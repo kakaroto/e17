@@ -12,11 +12,11 @@ typedef struct _Config_Item Config_Item;
 struct _Config
 {
    E_Module *module;
-   Evas_List *taskbars;
-   Evas_List *borders;
-   Evas_List *items;
+   Eina_List *taskbars;
+   Eina_List *borders;
+   Eina_List *items;
    E_Menu *menu;
-   Evas_List *handlers;
+   Eina_List *handlers;
    E_Config_Dialog *config_dialog;
 };
 

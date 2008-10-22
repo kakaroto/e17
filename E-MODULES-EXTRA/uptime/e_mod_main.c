@@ -110,7 +110,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _ut_cb_mouse_down, inst);
-  ut_config->instances = evas_list_append (ut_config->instances, inst);
+  ut_config->instances = eina_list_append (ut_config->instances, inst);
 
   (void) update_counters (inst);
   inst->counter = 0;
@@ -140,7 +140,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   if (inst->monitor != NULL)
     ecore_timer_del (inst->monitor);
 
-  ut_config->instances = evas_list_remove (ut_config->instances, inst);
+  ut_config->instances = eina_list_remove (ut_config->instances, inst);
   evas_object_event_callback_del (ut->ut_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _ut_cb_mouse_down);
 
@@ -248,7 +248,7 @@ _ut_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _ut_config_item_get (const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -260,7 +260,7 @@ _ut_config_item_get (const char *id)
 	if (ut_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last (ut_config->items)->data;
+	     ci = eina_list_last (ut_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -284,7 +284,7 @@ _ut_config_item_get (const char *id)
    ci->check_interval = 60.0;
    ci->update_interval = 60.0;
 
-   ut_config->items = evas_list_append (ut_config->items, ci);
+   ut_config->items = eina_list_append (ut_config->items, ci);
 
    return ci;
 }
@@ -292,7 +292,7 @@ _ut_config_item_get (const char *id)
 void
 _ut_config_updated (Config_Item *ci)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (ut_config == NULL)
     return;
@@ -350,7 +350,7 @@ e_modapi_init (E_Module * m)
       ci->id = evas_stringshare_add ("0");
       ci->check_interval = 60.0;
       ci->update_interval = 60.0;
-      ut_config->items = evas_list_append (ut_config->items, ci);
+      ut_config->items = eina_list_append (ut_config->items, ci);
     }
   ut_config->module = m;
   e_gadcon_provider_register (&_gc_class);
@@ -379,7 +379,7 @@ e_modapi_shutdown (E_Module * m)
 
       ci = ut_config->items->data;
       ut_config->items =
-	evas_list_remove_list (ut_config->items, ut_config->items);
+	eina_list_remove_list (ut_config->items, ut_config->items);
 
       if (ci->id != NULL)
 	evas_stringshare_del (ci->id);

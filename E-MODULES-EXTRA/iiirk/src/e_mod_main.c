@@ -55,7 +55,7 @@ struct _IIirk
    Evas_Object    *o_empty;
    IIirk_Icon     *ic_drop_before;
    int             drop_before;
-   Evas_List      *icons;
+   Eina_List      *icons;
    E_Zone         *zone;
    Evas_Coord      dnd_x, dnd_y;
    E_Order        *apps;
@@ -98,7 +98,7 @@ static void _iiirk_icon_fill(IIirk_Icon *ic);
 static void _iiirk_icon_fill_label(IIirk_Icon *ic);
 static void _iiirk_icon_empty(IIirk_Icon *ic);
 static void _iiirk_icon_signal_emit(IIirk_Icon *ic, char *sig, char *src);
-static Evas_List *_iiirk_zone_find(E_Zone *zone);
+static Eina_List *_iiirk_zone_find(E_Zone *zone);
 static void _iiirk_cb_app_change(void *data, E_Order *eo);
 static void _iiirk_cb_obj_moveresize(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _iiirk_cb_menu_post(void *data, E_Menu *m);
@@ -172,7 +172,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				  _iiirk_cb_obj_moveresize, inst);
    evas_object_event_callback_add(o, EVAS_CALLBACK_RESIZE,
 				  _iiirk_cb_obj_moveresize, inst);
-   iiirk_config->instances = evas_list_append(iiirk_config->instances, inst);
+   iiirk_config->instances = eina_list_append(iiirk_config->instances, inst);
    _gc_orient(gcc);
 
    return gcc;
@@ -184,7 +184,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   iiirk_config->instances = evas_list_remove(iiirk_config->instances, inst);
+   iiirk_config->instances = eina_list_remove(iiirk_config->instances, inst);
    e_drop_handler_del(inst->drop_handler);
    _iiirk_free(inst->iiirk);
    free(inst);
@@ -207,7 +207,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	_iiirk_orient_set(inst->iiirk, 1);
-	e_gadcon_client_aspect_set(gcc, MAX(evas_list_count(inst->iiirk->icons), 1) * 16, 16);
+	e_gadcon_client_aspect_set(gcc, MAX(eina_list_count(inst->iiirk->icons), 1) * 16, 16);
 	break;
       case E_GADCON_ORIENT_VERT:
       case E_GADCON_ORIENT_LEFT:
@@ -217,7 +217,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
 	_iiirk_orient_set(inst->iiirk, 0);
-	e_gadcon_client_aspect_set(gcc, 16, MAX(evas_list_count(inst->iiirk->icons), 1) * 16);
+	e_gadcon_client_aspect_set(gcc, 16, MAX(eina_list_count(inst->iiirk->icons), 1) * 16);
 	break;
       default:
 	break;
@@ -262,7 +262,7 @@ _gc_id_del(const char *id)
    if (ci)
      {
 	if (ci->id) evas_stringshare_del(ci->id);
-	iiirk_config->items = evas_list_remove(iiirk_config->items, ci);
+	iiirk_config->items = eina_list_remove(iiirk_config->items, ci);
      }
 }
 
@@ -419,7 +419,7 @@ _iiirk_fill(IIirk *b)
    if (b && b->apps && b->inst && b->inst->ci)
      {
 	Efreet_Desktop *desktop;
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = b->apps->desktops; l; l = l->next)
 	  {
@@ -452,7 +452,7 @@ _iiirk_fill(IIirk *b)
 		       IIirk_Icon *ic;
 
 		       ic = _iiirk_icon_new(b, bd);
-		       b->icons = evas_list_append(b->icons, ic);
+		       b->icons = eina_list_append(b->icons, ic);
 		       e_box_pack_end(b->o_box, ic->o_holder);
 		    }
 	       }
@@ -469,7 +469,7 @@ _iiirk_empty(IIirk *b)
    while (b->icons)
      {
 	_iiirk_icon_free(b->icons->data);
-	b->icons = evas_list_remove_list(b->icons, b->icons);
+	b->icons = eina_list_remove_list(b->icons, b->icons);
      }
    _iiirk_empty_handle(b);
 }
@@ -484,7 +484,7 @@ _iiirk_orient_set(IIirk *b, int horizontal)
 static void
 _iiirk_resize_handle(IIirk *b)
 {
-   Evas_List *l;
+   Eina_List *l;
    IIirk_Icon *ic;
    Evas_Coord w, h;
 
@@ -520,7 +520,7 @@ _iiirk_instance_drop_zone_recalc(Instance *inst)
 static IIirk_Icon *
 _iiirk_icon_find(IIirk *b, E_Border *bd)
 {
-   Evas_List *l;
+   Eina_List *l;
    IIirk_Icon *ic;
 
    for (l = b->icons; l; l = l->next)
@@ -535,7 +535,7 @@ _iiirk_icon_find(IIirk *b, E_Border *bd)
 static IIirk_Icon *
 _iiirk_icon_at_coord(IIirk *b, Evas_Coord x, Evas_Coord y)
 {
-   Evas_List *l;
+   Eina_List *l;
    IIirk_Icon *ic;
 
    for (l = b->icons; l; l = l->next)
@@ -669,11 +669,11 @@ _iiirk_icon_signal_emit(IIirk_Icon *ic, char *sig, char *src)
      edje_object_signal_emit(ic->o_icon2, sig, src);
 }
 
-static Evas_List *
+static Eina_List *
 _iiirk_zone_find(E_Zone *zone)
 {
-   Evas_List *iiirk = NULL;
-   Evas_List *l;
+   Eina_List *iiirk = NULL;
+   Eina_List *l;
 
    for (l = iiirk_config->instances; l; l = l->next)
      {
@@ -681,9 +681,9 @@ _iiirk_zone_find(E_Zone *zone)
 
 	inst = l->data;
 	if (inst->ci->show_zone == 0)
-	  iiirk = evas_list_append(iiirk, inst->iiirk);
+	  iiirk = eina_list_append(iiirk, inst->iiirk);
 	else if ((inst->ci->show_zone == 1) && (inst->iiirk->zone == zone))
-	  iiirk = evas_list_append(iiirk, inst->iiirk);
+	  iiirk = eina_list_append(iiirk, inst->iiirk);
      }
    return iiirk;
 }
@@ -868,7 +868,7 @@ _iiirk_cb_icon_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	     e_drag_resize(d, w, h);
 	     e_drag_start(d, ic->drag.x, ic->drag.y);
 	     e_object_ref(E_OBJECT(ic->border));
-	     ic->iiirk->icons = evas_list_remove(ic->iiirk->icons, ic);
+	     ic->iiirk->icons = eina_list_remove(ic->iiirk->icons, ic);
 	     if (ic->border->desktop) e_order_remove(ic->iiirk->apps, ic->border->desktop);
 	     _iiirk_resize_handle(ic->iiirk);
 	     _gc_orient(ic->iiirk->inst->gcc);
@@ -1057,7 +1057,7 @@ _iiirk_inst_cb_drop(void *data, const char *type, void *event_info)
    E_Border *bd = NULL;
    IIirk *b;
    IIirk_Icon *ic, *ic2;
-   Evas_List *l;
+   Eina_List *l;
 
    ev = event_info;
    inst = data;
@@ -1090,7 +1090,7 @@ _iiirk_inst_cb_drop(void *data, const char *type, void *event_info)
 	if (_iiirk_icon_find(b, bd)) return;
 	ic = _iiirk_icon_new(b, bd);
 	if (!ic) return;
-	b->icons = evas_list_prepend_relative(b->icons, ic, ic2);
+	b->icons = eina_list_prepend_relative(b->icons, ic, ic2);
 	e_box_pack_before(b->o_box, ic->o_holder, ic2->o_holder);
      }
    else
@@ -1100,7 +1100,7 @@ _iiirk_inst_cb_drop(void *data, const char *type, void *event_info)
 	if (_iiirk_icon_find(b, bd)) return;
 	ic = _iiirk_icon_new(b, bd);
 	if (!ic) return;
-	b->icons = evas_list_append(b->icons, ic);
+	b->icons = eina_list_append(b->icons, ic);
 	e_box_pack_end(b->o_box, ic->o_holder);
      }
 
@@ -1137,7 +1137,7 @@ _iiirk_cb_event_border_property(void *data, int type, void *event)
    IIirk *b;
    IIirk_Icon *ic;
    E_Desk *desk;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    desk = e_desk_current_get(ev->border->zone);
@@ -1154,7 +1154,7 @@ _iiirk_cb_event_border_property(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
    return 1;
 }
 
@@ -1166,7 +1166,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
    IIirk_Icon *ic;
    E_Desk *desk;
    Efreet_Desktop *desktop;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    if (!ev || !ev->border || !ev->border->desktop) return 1;
@@ -1176,7 +1176,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
    iiirk = _iiirk_zone_find(ev->border->zone);
    for (l = iiirk; l; l = l->next)
      {
-	Evas_List *ll;
+	Eina_List *ll;
 
 	b = l->data;
 	if (_iiirk_icon_find(b, ev->border)) continue;
@@ -1190,7 +1190,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
 	       {
 		  ic = _iiirk_icon_new(b, ev->border);
 		  if (!ic) continue;
-		  b->icons = evas_list_append(b->icons, ic);
+		  b->icons = eina_list_append(b->icons, ic);
 		  e_box_pack_end(b->o_box, ic->o_holder);
 		  _iiirk_empty_handle(b);
 		  _iiirk_resize_handle(b);
@@ -1200,7 +1200,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
    return 1;
 }
 
@@ -1210,7 +1210,7 @@ _iiirk_cb_event_border_remove(void *data, int type, void *event)
    E_Event_Border_Remove *ev;
    IIirk *b;
    IIirk_Icon *ic;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    /* find icon and remove if there */
@@ -1221,13 +1221,13 @@ _iiirk_cb_event_border_remove(void *data, int type, void *event)
 	ic = _iiirk_icon_find(b, ev->border);
 	if (!ic) continue;
 	_iiirk_icon_free(ic);
-	b->icons = evas_list_remove(b->icons, ic);
+	b->icons = eina_list_remove(b->icons, ic);
 	_iiirk_empty_handle(b);
 	_iiirk_resize_handle(b);
 	_gc_orient(b->inst->gcc);
      }
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
 
    return 1;
 }
@@ -1238,7 +1238,7 @@ _iiirk_cb_event_border_iconify(void *data, int type, void *event)
    E_Event_Border_Iconify *ev;
    IIirk *b;
    IIirk_Icon *ic;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
    E_Desk *desk;
 
    ev = event;
@@ -1257,7 +1257,7 @@ _iiirk_cb_event_border_iconify(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
    return 1;
 }
 
@@ -1267,7 +1267,7 @@ _iiirk_cb_event_border_uniconify(void *data, int type, void *event)
    E_Event_Border_Uniconify *ev;
    IIirk *b;
    IIirk_Icon *ic;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    iiirk = _iiirk_zone_find(ev->border->zone);
@@ -1284,7 +1284,7 @@ _iiirk_cb_event_border_uniconify(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
 
    return 1;
 }
@@ -1295,7 +1295,7 @@ _iiirk_cb_event_border_icon_change(void *data, int type, void *event)
    E_Event_Border_Icon_Change *ev;
    IIirk *b;
    IIirk_Icon *ic;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    /* update icon */
@@ -1310,7 +1310,7 @@ _iiirk_cb_event_border_icon_change(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
 
    return 1;
 }
@@ -1321,7 +1321,7 @@ _iiirk_cb_event_border_urgent_change(void *data, int type, void *event)
    E_Event_Border_Urgent_Change *ev;
    IIirk *b;
    IIirk_Icon *ic;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    /* update icon */
@@ -1351,7 +1351,7 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
    IIirk *b;
-   Evas_List *l, *iiirk;
+   Eina_List *l, *iiirk;
 
    ev = event;
    /* delete all wins from iiirk and add only for current desk */
@@ -1369,7 +1369,7 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
      }
 
    while (iiirk)
-     iiirk = evas_list_remove_list(iiirk, iiirk);
+     iiirk = eina_list_remove_list(iiirk, iiirk);
 
    return 1;
 }
@@ -1377,7 +1377,7 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
 static Config_Item *
 _iiirk_config_item_get(const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -1403,14 +1403,14 @@ _iiirk_config_item_get(const char *id)
    ci->show_zone = 1;
    ci->show_desk = 0;
    ci->icon_label = 0;
-   iiirk_config->items = evas_list_append(iiirk_config->items, ci);
+   iiirk_config->items = eina_list_append(iiirk_config->items, ci);
    return ci;
 }
 
 void
 _iiirk_config_update(Config_Item *ci)
 {
-   Evas_List *l;
+   Eina_List *l;
    for (l = iiirk_config->instances; l; l = l->next)
      {
 	Instance *inst;
@@ -1442,7 +1442,7 @@ _iiirk_cb_menu_configuration(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    IIirk *b;
    int ok = 1;
-   Evas_List *l;
+   Eina_List *l;
 
    b = data;
    for (l = iiirk_config->config_dialog; l; l = l->next)
@@ -1504,7 +1504,7 @@ e_modapi_init(E_Module *m)
 	ci->show_zone = 1;
 	ci->show_desk = 0;
 	ci->icon_label = 0;
-	iiirk_config->items = evas_list_append(iiirk_config->items, ci);
+	iiirk_config->items = eina_list_append(iiirk_config->items, ci);
      }
    else
      {
@@ -1512,36 +1512,36 @@ e_modapi_init(E_Module *m)
 	const char *p;
 
 	/* Init uuid */
-	ci = evas_list_last(iiirk_config->items)->data;
+	ci = eina_list_last(iiirk_config->items)->data;
 	p = strrchr(ci->id, '.');
 	if (p) uuid = atoi(p + 1);
      }
 
    iiirk_config->module = m;
 
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_PROPERTY, _iiirk_cb_event_border_property, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_ADD, _iiirk_cb_event_border_add, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_REMOVE, _iiirk_cb_event_border_remove, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_ICONIFY, _iiirk_cb_event_border_iconify, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_UNICONIFY, _iiirk_cb_event_border_uniconify, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_ICON_CHANGE, _iiirk_cb_event_border_icon_change, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_URGENT_CHANGE,
        _iiirk_cb_event_border_urgent_change, NULL));
-   iiirk_config->handlers = evas_list_append
+   iiirk_config->handlers = eina_list_append
      (iiirk_config->handlers, ecore_event_handler_add
       (E_EVENT_DESK_SHOW, _iiirk_cb_event_desk_show, NULL));
 
@@ -1565,7 +1565,7 @@ e_modapi_shutdown(E_Module *m)
    while (iiirk_config->handlers)
      {
 	ecore_event_handler_del(iiirk_config->handlers->data);
-	iiirk_config->handlers = evas_list_remove_list(iiirk_config->handlers, iiirk_config->handlers);
+	iiirk_config->handlers = eina_list_remove_list(iiirk_config->handlers, iiirk_config->handlers);
      }
 
    while (iiirk_config->config_dialog)
@@ -1585,7 +1585,7 @@ e_modapi_shutdown(E_Module *m)
 	Config_Item *ci;
 	
 	ci = iiirk_config->items->data;
-	iiirk_config->items = evas_list_remove_list(iiirk_config->items, iiirk_config->items);
+	iiirk_config->items = eina_list_remove_list(iiirk_config->items, iiirk_config->items);
 	if (ci->id)
 	  evas_stringshare_del(ci->id);
 	free(ci);

@@ -13,7 +13,7 @@ typedef struct _Lang_Choice Lang_Choice;
 
 struct _E_Config_Dialog_Data
 {
-   Evas_List *choices;
+   Eina_List *choices;
 };
 
 static void        *_create_data(E_Config_Dialog *cfd);
@@ -78,10 +78,10 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Lang_Choice *ch;
 
-   while ((ch = evas_list_data(cfdata->choices)))
+   while ((ch = eina_list_data_get(cfdata->choices)))
      {
         free(ch);
-        cfdata->choices = evas_list_remove_list(cfdata->choices, cfdata->choices);
+        cfdata->choices = eina_list_remove_list(cfdata->choices, cfdata->choices);
      }
 
    news->config_dialog_langs = NULL;
@@ -93,15 +93,15 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 {
    News_Feed_Lang *lang;
    Lang_Choice *choice;
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=news->langs; l; l=evas_list_next(l))
+   for (l=news->langs; l; l=eina_list_next(l))
      {
         lang = l->data;
         choice = E_NEW(Lang_Choice, 1);
         choice->lang = lang;
         choice->ok = news_feed_lang_selected_is(lang->key);
-        cfdata->choices = evas_list_append(cfdata->choices, choice);
+        cfdata->choices = eina_list_append(cfdata->choices, choice);
      }
 }
 
@@ -111,7 +111,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Evas_Object *ol, *of, *o;
    Evas_Object *ob;
    Lang_Choice *choice;
-   Evas_List *l;
+   Eina_List *l;
    char buf[4096];
    int line;
    int count;
@@ -132,7 +132,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    line = 0;
    of = e_widget_framelist_add(evas, D_("Languages"), 1);
    ol = e_widget_list_add(evas, 0, 0);
-   for (l=cfdata->choices; l; l=evas_list_next(l))
+   for (l=cfdata->choices; l; l=eina_list_next(l))
      {
         choice = l->data;
 
@@ -172,13 +172,13 @@ _cb_lang_change(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata;
    News_Feed_Lang *lang;
    Lang_Choice *choice;
-   Evas_List *list, *l;
+   Eina_List *list, *l;
 
    cfdata = data;
 
    news_feed_lang_list_free(news->config->feed.langs);
    list = NULL;
-   for (l=cfdata->choices; l; l=evas_list_next(l))
+   for (l=cfdata->choices; l; l=eina_list_next(l))
      {
         choice = l->data;
         if (choice->ok)
@@ -186,7 +186,7 @@ _cb_lang_change(void *data, Evas_Object *obj)
              lang = E_NEW(News_Feed_Lang, 1);
              lang->key = evas_stringshare_add(choice->lang->key);
              lang->name = evas_stringshare_add(choice->lang->name);
-             list = evas_list_append(list, lang);
+             list = eina_list_append(list, lang);
           }
      }
    news->config->feed.langs = list;

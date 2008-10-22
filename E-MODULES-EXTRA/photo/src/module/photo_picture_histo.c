@@ -22,26 +22,26 @@ int photo_picture_histo_init(Photo_Item *pi)
 
 void photo_picture_histo_shutdown(Photo_Item *pi)
 {
-   Evas_List *l;
+   Eina_List *l;
    Picture *p;
    Photo_Item *pi2;
    int cur;
 
    if (pi->histo.list)
      {
-        for (l=pi->histo.list; l; l=evas_list_next(l))
+        for (l=pi->histo.list; l; l=eina_list_next(l))
           {
-             p = evas_list_data(l);
+             p = eina_list_data_get(l);
              cur = 0;
-             while ( (pi2 = evas_list_nth(p->items_histo, cur)) )
+             while ( (pi2 = eina_list_nth(p->items_histo, cur)) )
                {
                   if (pi == pi2)
-                    p->items_histo = evas_list_remove(p->items_histo, pi);
+                    p->items_histo = eina_list_remove(p->items_histo, pi);
                   else
                     cur++;
                }
           }
-        evas_list_free(pi->histo.list);
+        eina_list_free(pi->histo.list);
         pi->histo.list = NULL;
      }
 
@@ -56,21 +56,21 @@ void photo_picture_histo_shutdown(Photo_Item *pi)
 
 void photo_picture_histo_attach(Photo_Item *pi, Picture *picture)
 {
-   pi->histo.list = evas_list_prepend(pi->histo.list, picture);
+   pi->histo.list = eina_list_prepend(pi->histo.list, picture);
 
    /* if full and we are not on the last histo item, remove last */
-   if (evas_list_count(pi->histo.list) > PICTURE_HISTO_SIZE_MAX)
+   if (eina_list_count(pi->histo.list) > PICTURE_HISTO_SIZE_MAX)
      {
-        Evas_List *l, *l2;
-        l = evas_list_last(pi->histo.list);
-        l2 = evas_list_nth_list(pi->histo.list, pi->histo.pos);
+        Eina_List *l, *l2;
+        l = eina_list_last(pi->histo.list);
+        l2 = eina_list_nth_list(pi->histo.list, pi->histo.pos);
         if (l != l2)
-          pi->histo.list = evas_list_remove_list(pi->histo.list, l);
+          pi->histo.list = eina_list_remove_list(pi->histo.list, l);
      }
 
    /* add the pi to the picture's items histo list if not already here */
-   if (!evas_list_find(picture->items_histo, pi))
-     picture->items_histo = evas_list_append(picture->items_histo, pi);
+   if (!eina_list_data_find(picture->items_histo, pi))
+     picture->items_histo = eina_list_append(picture->items_histo, pi);
 }
 
 Picture *photo_picture_histo_change(Photo_Item *pi, int offset)
@@ -82,7 +82,7 @@ Picture *photo_picture_histo_change(Photo_Item *pi, int offset)
 
    DPIC(("HISTO change from %d to %d (off %d)", pi->histo.pos, new_pos, offset));
 
-   picture = evas_list_nth(pi->histo.list, new_pos);
+   picture = eina_list_nth(pi->histo.list, new_pos);
    if (picture)
      {
        if (!picture->pi && !picture->delete_me)
@@ -100,17 +100,17 @@ Picture *photo_picture_histo_change(Photo_Item *pi, int offset)
 void photo_picture_histo_picture_del(Picture *picture)
 {
    Photo_Item *pi;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!picture) return;
-   for (l=picture->items_histo; l; l=evas_list_next(l))
+   for (l=picture->items_histo; l; l=eina_list_next(l))
      {
-        pi = evas_list_data(l);
-        while(evas_list_find(pi->histo.list, picture))
-          pi->histo.list = evas_list_remove(pi->histo.list, picture);
+        pi = eina_list_data_get(l);
+        while(eina_list_data_find(pi->histo.list, picture))
+          pi->histo.list = eina_list_remove(pi->histo.list, picture);
      }
 
-   evas_list_free(picture->items_histo);
+   eina_list_free(picture->items_histo);
 }
 
 void photo_picture_histo_menu_append(Photo_Item *pi, E_Menu *mn_main)
@@ -146,8 +146,8 @@ _cb_menu_populate(void *data, E_Menu *m, E_Menu_Item *mi)
    e_menu_post_deactivate_callback_set(mn, _cb_menu_deactivate_post, pi);
    e_menu_item_submenu_set(mi, mn);
 
-   pos = evas_list_count(pi->histo.list) - 1;
-   while ( (p=evas_list_nth(pi->histo.list, pos)) )
+   pos = eina_list_count(pi->histo.list) - 1;
+   while ( (p=eina_list_nth(pi->histo.list, pos)) )
      {
         mi = e_menu_item_new(mn);
         e_menu_item_label_set(mi, p->infos.name);
@@ -171,18 +171,18 @@ _cb_menu_activate(void *data, E_Menu *m, E_Menu_Item *mi)
 {
   Photo_Item *pi;
   E_Menu *mn;
-  Evas_List *l;
+  Eina_List *l;
 
   pi = data;
   mn = pi->menu_histo;
 
   if (!mn) return;
 
-  for (l=mn->items; l; l=evas_list_next(l))
+  for (l=mn->items; l; l=eina_list_next(l))
     {
       E_Menu_Item *mi;
 
-      mi = evas_list_data(l);
+      mi = eina_list_data_get(l);
       if (!mi || mi->separator) continue;
       evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_IN,
 				     _cb_menu_pre_select, mi);
@@ -202,7 +202,7 @@ _cb_menu_select(void *data, E_Menu *m, E_Menu_Item *mi)
    no = e_menu_item_num_get(mi);
    photo_item_action_change(pi,
                             pi->histo.pos -
-                            (evas_list_count(pi->histo.list) - (no+1)));
+                            (eina_list_count(pi->histo.list) - (no+1)));
    photo_item_timer_set(pi, pi->config->timer_active, 0);
 }
 
@@ -220,11 +220,11 @@ _cb_menu_pre_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
    pi = mi->cb.data;
    if (!pi) return;
 
-   number = (evas_list_count(pi->histo.list) - (e_menu_item_num_get(mi)+1));
+   number = (eina_list_count(pi->histo.list) - (e_menu_item_num_get(mi)+1));
 
    DPIC(("Histo menu : Select %d in histo list", number));
 
-   p = evas_list_nth(pi->histo.list, number);
+   p = eina_list_nth(pi->histo.list, number);
    if (!p) return;
 
    text = photo_picture_infos_get(p);

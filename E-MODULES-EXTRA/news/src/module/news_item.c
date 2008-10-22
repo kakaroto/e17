@@ -17,7 +17,7 @@ news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id)
    News_Item *ni;
    News_Config_Item *nic;
    Evas_Object *view;
-   Evas_List *l;
+   Eina_List *l;
 
    ni = E_NEW(News_Item, 1);
 
@@ -34,11 +34,11 @@ news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id)
 				  _cb_mouse_out, ni);
 
    /* attach feeds */
-   for (l=nic->feed_refs; l; l=evas_list_next(l))
+   for (l=nic->feed_refs; l; l=eina_list_next(l))
      {
         News_Feed_Ref *ref;
 
-        ref = evas_list_data(l);
+        ref = eina_list_data_get(l);
         news_feed_attach(NULL, ref, ni);
      }
    news_feed_list_ui_refresh();
@@ -109,7 +109,7 @@ news_item_refresh(News_Item *ni, int changed_order, int changed_content, int cha
           }
      }
 
-   if (!evas_list_count(ni->config->feed_refs))
+   if (!eina_list_count(ni->config->feed_refs))
      mode = NEWS_ITEM_VIEW_MODE_ONE;
    else
      mode = ni->config->view_mode;
@@ -231,7 +231,7 @@ _item_refresh_mode_feed(News_Item *ni, int important_only, int unread_only, int 
    Evas_Object *box;
    Evas_Object *obj;
 
-   if (!evas_list_count(ni->config->feed_refs)) return;
+   if (!eina_list_count(ni->config->feed_refs)) return;
 
    box = ni->view.box;
 

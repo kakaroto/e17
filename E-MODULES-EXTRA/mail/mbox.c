@@ -2,7 +2,7 @@
 #include "e_mod_main.h"
 #include "mbox.h"
 
-static Evas_List *mboxes;
+static Eina_List *mboxes;
 
 static void _mail_mbox_check_mail_parser (Config_Box *cb);
 static void _mail_mbox_check_mail_monitor (void *data, Ecore_File_Monitor * monitor,
@@ -28,13 +28,13 @@ _mail_mbox_add_mailbox (void *data, void *data2)
     mb->monitor =
       ecore_file_monitor_add (mb->config->new_path, _mail_mbox_check_mail_monitor, mb);
 
-  mboxes = evas_list_append (mboxes, mb);
+  mboxes = eina_list_append (mboxes, mb);
 }
 
 void
 _mail_mbox_check_monitors ()
 {
-  Evas_List *l;
+  Eina_List *l;
 
   for (l = mboxes; l; l = l->next)
     {
@@ -66,7 +66,7 @@ void
 _mail_mbox_del_mailbox (void *data)
 {
   Config_Box *cb;
-  Evas_List *l;
+  Eina_List *l;
 
   cb = data;
   if (!cb)
@@ -82,7 +82,7 @@ _mail_mbox_del_mailbox (void *data)
 	continue;
       if (mb->monitor)
 	ecore_file_monitor_del (mb->monitor);
-      mboxes = evas_list_remove (mboxes, mb);
+      mboxes = eina_list_remove (mboxes, mb);
       free (mb);
       mb = NULL;
       break;
@@ -101,7 +101,7 @@ _mail_mbox_shutdown ()
       mb = mboxes->data;
       if (mb->monitor)
 	ecore_file_monitor_del (mb->monitor);
-      mboxes = evas_list_remove_list (mboxes, mboxes);
+      mboxes = eina_list_remove_list (mboxes, mboxes);
       free (mb);
       mb = NULL;
     }
@@ -109,7 +109,7 @@ _mail_mbox_shutdown ()
 
 void _mail_mbox_check_mail (void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
   Instance *inst;
   int num_new_prev;
 

@@ -35,7 +35,7 @@ struct _News_Viewer
    /* view of the feeds list */
    struct
    {
-      Evas_List   *list;
+      Eina_List   *list;
       int          list_own;
       Evas_Object *ilist;
       News_Feed   *selected;
@@ -48,7 +48,7 @@ struct _News_Viewer
    /* view of the articles list */
    struct
    {
-      Evas_List         *list;
+      Eina_List         *list;
       int                list_own;
       Evas_Object       *ilist;
       News_Feed_Article *selected;

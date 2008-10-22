@@ -150,7 +150,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    pi = photo_item_add(gcc, o, id);
    gcc->data = pi;
 
-   photo->items = evas_list_append(photo->items, pi);
+   photo->items = eina_list_append(photo->items, pi);
 
    return pi->gcc;
 }
@@ -163,7 +163,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    pi = gcc->data;
 
    DMAIN(("GCC shutdown"));
-   photo->items = evas_list_remove(photo->items, pi);
+   photo->items = eina_list_remove(photo->items, pi);
    photo_item_del(pi);
 }
 

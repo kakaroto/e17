@@ -37,7 +37,7 @@ config_notification_box_module(Config_Item *ci)
 			     D_("Notification Box Configuration"),
 			     "E", "_e_mod_notification_box_config_dialog",
 			     buf, 0, v, ci);
-   notification_cfg->config_dialog = evas_list_append(notification_cfg->config_dialog, cfd);
+   notification_cfg->config_dialog = eina_list_append(notification_cfg->config_dialog, cfd);
 }
 
 static void 
@@ -66,7 +66,7 @@ _ci_create_data(E_Config_Dialog *cfd)
 static void 
 _ci_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   notification_cfg->config_dialog = evas_list_remove(notification_cfg->config_dialog, cfd);
+   notification_cfg->config_dialog = eina_list_remove(notification_cfg->config_dialog, cfd);
    free(cfdata);
 }
 

@@ -7,7 +7,7 @@ struct _Notification_Box
   Instance       *inst;
   Evas_Object    *o_box;
   Evas_Object    *o_empty;
-  Evas_List      *icons;
+  Eina_List      *icons;
 };
 
 struct _Notification_Box_Icon

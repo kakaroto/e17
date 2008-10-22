@@ -159,7 +159,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              return 0;
           }
 
-        photo->config->local.dirs = evas_list_remove(photo->config->local.dirs,
+        photo->config->local.dirs = eina_list_remove(photo->config->local.dirs,
                                                      cfdata->dir);
         photo_picture_local_dir_free(cfdata->dir, 0);
      }
@@ -169,7 +169,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         dir->config_dialog = cfd;
      }
 
-   photo->config->local.dirs = evas_list_append(photo->config->local.dirs, dir);
+   photo->config->local.dirs = eina_list_append(photo->config->local.dirs, dir);
    cfdata->dir = dir;
 
    if (photo->config->local.auto_reload)

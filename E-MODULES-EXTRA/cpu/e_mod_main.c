@@ -90,7 +90,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = gcc;
    inst->cpu = cpu;
 
-   cpu_conf->instances = evas_list_append(cpu_conf->instances, inst);
+   cpu_conf->instances = eina_list_append(cpu_conf->instances, inst);
 
    evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
@@ -111,7 +111,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->timer) ecore_timer_del(inst->timer);
    if (cpu->o_icon) evas_object_del(cpu->o_icon);
 
-   cpu_conf->instances = evas_list_remove(cpu_conf->instances, inst);
+   cpu_conf->instances = eina_list_remove(cpu_conf->instances, inst);
    E_FREE(cpu);
    E_FREE(inst);
 }
@@ -157,7 +157,7 @@ _gc_id_new(void)
 static Config_Item *
 _config_item_get(const char *id) 
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Config_Item *ci;
    char buf[128];
    int num = 0;
@@ -168,7 +168,7 @@ _config_item_get(const char *id)
 	/* Create id */
 	if (cpu_conf->items)
 	  {
-	     ci = evas_list_last(cpu_conf->items)->data;
+	     ci = eina_list_last(cpu_conf->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -194,7 +194,7 @@ _config_item_get(const char *id)
    ci->interval = 1;
    update_interval = ci->interval;
 
-   cpu_conf->items = evas_list_append(cpu_conf->items, ci);
+   cpu_conf->items = eina_list_append(cpu_conf->items, ci);
    return ci;
 }
 
@@ -525,7 +525,7 @@ e_modapi_init(E_Module *m)
 	ci->id = evas_stringshare_add("0");
 	ci->interval = 1;
 	
-	cpu_conf->items = evas_list_append(cpu_conf->items, ci);
+	cpu_conf->items = eina_list_append(cpu_conf->items, ci);
      }
    
    cpu_conf->module = m;
@@ -553,7 +553,7 @@ e_modapi_shutdown(E_Module *m)
 	
 	ci = cpu_conf->items->data;
 	if (ci->id) evas_stringshare_del(ci->id);
-	cpu_conf->items = evas_list_remove_list(cpu_conf->items, cpu_conf->items);
+	cpu_conf->items = eina_list_remove_list(cpu_conf->items, cpu_conf->items);
 	E_FREE(ci);
      }
 

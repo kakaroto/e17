@@ -25,7 +25,7 @@ struct _Config
    E_Config_Dialog *cfd;
 
    /* The list; their location on screen ? */
-   Evas_List *conf_items;
+   Eina_List *conf_items;
 
    /* config file version */
    int version;

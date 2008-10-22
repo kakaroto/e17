@@ -5,9 +5,9 @@
 struct _E_Config_Dialog_Data
 {
    Evas_Object *ilist_feeds;
-   Evas_List   *ilist_feeds_sel;
+   Eina_List   *ilist_feeds_sel;
    Evas_Object *ilist_selected_feeds;
-   Evas_List   *ilist_selected_feeds_sel;
+   Eina_List   *ilist_selected_feeds_sel;
    int          ilist_selected_feeds_inrefresh;
    Evas_Object *button_add;
    Evas_Object *button_rem;
@@ -75,7 +75,7 @@ void
 news_config_dialog_item_content_refresh_feeds(News_Item *ni)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    Evas_Object *ilist;
    int pos;
    int iw, ih;
@@ -93,12 +93,12 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
      e_widget_disabled_set(cfdata->button_add, 1);
 
    pos = -1;
-   for(l=news->config->feed.categories; l; l=evas_list_next(l))
+   for(l=news->config->feed.categories; l; l=eina_list_next(l))
      {
         News_Feed_Category *cat;
         Evas_Object *iccat = NULL;
 
-        cat = evas_list_data(l);
+        cat = eina_list_data_get(l);
 
         if (!cat->feeds_visible)
           continue;
@@ -112,13 +112,13 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
         e_widget_ilist_header_append(ilist, iccat, cat->name);
 	pos++;
 
-        for(l2=cat->feeds_visible; l2; l2=evas_list_next(l2))
+        for(l2=cat->feeds_visible; l2; l2=eina_list_next(l2))
           {
              Evas_Object *ic = NULL;
              News_Feed *f;
              char buf[1024];
              
-             f = evas_list_data(l2);
+             f = eina_list_data_get(l2);
              
              if (f->icon && f->icon[0])
                {
@@ -131,7 +131,7 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
              e_widget_ilist_append(ilist, ic, buf, NULL, f, NULL);
 	     pos++;
 
-	     if (evas_list_find(cfdata->ilist_feeds_sel, f))
+	     if (eina_list_data_find(cfdata->ilist_feeds_sel, f))
                e_widget_ilist_multi_select(ilist, pos);
           }
      }
@@ -188,7 +188,7 @@ news_config_dialog_item_content_refresh_selected_feeds(News_Item *ni)
         e_widget_ilist_append(ilist, ic, buf, NULL, _feed, NULL);
 	pos++;
 
-	if (evas_list_find(cfdata->ilist_selected_feeds_sel, _feed))
+	if (eina_list_data_find(cfdata->ilist_selected_feeds_sel, _feed))
           e_widget_ilist_multi_select(ilist, pos);
    }
    NEWS_ITEM_FEEDS_FOREACH_END();
@@ -230,9 +230,9 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    if (cfdata->ilist_feeds_sel)
-     evas_list_free(cfdata->ilist_feeds_sel);
+     eina_list_free(cfdata->ilist_feeds_sel);
    if (cfdata->ilist_selected_feeds_sel)
-     evas_list_free(cfdata->ilist_selected_feeds_sel);
+     eina_list_free(cfdata->ilist_selected_feeds_sel);
 
    cfdata->ni->config_dialog_content = NULL;
    free(cfdata);
@@ -315,23 +315,23 @@ _cb_feed_up(void *data, void *data2)
    News_Feed *f;
    News_Item *ni;
    News_Feed_Ref *ref;
-   Evas_List *sel, *l, *lf;
+   Eina_List *sel, *l, *lf;
 
    cfdata = data;
    ni = cfdata->ni;
 
-   for (sel = cfdata->ilist_selected_feeds_sel; sel; sel=evas_list_next(sel))
+   for (sel = cfdata->ilist_selected_feeds_sel; sel; sel=eina_list_next(sel))
      {
         f = sel->data;
         ref = news_feed_ref_find(f, ni);
         if (!ref) return;
 
-        l = evas_list_find_list(ni->config->feed_refs, ref);
-        lf = evas_list_prev(l);
+        l = eina_list_data_find_list(ni->config->feed_refs, ref);
+        lf = eina_list_prev(l);
         if (!lf) return;
 
-        ni->config->feed_refs = evas_list_remove_list(ni->config->feed_refs, l);
-        ni->config->feed_refs = evas_list_prepend_relative_list(ni->config->feed_refs,
+        ni->config->feed_refs = eina_list_remove_list(ni->config->feed_refs, l);
+        ni->config->feed_refs = eina_list_prepend_relative_list(ni->config->feed_refs,
                                                                 ref, lf);
      }
 
@@ -346,23 +346,23 @@ _cb_feed_down(void *data, void *data2)
    News_Feed *f;
    News_Item *ni;
    News_Feed_Ref *ref;
-   Evas_List *sel, *l, *lf;
+   Eina_List *sel, *l, *lf;
 
    cfdata = data;
    ni = cfdata->ni;
 
-   for (sel=evas_list_last(cfdata->ilist_selected_feeds_sel); sel; sel=evas_list_prev(sel))
+   for (sel=eina_list_last(cfdata->ilist_selected_feeds_sel); sel; sel=eina_list_prev(sel))
      {
         f = sel->data;
         ref = news_feed_ref_find(f, ni);
         if (!ref) return;
 
-        l = evas_list_find_list(ni->config->feed_refs, ref);
-        lf = evas_list_next(l);
+        l = eina_list_data_find_list(ni->config->feed_refs, ref);
+        lf = eina_list_next(l);
         if (!lf) return;
   
-        ni->config->feed_refs = evas_list_remove_list(ni->config->feed_refs, l);
-        ni->config->feed_refs = evas_list_append_relative_list(ni->config->feed_refs,
+        ni->config->feed_refs = eina_list_remove_list(ni->config->feed_refs, l);
+        ni->config->feed_refs = eina_list_append_relative_list(ni->config->feed_refs,
                                                                ref, lf);
      }
 
@@ -376,12 +376,12 @@ _cb_feed_add(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    News_Item *ni;
    News_Feed *f;
-   Evas_List *l;
+   Eina_List *l;
   
    cfdata = data;
    ni = cfdata->ni;
 
-   for (l=cfdata->ilist_feeds_sel; l; l=evas_list_next(l))
+   for (l=cfdata->ilist_feeds_sel; l; l=eina_list_next(l))
      {
         f = l->data;
         if (f->item) continue;
@@ -390,7 +390,7 @@ _cb_feed_add(void *data, void *data2)
           news_feed_obj_refresh(f, 1, 1);
 
         /* dont reselect this feed */
-        cfdata->ilist_feeds_sel = evas_list_remove(cfdata->ilist_feeds_sel, f);
+        cfdata->ilist_feeds_sel = eina_list_remove(cfdata->ilist_feeds_sel, f);
      }
 
    news_item_refresh(ni, 1, 0, 0);
@@ -406,12 +406,12 @@ _cb_feed_remove(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    News_Item *ni;
    News_Feed *f;
-   Evas_List *l;
+   Eina_List *l;
   
    cfdata = data;
    ni = cfdata->ni;
 
-   for (l=cfdata->ilist_selected_feeds_sel; l; l=evas_list_next(l))
+   for (l=cfdata->ilist_selected_feeds_sel; l; l=eina_list_next(l))
      {
         f = l->data;
         news_feed_detach(f, 1);
@@ -430,21 +430,21 @@ _cb_feed_change(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata;
    E_Ilist_Item *item;
    News_Feed *feed;
-   Evas_List *sel, *items, *l;
+   Eina_List *sel, *items, *l;
    int i;
 
    cfdata = data;
 
-   if (cfdata->ilist_feeds_sel) evas_list_free(cfdata->ilist_feeds_sel);
+   if (cfdata->ilist_feeds_sel) eina_list_free(cfdata->ilist_feeds_sel);
    sel = NULL;
    items = e_widget_ilist_items_get(cfdata->ilist_feeds);
-   for (l=items, i=0; l; l=evas_list_next(l), i++)
+   for (l=items, i=0; l; l=eina_list_next(l), i++)
      {
         item = l->data;
         if (item->header) continue;
         if (!item->selected) continue;
         feed = e_widget_ilist_nth_data_get(cfdata->ilist_feeds, i);
-        sel = evas_list_append(sel, feed);
+        sel = eina_list_append(sel, feed);
      }
    cfdata->ilist_feeds_sel = sel;
 
@@ -466,22 +466,22 @@ _cb_selected_feed_change(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata;
    E_Ilist_Item *item;
    News_Feed *feed;
-   Evas_List *sel, *items, *l;
+   Eina_List *sel, *items, *l;
    int i;
 
    cfdata = data;
    if (cfdata->ilist_selected_feeds_inrefresh) return;
 
-   if (cfdata->ilist_selected_feeds_sel) evas_list_free(cfdata->ilist_selected_feeds_sel);
+   if (cfdata->ilist_selected_feeds_sel) eina_list_free(cfdata->ilist_selected_feeds_sel);
    sel = NULL;
    items = e_widget_ilist_items_get(cfdata->ilist_selected_feeds);
-   for (l=items, i=0; l; l=evas_list_next(l), i++)
+   for (l=items, i=0; l; l=eina_list_next(l), i++)
      {
         item = l->data;
         if (item->header) continue;
         if (!item->selected) continue;
         feed = e_widget_ilist_nth_data_get(cfdata->ilist_selected_feeds, i);
-        sel = evas_list_append(sel, feed);
+        sel = eina_list_append(sel, feed);
      }
    cfdata->ilist_selected_feeds_sel = sel;
 

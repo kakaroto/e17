@@ -169,7 +169,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                                      cfdata->icon);
         if (!cat) return 0;
         news->config->feed.categories =
-           evas_list_append(news->config->feed.categories, cat);
+           eina_list_append(news->config->feed.categories, cat);
 
         cfdata->cat = cat;
         news->config_dialog_category_new = NULL;

@@ -106,7 +106,7 @@ static Flame *
 _flame_init (E_Module * m)
 {
   Flame *f;
-  Evas_List *managers, *l, *l2;
+  Eina_List *managers, *l, *l2;
 
   f = calloc (1, sizeof (Flame));
   if (!f)

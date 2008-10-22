@@ -13,13 +13,13 @@ static int _mail_imap_server_del (void *data, int type, void *event);
 static int _mail_imap_server_data (void *data, int type, void *event);
 static void _mail_imap_server_logout (ImapServer * is);
 
-static Evas_List *iservers = NULL;
+static Eina_List *iservers = NULL;
 
 void
 _mail_imap_check_mail (void *data)
 {
    Ecore_Con_Type type;
-   Evas_List *l;
+   Eina_List *l;
 
   for (l = iservers; l; l = l->next)
     {
@@ -81,7 +81,7 @@ _mail_imap_del_mailbox (void *data)
   if (!cb)
     return;
   ic = _mail_imap_client_get (cb);
-  ic->server->clients = evas_list_remove (ic->server->clients, ic);
+  ic->server->clients = eina_list_remove (ic->server->clients, ic);
 }
 
 void
@@ -100,7 +100,7 @@ _mail_imap_shutdown ()
 	ecore_event_handler_del (is->del_handler);
       if (is->data_handler)
 	ecore_event_handler_del (is->data_handler);
-      iservers = evas_list_remove_list (iservers, iservers);
+      iservers = eina_list_remove_list (iservers, iservers);
        E_FREE(is);
     }
 }
@@ -109,7 +109,7 @@ _mail_imap_shutdown ()
 static ImapServer *
 _mail_imap_server_find (Ecore_Con_Server * server)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   for (l = iservers; l; l = l->next)
     {
@@ -126,7 +126,7 @@ static ImapServer *
 _mail_imap_server_get (Config_Box *cb)
 {
    ImapServer *is = NULL;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
 
    for (l = iservers; l; l = l->next)
      {
@@ -155,7 +155,7 @@ _mail_imap_server_get (Config_Box *cb)
       is->server = NULL;
       is->cmd = 0;
       is->state = IMAP_STATE_DISCONNECTED;
-      iservers = evas_list_append (iservers, is);
+      iservers = eina_list_append (iservers, is);
     }
   return is;
 }
@@ -165,7 +165,7 @@ _mail_imap_client_get (Config_Box *cb)
 {
   ImapServer *is;
   ImapClient *ic;
-  Evas_List *l;
+  Eina_List *l;
   int found = 0;
 
   if (!cb)
@@ -191,7 +191,7 @@ _mail_imap_client_get (Config_Box *cb)
       ic->server = is;
       ic->config->num_new = 0;
       ic->config->num_total = 0;
-      ic->server->clients = evas_list_append (ic->server->clients, ic);
+      ic->server->clients = eina_list_append (ic->server->clients, ic);
     }
   return ic;
 }

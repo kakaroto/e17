@@ -37,7 +37,7 @@ struct _Instance
 
 /* Local Variables */
 static int uuid = 0;
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 Config *skel_conf = NULL;
@@ -180,7 +180,7 @@ e_modapi_shutdown(E_Module *m)
         ci = skel_conf->conf_items->data;
         /* remove it */
         skel_conf->conf_items = 
-          evas_list_remove_list(skel_conf->conf_items, 
+          eina_list_remove_list(skel_conf->conf_items, 
                                 skel_conf->conf_items);
         /* cleanup stringshares !! ) */
         if (ci->id) evas_stringshare_del(ci->id);
@@ -240,7 +240,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
                                   _skel_cb_mouse_down, inst);
 
    /* add to list of running instances so we can cleanup later */
-   instances = evas_list_append(instances, inst);
+   instances = eina_list_append(instances, inst);
 
    /* return the Gadget_Container Client */
    return inst->gcc;
@@ -253,7 +253,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst = NULL;
 
    if (!(inst = gcc->data)) return;
-   instances = evas_list_remove(instances, inst);
+   instances = eina_list_remove(instances, inst);
 
    /* kill popup menu */
    if (inst->menu) 
@@ -309,7 +309,7 @@ _gc_id_del(const char *id)
    /* cleanup !! */
    if (ci->id) evas_stringshare_del(ci->id);
 
-   skel_conf->conf_items = evas_list_remove(skel_conf->conf_items, ci);
+   skel_conf->conf_items = eina_list_remove(skel_conf->conf_items, ci);
    E_FREE(ci);
 }
 
@@ -369,7 +369,7 @@ _skel_conf_free(void)
 
         ci = skel_conf->conf_items->data;
         skel_conf->conf_items = 
-          evas_list_remove_list(skel_conf->conf_items, 
+          eina_list_remove_list(skel_conf->conf_items, 
                                 skel_conf->conf_items);
         /* EPA */
         if (ci->id) evas_stringshare_del(ci->id);
@@ -392,7 +392,7 @@ _skel_conf_timer(void *data)
 static Config_Item *
 _skel_conf_item_get(const char *id) 
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Config_Item *ci = NULL;
    char buf[128];
 
@@ -413,7 +413,7 @@ _skel_conf_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->switch2 = 0;
-   skel_conf->conf_items = evas_list_append(skel_conf->conf_items, ci);
+   skel_conf->conf_items = eina_list_append(skel_conf->conf_items, ci);
    return ci;
 }
 

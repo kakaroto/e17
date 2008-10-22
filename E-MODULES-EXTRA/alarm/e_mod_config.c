@@ -59,20 +59,20 @@ alarm_config_module(void)
 void
 alarm_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
    int pos;
    int wmw, wmh;
 
    pos = e_widget_ilist_selected_get(cfdata->alarms_ilist);
    e_widget_ilist_clear(cfdata->alarms_ilist);
 
-   for(l=alarm_config->alarms; l; l=evas_list_next(l))
+   for(l=alarm_config->alarms; l; l=eina_list_next(l))
      {
         Evas_Object *ic;
         Alarm *al;
         char buf[1024], bufdate[15];
         
-        al = evas_list_data(l);
+        al = eina_list_data_get(l);
         
         if (al->state == ALARM_STATE_OFF)
           ic = NULL;
@@ -101,7 +101,7 @@ alarm_config_refresh_alarms_ilist(E_Config_Dialog_Data *cfdata)
      }
 
    e_widget_min_size_get(cfdata->alarms_ilist, &wmw, &wmh);
-   if (evas_list_count(alarm_config->alarms) > 0) 
+   if (eina_list_count(alarm_config->alarms) > 0) 
      e_widget_min_size_set(cfdata->alarms_ilist, wmw, 200);
    else 
      e_widget_min_size_set(cfdata->alarms_ilist, 165, 100);
@@ -311,7 +311,7 @@ _cb_alarm_del(void *data, void *data2)
    Alarm *al;
 
    cfdata = data;
-   al = evas_list_nth(alarm_config->alarms,
+   al = eina_list_nth(alarm_config->alarms,
                       e_widget_ilist_selected_get(cfdata->alarms_ilist));
    if (!al)
      return;
@@ -327,7 +327,7 @@ _cb_alarm_config(void *data, void *data2)
    Alarm *al;
 
    cfdata = data;
-   al = evas_list_nth(alarm_config->alarms,
+   al = eina_list_nth(alarm_config->alarms,
                       e_widget_ilist_selected_get(cfdata->alarms_ilist));
    if (!al) return;
    if (al->config_dialog) return;
@@ -342,12 +342,12 @@ _cb_alarm_duplicate(void *data, void *data2)
    Alarm *al, *al_new;
 
    cfdata = data;
-   al = evas_list_nth(alarm_config->alarms,
+   al = eina_list_nth(alarm_config->alarms,
                       e_widget_ilist_selected_get(cfdata->alarms_ilist));
    if (!al) return;
 
    al_new = alarm_alarm_duplicate(al);
-   alarm_config->alarms = evas_list_append(alarm_config->alarms, al_new);
+   alarm_config->alarms = eina_list_append(alarm_config->alarms, al_new);
 
    /* refresh things */
    if (alarm_config->config_dialog)

@@ -144,7 +144,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    News_Config_Item *nic, *nic2;
    News_Item *ni, *ni2;
-   Evas_List *l;
+   Eina_List *l;
    
    ni = cfdata->ni;
    nic = ni->config;
@@ -161,7 +161,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
    else
      {
-        for (l=news->items; l; l=evas_list_next(l))
+        for (l=news->items; l; l=eina_list_next(l))
           {
              ni2 = l->data;
              nic2 = ni2->config;

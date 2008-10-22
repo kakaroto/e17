@@ -8,7 +8,7 @@ static void               _notification_box_evas_set      (Notification_Box *b,
 static void               _notification_box_empty         (Notification_Box *b);
 static void               _notification_box_resize_handle (Notification_Box *b);
 static void               _notification_box_empty_handle  (Notification_Box *b);
-static Evas_List         *_notification_box_find          (E_Notification_Urgency urgency);
+static Eina_List         *_notification_box_find          (E_Notification_Urgency urgency);
 
 /* Notification box icons protos */
 static Notification_Box_Icon *_notification_box_icon_new         (Notification_Box *b, 
@@ -71,7 +71,7 @@ notification_box_notify(E_Notification *n,
                         unsigned int replaces_id, 
                         unsigned int id)
 {
-  Evas_List *l, *n_box;
+  Eina_List *l, *n_box;
   E_Border *bd;
 
   bd = _notification_find_source_border(n);
@@ -98,14 +98,14 @@ notification_box_notify(E_Notification *n,
         {
           ic = _notification_box_icon_new(b, n, bd, id);
           if (!ic) continue;
-          b->icons = evas_list_append(b->icons, ic);
+          b->icons = eina_list_append(b->icons, ic);
           e_box_pack_end(b->o_box, ic->o_holder);
         }
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
       _gc_orient(b->inst->gcc);
     }
-  evas_list_free(n_box);
+  eina_list_free(n_box);
 
   return 1;
 }
@@ -119,7 +119,7 @@ notification_box_shutdown(void)
     {
       b = notification_cfg->n_box->data;
       if (b) _notification_box_free(b);
-      notification_cfg->n_box = evas_list_remove_list(notification_cfg->n_box,
+      notification_cfg->n_box = eina_list_remove_list(notification_cfg->n_box,
                                                       notification_cfg->n_box);
     }
 }
@@ -127,7 +127,7 @@ notification_box_shutdown(void)
 void
 notification_box_del(const char *id)
 {
-  Evas_List *l;
+  Eina_List *l;
   Notification_Box *b;
 
   /* Find old config */
@@ -138,7 +138,7 @@ notification_box_del(const char *id)
       if (b->id && !strcmp(b->id, id))
         {
           _notification_box_free(b);
-          notification_cfg->n_box = evas_list_remove(notification_cfg->n_box, b);
+          notification_cfg->n_box = eina_list_remove(notification_cfg->n_box, b);
           return;
         }
     }
@@ -147,7 +147,7 @@ notification_box_del(const char *id)
 void
 notification_box_show(Notification_Box *b)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   evas_object_show(b->o_box);
   if (b->o_empty) evas_object_show(b->o_empty);
@@ -166,7 +166,7 @@ notification_box_show(Notification_Box *b)
 void
 notification_box_hide(Notification_Box *b)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   evas_object_hide(b->o_box);
   if (b->o_empty) evas_object_hide(b->o_empty);
@@ -185,7 +185,7 @@ notification_box_hide(Notification_Box *b)
 Notification_Box *
 notification_box_get(const char *id, Evas *evas)
 {
-  Evas_List *l;
+  Eina_List *l;
   Notification_Box *b;
 
   /* Find old config */
@@ -202,14 +202,14 @@ notification_box_get(const char *id, Evas *evas)
     }
 
   b = _notification_box_new(id, evas);
-  notification_cfg->n_box = evas_list_append(notification_cfg->n_box, b);
+  notification_cfg->n_box = eina_list_append(notification_cfg->n_box, b);
   return b;
 }
 
 Config_Item *
 notification_box_config_item_get(const char *id)
 {
-  Evas_List *l;
+  Eina_List *l;
   Config_Item *ci;
   char buf[128];
 
@@ -237,7 +237,7 @@ notification_box_config_item_get(const char *id)
   ci->store_low      = 1;
   ci->store_normal   = 1;
   ci->store_critical = 0;
-  notification_cfg->items = evas_list_append(notification_cfg->items, ci);
+  notification_cfg->items = eina_list_append(notification_cfg->items, ci);
 
   return ci;
 }
@@ -267,7 +267,7 @@ int notification_box_cb_border_remove(void *data __UNUSED__,
 {
   E_Event_Border_Remove *ev;
   Notification_Box_Icon *ic;
-  Evas_List *l;
+  Eina_List *l;
 
   ev = event;
   for (l = notification_cfg->instances; l; l = l->next)
@@ -280,7 +280,7 @@ int notification_box_cb_border_remove(void *data __UNUSED__,
 
       ic = _notification_box_icon_find(b, ev->border, 0);
       if (!ic) continue;
-      b->icons = evas_list_remove(b->icons, ic);
+      b->icons = eina_list_remove(b->icons, ic);
       _notification_box_icon_free(ic);
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
@@ -318,7 +318,7 @@ _notification_box_free(Notification_Box *b)
 static void
 _notification_box_evas_set(Notification_Box *b, Evas *evas)
 {
-  Evas_List *l, *new_icons=NULL;
+  Eina_List *l, *new_icons=NULL;
 
   evas_object_del(b->o_box);
   if (b->o_empty) evas_object_del(b->o_empty);
@@ -338,11 +338,11 @@ _notification_box_evas_set(Notification_Box *b, Evas *evas)
 
       new_ic = _notification_box_icon_new(b, ic->notif, ic->border, ic->n_id);
       _notification_box_icon_free(ic);
-      new_icons = evas_list_append(new_icons, new_ic);
+      new_icons = eina_list_append(new_icons, new_ic);
 
       e_box_pack_end(b->o_box, new_ic->o_holder);
     }
-  evas_list_free(b->icons);
+  eina_list_free(b->icons);
   b->icons = new_icons;
   _notification_box_empty_handle(b);
   _notification_box_resize_handle(b);
@@ -354,7 +354,7 @@ _notification_box_empty(Notification_Box *b)
   while (b->icons)
     {
       _notification_box_icon_free(b->icons->data);
-      b->icons = evas_list_remove_list(b->icons, b->icons);
+      b->icons = eina_list_remove_list(b->icons, b->icons);
     }
   _notification_box_empty_handle(b);
 }
@@ -362,7 +362,7 @@ _notification_box_empty(Notification_Box *b)
 static void
 _notification_box_resize_handle(Notification_Box *b)
 {
-  Evas_List *l;
+  Eina_List *l;
   Notification_Box_Icon *ic;
   Evas_Coord w, h;
 
@@ -422,11 +422,11 @@ _notification_box_empty_handle(Notification_Box *b)
     }
 }
 
-static Evas_List *
+static Eina_List *
 _notification_box_find(E_Notification_Urgency urgency)
 {
-  Evas_List *n_box = NULL;
-  Evas_List *l;
+  Eina_List *n_box = NULL;
+  Eina_List *l;
 
   for (l = notification_cfg->instances; l; l = l->next)
     {
@@ -434,11 +434,11 @@ _notification_box_find(E_Notification_Urgency urgency)
 
       inst = l->data;
       if (urgency == E_NOTIFICATION_URGENCY_LOW && inst->ci->store_low)
-        n_box = evas_list_append(n_box, inst->n_box);
+        n_box = eina_list_append(n_box, inst->n_box);
       else if (urgency == E_NOTIFICATION_URGENCY_NORMAL && inst->ci->store_normal)
-        n_box = evas_list_append(n_box, inst->n_box);
+        n_box = eina_list_append(n_box, inst->n_box);
       else if (urgency == E_NOTIFICATION_URGENCY_CRITICAL && inst->ci->store_critical)
-        n_box = evas_list_append(n_box, inst->n_box);
+        n_box = eina_list_append(n_box, inst->n_box);
     }
   return n_box;
 }
@@ -581,7 +581,7 @@ _notification_box_icon_empty(Notification_Box_Icon *ic)
 static Notification_Box_Icon *
 _notification_box_icon_find(Notification_Box *b, E_Border *bd, unsigned int n_id)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   for (l = b->icons; l; l = l->next)
     {
@@ -612,7 +612,7 @@ static E_Border *
 _notification_find_source_border(E_Notification *n)
 {
   const char *app_name;
-  Evas_List *l;
+  Eina_List *l;
 
   if (!(app_name = e_notification_app_name_get(n))) return NULL;
 
@@ -790,7 +790,7 @@ _notification_box_cb_icon_mouse_up(void *data,
           e_border_raise(ic->border);
           e_border_focus_set(ic->border, 1, 1);
         }
-      b->icons = evas_list_remove(b->icons, ic);
+      b->icons = eina_list_remove(b->icons, ic);
       _notification_box_icon_free(ic);
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
@@ -861,7 +861,7 @@ _notification_box_cb_menu_configuration(void *data,
 {
   Notification_Box *b;
   int ok = 1;
-  Evas_List *l;
+  Eina_List *l;
 
   b = data;
   for (l = notification_cfg->config_dialog; l; l = l->next)

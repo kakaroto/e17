@@ -93,7 +93,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = gcc;
    inst->execwatch = execwatch;
 
-   execwatch_config->instances = evas_list_append(execwatch_config->instances, inst);
+   execwatch_config->instances = eina_list_append(execwatch_config->instances, inst);
    evas_object_event_callback_add(execwatch->execwatch_obj, EVAS_CALLBACK_MOUSE_IN,
 				  _cb_mouse_in, inst);
    evas_object_event_callback_add(execwatch->execwatch_obj, EVAS_CALLBACK_MOUSE_OUT,
@@ -132,7 +132,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (execwatch->execwatch_obj) evas_object_del(execwatch->execwatch_obj);
    if (execwatch->icon_obj) evas_object_del(execwatch->icon_obj);
    
-   execwatch_config->instances = evas_list_remove(execwatch_config->instances, inst);
+   execwatch_config->instances = eina_list_remove(execwatch_config->instances, inst);
    E_FREE(execwatch);
    E_FREE(inst);
 }
@@ -178,7 +178,7 @@ _gc_id_new(void)
 static Config_Item *
 _config_item_get(const char *id) 
 {
-   Evas_List   *l;
+   Eina_List   *l;
    Config_Item *ci;
    char buf[128];
 
@@ -190,7 +190,7 @@ _config_item_get(const char *id)
 	if (execwatch_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(execwatch_config->items)->data;
+	     ci = eina_list_last(execwatch_config->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -221,7 +221,7 @@ _config_item_get(const char *id)
    ci->poll_time_mins = 0.0;
    ci->poll_time_hours = 0.0;
 
-   execwatch_config->items = evas_list_append(execwatch_config->items, ci);
+   execwatch_config->items = eina_list_append(execwatch_config->items, ci);
    return ci;
 }
 
@@ -527,7 +527,7 @@ _menu_cb_exec(void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _execwatch_config_updated(Config_Item *ci)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!execwatch_config) return;
    for (l = execwatch_config->instances; l; l = l->next)
@@ -601,7 +601,7 @@ e_modapi_init(E_Module *m)
 	ci->poll_time_mins = 0.0;
 	ci->poll_time_hours = 0.0;
 	
-	execwatch_config->items = evas_list_append(execwatch_config->items, ci);
+	execwatch_config->items = eina_list_append(execwatch_config->items, ci);
      }
    
    execwatch_config->module = m;
@@ -633,7 +633,7 @@ e_modapi_shutdown(E_Module *m)
 	
 	ci = execwatch_config->items->data;
 	if (ci->id) evas_stringshare_del(ci->id);
-	execwatch_config->items = evas_list_remove_list(execwatch_config->items, execwatch_config->items);
+	execwatch_config->items = eina_list_remove_list(execwatch_config->items, execwatch_config->items);
 	E_FREE(ci);
      }
 

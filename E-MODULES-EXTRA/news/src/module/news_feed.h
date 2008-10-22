@@ -173,14 +173,14 @@ typedef enum _News_Feed_Popup_News_Active
 
 #define NEWS_FEED_FOREACH_BEG() \
 { \
-Evas_List *_l_feeds, *_l_cats; \
+Eina_List *_l_feeds, *_l_cats; \
 News_Feed_Category *_cat; \
 News_Feed *_feed; \
 \
-for (_l_feeds=news->config->feed.categories; _l_feeds; _l_feeds=evas_list_next(_l_feeds)) \
+for (_l_feeds=news->config->feed.categories; _l_feeds; _l_feeds=eina_list_next(_l_feeds)) \
 { \
    _cat = _l_feeds->data; \
-   for (_l_cats=_cat->feeds; _l_cats; _l_cats=evas_list_next(_l_cats)) \
+   for (_l_cats=_cat->feeds; _l_cats; _l_cats=eina_list_next(_l_cats)) \
      { \
         _feed = _l_cats->data;
 #define NEWS_FEED_FOREACH_END() \
@@ -237,14 +237,14 @@ struct _News_Feed_Category
    const char *name;
    const char *icon;
 
-   Evas_List *feeds;
+   Eina_List *feeds;
 
    /* not saved */
    /* temporary list of categories */
    /* this list is sorted and contains only the feeds
       of the languages selected by user
       it regenerated via news_feed_lists_refresh */
-   Evas_List *feeds_visible;
+   Eina_List *feeds_visible;
    int        feeds_visible_free;
    E_Config_Dialog *config_dialog;
 };
@@ -254,7 +254,7 @@ struct _News_Feed_Document
    News_Feed       *feed;
 
    News_Popup   *popw;
-   Evas_List    *articles;
+   Eina_List    *articles;
    int           unread_count;
    unsigned char ui_needrefresh : 1;
 
@@ -352,7 +352,7 @@ void                news_feed_category_free(News_Feed_Category *cat);
 void                news_feed_category_list_ui_refresh(void);
 
 void                news_feed_lang_list_refresh(void);
-void                news_feed_lang_list_free(Evas_List *l);
+void                news_feed_lang_list_free(Eina_List *l);
 const char         *news_feed_lang_name_get(const char *key);
 int                 news_feed_lang_selected_is(const char *key);
 

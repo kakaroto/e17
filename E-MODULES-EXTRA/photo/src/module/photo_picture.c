@@ -231,7 +231,7 @@ void photo_picture_setbg_add(const char *name)
    home = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds/%s.edj", home, name);
 
-   photo->setbg_topurge = evas_list_append(photo->setbg_topurge, strdup(buf));
+   photo->setbg_topurge = eina_list_append(photo->setbg_topurge, strdup(buf));
 }
 
 void photo_picture_setbg_purge(int shutdown)
@@ -239,7 +239,7 @@ void photo_picture_setbg_purge(int shutdown)
    char *file;
    int n = 0;
 
-   while( (file = evas_list_nth(photo->setbg_topurge, n)) )
+   while( (file = eina_list_nth(photo->setbg_topurge, n)) )
      {
         n++;
         DMAIN(("set_bg check remove %s", file));
@@ -249,7 +249,7 @@ void photo_picture_setbg_purge(int shutdown)
              DMAIN(("set_bg remove %s !", file));
              if (ecore_file_exists(file))
                ecore_file_unlink(file);
-             photo->setbg_topurge = evas_list_remove(photo->setbg_topurge, file);
+             photo->setbg_topurge = eina_list_remove(photo->setbg_topurge, file);
              free(file);
              n--;
           }
@@ -261,7 +261,7 @@ void photo_picture_setbg_purge(int shutdown)
      }
 
    if (shutdown)
-     evas_list_free(photo->setbg_topurge);
+     eina_list_free(photo->setbg_topurge);
 
    return;
 }

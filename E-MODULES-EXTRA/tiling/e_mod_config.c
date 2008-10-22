@@ -37,7 +37,7 @@ extern Config *tiling_config;
 static struct _E_Config_vdesk*
 get_vdesk(E_Config_Dialog_Data *cfdata, int x, int y, int zone_num)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = cfdata->vdesks; l; l = l->next)
      {
@@ -89,7 +89,7 @@ _create_data(E_Config_Dialog *cfd)
    cfdata->tiling_border = (tiling_config->tiling_border ? strdup(tiling_config->tiling_border) : NULL);
    cfdata->floating_border = (tiling_config->floating_border ? strdup(tiling_config->floating_border) : NULL);
    cfdata->vdesks = NULL;
-   Evas_List *l;
+   Eina_List *l;
    for (l = tiling_config->vdesks; l; l = l->next)
      {
 	struct _E_Config_vdesk *vd = l->data;
@@ -99,7 +99,7 @@ _create_data(E_Config_Dialog *cfd)
 	newvd->y = vd->y;
 	newvd->zone_num = vd->zone_num;
 	newvd->layout = vd->layout;
-	cfdata->vdesks = evas_list_append(cfdata->vdesks, newvd);
+	cfdata->vdesks = eina_list_append(cfdata->vdesks, newvd);
      }
 
    return cfdata;
@@ -137,7 +137,7 @@ _fill_zone_config(E_Zone *zone, E_Config_Dialog_Data *cfdata)
 	     vd->y = desk->y;
 	     vd->zone_num = zone->num;
 	     vd->layout = TILE_NONE;
-	     cfdata->vdesks = evas_list_append(cfdata->vdesks, vd);
+	     cfdata->vdesks = eina_list_append(cfdata->vdesks, vd);
 	  }
 
 	rg = e_widget_radio_group_new(&(vd->layout));
@@ -208,7 +208,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    E_Radio_Group *rg;
    E_Container *con = e_container_current_get(e_manager_current_get());
    E_Zone *zone;
-   Evas_List *l;
+   Eina_List *l;
    
    o = e_widget_list_add(evas, 0, 0);
    ot = e_widget_table_add(evas, 0);
@@ -329,14 +329,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   int need_rearrangement = memcmp(cfdata, tiling_config, sizeof(Config) - (sizeof(char*) * 2) - sizeof(Evas_List*)) ||
+   int need_rearrangement = memcmp(cfdata, tiling_config, sizeof(Config) - (sizeof(char*) * 2) - sizeof(Eina_List*)) ||
                             strcmp(cfdata->tiling_border, tiling_config->tiling_border) ||
 			    strcmp(cfdata->floating_border, tiling_config->floating_border);
 
    if (!need_rearrangement)
      {
 	/* Check if the layout for one of the vdesks has changed */
-	Evas_List *l;
+	Eina_List *l;
 	for (l = tiling_config->vdesks; l; l = l->next)
 	  {
 	     struct _E_Config_vdesk *vd = l->data,

@@ -35,7 +35,7 @@ static void             _cb_key_down      (void *data, Evas_Object *obj,
 static void             _cb_mouse_down    (void *data, Evas *e, 
 					   Evas_Object *obj, void *event_info);
 
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 static E_Module *path_mod = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = 
@@ -101,7 +101,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_base);
    inst->gcc->data = inst;
 
-   instances = evas_list_append(instances, inst);
+   instances = eina_list_append(instances, inst);
    return inst->gcc;
 }
 
@@ -112,7 +112,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    inst = gcc->data;
    if (!inst) return;
-   instances = evas_list_remove(instances, inst);
+   instances = eina_list_remove(instances, inst);
 
    evas_object_event_callback_del(inst->o_event, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
    evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
@@ -156,7 +156,7 @@ _gc_id_new(void)
    char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
-	    (evas_list_count(instances) + 1));
+	    (eina_list_count(instances) + 1));
    return strdup(buf);
 }
 

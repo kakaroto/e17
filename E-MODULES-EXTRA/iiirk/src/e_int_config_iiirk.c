@@ -232,7 +232,7 @@ static Ecore_List *
 _load_order(const char *path) 
 {
    E_Order *order = NULL;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Ecore_List *apps = NULL;
 
    apps = ecore_list_new();
@@ -245,7 +245,7 @@ _load_order(const char *path)
 	efreet_desktop_ref(l->data);
 	ecore_list_append(apps, l->data);
      }
-   if (l) evas_list_free(l);
+   if (l) eina_list_free(l);
    e_object_del(E_OBJECT(order));
    return apps;
 }
@@ -414,7 +414,7 @@ static void
 _cb_add(void *data, void *data2) 
 {
    E_Config_Dialog_Data *cfdata = NULL;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evas *evas;
    int w, i;
 
@@ -455,7 +455,7 @@ static void
 _cb_del(void *data, void *data2) 
 {
    E_Config_Dialog_Data *cfdata = NULL;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evas *evas;
    int w;
 
@@ -564,7 +564,7 @@ _cb_down(void *data, void *data2)
 static int 
 _save_menu(E_Config_Dialog_Data *cfdata) 
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Efreet_Menu *menu = NULL;
    int i, ret;
 
@@ -590,7 +590,7 @@ _save_menu(E_Config_Dialog_Data *cfdata)
 static int 
 _save_order(E_Config_Dialog_Data *cfdata) 
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    E_Order *order = NULL;
    int i;
 

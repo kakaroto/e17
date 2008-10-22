@@ -22,24 +22,24 @@ struct _Config
    E_Config_Binding_Key	switch_next_lang_key;
    E_Config_Binding_Key	switch_prev_lang_key;
 
-   Evas_List		*languages; // Language
+   Eina_List		*languages; // Language
 
    /* config state */
    E_Module	     *module;
    E_Config_Dialog   *config_dialog;
-   Evas_List	     *instances; // Instance
+   Eina_List	     *instances; // Instance
    E_Menu	     *menu;
 
-   Evas_List	     *handlers;
+   Eina_List	     *handlers;
 
    /* lang related stuff */
    unsigned int	  language_selector;
-   Evas_List	  *language_predef_list; // Language_Predef
-   Evas_List	  *language_kbd_model_list; // Language_Kbd_Model
+   Eina_List	  *language_predef_list; // Language_Predef
+   Eina_List	  *language_kbd_model_list; // Language_Kbd_Model
 
    struct
      { 
-	Evas_List *border_lang_setup; // Border_Language_Settings 
+	Eina_List *border_lang_setup; // Border_Language_Settings 
 	E_Border  *current;
      } l;
 };

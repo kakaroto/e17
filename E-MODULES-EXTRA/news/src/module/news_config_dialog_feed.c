@@ -58,7 +58,7 @@ news_config_dialog_feed_show(News_Feed *feed)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   if (!evas_list_count(news->config->feed.categories))
+   if (!eina_list_count(news->config->feed.categories))
      {
         news_util_message_error_show(D_("You need to <hilight>create a category</hilight> first"));
         return 0;
@@ -100,7 +100,7 @@ void
 news_config_dialog_feed_refresh_categories(News_Feed *feed)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *ilist;
    int pos, pos_to_select;
    int w;
@@ -122,13 +122,13 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
 
    pos = 0;
    pos_to_select = -1;
-   for(l=news->config->feed.categories; l; l=evas_list_next(l))
+   for(l=news->config->feed.categories; l; l=eina_list_next(l))
      {
         Evas_Object *ic = NULL;
         News_Feed_Category *fc;
         char buf[1024];
         
-        fc = evas_list_data(l);
+        fc = eina_list_data_get(l);
 
         if (fc->icon && fc->icon[0])
           {
@@ -165,7 +165,7 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
    E_Config_Dialog_Data *cfdata;
    Evas_Object *ilist;
    News_Feed_Lang *lang;
-   Evas_List *list, *l;
+   Eina_List *list, *l;
    int pos, pos_to_select;
    int w;
 
@@ -190,7 +190,7 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
      list = news->config->feed.langs;
    pos = 0;
    pos_to_select = -1;
-   for (l=list; l; l=evas_list_next(l))
+   for (l=list; l; l=eina_list_next(l))
      {
         lang = l->data;
         e_widget_ilist_append(ilist, NULL, lang->name, NULL, lang, NULL);
@@ -446,8 +446,8 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
           {
              if (old_cat != cfdata->category)
                {
-                  old_cat->feeds = evas_list_remove(old_cat->feeds, f);
-                  f->category->feeds = evas_list_prepend(f->category->feeds, f);
+                  old_cat->feeds = eina_list_remove(old_cat->feeds, f);
+                  f->category->feeds = eina_list_prepend(f->category->feeds, f);
                }
              if (f->item && f->item->viewer)
                news_viewer_refresh(f->item->viewer);
@@ -477,7 +477,7 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
              DD(("FAILED to create feed !"));
              return 0;
           }
-        cat->feeds = evas_list_append(cat->feeds, f);
+        cat->feeds = eina_list_append(cat->feeds, f);
 
         cfdata->feed = f;
         news->config_dialog_feed_new = NULL;
@@ -513,7 +513,7 @@ _cb_category_list(void *data)
 
    cfdata = data;
 
-   cfdata->category = evas_list_nth(news->config->feed.categories,
+   cfdata->category = eina_list_nth(news->config->feed.categories,
                                     e_widget_ilist_selected_get(cfdata->gui.ilist_categories));
 }
 

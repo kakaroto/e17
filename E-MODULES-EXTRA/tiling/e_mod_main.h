@@ -34,7 +34,7 @@ struct _Config
    int between_x;
    int between_y;
    double big_perc;
-   Evas_List *vdesks;
+   Eina_List *vdesks;
    char *tiling_border;
    char *floating_border;
 };
@@ -57,10 +57,10 @@ struct _Tiling_Info
    E_Desk *desk;
 
    /* List of windows which were toggled floating */
-   Evas_List *floating_windows;
+   Eina_List *floating_windows;
 
    /* List of windows in our own sorting */
-   Evas_List *client_list;
+   Eina_List *client_list;
 
    /* big_perc (percentage of the screen which the mainbd-border will get) has
     * to be stored individually for each desk, the one in Tiling_Config is only

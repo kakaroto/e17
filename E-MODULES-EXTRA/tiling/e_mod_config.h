@@ -24,7 +24,7 @@ struct _E_Config_Dialog_Data
    int between_x;
    int between_y;
    double big_perc;
-   Evas_List *vdesks;
+   Eina_List *vdesks;
    char *tiling_border;
    char *floating_border;
    Evas_Object *o_zonelist;

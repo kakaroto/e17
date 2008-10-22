@@ -105,7 +105,7 @@ static Population *
 _population_init(E_Module *m)
 {
    Population *pop;
-   Evas_List *managers, *l, *l2;
+   Eina_List *managers, *l, *l2;
    
    pop = calloc(1, sizeof(Population));
    if (!pop)
@@ -150,7 +150,7 @@ _population_init(E_Module *m)
          con = l2->data;
          //printf("PENGUINS: E_container found: '%s' [x:%d y:%d w:%d h:%d]\n",
          //        con->name, con->x, con->y, con->w, con->h);
-         pop->cons = evas_list_append(pop->cons, con);
+         pop->cons = eina_list_append(pop->cons, con);
          pop->canvas = con->bg_evas;
          //e_container_shape_change_callback_add(con, _win_shape_change, NULL);
 /*          for (l3 = e_container_shape_list_get(con); l3; l3 = l3->next)
@@ -186,7 +186,7 @@ _population_init(E_Module *m)
             if (name)
             {
                //printf("PENGUINS: Theme found: %s (%s)\n", filename, name);
-               pop->themes = evas_list_append(pop->themes, strdup(buf));
+               pop->themes = eina_list_append(pop->themes, strdup(buf));
             }
          }
    }   
@@ -221,7 +221,7 @@ _population_free(Population *pop)
         //printf("PENGUINS: Free TUX :)\n");
         tux = pop->penguins->data;
         evas_object_del(tux->obj);
-        pop->penguins = evas_list_remove_list(pop->penguins, pop->penguins);
+        pop->penguins = eina_list_remove_list(pop->penguins, pop->penguins);
         E_FREE(tux);
          tux = NULL;
      }
@@ -234,7 +234,7 @@ _population_free(Population *pop)
         E_FREE(cus->left_program_name);
         E_FREE(cus->right_program_name);
         
-        pop->customs = evas_list_remove_list(pop->customs, pop->customs);
+        pop->customs = eina_list_remove_list(pop->customs, pop->customs);
         E_FREE(cus);
         cus = NULL;
      } 
@@ -260,7 +260,7 @@ _population_shutdown(Population *pop)
         E_Container *con;
 
         con = pop->cons->data;
-        pop->cons = evas_list_remove_list(pop->cons, pop->cons);
+        pop->cons = eina_list_remove_list(pop->cons, pop->cons);
      }
 
    _population_free(pop);
@@ -272,7 +272,7 @@ _population_shutdown(Population *pop)
    while (pop->themes)
    {
       //printf("PENGUINS: Free Theme '%s'\n", (char *)pop->themes->data);
-      pop->themes = evas_list_remove_list(pop->themes, pop->themes);
+      pop->themes = eina_list_remove_list(pop->themes, pop->themes);
    }
 
    if (pop->conf->theme) evas_stringshare_del(pop->conf->theme);
@@ -351,7 +351,7 @@ _load_custom_action(Population *pop, const char *filename, char *name)
    snprintf(buf, sizeof(buf), "start_custom_%d_right", pop->custom_num+1);
    c->right_program_name = strdup(buf);
    
-   pop->customs = evas_list_append(pop->customs, c);
+   pop->customs = eina_list_append(pop->customs, c);
    pop->custom_num++;
    
    return c;
@@ -397,7 +397,7 @@ _theme_load(Population *pop)
       snprintf(buf, sizeof(buf), "Custom_%d", i++);
    
    // evas_hash_foreach(pop->actions, hash_fn, NULL);
-   // Evas_List *l;
+   // Eina_List *l;
    // for (l = pop->customs; l; l = l->next )
    // {
    //    Custom_Action *c = l->data;
@@ -441,7 +441,7 @@ _population_load(Population *pop)
         tux->pop = pop;
         
 
-        pop->penguins = evas_list_append(pop->penguins, tux);
+        pop->penguins = eina_list_append(pop->penguins, tux);
         evas_object_show(o);
         
         _reborn(tux);
@@ -485,7 +485,7 @@ static int
 _cb_animator(void *data)
 {
    Population *pop;
-   Evas_List *l;
+   Eina_List *l;
 
    pop = data;
    for (l = pop->penguins; l; l = l->next)
@@ -673,7 +673,7 @@ _cb_animator(void *data)
 static int
 _is_inside_any_win(Population *pop, int x, int y, int ret_value)
 {
-   Evas_List *l;
+   Eina_List *l;
    E_Container *con;
    
    con = e_container_current_get(e_manager_current_get());
@@ -925,7 +925,7 @@ _start_custom_at(Penguin *tux, int at_y)
    //ran=2;  //!!!!
    //printf("START CUSTOM NUM %d RAN %d\n",tux->pop->custom_num, ran);
    
-   tux->custom = evas_list_nth(tux->pop->customs, ran);
+   tux->custom = eina_list_nth(tux->pop->customs, ran);
    if (!tux->custom)
       return;
    

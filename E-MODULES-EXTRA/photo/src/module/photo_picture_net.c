@@ -4,7 +4,7 @@ typedef struct _Picture_Net_List Picture_Net_List;
 
 struct _Picture_Net_List
 {
-   Evas_List *pictures;
+   Eina_List *pictures;
    int nb_pictures_waiting;
 };
 

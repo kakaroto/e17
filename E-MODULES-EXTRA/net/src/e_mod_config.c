@@ -7,7 +7,7 @@
 EAPI Config_Item *
 _config_item_get(const char *id) 
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -19,7 +19,7 @@ _config_item_get(const char *id)
 	if (net_cfg->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(net_cfg->items)->data;
+	     ci = eina_list_last(net_cfg->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -42,7 +42,7 @@ _config_item_get(const char *id)
    ci->limit = 0;
    ci->show_text = 1;
    ci->show_popup = 0;
-   net_cfg->items = evas_list_append(net_cfg->items, ci);
+   net_cfg->items = eina_list_append(net_cfg->items, ci);
    return ci;
 }
 
@@ -100,7 +100,7 @@ _config_devices_get(void)
 EAPI void 
 _config_updated(Config_Item *ci)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!net_cfg) return;
    for (l = net_cfg->instances; l; l = l->next) 

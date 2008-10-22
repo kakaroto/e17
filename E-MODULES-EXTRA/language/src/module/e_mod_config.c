@@ -21,7 +21,7 @@ struct _E_Config_Dialog_Data
    Config   *conf;
    Evas	    *evas;
 
-   Evas_List *s_langs;
+   Eina_List *s_langs;
 
    char *plang;
    char *slang;
@@ -109,7 +109,7 @@ _lang_configure_language_module(Config *conf)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    cfdata->lang_policy		 = cfdata->conf->lang_policy;
    cfdata->lang_show_indicator	 = cfdata->conf->lang_show_indicator;
@@ -120,7 +120,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 	
 	lang = lang_language_copy(l->data);
 	if (lang)
-	  cfdata->s_langs = evas_list_append(cfdata->s_langs, lang);
+	  cfdata->s_langs = eina_list_append(cfdata->s_langs, lang);
      }
 
    cfdata->plang	= NULL;
@@ -149,7 +149,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    while (cfdata->s_langs)
      {
 	lang_language_free(cfdata->s_langs->data);
-	cfdata->s_langs = evas_list_remove_list(cfdata->s_langs, cfdata->s_langs);
+	cfdata->s_langs = eina_list_remove_list(cfdata->s_langs, cfdata->s_langs);
      }
 
    if (cfdata->plang) E_FREE(cfdata->plang);
@@ -328,7 +328,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 static int
 _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
    Language    *lang;
 
    cfdata->conf->lang_policy = cfdata->lang_policy;
@@ -346,7 +346,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    while (cfdata->conf->languages)
      {
 	lang_language_free(cfdata->conf->languages->data);
-	cfdata->conf->languages = evas_list_remove_list(cfdata->conf->languages,
+	cfdata->conf->languages = eina_list_remove_list(cfdata->conf->languages,
 						        cfdata->conf->languages);
      }
 
@@ -356,7 +356,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	if (!lang) continue;
 
 	lang_language_xorg_values_get(lang);
-	cfdata->conf->languages = evas_list_append(cfdata->conf->languages, lang);
+	cfdata->conf->languages = eina_list_append(cfdata->conf->languages, lang);
      }
    cfdata->conf->language_selector = 0;
    e_config_save_queue();
@@ -369,7 +369,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _conf_fill_planguages(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
    char	     buf[128];
    char	     lflag[2048];
 
@@ -378,7 +378,7 @@ _conf_fill_planguages(E_Config_Dialog_Data *cfdata)
      {
 	Evas_Object	*ic = NULL;
 	Language_Predef *lp;
-	Evas_List	*l2;
+	Eina_List	*l2;
 	int		found = 0;
 
 	lp = l->data;
@@ -407,7 +407,7 @@ _conf_fill_planguages(E_Config_Dialog_Data *cfdata)
 static void
 _conf_fill_slanguages(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
    char	     buf[128];
    char	     lflag[2048];
 
@@ -445,11 +445,11 @@ _conf_fill_kbd_model(E_Config_Dialog_Data *cfdata)
 	return;
      }
 
-   slang = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+   slang = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
 
    if (!e_widget_ilist_count(cfdata->gui.o_kbd_model))
      {
-	Evas_List *l;
+	Eina_List *l;
 	int i;
 	char buf[256];
 
@@ -469,7 +469,7 @@ _conf_fill_kbd_model(E_Config_Dialog_Data *cfdata)
      }
    else
      {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = cfdata->conf->language_kbd_model_list, kbdm_i = 0; l; l = l->next, kbdm_i++)
 	  {
@@ -490,7 +490,7 @@ _conf_fill_kbd_model(E_Config_Dialog_Data *cfdata)
 static void
 _conf_fill_kbd_variant(E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l;
+   Eina_List *l;
    int kbdv_i = 0;
 
    if (!cfdata->gui.o_kbd_variant) return;
@@ -513,7 +513,7 @@ _conf_fill_kbd_variant(E_Config_Dialog_Data *cfdata)
 	     Language *lang;
 	     int i;
 
-	     lang = evas_list_nth(cfdata->s_langs,
+	     lang = eina_list_nth(cfdata->s_langs,
 				  e_widget_ilist_selected_get(cfdata->gui.o_slang));
 
 	     e_widget_ilist_append(cfdata->gui.o_kbd_variant, NULL, "basic",
@@ -562,7 +562,7 @@ _conf_up_button_availability_set(E_Config_Dialog_Data *cfdata)
 {
    if (!e_widget_ilist_selected_label_get(cfdata->gui.o_slang) ||
        !e_widget_ilist_selected_get(cfdata->gui.o_slang) ||
-       evas_list_count(cfdata->s_langs) < 1)
+       eina_list_count(cfdata->s_langs) < 1)
      e_widget_disabled_set(cfdata->gui.o_up, 1);
    else
      e_widget_disabled_set(cfdata->gui.o_up, 0);
@@ -573,7 +573,7 @@ _conf_down_button_availability_set(E_Config_Dialog_Data *cfdata)
    if (!e_widget_ilist_selected_label_get(cfdata->gui.o_slang) ||
        (e_widget_ilist_selected_get(cfdata->gui.o_slang) ==
 	   e_widget_ilist_count(cfdata->gui.o_slang) - 1) ||
-       evas_list_count(cfdata->s_langs) < 1)
+       eina_list_count(cfdata->s_langs) < 1)
      e_widget_disabled_set(cfdata->gui.o_down, 1);
    else
      e_widget_disabled_set(cfdata->gui.o_down, 0);
@@ -611,7 +611,7 @@ _conf_cb_kbd_model_select(void *data)
 
    cfdata = data;
 
-   l = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+   l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
    if (l->rdefs.model) evas_stringshare_del(l->rdefs.model);
@@ -625,7 +625,7 @@ _conf_cb_kbd_variant_select(void *data)
 
    cfdata = data;
 
-   l = evas_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
+   l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
    if (l->rdefs.variant) evas_stringshare_del(l->rdefs.variant);
@@ -638,7 +638,7 @@ _conf_cb_language_add(void *data, void *data2)
    Language		*lang;
    E_Config_Dialog_Data *cfdata;
    Language_Predef	*lp = NULL;
-   Evas_List		*l;
+   Eina_List		*l;
 
    cfdata = data;
 
@@ -655,7 +655,7 @@ _conf_cb_language_add(void *data, void *data2)
    lang = E_NEW(Language, 1);
    if (!lang) return;
 
-   lang->id		= evas_list_count(cfdata->s_langs);
+   lang->id		= eina_list_count(cfdata->s_langs);
    lang->lang_name	= evas_stringshare_add(lp->lang_name);
    lang->lang_shortcut	= evas_stringshare_add(lp->lang_shortcut);
    lang->lang_flag	= !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
@@ -663,14 +663,14 @@ _conf_cb_language_add(void *data, void *data2)
    lang->rdefs.layout	= (char *) evas_stringshare_add(lp->kbd_layout);
    lang->rdefs.variant	= (char *) evas_stringshare_add("basic");
 
-   cfdata->s_langs = evas_list_append(cfdata->s_langs, lang);
+   cfdata->s_langs = eina_list_append(cfdata->s_langs, lang);
 
    _conf_fill_planguages(cfdata);
    _conf_fill_slanguages(cfdata);
 
    E_FREE(cfdata->plang);
 
-   e_widget_ilist_selected_set(cfdata->gui.o_slang, evas_list_count(cfdata->s_langs) - 1);
+   e_widget_ilist_selected_set(cfdata->gui.o_slang, eina_list_count(cfdata->s_langs) - 1);
    _conf_add_button_availability_set(cfdata);
 }
 static void
@@ -684,8 +684,8 @@ _conf_cb_language_del(void *data, void *data2)
 
    n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
 
-   l = evas_list_nth(cfdata->s_langs, n);
-   cfdata->s_langs = evas_list_remove(cfdata->s_langs, l);
+   l = eina_list_nth(cfdata->s_langs, n);
+   cfdata->s_langs = eina_list_remove(cfdata->s_langs, l);
 
    lang_language_free(l);
 
@@ -694,8 +694,8 @@ _conf_cb_language_del(void *data, void *data2)
 
    E_FREE(cfdata->slang);
 
-   if (n >= evas_list_count(cfdata->s_langs)) 
-     n = evas_list_count(cfdata->s_langs) - 1;
+   if (n >= eina_list_count(cfdata->s_langs)) 
+     n = eina_list_count(cfdata->s_langs) - 1;
 
    if (n >= 0) 
      e_widget_ilist_selected_set(cfdata->gui.o_slang, n);
@@ -714,7 +714,7 @@ static void
 _conf_cb_language_up(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    void *tmp;
    int n;
 
@@ -723,8 +723,8 @@ _conf_cb_language_up(void *data, void *data2)
    n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
    if (n <= 0) return;
 
-   l  = evas_list_nth_list(cfdata->s_langs, n);
-   l2 = evas_list_nth_list(cfdata->s_langs, n - 1); 
+   l  = eina_list_nth_list(cfdata->s_langs, n);
+   l2 = eina_list_nth_list(cfdata->s_langs, n - 1); 
 
    ((Language *)(l->data))->id --;
    ((Language *)(l2->data))->id ++;
@@ -740,17 +740,17 @@ static void
 _conf_cb_language_down(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    void *tmp;
    int n;
 
    cfdata = data;
 
    n = e_widget_ilist_selected_get(cfdata->gui.o_slang);
-   if ((n < 0) || (n >= evas_list_count(cfdata->s_langs))) return;
+   if ((n < 0) || (n >= eina_list_count(cfdata->s_langs))) return;
 
-   l  = evas_list_nth_list(cfdata->s_langs, n);
-   l2 = evas_list_nth_list(cfdata->s_langs, n + 1);
+   l  = eina_list_nth_list(cfdata->s_langs, n);
+   l2 = eina_list_nth_list(cfdata->s_langs, n + 1);
 
    ((Language *)(l->data))->id ++;
    ((Language *)(l2->data))->id --;

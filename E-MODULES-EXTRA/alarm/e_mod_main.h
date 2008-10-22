@@ -119,7 +119,7 @@ struct _Config
    Time_Format      time_format;
 
    Alarm_State      alarms_state;
-   Evas_List       *alarms;
+   Eina_List       *alarms;
    Ecore_Timer     *alarms_ring_etimer;
    int              alarms_details;
    int              alarms_autoremove_default;
@@ -133,7 +133,7 @@ struct _Config
    E_Module        *module;
    E_Config_Dialog *config_dialog;
    E_Config_Dialog *config_dialog_alarm_new;
-   Evas_List       *instances;
+   Eina_List       *instances;
    E_Menu          *menu;
 };
 

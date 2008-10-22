@@ -36,7 +36,7 @@ static void _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
 
 static E_Module *desk_module = NULL;
-Evas_List *handlers;
+Eina_List *handlers;
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -68,10 +68,10 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
-   handlers = evas_list_append(handlers,
+   handlers = eina_list_append(handlers,
 	 ecore_event_handler_add(E_EVENT_DESK_SHOW,
 	    _deskshow_cb_event_desk_show, inst));
-   handlers = evas_list_append(handlers,
+   handlers = eina_list_append(handlers,
 	 ecore_event_handler_add(E_EVENT_DESK_DESKSHOW,
 	    _deskshow_cb_event_desk_show, inst));
   return gcc;
@@ -86,7 +86,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   while (handlers) 
     {
        ecore_event_handler_del(handlers->data);
-       handlers = evas_list_remove_list(handlers, handlers);
+       handlers = eina_list_remove_list(handlers, handlers);
     }
   evas_object_del (inst->o_button);
   E_FREE (inst);

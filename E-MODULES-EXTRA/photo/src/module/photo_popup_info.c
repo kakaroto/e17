@@ -23,7 +23,7 @@
   y = (eh/2) - (h/2);
 
 
-static Evas_List *_popups_info;
+static Eina_List *_popups_info;
 
 
 static void _placement(Photo_Item *pi, int placement, int popi_w, int popi_h, int *popi_x, int *popi_y);
@@ -44,15 +44,15 @@ int photo_popup_info_init(void)
 
 void photo_popup_info_shutdown(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l = _popups_info; l; l = evas_list_next(l))
+   for (l = _popups_info; l; l = eina_list_next(l))
      {
         Popup_Info *p;
-        p = evas_list_data(l);
+        p = eina_list_data_get(l);
         photo_popup_info_del(p);
      }
-   evas_list_free(_popups_info);
+   eina_list_free(_popups_info);
    _popups_info = NULL;
 }
 
@@ -143,7 +143,7 @@ Popup_Info *photo_popup_info_add(Photo_Item *pi, const char *title, const char *
   evas_event_thaw(popi->pop->evas);
   e_popup_show(popi->pop);
   
-  _popups_info = evas_list_append(_popups_info, popi);
+  _popups_info = eina_list_append(_popups_info, popi);
 	
    return popi;
 }
@@ -161,7 +161,7 @@ void photo_popup_info_del(Popup_Info *popi)
   if (popi->pop)
     e_object_del(E_OBJECT(popi->pop));
 
-  _popups_info = evas_list_remove(_popups_info, popi);
+  _popups_info = eina_list_remove(_popups_info, popi);
 
   free(popi);
 }

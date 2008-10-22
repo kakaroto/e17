@@ -11,8 +11,8 @@ struct _Config
    E_Module        *module;
    E_Menu          *menu, *menu_firstweekday;
    Ecore_Timer     *timer;
-   Evas_List       *instances;
-   Evas_List       *items;
+   Eina_List       *instances;
+   Eina_List       *items;
 };
 
 struct _Config_Item 

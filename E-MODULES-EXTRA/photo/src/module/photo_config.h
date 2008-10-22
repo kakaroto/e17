@@ -23,7 +23,7 @@ struct _Photo_Config
    int pictures_thumb_size;
    struct
    {
-      Evas_List *dirs;
+      Eina_List *dirs;
       int auto_reload;
       int popup;
       int thumb_msg;
@@ -37,7 +37,7 @@ struct _Photo_Config
    int action_mouse_left;
    int action_mouse_middle;
 
-   Evas_List *items;
+   Eina_List *items;
 };
 
 struct _Photo_Config_Item

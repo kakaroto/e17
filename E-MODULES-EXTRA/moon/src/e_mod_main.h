@@ -22,7 +22,7 @@ struct _Config
    int        show_border;
    int        show_cloud_anim;
    double     poll_time;
-   Evas_List *faces;
+   Eina_List *faces;
 
    E_Config_Dialog *config_dialog;
    E_Menu          *menu;

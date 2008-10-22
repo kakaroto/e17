@@ -62,7 +62,7 @@ struct _Photo_Item
    
    struct
    {
-      Evas_List *list;
+      Eina_List *list;
       int pos;
       Popup_Info *popi;
    } histo;

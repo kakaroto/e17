@@ -42,7 +42,7 @@ struct _Language_Predef
    const char  *lang_shortcut;
    const char  *lang_flag;
    const char  *kbd_layout;
-   Evas_List   *kbd_variant; // const char *
+   Eina_List   *kbd_variant; // const char *
 };
 
 void	    lang_language_switch_to(Config *cfg, unsigned int n);

@@ -11,7 +11,7 @@ static E_Config_DD *_photo_item_edd = NULL;
 
 int photo_config_init(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    char buf[4096];
 	
    _photo_dir_edd = E_CONFIG_DD_NEW("Photo_Local_Dir", Picture_Local_Dir);
@@ -99,7 +99,7 @@ int photo_config_init(void)
         c->pictures_set_bg_purge = PICTURE_SET_BG_PURGE_DEFAULT;
         c->pictures_viewer = evas_stringshare_add(PICTURE_VIEWER_DEFAULT);
         c->pictures_thumb_size = PICTURE_THUMB_SIZE_DEFAULT;
-        c->local.dirs = evas_list_append(c->local.dirs,
+        c->local.dirs = eina_list_append(c->local.dirs,
                                          photo_picture_local_dir_new((char *)e_module_dir_get(photo->module),
                                                                      1, 0));
         c->local.auto_reload = PICTURE_LOCAL_AUTO_RELOAD_DEFAULT;
@@ -119,10 +119,10 @@ int photo_config_init(void)
    E_CONFIG_LIMIT(photo->config->local.thumb_msg, 0, 1);
    E_CONFIG_LIMIT(photo->config->pictures_set_bg_purge, 0, 1);
 
-   for (l=photo->config->local.dirs; l; l=evas_list_next(l))
+   for (l=photo->config->local.dirs; l; l=eina_list_next(l))
      {
         Picture_Local_Dir *dir;
-        dir = evas_list_data(l);
+        dir = eina_list_data_get(l);
 
         E_CONFIG_LIMIT(dir->recursive, 0, 1);
         E_CONFIG_LIMIT(dir->read_hidden, 0, 1);
@@ -130,10 +130,10 @@ int photo_config_init(void)
         dir->config_dialog = NULL;
      }
 
-   for (l=photo->config->items; l; l=evas_list_next(l))
+   for (l=photo->config->items; l; l=eina_list_next(l))
      {
         Photo_Config_Item *pic;
-        pic = evas_list_data(l);
+        pic = eina_list_data_get(l);
 
         E_CONFIG_LIMIT(pic->timer_s, ITEM_TIMER_S_MIN, ITEM_TIMER_S_MAX);
         E_CONFIG_LIMIT(pic->timer_active, 0, 1);
@@ -150,23 +150,23 @@ int photo_config_init(void)
 int photo_config_shutdown(void)
 {
    Photo_Config *c;
-   Evas_List *l;
+   Eina_List *l;
 
    c = photo->config;
-   for (l=c->local.dirs; l; l=evas_list_next(l))
+   for (l=c->local.dirs; l; l=eina_list_next(l))
      {
         Picture_Local_Dir *d;
-        d = evas_list_data(l);
+        d = eina_list_data_get(l);
         photo_picture_local_dir_free(d, 1);
      }
-   evas_list_free(c->local.dirs);
-   for (l=c->items; l; l=evas_list_next(l))
+   eina_list_free(c->local.dirs);
+   for (l=c->items; l; l=eina_list_next(l))
      {
         Photo_Config_Item *pic;
-        pic = evas_list_data(l);
+        pic = eina_list_data_get(l);
         photo_config_item_free(pic);
      }
-   evas_list_free(c->items);
+   eina_list_free(c->items);
 
    E_FREE(photo->config);
 
@@ -187,14 +187,14 @@ int photo_config_save(void)
 Photo_Config_Item *photo_config_item_new(const char *id)
 {
    Photo_Config_Item *pic;
-   Evas_List *l;
+   Eina_List *l;
 
    DCONF(("Item new config"));
 
    /* is there already an item config for this id ? */
-   for (l=photo->config->items; l; l=evas_list_next(l))
+   for (l=photo->config->items; l; l=eina_list_next(l))
      {
-        pic = evas_list_data(l);
+        pic = eina_list_data_get(l);
         if (!strcmp(pic->id, id))
           {
              DCONF(("config found ! %s", pic->id));
@@ -214,7 +214,7 @@ Photo_Config_Item *photo_config_item_new(const char *id)
    pic->action_mouse_left = ITEM_ACTION_PARENT;
    pic->action_mouse_middle = ITEM_ACTION_PARENT;
 
-   photo->config->items = evas_list_append(photo->config->items, pic);
+   photo->config->items = eina_list_append(photo->config->items, pic);
 
    return pic;
 }
@@ -223,7 +223,7 @@ void photo_config_item_free(Photo_Config_Item *pic)
 {
    evas_stringshare_del(pic->id);
 
-   photo->config->items = evas_list_remove(photo->config->items, pic);
+   photo->config->items = eina_list_remove(photo->config->items, pic);
    free(pic);
 }
 

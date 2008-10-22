@@ -18,7 +18,7 @@ typedef struct _Config_Emu Config_Emu;
 struct _Config
 {
    char *appdir;
-   Evas_List *emus;
+   Eina_List *emus;
 };
 
 struct _Config_Emu

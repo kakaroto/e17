@@ -17,11 +17,11 @@ struct _Config
 struct _Rain
 {
    E_Module *module;
-   Evas_List *cons;
+   Eina_List *cons;
    Evas *canvas;
    Ecore_Animator *animator;
-   Evas_List *clouds;
-   Evas_List *drops;
+   Eina_List *clouds;
+   Eina_List *drops;
 
    E_Config_DD *conf_edd;
    Config *conf;

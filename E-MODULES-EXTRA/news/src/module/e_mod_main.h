@@ -20,8 +20,8 @@ struct _News
    E_Config_Dialog *config_dialog_category_new;
    E_Config_Dialog *config_dialog_langs;
 
-   Evas_List *items;
-   Evas_List *langs;
+   Eina_List *items;
+   Eina_List *langs;
    Ecore_Timer *feeds_timer;
 };
 

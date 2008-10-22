@@ -44,8 +44,8 @@ struct _Config
    E_Module *module;
    E_Config_Dialog *config_dialog;
    E_Menu *menu;
-   Evas_List *instances;
-   Evas_List *items;
+   Eina_List *instances;
+   Eina_List *items;
 };
 
 struct _Config_Item 
@@ -58,7 +58,7 @@ struct _Config_Item
    unsigned char show_popup;
    unsigned char show_popup_empty;
 
-   Evas_List *boxes;
+   Eina_List *boxes;
 };
 
 struct _Config_Box 

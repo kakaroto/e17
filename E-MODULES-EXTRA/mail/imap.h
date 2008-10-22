@@ -29,8 +29,8 @@ struct _ImapServer
    const char *pass;
 
    Ecore_Con_Server *server;
-   Evas_List *clients;
-   Evas_List *current;
+   Eina_List *clients;
+   Eina_List *current;
    int cmd;
    ImapState state;
    void *data;

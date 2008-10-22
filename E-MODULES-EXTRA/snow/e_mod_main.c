@@ -78,7 +78,7 @@ static Snow *
 _snow_init(E_Module *m)
 {
    Snow *snow;
-   Evas_List *managers, *l, *l2;
+   Eina_List *managers, *l, *l2;
 
    snow = calloc(1, sizeof(Snow));
    if (!snow)
@@ -117,7 +117,7 @@ _snow_init(E_Module *m)
              E_Container *con;
 
              con = l2->data;
-             snow->cons = evas_list_append(snow->cons, con);
+             snow->cons = eina_list_append(snow->cons, con);
              snow->canvas = con->bg_evas;
           }
      }
@@ -144,7 +144,7 @@ _snow_trees_free(Snow *snow)
 
         tree = snow->trees->data;
         evas_object_del(tree);
-        snow->trees = evas_list_remove_list(snow->trees, snow->trees);
+        snow->trees = eina_list_remove_list(snow->trees, snow->trees);
      }
 }
 
@@ -157,7 +157,7 @@ _snow_flakes_free(Snow *snow)
 
         flake = snow->flakes->data;
         evas_object_del(flake->flake);
-        snow->flakes = evas_list_remove_list(snow->flakes, snow->flakes);
+        snow->flakes = eina_list_remove_list(snow->flakes, snow->flakes);
         free(flake);
 	flake = NULL;
      }
@@ -174,7 +174,7 @@ _snow_shutdown(Snow *snow)
         E_Container *con;
 
         con = snow->cons->data;
-        snow->cons = evas_list_remove_list(snow->cons, snow->cons);
+        snow->cons = eina_list_remove_list(snow->cons, snow->cons);
      }
    _snow_trees_free(snow);
    _snow_flakes_free(snow);
@@ -228,7 +228,7 @@ _snow_trees_load(Snow *snow)
         evas_object_move(o, tx, ty);
         evas_object_pass_events_set(o, 1);
         evas_object_show(o);
-        snow->trees = evas_list_append(snow->trees, o);
+        snow->trees = eina_list_append(snow->trees, o);
      }
 }
 
@@ -280,7 +280,7 @@ _snow_flakes_load(char type, Snow *snow)
              flake->speed = 3;
              break;
           }
-        snow->flakes = evas_list_append(snow->flakes, flake);
+        snow->flakes = eina_list_append(snow->flakes, flake);
      }
 
 }
@@ -289,7 +289,7 @@ static int
 _snow_cb_animator(void *data)
 {
    Snow *snow;
-   Evas_List *next;
+   Eina_List *next;
    double d;
 
    snow = data;
@@ -307,7 +307,7 @@ _snow_cb_animator(void *data)
            flake->start_time = ecore_time_get() + (double)(random() % 100) / (double)100;
         evas_object_move(flake->flake, x, y);
 
-        next = evas_list_next(next);
+        next = eina_list_next(next);
      }
    return 1;
 }

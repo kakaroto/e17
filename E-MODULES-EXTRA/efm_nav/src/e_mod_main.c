@@ -43,7 +43,7 @@ static void             _cb_changed       (void *data, Evas_Object *obj,
 static void             _cb_dir_changed   (void *data, Evas_Object *obj, 
 					   void *event_info);
 
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 static E_Module *nav_mod = NULL;
 
 /* local gadcon functions */
@@ -141,7 +141,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    edje_object_signal_emit(inst->o_forward, "e,state,disabled", "e");
    edje_object_message_signal_process(inst->o_forward);
 
-   instances = evas_list_append(instances, inst);
+   instances = eina_list_append(instances, inst);
    return inst->gcc;
 }
 
@@ -152,7 +152,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    inst = gcc->data;
    if (!inst) return;
-   instances = evas_list_remove(instances, inst);
+   instances = eina_list_remove(instances, inst);
    if (inst->history) ecore_list_destroy(inst->history);
    if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_back) evas_object_del(inst->o_back);
@@ -212,7 +212,7 @@ _gc_id_new(void)
    char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
-	    (evas_list_count(instances) + 1));
+	    (eina_list_count(instances) + 1));
    return strdup(buf);
 }
 

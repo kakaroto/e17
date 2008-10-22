@@ -36,7 +36,7 @@ struct _News_Popup
    E_Popup *pop;
    Evas_Object *face;
   Evas_Object *tb;
-  Evas_List *log; /* 2 consecutive strings for each popup */
+  Eina_List *log; /* 2 consecutive strings for each popup */
 
    Ecore_Timer *timer;
    int (*func_close) (News_Popup *popw, void *data);

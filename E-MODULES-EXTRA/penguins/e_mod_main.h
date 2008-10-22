@@ -35,14 +35,14 @@ struct _Config
 struct _Population
 {
    E_Module *module;
-   Evas_List *cons;
+   Eina_List *cons;
    Evas *canvas;
    Ecore_Animator *animator;
-   Evas_List *penguins;
+   Eina_List *penguins;
    Evas_Hash *actions;
-   Evas_List *customs;
+   Eina_List *customs;
    int custom_num;
-   Evas_List *themes;
+   Eina_List *themes;
 
    E_Config_DD *conf_edd;
    Config *conf;

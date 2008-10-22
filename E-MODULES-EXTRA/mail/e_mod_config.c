@@ -8,7 +8,7 @@ struct _E_Config_Dialog_Data
   double check_time;
   int show_popup;
   int show_popup_empty;
-  Evas_List *boxes;
+  Eina_List *boxes;
 
   /* Evas Object References */
   Evas_Object *il;
@@ -177,7 +177,7 @@ _load_boxes (E_Config_Dialog * cfd)
     return;
   if (!ci->boxes)
     return;
-  if (evas_list_count (ci->boxes) <= 0)
+  if (eina_list_count (ci->boxes) <= 0)
     return;
 
   snprintf (buf, sizeof (buf), "%s/module.edj",
@@ -187,7 +187,7 @@ _load_boxes (E_Config_Dialog * cfd)
 
   for (i = 0; i <= 3; i++)
     {
-      Evas_List *box;
+      Eina_List *box;
       int found = -1;
       char *name;
 
@@ -295,7 +295,7 @@ _cb_edit_box (void *data, void *data2)
   E_Config_Dialog *cfd;
   E_Config_Dialog_Data *cfdata;
   Evas_Object *il;
-  Evas_List *l;
+  Eina_List *l;
   Config_Item *ci;
   const char *s;
 
@@ -332,7 +332,7 @@ _cb_del_box (void *data, void *data2)
   E_Config_Dialog *cfd;
   E_Config_Dialog_Data *cfdata;
   Evas_Object *il;
-  Evas_List *l;
+  Eina_List *l;
   Config_Item *ci;
   const char *s;
 

@@ -53,7 +53,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
 
-   net_cfg->instances = evas_list_append(net_cfg->instances, inst);
+   net_cfg->instances = eina_list_append(net_cfg->instances, inst);
    return gcc;
 }
 
@@ -63,7 +63,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
-   net_cfg->instances = evas_list_remove(net_cfg->instances, inst);
+   net_cfg->instances = eina_list_remove(net_cfg->instances, inst);
    if (inst->timer) ecore_timer_del(inst->timer);
    if (inst->o_net) 
      {

@@ -33,8 +33,8 @@ struct _Photo
    E_Config_Dialog *config_dialog;
    E_Config_Dialog *config_dialog_adddir;
 
-   Evas_List *items;
-   Evas_List *setbg_topurge;
+   Eina_List *items;
+   Eina_List *setbg_topurge;
 
    char *theme;
 

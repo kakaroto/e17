@@ -89,7 +89,7 @@ void photo_config_dialog_refresh_local_infos(void)
 void photo_config_dialog_refresh_local_dirs(void)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *ilist_dirs;
    int pos;
 
@@ -101,13 +101,13 @@ void photo_config_dialog_refresh_local_dirs(void)
    pos = e_widget_ilist_selected_get(ilist_dirs);
    e_widget_ilist_clear(ilist_dirs);
 
-   for(l=photo->config->local.dirs; l; l=evas_list_next(l))
+   for(l=photo->config->local.dirs; l; l=eina_list_next(l))
      {
         Evas_Object *ic;
         Picture_Local_Dir *dir;
         char buf[1024];
         
-        dir = evas_list_data(l);
+        dir = eina_list_data_get(l);
 
         ic = e_icon_add(evas_object_evas_get(ilist_dirs));
         switch(dir->state)
@@ -131,7 +131,7 @@ void photo_config_dialog_refresh_local_dirs(void)
         e_widget_ilist_append(ilist_dirs, ic, buf, _cb_dir_list, cfdata, NULL);
      }
 
-   if (!evas_list_count(photo->config->local.dirs))
+   if (!eina_list_count(photo->config->local.dirs))
      e_widget_min_size_set(ilist_dirs, 165, 120);
    else
      {
@@ -403,12 +403,12 @@ _cb_dir_del(void *data, void *data2)
    Picture_Local_Dir *dir;
 
    cfdata = data;
-   dir = evas_list_nth(photo->config->local.dirs,
+   dir = eina_list_nth(photo->config->local.dirs,
                        e_widget_ilist_selected_get(cfdata->ilist_local_dirs));
    if (!dir || (dir->state == PICTURE_LOCAL_DIR_LOADING))
      return;
 
-   photo->config->local.dirs = evas_list_remove(photo->config->local.dirs, dir);
+   photo->config->local.dirs = eina_list_remove(photo->config->local.dirs, dir);
    photo_picture_local_dir_free(dir, 1);
 
    photo_config_save();
@@ -426,7 +426,7 @@ _cb_dir_config(void *data, void *data2)
    Picture_Local_Dir *dir;
 
    cfdata = data;
-   dir = evas_list_nth(photo->config->local.dirs,
+   dir = eina_list_nth(photo->config->local.dirs,
                        e_widget_ilist_selected_get(cfdata->ilist_local_dirs));
 
    if (!dir ||

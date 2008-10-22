@@ -29,11 +29,11 @@ typedef enum _News_Item_Openmethod
 
 #define NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(list) \
 { \
-Evas_List *_l_feeds; \
+Eina_List *_l_feeds; \
 News_Feed_Ref *_ref; \
 News_Feed *_feed; \
 \
-for (_l_feeds=list; _l_feeds; _l_feeds=evas_list_next(_l_feeds)) \
+for (_l_feeds=list; _l_feeds; _l_feeds=eina_list_next(_l_feeds)) \
 { \
    _ref = _l_feeds->data; \
    _feed = _ref->feed; \

@@ -30,7 +30,7 @@ recursively_set_disabled(Evas_Object *obj, int disabled)
    E_Widget_Smart_Data *sd = evas_object_smart_data_get(obj);
    if (!sd || (evas_object_type_get(obj) && strcmp(evas_object_type_get(obj), "e_widget"))) return;
 
-   Evas_List *l;
+   Eina_List *l;
    for (l = sd->subobjs; l; l = l->next)
      {
 	Evas_Object *o = l->data;
@@ -93,7 +93,7 @@ shelf_show_on_desk(E_Shelf *sh, E_Desk *desk)
    E_Config_Shelf *cf = sh->cfg;
    if (!cf) return 0;
    if (!cf->desk_show_mode) return 1;
-   Evas_List *l;
+   Eina_List *l;
    for (l = cf->desk_list; l; l = l->next)
      {
 	E_Config_Shelf_Desk *sd = l->data;

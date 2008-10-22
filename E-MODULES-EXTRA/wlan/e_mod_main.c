@@ -90,7 +90,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   _wlan_cb_check (inst);
 
   inst->check_timer = ecore_timer_add (inst->ci->poll_time, _wlan_cb_check, inst);
-  wlan_config->instances = evas_list_append (wlan_config->instances, inst);
+  wlan_config->instances = eina_list_append (wlan_config->instances, inst);
   return gcc;
 }
 
@@ -137,7 +137,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   inst = gcc->data;
   if (inst->check_timer)
     ecore_timer_del (inst->check_timer);
-  wlan_config->instances = evas_list_remove (wlan_config->instances, inst);
+  wlan_config->instances = eina_list_remove (wlan_config->instances, inst);
   _wlan_free (inst->wlan);
   free (inst);
   inst = NULL;
@@ -202,7 +202,7 @@ _wlan_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _wlan_config_updated (Config_Item *ci)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!wlan_config)
     return;
@@ -227,7 +227,7 @@ _wlan_config_updated (Config_Item *ci)
 static Config_Item *
 _wlan_config_item_get (const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -239,7 +239,7 @@ _wlan_config_item_get (const char *id)
 	if (wlan_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last (wlan_config->items)->data;
+	     ci = eina_list_last (wlan_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -268,7 +268,7 @@ _wlan_config_item_get (const char *id)
    ci->always_text = 0;
    ci->show_percent = 1;
 
-   wlan_config->items = evas_list_append (wlan_config->items, ci);
+   wlan_config->items = eina_list_append (wlan_config->items, ci);
    return ci;
 }
 
@@ -317,7 +317,7 @@ e_modapi_init (E_Module * m)
       ci->poll_time = 1.0;
       ci->always_text = 0;
       ci->show_percent = 1;
-      wlan_config->items = evas_list_append (wlan_config->items, ci);
+      wlan_config->items = eina_list_append (wlan_config->items, ci);
     }
   wlan_config->module = m;
   e_gadcon_provider_register (&_gc_class);
@@ -344,7 +344,7 @@ e_modapi_shutdown (E_Module * m)
 
       ci = wlan_config->items->data;
       wlan_config->items =
-	evas_list_remove_list (wlan_config->items, wlan_config->items);
+	eina_list_remove_list (wlan_config->items, wlan_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
       if (ci->device)

@@ -11,8 +11,8 @@ struct _Config
    E_Module        *module;
    E_Config_Dialog *config_dialog;
    E_Menu          *menu;
-   Evas_List       *instances;
-   Evas_List       *items;
+   Eina_List       *instances;
+   Eina_List       *items;
    Ecore_Event_Handler *exe_del;
 };
 

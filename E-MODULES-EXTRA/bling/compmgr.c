@@ -65,7 +65,7 @@ static Ecore_X_Picture rootTile;
 static Ecore_X_Region allDamage;
 static Bool clipChanged;
 
-static Evas_List *wins = NULL;
+static Eina_List *wins = NULL;
 
 #if HAS_NAME_WINDOW_PIXMAP
 static Bool hasNamePixmap;
@@ -95,7 +95,7 @@ int fade_delta = 10;
 int fade_time = 0;
 static int fade_steps = 0;
 #endif
-static Evas_List *fades = NULL;
+static Eina_List *fades = NULL;
 
 #if 0
 static Bool fadeWindows = False;
@@ -149,7 +149,7 @@ composite_x_error(Display *dpy, XErrorEvent *xerror)
 static Fade *
 composite_fade_find(Win * w)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = fades; l; l = l->next)
    {
@@ -167,7 +167,7 @@ composite_fade_dequeue(Fade * f)
    f->w->isInFade = False;
    if (f->callback)
       (*f->callback) (f->w, f->gone);
-   fades = evas_list_remove(fades, f);
+   fades = eina_list_remove(fades, f);
    if (f->anim)
       ecore_animator_del(f->anim);
    /* E_FREE(f); */
@@ -184,7 +184,7 @@ static int
 composite_fade_is_valid(Ecore_X_Window id)
 {
    E_Manager *man;
-   Evas_List *l;
+   Eina_List *l;
    char *name = NULL, *class = NULL;
 
    if (!id) return 0;
@@ -225,7 +225,7 @@ composite_fade_set(Win *w, double start, double finish, double step,
       f->w = w;
       f->start = f->cur = start;
       w->isInFade = True;
-      fades = evas_list_prepend(fades, f);
+      fades = eina_list_prepend(fades, f);
       f->anim = ecore_animator_add(_composite_run_fades_cb, f);
    }
    else if (!override)
@@ -823,7 +823,7 @@ composite_paint_all(Ecore_X_Region region)
 {
    Win *w;
    Win *t = NULL;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!region)
    {
@@ -1067,11 +1067,11 @@ composite_damage_add(Ecore_X_Region damage)
 static Win *
 composite_win_find(Ecore_X_Window id)
 {
-   Evas_List *l;
+   Eina_List *l;
+   Win *w;
 
-   for(l = wins; l; l = l->next)
+   EINA_LIST_FOREACH(wins, l, w)
    {
-      Win *w = l->data;
       if (w && w->id == id)
          return w;
    }
@@ -1439,9 +1439,9 @@ composite_win_add(Ecore_X_Window id, Ecore_X_Window prev)
 
    p = composite_win_find(prev);
    if (p)
-      wins = evas_list_prepend_relative(wins, new, p);
+      wins = eina_list_prepend_relative(wins, new, p);
    else
-      wins = evas_list_prepend(wins, new);
+      wins = eina_list_prepend(wins, new);
    
    /* Don't fade desktop/container windows */
 #if 0
@@ -1456,9 +1456,9 @@ void
 composite_win_restack(Win * w, Ecore_X_Window new_above)
 {
    Ecore_X_Window old_above;
-   Evas_List *l;
+   Eina_List *l;
 
-   l = evas_list_find_list(wins, w);
+   l = eina_list_data_find_list(wins, w);
 
    if (l && l->next)
       old_above = ((Win *)l->next->data)->id;
@@ -1469,13 +1469,13 @@ composite_win_restack(Win * w, Ecore_X_Window new_above)
       Win *prev = composite_win_find(new_above);
       if (!prev)
       {
-         wins = evas_list_remove(wins, w);
-         wins = evas_list_prepend(wins, w);
+         wins = eina_list_remove(wins, w);
+         wins = eina_list_prepend(wins, w);
       }
       else
       {
-         wins = evas_list_remove(wins, w);
-         wins = evas_list_prepend_relative(wins, w, prev);
+         wins = eina_list_remove(wins, w);
+         wins = eina_list_prepend_relative(wins, w, prev);
       }
    }
 }
@@ -1484,7 +1484,7 @@ static void
 composite_win_destroy_finish(Ecore_X_Window id, Bool gone)
 {
    Win *w;
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = wins; l; l = l->next)
    {
@@ -1493,7 +1493,7 @@ composite_win_destroy_finish(Ecore_X_Window id, Bool gone)
       {
          if (!gone)
             composite_win_finish_unmap(w);
-         wins = evas_list_remove(wins, w);
+         wins = eina_list_remove(wins, w);
          if (w->picture)
          {
             XRenderFreePicture(dpy, w->picture);
@@ -2131,7 +2131,7 @@ composite_init(Bling *b)
 void
 composite_shutdown(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = fades; l; l = l->next)
    {

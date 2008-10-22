@@ -319,9 +319,9 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
 
    if (!cfdata->new)
-     alarm_config->alarms = evas_list_remove(alarm_config->alarms, cfdata->al);
+     alarm_config->alarms = eina_list_remove(alarm_config->alarms, cfdata->al);
 
-   alarm_config->alarms = evas_list_append(alarm_config->alarms, al);
+   alarm_config->alarms = eina_list_append(alarm_config->alarms, al);
    cfdata->new = 0;
    cfdata->al = al;
 

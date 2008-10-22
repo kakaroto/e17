@@ -189,7 +189,7 @@ news_config_shutdown(void)
 
    if (c->proxy.host) evas_stringshare_del(c->proxy.host);
 
-   while ( (nic = evas_list_data(c->items)) )
+   while ( (nic = eina_list_data_get(c->items)) )
      news_config_item_del(nic);
 
    evas_stringshare_del(c->viewer.vcontent.font_color);
@@ -218,7 +218,7 @@ News_Config_Item *
 news_config_item_add(const char *id)
 {
    News_Config_Item *nic;
-   Evas_List *l;
+   Eina_List *l;
    char buf[128];
 
    DCONF(("Item new config"));
@@ -231,7 +231,7 @@ news_config_item_add(const char *id)
 	if (news->config->items)
 	  {
 	     const char *p;
-	     nic = evas_list_last(news->config->items)->data;
+	     nic = eina_list_last(news->config->items)->data;
 	     p = strrchr(nic->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -241,9 +241,9 @@ news_config_item_add(const char *id)
    else
      {
 	/* is there already an item config for this id ? */
-	for (l=news->config->items; l; l=evas_list_next(l))
+	for (l=news->config->items; l; l=eina_list_next(l))
 	  {
-	     nic = evas_list_data(l);
+	     nic = eina_list_data_get(l);
 	     if (!strcmp(nic->id, id))
 	       {
 		  DCONF(("config found ! %s", nic->id));
@@ -261,7 +261,7 @@ news_config_item_add(const char *id)
    nic->openmethod = NEWS_ITEM_OPENMETHOD_DEFAULT;
    nic->browser_open_home = NEWS_ITEM_BROWSER_OPEN_HOME_DEFAULT;
 
-   news->config->items = evas_list_append(news->config->items, nic);
+   news->config->items = eina_list_append(news->config->items, nic);
 
    return nic;
 }
@@ -271,15 +271,15 @@ news_config_item_del(News_Config_Item *nic)
 {
    evas_stringshare_del(nic->id);
 
-   while(evas_list_count(nic->feed_refs))
+   while(eina_list_count(nic->feed_refs))
      {
         News_Feed_Ref *fr;
-        fr = evas_list_data(nic->feed_refs);
+        fr = eina_list_data_get(nic->feed_refs);
         evas_stringshare_del(fr->name);
-        nic->feed_refs = evas_list_remove(nic->feed_refs, fr);
+        nic->feed_refs = eina_list_remove(nic->feed_refs, fr);
      }
 
-   news->config->items = evas_list_remove(news->config->items, nic);
+   news->config->items = eina_list_remove(news->config->items, nic);
    free(nic);
 }
 

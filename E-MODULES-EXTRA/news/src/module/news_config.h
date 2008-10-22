@@ -16,10 +16,10 @@ struct _News_Config
 
    struct
    {
-      Evas_List *categories;
+      Eina_List *categories;
       int        timer_m;
       int        sort_name;
-      Evas_List *langs;
+      Eina_List *langs;
       int        langs_all;
       int        langs_notset;
    } feed;
@@ -63,7 +63,7 @@ struct _News_Config
       int timer_s;
    } popup_other;
 
-   Evas_List *items;
+   Eina_List *items;
 };
 
 struct _News_Config_Item
@@ -71,7 +71,7 @@ struct _News_Config_Item
    const char *id;
 
    /* list of Feed_Ref */
-   Evas_List *feed_refs;
+   Eina_List *feed_refs;
 
    int view_mode;
    int openmethod;

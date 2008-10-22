@@ -102,7 +102,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
 
-   alarm_config->instances = evas_list_append(alarm_config->instances, inst);
+   alarm_config->instances = eina_list_append(alarm_config->instances, inst);
 
    alarm_details_change();
 
@@ -131,7 +131,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    
    inst = gcc->data;
    evas_object_del(inst->obj);
-   alarm_config->instances = evas_list_remove(alarm_config->instances, inst);
+   alarm_config->instances = eina_list_remove(alarm_config->instances, inst);
    free(inst);
 
    e_config_save_queue();
@@ -315,7 +315,7 @@ alarm_alarm_del(Alarm *al)
    if (al->snooze.etimer)
      ecore_timer_del(al->snooze.etimer);
 
-   alarm_config->alarms = evas_list_remove(alarm_config->alarms, al);
+   alarm_config->alarms = eina_list_remove(alarm_config->alarms, al);
    free(al);
 
    /* refresh things */
@@ -329,7 +329,7 @@ alarm_alarm_del(Alarm *al)
    if (alarm_config->alarms_details)
      alarm_edje_refresh_details();
 
-   if ( !evas_list_count(alarm_config->alarms) &&
+   if ( !eina_list_count(alarm_config->alarms) &&
         alarm_config->alarms_ring_etimer )
      {
         ecore_timer_del(alarm_config->alarms_ring_etimer);
@@ -434,7 +434,7 @@ alarm_alarm_ring(Alarm *al, int test)
 void
 alarm_alarm_ring_stop(Alarm *al, int check)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (al)
      {
@@ -446,9 +446,9 @@ alarm_alarm_ring_stop(Alarm *al, int check)
      }
    else
      {
-        for (l=alarm_config->alarms; l; l=evas_list_next(l))
+        for (l=alarm_config->alarms; l; l=eina_list_next(l))
           {
-             al = evas_list_data(l);
+             al = eina_list_data_get(l);
              if (al->state == ALARM_STATE_RINGING)
                {
                   printf("Stop alarm %s\n", al->name);
@@ -471,13 +471,13 @@ alarm_alarm_ring_stop(Alarm *al, int check)
 void
 alarm_edje_signal_emit(const char *source, const char *message)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=alarm_config->instances; l; l=evas_list_next(l))
+   for (l=alarm_config->instances; l; l=eina_list_next(l))
      {
         Instance *inst;
 
-        inst = evas_list_data(l);
+        inst = eina_list_data_get(l);
         edje_object_signal_emit(inst->obj, source, message);
      }
 }
@@ -485,13 +485,13 @@ alarm_edje_signal_emit(const char *source, const char *message)
 void
 alarm_edje_text_set(char *part, char *text)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=alarm_config->instances; l; l=evas_list_next(l))
+   for (l=alarm_config->instances; l; l=eina_list_next(l))
      {
         Instance *inst;
 
-        inst = evas_list_data(l);
+        inst = eina_list_data_get(l);
         edje_object_part_text_set(inst->obj, part, text);
      }
 }
@@ -499,7 +499,7 @@ alarm_edje_text_set(char *part, char *text)
 void
 alarm_edje_refresh_details(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    Alarm *al;
    Alarm *first;
    double first_epoch;
@@ -508,9 +508,9 @@ alarm_edje_refresh_details(void)
    first = NULL;
    first_epoch = LONG_MAX;
 
-   for (l=alarm_config->alarms; l; l=evas_list_next(l))
+   for (l=alarm_config->alarms; l; l=eina_list_next(l))
      {
-        al = evas_list_data(l);
+        al = eina_list_data_get(l);
         if (al->state == ALARM_STATE_OFF)
           continue;
         if (al->sched.date_epoch < first_epoch)
@@ -543,13 +543,13 @@ alarm_edje_refresh_details(void)
 void
 alarm_details_change(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for(l=alarm_config->instances; l; l=evas_list_next(l))
+   for(l=alarm_config->instances; l; l=eina_list_next(l))
      {
         Instance *i;
 
-        i = evas_list_data(l);
+        i = eina_list_data_get(l);
         _gc_orient(i->gcc);
      }
 
@@ -818,12 +818,12 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         /* snooze menu */
         if (alarm_config->alarms_state == ALARM_STATE_RINGING)
           {
-             Evas_List *l;
+             Eina_List *l;
 
-             for (l=alarm_config->alarms; l; l=evas_list_next(l))
+             for (l=alarm_config->alarms; l; l=eina_list_next(l))
                {
                   Alarm *al;
-                  al = evas_list_data(l);
+                  al = eina_list_data_get(l);
                   if (al->state == ALARM_STATE_RINGING)
                     {
                        char buf[30];
@@ -944,7 +944,7 @@ _cb_edje_alarm_ring_stop(void *data, Evas_Object *obj, const char *emission, con
 static int
 _cb_alarms_ring_etimer(void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    double now;
 
    if (alarm_config->alarms_state == ALARM_STATE_OFF)
@@ -955,11 +955,11 @@ _cb_alarms_ring_etimer(void *data)
 
    now = ecore_time_get();
 
-   for(l=alarm_config->alarms; l; l=evas_list_next(l))
+   for(l=alarm_config->alarms; l; l=eina_list_next(l))
      {
         Alarm *al;
 
-        al = evas_list_data(l);
+        al = eina_list_data_get(l);
         if (al->state != ALARM_STATE_ON)
           continue;
 
@@ -992,7 +992,7 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    char buf[4096];
-   Evas_List *l;
+   Eina_List *l;
 
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -1087,10 +1087,10 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIMIT(alarm_config->alarms_open_popup_default, 0, 1);
 
    /* set the number of ringing alarms */
-   for (l=alarm_config->alarms; l; l=evas_list_next(l))
+   for (l=alarm_config->alarms; l; l=eina_list_next(l))
      {
         Alarm *al;
-        al = evas_list_data(l);
+        al = eina_list_data_get(l);
         if (al->state == ALARM_STATE_RINGING)
           alarm_config->alarms_ringing_nb++;
      }
@@ -1098,10 +1098,10 @@ e_modapi_init(E_Module *m)
    /* set alarms state and check dates */
    if (alarm_config->alarms)
      {
-        for (l=alarm_config->alarms; l; l=evas_list_next(l))
+        for (l=alarm_config->alarms; l; l=eina_list_next(l))
           {
              Alarm *al;
-             al = evas_list_data(l);
+             al = eina_list_data_get(l);
              _alarm_check_date(al, 0);
           }
         alarm_config->alarms_ring_etimer = ecore_timer_add(ALARMS_CHECK_TIMER,
@@ -1132,13 +1132,13 @@ e_modapi_shutdown(E_Module *m)
    
    if (alarm_config->alarms)
      {
-        while (evas_list_count(alarm_config->alarms))
+        while (eina_list_count(alarm_config->alarms))
           {
              Alarm *al;
-             al = evas_list_data(alarm_config->alarms);
+             al = eina_list_data_get(alarm_config->alarms);
              alarm_alarm_del(al);
           }
-        evas_list_free(alarm_config->alarms);
+        eina_list_free(alarm_config->alarms);
      }
    if (alarm_config->alarms_ring_etimer)
      ecore_timer_del(alarm_config->alarms_ring_etimer);

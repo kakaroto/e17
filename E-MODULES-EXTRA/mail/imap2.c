@@ -30,7 +30,7 @@ static void _mail_imap_server_noop (ImapClient *ic);
 static int   elements (char *p);
 static char *find_rn (char *data, unsigned int size);
 
-static Evas_List *iclients = NULL;
+static Eina_List *iclients = NULL;
 
 static Ecore_Event_Handler *add_handler = NULL;
 static Ecore_Event_Handler *del_handler = NULL;
@@ -40,7 +40,7 @@ void
 _mail_imap_check_mail (void *data)
 {
    Ecore_Con_Type type;
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = iclients; l; l = l->next)
      {
@@ -122,7 +122,7 @@ _mail_imap_del_mailbox (void *data)
    ic = _mail_imap_client_get (cb);
    if (!ic)
      return;
-   iclients = evas_list_remove (iclients, ic);
+   iclients = eina_list_remove (iclients, ic);
    _mail_imap_client_logout (ic);
    E_FREE (ic);
 
@@ -148,7 +148,7 @@ _mail_imap_shutdown ()
 	ImapClient *ic;
 
 	ic = iclients->data;
-	iclients = evas_list_remove_list (iclients, iclients);
+	iclients = eina_list_remove_list (iclients, iclients);
 	_mail_imap_client_logout (ic);
 	E_FREE (ic->prev.data);
 	E_FREE (ic);
@@ -169,7 +169,7 @@ _mail_imap_shutdown ()
 static ImapClient *
 _mail_imap_client_find (Ecore_Con_Server *server)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = iclients; l; l = l->next)
      {
@@ -186,7 +186,7 @@ static ImapClient *
 _mail_imap_client_get (Config_Box *cb)
 {
    ImapClient *ic;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!cb)
      return NULL;
@@ -206,7 +206,7 @@ _mail_imap_client_get (Config_Box *cb)
    ic->config->num_new = 0;
    ic->config->num_total = 0;
 
-   iclients = evas_list_append (iclients, ic);
+   iclients = eina_list_append (iclients, ic);
    return ic;
 }
 

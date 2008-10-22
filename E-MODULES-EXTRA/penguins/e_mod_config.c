@@ -110,7 +110,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    e_widget_ilist_clear(ol);
    
-   Evas_List *l;
+   Eina_List *l;
    int count;
    l = pop->themes;
    count = 0;
@@ -133,7 +133,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
          }
          count++;
       }
-      l = evas_list_next(l);
+      l = eina_list_next(l);
    }
    e_widget_ilist_go(ol);
    e_widget_min_size_set(ol, 155, 250);

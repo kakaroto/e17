@@ -50,7 +50,7 @@ struct _Picture
     * each photo item where the picture is in the histo
     * is attached here, only one time
     */
-   Evas_List *items_histo;
+   Eina_List *items_histo;
 };
 
 struct _Picture_Event_Fill

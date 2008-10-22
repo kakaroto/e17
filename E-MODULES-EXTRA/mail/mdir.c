@@ -2,7 +2,7 @@
 #include "e_mod_main.h"
 #include "mdir.h"
 
-static Evas_List *mdirs;
+static Eina_List *mdirs;
 
 static void _mail_mdir_check_mail (void *data, Ecore_File_Monitor * monitor,
 				   Ecore_File_Event event, const char *path);
@@ -26,14 +26,14 @@ _mail_mdir_add_mailbox (void *data, void *data2)
   mc->monitor =
     ecore_file_monitor_add (cb->new_path, _mail_mdir_check_mail, mc);
 
-  mdirs = evas_list_append (mdirs, mc);
+  mdirs = eina_list_append (mdirs, mc);
 }
 
 void
 _mail_mdir_del_mailbox (void *data)
 {
   Config_Box *cb;
-  Evas_List *l;
+  Eina_List *l;
 
   cb = data;
   if (!cb)
@@ -47,7 +47,7 @@ _mail_mdir_del_mailbox (void *data)
 	continue;
       if (mc->config != cb)
 	continue;
-      mdirs = evas_list_remove (mdirs, mc);
+      mdirs = eina_list_remove (mdirs, mc);
       free (mc);
       mc = NULL;
       break;
@@ -66,7 +66,7 @@ _mail_mdir_shutdown ()
       mc = mdirs->data;
       if (mc->monitor)
 	ecore_file_monitor_del (mc->monitor);
-      mdirs = evas_list_remove_list (mdirs, mdirs);
+      mdirs = eina_list_remove_list (mdirs, mdirs);
       free (mc);
       mc = NULL;
     }

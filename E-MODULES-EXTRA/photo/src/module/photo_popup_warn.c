@@ -1,6 +1,6 @@
 #include "Photo.h"
 
-static Evas_List *_popups_warn;
+static Eina_List *_popups_warn;
 
 static void _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y);
 static void _try_close(Popup_Warn *popw);
@@ -21,17 +21,17 @@ int photo_popup_warn_init(void)
 
 void photo_popup_warn_shutdown(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l = _popups_warn; l; l = evas_list_next(l))
+   for (l = _popups_warn; l; l = eina_list_next(l))
      {
         Popup_Warn *p;
-        p = evas_list_data(l);
+        p = eina_list_data_get(l);
         if (p->func_close)
           p->func_close(p, p->data);
         photo_popup_warn_del(p);
      }
-   evas_list_free(_popups_warn);
+   eina_list_free(_popups_warn);
    _popups_warn = NULL;
 }
 
@@ -117,7 +117,7 @@ Popup_Warn *photo_popup_warn_add(int type, const char *text, int timer, int (*fu
   evas_event_thaw(popw->pop->evas);
   e_popup_show(popw->pop);
   
-  _popups_warn = evas_list_append(_popups_warn, popw);
+  _popups_warn = eina_list_append(_popups_warn, popw);
 	
    return popw;
 }
@@ -131,7 +131,7 @@ void photo_popup_warn_del(Popup_Warn *popw)
   if (popw->pop)
     e_object_del(E_OBJECT(popw->pop));
 
-  _popups_warn = evas_list_remove(_popups_warn, popw);
+  _popups_warn = eina_list_remove(_popups_warn, popw);
 
   free(popw);
 }
@@ -145,16 +145,16 @@ void photo_popup_warn_del(Popup_Warn *popw)
 static void
 _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Popup_Warn *p;
    int pxw, pyh;
    int p_xw, p_yh;
 
    pxw = *px + *pw;
    pyh = *py + *ph;
-   for (l = _popups_warn; l; l = evas_list_next(l))
+   for (l = _popups_warn; l; l = eina_list_next(l))
      {
-        p = evas_list_data(l);
+        p = eina_list_data_get(l);
         p_xw = p->x + p->w;
         p_yh = p->y + p->h;
         if (((p->x >= *px) && (p->x <= pxw) &&

@@ -58,7 +58,7 @@ _config_iiirk_module(Config_Item *ci)
 			     D_("Iiirk Configuration"),
 			     "E", "_e_mod_iiirk_config_dialog",
 			     buf, 0, v, ci);
-   iiirk_config->config_dialog = evas_list_append(iiirk_config->config_dialog, cfd);
+   iiirk_config->config_dialog = eina_list_append(iiirk_config->config_dialog, cfd);
 }
 
 static void 
@@ -92,7 +92,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (cfdata->dir) free(cfdata->dir);
    if (cfdata->gui.dialog_delete) e_object_del(E_OBJECT(cfdata->gui.dialog_delete));
-   iiirk_config->config_dialog = evas_list_remove(iiirk_config->config_dialog, cfd);
+   iiirk_config->config_dialog = eina_list_remove(iiirk_config->config_dialog, cfd);
    E_FREE(cfdata);
 }
 
@@ -102,7 +102,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    E_Radio_Group *rg;
    Evas_Object *o, *of, *ol, *ob, *ot;
 
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    int zone_count;
 
    o = e_widget_list_add(evas, 0, 0);
@@ -160,7 +160,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	     E_Container *con;
 
 	     con = l2->data;
-	     zone_count += evas_list_count(con->zones);
+	     zone_count += eina_list_count(con->zones);
 	  }
      }
 

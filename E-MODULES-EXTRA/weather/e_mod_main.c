@@ -116,7 +116,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   evas_object_event_callback_add (w->weather_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _weather_cb_mouse_down, inst);
   weather_config->instances =
-    evas_list_append (weather_config->instances, inst);
+    eina_list_append (weather_config->instances, inst);
 
   if (inst->ci->display == 0)
     edje_object_signal_emit (inst->weather->weather_obj, "set_style",
@@ -154,7 +154,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 
   inst->server = NULL;
   weather_config->instances =
-    evas_list_remove (weather_config->instances, inst);
+    eina_list_remove (weather_config->instances, inst);
 
   evas_object_event_callback_del (w->weather_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _weather_cb_mouse_down);
@@ -261,7 +261,7 @@ _weather_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _weather_config_item_get (const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -273,7 +273,7 @@ _weather_config_item_get (const char *id)
 	if (weather_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last (weather_config->items)->data;
+	     ci = eina_list_last (weather_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -300,7 +300,7 @@ _weather_config_item_get (const char *id)
    ci->host = evas_stringshare_add ("www.rssweather.com");
    ci->code = evas_stringshare_add ("KJFK");
 
-   weather_config->items = evas_list_append (weather_config->items, ci);
+   weather_config->items = eina_list_append (weather_config->items, ci);
    return ci;
 }
 
@@ -353,7 +353,7 @@ e_modapi_init (E_Module * m)
       ci->code = evas_stringshare_add ("KJFK");
       ci->id = evas_stringshare_add ("0");
 
-      weather_config->items = evas_list_append (weather_config->items, ci);
+      weather_config->items = eina_list_append (weather_config->items, ci);
     }
   _weather_get_proxy ();
 
@@ -389,7 +389,7 @@ e_modapi_shutdown (E_Module * m)
       if (ci->code)
 	evas_stringshare_del (ci->code);
       weather_config->items =
-	evas_list_remove_list (weather_config->items, weather_config->items);
+	eina_list_remove_list (weather_config->items, weather_config->items);
        E_FREE(ci);
     }
 
@@ -685,7 +685,7 @@ _weather_display_set (Instance * inst, int ok)
 void
 _weather_config_updated (Config_Item *ci)
 {
-  Evas_List *l;
+  Eina_List *l;
   char buf[4096];
 
   if (!weather_config) return;

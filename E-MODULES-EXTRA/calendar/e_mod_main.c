@@ -91,7 +91,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = gcc;
    inst->calendar = calendar;
 
-   calendar_conf->instances = evas_list_append(calendar_conf->instances, inst);
+   calendar_conf->instances = eina_list_append(calendar_conf->instances, inst);
    evas_object_event_callback_add(calendar->o_icon, EVAS_CALLBACK_MOUSE_IN,
 				   _cb_mouse_in, inst);
    evas_object_event_callback_add(calendar->o_icon, EVAS_CALLBACK_MOUSE_OUT,
@@ -115,7 +115,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->popup) _calendar_popup_destroy(inst);
    if (calendar->o_icon) evas_object_del(calendar->o_icon);
    
-   calendar_conf->instances = evas_list_remove(calendar_conf->instances, inst);
+   calendar_conf->instances = eina_list_remove(calendar_conf->instances, inst);
    E_FREE(calendar);
    E_FREE(inst);
 }
@@ -153,7 +153,7 @@ static const char *
 _gc_id_new(void)
 {
    Config_Item *ci;
-   Evas_List   *l;
+   Eina_List   *l;
    const char *id;
    char buf[128];
    int num = 0;
@@ -162,7 +162,7 @@ _gc_id_new(void)
    if (calendar_conf->items)
      {
 	const char *p;
-	ci = evas_list_last(calendar_conf->items)->data;
+	ci = eina_list_last(calendar_conf->items)->data;
 	p = strrchr(ci->id, '.');
 	if (p) num = atoi(p + 1) + 1;
      }
@@ -174,7 +174,7 @@ _gc_id_new(void)
 static Config_Item *
 _config_item_get(const char *id) 
 {
-   Evas_List   *l;
+   Eina_List   *l;
    Config_Item *ci;
    char buf[128];
 
@@ -186,7 +186,7 @@ _config_item_get(const char *id)
 	if (calendar_conf->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(calendar_conf->items)->data;
+	     ci = eina_list_last(calendar_conf->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -208,14 +208,14 @@ _config_item_get(const char *id)
    ci->id = evas_stringshare_add(id);
    ci->firstweekday = 0;
 
-   calendar_conf->items = evas_list_append(calendar_conf->items, ci);
+   calendar_conf->items = eina_list_append(calendar_conf->items, ci);
    return ci;
 }
 
 static int
 _update_date(void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    time_t current_time;
    struct tm *local_time;
    static int prev_day=0;
@@ -374,7 +374,7 @@ _calendar_popup_destroy(Instance *inst)
 static void
 _cb_action(E_Object *obj, const char *params)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = calendar_conf->instances; l; l = l->next) 
      {
@@ -541,7 +541,7 @@ e_modapi_init(E_Module *m)
 	ci->id = evas_stringshare_add("0");
 	ci->firstweekday = 0;
 	
-	calendar_conf->items = evas_list_append(calendar_conf->items, ci);
+	calendar_conf->items = eina_list_append(calendar_conf->items, ci);
      }
    
    calendar_conf->module = m;
@@ -579,7 +579,7 @@ e_modapi_shutdown(E_Module *m)
 	ci = calendar_conf->items->data;
 	if (ci->id)
 	  evas_stringshare_del(ci->id);
-	calendar_conf->items = evas_list_remove_list(calendar_conf->items, calendar_conf->items);
+	calendar_conf->items = eina_list_remove_list(calendar_conf->items, calendar_conf->items);
 	E_FREE(ci);
      }
 

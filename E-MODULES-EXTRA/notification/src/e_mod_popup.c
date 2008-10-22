@@ -56,7 +56,7 @@ notification_popup_notify(E_Notification *n,
   if (!popup)
     {
       popup = _notification_popup_new(n);
-      notification_cfg->popups = evas_list_append(notification_cfg->popups, popup);
+      notification_cfg->popups = eina_list_append(notification_cfg->popups, popup);
       edje_object_signal_emit(popup->theme, "notification,new", "notification");
     }
 
@@ -74,14 +74,14 @@ notification_popup_notify(E_Notification *n,
 void
 notification_popup_shutdown(void)
 {
-  Evas_List *l, *next;
+  Eina_List *l, *next;
   Popup_Data *popup;
 
   for (l = notification_cfg->popups; l && (popup = l->data); l = next)
     {
       next = l->next;
       _notification_popdown(popup, E_NOTIFICATION_CLOSED_REQUESTED);
-      notification_cfg->popups = evas_list_remove_list(notification_cfg->popups, l);
+      notification_cfg->popups = eina_list_remove_list(notification_cfg->popups, l);
     }
 }
 
@@ -147,7 +147,7 @@ _notification_popup_new(E_Notification *n)
         }
     }
   _notification_popup_refresh(popup);
-  _notification_popup_place(popup, evas_list_count(notification_cfg->popups));
+  _notification_popup_place(popup, eina_list_count(notification_cfg->popups));
   e_popup_show(popup->win);
 
   return popup;
@@ -301,7 +301,7 @@ _notification_popup_refresh(Popup_Data *popup)
 static Popup_Data *
 _notification_popup_find(unsigned int id)
 {
-  Evas_List *l;
+  Eina_List *l;
   Popup_Data *popup;
 
   for (l = notification_cfg->popups; l && (popup = l->data); l = l->next)
@@ -314,7 +314,7 @@ static void
 _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
 {
   Popup_Data *popup;
-  Evas_List *l, *next;
+  Eina_List *l, *next;
   int i;
 
   for (l = notification_cfg->popups, i = 0; l && (popup = l->data); l = next)
@@ -323,7 +323,7 @@ _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
       if (e_notification_id_get(popup->notif) == id)
         {
           _notification_popdown(popup, reason);
-          notification_cfg->popups = evas_list_remove_list(notification_cfg->popups, l);
+          notification_cfg->popups = eina_list_remove_list(notification_cfg->popups, l);
         }
       else
         {
@@ -422,7 +422,7 @@ _notification_theme_cb_find(void *data,
                             const char *source __UNUSED__)
 {
   Popup_Data *popup = data;
-  Evas_List *l;
+  Eina_List *l;
 
   if (!popup->app_name) return;
 

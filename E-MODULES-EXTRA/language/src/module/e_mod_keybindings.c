@@ -102,7 +102,7 @@ lang_unregister_module_keybindings()
 void
 _lang_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
 {
-   Evas_List   *l;
+   Eina_List   *l;
    int done = 0, found = 0;
    E_Config_Binding_Key *eb;
 
@@ -138,7 +138,7 @@ _lang_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
 		  if (eb->params) evas_stringshare_del(eb->params);
 		  E_FREE(eb);
 
-		  e_config->key_bindings = evas_list_remove_list(e_config->key_bindings, l);
+		  e_config->key_bindings = eina_list_remove_list(e_config->key_bindings, l);
 		  found = 1;
 		  done = 0;
 		  break;
@@ -162,7 +162,7 @@ static void
 _lang_register_module_keybinding(E_Config_Binding_Key *key, const char *action)
 {
    int found;
-   Evas_List   *l;
+   Eina_List   *l;
    E_Config_Binding_Key	*eb;
 
    if (!key || !key->key || !key->key[0] || !action) return;
@@ -181,7 +181,7 @@ _lang_register_module_keybinding(E_Config_Binding_Key *key, const char *action)
 
    if (!found)
      {
-	e_config->key_bindings = evas_list_append(e_config->key_bindings, eb); 
+	e_config->key_bindings = eina_list_append(e_config->key_bindings, eb); 
 	
 	e_bindings_key_add(key->context, key->key, key->modifiers, key->any_mod,
 			   action, key->params);

@@ -78,7 +78,7 @@ static Rain *
 _rain_init(E_Module *m)
 {
    Rain *rain;
-   Evas_List *managers, *l, *l2;
+   Eina_List *managers, *l, *l2;
 
    rain = calloc(1, sizeof(Rain));
    if (!rain)
@@ -117,7 +117,7 @@ _rain_init(E_Module *m)
              E_Container *con;
 
              con = l2->data;
-             rain->cons = evas_list_append(rain->cons, con);
+             rain->cons = eina_list_append(rain->cons, con);
              rain->canvas = con->bg_evas;
           }
      }
@@ -144,7 +144,7 @@ _rain_clouds_free(Rain *rain)
 
         cloud = rain->clouds->data;
         evas_object_del(cloud);
-        rain->clouds = evas_list_remove_list(rain->clouds, rain->clouds);
+        rain->clouds = eina_list_remove_list(rain->clouds, rain->clouds);
      }
 }
 
@@ -157,7 +157,7 @@ _rain_drops_free(Rain *rain)
 
         drop = rain->drops->data;
         evas_object_del(drop->drop);
-        rain->drops = evas_list_remove_list(rain->drops, rain->drops);
+        rain->drops = eina_list_remove_list(rain->drops, rain->drops);
         free(drop);
 	drop = NULL;
      }
@@ -173,7 +173,7 @@ _rain_shutdown(Rain *rain)
         E_Container *con;
 
         con = rain->cons->data;
-        rain->cons = evas_list_remove_list(rain->cons, rain->cons);
+        rain->cons = eina_list_remove_list(rain->cons, rain->cons);
      }
 
    _rain_clouds_free(rain);
@@ -228,7 +228,7 @@ _rain_clouds_load(Rain *rain)
         evas_object_move(o, tx, ty);
         evas_object_pass_events_set(o, 1);
         evas_object_show(o);
-        rain->clouds = evas_list_append(rain->clouds, o);
+        rain->clouds = eina_list_append(rain->clouds, o);
      }
 }
 
@@ -282,7 +282,7 @@ _rain_drops_load(char type, Rain *rain)
              drop->speed = 3;
              break;
           }
-        rain->drops = evas_list_append(rain->drops, drop);
+        rain->drops = eina_list_append(rain->drops, drop);
      }
 }
 
@@ -290,7 +290,7 @@ static int
 _rain_cb_animator(void *data)
 {
    Rain *rain;
-   Evas_List *next;
+   Eina_List *next;
    double d;
 
    rain = data;
@@ -308,7 +308,7 @@ _rain_cb_animator(void *data)
            drop->start_time = ecore_time_get() + (double)(random() % 600) / (double)600;
         evas_object_move(drop->drop, x, y);
 
-        next = evas_list_next(next);
+        next = eina_list_next(next);
      }
    return 1;
 }

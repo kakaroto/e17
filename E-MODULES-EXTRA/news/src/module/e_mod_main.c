@@ -123,7 +123,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    ni = news_item_new(gcc, o, id);
    gcc->data = ni;
 
-   news->items = evas_list_append(news->items, ni);
+   news->items = eina_list_append(news->items, ni);
 
    return ni->gcc;
 }
@@ -136,7 +136,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    ni = gcc->data;
 
    DMAIN(("GCC shutdown"));
-   news->items = evas_list_remove(news->items, ni);
+   news->items = eina_list_remove(news->items, ni);
    news_item_free(ni);
 }
 
@@ -159,7 +159,7 @@ _gc_orient(E_Gadcon_Client *gcc)
         nb_feeds = 1;
         break;
      case NEWS_ITEM_VIEW_MODE_FEED:
-        nb_feeds = evas_list_count(ni->config->feed_refs);
+        nb_feeds = eina_list_count(ni->config->feed_refs);
         if (!nb_feeds) nb_feeds = 1;
         break;        
      case NEWS_ITEM_VIEW_MODE_FEED_UNREAD:

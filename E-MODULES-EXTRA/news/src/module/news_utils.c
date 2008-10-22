@@ -80,17 +80,17 @@ news_util_browser_open(const char *url)
    return 1;
 }
 
-Evas_List *
+Eina_List *
 news_util_lang_detect(void)
 {
-   Evas_List *list = NULL;
+   Eina_List *list = NULL;
    News_Feed_Lang *lang;
    const char *key, *name;
 
    lang = E_NEW(News_Feed_Lang, 1);
    lang->key = evas_stringshare_add("en");
    lang->name = evas_stringshare_add("English");
-   list = evas_list_append(list, lang);
+   list = eina_list_append(list, lang);
 
    //FIXME is that get from env correct ?
    key = getenv("LC_MESSAGES");
@@ -103,7 +103,7 @@ news_util_lang_detect(void)
         lang = E_NEW(News_Feed_Lang, 1);
         lang->key = evas_stringshare_add(key);
         lang->name = evas_stringshare_add(name);
-        list = evas_list_append(list, lang);
+        list = eina_list_append(list, lang);
      }
 
    return list;

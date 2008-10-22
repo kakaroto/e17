@@ -104,7 +104,7 @@ void
 news_config_dialog_feeds_refresh_feeds(void)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l, *lcat;
+   Eina_List *l, *lcat;
    Evas_Object *ilist;
    int pos, pos_to_select;
 
@@ -119,12 +119,12 @@ news_config_dialog_feeds_refresh_feeds(void)
 
    pos = -1;
    pos_to_select = -1;
-   for (lcat=news->config->feed.categories; lcat; lcat=evas_list_next(lcat))
+   for (lcat=news->config->feed.categories; lcat; lcat=eina_list_next(lcat))
      {
         News_Feed_Category *cat;
         Evas_Object *iccat = NULL;
 
-        cat = evas_list_data(lcat);
+        cat = eina_list_data_get(lcat);
 
         if (!cat->feeds_visible)
           continue;
@@ -138,13 +138,13 @@ news_config_dialog_feeds_refresh_feeds(void)
         e_widget_ilist_header_append(ilist, iccat, cat->name);
 	pos++;
 
-        for (l=cat->feeds_visible; l; l=evas_list_next(l))
+        for (l=cat->feeds_visible; l; l=eina_list_next(l))
           {
              Evas_Object *ic = NULL;
              News_Feed *f;
              char buf[1024];
 	   
-             f = evas_list_data(l);
+             f = eina_list_data_get(l);
 	
              if (f->icon && f->icon[0])
                {
@@ -186,7 +186,7 @@ void
 news_config_dialog_feeds_refresh_categories(void)
 {
    E_Config_Dialog_Data *cfdata;
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *ilist;
    int pos, pos_to_select;
 
@@ -201,13 +201,13 @@ news_config_dialog_feeds_refresh_categories(void)
 
    pos = -1;
    pos_to_select = -1;
-   for (l=news->config->feed.categories; l; l=evas_list_next(l))
+   for (l=news->config->feed.categories; l; l=eina_list_next(l))
      {
         Evas_Object *ic = NULL;
         News_Feed_Category *fc;
         char buf[1024];
         
-        fc = evas_list_data(l);
+        fc = eina_list_data_get(l);
 
         if (fc->icon && fc->icon[0])
           {
@@ -453,7 +453,7 @@ _cb_feed_up(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    News_Feed_Category *cat;
    News_Feed *f, *f_prev;
-   Evas_List *l, *l_prev;
+   Eina_List *l, *l_prev;
 
    if (news->config->feed.sort_name) return;
 
@@ -463,13 +463,13 @@ _cb_feed_up(void *data, void *data2)
    if (!f) return;
    cat = f->category;
 
-   l = evas_list_find_list(cat->feeds_visible, f);
-   l_prev = evas_list_prev(l);
-   f_prev = evas_list_data(l_prev);
+   l = eina_list_data_find_list(cat->feeds_visible, f);
+   l_prev = eina_list_prev(l);
+   f_prev = eina_list_data_get(l_prev);
    if (!l_prev) return;
   
-   cat->feeds = evas_list_remove(cat->feeds, f);
-   cat->feeds = evas_list_prepend_relative(cat->feeds, f, f_prev);
+   cat->feeds = eina_list_remove(cat->feeds, f);
+   cat->feeds = eina_list_prepend_relative(cat->feeds, f, f_prev);
 
    news_feed_lists_refresh(0);
 }
@@ -480,7 +480,7 @@ _cb_feed_down(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    News_Feed_Category *cat;
    News_Feed *f, *f_next;
-   Evas_List *l, *l_next;
+   Eina_List *l, *l_next;
 
    if (news->config->feed.sort_name) return;
 
@@ -490,13 +490,13 @@ _cb_feed_down(void *data, void *data2)
    if (!f) return;
    cat = f->category;
 
-   l = evas_list_find_list(cat->feeds, f);
-   l_next = evas_list_next(l);
-   f_next = evas_list_data(l_next);
+   l = eina_list_data_find_list(cat->feeds, f);
+   l_next = eina_list_next(l);
+   f_next = eina_list_data_get(l_next);
    if (!l_next) return;
   
-   cat->feeds = evas_list_remove(cat->feeds, f);
-   cat->feeds = evas_list_append_relative(cat->feeds, f, f_next);
+   cat->feeds = eina_list_remove(cat->feeds, f);
+   cat->feeds = eina_list_append_relative(cat->feeds, f, f_next);
 
    news_feed_lists_refresh(0);
 }
@@ -545,7 +545,7 @@ _cb_feed_del(void *data, void *data2)
      nv = f->item->viewer;
 
    cat = f->category;
-   cat->feeds = evas_list_remove(cat->feeds, f);
+   cat->feeds = eina_list_remove(cat->feeds, f);
    news_feed_free(f);
    cfdata->selected_feed = NULL;
 
@@ -579,7 +579,7 @@ _cb_category_up(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata;
    News_Feed_Category *cat;
-   Evas_List *l, *l_prev;
+   Eina_List *l, *l_prev;
 
    if (news->config->feed.sort_name) return;
 
@@ -587,14 +587,14 @@ _cb_category_up(void *data, void *data2)
 
    cat = cfdata->selected_category;
    if (!cat) return;
-   l = evas_list_find_list(news->config->feed.categories, cat);
-   l_prev = evas_list_prev(l);
+   l = eina_list_data_find_list(news->config->feed.categories, cat);
+   l_prev = eina_list_prev(l);
    if (!l_prev) return;
   
    news->config->feed.categories =
-      evas_list_remove_list(news->config->feed.categories, l);
+      eina_list_remove_list(news->config->feed.categories, l);
    news->config->feed.categories =
-      evas_list_prepend_relative_list(news->config->feed.categories, cat, l_prev);
+      eina_list_prepend_relative_list(news->config->feed.categories, cat, l_prev);
 
    news_feed_lists_refresh(0);
 }
@@ -604,7 +604,7 @@ _cb_category_down(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata;
    News_Feed_Category *cat;
-   Evas_List *l, *l_next;
+   Eina_List *l, *l_next;
 
    if (news->config->feed.sort_name) return;
 
@@ -612,14 +612,14 @@ _cb_category_down(void *data, void *data2)
 
    cat = cfdata->selected_category;
    if (!cat) return;
-   l = evas_list_find_list(news->config->feed.categories, cat);
-   l_next = evas_list_next(l);
+   l = eina_list_data_find_list(news->config->feed.categories, cat);
+   l_next = eina_list_next(l);
    if (!l_next) return;
   
    news->config->feed.categories =
-      evas_list_remove_list(news->config->feed.categories, l);
+      eina_list_remove_list(news->config->feed.categories, l);
    news->config->feed.categories =
-      evas_list_append_relative_list(news->config->feed.categories, cat, l_next);
+      eina_list_append_relative_list(news->config->feed.categories, cat, l_next);
 
    news_feed_lists_refresh(0);
 }
@@ -681,7 +681,7 @@ _cb_category_del(void *data, void *data2)
    cfdata = data;
    c = cfdata->selected_category;
    if (!c) return;
-   if (c->feeds && evas_list_count(c->feeds))
+   if (c->feeds && eina_list_count(c->feeds))
      {
         news_util_message_error_show(D_("There are <hilight>feeds</hilight> in this category.<br>"
                                         "You have to <hilight>remove them first</hilight>"));
@@ -689,7 +689,7 @@ _cb_category_del(void *data, void *data2)
      }
 
    news_feed_category_free(c);
-   news->config->feed.categories = evas_list_remove(news->config->feed.categories, c);
+   news->config->feed.categories = eina_list_remove(news->config->feed.categories, c);
    cfdata->selected_category = NULL;
 
    pos = e_widget_ilist_selected_get(cfdata->ilist_categories);

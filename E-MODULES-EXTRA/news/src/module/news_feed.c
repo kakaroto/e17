@@ -5,14 +5,14 @@
     snprintf(buf, sizeof(buf), "%s/%s",                             \
              e_module_dir_get(news->module), icon);                 \
     cat = news_feed_category_new(id, buf);                          \
-    c->feed.categories = evas_list_append(c->feed.categories, cat); \
+    c->feed.categories = eina_list_append(c->feed.categories, cat); \
  }
 #define CFG_FEED_ADD(id, icon)                       \
  {                                                   \
     snprintf(buf, sizeof(buf), "%s/%s",              \
              e_module_dir_get(news->module), icon);  \
     feed = news_feed_new(id, buf, 1, 0, cat);        \
-    cat->feeds = evas_list_append(cat->feeds, feed); \
+    cat->feeds = eina_list_append(cat->feeds, feed); \
  }
 
 static int        _feed_activate(News_Feed *f);
@@ -64,7 +64,7 @@ int
 news_feed_init(void)
 {
    News_Feed_Lang *lang;
-   Evas_List *l;
+   Eina_List *l;
    int i;
 
    /* create dynamic languages list from static one
@@ -76,7 +76,7 @@ news_feed_init(void)
         lang = E_NEW(News_Feed_Lang, 1);
         lang->key = evas_stringshare_add(_feed_langs[i].key);
         lang->name = evas_stringshare_add(_feed_langs[i].name);
-        l = evas_list_append(l, lang);
+        l = eina_list_append(l, lang);
         i++;
      }
    news->langs = l;
@@ -92,7 +92,7 @@ news_feed_init(void)
                        (char *)_feed->icon, _feed->icon_ovrw,
                        _feed->important,
                        _cat, 1))
-     _cat->feeds = evas_list_remove_list(_cat->feeds, _l_cats);
+     _cat->feeds = eina_list_remove_list(_cat->feeds, _l_cats);
    NEWS_FEED_FOREACH_END();
 
    /* create 'feeds_visible' lists in categories */
@@ -128,10 +128,10 @@ news_feed_all_delete(void)
         while (cat->feeds)
           {
              f = cat->feeds->data;
-             cat->feeds = evas_list_remove_list(cat->feeds, cat->feeds);
+             cat->feeds = eina_list_remove_list(cat->feeds, cat->feeds);
              news_feed_free(f);
           }
-        c->feed.categories = evas_list_remove_list(c->feed.categories,
+        c->feed.categories = eina_list_remove_list(c->feed.categories,
                                                    c->feed.categories);
         news_feed_category_free(cat);
      }
@@ -184,7 +184,7 @@ news_feed_all_restore(void)
 void
 news_feed_lists_refresh(int sort)
 {
-   Evas_List *l, *l2, *list;
+   Eina_List *l, *l2, *list;
    News_Feed_Category *cat;
    News_Feed *f;
    int list_free;
@@ -194,21 +194,21 @@ news_feed_lists_refresh(int sort)
    if (sort && news->config->feed.sort_name)
      {
         list = news->config->feed.categories;
-        list = evas_list_sort(list, evas_list_count(list), _cb_sort_cats);
+        list = eina_list_sort(list, eina_list_count(list), _cb_sort_cats);
         news->config->feed.categories = list;
 
-        for (l=news->config->feed.categories; l; l=evas_list_next(l))
+        for (l=news->config->feed.categories; l; l=eina_list_next(l))
           {
              cat = l->data;
              list = cat->feeds;
-             list = evas_list_sort(list, evas_list_count(list), _cb_sort_feeds);
+             list = eina_list_sort(list, eina_list_count(list), _cb_sort_feeds);
              cat->feeds = list;
           }
      }
 
    /* 2. create "feeds_visible" in categories */
 
-   for (l=news->config->feed.categories; l; l=evas_list_next(l))
+   for (l=news->config->feed.categories; l; l=eina_list_next(l))
      {
         cat = l->data;
         list = NULL;
@@ -219,17 +219,17 @@ news_feed_lists_refresh(int sort)
           }
         else
           {
-             for (l2=cat->feeds; l2; l2=evas_list_next(l2))
+             for (l2=cat->feeds; l2; l2=eina_list_next(l2))
                {
                   f = l2->data;
                   if (news_feed_lang_selected_is(f->language))
-                    list = evas_list_append(list, f);
+                    list = eina_list_append(list, f);
                }
              list_free = 1;
           }
 
         if (cat->feeds_visible_free && cat->feeds_visible)
-          evas_list_free(cat->feeds_visible);
+          eina_list_free(cat->feeds_visible);
 
         cat->feeds_visible = list;
         cat->feeds_visible_free = list_free;
@@ -469,16 +469,16 @@ news_feed_attach(News_Feed *f, News_Feed_Ref *ref, News_Item *ni)
      {
         News_Feed_Category *cat;
         News_Feed *f_look;
-        Evas_List *l, *l2;
+        Eina_List *l, *l2;
       
-        for (l=news->config->feed.categories; l; l=evas_list_next(l))
+        for (l=news->config->feed.categories; l; l=eina_list_next(l))
           {
-             cat = evas_list_data(l);
+             cat = eina_list_data_get(l);
              if (!strcmp(cat->name, ref->category))
                {
-                  for (l2=cat->feeds; l2; l2=evas_list_next(l2))
+                  for (l2=cat->feeds; l2; l2=eina_list_next(l2))
                     {
-                       f_look = evas_list_data(l2);
+                       f_look = eina_list_data_get(l2);
                        if (!strcmp(f_look->name, ref->name))
                          {
                             f = f_look;
@@ -497,7 +497,7 @@ news_feed_attach(News_Feed *f, News_Feed_Ref *ref, News_Item *ni)
         ref->category = evas_stringshare_add(f->category->name);
         ref->name = evas_stringshare_add(f->name);
         ref->feed = f;
-        ni->config->feed_refs = evas_list_append(ni->config->feed_refs, ref);
+        ni->config->feed_refs = eina_list_append(ni->config->feed_refs, ref);
      }
    else
      {
@@ -542,7 +542,7 @@ news_feed_detach(News_Feed *f, int really)
              if (really)
                {
                   DITEM(("feed detach : delete feed ref (%s)", ref->feed->name));
-                  ni->config->feed_refs = evas_list_remove(ni->config->feed_refs, ref);
+                  ni->config->feed_refs = eina_list_remove(ni->config->feed_refs, ref);
                   evas_stringshare_del(ref->category);
                   evas_stringshare_del(ref->name);
                   free(ref);
@@ -738,13 +738,13 @@ news_feed_ref_find(News_Feed *f, News_Item *ni)
 void
 news_feed_read_set(News_Feed *feed)
 {
-   Evas_List *l;
+   Eina_List *l;
    News_Feed_Article *art;
 
    if (!feed->doc) return;
    if (!feed->doc->unread_count) return;
 
-   for (l=feed->doc->articles; l; l=evas_list_next(l))
+   for (l=feed->doc->articles; l; l=eina_list_next(l))
      {
         art = l->data;
         if (art->unread)
@@ -795,16 +795,16 @@ news_feed_unread_count_change(News_Feed *feed, int nb)
 void
 news_feed_list_ui_refresh(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (news->config_dialog_feeds)
      news_config_dialog_feeds_refresh_feeds();
 
-   for (l=news->items; l; l=evas_list_next(l))
+   for (l=news->items; l; l=eina_list_next(l))
      {
         News_Item *ni;
 
-        ni = evas_list_data(l);
+        ni = eina_list_data_get(l);
         if (ni->config_dialog_content)
 	  {
              news_config_dialog_item_content_refresh_feeds(ni);
@@ -833,7 +833,7 @@ news_feed_article_del(News_Feed_Article *art)
    if (doc->feed->item && art->unread)
      news_feed_unread_count_change(doc->feed, -1);
 
-   doc->articles = evas_list_remove(doc->articles, art);
+   doc->articles = eina_list_remove(doc->articles, art);
 
    free(art);
 }
@@ -908,12 +908,12 @@ news_feed_category_edit(News_Feed_Category *cat, char *name, char *icon)
 void
 news_feed_category_free(News_Feed_Category *cat)
 {
-   if (cat->feeds && evas_list_count(cat->feeds)) return;
+   if (cat->feeds && eina_list_count(cat->feeds)) return;
    
    if (cat->name) evas_stringshare_del(cat->name);
    if (cat->icon) evas_stringshare_del(cat->icon);
    if (cat->feeds_visible_free && cat->feeds_visible)
-     evas_list_free(cat->feeds_visible);
+     eina_list_free(cat->feeds_visible);
    if (cat->config_dialog) news_config_dialog_category_hide(cat);
    
    free(cat);
@@ -948,15 +948,15 @@ news_feed_lang_list_refresh(void)
 }
 
 void
-news_feed_lang_list_free(Evas_List *list)
+news_feed_lang_list_free(Eina_List *list)
 {
    News_Feed_Lang *lang;
 
-   while ((lang = evas_list_data(list)))
+   while ((lang = eina_list_data_get(list)))
      {
         if (lang->key) evas_stringshare_del(lang->key);
         if (lang->name) evas_stringshare_del(lang->name);
-        list = evas_list_remove_list(list, list);
+        list = eina_list_remove_list(list, list);
         free(lang);
      }
 }
@@ -980,9 +980,9 @@ int
 news_feed_lang_selected_is(const char *key)
 {
    News_Feed_Lang *lang;
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=news->config->feed.langs; l; l=evas_list_next(l))
+   for (l=news->config->feed.langs; l; l=eina_list_next(l))
      {
         lang = l->data;
         if (!strncmp(lang->key, key, 2))
@@ -1065,9 +1065,9 @@ static News_Feed *
 _feed_find(News_Feed_Category *cat, char *name)
 {
    News_Feed *f;
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=cat->feeds; l; l=evas_list_next(l))
+   for (l=cat->feeds; l; l=eina_list_next(l))
      {
         f = l->data;
         if (!strcmp(f->name, name))
@@ -1080,13 +1080,13 @@ _feed_find(News_Feed_Category *cat, char *name)
 static News_Feed_Category *
 _feed_category_find(char *name)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l=news->config->feed.categories; l; l=evas_list_next(l))
+   for (l=news->config->feed.categories; l; l=eina_list_next(l))
      {
         News_Feed_Category *cat;
 
-        cat = evas_list_data(l);
+        cat = eina_list_data_get(l);
         if (!strcmp(cat->name, name))
           return cat;
      }

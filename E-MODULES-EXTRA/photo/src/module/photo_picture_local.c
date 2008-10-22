@@ -23,7 +23,7 @@ typedef struct _Picture_Local_List Picture_Local_List;
 
 struct _Picture_Local_List
 {
-   Evas_List *pictures;
+   Eina_List *pictures;
   int pictures_waiting_delete;
 
    /* thumb */
@@ -37,7 +37,7 @@ struct _Picture_Local_List
    /* ecore idler to load in background */
    struct
    {
-      Evas_List *queue;
+      Eina_List *queue;
 
       Ecore_Idler *idler;
       Ecore_Timer *timer;
@@ -45,7 +45,7 @@ struct _Picture_Local_List
 
       Picture_Local_Dir *current_dir;
 
-      Evas_List  *dirs;
+      Eina_List  *dirs;
       DIR *odir;
    } loader;
 
@@ -99,13 +99,13 @@ void photo_picture_local_shutdown(void)
    
    _pictures_old_del(1, 1);
 
-   evas_list_free(pictures_local->pictures);
+   eina_list_free(pictures_local->pictures);
    pictures_local = NULL;
 }
 
 void photo_picture_local_load_start(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    photo_picture_local_load_stop();
 
@@ -113,10 +113,10 @@ void photo_picture_local_load_start(void)
    _pictures_old_del(1, 0);
 
    /* set all directories to not loaded */
-   for (l=photo->config->local.dirs; l; l=evas_list_next(l))
+   for (l=photo->config->local.dirs; l; l=eina_list_next(l))
      {
         Picture_Local_Dir *d;
-        d = evas_list_data(l);
+        d = eina_list_data_get(l);
         d->state = PICTURE_LOCAL_DIR_NOT_LOADED;
      }
 
@@ -159,37 +159,37 @@ int photo_picture_local_load_state_get(void)
 Picture *photo_picture_local_get(int position)
 {
    Picture *picture;
-   Evas_List *l, *was_first;
+   Eina_List *l, *was_first;
    Picture_Local_List *pl;
 
    pl = pictures_local;
 
    DPICL(("Trying to get a picture (%d), position = %d",
-          evas_list_count(pl->pictures), position));
+          eina_list_count(pl->pictures), position));
 
-   if (!(evas_list_count(pl->pictures) - pl->pictures_waiting_delete))
+   if (!(eina_list_count(pl->pictures) - pl->pictures_waiting_delete))
      return NULL;
 
    if (position != PICTURE_LOCAL_GET_RANDOM)
      {
         /* get the given picture */
-        l = evas_list_nth_list(pl->pictures, position);
-        picture = evas_list_data(l);
+        l = eina_list_nth_list(pl->pictures, position);
+        picture = eina_list_data_get(l);
      }
    else
      {
         /* get a random picture */
-        l = evas_list_nth_list(pl->pictures,
-                               rand() % evas_list_count(pl->pictures));
+        l = eina_list_nth_list(pl->pictures,
+                               rand() % eina_list_count(pl->pictures));
         was_first = l;
         do
           {
              DD(("- Search -"));
-             picture = evas_list_data(l);
+             picture = eina_list_data_get(l);
              if (!picture->pi && !picture->delete_me &&
 		 (picture->thumb != PICTURE_THUMB_WAITING))
                return picture;
-             l = evas_list_next(l);
+             l = eina_list_next(l);
              if (!l) l = pl->pictures;
           } while (l != was_first);
         picture = NULL;
@@ -200,7 +200,7 @@ Picture *photo_picture_local_get(int position)
 
 int photo_picture_local_loaded_nb_get(void)
 {
-  return ((evas_list_count(pictures_local->pictures) -
+  return ((eina_list_count(pictures_local->pictures) -
 	  pictures_local->thumb.nb) -
 	  pictures_local->pictures_waiting_delete);
 }
@@ -290,10 +290,10 @@ _pictures_old_del(int force, int force_now)
    Picture *p;
    int no = 0;
    
-   while ( (p = evas_list_nth(pictures_local->pictures, no)) )
+   while ( (p = eina_list_nth(pictures_local->pictures, no)) )
      {
         if (photo_picture_free(p, force, force_now))
-          pictures_local->pictures = evas_list_remove(pictures_local->pictures, p);
+          pictures_local->pictures = eina_list_remove(pictures_local->pictures, p);
         else
 	  no++;
      }
@@ -304,7 +304,7 @@ _load_idler(void *data)
 {
    Picture_Local_List *pl;
    Picture_Local_Dir *d;
-   Evas_List *l;
+   Eina_List *l;
    char *file_tmp;
    char file[200];
    struct dirent *fs;
@@ -318,7 +318,7 @@ _load_idler(void *data)
    if (pl->thumb.nb >= 2) return 1;
 
    /* no more dirs in the current_dir */
-   if (!evas_list_count(pl->loader.dirs))
+   if (!eina_list_count(pl->loader.dirs))
      {
         /* find a dir to load in user dir list */
         if (pl->loader.current_dir)
@@ -329,15 +329,15 @@ _load_idler(void *data)
 	       photo_config_dialog_refresh_local_dirs();
           }
         DD(("oo"));
-        for (l=photo->config->local.dirs; l; l=evas_list_next(l))
+        for (l=photo->config->local.dirs; l; l=eina_list_next(l))
           {
-             d = evas_list_data(l);
+             d = eina_list_data_get(l);
              DD(("ooo"));
              if (d->state == PICTURE_LOCAL_DIR_NOT_LOADED)
                {
                   d->state = PICTURE_LOCAL_DIR_LOADING;
                   pl->loader.current_dir = d;
-                  pl->loader.dirs = evas_list_append(pl->loader.dirs,
+                  pl->loader.dirs = eina_list_append(pl->loader.dirs,
                                                      strdup(d->path));
 		  pl->loader.odir = NULL;
                   DPICL(("Going to read %s", d->path));
@@ -362,7 +362,7 @@ _load_idler(void *data)
 		 char buf[50];
 
 		 snprintf(buf, sizeof(buf), "Scan finished : %d pictures found",
-			  evas_list_count(pl->pictures) - pl->pictures_waiting_delete);
+			  eina_list_count(pl->pictures) - pl->pictures_waiting_delete);
 		 POPUP_LOADING(pl, buf, 3);
                }
              if (pl->loader.timer)
@@ -376,17 +376,17 @@ _load_idler(void *data)
 
    /* first dir list */
    if ( !pl->loader.odir )
-     pl->loader.odir = opendir((char *)evas_list_data(pl->loader.dirs));
+     pl->loader.odir = opendir((char *)eina_list_data_get(pl->loader.dirs));
 
    /* no more files in the current loader.dirs item */
    if ( !pl->loader.odir || !(fs = readdir(pl->loader.odir)) )
      {
-        DD(("removing %s", (char *)evas_list_data(pl->loader.dirs)));
+        DD(("removing %s", (char *)eina_list_data_get(pl->loader.dirs)));
         /* go to next dir */
         closedir(pl->loader.odir);
 	pl->loader.odir = NULL;
-        free(evas_list_data(pl->loader.dirs));
-        pl->loader.dirs = evas_list_remove_list(pl->loader.dirs,
+        free(eina_list_data_get(pl->loader.dirs));
+        pl->loader.dirs = eina_list_remove_list(pl->loader.dirs,
                                                 pl->loader.dirs);
         return 1;
      }
@@ -396,7 +396,7 @@ _load_idler(void *data)
      return 1;
 
    snprintf(file, sizeof(file),
-            "%s/%s", (char *)evas_list_data(pl->loader.dirs), fs->d_name);
+            "%s/%s", (char *)eina_list_data_get(pl->loader.dirs), fs->d_name);
 
    if (stat(file, &fs_stat) < 0) return 1;
 
@@ -410,13 +410,13 @@ _load_idler(void *data)
    if ( pl->loader.current_dir->recursive &&
         (S_ISDIR(fs_stat.st_mode)) )
      {
-        pl->loader.dirs = evas_list_append(pl->loader.dirs, strdup(file));
+        pl->loader.dirs = eina_list_append(pl->loader.dirs, strdup(file));
         DPICL(("added %s to loader dirs", file));
         return 1;
      }
 
    /* enqueue the file */
-   pl->loader.queue = evas_list_append(pl->loader.queue, strdup(file));
+   pl->loader.queue = eina_list_append(pl->loader.queue, strdup(file));
    
    return 1;
 }
@@ -441,7 +441,7 @@ _load_timer(void *data)
         if (picture)
           {
              pl->thumb.nb++;
-             pl->pictures = evas_list_append(pl->pictures, picture);
+             pl->pictures = eina_list_append(pl->pictures, picture);
              
              /* loader popups */
              if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
@@ -449,7 +449,7 @@ _load_timer(void *data)
                   int nb;
                   
                   /* loading popup message */        
-                  nb = evas_list_count(pl->pictures) - pl->pictures_waiting_delete;
+                  nb = eina_list_count(pl->pictures) - pl->pictures_waiting_delete;
                   if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
                     {
                        char buf[50];
@@ -464,7 +464,7 @@ _load_timer(void *data)
           }
 
         free(file);
-        pl->loader.queue = evas_list_remove_list(pl->loader.queue,
+        pl->loader.queue = eina_list_remove_list(pl->loader.queue,
                                                  pl->loader.queue);
         rounds++;
      }
@@ -510,15 +510,15 @@ _load_idler_stop(void)
 
    if (pl->loader.dirs)
      {
-	Evas_List *l;
+	Eina_List *l;
 
-        for(l=pl->loader.dirs; l; l=evas_list_next(l))
+        for(l=pl->loader.dirs; l; l=eina_list_next(l))
           {
 	     char *name;
-             name = evas_list_data(l);
+             name = eina_list_data_get(l);
              free(name);
           }
-        evas_list_free(pl->loader.dirs);
+        eina_list_free(pl->loader.dirs);
         pl->loader.dirs = NULL;
      }
 
@@ -571,7 +571,7 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
    if (!obj)
      {
         DPICL(("generated object is NULL !!"));
-	pl->pictures = evas_list_remove(pl->pictures, picture);
+	pl->pictures = eina_list_remove(pl->pictures, picture);
         photo_picture_free(picture, 1, 1);
         return;
      }
@@ -664,13 +664,13 @@ _thumb_generate_stop(void)
 
    if (pl->thumb.nb)
      {   
-        while ( (p = evas_list_nth(pictures_local->pictures, no)) )
+        while ( (p = eina_list_nth(pictures_local->pictures, no)) )
           {
              if (p->thumb == PICTURE_THUMB_WAITING)
                {
                   e_thumb_icon_end(p->picture);
                   photo_picture_free(p, 1, 1);
-                  pictures_local->pictures = evas_list_remove(pictures_local->pictures,
+                  pictures_local->pictures = eina_list_remove(pictures_local->pictures,
                                                               p);
                }
              else

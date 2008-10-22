@@ -67,7 +67,7 @@ e_modapi_shutdown(E_Module *m)
 	if (ci->id) evas_stringshare_del(ci->id);
 	if (ci->device) evas_stringshare_del(ci->device);
 	if (ci->app) evas_stringshare_del(ci->app);
-	net_cfg->items = evas_list_remove_list(net_cfg->items, net_cfg->items);
+	net_cfg->items = eina_list_remove_list(net_cfg->items, net_cfg->items);
 	E_FREE(ci);
      }
    

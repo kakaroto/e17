@@ -82,7 +82,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->slide_obj = o;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down, inst);
-   slide_config->instances = evas_list_append(slide_config->instances, inst);
+   slide_config->instances = eina_list_append(slide_config->instances, inst);
 
    if (!inst->ci->disable_timer)
      inst->check_timer =
@@ -119,7 +119,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->check_timer)
      ecore_timer_del(inst->check_timer);
 
-   slide_config->instances = evas_list_remove(slide_config->instances, inst);
+   slide_config->instances = eina_list_remove(slide_config->instances, inst);
 
    evas_object_event_callback_del(slide->slide_obj, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down);
 
@@ -231,7 +231,7 @@ _slide_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 void
 _slide_config_updated(Config_Item *ci)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!slide_config)
      return;
@@ -252,7 +252,7 @@ _slide_config_updated(Config_Item *ci)
 static Config_Item *
 _slide_config_item_get(const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[4096];
 
@@ -264,7 +264,7 @@ _slide_config_item_get(const char *id)
 	if (slide_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(slide_config->items)->data;
+	     ci = eina_list_last(slide_config->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -289,7 +289,7 @@ _slide_config_item_get(const char *id)
    snprintf(buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get());
    ci->dir = evas_stringshare_add(buf);
 
-   slide_config->items = evas_list_append(slide_config->items, ci);
+   slide_config->items = eina_list_append(slide_config->items, ci);
    return ci;
 }
 
@@ -342,7 +342,7 @@ e_modapi_init(E_Module *m)
 	ci->disable_timer = 0;
 	ci->random_order = 0;
 	ci->all_desks = 0;
-	slide_config->items = evas_list_append(slide_config->items, ci);
+	slide_config->items = eina_list_append(slide_config->items, ci);
      }
    slide_config->module = m;
    e_gadcon_provider_register(&_gc_class);
@@ -368,7 +368,7 @@ e_modapi_shutdown(E_Module *m)
 	Config_Item *ci;
 
 	ci = slide_config->items->data;
-	slide_config->items = evas_list_remove_list(slide_config->items, slide_config->items);
+	slide_config->items = eina_list_remove_list(slide_config->items, slide_config->items);
 	if (ci->id) evas_stringshare_del(ci->id);
 	if (ci->dir) evas_stringshare_del(ci->dir);
 	E_FREE(ci);

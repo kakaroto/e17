@@ -61,7 +61,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
                                   notification_box_cb_obj_moveresize, inst);
    evas_object_event_callback_add(b->o_box, EVAS_CALLBACK_RESIZE,
                                   notification_box_cb_obj_moveresize, inst);
-   notification_cfg->instances = evas_list_append(notification_cfg->instances, inst);
+   notification_cfg->instances = eina_list_append(notification_cfg->instances, inst);
    _gc_orient(gcc);
    return gcc;
 }
@@ -73,7 +73,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    inst = gcc->data;
    notification_box_hide(inst->n_box);
-   notification_cfg->instances = evas_list_remove(notification_cfg->instances, inst);
+   notification_cfg->instances = eina_list_remove(notification_cfg->instances, inst);
    free(inst);
 }
 
@@ -94,7 +94,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	notification_box_orient_set(inst->n_box, 1);
-	e_gadcon_client_aspect_set(gcc, MAX(evas_list_count(inst->n_box->icons), 1) * 16, 16);
+	e_gadcon_client_aspect_set(gcc, MAX(eina_list_count(inst->n_box->icons), 1) * 16, 16);
 	break;
       case E_GADCON_ORIENT_VERT:
       case E_GADCON_ORIENT_LEFT:
@@ -104,7 +104,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
 	notification_box_orient_set(inst->n_box, 0);
-	e_gadcon_client_aspect_set(gcc, 16, MAX(evas_list_count(inst->n_box->icons), 1) * 16);
+	e_gadcon_client_aspect_set(gcc, 16, MAX(eina_list_count(inst->n_box->icons), 1) * 16);
 	break;
       default:
 	break;
@@ -152,7 +152,7 @@ _gc_id_del(const char *id)
    if (ci)
      {
 	if (ci->id) evas_stringshare_del(ci->id);
-	notification_cfg->items = evas_list_remove(notification_cfg->items, ci);
+	notification_cfg->items = eina_list_remove(notification_cfg->items, ci);
         free(ci);
      }
 }
@@ -249,13 +249,13 @@ e_modapi_init(E_Module *m)
      {
        notification_cfg = _notification_cfg_new();
      }
-   else if (evas_list_count(notification_cfg->items) > 0)
+   else if (eina_list_count(notification_cfg->items) > 0)
      {
        Config_Item *ci;
        const char *p;
 
        /* Init uuid */
-	ci = evas_list_last(notification_cfg->items)->data;
+	ci = eina_list_last(notification_cfg->items)->data;
 	p = strrchr(ci->id, '.');
 	if (p) uuid = atoi(p + 1);
      }
@@ -278,7 +278,7 @@ e_modapi_init(E_Module *m)
    e_notification_daemon_callback_close_notification_set(d, _notification_cb_close_notification);
 
    /* set up the borders events callbacks */
-   notification_cfg->handlers = evas_list_append
+   notification_cfg->handlers = eina_list_append
      (notification_cfg->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_REMOVE, notification_box_cb_border_remove, NULL));
 
@@ -295,7 +295,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
    while (notification_cfg->handlers)
      {
        ecore_event_handler_del(notification_cfg->handlers->data);
-       notification_cfg->handlers = evas_list_remove_list(notification_cfg->handlers,
+       notification_cfg->handlers = eina_list_remove_list(notification_cfg->handlers,
                                                           notification_cfg->handlers);
      }
 
@@ -315,7 +315,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
        Config_Item *ci;
 
        ci = notification_cfg->items->data;
-       notification_cfg->items = evas_list_remove_list(notification_cfg->items,
+       notification_cfg->items = eina_list_remove_list(notification_cfg->items,
                                                        notification_cfg->items);
        if (ci->id) evas_stringshare_del(ci->id);
        free(ci);

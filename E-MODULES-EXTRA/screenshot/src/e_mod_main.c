@@ -55,7 +55,7 @@ struct _Instance
    E_Menu *menu, *menu_mode;
 };
 
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Action *act = NULL;
 E_Module *ss_mod = NULL;
@@ -213,7 +213,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
 
-   instances = evas_list_append(instances, inst);
+   instances = eina_list_append(instances, inst);
    return inst->gcc;
 }
 
@@ -223,7 +223,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst = NULL;
 
    if (!(inst = gcc->data)) return;
-   instances = evas_list_remove(instances, inst);
+   instances = eina_list_remove(instances, inst);
    if (inst->menu) 
      {
 	e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
@@ -270,7 +270,7 @@ _gc_id_new(void)
    char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
-	    evas_list_count(instances));
+	    eina_list_count(instances));
    return strdup(buf);
 }
 

@@ -31,13 +31,13 @@ static void  _vcontent_feed_infos_set(News_Viewer *nv);
 static void  _vcontent_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static Evas_Object *_article_icon_get(News_Feed_Article *art, Evas *evas);
-static Evas_List   *_sort_feedrefs_unreadfirst_list_get(News_Item *ni);
-static Evas_List   *_sort_articles_unreadfirst_list_get(News_Feed *f);
-static Evas_List   *_sort_articles_unreadfirst(Evas_List *articles);
-static Evas_List   *_sort_articles_date_list_get(News_Feed *f);
+static Eina_List   *_sort_feedrefs_unreadfirst_list_get(News_Item *ni);
+static Eina_List   *_sort_articles_unreadfirst_list_get(News_Feed *f);
+static Eina_List   *_sort_articles_unreadfirst(Eina_List *articles);
+static Eina_List   *_sort_articles_date_list_get(News_Feed *f);
 static int          _sort_articles_date_list_cb(void *d1, void *d2);
 
-static Evas_List *_viewers;
+static Eina_List *_viewers;
 
 
 /*
@@ -61,7 +61,7 @@ news_viewer_shutdown(void)
      {
         nv = _viewers->data;
         news_viewer_destroy(nv);
-        _viewers = evas_list_remove_list(_viewers, _viewers);
+        _viewers = eina_list_remove_list(_viewers, _viewers);
      }
 }
 
@@ -73,10 +73,10 @@ news_viewer_all_refresh(int force, int recreate)
 
    pos = 0;
    counter = 0;
-   count = evas_list_count(_viewers);
+   count = eina_list_count(_viewers);
    while (counter < count)
      {
-        nv = evas_list_nth(_viewers, pos);
+        nv = eina_list_nth(_viewers, pos);
         if (force)
           {
              NEWS_ITEM_FEEDS_FOREACH_BEG(nv->item);
@@ -119,7 +119,7 @@ news_viewer_create(News_Item *ni)
    e_win_raise(nv->dialog.dia->win);
 
    ni->viewer = nv;
-   _viewers = evas_list_append(_viewers, nv);
+   _viewers = eina_list_append(_viewers, nv);
 
    news_viewer_refresh(nv);
 
@@ -133,7 +133,7 @@ news_viewer_destroy(News_Viewer *nv)
    _dialog_destroy(nv);
 
    nv->item->viewer = NULL;
-   _viewers = evas_list_remove(_viewers, nv);
+   _viewers = eina_list_remove(_viewers, nv);
    free(nv);
 }
 
@@ -141,7 +141,7 @@ void
 news_viewer_refresh(News_Viewer *nv)
 {
    Evas_Object *ilist;
-   Evas_List *feed_refs;
+   Eina_List *feed_refs;
    int feed_refs_own = 0;
    int pos, toselect_pos;
 
@@ -150,7 +150,7 @@ news_viewer_refresh(News_Viewer *nv)
    ilist = nv->vfeeds.ilist;
    e_widget_ilist_freeze(ilist);
    e_widget_ilist_clear(ilist);
-   if (!evas_list_count(nv->item->config->feed_refs))
+   if (!eina_list_count(nv->item->config->feed_refs))
      {
         nv->vfeeds.selected = NULL;
         nv->varticles.selected = NULL;
@@ -221,7 +221,7 @@ news_viewer_refresh(News_Viewer *nv)
         if (nv->vfeeds.list)
           {
              DD(("LIST OWN free !!"));
-             evas_list_free(nv->vfeeds.list);
+             eina_list_free(nv->vfeeds.list);
              nv->vfeeds.list = NULL;
           }
         nv->vfeeds.list_own = 0;
@@ -268,7 +268,7 @@ news_viewer_feed_selected_infos_refresh(News_Viewer *nv)
 void
 news_viewer_article_state_refresh(News_Viewer *nv, News_Feed_Article *art)
 {
-   Evas_List *l;
+   Eina_List *l;
    News_Feed *f;
    News_Feed_Article *a;
    int pos;
@@ -277,7 +277,7 @@ news_viewer_article_state_refresh(News_Viewer *nv, News_Feed_Article *art)
    if (nv->vfeeds.selected != f) return;
 
    pos = 0;
-   for (l=nv->varticles.list; l; l=evas_list_next(l))
+   for (l=nv->varticles.list; l; l=eina_list_next(l))
      {
         a = l->data;
         if (art == a) break;
@@ -478,7 +478,7 @@ _dialog_content_destroy(News_Viewer *nv)
      }
    if (nv->vfeeds.list_own && nv->vfeeds.list)
      {
-        evas_list_free(nv->vfeeds.list);
+        eina_list_free(nv->vfeeds.list);
         nv->vfeeds.list = NULL;
      }
    if (nv->vfeeds.ilist)
@@ -510,7 +510,7 @@ _dialog_content_destroy(News_Viewer *nv)
 
    if (nv->varticles.list_own && nv->varticles.list)
      {
-        evas_list_free(nv->varticles.list);
+        eina_list_free(nv->varticles.list);
         nv->varticles.list = NULL;
         nv->varticles.list_own = 0;
      }
@@ -713,7 +713,7 @@ _varticles_refresh(News_Viewer *nv)
 {
    News_Feed *feed;
    Evas_Object *ilist;
-   Evas_List *articles, *l;
+   Eina_List *articles, *l;
    int articles_own = 0;
    int pos, toselect_pos;
 
@@ -728,11 +728,11 @@ _varticles_refresh(News_Viewer *nv)
      {
         if (news->config->viewer.varticles.sort_date)
           {
-             Evas_List *tmp;
+             Eina_List *tmp;
 
              tmp = _sort_articles_date_list_get(feed);
              articles = _sort_articles_unreadfirst(tmp);
-             evas_list_free(tmp);
+             eina_list_free(tmp);
           }
         else
           articles = _sort_articles_unreadfirst_list_get(feed);
@@ -747,9 +747,9 @@ _varticles_refresh(News_Viewer *nv)
 
    pos = 0;
    toselect_pos = -1;
-   if (evas_list_count(articles))
+   if (eina_list_count(articles))
      {
-        for (l=articles; l; l=evas_list_next(l))
+        for (l=articles; l; l=eina_list_next(l))
           {
              News_Feed_Article *art;
              char label[4096];
@@ -785,7 +785,7 @@ _varticles_refresh(News_Viewer *nv)
 
    if (nv->varticles.list_own)
      {
-        evas_list_free(nv->varticles.list);
+        eina_list_free(nv->varticles.list);
         nv->varticles.list = NULL;
         nv->varticles.list_own = 0;
      }
@@ -934,35 +934,35 @@ _article_icon_get(News_Feed_Article *art, Evas *evas)
    return ic;
 }
 
-static Evas_List *
+static Eina_List *
 _sort_feedrefs_unreadfirst_list_get(News_Item *ni)
 {
-   Evas_List *list, *reads, *l;
+   Eina_List *list, *reads, *l;
    News_Feed_Ref *ref;
 
    list = NULL;
    reads = NULL;
    NEWS_ITEM_FEEDS_FOREACH_BEG(ni);
    if (_feed->doc && _feed->doc->unread_count)
-     list = evas_list_append(list, _ref);
+     list = eina_list_append(list, _ref);
    else
-     reads = evas_list_append(reads, _ref);
+     reads = eina_list_append(reads, _ref);
    NEWS_ITEM_FEEDS_FOREACH_END();
 
-   for (l=reads; l; l=evas_list_next(l))
+   for (l=reads; l; l=eina_list_next(l))
      {
         ref = l->data;
-        list = evas_list_append(list, ref);
+        list = eina_list_append(list, ref);
      }
-   evas_list_free(reads);
+   eina_list_free(reads);
 
    return list;
 }
 
-static Evas_List *
+static Eina_List *
 _sort_articles_unreadfirst_list_get(News_Feed *f)
 {
-   Evas_List *list;
+   Eina_List *list;
 
    if (!f->doc) return NULL;
    list = _sort_articles_unreadfirst(f->doc->articles);
@@ -970,49 +970,49 @@ _sort_articles_unreadfirst_list_get(News_Feed *f)
    return list;
 }
 
-static Evas_List *
-_sort_articles_unreadfirst(Evas_List *articles)
+static Eina_List *
+_sort_articles_unreadfirst(Eina_List *articles)
 {
-   Evas_List *list, *reads, *l;
+   Eina_List *list, *reads, *l;
    News_Feed_Article *art;
 
    list = NULL;
    reads = NULL;
-   for (l=articles; l; l=evas_list_next(l))
+   for (l=articles; l; l=eina_list_next(l))
      {
         art = l->data;
         
         if (art->unread)
-          list = evas_list_append(list, art);
+          list = eina_list_append(list, art);
         else
-          reads = evas_list_append(reads, art);
+          reads = eina_list_append(reads, art);
      }
 
-   for (l=reads; l; l=evas_list_next(l))
+   for (l=reads; l; l=eina_list_next(l))
      {
         art = l->data;
-        list = evas_list_append(list, art);
+        list = eina_list_append(list, art);
      }
-   evas_list_free(reads);
+   eina_list_free(reads);
 
    return list;
 }
 
-static Evas_List *
+static Eina_List *
 _sort_articles_date_list_get(News_Feed *f)
 {
-   Evas_List *list, *l;
+   Eina_List *list, *l;
    News_Feed_Article *art;
 
    if (!f->doc) return NULL;
 
    list = NULL;
-   for (l=f->doc->articles; l; l=evas_list_next(l))
+   for (l=f->doc->articles; l; l=eina_list_next(l))
      {
         art = l->data;
-        list = evas_list_append(list, art);
+        list = eina_list_append(list, art);
      }
-   list = evas_list_sort(list, evas_list_count(list), _sort_articles_date_list_cb);
+   list = eina_list_sort(list, eina_list_count(list), _sort_articles_date_list_cb);
 
    return list;
 }

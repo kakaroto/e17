@@ -9,13 +9,13 @@ static PopClient *_mail_pop_client_get (void *data);
 static PopClient *_mail_pop_client_get_from_server (void *data);
 static void _mail_pop_client_quit (void *data);
 
-static Evas_List *pclients;
+static Eina_List *pclients;
 
 void
 _mail_pop_check_mail (void *data)
 {
   Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
-  Evas_List *l;
+  Eina_List *l;
   Instance *inst;
 
   inst = data;
@@ -67,7 +67,7 @@ _mail_pop_add_mailbox (void *data)
   pc = _mail_pop_client_get (cb);
   pc->config->num_new = 0;
   pc->config->num_total = 0;
-  pclients = evas_list_append (pclients, pc);
+  pclients = eina_list_append (pclients, pc);
 }
 
 void
@@ -88,7 +88,7 @@ _mail_pop_del_mailbox (void *data)
     ecore_event_handler_del (pc->del_handler);
   if (pc->data_handler)
     ecore_event_handler_del (pc->data_handler);
-  pclients = evas_list_remove (pclients, pc);
+  pclients = eina_list_remove (pclients, pc);
 }
 
 void
@@ -112,7 +112,7 @@ _mail_pop_shutdown ()
 	ecore_event_handler_del (pc->del_handler);
       if (pc->data_handler)
 	ecore_event_handler_del (pc->data_handler);
-      pclients = evas_list_remove_list (pclients, pclients);
+      pclients = eina_list_remove_list (pclients, pclients);
       free (pc);
       pc = NULL;
     }
@@ -220,7 +220,7 @@ static PopClient *
 _mail_pop_client_get (void *data)
 {
   PopClient *pc;
-  Evas_List *l;
+  Eina_List *l;
   Config_Box *cb;
   int found = 0;
 
@@ -228,7 +228,7 @@ _mail_pop_client_get (void *data)
   if (!cb)
     return NULL;
 
-  if ((!pclients) || (evas_list_count (pclients) <= 0))
+  if ((!pclients) || (eina_list_count (pclients) <= 0))
     {
       pc = E_NEW (PopClient, 1);
       pc->server = NULL;
@@ -289,7 +289,7 @@ static PopClient *
 _mail_pop_client_get_from_server (void *data)
 {
   Ecore_Con_Server *server = data;
-  Evas_List *l;
+  Eina_List *l;
 
   if (!pclients)
     return NULL;

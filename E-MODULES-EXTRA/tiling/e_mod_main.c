@@ -53,26 +53,26 @@ static int check_for_too_big_windows(int width, int height, E_Border *bd);
 static void rearrange_windows(E_Border *bd, int remove_bd);
 static void _desk_show(E_Desk *desk);
 
-#define EVAS_LIST_FOREACH(list)	for (l = list; l; l = l->next) \
+#define EINA_LIST_FOREACH(list)	for (l = list; l; l = l->next) \
 				  { \
 				     E_Border *lbd = l->data; \
 				     if (!lbd) continue;
 
-#define TILE_LOOP_EBORDER_STACK	EVAS_LIST_FOREACH(e_border_client_list())
+#define TILE_LOOP_EBORDER_STACK	EINA_LIST_FOREACH(e_border_client_list())
 
 #define TILE_LOOP_DESKCHECK	if ((lbd->desk != bd->desk) || (lbd->zone != bd->zone)) continue;
 
-#define TILE_LOOP_CHECKS(lbd)	((tinfo && evas_list_find(tinfo->floating_windows, lbd) == lbd) || \
+#define TILE_LOOP_CHECKS(lbd)	((tinfo && eina_list_data_find(tinfo->floating_windows, lbd) == lbd) || \
 				 (lbd->visible == 0) || \
 				 (!tiling_config->tile_dialogs && \
                                   ((lbd->client.icccm.transient_for != 0) || \
                                   (lbd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG))))
 
-#define TILE_STDLOOP		EVAS_LIST_FOREACH(e_border_focus_stack_get()) \
+#define TILE_STDLOOP		EINA_LIST_FOREACH(e_border_focus_stack_get()) \
 				TILE_LOOP_DESKCHECK \
 				if (TILE_LOOP_CHECKS(lbd)) continue;
 
-#define TILE_STDBLOOP		EVAS_LIST_FOREACH(tinfo->client_list) \
+#define TILE_STDBLOOP		EINA_LIST_FOREACH(tinfo->client_list) \
 				TILE_LOOP_DESKCHECK \
 				if (TILE_LOOP_CHECKS(lbd)) continue;
 
@@ -135,7 +135,7 @@ desk_hash_key(E_Desk *desk)
 static struct _Config_vdesk*
 get_vdesk(int x, int y, int zone_num)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    DBG("getting vdesk x %d / y %d / zone_num %d\n", x, y, zone_num);
 
@@ -166,7 +166,7 @@ static void
 print_borderlist()
 {
    if (!tinfo) return;
-   Evas_List *l;
+   Eina_List *l;
    int wc = 0;
    printf("\n\nTILING_DEBUG: Tiling-Borderlist for \"%s\":\n", desk_hash_key(tinfo->desk));
    for (l = tinfo->client_list; l; l = l->next, wc++)
@@ -186,18 +186,18 @@ print_borderlist()
 static int
 border_move_to_left(E_Border *bd, int times)
 {
-   Evas_List *n, *p;
+   Eina_List *n, *p;
    void *data;
    int c;
 
    if (!bd || !tinfo) return 0;
-   if (!(n = evas_list_find_list(tinfo->client_list, bd))) return 0;
+   if (!(n = eina_list_data_find_list(tinfo->client_list, bd))) return 0;
    if (!(p = n->prev)) return 0;
    data = n->data;
    for (c = 0; c < (times-1); c++)
      if (!(p = p->prev)) return 0;
-   tinfo->client_list = evas_list_remove_list(tinfo->client_list, n);
-   tinfo->client_list = evas_list_prepend_relative_list(tinfo->client_list, data, p);
+   tinfo->client_list = eina_list_remove_list(tinfo->client_list, n);
+   tinfo->client_list = eina_list_prepend_relative_list(tinfo->client_list, data, p);
    
    return 1;
 }
@@ -206,18 +206,18 @@ border_move_to_left(E_Border *bd, int times)
 static int
 border_move_to_right(E_Border *bd, int times)
 {
-   Evas_List *n, *p;
+   Eina_List *n, *p;
    void *data;
    int c;
 
    if (!bd || !tinfo) return 0;
-   if (!(n = evas_list_find_list(tinfo->client_list, bd))) return 0;
+   if (!(n = eina_list_data_find_list(tinfo->client_list, bd))) return 0;
    if (!(p = n->next)) return 0;
    data = n->data;
    for (c = 0; c < (times-1); c++)
      if (!(p = p->next)) return 0;
-   tinfo->client_list = evas_list_remove_list(tinfo->client_list, n);
-   tinfo->client_list = evas_list_append_relative_list(tinfo->client_list, data, p);
+   tinfo->client_list = eina_list_remove_list(tinfo->client_list, n);
+   tinfo->client_list = eina_list_append_relative_list(tinfo->client_list, data, p);
    return 1;
 
 }
@@ -226,9 +226,9 @@ border_move_to_right(E_Border *bd, int times)
 static E_Border *
 get_first_window(E_Border *exclude, E_Desk *desk)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   EVAS_LIST_FOREACH(e_border_focus_stack_get())
+   EINA_LIST_FOREACH(e_border_focus_stack_get())
      {
 	if (exclude &&
 	      ((lbd == exclude) || (lbd->desk != exclude->desk))) continue;
@@ -245,9 +245,9 @@ toggle_floating(E_Border *bd)
 {
    if (!bd || !tinfo) return;
 
-   if (evas_list_find(tinfo->floating_windows, bd) == bd)
+   if (eina_list_data_find(tinfo->floating_windows, bd) == bd)
      {
-	tinfo->floating_windows = evas_list_remove(tinfo->floating_windows, bd);
+	tinfo->floating_windows = eina_list_remove(tinfo->floating_windows, bd);
 	if (!tiling_config->dont_touch_borders &&
 	    tiling_config->tiling_border &&
 	    (!bd->bordername || strcmp(bd->bordername, tiling_config->tiling_border)))
@@ -260,7 +260,7 @@ toggle_floating(E_Border *bd)
 	int w = bd->w, h = bd->h;
 	/* To give the user a bit of feedback we restore the original border */
 	/* TODO: save the original border, don't just restore the default one */
-	tinfo->floating_windows = evas_list_prepend(tinfo->floating_windows, bd);
+	tinfo->floating_windows = eina_list_prepend(tinfo->floating_windows, bd);
 	if (!tiling_config->dont_touch_borders &&
 	    tiling_config->floating_border &&
 	    (!bd->bordername || strcmp(bd->bordername, tiling_config->floating_border)))
@@ -277,7 +277,7 @@ toggle_floating(E_Border *bd)
 static int
 check_for_too_big_windows(int width, int height, E_Border *bd)
 {
-   Evas_List *l;
+   Eina_List *l;
    TILE_STDLOOP
      {
 	if (lbd->client.icccm.min_w > width || lbd->client.icccm.min_h > height)
@@ -312,22 +312,22 @@ rearrange_windows(E_Border *bd, int remove_bd)
 #endif
 
    /* Take care of our own tinfo->client_list */
-   if (evas_list_find(tinfo->client_list, bd) != bd)
+   if (eina_list_data_find(tinfo->client_list, bd) != bd)
      {
 	if (!remove_bd)
-	  tinfo->client_list = evas_list_append(tinfo->client_list, bd);
+	  tinfo->client_list = eina_list_append(tinfo->client_list, bd);
      }
    else
      {
 	if (remove_bd)
-	  tinfo->client_list = evas_list_remove(tinfo->client_list, bd);
+	  tinfo->client_list = eina_list_remove(tinfo->client_list, bd);
      }
 
    /* Check if the window is set floating */
-   if (evas_list_find(tinfo->floating_windows, bd) == bd)
+   if (eina_list_data_find(tinfo->floating_windows, bd) == bd)
      {
 	if (remove_bd)
-	  tinfo->floating_windows = evas_list_remove(tinfo->floating_windows, bd);
+	  tinfo->floating_windows = eina_list_remove(tinfo->floating_windows, bd);
 	return;
      }
 
@@ -337,7 +337,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	(bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)))
      return;
 
-   Evas_List *l, *s;
+   Eina_List *l, *s;
    int window_count = (remove_bd ? 0 : 1);
    int layout = layout_for_desk(bd->desk);
    if (layout == TILE_NONE)
@@ -572,7 +572,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 static Tiling_Info *
 _initialize_tinfo(E_Desk *desk)
 {
-   Evas_List *l;
+   Eina_List *l;
    Tiling_Info *res;
 
    res = E_NEW(Tiling_Info, 1);
@@ -582,10 +582,10 @@ _initialize_tinfo(E_Desk *desk)
    res->need_rearrange = 0;
    info_hash = evas_hash_add(info_hash, desk_hash_key(desk), res);
 
-   EVAS_LIST_FOREACH(e_border_client_list())
+   EINA_LIST_FOREACH(e_border_client_list())
      {
 	if (lbd->desk == desk)
-	  res->client_list = evas_list_append(res->client_list, lbd);
+	  res->client_list = eina_list_append(res->client_list, lbd);
      } LOOP_END
 
    return res;
@@ -681,7 +681,7 @@ _e_mod_action_switch_tiling_cb(E_Object *obj, const char *params)
 	     vd->x = desk->x;
 	     vd->y = desk->y;
 	     vd->layout = tiling_config->tiling_mode;
-	     tiling_config->vdesks = evas_list_append(tiling_config->vdesks, vd);
+	     tiling_config->vdesks = eina_list_append(tiling_config->vdesks, vd);
 	  }
 	toggle_layout(&(vd->layout));
      }
@@ -764,7 +764,7 @@ static void
 _e_module_tiling_cb_hook(void *data, E_Border *bd)
 {
    if (!bd || TILE_LOOP_CHECKS(bd) ||
-       (!bd->changes.size && !bd->changes.pos && (evas_list_find(tinfo->client_list, bd) == bd)))
+       (!bd->changes.size && !bd->changes.pos && (eina_list_data_find(tinfo->client_list, bd) == bd)))
 	return;
    DBG("cb-Hook for %p / %s / %s, size.changes = %d, position.changes = %d\n", bd,
 	 bd->client.icccm.title, bd->client.netwm.name, bd->changes.size, bd->changes.pos);
@@ -807,7 +807,7 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 
    /* Ensure that the border is deleted from all available desks */
    static Tiling_Info *_tinfo = NULL;
-   Evas_List *l, *ll, *lll;
+   Eina_List *l, *ll, *lll;
    E_Zone *zone;
    E_Desk *desk;
    int i;
@@ -822,8 +822,8 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 		 desk = zone->desks[i];
 		 if ((_tinfo = evas_hash_find(info_hash, desk_hash_key(desk))) == NULL)
 		   continue;
-		 if (evas_list_find(_tinfo->client_list, ev->border) == ev->border)
-		   _tinfo->client_list = evas_list_remove(_tinfo->client_list, ev->border);
+		 if (eina_list_data_find(_tinfo->client_list, ev->border) == ev->border)
+		   _tinfo->client_list = eina_list_remove(_tinfo->client_list, ev->border);
 	      }
 	 }
 
@@ -860,9 +860,9 @@ _clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, voi
 	DBG("set need_rearrange=1\n");
 	return 1;
      }
-   if (evas_list_find(ti->client_list, ev->border) == ev->border)
+   if (eina_list_data_find(ti->client_list, ev->border) == ev->border)
      {
-	ti->client_list = evas_list_remove(ti->client_list, ev->border);
+	ti->client_list = eina_list_remove(ti->client_list, ev->border);
 	if (ti->desk == get_current_desk())
 	  {
 	     E_Border *first;
@@ -872,8 +872,8 @@ _clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, voi
      }
    if (ti->mainbd == ev->border)
      ti->mainbd = get_first_window(NULL, ti->desk);
-   if (evas_list_find(ti->floating_windows, ev->border) == ev->border)
-     ti->floating_windows = evas_list_remove(ti->floating_windows, ev->border);
+   if (eina_list_data_find(ti->floating_windows, ev->border) == ev->border)
+     ti->floating_windows = eina_list_remove(ti->floating_windows, ev->border);
    return 1;
 }
 
@@ -922,7 +922,7 @@ _e_module_tiling_mouse_move(void *data, int type, void *event)
 EAPI void
 e_mod_tiling_rearrange()
 {
-   Evas_List *l, *ll, *lll;
+   Eina_List *l, *ll, *lll;
    E_Zone *zone;
    E_Desk *desk;
    E_Border *first;
@@ -950,8 +950,8 @@ static Evas_Bool
 _clear_info_hash(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Tiling_Info *ti = data;
-   evas_list_free(ti->floating_windows);
-   evas_list_free(ti->client_list);
+   eina_list_free(ti->floating_windows);
+   eina_list_free(ti->client_list);
    E_FREE(ti);
    return 1;
 }

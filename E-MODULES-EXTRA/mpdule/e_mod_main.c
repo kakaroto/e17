@@ -151,7 +151,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 					_mpdule_update_song_cb, inst);
 
   mpdule_config->instances =
-    evas_list_append (mpdule_config->instances, inst);
+    eina_list_append (mpdule_config->instances, inst);
   return gcc;
 }
 
@@ -165,7 +165,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
     ecore_timer_del (inst->update_timer);
   _mpdule_disconnect (inst);
   mpdule_config->instances =
-    evas_list_remove (mpdule_config->instances, inst);
+    eina_list_remove (mpdule_config->instances, inst);
 
   evas_object_event_callback_del (inst->mpdule, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mpdule_cb_mouse_down);
@@ -309,7 +309,7 @@ _mpdule_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _mpdule_config_updated (Config_Item * ci)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!mpdule_config)
     return;
@@ -396,7 +396,7 @@ _mpdule_cb_pause (void *data, Evas_Object * obj, const char *emission,
 static Config_Item *
 _mpdule_config_item_get (const char *id)
 {
-  Evas_List *l;
+  Eina_List *l;
   Config_Item *ci;
   char buf[128];
 
@@ -409,7 +409,7 @@ _mpdule_config_item_get (const char *id)
       if (mpdule_config->items)
 	{
 	  const char *p;
-	  ci = evas_list_last (mpdule_config->items)->data;
+	  ci = eina_list_last (mpdule_config->items)->data;
 	  p = strrchr (ci->id, '.');
 	  if (p)
 	    num = atoi (p + 1) + 1;
@@ -435,7 +435,7 @@ _mpdule_config_item_get (const char *id)
   ci->hostname = evas_stringshare_add ("localhost");
   ci->port = 6600;
 
-  mpdule_config->items = evas_list_append (mpdule_config->items, ci);
+  mpdule_config->items = eina_list_append (mpdule_config->items, ci);
   return ci;
 }
 
@@ -721,7 +721,7 @@ e_modapi_init (E_Module * m)
       ci->hostname = evas_stringshare_add ("localhost");
       ci->port = 6600;
 
-      mpdule_config->items = evas_list_append (mpdule_config->items, ci);
+      mpdule_config->items = eina_list_append (mpdule_config->items, ci);
     }
   mpdule_config->module = m;
 
@@ -750,7 +750,7 @@ e_modapi_shutdown (E_Module * m)
 
       ci = mpdule_config->items->data;
       mpdule_config->items =
-	evas_list_remove_list (mpdule_config->items, mpdule_config->items);
+	eina_list_remove_list (mpdule_config->items, mpdule_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
       free (ci);

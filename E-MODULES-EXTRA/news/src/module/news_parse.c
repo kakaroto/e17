@@ -47,14 +47,14 @@ struct _News_Parse
    char *buffer_pos;
 
    News_Parse_Oc_Actions oc;
-   Evas_List            *articles;
+   Eina_List            *articles;
    Ecore_Idler          *idler;
    News_Parse_Article   *art;
    int                   error;
    unsigned char         changes : 1;
 };
 
-static Evas_List *_parsers;
+static Eina_List *_parsers;
 
 static int              _parse_type(News_Feed_Document *doc);
 
@@ -102,7 +102,7 @@ news_parse_shutdown(void)
      {
         p = _parsers->data;
         news_parse_stop(p->doc);
-        _parsers = evas_list_remove_list(_parsers, _parsers);
+        _parsers = eina_list_remove_list(_parsers, _parsers);
      }
 }
 
@@ -116,7 +116,7 @@ news_parse_go(News_Feed_Document *doc,
 
    if (!_parse_type(doc))
      {
-        if (doc->articles && evas_list_count(doc->articles))
+        if (doc->articles && eina_list_count(doc->articles))
           cb_func(doc, NEWS_PARSE_ERROR_TYPE_UNKNOWN, 0);
         else
           cb_func(doc, NEWS_PARSE_ERROR_TYPE_UNKNOWN, 1);
@@ -129,7 +129,7 @@ news_parse_go(News_Feed_Document *doc,
    parser->buffer_pos = parser->doc->server.buffer;
 
    doc->parse.parser = parser;
-   _parsers = evas_list_append(_parsers, parser);
+   _parsers = eina_list_append(_parsers, parser);
 
    switch (doc->parse.type)
      {
@@ -154,7 +154,7 @@ news_parse_stop(News_Feed_Document *doc)
    DPARSE(("Parse STOP"));
 
    _parse_free(doc->parse.parser);
-   _parsers = evas_list_remove(_parsers,
+   _parsers = eina_list_remove(_parsers,
                                doc->parse.parser);
    doc->parse.parser = NULL;
 }
@@ -390,7 +390,7 @@ _idler_parse_article_init(News_Parse *parser)
    p1 = strstr(pos, parser->doc->parse.meta_article);
    if (!p1)
      {
-        if (evas_list_count(parser->articles))
+        if (eina_list_count(parser->articles))
           {
              parser->oc.action = NEWS_PARSE_OC_END;
              return NEWS_PARSE_ERROR_NO;
@@ -414,17 +414,17 @@ _idler_parse_article_exists(News_Parse *parser)
 {
    News_Parse_Article *art;
    News_Feed_Article *a;
-   Evas_List *l;
+   Eina_List *l;
 
    art = parser->art;
 
    if (!parser->doc->articles ||
-       !evas_list_count(parser->doc->articles))
+       !eina_list_count(parser->doc->articles))
      return NEWS_PARSE_ERROR_NO;
 
    DPARSE(("ALREADY EXISTS : Go %s %s",
            art->url, art->title));
-   for (l=parser->doc->articles; l; l=evas_list_next(l))
+   for (l=parser->doc->articles; l; l=eina_list_next(l))
      {
         a = l->data;
 
@@ -456,7 +456,7 @@ _idler_parse_article_exists(News_Parse *parser)
 static News_Parse_Error
 _idler_parse_article_end(News_Parse *parser)
 {
-   parser->articles = evas_list_append(parser->articles,
+   parser->articles = eina_list_append(parser->articles,
                                        parser->art);
    parser->buffer_pos = parser->art->pos_end;
    DPARSE(("Parse article %s end", parser->art->title));
@@ -1007,7 +1007,7 @@ _parse_finished(News_Parse *parser)
 
    doc = parser->doc;
 
-   DPARSE(("Parse finished ! %d articles", evas_list_count(parser->articles)));
+   DPARSE(("Parse finished ! %d articles", eina_list_count(parser->articles)));
   
    if ( (parser->error != NEWS_PARSE_ERROR_TYPE_UNKNOWN) &&
         (parser->error != NEWS_PARSE_ERROR_NOT_IMPLEMENTED))
@@ -1019,7 +1019,7 @@ _parse_finished(News_Parse *parser)
    parser->idler = NULL;
    parser->doc->parse.parser = NULL;
 
-   _parsers = evas_list_remove(_parsers, parser);
+   _parsers = eina_list_remove(_parsers, parser);
    _parse_free(parser);
 }
 
@@ -1028,16 +1028,16 @@ _update_doc(News_Parse *parser)
 {
    News_Parse_Article *pa;
    News_Feed_Article *fa;
-   Evas_List *list, *l;
+   Eina_List *list, *l;
    int pos;
 
    list = NULL;
 
    /* create a list of new articles */
 
-   for (l=parser->articles; l; l=evas_list_next(l))
+   for (l=parser->articles; l; l=eina_list_next(l))
      {
-        pa = evas_list_data(l);
+        pa = eina_list_data_get(l);
         if (!pa->article)
           {
              /* create a brand new article */
@@ -1066,13 +1066,13 @@ _update_doc(News_Parse *parser)
              DPARSE(("** New articles list, reused fa %s", pa->article->title));
              fa = pa->article;
              fa->reused = 0;
-	     parser->doc->articles = evas_list_remove(parser->doc->articles, fa);
+	     parser->doc->articles = eina_list_remove(parser->doc->articles, fa);
           }
         _parse_article_free(pa);
 
-	list = evas_list_append(list, fa);
+	list = eina_list_append(list, fa);
      }
-   evas_list_free(parser->articles);
+   eina_list_free(parser->articles);
    parser->articles = NULL;
 
    /* remove old articles
@@ -1080,8 +1080,8 @@ _update_doc(News_Parse *parser)
    if ((parser->error != NEWS_PARSE_ERROR_BROKEN_FEED) ||
        (parser->doc->unread_count > NEWS_FEED_UNREAD_COUNT_MAX))
      {
-        pos = evas_list_count(parser->doc->articles) - 1;
-        while ((fa = evas_list_nth(parser->doc->articles, pos)))
+        pos = eina_list_count(parser->doc->articles) - 1;
+        while ((fa = eina_list_nth(parser->doc->articles, pos)))
           {
              /* if unread count max reached, remove even if unread */
              if (!fa->unread || (parser->doc->unread_count > NEWS_FEED_UNREAD_COUNT_MAX))
@@ -1094,21 +1094,21 @@ _update_doc(News_Parse *parser)
      }
 
    /* append the old articles list to the new one */
-   for (l=parser->doc->articles; l; l=evas_list_next(l))
+   for (l=parser->doc->articles; l; l=eina_list_next(l))
      {
         fa = l->data;
-        list = evas_list_append(list, fa);
+        list = eina_list_append(list, fa);
      }
    /* and replace the old list by the new one */
-   evas_list_free(parser->doc->articles);
+   eina_list_free(parser->doc->articles);
    parser->doc->articles = list;
 
    /* DEBUG : list the articles */
 #ifdef DPARSE
    DPARSE(("-- New articles list for feed %s", parser->doc->feed->name));
-   for (l=parser->doc->articles; l; l=evas_list_next(l))
+   for (l=parser->doc->articles; l; l=eina_list_next(l))
      {
-        fa = evas_list_data(l);
+        fa = eina_list_data_get(l);
         DPARSE(("- %s", fa->title));
      }
    DPARSE(("---------"));
@@ -1126,7 +1126,7 @@ _parse_free(News_Parse *parser)
       
         a = parser->articles->data;
         _parse_article_free(a);
-        parser->articles = evas_list_remove_list(parser->articles,
+        parser->articles = eina_list_remove_list(parser->articles,
                                                  parser->articles);
      }
    if (parser->idler) ecore_idler_del(parser->idler);

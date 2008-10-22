@@ -79,7 +79,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   E_Gadcon_Client *gcc;
   Instance *inst;
   Mail *mail;
-  Evas_List *l;
+  Eina_List *l;
   int have_pop = 0, have_imap = 0, have_mbox = 0;
 
   inst = E_NEW (Instance, 1);
@@ -106,7 +106,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   else
     edje_object_signal_emit (inst->mail_obj, "label_passive", "");
 
-  mail_config->instances = evas_list_append (mail_config->instances, inst);
+  mail_config->instances = eina_list_append (mail_config->instances, inst);
   for (l = inst->ci->boxes; l; l = l->next)
     {
        Config_Box *cb;
@@ -170,7 +170,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 				  _mail_cb_mouse_out);
 
   if (inst->popup) e_object_del (E_OBJECT (inst->popup));
-  mail_config->instances = evas_list_remove (mail_config->instances, inst);
+  mail_config->instances = eina_list_remove (mail_config->instances, inst);
   _mail_free (inst->mail);
   free (inst);
   inst = NULL;
@@ -217,7 +217,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 {
   Instance *inst = data;
   Evas_Event_Mouse_Down *ev = event_info;
-  Evas_List *l;
+  Eina_List *l;
 
   if (!inst)
     return;
@@ -232,7 +232,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       e_menu_post_deactivate_callback_set (mn, _mail_menu_cb_post, inst);
       mail_config->menu = mn;
 
-      if ((inst->ci->boxes) && (evas_list_count (inst->ci->boxes) > 0))
+      if ((inst->ci->boxes) && (eina_list_count (inst->ci->boxes) > 0))
 	{
 	  E_Menu_Item *mm;
 
@@ -289,7 +289,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
   Instance    *inst = data;
   Evas_Object *list;
-  Evas_List   *l;
+  Eina_List   *l;
   char         buf[256];
   char path[PATH_MAX];
 
@@ -366,7 +366,7 @@ _mail_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _mail_config_item_get (const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -378,7 +378,7 @@ _mail_config_item_get (const char *id)
 	if (mail_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last (mail_config->items)->data;
+	     ci = eina_list_last (mail_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -405,7 +405,7 @@ _mail_config_item_get (const char *id)
    ci->show_popup_empty = 0;
    ci->boxes = NULL;
 
-   mail_config->items = evas_list_append (mail_config->items, ci);
+   mail_config->items = eina_list_append (mail_config->items, ci);
    return ci;
 }
 
@@ -476,7 +476,7 @@ e_modapi_init (E_Module * m)
       ci->show_popup_empty = 0;
       ci->boxes = NULL;
 
-      mail_config->items = evas_list_append (mail_config->items, ci);
+      mail_config->items = eina_list_append (mail_config->items, ci);
     }
 
   mail_config->module = m;
@@ -540,14 +540,14 @@ e_modapi_shutdown (E_Module * m)
 	    evas_stringshare_del (cb->cur_path);
 	  if (cb->exec)
 	    evas_stringshare_del (cb->exec);
-	  ci->boxes = evas_list_remove_list (ci->boxes, ci->boxes);
+	  ci->boxes = eina_list_remove_list (ci->boxes, ci->boxes);
 	  free (cb);
 	  cb = NULL;
 	}
       if (ci->id)
 	evas_stringshare_del (ci->id);
       mail_config->items =
-	evas_list_remove_list (mail_config->items, mail_config->items);
+	eina_list_remove_list (mail_config->items, mail_config->items);
       free (ci);
       ci = NULL;
     }
@@ -601,7 +601,7 @@ static int
 _mail_cb_check (void *data)
 {
   Instance *inst = data;
-  Evas_List *l;
+  Eina_List *l;
   int have_imap = 0, have_pop = 0, have_mbox = 0;
 
   if (!inst)
@@ -646,7 +646,7 @@ void
 _mail_set_text (void *data)
 {
   Instance *inst = data;
-  Evas_List *l;
+  Eina_List *l;
   char buf[1024];
   int count = 0;
 
@@ -706,7 +706,7 @@ _mail_cb_exe_exit (void *data, int type, void *event)
 void
 _mail_box_added (Config_Item *ci, const char *box_name)
 {
-  Evas_List *l, *b;
+  Eina_List *l, *b;
 
   for (l = mail_config->instances; l; l = l->next)
     {
@@ -745,7 +745,7 @@ _mail_box_added (Config_Item *ci, const char *box_name)
 void
 _mail_box_deleted (Config_Item *ci, const char *box_name)
 {
-  Evas_List *d, *i;
+  Eina_List *d, *i;
   Config_Box *cb;
 
   for (i = mail_config->instances; i; i = i->next)
@@ -784,7 +784,7 @@ _mail_box_deleted (Config_Item *ci, const char *box_name)
 		  _mail_mbox_del_mailbox (cb);
 		  break;
 	      }
-	    ci->boxes = evas_list_remove (ci->boxes, cb);
+	    ci->boxes = eina_list_remove (ci->boxes, cb);
 	    e_config_save_queue ();
 	    break;
 	 }
@@ -794,7 +794,7 @@ _mail_box_deleted (Config_Item *ci, const char *box_name)
 void
 _mail_config_updated (Config_Item *ci)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!mail_config)
     return;

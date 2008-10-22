@@ -32,7 +32,7 @@ static void	     _lang_load_xfree_language_kbd_layouts_load_variantList(EXML *xm
 static void	     _lang_load_xfree_language_register_language(Config *cfg,
 					    const char *lang_name, const char *lang_shortcut,
 					    const char *lang_flag, const char *kbd_layout,
-					    Evas_List *kbd_layout_variant);
+					    Eina_List *kbd_layout_variant);
 static void	     _lang_free_predef_language(Language_Predef *lp);
 int		     _lang_predef_language_sort_cb(void *e1, void *e2);
 /****************************************/
@@ -42,7 +42,7 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 {
 #define APPLY_LANGUAGE_SETTINGS(__c) \
      { \
-	Language *__l = evas_list_nth(__c->languages, __c->language_selector); \
+	Language *__l = eina_list_nth(__c->languages, __c->language_selector); \
 	if (__l) _lang_apply_language_settings(__l); \
      }
    
@@ -57,8 +57,8 @@ lang_language_switch_to(Config *cfg, unsigned int n)
    if (cfg->lang_policy == LS_GLOBAL_POLICY)
      { 
 	if (n < 0) n = 0;
-	else if (n >= evas_list_count(cfg->languages))
-	  n = evas_list_count(cfg->languages) - 1;
+	else if (n >= eina_list_count(cfg->languages))
+	  n = eina_list_count(cfg->languages) - 1;
 
 	cfg->language_selector = n; 
         
@@ -68,19 +68,19 @@ lang_language_switch_to(Config *cfg, unsigned int n)
      { 
 	E_Border *bd = NULL;
 
-	if (n >= evas_list_count(cfg->languages)) 
-	  n = evas_list_count(cfg->languages) - 1;
+	if (n >= eina_list_count(cfg->languages)) 
+	  n = eina_list_count(cfg->languages) - 1;
 
         bd = e_border_focused_get();
 
 	if (bd)
 	  {
-	     Evas_List *l;
+	     Eina_List *l;
 	     Border_Language_Settings *bls; 
 	     Language *lang;
 
 	     cfg->language_selector = n;
-	     lang = evas_list_nth(cfg->languages, n);
+	     lang = eina_list_nth(cfg->languages, n);
 
 	     bls = NULL;
 	     for (l = cfg->l.border_lang_setup; l; l = l->next)
@@ -92,7 +92,7 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 			 {
 			    if (bls->language_name) evas_stringshare_del(bls->language_name);
 			    E_FREE(bls);
-			    cfg->l.border_lang_setup = evas_list_remove_list(
+			    cfg->l.border_lang_setup = eina_list_remove_list(
 								     cfg->l.border_lang_setup, l);
 			 }
 		       break;
@@ -117,7 +117,7 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 		       bls->language_selector = n; 
 		       bls->language_name = evas_stringshare_add(lang->lang_name); 
 		       
-		       cfg->l.border_lang_setup = evas_list_append(cfg->l.border_lang_setup, bls);
+		       cfg->l.border_lang_setup = eina_list_append(cfg->l.border_lang_setup, bls);
 	            }
 	       }
 	  } 
@@ -139,7 +139,7 @@ lang_language_switch_to_next(Config *cfg)
    int	 size;
    if (!cfg) return;
 
-   size = evas_list_count(cfg->languages);
+   size = eina_list_count(cfg->languages);
    if (size <= 1) return;
 
    if (cfg->language_selector >= size - 1)
@@ -153,7 +153,7 @@ lang_language_switch_to_prev(Config *cfg)
    int size;
    if (!cfg) return;
 
-   size = evas_list_count(cfg->languages);
+   size = eina_list_count(cfg->languages);
    if (size <= 1) return;
 
    if (cfg->language_selector == 0)
@@ -164,7 +164,7 @@ lang_language_switch_to_prev(Config *cfg)
 Language *
 lang_get_default_language(Config *cfg)
 {
-   Evas_List   *l;
+   Eina_List   *l;
    Language    *lang = NULL;
 
    for (l = cfg->language_predef_list; l; l = l->next)
@@ -279,7 +279,7 @@ lang_free_xfree_language_kbd_layouts(Config *cfg)
    while (cfg->language_predef_list)
      { 
 	_lang_free_predef_language(cfg->language_predef_list->data);
-	cfg->language_predef_list = evas_list_remove_list(cfg->language_predef_list,
+	cfg->language_predef_list = eina_list_remove_list(cfg->language_predef_list,
 							  cfg->language_predef_list);
      }
 }
@@ -369,7 +369,7 @@ lang_load_xfree_kbd_models(Config *cfg)
 		    } 
 		  
 		  if (lkm->kbd_model && lkm->kbd_model_description) 
-		    cfg->language_kbd_model_list = evas_list_append(cfg->language_kbd_model_list,
+		    cfg->language_kbd_model_list = eina_list_append(cfg->language_kbd_model_list,
 								    lkm); 
 		  else 
 		    { 
@@ -400,7 +400,7 @@ lang_free_xfree_kbd_models(Config *cfg)
 	if (lkm->kbd_model) evas_stringshare_del(lkm->kbd_model);
 	if (lkm->kbd_model_description) evas_stringshare_del(lkm->kbd_model_description);
 	E_FREE(lkm);
-	cfg->language_kbd_model_list = evas_list_remove_list(cfg->language_kbd_model_list,
+	cfg->language_kbd_model_list = eina_list_remove_list(cfg->language_kbd_model_list,
 							     cfg->language_kbd_model_list);
      }
    cfg->language_kbd_model_list = NULL;
@@ -566,7 +566,7 @@ _lang_load_xfree_language_kbd_layouts_load_variantList(EXML *xml, Language_Prede
 		       char *tag = exml_tag_get(xml);
 		       if (!strcasecmp(tag, "name"))
 			 {
-			    lp->kbd_variant = evas_list_append(lp->kbd_variant,
+			    lp->kbd_variant = eina_list_append(lp->kbd_variant,
 						      evas_stringshare_add(exml_value_get(xml)));
 			    break;
 			 }
@@ -585,10 +585,10 @@ static void
 _lang_load_xfree_language_register_language(Config *cfg,
 					    const char *lang_name, const char *lang_shortcut,
 					    const char *lang_flag, const char *kbd_layout,
-					    Evas_List *kbd_layout_variant)
+					    Eina_List *kbd_layout_variant)
 {
    Language_Predef   *lp;
-   Evas_List	     *l;
+   Eina_List	     *l;
    int		     found = 0;
 
    if (!lang_name || !lang_shortcut || !kbd_layout) return;
@@ -606,7 +606,7 @@ _lang_load_xfree_language_register_language(Config *cfg,
 	if (kbd_layout_variant)
 	  {
 	     for (l = kbd_layout_variant; l; l = l->next)
-	       lp->kbd_variant = evas_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
+	       lp->kbd_variant = eina_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
 	  }
 	return;
      }
@@ -623,14 +623,14 @@ _lang_load_xfree_language_register_language(Config *cfg,
 	if (kbd_layout_variant)
 	  {
 	     for (l = kbd_layout_variant; l; l = l->next)
-	       lp->kbd_variant = evas_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
+	       lp->kbd_variant = eina_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
 	  }
      }
 
-   cfg->language_predef_list = evas_list_append(cfg->language_predef_list, lp);
+   cfg->language_predef_list = eina_list_append(cfg->language_predef_list, lp);
 
-   cfg->language_predef_list = evas_list_sort(cfg->language_predef_list,
-					      evas_list_count(cfg->language_predef_list),
+   cfg->language_predef_list = eina_list_sort(cfg->language_predef_list,
+					      eina_list_count(cfg->language_predef_list),
 					      _lang_predef_language_sort_cb);
 }
 static void
@@ -646,7 +646,7 @@ _lang_free_predef_language(Language_Predef *lp)
      {
 	if (lp->kbd_variant->data)
 	  evas_stringshare_del(lp->kbd_variant->data);
-	lp->kbd_variant = evas_list_remove_list(lp->kbd_variant, lp->kbd_variant);
+	lp->kbd_variant = eina_list_remove_list(lp->kbd_variant, lp->kbd_variant);
      }
    E_FREE(lp);
 }
@@ -764,7 +764,7 @@ lang_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
    Config	     *conf;
-   Evas_List	     *l;
+   Eina_List	     *l;
    E_Border	     *bd;
 
    if (!(conf = data)) return 1;
@@ -804,7 +804,7 @@ lang_cb_event_border_focus_in(void *data, int type, void *ev)
    Border_Language_Settings *bls;
    Config *conf;
    E_Event_Border_Focus_In *e;
-   Evas_List *l;
+   Eina_List *l;
 
    e = ev;
    conf = data;
@@ -823,7 +823,7 @@ lang_cb_event_border_focus_in(void *data, int type, void *ev)
 	     Language *lang;
 
 	     conf->language_selector = bls->language_selector;
-	     lang = evas_list_nth(conf->languages, conf->language_selector);
+	     lang = eina_list_nth(conf->languages, conf->language_selector);
 	     _lang_apply_language_settings(lang);
 	     language_face_language_indicator_update();
 	     break;
@@ -846,7 +846,7 @@ lang_cb_event_border_remove(void *data, int type, void *ev)
    E_Event_Border_Remove      *e;
    Border_Language_Settings   *bls;
 
-   Evas_List   *l;
+   Eina_List   *l;
    Config      *conf;
 
    e = ev;
@@ -858,7 +858,7 @@ lang_cb_event_border_remove(void *data, int type, void *ev)
 
 	if (bls->bd == e->border)
 	  {
-	     conf->l.border_lang_setup = evas_list_remove(conf->l.border_lang_setup, bls);
+	     conf->l.border_lang_setup = eina_list_remove(conf->l.border_lang_setup, bls);
 	     if (bls->language_name) evas_stringshare_del(bls->language_name);
 	     E_FREE(bls);
 	     break;

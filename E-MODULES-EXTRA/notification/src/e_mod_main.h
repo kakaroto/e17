@@ -39,13 +39,13 @@ struct _Config
 
    E_Notification_Daemon *daemon;
 
-   Evas_List  *instances;
-   Evas_List  *n_box;
-   Evas_List  *config_dialog;
+   Eina_List  *instances;
+   Eina_List  *n_box;
+   Eina_List  *config_dialog;
    E_Menu     *menu;
-   Evas_List  *handlers;
-   Evas_List  *items;
-   Evas_List  *popups;
+   Eina_List  *handlers;
+   Eina_List  *items;
+   Eina_List  *popups;
    float       default_timeout;
    int         next_id;
 };

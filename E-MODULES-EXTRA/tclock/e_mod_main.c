@@ -88,7 +88,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 				  _tclock_cb_mouse_out, inst);
 
   tclock_config->instances =
-    evas_list_append (tclock_config->instances, inst);
+    eina_list_append (tclock_config->instances, inst);
 
   _tclock_cb_check (inst);
    if (!check_timer)
@@ -113,9 +113,9 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   evas_object_del (inst->tclock);
 
    tclock_config->instances =
-     evas_list_remove (tclock_config->instances, inst);
+     eina_list_remove (tclock_config->instances, inst);
 
-   if (evas_list_count (tclock_config->instances) <= 0) 
+   if (eina_list_count (tclock_config->instances) <= 0) 
      {	
 	ecore_timer_del (check_timer);
 	check_timer = NULL;
@@ -318,7 +318,7 @@ _tclock_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 void
 _tclock_config_updated (Config_Item *ci)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!tclock_config)
     return;
@@ -348,7 +348,7 @@ static int
 _tclock_cb_check (void *data)
 {
    Instance *inst;
-   Evas_List *l;
+   Eina_List *l;
    time_t current_time;
    struct tm *local_time;
    char buf[1024];
@@ -398,7 +398,7 @@ _tclock_cb_check (void *data)
 static Config_Item *
 _tclock_config_item_get (const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -410,7 +410,7 @@ _tclock_config_item_get (const char *id)
 	if (tclock_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last (tclock_config->items)->data;
+	     ci = eina_list_last (tclock_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -438,7 +438,7 @@ _tclock_config_item_get (const char *id)
    ci->date_format = evas_stringshare_add ("%d/%m/%y");
    ci->tip_format = evas_stringshare_add("%A, %B %d, %Y");
 
-   tclock_config->items = evas_list_append (tclock_config->items, ci);
+   tclock_config->items = eina_list_append (tclock_config->items, ci);
    return ci;
 }
 
@@ -495,7 +495,7 @@ e_modapi_init (E_Module * m)
       ci->date_format = evas_stringshare_add ("%d/%m/%y");
       ci->tip_format = evas_stringshare_add("%d");
 
-      tclock_config->items = evas_list_append (tclock_config->items, ci);
+      tclock_config->items = eina_list_append (tclock_config->items, ci);
     }
   tclock_config->module = m;
 
@@ -524,7 +524,7 @@ e_modapi_shutdown (E_Module * m)
 
       ci = tclock_config->items->data;
       tclock_config->items =
-	evas_list_remove_list (tclock_config->items, tclock_config->items);
+	eina_list_remove_list (tclock_config->items, tclock_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
       if (ci->time_format)

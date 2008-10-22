@@ -43,7 +43,7 @@ struct _Instance
 
 /* Local Variables */
 static int uuid = 0;
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 Config *diskio_conf = NULL;
@@ -169,7 +169,7 @@ e_modapi_shutdown(E_Module *m)
         ci = diskio_conf->conf_items->data;
         /* remove it */
         diskio_conf->conf_items = 
-          evas_list_remove_list(diskio_conf->conf_items, 
+          eina_list_remove_list(diskio_conf->conf_items, 
                                 diskio_conf->conf_items);
         /* cleanup stringshares !! ) */
         if (ci->id) evas_stringshare_del(ci->id);
@@ -230,7 +230,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
                                   _diskio_cb_mouse_down, inst);
 
    /* add to list of running instances so we can cleanup later */
-   instances = evas_list_append(instances, inst);
+   instances = eina_list_append(instances, inst);
 
    inst->timer = ecore_timer_add(0.1, _diskio_set, inst);
 
@@ -305,7 +305,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst = NULL;
 
    if (!(inst = gcc->data)) return;
-   instances = evas_list_remove(instances, inst);
+   instances = eina_list_remove(instances, inst);
 
 	/* Delete diskstat update timer */
    if (inst->timer) ecore_timer_del(inst->timer);
@@ -365,7 +365,7 @@ _gc_id_del(const char *id)
    if (ci->id)   evas_stringshare_del(ci->id);
    if (ci->disk) evas_stringshare_del(ci->disk);
 
-   diskio_conf->conf_items = evas_list_remove(diskio_conf->conf_items, ci);
+   diskio_conf->conf_items = eina_list_remove(diskio_conf->conf_items, ci);
    E_FREE(ci);
 }
 
@@ -424,7 +424,7 @@ _diskio_conf_free(void)
 
         ci = diskio_conf->conf_items->data;
         diskio_conf->conf_items = 
-          evas_list_remove_list(diskio_conf->conf_items, 
+          eina_list_remove_list(diskio_conf->conf_items, 
                                 diskio_conf->conf_items);
         /* EPA */
         if (ci->id) evas_stringshare_del(ci->id);
@@ -448,7 +448,7 @@ _diskio_conf_timer(void *data)
 static Config_Item *
 _diskio_conf_item_get(const char *id) 
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Config_Item *ci = NULL;
    char buf[128];
 
@@ -469,7 +469,7 @@ _diskio_conf_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->disk = evas_stringshare_add("???");
-   diskio_conf->conf_items = evas_list_append(diskio_conf->conf_items, ci);
+   diskio_conf->conf_items = eina_list_append(diskio_conf->conf_items, ci);
    return ci;
 }
 

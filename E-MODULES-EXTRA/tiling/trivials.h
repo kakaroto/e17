@@ -23,7 +23,7 @@ struct _E_Widget_Smart_Data
    Evas_Object   *parent_obj;
    Evas_Coord     x, y, w, h;
    Evas_Coord     minw, minh;
-   Evas_List     *subobjs;
+   Eina_List     *subobjs;
 };
 
 #endif

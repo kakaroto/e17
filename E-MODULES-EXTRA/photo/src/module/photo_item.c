@@ -175,15 +175,15 @@ void photo_item_timer_set(Photo_Item *pi, int active, int time)
 void photo_item_label_mode_set(Photo_Item *pi)
 {
    Photo_Config_Item *pic;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    int action;
 
-   DD(("Mode set (%d items)", evas_list_count(photo->items)));
+   DD(("Mode set (%d items)", eina_list_count(photo->items)));
 
    if (!pi)
      {
         l = photo->items;
-        pi = evas_list_data(l);
+        pi = eina_list_data_get(l);
      }
 
    do
@@ -204,7 +204,7 @@ void photo_item_label_mode_set(Photo_Item *pi)
        
         if (action)
           photo_item_action_label(pi);
-     } while ( l && (l = evas_list_next(l)) && (pi = evas_list_data(l)) );
+     } while ( l && (l = eina_list_next(l)) && (pi = eina_list_data_get(l)) );
 }
 
 Picture *photo_item_picture_current_get(Photo_Item *pi)

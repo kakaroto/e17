@@ -1,6 +1,6 @@
 #include "News.h"
 
-static Evas_List *_popups_warn;
+static Eina_List *_popups_warn;
 
 static void _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y);
 static void _try_close(News_Popup *popw);
@@ -23,15 +23,15 @@ news_popup_init(void)
 void
 news_popup_shutdown(void)
 {
-   Evas_List *l;
+   Eina_List *l;
 
-   for (l = _popups_warn; l; l = evas_list_next(l))
+   for (l = _popups_warn; l; l = eina_list_next(l))
      {
         News_Popup *p;
-        p = evas_list_data(l);
+        p = eina_list_data_get(l);
         news_popup_del(p);
      }
-   evas_list_free(_popups_warn);
+   eina_list_free(_popups_warn);
    _popups_warn = NULL;
 }
 
@@ -119,7 +119,7 @@ news_popup_add(int type, const char *title, const char *text, int timer, int (*f
   evas_event_thaw(popw->pop->evas);
   e_popup_show(popw->pop);
   
-  _popups_warn = evas_list_append(_popups_warn, popw);
+  _popups_warn = eina_list_append(_popups_warn, popw);
 	
    return popw;
 }
@@ -136,7 +136,7 @@ news_popup_del(News_Popup *popw)
   if (popw->pop)
     e_object_del(E_OBJECT(popw->pop));
 
-  _popups_warn = evas_list_remove(_popups_warn, popw);
+  _popups_warn = eina_list_remove(_popups_warn, popw);
 
   free(popw);
 }
@@ -150,16 +150,16 @@ news_popup_del(News_Popup *popw)
 static void
 _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y)
 {
-   Evas_List *l;
+   Eina_List *l;
    News_Popup *p;
    int pxw, pyh;
    int p_xw, p_yh;
 
    pxw = *px + *pw;
    pyh = *py + *ph;
-   for (l = _popups_warn; l; l = evas_list_next(l))
+   for (l = _popups_warn; l; l = eina_list_next(l))
      {
-        p = evas_list_data(l);
+        p = eina_list_data_get(l);
         p_xw = p->x + p->w;
         p_yh = p->y + p->h;
         if (((p->x >= *px) && (p->x <= pxw) &&
