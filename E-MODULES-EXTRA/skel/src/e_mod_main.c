@@ -69,7 +69,7 @@ e_modapi_init(E_Module *m)
    e_configure_registry_category_add("advanced", 80, "Advanced", 
                                      NULL, "enlightenment/advanced");
    /* add right-side item */
-   e_configure_registry_item_add("advanced/connman", 110, "Skel", 
+   e_configure_registry_item_add("advanced/skel", 110, "Skel", 
                                  NULL, buf, e_int_config_skel_module);
 
    /* Define EET Data Storage */
@@ -157,7 +157,7 @@ EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
    /* Unregister the config dialog from the main panel */
-   e_configure_registry_item_del("advanced/connman");
+   e_configure_registry_item_del("advanced/skel");
 
    /* Remove the config panel category if we can. E will tell us.
     category stays if other items using it */
