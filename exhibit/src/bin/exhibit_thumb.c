@@ -46,14 +46,14 @@ _ex_thumb_abort(void)
 {
    /* TODO: reimplement */
 #if 0
-   Evas_List *l;
+   Eina_List *l;
+   Ex_Thumb *thumb;
+
    pid = -1;
-   
+
+   EINA_LIST_FOREACH(thum_list, l, thumb)
    for(l = thumb_list; l; l = l->next)
      {
-	Ex_Thumb *thumb;
-	
-	thumb = l->data;
 	if (thumb->tab == e->cur_tab)
 	  {
 	     E_FREE(thumb->image);
@@ -61,7 +61,7 @@ _ex_thumb_abort(void)
 	     if (thumb->ep)
 	       epsilon_free(thumb->ep);
 	     E_FREE(thumb);
-	     thumb_list = evas_list_remove_list(thumb_list, l);
+	     thumb_list = eina_list_remove_list(thumb_list, l);
 	  }
      }
 #endif
@@ -84,9 +84,9 @@ _ex_thumb_abort_all(void)
 	if (thumb->ep)
 	  epsilon_free(thumb->ep);
 	E_FREE(thumb);
-	thumb_list = evas_list_remove_list(thumb_list, thumb_list);
+	thumb_list = eina_list_remove_list(thumb_list, thumb_list);
      }
-   evas_list_free(thumb_list);
+   eina_list_free(thumb_list);
 #endif   
 }
 

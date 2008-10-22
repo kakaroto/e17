@@ -113,7 +113,7 @@ _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
 int
 _ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
 {
-   if(evas_list_count(e->tabs) <= 1)
+   if(eina_list_count(e->tabs) <= 1)
      {
 	 _ex_main_dialog_show("No tabs open! Create new with Ctrl^t", 
 	       ETK_MESSAGE_DIALOG_INFO);

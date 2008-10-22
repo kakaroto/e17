@@ -21,7 +21,7 @@ void         _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data);
 
 /* remove this when tree2 defines it */
 Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
-Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
+Eina_List *etk_tree_selected_rows_get(Etk_Tree *tree);
 int etk_tree_num_rows_get(Etk_Tree *tree);
 int etk_tree_row_num_get(Etk_Tree *tree, Etk_Tree_Row *row);
 #endif

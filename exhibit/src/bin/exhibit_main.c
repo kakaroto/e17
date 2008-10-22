@@ -29,7 +29,7 @@ struct _Ex_Populate_Data
 };
 
 Exhibit *e;
-Evas_List  *event_handlers;
+Eina_List  *event_handlers;
 
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
@@ -39,16 +39,16 @@ static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_window_resize_cb(Etk_Object *object, void *data);
 
-Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
+Eina_List *etk_tree_selected_rows_get(Etk_Tree *tree)
 {
-   Evas_List *row_list = NULL;
+   Eina_List *row_list = NULL;
    Etk_Tree_Row *iter;
    
    for (iter = etk_tree_first_row_get(tree); 
 	iter; 
 	iter = etk_tree_row_walk_next(iter, ETK_TRUE))
      if (iter->selected == ETK_TRUE) 
-       row_list = evas_list_append(row_list, iter);
+       row_list = eina_list_append(row_list, iter);
    
    return row_list;
 }
@@ -253,7 +253,7 @@ _ex_main_populate_files_timer_cb(void *fdata)
 			"places/folder_16",
 			file, NULL);
 		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), file, NULL);
-		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, file);
+		  e->cur_tab->dirs = eina_list_append(e->cur_tab->dirs, file);
 		  continue;
 	       }
 	  }
@@ -519,7 +519,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	const char *path;
 	const char *dir;
 	const char *file;
-	Evas_List *l;
+	Eina_List *l;
         
         /* Stop the propagation of the signal so the focus won't be passed to the next widget */
         stop_signal = ETK_TRUE;
@@ -541,10 +541,11 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	     DIR *dirfd;
 	     struct dirent *dir_entry;
 	     struct stat st;
-	     	     
+	     char *data;
+
 	     while(e->cur_tab->dirs)
 	       {
-		  e->cur_tab->dirs = evas_list_remove_list(e->cur_tab->dirs, e->cur_tab->dirs);
+		  e->cur_tab->dirs = eina_list_remove_list(e->cur_tab->dirs, e->cur_tab->dirs);
 	       }
 	     
 	     if ((dirfd = opendir(dir)) == NULL)
@@ -561,21 +562,20 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 		  if(stat(fullpath, &st) == -1) continue;
 
 		  if(S_ISDIR(st.st_mode))
-		    e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, strdup(dir_entry->d_name));
+		    e->cur_tab->dirs = eina_list_append(e->cur_tab->dirs, strdup(dir_entry->d_name));
 	       }
 	     
 	     closedir(dirfd);
 	  }			
-	
-	for(l = e->cur_tab->dirs; l; l = l->next)
+	EINA_LIST_FOREACH(e->cur_tab->dirs, l, data)
 	  {
 	     if(!strncmp(file, l->data, strlen(file)))
 	       {
 		  char fullpath[PATH_MAX];
-		  snprintf(fullpath, PATH_MAX, "%s/%s/", dir, (char*)l->data);
+		  snprintf(fullpath, PATH_MAX, "%s/%s/", dir, data);
 		  etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), fullpath);
 		  break;
-	       }	
+	       }
 	  }
 	
      }
@@ -717,7 +717,7 @@ _ex_main_window_fullscreen_toggle()
 	etk_container_add(ETK_CONTAINER(e->win), e->vbox);
 	etk_widget_show_all(e->win);
 	etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
-	if (evas_list_count(e->tabs) > 1)
+	if (eina_list_count(e->tabs) > 1)
 	  etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_TRUE);
 	else
 	  etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
@@ -755,7 +755,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    if (num < 0)
      return;
    
-   tab = evas_list_nth(e->tabs, num);
+   tab = eina_list_nth(e->tabs, num);
 
    e->cur_tab = tab;
    D(("Toggeled tab %p number %d\n", tab, e->cur_tab->num));
@@ -768,15 +768,15 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 void
 _ex_main_window_tab_append(Ex_Tab *tab)
 {
-   if (evas_list_count(e->tabs) >= 1)
+   if (eina_list_count(e->tabs) >= 1)
      etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_TRUE);
    else
      etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);     
 
-   e->tabs = evas_list_append(e->tabs, tab);
+   e->tabs = eina_list_append(e->tabs, tab);
    e->cur_tab = tab;
    etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
-   etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), evas_list_count(e->tabs) - 1);
+   etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), eina_list_count(e->tabs) - 1);
 
    tab->num = etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook));
 }
@@ -1237,7 +1237,7 @@ main(int argc, char *argv[])
 
    epsilon_request_init();
 
-   event_handlers = evas_list_append(event_handlers,
+   event_handlers = eina_list_append(event_handlers,
 	 ecore_event_handler_add(EPSILON_EVENT_DONE, _ex_thumb_complete, NULL));
          
    if(argc > 1 + fullscreen + slideshow)

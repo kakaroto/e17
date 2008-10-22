@@ -149,7 +149,7 @@ _ex_file_is_ebg(char *file)
 {
    int          val;
    char        *ext;
-   Evas_List   *groups, *l;
+   Eina_List   *groups, *l;
    
    ext = strrchr(file, '.');
    if (!ext) return 0;

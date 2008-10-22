@@ -164,7 +164,7 @@ struct _Ex_Tab
    Etk_Bool       fit_window;
    Ecore_File_Monitor *monitor;
    
-   Evas_List     *dirs;
+   Eina_List     *dirs;
   
    Etk_Widget    *image;   
    Etk_Widget    *dtree;
@@ -226,7 +226,7 @@ struct _Exhibit
    int            brightness;
    int            contrast;
 
-   Evas_List     *tabs;
+   Eina_List     *tabs;
    Ex_Tab        *cur_tab;
    
    Ex_Options     *options;

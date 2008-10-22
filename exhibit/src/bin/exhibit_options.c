@@ -5,10 +5,10 @@
 
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))evas_list_next, \
-				(void *(*) (void *, void *))evas_list_append, \
-				(void *(*) (void *))evas_list_data, \
-				(void *(*) (void *))evas_list_free, \
+				(void *(*) (void *))eina_list_next, \
+				(void *(*) (void *, void *))eina_list_append, \
+				(void *(*) (void *))eina_list_data_get, \
+				(void *(*) (void *))eina_list_free, \
 				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
 				(void *(*) (void *, const char *, void *))evas_hash_add, \
 				(void  (*) (void *))evas_hash_free)
