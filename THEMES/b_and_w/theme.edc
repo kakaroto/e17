@@ -1,5 +1,6 @@
 // TODO: Items that need some revision
 // ibar - ibox (done - Merged with alias... see FIXME for bugs.)
+// Add group{} locations to all sections. eg. "widget/preview" is found in Wallpaper selector"
 //
 // TODO Code:
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
@@ -457,9 +458,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
 	 part { name: "e.text.title"; /* this is a text part - the black
 				       * text on the white title top image */
-	    type: TEXT; /* allow this part to scale by a scale factor (dpi) */
+	    type: TEXT; 
 	    mouse_events: 0;
-	    scale: 1;
+	    scale: 1; /* allow this part to scale by a scale factor (dpi) */
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0; /* align top and left */
@@ -485,14 +486,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title"; /* give it a color class so people
 					     * can re-color it if they want */
 	       text {
-		  font: "Sans:style=Bold"; /* the font is now
-							   * complex. use the
-							   * system sans font
-							   * in a bold style,
-							   * if possible, if
-							   * not use the
-							   * built-in vera
-							   * bold font */
+		  font: "Sans:style=Bold"; /* Use the Bold style of
+					    * the Sans font. */
 		  size: 10; /* size in pixels - 10 */
 		  min: 0 1; /* the text will not determine minimum horizontal
 			     * size but WILL determine minimal vertical size
