@@ -48,7 +48,7 @@ xmlSAXHandler ModuleListParser = {
 };
 
 Module_List_Data *mldata;
-Evas_List *ml = NULL;
+Eina_List *ml = NULL;
 
 /**
  * @addtogroup Exchange_Module_List_Group Exchange Module Listing Functions
@@ -62,10 +62,10 @@ Evas_List *ml = NULL;
  * @param user_id The user ID of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched module, NULL otherwise
- * @brief Get the Evas_List for modules that matches the filter. 
+ * @return The Eina_List * for matched module, NULL otherwise
+ * @brief Get the Eina_List for modules that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_module_list_filter_by_user_id(int user_id, int limit, int offset)
 {
    char text[16];
@@ -82,10 +82,10 @@ exchange_module_list_filter_by_user_id(int user_id, int limit, int offset)
  * @param user_name The username of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched modules, NULL otherwise
- * @brief Get the Evas_List for modules that matches the filter. 
+ * @return The Eina_List * for matched modules, NULL otherwise
+ * @brief Get the Eina_List for modules that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_module_list_filter_by_user_name(const char *user_name, int limit, int offset)
 {
    char text[1024];
@@ -102,10 +102,10 @@ exchange_module_list_filter_by_user_name(const char *user_name, int limit, int o
  * @param application_id The application ID
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched module, NULL otherwise
- * @brief Get the Evas_List for modules that matches the filter. 
+ * @return The Eina_List * for matched module, NULL otherwise
+ * @brief Get the Eina_List for modules that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_module_list_filter_by_application_id(int application_id, int limit, int offset)
 {
    char text[20];
@@ -121,10 +121,10 @@ exchange_module_list_filter_by_application_id(int application_id, int limit, int
 /**
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for available modules, NULL otherwise
- * @brief Get the Evas_List for all available modules. 
+ * @return The Eina_List * for available modules, NULL otherwise
+ * @brief Get the Eina_List for all available modules. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_module_list_all(int limit, int offset)
 {
    if (_module_list_connect(NULL, limit, offset) == 0)
@@ -143,7 +143,7 @@ _module_list_free_data(void)
 {
    if (ml)
    {
-      Evas_List *l;
+      Eina_List *l;
       for (l = ml; l; l = l->next)
       {
          Module_List_Data *mld;
@@ -156,7 +156,7 @@ _module_list_free_data(void)
          free(mld);
          mld= NULL;
       }
-      ml = evas_list_free(ml);
+      ml = eina_list_free(ml);
    }
 }
 
@@ -255,7 +255,7 @@ _end_element_module_list_cb(Module_List_Parser *state, const xmlChar *name)
 {
    if (!strcmp((char *)name, "module"))
    {
-      ml = evas_list_append(ml, (Module_List_Data *)mldata);
+      ml = eina_list_append(ml, (Module_List_Data *)mldata);
       state->state = PARSER_MODULE_LIST_START;
       state->prev_state = PARSER_MODULE_LIST;
    }

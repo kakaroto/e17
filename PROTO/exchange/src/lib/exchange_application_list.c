@@ -48,7 +48,7 @@ xmlSAXHandler ApplicationListParser = {
 };
 
 Application_List_Data *aldata;
-Evas_List *al = NULL;
+Eina_List *al = NULL;
 
 /**
  * @addtogroup Exchange_Application_List_Group Exchange Application Listing Functions
@@ -62,10 +62,10 @@ Evas_List *al = NULL;
  * @param user_id The user ID of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched application, NULL otherwise
- * @brief Get the Evas_List for applications that matches the filter. 
+ * @return The Eina_List * for matched application, NULL otherwise
+ * @brief Get the Eina_List for applications that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_application_list_filter_by_user_id(int user_id, int limit, int offset)
 {
    char text[16];
@@ -82,10 +82,10 @@ exchange_application_list_filter_by_user_id(int user_id, int limit, int offset)
  * @param user_name The username of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched applications, NULL otherwise
- * @brief Get the Evas_List for applications that matches the filter. 
+ * @return The Eina_List * for matched applications, NULL otherwise
+ * @brief Get the Eina_List for applications that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_application_list_filter_by_user_name(const char *user_name, int limit, int offset)
 {
    char text[1024];
@@ -101,10 +101,10 @@ exchange_application_list_filter_by_user_name(const char *user_name, int limit, 
 /**
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for available applications, NULL otherwise
- * @brief Get the Evas_List for all available applications. 
+ * @return The Eina_List * for available applications, NULL otherwise
+ * @brief Get the Eina_List for all available applications. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_application_list_all(int limit, int offset)
 {
    if (_application_list_connect(NULL, limit, offset) == 0)
@@ -123,7 +123,7 @@ _application_list_free_data(void)
 {
    if (al)
    {
-      Evas_List *l;
+      Eina_List *l;
       for (l = al; l; l = l->next)
       {
          Application_List_Data *ald;
@@ -136,7 +136,7 @@ _application_list_free_data(void)
          free(ald);
          ald = NULL;
       }
-      al = evas_list_free(al);
+      al = eina_list_free(al);
    }
 }
 
@@ -230,7 +230,7 @@ _end_element_application_list_cb(Application_List_Parser *state, const xmlChar *
 {
    if (!strcmp((char *)name, "application"))
    {
-      al = evas_list_append(al, (Application_List_Data *)aldata);
+      al = eina_list_append(al, (Application_List_Data *)aldata);
       state->state = PARSER_APPLICATION_LIST_START;
       state->prev_state = PARSER_APPLICATION_LIST;
    }

@@ -48,7 +48,7 @@ xmlSAXHandler ThemeGroupParser = {
 };
 
 Theme_Group_Data *tgdata;
-Evas_List *fel = NULL;
+Eina_List *fel = NULL;
 
 /**
  * @addtogroup Exchange_Theme_Group_Group Exchange Theme_Group Functions
@@ -60,10 +60,10 @@ Evas_List *fel = NULL;
 
 /**
  * @param void
- * @return An Evas_List *, NULL otherwise. The list contains the available theme_gropus
+ * @return An Eina_List *, NULL otherwise. The list contains the available theme_gropus
  * @brief Get a list of available theme_groups.
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_group_list_available(void)
 {
    if (_theme_group_connect() == 0)
@@ -83,7 +83,7 @@ _theme_group_free_data(void)
 {
    if (fel)
    {
-      Evas_List *l;
+      Eina_List *l;
       for (l = fel; l; l = l->next)
       {
          Theme_Group_Data *tgd;
@@ -92,7 +92,7 @@ _theme_group_free_data(void)
          free(tgd);
          tgd = NULL;
       }
-      fel = evas_list_free(fel);
+      fel = eina_list_free(fel);
    }
 }
 
@@ -158,7 +158,7 @@ _end_element_theme_group_cb(Theme_Group_Parser *state, const xmlChar *name)
    {
       if (tgdata->known == 1)
       {
-         fel = evas_list_append(fel, (Theme_Group_Data *)tgdata);
+         fel = eina_list_append(fel, (Theme_Group_Data *)tgdata);
       }
       else
       {

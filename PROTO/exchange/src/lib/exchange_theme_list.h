@@ -65,13 +65,13 @@ typedef struct _Theme_List_Data { /**< Metadata from a remote theme */
    char *screenshot; /** Theme screenshot URL */
 } Theme_List_Data;
 
-EAPI Evas_List *exchange_theme_list_filter_by_user_id(int user_id, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_filter_by_user_name(const char *user_name, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_filter_by_group_title(const char *group_title, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_filter_by_group_name(const char *group_name, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_filter_by_application_id(int application_id, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset);
-EAPI Evas_List *exchange_theme_list_all(int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_user_id(int user_id, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_user_name(const char *user_name, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_group_title(const char *group_title, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_group_name(const char *group_name, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_application_id(int application_id, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset);
+EAPI Eina_List *exchange_theme_list_all(int limit, int offset);
 
 /**
  * @cond LOCAL

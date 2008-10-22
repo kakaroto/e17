@@ -67,9 +67,9 @@ typedef struct _Application_List_Data { /**< Metadata from a remote application 
    int user_id; /** The ID of user */ 
 } Application_List_Data;
 
-EAPI Evas_List *exchange_application_list_filter_by_user_id(int user_id, int limit, int offset);
-EAPI Evas_List *exchange_application_list_filter_by_user_name(const char *user_name, int limit, int offset);
-EAPI Evas_List *exchange_application_list_all(int limit, int offset);
+EAPI Eina_List *exchange_application_list_filter_by_user_id(int user_id, int limit, int offset);
+EAPI Eina_List *exchange_application_list_filter_by_user_name(const char *user_name, int limit, int offset);
+EAPI Eina_List *exchange_application_list_all(int limit, int offset);
 
 /**
  * @cond LOCAL

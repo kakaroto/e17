@@ -261,12 +261,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_user_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Themes from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes from user ID #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -282,12 +282,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
                      if (!quiet)
-                        printf("Themes from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes from user name \"%s\" (%d):\n", argv[argc - 1], eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -303,12 +303,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_theme_group_title"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_group_title(argv[argc - 1], 0, 0);
 
                      if (!quiet)
-                        printf("Themes that provides \"%s\" as theme_group title (%d):\n", argv[argc - 1], evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes that provides \"%s\" as theme_group title (%d):\n", argv[argc - 1], eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -324,12 +324,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_theme_group_name"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_group_name(argv[argc - 1], 0, 0);
 
                      if (!quiet)
-                        printf("Themes that provides \"%s\" as theme_group name (%d):\n", argv[argc - 1], evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes that provides \"%s\" as theme_group name (%d):\n", argv[argc - 1], eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -345,12 +345,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_application_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_application_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Themes that matches the provided application id #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes that matches the provided application id #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -366,12 +366,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_module_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_filter_by_module_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Themes that matches the provided module id #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Themes that matches the provided module id #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -387,12 +387,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_all"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_list_all(0, 0);
                      
                      if (!quiet)
                         printf("All themes available\n");
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -448,12 +448,12 @@ main(int argc, char **argv)
 
                   if (!strcmp(request, "list"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_theme_group_list_available();
 
                      if (!quiet)
-                        printf("Available theme_groups (%d):\n", evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Available theme_groups (%d):\n", eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -480,12 +480,12 @@ main(int argc, char **argv)
 
                   if (!strcmp(request, "list_by_user_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_application_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Applications from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Applications from user ID #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -502,12 +502,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_application_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
                      if (!quiet)
-                        printf("Applications from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Applications from user name \"%s\" (%d):\n", argv[argc - 1], eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -524,12 +524,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_all"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_application_list_all(0, 0);
 
                      if (!quiet)
                         printf("All applications available\n");
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -554,12 +554,12 @@ main(int argc, char **argv)
 
                   if (!strcmp(request, "list_by_user_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_module_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Modules from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Modules from user ID #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -577,12 +577,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_module_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
                      if (!quiet)
-                        printf("Modules from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Modules from user name \"%s\" (%d):\n", argv[argc - 1], eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -600,12 +600,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_by_application_id"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_module_list_filter_by_application_id(atoi(argv[argc - 1]), 0, 0);
 
                      if (!quiet)
-                        printf("Modules for application ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                        printf("Modules for application ID #%d (%d):\n", atoi(argv[argc - 1]), eina_list_count(l));
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {
@@ -623,12 +623,12 @@ main(int argc, char **argv)
                   }
                   if (!strcmp(request, "list_all"))
                   {
-                     Evas_List *l, *l1;
+                     Eina_List *l, *l1;
                      l = exchange_module_list_all(0, 0);
 
                      if (!quiet)
                         printf("All modules available\n");
-                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     for (l1 = l; l1; l1 = eina_list_next(l1))
                      {
                         if (l1->data)
                         {

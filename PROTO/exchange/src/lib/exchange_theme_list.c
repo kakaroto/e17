@@ -48,7 +48,7 @@ xmlSAXHandler ThemeListParser = {
 };
 
 Theme_List_Data *tldata;
-Evas_List *tl = NULL;
+Eina_List *tl = NULL;
 
 /**
  * @addtogroup Exchange_Theme_List_Group Exchange Theme Listing Functions
@@ -62,10 +62,10 @@ Evas_List *tl = NULL;
  * @param user_id The user ID of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_user_id(int user_id, int limit, int offset)
 {
    char text[16];
@@ -82,10 +82,10 @@ exchange_theme_list_filter_by_user_id(int user_id, int limit, int offset)
  * @param user_name The username of the author of the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_user_name(const char *user_name, int limit, int offset)
 {
    char text[1024];
@@ -102,10 +102,10 @@ exchange_theme_list_filter_by_user_name(const char *user_name, int limit, int of
  * @param group_title The theme_group_title provided by the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_group_title(const char *group_title, int limit, int offset)
 {
    char text[1024];
@@ -122,10 +122,10 @@ exchange_theme_list_filter_by_group_title(const char *group_title, int limit, in
  * @param group_name The theme_group_name managed by the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_group_name(const char *group_name, int limit, int offset)
 {
    char text[1024];
@@ -142,10 +142,10 @@ exchange_theme_list_filter_by_group_name(const char *group_name, int limit, int 
  * @param application_id The ID of application managed by the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_application_id(int application_id, int limit, int offset)
 {
    char text[21];   
@@ -162,10 +162,10 @@ exchange_theme_list_filter_by_application_id(int application_id, int limit, int 
  * @param module_id The ID of module managed by the theme
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for matched themes, NULL otherwise
- * @brief Get the Evas_List for themes that matches the filter. 
+ * @return The Eina_List * for matched themes, NULL otherwise
+ * @brief Get the Eina_List for themes that matches the filter. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset)
 {
    char text[16];
@@ -181,10 +181,10 @@ exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset)
 /**
  * @param limit The max number of list entries
  * @param offset The starting number of list entries
- * @return The Evas_List * for available themes, NULL otherwise
- * @brief Get the Evas_List for all available themes. 
+ * @return The Eina_List * for available themes, NULL otherwise
+ * @brief Get the Eina_List for all available themes. 
  */
-EAPI Evas_List *
+EAPI Eina_List *
 exchange_theme_list_all(int limit, int offset)
 {
    if (_theme_list_connect(NULL, limit, offset) == 0)
@@ -203,7 +203,7 @@ _theme_list_free_data(void)
 {
    if (tl)
    {
-      Evas_List *l;
+      Eina_List *l;
       for (l = tl; l; l = l->next)
       {
          Theme_List_Data *tld;
@@ -218,7 +218,7 @@ _theme_list_free_data(void)
          free(tld);
          tld = NULL;
       }
-      tl = evas_list_free(tl);
+      tl = eina_list_free(tl);
    }
 }
 
@@ -307,7 +307,7 @@ _end_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name)
 {
    if (!strcmp((char *)name, "theme"))
    {
-      tl = evas_list_append(tl, (Theme_List_Data *)tldata);
+      tl = eina_list_append(tl, (Theme_List_Data *)tldata);
       state->state = PARSER_THEME_LIST_START;
       state->prev_state = PARSER_THEME_LIST;
    }
