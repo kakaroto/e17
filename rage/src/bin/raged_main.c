@@ -68,14 +68,14 @@ static char *_key_public = "public"; /* public members of the network - read and
 static char *_ident_info = "user=x;location=y;"; /* send as ident in response to a who - for now hardcoded */
 static Ecore_Ipc_Server *_server_local = NULL;
 static Ecore_Ipc_Server *_server_remote = NULL;
-static Evas_List *_clients = NULL;
-static Evas_List *_nodes = NULL;
+static Eina_List *_clients = NULL;
+static Eina_List *_nodes = NULL;
 
 static void
 _client_del(Client *cl)
 {
    ecore_ipc_client_data_set(cl->client, NULL);
-   _clients = evas_list_remove(_clients, cl->client);
+   _clients = eina_list_remove(_clients, cl->client);
    ecore_ipc_client_del(cl->client);
    if (cl->ident) free(cl->ident);
    free(cl);
@@ -84,7 +84,7 @@ _client_del(Client *cl)
 static void
 _node_del(Node *nd)
 {
-   _nodes = evas_list_remove(_nodes, nd);
+   _nodes = eina_list_remove(_nodes, nd);
    if (nd->server) ecore_ipc_server_del(nd->server);
    if (nd->name) free(nd->name);
    if (nd->key) free(nd->key);
@@ -173,7 +173,7 @@ _client_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 		    {
 		       nd2->name = strdup(e->data);
 		       nd2->key = strdup(nd->key);
-		       _nodes = evas_list_append(_nodes, nd2);
+		       _nodes = eina_list_append(_nodes, nd2);
 		    }
 	       }
 	  }
@@ -243,7 +243,7 @@ _server_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    if (ecore_ipc_client_server_get(e->client) == _server_local)
      cl->local = 1;
    ecore_ipc_client_data_set(e->client, cl);
-   _clients = evas_list_append(_clients, cl);
+   _clients = eina_list_append(_clients, cl);
 
    ecore_ipc_client_send(cl->client, OP_VERSION, _version,
 			 _version_magic1, _version_magic2, _version_magic3,
@@ -330,7 +330,7 @@ _server_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 		       nd->name = strdup(e->data);
 		       if (cl->private_ok) nd->key = strdup(_key_private);
 		       else nd->key = strdup(_key_public);
-		       _nodes = evas_list_append(_nodes, nd);
+		       _nodes = eina_list_append(_nodes, nd);
 		    }
 	       }
 	  }

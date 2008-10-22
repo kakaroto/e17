@@ -16,7 +16,7 @@ static Ecore_Evas  *ecore_evas = NULL;
 static int          startw     = 1280;
 static int          starth     = 720;
 static Evas_Object *o_bg       = NULL;
-static Evas_List   *modes      = NULL;
+static Eina_List   *modes      = NULL;
 static int          cmode      = NONE;
 
 static void main_usage(void);
@@ -234,7 +234,7 @@ main_mode_push(int mode)
 
    md = calloc(1, sizeof(Mode));
    md->mode = mode;
-   modes = evas_list_prepend(modes, md);
+   modes = eina_list_prepend(modes, md);
    cmode = md->mode;
 }
 
@@ -245,7 +245,7 @@ main_mode_pop(void)
 
    if (!modes) return;
    md = modes->data;
-   modes = evas_list_remove_list(modes, modes);
+   modes = eina_list_remove_list(modes, modes);
    free(md);
    if (!modes)
      {
@@ -370,10 +370,10 @@ struct _Genre
    int count;
 };
 
-static Evas_List *
-list_string_unique_append(Evas_List *list, const char *str, int count)
+static Eina_List *
+list_string_unique_append(Eina_List *list, const char *str, int count)
 {
-   Evas_List *l;
+   Eina_List *l;
    Genre *ge;
 
    for (l = list; l; l = l->next)
@@ -388,12 +388,12 @@ list_string_unique_append(Evas_List *list, const char *str, int count)
    ge = calloc(1, sizeof(Genre));
    ge->label = evas_stringshare_add(str);
    ge->count = count;
-   list = evas_list_append(list, ge);
+   list = eina_list_append(list, ge);
    return list;
 }
 
 static void
-list_string_free(Evas_List *list)
+list_string_free(Eina_List *list)
 {
    while (list)
      {
@@ -402,15 +402,15 @@ list_string_free(Evas_List *list)
 	ge = list->data;
 	evas_stringshare_del(ge->label);
 	free(ge);
-	list = evas_list_remove_list(list, list);
+	list = eina_list_remove_list(list, list);
      }
 }
 
-static Evas_List *
+static Eina_List *
 list_video_genres(void)
 {
-   const Evas_List *l;
-   Evas_List *genres = NULL;
+   const Eina_List *l;
+   Eina_List *genres = NULL;
 
    /* determine toplevel genres */
    for (l = volume_items_get(); l; l = l->next)
@@ -532,8 +532,8 @@ main_menu_video_out(void *data)
 static void
 main_menu_video_library(void *data)
 {
-   const Evas_List *l;
-   Evas_List *genres = NULL, *glist = NULL;
+   const Eina_List *l;
+   Eina_List *genres = NULL, *glist = NULL;
    Video_Lib *vl;
    Video_Lib_Item *vli;
 

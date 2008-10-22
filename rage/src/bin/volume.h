@@ -25,7 +25,7 @@ int  volume_exists(char *vol);
 void volume_index(char *vol);
 void volume_deindex(char *vol);
 int  volume_type_num_get(char *type);
-const Evas_List *volume_items_get(void);
+const Eina_List *volume_items_get(void);
     
 extern int VOLUME_ADD;
 extern int VOLUME_DEL;

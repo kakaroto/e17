@@ -23,7 +23,7 @@ static int _mini_timer(void *data);
 static int _mini_exe_exit(void *data, int ev_type, void *ev);
 
 static Ecore_Timer *timer = NULL;
-static Evas_List *minis = NULL;
+static Eina_List *minis = NULL;
 static int generators = 0;
 
 Evas_Object *
@@ -63,7 +63,7 @@ mini_add(Evas_Object *parent, const char *source)
    evas_object_event_callback_add(o, EVAS_CALLBACK_FREE, _mini_free, mini);
    evas_object_event_callback_add(mini->o_image, EVAS_CALLBACK_RESIZE, _mini_resize, mini);
    if (!timer) timer = ecore_timer_add(0.1, _mini_timer, NULL);
-   minis = evas_list_append(minis, mini);
+   minis = eina_list_append(minis, mini);
    mini->source_mod = ecore_file_mod_time(source);
    mini->file_mod = ecore_file_mod_time(file);
    return o;
@@ -113,7 +113,7 @@ _mini_free(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	mini->handler = NULL;
      }
    free(mini);
-   minis = evas_list_remove(minis, mini);
+   minis = eina_list_remove(minis, mini);
    if (!minis)
      {
 	if (timer)
@@ -161,7 +161,7 @@ _mini_timer(void *data)
    Mini *mini;
    char buf[4096];
    int iw = 0, ih = 0;
-   Evas_List *l;
+   Eina_List *l;
 
    for (l = minis; l; l = l->next)
      {

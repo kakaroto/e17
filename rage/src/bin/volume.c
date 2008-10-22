@@ -13,12 +13,12 @@ struct _Scan
 {
    char *vol;
    Ecore_Idler *timer;
-   Evas_List *dirstack;
-   Evas_List *items;
+   Eina_List *dirstack;
+   Eina_List *items;
    char curdir[4096];
 };
 
-static char *volume_list_exists(Evas_List *list, char *vol);
+static char *volume_list_exists(Eina_List *list, char *vol);
 static void volume_file_change(void *data, Ecore_File_Monitor *fmon, Ecore_File_Event ev, const char *path);
 static int volume_timer(void *data);
 static int volume_idler(void *data);
@@ -27,11 +27,11 @@ static Volume_Item *volume_dir_scan(char *dir);
 static int volume_item_sort(void *d1, void *d2);
 static void volume_items_sort(Scan *s);
 
-static Evas_List *volumes = NULL;
+static Eina_List *volumes = NULL;
 static Ecore_File_Monitor *volumes_file_mon = NULL;
 static Ecore_Timer *volumes_load_timer = NULL;
-static Evas_List *scans = NULL;
-static Evas_List *items = NULL;
+static Eina_List *scans = NULL;
+static Eina_List *items = NULL;
 static int video_count = 0;
 static int audio_count = 0;
 static int photo_count = 0;
@@ -69,14 +69,14 @@ volume_load(void)
 {
    FILE *f;
    char buf[4096];
-   Evas_List *tvolumes, *l;
+   Eina_List *tvolumes, *l;
    
    snprintf(buf, sizeof(buf), "%s/volumes", config);
    tvolumes = volumes;
    volumes = NULL;
    f = fopen(buf, "rb");
    for (l = tvolumes; l; l = l->next)
-     volumes = evas_list_append(volumes, strdup(l->data));
+     volumes = eina_list_append(volumes, strdup(l->data));
    if (f)
      {
 	while (fgets(buf, sizeof(buf), f))
@@ -93,7 +93,7 @@ volume_load(void)
 	       volume_add(buf);
 	     else
 	       {
-		  tvolumes = evas_list_remove(tvolumes, vol);
+		  tvolumes = eina_list_remove(tvolumes, vol);
 		  free(vol);
 	       }
 	  }
@@ -105,7 +105,7 @@ volume_load(void)
 	char *vol;
 	
 	vol = tvolumes->data;
-	tvolumes = evas_list_remove_list(tvolumes, tvolumes);
+	tvolumes = eina_list_remove_list(tvolumes, tvolumes);
 	volume_del(vol);
 	free(vol);
      }
@@ -114,7 +114,7 @@ volume_load(void)
 void
 volume_add(char *vol)
 {
-   volumes = evas_list_append(volumes, strdup(vol));
+   volumes = eina_list_append(volumes, strdup(vol));
    volume_index(vol);
    ecore_event_add(VOLUME_ADD, strdup(vol), NULL, NULL);
 }
@@ -127,7 +127,7 @@ volume_del(char *vol)
    if (vol)
      {
 	ecore_event_add(VOLUME_DEL, strdup(vol), NULL, NULL);
-	volumes = evas_list_remove(volumes, vol);
+	volumes = eina_list_remove(volumes, vol);
 	free(vol);
      }
 }
@@ -146,13 +146,13 @@ volume_index(char *vol)
    s = calloc(1, sizeof(Scan));
    s->vol = strdup(vol);
    s->timer = ecore_timer_add(SCANSPEED, volume_idler, s);
-   scans = evas_list_append(scans, s);
+   scans = eina_list_append(scans, s);
 }
 
 void
 volume_deindex(char *vol)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = scans; l; l = l->next)
      {
@@ -172,8 +172,8 @@ volume_deindex(char *vol)
 		  Volume_Item *vi;
 		  
 		  vi = s->items->data;
-		  items = evas_list_remove(items, vi);
-		  s->items = evas_list_remove_list(s->items, s->items);
+		  items = eina_list_remove(items, vi);
+		  s->items = eina_list_remove_list(s->items, s->items);
 		  if 
 		    (!strcmp(vi->type, "video"))
 		    video_count--;
@@ -191,7 +191,7 @@ volume_deindex(char *vol)
 		  free(vi);
 	       }
 	     free(s);
-	     scans = evas_list_remove_list(scans, l);
+	     scans = eina_list_remove_list(scans, l);
 	     return;
 	  }
      }
@@ -212,16 +212,16 @@ volume_type_num_get(char *type)
    return 0;
 }
 
-const Evas_List *
+const Eina_List *
 volume_items_get(void)
 {
    return items;
 }
 
 static char *
-volume_list_exists(Evas_List *list, char *vol)
+volume_list_exists(Eina_List *list, char *vol)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = list; l; l = l->next)
      {
@@ -264,7 +264,7 @@ volume_idler(void *data)
 	ecore_event_add(VOLUME_SCAN_START, strdup(s->vol), NULL, NULL);
 	snprintf(s->curdir, sizeof(s->curdir), "%s", s->vol);
 	dp = opendir(s->curdir);
-	if (dp) s->dirstack = evas_list_append(s->dirstack, dp);
+	if (dp) s->dirstack = eina_list_append(s->dirstack, dp);
      }
    if (!s->dirstack)
      {
@@ -273,7 +273,7 @@ volume_idler(void *data)
 	s->timer = NULL;
 	return 0;
      }
-   dp = evas_list_data(evas_list_last(s->dirstack));
+   dp = eina_list_data_get(eina_list_last(s->dirstack));
    if (!dp)
      {
 	ecore_event_add(VOLUME_SCAN_STOP, strdup(s->vol), NULL, NULL);
@@ -299,12 +299,12 @@ volume_idler(void *data)
 		    {
 		       ecore_event_add(VOLUME_SCAN_GO, strdup(s->vol), NULL, NULL);
 		       vi = volume_dir_scan(buf);
-		       if (vi) s->items = evas_list_append(s->items, vi);
+		       if (vi) s->items = eina_list_append(s->items, vi);
 		       dp = opendir(buf);
 		       if (dp)
 			 {
 			    snprintf(s->curdir, sizeof(s->curdir), "%s", buf);
-			    s->dirstack = evas_list_append(s->dirstack, dp);
+			    s->dirstack = eina_list_append(s->dirstack, dp);
 			 }
 		    }
 		  else
@@ -313,7 +313,7 @@ volume_idler(void *data)
 		       vi = volume_file_scan(buf);
 		       if (vi)
 			 {
-			    Evas_List *l;
+			    Eina_List *l;
 			    int exists;
 			    
 			    exists = 0;
@@ -362,7 +362,7 @@ volume_idler(void *data)
 				 free(vi);
 			      }
 			    else
-			      s->items = evas_list_append(s->items, vi);
+			      s->items = eina_list_append(s->items, vi);
 			 }
 		    }
 	       }
@@ -373,7 +373,7 @@ volume_idler(void *data)
 	char *p;
 	
 	closedir(dp);
-	s->dirstack = evas_list_remove(s->dirstack, dp);
+	s->dirstack = eina_list_remove(s->dirstack, dp);
 	p = strrchr(s->curdir, '/');
 	if (p) *p = 0;
      }
@@ -558,12 +558,12 @@ volume_item_sort(void *d1, void *d2)
 static void
 volume_items_sort(Scan *s)
 {
-   Evas_List *l;
+   Eina_List *l;
    
-   s->items = evas_list_sort(s->items, evas_list_count(s->items),
+   s->items = eina_list_sort(s->items, eina_list_count(s->items),
 			     volume_item_sort);
    for (l = s->items; l; l = l->next)
-     items = evas_list_append(items, l->data);
-   items = evas_list_sort(items, evas_list_count(items),
+     items = eina_list_append(items, l->data);
+   items = eina_list_sort(items, eina_list_count(items),
 			  volume_item_sort);
 }
