@@ -236,7 +236,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
     }
   if (what & MPD_CST_PLAYLIST)
     {
-      Evas_List *emphasis_playlist;
+      Eina_List *emphasis_playlist;
 
       playlist = mpd_playlist_get_changes(mo, -1);
       emphasis_playlist = convert_mpd_data(playlist);
@@ -305,11 +305,11 @@ mpc_assert_status(MpdState status)
  * @brief Get the artists list from mpd database
  * @return A list of all artists
  */
-Evas_List *
+Eina_List *
 mpc_mlib_artist_get(void)
 {
   MpdData *data;
-  Evas_List *list;
+  Eina_List *list;
 
   data = mpd_database_get_artists(mo);
   list = convert_mpd_data(data);
@@ -323,11 +323,11 @@ mpc_mlib_artist_get(void)
  * @param artist An artist name
  * @return A list of albums
  */
-Evas_List *
+Eina_List *
 mpc_mlib_album_get(char *artist)
 {
   MpdData *data;
-  Evas_List *list;
+  Eina_List *list;
 
   data = mpd_database_get_albums(mo, artist);
   list = convert_mpd_data(data);
@@ -342,11 +342,11 @@ mpc_mlib_album_get(char *artist)
  * @param album An album name
  * @return A list of song matchin artist and album
  */
-Evas_List *
+Eina_List *
 mpc_mlib_track_get(char *artist, char *album)
 {
   MpdData *data;
-  Evas_List *list;
+  Eina_List *list;
 
   if ((album != NULL) || (artist != NULL))
     {
@@ -388,20 +388,20 @@ mpc_playlist_get_current_song(void)
  * @return The list of songs added with their id
  */
 void
-mpc_playlist_add(Evas_List *list)
+mpc_playlist_add(Eina_List *list)
 {
   long long id;
   Emphasis_Data *data;
-  Evas_List *first;
+  Eina_List *first;
 
   first = list;
   id = mpd_playlist_get_playlist_id(mo);
 
   while (list)
     {
-      data = evas_list_data(list);
+      data = eina_list_data_get(list);
       mpd_playlist_queue_add(mo, data->song->file);
-      list = evas_list_next(list);
+      list = eina_list_next(list);
     }
 
   mpd_playlist_queue_commit(mo);
@@ -425,15 +425,15 @@ mpc_playlist_add_song(const char *file, int commit)
  * @param id 
  */
 void
-mpc_playlist_delete(Evas_List *list)
+mpc_playlist_delete(Eina_List *list)
 {
   Emphasis_Data *data;
 
   while (list)
     {
-      data = evas_list_data(list);
+      data = eina_list_data_get(list);
       mpd_playlist_queue_delete_id(mo, data->song->id);
-      list = evas_list_next(list);
+      list = eina_list_next(list);
     }
   mpd_playlist_queue_commit(mo);
   emphasis_list_free(list);
@@ -647,12 +647,12 @@ mpc_disconnect(void)
   mpd_free(mo);
 }
 
-Evas_List *
+Eina_List *
 mpc_list_playlists(void)
 {
 #if defined(LIBMPD_0_12_4)
   MpdData *data;
-  Evas_List *list;
+  Eina_List *list;
 
   data = mpd_database_list_playlist(mo);
   list = convert_mpd_data(data);
@@ -664,12 +664,12 @@ mpc_list_playlists(void)
 #endif
 }
 
-Evas_List *
+Eina_List *
 mpc_get_playlist_content(char *playlist_name)
 {
 #if defined(LIBMPD_0_12_4)
   MpdData *data;
-  Evas_List *list;
+  Eina_List *list;
   
   data = mpd_database_get_playlist_content(mo, playlist_name);
   list = convert_mpd_data(data);
@@ -755,13 +755,13 @@ MpdData *mpd_database_list_playlist(MpdObj *mi)
 	return mpd_data_get_first(data);
 }
 
-Evas_List *
-mpc_find(Evas_List *query, int exact)
+Eina_List *
+mpc_find(Eina_List *query, int exact)
 {
-  Evas_List      *table, *value;
+  Eina_List      *table, *value;
   Emphasis_Data  *data;
   mpd_InfoEntity *ent     = NULL;
-  Evas_List      *results = NULL;
+  Eina_List      *results = NULL;
 
  	if (!mpd_check_connected(mo)               ||
  	    !mpd_server_check_version(mo, 0,12,0)  ||
@@ -770,16 +770,16 @@ mpc_find(Evas_List *query, int exact)
 
   mpd_startSearch(mo->connection, exact);
   table = query;
-  value = evas_list_next(table);
+  value = eina_list_next(table);
 
   while (value && table)
     {
       mpd_addConstraintSearch(mo->connection, 
-                              (int)evas_list_data(table),
-                              (char *)evas_list_data(value));
+                              (int)eina_list_data_get(table),
+                              (char *)eina_list_data_get(value));
       
-      value = evas_list_nth_list(value, 2);
-      table = evas_list_nth_list(table, 2);
+      value = eina_list_nth_list(value, 2);
+      table = eina_list_nth_list(table, 2);
     }
   mpd_commitSearch(mo->connection);
 
@@ -809,7 +809,7 @@ mpc_find(Evas_List *query, int exact)
 
 		mpd_freeInfoEntity(ent);
     if (data != NULL)
-      { results = evas_list_append(results, data); }
+      { results = eina_list_append(results, data); }
 	}
 	mpd_finishCommand(mo->connection);
 

@@ -17,16 +17,16 @@ emphasis_data_new(void)
 }
 
 void
-print_evas_list_stats(Evas_List *list)
+print_eina_list_stats(Eina_List *list)
 {
-  Evas_List *p;
+  Eina_List *p;
   p = list;
   Emphasis_Data *data;
   int count = 0;
 
   while (p)
     {
-      data = evas_list_data(p);
+      data = eina_list_data_get(p);
       switch (data->type)
         {
         case MPD_DATA_TYPE_NONE:
@@ -45,7 +45,7 @@ print_evas_list_stats(Evas_List *list)
           printf("MPD_DATA_TYPE_PLAYLIST\n");
           break;
         }
-      p = evas_list_next(p);
+      p = eina_list_next(p);
       count++;
     }
   printf("total numbers of elements : %d\n", count);
@@ -87,16 +87,16 @@ emphasis_data_free(Emphasis_Data *data)
 
 /* TODO check this */
 void
-emphasis_list_free(Evas_List *list)
+emphasis_list_free(Eina_List *list)
 {
   Emphasis_Data *data;
 
   if (!list) return;
-  list = evas_list_last(list);
-  while (evas_list_prev(list))
+  list = eina_list_last(list);
+  while (eina_list_prev(list))
     {
-      data = evas_list_data(list);
-      list = evas_list_prev(list);
+      data = eina_list_data_get(list);
+      list = eina_list_prev(list);
       if (!data) continue;
       if (data->song)
         {
@@ -116,17 +116,17 @@ emphasis_list_free(Evas_List *list)
       if (data->directory) { free(data->directory); }
       free(data);
     }
-  data = evas_list_data(list);
+  data = eina_list_data_get(list);
   free(data);
-  list = evas_list_free(list);
+  list = eina_list_free(list);
 }
 
-Evas_List *
-emphasis_list_concatenate(Evas_List *head, Evas_List *tail)
+Eina_List *
+emphasis_list_concatenate(Eina_List *head, Eina_List *tail)
 {
-  Evas_List *list;
+  Eina_List *list;
 
-  list = evas_list_concatenate(head, tail);
+  list = eina_list_merge(head, tail);
   emphasis_list_free(tail);
 
   return list;

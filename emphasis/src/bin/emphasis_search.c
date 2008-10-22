@@ -9,7 +9,7 @@ emphasis_search_row_add(Emphasis_Player_Gui *player)
   Etk_Widget *combo = NULL;
   Etk_Widget *entry;
   Etk_Widget *button;
-  Evas_List *children;
+  Eina_List *children;
 
   combo = etk_combobox_new_default();
   item = etk_combobox_item_append(ETK_COMBOBOX(combo), "Artist");
@@ -45,8 +45,8 @@ emphasis_search_row_add(Emphasis_Player_Gui *player)
 
   etk_box_insert_at(ETK_BOX(player->media.search_root), hbox,
                     ETK_BOX_START,
-                    evas_list_count(children)-2, ETK_BOX_FILL, 0);
-  evas_list_free(children);
+                    eina_list_count(children)-2, ETK_BOX_FILL, 0);
+  eina_list_free(children);
 
   etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(cb_media_search_btn_remove_search_clicked),
@@ -57,14 +57,14 @@ emphasis_search_row_add(Emphasis_Player_Gui *player)
 }
 
 void
-emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
+emphasis_search_tree_fill(Emphasis_Player_Gui *player, Eina_List *results)
 {
   Etk_Tree *tree;
   Etk_Tree_Col *col1;
   Etk_Tree_Col *col2;
   Etk_Tree_Col *col3;
   Etk_Tree_Col *col4;
-  Evas_List *list;
+  Eina_List *list;
   Emphasis_Data *data;
   Emphasis_Song *song;
 
@@ -80,7 +80,7 @@ emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
 
   while (results)
     {
-      data = evas_list_data(results);
+      data = eina_list_data_get(results);
       if (data->type == EMPHASIS_DATA_TYPE_SONG)
         {
           song = data->song;
@@ -91,7 +91,7 @@ emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
                                col4, song->file,
                                NULL);
         }
-      results = evas_list_next(results);
+      results = eina_list_next(results);
     }
   etk_tree_thaw(tree);
   emphasis_list_free(list);

@@ -310,7 +310,7 @@ _emphasis_cover_receive_next_packet(int socket_fd, char **packet, int *length)
   char packet_chunk[PACKET_CHUNK_SIZE];
   int num_bytes_read, pos;
   Emphasis_Cover_Packet_Chunk *chunk;
-  Evas_List *l, *chunks = NULL;
+  Eina_List *l, *chunks = NULL;
 
   if (socket_fd < 0 || !packet || !length)
     return 0;
@@ -323,7 +323,7 @@ _emphasis_cover_receive_next_packet(int socket_fd, char **packet, int *length)
       chunk->size = num_bytes_read;
       chunk->data = malloc(num_bytes_read);
       memcpy(chunk->data, packet_chunk, num_bytes_read);
-      chunks = evas_list_append(chunks, chunk);
+      chunks = eina_list_append(chunks, chunk);
       *length += num_bytes_read;
     }
 
@@ -345,7 +345,7 @@ _emphasis_cover_receive_next_packet(int socket_fd, char **packet, int *length)
       pos += chunk->size;
       free(chunk);
     }
-  evas_list_free(chunks);
+  eina_list_free(chunks);
 
   return 1;
 }

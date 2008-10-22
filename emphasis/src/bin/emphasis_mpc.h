@@ -24,13 +24,13 @@ int mpc_assert_status(MpdState status);
 
 Emphasis_Song *mpc_playlist_get_current_song(void);
 
-Evas_List *mpc_mlib_artist_get(void);
-Evas_List *mpc_mlib_album_get(char *artist);
-Evas_List *mpc_mlib_track_get(char *album, char *artist);
+Eina_List *mpc_mlib_artist_get(void);
+Eina_List *mpc_mlib_album_get(char *artist);
+Eina_List *mpc_mlib_track_get(char *album, char *artist);
 
-void mpc_playlist_add(Evas_List *list);
+void mpc_playlist_add(Eina_List *list);
 void mpc_playlist_add_song(const char *file, int commit);
-void mpc_playlist_delete(Evas_List *list);
+void mpc_playlist_delete(Eina_List *list);
 void mpc_playlist_clear(void);
 void mpc_playlist_commit(void);
 void mpc_playlist_shuffle(void);
@@ -55,13 +55,13 @@ void mpc_set_crossfade(int sec);
 void mpc_database_update(void);
 void mpc_disconnect(void);
 
-Evas_List *mpc_list_playlists(void);
-Evas_List *mpc_get_playlist_content(char *playlist_name);
+Eina_List *mpc_list_playlists(void);
+Eina_List *mpc_get_playlist_content(char *playlist_name);
 void mpc_save_playlist(char *playlist_name);
 void mpc_load_playlist(char *playlist_name);
 void mpc_delete_playlist(char *playlist_name);
 
-Evas_List *mpc_find(Evas_List *query, int exact);
+Eina_List *mpc_find(Eina_List *query, int exact);
 
 #include <libmpd/libmpd-internal.h>
 MpdData *mpd_database_list_playlist(MpdObj *mi);

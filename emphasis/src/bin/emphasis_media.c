@@ -7,7 +7,7 @@ void
 emphasis_tree_mlib_init(Emphasis_Player_Gui *player, Emphasis_Type type)
 {
   Etk_Tree_Row *row;
-  Evas_List *list;
+  Eina_List *list;
 
   switch (type)
     {
@@ -29,7 +29,7 @@ emphasis_tree_mlib_init(Emphasis_Player_Gui *player, Emphasis_Type type)
 
 /* TODO : documentation */
 void
-emphasis_tree_mlib_set(Etk_Tree *tree, Evas_List *list,
+emphasis_tree_mlib_set(Etk_Tree *tree, Eina_List *list,
                        MpdDataType mpd_type, char *tag)
 {
   Etk_Tree_Row *row;
@@ -61,13 +61,13 @@ emphasis_tree_mlib_set(Etk_Tree *tree, Evas_List *list,
  * @param mpd_type The type of the list
  */
 void
-emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
+emphasis_tree_mlib_append(Etk_Tree *tree, Eina_List *list,
                           MpdDataType mpd_type, char *tag)
 {
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
   Emphasis_Data *data;
-  Evas_List *first_list;
+  Eina_List *first_list;
   char **album_tag;
   Emphasis_Type et;
 
@@ -83,7 +83,7 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
                                                "Emphasis_Type");
       while (list)
         {
-          data = evas_list_data(list);
+          data = eina_list_data_get(list);
           row = etk_tree_row_append(tree, NULL, col, data->tag, NULL);
           if (et == EMPHASIS_ALBUM)
             {
@@ -97,7 +97,7 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
             {
               etk_tree_row_data_set(row, strdup(data->tag));
             }
-          list = evas_list_next(list);
+          list = eina_list_next(list);
         }
     }
   else
@@ -106,14 +106,14 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
         {
           while (list)
             {
-              data = evas_list_data(list);
+              data = eina_list_data_get(list);
               if (data->song->title)
                 row = etk_tree_row_append(tree, NULL, col, data->song->title, NULL);
               else
                 row = etk_tree_row_append(tree, NULL, col, data->song->file, NULL);
 
               etk_tree_row_data_set(row, strdup(data->song->file));
-              list = evas_list_next(list);
+              list = eina_list_next(list);
             }
         }
       else
@@ -122,9 +122,9 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
             {
               while (list)
                 {
-                  data = evas_list_data(list);
+                  data = eina_list_data_get(list);
                   etk_tree_row_append(tree, NULL, col, data->playlist, NULL);
-                  list = evas_list_next(list);
+                  list = eina_list_next(list);
                 }
             }
         }
@@ -140,14 +140,14 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
  * @param playlist The full playlist used by mpd
  */
 void
-emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
+emphasis_tree_pls_set(Etk_Tree *tree, Eina_List *playlist)
 {
   Etk_Tree_Col *col_title, *col_time, *col_artist, *col_album;
   Etk_Tree_Row *row, *row_next;
   int id;
   char *title, *song_time;
   Emphasis_Data *data;
-  Evas_List *list;
+  Eina_List *list;
 
   list = playlist;
   col_title  = etk_tree_nth_col_get(tree, 0);
@@ -161,7 +161,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
   /* LEAK : playlist and on NULL */
   while (row && playlist)
     {
-      data = evas_list_data(playlist);
+      data = eina_list_data_get(playlist);
       row_next = etk_tree_row_next_get(row);
       id = (int) etk_tree_row_data_get(row);
       if (data->song->id != id)
@@ -170,7 +170,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
         }
       else
         {
-          playlist = evas_list_next(playlist);
+          playlist = eina_list_next(playlist);
         }
       row = row_next;
     }
@@ -184,7 +184,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
 
   while (playlist)
     {
-      data = evas_list_data(playlist);
+      data = eina_list_data_get(playlist);
       if (!data->song->title)
         title = data->song->file;
       else
@@ -199,7 +199,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
 
       etk_tree_row_data_set(row, (int *) data->song->id);
       free(song_time);
-      playlist = evas_list_next(playlist);
+      playlist = eina_list_next(playlist);
     }
 
   emphasis_list_free(list);

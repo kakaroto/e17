@@ -299,14 +299,14 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   UNUSED(object)
   UNUSED(row)
   Emphasis_Player_Gui *player;
-  Evas_List *artist_sel;
+  Eina_List *artist_sel;
   char *artist;
 
   player = data;
   if(!data) return ETK_TRUE;
 
   artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
-  artist     = etk_tree_row_data_get(evas_list_data(artist_sel));
+  artist     = etk_tree_row_data_get(eina_list_data_get(artist_sel));
 
   if (artist == NULL)
     {
@@ -322,11 +322,11 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
                          MPD_DATA_TYPE_TAG, NULL);
   while (artist_sel)
     {
-      artist = etk_tree_row_data_get(evas_list_data(artist_sel));
+      artist = etk_tree_row_data_get(eina_list_data_get(artist_sel));
       emphasis_tree_mlib_append(ETK_TREE(player->media.album),
                                 mpc_mlib_album_get(artist),
                                 MPD_DATA_TYPE_TAG, artist);
-      artist_sel = evas_list_next(artist_sel);
+      artist_sel = eina_list_next(artist_sel);
     }
 
   etk_tree_row_select(etk_tree_first_row_get(ETK_TREE(player->media.album)));
@@ -343,7 +343,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   UNUSED(object)
   UNUSED(row)
   Emphasis_Player_Gui *player;
-  Evas_List *artist_sel, *album_sel;
+  Eina_List *artist_sel, *album_sel;
   char **album_tag;
   char *artist_tag;
 
@@ -351,7 +351,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   if(!data) return ETK_TRUE;
 
   album_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.album));
-  album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
+  album_tag = etk_tree_row_data_get(eina_list_data_get(album_sel));
 
   if (album_tag == NULL)
     {
@@ -359,11 +359,11 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
       while (artist_sel)
         {
-          artist_tag = etk_tree_row_data_get(evas_list_data(artist_sel));
+          artist_tag = etk_tree_row_data_get(eina_list_data_get(artist_sel));
           emphasis_tree_mlib_append(ETK_TREE(player->media.track),
                                     mpc_mlib_track_get(artist_tag, NULL),
                                     MPD_DATA_TYPE_SONG, NULL);
-          artist_sel = evas_list_next(artist_sel);
+          artist_sel = eina_list_next(artist_sel);
         }
       return ETK_TRUE;
     }
@@ -371,11 +371,11 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   etk_tree_clear(ETK_TREE(player->media.track));
   while (album_sel)
     {
-      album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
+      album_tag = etk_tree_row_data_get(eina_list_data_get(album_sel));
       emphasis_tree_mlib_append(ETK_TREE(player->media.track),
                                 mpc_mlib_track_get(album_tag[1], album_tag[0]),
                                 MPD_DATA_TYPE_SONG, NULL);
-      album_sel = evas_list_next(album_sel);
+      album_sel = eina_list_next(album_sel);
     }
   return ETK_TRUE;
 }
@@ -392,11 +392,11 @@ cb_drag_artist(Etk_Object *object, void *data)
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
-  Evas_List *rowlist, *next;
+  Eina_List *rowlist, *next;
   char *artist;
   const char **types;
   unsigned int num_types;
-  Evas_List *playlist = NULL, *tmplist;
+  Eina_List *playlist = NULL, *tmplist;
 
   if(!data) return ETK_TRUE;
 
@@ -408,7 +408,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 
   while(rowlist)
     {
-      artist = etk_tree_row_data_get(evas_list_data(rowlist));
+      artist = etk_tree_row_data_get(eina_list_data_get(rowlist));
       tmplist = mpc_mlib_track_get(artist, NULL);
       
       if(artist)
@@ -429,13 +429,13 @@ cb_drag_artist(Etk_Object *object, void *data)
         }
       else
         {
-          playlist = evas_list_concatenate(playlist, tmplist);
+          playlist = eina_list_merge(playlist, tmplist);
         }
       
-      next = evas_list_next(rowlist);
+      next = eina_list_next(rowlist);
       rowlist = next;
     }
-  evas_list_free(rowlist);
+  eina_list_free(rowlist);
 
   types = calloc(1, sizeof(char));
   if(!types) return ETK_TRUE;
@@ -462,11 +462,11 @@ cb_drag_album(Etk_Object *object, void *data)
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
-  Evas_List *rowlist;
+  Eina_List *rowlist;
   char **album;
   const char **types;
   unsigned int num_types;
-  Evas_List *playlist = NULL, *tmplist;
+  Eina_List *playlist = NULL, *tmplist;
 
   if(!data) return ETK_TRUE;
 
@@ -478,7 +478,7 @@ cb_drag_album(Etk_Object *object, void *data)
 
   while (rowlist)
     {
-      album = etk_tree_row_data_get(evas_list_data(rowlist));
+      album = etk_tree_row_data_get(eina_list_data_get(rowlist));
       if (album != NULL)
         {
           tmplist = mpc_mlib_track_get(album[1], album[0]);
@@ -500,9 +500,9 @@ cb_drag_album(Etk_Object *object, void *data)
             }
           else
             {
-              playlist = evas_list_concatenate(playlist, tmplist);
+              playlist = eina_list_merge(playlist, tmplist);
             }
-          rowlist = evas_list_next(rowlist);
+          rowlist = eina_list_next(rowlist);
         }
       else
         {
@@ -510,13 +510,13 @@ cb_drag_album(Etk_Object *object, void *data)
 
           row = etk_tree_first_row_get(tree);
           row = etk_tree_row_next_get(row);
-          rowlist = evas_list_free(rowlist);
+          rowlist = eina_list_free(rowlist);
           rowlist = NULL;
           emphasis_list_free(playlist);
           playlist = NULL;
           while (row)
             {
-              rowlist = evas_list_append(rowlist, row);
+              rowlist = eina_list_append(rowlist, row);
               row = etk_tree_row_next_get(row);
             }
         }
@@ -549,11 +549,11 @@ cb_drag_track(Etk_Object *object, void *data)
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
-  Evas_List *rowlist;
+  Eina_List *rowlist;
   char *title;
   const char **types;
   unsigned int num_types;
-  Evas_List *playlist;
+  Eina_List *playlist;
 
   if(!data) return ETK_TRUE;
 
@@ -566,14 +566,14 @@ cb_drag_track(Etk_Object *object, void *data)
   playlist = convert_rowlist_in_playlist_with_file(rowlist);
   while (rowlist)
     {
-      etk_tree_row_fields_get(evas_list_data(rowlist),
+      etk_tree_row_fields_get(eina_list_data_get(rowlist),
                               etk_tree_nth_col_get(tree, 0), &title, NULL);
 
       menu_item = etk_menu_item_new_with_label(title);
       etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
                             ETK_MENU_ITEM(menu_item));
 
-      rowlist = evas_list_next(rowlist);
+      rowlist = eina_list_next(rowlist);
     }
 
   types = calloc(1, sizeof(char));
@@ -584,7 +584,7 @@ cb_drag_track(Etk_Object *object, void *data)
   etk_drag_types_set(drag, types, num_types);
   etk_drag_data_set(drag, playlist, 1);
 
-  etk_tree_row_fields_get(evas_list_data(rowlist),
+  etk_tree_row_fields_get(eina_list_data_get(rowlist),
                           etk_tree_nth_col_get(tree, 0), &title, NULL);
 
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
@@ -606,7 +606,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
   UNUSED(event)
   Etk_Tree *tree;
   Etk_Drag *drag;
-  Evas_List *list;
+  Eina_List *list;
 
   if(!data) return ETK_TRUE;
 
@@ -629,13 +629,13 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
 
   /*
      Etk_Widget *wid;
-     Evas_List *evaslist;
+     Eina_List *evaslist;
      evaslist = etk_container_children_get(ETK_CONTAINER(drag));
      while (evaslist)
      {
-     etk_container_remove(ETK_CONTAINER(drag), evas_list_data(evaslist));
-     etk_object_destroy(ETK_OBJECT(evas_list_data(evaslist)));
-     evaslist = evas_list_next(evaslist);
+     etk_container_remove(ETK_CONTAINER(drag), eina_list_data_get(evaslist));
+     etk_object_destroy(ETK_OBJECT(eina_list_data_get(evaslist)));
+     evaslist = eina_list_next(evaslist);
      }
    */
 #endif
@@ -940,8 +940,8 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
-  Evas_List *rowlist;
-  Evas_List *list;
+  Eina_List *rowlist;
+  Eina_List *list;
 
   if(!data) return ETK_TRUE;
   player = data;
@@ -978,8 +978,8 @@ cb_playlist_delete(Etk_Object *object, void *data)
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
-  Evas_List *rowlist;
-  Evas_List *list;
+  Eina_List *rowlist;
+  Eina_List *list;
 
   if(!data) return ETK_TRUE;
   player = data;
@@ -1346,8 +1346,8 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
 {
   Emphasis_Player_Gui *player;
   UNUSED(object);
-  Evas_List *row;
-  Evas_List *list;
+  Eina_List *row;
+  Eina_List *list;
   Etk_Tree_Col *col;
   const char *file;
 
@@ -1362,11 +1362,11 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
   col = etk_tree_nth_col_get(ETK_TREE(player->media.search_tree), 3);
   while (row)
     {
-      etk_tree_row_fields_get(evas_list_data(row), col, &file, NULL);
+      etk_tree_row_fields_get(eina_list_data_get(row), col, &file, NULL);
       mpc_playlist_add_song(file, 0);
-      row = evas_list_next(row);
+      row = eina_list_next(row);
     }
-  evas_list_free(list);
+  eina_list_free(list);
   mpc_playlist_commit();
   return ETK_TRUE;
 }
@@ -1413,16 +1413,16 @@ cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
   etk_container_remove(search_query_row);
 
   /* TODO : check for an etk function to replace this */
-  Evas_List *children;
-  Evas_List *child;
+  Eina_List *children;
+  Eina_List *child;
   children = etk_container_children_get(ETK_CONTAINER(search_query_row));
   child = children;
   while (child)
     {
-      etk_object_destroy(ETK_OBJECT(evas_list_data(child)));
-      child = evas_list_next(child);
+      etk_object_destroy(ETK_OBJECT(eina_list_data_get(child)));
+      child = eina_list_next(child);
     }
-  evas_list_free(children);
+  eina_list_free(children);
   etk_object_destroy(ETK_OBJECT(search_query_row));
   return ETK_TRUE;
 }
@@ -1445,11 +1445,11 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   /* FIXME read this */
   UNUSED(object);
   Emphasis_Player_Gui *player;
-  Evas_List *children;
-  Evas_List *child;
-  Evas_List *sub_child;
-  Evas_List *list;
-  Evas_List *query = NULL;
+  Eina_List *children;
+  Eina_List *child;
+  Eina_List *sub_child;
+  Eina_List *list;
+  Eina_List *query = NULL;
   Etk_Widget *widget;
   int index;
 
@@ -1460,39 +1460,39 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   child = children;
   while (child)
     {
-      widget = evas_list_data(child);
+      widget = eina_list_data_get(child);
 
       if (ETK_IS_BOX(widget))
         {
           /* Get the search row content */
-          sub_child = etk_container_children_get(ETK_CONTAINER(evas_list_data(child)));
+          sub_child = etk_container_children_get(ETK_CONTAINER(eina_list_data_get(child)));
           list = sub_child;
 
           /* Get the id of the tag to search */
-          index = etk_combobox_active_item_num_get(ETK_COMBOBOX(evas_list_data(sub_child)));
-          query = evas_list_append(query, (void *)index);
+          index = etk_combobox_active_item_num_get(ETK_COMBOBOX(eina_list_data_get(sub_child)));
+          query = eina_list_append(query, (void *)index);
 
           /* Get the search pattern */
-          sub_child = evas_list_next(sub_child);
-          query = evas_list_append(query, etk_entry_text_get(ETK_ENTRY(evas_list_data(sub_child))));
+          sub_child = eina_list_next(sub_child);
+          query = eina_list_append(query, etk_entry_text_get(ETK_ENTRY(eina_list_data_get(sub_child))));
 
-          evas_list_free(list);
+          eina_list_free(list);
         }
 
       if (ETK_IS_TREE(widget)) { break; }
 
-      child = evas_list_next(child);
+      child = eina_list_next(child);
     } 
-  evas_list_free(children);
+  eina_list_free(children);
 
   /* XXX */
-  Evas_List *results;
+  Eina_List *results;
   results = mpc_find(query, 0);
 
   emphasis_search_tree_fill(player, results);
   /* ^ freed results */
 
-  evas_list_free(query);
+  eina_list_free(query);
   return ETK_TRUE;
 }
 

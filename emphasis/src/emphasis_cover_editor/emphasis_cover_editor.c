@@ -23,7 +23,7 @@ Etk_Widget *add_dialog = NULL;
 Etk_Widget *entry_add_artist;
 Etk_Widget *entry_add_album;
 
-Evas_List *cover_changed = NULL;
+Eina_List *cover_changed = NULL;
 
 void on_window_destroy(Etk_Object *object, void *data);
 void fill_tree_with_db(Etk_Tree *tree);
@@ -111,7 +111,7 @@ on_btn_save_clicked(Etk_Object *object, void *data)
 {
   Cover_Entry *ce;
   Eet_File *ef;
-  Evas_List *list;
+  Eina_List *list;
   char *cover_file;
 
   list = cover_changed;
@@ -126,15 +126,15 @@ on_btn_save_clicked(Etk_Object *object, void *data)
 
   while (cover_changed)
     {
-      ce = evas_list_data(cover_changed);
+      ce = eina_list_data_get(cover_changed);
       eet_write(ef, ce->key, ce->path, strlen(ce->path)+1, 0);
       eet_clearcache();
       free(ce->key);
       free(ce->path);
       free(ce);
-      cover_changed = evas_list_next(cover_changed);
+      cover_changed = eina_list_next(cover_changed);
     }
-  evas_list_free(list);
+  eina_list_free(list);
   eet_close(ef);
   free(cover_file);
 }
@@ -176,7 +176,7 @@ change_cover_path(char *cover_path)
   ce->key = strdup(key);
   ce->path = strdup(cover_path);
 
-  cover_changed = evas_list_append(cover_changed, ce);
+  cover_changed = eina_list_append(cover_changed, ce);
 }
 
 Etk_Bool

@@ -44,8 +44,8 @@ typedef struct _Emphasis_Data
 Emphasis_Data *emphasis_data_new(void);
 void emphasis_data_free(Emphasis_Data *data);
 void emphasis_song_free(Emphasis_Song *song);
-void print_evas_list_stats(Evas_List *list);
-void emphasis_list_free(Evas_List *list);
-Evas_List *emphasis_list_concatenate(Evas_List *head, Evas_List *tail);
+void print_eina_list_stats(Eina_List *list);
+void emphasis_list_free(Eina_List *list);
+Eina_List *emphasis_list_concatenate(Eina_List *head, Eina_List *tail);
 
 #endif /* EMPHASIS_DATA_LIST_H_ */

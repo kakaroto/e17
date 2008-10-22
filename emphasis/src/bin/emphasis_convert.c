@@ -30,11 +30,11 @@ convert_mpd_song(mpd_Song * src)
 }
 
 
-Evas_List *
+Eina_List *
 convert_mpd_data(MpdData * src)
 {
   int loop = 1;
-  Evas_List *dest = NULL;
+  Eina_List *dest = NULL;
   Emphasis_Data *data;
   MpdData *first;
 
@@ -71,7 +71,7 @@ convert_mpd_data(MpdData * src)
           /* TODO something ? */
           break;
         }
-      dest = evas_list_append(dest, data);
+      dest = eina_list_append(dest, data);
 
       if (mpd_data_is_last(src))
         {
