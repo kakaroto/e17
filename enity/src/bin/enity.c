@@ -378,7 +378,7 @@ static void _en_list_cb(En_Argument *args, int index)
 	     
 	     valist[j] = NULL;
 	     	     
-	     row = etk_tree_row_append(ETK_TREE(tree), NULL, (va_list)valist);
+	     row = etk_tree_row_append(ETK_TREE(tree), NULL, (va_list*)valist);
 	     etk_tree_row_data_set(row, cols);
 	  }
      }
