@@ -23,7 +23,7 @@ struct _Enity_Tree_Col
    } model;
 };
 
-static Evas_List *_en_arg_data_get(En_Argument *args, char *key);
+static Eina_List *_en_arg_data_get(En_Argument *args, char *key);
 static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data);
 static void _en_entry_cb(En_Argument *args, int index);

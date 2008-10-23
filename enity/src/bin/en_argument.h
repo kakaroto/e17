@@ -32,7 +32,7 @@ struct En_Argument
 {
    char *long_name;           /* long name of argument: --foo */
    char  short_name;          /* short name of argument: -f */
-   Evas_List *data;                /* filled with value of argument: -f blah */
+   Eina_List *data;                /* filled with value of argument: -f blah */
    void (*func)(En_Argument *args, int index); /* callback */
    void *func_data;           /* data to the callback */
    En_Argument_Flags flags;  /* flags */
@@ -41,7 +41,7 @@ struct En_Argument
 
 int en_arguments_parse(En_Argument *args, int argc, char **argv);
 void en_argument_help_show(En_Argument *args);  
-Evas_List *en_argument_extra_find(const char *key);
+Eina_List *en_argument_extra_find(const char *key);
 int en_argument_is_set(En_Argument *args, const char *long_name, char short_name);
 
 /** @} */

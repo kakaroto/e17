@@ -107,7 +107,7 @@ int en_arguments_parse(En_Argument *args, int argc, char **argv)
 		     return EN_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
-		  arg->data = evas_list_append(arg->data, val);
+		  arg->data = eina_list_append(arg->data, val);
 		  arg->flags |= EN_ARGUMENT_FLAG_PRIV_SET;
 		  _en_argument_status = 1;
 		  ++i;
@@ -174,7 +174,7 @@ int en_arguments_parse(En_Argument *args, int argc, char **argv)
 		     return EN_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
-		  arg->data = evas_list_append(arg->data, val);
+		  arg->data = eina_list_append(arg->data, val);
 		  arg->flags |= EN_ARGUMENT_FLAG_PRIV_SET;
 		  _en_argument_status = 1;		  
 		  
@@ -209,7 +209,7 @@ int en_arguments_parse(En_Argument *args, int argc, char **argv)
 		* then this is where we get them.
 		*/
 	       char *extra;
-	       Evas_List *value = NULL;
+	       Eina_List *value = NULL;
 	       int j = 1;
 	       
 	       extra = argv[i + j];
@@ -230,13 +230,13 @@ int en_arguments_parse(En_Argument *args, int argc, char **argv)
 		  
 		  if(!value)
 		  {
-		     value = evas_list_append(value, extra);
+		     value = eina_list_append(value, extra);
 		     _en_argument_extra = evas_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
 		  }
 		  else
 		  {
 		     _en_argument_extra = evas_hash_del(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
-		     value = evas_list_append(value, extra);
+		     value = eina_list_append(value, extra);
 		     _en_argument_extra = evas_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
 		  }
 		  
@@ -299,7 +299,7 @@ void en_argument_help_show(En_Argument *args)
      }
 }
 
-Evas_List *en_argument_extra_find(const char *key)
+Eina_List *en_argument_extra_find(const char *key)
 {
    if(!_en_argument_extra)
      return NULL;

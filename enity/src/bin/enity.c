@@ -1,7 +1,7 @@
 #include "enity.h"
 
 static int _en_retval = 0;
-static Evas_List *_en_checked_rows = NULL;
+static Eina_List *_en_checked_rows = NULL;
 static Ecore_Fd_Handler *_en_fd_stdin_handler = NULL;
 
 int _en_fd_stdin_cb (void *data, Ecore_Fd_Handler *fd_handler)
@@ -26,7 +26,7 @@ static Etk_Bool _en_window_delete_cb(void *data)
    return ETK_TRUE;
 }
 
-static Evas_List *_en_arg_data_get(En_Argument *args, char *key)
+static Eina_List *_en_arg_data_get(En_Argument *args, char *key)
 {
    En_Argument *arg;
    
@@ -50,9 +50,9 @@ static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, 
    
    etk_tree_row_fields_get(row, col, &checked, NULL);
    if (checked)
-     _en_checked_rows = evas_list_append(_en_checked_rows, row);
+     _en_checked_rows = eina_list_append(_en_checked_rows, row);
    else
-     _en_checked_rows = evas_list_remove(_en_checked_rows, row);
+     _en_checked_rows = eina_list_remove(_en_checked_rows, row);
 }
 
 
@@ -84,8 +84,8 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	else if(ETK_IS_TREE(data))
 	  {
 	     Etk_Tree_Row *row;
-	     Evas_List *cols;
-	     Evas_List *rows;	     
+	     Eina_List *cols;
+	     Eina_List *rows;	     
 	     char *str = NULL;
 	     int check_value;
 	     
@@ -146,7 +146,7 @@ static void _en_entry_cb(En_Argument *args, int index)
    Etk_Widget *dialog;   
    Etk_Widget *label;
    Etk_Widget *entry;
-   Evas_List *data;
+   Eina_List *data;
    
    dialog = etk_dialog_new();
    etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
@@ -180,7 +180,7 @@ static void _en_error_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
-   Evas_List *data;
+   Eina_List *data;
      
    if((data = _en_arg_data_get(args, "text")) == NULL)
      value = strdup(_("No information available"));
@@ -205,7 +205,7 @@ static void _en_question_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
-   Evas_List *data;
+   Eina_List *data;
      
    if((data = _en_arg_data_get(args, "text")) == NULL)
      value = strdup(_("No information available"));
@@ -230,7 +230,7 @@ static void _en_info_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
-   Evas_List *data;
+   Eina_List *data;
      
    if((data = _en_arg_data_get(args, "text")) == NULL)
      value = strdup(_("No information available"));
@@ -254,7 +254,7 @@ static void _en_info_cb(En_Argument *args, int index)
 static void _en_warning_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
-   Evas_List  *data;
+   Eina_List  *data;
    const char *value;
      
    if((data = _en_arg_data_get(args, "text")) == NULL)
@@ -291,8 +291,9 @@ static void _en_list_cb(En_Argument *args, int index)
    Etk_Widget *dialog;   
    Etk_Widget *label;
    Etk_Widget *tree;
-   Evas_List *cols = NULL;
-   Evas_List *data;
+   Eina_List *cols = NULL;
+   Eina_List *data;
+   const char *title;
    
    dialog = etk_dialog_new();
    etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);   
@@ -308,51 +309,50 @@ static void _en_list_cb(En_Argument *args, int index)
    
    if((data = _en_arg_data_get(args, "column")) != NULL)
      {
-	Evas_List *l;
-	
-	for(l = data; l; l = l->next)
+	Eina_List *l;
+	EINA_LIST_FOREACH(data, l, title)
 	  {
 	     Enity_Tree_Col *col;
 	     
 	     /* todo - implement checkboxes and radio buttons */
 	     col = calloc(1, sizeof(Enity_Tree_Col));
 	     	     
-	     if(en_argument_is_set(args, "checklist", ' ') && evas_list_count(cols) == 0)
+	     if(en_argument_is_set(args, "checklist", ' ') && eina_list_count(cols) == 0)
 	       {
-		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, 60, 0.0);
-      etk_tree_col_model_add(col->col, etk_tree_model_checkbox_new());
+		  col->col = etk_tree_col_new(ETK_TREE(tree), title, 60, 0.0);
+		  etk_tree_col_model_add(col->col, etk_tree_model_checkbox_new());
 		  col->model = ENITY_COL_MODEL_CHECK;
 		  etk_signal_connect("cell_value_changed", ETK_OBJECT(col->col), ETK_CALLBACK(_en_tree_checkbox_toggled_cb), NULL);
 		  
 	       }
 	     else
 	       {
-		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, 60, 0.0);
-      etk_tree_col_model_add(col->col, etk_tree_model_text_new());
+		  col->col = etk_tree_col_new(ETK_TREE(tree), title, 60, 0.0);
+		  etk_tree_col_model_add(col->col, etk_tree_model_text_new());
 		  col->model = ENITY_COL_MODEL_TEXT;		  
 	       }
-	     cols = evas_list_append(cols, col);
+	     cols = eina_list_append(cols, col);
 	  }
 	etk_tree_build(ETK_TREE(tree));
 	
-	for(l = en_argument_extra_find("column"); l; l = l->next)
+	for(l = en_argument_extra_find("column"); l; l = eina_list_next(l))
 	  {
 	     int i;
 	     int j = 0;
 	     void **valist;
 	     Etk_Tree_Row *row;
 	     
-	     valist = calloc(evas_list_count(cols) * 2 + 1, sizeof(void*));
+	     valist = calloc(eina_list_count(cols) * 2 + 1, sizeof(void*));
 	     
-	     for(i = 0; i < evas_list_count(cols); i++)
+	     for(i = 0; i < eina_list_count(cols); i++)
 	       {
 		  char *value;
 		  
-		  value = l->data;
+		  value = eina_list_data_get(l);
 		  
-		  valist[j] = ((Enity_Tree_Col*)evas_list_nth(cols, i))->col;
+		  valist[j] = ((Enity_Tree_Col*)eina_list_nth(cols, i))->col;
 		  
-		  switch(((Enity_Tree_Col*)evas_list_nth(cols, i))->model)
+		  switch(((Enity_Tree_Col*)eina_list_nth(cols, i))->model)
 		    {
 		     case ENITY_COL_MODEL_TEXT:
 		       valist[j + 1] = value;
@@ -368,9 +368,9 @@ static void _en_list_cb(En_Argument *args, int index)
 		  
 		  j += 2;
 		  		  
-		  if(l->next && i < evas_list_count(cols) - 1)
+		  if(eina_list_next(l) && i < eina_list_count(cols) - 1)
 		    {
-		       l = l->next;
+ 		       l = eina_list_next(l);
 		    }
 		  else
 		    break;		  		  
@@ -428,7 +428,7 @@ static void _en_scale_cb(En_Argument *args, int index)
    Etk_Widget *slider_label;
    Etk_Widget *slider;
    Etk_Widget *slider_hbox;
-   Evas_List *data;
+   Eina_List *data;
    int min_value;
    int max_value;
    int step_value;
@@ -498,7 +498,7 @@ static void _en_progress_cb(En_Argument *args, int index)
    Etk_Widget *dialog;   
    Etk_Widget *label;
    Etk_Widget *progress;
-   Evas_List *data;
+   Eina_List *data;
    
    dialog = etk_dialog_new();
    etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(_en_window_delete_cb), NULL);
