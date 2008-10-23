@@ -31,10 +31,10 @@ void eli_statistics_init(const char * app)
 
     edd_statistics = eet_data_descriptor_new("Eli_Statistics",
                                              sizeof(Eli_Statistics),
-                                             (list_next) evas_list_next,
-                                             (list_append) evas_list_append,
-                                             (list_data) evas_list_data,
-                                             (list_free) evas_list_free,
+                                             (list_next) eina_list_next,
+                                             (list_append) eina_list_append,
+                                             (list_data) eina_list_data_get,
+                                             (list_free) eina_list_free,
                                              (hash_foreach) evas_hash_foreach,
                                              (hash_add) evas_hash_add,
                                              (hash_free) evas_hash_free);

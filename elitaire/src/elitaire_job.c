@@ -27,7 +27,7 @@ static int
 _elitaire_job_list_activate(Elitaire_Job_List * list)
 {
     int             activated;
-    Evas_List      *l;
+    Eina_List      *l;
 
     for (l = list->l, activated = 0; l; l = l->next, activated++) {
 	Elitaire_Job   *j;
@@ -102,7 +102,7 @@ elitaire_job_list_new(Elitaire_Job_Func list_empty, void *data)
 void
 elitaire_job_list_del(Elitaire_Job_List * list)
 {
-    Evas_List      *l;
+    Eina_List      *l;
 
     if (!list)
 	return;
@@ -111,7 +111,7 @@ elitaire_job_list_del(Elitaire_Job_List * list)
 	Elitaire_Job   *job;
 
 	job = (Elitaire_Job *) l->data;
-	list->l = evas_list_remove_list(list->l, l);
+	list->l = eina_list_remove_list(list->l, l);
 	if (list->del_node)
 	    (*list->del_node) (list, job->data);
 	free(job);
@@ -123,7 +123,7 @@ elitaire_job_list_del(Elitaire_Job_List * list)
 void
 elitaire_job_del(Elitaire_Job_List * list, void *data)
 {
-    Evas_List      *l;
+    Eina_List      *l;
 
     for (l = list->l; l; l = l->next) {
 	Elitaire_Job   *job;
@@ -143,14 +143,14 @@ elitaire_job_add(Elitaire_Job_List * list, Elitaire_Job_Func func,
     Elitaire_Job   *job;
     int             empty;
 
-    empty = !evas_list_count(list->l);
+    empty = !eina_list_count(list->l);
     job = _elitaire_job_new();
 
     job->func = func;
     job->data = data;
     job->sync = sync;
 
-    list->l = evas_list_append(list->l, job);
+    list->l = eina_list_append(list->l, job);
 
     _elitaire_job_list_activate(list);
 
@@ -159,7 +159,7 @@ elitaire_job_add(Elitaire_Job_List * list, Elitaire_Job_Func func,
 static void
 _elitaire_job_del_job(Elitaire_Job_List * list, Elitaire_Job * job)
 {
-    Evas_List      *l,
+    Eina_List      *l,
                    *prev;
 
 
@@ -168,7 +168,7 @@ _elitaire_job_del_job(Elitaire_Job_List * list, Elitaire_Job * job)
     if (!list->l)
 	return;
 
-    l = evas_list_find_list(list->l, job);
+    l = eina_list_data_find_list(list->l, job);
 
     if (!l)
 	return;
@@ -177,7 +177,7 @@ _elitaire_job_del_job(Elitaire_Job_List * list, Elitaire_Job * job)
     /*
      * first remove the unneeded stuff 
      */
-    list->l = evas_list_remove_list(list->l, l);
+    list->l = eina_list_remove_list(list->l, l);
 
     if (list->del_node)
 	(*list->del_node) (list, job->data);

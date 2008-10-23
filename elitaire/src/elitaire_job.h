@@ -20,7 +20,7 @@ struct _Elitaire_Job
 
 struct _Elitaire_Job_List 
 {
-    Evas_List * l;
+    Eina_List * l;
     Elitaire_Job_Func del_node;
     Elitaire_Job_Func list_empty;
     void * data;

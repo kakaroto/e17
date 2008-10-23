@@ -20,7 +20,7 @@ typedef void * (*hash_add)     (void *, const char *, void *);
 typedef void   (*hash_free)    (void *);
 
 typedef struct _Eli_Highscore {
-    Evas_List * entries;
+    Eina_List * entries;
 } Eli_Highscore;
 
 /* globals */
@@ -31,7 +31,7 @@ static char * eet_file_name;
 static Ecore_Hash * hiscore_hash = NULL;
 
 /* internals declaration */
-static void _eli_highscore_list_free(Evas_List * list);
+static void _eli_highscore_list_free(Eina_List * list);
 static void _eli_highscore_write(const char * game);
 static int _eli_highscore_list_sort_bad  (void * ent1, void * ent2);
 static int _eli_highscore_list_sort_good (void * ent1, void * ent2);
@@ -52,10 +52,10 @@ void eli_highscore_init(const char * app)
 
     edd_entry = eet_data_descriptor_new("Eli_Highscore_Entry",
                                         sizeof(Eli_Highscore_Entry),
-                                        (list_next) evas_list_next,
-                                        (list_append) evas_list_append,
-                                        (list_data) evas_list_data,
-                                        (list_free) evas_list_free,
+                                        (list_next) eina_list_next,
+                                        (list_append) eina_list_append,
+                                        (list_data) eina_list_data_get,
+                                        (list_free) eina_list_free,
                                         (hash_foreach) evas_hash_foreach,
                                         (hash_add) evas_hash_add,
                                         (hash_free) evas_hash_free);
@@ -69,10 +69,10 @@ void eli_highscore_init(const char * app)
 
     edd_hiscore = eet_data_descriptor_new("Eli_Highscore",
                                           sizeof(Eli_Highscore),
-                                          (list_next) evas_list_next,
-                                          (list_append) evas_list_append,
-                                          (list_data) evas_list_data,
-                                          (list_free) evas_list_free,
+                                          (list_next) eina_list_next,
+                                          (list_append) eina_list_append,
+                                          (list_data) eina_list_data_get,
+                                          (list_free) eina_list_free,
                                           (hash_foreach) evas_hash_foreach,
                                           (hash_add) evas_hash_add,
                                           (hash_free) evas_hash_free);
@@ -142,7 +142,7 @@ void eli_highscore_shutdown(void)
 Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
                                   float points, pointsType type)
 {
-    Evas_List * l = NULL;
+    Eina_List * l = NULL;
     Eli_Highscore_Entry * entry;
     
     int (*list_sort) (void *, void *);
@@ -153,7 +153,7 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
     entry = _eli_entry_new(username, points, type);
 
     l = eli_highscore_get(game);
-    if (l) count = evas_list_count(l);
+    if (l) count = eina_list_count(l);
     else count = 0;
 
     /* select the right sorting function */
@@ -169,11 +169,11 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
 
     /* 10 entries should be enough */
     if (count >= 10) {
-        Evas_List * last_l;
+        Eina_List * last_l;
         Eli_Highscore_Entry * last_e;
 
-        last_l = evas_list_last(l);
-        last_e = evas_list_data(last_l);
+        last_l = eina_list_last(l);
+        last_e = eina_list_data_get(last_l);
 
         if ( list_sort(last_e, entry) < 0) {
             free(entry->username);
@@ -182,9 +182,9 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
         }
     }
 
-    l = evas_list_append(l, entry);
-    if (count) l = evas_list_sort(l, (count + 1), list_sort);
-    if (count >= 10) l = evas_list_remove_list(l, evas_list_last(l));
+    l = eina_list_append(l, entry);
+    if (count) l = eina_list_sort(l, (count + 1), list_sort);
+    if (count >= 10) l = eina_list_remove_list(l, eina_list_last(l));
 
     ecore_hash_set(hiscore_hash, strdup(game), l);
   
@@ -196,7 +196,7 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
 Evas_Bool eli_highscore_accept(const char * game, float points,
                                pointsType type)
 {
-    Evas_List * l, * list;
+    Eina_List * l, * list;
     float m;
     float (*select) (float, float);
 
@@ -204,7 +204,7 @@ Evas_Bool eli_highscore_accept(const char * game, float points,
     list = eli_highscore_get(game);
 
     if (!list) return (1 == 1);
-    if (evas_list_count(list) < 10) return (1 == 1);
+    if (eina_list_count(list) < 10) return (1 == 1);
 
     /* select the right min/max function */
     switch (type) {
@@ -220,14 +220,14 @@ Evas_Bool eli_highscore_accept(const char * game, float points,
     for (l = list; l; l = l->next) {
         Eli_Highscore_Entry * e;
 
-        e = (Eli_Highscore_Entry *) evas_list_data(l);
+        e = (Eli_Highscore_Entry *) eina_list_data_get(l);
         m = select(m, e->points);
     }
 
     return m == select(m, points);
 }
 
-Evas_List * eli_highscore_get(const char * game)
+Eina_List * eli_highscore_get(const char * game)
 {
     if(!game || *game == '\0') return NULL;
 
@@ -237,12 +237,12 @@ Evas_List * eli_highscore_get(const char * game)
 /* ***************************************************************************
  *     Internals				             
  * ***************************************************************************/
-static void _eli_highscore_list_free(Evas_List * list)
+static void _eli_highscore_list_free(Eina_List * list)
 {
     while (list) {
         Eli_Highscore_Entry * entry;
 
-        entry = (Eli_Highscore_Entry *) evas_list_data(list);
+        entry = (Eli_Highscore_Entry *) eina_list_data_get(list);
 
         if (entry) {
             if (entry->username) {
@@ -252,7 +252,7 @@ static void _eli_highscore_list_free(Evas_List * list)
 	    free(entry);
 	}
 
-        list = evas_list_remove_list(list, list);
+        list = eina_list_remove_list(list, list);
     }
 }
 
