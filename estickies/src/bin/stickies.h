@@ -51,7 +51,7 @@ struct _E_Config_Sticky
 struct _E_Config_Stickies
 {
    char *theme;
-   Evas_List *stickies;
+   Eina_List *stickies;
 };
 
 struct _E_Config_General
@@ -96,7 +96,7 @@ struct _E_Sticky
 struct _E_Stickies
 {
    char *theme;
-   Evas_List *stickies;
+   Eina_List *stickies;
    E_Config_Version *version;
 };
 

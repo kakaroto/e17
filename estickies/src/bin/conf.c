@@ -4,10 +4,10 @@
 
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))evas_list_next, \
-				(void *(*) (void *, void *))evas_list_append, \
-				(void *(*) (void *))evas_list_data, \
-				(void *(*) (void *))evas_list_free, \
+				(void *(*) (void *))eina_list_next, \
+				(void *(*) (void *, void *))eina_list_append, \
+				(void *(*) (void *))eina_list_data_get, \
+				(void *(*) (void *))eina_list_free, \
 				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
 				(void *(*) (void *, const char *, void *))evas_hash_add, \
 				(void  (*) (void *))evas_hash_free)
@@ -225,7 +225,7 @@ _e_config_load(E_Stickies *ss)
    stickies = eet_data_read(ef, _e_config_stickies_edd, "config/stickies");
    if(stickies)
      {
-	//printf ("found %d stickies in conf!\n", evas_list_count(stickies->stickies));
+	//printf ("found %d stickies in conf!\n", eina_list_count(stickies->stickies));
 	ss->stickies = stickies->stickies;	
      }
    //else
@@ -249,7 +249,8 @@ _e_config_save(E_Stickies *ss)
    char      *home;
    int        ret;
    E_Config_Stickies *stickies = NULL;
-   Evas_List *l;
+   Eina_List *l;
+   E_Sticky *s;
 
    home = getenv("HOME");
    if(!home)
@@ -265,18 +266,15 @@ _e_config_save(E_Stickies *ss)
    if(!ret)
      DEBUG(_("Problem saving config!"));
 
-   for(l = ss->stickies; l; l = l->next)
+   EINA_LIST_FOREACH(ss->stickies, l, s)
      {
-	E_Sticky *s;
-	
-	s = l->data;
 	E_FREE(s->text);
 	s->text = strdup(etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(s->textview)->textblock, ETK_FALSE)));
      }
 
    stickies = E_NEW(1, E_Config_Stickies);
    stickies->stickies = ss->stickies;
-   //printf("saving %d stickies to conf\n", evas_list_count(ss->stickies));
+   //printf("saving %d stickies to conf\n", eina_list_count(ss->stickies));
    ret = eet_data_write(ef, _e_config_stickies_edd, "config/stickies", stickies, 1);
    if(!ret)
      DEBUG(_("Problem saving config/stickies!"));

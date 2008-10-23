@@ -38,7 +38,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	     E_Sticky *sn;
 	     
 	     sn = _e_sticky_new();
-	     ss->stickies = evas_list_append(ss->stickies, sn);
+	     ss->stickies = eina_list_append(ss->stickies, sn);
 	     _e_sticky_show(sn);
 	  }
 	else if(!strcmp(ev->key, "d"))
@@ -182,7 +182,7 @@ _e_sticky_delete_event_cb(Etk_Object *object, void *data)
    E_Sticky *s;
    
    s = data;
-   ss->stickies = evas_list_remove(ss->stickies, s);
+   ss->stickies = eina_list_remove(ss->stickies, s);
    
    return 1;
 }   
@@ -191,34 +191,24 @@ static void
 _e_sticky_focus_in_cb(Etk_Object *object, void *data)
 {
    E_Sticky *s;
-   Evas_List *l;
-   
-   s = data;   
-   for(l = etk_container_children_get(ETK_CONTAINER(s->buttonbox)); 
-       l; l = l->next)
-     {
-	Etk_Widget *w;
-	
-	w = l->data;
-	etk_widget_show_all(w);
-     }
+   Eina_List *l;
+   Etk_Widget *w;
+
+   s = data;
+   EINA_LIST_FOREACH(etk_container_children_get(ETK_CONTAINER(s->buttonbox)), l, w)
+     etk_widget_show_all(w);
 }
 
 static void
 _e_sticky_focus_out_cb(Etk_Object *object, void *data)
 {
    E_Sticky *s;
-   Evas_List *l;
-   
-   s = data;   
-   for(l = etk_container_children_get(ETK_CONTAINER(s->buttonbox)); 
-       l; l = l->next)
-     {
-	Etk_Widget *w;
-	
-	w = l->data;
-	etk_widget_hide_all(w);
-     }
+   Eina_List *l;
+   Etk_Widget *w;
+
+   s = data;
+   EINA_LIST_FOREACH(etk_container_children_get(ETK_CONTAINER(s->buttonbox)), l, w)
+     etk_widget_hide_all(w);
 }
 
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data)
@@ -382,7 +372,7 @@ _e_sticky_new_show_append()
    E_Sticky *s;
    
    s = _e_sticky_new();
-   ss->stickies = evas_list_append(ss->stickies, s);
+   ss->stickies = eina_list_append(ss->stickies, s);
    _e_sticky_show(s);
    return s;
 }
@@ -398,7 +388,7 @@ void
 _e_sticky_export_cb(void *data)
 {
    E_Filedialog *fd = data;
-   Evas_List *l;
+   Eina_List *l;
    E_Sticky *s;
    FILE *fh;
    int c = 1;
@@ -431,9 +421,8 @@ _e_sticky_export_cb(void *data)
    else
      {
 	/* save all stickies */
-	for(l = ss->stickies; l; l = l->next)
+        EINA_LIST_FOREACH(ss->stickies, l, s)
 	  {	     
-	     s = l->data;	     
 	     fprintf(fh, "Sticky %d\n=========================\n", c);
 	     text = strdup(etk_string_get(etk_textblock_text_get(
 			   ETK_TEXT_VIEW(s->textview)->textblock, 
@@ -528,9 +517,9 @@ _e_sticky_export_to(E_Sticky *s)
 void
 _e_sticky_delete(E_Sticky *s)
 {
-   ss->stickies = evas_list_remove(ss->stickies, s);
+   ss->stickies = eina_list_remove(ss->stickies, s);
    _e_sticky_destroy(s);
-   if(!ss->stickies || evas_list_count(ss->stickies) == 0)
+   if(!ss->stickies || eina_list_count(ss->stickies) == 0)
      etk_main_quit();
 }
 
@@ -567,7 +556,7 @@ _e_sticky_resize(E_Sticky *s, int w, int h)
 Etk_Bool
 _e_sticky_exists(E_Sticky *s)
 {
-   if(evas_list_find(ss->stickies, s))
+   if(eina_list_data_find(ss->stickies, s))
      return ETK_TRUE;
    return ETK_FALSE;
 }
@@ -678,10 +667,11 @@ _e_sticky_theme_apply(E_Sticky *s, const char *theme)
 void
 _e_sticky_theme_apply_all(const char *theme)
 {
-   Evas_List *l;
-   
-   for(l = ss->stickies; l; l = l->next)
-     _e_sticky_theme_apply(l->data, theme);   
+   Eina_List *l;
+   E_Sticky *data;
+
+   EINA_LIST_FOREACH(ss->stickies, l, data)
+     _e_sticky_theme_apply(data, theme);
 }
 
 static void 
@@ -735,20 +725,21 @@ int main(int argc, char **argv)
 
    if(ss->stickies)
      {
-	Evas_List *l;
+	Eina_List *l;
+	E_Sticky *data;
 
-	for(l = ss->stickies; l; l = l->next)
+	EINA_LIST_FOREACH(ss->stickies, l, data)
 	  {
-	     _e_sticky_load_from(l->data);
-	     _e_sticky_show(l->data);
-	     _e_sticky_move_resize(l->data);
-	     _e_sticky_properties_set(l->data);
+	     _e_sticky_load_from(data);
+	     _e_sticky_show(data);
+	     _e_sticky_move_resize(data);
+	     _e_sticky_properties_set(data);
 	  }
      }
    else
      {
 	s = _e_sticky_new();
-	ss->stickies = evas_list_append(ss->stickies, s);
+	ss->stickies = eina_list_append(ss->stickies, s);
 	_e_sticky_show(s);
      }
    
