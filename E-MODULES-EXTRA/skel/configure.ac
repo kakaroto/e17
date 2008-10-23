@@ -57,7 +57,7 @@ AC_ARG_ENABLE(homedir-install,
 AC_OUTPUT([
 Makefile
 src/Makefile
-po/Makefile
+po/Makefile.in
 module.desktop
 ], [
 ])
