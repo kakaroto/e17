@@ -21,7 +21,7 @@ elicit_themes_init(Elicit *el)
     evas_object_show(el->themes.cont);
     {
       Evas_Object *o;
-      Evas_List *themes, *l;
+      Eina_List *themes, *l;
 
       themes = elicit_themes_list();
       
@@ -39,7 +39,7 @@ elicit_themes_init(Elicit *el)
         esmart_container_element_append(el->themes.cont, o);
       }
 
-      evas_list_free(themes);
+      eina_list_free(themes);
 
       el->themes.length = esmart_container_elements_length_get(el->themes.cont);
 
@@ -54,7 +54,7 @@ elicit_themes_init(Elicit *el)
 void
 elicit_themes_shutdown(Elicit *el)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if(el->themes.cont)
   {
@@ -127,14 +127,14 @@ elicit_theme_name_show_cb(void *data, Evas_Object *o, const char *emission, cons
   edje_object_part_text_set(el->gui, "theme.label", th);
 }
 
-Evas_List *
+Eina_List *
 elicit_themes_list()
 {
   char *dirs = NULL, *ptr = NULL, *end = NULL, *dir = NULL;
   struct stat st;
   struct dirent *ent;
   DIR *dp;
-  Evas_List *themes = NULL, *l = NULL;
+  Eina_List *themes = NULL, *l = NULL;
   int theme_seen = 0;
   
   dirs = ecore_config_theme_search_path_get();
@@ -176,7 +176,7 @@ elicit_themes_list()
         if (!strcmp(suff, ".edj"))
         {
           *suff = '\0';
-          themes = evas_list_append(themes, theme);
+          themes = eina_list_append(themes, theme);
         }
         else free(theme);
       }

@@ -42,7 +42,7 @@ elicit_swatches_init(Elicit *el)
 void
 elicit_swatches_shutdown(Elicit *el)
 {
-  Evas_List *l;
+  Eina_List *l;
   
   if (el->swatches.cont)
   {
@@ -69,7 +69,7 @@ elicit_swatches_save(Elicit *el)
 void
 _elicit_swatches_save_gpl(Elicit *el)
 {
-  Evas_List *l;
+  Eina_List *l;
   FILE *f = NULL;
   char buf[PATH_MAX];
 

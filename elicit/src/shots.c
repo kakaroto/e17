@@ -42,7 +42,7 @@ elicit_shots_init(Elicit *el)
 void
 elicit_shots_shutdown(Elicit *el)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (el->shots.cont){
     for (l = esmart_container_elements_get(el->shots.cont); l; l = l->next)
@@ -69,7 +69,7 @@ elicit_shots_save(Elicit *el)
 void
 _elicit_shots_save_eet(Elicit *el)
 {
-  Evas_List *l;
+  Eina_List *l;
   Eet_File *eet;
   int i = 0;
   char buf[PATH_MAX];

@@ -130,8 +130,8 @@ elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *src)
   char *theme = elicit_config_theme_get();
   char *file = elicit_theme_find(theme);
   char group[PATH_MAX];
-  Evas_List *groups = edje_file_collection_list(file);
-  Evas_List *l;
+  Eina_List *groups = edje_file_collection_list(file);
+  Eina_List *l;
 
   sscanf(sig, "elicit,switch,%s", group);
 
