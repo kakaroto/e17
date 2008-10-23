@@ -8,7 +8,7 @@
 #define PATH_MAX 4096
 #endif
 
-#define CONF_VERSION 1
+#define CONF_VERSION 2
 
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
@@ -201,6 +201,16 @@ void edje_viewer_config_defaults(Gui *gui)
 
 void edje_viewer_config_recent_set(Gui *gui, const char *file)
 {
+   Eina_List *l;
+
+   for(l = gui->config->recent; l; l = l->next)
+     {
+	 if(!(strncmp((char *) l->data, file, strlen(file))))
+	   {
+	      gui->config->recent = eina_list_remove_list(gui->config->recent, l);
+	      break;
+	   }
+     }
 
    gui->config->recent = eina_list_prepend(gui->config->recent, strdup(file));
    if (10 == eina_list_count(gui->config->recent))
