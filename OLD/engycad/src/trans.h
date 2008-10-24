@@ -9,8 +9,8 @@ struct _XY
     double              y;
 };
 
-void                trans_move(Evas_List *, double, double);
-void                trans_scale(Evas_List *, double, double);
-void                trans_rotate(Evas_List *, double);
+void                trans_move(Eina_List *, double, double);
+void                trans_scale(Eina_List *, double, double);
+void                trans_rotate(Eina_List *, double);
 
 double              unit(int);

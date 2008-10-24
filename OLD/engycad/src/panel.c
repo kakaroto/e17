@@ -35,7 +35,7 @@ struct _Icon
 };
 
 /* vars */
-Evas_List          *icons = NULL;
+Eina_List          *icons = NULL;
 Evas_Object        *oh, *oa, *on;
 Evas_Object        *o_hbg, *o_hte;
 
@@ -70,7 +70,7 @@ panel_init(void)
 void
 panel_configure(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Icon               *ic;
 
     for (l = icons; l; l = l->next)
@@ -161,14 +161,14 @@ load_icons(void)
           Icon               *ic;
 
           ic = panel_item_load(i);
-          icons = evas_list_append(icons, ic);
+          icons = eina_list_append(icons, ic);
       }
 }
 
 void
 panel_show(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Icon               *ic;
 
     for (l = icons; l; l = l->next)
@@ -244,7 +244,7 @@ _panel_mouse_down(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
     Evas               *e;
     Icon               *ic = NULL;
-    Evas_List          *l;
+    Eina_List          *l;
 
     e = shell->evas;
     for (l = icons; l && (!ic); l = l->next)
@@ -268,7 +268,7 @@ _panel_mouse_up(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
     Evas               *e;
     Icon               *ic = NULL;
-    Evas_List          *l;
+    Eina_List          *l;
 
     e = shell->evas;
     for (l = icons; l && (!ic); l = l->next)
@@ -292,7 +292,7 @@ _panel_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
     Evas               *e;
     Icon               *ic = NULL;
-    Evas_List          *l;
+    Eina_List          *l;
     double              w;
     int			_x, _y;
     char *s;
@@ -336,7 +336,7 @@ _panel_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
     Evas               *e;
     Icon               *ic = NULL;
-    Evas_List          *l;
+    Eina_List          *l;
 
     e = shell->evas;
     pointer_pop(0x1400 + POINTER_ARROW);
@@ -360,7 +360,7 @@ _panel_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 
 void panel_shutdown(void)
 {
-    Evas_List *l;
+    Eina_List *l;
     for (l = icons; l ; l = l->next)
       {
           Icon               *c = l->data;
@@ -369,5 +369,5 @@ void panel_shutdown(void)
 	  IF_FREE(c->hint);
 	  FREE(c);
       }
-    icons = evas_list_free(icons);
+    icons = eina_list_free(icons);
 }

@@ -128,14 +128,14 @@ drawing_load(void)
 void
 drawing_free(void)
 {
-	Evas_List *l;
+	Eina_List *l;
 
         for (l = drawing->layers; l; l = l->next)
 	{
 		layer_destroy((Layer *) l->data);
 	}
 
-	evas_list_free(drawing->layers);
+	eina_list_free(drawing->layers);
 	IF_FREE(drawing->filein);
 	IF_FREE(drawing->fileout);
 	FREE(drawing);
@@ -362,7 +362,7 @@ _drawing_create(Unit unit,
 void
 drawing_redraw(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Evas               *e;
     Drawing            *d;
     Evas_Coord          x, y, w, h;
@@ -445,7 +445,7 @@ drawing_redraw(void)
 void
 drawing_sync(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     IF_DR_SYNC(unit) E_DB_INT_SET(drawing->fileout, "/unit", drawing->unit);
     IF_DR_SYNC(aunit) E_DB_INT_SET(drawing->fileout, "/aunit", drawing->aunit);

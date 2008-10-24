@@ -94,7 +94,7 @@ void
 _point_create(double x, double y)
 {
     Point              *point;
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!drawing)
         return;
@@ -110,7 +110,7 @@ _point_create(double x, double y)
     point->point_style = DUP(shell->context.point_style);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, point);
+        eina_list_append(drawing->current_layer->objects, point);
 
     append_undo_new_object(point, CMD_SYNC, OBJ_POINT, point);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, point);
@@ -157,7 +157,7 @@ create_evas_objects(Point * point)
           evas_object_data_set(o, "y1", (void *)(long)y1);
           evas_object_data_set(o, "x2", (void *)(long)x2);
           evas_object_data_set(o, "y2", (void *)(long)y2);
-          point->list = evas_list_append(point->list, o);
+          point->list = eina_list_append(point->list, o);
       }
 }
 
@@ -165,7 +165,7 @@ void
 _point_check_evas_objects(Point * point)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     static int          fake_point = 0;
     int                 need_to_clear = 0;
 
@@ -192,7 +192,7 @@ _point_check_evas_objects(Point * point)
 
     for (l = point->list; l; l = l->next)
         evas_object_del(l->data);
-    point->list = evas_list_free(point->list);
+    point->list = eina_list_free(point->list);
 
     create_evas_objects(point);
 
@@ -260,7 +260,7 @@ point_redraw(Point * point)
 {
     Drawing            *d;
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     Evas_Coord          x, y, w, h;
     Evas_Coord          x1, y1;
 
@@ -330,13 +330,13 @@ point_redraw(Point * point)
 void 
 point_destroy(Point * point)
 {
-	Evas_List          *l;
+	Eina_List          *l;
 	for (l = drawing->layers; l; l = l->next)
 	{
 		Layer              *layer;
 		
 		layer = (Layer *) l->data;
-		layer->objects = evas_list_remove(layer->objects, point);
+		layer->objects = eina_list_remove(layer->objects, point);
 	}
 
 	point_free(point);
@@ -345,7 +345,7 @@ point_destroy(Point * point)
 void
 point_free(Point * point)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!point)
         return;
@@ -357,7 +357,7 @@ point_free(Point * point)
 
     for (l = point->list; l; l = l->next)
         evas_object_del(l->data);
-    point->list = evas_list_free(point->list);
+    point->list = eina_list_free(point->list);
     FREE(point);
 }
 
@@ -445,7 +445,7 @@ void
 point_clone(Point * oldpo, double dx, double dy)
 {
     Point              *point;
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!drawing)
         return;
@@ -458,7 +458,7 @@ point_clone(Point * oldpo, double dx, double dy)
     point->y += dy;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, point);
+        eina_list_append(drawing->current_layer->objects, point);
     append_undo_new_object(point, CMD_SYNC, OBJ_POINT, point);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, point);
 
@@ -495,7 +495,7 @@ point_array_polar(Point * po, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           point_clone(po, 0, 0);
-          point_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          point_rotate(eina_list_last(drawing->current_layer->objects)->data,
                        x0, y0, i * da);
       }
 }
@@ -504,7 +504,7 @@ void
 point_mirror_ab(Point * po, double a, double b)
 {
     Point              *point;
-    Evas_List          *l;
+    Eina_List          *l;
     double              angle, resx, resy, tx, ty;
 
     if (!drawing)
@@ -525,7 +525,7 @@ point_mirror_ab(Point * po, double a, double b)
     point->y = resy + b;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, point);
+        eina_list_append(drawing->current_layer->objects, point);
 
     append_undo_new_object(point, CMD_SYNC, OBJ_POINT, point);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, point);
@@ -538,7 +538,7 @@ void
 point_mirror_y(Point * po, double y0)
 {
     Point              *point;
-    Evas_List          *l;
+    Eina_List          *l;
     double              angle, resx, resy;
 
     if (!drawing)
@@ -553,7 +553,7 @@ point_mirror_y(Point * po, double y0)
     point->y = 2 * y0 - po->y;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, point);
+        eina_list_append(drawing->current_layer->objects, point);
 
     append_undo_new_object(point, CMD_SYNC, OBJ_POINT, point);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, point);
@@ -566,7 +566,7 @@ void
 point_mirror_x(Point * po, double x0)
 {
     Point              *point;
-    Evas_List          *l;
+    Eina_List          *l;
     double              angle, resx, resy;
 
     if (!drawing)
@@ -581,7 +581,7 @@ point_mirror_x(Point * po, double x0)
     point->y = po->y;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, point);
+        eina_list_append(drawing->current_layer->objects, point);
 
     append_undo_new_object(point, CMD_SYNC, OBJ_POINT, point);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, point);
@@ -703,7 +703,7 @@ point_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, po);
+        eina_list_append(drawing->current_layer->objects, po);
 
     append_undo_new_object(po, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
@@ -880,7 +880,7 @@ point_load(int id)
 	                po->point_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, po);
+        eina_list_append(drawing->current_layer->objects, po);
 
     append_undo_new_object(po, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);

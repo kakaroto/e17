@@ -98,14 +98,14 @@ void
 pre_line_x1y1(double x1, double y1)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
 
     xy->x = x1;
     xy->y = y1;
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
 
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
@@ -168,7 +168,7 @@ _line_create(double x1, double y1, double x2, double y2)
     line->y1 = y1;
     line->y2 = y2;
 
-    layer->objects = evas_list_append(layer->objects, line);
+    layer->objects = eina_list_append(layer->objects, line);
 
     append_undo_new_object(line, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
@@ -203,7 +203,7 @@ void
 _line_check_evas_objects(Line * line)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     int                 need_to_clear = 0;
 
     e = shell->evas;
@@ -258,7 +258,7 @@ _line_check_evas_objects(Line * line)
       {
           for (l = line->list; l; l = l->next)
               evas_object_del(l->data);
-          line->list = evas_list_free(line->list);
+          line->list = eina_list_free(line->list);
       }
 
     _line_refresh_evas_objects(line);
@@ -358,13 +358,13 @@ line_redraw(Line * line)
 void
 line_destroy(Line *line)
 {
-	Evas_List          *l;
+	Eina_List          *l;
 	for (l = drawing->layers; l; l = l->next)
 	{                                           
 		Layer              *layer;
 		
 		layer = (Layer *) l->data;
-		layer->objects = evas_list_remove(layer->objects, line);
+		layer->objects = eina_list_remove(layer->objects, line);
 	}
 
 	line_free(line);
@@ -373,7 +373,7 @@ line_destroy(Line *line)
 void
 line_free(Line * line)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!line)
         return;
@@ -387,7 +387,7 @@ line_free(Line * line)
 
     for (l = line->list; l; l = l->next)
         evas_object_del(l->data);
-    line->list = evas_list_free(line->list);
+    line->list = eina_list_free(line->list);
 
     FREE(line);
 }
@@ -541,7 +541,7 @@ line_clone(Line * oldline, double dx, double dy)
     line->y1 += dy;
     line->y2 += dy;
 
-    layer->objects = evas_list_append(layer->objects, line);
+    layer->objects = eina_list_append(layer->objects, line);
 
     append_undo_new_object(line, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
@@ -579,7 +579,7 @@ line_array_polar(Line * line, double x0, double y0, int num, double dalpha)
     for (i = 1; i < num; i++)
       {
           line_clone(line, 0, 0);
-          line_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          line_rotate(eina_list_last(drawing->current_layer->objects)->data,
                       x0, y0, i * dalpha);
       }
 }
@@ -620,7 +620,7 @@ line_mirror_ab(Line * oldline, double a, double b)
     line->y2 = resy + b;
 
     line->owner = (Object *) drawing->current_layer;
-    layer->objects = evas_list_append(layer->objects, line);
+    layer->objects = eina_list_append(layer->objects, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
     append_undo_new_object(line, CMD_SYNC, OBJ_LINE, line);
     line_ssync(line);
@@ -648,7 +648,7 @@ line_mirror_y(Line * oldline, double y0)
     line->y2 = 2 * y0 - oldline->y2;
     line->owner = (Object *) drawing->current_layer;
 
-    layer->objects = evas_list_append(layer->objects, line);
+    layer->objects = eina_list_append(layer->objects, line);
     append_undo_new_object(line, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
     line_ssync(line);
@@ -676,7 +676,7 @@ line_mirror_x(Line * oldline, double x0)
     line->y2 = oldline->y2;
     line->owner = (Object *) drawing->current_layer;
 
-    layer->objects = evas_list_append(layer->objects, line);
+    layer->objects = eina_list_append(layer->objects, line);
     append_undo_new_object(line, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
     line_ssync(line);
@@ -958,7 +958,7 @@ line_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, li);
+        eina_list_append(drawing->current_layer->objects, li);
 
     append_undo_new_object(li, CMD_SYNC, OBJ_LINE, li);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, li);
@@ -1123,7 +1123,7 @@ _create_scaled_line(Line * line)
 {
     Evas               *e;
     Evas_Object        *o;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Drawing            *d;
     int                 flag, sign = 1;
     float               len, tlen, tscale;
@@ -1172,8 +1172,8 @@ _create_scaled_line(Line * line)
                                      shell->context.show_thickness * d->scale);
                       evas_object_layer_set(o, 10);
                       evas_object_pass_events_set(o, 1);
-                      line->list = evas_list_append(line->list, o);
-                      lo = evas_list_last(line->list);
+                      line->list = eina_list_append(line->list, o);
+                      lo = eina_list_last(line->list);
                   }
                 o = lo->data;
                 lo = lo->next;
@@ -1209,14 +1209,14 @@ _create_scaled_line(Line * line)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
 _create_tiled_line(Line * line)
 {
     int                 flag, sign = 1;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Evas               *e;
     Evas_Object        *o;
     Drawing            *d;
@@ -1263,8 +1263,8 @@ _create_tiled_line(Line * line)
                                      shell->context.show_thickness * d->scale);
                       evas_object_layer_set(o, 10);
                       evas_object_pass_events_set(o, 1);
-                      line->list = evas_list_append(line->list, o);
-                      lo = evas_list_last(line->list);
+                      line->list = eina_list_append(line->list, o);
+                      lo = eina_list_last(line->list);
                   }
                 o = lo->data;
                 lo = lo->next;
@@ -1302,7 +1302,7 @@ _create_tiled_line(Line * line)
 
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 
@@ -1458,7 +1458,7 @@ ghost_line_create(void)
 }
 
 void
-ghost_line_redraw(Evas_List *data, double x, double y)
+ghost_line_redraw(Eina_List *data, double x, double y)
 {
     XY                 *xy;
     Evas               *e;
@@ -1472,7 +1472,7 @@ ghost_line_redraw(Evas_List *data, double x, double y)
     if (!d)
         return;
 
-    xy = (XY *) evas_list_last(data)->data;
+    xy = (XY *) eina_list_last(data)->data;
     x1 = w2s_x(xy->x);
     y1 = w2s_y(xy->y);
     x2 = w2s_x(x);
@@ -1581,7 +1581,7 @@ line_load(int id)
 	                li->line_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, li);
+        eina_list_append(drawing->current_layer->objects, li);
 
     append_undo_new_object(li, CMD_SYNC, OBJ_LINE, li);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, li);

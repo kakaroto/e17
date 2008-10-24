@@ -35,9 +35,9 @@ struct _Candidate
     MG                 *parent;
 };
 
-Evas_List          *candlist = NULL;
-Evas_List          *a_mg = NULL;
-Evas_List          *mclist = NULL;
+Eina_List          *candlist = NULL;
+Eina_List          *a_mg = NULL;
+Eina_List          *mclist = NULL;
 
 int                 mg_mask = 0xff;
 
@@ -112,11 +112,11 @@ magnet_detach(void *pnt)
     mc = magnet_find_parent(pnt);
     if (!mc)
         return;
-    mclist = evas_list_remove(mclist, mc);
-    a_mg = evas_list_remove(a_mg, mc->ep1);
-    a_mg = evas_list_remove(a_mg, mc->ep2);
-    a_mg = evas_list_remove(a_mg, mc->mp);
-    a_mg = evas_list_remove(a_mg, mc->cp);
+    mclist = eina_list_remove(mclist, mc);
+    a_mg = eina_list_remove(a_mg, mc->ep1);
+    a_mg = eina_list_remove(a_mg, mc->ep2);
+    a_mg = eina_list_remove(a_mg, mc->mp);
+    a_mg = eina_list_remove(a_mg, mc->cp);
 
     if (mc->ep1)
         evas_object_del(mc->ep1->o);
@@ -137,7 +137,7 @@ magnet_detach(void *pnt)
 MC                 *
 magnet_find_parent(void *pnt)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     MC                 *mc;
 
     for (l = mclist; l; l = l->next)
@@ -148,7 +148,7 @@ magnet_find_parent(void *pnt)
       }
     mc = mc_create();
     mc->parent = pnt;
-    mclist = evas_list_append(mclist, mc);
+    mclist = eina_list_append(mclist, mc);
     return mc;
 }
 
@@ -338,7 +338,7 @@ _mg_mouse_up(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 static void
 _mg_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     MC                 *mc;
     MG                 *mg;
 
@@ -388,7 +388,7 @@ mg_on(MG * mg)
 {
     evas_object_color_set(mg->o, 40, 120, 160, 200);
     mg->on = 1;
-    a_mg = evas_list_append(a_mg, mg);
+    a_mg = eina_list_append(a_mg, mg);
 }
 
 void
@@ -396,7 +396,7 @@ mg_off(MG * mg)
 {
     evas_object_color_set(mg->o, 0, 0, 0, 0);
     mg->on = 0;
-    a_mg = evas_list_remove(a_mg, mg);
+    a_mg = eina_list_remove(a_mg, mg);
 }
 
 void
@@ -411,7 +411,7 @@ magnet_off_all(void)
 void
 magnet_mouse_move(int _x, int _y)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     MG                 *mg;
     Cand               *cand;
     double              x, y;
@@ -421,14 +421,14 @@ magnet_mouse_move(int _x, int _y)
 
     for (l = candlist; l; l = l->next)
         FREE(l->data);
-    candlist = evas_list_free(candlist);
+    candlist = eina_list_free(candlist);
 
     for (l = a_mg; l; l = l->next)
       {
           mg = (MG *) l->data;
           cand = mg_check_xy(mg, x, y);
           if (cand)
-              candlist = evas_list_append(candlist, cand);
+              candlist = eina_list_append(candlist, cand);
       }
     cand = NULL;                /* I can't deal with 2 arc */
     for (l = a_mg; l && !cand; l = l->next)
@@ -436,14 +436,14 @@ magnet_mouse_move(int _x, int _y)
           mg = (MG *) l->data;
           cand = mg_check_arc(mg, x, y);
           if (cand)
-              candlist = evas_list_append(candlist, cand);
+              candlist = eina_list_append(candlist, cand);
       }
     for (l = a_mg; l; l = l->next)
       {
           mg = (MG *) l->data;
           cand = mg_check_ab(mg, x, y);
           if (cand)
-              candlist = evas_list_append(candlist, cand);
+              candlist = eina_list_append(candlist, cand);
       }
 
     cand = NULL;
@@ -452,7 +452,7 @@ magnet_mouse_move(int _x, int _y)
           mg = (MG *) l->data;
           cand = mg_check_x(mg, x, y);
           if (cand)
-              candlist = evas_list_append(candlist, cand);
+              candlist = eina_list_append(candlist, cand);
       }
 
     cand = NULL;
@@ -461,7 +461,7 @@ magnet_mouse_move(int _x, int _y)
           mg = (MG *) l->data;
           cand = mg_check_y(mg, x, y);
           if (cand)
-              candlist = evas_list_append(candlist, cand);
+              candlist = eina_list_append(candlist, cand);
       }
 
     parse_candidates();
@@ -664,7 +664,7 @@ parse_candidates(void)
 {
     Evas               *e;
     Cand               *c1 = NULL, *c2 = NULL;
-    Evas_List          *l, *l2;
+    Eina_List          *l, *l2;
 
     if (!shell)
         return;
@@ -694,10 +694,10 @@ parse_candidates(void)
       {
           /* along xy */
           mg_create_along(c1);
-          candlist = evas_list_remove(candlist, c1);
+          candlist = eina_list_remove(candlist, c1);
           for (l = candlist; l; l = l->next)
               FREE(l->data);
-          candlist = evas_list_free(candlist);
+          candlist = eina_list_free(candlist);
           return;
       }
 
@@ -713,12 +713,12 @@ parse_candidates(void)
     if (candlist->next)
         c2 = (Cand *) candlist->next->data;
 
-    candlist = evas_list_remove(candlist, c1);
-    candlist = evas_list_remove(candlist, c2);
+    candlist = eina_list_remove(candlist, c1);
+    candlist = eina_list_remove(candlist, c2);
 
     for (l = candlist; l; l = l->next)
         FREE(l->data);
-    candlist = evas_list_free(candlist);
+    candlist = eina_list_free(candlist);
     if (c2)
       {
           mg_create_intersection(c1, c2);

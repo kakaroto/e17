@@ -119,7 +119,7 @@ _layer_create(char *label, int r, int g, int b, int a,
 
     append_undo_new_object(layer, CMD_REDRAW, OBJ_LAYER, layer);
 
-    drawing->layers = evas_list_append(drawing->layers, layer);
+    drawing->layers = eina_list_append(drawing->layers, layer);
     layer_set(layer->label);
     layer_ssync(layer);
     layer_sync(layer);
@@ -129,7 +129,7 @@ _layer_create(char *label, int r, int g, int b, int a,
 void
 layer_set(char *label)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Layer              *layer = NULL;
     Drawing            *d;
 
@@ -159,7 +159,7 @@ layer_set(char *label)
           layer_ssync(layer);
           layer_sync(layer);
           append_undo_new_object(layer, CMD_REDRAW, OBJ_LAYER, layer);
-          drawing->layers = evas_list_append(drawing->layers, layer);
+          drawing->layers = eina_list_append(drawing->layers, layer);
       }
     FREE(label);
     append_undo_long((void *)&(drawing->current_layer),
@@ -172,7 +172,7 @@ layer_set(char *label)
 void
 layer_redraw(Layer * layer)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!layer)
         return;
@@ -223,7 +223,7 @@ layer_redraw(Layer * layer)
 void
 layer_sync(Layer * layer)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     char               *f;
     char                buf[4096];
 
@@ -248,7 +248,7 @@ layer_sync(Layer * layer)
 void
 layer_destroy(Layer * layer)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!layer)
         return;
@@ -287,7 +287,7 @@ layer_destroy(Layer * layer)
             }
       }
 
-    evas_list_free(layer->objects);
+    eina_list_free(layer->objects);
     FREE(layer->line_style);
     FREE(layer->label);
     IF_FREE(layer->old.line_style);
@@ -377,7 +377,7 @@ layer_load(int id)
     layer->thickness = x;
     ENGY_ASSERT(res);
 
-    drawing->layers = evas_list_append(drawing->layers, layer);
+    drawing->layers = eina_list_append(drawing->layers, layer);
     layer_set(DUP(layer->label));
 
     {
@@ -414,7 +414,7 @@ void
 layer_menu_handling(void)
 {
     int                 i = 0;
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = drawing->layers; l && (i < 20); l = l->next)
       {
@@ -441,7 +441,7 @@ layer_menu_handling(void)
 void
 layer_hide(Layer * layer)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = layer->objects; l; l = l->next)
       {
@@ -457,7 +457,7 @@ layer_hide(Layer * layer)
 void
 layer_show(Layer * layer)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = layer->objects; l; l = l->next)
       {
@@ -473,7 +473,7 @@ layer_show(Layer * layer)
 void
 layer_hide_all(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!drawing)
         return;
@@ -488,7 +488,7 @@ layer_hide_all(void)
 void
 layer_show_all(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!drawing)
         return;

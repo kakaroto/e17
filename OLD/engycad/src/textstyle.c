@@ -36,7 +36,7 @@ typedef struct
 Text_Style;
 
 /* vars */
-Evas_List          *textstyles = NULL;
+Eina_List          *textstyles = NULL;
 Text_Style         *ts_current = NULL;
 
 /* protos */
@@ -54,7 +54,7 @@ _ts_find(const char *style)
 {
     Text_Style         *ts;
 
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = textstyles; l; l = l->next)
       {
@@ -67,7 +67,7 @@ _ts_find(const char *style)
     if (!ts)
         return NULL;
 
-    textstyles = evas_list_append(textstyles, ts);
+    textstyles = eina_list_append(textstyles, ts);
     return ts;
 }
 

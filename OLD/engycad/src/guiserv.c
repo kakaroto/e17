@@ -27,7 +27,7 @@
 
 pthread_mutex_t     guimutex = PTHREAD_MUTEX_INITIALIZER;
 extern Evas_Object * o_cl; // FIXME
-Evas_List          *guiqueue = NULL;
+Eina_List          *guiqueue = NULL;
 
 /* protos */
 void                set_show_thickness(char *s);
@@ -60,7 +60,7 @@ _gui_put_string(char *s)
     if (!s)
         return;
     pthread_mutex_lock(&guimutex);
-    guiqueue = evas_list_append(guiqueue, s);
+    guiqueue = eina_list_append(guiqueue, s);
     pthread_mutex_unlock(&guimutex);
 }
 
@@ -118,7 +118,7 @@ _gui_get_string(void)
           return NULL;
       }
     s = guiqueue->data;
-    guiqueue = evas_list_remove(guiqueue, s);
+    guiqueue = eina_list_remove(guiqueue, s);
     pthread_mutex_unlock(&guimutex);
     return s;
 }

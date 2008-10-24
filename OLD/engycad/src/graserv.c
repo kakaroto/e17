@@ -27,11 +27,11 @@
 
 /* vars */
 pthread_mutex_t     gramutex = PTHREAD_MUTEX_INITIALIZER;
-Evas_List          *gra_queue = NULL;
+Eina_List          *gra_queue = NULL;
 
 /*   pre_draw vars   */
-Evas_List          *obj_data = NULL;
-Evas_List          *pre_draw_objects = NULL;
+Eina_List          *obj_data = NULL;
+Eina_List          *pre_draw_objects = NULL;
 int                 state = 0;
 
 /* protos */
@@ -70,7 +70,7 @@ void
 gra_put_msg(Msg * msg)
 {
     pthread_mutex_lock(&gramutex);
-    gra_queue = evas_list_append(gra_queue, msg);
+    gra_queue = eina_list_append(gra_queue, msg);
     pthread_mutex_unlock(&gramutex);
 }
 
@@ -93,7 +93,7 @@ gra_get_msg(void)
 
     pthread_mutex_lock(&gramutex);
     msg = gra_queue->data;
-    gra_queue = evas_list_remove(gra_queue, msg);
+    gra_queue = eina_list_remove(gra_queue, msg);
     pthread_mutex_unlock(&gramutex);
     return msg;
 }
@@ -273,13 +273,13 @@ gra_delete(Msg * msg)
 /*******  pre_draw  ***********/
 
 void
-gra_pre_draw_put_data(Evas_List *list)
+gra_pre_draw_put_data(Eina_List *list)
 {
-    Evas_List           *l;
+    Eina_List           *l;
 
     for (l = obj_data; l; l = l->next)
         FREE(l->data);
-    obj_data = evas_list_free(obj_data);
+    obj_data = eina_list_free(obj_data);
 
     obj_data = list;
 }

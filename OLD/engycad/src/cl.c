@@ -32,8 +32,8 @@ struct _CL {
 Evas_Object * o_cl;
 iconv_t dcd;
 Evas_Object * current_editbox;
-Evas_List * history = NULL;
-Evas_List * curr_h = NULL;
+Eina_List * history = NULL;
+Eina_List * curr_h = NULL;
 
 
 Evas_Smart *smart;
@@ -557,7 +557,7 @@ void cl_handle_key(Evas_Object *o, void *event_info)
 	if(!curr_h)
 	{
 		s = DUP(p);
-		history = evas_list_prepend(history, s);
+		history = eina_list_prepend(history, s);
 	}
 	else
 	{
@@ -662,7 +662,7 @@ void cl_history_up(Evas_Object *_o)
 	if(!curr_h)
 	{
 		s = DUP(p);
-		history = evas_list_prepend(history, s);
+		history = eina_list_prepend(history, s);
 		curr_h = history;
 	}
 	else
@@ -685,7 +685,7 @@ void cl_history_down(Evas_Object *_o)
 	if(!curr_h)
 	{
 		s = DUP(p);
-		history = evas_list_prepend(history, s);
+		history = eina_list_prepend(history, s);
 		curr_h = history;
 	}
 	else
@@ -694,15 +694,15 @@ void cl_history_down(Evas_Object *_o)
 		curr_h->data = DUP(p);
 	}
 
-	if(!evas_list_prev(curr_h))
+	if(!eina_list_prev(curr_h))
 		return;
-	curr_h = evas_list_prev(curr_h);
+	curr_h = eina_list_prev(curr_h);
 	cl_text_set(_o, curr_h->data);
 }
 
 void cl_autocomplete(Evas_Object *_o)
 {
-	Evas_List *l;
+	Eina_List *l;
 	char *s, *s1;
 
 	if(!history)
@@ -1099,7 +1099,7 @@ void cl_configure(Evas_Coord w, Evas_Coord h)
 
 void cl_shutdown(void)
 {
-	Evas_List *l;
+	Eina_List *l;
 	iconv_close(dcd);
 
 	for(l = history; l; l = l->next)
@@ -1107,7 +1107,7 @@ void cl_shutdown(void)
 		IF_FREE(l->data);
 	}
 	
-	evas_list_free(history);
+	eina_list_free(history);
 }
 
 

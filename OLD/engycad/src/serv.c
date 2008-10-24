@@ -39,7 +39,7 @@ pthread_t           thserv;
 char               *ipc_script_name;
 char                file[4096];
 
-Evas_List          *serv_queue = NULL;
+Eina_List          *serv_queue = NULL;
 
 int                 parsed_flag;
 int 		    fl_shutdown = FALSE;
@@ -129,7 +129,7 @@ _serv_put_string(char *s)
     if (!s)
         return;
 
-    serv_queue = evas_list_append(serv_queue, s);
+    serv_queue = eina_list_append(serv_queue, s);
 }
 
 void
@@ -179,7 +179,7 @@ _serv_get_string(void)
 		    continue;
 	    }
 	    s = serv_queue->data;
-	    serv_queue = evas_list_remove(serv_queue, s);
+	    serv_queue = eina_list_remove(serv_queue, s);
 	    pthread_mutex_unlock(&queuemutex);
     }
     while(!s);
@@ -395,13 +395,13 @@ void
 pre_set_x1y1(double x, double y)
 {
     XY                 *o;
-    Evas_List          *l = NULL;
+    Eina_List          *l = NULL;
 
     o = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(o);
     o->x = x;
     o->y = y;
-    l = evas_list_append(l, o);
+    l = eina_list_append(l, o);
     msg_create_and_send(CMD_PRE_DATA, 0, l);
 }
 
@@ -409,19 +409,19 @@ void
 pre_set_x1y1x2y2(double x1, double y1, double x2, double y2)
 {
     XY                 *o;
-    Evas_List          *l = NULL;
+    Eina_List          *l = NULL;
 
     o = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(o);
     o->x = x1;
     o->y = y1;
-    l = evas_list_append(l, o);
+    l = eina_list_append(l, o);
 
     o = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(o);
     o->x = x2;
     o->y = y2;
-    l = evas_list_append(l, o);
+    l = eina_list_append(l, o);
 
     msg_create_and_send(CMD_PRE_DATA, 0, l);
 }

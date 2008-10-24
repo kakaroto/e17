@@ -32,7 +32,7 @@ void
 pre_rect_x1y1(double x, double y)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
@@ -40,7 +40,7 @@ pre_rect_x1y1(double x, double y)
     xy->x = x;
     xy->y = y;
 
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
 
@@ -139,7 +139,7 @@ ghost_rect_create(void)
 }
 
 void
-ghost_rect_redraw(Evas_List *data, double x, double y)
+ghost_rect_redraw(Eina_List *data, double x, double y)
 {
     XY                 *xy;
     Evas               *e;
@@ -153,7 +153,7 @@ ghost_rect_redraw(Evas_List *data, double x, double y)
     if (!d)
         return;
 
-    xy = (XY *) evas_list_last(data)->data;
+    xy = (XY *) eina_list_last(data)->data;
     x1 = w2s_x(xy->x);
     y1 = w2s_y(xy->y);
     x2 = w2s_x(x);

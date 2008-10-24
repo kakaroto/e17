@@ -32,11 +32,11 @@ struct _Line_Style
     float               tilelength;
     int                 odd;
     int                 count;
-    Evas_List          *points;
+    Eina_List          *points;
 };
 
 /* vars */
-Evas_List          *line_styles = NULL;
+Eina_List          *line_styles = NULL;
 Line_Style         *ls_current = NULL;
 
 /* protos */
@@ -54,7 +54,7 @@ _ls_find(const char *style)
 {
     Line_Style         *ls;
 
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = line_styles; l; l = l->next)
       {
@@ -67,7 +67,7 @@ _ls_find(const char *style)
     if (!ls)
         return NULL;
 
-    line_styles = evas_list_append(line_styles, ls);
+    line_styles = eina_list_append(line_styles, ls);
     return ls;
 }
 
@@ -75,7 +75,7 @@ Line_Style         *
 _ls_load(const char *style)
 {
     Line_Style         *ls;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
     int                 i, res, tiled;
     char                buf[4096];
     float               x, y;
@@ -118,7 +118,7 @@ _ls_load(const char *style)
           E_DB_FLOAT_GET(shell->line_styles_file, buf, y, res);
           ENGY_ASSERT(res);
           xy->y = y;
-          ls->points = evas_list_append(ls->points, xy);
+          ls->points = eina_list_append(ls->points, xy);
       }
 
     return ls;
@@ -148,12 +148,12 @@ linestyle_get_tilelength(void)
     return (double)ls_current->tilelength;
 }
 
-Evas_List *
+Eina_List *
 linestyle_get_points(double len, double scale)
 {
     Line_Style         *ls;
-    Evas_List          *res = NULL;
-    Evas_List          *l;
+    Eina_List          *res = NULL;
+    Eina_List          *l;
     XY                 *a, *b;
 
     if (!ls_current)
@@ -176,7 +176,7 @@ linestyle_get_points(double len, double scale)
           ENGY_ASSERT(a);
           a->x = 0.0;
           a->y = 0.0;
-          res = evas_list_append(res, a);
+          res = eina_list_append(res, a);
 
           for (i = 0; i < n; i++)
             {
@@ -195,7 +195,7 @@ linestyle_get_points(double len, double scale)
                           b->x = len;
 
                       b->y = a->y * scale;
-                      res = evas_list_append(res, b);
+                      res = eina_list_append(res, b);
                   }
             }
       }
@@ -206,25 +206,25 @@ linestyle_get_points(double len, double scale)
           ENGY_ASSERT(a);
           a->x = 0.0;
           a->y = 0.0;
-          res = evas_list_append(res, a);
+          res = eina_list_append(res, a);
 
           for (l = ls->points; l; l = l->next)
             {
                 b = (XY *) malloc(sizeof(XY));
                 ENGY_ASSERT(b);
                 memcpy(b, l->data, sizeof(XY));
-                res = evas_list_append(res, b);
+                res = eina_list_append(res, b);
             }
       }
     return res;
 }
 
-Evas_List *
+Eina_List *
 linestyle_get_dx_points(double x1, double x2, double scale)
 {
     Line_Style         *ls;
-    Evas_List          *res = NULL;
-    Evas_List          *l;
+    Eina_List          *res = NULL;
+    Eina_List          *l;
     XY                 *a, *b;
     double              len;
 
@@ -253,7 +253,7 @@ linestyle_get_dx_points(double x1, double x2, double scale)
           ENGY_ASSERT(a);
           a->x = x1;
           a->y = 0.0;
-          res = evas_list_append(res, a);
+          res = eina_list_append(res, a);
 
           for (i = -1; i < n; i++)
             {
@@ -273,7 +273,7 @@ linestyle_get_dx_points(double x1, double x2, double scale)
 
                       b->x += (float)((int)(x1 / tlen)) * tlen;
                       b->y = a->y * scale;
-                      res = evas_list_append(res, b);
+                      res = eina_list_append(res, b);
                   }
             }
       }
@@ -285,7 +285,7 @@ linestyle_get_dx_points(double x1, double x2, double scale)
           ENGY_ASSERT(a);
           a->x = x1;
           a->y = 0.0;
-          res = evas_list_append(res, a);
+          res = eina_list_append(res, a);
 
           tlen = ls->tilelength;
           tscale = len / tlen;
@@ -297,7 +297,7 @@ linestyle_get_dx_points(double x1, double x2, double scale)
                 memcpy(b, l->data, sizeof(XY));
                 b->x *= tscale;
                 b->x += x1;
-                res = evas_list_append(res, b);
+                res = eina_list_append(res, b);
             }
       }
     return res;

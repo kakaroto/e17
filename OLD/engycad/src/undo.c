@@ -91,15 +91,15 @@ void                redo_double(Undo_Item_Double *);
 void                redo_obj(Undo_Item_Obj *);
 
 /* vars */
-Evas_List          *undo_items = NULL;
-Evas_List          *undo_pos = NULL;
-Evas_List          *garbage = NULL;
-Evas_List          *garbage_obj = NULL;
+Eina_List          *undo_items = NULL;
+Eina_List          *undo_pos = NULL;
+Eina_List          *garbage = NULL;
+Eina_List          *garbage_obj = NULL;
 
 void
 dump_list(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     printf("Beg\n");
     printf("pos = %x\n", undo_pos);
@@ -113,22 +113,22 @@ dump_list(void)
 void
 free_garbage(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = garbage; l; l = l->next)
         FREE(l->data);
-    garbage = evas_list_free(garbage);
+    garbage = eina_list_free(garbage);
 
     for (l = garbage_obj; l; l = l->next)
 	  msg_create_and_send(CMD_DELETE, ((Object*)l->data)->type, l->data);
-    garbage_obj = evas_list_free(garbage_obj);
+    garbage_obj = eina_list_free(garbage_obj);
 
 }
 
 void
 cut_undo_list(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     void               *p = NULL, *p1 = NULL;
 
     free_garbage();
@@ -137,19 +137,19 @@ cut_undo_list(void)
       {
           for (l = undo_items; l; l = l->next)
               FREE(l->data);
-          undo_items = evas_list_free(undo_items);
+          undo_items = eina_list_free(undo_items);
           return;
       }
 
-    if (undo_pos == evas_list_last(undo_items))
+    if (undo_pos == eina_list_last(undo_items))
         return;
 
     p = undo_pos->data;
     do
       {
-          p1 = evas_list_last(undo_items)->data;
+          p1 = eina_list_last(undo_items)->data;
           if (p != p1)
-              undo_items = evas_list_remove(undo_items, p1);
+              undo_items = eina_list_remove(undo_items, p1);
       }
     while (p != p1);
 };
@@ -172,8 +172,8 @@ append_undo_ptr(void *ptr,
     it->obj = obj;
 
     cut_undo_list();
-    undo_items = evas_list_append(undo_items, it);
-    undo_pos = evas_list_last(undo_items);
+    undo_items = eina_list_append(undo_items, it);
+    undo_pos = eina_list_last(undo_items);
 }
 
 void
@@ -193,8 +193,8 @@ append_undo_long(void *ptr, long old, long new, int major, int minor, void *obj)
     it->obj = obj;
 
     cut_undo_list();
-    undo_items = evas_list_append(undo_items, it);
-    undo_pos = evas_list_last(undo_items);
+    undo_items = eina_list_append(undo_items, it);
+    undo_pos = eina_list_last(undo_items);
 }
 
 void
@@ -216,8 +216,8 @@ append_undo_double(void *ptr,
 
     cut_undo_list();
 
-    undo_items = evas_list_append(undo_items, it);
-    undo_pos = evas_list_last(undo_items);
+    undo_items = eina_list_append(undo_items, it);
+    undo_pos = eina_list_last(undo_items);
 }
 
 void
@@ -234,8 +234,8 @@ append_undo_new_object(void *ptr, int major, int minor, void *obj)
     it->obj = obj;
 
     cut_undo_list();
-    undo_items = evas_list_append(undo_items, it);
-    undo_pos = evas_list_last(undo_items);
+    undo_items = eina_list_append(undo_items, it);
+    undo_pos = eina_list_last(undo_items);
 }
 
 void
@@ -331,7 +331,7 @@ undo_ptr(Undo_Item_Ptr * it)
 
     p = (char **)it->ptr;
     *p = it->old;
-    garbage = evas_list_append(garbage, it->new);
+    garbage = eina_list_append(garbage, it->new);
     msg_create_and_send(it->major, it->minor, it->obj);
 }
 
@@ -362,7 +362,7 @@ undo_obj(Undo_Item_Obj * it)
 
     o = it->obj;
     o->flags |= FLAG_DELETED;
-    garbage_obj = evas_list_append(garbage_obj, o);
+    garbage_obj = eina_list_append(garbage_obj, o);
     msg_create_and_send(it->major, it->minor, it->obj);
 }
 
@@ -373,7 +373,7 @@ redo_ptr(Undo_Item_Ptr * it)
 
     p = (char **)it->ptr;
     *p = it->new;
-    garbage = evas_list_remove(garbage, it->new);
+    garbage = eina_list_remove(garbage, it->new);
     msg_create_and_send(it->major, it->minor, it->obj);
 }
 
@@ -404,7 +404,7 @@ redo_obj(Undo_Item_Obj * it)
 
     o = it->obj;
     o->flags ^= FLAG_DELETED;
-    garbage_obj = evas_list_remove(garbage_obj, o);
+    garbage_obj = eina_list_remove(garbage_obj, o);
     msg_create_and_send(it->major, it->minor, it->obj);
 }
 

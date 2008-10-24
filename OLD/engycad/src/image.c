@@ -173,7 +173,7 @@ _image_create(char *name, double x, double y, double s, double g)
         im->h = imlib_image_get_height();
     }
 
-    layer->objects = evas_list_append(layer->objects, im);
+    layer->objects = eina_list_append(layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -385,13 +385,13 @@ image_sync(Image * im)
 void
 image_destroy(Image * im)
 {    
-	Evas_List          *l;
+	Eina_List          *l;
 	for (l = drawing->layers; l; l = l->next)
 	{                                           
 		Layer              *layer;
 		
 		layer = (Layer *) l->data;
-		layer->objects = evas_list_remove(layer->objects, im);
+		layer->objects = eina_list_remove(layer->objects, im);
 	}
 	
 	image_free(im);
@@ -531,7 +531,7 @@ image_clone(Image * src, double dx, double dy)
     im->x += dx;
     im->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, im);
+    layer->objects = eina_list_append(layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -569,7 +569,7 @@ image_array_polar(Image * im, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           image_clone(im, 0, 0);
-          image_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          image_rotate(eina_list_last(drawing->current_layer->objects)->data,
                        x0, y0, i * da);
       }
 }
@@ -602,7 +602,7 @@ image_mirror_ab(Image * src, double a, double b)
     im->y = resy + b;
     im->g += 2 * angle * 180 / M_PI;
 
-    layer->objects = evas_list_append(layer->objects, im);
+    layer->objects = eina_list_append(layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -632,7 +632,7 @@ image_mirror_y(Image * src, double y0)
     im->y = y0 * 2 - src->y;
     im->g = 180 - src->g;
 
-    layer->objects = evas_list_append(layer->objects, im);
+    layer->objects = eina_list_append(layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -662,7 +662,7 @@ image_mirror_x(Image * src, double x0)
     im->x = x0 * 2 - src->x;
     im->g = -src->g;
 
-    layer->objects = evas_list_append(layer->objects, im);
+    layer->objects = eina_list_append(layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -799,7 +799,7 @@ image_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(data);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, im);
+        eina_list_append(drawing->current_layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -1096,7 +1096,7 @@ image_load(int id)
     ENGY_ASSERT(im->image);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, im);
+        eina_list_append(drawing->current_layer->objects, im);
 
     append_undo_new_object(im, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);

@@ -198,7 +198,7 @@ _arc_create(double x, double y, double r, double a, double b)
     arc->a = a;
     arc->b = b;
 
-    layer->objects = evas_list_append(layer->objects, arc);
+    layer->objects = eina_list_append(layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -302,14 +302,14 @@ arc_sync(Arc * arc)
 void 
 arc_destroy(Arc * arc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = drawing->layers; l; l = l->next)
       {
           Layer              *layer;
 
           layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, arc);
+          layer->objects = eina_list_remove(layer->objects, arc);
       }
 
     arc_free(arc);
@@ -318,7 +318,7 @@ arc_destroy(Arc * arc)
 void
 arc_free(Arc * arc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!arc)
         return;
@@ -332,7 +332,7 @@ arc_free(Arc * arc)
 
     for (l = arc->list; l; l = l->next)
         evas_object_del(l->data);
-    arc->list = evas_list_free(arc->list);
+    arc->list = eina_list_free(arc->list);
 
     FREE(arc);
 }
@@ -454,7 +454,7 @@ arc_clone(Arc * src, double dx, double dy)
     arc->x += dx;
     arc->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, arc);
+    layer->objects = eina_list_append(layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -493,7 +493,7 @@ arc_array_polar(Arc * arc, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           arc_clone(arc, 0, 0);
-          arc_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          arc_rotate(eina_list_last(drawing->current_layer->objects)->data,
                      x0, y0, i * da);
       }
 }
@@ -528,7 +528,7 @@ arc_mirror_ab(Arc * src, double a, double b)
     arc->b = 2 * angle / M_PI * 180 - arc->a;
     arc->a = 2 * angle / M_PI * 180 - tx;
 
-    layer->objects = evas_list_append(layer->objects, arc);
+    layer->objects = eina_list_append(layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -559,7 +559,7 @@ arc_mirror_y(Arc * src, double y0)
     arc->a = -src->b;
     arc->b = -src->a;
 
-    layer->objects = evas_list_append(layer->objects, arc);
+    layer->objects = eina_list_append(layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -590,7 +590,7 @@ arc_mirror_x(Arc * src, double x0)
     arc->a = 180 - src->b;
     arc->b = 180 - src->a;
 
-    layer->objects = evas_list_append(layer->objects, arc);
+    layer->objects = eina_list_append(layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -710,7 +710,7 @@ arc_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, arc);
+        eina_list_append(drawing->current_layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
@@ -897,7 +897,7 @@ arc_deselect_by_rect(Arc * arc, double x, double y, double w, double h)
 void
 _arc_check_evas_objects(Arc * arc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     int                 need_to_clear = 0;
 
     if (!arc->old.line_style || strcmp(arc->old.line_style, arc->line_style))
@@ -942,7 +942,7 @@ _arc_check_evas_objects(Arc * arc)
       {
           for (l = arc->list; l; l = l->next)
               evas_object_del(l->data);
-          arc->list = evas_list_free(arc->list);
+          arc->list = eina_list_free(arc->list);
       }
 
     _arc_refresh_evas_objects(arc);
@@ -967,7 +967,7 @@ void
 _create_scaled_arc(Arc * arc)
 {
     Evas               *e;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Evas_Object        *o;
     float               len, tlen, tscale;
     int                 i, flag;
@@ -1035,8 +1035,8 @@ _create_scaled_arc(Arc * arc)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            arc->list = evas_list_append(arc->list, o);
-                            lo = evas_list_last(arc->list);
+                            arc->list = eina_list_append(arc->list, o);
+                            lo = eina_list_last(arc->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1091,13 +1091,13 @@ _create_scaled_arc(Arc * arc)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
 _create_tiled_arc(Arc * arc)
 {
-    Evas_List          *list, *l, *lo;
+    Eina_List          *list, *l, *lo;
     int                 i, flag;
     Evas               *e;
     Evas_Object        *o;
@@ -1165,8 +1165,8 @@ _create_tiled_arc(Arc * arc)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            arc->list = evas_list_append(arc->list, o);
-                            lo = evas_list_last(arc->list);
+                            arc->list = eina_list_append(arc->list, o);
+                            lo = eina_list_last(arc->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1225,7 +1225,7 @@ _create_tiled_arc(Arc * arc)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
@@ -1318,7 +1318,7 @@ arc_load(int id)
 	arc->line_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, arc);
+        eina_list_append(drawing->current_layer->objects, arc);
 
     append_undo_new_object(arc, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);

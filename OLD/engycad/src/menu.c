@@ -51,7 +51,7 @@ typedef struct _Box
 {
     char               *name;
     int                 level;
-    Evas_List          *items;
+    Eina_List          *items;
     double              x, y;
     double              w, h;
 }
@@ -68,9 +68,9 @@ Menu_Params;
 
 /* vars */
 
-Evas_List          *top = NULL;
-Evas_List          *boxes = NULL;
-Evas_List          *items = NULL;
+Eina_List          *top = NULL;
+Eina_List          *boxes = NULL;
+Eina_List          *items = NULL;
 Menu_Params         mp;
 
 /* proto */
@@ -256,14 +256,14 @@ _menu_load_item(int box, int item)
 
     menu_item_create_evas_object(mi);
 
-    items = evas_list_append(items, mi);
+    items = eina_list_append(items, mi);
     return mi;
 }
 
 void
 menu_load(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     char               *s;
     int                 i, n, res;
 
@@ -295,9 +295,9 @@ menu_load(void)
 
                 mi = _menu_load_item(i, j);
                 mi->owner = box->name;
-                box->items = evas_list_append(box->items, mi);
+                box->items = eina_list_append(box->items, mi);
             }
-          boxes = evas_list_append(boxes, box);
+          boxes = eina_list_append(boxes, box);
       }
 }
 
@@ -350,7 +350,7 @@ void
 menu_show(void)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     double              x = 0.0;
     double              h;
 
@@ -388,7 +388,7 @@ _menu_item_normal(Menu_Item * mi)
 void
 _menu_item_hilight(Menu_Item * mi)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Evas               *e;
     Box                *box;
 
@@ -434,7 +434,7 @@ _menu_item_hilight(Menu_Item * mi)
 void
 _menu_item_active(Menu_Item * mi)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Evas               *e;
     Box                *box;
 
@@ -498,7 +498,7 @@ void
 menu_box_show_top(void)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     Box                *top = NULL;
     Evas_Coord          x, y, w, h;
 
@@ -539,7 +539,7 @@ void
 menu_box_show(char *name, double x, double y, int level)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     Box                *box = NULL;
     double              w, h;
     int                 indent = 0;
@@ -598,7 +598,7 @@ void
 menu_box_hide(char *name)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
     Box                *box = NULL;
     double              w, h;
 
@@ -626,7 +626,7 @@ menu_box_hide(char *name)
 static void
 _menu_mouse_down(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Menu_Item          *mi = NULL;
     int                 ac;
 
@@ -663,7 +663,7 @@ _menu_mouse_down(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 static void
 _menu_mouse_up(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Menu_Item          *mi = NULL;
     int                 ac;
 
@@ -689,7 +689,7 @@ _menu_mouse_up(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 static void
 _menu_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Menu_Item          *mi = NULL;
     int                 ac;
 
@@ -729,7 +729,7 @@ _menu_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 static void
 _menu_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Menu_Item          *mi = NULL;
     int                 ac;
 
@@ -765,7 +765,7 @@ _menu_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
 void
 menu_item_reset(char *id, char *label, int ac, char *image, char *param)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Evas               *e;
     Menu_Item          *mi, *nmi = NULL;
     char               *s;
@@ -806,7 +806,7 @@ menu_item_reset(char *id, char *label, int ac, char *image, char *param)
 
 void menu_shutdown(void)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     for (l = items; l; l = l->next)
     {
 	    Menu_Item *mi = l->data;
@@ -816,6 +816,6 @@ void menu_shutdown(void)
 	    free(mi);
     } 
 
-    items = evas_list_free(items);
+    items = eina_list_free(items);
 }
 

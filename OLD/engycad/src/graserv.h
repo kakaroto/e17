@@ -17,7 +17,7 @@ void                gra_apply(void);
 Msg                *msg_create(void);
 void                msg_create_and_send(int, int, void *);
 
-void                gra_pre_draw_put_data(Evas_List *);
+void                gra_pre_draw_put_data(Eina_List *);
 void                gra_pre_draw_mouse_move(double, double);
 void                gra_pre_draw_mouse_click(double, double);
 void                gra_set_state(int);

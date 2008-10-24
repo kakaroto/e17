@@ -143,7 +143,7 @@ _ell_create(double x, double y, double rx, double ry, double g)
     ell->ry = ry;
     ell->g = g;
 
-    layer->objects = evas_list_append(layer->objects, ell);
+    layer->objects = eina_list_append(layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -281,14 +281,14 @@ void
 ell_destroy(Ellipse * ell)
 {
     Evas               *e;
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = drawing->layers; l; l = l->next)
       {
           Layer              *layer;
 
           layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, ell);
+          layer->objects = eina_list_remove(layer->objects, ell);
       }
 
     ell_free(ell);
@@ -297,7 +297,7 @@ ell_destroy(Ellipse * ell)
 void
 ell_free(Ellipse * ell)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if(!ell)
         return;
@@ -311,7 +311,7 @@ ell_free(Ellipse * ell)
 
     for (l = ell->list; l; l = l->next)
         evas_object_del(l->data);
-    ell->list = evas_list_free(ell->list);
+    ell->list = eina_list_free(ell->list);
 
     FREE(ell);
 }
@@ -440,7 +440,7 @@ ell_clone(Ellipse * src, double dx, double dy)
     ell->x += dx;
     ell->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, ell);
+    layer->objects = eina_list_append(layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -478,7 +478,7 @@ ell_array_polar(Ellipse * ell, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           ell_clone(ell, 0, 0);
-          ell_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          ell_rotate(eina_list_last(drawing->current_layer->objects)->data,
                      x0, y0, i * da);
       }
 }
@@ -511,7 +511,7 @@ ell_mirror_ab(Ellipse * src, double a, double b)
     ell->y = resy + b;
     ell->g = 2 * angle * 180 / M_PI - ell->g;
 
-    layer->objects = evas_list_append(layer->objects, ell);
+    layer->objects = eina_list_append(layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -541,7 +541,7 @@ ell_mirror_y(Ellipse * src, double y0)
     ell->y = y0 * 2 - src->y;
     ell->g = 180 - src->g;
 
-    layer->objects = evas_list_append(layer->objects, ell);
+    layer->objects = eina_list_append(layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -571,7 +571,7 @@ ell_mirror_x(Ellipse * src, double x0)
     ell->x = x0 * 2 - src->x;
     ell->g = -src->g;
 
-    layer->objects = evas_list_append(layer->objects, ell);
+    layer->objects = eina_list_append(layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -691,7 +691,7 @@ ell_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, ell);
+        eina_list_append(drawing->current_layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
@@ -862,14 +862,14 @@ void
 pre_ell_x1y1(double x1, double y1)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
 
     xy->x = x1;
     xy->y = y1;
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
 
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
@@ -878,19 +878,19 @@ void
 pre_ell_rxg(double x1, double y1, double rx, double g)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
     xy->x = x1;
     xy->y = y1;
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
     xy->x = rx;
     xy->y = g;
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
 
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
@@ -918,7 +918,7 @@ ghost_ell_create(void)
 }
 
 void
-ghost_ell_redraw(Evas_List *data, double x, double y)
+ghost_ell_redraw(Eina_List *data, double x, double y)
 {
     XY                 *xy;
     Evas               *e;
@@ -972,7 +972,7 @@ ghost_ell_destroy(void)
 void
 _ell_check_evas_objects(Ellipse * ell)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     int                 need_to_clear = 0;
 
     if (!ell->old.line_style || strcmp(ell->old.line_style, ell->line_style))
@@ -1018,7 +1018,7 @@ _ell_check_evas_objects(Ellipse * ell)
       {
           for (l = ell->list; l; l = l->next)
               evas_object_del(l->data);
-          ell->list = evas_list_free(ell->list);
+          ell->list = eina_list_free(ell->list);
       }
 
     _ell_refresh_evas_objects(ell);
@@ -1044,7 +1044,7 @@ void
 _create_scaled_ell(Ellipse * ell)
 {
     Evas               *e;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Evas_Object        *o;
     float               len, tlen, tscale;
     int                 i, flag;
@@ -1115,8 +1115,8 @@ _create_scaled_ell(Ellipse * ell)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            ell->list = evas_list_append(ell->list, o);
-                            lo = evas_list_last(ell->list);
+                            ell->list = eina_list_append(ell->list, o);
+                            lo = eina_list_last(ell->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1184,13 +1184,13 @@ _create_scaled_ell(Ellipse * ell)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
 _create_tiled_ell(Ellipse * ell)
 {
-    Evas_List          *list, *l, *lo;
+    Eina_List          *list, *l, *lo;
     int                 i, flag;
     Evas               *e;
     Evas_Object        *o;
@@ -1263,8 +1263,8 @@ _create_tiled_ell(Ellipse * ell)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            ell->list = evas_list_append(ell->list, o);
-                            lo = evas_list_last(ell->list);
+                            ell->list = eina_list_append(ell->list, o);
+                            lo = eina_list_last(ell->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1332,7 +1332,7 @@ _create_tiled_ell(Ellipse * ell)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
@@ -1425,7 +1425,7 @@ ell_load(int id)
 	                ell->line_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, ell);
+        eina_list_append(drawing->current_layer->objects, ell);
 
     append_undo_new_object(ell, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);

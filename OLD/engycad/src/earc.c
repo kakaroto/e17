@@ -219,7 +219,7 @@ _earc_create(double x, double y,
     earc->a = a;
     earc->b = b;
 
-    layer->objects = evas_list_append(layer->objects, earc);
+    layer->objects = eina_list_append(layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -332,14 +332,14 @@ earc_sync(EArc * earc)
 void
 earc_destroy(EArc * earc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = drawing->layers; l; l = l->next)
       {
           Layer              *layer;
 
           layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, earc);
+          layer->objects = eina_list_remove(layer->objects, earc);
       }
 
     earc_free(earc);
@@ -348,7 +348,7 @@ earc_destroy(EArc * earc)
 void
 earc_free(EArc * earc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!earc)
         return;
@@ -362,7 +362,7 @@ earc_free(EArc * earc)
 
     for (l = earc->list; l; l = l->next)
         evas_object_del(l->data);
-    earc->list = evas_list_free(earc->list);
+    earc->list = eina_list_free(earc->list);
 
     FREE(earc);
 }
@@ -493,7 +493,7 @@ earc_clone(EArc * src, double dx, double dy)
     earc->x += dx;
     earc->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, earc);
+    layer->objects = eina_list_append(layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -531,7 +531,7 @@ earc_array_polar(EArc * earc, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           earc_clone(earc, 0, 0);
-          earc_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          earc_rotate(eina_list_last(drawing->current_layer->objects)->data,
                       x0, y0, i * da);
       }
 }
@@ -571,7 +571,7 @@ earc_mirror_ab(EArc * src, double a, double b)
     if ((earc->g < -90) && (earc->g > -270))
         earc->g += 180;
 
-    layer->objects = evas_list_append(layer->objects, earc);
+    layer->objects = eina_list_append(layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -603,7 +603,7 @@ earc_mirror_y(EArc * src, double y0)
     earc->b = 360 - src->a;
     earc->g = -src->g;
 
-    layer->objects = evas_list_append(layer->objects, earc);
+    layer->objects = eina_list_append(layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -635,7 +635,7 @@ earc_mirror_x(EArc * src, double x0)
     earc->b = 180 - src->a;
     earc->g = -src->g;
 
-    layer->objects = evas_list_append(layer->objects, earc);
+    layer->objects = eina_list_append(layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -767,7 +767,7 @@ earc_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, earc);
+        eina_list_append(drawing->current_layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
@@ -970,7 +970,7 @@ earc_deselect_by_rect(EArc * earc, double x, double y, double w, double h)
 void
 _earc_check_evas_objects(EArc * earc)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     int                 need_to_clear = 0;
 
     if (!earc->old.line_style || strcmp(earc->old.line_style, earc->line_style))
@@ -1019,7 +1019,7 @@ _earc_check_evas_objects(EArc * earc)
       {
           for (l = earc->list; l; l = l->next)
               evas_object_del(l->data);
-          earc->list = evas_list_free(earc->list);
+          earc->list = eina_list_free(earc->list);
       }
 
     _earc_refresh_evas_objects(earc);
@@ -1044,7 +1044,7 @@ void
 _create_scaled_earc(EArc * earc)
 {
     Evas               *e;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Evas_Object        *o;
     float               len, tlen, tscale;
     int                 i, flag;
@@ -1125,8 +1125,8 @@ _create_scaled_earc(EArc * earc)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            earc->list = evas_list_append(earc->list, o);
-                            lo = evas_list_last(earc->list);
+                            earc->list = eina_list_append(earc->list, o);
+                            lo = eina_list_last(earc->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1195,13 +1195,13 @@ _create_scaled_earc(EArc * earc)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
 _create_tiled_earc(EArc * earc)
 {
-    Evas_List          *list, *l, *lo;
+    Eina_List          *list, *l, *lo;
     int                 i, flag;
     Evas               *e;
     Evas_Object        *o;
@@ -1280,8 +1280,8 @@ _create_tiled_earc(EArc * earc)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            earc->list = evas_list_append(earc->list, o);
-                            lo = evas_list_last(earc->list);
+                            earc->list = eina_list_append(earc->list, o);
+                            lo = eina_list_last(earc->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1349,7 +1349,7 @@ _create_tiled_earc(EArc * earc)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
@@ -1452,7 +1452,7 @@ earc_load(int id)
 	                earc->line_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, earc);
+        eina_list_append(drawing->current_layer->objects, earc);
 
     append_undo_new_object(earc, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);

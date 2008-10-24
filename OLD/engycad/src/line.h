@@ -39,7 +39,7 @@ void                line_deselect_by_rect(Line *, double, double, double,
                                           double);
 
 void                ghost_line_create(void);
-void                ghost_line_redraw(Evas_List*, double, double);
+void                ghost_line_redraw(Eina_List*, double, double);
 void                ghost_line_destroy(void);
 
 Evas_Object        *_line_item(Evas *e, double w);

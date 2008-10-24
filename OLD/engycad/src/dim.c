@@ -129,7 +129,7 @@ _dim_create_line(double x1, double y1, double x2, double y2,
     li->line_scale = scale;
     li->thickness = thickness;
 
-    layer->objects = evas_list_append(layer->objects, li);
+    layer->objects = eina_list_append(layer->objects, li);
 
     append_undo_new_object(li, CMD_SYNC, OBJ_LINE, li);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, li);
@@ -206,7 +206,7 @@ _dim_h_create(double x1, double y1, double x2, double y2, double x3, double y3)
 
     te->text = DUP(buf);
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
 
@@ -389,7 +389,7 @@ ghost_dim_create(void)
 }
 
 void
-ghost_dim_h_redraw(Evas_List *data, double x, double y)
+ghost_dim_h_redraw(Eina_List *data, double x, double y)
 {
     Evas               *e;
     XY                 *xy;
@@ -435,7 +435,7 @@ ghost_dim_destroy(void)
 }
 
 void
-ghost_dim_v_redraw(Evas_List *data, double x, double y)
+ghost_dim_v_redraw(Eina_List *data, double x, double y)
 {
     Evas               *e;
     XY                 *xy;
@@ -470,7 +470,7 @@ ghost_dim_v_redraw(Evas_List *data, double x, double y)
 }
 
 void
-ghost_dim_a_redraw(Evas_List *data, double x, double y)
+ghost_dim_a_redraw(Eina_List *data, double x, double y)
 {
     Evas               *e;
     XY                 *xy;
@@ -601,7 +601,7 @@ _dim_v_create(double x1, double y1, double x2, double y2, double x3, double y3)
 
     te->text = DUP(buf);
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
 
@@ -731,7 +731,7 @@ _dim_a_create(double x1, double y1, double x2, double y2, double x3, double y3)
 
     te->text = DUP(buf);
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
 

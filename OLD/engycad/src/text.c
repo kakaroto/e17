@@ -195,7 +195,7 @@ _text_create(char *text, double x, double y, double h, double g)
     te->g = g;
     te->text = text;
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -498,14 +498,14 @@ text_sync(Text * te)
 void
 text_destroy(Text * te)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = drawing->layers; l; l = l->next)
       {
           Layer              *layer;
 
           layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, te);
+          layer->objects = eina_list_remove(layer->objects, te);
       }
 
     text_free(te);
@@ -515,7 +515,7 @@ text_destroy(Text * te)
 void
 text_free(Text * te)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!te)
         return;
@@ -648,7 +648,7 @@ text_clone(Text * src, double dx, double dy)
     te->x += dx;
     te->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -686,7 +686,7 @@ text_array_polar(Text * te, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           text_clone(te, 0, 0);
-          text_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          text_rotate(eina_list_last(drawing->current_layer->objects)->data,
                       x0, y0, i * da);
       }
 }
@@ -719,7 +719,7 @@ text_mirror_ab(Text * src, double a, double b)
     te->y = resy + b;
     te->g += 2 * angle * 180 / M_PI;
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -749,7 +749,7 @@ text_mirror_y(Text * src, double y0)
     te->y = y0 * 2 - src->y;
     te->g = 180 - src->g;
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -779,7 +779,7 @@ text_mirror_x(Text * src, double x0)
     te->x = x0 * 2 - src->x;
     te->g = -src->g;
 
-    layer->objects = evas_list_append(layer->objects, te);
+    layer->objects = eina_list_append(layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -917,7 +917,7 @@ text_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, te);
+        eina_list_append(drawing->current_layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);
@@ -1208,7 +1208,7 @@ text_load(int id)
     if(te->text && (strlen(te->text)>4000)) te->text[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, te);
+        eina_list_append(drawing->current_layer->objects, te);
 
     append_undo_new_object(te, CMD_SYNC, OBJ_TEXT, te);
     msg_create_and_send(CMD_SYNC, OBJ_TEXT, te);

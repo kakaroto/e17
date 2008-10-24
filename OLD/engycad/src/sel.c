@@ -33,7 +33,7 @@ void                pre_sel_x1y1(double, double);
 int
 sel_click_layer(int mode, Layer * layer, double _x, double _y)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Object             *obj;
     int                 flag = 0;
 
@@ -109,7 +109,7 @@ sel_click_layer(int mode, Layer * layer, double _x, double _y)
 void
 sel_click(double _x, double _y)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Drawing            *d;
     int                 flag = 0, mode = 0;
@@ -249,7 +249,7 @@ desel_rect(void)
 void
 _sel_rect_layer(int mode, Layer * layer, double x, double y, double w, double h)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Object             *obj;
 
     for (l = layer->objects; l; l = l->next)
@@ -322,7 +322,7 @@ _sel_rect_layer(int mode, Layer * layer, double x, double y, double w, double h)
 void
 _sel_rect(int mode, double x1, double y1, double x2, double y2)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     Layer              *layer;
     Drawing            *d;
     double              x, y, w, h;
@@ -348,14 +348,14 @@ void
 pre_sel_x1y1(double x1, double y1)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
 
     xy->x = x1;
     xy->y = y1;
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
 
@@ -392,7 +392,7 @@ sel_box_create(void)
 }
 
 void
-sel_box_redraw(Evas_List *data, double _x, double _y)
+sel_box_redraw(Eina_List *data, double _x, double _y)
 {
     XY                 *xy;
     Evas               *e;
@@ -413,7 +413,7 @@ sel_box_redraw(Evas_List *data, double _x, double _y)
     evas_object_show(sel3);
     evas_object_show(sel4);
 
-    xy = (XY *) evas_list_last(data)->data;
+    xy = (XY *) eina_list_last(data)->data;
     x1 = w2s_x(xy->x);
     y1 = w2s_y(xy->y);
     x2 = w2s_x(_x);

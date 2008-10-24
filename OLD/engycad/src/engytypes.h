@@ -131,7 +131,7 @@ struct _Drawing
     double              h;
     double              scale;
     Layer              *current_layer;
-    Evas_List          *layers;
+    Eina_List          *layers;
     struct
     {
         int                 r, g, b, a;
@@ -236,7 +236,7 @@ struct _Layer
         char               *label;
     }
     old;
-    Evas_List          *objects;
+    Eina_List          *objects;
 };
 
 struct _Point
@@ -259,7 +259,7 @@ struct _Point
         char               *point_style;
     }
     old;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _Line
@@ -284,7 +284,7 @@ struct _Line
     }
     old;
     double              hatch_offset;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _Magnet
@@ -299,7 +299,7 @@ struct _Magnet
     Object             *owner;
     int                 mtype;
     double              x, y;
-    Evas_List          *points;
+    Eina_List          *points;
 
 };
 
@@ -324,7 +324,7 @@ struct _Circle
         double              x, y, r;
     }
     old;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _Arc
@@ -351,7 +351,7 @@ struct _Arc
     struct {
     double x1, y1, x2, y2;
     } rect;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _Ellipse
@@ -378,7 +378,7 @@ struct _Ellipse
     struct {
     double x1, y1, x2, y2;
     } rect;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _EArc
@@ -405,7 +405,7 @@ struct _EArc
     struct {
 	    double x1, y1, x2, y2;
     } rect;
-    Evas_List          *list;
+    Eina_List          *list;
 };
 
 struct _Text

@@ -39,7 +39,7 @@ typedef struct
 {
     int                 num;
     char               *name;
-    Evas_List          *items;
+    Eina_List          *items;
 }
 HS;
 
@@ -49,7 +49,7 @@ HS                 *_hs_load(const char *);
 HS_Item            *hs_load_item(const char *, int);
 
 /* vars */
-Evas_List          *hatches = NULL;
+Eina_List          *hatches = NULL;
 HS                 *hs_current = NULL;
 
 void
@@ -63,7 +63,7 @@ _hs_find(const char *style)
 {
     HS                 *hs;
 
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = hatches; l; l = l->next)
       {
@@ -77,7 +77,7 @@ _hs_find(const char *style)
     if (!hs)
         return NULL;
 
-    hatches = evas_list_append(hatches, hs);
+    hatches = eina_list_append(hatches, hs);
     return hs;
 }
 
@@ -107,7 +107,7 @@ _hs_load(const char *style)
 
           it = hs_load_item(style, i);
           if (it)
-              hs->items = evas_list_append(hs->items, it);
+              hs->items = eina_list_append(hs->items, it);
       }
     return hs;
 }
@@ -177,7 +177,7 @@ hs_get_num(void)
 double
 hs_get_angle(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)
@@ -197,7 +197,7 @@ hs_get_angle(int num)
 double
 hs_get_xoffset(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)
@@ -217,7 +217,7 @@ hs_get_xoffset(int num)
 double
 hs_get_yoffset(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)
@@ -237,7 +237,7 @@ hs_get_yoffset(int num)
 double
 hs_get_ystep(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)
@@ -257,7 +257,7 @@ hs_get_ystep(int num)
 double
 hs_get_scale(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)
@@ -277,7 +277,7 @@ hs_get_scale(int num)
 char               *
 hs_get_line_style(int num)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     HS_Item            *it;
 
     if (!hs_current)

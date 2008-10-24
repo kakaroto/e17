@@ -28,7 +28,7 @@
 Ecore_X_Cursor xc[4];
 Pointer             curr;
 int                 pointer_x, pointer_y;
-Evas_List          *pointer_queue = NULL;
+Eina_List          *pointer_queue = NULL;
 
 void
 pointer_init(void)
@@ -80,14 +80,14 @@ pointer_set(long n)
 void
 pointer_push_and_set(long n)
 {
-    pointer_queue = evas_list_append(pointer_queue, (void *)n);
+    pointer_queue = eina_list_append(pointer_queue, (void *)n);
     pointer_set(n);
 }
 
 void
 pointer_pop(long n)
 {
-    pointer_queue = evas_list_remove(pointer_queue, (void *)n);
+    pointer_queue = eina_list_remove(pointer_queue, (void *)n);
     if (!pointer_queue)
         pointer_push_and_set(POINTER_NORMAL);
     pointer_set((long)pointer_queue->data);

@@ -39,5 +39,5 @@ void                ci_deselect_by_rect(Circle *, double, double, double,
                                         double);
 
 void                ghost_ci_create(void);
-void                ghost_ci_redraw(Evas_List*, double, double);
+void                ghost_ci_redraw(Eina_List*, double, double);
 void                ghost_ci_destroy(void);

@@ -49,7 +49,7 @@ typedef struct
 Dim_Style;
 
 /** vars **/
-Evas_List          *dim_styles = NULL;
+Eina_List          *dim_styles = NULL;
 Dim_Style          *ds_current = NULL;
 
 /* protos */
@@ -66,7 +66,7 @@ Dim_Style          *
 ds_find(const char *style)
 {
     Dim_Style          *ds;
-    Evas_List          *l;
+    Eina_List          *l;
 
     for (l = dim_styles; l; l = l->next)
       {
@@ -80,7 +80,7 @@ ds_find(const char *style)
     if (!ds)
         return NULL;
 
-    dim_styles = evas_list_append(dim_styles, ds);
+    dim_styles = eina_list_append(dim_styles, ds);
     return ds;
 }
 

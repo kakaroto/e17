@@ -38,7 +38,7 @@ void
 pre_ci_x1y1(double x, double y)
 {
     XY                 *xy;
-    Evas_List          *list = NULL;
+    Eina_List          *list = NULL;
 
     xy = (XY *) malloc(sizeof(XY));
     ENGY_ASSERT(xy);
@@ -46,7 +46,7 @@ pre_ci_x1y1(double x, double y)
     xy->x = x;
     xy->y = y;
 
-    list = evas_list_append(list, xy);
+    list = eina_list_append(list, xy);
     msg_create_and_send(CMD_PRE_DATA, 0, list);
 }
 
@@ -163,7 +163,7 @@ _ci_create(double x, double y, double r)
     ci->y = y;
     ci->r = r;
 
-    layer->objects = evas_list_append(layer->objects, ci);
+    layer->objects = eina_list_append(layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -256,13 +256,13 @@ ci_sync(Circle * ci)
 void 
 ci_destroy(Circle * ci)
 {
-	Evas_List          *l;
+	Eina_List          *l;
 	for (l = drawing->layers; l; l = l->next)
 	{
 		Layer              *layer;
 		
 		layer = (Layer *) l->data;
-		layer->objects = evas_list_remove(layer->objects, ci);
+		layer->objects = eina_list_remove(layer->objects, ci);
 	}
 	ci_free(ci);
 }
@@ -270,7 +270,7 @@ ci_destroy(Circle * ci)
 void
 ci_free(Circle * ci)
 {
-    Evas_List          *l;
+    Eina_List          *l;
 
     if (!ci)
         return;
@@ -284,7 +284,7 @@ ci_free(Circle * ci)
 
     for (l = ci->list; l; l = l->next)
         evas_object_del(l->data);
-    ci->list = evas_list_free(ci->list);
+    ci->list = eina_list_free(ci->list);
 
     FREE(ci);
 }
@@ -399,7 +399,7 @@ ci_clone(Circle * src, double dx, double dy)
     ci->x += dx;
     ci->y += dy;
 
-    layer->objects = evas_list_append(layer->objects, ci);
+    layer->objects = eina_list_append(layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -437,7 +437,7 @@ ci_array_polar(Circle * ci, double x0, double y0, int num, double da)
     for (i = 1; i < num; i++)
       {
           ci_clone(ci, 0, 0);
-          ci_rotate(evas_list_last(drawing->current_layer->objects)->data,
+          ci_rotate(eina_list_last(drawing->current_layer->objects)->data,
                     x0, y0, i * da);
       }
 }
@@ -469,7 +469,7 @@ ci_mirror_ab(Circle * src, double a, double b)
     ci->x = resx;
     ci->y = resy + b;
 
-    layer->objects = evas_list_append(layer->objects, ci);
+    layer->objects = eina_list_append(layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -498,7 +498,7 @@ ci_mirror_y(Circle * src, double y0)
     ci->x = src->x;
     ci->y = y0 * 2 - src->y;
 
-    layer->objects = evas_list_append(layer->objects, ci);
+    layer->objects = eina_list_append(layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -527,7 +527,7 @@ ci_mirror_x(Circle * src, double x0)
     ci->y = src->y;
     ci->x = x0 * 2 - src->x;
 
-    layer->objects = evas_list_append(layer->objects, ci);
+    layer->objects = eina_list_append(layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -646,7 +646,7 @@ ci_paste(CP_Header hd, int sock, double dx, double dy)
     FREE(src);
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, ci);
+        eina_list_append(drawing->current_layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
@@ -811,7 +811,7 @@ ghost_ci_create(void)
 }
 
 void
-ghost_ci_redraw(Evas_List *data, double x2, double y2)
+ghost_ci_redraw(Eina_List *data, double x2, double y2)
 {
     XY                 *xy;
     Evas               *e;
@@ -825,7 +825,7 @@ ghost_ci_redraw(Evas_List *data, double x2, double y2)
     d = drawing;
     if (!d)
         return;
-    xy = (XY *) evas_list_last(data)->data;
+    xy = (XY *) eina_list_last(data)->data;
     x = w2s_x(xy->x);
     y = w2s_y(xy->y);
     r = hypot(x2 - xy->x, y2 - xy->y);
@@ -855,7 +855,7 @@ ghost_ci_destroy(void)
 void
 _ci_check_evas_objects(Circle * ci)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     int                 need_to_clear = 0;
 
     if (!ci->old.line_style || strcmp(ci->old.line_style, ci->line_style))
@@ -896,7 +896,7 @@ _ci_check_evas_objects(Circle * ci)
       {
           for (l = ci->list; l; l = l->next)
               evas_object_del(l->data);
-          ci->list = evas_list_free(ci->list);
+          ci->list = eina_list_free(ci->list);
       }
 
     _ci_refresh_evas_objects(ci);
@@ -921,7 +921,7 @@ void
 _create_scaled_ci(Circle * ci)
 {
     Evas               *e;
-    Evas_List          *list = NULL, *l, *lo;
+    Eina_List          *list = NULL, *l, *lo;
     Evas_Object        *o;
     float               len, tlen, tscale;
     int                 i, flag;
@@ -984,8 +984,8 @@ _create_scaled_ci(Circle * ci)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            ci->list = evas_list_append(ci->list, o);
-                            lo = evas_list_last(ci->list);
+                            ci->list = eina_list_append(ci->list, o);
+                            lo = eina_list_last(ci->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1024,13 +1024,13 @@ _create_scaled_ci(Circle * ci)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
 _create_tiled_ci(Circle * ci)
 {
-    Evas_List          *list, *l, *lo;
+    Eina_List          *list, *l, *lo;
     int                 i, flag;
     Evas               *e;
     Evas_Object        *o;
@@ -1093,8 +1093,8 @@ _create_tiled_ci(Circle * ci)
                                            show_thickness * drawing->scale);
                             evas_object_layer_set(o, 10);
                             evas_object_pass_events_set(o, 1);
-                            ci->list = evas_list_append(ci->list, o);
-                            lo = evas_list_last(ci->list);
+                            ci->list = eina_list_append(ci->list, o);
+                            lo = eina_list_last(ci->list);
                         }
                       o = lo->data;
                       lo = lo->next;
@@ -1134,7 +1134,7 @@ _create_tiled_ci(Circle * ci)
       }
     for (l = list; l; l = l->next)
         FREE(l->data);
-    list = evas_list_free(list);
+    list = eina_list_free(list);
 }
 
 void
@@ -1217,7 +1217,7 @@ ci_load(int id)
 	        ci->line_style[4000]=0;
 
     drawing->current_layer->objects =
-        evas_list_append(drawing->current_layer->objects, ci);
+        eina_list_append(drawing->current_layer->objects, ci);
 
     append_undo_new_object(ci, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);

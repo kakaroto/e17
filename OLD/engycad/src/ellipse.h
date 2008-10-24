@@ -40,5 +40,5 @@ void                ell_deselect_by_rect(Ellipse *, double, double, double,
                                          double);
 
 void                ghost_ell_create(void);
-void                ghost_ell_redraw(Evas_List*, double, double);
+void                ghost_ell_redraw(Eina_List*, double, double);
 void                ghost_ell_destroy(void);

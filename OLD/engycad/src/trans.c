@@ -24,9 +24,9 @@
 #include "engy.h"
 
 void
-trans_move(Evas_List *list, double dx, double dy)
+trans_move(Eina_List *list, double dx, double dy)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     XY                 *o;
 
     for (l = list; l; l = l->next)
@@ -38,9 +38,9 @@ trans_move(Evas_List *list, double dx, double dy)
 }
 
 void
-trans_scale(Evas_List *list, double xscale, double yscale)
+trans_scale(Eina_List *list, double xscale, double yscale)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     XY                 *o;
 
     for (l = list; l; l = l->next)
@@ -52,9 +52,9 @@ trans_scale(Evas_List *list, double xscale, double yscale)
 }
 
 void
-trans_rotate(Evas_List *list, double angle)
+trans_rotate(Eina_List *list, double angle)
 {
-    Evas_List          *l;
+    Eina_List          *l;
     XY                 *o;
     double              x;
     double              cos_a, sin_a;

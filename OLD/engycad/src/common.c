@@ -68,7 +68,7 @@ _common_move_object(Object * obj, double dx, double dy)
 void
 common_move(double dx, double dy)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -127,7 +127,7 @@ _common_clone_object(Object * obj, double dx, double dy)
 void
 common_clone(double dx, double dy)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -186,7 +186,7 @@ _common_rotate_object(Object * obj, double x, double y, double a)
 void
 common_rotate(double x, double y, double a)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -245,7 +245,7 @@ _common_scale_object(Object * obj, double x, double y, double a)
 void
 common_scale(double x, double y, double a)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -304,7 +304,7 @@ _common_scale_xy_object(Object * obj, double x, double y, double a, double b)
 void
 common_scale_xy(double x, double y, double a, double b)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -363,7 +363,7 @@ _common_mirror_ab_object(Object * obj, double a, double b)
 void
 common_mirror_ab(double a, double b)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -422,7 +422,7 @@ _common_mirror_y_object(Object * obj, double y)
 void
 common_mirror_y(double y)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -481,7 +481,7 @@ _common_mirror_x_object(Object * obj, double x)
 void
 common_mirror_x(double x)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -540,7 +540,7 @@ _common_trim_ab_object(Object * obj, double a, double b, int side)
 void
 common_trim_ab(double a, double b, int side)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -599,7 +599,7 @@ _common_trim_x_object(Object * obj, double x, int side)
 void
 common_trim_x(double x, int side)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -657,7 +657,7 @@ _common_trim_y_object(Object * obj, double y, int side)
 void
 common_trim_y(double y, int side)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -715,7 +715,7 @@ _common_array_object(Object * obj, int nx, int ny, double dx, double dy)
 void
 common_array(int nx, int ny, double dx, double dy)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -773,7 +773,7 @@ _common_polar_object(Object * obj, double x0, double y0, int num, double da)
 void
 common_polar(double x0, double y0, int num, double da)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -831,7 +831,7 @@ _common_delete_object(Object * obj)
 void
 common_delete(void)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -877,7 +877,7 @@ _common_sel_object(Object * obj)
 void
 common_all_sel(void)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -924,7 +924,7 @@ _common_desel_object(Object * obj)
 void
 common_all_desel(void)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -967,7 +967,7 @@ _common_inv_sel_object(Object * obj)
 void
 common_inv_sel(void)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1034,7 +1034,7 @@ _common_copy_object(Object * obj, int sock, double dx, double dy)
 void
 common_copy(double dx, double dy)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1206,7 +1206,7 @@ _common_linestyle_object(Object * obj, char *s)
 void
 common_linestyle(char *s)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1256,7 +1256,7 @@ _common_color_object(Object * obj, int r, int g, int b, int a)
 void
 common_color(int r, int g, int b, int a)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1293,7 +1293,7 @@ _common_thickness_object(Object * obj, double w)
 void
 common_thickness(float w)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1330,7 +1330,7 @@ _common_linescale_object(Object * obj, double w)
 void
 common_linescale(float w)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1383,7 +1383,7 @@ char              **
 common_get_info(void)
 {
     int                 i;
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1409,7 +1409,7 @@ common_get_info(void)
 Color
 common_get_color(void)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
     static Color        col;
@@ -1458,7 +1458,7 @@ _common_gravity_object(Object * obj, int gr)
 void
 common_gravity(int gr)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1495,7 +1495,7 @@ _common_text_height_object(Object * obj, double h)
 void
 common_text_height(double h)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1532,7 +1532,7 @@ _common_text_object(Object * obj, char *s)
 void
 common_text(char *s)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
@@ -1570,7 +1570,7 @@ _common_image_scale_object(Object * obj, double s)
 void
 common_image_scale(double s)
 {
-    Evas_List          *l, *l1;
+    Eina_List          *l, *l1;
     Layer              *layer;
     Object             *obj;
 
