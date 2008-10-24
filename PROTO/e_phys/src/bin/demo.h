@@ -15,7 +15,7 @@ struct _App
 
   E_Phys_World *world;
   E_Phys_Constraint_Anchor *mouse_anchor;
-  Evas_List *objects;
+  Eina_List *objects;
 };
 
 void setup(App *app, int argc, char **argv);
@@ -29,7 +29,7 @@ struct _Constraint_Wrap
 {
   E_Phys_Constraint con;
   int margin;
-  Evas_List *exclusions;
+  Eina_List *exclusions;
 };
 
 Constraint_Wrap *snow_test_constraint_wrap_around_add(E_Phys_World *world,

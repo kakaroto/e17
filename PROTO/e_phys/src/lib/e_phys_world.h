@@ -30,9 +30,9 @@ struct E_Phys_World
 {
   float w, h;
 
-  Evas_List *particles;
-  Evas_List *forces;
-  Evas_List *constraints;
+  Eina_List *particles;
+  Eina_List *forces;
+  Eina_List *constraints;
 
   Ecore_Timer *timer;
 

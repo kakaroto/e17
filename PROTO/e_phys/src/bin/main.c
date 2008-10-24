@@ -280,7 +280,7 @@ init_boundary_test(E_Phys_World *world)
 void
 init_evas_objs(App *app, int use_image)
 {
-  Evas_List *l;
+  Eina_List *l;
   Evas_Object *o;
   int i, num_p;
 
@@ -322,7 +322,7 @@ init_evas_objs(App *app, int use_image)
     evas_object_data_set(o, "particle", p);
     evas_object_move(o, p->cur.x - (p->w / 2), p->cur.y - (p->h / 2));
     evas_object_show(o);
-    app->objects = evas_list_append(app->objects, o);
+    app->objects = eina_list_append(app->objects, o);
   }
 }
 
@@ -374,7 +374,7 @@ void
 update_view(void *data, E_Phys_World *world)
 {
   App *app = data;
-  Evas_List *l;
+  Eina_List *l;
   for (l = app->objects; l; l = l->next)
   {
     Evas_Object *o;

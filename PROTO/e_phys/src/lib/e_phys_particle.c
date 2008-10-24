@@ -13,7 +13,7 @@ e_phys_particle_add(E_Phys_World *world)
   p->world = world;
   p->m = 1.0;
 
-  world->particles = evas_list_append(world->particles, p);
+  world->particles = eina_list_append(world->particles, p);
   return p;
 }
 
@@ -187,7 +187,7 @@ e_phys_particle_del(E_Phys_Particle *p)
   if (p)
   {
     if (p->world)
-      p->world->particles = evas_list_remove(p->world->particles, p);
+      p->world->particles = eina_list_remove(p->world->particles, p);
     e_phys_particle_free(p);
   }
 }

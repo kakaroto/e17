@@ -57,13 +57,13 @@ snow_test_constraint_wrap_around_add(E_Phys_World *world, int margin)
 void
 snow_test_constraint_wrap_around_exclude(Constraint_Wrap *con, E_Phys_Particle *p)
 {
-  con->exclusions = evas_list_append(con->exclusions, p);
+  con->exclusions = eina_list_append(con->exclusions, p);
 }
 
 static void
 snow_test_constraint_wrap_around_apply(E_Phys_Constraint *con)
 {
-  Evas_List *l;
+  Eina_List *l;
   E_Phys_World *world;
   Constraint_Wrap *cw = (Constraint_Wrap *)con;
 
@@ -75,7 +75,7 @@ snow_test_constraint_wrap_around_apply(E_Phys_Constraint *con)
     E_Phys_Particle *p;
     p = l->data;
 
-    if (evas_list_find(cw->exclusions, p)) continue;
+    if (eina_list_data_find(cw->exclusions, p)) continue;
 
     /* wrap horizontally, keeping velocity */
     if (p->cur.x < -1 * cw->margin)

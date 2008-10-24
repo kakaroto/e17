@@ -46,7 +46,7 @@ struct E_Phys_Constraint_Boundary
 {
   E_Phys_Constraint con;
   float e; // elasticity (0 fully inelastic -> 1 fully elastic)
-  Evas_List *exclusions;
+  Eina_List *exclusions;
 };
 
 E_Phys_Constraint_Boundary *e_phys_constraint_boundary_add(E_Phys_World *world);

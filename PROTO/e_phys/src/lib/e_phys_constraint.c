@@ -9,7 +9,7 @@ void
 e_phys_constraint_init(E_Phys_Constraint *con, E_Phys_World *world, void (*apply_func) (E_Phys_Constraint *con), void (*free_func) (E_Phys_Constraint *con))
 {
   con->world = world;
-  if (world) world->constraints = evas_list_append(world->constraints, con);
+  if (world) world->constraints = eina_list_append(world->constraints, con);
 
   con->apply = apply_func;
   if (free_func)
@@ -23,7 +23,7 @@ e_phys_constraint_del(E_Phys_Constraint *con)
 {
   if (!con) return;
   if (con->world) 
-    con->world->constraints = evas_list_remove(con->world->constraints, con);
+    con->world->constraints = eina_list_remove(con->world->constraints, con);
   con->free(con);
 }
 
@@ -49,7 +49,7 @@ void
 e_phys_constraint_boundary_exclude(E_Phys_Constraint_Boundary *con, E_Phys_Particle *p)
 {
   if (!con) return;
-  con->exclusions = evas_list_append(con->exclusions, p);
+  con->exclusions = eina_list_append(con->exclusions, p);
 }
 
 static void
@@ -58,7 +58,7 @@ e_phys_constraint_boundary_apply(E_Phys_Constraint *con)
   E_Phys_Constraint_Boundary *bound = (E_Phys_Constraint_Boundary *)con;
   E_Phys_World *world = con->world;
 
-  Evas_List *l;
+  Eina_List *l;
   // keep particles inside world boundaries
   for (l = world->particles; l; l = l->next)
   {
@@ -68,7 +68,7 @@ e_phys_constraint_boundary_apply(E_Phys_Constraint *con)
 
     p = l->data;
 
-    if (evas_list_find(bound->exclusions, p)) continue;
+    if (eina_list_data_find(bound->exclusions, p)) continue;
 
     hw = p->w / 2;
     hh = p->h / 2;

@@ -25,7 +25,7 @@ void
 e_phys_force_init(E_Phys_Force *force, E_Phys_World *world, void (*apply_func) (E_Phys_Force *force), void (*free_func) (E_Phys_Force *force))
 {
   force->world = world;
-  if (world) world->forces = evas_list_append(world->forces, force);
+  if (world) world->forces = eina_list_append(world->forces, force);
 
   force->apply = apply_func;
   if (free_func)
@@ -129,7 +129,7 @@ e_phys_force_collision_helper(E_Phys_Particle *p1, E_Phys_Particle *p2, int axis
 static void
 e_phys_force_collision_apply(E_Phys_Force *force)
 {
-  Evas_List *l, *l2;
+  Eina_List *l, *l2;
   float x11, x12, x21, x22;
   float y11, y12, y21, y22;
   float dx, dy;
@@ -198,7 +198,7 @@ e_phys_force_gravity_apply(E_Phys_Force *force)
 {
   E_Phys_Force_Gravity *grav = (E_Phys_Force_Gravity *)force;
 
-  Evas_List *l, *l2;
+  Eina_List *l, *l2;
 
   if (!force || !force->world) return;
 
@@ -353,7 +353,7 @@ e_phys_force_uniform_apply(E_Phys_Force *force)
   E_Phys_Force_Uniform *uni = (E_Phys_Force_Uniform *)force;
   E_Phys_Vector f;
 
-  Evas_List *l;
+  Eina_List *l;
 
   if (!force || !force->world) return;
 

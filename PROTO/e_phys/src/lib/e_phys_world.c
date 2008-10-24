@@ -38,19 +38,19 @@ e_phys_world_free(E_Phys_World *world)
   while (world->particles) 
   {
     e_phys_particle_free(world->particles->data);
-    world->particles = evas_list_remove_list(world->particles, world->particles);
+    world->particles = eina_list_remove_list(world->particles, world->particles);
   }
   while (world->forces) 
   {
     E_Phys_Force *f = world->forces->data;
     f->free(f);
-    world->forces = evas_list_remove_list(world->forces, world->forces);
+    world->forces = eina_list_remove_list(world->forces, world->forces);
   }
   while (world->constraints) 
   {
     E_Phys_Constraint *c = world->constraints->data;
     c->free(c);
-    world->constraints = evas_list_remove_list(world->constraints, world->constraints);
+    world->constraints = eina_list_remove_list(world->constraints, world->constraints);
   }
 }
 
@@ -123,7 +123,7 @@ e_phys_world_update_func_set(E_Phys_World *world, void (*func) (void *data, E_Ph
 E_Phys_Particle *
 e_phys_world_nearest_particle(E_Phys_World *world, int x, int y)
 {
-  Evas_List *l;
+  Eina_List *l;
   E_Phys_Particle *nearest = NULL;
   float distance = 0.0;
 
@@ -165,7 +165,7 @@ e_phys_world_size_set(E_Phys_World *world, float w, float h)
 static void
 e_phys_world_accumulate_forces(E_Phys_World *world)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   // clear old forces
   for (l = world->particles; l; l = l->next)
@@ -188,7 +188,7 @@ e_phys_world_accumulate_forces(E_Phys_World *world)
 static void
 e_phys_world_verlet_integrate(E_Phys_World *world)
 {
-  Evas_List *l;
+  Eina_List *l;
   for(l = world->particles; l; l = l->next)
   {
     E_Phys_Particle *p;
@@ -211,7 +211,7 @@ e_phys_world_verlet_integrate(E_Phys_World *world)
 static void
 e_phys_world_satisfy_constraints(E_Phys_World *world)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   for (l = world->constraints; l; l = l->next)
   {
