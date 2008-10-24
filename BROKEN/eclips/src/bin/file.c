@@ -36,8 +36,8 @@ char
 }
 
 /* inspired by code from entice */
-Evas_List 
-  *eclips_file_add_dir(Evas_List *filelist,char *file)
+Eina_List 
+  *eclips_file_add_dir(Eina_List *filelist,char *file)
 {
    
    DIR *d = NULL;
@@ -64,7 +64,7 @@ Evas_List
 	     if (!eclips_file_is_dir(buf))
 	       {
 		  printf("%s\n",buf);
-		  filelist = evas_list_append(filelist,(void*)strdup(buf));
+		  filelist = eina_list_append(filelist,(void*)strdup(buf));
 	       }
 	  }	     
 	closedir(d);
@@ -73,7 +73,7 @@ Evas_List
      {
 	snprintf(buf, PATH_MAX, "%s", tok);
 	printf("%s (single file)\n",buf);
-	filelist = evas_list_append(filelist,(void*)strdup(buf));		
+	filelist = eina_list_append(filelist,(void*)strdup(buf));		
      }   
    return filelist;
 }      

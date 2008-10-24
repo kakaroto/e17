@@ -4,7 +4,7 @@
 #define SET_REL_COLOR(a, b) ((a + b) > 255 ? 255 : ((a + b) < 0 ? 0 : a + b))
 
 static Ecore_Hash *styles = NULL;
-static Evas_List *gc = NULL;
+static Eina_List *gc = NULL;
 static int style_path = 0;
 
 static void __etox_style_style_read(Etox_Style_Style_Info * info);
@@ -49,7 +49,7 @@ Etox_Style_Style *_etox_style_style_instance(char *name)
 void _etox_style_style_release(Etox_Style_Style *style, Evas *ev)
 {
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 
 	CHECK_PARAM_POINTER("style", style);
 
@@ -74,7 +74,7 @@ void _etox_style_style_release(Etox_Style_Style *style, Evas *ev)
 		/*
 		 * Destroy the list that held the objects
 		 */
-		evas_list_free(style->bits);
+		eina_list_free(style->bits);
 	}
 
 	FREE(style);
@@ -89,7 +89,7 @@ void _etox_style_style_release(Etox_Style_Style *style, Evas *ev)
 void _etox_style_style_hide(Etox_Style *es)
 {
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 
 	/*
 	 * Check if we need to hide any style bits.
@@ -117,7 +117,7 @@ void _etox_style_style_hide(Etox_Style *es)
 void _etox_style_style_show(Etox_Style *es)
 {
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 
 	/*
 	 * Check if we need to show any style bits.
@@ -194,7 +194,7 @@ void _etox_style_style_draw(Etox_Style *es, char *text)
 	 */
 	while ((layer = _etox_style_heap_item(info->layers, i))) {
 		ob = __etox_style_style_layer_draw(layer, es, text);
-		((Etox_Style_Style *) es->style)->bits = evas_list_append( ((Etox_Style_Style *)es->style)->bits, ob );
+		((Etox_Style_Style *) es->style)->bits = eina_list_append( ((Etox_Style_Style *)es->style)->bits, ob );
 		evas_object_smart_member_add(ob, es->smart_obj);
 		i++;
 	}
@@ -217,7 +217,7 @@ int _etox_style_style_set_layer_lower(Etox_Style * es, int l)
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 
 	if (!es->style)
 		return 0;
@@ -261,7 +261,7 @@ int _etox_style_style_set_layer_upper(Etox_Style *es, int l, int start)
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 
 	if (!es->bit)
 		return 0;
@@ -306,7 +306,7 @@ void _etox_style_style_move(Etox_Style *es)
 {
 	int i;
 	Evas_Object *ob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 
@@ -351,7 +351,7 @@ void _etox_style_style_set_color(Etox_Style *es)
 {
 	int i;
 	Evas_Object *sob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 
@@ -408,7 +408,7 @@ void _etox_style_style_set_font(Etox_Style *es, char *font, int size)
 {
 	int i;
 	Evas_Object *sob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 
@@ -451,7 +451,7 @@ void _etox_style_style_set_text(Etox_Style *es)
 	int i;
 	char *text;
 	Evas_Object *sob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 
@@ -499,7 +499,7 @@ void _etox_style_style_set_clip(Etox_Style *es, Evas_Object *ob)
 {
 	int i;
 	Evas_Object *sob;
-	Evas_List *ptr_list;
+	Eina_List *ptr_list;
 	Etox_Style_Style_Info *info;
 	Etox_Style_Style_Layer *layer;
 
@@ -570,8 +570,8 @@ Etox_Style_Style_Info *_etox_style_style_info_reference(char *name)
 		ecore_hash_set(styles, strdup(name), found);
 	}
 	else {
-		if (evas_list_find(gc, found))
-			gc = evas_list_remove(gc, found);
+		if (eina_list_data_find(gc, found))
+			gc = eina_list_remove(gc, found);
 	}
 
 	found->references++;
@@ -587,8 +587,8 @@ void _etox_style_style_info_dereference(Etox_Style_Style_Info *info)
 {
 	info->references--;
 
-	if (info->references < 1 && !evas_list_find(gc, info))
-		gc = evas_list_append(gc, info);
+	if (info->references < 1 && !eina_list_data_find(gc, info))
+		gc = eina_list_append(gc, info);
 }
 
 void _etox_style_style_info_collect()
@@ -601,7 +601,7 @@ void _etox_style_style_info_collect()
 		Etox_Style_Style_Info *info;
 
 		info = gc->data;
-		gc = evas_list_remove(gc, info);
+		gc = eina_list_remove(gc, info);
 		ecore_hash_remove(styles, info->name);
 		if (info->layers)
 			_etox_style_heap_destroy(info->layers);

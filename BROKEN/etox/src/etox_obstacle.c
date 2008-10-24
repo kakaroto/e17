@@ -57,7 +57,7 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 	int i = 0;
 	Evas_Coord x, y, w, h;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -114,7 +114,7 @@ void etox_obstacle_unplace(Etox_Obstacle * obst)
 	while (obst->lines) {
 		line = obst->lines->data;
 		etox_line_remove(line, obst->bit);
-		obst->lines = evas_list_remove(obst->lines, line);
+		obst->lines = eina_list_remove(obst->lines, line);
 	}
 }
 
@@ -152,18 +152,18 @@ void etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst)
 		if (i < etox_style_length(bit)) {
 			etox_split_bit(line, bit, i);
 		}
-		line->bits = evas_list_append_relative(line->bits, obst->bit,
+		line->bits = eina_list_append_relative(line->bits, obst->bit,
 				bit);
 	}
 	else {
 		/*
 		 * Otherwise, stick it in front of this bit.
 		 */
-		line->bits = evas_list_prepend_relative(line->bits, obst->bit,
+		line->bits = eina_list_prepend_relative(line->bits, obst->bit,
 				bit);
 	}
 
-	obst->lines = evas_list_append(obst->lines, line);
+	obst->lines = eina_list_append(obst->lines, line);
 }
 
 /*

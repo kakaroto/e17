@@ -131,12 +131,12 @@ struct _etox
 	/*
 	 * List of lines in the etox
 	 */
-	Evas_List *lines;
+	Eina_List *lines;
 
 	/*
 	 * List of obstacles in the etox
 	 */
-	Evas_List *obstacles;
+	Eina_List *obstacles;
 
 	/*
 	 * Whether to wrap the etox or not.
@@ -165,7 +165,7 @@ struct _etox_line
 	/*
 	 * This is a pointer to a list of bits
 	 */
-	Evas_List *bits;
+	Eina_List *bits;
 
 	/*
 	 * The dimensions of this line.
@@ -194,7 +194,7 @@ struct _etox_obstacle
 {
 	Etox *et;
 	Evas_Object *bit;
-	Evas_List *lines;
+	Eina_List *lines;
 };
 
 /*

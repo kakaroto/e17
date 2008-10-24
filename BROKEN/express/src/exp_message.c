@@ -19,7 +19,7 @@ exp_message_new(Exp_Conversation *conv, char *text, int sender)
   msg->sender = sender;
   msg->msg_text = strdup(text);
   msg->conv = conv;
-  conv->messages = evas_list_append(conv->messages, msg);
+  conv->messages = eina_list_append(conv->messages, msg);
   conv->new_message = 1;
   conv->changed = 1;
   msg->changed = 1;

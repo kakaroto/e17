@@ -41,7 +41,7 @@ extern Evas_Object *clip_msg;
 extern Evas_Object *clip_test;
 extern Evas_Object *o_next_box;
 extern Evas_Object *o_txt_next_box;
-extern Evas_List *pbuttons;
+extern Eina_List *pbuttons;
 
 extern Evas_Object *e_msg;
 extern Evas_Object *e_test;

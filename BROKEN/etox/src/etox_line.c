@@ -44,7 +44,7 @@ void etox_line_free(Etox_Line * line)
 	while (line->bits) {
 		bit = line->bits->data;
 		evas_object_del(bit);
-		line->bits = evas_list_remove(line->bits, bit);
+		line->bits = eina_list_remove(line->bits, bit);
 	}
 
 	FREE(line);
@@ -59,7 +59,7 @@ void etox_line_free(Etox_Line * line)
 void etox_line_show(Etox_Line * line)
 {
 	Evas_Object *bit;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -82,7 +82,7 @@ void etox_line_show(Etox_Line * line)
 void etox_line_hide(Etox_Line * line)
 {
 	Evas_Object *bit;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -114,7 +114,7 @@ void etox_line_append(Etox_Line * line, Evas_Object * bit)
 	/*
 	 * Append the text and update necessary fields
 	 */
-	line->bits = evas_list_append(line->bits, bit);
+	line->bits = eina_list_append(line->bits, bit);
 	evas_object_geometry_get(bit, &x, &y, &w, &h);
 
 	line->w += w;
@@ -143,7 +143,7 @@ void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 	/*
 	 * Prepend the text and update necessary fields
 	 */
-	line->bits = evas_list_prepend(line->bits, bit);
+	line->bits = eina_list_prepend(line->bits, bit);
 	evas_object_geometry_get(bit, &x, &y, &w, &h);
 
 	line->w += w;
@@ -169,7 +169,7 @@ void etox_line_remove(Etox_Line * line, Evas_Object * bit)
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
 
-	line->bits = evas_list_remove(line->bits, bit);
+	line->bits = eina_list_remove(line->bits, bit);
 	line->length -= etox_style_length(bit);
 	evas_object_geometry_get(bit, NULL, NULL, &w, NULL);
 	line->w -= w;
@@ -193,7 +193,7 @@ void etox_line_layout(Etox_Line * line)
 	int x;
 	Evas_Object *bit;
 	Evas_Coord tx, ty, tw, th;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -267,7 +267,7 @@ void etox_line_layout(Etox_Line * line)
 void etox_line_minimize(Etox_Line * line)
 {
 	Evas_Object *bit, *last_bit = NULL;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -285,8 +285,8 @@ void etox_line_minimize(Etox_Line * line)
 		 * one if successful.
 		 */
 		if (etox_style_merge(last_bit, bit)) {
-			line->bits = evas_list_remove(line->bits, bit);
-			l = evas_list_find_list(line->bits, last_bit);
+			line->bits = eina_list_remove(line->bits, bit);
+			l = eina_list_data_find_list(line->bits, last_bit);
 			l = l->next;
 		}
 		else {
@@ -315,8 +315,8 @@ void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 	 */
 	while (line2->bits) {
 		bit = line2->bits->data;
-		line1->bits = evas_list_append(line1->bits, bit);
-		line2->bits = evas_list_remove(line2->bits, bit);
+		line1->bits = eina_list_append(line1->bits, bit);
+		line2->bits = eina_list_remove(line2->bits, bit);
 		line1->length += etox_style_length(bit);
 
         	etox_selections_update(bit, line1);
@@ -348,8 +348,8 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
 	 */
 	while (line1->bits) {
 		bit = line1->bits->data;
-		line2->bits = evas_list_prepend(line2->bits, bit);
-		line1->bits = evas_list_remove(line1->bits, bit);
+		line2->bits = eina_list_prepend(line2->bits, bit);
+		line1->bits = eina_list_remove(line1->bits, bit);
 		line2->length += etox_style_length(bit);
 	}
 	/*
@@ -375,7 +375,7 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 #endif
 	char *temp;
 	Evas_Object *es;
-	Evas_List *l;
+	Eina_List *l;
 	int sum = 0, pos = 0;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -437,7 +437,7 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 int
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
-	Evas_List *ll;
+	Eina_List *ll;
 	Evas_Object *bit = NULL, *marker, *split_bit = NULL;
 	Evas_Coord x, w, y, h;
 	int index = -1, ok = 0;
@@ -589,7 +589,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		FREE(tmp);
 #endif
 		etox_line_split(line, bit, index);
-		ll = evas_list_find_list(et->lines, line);
+		ll = eina_list_data_find_list(et->lines, line);
 		ll = ll->next;
 
 		/* create a marker bit. */
@@ -622,18 +622,18 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 void
 etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 {
-	Evas_List *ll;
+	Eina_List *ll;
 	Etox_Line *newline;
 	Evas_Object *split = NULL;
 
-	ll = evas_list_find_list(line->bits, bit);
+	ll = eina_list_data_find_list(line->bits, bit);
 
 	/*
 	 * add the newline after the current one
 	 */
 	newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
 	newline->et = line->et;
-	line->et->lines = evas_list_append_relative(line->et->lines, newline,
+	line->et->lines = eina_list_append_relative(line->et->lines, newline,
 			line);
 
 	/*
@@ -674,17 +674,17 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 void
 etox_line_unwrap(Etox *et, Etox_Line *line)
 {
-	Evas_List *l, *prevline;
+	Eina_List *l, *prevline;
 	Evas_Object *marker;
 
 	if (!et->lines)
 		return;
 
-	prevline = evas_list_find_list(et->lines, line);
+	prevline = eina_list_data_find_list(et->lines, line);
 
 	l = prevline->next;
 	while (l) {
-		Evas_List *ll;
+		Eina_List *ll;
 
 		line = l->data;
 		if (!(line->flags & ETOX_LINE_WRAPPED))
@@ -700,14 +700,14 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 
 			t = etox_style_get_type(marker);
 			if (t == ETOX_BIT_TYPE_WRAP_MARKER) {
-				line->bits = evas_list_remove(line->bits,
+				line->bits = eina_list_remove(line->bits,
 							      marker);
 				evas_object_del(marker);
 			}
 		}
 
 		/* remove the line from the list */
-		et->lines = evas_list_remove(et->lines, line);
+		et->lines = eina_list_remove(et->lines, line);
 
 		/* merge the two lines */
 		etox_line_merge_append(prevline->data, line);
@@ -723,7 +723,7 @@ Evas_Object *
 etox_line_coord_to_bit(Etox_Line *line, int x)
 {
 	Evas_Coord bx;
-	Evas_List *l = NULL;
+	Eina_List *l = NULL;
 	Evas_Object *bit = NULL;
 
 	/*
@@ -745,7 +745,7 @@ Evas_Object *
 etox_line_index_to_bit(Etox_Line *line, int *i)
 {
 	int len = 0;
-	Evas_List *l = NULL;
+	Eina_List *l = NULL;
 	Evas_Object *bit = NULL;
 
 	l = line->bits;
@@ -767,7 +767,7 @@ void
 etox_line_print_bits(Etox_Line *line)
 {
 	int i = 0;
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = line->bits; l; l = l->next) {
 		printf("\tBit %d: (%s)\n", i, etox_style_get_text(l->data));
@@ -778,7 +778,7 @@ etox_line_print_bits(Etox_Line *line)
 void
 etox_line_set_layer(Etox_Line *line, int layer)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!line->bits) return;
   
@@ -796,7 +796,7 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
 			    Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
 	Evas_Object *bit = NULL;
-	Evas_List *l;
+	Eina_List *l;
 	int sum = 0;
 
 	/* find the bit containing the character */
@@ -841,10 +841,10 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
   printf("etox_line_apply_context() - called\n");
 fflush(stdout);
 #endif
-  Evas_List *l, *ls = NULL, *le = NULL;
+  Eina_List *l, *ls = NULL, *le = NULL;
 
-  ls = evas_list_find_list(line->bits, start);
-  le = evas_list_find_list(line->bits, end);
+  ls = eina_list_data_find_list(line->bits, start);
+  le = eina_list_data_find_list(line->bits, end);
 #ifdef DEBUG
   printf("etox_line_apply_context() - found start and end bits\n");
 fflush(stdout);
@@ -854,7 +854,7 @@ fflush(stdout);
   if ( !ls )
     ls = line->bits;
   if ( !le ) 
-    le = evas_list_last(line->bits);
+    le = eina_list_last(line->bits);
 
   for (l = ls; l; l = l->next)
   {

@@ -1,15 +1,15 @@
 #include "Etox_test.h"
 
-Evas_List *basic_tests()
+Eina_List *basic_tests()
 {
-	Evas_List *l = NULL;
+	Eina_List *l = NULL;
 
-	l = evas_list_append(l, test_basic_init);
-	l = evas_list_append(l, test_basic_get);
-	l = evas_list_append(l, test_basic_set);
-	l = evas_list_append(l, test_basic_append);
-	l = evas_list_append(l, test_basic_prepend);
-	l = evas_list_append(l, test_basic_insert);
+	l = eina_list_append(l, test_basic_init);
+	l = eina_list_append(l, test_basic_get);
+	l = eina_list_append(l, test_basic_set);
+	l = eina_list_append(l, test_basic_append);
+	l = eina_list_append(l, test_basic_prepend);
+	l = eina_list_append(l, test_basic_insert);
 
 	return l;
 }
@@ -149,15 +149,15 @@ void test_basic_insert()
 	return;
 }
 
-Evas_List *style_tests()
+Eina_List *style_tests()
 {
-	Evas_List *l = NULL;
+	Eina_List *l = NULL;
 
-	l = evas_list_append(l, test_style_init);
-	l = evas_list_append(l, test_style_bold);
-	l = evas_list_append(l, test_style_outline);
-	l = evas_list_append(l, test_style_raised);
-	l = evas_list_append(l, test_style_shadow);
+	l = eina_list_append(l, test_style_init);
+	l = eina_list_append(l, test_style_bold);
+	l = eina_list_append(l, test_style_outline);
+	l = eina_list_append(l, test_style_raised);
+	l = eina_list_append(l, test_style_shadow);
 
 	return l;
 }
@@ -261,12 +261,12 @@ void test_style_shadow()
 	return;
 }
 
-Evas_List *callback_tests()
+Eina_List *callback_tests()
 {
-	Evas_List *l = NULL;
+	Eina_List *l = NULL;
 
-	l = evas_list_append(l, test_callback_init);
-	/* l = evas_list_append(l, test_callback_add); */
+	l = eina_list_append(l, test_callback_init);
+	/* l = eina_list_append(l, test_callback_add); */
 
 	return l;
 }

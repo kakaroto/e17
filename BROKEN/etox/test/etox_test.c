@@ -6,7 +6,7 @@ Evas_Object *o_next_box;
 Evas_Object *o_txt_next_box;
 Evas_Object *o_prev_box;
 Evas_Object *o_txt_prev_box;
-Evas_List *pbuttons;
+Eina_List *pbuttons;
 Evas_Object *o_bg;
 Evas_Object *o_bg_etox;
 
@@ -17,7 +17,7 @@ int render_method = 0;
 Evas_Object *e_msg;
 Evas_Object *e_test;
 
-Evas_List *current_test = NULL;
+Eina_List *current_test = NULL;
 
 int win_w = W, win_h = H;
 int win_x = 0, win_y = 0;
@@ -152,7 +152,7 @@ void
 button_mouse_down(void *_data, Evas *_e, Evas_Object *_o,
 		void *event_info)
 {
-	Evas_List *l = _data;
+	Eina_List *l = _data;
 	void (*run) ();
 
 	etox_clear(e_msg);
@@ -434,7 +434,7 @@ int main(int argc, const char **argv)
 
 	while (pbuttons) {
 		panel_button_free(pbuttons->data);
-		pbuttons = evas_list_remove(pbuttons, pbuttons->data);
+		pbuttons = eina_list_remove(pbuttons, pbuttons->data);
 	}
 
 	evas_free(evas);

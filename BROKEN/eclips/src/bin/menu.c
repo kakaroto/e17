@@ -124,15 +124,15 @@ void root_menu_show(Evas_Event_Mouse_Down *ev,
 
      {
 	char *str = strdup("Option1\nOption2\nOption3)");
-	etox_set_text(menu->text, str);//(char*)evas_list_data(view->images)
+	etox_set_text(menu->text, str);//(char*)eina_list_data_get(view->images)
      }
    
    evas_object_layer_set(menu->text, 1000);
    evas_object_show(menu->text);
    
    /* final resize */
-   if(total_w<5*strlen((char*)evas_list_data(view->images)))
-     total_w = 5*strlen((char*)evas_list_data(view->images));
+   if(total_w<5*strlen((char*)eina_list_data_get(view->images)))
+     total_w = 5*strlen((char*)eina_list_data_get(view->images));
    ecore_evas_resize(menu->window,total_w+hor_sp, total_h+ver_sp);
    evas_object_image_fill_set(menu->bg, 0, 0, total_w+hor_sp, total_h+ver_sp);
    evas_object_resize(menu->bg, total_w+hor_sp, total_h+ver_sp);
@@ -187,16 +187,16 @@ void show_image_info_menu(Evas_Event_Mouse_Down *ev,
    ecore_evas_geometry_get(ee, &x, &y, &w, &h);
    
    /* create menu */
-   if ((!strncmp((char*)evas_list_data(view->images), "http://", 7)) ||
-       (!strncmp((char*)evas_list_data(view->images), "https://", 8)) ||
-       (!strncmp((char*)evas_list_data(view->images), "ftp://", 6)))
+   if ((!strncmp((char*)eina_list_data_get(view->images), "http://", 7)) ||
+       (!strncmp((char*)eina_list_data_get(view->images), "https://", 8)) ||
+       (!strncmp((char*)eina_list_data_get(view->images), "ftp://", 6)))
      {
 	char outfilename[PATH_MAX];
-	snprintf(outfilename, PATH_MAX, "/tmp/eclips%d%s",getpid(),get_shortname_for((char*)evas_list_data(view->images)));
+	snprintf(outfilename, PATH_MAX, "/tmp/eclips%d%s",getpid(),get_shortname_for((char*)eina_list_data_get(view->images)));
 	menu = eclips_menu_new(ev,view,outfilename,w,h);
      }
    else 
-     menu = eclips_menu_new(ev,view,(char*)evas_list_data(view->images),w,h);
+     menu = eclips_menu_new(ev,view,(char*)eina_list_data_get(view->images),w,h);
           
    evas_object_image_size_get(menu->bg, &w, &h);
    evas_object_resize(menu->bg, 320, (int)((320.0/(float)w)*(float)h));
@@ -212,14 +212,14 @@ void show_image_info_menu(Evas_Event_Mouse_Down *ev,
    etox_context_set_style(etox_get_context(menu->text), "shadow");
    etox_context_set_color(etox_get_context(menu->text), 255, 255, 255, 255);
    etox_set_soft_wrap(menu->text, 1);
-   etox_set_text(menu->text, (char*)evas_list_data(view->images));
+   etox_set_text(menu->text, (char*)eina_list_data_get(view->images));
    etox_set_alpha(menu->text, 255);
    evas_object_layer_set(menu->text, 1000);
    evas_object_show(menu->text);
    
    /* final resize */
-   if(total_w<5*strlen((char*)evas_list_data(view->images)))
-     total_w = 5*strlen((char*)evas_list_data(view->images));
+   if(total_w<5*strlen((char*)eina_list_data_get(view->images)))
+     total_w = 5*strlen((char*)eina_list_data_get(view->images));
    ecore_evas_resize(menu->window,total_w+hor_sp, total_h+ver_sp);
    evas_object_image_fill_set(menu->bg, 0, 0, total_w+hor_sp, total_h+ver_sp);
    evas_object_resize(menu->bg, total_w+hor_sp, total_h+ver_sp);

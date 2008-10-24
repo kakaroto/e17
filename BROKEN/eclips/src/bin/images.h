@@ -43,7 +43,7 @@ Ecore_Timer *mode_webcam(Eclipse_View *view);
 
 void get_image_curl(char outfilename[], char* img);
     
-Eclipse_Image *eclips_image_new(int layer, Evas_List *list);
+Eclipse_Image *eclips_image_new(int layer, Eina_List *list);
     
 int evas_object_fade_in(Evas_Object *ob);
 

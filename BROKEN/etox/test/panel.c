@@ -32,17 +32,17 @@ void setup_panel(Evas *_e)
 
 	/* Panel buttons */
 	pbutton1 = panel_button(evas, "Basic", basic_tests());
-	pbuttons = evas_list_append(pbuttons, pbutton1);
+	pbuttons = eina_list_append(pbuttons, pbutton1);
 
 	pbutton2 = panel_button(evas, "Style", style_tests());
-	pbuttons = evas_list_append(pbuttons, pbutton2);
+	pbuttons = eina_list_append(pbuttons, pbutton2);
 
 	pbutton3 = panel_button(evas, "Callbacks", callback_tests());
-	pbuttons = evas_list_append(pbuttons, pbutton3);
+	pbuttons = eina_list_append(pbuttons, pbutton3);
 
 }
 
-Panel_Button *panel_button(Evas *_e, char *_label, Evas_List *tests)
+Panel_Button *panel_button(Evas *_e, char *_label, Eina_List *tests)
 {
 	Evas_Object *o;
 	static int y = 200;

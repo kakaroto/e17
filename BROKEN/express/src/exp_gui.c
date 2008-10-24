@@ -94,7 +94,7 @@ exp_gui_idler_before(void *data)
 {
   /* all real work gets done from here */
   Exp *exp = data;
-  Evas_List *l, *removals = NULL;
+  Eina_List *l, *removals = NULL;
 
   if (!exp) return 1;
 
@@ -104,7 +104,7 @@ exp_gui_idler_before(void *data)
     Exp_Conversation *conv = l->data;
     if (conv->destroy)
     {
-      removals = evas_list_append(removals, conv);
+      removals = eina_list_append(removals, conv);
 
       if (conv == exp->active_conversation)
       {
@@ -121,9 +121,9 @@ exp_gui_idler_before(void *data)
   while(removals)
   {
     Exp_Conversation *conv = removals->data;
-    exp->conversations = evas_list_remove(exp->conversations, conv);
+    exp->conversations = eina_list_remove(exp->conversations, conv);
     exp_conversation_free(conv);
-    removals = evas_list_remove(removals, conv);
+    removals = eina_list_remove(removals, conv);
   }
 
 

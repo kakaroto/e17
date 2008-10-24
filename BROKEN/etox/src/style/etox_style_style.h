@@ -41,7 +41,7 @@ typedef struct _etox_style_style Etox_Style_Style;
 struct _etox_style_style
 {
 	Etox_Style_Style_Info *info;
-	Evas_List *bits;
+	Eina_List *bits;
 };
 
 

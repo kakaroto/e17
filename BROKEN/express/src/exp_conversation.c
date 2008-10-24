@@ -27,7 +27,7 @@ exp_conversation_new(Exp_Buddy *buddy)
   buddy->changed = 1;
   buddy->changes.state = 1;
 
-  buddy->exp->conversations = evas_list_append(buddy->exp->conversations, conv);
+  buddy->exp->conversations = eina_list_append(buddy->exp->conversations, conv);
 
   printf("new conv: (%s)\n", buddy->name);
   if (buddy->name && !strcmp(buddy->name, "tokyo"))
@@ -45,7 +45,7 @@ exp_conversation_free(Exp_Conversation *conv)
   while (conv->messages)
   {
     Exp_Message *msg = conv->messages->data;
-    conv->messages = evas_list_remove(conv->messages, msg);
+    conv->messages = eina_list_remove(conv->messages, msg);
     exp_message_free(msg);
   }
 
@@ -55,7 +55,7 @@ exp_conversation_free(Exp_Conversation *conv)
 void
 exp_conversation_update(Exp_Conversation *conv)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   printf("update conv!\n");
   if (!conv->realized) _exp_conversation_realize(conv);
@@ -101,7 +101,7 @@ exp_conversation_update(Exp_Conversation *conv)
 void
 exp_conversation_activate(Exp_Conversation *conv)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!conv || !conv->exp) return;
   if (conv->active) return;
 
@@ -132,7 +132,7 @@ exp_conversation_destroy(Exp_Conversation *conv)
 Exp_Conversation *
 exp_conversation_find_by_buddy(Exp_Buddy *buddy)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!buddy || !buddy->exp) return NULL;
   
   for (l = buddy->exp->conversations; l; l = l->next)

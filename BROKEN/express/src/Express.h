@@ -28,8 +28,8 @@ struct _Exp
   Evas_Object *buddy_cont;
   Exp_Buddy *user;
 
-  Evas_List *buddies;
-  Evas_List *conversations;
+  Eina_List *buddies;
+  Eina_List *conversations;
 
   char *theme_path;
 
@@ -91,7 +91,7 @@ struct _Exp_Conversation
   Exp_Buddy *buddy, *user;
   Evas_Object *cont;
   
-  Evas_List *messages;
+  Eina_List *messages;
 
   double pos;
 

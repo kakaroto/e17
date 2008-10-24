@@ -2,7 +2,7 @@
 #include "eclipse.h"
 #include "file.h"
 
-extern Evas_List *views;
+extern Eina_List *views;
 
 Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 {
@@ -43,7 +43,7 @@ Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 	 view->imfirst= view->images;
 	 view->mode   = c;
 	 view->display= 1;      
-	 views        = evas_list_append(views,view);	 
+	 views        = eina_list_append(views,view);	 
 	 modeset      = 1;
 	 break;
 	 
@@ -64,7 +64,7 @@ Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 	 view->imfirst= view->images;	 
 	 view->mode   = c;
 	 view->display= 1;	 
-	 views = evas_list_append(views,view);
+	 views = eina_list_append(views,view);
 	 while(tok = strtok(NULL,","))
 	   {	       	
 	      printf("----> adding %s\n",arg);
@@ -74,7 +74,7 @@ Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 	      view->imfirst= view->images;	      
 	      view->mode   = c;	   
 	      view->display= 1;	      
-	      views = evas_list_append(views,view);
+	      views = eina_list_append(views,view);
 	   }	 
 	 modeset = 1;
 	 break;	 
@@ -92,7 +92,7 @@ Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 	 view->images = NULL;
 	 view->mode   = c;
 	 view->display= 1;	 
-	 views        = evas_list_append(views,view);	 
+	 views        = eina_list_append(views,view);	 
 	 modeset      = 1;	 
 	 
        case 'd':
@@ -167,13 +167,13 @@ Eclipse_Options *parseArgs(int argc, char *argv[], Eclipse_Options *eo)
 	  {
 	     //img = (char*)malloc(sizeof(argv[optind]));
 	     sprintf(img,"%s",argv[optind++]);
-	     view->images = evas_list_append(view->images,(void*)strdup(img));
+	     view->images = eina_list_append(view->images,(void*)strdup(img));
 	  }
 	/* add view to list of views */
 	view->imfirst= view->images;
 	view->mode = 0;
 	view->display= 1;	
-	views = evas_list_append(views,view);
+	views = eina_list_append(views,view);
      }   
             
    if (!ok || optind < argc) {

@@ -3,17 +3,17 @@
 
 //#define DEBUG ON
 
-Evas_List *active_selections = NULL;
+Eina_List *active_selections = NULL;
 
 #define SELECTION_LOOP_START(selected) \
 do { \
 	Evas_Object *bit = NULL; \
 	Etox_Line *line; \
-	Evas_List *l, *bl; \
+	Eina_List *l, *bl; \
 	Evas_Coord w, h; \
 	line = selected->start.line; \
-	l = evas_list_find_list(selected->etox->lines, selected->start.line); \
-	bl = evas_list_find_list(line->bits, selected->start.bit); \
+	l = eina_list_data_find_list(selected->etox->lines, selected->start.line); \
+	bl = eina_list_data_find_list(line->bits, selected->start.bit); \
 	while (bl && bit != selected->end.bit) { \
 		bit = bl->data; \
 		evas_object_geometry_get(bit, NULL, NULL, &w, NULL); \
@@ -39,7 +39,7 @@ do { \
 Evas_Object *
 etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 {
-	Evas_List *l;
+	Eina_List *l;
 	Evas_Object *point = bit;
 	Etox_Selection *selected;
 
@@ -50,7 +50,7 @@ etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 	if (index && index < etox_style_length(bit)) {
 		point = etox_style_split(bit, index);
 		evas_object_smart_member_add(point, line->et->smart_obj);
-		line->bits = evas_list_append_relative(line->bits, point, bit);
+		line->bits = eina_list_append_relative(line->bits, point, bit);
 
 		l = active_selections;
 		while (l) {
@@ -100,7 +100,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	selected->end.line = l2;
 	selected->end.bit = s2;
 
-	active_selections = evas_list_prepend(active_selections, selected);
+	active_selections = eina_list_prepend(active_selections, selected);
 
         // If any bits were split, re-layout the etox.
         /** @TODO : If there are multiple selections created in an etox, the layout
@@ -124,7 +124,7 @@ etox_selection_free(Etox_Selection *selected)
 {
         CHECK_PARAM_POINTER("selected", selected);
 
-	active_selections = evas_list_remove(active_selections, selected);
+	active_selections = eina_list_remove(active_selections, selected);
 	FREE(selected);
 }
 
@@ -134,7 +134,7 @@ void
 etox_selection_free_by_etox(Evas_Object *obj)
 {
 	Etox *etox;
-	Evas_List *l, *r = NULL;
+	Eina_List *l, *r = NULL;
 	Etox_Selection *selected;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -148,7 +148,7 @@ etox_selection_free_by_etox(Evas_Object *obj)
 	for (l = active_selections; l; l = l->next) {
 		selected = l->data;
 		if (selected->etox == etox) {
-                        r = evas_list_append(r, selected);
+                        r = eina_list_append(r, selected);
 		}
 	}
 
@@ -157,11 +157,11 @@ etox_selection_free_by_etox(Evas_Object *obj)
         {
           selected = l->data;
 
-          active_selections = evas_list_remove(active_selections, selected);
+          active_selections = eina_list_remove(active_selections, selected);
           free(selected);
         }
 
-        evas_list_free(r);
+        eina_list_free(r);
 }
 
 /**
@@ -327,7 +327,7 @@ void
 etox_selection_apply_context(Etox_Selection *selected,
                              Etox_Context *context)
 {
-  Evas_List *l;
+  Eina_List *l;
   Etox_Line *line;
 
   CHECK_PARAM_POINTER("selected", selected);
@@ -342,7 +342,7 @@ etox_selection_apply_context(Etox_Selection *selected,
   else
   {
     /* start on the first line */
-    l = evas_list_find_list(selected->etox->lines, selected->start.line);
+    l = eina_list_data_find_list(selected->etox->lines, selected->start.line);
 
     line = l->data;
     
@@ -371,11 +371,11 @@ etox_selection_apply_context(Etox_Selection *selected,
 void
 etox_selections_update(Evas_Object *bit, Etox_Line *line)
 {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = active_selections; l; l = l->next)
 	{
-		Etox_Selection *selected = evas_list_data(l);
+		Etox_Selection *selected = eina_list_data_get(l);
 		
 		if (selected->start.bit == bit)
 		{
@@ -393,11 +393,11 @@ Etox_Rect *
 etox_selection_get_geometry(Etox_Selection *selected, int *num)
 {
   Etox_Rect *rects = NULL, *cur = NULL;
-  Evas_List *l = NULL, *midlines = NULL;
+  Eina_List *l = NULL, *midlines = NULL;
   Evas_Coord x, y, w, h;
   int count = 0;
 
-  l = evas_list_find_list(selected->etox->lines, selected->start.line);
+  l = eina_list_data_find_list(selected->etox->lines, selected->start.line);
 
   // Start with the second line (if any)
   l = l->next;
@@ -410,7 +410,7 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
 
     if (line == selected->end.line) break;
 
-    midlines = evas_list_append(midlines, line);
+    midlines = eina_list_append(midlines, line);
     l = l->next;
   }
 

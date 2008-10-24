@@ -102,7 +102,7 @@ struct _etox_style
 	/*
 	 * Callbacks.
 	 */
-	Evas_List *callbacks;
+	Eina_List *callbacks;
 };
 
 /*

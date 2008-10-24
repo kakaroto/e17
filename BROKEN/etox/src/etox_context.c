@@ -260,7 +260,7 @@ void etox_context_set_color_db(Etox_Context * context, char *name)
 /*
 void etox_context_clear_callbacks(Etox *et)
 {
-	Evas_List l;
+	Eina_List l;
 	Etox_Callback *cb;
 
 	CHECK_PARAM_POINTER("et", et);
@@ -268,7 +268,7 @@ void etox_context_clear_callbacks(Etox *et)
 	l = et->context->callbacks;
 	while (l) {
 		cb = l->data;
-		l = evas_list_remove(l, cb);
+		l = eina_list_remove(l, cb);
 		FREE(cb);
 	}
 
@@ -292,7 +292,7 @@ void etox_context_add_callback(Etox *et, Evas_Callback_Type type,
 	cb->func = func;
 	cb->data = data;
 
-	et->context->callbacks = evas_list_append(et->context->callbacks, cb);
+	et->context->callbacks = eina_list_append(et->context->callbacks, cb);
 }
 */
 
@@ -302,7 +302,7 @@ void etox_context_add_callback(Etox *et, Evas_Callback_Type type,
 /*
 void etox_context_del_callback(Etox *et, Evas_Callback_Type callback)
 {
-	Evas_List l;
+	Eina_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -314,7 +314,7 @@ void etox_context_del_callback(Etox *et, Evas_Callback_Type callback)
 		l = l->next;
 		if (cb->type == callback)
 			et->context->callbacks =
-				evas_list_remove(et->context->callbacks, cb);
+				eina_list_remove(et->context->callbacks, cb);
 	}
 }
 */

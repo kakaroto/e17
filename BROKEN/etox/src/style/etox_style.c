@@ -98,7 +98,7 @@ Evas_Object *etox_style_new(Evas *evas, char *text, char *style)
  */
 void etox_style_free(Evas_Object *obj)
 {
-	Evas_List *l;
+	Eina_List *l;
 	Etox_Style *es;
 
 	es = evas_object_smart_data_get(obj);
@@ -112,7 +112,7 @@ void etox_style_free(Evas_Object *obj)
 	if (es->callbacks) {
 		for (l = es->callbacks; l; l = l->next)
 			FREE(l->data);
-		evas_list_free(es->callbacks);
+		eina_list_free(es->callbacks);
 	}
 
 	FREE(es);
@@ -1011,7 +1011,7 @@ void etox_style_callback_add(Evas_Object *obj, Evas_Callback_Type callback,
 {
 	Etox_Style * es;
 	Etox_Style_Callback *cb;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -1031,7 +1031,7 @@ void etox_style_callback_add(Evas_Object *obj, Evas_Callback_Type callback,
 	 * Append the callback to the etox_style's list, and add the callback to
 	 * the evas bits so that the wrapper function gets called.
 	 */
-	es->callbacks = evas_list_append(es->callbacks, (const void *)cb);
+	es->callbacks = eina_list_append(es->callbacks, (const void *)cb);
 	evas_object_event_callback_add(es->bit, callback,
 			  __etox_style_callback_dispatcher, cb);
 	if (es->style->bits) {
@@ -1066,7 +1066,7 @@ void __etox_style_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
 void etox_style_callback_del(Evas_Object *obj, Evas_Callback_Type callback,
 		Etox_Style_Callback_Function func)
 {
-	Evas_List *l;
+	Eina_List *l;
 	Etox_Style * es;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -1084,7 +1084,7 @@ void etox_style_callback_del(Evas_Object *obj, Evas_Callback_Type callback,
 			 * the matched item.
 			 */
 			l = l->next;
-			es->callbacks = evas_list_remove(es->callbacks, cb);
+			es->callbacks = eina_list_remove(es->callbacks, cb);
 			FREE(cb);
 		}
 	}

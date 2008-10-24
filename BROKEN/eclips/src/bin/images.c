@@ -45,7 +45,7 @@ void
    image->img = ob;
    
    /* we need to see if the file is local or not */
-   filename = strdup((char*)evas_list_data(view->images));
+   filename = strdup((char*)eina_list_data_get(view->images));
    if ((!strncmp(filename, "http://", 7)) ||
        (!strncmp(filename, "https://", 8)) ||
        (!strncmp(filename, "ftp://", 6)))
@@ -325,17 +325,17 @@ void
 	  {
 	     int r;
 	     srand((int)ecore_time_get());
-	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
-	     printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
-	     view->images = evas_list_nth_list(view->imfirst,r);
+	     r = 0+(int) ((float)(eina_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
+	     printf("using image no. %d from %d\n",r,eina_list_count(view->imfirst));
+	     view->images = eina_list_nth_list(view->imfirst,r);
 	  }
 	else
 	  {
 	     
 	     if(!view->images->next)
-	       while(view->images->prev)view->images=evas_list_prev(view->images);
+	       while(view->images->prev)view->images=eina_list_prev(view->images);
 	     else
-	       view->images = evas_list_next(view->images);
+	       view->images = eina_list_next(view->images);
 	  }	
 	show_image(view);
      }   
@@ -347,16 +347,16 @@ void
 	  {
 	     int r;
 	     srand((int)ecore_time_get());
-	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
-	     printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
-	     view->images = evas_list_nth_list(view->imfirst,r);
+	     r = 0+(int) ((float)(eina_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
+	     printf("using image no. %d from %d\n",r,eina_list_count(view->imfirst));
+	     view->images = eina_list_nth_list(view->imfirst,r);
 	  }
 	else
 	  {	
 	     if(!view->images->prev)
-	       view->images = evas_list_last(view->images);
+	       view->images = eina_list_last(view->images);
 	     else
-	       view->images = evas_list_prev(view->images);
+	       view->images = eina_list_prev(view->images);
 	  }	
 	show_image(view);
      }   
@@ -426,16 +426,16 @@ int
      {
 	int r;
 	srand((int)ecore_time_get());
-	r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
-	printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
-	view->images = evas_list_nth_list(view->imfirst,r);
+	r = 0+(int) ((float)(eina_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
+	printf("using image no. %d from %d\n",r,eina_list_count(view->imfirst));
+	view->images = eina_list_nth_list(view->imfirst,r);
      }
    else 
      {	
 	if(!view->images->next)
-	  while(view->images->prev)view->images=evas_list_prev(view->images);
+	  while(view->images->prev)view->images=eina_list_prev(view->images);
 	else
-	  view->images = evas_list_next(view->images);
+	  view->images = eina_list_next(view->images);
      }   
    show_image(view);
    return 1;
@@ -468,7 +468,7 @@ void
 
 Eclipse_Image 
   *eclips_image_new(int        layer, 
-		    Evas_List *list)
+		    Eina_List *list)
 {
    Eclipse_Image *im;
    im = (Eclipse_Image*)calloc(1,sizeof(Eclipse_Image));

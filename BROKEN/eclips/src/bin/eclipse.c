@@ -19,7 +19,7 @@
 Ecore_Evas  *ee;           /* our ecore_evas */
 Evas        *evas;         /* our evas       */
 Evas_Object *ob,*bg;       /* our background */
-Evas_List   *l,*l2,*views; /* our view list  */
+Eina_List   *l,*l2,*views; /* our view list  */
 
 Eclipse_Image   *image, *picnpic;
 Eclipse_Options *eo;
@@ -52,12 +52,12 @@ int main(int argc, char **argv)
    /* go through available views and display them properly */
    while(views)
      {
-	switch(((Eclipse_View*)evas_list_data(views))->mode)
+	switch(((Eclipse_View*)eina_list_data_get(views))->mode)
 	  {
 	   case 1:
 	     /* pnp mode */
 	       {		  
-		  Eclipse_View *view = (Eclipse_View*)evas_list_data(views);
+		  Eclipse_View *view = (Eclipse_View*)eina_list_data_get(views);
 		  view->curimg = NULL;
 		  view->layer  = 6;
 		  view->x = 10;
@@ -76,13 +76,13 @@ int main(int argc, char **argv)
 	     printf("entering multi view\n");
 	       {
 		  /* count number of view ports we need */
-		  Evas_List *l = views;
+		  Eina_List *l = views;
 		  int viewports = 0,i,j;
 		  while(l)
 		    {
-		       if(((Eclipse_View*)evas_list_data(views))->mode == 2)
+		       if(((Eclipse_View*)eina_list_data_get(views))->mode == 2)
 			 viewports++;
-		       l = evas_list_next(l);
+		       l = eina_list_next(l);
 		    }
 		  eo->geom_h = eo->geom_w = (90+10+10)*(int)(ceil(sqrt((double)viewports)));
 		  /* for now, we want to draw a square, TODO: user input */
@@ -94,9 +94,9 @@ int main(int argc, char **argv)
 			    int go = 1;
 			    while(go == 1&&l)
 			      {
-				 if(((Eclipse_View*)evas_list_data(l))->mode == 2)
+				 if(((Eclipse_View*)eina_list_data_get(l))->mode == 2)
 				   {
-				      Eclipse_View *view = (Eclipse_View*)evas_list_data(l);
+				      Eclipse_View *view = (Eclipse_View*)eina_list_data_get(l);
 				      view->curimg = NULL;
 				      view->layer  = 5;
 				      view->x = 0+j*90+10+j*10;
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 				      else if(strcmp(eo->mode,"w") == 0)
 					timer = mode_webcam(view);
 				      go = -1;
-				      l = evas_list_next(l);
+				      l = eina_list_next(l);
 				      break;
 				   }				 
 			      }			    
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 	   case 0:
 	     /* default mode */
 	       {
-		  Eclipse_View *view = (Eclipse_View*)evas_list_data(views);		  
+		  Eclipse_View *view = (Eclipse_View*)eina_list_data_get(views);		  
 		  show_image(view);
 		  if(strcmp(eo->mode,"s") == 0)
 		    timer = mode_slideshow(view);
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 	     break;
 	     
 	  }
-	views = evas_list_next(views);
+	views = eina_list_next(views);
      }   
    /* show main window */
    ecore_evas_show(ee);

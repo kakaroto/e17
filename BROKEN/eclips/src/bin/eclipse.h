@@ -36,7 +36,7 @@ struct _Eclipse_Options
    int       shadows;
    int       random;
    int       borderless;
-   Evas_List *images;
+   Eina_List *images;
 };
 
 typedef struct _Eclipse_Image Eclipse_Image;
@@ -46,7 +46,7 @@ struct _Eclipse_Image
    Evas_Object *img;
    int         x,y,w,h;
    int         layer;
-   Evas_List   *list;
+   Eina_List   *list;
 };
 
 typedef struct _Eclipse_View Eclipse_View;
@@ -58,8 +58,8 @@ struct _Eclipse_View
    int               mode; /* 1 = pnp, 2 = multi, 3 = pcn */   
    int               layer;
    Eclipse_Options  *options; /* do we really need this? */
-   Evas_List        *images;
-   Evas_List        *imfirst;
+   Eina_List        *images;
+   Eina_List        *imfirst;
    Evas_Object      *shadow;
    Eclipse_Image    *curimg;   
 };

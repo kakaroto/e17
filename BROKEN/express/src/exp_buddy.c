@@ -11,7 +11,7 @@ Exp_Buddy *exp_buddy_new(Exp *exp)
 {
   Exp_Buddy *buddy = calloc(1, sizeof(Exp_Buddy));
 
-  exp->buddies = evas_list_append(exp->buddies, buddy);
+  exp->buddies = eina_list_append(exp->buddies, buddy);
   buddy->exp = exp;
   buddy->changed = 1;
   return buddy;

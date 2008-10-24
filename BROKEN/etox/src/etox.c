@@ -13,7 +13,7 @@ static void etox_set_layer(Evas_Object * et, int layer);
 static void etox_set_clip(Evas_Object * et, Evas_Object *clip);
 static void etox_unset_clip(Evas_Object * et);
 
-static Evas_List *_etox_break_text(Etox * et, char *text);
+static Eina_List *_etox_break_text(Etox * et, char *text);
 
 static Evas_Smart *etox_smart = NULL;
 
@@ -26,7 +26,7 @@ static Evas_Smart *etox_smart = NULL;
 Evas_Object *etox_new(Evas *evas)
 {
 	Etox *et;
-	const Evas_List *font_paths;
+	const Eina_List *font_paths;
 	int path_found = 0;
 	char buf[PATH_MAX];
 
@@ -125,7 +125,7 @@ static void etox_free(Evas_Object * obj)
 {
 	Etox *et;
 	Etox_Obstacle *obst;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -138,7 +138,7 @@ static void etox_free(Evas_Object * obj)
 	l = et->obstacles;
 	while (l) {
 		obst = l->data;
-		l = evas_list_remove(l, obst);
+		l = eina_list_remove(l, obst);
 		FREE(obst);
 	}
 
@@ -163,7 +163,7 @@ static void etox_show(Evas_Object * obj)
 {
 	Etox *et;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -347,7 +347,7 @@ void etox_set_text(Evas_Object * obj, char *text)
 {
 	Etox *et;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -406,7 +406,7 @@ char *etox_get_text(Evas_Object * obj)
 	Etox *et;
 	char *ret, *temp;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 	int len;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
@@ -475,7 +475,7 @@ void etox_clear(Evas_Object * obj)
 {
 	Etox *et;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -488,7 +488,7 @@ void etox_clear(Evas_Object * obj)
 	if (!et->lines)
 		return;
 
-	for (l = et->lines; l; l = evas_list_remove(l, l->data)) {
+	for (l = et->lines; l; l = eina_list_remove(l, l->data)) {
 		line = l->data;
 		etox_line_free(line);
 	}
@@ -541,7 +541,7 @@ static void etox_set_layer(Evas_Object * obj, int layer)
 {
 	Etox *et;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -770,7 +770,7 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 
 	if (index >= et->length) {
 		sum = et->length;
-                line = evas_list_data(evas_list_last(et->lines));
+                line = eina_list_data_get(eina_list_last(et->lines));
 
 		if (line) {
 			if (h) *h = line->h;
@@ -780,7 +780,7 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 		}
 	}
 	else {
-		Evas_List *l;
+		Eina_List *l;
 		for (l = et->lines; l; l = l->next) {
 			line = l->data;
 			sum += line->length;
@@ -831,7 +831,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 	Etox_Line *line = NULL;
 	Evas_Object *bit = NULL;
 	Evas_Coord tx, ty, tw, th;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
 
@@ -866,7 +866,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		return sum;
 
 	if (!line)
-		line = (evas_list_last(et->lines))->data;
+		line = (eina_list_last(et->lines))->data;
 
 	/*
 	 * Bring the coordinate into the line if it falls outside, this may
@@ -983,7 +983,7 @@ etox_obstacle_add(Evas_Object * obj, Evas_Coord x, Evas_Coord y,
 	obst = etox_obstacle_new(et, x, y, w, h);
 
 	if (obst)
-		et->obstacles = evas_list_append(et->obstacles, obst);
+		et->obstacles = eina_list_append(et->obstacles, obst);
 
 #ifdef DEBUG
 	printf("\netox_obstacle_add() - calling etox_layout()\n");
@@ -1005,7 +1005,7 @@ void etox_obstacle_remove(Etox_Obstacle * obstacle)
 {
 	CHECK_PARAM_POINTER("obstacle", obstacle);
 
-	obstacle->et->obstacles = evas_list_remove(obstacle->et->obstacles,
+	obstacle->et->obstacles = eina_list_remove(obstacle->et->obstacles,
 			obstacle);
 
 	etox_obstacle_free(obstacle->et, obstacle);
@@ -1057,9 +1057,9 @@ void etox_obstacle_resize(Etox_Obstacle * obst, Evas_Coord x, Evas_Coord y)
  * Returns a list of lines on success, NULL on failure. Separates the text into
  * lines and bits if specific characters are contained in the text.
  */
-static Evas_List *_etox_break_text(Etox * et, char *text)
+static Eina_List *_etox_break_text(Etox * et, char *text)
 {
-	Evas_List *ret = NULL;
+	Eina_List *ret = NULL;
 	Evas_Object *bit;
 	Etox_Line *line = NULL;
 	char *walk = text;
@@ -1073,7 +1073,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	 * calling function
 	 */
 	line = etox_line_new(et->context->flags);
-	ret = evas_list_append(ret, line);
+	ret = eina_list_append(ret, line);
 	line->et = et;
 
 	while (*walk) {
@@ -1172,7 +1172,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 * Create a new line for the next text
 			 */
 			line = etox_line_new(line->flags);
-			ret = evas_list_append(ret, line);
+			ret = eina_list_append(ret, line);
 			line->et = et;
 
 			break;
@@ -1213,7 +1213,7 @@ void etox_layout(Etox * et)
 {
 	int y;
 	Etox_Line *line;
-	Evas_List *l;
+	Eina_List *l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -1253,7 +1253,7 @@ void etox_layout(Etox * et)
 	 */
 	l = et->lines;
 	while (l) {
-		Evas_List *ll;
+		Eina_List *ll;
 
 		line = l->data;
 		line->x = et->x;
@@ -1332,7 +1332,7 @@ void etox_layout(Etox * et)
 Etox_Line *
 etox_coord_to_line(Etox *et, int y)
 {
-	Evas_List *l;
+	Eina_List *l;
 	Etox_Line *line = NULL;;
 
 	l = et->lines;
@@ -1357,7 +1357,7 @@ etox_index_to_line(Etox *et, int *i)
 #endif
 	int begin_line_index = 0;
 	int line_length;
-	Evas_List *l;
+	Eina_List *l;
 	Etox_Line *line = NULL;;
 
 	l = et->lines;
@@ -1405,7 +1405,7 @@ void
 etox_print_lines(Etox *et)
 {
 	int i = 0;
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = et->lines; l; l = l->next) {
 		printf("Line %d:\n", i);
