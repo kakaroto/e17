@@ -235,6 +235,7 @@
 #define __BACKGROUND_LAYER 561
 #define __FORGROUND_LAYER 562
 #define __USE_ON_DESKTOP 564
+#define __DESKTOP_ALL -1
 
 #define __TYPE_NORMAL 5
 #define __TYPE_GLOBAL 7

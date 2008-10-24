@@ -1064,7 +1064,7 @@ BackgroundsConfigLoad(FILE * fs)
    char               *bg2 = 0;
    char               *name = 0;
    char                ignore = 0;
-   unsigned int        desk;
+   int                 desk;
 
    SET_COLOR(&color, 0, 0, 0);
 
@@ -1106,10 +1106,22 @@ BackgroundsConfigLoad(FILE * fs)
 	     desk = atoi(s2);
 	     if (desk >= N_BG_ASSIGNED)
 		break;
-	     if (!bg_assigned[desk] || Conf.backgrounds.user)
+	     if (desk >= 0)
 	       {
-		  bg_assigned[desk] = bg;
+		  if (!bg_assigned[desk] || Conf.backgrounds.user)
+		    {
+		       bg_assigned[desk] = bg;
+		       bg->referenced = 1;
+		    }
+	       }
+	     else
+	       {
 		  bg->referenced = 1;
+		  for (ii1 = 0; ii1 < N_BG_ASSIGNED; ii1++)
+		    {
+		       if (!bg_assigned[ii1])
+			  bg_assigned[ii1] = bg;
+		    }
 	       }
 	     break;
 
