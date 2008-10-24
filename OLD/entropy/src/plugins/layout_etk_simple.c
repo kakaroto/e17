@@ -456,7 +456,7 @@ void etk_local_viewer_cb(Etk_Object* obj, void* data)
 void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
 		entropy_gui_component_instance* local)
 {
-	Evas_List* children;
+	Eina_List* children;
 	entropy_layout_gui* gui = instance->data;
 	Etk_Widget* widget;
 	entropy_generic_file* file;
@@ -707,7 +707,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     break;
 
 	     case ENTROPY_NOTIFY_METADATA_ALL: {
-			entropy_etk_efolder_dialog_show((Evas_List*)el);
+			entropy_etk_efolder_dialog_show((Eina_List*)el);
 	     }
 	     break;
 
@@ -738,7 +738,7 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget* menu_item;
   Etk_Widget* menu;
 
-  Evas_List* structures;
+  Eina_List* structures;
   Entropy_Config_Structure* structure;
   int local_viewer_selected = 0;
 

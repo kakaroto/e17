@@ -377,7 +377,7 @@ void entropy_core_gui_event_handler_add(char* gui_event,
 void entropy_core_mime_action_remove(char* mime_type)
 {
 	Entropy_Config_Mime_Binding* binding;
-	Evas_List* l;
+	Eina_List* l;
 
 	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
@@ -386,7 +386,7 @@ void entropy_core_mime_action_remove(char* mime_type)
 		if (!strcmp(binding->mime_type, mime_type)) {
 			printf("Removing binding '%s'...\n", mime_type);
 			core_core->config->Loaded_Config->mime_bindings = 
-				evas_list_remove(core_core->config->Loaded_Config->mime_bindings, binding);
+				eina_list_remove(core_core->config->Loaded_Config->mime_bindings, binding);
 		}
 		l = l->next;
 	}
@@ -396,14 +396,14 @@ void entropy_core_mime_action_remove(char* mime_type)
 void entropy_core_mime_action_remove_app(char* mime_type, Entropy_Config_Mime_Binding_Action* action)
 {
 	Entropy_Config_Mime_Binding* binding;
-	Evas_List* l;
+	Eina_List* l;
 
 	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
 		/*FIXME: This leaks a binding*/
 		if (!strcmp(binding->mime_type, mime_type)) {
-			binding->actions = evas_list_remove(binding->actions, action);
+			binding->actions = eina_list_remove(binding->actions, action);
 		}
 		l = l->next;
 	}
@@ -412,7 +412,7 @@ void entropy_core_mime_action_remove_app(char* mime_type, Entropy_Config_Mime_Bi
 void entropy_core_mime_action_add(char* mime_type, char* desc) 
 {
 	Entropy_Config_Mime_Binding* binding;
-	Evas_List* l;
+	Eina_List* l;
 	int found = 0;
 	
 	/*entropy_mime_action* action_o;
@@ -444,7 +444,7 @@ void entropy_core_mime_action_add(char* mime_type, char* desc)
 		binding->mime_type = strdup(mime_type);
 		binding->desc = strdup(desc);
 		core_core->config->Loaded_Config->mime_bindings = 
-			evas_list_append(core_core->config->Loaded_Config->mime_bindings, binding);
+			eina_list_append(core_core->config->Loaded_Config->mime_bindings, binding);
 	}
 
 	
@@ -455,7 +455,7 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
 	
-	Evas_List* l;
+	Eina_List* l;
 
 
 	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
@@ -469,7 +469,7 @@ void entropy_core_mime_application_add(char* mime_type, char* name, char* execut
 			action->executable = strdup(executable);
 			action->args = strdup(args);
 
-			binding->actions = evas_list_append(binding->actions, action);
+			binding->actions = eina_list_append(binding->actions, action);
 		}
 		
 		l = l->next;
@@ -491,14 +491,14 @@ Entropy_Config_Mime_Binding_Action* entropy_core_mime_hint_get(char* mime_type, 
 
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l;
+	Eina_List* l;
 
 	for (l = core_core->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 		
 		if (!strcmp(mime_type , binding->mime_type)) {
 			/*Return nth element*/
-			action = evas_list_nth(binding->actions, key);
+			action = eina_list_nth(binding->actions, key);
 
 			printf("Action exe: %s, Action args: %s\n", action->executable, action->args);
 			return action;

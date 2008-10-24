@@ -41,7 +41,7 @@ void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* grou
 Ecore_List* entropy_filesystem_metadata_groups_retrieve();
 void entropy_filesystem_auth_response(char* location, char* user, char* password);
 void entropy_filesystem_meta_all_retrieve();
-void entropy_filesystem_vfolder_create(char* name, Evas_List* entries);
+void entropy_filesystem_vfolder_create(char* name, Eina_List* entries);
 
 static evfs_connection *con;
 
@@ -274,7 +274,7 @@ callback (EvfsEvent * data, void *obj)
 	      /*folder = data->resp_command.file_command.files[0]->path;*/
 
 	      if (EVFS_EVENT_DIR_LIST(data)->files) {
-		      Evas_List* l;
+		      Eina_List* l;
 		      for (l= EVFS_EVENT_DIR_LIST(data)->files;l; ) {
 			ref = l->data;
 			l = l->next; 
@@ -485,7 +485,7 @@ callback (EvfsEvent * data, void *obj)
   case EVFS_EV_METADATA_GROUPS: {
 	
 					
-	Evas_List* l;
+	Eina_List* l;
 	if (metadata_groups) {
 		char* obj;
 		while ((obj = ecore_list_first_remove(metadata_groups))) {
@@ -1208,11 +1208,11 @@ void entropy_filesystem_meta_all_retrieve(entropy_gui_component_instance* instan
 	ecore_hash_set (evfs_dir_requests, (long*)id, instance);
 }
 
-void entropy_filesystem_vfolder_create(char* name, Evas_List* entries)
+void entropy_filesystem_vfolder_create(char* name, Eina_List* entries)
 {
 	evfs_command* com;
 	EvfsVfolderEntry* e;
-	Evas_List* l;
+	Eina_List* l;
 
 	com = evfs_vfolder_create_command_new(name);
 	for (l=entries;l;) {

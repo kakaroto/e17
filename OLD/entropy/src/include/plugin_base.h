@@ -87,7 +87,7 @@ struct Entropy_Plugin_File {
 		void (*groups_get)(entropy_gui_component_instance* instance);
 		 Ecore_List* (*groups_retrieve)();
 		void (*meta_all_get)(entropy_gui_component_instance* instance);
-		void (*vfolder_create)(char* name,Evas_List* entries);
+		void (*vfolder_create)(char* name,Eina_List* entries);
 	} misc_functions;
 };
 #define ENTROPY_PLUGIN_FILE(plugin) ((Entropy_Plugin_File *) plugin)

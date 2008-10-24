@@ -353,7 +353,7 @@ void entropy_plugin_filesystem_metadata_all_get(entropy_gui_component_instance* 
    }
 }
 
-void entropy_plugin_filesystem_vfolder_create(char* name, Evas_List* entries) 
+void entropy_plugin_filesystem_vfolder_create(char* name, Eina_List* entries) 
 {
     Entropy_Plugin_File* plugin =
     ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,

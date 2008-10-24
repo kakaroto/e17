@@ -21,7 +21,7 @@ static Eet_Data_Descriptor *_entropy_config_item_edd;
 
 void entropy_config_loaded_config_free()
 {
-	Evas_List *l, *l2;
+	Eina_List *l, *l2;
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
 	Entropy_Config_Structure* structure;
@@ -44,13 +44,13 @@ void entropy_config_loaded_config_free()
 
 		IF_FREE(binding->desc);
 		IF_FREE(binding->mime_type);
-		evas_list_free(binding->actions);
+		eina_list_free(binding->actions);
 		IF_FREE(binding);
 
 		l = l->next;
 
 	}
-	evas_list_free(_Entropy_Config->Loaded_Config->mime_bindings);
+	eina_list_free(_Entropy_Config->Loaded_Config->mime_bindings);
 
 	/*Free Structure bindings*/
 	for (l = _Entropy_Config->Loaded_Config->structures; l; ) {
@@ -62,7 +62,7 @@ void entropy_config_loaded_config_free()
 		
 		l = l->next;
 	}
-	evas_list_free(_Entropy_Config->Loaded_Config->structures);
+	eina_list_free(_Entropy_Config->Loaded_Config->structures);
 
 	
 	free(_Entropy_Config->Loaded_Config);
@@ -76,10 +76,10 @@ void entropy_config_edd_build()
 	/*Build the EDDs*/
 	_entropy_config_mime_binding_action_edd = 
 	eet_data_descriptor_new("entropy_config_mime_binding_action", sizeof(Entropy_Config_Mime_Binding_Action),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
+                              (void *(*)(void *))eina_list_next,
+                              (void *(*)(void *, void *))eina_list_append,
+                              (void *(*)(void *))eina_list_data_get,
+                              (void *(*)(void *))eina_list_free,
                               (void (*)
                                (void *,
                                 int (*)(void *, const char *, void *, void *),
@@ -99,10 +99,10 @@ void entropy_config_edd_build()
 
 	_entropy_config_mime_binding_edd =
 	eet_data_descriptor_new("entropy_config_mime_binding", sizeof(Entropy_Config_Mime_Binding),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
+                              (void *(*)(void *))eina_list_next,
+                              (void *(*)(void *, void *))eina_list_append,
+                              (void *(*)(void *))eina_list_data_get,
+                              (void *(*)(void *))eina_list_free,
                               (void (*)
                                (void *,
                                 int (*)(void *, const char *, void *, void *),
@@ -121,10 +121,10 @@ void entropy_config_edd_build()
 
 	_entropy_config_item_edd =
 	eet_data_descriptor_new("entropy_config_item", sizeof(Entropy_Config_Item),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
+                              (void *(*)(void *))eina_list_next,
+                              (void *(*)(void *, void *))eina_list_append,
+                              (void *(*)(void *))eina_list_data_get,
+                              (void *(*)(void *))eina_list_free,
                               (void (*)
                                (void *,
                                 int (*)(void *, const char *, void *, void *),
@@ -140,10 +140,10 @@ void entropy_config_edd_build()
 
 	_entropy_config_structure_edd = 
 	eet_data_descriptor_new("entropy_config_mime_binding", sizeof(Entropy_Config_Structure),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
+                              (void *(*)(void *))eina_list_next,
+                              (void *(*)(void *, void *))eina_list_append,
+                              (void *(*)(void *))eina_list_data_get,
+                              (void *(*)(void *))eina_list_free,
                               (void (*)
                                (void *,
                                 int (*)(void *, const char *, void *, void *),
@@ -160,10 +160,10 @@ void entropy_config_edd_build()
 	
 	_entropy_config_loaded_edd =
 	eet_data_descriptor_new("entropy_config_loaded", sizeof(Entropy_Config_Loaded),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
+                              (void *(*)(void *))eina_list_next,
+                              (void *(*)(void *, void *))eina_list_append,
+                              (void *(*)(void *))eina_list_data_get,
+                              (void *(*)(void *))eina_list_free,
                               (void (*)
                                (void *,
                                 int (*)(void *, const char *, void *, void *),
@@ -215,7 +215,7 @@ entropy_config_mime_binding_for_type_get(char* type)
 	Entropy_Config_Mime_Binding* rbinding = NULL;
 	Entropy_Config_Mime_Binding* binding = NULL;
 	
-	Evas_List* l;
+	Eina_List* l;
 	
 	/*Do a scan for now, we should dynamically load this into a hash*/
 	for (l = _Entropy_Config->Loaded_Config->mime_bindings; l; ) {
@@ -239,7 +239,7 @@ entropy_config_mimes_print(Entropy_Config_Loaded* mimes)
 {
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l, *l2;
+	Eina_List* l, *l2;
 
 	for (l = mimes->mime_bindings; l; ) {
 		binding = l->data;
@@ -278,7 +278,7 @@ entropy_config_binding_new(char* mime_type, char* description, Entropy_Config_Mi
 
 	va_start(args, action1);
 	for (action = action1; action; action = va_arg(args, Entropy_Config_Mime_Binding_Action*)) {
-		binding->actions = evas_list_append(binding->actions, action);
+		binding->actions = eina_list_append(binding->actions, action);
 	}
 	
 	va_end(args);
@@ -310,7 +310,7 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	char* data;
 	int size_ret;
 	int ok;
-	Evas_List* l;
+	Eina_List* l;
 	Entropy_Config_Item* item;
 	Entropy_Config_Loaded* mimes;
 	
@@ -481,7 +481,7 @@ void entropy_config_eet_config_save()
 	
 	/*Xlate misc hash->list*/
 	if (config->Loaded_Config->Misc_Config_Load)
-		evas_list_free(config->Loaded_Config->Misc_Config_Load);
+		eina_list_free(config->Loaded_Config->Misc_Config_Load);
 
 	config->Loaded_Config->Misc_Config_Load = NULL;
 	keys = ecore_hash_keys(config->Loaded_Config->Misc_Config);
@@ -490,7 +490,7 @@ void entropy_config_eet_config_save()
 		
 		if (item && item->name && item->value) {
 			config->Loaded_Config->Misc_Config_Load = 
-				evas_list_append(config->Loaded_Config->Misc_Config_Load, item);
+				eina_list_append(config->Loaded_Config->Misc_Config_Load, item);
 			printf("CONFIG SAVE: Wrote '%s' for '%s'\n", item->name, item->value);
 		}
 	}
@@ -538,46 +538,46 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		char buf[PATH_MAX];
 	
 		config->config_version = ENTROPY_CONFIG_VERSION;
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("image/jpeg", "JPEG Image",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
 					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
 					NULL
 					));
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("image/png", "PNG Image",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
 					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("image/gif", "GIF Image",
 					entropy_config_binding_action_new("Exhibit (Single File)", "exhibit", "\%pf"),
 					entropy_config_binding_action_new("Exhibit (Directory)", "exhibit", "\%p"),
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("text/csrc", "C Source File",
 					entropy_config_binding_action_new("Gvim", "gvim", "\%pf"),
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("text/html", "HTML Document",
 					entropy_config_binding_action_new("Firefox", "firefox", "\%pf"),
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("audio/x-mp3", "MP3 Audio",
 					entropy_config_binding_action_new("Xmms", "xmms", "\%pf"),
 					entropy_config_binding_action_new("Mpg123 (via eVFS)", "evfscat \%u | mpg123 -", ""),
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/x-ms-wmv", "WMV Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
@@ -585,7 +585,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/mpeg", "MPEG Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
@@ -593,7 +593,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 					NULL
 					));
 
-		config->mime_bindings = evas_list_append(config->mime_bindings, 
+		config->mime_bindings = eina_list_append(config->mime_bindings, 
 				entropy_config_binding_new("video/x-msvideo", "AVI Video",
 					entropy_config_binding_action_new("MPlayer", "mplayer", "\%pf"),
 					entropy_config_binding_action_new("MPlayer (via evfs)", "evfscat \%u | mplayer -cache 4096 -", ""),
@@ -606,14 +606,14 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		home = entropy_core_home_dir_get (entropy_core_get_core());
 		snprintf(buf, PATH_MAX, "file://%s", home);
 		
-		config->structures = evas_list_append(config->structures, 
+		config->structures = eina_list_append(config->structures, 
 				entropy_config_structure_new("Computer", "file:///")
 				);
 
-		config->structures = evas_list_append(config->structures, 
+		config->structures = eina_list_append(config->structures, 
 				entropy_config_structure_new("Home", buf)
 				);
-		config->structures = evas_list_append(config->structures, 
+		config->structures = eina_list_append(config->structures, 
 				entropy_config_structure_new("Virtual Folders", "vfolder:///")
 				);
 
@@ -628,7 +628,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 
 }
 
-Evas_List *
+Eina_List *
 entropy_config_standard_structures_parse (entropy_gui_component_instance * instance,
 				char *config)
 {
@@ -637,7 +637,7 @@ entropy_config_standard_structures_parse (entropy_gui_component_instance * insta
 
 void entropy_config_standard_structure_remove(Entropy_Config_Structure* structure)
 {
-	_Entropy_Config->Loaded_Config->structures = evas_list_remove(_Entropy_Config->Loaded_Config->structures, 
+	_Entropy_Config->Loaded_Config->structures = eina_list_remove(_Entropy_Config->Loaded_Config->structures, 
 			structure);
 }
 
@@ -646,7 +646,7 @@ entropy_config_standard_structures_add (char *name, char *uri)
 {
 	Entropy_Config_Structure* structure = entropy_config_structure_new(name,uri);
 	
-	_Entropy_Config->Loaded_Config->structures = evas_list_append(_Entropy_Config->Loaded_Config->structures,
+	_Entropy_Config->Loaded_Config->structures = eina_list_append(_Entropy_Config->Loaded_Config->structures,
 	structure);
 
 	return structure;
@@ -716,7 +716,7 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 		c_item->name = strdup(item);
 		if (value) c_item->value = strdup(value);		
 		
-		_Entropy_Config->Loaded_Config->Misc_Config_Load = evas_list_append(
+		_Entropy_Config->Loaded_Config->Misc_Config_Load = eina_list_append(
 			_Entropy_Config->Loaded_Config->Misc_Config_Load, c_item);
 		/*printf ("Set '%s' -> '%s'\n",item, value);*/
 	}

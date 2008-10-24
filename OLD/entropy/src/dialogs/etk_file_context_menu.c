@@ -388,7 +388,7 @@ _entropy_etk_context_menu_popup_cb(Etk_Object *object, void *data)
 {
 	Entropy_Config_Mime_Binding* binding;
 	Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l;
+	Eina_List* l;
 	entropy_generic_file* file;
 
 	file = _entropy_etk_context_menu_current_file;

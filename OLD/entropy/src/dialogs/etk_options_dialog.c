@@ -71,7 +71,7 @@ void entropy_etk_options_dialog_frame_set(Etk_Object* obj, void* data)
 {
 	Etk_Widget* frame;
 	Etk_Widget* widget;
-	Evas_List* children;
+	Eina_List* children;
 
 	frame = data;
 

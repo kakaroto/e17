@@ -27,7 +27,7 @@ static Entropy_Etk_Efolder_Dialog* eeed = NULL;
 
 void entropy_etk_efolder_dialog_close(Etk_Object* obj, void* data)
 {
-	Evas_List* l = NULL;
+	Eina_List* l = NULL;
 	EvfsVfolderEntry* v;
 	Etk_Tree_Row* iter;
 
@@ -52,7 +52,7 @@ void entropy_etk_efolder_dialog_close(Etk_Object* obj, void* data)
 			v->name = key;
 			v->value = value;
 
-			l = evas_list_append(l,v);
+			l = eina_list_append(l,v);
 		}
 		entropy_plugin_filesystem_vfolder_create(name,l);
 	}
@@ -148,10 +148,10 @@ void entropy_etk_efolder_dialog_create()
 }
 
 
-void entropy_etk_efolder_dialog_show(Evas_List* l)
+void entropy_etk_efolder_dialog_show(Eina_List* l)
 {
 	EvfsMetaObject* o;
-	Evas_List* i;
+	Eina_List* i;
 	
 	if (!eeed) {
 		entropy_etk_efolder_dialog_create();

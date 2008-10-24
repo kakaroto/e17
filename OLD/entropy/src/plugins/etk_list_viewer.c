@@ -202,7 +202,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
    Etk_Tree_Row* iter;
 
    Etk_Tree* tree;
-   Evas_List* row_list = NULL;
+   Eina_List* row_list = NULL;
    gui_file* file;
    Ecore_List* del = NULL;
 	
@@ -210,7 +210,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
    if (!strcmp(key_event->key, "Delete")) {
 	   for (iter = etk_tree_first_row_get(tree); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
-		   if (iter->selected == ETK_TRUE) row_list = evas_list_append(row_list, iter);
+		   if (iter->selected == ETK_TRUE) row_list = eina_list_append(row_list, iter);
 	   printf("Delete pressed!\n");
 
 	  for (; row_list; row_list = row_list->next ) {
@@ -229,7 +229,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
 	  }
 
-	  evas_list_free(row_list);
+	  eina_list_free(row_list);
 
 	  if (del && ecore_list_count(del)) {
 		entropy_etk_delete_dialog_new((entropy_gui_component_instance*)data, del);
@@ -253,7 +253,7 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    entropy_etk_file_list_viewer* viewer;
    char buffer[8192]; /* Um - help - what do we size this to? */
    int count = 0;
-   Evas_List* rows = NULL;
+   Eina_List* rows = NULL;
    Etk_Widget* table;
    int l=0,r=0,t=0,b=0;
    int added_object = 0;
@@ -268,13 +268,13 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 
    tree = ETK_TREE(object);
    for (iter = etk_tree_first_row_get(tree); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
-        if (iter->selected == ETK_TRUE) rows = evas_list_append(rows, iter);   
+        if (iter->selected == ETK_TRUE) rows = eina_list_append(rows, iter);   
    
    //FIXME: Removed until DND works
    //drag = (ETK_WIDGET(tree))->drag;
 
    table = etk_table_new(5,5,ETK_FALSE);
-   count = evas_list_count(rows);
+   count = eina_list_count(rows);
    bzero(buffer,8192);
    for (; rows; rows = rows->next ) {
 	   file = ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data));
@@ -345,7 +345,7 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    etk_widget_size_request_set(image, 96, 96);
    etk_container_add(ETK_CONTAINER(drag), image);*/
 
-   evas_list_free(rows);
+   eina_list_free(rows);
 }
 
 
@@ -469,20 +469,20 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	  gui_event->data = file->file;
 	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
    } else if (event->button == 3) {
-	Evas_List* rows = NULL;
+	Eina_List* rows = NULL;
 	Etk_Tree_Row* iter;
 
 	for (iter = etk_tree_first_row_get(ETK_TREE(viewer->tree)); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
-        	if (iter->selected == ETK_TRUE) rows = evas_list_append(rows, iter);  
+        	if (iter->selected == ETK_TRUE) rows = eina_list_append(rows, iter);  
 	
-	if (evas_list_count(rows) <= 1) {
+	if (eina_list_count(rows) <= 1) {
 		etk_tree_row_select(row);
 		file = ecore_hash_get(etk_list_viewer_row_hash, row);
 		entropy_etk_context_menu_popup(instance, file->file);
 	} else {
 		/*Multi select popup*/
 		Ecore_List* files = ecore_list_new();
-		Evas_List* l;
+		Eina_List* l;
 
 		printf("Preparing multi-select popup..\n");
 
@@ -497,7 +497,7 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 
 		ecore_list_destroy(files);
 	}
-	evas_list_free(rows);
+	eina_list_free(rows);
    }
 }
 
@@ -521,7 +521,7 @@ list_viewer_remove_row(entropy_gui_component_instance* instance,
 
 Ecore_List* entropy_etk_list_viewer_selected_get(entropy_etk_file_list_viewer* viewer)
 {
-	Evas_List* rows = NULL;
+	Eina_List* rows = NULL;
 	Etk_Tree_Row* iter;
 	Ecore_List* ret_files;
 	gui_file* file;
@@ -529,14 +529,14 @@ Ecore_List* entropy_etk_list_viewer_selected_get(entropy_etk_file_list_viewer* v
 	ret_files = ecore_list_new();
 
 	for (iter = etk_tree_first_row_get(ETK_TREE(viewer->tree)); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
-        	if (iter->selected == ETK_TRUE) rows = evas_list_append(rows, iter);  
+        	if (iter->selected == ETK_TRUE) rows = eina_list_append(rows, iter);  
 	
 	for (; rows; rows = rows->next ) {
 		file = ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data));
 		ecore_list_append(ret_files, file->file);
 	}
 
-	evas_list_free(rows);
+	eina_list_free(rows);
 
 	return ret_files;
 }

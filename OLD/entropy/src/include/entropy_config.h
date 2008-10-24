@@ -8,7 +8,7 @@
 struct Entropy_Config_Mime_Binding {
 	char* desc;
 	char* mime_type;
-	Evas_List* actions;
+	Eina_List* actions;
 };
 typedef struct Entropy_Config_Mime_Binding Entropy_Config_Mime_Binding;
 
@@ -27,11 +27,11 @@ typedef struct Entropy_Config_Structure Entropy_Config_Structure;
 
 struct Entropy_Config_Loaded {
 	int config_version;
-	Evas_List* mime_bindings;
-	Evas_List* structures;
+	Eina_List* mime_bindings;
+	Eina_List* structures;
 
 	Ecore_Hash* Misc_Config;
-	Evas_List* Misc_Config_Load;
+	Eina_List* Misc_Config_Load;
 };
 typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 
@@ -60,7 +60,7 @@ char* entropy_config_str_get(char* module, char* key);
 void entropy_config_str_set(char* module, char* key, char* value);
 int entropy_config_misc_is_set(char*);
 
-Evas_List* entropy_config_standard_structures_parse (entropy_gui_component_instance * instance, char *config);
+Eina_List* entropy_config_standard_structures_parse (entropy_gui_component_instance * instance, char *config);
 Entropy_Config_Structure* entropy_config_standard_structures_add (char *name, char *uri);
 Entropy_Config_Mime_Binding*
 entropy_config_binding_new(char* mime_type, char* description, Entropy_Config_Mime_Binding_Action* action1, ...);

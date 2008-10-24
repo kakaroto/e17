@@ -222,7 +222,7 @@ void _entropy_etk_mime_dialog_application_add_cb(Etk_Object* w, void* user_data)
 void etk_mime_dialog_populate_nth_binding_apps(int record)
 {
 	Entropy_Config_Mime_Binding* binding;
-	Evas_List* l;
+	Eina_List* l;
 	Entropy_Config_Mime_Binding_Action* action;
 	Etk_Tree_Col* col1;
 	Etk_Tree_Col* col2;
@@ -235,7 +235,7 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 
 
 	
-	binding = evas_list_nth(entropy_core_get_core()->config->Loaded_Config->mime_bindings, record);
+	binding = eina_list_nth(entropy_core_get_core()->config->Loaded_Config->mime_bindings, record);
 
 	etk_tree_freeze(ETK_TREE(tree));
 	etk_tree_clear(ETK_TREE(tree));
@@ -283,7 +283,7 @@ void etk_mime_dialog_tree_populate()
 	Etk_Tree_Col* col2;
 	Entropy_Config_Mime_Binding* binding;
 	//Entropy_Config_Mime_Binding_Action* action;
-	Evas_List* l;
+	Eina_List* l;
 	int i =0;
 	Etk_Tree_Row* row;
 
