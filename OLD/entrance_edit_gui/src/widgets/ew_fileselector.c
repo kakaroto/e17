@@ -25,7 +25,7 @@ ew_fileselector_file_get(Entrance_Dialog dialog) {
 	return etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(dialog->hbox));
 }
 
-Evas_List *
+Eina_List *
 ew_fileselector_file_list_get(Entrance_Dialog dialog) {
 	return etk_filechooser_widget_selected_files_get(ETK_FILECHOOSER_WIDGET(dialog->hbox));
 }
