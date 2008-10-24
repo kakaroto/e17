@@ -233,11 +233,11 @@ void option_pool_from_data_block ()
 
 void list_engines ()
 {
-  Evas_List *engines_list;
-  Evas_List *l; // list element
+  Eina_List *engines_list;
+  Eina_List *l; // list element
  
   engines_list = ecore_evas_engines_get ();
-  for (l = engines_list; l; l = evas_list_next(l))
+  for (l = engines_list; l; l = eina_list_next(l))
   {
     const char *engine = (const char*) l->data;
     
@@ -247,13 +247,13 @@ void list_engines ()
 
 void list_groups (const char *edje_file)
 {
-  Evas_List *group_list;
-  Evas_List *l; // list element
+  Eina_List *group_list;
+  Eina_List *l; // list element
 
   group_list = edje_file_collection_list (edje_file);
 
   printf("Available groups in 'edje_file':\n");
-  for (l = group_list; l; l = evas_list_next(l))
+  for (l = group_list; l; l = eina_list_next(l))
   {
     printf("%s\n", (const char*) l->data);
   }
