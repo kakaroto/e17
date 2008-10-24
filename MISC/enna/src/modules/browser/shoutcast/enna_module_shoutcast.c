@@ -21,12 +21,12 @@ typedef struct Enna_Module_Music_s
 
 static Enna_Module_Music *mod;
 
-static Evas_List * browse_list(void)
+static Eina_List * browse_list(void)
 {
     url_data_t chunk;
     xmlDocPtr doc;
     xmlNode *list, *n;
-    Evas_List *files = NULL;
+    Eina_List *files = NULL;
 
     chunk = url_get_data(mod->curl, SHOUTCAST_LIST);
 
@@ -52,7 +52,7 @@ static Evas_List * browse_list(void)
         file = enna_vfs_create_directory(uri, (char *) genre, "icon/webradio",
                 NULL);
         free(uri);
-        files = evas_list_append(files, file);
+        files = eina_list_append(files, file);
     }
 
     free(chunk.buffer);
@@ -61,13 +61,13 @@ static Evas_List * browse_list(void)
     return files;
 }
 
-static Evas_List * browse_by_genre(const char *path)
+static Eina_List * browse_by_genre(const char *path)
 {
     url_data_t chunk;
     xmlDocPtr doc;
     xmlNode *list, *n;
     char url[MAX_URL];
-    Evas_List *files = NULL;
+    Eina_List *files = NULL;
     xmlChar *tunein = NULL;
     const char *genre = path + strlen(SHOUTCAST_GENRE);
 
@@ -110,7 +110,7 @@ static Evas_List * browse_by_genre(const char *path)
             snprintf(uri, MAX_URL, "%s%s?id=%s", SHOUTCAST_URL, tunein, id);
 
             file = enna_vfs_create_file(uri, (char *) name, "icon/music", NULL);
-            files = evas_list_append(files, file);
+            files = eina_list_append(files, file);
         }
     }
 
@@ -120,7 +120,7 @@ static Evas_List * browse_by_genre(const char *path)
     return files;
 }
 
-static Evas_List * _class_browse_up(const char *path)
+static Eina_List * _class_browse_up(const char *path)
 {
     if (!path)
         return browse_list();
@@ -131,7 +131,7 @@ static Evas_List * _class_browse_up(const char *path)
     return NULL;
 }
 
-static Evas_List * _class_browse_down(void)
+static Eina_List * _class_browse_down(void)
 {
     return browse_list();
 }

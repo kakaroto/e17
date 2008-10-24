@@ -327,7 +327,7 @@ EAPI void module_init(Enna_Module *em)
 
     if (cfgdata)
     {
-        Evas_List *l;
+        Eina_List *l;
 
         for (l = cfgdata->pair; l; l = l->next)
         {

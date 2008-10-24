@@ -22,15 +22,15 @@ static int _pipe_read_active(void *data, Ecore_Fd_Handler * fdh);
 //static int            _audio_nb_albums_get();
 //static int            _audio_nb_artists_get();
 //static int            _audio_nb_genres_get();
-static Evas_List *_audio_artists_list_get();
-static Evas_List *_audio_albums_list_get();
-static Evas_List *_audio_genres_list_get();
-static Evas_List *_audio_albums_of_artist_list_get(const char *artist);
-static Evas_List *_audio_tracks_of_album_list_get(const char *artist,
+static Eina_List *_audio_artists_list_get();
+static Eina_List *_audio_albums_list_get();
+static Eina_List *_audio_genres_list_get();
+static Eina_List *_audio_albums_of_artist_list_get(const char *artist);
+static Eina_List *_audio_tracks_of_album_list_get(const char *artist,
         const char *album);
 
-static Evas_List *_class_browse_up(const char *path);
-static Evas_List *_class_browse_down();
+static Eina_List *_class_browse_up(const char *path);
+static Eina_List *_class_browse_down();
 static Enna_Vfs_File *_class_vfs_get(void);
 static void _vfs_free(Enna_Vfs_File *vfs);
 static Enna_Vfs_File *_vfs_set(char *uri, char *label, char *icon_file,
@@ -58,9 +58,9 @@ struct _Enna_Scanner
     unsigned int commit_interval;
     unsigned int slave_timeout;
     const char *db_path;
-    Evas_List *parsers;
+    Eina_List *parsers;
     const char *charset;
-    Evas_List *scan_path;
+    Eina_List *scan_path;
     lms_t *lms;
     sqlite3 *db;
     int fd_ev_read;
@@ -210,7 +210,7 @@ static void * _scanner_thread(void *ptr)
 {
     Enna_Scanner *scanner;
     void *buf[1];
-    Evas_List *l;
+    Eina_List *l;
     scanner = (Enna_Scanner *) ptr;
 
     for (l = scanner->scan_path; l; l = l->next)
@@ -444,10 +444,10 @@ _audio_nb_genres_get()
 }
 #endif
 
-static Evas_List * _audio_artists_list_get()
+static Eina_List * _audio_artists_list_get()
 {
     sqlite3_stmt *stmt;
-    Evas_List *artists = NULL;
+    Eina_List *artists = NULL;
 
     stmt
             = _db_compile_stmt(mod->scanner->db,
@@ -460,7 +460,7 @@ static Evas_List * _audio_artists_list_get()
         char *artist;
         artist = (char*)sqlite3_column_text(stmt, 0);
         if (artist)
-            artists = evas_list_append(artists, strdup(artist));
+            artists = eina_list_append(artists, strdup(artist));
     }
     return artists;
 
@@ -468,10 +468,10 @@ static Evas_List * _audio_artists_list_get()
     return NULL;
 }
 
-static Evas_List * _audio_albums_list_get()
+static Eina_List * _audio_albums_list_get()
 {
     sqlite3_stmt *stmt;
-    Evas_List *albums = NULL;
+    Eina_List *albums = NULL;
 
     stmt = _db_compile_stmt(mod->scanner->db,
             "SELECT DISTINCT name FROM audio_albums");
@@ -483,7 +483,7 @@ static Evas_List * _audio_albums_list_get()
         char *album;
         album = (char*)sqlite3_column_text(stmt, 0);
         if (album)
-            albums = evas_list_append(albums, strdup(album));
+            albums = eina_list_append(albums, strdup(album));
 
     }
     return albums;
@@ -492,10 +492,10 @@ static Evas_List * _audio_albums_list_get()
     return NULL;
 }
 
-static Evas_List * _audio_genres_list_get()
+static Eina_List * _audio_genres_list_get()
 {
     sqlite3_stmt *stmt;
-    Evas_List *genres = NULL;
+    Eina_List *genres = NULL;
 
     stmt = _db_compile_stmt(mod->scanner->db,
             "SELECT DISTINCT name FROM audio_genres");
@@ -507,7 +507,7 @@ static Evas_List * _audio_genres_list_get()
         char *genre;
         genre = (char*)sqlite3_column_text(stmt, 0);
         if (genre)
-            genres = evas_list_append(genres, strdup(genre));
+            genres = eina_list_append(genres, strdup(genre));
 
     }
     return genres;
@@ -516,11 +516,11 @@ static Evas_List * _audio_genres_list_get()
     return NULL;
 }
 
-static Evas_List * _audio_albums_of_artist_list_get(const char *artist)
+static Eina_List * _audio_albums_of_artist_list_get(const char *artist)
 {
     int ret;
     sqlite3_stmt *stmt;
-    Evas_List *albums = NULL;
+    Eina_List *albums = NULL;
 
     stmt = _db_compile_stmt(mod->scanner->db, "SELECT audio_albums.name "
         "FROM audio_albums,audio_artists "
@@ -538,7 +538,7 @@ static Evas_List * _audio_albums_of_artist_list_get(const char *artist)
         char *album;
         album = (char*)sqlite3_column_text(stmt, 0);
         if (album)
-            albums = evas_list_append(albums, strdup(album));
+            albums = eina_list_append(albums, strdup(album));
 
     }
     return albums;
@@ -548,12 +548,12 @@ static Evas_List * _audio_albums_of_artist_list_get(const char *artist)
 
 }
 
-static Evas_List * _audio_tracks_of_album_list_get(const char *artist,
+static Eina_List * _audio_tracks_of_album_list_get(const char *artist,
         const char *album)
 {
     int ret;
     sqlite3_stmt *stmt;
-    Evas_List *tracks = NULL;
+    Eina_List *tracks = NULL;
 
     stmt = _db_compile_stmt(mod->scanner->db,
             "SELECT audios.title,files.path,audios.trackno "
@@ -581,7 +581,7 @@ static Evas_List * _audio_tracks_of_album_list_get(const char *artist,
         m->uri = strdup((char*)sqlite3_column_text(stmt, 1));
         m->music->track = sqlite3_column_int(stmt, 2);
         if (m)
-            tracks = evas_list_append(tracks, m);
+            tracks = eina_list_append(tracks, m);
 
     }
     return tracks;
@@ -615,30 +615,30 @@ static int _sort_cb(void *d1, void *d2)
     return (strcasecmp((const char*)f1->label, (const char*)f2->label));
 }
 
-static Evas_List * _browse_root()
+static Eina_List * _browse_root()
 {
-    Evas_List *entries = NULL;
+    Eina_List *entries = NULL;
     Enna_Vfs_File *file;
     mod->state = ROOT;
     mod->vfs = NULL;
 
     file = enna_vfs_create_directory("artists://", "Artists", "icon/artist",
             NULL);
-    entries = evas_list_append(entries, file);
+    entries = eina_list_append(entries, file);
 
     file = enna_vfs_create_directory("albums://", "Albums", "icon/album", NULL);
-    entries = evas_list_append(entries, file);
+    entries = eina_list_append(entries, file);
 
     file = enna_vfs_create_directory("genres://", "Genres", "icon/genre", NULL);
-    entries = evas_list_append(entries, file);
+    entries = eina_list_append(entries, file);
 
     return entries;
 }
 
-static Evas_List * _browse_artists_root()
+static Eina_List * _browse_artists_root()
 {
-    Evas_List *l;
-    Evas_List *entries = NULL;
+    Eina_List *l;
+    Eina_List *entries = NULL;
 
     mod->state = ARTISTS_ROOT;
     _vfs_free(mod->vfs);
@@ -650,13 +650,13 @@ static Evas_List * _browse_artists_root()
 
         snprintf(uri, sizeof(uri), "artists://%s", (char*)l->data);
         file = enna_vfs_create_directory(uri, l->data, "icon/artist", NULL);
-        entries = evas_list_append(entries, file);
+        entries = eina_list_append(entries, file);
 
     }
-    return evas_list_sort(entries, evas_list_count(entries), _sort_cb);
+    return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
 }
 
-static Evas_List *_class_browse_up(const char *path)
+static Eina_List *_class_browse_up(const char *path)
 {
 
     /* Display LMS ROOT menu*/
@@ -670,8 +670,8 @@ static Evas_List *_class_browse_up(const char *path)
     }
     else if (!strcmp(path, "albums://"))
     {
-        Evas_List *l;
-        Evas_List *entries = NULL;
+        Eina_List *l;
+        Eina_List *entries = NULL;
 
         mod->state = ALBUMS_ROOT;
         _vfs_free(mod->vfs);
@@ -685,15 +685,15 @@ static Evas_List *_class_browse_up(const char *path)
             snprintf(uri, sizeof(uri), "albums://%s", (char*)l->data);
             /* FIXME Set Cover filename here */
             file = enna_vfs_create_directory(uri, l->data, NULL, NULL);
-            entries = evas_list_append(entries, file);
+            entries = eina_list_append(entries, file);
 
         }
-        return evas_list_sort(entries, evas_list_count(entries), _sort_cb);
+        return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
     }
     else if (!strcmp(path, "genres://"))
     {
-        Evas_List *l;
-        Evas_List *entries = NULL;
+        Eina_List *l;
+        Eina_List *entries = NULL;
 
         mod->state = GENRES_ROOT;
         _vfs_free(mod->vfs);
@@ -707,18 +707,18 @@ static Evas_List *_class_browse_up(const char *path)
             snprintf(uri, sizeof(uri), "genres://%s", (char*)l->data);
             /* FIXME Set Cover filename here */
             file = enna_vfs_create_directory(uri, l->data, NULL, NULL);
-            entries = evas_list_append(entries, file);
+            entries = eina_list_append(entries, file);
 
         }
-        return evas_list_sort(entries, evas_list_count(entries), _sort_cb);
+        return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
 
     }
     else if (!strncmp(path, "artists://", 10))
     {
         if (mod->state == ARTISTS_ROOT)
         {
-            Evas_List *l;
-            Evas_List *entries = NULL;
+            Eina_List *l;
+            Eina_List *entries = NULL;
             char uri[4096];
             const char *artist;
             const char *album;
@@ -731,7 +731,7 @@ static Evas_List *_class_browse_up(const char *path)
             for (l = _audio_albums_of_artist_list_get(path+10); l; l = l->next)
             {
                 Enna_Vfs_File *file;
-                Evas_List *l2 = NULL;
+                Eina_List *l2 = NULL;
                 Enna_Vfs_File *filename;
                 char *icon_file = NULL;
 
@@ -743,9 +743,9 @@ static Evas_List *_class_browse_up(const char *path)
                 enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME,
                         "album : %s, artist : %s", album, artist);
                 l2 = _audio_tracks_of_album_list_get(artist, album);
-                if (evas_list_count(l2))
+                if (eina_list_count(l2))
                 {
-                    filename = evas_list_nth(l2, 0);
+                    filename = eina_list_nth(l2, 0);
                     enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "uri : %s",
                             filename->uri);
                     icon_file =enna_cover_album_get(artist, album,
@@ -754,16 +754,16 @@ static Evas_List *_class_browse_up(const char *path)
 
                 file = enna_vfs_create_directory(uri, l->data, "icon/album",
                         icon_file);
-                entries = evas_list_append(entries, file);
+                entries = eina_list_append(entries, file);
 
             }
-            return evas_list_sort(entries, evas_list_count(entries), _sort_cb);
+            return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
         }
         else
         {
 
-            Evas_List *l;
-            Evas_List *entries = NULL;
+            Eina_List *l;
+            Eina_List *entries = NULL;
             char uri[4096];
             const char *album;
             const char *artist;
@@ -787,17 +787,17 @@ static Evas_List *_class_browse_up(const char *path)
                 snprintf(tmp, sizeof(tmp), "%02d - %s", m->music->track,
                         m->title);
                 file = enna_vfs_create_file(uri, tmp, "icon/song", NULL);
-                entries = evas_list_append(entries, file);
+                entries = eina_list_append(entries, file);
                 enna_metadata_free(m);
 
             }
-            return evas_list_sort(entries, evas_list_count(entries), _sort_cb);
+            return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
         }
     }
     return NULL;
 }
 
-static Evas_List *_class_browse_down()
+static Eina_List *_class_browse_down()
 {
     switch (mod->state)
     {
@@ -811,7 +811,7 @@ static Evas_List *_class_browse_down()
             return _browse_artists_root();
         case ARTISTS_ALBUMS_TRACKS:
         {
-            Evas_List *files;
+            Eina_List *files;
             char *uri;
             mod->state = ARTISTS_ROOT;
             enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "mod->vfs->uri : %s",
@@ -838,7 +838,7 @@ static Enna_Vfs_File *_class_vfs_get()
 static int em_init(Enna_Module *em)
 {
     Enna_Config_Data *cfgdata = NULL;
-    Evas_List *l = NULL;
+    Eina_List *l = NULL;
     char tmp[PATH_MAX];
     int fds[2];
 
@@ -879,7 +879,7 @@ static int em_init(Enna_Module *em)
     mod->scanner->scan_path = NULL;
     if (cfgdata)
     {
-        Evas_List *parser = NULL;
+        Eina_List *parser = NULL;
         for (l = cfgdata->pair; l; l = l->next)
         {
             char *path;
@@ -887,7 +887,7 @@ static int em_init(Enna_Module *em)
             if (!strcmp("path", pair->key))
             {
                 enna_config_value_store(&path, "path", ENNA_CONFIG_STRING, pair);
-                mod->scanner->scan_path = evas_list_append(
+                mod->scanner->scan_path = eina_list_append(
                         mod->scanner->scan_path, path+7);
             }
             enna_config_value_store(&parser, "parser", ENNA_CONFIG_STRING_LIST,
@@ -902,20 +902,20 @@ static int em_init(Enna_Module *em)
             char *p = l->data;
             enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "parser : %s", p);
             if (!strcmp(p, "ogg"))
-                mod->scanner->parsers = evas_list_append(mod->scanner->parsers,
+                mod->scanner->parsers = eina_list_append(mod->scanner->parsers,
                         lms_parser_find_and_add(mod->scanner->lms, "ogg"));
             if (!strcmp(p, "mp3"))
-                mod->scanner->parsers = evas_list_append(mod->scanner->parsers,
+                mod->scanner->parsers = eina_list_append(mod->scanner->parsers,
                         lms_parser_find_and_add(mod->scanner->lms, "id3"));
             if (!strcmp(p, "flac"))
-                mod->scanner->parsers = evas_list_append(mod->scanner->parsers,
+                mod->scanner->parsers = eina_list_append(mod->scanner->parsers,
                         lms_parser_find_and_add(mod->scanner->lms, "flac"));
             if (!strcmp(p, "dummy"))
-                mod->scanner->parsers = evas_list_append(mod->scanner->parsers,
+                mod->scanner->parsers = eina_list_append(mod->scanner->parsers,
                         lms_parser_find_and_add(mod->scanner->lms,
                                 "audio-dummy"));
             if (!strcmp(p, "rm"))
-                mod->scanner->parsers = evas_list_append(mod->scanner->parsers,
+                mod->scanner->parsers = eina_list_append(mod->scanner->parsers,
                         lms_parser_find_and_add(mod->scanner->lms, "rm"));
         }
 
@@ -965,7 +965,7 @@ static int em_init(Enna_Module *em)
 
 static int em_shutdown(Enna_Module *em)
 {
-    Evas_List *l;
+    Eina_List *l;
     Enna_Module_Lms *mod;
     mod = em->mod;
 

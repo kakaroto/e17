@@ -1,7 +1,7 @@
 #include "enna.h"
 #include "activity.h"
 
-static Evas_List *_enna_activities = NULL;
+static Eina_List *_enna_activities = NULL;
 
 /**
  * @brief Register new activity
@@ -10,7 +10,7 @@ static Evas_List *_enna_activities = NULL;
  */
 EAPI int enna_activity_add(Enna_Class_Activity *class)
 {
-    Evas_List *l;
+    Eina_List *l;
     Enna_Class_Activity *act;
 
     if (!class)
@@ -20,12 +20,12 @@ EAPI int enna_activity_add(Enna_Class_Activity *class)
         act = l->data;
         if (act->pri > class->pri)
         {
-            _enna_activities = evas_list_prepend_relative_list(
+            _enna_activities = eina_list_prepend_relative_list(
                     _enna_activities, class, l);
             return 0;
         }
     }
-    _enna_activities = evas_list_append(_enna_activities, class);
+    _enna_activities = eina_list_append(_enna_activities, class);
     return 0;
 }
 
@@ -36,7 +36,7 @@ EAPI int enna_activity_add(Enna_Class_Activity *class)
  */
 EAPI int enna_activity_del(const char *name)
 {
-    Evas_List *l;
+    Eina_List *l;
     Enna_Class_Activity *act;
 
     if (!name)
@@ -45,7 +45,7 @@ EAPI int enna_activity_del(const char *name)
     for (l = _enna_activities; l; l = l->next)
     {
         act = l->data;
-        _enna_activities = evas_list_remove(_enna_activities, act);
+        _enna_activities = eina_list_remove(_enna_activities, act);
         return 0;
     }
     return -1;
@@ -53,9 +53,9 @@ EAPI int enna_activity_del(const char *name)
 
 /**
  * @brief Get list of activities registred
- * @return Evas_List of activities
+ * @return Eina_List of activities
  */
-EAPI Evas_List *
+EAPI Eina_List *
 enna_activities_get(void)
 {
     return _enna_activities;
@@ -63,7 +63,7 @@ enna_activities_get(void)
 
 static Enna_Class_Activity * enna_get_activity(const char *name)
 {
-    Evas_List *l;
+    Eina_List *l;
     Enna_Class_Activity *act;
 
     if (!name)

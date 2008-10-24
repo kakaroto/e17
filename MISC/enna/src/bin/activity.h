@@ -20,12 +20,12 @@ struct _Enna_Class_Activity
         void (*class_hide)(int dummy);
         void (*class_event)(void *event_info);
     } func;
-    Evas_List *categories;
+    Eina_List *categories;
 };
 
 EAPI int enna_activity_add(Enna_Class_Activity *class);
 EAPI int enna_activity_del(const char *name);
-EAPI Evas_List *enna_activities_get(void);
+EAPI Eina_List *enna_activities_get(void);
 EAPI int enna_activity_init(const char *name);
 EAPI int enna_activity_show(const char *name);
 EAPI int enna_activity_shutdown(const char *name);

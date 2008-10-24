@@ -55,7 +55,7 @@ struct _E_Smart_Data
     Evas_Object *smart_obj;
     Evas_Object *o_box;
     Evas_Object *o_scroll;
-    Evas_List *items;
+    Eina_List *items;
     unsigned char on_hold : 1;
 };
 
@@ -112,7 +112,7 @@ EAPI void enna_location_append(Evas_Object *obj, const char *label,
     si->sd = sd;
     si->o_base = edje_object_add(evas_object_evas_get(sd->o_scroll));
 
-    if (evas_list_count(sd->items) & 0x1)
+    if (eina_list_count(sd->items) & 0x1)
         edje_object_file_set(si->o_base, enna_config_theme_get(),
                 "enna/location/item");
     else
@@ -133,7 +133,7 @@ EAPI void enna_location_append(Evas_Object *obj, const char *label,
     si->func = func;
     si->data = data;
     si->data2 = data2;
-    sd->items = evas_list_append(sd->items, si);
+    sd->items = eina_list_append(sd->items, si);
 
     edje_object_size_min_calc(si->o_base, &mw, &mh);
     enna_box_freeze(sd->o_box);
@@ -184,9 +184,9 @@ EAPI void enna_location_remove_nth(Evas_Object *obj, int n)
     return;
     if (!sd->items)
         return;
-    if (!(si = evas_list_nth(sd->items, n)))
+    if (!(si = eina_list_nth(sd->items, n)))
         return;
-    sd->items = evas_list_remove(sd->items, si);
+    sd->items = eina_list_remove(sd->items, si);
     edje_object_signal_emit(si->o_base, "location,hide", "enna");
     edje_object_signal_callback_add(si->o_base, "location,hide,end", "edje",
             _location_hide_end, si);
@@ -201,7 +201,7 @@ EAPI const char * enna_location_label_get_nth(Evas_Object *obj, int n)
     return NULL;
     if (!sd->items)
         return NULL;
-    if (!(si = evas_list_nth(sd->items, n)))
+    if (!(si = eina_list_nth(sd->items, n)))
         return NULL;
     return edje_object_part_text_get(si->o_base, "enna.text.label");
 }
@@ -210,7 +210,7 @@ EAPI int enna_location_count(Evas_Object *obj)
 {
     API_ENTRY
     return 0;
-    return evas_list_count(sd->items);
+    return eina_list_count(sd->items);
 }
 
 /* local subsystem globals */
@@ -402,7 +402,7 @@ static void _e_smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
     if (!sd->items)
         return;
     //if (!sd->selector) return;
-    //if (!(si = evas_list_nth(sd->items, sd->selected))) return;
+    //if (!(si = eina_list_nth(sd->items, sd->selected))) return;
     if (sd->on_hold)
     {
         sd->on_hold = 0;

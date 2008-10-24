@@ -44,7 +44,7 @@ struct _Enna_Content_Element
     unsigned char selected : 1;
 };
 
-static Evas_List *_enna_contents = NULL;
+static Eina_List *_enna_contents = NULL;
 
 /* local subsystem functions */
 
@@ -62,7 +62,7 @@ enna_content_add(Evas *evas)
 
 EAPI int enna_content_append(const char *name, Evas_Object *content)
 {
-    Evas_List *l;
+    Eina_List *l;
     Enna_Content_Element *elem;
 
     if (!name || !content)
@@ -80,14 +80,14 @@ EAPI int enna_content_append(const char *name, Evas_Object *content)
     elem->name = evas_stringshare_add(name);
     elem->content = content;
     elem->selected = 0;
-    _enna_contents = evas_list_append(_enna_contents, elem);
+    _enna_contents = eina_list_append(_enna_contents, elem);
     return 0;
 }
 
 EAPI int enna_content_select(const char *name)
 {
 
-    Evas_List *l;
+    Eina_List *l;
     Enna_Content_Element *new = NULL;
     Enna_Content_Element *prev = NULL;
 
@@ -132,7 +132,7 @@ EAPI int enna_content_select(const char *name)
 
 EAPI void enna_content_hide()
 {
-    Evas_List *l;
+    Eina_List *l;
     
     for (l = _enna_contents; l; l = l->next)
     {
@@ -151,7 +151,7 @@ EAPI void enna_content_hide()
 
 EAPI void enna_content_show()
 {
-    Evas_List *l;
+    Eina_List *l;
     
     for (l = _enna_contents; l; l = l->next)
     {

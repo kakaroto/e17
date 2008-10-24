@@ -10,7 +10,7 @@ struct _Input_Module_Item
     Enna_Class_Input *class;
 };
 
-static Evas_List *_input_modules;
+static Eina_List *_input_modules;
 
 static const struct
 {
@@ -160,7 +160,7 @@ EAPI void enna_input_init()
     em = enna_module_open("lirc", enna->evas);
     item = calloc(1, sizeof(Input_Module_Item));
     item->module = em;
-    _input_modules = evas_list_append(_input_modules, item);
+    _input_modules = eina_list_append(_input_modules, item);
     enna_module_enable(em);
 #endif
 
@@ -168,7 +168,7 @@ EAPI void enna_input_init()
 
 EAPI void enna_input_shutdown()
 {
-    Evas_List *l = NULL;
+    Eina_List *l = NULL;
 
     for (l = _input_modules; l; l = l->next)
     {
@@ -176,12 +176,12 @@ EAPI void enna_input_shutdown()
         item->class->func.class_shutdown(0);
         enna_module_disable(item->module);
     }
-    evas_list_free(_input_modules);
+    eina_list_free(_input_modules);
 }
 
 EAPI int enna_input_class_register(Enna_Module *module, Enna_Class_Input *class)
 {
-    Evas_List *l = NULL;
+    Eina_List *l = NULL;
 
     for (l = _input_modules; l; l = l->next)
     {

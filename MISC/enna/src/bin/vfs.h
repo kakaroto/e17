@@ -36,8 +36,8 @@ struct _Enna_Class_Vfs
     {
         void (*class_init)(int dummy);
         void (*class_shutdown)(int dummy);
-        Evas_List *(*class_browse_up)(const char *path);
-        Evas_List *(*class_browse_down)(void);
+        Eina_List *(*class_browse_up)(const char *path);
+        Eina_List *(*class_browse_down)(void);
         Enna_Vfs_File *(*class_vfs_get)(void);
     } func;
 
@@ -45,7 +45,7 @@ struct _Enna_Class_Vfs
 EAPI int enna_vfs_init(Evas *evas);
 EAPI int enna_vfs_append(const char *name, unsigned char type,
         Enna_Class_Vfs *vfs);
-EAPI Evas_List *enna_vfs_get(ENNA_VFS_CAPS type);
+EAPI Eina_List *enna_vfs_get(ENNA_VFS_CAPS type);
 EAPI Enna_Vfs_File *enna_vfs_create_file (char *uri, char *label, char *icon, char *icon_file);
 EAPI Enna_Vfs_File *enna_vfs_create_directory (char *uri, char *label, char *icon, char *icon_file);
 EAPI void enna_vfs_remove(Enna_Vfs_File *f);

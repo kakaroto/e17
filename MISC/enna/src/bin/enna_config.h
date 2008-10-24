@@ -27,16 +27,16 @@ struct _Enna_Config
     const char *backend;
     const char *verbosity;
     /* Module Music */
-    Evas_List *music_local_root_directories;
-    Evas_List *music_filters;
-    Evas_List *video_filters;
-    Evas_List *photo_filters;
+    Eina_List *music_local_root_directories;
+    Eina_List *music_filters;
+    Eina_List *video_filters;
+    Eina_List *photo_filters;
 };
 
 struct _Enna_Config_Data
 {
     char *section;
-    Evas_List *pair;
+    Eina_List *pair;
 };
 
 struct _Config_Pair

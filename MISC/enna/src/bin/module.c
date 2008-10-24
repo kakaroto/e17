@@ -2,7 +2,7 @@
 
 #include "enna.h"
 
-static Evas_List *_enna_modules = NULL;
+static Eina_List *_enna_modules = NULL;
 static Ecore_Path_Group *path_group = NULL;
 
 /**
@@ -40,9 +40,9 @@ EAPI int enna_module_init(void)
 
         EAPI int enna_module_shutdown(void)
         {
-            Evas_List *l;
+            Eina_List *l;
 
-            for (l = _enna_modules; l; l = evas_list_remove(l, l->data))
+            for (l = _enna_modules; l; l = eina_list_remove(l, l->data))
             {
                 Enna_Module *m;
                 m = l->data;
@@ -136,7 +136,7 @@ EAPI int enna_module_init(void)
                 m->enabled = 0;
                 m->plugin = plugin;
                 m->evas = evas;
-                _enna_modules = evas_list_append(_enna_modules, m);
+                _enna_modules = eina_list_append(_enna_modules, m);
                 return m;
             }
             else

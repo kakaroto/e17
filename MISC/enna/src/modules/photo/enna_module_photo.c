@@ -5,7 +5,7 @@
 #define ENNA_MODULE_NAME "photo"
 
 static void _create_gui();
-static void _list_transition_core(Evas_List *files, unsigned char direction);
+static void _list_transition_core(Eina_List *files, unsigned char direction);
 static void _list_transition_left_end_cb(void *data, Evas_Object *o,
         const char *sig, const char *src);
 static void _list_transition_right_end_cb(void *data, Evas_Object *o,
@@ -69,10 +69,10 @@ static Evas_Object * create_item(const char *img, const char *label)
     return item;
 }
 
-static void _list_transition_core(Evas_List *files, unsigned char direction)
+static void _list_transition_core(Eina_List *files, unsigned char direction)
 {
     Evas_Object *o_list, *oe;
-    Evas_List *l;
+    Eina_List *l;
 
     o_list = mod->o_list;
     oe = enna_list_edje_object_get(o_list);
@@ -98,7 +98,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
 
     enna_list_freeze(o_list);
     enna_list_icon_size_set(o_list, 200, 200);
-    if (evas_list_count(files))
+    if (eina_list_count(files))
     {
         int i = 0;
         mod->is_root = 0;
@@ -141,7 +141,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     else
     {
         /* Browse down and no file detected : Root */
-        Evas_List *l, *categories;
+        Eina_List *l, *categories;
         mod->is_root = 1;
         enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "get CAPS Photo");
         categories = enna_vfs_get(ENNA_CAPS_PHOTO);
@@ -201,7 +201,7 @@ static void _browse_down()
     if (mod->vfs && mod->vfs->func.class_browse_down)
     {
         Evas_Object *o, *oe;
-        Evas_List *files;
+        Eina_List *files;
 
         files = mod->vfs->func.class_browse_down();
         o = mod->o_list;
@@ -244,7 +244,7 @@ static void _browse(void *data, void *data2)
 
     Enna_Class_Vfs *vfs = data;
     Enna_Vfs_File *file = data2;
-    Evas_List *files, *l;
+    Eina_List *files, *l;
 
     if (!vfs)
         return;
@@ -315,7 +315,7 @@ static void _create_gui(void)
 {
 
     Evas_Object *o, *oe;
-    Evas_List *l, *categories;
+    Eina_List *l, *categories;
     Evas_Object *icon;
 
     o = edje_object_add(mod->em->evas);

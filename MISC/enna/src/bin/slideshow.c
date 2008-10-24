@@ -62,7 +62,7 @@ struct _E_Smart_Data
     Evas_Object *o_edje;
     Evas_Object *o_transition;
     Evas_Object *obj;
-    Evas_List *playlist;
+    Eina_List *playlist;
     unsigned int playlist_id;
     Ecore_Timer *timer;
     Evas_Object *old_slide;
@@ -115,7 +115,7 @@ EAPI void enna_slideshow_image_append(Evas_Object *obj, const char *filename)
     enna_image_size_get(o, &w, &h);
     enna_image_load_size_set(o, w, h);
 
-    sd->playlist = evas_list_append(sd->playlist, o);
+    sd->playlist = eina_list_append(sd->playlist, o);
 
 }
 
@@ -131,7 +131,7 @@ EAPI int enna_slideshow_next(void *data)
         return 1;
 
     sd->playlist_id++;
-    o = evas_list_nth(sd->playlist, sd->playlist_id);
+    o = eina_list_nth(sd->playlist, sd->playlist_id);
 
     if (o)
     {
@@ -158,7 +158,7 @@ EAPI int enna_slideshow_prev(void *data)
         return 1;
 
     sd->playlist_id--;
-    o = evas_list_nth(sd->playlist, sd->playlist_id);
+    o = eina_list_nth(sd->playlist, sd->playlist_id);
 
     if (o)
     {
@@ -191,7 +191,7 @@ EAPI void enna_slideshow_play(void *data)
     {
         /* Play */
         sd->state = PLAY;
-        o = evas_list_nth(sd->playlist, sd->playlist_id);
+        o = eina_list_nth(sd->playlist, sd->playlist_id);
         _switch_images(sd, o);
         sd->timer = ecore_timer_add(4, enna_slideshow_next, sd->obj);
     }
@@ -335,7 +335,7 @@ static void _e_smart_add(Evas_Object * obj)
 static void _e_smart_del(Evas_Object * obj)
 {
     E_Smart_Data *sd;
-    Evas_List *l;
+    Eina_List *l;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)

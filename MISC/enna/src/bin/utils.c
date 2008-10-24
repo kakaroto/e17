@@ -45,9 +45,9 @@ EAPI char * enna_util_user_home_get()
     return home;
 }
 
-EAPI int enna_util_has_suffix(char *str, Evas_List * patterns)
+EAPI int enna_util_has_suffix(char *str, Eina_List * patterns)
 {
-    Evas_List *l;
+    Eina_List *l;
     int result = 0;
 
     int i;
@@ -56,7 +56,7 @@ EAPI int enna_util_has_suffix(char *str, Evas_List * patterns)
     if (!patterns || !str || !str[0])
         return 0;
 
-    for (l = patterns; l; l = evas_list_next(l))
+    for (l = patterns; l; l = eina_list_next(l))
     {
         tmp = calloc(1, strlen(str) + 1);
         for (i = 0; i < strlen(str); i++)

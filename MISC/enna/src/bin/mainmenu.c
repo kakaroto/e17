@@ -50,7 +50,7 @@ struct _E_Smart_Data
     Evas_Object *o_smart;
     Evas_Object *o_edje;
     Evas_Object *o_box;
-    Evas_List *items;
+    Eina_List *items;
     int selected;
     unsigned char visible : 1;
 
@@ -129,7 +129,7 @@ EAPI void enna_mainmenu_append(Evas_Object *obj, Evas_Object *icon,
     si->func = func;
     si->data = data;
     si->selected = 0;
-    sd->items = evas_list_append(sd->items, si);
+    sd->items = eina_list_append(sd->items, si);
     edje_object_size_min_calc(si->o_base, &mw, &mh);
     edje_object_size_min_get(si->o_base, &mw, &mh);
     enna_box_pack_end(sd->o_box, si->o_base);
@@ -157,7 +157,7 @@ EAPI void enna_mainmenu_append(Evas_Object *obj, Evas_Object *icon,
 
 EAPI void enna_mainmenu_load_from_activities(Evas_Object *obj)
 {
-    Evas_List *activities, *l;
+    Eina_List *activities, *l;
     API_ENTRY
     return;
 
@@ -191,7 +191,7 @@ EAPI void enna_mainmenu_activate_nth(Evas_Object *obj, int nth)
     API_ENTRY
     return;
 
-    si = evas_list_nth(sd->items, nth);
+    si = eina_list_nth(sd->items, nth);
     if (!si)
         return;
     if (si->func)
@@ -226,12 +226,12 @@ EAPI void enna_mainmenu_select_nth(Evas_Object *obj, int nth)
     API_ENTRY
     return;
 
-    prev = evas_list_nth(sd->items, sd->selected);
+    prev = eina_list_nth(sd->items, sd->selected);
 
     if (!prev)
         return;
 
-    new = evas_list_nth(sd->items, nth);
+    new = eina_list_nth(sd->items, nth);
     if (!new)
         return;
 
@@ -248,7 +248,7 @@ enna_mainmenu_selected_activity_get(Evas_Object *obj)
     E_Smart_Item *si;
     API_ENTRY return NULL;
 
-    si = evas_list_nth(sd->items, sd->selected);
+    si = eina_list_nth(sd->items, sd->selected);
 
     if (!si)
     return NULL;
@@ -266,15 +266,15 @@ EAPI void enna_mainmenu_select_next(Evas_Object *obj)
     return;
 
     ns = sd->selected;
-    prev = evas_list_nth(sd->items, ns);
+    prev = eina_list_nth(sd->items, ns);
     if (!prev)
         return;
     ns++;
-    new = evas_list_nth(sd->items, ns);
+    new = eina_list_nth(sd->items, ns);
     if (!new)
     {
         ns = 0;
-        new = evas_list_nth(sd->items, ns);
+        new = eina_list_nth(sd->items, ns);
         if (!new)
             return;
     }
@@ -293,15 +293,15 @@ EAPI void enna_mainmenu_select_prev(Evas_Object *obj)
     return;
 
     ns = sd->selected;
-    prev = evas_list_nth(sd->items, ns);
+    prev = eina_list_nth(sd->items, ns);
     if (!prev)
         return;
     ns--;
-    new = evas_list_nth(sd->items, ns);
+    new = eina_list_nth(sd->items, ns);
     if (!new)
     {
-        ns = evas_list_count(sd->items)-1;
-        new = evas_list_nth(sd->items, ns);
+        ns = eina_list_count(sd->items)-1;
+        new = eina_list_nth(sd->items, ns);
         if (!new)
             return;
     }
@@ -345,7 +345,7 @@ EAPI void enna_mainmenu_hide(Evas_Object *obj)
 
     sd->visible = 0;
 
-    si = evas_list_nth(sd->items, sd->selected);
+    si = eina_list_nth(sd->items, sd->selected);
 
     if (si && si->act)
     {
@@ -468,7 +468,7 @@ static void _e_smart_add(Evas_Object * obj)
 static void _e_smart_del(Evas_Object * obj)
 {
     E_Smart_Data *sd;
-    Evas_List *l;
+    Eina_List *l;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -481,7 +481,7 @@ static void _e_smart_del(Evas_Object * obj)
         evas_object_del(si->o_base);
         evas_object_del(si->o_icon);
     }
-    evas_list_free(sd->items);
+    eina_list_free(sd->items);
     evas_object_del(sd->o_edje);
     evas_object_del(sd->o_box);
     free(sd);
@@ -572,7 +572,7 @@ static void _e_smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
     E_Smart_Data *sd;
     Evas_Event_Mouse_Up *ev;
     Enna_List_Item *si;
-    Evas_List *l;
+    Eina_List *l;
     int i;
 
     ev = event_info;
@@ -599,7 +599,7 @@ static void _e_smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
     Evas_Event_Mouse_Down *ev;
     Enna_List_Item *si;
     Enna_List_Item *prev;
-    Evas_List *l = NULL;
+    Eina_List *l = NULL;
     int i;
 
     ev = event_info;
@@ -608,7 +608,7 @@ static void _e_smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
 
     if (!sd->items)
         return;
-    prev = evas_list_nth(sd->items, sd->selected);
+    prev = eina_list_nth(sd->items, sd->selected);
 
     for (i = 0, l = sd->items; l; l = l->next, i++)
     {

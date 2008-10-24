@@ -32,9 +32,9 @@
 #include "enna.h"
 #include "vfs.h"
 
-static Evas_List *_enna_vfs_music = NULL;
-static Evas_List *_enna_vfs_video = NULL;
-static Evas_List *_enna_vfs_photo = NULL;
+static Eina_List *_enna_vfs_music = NULL;
+static Eina_List *_enna_vfs_video = NULL;
+static Eina_List *_enna_vfs_photo = NULL;
 
 /* local subsystem functions */
 
@@ -52,18 +52,18 @@ EAPI int enna_vfs_append(const char *name, unsigned char type,
         return -1;
 
     if ((type & ENNA_CAPS_MUSIC) == ENNA_CAPS_MUSIC)
-        _enna_vfs_music = evas_list_append(_enna_vfs_music, vfs);
+        _enna_vfs_music = eina_list_append(_enna_vfs_music, vfs);
 
     if ((type & ENNA_CAPS_VIDEO) == ENNA_CAPS_VIDEO)
-        _enna_vfs_video = evas_list_append(_enna_vfs_video, vfs);
+        _enna_vfs_video = eina_list_append(_enna_vfs_video, vfs);
 
     if ((type & ENNA_CAPS_PHOTO) == ENNA_CAPS_PHOTO)
-        _enna_vfs_photo = evas_list_append(_enna_vfs_photo, vfs);
+        _enna_vfs_photo = eina_list_append(_enna_vfs_photo, vfs);
 
     return 0;
 }
 
-EAPI Evas_List *
+EAPI Eina_List *
 enna_vfs_get(ENNA_VFS_CAPS type)
 {
 
