@@ -44,7 +44,7 @@ struct _Elation_Module
    void *handle; /* lib handle */
    Elation_Info *info; /* app info */
    Elation_Module *parent; /* parent module */
-   Evas_List *children; /* modules loded by this one */
+   Eina_List *children; /* modules loded by this one */
    void *data; /* private modules data */
    
    unsigned char focused : 1;

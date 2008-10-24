@@ -10,7 +10,7 @@ struct _Elation_Module_Private
 {
    Evas_Object *key;
    Evas_Object *video;
-   Evas_List *items;
+   Eina_List *items;
 };
 
 typedef struct _Item Item;

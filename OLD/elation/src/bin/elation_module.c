@@ -2,7 +2,7 @@
 
 #include <dlfcn.h>
 
-Evas_List *modules = NULL;
+Eina_List *modules = NULL;
 
 Elation_Module *
 elation_module_open(Elation_Info *info, Elation_Module *parent, char *name)
@@ -46,7 +46,7 @@ elation_module_open(Elation_Info *info, Elation_Module *parent, char *name)
 	free(em);
 	return NULL;
      }
-   modules = evas_list_append(modules, em);
+   modules = eina_list_append(modules, em);
    return em;
 }
 
@@ -68,16 +68,16 @@ elation_module_close(Elation_Module *em)
    dlclose(em->handle);
    
    if (em->parent)
-     em->parent->children = evas_list_remove(em->parent->children, em);
+     em->parent->children = eina_list_remove(em->parent->children, em);
    
-   modules = evas_list_remove(modules, em);
+   modules = eina_list_remove(modules, em);
    free(em);
 }
 
 void
 elation_module_action_broadcast(int action)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    /* FIXME: what if amodule quits as a result of an action???? */
    for (l = modules; l; l = l->next)
@@ -92,7 +92,7 @@ elation_module_action_broadcast(int action)
 void
 elation_module_resize_broadcast(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = modules; l; l = l->next)
      {
