@@ -3,7 +3,7 @@
 Type=Link
 Name=Skel
 Icon=e-module-skel
-Comment=<title>Skeleton Module Gadget:</title>Not meant for users. Basis for building new ones.
+Comment=<title>Skeleton Module Gadget:</title><br>Not meant for users. Basis for building new ones.
 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system

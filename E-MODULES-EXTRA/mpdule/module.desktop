@@ -2,6 +2,6 @@
 Type=Link
 Name=MPDule
 Icon=e-module-mpdule
-Comment=<hilight>Mpdule Gadget</hilight><br><br>View what's playing in MPD.
-Comment[hu]=<hilight>Mpdule modul/bigyó</hilight><br><br>Láthatod, mit játszik épp az MPD.
-Comment[it]=<hilight>Modulo Mpdule</hilight><br><br>Un'interfaccia per il demone MPD.
+Comment=<title>Mpdule Gadget</title><br>View what's playing in MPD.
+Comment[hu]=<title>Mpdule modul/bigyó</title><br>Láthatod, mit játszik épp az MPD.
+Comment[it]=<title>Modulo Mpdule</title><br>Un'interfaccia per il demone MPD.

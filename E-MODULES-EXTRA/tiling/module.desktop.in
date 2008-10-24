@@ -2,6 +2,6 @@
 Type=Link
 Name=Tiling
 Icon=e-module-tiling
-Comment=<hilight>Tiling Module</hilight><br>Positions/resizes your windows tilingly, like ion for example.
-Comment[it]=<hilight>Modulo Tiling</hilight><br><br>Posiziona/ridimensiona le finestre affiancandole, come ad esempio ion.
+Comment=<title>Tiling Module</title><br>Positions/resizes your windows tilingly, like ion for example.
+Comment[it]=<title>Modulo Tiling</title><br>Posiziona/ridimensiona le finestre affiancandole, come ad esempio ion.
 X-Enlightenment-ModuleType=appearance
