@@ -824,7 +824,7 @@ init_parse_options(struct cpp_options *opts)
    opts->dump_macros = dump_none;
    opts->no_output = 0;
    opts->cplusplus = 0;
-   opts->cplusplus_comments = 0;
+   opts->cplusplus_comments = 1;
 
    opts->verbose = 0;
    opts->objc = 0;
