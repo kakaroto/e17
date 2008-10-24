@@ -15,7 +15,7 @@ typedef struct _Engage_App_Icon Engage_App_Icon;
 struct _Config
 {
    const char   *appdir;
-   Evas_List    *bars;
+   Eina_List    *bars;
    unsigned char click_focus;
    /*
    double        handle;
@@ -36,7 +36,7 @@ struct _Config_Bar
 struct _Engage
 {
    E_App       *apps;
-   Evas_List   *bars;
+   Eina_List   *bars;
    E_Menu      *config_menu;
 
    Config      *conf;
@@ -48,7 +48,7 @@ struct _Engage_Tray
    Evas_Object *tray;
    int          w, h;
    int          icons;
-   Evas_List   *wins;
+   Eina_List   *wins;
    Ecore_X_Window win;
    Ecore_X_Time select_time;
 
@@ -73,8 +73,8 @@ struct _Engage_Bar
    Evas_Coord   bw, bh;
    Evas_Coord   mouse_out;
    
-   Evas_List   *icons;   
-   Evas_List   *contexts;
+   Eina_List   *icons;   
+   Eina_List   *contexts;
    
    double       align, align_req;
    int          loaded;
@@ -105,7 +105,7 @@ struct _Engage_Icon
    Evas_Object   *bg_object;
    Evas_Object   *icon_object;
    Evas_Object   *event_object;
-   Evas_List     *extra_icons, *selected_app;
+   Eina_List     *extra_icons, *selected_app;
 
    double         scale;
    int            dotorder;

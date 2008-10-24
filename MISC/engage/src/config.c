@@ -36,7 +36,7 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
                void *data)
 {
   char           *path;
-  Evas_List      *icons;
+  Eina_List      *icons;
 
   if (options.theme)
     free(options.theme);
@@ -47,7 +47,7 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
   icons = dock.icons;
   while (icons) {
     od_icon_reload((OD_Icon *) icons->data);
-    icons = evas_list_next(icons);
+    icons = eina_list_next(icons);
   }
   return 1;
 }

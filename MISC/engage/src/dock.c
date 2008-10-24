@@ -72,7 +72,7 @@ od_dock_reposition()
   double          x, y;
 
   {
-    Evas_List      *item = dock.icons;
+    Eina_List      *item = dock.icons;
 
     while (item) {
       OD_Icon        *icon = (OD_Icon *) item->data;
@@ -89,7 +89,7 @@ od_dock_reposition()
 
 #define POSITION(__icons) \
 		{ \
-			Evas_List * __item = __icons; \
+			Eina_List * __item = __icons; \
 			while(__item) { \
 				OD_Icon * __icon = (OD_Icon *)__item->data; \
 				x += 0.5 * (__icon->scale * options.size + options.spacing); \
@@ -130,7 +130,7 @@ od_dock_redraw(Ecore_Evas * ee)
   lasttime = time;
 
 
-  Evas_List      *item = dock.icons;
+  Eina_List      *item = dock.icons;
   while (item) {
     OD_Icon        *icon = (OD_Icon *) item->data;
 
@@ -253,8 +253,8 @@ zoom_function(double d, double *zoom, double *disp)
 void
 od_dock_add_applnk(OD_Icon * applnk)
 {
-  dock.icons = evas_list_append(dock.icons, applnk);
-  dock.applnks = evas_list_append(dock.applnks, applnk);
+  dock.icons = eina_list_append(dock.icons, applnk);
+  dock.applnks = eina_list_append(dock.applnks, applnk);
   applnk->state |= OD_ICON_STATE_USEABLE;
   applnk->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, applnk);
 }
@@ -262,8 +262,8 @@ od_dock_add_applnk(OD_Icon * applnk)
 void
 od_dock_add_sysicon(OD_Icon * sysicon)
 {
-  dock.icons = evas_list_append(dock.icons, sysicon);
-  dock.sysicons = evas_list_append(dock.sysicons, sysicon);
+  dock.icons = eina_list_append(dock.icons, sysicon);
+  dock.sysicons = eina_list_append(dock.sysicons, sysicon);
   sysicon->state |= OD_ICON_STATE_USEABLE;
   sysicon->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, sysicon);
 }
@@ -271,8 +271,8 @@ od_dock_add_sysicon(OD_Icon * sysicon)
 void
 od_dock_add_minwin(OD_Icon * minwin)
 {
-  dock.icons = evas_list_append(dock.icons, minwin);
-  dock.minwins = evas_list_append(dock.minwins, minwin);
+  dock.icons = eina_list_append(dock.icons, minwin);
+  dock.minwins = eina_list_append(dock.minwins, minwin);
   minwin->state |= OD_ICON_STATE_USEABLE;
   minwin->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, minwin);
 }
@@ -305,7 +305,7 @@ od_dock_icon_appear(void *data)
   icon->scale += delta;
   if (icon->scale < 1.0) {
     double          s = 0.5 * delta * options.size;
-    Evas_List      *item = dock.icons;
+    Eina_List      *item = dock.icons;
 
     while (item) {
       OD_Icon        *i = (OD_Icon *) item->data;
@@ -335,7 +335,7 @@ od_dock_icon_appear(void *data)
 static int
 od_dock_icon_disappear(void *data)
 {
-  Evas_List      *item = NULL;
+  Eina_List      *item = NULL;
   double          delta = 0.0, s = 0.0;
   OD_Icon        *i = NULL;
   OD_Icon        *icon = (OD_Icon *) data;
@@ -373,16 +373,16 @@ od_dock_icon_disappear(void *data)
       dock.middle_pos -= s;
     return 1;
   } else {
-    dock.icons = evas_list_remove(dock.icons, icon);
+    dock.icons = eina_list_remove(dock.icons, icon);
     switch (icon->type) {
     case application_link:
-      dock.applnks = evas_list_remove(dock.applnks, icon);
+      dock.applnks = eina_list_remove(dock.applnks, icon);
       break;
     case system_icon:
-      dock.sysicons = evas_list_remove(dock.sysicons, icon);
+      dock.sysicons = eina_list_remove(dock.sysicons, icon);
       break;
     case minimised_window:
-      dock.minwins = evas_list_remove(dock.minwins, icon);
+      dock.minwins = eina_list_remove(dock.minwins, icon);
       break;
     }
     od_dock_reposition();

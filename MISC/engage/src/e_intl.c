@@ -43,14 +43,14 @@ static int loc_mask;
 
 /* Language Setting and Listing */
 static char		*_e_intl_language_path_find(char *language);
-static Evas_List 	*_e_intl_language_dir_scan(const char *dir);
-static int 		 _e_intl_language_list_find(Evas_List *language_list, char *language);
+static Eina_List 	*_e_intl_language_dir_scan(const char *dir);
+static int 		 _e_intl_language_list_find(Eina_List *language_list, char *language);
 
 /* Locale Validation and Discovery */
 static Evas_Hash	*_e_intl_locale_alias_hash_get(void);
 static char		*_e_intl_locale_alias_get(const char *language);
-static Evas_List	*_e_intl_locale_system_locales_get(void);
-static Evas_List	*_e_intl_locale_search_order_get(char *locale);
+static Eina_List	*_e_intl_locale_system_locales_get(void);
+static Eina_List	*_e_intl_locale_search_order_get(char *locale);
 static int		 _e_intl_locale_validate(char *locale);
 static void 		 _e_intl_locale_hash_free(Evas_Hash *language_hash);
 static Evas_Bool 	 _e_intl_locale_hash_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
@@ -58,9 +58,9 @@ static Evas_Bool 	 _e_intl_locale_hash_free_cb(Evas_Hash *hash, const char *key,
 /* Input Method Configuration and Management */
 static int 		 _e_intl_cb_exit(void *data, int type, void *event);
 #if 0
-static Evas_List 	*_e_intl_imc_path_scan(E_Path *path);
-static Evas_List 	*_e_intl_imc_dir_scan(const char *dir);
-static E_Input_Method_Config *_e_intl_imc_find(Evas_List *imc_list, char *name);
+static Eina_List 	*_e_intl_imc_path_scan(E_Path *path);
+static Eina_List 	*_e_intl_imc_dir_scan(const char *dir);
+static E_Input_Method_Config *_e_intl_imc_find(Eina_List *imc_list, char *name);
 #endif
 
 
@@ -259,19 +259,19 @@ e_intl_language_alias_get(void)
    return _e_intl_language_alias;
 }
 
-EAPI Evas_List *
+EAPI Eina_List *
 e_intl_language_list(void)
 {
-   Evas_List *next;
-   Evas_List *dir_list;
-   Evas_List *all_languages;
+   Eina_List *next;
+   Eina_List *dir_list;
+   Eina_List *all_languages;
 
    all_languages = NULL;
    dir_list = e_path_dir_list_get(path_messages);
    for (next = dir_list ; next ; next = next->next)
      {
 	E_Path_Dir *epd;        
-	Evas_List *dir_languages;
+	Eina_List *dir_languages;
 	        
 	epd = next->data;		        
 	dir_languages = _e_intl_language_dir_scan(epd->dir);
@@ -280,7 +280,7 @@ e_intl_language_list(void)
 	     char *language;
 
 	     language = dir_languages->data;
-	     dir_languages = evas_list_remove_list(dir_languages, dir_languages);
+	     dir_languages = eina_list_remove_list(dir_languages, dir_languages);
 
 	     if (  _e_intl_language_list_find(all_languages, language) || (strlen(language) > 2 && 
 		      !_e_intl_locale_validate(language)))
@@ -289,7 +289,7 @@ e_intl_language_list(void)
 	       }
 	     else
 	       {
-		  all_languages = evas_list_append(all_languages, language);
+		  all_languages = eina_list_append(all_languages, language);
 	       }
 	  }
      }
@@ -300,9 +300,9 @@ e_intl_language_list(void)
 }
 
 static int
-_e_intl_language_list_find(Evas_List *language_list, char *language)
+_e_intl_language_list_find(Eina_List *language_list, char *language)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!language_list) return 0;
    if (!language) return 0;
@@ -333,7 +333,7 @@ e_intl_input_method_set(const char *method)
    
    if (method) 
      {   
-	Evas_List *input_methods;
+	Eina_List *input_methods;
 	E_Input_Method_Config *imc;
 
 	input_methods = _e_intl_imc_path_scan(path_input_methods);
@@ -372,7 +372,7 @@ e_intl_input_method_set(const char *method)
 	     E_Input_Method_Config *imc;
 	     
 	     imc = input_methods->data;	     
-	     input_methods = evas_list_remove_list(input_methods,input_methods);
+	     input_methods = eina_list_remove_list(input_methods,input_methods);
 	     e_intl_input_method_config_free(imc); 
 	  }
      }   
@@ -388,12 +388,12 @@ e_intl_input_method_get(void)
    return _e_intl_input_method;   
 }
 
-EAPI Evas_List *
+EAPI Eina_List *
 e_intl_input_method_list(void)
 {
-   Evas_List *input_methods;
-   Evas_List *im_list;
-   Evas_List *l;
+   Eina_List *input_methods;
+   Eina_List *im_list;
+   Eina_List *l;
    E_Input_Method_Config *imc;
 
    im_list = NULL;
@@ -402,7 +402,7 @@ e_intl_input_method_list(void)
    for (l = input_methods; l; l = l->next)
      {
 	imc = l->data;
-	im_list = evas_list_append(im_list, strdup(imc->e_im_name));
+	im_list = eina_list_append(im_list, strdup(imc->e_im_name));
      }
 
    * Need to free up the directory listing *
@@ -411,7 +411,7 @@ e_intl_input_method_list(void)
 	E_Input_Method_Config *imc;
 	     
 	imc = input_methods->data;	     
-	input_methods = evas_list_remove_list(input_methods, input_methods);
+	input_methods = eina_list_remove_list(input_methods, input_methods);
 	e_intl_input_method_config_free(imc);
      }
    return im_list;
@@ -503,10 +503,10 @@ static char *
 _e_intl_language_path_find(char *language)
 {
    char		*directory;
-   Evas_List	*dir_list;
-   Evas_List	*search_list;
-   Evas_List	*next_dir;
-   Evas_List	*next_search;
+   Eina_List	*dir_list;
+   Eina_List	*search_list;
+   Eina_List	*next_dir;
+   Eina_List	*next_search;
    int		 found;
 
    search_list = _e_intl_locale_search_order_get(language); 
@@ -565,16 +565,16 @@ _e_intl_language_path_find(char *language)
 	char *data;
 	data = search_list->data;
 	free(data);
-	search_list = evas_list_remove_list(search_list, search_list);
+	search_list = eina_list_remove_list(search_list, search_list);
      }
 
    return directory;
 }
 
-static Evas_List *
+static Eina_List *
 _e_intl_language_dir_scan(const char *dir)
 {
-   Evas_List *languages;
+   Eina_List *languages;
    Ecore_List *files;
    char *file;
    
@@ -593,7 +593,7 @@ _e_intl_language_dir_scan(const char *dir)
 	     snprintf(file_path, sizeof(file_path),"%s/%s/LC_MESSAGES/%s.mo", 
 		   dir, file, PACKAGE);
 	     if (ecore_file_exists(file_path) && !ecore_file_is_dir(file_path))
-	       languages = evas_list_append(languages, strdup(file));
+	       languages = eina_list_append(languages, strdup(file));
 
 	  }
 	ecore_list_destroy(files);
@@ -668,8 +668,8 @@ _e_intl_locale_alias_get(const char *language)
 static Evas_Hash *
 _e_intl_locale_alias_hash_get(void)
 {
-   Evas_List *next;
-   Evas_List *dir_list;
+   Eina_List *next;
+   Eina_List *dir_list;
    Evas_Hash *alias_hash; 
      
    dir_list = e_path_dir_list_get(path_messages);
@@ -862,10 +862,10 @@ e_intl_locale_canonic_get(const char *locale, int ret_mask)
 	 
 }
 
-static Evas_List *
+static Eina_List *
 _e_intl_locale_system_locales_get(void)
 {
-   Evas_List	*locales;
+   Eina_List	*locales;
    FILE		*output;
 
    locales = NULL;
@@ -875,7 +875,7 @@ _e_intl_locale_system_locales_get(void)
 	char line[32];
 	while ( fscanf(output, "%[^\n]\n", line) == 1)
 	  {
-	     locales = evas_list_append(locales, strdup(line));
+	     locales = eina_list_append(locales, strdup(line));
 	  }
 	          
 	pclose(output);
@@ -889,7 +889,7 @@ _e_intl_locale_system_locales_get(void)
 static int
 _e_intl_locale_validate(char *locale)
 {
-   Evas_List *all_locales;
+   Eina_List *all_locales;
    char *search_locale;
    int found;
    
@@ -923,7 +923,7 @@ _e_intl_locale_validate(char *locale)
 	       }
 	  }
 	
-	all_locales = evas_list_remove_list(all_locales, all_locales);
+	all_locales = eina_list_remove_list(all_locales, all_locales);
 	free(test_locale);
      }
    free(search_locale);
@@ -934,10 +934,10 @@ _e_intl_locale_validate(char *locale)
  *  arg local must be an already validated and unaliased locale
  *  
  */
-static Evas_List *
+static Eina_List *
 _e_intl_locale_search_order_get(char *locale)
 {
-   Evas_List *search_list;
+   Eina_List *search_list;
    char *masked_locale;
    int mask;
    
@@ -947,7 +947,7 @@ _e_intl_locale_search_order_get(char *locale)
 	  masked_locale = e_intl_locale_canonic_get(locale, mask);
 	  
 	  if (loc_mask == mask) 
-	    search_list = evas_list_append(search_list, masked_locale);
+	    search_list = eina_list_append(search_list, masked_locale);
 	  else
 	    free(masked_locale);
        } 
@@ -955,13 +955,13 @@ _e_intl_locale_search_order_get(char *locale)
 }
 
 #if 0
-static Evas_List *
+static Eina_List *
 _e_intl_imc_path_scan(E_Path *path)
 {
 
-   Evas_List *next;
-   Evas_List *dir_list;
-   Evas_List *all_imcs;
+   Eina_List *next;
+   Eina_List *dir_list;
+   Eina_List *all_imcs;
   
    if (!path) return NULL; 
    
@@ -971,7 +971,7 @@ _e_intl_imc_path_scan(E_Path *path)
    for (next = dir_list ; next ; next = next->next)
      {
 	E_Path_Dir *epd;
-	Evas_List *dir_imcs;
+	Eina_List *dir_imcs;
 	
 	epd = next->data;
 
@@ -982,7 +982,7 @@ _e_intl_imc_path_scan(E_Path *path)
 	     E_Input_Method_Config *imc;
 
 	     imc = dir_imcs->data;
-	     dir_imcs = evas_list_remove_list(dir_imcs, dir_imcs);
+	     dir_imcs = eina_list_remove_list(dir_imcs, dir_imcs);
 
 	     if (_e_intl_imc_find(all_imcs, imc->e_im_name))
 	       {
@@ -990,7 +990,7 @@ _e_intl_imc_path_scan(E_Path *path)
 	       }
 	     else
 	       {
-		  all_imcs = evas_list_append(all_imcs, imc);
+		  all_imcs = eina_list_append(all_imcs, imc);
 	       }
 	  }
      }
@@ -1000,10 +1000,10 @@ _e_intl_imc_path_scan(E_Path *path)
    return all_imcs;
 }
    
-static Evas_List *
+static Eina_List *
 _e_intl_imc_dir_scan(const char *dir)
 {
-   Evas_List *imcs;
+   Eina_List *imcs;
    Ecore_List *files;
    char *file;
    
@@ -1028,7 +1028,7 @@ _e_intl_imc_dir_scan(const char *dir)
 		  imc = e_intl_input_method_config_read(imc_file);
 		  if (imc)
 		    {
-		       imcs = evas_list_append(imcs, imc);
+		       imcs = eina_list_append(imcs, imc);
 		    }
 		  eet_close(imc_file);
 	       }
@@ -1039,9 +1039,9 @@ _e_intl_imc_dir_scan(const char *dir)
 }
 
 static E_Input_Method_Config *
-_e_intl_imc_find(Evas_List *imc_list, char *name)
+_e_intl_imc_find(Eina_List *imc_list, char *name)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!imc_list) return NULL;
    if (!name) return NULL;

@@ -27,7 +27,7 @@ struct _E_App_Cache
    const char         *icon_class; /* icon_class */
    const char         *icon_path;  /* FDO icon path */
    
-   Evas_List          *subapps; /* if this a directory, a list of more E_App's */
+   Eina_List          *subapps; /* if this a directory, a list of more E_App's */
    
    unsigned char       startup_notify; /* disable while starting etc. */
    unsigned char       wait_exit; /* wait for app to exit before execing next */

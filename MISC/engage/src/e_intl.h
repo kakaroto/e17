@@ -37,7 +37,7 @@ struct _E_Language_Pack
    char		*language_pack_name;
    char		*language;
    char		*input_method;
-   Evas_List	*font_fallbacks;
+   Eina_List	*font_fallbacks;
 };
 
 struct _E_Input_Method_Config
@@ -58,11 +58,11 @@ EAPI int		 e_intl_post_shutdown(void);
 EAPI void		 e_intl_language_set(const char *lang);
 EAPI const char		*e_intl_language_get(void);
 EAPI const char		*e_intl_language_alias_get(void);
-EAPI Evas_List		*e_intl_language_list(void);
+EAPI Eina_List		*e_intl_language_list(void);
 /* Setting & Getting Input Method */
 /*EAPI void                e_intl_input_method_set(const char *method);
 EAPI const char         *e_intl_input_method_get(void);
-EAPI Evas_List		*e_intl_input_method_list(void);
+EAPI Eina_List		*e_intl_input_method_list(void);
 EAPI E_Input_Method_Config *e_intl_input_method_config_read (Eet_File *imc_file);
 EAPI int		 e_intl_input_method_config_write (Eet_File *imc_file, E_Input_Method_Config *imc);
 EAPI void		 e_intl_input_method_config_free (E_Input_Method_Config *imc);*/

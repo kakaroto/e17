@@ -16,8 +16,8 @@
 #endif
 #include <assert.h>
 
-Evas_List      *icon_mappings = NULL;
-Evas_List      *icon_paths = NULL;
+Eina_List      *icon_mappings = NULL;
+Eina_List      *icon_paths = NULL;
 
 static OD_Icon *od_icon_new(E_App *app, char *name_override,
                             char *class_override, int type);
@@ -345,13 +345,13 @@ od_icon_name_change(OD_Icon * icon, const char *name)
 void
 od_icon_mapping_add(E_App *app)
 {
-  icon_mappings = evas_list_append(icon_mappings, app);
+  icon_mappings = eina_list_append(icon_mappings, app);
 }
 
 E_App *
 od_icon_mapping_get(const char *winclass)
 {
-  Evas_List      *item = icon_mappings;
+  Eina_List      *item = icon_mappings;
   E_App *app;
 
 #if 0
@@ -375,7 +375,7 @@ od_icon_mapping_get(const char *winclass)
 void
 od_icon_add_path(const char *path)
 {
-  icon_paths = evas_list_append(icon_paths, strdup(path));
+  icon_paths = eina_list_append(icon_paths, strdup(path));
 }
 
 void
@@ -446,7 +446,7 @@ od_icon_edje_win_minimize_cb(void *data, Evas_Object * obj,
                              const char *emission, const
                              char *source)
 {
-  Evas_List      *l = NULL;
+  Eina_List      *l = NULL;
   OD_Icon        *icon = NULL;
 
   if ((icon = (OD_Icon *) data)) {
@@ -493,7 +493,7 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
                           char *source)
 {
   const char     *winclass = NULL;
-  Evas_List      *l = NULL;
+  Eina_List      *l = NULL;
   OD_Icon        *icon = NULL;
   OD_Window      *win = NULL;
 

@@ -50,11 +50,11 @@ struct _E_App
    const char         *icon_class; /* icon_class */
    const char         *icon_path;  /* FDO icon path */
    
-   Evas_List          *subapps; /* if this a directory, a list of more E_App's */
+   Eina_List          *subapps; /* if this a directory, a list of more E_App's */
    
-   Evas_List          *instances; /* a list of all the exe handles for executions */
+   Eina_List          *instances; /* a list of all the exe handles for executions */
 
-   Evas_List          *references; /* If this app is in a main repository, this would
+   Eina_List          *references; /* If this app is in a main repository, this would
 				      be a list to other eapp pointing to this */
    Ecore_File_Monitor *monitor; /* Check for changes and files */
    
@@ -107,12 +107,12 @@ EAPI int         e_app_starting_get                      (E_App *a);
 EAPI int         e_app_running_get                       (E_App *a);
 EAPI void        e_app_list_prepend_relative             (E_App *add, E_App *before);
 EAPI void        e_app_list_append                       (E_App *add, E_App *parent);
-EAPI void        e_app_files_list_prepend_relative       (Evas_List *files, E_App *before);
-EAPI void        e_app_files_list_append                 (Evas_List *files, E_App *parent);
+EAPI void        e_app_files_list_prepend_relative       (Eina_List *files, E_App *before);
+EAPI void        e_app_files_list_append                 (Eina_List *files, E_App *parent);
 EAPI void        e_app_prepend_relative                  (E_App *add, E_App *before);
 EAPI void        e_app_append                            (E_App *add, E_App *parent);
-EAPI void        e_app_files_prepend_relative            (Evas_List *files, E_App *before);
-EAPI void        e_app_files_append                      (Evas_List *files, E_App *parent);
+EAPI void        e_app_files_prepend_relative            (Eina_List *files, E_App *before);
+EAPI void        e_app_files_append                      (Eina_List *files, E_App *parent);
 EAPI void        e_app_remove                            (E_App *a);
     
 EAPI void        e_app_change_callback_add               (void (*func) (void *data, E_App *a, E_App_Change ch), void *data);
@@ -125,10 +125,10 @@ EAPI E_App      *e_app_name_find                         (const char *name);
 EAPI E_App      *e_app_generic_find                      (const char *generic);
 EAPI E_App      *e_app_exe_find                          (const char *exe);
 
-EAPI Evas_List  *e_app_name_glob_list                    (const char *name);
-EAPI Evas_List  *e_app_generic_glob_list                 (const char *generic);
-EAPI Evas_List  *e_app_exe_glob_list                     (const char *exe);
-EAPI Evas_List  *e_app_comment_glob_list                 (const char *comment);
+EAPI Eina_List  *e_app_name_glob_list                    (const char *name);
+EAPI Eina_List  *e_app_generic_glob_list                 (const char *generic);
+EAPI Eina_List  *e_app_exe_glob_list                     (const char *exe);
+EAPI Eina_List  *e_app_comment_glob_list                 (const char *comment);
     
 EAPI void         e_app_fields_fill                       (E_App *a, const char *path);
 EAPI void         e_app_fields_save                       (E_App *a);

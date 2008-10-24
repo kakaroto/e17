@@ -385,16 +385,16 @@ handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
   OD_Icon        *icon = NULL;
 
   {
-    Evas_List      *objects =
+    Eina_List      *objects =
       evas_objects_at_xy_get(evas, ev->canvas.x, ev->canvas.y, 0, 0);
-    Evas_List      *item = objects;
+    Eina_List      *item = objects;
     bool            done = false;
 
     while (item && !done) {
       const char     *name = evas_object_name_get((Evas_Object *) item->data);
 
       if (name && strncmp("icon", name, 4) == 0) {
-        Evas_List      *i2 = dock.icons;
+        Eina_List      *i2 = dock.icons;
 
         while (i2 && !done) {
           if (((OD_Icon *) (i2->data))->pic == (Evas_Object *) item->data) {
@@ -415,14 +415,14 @@ handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
       // then make one...
       system(icon->data.applnk.command);
     } else if (icon->data.applnk.count > 0 && ev->button == 1) {
-      Evas_List      *item = clients;
+      Eina_List      *item = clients;
 
       while (item) {
         OD_Window      *window = (OD_Window *) item->data;
 
         if (window->applnk == icon)
           od_wm_activate_window(window->id);
-        item = evas_list_next(item);
+        item = eina_list_next(item);
       }
     }
   } else if (icon->type == minimised_window) {

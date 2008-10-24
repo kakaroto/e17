@@ -56,7 +56,7 @@ _engage_tray_shutdown(Engage_Bar *eb)
    edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
    _engage_tray_active_set(eb, 0);
 
-   evas_list_free(eb->tray->wins);
+   eina_list_free(eb->tray->wins);
    evas_object_del(eb->tray->tray);
    free(eb->tray);
    eb->tray = NULL;
@@ -147,12 +147,12 @@ _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win)
   if (!eb->conf->tray)
     return;
 
-  if (evas_list_find(eb->tray->wins, (void *)win))
+  if (eina_list_data_find(eb->tray->wins, (void *)win))
     return;
   ecore_x_window_show(eb->tray->win);
 
   /* we want to insert at the end, so as not to move all icons on each add */
-  eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
+  eb->tray->wins = eina_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
 
   ecore_x_window_resize(win, 24, 24);
@@ -173,10 +173,10 @@ _engage_tray_remove(Engage_Bar *eb, Ecore_X_Window win) {
 
   if (!win)
     return;
-  if (!evas_list_find(eb->tray->wins, (void *)win)) /* if was not found */
+  if (!eina_list_data_find(eb->tray->wins, (void *)win)) /* if was not found */
     return;
 
-  eb->tray->wins = evas_list_remove(eb->tray->wins, (void *)win);
+  eb->tray->wins = eina_list_remove(eb->tray->wins, (void *)win);
   eb->tray->icons--;
   _engage_tray_layout(eb);
   _engage_bar_frame_resize(eb);
@@ -244,7 +244,7 @@ _engage_tray_layout(Engage_Bar *eb)
 {
    Evas_Coord w, h, c, d;
    int x, y;
-   Evas_List *wins;
+   Eina_List *wins;
    E_Gadman_Edge edge;
 
    if (!eb->gmc || !eb->conf || !eb->tray)

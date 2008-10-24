@@ -13,7 +13,7 @@ Etk_Widget *_od_config_menu_app;
 Etk_Widget *_od_config_menu_app_keep, *_od_config_menu_app_remove;
 
 OD_Icon *_od_icon_at_x_get(int x) {
-  Evas_List *l;
+  Eina_List *l;
   Evas_Coord minx, maxx;
 
   minx = x - options.size / 2;

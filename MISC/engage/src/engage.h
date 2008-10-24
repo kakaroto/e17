@@ -31,7 +31,7 @@ typedef enum {
 
 extern OD_Options options;
 extern OD_Dock  dock;
-extern Evas_List *clients;
+extern Eina_List *clients;
 
 extern Ecore_Evas *ee;
 extern Evas    *evas;
@@ -124,7 +124,7 @@ struct _OD_Window {
 #define OD_BG_MIDDLE 3
 #define OD_BG_MIDDLE2 4
 struct _OD_Dock {
-  Evas_List      *icons, *applnks, *minwins, *sysicons;
+  Eina_List      *icons, *applnks, *minwins, *sysicons;
   enum { unzoomed, zooming, zoomed, unzooming } state;
   double          zoom;
   double          x;            // current pointer x position

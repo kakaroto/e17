@@ -12,7 +12,7 @@
 /**
  * A list of all the X Window clients, data is type OD_Window *
  */
-Evas_List      *clients = NULL;
+Eina_List      *clients = NULL;
 
 /**
  * A hash of all the X Window clients, window id -> OD_Window* mapping
@@ -33,7 +33,7 @@ static bool     od_wm_ignored(Ecore_X_Window win);
 OD_Window      *
 od_wm_window_current_by_window_class_get(const char *name)
 {
-  Evas_List      *l = NULL;
+  Eina_List      *l = NULL;
   OD_Window      *win = NULL;
   OD_Window      *result = NULL;
   OD_Window      *current = NULL;
@@ -64,8 +64,8 @@ od_wm_window_current_by_window_class_get(const char *name)
 OD_Window      *
 od_wm_window_next_by_window_class_get(const char *name)
 {
-  Evas_List      *l = NULL;
-  Evas_List      *tmp = NULL;
+  Eina_List      *l = NULL;
+  Eina_List      *tmp = NULL;
   OD_Window      *win = NULL;
   OD_Window      *result = NULL;
   OD_Window      *current = NULL;
@@ -81,7 +81,7 @@ od_wm_window_next_by_window_class_get(const char *name)
           continue;
         if (win->applnk && win->applnk->data.applnk.winclass) {
           if (!strcmp(name, win->applnk->data.applnk.winclass)) {
-            tmp = evas_list_append(tmp, win);
+            tmp = eina_list_append(tmp, win);
           }
         }
       }
@@ -96,7 +96,7 @@ od_wm_window_next_by_window_class_get(const char *name)
     }
     if (!result && tmp)
       result = tmp->data;
-    evas_list_free(tmp);
+    eina_list_free(tmp);
   } else {
     for (l = clients; l; l = l->next) {
       if ((win = l->data)) {
@@ -123,9 +123,9 @@ od_wm_window_next_by_window_class_get(const char *name)
 OD_Window      *
 od_wm_window_prev_by_window_class_get(const char *name)
 {
-  Evas_List      *l = NULL;
-  Evas_List      *tmp = NULL;
-  Evas_List      *last = NULL;
+  Eina_List      *l = NULL;
+  Eina_List      *tmp = NULL;
+  Eina_List      *last = NULL;
   OD_Window      *win = NULL;
   OD_Window      *result = NULL;
   OD_Window      *current = NULL;
@@ -138,7 +138,7 @@ od_wm_window_prev_by_window_class_get(const char *name)
           continue;
         if (win->applnk && win->applnk->data.applnk.winclass) {
           if (!strcmp(name, win->applnk->data.applnk.winclass)) {
-            tmp = evas_list_append(tmp, win);
+            tmp = eina_list_append(tmp, win);
           }
         }
       }
@@ -153,11 +153,11 @@ od_wm_window_prev_by_window_class_get(const char *name)
     }
 
     if (tmp) {
-      last = evas_list_last(tmp);
+      last = eina_list_last(tmp);
       if (!result && last)
         result = last->data;
     }
-    evas_list_free(tmp);
+    eina_list_free(tmp);
   } else {
     for (l = clients; l; l = l->next) {
       if ((win = l->data)) {
@@ -282,10 +282,10 @@ od_sync_clients(void *data)
   char           *winclass = NULL;
   char            buf[32];
   OD_Window      *owd = NULL;
-  Evas_List      *dirty = NULL;
-  Evas_List      *fresh = NULL;
-  Evas_List      *item = NULL;
-  Evas_List      *to_free = NULL;
+  Eina_List      *dirty = NULL;
+  Eina_List      *fresh = NULL;
+  Eina_List      *item = NULL;
+  Eina_List      *to_free = NULL;
   Ecore_X_Window *win = NULL;
   Ecore_X_Window *windows = NULL;
 
@@ -300,7 +300,7 @@ od_sync_clients(void *data)
     if (!od_wm_ignored(*win)) {
       snprintf(buf, 32, "%8x", *win);
       if ((owd = evas_hash_find(clients_hash, buf))) {
-        dirty = evas_list_remove(dirty, owd);
+        dirty = eina_list_remove(dirty, owd);
         if (!owd->minwin && od_wm_iconified(owd->id) && !options.ignore_min) {
           owd->minwin = od_icon_new_minwin(owd->id, od_wm_get_title(owd->id),
                                            od_wm_get_winclass(owd->id));
@@ -322,9 +322,9 @@ od_sync_clients(void *data)
         memset(owd, 0, sizeof(OD_Window));
         owd->id = *win;
         clients_hash = evas_hash_add(clients_hash, buf, owd);
-        fresh = evas_list_append(fresh, owd);
+        fresh = eina_list_append(fresh, owd);
       }
-      clients = evas_list_append(clients, owd);
+      clients = eina_list_append(clients, owd);
     }
     win++;
   }
@@ -357,7 +357,7 @@ od_sync_clients(void *data)
     }
     dirty = dirty->next;
   }
-  to_free = evas_list_free(to_free);
+  to_free = eina_list_free(to_free);
 
   to_free = fresh;
   while (fresh) {
@@ -399,7 +399,7 @@ od_sync_clients(void *data)
     fresh->data = NULL;
     fresh = fresh->next;
   }
-  to_free = evas_list_free(to_free);
+  to_free = eina_list_free(to_free);
   return 1;                     // keep going
 }
 

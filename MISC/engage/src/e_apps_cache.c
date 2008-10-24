@@ -31,10 +31,10 @@ e_app_cache_init(void)
    eddc.func.mem_free = NULL;
    eddc.func.str_alloc = (char *(*)(const char *)) evas_stringshare_add;
    eddc.func.str_free = (void (*)(const char *)) evas_stringshare_del;
-   eddc.func.list_next = (void *(*)(void *)) evas_list_next;
-   eddc.func.list_append = (void *(*)(void *l, void *d)) evas_list_append;
-   eddc.func.list_data = (void *(*)(void *)) evas_list_data;
-   eddc.func.list_free = (void *(*)(void *)) evas_list_free;
+   eddc.func.list_next = (void *(*)(void *)) eina_list_next;
+   eddc.func.list_append = (void *(*)(void *l, void *d)) eina_list_append;
+   eddc.func.list_data = (void *(*)(void *)) eina_list_data_get;
+   eddc.func.list_free = (void *(*)(void *)) eina_list_free;
    eddc.func.hash_foreach = 
       (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *)) 
       evas_hash_foreach;
@@ -86,7 +86,7 @@ e_app_cache_load(const char *path)
    eet_close(ef);
    if (ac)
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = ac->subapps; l; l = l->next)
 	  {
@@ -103,7 +103,7 @@ EAPI E_App_Cache *
 e_app_cache_generate(E_App *a)
 {
    E_App_Cache *ac;
-   Evas_List *l;
+   Eina_List *l;
    char buf[PATH_MAX];
    
    if (!a) return NULL;
@@ -125,7 +125,7 @@ e_app_cache_generate(E_App *a)
 	     if (a2->orig) ac2->is_link = 1;
 	     if ((!ac2->is_link) && (!ac2->is_dir))
 	       ac2->file_mod_time = ecore_file_mod_time(buf);
-	     ac->subapps = evas_list_append(ac->subapps, ac2);
+	     ac->subapps = eina_list_append(ac->subapps, ac2);
 	     ac->subapps_hash = evas_hash_direct_add(ac->subapps_hash, ac2->file, ac2);
 	  }
      }
@@ -152,7 +152,7 @@ e_app_cache_free(E_App_Cache *ac)
 	E_App_Cache *ac2;
 	
 	ac2 = ac->subapps->data;
-	ac->subapps = evas_list_remove_list(ac->subapps, ac->subapps);
+	ac->subapps = eina_list_remove_list(ac->subapps, ac->subapps);
 	e_app_cache_free(ac2);
      }
    evas_hash_free(ac->subapps_hash);

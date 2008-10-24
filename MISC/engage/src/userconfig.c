@@ -14,7 +14,7 @@ static void _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch);
 static void
 userconfig_mappings_load(char* fp)
 {
-  Evas_List      *l;
+  Eina_List      *l;
 
   od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eap", 0);
   if (!od_unmatched_app) {
@@ -44,7 +44,7 @@ static void
 _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
 {
   OD_Icon *tmp = NULL;
-  Evas_List *l;
+  Eina_List *l;
   if (a->parent == applist) {
     switch (ch) {
       case E_APP_ADD:
@@ -62,8 +62,8 @@ _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
           l = l->next;
         }
         if (tmp) {
-          dock.icons = evas_list_remove(dock.icons, tmp);
-          dock.applnks = evas_list_remove(dock.applnks, tmp);
+          dock.icons = eina_list_remove(dock.icons, tmp);
+          dock.applnks = eina_list_remove(dock.applnks, tmp);
           od_dock_reposition();
           od_icon_del(tmp);
         }
@@ -97,7 +97,7 @@ _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
 static void
 userconfig_applinks_load(char* fp)
 {
-  Evas_List      *l;
+  Eina_List      *l;
 
   applist = e_app_new(fp, 0);
   if (!applist) {
