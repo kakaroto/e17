@@ -320,10 +320,10 @@ Eet_Data_Descriptor * _exalt_eth_save_edd_new()
     edd_conn = exalt_conn_edd_new();
 
     edd = eet_data_descriptor_new("Interface", sizeof(Exalt_Eth_Save),
-            evas_list_next,
-            evas_list_append,
-            evas_list_data,
-            evas_list_free,
+            eina_list_next,
+            eina_list_append,
+            eina_list_data_get,
+            eina_list_free,
             evas_hash_foreach,
             evas_hash_add,
             evas_hash_free);

@@ -31,7 +31,7 @@ typedef struct Boot_Process_Elt
 typedef struct Boot_Process_List
 {
     int timeout;
-    Evas_List *l;
+    Eina_List *l;
 } Boot_Process_List;
 
 Boot_Process_List *waiting_iface_list;

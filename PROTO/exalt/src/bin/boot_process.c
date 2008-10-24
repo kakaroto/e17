@@ -84,19 +84,19 @@ void waiting_iface_free(Boot_Process_List** l)
     EXALT_ASSERT_RETURN_VOID(l!=NULL);
     EXALT_ASSERT_RETURN_VOID((*l)!=NULL);
 
-    //evas_list_free() doesn't free the data, we free them
+    //eina_list_free() doesn't free the data, we free them
     {
-        Evas_List* levas = (*l)->l;
+        Eina_List* levas = (*l)->l;
         while(levas)
         {
-            Boot_Process_Elt* data = evas_list_data(levas);
+            Boot_Process_Elt* data = eina_list_data_get(levas);
             EXALT_FREE(data->interface);
             EXALT_FREE(data);
-            levas = evas_list_next(levas);
+            levas = eina_list_next(levas);
         }
     }
 
-    evas_list_free((*l)->l);
+    eina_list_free((*l)->l);
     EXALT_FREE(*l);
 }
 
@@ -109,7 +109,7 @@ void waiting_iface_free(Boot_Process_List** l)
 int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
 {
 //  int find = 0;
-    Evas_List *elt;
+    Eina_List *elt;
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN(l!=NULL);
@@ -120,19 +120,19 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
     elt = l->l;
     while(!find && elt)
     {
-        data = evas_list_data(elt);
+        data = eina_list_data_get(elt);
         if(data->interface && strcmp(exalt_eth_get_name(eth),data->interface) == 0)
             find = 1;
         else
-            elt = evas_list_next(elt);
+            elt = eina_list_next(elt);
     }
     return find;
 */
     EXALT_ASSERT_RETURN(l->l!=NULL);
 
-	for(elt = l->l; elt; elt = evas_list_next(elt))
+	for(elt = l->l; elt; elt = eina_list_next(elt))
 	{
-        if(!(data = evas_list_data(elt)))
+        if(!(data = eina_list_data_get(elt)))
         	continue;
 
         if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
@@ -149,7 +149,7 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
 void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
 {
     int find = 0;
-    Evas_List *elt;
+    Eina_List *elt;
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN_VOID(l!=NULL);
@@ -161,26 +161,26 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
 
     while(!find && elt)
     {
-        data = evas_list_data(elt);
+        data = eina_list_data_get(elt);
         if(data->interface && strcmp(exalt_eth_get_name(eth),data->interface) == 0)
             find = 1;
         else
-            elt = evas_list_next(elt);
+            elt = eina_list_next(elt);
     }
     if(!find)
         //the iface is not in the list
         return ;
 
-    l->l = evas_list_remove(l->l,evas_list_data(elt));
+    l->l = eina_list_remove(l->l,eina_list_data_get(elt));
 */
-	for(elt = l->l; elt; elt = evas_list_next(elt))
+	for(elt = l->l; elt; elt = eina_list_next(elt))
 	{
-        if(!(data = evas_list_data(elt)))
+        if(!(data = eina_list_data_get(elt)))
         	continue;
 
         if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
         {
-			l->l = evas_list_remove(l->l,evas_list_data(elt));
+			l->l = eina_list_remove(l->l,eina_list_data_get(elt));
         	return;
         }
 	}
@@ -194,7 +194,7 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
  */
 int waiting_iface_is_done(const Boot_Process_List* l)
 {
-    Evas_List *elt;
+    Eina_List *elt;
     Boot_Process_Elt *data;
 //  int find =  0;
 
@@ -208,18 +208,18 @@ int waiting_iface_is_done(const Boot_Process_List* l)
 
     while(!find && elt)
     {
-        data = evas_list_data(elt);
+        data = eina_list_data_get(elt);
         if(exalt_eth_get_ethernet_byname(data->interface))
             find = 1;
         else
-            elt = evas_list_next(elt);
+            elt = eina_list_next(elt);
     }
 
     return !find;
 */
-	for(elt = l->l; elt; elt = evas_list_next(elt))
+	for(elt = l->l; elt; elt = eina_list_next(elt))
 	{
-        if(!(data = evas_list_data(elt)))
+        if(!(data = eina_list_data_get(elt)))
         	continue;
 
         if(exalt_eth_get_ethernet_byname(data->interface))
@@ -268,7 +268,7 @@ int waiting_iface_add(const char* interface,const char* file)
     //add the new interface
     Boot_Process_Elt *elt = malloc(sizeof(Boot_Process_Elt));
     EXALT_STRDUP(elt->interface,interface);
-    l->l = evas_list_append(l->l, elt);
+    l->l = eina_list_append(l->l, elt);
 
     //save the new list
     waiting_iface_save(l,file);
@@ -399,10 +399,10 @@ Eet_Data_Descriptor * waiting_iface_edd_new()
     Eet_Data_Descriptor *edd_elt, *edd_l;
 
     edd_elt = eet_data_descriptor_new("elt", sizeof(Boot_Process_Elt),
-            evas_list_next,
-            evas_list_append,
-            evas_list_data,
-            evas_list_free,
+            eina_list_next,
+            eina_list_append,
+            eina_list_data_get,
+            eina_list_free,
             evas_hash_foreach,
             evas_hash_add,
             evas_hash_free);
@@ -411,10 +411,10 @@ Eet_Data_Descriptor * waiting_iface_edd_new()
 
 
     edd_l = eet_data_descriptor_new("boot process interface list", sizeof(Boot_Process_List),
-            evas_list_next,
-            evas_list_append,
-            evas_list_data,
-            evas_list_free,
+            eina_list_next,
+            eina_list_append,
+            eina_list_data_get,
+            eina_list_free,
             evas_hash_foreach,
             evas_hash_add,
             evas_hash_free);
