@@ -244,25 +244,30 @@ ImagestateColorsAlloc(ImageState * is)
 static void
 ImagestateRealize(ImageState * is)
 {
-   if (is == NULL || is->im_file == NULL)
+   if (!is)
       return;
-
-   /* has bg pixmap */
-   if (is->im)
+   if (is->im)			/* Image is already loaded */
       return;
 
    /* not loaded, load and setup */
-   if (!is->real_file)
+   if (!is->real_file && is->im_file)
       is->real_file = ThemeFileFind(is->im_file);
    if (is->real_file)
       is->im = EImageLoad(is->real_file);
+
    if (!is->im)
      {
+#define S(s) ((s) ? (s) : "(null)")
 	Eprintf
 	   ("ImagestateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s)\n",
-	    is->im_file, is->real_file);
+	    S(is->im_file), S(is->real_file));
+	Efree(is->real_file);
+	is->real_file = NULL;
 	return;
      }
+
+   Efree(is->im_file);		/* We no longer need the file */
+   is->im_file = NULL;
 
    EImageCheckAlpha(is->im);
 
@@ -648,7 +653,7 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    if (!is)
       return NULL;
 
-   if (is->im == NULL && is->im_file)
+   if (is->im == NULL)
       ImagestateRealize(is);
 
    im = is->im;
@@ -1040,7 +1045,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	   ts = TextclassGetTextState(tc, state, active, sticky);
      }
 
-   if (is->im == NULL && is->im_file)
+   if (is->im == NULL)
       ImagestateRealize(is);
 
    /* Imlib2 will not render pixmaps with dimensions > 8192 */
@@ -1171,7 +1176,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
    if (!is)
       return;
 
-   if (is->im == NULL && is->im_file)
+   if (is->im == NULL)
       ImagestateRealize(is);
 
    /* Imlib2 will not render pixmaps with dimensions > 8192 */
