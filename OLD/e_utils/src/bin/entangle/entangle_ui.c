@@ -80,8 +80,8 @@ static void entangle_ui_button_bar_init(Evas_Object *container);
 static int entangle_ui_calc_container_position(Evas_Object *container, 
                                                         Evas_Coord y);
 static int entangle_ui_position_compare(Evas_Object *o, Evas_Coord cur_y);
-static int entangle_ui_list_find(Evas_List *list, Evas_Coord at_y);
-static int entangle_ui_list_find_rec(Evas_List *list, Evas_Coord at_y, 
+static int entangle_ui_list_find(Eina_List *list, Evas_Coord at_y);
+static int entangle_ui_list_find_rec(Eina_List *list, Evas_Coord at_y, 
                                                     int start, int end);
 
 static Evas_Object *entangle_ui_cmd_bar_button_get(Evas *evas, const char *label,  
@@ -939,23 +939,23 @@ entangle_ui_button_get(Evas *evas, const char *label, const char *name)
 static int
 entangle_ui_calc_container_position(Evas_Object *container, Evas_Coord at_y)
 {
-    Evas_List *list, *l;
+    Eina_List *list, *l;
     Evas_Object *o;
 
     list = esmart_container_elements_get(container);
-    if (evas_list_count(list) == 0) return 0;
+    if (eina_list_count(list) == 0) return 0;
 
     /* check the first element */
-    l = evas_list_nth_list(list, 0);
+    l = eina_list_nth_list(list, 0);
     o = l->data;
     if (entangle_ui_position_compare(o, at_y) < 0) 
         return 0;
 
     /* check the last element */
-    l = evas_list_last(list);
+    l = eina_list_last(list);
     o = l->data;
     if (entangle_ui_position_compare(o, at_y) > 0) 
-        return evas_list_count(list);
+        return eina_list_count(list);
 
     return entangle_ui_list_find(list, at_y);
 }
@@ -973,22 +973,22 @@ entangle_ui_position_compare(Evas_Object *o, Evas_Coord at_y)
 }
 
 static int
-entangle_ui_list_find(Evas_List *list, Evas_Coord at_y)
+entangle_ui_list_find(Eina_List *list, Evas_Coord at_y)
 {
-    return entangle_ui_list_find_rec(list, at_y, 0, evas_list_count(list));
+    return entangle_ui_list_find_rec(list, at_y, 0, eina_list_count(list));
 }
 
 static int
-entangle_ui_list_find_rec(Evas_List *list, Evas_Coord at_y, int start, int end)
+entangle_ui_list_find_rec(Eina_List *list, Evas_Coord at_y, int start, int end)
 {
-    Evas_List *l;
+    Eina_List *l;
     Evas_Object *o;
     int middle, position;
 
     if (start == end) return start;
 
     middle = start + ((end - start) >> 1);
-    l = evas_list_nth_list(list, middle);
+    l = eina_list_nth_list(list, middle);
     o = l->data;
 
     position = entangle_ui_position_compare(o, at_y);

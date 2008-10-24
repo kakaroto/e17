@@ -21,7 +21,7 @@ const int WIDTH = 700;
 const int HEIGHT = 500;
 const int container_height = 400;
 
-Evas_List * themes;
+Eina_List * themes;
 
 Evas_Object * container_outer;
 Evas_Object * container;
@@ -209,7 +209,7 @@ void get_theme_list() {
 			char * file = (char *) strdup(data);
 			Etheme_Object * o;
 			o = etheme_new(file);
-			themes = evas_list_append(themes, o);
+			themes = eina_list_append(themes, o);
 			free(file);
 		}
 	
@@ -328,13 +328,13 @@ int main(int argc, char **argv) {
 	ecore_main_loop_begin();
 
 	/* free ethemes */
-	int n = evas_list_count(themes);
+	int n = eina_list_count(themes);
 	for ( n -= 1; n>=0; n--) {
 		Etheme_Object * o;
-		o = evas_list_nth(themes, n);
+		o = eina_list_nth(themes, n);
 		etheme_free(o);
 	}
-	evas_list_free(themes);
+	eina_list_free(themes);
 
 	/* free canvas objects */
 	evas_object_del(container);
