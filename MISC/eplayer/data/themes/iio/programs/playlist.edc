@@ -10,7 +10,7 @@ program {
 				signal, "PLAYLIST_ITEM_SELECTED";
 				source, "";
 				action, STATE_SET "selected" 0.0;
-				transition, LINEAR, 0.2;
+				transition, LINEAR 0.2;
 				target, "background";
 			}
 
@@ -19,7 +19,7 @@ program {
 				signal, "PLAYLIST_ITEM_UNSELECTED";
 				source, "";
 				action, STATE_SET "default" 0.0;
-				transition, LINEAR, 0.2;
+				transition, LINEAR 0.2;
 				target, "background";
 			}
 

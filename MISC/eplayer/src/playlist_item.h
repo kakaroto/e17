@@ -32,7 +32,7 @@ typedef struct {
 } PlayListItem;
 
 PlayListItem *playlist_item_new(const char *file, Evas *evas,
-                                Evas_List *plugins,
+                                Eina_List *plugins,
                                 Evas_Object *container,
                                 const char *theme);
 void playlist_item_free(PlayListItem *pli);

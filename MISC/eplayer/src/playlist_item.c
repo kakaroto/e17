@@ -49,9 +49,9 @@ void playlist_item_free(PlayListItem *pli) {
 	free(pli);
 }
 
-static InputPlugin *find_plugin(const char *file, Evas_List *plugins) {
+static InputPlugin *find_plugin(const char *file, Eina_List *plugins) {
 	InputPlugin *ip;
-	Evas_List *l;
+	Eina_List *l;
 
 	assert(file);
 
@@ -76,7 +76,7 @@ void playlist_item_container_set(PlayListItem *pli,
 
 bool playlist_item_show(PlayListItem *pli) {
 	char len[32];
-	double w = 0, h = 0;
+	int w = 0, h = 0;
 	void *udata;
 
 	assert(pli);
@@ -141,7 +141,7 @@ bool playlist_item_show(PlayListItem *pli) {
  * @return The new PlayListItem object.
  */
 PlayListItem *playlist_item_new(const char *file, Evas *evas,
-                                Evas_List *plugins,
+                                Eina_List *plugins,
                                 Evas_Object *container,
                                 const char *theme) {
 	PlayListItem *pli;

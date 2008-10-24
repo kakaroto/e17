@@ -16,8 +16,8 @@
                                         }
                                         image {
                                                 normal, "border-scale.png";
+						border, 6 6 6 6;
                                         }
-                                        border, 6 6 6 6;
 
                                         fill {
                                                 smooth, 0;
@@ -124,8 +124,8 @@
 
                                         image {
                                                 normal, "lcd_area.png";
+						border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
 
                                         fill {
                                                 smooth, 0;
@@ -308,14 +308,13 @@
 
                                 rel2 {
                                         relative, 0.0 0.0;
-                                        offset, 316, 86;
+                                        offset, 316 86;
                                 }
 
                                 image {
                                         normal, "controls-back.png";
+					border, 5 5 5 5;
                                 }
-
-                                border, 5 5 5 5;
 
                                 fill {
                                         smooth, 0;
@@ -772,7 +771,7 @@
 
                                 rel1 {
                                         relative, 0.0 0.0;
-                                        offset, 282, 17;
+                                        offset, 282 17;
                                 }
                                 rel2 {
                                         relative, 0.0 0.0;
@@ -987,8 +986,8 @@
 
                                 image {
                                         normal, "lcd_area.png";
+					border, 5 5 5 5;
                                 }
-                                border, 5 5 5 5;
 
                                 fill {
                                         smooth, 0;

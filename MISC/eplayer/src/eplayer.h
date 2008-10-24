@@ -54,7 +54,7 @@ typedef struct _ePlayer {
 	bool playback_next;
 
 	OutputPlugin *output;
-	Evas_List *input_plugins; /* lists all available input plugins */
+	Eina_List *input_plugins; /* lists all available input plugins */
 
 	Config cfg;
 	Gui gui;

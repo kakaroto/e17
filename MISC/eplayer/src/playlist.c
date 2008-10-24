@@ -18,7 +18,7 @@
  * @param plugins
  * @return The newly created PlayList.
  */
-PlayList *playlist_new(Evas *evas, Evas_List *plugins,
+PlayList *playlist_new(Evas *evas, Eina_List *plugins,
                        const char *theme) {
 	PlayList *pl;
 
@@ -37,7 +37,7 @@ PlayList *playlist_new(Evas *evas, Evas_List *plugins,
 }
 
 void playlist_container_set(PlayList *pl, Evas_Object *container) {
-	Evas_List *l;
+	Eina_List *l;
 
 	assert(pl);
 
@@ -53,10 +53,10 @@ void playlist_container_set(PlayList *pl, Evas_Object *container) {
 void playlist_remove_all(PlayList *pl) {
 	if (!pl)
 		return;
-	
+
 	while (pl->items) {
 		playlist_item_free((PlayListItem *) pl->items->data);
-		pl->items = evas_list_remove(pl->items, pl->items->data);
+		pl->items = eina_list_remove(pl->items, pl->items->data);
 	}
 
 	pl->num = pl->duration = 0;
@@ -75,7 +75,7 @@ void playlist_remove_item(PlayList *pl, PlayListItem *pli) {
 	pl->num--;
 	pl->duration -= pli->duration;
 
-	pl->items = evas_list_remove(pl->items, pli);
+	pl->items = eina_list_remove(pl->items, pli);
 	playlist_item_free(pli);
 }
 
@@ -90,7 +90,7 @@ void playlist_current_item_set(PlayList *pl, PlayListItem *pli) {
 	if (!pli) /* move to the beginning */
 		pl->cur_item = pl->items;
 	else
-		pl->cur_item = evas_list_find_list(pl->items, pli);
+		pl->cur_item = eina_list_data_find_list(pl->items, pli);
 }
 
 bool playlist_current_item_has_next(PlayList *pl) {
@@ -138,27 +138,6 @@ bool playlist_current_item_prev(PlayList *pl) {
 }
 
 /**
- * Appends a list with PlayListItems to a PlayList.
- *
- * @param pl
- * @param list
- */
-static void playlist_append_list(PlayList *pl, Evas_List *list) {
-	if (!pl || !list)
-		return;
-	
-	if (!pl->items) {
-		pl->items = list;
-		pl->num = evas_list_count(list);
-	} else {
-		pl->items->last->next = list;
-		list->prev = pl->items->last;
-		pl->items->last = list->last;
-		pl->num += evas_list_count(list);
-	}
-}
-
-/**
  * Frees a PlayList object.
  *
  * @param pl The PlayList to free.
@@ -191,7 +170,7 @@ bool playlist_load_file(PlayList *pl, const char *file, bool append) {
 	if (!append)
 		playlist_remove_all(pl);
 
-	pl->items = evas_list_append(pl->items, pli);
+	pl->items = eina_list_append(pl->items, pli);
 
 	if (!append)
 		pl->cur_item = pl->items;
@@ -202,17 +181,17 @@ bool playlist_load_file(PlayList *pl, const char *file, bool append) {
 	return true;
 }
 
-static void finish_playlist(PlayList *pl, Evas_List *list, bool append) {
-	list = evas_list_reverse(list);
+static void finish_playlist(PlayList *pl, Eina_List *list, bool append) {
+	list = eina_list_reverse(list);
 	
-	if (append)
-		playlist_append_list(pl, list);
-	else {
+	if (append) {
+		pl->items = eina_list_merge(pl->items, list);
+	} else {
 		playlist_remove_all(pl);
 		pl->items = list;
 		pl->cur_item = pl->items;
-		pl->num = evas_list_count(list);
 	}
+	pl->num = eina_list_count(pl->items);
 }
 
 /**
@@ -257,7 +236,7 @@ bool playlist_load_dir(PlayList *pl, const char *path, bool append) {
  */
 bool playlist_load_m3u(PlayList *pl, const char *file, bool append) {
 	PlayListItem *pli = NULL;
-	Evas_List *tmp = NULL;
+	Eina_List *tmp = NULL;
 	FILE *fp;
 	char buf[PATH_MAX + 1], path[PATH_MAX + 1], dir[PATH_MAX + 1];
 	char *ptr;
@@ -282,7 +261,7 @@ bool playlist_load_m3u(PlayList *pl, const char *file, bool append) {
 
 		if ((pli = playlist_item_new(ptr, pl->evas, pl->plugins, pl->container,
 		                             pl->theme))) {
-			tmp = evas_list_prepend(tmp, pli);
+			tmp = eina_list_prepend(tmp, pli);
 			pl->num++;
 			pl->duration += pli->duration;
 		}

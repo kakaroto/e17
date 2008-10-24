@@ -22,9 +22,8 @@
 	
                         image {
                                 normal, "small_base.png";
+				border, 3 3 10 20;
 			}
-
-			border, 3 3 10 20;
 
 			fill {
 				smooth, 0;
@@ -497,8 +496,8 @@
 	       		}
 			image {
 		  		normal, "play_button.png";	
+				border, 1 1 1 1;
 			}
-			border, 1 1 1 1;
 
 			fill {
 				smooth, 0;
@@ -523,8 +522,8 @@
 	       		}
 			image {
 		  	normal, "play_button_hilited.png";	
-			}
 			border, 1 1 1 1;
+			}
 
 			fill {
 				smooth, 1;
@@ -549,8 +548,8 @@
 	       		}
 			image {
 		  		normal, "play_button_clicked.png";	
+				border, 1 1 1 1;
 			}
-			border, 1 1 1 1;
 
 			fill {
 				smooth, 0;

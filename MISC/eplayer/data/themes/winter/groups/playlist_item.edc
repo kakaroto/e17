@@ -1,7 +1,7 @@
     group {
         name, "playlist_item";
-	min, 50, 15;
-	max, 9999, 15;
+	min, 50 15;
+	max, 9999 15;
 	parts {
             part {
               name, "bg";
@@ -115,7 +115,7 @@
 		signal, "PLAYLIST_ITEM_SELECTED";
 		source, "";
 		action, STATE_SET "selected" 0.0;
-		transition, DECELERATE, 0.5;
+		transition, DECELERATE 0.5;
 		target, "title";
 		target, "length";
 	    } 
@@ -124,7 +124,7 @@
 		signal, "PLAYLIST_ITEM_UNSELECTED";
 		source, "";
 		action, STATE_SET "default" 0.0;
-		transition, DECELERATE, 0.5;
+		transition, DECELERATE 0.5;
 		target, "title";
 		target, "length";
 	    } 

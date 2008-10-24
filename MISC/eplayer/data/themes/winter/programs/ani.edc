@@ -64,7 +64,7 @@
         after, "ani"NUM".stop"; \
       } \
       program {  \
-        name, "ani"NUM".paused"; \
+        name, "ani"NUM".stopped"; \
         signal, "PLAYBACK_STATE_STOPPED";  \
         source, "*";  \
         after, "ani"NUM".stop"; \

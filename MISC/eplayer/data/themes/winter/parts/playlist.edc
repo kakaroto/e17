@@ -16,8 +16,8 @@
 		    }
 		    image {
 		        normal, "panel.png";
+			border, 3 3 0 0;
 		    }
-		    border, 3 3 0 0;
 		}
 	    } //part
 
@@ -72,7 +72,6 @@
 		clip_to, "playlistClip";
 		description {
 		    state, "default" 0.0;
-		    border, 0 0 0 0;
 		    rel1 {
 		      to, "playlistPanel";
 		      relative, 0 0;
@@ -85,6 +84,7 @@
 		    }
 		    image {
 		        normal, "shad.png";
+			border, 0 0 0 0;
 		    }
 		}
 	    } //part

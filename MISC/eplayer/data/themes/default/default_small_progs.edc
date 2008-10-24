@@ -6,7 +6,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "previous_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "previous_button";
                         }
 
@@ -15,11 +15,11 @@
                                 signal,     "mouse,up,1";
                                 source,     "previous_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, DECELERATE, 0.25;
+                                transition, DECELERATE 0.25;
                                 target,     "previous_button";
                         }
                         program {
-                                name,       "previous_click";
+                                name,       "previous_click_up";
                                 signal,     "mouse,up,1";
                                 source,     "previous_button";
                                 action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
@@ -31,7 +31,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "play_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "play_button";
                         }
 
@@ -40,11 +40,11 @@
                                 signal,     "mouse,up,1";
                                 source,     "play_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, DECELERATE, 0.25;
+                                transition, DECELERATE 0.25;
                                 target,     "play_button";
                         }
                         program {
-                                name,      "play_click";
+                                name,      "play_click_up";
                                 signal,    "mouse,up,1";
                                 source,    "play_button";
                                 action,    SIGNAL_EMIT "PLAY" "play_button";
@@ -56,7 +56,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "pause_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "pause_button";
                         }
 
@@ -65,11 +65,11 @@
                                 signal,     "mouse,up,1";
                                 source,     "pause_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, DECELERATE, 0.25;
+                                transition, DECELERATE 0.25;
                                 target,     "pause_button";
                         }
                         program {
-                                name,      "pause_click";
+                                name,      "pause_click_up";
                                 signal,    "mouse,up,1";
                                 source,    "pause_button";
                                 action,    SIGNAL_EMIT "PAUSE" "pause_button";
@@ -81,7 +81,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "next_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "next_button";
                         }
 
@@ -90,11 +90,11 @@
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, DECELERATE, 0.25;
+                                transition, DECELERATE 0.25;
                                 target,     "next_button";
                         }
                         program {
-                                name,       "next_click";
+                                name,       "next_click_up";
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
                                 action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
@@ -107,7 +107,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "quit_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "quit_button";
                         }
 
@@ -116,11 +116,11 @@
                                 signal,     "mouse,up,1";
                                 source,     "quit_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, DECELERATE, 0.25;
+                                transition, DECELERATE 0.25;
                                 target,     "quit_button";
                         }
                         program {
-                                name,       "quit_click";
+                                name,       "quit_click_up";
                                 signal,     "mouse,up,1";
                                 source,     "quit_button";
                                 action,     SIGNAL_EMIT "QUIT" "quit";
@@ -132,7 +132,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "vol_incr_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "vol_incr_button";
                         }
                         program {
@@ -140,7 +140,7 @@
                                 signal,     "mouse,up,1";
                                 source,     "vol_incr_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "vol_incr_button";
                         }
 
@@ -176,7 +176,7 @@
                                 signal,     "mouse,down,1";
                                 source,     "vol_decr_button";
                                 action,     STATE_SET "clicked" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "vol_decr_button";
                         }
                         program {
@@ -184,7 +184,7 @@
                                 signal,     "mouse,up,1";
                                 source,     "vol_decr_button";
                                 action,     STATE_SET "default" 0.0;
-                                transition, LINEAR, 0.0;
+                                transition, LINEAR 0.0;
                                 target,     "vol_decr_button";
                         }
                         program {
@@ -213,7 +213,7 @@
                                 name, "titlebar_dbl_click";
                                 signal, "mouse,down,1,double";
                                 source, "background";
-                                action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer";
+                                action, SIGNAL_EMIT "SWITCH_GROUP" "eplayer";
                         }
 
 /********* FIN *****************/

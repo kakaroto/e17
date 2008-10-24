@@ -11,7 +11,6 @@
 	  state, "default" 0.0;
 	  min, 110 32;
 	  max, 110 32;
-	  border, 10 2 2 2;
 	  rel1 {
 	    relative, 0 0;
 	    offset, 0 0;
@@ -22,6 +21,7 @@
 	  }
 	  image {
 	      normal, "small-main.png";
+	  border, 10 2 2 2;
 	  }
 	}
       } //part
@@ -54,7 +54,6 @@
 	  state, "default" 0.0;
 	  min, 0 30;
 	  max, 9999 30;
-	  border, 10 2 2 2;
 	  rel1 {
             to, "main";
 	    relative, 1 0;
@@ -67,6 +66,7 @@
 	  }
 	  image {
 	      normal, "small-panel.png";
+	  border, 10 2 2 2;
 	  }
 	}
       } //part
@@ -95,7 +95,6 @@
 	  state, "default" 0.0;
 	  min, 17 4;
 	  max, 9999 4;
-	  border, 3 3 2 2;
 	  rel1 {
             to, "main";
 	    relative, 0 0;
@@ -108,6 +107,7 @@
 	  }
 	  image {
 	      normal, "small-seeker-trough.png";
+	  border, 3 3 2 2;
 	  }
 	}
       } //part
@@ -119,7 +119,6 @@
 	  state, "default" 0.0;
 	  min, 0 2;
 	  max, 9999 2;
-	  border, 3 3 2 2;
 	  rel1 {
             to, "seekerTrough";
 	    relative, 0 0;
@@ -133,6 +132,7 @@
 	  }
 	  image {
 	      normal, "small-seeker-bar.png";
+	  border, 3 3 2 2;
 	  }
 	}
       } //part

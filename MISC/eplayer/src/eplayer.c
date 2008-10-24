@@ -20,7 +20,7 @@
 static InputPlugin *find_input_plugin (ePlayer *player,
                                        const char *name) {
 	InputPlugin *ip;
-	Evas_List *l;
+	Eina_List *l;
 
 	assert(player);
 	assert(name);
@@ -48,7 +48,7 @@ static int load_input_plugin (const char *file, lt_ptr udata) {
 		return 0;
 	}
 
-	player->input_plugins = evas_list_append(player->input_plugins, ip);
+	player->input_plugins = eina_list_append(player->input_plugins, ip);
 
 	return 0;
 }
@@ -62,7 +62,7 @@ static bool load_input_plugins(ePlayer *player) {
 	lt_dlsetsearchpath(path);
 	lt_dlforeachfile(NULL, load_input_plugin, player);
 
-	return (evas_list_count(player->input_plugins) > 0);
+	return (eina_list_count(player->input_plugins) > 0);
 }
 
 static void config_init(Config *cfg) {
@@ -108,7 +108,7 @@ static bool config_load(Config *cfg, const char *file) {
 }
 
 static void eplayer_free(ePlayer *player) {
-	Evas_List *l;
+	Eina_List *l;
 
 	if (!player)
 		return;
@@ -154,10 +154,8 @@ static ePlayer *eplayer_new() {
 	ePlayer *player;
 	char cfg_file[PATH_MAX + 1];
 
-	if (!(player = malloc(sizeof(ePlayer))))
+	if (!(player = calloc(1, sizeof(ePlayer))))
 		return NULL;
-
-	memset(player, 0, sizeof(ePlayer));
 
 	/* load config */
 	config_init(&player->cfg);
@@ -346,6 +344,8 @@ int main(int argc, const char **argv) {
 
 	lt_dlinit();
 
+	eina_init();
+
 	if (!(player = eplayer_new()))
 		return 1;
 
@@ -376,6 +376,8 @@ int main(int argc, const char **argv) {
 	eplayer_free(player);
 
 	lt_dlexit();
+
+	eina_shutdown();
 
 	return 0;
 }

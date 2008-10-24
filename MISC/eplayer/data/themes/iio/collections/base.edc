@@ -22,10 +22,8 @@
 	
                         image {
                                 normal, "base_layer.png";
-			}
-				
 				border, 6 6 6 6;
-				
+			}
 			fill {
 				smooth, 1;
 			}
@@ -200,8 +198,8 @@
 	       
 			image {
 		  		normal, "lcd_window.png";
+				border, 9 9 9 9;
 		  	}
-			border, 9 9 9 9;
 
 			fill {
 				smooth, 0;
@@ -235,8 +233,8 @@
 	       
 			image {
 		  		normal, "lcd_window.png";
+				border, 9 9 9 9;
 		  	}
-			border, 9 9 9 9;
 
 			fill {
 				smooth, 0;
@@ -560,8 +558,8 @@
 	       		}
 			image {
 		  		normal, "play_button.png";	
+				border, 1 1 1 1;
 			}
-			border, 1 1 1 1;
 
 			fill {
 				smooth, 0;
@@ -585,9 +583,9 @@
 		  			to, "cc_align";
 	       		}
 			image {
-		  	normal, "play_button_hilited.png";	
+					normal, "play_button_hilited.png";	
+					border, 1 1 1 1;
 			}
-			border, 1 1 1 1;
 
 			fill {
 				smooth, 1;
@@ -612,8 +610,8 @@
 	       		}
 			image {
 		  		normal, "play_button_clicked.png";	
+				border, 1 1 1 1;
 			}
-			border, 1 1 1 1;
 
 			fill {
 				smooth, 0;
@@ -1146,13 +1144,13 @@
 		rel1 {
 			relative, 0.0  0.5;
 		  	offset,   0    0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	       
 		rel2 {
 		  	relative, 1.0  0.5;
 		  	offset, 0 0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	      
 		image {
@@ -1213,13 +1211,13 @@
 			rel1 {
 		  		relative, 0.0  0.5;
 		  		offset,   0    0;
-				to, "layer_in" 1.0;
+				to, "layer_in";
 	       		}
 	       
 			rel2 {
 		  		relative, 1.0  0.5;
 		  		offset, 0 0;
-				to, "layer_in" 1.0;
+				to, "layer_in";
 	       		}
 	      
 		image {
@@ -1285,13 +1283,13 @@
 		rel1 {
 			relative, 0.0  0.5;
 		  	offset,   0    0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	       
 		rel2 {
 		  	relative, 1.0  0.5;
 		  	offset, 0 0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	      
 		image {
@@ -1310,13 +1308,13 @@
 		rel1 {
 			relative, 0.0  0.5;
 		  	offset,   0    0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	       
 		rel2 {
 		  	relative, 1.0  0.5;
 		  	offset, 0 0;
-			to, "layer_in" 0.0;
+			to, "layer_in";
 	       	}
 	      
 		image {

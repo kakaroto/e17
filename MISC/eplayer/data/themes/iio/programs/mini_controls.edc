@@ -6,7 +6,7 @@
 			signal,     		"mouse,in"; 
 			source,     		"sw_base";
             		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"sw_base";
 	}
 
@@ -15,7 +15,7 @@
 			signal,     		"mouse,out"; 
 			source,     		"sw_base";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"sw_base";
 	}
 
@@ -24,7 +24,7 @@
 			signal,     		"mouse,down,1"; 
 			source,     		"sw_base";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"sw_base";
 	}
 
@@ -33,7 +33,7 @@
 			signal,     		"mouse,down"; 
 			source,     		"sw_base";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"sw_base";
 	}
 
@@ -41,7 +41,7 @@
 			name, 			"switch_mode_2";
 			signal, 			"mouse,down,1";
 			source, 			"sw_base";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "eplayer";
+			action, 			SIGNAL_EMIT "SWITCH_GROUP" "eplayer";
 	}
 
 
@@ -49,7 +49,7 @@
 			name, 			"_titlebar_click";
 			signal, 			"mouse,clicked,1";
 			source, 			"small_base";
-			action, 			SIGNAL_EMIT "RAISE", "small_base";
+			action, 			SIGNAL_EMIT "RAISE" "small_base";
 	}
 
 /* play_button */
@@ -59,7 +59,7 @@
 			signal,			"mouse,in";
 			source,			"_play_button";
             		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_play_button";
 	}
 
@@ -68,7 +68,7 @@
 			signal,			"mouse,out";
 			source,			"_play_button";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_play_button";
 	}
 	
@@ -77,7 +77,7 @@
 			signal,			"mouse,down,1";
 			source,			"_play_button";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_play_button";
 	}
 	
@@ -86,12 +86,12 @@
 			signal,			"mouse,down";
 			source,			"_play_button";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_play_button";
 	}
 	
 	program {
-			name,			"_play_click";
+			name,			"_play_click_up";
 			signal,			"mouse,down,1";
 			source,			"_play_button";
 			action, 			SIGNAL_EMIT "PLAY" "play_button";
@@ -104,7 +104,7 @@
             		signal,     		"mouse,in";
             		source,     		"_prev_button";
             		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_prev_button";
          }
 
@@ -113,7 +113,7 @@
             		signal,     		"mouse,out";
             		source,     		"_prev_button";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_prev_button";
          }
 
@@ -122,7 +122,7 @@
             		signal,     		"mouse,down,1";
             		source,     		"_prev_button";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_prev_button";
          }
 
@@ -131,7 +131,7 @@
             		signal,     		"mouse,down";
             		source,     		"_prev_button";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_prev_button";
          }
 
@@ -149,7 +149,7 @@
 			signal,			"mouse,in";
 			source,			"_next_button";
 			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_next_button";
 	}
 
@@ -158,7 +158,7 @@
 			signal,			"mouse,out";
 			source,			"_next_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_next_button";
 	}
 
@@ -167,7 +167,7 @@
 			signal,			"mouse,down,1";
 			source,			"_next_button";
 			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_next_button";
 	}
 
@@ -176,12 +176,12 @@
 			signal,			"mouse,down";
 			source,			"_next_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_next_button";
 	}
 	
 	program {
-			name,			"_next_click";
+			name,			"_next_click_up";
 			signal,			"mouse,down,1";
 			source,			"_next_button";
 			action, 			SIGNAL_EMIT "PLAY_NEXT" "next_button";
@@ -194,7 +194,7 @@
 			signal,			"mouse,in";
 			source,			"_pause_button";
 			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_pause_button";
 	}
 
@@ -203,7 +203,7 @@
 			signal,			"mouse,out";
 			source,			"_pause_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_pause_button";
 	}
 
@@ -212,7 +212,7 @@
 			signal,			"mouse,down,1";
 			source,			"_pause_button";
 			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_pause_button";
 	}
 
@@ -221,12 +221,12 @@
 			signal,			"mouse,down";
 			source,			"_pause_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_pause_button";
 	}
 
 	program {
-			name,			"_pause_click";
+			name,			"_pause_click_up";
 			signal,			"mouse,down,1";
 			source,			"_pause_button";
 			action, 			SIGNAL_EMIT "PAUSE" "pause_button";
@@ -239,7 +239,7 @@
 			signal,			"mouse,in";
 			source,			"_stop_button";
 			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_stop_button";
 	} 
 	
@@ -248,7 +248,7 @@
 			signal,			"mouse,out";
 			source,			"_stop_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_stop_button";
 	}
 	
@@ -257,7 +257,7 @@
 			signal,			"mouse,down,1";
 			source,			"_stop_button";
 			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_stop_button";
 	}
  
@@ -266,12 +266,12 @@
 			signal,			"mouse,down";
 			source,			"_stop_button";
 			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_stop_button";
 	}
  
 	program {
-			name,			"_stop_click";
+			name,			"_stop_click_up";
 			signal,			"mouse,down,1";
 			source,			"_stop_button";
 			action, 			SIGNAL_EMIT "STOP" "stop_button";
@@ -311,7 +311,7 @@
 	    		signal,     		"mouse,click,1";
 	    		source,     		"play_button";
 	    		action,     		STATE_SET "default" 0.0;
-	    		transition, 		DECELERATE, 5.0;
+	    		transition, 		DECELERATE 5.0;
 	    		target,     		"count";
 	    		after,      			"mode_animation"; 
 	}
@@ -332,7 +332,7 @@
 			signal,     		"mouse,in"; 
 			source,     		"_quit";
             		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_quit";
 	}
 
@@ -341,7 +341,7 @@
 			signal,     		"mouse,out"; 
 			source,     		"_quit";
             		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
+            		transition, 		LINEAR 0.1;
             		target,     		"_quit";
 	}
 
@@ -350,7 +350,7 @@
 			signal,     		"mouse,down,1"; 
 			source,     		"_quit";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_quit";
 	}
 
@@ -359,7 +359,7 @@
 			signal,     		"mouse,down"; 
 			source,     		"_quit";
             		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
+            		transition, 		LINEAR 1.0;
             		target,     		"_quit";
 	}
 

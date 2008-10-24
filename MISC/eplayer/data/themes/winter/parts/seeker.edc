@@ -18,8 +18,8 @@
 	  }
 	  image {
 	    normal, "seeker_trough.png";
+	    border, 5 5 1 1;
 	  }
-	  border, 5 5 1 1;
 	}
       }
 
@@ -43,8 +43,8 @@
 	  }
 	  image {
 	    normal, "seeker_bar.png";
-	  }
 	  border, 5 5 1 1;
+	  }
 	}
       }
 
@@ -72,7 +72,6 @@
 	    relative, 1 1;
 	    offset,  -1 -1;
 	  }
-	  border, 5 5 1 1;
 	}
       }
 

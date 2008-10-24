@@ -11,16 +11,16 @@
 typedef struct {
 	int num; /* number of entries */
 	int duration;
-	Evas_List *items;
-	Evas_List *cur_item;
+	Eina_List *items;
+	Eina_List *cur_item;
 
-	Evas_List *plugins; /* lists all available plugins */
+	Eina_List *plugins; /* lists all available plugins */
 	Evas *evas;
 	Evas_Object *container;
 	const char *theme;
 } PlayList;
 
-PlayList *playlist_new(Evas *evas, Evas_List *plugins,
+PlayList *playlist_new(Evas *evas, Eina_List *plugins,
                        const char *theme);
 void playlist_free(PlayList *pl);
 

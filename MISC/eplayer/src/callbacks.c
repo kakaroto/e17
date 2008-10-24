@@ -277,8 +277,8 @@ EDJE_CB(playlist_item_remove) {
 }
 
 EDJE_CB(playlist_item_selected) {
-	Evas_List *items = esmart_container_elements_get(player->gui.playlist);
-	Evas_List *l;
+	Eina_List *items = esmart_container_elements_get(player->gui.playlist);
+	Eina_List *l;
 
 	for (l = items; l; l = l->next)
 		if (l->data != obj)
@@ -542,7 +542,7 @@ EDJE_CB(playlist_add) {
 	ewl_container_child_append(EWL_CONTAINER(fd_win), vbox);
 	ewl_widget_show(vbox);
 
-	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+/* 	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN); */
 
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 	                    cb_file_dialog_value_changed, player);

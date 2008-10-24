@@ -48,22 +48,16 @@ AC_DEFINE_UNQUOTED([DEBUG_LEVEL], $DEBUG_LVL, [
 	Define to 999 if you want much debugging output
 ])
 
-AC_PATH_GENERIC(ecore, , ,
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+PKG_PROG_PKG_CONFIG
 
-AC_PATH_GENERIC(evas, , ,
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-
-AC_PATH_GENERIC(edje, , ,
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-
-AC_PATH_GENERIC(esmart, , ,
-	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
+PKG_CHECK_MODULES(EDB, [edb])
+PKG_CHECK_MODULES(ECORE, [ecore])
+PKG_CHECK_MODULES(EVAS, [evas])
+PKG_CHECK_MODULES(EDJE, [edje])
+PKG_CHECK_MODULES(ESMART, [esmart])
+PKG_CHECK_MODULES(EWL, [ewl])
 
 ESMART_LIBS="-lesmart_draggies -lesmart_container"
-
-AC_PATH_GENERIC(ewl, , ,
-	AC_MSG_ERROR(Cannot find ewl: Is ewl-config in path?))
 
 dnl Check for libltdl
 tmp=$LIBS

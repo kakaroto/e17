@@ -77,7 +77,7 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME;			\
       }					\
       program {				\
@@ -90,20 +90,16 @@
         name, NAME"-down2";		\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "down" 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
         name, NAME"-up";		\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "over" 0.0;	\
 	target, NAME;			\
       }					\
-
-
 
 
 #define BUTTON2(NAME, IMG, IMG2, IMG3, W, H, REL1_TO, REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF) \
@@ -181,7 +177,6 @@
         signal, "mouse,in";		\
         source, NAME;			\
         action, STATE_SET "over" 0.0;	\
-        transition, LINEAR, 0.0;	\
         target, NAME;			\
       }					\
       program {				\
@@ -189,7 +184,6 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, LINEAR, 0.0;	\
         target, NAME;			\
       }					\
       program {				\
@@ -202,16 +196,14 @@
         name, P4;			\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "down" 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
         name, P5;			\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "over" 0.0;	\
 	target, NAME;			\
       }					\
 
@@ -296,7 +288,7 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME;			\
       }					\
       program {				\
@@ -309,8 +301,7 @@
         name, NAME"-down2";		\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "down" 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
@@ -323,8 +314,7 @@
         name, NAME"-up2";		\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
-        transition, LINEAR, 0.0;	\
+	action, STATE_SET "over" 0.0;	\
 	target, NAME;			\
       }					\
 
@@ -508,7 +498,7 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME;			\
       }					\
       program {				\
@@ -522,7 +512,7 @@
 	signal, "mouse,down,1";		\
 	source, NAME;			\
 	action, STATE_SET "down" 0.0	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
@@ -530,7 +520,7 @@
 	signal, "mouse,up,1";		\
 	source, NAME;			\
 	action, STATE_SET "over" 0.0	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
@@ -546,7 +536,7 @@
         signal, "mouse,out";		\
         source, NAME2;			\
         action, STATE_SET "toggled" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME2;			\
       }					\
       program {				\
@@ -560,7 +550,7 @@
 	signal, "mouse,down,1";		\
 	source, NAME2;			\
 	action, STATE_SET "down" 0.0	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME2;			\
       }					\
       program {				\
@@ -568,7 +558,7 @@
 	signal, "mouse,up,1";		\
 	source, NAME2;			\
 	action, STATE_SET "over" 0.0	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME2;			\
       }					\
       program {				\
