@@ -40,11 +40,12 @@ struct _imagestate {
    char                got_colors;
    char                unloadable;
    char                transparent;
+   char                pixmapfillstyle;
+   char                bevelstyle;
+   char                rotate;
    EImage             *im;
    EImageBorder       *border;
-   int                 pixmapfillstyle;
    EColor              bg, hi, lo, hihi, lolo;
-   int                 bevelstyle;
 };
 
 typedef struct {
@@ -253,8 +254,11 @@ ImagestateRealize(ImageState * is)
    if (!is->real_file && is->im_file)
       is->real_file = ThemeFileFind(is->im_file);
    if (is->real_file)
-      is->im = EImageLoad(is->real_file);
-
+     {
+	is->im = EImageLoad(is->real_file);
+	if (is->im && is->rotate)
+	   EImageOrientate(is->im, is->rotate);
+     }
    if (!is->im)
      {
 #define S(s) ((s) ? (s) : "(null)")
@@ -470,6 +474,9 @@ ImageclassConfigLoad(FILE * fs)
 	     break;
 	  case ICLASS_TRANSPARENT:
 	     ICToRead->transparent = strtoul(s2, NULL, 0);
+	     break;
+	  case ICLASS_ROTATE:
+	     ICToRead->rotate = strtoul(s2, NULL, 0);
 	     break;
 	  case CONFIG_INHERIT:
 	     {
