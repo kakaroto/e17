@@ -384,31 +384,31 @@ SV * newSVSizePtr(Etk_Size *size) {
 	return newRV_noinc((SV*)hv);
 }
 
-Evas_List * SvEvasList(SV *sv) {
+Eina_List * SvEvasList(SV *sv) {
 
 	AV * av;
-	Evas_List * list;
+	Eina_List * list;
 	int i;
 	
 	if (!SvROK(sv)) {
-		printf("cannot convert to Evas_List. SV is not a reference\n");
+		printf("cannot convert to Eina_List. SV is not a reference\n");
 		return NULL;
 	}
 
 	av = (AV*)SvRV(sv);
 	list = NULL;
 	for (i=0; i<=av_len(av); i++) 
-		list = evas_list_append(list, *av_fetch(av, i, 0));
+		list = eina_list_append(list, *av_fetch(av, i, 0));
 
 	return list;
 
 }
 
-SV * newSVEvasList(Evas_List *list) {
+SV * newSVEvasList(Eina_List *list) {
 
 	AV * av;
 	SV * ret;
-	Evas_List * l;
+	Eina_List * l;
 
 	av = newAV();
 	for (l = list; l; l = l->next) 
@@ -418,11 +418,11 @@ SV * newSVEvasList(Evas_List *list) {
 
 }
 
-SV * newSVCharEvasList(Evas_List *list) {
+SV * newSVCharEvasList(Eina_List *list) {
 
 	AV * av;
 	SV * ret;
-	Evas_List * l;
+	Eina_List * l;
 
 	av = newAV();
 	for (l = list; l; l = l->next) 

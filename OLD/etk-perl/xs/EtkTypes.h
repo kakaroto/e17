@@ -33,9 +33,9 @@ Etk_Geometry *		SvGeometryPtr(SV * geo);
 SV *			newSVSizePtr(Etk_Size * size);
 Etk_Size *		SvSizePtr(SV * size);
 
-Evas_List *		SvEvasList(SV *sv);
-SV *			newSVEvasList(Evas_List *list);
-SV *			newSVCharEvasList(Evas_List *list);
+Eina_List *		SvEvasList(SV *sv);
+SV *			newSVEvasList(Eina_List *list);
+SV *			newSVCharEvasList(Eina_List *list);
 
 SV *			newSVEventKeyUp(Etk_Event_Key_Up *ev);
 SV *			newSVEventKeyDown(Etk_Event_Key_Down *ev);
