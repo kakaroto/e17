@@ -46,12 +46,12 @@ typedef enum {
 	mailbox_property_set (mb, "server", NULL);
 
 static EmbracePlugin *plugin = NULL;
-static Evas_List *mailboxes = NULL;
+static Eina_List *mailboxes = NULL;
 static Ecore_Event_Handler *ev_hdl[3];
 
 static MailBox *find_mailbox (Ecore_Con_Server *server)
 {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = mailboxes; l; l = l->next) {
 		MailBox *current = l->data;
@@ -219,7 +219,7 @@ static bool pop3_add_mailbox (MailBox *mb)
 
 	mailbox_property_set (mb, "timer", timer);
 
-	mailboxes = evas_list_append (mailboxes, mb);
+	mailboxes = eina_list_append (mailboxes, mb);
 
 	return true;
 }
@@ -237,7 +237,7 @@ static bool pop3_remove_mailbox (MailBox *mb)
 	free (mailbox_property_get (mb, "user"));
 	free (mailbox_property_get (mb, "pass"));
 
-	mailboxes = evas_list_remove (mailboxes, mb);
+	mailboxes = eina_list_remove (mailboxes, mb);
 
 	return true;
 }

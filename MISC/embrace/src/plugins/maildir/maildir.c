@@ -46,9 +46,9 @@ typedef struct {
 	bool is_unseen;
 } NotifyData;
 
-static Evas_List *find_notify_data (MailBox *mb, int signal);
+static Eina_List *find_notify_data (MailBox *mb, int signal);
 
-static Evas_List *notify_data = NULL;
+static Eina_List *notify_data = NULL;
 #endif
 
 static int get_files (char *path)
@@ -115,7 +115,7 @@ static int on_notify (void *udata, int type, void *event)
 	Ecore_Event_Signal_Realtime *ev = event;
 	NotifyData *data = NULL;
 	char *path;
-	Evas_List *l;
+	Eina_List *l;
 	int num;
 
 	/* find the set we need to work with */
@@ -170,7 +170,7 @@ static bool monitor_dir (MailBox *mb, const char *path, bool is_unseen)
 	data->is_unseen = is_unseen;
 	data->mailbox = mb;
 
-	notify_data = evas_list_append (notify_data, data);
+	notify_data = eina_list_append (notify_data, data);
 
 	/* tell the kernel what events we are interested in */
 	fcntl (fd, F_SETSIG, data->signal);
@@ -220,10 +220,10 @@ static bool maildir_add_mailbox (MailBox *mb)
 }
 
 #ifdef USE_DNOTIFY
-static Evas_List *find_notify_data (MailBox *mb, int signal)
+static Eina_List *find_notify_data (MailBox *mb, int signal)
 {
 	NotifyData *data;
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = notify_data; l; l = l->next) {
 		data = l->data;
@@ -240,7 +240,7 @@ static bool maildir_remove_mailbox (MailBox *mb)
 {
 #ifdef USE_DNOTIFY
 	NotifyData *data;
-	Evas_List *l;
+	Eina_List *l;
 #else
 	Ecore_Timer *timer;
 #endif
@@ -258,7 +258,7 @@ static bool maildir_remove_mailbox (MailBox *mb)
 		close (data->fd);
 		free (data);
 
-		notify_data = evas_list_remove_list (notify_data, l);
+		notify_data = eina_list_remove_list (notify_data, l);
 	}
 #else
 	if ((timer = mailbox_property_get (mb, "timer")))

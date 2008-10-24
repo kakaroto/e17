@@ -49,8 +49,8 @@ typedef struct {
 } Gui;
 
 typedef struct {
-	Evas_List *mailboxes;
-	Evas_List *plugins;
+	Eina_List *mailboxes;
+	Eina_List *plugins;
 
 	Ecore_Event_Handler *evt_hup;
 

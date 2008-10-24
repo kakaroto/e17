@@ -46,8 +46,8 @@ typedef struct {
 	char *user;
 	char *pass;
 
-	Evas_List *clients;
-	Evas_List *current;
+	Eina_List *clients;
+	Eina_List *current;
 
 	Ecore_Timer *timer;
 	double interval;
@@ -69,12 +69,12 @@ typedef struct {
 	server->server = NULL;
 
 static EmbracePlugin *plugin = NULL;
-static Evas_List *servers = NULL;
+static Eina_List *servers = NULL;
 static Ecore_Event_Handler *ev_hdl[3];
 
 static ImapServer *find_server (Ecore_Con_Server *server)
 {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = servers; l; l = l->next) {
 		ImapServer *current = l->data;
@@ -88,7 +88,7 @@ static ImapServer *find_server (Ecore_Con_Server *server)
 
 static ImapServer *find_server_by_mailbox (MailBox *mb)
 {
-	Evas_List *l;
+	Eina_List *l;
 	char *host;
 	int port;
 	int use_ssl;
@@ -320,7 +320,7 @@ static bool destroy_server (ImapServer *server)
 	if (server->timer)
 		ecore_timer_del (server->timer);
 
-	servers = evas_list_remove (servers, server);
+	servers = eina_list_remove (servers, server);
 	free (server);
 	
 	return true;
@@ -340,7 +340,7 @@ static bool imap_add_server (MailBox *mb)
 		if (!server)
 			return false;
 
-		servers = evas_list_append (servers, server);
+		servers = eina_list_append (servers, server);
 	} else {
 		interval = MAX (mailbox_poll_interval_get (mb), MIN_INTERVAL);
 		if (interval < server->interval) {
@@ -356,7 +356,7 @@ static bool imap_add_server (MailBox *mb)
 		}
 	}
 
-	server->clients = evas_list_append (server->clients, mb);
+	server->clients = eina_list_append (server->clients, mb);
 	mailbox_property_set (mb, "server", server);
 
 	return true;
@@ -368,7 +368,7 @@ static bool imap_remove_server (ImapServer *server, MailBox *mb)
 	assert (mb);
 
 	/* FIXME: reschedule server timer */
-	server->clients = evas_list_remove (server->clients, mb);
+	server->clients = eina_list_remove (server->clients, mb);
 	if (!server->clients)
 		destroy_server (server);
 

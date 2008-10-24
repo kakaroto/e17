@@ -113,7 +113,7 @@ char *embrace_strstrip (char *str)
 static EmbracePlugin *find_plugin (Embrace *e, const char *name)
 {
 	EmbracePlugin *ep;
-	Evas_List *l;
+	Eina_List *l;
 
 	assert (e);
 	assert (name);
@@ -142,7 +142,7 @@ static void load_plugin (Embrace *e, const char *file)
 	if (find_plugin (e, ep->name))
 		embrace_plugin_free (ep);
 	else
-		e->plugins = evas_list_append (e->plugins, ep);
+		e->plugins = eina_list_append (e->plugins, ep);
 }
 
 static void load_plugins (Embrace *e, const char *path)
@@ -187,7 +187,7 @@ static bool embrace_load_plugins (Embrace *e)
 	load_plugins (e, path);
 	load_plugins (e, PLUGIN_DIR);
 
-	return (evas_list_count (e->plugins) > 0);
+	return (eina_list_count (e->plugins) > 0);
 }
 
 static MailBox *load_mailbox (Embrace *e, E_DB_File *edb, int i)
@@ -273,7 +273,7 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 			edje = mailbox_edje_get (mailbox);
 			esmart_container_element_append (e->gui.container, edje);
 
-			e->mailboxes = evas_list_append (e->mailboxes, mailbox);
+			e->mailboxes = eina_list_append (e->mailboxes, mailbox);
 
 			h += mailbox_height_get (mailbox);
 			w = mailbox_width_get (mailbox);
@@ -285,7 +285,7 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 		ecore_evas_size_min_set (e->gui.ee, w, h);
 	}
 
-	return evas_list_count (e->mailboxes);
+	return eina_list_count (e->mailboxes);
 }
 
 /**
@@ -650,7 +650,7 @@ static void free_mailboxes (Embrace *e)
 	while (e->mailboxes) {
 		mb = e->mailboxes->data;
 
-		e->mailboxes = evas_list_remove (e->mailboxes, mb);
+		e->mailboxes = eina_list_remove (e->mailboxes, mb);
 		mailbox_free (mb);
 	}
 }
@@ -664,7 +664,7 @@ static void free_plugins (Embrace *e)
 	while (e->plugins) {
 		ep = e->plugins->data;
 
-		e->plugins = evas_list_remove (e->plugins, ep);
+		e->plugins = eina_list_remove (e->plugins, ep);
 		embrace_plugin_free (ep);
 	}
 }
@@ -800,7 +800,7 @@ bool embrace_init (Embrace *e)
 static int check_mailboxes (void *udata)
 {
 	Embrace *e = udata;
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = e->mailboxes; l; l = l->next)
 		mailbox_check (l->data);
