@@ -1074,38 +1074,9 @@ BackgroundsConfigLoad(FILE * fs)
 	switch (ii1)
 	  {
 	  case CONFIG_CLOSE:
-	     if (!ignore)
-	       {
-		  if ((!bg) && (name))
-		    {
-		       char               *tmp;
-		       char                ok = 1;
-
-		       /* check first if we can actually find the files */
-		       if (bg1)
-			 {
-			    tmp = ThemeFileFind(bg1);
-			    if (!tmp)
-			       ok = 0;
-			    else
-			       Efree(tmp);
-			 }
-		       if (bg2)
-			 {
-			    tmp = ThemeFileFind(bg2);
-			    if (!tmp)
-			       ok = 0;
-			    else
-			       Efree(tmp);
-			 }
-		       if (ok)
-			 {
-			    bg = BackgroundCreate(name, &color, bg1, i1, i2, i3,
-						  i4, i5, i6, bg2, j1, j2, j3,
-						  j4, j5);
-			 }
-		    }
-	       }
+	     if (!ignore && !bg && name)
+		bg = BackgroundCreate(name, &color, bg1, i1, i2, i3, i4, i5,
+				      i6, bg2, j1, j2, j3, j4, j5);
 	     goto done;
 
 	  case CONFIG_COLORMOD:
@@ -1127,18 +1098,16 @@ BackgroundsConfigLoad(FILE * fs)
 	     break;
 
 	  case BG_DESKNUM:
+	     if (!ignore && !bg && name)
+		bg = BackgroundCreate(name, &color, bg1, i1, i2, i3, i4, i5,
+				      i6, bg2, j1, j2, j3, j4, j5);
+	     if (!bg)
+		break;
 	     desk = atoi(s2);
 	     if (desk >= N_BG_ASSIGNED)
 		break;
 	     if (!bg_assigned[desk] || Conf.backgrounds.user)
 	       {
-		  if (!ignore)
-		    {
-		       if (!bg)
-			  bg = BackgroundCreate(name, &color, bg1, i1, i2,
-						i3, i4, i5, i6, bg2, j1,
-						j2, j3, j4, j5);
-		    }
 		  bg_assigned[desk] = bg;
 		  bg->referenced = 1;
 	       }
