@@ -125,31 +125,31 @@ enum {
  *
  * caller frees return value.
  */
-Evas_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev )
+Eina_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev )
 {
 	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
     
-    return gevas_obj_collection_to_evas_list( ev->col );
+    return gevas_obj_collection_to_eina_list( ev->col );
 }
 
 /*
  * Get all the selectables that we have selected. caller frees list.
  */
-Evas_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev )
+Eina_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev )
 {
-    Evas_List* ret = 0;
-    Evas_List* tl = 0;
+    Eina_List* ret = 0;
+    Eina_List* tl = 0;
     GtkgEvasEvHSelectable* s = 0;
     
 	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
 
-	for(tl = gevas_obj_collection_to_evas_list( ev->col ); tl; tl = tl->next)
+	for(tl = gevas_obj_collection_to_eina_list( ev->col ); tl; tl = tl->next)
     {
         if( s = gevas_selectable_get_backref( ev->gevas , tl->data) )
         {
-			ret = evas_list_append( ret, s );
+			ret = eina_list_append( ret, s );
         }
     }
 
@@ -165,7 +165,7 @@ Evas_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSele
 void
 gevasevh_group_selector_flushsel( GtkgEvasEvHGroupSelector* ev )
 {
-	Evas_List* tl = 0;
+	Eina_List* tl = 0;
     GtkgEvasEvHSelectable* s=0;
     
 	g_return_if_fail(ev != NULL);
@@ -634,7 +634,7 @@ gevasev_group_selector_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b
                                 int _x, int _y)
 {
 	Evas_Coord x=0,y=0,w=0,h=0;
-	Evas_List* list;
+	Eina_List* list;
 	void* data;
 	GtkgEvasEvHGroupSelector *ev;
 

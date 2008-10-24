@@ -74,7 +74,7 @@ struct _GtkgEvasEvHGroupSelector
 	gint	tracking_iy;
 	GtkgEvasObj* rect;
 
-	Evas_List* selected_objs;		/* the current selection*/
+	Eina_List* selected_objs;		/* the current selection*/
 	GtkgEvasEvHSelectable* selected_objs_lastadded;	/* Last object added to selected_objs;*/
 
     
@@ -110,8 +110,8 @@ GtkObject *gevasevh_group_selector_new(void);
 
 /*public*/
     void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj );
-    Evas_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
-    Evas_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev );
+    Eina_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
+    Eina_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev );
     void gevasevh_group_selector_set_drag_targets(GtkgEvasEvHGroupSelector* ev, GtkTargetList *dt );
 
 /*package*/

@@ -172,26 +172,26 @@ GtkObject* gevas_get_object_under_mouse(GtkgEvas * ev)
 
 GtkObject* gevas_object_at_position(GtkgEvas * ev, double x, double y)
 {
-    Evas_List* l = evas_objects_at_xy_get(EVAS(ev), x, y, 0, 0 );
-    return l ? EVASO_TO_GTKO( evas_list_nth(l, 0 )) : 0;
+    Eina_List* l = evas_objects_at_xy_get(EVAS(ev), x, y, 0, 0 );
+    return l ? EVASO_TO_GTKO( eina_list_nth(l, 0 )) : 0;
 }
 
-Evas_List* gevas_objects_at_xy_get(GtkgEvas * ev, double x, double y)
+Eina_List* gevas_objects_at_xy_get(GtkgEvas * ev, double x, double y)
 {
-    Evas_List* l = evas_objects_at_xy_get(EVAS(ev), x, y, 0, 0 );
-    Evas_List* ret = 0;
+    Eina_List* l = evas_objects_at_xy_get(EVAS(ev), x, y, 0, 0 );
+    Eina_List* ret = 0;
 
-    Evas_List* iter = l;
+    Eina_List* iter = l;
     while( iter )
     {
         GtkObject* go = EVASO_TO_GTKO( iter->data );
 
-        if( go ) ret = evas_list_append( ret, go );
+        if( go ) ret = eina_list_append( ret, go );
         
-        iter = evas_list_next( iter );
+        iter = eina_list_next( iter );
     }
     
-    evas_list_free(l);
+    eina_list_free(l);
     return ret;
 }
 

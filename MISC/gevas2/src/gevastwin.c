@@ -180,7 +180,7 @@ static void gevastwin_destroy(GtkObject * object)
 
     if( ev->extra_objects )
     {
-        Evas_List* li = gevas_obj_collection_to_evas_list( ev->extra_objects );
+        Eina_List* li = gevas_obj_collection_to_eina_list( ev->extra_objects );
         for( ; li; li = li->next)
         {
             if(li->data)
@@ -299,7 +299,7 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 /*             printf("gevastwin_move_xxx(3) extra object. main:%lp aux:%lp obj:%lp\n", */
 /*                    ev->mainobj, ev->auxobj, object ); */
             
-            Evas_List* li = gevas_obj_collection_to_evas_list( ev->extra_objects );
+            Eina_List* li = gevas_obj_collection_to_eina_list( ev->extra_objects );
             for( ; li; li = li->next)
                 if(li->data)
                 {
@@ -417,7 +417,7 @@ void gevastwin_add_extra_object( GtkgEvasTwin* ev, GtkgEvasObj* gobj )
 
 void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v )
 {
-    Evas_List* li = gevas_obj_collection_to_evas_list( v );
+    Eina_List* li = gevas_obj_collection_to_eina_list( v );
     for( ; li; li = li->next)
     {
         if(li->data)
@@ -457,7 +457,7 @@ static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 /*                 gtk_signal_connect( GTK_OBJECT(sprite->col), "add", */
 /*                                     GTK_SIGNAL_FUNC(sprite_item_add), ev ); */
 
-/*                 Evas_List* li=0; */
+/*                 Eina_List* li=0; */
 /*                 for( li=sprite->col->selected_objs; li; li = li->next) */
 /*                 { */
 /*                     if(li->data) */

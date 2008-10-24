@@ -6,14 +6,14 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 LIBS_EVAS     = @evas_libs@
-LIBS_EXTRA    = @edb_libs@ @EDJE_LIBS@
+LIBS_EXTRA    = @edb_libs@ @EDJE_LIBS@ @EVAS_LIBS@
 
 
-CFLAGS_EVAS   = @evas_cflags@ @EDJE_CFLAGS@
+CFLAGS_EVAS   = @evas_cflags@ @EDJE_CFLAGS@ @EVAS_CFLAGS@
 CFLAGS_EXTRA  = -I$(top_srcdir) @edb_cflags@
 
 LIBS_ALL      = $(LIBS_EVAS) $(LIBS_EXTRA)
-CFLGAS_ALL    = $(CFLAGS_EVAS) $(CFLAGS_EXTRA)
+CFLAGS_ALL    = $(CFLAGS_EVAS) $(CFLAGS_EXTRA)
 
 INCLUDES	     = $(CFLAGS_ALL)           \
 			    @GTK_CFLAGS@           \

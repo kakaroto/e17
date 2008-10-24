@@ -33,7 +33,7 @@
   FIXME: make the _all() functions use a foreach() style if at all possible.
 
 
- Should use something other than Evas_List* for better speed.
+ Should use something other than Eina_List* for better speed.
 
  Basically I want.
    A set (C) is the underlying collection. (no order, no dups)
@@ -114,24 +114,24 @@ static guint signals[SIG_LAST] = { 0 };
 /**
  * List of type GtkgEvasObjCollection_T containing all the objects in this collection.
  *
- * Caller must free the return value with evas_list_free();
+ * Caller must free the return value with eina_list_free();
  */
-Evas_List*
-gevas_obj_collection_to_evas_list( GtkgEvasObjCollection* ev )
+Eina_List*
+gevas_obj_collection_to_eina_list( GtkgEvasObjCollection* ev )
 {
-    Evas_List* ret = 0;
+    Eina_List* ret = 0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
     
     {
-        Evas_List* tl = ev->selected_objs;
+        Eina_List* tl = ev->selected_objs;
     
         while(tl)
         {
             if( tl->data )
             {
-                ret = evas_list_append( ret, tl->data );
+                ret = eina_list_append( ret, tl->data );
             }
             tl = tl->next;
         }
@@ -163,7 +163,7 @@ GtkgEvasObjCollection_T
 gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n )
 {
     gint i=0;
-    Evas_List* li=0;
+    Eina_List* li=0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (n >= 0);
@@ -201,7 +201,7 @@ static gint gevas_obj_collection_element_idx_from_name_internal(
     gboolean case_sensitive )
 {
     gint i=0;
-    Evas_List* li=0;
+    Eina_List* li=0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -301,9 +301,9 @@ gevas_obj_collection_add( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 
     if( !ev->m_pred || ev->m_pred(ev,o,ev->m_pred_udata))
     {
-        if(!evas_list_find(ev->selected_objs, o))
+        if(!eina_list_data_find(ev->selected_objs, o))
         {
-            ev->selected_objs = evas_list_append( ev->selected_objs, o);
+            ev->selected_objs = eina_list_append( ev->selected_objs, o);
             ev->lastadded = o;
 
             gtk_signal_emit(GTK_OBJECT(ev), signals[SIG_ADD], GTK_OBJECT(o));
@@ -330,7 +330,7 @@ gevas_obj_collection_add( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 void
 gevas_obj_collection_add_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
-    Evas_List* li;
+    Eina_List* li;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -363,7 +363,7 @@ void
 gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
                                      double x, double y, double w, double h)
 {
-    Evas_List* list;
+    Eina_List* list;
 	void* data;
 
     /*printf("gevas_obj_collection_add_flood_area() x:%f y:%f w:%f h:%f\n",x,y,w,h);*/
@@ -497,7 +497,7 @@ gevas_obj_collection_remove( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T 
         ev->lastadded = 0;
     }
     
-	ev->selected_objs = evas_list_remove( ev->selected_objs, o );
+	ev->selected_objs = eina_list_remove( ev->selected_objs, o );
     gtk_signal_emit(GTK_OBJECT(ev), signals[SIG_REMOVE], GTK_OBJECT(o));
     
 }
@@ -516,8 +516,8 @@ gevas_obj_collection_remove( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T 
 void
 gevas_obj_collection_remove_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
-    Evas_List* li;
-    Evas_List* lin;
+    Eina_List* li;
+    Eina_List* lin;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (s  != NULL);
@@ -570,7 +570,7 @@ gevas_obj_collection_clear(  GtkgEvasObjCollection* ev )
 void
 gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
 {
-    Evas_List* li = 0;
+    Eina_List* li = 0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -596,7 +596,7 @@ gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
 void
 gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32 dy )
 {
-    Evas_List* li = 0;
+    Eina_List* li = 0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -635,7 +635,7 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
 gint
 gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev )
 {
-    Evas_List* tl = 0;
+    Eina_List* tl = 0;
     gint ret = 0;
 
     g_return_if_fail (ev != NULL);
@@ -680,7 +680,7 @@ gevas_obj_collection_show( GtkgEvasObjCollection* ev )
 void
 gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v )
 {
-    Evas_List* li = 0;
+    Eina_List* li = 0;
 
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -698,7 +698,7 @@ gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v )
  */
 gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o )
 {
-    Evas_List* li = 0;
+    Eina_List* li = 0;
 
     g_return_if_fail (o != NULL);
     g_return_if_fail (ev != NULL);
@@ -718,7 +718,7 @@ gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCo
  * Debug code. Dumps some meta data about the contents of the collection to
  * stdout.
  */
-void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Evas_List* li )
+void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Eina_List* li )
 {
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
@@ -738,7 +738,7 @@ void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Evas_List* li )
  */
 gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s)
 {
-    Evas_List* li = 0;
+    Eina_List* li = 0;
 
     g_return_if_fail (s != NULL);
     g_return_if_fail (ev != NULL);

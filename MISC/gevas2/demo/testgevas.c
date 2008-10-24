@@ -370,7 +370,7 @@ static void __drag_data_get(GtkWidget          *widget,
     static gchar ddn_bufstat[BUFSIZE];	/* Data exchange buffer. */
     gchar* ddn_buf = ddn_bufstat;
     GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
-    Evas_List* el = 0;
+    Eina_List* el = 0;
 
     printf("testgevas.c __drag_data_get() info:%d\n",info);
     if((data == NULL) || (context == NULL))

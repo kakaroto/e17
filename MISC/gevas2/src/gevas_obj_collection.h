@@ -72,7 +72,7 @@ extern "C" {
         GtkObject gobj;
 
         /* the current selection. the data stored is of type GtkgEvasObjCollection_T */
-        Evas_List* selected_objs;
+        Eina_List* selected_objs;
         
 
         /* Last object added to selected_objs */
@@ -145,11 +145,11 @@ extern "C" {
     void gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v );
     gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o );
     gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s);
-    Evas_List* gevas_obj_collection_to_evas_list( GtkgEvasObjCollection* ev );
+    Eina_List* gevas_obj_collection_to_eina_list( GtkgEvasObjCollection* ev );
     
     
 /* package */
-    void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Evas_List* li );
+    void gevas_obj_collection_dump( GtkgEvasObjCollection* ev, Eina_List* li );
     
 
 

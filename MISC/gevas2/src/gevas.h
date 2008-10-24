@@ -214,7 +214,7 @@ struct _GtkgEvasClass {
 		   GtkAdjustment * ah, GtkAdjustment * av);
 	void gevas_set_middleb_scrolls_pgate_event( GtkgEvas* gevas, gboolean v ); 
 
-    Evas_List* gevas_objects_at_xy_get(GtkgEvas * ev, double x, double y);
+    Eina_List* gevas_objects_at_xy_get(GtkgEvas * ev, double x, double y);
 	GtkObject *gevas_get_object_under_mouse(GtkgEvas * ev);
 	GtkObject *gevas_object_at_position(GtkgEvas * ev, double x, double y);
 	GtkObject *gevas_object_get_named(GtkgEvas * ev, char *name);

@@ -243,7 +243,7 @@ void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
 	GtkgEvasObj* nor )
 {
-        Evas_List* li;
+        Eina_List* li;
 	ev->normal = nor;
 
     if( !ev->gevas )
@@ -350,7 +350,7 @@ gevasevh_selectable_to_collection( GtkgEvasEvHSelectable* ev )
     {
         GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( ev->normal );
 
-        Evas_List* li=0;
+        Eina_List* li=0;
         for( li=sprite->col->selected_objs; li; li = li->next)
         {
             if(li->data)

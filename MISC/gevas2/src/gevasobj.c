@@ -381,7 +381,7 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
     {
         GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( object );
 
-        Evas_List* li=0;
+        Eina_List* li=0;
         for( li=sprite->col->selected_objs; li; li = li->next)
         {
             if(li->data)
