@@ -22,7 +22,7 @@ void
 evfs_cleanup_file_command_only(evfs_command* command)
 {
 	if (command->file_command->files)
-		evas_list_free(command->file_command->files);
+		eina_list_free(command->file_command->files);
 
 	free(command);
 }
@@ -31,14 +31,14 @@ void
 evfs_cleanup_file_command(evfs_command * command)
 {
    int i;
-   Evas_List* l;
+   Eina_List* l;
 
    if (command->file_command->files) {
 	   for (l = command->file_command->files; l; ){
 		evfs_cleanup_filereference((EvfsFilereference*)l->data);
 		l=l->next;
 	   }
-	   evas_list_free(command->file_command->files); 
+	   eina_list_free(command->file_command->files); 
    }
 
    if (command->file_command->ref) free(command->file_command->ref);
@@ -47,7 +47,7 @@ evfs_cleanup_file_command(evfs_command * command)
 void 
 evfs_cleanup_vfolder_create(evfs_command* command)
 {
-	Evas_List* l;
+	Eina_List* l;
 	EvfsVfolderEntry *e;
 	if (command->entries) {
 		for (l=command->entries; l; ) {
@@ -58,7 +58,7 @@ evfs_cleanup_vfolder_create(evfs_command* command)
 			IF_FREE(e->value);
 			free(e);
 		}
-		evas_list_free(command->entries);
+		eina_list_free(command->entries);
 	}
 }
 
@@ -112,7 +112,7 @@ void
 evfs_cleanup_file_list_event(EvfsEventDirList *event)
 {
    EvfsFilereference *file;
-   Evas_List* l;
+   Eina_List* l;
 
    if (event->files)
      {
@@ -120,7 +120,7 @@ evfs_cleanup_file_list_event(EvfsEventDirList *event)
 		     evfs_cleanup_filereference(l->data);
 		     l = l->next;
 	     }
-	     evas_list_free(event->files);
+	     eina_list_free(event->files);
      }
 }
 
@@ -170,14 +170,14 @@ void
 evfs_cleanup_metadata_event(EvfsEventMetadata* event)
 {
 	if (!evfs_object_client_is_get()) {
-		Evas_List* l = event->meta_list;
+		Eina_List* l = event->meta_list;
 		if (l) {
 			for (; l ;) {
 				evfs_cleanup_metadata_object(l->data);
 				
 				l = l->next;
 			}
-			evas_list_free(event->meta_list);
+			eina_list_free(event->meta_list);
 		}
 	}
 }
@@ -190,7 +190,7 @@ void evfs_cleanup_mime_event(EvfsEventMime* event)
 void
 evfs_cleanup_metadata_groups_event(EvfsEventMetadataGroups* event) 
 {
-	Evas_List* l;
+	Eina_List* l;
 
 	EvfsMetadataGroup* g;
 	for (l=event->string_list; l;) {
@@ -198,14 +198,14 @@ evfs_cleanup_metadata_groups_event(EvfsEventMetadataGroups* event)
 		evfs_metadata_group_header_free(g);
 		l = l->next;
 	}
-	evas_list_free(event->string_list);
+	eina_list_free(event->string_list);
 	
 }
 
 void
 evfs_cleanup_meta_all_event(EvfsEventMetaAll* event)
 {
-	Evas_List* l;
+	Eina_List* l;
 	EvfsMetaObject* m;
 
 	for (l=event->meta;l;) {
@@ -213,7 +213,7 @@ evfs_cleanup_meta_all_event(EvfsEventMetaAll* event)
 		free(m);
 		l=l->next;
 	}
-	evas_list_free(event->meta);
+	eina_list_free(event->meta);
 }
 
 void

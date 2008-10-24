@@ -27,7 +27,7 @@ callback(EvfsEvent* data, void *obj)
    else if (data->type == EVFS_EV_DIR_LIST)
      {
         EvfsFilereference *ref;
-	Evas_List* l;
+	Eina_List* l;
 
         printf("Received a directory listing..\nFiles:\n\n");
 
@@ -41,7 +41,7 @@ callback(EvfsEvent* data, void *obj)
           }
 
      } else if (data->type == EVFS_EV_METADATA)  {
-	     Evas_List* l;
+	     Eina_List* l;
 	     EvfsMetaObject* o;
 	     
 	     printf("Received metadata:\n");
@@ -56,7 +56,7 @@ callback(EvfsEvent* data, void *obj)
 			     
 	     
      } else if (data->type == EVFS_EV_METAALL) {
-     	Evas_List* l;
+     	Eina_List* l;
 	EvfsMetaObject* m;
 
 	printf("Metaall event\n");

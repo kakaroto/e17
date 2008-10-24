@@ -46,7 +46,7 @@
 
 static  EXTRACTOR_ExtractorList *_extractors = NULL;
 static EXTRACTOR_KeywordList   *keywords;
-Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command);
+Eina_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command);
 const char              *key;
 static char buffer[PATH_MAX];
 
@@ -90,9 +90,9 @@ evfs_plugin_functions_meta* evfs_plugin_init()
 }
 
 
-Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
+Eina_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 {
-	Evas_List* ret_list = NULL;
+	Eina_List* ret_list = NULL;
 	EvfsMetaObject* obj;
 	char* key;
 	EvfsFilereference* ref;
@@ -109,7 +109,7 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup(key);
 		obj->value = strdup(keywords->keyword);
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 
 		keywords = keywords->next;
 	}

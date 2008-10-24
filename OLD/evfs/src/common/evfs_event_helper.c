@@ -62,7 +62,7 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
    EVFS_EVENT(event)->type = EVFS_EV_DIR_LIST;
    event->files = NULL;
    while ((file = ecore_list_first_remove(files))) {
-	   event->files = evas_list_append(event->files, file);
+	   event->files = eina_list_append(event->files, file);
    }
    ecore_list_destroy(files);
    evfs_write_event(client, command, EVFS_EVENT(event));
@@ -151,7 +151,7 @@ evfs_operation_event_create(evfs_client * client, evfs_command * command,
 }
 
 void
-evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List* ret_list)
+evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Eina_List* ret_list)
 {
    EvfsEventMetadata *event = NEW(EvfsEventMetadata);
 
@@ -164,7 +164,7 @@ evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List
    evfs_cleanup_event(EVFS_EVENT(event));
 }
 
-void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Evas_List* group_list) 
+void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Eina_List* group_list) 
 {
    EvfsEventMetadataGroups *event = NEW(EvfsEventMetadataGroups);
 
@@ -189,7 +189,7 @@ void evfs_mime_event_create(evfs_client* client, evfs_command* command, const ch
    evfs_cleanup_event(EVFS_EVENT(event));
 }
 
-void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Evas_List* e)
+void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Eina_List* e)
 {
    EvfsEventMetaAll* event = NEW(EvfsEventMetaAll);
    EVFS_EVENT(event)->type = EVFS_EV_METAALL;

@@ -657,7 +657,7 @@ void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
 {
 	char* type = "audio/x-mp3"; /*FIXME - make generic - id mimes..*/
 	evfs_plugin_meta* plugin;
-	Evas_List* ret_list;
+	Eina_List* ret_list;
 
 	plugin = EVFS_PLUGIN_META(evfs_meta_plugin_get_for_type(evfs_server_get(),type));
 	if (plugin) {
@@ -690,7 +690,7 @@ void evfs_handle_metadata_string_file_get_command(evfs_client* client __UNUSED__
 
 void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_command* command) 
 {
-	Evas_List* group_list;
+	Eina_List* group_list;
 
 	if ( (group_list = evfs_metadata_groups_get())) {
 		evfs_group_list_event_create(client, command, group_list);
@@ -776,7 +776,7 @@ void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command)
 {
 	int id;
 	sqlite3* db;
-	Evas_List* l;
+	Eina_List* l;
 	EvfsVfolderEntry* e;
 	
 	db = evfs_metadata_db_connect();
@@ -793,7 +793,7 @@ void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command)
 
 void evfs_handle_meta_all_request(evfs_client* client, evfs_command* command)
 {
-	Evas_List* e;
+	Eina_List* e;
 	sqlite3* db;
 
 	db = evfs_metadata_db_connect();

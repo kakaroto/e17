@@ -34,10 +34,10 @@ static Eet_Data_Descriptor *_EvfsVfolderEntry_edd;
 static Eet_Data_Descriptor *_EvfsEventMetaAll_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
-                              (void *(*)(void *))evas_list_next, \
-                              (void *(*)(void *, void *))evas_list_append, \
-                              (void *(*)(void *))evas_list_data, \
-                              (void *(*)(void *))evas_list_free, \
+                              (void *(*)(void *))eina_list_next, \
+                              (void *(*)(void *, void *))eina_list_append, \
+                              (void *(*)(void *))eina_list_data_get, \
+                              (void *(*)(void *))eina_list_free, \
                               (void (*) \
                                (void *, \
                                 int (*)(void *, const char *, void *, void *), \

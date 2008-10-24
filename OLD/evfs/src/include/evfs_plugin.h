@@ -7,7 +7,7 @@
 
 typedef struct evfs_plugin_functions_meta
 {
-   Evas_List* (*evfs_file_meta_retrieve)(evfs_client* client, evfs_command* command);
+   Eina_List* (*evfs_file_meta_retrieve)(evfs_client* client, evfs_command* command);
 } evfs_plugin_functions_meta;
 
 typedef struct evfs_plugin_functions_vfolder

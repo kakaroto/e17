@@ -16,7 +16,7 @@ Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db);
 int evfs_metadata_db_vfolder_search_id_get(sqlite3* db, char* name);
 Ecore_List* evfs_metadata_db_vfolder_search_entries_get(sqlite3* db, int id);
 Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_List* entries);
-Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db);
+Eina_List* evfs_metadata_db_meta_list_get(sqlite3* db);
 void evfs_metadata_db_record_stat(sqlite3*, int, struct stat*);
 
 #endif

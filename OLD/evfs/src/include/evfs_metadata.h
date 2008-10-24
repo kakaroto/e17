@@ -17,17 +17,17 @@ typedef struct {
 
 
 struct _evfs_metadata_group {
-	Evas_List* files;
+	Eina_List* files;
 };
 typedef struct _evfs_metadata_group evfs_metadata_group;
 
 struct _evfs_metadata_file_groups {
-	        Evas_List* groups;
+	        Eina_List* groups;
 };
 typedef struct _evfs_metadata_file_groups evfs_metadata_file_groups;
 
 struct _evfs_metadata_root {
-	Evas_List* group_list;
+	Eina_List* group_list;
 };
 typedef struct _evfs_metadata_root evfs_metadata_root;
 
@@ -49,7 +49,7 @@ void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups);
 int evfs_metadata_file_groups_group_check(evfs_metadata_file_groups* groups, char* group);
 
 Ecore_List* evfs_metadata_file_group_list(char* group);
-Evas_List* evfs_metadata_groups_get();
+Eina_List* evfs_metadata_groups_get();
 
 int evfs_metadata_extract_init();
 int evfs_metadata_extract_fork(EvfsFilereference* ref);

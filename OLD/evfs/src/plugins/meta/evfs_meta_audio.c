@@ -44,7 +44,7 @@
 #include <tag_c.h>
 
 
-Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command);
+Eina_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command);
 
 
 Ecore_List* evfs_plugin_meta_types_get()
@@ -65,14 +65,14 @@ evfs_plugin_functions_meta* evfs_plugin_init()
 }
 
 
-Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
+Eina_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 {
 	TagLib_File *taglib_file;
 	TagLib_Tag *taglib_tag;
 	const TagLib_AudioProperties *taglib_props;
 	char* tmp;
 	char buf[100];
-	Evas_List* ret_list = NULL;
+	Eina_List* ret_list = NULL;
 	
 	EvfsMetaObject* obj;
 
@@ -90,13 +90,13 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("artist");
 		obj->value = strdup(tmp);
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 
 	} else {
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("artist");
 		obj->value = NULL;
-		ret_list = evas_list_append(ret_list, obj);		
+		ret_list = eina_list_append(ret_list, obj);		
 	}
 
 	tmp = taglib_tag_title(taglib_tag);
@@ -104,12 +104,12 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("title");
 		obj->value = strdup(tmp);
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 	} else {
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("title");
 		obj->value = NULL;
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 	}
 	
 	tmp = taglib_tag_album(taglib_tag);
@@ -117,12 +117,12 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("album");
 		obj->value = strdup(tmp);
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 	} else {
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("album");
 		obj->value = NULL;
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 	}
 
 	taglib_props = taglib_file_audioproperties(taglib_file);
@@ -132,13 +132,13 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("length");
 		obj->value = strdup(buf);
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 
 	} else {
 		obj = calloc(1,sizeof(EvfsMetaObject));
 		obj->key = strdup("length");
 		obj->value = NULL;
-		ret_list = evas_list_append(ret_list, obj);
+		ret_list = eina_list_append(ret_list, obj);
 	}
 
 	taglib_file_free(taglib_file);
@@ -149,7 +149,7 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 	obj = calloc(1,sizeof(EvfsMetaObject));
 	obj->key = strdup("file");
 	obj->value = strdup("invalid");
-	ret_list = evas_list_append(ret_list, obj);
+	ret_list = eina_list_append(ret_list, obj);
 	
 	done:
 	return ret_list;

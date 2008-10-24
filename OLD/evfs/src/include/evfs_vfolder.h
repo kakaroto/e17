@@ -27,7 +27,7 @@
 typedef struct evfs_vfolder evfs_vfolder;
 struct evfs_vfolder
 {
-   Evas_List *bases;            /* A list of base URIs where we start our search */
+   Eina_List *bases;            /* A list of base URIs where we start our search */
 };
 
 void evfs_vfolder_initialise();

@@ -24,15 +24,15 @@ void evfs_operation_event_create(evfs_client * client, evfs_command * command,
                                  evfs_operation * op, char* misc);
 
 void
-evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List* ret_list);
+evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Eina_List* ret_list);
 
-void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Evas_List* group_list);
+void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Eina_List* group_list);
 
 void
 evfs_auth_failure_event_create(evfs_client * client, evfs_command * command);
 
 void evfs_mime_event_create(evfs_client* client, evfs_command* command, const char* mime);
 
-void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Evas_List* e);
+void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Eina_List* e);
 
 #endif

@@ -9,11 +9,11 @@ evfs_monitor_add(evfs_connection * conn, EvfsFilereference * ref)
    printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri); 
 
    command->type = EVFS_CMD_STARTMON_FILE;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);
+   command->file_command->files = eina_list_append( command->file_command->files, ref);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -27,10 +27,10 @@ evfs_monitor_remove(evfs_connection * conn, EvfsFilereference * ref)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_STOPMON_FILE;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);
+   command->file_command->files = eina_list_append( command->file_command->files, ref);
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -43,11 +43,11 @@ evfs_client_file_remove(evfs_connection * conn, EvfsFilereference * ref)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_REMOVE_FILE;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);
+   command->file_command->files = eina_list_append( command->file_command->files, ref);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -61,11 +61,11 @@ evfs_client_file_rename(evfs_connection * conn, EvfsFilereference * from,
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_RENAME_FILE;
-   command->file_command->files = evas_list_append( command->file_command->files, from);
-   command->file_command->files = evas_list_append( command->file_command->files, to);
+   command->file_command->files = eina_list_append( command->file_command->files, from);
+   command->file_command->files = eina_list_append( command->file_command->files, to);
 
    evfs_write_command(conn, command);
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -78,11 +78,11 @@ evfs_client_file_stat(evfs_connection * conn, EvfsFilereference * file)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_FILE_STAT;
-   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->files = eina_list_append( command->file_command->files, file);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -95,14 +95,14 @@ evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file, int optio
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_LIST_DIR;
-   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->files = eina_list_append( command->file_command->files, file);
 
    command->options = options;
 
    printf("COMMAND OPTIOONS: %d\n", command->options);
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -117,12 +117,12 @@ evfs_client_file_copy(evfs_connection * conn, EvfsFilereference * from,
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_FILE_COPY;
-   command->file_command->files = evas_list_append( command->file_command->files, from);
-   command->file_command->files = evas_list_append( command->file_command->files, to);   
+   command->file_command->files = eina_list_append( command->file_command->files, from);
+   command->file_command->files = eina_list_append( command->file_command->files, to);   
    
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -143,13 +143,13 @@ evfs_client_multi_file_command(evfs_connection * conn, Ecore_List* files, EvfsFi
  
    ecore_list_first_goto(files);
    while ((ref = ecore_list_next(files))) {
-	command->file_command->files = evas_list_append( command->file_command->files, ref);
+	command->file_command->files = eina_list_append( command->file_command->files, ref);
    }
-   if (to) command->file_command->files = evas_list_append( command->file_command->files, to);
+   if (to) command->file_command->files = eina_list_append( command->file_command->files, to);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -186,13 +186,13 @@ evfs_client_file_move(evfs_connection * conn, EvfsFilereference * from,
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_FILE_MOVE;
-   command->file_command->files = evas_list_append( command->file_command->files, from);
-   command->file_command->files = evas_list_append( command->file_command->files, to);
+   command->file_command->files = eina_list_append( command->file_command->files, from);
+   command->file_command->files = eina_list_append( command->file_command->files, to);
 
    
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -205,11 +205,11 @@ evfs_client_file_open(evfs_connection * conn, EvfsFilereference * file)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_FILE_OPEN;
-   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->files = eina_list_append( command->file_command->files, file);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
  
    return id;
@@ -225,12 +225,12 @@ evfs_client_file_read(evfs_connection * conn, EvfsFilereference * file,
    //printf("Reading a file..\n");
 
    command->type = EVFS_CMD_FILE_READ;
-   command->file_command->files = evas_list_append( command->file_command->files, file);   
+   command->file_command->files = eina_list_append( command->file_command->files, file);   
    command->file_command->extra = read_size;
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
  
@@ -247,11 +247,11 @@ evfs_client_directory_create(evfs_connection * conn, EvfsFilereference * file)
    //printf("Reading a file..\n");
 
    command->type = EVFS_CMD_DIRECTORY_CREATE;
-   command->file_command->files = evas_list_append( command->file_command->files, file);   
+   command->file_command->files = eina_list_append( command->file_command->files, file);   
 
    evfs_write_command(conn, command);
 	
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -292,11 +292,11 @@ evfs_client_metadata_retrieve(evfs_connection * conn, EvfsFilereference* file )
    
    command->type = EVFS_CMD_METADATA_RETRIEVE;
 
-   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->files = eina_list_append( command->file_command->files, file);
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -313,14 +313,14 @@ evfs_client_metadata_string_file_set(evfs_connection * conn, EvfsFilereference* 
    
    command->type = EVFS_CMD_METADATA_FILE_SET;
 
-   command->file_command->files = evas_list_append( command->file_command->files, file);   
+   command->file_command->files = eina_list_append( command->file_command->files, file);   
    command->file_command->ref = key;
    command->file_command->ref2 = value;
 
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -336,13 +336,13 @@ evfs_client_metadata_string_file_get(evfs_connection * conn, EvfsFilereference* 
    
    command->type = EVFS_CMD_METADATA_FILE_GET;
 
-   command->file_command->files = evas_list_append( command->file_command->files, file);   
+   command->file_command->files = eina_list_append( command->file_command->files, file);   
    command->file_command->ref = key;
 
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -358,13 +358,13 @@ evfs_client_file_tag_add(evfs_connection * conn, EvfsFilereference* file, char* 
 
    command->type = EVFS_CMD_FILE_TAG_ADD;
 
-   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->files = eina_list_append( command->file_command->files, file);
    command->file_command->ref = key;
 
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -395,13 +395,13 @@ evfs_client_metadata_group_file_add(evfs_connection * conn, EvfsFilereference* r
    long id = command->client_identifier;
    
    command->type = EVFS_CMD_METADATA_FILE_GROUP_ADD;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);   
+   command->file_command->files = eina_list_append( command->file_command->files, ref);   
    command->file_command->ref = group;
 
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -415,13 +415,13 @@ evfs_client_metadata_group_file_remove(evfs_connection * conn, EvfsFilereference
    long id = command->client_identifier;
    
    command->type = EVFS_CMD_METADATA_FILE_GROUP_REMOVE;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);   
+   command->file_command->files = eina_list_append( command->file_command->files, ref);   
    command->file_command->ref = group;
 
 
    evfs_write_command(conn, command);
 
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
    return id;
@@ -436,11 +436,11 @@ evfs_client_auth_send(evfs_connection* conn, EvfsFilereference* ref, char* user,
    command->type = EVFS_CMD_AUTH_RESPONSE;
    ref->username = user;
    ref->password = password;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);   
+   command->file_command->files = eina_list_append( command->file_command->files, ref);   
 
    evfs_write_command(conn, command);
 	
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -454,11 +454,11 @@ evfs_client_mime_request(evfs_connection* conn, EvfsFilereference* ref)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_MIME_REQUEST;
-   command->file_command->files = evas_list_append( command->file_command->files, ref);   
+   command->file_command->files = eina_list_append( command->file_command->files, ref);   
 
    evfs_write_command(conn, command);
 	
-   evas_list_free(command->file_command->files);
+   eina_list_free(command->file_command->files);
    free(command);
 
 
@@ -484,7 +484,7 @@ void evfs_vfolder_command_entry_add(evfs_command* command, char type, char* name
 	if (name) entry->name = strdup(name);
 	if (value) entry->value = strdup(value);
 
-	command->entries = evas_list_append(command->entries, entry);
+	command->entries = eina_list_append(command->entries, entry);
 }
 
 int evfs_vfolder_command_send(evfs_connection* conn, evfs_command* command)

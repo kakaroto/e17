@@ -662,10 +662,10 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_L
 	return files;
 }
 
-Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db)
+Eina_List* evfs_metadata_db_meta_list_get(sqlite3* db)
 {
 	char query[PATH_MAX];
-	Evas_List* meta = NULL;
+	Eina_List* meta = NULL;
 	int ret;
 	sqlite3_stmt *pStmt;
 
@@ -677,7 +677,7 @@ Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db)
 			char* mt = strdup((char*)sqlite3_column_text(pStmt,0));
 			m->key = mt;
 
-			meta = evas_list_append(meta, m);	
+			meta = eina_list_append(meta, m);	
 		}
 		sqlite3_reset(pStmt);
 		sqlite3_finalize(pStmt);

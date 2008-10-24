@@ -49,7 +49,7 @@ typedef struct evfs_command_file
    char* ref;
    char* ref2;
 
-   Evas_List* files;
+   Eina_List* files;
 }
 evfs_command_file;
 
@@ -58,7 +58,7 @@ typedef struct evfs_command
    evfs_command_type type;
    evfs_command_file* file_command;
    struct evfs_operation *op;
-   Evas_List* entries;
+   Eina_List* entries;
 
    int options;
    long client_identifier;

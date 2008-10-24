@@ -64,7 +64,7 @@ typedef struct {
 #define EVFS_EVENT_DIR_LIST(event) ((EvfsEventDirList *) event)
 typedef struct {
 	EvfsEvent base;
-	Evas_List* files; /*A list of EvfsFileReference*/
+	Eina_List* files; /*A list of EvfsFileReference*/
 } EvfsEventDirList;
 
 typedef struct
@@ -83,7 +83,7 @@ typedef struct {
 #define EVFS_EVENT_METADATA(event) ((EvfsEventMetadata*) event)
 typedef struct {
 	EvfsEvent base;
-	Evas_List* meta_list;
+	Eina_List* meta_list;
 } EvfsEventMetadata;
 
 typedef struct 
@@ -105,7 +105,7 @@ typedef struct
 typedef struct
 {
 	EvfsEvent base;
-	Evas_List* string_list;
+	Eina_List* string_list;
 } EvfsEventMetadataGroups;
 
 typedef enum EvfsEventFileMonitorType
@@ -156,7 +156,7 @@ typedef struct
 typedef struct
 {
 	EvfsEvent base;
-	Evas_List* meta;
+	Eina_List* meta;
 } EvfsEventMetaAll;
 
 /*---------------*/

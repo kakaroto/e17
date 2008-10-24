@@ -64,8 +64,8 @@ void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 	char* path = ref->path;
 	
 	if (!strcmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID)) {
-		   Evas_List* group_list;
-		   Evas_List* iter;
+		   Eina_List* group_list;
+		   Eina_List* iter;
 		   char assemble[PATH_MAX];
 		   EvfsMetadataGroup* g;
 		   

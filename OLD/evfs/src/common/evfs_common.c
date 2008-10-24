@@ -26,14 +26,14 @@ evfs_command* evfs_file_command_single_build(EvfsFilereference* ref)
 	evfs_command* c = NEW(evfs_command);
 	EvfsFilereference_sanitise(ref);
 	c->file_command = NEW(evfs_command_file);
-	c->file_command->files = evas_list_append(c->file_command->files,ref);
+	c->file_command->files = eina_list_append(c->file_command->files,ref);
 
 	return c;
 }
 
 void evfs_file_command_file_add(evfs_command* command, EvfsFilereference* ref)
 {
-	command->file_command->files = evas_list_append(command->file_command->files, ref);
+	command->file_command->files = eina_list_append(command->file_command->files, ref);
 }
 
 EvfsFilereference* EvfsFilereference_clone(EvfsFilereference* source)
