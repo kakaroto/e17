@@ -29,7 +29,7 @@ typedef struct {
 } Gui;
 
 typedef struct {
-   Evas_List *playlist;
+   Eina_List *playlist;
    Gui gui;
    Config config;
 } Envision;
