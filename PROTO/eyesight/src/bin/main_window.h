@@ -17,7 +17,7 @@ typedef struct _Main_Window
 }
 Main_Window;
 
-Main_Window *main_window_create(Args *args, Evas_List **startup_errors);
+Main_Window *main_window_create(Args *args, Eina_List **startup_errors);
 void main_window_resize_cb(Ecore_Evas *ee);
 void main_window_load_cb(void *data, Evas_Object *o, const char *emission,
                          const char *source);

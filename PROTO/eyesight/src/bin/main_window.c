@@ -43,7 +43,7 @@ main_window_delete_request_cb(Ecore_Evas *ee)
 }
 
 Main_Window *
-main_window_create(Args *args, Evas_List **startup_errors)
+main_window_create(Args *args, Eina_List **startup_errors)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
@@ -175,7 +175,7 @@ void
 main_window_load_cb(void *data, Evas_Object *o, const char *emission,
                     const char *source)
 {
-   if (!evas_list_data(data))
+   if (!eina_list_data_get(data))
       return; // don't do anything if there's no errors
    edje_object_signal_emit(o, "error_show", "eyesight");
 }

@@ -20,7 +20,7 @@ main(int argc, char **argv)
 {
    Args *args = NULL;
    char *errstr = NULL;
-   Evas_List *startup_errors = NULL;
+   Eina_List *startup_errors = NULL;
    Plist_Data *plist_data; // Will contain plugin list and plugin path group
    Main_Window *main_window;
 
@@ -62,13 +62,13 @@ main(int argc, char **argv)
       fprintf(stderr, _("During startup, the following errors occured:\n"));
       for (i = 0;; i++)
       {
-         errstr = evas_list_nth(startup_errors, i);
+         errstr = eina_list_nth(startup_errors, i);
          if (!errstr) break;
          else fprintf(stderr, "  %s\n", errstr);
       }
    }
    
-   evas_list_free(startup_errors);
+   eina_list_free(startup_errors);
 
    ecore_main_loop_begin();
 

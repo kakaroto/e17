@@ -84,7 +84,7 @@ plugin_init_for_each(void *_val, void *_data)
 }
 
 Plist_Data *
-plugin_init(Evas_List **startup_errors)
+plugin_init(Eina_List **startup_errors)
 {
    char *tmp;
    Ecore_Path_Group *pg;

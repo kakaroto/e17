@@ -18,10 +18,10 @@
 
 
 
-void append_startup_error(Evas_List **startup_errors, char *error_string,
+void append_startup_error(Eina_List **startup_errors, char *error_string,
                           char *argument);
-void append_startup_error2(Evas_List **startup_errors, char *error_string,
+void append_startup_error2(Eina_List **startup_errors, char *error_string,
                           char *argument1, char *argument2);
-void display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors);
+void display_startup_error_dialog(Ecore_Evas *ee, Eina_List *startup_errors);
 
 #endif /*ERROR_H_*/

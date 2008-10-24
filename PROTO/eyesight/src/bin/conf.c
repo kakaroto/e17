@@ -10,7 +10,7 @@
 #define OPTS "t:e:"
 
 Args *
-parse_args(int argc, char **argv, Evas_List **startup_errors)
+parse_args(int argc, char **argv, Eina_List **startup_errors)
 {
    int c;
    Args *args = malloc(sizeof(Args));

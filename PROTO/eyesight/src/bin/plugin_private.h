@@ -13,9 +13,9 @@ typedef struct _Plist_Data
 {
    Ecore_List *plugin_list;
    Ecore_Path_Group *pg;
-   Evas_List **startup_errors;
+   Eina_List **startup_errors;
 } Plist_Data;
 
-Plist_Data *plugin_init(Evas_List **startup_errors);
+Plist_Data *plugin_init(Eina_List **startup_errors);
 
 #endif /*PLUGIN_PRIVATE_H_*/

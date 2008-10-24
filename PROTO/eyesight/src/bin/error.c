@@ -11,18 +11,18 @@
 #include "error.h"
 
 void
-append_startup_error(Evas_List **startup_errors, char *error_string,
+append_startup_error(Eina_List **startup_errors, char *error_string,
                      char *argument)
 {
    char *errstr;
    errstr = malloc(strlen(error_string) + strlen(argument) - 1);
    snprintf(errstr, (strlen(error_string) + strlen(argument) - 1), error_string,
             argument);
-   *startup_errors = evas_list_append(*startup_errors, errstr);         
+   *startup_errors = eina_list_append(*startup_errors, errstr);         
 }
 
 void
-append_startup_error2(Evas_List **startup_errors, char *error_string,
+append_startup_error2(Eina_List **startup_errors, char *error_string,
                      char *argument1, char *argument2)
 {
    char *errstr;
@@ -30,14 +30,14 @@ append_startup_error2(Evas_List **startup_errors, char *error_string,
                    - 2);
    snprintf(errstr, (strlen(error_string) + strlen(argument1) + 
             strlen(argument2) - 2), error_string, argument1, argument2);
-   *startup_errors = evas_list_append(*startup_errors, errstr);         
+   *startup_errors = eina_list_append(*startup_errors, errstr);         
 }
 
 void
-display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
+display_startup_error_dialog(Ecore_Evas *ee, Eina_List *startup_errors)
 {
    char *str;
-   Evas_List *tmp;
+   Eina_List *tmp;
    unsigned int len = 0;
    Evas_Object *main_window;
    
@@ -49,8 +49,8 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
    len = strlen(ERROR_STARTUP_BEGIN) + strlen("<br>");
    do
    {
-      len += strlen("<i>> ") + strlen((char *)evas_list_data(tmp)) + strlen("<br>");
-   } while ((tmp = evas_list_next(tmp)));
+      len += strlen("<i>> ") + strlen((char *)eina_list_data_get(tmp)) + strlen("<br>");
+   } while ((tmp = eina_list_next(tmp)));
    
    str = calloc(sizeof(char), len);
    
@@ -62,9 +62,9 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
    do
    {
       strncat(str, "<i>> ", len);
-      strncat(str, evas_list_data(tmp), len);
+      strncat(str, eina_list_data_get(tmp), len);
       strncat(str, "<br>", len);
-   } while ((tmp = evas_list_next(tmp)));
+   } while ((tmp = eina_list_next(tmp)));
    
    // Display error dialog (error_show signal will be emitted later)
    // TODO: error.c: Resize dialog to fit text
