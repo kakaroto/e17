@@ -34,7 +34,6 @@
 
 struct _ecursor {
    char               *name;
-   char               *file;
    Cursor              cursor;
    unsigned int        ref_count;
 };
@@ -150,7 +149,6 @@ ECursorCreate(const char *name, const char *image, int native_id,
 
    ec = EMALLOC(ECursor, 1);
    ec->name = Estrdup(name);
-   ec->file = Estrdup(image);
    ec->cursor = curs;
    ec->ref_count = 0;
 
@@ -176,7 +174,6 @@ ECursorDestroy(ECursor * ec)
    ecore_list_node_remove(cursor_list, ec);
 
    Efree(ec->name);
-   Efree(ec->file);
 
    Efree(ec);
 }
