@@ -48,7 +48,7 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
    while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
       usleep(10000);
    meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
-   meta_tag_manager->meta_tag_files_to_add = evas_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
+   meta_tag_manager->meta_tag_files_to_add = eina_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
    meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
    meta_tag_manager->meta_tag_should_scan_files = 1;
    pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond);
@@ -104,7 +104,7 @@ static void *_eclair_meta_tag_thread(void *param)
 {
    Eclair *eclair = param;
    Eclair_Meta_Tag_Manager *meta_tag_manager;
-   Evas_List *l, *next;
+   Eina_List *l, *next;
    Eclair_Media_File *current_file;
 
    if (!eclair)
@@ -123,8 +123,8 @@ static void *_eclair_meta_tag_thread(void *param)
       {
          if (meta_tag_manager->meta_tag_delete_thread)
          {
-            meta_tag_manager->meta_tag_files_to_scan = evas_list_free(meta_tag_manager->meta_tag_files_to_scan);
-            meta_tag_manager->meta_tag_files_to_add = evas_list_free(meta_tag_manager->meta_tag_files_to_add);
+            meta_tag_manager->meta_tag_files_to_scan = eina_list_free(meta_tag_manager->meta_tag_files_to_scan);
+            meta_tag_manager->meta_tag_files_to_add = eina_list_free(meta_tag_manager->meta_tag_files_to_add);
             meta_tag_manager->meta_tag_delete_thread = 0;
             return NULL;
          }
@@ -135,8 +135,8 @@ static void *_eclair_meta_tag_thread(void *param)
                usleep(10000);
             meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = meta_tag_manager->meta_tag_files_to_add; l; l = l->next)
-               meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, l->data);
-            meta_tag_manager->meta_tag_files_to_add = evas_list_free(meta_tag_manager->meta_tag_files_to_add);
+               meta_tag_manager->meta_tag_files_to_scan = eina_list_append(meta_tag_manager->meta_tag_files_to_scan, l->data);
+            meta_tag_manager->meta_tag_files_to_add = eina_list_free(meta_tag_manager->meta_tag_files_to_add);
             meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE; 
          }
          //Treat the files in the list
@@ -146,7 +146,7 @@ static void *_eclair_meta_tag_thread(void *param)
                break;
             next = l->next;
             current_file = l->data;
-            meta_tag_manager->meta_tag_files_to_scan = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_scan, l);
+            meta_tag_manager->meta_tag_files_to_scan = eina_list_remove_list(meta_tag_manager->meta_tag_files_to_scan, l);
             if (current_file)
             {
                if (current_file->delete_me)

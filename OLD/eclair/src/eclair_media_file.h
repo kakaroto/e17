@@ -20,7 +20,7 @@ struct _Eclair_Media_File
    int bitrate;
    int samplerate;
 
-   Evas_List *shuffle_node;
+   Eina_List *shuffle_node;
    Eclair_Playlist_Container_Object *container_object;
    unsigned char selected : 1;
    unsigned char in_meta_tag_process : 1;

@@ -31,7 +31,7 @@ static void _eclair_menu_item_up_cb(void *data, Evas *e, Evas_Object *obj, void 
 
 static Eclair_Menu *_eclair_menu_root = NULL;
 static Ecore_X_Window _eclair_menu_input_window = 0;
-static Evas_List *_eclair_menu_popped_menus = NULL;
+static Eina_List *_eclair_menu_popped_menus = NULL;
 static Ecore_Event_Handler *_eclair_menu_mouse_up_handler = NULL;
 static Ecore_Event_Handler *_eclair_menu_mouse_move_handler = NULL;
 static Ecore_Timer *_eclair_menu_slide_timer = NULL;
@@ -92,7 +92,7 @@ Eclair_Menu *eclair_menu_new(Eclair_Engine menu_engine)
 //Free the menu and its children
 void eclair_menu_free(Eclair_Menu *menu)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Menu_Item *item;
 
    if (!menu)
@@ -107,7 +107,7 @@ void eclair_menu_free(Eclair_Menu *menu)
          eclair_menu_item_free(item);
       }
    }
-   evas_list_free(menu->items);
+   eina_list_free(menu->items);
 
    evas_object_del(menu->edje_object);
    ecore_evas_free(menu->window);
@@ -122,7 +122,7 @@ int eclair_menu_append_item(Eclair_Menu *menu, Eclair_Menu_Item *item)
       return 0;
 
    item->parent = menu;
-   menu->items = evas_list_append(menu->items, item);
+   menu->items = eina_list_append(menu->items, item);
 
    _eclair_menu_recalc(menu);
 
@@ -184,7 +184,7 @@ void eclair_menu_popup_at_xy(Eclair_Menu *menu, int x, int y)
    ecore_evas_show(menu->window);
    evas_event_feed_mouse_move(menu->evas, -100000, -100000, ecore_x_current_time_get(), NULL);
    evas_event_feed_mouse_in(menu->evas, ecore_x_current_time_get(), NULL);
-   _eclair_menu_popped_menus = evas_list_append(_eclair_menu_popped_menus, menu);
+   _eclair_menu_popped_menus = eina_list_append(_eclair_menu_popped_menus, menu);
 
    _eclair_menu_update_slide_timer(menu);
 }
@@ -192,7 +192,7 @@ void eclair_menu_popup_at_xy(Eclair_Menu *menu, int x, int y)
 //Pop down the menu and its childrend
 void eclair_menu_pop_down(Eclair_Menu *menu)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Menu_Item *item;
 
    if (!menu)
@@ -217,7 +217,7 @@ void eclair_menu_pop_down(Eclair_Menu *menu)
       _eclair_menu_root = NULL;
    }
 
-   _eclair_menu_popped_menus = evas_list_remove(_eclair_menu_popped_menus, menu);
+   _eclair_menu_popped_menus = eina_list_remove(_eclair_menu_popped_menus, menu);
 }
 
 //Create a new menu item
@@ -247,7 +247,7 @@ Eclair_Menu_Item *eclair_menu_add_seperator(Eclair_Menu *menu)
 //Calculate the size of the menu, resize it and display the arrows if needed
 static void _eclair_menu_recalc(Eclair_Menu *menu)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Menu_Item *item;
    int w = 0, h = 0, item_w;
    int display_arrows = 0, display_icons = 0;
@@ -300,7 +300,7 @@ static void _eclair_menu_recalc(Eclair_Menu *menu)
 static void _eclair_menu_resize_cb(Ecore_Evas *menu_window)
 {
    Eclair_Menu *menu;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Menu_Item *item;
    Evas_Coord w, h, y;
    int i;
@@ -399,7 +399,7 @@ static void _eclair_menu_update_slide_timer(Eclair_Menu *menu)
 static int _eclair_menu_slide_timer_cb(void *data)
 {
    Eclair_Menu *menu = NULL, *m;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Menu_Screen_Edge mouse_edge, menu_edge = ECLAIR_MENU_NO_EDGE;
    int root_x, root_y, root_w, root_h;
    int menu_x, menu_y, menu_w, menu_h;
@@ -485,7 +485,7 @@ static int _eclair_menu_slide_timer_cb(void *data)
 static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
 {
    Eclair_Menu *menu, *m;
-   Evas_List *l;
+   Eina_List *l;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
    int pointer_over_menu = 0;
 
@@ -515,7 +515,7 @@ static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
 static int _eclair_menu_mouse_move_cb(void *data, int type, void *event)
 {
    Eclair_Menu *menu, *m;
-   Evas_List *l;
+   Eina_List *l;
    Ecore_X_Event_Mouse_Move *mouse_event;
    int menu_x, menu_y;
 
@@ -635,7 +635,7 @@ void eclair_menu_item_free(Eclair_Menu_Item *menu_item)
 
    if (menu_item->parent)
    {
-      menu_item->parent->items = evas_list_remove(menu_item->parent->items, menu_item);
+      menu_item->parent->items = eina_list_remove(menu_item->parent->items, menu_item);
       _eclair_menu_recalc(menu_item->parent);
    }
    free(menu_item);
@@ -668,7 +668,7 @@ void eclair_menu_item_activate(Eclair_Menu_Item *item)
    Eclair_Menu_Item *i;
    int menu_x, menu_y, menu_w, item_y = 0;
    int item_met = 0;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!item || !(menu = item->parent) || item->is_active)
       return;

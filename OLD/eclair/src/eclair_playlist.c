@@ -44,7 +44,7 @@ void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
 //Shutdown the playlist
 void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!playlist)
       return;
@@ -54,9 +54,9 @@ void eclair_playlist_shutdown(Eclair_Playlist *playlist)
       eclair_media_file_free(l->data);
    for (l = playlist->removed_media_files; l; l = l->next)
       eclair_media_file_free(l->data);
-   playlist->playlist = evas_list_free(playlist->playlist);
-   playlist->shuffle_list = evas_list_free(playlist->shuffle_list);
-   playlist->removed_media_files = evas_list_free(playlist->removed_media_files);
+   playlist->playlist = eina_list_free(playlist->playlist);
+   playlist->shuffle_list = eina_list_free(playlist->shuffle_list);
+   playlist->removed_media_files = eina_list_free(playlist->removed_media_files);
    playlist->current = NULL;
 
    if (playlist->eclair)
@@ -103,7 +103,7 @@ void eclair_playlist_set_repeat(Eclair_Playlist *playlist, Evas_Bool repeat)
 void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
 {
    Eclair_Media_File *media_file;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!playlist || !playlist->shuffle)
       return;
@@ -113,12 +113,12 @@ void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
       if ((media_file = l->data))
          media_file->shuffle_node = NULL;
    }
-   playlist->shuffle_list = evas_list_free(playlist->shuffle_list);
+   playlist->shuffle_list = eina_list_free(playlist->shuffle_list);
 
    if (playlist->current && (media_file = playlist->current->data))
    {
-      playlist->shuffle_list = evas_list_append(playlist->shuffle_list, media_file);
-      media_file->shuffle_node = evas_list_last(playlist->shuffle_list);
+      playlist->shuffle_list = eina_list_append(playlist->shuffle_list, media_file);
+      media_file->shuffle_node = eina_list_last(playlist->shuffle_list);
    }
 }
 
@@ -126,7 +126,7 @@ void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
 int eclair_playlist_media_files_destructor(void *data)
 {
    Eclair_Playlist *playlist;
-   Evas_List *l, *next;
+   Eina_List *l, *next;
    Eclair_Media_File *current_file;
 
    if (!(playlist = data))
@@ -136,11 +136,11 @@ int eclair_playlist_media_files_destructor(void *data)
    {
       next = l->next;
       if (!(current_file = l->data))
-         playlist->removed_media_files = evas_list_remove_list(playlist->removed_media_files, l);
+         playlist->removed_media_files = eina_list_remove_list(playlist->removed_media_files, l);
       else if (!current_file->in_meta_tag_process && !current_file->in_cover_process)
       {
          eclair_media_file_free(current_file);
-         playlist->removed_media_files = evas_list_remove_list(playlist->removed_media_files, l);
+         playlist->removed_media_files = eina_list_remove_list(playlist->removed_media_files, l);
       }
    }
 
@@ -151,7 +151,7 @@ int eclair_playlist_media_files_destructor(void *data)
 //0 if failed
 Evas_Bool eclair_playlist_save(Eclair_Playlist *playlist, const char *path)
 {
-   Evas_List *l;
+   Eina_List *l;
    FILE *playlist_file;
    Eclair_Media_File *media_file;
 
@@ -177,7 +177,7 @@ Eclair_Media_File *eclair_playlist_current_media_file(Eclair_Playlist *playlist)
    if (!playlist)
       return NULL;
 
-   return evas_list_data(playlist->current);
+   return eina_list_data_get(playlist->current);
 }
 
 //Add recursively a directory
@@ -292,7 +292,7 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
    {   
       new_media_file = eclair_media_file_new();
       new_media_file->path = new_path;
-      playlist->playlist = evas_list_append(playlist->playlist, new_media_file);
+      playlist->playlist = eina_list_append(playlist->playlist, new_media_file);
       if (!playlist->current)
       {
          eclair_playlist_current_set_list(playlist, playlist->playlist);
@@ -315,15 +315,15 @@ void eclair_playlist_remove_media_file(Eclair_Playlist *playlist, Eclair_Media_F
    if (!playlist || !media_file)
       return;
 
-   eclair_playlist_remove_media_file_list(playlist, evas_list_find_list(playlist->playlist, media_file), update_container);
+   eclair_playlist_remove_media_file_list(playlist, eina_list_data_find_list(playlist->playlist, media_file), update_container);
 }
 
 //Remove the media file pointed by the list from the playlist
 //Return the next media file
-Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Evas_List *list, Evas_Bool update_container)
+Eina_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Eina_List *list, Evas_Bool update_container)
 {
    Eclair_Media_File *remove_media_file;
-   Evas_List *next;
+   Eina_List *next;
 
    if (!playlist || !list)
       return NULL;
@@ -334,12 +334,12 @@ Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Eva
    if ((remove_media_file = list->data))
    {
       remove_media_file->delete_me = 1;
-      playlist->removed_media_files = evas_list_append(playlist->removed_media_files, remove_media_file);
-      playlist->shuffle_list = evas_list_remove_list(playlist->shuffle_list, remove_media_file->shuffle_node);
+      playlist->removed_media_files = eina_list_append(playlist->removed_media_files, remove_media_file);
+      playlist->shuffle_list = eina_list_remove_list(playlist->shuffle_list, remove_media_file->shuffle_node);
    }
 
    next = list->next;
-   playlist->playlist = evas_list_remove_list(playlist->playlist, list);
+   playlist->playlist = eina_list_remove_list(playlist->playlist, list);
 
    if (update_container && playlist->eclair && playlist->eclair->playlist_container)
       eclair_playlist_container_update(playlist->eclair->playlist_container);
@@ -350,7 +350,7 @@ Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Eva
 //Remove the selected media files
 void eclair_playlist_remove_selected_media_files(Eclair_Playlist *playlist)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *media_file;
 
    if (!playlist)
@@ -373,7 +373,7 @@ void eclair_playlist_remove_selected_media_files(Eclair_Playlist *playlist)
 //Remove the unselected media files
 void eclair_playlist_remove_unselected_media_files(Eclair_Playlist *playlist)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *media_file;
 
    if (!playlist)
@@ -396,13 +396,13 @@ void eclair_playlist_remove_unselected_media_files(Eclair_Playlist *playlist)
 //Empty the playlist and destroy all the media_file
 void eclair_playlist_empty(Eclair_Playlist *playlist)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!playlist)
       return;
 
    for (l = playlist->playlist; l; l = eclair_playlist_remove_media_file_list(playlist, l, 0));
-   playlist->playlist = evas_list_free(playlist->playlist);
+   playlist->playlist = eina_list_free(playlist->playlist);
    playlist->current = NULL;
 
    eclair_playlist_reset_shuffle_list(playlist);
@@ -418,20 +418,20 @@ void eclair_playlist_current_set(Eclair_Playlist *playlist, Eclair_Media_File *m
       return;
 
    if (media_file)
-      eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, media_file));
+      eclair_playlist_current_set_list(playlist, eina_list_data_find_list(playlist->playlist, media_file));
    else
       eclair_playlist_current_set_list(playlist, NULL);
 }
 
 //Set the media file stored in the list as the active media file  
-void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list)
+void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Eina_List *list)
 {
    Eclair_Media_File *previous_media_file, *new_current_file;
 
    if (!playlist || !playlist->eclair)
       return;
 
-   previous_media_file = evas_list_data(playlist->current);
+   previous_media_file = eina_list_data_get(playlist->current);
    if (!playlist->current)
       eclair_playlist_reset_shuffle_list(playlist);
    playlist->current = list;
@@ -442,18 +442,18 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
       eclair_media_file_update(playlist->eclair, list->data);
       if ((new_current_file = list->data) && !new_current_file->shuffle_node && playlist->shuffle)
       {
-         playlist->shuffle_list = evas_list_append(playlist->shuffle_list, new_current_file);
-         new_current_file->shuffle_node = evas_list_last(playlist->shuffle_list);
+         playlist->shuffle_list = eina_list_append(playlist->shuffle_list, new_current_file);
+         new_current_file->shuffle_node = eina_list_last(playlist->shuffle_list);
       }
    }
 } 
 
 //Return the next item to play, shuffled or not
 //NULL if no next
-Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
+Eina_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
 {
    Eclair_Media_File *current_file, *random_file;
-   Evas_List *ramdom_first_list, *l;
+   Eina_List *ramdom_first_list, *l;
    int k;
 
    if (!playlist || !playlist->current)
@@ -472,8 +472,8 @@ Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
       return current_file->shuffle_node->next;
    else
    {
-      k = eclair_utils_get_random_int(0, evas_list_count(playlist->playlist) - 1);
-      ramdom_first_list = evas_list_nth_list(playlist->playlist, k);
+      k = eclair_utils_get_random_int(0, eina_list_count(playlist->playlist) - 1);
+      ramdom_first_list = eina_list_nth_list(playlist->playlist, k);
       for (l = ramdom_first_list, random_file = NULL; l; )
       {
          if (!(random_file = l->data))
@@ -503,7 +503,7 @@ Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
 
 //Return the previous item to play, shuffled or not
 //NULL if no previous item
-Evas_List *eclair_playlist_get_prev_list(Eclair_Playlist *playlist)
+Eina_List *eclair_playlist_get_prev_list(Eclair_Playlist *playlist)
 {
    Eclair_Media_File *current_file;
 
@@ -513,7 +513,7 @@ Evas_List *eclair_playlist_get_prev_list(Eclair_Playlist *playlist)
    if (!playlist->shuffle)
    {
       if (playlist->repeat && !playlist->current->prev)
-         return evas_list_last(playlist->playlist);
+         return eina_list_last(playlist->playlist);
       else
          return playlist->current->prev;
    }

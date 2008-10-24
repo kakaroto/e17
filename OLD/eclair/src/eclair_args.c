@@ -5,7 +5,7 @@
 static void _eclair_args_print_usage();
 
 //Parse the arguments of the application and stock the filenames to load in the list
-Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
+Evas_Bool eclair_args_parse(Eclair *eclair, Eina_List **filenames)
 {
    int c, i;
    int argc;
@@ -80,7 +80,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
    if (optind < argc)
    {
       for (i = optind; i < argc; i++)
-         *filenames = evas_list_append(*filenames, argv[i]);
+         *filenames = eina_list_append(*filenames, argv[i]);
    }
    return 1;
 }

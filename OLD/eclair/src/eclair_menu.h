@@ -9,7 +9,7 @@
 struct _Eclair_Menu
 {
    Eclair_Menu_Item *parent;
-   Evas_List *items;
+   Eina_List *items;
    Eclair_Engine engine;
    Ecore_Evas *window;
    Ecore_X_Window x_window;

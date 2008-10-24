@@ -12,7 +12,7 @@ struct _Eclair_Subtitle
 
 struct _Eclair_Subtitles
 {
-   Evas_List *subtitles;
+   Eina_List *subtitles;
    Evas_Bool enable;
 };
 

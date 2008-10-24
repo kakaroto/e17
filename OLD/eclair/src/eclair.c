@@ -24,7 +24,7 @@ static void _eclair_add_inter_windows_callbacks(Eclair *eclair);
 //Initialize eclair
 Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
 {
-   Evas_List *filenames, *l;
+   Eina_List *filenames, *l;
    filenames = NULL;
 
    if (!eclair)
@@ -92,7 +92,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    {
       for (; l; l = l->next)
          eclair_playlist_add_uri(&eclair->playlist, l->data, 0, 1);
-      evas_list_free(filenames);
+      eina_list_free(filenames);
       eclair_playlist_container_update(eclair->playlist_container);
    }
    else

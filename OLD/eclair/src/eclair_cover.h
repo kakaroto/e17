@@ -8,9 +8,9 @@
 struct _Eclair_Cover_Manager
 {
    Eclair_Add_File_State cover_add_state;
-   Evas_List *cover_files_to_add;
-   Evas_List *cover_files_to_treat;
-   Evas_List *not_in_amazon_db;
+   Eina_List *cover_files_to_add;
+   Eina_List *cover_files_to_treat;
+   Eina_List *not_in_amazon_db;
 
    Evas_Bool cover_should_treat_files;
    Evas_Bool cover_delete_thread;

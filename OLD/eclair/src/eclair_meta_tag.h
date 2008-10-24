@@ -8,8 +8,8 @@
 struct _Eclair_Meta_Tag_Manager
 {
    Eclair_Add_File_State meta_tag_add_state;
-   Evas_List *meta_tag_files_to_add;
-   Evas_List *meta_tag_files_to_scan;
+   Eina_List *meta_tag_files_to_add;
+   Eina_List *meta_tag_files_to_scan;
 
    Evas_Bool meta_tag_should_scan_files;
    Evas_Bool meta_tag_delete_thread;

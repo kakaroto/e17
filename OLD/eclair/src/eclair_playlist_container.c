@@ -163,7 +163,7 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
 }
 
 //Set the list of media files used by the playlist_container
-void eclair_playlist_container_set_media_list(Evas_Object *obj, Evas_List **media_list)
+void eclair_playlist_container_set_media_list(Evas_Object *obj, Eina_List **media_list)
 {
    Eclair_Playlist_Container *playlist_container;
 
@@ -178,8 +178,8 @@ void eclair_playlist_container_set_media_list(Evas_Object *obj, Evas_List **medi
 void eclair_playlist_container_update(Evas_Object *obj)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l, *l2;
-   Evas_List *first_visible = NULL;
+   Eina_List *l, *l2;
+   Eina_List *first_visible = NULL;
    Eclair_Playlist_Container_Object *entry_object;
    Eclair_Media_File *entry_file;
    int i;
@@ -191,7 +191,7 @@ void eclair_playlist_container_update(Evas_Object *obj)
       return;
 
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   invisible_height = (evas_list_count(*playlist_container->entries) * playlist_container->entry_height) - h;
+   invisible_height = (eina_list_count(*playlist_container->entries) * playlist_container->entry_height) - h;
    if (invisible_height < 0)
       invisible_height = 0;
    offset = invisible_height * playlist_container->scroll_percent;
@@ -278,7 +278,7 @@ void eclair_playlist_container_scroll(Evas_Object *obj, double num_entries)
       return;
 
    evas_object_geometry_get(obj, NULL, NULL, NULL, &h);
-   hidden_items = evas_list_count(*playlist_container->entries) - ((float)h / playlist_container->entry_height);
+   hidden_items = eina_list_count(*playlist_container->entries) - ((float)h / playlist_container->entry_height);
    if (hidden_items > 0.0)
    {
       percent = playlist_container->scroll_percent + (num_entries / hidden_items);
@@ -299,7 +299,7 @@ void eclair_playlist_container_scroll_start(Evas_Object *obj, double speed)
       return;
 
    evas_object_geometry_get(obj, NULL, NULL, NULL, &h);
-   length = evas_list_count(*playlist_container->entries) * playlist_container->entry_height;
+   length = eina_list_count(*playlist_container->entries) * playlist_container->entry_height;
    
    if (length <= h)
       return;
@@ -345,10 +345,10 @@ static int _eclair_playlist_container_scroll_timer(void *data)
 }
 
 //Scroll the playlist container up to the element
-void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Evas_List *element)
+void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Eina_List *element)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Evas_Coord container_height;
    int i, start_offset, element_offset;
 
@@ -414,7 +414,7 @@ int eclair_playlist_container_offset_get_from_percent(Evas_Object *obj, double s
       return 0;
 
    evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
-   hidden_height = (playlist_container->entry_height * evas_list_count(*playlist_container->entries)) - container_height;
+   hidden_height = (playlist_container->entry_height * eina_list_count(*playlist_container->entries)) - container_height;
 
    if (hidden_height <= 0)
       return 0;
@@ -435,7 +435,7 @@ double eclair_playlist_container_percent_get_from_offset(Evas_Object *obj, int o
       return 0;
 
    evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
-   hidden_height = (playlist_container->entry_height * evas_list_count(*playlist_container->entries)) - container_height;
+   hidden_height = (playlist_container->entry_height * eina_list_count(*playlist_container->entries)) - container_height;
    scroll_percent = (double)offset / hidden_height;
    if (scroll_percent < 0)
       scroll_percent = 0;
@@ -489,7 +489,7 @@ Evas_Bool eclair_playlist_container_nth_element_is_visible(Evas_Object *obj, int
 void eclair_playlist_container_select_file(Evas_Object *obj, Eclair_Media_File *media_file, Evas_Modifier *modifiers)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *current_file;
    Evas_Bool selected = 0;
 
@@ -551,7 +551,7 @@ void eclair_playlist_container_select_file(Evas_Object *obj, Eclair_Media_File *
 //Select all the media files
 void eclair_playlist_container_select_all(Evas_Object *obj)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *media_file;
    Eclair_Playlist_Container *playlist_container;
 
@@ -569,7 +569,7 @@ void eclair_playlist_container_select_all(Evas_Object *obj)
 //Unselect all the media files
 void eclair_playlist_container_select_none(Evas_Object *obj)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *media_file;
    Eclair_Playlist_Container *playlist_container;
 
@@ -587,7 +587,7 @@ void eclair_playlist_container_select_none(Evas_Object *obj)
 //Invert the selection of media files in the playlist container
 void eclair_playlist_container_invert_selection(Evas_Object *obj)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Media_File *media_file;
    Eclair_Playlist_Container *playlist_container;
 
@@ -637,7 +637,7 @@ static void _eclair_playlist_container_smart_add(Evas_Object *obj)
 static void _eclair_playlist_container_smart_del(Evas_Object *obj)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -658,7 +658,7 @@ static void _eclair_playlist_container_smart_del(Evas_Object *obj)
    if (playlist_container->scroll_to_timer)
       ecore_timer_del(playlist_container->scroll_to_timer);
 
-   evas_list_free(playlist_container->entry_objects);
+   eina_list_free(playlist_container->entry_objects);
    evas_object_del(playlist_container->clip);
    evas_object_del(playlist_container->grabber);
    free(playlist_container->entry_theme_path);
@@ -668,7 +668,7 @@ static void _eclair_playlist_container_smart_del(Evas_Object *obj)
 static void _eclair_playlist_container_smart_layer_set(Evas_Object *obj, int layer)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -689,7 +689,7 @@ static void _eclair_playlist_container_smart_layer_set(Evas_Object *obj, int lay
 static void _eclair_playlist_container_smart_raise(Evas_Object *obj)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -710,7 +710,7 @@ static void _eclair_playlist_container_smart_raise(Evas_Object *obj)
 static void _eclair_playlist_container_smart_lower(Evas_Object *obj)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -731,7 +731,7 @@ static void _eclair_playlist_container_smart_lower(Evas_Object *obj)
 static void _eclair_playlist_container_smart_stack_above(Evas_Object *obj, Evas_Object *above)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -752,7 +752,7 @@ static void _eclair_playlist_container_smart_stack_above(Evas_Object *obj, Evas_
 static void _eclair_playlist_container_smart_stack_below(Evas_Object *obj, Evas_Object *below)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
 
    if (!(playlist_container = evas_object_smart_data_get(obj)))
@@ -790,7 +790,7 @@ static void _eclair_playlist_container_smart_move(Evas_Object *obj, Evas_Coord x
 static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
    Eclair_Playlist_Container *playlist_container;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Playlist_Container_Object *entry;
    int num_entries;
    Evas_Coord current_w, current_h;
@@ -810,7 +810,7 @@ static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord
       if (num_entries < 0)
          num_entries = 0;
    
-      while(evas_list_count(playlist_container->entry_objects) < num_entries)
+      while(eina_list_count(playlist_container->entry_objects) < num_entries)
       {
          entry = malloc(sizeof(Eclair_Playlist_Container_Object));
          entry->rect = evas_object_rectangle_add(evas);
@@ -827,18 +827,18 @@ static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord
          evas_object_event_callback_add(entry->text, EVAS_CALLBACK_MOUSE_DOWN, _eclair_playlist_container_entry_down_cb, playlist_container->eclair);
          evas_object_smart_member_add(entry->text, obj);
          evas_object_stack_above(entry->text, entry->rect);
-         playlist_container->entry_objects = evas_list_append(playlist_container->entry_objects, entry);
+         playlist_container->entry_objects = eina_list_append(playlist_container->entry_objects, entry);
       }
-      while(evas_list_count(playlist_container->entry_objects) > num_entries)
+      while(eina_list_count(playlist_container->entry_objects) > num_entries)
       {
-         l = evas_list_last(playlist_container->entry_objects);
+         l = eina_list_last(playlist_container->entry_objects);
          if ((entry = l->data))
          {
             evas_object_del(entry->rect);
             evas_object_del(entry->text);
             free(entry);
          }
-         playlist_container->entry_objects = evas_list_remove_list(playlist_container->entry_objects, l);
+         playlist_container->entry_objects = eina_list_remove_list(playlist_container->entry_objects, l);
       }
    }
    evas_object_resize(playlist_container->clip, w, h);

@@ -52,7 +52,7 @@ static void _eclair_cover_build_url_for_item_search(const char *keywords, char u
 static void _eclair_cover_build_url_for_item_images(const char *ASIN, char url[MAX_REQUEST_SIZE]);
 static xmlNode *_eclair_cover_get_node_xml_tree(xmlNode *root_node, const char *prop);
 static xmlChar *_eclair_cover_get_prop_value_from_xml_tree(xmlNode *root_node, const char *prop);
-static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, const char *artist, const char *album);
+static void _eclair_cover_add_file_to_not_in_amazon_db_list(Eina_List **list, const char *artist, const char *album);
 
 static void *_eclair_cover_thread(void *param);
 
@@ -77,7 +77,7 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
 //Shutdown the cover module
 void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Cover_Not_In_DB_Album *album;
 
    if (!cover_manager)
@@ -91,7 +91,7 @@ void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
       free(album->album);
       free(album);
    }
-   evas_list_free(cover_manager->not_in_amazon_db);
+   eina_list_free(cover_manager->not_in_amazon_db);
 
    fprintf(stderr, "Cover: Debug: Destroying cover thread\n");
    cover_manager->cover_delete_thread = 1;
@@ -110,7 +110,7 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
    while (cover_manager->cover_add_state != ECLAIR_IDLE)
       usleep(10000);
    cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
-   cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
+   cover_manager->cover_files_to_add = eina_list_append(cover_manager->cover_files_to_add, media_file);
    cover_manager->cover_add_state = ECLAIR_IDLE;
    
    cover_manager->cover_should_treat_files = 1;
@@ -122,7 +122,7 @@ static void *_eclair_cover_thread(void *param)
 {
    Eclair_Cover_Manager *cover_manager;
    Eclair *eclair;
-   Evas_List *l, *next;
+   Eina_List *l, *next;
    Eclair_Media_File *current_file;
 
    if (!(cover_manager = param) || !(eclair = cover_manager->eclair))
@@ -139,8 +139,8 @@ static void *_eclair_cover_thread(void *param)
       {
          if (cover_manager->cover_delete_thread)
          {
-            cover_manager->cover_files_to_treat = evas_list_free(cover_manager->cover_files_to_treat);
-            cover_manager->cover_files_to_add = evas_list_free(cover_manager->cover_files_to_add);
+            cover_manager->cover_files_to_treat = eina_list_free(cover_manager->cover_files_to_treat);
+            cover_manager->cover_files_to_add = eina_list_free(cover_manager->cover_files_to_add);
             cover_manager->cover_delete_thread = 0;
             return NULL;
          }
@@ -151,8 +151,8 @@ static void *_eclair_cover_thread(void *param)
                usleep(10000);
             cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = cover_manager->cover_files_to_add; l; l = l->next)
-               cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, l->data);
-            cover_manager->cover_files_to_add = evas_list_free(cover_manager->cover_files_to_add);
+               cover_manager->cover_files_to_treat = eina_list_append(cover_manager->cover_files_to_treat, l->data);
+            cover_manager->cover_files_to_add = eina_list_free(cover_manager->cover_files_to_add);
             cover_manager->cover_add_state = ECLAIR_IDLE;
          }
          //Treat the files in the list
@@ -162,7 +162,7 @@ static void *_eclair_cover_thread(void *param)
                break;
             next = l->next;
             current_file = l->data;
-            cover_manager->cover_files_to_treat = evas_list_remove_list(cover_manager->cover_files_to_treat, l);
+            cover_manager->cover_files_to_treat = eina_list_remove_list(cover_manager->cover_files_to_treat, l);
             if (current_file)
             {
                if (current_file->delete_me)
@@ -248,7 +248,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    char url[MAX_REQUEST_SIZE];
    char *keywords, *converted_keywords;
    FILE *cover_file;
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Cover_Not_In_DB_Album *not_in_db_album;
 
    if (!cover_manager || !artist || !album || (strlen(artist) <= 0) || (strlen(album) <= 0))
@@ -482,7 +482,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
    char packet_chunk[PACKET_CHUNK_SIZE];
    int num_bytes_read, pos;
    Eclair_Cover_Packet_Chunk *chunk;
-   Evas_List *l, *chunks = NULL;
+   Eina_List *l, *chunks = NULL;
 
    if (socket_fd < 0 || !packet || !length)
       return 0;
@@ -494,7 +494,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
       chunk->size = num_bytes_read;
       chunk->data = malloc(num_bytes_read);
       memcpy(chunk->data, packet_chunk, num_bytes_read);
-      chunks = evas_list_append(chunks, chunk);
+      chunks = eina_list_append(chunks, chunk);
       *length += num_bytes_read;
    }
 
@@ -516,7 +516,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
       pos += chunk->size;
       free(chunk);
    }
-   evas_list_free(chunks);
+   eina_list_free(chunks);
 
    return 1;
 }
@@ -649,7 +649,7 @@ static xmlChar *_eclair_cover_get_prop_value_from_xml_tree(xmlNode *root_node, c
 }
 
 //Add the album to the list of albums which amazon doesn't have in its database
-static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, const char *artist, const char *album)
+static void _eclair_cover_add_file_to_not_in_amazon_db_list(Eina_List **list, const char *artist, const char *album)
 {
    Eclair_Cover_Not_In_DB_Album *new_album;
    
@@ -659,7 +659,7 @@ static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, co
    new_album = malloc(sizeof(Eclair_Cover_Not_In_DB_Album));
    new_album->artist = strdup(artist);
    new_album->album = strdup(album);
-   *list = evas_list_prepend(*list, new_album);
+   *list = eina_list_prepend(*list, new_album);
 }
 
 //Set the cover of the file

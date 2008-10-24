@@ -18,7 +18,7 @@ void eclair_subtitles_init(Eclair_Subtitles *subtitles)
 //Free the loaded subtitles
 void eclair_subtitles_free(Eclair_Subtitles *subtitles)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Subtitle *sub;
 
    if (!subtitles)
@@ -26,14 +26,14 @@ void eclair_subtitles_free(Eclair_Subtitles *subtitles)
 
    for (l = subtitles->subtitles; l && (sub = l->data); l = l->next)
       free(sub->subtitle);
-   evas_list_free(subtitles->subtitles);
+   eina_list_free(subtitles->subtitles);
    subtitles->subtitles = NULL;
 }
 
 //Return current subtitle (may be NULL)
 char *eclair_subtitles_get_current_subtitle(Eclair_Subtitles *subtitles, double current_time)
 {
-   Evas_List *l;
+   Eina_List *l;
    Eclair_Subtitle *subtitle;
 
    if (!subtitles || !subtitles->subtitles)
@@ -116,7 +116,7 @@ void eclair_subtitles_sort(Eclair_Subtitles *subtitles)
    if (!subtitles || !subtitles->subtitles)
       return;
 
-   subtitles->subtitles = evas_list_sort(subtitles->subtitles, evas_list_count(subtitles->subtitles), _eclair_subtitles_sort_cb);
+   subtitles->subtitles = eina_list_sort(subtitles->subtitles, eina_list_count(subtitles->subtitles), _eclair_subtitles_sort_cb);
 }
 
 //Try to load subtitles from the media filename
@@ -181,7 +181,7 @@ Evas_Bool eclair_subtitles_load_srt(Eclair_Subtitles *subtitles, const char *pat
                if (new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\n' ||
                   new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\r')
                   new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] = 0;
-               subtitles->subtitles = evas_list_append(subtitles->subtitles, new_subtitle);
+               subtitles->subtitles = eina_list_append(subtitles->subtitles, new_subtitle);
             }
             new_subtitle = calloc(1, sizeof(Eclair_Subtitle));
             have_time = have_text = 0;
@@ -224,7 +224,7 @@ Evas_Bool eclair_subtitles_load_srt(Eclair_Subtitles *subtitles, const char *pat
       if (new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\n' ||
          new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\r')
          new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] = 0;
-      subtitles->subtitles = evas_list_append(subtitles->subtitles, new_subtitle);
+      subtitles->subtitles = eina_list_append(subtitles->subtitles, new_subtitle);
    }
 
    fclose(subtitles_file);

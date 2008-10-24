@@ -10,8 +10,8 @@ struct _Eclair_Playlist_Container
    //Container vars
    Evas_Object *clip;
    Evas_Object *grabber;
-   Evas_List *entry_objects;
-   Evas_List **entries;
+   Eina_List *entry_objects;
+   Eina_List **entries;
    Eclair_Media_File *last_selected;
    double scroll_percent;
 
@@ -40,7 +40,7 @@ struct _Eclair_Playlist_Container
 
 Evas_Object *eclair_playlist_container_object_add(Evas *evas, Eclair *eclair);
 void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char *entry_theme_path);
-void eclair_playlist_container_set_media_list(Evas_Object *obj, Evas_List **media_list);
+void eclair_playlist_container_set_media_list(Evas_Object *obj, Eina_List **media_list);
 void eclair_playlist_container_update(Evas_Object *obj);
 
 void eclair_playlist_container_scroll(Evas_Object *obj, double num_entries);
@@ -48,7 +48,7 @@ void eclair_playlist_container_scroll_percent_set(Evas_Object *obj, double perce
 double eclair_playlist_container_scroll_percent_get(Evas_Object *obj);
 void eclair_playlist_container_scroll_start(Evas_Object *obj, double speed);
 void eclair_playlist_container_scroll_stop(Evas_Object *obj);
-void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Evas_List *element);
+void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Eina_List *element);
 int eclair_playlist_container_offset_get_from_percent(Evas_Object *obj, double scroll_percent);
 double eclair_playlist_container_percent_get_from_offset(Evas_Object *obj, int offset);
 int eclair_playlist_container_offset_get(Evas_Object *obj);

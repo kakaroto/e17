@@ -4,6 +4,6 @@
 #include <Evas.h>
 #include "eclair_types.h"
 
-Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames);
+Evas_Bool eclair_args_parse(Eclair *eclair, Eina_List **filenames);
 
 #endif
