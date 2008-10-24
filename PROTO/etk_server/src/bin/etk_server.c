@@ -428,46 +428,46 @@ static void *etk_server_function_exists(char *func_name, char **args, int arg_nu
 	int i;
 	
 	/* check number of args */
-	if(evas_list_count(sfunc->arg_types) != arg_num &&
-	   !evas_list_find(sfunc->arg_types, "..."))
+	if(eina_list_count(sfunc->arg_types) != arg_num &&
+	   !eina_list_data_find(sfunc->arg_types, "..."))
 	  {
 	     fprintf(stderr,"etk-server warning: calling %s with %d args "
 		     "while it expects %d args!\n", func_name, arg_num, 
-		     evas_list_count(sfunc->arg_types));
+		     eina_list_count(sfunc->arg_types));
 	  }
 	
 	/* check arg types */
-	for(i = 0; i < arg_num && i < evas_list_count(sfunc->arg_types); i++)
+	for(i = 0; i < arg_num && i < eina_list_count(sfunc->arg_types); i++)
 	  {
 	     if(args[i] == NULL
-		&& strchr(evas_list_nth(sfunc->arg_types, i), '*'))
+		&& strchr(eina_list_nth(sfunc->arg_types, i), '*'))
 	       continue;	     
 	     /* optimize! */
 	     if(is_number(args[i]))
 	       {		 
-		  if(evas_list_nth(sfunc->arg_types, i) != NULL)
+		  if(eina_list_nth(sfunc->arg_types, i) != NULL)
 		    {
-		       if(strcasestr(evas_list_nth(sfunc->arg_types, i), "int")||
-			  strcasestr(evas_list_nth(sfunc->arg_types, i), "double")||
-			  strcasestr(evas_list_nth(sfunc->arg_types, i), "float")||
-			  strcasestr(evas_list_nth(sfunc->arg_types, i), "bool")||
-			  strcasestr(evas_list_nth(sfunc->arg_types, i), "Etk_Tree_Mode")||
-			  !strcasecmp(evas_list_nth(sfunc->arg_types, i), "char")
+		       if(strcasestr(eina_list_nth(sfunc->arg_types, i), "int")||
+			  strcasestr(eina_list_nth(sfunc->arg_types, i), "double")||
+			  strcasestr(eina_list_nth(sfunc->arg_types, i), "float")||
+			  strcasestr(eina_list_nth(sfunc->arg_types, i), "bool")||
+			  strcasestr(eina_list_nth(sfunc->arg_types, i), "Etk_Tree_Mode")||
+			  !strcasecmp(eina_list_nth(sfunc->arg_types, i), "char")
 			  )
 			 continue;
 		    }
 	       }
 	     
 	     if(evas_hash_find(_etk_server_vars, args[i]) != NULL
-		&& strchr(evas_list_nth(sfunc->arg_types, i), '*'))
+		&& strchr(eina_list_nth(sfunc->arg_types, i), '*'))
 	       continue;	     
 	     
-	     if(strcasestr(evas_list_nth(sfunc->arg_types, i), "char") &&
-		strchr(evas_list_nth(sfunc->arg_types, i), '*'))
+	     if(strcasestr(eina_list_nth(sfunc->arg_types, i), "char") &&
+		strchr(eina_list_nth(sfunc->arg_types, i), '*'))
 	       continue;
 	     
 	     fprintf(stderr, "etk-server warning: calling %s with argument %d (%s) "
-		     "of improper type, %s required!\n", func_name, i + 1, args[i], (char*)evas_list_nth(sfunc->arg_types, i));
+		     "of improper type, %s required!\n", func_name, i + 1, args[i], (char*)eina_list_nth(sfunc->arg_types, i));
 	  }
 
      }
@@ -503,7 +503,7 @@ static void etk_server_server_foreach(void *value, void *user_data)
 static void _etk_server_internal_callback(Etk_Object *object, ...)
 {
    Etk_Type *type;
-   Evas_List *sigs = NULL;   
+   Eina_List *sigs = NULL;   
    char *sig = NULL;
    char *app_id = NULL;
    va_list args;   
@@ -529,7 +529,7 @@ static void _etk_server_internal_callback(Etk_Object *object, ...)
 	  {}
 	else if(!strcmp(type_name, "Etk_Dialog"))
 	  {
-	     Evas_List *l;
+	     Eina_List *l;
 	     
 	     for(l = sigs; l; l = l->next)
 	       {
@@ -553,7 +553,7 @@ static void _etk_server_internal_callback(Etk_Object *object, ...)
    
      {      
 /*
-	Evas_List *l;
+	Eina_List *l;
 	
 	for(l = _etk_server_clients; l; l = l->next);
 	  {
@@ -633,8 +633,8 @@ void *etk_server_var_get(char *key)
 
 void etk_server_signal_connect(char *sig, Etk_Object *object, char *id)
 {
-   Evas_List *callbacks = NULL;
-   Evas_List *sigs = NULL;
+   Eina_List *callbacks = NULL;
+   Eina_List *sigs = NULL;
    
    if(!object)
      return;
@@ -658,6 +658,6 @@ void etk_server_signal_connect(char *sig, Etk_Object *object, char *id)
    if(callbacks != NULL)
      _etk_server_callbacks = evas_hash_del(_etk_server_callbacks, sig, callbacks);
 
-   callbacks = evas_list_append(callbacks, object);
+   callbacks = eina_list_append(callbacks, object);
    _etk_server_callbacks = evas_hash_add(_etk_server_callbacks, sig, callbacks);
 }

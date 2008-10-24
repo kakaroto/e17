@@ -30,8 +30,8 @@ struct _Etk_Server_Func
 {
       char *name;
       char *return_type;
-      Evas_List *arg_names;
-      Evas_List *arg_types;
+      Eina_List *arg_names;
+      Eina_List *arg_types;
 };
 
 struct _Etk_Server_Signal
