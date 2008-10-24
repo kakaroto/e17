@@ -1,91 +1,94 @@
 # Moon module (e17), French translation
 # This file is put in the public domain.
-# 
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Moon module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 19:28+0200\n"
-"PO-Revision-Date: 2008-01-23 01:50+0200\n"
-"Last-Translator: "
-"Language-Team: "
-"MIME-Version: 1.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-10-23 11:07+0400\n"
+"PO-Revision-Date: 2008-10-24 16:57+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language-Team:  Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 
 #: src/e_mod_config.c:101
 msgid "Moon Configuration"
-msgstr ""
+msgstr "Configuration de la lune"
 
 #: src/e_mod_config.c:157
 msgid "Display Settings"
-msgstr ""
+msgstr "Configuration de l'aspect"
 
 #: src/e_mod_config.c:158
 msgid "Animated Clouds"
-msgstr ""
+msgstr "Nuages animés"
 
 #: src/e_mod_config.c:162
 msgid "Moon Phase Value"
-msgstr ""
+msgstr "Variable de la phase lunaire"
 
 #: src/e_mod_config.c:164
 msgid "Show always"
-msgstr ""
+msgstr "Toujours afficher"
 
 #: src/e_mod_config.c:166
 msgid "Show on mouse over"
-msgstr ""
+msgstr "Afficher au survol"
 
 #: src/e_mod_config.c:168
 msgid "Never show"
-msgstr ""
+msgstr "Ne pas afficher"
 
 #: src/e_mod_config.c:172
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: src/e_mod_config.c:175
 msgid "Numerical"
-msgstr ""
+msgstr "Numérique"
 
 #: src/e_mod_main.c:207
 msgid "Moon"
-msgstr ""
+msgstr "Lune"
 
 #: src/e_mod_main.c:247
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #: src/e_mod_main.c:491
 msgid "New Moon"
-msgstr ""
+msgstr "Nouvelle lune"
 
 #: src/e_mod_main.c:493
 msgid "Waxing Crescent"
-msgstr ""
+msgstr "Premier croissant"
 
 #: src/e_mod_main.c:495
 msgid "First Quarter"
-msgstr ""
+msgstr "Premier quartier"
 
 #: src/e_mod_main.c:497
 msgid "Waxing Gibbous"
-msgstr ""
+msgstr "Lune gibbeuse ascendante"
 
 #: src/e_mod_main.c:499
 msgid "Full Moon"
-msgstr ""
+msgstr "Pleine lune"
 
 #: src/e_mod_main.c:501
 msgid "Waning Gibbous"
-msgstr ""
+msgstr "lune gibbeuse descendante"
 
 #: src/e_mod_main.c:503
 msgid "Last Quarter"
-msgstr ""
+msgstr "Dernier quartier"
 
 #: src/e_mod_main.c:505
 msgid "Waning Crescent"
-msgstr ""
+msgstr "Dernier croissant"
+

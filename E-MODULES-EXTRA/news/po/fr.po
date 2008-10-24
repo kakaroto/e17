@@ -1,477 +1,472 @@
 # News module (e17), French translation
 # This file is put in the public domain.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: News module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 20:37+0200\n"
-"PO-Revision-Date: 2008-10-22 21:49+0800\n"
-"Last-Translator:  <>\n"
-"Language-Team: \n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-10-23 11:08+0400\n"
+"PO-Revision-Date: 2008-10-24 16:58+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
-
-#: src/module/news_config_dialog_feed.c:63
-msgid "You need to <hilight>create a category</hilight> first"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:77
-msgid "News Feed Configuration"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:329
-msgid "Basic informations"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:345
-msgid "Name :"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:349
-msgid "Feed url :"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:353
-msgid "Mark as important feed"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:358
-msgid "Category"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:368
-#: src/module/news_config_dialog_feed.c:412
-msgid "Language"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:391
-msgid "Advanced informations"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:393
-#: src/module/news_config_dialog_feed.c:414
-msgid "Description"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:397
-#: src/module/news_config_dialog_feed.c:416
-msgid "Home url"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:405
-msgid "Server informations"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:407
-msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:410
-#: src/module/news_config_dialog_category.c:145
-msgid "Name"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:539
-#: src/module/news_config_dialog_category.c:203
-msgid "Select an Icon"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:564
-#: src/module/news_config_dialog_category.c:228
-msgid "OK"
-msgstr ""
-
-#: src/module/news_config_dialog_feed.c:565
-#: src/module/news_config_dialog_category.c:229
-msgid "Cancel"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:82
-msgid "News Feeds Configuration"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:290
-msgid "Categories"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:314
-#: src/module/news_config_dialog_feeds.c:388
-msgid "Add"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:316
-#: src/module/news_config_dialog_feeds.c:390
-msgid "Delete"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:319
-#: src/module/news_config_dialog_feeds.c:393
-msgid "Configure"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:331
-#: src/module/news_config_dialog_langs.c:133
-msgid "Languages"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:333
-msgid "All"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:336
-msgid "Select"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:346
-msgid "Empty the lists"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:349
-msgid "Restore default lists"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:358
-#: src/module/news_config_dialog.c:190 src/module/news_config_dialog.c:228
-msgid "Feeds"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:686
-msgid ""
-"There are <hilight>feeds</hilight> in this category.<br>You have to "
-"<hilight>remove them first</hilight>"
-msgstr ""
-
-#: src/module/news_config_dialog_feeds.c:754
-#: src/module/news_config_dialog_feeds.c:779
-msgid "News Module - Are you sure ?"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:40
-msgid "News Gadget Configuration"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:104
-msgid "View Mode"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:107
-msgid "Show one icon for all feeds"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:109
-msgid "Show all feeds"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:111
-msgid "Show unread feeds"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:113
-msgid "Show all feeds marked as important"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:115
-msgid "Show unread feeds marked as important"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:120
-msgid "Feed open in"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:123
-msgid "the feed viewer"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:125
-msgid "my favorite browser"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:127
-msgid "Browser opens home url"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:129
-msgid "instead of feed url"
-msgstr ""
-
-#: src/module/news_config_dialog_item.c:136
-msgid "Apply this to all News gadgets"
-msgstr ""
-
-#: src/module/news_viewer.c:376
-msgid "Feeds in this gadget"
-msgstr ""
-
-#: src/module/news_viewer.c:442
-msgid "Articles in selected feed"
-msgstr ""
-
-#: src/module/news_config_dialog_category.c:50
-msgid "News Category Configuration"
-msgstr ""
-
-#: src/module/news_config_dialog_category.c:135
-msgid "Icon"
-msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 
 #: src/module/e_mod_main.c:52
 msgid "Config init failed"
-msgstr ""
+msgstr "L'initialisation de la configuration du module a échoué"
 
 #: src/module/e_mod_main.c:53
 msgid "Parser init failed"
-msgstr ""
+msgstr "L'initialisation de l'analyseur syntaxique a échoué"
 
 #: src/module/e_mod_main.c:54
 msgid "Feeds init failed"
-msgstr ""
+msgstr "L'initialisation des flux a échoué"
 
 #: src/module/e_mod_main.c:55
 msgid "Viewer init failed"
-msgstr ""
+msgstr "L'initialisation du lecteur a échoué"
 
 #: src/module/e_mod_main.c:56
 msgid "Popup subsystem init failed"
-msgstr ""
+msgstr "L'initialisation du sous-système de pop-up a échoué"
 
 #: src/module/e_mod_main.c:219
 msgid "News"
-msgstr ""
+msgstr "Nouvelles"
+
+#: src/module/news_config.c:100
+#, c-format
+msgid "<hilight>News module : Configuration Upgraded</hilight><br><br>Your configuration of news module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr "<hilight>Module de nouvelles: Configuration actualisée</hilight><br><br>La configuration du module de nouvelles<br>a été mise à jour<br>Vos réglages ont dû être supprimés<br>Désolé pour le désagrément<br><br>(%d ->%d)"
+
+#: src/module/news_config.c:112
+#, c-format
+msgid "<hilight>News module : Configuration Downgraded</hilight><br><br>Your configuration of News module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr "<hilight>Module de nouvelles: Configuration rétrogradée</hilight><br><br>La configuration du module de nouvelles<br>a été ramenée à un état antérieur<br>Vos réglages ont dû être supprimés<br>Désolé pour le désagrément<br><br>(%d ->%d)"
 
 #: src/module/news_config_dialog.c:90
 msgid "News Main Configuration"
-msgstr ""
+msgstr "Configuration principale du module de nouvelles"
 
-#: src/module/news_config_dialog.c:192 src/module/news_config_dialog.c:236
+#: src/module/news_config_dialog.c:190
+#: src/module/news_config_dialog.c:228
+#: src/module/news_config_dialog_feeds.c:358
+msgid "Feeds"
+msgstr "Flux"
+
+#: src/module/news_config_dialog.c:192
+#: src/module/news_config_dialog.c:236
 msgid "Sort lists by name (disable Move action)"
-msgstr ""
+msgstr "Classer les listes par ordre alphabétique (désactive l'action déplacer)"
 
-#: src/module/news_config_dialog.c:197 src/module/news_config_dialog.c:305
+#: src/module/news_config_dialog.c:197
+#: src/module/news_config_dialog.c:305
 msgid "News Viewer"
-msgstr ""
+msgstr "Lecteur de nouvelles"
 
 #: src/module/news_config_dialog.c:199
 msgid "Font size"
-msgstr ""
+msgstr "Taille de la police"
 
-#: src/module/news_config_dialog.c:202 src/module/news_config_dialog.c:316
+#: src/module/news_config_dialog.c:202
+#: src/module/news_config_dialog.c:316
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
 #: src/module/news_config_dialog.c:205
 msgid "Font color"
-msgstr ""
+msgstr "Couleur de la police"
 
-#: src/module/news_config_dialog.c:230 src/module/news_config_dialog.c:270
+#: src/module/news_config_dialog.c:230
+#: src/module/news_config_dialog.c:270
 #: src/module/news_config_dialog.c:290
 msgid "Timer"
-msgstr ""
+msgstr "Minuteur"
 
 #: src/module/news_config_dialog.c:232
 #, c-format
 msgid "%1.0f min"
-msgstr ""
+msgstr "%1.0f min"
 
 #: src/module/news_config_dialog.c:241
 msgid "Browser"
-msgstr ""
+msgstr "Navigateur"
 
 #: src/module/news_config_dialog.c:243
 msgid "Uses xdg-open script, from freedesktop.org"
-msgstr ""
+msgstr "Utilise le script xdg-open, de freedesktop.org"
 
 #: src/module/news_config_dialog.c:248
 msgid "Popup On News"
-msgstr ""
+msgstr "Pop-up à la réception"
 
 #: src/module/news_config_dialog.c:251
 msgid "Never"
-msgstr ""
+msgstr "Jamais"
 
 #: src/module/news_config_dialog.c:257
 msgid "Only on urgent feeds"
-msgstr ""
+msgstr "Uniquement pour les flux urgents"
 
 #: src/module/news_config_dialog.c:263
 msgid "On all feeds"
-msgstr ""
+msgstr "Pour tous les flux"
 
-#: src/module/news_config_dialog.c:272 src/module/news_config_dialog.c:292
+#: src/module/news_config_dialog.c:272
+#: src/module/news_config_dialog.c:292
 #, c-format
 msgid "%1.0f s"
-msgstr ""
+msgstr "%1.0f s"
 
 #: src/module/news_config_dialog.c:280
 msgid "Popup On Warning / Error"
-msgstr ""
+msgstr "Pop-up pour Avertissement / Erreur"
 
 #: src/module/news_config_dialog.c:285
 msgid "Show on timeout ?"
-msgstr ""
+msgstr "Afficher pour délai d'attente dépassé ?"
 
 #: src/module/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr ""
+msgstr "FLux non lus d'abord"
 
 #: src/module/news_config_dialog.c:309
 msgid "Unread articles first"
-msgstr ""
+msgstr "Articles non lus d'abord"
 
 #: src/module/news_config_dialog.c:311
 msgid "Sort articles by date"
-msgstr ""
+msgstr "Classer les articles par ordre chronologique"
 
 #: src/module/news_config_dialog.c:314
 msgid "Font"
-msgstr ""
+msgstr "Police"
 
 #: src/module/news_config_dialog.c:324
 msgid "Font Shadow"
-msgstr ""
+msgstr "Ombre de la police"
 
 #: src/module/news_config_dialog.c:336
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: src/module/news_config_dialog.c:338
 msgid "Enable"
-msgstr ""
+msgstr "Activer"
 
 #: src/module/news_config_dialog.c:340
 msgid "Host"
-msgstr ""
+msgstr "Hôte"
 
 #: src/module/news_config_dialog.c:344
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
-#: src/module/news_config.c:100
-#, c-format
-msgid ""
-"<hilight>News module : Configuration Upgraded</hilight><br><br>Your "
-"configuration of news module<br>has been upgraded<br>Your settings were "
-"removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr ""
+#: src/module/news_config_dialog_category.c:50
+msgid "News Category Configuration"
+msgstr "Configuration de la catégorie des nouvelles"
 
-#: src/module/news_config.c:112
-#, c-format
-msgid ""
-"<hilight>News module : Configuration Downgraded</hilight><br><br>Your "
-"configuration of News module<br>has been downgraded<br>Your settings were "
-"removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr ""
+#: src/module/news_config_dialog_category.c:135
+msgid "Icon"
+msgstr "Icone"
+
+#: src/module/news_config_dialog_category.c:145
+#: src/module/news_config_dialog_feed.c:410
+msgid "Name"
+msgstr "Nom"
+
+#: src/module/news_config_dialog_category.c:203
+#: src/module/news_config_dialog_feed.c:539
+msgid "Select an Icon"
+msgstr "Sélectionner un icone"
+
+#: src/module/news_config_dialog_category.c:228
+#: src/module/news_config_dialog_feed.c:564
+msgid "OK"
+msgstr "Ok"
+
+#: src/module/news_config_dialog_category.c:229
+#: src/module/news_config_dialog_feed.c:565
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/module/news_config_dialog_feed.c:63
+msgid "You need to <hilight>create a category</hilight> first"
+msgstr "Vous devez d'abord <hilight>créer une catégorie</hilight>"
+
+#: src/module/news_config_dialog_feed.c:77
+msgid "News Feed Configuration"
+msgstr "Configuration du flux de nouvelles"
+
+#: src/module/news_config_dialog_feed.c:329
+msgid "Basic informations"
+msgstr "Informations basiques"
+
+#: src/module/news_config_dialog_feed.c:345
+msgid "Name :"
+msgstr "Nom:"
+
+#: src/module/news_config_dialog_feed.c:349
+msgid "Feed url :"
+msgstr "Url du flux:"
+
+#: src/module/news_config_dialog_feed.c:353
+msgid "Mark as important feed"
+msgstr "Marquer comme important"
+
+#: src/module/news_config_dialog_feed.c:358
+msgid "Category"
+msgstr "Catégorie"
+
+#: src/module/news_config_dialog_feed.c:368
+#: src/module/news_config_dialog_feed.c:412
+msgid "Language"
+msgstr "Langue"
+
+#: src/module/news_config_dialog_feed.c:391
+msgid "Advanced informations"
+msgstr "Informations avancées"
+
+#: src/module/news_config_dialog_feed.c:393
+#: src/module/news_config_dialog_feed.c:414
+msgid "Description"
+msgstr "Description"
+
+#: src/module/news_config_dialog_feed.c:397
+#: src/module/news_config_dialog_feed.c:416
+msgid "Home url"
+msgstr "Url de démarrage"
+
+#: src/module/news_config_dialog_feed.c:405
+msgid "Server informations"
+msgstr "Informations du serveur"
+
+#: src/module/news_config_dialog_feed.c:407
+msgid "Do allow the server to overwrite the informations you entered ?"
+msgstr "Autoriser le serveur à modifier les informations choisies ?"
+
+#: src/module/news_config_dialog_feeds.c:82
+msgid "News Feeds Configuration"
+msgstr "Configuration des flux de nouvelles"
+
+#: src/module/news_config_dialog_feeds.c:290
+msgid "Categories"
+msgstr "Catégories"
+
+#: src/module/news_config_dialog_feeds.c:314
+#: src/module/news_config_dialog_feeds.c:388
+msgid "Add"
+msgstr "Ajouter"
+
+#: src/module/news_config_dialog_feeds.c:316
+#: src/module/news_config_dialog_feeds.c:390
+msgid "Delete"
+msgstr "Supprimer"
+
+#: src/module/news_config_dialog_feeds.c:319
+#: src/module/news_config_dialog_feeds.c:393
+msgid "Configure"
+msgstr "Configurer"
+
+#: src/module/news_config_dialog_feeds.c:331
+#: src/module/news_config_dialog_langs.c:133
+msgid "Languages"
+msgstr "Langues"
+
+#: src/module/news_config_dialog_feeds.c:333
+msgid "All"
+msgstr "Tout"
+
+#: src/module/news_config_dialog_feeds.c:336
+msgid "Select"
+msgstr "Sélectionner"
+
+#: src/module/news_config_dialog_feeds.c:346
+msgid "Empty the lists"
+msgstr "Vider les listes"
+
+#: src/module/news_config_dialog_feeds.c:349
+msgid "Restore default lists"
+msgstr "Restaurer les listes par défaut"
+
+#: src/module/news_config_dialog_feeds.c:686
+msgid "There are <hilight>feeds</hilight> in this category.<br>You have to <hilight>remove them first</hilight>"
+msgstr "Il y a des <hilight>flux</hilight> dans cette catégorie.<br>Vous devez <hilight>d'abord les supprimer</hilight>"
+
+#: src/module/news_config_dialog_feeds.c:754
+#: src/module/news_config_dialog_feeds.c:779
+msgid "News Module - Are you sure ?"
+msgstr "Modules de nouvelles: Êtes-vous sûr ?"
+
+#: src/module/news_config_dialog_item.c:40
+msgid "News Gadget Configuration"
+msgstr "Configuration du gadget de nouvelles"
+
+#: src/module/news_config_dialog_item.c:104
+msgid "View Mode"
+msgstr "Mode d'affichage"
+
+#: src/module/news_config_dialog_item.c:107
+msgid "Show one icon for all feeds"
+msgstr "Afficher un seul icone pour tous les flux"
+
+#: src/module/news_config_dialog_item.c:109
+msgid "Show all feeds"
+msgstr "Afficher tous les flux"
+
+#: src/module/news_config_dialog_item.c:111
+msgid "Show unread feeds"
+msgstr "Afficher les flux non lus"
+
+#: src/module/news_config_dialog_item.c:113
+msgid "Show all feeds marked as important"
+msgstr "Afficher tous les flux marqués comme importants"
+
+#: src/module/news_config_dialog_item.c:115
+msgid "Show unread feeds marked as important"
+msgstr "Afficher les flux non lus marqués comme importants"
+
+#: src/module/news_config_dialog_item.c:120
+msgid "Feed open in"
+msgstr "Ouvir le flux dans"
+
+#: src/module/news_config_dialog_item.c:123
+msgid "the feed viewer"
+msgstr "Le lecteur de flux"
+
+#: src/module/news_config_dialog_item.c:125
+msgid "my favorite browser"
+msgstr "Mon navigateur préféré"
+
+#: src/module/news_config_dialog_item.c:127
+msgid "Browser opens home url"
+msgstr "Le navigateur ouvre l'url de démarrage"
+
+#: src/module/news_config_dialog_item.c:129
+msgid "instead of feed url"
+msgstr "à la place de l'url du flux"
+
+#: src/module/news_config_dialog_item.c:136
+msgid "Apply this to all News gadgets"
+msgstr "Appliquer à tous les gadgets de nouvelles"
 
 #: src/module/news_config_dialog_item_content.c:53
 msgid "News Gadget Content Configuration"
-msgstr ""
+msgstr "Configuration du contenu du gadget de nouvelles"
 
 #: src/module/news_config_dialog_item_content.c:258
 msgid "Avalaible Feeds"
-msgstr ""
+msgstr "Flux disponibles"
 
 #: src/module/news_config_dialog_item_content.c:267
 msgid "Add this Feed"
-msgstr ""
+msgstr "Ajouter ce flux"
 
 #: src/module/news_config_dialog_item_content.c:274
 msgid "Selected Feeds"
-msgstr ""
+msgstr "Flux sélectionnés"
 
 #: src/module/news_config_dialog_item_content.c:292
 msgid "Remove this Feed"
-msgstr ""
-
-#: src/module/news_feed.c:291
-msgid "The <hilight>name</hilight> you entered is not correct"
-msgstr ""
-
-#: src/module/news_feed.c:296
-msgid "The need to <hilight>select a category</hilight>."
-msgstr ""
-
-#: src/module/news_feed.c:302
-#, c-format
-msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
-"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
-"the same name<br>in one category."
-msgstr ""
-
-#: src/module/news_feed.c:311
-msgid "You need to select a <hilight>language</hilight>."
-msgstr ""
-
-#: src/module/news_feed.c:318
-msgid "The <hilight>url</hilight> you specified is not correct"
-msgstr ""
-
-#: src/module/news_feed.c:880
-msgid "You need to enter a <hilight>name</hilight> !"
-msgstr ""
-
-#: src/module/news_feed.c:888
-msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already used</"
-"hilight><br>by another category"
-msgstr ""
-
-#: src/module/news_utils.h:13
-msgid "News Module DEBUG DEBUG DEBUG DEBUG"
-msgstr ""
-
-#: src/module/news_utils.h:20
-msgid "News Module"
-msgstr ""
-
-#: src/module/news_utils.h:27
-msgid "News Module Error"
-msgstr ""
-
-#: src/module/news_menu.c:56
-msgid "Configure this feed"
-msgstr ""
-
-#: src/module/news_menu.c:130
-msgid "Set all feeds as read"
-msgstr ""
-
-#: src/module/news_menu.c:136
-msgid "Update all feeds"
-msgstr ""
-
-#: src/module/news_menu.c:147
-msgid "Configure gadget"
-msgstr ""
-
-#: src/module/news_menu.c:151
-msgid "Configure gadget content"
-msgstr ""
-
-#: src/module/news_menu.c:155
-msgid "Main Configuration"
-msgstr ""
-
-#: src/module/news_menu.c:159
-msgid "Feeds Configuration"
-msgstr ""
-
-#: src/module/news_menu.c:163
-msgid "Configuration"
-msgstr ""
+msgstr "Supprimer ce flux"
 
 #: src/module/news_config_dialog_langs.c:45
 msgid "News Feeds Language Configuration"
-msgstr ""
+msgstr "Configuration de la langue des flux de nouvelles"
 
 #: src/module/news_config_dialog_langs.c:123
 msgid "Welcome to News Module !"
-msgstr ""
+msgstr "Bienvenue dans le module des nouvelles !"
 
 #: src/module/news_config_dialog_langs.c:125
 msgid "Please select the languages that you are able to read"
-msgstr ""
+msgstr "Veuillez sélectionner les langues que vous pouvez lire"
+
+#: src/module/news_feed.c:291
+msgid "The <hilight>name</hilight> you entered is not correct"
+msgstr "Le <hilight>nom</hilight> que vous avez choisi est incorrect"
+
+#: src/module/news_feed.c:296
+msgid "The need to <hilight>select a category</hilight>."
+msgstr "Il est nécessaire de <hilight>sélectioner une catégorie</hilight>."
+
+#: src/module/news_feed.c:302
+#, c-format
+msgid "A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>in the %s category<br><br>Its not possible to have feeds with the same name<br>in one category."
+msgstr "Un flux du <hilight>nom</hilight> %s <hilight>existe déjà</hilight><br>dans la catégorie %s<br><br>Il n'est pas possible d'avoir deux flux de même nom<br>dans une catégorie."
+
+#: src/module/news_feed.c:311
+msgid "You need to select a <hilight>language</hilight>."
+msgstr "Vous devez sélectionner une <hilight>langue</hilight>."
+
+#: src/module/news_feed.c:318
+msgid "The <hilight>url</hilight> you specified is not correct"
+msgstr "L' <hilight>url</hilight> spécifiée est incorrecte"
+
+#: src/module/news_feed.c:880
+msgid "You need to enter a <hilight>name</hilight> !"
+msgstr "Vous devez entrer un <hilight>nom</hilight> !"
+
+#: src/module/news_feed.c:888
+msgid "The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>by another category"
+msgstr "Le <hilight>nom</hilight> que vous avez choisi est <hilight>déjà utilisé</hilight>par une autre catégorie"
+
+#: src/module/news_menu.c:56
+msgid "Configure this feed"
+msgstr "Configurer ce flux"
+
+#: src/module/news_menu.c:130
+msgid "Set all feeds as read"
+msgstr "Marquer tous les flux comme lus"
+
+#: src/module/news_menu.c:136
+msgid "Update all feeds"
+msgstr "Actualiser tous les flux"
+
+#: src/module/news_menu.c:147
+msgid "Configure gadget"
+msgstr "Configurer le gadget"
+
+#: src/module/news_menu.c:151
+msgid "Configure gadget content"
+msgstr "Configurer le contenu du gadget"
+
+#: src/module/news_menu.c:155
+msgid "Main Configuration"
+msgstr "Configuration principale"
+
+#: src/module/news_menu.c:159
+msgid "Feeds Configuration"
+msgstr "Configuration des flux"
+
+#: src/module/news_menu.c:163
+msgid "Configuration"
+msgstr "Configuration"
+
+#: src/module/news_utils.h:13
+msgid "News Module DEBUG DEBUG DEBUG DEBUG"
+msgstr "Module des nouvelles DÉBOGAGE DÉBOGAGE DÉBOGAGE"
+
+#: src/module/news_utils.h:20
+msgid "News Module"
+msgstr "Module de nouvelles"
+
+#: src/module/news_utils.h:27
+msgid "News Module Error"
+msgstr "Erreur du module de nouvelles"
+
+#: src/module/news_viewer.c:376
+msgid "Feeds in this gadget"
+msgstr "Flux dans ce gadget"
+
+#: src/module/news_viewer.c:442
+msgid "Articles in selected feed"
+msgstr "Articles du flux sélectionné"
 

@@ -1,55 +1,60 @@
 # Tclock module (e17), French translation
 # This file is put in the public domain.
-# 
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-08-07 09:16-0500\n"
-"PO-Revision-Date: 2008-01-23 01:50+0200\n"
-"Last-Translator: "
-"Language-Team: "
-"MIME-Version: 1.0\n"
+"PO-Revision-Date: 2008-10-24 17:00+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 
 #: e_mod_config.c:45
 msgid "Tclock Configuration"
-msgstr ""
+msgstr "Configuration de l'horloge numérique"
 
 #: e_mod_config.c:94
 msgid "Top"
-msgstr ""
+msgstr "Haut"
 
 #: e_mod_config.c:96
 msgid "Show Top Line"
-msgstr ""
+msgstr "Afficher la ligne supérieure"
 
-#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
+#: e_mod_config.c:104
+#: e_mod_config.c:118
+#: e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
-msgstr ""
+msgstr "Consulter strftime(3) pour la syntaxe"
 
 #: e_mod_config.c:108
 msgid "Bottom"
-msgstr ""
+msgstr "Bas"
 
 #: e_mod_config.c:110
 msgid "Show Bottom Line"
-msgstr ""
+msgstr "Afficher la ligne inférieure"
 
 #: e_mod_config.c:122
 msgid "Tool Tip"
-msgstr ""
+msgstr "Info-bulle"
 
 #: e_mod_config.c:124
 msgid "Show Tooltip"
-msgstr ""
+msgstr "Afficher l'info-bulle"
 
 #: e_mod_main.c:141
 msgid "TClock"
-msgstr ""
+msgstr "TClock"
 
 #: e_mod_main.c:186
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
+
