@@ -159,6 +159,8 @@ static const Evas_Smart_Class _smart_class = {
 	NULL,
 	_smart_clip_set,
 	_smart_clip_unset,
+	NULL,
+	NULL,
 	NULL
 };
 

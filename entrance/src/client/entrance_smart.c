@@ -132,6 +132,8 @@ _entrance_smart_object_smart_get()
 	       _entrance_smart_object_color_set,
 	       _entrance_smart_object_clip_set,
 	       _entrance_smart_object_clip_unset,
+	       NULL,
+	       NULL,
 	       NULL
 	  };
 	smart = evas_smart_class_new(&sc);

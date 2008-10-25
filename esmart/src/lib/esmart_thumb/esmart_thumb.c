@@ -56,6 +56,7 @@ esmart_thumb_new (Evas * evas, const char *file)
               _e_thumb_clip_set,
               _e_thumb_clip_unset,
               NULL,
+	      NULL,
               NULL
           };
           s = evas_smart_class_new(&sc);

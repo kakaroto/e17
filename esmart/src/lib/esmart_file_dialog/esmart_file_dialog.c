@@ -691,6 +691,8 @@ _esmart_file_dialog_object_smart_get (void)
       _esmart_file_dialog_object_color_set,
       _esmart_file_dialog_object_clip_set,
       _esmart_file_dialog_object_clip_unset,
+      NULL,
+      NULL,
       NULL
   };
 

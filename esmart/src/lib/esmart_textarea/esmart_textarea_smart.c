@@ -19,6 +19,8 @@ esmart_textarea_smart_get()
       esmart_textarea_color_set,
       esmart_textarea_clip_set,
       esmart_textarea_clip_unset,
+      NULL,
+      NULL,
       NULL
   };
 

@@ -405,6 +405,8 @@ esmart_text_entry_smart_get (void)
       esmart_text_entry_color_set,
       esmart_text_entry_clip_set,
       esmart_text_entry_clip_unset,
+      NULL,
+      NULL,
       NULL
   };
 

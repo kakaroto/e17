@@ -466,6 +466,8 @@ static const Evas_Smart_Class _esmart_trans_x11_smart_class = {
   _esmart_trans_x11_color_set,
   _esmart_trans_x11_clip_set,
   _esmart_trans_x11_clip_unset,
+  NULL,
+  NULL,
   NULL
 };
 

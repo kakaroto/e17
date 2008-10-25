@@ -71,6 +71,8 @@ _container_smart_get()
 	     _container_color_set,
 	     _container_clip_set,
 	     _container_clip_unset,
+	     NULL,
+	     NULL,
 	     NULL
 	  };
 

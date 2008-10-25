@@ -235,6 +235,8 @@ _esmart_resize_object_smart_get()
 	     _esmart_resize_object_color_set,
 	     _esmart_resize_object_clip_set,
 	     _esmart_resize_object_clip_unset,
+	     NULL,
+	     NULL,
 	     NULL
 	  };
 
