@@ -11,7 +11,9 @@ $MAIN -t ../data/themes/default.edj -x 480 -y 640 &
 #$MAIN -t ../data/themes/default.edj -x 1280 -y 1024 &
 #$MAIN -fb -fs
 # run 'exquisite -h' for more options
-echo "I: waiting..."
+echo "I: waiting up to 30 secs for exquisite..."
+$WRITE -wait 30
+echo "OK. 1 second, then go"
 sleep 1
 $WRITE "TIMEOUT 5"
 $WRITE "TITLE Welcome to Exquisite"
