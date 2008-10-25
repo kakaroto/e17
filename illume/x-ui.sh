@@ -13,6 +13,7 @@ Xephyr :1 -noreset -ac -br -dpi 284 -screen 480x640 &
 #Xephyr :1 -noreset -ac -br -dpi 142 -screen 240x320x16 &
 #Xephyr :1 -noreset -ac -br -dpi 142 -screen 240x320 &
 
+exit
 sleep 1
 export DISPLAY=:1
 #xmodmap -e "keycode 223 = 0x11000601"
