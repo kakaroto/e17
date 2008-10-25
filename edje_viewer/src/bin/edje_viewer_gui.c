@@ -4,12 +4,6 @@
 
 #include <edje_viewer_main.h>
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
-
 static Etk_Widget *_gui_menubar_item_new(Gui *gui, const char *label,
 	Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_gui_menu_item_new(Gui *gui, const char *label,
@@ -21,6 +15,8 @@ static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label,
 static Etk_Bool _gui_tree_search(Gui *gui, Tree_Search direction);
 static void _open_edje_file(Gui *gui);
 static void _list_entries(Gui *gui);
+static int _gui_part_col_sort_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1,
+      Etk_Tree_Row *row2, void *data);
 
 static Etk_Bool _gui_open_last_clicked_cb(Etk_Object *obj, void *data);
 static Etk_Bool _gui_sort_parts_clicked_cb(Etk_Object *obj, void *data);
@@ -34,7 +30,8 @@ static Etk_Bool _gui_menu_item_open_edje_file_cb(Etk_Menu_Item *item, Gui *gui);
 static Etk_Bool _gui_fm_ok_clicked_cb(Etk_Button *btn, Gui *gui);
 static Etk_Bool _gui_fm_cancel_clicked_cb(Etk_Button *btn, Gui *gui);
 static Etk_Bool _gui_mdi_window_delete_event_cb(Etk_Mdi_Window *mdi, Demo_Edje *de);
-static Etk_Bool _gui_mdi_window_moved_event_cb(Etk_Mdi_Window *mdi, int x, int y, Demo_Edje *de);
+static Etk_Bool _gui_mdi_window_moved_event_cb(Etk_Mdi_Window *mdi __UNUSED__, int x, int y, Demo_Edje *de);
+static Etk_Bool _gui_mdi_window_size_requested_cb(Etk_Object *mdi __UNUSED__, Etk_Size *size __UNUSED__, Demo_Edje *de);
 static Etk_Bool _gui_main_window_deleted_cb(Etk_Window *obj, Gui *gui);
 static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data);
@@ -168,7 +165,7 @@ Gui *main_window_show(const char *file)
    col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"), 80, 0.0);
    etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_col_expand_set(col, ETK_TRUE);
-   etk_tree_col_sort_set(col, gui_part_col_sort_cb, NULL);
+   etk_tree_col_sort_set(col, _gui_part_col_sort_cb, NULL);
    col2 = etk_tree_col_new(ETK_TREE(gui->tree), _("Visibility"), 60, 0.0);
    etk_tree_col_model_add(col2, etk_tree_model_checkbox_new());
    etk_tree_build(ETK_TREE(gui->tree));
@@ -397,7 +394,7 @@ static void _list_entries(Gui *gui)
 	edje_file_collection_list_free(entries);
 	edje_viewer_config_recent_set(gui, file);
 	if (gui->config->sort_parts)
-	  etk_tree_col_sort_set(col1, gui_part_col_sort_cb, NULL);
+	  etk_tree_col_sort_set(col1, _gui_part_col_sort_cb, NULL);
      }
 }
 
@@ -633,6 +630,7 @@ static Etk_Bool _gui_mdi_window_delete_event_cb(Etk_Mdi_Window *mdi __UNUSED__, 
 {
    if (!de) return ETK_FALSE;
    etk_tree_row_fields_set(de->tree_row, ETK_TRUE, de->tree_col, ETK_FALSE, NULL);
+   de->prev.x = de->prev.y = de->prev.w = de->prev.h = 0;
    return ETK_FALSE;
 }
 
@@ -640,7 +638,7 @@ static Etk_Bool _gui_mdi_window_moved_event_cb
 (Etk_Mdi_Window *mdi __UNUSED__, int x __UNUSED__, int y __UNUSED__, Demo_Edje *de)
 {
    Evas_Coord px, py, pw, ph, ox, oy;
-   char *name;
+   const char *name;
 
    if (!de->part_row) return ETK_TRUE;
    if (!(name = etk_tree_row_data_get(de->part_row))) return ETK_TRUE;
@@ -649,6 +647,43 @@ static Etk_Bool _gui_mdi_window_moved_event_cb
    edje_object_part_geometry_get(de->edje_object, name, &px, &py, &pw, &ph);
 
    evas_object_move(Highlighter, px + ox, py + oy);
+   return ETK_TRUE;
+}
+
+static Etk_Bool _gui_mdi_window_size_requested_cb
+(Etk_Object *mdi __UNUSED__, Etk_Size *size __UNUSED__, Demo_Edje *de)
+{
+   Evas_Coord px, py, pw, ph, x, y, w, h, dx, dy, dw, dh;
+   const char *name;
+
+   if (!de->part_row) return ETK_TRUE;
+   if (!(name = etk_tree_row_data_get(de->part_row))) return ETK_TRUE;
+
+   edje_object_part_geometry_get(de->edje_object, name, &px, &py, &pw, &ph);
+   evas_object_geometry_get(Highlighter, &x, &y, &w, &h);
+   if (!de->prev.x && !de->prev.y && !de->prev.w && !de->prev.h)
+     {
+	de->prev.x = px;
+	de->prev.y = py;
+	de->prev.w = pw;
+	de->prev.h = ph;
+
+	return ETK_TRUE;
+     }
+
+   dx = de->prev.x - px;
+   dy = de->prev.y - py;
+   dw = de->prev.w - pw;
+   dh = de->prev.h - ph;
+
+   evas_object_move(Highlighter, x - dx, y - dy);
+   evas_object_resize(Highlighter, w - dw, h - dh);
+
+   de->prev.x = px;
+   de->prev.y = py;
+   de->prev.w = pw;
+   de->prev.h = ph;
+
    return ETK_TRUE;
 }
 
@@ -670,8 +705,6 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
    /* The group row */
    if (row->parent == &row->tree->root)
      {
-	Etk_Widget *mdi_win;
-
 	if (!(co = etk_tree_row_data_get(row))) return ETK_TRUE;
 
 	if (!co->de)
@@ -684,6 +717,13 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	     co->de->tree_col = col;
 	     co->de->tree_row = row;
 	     co->de->data     = data;
+
+	     etk_signal_connect_by_code(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(co->de->mdi_window),
+		   ETK_CALLBACK(_gui_mdi_window_delete_event_cb), co->de);
+	     etk_signal_connect_by_code(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(co->de->mdi_window),
+		   ETK_CALLBACK(_gui_mdi_window_moved_event_cb), co->de);
+	     etk_signal_connect_by_code(ETK_WIDGET_SIZE_REQUESTED_SIGNAL, ETK_OBJECT(co->de->mdi_window),
+		   ETK_CALLBACK(_gui_mdi_window_size_requested_cb), co->de);
 
 	     parts = (Eina_List *) edje_edit_parts_list_get(co->de->edje_object);
 	     for (l = parts; l; l = l->next)
@@ -698,11 +738,10 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	     edje_edit_string_list_free(parts);
 	  }
 
-	mdi_win = co->de->mdi_window;
 	if (checked)
 	  {
 	     visible_elements = eina_list_append(visible_elements, co);
-	     etk_widget_show_all(mdi_win);
+	     etk_widget_show_all(co->de->mdi_window);
 	     etk_tree_row_unfold(row);
 	  }
 	else
@@ -710,14 +749,9 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	     visible_elements = eina_list_remove(visible_elements, co);
 	     if (co->de->part_row)
 	       etk_tree_row_fields_set(co->de->part_row, ETK_TRUE, col, ETK_FALSE, NULL);
-	     etk_widget_hide(mdi_win);
+	     etk_widget_hide(co->de->mdi_window);
 	     etk_tree_row_fold(row);
 	  }
-
-	etk_signal_connect_by_code(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_win),
-	      ETK_CALLBACK(_gui_mdi_window_delete_event_cb), co->de);
-	etk_signal_connect_by_code(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(mdi_win),
-	      ETK_CALLBACK(_gui_mdi_window_moved_event_cb), co->de);
      }
    else
      {
@@ -782,7 +816,7 @@ static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj __UNUSED__, void *data)
    return ETK_TRUE;
 }
 
-int gui_part_col_sort_cb
+static int _gui_part_col_sort_cb
 (Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data __UNUSED__)
 {
    char *row1_value, *row2_value;

@@ -213,7 +213,7 @@ void edje_viewer_config_recent_set(Gui *gui, const char *file)
      }
 
    gui->config->recent = eina_list_prepend(gui->config->recent, strdup(file));
-   if (10 == eina_list_count(gui->config->recent))
+   if (10 < eina_list_count(gui->config->recent))
      {
 	Eina_List *l;
 

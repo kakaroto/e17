@@ -1,7 +1,5 @@
 [todo] Need to put the mdi_area into a scrollview, so that the window doesn't resize when you move the mdi_windows to the edje (bug in Etk_Scrolled_View)
 
-[bug] The highlighter does not scale with the mdi_window (Etk_Mdi_Window missing a resize signal)
-
 [todo] Create an icon for the desktop file
 
 ================ Old bugs =====================

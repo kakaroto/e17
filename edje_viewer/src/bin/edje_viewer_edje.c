@@ -4,16 +4,6 @@
 
 #include <edje_viewer_main.h>
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
-
-#define DAT PACKAGE_DATA_DIR"/"
-
-#define FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; }} while (0);
-
 static void signal_cb(void *data, Evas_Object *o, const char *sig,
 	const char *src);
 static void message_cb(void *data, Evas_Object *obj, Edje_Message_Type type,
