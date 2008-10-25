@@ -1096,6 +1096,8 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
          _etk_tb_object_smart_clip_set,
          _etk_tb_object_smart_clip_unset,
          NULL,
+         NULL,
+         NULL,
          NULL
       };
       _etk_tb_object_smart = evas_smart_class_new(&sc);

@@ -1583,6 +1583,8 @@ Evas_Object *etk_textblock2_object_add(Etk_Textblock2 *tb, Evas *evas)
       _etk_tb2_object_smart_clip_set,
       _etk_tb2_object_smart_clip_unset,
       NULL,
+      NULL,
+      NULL,
       NULL
    };
    

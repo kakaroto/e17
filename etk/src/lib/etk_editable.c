@@ -118,6 +118,8 @@ Evas_Object *etk_editable_add(Evas *evas)
          _etk_editable_clip_set,
          _etk_editable_clip_unset,
          NULL,
+         NULL,
+         NULL,
          NULL
       };
       _etk_editable_smart = evas_smart_class_new(&sc);
