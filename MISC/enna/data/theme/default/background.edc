@@ -6,10 +6,19 @@ images {
 group {
  name: "enna/background";
    parts {
-      part{
+       part {
+       name: "white";
+       type: RECT;
+           description {
+           state: "default" 0.0;
+           color: 255 255 255 255;
+           }
+       }
+     part{
       name: "bg";
          description {
          state: "default" 0.0;
+         color: 255 255 255 220;
          image.normal: "background.png";
             fill {
             smooth: 0;
@@ -19,7 +28,10 @@ group {
                }
             }
          }
-      }
+         }
+
+
+
       part {
       name: "shade";
       mouse_events:  0;
