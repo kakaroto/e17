@@ -1,6 +1,6 @@
 data {
    item: "theme/name"     "BlingBling";
-   item: "theme/version"  "0.16.999.50";
+   item: "theme/version"  "0.16.999.50.FINAL";
    item: "theme/author"   "Raster & E17 Developers";
    item: "theme/license"  "3-Clause BSD";
 }
