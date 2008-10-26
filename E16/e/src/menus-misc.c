@@ -422,117 +422,6 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
    return m;
 }
 
-static Menu        *
-MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
-		    const char *dir)
-{
-   Menu               *m, *mm;
-   int                 i, num;
-   char              **list, s[4096], ss[4096];
-   MenuItem           *mi;
-   FILE               *f;
-   char                name_buf[20];
-
-   if (Mode.locale.lang)
-      Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", Mode.locale.lang);
-   else
-      name_buf[0] = '\0';
-
-   m = MenuCreate(name, NULL, parent, ms);
-
-   list = E_ls(dir, &num);
-   for (i = 0; i < num; i++)
-     {
-	if ((strcmp(list[i], ".")) && (strcmp(list[i], "..")))
-	  {
-	     Esnprintf(ss, sizeof(ss), "%s/%s", dir, list[i]);
-	     if (isdir(ss))
-	       {
-		  Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
-		  mm = MenuCreateFromGnome(s, m, ms, ss);
-
-		  name = list[i];
-		  if (name_buf[0])
-		    {
-		       Esnprintf(s, sizeof(s), "%s/.directory", ss);
-		       if ((f = fopen(s, "r")) != NULL)
-			 {
-			    while (fgets(s, sizeof(s), f))
-			      {
-				 if (!strncmp(s, name_buf, strlen(name_buf)))
-				   {
-				      if (s[strlen(s) - 1] == '\n')
-					 s[strlen(s) - 1] = 0;
-				      name = &(s[strlen(name_buf)]);
-				      break;
-				   }
-			      }
-			    fclose(f);
-			 }
-		    }
-		  mi = MenuItemCreate(name, NULL, NULL, mm);
-		  MenuAddItem(m, mi);
-	       }
-	     else
-	       {
-		  f = fopen(ss, "r");
-		  if (f)
-		    {
-		       char               *iname, *exec, *texec, *en_name;
-
-		       iname = exec = texec = en_name = NULL;
-
-		       while (fgets(s, sizeof(s), f))
-			 {
-			    if (s[strlen(s) - 1] == '\n')
-			       s[strlen(s) - 1] = 0;
-			    if (!strncmp(s, "Name=", strlen("Name=")))
-			       en_name = Estrdup(&(s[strlen("Name=")]));
-			    else if (name_buf[0]
-				     && !strncmp(s, name_buf, strlen(name_buf)))
-			       iname = Estrdup(&(s[strlen(name_buf)]));
-			    else if (!strncmp
-				     (s, "TryExec=", strlen("TryExec=")))
-			       texec = Estrdup(&(s[strlen("TryExec=")]));
-			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
-			       exec = Estrdup(&(s[strlen("Exec=")]));
-			 }
-		       if (iname)
-			 {
-			    Efree(en_name);
-			 }
-		       else
-			 {
-			    if (en_name)
-			       iname = en_name;
-			 }
-		       fclose(f);
-		       if ((iname) && (exec))
-			 {
-			    int                 ok = 1;
-
-			    if (texec)
-			       ok = path_canexec(texec);
-			    if (ok)
-			      {
-				 Esnprintf(s, sizeof(s), "exec %s", exec);
-				 mi = MenuItemCreate(iname, NULL, s, NULL);
-				 MenuAddItem(m, mi);
-			      }
-			 }
-		       Efree(iname);
-		       Efree(exec);
-		       Efree(texec);
-		    }
-	       }
-	  }
-     }
-   if (list)
-      StrlistFree(list, num);
-
-   return m;
-}
-
 static int
 MenuLoadFromThemes(Menu * m)
 {
@@ -812,10 +701,6 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
      {
 	SoundPlay("SOUND_SCANNING");
 	m = MenuCreateFromDirectory(name, NULL, ms, prm);
-     }
-   else if (!strcmp(type, "gnome"))
-     {
-	m = MenuCreateFromGnome(name, NULL, ms, prm);
      }
    else if (!strcmp(type, "borders"))
      {
