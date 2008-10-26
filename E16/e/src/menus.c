@@ -1881,6 +1881,12 @@ MenuConfigLoad(FILE * fs)
 	i1 = ConfigParseline1(s, s2, &p2, &p3);
 	switch (i1)
 	  {
+	  default:
+	     break;
+
+	  case CONFIG_VERSION:
+	     continue;
+
 	  case CONFIG_MENU:
 	     err = -1;
 	     i2 = atoi(s2);
@@ -1889,35 +1895,48 @@ MenuConfigLoad(FILE * fs)
 	     m = NULL;
 	     ic = NULL;
 	     _EFREE(txt);
-	     break;
+	     continue;
 	  case CONFIG_CLOSE:
 	     err = 0;
-	     break;
+	     continue;
 
 	  case MENU_PREBUILT:
 	     sscanf(p3, "%4000s %4000s %4000s", s3, s4, s5);
 	     m = MenusCreateInternal(s4, s2, s3, s5);
-	     break;
+	     continue;
+
 	  case CONFIG_CLASSNAME:
 	     if (!m)
 		m = MenuCreate(s2, NULL, NULL, NULL);
 	     else
 		MenuSetName(m, s2);
 	     params = _MenuCheckAlias(s2);
-	     if (params)
+	     if (m && params)
 		MenuSetAlias(m, params);
-	     break;
-	  case MENU_USE_STYLE:
-	     MenuSetStyle(m, MenuStyleFind(s2));
-	     break;
-	  case MENU_TITLE:
-	     MenuSetTitle(m, p2);
-	     break;
+	     continue;
+
 	  case MENU_ITEM:
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
 	     _EFDUP(txt, p3);
+	     continue;
+	  }
+
+	/* The rest require the menu m to be created */
+	if (!m)
+	  {
+	     ConfigParseError("Menu", s);
+	     continue;
+	  }
+
+	switch (i1)
+	  {
+	  case MENU_USE_STYLE:
+	     MenuSetStyle(m, MenuStyleFind(s2));
+	     break;
+	  case MENU_TITLE:
+	     MenuSetTitle(m, p2);
 	     break;
 	  case MENU_ACTION:
 	     if ((txt) || (ic))
