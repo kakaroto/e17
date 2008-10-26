@@ -141,10 +141,7 @@ static int _enna_init(int run_gl)
     enna->lvl = ENNA_MSG_INFO;
     enna->home = enna_util_user_home_get();
 
-    ecore_init();
-    ecore_file_init();
-    ecore_evas_init();
-    edje_init();
+
     enna_module_init();
 
     sprintf(tmp, "%s/.enna", enna->home);
@@ -338,9 +335,9 @@ static void _enna_shutdown()
     evas_object_del(enna->o_edje);
     evas_object_del(enna->o_mainmenu);
     edje_shutdown();
-    ecore_evas_shutdown();
     ecore_file_shutdown();
-    ecore_shutdown();
+    ecore_evas_shutdown();
+
     ENNA_FREE(enna->home);
     ENNA_FREE(enna);
 }
@@ -418,6 +415,10 @@ int main(int arc, char **arv)
 {
     if (parse_command_line(arc, arv) < 0)
         return 0;
+
+    ecore_evas_init();
+    ecore_file_init();
+    edje_init();
 
     /* Must be called first */
     enna_config_init();

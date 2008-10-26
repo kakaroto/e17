@@ -51,7 +51,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
 
     /* 2. Prepare Amazon WebService URL for Search */
     memset(url, '\0', MAX_URL_SIZE);
-    snprintf(url, MAX_URL_SIZE, AMAZON_SEARCH, 
+    snprintf(url, MAX_URL_SIZE, AMAZON_SEARCH,
     AMAZON_HOSTNAME, AMAZON_LICENSE_KEY, escaped_keywords, search_type);
 
 #ifdef DEBUG
@@ -90,7 +90,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
 
     /* 5. Prepare Amazon WebService URL for Cover Search */
     memset(url, '\0', MAX_URL_SIZE);
-    snprintf(url, MAX_URL_SIZE, AMAZON_SEARCH_COVER, 
+    snprintf(url, MAX_URL_SIZE, AMAZON_SEARCH_COVER,
     AMAZON_HOSTNAME, AMAZON_LICENSE_KEY, asin);
     xmlFree(asin);
 
@@ -206,14 +206,14 @@ static char * amazon_movie_cover_get(const char *movie)
     /* Format the keywords */
     memset(keywords, '\0', MAX_KEYWORD_SIZE);
     memset(escaped_keywords, '\0', 2 * MAX_KEYWORD_SIZE);
-    snprintf(keywords, MAX_KEYWORD_SIZE, movie);
+    snprintf(keywords, MAX_KEYWORD_SIZE, "%s", movie);
     url_escape_string(escaped_keywords, keywords);
 
     return amazon_cover_get(AMAZON_SEARCH_MOVIE, keywords, escaped_keywords);
 }
 
 static Enna_Class_CoverPlugin class =
-{ "amazon", amazon_music_cover_get, amazon_movie_cover_get, 
+{ "amazon", amazon_music_cover_get, amazon_movie_cover_get,
 };
 
 /*****************************************************************************/

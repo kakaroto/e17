@@ -32,7 +32,7 @@
 #include "enna.h"
 #include "utils.h"
 
-EAPI char * enna_util_user_home_get()
+char * enna_util_user_home_get()
 {
     static char *home = NULL;
 
@@ -45,7 +45,7 @@ EAPI char * enna_util_user_home_get()
     return home;
 }
 
-EAPI int enna_util_has_suffix(char *str, Eina_List * patterns)
+int enna_util_has_suffix(char *str, Eina_List * patterns)
 {
     Eina_List *l;
     int result = 0;
@@ -67,7 +67,34 @@ EAPI int enna_util_has_suffix(char *str, Eina_List * patterns)
     return result;
 }
 
-EAPI unsigned int enna_util_calculate_font_size(Evas_Coord w, Evas_Coord h)
+unsigned char enna_util_uri_has_extension(const char *uri, int type)
+{
+
+    Evas_List *l;
+    Evas_List *filters = NULL;
+
+    if (type == ENNA_CAPS_MUSIC)
+        filters = enna_config->music_filters;
+    else if (type == ENNA_CAPS_VIDEO)
+        filters = enna_config->video_filters;
+    else if (type == ENNA_CAPS_PHOTO)
+        filters = enna_config->photo_filters;
+
+    if (!filters)
+        return 0;
+
+    for (l = filters; l; l = l->next)
+    {
+        const char *ext = l->data;
+        if (ecore_str_has_extension(uri, ext))
+            return 1;
+    }
+
+    return 0;
+
+}
+
+unsigned int enna_util_calculate_font_size(Evas_Coord w, Evas_Coord h)
 {
     float size = 12;
 
@@ -79,8 +106,7 @@ EAPI unsigned int enna_util_calculate_font_size(Evas_Coord w, Evas_Coord h)
 
 }
 
-EAPI void enna_util_switch_objects(Evas_Object * container, Evas_Object * obj1,
-        Evas_Object * obj2)
+void enna_util_switch_objects(Evas_Object * container, Evas_Object * obj1, Evas_Object * obj2)
 {
     Evas_Object *s;
 

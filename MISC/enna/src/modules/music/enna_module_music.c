@@ -267,7 +267,7 @@ static void _list_transition_core(Eina_List *files, unsigned char direction)
     else if (!direction)
     {
         /* No files returned : create no media item */
-
+        
         Evas_Object *icon;
         Evas_Object *item;
         mod->is_root = 0;

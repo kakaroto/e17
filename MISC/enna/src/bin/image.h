@@ -16,5 +16,5 @@ EAPI int enna_image_fill_inside_get(Evas_Object * obj);
 EAPI void enna_image_fill_inside_set(Evas_Object * obj, int fill_inside);
 EAPI void enna_image_data_set(Evas_Object * obj, void *data, int w, int h);
 EAPI void *enna_image_data_get(Evas_Object * obj, int *w, int *h);
-
+EAPI void enna_image_preload(Evas_Object *obj, Evas_Bool cancel);
 #endif

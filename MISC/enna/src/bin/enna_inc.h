@@ -17,6 +17,7 @@
 #include "pan.h"
 #include "scrollframe.h"
 #include "list.h"
+#include "wall.h"
 #include "location.h"
 #include "mediaplayer.h"
 #include "event_key.h"

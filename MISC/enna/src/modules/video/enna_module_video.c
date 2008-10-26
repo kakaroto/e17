@@ -538,7 +538,7 @@ static void _video_info_next()
     int n;
     n = enna_mediaplayer_selected_get();
 
-    if (n < enna_mediaplayer_playlist_count - 2)
+    if (n < enna_mediaplayer_playlist_count() - 1)
     {
         Enna_Metadata *m;
         Evas_Object *o;

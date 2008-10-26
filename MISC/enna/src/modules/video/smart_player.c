@@ -120,7 +120,7 @@ EAPI void enna_smart_player_snapshot_set(Evas_Object *obj,
                                          Enna_Metadata *metadata)
 {
     char *snap_file = NULL;
-    
+
     API_ENTRY;
 
     snap_file = enna_snapshot_get(metadata->uri);
@@ -133,15 +133,15 @@ EAPI void enna_smart_player_snapshot_set(Evas_Object *obj,
         sd->o_snapshot_old = sd->o_snapshot;
         sd->o_snapshot = enna_image_add(evas_object_evas_get(sd->o_edje));
         evas_object_show(sd->o_snapshot);
-        
+
         /* Stretch image to fit the parent container */
         enna_image_fill_inside_set(sd->o_snapshot, 0);
-        
+
         enna_image_file_set(sd->o_snapshot, snap_file);
         /* Full definition for image loaded */
         enna_image_size_get(sd->o_snapshot, &ow, &oh);
         enna_image_load_size_set(sd->o_snapshot, ow, oh);
- 
+
         edje_object_part_swallow(sd->o_edje,
                                  "enna.swallow.snapshot", sd->o_snapshot);
         edje_object_signal_emit(sd->o_edje, "snapshot,show", "enna");
@@ -160,17 +160,17 @@ EAPI void enna_smart_player_cover_set(Evas_Object *obj,
     char *cover_file = NULL;
 
     API_ENTRY;
-    
+
     cover_file = enna_cover_video_get(metadata->uri);
     if (cover_file)
     {
         Evas_Coord ow,oh;
-        float aspect = 1.0;
+
         enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "cover filename : %s",
                 cover_file);
         /* FIXME : add edje cb at end of cover transition to switch properly covers*/
         sd->o_cover_old = sd->o_cover;
-        
+
         sd->o_cover = enna_image_add(evas_object_evas_get(sd->o_edje));
         enna_image_file_set(sd->o_cover, cover_file);
         enna_image_size_get(sd->o_cover, &ow, &oh);

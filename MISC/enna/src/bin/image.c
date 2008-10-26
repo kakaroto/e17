@@ -205,6 +205,17 @@ EAPI void * enna_image_data_get(Evas_Object * obj, int *w, int *h)
     return evas_object_image_data_get(sd->obj, 0);
 }
 
+EAPI void enna_image_preload(Evas_Object *obj, Evas_Bool cancel)
+{
+    E_Smart_Data *sd;
+
+    sd = evas_object_smart_data_get(obj);
+    if (!sd)
+        return;
+
+    evas_object_image_preload(sd->obj, cancel);
+}
+
 /* local subsystem globals */
 static void _enna_image_smart_reconfigure(E_Smart_Data * sd)
 {

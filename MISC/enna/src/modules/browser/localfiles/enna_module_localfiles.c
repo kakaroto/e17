@@ -34,33 +34,6 @@ typedef struct _Enna_Module_LocalFiles
 
 static Enna_Module_LocalFiles *mod;
 
-static unsigned char _uri_has_extension(const char *uri, int type)
-{
-
-    Eina_List *l;
-    Eina_List *filters = NULL;
-
-    if (type == ENNA_CAPS_MUSIC)
-        filters = enna_config->music_filters;
-    else if (type == ENNA_CAPS_VIDEO)
-        filters = enna_config->video_filters;
-    else if (type == ENNA_CAPS_PHOTO)
-        filters = enna_config->photo_filters;
-
-    if (!filters)
-        return 0;
-
-    for (l = filters; l; l = l->next)
-    {
-        const char *ext = l->data;
-        if (ecore_str_has_extension(uri, ext))
-            return 1;
-    }
-
-    return 0;
-
-}
-
 static unsigned char _uri_is_root(Class_Private_Data *data, const char *uri)
 {
     Eina_List *l;
@@ -134,7 +107,7 @@ static Eina_List *_class_browse_up(const char *path, ENNA_VFS_CAPS caps,
                         f->is_selected = 0;
                 }
             }
-            else if (_uri_has_extension(dir, caps))
+            else if (enna_util_uri_has_extension(dir, caps))
             {
                 Enna_Vfs_File *f;
 
@@ -327,21 +300,21 @@ static void __class_init(const char *name, Class_Private_Data **priv,
 static Enna_Class_Vfs class_music =
 { "localfiles_music", 1, "Browse Local Files", NULL, "icon/hd",
 { NULL, NULL, _class_browse_up_music, _class_browse_down_music,
-        _class_vfs_get_music, 
+        _class_vfs_get_music,
 },
 };
 
 static Enna_Class_Vfs class_video =
 { "localfiles_video", 1, "Browse Local Files", NULL, "icon/hd",
 { NULL, NULL, _class_browse_up_video, _class_browse_down_video,
-        _class_vfs_get_video, 
+        _class_vfs_get_video,
 },
 };
 
 static Enna_Class_Vfs class_photo =
 { "localfiles_photo", 1, "Browse Local Files", NULL, "icon/hd",
 { NULL, NULL, _class_browse_up_photo, _class_browse_down_photo,
-        _class_vfs_get_photo, 
+        _class_vfs_get_photo,
 },
 };
 

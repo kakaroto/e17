@@ -24,6 +24,7 @@ list.c\
 content.c\
 pan.c\
 scrollframe.c\
+wall.c\
 button.c\
 switcher.c\
 location.c\
@@ -58,6 +59,7 @@ list.h\
 content.h\
 pan.h\
 scrollframe.h\
+wall.h\
 button.h\
 switcher.h\
 location.h\
