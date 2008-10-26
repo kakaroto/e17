@@ -3,7 +3,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
-#endif
 #include "colormod.h"
 #include "image.h"
 #include "scale.h"
@@ -15,8 +14,6 @@
 #include "blend.h"
 #include "rend.h"
 #include "rotate.h"
-
-#ifdef BUILD_X11
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
@@ -601,4 +598,4 @@ __imlib_RenderImageSkewed(Display * d, ImlibImage * im, Drawable w, Drawable m,
    __imlib_FreeImage(back);
 }
 
-#endif
+#endif /* BUILD_X11 */

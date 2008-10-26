@@ -1,11 +1,8 @@
 #include "common.h"
 #ifdef BUILD_X11
-# include <X11/Xlib.h>
-# include "context.h"
-#endif
+#include <X11/Xlib.h>
+#include "context.h"
 #include "rgba.h"
-
-#ifdef BUILD_X11
 
 #define IS_ALIGNED_128(val) (!((val) & 0x15))
 #define IS_ALIGNED_64(val)  (!((val) & 0x7))
@@ -4998,4 +4995,4 @@ __imlib_GetMaskFunction(char hiq)
    return hiq ? &__imlib_RGBA_to_A1_dither : &__imlib_RGBA_to_A1_fast;
 }
 
-#endif
+#endif /* BUILD_X11 */

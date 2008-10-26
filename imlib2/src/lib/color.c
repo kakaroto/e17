@@ -3,9 +3,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "color.h"
-#endif
-
-#ifdef BUILD_X11
 
 DATA8               _pal_type = 0;
 DATA16              _max_colors = 256;
@@ -552,4 +549,4 @@ __imlib_AllocColors1(Display * d, Colormap cmap, Visual * v)
    return color_lut;
 }
 
-#endif
+#endif /* BUILD_X11 */
