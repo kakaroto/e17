@@ -412,7 +412,7 @@ perf_options(void)
     char *display = NULL, *name = NULL, *theme = NULL, **exec = NULL, **foo = NULL;
     long color = 0;
     spif_uint32_t options = 0;
-    static void handle_theme(char *val_ptr) {theme = STRDUP(val_ptr);}
+    void handle_theme(char *val_ptr) {theme = STRDUP(val_ptr);}
     char *argv2[] = { "test", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com", "--scrollbar",
                       "--buttonbar", "no", "--login=0", "-mvd", "foo:0", "--color", "4", "--foo", "blah", "-d", "eatme", NULL };
     int argc2 = 18;
@@ -654,7 +654,6 @@ perf_tok(void)
     testtok = spif_tok_new_from_ptr(tmp2);
     teststr = spif_str_new_from_ptr(":");
     spif_tok_set_sep(testtok, teststr);
-    spif_str_del(teststr);
     PERF_TEST(spif_tok_eval(testtok););
     spif_tok_del(testtok);
 
