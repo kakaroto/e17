@@ -7,7 +7,7 @@ group "Illume_Cfg" struct {
   value "power.auto_suspend_delay" int: 1;
   value "performance.cache_level" int: 3;
   value "performance.fps" int: 30;
-  value "slipshelf.main_gadget_size" int: 48;
+  value "slipshelf.main_gadget_size" int: 56;
   value "slipshelf.extra_gagdet_size" int: 48;
   value "slipshelf.style" int: 1;
   value "sliding.slipshelf.duration" int: 1000;
