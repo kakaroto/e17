@@ -20,19 +20,13 @@
       -> Do not display empty metadata in audio player if none is found
          in current stream: display filename instead.
       -> Display a picture when no cover has been found.
-      -> Dinish shoutcast support so that non-local streams can be played back.
+      -> Finish shoutcast support so that non-local streams can be played back.
 
  * Video module (based on music one)
       -> Add video support to emotion backend
-      -> change libplayer video size when resizing enna main window.
       -> Polish video_info UI
       -> Add prev/next buttons (left/right arrows?) to browse between
          videos from current directory without coming back to selection menu.
-
- * Covers
-      -> When amazon cover has been found, send a notification to
-         display it immediately.
-      -> Use a thread to retrieve cover from network.
 
  * Add Simple Widgets
       -> Checkbox
@@ -48,10 +42,8 @@
      -> 4:3 videos are cropped when displayed on a 16:10 window.
      -> Ensure media player works (do not segv) if
         libplayer has no x11 support.
-     -> Segfault when location bar is hidden too fastly
-        (go in some subfolders -> hold Backspace key; will reproduce the bug)
      -> Duplicated folder's name in location bar when a subfolder is opened
-        too fastly
+        too fast
      -> Don't try to create video thumbnails for net streams
 
 [Priority 9]
@@ -88,9 +80,7 @@
 
   * Smooth selection in list (scroll animated)
   * Lastfm plugin
-  * FreeboxTV plugin (or better, generalize to M3UEXT playlist)
   * youtube plugin
   * Deezer plugin
   * Theme Documentation
-
-
+  * NetFlix plugin
