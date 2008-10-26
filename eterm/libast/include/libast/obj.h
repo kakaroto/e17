@@ -283,7 +283,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CLASS(), SPIF_CAST()
  */
-#define SPIF_CLASS(cls)                  (SPIF_CAST(class) (cls))
+#define SPIF_CLASS(cls)                  ((spif_class_t) (cls))
 
 /**
  * Cast an arbitrary class object to a const generic class type.
@@ -296,7 +296,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CLASS(), SPIF_CONST_CAST()
  */
-#define SPIF_CONST_CLASS(cls)            (SPIF_CONST_CAST(class) (cls))
+#define SPIF_CONST_CLASS(cls)            ((const spif_class_t) (cls))
 
 /**
  * Cast an arbitrary object to an obj.
@@ -313,7 +313,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CAST()
  */
-#define SPIF_OBJ(o)                    (SPIF_CAST(obj) (o))
+#define SPIF_OBJ(o)                    ((spif_obj_t) (o))
 /*@}*/
 
 /*@{*/
@@ -365,7 +365,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ(), SPIF_NULL_TYPE()
  */
-#define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
+#define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == (spif_obj_t) NULL)
 
 /**
  * Determine if an object is of a given type.
@@ -460,7 +460,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CLASS()
  */
-#define SPIF_OBJ_CLASSNAME(obj)          (SPIF_CAST(classname) SPIF_OBJ_CLASS(obj))
+#define SPIF_OBJ_CLASSNAME(obj)          ((spif_classname_t) SPIF_OBJ_CLASS(obj))
 
 /**
  * Call the named method for a given object.
@@ -494,7 +494,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_new()
  */
-#define SPIF_OBJ_NEW()                   SPIF_CAST(obj) (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
+#define SPIF_OBJ_NEW()                   (spif_obj_t) (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
 
 /**
  * Initialize an object.
@@ -507,7 +507,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_init()
  */
-#define SPIF_OBJ_INIT(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init)(o))
+#define SPIF_OBJ_INIT(o)                 (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init)(o))
 
 /**
  * Clean up an object.
@@ -520,7 +520,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_done()
  */
-#define SPIF_OBJ_DONE(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), done)(o))
+#define SPIF_OBJ_DONE(o)                 (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), done)(o))
 
 /**
  * Delete an object.
@@ -533,7 +533,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_del()
  */
-#define SPIF_OBJ_DEL(o)                  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), del)(o))
+#define SPIF_OBJ_DEL(o)                  (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), del)(o))
 
 /**
  * Convert the contents of an object to a string.
@@ -549,7 +549,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_show(), SPIF_SHOW()
  */
-#define SPIF_OBJ_SHOW(o, b, i)           SPIF_CAST(str) (SPIF_OBJ_CALL_METHOD((o), show)(o, #o, b, i))
+#define SPIF_OBJ_SHOW(o, b, i)           (spif_str_t) (SPIF_OBJ_CALL_METHOD((o), show)(o, #o, b, i))
 
 /**
  * Compare two objects.
@@ -563,7 +563,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_comp(), spif_comp_t
  */
-#define SPIF_OBJ_COMP(o1, o2)            SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o1),  comp)(o1, o2))
+#define SPIF_OBJ_COMP(o1, o2)            (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o1),  comp)(o1, o2))
 
 /**
  * Duplicate an object.
@@ -576,7 +576,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_dup()
  */
-#define SPIF_OBJ_DUP(o)                  SPIF_CAST(obj) (SPIF_OBJ_CALL_METHOD((o), dup)(o))
+#define SPIF_OBJ_DUP(o)                  (spif_obj_t) (SPIF_OBJ_CALL_METHOD((o), dup)(o))
 
 /**
  * Obtain the type of the object.
@@ -589,7 +589,7 @@
  *
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_type(), SPIF_OBJ_CLASSNAME()
  */
-#define SPIF_OBJ_TYPE(o)                 SPIF_CAST(classname) (SPIF_OBJ_CALL_METHOD((o), type)(o))
+#define SPIF_OBJ_TYPE(o)                 (spif_classname_t) (SPIF_OBJ_CALL_METHOD((o), type)(o))
 /*@}*/
 
 
@@ -619,7 +619,7 @@
  */
 #define SPIF_SHOW(o, fd)                 do { \
                                            spif_str_t tmp__; \
-                                           tmp__ = SPIF_OBJ_SHOW(o, SPIF_NULL_TYPE(str), 0); \
+                                           tmp__ = SPIF_OBJ_SHOW(o, (spif_str_t) NULL, 0); \
                                            fprintf(fd, "%s", SPIF_STR_STR(tmp__)); \
                                            spif_str_del(tmp__); \
                                          } while (0)
@@ -642,13 +642,13 @@
  */
 #define SPIF_OBJ_SHOW_NULL(t, n, b, i, tmp)  do { \
                                                memset(tmp, ' ', (i)); \
-                                               snprintf(SPIF_CAST_C(char *) tmp + (i), sizeof(tmp) - (i), \
+                                               snprintf((char *) tmp + (i), sizeof(tmp) - (i), \
                                                         "(spif_" #t "_t) %s:  " SPIF_NULLSTR_TYPE(t) "\n", \
                                                         NONULL(n)); \
                                                if (SPIF_STR_ISNULL(b)) { \
-                                                 (b) = spif_str_new_from_ptr(SPIF_CAST(charptr) tmp); \
+                                                 (b) = spif_str_new_from_ptr((spif_charptr_t) tmp); \
                                                } else { \
-                                                 spif_str_append_from_ptr((b), SPIF_CAST(charptr) tmp); \
+                                                 spif_str_append_from_ptr((b), (spif_charptr_t) tmp); \
                                                } \
                                              } while (0)
 

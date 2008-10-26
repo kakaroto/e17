@@ -166,7 +166,7 @@
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
-#define SPIF_ALLOC(type)                 SPIF_CAST(type) MALLOC(SPIF_SIZEOF_TYPE(type))
+#define SPIF_ALLOC(type)                 (spif_ ## type ## _t) MALLOC(SPIF_SIZEOF_TYPE(type))
 
 /**
  * Deallocate an object (or other structured type).
@@ -191,7 +191,7 @@
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
-#define SPIF_DECL_CLASSNAME(type)        SPIF_CAST(charptr) "!spif_" #type "_t!"
+#define SPIF_DECL_CLASSNAME(type)        (spif_charptr_t) "!spif_" #type "_t!"
 /*@}*/
 
 /*@{*/
@@ -206,78 +206,6 @@
  * @ingroup DOXGRP_TYPES
  */
 
-/**
- * Typecast to a native C type.
- *
- * This macro is identical to traditional C typecasting and is
- * supplied primarily for consistency.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink
- */
-#define SPIF_CAST_C(type)                (type)
-
-/**
- * Typecast to a const native C type.
- *
- * This macro is identical to traditional C typecasting, except that
- * the @c const keyword is added to the typecast.  It is supplied
- * primarily for consistency.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink
- */
-#define SPIF_CONST_CAST_C(type)          (const type)
-
-/**
- * Typecast to a LibAST type by basename.
- *
- * This macro typecasts a value to a particular LibAST type by its
- * basename.  It is usually employed where emphasis on the basename is
- * desired, particularly with objects.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_TYPE()
- */
-#define SPIF_CAST(type)                  (SPIF_TYPE(type))
-
-/**
- * Typecast to a const LibAST type by basename.
- *
- * This macro is identical to SPIF_CAST(), except that the @c const
- * keyword is added to the typecast.
- *
- * @note DO NOT confuse this typecast with the "const type"
- * terminology.  This typecast applies const-ness (i.e., immutability)
- * to an object or other value.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_TYPE(), SPIF_CAST()
- */
-#define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
-
-/**
- * Typecast to a pointer to a LibAST type by basename.
- *
- * This macro typecasts a value to a pointer to a particular LibAST
- * type by its basename.  It is usually employed where emphasis on the
- * basename is desired, particularly with objects.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_TYPE()
- */
-#define SPIF_CAST_PTR(type)              (SPIF_TYPE(type) *)
-
-/**
- * Typecast to a pointer to a const LibAST type by basename.
- *
- * This macro is identical to SPIF_CAST_PTR(), except that the @c
- * const keyword is added to the typecast.
- *
- * @note DO NOT confuse this typecast with the "const type"
- * terminology.  This typecast applies const-ness (i.e., immutability)
- * to the object or other value referenced by the pointer.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_TYPE(), SPIF_CAST_PTR()
- */
-#define SPIF_CONST_CAST_PTR(type)        (const SPIF_TYPE(type) *)
-/*@}*/
-
 /*@{*/
 /**
  * @name NULL Handling Macros
@@ -289,48 +217,6 @@
  *
  * @ingroup DOXGRP_TYPES
  */
-
-/**
- * Returns a NULL object of the specified base type.
- *
- * This macro returns a NULL object of the type specified by the given
- * basename.  It is generally used for initializing object member
- * variables and for returning correctly-typed NULL objects.
- *
- * @param type The type basename.
- * @return     A NULL object of the specified type.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST()
- */
-#define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
-
-/**
- * Returns a NULL object of the specified native C type.
- *
- * This macro returns a NULL object of the specified C type.  It is
- * included primarily for consistency.
- *
- * @param type The native C type.
- * @return     A NULL value of the specified type.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST_C()
- */
-#define SPIF_NULL_TYPE_C(type)            (SPIF_CAST_C(type) (NULL))
-
-/**
- * Returns a NULL pointer to an object of the specified base type.
- *
- * This macro returns a NULL pointer to an object of the type
- * specified by the given basename.  It is generally used for
- * initializing object member variables and for returning
- * correctly-typed NULL objects.
- *
- * @param type The type basename.
- * @return     A NULL pointer to an object of the specified type.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST()
- */
-#define SPIF_NULL_TYPE_PTR(type)          (SPIF_CAST_PTR(type) (NULL))
 
 /**
  * Returns a string representing a NULL value of the specified base
@@ -388,9 +274,18 @@
  * @param p The pointer to test.
  * @return  #TRUE if NULL, #FALSE otherwise.
  *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST()
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, 
  */
-#define SPIF_PTR_ISNULL(p)                ((SPIF_CAST(ptr) (p) == SPIF_NULL_TYPE(ptr)) ? (TRUE) : (FALSE))
+#define SPIF_PTR_ISNULL(p)                (((spif_ptr_t) (p) == (spif_ptr_t) NULL) ? (TRUE) : (FALSE))
+
+/**
+ * Convenience macro for typecasting to spif_charptr_t.
+ *
+ * This macro typecasts a value to a spif_charptr_t.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, spif_charptr_t
+ */
+#define SPIF_CHARPTR(var)    ((spif_charptr_t) (var))
 /*@}*/
 
 /*@{*/
@@ -616,29 +511,6 @@ typedef void * (*spif_func_t)();
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
 typedef spif_charptr_t spif_classname_t;
-
-/**
- * Convenience macro for typecasting to spif_charptr_t.
- *
- * This macro typecasts a value to a spif_charptr_t.  I got really
- * tired of typing "SPIF_CAST(charptr)" all the time, especially for
- * string constants. :-)
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST(), spif_charptr_t
- */
-#define SPIF_CHARPTR(var)    (SPIF_CAST(charptr) (var))
-
-/**
- * Convenience macro for typecasting to C's default char * type.
- *
- * This macro typecasts a value to whatever "char *" is on the current
- * system.  This is used to typecast a spif_charptr_t back to the
- * native C type for use in standard libc functions.
- *
- * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST(), spif_charptr_t
- */
-#define SPIF_CHARPTR_C(var)  (SPIF_CAST_C(char *) (var))
-
 /*@}*/
 
 /*@{*/
@@ -841,7 +713,7 @@ typedef enum {
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink, spif_cmp_t
  */
-#define SPIF_CMP_FROM_INT(i)      ((SPIF_CAST_C(int) (i) < 0) ? (SPIF_CMP_LESS) : ((SPIF_CAST_C(int) (i) > 0) ? (SPIF_CMP_GREATER) : (SPIF_CMP_EQUAL)))
+#define SPIF_CMP_FROM_INT(i)      (((int) (i) < 0) ? (SPIF_CMP_LESS) : (((int) (i) > 0) ? (SPIF_CMP_GREATER) : (SPIF_CMP_EQUAL)))
 
 /**
  * Check if a comparison value is SPIF_CMP_LESS.

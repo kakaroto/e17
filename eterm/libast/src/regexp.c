@@ -52,7 +52,7 @@ spif_regexp_new(void)
     self = SPIF_ALLOC(regexp);
     if (!spif_regexp_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(regexp);
+        self = (spif_regexp_t) NULL;
     }
     return self;
 }
@@ -65,7 +65,7 @@ spif_regexp_new_from_str(spif_str_t other)
     self = SPIF_ALLOC(regexp);
     if (!spif_regexp_init_from_str(self, other)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(regexp);
+        self = (spif_regexp_t) NULL;
     }
     return self;
 }
@@ -78,7 +78,7 @@ spif_regexp_new_from_ptr(spif_charptr_t other)
     self = SPIF_ALLOC(regexp);
     if (!spif_regexp_init_from_ptr(self, other)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(regexp);
+        self = (spif_regexp_t) NULL;
     }
     return self;
 }
@@ -91,8 +91,8 @@ spif_regexp_init(spif_regexp_t self)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
-    self->data = SPIF_NULL_TYPE(ptr);
-    spif_regexp_set_flags(self, SPIF_NULL_TYPE(charptr));
+    self->data = (spif_ptr_t) NULL;
+    spif_regexp_set_flags(self, (spif_charptr_t) NULL);
     return TRUE;
 }
 
@@ -104,7 +104,7 @@ spif_regexp_init_from_str(spif_regexp_t self, spif_str_t other)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
-    self->data = SPIF_NULL_TYPE(ptr);
+    self->data = (spif_ptr_t) NULL;
     spif_regexp_set_flags(self, SPIF_CHARPTR(""));
     return TRUE;
 }
@@ -117,7 +117,7 @@ spif_regexp_init_from_ptr(spif_regexp_t self, spif_charptr_t other)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
-    self->data = SPIF_NULL_TYPE(ptr);
+    self->data = (spif_ptr_t) NULL;
     spif_regexp_set_flags(self, SPIF_CHARPTR(""));
     return TRUE;
 }
@@ -127,7 +127,7 @@ spif_regexp_done(spif_regexp_t self)
 {
     ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
     spif_str_done(SPIF_STR(self));
-    if (self->data != SPIF_NULL_TYPE(ptr)) {
+    if (self->data != (spif_ptr_t) NULL) {
         FREE(self->data);
     }
     self->flags = 0;
@@ -154,16 +154,16 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_str_t buff, size_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_regexp_t) %s:  %10p {\n",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_REGEXP_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
+    snprintf((char *) tmp, sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -180,7 +180,7 @@ spif_regexp_dup(spif_regexp_t self)
 {
     spif_regexp_t tmp;
 
-    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_NULL_TYPE(regexp));
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), (spif_regexp_t) NULL);
 
     tmp = spif_regexp_new_from_str(SPIF_STR(self));
     tmp->flags = self->flags;
@@ -191,7 +191,7 @@ spif_regexp_dup(spif_regexp_t self)
 spif_classname_t
 spif_regexp_type(spif_regexp_t self)
 {
-    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -199,7 +199,7 @@ spif_bool_t
 spif_regexp_compile(spif_regexp_t self)
 {
     ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), FALSE);
-    if (self->data != SPIF_NULL_TYPE(ptr)) {
+    if (self->data != (spif_ptr_t) NULL) {
         FREE(self->data);
     }
 #if LIBAST_REGEXP_SUPPORT_PCRE
@@ -207,7 +207,7 @@ spif_regexp_compile(spif_regexp_t self)
         const char *errptr;
         int erroffset;
 
-        self->data = SPIF_CAST(ptr) pcre_compile(SPIF_CHARPTR_C(SPIF_STR_STR(SPIF_STR(self))),
+        self->data = (spif_ptr_t) pcre_compile((char *) SPIF_STR_STR(SPIF_STR(self)),
                                                  self->flags, &errptr, &erroffset, NULL);
         if (SPIF_PTR_ISNULL(self->data)) {
             libast_print_error("PCRE compilation of \"%s\" failed at offset %d -- %s\n",
@@ -221,9 +221,9 @@ spif_regexp_compile(spif_regexp_t self)
         char buff[256];
         int errcode;
 
-        self->data = SPIF_CAST(ptr) MALLOC(sizeof(regex_t));
-        if ((errcode = regcomp(SPIF_CAST_C(regex_t *) self->data, SPIF_STR_STR(SPIF_STR(self)), (self->flags & 0xffff))) != 0) {
-            regerror(errcode, SPIF_CAST_C(regex_t *) self->data, buff, sizeof(buff));
+        self->data = (spif_ptr_t) MALLOC(sizeof(regex_t));
+        if ((errcode = regcomp((regex_t *) self->data, SPIF_STR_STR(SPIF_STR(self)), (self->flags & 0xffff))) != 0) {
+            regerror(errcode, (regex_t *) self->data, buff, sizeof(buff));
             libast_print_error("POSIX regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), buff);
             FREE(self->data);
             return FALSE;
@@ -245,7 +245,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
     {
         int rc;
 
-        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, SPIF_CHARPTR_C(SPIF_STR_STR(subject)),
+        rc = pcre_exec((pcre *) self->data, NULL, (char *) SPIF_STR_STR(subject),
                        spif_str_get_len(subject), 0, 0, NULL, 0);
         if (rc == 0) {
             return TRUE;
@@ -261,14 +261,14 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
         int rc;
         char errbuf[256];
 
-        rc = regexec(SPIF_CAST_C(regex_t *) self->data, SPIF_STR_STR(subject), (size_t) 0, (regmatch_t *) NULL,
+        rc = regexec((regex_t *) self->data, SPIF_STR_STR(subject), (size_t) 0, (regmatch_t *) NULL,
                      ((self->flags >> 8) & 0xffff));
         if (rc == 0) {
             return TRUE;
         } else if (rc == REG_NOMATCH) {
             return FALSE;
         } else {
-            regerror(rc, SPIF_CAST_C(regex_t *) self->data, errbuf, sizeof(errbuf));
+            regerror(rc, (regex_t *) self->data, errbuf, sizeof(errbuf));
             libast_print_error("POSIX regexp matching error on \"%s\" -- %s\n", SPIF_STR_STR(subject), errbuf);
             return FALSE;
         }
@@ -277,8 +277,8 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
     {
         spif_charptr_t err;
 
-        err = SPIF_CAST(charptr) re_comp(SPIF_STR_STR(SPIF_STR(self)));
-        if (err != SPIF_NULL_TYPE(charptr)) {
+        err = (spif_charptr_t) re_comp(SPIF_STR_STR(SPIF_STR(self)));
+        if (err != (spif_charptr_t) NULL) {
             libast_print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
             return FALSE;
         }
@@ -296,8 +296,8 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
     {
         int rc;
 
-        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, SPIF_CHARPTR_C(subject),
-                       strlen(SPIF_CHARPTR_C(subject)), 0, 0, NULL, 0);
+        rc = pcre_exec((pcre *) self->data, NULL, (char *) subject,
+                       strlen((char *) subject), 0, 0, NULL, 0);
         if (rc == 0) {
             return TRUE;
         } else if (rc == PCRE_ERROR_NOMATCH) {
@@ -312,14 +312,14 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
         int rc;
         char errbuf[256];
 
-        rc = regexec(SPIF_CAST_C(regex_t *) self->data, subject, (size_t) 0, (regmatch_t *) NULL,
+        rc = regexec((regex_t *) self->data, subject, (size_t) 0, (regmatch_t *) NULL,
                      ((self->flags >> 8) & 0xffff));
         if (rc == 0) {
             return TRUE;
         } else if (rc == REG_NOMATCH) {
             return FALSE;
         } else {
-            regerror(rc, SPIF_CAST_C(regex_t *) self->data, errbuf, sizeof(errbuf));
+            regerror(rc, (regex_t *) self->data, errbuf, sizeof(errbuf));
             libast_print_error("POSIX regexp matching error on \"%s\" -- %s\n", subject, errbuf);
             return FALSE;
         }
@@ -328,8 +328,8 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
     {
         spif_charptr_t err;
 
-        err = SPIF_CAST(charptr) re_comp(SPIF_STR_STR(SPIF_STR(self)));
-        if (err != SPIF_NULL_TYPE(charptr)) {
+        err = (spif_charptr_t) re_comp(SPIF_STR_STR(SPIF_STR(self)));
+        if (err != (spif_charptr_t) NULL) {
             libast_print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
             return FALSE;
         }
@@ -341,7 +341,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
 int
 spif_regexp_get_flags(spif_regexp_t self)
 {
-    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), SPIF_CAST_C(int) 0);
+    ASSERT_RVAL(!SPIF_REGEXP_ISNULL(self), (int) 0);
     return self->flags;
 }
 
@@ -357,7 +357,7 @@ spif_regexp_set_flags(spif_regexp_t self, spif_charptr_t flagstr)
     self->flags = REG_EXTENDED | REG_NEWLINE;
 #endif
 
-    REQUIRE_RVAL(flagstr != SPIF_NULL_TYPE(charptr), FALSE);
+    REQUIRE_RVAL(flagstr != (spif_charptr_t) NULL, FALSE);
     for (p = flagstr; *p; p++) {
         switch (*p) {
 #if LIBAST_REGEXP_SUPPORT_PCRE

@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_ITERATOR(o)                                    (SPIF_CAST(iterator) (o))
-#define SPIF_ITERATOR_CLASS(o)                              (SPIF_CAST(iteratorclass) SPIF_OBJ_CLASS(o))
+#define SPIF_ITERATOR(o)                                    ((spif_iterator_t) (o))
+#define SPIF_ITERATOR_CLASS(o)                              ((spif_iteratorclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with iterator interface */
 #define SPIF_ITERATORCLASS_VAR(type)                        spif_ ## type ## _iteratorclass
 
 /* Check if an iterator is NULL */
-#define SPIF_ITERATOR_ISNULL(o)                             (SPIF_ITERATOR(o) == SPIF_NULL_TYPE(iterator))
+#define SPIF_ITERATOR_ISNULL(o)                             (SPIF_ITERATOR(o) == (spif_iterator_t) NULL)
 
 /* Check if an object is an iterator */
 #define SPIF_OBJ_IS_ITERATOR(o)                             SPIF_OBJ_IS_TYPE(o, iterator)
@@ -54,8 +54,8 @@
 #define SPIF_ITERATOR_DUP(o)                                SPIF_OBJ_DUP(o)
 #define SPIF_ITERATOR_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_ITERATOR_HAS_NEXT(o)                           SPIF_CAST(bool) ((SPIF_ITERATOR_CALL_METHOD((o), has_next))(o))
-#define SPIF_ITERATOR_NEXT(o)                               SPIF_CAST(obj) ((SPIF_ITERATOR_CALL_METHOD((o), next))(o))
+#define SPIF_ITERATOR_HAS_NEXT(o)                           (spif_bool_t) ((SPIF_ITERATOR_CALL_METHOD((o), has_next))(o))
+#define SPIF_ITERATOR_NEXT(o)                               (spif_obj_t) ((SPIF_ITERATOR_CALL_METHOD((o), next))(o))
 
 typedef spif_obj_t spif_iterator_t;
 

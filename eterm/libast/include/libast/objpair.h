@@ -58,7 +58,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, SPIF_CAST()
  */
-#define SPIF_OBJPAIR(o)                    (SPIF_CAST(objpair) (o))
+#define SPIF_OBJPAIR(o)                    ((spif_objpair_t) (o))
 
 /**
  * Determine if an arbitrary object is of type "objpair."
@@ -89,7 +89,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, SPIF_OBJPAIR(), SPIF_NULL_TYPE()
  */
-#define SPIF_OBJPAIR_ISNULL(o)             (SPIF_OBJPAIR(o) == SPIF_NULL_TYPE(objpair))
+#define SPIF_OBJPAIR_ISNULL(o)             (SPIF_OBJPAIR(o) == (spif_objpair_t) NULL)
 
 /**
  * Create an instance of a objpair.
@@ -100,7 +100,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_new()
  */
-#define SPIF_OBJPAIR_NEW()                   SPIF_CAST(objpair) (SPIF_CLASS(SPIF_CLASS_VAR(objpair)))->(noo)()
+#define SPIF_OBJPAIR_NEW()                   (spif_objpair_t) (SPIF_CLASS(SPIF_CLASS_VAR(objpair)))->(noo)()
 
 /**
  * Initialize an objpair.
@@ -113,7 +113,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_init()
  */
-#define SPIF_OBJPAIR_INIT(o)                 SPIF_CAST(bool) (SPIF_OBJPAIR_CALL_METHOD((o), init)(o))
+#define SPIF_OBJPAIR_INIT(o)                 (spif_bool_t) (SPIF_OBJPAIR_CALL_METHOD((o), init)(o))
 
 /**
  * Clean up an objpair.
@@ -126,7 +126,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_done()
  */
-#define SPIF_OBJPAIR_DONE(o)                 SPIF_CAST(bool) (SPIF_OBJPAIR_CALL_METHOD((o), done)(o))
+#define SPIF_OBJPAIR_DONE(o)                 (spif_bool_t) (SPIF_OBJPAIR_CALL_METHOD((o), done)(o))
 
 /**
  * Delete an objpair.
@@ -139,7 +139,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_del()
  */
-#define SPIF_OBJPAIR_DEL(o)                  SPIF_CAST(bool) (SPIF_OBJPAIR_CALL_METHOD((o), del)(o))
+#define SPIF_OBJPAIR_DEL(o)                  (spif_bool_t) (SPIF_OBJPAIR_CALL_METHOD((o), del)(o))
 
 /**
  * Convert the contents of an objpair to a string.
@@ -155,7 +155,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_show(), SPIF_SHOW()
  */
-#define SPIF_OBJPAIR_SHOW(o, b, i)           SPIF_CAST(str) (SPIF_OBJPAIR_CALL_METHOD((o), show)(o, #o, b, i))
+#define SPIF_OBJPAIR_SHOW(o, b, i)           (spif_str_t) (SPIF_OBJPAIR_CALL_METHOD((o), show)(o, #o, b, i))
 
 /**
  * Compare two objpairs.
@@ -169,7 +169,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_comp(), spif_comp_t
  */
-#define SPIF_OBJPAIR_COMP(o1, o2)            SPIF_CAST(cmp) (SPIF_OBJPAIR_CALL_METHOD((o1),  comp)(o1, o2))
+#define SPIF_OBJPAIR_COMP(o1, o2)            (spif_cmp_t) (SPIF_OBJPAIR_CALL_METHOD((o1),  comp)(o1, o2))
 
 /**
  * Duplicate an objpair.
@@ -182,7 +182,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_dup()
  */
-#define SPIF_OBJPAIR_DUP(o)                  SPIF_CAST(objpair) (SPIF_OBJPAIR_CALL_METHOD((o), dup)(o))
+#define SPIF_OBJPAIR_DUP(o)                  (spif_objpair_t) (SPIF_OBJPAIR_CALL_METHOD((o), dup)(o))
 
 /**
  * Obtain the type of the objpair.
@@ -195,7 +195,7 @@
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink, spif_objpair_type(), SPIF_OBJPAIR_CLASSNAME()
  */
-#define SPIF_OBJPAIR_TYPE(o)                 SPIF_CAST(classname) (SPIF_OBJPAIR_CALL_METHOD((o), type)(o))
+#define SPIF_OBJPAIR_TYPE(o)                 (spif_classname_t) (SPIF_OBJPAIR_CALL_METHOD((o), type)(o))
 
 
 /**

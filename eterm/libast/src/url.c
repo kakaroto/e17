@@ -54,7 +54,7 @@ spif_url_new(void)
     self = SPIF_ALLOC(url);
     if (!spif_url_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(url);
+        self = (spif_url_t) NULL;
     }
     return self;
 }
@@ -67,7 +67,7 @@ spif_url_new_from_str(spif_str_t other)
     self = SPIF_ALLOC(url);
     if (!spif_url_init_from_str(self, other)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(url);
+        self = (spif_url_t) NULL;
     }
     return self;
 }
@@ -80,7 +80,7 @@ spif_url_new_from_ptr(spif_charptr_t other)
     self = SPIF_ALLOC(url);
     if (!spif_url_init_from_ptr(self, other)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(url);
+        self = (spif_url_t) NULL;
     }
     return self;
 }
@@ -93,13 +93,13 @@ spif_url_init(spif_url_t self)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
-    self->proto = SPIF_NULL_TYPE(str);
-    self->user = SPIF_NULL_TYPE(str);
-    self->passwd = SPIF_NULL_TYPE(str);
-    self->host = SPIF_NULL_TYPE(str);
-    self->port = SPIF_NULL_TYPE(str);
-    self->path = SPIF_NULL_TYPE(str);
-    self->query = SPIF_NULL_TYPE(str);
+    self->proto = (spif_str_t) NULL;
+    self->user = (spif_str_t) NULL;
+    self->passwd = (spif_str_t) NULL;
+    self->host = (spif_str_t) NULL;
+    self->port = (spif_str_t) NULL;
+    self->path = (spif_str_t) NULL;
+    self->query = (spif_str_t) NULL;
     return TRUE;
 }
 
@@ -111,13 +111,13 @@ spif_url_init_from_str(spif_url_t self, spif_str_t other)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
-    self->proto = SPIF_NULL_TYPE(str);
-    self->user = SPIF_NULL_TYPE(str);
-    self->passwd = SPIF_NULL_TYPE(str);
-    self->host = SPIF_NULL_TYPE(str);
-    self->port = SPIF_NULL_TYPE(str);
-    self->path = SPIF_NULL_TYPE(str);
-    self->query = SPIF_NULL_TYPE(str);
+    self->proto = (spif_str_t) NULL;
+    self->user = (spif_str_t) NULL;
+    self->passwd = (spif_str_t) NULL;
+    self->host = (spif_str_t) NULL;
+    self->port = (spif_str_t) NULL;
+    self->path = (spif_str_t) NULL;
+    self->query = (spif_str_t) NULL;
     spif_url_parse(self);
     return TRUE;
 }
@@ -130,13 +130,13 @@ spif_url_init_from_ptr(spif_url_t self, spif_charptr_t other)
         return FALSE;
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
-    self->proto = SPIF_NULL_TYPE(str);
-    self->user = SPIF_NULL_TYPE(str);
-    self->passwd = SPIF_NULL_TYPE(str);
-    self->host = SPIF_NULL_TYPE(str);
-    self->port = SPIF_NULL_TYPE(str);
-    self->path = SPIF_NULL_TYPE(str);
-    self->query = SPIF_NULL_TYPE(str);
+    self->proto = (spif_str_t) NULL;
+    self->user = (spif_str_t) NULL;
+    self->passwd = (spif_str_t) NULL;
+    self->host = (spif_str_t) NULL;
+    self->port = (spif_str_t) NULL;
+    self->path = (spif_str_t) NULL;
+    self->query = (spif_str_t) NULL;
     spif_url_parse(self);
     return TRUE;
 }
@@ -147,31 +147,31 @@ spif_url_done(spif_url_t self)
     ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     if (!SPIF_STR_ISNULL(self->proto)) {
         spif_str_del(self->proto);
-        self->proto = SPIF_NULL_TYPE(str);
+        self->proto = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->user)) {
         spif_str_del(self->user);
-        self->user = SPIF_NULL_TYPE(str);
+        self->user = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->passwd)) {
         spif_str_del(self->passwd);
-        self->passwd = SPIF_NULL_TYPE(str);
+        self->passwd = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->host)) {
         spif_str_del(self->host);
-        self->host = SPIF_NULL_TYPE(str);
+        self->host = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->port)) {
         spif_str_del(self->port);
-        self->port = SPIF_NULL_TYPE(str);
+        self->port = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->path)) {
         spif_str_del(self->path);
-        self->path = SPIF_NULL_TYPE(str);
+        self->path = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->query)) {
         spif_str_del(self->query);
-        self->query = SPIF_NULL_TYPE(str);
+        self->query = (spif_str_t) NULL;
     }
     spif_str_done(SPIF_STR(self));
     return TRUE;
@@ -197,9 +197,9 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_url_t) %s:  %10p {\n",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -214,7 +214,7 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     buff = spif_str_show(self->path, SPIF_CHARPTR("path"), buff, indent + 2);
     buff = spif_str_show(self->query, SPIF_CHARPTR("query"), buff, indent + 2);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "}\n");
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -231,7 +231,7 @@ spif_url_dup(spif_url_t self)
 {
     spif_url_t tmp;
 
-    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(url));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), (spif_url_t) NULL);
     tmp = spif_url_new_from_str(SPIF_STR(self));
     return tmp;
 }
@@ -239,7 +239,7 @@ spif_url_dup(spif_url_t self)
 spif_classname_t
 spif_url_type(spif_url_t self)
 {
-    ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_URL_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -261,7 +261,7 @@ spif_url_parse(spif_url_t self)
     pstr = s;
 
     /* Check for "proto:" at the beginning. */
-    pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(s), ':'));
+    pend = SPIF_CHARPTR(strchr((char *) s, ':'));
     if (pend != NULL) {
         for (; pstr < pend; pstr++) {
             if (!isalnum(*pstr)) {
@@ -283,9 +283,9 @@ spif_url_parse(spif_url_t self)
     }
 
     /* Knock out the path and query if they're there. */
-    pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '/'));
+    pend = SPIF_CHARPTR(strchr((char *) pstr, '/'));
     if (pend != NULL) {
-        spif_charptr_t tmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pend), '?'));
+        spif_charptr_t tmp = SPIF_CHARPTR(strchr((char *) pend, '?'));
 
         if (tmp != NULL) {
             self->query = spif_str_new_from_ptr(tmp + 1);
@@ -293,7 +293,7 @@ spif_url_parse(spif_url_t self)
         } else {
           self->path = spif_str_new_from_ptr(pend);
         }
-    } else if ((pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '?'))) != NULL) {
+    } else if ((pend = SPIF_CHARPTR(strchr((char *) pstr, '?'))) != NULL) {
         self->query = spif_str_new_from_ptr(pend + 1);
     } else {
         for (pend = pstr; *pend; pend++);
@@ -301,9 +301,9 @@ spif_url_parse(spif_url_t self)
     /* At this point, pend *must* point to the end of the user/pass/host/port part. */
 
     /* Check for an @ sign, which would mean we have auth info. */
-    ptmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '@'));
+    ptmp = SPIF_CHARPTR(strchr((char *) pstr, '@'));
     if ((ptmp != NULL) && (ptmp < pend)) {
-        spif_charptr_t tmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), ':'));
+        spif_charptr_t tmp = SPIF_CHARPTR(strchr((char *) pstr, ':'));
 
         if ((tmp != NULL) && (tmp < ptmp)) {
             /* Both username and password. */
@@ -316,7 +316,7 @@ spif_url_parse(spif_url_t self)
     }
 
     /* All that remains now between pstr and pend is host and maybe port. */
-    ptmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), ':'));
+    ptmp = SPIF_CHARPTR(strchr((char *) pstr, ':'));
     if ((ptmp != NULL) && (ptmp < pend)) {
         self->host = spif_str_new_from_buff(pstr, ptmp - pstr);
         self->port = spif_str_new_from_buff((ptmp + 1), pend - ptmp - 1);
@@ -329,12 +329,12 @@ spif_url_parse(spif_url_t self)
         spif_protoinfo_t proto;
         spif_servinfo_t serv;
 
-        proto = getprotobyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)));
+        proto = getprotobyname((char *) SPIF_STR_STR(self->proto));
         if (proto == NULL) {
             /* If it's not a protocol, it's probably a service. */
-            serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)), "tcp");
+            serv = getservbyname((char *) SPIF_STR_STR(self->proto), "tcp");
             if (serv == NULL) {
-                serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)), "udp");
+                serv = getservbyname((char *) SPIF_STR_STR(self->proto), "udp");
             }
             if (serv != NULL) {
                 proto = getprotobyname(serv->s_proto);
@@ -344,7 +344,7 @@ spif_url_parse(spif_url_t self)
         if (proto != NULL) {
             spif_char_t buff[32];
 
-            snprintf(SPIF_CHARPTR_C(buff), sizeof(buff), "%d", ntohs(serv->s_port));
+            snprintf((char *) buff, sizeof(buff), "%d", ntohs(serv->s_port));
             self->port = spif_str_new_from_ptr(buff);
         }
     }

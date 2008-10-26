@@ -24,17 +24,17 @@
 #ifndef _LIBAST_USTR_H_
 #define _LIBAST_USTR_H_
 
-#define SPIF_UTF8_CHAR_LEN(s)         ((((SPIF_CAST(uchar) (*(s))) & 0x80) == 0x00) \
+#define SPIF_UTF8_CHAR_LEN(s)         (((((spif_uchar_t) (*(s))) & 0x80) == 0x00) \
                                        ? (1) \
-                                       : ((((SPIF_CAST(uchar) (*(s))) & 0xc0) == 0x80) \
+                                       : (((((spif_uchar_t) (*(s))) & 0xc0) == 0x80) \
                                           ? (2) \
-                                          : ((((SPIF_CAST(uchar) (*(s))) & 0xe0) == 0xc0) \
+                                          : (((((spif_uchar_t) (*(s))) & 0xe0) == 0xc0) \
                                              ? (3) \
-                                             : ((((SPIF_CAST(uchar) (*(s))) & 0xf0) == 0xe0) \
+                                             : (((((spif_uchar_t) (*(s))) & 0xf0) == 0xe0) \
                                                 ? (4) \
-                                                : ((((SPIF_CAST(uchar) (*(s))) & 0xf8) == 0xf0) \
+                                                : (((((spif_uchar_t) (*(s))) & 0xf8) == 0xf0) \
                                                    ? (5) \
-                                                   : ((((SPIF_CAST(uchar) (*(s))) & 0xfc) == 0xf8) \
+                                                   : (((((spif_uchar_t) (*(s))) & 0xfc) == 0xf8) \
                                                       ? (6) \
                                                       : (0)))))))
 
@@ -56,44 +56,44 @@
 #define SPIF_USTR_NEW_FROM_FP(type, fp)          SPIF_USTR((SPIF_CLASS(SPIF_CLASS_VAR(type)))->new_from_fp)(fp))
 #define SPIF_USTR_NEW_FROM_FD(type, fd)          SPIF_USTR((SPIF_CLASS(SPIF_CLASS_VAR(type)))->new_from_fd)(fd))
 #define SPIF_USTR_NEW_FROM_NUM(type, num)        SPIF_USTR((SPIF_CLASS(SPIF_CLASS_VAR(type)))->new_from_num)(num))
-#define SPIF_USTR_INIT_FROM_PTR(o, p)            SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init_from_ptr)(o, p))
-#define SPIF_USTR_INIT_FROM_BUFF(o, b, s)        SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init_from_buff)(o, b, s))
-#define SPIF_USTR_INIT_FROM_FP(o, fp)            SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init_from_fp)(o, fp))
-#define SPIF_USTR_INIT_FROM_FD(o, fd)            SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init_from_fd)(o, fd))
-#define SPIF_USTR_INIT_FROM_NUM(o, num)          SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init_from_num)(o, num))
-#define SPIF_USTR_APPEND(o, x)                   SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), append)(o, x))
-#define SPIF_USTR_APPEND_CHAR(o, x)              SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), append_char)(o, x))
-#define SPIF_USTR_APPEND_FROM_PTR(o, x)          SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), append_from_ptr)(o, x))
-#define SPIF_USTR_CASECMP(o, x)                  SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), casecmp)(o, x))
-#define SPIF_USTR_CASECMP_WITH_PTR(o, x)         SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), casecmp_with_ptr)(o, x))
-#define SPIF_USTR_CLEAR(o, x)                    SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), clear)(o, x))
-#define SPIF_USTR_CMP(o, x)                      SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), cmp)(o, x))
-#define SPIF_USTR_CMP_WITH_PTR(o, x)             SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), cmp_with_ptr)(o, x))
-#define SPIF_USTR_DOWNCASE(o)                    SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), downcase)(o))
-#define SPIF_USTR_FIND(o, x)                     SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), find)(o, x))
-#define SPIF_USTR_FIND_FROM_PTR(o, x)            SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), find_from_ptr)(o, x))
-#define SPIF_USTR_INDEX(o, x)                    SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), index)(o, x))
-#define SPIF_USTR_NCASECMP(o, x, n)              SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), ncasecmp)(o, x, n))
-#define SPIF_USTR_NCASECMP_WITH_PTR(o, x, n)     SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), ncasecmp_with_ptr)(o, x, n))
-#define SPIF_USTR_NCMP(o, x, n)                  SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), ncmp)(o, x, n))
-#define SPIF_USTR_NCMP_WITH_PTR(o, x, n)         SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o), ncmp_with_ptr)(o, x, n))
-#define SPIF_USTR_PREPEND(o, x)                  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), prepend)(o, x))
-#define SPIF_USTR_PREPEND_CHAR(o, x)             SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), prepend_char)(o, x))
-#define SPIF_USTR_PREPEND_FROM_PTR(o, x)         SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), prepend_from_ptr)(o, x))
-#define SPIF_USTR_REVERSE(o)                     SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), reverse)(o))
-#define SPIF_USTR_RINDEX(o, x)                   SPIF_CAST(stridx) (SPIF_OBJ_CALL_METHOD((o), rindex)(o, x))
-#define SPIF_USTR_SPLICE(o, n1, n2, x)           SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice)(o, n1, n2, x))
-#define SPIF_USTR_SPLICE_FROM_PTR(o, n1, n2, x)  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
-#define SPIF_USTR_SPRINTF(x)                     SPIF_CAST(bool) (SPIF_STR_CALL_METHOD((o), sprintf) x)
-#define SPIF_USTR_SUBSTR(o, n1, n2)              SPIF_CAST(ustr) (SPIF_OBJ_CALL_METHOD((o), substr)(o, n1, n2))
-#define SPIF_USTR_SUBSTR_TO_PTR(o, n1, n2)       SPIF_CAST(charptr) (SPIF_OBJ_CALL_METHOD((o), substr_to_ptr)(o, n1, n2))
-#define SPIF_USTR_TO_FLOAT(o)                    SPIF_CAST_C(double) (SPIF_OBJ_CALL_METHOD((o), to_float)(o))
-#define SPIF_USTR_TO_NUM(o, x)                   SPIF_CAST_C(size_t) (SPIF_OBJ_CALL_METHOD((o), to_num)(o, x))
-#define SPIF_USTR_TRIM(o)                        SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), trim)(o))
-#define SPIF_USTR_UPCASE(o)                      SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), upcase)(o))
+#define SPIF_USTR_INIT_FROM_PTR(o, p)            (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init_from_ptr)(o, p))
+#define SPIF_USTR_INIT_FROM_BUFF(o, b, s)        (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init_from_buff)(o, b, s))
+#define SPIF_USTR_INIT_FROM_FP(o, fp)            (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init_from_fp)(o, fp))
+#define SPIF_USTR_INIT_FROM_FD(o, fd)            (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init_from_fd)(o, fd))
+#define SPIF_USTR_INIT_FROM_NUM(o, num)          (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), init_from_num)(o, num))
+#define SPIF_USTR_APPEND(o, x)                   (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), append)(o, x))
+#define SPIF_USTR_APPEND_CHAR(o, x)              (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), append_char)(o, x))
+#define SPIF_USTR_APPEND_FROM_PTR(o, x)          (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), append_from_ptr)(o, x))
+#define SPIF_USTR_CASECMP(o, x)                  (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), casecmp)(o, x))
+#define SPIF_USTR_CASECMP_WITH_PTR(o, x)         (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), casecmp_with_ptr)(o, x))
+#define SPIF_USTR_CLEAR(o, x)                    (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), clear)(o, x))
+#define SPIF_USTR_CMP(o, x)                      (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), cmp)(o, x))
+#define SPIF_USTR_CMP_WITH_PTR(o, x)             (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), cmp_with_ptr)(o, x))
+#define SPIF_USTR_DOWNCASE(o)                    (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), downcase)(o))
+#define SPIF_USTR_FIND(o, x)                     (spif_stridx_t) (SPIF_OBJ_CALL_METHOD((o), find)(o, x))
+#define SPIF_USTR_FIND_FROM_PTR(o, x)            (spif_stridx_t) (SPIF_OBJ_CALL_METHOD((o), find_from_ptr)(o, x))
+#define SPIF_USTR_INDEX(o, x)                    (spif_stridx_t) (SPIF_OBJ_CALL_METHOD((o), index)(o, x))
+#define SPIF_USTR_NCASECMP(o, x, n)              (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), ncasecmp)(o, x, n))
+#define SPIF_USTR_NCASECMP_WITH_PTR(o, x, n)     (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), ncasecmp_with_ptr)(o, x, n))
+#define SPIF_USTR_NCMP(o, x, n)                  (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), ncmp)(o, x, n))
+#define SPIF_USTR_NCMP_WITH_PTR(o, x, n)         (spif_cmp_t) (SPIF_OBJ_CALL_METHOD((o), ncmp_with_ptr)(o, x, n))
+#define SPIF_USTR_PREPEND(o, x)                  (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), prepend)(o, x))
+#define SPIF_USTR_PREPEND_CHAR(o, x)             (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), prepend_char)(o, x))
+#define SPIF_USTR_PREPEND_FROM_PTR(o, x)         (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), prepend_from_ptr)(o, x))
+#define SPIF_USTR_REVERSE(o)                     (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), reverse)(o))
+#define SPIF_USTR_RINDEX(o, x)                   (spif_stridx_t) (SPIF_OBJ_CALL_METHOD((o), rindex)(o, x))
+#define SPIF_USTR_SPLICE(o, n1, n2, x)           (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), splice)(o, n1, n2, x))
+#define SPIF_USTR_SPLICE_FROM_PTR(o, n1, n2, x)  (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), splice_from_ptr)(o, n1, n2, x))
+#define SPIF_USTR_SPRINTF(x)                     (spif_bool_t) (SPIF_STR_CALL_METHOD((o), sprintf) x)
+#define SPIF_USTR_SUBSTR(o, n1, n2)              (spif_ustr_t) (SPIF_OBJ_CALL_METHOD((o), substr)(o, n1, n2))
+#define SPIF_USTR_SUBSTR_TO_PTR(o, n1, n2)       (spif_charptr_t) (SPIF_OBJ_CALL_METHOD((o), substr_to_ptr)(o, n1, n2))
+#define SPIF_USTR_TO_FLOAT(o)                    (double) (SPIF_OBJ_CALL_METHOD((o), to_float)(o))
+#define SPIF_USTR_TO_NUM(o, x)                   (size_t) (SPIF_OBJ_CALL_METHOD((o), to_num)(o, x))
+#define SPIF_USTR_TRIM(o)                        (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), trim)(o))
+#define SPIF_USTR_UPCASE(o)                      (spif_bool_t) (SPIF_OBJ_CALL_METHOD((o), upcase)(o))
 
-#define SPIF_USTR_STR(obj)  (SPIF_CONST_CAST(charptr) ((SPIF_USTR_ISNULL(obj)) \
-                                                       ? (SPIF_CAST(charptr) "") \
+#define SPIF_USTR_STR(obj)  ((const spif_charptr_t) ((SPIF_USTR_ISNULL(obj)) \
+                                                       ? ((spif_charptr_t) "") \
                                                        : (SPIF_USTR(obj)->s)))
 
 typedef spif_int64_t spif_ustridx_t;

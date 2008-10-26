@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_LIST(o)                                    (SPIF_CAST(list) (o))
-#define SPIF_LIST_CLASS(o)                              (SPIF_CAST(listclass) SPIF_OBJ_CLASS(o))
+#define SPIF_LIST(o)                                    ((spif_list_t) (o))
+#define SPIF_LIST_CLASS(o)                              ((spif_listclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with list interface */
 #define SPIF_LISTCLASS_VAR(type)                        spif_ ## type ## _listclass
 
 /* Check if a list is NULL */
-#define SPIF_LIST_ISNULL(o)                             (SPIF_LIST(o) == SPIF_NULL_TYPE(list))
+#define SPIF_LIST_ISNULL(o)                             (SPIF_LIST(o) == (spif_list_t) NULL)
 
 /* Check if an object is a list */
 #define SPIF_OBJ_IS_LIST(o)                             SPIF_OBJ_IS_TYPE(o, list)
@@ -54,20 +54,20 @@
 #define SPIF_LIST_DUP(o)                                SPIF_OBJ_DUP(o)
 #define SPIF_LIST_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_LIST_APPEND(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), append))(o, item))
-#define SPIF_LIST_CONTAINS(o, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), contains))(o, item))
-#define SPIF_LIST_COUNT(o)                              SPIF_CAST(listidx) ((SPIF_LIST_CALL_METHOD((o), count))(o))
-#define SPIF_LIST_FIND(o, item)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), find))(o, item))
-#define SPIF_LIST_GET(o, index)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), get))(o, index))
-#define SPIF_LIST_INDEX(o, item)                        SPIF_CAST(listidx) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
-#define SPIF_LIST_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
-#define SPIF_LIST_INSERT_AT(o, item, index)             SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert_at))(o, item, index))
-#define SPIF_LIST_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))
-#define SPIF_LIST_PREPEND(o, item)                      SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), prepend))(o, item))
-#define SPIF_LIST_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove))(o, item))
-#define SPIF_LIST_REMOVE_AT(o, index)                   SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove_at))(o, index))
-#define SPIF_LIST_REVERSE(o)                            SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), reverse))(o))
-#define SPIF_LIST_TO_ARRAY(o)                           SPIF_CAST_PTR(obj) ((SPIF_LIST_CALL_METHOD((o), to_array))(o))
+#define SPIF_LIST_APPEND(o, item)                       (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), append))(o, item))
+#define SPIF_LIST_CONTAINS(o, item)                     (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), contains))(o, item))
+#define SPIF_LIST_COUNT(o)                              (spif_listidx_t) ((SPIF_LIST_CALL_METHOD((o), count))(o))
+#define SPIF_LIST_FIND(o, item)                         (spif_obj_t) ((SPIF_LIST_CALL_METHOD((o), find))(o, item))
+#define SPIF_LIST_GET(o, index)                         (spif_obj_t) ((SPIF_LIST_CALL_METHOD((o), get))(o, index))
+#define SPIF_LIST_INDEX(o, item)                        (spif_listidx_t) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
+#define SPIF_LIST_INSERT(o, item)                       (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
+#define SPIF_LIST_INSERT_AT(o, item, index)             (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), insert_at))(o, item, index))
+#define SPIF_LIST_ITERATOR(o)                           (spif_iterator_t) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))
+#define SPIF_LIST_PREPEND(o, item)                      (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), prepend))(o, item))
+#define SPIF_LIST_REMOVE(o, item)                       (spif_obj_t) ((SPIF_LIST_CALL_METHOD((o), remove))(o, item))
+#define SPIF_LIST_REMOVE_AT(o, index)                   (spif_obj_t) ((SPIF_LIST_CALL_METHOD((o), remove_at))(o, index))
+#define SPIF_LIST_REVERSE(o)                            (spif_bool_t) ((SPIF_LIST_CALL_METHOD((o), reverse))(o))
+#define SPIF_LIST_TO_ARRAY(o)                           (spif_obj_t *) ((SPIF_LIST_CALL_METHOD((o), to_array))(o))
 
 typedef spif_obj_t spif_list_t;
 typedef spif_int32_t spif_listidx_t;

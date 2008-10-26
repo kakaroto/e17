@@ -808,3 +808,10 @@ Fri Aug 18 17:45:56 2006                        Michael Jennings (mej)
 
 Add libcurl macro for future use.
 ----------------------------------------------------------------------
+Sun Oct 26 15:56:20 2008                        Michael Jennings (mej)
+
+Remove unnecessary typecasting macros.  They were supposed to save
+typing and improve readability, but I've concluded that they tend to
+do neither.  More cleanups to come; there appear to be some new
+warnings I need to deal with.
+----------------------------------------------------------------------

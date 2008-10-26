@@ -29,7 +29,7 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
-#define BUILTIN_RANDOM_SEED   (SPIF_CAST(uint32) 0xf721b64d)
+#define BUILTIN_RANDOM_SEED   ((spif_uint32_t) 0xf721b64d)
 
 /*
  * Bob Jenkins' hash algorithm as published in December 1996.  Public
@@ -67,9 +67,9 @@ spifhash_jenkins(register spif_uint8_t *key, register spif_uint32_t length, regi
     /* The loop below handles most of the key (all but the last
        length % 12 bytes). */
     while (len >= 12) {
-        a += (key[0] + (SPIF_CAST(uint32) key[1] << 8) + (SPIF_CAST(uint32) key[2] << 16) + (SPIF_CAST(uint32) key[3] << 24));
-        b += (key[4] + (SPIF_CAST(uint32) key[5] << 8) + (SPIF_CAST(uint32) key[6] << 16) + (SPIF_CAST(uint32) key[7] << 24));
-        c += (key[8] + (SPIF_CAST(uint32) key[9] << 8) + (SPIF_CAST(uint32) key[10] << 16) + (SPIF_CAST(uint32) key[11] << 24));
+        a += (key[0] + ((spif_uint32_t) key[1] << 8) + ((spif_uint32_t) key[2] << 16) + ((spif_uint32_t) key[3] << 24));
+        b += (key[4] + ((spif_uint32_t) key[5] << 8) + ((spif_uint32_t) key[6] << 16) + ((spif_uint32_t) key[7] << 24));
+        c += (key[8] + ((spif_uint32_t) key[9] << 8) + ((spif_uint32_t) key[10] << 16) + ((spif_uint32_t) key[11] << 24));
         SPIFHASH_JENKINS_MIX(a, b, c);
         key += 12;
         len -= 12;
@@ -79,16 +79,16 @@ spifhash_jenkins(register spif_uint8_t *key, register spif_uint32_t length, regi
        bytes.  All cases drop through to the next case. */
     c += length;
     switch (len) {
-        case 11:  c += (SPIF_CAST(uint32) key[10] << 24);
-        case 10:  c += (SPIF_CAST(uint32) key[9] << 16);
-        case 9:   c += (SPIF_CAST(uint32) key[8] << 8);
-        case 8:   b += (SPIF_CAST(uint32) key[7] << 24);
-        case 7:   b += (SPIF_CAST(uint32) key[6] << 16);
-        case 6:   b += (SPIF_CAST(uint32) key[5] << 8);
+        case 11:  c += ((spif_uint32_t) key[10] << 24);
+        case 10:  c += ((spif_uint32_t) key[9] << 16);
+        case 9:   c += ((spif_uint32_t) key[8] << 8);
+        case 8:   b += ((spif_uint32_t) key[7] << 24);
+        case 7:   b += ((spif_uint32_t) key[6] << 16);
+        case 6:   b += ((spif_uint32_t) key[5] << 8);
         case 5:   b += key[4];
-        case 4:   a += (SPIF_CAST(uint32) key[3] << 24);
-        case 3:   a += (SPIF_CAST(uint32) key[2] << 16);
-        case 2:   a += (SPIF_CAST(uint32) key[1] << 8);
+        case 4:   a += ((spif_uint32_t) key[3] << 24);
+        case 3:   a += ((spif_uint32_t) key[2] << 16);
+        case 2:   a += ((spif_uint32_t) key[1] << 8);
         case 1:   a += key[0];
         /* case 0: nothing left to add */
     }
@@ -119,7 +119,7 @@ spif_uint32_t
 spifhash_jenkins32(spif_uint8_t *key, register spif_uint32_t length, register spif_uint32_t seed)
 {
     register spif_uint32_t a, b, c, len;
-    register spif_uint32_t *key_dword = SPIF_CAST_PTR(uint32) key;
+    register spif_uint32_t *key_dword = (spif_uint32_t *) key;
 
     len = length;
     a = b = BUILTIN_RANDOM_SEED;  /* This can be any 32-bit value. */
@@ -178,12 +178,12 @@ spifhash_jenkinsLE(register spif_uint8_t *key, register spif_uint32_t length, re
 
     /* The loop below handles most of the key (all but the last
        length % 12 bytes). */
-    if ((SPIF_CAST(uint32) key) & 3) {
+    if (((spif_uint32_t) key) & 3) {
         /* Not 32-bit aligned.  Use old method. */
         while (len >= 12) {
-            a += (key[0] + (SPIF_CAST(uint32) key[1] << 8) + (SPIF_CAST(uint32) key[2] << 16) + (SPIF_CAST(uint32) key[3] << 24));
-            b += (key[4] + (SPIF_CAST(uint32) key[5] << 8) + (SPIF_CAST(uint32) key[6] << 16) + (SPIF_CAST(uint32) key[7] << 24));
-            c += (key[8] + (SPIF_CAST(uint32) key[9] << 8) + (SPIF_CAST(uint32) key[10] << 16) + (SPIF_CAST(uint32) key[11] << 24));
+            a += (key[0] + ((spif_uint32_t) key[1] << 8) + ((spif_uint32_t) key[2] << 16) + ((spif_uint32_t) key[3] << 24));
+            b += (key[4] + ((spif_uint32_t) key[5] << 8) + ((spif_uint32_t) key[6] << 16) + ((spif_uint32_t) key[7] << 24));
+            c += (key[8] + ((spif_uint32_t) key[9] << 8) + ((spif_uint32_t) key[10] << 16) + ((spif_uint32_t) key[11] << 24));
             SPIFHASH_JENKINS_MIX(a, b, c);
             key += 12;
             len -= 12;
@@ -193,9 +193,9 @@ spifhash_jenkinsLE(register spif_uint8_t *key, register spif_uint32_t length, re
         while (len >= 12) {
             /* These three lines are the only ones which differ from
                spifhash_jenkins(). */
-            a += *(SPIF_CAST_PTR(uint32) key);
-            b += *(SPIF_CAST_PTR(uint32) (key + 4));
-            c += *(SPIF_CAST_PTR(uint32) (key + 8));
+            a += *((spif_uint32_t *) key);
+            b += *((spif_uint32_t *) (key + 4));
+            c += *((spif_uint32_t *) (key + 8));
             SPIFHASH_JENKINS_MIX(a, b, c);
             key += 12;
             len -= 12;
@@ -207,25 +207,25 @@ spifhash_jenkinsLE(register spif_uint8_t *key, register spif_uint32_t length, re
     c += length;
     switch (len) {
       case 11:
-          c += (SPIF_CAST(uint32) key[10] << 24);
+          c += ((spif_uint32_t) key[10] << 24);
       case 10:
-          c += (SPIF_CAST(uint32) key[9] << 16);
+          c += ((spif_uint32_t) key[9] << 16);
       case 9:
-          c += (SPIF_CAST(uint32) key[8] << 8);
+          c += ((spif_uint32_t) key[8] << 8);
       case 8:
-          b += (SPIF_CAST(uint32) key[7] << 24);
+          b += ((spif_uint32_t) key[7] << 24);
       case 7:
-          b += (SPIF_CAST(uint32) key[6] << 16);
+          b += ((spif_uint32_t) key[6] << 16);
       case 6:
-          b += (SPIF_CAST(uint32) key[5] << 8);
+          b += ((spif_uint32_t) key[5] << 8);
       case 5:
           b += key[4];
       case 4:
-          a += (SPIF_CAST(uint32) key[3] << 24);
+          a += ((spif_uint32_t) key[3] << 24);
       case 3:
-          a += (SPIF_CAST(uint32) key[2] << 16);
+          a += ((spif_uint32_t) key[2] << 16);
       case 2:
-          a += (SPIF_CAST(uint32) key[1] << 8);
+          a += ((spif_uint32_t) key[1] << 8);
       case 1:
           a += key[0];
           /* case 0: nothing left to add */
@@ -322,15 +322,15 @@ spifhash_fnv(spif_uint8_t *key, spif_uint32_t len, spif_uint32_t seed)
     spif_uint32_t hash;
 
     if (!seed) {
-        seed = SPIF_CAST(uint32) 0x811c9dc5;    /* FNV-1a 32-bit init. */
+        seed = (spif_uint32_t) 0x811c9dc5;    /* FNV-1a 32-bit init. */
     }
     for (hash = seed; key < key_end; key++) {
-        hash ^= SPIF_CAST(uint32) (*key);
+        hash ^= (spif_uint32_t) (*key);
 
 #ifdef __GNUC__
         hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
 #else
-        hash *= SPIF_CAST(uint32) 0x01000193;   /* 32-bit FNV-1 prime. */
+        hash *= (spif_uint32_t) 0x01000193;   /* 32-bit FNV-1 prime. */
 #endif
     }
 

@@ -49,11 +49,11 @@ memmem(const void *haystack, register size_t haystacklen, const void *needle, re
     register unsigned long i;
     register size_t len = haystacklen - needlelen;
 
-    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(needlelen > 0, SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(haystacklen > 0, SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(haystacklen > needlelen, SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(needle != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(haystack != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(needlelen > 0, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(haystacklen > 0, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(haystacklen > needlelen, (spif_ptr_t) NULL);
     for (i = 0; i < len; i++) {
         if (!memcmp(hs + i, n, needlelen)) {
             return (hs + i);
@@ -69,7 +69,7 @@ strnlen(register const char *s, size_t maxlen)
 {
     register size_t n;
 
-    REQUIRE_RVAL(s, SPIF_CAST_C(size_t) 0);
+    REQUIRE_RVAL(s, (size_t) 0);
     for (n = 0; *s && n < maxlen; s++, n++);
     return n;
 }
@@ -105,10 +105,10 @@ strcasestr(const char *haystack, register const char *needle)
     register const spif_uchar_t *t;
     register size_t len;
 
-    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(needle != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(haystack != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     len = strlen(needle);
-    for (t = SPIF_CAST_PTR(uchar) haystack; t && *t; t++) {
+    for (t = (spif_uchar_t *) haystack; t && *t; t++) {
         if (!strncasecmp(t, needle, len)) {
             return ((char *) t);
         }
@@ -123,7 +123,7 @@ strcasechr(const char *haystack, register const char needle)
 {
     register const char *t;
 
-    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(haystack != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (t = haystack; t && *t; t++) {
         if (tolower(*t) == tolower(needle)) {
             return ((char *) t);
@@ -139,8 +139,8 @@ strcasepbrk(const char *haystack, register const char *needle)
 {
     register const char *t;
 
-    REQUIRE_RVAL(needle != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(haystack != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(needle != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(haystack != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (t = haystack; t && *t; t++) {
         if (strcasechr(needle, *t)) {
             return ((char *) t);
@@ -156,7 +156,7 @@ strrev(register char *str)
 {
     register int i, j;
 
-    REQUIRE_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     i = strlen(str);
     for (j = 0, i--; i > j; i--, j++) {
         (void) SWAP(str[j], str[i]);
@@ -173,8 +173,8 @@ strsep(char **str, register char *sep)
     register char *s = *str;
     char *sptr;
 
-    REQUIRE_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(sep != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(sep != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     D_STRINGS(("strsep(%s, %s) called.\n", *str, sep));
     sptr = s;
     for (; *s && !strchr(sep, *s); s++);
@@ -228,7 +228,7 @@ spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr_t src, spif_int32_
     REQUIRE_RVAL(!SPIF_PTR_ISNULL(src), FALSE);
     REQUIRE_RVAL(size > 0, FALSE);
 
-    len = strnlen(SPIF_CHARPTR_C(dest), size);
+    len = strnlen((char *) dest, size);
     if (len >= size) {
         return FALSE;
     } else {
@@ -246,16 +246,16 @@ spiftool_substr(spif_charptr_t str, spif_int32_t idx, spif_int32_t cnt)
     spif_uint32_t start_pos, char_count;
     spif_uint32_t len;
 
-    REQUIRE_RVAL(str != SPIF_NULL_TYPE(charptr), SPIF_NULL_TYPE(charptr));
+    REQUIRE_RVAL(str != (spif_charptr_t) NULL, (spif_charptr_t) NULL);
 
-    len = SPIF_CAST(uint32) strlen(SPIF_CHARPTR_C(str));
+    len = (spif_uint32_t) strlen((char *) str);
 
     if (idx < 0) {
         start_pos = len + idx;
     } else {
         start_pos = idx;
     }
-    REQUIRE_RVAL(start_pos < len, SPIF_NULL_TYPE(charptr));
+    REQUIRE_RVAL(start_pos < len, (spif_charptr_t) NULL);
 
     if (cnt <= 0) {
         char_count = len - start_pos + cnt;
@@ -264,7 +264,7 @@ spiftool_substr(spif_charptr_t str, spif_int32_t idx, spif_int32_t cnt)
     }
     UPPER_BOUND(char_count, len - start_pos);
 
-    newstr = SPIF_CAST(charptr) MALLOC(char_count + 1);
+    newstr = (spif_charptr_t) MALLOC(char_count + 1);
     memcpy(newstr, str + start_pos, char_count);
     newstr[char_count] = 0;
     return newstr;
@@ -342,7 +342,7 @@ spiftool_regexp_match_r(register const spif_charptr_t str, register const spif_c
 }
 #endif
 
-#define IS_DELIM(c)  ((delim != NULL) ? (strchr(SPIF_CHARPTR_C(delim), (c)) != NULL) : (isspace(c)))
+#define IS_DELIM(c)  ((delim != NULL) ? (strchr((char *) delim, (c)) != NULL) : (isspace(c)))
 #define IS_QUOTE(c)  (quote && quote == (c))
 
 spif_charptr_t *
@@ -363,7 +363,7 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
     }
 
     /* Before we do anything, skip leading "whitespace." */
-    for (pstr = SPIF_CAST(charptr) str; *pstr && IS_DELIM(*pstr); pstr++);
+    for (pstr = (spif_charptr_t) str; *pstr && IS_DELIM(*pstr); pstr++);
 
     /* The outermost for loop is where we traverse the string.  Each new
        word brings us back to the top where we resize our string list. */
@@ -377,8 +377,8 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
 
         /* The string we're about to create can't possibly be larger than the remainder
            of the string we have yet to parse, so allocate that much space to start. */
-        len = strlen(SPIF_CHARPTR_C(pstr)) + 1;
-        if ((slist[cnt] = SPIF_CAST(charptr) MALLOC(len)) == NULL) {
+        len = strlen((char *) pstr) + 1;
+        if ((slist[cnt] = (spif_charptr_t) MALLOC(len)) == NULL) {
             libast_print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
             return ((spif_charptr_t *) NULL);
         }
@@ -413,8 +413,8 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
         *pdest = 0;
 
         /* Reallocate the new string to be just the right size. */
-        len = strlen(SPIF_CHARPTR_C(slist[cnt])) + 1;
-        slist[cnt] = SPIF_CAST(charptr) REALLOC(slist[cnt], len);
+        len = strlen((char *) slist[cnt]) + 1;
+        slist[cnt] = (spif_charptr_t) REALLOC(slist[cnt], len);
 
         /* Move past any trailing "whitespace." */
         for (; *pstr && IS_DELIM(*pstr); pstr++);
@@ -444,23 +444,23 @@ spiftool_join(spif_charptr_t sep, spif_charptr_t *slist)
     size_t len, slen;
     spif_charptr_t new_str;
 
-    ASSERT_RVAL(slist != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(*slist != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(slist != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    REQUIRE_RVAL(*slist != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     if (sep == NULL) {
         sep = SPIF_CHARPTR("");
     }
-    slen = strlen(SPIF_CHARPTR_C(sep));
+    slen = strlen((char *) sep);
     for (i = len = 0; slist[i]; i++) {
-        len += strlen(SPIF_CHARPTR_C(slist[i]));
+        len += strlen((char *) slist[i]);
     }
     len += slen * (i - 1);
-    new_str = SPIF_CAST(charptr) MALLOC(len + 1);
-    strcpy(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(slist[0]));
+    new_str = (spif_charptr_t) MALLOC(len + 1);
+    strcpy((char *) new_str, (char *) slist[0]);
     for (i = 1; slist[i]; i++) {
         if (slen) {
-            strcat(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(sep));
+            strcat((char *) new_str, (char *) sep);
         }
-        strcat(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(slist[i]));
+        strcat((char *) new_str, (char *) slist[i]);
     }
     return new_str;
 }
@@ -476,11 +476,11 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
     char delim = 0;
     register unsigned long i, j, k;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    k = strlen(SPIF_CHARPTR_C(str)) + 1;
-    if ((tmpstr = SPIF_CAST(charptr) MALLOC(k)) == NULL) {
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
+    k = strlen((char *) str) + 1;
+    if ((tmpstr = (spif_charptr_t) MALLOC(k)) == NULL) {
         libast_print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
-        return (SPIF_CAST(charptr) NULL);
+        return ((spif_charptr_t) NULL);
     }
     *tmpstr = 0;
     for (i = 0, j = 0; j < index && str[i]; j++) {
@@ -517,9 +517,9 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
     if (j != index) {
         FREE(tmpstr);
         D_STRINGS(("get_word(%lu, %s) returning NULL.\n", index, str));
-        return (SPIF_CAST(charptr) NULL);
+        return ((spif_charptr_t) NULL);
     } else {
-        tmpstr = SPIF_CAST(charptr) REALLOC(tmpstr, strlen(SPIF_CHARPTR_C(tmpstr)) + 1);
+        tmpstr = (spif_charptr_t) REALLOC(tmpstr, strlen((char *) tmpstr) + 1);
         D_STRINGS(("get_word(%lu, %s) returning \"%s\".\n", index, str, tmpstr));
         return (tmpstr);
     }
@@ -529,10 +529,10 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
 spif_charptr_t 
 spiftool_get_pword(unsigned long index, const spif_charptr_t str)
 {
-    register spif_charptr_t tmpstr = SPIF_CAST(charptr) str;
+    register spif_charptr_t tmpstr = (spif_charptr_t) str;
     register unsigned long j;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (; isspace(*tmpstr) && *tmpstr; tmpstr++);
     for (j = 1; j < index && *tmpstr; j++) {
         for (; !isspace(*tmpstr) && *tmpstr; tmpstr++);
@@ -544,10 +544,10 @@ spiftool_get_pword(unsigned long index, const spif_charptr_t str)
     }
     if (*tmpstr == '\0') {
         D_STRINGS(("get_pword(%lu, %s) returning NULL.\n", index, str));
-        return (SPIF_CAST(charptr) NULL);
+        return ((spif_charptr_t) NULL);
     } else {
         D_STRINGS(("get_pword(%lu, %s) returning \"%s\"\n", index, str, tmpstr));
-        return SPIF_CAST(charptr) tmpstr;
+        return (spif_charptr_t) tmpstr;
     }
 }
 
@@ -559,7 +559,7 @@ spiftool_num_words(const spif_charptr_t str)
     char delim = 0;
     register unsigned long i;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_CAST_C(unsigned long) -1);
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (unsigned long) -1);
     for (i = 0; str[i] && IS_DELIM(str[i]); i++);
     for (; str[i]; cnt++) {
         switch (str[i]) {
@@ -598,7 +598,7 @@ spiftool_chomp(spif_charptr_t s)
     REQUIRE_RVAL(*s, s);
 
     for (front = s; *front && isspace(*front); front++);
-    for (back = s + strlen(SPIF_CHARPTR_C(s)) - 1; *back && isspace(*back) && back > front; back--);
+    for (back = s + strlen((char *) s) - 1; *back && isspace(*back) && back > front; back--);
 
     *(++back) = 0;
     if (front != s) {
@@ -612,7 +612,7 @@ spiftool_downcase_str(spif_charptr_t str)
 {
     register spif_charptr_t tmp;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (tmp = str; *tmp; tmp++) {
         *tmp = tolower(*tmp);
     }
@@ -625,7 +625,7 @@ spiftool_upcase_str(spif_charptr_t str)
 {
     register spif_charptr_t tmp;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (tmp = str; *tmp; tmp++) {
         *tmp = toupper(*tmp);
     }
@@ -640,7 +640,7 @@ spiftool_condense_whitespace(spif_charptr_t s)
     register unsigned char gotspc = 0;
     register spif_charptr_t pbuff = s, pbuff2 = s;
 
-    ASSERT_RVAL(s != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(s != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     D_STRINGS(("condense_whitespace(%s) called.\n", s));
     for (; *pbuff2; pbuff2++) {
         if (isspace(*pbuff2)) {
@@ -659,7 +659,7 @@ spiftool_condense_whitespace(spif_charptr_t s)
         pbuff--;
     *pbuff = 0;
     D_STRINGS(("condense_whitespace() returning \"%s\".\n", s));
-    return (SPIF_CAST(charptr) REALLOC(s, strlen(SPIF_CHARPTR_C(s)) + 1));
+    return ((spif_charptr_t) REALLOC(s, strlen((char *) s) + 1));
 }
 
 spif_charptr_t 
@@ -667,7 +667,7 @@ spiftool_safe_str(register spif_charptr_t str, unsigned short len)
 {
     register unsigned short i;
 
-    ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     for (i = 0; i < len; i++) {
         if (iscntrl(str[i])) {
             str[i] = '.';
@@ -684,7 +684,7 @@ spiftool_hex_dump(void *buff, register size_t count)
     register spif_charptr_t ptr;
     spif_char_t buffr[9];
 
-    ASSERT(buff != SPIF_NULL_TYPE(ptr));
+    ASSERT(buff != (spif_ptr_t) NULL);
     fprintf(stderr, "  Address  |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(stderr, "-----------+--------+---------+-------------------------+---------\n");
     for (ptr = buff, j = 0; j < count; j += 8) {
@@ -698,7 +698,7 @@ spiftool_hex_dump(void *buff, register size_t count)
         for (; k < 8; k++) {
             fprintf(stderr, "   ");
         }
-        fprintf(stderr, "| %-8s\n", spiftool_safe_str(SPIF_CAST(charptr) buffr, l));
+        fprintf(stderr, "| %-8s\n", spiftool_safe_str((spif_charptr_t) buffr, l));
     }
 }
 
@@ -730,26 +730,26 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             D_CONF(("     -> Comparing as words \"%s\" vs. \"%s\"\n", buff1, buff2));
 
             /* Some strings require special handling. */
-            if (!strcmp(SPIF_CHARPTR_C(buff1), "snap")) {
+            if (!strcmp((char *) buff1, "snap")) {
                 ival1 = 1;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "pre")) {
+            } else if (!strcmp((char *) buff1, "pre")) {
                 ival1 = 2;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "alpha")) {
+            } else if (!strcmp((char *) buff1, "alpha")) {
                 ival1 = 3;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "beta")) {
+            } else if (!strcmp((char *) buff1, "beta")) {
                 ival1 = 4;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "rc")) {
+            } else if (!strcmp((char *) buff1, "rc")) {
                 ival1 = 5;
             }
-            if (!strcmp(SPIF_CHARPTR_C(buff2), "snap")) {
+            if (!strcmp((char *) buff2, "snap")) {
                 ival2 = 1;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "pre")) {
+            } else if (!strcmp((char *) buff2, "pre")) {
                 ival2 = 2;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "alpha")) {
+            } else if (!strcmp((char *) buff2, "alpha")) {
                 ival2 = 3;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "beta")) {
+            } else if (!strcmp((char *) buff2, "beta")) {
                 ival2 = 4;
-            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "rc")) {
+            } else if (!strcmp((char *) buff2, "rc")) {
                 ival2 = 5;
             }
             if (ival1 != ival2) {
@@ -760,7 +760,7 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
                 int c;
 
                 /* Two arbitrary strings.  Compare them too. */
-                if ((c = strcmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2))) != 0) {
+                if ((c = strcmp((char *) buff1, (char *) buff2)) != 0) {
                     D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(c)));
                     return SPIF_CMP_FROM_INT(c);
                 }
@@ -776,9 +776,9 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             *p1 = *p2 = 0;
 
             /* Convert the strings into actual integers. */
-            ival1 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff1), (char **) NULL, 10);
-            ival2 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff2), (char **) NULL, 10);
-            D_CONF(("     -> Comparing as integers %d vs. %d\n", SPIF_CAST_C(int) ival1, SPIF_CAST_C(int) ival2));
+            ival1 = (spif_int32_t) strtol((char *) buff1, (char **) NULL, 10);
+            ival2 = (spif_int32_t) strtol((char *) buff2, (char **) NULL, 10);
+            D_CONF(("     -> Comparing as integers %d vs. %d\n", (int) ival1, (int) ival2));
 
             /* Compare the integers and return if not equal. */
             c = SPIF_CMP_FROM_INT(ival1 - ival2);
@@ -796,22 +796,22 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             *p1 = *p2 = 0;
 
             D_CONF(("     -> Comparing as non-alphanumeric strings \"%s\" vs. \"%s\"\n", buff1, buff2));
-            c = SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
+            c = SPIF_CMP_FROM_INT(strcasecmp((char *) buff1, (char *) buff2));
             if (!SPIF_CMP_IS_EQUAL(c)) {
                 D_CONF(("     -> %d\n", (int) c));
                 return c;
             }
         } else {
             D_CONF(("     -> Comparing as alphanumeric strings \"%s\" vs. \"%s\"\n", buff1, buff2));
-            D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)))));
-            return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
+            D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(strcasecmp((char *) buff1, (char *) buff2))));
+            return SPIF_CMP_FROM_INT(strcasecmp((char *) buff1, (char *) buff2));
         }
     }
 
     /* We've reached the end of one of the strings. */
     if (*v1) {
-        if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "pre")
-            || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "beta")) {
+        if (!BEG_STRCASECMP((char *) v1, "snap") || !BEG_STRCASECMP((char *) v1, "pre")
+            || !BEG_STRCASECMP((char *) v1, "alpha") || !BEG_STRCASECMP((char *) v1, "beta")) {
             D_CONF(("     -> <\n"));
             return SPIF_CMP_LESS;
         } else {
@@ -819,8 +819,8 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             return SPIF_CMP_GREATER;
         }
     } else if (*v2) {
-        if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "pre")
-            || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "beta")) {
+        if (!BEG_STRCASECMP((char *) v2, "snap") || !BEG_STRCASECMP((char *) v2, "pre")
+            || !BEG_STRCASECMP((char *) v2, "alpha") || !BEG_STRCASECMP((char *) v2, "beta")) {
             D_CONF(("     -> >\n"));
             return SPIF_CMP_GREATER;
         } else {

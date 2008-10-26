@@ -135,8 +135,8 @@ typedef struct memrec_t_struct {
  */
 #define ctx_name_to_id(the_id, n, i) do { \
                                        for ((i)=0; (i) <= ctx_idx; (i)++) { \
-                                         if (!strcasecmp(SPIF_CAST_C(char *) (n), \
-                                                         SPIF_CAST_C(char *) context[(i)].name)) { \
+                                         if (!strcasecmp((char *) (n), \
+                                                         (char *) context[(i)].name)) { \
                                            (the_id) = (i); \
                                            break; \
                                          } \
@@ -263,7 +263,7 @@ typedef struct memrec_t_struct {
                                      name = spiftool_get_word(idx, buff); \
                                      ctx_name_to_id(id, name, i); \
                                      ctx_push(id); \
-                                     state = (*ctx_id_to_func(id))(SPIF_CAST(charptr) SPIFCONF_BEGIN_STRING, \
+                                     state = (*ctx_id_to_func(id))((spif_charptr_t) SPIFCONF_BEGIN_STRING, \
                                                                    ctx_peek_last_state()); \
                                      ctx_poke_state(state); \
                                      FREE(name); \
@@ -279,7 +279,7 @@ typedef struct memrec_t_struct {
  */
 #define ctx_end()                  do { \
                                      if (ctx_get_depth()) { \
-                                       state = (*ctx_id_to_func(id))(SPIF_CAST(charptr) SPIFCONF_END_STRING, \
+                                       state = (*ctx_id_to_func(id))((spif_charptr_t) SPIFCONF_END_STRING, \
                                                                      ctx_peek_state()); \
                                        ctx_poke_state(NULL); \
                                        ctx_pop(); \

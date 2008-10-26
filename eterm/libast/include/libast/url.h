@@ -25,16 +25,16 @@
 #define _LIBAST_URL_H_
 
 /* Cast an arbitrary object pointer to a url. */
-#define SPIF_URL(o)                      (SPIF_CAST(url) (o))
+#define SPIF_URL(o)                      ((spif_url_t) (o))
 
 /* Check to see if a pointer references an url. */
 #define SPIF_OBJ_IS_URL(o)               (SPIF_OBJ_IS_TYPE(o, url))
 
 /* Used for testing the NULL-ness of urls. */
-#define SPIF_URL_ISNULL(o)               (SPIF_URL(o) == SPIF_NULL_TYPE(url))
+#define SPIF_URL_ISNULL(o)               (SPIF_URL(o) == (spif_url_t) NULL)
 
 /* Calls to the basic functions. */
-#define SPIF_URL_NEW()                   SPIF_CAST(url) (SPIF_CLASS(SPIF_CLASS_VAR(url)))->(noo)()
+#define SPIF_URL_NEW()                   (spif_url_t) (SPIF_CLASS(SPIF_CLASS_VAR(url)))->(noo)()
 #define SPIF_URL_INIT(o)                 SPIF_OBJ_INIT(o)
 #define SPIF_URL_DONE(o)                 SPIF_OBJ_DONE(o)
 #define SPIF_URL_DEL(o)                  SPIF_OBJ_DEL(o)

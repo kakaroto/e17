@@ -27,13 +27,13 @@
 #include <libast/list_if.h>
 
 /* Cast an arbitrary object pointer to a tok. */
-#define SPIF_TOK(obj)                (SPIF_CAST(tok) (obj))
+#define SPIF_TOK(obj)                ((spif_tok_t) (obj))
 
 /* Check to see if a pointer references a tokenizer object. */
 #define SPIF_OBJ_IS_TOK(obj)         (SPIF_OBJ_IS_TYPE(obj, tok))
 
 /* Check to see if a tokenizer object is NULL. */
-#define SPIF_TOK_ISNULL(obj)         (SPIF_TOK(obj) == SPIF_NULL_TYPE(tok))
+#define SPIF_TOK_ISNULL(obj)         (SPIF_TOK(obj) == (spif_tok_t) NULL)
 
 #define SPIF_TOK_NEW(type)           SPIF_TOK((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
 #define SPIF_TOK_INIT(obj)           SPIF_OBJ_INIT(obj)

@@ -24,7 +24,7 @@
 #ifndef _LIBAST_PTHREADS_H_
 #define _LIBAST_PTHREADS_H_
 
-#define SPIF_PTHREADS(obj)                    (SPIF_CAST(pthreads) (obj))
+#define SPIF_PTHREADS(obj)                    ((spif_pthreads_t) (obj))
 #define SPIF_OBJ_IS_PTHREADS(o)               (SPIF_OBJ_IS_TYPE(o, pthreads))
 #define SPIF_PTHREADS_ISNULL(s)               SPIF_OBJ_ISNULL(SPIF_OBJ(s))
 
@@ -38,7 +38,7 @@ SPIF_DECL_OBJ(pthreads) {
     SPIF_DECL_PROPERTY(list, tls_keys);
 };
 
-#define SPIF_PTHREADS_MUTEX(obj)              (SPIF_CAST(pthreads_mutex) (obj))
+#define SPIF_PTHREADS_MUTEX(obj)              ((spif_pthreads_mutex_t) (obj))
 #define SPIF_OBJ_IS_PTHREADS_MUTEX(o)         (SPIF_OBJ_IS_TYPE(o, pthreads_mutex))
 #define SPIF_PTHREADS_MUTEX_ISNULL(s)         SPIF_OBJ_ISNULL(SPIF_OBJ(s))
 
@@ -48,7 +48,7 @@ SPIF_DECL_OBJ(pthreads_mutex) {
     SPIF_DECL_PROPERTY_C(pthread_mutex_t, mutex);
 };
 
-#define SPIF_PTHREADS_CONDITION(obj)          (SPIF_CAST(pthreads_condition) (obj))
+#define SPIF_PTHREADS_CONDITION(obj)          ((spif_pthreads_condition_t) (obj))
 #define SPIF_OBJ_IS_PTHREADS_CONDITION(o)     (SPIF_OBJ_IS_TYPE(o, pthreads_condition))
 #define SPIF_PTHREADS_CONDITION_ISNULL(s)     SPIF_OBJ_ISNULL(SPIF_OBJ(s))
 

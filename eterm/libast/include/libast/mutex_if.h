@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_MUTEX(o)                                    (SPIF_CAST(mutex) (o))
-#define SPIF_MUTEX_CLASS(o)                              (SPIF_CAST(mutexclass) SPIF_OBJ_CLASS(o))
+#define SPIF_MUTEX(o)                                    ((spif_mutex_t) (o))
+#define SPIF_MUTEX_CLASS(o)                              ((spif_mutexclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with mutex interface */
 #define SPIF_MUTEXCLASS_VAR(type)                        spif_ ## type ## _mutexclass
 
 /* Check if a mutex is NULL */
-#define SPIF_MUTEX_ISNULL(o)                             (SPIF_MUTEX(o) == SPIF_NULL_TYPE(mutex))
+#define SPIF_MUTEX_ISNULL(o)                             (SPIF_MUTEX(o) == (spif_mutex_t) NULL)
 
 /* Check if an object is a mutex */
 #define SPIF_OBJ_IS_MUTEX(o)                             SPIF_OBJ_IS_TYPE(o, mutex)
@@ -54,9 +54,9 @@
 #define SPIF_MUTEX_DUP(o)                                SPIF_OBJ_DUP(o)
 #define SPIF_MUTEX_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_MUTEX_LOCK()                                SPIF_CAST(bool) ((SPIF_MUTEX_CALL_METHOD((o), lock))(o))
-#define SPIF_MUTEX_LOCK_NOWAIT()                         SPIF_CAST(bool) ((SPIF_MUTEX_CALL_METHOD((o), lock_nowait))(o))
-#define SPIF_MUTEX_UNLOCK()                              SPIF_CAST(bool) ((SPIF_MUTEX_CALL_METHOD((o), unlock))(o))
+#define SPIF_MUTEX_LOCK()                                (spif_bool_t) ((SPIF_MUTEX_CALL_METHOD((o), lock))(o))
+#define SPIF_MUTEX_LOCK_NOWAIT()                         (spif_bool_t) ((SPIF_MUTEX_CALL_METHOD((o), lock_nowait))(o))
+#define SPIF_MUTEX_UNLOCK()                              (spif_bool_t) ((SPIF_MUTEX_CALL_METHOD((o), unlock))(o))
 
 typedef spif_obj_t spif_mutex_t;
 

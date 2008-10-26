@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_THREAD(o)                        (SPIF_CAST(thread) (o))
-#define SPIF_THREAD_CLASS(o)                  (SPIF_CAST(threadclass) SPIF_OBJ_CLASS(o))
+#define SPIF_THREAD(o)                        ((spif_thread_t) (o))
+#define SPIF_THREAD_CLASS(o)                  ((spif_threadclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with thread interface */
 #define SPIF_THREADCLASS_VAR(type)            spif_ ## type ## _threadclass
 
 /* Check if a thread is NULL */
-#define SPIF_THREAD_ISNULL(o)                 (SPIF_THREAD(o) == SPIF_NULL_TYPE(thread))
+#define SPIF_THREAD_ISNULL(o)                 (SPIF_THREAD(o) == (spif_thread_t) NULL)
 
 /* Check if an object is a thread */
 #define SPIF_OBJ_IS_THREAD(o)                 SPIF_OBJ_IS_TYPE(o, thread)
@@ -55,19 +55,19 @@
 #define SPIF_THREAD_TYPE(o)                   SPIF_OBJ_TYPE(o)
 
 #define SPIF_THREAD_NEW_WITH_FUNC(type, f, d) SPIF_THREAD((SPIF_CLASS(SPIF_THREADCLASS_VAR(type)))->new_with_func((f), (d)))
-#define SPIF_THREAD_INIT_WITH_FUNC(o, f, d)   SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), init_with_func))((o), (f), (d)))
-#define SPIF_THREAD_DETACH(o)                 SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), detach))(o))
-#define SPIF_THREAD_GET_CONDITION(o)          SPIF_CAST(condition) ((SPIF_THREAD_CALL_METHOD((o), get_condition))())
-#define SPIF_THREAD_GET_MUTEX(o)              SPIF_CAST(mutex) ((SPIF_THREAD_CALL_METHOD((o), get_mutex))())
-#define SPIF_THREAD_KILL(o, s)                SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), kill))((o), (s)))
-#define SPIF_THREAD_RUN(o)                    SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), run))(o))
-#define SPIF_THREAD_TLS_CALLOC(o, c, s)       SPIF_CAST(tls_handle) ((SPIF_THREAD_CALL_METHOD((o), tls_calloc))((o), (c), (s)))
-#define SPIF_THREAD_TLS_FREE(o, i)            SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), tls_free))((o), (i)))
-#define SPIF_THREAD_TLS_GET(o, i)             SPIF_CAST(ptr) ((SPIF_THREAD_CALL_METHOD((o), tls_get))((o), (i)))
-#define SPIF_THREAD_TLS_MALLOC(o, s)          SPIF_CAST(tls_handle) ((SPIF_THREAD_CALL_METHOD((o), tls_malloc))((o), (s)))
-#define SPIF_THREAD_TLS_REALLOC(o, i, s)      SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), tls_realloc))((o), (i), (s)))
-#define SPIF_THREAD_WAIT(o, c)                SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), wait))((o), (c)))
-#define SPIF_THREAD_WAIT_FOR(o, t)            SPIF_CAST(bool) ((SPIF_THREAD_CALL_METHOD((o), wait_for))((o), (t)))
+#define SPIF_THREAD_INIT_WITH_FUNC(o, f, d)   (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), init_with_func))((o), (f), (d)))
+#define SPIF_THREAD_DETACH(o)                 (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), detach))(o))
+#define SPIF_THREAD_GET_CONDITION(o)          (spif_condition_t) ((SPIF_THREAD_CALL_METHOD((o), get_condition))())
+#define SPIF_THREAD_GET_MUTEX(o)              (spif_mutex_t) ((SPIF_THREAD_CALL_METHOD((o), get_mutex))())
+#define SPIF_THREAD_KILL(o, s)                (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), kill))((o), (s)))
+#define SPIF_THREAD_RUN(o)                    (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), run))(o))
+#define SPIF_THREAD_TLS_CALLOC(o, c, s)       (spif_tls_handle_t) ((SPIF_THREAD_CALL_METHOD((o), tls_calloc))((o), (c), (s)))
+#define SPIF_THREAD_TLS_FREE(o, i)            (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), tls_free))((o), (i)))
+#define SPIF_THREAD_TLS_GET(o, i)             (spif_ptr_t) ((SPIF_THREAD_CALL_METHOD((o), tls_get))((o), (i)))
+#define SPIF_THREAD_TLS_MALLOC(o, s)          (spif_tls_handle_t) ((SPIF_THREAD_CALL_METHOD((o), tls_malloc))((o), (s)))
+#define SPIF_THREAD_TLS_REALLOC(o, i, s)      (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), tls_realloc))((o), (i), (s)))
+#define SPIF_THREAD_WAIT(o, c)                (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), wait))((o), (c)))
+#define SPIF_THREAD_WAIT_FOR(o, t)            (spif_bool_t) ((SPIF_THREAD_CALL_METHOD((o), wait_for))((o), (t)))
 
 typedef spif_obj_t spif_thread_t;
 typedef spif_ptr_t spif_thread_data_t;

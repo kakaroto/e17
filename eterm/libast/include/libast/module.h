@@ -24,8 +24,8 @@
 #ifndef _LIBAST_MODULE_H_
 #define _LIBAST_MODULE_H_
 
-#define SPIF_MODULE(obj)                    (SPIF_CAST(module) (obj))
-#define SPIF_MODULE_CLASS(o)                (SPIF_CAST(moduleclass) SPIF_OBJ_CLASS(o))
+#define SPIF_MODULE(obj)                    ((spif_module_t) (obj))
+#define SPIF_MODULE_CLASS(o)                ((spif_moduleclass_t) SPIF_OBJ_CLASS(o))
 #define SPIF_OBJ_IS_MODULE(o)               (SPIF_OBJ_IS_TYPE(o, module))
 #define SPIF_MODULE_ISNULL(s)               SPIF_OBJ_ISNULL(SPIF_OBJ(s))
 #define SPIF_MODULECLASS_VAR(type)          spif_ ## type ## _moduleclass

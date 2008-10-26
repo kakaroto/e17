@@ -1120,17 +1120,17 @@ extern int re_exec();
  * @ingroup DOXGRP_MEM
  */
 #if (DEBUG >= DEBUG_MEM)
-# define MALLOC(sz)                             spifmem_malloc(SPIF_CAST(charptr) __FILE__, __LINE__, (sz))
-# define CALLOC(type,n)                         spifmem_calloc(SPIF_CAST(charptr) __FILE__, __LINE__, (n), (sizeof(type)))
-# define REALLOC(mem,sz)                        spifmem_realloc(SPIF_CAST(charptr) #mem, SPIF_CAST(charptr) __FILE__, __LINE__, (mem), (sz))
-# define FREE(ptr)                              do { spifmem_free(SPIF_CAST(charptr) #ptr, SPIF_CAST(charptr) __FILE__, __LINE__, (ptr)); (ptr) = NULL; } while (0)
-# define STRDUP(s)                              spifmem_strdup(SPIF_CAST(charptr) #s, SPIF_CAST(charptr) __FILE__, __LINE__, SPIF_CAST(charptr) (s))
+# define MALLOC(sz)                             spifmem_malloc((spif_charptr_t) __FILE__, __LINE__, (sz))
+# define CALLOC(type,n)                         spifmem_calloc((spif_charptr_t) __FILE__, __LINE__, (n), (sizeof(type)))
+# define REALLOC(mem,sz)                        spifmem_realloc((spif_charptr_t) #mem, (spif_charptr_t) __FILE__, __LINE__, (mem), (sz))
+# define FREE(ptr)                              do { spifmem_free((spif_charptr_t) #ptr, (spif_charptr_t) __FILE__, __LINE__, (ptr)); (ptr) = NULL; } while (0)
+# define STRDUP(s)                              spifmem_strdup((spif_charptr_t) #s, (spif_charptr_t) __FILE__, __LINE__, (spif_charptr_t) (s))
 # define MALLOC_DUMP()                          spifmem_dump_mem_tables()
-# define X_CREATE_PIXMAP(d, win, w, h, depth)   spifmem_x_create_pixmap(SPIF_CAST(charptr) __FILE__, __LINE__, (d), (win), (w), (h), (depth))
-# define X_FREE_PIXMAP(d, p)                    spifmem_x_free_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (d), (p))
+# define X_CREATE_PIXMAP(d, win, w, h, depth)   spifmem_x_create_pixmap((spif_charptr_t) __FILE__, __LINE__, (d), (win), (w), (h), (depth))
+# define X_FREE_PIXMAP(d, p)                    spifmem_x_free_pixmap((spif_charptr_t) #p, (spif_charptr_t) __FILE__, __LINE__, (d), (p))
 # if LIBAST_IMLIB2_SUPPORT
-#  define IMLIB_REGISTER_PIXMAP(p)              spifmem_imlib_register_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (p))
-#  define IMLIB_FREE_PIXMAP(p)                  spifmem_imlib_free_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (p))
+#  define IMLIB_REGISTER_PIXMAP(p)              spifmem_imlib_register_pixmap((spif_charptr_t) #p, (spif_charptr_t) __FILE__, __LINE__, (p))
+#  define IMLIB_FREE_PIXMAP(p)                  spifmem_imlib_free_pixmap((spif_charptr_t) #p, (spif_charptr_t) __FILE__, __LINE__, (p))
 # else
 #  define IMLIB_REGISTER_PIXMAP(p)              NOP
 #  define IMLIB_FREE_PIXMAP(p)                  NOP
@@ -1271,7 +1271,7 @@ extern int re_exec();
  * @see @link DOXGRP_STRINGS String Utility Routines @endlink
  * @ingroup DOXGRP_STRINGS
  */
-#define BEG_STRCASECMP(s, constr)  (strncasecmp(SPIF_CAST_C(char *) (s), constr, CONST_STRLEN(constr)))
+#define BEG_STRCASECMP(s, constr)  (strncasecmp((char *) (s), constr, CONST_STRLEN(constr)))
 
 
 
@@ -1357,10 +1357,10 @@ extern int re_exec();
  * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
-#define BOOL_OPT_ISTRUE(s)  (!strcasecmp(SPIF_CHARPTR_C(s), true_vals[0]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[1]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[2]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[3]))
+#define BOOL_OPT_ISTRUE(s)  (!strcasecmp((char *) s, true_vals[0]) \
+                             || !strcasecmp((char *) s, true_vals[1]) \
+                             || !strcasecmp((char *) s, true_vals[2]) \
+                             || !strcasecmp((char *) s, true_vals[3]))
 /**
  * Compares boolean option value to allowed false values.
  *
@@ -1372,10 +1372,10 @@ extern int re_exec();
  * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
-#define BOOL_OPT_ISFALSE(s) (!strcasecmp(SPIF_CHARPTR_C(s), false_vals[0]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[1]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[2]) \
-                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[3]))
+#define BOOL_OPT_ISFALSE(s) (!strcasecmp((char *) s, false_vals[0]) \
+                             || !strcasecmp((char *) s, false_vals[1]) \
+                             || !strcasecmp((char *) s, false_vals[2]) \
+                             || !strcasecmp((char *) s, false_vals[3]))
 
 /**
  * Skip-to-end flag.
@@ -2092,7 +2092,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST(s, l, d, f) \
-    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), SPIF_CAST(ptr) f, 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), (spif_ptr_t) f, 0)
 /**
  * Declare a pre-parsed abstract option.
  *
@@ -2108,7 +2108,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_PP(s, l, d, f) \
-    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), SPIF_CAST(ptr) f, 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), (spif_ptr_t) f, 0)
 /**
  * Declare a long-only abstract option.
  *
@@ -2123,7 +2123,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_LONG(l, d, f) \
-    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), SPIF_CAST(ptr) f, 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), (spif_ptr_t) f, 0)
 /**
  * Declare a long-only, pre-parsed abstract option.
  *
@@ -2138,7 +2138,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_LONG_PP(l, d, f) \
-    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), SPIF_CAST(ptr) f, 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), (spif_ptr_t) f, 0)
 /*@}*/
 
 /*@{*/
@@ -2639,7 +2639,7 @@ extern spifopt_settings_t spifopt_settings;
  * @return  Number of hash buckets required.
  *
  */
-#define SPIFHASH_SIZE(n)       (SPIF_CAST(uint32) (1UL << (n)))
+#define SPIFHASH_SIZE(n)       ((spif_uint32_t) (1UL << (n)))
 
 /**
  * Calculate mask to apply to hash key to get lowest n bits.
@@ -2652,7 +2652,7 @@ extern spifopt_settings_t spifopt_settings;
  * @return  Bitmask to zero out all but the n lowest bits.
  *
  */
-#define SPIFHASH_MASK(n)       (SPIF_CAST(uint32) (SPIFHASH_SIZE(n) - 1))
+#define SPIFHASH_MASK(n)       ((spif_uint32_t) (SPIFHASH_SIZE(n) - 1))
 
 /**
  * Mix 3 32-bit integer values in a reproducible, reversible manner.

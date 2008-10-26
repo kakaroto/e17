@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_MAP(o)                                    (SPIF_CAST(map) (o))
-#define SPIF_MAP_CLASS(o)                              (SPIF_CAST(mapclass) SPIF_OBJ_CLASS(o))
+#define SPIF_MAP(o)                                    ((spif_map_t) (o))
+#define SPIF_MAP_CLASS(o)                              ((spif_mapclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with map interface */
 #define SPIF_MAPCLASS_VAR(type)                        spif_ ## type ## _mapclass
 
 /* Check if a map is NULL */
-#define SPIF_MAP_ISNULL(o)                             (SPIF_MAP(o) == SPIF_NULL_TYPE(map))
+#define SPIF_MAP_ISNULL(o)                             (SPIF_MAP(o) == (spif_map_t) NULL)
 
 /* Check if an object is a map */
 #define SPIF_OBJ_IS_MAP(o)                             SPIF_OBJ_IS_TYPE(o, map)
@@ -54,16 +54,16 @@
 #define SPIF_MAP_DUP(o)                                SPIF_OBJ_DUP(o)
 #define SPIF_MAP_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_MAP_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_MAP_CALL_METHOD((o), count))(o))
-#define SPIF_MAP_GET(o, key)                           SPIF_CAST(obj) ((SPIF_MAP_CALL_METHOD((o), get))(o, key))
-#define SPIF_MAP_GET_KEYS(o, l)                        SPIF_CAST(list) ((SPIF_MAP_CALL_METHOD((o), get_keys))(o, l))
-#define SPIF_MAP_GET_PAIRS(o, l)                       SPIF_CAST(list) ((SPIF_MAP_CALL_METHOD((o), get_pairs))(o, l))
-#define SPIF_MAP_GET_VALUES(o, l)                      SPIF_CAST(list) ((SPIF_MAP_CALL_METHOD((o), get_values))(o, l))
-#define SPIF_MAP_HAS_KEY(o, key)                       SPIF_CAST(bool) ((SPIF_MAP_CALL_METHOD((o), has_key))(o, key))
-#define SPIF_MAP_HAS_VALUE(o, value)                   SPIF_CAST(bool) ((SPIF_MAP_CALL_METHOD((o), has_value))(o, value))
-#define SPIF_MAP_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_MAP_CALL_METHOD((o), iterator))(o))
-#define SPIF_MAP_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_MAP_CALL_METHOD((o), remove))(o, item))
-#define SPIF_MAP_SET(o, key, value)                    SPIF_CAST(bool) ((SPIF_MAP_CALL_METHOD((o), set))(o, key, value))
+#define SPIF_MAP_COUNT(o)                              (size_t) ((SPIF_MAP_CALL_METHOD((o), count))(o))
+#define SPIF_MAP_GET(o, key)                           (spif_obj_t) ((SPIF_MAP_CALL_METHOD((o), get))(o, key))
+#define SPIF_MAP_GET_KEYS(o, l)                        (spif_list_t) ((SPIF_MAP_CALL_METHOD((o), get_keys))(o, l))
+#define SPIF_MAP_GET_PAIRS(o, l)                       (spif_list_t) ((SPIF_MAP_CALL_METHOD((o), get_pairs))(o, l))
+#define SPIF_MAP_GET_VALUES(o, l)                      (spif_list_t) ((SPIF_MAP_CALL_METHOD((o), get_values))(o, l))
+#define SPIF_MAP_HAS_KEY(o, key)                       (spif_bool_t) ((SPIF_MAP_CALL_METHOD((o), has_key))(o, key))
+#define SPIF_MAP_HAS_VALUE(o, value)                   (spif_bool_t) ((SPIF_MAP_CALL_METHOD((o), has_value))(o, value))
+#define SPIF_MAP_ITERATOR(o)                           (spif_iterator_t) ((SPIF_MAP_CALL_METHOD((o), iterator))(o))
+#define SPIF_MAP_REMOVE(o, item)                       (spif_obj_t) ((SPIF_MAP_CALL_METHOD((o), remove))(o, item))
+#define SPIF_MAP_SET(o, key, value)                    (spif_bool_t) ((SPIF_MAP_CALL_METHOD((o), set))(o, key, value))
 
 typedef spif_obj_t spif_map_t;
 

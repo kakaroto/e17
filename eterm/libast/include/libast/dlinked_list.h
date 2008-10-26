@@ -25,10 +25,10 @@
 #define _LIBAST_DLINKED_LIST_H_
 
 /* Standard typecast macros.... */
-#define SPIF_DLINKED_LIST_ITEM(obj)                 (SPIF_CAST(dlinked_list_item) (obj))
-#define SPIF_DLINKED_LIST(obj)                      (SPIF_CAST(dlinked_list) (obj))
+#define SPIF_DLINKED_LIST_ITEM(obj)                 ((spif_dlinked_list_item_t) (obj))
+#define SPIF_DLINKED_LIST(obj)                      ((spif_dlinked_list_t) (obj))
 
-#define SPIF_DLINKED_LIST_ITEM_ISNULL(o)            (SPIF_DLINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(dlinked_list_item))
+#define SPIF_DLINKED_LIST_ITEM_ISNULL(o)            (SPIF_DLINKED_LIST_ITEM(o) == (spif_dlinked_list_item_t) NULL)
 #define SPIF_OBJ_IS_DLINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), dlinked_list_item))
 
 SPIF_DECL_OBJ(dlinked_list_item) {

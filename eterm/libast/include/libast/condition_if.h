@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_CONDITION(o)                         (SPIF_CAST(condition) (o))
-#define SPIF_CONDITION_CLASS(o)                   (SPIF_CAST(conditionclass) SPIF_OBJ_CLASS(o))
+#define SPIF_CONDITION(o)                         ((spif_condition_t) (o))
+#define SPIF_CONDITION_CLASS(o)                   ((spif_conditionclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with condition interface */
 #define SPIF_CONDITIONCLASS_VAR(type)             spif_ ## type ## _conditionclass
 
 /* Check if a condition is NULL */
-#define SPIF_CONDITION_ISNULL(o)                  (SPIF_CONDITION(o) == SPIF_NULL_TYPE(condition))
+#define SPIF_CONDITION_ISNULL(o)                  (SPIF_CONDITION(o) == (spif_condition_t) NULL)
 
 /* Check if an object is a condition */
 #define SPIF_OBJ_IS_CONDITION(o)                  SPIF_OBJ_IS_TYPE(o, condition)
@@ -54,10 +54,10 @@
 #define SPIF_CONDITION_DUP(o)                     SPIF_OBJ_DUP(o)
 #define SPIF_CONDITION_TYPE(o)                    SPIF_OBJ_TYPE(o)
 
-#define SPIF_CONDITION_BROADCAST(o)                SPIF_CAST(bool) ((SPIF_CONDITION_CALL_METHOD((o), broadcast))(o))
-#define SPIF_CONDITION_SIGNAL(o)                   SPIF_CAST(bool) ((SPIF_CONDITION_CALL_METHOD((o), signal))(o))
-#define SPIF_CONDITION_WAIT(o)                     SPIF_CAST(bool) ((SPIF_CONDITION_CALL_METHOD((o), wait))(o))
-#define SPIF_CONDITION_WAIT_TIMED(o, t)            SPIF_CAST(bool) ((SPIF_CONDITION_CALL_METHOD((o), wait_timed))((o), (t)))
+#define SPIF_CONDITION_BROADCAST(o)                (spif_bool_t) ((SPIF_CONDITION_CALL_METHOD((o), broadcast))(o))
+#define SPIF_CONDITION_SIGNAL(o)                   (spif_bool_t) ((SPIF_CONDITION_CALL_METHOD((o), signal))(o))
+#define SPIF_CONDITION_WAIT(o)                     (spif_bool_t) ((SPIF_CONDITION_CALL_METHOD((o), wait))(o))
+#define SPIF_CONDITION_WAIT_TIMED(o, t)            (spif_bool_t) ((SPIF_CONDITION_CALL_METHOD((o), wait_timed))((o), (t)))
 
 typedef spif_obj_t spif_condition_t;
 

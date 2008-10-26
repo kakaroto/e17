@@ -58,7 +58,7 @@ static SPIF_CONST_TYPE(threadclass) pt_class = {
     (spif_func_t) spif_pthreads_wait,
     (spif_func_t) spif_pthreads_wait_for
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads) = SPIF_CAST(class) &pt_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads) = (spif_class_t) &pt_class;
 SPIF_TYPE(threadclass) SPIF_THREADCLASS_VAR(pthreads) = &pt_class;
 
 static SPIF_CONST_TYPE(mutexclass) ptm_class = {
@@ -77,7 +77,7 @@ static SPIF_CONST_TYPE(mutexclass) ptm_class = {
     (spif_func_t) spif_pthreads_mutex_lock_nowait,
     (spif_func_t) spif_pthreads_mutex_unlock
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads_mutex) = SPIF_CAST(class) &ptm_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads_mutex) = (spif_class_t) &ptm_class;
 SPIF_TYPE(mutexclass) SPIF_MUTEXCLASS_VAR(pthreads_mutex) = &ptm_class;
 
 static SPIF_CONST_TYPE(conditionclass) ptc_class = {
@@ -97,7 +97,7 @@ static SPIF_CONST_TYPE(conditionclass) ptc_class = {
     (spif_func_t) spif_pthreads_condition_wait,
     (spif_func_t) spif_pthreads_condition_wait_timed
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads_condition) = SPIF_CAST(class) &ptc_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(pthreads_condition) = (spif_class_t) &ptc_class;
 SPIF_TYPE(conditionclass) SPIF_CONDITIONCLASS_VAR(pthreads_condition) = &ptc_class;
 /* *INDENT-ON* */
 
@@ -111,7 +111,7 @@ spif_pthreads_new(void)
     self = SPIF_ALLOC(pthreads);
     if (!spif_pthreads_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(pthreads);
+        self = (spif_pthreads_t) NULL;
     }
     return self;
 }
@@ -124,7 +124,7 @@ spif_pthreads_new_with_func(spif_thread_func_t func, spif_thread_data_t data)
     self = SPIF_ALLOC(pthreads);
     if (!spif_pthreads_init_with_func(self, func, data)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(pthreads);
+        self = (spif_pthreads_t) NULL;
     }
     return self;
 }
@@ -138,9 +138,9 @@ spif_pthreads_init(spif_pthreads_t self)
     self->handle = (pthread_t) 0;
     self->creator = (pthread_t) 0;
     pthread_attr_init(&self->attr);
-    self->main_func = SPIF_NULL_TYPE(thread_func);
-    self->data = SPIF_NULL_TYPE(thread_data);
-    self->tls_keys = SPIF_NULL_TYPE(list);
+    self->main_func = (spif_thread_func_t) NULL;
+    self->data = (spif_thread_data_t) NULL;
+    self->tls_keys = (spif_list_t) NULL;
     return TRUE;
 }
 
@@ -155,7 +155,7 @@ spif_pthreads_init_with_func(spif_pthreads_t self, spif_thread_func_t func, spif
     pthread_attr_init(&self->attr);
     self->main_func = func;
     self->data = data;
-    self->tls_keys = SPIF_NULL_TYPE(list);
+    self->tls_keys = (spif_list_t) NULL;
     return TRUE;
 }
 
@@ -172,10 +172,10 @@ spif_pthreads_done(spif_pthreads_t self)
     self->creator = pthread_self();
     pthread_attr_destroy(&self->attr);
     pthread_attr_init(&self->attr);
-    self->main_func = SPIF_NULL_TYPE(thread_func);
+    self->main_func = (spif_thread_func_t) NULL;
     if (self->tls_keys) {
         SPIF_LIST_DEL(self->tls_keys);
-        self->tls_keys = SPIF_NULL_TYPE(list);
+        self->tls_keys = (spif_list_t) NULL;
     }
     return ret;
 }
@@ -200,9 +200,9 @@ spif_pthreads_show(spif_pthreads_t self, spif_charptr_t name, spif_str_t buff, s
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_pthreads_t) %s:  %10p { \"",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -213,19 +213,19 @@ spif_pthreads_show(spif_pthreads_t self, spif_charptr_t name, spif_str_t buff, s
     if (indent < sizeof(tmp)) {
         memset(tmp, ' ', indent);
     }
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(pthread_t) handle:  %ld\n", (long) self->handle);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(pthread_t) handle:  %ld\n", (long) self->handle);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(pthread_t) creator:  %ld\n", (long) self->creator);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(pthread_t) creator:  %ld\n", (long) self->creator);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(pthread_attr_t) attr:  %10p {...}\n", &self->attr);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(pthread_attr_t) attr:  %10p {...}\n", &self->attr);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_thread_func_t) main_func:  %10p\n", self->main_func);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(spif_thread_func_t) main_func:  %10p\n", self->main_func);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_thread_data_t) data:  %10p\n", self->data);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(spif_thread_data_t) data:  %10p\n", self->data);
     spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_LIST_ISNULL(self->tls_keys)) {
@@ -234,7 +234,7 @@ spif_pthreads_show(spif_pthreads_t self, spif_charptr_t name, spif_str_t buff, s
         buff = SPIF_LIST_SHOW(self->tls_keys, buff, indent);
     }
 
-    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
+    snprintf((char *) tmp, sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -254,7 +254,7 @@ spif_pthreads_dup(spif_pthreads_t self)
 {
     spif_pthreads_t tmp;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_NULL_TYPE(pthreads));
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_pthreads_t) NULL);
     tmp = SPIF_ALLOC(pthreads);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(pthreads));
     tmp->tls_keys = SPIF_LIST_DUP(self->tls_keys);
@@ -264,7 +264,7 @@ spif_pthreads_dup(spif_pthreads_t self)
 spif_classname_t
 spif_pthreads_type(spif_pthreads_t self)
 {
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_classname_t) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -291,10 +291,10 @@ spif_pthreads_get_condition(spif_pthreads_t self)
 {
     spif_pthreads_condition_t cond;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_NULL_TYPE(condition));
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_condition_t) NULL);
     cond = spif_pthreads_condition_new();
     spif_pthreads_mutex_set_creator(SPIF_PTHREADS_MUTEX(cond), SPIF_THREAD(self));
-    return SPIF_CAST(condition) cond;
+    return (spif_condition_t) cond;
 }
 
 spif_mutex_t
@@ -302,10 +302,10 @@ spif_pthreads_get_mutex(spif_pthreads_t self)
 {
     spif_pthreads_mutex_t mutex;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_NULL_TYPE(mutex));
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_mutex_t) NULL);
     mutex = spif_pthreads_mutex_new();
     spif_pthreads_mutex_set_creator(mutex, SPIF_THREAD(self));
-    return SPIF_CAST(mutex) mutex;
+    return (spif_mutex_t) mutex;
 }
 
 spif_bool_t
@@ -321,7 +321,7 @@ spif_bool_t
 spif_pthreads_run(spif_pthreads_t self)
 {
     ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), FALSE);
-    REQUIRE_RVAL(self->main_func != SPIF_NULL_TYPE(thread_func), FALSE);
+    REQUIRE_RVAL(self->main_func != (spif_thread_func_t) NULL, FALSE);
     REQUIRE_RVAL(self->handle == (pthread_t) 0, FALSE);
 
     if (!pthread_create(&self->handle, &self->attr, self->main_func, self)) {
@@ -337,9 +337,9 @@ spif_pthreads_tls_calloc(spif_pthreads_t self, size_t count, size_t size)
     spif_tls_handle_t handle;
     spif_ptr_t data;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_CAST(tls_handle) -1);
-    REQUIRE_RVAL(count, SPIF_CAST(tls_handle) -1);
-    REQUIRE_RVAL(size, SPIF_CAST(tls_handle) -1);
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_tls_handle_t) -1);
+    REQUIRE_RVAL(count, (spif_tls_handle_t) -1);
+    REQUIRE_RVAL(size, (spif_tls_handle_t) -1);
 
     handle = spif_pthreads_tls_malloc(self, count * size);
     data = spif_pthreads_tls_get(self, handle);
@@ -355,16 +355,16 @@ spif_pthreads_tls_free(spif_pthreads_t self, spif_tls_handle_t handle)
     ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), FALSE);
     REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->tls_keys), FALSE);
 
-    key = SPIF_CAST(mbuff) SPIF_LIST_REMOVE_AT(self->tls_keys, handle);
+    key = (spif_mbuff_t) SPIF_LIST_REMOVE_AT(self->tls_keys, handle);
     if (handle != SPIF_LIST_COUNT(self->tls_keys)) {
         /* If this isn't the last item in our list, insert an empty placeholder
            so that numeric indexes which have already been given out will remain valid. */
-        SPIF_LIST_INSERT_AT(self->tls_keys, SPIF_NULL_TYPE(obj), handle);
+        SPIF_LIST_INSERT_AT(self->tls_keys, (spif_obj_t) NULL, handle);
     }
     if (!SPIF_MBUFF_ISNULL(key)) {
         spif_ptr_t ptr;
 
-        ptr = SPIF_CAST(ptr) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key)));
+        ptr = (spif_ptr_t) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key)));
         if (ptr && !pthread_key_delete(*((pthread_key_t *) SPIF_MBUFF_BUFF(key)))) {
             FREE(ptr);
             return TRUE;
@@ -378,14 +378,14 @@ spif_pthreads_tls_get(spif_pthreads_t self, spif_tls_handle_t handle)
 {
     spif_mbuff_t key;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_ptr_t) NULL);
     REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->tls_keys), FALSE);
 
-    key = SPIF_CAST(mbuff) SPIF_LIST_GET(self->tls_keys, handle);
+    key = (spif_mbuff_t) SPIF_LIST_GET(self->tls_keys, handle);
     if (!SPIF_MBUFF_ISNULL(key)) {
-        return (SPIF_CAST(ptr) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key))));
+        return ((spif_ptr_t) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key))));
     }
-    return SPIF_NULL_TYPE(ptr);
+    return (spif_ptr_t) NULL;
 }
 
 spif_tls_handle_t
@@ -394,7 +394,7 @@ spif_pthreads_tls_malloc(spif_pthreads_t self, spif_memidx_t size)
     pthread_key_t key;
     spif_ptr_t ptr;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), SPIF_CAST(tls_handle) -1);
+    ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), (spif_tls_handle_t) -1);
 
     if (SPIF_LIST_ISNULL(self->tls_keys)) {
         self->tls_keys = SPIF_LIST_NEW(array);
@@ -408,7 +408,7 @@ spif_pthreads_tls_malloc(spif_pthreads_t self, spif_memidx_t size)
         pthread_setspecific(key, ptr);
 
         /* The key is actually copied into the mbuff buffer. */
-        tls_key = spif_mbuff_new_from_ptr(SPIF_CAST(byteptr) &key, sizeof(pthread_key_t));
+        tls_key = spif_mbuff_new_from_ptr((spif_byteptr_t) &key, sizeof(pthread_key_t));
 
         /* Since the pointer returned by MALLOC() is only stored locally in
            this function and as keyed in the TLS data store, it cannot be
@@ -417,7 +417,7 @@ spif_pthreads_tls_malloc(spif_pthreads_t self, spif_memidx_t size)
             return (SPIF_LIST_COUNT(self->tls_keys) - 1);
         }
     }
-    return (SPIF_CAST(tls_handle) -1);
+    return ((spif_tls_handle_t) -1);
 }
 
 static void
@@ -434,11 +434,11 @@ spif_pthreads_tls_realloc(spif_pthreads_t self, spif_tls_handle_t handle, spif_m
     ASSERT_RVAL(!SPIF_PTHREADS_ISNULL(self), FALSE);
     REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->tls_keys), FALSE);
 
-    key = SPIF_CAST(mbuff) SPIF_LIST_GET(self->tls_keys, handle);
+    key = (spif_mbuff_t) SPIF_LIST_GET(self->tls_keys, handle);
     if (!SPIF_MBUFF_ISNULL(key)) {
         spif_ptr_t ptr;
 
-        ptr = SPIF_CAST(ptr) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key)));
+        ptr = (spif_ptr_t) pthread_getspecific(*((pthread_key_t *) SPIF_MBUFF_BUFF(key)));
         if (ptr) {
             ptr = REALLOC(ptr, size);
             if (ptr) {
@@ -479,7 +479,7 @@ spif_pthreads_mutex_new(void)
     self = SPIF_ALLOC(pthreads_mutex);
     if (!spif_pthreads_mutex_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(pthreads_mutex);
+        self = (spif_pthreads_mutex_t) NULL;
     }
     return self;
 }
@@ -490,7 +490,7 @@ spif_pthreads_mutex_init(spif_pthreads_mutex_t self)
     ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MUTEXCLASS_VAR(pthreads_mutex)));
-    self->creator = SPIF_NULL_TYPE(thread);
+    self->creator = (spif_thread_t) NULL;
     pthread_mutex_init(&self->mutex, NULL);
     return TRUE;
 }
@@ -501,7 +501,7 @@ spif_pthreads_mutex_done(spif_pthreads_mutex_t self)
     spif_bool_t ret = TRUE;
 
     ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), FALSE);
-    self->creator = SPIF_NULL_TYPE(thread);
+    self->creator = (spif_thread_t) NULL;
     if (!pthread_mutex_unlock(&self->mutex)) {
         /* It was locked.  Destroy it. */
         pthread_mutex_destroy(&self->mutex);
@@ -530,9 +530,9 @@ spif_pthreads_mutex_show(spif_pthreads_mutex_t self, spif_charptr_t name, spif_s
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_pthreads_mutex_t) %s:  %10p { \"",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -549,10 +549,10 @@ spif_pthreads_mutex_show(spif_pthreads_mutex_t self, spif_charptr_t name, spif_s
         buff = SPIF_THREAD_SHOW(self->creator, buff, indent);
     }
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(pthread_mutex_t) mutex:  %10p {...}\n", &self->mutex);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(pthread_mutex_t) mutex:  %10p {...}\n", &self->mutex);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
+    snprintf((char *) tmp, sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -569,7 +569,7 @@ spif_pthreads_mutex_dup(spif_pthreads_mutex_t self)
 {
     spif_pthreads_mutex_t tmp;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), SPIF_NULL_TYPE(pthreads_mutex));
+    ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), (spif_pthreads_mutex_t) NULL);
     tmp = SPIF_ALLOC(pthreads_mutex);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(pthreads_mutex));
     return tmp;
@@ -578,7 +578,7 @@ spif_pthreads_mutex_dup(spif_pthreads_mutex_t self)
 spif_classname_t
 spif_pthreads_mutex_type(spif_pthreads_mutex_t self)
 {
-    ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_PTHREADS_MUTEX_ISNULL(self), (spif_classname_t) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -611,7 +611,7 @@ spif_pthreads_condition_new(void)
     self = SPIF_ALLOC(pthreads_condition);
     if (!spif_pthreads_condition_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(pthreads_condition);
+        self = (spif_pthreads_condition_t) NULL;
     }
     return self;
 }
@@ -658,9 +658,9 @@ spif_pthreads_condition_show(spif_pthreads_condition_t self, spif_charptr_t name
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_pthreads_condition_t) %s:  %10p { \"",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -673,10 +673,10 @@ spif_pthreads_condition_show(spif_pthreads_condition_t self, spif_charptr_t name
     }
     buff = spif_pthreads_mutex_show(SPIF_PTHREADS_MUTEX(self), "self", buff, indent);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(pthread_cond_t) cond:  %10p {...}\n", &self->cond);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(pthread_cond_t) cond:  %10p {...}\n", &self->cond);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
+    snprintf((char *) tmp, sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -693,7 +693,7 @@ spif_pthreads_condition_dup(spif_pthreads_condition_t self)
 {
     spif_pthreads_condition_t tmp;
 
-    ASSERT_RVAL(!SPIF_PTHREADS_CONDITION_ISNULL(self), SPIF_NULL_TYPE(pthreads_condition));
+    ASSERT_RVAL(!SPIF_PTHREADS_CONDITION_ISNULL(self), (spif_pthreads_condition_t) NULL);
     tmp = SPIF_ALLOC(pthreads_condition);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(pthreads_condition));
     return tmp;
@@ -702,7 +702,7 @@ spif_pthreads_condition_dup(spif_pthreads_condition_t self)
 spif_classname_t
 spif_pthreads_condition_type(spif_pthreads_condition_t self)
 {
-    ASSERT_RVAL(!SPIF_PTHREADS_CONDITION_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_PTHREADS_CONDITION_ISNULL(self), (spif_classname_t) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 

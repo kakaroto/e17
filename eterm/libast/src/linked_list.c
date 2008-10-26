@@ -218,7 +218,7 @@ spif_linked_list_item_new(void)
     self = SPIF_ALLOC(linked_list_item);
     if (!spif_linked_list_item_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(linked_list_item);
+        self = (spif_linked_list_item_t) NULL;
     }
     return self;
 }
@@ -227,8 +227,8 @@ static spif_bool_t
 spif_linked_list_item_init(spif_linked_list_item_t self)
 {
     ASSERT_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self), FALSE);
-    self->data = SPIF_NULL_TYPE(obj);
-    self->next = SPIF_NULL_TYPE(linked_list_item);
+    self->data = (spif_obj_t) NULL;
+    self->next = (spif_linked_list_item_t) NULL;
     return TRUE;
 }
 
@@ -236,11 +236,11 @@ static spif_bool_t
 spif_linked_list_item_done(spif_linked_list_item_t self)
 {
     ASSERT_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self), FALSE);
-    if (self->data != SPIF_NULL_TYPE(obj)) {
+    if (self->data != (spif_obj_t) NULL) {
         SPIF_OBJ_DEL(self->data);
     }
-    self->data = SPIF_NULL_TYPE(obj);
-    self->next = SPIF_NULL_TYPE(linked_list_item);
+    self->data = (spif_obj_t) NULL;
+    self->next = (spif_linked_list_item_t) NULL;
     return TRUE;
 }
 
@@ -264,16 +264,16 @@ spif_linked_list_item_show(spif_linked_list_item_t self, spif_charptr_t name, sp
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_linked_list_item_t) %s (%9p -> %9p):  ",
-             name, SPIF_CAST(ptr) self, SPIF_CAST(ptr) self->next);
+             name, (spif_ptr_t) self, (spif_ptr_t) self->next);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->data)) {
-        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj) "\n");
+        spif_str_append_from_ptr(buff, (spif_charptr_t) SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         buff = SPIF_OBJ_SHOW(self->data, buff, 0);
     }
@@ -285,7 +285,7 @@ spif_linked_list_item_comp(spif_linked_list_item_t self, spif_linked_list_item_t
 {
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
     SPIF_OBJ_COMP_CHECK_NULL(self->data, other->data);
-    return (SPIF_CAST(cmp) SPIF_OBJ_COMP(SPIF_OBJ(self->data), SPIF_OBJ(other->data)));
+    return ((spif_cmp_t) SPIF_OBJ_COMP(SPIF_OBJ(self->data), SPIF_OBJ(other->data)));
 }
 
 static spif_linked_list_item_t
@@ -304,7 +304,7 @@ spif_linked_list_item_dup(spif_linked_list_item_t self)
 static spif_classname_t
 spif_linked_list_item_type(spif_linked_list_item_t self)
 {
-    ASSERT_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -320,7 +320,7 @@ spif_linked_list_new(void)
     self = SPIF_ALLOC(linked_list);
     if (!spif_linked_list_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(linked_list);
+        self = (spif_linked_list_t) NULL;
     }
     return self;
 }
@@ -333,7 +333,7 @@ spif_linked_list_vector_new(void)
     self = SPIF_ALLOC(linked_list);
     if (!spif_linked_list_vector_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(linked_list);
+        self = (spif_linked_list_t) NULL;
     }
     return self;
 }
@@ -346,7 +346,7 @@ spif_linked_list_map_new(void)
     self = SPIF_ALLOC(linked_list);
     if (!spif_linked_list_map_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(linked_list);
+        self = (spif_linked_list_t) NULL;
     }
     return self;
 }
@@ -360,7 +360,7 @@ spif_linked_list_init(spif_linked_list_t self)
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     t = spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_LISTCLASS_VAR(linked_list)));
     self->len = 0;
-    self->head = SPIF_NULL_TYPE(linked_list_item);
+    self->head = (spif_linked_list_item_t) NULL;
     return t;
 }
 
@@ -373,7 +373,7 @@ spif_linked_list_vector_init(spif_linked_list_t self)
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     t = spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_VECTORCLASS_VAR(linked_list)));
     self->len = 0;
-    self->head = SPIF_NULL_TYPE(linked_list_item);
+    self->head = (spif_linked_list_item_t) NULL;
     return t;
 }
 
@@ -386,7 +386,7 @@ spif_linked_list_map_init(spif_linked_list_t self)
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     t = spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MAPCLASS_VAR(linked_list)));
     self->len = 0;
-    self->head = SPIF_NULL_TYPE(linked_list_item);
+    self->head = (spif_linked_list_item_t) NULL;
     return t;
 }
 
@@ -405,7 +405,7 @@ spif_linked_list_done(spif_linked_list_t self)
             spif_linked_list_item_del(tmp);
         }
         self->len = 0;
-        self->head = SPIF_NULL_TYPE(linked_list_item);
+        self->head = (spif_linked_list_item_t) NULL;
     }
     return TRUE;
 }
@@ -432,29 +432,29 @@ spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t b
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
-             "(spif_linked_list_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_linked_list_t) %s:  %10p {\n", name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n",
-             SPIF_CAST_C(unsigned long) self->len);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n",
+             (unsigned long) self->len);
     spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj) "\n");
+        spif_str_append_from_ptr(buff, (spif_charptr_t) SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         for (current = self->head, i = 0; current; current = current->next, i++) {
-            sprintf(SPIF_CAST_C(char *) tmp, "item %d", i);
+            sprintf((char *) tmp, "item %d", i);
             buff = spif_linked_list_item_show(current, tmp, buff, indent + 2);
         }
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -473,14 +473,14 @@ spif_linked_list_dup(spif_linked_list_t self)
     spif_linked_list_t tmp;
     spif_linked_list_item_t src, dest;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(linked_list));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_linked_list_t) NULL);
     tmp = spif_linked_list_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(linked_list));
     tmp->head = spif_linked_list_item_dup(self->head);
     for (src = self->head, dest = tmp->head; src->next; src = src->next, dest = dest->next) {
         dest->next = spif_linked_list_item_dup(src->next);
     }
-    dest->next = SPIF_NULL_TYPE(linked_list_item);
+    dest->next = (spif_linked_list_item_t) NULL;
     return tmp;
 }
 
@@ -490,14 +490,14 @@ spif_linked_list_vector_dup(spif_linked_list_t self)
     spif_linked_list_t tmp;
     spif_linked_list_item_t src, dest;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(linked_list));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_linked_list_t) NULL);
     tmp = spif_linked_list_vector_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(linked_list));
     tmp->head = spif_linked_list_item_dup(self->head);
     for (src = self->head, dest = tmp->head; src->next; src = src->next, dest = dest->next) {
         dest->next = spif_linked_list_item_dup(src->next);
     }
-    dest->next = SPIF_NULL_TYPE(linked_list_item);
+    dest->next = (spif_linked_list_item_t) NULL;
     return tmp;
 }
 
@@ -507,21 +507,21 @@ spif_linked_list_map_dup(spif_linked_list_t self)
     spif_linked_list_t tmp;
     spif_linked_list_item_t src, dest;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(linked_list));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_linked_list_t) NULL);
     tmp = spif_linked_list_map_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(linked_list));
     tmp->head = spif_linked_list_item_dup(self->head);
     for (src = self->head, dest = tmp->head; src->next; src = src->next, dest = dest->next) {
         dest->next = spif_linked_list_item_dup(src->next);
     }
-    dest->next = SPIF_NULL_TYPE(linked_list_item);
+    dest->next = (spif_linked_list_item_t) NULL;
     return tmp;
 }
 
 static spif_classname_t
 spif_linked_list_type(spif_linked_list_t self)
 {
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -564,7 +564,7 @@ spif_linked_list_vector_contains(spif_linked_list_t self, spif_obj_t obj)
 static spif_listidx_t
 spif_linked_list_count(spif_linked_list_t self)
 {
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(listidx));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_listidx_t) NULL);
     return self->len;
 }
 
@@ -573,15 +573,15 @@ spif_linked_list_find(spif_linked_list_t self, spif_obj_t obj)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), (spif_obj_t) NULL);
     for (current = self->head; current; current = current->next) {
         /* current->data may be NULL here, so use obj methods. */
         if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(obj, current->data))) {
             return current->data;
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_obj_t
@@ -589,13 +589,13 @@ spif_linked_list_vector_find(spif_linked_list_t self, spif_obj_t obj)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), (spif_obj_t) NULL);
     for (current = self->head; current; current = current->next) {
         spif_cmp_t c;
 
         /* current->data is always non-NULL in vectors. */
-        ASSERT_RVAL(!SPIF_OBJ_ISNULL(current->data), SPIF_NULL_TYPE(obj));
+        ASSERT_RVAL(!SPIF_OBJ_ISNULL(current->data), (spif_obj_t) NULL);
         c = SPIF_OBJ_COMP(current->data, obj);
         if (SPIF_CMP_IS_EQUAL(c)) {
             return current->data;
@@ -603,7 +603,7 @@ spif_linked_list_vector_find(spif_linked_list_t self, spif_obj_t obj)
             break;
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_obj_t
@@ -612,15 +612,15 @@ spif_linked_list_get(spif_linked_list_t self, spif_listidx_t idx)
     spif_listidx_t i;
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t) NULL);
     if (idx < 0) {
         /* Negative indexes go backward from the end of the list. */
         idx += self->len;
     }
-    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx >= 0, (spif_obj_t) NULL);
+    REQUIRE_RVAL(idx < self->len, (spif_obj_t) NULL);
     for (current = self->head, i = 0; current && i < idx; i++, current = current->next);
-    return (current ? (current->data) : SPIF_NULL_TYPE(obj));
+    return (current ? (current->data) : (spif_obj_t) NULL);
 }
 
 static spif_obj_t
@@ -628,13 +628,13 @@ spif_linked_list_map_get(spif_linked_list_t self, spif_obj_t key)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(key), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(key), (spif_obj_t) NULL);
     for (current = self->head; current; current = current->next) {
         spif_cmp_t c;
 
         /* current->data is always non-NULL in maps. */
-        ASSERT_RVAL(!SPIF_OBJ_ISNULL(current->data), SPIF_NULL_TYPE(obj));
+        ASSERT_RVAL(!SPIF_OBJ_ISNULL(current->data), (spif_obj_t) NULL);
         c = SPIF_OBJ_COMP(current->data, key);
         if (SPIF_CMP_IS_EQUAL(c)) {
             return SPIF_OBJPAIR(current->data)->value;
@@ -642,7 +642,7 @@ spif_linked_list_map_get(spif_linked_list_t self, spif_obj_t key)
             break;
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_list_t
@@ -650,7 +650,7 @@ spif_linked_list_get_keys(spif_linked_list_t self, spif_list_t key_list)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(key_list)) {
         key_list = SPIF_LIST_NEW(linked_list);
     }
@@ -666,7 +666,7 @@ spif_linked_list_get_pairs(spif_linked_list_t self, spif_list_t pair_list)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(pair_list)) {
         pair_list = SPIF_LIST_NEW(linked_list);
     }
@@ -682,7 +682,7 @@ spif_linked_list_get_values(spif_linked_list_t self, spif_list_t value_list)
 {
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(value_list)) {
         value_list = SPIF_LIST_NEW(linked_list);
     }
@@ -726,9 +726,9 @@ spif_linked_list_index(spif_linked_list_t self, spif_obj_t obj)
     spif_listidx_t i;
     spif_linked_list_item_t current;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_CAST(listidx) -1);
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_listidx_t) -1);
     for (current = self->head, i = 0; current && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(obj, current->data)); i++, current = current->next);
-    return (current ? i : (SPIF_CAST(listidx) -1));
+    return (current ? i : ((spif_listidx_t) -1));
 }
 
 static spif_bool_t
@@ -790,7 +790,7 @@ spif_linked_list_insert_at(spif_linked_list_t self, spif_obj_t obj, spif_listidx
 static spif_iterator_t
 spif_linked_list_iterator(spif_linked_list_t self)
 {
-    return SPIF_CAST(iterator) spif_linked_list_iterator_new(self);
+    return (spif_iterator_t) spif_linked_list_iterator_new(self);
 }
 
 static spif_bool_t
@@ -817,10 +817,10 @@ spif_linked_list_remove(spif_linked_list_t self, spif_obj_t item)
 {
     spif_linked_list_item_t current, tmp;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), (spif_obj_t) NULL);
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     } else if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(item, self->head->data))) {
         tmp = self->head;
         self->head = self->head->next;
@@ -830,11 +830,11 @@ spif_linked_list_remove(spif_linked_list_t self, spif_obj_t item)
             tmp = current->next;
             current->next = current->next->next;
         } else {
-            return SPIF_NULL_TYPE(obj);
+            return (spif_obj_t) NULL;
         }
     }
     item = tmp->data;
-    tmp->data = SPIF_NULL_TYPE(obj);
+    tmp->data = (spif_obj_t) NULL;
     spif_linked_list_item_del(tmp);
 
     self->len--;
@@ -846,10 +846,10 @@ spif_linked_list_map_remove(spif_linked_list_t self, spif_obj_t item)
 {
     spif_linked_list_item_t current, tmp;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), (spif_obj_t) NULL);
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     } else if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(self->head->data, item))) {
         tmp = self->head;
         self->head = self->head->next;
@@ -859,11 +859,11 @@ spif_linked_list_map_remove(spif_linked_list_t self, spif_obj_t item)
             tmp = current->next;
             current->next = current->next->next;
         } else {
-            return SPIF_NULL_TYPE(obj);
+            return (spif_obj_t) NULL;
         }
     }
     item = tmp->data;
-    tmp->data = SPIF_NULL_TYPE(obj);
+    tmp->data = (spif_obj_t) NULL;
     spif_linked_list_item_del(tmp);
 
     self->len--;
@@ -877,30 +877,30 @@ spif_linked_list_remove_at(spif_linked_list_t self, spif_listidx_t idx)
     spif_linked_list_item_t item, current;
     spif_obj_t tmp;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t) NULL);
     if (idx < 0) {
         /* Negative indexes go backward from the end of the list. */
         idx += self->len;
     }
-    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx >= 0, (spif_obj_t) NULL);
+    REQUIRE_RVAL(idx < self->len, (spif_obj_t) NULL);
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     } else if (idx == 0) {
         item = self->head;
         self->head = item->next;
     } else {
         for (current = self->head, i = 1; current->next && i < idx; i++, current = current->next);
         if (i != idx) {
-            return SPIF_NULL_TYPE(obj);
+            return (spif_obj_t) NULL;
         }
         item = current->next;
         current->next = item->next;
     }
     self->len--;
     tmp = spif_linked_list_item_get_data(item);
-    item->data = SPIF_NULL_TYPE(obj);
+    item->data = (spif_obj_t) NULL;
     spif_linked_list_item_del(item);
     return tmp;
 }
@@ -911,7 +911,7 @@ spif_linked_list_reverse(spif_linked_list_t self)
     spif_linked_list_item_t current, tmp, previous;
 
     ASSERT_RVAL(!SPIF_LIST_ISNULL(self), FALSE);
-    for (previous = SPIF_NULL_TYPE(linked_list_item), current = self->head; current; previous = tmp) {
+    for (previous = (spif_linked_list_item_t) NULL, current = self->head; current; previous = tmp) {
         tmp = current;
         current = current->next;
         tmp->next = previous;
@@ -954,10 +954,10 @@ spif_linked_list_to_array(spif_linked_list_t self)
     spif_linked_list_item_t current;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_NULL_TYPE_PTR(obj));
-    tmp = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    ASSERT_RVAL(!SPIF_LIST_ISNULL(self), (spif_obj_t *) NULL);
+    tmp = (spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
     for (i = 0, current = self->head; i < self->len; current = current->next, i++) {
-        tmp[i] = SPIF_CAST(obj) SPIF_OBJ(spif_linked_list_item_get_data(current));
+        tmp[i] = (spif_obj_t) SPIF_OBJ(spif_linked_list_item_get_data(current));
     }
     return tmp;
 }
@@ -974,7 +974,7 @@ spif_linked_list_iterator_new(spif_linked_list_t subject)
     self = SPIF_ALLOC(linked_list_iterator);
     if (!spif_linked_list_iterator_init(self, subject)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(linked_list_iterator);
+        self = (spif_linked_list_iterator_t) NULL;
     }
     return self;
 }
@@ -987,7 +987,7 @@ spif_linked_list_iterator_init(spif_linked_list_iterator_t self, spif_linked_lis
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_ITERATORCLASS_VAR(linked_list)));
     self->subject = subject;
     if (SPIF_LIST_ISNULL(self->subject)) {
-        self->current = SPIF_NULL_TYPE(linked_list_item);
+        self->current = (spif_linked_list_item_t) NULL;
     } else {
         self->current = self->subject->head;
     }
@@ -999,8 +999,8 @@ spif_linked_list_iterator_done(spif_linked_list_iterator_t self)
 {
     ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), FALSE);
     /* Do not destroy these objects.  The list owns them! */
-    self->subject = SPIF_NULL_TYPE(linked_list);
-    self->current = SPIF_NULL_TYPE(linked_list_item);
+    self->subject = (spif_linked_list_t) NULL;
+    self->current = (spif_linked_list_item_t) NULL;
     return TRUE;
 }
 
@@ -1024,19 +1024,19 @@ spif_linked_list_iterator_show(spif_linked_list_iterator_t self, spif_charptr_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_linked_list_iterator_t) %s:  %10p {\n",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_linked_list_show(self->subject, SPIF_CAST(charptr) "subject", buff, indent + 2);
-    buff = spif_linked_list_item_show(self->current, SPIF_CAST(charptr) "current", buff, indent + 2);
+    buff = spif_linked_list_show(self->subject, (spif_charptr_t) "subject", buff, indent + 2);
+    buff = spif_linked_list_item_show(self->current, (spif_charptr_t) "current", buff, indent + 2);
 
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -1054,7 +1054,7 @@ spif_linked_list_iterator_dup(spif_linked_list_iterator_t self)
 {
     spif_linked_list_iterator_t tmp;
 
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(linked_list_iterator));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_linked_list_iterator_t) NULL);
     tmp = spif_linked_list_iterator_new(self->subject);
     tmp->current = self->current;
     return tmp;
@@ -1063,7 +1063,7 @@ spif_linked_list_iterator_dup(spif_linked_list_iterator_t self)
 static spif_classname_t
 spif_linked_list_iterator_type(spif_linked_list_iterator_t self)
 {
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -1087,9 +1087,9 @@ spif_linked_list_iterator_next(spif_linked_list_iterator_t self)
 {
     spif_obj_t tmp;
 
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self->current), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_LINKED_LIST_ITEM_ISNULL(self->current), (spif_obj_t) NULL);
     tmp = self->current->data;
     self->current = self->current->next;
     return tmp;

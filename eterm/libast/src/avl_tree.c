@@ -117,7 +117,7 @@ spif_avl_tree_node_new(void)
     self = SPIF_ALLOC(avl_tree_node);
     if (!spif_avl_tree_node_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(avl_tree_node);
+        self = (spif_avl_tree_node_t) NULL;
     }
     return self;
 }
@@ -126,9 +126,9 @@ static spif_bool_t
 spif_avl_tree_node_init(spif_avl_tree_node_t self)
 {
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), FALSE);
-    self->data = SPIF_NULL_TYPE(obj);
+    self->data = (spif_obj_t) NULL;
     self->balance = BALANCED;
-    self->left = self->right = SPIF_NULL_TYPE(avl_tree_node);
+    self->left = self->right = (spif_avl_tree_node_t) NULL;
     return TRUE;
 }
 
@@ -136,17 +136,17 @@ static spif_bool_t
 spif_avl_tree_node_done(spif_avl_tree_node_t self)
 {
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), FALSE);
-    if (self->data != SPIF_NULL_TYPE(obj)) {
+    if (self->data != (spif_obj_t) NULL) {
         SPIF_OBJ_DEL(self->data);
-        self->data = SPIF_NULL_TYPE(obj);
+        self->data = (spif_obj_t) NULL;
     }
-    if (self->left != SPIF_NULL_TYPE(avl_tree_node)) {
+    if (self->left != (spif_avl_tree_node_t) NULL) {
         spif_avl_tree_node_done(self->left);
-        self->left = SPIF_NULL_TYPE(avl_tree_node);
+        self->left = (spif_avl_tree_node_t) NULL;
     }
-    if (self->right != SPIF_NULL_TYPE(avl_tree_node)) {
+    if (self->right != (spif_avl_tree_node_t) NULL) {
         spif_avl_tree_node_done(self->right);
-        self->right = SPIF_NULL_TYPE(avl_tree_node);
+        self->right = (spif_avl_tree_node_t) NULL;
     }
     self->balance = BALANCED;
     return TRUE;
@@ -219,7 +219,7 @@ spif_avl_tree_node_dup(spif_avl_tree_node_t self)
 {
     spif_avl_tree_node_t tmp;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), (spif_avl_tree_node_t) NULL);
     tmp = spif_avl_tree_node_new();
     tmp->data = SPIF_OBJ_DUP(self->data);
     tmp->balance = self->balance;
@@ -235,7 +235,7 @@ spif_avl_tree_node_dup(spif_avl_tree_node_t self)
 static spif_classname_t
 spif_avl_tree_node_type(spif_avl_tree_node_t self)
 {
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(self), (spif_classname_t) NULL);
     USE_VAR(self);
     return SPIF_CLASS_VAR(avl_tree_node)->classname;
 }
@@ -254,7 +254,7 @@ spif_avl_tree_new(void)
     self = SPIF_ALLOC(avl_tree);
     if (!spif_avl_tree_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(avl_tree);
+        self = (spif_avl_tree_t) NULL;
     }
     return self;
 }
@@ -266,7 +266,7 @@ spif_avl_tree_init(spif_avl_tree_t self)
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_VECTORCLASS_VAR(avl_tree)));
     self->len = 0;
-    self->root = SPIF_NULL_TYPE(avl_tree_node);
+    self->root = (spif_avl_tree_node_t) NULL;
     return TRUE;
 }
 
@@ -276,7 +276,7 @@ spif_avl_tree_done(spif_avl_tree_t self)
     ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), FALSE);
     if (self->len) {
         spif_avl_tree_node_del(self->root);
-        self->root = SPIF_NULL_TYPE(avl_tree_node);
+        self->root = (spif_avl_tree_node_t) NULL;
         self->len = 0;
     }
     return TRUE;
@@ -309,7 +309,7 @@ spif_avl_tree_show(spif_avl_tree_t self, spif_charptr_t name, spif_str_t buff, s
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n", SPIF_CAST_C(unsigned long) self->len);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n", (unsigned long) self->len);
     spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_AVL_TREE_NODE_ISNULL(self->root)) {
@@ -336,7 +336,7 @@ spif_avl_tree_dup(spif_avl_tree_t self)
 {
     spif_avl_tree_t tmp;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(avl_tree));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_avl_tree_t) NULL);
     tmp = spif_avl_tree_new();
     tmp->root = spif_avl_tree_node_dup(self->root);
     tmp->len = self->len;
@@ -346,7 +346,7 @@ spif_avl_tree_dup(spif_avl_tree_t self)
 static spif_classname_t
 spif_avl_tree_type(spif_avl_tree_t self)
 {
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -360,7 +360,7 @@ spif_avl_tree_contains(spif_avl_tree_t self, spif_obj_t obj)
 static spif_listidx_t
 spif_avl_tree_count(spif_avl_tree_t self)
 {
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(listidx));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_listidx_t) NULL);
     return self->len;
 }
 
@@ -369,8 +369,8 @@ spif_avl_tree_find(spif_avl_tree_t self, spif_obj_t obj)
 {
     spif_avl_tree_node_t current;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), (spif_obj_t) NULL);
     for (current = self->root; current; ) {
         spif_cmp_t cmp;
 
@@ -383,7 +383,7 @@ spif_avl_tree_find(spif_avl_tree_t self, spif_obj_t obj)
             current = current->left;
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_bool_t
@@ -417,7 +417,7 @@ static spif_obj_t
 spif_avl_tree_next(spif_avl_tree_t self)
 {
     USE_VAR(self);
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_obj_t
@@ -425,10 +425,10 @@ spif_avl_tree_remove(spif_avl_tree_t self, spif_obj_t item)
 {
     spif_avl_tree_node_t current, tmp;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), (spif_obj_t) NULL);
     if (SPIF_AVL_TREE_NODE_ISNULL(self->root)) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     } else if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(item, self->root->data))) {
         tmp = self->root;
         self->root = self->root->next;
@@ -438,11 +438,11 @@ spif_avl_tree_remove(spif_avl_tree_t self, spif_obj_t item)
             tmp = current->next;
             current->next = current->next->next;
         } else {
-            return SPIF_NULL_TYPE(obj);
+            return (spif_obj_t) NULL;
         }
     }
     item = tmp->data;
-    tmp->data = SPIF_NULL_TYPE(obj);
+    tmp->data = (spif_obj_t) NULL;
     spif_avl_tree_node_del(tmp);
 
     self->len--;
@@ -456,10 +456,10 @@ spif_avl_tree_to_array(spif_avl_tree_t self)
     spif_avl_tree_node_t current;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE_PTR(obj));
-    tmp = SPIF_CAST_PTR(obj) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_obj_t *) NULL);
+    tmp = (spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
     for (i = 0, current = self->root; i < self->len; current = current->next, i++) {
-        tmp[i] = SPIF_CAST(obj) SPIF_OBJ(spif_avl_tree_node_get_data(current));
+        tmp[i] = (spif_obj_t) SPIF_OBJ(spif_avl_tree_node_get_data(current));
     }
     return tmp;
 }
@@ -476,7 +476,7 @@ insert_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_uint8_t *
     int taller_subnode = 0;
     spif_cmp_t diff;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), (spif_avl_tree_node_t) NULL);
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(taller), root);
 
@@ -578,7 +578,7 @@ remove_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_avl_tree_
     int shorter_subnode = 0;
     spif_cmp_t diff;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), (spif_avl_tree_node_t) NULL);
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(removed), root);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(shorter), root);
@@ -621,7 +621,7 @@ remove_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_avl_tree_
         /* node must be in the left subtree of root. */
         if (SPIF_AVL_TREE_NODE_ISNULL(root->left)) {
             /* Nothing there.  We didn't find it. */
-            *removed = SPIF_NULL_TYPE(avl_tree_node);
+            *removed = (spif_avl_tree_node_t) NULL;
             return root;
         } else {
             /* Search the left tree. */
@@ -695,12 +695,12 @@ left_balance(spif_avl_tree_node_t root)
 {
     spif_avl_tree_node_t node, subnode;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), (spif_avl_tree_node_t) NULL);
 
     node = root->left;
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
 
-    subnode = SPIF_NULL_TYPE(avl_tree_node);
+    subnode = (spif_avl_tree_node_t) NULL;
 
     switch (node->balance) {
     case LEFT_HEAVY:
@@ -740,12 +740,12 @@ right_balance(spif_avl_tree_node_t root)
 {
     spif_avl_tree_node_t node, subnode;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), (spif_avl_tree_node_t) NULL);
 
     node = root->right;
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
 
-    subnode = SPIF_NULL_TYPE(avl_tree_node);
+    subnode = (spif_avl_tree_node_t) NULL;
 
     switch (node->balance) {
     case RIGHT_HEAVY:
@@ -785,7 +785,7 @@ rotate_left(spif_avl_tree_node_t node)
 {
     spif_avl_tree_node_t right_child;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), (spif_avl_tree_node_t) NULL);
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node->right), node);
 
     right_child = node->right;
@@ -800,7 +800,7 @@ rotate_right(spif_avl_tree_node_t node)
 {
     spif_avl_tree_node_t left_child;
 
-    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), (spif_avl_tree_node_t) NULL);
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node->left), node);
 
     left_child = node->left;

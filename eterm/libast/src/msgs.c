@@ -49,7 +49,7 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
  * some built-in functions.  This variable must be set using the
  * libast_set_program_name() function.
  */
-spif_charptr_t libast_program_name = SPIF_CAST(charptr) PACKAGE;
+spif_charptr_t libast_program_name = (spif_charptr_t) PACKAGE;
 /**
  * Program version.
  *
@@ -58,7 +58,7 @@ spif_charptr_t libast_program_name = SPIF_CAST(charptr) PACKAGE;
  * number checking and some built-in functions.  This variable must be
  * set using the libast_set_program_version() function.
  */
-spif_charptr_t libast_program_version = SPIF_CAST(charptr) VERSION;
+spif_charptr_t libast_program_version = (spif_charptr_t) VERSION;
 
 /**
  * Silence mode
@@ -83,17 +83,17 @@ void
 libast_set_program_name(const char *progname)
 {
     if (libast_program_name) {
-        if (!strcmp(SPIF_CAST_C(char *) libast_program_name, progname)) {
+        if (!strcmp((char *) libast_program_name, progname)) {
             return;
         }
-        if (strcmp(SPIF_CAST_C(char *) libast_program_name, PACKAGE)) {
+        if (strcmp((char *) libast_program_name, PACKAGE)) {
             FREE(libast_program_name);
         }
     }
     if (progname) {
-        libast_program_name = SPIF_CAST(charptr) STRDUP(progname);
+        libast_program_name = (spif_charptr_t) STRDUP(progname);
     } else {
-        libast_program_name = SPIF_CAST(charptr) PACKAGE;
+        libast_program_name = (spif_charptr_t) PACKAGE;
     }
 }
 
@@ -112,17 +112,17 @@ void
 libast_set_program_version(const char *progversion)
 {
     if (libast_program_version) {
-        if (!strcmp(SPIF_CAST_C(char *) libast_program_version, progversion)) {
+        if (!strcmp((char *) libast_program_version, progversion)) {
             return;
         }
-        if (strcmp(SPIF_CAST_C(char *) libast_program_version, VERSION)) {
+        if (strcmp((char *) libast_program_version, VERSION)) {
             FREE(libast_program_version);
         }
     }
     if (progversion) {
-        libast_program_version = SPIF_CAST(charptr) STRDUP(progversion);
+        libast_program_version = (spif_charptr_t) STRDUP(progversion);
     } else {
-        libast_program_version = SPIF_CAST(charptr) VERSION;
+        libast_program_version = (spif_charptr_t) VERSION;
     }
 }
 
@@ -163,7 +163,7 @@ libast_dprintf(const char *format, ...)
     va_list args;
     int n;
 
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(format), SPIF_CAST_C(int) -1);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(format), (int) -1);
     REQUIRE_RVAL(!silent, 0);
     REQUIRE_RVAL(libast_program_name != NULL, 0);
     va_start(args, format);

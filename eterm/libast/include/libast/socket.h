@@ -25,19 +25,19 @@
 #define _LIBAST_SOCKET_H_
 
 /* Cast an arbitrary object pointer to a socket. */
-#define SPIF_SOCKET(o)                      (SPIF_CAST(socket) (o))
+#define SPIF_SOCKET(o)                      ((spif_socket_t) (o))
 #define SPIF_SOCKET_SOCKFD(o)               (SPIF_SOCKET(o)->fd)
 #define SPIF_SOCKET_SOCKADDR(o)             (SPIF_SOCKET(o)->addr)
-#define SPIF_SOCKET_SOCKADDR_IP(o)          (SPIF_CAST(ipsockaddr) (SPIF_SOCKET(o)->addr))
+#define SPIF_SOCKET_SOCKADDR_IP(o)          ((spif_ipsockaddr_t) (SPIF_SOCKET(o)->addr))
 
 /* Check to see if a pointer references an socket. */
 #define SPIF_OBJ_IS_SOCKET(o)               (SPIF_OBJ_IS_TYPE(o, socket))
 
 /* Used for testing the NULL-ness of sockets. */
-#define SPIF_SOCKET_ISNULL(o)               (SPIF_SOCKET(o) == SPIF_NULL_TYPE(socket))
+#define SPIF_SOCKET_ISNULL(o)               (SPIF_SOCKET(o) == (spif_socket_t) NULL)
 
 /* Calls to the basic functions. */
-#define SPIF_SOCKET_NEW()                   SPIF_CAST(socket) (SPIF_CLASS(SPIF_CLASS_VAR(socket)))->(noo)()
+#define SPIF_SOCKET_NEW()                   (spif_socket_t) (SPIF_CLASS(SPIF_CLASS_VAR(socket)))->(noo)()
 #define SPIF_SOCKET_INIT(o)                 SPIF_OBJ_INIT(o)
 #define SPIF_SOCKET_DONE(o)                 SPIF_OBJ_DONE(o)
 #define SPIF_SOCKET_DEL(o)                  SPIF_OBJ_DEL(o)

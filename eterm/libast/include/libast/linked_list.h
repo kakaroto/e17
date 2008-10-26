@@ -29,10 +29,10 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_LINKED_LIST_ITEM(obj)                 (SPIF_CAST(linked_list_item) (obj))
-#define SPIF_LINKED_LIST(obj)                      (SPIF_CAST(linked_list) (obj))
+#define SPIF_LINKED_LIST_ITEM(obj)                 ((spif_linked_list_item_t) (obj))
+#define SPIF_LINKED_LIST(obj)                      ((spif_linked_list_t) (obj))
 
-#define SPIF_LINKED_LIST_ITEM_ISNULL(o)            (SPIF_LINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(linked_list_item))
+#define SPIF_LINKED_LIST_ITEM_ISNULL(o)            (SPIF_LINKED_LIST_ITEM(o) == (spif_linked_list_item_t) NULL)
 #define SPIF_OBJ_IS_LINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), linked_list_item))
 
 SPIF_DECL_OBJ(linked_list_item) {

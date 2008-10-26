@@ -29,10 +29,10 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_AVL_TREE_NODE(obj)                 (SPIF_CAST(avl_tree_node) (obj))
-#define SPIF_AVL_TREE(obj)                      (SPIF_CAST(avl_tree) (obj))
+#define SPIF_AVL_TREE_NODE(obj)                 ((spif_avl_tree_node_t) (obj))
+#define SPIF_AVL_TREE(obj)                      ((spif_avl_tree_t) (obj))
 
-#define SPIF_AVL_TREE_NODE_ISNULL(o)            (SPIF_AVL_TREE_NODE(o) == SPIF_NULL_TYPE(avl_tree_node))
+#define SPIF_AVL_TREE_NODE_ISNULL(o)            (SPIF_AVL_TREE_NODE(o) == (spif_avl_tree_node_t) NULL)
 #define SPIF_OBJ_IS_AVL_TREE_NODE(o)            (SPIF_OBJ_IS_TYPE((o), avl_tree_node))
 
 SPIF_DECL_OBJ(avl_tree_node) {

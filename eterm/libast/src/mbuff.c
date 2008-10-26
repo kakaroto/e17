@@ -71,7 +71,7 @@ static SPIF_CONST_TYPE(mbuffclass) mb_class = {
     (spif_func_t) spif_mbuff_subbuff_to_ptr,
     (spif_func_t) spif_mbuff_trim
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(mbuff) = SPIF_CAST(class) &mb_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(mbuff) = (spif_class_t) &mb_class;
 SPIF_TYPE(mbuffclass) SPIF_MBUFFCLASS_VAR(mbuff) = &mb_class;
 /* *INDENT-ON* */
 
@@ -85,7 +85,7 @@ spif_mbuff_new(void)
     self = SPIF_ALLOC(mbuff);
     if (!spif_mbuff_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(mbuff);
+        self = (spif_mbuff_t) NULL;
     }
     return self;
 }
@@ -98,7 +98,7 @@ spif_mbuff_new_from_ptr(spif_byteptr_t old, spif_memidx_t len)
     self = SPIF_ALLOC(mbuff);
     if (!spif_mbuff_init_from_ptr(self, old, len)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(mbuff);
+        self = (spif_mbuff_t) NULL;
     }
     return self;
 }
@@ -111,7 +111,7 @@ spif_mbuff_new_from_buff(spif_byteptr_t buff, spif_memidx_t len, spif_memidx_t s
     self = SPIF_ALLOC(mbuff);
     if (!spif_mbuff_init_from_buff(self, buff, len, size)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(mbuff);
+        self = (spif_mbuff_t) NULL;
     }
     return self;
 }
@@ -124,7 +124,7 @@ spif_mbuff_new_from_fp(FILE * fp)
     self = SPIF_ALLOC(mbuff);
     if (!spif_mbuff_init_from_fp(self, fp)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(mbuff);
+        self = (spif_mbuff_t) NULL;
     }
     return self;
 }
@@ -137,7 +137,7 @@ spif_mbuff_new_from_fd(int fd)
     self = SPIF_ALLOC(mbuff);
     if (!spif_mbuff_init_from_fd(self, fd)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(mbuff);
+        self = (spif_mbuff_t) NULL;
     }
     return self;
 }
@@ -148,7 +148,7 @@ spif_mbuff_init(spif_mbuff_t self)
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
-    self->buff = SPIF_NULL_TYPE(byteptr);
+    self->buff = (spif_byteptr_t) NULL;
     self->len = 0;
     self->size = 0;
     return TRUE;
@@ -158,11 +158,11 @@ spif_bool_t
 spif_mbuff_init_from_ptr(spif_mbuff_t self, spif_byteptr_t old, spif_memidx_t len)
 {
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
-    REQUIRE_RVAL((old != SPIF_NULL_TYPE(byteptr)), spif_mbuff_init(self));
+    REQUIRE_RVAL((old != (spif_byteptr_t) NULL), spif_mbuff_init(self));
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
     self->len = self->size = len;
-    self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+    self->buff = (spif_byteptr_t) MALLOC(self->size);
     memcpy(self->buff, old, self->len);
     return TRUE;
 }
@@ -173,14 +173,14 @@ spif_mbuff_init_from_buff(spif_mbuff_t self, spif_byteptr_t buff, spif_memidx_t 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
-    if (buff != SPIF_NULL_TYPE(byteptr)) {
+    if (buff != (spif_byteptr_t) NULL) {
         self->len = len;
     } else {
         self->len = 0;
     }
     self->size = MAX(size, self->len);
-    self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
-    if (buff != SPIF_NULL_TYPE(byteptr)) {
+    self->buff = (spif_byteptr_t) MALLOC(self->size);
+    if (buff != (spif_byteptr_t) NULL) {
         memcpy(self->buff, buff, self->len);
     }
     return TRUE;
@@ -193,7 +193,7 @@ spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
     spif_memidx_t file_size;
 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
-    ASSERT_RVAL((fp != SPIF_NULL_TYPE_C(FILE *)), FALSE);
+    ASSERT_RVAL((fp != (FILE *) NULL), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
 
@@ -206,7 +206,7 @@ spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
         D_OBJ(("Unable to seek to EOF -- %s.\n", strerror(errno)));
         self->size = buff_inc;
         self->len = 0;
-        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+        self->buff = (spif_byteptr_t) MALLOC(self->size);
 
         for (p = self->buff; (cnt = fread(p, 1, buff_inc, fp)) > 0; p += buff_inc) {
             self->len += cnt;
@@ -217,12 +217,12 @@ spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
                 break;
             } else {
                 self->size += buff_inc;
-                self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+                self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
             }
         }
         self->size = self->len;
         if (self->size) {
-            self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+            self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         } else {
             FREE(self->buff);
         }
@@ -235,7 +235,7 @@ spif_mbuff_init_from_fp(spif_mbuff_t self, FILE *fp)
             return FALSE;
         }
         self->len = self->size = file_size;
-        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+        self->buff = (spif_byteptr_t) MALLOC(self->size);
 
         if (fread(self->buff, file_size, 1, fp) < 1) {
             FREE(self->buff);
@@ -257,8 +257,8 @@ spif_mbuff_init_from_fd(spif_mbuff_t self, int fd)
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MBUFFCLASS_VAR(mbuff)));
 
-    file_pos = lseek(fd, SPIF_CAST_C(off_t) 0, SEEK_CUR);
-    file_size = SPIF_CAST(memidx) lseek(fd, SPIF_CAST_C(off_t) 0, SEEK_END);
+    file_pos = lseek(fd, (off_t) 0, SEEK_CUR);
+    file_size = (spif_memidx_t) lseek(fd, (off_t) 0, SEEK_END);
     lseek(fd, file_pos, SEEK_SET);
     if (file_size < 0) {
         spif_byteptr_t p;
@@ -267,7 +267,7 @@ spif_mbuff_init_from_fd(spif_mbuff_t self, int fd)
         D_OBJ(("Unable to seek to EOF -- %s.\n", strerror(errno)));
         self->size = buff_inc;
         self->len = 0;
-        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+        self->buff = (spif_byteptr_t) MALLOC(self->size);
 
         for (p = self->buff; (cnt = read(fd, p, buff_inc)) > 0; p += buff_inc) {
             self->len += cnt;
@@ -275,18 +275,18 @@ spif_mbuff_init_from_fd(spif_mbuff_t self, int fd)
                 break;
             } else {
                 self->size += buff_inc;
-                self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+                self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
             }
         }
         self->size = self->len;
         if (self->size) {
-            self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+            self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         } else {
             FREE(self->buff);
         }
     } else {
         self->len = self->size = file_size;
-        self->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+        self->buff = (spif_byteptr_t) MALLOC(self->size);
 
         if (read(fd, p, file_size) < 1) {
             FREE(self->buff);
@@ -304,7 +304,7 @@ spif_mbuff_done(spif_mbuff_t self)
         FREE(self->buff);
         self->len = 0;
         self->size = 0;
-        self->buff = SPIF_NULL_TYPE(byteptr);
+        self->buff = (spif_byteptr_t) NULL;
     }
     return TRUE;
 }
@@ -330,9 +330,9 @@ spif_mbuff_show(spif_mbuff_t self, spif_byteptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_mbuff_t) %s:  %10p (length %lu, size %lu) {\n",
-             name, SPIF_CAST(ptr) self, SPIF_CAST(ulong) self->len, SPIF_CAST(ulong) self->size);
+             name, (spif_ptr_t) self, (spif_ulong_t) self->len, (spif_ulong_t) self->size);
     if (SPIF_MBUFF_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -343,8 +343,8 @@ spif_mbuff_show(spif_mbuff_t self, spif_byteptr_t name, spif_str_t buff, size_t 
     for (j = 0; j < self->len; j += 8) {
         spif_memidx_t k, l, len;
 
-        snprintf(SPIF_CHARPTR_C(tmp) + indent + 2, sizeof(tmp) - indent - 2, "0x%08lx    ", SPIF_CAST(long) j);
-        len = strlen(SPIF_CHARPTR_C(tmp));
+        snprintf((char *) tmp + indent + 2, sizeof(tmp) - indent - 2, "0x%08lx    ", (spif_long_t) j);
+        len = strlen((char *) tmp);
         if ((sizeof(tmp) - indent - 2) > 46) {
             spif_char_t buffr[9];
 
@@ -352,19 +352,19 @@ spif_mbuff_show(spif_mbuff_t self, spif_byteptr_t name, spif_str_t buff, size_t 
             memcpy(buffr, self->buff + j, l);
             memset(buffr + l, 0, 9 - l);
             for (k = 0; k < l; k++) {
-                sprintf(SPIF_CHARPTR_C(tmp) + 14 + (k * 3), "%02x ", self->buff[j + k]);
+                sprintf((char *) tmp + 14 + (k * 3), "%02x ", self->buff[j + k]);
             }
             for (; k < 8; k++) {
-                strcat(SPIF_CHARPTR_C(tmp) + 14, "   ");
+                strcat((char *) tmp + 14, "   ");
             }
-            sprintf(SPIF_CHARPTR_C(tmp) + 38, "%-8s\n", spiftool_safe_str(SPIF_CAST(charptr) (buffr), l));
+            sprintf((char *) tmp + 38, "%-8s\n", spiftool_safe_str((spif_charptr_t) (buffr), l));
         } else {
-            snprintf(SPIF_CHARPTR_C(tmp) + indent + 2, sizeof(tmp) - indent - 2, "!X!");
+            snprintf((char *) tmp + indent + 2, sizeof(tmp) - indent - 2, "!X!");
         }
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "}\n");
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -380,10 +380,10 @@ spif_mbuff_dup(spif_mbuff_t self)
 {
     spif_mbuff_t tmp;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), SPIF_NULL_TYPE(mbuff));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (spif_mbuff_t) NULL);
     tmp = SPIF_ALLOC(mbuff);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(mbuff));
-    tmp->buff = SPIF_CAST(byteptr) MALLOC(self->size);
+    tmp->buff = (spif_byteptr_t) MALLOC(self->size);
     memcpy(tmp->buff, self->buff, self->size);
     tmp->len = self->len;
     tmp->size = self->size;
@@ -393,7 +393,7 @@ spif_mbuff_dup(spif_mbuff_t self)
 spif_classname_t
 spif_mbuff_type(spif_mbuff_t self)
 {
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (spif_classname_t) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -404,7 +404,7 @@ spif_mbuff_append(spif_mbuff_t self, spif_mbuff_t other)
     REQUIRE_RVAL(!SPIF_MBUFF_ISNULL(other), FALSE);
     if (other->size && other->len) {
         self->size += other->size;
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         memcpy(self->buff + self->len, SPIF_MBUFF_BUFF(other), other->len);
         self->len += other->len;
     }
@@ -415,10 +415,10 @@ spif_bool_t
 spif_mbuff_append_from_ptr(spif_mbuff_t self, spif_byteptr_t other, spif_memidx_t len)
 {
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
-    REQUIRE_RVAL((other != SPIF_NULL_TYPE(byteptr)), FALSE);
+    REQUIRE_RVAL((other != (spif_byteptr_t) NULL), FALSE);
     if (len) {
         self->size += len;
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         memcpy(self->buff + self->len, other, len);
         self->len += len;
     }
@@ -458,13 +458,13 @@ spif_mbuff_find(spif_mbuff_t self, spif_mbuff_t other)
 {
     spif_byteptr_t tmp;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
-    REQUIRE_RVAL(!SPIF_MBUFF_ISNULL(other), (SPIF_CAST(memidx) -1));
-    tmp = SPIF_CAST(byteptr) memmem(SPIF_MBUFF_BUFF(self), self->len, SPIF_MBUFF_BUFF(other), other->len);
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), ((spif_memidx_t) -1));
+    REQUIRE_RVAL(!SPIF_MBUFF_ISNULL(other), ((spif_memidx_t) -1));
+    tmp = (spif_byteptr_t) memmem(SPIF_MBUFF_BUFF(self), self->len, SPIF_MBUFF_BUFF(other), other->len);
     if (tmp) {
-        return SPIF_CAST(memidx) (SPIF_CAST(long) tmp - SPIF_CAST(long) (SPIF_MBUFF_BUFF(self)));
+        return (spif_memidx_t) ((spif_long_t) tmp - (spif_long_t) (SPIF_MBUFF_BUFF(self)));
     } else {
-        return SPIF_CAST(memidx) (self->len);
+        return (spif_memidx_t) (self->len);
     }
 }
 
@@ -473,13 +473,13 @@ spif_mbuff_find_from_ptr(spif_mbuff_t self, spif_byteptr_t other, spif_memidx_t 
 {
     spif_byteptr_t tmp;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
-    REQUIRE_RVAL((other != SPIF_NULL_TYPE(byteptr)), (SPIF_CAST(memidx) -1));
-    tmp = SPIF_CAST(byteptr) memmem(SPIF_MBUFF_BUFF(self), self->len, other, len);
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), ((spif_memidx_t) -1));
+    REQUIRE_RVAL((other != (spif_byteptr_t) NULL), ((spif_memidx_t) -1));
+    tmp = (spif_byteptr_t) memmem(SPIF_MBUFF_BUFF(self), self->len, other, len);
     if (tmp) {
-        return SPIF_CAST(memidx) (SPIF_CAST(long) tmp - SPIF_CAST(long) (SPIF_MBUFF_BUFF(self)));
+        return (spif_memidx_t) ((spif_long_t) tmp - (spif_long_t) (SPIF_MBUFF_BUFF(self)));
     } else {
-        return SPIF_CAST(memidx) (self->len);
+        return (spif_memidx_t) (self->len);
     }
 }
 
@@ -489,9 +489,9 @@ spif_mbuff_index(spif_mbuff_t self, spif_uint8_t c)
     spif_byteptr_t tmp;
     spif_memidx_t i;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), ((spif_memidx_t) -1));
     for (tmp = self->buff, i = 0; ((int) *tmp != (int) (c)) && (i < self->len); i++, tmp++);
-    return SPIF_CAST(memidx) (SPIF_CAST(long) tmp - SPIF_CAST(long) self->buff);
+    return (spif_memidx_t) ((spif_long_t) tmp - (spif_long_t) self->buff);
 }
 
 spif_cmp_t
@@ -520,7 +520,7 @@ spif_mbuff_prepend(spif_mbuff_t self, spif_mbuff_t other)
     REQUIRE_RVAL(!SPIF_MBUFF_ISNULL(other), FALSE);
     if (other->size && other->len) {
         self->size += other->size;
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         memmove(self->buff + other->len, self->buff, self->len);
         memcpy(self->buff, SPIF_MBUFF_BUFF(other), other->len);
         self->len += other->len;
@@ -532,10 +532,10 @@ spif_bool_t
 spif_mbuff_prepend_from_ptr(spif_mbuff_t self, spif_byteptr_t other, spif_memidx_t len)
 {
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
-    REQUIRE_RVAL((other != SPIF_NULL_TYPE(byteptr)), FALSE);
+    REQUIRE_RVAL((other != (spif_byteptr_t) NULL), FALSE);
     if (len) {
         self->size += len;
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
         memmove(self->buff + len, self->buff, self->len);
         memcpy(self->buff, other, len);
         self->len += len;
@@ -550,7 +550,7 @@ spif_mbuff_reverse(spif_mbuff_t self)
     int i, j;
 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
-    REQUIRE_RVAL(self->buff != SPIF_NULL_TYPE(byteptr), FALSE);
+    REQUIRE_RVAL(self->buff != (spif_byteptr_t) NULL, FALSE);
 
     for (j = 0, i = self->len - 1; i > j; i--, j++) {
         SWAP(tmp[j], tmp[i]);
@@ -563,13 +563,13 @@ spif_mbuff_rindex(spif_mbuff_t self, spif_uint8_t c)
 {
     spif_byteptr_t tmp;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), ((spif_memidx_t) -1));
     for (tmp = self->buff + self->len - 1; (*tmp != c) && (tmp >= self->buff); tmp--);
 
     if ((tmp == self->buff) && (*tmp != c)) {
-        return SPIF_CAST(memidx) (self->len);
+        return (spif_memidx_t) (self->len);
     } else {
-        return SPIF_CAST(memidx) (SPIF_CAST(long) tmp - SPIF_CAST(long) self->buff);
+        return (spif_memidx_t) ((spif_long_t) tmp - (spif_long_t) self->buff);
     }
 }
 
@@ -592,7 +592,7 @@ spif_mbuff_splice(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t cnt, spif_
     REQUIRE_RVAL(cnt <= (self->len - idx), FALSE);
 
     newsize = self->len + ((SPIF_MBUFF_ISNULL(other)) ? (0) : (other->len)) - cnt;
-    ptmp = tmp = SPIF_CAST(byteptr) MALLOC(newsize);
+    ptmp = tmp = (spif_byteptr_t) MALLOC(newsize);
     if (idx > 0) {
         memcpy(tmp, self->buff, idx);
         ptmp += idx;
@@ -603,7 +603,7 @@ spif_mbuff_splice(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t cnt, spif_
     }
     memcpy(ptmp, self->buff + idx + cnt, self->len - idx - cnt + 1);
     if (self->size < newsize) {
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, newsize);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, newsize);
         self->size = newsize;
     }
     self->len = newsize;
@@ -634,7 +634,7 @@ spif_mbuff_splice_from_ptr(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t c
     REQUIRE_RVAL(cnt <= (self->len - idx), FALSE);
 
     newsize = self->len + len - cnt;
-    ptmp = tmp = SPIF_CAST(byteptr) MALLOC(newsize);
+    ptmp = tmp = (spif_byteptr_t) MALLOC(newsize);
     if (idx > 0) {
         memcpy(tmp, self->buff, idx);
         ptmp += idx;
@@ -645,7 +645,7 @@ spif_mbuff_splice_from_ptr(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t c
     }
     memcpy(ptmp, self->buff + idx + cnt, self->len - idx - cnt);
     if (self->size < newsize) {
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, newsize);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, newsize);
         self->size = newsize;
     }
     self->len = newsize;
@@ -661,7 +661,7 @@ spif_mbuff_sprintf(spif_mbuff_t self, spif_charptr_t format, ...)
 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), FALSE);
     va_start(ap, format);
-    if (self->buff != SPIF_NULL_TYPE(byteptr)) {
+    if (self->buff != (spif_byteptr_t) NULL) {
         spif_mbuff_done(self);
     }
     if (*format == 0) {
@@ -678,7 +678,7 @@ spif_mbuff_sprintf(spif_mbuff_t self, spif_charptr_t format, ...)
         } else {
             c++;
             self->len = self->size = c;
-            self->buff = SPIF_CAST(charptr) MALLOC(self->size);
+            self->buff = (spif_charptr_t) MALLOC(self->size);
             c = vsnprintf(self->buff, self->size, format, ap);
         }
         return ((c >= 0) ? (TRUE) : (FALSE));
@@ -689,16 +689,16 @@ spif_mbuff_sprintf(spif_mbuff_t self, spif_charptr_t format, ...)
 spif_mbuff_t
 spif_mbuff_subbuff(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t cnt)
 {
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), SPIF_NULL_TYPE(mbuff));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (spif_mbuff_t) NULL);
     if (idx < 0) {
         idx = self->len + idx;
     }
-    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(mbuff));
-    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(mbuff));
+    REQUIRE_RVAL(idx >= 0, (spif_mbuff_t) NULL);
+    REQUIRE_RVAL(idx < self->len, (spif_mbuff_t) NULL);
     if (cnt <= 0) {
         cnt = self->len - idx + cnt;
     }
-    REQUIRE_RVAL(cnt >= 0, SPIF_NULL_TYPE(mbuff));
+    REQUIRE_RVAL(cnt >= 0, (spif_mbuff_t) NULL);
     UPPER_BOUND(cnt, self->len - idx);
     return spif_mbuff_new_from_buff(self->buff + idx, cnt, cnt);
 }
@@ -708,19 +708,19 @@ spif_mbuff_subbuff_to_ptr(spif_mbuff_t self, spif_memidx_t idx, spif_memidx_t cn
 {
     spif_byteptr_t newmbuff;
 
-    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), SPIF_NULL_TYPE(byteptr));
+    ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (spif_byteptr_t) NULL);
     if (idx < 0) {
         idx = self->len + idx;
     }
-    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(byteptr));
-    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(byteptr));
+    REQUIRE_RVAL(idx >= 0, (spif_byteptr_t) NULL);
+    REQUIRE_RVAL(idx < self->len, (spif_byteptr_t) NULL);
     if (cnt <= 0) {
         cnt = self->len - idx + cnt;
     }
-    REQUIRE_RVAL(cnt >= 0, SPIF_NULL_TYPE(byteptr));
+    REQUIRE_RVAL(cnt >= 0, (spif_byteptr_t) NULL);
     UPPER_BOUND(cnt, self->len - idx);
 
-    newmbuff = SPIF_CAST(byteptr) MALLOC(cnt + 1);
+    newmbuff = (spif_byteptr_t) MALLOC(cnt + 1);
     memcpy(newmbuff, SPIF_MBUFF_BUFF(self) + idx, cnt);
     newmbuff[cnt] = 0;
     return newmbuff;
@@ -745,7 +745,7 @@ spif_mbuff_trim(spif_mbuff_t self)
     }
     if (self->size != self->len) {
         self->size = self->len;
-        self->buff = SPIF_CAST(byteptr) REALLOC(self->buff, self->size);
+        self->buff = (spif_byteptr_t) REALLOC(self->buff, self->size);
     }
     return TRUE;
 }

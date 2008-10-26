@@ -29,14 +29,14 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_VECTOR(o)                                    (SPIF_CAST(vector) (o))
-#define SPIF_VECTOR_CLASS(o)                              (SPIF_CAST(vectorclass) SPIF_OBJ_CLASS(o))
+#define SPIF_VECTOR(o)                                    ((spif_vector_t) (o))
+#define SPIF_VECTOR_CLASS(o)                              ((spif_vectorclass_t) SPIF_OBJ_CLASS(o))
 
 /* Name of class variable associated with vector interface */
 #define SPIF_VECTORCLASS_VAR(type)                        spif_ ## type ## _vectorclass
 
 /* Check if a vector is NULL */
-#define SPIF_VECTOR_ISNULL(o)                             (SPIF_VECTOR(o) == SPIF_NULL_TYPE(vector))
+#define SPIF_VECTOR_ISNULL(o)                             (SPIF_VECTOR(o) == (spif_vector_t) NULL)
 
 /* Check if an object is a vector */
 #define SPIF_OBJ_IS_VECTOR(o)                             SPIF_OBJ_IS_TYPE(o, vector)
@@ -54,13 +54,13 @@
 #define SPIF_VECTOR_DUP(o)                                SPIF_OBJ_DUP(o)
 #define SPIF_VECTOR_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_VECTOR_CONTAINS(o, item)                     SPIF_CAST(bool) ((SPIF_VECTOR_CALL_METHOD((o), contains))(o, item))
-#define SPIF_VECTOR_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_VECTOR_CALL_METHOD((o), count))(o))
-#define SPIF_VECTOR_FIND(o, item)                         SPIF_CAST(obj) ((SPIF_VECTOR_CALL_METHOD((o), find))(o, item))
-#define SPIF_VECTOR_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_VECTOR_CALL_METHOD((o), insert))(o, item))
-#define SPIF_VECTOR_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_VECTOR_CALL_METHOD((o), iterator))(o))
-#define SPIF_VECTOR_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_VECTOR_CALL_METHOD((o), remove))(o, item))
-#define SPIF_VECTOR_TO_ARRAY(o)                           SPIF_CAST_PTR(obj) ((SPIF_VECTOR_CALL_METHOD((o), to_array))(o))
+#define SPIF_VECTOR_CONTAINS(o, item)                     (spif_bool_t) ((SPIF_VECTOR_CALL_METHOD((o), contains))(o, item))
+#define SPIF_VECTOR_COUNT(o)                              (size_t) ((SPIF_VECTOR_CALL_METHOD((o), count))(o))
+#define SPIF_VECTOR_FIND(o, item)                         (spif_obj_t) ((SPIF_VECTOR_CALL_METHOD((o), find))(o, item))
+#define SPIF_VECTOR_INSERT(o, item)                       (spif_bool_t) ((SPIF_VECTOR_CALL_METHOD((o), insert))(o, item))
+#define SPIF_VECTOR_ITERATOR(o)                           (spif_iterator_t) ((SPIF_VECTOR_CALL_METHOD((o), iterator))(o))
+#define SPIF_VECTOR_REMOVE(o, item)                       (spif_obj_t) ((SPIF_VECTOR_CALL_METHOD((o), remove))(o, item))
+#define SPIF_VECTOR_TO_ARRAY(o)                           (spif_obj_t *) ((SPIF_VECTOR_CALL_METHOD((o), to_array))(o))
 
 typedef spif_obj_t spif_vector_t;
 

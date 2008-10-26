@@ -49,7 +49,7 @@ static SPIF_CONST_TYPE(moduleclass) s_class = {
     (spif_func_t) spif_module_run,
     (spif_func_t) spif_module_unload,
 };
-SPIF_TYPE(class) SPIF_CLASS_VAR(module) = SPIF_CAST(class) &s_class;
+SPIF_TYPE(class) SPIF_CLASS_VAR(module) = (spif_class_t) &s_class;
 SPIF_TYPE(moduleclass) SPIF_MODULECLASS_VAR(module) = &s_class;
 /* *INDENT-ON* */
 
@@ -63,7 +63,7 @@ spif_module_new(void)
     self = SPIF_ALLOC(module);
     if (!spif_module_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(module);
+        self = (spif_module_t) NULL;
     }
     return self;
 }
@@ -74,9 +74,9 @@ spif_module_init(spif_module_t self)
     ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_MODULECLASS_VAR(module)));
-    self->name = SPIF_NULL_TYPE(str);
-    self->path = SPIF_NULL_TYPE(str);
-    self->module_handle = SPIF_NULL_TYPE(ptr);
+    self->name = (spif_str_t) NULL;
+    self->path = (spif_str_t) NULL;
+    self->module_handle = (spif_ptr_t) NULL;
     self->main_handle = dlopen(NULL, RTLD_LAZY);
     return TRUE;
 }
@@ -89,15 +89,15 @@ spif_module_done(spif_module_t self)
     ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), FALSE);
     if (self->module_handle) {
         ret = spif_module_unload(self);
-        self->module_handle = SPIF_NULL_TYPE(ptr);
+        self->module_handle = (spif_ptr_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->name)) {
         spif_str_del(self->name);
-        self->name = SPIF_NULL_TYPE(str);
+        self->name = (spif_str_t) NULL;
     }
     if (!SPIF_STR_ISNULL(self->path)) {
         spif_str_del(self->path);
-        self->path = SPIF_NULL_TYPE(str);
+        self->path = (spif_str_t) NULL;
     }
     return ret;
 }
@@ -123,9 +123,9 @@ spif_module_show(spif_module_t self, spif_charptr_t name, spif_str_t buff, size_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_module_t) %s:  %10p { \"",
-             name, SPIF_CAST(ptr) self);
+             name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -138,13 +138,13 @@ spif_module_show(spif_module_t self, spif_charptr_t name, spif_str_t buff, size_
     }
     buff = spif_str_show(self->name, SPIF_CHARPTR("name"), buff, indent);
     buff = spif_str_show(self->path, SPIF_CHARPTR("path"), buff, indent);
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_ptr_t) module_handle:  0x%p\n", self->module_handle);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(spif_ptr_t) module_handle:  0x%p\n", self->module_handle);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_ptr_t) main_handle:  0x%p\n", self->main_handle);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "(spif_ptr_t) main_handle:  0x%p\n", self->main_handle);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
+    snprintf((char *) tmp, sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -171,7 +171,7 @@ spif_module_dup(spif_module_t self)
 {
     spif_module_t tmp;
 
-    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), SPIF_NULL_TYPE(module));
+    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), (spif_module_t) NULL);
     tmp = SPIF_ALLOC(module);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(module));
     tmp->name = spif_str_dup(self->name);
@@ -182,7 +182,7 @@ spif_module_dup(spif_module_t self)
 spif_classname_t
 spif_module_type(spif_module_t self)
 {
-    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), (spif_classname_t) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -192,14 +192,14 @@ spif_module_call(spif_module_t self, spif_charptr_t fname, spif_ptr_t data)
     spif_func_t fp;
     spif_charptr_t err;
 
-    fp = SPIF_CAST(func) spif_module_getsym(self, fname);
+    fp = (spif_func_t) spif_module_getsym(self, fname);
     if (SPIF_PTR_ISNULL(err)) {
         /* No error.  Proceed. */
         return (fp)(data);
     } else {
         libast_print_warning("Unable to call function %s() from module \"%s\" -- %s\n", fname, SPIF_STR_STR(self->name), err);
     }
-    return SPIF_NULL_TYPE(ptr);
+    return (spif_ptr_t) NULL;
 }
 
 spif_ptr_t
@@ -208,25 +208,25 @@ spif_module_getsym(spif_module_t self, spif_charptr_t sym)
     spif_ptr_t psym;
     spif_charptr_t err;
 
-    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), SPIF_NULL_TYPE(ptr));
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(sym), SPIF_NULL_TYPE(ptr));
-    REQUIRE_RVAL(!SPIF_PTR_ISNULL(self->main_handle), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(!SPIF_MODULE_ISNULL(self), (spif_ptr_t) NULL);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(sym), (spif_ptr_t) NULL);
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(self->main_handle), (spif_ptr_t) NULL);
     dlerror();
-    psym = SPIF_CAST(ptr) dlsym(self->module_handle, (const char *) sym);
-    err = SPIF_CAST(charptr) dlerror();
+    psym = (spif_ptr_t) dlsym(self->module_handle, (const char *) sym);
+    err = (spif_charptr_t) dlerror();
     if (SPIF_PTR_ISNULL(err)) {
         /* No error.  Proceed. */
         return psym;
     } else {
-        psym = SPIF_CAST(ptr) dlsym(self->main_handle, (const char *) sym);
-        err = SPIF_CAST(charptr) dlerror();
+        psym = (spif_ptr_t) dlsym(self->main_handle, (const char *) sym);
+        err = (spif_charptr_t) dlerror();
         if (SPIF_PTR_ISNULL(err)) {
             /* No error.  Proceed. */
             return psym;
         } else {
 #ifdef RTLD_DEFAULT
-            psym = SPIF_CAST(ptr) dlsym(RTLD_DEFAULT, (const char *) sym);
-            err = SPIF_CAST(charptr) dlerror();
+            psym = (spif_ptr_t) dlsym(RTLD_DEFAULT, (const char *) sym);
+            err = (spif_charptr_t) dlerror();
             if (SPIF_PTR_ISNULL(err)) {
                 /* No error.  Proceed. */
                 return psym;
@@ -236,7 +236,7 @@ spif_module_getsym(spif_module_t self, spif_charptr_t sym)
                                      SPIF_STR_STR(self->name), err);
         }
     }
-    return SPIF_NULL_TYPE(ptr);
+    return (spif_ptr_t) NULL;
 }
 
 spif_bool_t
@@ -297,7 +297,7 @@ spif_module_unload(spif_module_t self)
         libast_print_warning("Unable to dlclose() \"%s\" -- %s\n", SPIF_STR_STR(self->path), dlerror());
         return FALSE;
     }
-    self->module_handle = SPIF_NULL_TYPE(ptr);
+    self->module_handle = (spif_ptr_t) NULL;
     return TRUE;
 }
 

@@ -189,7 +189,7 @@ spif_array_list_new(void)
     self = SPIF_ALLOC(array);
     if (!spif_array_list_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(array);
+        self = (spif_array_t) NULL;
     }
     return self;
 }
@@ -204,7 +204,7 @@ spif_array_list_init(spif_array_t self)
         return FALSE;
     }
     self->len = 0;
-    self->items = SPIF_NULL_TYPE_C(spif_obj_t *);
+    self->items = (spif_obj_t *) NULL;
     return TRUE;
 }
 
@@ -216,7 +216,7 @@ spif_array_vector_new(void)
     self = SPIF_ALLOC(array);
     if (!spif_array_vector_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(array);
+        self = (spif_array_t) NULL;
     }
     return self;
 }
@@ -229,7 +229,7 @@ spif_array_map_new(void)
     self = SPIF_ALLOC(array);
     if (!spif_array_map_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(array);
+        self = (spif_array_t) NULL;
     }
     return self;
 }
@@ -244,7 +244,7 @@ spif_array_vector_init(spif_array_t self)
         return FALSE;
     }
     self->len = 0;
-    self->items = SPIF_NULL_TYPE_C(spif_obj_t *);
+    self->items = (spif_obj_t *) NULL;
     return TRUE;
 }
 
@@ -258,7 +258,7 @@ spif_array_map_init(spif_array_t self)
         return FALSE;
     }
     self->len = 0;
-    self->items = SPIF_NULL_TYPE_C(spif_obj_t *);
+    self->items = (spif_obj_t *) NULL;
     return TRUE;
 }
 
@@ -301,20 +301,20 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
-             "(spif_array_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_array_t) %s:  %10p {\n", name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
-        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) tmp);
+        spif_str_append_from_ptr(buff, (spif_charptr_t) tmp);
     }
 
     if (SPIF_ARRAY_ISNULL(self->items)) {
-        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE_PTR(obj));
+        spif_str_append_from_ptr(buff, (spif_charptr_t) SPIF_NULLSTR_TYPE_PTR(obj));
     } else {
         for (i = 0; i < self->len; i++) {
             spif_obj_t o = self->items[i];
-            sprintf(SPIF_CAST_C(char *) tmp, "item %d", i);
+            sprintf((char *) tmp, "item %d", i);
             if (SPIF_OBJ_ISNULL(o)) {
                 char tmp2[4096];
 
@@ -326,8 +326,8 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
-    spif_str_append_from_ptr(buff, SPIF_CAST(charptr) tmp);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, (spif_charptr_t) tmp);
     return buff;
 }
 
@@ -361,14 +361,14 @@ spif_array_list_dup(spif_array_t self)
     spif_array_t tmp;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(array));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_array_t) NULL);
 
     tmp = spif_array_list_new();
-    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), SPIF_NULL_TYPE(array));
+    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), (spif_array_t) NULL);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(array));
-    tmp->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
+    tmp->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
     for (i = 0; i < self->len; i++) {
-        tmp->items[i] = SPIF_CAST(obj) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
+        tmp->items[i] = (spif_obj_t) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
     }
     return tmp;
 }
@@ -379,14 +379,14 @@ spif_array_vector_dup(spif_array_t self)
     spif_array_t tmp;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(array));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_array_t) NULL);
 
     tmp = spif_array_vector_new();
-    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), SPIF_NULL_TYPE(array));
+    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), (spif_array_t) NULL);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(array));
-    tmp->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
+    tmp->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
     for (i = 0; i < self->len; i++) {
-        tmp->items[i] = SPIF_CAST(obj) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
+        tmp->items[i] = (spif_obj_t) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
     }
     return tmp;
 }
@@ -397,14 +397,14 @@ spif_array_map_dup(spif_array_t self)
     spif_array_t tmp;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(array));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_array_t) NULL);
 
     tmp = spif_array_map_new();
-    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), SPIF_NULL_TYPE(array));
+    REQUIRE_RVAL(!SPIF_ARRAY_ISNULL(tmp), (spif_array_t) NULL);
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(array));
-    tmp->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
+    tmp->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
     for (i = 0; i < self->len; i++) {
-        tmp->items[i] = SPIF_CAST(obj) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
+        tmp->items[i] = (spif_obj_t) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
     }
     return tmp;
 }
@@ -412,7 +412,7 @@ spif_array_map_dup(spif_array_t self)
 static spif_classname_t
 spif_array_type(spif_array_t self)
 {
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -422,9 +422,9 @@ spif_array_append(spif_array_t self, spif_obj_t obj)
     ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), FALSE);
     self->len++;
     if (self->items) {
-        self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
+        self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
     } else {
-        self->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
+        self->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
     }
     self->items[self->len - 1] = obj;
     return TRUE;
@@ -447,7 +447,7 @@ spif_array_vector_contains(spif_array_t self, spif_obj_t obj)
 static spif_listidx_t
 spif_array_count(spif_array_t self)
 {
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(listidx));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_listidx_t) NULL);
     return self->len;
 }
 
@@ -456,8 +456,8 @@ spif_array_list_find(spif_array_t self, spif_obj_t obj)
 {
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), (spif_obj_t) NULL);
     for (i = 0; i < self->len; i++) {
         if (SPIF_OBJ_ISNULL(self->items[i])) {
             continue;
@@ -466,7 +466,7 @@ spif_array_list_find(spif_array_t self, spif_obj_t obj)
             return self->items[i];
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_obj_t
@@ -475,9 +475,9 @@ spif_array_vector_find(spif_array_t self, spif_obj_t obj)
     spif_listidx_t start, end, mid;
     spif_cmp_t diff;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(self->len > 0, SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), (spif_obj_t) NULL);
+    REQUIRE_RVAL(self->len > 0, (spif_obj_t) NULL);
 
     for (start = 0, end = self->len - 1; start <= end; ) {
         mid = (end - start) / 2 + start;
@@ -488,22 +488,22 @@ spif_array_vector_find(spif_array_t self, spif_obj_t obj)
             start = mid + 1;
         } else {
             end = mid - 1;
-            if (end == SPIF_CAST(listidx) -1) {
+            if (end == (spif_listidx_t) -1) {
                 break;
             }
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_obj_t
 spif_array_get(spif_array_t self, spif_listidx_t idx)
 {
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
     if (idx < 0) {
         idx += self->len;
     }
-    return (((idx >= 0) && (idx < self->len)) ? (self->items[idx]) : (SPIF_NULL_TYPE(obj)));
+    return (((idx >= 0) && (idx < self->len)) ? (self->items[idx]) : ((spif_obj_t) NULL));
 }
 
 static spif_obj_t
@@ -512,9 +512,9 @@ spif_array_map_get(spif_array_t self, spif_obj_t key)
     spif_listidx_t start, end, mid;
     spif_cmp_t diff;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(key), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(self->len > 0, SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(key), (spif_obj_t) NULL);
+    REQUIRE_RVAL(self->len > 0, (spif_obj_t) NULL);
 
     for (start = 0, end = self->len - 1; start <= end; ) {
         mid = (end - start) / 2 + start;
@@ -525,12 +525,12 @@ spif_array_map_get(spif_array_t self, spif_obj_t key)
             start = mid + 1;
         } else {
             end = mid - 1;
-            if (end == SPIF_CAST(listidx) -1) {
+            if (end == (spif_listidx_t) -1) {
                 break;
             }
         }
     }
-    return SPIF_NULL_TYPE(obj);
+    return (spif_obj_t) NULL;
 }
 
 static spif_list_t
@@ -538,7 +538,7 @@ spif_array_get_keys(spif_array_t self, spif_list_t key_list)
 {
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(key_list)) {
         key_list = SPIF_LIST_NEW(array);
     }
@@ -554,7 +554,7 @@ spif_array_get_pairs(spif_array_t self, spif_list_t pair_list)
 {
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(pair_list)) {
         pair_list = SPIF_LIST_NEW(array);
     }
@@ -570,7 +570,7 @@ spif_array_get_values(spif_array_t self, spif_list_t value_list)
 {
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), SPIF_NULL_TYPE(list));
+    ASSERT_RVAL(!SPIF_VECTOR_ISNULL(self), (spif_list_t) NULL);
     if (SPIF_LIST_ISNULL(value_list)) {
         value_list = SPIF_LIST_NEW(array);
     }
@@ -612,7 +612,7 @@ spif_array_index(spif_array_t self, spif_obj_t obj)
 {
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_CAST(listidx) -1);
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_listidx_t) -1);
     for (i = 0; i < self->len; i++) {
         if (SPIF_OBJ_ISNULL(self->items[i])) {
             if (SPIF_OBJ_ISNULL(obj)) {
@@ -624,7 +624,7 @@ spif_array_index(spif_array_t self, spif_obj_t obj)
             return i;
         }
     }
-    return SPIF_CAST(listidx) (-1);
+    return (spif_listidx_t) (-1);
 }
 
 static spif_bool_t
@@ -635,9 +635,9 @@ spif_array_insert(spif_array_t self, spif_obj_t obj)
     ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), FALSE);
     REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), FALSE);
     if (self->items) {
-        self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
     } else {
-        self->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
     }
 
     for (i = 0; i < self->len && SPIF_CMP_IS_GREATER(SPIF_OBJ_COMP(obj, self->items[i])); i++);
@@ -672,9 +672,9 @@ spif_array_insert_at(spif_array_t self, spif_obj_t obj, spif_listidx_t idx)
     }
 
     if (self->items) {
-        self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
     } else {
-        self->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
     }
 
     if (left > 0) {
@@ -693,8 +693,8 @@ spif_array_insert_at(spif_array_t self, spif_obj_t obj, spif_listidx_t idx)
 static spif_iterator_t
 spif_array_iterator(spif_array_t self)
 {
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(iterator));
-    return SPIF_CAST(iterator) spif_array_iterator_new(self);
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_iterator_t) NULL);
+    return (spif_iterator_t) spif_array_iterator_new(self);
 }
 
 static spif_bool_t
@@ -703,9 +703,9 @@ spif_array_prepend(spif_array_t self, spif_obj_t obj)
     ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), FALSE);
     REQUIRE_RVAL(!SPIF_OBJ_ISNULL(obj), FALSE);
     if (self->items) {
-        self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * (self->len + 1));
     } else {
-        self->items = SPIF_CAST_C(spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
+        self->items = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * (self->len + 1));
     }
 
     memmove(self->items + 1, self->items, sizeof(spif_obj_t) * self->len);
@@ -720,18 +720,18 @@ spif_array_remove(spif_array_t self, spif_obj_t item)
     spif_obj_t tmp;
     spif_listidx_t i, left;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), (spif_obj_t) NULL);
     for (i = 0; i < self->len && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(item, self->items[i])); i++);
     if (i == self->len) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     }
 
     left = self->len - i - 1;
     tmp = self->items[i];
     memmove(self->items + i, self->items + i + 1, sizeof(spif_obj_t) * left);
     self->len--;
-    self->items = SPIF_CAST_PTR(obj) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
+    self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
 
     return tmp;
 }
@@ -742,18 +742,18 @@ spif_array_map_remove(spif_array_t self, spif_obj_t item)
     spif_obj_t tmp;
     spif_listidx_t i, left;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_OBJ_ISNULL(item), (spif_obj_t) NULL);
     for (i = 0; i < self->len && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(self->items[i], item)); i++);
     if (i == self->len) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     }
 
     left = self->len - i - 1;
     tmp = self->items[i];
     memmove(self->items + i, self->items + i + 1, sizeof(spif_obj_t) * left);
     self->len--;
-    self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
+    self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
 
     return tmp;
 }
@@ -764,20 +764,20 @@ spif_array_remove_at(spif_array_t self, spif_listidx_t idx)
     spif_obj_t tmp;
     spif_listidx_t left;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t) NULL);
     if (idx < 0) {
         /* Negative indexes go backward from the end of the list. */
         idx += self->len;
     }
     if ((idx < 0) || (idx >= self->len)) {
-        return SPIF_NULL_TYPE(obj);
+        return (spif_obj_t) NULL;
     }
 
     left = self->len - idx - 1;
     tmp = self->items[idx];
     memmove(self->items + idx, self->items + idx + 1, sizeof(spif_obj_t) * left);
     self->len--;
-    self->items = SPIF_CAST_C(spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
+    self->items = (spif_obj_t *) REALLOC(self->items, sizeof(spif_obj_t) * self->len);
 
     return tmp;
 }
@@ -823,8 +823,8 @@ spif_array_to_array(spif_array_t self)
     spif_obj_t *tmp;
     spif_listidx_t i;
 
-    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), SPIF_NULL_TYPE_PTR(obj));
-    tmp = SPIF_CAST_PTR(obj) MALLOC(sizeof(spif_obj_t) * self->len);
+    ASSERT_RVAL(!SPIF_ARRAY_ISNULL(self), (spif_obj_t *) NULL);
+    tmp = (spif_obj_t *) MALLOC(sizeof(spif_obj_t) * self->len);
     for (i = 0; i < self->len; i++) {
         tmp[i] = SPIF_OBJ(self->items[i]);
     }
@@ -839,7 +839,7 @@ spif_array_iterator_new(spif_array_t subject)
     self = SPIF_ALLOC(array_iterator);
     if (!spif_array_iterator_init(self, subject)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(array_iterator);
+        self = (spif_array_iterator_t) NULL;
     }
     return self;
 }
@@ -862,7 +862,7 @@ static spif_bool_t
 spif_array_iterator_done(spif_array_iterator_t self)
 {
     ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), FALSE);
-    self->subject = SPIF_NULL_TYPE(array);
+    self->subject = (spif_array_t) NULL;
     self->current_index = 0;
     return TRUE;
 }
@@ -889,23 +889,23 @@ spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_s
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
-             "(spif_array_iterator_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_array_iterator_t) %s:  %10p {\n", name, (spif_ptr_t) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_array_show(self->subject, SPIF_CAST(charptr) "subject", buff, indent + 2);
+    buff = spif_array_show(self->subject, (spif_charptr_t) "subject", buff, indent + 2);
 
     memset(tmp, ' ', indent + 2);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "  (spif_listidx_t) current_index:  %lu\n",
-             SPIF_CAST_C(unsigned long) self->current_index);
+             (unsigned long) self->current_index);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -930,7 +930,7 @@ spif_array_iterator_dup(spif_array_iterator_t self)
 {
     spif_array_iterator_t tmp;
 
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(array_iterator));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_array_iterator_t) NULL);
     tmp = spif_array_iterator_new(self->subject);
     tmp->current_index = self->current_index;
     return tmp;
@@ -939,7 +939,7 @@ spif_array_iterator_dup(spif_array_iterator_t self)
 static spif_classname_t
 spif_array_iterator_type(spif_array_iterator_t self)
 {
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -963,8 +963,8 @@ spif_array_iterator_next(spif_array_iterator_t self)
 {
     spif_obj_t tmp;
 
-    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(obj));
-    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), SPIF_NULL_TYPE(obj));
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), (spif_obj_t) NULL);
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), (spif_obj_t) NULL);
     tmp = spif_array_get(self->subject, self->current_index);
     self->current_index++;
     return tmp;

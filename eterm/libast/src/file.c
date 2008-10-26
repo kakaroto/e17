@@ -67,20 +67,20 @@ spiftool_temp_file(spif_charptr_t ftemplate, size_t len)
     int fd;
     mode_t m;
 
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(ftemplate), SPIF_CAST_C(int) -1);
-    ASSERT_RVAL(len > 0, SPIF_CAST_C(int) -1);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(ftemplate), (int) -1);
+    ASSERT_RVAL(len > 0, (int) -1);
     if (getenv("TMPDIR")) {
-        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+        snprintf((char *) buff, sizeof(buff),
                  "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
     } else if (getenv("TMP")) {
-        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+        snprintf((char *) buff, sizeof(buff),
                  "%s/%sXXXXXX", getenv("TMP"), ftemplate);
     } else {
-        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+        snprintf((char *) buff, sizeof(buff),
                  "/tmp/%sXXXXXX", ftemplate);
     }
     m = umask(0077);
-    fd = mkstemp(SPIF_CAST_C(char *) buff);
+    fd = mkstemp((char *) buff);
     umask(m);
     if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR))) {
         return (-1);

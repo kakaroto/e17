@@ -25,9 +25,9 @@
 #define _LIBAST_ARRAY_H_
 
 /* Standard typecast macros.... */
-#define SPIF_ARRAY(obj)                      (SPIF_CAST(array) (obj))
+#define SPIF_ARRAY(obj)                      ((spif_array_t) (obj))
 
-#define SPIF_ARRAY_ISNULL(o)                 (SPIF_ARRAY(o) == SPIF_NULL_TYPE(array))
+#define SPIF_ARRAY_ISNULL(o)                 (SPIF_ARRAY(o) == (spif_array_t) NULL)
 #define SPIF_OBJ_IS_ARRAY(o)                 (SPIF_OBJ_IS_TYPE((o), array))
 
 SPIF_DECL_OBJ(array) {

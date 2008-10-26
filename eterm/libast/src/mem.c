@@ -156,7 +156,7 @@ memrec_add_var(memrec_t *memrec, const spif_charptr_t filename, unsigned long li
     D_MEM(("Storing as pointer #%lu at %10p (from %10p).\n", memrec->cnt, p, memrec->ptrs));
     p->ptr = ptr;
     p->size = size;
-    spiftool_safe_strncpy(p->file, SPIF_CONST_CAST(charptr) filename, LIBAST_FNAME_LEN);
+    spiftool_safe_strncpy(p->file, (const spif_charptr_t) filename, LIBAST_FNAME_LEN);
     p->file[LIBAST_FNAME_LEN] = 0;
     p->line = line;
 }
@@ -267,7 +267,7 @@ memrec_chg_var(memrec_t *memrec, const spif_charptr_t var, const spif_charptr_t 
     D_MEM(("Changing variable %s (%10p, %lu -> %10p, %lu)\n", var, oldp, p->size, newp, size));
     p->ptr = newp;
     p->size = size;
-    spiftool_safe_strncpy(p->file, SPIF_CONST_CAST(charptr) filename, LIBAST_FNAME_LEN);
+    spiftool_safe_strncpy(p->file, (const spif_charptr_t) filename, LIBAST_FNAME_LEN);
     p->line = line;
 }
 
@@ -293,7 +293,7 @@ memrec_dump_pointers(memrec_t *memrec)
     spif_char_t buff[9];
 
     ASSERT(memrec != NULL);
-    fprintf(LIBAST_DEBUG_FD, "PTR:  %lu pointers stored.\n", SPIF_CAST_C(unsigned long) memrec->cnt);
+    fprintf(LIBAST_DEBUG_FD, "PTR:  %lu pointers stored.\n", (unsigned long) memrec->cnt);
     fprintf(LIBAST_DEBUG_FD,
             "PTR:   Pointer |       Filename       |  Line  |  Address |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(LIBAST_DEBUG_FD,
@@ -306,7 +306,7 @@ memrec_dump_pointers(memrec_t *memrec)
     for (p = memrec->ptrs, j = 0; j < len; j += 8) {
         fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ",
                 (unsigned long) 0, "", (unsigned long) 0,
-                SPIF_CAST(ptr) memrec->ptrs,
+                (spif_ptr_t) memrec->ptrs,
                 (unsigned long) (sizeof(ptr_t) * memrec->cnt), (unsigned int) j);
         /* l is the number of characters we're going to output */
         l = ((len - j < 8) ? (len - j) : (8));
@@ -332,8 +332,8 @@ memrec_dump_pointers(memrec_t *memrec)
         total += p->size;
         for (j = 0; j < p->size; j += 8) {
             fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ",
-                    i + 1, NONULL(p->file), SPIF_CAST_C(unsigned long) p->line,
-                    p->ptr, SPIF_CAST_C(unsigned long) p->size, SPIF_CAST_C(unsigned) j);
+                    i + 1, NONULL(p->file), (unsigned long) p->line,
+                    p->ptr, (unsigned long) p->size, (unsigned) j);
             /* l is the number of characters we're going to output */
             l = ((p->size - j < 8) ? (p->size - j) : (8));
             /* Copy l bytes (up to 8) from p->ptr to buffer */
@@ -378,7 +378,7 @@ memrec_dump_resources(memrec_t *memrec)
     ASSERT(memrec != NULL);
     len = memrec->cnt;
     fprintf(LIBAST_DEBUG_FD, "RES:  %lu resources stored.\n",
-            SPIF_CAST_C(unsigned long) memrec->cnt);
+            (unsigned long) memrec->cnt);
     fprintf(LIBAST_DEBUG_FD, "RES:   Index | Resource ID |       Filename       |  Line  |  Size  \n");
     fprintf(LIBAST_DEBUG_FD, "RES:  -------+-------------+----------------------+--------+--------\n");
     fflush(LIBAST_DEBUG_FD);
@@ -386,13 +386,13 @@ memrec_dump_resources(memrec_t *memrec)
     for (p = memrec->ptrs, i = 0, total = 0; i < len; i++, p++) {
         total += p->size;
         fprintf(LIBAST_DEBUG_FD, "RES:   %5lu |  0x%08lx | %20s | %6lu | %6lu\n",
-                i, SPIF_CAST_C(unsigned long) p->ptr, NONULL(p->file),
-                SPIF_CAST_C(unsigned long) p->line,
-                SPIF_CAST_C(unsigned long) p->size);
+                i, (unsigned long) p->ptr, NONULL(p->file),
+                (unsigned long) p->line,
+                (unsigned long) p->size);
         /* Flush after every line in case we crash */
         fflush(LIBAST_DEBUG_FD);
     }
-    fprintf(LIBAST_DEBUG_FD, "RES:  Total size: %lu bytes\n", SPIF_CAST_C(unsigned long) total);
+    fprintf(LIBAST_DEBUG_FD, "RES:  Total size: %lu bytes\n", (unsigned long) total);
     fflush(LIBAST_DEBUG_FD);
 }
 
@@ -431,9 +431,9 @@ spifmem_malloc(const spif_charptr_t filename, unsigned long line, size_t size)
     D_MEM(("%lu bytes requested at %s:%lu\n", size, NONULL(filename), line));
 
     temp = (void *) malloc(size);
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), (spif_ptr_t) NULL);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&malloc_rec, SPIF_CAST(charptr) NONULL(filename), line, temp, size);
+        memrec_add_var(&malloc_rec, (spif_charptr_t) NONULL(filename), line, temp, size);
     }
     return (temp);
 }
@@ -478,9 +478,9 @@ spifmem_realloc(const spif_charptr_t var, const spif_charptr_t filename, unsigne
         temp = NULL;
     } else {
         temp = (void *) realloc(ptr, size);
-        ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
+        ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), (spif_ptr_t) NULL);
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_chg_var(&malloc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, ptr, temp, size);
+            memrec_chg_var(&malloc_rec, var, (spif_charptr_t) NONULL(filename), line, ptr, temp, size);
         }
     }
     return (temp);
@@ -520,9 +520,9 @@ spifmem_calloc(const spif_charptr_t filename, unsigned long line, size_t count, 
 
     D_MEM(("%lu units of %lu bytes each requested at %s:%lu\n", count, size, NONULL(filename), line));
     temp = (void *) calloc(count, size);
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), (spif_ptr_t) NULL);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&malloc_rec, SPIF_CAST(charptr) NONULL(filename), line, temp, size * count);
+        memrec_add_var(&malloc_rec, (spif_charptr_t) NONULL(filename), line, temp, size * count);
     }
     return (temp);
 }
@@ -556,7 +556,7 @@ spifmem_free(const spif_charptr_t var, const spif_charptr_t filename, unsigned l
     D_MEM(("Variable %s (%10p) at %s:%lu\n", var, ptr, NONULL(filename), line));
     if (ptr) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&malloc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, ptr);
+            memrec_rem_var(&malloc_rec, var, (spif_charptr_t) NONULL(filename), line, ptr);
         }
         free(ptr);
     } else {
@@ -587,14 +587,14 @@ spifmem_strdup(const spif_charptr_t var, const spif_charptr_t filename, unsigned
     register spif_charptr_t newstr;
     register size_t len;
 
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(str), SPIF_NULL_TYPE_C(spif_charptr_t));
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(str), (spif_charptr_t) NULL);
     USE_VAR(var);
     D_MEM(("Variable %s (%10p) at %s:%lu\n", var, str, NONULL(filename), line));
 
-    len = strlen(SPIF_CAST_C(char *) str) + 1;      /* Copy NUL byte also */
-    newstr = SPIF_CAST(charptr) spifmem_malloc(SPIF_CAST(charptr) NONULL(filename), line, len);
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(newstr), SPIF_NULL_TYPE(ptr));
-    strcpy(SPIF_CAST_C(char *) newstr, SPIF_CAST_C(char *) str);
+    len = strlen((char *) str) + 1;      /* Copy NUL byte also */
+    newstr = (spif_charptr_t) spifmem_malloc((spif_charptr_t) NONULL(filename), line, len);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(newstr), (spif_ptr_t) NULL);
+    strcpy((char *) newstr, (char *) str);
     return (newstr);
 }
 
@@ -649,7 +649,7 @@ spifmem_x_create_pixmap(const spif_charptr_t filename, unsigned long line, Displ
     D_MEM(("Created %ux%u pixmap 0x%08x of depth %u for window 0x%08x at %s:%lu\n", w, h, p, depth, win, NONULL(filename), line));
     ASSERT_RVAL(p != None, None);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&pixmap_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) p, w * h * (depth / 8));
+        memrec_add_var(&pixmap_rec, (spif_charptr_t) NONULL(filename), line, (void *) p, w * h * (depth / 8));
     }
     return (p);
 }
@@ -677,7 +677,7 @@ spifmem_x_free_pixmap(const spif_charptr_t var, const spif_charptr_t filename, u
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu\n", var, p, NONULL(filename), line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&pixmap_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) p);
+            memrec_rem_var(&pixmap_rec, var, (spif_charptr_t) NONULL(filename), line, (void *) p);
         }
         XFreePixmap(d, p);
     } else {
@@ -710,7 +710,7 @@ spifmem_imlib_register_pixmap(const spif_charptr_t var, const spif_charptr_t fil
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
             if (!memrec_find_var(&pixmap_rec, (void *) p)) {
-                memrec_add_var(&pixmap_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) p, 1);
+                memrec_add_var(&pixmap_rec, (spif_charptr_t) NONULL(filename), line, (void *) p, 1);
             } else {
                 D_MEM(("Pixmap 0x%08x already registered.\n"));
             }
@@ -743,7 +743,7 @@ spifmem_imlib_free_pixmap(const spif_charptr_t var, const spif_charptr_t filenam
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu using Imlib2\n", var, p, NONULL(filename), line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&pixmap_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) p);
+            memrec_rem_var(&pixmap_rec, var, (spif_charptr_t) NONULL(filename), line, (void *) p);
         }
         imlib_free_pixmap_and_mask(p);
     } else {
@@ -802,7 +802,7 @@ spifmem_x_create_gc(const spif_charptr_t filename, unsigned long line, Display *
     gc = XCreateGC(d, win, mask, gcv);
     ASSERT_RVAL(gc != None, None);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&gc_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) gc, sizeof(XGCValues));
+        memrec_add_var(&gc_rec, (spif_charptr_t) NONULL(filename), line, (void *) gc, sizeof(XGCValues));
     }
     return (gc);
 }
@@ -830,7 +830,7 @@ spifmem_x_free_gc(const spif_charptr_t var, const spif_charptr_t filename, unsig
     D_MEM(("spifmem_x_free_gc() called for variable %s (0x%08x) at %s:%lu\n", var, gc, NONULL(filename), line));
     if (gc) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&gc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) gc);
+            memrec_rem_var(&gc_rec, var, (spif_charptr_t) NONULL(filename), line, (void *) gc);
         }
         XFreeGC(d, gc);
     } else {

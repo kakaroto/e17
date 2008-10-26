@@ -160,7 +160,7 @@ spifopt_usage(void)
             printf("      ");
         }
         printf("--%s", SPIFOPT_OPT_LONG(i));
-        for (col = strlen(SPIF_CAST_C(char *) SPIFOPT_OPT_LONG(i)); col < l_long; col++) {
+        for (col = strlen((char *) SPIFOPT_OPT_LONG(i)); col < l_long; col++) {
             printf(" ");
         }
         printf("  %-6s %s\n", get_option_type_string(SPIFOPT_OPT_TYPE(i)), SPIFOPT_OPT_DESC(i));
@@ -190,9 +190,9 @@ find_long_option(spif_charptr_t opt)
     for (j = 0; j < SPIFOPT_NUMOPTS_GET(); j++) {
         size_t l;
 
-        l = strlen(SPIF_CHARPTR_C(SPIFOPT_OPT_LONG(j)));
+        l = strlen((char *) SPIFOPT_OPT_LONG(j));
         /* Look for matches to the part before the =, if any. */
-        if (!strncasecmp(SPIF_CHARPTR_C(SPIFOPT_OPT_LONG(j)), SPIF_CHARPTR_C(opt), l)
+        if (!strncasecmp((char *) SPIFOPT_OPT_LONG(j), (char *) opt, l)
             && (opt[l] == '=' || !opt[l])) {
             /* Got one. */
             D_OPTIONS(("Match found at %d:  %s == %s\n", j, SPIFOPT_OPT_LONG(j), opt));
@@ -257,7 +257,7 @@ find_value_long(spif_charptr_t arg, spif_charptr_t next_arg, spif_charptr_t hase
 {
     spif_charptr_t val_ptr;
 
-    if ((val_ptr = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(arg), '='))) != NULL) {
+    if ((val_ptr = SPIF_CHARPTR(strchr((char *) arg, '='))) != NULL) {
         val_ptr++;
         *hasequal = 1;
     } else {
@@ -427,7 +427,7 @@ static void
 handle_integer(spif_int32_t n, spif_charptr_t val_ptr)
 {
     D_OPTIONS(("Integer option detected\n"));
-    *((int *) SPIFOPT_OPT_VALUE(n)) = strtol(SPIF_CHARPTR_C(val_ptr), (char **) NULL, 0);
+    *((int *) SPIFOPT_OPT_VALUE(n)) = strtol((char *) val_ptr, (char **) NULL, 0);
 }
 
 /**
@@ -448,7 +448,7 @@ static void
 handle_string(spif_int32_t n, spif_charptr_t val_ptr)
 {
     D_OPTIONS(("String option detected\n"));
-    *((const char **) SPIFOPT_OPT_VALUE(n)) = SPIF_CAST_C(char *) STRDUP(val_ptr);
+    *((const char **) SPIFOPT_OPT_VALUE(n)) = (char *) STRDUP(val_ptr);
 }
 
 
@@ -480,30 +480,30 @@ handle_arglist(spif_int32_t n, spif_charptr_t val_ptr, unsigned char hasequal,
     D_OPTIONS(("Argument list option detected\n"));
     if (hasequal) {
         /* There's an equals sign, so just parse the rest of this option into words. */
-        tmp = SPIF_CAST_PTR(charptr) MALLOC(sizeof(spif_charptr_t) * (spiftool_num_words(val_ptr) + 1));
+        tmp = (spif_charptr_t *) MALLOC(sizeof(spif_charptr_t) * (spiftool_num_words(val_ptr) + 1));
 
         for (k = 0; val_ptr; k++) {
             tmp[k] = spiftool_get_word(1, val_ptr);
             val_ptr = spiftool_get_pword(2, val_ptr);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
         }
-        tmp[k] = SPIF_NULL_TYPE(charptr);
-        *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
+        tmp[k] = (spif_charptr_t) NULL;
+        *((spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
     } else {
         unsigned short len = argc - i;
 
         /* No equals sign, so use the rest of the command line and break. */
-        tmp = SPIF_CAST_PTR(charptr) MALLOC(sizeof(spif_charptr_t ) * (argc - i + 1));
+        tmp = (spif_charptr_t *) MALLOC(sizeof(spif_charptr_t ) * (argc - i + 1));
 
         for (k = 0; k < len; k++) {
-            tmp[k] = SPIF_CAST(charptr) STRDUP(argv[k + i]);
+            tmp[k] = (spif_charptr_t) STRDUP(argv[k + i]);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
             if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_REMOVE_ARGS)) {
                 argv[k + i] = NULL;
             }
         }
-        tmp[k] = SPIF_NULL_TYPE(charptr);
-        *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
+        tmp[k] = (spif_charptr_t) NULL;
+        *((spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
     }
 }
 
@@ -584,7 +584,7 @@ spifopt_parse(int argc, char *argv[])
         if (val_ptr) {
             if (val_ptr == SPIF_CHARPTR(argv[i + 1])) {
                 i++;
-                opt += strlen(SPIF_CHARPTR_C(opt));
+                opt += strlen((char *) opt);
             }
         }
 
@@ -602,7 +602,7 @@ spifopt_parse(int argc, char *argv[])
             }
             spif_str_append_from_ptr(warn, SPIFOPT_OPT_LONG(j));
             spif_str_append_from_ptr(warn, SPIF_CHARPTR(" option is deprecated and should not be used.\n"));
-            libast_print_warning(SPIF_CHARPTR_C(SPIF_STR_STR(warn)));
+            libast_print_warning((char *) SPIF_STR_STR(warn));
             spif_str_del(warn);
         }
 

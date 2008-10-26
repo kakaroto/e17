@@ -121,7 +121,7 @@ spif_objpair_new(void)
     self = SPIF_ALLOC(objpair);
     if (!spif_objpair_init(self)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(objpair);
+        self = (spif_objpair_t) NULL;
     }
     return self;
 }
@@ -145,7 +145,7 @@ spif_objpair_new_from_key(spif_obj_t key)
     self = SPIF_ALLOC(objpair);
     if (!spif_objpair_init_from_key(self, key)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(objpair);
+        self = (spif_objpair_t) NULL;
     }
     return self;
 }
@@ -169,7 +169,7 @@ spif_objpair_new_from_value(spif_obj_t value)
     self = SPIF_ALLOC(objpair);
     if (!spif_objpair_init_from_value(self, value)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(objpair);
+        self = (spif_objpair_t) NULL;
     }
     return self;
 }
@@ -195,7 +195,7 @@ spif_objpair_new_from_both(spif_obj_t key, spif_obj_t value)
     self = SPIF_ALLOC(objpair);
     if (!spif_objpair_init_from_both(self, key, value)) {
         SPIF_DEALLOC(self);
-        self = SPIF_NULL_TYPE(objpair);
+        self = (spif_objpair_t) NULL;
     }
     return self;
 }
@@ -241,7 +241,7 @@ spif_objpair_init_from_key(spif_objpair_t self, spif_obj_t key)
     ASSERT_RVAL(!SPIF_OBJ_ISNULL(key), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
     self->key = SPIF_OBJ_DUP(SPIF_OBJ(key));
-    self->value = SPIF_NULL_TYPE(obj);
+    self->value = (spif_obj_t) NULL;
     return TRUE;
 }
 
@@ -265,7 +265,7 @@ spif_objpair_init_from_value(spif_objpair_t self, spif_obj_t value)
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
     ASSERT_RVAL(!SPIF_OBJ_ISNULL(value), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
-    self->key = SPIF_NULL_TYPE(obj);
+    self->key = (spif_obj_t) NULL;
     self->value = SPIF_OBJ_DUP(SPIF_OBJ(value));
     return TRUE;
 }
@@ -317,11 +317,11 @@ spif_objpair_done(spif_objpair_t self)
     if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->key))) {
         SPIF_OBJ_DEL(SPIF_OBJ(self->key));
     }
-    self->key = SPIF_NULL_TYPE(obj);
+    self->key = (spif_obj_t) NULL;
     if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->value))) {
         SPIF_OBJ_DEL(SPIF_OBJ(self->value));
     }
-    self->value = SPIF_NULL_TYPE(obj);
+    self->value = (spif_obj_t) NULL;
 
     return TRUE;
 }
@@ -375,9 +375,9 @@ spif_objpair_show(spif_objpair_t self, spif_charptr_t name, spif_str_t buff, siz
     }
 
     memset(tmp, ' ', indent);
-    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+    snprintf((char *) tmp + indent, sizeof(tmp) - indent,
              "(spif_objpair_t) %s:  %10p \"%s\"\n",
-             name, SPIF_CAST(ptr) self, SPIF_OBJ_CLASSNAME(self));
+             name, (spif_ptr_t) self, SPIF_OBJ_CLASSNAME(self));
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -426,7 +426,7 @@ spif_objpair_comp(spif_objpair_t self, spif_obj_t other)
 spif_objpair_t
 spif_objpair_dup(spif_objpair_t self)
 {
-    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), SPIF_NULL_TYPE(objpair));
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), (spif_objpair_t) NULL);
     return spif_objpair_new_from_both(self->key, self->value);
 }
 
@@ -445,7 +445,7 @@ spif_objpair_dup(spif_objpair_t self)
 spif_classname_t
 spif_objpair_type(spif_objpair_t self)
 {
-    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), SPIF_NULL_TYPE(classname));
+    ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), (spif_classname_t) NULL);
     return SPIF_OBJ_CLASSNAME(SPIF_OBJ(self));
 }
 
