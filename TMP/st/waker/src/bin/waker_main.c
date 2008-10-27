@@ -372,6 +372,28 @@ rtc_clear(void)
    close(fd);
 }
 
+/*
+ *         Function: write_alarm
+ *         Set the alarm in the RTC
+ */
+/*
+static void set_alarm(const struct rtc_time *alarm)
+{
+   int res,retval;
+   printf("\nset_alarm()");
+   res = ioctl(fd, RTC_ALM_SET, alarm);
+   if (res < 0) {
+      perror("ioctl(RTC_ALM_SET)");
+      ecore_main_loop_quit();
+   }
+   retval = ioctl(fd, RTC_AIE_ON, 0);
+   if (retval == -1) {
+      perror("ioctl");
+      ecore_main_loop_quit();
+   }
+}
+*/
+
 static void
 rtc_set(dbus_uint64_t time_at)
 {
@@ -416,7 +438,7 @@ rtc_set(dbus_uint64_t time_at)
    t2 = mktime(&tm);
    // add the delta to the current rtc
    t2 += t;
-   tmp = localtime(&t);
+   tmp = localtime(&t2);
    if (!tmp) {
       close(fd);
       return;
