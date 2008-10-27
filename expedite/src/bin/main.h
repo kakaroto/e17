@@ -16,6 +16,10 @@
 # include <windows.h>
 #endif
 
+#ifdef HAVE_EVIL
+# include <Evil.h>
+#endif
+
 #include <Evas.h>
 #if HAVE_EVAS_SOFTWARE_X11
 #include "engine_software_x11.h"

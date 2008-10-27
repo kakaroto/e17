@@ -29,10 +29,15 @@ AM_PROG_CC_C_O
 WIN32_CFLAGS=""
 lt_enable_auto_import=""
 case "$host_os" in
-  cegcc)
-    WIN32_CFLAGS="-mwin32"
-    lt_enable_auto_import="-Wl,--enable-auto-import"
-    ;;
+   mingw32ce*)
+      PKG_CHECK_MODULES([EVIL], [evil])
+      AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if Evil library is installed])
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+      ;;
+   cegcc*)
+      WIN32_CFLAGS="-mwin32"
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+      ;;
 esac
 AC_SUBST(WIN32_CFLAGS)
 AC_SUBST(lt_enable_auto_import)
