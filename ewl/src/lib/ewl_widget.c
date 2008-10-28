@@ -2454,7 +2454,8 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         "Ewl Widget Smart Object",
                                         EVAS_SMART_CLASS_VERSION,
                                         NULL, NULL, NULL, NULL, NULL,
-                                               NULL, NULL, NULL, NULL, NULL, NULL
+                                        NULL, NULL, NULL, NULL, NULL,
+                                        NULL, NULL, NULL
                                 };
                                 widget_smart = evas_smart_class_new(&sc);
                         }
