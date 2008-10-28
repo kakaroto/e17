@@ -25,6 +25,7 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 AM_PROG_CC_C_O
+PKG_PROG_PKG_CONFIG
 
 WIN32_CFLAGS=""
 lt_enable_auto_import=""
@@ -42,7 +43,7 @@ esac
 AC_SUBST(WIN32_CFLAGS)
 AC_SUBST(lt_enable_auto_import)
 
-PKG_CHECK_MODULES([EVAS], evas)
+PKG_CHECK_MODULES([EVAS], [evas])
 
 #######################################
 ## Simple X11 build/link
