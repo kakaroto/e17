@@ -113,9 +113,9 @@ class EvasObject
     // construction/destruction
     EvasObject( EvasCanvas* canvas,
             const char* name = "(null)" );
-    virtual ~EvasObject();
 
   public:
+    virtual ~EvasObject();
     bool operator==(const EvasObject& rhs) { return rhs.o == o; };
 
     /* don't use these */

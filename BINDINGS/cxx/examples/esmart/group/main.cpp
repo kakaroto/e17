@@ -36,8 +36,8 @@ int main( int argc, const char **argv )
     EvasEsmartGroup* vbox = new EvasEsmartGroup( 50, 50, 200, 200, evas );
     //vbox->resize( 100, 100 );
     //vbox->setLayer( 20 );
-    vbox->add( buttonbackground );
-    vbox->add( buttontext );
+    vbox->append( buttonbackground );
+    vbox->append( buttontext );
     vbox->show();
 
     /* Enter the application main loop */

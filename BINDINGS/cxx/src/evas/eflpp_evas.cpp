@@ -211,6 +211,7 @@ void EvasObject::init (const char *name)
 EvasObject::~EvasObject()
 {
     Dout( dc::notice, *this << " EvasObject::~EvasObject" );
+    evas_object_del( o );
 }
 
 const char* EvasObject::name() const

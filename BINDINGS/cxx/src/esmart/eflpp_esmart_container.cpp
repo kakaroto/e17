@@ -148,7 +148,7 @@ void EvasEsmartContainer::destroy( EvasObject* object )
   esmart_container_element_destroy( o, object->obj() );
 }
 
-void EvasEsmartContainer::clean()
+void EvasEsmartContainer::clear()
 {
   esmart_container_empty( o );
 }

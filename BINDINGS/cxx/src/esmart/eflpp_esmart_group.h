@@ -18,8 +18,10 @@ public:
   EvasEsmartGroup( int x, int y, int width, int height, EvasCanvas* canvas, const char* name = 0 );
   virtual ~EvasEsmartGroup();
 
-  void add (EvasObject* object);
+  void append (EvasObject* object); // TODO: ,  EvasObject* after = 0
+  void prepend (EvasObject* object); // TODO: , EvasObject* before = 0
   void remove (EvasObject* object);
+  void clear();
 
 protected:
   // smart object handlers

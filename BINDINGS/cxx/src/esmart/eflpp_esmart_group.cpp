@@ -39,18 +39,36 @@ EvasEsmartGroup::EvasEsmartGroup( int x, int y, int width, int height, EvasCanva
 
 EvasEsmartGroup::~EvasEsmartGroup()
 {
+    clear ();
 		evas_object_del( o );
 }
 
-void EvasEsmartGroup::add (EvasObject *object)
+void EvasEsmartGroup::append (EvasObject *object)
 {
   evasObjectList.push_back (object);
-  printf ("add (%p) -> size: %d\n", this, evasObjectList.size ());
+}
+
+void EvasEsmartGroup::prepend (EvasObject *object)
+{
+  evasObjectList.push_front (object);
 }
 
 void EvasEsmartGroup::remove (EvasObject* object)
 {
+  evasObjectList.remove (object);
   cerr << "EvasEsmartGroup::remove" << endl;
+}
+
+void EvasEsmartGroup::clear()
+{
+  for (list<EvasObject*>::iterator eo_it = evasObjectList.begin ();
+     eo_it != evasObjectList.end ();
+     ++eo_it)
+  {
+    delete *eo_it;
+  }
+  
+  evasObjectList.clear ();
 }
 
 // Handler functions

@@ -70,7 +70,7 @@ public:
   void prepend( EvasObject* object, EvasObject* before = 0 );
   void remove( EvasObject* object );
   void destroy( EvasObject* object );
-  void clean();
+  void clear();
   //void sort();
   //EvasList* elements() const;
 
