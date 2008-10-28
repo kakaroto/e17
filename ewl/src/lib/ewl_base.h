@@ -8,6 +8,9 @@
 
 #include <Ecore.h>
 #include <Ecore_Data.h>
+/* Eina is defining __UNUSED__, undefine it, so we can set it to a sane
+ * value later. Remove that line if some fixed eina */
+#undef __UNUSED__
 
 #include <ewl_enums.h>
 #include <ewl_object.h>
