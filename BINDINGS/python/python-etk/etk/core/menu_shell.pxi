@@ -27,7 +27,7 @@ cdef public class MenuShell(Widget) [object PyEtk_Menu_Shell, type PyEtk_Menu_Sh
 
 
     def items_get(self):
-        cdef Evas_List* __lst
+        cdef Eina_List* __lst
         cdef Object o
         __ret = []
 
@@ -37,7 +37,7 @@ cdef public class MenuShell(Widget) [object PyEtk_Menu_Shell, type PyEtk_Menu_Sh
             __ret.append(o)
             __lst = __lst.next
 
-        evas.c_evas.evas_list_free(__lst)
+        evas.c_evas.eina_list_free(__lst)
         return (__ret)
 
 

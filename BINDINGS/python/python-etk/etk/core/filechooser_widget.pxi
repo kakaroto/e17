@@ -42,7 +42,7 @@ cdef public class FilechooserWidget(Widget) [object PyEtk_Filechooser_Widget, ty
         return (__ret)
 
     def selected_files_get(self):
-        cdef Evas_List* __lst
+        cdef Eina_List* __lst
         __ret = []
 
         __lst = etk_filechooser_widget_selected_files_get(<Etk_Filechooser_Widget*>self.obj)
@@ -50,7 +50,7 @@ cdef public class FilechooserWidget(Widget) [object PyEtk_Filechooser_Widget, ty
             __ret.append(<char*> __lst.data)
             __lst = __lst.next
 
-        evas.c_evas.evas_list_free(__lst)
+        evas.c_evas.eina_list_free(__lst)
         return (__ret)
 
     def show_hidden_get(self):

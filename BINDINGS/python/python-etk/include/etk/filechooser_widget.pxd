@@ -20,7 +20,7 @@ cdef extern from "etk_filechooser_widget.h":
     void etk_filechooser_widget_select_multiple_set(Etk_Filechooser_Widget* __self, int select_multiple)
     char* etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget* __self)
     int etk_filechooser_widget_selected_file_set(Etk_Filechooser_Widget* __self, char* filename)
-    evas.c_evas.Evas_List* etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget* __self)
+    evas.c_evas.Eina_List* etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget* __self)
     int etk_filechooser_widget_show_hidden_get(Etk_Filechooser_Widget* __self)
     void etk_filechooser_widget_show_hidden_set(Etk_Filechooser_Widget* __self, int show_hidden)
 

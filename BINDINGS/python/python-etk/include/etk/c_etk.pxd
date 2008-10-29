@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Etk.  If not, see <http://www.gnu.org/licenses/>.
 
-from evas.c_evas cimport Evas_List, Evas_Hash, Evas_Object, Evas
+from evas.c_evas cimport Eina_List, Evas_Hash, Evas_Object, Evas
 cimport evas.c_evas
 import evas.c_evas
 
@@ -54,8 +54,8 @@ cdef extern from "etk_types.h":
         Etk_Object *prev
         Etk_Object *next
         Evas_Hash *data_hash
-        Evas_List *signal_callbacks
-        Evas_List *weak_pointers
+        Eina_List *signal_callbacks
+        Eina_List *weak_pointers
         Evas_Hash *notification_callbacks
         Etk_Bool should_delete_cbs
         int notifying

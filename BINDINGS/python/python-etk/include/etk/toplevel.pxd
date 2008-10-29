@@ -47,7 +47,7 @@ cdef extern from "etk_toplevel.h":
     ####################################################################
     # Functions
     Etk_Type* etk_toplevel_type_get()
-    evas.c_evas.Evas_List* etk_toplevel_widgets_get()
+    evas.c_evas.Eina_List* etk_toplevel_widgets_get()
     evas.c_evas.Evas* etk_toplevel_evas_get(Etk_Toplevel* __self)
     void etk_toplevel_evas_position_get(Etk_Toplevel* __self, int* x, int* y)
     Etk_Widget* etk_toplevel_focused_widget_get(Etk_Toplevel* __self)

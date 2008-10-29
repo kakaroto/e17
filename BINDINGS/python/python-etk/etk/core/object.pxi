@@ -403,7 +403,7 @@ cdef public class Object [object PyEtk_Object, type PyEtk_Object_Type]:
 ##         # FIXME: unsupported method arguments
 ##         pass
 
-##     def signal_callbacks_get(self, Etk_Signal* signal, Evas_List** callbacks):
+##     def signal_callbacks_get(self, Etk_Signal* signal, Eina_List** callbacks):
 ##         # FIXME: unsupported method arguments
 ##         pass
 

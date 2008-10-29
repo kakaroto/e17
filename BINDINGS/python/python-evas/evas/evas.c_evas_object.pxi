@@ -816,7 +816,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         """Return objects currently clipped by this.
         @rtype: tuple of L{Object}
         """
-        cdef Evas_List *itr
+        cdef Eina_List *itr
         cdef Object o
         ret = []
         itr = evas_object_clipees_get(self.obj)

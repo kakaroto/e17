@@ -71,7 +71,7 @@ def fontset_append_get():
 
 def file_collection_list(char *file):
     "@rtype: list of str"
-    cdef evas.c_evas.Evas_List *lst, *itr
+    cdef evas.c_evas.Eina_List *lst, *itr
     ret = []
     lst = edje_file_collection_list(file)
     itr = lst
@@ -163,7 +163,7 @@ def color_class_del(char *color_class):
 
 def color_class_list():
     "@rtype: list of str"
-    cdef evas.c_evas.Evas_List *lst, *itr
+    cdef evas.c_evas.Eina_List *lst, *itr
     ret = []
     lst = edje_color_class_list()
     itr = lst
@@ -171,7 +171,7 @@ def color_class_list():
         ret.append(<char*>itr.data)
         python.free(itr.data)
         itr = itr.next
-    evas.c_evas.evas_list_free(lst)
+    evas.c_evas.eina_list_free(lst)
     return ret
 
 
@@ -191,7 +191,7 @@ def text_class_del(char *text_class):
 
 def text_class_list():
     "@rtype: list of str"
-    cdef evas.c_evas.Evas_List *lst, *itr
+    cdef evas.c_evas.Eina_List *lst, *itr
     ret = []
     lst = edje_text_class_list()
     itr = lst
@@ -199,7 +199,7 @@ def text_class_list():
         ret.append(<char*>itr.data)
         python.free(itr.data)
         itr = itr.next
-    evas.c_evas.evas_list_free(lst)
+    evas.c_evas.eina_list_free(lst)
     return ret
 
 

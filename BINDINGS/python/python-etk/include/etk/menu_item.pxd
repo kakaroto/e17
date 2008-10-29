@@ -36,11 +36,11 @@ cdef extern from "etk_menu_item.h":
     Etk_Widget* etk_menu_item_check_new_with_label(char* label)
     void etk_menu_item_check_active_set(Etk_Menu_Item_Check* __self, Etk_Bool active)
     Etk_Bool etk_menu_item_check_active_get(Etk_Menu_Item_Check* __self)
-    Etk_Widget* etk_menu_item_radio_new(evas.c_evas.Evas_List** group)
+    Etk_Widget* etk_menu_item_radio_new(evas.c_evas.Eina_List** group)
     Etk_Widget* etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio* radio_item)
     Etk_Widget* etk_menu_item_radio_new_with_label_from_widget(char* label, Etk_Menu_Item_Radio* radio_item)
-    void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio* __self, evas.c_evas.Evas_List** group)
-    evas.c_evas.Evas_List** etk_menu_item_radio_group_get(Etk_Menu_Item_Radio* __self)
+    void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio* __self, evas.c_evas.Eina_List** group)
+    evas.c_evas.Eina_List** etk_menu_item_radio_group_get(Etk_Menu_Item_Radio* __self)
 
 
 #########################################################################

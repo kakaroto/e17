@@ -328,7 +328,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @return: children objects.
         @rtype: list of L{Object}
         """
-        cdef Evas_List *objs, *itr
+        cdef Eina_List *objs, *itr
         cdef int ip, ih
         cdef Evas_Object *o
         ip = include_pass_events_objects
@@ -340,7 +340,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             o = <Evas_Object*>itr.data
             lst.append(Object_from_instance(o))
             itr = itr.next
-        evas_list_free(objs)
+        eina_list_free(objs)
         return lst
 
     def objects_in_rectangle_get(self, int x, int y, int w, int h,
@@ -358,7 +358,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @return: children objects.
         @rtype: list of L{Object}
         """
-        cdef Evas_List *objs, *itr
+        cdef Eina_List *objs, *itr
         cdef int ip, ih
         cdef Evas_Object *o
         ip = include_pass_events_objects
@@ -370,7 +370,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             o = <Evas_Object*>itr.data
             lst.append(Object_from_instance(o))
             itr = itr.next
-        evas_list_free(objs)
+        eina_list_free(objs)
         return lst
 
     def damage_rectangle_add(self, int x, int y, int w, int h):
@@ -383,7 +383,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_obscured_clear(self.obj)
 
     def render_updates(self):
-        cdef Evas_List *lst
+        cdef Eina_List *lst
 
         lst = evas_render_updates(self.obj)
         evas_render_updates_free(lst)
@@ -482,7 +482,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def font_path_list(self):
         "@rtype: list of str"
-        cdef Evas_List *itr
+        cdef Eina_List *itr
         lst = []
         itr = evas_font_path_list(self.obj)
         while itr != NULL:
@@ -493,10 +493,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def font_available_list(self):
         "@rtype: list of str"
         cdef void *p
-        cdef Evas_List *itr, *head
+        cdef Eina_List *itr, *head
         lst = []
         p = <void*>evas_font_available_list(self.obj) # avoid warning
-        head = <Evas_List*>p
+        head = <Eina_List*>p
         itr = head
         while itr != NULL:
             lst.append(<char*>itr.data)

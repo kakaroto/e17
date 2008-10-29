@@ -28,7 +28,7 @@ cdef extern from "etk_container.h":
     ctypedef struct Etk_Container:
         void (*child_add)(Etk_Container *container, Etk_Widget *widget)
         void (*child_remove)(Etk_Container *container, Etk_Widget *widget)
-        Evas_List *(*children_get)(Etk_Container *container)
+        Eina_List *(*children_get)(Etk_Container *container)
 
 
     ####################################################################
@@ -39,7 +39,7 @@ cdef extern from "etk_container.h":
     void etk_container_add(Etk_Container* __self, Etk_Widget* widget)
     int etk_container_border_width_get(Etk_Container* __self)
     void etk_container_border_width_set(Etk_Container* __self, int border_width)
-    evas.c_evas.Evas_List* etk_container_children_get(Etk_Container* __self)
+    evas.c_evas.Eina_List* etk_container_children_get(Etk_Container* __self)
     void etk_container_for_each_data(Etk_Container* __self, void (*for_each_cb)(Etk_Widget *child, void *data), void *data)
     int etk_container_is_child(Etk_Container* __self, Etk_Widget* widget)
     void etk_container_remove_all(Etk_Container* __self)

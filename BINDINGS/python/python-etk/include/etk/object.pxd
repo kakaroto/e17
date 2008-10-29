@@ -52,7 +52,7 @@ cdef extern from "etk_object.h":
     void etk_object_property_reset(Etk_Object* __self, char* property_name)
     void etk_object_signal_callback_add(Etk_Object* __self, Etk_Signal_Callback* signal_callback, int after)
     void etk_object_signal_callback_remove(Etk_Object* __self, Etk_Signal_Callback* signal_callback)
-    void etk_object_signal_callbacks_get(Etk_Object* __self, Etk_Signal* signal, Evas_List** callbacks)
+    void etk_object_signal_callbacks_get(Etk_Object* __self, Etk_Signal* signal, Eina_List** callbacks)
     void etk_object_weak_pointer_add(Etk_Object* __self, void** pointer_location)
     void etk_object_weak_pointer_remove(Etk_Object* __self, void** pointer_location)
 

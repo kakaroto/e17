@@ -43,7 +43,7 @@ def render_method_list():
 
     @rtype: list of str
     """
-    cdef Evas_List *lst
+    cdef Eina_List *lst
 
     ret = []
     lst = evas_render_method_list()

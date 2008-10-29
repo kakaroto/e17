@@ -122,8 +122,8 @@ cdef extern from "Edje.h":
     void edje_fontset_append_set(char *fonts)
     char *edje_fontset_append_get()
 
-    evas.c_evas.Evas_List *edje_file_collection_list(char *file)
-    void edje_file_collection_list_free(evas.c_evas.Evas_List *lst)
+    evas.c_evas.Eina_List *edje_file_collection_list(char *file)
+    void edje_file_collection_list_free(evas.c_evas.Eina_List *lst)
     int edje_file_group_exists(char *file, char *glob)
     char *edje_file_data_get(char *file, char *key)
     void edje_file_cache_set(int count)
@@ -135,10 +135,10 @@ cdef extern from "Edje.h":
 
     void edje_color_class_set(char *color_class, int r, int g, int b, int a, int r2, int g2, int b2, int a2, int r3, int g3, int b3, int a3)
     void edje_color_class_del(char *color_class)
-    evas.c_evas.Evas_List * edje_color_class_list()
+    evas.c_evas.Eina_List * edje_color_class_list()
     void edje_text_class_set(char *text_class, char *font, evas.c_evas.Evas_Font_Size size)
     void edje_text_class_del(char *text_class)
-    evas.c_evas.Evas_List * edje_text_class_list()
+    evas.c_evas.Eina_List * edje_text_class_list()
     void edje_extern_object_min_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord minw, evas.c_evas.Evas_Coord minh)
     void edje_extern_object_max_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord maxw, evas.c_evas.Evas_Coord maxh)
     void edje_extern_object_aspect_set(evas.c_evas.Evas_Object *obj, Edje_Aspect_Control aspect, evas.c_evas.Evas_Coord aw, evas.c_evas.Evas_Coord ah)

@@ -39,9 +39,9 @@ cdef void _virtual_child_remove(Etk_Container *container, Etk_Widget *widget) \
     obj = Object_from_instance(<Etk_Object *>widget)
     self._child_remove(obj)
 
-cdef Evas_List *_virtual_children_get(Etk_Container *container) \
+cdef Eina_List *_virtual_children_get(Etk_Container *container) \
         with gil:
-    cdef Evas_List* lst
+    cdef Eina_List* lst
     self = Object_from_instance(<Etk_Object *>container)
     children = self._children_get()
     lst = NULL
@@ -49,7 +49,7 @@ cdef Evas_List *_virtual_children_get(Etk_Container *container) \
     for c in children:
         cobj = c._get_obj()
         if cobj:
-            lst = evas.c_evas.evas_list_append(lst, <Etk_Widget*>cobj)
+            lst = evas.c_evas.eina_list_append(lst, <Etk_Widget*>cobj)
 
     return lst
 
@@ -81,7 +81,7 @@ cdef public class Container(Widget) [object PyEtk_Container, type PyEtk_Containe
         etk_container_border_width_set(<Etk_Container*>self.obj, border_width)
 
     def children_get(self):
-        cdef Evas_List* __lst
+        cdef Eina_List* __lst
         cdef Object o
         __ret = []
 
@@ -91,7 +91,7 @@ cdef public class Container(Widget) [object PyEtk_Container, type PyEtk_Containe
             __ret.append(o)
             __lst = __lst.next
 
-        evas.c_evas.evas_list_free(__lst)
+        evas.c_evas.eina_list_free(__lst)
         return (__ret)
 
     def for_each(self, func, *args, **kargs):

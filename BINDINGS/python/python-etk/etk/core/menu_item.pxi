@@ -160,8 +160,8 @@ cdef public class MenuItemRadio(MenuItemCheck) [object PyEtk_Menu_Item_Radio, ty
     """
     def group_set(self, group):
         #FIXME
-        cdef Evas_List* __lst = NULL
-        cdef Evas_List ** __lst_ptr = <Evas_List**>python.malloc(sizeof(Evas_List *))
+        cdef Eina_List* __lst = NULL
+        cdef Eina_List ** __lst_ptr = <Eina_List**>python.malloc(sizeof(Eina_List *))
         cdef Etk_Object* cobj
         for elemt in group:
             cobj = NULL
@@ -169,7 +169,7 @@ cdef public class MenuItemRadio(MenuItemCheck) [object PyEtk_Menu_Item_Radio, ty
             if o is not None:
                 cobj = <Etk_Object *>o
                 if cobj != NULL:
-                    __lst = evas.c_evas.evas_list_append(__lst, cobj)
+                    __lst = evas.c_evas.eina_list_append(__lst, cobj)
 
         if __lst != NULL:
             __lst_ptr[0] = __lst
@@ -177,8 +177,8 @@ cdef public class MenuItemRadio(MenuItemCheck) [object PyEtk_Menu_Item_Radio, ty
     """
 
     def group_get(self):
-        cdef Evas_List** __lst_ptr
-        cdef Evas_List* __lst
+        cdef Eina_List** __lst_ptr
+        cdef Eina_List* __lst
         cdef Object o
         __ret = []
         __lst_ptr = etk_menu_item_radio_group_get(<Etk_Menu_Item_Radio*>self.obj)

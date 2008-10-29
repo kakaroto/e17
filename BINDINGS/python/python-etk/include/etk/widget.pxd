@@ -65,7 +65,7 @@ cdef extern from "etk_widget.h":
 
     ####################################################################
     # Functions
-    Evas_List* etk_widget_dnd_dest_widgets_get()
+    Eina_List* etk_widget_dnd_dest_widgets_get()
     int etk_widget_swallow_error_get()
     Etk_Type* etk_widget_type_get()
     Etk_Widget* etk_widget_new(Etk_Type* widget_type, ...)

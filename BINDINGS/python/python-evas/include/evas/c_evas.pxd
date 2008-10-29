@@ -122,10 +122,10 @@ cdef extern from "Evas.h":
     ####################################################################
     # Structures
     #
-    ctypedef struct Evas_List:
+    ctypedef struct Eina_List:
         void      *data
-        Evas_List *next
-        Evas_List *prev
+        Eina_List *next
+        Eina_List *prev
         void      *accounting
 
 
@@ -274,8 +274,8 @@ cdef extern from "Evas.h":
     int evas_init()
     int evas_shutdown()
 
-    Evas_List *evas_list_free(Evas_List *list)
-    Evas_List *evas_list_append(Evas_List *list, void *data)
+    Eina_List *eina_list_free(Eina_List *list)
+    Eina_List *eina_list_append(Eina_List *list, void *data)
 
 
     ####################################################################
@@ -285,8 +285,8 @@ cdef extern from "Evas.h":
     void evas_free(Evas *e)
 
     int evas_render_method_lookup(char *name)
-    Evas_List *evas_render_method_list()
-    void evas_render_method_list_free(Evas_List *list)
+    Eina_List *evas_render_method_list()
+    void evas_render_method_list_free(Eina_List *list)
 
     void evas_output_method_set(Evas *e, int render_method)
     int evas_output_method_get(Evas *e)
@@ -309,14 +309,14 @@ cdef extern from "Evas.h":
     Evas_Object *evas_object_top_at_pointer_get(Evas *e)
     Evas_Object *evas_object_top_in_rectangle_get(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Evas_Bool include_pass_events_objects, Evas_Bool include_hidden_objects)
 
-    Evas_List *evas_objects_at_xy_get(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Bool include_pass_events_objects, Evas_Bool include_hidden_objects)
-    Evas_List *evas_objects_in_rectangle_get(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Evas_Bool include_pass_events_objects, Evas_Bool include_hidden_objects)
+    Eina_List *evas_objects_at_xy_get(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Bool include_pass_events_objects, Evas_Bool include_hidden_objects)
+    Eina_List *evas_objects_in_rectangle_get(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Evas_Bool include_pass_events_objects, Evas_Bool include_hidden_objects)
 
     void evas_damage_rectangle_add(Evas *e, int x, int y, int w, int h)
     void evas_obscured_rectangle_add(Evas *e, int x, int y, int w, int h)
     void evas_obscured_clear(Evas *e)
-    Evas_List *evas_render_updates(Evas *e)
-    void evas_render_updates_free(Evas_List *updates)
+    Eina_List *evas_render_updates(Evas *e)
+    void evas_render_updates_free(Eina_List *updates)
     void evas_render(Evas *e)
     void evas_norender(Evas *e)
     void *evas_data_attach_get(Evas *e)
@@ -333,7 +333,7 @@ cdef extern from "Evas.h":
     void evas_font_path_clear(Evas *e)
     void evas_font_path_append(Evas *e, char *path)
     void evas_font_path_prepend(Evas *e, char *path)
-    Evas_List  *evas_font_path_list(Evas *e)
+    Eina_List  *evas_font_path_list(Evas *e)
 
     void evas_font_hinting_set(Evas *e, Evas_Font_Hinting_Flags hinting)
     Evas_Font_Hinting_Flags evas_font_hinting_get(Evas *e)
@@ -343,8 +343,8 @@ cdef extern from "Evas.h":
     void evas_font_cache_set(Evas *e, int size)
     int evas_font_cache_get(Evas *e)
 
-    Evas_List *evas_font_available_list(Evas *e)
-    void evas_font_available_list_free(Evas *e, Evas_List *available)
+    Eina_List *evas_font_available_list(Evas *e)
+    void evas_font_available_list_free(Evas *e, Eina_List *available)
 
     void evas_image_cache_flush(Evas *e)
     void evas_image_cache_reload(Evas *e)
@@ -405,7 +405,7 @@ cdef extern from "Evas.h":
     void evas_object_clip_set(Evas_Object *obj, Evas_Object *clip)
     Evas_Object *evas_object_clip_get(Evas_Object *obj)
     void evas_object_clip_unset(Evas_Object *obj)
-    Evas_List *evas_object_clipees_get(Evas_Object *obj)
+    Eina_List *evas_object_clipees_get(Evas_Object *obj)
 
     void evas_object_name_set(Evas_Object *obj, char *name)
     char *evas_object_name_get(Evas_Object *obj)
@@ -440,7 +440,7 @@ cdef extern from "Evas.h":
     void evas_object_smart_member_add(Evas_Object *obj, Evas_Object *smart_obj)
     void evas_object_smart_member_del(Evas_Object *obj)
     Evas_Object *evas_object_smart_parent_get(Evas_Object *obj)
-    Evas_List *evas_object_smart_members_get(Evas_Object *obj)
+    Eina_List *evas_object_smart_members_get(Evas_Object *obj)
     Evas_Smart *evas_object_smart_smart_get(Evas_Object *obj)
     void *evas_object_smart_data_get(Evas_Object *obj)
     void evas_object_smart_data_set(Evas_Object *obj, void *data)

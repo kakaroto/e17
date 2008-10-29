@@ -19,7 +19,7 @@ cdef extern from "etk_menu_shell.h":
     void etk_menu_shell_append_relative(Etk_Menu_Shell* __self, Etk_Menu_Item* item, Etk_Menu_Item* relative)
     void etk_menu_shell_insert(Etk_Menu_Shell* __self, Etk_Menu_Item* item, int position)
     void etk_menu_shell_remove(Etk_Menu_Shell* __self, Etk_Menu_Item* item)
-    evas.c_evas.Evas_List* etk_menu_shell_items_get(Etk_Menu_Shell* __self)
+    evas.c_evas.Eina_List* etk_menu_shell_items_get(Etk_Menu_Shell* __self)
 
 #########################################################################
 # Objects

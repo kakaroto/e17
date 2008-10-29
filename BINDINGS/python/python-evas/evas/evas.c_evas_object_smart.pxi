@@ -390,7 +390,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
     def members_get(self):
         "@rtype: tuple of L{Object}"
-        cdef Evas_List *lst, *itr
+        cdef Eina_List *lst, *itr
         cdef Object o
         ret = []
         lst = evas_object_smart_members_get(self.obj)
@@ -399,7 +399,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             o = Object_from_instance(<Evas_Object*>itr.data)
             ret.append(o)
             itr = itr.next
-        evas_list_free(lst)
+        eina_list_free(lst)
         return tuple(ret)
 
     property members:
@@ -474,17 +474,17 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
     def delete(self):
         "Default implementation to delete all children."
-        cdef Evas_List *lst, *itr
+        cdef Eina_List *lst, *itr
         lst = evas_object_smart_members_get(self.obj)
         itr = lst
         while itr:
             evas_object_del(<Evas_Object*>itr.data)
             itr = itr.next
-        evas_list_free(lst)
+        eina_list_free(lst)
 
     def move_children_relative(self, int dx, int dy):
         "Move all children relatively."
-        cdef Evas_List *lst, *itr
+        cdef Eina_List *lst, *itr
         cdef Evas_Object *o
         cdef int orig_x, orig_y
 
@@ -498,7 +498,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             evas_object_geometry_get(o, &orig_x, &orig_y, NULL, NULL)
             evas_object_move(o, orig_x + dx, orig_y + dy)
             itr = itr.next
-        evas_list_free(lst)
+        eina_list_free(lst)
 
     def move(self, int x, int y):
         "Default implementation to move all children."
