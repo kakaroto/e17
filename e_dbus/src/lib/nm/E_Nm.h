@@ -61,10 +61,11 @@ struct E_NM_Device
   char              *interface;
   char              *driver;
   E_NM_Device_Cap    capabilities;
-  int                ip4address;
+  unsigned int       ip4address;
   E_NM_Device_State  state;
   char              *ip4config; /* object_path */
-  unsigned char      managed;
+  char              *dhcp4config; /* object_path */
+  dbus_bool_t        managed;
   unsigned int       device_type;
 };
 
@@ -165,24 +166,11 @@ extern "C" {
 
 
 /* org.freedesktop.NetworkManager.Device api */
-   EAPI int e_nm_device_get_udi(E_NM_Context *ctx, const char *device,
-                                E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_interface(E_NM_Context *ctx, const char *device,
-                                      E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_driver(E_NM_Context *ctx, const char *device,
-                                   E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_capabilities(E_NM_Context *ctx, const char *device,
-                                         E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_ip4address(E_NM_Context *ctx, const char *device,
-                                       E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_state(E_NM_Context *ctx, const char *device,
-                                  E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_ip4config(E_NM_Context *ctx, const char *device,
-                                      E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_carrier(E_NM_Context *ctx, const char *device,
+   EAPI int  e_nm_device_get_device(E_NM_Context *ctx, const char *device,
                                     E_DBus_Callback_Func cb_func, void *data);
-   EAPI int e_nm_device_get_type(E_NM_Context *ctx, const char *device,
-                                 E_DBus_Callback_Func cb_func, void *data);
+   EAPI void e_nm_device_free_device(E_NM_Device *device);
+   EAPI void e_nm_device_dump_device(E_NM_Device *device);
+
 
 /* org.freedesktop.NetworkManager.Devices api */
 /* TODO: EAPI int e_nm_network_get_name() */

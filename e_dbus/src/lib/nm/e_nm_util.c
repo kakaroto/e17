@@ -14,8 +14,8 @@ e_nm_callback_by_type(int rettype)
 {
   switch (rettype)
   {
-    case DBUS_TYPE_STRING:
-      return cb_nm_string;
+    case DBUS_TYPE_OBJECT_PATH:
+      return cb_nm_object_path;
       
     case DBUS_TYPE_INT32:
       return cb_nm_int32;
@@ -95,8 +95,8 @@ e_nm_get_from_device(E_NM_Context *ctx, const char *device,
   msg = e_nm_device_call_new(device, method);
   ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
                                 cb_func,
-				e_nm_free_by_type(rettype),
-				-1, data) ? 1 : 0;
+                                e_nm_free_by_type(rettype),
+                                -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -131,6 +131,8 @@ cb_nm_int32(DBusMessage *msg, DBusError *err)
 {
   dbus_int32_t *i;
 
+  E_NM_CHECK_SIGNATURE(msg, err, "i");
+
   i = malloc(sizeof(dbus_int32_t));
   /* Actually emit the integer */
   dbus_message_get_args(msg, err,
@@ -148,6 +150,8 @@ void *
 cb_nm_uint32(DBusMessage *msg, DBusError *err)
 {
   dbus_uint32_t *i;
+
+  E_NM_CHECK_SIGNATURE(msg, err, "u");
 
   i = malloc(sizeof(dbus_uint32_t));
   /* Actually emit the unsigned integer */
@@ -167,6 +171,8 @@ cb_nm_boolean(DBusMessage *msg, DBusError *err)
 {
   dbus_bool_t *i;
 
+  E_NM_CHECK_SIGNATURE(msg, err, "b");
+
   i = malloc(sizeof(dbus_bool_t));
   /* Actually emit the unsigned integer */
   dbus_message_get_args(msg, err,
@@ -178,16 +184,18 @@ cb_nm_boolean(DBusMessage *msg, DBusError *err)
 
 /**
  * @internal
- * @brief Callback for methods returning a single string
+ * @brief Callback for methods returning a single object path
  */
 void *
-cb_nm_string(DBusMessage *msg, DBusError *err)
+cb_nm_object_path(DBusMessage *msg, DBusError *err)
 {
   char *str;
 
-  /* Actually emit the string */
+  E_NM_CHECK_SIGNATURE(msg, err, "o");
+
+  /* Actually emit the object_path */
   dbus_message_get_args(msg, err,
-                        DBUS_TYPE_STRING, &str,
+                        DBUS_TYPE_OBJECT_PATH, &str,
                         DBUS_TYPE_INVALID);
 
   return str;
@@ -196,17 +204,17 @@ cb_nm_string(DBusMessage *msg, DBusError *err)
 
 /**
  * @internal
- * @brief Callback for methods returning a list of strings or object paths
+ * @brief Callback for methods returning a list of object paths
  */
 void *
-cb_nm_string_list(DBusMessage *msg, DBusError *err)
+cb_nm_object_path_list(DBusMessage *msg, DBusError *err)
 {
   Ecore_List *devices;
   DBusMessageIter iter, sub;
 
+  E_NM_CHECK_SIGNATURE(msg, err, "ao");
+
   dbus_message_iter_init(msg, &iter);
-  if (dbus_message_iter_get_arg_type(&iter) != DBUS_TYPE_ARRAY ||
-      dbus_message_iter_get_element_type(&iter) != DBUS_TYPE_OBJECT_PATH) return NULL;
 
   devices = ecore_list_new();
   dbus_message_iter_recurse(&iter, &sub);
@@ -223,10 +231,19 @@ cb_nm_string_list(DBusMessage *msg, DBusError *err)
 }
 
 void
-free_nm_string_list(void *data)
+free_nm_object_path_list(void *data)
 {
   Ecore_List *list = data;
 
   if (list) ecore_list_destroy(list);
+}
+
+int
+nm_check_arg_type(DBusMessageIter *iter, char type)
+{
+  char sig;
+ 
+  sig = dbus_message_iter_get_arg_type(iter);
+  return sig == type;
 }
 
