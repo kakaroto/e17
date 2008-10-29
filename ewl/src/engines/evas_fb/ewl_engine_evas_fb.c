@@ -17,7 +17,7 @@ static Ecore_Event_Handler *ee_mouse_down_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_up_handler = NULL;
 
 static void ee_canvas_setup(Ewl_Window *win, int debug);
-static int ee_init(Ewl_Engine *engine);
+static int ee_init(Ewl_Engine *engine, int *argc, char **argv);
 static void ee_shutdown(Ewl_Engine *engine);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
