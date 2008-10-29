@@ -49,14 +49,14 @@ epsilonmodule = Extension('epsilon.c_epsilon',
                                    ],
                           depends=['include/epsilon/c_epsilon.pxd',
                                    ],
-                          **pkgconfig('"epsilon >= 0.3.1.012" ''"eina-0 >= 0.0.1"'))
+                          **pkgconfig('"epsilon >= 0.3.0.012" "eina-0 >= 0.0.1"'))
 
 epsilonrequestmodule = Extension('epsilon.request',
                           sources=['epsilon/epsilon.request.pyx',
                                    ],
                           depends=['include/epsilon/request.pxd',
                                    ],
-                          **pkgconfig('"epsilon >= 0.3.1.012" ''"eina-0 >= 0.0.1"'))
+                          **pkgconfig('"epsilon >= 0.3.0.012" "eina-0 >= 0.0.1"'))
 
 
 trove_classifiers = [
