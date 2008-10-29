@@ -86,3 +86,5 @@ if __name__ == "__main__":
 
     ee.show()
     ecore.main_loop_begin()
+    del canvas
+    del ee

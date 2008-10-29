@@ -84,9 +84,9 @@ cdef int Canvas_remember(long ptr, Canvas c) except 0:
 
 cdef int Canvas_forget(long ptr) except 0:
     try:
-        del canvas_mapping[ptr]
+        canvas_mapping.pop(ptr)
     except KeyError, e:
-        raise ValueError("Canvas 0x%x is unknown" % ptr)
+        raise ValueError("Canvas %#x is unknown" % ptr)
     return 1
 
 
