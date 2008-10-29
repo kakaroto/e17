@@ -50,6 +50,9 @@ group { \
 collections {
    group {
        name: "modules/forecasts/main";
+       script {
+           public is_float;
+       }
        parts {
 	   part {
 	       name: "base";
@@ -168,6 +171,7 @@ collections {
 		       font:  "Vera Bold";
 		       size:  10;
 		       min:   1 1;
+                       fit:   1 1;
 		       align: 0.5 0.5;
 		       text_class: "module_normal";
 		   }
@@ -608,30 +612,58 @@ collections {
 	       name: "text_hide";
 	       signal: "e,state,description,hide";
 	       source: "e";
+               script {
+                   if (is_float == 0)
+                       run_program(PROGRAM:"text_hide_complete");
+               }
+	   }
+           program {
+               name: "text_hide_complete";
 	       action: STATE_SET "hidden" 0.0;
 	       target: "e.text.description";
-	   }
+           }
 	   program {
 	       name: "text_show";
 	       signal: "e,state,description,show";
 	       source: "e";
+               script {
+                   if (is_float == 0)
+                       run_program(PROGRAM:"text_hide_complete");
+               }
+	   }
+           program {
+               name: "text_show_complete";
 	       action: STATE_SET "default" 0.0;
 	       target: "e.text.description";
-	   }
+           }
 	   program {
 	       name: "float";
 	       signal: "e,state,orientation,float";
 	       source: "e";
+               script {
+                   set_int(is_float, 1);
+                   run_program(PROGRAM:"float_complete");
+               }
+	   }
+           program {
+               name: "float_complete";
 	       action: STATE_SET "float" 0.0;
                ORIENT_TARGETS
-	   }
+           }
 	   program {
 	       name: "shelf";
 	       signal: "e,state,orientation,default";
 	       source: "e";
+               script {
+                   set_int(is_float, 0);
+                   run_program(PROGRAM:"shelf_complete");
+               }
+	   }
+           program {
+               name: "shelf_complete";
 	       action: STATE_SET "default" 0.0;
                ORIENT_TARGETS
-	   }
+           }
        }
    }
    FORECASTS_ICON(0, 10, 10, 110, 110, 1.0)
