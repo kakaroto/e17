@@ -54,7 +54,7 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore_fd_handler.pxi',
                                  'include/ecore/c_ecore.pxd',
                                  ],
-                        **pkgconfig('"ecore >= 0.9.9.043" ''"eina-0 >= 0.0.1"'))
+                        **pkgconfig('"ecore >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 
 
 ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
@@ -69,26 +69,26 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
                                      'include/ecore/evas/c_ecore_evas.pxd',
                                      ],
-                            **pkgconfig('"ecore-evas >= 0.9.9.043" ''"eina-0 >= 0.0.1"'))
+                            **pkgconfig('"ecore-evas >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 
 ecorexmodule = Extension('ecore.x.c_ecore_x',
                          sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
                          depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
                                   'include/ecore/x/c_ecore_x.pxd',
                                  ],
-                         **pkgconfig('"ecore-x >= 0.9.9.043" ''"eina-0 >= 0.0.1"'))
+                         **pkgconfig('"ecore-x >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 
 ecorexscreensavermodule = Extension('ecore.x.screensaver',
                                     sources=['ecore/x/ecore.x.screensaver.pyx'],
                                     depends=['include/ecore/x/screensaver.pxd'],
-                                    **pkgconfig('"ecore-x >= 0.9.9.043" ''"eina-0 >= 0.0.1"'))
+                                    **pkgconfig('"ecore-x >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 
 ecoreimfmodule = Extension('ecore.imf.c_ecore_imf',
                            sources=['ecore/imf/ecore.imf.c_ecore_imf.pyx'],
                            depends=['include/ecore/c_ecore_data.pxd',
                                     'include/ecore/imf/c_ecore_imf.pxd',
                                    ],
-                           **pkgconfig('"ecore-imf >= 0.9.9.043" ''"eina-0 >= 0.0.1"'))
+                           **pkgconfig('"ecore-imf >= 0.9.9.050" ''"eina-0 >= 0.0.1"'))
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -134,7 +134,7 @@ class ecore_build_ext(build_ext):
 
 
 setup(name='python-ecore',
-      version='0.3.0',
+      version='0.3.1',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -144,8 +144,8 @@ setup(name='python-ecore',
       keywords='wrapper binding enlightenment abstraction event ecore',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.3.0'],
-      setup_requires=['python-evas>=0.3.0'],
+      install_requires=['python-evas>=0.3.1'],
+      setup_requires=['python-evas>=0.3.1'],
       ext_modules=[ecoremodule, ecoreevasmodule, ecorexmodule,
                    ecorexscreensavermodule, ecoreimfmodule,
                   ],

@@ -49,14 +49,14 @@ epsilonmodule = Extension('epsilon.c_epsilon',
                                    ],
                           depends=['include/epsilon/c_epsilon.pxd',
                                    ],
-                          **pkgconfig('"epsilon >= 0.3.0.012" ''"eina-0 >= 0.0.1"'))
+                          **pkgconfig('"epsilon >= 0.3.1.012" ''"eina-0 >= 0.0.1"'))
 
 epsilonrequestmodule = Extension('epsilon.request',
                           sources=['epsilon/epsilon.request.pyx',
                                    ],
                           depends=['include/epsilon/request.pxd',
                                    ],
-                          **pkgconfig('"epsilon >= 0.3.0.012" ''"eina-0 >= 0.0.1"'))
+                          **pkgconfig('"epsilon >= 0.3.1.012" ''"eina-0 >= 0.0.1"'))
 
 
 trove_classifiers = [
@@ -98,7 +98,7 @@ class epsilon_build_ext(build_ext):
 
 
 setup(name='python-epsilon',
-      version='0.3.0',
+      version='0.3.1',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -108,8 +108,8 @@ setup(name='python-epsilon',
       keywords='wrapper binding enlightenment graphics jpg jpeg png thumbnail freedesktop.org',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-ecore>=0.3.0'],
-      setup_requires=['python-ecore>=0.3.0'],
+      install_requires=['python-ecore>=0.3.1'],
+      setup_requires=['python-ecore>=0.3.1'],
       ext_modules=[epsilonmodule, epsilonrequestmodule],
       zip_safe=False,
       cmdclass={'build_ext': epsilon_build_ext,},
