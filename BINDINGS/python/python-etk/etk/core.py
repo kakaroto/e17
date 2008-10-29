@@ -273,3 +273,7 @@ class VPaned(c_etk.VPaned):
 class MessageDialog(c_etk.MessageDialog, c_etk.MessageDialogEnums):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_Message_Dialog"
+
+class Notebook(c_etk.Notebook):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Notebook"
