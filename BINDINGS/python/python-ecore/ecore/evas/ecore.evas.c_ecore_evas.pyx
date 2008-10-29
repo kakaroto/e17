@@ -30,23 +30,45 @@ def shutdown():
     return ecore_evas_shutdown()
 
 cdef char *engines[15]
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "software_buffer"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "buffer"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
-engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "gl_x11"
+engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "opengl_x11"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_XCB] = "software_xcb"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_XCB] = "xrender_xcb"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_DDRAW] = "software_ddraw"
 engines[<int>ECORE_EVAS_ENGINE_DIRECT3D] = "direct3d"
-engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "gl_glew"
+engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "opengl_glew"
 engines[<int>ECORE_EVAS_ENGINE_SDL] = "sdl"
 engines[<int>ECORE_EVAS_ENGINE_DIRECTFB] = "directfb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "software_fb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_X11] = "software_x11_16"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW] = "software_ddraw_16"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE] = "software_wince_16"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "fb"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_X11] = "software_16_x11"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW] = "software_16_ddraw"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE] = "software_16_wince"
 cdef int engines_len
 engines_len = sizeof(engines)/sizeof(engines[0])
+
+cdef object engine_mapping
+engine_mapping = {
+  "software_x11": SoftwareX11,
+  "xrender_x11": XRenderX11,
+  "opengl_x11": GLX11,
+  "software_xcb": SoftwareX11,
+  "xrender_xcb": XRenderX11,
+  "software_16_x11": SoftwareX11_16,
+#  "directfb": DirectFB,
+  "fb": FB,
+#  "software_ddraw": ,
+#  "direct3d": ,
+#  "opengl_glew": ,
+#  "software_16_ddraw": ,
+#  "software_16_wince": ,
+#  "software_16_wince_fb": ,
+#  "software_16_wince_gapi": ,
+#  "sdl": ,
+#  "software_16_sdl": ,
+  "buffer": Buffer,
+  }
 
 
 def engine_type_from_name(char *method):
@@ -90,6 +112,69 @@ def engine_type_supported_get(method):
     return bool(ecore_evas_engine_type_supported_get(method_id))
 
 
+def engines_get():
+    """List all supported engines.
+
+    @rtype: list of str
+    """
+    cdef Eina_List *l, *orig_l
+    cdef char *s
+    lst = []
+    orig_l = l = ecore_evas_engines_get()
+    while l != NULL:
+        s = <char *>l.data
+        if s != NULL:
+            lst.append(s)
+        l = l.next
+    ecore_evas_engines_free(orig_l)
+    return lst
+
+
+def new(engine_name=None, int x=0, int y=0, int w=320, int h=240, extra_options=None):
+    """Creates a new EcoreEvas based on engine name.
+
+    @parm B{engine_name} name of engine to use (as of engines_get()) or None
+          to use auto discovery.
+    @parm B{x} horizontal placement.
+    @parm B{y} vertical placement.
+    @parm B{w} window width.
+    @parm B{h} window height.
+    @parm B{extra_options} if not None, a textual description of parameters.
+
+    @raise SystemError if problems occur.
+    """
+    cdef Ecore_Evas *ee
+    cdef EcoreEvas o
+    cdef char *en, *eo
+
+    if engine_name is None:
+        en = NULL
+    else:
+        en = engine_name
+
+    if extra_options is None:
+        eo = NULL
+    else:
+        eo = extra_options
+
+    ee = ecore_evas_new(en, x, y, w, h, eo)
+    if ee == NULL:
+        raise SystemError(("could not create engine named %r with geometry "
+                           "%d,%d %dx%d and extra options %s") %
+                          engine_name, x, y, w, h, extra_options)
+
+    en = ecore_evas_engine_name_get(ee)
+    if en == NULL:
+        raise SystemError("Ecore_Evas has no engine name!")
+
+    cls = engine_mapping.get(en, None)
+    if cls is None:
+        raise SystemError("Ecore_Evas has no associated wrapper: %s" % en)
+
+    o = cls.__new__(cls)
+    o._set_obj(ee)
+    return o
+
 
 include "ecore.evas.c_ecore_evas_base.pxi"
 include "ecore.evas.c_ecore_evas_base_x11.pxi"
@@ -97,6 +182,5 @@ include "ecore.evas.c_ecore_evas_software_x11.pxi"
 include "ecore.evas.c_ecore_evas_gl_x11.pxi"
 include "ecore.evas.c_ecore_evas_xrender_x11.pxi"
 include "ecore.evas.c_ecore_evas_fb.pxi"
-#include "ecore.evas.c_ecore_evas_directfb.pxi"
 include "ecore.evas.c_ecore_evas_buffer.pxi"
 include "ecore.evas.c_ecore_evas_software_x11_16.pxi"

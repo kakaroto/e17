@@ -20,6 +20,12 @@ cimport evas.c_evas
 cdef extern from "evas/python_evas_utils.h":
     int PY_REFCOUNT(object)
 
+cdef extern from "Eina.h":
+    ctypedef struct Eina_List:
+        void *data
+        Eina_List *next
+        Eina_List *prev
+
 
 cdef extern from "Ecore_Evas.h":
     ####################################################################
@@ -75,6 +81,11 @@ cdef extern from "Ecore_Evas.h":
     int ecore_evas_shutdown()
 
     int ecore_evas_engine_type_supported_get(Ecore_Evas_Engine_Type engine)
+
+    Eina_List  *ecore_evas_engines_get()
+    void ecore_evas_engines_free(Eina_List *engines)
+    Ecore_Evas *ecore_evas_new(char *engine_name, int x, int y, int w, int h, char *extra_options)
+    char *ecore_evas_engine_name_get(Ecore_Evas *ee)
 
     Ecore_Evas *ecore_evas_software_x11_new(char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h)
     Ecore_X_Window ecore_evas_software_x11_window_get(Ecore_Evas *ee)
