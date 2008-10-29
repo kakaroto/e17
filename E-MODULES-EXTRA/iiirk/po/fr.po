@@ -1,154 +1,157 @@
 # French translation of iiirk in e17
 # This file is put in the public domain.
 # Lisovszki Sándor <lisovszki@gmail.com>, 2008.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: iiirk e17\n"
+"Project-Id-Version: iiirk module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-17 08:24+0100\n"
-"PO-Revision-Date: 2008-10-22 21:31+0800\n"
-"Last-Translator:  <>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2008-10-27 10:35+0400\n"
+"PO-Revision-Date: 2008-10-27 13:43+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 
 #: src/e_mod_main.c:231
 msgid "IIirk"
-msgstr ""
+msgstr "IIirk"
 
-#: src/e_mod_main.c:363 src/e_mod_main.c:781
+#: src/e_mod_main.c:363
+#: src/e_mod_main.c:780
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
-#: src/e_mod_main.c:1553
+#: src/e_mod_main.c:1548
 msgid "Applications"
-msgstr ""
+msgstr "Applications"
 
-#: src/e_mod_main.c:1555 src/e_int_config_iiirk.c:52
+#: src/e_mod_main.c:1550
+#: src/e_int_config_iiirk.c:52
 #: src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
-msgstr ""
+msgstr "Applications à l'intérieur de IIirk"
 
-#: src/e_mod_main.c:1557
+#: src/e_mod_main.c:1552
 msgid "Internal"
-msgstr ""
+msgstr "Interne"
 
-#: src/e_mod_main.c:1558
+#: src/e_mod_main.c:1553
 msgid "IIirk Other"
-msgstr ""
+msgstr "IIirk (autres)"
 
 #: src/e_mod_config.c:58
 msgid "Iiirk Configuration"
-msgstr ""
+msgstr "Configuration de IIirk"
 
 #: src/e_mod_config.c:110
 msgid "Selected Iiirk Source"
-msgstr ""
+msgstr "Sélection de la source"
 
-#: src/e_mod_config.c:118 src/e_int_config_iiirk.c:157
+#: src/e_mod_config.c:118
+#: src/e_int_config_iiirk.c:157
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
-#: src/e_mod_config.c:120 src/e_int_config_iiirk.c:183
+#: src/e_mod_config.c:120
+#: src/e_int_config_iiirk.c:183
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: src/e_mod_config.c:122
 msgid "Configure"
-msgstr ""
+msgstr "Configurer"
 
 #: src/e_mod_config.c:131
 msgid "General Settings"
-msgstr ""
+msgstr "Paramètres généraux"
 
 #: src/e_mod_config.c:132
 msgid "Hide window from any list when iconified"
-msgstr ""
+msgstr "Cacher la fenêtre de toute liste quand minimisée"
 
 #: src/e_mod_config.c:134
 msgid "Show Icon Label"
-msgstr ""
+msgstr "Montrer l'étiquette de l'icone"
 
 #: src/e_mod_config.c:137
 msgid "Display Name"
-msgstr ""
+msgstr "Afficher le nom"
 
 #: src/e_mod_config.c:139
 msgid "Display Title"
-msgstr ""
+msgstr "Afficher le titre"
 
 #: src/e_mod_config.c:141
 msgid "Display Class"
-msgstr ""
+msgstr "Afficher la classe"
 
 #: src/e_mod_config.c:143
 msgid "Display Icon Name"
-msgstr ""
+msgstr "Afficher le nom de l'icone"
 
 #: src/e_mod_config.c:145
 msgid "Display Border Caption"
-msgstr ""
+msgstr "Afficher la légende de la bordure"
 
 #: src/e_mod_config.c:150
 msgid "Screen"
-msgstr ""
+msgstr "Écran"
 
 #: src/e_mod_config.c:170
 msgid "Show windows from all screens"
-msgstr ""
+msgstr "Afficher les fenêtres des autres écrans"
 
 #: src/e_mod_config.c:175
 msgid "Show windows from current screen"
-msgstr ""
+msgstr "Afficher les fenêtres de l'écran actuel"
 
 #: src/e_mod_config.c:181
 msgid "Desktop"
-msgstr ""
+msgstr "Bureau"
 
 #: src/e_mod_config.c:184
 msgid "Show windows from all desktops"
-msgstr ""
+msgstr "Afficher les fenêtres de tous les bureaux"
 
 #: src/e_mod_config.c:189
 msgid "Show windows from active desktop"
-msgstr ""
+msgstr "Afficher les fenêtres du bureau actif"
 
 #: src/e_mod_config.c:228
 msgid "Create new IIirk source"
-msgstr ""
+msgstr "Créer une source IIirk"
 
 #: src/e_mod_config.c:229
 msgid "Enter a name for this new source:"
-msgstr ""
+msgstr "Entrer un nom pour cette nouvelle source:"
 
 #: src/e_mod_config.c:244
 #, c-format
-msgid ""
-"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
-"iiirk source?"
-msgstr ""
+msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this iiirk source?"
+msgstr "Vous avez demandé à supprimer \"%s\".<br><br>Êtes-vous sur de vouloir supprimer cette source?"
 
 #: src/e_mod_config.c:248
 msgid "Are you sure you want to delete this iiirk source?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer cette source ?"
 
 #: src/e_int_config_iiirk.c:150
 msgid "All Applications"
-msgstr ""
+msgstr "Toutes les applications"
 
 #: src/e_int_config_iiirk.c:164
 msgid "Selected Applications"
-msgstr ""
+msgstr "Applications sélectionnées"
 
 #: src/e_int_config_iiirk.c:172
 msgid "Up"
-msgstr ""
+msgstr "Monter"
 
 #: src/e_int_config_iiirk.c:177
 msgid "Down"
-msgstr ""
+msgstr "Descendre"
 

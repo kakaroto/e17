@@ -1,23 +1,26 @@
 # Efm_path module (e17), French translation
 # This file is put in the public domain.
-# 
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Efm_path module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 18:46+0200\n"
-"PO-Revision-Date: 2008-01-23 01:50+0200\n"
-"Last-Translator: "
-"Language-Team: "
-"MIME-Version: 1.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-10-27 10:32+0400\n"
+"PO-Revision-Date: 2008-10-27 13:27+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 
 #: src/e_mod_main.c:68
 msgid "Location:"
-msgstr ""
+msgstr "Emplacement:"
 
 #: src/e_mod_main.c:137
 msgid "EFM Path"
-msgstr ""
+msgstr "Chemin EFM"
+
