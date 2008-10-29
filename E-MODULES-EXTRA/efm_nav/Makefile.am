@@ -15,12 +15,18 @@ files_DATA = \
 
 EXTRA_DIST = $(files_DATA) \
 	     images/home.png \
-	     images/btn.png \
-	     images/btn_down.png \
-	     images/btn_disabled.png \
+	     images/bt_base1.png \
+	     images/bt_base2.png \
+	     images/bt_hilight.png \
+	     images/bt_shine.png \
+	     images/bt_dis_base.png \
+	     images/bt_dis_shine.png \
+	     images/bt_dis_hilight.png \
 	     images/back.png \
 	     images/forward.png \
 	     images/up.png \
+	     images/favorites.png \
+	     images/refresh.png \
 	     fonts/Vera.ttf
 
 %.edj:  %.edc
