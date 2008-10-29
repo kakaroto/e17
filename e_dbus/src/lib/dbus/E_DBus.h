@@ -136,6 +136,10 @@ extern "C" {
 						    const char *destination, const char *path,
 						    E_DBus_Method_Return_Cb cb_return,
 						    const void *data);
+   EAPI DBusPendingCall *e_dbus_properties_get_all(E_DBus_Connection *conn, const char *destination,
+						   const char *path, const char *interface,
+						   E_DBus_Method_Return_Cb cb_return,
+						   const void *data);
    EAPI DBusPendingCall *e_dbus_properties_get(E_DBus_Connection *conn, const char *destination,
 					       const char *path, const char *interface,
 					       const char *property,

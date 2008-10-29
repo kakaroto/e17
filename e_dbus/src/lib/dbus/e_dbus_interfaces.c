@@ -58,7 +58,7 @@ e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination, const char *p
  * @param data data to pass to the callbacks
  */
 EAPI DBusPendingCall *
-e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
+e_dbus_peer_get_machine_id(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
    return _dbus_peer_call(conn, "GetMachineId", destination, path, cb_return, data);
 }
@@ -85,9 +85,37 @@ _dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_n
        return NULL;
     }
 
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface,
-			   DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+  if (property)
+  {
+    dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface,
+			     DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+  }
+  else
+  {
+    dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID);
+  }
+
   return msg;
+}
+
+EAPI DBusPendingCall *
+e_dbus_properties_get_all(E_DBus_Connection *conn, const char *destination, const char *path, const char *interface, E_DBus_Method_Return_Cb cb_return, const void *data)
+{
+  DBusMessage *msg;
+  DBusPendingCall *ret;
+
+  msg = _dbus_message_property_method_call
+    (conn, "GetAll", destination, path, interface, NULL);
+  if (!msg)
+    return NULL;
+  ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);
+  dbus_message_unref(msg);
+
+  if (!ret)
+    fprintf(stderr, "ERROR: failed to call GetAll() at \"%s\" at \"%s\"\n",
+	    destination, path);
+
+  return ret;
 }
 
 /**
@@ -102,7 +130,7 @@ _dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_n
  * @param data data to pass to the callbacks
  */
 EAPI DBusPendingCall *
-e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, const void *data)
+e_dbus_properties_get(E_DBus_Connection *conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
   DBusMessage *msg;
   DBusPendingCall *ret;
@@ -135,7 +163,7 @@ e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const cha
  * @param data data to pass to the callbacks
  */
 EAPI DBusPendingCall *
-e_dbus_properties_set(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, const void *value, E_DBus_Method_Return_Cb cb_return, const void *data)
+e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, const void *value, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;
