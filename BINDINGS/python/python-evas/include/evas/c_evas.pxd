@@ -156,6 +156,8 @@ cdef extern from "Evas.h":
         void (*clip_set)(Evas_Object *o, Evas_Object *clip)
         void (*clip_unset)(Evas_Object *o)
         void (*calculate)(Evas_Object *o)
+        void (*member_add)(Evas_Object *o, Evas_Object *child)
+        void (*member_del)(Evas_Object *o, Evas_Object *child)
         void *data
 
 

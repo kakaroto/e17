@@ -14,9 +14,9 @@ TITLE = "Kinetic List Test"
 WM_NAME = "KineticListTest"
 WM_CLASS = "main"
 
-class ResizableImage(evas.SmartObject):
+class ResizableImage(evas.ClippedSmartObject):
     def __init__(self, ecanvas):
-        evas.SmartObject.__init__(self, ecanvas)
+        evas.ClippedSmartObject.__init__(self, ecanvas)
         self.image_object = evas.Image(ecanvas)
         self.member_add(self.image_object)
 
@@ -28,11 +28,8 @@ class ResizableImage(evas.SmartObject):
         self.image_object.size = (w, h)
         self.image_object.fill_set(0, 0, w, h)
 
-    def color_set(self, r, g, b, a):
-        self.image_object.color_set(r, g, b, a)
 
-
-class KineticList(evas.SmartObject):
+class KineticList(evas.ClippedSmartObject):
     (
         SCROLL_PAGE_FORWARD,
         SCROLL_PAGE_BACKWARD,
@@ -48,7 +45,7 @@ class KineticList(evas.SmartObject):
         if item_width or item_height is left out the width (resp. height)
         of the List element is used.
         '''
-        evas.SmartObject.__init__(self, ecanvas)
+        evas.ClippedSmartObject.__init__(self, ecanvas)
         self.elements = []
         self.objects = []
         self.image_objects = []

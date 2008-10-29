@@ -77,6 +77,16 @@ cdef void _smart_object_delete(Evas_Object *o) with gil:
             del obj.calculate
         except AttributeError, e:
             pass
+    if type(obj.member_add) is types.MethodType:
+        try:
+            del obj.member_add
+        except AttributeError, e:
+            pass
+    if type(obj.member_del) is types.MethodType:
+        try:
+            del obj.member_del
+        except AttributeError, e:
+            pass
 
     obj._smart_callbacks = None
     obj._m_delete = None
@@ -88,6 +98,8 @@ cdef void _smart_object_delete(Evas_Object *o) with gil:
     obj._m_clip_set = None
     obj._m_clip_unset = None
     obj._m_calculate = None
+    obj._m_member_add = None
+    obj._m_member_del = None
 
 
 cdef void _smart_object_move(Evas_Object *o,
@@ -175,6 +187,30 @@ cdef void _smart_object_calculate(Evas_Object *o) with gil:
             traceback.print_exc()
 
 
+cdef void _smart_object_member_add(Evas_Object *o, Evas_Object *clip) with gil:
+    cdef SmartObject obj
+    cdef Object other
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
+    other = Object_from_instance(clip)
+    if obj._m_member_add is not None:
+        try:
+            obj._m_member_add(obj, other)
+        except Exception, e:
+            traceback.print_exc()
+
+
+cdef void _smart_object_member_del(Evas_Object *o, Evas_Object *clip) with gil:
+    cdef SmartObject obj
+    cdef Object other
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
+    other = Object_from_instance(clip)
+    if obj._m_member_del is not None:
+        try:
+            obj._m_member_del(obj, other)
+        except Exception, e:
+            traceback.print_exc()
+
+
 cdef void _smart_callback(void *data,
                           Evas_Object *o, void *event_info) with gil:
     cdef SmartObject obj
@@ -215,6 +251,8 @@ cdef long _smart_object_class_new(char *name) except 0:
     cls_def.clip_set = _smart_object_clip_set
     cls_def.clip_unset = _smart_object_clip_unset
     cls_def.calculate = _smart_object_calculate
+    cls_def.member_add = _smart_object_member_add
+    cls_def.member_del = _smart_object_member_del
     cls_def.data = NULL
 
     cls = evas_smart_class_new(cls_def);
@@ -295,6 +333,10 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
      - L{calculate()}: called before object is used for rendering and it is
        marked as dirty/changed with L{changed()}. I{Default implementation
        does nothing.}
+     - L{member_add()}: called when children is added to object. I{Default
+       implementation does nothing.}
+     - L{member_del()}: called when children is removed from object.
+       I{Default implementation does nothing.}
 
     @note: You should never instantiate the SmartObject base class directly,
        but inherit and implement methods, then instantiate this new subclass.
@@ -311,7 +353,8 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
        members
     @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
        Polygon, Text
-    @group Default implementations: delete, move, calculate
+    @group Default implementations: delete, move, calculate, member_add,
+       member_del
     @group Missing implementations: resize, show, hide, color_set,
        clip_set, clip_unset
     @group Event system: callback_add, callback_del, callback_call
@@ -350,6 +393,16 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         if self._m_calculate is not None:
             self.calculate = python.PyMethod_New(
                 SmartObject.calculate, self, cls)
+        self._m_member_add = _smart_class_get_impl_method_cls(
+            cls, SmartObject, "member_add")
+        if self._m_member_add is not None:
+            self.member_add = python.PyMethod_New(
+                SmartObject.member_add, self, cls)
+        self._m_member_del = _smart_class_get_impl_method_cls(
+            cls, SmartObject, "member_del")
+        if self._m_member_del is not None:
+            self.member_del = python.PyMethod_New(
+                SmartObject.member_del, self, cls)
 
     def __dealloc__(self):
         self._smart_callbacks = None
@@ -670,6 +723,8 @@ cdef public class ClippedSmartObject(SmartObject) \
        clip_set, clip_unset, calculate
     @ivar clipper: the internal object used for clipping. You shouldn't
        mess with it.
+
+    @todo remove current code and wrap C version (now it's in evas).
     """
     def __init__(self, Canvas canvas not None, **kargs):
         if type(self) is ClippedSmartObject:
@@ -686,14 +741,12 @@ cdef public class ClippedSmartObject(SmartObject) \
     def member_add(self, Object child):
         "Set an evas object as a member of this object, already clipping."
         evas_object_clip_set(child.obj, self.clipper.obj)
-        evas_object_smart_member_add(child.obj, self.obj)
         if evas_object_visible_get(self.obj):
             evas_object_show(self.clipper.obj)
 
     def member_del(self, Object child):
         "Removes a member object from a smart object, already unsets its clip."
         evas_object_clip_unset(child.obj)
-        evas_object_smart_member_del(child.obj)
         if evas_object_clipees_get(self.clipper.obj) == NULL:
             evas_object_hide(self.clipper.obj)
 
