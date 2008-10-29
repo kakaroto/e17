@@ -53,6 +53,11 @@ cdef extern from "Ecore_Evas.h":
         ECORE_EVAS_AVOID_DAMAGE_EXPOSE
         ECORE_EVAS_AVOID_DAMAGE_BUILT_IN
 
+    ctypedef enum Ecore_Evas_Object_Associate_Flags:
+        ECORE_EVAS_OBJECT_ASSOCIATE_BASE
+        ECORE_EVAS_OBJECT_ASSOCIATE_STACK
+        ECORE_EVAS_OBJECT_ASSOCIATE_LAYER
+
 
     ####################################################################
     # Structures
@@ -86,6 +91,10 @@ cdef extern from "Ecore_Evas.h":
     void ecore_evas_engines_free(Eina_List *engines)
     Ecore_Evas *ecore_evas_new(char *engine_name, int x, int y, int w, int h, char *extra_options)
     char *ecore_evas_engine_name_get(Ecore_Evas *ee)
+
+    int ecore_evas_object_associate(Ecore_Evas *ee, evas.c_evas.Evas_Object *obj, Ecore_Evas_Object_Associate_Flags flags)
+    int ecore_evas_object_dissociate(Ecore_Evas *ee, evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *ecore_evas_object_associate_get(Ecore_Evas *ee)
 
     Ecore_Evas *ecore_evas_software_x11_new(char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h)
     Ecore_X_Window ecore_evas_software_x11_window_get(Ecore_Evas *ee)

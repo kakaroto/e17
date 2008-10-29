@@ -21,5 +21,8 @@ canvas = ee.evas
 o = evas.Rectangle(canvas, size=canvas.size, color="#ff0000")
 o.show()
 
+o.event_callback_add(evas.EVAS_CALLBACK_DEL, lambda *a: ecore.main_loop_quit())
+ee.associate(o)
+
 ee.show()
 ecore.main_loop_begin()
