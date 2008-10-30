@@ -903,6 +903,9 @@ __END
 #define ON_DESKTOP(num) \
   __USE_ON_DESKTOP num
 
+#define DEFAULT_BACKGROUND \
+  __USE_ON_DESKTOP __DESKTOP_ALL
+
 #define ADD_BACKGROUND_TILED(file)\
   __BACKGROUND_LAYER file 1 1 0 0 0 0
 
