@@ -13,6 +13,7 @@ BASE_INSTALL = "\
   sysfsutils \
   modutils-initscripts \
   module-init-tools-depmod \
+  prelink \
   exquisite \
   exquisite-themes \
   exquisite-theme-illume \
@@ -28,14 +29,37 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 # getting an X window system up
 X_INSTALL = "\
+  glibc-utils \
+  glibc-charmap-utf-8 \
+  glibc-binary-localedata-en-us \
+  glibc-binary-localedata-de-de \
+  glibc-binary-localedata-fr-fr \
+  glibc-binary-localedata-pt-br \
+  glibc-binary-localedata-ca-es \
+  glibc-binary-localedata-zh-cn \
+  glibc-binary-localedata-zh-tw \
+  glibc-binary-localedata-bg-bg \
+  glibc-binary-localedata-cs-cz \
+  glibc-binary-localedata-da-dk \
+  glibc-binary-localedata-nl-nl \
+  glibc-binary-localedata-fi-fi \
+  glibc-binary-localedata-hu-hu \
+  glibc-binary-localedata-it-it \
+  glibc-binary-localedata-ja-jp \
+  glibc-binary-localedata-ko-kr \
+  glibc-binary-localedata-nb-no \
+  glibc-binary-localedata-pl-pl \
+  glibc-binary-localedata-ru-ru \
+  glibc-binary-localedata-sk-sk \
+  glibc-binary-localedata-sl-si \
+  glibc-binary-localedata-es-ar \
+  glibc-binary-localedata-sv-se \
   e-wm \
-  illume \
-  illume-config-illume \
-  illume-dicts-english-us \
-  illume-keyboards-default \
-  illume-keyboards-numbers \
-  illume-keyboards-terminal \
-  illume-theme-illume \
+  e-wm-config-illume \
+  e-wm-config-standard \
+  e-wm-config-netbook \
+  e-wm-config-minimalist \
+  e-wm-config-scaleable \
   ${XSERVER} \
   xserver-kdrive-splash-illume \
   xserver-kdrive-common \
@@ -51,6 +75,7 @@ X_INSTALL = "\
   ttf-dejavu-sans \
 #  ttf-dejavu-serif \
   ttf-dejavu-sans-mono \
+  ttf-arphic-uming \
   \
 "
 
@@ -112,10 +137,10 @@ PYTHON_INSTALL = "\
 
 # zhone
 ZHONE_INSTALL = "\
-  gsm0710muxd \
-  frameworkd \
-  fso-gpsd \
-#  zhone \
+#  gsm0710muxd \
+#  frameworkd \
+#  fso-gpsd \
+##  zhone \
 "
 
 # additional apps
@@ -152,6 +177,9 @@ fso_rootfs_postprocess() {
     echo "alias pico=nano" >>./etc/profile
 #    echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
+    # dns
+    echo "nameserver 208.67.222.222" >>./etc/resolv.conf
+    echo "nameserver 208.67.220.220" >>./etc/resolv.conf
     # nfs
     mkdir -p ./local/pkg
     echo >>./etc/fstab
