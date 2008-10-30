@@ -82,6 +82,18 @@ con_udp_client_example: $(con_udp_client_example_OBJS)
 	$(RM) $@
 	$(CC) $(LIBS) $(LDFLAFS) $(con_udp_client_example_OBJS) -o $@
 
+con_tcp_client_ssl_example_SRCS = con_tcp_client_ssl_example.c
+con_tcp_client_ssl_example_OBJS = $(con_tcp_client_ssl_example_SRCS:.c=.o)
+con_tcp_client_ssl_example: $(con_tcp_client_ssl_example_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(LDFLAFS) $(con_tcp_client_ssl_example_OBJS) -o $@
+
+con_tcp_ssl_example_SRCS = con_tcp_ssl_example.c
+con_tcp_ssl_example_OBJS = $(con_tcp_ssl_example_SRCS:.c=.o)
+con_tcp_ssl_example: $(con_tcp_ssl_example_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(LDFLAFS) $(con_tcp_ssl_example_OBJS) -o $@
+
 ############################################################################
 #### boilerplate
 .c.o:

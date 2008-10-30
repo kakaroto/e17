@@ -75,7 +75,7 @@ int main (int argc, char *argv[]) {
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_HUP,
                           event_hup, NULL);
 
-  svr = ecore_con_server_add(ECORE_CON_REMOTE_TCP, argv[1], atoi(argv[2]), NULL);
+  svr = ecore_con_server_add(ECORE_CON_REMOTE_TCP | ECORE_CON_USE_SSL3, argv[1], atoi(argv[2]), NULL);
   if( NULL == svr )
     {
       printf("Unable to add server\n");
