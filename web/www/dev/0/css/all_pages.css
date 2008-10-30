@@ -331,13 +331,25 @@ body
         line-height: 35px;
     }
 
-    #header .menu a.current 
+    #header .menu li.current
+    {
+        background-image: url("../img/header_background.png");
+        background-repeat: repeat-x;
+        background-position: top left;
+    }
+
+    #header .menu li.current:hover
+    {
+        background-image: url("../img/header_background.png");
+        background-repeat: repeat-x;
+        background-position: top left;
+    }
+
+    #header .menu li.current a
     {
         display: block;
-        background-image: url("../img/header_menu_arrow.png");
-        background-repeat: no-repeat;
-        background-position: bottom center;
         line-height: 60px;
+        color: #646464;
     }
 
     #header .submenu a:hover

@@ -11,10 +11,8 @@
     <link rel="icon" href="img/favicon.png" type="image/ico">
     <link rel="shortcut icon" href="img/favicon.png" type="image/ico">
 
-    <style type="text/css" media="all">
-        @import "css/all_pages.css";
-        @import "css/home_page.css";
-    </style>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/all_pages.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/home_page.css">
 </head>
 
 <body>
@@ -30,7 +28,7 @@
     <div class="menu-container">
         <div class="menu">
             <ul>
-                <li><a class="current" id="header-menu-news" href="#">News</a></li>
+                <li class="current"><a id="header-menu-news" href="#">News</a></li>
                 <li><a id="header-menu-project" href="#">Project</a></li>
                 <li><a id="header-menu-documentation" href="#">Documentation</a></li>
                 <li><a id="header-menu-community" href="#">Community</a></li>
@@ -70,62 +68,7 @@
 <div class="layout">
 <!-- Here should begin the dynamic content -->
 
-    <div id="colum-content">
-
-        <div id="introduction">
-        <div class="level1">
-        <div class="level2">
-            <h3><span>What is Enlightenment?</span></h3>
-<!--             <div class="images"> -->
-<!--                 <img src="img/main_shot_thumb.png" alt="screenshot"> -->
-<!--             </div> -->
-            <p>
-                Enlightenment is a window manager. Enlightenment is a desktop
-                shell. Enlightenment is the building blocks to create beautiful
-                applications. Enlightenment, or simply <em><strong>e</strong></em>,
-                is a group of people trying to make a new generation of software.
-            </p>
-
-            <ul>
-                <li><a href="about.html#desktop_shell">The desktop shell</a></li>
-                <li><a href="about.html#development_libraires">The development libraries</a></li>
-            </ul>
-            <div class="clear"></div>
-        </div>
-        </div>
-        </div>
-
-        <div id="welcome-buttons">
-            <table>
-            <tr>
-            <td id="welcome-button-use">
-                <h3><span>Use.</span></h3>
-                <ul>
-                    <li><a href="#">Download</a></li>
-                    <li><a href="#">Install</a></li>
-                    <li><a href="#">Exchange</a></li>
-                </ul>
-            </td><td id="welcome-button-learn">
-                <h3><span>Learn.</span></h3>
-                <ul>
-                    <li><a href="">Wiki</a></li>
-                    <li><a href="#">Documentation</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </td><td id="welcome-button-contribute">
-                <h3><span>Contribute.</span></h3>
-                <ul>
-                    <li><a href="#">Project Tracker</a></li>
-                    <li><a href="#">Bug reports</a></li>
-                </ul>
-            </td>
-            </tr>
-            </table>
-        </div>
-
-    </div>
-
-    <div id="colum-news">
+<div id="colum-news">
 
         <h2><span>Enlightenment News</span></h2>
 
@@ -183,6 +126,57 @@
             <p class="see-more">
                 <a href="p.php?p=news/show&amp;l=en&amp;news_id=8">more &raquo;</a>
             </p>
+        </div>
+
+    </div>
+
+    <div id="colum-content">
+
+        <div id="introduction">
+        <div class="level1">
+        <div class="level2">
+            <h3><span>What is Enlightenment?</span></h3>
+            <p>
+                Enlightenment is a window manager. Enlightenment is a desktop
+                shell. Enlightenment is the building blocks to create beautiful
+                applications. Enlightenment, or simply <em><strong>e</strong></em>,
+                is a group of people trying to make a new generation of software.
+            </p>
+
+            <ul>
+                <li><a href="about.html#desktop_shell">The desktop shell</a></li>
+                <li><a href="about.html#development_libraires">The development libraries</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+
+        <div id="welcome-buttons">
+            <table>
+            <tr>
+            <td id="welcome-button-use">
+                <h3><span>Use.</span></h3>
+                <ul>
+                    <li><a href="#">Download</a></li>
+                    <li><a href="#">Install</a></li>
+                    <li><a href="#">Exchange</a></li>
+                </ul>
+            </td><td id="welcome-button-learn">
+                <h3><span>Learn.</span></h3>
+                <ul>
+                    <li><a href="">Wiki</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </td><td id="welcome-button-contribute">
+                <h3><span>Contribute.</span></h3>
+                <ul>
+                    <li><a href="#">Project Tracker</a></li>
+                    <li><a href="#">Bug reports</a></li>
+                </ul>
+            </td>
+            </tr>
+            </table>
         </div>
 
     </div>

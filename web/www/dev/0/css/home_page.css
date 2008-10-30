@@ -1,34 +1,31 @@
 #content
 {
-    padding-top: 4em;
+    padding-top: 3em;
 
 }
 
 #welcome-buttons
 {
     margin-top: 4em;
-    margin-right: 4em;
+    margin-right: 3em;                                              /* Sunc B */
 }
 
 #colum-content
 {
-    width: 65%;
-    float: left;
+    margin-right: 30em;                                             /* Sync A */
 }
 
 #colum-news
 {
-    display: block;
-    margin-left: 65%;
-/*     background-color: white; */
-/*     padding: 1em; */
+    width: 28em;                                                    /* Sync A */
+    float: right;
+    background-color: white;
+    padding: 1em;                                                   /* Sync A */
 }
 
 #introduction
 {
-    margin-right: 4em;
-    display: block;
-    clear: both;
+    margin-right: 3em;                                              /* Sync B */
     background-color: black;
     background-image: url("../img/home_page/banner_background.png");
     background-repeat: repeat-x;
