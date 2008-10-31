@@ -168,9 +168,9 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 	tmp = ecore_list_index_goto(cfdata->devs, cfdata->dev_num);
 	if (tmp != NULL) 
 	  {
-	     if (ci->device) evas_stringshare_del(ci->device);
+	     if (ci->device) eina_stringshare_del(ci->device);
 
-	     ci->device = evas_stringshare_add(tmp);
+	     ci->device = eina_stringshare_add(tmp);
 	     E_FREE(tmp);
 	  }
      }

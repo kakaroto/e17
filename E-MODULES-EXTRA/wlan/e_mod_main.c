@@ -256,14 +256,14 @@ _wlan_config_item_get (const char *id)
 	     if (!strcmp (ci->id, id)) 
 	       {
 		  if (!ci->device)
-		    ci->device = evas_stringshare_add ("wlan0");
+		    ci->device = eina_stringshare_add ("wlan0");
 		  return ci;
 	       }       
 	  }
      }
    ci = E_NEW (Config_Item, 1);
-   ci->id = evas_stringshare_add (id);
-   ci->device = evas_stringshare_add ("wlan0");  
+   ci->id = eina_stringshare_add (id);
+   ci->device = eina_stringshare_add ("wlan0");  
    ci->poll_time = 1.0;
    ci->always_text = 0;
    ci->show_percent = 1;
@@ -312,8 +312,8 @@ e_modapi_init (E_Module * m)
       wlan_config = E_NEW (Config, 1);
 
       ci = E_NEW (Config_Item, 1);
-      ci->id = evas_stringshare_add ("0");
-      ci->device = evas_stringshare_add ("wlan0");      
+      ci->id = eina_stringshare_add ("0");
+      ci->device = eina_stringshare_add ("wlan0");      
       ci->poll_time = 1.0;
       ci->always_text = 0;
       ci->show_percent = 1;
@@ -346,9 +346,9 @@ e_modapi_shutdown (E_Module * m)
       wlan_config->items =
 	eina_list_remove_list (wlan_config->items, wlan_config->items);
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       if (ci->device)
-	evas_stringshare_del (ci->device);
+	eina_stringshare_del (ci->device);
 	
       free (ci);
       ci = NULL;
