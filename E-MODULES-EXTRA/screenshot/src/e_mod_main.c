@@ -278,9 +278,9 @@ _gc_id_new(void)
 static void 
 _cfg_free(void) 
 {
-   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
-   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
-   if (ss_cfg->app) evas_stringshare_del(ss_cfg->app);
+   if (ss_cfg->location) eina_stringshare_del(ss_cfg->location);
+   if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
+   if (ss_cfg->app) eina_stringshare_del(ss_cfg->app);
    E_FREE(ss_cfg);
 }
 
@@ -313,7 +313,7 @@ _cfg_new(void)
    ss_cfg->use_bell = 1;
    ss_cfg->use_thumb = 0;
    snprintf(buf, sizeof(buf), "%s/Desktop", e_user_homedir_get());
-   ss_cfg->location = evas_stringshare_add(buf);
+   ss_cfg->location = eina_stringshare_add(buf);
    ss_cfg->filename = NULL;
    ss_cfg->app = NULL;
    IFMODCFGEND;
@@ -490,8 +490,8 @@ _cb_dialog_ok(char *text, void *data)
    else
      snprintf(buf, sizeof(buf), "%s", text);
 
-   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
-   ss_cfg->filename = evas_stringshare_add(buf);
+   if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
+   ss_cfg->filename = eina_stringshare_add(buf);
 
    _cb_send_msg(inst);
 }
