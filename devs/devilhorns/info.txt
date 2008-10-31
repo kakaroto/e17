@@ -1,0 +1,10 @@
+Login: devilhorns
+IRC Nick: devilhorns
+Name: Christopher Michael
+Location: New Jersey, USA
+E-Mail: devilhorns@devilhorns.us
+WWW: http://devilhorns.us
+Managing: General E patch monkey
+Group: Core, Applications, Libraries
+Platform: Gentoo
+
