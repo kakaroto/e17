@@ -38,7 +38,7 @@ e_phys_constraint_free(E_Phys_Constraint *con)
 E_Phys_Constraint_Boundary *
 e_phys_constraint_boundary_add(E_Phys_World *world)
 {
-  E_Phys_Constraint_Boundary *con = malloc(sizeof(E_Phys_Constraint_Boundary));
+   E_Phys_Constraint_Boundary *con = calloc(1, sizeof(E_Phys_Constraint_Boundary));
   e_phys_constraint_init(E_PHYS_CONSTRAINT(con), world,
     e_phys_constraint_boundary_apply, NULL);
 
