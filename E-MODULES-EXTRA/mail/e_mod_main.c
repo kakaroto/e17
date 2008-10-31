@@ -398,7 +398,7 @@ _mail_config_item_get (const char *id)
      }
 
    ci = E_NEW (Config_Item, 1);
-   ci->id = evas_stringshare_add (id);
+   ci->id = eina_stringshare_add (id);
    ci->show_label = 1;
    ci->check_time = 15.0;
    ci->show_popup = 1;
@@ -469,7 +469,7 @@ e_modapi_init (E_Module * m)
       mail_config = E_NEW (Config, 1);
       ci = E_NEW (Config_Item, 1);
 
-      ci->id = evas_stringshare_add ("0");
+      ci->id = eina_stringshare_add ("0");
       ci->show_label = 1;
       ci->check_time = 15.0;
       ci->show_popup = 1;
@@ -527,25 +527,25 @@ e_modapi_shutdown (E_Module * m)
 	      break;
 	    }
 	  if (cb->name)
-	    evas_stringshare_del (cb->name);
+	    eina_stringshare_del (cb->name);
 	  if (cb->host)
-	    evas_stringshare_del (cb->host);
+	    eina_stringshare_del (cb->host);
 	  if (cb->user)
-	    evas_stringshare_del (cb->user);
+	    eina_stringshare_del (cb->user);
 	  if (cb->pass)
-	    evas_stringshare_del (cb->pass);
+	    eina_stringshare_del (cb->pass);
 	  if (cb->new_path)
-	    evas_stringshare_del (cb->new_path);
+	    eina_stringshare_del (cb->new_path);
 	  if (cb->cur_path)
-	    evas_stringshare_del (cb->cur_path);
+	    eina_stringshare_del (cb->cur_path);
 	  if (cb->exec)
-	    evas_stringshare_del (cb->exec);
+	    eina_stringshare_del (cb->exec);
 	  ci->boxes = eina_list_remove_list (ci->boxes, ci->boxes);
 	  free (cb);
 	  cb = NULL;
 	}
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       mail_config->items =
 	eina_list_remove_list (mail_config->items, mail_config->items);
       free (ci);

@@ -311,11 +311,11 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
     }
 
   if (cb->name)
-    evas_stringshare_del (cb->name);
+    eina_stringshare_del (cb->name);
   if (cfdata->name != NULL)
-    cb->name = evas_stringshare_add (cfdata->name);
+    cb->name = eina_stringshare_add (cfdata->name);
   else
-    cb->name = evas_stringshare_add ("");
+    cb->name = eina_stringshare_add ("");
 
   cb->type = cfdata->type;
   cb->port = atoi (cfdata->port);
@@ -329,46 +329,46 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   cb->use_exec = cfdata->use_exec;
 
   if (cb->exec)
-    evas_stringshare_del (cb->exec);
+    eina_stringshare_del (cb->exec);
   if (cfdata->exec != NULL)
-    cb->exec = evas_stringshare_add (cfdata->exec);
+    cb->exec = eina_stringshare_add (cfdata->exec);
   else
-    cb->exec = evas_stringshare_add ("");
+    cb->exec = eina_stringshare_add ("");
 
   if (cb->host)
-    evas_stringshare_del (cb->host);
+    eina_stringshare_del (cb->host);
   if (cfdata->host != NULL)
-    cb->host = evas_stringshare_add (cfdata->host);
+    cb->host = eina_stringshare_add (cfdata->host);
   else
-    cb->host = evas_stringshare_add ("");
+    cb->host = eina_stringshare_add ("");
 
   if (cb->user)
-    evas_stringshare_del (cb->user);
+    eina_stringshare_del (cb->user);
   if (cfdata->user != NULL)
-    cb->user = evas_stringshare_add (cfdata->user);
+    cb->user = eina_stringshare_add (cfdata->user);
   else
-    cb->user = evas_stringshare_add ("");
+    cb->user = eina_stringshare_add ("");
 
   if (cb->pass)
-    evas_stringshare_del (cb->pass);
+    eina_stringshare_del (cb->pass);
   if (cfdata->pass != NULL)
-    cb->pass = evas_stringshare_add (cfdata->pass);
+    cb->pass = eina_stringshare_add (cfdata->pass);
   else
-    cb->pass = evas_stringshare_add ("");
+    cb->pass = eina_stringshare_add ("");
 
   if (cb->new_path)
-    evas_stringshare_del (cb->new_path);
+    eina_stringshare_del (cb->new_path);
   if (cfdata->new_path != NULL)
-    cb->new_path = evas_stringshare_add (cfdata->new_path);
+    cb->new_path = eina_stringshare_add (cfdata->new_path);
   else
-    cb->new_path = evas_stringshare_add ("");
+    cb->new_path = eina_stringshare_add ("");
 
   if (cb->cur_path)
-    evas_stringshare_del (cb->cur_path);
+    eina_stringshare_del (cb->cur_path);
   if (cfdata->cur_path != NULL)
-    cb->cur_path = evas_stringshare_add (cfdata->cur_path);
+    cb->cur_path = eina_stringshare_add (cfdata->cur_path);
   else
-    cb->cur_path = evas_stringshare_add ("");
+    cb->cur_path = eina_stringshare_add ("");
 
   if (!is_new)
     {
