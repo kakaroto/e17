@@ -139,14 +139,14 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    ci->all_desks = cfdata->all_desks;
    
    if (ci->dir)
-     evas_stringshare_del (ci->dir);
+     eina_stringshare_del (ci->dir);
 
    if (cfdata->dir != NULL)
-     ci->dir = evas_stringshare_add (cfdata->dir);
+     ci->dir = eina_stringshare_add (cfdata->dir);
    else
      {
 	snprintf (buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get ());
-	ci->dir = evas_stringshare_add (buf);
+	ci->dir = eina_stringshare_add (buf);
      }
 
    e_config_save_queue ();

@@ -115,7 +115,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->bg_list)
      ecore_list_destroy(inst->bg_list);
    if (inst->display)
-     evas_stringshare_del(inst->display);
+     eina_stringshare_del(inst->display);
    if (inst->check_timer)
      ecore_timer_del(inst->check_timer);
 
@@ -282,12 +282,12 @@ _slide_config_item_get(const char *id)
      }
 
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->poll_time = 60.0;
    ci->disable_timer = 0;
    ci->all_desks = 0;
    snprintf(buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get());
-   ci->dir = evas_stringshare_add(buf);
+   ci->dir = eina_stringshare_add(buf);
 
    slide_config->items = eina_list_append(slide_config->items, ci);
    return ci;
@@ -336,8 +336,8 @@ e_modapi_init(E_Module *m)
 	slide_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 
-	ci->id = evas_stringshare_add("0");
-	ci->dir = evas_stringshare_add(buf);
+	ci->id = eina_stringshare_add("0");
+	ci->dir = eina_stringshare_add(buf);
 	ci->poll_time = 60.0;
 	ci->disable_timer = 0;
 	ci->random_order = 0;
@@ -369,8 +369,8 @@ e_modapi_shutdown(E_Module *m)
 
 	ci = slide_config->items->data;
 	slide_config->items = eina_list_remove_list(slide_config->items, slide_config->items);
-	if (ci->id) evas_stringshare_del(ci->id);
-	if (ci->dir) evas_stringshare_del(ci->dir);
+	if (ci->id) eina_stringshare_del(ci->id);
+	if (ci->dir) eina_stringshare_del(ci->dir);
 	E_FREE(ci);
      }
    E_FREE(slide_config);
