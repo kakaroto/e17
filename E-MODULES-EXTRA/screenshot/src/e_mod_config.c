@@ -154,14 +154,14 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ss_cfg->delay = cfdata->delay;
    ss_cfg->prompt = cfdata->prompt;
    ss_cfg->mode = cfdata->mode;
-   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
+   if (ss_cfg->location) eina_stringshare_del(ss_cfg->location);
    if (cfdata->location) 
-     ss_cfg->location = evas_stringshare_add(cfdata->location);
+     ss_cfg->location = eina_stringshare_add(cfdata->location);
    else
-     ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
-   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
+     ss_cfg->location = eina_stringshare_add(e_user_homedir_get());
+   if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
    if (cfdata->filename)
-     ss_cfg->filename = evas_stringshare_add(cfdata->filename);
+     ss_cfg->filename = eina_stringshare_add(cfdata->filename);
    ss_cfg->use_app = cfdata->use_app;
    ss_cfg->use_thumb = cfdata->use_thumb;
 
@@ -253,17 +253,17 @@ _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ss_cfg->use_thumb = cfdata->use_thumb;
    ss_cfg->thumb_size = cfdata->thumb_size;
    ss_cfg->mode = cfdata->mode;
-   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
+   if (ss_cfg->location) eina_stringshare_del(ss_cfg->location);
    if (cfdata->location) 
-     ss_cfg->location = evas_stringshare_add(cfdata->location);
+     ss_cfg->location = eina_stringshare_add(cfdata->location);
    else
-     ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
-   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
+     ss_cfg->location = eina_stringshare_add(e_user_homedir_get());
+   if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
    if (cfdata->filename)
-     ss_cfg->filename = evas_stringshare_add(cfdata->filename);
-   if (ss_cfg->app) evas_stringshare_del(ss_cfg->app);
+     ss_cfg->filename = eina_stringshare_add(cfdata->filename);
+   if (ss_cfg->app) eina_stringshare_del(ss_cfg->app);
    if (cfdata->app)
-     ss_cfg->app = evas_stringshare_add(cfdata->app);
+     ss_cfg->app = eina_stringshare_add(cfdata->app);
    e_config_save_queue();
    return 1;
 }
