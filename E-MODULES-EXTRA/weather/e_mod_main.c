@@ -293,12 +293,12 @@ _weather_config_item_get (const char *id)
      }
 
    ci = E_NEW (Config_Item, 1);
-   ci->id = evas_stringshare_add (id);
+   ci->id = eina_stringshare_add (id);
    ci->poll_time = 900.0;
    ci->display = 0;
    ci->degrees = DEGREES_F;
-   ci->host = evas_stringshare_add ("www.rssweather.com");
-   ci->code = evas_stringshare_add ("KJFK");
+   ci->host = eina_stringshare_add ("www.rssweather.com");
+   ci->code = eina_stringshare_add ("KJFK");
 
    weather_config->items = eina_list_append (weather_config->items, ci);
    return ci;
@@ -349,9 +349,9 @@ e_modapi_init (E_Module * m)
       ci->poll_time = 900.0;
       ci->display = 0;
       ci->degrees = DEGREES_F;
-      ci->host = evas_stringshare_add ("www.rssweather.com");
-      ci->code = evas_stringshare_add ("KJFK");
-      ci->id = evas_stringshare_add ("0");
+      ci->host = eina_stringshare_add ("www.rssweather.com");
+      ci->code = eina_stringshare_add ("KJFK");
+      ci->id = eina_stringshare_add ("0");
 
       weather_config->items = eina_list_append (weather_config->items, ci);
     }
@@ -383,11 +383,11 @@ e_modapi_shutdown (E_Module * m)
 
       ci = weather_config->items->data;
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       if (ci->host)
-	evas_stringshare_del (ci->host);
+	eina_stringshare_del (ci->host);
       if (ci->code)
-	evas_stringshare_del (ci->code);
+	eina_stringshare_del (ci->code);
       weather_config->items =
 	eina_list_remove_list (weather_config->items, weather_config->items);
        E_FREE(ci);
@@ -469,8 +469,8 @@ _weather_get_proxy (void)
   // FIXME: A proxy doesn't necessarily need a port
   if ((host) && (port))
     {
-      if (proxy.host) evas_stringshare_del(proxy.host);
-      proxy.host = evas_stringshare_add (host);
+      if (proxy.host) eina_stringshare_del(proxy.host);
+      proxy.host = eina_stringshare_add (host);
       proxy.port = port;
     }
   free(env);
