@@ -65,7 +65,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   inst->ci = _tclock_config_item_get (id);
   if (!inst->ci->id)
-    inst->ci->id = evas_stringshare_add (id);
+    inst->ci->id = eina_stringshare_add (id);
 
   o = edje_object_add (gc->evas);
   snprintf (buf, sizeof (buf), "%s/tclock.edj",
@@ -430,13 +430,13 @@ _tclock_config_item_get (const char *id)
      }
 
    ci = E_NEW (Config_Item, 1);
-   ci->id = evas_stringshare_add (id);
+   ci->id = eina_stringshare_add (id);
    ci->show_date = 1;
    ci->show_time = 1;
    ci->show_tip = 1;
-   ci->time_format = evas_stringshare_add ("%T");
-   ci->date_format = evas_stringshare_add ("%d/%m/%y");
-   ci->tip_format = evas_stringshare_add("%A, %B %d, %Y");
+   ci->time_format = eina_stringshare_add ("%T");
+   ci->date_format = eina_stringshare_add ("%d/%m/%y");
+   ci->tip_format = eina_stringshare_add("%A, %B %d, %Y");
 
    tclock_config->items = eina_list_append (tclock_config->items, ci);
    return ci;
@@ -487,13 +487,13 @@ e_modapi_init (E_Module * m)
       tclock_config = E_NEW (Config, 1);
 
       ci = E_NEW (Config_Item, 1);
-      ci->id = evas_stringshare_add ("0");
+      ci->id = eina_stringshare_add ("0");
       ci->show_date = 1;
       ci->show_time = 1;
       ci->show_tip = 1;
-      ci->time_format = evas_stringshare_add ("%T");
-      ci->date_format = evas_stringshare_add ("%d/%m/%y");
-      ci->tip_format = evas_stringshare_add("%d");
+      ci->time_format = eina_stringshare_add ("%T");
+      ci->date_format = eina_stringshare_add ("%d/%m/%y");
+      ci->tip_format = eina_stringshare_add("%d");
 
       tclock_config->items = eina_list_append (tclock_config->items, ci);
     }
@@ -526,13 +526,13 @@ e_modapi_shutdown (E_Module * m)
       tclock_config->items =
 	eina_list_remove_list (tclock_config->items, tclock_config->items);
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       if (ci->time_format)
-	evas_stringshare_del (ci->time_format);
+	eina_stringshare_del (ci->time_format);
       if (ci->date_format)
-	evas_stringshare_del (ci->date_format);
+	eina_stringshare_del (ci->date_format);
        if (ci->tip_format)
-	 evas_stringshare_del(ci->tip_format);
+	 eina_stringshare_del(ci->tip_format);
       E_FREE (ci);
     }
 

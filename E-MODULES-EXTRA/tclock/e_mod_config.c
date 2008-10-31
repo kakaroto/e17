@@ -146,14 +146,14 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci->show_time = cfdata->show_time;
   ci->show_tip = cfdata->show_tip;
   if (ci->time_format)
-    evas_stringshare_del (ci->time_format);
-  ci->time_format = evas_stringshare_add (cfdata->time_format);
+    eina_stringshare_del (ci->time_format);
+  ci->time_format = eina_stringshare_add (cfdata->time_format);
   if (ci->date_format)
-    evas_stringshare_del (ci->date_format);
-  ci->date_format = evas_stringshare_add (cfdata->date_format);
+    eina_stringshare_del (ci->date_format);
+  ci->date_format = eina_stringshare_add (cfdata->date_format);
   if (ci->tip_format)
-    evas_stringshare_del (ci->tip_format);
-  ci->tip_format = evas_stringshare_add (cfdata->tip_format);
+    eina_stringshare_del (ci->tip_format);
+  ci->tip_format = eina_stringshare_add (cfdata->tip_format);
 
   e_config_save_queue ();
 
