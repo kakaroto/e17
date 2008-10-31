@@ -255,7 +255,7 @@ _mem_config_item_get (const char *id)
 	  }
      }
   ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
+  ci->id = eina_stringshare_add (id);
   ci->poll_time = 1.0;
   ci->always_text = 0;
   ci->show_percent = 1;
@@ -311,7 +311,7 @@ e_modapi_init (E_Module * m)
       mem_config = E_NEW (Config, 1);
 
       ci = E_NEW (Config_Item, 1);
-      ci->id = evas_stringshare_add ("0");
+      ci->id = eina_stringshare_add ("0");
       ci->poll_time = 1.0;
       ci->always_text = 0;
       ci->show_percent = 1;
@@ -348,7 +348,7 @@ e_modapi_shutdown (E_Module * m)
       mem_config->items =
 	eina_list_remove_list (mem_config->items, mem_config->items);
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       E_FREE (ci);
     }
   E_FREE (mem_config);
