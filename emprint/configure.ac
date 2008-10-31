@@ -58,6 +58,7 @@ ecore-evas
 )
 PKG_CHECK_MODULES(EVAS, evas)
 PKG_CHECK_MODULES(EDJE, edje)
+PKG_CHECK_MODULES(EINA, eina-0)
 
 AC_OUTPUT([
 Makefile

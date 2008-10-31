@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include <Eina.h>
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
@@ -69,6 +70,10 @@ static int gx = -1, gy = -1;
 int 
 main(int argc, char **argv) 
 {
+   /* initialize eina */
+   if (!eina_stringshare_init()) 
+     exit(EXIT_FAILURE);
+
    /* allocate a structure to hold our options */
    opts = calloc(1, sizeof(Options));
    if (opts  == NULL)
@@ -141,6 +146,9 @@ main(int argc, char **argv)
    /* shutdown ecore */
    ecore_shutdown();
 
+   /* shutdown eina_stringshare */
+   eina_stringshare_shutdown();
+
    return EXIT_SUCCESS;
 }
 
@@ -175,11 +183,11 @@ _em_parse_cmdln(Options *o, int argc, char *argv[])
              o->delay = atoi(optarg);
              break;
            case 'a':
-             o->app = evas_stringshare_add(optarg);
+             o->app = eina_stringshare_add(optarg);
              break;
            case 't':
              o->use_thumb = 1;
-             o->thumb.filename = evas_stringshare_add(optarg);
+             o->thumb.filename = eina_stringshare_add(optarg);
              break;
            case 'g':
              o->use_thumb = 1;
@@ -212,7 +220,7 @@ _em_parse_cmdln(Options *o, int argc, char *argv[])
      }
 
    /* The filename, if it exists, is expected to be the last command line arg */
-   if (optind < argc) o->filename = evas_stringshare_add(argv[optind]);
+   if (optind < argc) o->filename = eina_stringshare_add(argv[optind]);
 }
 
 static void 
@@ -261,9 +269,9 @@ _em_free_options(void)
 {
    /* cleanup our options structure */
    if (!opts) return;
-   if (opts->app) evas_stringshare_del(opts->app);
-   if (opts->filename) evas_stringshare_del(opts->filename);
-   if (opts->thumb.filename) evas_stringshare_del(opts->thumb.filename);
+   if (opts->app) eina_stringshare_del(opts->app);
+   if (opts->filename) eina_stringshare_del(opts->filename);
+   if (opts->thumb.filename) eina_stringshare_del(opts->thumb.filename);
    free(opts);
    opts = NULL;
 }
@@ -293,8 +301,8 @@ _em_get_filename(void)
 	     strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
 	     /* set the new filename */
 	     snprintf(buf, sizeof(buf), "%s/%s", opts->filename, strdup(buf));
-	     if (opts->filename) evas_stringshare_del(opts->filename);
-	     opts->filename = evas_stringshare_add(buf);
+	     if (opts->filename) eina_stringshare_del(opts->filename);
+	     opts->filename = eina_stringshare_add(buf);
 	     return;
 	  }
 	else 
@@ -368,8 +376,8 @@ _em_get_filename(void)
 	  }
      }
    /* set the new filename */
-   if (opts->filename) evas_stringshare_del(opts->filename);
-   opts->filename = evas_stringshare_add(buf);
+   if (opts->filename) eina_stringshare_del(opts->filename);
+   opts->filename = eina_stringshare_add(buf);
 }
 
 static void 
@@ -582,7 +590,7 @@ _em_do_thumb(void *data)
 	       snprintf(buf, sizeof(buf), "%s%s", strdup(buf), ext);
 	     else
 	       snprintf(buf, sizeof(buf), "%s.png", strdup(buf));
-	     opts->thumb.filename = evas_stringshare_add(buf);
+	     opts->thumb.filename = eina_stringshare_add(buf);
 	  }
 
 	/* actually save the thumbnail */
