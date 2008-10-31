@@ -183,7 +183,7 @@ e_modapi_shutdown(E_Module *m)
           eina_list_remove_list(skel_conf->conf_items, 
                                 skel_conf->conf_items);
         /* cleanup stringshares !! ) */
-        if (ci->id) evas_stringshare_del(ci->id);
+        if (ci->id) eina_stringshare_del(ci->id);
         /* keep the planet green */
         E_FREE(ci);
      }
@@ -307,7 +307,7 @@ _gc_id_del(const char *id)
    if (!(ci = _skel_conf_item_get(id))) return;
 
    /* cleanup !! */
-   if (ci->id) evas_stringshare_del(ci->id);
+   if (ci->id) eina_stringshare_del(ci->id);
 
    skel_conf->conf_items = eina_list_remove(skel_conf->conf_items, ci);
    E_FREE(ci);
@@ -372,7 +372,7 @@ _skel_conf_free(void)
           eina_list_remove_list(skel_conf->conf_items, 
                                 skel_conf->conf_items);
         /* EPA */
-        if (ci->id) evas_stringshare_del(ci->id);
+        if (ci->id) eina_stringshare_del(ci->id);
         E_FREE(ci);
      }
 
@@ -411,7 +411,7 @@ _skel_conf_item_get(const char *id)
           }
      }
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->switch2 = 0;
    skel_conf->conf_items = eina_list_append(skel_conf->conf_items, ci);
    return ci;
