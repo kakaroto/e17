@@ -190,7 +190,7 @@ _config_item_get(const char *id)
      }
 
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->interval = 1;
    update_interval = ci->interval;
 
@@ -522,7 +522,7 @@ e_modapi_init(E_Module *m)
 	
 	cpu_conf = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
+	ci->id = eina_stringshare_add("0");
 	ci->interval = 1;
 	
 	cpu_conf->items = eina_list_append(cpu_conf->items, ci);
@@ -552,7 +552,7 @@ e_modapi_shutdown(E_Module *m)
 	Config_Item *ci;
 	
 	ci = cpu_conf->items->data;
-	if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->id) eina_stringshare_del(ci->id);
 	cpu_conf->items = eina_list_remove_list(cpu_conf->items, cpu_conf->items);
 	E_FREE(ci);
      }
