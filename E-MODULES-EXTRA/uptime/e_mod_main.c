@@ -280,7 +280,7 @@ _ut_config_item_get (const char *id)
      }
 
    ci = E_NEW (Config_Item, 1);
-   ci->id = evas_stringshare_add (id);
+   ci->id = eina_stringshare_add (id);
    ci->check_interval = 60.0;
    ci->update_interval = 60.0;
 
@@ -347,7 +347,7 @@ e_modapi_init (E_Module * m)
 
       ut_config = E_NEW (Config, 1);
       ci = E_NEW (Config_Item, 1);
-      ci->id = evas_stringshare_add ("0");
+      ci->id = eina_stringshare_add ("0");
       ci->check_interval = 60.0;
       ci->update_interval = 60.0;
       ut_config->items = eina_list_append (ut_config->items, ci);
@@ -382,7 +382,7 @@ e_modapi_shutdown (E_Module * m)
 	eina_list_remove_list (ut_config->items, ut_config->items);
 
       if (ci->id != NULL)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
 
       free (ci);
       ci = NULL;
