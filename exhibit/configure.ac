@@ -99,9 +99,7 @@ PKG_CHECK_MODULES(EXHIBIT, [
 ])
 
 #check for E
-AC_PATH_EFL(
-   enlightenment,
-   0.16.999.022,
+PKG_CHECK_MODULES(E, [enlightenment],
    [
      AC_DEFINE(HAVE_E, 1, have E)
      e="E "
