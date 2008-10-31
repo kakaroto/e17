@@ -36,9 +36,9 @@ _config_item_get(const char *id)
 	  }
      }
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
-   ci->device = evas_stringshare_add("eth0");
-   ci->app = evas_stringshare_add("");
+   ci->id = eina_stringshare_add(id);
+   ci->device = eina_stringshare_add("eth0");
+   ci->app = eina_stringshare_add("");
    ci->limit = 0;
    ci->show_text = 1;
    ci->show_popup = 0;
