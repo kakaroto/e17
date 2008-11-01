@@ -6,6 +6,7 @@
 using namespace efl;
 
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 #define WIDTH 240

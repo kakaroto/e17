@@ -2,6 +2,7 @@
 
 #include "calibrate.h"
 
+#include <cstring>
 #include <cstdio>
 #include <cerrno>
 using namespace std;
