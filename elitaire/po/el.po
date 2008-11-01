@@ -1,0 +1,263 @@
+# translation of el.po to
+# Copyright (C) 2008 Peter Wehrfritz
+# This file is distributed under the same license as the elitaire package.
+# Aron Xu <aronmalache@163.com>, 2008.
+# Geo Kou <ragecryx@yahoo.gr>, 2008. <aronmalache@163.com>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: elitaire e17\n"
+"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"POT-Creation-Date: 2008-09-30 19:49+0200\n"
+"PO-Revision-Date: 2008-11-01 13:49+0800\n"
+"Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/edje_frontend_game.cpp:61 src/edje_frontend_gui.cpp:701
+#: src/edje_frontend_gui.cpp:755
+#, c-format
+msgid "Elitaire Error in %s: missing element_value part!\n"
+msgstr ""
+
+#: src/edje_frontend_game.cpp:68 src/edje_frontend_gui.cpp:708
+#: src/edje_frontend_gui.cpp:762
+#, c-format
+msgid "Elitaire Error in %s: missing element group!\n"
+msgstr ""
+
+#: src/edje_frontend_game.cpp:101
+msgid "You win!"
+msgstr "Νίκησες"
+
+#: src/edje_frontend_game.cpp:108
+msgid "You lose!"
+msgstr "Έχασες"
+
+#: src/edje_frontend_game.cpp:118
+msgid "Game Over"
+msgstr "Τέλος Παιχνιδιού"
+
+#: src/edje_frontend_game.cpp:223
+#, c-format
+msgid "Elitaire Error: cards file %s not found!\n"
+msgstr ""
+
+#: src/edje_frontend_game.cpp:234
+#, c-format
+msgid "Elitaire Error in %s: elitaire_card_field does not exist!\n"
+msgstr ""
+
+#: src/edje_frontend_gui.cpp:208
+#, c-format
+msgid "Elitaire Error: unable to find %s theme!\n"
+msgstr ""
+
+#: src/edje_frontend_gui.cpp:404
+msgid "Games"
+msgstr "Παιχνίδια"
+
+#: src/edje_frontend_gui.cpp:404
+msgid "Themes"
+msgstr "Θέματα"
+
+#: src/edje_frontend_gui.cpp:404
+msgid "Cards"
+msgstr "Κάρτες"
+
+#: src/edje_frontend_menu.cpp:24 src/edje_frontend_menu.cpp:57
+msgid "CONTEXT|Undo"
+msgstr "Αναίρεση"
+
+#: src/edje_frontend_menu.cpp:25 src/edje_frontend_menu.cpp:61
+msgid "CONTEXT|Highscore"
+msgstr "Σκόρ"
+
+#: src/edje_frontend_menu.cpp:26 src/edje_frontend_menu.cpp:63
+msgid "CONTEXT|Preferences"
+msgstr "Ρυθμίσεις"
+
+#: src/edje_frontend_menu.cpp:27 src/edje_frontend_menu.cpp:65
+msgid "CONTEXT|About"
+msgstr "Σχετικά"
+
+#: src/edje_frontend_menu.cpp:28 src/edje_frontend_menu.cpp:67
+msgid "CONTEXT|Help"
+msgstr "Βοήθεια"
+
+#: src/edje_frontend_menu.cpp:79
+msgid "CONTEXT|New"
+msgstr "Νέο"
+
+#: src/eli_app.cpp:290
+#, c-format
+msgid "Elitaire Error: No theme file in %s!\n"
+msgstr ""
+
+#: src/eli_app.cpp:306
+#, c-format
+msgid "Elitaire Error: No cards file in %s!\n"
+msgstr ""
+
+#: src/elitaire_card.cpp:49 src/elitaire_card.cpp:221
+#, c-format
+msgid "Elitaire Error: Card %s is missed!\n"
+msgstr ""
+
+#: src/elitaire_card.cpp:55 src/elitaire_card.cpp:227
+#, c-format
+msgid "Elitaire Error: The bg pic is missed!\n"
+msgstr ""
+
+#: src/elitaire_card_jobs.cpp:394
+#, c-format
+msgid "Elitaire Error: The shadow pic is missed!\n"
+msgstr ""
+
+#: src/elitaire.cpp:134
+#, c-format
+msgid "Elitaire Error: unknown game %s\n"
+msgstr ""
+
+#: src/elitaire.cpp:221
+#, c-format
+msgid "Elitaire Error: Callback registering failed!\n"
+msgstr ""
+
+#: src/ewl_dialog_about.cpp:19
+msgid "About"
+msgstr "Σχετικά"
+
+#: src/ewl_dialog_about.cpp:38
+#, c-format
+msgid ""
+"%s version %s\n"
+"\n"
+"Author:\n"
+"  %s\n"
+"  %s\n"
+"  %s\n"
+"\n"
+"Thanks to:\n"
+"  %s\n"
+"  %s"
+msgstr ""
+"%s Έκδοση %s\n"
+"\nΣυγγραφέας:\n"
+"  %s\n"
+"  %s\n"
+"  %s\n"
+"\n"
+"Ευχαριστήρια σε:\n"
+"  %s\n"
+"  %s"
+
+#: src/ewl_dialog_config.cpp:41
+msgid "Configuration"
+msgstr "Ρύθμιση"
+
+#: src/ewl_dialog_config.cpp:86
+msgid "Graphic"
+msgstr "Γραφικό"
+
+#: src/ewl_dialog_config.cpp:93 src/ewl_dialog_config.cpp:286
+msgid "animated movements"
+msgstr ""
+
+#: src/ewl_dialog_config.cpp:102 src/ewl_dialog_config.cpp:289
+msgid "shadows"
+msgstr "σκιές"
+
+#: src/ewl_dialog_config.cpp:118
+msgid "velocity:"
+msgstr "ταχύτητα:"
+
+#: src/ewl_dialog_config.cpp:150
+msgid "frame rate:"
+msgstr "frame rate:"
+
+#: src/ewl_dialog_config.cpp:182
+msgid "Laziness"
+msgstr ""
+
+#: src/ewl_dialog_config.cpp:187 src/ewl_dialog_config.cpp:301
+msgid "normal mode"
+msgstr "κανονική λειτουργία"
+
+#: src/ewl_dialog_config.cpp:195 src/ewl_dialog_config.cpp:298
+msgid "lazy mode"
+msgstr ""
+
+#: src/ewl_dialog_config.cpp:211
+msgid "Render Engine"
+msgstr "Μηχανή Render"
+
+#: src/ewl_dialog_config.cpp:219
+msgid "Changes only affect after new start"
+msgstr "Οι αλλαγές θα ενεργοποιηθούν μετα την επανεκκίνηση"
+
+#: src/ewl_dialog_config.cpp:226 src/ewl_dialog_config.cpp:292
+msgid "Software"
+msgstr "Λογισμικό"
+
+#: src/ewl_dialog_config.cpp:234 src/ewl_dialog_config.cpp:295
+msgid "OpenGL (testing)"
+msgstr "OpenGL (δοκιμαστικό)"
+
+#: src/ewl_dialog_config.cpp:271
+#, c-format
+msgid "Elitaire Error: Could not save configuration.\n"
+msgstr ""
+
+#: src/ewl_dialog_hiscore.cpp:50
+msgid "Highscore"
+msgstr "Σκόρ"
+
+#: src/ewl_dialog_hiscore.cpp:119
+msgid "Name"
+msgstr "Όνομα"
+
+#: src/ewl_dialog_hiscore.cpp:145
+msgid "Please insert your name"
+msgstr "Παρακαλώ εισάγετε το όνομα σας"
+
+#: src/ewl_dialog_hiscore.cpp:218
+msgid "Won Games:"
+msgstr "Κερδισμένες Παρτίδες:"
+
+#: src/ewl_dialog_hiscore.cpp:233
+msgid "Lost Games:"
+msgstr "Χαμένες Παρτίδες:"
+
+#: src/ewl_dialog_hiscore.cpp:248
+msgid "relative Quote:"
+msgstr "relative Quote:"
+
+#: src/main.cpp:33
+#, c-format
+msgid "Elitaire Error: Cannot init Ecore\n"
+msgstr ""
+
+#: src/main.cpp:37
+#, c-format
+msgid "Elitaire Error: Cannot init Ecore File\n"
+msgstr ""
+
+#: src/main.cpp:42
+#, c-format
+msgid "Elitaire Error: Cannot init Edje\n"
+msgstr ""
+
+#: src/main.cpp:47
+#, c-format
+msgid "Elitaire Error: Cannot init Ecore Config\n"
+msgstr ""
+
+#: src/main.cpp:52
+#, c-format
+msgid "Elitaire Error: Cannot init Ewl\n"
+msgstr ""
+
