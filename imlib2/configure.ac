@@ -26,10 +26,10 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 
-dnl Next four lines is a hack to prevent libtool checking for CXX/F77
+dnl Next two lines is a hack to prevent libtool checking for CXX/F77
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 VERSION_CUR=5
 VERSION_REV=2
@@ -60,7 +60,6 @@ case $host_os in
   darwin*) mmx="no";;
 esac
 
-dnl 
 AC_ARG_ENABLE([mmx],
   [AC_HELP_STRING([--enable-mmx], [attempt compiling using x86 mmx assembly @<:@default=auto@:>@])],
   [

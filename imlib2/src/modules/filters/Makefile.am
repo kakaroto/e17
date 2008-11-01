@@ -15,12 +15,15 @@ EXTRA_DIST = filter_common.h
 testfilter_la_SOURCES = filter_test.c
 testfilter_la_LDFLAGS = -module -avoid-version
 testfilter_la_LIBADD  = $(top_builddir)/src/lib/libImlib2.la
+testfilter_la_LIBTOOLFLAGS = --tag=disable-static
 
 bumpmap_la_SOURCES    = filter_bumpmap.c
 bumpmap_la_LDFLAGS    = -module -avoid-version
 bumpmap_la_LIBADD     = $(top_builddir)/src/lib/libImlib2.la
+bumpmap_la_LIBTOOLFLAGS = --tag=disable-static
 
 colormod_la_SOURCES   = filter_colormod.c
 colormod_la_LDFLAGS   = -module -avoid-version
 colormod_la_LIBADD    = $(top_builddir)/src/lib/libImlib2.la
+colormod_la_LIBTOOLFLAGS = --tag=disable-static
 
