@@ -1,0 +1,210 @@
+# translation of el.po to
+# This file is put in the public domain.
+# Geo Kou <ragecryx@yahoo.gr>, 2008.
+#  <aronmalache@163.com>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: el e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2005-10-16 01:45+0200\n"
+"PO-Revision-Date: 2008-11-01 13:38+0800\n"
+"Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/bin/etk_button_test.c:28
+msgid "Etk Button test"
+msgstr "Δοκιμή κουμπιού Etk"
+
+#: src/bin/etk_button_test.c:35
+msgid "Normal button"
+msgstr "Κανονικό Κουμπί"
+
+#: src/bin/etk_button_test.c:39
+msgid "Button with an image"
+msgstr "Κουμπί με εικόνα"
+
+#: src/bin/etk_button_test.c:46
+msgid "Check button"
+msgstr "Κουμπί ενεργοποίησης"
+
+#: src/bin/etk_button_test.c:52
+msgid "Radio button"
+msgstr "Κουμπί επιλογής"
+
+#: src/bin/etk_button_test.c:58
+msgid "Toggle button"
+msgstr "Κουμπί εναλλαγής"
+
+#: src/bin/etk_canvas_test.c:29
+msgid "Etk Canvas Test"
+msgstr "Δοκιμή Etk Καμβά"
+
+#: src/bin/etk_canvas_test.c:40
+msgid "Add object"
+msgstr "Προσθήκη αντικειμένου"
+
+#: src/bin/etk_colorpicker_test.c:24
+msgid "Etk Color Picker"
+msgstr "Επιλογέας Χρωμάτων Etk"
+
+#: src/bin/etk_entry_test.c:31
+msgid "Etk Entry test"
+msgstr "Δοκιμή Καταχώρησης Etk"
+
+#: src/bin/etk_entry_test.c:41
+msgid "Print the text!!!"
+msgstr "Εκτύπωση του κειμένου!!!"
+
+#: src/bin/etk_image_test.c:25
+msgid "Etk Image Test"
+msgstr "Δοκιμή Εικόνας Etk"
+
+#: src/bin/etk_image_test.c:34
+msgid "Keep aspect"
+msgstr "Κράτα την αναλογία"
+
+#: src/bin/etk_image_test.c:35
+msgid "Don't keep aspect"
+msgstr "Μην κρατάς την αναλογία"
+
+#: src/bin/etk_scale_test.c:22
+msgid "Etk Scale test"
+msgstr "Δοκιμή Κλίμακας Etk"
+
+#: src/bin/etk_table_test.c:25
+msgid "Etk Table Test"
+msgstr "Δοκιμή Πίνακα Etk"
+
+#: src/bin/etk_table_test.c:30
+msgid "Set Icon"
+msgstr "Ορισμός Εικονιδίου"
+
+#: src/bin/etk_table_test.c:36
+msgid "App name"
+msgstr "Όνομα εφαρμογής"
+
+#: src/bin/etk_table_test.c:39
+msgid "Generic Info"
+msgstr "Γενικές Πληροφορίες"
+
+#: src/bin/etk_table_test.c:42
+msgid "Comments"
+msgstr "Σχόλια"
+
+#: src/bin/etk_table_test.c:45
+msgid "Executable"
+msgstr "Εκτελέσιμο"
+
+#: src/bin/etk_table_test.c:48
+msgid "Window name"
+msgstr "Όνομα Παραθύρου"
+
+#: src/bin/etk_table_test.c:51
+#, fuzzy
+msgid "Window class"
+msgstr "Τύπος Παραθύρου"
+
+#: src/bin/etk_table_test.c:54
+#, fuzzy
+msgid "Startup notify"
+msgstr "Ειδοποίηση εκκίνησης"
+
+#: src/bin/etk_table_test.c:57
+msgid "Wait exit"
+msgstr "Αναμονή εξόδου"
+
+#: src/bin/etk_table_test.c:61
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: src/bin/etk_table_test.c:65
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: src/bin/etk_test.c:55
+msgid "Etk Test Application"
+msgstr "Δοκιμαστική Εφαρμογή Etk"
+
+#: src/bin/etk_tree_test.c:27
+msgid "Etk Tree Test"
+msgstr "Δοκιμή Δέντρου Etk"
+
+#: src/bin/etk_tree_test.c:33
+msgid "<h1>Tree:</h1>"
+msgstr "<h1>Δέντρο:</h1>"
+
+#: src/bin/etk_tree_test.c:36
+msgid "<h1>List:</h1>"
+msgstr "<h1>Λίστα:</h1>"
+
+#: src/bin/etk_tree_test.c:46
+#: src/bin/etk_tree_test.c:81
+msgid "Column 1"
+msgstr "Στήλη 1"
+
+#: src/bin/etk_tree_test.c:47
+#: src/bin/etk_tree_test.c:82
+msgid "Column 2"
+msgstr "Στήλη 2"
+
+#: src/bin/etk_tree_test.c:48
+#: src/bin/etk_tree_test.c:83
+msgid "Column 3"
+msgstr "Στήλη 3"
+
+#: src/bin/etk_tree_test.c:60
+#: src/bin/etk_tree_test.c:89
+msgid "Row1"
+msgstr "Γραμμή1"
+
+#: src/bin/etk_tree_test.c:61
+#: src/bin/etk_tree_test.c:90
+msgid "Row2"
+msgstr "Γραμμή2"
+
+#: src/bin/etk_tree_test.c:62
+#: src/bin/etk_tree_test.c:91
+msgid "Row3"
+msgstr "Γραμμή3"
+
+#: src/bin/etk_tree_test.c:92
+msgid "Row4"
+msgstr "Γραμμή4"
+
+#: src/bin/etk_tree_test.c:93
+msgid "Row5"
+msgstr "Γραμμή5"
+
+#: src/bin/etk_tree_test.c:94
+msgid "Row6"
+msgstr "Γραμμή6"
+
+#: src/bin/etk_tree_test.c:95
+msgid "Row7"
+msgstr "Γραμμή7"
+
+#: src/bin/etk_tree_test.c:96
+msgid "Row8"
+msgstr "Γραμμή8"
+
+#: src/bin/etk_tree_test.c:97
+msgid "Row9"
+msgstr "Γραμμή9"
+
+#: src/bin/etk_tree_test.c:98
+msgid "Row10"
+msgstr "Γραμμή10"
+
+#: src/bin/etk_tree_test.c:99
+msgid "Row11"
+msgstr "Γραμμή11"
+
+#: src/bin/etk_tree_test.c:100
+msgid "Row12"
+msgstr "Γραμμή12"
+
