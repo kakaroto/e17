@@ -7,6 +7,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include "grab.h"
+#include "ximage.h"
 
 static char         _x_err = 0;
 static DATA8        rtab[256], gtab[256], btab[256];
@@ -530,7 +531,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    int                 src_x, src_y, src_w, src_h, origw, origh;
    int                 width, height, clipx, clipy;
    XShmSegmentInfo     shminfo, mshminfo;
-   XImage             *xim = NULL, *mxim = NULL;
+   XImage             *xim, *mxim;
    static signed char  x_does_shm = -1;
    XColor              cols[256];
 
@@ -662,62 +663,15 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 
    /* Create an Ximage (shared or not) */
    if (x_does_shm < 0)
-     {
-        if (XShmQueryExtension(d))
-           x_does_shm = 1;
-        else
-           x_does_shm = 0;
-     }
+      __imlib_ShmCheck(d);
 
-   prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
-
+   xim = NULL;
    if (x_does_shm)
      {
-        _x_err = 0;
-        xim = XShmCreateImage(d, v, xatt.depth, ZPixmap, NULL, &shminfo, w, h);
-        if (xim)
-          {
-             XSync(d, False);
-             if (_x_err)
-               {
-                  XDestroyImage(xim);
-               }
-             else
-               {
-                  shminfo.shmid = shmget(IPC_PRIVATE, xim->bytes_per_line *
-                                         xim->height, IPC_CREAT | 0666);
-                  if (shminfo.shmid < 0)
-                    {
-                       XDestroyImage(xim);
-                    }
-                  else
-                    {
-                       shminfo.shmaddr = xim->data = shmat(shminfo.shmid, 0, 0);
-                       if (xim->data != (char *)-1)
-                         {
-                            shminfo.readOnly = False;
-                            XShmAttach(d, &shminfo);
-                            is_shm = 1;
-                            XShmGetImage(d, p, xim, x, y, 0xffffffff);
-                            XSync(d, False);
-                            if (_x_err)
-                              {
-                                 shmdt(shminfo.shmaddr);
-                                 shmctl(shminfo.shmid, IPC_RMID, 0);
-                                 XDestroyImage(xim);
-                                 is_shm = 0;
-                              }
-                         }
-                       else
-                         {
-                            shmctl(shminfo.shmid, IPC_RMID, 0);
-                            XDestroyImage(xim);
-                         }
-                    }
-               }
-          }
+        xim = __imlib_ShmGetXImage(d, v, p, xatt.depth, x, y, w, h, &shminfo);
+        is_shm = xim != NULL;
      }
-   if (!is_shm)
+   if (!xim)
       xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
    if (!xim)
      {
@@ -726,61 +680,14 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
         return 0;
      }
 
+   mxim = NULL;
    if ((m) && (domask))
      {
-        _x_err = 0;
-        if (x_does_shm)
-          {
-             mxim = XShmCreateImage(d, v, 1, ZPixmap, NULL, &mshminfo, w, h);
-             if (mxim)
-               {
-                  XSync(d, False);
-                  if (_x_err)
-                    {
-                       XDestroyImage(mxim);
-                    }
-                  else
-                    {
-                       mshminfo.shmid = shmget(IPC_PRIVATE,
-                                               mxim->bytes_per_line *
-                                               mxim->height, IPC_CREAT | 0666);
-                       if (mshminfo.shmid < 0)
-                         {
-                            XDestroyImage(mxim);
-                         }
-                       else
-                         {
-                            mshminfo.shmaddr = mxim->data =
-                               shmat(mshminfo.shmid, 0, 0);
-                            if (mxim->data != (char *)-1)
-                              {
-                                 mshminfo.readOnly = False;
-                                 XShmAttach(d, &mshminfo);
-                                 is_mshm = 1;
-                                 XShmGetImage(d, m, mxim, 0, 0, 0xffffffff);
-                                 XSync(d, False);
-                                 if (_x_err)
-                                   {
-                                      shmdt(mshminfo.shmaddr);
-                                      shmctl(mshminfo.shmid, IPC_RMID, 0);
-                                      XDestroyImage(mxim);
-                                      is_mshm = 0;
-                                   }
-                              }
-                            else
-                              {
-                                 shmctl(mshminfo.shmid, IPC_RMID, 0);
-                                 XDestroyImage(mxim);
-                              }
-                         }
-                    }
-               }
-          }
-        if (!is_mshm)
+        mxim = __imlib_ShmGetXImage(d, v, m, 1, 0, 0, w, h, &mshminfo);
+        is_mshm = mxim != NULL;
+        if (!mxim)
            mxim = XGetImage(d, m, 0, 0, w, h, 0xffffffff, ZPixmap);
      }
-
-   XSetErrorHandler((XErrorHandler) prev_erh);
 
    if ((is_shm) || (is_mshm))
      {
@@ -835,23 +742,16 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 
    /* destroy the Ximage */
    if (is_shm)
-     {
-        XSync(d, False);
-        XShmDetach(d, &shminfo);
-        shmdt(shminfo.shmaddr);
-        shmctl(shminfo.shmid, IPC_RMID, 0);
-     }
-   if ((is_mshm) && (mxim))
-     {
-        XShmDetach(d, &mshminfo);
-        shmdt(mshminfo.shmaddr);
-        shmctl(mshminfo.shmid, IPC_RMID, 0);
-     }
+      __imlib_ShmDetach(d, &shminfo);
    XDestroyImage(xim);
+   if (mxim)
+     {
+        if (is_mshm)
+           __imlib_ShmDetach(d, &mshminfo);
+        XDestroyImage(mxim);
+     }
    if (created_mask)
       XFreePixmap(d, m);
-   if (mxim)
-      XDestroyImage(mxim);
 
    if (pdomask)
      {
