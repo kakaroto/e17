@@ -1,0 +1,214 @@
+# translation of el.po to
+# This file is put in the public domain.
+# This file is distributed under the same license as the ephoto package.
+# DUNNEWIND Maxence <maxenced@ubuntu.com>, 2006.
+# Geo Kou <ragecryx@yahoo.gr>, 2008.
+#  <aronmalache@163.com>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: el e17\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-20 22:18+0100\n"
+"PO-Revision-Date: 2008-11-01 13:42+0800\n"
+"Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/ephoto.c:52
+#: src/ephoto_viewer.c:253
+msgid "Menu|File"
+msgstr "Μενού|Αρχείο"
+
+#: src/ephoto.c:60
+#: src/ephoto_viewer.c:271
+msgid "Menu|File|Exit"
+msgstr "Μενού|Αρχείο|Έξοδος"
+
+#: src/ephoto.c:68
+msgid "Menu|Albums"
+msgstr "Μενού|Άλμπουμ"
+
+#: src/ephoto.c:76
+msgid "Menu|Albums|Add Album"
+msgstr "Μενού|Άλμπουμ|Προσθήκη"
+
+#: src/ephoto.c:86
+msgid "Menu|Albums|Remove Album"
+msgstr "Μενού|Άλμπουμ|Αφαίρεση"
+
+#: src/ephoto.c:93
+msgid "Menu|Viewer"
+msgstr "Μενού|Προβολέας"
+
+#: src/ephoto.c:101
+msgid "Menu|Viewer|Image Viewer"
+msgstr "Μενού|Προβολέας|Προβολέας Εικόνων"
+
+#: src/ephoto.c:109
+msgid "Menu|Slideshow"
+msgstr "Μενού|Slideshow"
+
+#: src/ephoto.c:118
+msgid "Menu|Slideshow|Configure Slideshow"
+msgstr "Μενού|Slideshow|Ρύθμιση Slideshow"
+
+#: src/ephoto.c:129
+msgid "Menu|Slideshow|Start Slideshow"
+msgstr "Μενού|Slideshow|Εκκίνηση Slideshow"
+
+#: src/ephoto.c:170
+msgid "  Location:"
+msgstr "  Περιοχή:"
+
+#: src/ephoto.c:216
+msgid "Albums"
+msgstr "Άλμπουμ"
+
+#: src/ephoto_callbacks.c:218
+msgid "Add an Album"
+msgstr "Προσθήκη Άλμπουμ"
+
+#: src/ephoto_callbacks.c:231
+msgid "Enter the new album name:"
+msgstr "Εισαγωγή ονόματος νέου άλμπουμ:"
+
+#: src/ephoto_callbacks.c:243
+msgid "Enter the new album description:"
+msgstr "Εισαγωγή περιγραφής νέου άλμπουμ:"
+
+#: src/ephoto_callbacks.c:263
+#: src/ephoto_slideshow.c:493
+msgid "save"
+msgstr "αποθήκευση"
+
+#: src/ephoto_callbacks.c:272
+#: src/ephoto_slideshow.c:503
+msgid "cancel"
+msgstr "ακύρωση"
+
+#: src/ephoto_slideshow.c:115
+msgid "Ephoto Slideshow"
+msgstr "Ephoto Slideshow"
+
+#: src/ephoto_slideshow.c:329
+msgid "Slideshow Configuration"
+msgstr "Ρυθμίσεις Slideshow"
+
+#: src/ephoto_slideshow.c:348
+msgid "Window Size"
+msgstr "Μέγεθος Παραθύρου"
+
+#: src/ephoto_slideshow.c:361
+msgid "Fullscreen"
+msgstr "Πλήρης Οθόνη"
+
+#: src/ephoto_slideshow.c:369
+msgid "Custom"
+msgstr "Προσαρμοσμένο"
+
+#: src/ephoto_slideshow.c:384
+msgid "Width"
+msgstr "Πλάτος"
+
+#: src/ephoto_slideshow.c:398
+msgid "Height"
+msgstr "Ύψος"
+
+#: src/ephoto_slideshow.c:412
+#, fuzzy
+msgid "Order"
+msgstr "Σειρά"
+
+#: src/ephoto_slideshow.c:419
+msgid "Loop Slideshow"
+msgstr "Επανάληψη Slideshow"
+
+#: src/ephoto_slideshow.c:426
+msgid "Random Order"
+msgstr "Τυχαία Σειρά"
+
+#: src/ephoto_slideshow.c:439
+msgid "Image Size"
+msgstr "Μέγεθος Εικόνας"
+
+#: src/ephoto_slideshow.c:446
+msgid "Zoom Images to Fill Window"
+msgstr "Εστίαση εικόνων για Γέμισμα του Παραθύρου"
+
+#: src/ephoto_slideshow.c:453
+msgid "Keep Aspect"
+msgstr "Κράτα Αναλογία"
+
+#: src/ephoto_slideshow.c:460
+msgid "Transitions"
+msgstr "Μεταβάσεις"
+
+#: src/ephoto_slideshow.c:478
+msgid "Show File Name On Change"
+msgstr "Εμφάνισε Όνομα Αρχείου Όταν Αλλάξει"
+
+#: src/ephoto_viewer.c:235
+msgid "Ephoto Image Viewer"
+msgstr "Προβολέας Εικόνων Ephoto"
+
+#: src/ephoto_viewer.c:261
+msgid "Menu|File|Save Image"
+msgstr "Μενού|Αρχείο|Αποθήκευση Εικόνας"
+
+#: src/ephoto_viewer.c:279
+msgid "Menu|Actions"
+msgstr "Μενού|Ενέργειες"
+
+#: src/ephoto_viewer.c:287
+msgid "Menu|Actions|Zoom In"
+msgstr "Μενού|Ενέργειες|Εστίαση"
+
+#: src/ephoto_viewer.c:297
+msgid "Menu|Actions|Zoom Out"
+msgstr "Μενού|Ενέργειες|Σμίκρυνση"
+
+#: src/ephoto_viewer.c:307
+#, fuzzy
+msgid "Menu|Actions|Zoom To Fit"
+msgstr "Μενού|Ενέργειες|Εστίαση για Προσαρμογή"
+
+#: src/ephoto_viewer.c:317
+msgid "Menu|Actions|Zoom 1:1"
+msgstr "Μενού|Ενέργειες|Εστίαση 1:1"
+
+#: src/ephoto_viewer.c:328
+msgid "Menu|Actions|Flip Horizontally"
+msgstr "Μενού|Ενέργειες|Αναστροφή Οριζόντια"
+
+#: src/ephoto_viewer.c:338
+msgid "Menu|Actions|Flip Vertically"
+msgstr "Μενού|Ενέργειες|Αναστροφή Κατακόρυφα"
+
+#: src/ephoto_viewer.c:348
+msgid "Menu|Actions|Rotate Left"
+msgstr "Μενού|Ενέργειες|Περιστροφή Αριστερά"
+
+#: src/ephoto_viewer.c:358
+msgid "Menu|Actions|Rotate Right"
+msgstr "Μενού|Ενέργειες|Περιστροφή Δεξιά"
+
+#: src/ephoto_viewer.c:400
+msgid "In"
+msgstr "Εστίαση +"
+
+#: src/ephoto_viewer.c:410
+msgid "Out"
+msgstr "Εστίαση -"
+
+#: src/ephoto_viewer.c:440
+msgid "Left"
+msgstr "Αριστερά"
+
+#: src/ephoto_viewer.c:450
+msgid "Right"
+msgstr "Δεξιά"
+
