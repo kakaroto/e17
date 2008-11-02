@@ -279,8 +279,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    alarm_config->alarms_open_popup_default = cfdata->alarms_open_popup_default;
    alarm_config->alarms_run_program_default = cfdata->alarms_run_program_default;
    if (alarm_config->alarms_program_default)
-     evas_stringshare_del(alarm_config->alarms_program_default);
-   alarm_config->alarms_program_default = evas_stringshare_add(cfdata->alarms_program_default);
+     eina_stringshare_del(alarm_config->alarms_program_default);
+   alarm_config->alarms_program_default = eina_stringshare_add(cfdata->alarms_program_default);
 
    e_config_save_queue();
    return ret;

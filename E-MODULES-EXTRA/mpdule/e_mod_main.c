@@ -92,7 +92,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   inst->ci = _mpdule_config_item_get (id);
   if (!inst->ci->id)
-    inst->ci->id = evas_stringshare_add (id);
+    inst->ci->id = eina_stringshare_add (id);
 
   o = edje_object_add (gc->evas);
   snprintf (buf, sizeof (buf), "%s/mpdule.edj",
@@ -430,9 +430,9 @@ _mpdule_config_item_get (const char *id)
     }
 
   ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
+  ci->id = eina_stringshare_add (id);
   ci->poll_time = 1.0;
-  ci->hostname = evas_stringshare_add ("localhost");
+  ci->hostname = eina_stringshare_add ("localhost");
   ci->port = 6600;
 
   mpdule_config->items = eina_list_append (mpdule_config->items, ci);
@@ -716,9 +716,9 @@ e_modapi_init (E_Module * m)
       mpdule_config = E_NEW (Config, 1);
 
       ci = E_NEW (Config_Item, 1);
-      ci->id = evas_stringshare_add ("0");
+      ci->id = eina_stringshare_add ("0");
       ci->poll_time = 1.0;
-      ci->hostname = evas_stringshare_add ("localhost");
+      ci->hostname = eina_stringshare_add ("localhost");
       ci->port = 6600;
 
       mpdule_config->items = eina_list_append (mpdule_config->items, ci);
@@ -752,7 +752,7 @@ e_modapi_shutdown (E_Module * m)
       mpdule_config->items =
 	eina_list_remove_list (mpdule_config->items, mpdule_config->items);
       if (ci->id)
-	evas_stringshare_del (ci->id);
+	eina_stringshare_del (ci->id);
       free (ci);
       ci = NULL;
     }

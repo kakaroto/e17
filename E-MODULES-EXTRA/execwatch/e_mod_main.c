@@ -209,13 +209,13 @@ _config_item_get(const char *id)
      }
 
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
-   ci->display_name = evas_stringshare_add("Edit!");
-   ci->status_cmd = evas_stringshare_add("");
-   ci->dblclk_cmd = evas_stringshare_add("");
+   ci->id = eina_stringshare_add(id);
+   ci->display_name = eina_stringshare_add("Edit!");
+   ci->status_cmd = eina_stringshare_add("");
+   ci->dblclk_cmd = eina_stringshare_add("");
    ci->okstate_mode = 0;
    ci->okstate_exitcode = 0;
-   ci->okstate_string = evas_stringshare_add("");
+   ci->okstate_string = eina_stringshare_add("");
    ci->okstate_lines = 0;
    ci->refresh_after_dblclk_cmd = 0;
    ci->poll_time_mins = 0.0;
@@ -589,13 +589,13 @@ e_modapi_init(E_Module *m)
 	
 	execwatch_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
-	ci->display_name = evas_stringshare_add("Edit!");
-	ci->status_cmd = evas_stringshare_add("");
-	ci->dblclk_cmd = evas_stringshare_add("");
+	ci->id = eina_stringshare_add("0");
+	ci->display_name = eina_stringshare_add("Edit!");
+	ci->status_cmd = eina_stringshare_add("");
+	ci->dblclk_cmd = eina_stringshare_add("");
 	ci->okstate_mode = 0;
 	ci->okstate_exitcode = 0;
-	ci->okstate_string = evas_stringshare_add("");
+	ci->okstate_string = eina_stringshare_add("");
 	ci->okstate_lines = 0;
 	ci->refresh_after_dblclk_cmd = 0;
 	ci->poll_time_mins = 0.0;
@@ -632,7 +632,7 @@ e_modapi_shutdown(E_Module *m)
 	Config_Item *ci;
 	
 	ci = execwatch_config->items->data;
-	if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->id) eina_stringshare_del(ci->id);
 	execwatch_config->items = eina_list_remove_list(execwatch_config->items, execwatch_config->items);
 	E_FREE(ci);
      }

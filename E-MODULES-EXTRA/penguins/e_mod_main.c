@@ -134,7 +134,7 @@ _population_init(E_Module *m)
         pop->conf->alpha = 200;
 
 	snprintf(buf, sizeof(buf), "%s/themes/default.edj", e_module_dir_get(m));
-        pop->conf->theme = evas_stringshare_add(buf);
+        pop->conf->theme = eina_stringshare_add(buf);
      }
 
    managers = e_manager_list();
@@ -275,7 +275,7 @@ _population_shutdown(Population *pop)
       pop->themes = eina_list_remove_list(pop->themes, pop->themes);
    }
 
-   if (pop->conf->theme) evas_stringshare_del(pop->conf->theme);
+   if (pop->conf->theme) eina_stringshare_del(pop->conf->theme);
    E_FREE(pop->conf);
    E_CONFIG_DD_FREE(pop->conf_edd);
    

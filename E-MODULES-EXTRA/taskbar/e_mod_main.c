@@ -132,7 +132,7 @@ e_modapi_init(E_Module *m)
         taskbar_config = E_NEW(Config, 1);
         config = E_NEW(Config_Item, 1);
 
-        config->id = evas_stringshare_add("0");
+        config->id = eina_stringshare_add("0");
         config->show_all = 0;
 
         taskbar_config->items = eina_list_append(taskbar_config->items, config);
@@ -607,7 +607,7 @@ _taskbar_config_item_get(const char *id)
      }
 
    config = E_NEW(Config_Item, 1);
-   config->id = evas_stringshare_add(id);
+   config->id = eina_stringshare_add(id);
    config->show_all = 0;
 
    taskbar_config->items = eina_list_append(taskbar_config->items, config);

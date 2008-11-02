@@ -154,8 +154,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    pop->conf->zoom = cfdata->zoom;
    pop->conf->alpha = cfdata->alpha;
    
-   if (pop->conf->theme) evas_stringshare_del(pop->conf->theme);
-   pop->conf->theme = evas_stringshare_add(cfdata->theme);
+   if (pop->conf->theme) eina_stringshare_del(pop->conf->theme);
+   pop->conf->theme = eina_stringshare_add(cfdata->theme);
 
    e_config_save_queue();
    e_border_button_bindings_grab_all();

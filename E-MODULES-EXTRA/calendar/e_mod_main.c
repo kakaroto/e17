@@ -205,7 +205,7 @@ _config_item_get(const char *id)
      }
 
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->firstweekday = 0;
 
    calendar_conf->items = eina_list_append(calendar_conf->items, ci);
@@ -538,7 +538,7 @@ e_modapi_init(E_Module *m)
 	
 	calendar_conf = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
+	ci->id = eina_stringshare_add("0");
 	ci->firstweekday = 0;
 	
 	calendar_conf->items = eina_list_append(calendar_conf->items, ci);
@@ -578,7 +578,7 @@ e_modapi_shutdown(E_Module *m)
 	
 	ci = calendar_conf->items->data;
 	if (ci->id)
-	  evas_stringshare_del(ci->id);
+	  eina_stringshare_del(ci->id);
 	calendar_conf->items = eina_list_remove_list(calendar_conf->items, calendar_conf->items);
 	E_FREE(ci);
      }

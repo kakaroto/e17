@@ -189,19 +189,19 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      }
    if (!cfdata->poll_time_mins && !cfdata->poll_time_hours) return 0;
 
-   if (ci->display_name) evas_stringshare_del(ci->display_name);
-   ci->display_name = evas_stringshare_add(cfdata->display_name);
-   if (ci->status_cmd) evas_stringshare_del(ci->status_cmd);
-   ci->status_cmd = evas_stringshare_add(cfdata->status_cmd);
+   if (ci->display_name) eina_stringshare_del(ci->display_name);
+   ci->display_name = eina_stringshare_add(cfdata->display_name);
+   if (ci->status_cmd) eina_stringshare_del(ci->status_cmd);
+   ci->status_cmd = eina_stringshare_add(cfdata->status_cmd);
    if (strlen(cfdata->okstate_string))
      {
-	if (ci->okstate_string) evas_stringshare_del(ci->okstate_string);
-	ci->okstate_string = evas_stringshare_add(cfdata->okstate_string);
+	if (ci->okstate_string) eina_stringshare_del(ci->okstate_string);
+	ci->okstate_string = eina_stringshare_add(cfdata->okstate_string);
      }
    if (strlen(cfdata->dblclk_cmd))
      {
-	if (ci->dblclk_cmd) evas_stringshare_del(ci->dblclk_cmd);
-	ci->dblclk_cmd = evas_stringshare_add(cfdata->dblclk_cmd);
+	if (ci->dblclk_cmd) eina_stringshare_del(ci->dblclk_cmd);
+	ci->dblclk_cmd = eina_stringshare_add(cfdata->dblclk_cmd);
      }
    if (strlen(cfdata->okstate_exitcode))
      ci->okstate_exitcode = atoi (cfdata->okstate_exitcode);

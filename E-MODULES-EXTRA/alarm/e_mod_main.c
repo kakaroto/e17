@@ -229,7 +229,7 @@ alarm_alarm_add(int state, char *name, int type,
      al->state = ALARM_STATE_ON;
    else
      al->state = ALARM_STATE_OFF;
-   al->name = evas_stringshare_add(name);
+   al->name = eina_stringshare_add(name);
    al->sched.type = type;
    switch(type)
      {
@@ -275,12 +275,12 @@ alarm_alarm_add(int state, char *name, int type,
    al->snooze.hour = ALARM_SNOOZE_HOUR_DEFAULT;
    al->autoremove = autoremove;
    if (description)
-     al->description = evas_stringshare_add(description);
+     al->description = eina_stringshare_add(description);
    al->open_popup = open_popup;
    al->run_program = run_program;
    if (program)
      if (strlen(program))
-       al->program = evas_stringshare_add(program);
+       al->program = eina_stringshare_add(program);
 
    if (!_alarm_check_date(al, 1))
      {
@@ -299,16 +299,16 @@ void
 alarm_alarm_del(Alarm *al)
 {
    if (al->name)
-     evas_stringshare_del(al->name);
+     eina_stringshare_del(al->name);
    if (al->state == ALARM_STATE_RINGING)
      alarm_alarm_ring_stop(al, 0);
    if (al->config_dialog)
      e_object_del(E_OBJECT(al->config_dialog));
 
    if (al->description)
-     evas_stringshare_del(al->description);
+     eina_stringshare_del(al->description);
    if (al->program)
-     evas_stringshare_del(al->program);
+     eina_stringshare_del(al->program);
 
    if (al->snooze.dia)
      e_object_del(E_OBJECT(al->snooze.dia));
@@ -345,15 +345,15 @@ alarm_alarm_duplicate(Alarm *al)
    al_new = E_NEW(Alarm, 1);
 
    if (al->name)
-     al_new->name = evas_stringshare_add(al->name);
+     al_new->name = eina_stringshare_add(al->name);
    al_new->state = al->state;
    if (al->description)
-     al_new->description = evas_stringshare_add(al->description);
+     al_new->description = eina_stringshare_add(al->description);
    al_new->autoremove = al->autoremove;
    al_new->open_popup = al->open_popup;
    al_new->run_program = al->run_program;
    if (al->program)
-     al_new->program = evas_stringshare_add(al->program);
+     al_new->program = eina_stringshare_add(al->program);
    al_new->sched.type = al->sched.type;
    al_new->sched.date_epoch = al->sched.date_epoch;
    al_new->sched.hour = al->sched.hour;
@@ -1143,7 +1143,7 @@ e_modapi_shutdown(E_Module *m)
    if (alarm_config->alarms_ring_etimer)
      ecore_timer_del(alarm_config->alarms_ring_etimer);
    if (alarm_config->alarms_program_default)
-     evas_stringshare_del(alarm_config->alarms_program_default);
+     eina_stringshare_del(alarm_config->alarms_program_default);
 
    if (alarm_config->theme)
      free(alarm_config->theme);

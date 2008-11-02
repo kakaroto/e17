@@ -11,8 +11,8 @@ void
 change_window_border(E_Border *bd, char *bordername)
 {
    if (bd->bordername)
-     evas_stringshare_del(bd->bordername);
-   bd->bordername = evas_stringshare_add(bordername);
+     eina_stringshare_del(bd->bordername);
+   bd->bordername = eina_stringshare_add(bordername);
    bd->client.border.changed = 1;
    bd->changed = 1;
 }

@@ -115,8 +115,8 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci = cfd->data;
   ci->poll_time = cfdata->poll_time;
   if (ci->hostname)
-    evas_stringshare_del (ci->hostname);
-  ci->hostname = evas_stringshare_add (cfdata->hostname);
+    eina_stringshare_del (ci->hostname);
+  ci->hostname = eina_stringshare_add (cfdata->hostname);
   ci->port = atoi (cfdata->port);
   e_config_save_queue ();
   _mpdule_config_updated (ci);
