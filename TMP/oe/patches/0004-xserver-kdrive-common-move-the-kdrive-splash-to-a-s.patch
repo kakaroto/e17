@@ -1,4 +1,4 @@
-From 894da211a6ab8d389475e131a82c6b93e388a7f1 Mon Sep 17 00:00:00 2001
+From c65a0109d377db0e438133cda781369227bd3c14 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Wed, 29 Oct 2008 22:59:26 +1100
 Subject: [PATCH] xserver-kdrive-common: move the kdrive splash to a separate package

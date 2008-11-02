@@ -1,4 +1,4 @@
-From de2a761bb053744ab158f8f18ba8d7a225e60930 Mon Sep 17 00:00:00 2001
+From 1b0a228b03ec5e3317cd587ae6ad475732cdb9aa Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 14:31:23 +1100
 Subject: [PATCH] netbase: provide a default network setup for palmt650 so usbnet works

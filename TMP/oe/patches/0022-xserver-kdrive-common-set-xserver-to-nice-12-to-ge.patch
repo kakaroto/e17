@@ -1,5 +1,5 @@
-From 826f23666cedf262fccb9065c141624398c3dce3 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From 6c61e61a7c74ca3f3588127fbc560655b9cacae8 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 11:46:20 +1100
 Subject: [PATCH] xserver-kdrive-common: set xserver to nice -12 to get al lthe cpu it needs
 

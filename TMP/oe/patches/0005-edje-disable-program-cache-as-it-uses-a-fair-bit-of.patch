@@ -1,4 +1,4 @@
-From 09bc9ad07c3bb0842a1756e187c35170f43992ed Mon Sep 17 00:00:00 2001
+From 29959d57f120071a4522d95633446052b78f0b90 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 14:11:08 +1100
 Subject: [PATCH] edje: disable program cache as it uses a fair bit of ram

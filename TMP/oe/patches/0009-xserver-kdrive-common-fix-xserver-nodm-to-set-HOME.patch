@@ -1,4 +1,4 @@
-From 0c2d33b30f651b4b20e453b2cd62d7b82f715ad2 Mon Sep 17 00:00:00 2001
+From 732b61f7f27779c26e18db56ac32e7ba02fa3e17 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 15:00:31 +1100
 Subject: [PATCH] xserver-kdrive-common: fix xserver-nodm to set HOME env var right

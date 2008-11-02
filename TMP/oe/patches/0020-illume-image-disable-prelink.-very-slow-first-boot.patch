@@ -1,5 +1,5 @@
-From 93e04d76d978caf0cfb6e745fdc73550abe16894 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From f698d83f045b7f13c99755b9c8392e2bc63e6004 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 31 Oct 2008 17:34:35 +1100
 Subject: [PATCH] illume-image: disable prelink. very slow first boot.
 

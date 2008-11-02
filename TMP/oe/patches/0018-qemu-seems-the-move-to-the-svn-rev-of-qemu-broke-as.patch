@@ -1,4 +1,4 @@
-From 5d01aa2b7f1ccd02f91acc117fd53622154adc36 Mon Sep 17 00:00:00 2001
+From b59a05cfdeeba2d3cedc0f749544858f07bcb401 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 23:23:16 +1100
 Subject: [PATCH] qemu: seems the move to the svn rev of qemu broke as there are compiler bugs
@@ -12,7 +12,7 @@ the old 0.9.1 that works.
  3 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index 0fbf62b..ae914c8 100644
+index d27873f..972c87a 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
 @@ -180,10 +180,10 @@ SRCREV_pn-python-gsmd = "148"
@@ -27,9 +27,9 @@ index 0fbf62b..ae914c8 100644
 +#SRCREV_pn-qemu-native ?= "${QEMUSRCREV}"
 +#SRCREV_pn-qemu-sdk ?= "${QEMUSRCREV}"
 +#SRCREV_pn-qemu ?= "${QEMUSRCREV}"
+ SRCREV_pn-qi ?= "ed52486b43dca91891305b9e832c8366a2742798"
  SRCREV_pn-remoko = "115"
  SRCREV_pn-remoko-server = "115"
- SRCREV_pn-s3c24xx-gpio ?= "4130"
 diff --git a/packages/qemu/qemu-native_svn.bb b/packages/qemu/qemu-native_svn.bb
 index 1e3a4db..60f5a39 100644
 --- a/packages/qemu/qemu-native_svn.bb

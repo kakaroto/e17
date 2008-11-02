@@ -1,5 +1,5 @@
-From 2f683c0279b5e1def4d8e9f2a45ae721c0fe014c Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From 4dd95a7698c6db4098d7f6117393dab6eaaebce1 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 12:04:20 +1100
 Subject: [PATCH] e-wm: fix nice level set for e
 

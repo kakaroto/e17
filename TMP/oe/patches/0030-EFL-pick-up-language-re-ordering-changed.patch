@@ -1,22 +1,22 @@
-From 4a6b9cfaf1bd6cab37a57465297e68a5fdcd7ad9 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
-Date: Sun, 2 Nov 2008 11:51:37 +1100
-Subject: [PATCH] EFL srcrevs: update srcrevs to latest
+From 280ac14f15680fa82be1dbadb084fea33bb05aaa Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Sun, 2 Nov 2008 13:54:34 +1100
+Subject: [PATCH] EFL: pick up language re-ordering changed
 
 ---
  conf/distro/include/sane-srcrevs.inc |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index 691ee2c..43e0eaa 100644
+index 70104bd..1d82cc9 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -211,7 +211,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+@@ -212,7 +212,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.
--EFL_SRCREV ?= "37349"
-+EFL_SRCREV ?= "37387"
+-EFL_SRCREV ?= "37394"
++EFL_SRCREV ?= "37395"
  SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
  SRCREV_pn-edb ?= "${EFL_SRCREV}"
  SRCREV_pn-eina-native ?= "${EFL_SRCREV}"

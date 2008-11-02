@@ -1,4 +1,4 @@
-From 718ab0a86bd90513c732e92bfe5ec04b5dcd70f7 Mon Sep 17 00:00:00 2001
+From 45ed52a8300b652e2831bc266de39d054771789b Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 17:19:22 +1100
 Subject: [PATCH] distro-angstrom: remove avahi and sftp from angstrom for openmoko

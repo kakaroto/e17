@@ -1,4 +1,4 @@
-From 04c29ebc3af2db34d716984a9060e1845d2679ec Mon Sep 17 00:00:00 2001
+From d8defc0c7022e38aa09edc9d9b9a37bd82461963 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 14:37:56 +1100
 Subject: [PATCH] xserver-kdrive-common: provide xserver ppm splash support for palmt650

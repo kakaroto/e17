@@ -1,5 +1,5 @@
-From bd780869d8455a08cbdcbdcff51652945f132812 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From 5ea52687bdbbaac2ec940ce98e7ba1c71135cdc6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 31 Oct 2008 16:10:17 +1100
 Subject: [PATCH] elementary-alarm: fix to build properly from svn
 
@@ -10,10 +10,10 @@ moved in svn and need real srcrev
  2 files changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index ae914c8..691ee2c 100644
+index 972c87a..7b6b4d0 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -211,7 +211,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+@@ -212,7 +212,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.
@@ -22,7 +22,7 @@ index ae914c8..691ee2c 100644
  SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
  SRCREV_pn-edb ?= "${EFL_SRCREV}"
  SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
-@@ -278,6 +278,6 @@ SRCREV_pn-illume ?= "${EFL_SRCREV}"
+@@ -279,6 +279,6 @@ SRCREV_pn-illume ?= "${EFL_SRCREV}"
  SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
  
  # Enlightenment ST

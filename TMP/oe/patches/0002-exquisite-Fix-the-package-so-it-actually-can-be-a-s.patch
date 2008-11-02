@@ -1,4 +1,4 @@
-From cf32454f2ff255ba1c98fdd1cf4c4cee77cb6700 Mon Sep 17 00:00:00 2001
+From 3d51d541d076d9e67c03fee6e18d02902ebb46b9 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Wed, 29 Oct 2008 21:28:59 +1100
 Subject: [PATCH] exquisite: Fix the package so it actually can be a splash screen app

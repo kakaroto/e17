@@ -1,4 +1,4 @@
-From 2bd739111cacab8cc876a70f8158f39a1f8cb164 Mon Sep 17 00:00:00 2001
+From c1b007e1e60a405dbfe95aa908aee26997c9856d Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 17:29:51 +1100
 Subject: [PATCH] illume-image: add illume-image and packages required for it

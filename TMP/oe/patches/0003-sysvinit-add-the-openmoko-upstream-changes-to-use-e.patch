@@ -1,4 +1,4 @@
-From 1cb4203bd513bb147a9c9410cf2e161de25608d6 Mon Sep 17 00:00:00 2001
+From 56bb1613be9004ca2a8ac87096c58d68c476c01e Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Wed, 29 Oct 2008 21:34:38 +1100
 Subject: [PATCH] sysvinit: add the openmoko upstream changes to use exquisite as splash

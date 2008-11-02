@@ -1,4 +1,4 @@
-From a16ad09eb7ada1d9f68869c7f5f53c76adc0da47 Mon Sep 17 00:00:00 2001
+From 78168ceee7f890dec26c53533a27a1ed766b9548 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 15:40:54 +1100
 Subject: [PATCH] checksums.ini: hal checksum is wrong and makes it not build. fix.
@@ -9,10 +9,10 @@ fix the hal checksum so things build again.
  1 files changed, 4 insertions(+), 0 deletions(-)
 
 diff --git a/conf/checksums.ini b/conf/checksums.ini
-index dec4b7e..1b60d48 100644
+index 3981473..01b5bc4 100644
 --- a/conf/checksums.ini
 +++ b/conf/checksums.ini
-@@ -6510,6 +6510,10 @@ sha256=65d8f8eeb61e7609a8c5001b6660d90e7a482c4b74b4e226d09b433dc1a80c9d
+@@ -6522,6 +6522,10 @@ sha256=65d8f8eeb61e7609a8c5001b6660d90e7a482c4b74b4e226d09b433dc1a80c9d
  md5=a6f532770cf9286e1de38d6570cbc6bc
  sha256=65d8f8eeb61e7609a8c5001b6660d90e7a482c4b74b4e226d09b433dc1a80c9d
  

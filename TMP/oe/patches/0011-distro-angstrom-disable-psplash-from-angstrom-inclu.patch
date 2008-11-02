@@ -1,4 +1,4 @@
-From 61947569a1945bb2f971dcdcaea56a94539a7eb9 Mon Sep 17 00:00:00 2001
+From 2ce85729fda35f1cae021dd3baf60695acd8d2de Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 16:02:24 +1100
 Subject: [PATCH] distro-angstrom: disable psplash from angstrom includes for openmoko

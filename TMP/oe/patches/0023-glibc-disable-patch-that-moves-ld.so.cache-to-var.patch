@@ -1,5 +1,5 @@
-From 5af34935af6edacb16cdb591700f2675622ae6a5 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From 591c68d5d07f9b9d3be0a45b4d211b2871aa1a3f Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 11:47:42 +1100
 Subject: [PATCH] glibc: disable patch that moves ld.so.cache to /var/run to not run ldconfig
 
@@ -7,20 +7,13 @@ ldconfig is run at boot as a work around for ld.so.cache being in volatile
 ramdisk. this means it is not persistent and its caching won't help on boot.
 disable this.
 ---
- packages/glibc/glibc_2.6.1.bb |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ packages/glibc/glibc_2.6.1.bb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/packages/glibc/glibc_2.6.1.bb b/packages/glibc/glibc_2.6.1.bb
-index 1f72ff0..264e115 100644
+index 1705017..264e115 100644
 --- a/packages/glibc/glibc_2.6.1.bb
 +++ b/packages/glibc/glibc_2.6.1.bb
-@@ -1,5 +1,5 @@
- require glibc.inc
--PR = "r14"
-+PR = "r15"
- 
- PACKAGES_DYNAMIC = "libc6*"
- RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 @@ -41,7 +41,6 @@ SRC_URI = "\
    file://arm-longlong.patch;patch=1 \
    file://fhs-linux-paths.patch;patch=1 \

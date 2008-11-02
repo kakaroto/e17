@@ -1,4 +1,4 @@
-From 6496ebbd893142dad2e907f215318bf2cd730131 Mon Sep 17 00:00:00 2001
+From c4ac5acef3c96cf8eda5ee2f3a88affa4b858e79 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 14:23:06 +1100
 Subject: [PATCH] e17+efl: update to match latest additions and changes upstream
@@ -35,10 +35,10 @@ you want "latest e+efl to work well" you will want these changes.
  create mode 100644 packages/efl1/eina_svn.bb
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index aa0f823..0fbf62b 100644
+index 3e0af7e..d27873f 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -211,9 +211,11 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+@@ -212,9 +212,11 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.

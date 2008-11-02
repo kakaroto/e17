@@ -1,4 +1,4 @@
-From 79fdcaa39a214df2ed0a1340791466b5017340ad Mon Sep 17 00:00:00 2001
+From de9509ae43b7892d4181e1547e2e219d7adb9b0e Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 16:06:52 +1100
 Subject: [PATCH] exquisitie: update initial timeout to wait for exquisite and the total boot too

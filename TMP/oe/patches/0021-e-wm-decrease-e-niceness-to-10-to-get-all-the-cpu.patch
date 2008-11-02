@@ -1,5 +1,5 @@
-From 6889a7316b7000e720a816859868853795a5c1f2 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From bfacaa12df4ce03260f8ce0abc43c3e8adb3c979 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 11:44:09 +1100
 Subject: [PATCH] e-wm: decrease e niceness to -10 to get all the cpu it wants/needs
 

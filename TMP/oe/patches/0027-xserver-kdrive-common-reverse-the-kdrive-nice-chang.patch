@@ -1,5 +1,5 @@
-From 3abb7bd98c4b36d796004aeccb85d82f95ecd7b6 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From 74f69a04fa1ee3b24ddbbd9341c127cda7cbec8f Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 12:08:32 +1100
 Subject: [PATCH] xserver-kdrive-common: reverse the kdrive nice changes. won't work.
 

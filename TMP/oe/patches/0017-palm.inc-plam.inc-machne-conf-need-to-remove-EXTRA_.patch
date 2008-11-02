@@ -1,4 +1,4 @@
-From e6849ef32b41b391587fe906064349a6f3e34924 Mon Sep 17 00:00:00 2001
+From cf6efbf9212aeb36e9501cb6c1e27153d501b7f0 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 21:56:07 +1100
 Subject: [PATCH] palm.inc: plam.inc machne conf need to remove EXTRA_PACKAGE_ARCHS
