@@ -135,10 +135,10 @@ ewl_toolbar_orientation_get(Ewl_Toolbar *t)
 }
 
 /**
- * @param t: The toolbar to set the orientation on
+ * @param t: The toolbar to set the hidden part
  * @param part: The Ewl_Icon_Part to hide
  * @return Returns no value
- * @brief Set the orientation of the toolbar
+ * @brief Hide the given icon part
  */
 void
 ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
@@ -161,6 +161,21 @@ ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The toolbar to get the hidden part
+ * @return Returns the hidden icon part
+ * @brief Retrieve the hidden part
+ */
+Ewl_Icon_Part
+ewl_toolbar_icon_part_hidden_get(Ewl_Toolbar *t)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, EWL_ICON_PART_NONE);
+        DCHECK_TYPE_RET(t, EWL_TOOLBAR_TYPE, EWL_ICON_PART_NONE);
+
+        DRETURN_INT(t->hidden, DLEVEL_STABLE);
 }
 
 /**

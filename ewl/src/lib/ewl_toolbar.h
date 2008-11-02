@@ -47,6 +47,7 @@ struct Ewl_Toolbar
         Ewl_Menubar     menubar; /**< Inherit from Ewl_Menubar */
         Ewl_Icon_Part   hidden;  /**< which part of icons should be hidden */
 };
+
 Ewl_Widget     *ewl_htoolbar_new(void);
 Ewl_Widget     *ewl_vtoolbar_new(void);
 
@@ -57,6 +58,7 @@ void            ewl_toolbar_orientation_set(Ewl_Toolbar *t, Ewl_Orientation o);
 Ewl_Orientation ewl_toolbar_orientation_get(Ewl_Toolbar *t);
 
 void            ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part);
+Ewl_Icon_Part   ewl_toolbar_icon_part_hidden_get(Ewl_Toolbar *t);
 
 /*
  * Internal functions
