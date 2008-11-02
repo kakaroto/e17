@@ -78,6 +78,13 @@ struct Ewl_Image
 #define EWL_IMAGE_THUMBNAIL_TYPE "image_thumbnail"
 
 /**
+ * @def EWL_IMAGE_THUMBNAIL_IS(w)
+ * Returns TRUE if the widget is an Ewl_Image_Thumbnail, FALSE otherwise
+ */
+#define EWL_IMAGE_THUMBNAIL_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), \
+                        EWL_IMAGE_THUMBNAIL_TYPE))
+
+/**
  * @brief Inherits from Ewl_Image and extends to provide reference to original image.
  */
 struct Ewl_Image_Thumbnail

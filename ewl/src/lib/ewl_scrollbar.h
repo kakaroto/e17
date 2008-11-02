@@ -62,18 +62,18 @@ typedef struct Ewl_Scrollbar Ewl_Scrollbar;
  */
 struct Ewl_Scrollbar
 {
-        Ewl_Box box;                         /**< Inherit from Ewl_Box */
+        Ewl_Box box;                    /**< Inherit from Ewl_Box */
 
-        Ewl_Widget *seeker;                 /**< The internal Ewl_Seeker */
-        Ewl_Widget *decrement;                /**< The internal decrement button */
-        Ewl_Widget *increment;                 /**< The internal increment button */
+        Ewl_Widget *seeker;             /**< The internal Ewl_Seeker */
+        Ewl_Widget *decrement;          /**< The internal decrement button */
+        Ewl_Widget *increment;          /**< The internal increment button */
         unsigned int buttons_alignment; /**< The ordering of buttons */
 
-        double fill_percentage;                /**< Ratio of size for draggable */
-        double start_time;                 /**< Time scrolling began */
-        Ecore_Timer *timer;                /**< Repeating timer for scrolling */
-        signed char direction;                /**< Direction for the scrollbar */
-        signed char invert;                /**< Invert the scrolling direction */
+        double fill_percentage;         /**< Ratio of size for draggable */
+        double start_time;              /**< Time scrolling began */
+        Ecore_Timer *timer;             /**< Repeating timer for scrolling */
+        signed char direction;          /**< Direction for the scrollbar */
+        signed char invert;             /**< Invert the scrolling direction */
 };
 
 Ewl_Widget              *ewl_scrollbar_new(void);
