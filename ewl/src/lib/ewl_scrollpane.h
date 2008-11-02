@@ -48,13 +48,15 @@ typedef struct Ewl_Scrollpane_Scroll_Info_Base Ewl_Scrollpane_Scroll_Info_Base;
  */
 struct Ewl_Scrollpane_Scroll_Info_Base
 {
-        unsigned char clicked:1;        /**< If the mouse is currently clicked or not */
-        unsigned char active:1;                /**< If the pane is currently moving */
-        int fps;                        /**< Number of recalculations per second */
-        double vmax;                        /**< Maximum speed in pixels */
-        double vmin;                        /**< Minimum speed in pixels */
-        double dampen;                        /**< Frictional variable */
-        void *extra;                        /**< Additional information */
+        unsigned char clicked:1;        /**< If the mouse is currently clicked
+                                                or not */
+        unsigned char active:1;         /**< If the pane is currently moving */
+        int fps;                        /**< Number of recalculations per
+                                                second */
+        double vmax;                    /**< Maximum speed in pixels */
+        double vmin;                    /**< Minimum speed in pixels */
+        double dampen;                  /**< Frictional variable */
+        void *extra;                    /**< Additional information */
 };
 
 /**
@@ -75,16 +77,18 @@ typedef struct Ewl_Scrollpane Ewl_Scrollpane;
  */
 struct Ewl_Scrollpane
 {
-        Ewl_Container container;  /**< Inherit from Ewl_Container */
+        Ewl_Container container;        /**< Inherit from Ewl_Container */
 
-        Ewl_Widget *overlay;         /**< Clips the enclosed widget */
-        Ewl_Widget *box;          /**< Lays out enclosed widget */
-        Ewl_Widget *hscrollbar; /**< Horizontal scrollbar */
-        Ewl_Widget *vscrollbar; /**< Vertical scrollbar */
-        Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
-        Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
-        Ewl_Scrollpane_Scroll_Info_Base *kinfo;        /**< Kinetic scrolling info */
-        Ewl_Kinetic_Scroll type;        /**< If the scrollpane is to use kinetic scrolling */
+        Ewl_Widget *overlay;            /**< Clips the enclosed widget */
+        Ewl_Widget *box;                /**< Lays out enclosed widget */
+        Ewl_Widget *hscrollbar;         /**< Horizontal scrollbar */
+        Ewl_Widget *vscrollbar;         /**< Vertical scrollbar */
+        Ewl_Scrollpane_Flags hflag;     /**< Flags for horizontal scrollbar */
+        Ewl_Scrollpane_Flags vflag;     /**< Flags for vertical scrollbar */
+        Ewl_Scrollpane_Scroll_Info_Base *kinfo;         /**< Kinetic scrolling 
+                                                             info */
+        Ewl_Kinetic_Scroll type;        /**< If the scrollpane is to use 
+                                                kinetic scrolling */
 };
 
 Ewl_Widget              *ewl_scrollpane_new(void);
