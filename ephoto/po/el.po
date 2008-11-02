@@ -1,22 +1,21 @@
 # translation of el.po to
+# Greek translation for Enlightenment17.
 # This file is put in the public domain.
-# This file is distributed under the same license as the ephoto package.
-# DUNNEWIND Maxence <maxenced@ubuntu.com>, 2006.
 # Geo Kou <ragecryx@yahoo.gr>, 2008.
-#  <aronmalache@163.com>, 2008.
 # 
-# 
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: el e17\n"
+"Project-Id-Version: ephoto e17\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 22:18+0100\n"
-"PO-Revision-Date: 2008-11-01 13:42+0800\n"
+"PO-Revision-Date: 2008-10-31 14:29+0200\n"
 "Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: src/ephoto.c:52
 #: src/ephoto_viewer.c:253
