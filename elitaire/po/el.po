@@ -1,21 +1,23 @@
 # translation of el.po to
-# Copyright (C) 2008 Peter Wehrfritz
-# This file is distributed under the same license as the elitaire package.
-# Aron Xu <aronmalache@163.com>, 2008.
-# Geo Kou <ragecryx@yahoo.gr>, 2008. <aronmalache@163.com>, 2008.
+# Greek translation for Enlightenment17.
+# This file is put in the public domain.
+# Geo Kou <ragecryx@yahoo.gr>, 2008.
 # 
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: elitaire e17\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
 "POT-Creation-Date: 2008-09-30 19:49+0200\n"
-"PO-Revision-Date: 2008-11-01 13:49+0800\n"
+"PO-Revision-Date: 2008-10-31 14:08+0200\n"
 "Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: src/edje_frontend_game.cpp:61 src/edje_frontend_gui.cpp:701
 #: src/edje_frontend_gui.cpp:755
