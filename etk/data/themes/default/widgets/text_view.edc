@@ -97,3 +97,162 @@ group {
       }
    }
 }
+
+
+styles {
+   style {
+      name: "textblock_style";
+      base: "font=Sans font_size=10 align=left color=#000 wrap=word";
+      tag:  "br" "\n";
+      tag:  "tab" "\t";
+      tag:  "title" "+ style=Bold font_size=20 align=center";
+      tag:  "i" "+ font=Sans:style=Oblique";
+      tag:  "b" "+ font=Sans:style=Bold";
+      tag:  "u" "+ underline=on underline_color=#000";
+      tag:  "s" "+ color=#C00";
+  }
+}
+
+group {
+   name: "etk/text_view3";
+   min: 120 18;
+   data {
+      item: "inset" "6 6 6 6";
+   }
+   parts {
+      part {
+         name: "text_view_bg";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            image {
+               normal: "text_view_bg.png";
+               border: 6 6 6 6;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "etk.text.textblock";
+         type: TEXTBLOCK;
+         entry_mode: EDITABLE;
+         multiline: 1;
+         source: "etk/text_view3/selection"; //selection under
+         source4: "etk/text_view3/cursor";   //cursor over
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 4 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -5 -3;
+            }
+            text {
+               style: "textblock_style";
+            }
+         }
+      }
+      part {
+         name: "text_view_over";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            image {
+               normal: "text_view_over.png";
+               border: 13 13 13 13;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -1, -1, "text_view_bg", 1.0, 1.0, 0, 0, "text_view_bg")
+   }
+   programs {
+      
+         program { name: "focus";
+            signal: "load";
+            source: "";
+            action: FOCUS_SET;
+            target: "etk.text.textblock";
+         }
+      
+      program {
+         name: "text_view_focus";
+         signal: "etk,state,focused";
+         source: "etk";
+         FOCUS_GLOW_ACTION
+      }
+      program {
+         name: "text_view_unfocus";
+         signal: "etk,state,unfocused";
+         source: "etk";
+         UNFOCUS_GLOW_ACTION
+      }
+   }
+}
+
+group {
+   name: "etk/text_view3/selection";
+   parts {
+      part {
+         name: "bg";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 128 128 128 128;
+         }
+      }
+   }
+}
+
+group {
+   name: "etk/text_view3/cursor";
+   parts {
+      part {
+         name: "cur";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 0 -1;
+            }
+         }
+         description {
+            state: "blink" 0.0;
+            color: 0 0 0 0;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 0 -1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "blink";
+         signal: "load";
+         source: "*";
+         in: 1.5 0;
+         action: STATE_SET "blink" 0.0;
+         transition: LINEAR 0.5;
+         target: "cur";
+         after: "blink2";
+      }
+      program {
+         name: "blink2";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.5;
+         target: "cur";
+         after: "blink";
+      }
+   }
+}

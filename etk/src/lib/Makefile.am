@@ -76,6 +76,7 @@ etk_string.h \
 etk_table.h \
 etk_text_view.h \
 etk_text_view2.h \
+etk_text_view3.h \
 etk_textblock.h \
 etk_textblock2.h \
 etk_theme.h \
@@ -153,6 +154,7 @@ etk_string.c \
 etk_table.c \
 etk_text_view.c \
 etk_text_view2.c \
+etk_text_view3.c \
 etk_textblock.c \
 etk_textblock2.c \
 etk_theme.c \

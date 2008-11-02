@@ -133,6 +133,7 @@ typedef struct Etk_Statusbar Etk_Statusbar;
 typedef struct Etk_Table Etk_Table;
 typedef struct Etk_Text_View Etk_Text_View;
 typedef struct Etk_Text_View2 Etk_Text_View2;
+typedef struct Etk_Text_View3 Etk_Text_View3;
 typedef struct Etk_Textblock Etk_Textblock;
 typedef struct Etk_Textblock_Format Etk_Textblock_Format;
 typedef struct Etk_Textblock_Iter Etk_Textblock_Iter;

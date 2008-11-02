@@ -91,6 +91,7 @@ extern "C" {
 #include "etk_textblock2.h"
 #include "etk_text_view.h"
 #include "etk_text_view2.h"
+#include "etk_text_view3.h"
 #include "etk_theme.h"
 #include "etk_toggle_button.h"
 #include "etk_tool_button.h"

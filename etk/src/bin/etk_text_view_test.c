@@ -29,7 +29,13 @@ typedef struct _IM_Button_Type
 
 static void _etk_test_text_view_tag_window_create(void *data);
 static void _etk_test_text_view_im_window_create(void *data);
+static void _etk_test_text_view_textview_window_create(void *data);
 static Etk_Bool _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+
+Etk_Bool _etk_test_text_view_reset_cb(Etk_Button *button, void *data);
+Etk_Bool _etk_test_text_view_insert_cb(Etk_Button *button, void *data);
+Etk_Bool _etk_test_text_view_print_cb(Etk_Button *button, void *data);
+
 
 static IM_Button_Type _im_buttons[] =
 {
@@ -75,6 +81,10 @@ void etk_test_text_view_window_create(void *data)
    etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_im_window_create), NULL);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
+   button = etk_button_new_with_label("TextView3");
+   etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_textview_window_create), NULL);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   
    etk_widget_show_all(win);
 }
 
@@ -272,4 +282,128 @@ static Etk_Bool _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Ke
    }
 
    return ETK_FALSE;
+}
+/**************************
+ *
+ * TextView3
+ *
+ **************************/
+
+static const char* init_text = 
+   "<div wrap=no><title>Etk Textview3</title></div><br>"
+   "<b>Included tags:</b><br>"
+   "<tab><div wrap=no><b>&lt;br&gt;:</b> Insert a new line</b></div><br>"
+   "<tab><div wrap=no><b>&lt;tab&gt;:</b> Insert a TAB char</b></div><br>"
+   "<tab><div wrap=no><b>&lt;p </b>margin=X<b>&gt;:</b> Start a new paragraph</p></div><br>"
+   "<tab><div wrap=no><b>&lt;b&gt;:</b> <b>bold</b></div><br>"
+   "<tab><div wrap=no><b>&lt;i&gt;:</b> <i>italic</i></div><br>"
+   "<tab><div wrap=no><b>&lt;u&gt;:</b> <u>underline</u></div><br>"
+   "<br><b>Custom tags:</b><br>"
+   "<tag color=#f00>color=#f00</tag><br>"
+   "<tag font_size=14>font_size=14</tag><br>"
+   "<tag underline=on underline_color=#000>underline=on</tag><br>"
+   "<tag underline=on underline_color=#0f0>underline_color=#0f0</tag><br>"
+   "<tag align=center>align=center</tag><br>"
+   "<tag align=right>align=right</tag><br>"
+   "<tag align=right right_margin=30>align=right right_margin=30</tag><br>"
+   "<tag left_margin=10>left_margin=10</tag><br>"
+   "<tag wrap=no>wrap=no  bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</tag><br>"
+   "<tag wrap=word>wrap=word  bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</tag><br>"
+
+   "<br><br><b><u><red>bold-underline</red></u></b>";
+
+static Etk_Bool _etk_test_text_view_realized_cb(Etk_Object *object, void *data)
+{
+   etk_text_view3_text_set(ETK_TEXT_VIEW3(object), init_text);
+
+   //printf("GET: %s\n", etk_text_view3_text_get(ETK_TEXT_VIEW3(object)));
+   //etk_text_view3_text_insert(ETK_TEXT_VIEW3(object), "<link>dave</link><br>");
+   //etk_text_view3_text_insert(ETK_TEXT_VIEW3(object), "<em>dave</em>");
+   //printf("SELECTION: %s\n", etk_text_view3_selection_get(ETK_TEXT_VIEW3(object)));
+   return ETK_TRUE;
+}
+
+static void _etk_test_text_view_textview_window_create(void *data)
+{
+   static Etk_Widget *win = NULL;
+   Etk_Widget *vbox, *hbox;
+   Etk_Widget *text_view;
+   Etk_Widget *scrolled_view;
+   Etk_Widget *button;
+
+   if (win)
+   {
+      etk_widget_show(win);
+      return;
+   }
+
+   //Window
+   win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(win), "Etk Text View3 Test");
+   etk_widget_size_request_set(win, 150, 150);
+   etk_window_resize(ETK_WINDOW(win), 400, 300);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win),
+                              ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(win), vbox);
+
+   //Text_View
+   text_view = etk_text_view3_new();
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(text_view),
+         ETK_CALLBACK(_etk_test_text_view_realized_cb), NULL);
+
+   scrolled_view = etk_scrolled_view_new();
+   etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(scrolled_view),
+                                ETK_POLICY_HIDE, ETK_POLICY_HIDE);
+   etk_bin_child_set(ETK_BIN(scrolled_view), text_view);
+   etk_box_append(ETK_BOX(vbox), scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //Reset button
+   button = etk_button_new_with_label("Reset");
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
+         ETK_CALLBACK(_etk_test_text_view_reset_cb), text_view);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //Insert button
+   button = etk_button_new_with_label("Insert");
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
+         ETK_CALLBACK(_etk_test_text_view_insert_cb), text_view);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //Print Selection button
+   button = etk_button_new_with_label("Selection");
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
+         ETK_CALLBACK(_etk_test_text_view_print_cb), text_view);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   etk_widget_show_all(win);
+}
+
+Etk_Bool _etk_test_text_view_reset_cb(Etk_Button *button, void *data)
+{
+   etk_text_view3_text_set(ETK_TEXT_VIEW3(data), init_text);
+   return ETK_TRUE;
+}
+
+Etk_Bool _etk_test_text_view_insert_cb(Etk_Button *button, void *data)
+{
+   etk_text_view3_text_insert(ETK_TEXT_VIEW3(data), "Some random text");
+   return ETK_TRUE;
+}
+
+Etk_Bool _etk_test_text_view_print_cb(Etk_Button *button, void *data)
+{
+   const char *sel;
+
+   sel = etk_text_view3_selection_get(ETK_TEXT_VIEW3(data));
+   if (sel)
+      printf("Selection: %s\n", sel);
+   else
+      printf("None selected\n");
+   
+   return ETK_TRUE;
 }
