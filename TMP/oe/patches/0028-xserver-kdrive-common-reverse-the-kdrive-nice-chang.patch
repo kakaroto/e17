@@ -1,0 +1,36 @@
+From 3abb7bd98c4b36d796004aeccb85d82f95ecd7b6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Sun, 2 Nov 2008 12:08:32 +1100
+Subject: [PATCH] xserver-kdrive-common: reverse the kdrive nice changes. won't work.
+
+---
+ .../xserver-kdrive-common/openmoko/Xserver         |    2 +-
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+index 4e43961..07d1192 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+@@ -132,4 +132,4 @@ fi
+ 
+ DISPLAY=':0'
+ 
+-exec xinit /etc/X11/Xsession -- nice -n -12 $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1
++exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index b3632cc..ef7c8b9 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+ RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
+-PR = "r35"
++PR = "r36"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+-- 
+1.5.4.3
+

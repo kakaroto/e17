@@ -1,0 +1,24 @@
+From 6889a7316b7000e720a816859868853795a5c1f2 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Sun, 2 Nov 2008 11:44:09 +1100
+Subject: [PATCH] e-wm: decrease e niceness to -10 to get all the cpu it wants/needs
+
+get more cpu to function as a launcher/app manager. e will not set this for
+children - children get nice 1 now anyway.
+---
+ packages/e17/e-wm/enlightenment_start.oe |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/e17/e-wm/enlightenment_start.oe b/packages/e17/e-wm/enlightenment_start.oe
+index 7d472fa..fa78302 100644
+--- a/packages/e17/e-wm/enlightenment_start.oe
++++ b/packages/e17/e-wm/enlightenment_start.oe
+@@ -5,4 +5,4 @@ if [ -r /etc/enlightenment/default_profile ]; then
+   . /etc/enlightenment/default_profile
+ fi
+ 
+-exec enlightenment_start $E_PROFILE
++exec nice -n -10 enlightenment_start $E_PROFILE
+-- 
+1.5.4.3
+

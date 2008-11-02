@@ -1,8 +1,10 @@
-From 1488fc60174a6c4db0726e766b7dbbc372303fcf Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:34:36 +1100
-Subject: [PATCH] sysvinit scripts that under openmoko distro use exquisite - as per openmoko
+From 1cb4203bd513bb147a9c9410cf2e161de25608d6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Wed, 29 Oct 2008 21:34:38 +1100
+Subject: [PATCH] sysvinit: add the openmoko upstream changes to use exquisite as splash
 
+This just contains the upstream changes from openmoko to use exquisite as
+the bootsplash.
 ---
  packages/sysvinit/sysvinit/openmoko/rc          |  181 +++++++++++++++++++++++
  packages/sysvinit/sysvinit/openmoko/rcS-default |   25 +++
@@ -12,7 +14,7 @@ Subject: [PATCH] sysvinit scripts that under openmoko distro use exquisite - as 
 
 diff --git a/packages/sysvinit/sysvinit/openmoko/rc b/packages/sysvinit/sysvinit/openmoko/rc
 new file mode 100644
-index 0000000..11bc831
+index 0000000..9d28a68
 --- /dev/null
 +++ b/packages/sysvinit/sysvinit/openmoko/rc
 @@ -0,0 +1,181 @@
@@ -188,15 +190,15 @@ index 0000000..11bc831
 +	done
 +  fi
 +
-+# FIXME: this should be virtualised and come from a generic boot splash script
-+# provided by some generic splash handler - be it psplash, exquisite or
-+# whatever else soa  simple install of one splash instead of another works
-+if [ "x$runlevel" != "xS" ]; then
-+    if type exquisite-write >/dev/null 2>&1; then
-+        EXQUISITE_IPC=/mnt/.exquisite/exquisite exquisite-write "QUIT" || true
-+    	umount /mnt/.exquisite
-+    fi
-+fi
++  # FIXME: this should be virtualised and come from a generic boot splash script
++  # provided by some generic splash handler - be it psplash, exquisite or
++  # whatever else soa  simple install of one splash instead of another works
++  if [ "x$runlevel" != "xS" ]; then
++	if type exquisite-write >/dev/null 2>&1; then
++		EXQUISITE_IPC=/mnt/.exquisite/exquisite exquisite-write "QUIT" || true
++		umount /mnt/.exquisite
++	fi
++  fi
 diff --git a/packages/sysvinit/sysvinit/openmoko/rcS-default b/packages/sysvinit/sysvinit/openmoko/rcS-default
 new file mode 100644
 index 0000000..5bb57ef

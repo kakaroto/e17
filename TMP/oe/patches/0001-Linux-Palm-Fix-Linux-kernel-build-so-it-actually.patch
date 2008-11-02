@@ -1,17 +1,19 @@
-From d0a4ca894f5218bdf8fa196254feabaa20b7df25 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:24:48 +1100
-Subject: [PATCH] fix palm t650 build for kernel so linuxhnd works
+From 198a50435d5d6ec247642f890869141131522ce3 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Wed, 29 Oct 2008 21:03:52 +1100
+Subject: [PATCH] Linux (Palm): Fix Linux kernel build so it actually works for palmt650
 
+Linux hackndev changed their git so the OE packages for palm ceased to work.
+This updates so it actually builds a kernel corectly.
 ---
  packages/linux/linux-hackndev-2.6_git.bb |   10 +++-------
  1 files changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/packages/linux/linux-hackndev-2.6_git.bb b/packages/linux/linux-hackndev-2.6_git.bb
-index 510c199..a59c282 100644
+index 387a1da..015a6fe 100644
 --- a/packages/linux/linux-hackndev-2.6_git.bb
 +++ b/packages/linux/linux-hackndev-2.6_git.bb
-@@ -6,15 +6,10 @@ FILE_PR = "r14"
+@@ -6,15 +6,10 @@ PR = "r14"
  
  COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
  

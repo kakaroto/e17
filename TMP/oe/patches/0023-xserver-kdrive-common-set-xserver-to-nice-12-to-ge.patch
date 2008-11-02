@@ -1,0 +1,38 @@
+From 826f23666cedf262fccb9065c141624398c3dce3 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Sun, 2 Nov 2008 11:46:20 +1100
+Subject: [PATCH] xserver-kdrive-common: set xserver to nice -12 to get al lthe cpu it needs
+
+to improve ui responsiveness make x have nice -12 so it gets cpu it needs to
+always be responsive
+---
+ .../xserver-kdrive-common/openmoko/Xserver         |    2 +-
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+index 07d1192..4e43961 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+@@ -132,4 +132,4 @@ fi
+ 
+ DISPLAY=':0'
+ 
+-exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1
++exec xinit /etc/X11/Xsession -- nice -n -12 $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index a49d4fa..b3632cc 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+ RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
+-PR = "r34"
++PR = "r35"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+-- 
+1.5.4.3
+

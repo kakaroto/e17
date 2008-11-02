@@ -1,0 +1,60 @@
+From bd780869d8455a08cbdcbdcff51652945f132812 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Fri, 31 Oct 2008 16:10:17 +1100
+Subject: [PATCH] elementary-alarm: fix to build properly from svn
+
+moved in svn and need real srcrev
+---
+ conf/distro/include/sane-srcrevs.inc |    4 ++--
+ packages/e17/elementary-alarm_svn.bb |    7 +++----
+ 2 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index ae914c8..691ee2c 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -211,7 +211,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "37324"
++EFL_SRCREV ?= "37349"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+@@ -278,6 +278,6 @@ SRCREV_pn-illume ?= "${EFL_SRCREV}"
+ SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
+ 
+ # Enlightenment ST
+-SRCREV_pn-alarm ?= "${EFL_SRCREV}"
+ SRCREV_pn-waker ?= "${EFL_SRCREV}"
+ SRCREV_pn-elementary ?= "${EFL_SRCREV}"
++SRCREV_pn-elementary-alarm ?= "${EFL_SRCREV}"
+diff --git a/packages/e17/elementary-alarm_svn.bb b/packages/e17/elementary-alarm_svn.bb
+index 325f435..49f95a3 100644
+--- a/packages/e17/elementary-alarm_svn.bb
++++ b/packages/e17/elementary-alarm_svn.bb
+@@ -3,12 +3,12 @@ LICENSE = "GPL"
+ DEPENDS = "elementary"
+ RDEPENDS = "waker"
+ PV = "0.0.0+svnr${SRCREV}"
+-PR = "r0.21"
++PR = "r0.22"
+ 
+ inherit e
+ 
+-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=alarm;proto=http"
+-S = "${WORKDIR}/alarm"
++SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary-alarm;proto=http"
++S = "${WORKDIR}/elementary-alarm"
+ 
+ PACKAGES="${PN}-dbg ${PN}"
+ 
+@@ -16,4 +16,3 @@ FILES_${PN} += "${bindir}/*"
+ FILES_${PN} += "${datadir}/${PN}"
+ FILES_${PN} += "${datadir}/icons/*"
+ FILES_${PN} += "${datadir}/applications/*"
+-FILES_${PN} += "${datadir}/${PN}/sounds/*"
+-- 
+1.5.4.3
+

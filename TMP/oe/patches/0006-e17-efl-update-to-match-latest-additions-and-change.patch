@@ -1,0 +1,366 @@
+From 6496ebbd893142dad2e907f215318bf2cd730131 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 14:23:06 +1100
+Subject: [PATCH] e17+efl: update to match latest additions and changes upstream
+
+lots of changes:
+
+1. eina added. now a dependency.
+2. illume removed as separate source tree and module and part of e17's wm
+3. e17's default theme now include illume support so no need for illume theme
+
+these are fairly major but clean things up a lot. the e17 package splits out
+config profile now (it includes all of them as recommends though). the user
+can choose what profiel they want runtime. this is a "first time you run e"
+thing or whenever you choose the default profile (you go back to the wizard).
+also full intl support works with language selection etc. as long as glibc
+has that locale support. lots of other bugfixes and improvements as well. if
+you want "latest e+efl to work well" you will want these changes.
+---
+ conf/distro/include/sane-srcrevs.inc    |    4 +-
+ packages/e17/e-wm_svn.bb                |   85 +++++++++++++++++++++++++++----
+ packages/e17/illume-theme-illume_svn.bb |   33 ------------
+ packages/e17/illume_svn.bb              |   58 ---------------------
+ packages/efl1/eet-native_svn.bb         |    2 +-
+ packages/efl1/eet_svn.bb                |    2 +-
+ packages/efl1/eina-native_svn.bb        |    6 ++
+ packages/efl1/eina_svn.bb               |   12 ++++
+ packages/python/python-ecore_svn.bb     |    2 +-
+ packages/python/python-edje_svn.bb      |    2 +-
+ packages/python/python-evas_svn.bb      |    2 +-
+ 11 files changed, 100 insertions(+), 108 deletions(-)
+ delete mode 100644 packages/e17/illume-theme-illume_svn.bb
+ delete mode 100644 packages/e17/illume_svn.bb
+ create mode 100644 packages/efl1/eina-native_svn.bb
+ create mode 100644 packages/efl1/eina_svn.bb
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index aa0f823..0fbf62b 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -211,9 +211,11 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "36540"
++EFL_SRCREV ?= "37324"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
++SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
++SRCREV_pn-eina ?= "${EFL_SRCREV}"
+ SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-eet ?= "${EFL_SRCREV}"
+ SRCREV_pn-evas-native ?= "${EFL_SRCREV}"
+diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
+index acbee85..a641a2c 100644
+--- a/packages/e17/e-wm_svn.bb
++++ b/packages/e17/e-wm_svn.bb
+@@ -2,11 +2,51 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
+ DEPENDS = "eet evas ecore edje efreet edbus"
+ LICENSE = "MIT BSD"
+ PV = "0.16.999.043+svnr${SRCREV}"
+-PR = "r15"
++PR = "r16"
+ 
+ inherit e update-alternatives
+ 
+-RDEPENDS += "shared-mime-info mime-support"
++RDEPENDS += "shared-mime-info mime-support edje-utils glibc-utils"
++
++PACKAGES =+ "\
++  ${PN}-config-default \
++  ${PN}-config-illume \
++  ${PN}-config-minimalist \
++  ${PN}-config-netbook \
++  ${PN}-config-scaleable \
++  ${PN}-config-standard \
++  ${PN}-theme-default \
++  ${PN}-theme-illume \
++  ${PN}-background-dark-gradient \
++  ${PN}-background-light-gradient \
++  ${PN}-images \
++  ${PN}-icons \
++  ${PN}-other \
++  ${PN}-input-methods \
++"
++
++RRECOMMENDS_${PN} = "\
++  ${PN}-config-default \
++  ${PN}-images \
++  ${PN}-icons \
++  ${PN}-other \
++  ${PN}-input-methods \
++"
++
++PACKAGE_ARCH_${PN}-config-default = "all"
++PACKAGE_ARCH_${PN}-config-illume = "all"
++PACKAGE_ARCH_${PN}-config-minimalist = "all"
++PACKAGE_ARCH_${PN}-config-netbook = "all"
++PACKAGE_ARCH_${PN}-config-scaleable = "all"
++PACKAGE_ARCH_${PN}-config-standard = "all"
++PACKAGE_ARCH_${PN}-theme-default = "all"
++PACKAGE_ARCH_${PN}-theme-illume = "all"
++PACKAGE_ARCH_${PN}-background-dark-gradient = "all"
++PACKAGE_ARCH_${PN}-background-light-gradient = "all"
++PACKAGE_ARCH_${PN}-images = "all"
++PACKAGE_ARCH_${PN}-icons = "all"
++PACKAGE_ARCH_${PN}-other = "all"
++PACKAGE_ARCH_${PN}-input-methods = "all"
+ 
+ SRC_URI = "\
+   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
+@@ -37,30 +77,53 @@ do_stage() {
+ 
+ do_install_append() {
+     # customising - should rather make this simple upstream
+-    rm -rf ${D}${datadir}/enlightenment/data/backgrounds/*
+-    rm -rf ${D}${datadir}/enlightenment/data/fonts/*
+-    rm -rf ${D}${datadir}/enlightenment/data/other/*
+     install -m 755 ${WORKDIR}/enlightenment_start.oe ${D}/${bindir}
+     install -d ${D}/${sysconfdir}/xdg/menus
+     install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
++    for I in `find ${D}/${libdir}/enlightenment -name "*.a" -print`; do rm -f $I; done
++    for I in `find ${D}/${libdir}/enlightenment -name "*.la" -print`; do rm -f $I; done
+ }
+ 
+ FILES_${PN} = "\
+   ${bindir}/* \
+   ${libdir}/enlightenment/modules/*/*.* \
+   ${libdir}/enlightenment/modules/*/*/* \
+-  ${libdir}/enlightenment/preload/*.so \
+-  ${datadir} \
++  ${datadir}/locale \
++  ${datadir}/enlightenment/data/icons \
++  ${datadir}/enlightenment/data/input_methods \
++  ${datadir}/enlightenment/data/config/profile.cfg \
+   ${sysconfdir} \
+ "
++FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
++FILES_${PN}-config-illume = "${datadir}/enlightenment/data/config/illume"
++FILES_${PN}-config-minimalist = "${datadir}/enlightenment/data/config/minimalist"
++FILES_${PN}-config-netbook = "${datadir}/enlightenment/data/config/netbook"
++FILES_${PN}-config-scaleable = "${datadir}/enlightenment/data/config/scaleable"
++FILES_${PN}-config-standard = "${datadir}/enlightenment/data/config/standard"
++FILES_${PN}-theme-default = "${datadir}/enlightenment/data/themes/default.edj"
++FILES_${PN}-theme-illume = "${datadir}/enlightenment/data/themes/illume.edj"
++FILES_${PN}-theme-default = "${datadir}/enlightenment/data/themes/default.edj"
++FILES_${PN}-background-dark-gradient = "${datadir}/enlightenment/data/backgrounds/Dark_Gradient.edj"
++FILES_${PN}-background-light-gradient = "${datadir}/enlightenment/data/backgrounds/Light_Gradient.edj"
++FILES_${PN}-images = "${datadir}/enlightenment/data/images"
++FILES_${PN}-icons = "${datadir}/enlightenment/data/icons"
++FILES_${PN}-other = "${datadir}/enlightenment/data/other"
++FILES_${PN}-input-methods = "${datadir}/enlightenment/data/input_methods"
++
++RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
++RRECOMMENDS_${PN}-config-illume = "${PN}-theme-illume"
++RRECOMMENDS_${PN}-config-minimalist = "${PN}-background-light-gradient \
++${PN}-theme-default"
++RRECOMMENDS_${PN}-config-netbook = "${PN}-background-dark-gradient \
++${PN}-theme-default"
++RRECOMMENDS_${PN}-config-scaleable = "${PN}-theme-default"
++RRECOMMENDS_${PN}-config-standard = "${PN}-theme-default"
++
+ FILES_${PN}-dbg += "\
+   ${libdir}/enlightenment/modules/*/*/.debug/ \
+   ${libdir}/enlightenment/preload/.debug/ \
+ "
+-
+-FILES_${PN}-dev += "\
+-  ${libdir}/enlightenment/preload/*.?a \
+-"
++FILES_${PN}-dev += "${libdir}/enlightenment/preload/*.?a"
+ 
+ CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
+ 
+diff --git a/packages/e17/illume-theme-illume_svn.bb b/packages/e17/illume-theme-illume_svn.bb
+deleted file mode 100644
+index eb313e0..0000000
+--- a/packages/e17/illume-theme-illume_svn.bb
++++ /dev/null
+@@ -1,33 +0,0 @@
+-DESCRIPTION = "Illume theme for Illume E module"
+-HOMEPAGE = "http://www.enlightenment.org/"
+-LICENSE = "MIT/BSD"
+-DEPENDS = "edje-native eet-native"
+-PV = "0.0+${PR}-svnr${SRCREV}"
+-PR = "r1"
+-
+-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=THEMES/b_and_w;proto=http"
+-S = "${WORKDIR}/THEMES/b_and_w"
+-
+-do_compile() {
+-   edje_cc illume.edc
+-   edje_cc illume_init.edc
+-}
+-
+-do_install() {
+-    install -d ${D}${sysconfdir}/enlightenment
+-    install -d ${D}${datadir}/enlightenment/data/themes/
+-    install -d ${D}${datadir}/enlightenment/data/init/
+-
+-    # FIXME: hack. should modify profile.cfg and nto use enlightenment_start.oe
+-    echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
+-
+-    install -m 0644 ${S}/illume.edj ${D}${datadir}/enlightenment/data/themes/
+-    install -m 0644 ${S}/illume_init.edj ${D}${datadir}/enlightenment/data/init/
+-}
+-
+-RPROVIDES_${PN} = "illume-theme"
+-CONFFILES_${PN} = "${sysconfdir}/enlightenment/default_profile"
+-FILES_${PN} = "${sysconfdir}/enlightenment ${datadir}/enlightenment"
+-
+-PACKAGE_ARCH_${PN} = "all"
+-
+diff --git a/packages/e17/illume_svn.bb b/packages/e17/illume_svn.bb
+deleted file mode 100644
+index 2c1521c..0000000
+--- a/packages/e17/illume_svn.bb
++++ /dev/null
+@@ -1,58 +0,0 @@
+-DESCRIPTION = "Illume - A mobile UI module for the Enlightenment Window Manager"
+-HOMEPAGE = "http://illume.projects.openmoko.org"
+-AUTHOR = "Carsten 'Rasterman' Haitzler"
+-LICENSE = "MIT/BSD"
+-DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
+-PV = "0.0+svnr${SRCREV}"
+-PR = "r13"
+-
+-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=illume;proto=http"
+-S = "${WORKDIR}/${PN}"
+-
+-inherit autotools pkgconfig
+-
+-EXTRA_OECONF = "\
+-  --x-includes=${STAGING_INCDIR}/X11 \
+-  --x-libraries=${STAGING_LIBDIR} \
+-  --enable-simple-x11 \
+-  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+-  --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
+-"
+-
+-RRECOMMENDS_${PN} = "\
+-  ${PN}-config-illume \
+-  ${PN}-theme \
+-  ${PN}-dicts-english-us \
+-  ${PN}-keyboards-default \
+-  ${PN}-keyboards-numbers \
+-  ${PN}-keyboards-terminal \
+-"
+-
+-PACKAGES =+ "\
+-  ${PN}-config-illume \
+-  ${PN}-config-asu \
+-  ${PN}-dicts-english-us \
+-  ${PN}-keyboards-default \
+-  ${PN}-keyboards-numbers \
+-  ${PN}-keyboards-terminal \
+-"
+-PACKAGE_ARCH_${PN}-config-illume = "all"
+-PACKAGE_ARCH_${PN}-config-asu = "all"
+-PACKAGE_ARCH_${PN}-dicts-english-us = "all"
+-PACKAGE_ARCH_${PN}-keyboards-default = "all"
+-PACKAGE_ARCH_${PN}-keyboards-numbers = "all"
+-PACKAGE_ARCH_${PN}-keyboards-terminal = "all"
+-
+-FILES_${PN}-config-illume = "${datadir}/enlightenment/data/config/illume/*"
+-FILES_${PN}-config-asu = "${datadir}/enlightenment/data/config/asu/*"
+-FILES_${PN}-dicts-english-us = "${libdir}/enlightenment/modules/illume/dicts/English_*.dic"
+-FILES_${PN}-keyboards-default = "${libdir}/enlightenment/modules/illume/keyboards/Default.kbd"
+-FILES_${PN}-keyboards-numbers = "${libdir}/enlightenment/modules/illume/keyboards/Numbers.kbd"
+-FILES_${PN}-keyboards-terminal = "${libdir}/enlightenment/modules/illume/keyboards/Terminal.kbd"
+-
+-FILES_${PN} = "\
+-  ${libdir}/enlightenment/modules/*/*.edj \
+-  ${libdir}/enlightenment/modules/*/*.desktop \
+-  ${libdir}/enlightenment/modules/*/*/* \
+-"
+-FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug/"
+diff --git a/packages/efl1/eet-native_svn.bb b/packages/efl1/eet-native_svn.bb
+index 0b0b5a4..454bc53 100644
+--- a/packages/efl1/eet-native_svn.bb
++++ b/packages/efl1/eet-native_svn.bb
+@@ -1,6 +1,6 @@
+ require eet_svn.bb
+ inherit native
+-DEPENDS = "zlib-native jpeg-native"
++DEPENDS = "zlib-native jpeg-native eina-native"
+ # we no longer inherit pkgconfig, so we need to state this explicitly
+ # (see explanation in efl.bbclass and autotools.bbclass)
+ DEPENDS += "pkgconfig-native"
+diff --git a/packages/efl1/eet_svn.bb b/packages/efl1/eet_svn.bb
+index e801a54..6f7a615 100644
+--- a/packages/efl1/eet_svn.bb
++++ b/packages/efl1/eet_svn.bb
+@@ -1,5 +1,5 @@
+ DESCRIPTION = "EET is the Enlightenment data storage library"
+-DEPENDS = "zlib jpeg openssl"
++DEPENDS = "zlib jpeg openssl eina"
+ LICENSE = "MIT BSD"
+ PV = "1.0.1+svnr${SRCREV}"
+ PR = "r3"
+diff --git a/packages/efl1/eina-native_svn.bb b/packages/efl1/eina-native_svn.bb
+new file mode 100644
+index 0000000..8cc34bb
+--- /dev/null
++++ b/packages/efl1/eina-native_svn.bb
+@@ -0,0 +1,6 @@
++require eina_svn.bb
++inherit native
++DEPENDS = ""
++# we no longer inherit pkgconfig, so we need to state this explicitly
++# (see explanation in efl.bbclass and autotools.bbclass)
++DEPENDS += "pkgconfig-native"
+diff --git a/packages/efl1/eina_svn.bb b/packages/efl1/eina_svn.bb
+new file mode 100644
+index 0000000..2344b4e
+--- /dev/null
++++ b/packages/efl1/eina_svn.bb
+@@ -0,0 +1,12 @@
++DESCRIPTION = "EET is the Enlightenment data storage library"
++DEPENDS = ""
++LICENSE = "LGPL"
++PV = "0.0.1+svnr${SRCREV}"
++PR = "r1"
++
++inherit efl
++
++EXTRA_OECONF = "\
++"
++
++FILES_${PN} += "${libdir}/eina"
+diff --git a/packages/python/python-ecore_svn.bb b/packages/python/python-ecore_svn.bb
+index 1b02bf7..78aebc6 100644
+--- a/packages/python/python-ecore_svn.bb
++++ b/packages/python/python-ecore_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "python-evas ecore"
++DEPENDS += "python-evas ecore eina"
+ RDEPENDS += "python-evas"
+ PV = "0.3.0+svnr${SRCREV}"
+ PR = "r0"
+diff --git a/packages/python/python-edje_svn.bb b/packages/python/python-edje_svn.bb
+index 4e33847..532db08 100644
+--- a/packages/python/python-edje_svn.bb
++++ b/packages/python/python-edje_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "edje python-evas"
++DEPENDS += "edje python-evas eina"
+ RDEPENDS += "python-evas"
+ PV = "0.3.0+svnr${SRCREV}"
+ PR = "r0"
+diff --git a/packages/python/python-evas_svn.bb b/packages/python/python-evas_svn.bb
+index 6f53bf7..2deb020 100644
+--- a/packages/python/python-evas_svn.bb
++++ b/packages/python/python-evas_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "evas"
++DEPENDS += "evas eina"
+ PV = "0.3.0+svnr${SRCREV}"
+ PR = "r0"
+ 
+-- 
+1.5.4.3
+

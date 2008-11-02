@@ -1,8 +1,11 @@
-From 570fc733f56f3c20df04ab9068b9d20901f63e43 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:32:37 +1100
-Subject: [PATCH] make exquisite able to be a real bootsplash
+From cf32454f2ff255ba1c98fdd1cf4c4cee77cb6700 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Wed, 29 Oct 2008 21:28:59 +1100
+Subject: [PATCH] exquisite: Fix the package so it actually can be a splash screen app
 
+This fixes the exquisitie packages so they provide an initscript and all the
+appropriate sysvinit goop in the .bb file so exquisite can be a splash app
+if its installed and enabled by the initscripts.
 ---
  packages/e17/exquisite/exquisite-init |   40 +++++++++++++++++++++++++++++++++
  packages/e17/exquisite_svn.bb         |   26 ++++++++++++++++++++-
@@ -11,16 +14,16 @@ Subject: [PATCH] make exquisite able to be a real bootsplash
 
 diff --git a/packages/e17/exquisite/exquisite-init b/packages/e17/exquisite/exquisite-init
 new file mode 100644
-index 0000000..60ee13f
+index 0000000..6c94fdc
 --- /dev/null
 +++ b/packages/e17/exquisite/exquisite-init
 @@ -0,0 +1,40 @@
-+#!/bin/sh 
++#!/bin/sh
 +
 +for x in $(cat /proc/cmdline); do
 +  case $x in
 +    splash=false)
-+      echo "Splash Disabled" 
++      echo "Splash Disabled"
 +      exit 0;
 +      ;;
 +  esac
@@ -38,7 +41,7 @@ index 0000000..60ee13f
 +
 +args=''
 +case `machine_id` in
-+  "hp_ipaq_h3100"|"hp_ipaq_h3800") 
++  "hp_ipaq_h3100"|"hp_ipaq_h3800")
 +     args='-rot 90' ;;
 +  "hp_ipaq_3600"|"hp_ipaq_3700"|"hp_ipaq_h3900"|"htc_universal"|*collie|*poodle|*akita|*spitz|*borzoi)
 +     args='-rot 270' ;;
@@ -56,15 +59,15 @@ index 0000000..60ee13f
 +# kill off exquisite in 180 seconds if its not gone yet
 +(sleep 180; exquisite-write "QUIT")&
 diff --git a/packages/e17/exquisite_svn.bb b/packages/e17/exquisite_svn.bb
-index 6cc09c7..775b280 100644
+index 4777226..f1c8908 100644
 --- a/packages/e17/exquisite_svn.bb
 +++ b/packages/e17/exquisite_svn.bb
 @@ -2,8 +2,32 @@ DESCRIPTION = "A psplash replacement for display"
  LICENSE = "MIT BSD"
  DEPENDS = "eet evas ecore embryo edje"
  PV = "0.0.1+svnr${SRCREV}"
--FILE_PR = "r1"
-+FILE_PR = "r2"
+-PR = "r1"
++PR = "r2"
 +RDEPENDS = "initscripts"
 +RRECOMMENDS_${PN} = "exquisite-themes"
 +

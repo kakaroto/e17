@@ -1,25 +1,25 @@
-From 0d7015a8a7a0f1d82f294f357370869fa9f73865 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:55:14 +1100
-Subject: [PATCH] EFL sane srcrev update
+From 4a6b9cfaf1bd6cab37a57465297e68a5fdcd7ad9 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Sun, 2 Nov 2008 11:51:37 +1100
+Subject: [PATCH] EFL srcrevs: update srcrevs to latest
 
 ---
  conf/distro/include/sane-srcrevs.inc |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index e81765d..f19c7ee 100644
+index 691ee2c..43e0eaa 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -196,7 +196,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+@@ -211,7 +211,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.
--EFL_SRCREV ?= "36540"
-+EFL_SRCREV ?= "36619"
+-EFL_SRCREV ?= "37349"
++EFL_SRCREV ?= "37387"
  SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
  SRCREV_pn-edb ?= "${EFL_SRCREV}"
- SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
 -- 
 1.5.4.3
 

@@ -1,0 +1,25 @@
+From 93e04d76d978caf0cfb6e745fdc73550abe16894 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Fri, 31 Oct 2008 17:34:35 +1100
+Subject: [PATCH] illume-image: disable prelink. very slow first boot.
+
+---
+ packages/images/illume-image.bb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index e60088f..ff50e2c 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -13,7 +13,7 @@ BASE_INSTALL = "\
+   sysfsutils \
+   modutils-initscripts \
+   module-init-tools-depmod \
+-  prelink \
++#  prelink \
+   exquisite \
+   exquisite-themes \
+   exquisite-theme-illume \
+-- 
+1.5.4.3
+

@@ -1,8 +1,10 @@
-From a210b920dbd1cea7eb632537ff396fdecff7cbdd Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:53:21 +1100
-Subject: [PATCH] add depends for palmt650 modmap for palm keypad.
+From 4036d3042200a6d796026db4ef7db8153a37f39e Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 17:09:02 +1100
+Subject: [PATCH] palmt650.conf: use palmt650-keyboard-modmap in palmt650 machine conf
 
+use the new palmt650-keyboard-modmap package in the palmt650 config so the
+keymap is right for the treo 650.
 ---
  conf/machine/palmt650.conf |    5 ++++-
  1 files changed, 4 insertions(+), 1 deletions(-)

@@ -1,0 +1,26 @@
+From e6849ef32b41b391587fe906064349a6f3e34924 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 21:56:07 +1100
+Subject: [PATCH] palm.inc: plam.inc machne conf need to remove EXTRA_PACKAGE_ARCHS
+
+remove EXTRA_PACKAGE_ARCHS as this makes the arm architectures repeat
+and fail sanity test.
+---
+ conf/machine/include/palm.inc |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/conf/machine/include/palm.inc b/conf/machine/include/palm.inc
+index 22c6ad4..5394855 100644
+--- a/conf/machine/include/palm.inc
++++ b/conf/machine/include/palm.inc
+@@ -3,7 +3,6 @@
+ #
+ 
+ TARGET_ARCH = "arm"
+-PACKAGE_EXTRA_ARCHS = "arm armv4t armv5te"
+ 
+ SERIAL_CONSOLE = "115200 ttyS0"
+ 
+-- 
+1.5.4.3
+

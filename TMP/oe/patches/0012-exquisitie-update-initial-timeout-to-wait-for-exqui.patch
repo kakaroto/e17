@@ -1,18 +1,18 @@
-From 5b0ddc879f7962e8c2ac73d248a93282a152b6e3 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Wed, 29 Oct 2008 10:36:47 +1100
-Subject: [PATCH] Exqusitie: Stay around for longer if the boot is very long
+From 79fdcaa39a214df2ed0a1340791466b5017340ad Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 16:06:52 +1100
+Subject: [PATCH] exquisitie: update initial timeout to wait for exquisite and the total boot too
 
-Increase the timeout for exqusitie from 180 to 300 seconds in case the boot is
-(legitmately) long. Also up the delay in waiting for exqusitie to start to 40
-seconds for the same reasons.
+this increases the initial timeout wait from 20 to 40 seconds for exqusitie
+and also extends the total boot time timeout to 300 seconds from 180, incase
+the boot takes a long time.
 ---
  packages/e17/exquisite/exquisite-init |    6 +++---
  packages/e17/exquisite_svn.bb         |    2 +-
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/packages/e17/exquisite/exquisite-init b/packages/e17/exquisite/exquisite-init
-index 60ee13f..a504ee1 100644
+index 6c94fdc..1750184 100644
 --- a/packages/e17/exquisite/exquisite-init
 +++ b/packages/e17/exquisite/exquisite-init
 @@ -33,8 +33,8 @@ export EXQUISITE_IPC=$EXDIR/exquisite
@@ -28,15 +28,15 @@ index 60ee13f..a504ee1 100644
 +# kill off exquisite in 300 seconds if its not gone yet
 +(sleep 300; exquisite-write "QUIT")&
 diff --git a/packages/e17/exquisite_svn.bb b/packages/e17/exquisite_svn.bb
-index 775b280..218a99a 100644
+index f1c8908..e303600 100644
 --- a/packages/e17/exquisite_svn.bb
 +++ b/packages/e17/exquisite_svn.bb
 @@ -2,7 +2,7 @@ DESCRIPTION = "A psplash replacement for display"
  LICENSE = "MIT BSD"
  DEPENDS = "eet evas ecore embryo edje"
  PV = "0.0.1+svnr${SRCREV}"
--FILE_PR = "r2"
-+FILE_PR = "r3"
+-PR = "r2"
++PR = "r3"
  RDEPENDS = "initscripts"
  RRECOMMENDS_${PN} = "exquisite-themes"
  

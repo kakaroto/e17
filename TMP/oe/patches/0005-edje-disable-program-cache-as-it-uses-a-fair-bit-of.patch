@@ -1,17 +1,19 @@
-From 419902a60f96192ef548d4fc3f2d424fd139adc6 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:45:58 +1100
-Subject: [PATCH] disable program cache - really not a good idea i think.
+From 09bc9ad07c3bb0842a1756e187c35170f43992ed Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 14:11:08 +1100
+Subject: [PATCH] edje: disable program cache as it uses a fair bit of ram
 
+disable the program cache as it uses a fair bit of ram and you probably
+should re-evaluate your usage of edje if you need it for speed.
 ---
  packages/efl1/edje_svn.bb |    5 +++--
  1 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/packages/efl1/edje_svn.bb b/packages/efl1/edje_svn.bb
-index 00b913f..9f86e95 100644
+index 17c8f91..5cbeec9 100644
 --- a/packages/efl1/edje_svn.bb
 +++ b/packages/efl1/edje_svn.bb
-@@ -6,8 +6,9 @@ FILE_PR = "r5"
+@@ -6,8 +6,9 @@ PR = "r5"
  
  inherit efl
  

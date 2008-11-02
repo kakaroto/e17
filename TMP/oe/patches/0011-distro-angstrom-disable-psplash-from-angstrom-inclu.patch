@@ -1,11 +1,12 @@
-From f038751da06a98ee2cc973d66fc469d9b0f45834 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:51:06 +1100
-Subject: [PATCH] remove psplash from the ansgtrom include for openmoko as such openmoko
- adds exquisite itself to replace, and on hardware other than the gta01/02 that
- advertises like palmt650 that says "i have a screen" you end up with psplash
- and exquisite fighting over the framebuffer.
+From 61947569a1945bb2f971dcdcaea56a94539a7eb9 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 16:02:24 +1100
+Subject: [PATCH] distro-angstrom: disable psplash from angstrom includes for openmoko
 
+this removes psplash if the "screen" property of a machine is set for
+openmoko. the openmoko distribution/image explicitly provides its own splash
+universally, so this is not needed. interestingly the openmoko hardware does
+not say it provides a screen as a feature.
 ---
  conf/distro/include/angstrom-2007-for-openmoko.inc |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)

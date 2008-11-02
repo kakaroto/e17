@@ -1,11 +1,17 @@
-From 7e5348dcda2b10a962d548f29dafab2167f1cfbd Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 14:09:00 +1100
-Subject: [PATCH] bootfast - improve boot speed by removing useless bits of bootmisc
+From ea38e4b9a503f243ccccff91c41ccb0b4406b131 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 17:12:02 +1100
+Subject: [PATCH] initscripts: disable several useless things on boot that slow it down
 
+1. remove echo of "System bootup..." - conflicts with splashscreens like
+psplash and exquisitie. there is no need for it.
+2. remove MOTD handling. it's disabled anyway and it's an embedde device.
+3. disable ldconfig on boot. this should have been handled by the installer
+on image build and opkg on package install. no reason to run every boot.
 ---
  packages/initscripts/initscripts-1.0/bootmisc.sh |   20 ++++++++++++--------
- 1 files changed, 12 insertions(+), 8 deletions(-)
+ packages/initscripts/initscripts_1.0.bb          |    2 +-
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/packages/initscripts/initscripts-1.0/bootmisc.sh b/packages/initscripts/initscripts-1.0/bootmisc.sh
 index 2a40e0c..37acea5 100755
@@ -52,6 +58,19 @@ index 2a40e0c..37acea5 100755
  
  # Set the system clock from hardware clock
  # If the timestamp is 1 day or more recent than the current time,
+diff --git a/packages/initscripts/initscripts_1.0.bb b/packages/initscripts/initscripts_1.0.bb
+index b1c4317..8daefc5 100644
+--- a/packages/initscripts/initscripts_1.0.bb
++++ b/packages/initscripts/initscripts_1.0.bb
+@@ -4,7 +4,7 @@ PRIORITY = "required"
+ DEPENDS = "makedevs"
+ RDEPENDS = "makedevs"
+ LICENSE = "GPL"
+-PR = "r109"
++PR = "r110"
+ 
+ SRC_URI = "file://functions \
+            file://halt \
 -- 
 1.5.4.3
 

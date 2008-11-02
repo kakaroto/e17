@@ -1,9 +1,11 @@
-From 68fd16029b3394bbc49d879ee22e8849919797f5 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:52:39 +1100
-Subject: [PATCH] add palmt650 aware section for Xserver to use splash (if in a package at the
- right size) and correct dpi.
+From 04c29ebc3af2db34d716984a9060e1845d2679ec Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 14:37:56 +1100
+Subject: [PATCH] xserver-kdrive-common: provide xserver ppm splash support for palmt650
 
+if a /usr/share/pixmaps/xsplash-qvga-square.ppm file exists (provided by any
+optional splash screen package) display this splash on the palmt650 when x
+starts.
 ---
  .../xserver-kdrive-common/openmoko/Xserver         |    5 +++++
  .../xserver-kdrive-common_0.1.bb                   |    2 +-
@@ -26,15 +28,15 @@ index 0965d6e..07d1192 100644
  	        if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
  		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
 diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
-index f27bb6c..daab25f 100644
+index a1826e5..a49d4fa 100644
 --- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
 +++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
 @@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
  LICENSE = "GPL"
  SECTION = "x11"
  RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
--FILE_PR = "r31"
-+FILE_PR = "r34"
+-PR = "r31"
++PR = "r34"
  
  SRC_URI = "\
    file://Xdefaults \

@@ -1,18 +1,104 @@
-From 884af65a554b02c0fc196485d6cb1bb024ffd494 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler <raster@openmoko.org>
-Date: Sat, 18 Oct 2008 13:43:51 +1100
-Subject: [PATCH] add openmoko x11 splash package - to be sued instead of integrating into the
- kdrive common package.
+From 894da211a6ab8d389475e131a82c6b93e388a7f1 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Wed, 29 Oct 2008 22:59:26 +1100
+Subject: [PATCH] xserver-kdrive-common: move the kdrive splash to a separate package
 
+Move the vga ppm splash from the xserver-kdrive-common package into the new
+xserver-kdrive-splash-openmoko package. this makes the x root splash cleaner
+and more easily pluggable. the changes to the script check for existence of
+these files and don't try and use them if they don't exist, so dependency is
+soft, not hard.
 ---
+ .../xserver-kdrive-common/openmoko/Xserver         |   15 ++++++++++---
+ .../xserver-kdrive-common_0.1.bb                   |   14 +------------
  .../xsplash-qvga.ppm                               |  Bin 0 -> 230460 bytes
  .../xserver-kdrive-splash-openmoko/xsplash-vga.ppm |  Bin 0 -> 921660 bytes
  .../xserver-kdrive-splash-openmoko_0.1.bb          |   21 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 0 deletions(-)
+ 5 files changed, 33 insertions(+), 17 deletions(-)
  create mode 100644 packages/xserver-kdrive-common/xserver-kdrive-splash-openmoko/xsplash-qvga.ppm
  create mode 100644 packages/xserver-kdrive-common/xserver-kdrive-splash-openmoko/xsplash-vga.ppm
  create mode 100644 packages/xserver-kdrive-common/xserver-kdrive-splash-openmoko_0.1.bb
 
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+index d9ee794..0965d6e 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+@@ -39,7 +39,8 @@ module_id() {
+ 
+ export USER=root
+ 
+-ARGS=" -pn"
++ARGS=" -pn +extension Composite -nolisten tcp"
++PPM=""
+ 
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+@@ -72,7 +73,7 @@ case `module_id` in
+         *Collie)
+                 ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
+         "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+-                ARGS="$ARGS -br -dpi 200 -rgba rgb"
++                ARGS="$ARGS -br -dpi 200 -rgba rgb -br"
+                 IMAGEON="w100"
+                 ;;
+         "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
+@@ -93,9 +94,15 @@ case `module_id` in
+                 modprobe mbxfb
+                 ARGS="$ARGS -br -fb /dev/fb1" ;;
+         "GTA01" | "GTA02")
+-                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
++	        if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
++		  PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
++		fi
++                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor $PPM vt1" ;;
+         "Motorola Ezx Platform")
+-                ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
++	        if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
++		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
++		fi
++                ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor $PPM vt1" ;;
+         "Nokia N800")
+                 ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
+         "Freescale MX21ADS")
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index 738bb3f..a1826e5 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+ RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
+-PR = "r30"
++PR = "r31"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+@@ -15,11 +15,6 @@ SRC_URI = "\
+   file://90xXWindowManager \
+   "
+ 
+-SRC_URI_append_openmoko = "\
+-  file://xsplash-vga.ppm \
+-  file://xsplash-qvga.ppm \
+-"
+-
+ etcFiles = "\
+   Xdefaults \
+   Xinit \
+@@ -42,13 +37,6 @@ do_install() {
+     for i in ${sessionFiles}; do
+         install -m 0755 ${WORKDIR}/$i ${D}/${sysconfdir}/X11/Xsession.d/
+     done
+-
+-    # branding-foo. yes, /usr/share/pixmaps is hardcoded here, since it's
+-    # also hardcoded in the Xserver script...
+-    if [ "x${DISTRO}" = "xopenmoko" ]; then
+-        install -d ${D}/usr/share/pixmaps
+-        install -m 0755 ${WORKDIR}/*.ppm ${D}/usr/share/pixmaps
+-	fi
+ }
+ 
+ PACKAGE_ARCH = "all"
 diff --git a/packages/xserver-kdrive-common/xserver-kdrive-splash-openmoko/xsplash-qvga.ppm b/packages/xserver-kdrive-common/xserver-kdrive-splash-openmoko/xsplash-qvga.ppm
 new file mode 100644
 index 0000000000000000000000000000000000000000..88df5e5476eff94372e97af6fdf48ff313ebf77c
