@@ -1,20 +1,21 @@
 # translation of el.po to
+# Greek translation for Enlightenment17.
 # This file is put in the public domain.
 # Geo Kou <ragecryx@yahoo.gr>, 2008.
-#  <aronmalache@163.com>, 2008.
 # 
-# 
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: el e17\n"
+"Project-Id-Version: etk HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2005-10-16 01:45+0200\n"
-"PO-Revision-Date: 2008-11-01 13:38+0800\n"
+"PO-Revision-Date: 2008-10-31 13:50+0200\n"
 "Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: src/bin/etk_button_test.c:28
 msgid "Etk Button test"
