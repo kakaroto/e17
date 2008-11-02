@@ -18,11 +18,11 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_shadow_test.la
 
-ewl_shadow_test_la_SOURCES = ewl_shadow_test.c
+ewl_shadow_test_la_SOURCES = ewl_shadow_test.c ewl_shadow_unit_test.c
 ewl_shadow_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_shadow_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_shadow_test_la_SOURCES)
+FILES = ewl_shadow_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

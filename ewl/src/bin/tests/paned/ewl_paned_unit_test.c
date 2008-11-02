@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 
+static int test_constructor(char *buf, int len);
 static int test_initial_size_get(char *buf, int len);
 static int test_initial_size_unset_get(char *buf, int len);
 static int test_initial_size_after_remove_get(char *buf, int len);
@@ -14,6 +15,7 @@ static int test_fixed_size_get(char *buf, int len);
 static int test_fixed_size_unset_get(char *buf, int len);
 
 Ewl_Unit_Test paned_unit_tests[] = {
+                {"constructor", test_constructor, NULL, -1, 0},
                 {"get initial size", test_initial_size_get, NULL, -1, 0},
                 {"get unset initial size", test_initial_size_unset_get, NULL, -1, 0},
                 {"get initial size after remove", test_initial_size_after_remove_get, NULL, -1, 0},
@@ -22,6 +24,34 @@ Ewl_Unit_Test paned_unit_tests[] = {
                 {"get the unset fixed size flag", test_fixed_size_unset_get, NULL, -1, 0},
                 {NULL, NULL, NULL, -1, 0}
         };
+
+static int
+test_constructor(char *buf, int len)
+{
+        Ewl_Widget *paned;
+        int ret = 0;
+
+        paned = ewl_paned_new();
+
+        if (!EWL_PANED_IS(paned))
+                LOG_FAILURE(buf, len, "returned widget is not of the type "
+                                EWL_PANED_TYPE);
+        else if (ewl_paned_orientation_get(EWL_PANED(paned))
+                        != EWL_ORIENTATION_HORIZONTAL)
+                LOG_FAILURE(buf, len, "paned is not horizontal");
+        else if (ewl_object_fill_policy_get(EWL_OBJECT(paned))
+                        != EWL_FLAG_FILL_FILL)
+                LOG_FAILURE(buf, len, "paned's fill policy is not FILL");
+        else if (ewl_object_alignment_get(EWL_OBJECT(paned))
+                        != (EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT))
+                LOG_FAILURE(buf, len, "alignment is not LEFT | TOP");
+        else
+                ret = 1;
+
+        ewl_widget_destroy(paned);
+
+        return ret;
+}
 
 static int 
 test_initial_size_get(char *buf, int len)

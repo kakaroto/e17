@@ -12,6 +12,8 @@ static int create_test(Ewl_Container *win);
 static void button_push_cb(Ewl_Widget *w, void *ev, void *data);
 static void button_pop_cb(Ewl_Widget *w, void *ev, void *data);
 
+extern Ewl_Unit_Test statusbar_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -20,6 +22,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = statusbar_unit_tests;
 }
 
 static int

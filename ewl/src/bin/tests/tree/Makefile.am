@@ -18,11 +18,11 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_tree_test.la
 
-ewl_tree_test_la_SOURCES = ewl_tree_test.c
+ewl_tree_test_la_SOURCES = ewl_tree_test.c ewl_tree_unit_test.c
 ewl_tree_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_tree_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_tree_test_la_SOURCES)
+FILES = ewl_tree_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

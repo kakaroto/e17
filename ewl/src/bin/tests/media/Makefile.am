@@ -17,11 +17,11 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_media_test.la
 
-ewl_media_test_la_SOURCES = ewl_media_test.c
+ewl_media_test_la_SOURCES = ewl_media_test.c ewl_media_unit_test.c
 ewl_media_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_media_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_media_test_la_SOURCES)
+FILES = ewl_media_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

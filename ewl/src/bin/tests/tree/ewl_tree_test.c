@@ -58,6 +58,8 @@ static void ewl_tree_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 static void tree_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void tree_cb_select_mode_change(Ewl_Widget *w, void *ev, void *data);
 
+extern Ewl_Unit_Test tree_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -67,6 +69,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
+        test->unit_tests = tree_unit_tests;
 }
 
 static int

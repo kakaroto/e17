@@ -28,6 +28,8 @@ struct Freebox_Test
         Ewl_Freebox_Comparator compare;
 };
 
+extern Ewl_Unit_Test freebox_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -37,6 +39,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
+        test->unit_tests = freebox_unit_tests;
 }
 
 static int

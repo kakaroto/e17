@@ -7,6 +7,8 @@
 
 static int create_test(Ewl_Container *win);
 
+extern Ewl_Unit_Test scrollbar_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -15,6 +17,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = scrollbar_unit_tests;
 }
 
 static int
