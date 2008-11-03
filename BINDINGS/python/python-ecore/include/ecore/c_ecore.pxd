@@ -42,6 +42,7 @@ cdef extern from "Ecore.h":
     void ecore_main_loop_quit()
 
     double ecore_time_get()
+    double ecore_loop_time_get()
 
     Ecore_Timer *ecore_timer_add(double t, int (*func) (void *data), void *data)
     void *ecore_timer_del(Ecore_Timer *timer)

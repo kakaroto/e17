@@ -56,6 +56,26 @@ def time_get():
     return ecore_time_get()
 
 
+def loop_time_get():
+    """Retrieves the time at which the last loop stopped waiting for
+       timeouts or events.
+
+       This gets the time (since Jan 1st, 1970, 12:00AM) that the main
+       loop ceased waiting for timouts and/or events to come in or for
+       signals or any other interrupt source. This should be
+       considered a reference point fo all time based activity that
+       should calculate its timepoint from the return of
+       loop_time_get(). Use this UNLESS you absolutely must get the
+       current actual timepoint - then use L{ecore.time_get()}. If
+       this is called before any loop has ever been run, then it will
+       call L{ecore.time_get()} for you the first time and thus have
+       an initial time reference.
+
+       @rtype: float
+    """
+    return ecore_loop_time_get()
+
+
 def animator_frametime_set(double frametime):
     """Set time between frames (M{\frac{1}{frames-per-second}}).
 
