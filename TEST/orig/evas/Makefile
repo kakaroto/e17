@@ -1,7 +1,9 @@
-FLAGS = `pkg-config --cflags evas` -I/usr/X11R6/include -I/usr/X11R7/include -I/usr/xorg/include
-LIBS  = `pkg-config --libs evas`
+FLAGS = `pkg-config --cflags evas ecore ecore-evas` -I/usr/X11R6/include -I/usr/X11R7/include -I/usr/xorg/include
+LIBS  = `pkg-config --libs evas ecore ecore-evas`
 
-BINS  = evas_software_x11_test \
+BINS  = \
+test-ecore-evas-associate \
+evas_software_x11_test \
 evas_software_x11_perf_test \
 evas_software_x11_perf_load \
 evas_software_xcb_test \
@@ -19,6 +21,12 @@ evas_xrender_xcb_test \
 evas_software_ddraw_test
 
 all: evas_buffer_test
+
+test_ecore_evas_associate_SRCS = test-ecore-evas-associate.c
+test_ecore_evas_associate_OBJS = $(test_ecore_evas_associate_SRCS:.c=.o)
+test_ecore_evas_associate: $(test_ecore_evas_associate_OBJS)
+	$(RM) $@
+	$(CC) $(test_ecore_evas_associate_OBJS) $(LIBS) $(LDFLAGS) -lm -o $@
 
 evas_buffer_test_SRCS = evas_test_main.c evas_buffer_main.c
 evas_buffer_test_OBJS = $(evas_buffer_test_SRCS:.c=.o)
