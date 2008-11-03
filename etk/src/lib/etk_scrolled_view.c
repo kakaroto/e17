@@ -330,6 +330,57 @@ unsigned int etk_scrolled_view_drag_damping_get(Etk_Scrolled_View *scrolled_view
    return scrolled_view->drag.damping_magic;
 }
 
+/**
+ * @brief Set the vertical extra margin to the scrolled view
+ * @param  scrolled_view a scrolled view
+ * @param margin the extra margin in pixels
+ */ 
+void etk_scrolled_view_extra_vmargin_set(Etk_Scrolled_View *scrolled_view, int margin)
+{
+   if (!scrolled_view)
+      return;
+   margin = margin > 0 ? margin : 0;
+   scrolled_view->extra_vmargin = margin;
+}
+
+/**
+ * @brief Get the vertical extra margin to the scrolled view
+ * @param  scrolled_view a scrolled view
+ * @return Returns the vertical extra margin in pixels
+ */ 
+int etk_scrolled_view_extra_vmargin_get(Etk_Scrolled_View *scrolled_view)
+{
+   if (!scrolled_view)
+      return -1;
+   return scrolled_view->extra_vmargin;
+}
+
+/**
+ * @brief Set the horizontal extra margin to the scrolled view
+ * @param  scrolled_view a scrolled view
+ * @param margin the extra margin in pixels
+ */ 
+void etk_scrolled_view_extra_hmargin_set(Etk_Scrolled_View *scrolled_view, int margin) 
+{
+   if (!scrolled_view)
+      return;
+   margin = margin > 0 ? margin : 0;
+   scrolled_view->extra_hmargin = margin;
+}
+
+/**
+ * @brief Get the horizontal extra margin to the scrolled view
+ * @param  scrolled_view a scrolled view
+ * @return Returns the horizontal extra margin in pixels
+ */ 
+
+int etk_scrolled_view_extra_hmargin_get(Etk_Scrolled_View *scrolled_view) 
+{
+   if (!scrolled_view)
+      return -1;
+   return scrolled_view->extra_hmargin;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -352,6 +403,8 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->drag.dragable    = ETK_FALSE;
    scrolled_view->drag.bouncy      = ETK_TRUE;
    scrolled_view->drag.damping_magic = ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC;
+   scrolled_view->extra_hmargin    = 0;
+   scrolled_view->extra_vmargin    = 0;
 
    // FIXME This can be put in etk_config (Make whole system be configured)
    etk_scrolled_view_drag_sample_interval_set(scrolled_view, ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC);
@@ -528,21 +581,21 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       scrollview_size.h -= margins_size.h;
    }
 
-   scrollbar_size.w = vscrollbar_size.w;
-   scrollbar_size.h = hscrollbar_size.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
 
-   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w)
-      || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO 
+            && (scroll_size.w + 2 * scrolled_view->extra_hmargin) > scrollview_size.w)
+         || scrolled_view->hpolicy == ETK_POLICY_SHOW)
    {
       show_hscrollbar = ETK_TRUE;
    }
    if ((scrolled_view->vpolicy == ETK_POLICY_AUTO
-         && scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0)))
+         && (scroll_size.h + 2 * scrolled_view->extra_vmargin) > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0) ))
       || scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = ETK_TRUE;
-      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (scrollview_size.w - vscrollbar_size.w))
+      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && 
+            (scroll_size.w + 2 * scrolled_view->extra_hmargin) > (scrollview_size.w - vscrollbar_size.w))
          show_hscrollbar = ETK_TRUE;
    }
 
@@ -576,10 +629,20 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    else
       etk_widget_hide(scrolled_view->vscrollbar);
 
-   etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
-   etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scrollview_size.w);
-   etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
-   etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), scrollview_size.h);
+   etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 
+         0 - scrolled_view->extra_hmargin, 
+         scroll_size.w + scrolled_view->extra_hmargin);
+   if (scroll_size.w < scrollview_size.w)
+      etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scroll_size.w );
+   else 
+      etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scrollview_size.w );
+   etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 
+         0 - scrolled_view->extra_vmargin, 
+         scroll_size.h + scrolled_view->extra_vmargin);
+   if (scroll_size.h < scrollview_size.h)
+      etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), scroll_size.h);
+   else
+      etk_range_page_size_set(ETK_RANGE(scrolled_view->vscrollbar), scrollview_size.h);
 
    /* Moves and resizes the child */
    child_geometry.x = geometry.x;
@@ -706,7 +769,7 @@ static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key
    else if (strcmp(event->keyname, "Up") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->step_increment);
    else if (strcmp(event->keyname, "Home") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower);
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower + scrolled_view->extra_vmargin);
    else if (strcmp(event->keyname, "End") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
    else if (strcmp(event->keyname, "Next") == 0)
@@ -801,8 +864,14 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
       }
       if (drag->bar_pressed == ETK_FALSE) 
       {
-         etk_range_value_set(vscrollbar_range, vscrollbar_range->value - (event->cur.widget.y - drag->position.y));
-         etk_range_value_set(hscrollbar_range, hscrollbar_range->value - (event->cur.widget.x - drag->position.x));
+         double _value = vscrollbar_range->value - (event->cur.widget.y - drag->position.y);
+         if (_value > vscrollbar_range->lower && _value < vscrollbar_range->upper) {
+            etk_range_value_set(vscrollbar_range, _value);
+         }
+         _value = hscrollbar_range->value - (event->cur.widget.x - drag->position.x);
+         if (_value > hscrollbar_range->lower && _value < hscrollbar_range->upper) {
+            etk_range_value_set(hscrollbar_range, _value);
+         }
       }
       t = ecore_time_get();
       /* record the last 5 mouse moves and timestamps */
@@ -1030,8 +1099,12 @@ static Etk_Bool _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *obje
    scrollbar_size.h = hscrollbar_requisition.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
 
-   etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
-   etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
+   etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 
+         0 - scrolled_view->extra_hmargin, 
+         scroll_size.w + scrolled_view->extra_hmargin);
+   etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 
+         0 - scrolled_view->extra_vmargin, 
+         scroll_size.h + scrolled_view->extra_vmargin);
    etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
 
    return ETK_TRUE;

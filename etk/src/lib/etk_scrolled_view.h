@@ -91,6 +91,8 @@ struct Etk_Scrolled_View
    Etk_Scrolled_View_Policy hpolicy;
    Etk_Scrolled_View_Policy vpolicy;
 
+   int extra_hmargin;
+   int extra_vmargin;
    struct Etk_Scrolled_View_Mouse_Drag drag;
 };
 
@@ -112,6 +114,11 @@ double      etk_scrolled_view_drag_sample_interval_set(Etk_Scrolled_View *scroll
 double      etk_scrolled_view_drag_sample_interval_get(Etk_Scrolled_View *scrolled_view);
 unsigned int etk_scrolled_view_drag_damping_set(Etk_Scrolled_View *scrolled_view, unsigned int damping);
 unsigned int etk_scrolled_view_drag_damping_get(Etk_Scrolled_View *scrolled_view);
+void        etk_scrolled_view_extra_vmargin_set(Etk_Scrolled_View *scrolled_view, int margin);
+int        etk_scrolled_view_extra_vmargin_get(Etk_Scrolled_View *scrolled_view);
+void        etk_scrolled_view_extra_hmargin_set(Etk_Scrolled_View *scrolled_view, int margin);
+int        etk_scrolled_view_extra_hmargin_get(Etk_Scrolled_View *scrolled_view);
+
 
 /** @} */
 

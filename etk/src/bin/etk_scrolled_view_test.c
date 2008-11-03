@@ -46,6 +46,8 @@ void etk_test_scrolled_view_window_create(void *data)
 
    scrolled_view = etk_scrolled_view_new();
    etk_scrolled_view_dragable_set(ETK_SCROLLED_VIEW(scrolled_view), 1);
+   etk_scrolled_view_extra_vmargin_set(ETK_SCROLLED_VIEW(scrolled_view), 10);
+   etk_scrolled_view_extra_hmargin_set(ETK_SCROLLED_VIEW(scrolled_view), 20);
    etk_container_add(ETK_CONTAINER(win), scrolled_view);
 
    canvas = etk_canvas_new();
