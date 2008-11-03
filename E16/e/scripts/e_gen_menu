@@ -432,7 +432,7 @@ sub MakeAppsMenu {
 sub ReadDir {
 	local $dir = shift;
 	local @dirs;
-	opendir DH, $dir or die "*** Not a directory: $dir\n";
+	if (!opendir DH, $dir) { print "*** Could not open: $dir\n"; return 0; }
 	@dirs = readdir DH;
 	closedir DH;
 	return @dirs;
