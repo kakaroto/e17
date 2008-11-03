@@ -1,0 +1,101 @@
+# translation of ephoto to Simplified Chinese
+# This file is put in the public domain.
+# 
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: ephoto e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-12-10 16:11+0100\n"
+"PO-Revision-Date: 2008-11-03 23:10+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/bin/ephoto_exif.c:103
+msgid "No Exif Data Exists"
+msgstr ""
+
+#: src/bin/ephoto_list_view.c:96
+msgid "Name"
+msgstr ""
+
+#: src/bin/ephoto_list_view.c:98
+msgid "Pixels"
+msgstr ""
+
+#: src/bin/ephoto_list_view.c:100
+msgid "Size"
+msgstr ""
+
+#: src/bin/ephoto_main.c:115
+msgid "Normal View"
+msgstr ""
+
+#: src/bin/ephoto_main.c:123
+msgid "List View"
+msgstr ""
+
+#: src/bin/ephoto_main.c:131
+msgid "Single View"
+msgstr ""
+
+#: src/bin/ephoto_main.c:139
+msgid "Move to edit view"
+msgstr ""
+
+#: src/bin/ephoto_main.c:151
+msgid "You do not have libexif 0.6.13"
+msgstr ""
+
+#: src/bin/ephoto_main.c:157
+msgid "View Exif Data"
+msgstr ""
+
+#: src/bin/ephoto_main.c:164
+msgid "Toggle Fullscreen"
+msgstr ""
+
+#: src/bin/ephoto_main.c:172
+msgid "Start a Slideshow"
+msgstr ""
+
+#: src/bin/ephoto_utils.c:9
+#, c-format
+msgid "%'.0f Bytes"
+msgstr ""
+
+#: src/bin/ephoto_utils.c:14
+#, c-format
+msgid "%'.0f KB"
+msgstr ""
+
+#: src/bin/ephoto_utils.c:20
+#, c-format
+msgid "%'.0f MB"
+msgstr ""
+
+#: src/bin/ephoto_utils.c:25
+#, c-format
+msgid "%'.1f GB"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:33 src/bin/ephoto_edit_view.c:72
+msgid "Previous Image"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:39 src/bin/ephoto_edit_view.c:76
+msgid "Next Image"
+msgstr ""
+
+#: src/bin/ephoto_edit_view.c:42
+msgid "Standard Tools"
+msgstr ""
+
+#: src/bin/ephoto_edit_view.c:50
+msgid "Advanced Tools"
+msgstr ""
+
