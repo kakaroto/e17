@@ -1,23 +1,22 @@
+# translation of el.po to Greek
 # translation of el.po to
 # Greek translation for Enlightenment17.
 # This file is put in the public domain.
 # Geo Kou <ragecryx@yahoo.gr>, 2008.
+#  <aronmalache@163.com>, 2008.
 # 
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: elitaire e17\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
 "POT-Creation-Date: 2008-09-30 19:49+0200\n"
-"PO-Revision-Date: 2008-10-31 14:08+0200\n"
+"PO-Revision-Date: 2008-11-03 22:02+0800\n"
 "Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: KBabel 1.11.4\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: src/edje_frontend_game.cpp:61 src/edje_frontend_gui.cpp:701
 #: src/edje_frontend_gui.cpp:755
@@ -183,7 +182,7 @@ msgstr "frame rate:"
 
 #: src/ewl_dialog_config.cpp:182
 msgid "Laziness"
-msgstr ""
+msgstr "Τεμπελία"
 
 #: src/ewl_dialog_config.cpp:187 src/ewl_dialog_config.cpp:301
 msgid "normal mode"
@@ -191,7 +190,7 @@ msgstr "κανονική λειτουργία"
 
 #: src/ewl_dialog_config.cpp:195 src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
-msgstr ""
+msgstr "λειτουργία τεμπελιάς"
 
 #: src/ewl_dialog_config.cpp:211
 msgid "Render Engine"
@@ -212,7 +211,7 @@ msgstr "OpenGL (δοκιμαστικό)"
 #: src/ewl_dialog_config.cpp:271
 #, c-format
 msgid "Elitaire Error: Could not save configuration.\n"
-msgstr ""
+msgstr "Σφάλμα Elitaire: Αδύνατη η αποθήκευση της ρύθμισης.\n"
 
 #: src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
