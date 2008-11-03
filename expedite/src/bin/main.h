@@ -68,6 +68,7 @@
 #include "about.h"
 
 #define OBNUM 128
+#define LOOPS 512
 
 extern Evas *evas;
 extern int   win_w, win_h;
@@ -87,7 +88,7 @@ int          engine_abort(void);
        }
 
 #define FPS_STD(x) \
-   if ((f >= 32) && (!done)) \
+   if ((f >= LOOPS) && (!done)) \
        { \
 	  double fps; \
 	  fps = (double)f / t; \
