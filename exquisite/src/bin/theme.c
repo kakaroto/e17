@@ -58,8 +58,6 @@ theme_update_text(int signal)
           edje_object_signal_emit(o_bg, "exquisite", "text_set");  
         else if(signal == 2)
           edje_object_signal_emit(o_bg, "exquisite", "status_set");
-        else if(signal == 3)             
-          edje_object_signal_emit(o_bg, "exquisite", "text_clear");
         
         edje_object_part_text_set(o_bg, "textarea", buf);
         edje_object_part_text_set(o_bg, "statusarea", buf2);
@@ -242,9 +240,14 @@ theme_text_clear()
       eina_list_free(messages);
       messages = NULL;
     }  
-  
-  /*A 3 means a text clear signal will be sent*/
-  theme_update_text(3);
+
+   if (edje_object_part_exists(o_bg, "textarea") &&
+       edje_object_part_exists(o_bg, "statusarea"))
+     {
+	edje_object_signal_emit(o_bg, "exquisite", "text_clear");
+	edje_object_part_text_set(o_bg, "textarea", "");
+	edje_object_part_text_set(o_bg, "statusarea", "");
+     }
 }
 
 static void
