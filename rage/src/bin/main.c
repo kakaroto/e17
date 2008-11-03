@@ -10,6 +10,7 @@ struct _Mode
 Evas        *evas = NULL;
 char        *theme = NULL;
 char        *config = NULL;
+Ecore_Timer* mouse_timeout = NULL;
 
 static double       start_time = 0.0;
 static Ecore_Evas  *ecore_evas = NULL;
@@ -23,6 +24,7 @@ static void main_usage(void);
 static int main_volume_add(void *data, int type, void *ev);
 static int main_volume_del(void *data, int type, void *ev);
 static void main_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void main_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static int  main_signal_exit(void *data, int ev_type, void *ev);
 static void main_delete_request(Ecore_Evas *ee);
 static void main_resize(Ecore_Evas *ee);
@@ -161,6 +163,7 @@ main(int argc, char **argv)
    evas_object_resize(o, startw, starth);
    evas_object_show(o);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, main_key_down, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, main_mouse_move, NULL);
    evas_object_focus_set(o, 1);
    o_bg = o;
 
@@ -754,3 +757,24 @@ main_menu_tv(void *data)
 {
    system("tvtime -m -n PAL -f custom");
 }
+
+int
+main_mouse_timeout(void* data)
+{
+   ecore_evas_cursor_set(ecore_evas, "", 999, 0, 0);
+   mouse_timeout = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+main_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   if (mouse_timeout)
+      ecore_timer_delay(mouse_timeout, 1-ecore_timer_pending_get(mouse_timeout));
+   else
+   {
+      mouse_timeout = ecore_timer_add(1, main_mouse_timeout, NULL);
+      ecore_evas_cursor_set(ecore_evas, NULL, 0, 0, 0);
+   }
+}
+

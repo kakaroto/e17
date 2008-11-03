@@ -73,6 +73,24 @@ _menu_current_get(void)
    return NULL;
 }
 
+void
+_menu_mouseover_select(void *data, Evas_Object *obj, const char *emission, const char *source) 
+{
+   menu_item_select((char*) data);
+}
+
+void
+_menu_mouseover_go(void *data, Evas_Object *obj, const char *emission, const char *source) 
+{
+   menu_item_select_go();
+}
+
+void
+_menu_mouseover_pop(void *data, Evas_Object *obj, const char *emission, const char *source) 
+{
+   if ((menus) && (menus->next)) menu_pop();
+}
+
 static void
 _menu_item_select_update(Menu *m, Menu_Item *mi)
 {
@@ -131,6 +149,9 @@ _menu_realize(Menu *m)
 	mi = l->data;
 	mi->base = edje_object_add(evas);
 	edje_object_file_set(mi->base, theme, "menu_item");
+	edje_object_signal_callback_add(mi->base, "mouse,move", "*", _menu_mouseover_select, (void*)mi->label);
+	edje_object_signal_callback_add(mi->base, "mouse,clicked,1", "*", _menu_mouseover_go, NULL);
+	edje_object_signal_callback_add(mi->base, "mouse,clicked,3", "*", _menu_mouseover_pop, NULL);
 	if (mi->label)
 	  edje_object_part_text_set(mi->base, "label", mi->label);
 	else

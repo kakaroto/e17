@@ -1145,6 +1145,21 @@ collections {
 	    }
 	 }
 	 part {
+	    name: "mouse_rectangle";
+	    mouse_events: 1;
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 0;
+	       rel1 {
+		  offset:  -9 -9;
+	       }
+	       rel2 {
+		  offset:  10 10;
+	       }
+	    }
+	 }
+	 part {
 	    name: "label";
 	    type: TEXT;
             effect: SOFT_OUTLINE;
