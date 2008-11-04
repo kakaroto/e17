@@ -27,6 +27,8 @@ static Etk_Bool _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_
 static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 static int _etk_test_tree_sort_button_cb(Etk_Object *object, void *data);
 static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data);
+static int _etk_test_tree_select_all_cb(Etk_Object *object, void *data);
+static int _etk_test_tree_unselect_all_cb(Etk_Object *object, void *data);
 
 /* Creates the window for the tree test */
 void etk_test_tree_window_create(void *data)
@@ -148,6 +150,16 @@ void etk_test_tree_window_create(void *data)
    etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
       ETK_CALLBACK(_etk_test_tree_insert_sorted_button_cb), ETK_TREE(tree));
+   
+   button = etk_button_new_with_label("Select all");
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
+      ETK_CALLBACK(_etk_test_tree_select_all_cb), ETK_TREE(tree));
+
+   button = etk_button_new_with_label("Unselect all");
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
+      ETK_CALLBACK(_etk_test_tree_unselect_all_cb), ETK_TREE(tree));
 
    /* Finally we create the statusbar used to display the events on the tree */
    statusbar = etk_statusbar_new();
@@ -291,5 +303,23 @@ static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data
                                     NULL);
    etk_tree_row_select(row);
    etk_tree_row_scroll_to(row, ETK_TRUE);
+   return 0;
+}
+
+static int _etk_test_tree_select_all_cb(Etk_Object *object, void *data)
+{
+   Etk_Tree *tree = data;
+   
+   etk_tree_select_all(ETK_TREE(tree));
+   
+   return 0;
+}
+
+static int _etk_test_tree_unselect_all_cb(Etk_Object *object, void *data)
+{
+   Etk_Tree *tree = data;
+   
+   etk_tree_unselect_all(ETK_TREE(tree));
+   
    return 0;
 }
