@@ -10,6 +10,7 @@ struct _Mode
 Evas        *evas = NULL;
 char        *theme = NULL;
 char        *config = NULL;
+Eet_File    *eet_config = NULL;
 Ecore_Timer* mouse_timeout = NULL;
 
 static double       start_time = 0.0;
@@ -35,13 +36,14 @@ static void main_menu_audio(void *data);
 static void main_menu_photo(void *data);
 static void main_menu_scan(void *data);
 static void main_menu_tv(void *data);
+static void main_get_config(void);
 
 int
 main(int argc, char **argv)
 {
    Evas_Object *o;
-   int mode = 0, fullscreen = 0;
-   int i;
+   int fullscreen, mode;
+   int i, size;
 
    /* init ecore, eet, evas, edje etc. */
    start_time = ecore_time_get();
@@ -59,6 +61,10 @@ main(int argc, char **argv)
 	printf("ERROR: cannot init ecore_evas\n");
 	return -1;
      }
+
+   main_get_config();
+   mode = *(int*)eet_read(eet_config, "/config/mode", &size);
+   fullscreen = *(int*)eet_read(eet_config, "/config/fullscreen", &size);
 
    /* parse cmd-line options */
    for (i = 1; i < argc; i++)
@@ -86,11 +92,6 @@ main(int argc, char **argv)
 	     theme = strdup(buf);
 	     i++;
 	  }
-	else if (!strcmp(argv[i], "-cf"))
-	  {
-	     config = strdup(argv[i + 1]);
-	     i++;
-	  }
 	else if (!strcmp(argv[i], "-x11"))
 	  mode = 0;
 	else if (!strcmp(argv[i], "-gl"))
@@ -109,24 +110,9 @@ main(int argc, char **argv)
 	  main_usage();
      }
 
-   /* load config */
-   if (!config)
-     {
-	char buf[4096];
-
-	if (getenv("HOME"))
-	  snprintf(buf, sizeof(buf), "%s/.rage", getenv("HOME"));
-	else if (getenv("TMPDIR"))
-	  snprintf(buf, sizeof(buf), "%s/.rage", getenv("TMPDIR"));
-	else
-	  snprintf(buf, sizeof(buf), "%s/.rage", "/tmp");
-	config = strdup(buf);
-     }
-   if (!ecore_file_is_dir(config)) ecore_file_mkpath(config);
-
    /* set up default theme if no custom theme is selected */
    if (!theme)
-     theme = strdup(PACKAGE_DATA_DIR"/default.edj");
+     theme = eet_read(eet_config, "/config/theme", &size);
    /* create the canvas based on engine mode */
    if (mode == 0)
      ecore_evas = ecore_evas_software_x11_new(NULL, 0,  0, 0, startw, starth);
@@ -269,9 +255,16 @@ main_usage(void)
    printf("Usage:\n");
    printf("  rage "
 	  "[-x11] [-gl] [-fb] [-dfb] [-sdl] [-xr] [-g WxH] [-fs] "
-	  "[-t theme] [-cf dir]\n"
+	  "[-t theme] \n"
 	  );
    exit(-1);
+}
+
+void
+main_reset(void)
+{
+   eet_close(eet_config);
+   execlp("rage", "rage", NULL);
 }
 
 static int
@@ -293,7 +286,10 @@ main_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    ev = (Evas_Event_Key_Down *)event_info;
    if      (!strcmp(ev->keyname, "Escape"))
-     ecore_main_loop_quit();
+     {
+	eet_close(eet_config);
+	ecore_main_loop_quit();
+     }
    else if (!strcmp(ev->keyname, "f"))
      {
 	if (!ecore_evas_fullscreen_get(ecore_evas))
@@ -345,24 +341,24 @@ static void
 main_menu_config(void *data)
 {
    menu_push("menu", "Settings", NULL, NULL);
-   menu_item_add("icon/config", "Option 1",
-		  "Option 1", NULL,
-		  NULL, NULL, NULL, NULL, NULL);
-   menu_item_add("icon/config", "Option 2",
-		  "Option 2", NULL,
-		  NULL, NULL, NULL, NULL, NULL);
-   menu_item_add("icon/config", "Option 3",
-		  "Option 3", NULL,
-		  NULL, NULL, NULL, NULL, NULL);
-   menu_item_add("icon/config", "Option 4",
-		  "Option 4", NULL,
-		  NULL, NULL, NULL, NULL, NULL);
-   menu_item_enabled_set("Settings", "Option 1", 1);
-   menu_item_enabled_set("Settings", "Option 2", 1);
-   menu_item_enabled_set("Settings", "Option 3", 1);
-   menu_item_enabled_set("Settings", "Option 4", 1);
+   menu_item_add("icon/fullscreen", "Fullscreen",
+		  "Fullscreen On/Off", NULL,
+		  config_option_fullscreen, ecore_evas, NULL, NULL, NULL);
+   menu_item_add("icon/themes", "Themes",
+		  "Select your theme", NULL,
+		  config_option_themes, NULL, NULL, NULL, NULL);
+   menu_item_add("icon/modes", "Modes",
+		  "Change the engine Rage uses", NULL,
+		  config_option_modes, ecore_evas, NULL, NULL, NULL);
+   menu_item_add("icon/volumes", "Volumes",
+		  "Edit your Volumes", NULL,
+		  config_option_volumes, NULL, NULL, NULL, NULL);
+   menu_item_enabled_set("Settings", "Fullscreen", 1);
+   menu_item_enabled_set("Settings", "Themes", 1);
+   menu_item_enabled_set("Settings", "Modes", 1);
+   menu_item_enabled_set("Settings", "Volumes", 1);
    menu_go();
-   menu_item_select("Option 1");
+   menu_item_select("Fullscreen");
 }
 
 typedef struct _Genre          Genre;
@@ -778,3 +774,40 @@ main_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
    }
 }
 
+static void
+main_get_config(void)
+{
+   /* load config */
+   char buf[4096];
+   char *eetfile;
+   int *i = malloc(sizeof(int));
+   i[0] = 0;
+
+   if (getenv("HOME"))
+      snprintf(buf, sizeof(buf), "%s/.rage", getenv("HOME"));
+   else if (getenv("TMPDIR"))
+      snprintf(buf, sizeof(buf), "%s/.rage", getenv("TMPDIR"));
+   else
+      snprintf(buf, sizeof(buf), "%s/.rage", "/tmp");
+   config = strdup(buf);
+
+   snprintf(buf, sizeof(buf), "%s/config.eet", config);
+   eetfile = strdup(buf);
+
+   if (!ecore_file_exists(eetfile))
+   {
+      if (!ecore_file_is_dir(config))
+	 ecore_file_mkpath(config);
+
+      eet_config = eet_open(eetfile, EET_FILE_MODE_WRITE);
+
+      /* write default config */
+      eet_write(eet_config, "/config/fullscreen", i, sizeof(int), 0);
+      eet_write(eet_config, "/config/theme", strdup(PACKAGE_DATA_DIR"/default.edj"), 
+	    	strlen(strdup(PACKAGE_DATA_DIR"/default.edj")), 1);
+      eet_write(eet_config, "/config/mode", i, sizeof(int), 0);
+      eet_close(eet_config);
+   }
+
+   eet_config = eet_open(eetfile, EET_FILE_MODE_READ_WRITE);
+}
