@@ -74,7 +74,7 @@ EAPI void  *e_modapi_init(E_Module *m);
 EAPI int    e_modapi_shutdown(E_Module *m);
 EAPI int    e_modapi_save(E_Module *m);
 
-void             _gc_orient    (E_Gadcon_Client *gcc);
+void             _gc_orient    (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 
 EAPI E_Config_Dialog *e_int_config_notification_module(E_Container *con, 
                                                        const char *params __UNUSED__);

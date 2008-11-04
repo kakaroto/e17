@@ -17,10 +17,10 @@ EAPI E_Module_Api e_modapi =
 /* gadcon requirements */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void             _gc_shutdown(E_Gadcon_Client *gcc);
-static void             _gc_orient(E_Gadcon_Client *gcc);
-static char            *_gc_label(void);
-static Evas_Object     *_gc_icon(Evas *evas);
-static const char      *_gc_id_new(void);
+static void             _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char            *_gc_label(E_Gadcon_Client_Class *client_class);
+static Evas_Object     *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char      *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static const E_Gadcon_Client_Class _gadcon_class =
    {
       GADCON_CLIENT_CLASS_VERSION,
@@ -141,7 +141,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 }
 
 static void
-_gc_orient(E_Gadcon_Client *gcc)
+_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    News_Item *ni;
    int nb_feeds;
@@ -182,7 +182,7 @@ _gc_orient(E_Gadcon_Client *gcc)
         if (!nb_feeds) nb_feeds = 1;
      }
 
-   switch (gcc->gadcon->orient)
+   switch (orient)
      {
      case E_GADCON_ORIENT_FLOAT:
      case E_GADCON_ORIENT_HORIZ:
@@ -214,13 +214,13 @@ _gc_orient(E_Gadcon_Client *gcc)
 }
    
 static char *
-_gc_label(void)
+_gc_label(E_Gadcon_Client_Class *client_class)
 {
    return D_("News");
 }
 
 static Evas_Object *
-_gc_icon(Evas *evas)
+_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
 
@@ -230,7 +230,7 @@ _gc_icon(Evas *evas)
 }
 
 static const char *
-_gc_id_new(void)
+_gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    News_Config_Item *nic;
 

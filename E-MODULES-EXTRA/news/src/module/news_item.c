@@ -136,7 +136,7 @@ news_item_refresh(News_Item *ni, int changed_order, int changed_content, int cha
 
    /* resize the gadcon */
    if (changed_order && ni->gcc->client_class)
-     ni->gcc->client_class->func.orient(ni->gcc);
+     ni->gcc->client_class->func.orient(ni->gcc, ni->gcc->gadcon->orient);
 }
 
 void

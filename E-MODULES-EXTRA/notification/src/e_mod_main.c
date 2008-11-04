@@ -6,10 +6,10 @@ static E_Gadcon_Client *_gc_init      (E_Gadcon *gc,
                                        const char *id, 
                                        const char *style);
 static void             _gc_shutdown  (E_Gadcon_Client *gcc);
-static char            *_gc_label     (void);
-static Evas_Object     *_gc_icon      (Evas *evas);
-static const char      *_gc_id_new    (void);
-static void             _gc_id_del    (const char *id);
+static char            *_gc_label     (E_Gadcon_Client_Class *client_class);
+static Evas_Object     *_gc_icon      (E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char      *_gc_id_new    (E_Gadcon_Client_Class *client_class);
+static void             _gc_id_del    (E_Gadcon_Client_Class *client_class, const char *id);
 
 /* Callback function protos */
 static int  _notification_cb_notify              (E_Notification_Daemon *daemon, 
@@ -62,7 +62,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(b->o_box, EVAS_CALLBACK_RESIZE,
                                   notification_box_cb_obj_moveresize, inst);
    notification_cfg->instances = eina_list_append(notification_cfg->instances, inst);
-   _gc_orient(gcc);
+   _gc_orient(gcc, gc->orient);
    return gcc;
 }
 
@@ -78,12 +78,12 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 }
 
 void
-_gc_orient(E_Gadcon_Client *gcc)
+_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    Instance *inst;
 
    inst = gcc->data;
-   switch (gcc->gadcon->orient)
+   switch (orient)
      {
       case E_GADCON_ORIENT_FLOAT:
       case E_GADCON_ORIENT_HORIZ:
@@ -113,13 +113,13 @@ _gc_orient(E_Gadcon_Client *gcc)
 }
 
 static char *
-_gc_label(void)
+_gc_label(E_Gadcon_Client_Class *client_class)
 {
    return D_("Notification Box");
 }
 
 static Evas_Object *
-_gc_icon(Evas *evas)
+_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
    char buf[4096];
@@ -134,7 +134,7 @@ _gc_icon(Evas *evas)
 }
 
 static const char *
-_gc_id_new(void)
+_gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci;
 
@@ -143,7 +143,7 @@ _gc_id_new(void)
 }
 
 static void
-_gc_id_del(const char *id)
+_gc_id_del(E_Gadcon_Client_Class *client_class, const char *id)
 {
    Config_Item *ci;
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-06 17:47+0100\n"
+"POT-Creation-Date: 2008-11-04 05:58+0100\n"
 "PO-Revision-Date: 2007-11-18 19:22+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -62,7 +62,7 @@ msgstr "Net"
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_net.c:204
+#: src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Dispositivo - %s"

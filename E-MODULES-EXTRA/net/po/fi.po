@@ -5,27 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Net module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 20:34+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-04 05:58+0100\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: src/e_mod_net.c:168
-msgid "Configuration"
-msgstr "Asetukset"
-
-#: src/e_mod_net.c:204
-#, c-format
-msgid "Device - %s"
-msgstr "Laite - %s"
-
-#: src/e_mod_gadcon.c:91
-msgid "Net"
-msgstr "Verkko"
 
 #: src/e_mod_configure.c:44
 msgid "Net Module Configuration"
@@ -66,3 +53,16 @@ msgstr "Matala (t)"
 #: src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Laiteasetukset"
+
+#: src/e_mod_gadcon.c:91
+msgid "Net"
+msgstr "Verkko"
+
+#: src/e_mod_net.c:168
+msgid "Configuration"
+msgstr "Asetukset"
+
+#: src/e_mod_net.c:203
+#, c-format
+msgid "Device - %s"
+msgstr "Laite - %s"

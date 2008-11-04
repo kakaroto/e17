@@ -4,11 +4,11 @@
 /* Local Function Prototypes */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
-static void _gc_orient(E_Gadcon_Client *gcc);
-static char *_gc_label(void);
-static const char *_gc_id_new(void);
-static void _gc_id_del(const char *id);
-static Evas_Object *_gc_icon(Evas *evas);
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char *_gc_label(E_Gadcon_Client_Class *client_class);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static void _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id);
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _diskio_conf_new(void);
 static void _diskio_conf_free(void);
@@ -330,7 +330,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
 /* For for when container says we are changing position */
 static void 
-_gc_orient(E_Gadcon_Client *gcc) 
+_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
    e_gadcon_client_aspect_set(gcc, 16, 16);
    e_gadcon_client_min_size_set(gcc, 16, 16);
@@ -338,14 +338,14 @@ _gc_orient(E_Gadcon_Client *gcc)
 
 /* Gadget/Module label */
 static char *
-_gc_label(void) 
+_gc_label(E_Gadcon_Client_Class *client_class) 
 {
    return "DiskIO";
 }
 
 /* so E can keep a unique instance per-container */
 static const char *
-_gc_id_new(void) 
+_gc_id_new(E_Gadcon_Client_Class *client_class) 
 {
    Config_Item *ci = NULL;
 
@@ -355,7 +355,7 @@ _gc_id_new(void)
 
 /* gets called when container says remove this item */
 static void 
-_gc_id_del(const char *id) 
+_gc_id_del(E_Gadcon_Client_Class *client_class, const char *id) 
 {
    Config_Item *ci = NULL;
 
@@ -370,7 +370,7 @@ _gc_id_del(const char *id)
 }
 
 static Evas_Object *
-_gc_icon(Evas *evas) 
+_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
 {
    Evas_Object *o = NULL;
    char buf[4096];

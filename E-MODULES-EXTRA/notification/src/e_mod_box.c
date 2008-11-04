@@ -103,7 +103,7 @@ notification_box_notify(E_Notification *n,
         }
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
-      _gc_orient(b->inst->gcc);
+      _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
     }
   eina_list_free(n_box);
 
@@ -284,7 +284,7 @@ int notification_box_cb_border_remove(void *data __UNUSED__,
       _notification_box_icon_free(ic);
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
-      _gc_orient(inst->gcc);
+      _gc_orient(inst->gcc, inst->gcc->gadcon->orient);
     }
   return 1;
 }
@@ -794,7 +794,7 @@ _notification_box_cb_icon_mouse_up(void *data,
       _notification_box_icon_free(ic);
       _notification_box_empty_handle(b);
       _notification_box_resize_handle(b);
-      _gc_orient(b->inst->gcc);
+      _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
     }
 }
 
