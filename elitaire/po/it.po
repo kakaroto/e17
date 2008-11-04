@@ -82,9 +82,8 @@ msgid "CONTEXT|About"
 msgstr "Informazioni"
 
 #: src/edje_frontend_menu.cpp:28 src/edje_frontend_menu.cpp:67
-#, fuzzy
 msgid "CONTEXT|Help"
-msgstr "Nuovo"
+msgstr "Aiuto"
 
 #: src/edje_frontend_menu.cpp:79
 msgid "CONTEXT|New"
