@@ -1609,7 +1609,7 @@ void etk_tree_unselect_all(Etk_Tree *tree)
    for (row = tree->root.first_child; row; row = etk_tree_row_walk_next(row, ETK_TRUE))
       row->selected = ETK_FALSE;
 
-   etk_signal_emit(ETK_TREE_ALL_SELECTED_SIGNAL, ETK_OBJECT(tree));
+   etk_signal_emit(ETK_TREE_ALL_UNSELECTED_SIGNAL, ETK_OBJECT(tree));
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
