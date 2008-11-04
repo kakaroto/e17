@@ -1,0 +1,35 @@
+From cd9c46e23e317d8b29347a01ab7b0371a43f0b37 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Tue, 4 Nov 2008 12:11:29 +1100
+Subject: [PATCH] illume-image: replace openmoko-terminal2 with rxvt+gpu-terminal
+
+quick fix - openmoko-temrinal2 doesnt like utf8 locales
+---
+ packages/images/illume-image.bb |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index 677c140..fbb14d8 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -110,7 +110,7 @@ AUDIO_INSTALL = "\
+ 
+ GTK_INSTALL = "\
+ #  openmoko-calculator2 \
+-  openmoko-terminal2 \
++#  openmoko-terminal2 \
+ #  gpe-scap \
+ #  tangogps \
+ "
+@@ -151,6 +151,8 @@ APPS_INSTALL = "\
+ #  gpe-filemanager \
+ #  vagalume \
+ #  starling \
++   rxvt-unicode \
++   gpe-terminal \
+    elementary-alarm \
+    gpe-scap \
+    openmoko-calculator2 \
+-- 
+1.5.4.3
+
