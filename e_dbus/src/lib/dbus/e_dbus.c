@@ -22,6 +22,7 @@
 static int connection_slot = -1;
 
 static int init = 0;
+static int close_connection = 0;
 EAPI int E_DBUS_EVENT_SIGNAL = 0;
 
 static E_DBus_Connection *shared_connections[2] = {NULL, NULL};
@@ -438,6 +439,13 @@ e_dbus_idler(void *data)
   dbus_connection_unref(cd->conn);
   e_dbus_signal_handlers_clean(cd);
   e_dbus_idler_active--;
+  if (!e_dbus_idler_active && close_connection)
+  {
+    do
+    {
+      e_dbus_connection_close(cd);
+    } while (--close_connection);
+  }
   return 1;
 }
 
@@ -542,6 +550,11 @@ e_dbus_connection_close(E_DBus_Connection *conn)
 {
   DEBUG(5, "e_dbus_connection_close\n");
 
+  if (e_dbus_idler_active)
+  {
+    close_connection++;
+    return;
+  }
   if (--(conn->refcount) != 0) return;
 
   dbus_connection_free_data_slot(&connection_slot);
