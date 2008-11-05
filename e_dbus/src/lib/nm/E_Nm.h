@@ -295,7 +295,7 @@ extern "C" {
 
    EAPI void  e_nm_device_data_set(E_NM_Device *device, void *data);
    EAPI void *e_nm_device_data_get(E_NM_Device *device);
-   EAPI void  e_nm_device_callback_state_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, E_NM_State state));
+   EAPI void  e_nm_device_callback_state_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, E_NM_State new_state, E_NM_State old_state, E_NM_Device_State_Reason reason));
    EAPI void  e_nm_device_callback_properties_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device));
    /* TODO: e_nm_device_wireless_callback_access_point_added_set */
    /* TODO: e_nm_device_wireless_callback_access_point_removed_set */

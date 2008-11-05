@@ -38,7 +38,7 @@ struct E_NM_Internal
 
   E_DBus_Connection *conn;
 
-  int  (*state_changed)(E_NM *nm, unsigned int state);
+  int  (*state_changed)(E_NM *nm, E_NM_State state);
   int  (*properties_changed)(E_NM *nm);
   int  (*device_added)(E_NM *nm, const char *device);
   int  (*device_removed)(E_NM *nm, const char *device);
@@ -57,7 +57,7 @@ struct E_NM_Device_Internal
 
   E_NM_Internal *nmi;
 
-  int  (*state_changed)(E_NM_Device *device, unsigned int state);
+  int  (*state_changed)(E_NM_Device *device, E_NM_State new_state, E_NM_State old_state, E_NM_Device_State_Reason reason);
   int  (*properties_changed)(E_NM_Device *device);
   Ecore_List *handlers;
 

@@ -112,22 +112,26 @@ static void
 cb_state_changed(void *data, DBusMessage *msg)
 {
   E_NM_Device_Internal *dev;
-  dbus_uint32_t state;
+  dbus_uint32_t new_state, old_state, reason;
   DBusError err;
   if (!msg || !data) return;
 
   dev = data;
   dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &state, DBUS_TYPE_INVALID);
+  dbus_message_get_args(msg, &err,
+                        DBUS_TYPE_UINT32, &new_state,
+                        DBUS_TYPE_UINT32, &old_state,
+                        DBUS_TYPE_UINT32, &reason,
+                        DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
     printf("Error: %s - %s\n", err.name, err.message);
     return;
   }
 
-  dev->dev.state = state;
+  dev->dev.state = new_state;
   if (dev->state_changed)
-    dev->state_changed(&(dev->dev), state);
+    dev->state_changed(&(dev->dev), new_state, old_state, reason);
 }
 
 static void
@@ -336,7 +340,7 @@ e_nm_device_data_get(E_NM_Device *device)
 }
 
 EAPI void
-e_nm_device_callback_state_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, E_NM_State state))
+e_nm_device_callback_state_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, E_NM_State new_state, E_NM_State old_state, E_NM_Device_State_Reason reason))
 {
   E_NM_Device_Internal *dev;
 
