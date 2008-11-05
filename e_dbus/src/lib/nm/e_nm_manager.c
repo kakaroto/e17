@@ -8,7 +8,7 @@ cb_nm_device(void *data, E_NM_Device *dev)
   Ecore_List  *list;
 
   d = data;
-  list = d->object;
+  list = d->reply;
   if (dev)
     ecore_list_append(list, dev);
   ecore_list_first_remove(list);
@@ -49,9 +49,10 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   ecore_list_first_goto(devices);
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_device_free));
-  d->object = list;
+  d->reply = list;
   while ((dev = ecore_list_next(devices)))
   {
+    /* TODO: This wont work with instant callback */
     ecore_list_append(list, (void *)-1);
     e_nm_device_get(nm, dev, cb_nm_device, d);
   }

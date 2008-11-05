@@ -149,6 +149,13 @@ enum E_NM_802_11_Device_Cap
   E_NM_802_11_DEVICE_CAP_RSN = 0x20
 };
 
+typedef enum E_NMS_Context E_NMS_Context;
+enum E_NMS_Context
+{
+  E_NMS_CONTEXT_USER,
+  E_NMS_CONTEXT_SYSTEM,
+};
+
 typedef struct E_NM E_NM;
 struct E_NM
 {
@@ -294,7 +301,7 @@ extern "C" {
                         void *data);
 
    /* org.freedesktop.NetworkManagerSettings.Connection api */
-   EAPI int   e_nms_connection_get(E_NMS *nms, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
+   EAPI int   e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
    EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
    EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
 
