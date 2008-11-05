@@ -1282,6 +1282,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			dii->w = sw - (dii->padding.left + dii->padding.right);
 		     if (dii->fill_v)
 			dii->h = sh - (dii->padding.top + dii->padding.bottom);
+		     if (dii->w <= 0 || dii->h <= 0)
+			goto skip;
 		     if (dii->type == DITEM_TABLE)
 		       {
 			  int                 dx, dy, newx, newy;
@@ -1384,6 +1386,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->item.slider.numeric_h);
 			    }
 		       }
+		   skip:
 		     x += sw;
 		     c += dii->col_span;
 		     if (c >= cols)
