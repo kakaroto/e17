@@ -41,16 +41,41 @@ EAPI void
 e_nm_active_connection_free(E_NM_Active_Connection *conn)
 {
   if (!conn) return;
-  /* TODO */
+  if (conn->service_name) free(conn->service_name);
+  if (conn->connection) free(conn->connection);
+  if (conn->specific_object) free(conn->specific_object);
+  if (conn->devices) ecore_list_destroy(conn->devices);
   free(conn);
 }
 
 EAPI void
 e_nm_active_connection_dump(E_NM_Active_Connection *conn)
 {
+  const char *device;
+
   if (!conn) return;
   printf("E_NM_Active_Connection:\n");
-  /* TODO */
+  printf("service_name   : %s\n", conn->service_name);
+  printf("connection     : %s\n", conn->connection);
+  printf("specific_object: %s\n", conn->specific_object);
+  printf("devices        :\n");
+  ecore_list_first_goto(conn->devices);
+  while ((device = ecore_list_next(conn->devices)))
+    printf(" - %s\n", device);
+  printf("state          : ");
+  switch (conn->state)
+  {
+    case E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
+      printf("E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN\n");
+      break;
+    case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
+      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING\n");
+      break;
+    case E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
+      printf("E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED\n");
+      break;
+  }
+  printf("default        : %d\n", conn->def);
   printf("\n");
 }
 
