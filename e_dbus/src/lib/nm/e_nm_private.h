@@ -23,7 +23,7 @@
 #define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_device_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_ip4_config_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_IP4CONFIG, prop, (E_DBus_Method_Return_Cb) cb, data)
-#define e_nm_connection_active_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE_CONNECTION_ACTIVE, prop, (E_DBus_Method_Return_Cb) cb, data)
+#define e_nm_connection_active_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_CONNECTION_ACTIVE, prop, (E_DBus_Method_Return_Cb) cb, data)
 
 #define e_nm_signal_handler_add(con, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, sig, cb, data)
 #define e_nm_access_point_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, sig, cb, data)
