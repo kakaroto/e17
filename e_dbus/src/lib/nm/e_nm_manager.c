@@ -1,18 +1,9 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
 
-static int
-cb_nm_device(void *data, E_NM_Device *dev)
+static void
+check_done(Reply_Data *d, Ecore_List *list)
 {
-  Reply_Data   *d;
-  Ecore_List  *list;
-
-  d = data;
-  list = d->reply;
-  if (dev)
-    ecore_list_append(list, dev);
-  ecore_list_first_remove(list);
-
   ecore_list_first_goto(list);
   if (ecore_list_empty_is(list))
   {
@@ -25,6 +16,21 @@ cb_nm_device(void *data, E_NM_Device *dev)
     d->cb_func(d->data, list);
     free(d);
   }
+}
+
+static int
+cb_nm_device(void *data, E_NM_Device *dev)
+{
+  Reply_Data   *d;
+  Ecore_List  *list;
+
+  d = data;
+  list = d->reply;
+  if (dev)
+    ecore_list_append(list, dev);
+  ecore_list_first_remove(list);
+
+  check_done(d, list);
   return 1;
 }
 
@@ -50,12 +56,15 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_device_free));
   d->reply = list;
+  ecore_list_append(list, (void *)-1);
   while ((dev = ecore_list_next(devices)))
   {
     /* TODO: This wont work with instant callback */
-    ecore_list_append(list, (void *)-1);
+    ecore_list_prepend(list, (void *)-1);
     e_nm_device_get(nm, dev, cb_nm_device, d);
   }
+  ecore_list_first_remove(list);
+  check_done(d, list);
 }
 
 /**
