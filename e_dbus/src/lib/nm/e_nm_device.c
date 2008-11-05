@@ -356,7 +356,7 @@ e_nm_device_data_set(E_NM_Device *device, void *data)
 {
   E_NM_Device_Internal *dev;
 
-  dev = (E_NM_Device_Internal *)dev;
+  dev = (E_NM_Device_Internal *)device;
   dev->data = data;
 }
 
@@ -365,7 +365,7 @@ e_nm_device_data_get(E_NM_Device *device)
 {
   E_NM_Device_Internal *dev;
 
-  dev = (E_NM_Device_Internal *)dev;
+  dev = (E_NM_Device_Internal *)device;
   return dev->data;
 }
 
@@ -374,7 +374,7 @@ e_nm_device_callback_state_changed_set(E_NM_Device *device, int (*cb_func)(E_NM_
 {
   E_NM_Device_Internal *dev;
 
-  dev = (E_NM_Device_Internal *)dev;
+  dev = (E_NM_Device_Internal *)device;
   dev->state_changed = cb_func;
 }
 
@@ -383,6 +383,6 @@ e_nm_device_callback_properties_changed_set(E_NM_Device *device, int (*cb_func)(
 {
   E_NM_Device_Internal *dev;
 
-  dev = (E_NM_Device_Internal *)dev;
+  dev = (E_NM_Device_Internal *)device;
   dev->properties_changed = cb_func;
 }
