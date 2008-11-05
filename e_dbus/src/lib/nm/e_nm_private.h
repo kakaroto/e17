@@ -47,9 +47,6 @@ struct E_NM_Internal
   int  (*device_added)(E_NM *nm, const char *device);
   int  (*device_removed)(E_NM *nm, const char *device);
   Ecore_List *handlers;
-#if 0
-  Ecore_List *devices;
-#endif
 
   void *data;
 };

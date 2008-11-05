@@ -9,9 +9,6 @@
 #include <string.h>
 
 static void property_device_type(Property_Data *data, DBusMessageIter *iter);
-#if 0
-static void property_ip4_config(void *data, DBusMessageIter *iter);
-#endif
 
 static Property device_wired_properties[] = {
   { .name = "HwAddress", .sig = "s", .offset = offsetof(E_NM_Device, wired.hw_address) },
@@ -42,39 +39,6 @@ static Property device_properties[] = {
   { .name = "DeviceType", .func = property_device_type, .offset = offsetof(E_NM_Device, device_type) },
   { .name = NULL }
 };
-
-#if 0
-static void
-property_ip4_config(void *data, DBusMessageIter *iter)
-{
-  E_NM_Data *d;
-  E_NM_Device *device;
-  const char *str;
-
-  d = data;
-  if (!nm_check_arg_type(iter, 'o')) goto error;
-
-  device = d->reply;
-  dbus_message_iter_get_basic(iter, &str);
-  device->ip4_config = strdup(str);
-  e_nm_ip4_config_get(&(d->nmi->nm), str, NULL, NULL);
-
-  d->property++;
-  if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
-  else
-  {
-    if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
-  }
-  return;
-
-error:
-  if (d->reply) free(d->reply); /* TODO: Correct free for object */
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
-}
-#endif
 
 static void
 cb_state_changed(void *data, DBusMessage *msg)

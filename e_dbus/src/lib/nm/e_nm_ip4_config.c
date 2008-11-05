@@ -4,6 +4,7 @@
 #include <string.h>
 
 static Property ip4_config_properties[] = {
+	/* TODO */
 #if 0
   { .name = "Addresses", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, addresses) },
   { .name = "Nameservers", .sig = "au", .offset = offsetof(E_NM_IP4_Config, nameservers) },

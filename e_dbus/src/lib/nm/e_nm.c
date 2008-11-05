@@ -90,18 +90,6 @@ cb_device_removed(void *data, DBusMessage *msg)
     nmi->device_removed(&(nmi->nm), device);
 }
 
-#if 0
-static int
-cb_devices(void *data, void *reply)
-{
-  E_NM_Internal *nmi;
-
-  nmi = data;
-  nmi->devices = reply;
-  return 1;
-}
-#endif
-
 EAPI int
 e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
 {
@@ -143,9 +131,6 @@ e_nm_free(E_NM *nm)
   if (!nm) return;
   nmi = (E_NM_Internal *)nm;
   if (nmi->nm.active_connections) ecore_list_destroy(nmi->nm.active_connections);
-#if 0
-  if (nmi->devices) ecore_list_destroy(nmi->devices);
-#endif
   if (nmi->handlers)
   {
     E_DBus_Signal_Handler *sh;
