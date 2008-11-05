@@ -4,11 +4,11 @@
 static int
 cb_nms_connection(void *data, E_NMS_Connection *conn)
 {
-  E_NM_Data   *d;
+  Reply_Data  *d;
   Ecore_List  *list;
 
   d = data;
-  list = d->reply;
+  list = d->object;
   if (conn)
     ecore_list_append(list, conn);
   ecore_list_first_remove(list);
@@ -31,14 +31,14 @@ cb_nms_connection(void *data, E_NMS_Connection *conn)
 static void
 cb_nms_connections(void *data, void *reply, DBusError *err)
 {
-  E_NM_Data  *d;
+  Reply_Data  *d;
   E_NMS *nms;
   Ecore_List *connections;
   Ecore_List *list;
   const char *conn;
 
   d = data;
-  nms = d->reply;
+  nms = d->object;
   if (dbus_error_is_set(err))
   {
     d->cb_func(d->data, NULL);
@@ -49,7 +49,7 @@ cb_nms_connections(void *data, void *reply, DBusError *err)
   ecore_list_first_goto(connections);
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nms_connection_free));
-  d->reply = list;
+  d->object = list;
   while ((conn = ecore_list_next(connections)))
   {
     ecore_list_append(list, (void *)-1);
@@ -63,8 +63,8 @@ e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
   E_NMS_Internal *nmsi;
 
   nmsi = calloc(1, sizeof(E_NMS_Internal));
-  nmsi->nmi = nm;
-  (*cb_func)(data, nmsi);
+  nmsi->nmi = (E_NM_Internal *)nm;
+  (*cb_func)(data, (E_NMS *)nmsi);
   return 1;
 }
 
@@ -80,22 +80,22 @@ e_nms_dump(E_NMS *nms)
 {
   if (!nms) return;
   printf("E_NMS:\n");
+  printf("\n");
 }
 
 EAPI int
 e_nms_list_connections(E_NMS *nms, int (*cb_func)(void *data, Ecore_List *list), void *data)
 {
   DBusMessage *msg;
-  E_NM_Data   *d;
+  Reply_Data   *d;
   E_NMS_Internal *nmsi;
   int ret;
 
   nmsi = (E_NMS_Internal *)nms;
-  d = calloc(1, sizeof(E_NM_Data));
-  d->nmi = nmsi->nmi;
-  d->cb_func = cb_func;
+  d = calloc(1, sizeof(Reply_Data));
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
-  d->reply = nmsi;
+  d->object = nmsi;
 
   msg = e_nms_call_new("ListConnections");
 

@@ -108,15 +108,17 @@ EAPI int
 e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
 {
   E_NM_Internal *nmi = NULL;
-  E_NM_Data     *d = NULL;
+  Property_Data *d = NULL;
 
   nmi = calloc(1, sizeof(E_NM_Internal));
   if (!nmi) goto error;
-  d = calloc(1, sizeof(E_NM_Data));
+  d = calloc(1, sizeof(Property_Data));
   if (!d) goto error;
-  d->nmi = (E_NM_Internal *)nmi;
-  d->cb_func = cb_func;
+  d->nmi = nmi;
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
+  d->property = properties;
+  d->object = strdup(E_NM_PATH);
   d->reply = nmi;
 
   nmi->conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
@@ -126,9 +128,6 @@ e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
   ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "PropertiesChanged", cb_properties_changed, nmi));
   ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceAdded", cb_device_added, nmi));
   ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceRemoved", cb_device_removed, nmi));
-
-  d->property = properties;
-  d->object = strdup(_E_NM_PATH);
 
   return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
 

@@ -23,16 +23,16 @@ static void property_uint32(DBusMessageIter *iter, void *value);
 static void property_bool(DBusMessageIter *iter, void *value);
 static void property_string_list(DBusMessageIter *iter, void *value);
 
-typedef void (*property_cb)(DBusMessageIter *iter, void *value);
+typedef void (*Property_Cb)(DBusMessageIter *iter, void *value);
 
-typedef struct SigProperty SigProperty;
-struct SigProperty
+typedef struct Sig_Property Sig_Property;
+struct Sig_Property
 {
   const char *sig;
-  property_cb func;
+  Property_Cb func;
 };
 
-static SigProperty sigs[] = {
+static Sig_Property sigs[] = {
   { .sig = "s", property_string },
   { .sig = "o", property_object_path },
   { .sig = "u", property_uint32 },
@@ -41,10 +41,10 @@ static SigProperty sigs[] = {
   { .sig = NULL }
 };
 
-static property_cb
+static Property_Cb
 find_property_cb(const char *sig)
 {
-  SigProperty *t;
+  Sig_Property *t;
 
   if (!sig) return NULL;
 
@@ -76,7 +76,7 @@ property_string(DBusMessageIter *iter, void *value)
 {
   const char *str;
 
-  if (!nm_check_arg_type(iter, 's')) return;
+  if (!check_arg_type(iter, 's')) return;
 
   dbus_message_iter_get_basic(iter, &str);
   *((char **)value) = strdup(str);
@@ -87,7 +87,7 @@ property_object_path(DBusMessageIter *iter, void *value)
 {
   const char *str;
 
-  if (!nm_check_arg_type(iter, 'o')) return;
+  if (!check_arg_type(iter, 'o')) return;
 
   dbus_message_iter_get_basic(iter, &str);
   *((char **)value) = strdup(str);
@@ -96,7 +96,7 @@ property_object_path(DBusMessageIter *iter, void *value)
 static void
 property_uint32(DBusMessageIter *iter, void *value)
 {
-  if (!nm_check_arg_type(iter, 'u')) return;
+  if (!check_arg_type(iter, 'u')) return;
 
   dbus_message_iter_get_basic(iter, value);
 }
@@ -104,7 +104,7 @@ property_uint32(DBusMessageIter *iter, void *value)
 static void
 property_bool(DBusMessageIter *iter, void *value)
 {
-  if (!nm_check_arg_type(iter, 'b')) return;
+  if (!check_arg_type(iter, 'b')) return;
 
   dbus_message_iter_get_basic(iter, value);
 }
@@ -115,9 +115,9 @@ property_string_list(DBusMessageIter *iter, void *value)
   DBusMessageIter a_iter;
   Ecore_List **list;
 
-  if (!nm_check_arg_type(iter, 'a')) return;
+  if (!check_arg_type(iter, 'a')) return;
   dbus_message_iter_recurse(iter, &a_iter);
-  if (!nm_check_arg_type(&a_iter, 's')) return;
+  if (!check_arg_type(&a_iter, 's')) return;
 
   list = (Ecore_List **)value;
   *list = ecore_list_new();
@@ -136,7 +136,7 @@ void
 property(void *data, DBusMessage *msg, DBusError *err)
 {
   DBusMessageIter iter, v_iter;
-  E_NM_Data *d;
+  Property_Data *d;
   void *value;
   void (*func)(DBusMessageIter *iter, void *value) = NULL;
 
@@ -147,7 +147,7 @@ property(void *data, DBusMessage *msg, DBusError *err)
   dbus_message_iter_recurse(&iter, &v_iter);
   if (d->property->func)
   {
-    d->property->func(data, &v_iter);
+    d->property->func(d, &v_iter);
     return;
   }
 
@@ -157,20 +157,18 @@ property(void *data, DBusMessage *msg, DBusError *err)
 
   d->property++;
   if (d->property->name)
-  {
     e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
-  }
   else
   {
     if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
+    property_data_free(d);
   }
   return;
 
 error:
   if (d->reply) free(d->reply); /* TODO: Correct free for object */
   if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  property_data_free(d);
 }
 
 void
@@ -187,6 +185,7 @@ parse_properties(void *data, Property *properties, DBusMessage *msg)
   {
     DBusMessageIter d_iter, v_iter;
     Property *p;
+    Property_Cb func;
     const char *name;
     void *value;
 
@@ -199,16 +198,9 @@ parse_properties(void *data, Property *properties, DBusMessage *msg)
     p = find_property(name, properties);
     if (!p) goto next;
     value = ((char *)data + p->offset);
-    if (p->func)
-      p->func(&v_iter, value);
-    else
-    {
-      property_cb func;
-
-      func = find_property_cb(p->sig);
-      if (!func) goto next;
-      func(&v_iter, value);
-    }
+    func = find_property_cb(p->sig);
+    if (!func) goto next;
+    func(&v_iter, value);
 
 next:
     dbus_message_iter_next(&a_iter);
@@ -353,7 +345,7 @@ free_nm_object_path_list(void *data)
 }
 
 int
-nm_check_arg_type(DBusMessageIter *iter, char type)
+check_arg_type(DBusMessageIter *iter, char type)
 {
   char sig;
  
@@ -362,7 +354,7 @@ nm_check_arg_type(DBusMessageIter *iter, char type)
 }
 
 void
-e_nm_data_free(E_NM_Data *data)
+property_data_free(Property_Data *data)
 {
   if (data->object) free(data->object);
   free(data);

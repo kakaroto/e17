@@ -22,14 +22,14 @@ e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
 {
   E_NM_Internal            *nmi;
   E_NM_IP4_Config_Internal *config;
-  E_NM_Data                *d;
+  Property_Data            *d;
 
   nmi = (E_NM_Internal *)nm;
   config = calloc(1, sizeof(E_NM_IP4_Config_Internal));
   config->nmi = nmi;
-  d = calloc(1, sizeof(E_NM_Data));
+  d = calloc(1, sizeof(Property_Data));
   d->nmi = nmi;
-  d->cb_func = cb_func;
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
   d->reply = config;
   d->property = ip4_config_properties;

@@ -60,7 +60,7 @@ cb_nm(void *data, E_NM *reply)
     }
     nm = reply;
     e_nm_dump(nm);
-    //e_nm_get_devices(nm, cb_get_devices, nm);
+    e_nm_get_devices(nm, cb_get_devices, nm);
     e_nms_get(nm, cb_nms, nm);
     return 1;
 }

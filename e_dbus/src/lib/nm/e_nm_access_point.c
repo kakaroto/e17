@@ -36,14 +36,14 @@ e_nm_access_point_get(E_NM *nm, const char *access_point,
 {
   E_NM_Internal *nmi;
   E_NM_Access_Point_Internal *ap;
-  E_NM_Data     *d;
+  Property_Data     *d;
 
   nmi = (E_NM_Internal *)nm;
   ap = calloc(1, sizeof(E_NM_Access_Point_Internal));
   ap->nmi = nmi;
-  d = calloc(1, sizeof(E_NM_Data));
+  d = calloc(1, sizeof(Property_Data));
   d->nmi = nmi;
-  d->cb_func = cb_func;
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
   d->reply = ap;
   d->property = access_point_properties;

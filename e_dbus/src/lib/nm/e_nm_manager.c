@@ -4,11 +4,11 @@
 static int
 cb_nm_device(void *data, E_NM_Device *dev)
 {
-  E_NM_Data   *d;
+  Reply_Data   *d;
   Ecore_List  *list;
 
   d = data;
-  list = d->reply;
+  list = d->object;
   if (dev)
     ecore_list_append(list, dev);
   ecore_list_first_remove(list);
@@ -31,12 +31,14 @@ cb_nm_device(void *data, E_NM_Device *dev)
 static void
 cb_nm_devices(void *data, void *reply, DBusError *err)
 {
-  E_NM_Data  *d;
+  Reply_Data *d;
+  E_NM       *nm;
   Ecore_List *devices;
   Ecore_List *list;
   const char *dev;
 
   d = data;
+  nm = d->object;
   if (dbus_error_is_set(err))
   {
     d->cb_func(d->data, NULL);
@@ -47,11 +49,11 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   ecore_list_first_goto(devices);
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_device_free));
-  d->reply = list;
+  d->object = list;
   while ((dev = ecore_list_next(devices)))
   {
     ecore_list_append(list, (void *)-1);
-    e_nm_device_get(&(d->nmi->nm), dev, cb_nm_device, d);
+    e_nm_device_get(nm, dev, cb_nm_device, d);
   }
 }
 
@@ -69,14 +71,14 @@ EAPI int
 e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data)
 {
   DBusMessage *msg;
-  E_NM_Data   *d;
+  Reply_Data   *d;
   E_NM_Internal *nmi;
   int ret;
 
   nmi = (E_NM_Internal *)nm;
-  d = calloc(1, sizeof(E_NM_Data));
-  d->nmi = nmi;
-  d->cb_func = cb_func;
+  d = calloc(1, sizeof(Reply_Data));
+  d->object = nmi;
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
 
   msg = e_nm_call_new("GetDevices");

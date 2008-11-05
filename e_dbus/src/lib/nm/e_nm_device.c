@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-static void property_device_type(void *data, DBusMessageIter *iter);
+static void property_device_type(Property_Data *data, DBusMessageIter *iter);
 #if 0
 static void property_ip4_config(void *data, DBusMessageIter *iter);
 #endif
@@ -77,37 +77,35 @@ error:
 #endif
 
 static void
-property_device_type(void *data, DBusMessageIter *iter)
+property_device_type(Property_Data *data, DBusMessageIter *iter)
 {
-  E_NM_Data *d;
   E_NM_Device *device;
 
-  d = data;
-  if (!nm_check_arg_type(iter, 'u')) goto error;
+  if (!check_arg_type(iter, 'u')) goto error;
 
-  device = d->reply;
+  device = data->reply;
   dbus_message_iter_get_basic(iter, &(device->device_type));
   switch (device->device_type)
   {
     case E_NM_DEVICE_TYPE_WIRED:
-      d->property = device_wired_properties;
-      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
+      data->property = device_wired_properties;
+      e_nm_device_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
       break;
     case E_NM_DEVICE_TYPE_WIRELESS:
-      d->property = device_wireless_properties;
-      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
+      data->property = device_wireless_properties;
+      e_nm_device_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
       break;
     default:
-      if (d->cb_func) d->cb_func(d->data, device);
-      e_nm_data_free(d);
+      if (data->cb_func) data->cb_func(data->data, device);
+      property_data_free(data);
       break;
   }
   return;
  
 error:
-  if (d->reply) e_nm_device_free(d->reply);
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  if (data->reply) e_nm_device_free(data->reply);
+  if (data->cb_func) data->cb_func(data->data, NULL);
+  property_data_free(data);
 }
 
 static void
@@ -161,14 +159,14 @@ e_nm_device_get(E_NM *nm, const char *device,
 {
   E_NM_Internal *nmi;
   E_NM_Device_Internal *dev;
-  E_NM_Data     *d;
+  Property_Data     *d;
 
   nmi = (E_NM_Internal *)nm;
   dev = calloc(1, sizeof(E_NM_Device_Internal));
   dev->nmi = nmi;
-  d = calloc(1, sizeof(E_NM_Data));
+  d = calloc(1, sizeof(Property_Data));
   d->nmi = nmi;
-  d->cb_func = cb_func;
+  d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
   d->reply = dev;
   d->property = device_properties;
