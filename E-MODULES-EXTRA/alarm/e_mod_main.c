@@ -37,6 +37,7 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object     *obj;
+   E_Gadcon_Orient orient;
 };
 
 static int    _alarm_check_date(Alarm *al, int strict);
@@ -98,6 +99,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    
    inst->gcc = gcc;
    inst->obj = o;
+   inst->orient = E_GADCON_ORIENT_HORIZ;
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
@@ -140,7 +142,12 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 static void
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
+   Instance *inst;
    int w, h;
+
+   inst = gcc->data;
+   if (orient != -1)
+      inst->orient = orient;
 
    /* details or not */
    if (alarm_config->alarms_details)
@@ -155,7 +162,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
      }
 
    /* vertical */
-   switch (orient)
+   switch (inst->orient)
      {
      case E_GADCON_ORIENT_VERT:
      case E_GADCON_ORIENT_LEFT:
@@ -550,7 +557,7 @@ alarm_details_change(void)
         Instance *i;
 
         i = eina_list_data_get(l);
-        _gc_orient(i->gcc, i->gcc->gadcon->orient);
+        _gc_orient(i->gcc, -1);
      }
 
    if (alarm_config->alarms_details)
