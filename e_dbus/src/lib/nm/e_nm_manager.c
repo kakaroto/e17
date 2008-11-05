@@ -59,7 +59,6 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   ecore_list_append(list, (void *)-1);
   while ((dev = ecore_list_next(devices)))
   {
-    /* TODO: This wont work with instant callback */
     ecore_list_prepend(list, (void *)-1);
     e_nm_device_get(nm, dev, cb_nm_device, d);
   }

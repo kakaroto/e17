@@ -4,6 +4,11 @@
 #include <E_DBus.h>
 #include <Ecore_Data.h>
 
+/*
+ * TODO:
+ * - Return objects instead of object paths.
+ */
+
 #ifdef EAPI
 #undef EAPI
 #endif

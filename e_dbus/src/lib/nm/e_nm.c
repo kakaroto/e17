@@ -54,7 +54,6 @@ cb_device_added(void *data, DBusMessage *msg)
   DBusError err;
   if (!msg || !data) return;
 
-  /* TODO: Return E_NM_Device */
   nmi = data;
   dbus_error_init(&err);
   dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &device, DBUS_TYPE_INVALID);
@@ -76,7 +75,6 @@ cb_device_removed(void *data, DBusMessage *msg)
   DBusError err;
   if (!msg || !data) return;
 
-  /* TODO: Return E_NM_Device */
   nmi = data;
   dbus_error_init(&err);
   dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &device, DBUS_TYPE_INVALID);

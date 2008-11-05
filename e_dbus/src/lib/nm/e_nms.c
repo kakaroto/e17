@@ -122,7 +122,6 @@ new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
   DBusError err;
   if (!msg || !data) return;
 
-  /* TODO: Return E_NMS_Connection */
   nmsi = data;
   dbus_error_init(&err);
   dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &conn, DBUS_TYPE_INVALID);
