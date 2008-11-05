@@ -44,6 +44,7 @@ struct _Instance
    IIirk            *iiirk;
    E_Drop_Handler  *drop_handler;
    Config_Item     *ci;
+   E_Gadcon_Orient  orient;
 };
 
 struct _IIirk
@@ -161,6 +162,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    inst->gcc = gcc;
    inst->o_iiirk = o;
+   inst->orient = E_GADCON_ORIENT_HORIZ;
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
    inst->drop_handler =
@@ -173,7 +175,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(o, EVAS_CALLBACK_RESIZE,
 				  _iiirk_cb_obj_moveresize, inst);
    iiirk_config->instances = eina_list_append(iiirk_config->instances, inst);
-   _gc_orient(gcc, gcc->gadcon->orient);
+   _gc_orient(gcc, -1);
 
    return gcc;
 }
@@ -196,7 +198,10 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    Instance *inst;
 
    inst = gcc->data;
-   switch (gcc->gadcon->orient)
+   if (orient != -1)
+      inst->orient = orient;
+
+   switch (inst->orient)
      {
       case E_GADCON_ORIENT_FLOAT:
       case E_GADCON_ORIENT_HORIZ:
@@ -699,7 +704,7 @@ _iiirk_cb_app_change(void *data, E_Order *eo)
    _iiirk_fill(b);
    _iiirk_resize_handle(b);
    if (b->inst)
-     _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
+     _gc_orient(b->inst->gcc, -1);
 }
 
 static void
@@ -871,7 +876,7 @@ _iiirk_cb_icon_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	     ic->iiirk->icons = eina_list_remove(ic->iiirk->icons, ic);
 	     if (ic->border->desktop) e_order_remove(ic->iiirk->apps, ic->border->desktop);
 	     _iiirk_resize_handle(ic->iiirk);
-	     _gc_orient(ic->iiirk->inst->gcc, ic->iiirk->inst->gcc->gadcon->orient);
+	     _gc_orient(ic->iiirk->inst->gcc, -1);
 	     _iiirk_icon_free(ic);
 	  }
      }
@@ -989,7 +994,7 @@ _iiirk_drop_position_update(Instance *inst, Evas_Coord x, Evas_Coord y)
 			  -1, -1 /* max */
 			  );
    _iiirk_resize_handle(inst->iiirk);
-   _gc_orient(inst->gcc, inst->gcc->gadcon->orient);
+   _gc_orient(inst->gcc, -1);
 }
 
 static void
@@ -1046,7 +1051,7 @@ _iiirk_inst_cb_leave(void *data, const char *type, void *event_info)
    inst->iiirk->o_drop_over = NULL;
    e_gadcon_client_autoscroll_cb_set(inst->gcc, NULL, NULL);
    _iiirk_resize_handle(inst->iiirk);
-   _gc_orient(inst->gcc, inst->gcc->gadcon->orient);
+   _gc_orient(inst->gcc, -1);
 }
 
 static void
@@ -1127,7 +1132,7 @@ _iiirk_inst_cb_drop(void *data, const char *type, void *event_info)
    _iiirk_empty_handle(b);
    e_gadcon_client_autoscroll_cb_set(inst->gcc, NULL, NULL);
    _iiirk_resize_handle(inst->iiirk);
-   _gc_orient(inst->gcc, inst->gcc->gadcon->orient);
+   _gc_orient(inst->gcc, -1);
 }
 
 static int
@@ -1194,7 +1199,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
 		  e_box_pack_end(b->o_box, ic->o_holder);
 		  _iiirk_empty_handle(b);
 		  _iiirk_resize_handle(b);
-		  _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
+		  _gc_orient(b->inst->gcc, -1);
 	       }
 	  }
      }
@@ -1224,7 +1229,7 @@ _iiirk_cb_event_border_remove(void *data, int type, void *event)
 	b->icons = eina_list_remove(b->icons, ic);
 	_iiirk_empty_handle(b);
 	_iiirk_resize_handle(b);
-	_gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
+	_gc_orient(b->inst->gcc, -1);
      }
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
@@ -1364,7 +1369,7 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
 	     _iiirk_empty(b);
 	     _iiirk_fill(b);
 	     _iiirk_resize_handle(b);
-	     _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
+	     _gc_orient(b->inst->gcc, -1);
 	  }
      }
 
@@ -1433,7 +1438,7 @@ _iiirk_config_update(Config_Item *ci)
 	_iiirk_empty(inst->iiirk);
 	_iiirk_fill(inst->iiirk);
 	_iiirk_resize_handle(inst->iiirk);
-	_gc_orient(inst->gcc, inst->gcc->gadcon->orient);
+	_gc_orient(inst->gcc, -1);
      }
 }
 
