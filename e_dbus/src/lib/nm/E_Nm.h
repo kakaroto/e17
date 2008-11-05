@@ -215,6 +215,8 @@ extern "C" {
    EAPI void  e_nm_callback_device_added_set(E_NM *nm, int (*cb_func)(E_NM *nm, const char *device));
    EAPI void  e_nm_callback_device_removed_set(E_NM *nm, int (*cb_func)(E_NM *nm, const char *device));
 
+   /* TODO: org.freedesktop.NetworkManager.AccessPoint api */
+
    /* org.freedesktop.NetworkManager.Device api */
    EAPI int   e_nm_device_get(E_NM *nm, const char *device,
                               int (*cb_func)(void *data, void *reply),
@@ -237,6 +239,13 @@ extern "C" {
                                   void *data);
    EAPI void  e_nm_ip4_config_free(E_NM_IP4_Config *config);
    EAPI void  e_nm_ip4_config_dump(E_NM_IP4_Config *config);
+
+   /* TODO: org.freedesktop.NetworkManagerSettings api */
+   /* TODO: org.freedesktop.NetworkManagerSettings.Connection api */
+   /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
+   /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
+   /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */
+   /* TODO: org.freedesktop.NetworkManager.VPN.Plugin api */
 
 #ifdef __cplusplus
 }
