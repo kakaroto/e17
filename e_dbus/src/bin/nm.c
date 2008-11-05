@@ -37,6 +37,14 @@ cb_active_connection(void *data, E_NM_Active_Connection *conn)
 }
 
 static int
+cb_ip4_config(void *data, E_NM_IP4_Config *config)
+{
+    e_nm_ip4_config_dump(config);
+    e_nm_ip4_config_free(config);
+    return 1;
+}
+
+static int
 cb_get_devices(void *data, Ecore_List *list)
 {
     E_NM_Device *device;
@@ -48,7 +56,10 @@ cb_get_devices(void *data, Ecore_List *list)
         {
             e_nm_device_dump(device);
             if (device->device_type == E_NM_DEVICE_TYPE_WIRELESS)
+	    {
                 e_nm_access_point_get(nm, device->wireless.active_access_point, cb_access_point, NULL);
+                e_nm_ip4_config_get(nm, device->ip4_config, cb_ip4_config, NULL);
+	    }
         }
         ecore_list_destroy(list);
     }

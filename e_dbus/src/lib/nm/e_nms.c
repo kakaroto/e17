@@ -50,7 +50,7 @@ cb_nms_user_connections(void *data, void *reply, DBusError *err)
   list = d->reply;
   if (dbus_error_is_set(err))
   {
-    fprintf(stderr, "error: %s\n", err->message);
+    printf("Error: %s - %s\n", err->name, err->message);
     d->cb_func(d->data, NULL);
     ecore_list_destroy(list);
     free(d);
@@ -94,7 +94,7 @@ cb_nms_system_connections(void *data, void *reply, DBusError *err)
   nmsi = d->object;
   if (dbus_error_is_set(err))
   {
-    fprintf(stderr, "error: %s\n", err->message);
+    printf("Error: %s - %s\n", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;

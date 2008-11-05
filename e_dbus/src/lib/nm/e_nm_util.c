@@ -241,13 +241,13 @@ property_uint_list_list(DBusMessageIter *iter, void *value)
     if (!check_arg_type(&a2_iter, 'u')) return;
     list2 = ecore_list_new();
     ecore_list_free_cb_set(list2, free);
-    ecore_list_append(*list, list);
+    ecore_list_append(*list, list2);
     while (dbus_message_iter_get_arg_type(&a2_iter) != DBUS_TYPE_INVALID)
     {
       unsigned int *c;
 
       c = malloc(sizeof(unsigned int));
-      dbus_message_iter_get_basic(&a_iter, c);
+      dbus_message_iter_get_basic(&a2_iter, c);
       if (c) ecore_list_append(list2, c);
       dbus_message_iter_next(&a2_iter);
     }
@@ -264,7 +264,11 @@ property(void *data, DBusMessage *msg, DBusError *err)
   void (*func)(DBusMessageIter *iter, void *value) = NULL;
 
   d = data;
-  if (dbus_error_is_set(err)) goto error;
+  if (dbus_error_is_set(err))
+  {
+    printf("Error: %s - %s\n", err->name, err->message);
+    goto error;
+  }
   if (!dbus_message_has_signature(msg, "v")) goto error;
   dbus_message_iter_init(msg, &iter);
   dbus_message_iter_recurse(&iter, &v_iter);

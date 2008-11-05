@@ -47,6 +47,7 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   nm = d->object;
   if (dbus_error_is_set(err))
   {
+    printf("Error: %s - %s\n", err->name, err->message);
     d->cb_func(d->data, NULL);
     free(d);
     return;

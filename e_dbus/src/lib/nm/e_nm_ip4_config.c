@@ -4,15 +4,10 @@
 #include <string.h>
 
 static Property ip4_config_properties[] = {
-	/* TODO */
-#if 0
   { .name = "Addresses", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, addresses) },
   { .name = "Nameservers", .sig = "au", .offset = offsetof(E_NM_IP4_Config, nameservers) },
-#endif
   { .name = "Domains", .sig = "as", .offset = offsetof(E_NM_IP4_Config, domains) },
-#if 0
   { .name = "Routes", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, routes) },
-#endif
   { .name = NULL }
 };
 
@@ -36,7 +31,7 @@ e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
   d->property = ip4_config_properties;
   d->object = strdup(ip4_config);
 
-  return e_nm_ip4_config_properties_get(nmi->conn, d->object, d->property->name, d->property->func, d) ? 1 : 0;
+  return e_nm_ip4_config_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
 }
 
 EAPI void
@@ -53,25 +48,51 @@ e_nm_ip4_config_free(E_NM_IP4_Config *config)
 EAPI void
 e_nm_ip4_config_dump(E_NM_IP4_Config *config)
 {
+  uint       *u;
+  const char *domain;
+  Ecore_List *list;
+
   if (!config) return;
   printf("E_NM_IP4_Config:\n");
   if (config->addresses)
   {
+    printf("addresses  :\n");
+    ecore_list_first_goto(config->addresses);
+    while ((list = ecore_list_next(config->addresses)))
+    {
+      printf(" -");
+      ecore_list_first_goto(list);
+      while ((u = ecore_list_next(list)))
+        printf(" %s", ip4_address2str(*u));
+      printf("\n");
+    }
   }
   if (config->nameservers)
   {
+    printf("nameservers:\n");
+    ecore_list_first_goto(config->nameservers);
+    while ((u = ecore_list_next(config->nameservers)))
+      printf(" - %s\n", ip4_address2str(*u));
   }
   if (config->domains)
   {
-    const char *domain;
-
-    printf("domains:\n");
+    printf("domains    :\n");
     ecore_list_first_goto(config->domains);
     while ((domain = ecore_list_next(config->domains)))
       printf(" - %s\n", domain);
   }
   if (config->routes)
   {
+    printf("routes     :\n");
+    ecore_list_first_goto(config->routes);
+    while ((list = ecore_list_next(config->routes)))
+    {
+      printf(" -");
+      ecore_list_first_goto(list);
+      while ((u = ecore_list_next(list)))
+        printf(" %s", ip4_address2str(*u));
+      printf("\n");
+    }
   }
   printf("\n");
 }
