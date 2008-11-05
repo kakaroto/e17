@@ -133,7 +133,7 @@ new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
   }
 
   if (nmsi->new_connection)
-    nmsi->new_connection(nmsi, context, conn);
+    nmsi->new_connection((E_NMS *)nmsi, context, conn);
 }
 
 static void
