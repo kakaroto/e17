@@ -62,7 +62,8 @@ e_nm_access_point_free(E_NM_Access_Point *access_point)
 
   if (!access_point) return;
   ap = (E_NM_Access_Point_Internal *)access_point;
-  /* TODO */
+  if (ap->ap.ssid) ecore_list_destroy(ap->ap.ssid);
+  if (ap->ap.hw_address) free(ap->ap.hw_address);
   if (ap->handlers)
   {
     E_DBus_Signal_Handler *sh;
@@ -77,9 +78,86 @@ e_nm_access_point_free(E_NM_Access_Point *access_point)
 EAPI void
 e_nm_access_point_dump(E_NM_Access_Point *ap)
 {
+  unsigned char *c;
+
   if (!ap) return;
   printf("E_NM_Access_Point:\n");
-  /* TODO */
+  printf("flags      :");
+  if (ap->flags & E_NM_802_11_AP_FLAGS_PRIVACY)
+    printf(" E_NM_802_11_AP_FLAGS_PRIVACY");
+  if (ap->flags == E_NM_802_11_AP_FLAGS_NONE)
+    printf(" E_NM_802_11_AP_FLAGS_NONE");
+  printf("\n");
+  printf("wpa_flags  :");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
+    printf(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
+    printf(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
+    printf(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
+    printf(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
+    printf(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
+    printf(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
+    printf(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
+    printf(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
+    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+  if (ap->wpa_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+  if (ap->wpa_flags == E_NM_802_11_AP_SEC_NONE)
+    printf(" E_NM_802_11_AP_SEC_NONE");
+  printf("\n");
+  printf("rsn_flags  :");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP40)
+    printf(" E_NM_802_11_AP_SEC_PAIR_WEP40");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_WEP104)
+    printf(" E_NM_802_11_AP_SEC_PAIR_WEP104");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_TKIP)
+    printf(" E_NM_802_11_AP_SEC_PAIR_TKIP");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_PAIR_CCMP)
+    printf(" E_NM_802_11_AP_SEC_PAIR_CCMP");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP40)
+    printf(" E_NM_802_11_AP_SEC_GROUP_WEP40");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_WEP104)
+    printf(" E_NM_802_11_AP_SEC_GROUP_WEP104");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_TKIP)
+    printf(" E_NM_802_11_AP_SEC_GROUP_TKIP");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_GROUP_CCMP)
+    printf(" E_NM_802_11_AP_SEC_GROUP_CCMP");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_PSK)
+    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_PSK");
+  if (ap->rsn_flags & E_NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+    printf(" E_NM_802_11_AP_SEC_KEY_MGMT_802_1X");
+  if (ap->rsn_flags == E_NM_802_11_AP_SEC_NONE)
+    printf(" E_NM_802_11_AP_SEC_NONE");
+  printf("\n");
+  printf("ssid       : ");
+  ecore_list_first_goto(ap->ssid);
+  while ((c = ecore_list_next(ap->ssid)))
+    printf("%u", *c);
+  printf("\n");
+  printf("frequency  : %u\n", ap->frequency);
+  printf("hw_address : %s\n", ap->hw_address);
+  printf("mode       : ");
+  switch (ap->mode)
+  {
+    case E_NM_802_11_MODE_UNKNOWN:
+      printf("E_NM_802_11_MODE_UNKNOWN\n");
+      break;
+    case E_NM_802_11_MODE_ADHOC:
+      printf("E_NM_802_11_MODE_ADHOC\n");
+      break;
+    case E_NM_802_11_MODE_INFRA:
+      printf("E_NM_802_11_MODE_INFRA\n");
+      break;
+  }
+  printf("max_bitrate: %u\n", ap->max_bitrate);
+  printf("strength   : %u\n", ap->strength);
   printf("\n");
 }
 

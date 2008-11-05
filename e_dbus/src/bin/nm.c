@@ -21,6 +21,14 @@ cb_nms_connections(void *data, Ecore_List *list)
 }
 
 static int
+cb_access_point(void *data, E_NM_Access_Point *ap)
+{
+    e_nm_access_point_dump(ap);
+    e_nm_access_point_free(ap);
+    return 1;
+}
+
+static int
 cb_get_devices(void *data, Ecore_List *list)
 {
     E_NM_Device *device;
@@ -29,7 +37,11 @@ cb_get_devices(void *data, Ecore_List *list)
     {
         ecore_list_first_goto(list);
         while ((device = ecore_list_next(list)))
+        {
             e_nm_device_dump(device);
+            if (device->device_type == E_NM_DEVICE_TYPE_WIRELESS)
+                e_nm_access_point_get(nm, device->wireless.active_access_point, cb_access_point, NULL);
+        }
         ecore_list_destroy(list);
     }
     //ecore_main_loop_quit();
