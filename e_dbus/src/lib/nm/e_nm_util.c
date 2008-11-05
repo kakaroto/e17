@@ -25,6 +25,8 @@ static void property_uchar(DBusMessageIter *iter, void *value);
 static void property_string_list(DBusMessageIter *iter, void *value);
 static void property_object_path_list(DBusMessageIter *iter, void *value);
 static void property_uchar_list(DBusMessageIter *iter, void *value);
+static void property_uint_list(DBusMessageIter *iter, void *value);
+static void property_uint_list_list(DBusMessageIter *iter, void *value);
 
 typedef void (*Property_Cb)(DBusMessageIter *iter, void *value);
 
@@ -44,6 +46,8 @@ static Sig_Property sigs[] = {
   { .sig = "as", property_string_list },
   { .sig = "ao", property_object_path_list },
   { .sig = "ay", property_uchar_list },
+  { .sig = "au", property_uint_list },
+  { .sig = "aau", property_uint_list_list },
   { .sig = NULL }
 };
 
@@ -190,6 +194,63 @@ property_uchar_list(DBusMessageIter *iter, void *value)
     c = malloc(sizeof(unsigned char));
     dbus_message_iter_get_basic(&a_iter, c);
     if (c) ecore_list_append(*list, c);
+    dbus_message_iter_next(&a_iter);
+  }
+}
+
+static void
+property_uint_list(DBusMessageIter *iter, void *value)
+{
+  DBusMessageIter a_iter;
+  Ecore_List **list;
+
+  if (!check_arg_type(iter, 'a')) return;
+  dbus_message_iter_recurse(iter, &a_iter);
+  if (!check_arg_type(&a_iter, 'u')) return;
+
+  list = (Ecore_List **)value;
+  *list = ecore_list_new();
+  ecore_list_free_cb_set(*list, free);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    unsigned int *c;
+
+    c = malloc(sizeof(unsigned int));
+    dbus_message_iter_get_basic(&a_iter, c);
+    if (c) ecore_list_append(*list, c);
+    dbus_message_iter_next(&a_iter);
+  }
+}
+
+static void
+property_uint_list_list(DBusMessageIter *iter, void *value)
+{
+  DBusMessageIter a_iter, a2_iter;
+  Ecore_List **list, *list2;
+
+  if (!check_arg_type(iter, 'a')) return;
+  dbus_message_iter_recurse(iter, &a_iter);
+  if (!check_arg_type(&a_iter, 'a')) return;
+
+  list = (Ecore_List **)value;
+  *list = ecore_list_new();
+  ecore_list_free_cb_set(*list, ECORE_FREE_CB(ecore_list_destroy));
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    dbus_message_iter_recurse(&a_iter, &a2_iter);
+    if (!check_arg_type(&a2_iter, 'u')) return;
+    list2 = ecore_list_new();
+    ecore_list_free_cb_set(list2, free);
+    ecore_list_append(*list, list);
+    while (dbus_message_iter_get_arg_type(&a2_iter) != DBUS_TYPE_INVALID)
+    {
+      unsigned int *c;
+
+      c = malloc(sizeof(unsigned int));
+      dbus_message_iter_get_basic(&a_iter, c);
+      if (c) ecore_list_append(list2, c);
+      dbus_message_iter_next(&a2_iter);
+    }
     dbus_message_iter_next(&a_iter);
   }
 }
