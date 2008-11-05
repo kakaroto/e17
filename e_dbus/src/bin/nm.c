@@ -80,8 +80,8 @@ main(int argc, char **argv)
     }
    
     ecore_main_loop_begin();
-    e_nm_free(nm);
     e_nms_free(nms);
+    e_nm_free(nm);
    
     e_dbus_shutdown();
     eina_stringshare_shutdown();
