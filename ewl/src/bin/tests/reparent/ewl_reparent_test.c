@@ -106,7 +106,7 @@ fill_window(Ewl_Dialog *d, Ewl_Dialog *d2, Ewl_Widget *box)
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_widget_show(o);
 
-        debug_callbacks_append(box);
+        debug_callbacks_append(box->parent);
 
         return box;
 }
