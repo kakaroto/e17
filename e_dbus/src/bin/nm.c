@@ -29,6 +29,14 @@ cb_access_point(void *data, E_NM_Access_Point *ap)
 }
 
 static int
+cb_active_connection(void *data, E_NM_Active_Connection *conn)
+{
+    e_nm_active_connection_dump(conn);
+    e_nm_active_connection_free(conn);
+    return 1;
+}
+
+static int
 cb_get_devices(void *data, Ecore_List *list)
 {
     E_NM_Device *device;
@@ -65,6 +73,8 @@ cb_nms(void *data, E_NMS *reply)
 static int
 cb_nm(void *data, E_NM *reply)
 {
+    const char *conn;
+
     if (!reply)
     {
         ecore_main_loop_quit();
@@ -72,6 +82,9 @@ cb_nm(void *data, E_NM *reply)
     }
     nm = reply;
     e_nm_dump(nm);
+    ecore_list_first_goto(nm->active_connections);
+    while ((conn = ecore_list_next(nm->active_connections)))
+        e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
     e_nm_get_devices(nm, cb_get_devices, nm);
     e_nms_get(nm, cb_nms, nm);
     return 1;
