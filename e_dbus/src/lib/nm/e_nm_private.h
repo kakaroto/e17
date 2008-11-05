@@ -9,8 +9,12 @@
 #define _E_NM_INTERFACE_DEVICE_WIRELESS "org.freedesktop.NetworkManager.Device.Wireless"
 #define _E_NM_INTERFACE_DEVICE_WIRED "org.freedesktop.NetworkManager.Device.Wired"
 #define _E_NM_INTERFACE_IP4CONFIG "org.freedesktop.NetworkManager.IP4Config"
+#define _E_NMS_INTERFACE "org.freedesktop.NetworkManagerSettings"
+#define _E_NMS_INTERFACE_CONNECTION "org.freedesktop.NetworkManagerSettings.Connection"
 
 #define e_nm_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, _E_NM_PATH, _E_NM_INTERFACE, member)
+#define e_nms_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, _E_NM_PATH, _E_NMS_INTERFACE, member)
+
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, _E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_device_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, prop, (E_DBus_Method_Return_Cb) cb, data)
@@ -83,6 +87,18 @@ struct E_NM_IP4_Config_Internal
 {
   E_NM_IP4_Config cfg;
 
+  E_NM_Internal *nmi;
+};
+
+typedef struct E_NMS_Internal E_NMS_Internal;
+struct E_NMS_Internal
+{
+  E_NM_Internal *nmi;
+};
+
+typedef struct E_NMS_Connection_Internal E_NMS_Connection_Internal;
+struct E_NMS_Connection_Internal
+{
   E_NM_Internal *nmi;
 };
 

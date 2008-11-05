@@ -219,7 +219,9 @@ struct E_NM_IP4_Config
 typedef struct E_NMS E_NMS;
 /* No properties */
 
-/* TODO typedef struct E_NMS_Connection E_NMS_Connection */
+typedef struct E_NMS_Connection E_NMS_Connection;
+/* No properties */
+
 /* TODO typedef struct E_NMS_Connection_Secrets E_NMS_Connection_Secrets */
 /* TODO typedef struct E_NM_Connection_Active E_NM_Connection_Active */
 /* TODO typedef struct E_NM_VPN_Connection E_NM_VPN_Connection */
@@ -284,14 +286,18 @@ extern "C" {
    /* TODO: org.freedesktop.NetworkManager.DHCP4Config api */
 
    /* org.freedesktop.NetworkManagerSettings api */
-   EAPI void  e_nms_get(E_NM *nm);
+   EAPI int   e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data);
    EAPI void  e_nms_free(E_NMS *nms);
    EAPI void  e_nms_dump(E_NMS *nms);
    EAPI int   e_nms_list_connections(E_NMS *nms,
                         int (*cb_func)(void *data, Ecore_List *list),
                         void *data);
 
-   /* TODO: org.freedesktop.NetworkManagerSettings.Connection api */
+   /* org.freedesktop.NetworkManagerSettings.Connection api */
+   EAPI int   e_nms_connection_get(E_NMS *nms, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
+   EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
+   EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
+
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
    /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
    /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */

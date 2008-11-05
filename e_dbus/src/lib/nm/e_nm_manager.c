@@ -2,15 +2,15 @@
 #include "e_nm_private.h"
 
 static int
-cb_nm_device(void *data, void *reply)
+cb_nm_device(void *data, E_NM_Device *dev)
 {
   E_NM_Data   *d;
   Ecore_List  *list;
 
   d = data;
   list = d->reply;
-  if (reply)
-    ecore_list_append(list, reply);
+  if (dev)
+    ecore_list_append(list, dev);
   ecore_list_first_remove(list);
 
   ecore_list_first_goto(list);
