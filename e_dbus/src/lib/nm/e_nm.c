@@ -46,7 +46,7 @@ cb_signal_manager_state_changed(void *data, DBusMessage *msg)
   }
 
   if (ctx->cb_manager_state_changed)
-    ctx->cb_manager_state_changed(ctx->data_manager_state_changed, (int)state);
+    ctx->cb_manager_state_changed(ctx->data_manager_state_changed, state);
 }
 
 static void

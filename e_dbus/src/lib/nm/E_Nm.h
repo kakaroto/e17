@@ -122,7 +122,7 @@ struct E_NM_Manager
   uint state;
 };
 
-typedef void (*E_NM_Cb_Manager_State_Changed) (void *data, int state);
+typedef void (*E_NM_Cb_Manager_State_Changed) (void *data, unsigned int state);
 typedef void (*E_NM_Cb_Manager_Device_Added) (void *data, const char *device);
 typedef void (*E_NM_Cb_Manager_Device_Removed) (void *data, const char *device);
 
