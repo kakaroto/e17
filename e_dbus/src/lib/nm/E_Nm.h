@@ -243,7 +243,16 @@ extern "C" {
    EAPI void  e_nm_callback_device_added_set(E_NM *nm, int (*cb_func)(E_NM *nm, const char *device));
    EAPI void  e_nm_callback_device_removed_set(E_NM *nm, int (*cb_func)(E_NM *nm, const char *device));
 
-   /* TODO: org.freedesktop.NetworkManager.AccessPoint api */
+   /* org.freedesktop.NetworkManager.AccessPoint api */
+   EAPI int   e_nm_access_point_get(E_NM *nm, const char *access_point,
+                                    int (*cb_func)(void *data, void *reply),
+                                    void *data);
+   EAPI void  e_nm_access_point_free(E_NM_Access_Point *access_point);
+   EAPI void  e_nm_access_point_dump(E_NM_Access_Point *access_point);
+
+   EAPI void  e_nm_access_point_data_set(E_NM_Access_Point *access_point, void *data);
+   EAPI void *e_nm_access_point_data_get(E_NM_Access_Point *access_point);
+   EAPI void  e_nm_access_point_callback_properties_changed_set(E_NM_Access_Point *access_point, int (*cb_func)(E_NM_Access_Point *access_point));
 
    /* org.freedesktop.NetworkManager.Device api */
    EAPI int   e_nm_device_get(E_NM *nm, const char *device,

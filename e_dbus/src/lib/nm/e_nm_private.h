@@ -12,6 +12,7 @@
 
 #define e_nm_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, _E_NM_PATH, _E_NM_INTERFACE, member)
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, _E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
+#define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_device_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_ip4_config_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_IP4CONFIG, prop, (E_DBus_Method_Return_Cb) cb, data)
 
@@ -55,6 +56,20 @@ struct E_NM_Device_Internal
 
   int  (*state_changed)(E_NM_Device *device, unsigned int state);
   int  (*properties_changed)(E_NM_Device *device);
+
+  Ecore_List *handlers;
+
+  void *data;
+};
+
+typedef struct E_NM_Access_Point_Internal E_NM_Access_Point_Internal;
+struct E_NM_Access_Point_Internal
+{
+  E_NM_Access_Point ap;
+
+  E_NM_Internal *nmi;
+
+  int  (*properties_changed)(E_NM_Access_Point *device);
 
   Ecore_List *handlers;
 
