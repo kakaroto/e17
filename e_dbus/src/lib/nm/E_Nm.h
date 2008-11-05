@@ -221,6 +221,12 @@ struct E_NMS
 {
 };
 
+/* TODO typedef struct E_NMS_Connection E_NMS_Connection */
+/* TODO typedef struct E_NMS_Connection_Secrets E_NMS_Connection_Secrets */
+/* TODO typedef struct E_NM_Connection_Active E_NM_Connection_Active */
+/* TODO typedef struct E_NM_VPN_Connection E_NM_VPN_Connection */
+/* TODO typedef struct E_NM_VPN_Plugin E_NM_VPN_Plugin */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -277,6 +283,7 @@ extern "C" {
    EAPI void  e_nm_ip4_config_free(E_NM_IP4_Config *config);
    EAPI void  e_nm_ip4_config_dump(E_NM_IP4_Config *config);
 
+   /* TODO: org.freedesktop.NetworkManager.DHCP4Config api */
    /* TODO: org.freedesktop.NetworkManagerSettings api */
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection api */
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
