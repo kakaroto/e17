@@ -38,6 +38,29 @@ enum E_NM_State
   E_NM_STATE_DISCONNECTED = 4
 };
 
+typedef enum E_NM_802_11_Ap_Flags E_NM_802_11_Ap_Flags;
+enum E_NM_802_11_Ap_Flags
+{
+  E_NM_802_11_AP_FLAGS_NONE = 0x0,
+  E_NM_802_11_AP_FLAGS_PRIVACY = 0x1
+};
+
+typedef enum E_NM_802_11_Ap_Sec E_NM_802_11_Ap_Sec;
+enum E_NM_802_11_Ap_Sec
+{
+  E_NM_802_11_AP_SEC_NONE = 0x0,
+  E_NM_802_11_AP_SEC_PAIR_WEP40 = 0x1,
+  E_NM_802_11_AP_SEC_PAIR_WEP104 = 0x2,
+  E_NM_802_11_AP_SEC_PAIR_TKIP = 0x4,
+  E_NM_802_11_AP_SEC_PAIR_CCMP = 0x8,
+  E_NM_802_11_AP_SEC_GROUP_WEP40 = 0x10,
+  E_NM_802_11_AP_SEC_GROUP_WEP104 = 0x20,
+  E_NM_802_11_AP_SEC_GROUP_TKIP = 0x40,
+  E_NM_802_11_AP_SEC_GROUP_CCMP = 0x80,
+  E_NM_802_11_AP_SEC_KEY_MGMT_PSK = 0x100,
+  E_NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
+};
+
 typedef enum E_NM_Device_Cap E_NM_Device_Cap;
 enum E_NM_Device_Cap
 {
@@ -135,6 +158,20 @@ struct E_NM
   E_NM_State  state;
 };
 
+typedef struct E_NM_Access_Point E_NM_Access_Point;
+struct E_NM_Access_Point
+{
+  E_NM_802_11_Ap_Flags  flags;
+  E_NM_802_11_Ap_Sec    wpa_flags;
+  E_NM_802_11_Ap_Sec    rsn_flags;
+  Ecore_List           *ssid; /* unsigned char */
+  uint                  frequency;
+  char                 *hw_address;
+  E_NM_802_11_Mode      mode;
+  uint                  max_bitrate;
+  unsigned char         strength;
+};
+
 typedef struct E_NM_Device E_NM_Device;
 struct E_NM_Device
 {
@@ -171,26 +208,17 @@ struct E_NM_Device
 typedef struct E_NM_IP4_Config E_NM_IP4_Config;
 struct E_NM_IP4_Config
 {
-  /* TODO: Is it always 3 uints? */
-  Ecore_List *addresses;  /* (uint, uint, uint)s */
+  Ecore_List *addresses;  /* list uints */
   Ecore_List *nameservers;/* uints */
   Ecore_List *domains;    /* char* */
-  /* TODO: Is it always 4 uints? */
-  Ecore_List *routes;     /* (uint, uint, uint, uint)s */
+  Ecore_List *routes;     /* list uints */
 };
 
-typedef struct E_NM_Access_Point E_NM_Access_Point;
-struct E_NM_Access_Point
+/* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
+
+typedef struct E_NMS E_NMS;
+struct E_NMS
 {
-  uint  flags;
-  uint  wpaflags;
-  uint  rsnflags;
-  char *ssid;
-  uint  frequency;
-  char *hwaddress;
-  int   mode;
-  uint  rate;
-  uint  strength;
 };
 
 #ifdef __cplusplus
