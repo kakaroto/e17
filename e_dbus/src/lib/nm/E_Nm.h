@@ -237,8 +237,8 @@ typedef struct E_NMS E_NMS;
 typedef struct E_NMS_Connection E_NMS_Connection;
 /* No properties */
 
-typedef struct E_NM_Connection_Active E_NM_Connection_Active;
-struct E_NM_Connection_Active
+typedef struct E_NM_Active_Connection E_NM_Active_Connection;
+struct E_NM_Active_Connection
 {
   char                         *service_name;
   char                         *connection; /* object_path */
@@ -333,11 +333,11 @@ extern "C" {
    /* TODO: e_nms_connection_callback_removed_set */
 
    /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
-   EAPI int   e_nm_connection_active_get(E_NM *nm, const char *conn, int (*cb_func)(void *data, E_NM_Connection_Active *conn), void *data);
-   EAPI void  e_nm_connection_active_free(E_NM_Connection_Active *conn);
-   EAPI void  e_nm_connection_active_dump(E_NM_Connection_Active *conn);
+   EAPI int   e_nm_active_connection_get(E_NM *nm, const char *conn, int (*cb_func)(void *data, E_NM_Active_Connection *conn), void *data);
+   EAPI void  e_nm_active_connection_free(E_NM_Active_Connection *conn);
+   EAPI void  e_nm_active_connection_dump(E_NM_Active_Connection *conn);
 
-   EAPI void  e_nm_connection_active_callback_properties_changed_set(E_NM_Connection_Active *conn, int (*cb_func)(E_NM_Connection_Active *conn));
+   EAPI void  e_nm_active_connection_callback_properties_changed_set(E_NM_Active_Connection *conn, int (*cb_func)(E_NM_Active_Connection *conn));
 
    /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */
    /* TODO: org.freedesktop.NetworkManager.VPN.Plugin api */
