@@ -156,4 +156,6 @@ void  free_nm_object_path_list(void *data);
 int   check_arg_type(DBusMessageIter *iter, char type);
 
 void  property_data_free(Property_Data *data);
+
+const char *ip4_address2str(unsigned int address);
 #endif

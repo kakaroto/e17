@@ -215,12 +215,7 @@ e_nm_device_dump(E_NM_Device *dev)
   if (dev->capabilities == E_NM_DEVICE_CAP_NONE)
     printf(" E_NM_DEVICE_CAP_NONE");
   printf("\n");
-  printf("ip4_address          : %i.%i.%i.%i\n",
-         ((dev->ip4_address      ) & 0xff),
-         ((dev->ip4_address >> 8 ) & 0xff),
-         ((dev->ip4_address >> 16) & 0xff),
-         ((dev->ip4_address >> 24) & 0xff)
-         );
+  printf("ip4_address          : %s\n", ip4_address2str(dev->ip4_address));
   printf("state                : ");
   switch (dev->state)
   {

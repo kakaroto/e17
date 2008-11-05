@@ -483,3 +483,15 @@ property_data_free(Property_Data *data)
   free(data);
 }
 
+const char *
+ip4_address2str(unsigned int address)
+{
+  static char buf[16];
+
+  snprintf(buf, sizeof(buf), "%u.%u.%u.%u",
+           ((address      ) & 0xff),
+           ((address >> 8 ) & 0xff),
+           ((address >> 16) & 0xff),
+           ((address >> 24) & 0xff));
+  return buf;
+}
