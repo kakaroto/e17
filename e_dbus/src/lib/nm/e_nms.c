@@ -114,6 +114,40 @@ cb_nms_system_connections(void *data, void *reply, DBusError *err)
   dbus_message_unref(msg);
 }
 
+static void
+new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
+{
+  E_NMS_Internal *nmsi;
+  const char *conn;
+  DBusError err;
+  if (!msg || !data) return;
+
+  /* TODO: Return E_NMS_Connection */
+  nmsi = data;
+  dbus_error_init(&err);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &conn, DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(&err))
+  {
+    printf("Error: %s - %s\n", err.name, err.message);
+    return;
+  }
+
+  if (nmsi->new_connection)
+    nmsi->new_connection(nmsi, context, conn);
+}
+
+static void
+cb_new_system_connection(void *data, DBusMessage *msg)
+{
+  new_connection(E_NMS_CONTEXT_SYSTEM, data, msg);
+}
+
+static void
+cb_new_user_connection(void *data, DBusMessage *msg)
+{
+  new_connection(E_NMS_CONTEXT_USER, data, msg);
+}
+
 EAPI int
 e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
 {
@@ -121,6 +155,10 @@ e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
 
   nmsi = calloc(1, sizeof(E_NMS_Internal));
   nmsi->nmi = (E_NM_Internal *)nm;
+  nmsi->handlers = ecore_list_new();
+  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_SYSTEM, "NewConnection", cb_new_system_connection, nmsi));
+  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_USER, "NewConnection", cb_new_user_connection, nmsi));
+
   (*cb_func)(data, (E_NMS *)nmsi);
   return 1;
 }
@@ -128,8 +166,19 @@ e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
 EAPI void
 e_nms_free(E_NMS *nms)
 {
+  E_NMS_Internal *nmsi;
   if (!nms) return;
-  free(nms);
+  nmsi = (E_NMS_Internal *)nms;
+
+  if (nmsi->handlers)
+  {
+    E_DBus_Signal_Handler *sh;
+
+    while ((sh = ecore_list_first_remove(nmsi->handlers)))
+      e_dbus_signal_handler_del(nmsi->nmi->conn, sh);
+    ecore_list_destroy(nmsi->handlers);
+  }
+  free(nmsi);
 }
 
 EAPI void
@@ -146,7 +195,6 @@ e_nms_list_connections(E_NMS *nms, int (*cb_func)(void *data, Ecore_List *list),
   DBusMessage *msg;
   Reply_Data   *d;
   E_NMS_Internal *nmsi;
-  Ecore_List *list;
   int ret;
 
   nmsi = (E_NMS_Internal *)nms;
@@ -162,3 +210,29 @@ e_nms_list_connections(E_NMS *nms, int (*cb_func)(void *data, Ecore_List *list),
   return ret;
 }
 
+EAPI void
+e_nms_data_set(E_NMS *nms, void *data)
+{
+  E_NMS_Internal *nmsi;
+
+  nmsi = (E_NMS_Internal *)nms;
+  nmsi->data = data;
+}
+
+EAPI void *
+e_nms_data_get(E_NMS *nms)
+{
+  E_NMS_Internal *nmsi;
+
+  nmsi = (E_NMS_Internal *)nms;
+  return nmsi->data;
+}
+
+EAPI void
+e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, E_NMS_Context context, const char *connection))
+{
+  E_NMS_Internal *nmsi;
+
+  nmsi = (E_NMS_Internal *)nms;
+  nmsi->new_connection = cb_func;
+}

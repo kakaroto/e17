@@ -27,6 +27,8 @@
 #define e_nm_access_point_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, sig, cb, data)
 #define e_nm_device_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, sig, cb, data)
 
+#define e_nms_signal_handler_add(con, service, sig, cb, data) e_dbus_signal_handler_add(con, service, _E_NMS_PATH, _E_NMS_INTERFACE, sig, cb, data)
+
 typedef struct E_NM_Internal E_NM_Internal;
 struct E_NM_Internal
 {
@@ -38,7 +40,6 @@ struct E_NM_Internal
   int  (*properties_changed)(E_NM *nm);
   int  (*device_added)(E_NM *nm, const char *device);
   int  (*device_removed)(E_NM *nm, const char *device);
-
   Ecore_List *handlers;
 #if 0
   Ecore_List *devices;
@@ -56,7 +57,6 @@ struct E_NM_Device_Internal
 
   int  (*state_changed)(E_NM_Device *device, unsigned int state);
   int  (*properties_changed)(E_NM_Device *device);
-
   Ecore_List *handlers;
 
   void *data;
@@ -70,7 +70,6 @@ struct E_NM_Access_Point_Internal
   E_NM_Internal *nmi;
 
   int  (*properties_changed)(E_NM_Access_Point *device);
-
   Ecore_List *handlers;
 
   void *data;
@@ -88,6 +87,11 @@ typedef struct E_NMS_Internal E_NMS_Internal;
 struct E_NMS_Internal
 {
   E_NM_Internal *nmi;
+
+  int  (*new_connection)(E_NMS *nms, E_NMS_Context context, const char *connection);
+  Ecore_List *handlers;
+
+  void *data;
 };
 
 typedef struct E_NMS_Connection_Internal E_NMS_Connection_Internal;
@@ -96,6 +100,8 @@ struct E_NMS_Connection_Internal
   E_NM_Internal *nmi;
   char          *path;
   E_NMS_Context  context;
+
+  void *data;
 };
 
 typedef int (*Object_Cb)(void *data, void *reply);

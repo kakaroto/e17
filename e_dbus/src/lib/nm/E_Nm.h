@@ -299,6 +299,7 @@ extern "C" {
    EAPI int   e_nms_list_connections(E_NMS *nms,
                         int (*cb_func)(void *data, Ecore_List *list),
                         void *data);
+   EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, E_NMS_Context context, const char *connection));
 
    /* org.freedesktop.NetworkManagerSettings.Connection api */
    EAPI int   e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
