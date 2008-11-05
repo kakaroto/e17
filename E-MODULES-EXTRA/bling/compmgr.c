@@ -2019,10 +2019,13 @@ int
 composite_init(Bling *b)
 {
    Ecore_X_Window *children;
+   Ecore_X_Atom a;
+   Ecore_X_Window w;
    int nchildren;
    int i;
    XRenderPictureAttributes pa;
    int composite_major, composite_minor;
+   char buf[16];
 
    bling = b;
    config = b->config;
@@ -2093,6 +2096,12 @@ composite_init(Bling *b)
       transBlackPicture = solid_picture(True, 0.3, 0, 0, 0);
    allDamage = None;
    clipChanged = True;
+
+   snprintf(buf, sizeof(buf), "_NET_WM_CM_S%d", scr);
+   a = XInternAtom(dpy, buf, False);
+   w = ecore_x_window_input_new(0, 0, 0, 1, 1);
+   XSetSelectionOwner(dpy, a, w, 0);
+
    ecore_x_grab();
    if (autoRedirect)
       XCompositeRedirectSubwindows(dpy, root, CompositeRedirectAutomatic);
