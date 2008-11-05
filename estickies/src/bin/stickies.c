@@ -135,8 +135,10 @@ _e_sticky_mouse_move_cb(Etk_Object *object, void *event, void *data)
    
    if(_e_sticky_is_moving)
      {
-	_e_sticky_move(s, s->x + ev->cur.widget.x - _e_sticky_mouse_x,
-		       s->y + ev->cur.widget.y  - _e_sticky_mouse_y);
+	     int x = 0;
+	     int y = 0;
+	     ecore_x_pointer_last_xy_get(&x, &y);
+	     _e_sticky_move(s,  x-_e_sticky_mouse_x,  y-_e_sticky_mouse_y);
      }
 }
 
