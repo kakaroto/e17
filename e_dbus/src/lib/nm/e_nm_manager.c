@@ -5,7 +5,6 @@ static void
 cb_nm_device(void *data, void *reply, DBusError *err)
 {
   E_NM_Data   *d;
-  E_NM_Device *device;
   Ecore_List  *list;
 
   d = data;
