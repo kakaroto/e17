@@ -306,6 +306,13 @@ extern "C" {
    EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
    EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
 
+   /* TODO: e_nms_connection_update */
+   /* TODO: e_nms_connection_delete */
+   /* TODO: e_nms_connection_get_settings */
+
+   /* TODO: e_nms_connection_callback_updated_set */
+   /* TODO: e_nms_connection_callback_removed_set */
+
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
    /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
    /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */
