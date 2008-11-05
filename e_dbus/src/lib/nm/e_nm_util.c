@@ -4,101 +4,210 @@
 #include <string.h>
 #include <Ecore_Data.h>
 
-/**
- * @internal
- * @brief returns an e_dbus callback for a given dbus type
- * @param rettype the return type we want to find a callback for
- **/
-static E_DBus_Unmarshal_Func
-e_nm_callback_by_type(int rettype)
-{
-  switch (rettype)
-  {
-    case DBUS_TYPE_OBJECT_PATH:
-      return cb_nm_object_path;
-      
-    case DBUS_TYPE_INT32:
-      return cb_nm_int32;
-      
-    case DBUS_TYPE_UINT32:
-      return cb_nm_uint32;
-      
-    case DBUS_TYPE_BOOLEAN:
-      return cb_nm_boolean;
-
-    default:
-      return cb_nm_generic;
+#define CHECK_SIGNATURE(msg, err, sig)                       \
+  if (dbus_error_is_set((err)))                              \
+  {                                                          \
+    printf("Error: %s - %s\n", (err)->name, (err)->message); \
+    return NULL;                                             \
+  }                                                          \
+                                                             \
+  if (!dbus_message_has_signature((msg), (sig)))             \
+  {                                                          \
+    dbus_set_error((err), DBUS_ERROR_INVALID_SIGNATURE, ""); \
+    return NULL;                                             \
   }
-}
 
-/**
- * @internal
- * @brief returns an e_dbus free for a given dbus type
- * @param rettype the return type we want to find a free for
- **/
-static E_DBus_Free_Func
-e_nm_free_by_type(int rettype)
+void
+property_string(void *data, DBusMessage *msg, DBusError *err)
 {
-  switch (rettype)
+  DBusMessageIter iter, v_iter;
+  E_NM_Data *d;
+  const char *str;
+  char **value;
+
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (!nm_check_arg_type(&v_iter, 's')) goto error;
+
+  dbus_message_iter_get_basic(&v_iter, &str);
+
+  value = (char **)((char *)d->reply + d->property->offset);
+  *value = strdup(str);
+  d->property++;
+  if (d->property->name)
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  else
   {
-    case DBUS_TYPE_STRING:
-      return NULL;
-    case DBUS_TYPE_INT32:
-    case DBUS_TYPE_UINT32:
-    case DBUS_TYPE_BOOLEAN:
-    default:
-      return free_nm_generic;
+    if (d->cb_func) d->cb_func(d->data, d->reply);
+    e_nm_data_free(d);
   }
+  return;
+
+error:
+  if (d->reply) free(d->reply); /* TODO: Correct free for object */
+  if (d->cb_func) d->cb_func(d->data, NULL);
+  e_nm_data_free(d);
 }
 
-/**
- * @internal
- * @brief Send "get" messages to NetworkManager via e_dbus
- * @param ctx an e_nm context
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- * @param method the name of the method that should be called
- * @param rettype the type of the data that will be returned to the callback
- **/
-int
-e_nm_get_from_nm(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data,
-                 const char *method, int rettype)
+void
+property_object_path(void *data, DBusMessage *msg, DBusError *err)
 {
-  DBusMessage *msg;
-  int ret;
+  DBusMessageIter iter, v_iter;
+  E_NM_Data *d;
+  const char *str;
+  char **value;
 
-  msg = e_nm_manager_call_new(method);
-  ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
-                                cb_func, e_nm_free_by_type(rettype), -1, data) ? 1 : 0;
-  dbus_message_unref(msg);
-  return ret;
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (!nm_check_arg_type(&v_iter, 'o')) goto error;
+
+  dbus_message_iter_get_basic(&v_iter, &str);
+
+  value = (char **)((char *)d->reply + d->property->offset);
+  *value = strdup(str);
+  d->property++;
+  if (d->property->name)
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  else
+  {
+    if (d->cb_func) d->cb_func(d->data, d->reply);
+    e_nm_data_free(d);
+  }
+  return;
+
+error:
+  if (d->reply) free(d->reply); /* TODO: Correct free for object */
+  if (d->cb_func) d->cb_func(d->data, NULL);
+  e_nm_data_free(d);
 }
 
-
-/**
- * @internal
- * @brief Send "get" messages to a Device via e_dbus
- * @param ctx an e_nm context
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- * @param method the name of the method that should be called
- * @param rettype the type of the data that will be returned to the callback
- **/
-int
-e_nm_get_from_device(E_NM_Context *ctx, const char *device,
-                     E_DBus_Callback_Func cb_func, void *data,
-                     const char *method, int rettype)
+void
+property_uint32(void *data, DBusMessage *msg, DBusError *err)
 {
-  DBusMessage *msg;
-  int ret;
+  DBusMessageIter iter, v_iter;
+  E_NM_Data *d;
+  uint *value;
 
-  msg = e_nm_device_call_new(device, method);
-  ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
-                                cb_func,
-                                e_nm_free_by_type(rettype),
-                                -1, data) ? 1 : 0;
-  dbus_message_unref(msg);
-  return ret;
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (!nm_check_arg_type(&v_iter, 'u')) goto error;
+
+  value = (uint *)((char *)d->reply + d->property->offset);
+  dbus_message_iter_get_basic(&v_iter, value);
+  d->property++;
+  if (d->property->name)
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  else
+  {
+    if (d->cb_func) d->cb_func(d->data, d->reply);
+    e_nm_data_free(d);
+  }
+  return;
+
+error:
+  if (d->reply) free(d->reply); /* TODO: Correct free for object */
+  if (d->cb_func) d->cb_func(d->data, NULL);
+  e_nm_data_free(d);
+}
+
+void
+property_bool(void *data, DBusMessage *msg, DBusError *err)
+{
+  DBusMessageIter iter, v_iter;
+  E_NM_Data *d;
+  dbus_bool_t *value;
+
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (!nm_check_arg_type(&v_iter, 'b')) goto error;
+
+  value = (uint *)((char *)d->reply + d->property->offset);
+  dbus_message_iter_get_basic(&v_iter, value);
+  d->property++;
+  if (d->property->name)
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  else
+  {
+    if (d->cb_func) d->cb_func(d->data, d->reply);
+    e_nm_data_free(d);
+  }
+  return;
+
+error:
+  if (d->reply) free(d->reply); /* TODO: Correct free for object */
+  if (d->cb_func) d->cb_func(d->data, NULL);
+  e_nm_data_free(d);
+}
+
+void
+property_uint32_list_list(void *data, DBusMessage *msg, DBusError *err)
+{
+}
+
+void
+property_uint32_list(void *data, DBusMessage *msg, DBusError *err)
+{
+}
+
+void
+property_string_list(void *data, DBusMessage *msg, DBusError *err)
+{
+  DBusMessageIter iter, v_iter, a_iter;
+  E_NM_Data *d;
+  Ecore_List **value;
+
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (!nm_check_arg_type(&v_iter, 'a')) goto error;
+  dbus_message_iter_recurse(&v_iter, &a_iter);
+  if (!nm_check_arg_type(&a_iter, 's')) goto error;
+
+  value = (Ecore_List **)((char *)d->reply + d->property->offset);
+  *value = ecore_list_new();
+  ecore_list_free_cb_set(*value, free);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    const char *str;
+
+    dbus_message_iter_get_basic(&a_iter, &str);
+    if (str) ecore_list_append(*value, strdup(str));
+    dbus_message_iter_next(&a_iter);
+  }
+
+  d->property++;
+  if (d->property->name)
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  else
+  {
+    if (d->cb_func) d->cb_func(d->data, d->reply);
+    e_nm_data_free(d);
+  }
+  return;
+
+error:
+  if (d->reply) free(d->reply); /* TODO: Correct free for object */
+  if (d->cb_func) d->cb_func(d->data, NULL);
+  e_nm_data_free(d);
 }
 
 /**
@@ -131,7 +240,7 @@ cb_nm_int32(DBusMessage *msg, DBusError *err)
 {
   dbus_int32_t *i;
 
-  E_NM_CHECK_SIGNATURE(msg, err, "i");
+  CHECK_SIGNATURE(msg, err, "i");
 
   i = malloc(sizeof(dbus_int32_t));
   /* Actually emit the integer */
@@ -151,7 +260,7 @@ cb_nm_uint32(DBusMessage *msg, DBusError *err)
 {
   dbus_uint32_t *i;
 
-  E_NM_CHECK_SIGNATURE(msg, err, "u");
+  CHECK_SIGNATURE(msg, err, "u");
 
   i = malloc(sizeof(dbus_uint32_t));
   /* Actually emit the unsigned integer */
@@ -171,7 +280,7 @@ cb_nm_boolean(DBusMessage *msg, DBusError *err)
 {
   dbus_bool_t *i;
 
-  E_NM_CHECK_SIGNATURE(msg, err, "b");
+  CHECK_SIGNATURE(msg, err, "b");
 
   i = malloc(sizeof(dbus_bool_t));
   /* Actually emit the unsigned integer */
@@ -191,7 +300,7 @@ cb_nm_object_path(DBusMessage *msg, DBusError *err)
 {
   char *str;
 
-  E_NM_CHECK_SIGNATURE(msg, err, "o");
+  CHECK_SIGNATURE(msg, err, "o");
 
   /* Actually emit the object_path */
   dbus_message_get_args(msg, err,
@@ -212,7 +321,7 @@ cb_nm_object_path_list(DBusMessage *msg, DBusError *err)
   Ecore_List *devices;
   DBusMessageIter iter, sub;
 
-  E_NM_CHECK_SIGNATURE(msg, err, "ao");
+  CHECK_SIGNATURE(msg, err, "ao");
 
   dbus_message_iter_init(msg, &iter);
 
@@ -245,5 +354,12 @@ nm_check_arg_type(DBusMessageIter *iter, char type)
  
   sig = dbus_message_iter_get_arg_type(iter);
   return sig == type;
+}
+
+void
+e_nm_data_free(E_NM_Data *data)
+{
+  if (data->object) free(data->object);
+  free(data);
 }
 
