@@ -156,6 +156,14 @@ enum E_NMS_Context
   E_NMS_CONTEXT_SYSTEM,
 };
 
+typedef enum E_NM_Active_Connection_State E_NM_Active_Connection_State;
+enum E_NM_Active_Connection_State
+{
+  E_NM_ACTIVE_CONNECTION_STATE_UNKNOWN = 0,
+  E_NM_ACTIVE_CONNECTION_STATE_ACTIVATING = 1,
+  E_NM_ACTIVE_CONNECTION_STATE_ACTIVATED = 2
+};
+
 typedef struct E_NM E_NM;
 struct E_NM
 {
@@ -215,10 +223,10 @@ struct E_NM_Device
 typedef struct E_NM_IP4_Config E_NM_IP4_Config;
 struct E_NM_IP4_Config
 {
-  Ecore_List *addresses;  /* list uints */
-  Ecore_List *nameservers;/* uints */
+  Ecore_List *addresses;  /* list uint */
+  Ecore_List *nameservers;/* uint */
   Ecore_List *domains;    /* char* */
-  Ecore_List *routes;     /* list uints */
+  Ecore_List *routes;     /* list uint */
 };
 
 /* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
@@ -229,8 +237,17 @@ typedef struct E_NMS E_NMS;
 typedef struct E_NMS_Connection E_NMS_Connection;
 /* No properties */
 
-/* TODO typedef struct E_NMS_Connection_Secrets E_NMS_Connection_Secrets */
-/* TODO typedef struct E_NM_Connection_Active E_NM_Connection_Active */
+typedef struct E_NM_Connection_Active E_NM_Connection_Active;
+struct E_NM_Connection_Active
+{
+  char                         *service_name;
+  char                         *connection; /* object_path */
+  char                         *specific_object; /* object_path */
+  Ecore_List                   *devices; /* object_path */
+  E_NM_Active_Connection_State  state;
+  int                           def; /* default */
+};
+
 /* TODO typedef struct E_NM_VPN_Connection E_NM_VPN_Connection */
 /* TODO typedef struct E_NM_VPN_Plugin E_NM_VPN_Plugin */
 
@@ -267,7 +284,7 @@ extern "C" {
    EAPI void *e_nm_access_point_data_get(E_NM_Access_Point *access_point);
    EAPI void  e_nm_access_point_callback_properties_changed_set(E_NM_Access_Point *access_point, int (*cb_func)(E_NM_Access_Point *access_point));
 
-   /* org.freedesktop.NetworkManager.Device api */
+   /* org.freedesktop.NetworkManager.Device(.*) api */
    EAPI int   e_nm_device_get(E_NM *nm, const char *device,
                               int (*cb_func)(void *data, E_NM_Device *dev),
                               void *data);
@@ -299,9 +316,10 @@ extern "C" {
    EAPI int   e_nms_list_connections(E_NMS *nms,
                         int (*cb_func)(void *data, Ecore_List *list),
                         void *data);
+
    EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, E_NMS_Context context, const char *connection));
 
-   /* org.freedesktop.NetworkManagerSettings.Connection api */
+   /* org.freedesktop.NetworkManagerSettings.Connection(.*) api */
    EAPI int   e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
    EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
    EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
@@ -309,12 +327,18 @@ extern "C" {
    /* TODO: e_nms_connection_update */
    /* TODO: e_nms_connection_delete */
    /* TODO: e_nms_connection_get_settings */
+   /* TODO: e_nms_connection_secrets_get_secrets */
 
    /* TODO: e_nms_connection_callback_updated_set */
    /* TODO: e_nms_connection_callback_removed_set */
 
-   /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
    /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
+   EAPI int   e_nm_connection_active_get(E_NM *nm, int (*cb_func)(void *data, E_NM_Connection_Active *conn), void *data);
+   EAPI void  e_nm_connection_active_free(E_NM_Connection_Active *conn);
+   EAPI void  e_nm_connection_active_dump(E_NM_Connection_Active *conn);
+
+   EAPI void  e_nm_connection_active_callback_properties_changed_set(E_NM_Connection_Active *conn, int (*cb_func)(E_NM_Connection_Active *conn));
+
    /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */
    /* TODO: org.freedesktop.NetworkManager.VPN.Plugin api */
 

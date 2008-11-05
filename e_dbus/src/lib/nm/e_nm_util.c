@@ -22,6 +22,7 @@ static void property_object_path(DBusMessageIter *iter, void *value);
 static void property_uint32(DBusMessageIter *iter, void *value);
 static void property_bool(DBusMessageIter *iter, void *value);
 static void property_string_list(DBusMessageIter *iter, void *value);
+static void property_object_path_list(DBusMessageIter *iter, void *value);
 
 typedef void (*Property_Cb)(DBusMessageIter *iter, void *value);
 
@@ -38,6 +39,7 @@ static Sig_Property sigs[] = {
   { .sig = "u", property_uint32 },
   { .sig = "b", property_bool },
   { .sig = "as", property_string_list },
+  { .sig = "ao", property_object_path_list },
   { .sig = NULL }
 };
 
@@ -53,6 +55,7 @@ find_property_cb(const char *sig)
     if (!strcmp(t->sig, sig))
       return t->func;
   }
+  fprintf(stderr, "Missing property parser for sig: %s\n", sig);
   return NULL;
 }
 
@@ -118,6 +121,29 @@ property_string_list(DBusMessageIter *iter, void *value)
   if (!check_arg_type(iter, 'a')) return;
   dbus_message_iter_recurse(iter, &a_iter);
   if (!check_arg_type(&a_iter, 's')) return;
+
+  list = (Ecore_List **)value;
+  *list = ecore_list_new();
+  ecore_list_free_cb_set(*list, free);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    const char *str;
+
+    dbus_message_iter_get_basic(&a_iter, &str);
+    if (str) ecore_list_append(*list, strdup(str));
+    dbus_message_iter_next(&a_iter);
+  }
+}
+
+static void
+property_object_path_list(DBusMessageIter *iter, void *value)
+{
+  DBusMessageIter a_iter;
+  Ecore_List **list;
+
+  if (!check_arg_type(iter, 'a')) return;
+  dbus_message_iter_recurse(iter, &a_iter);
+  if (!check_arg_type(&a_iter, 'o')) return;
 
   list = (Ecore_List **)value;
   *list = ecore_list_new();

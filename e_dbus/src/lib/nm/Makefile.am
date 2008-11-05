@@ -18,6 +18,7 @@ e_nm_device.c \
 e_nm_ip4_config.c \
 e_nms.c \
 e_nms_connection.c \
+e_nm_connection_active.c \
 e_nm_util.c
 
 

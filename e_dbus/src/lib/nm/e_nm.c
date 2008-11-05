@@ -6,9 +6,7 @@
 static Property properties[] = {
   { .name = "WirelessEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_enabled) },
   { .name = "WirelessHardwareEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_hardware_enabled) },
-#if 0
-  { .name = "ActiveConnections", .sig = "ao", .offset = offsetof(E_NM, ...) },
-#endif
+  { .name = "ActiveConnections", .sig = "ao", .offset = offsetof(E_NM, active_connections) },
   { .name = "State", .sig = "u", .offset = offsetof(E_NM, state) },
   { .name = NULL }
 };
@@ -163,11 +161,16 @@ e_nm_free(E_NM *nm)
 EAPI void
 e_nm_dump(E_NM *nm)
 {
+  const char *conn;
+
   if (!nm) return;
   printf("E_NM:\n");
   printf("wireless_enabled         : %d\n", nm->wireless_enabled);
   printf("wireless_hardware_enabled: %d\n", nm->wireless_hardware_enabled);
-  /* TODO: active_connections */
+  printf("active_connections       :\n");
+  ecore_list_first_goto(nm->active_connections);
+  while ((conn = ecore_list_next(nm->active_connections)))
+    printf(" - %s\n", conn);
   printf("state                    : ");
   switch (nm->state)
   {
