@@ -77,38 +77,6 @@ error:
 #endif
 
 static void
-property_device_type(Property_Data *data, DBusMessageIter *iter)
-{
-  E_NM_Device *device;
-
-  if (!check_arg_type(iter, 'u')) goto error;
-
-  device = data->reply;
-  dbus_message_iter_get_basic(iter, &(device->device_type));
-  switch (device->device_type)
-  {
-    case E_NM_DEVICE_TYPE_WIRED:
-      data->property = device_wired_properties;
-      e_nm_device_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
-      break;
-    case E_NM_DEVICE_TYPE_WIRELESS:
-      data->property = device_wireless_properties;
-      e_nm_device_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
-      break;
-    default:
-      if (data->cb_func) data->cb_func(data->data, device);
-      property_data_free(data);
-      break;
-  }
-  return;
- 
-error:
-  if (data->reply) e_nm_device_free(data->reply);
-  if (data->cb_func) data->cb_func(data->data, NULL);
-  property_data_free(data);
-}
-
-static void
 cb_state_changed(void *data, DBusMessage *msg)
 {
   E_NM_Device_Internal *dev;
@@ -135,6 +103,32 @@ cb_state_changed(void *data, DBusMessage *msg)
 }
 
 static void
+cb_wired_properties_changed(void *data, DBusMessage *msg)
+{
+  E_NM_Device_Internal *dev;
+  if (!msg || !data) return;
+
+  dev = data;
+  parse_properties(dev, device_wired_properties, msg);
+
+  if (dev->properties_changed)
+    dev->properties_changed(&(dev->dev));
+}
+
+static void
+cb_wireless_properties_changed(void *data, DBusMessage *msg)
+{
+  E_NM_Device_Internal *dev;
+  if (!msg || !data) return;
+
+  dev = data;
+  parse_properties(dev, device_wireless_properties, msg);
+
+  if (dev->properties_changed)
+    dev->properties_changed(&(dev->dev));
+}
+
+static void
 cb_properties_changed(void *data, DBusMessage *msg)
 {
   E_NM_Device_Internal *dev;
@@ -142,18 +136,43 @@ cb_properties_changed(void *data, DBusMessage *msg)
 
   dev = data;
   parse_properties(dev, device_properties, msg);
-  switch (dev->dev.device_type)
-  {
-    case E_NM_DEVICE_TYPE_WIRED:
-      parse_properties(dev, device_wired_properties, msg);
-      break;
-    case E_NM_DEVICE_TYPE_WIRELESS:
-      parse_properties(dev, device_wireless_properties, msg);
-      break;
-  }
 
   if (dev->properties_changed)
     dev->properties_changed(&(dev->dev));
+}
+
+static void
+property_device_type(Property_Data *data, DBusMessageIter *iter)
+{
+  E_NM_Device_Internal *dev;
+
+  if (!check_arg_type(iter, 'u')) goto error;
+
+  dev = data->reply;
+  dbus_message_iter_get_basic(iter, &(dev->dev.device_type));
+  switch (dev->dev.device_type)
+  {
+    case E_NM_DEVICE_TYPE_WIRED:
+      data->property = device_wired_properties;
+      ecore_list_append(dev->handlers, e_nm_device_wired_signal_handler_add(data->nmi->conn, dev->dev.udi, "PropertiesChanged", cb_wired_properties_changed, dev));
+      e_nm_device_wired_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
+      break;
+    case E_NM_DEVICE_TYPE_WIRELESS:
+      data->property = device_wireless_properties;
+      ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "PropertiesChanged", cb_wireless_properties_changed, dev));
+      e_nm_device_wireless_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
+      break;
+    default:
+      if (data->cb_func) data->cb_func(data->data, dev);
+      property_data_free(data);
+      break;
+  }
+  return;
+ 
+error:
+  if (data->reply) e_nm_device_free(data->reply);
+  if (data->cb_func) data->cb_func(data->data, NULL);
+  property_data_free(data);
 }
 
 EAPI int
@@ -177,8 +196,8 @@ e_nm_device_get(E_NM *nm, const char *device,
   d->object = strdup(device);
 
   dev->handlers = ecore_list_new();
-  ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "StateChanged", cb_state_changed, nmi));
-  ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "PropertiesChanged", cb_properties_changed, nmi));
+  ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "StateChanged", cb_state_changed, dev));
+  ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "PropertiesChanged", cb_properties_changed, dev));
  
   return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
 }
