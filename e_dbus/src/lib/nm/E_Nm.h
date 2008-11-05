@@ -217,9 +217,7 @@ struct E_NM_IP4_Config
 /* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
 
 typedef struct E_NMS E_NMS;
-struct E_NMS
-{
-};
+/* No properties */
 
 /* TODO typedef struct E_NMS_Connection E_NMS_Connection */
 /* TODO typedef struct E_NMS_Connection_Secrets E_NMS_Connection_Secrets */
@@ -232,12 +230,12 @@ extern "C" {
 #endif
 
    /* org.freedesktop.NetworkManager api */
-   EAPI int   e_nm_get(int (*cb_func)(void *data, void *reply), void *data);
+   EAPI int   e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data);
    EAPI void  e_nm_free(E_NM *nm);
    EAPI void  e_nm_dump(E_NM *nm);
 
    /* TODO: e_nm_wireless_enabled_set */
-   EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, void *reply), void *data);
+   EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
    /* TODO: e_nm_activate_connection */
    /* TODO: e_nm_deactivate_connection */
    EAPI int   e_nm_sleep(E_NM *nm, int sleep);
@@ -251,7 +249,7 @@ extern "C" {
 
    /* org.freedesktop.NetworkManager.AccessPoint api */
    EAPI int   e_nm_access_point_get(E_NM *nm, const char *access_point,
-                                    int (*cb_func)(void *data, void *reply),
+                                    int (*cb_func)(void *data, E_NM_Access_Point *ap),
                                     void *data);
    EAPI void  e_nm_access_point_free(E_NM_Access_Point *access_point);
    EAPI void  e_nm_access_point_dump(E_NM_Access_Point *access_point);
@@ -262,7 +260,7 @@ extern "C" {
 
    /* org.freedesktop.NetworkManager.Device api */
    EAPI int   e_nm_device_get(E_NM *nm, const char *device,
-                              int (*cb_func)(void *data, void *reply),
+                              int (*cb_func)(void *data, E_NM_Device *dev),
                               void *data);
    EAPI void  e_nm_device_free(E_NM_Device *device);
    EAPI void  e_nm_device_dump(E_NM_Device *device);
@@ -277,14 +275,22 @@ extern "C" {
    /* TODO: e_nm_device_wireless_callback_access_point_removed_set */
 
    /* org.freedesktop.NetworkManager.IP4Config api */
-   EAPI int   e_nm_ip4_config_get(E_NM *nm, const char *device,
-                                  int (*cb_func)(void *data, void *reply),
+   EAPI int   e_nm_ip4_config_get(E_NM *nm, const char *config,
+                                  int (*cb_func)(void *data, E_NM_IP4_Config *config),
                                   void *data);
    EAPI void  e_nm_ip4_config_free(E_NM_IP4_Config *config);
    EAPI void  e_nm_ip4_config_dump(E_NM_IP4_Config *config);
 
    /* TODO: org.freedesktop.NetworkManager.DHCP4Config api */
-   /* TODO: org.freedesktop.NetworkManagerSettings api */
+
+   /* org.freedesktop.NetworkManagerSettings api */
+   EAPI void  e_nms_get(E_NM *nm);
+   EAPI void  e_nms_free(E_NMS *nms);
+   EAPI void  e_nms_dump(E_NMS *nms);
+   EAPI int   e_nms_list_connections(E_NMS *nms,
+                        int (*cb_func)(void *data, Ecore_List *list),
+                        void *data);
+
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection api */
    /* TODO: org.freedesktop.NetworkManagerSettings.Connection.Secrets api */
    /* TODO: org.freedesktop.NetworkManager.Connection.Active api */

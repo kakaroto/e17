@@ -8,66 +8,60 @@
 
 #include <string.h>
 
-static void property_device_type(void *data, DBusMessage *msg, DBusError *err);
+static void property_device_type(void *data, DBusMessageIter *iter);
 #if 0
-static void property_ip4_config(void *data, DBusMessage *msg, DBusError *err);
+static void property_ip4_config(void *data, DBusMessageIter *iter);
 #endif
 
 static Property device_wired_properties[] = {
-  { .name = "HwAddress", .func = property_string, .offset = offsetof(E_NM_Device, wired.hw_address) },
-  { .name = "Speed", .func = property_uint32, .offset = offsetof(E_NM_Device, wired.speed) },
-  { .name = "Carrier", .func = property_bool, .offset = offsetof(E_NM_Device, wired.carrier) },
-  { .name = NULL, .func = NULL, .offset = 0 }
+  { .name = "HwAddress", .sig = "s", .offset = offsetof(E_NM_Device, wired.hw_address) },
+  { .name = "Speed", .sig = "u", .offset = offsetof(E_NM_Device, wired.speed) },
+  { .name = "Carrier", .sig = "b", .offset = offsetof(E_NM_Device, wired.carrier) },
+  { .name = NULL }
 };
 
 static Property device_wireless_properties[] = {
-  { .name = "HwAddress", .func = property_string, .offset = offsetof(E_NM_Device, wireless.hw_address) },
-  { .name = "Mode", .func = property_uint32, .offset = offsetof(E_NM_Device, wireless.mode) },
-  { .name = "Bitrate", .func = property_uint32, .offset = offsetof(E_NM_Device, wireless.bitrate) },
-  { .name = "ActiveAccessPoint", .func = property_object_path, .offset = offsetof(E_NM_Device, wireless.active_access_point) },
-  { .name = "WirelessCapabilities", .func = property_uint32, .offset = offsetof(E_NM_Device, wireless.wireless_capabilities) },
-  { .name = NULL, .func = NULL, .offset = 0 }
+  { .name = "HwAddress", .sig = "s", .offset = offsetof(E_NM_Device, wireless.hw_address) },
+  { .name = "Mode", .sig = "u", .offset = offsetof(E_NM_Device, wireless.mode) },
+  { .name = "Bitrate", .sig = "u", .offset = offsetof(E_NM_Device, wireless.bitrate) },
+  { .name = "ActiveAccessPoint", .sig = "o", .offset = offsetof(E_NM_Device, wireless.active_access_point) },
+  { .name = "WirelessCapabilities", .sig = "u", .offset = offsetof(E_NM_Device, wireless.wireless_capabilities) },
+  { .name = NULL }
 };
 
 static Property device_properties[] = {
-  { .name = "Udi", .func = property_string, .offset = offsetof(E_NM_Device, udi) },
-  { .name = "Interface", .func = property_string, .offset = offsetof(E_NM_Device, interface) },
-  { .name = "Driver", .func = property_string, .offset = offsetof(E_NM_Device, driver) },
-  { .name = "Capabilities", .func = property_uint32, .offset = offsetof(E_NM_Device, capabilities) },
-  { .name = "Ip4Address", .func = property_uint32, .offset = offsetof(E_NM_Device, ip4_address) },
-  { .name = "State", .func = property_uint32, .offset = offsetof(E_NM_Device, state) },
-  { .name = "Ip4Config", .func = property_object_path, .offset = offsetof(E_NM_Device, ip4_config) },
-  { .name = "Dhcp4Config", .func = property_object_path, .offset = offsetof(E_NM_Device, dhcp4_config) },
-  { .name = "Managed", .func = property_bool, .offset = offsetof(E_NM_Device, managed) },
+  { .name = "Udi", .sig = "s", .offset = offsetof(E_NM_Device, udi) },
+  { .name = "Interface", .sig = "s", .offset = offsetof(E_NM_Device, interface) },
+  { .name = "Driver", .sig = "s", .offset = offsetof(E_NM_Device, driver) },
+  { .name = "Capabilities", .sig = "u", .offset = offsetof(E_NM_Device, capabilities) },
+  { .name = "Ip4Address", .sig = "u", .offset = offsetof(E_NM_Device, ip4_address) },
+  { .name = "State", .sig = "u", .offset = offsetof(E_NM_Device, state) },
+  { .name = "Ip4Config", .sig = "o", .offset = offsetof(E_NM_Device, ip4_config) },
+  { .name = "Dhcp4Config", .sig = "o", .offset = offsetof(E_NM_Device, dhcp4_config) },
+  { .name = "Managed", .sig = "b", .offset = offsetof(E_NM_Device, managed) },
   { .name = "DeviceType", .func = property_device_type, .offset = offsetof(E_NM_Device, device_type) },
-  { .name = NULL, .func = NULL, .offset = 0 }
+  { .name = NULL }
 };
 
 #if 0
 static void
-property_ip4_config(void *data, DBusMessage *msg, DBusError *err)
+property_ip4_config(void *data, DBusMessageIter *iter)
 {
-  DBusMessageIter iter, v_iter;
   E_NM_Data *d;
   E_NM_Device *device;
   const char *str;
 
   d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
-
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'o')) goto error;
+  if (!nm_check_arg_type(iter, 'o')) goto error;
 
   device = d->reply;
-  dbus_message_iter_get_basic(&v_iter, &str);
+  dbus_message_iter_get_basic(iter, &str);
   device->ip4_config = strdup(str);
   e_nm_ip4_config_get(&(d->nmi->nm), str, NULL, NULL);
 
   d->property++;
   if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
   else
   {
     if (d->cb_func) d->cb_func(d->data, d->reply);
@@ -83,31 +77,25 @@ error:
 #endif
 
 static void
-property_device_type(void *data, DBusMessage *msg, DBusError *err)
+property_device_type(void *data, DBusMessageIter *iter)
 {
-  DBusMessageIter iter, v_iter;
   E_NM_Data *d;
   E_NM_Device *device;
 
   d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
-
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'u')) goto error;
+  if (!nm_check_arg_type(iter, 'u')) goto error;
 
   device = d->reply;
-  dbus_message_iter_get_basic(&v_iter, &(device->device_type));
+  dbus_message_iter_get_basic(iter, &(device->device_type));
   switch (device->device_type)
   {
     case E_NM_DEVICE_TYPE_WIRED:
       d->property = device_wired_properties;
-      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
       break;
     case E_NM_DEVICE_TYPE_WIRELESS:
       d->property = device_wireless_properties;
-      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+      e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
       break;
     default:
       if (d->cb_func) d->cb_func(d->data, device);
@@ -120,35 +108,6 @@ error:
   if (d->reply) e_nm_device_free(d->reply);
   if (d->cb_func) d->cb_func(d->data, NULL);
   e_nm_data_free(d);
-}
-
-static int
-parse_properties(E_NM_Device_Internal *dev, DBusMessage *msg, DBusError *err)
-{
-  DBusMessageIter iter, a_iter;
-
-  if (dbus_error_is_set(err))
-    return 0;
-  if (!dbus_message_has_signature(msg, "a{sv}"))
-    return 0;
-
-  dbus_message_iter_init(msg, &iter);
-
-  dbus_message_iter_recurse(&iter, &a_iter);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
-  {
-    DBusMessageIter d_iter, v_iter;
-    const char *name, *value;
-
-    dbus_message_iter_recurse(&a_iter, &d_iter);
-    dbus_message_iter_get_basic(&d_iter, &name);
-
-    dbus_message_iter_next(&d_iter);
-    dbus_message_iter_recurse(&d_iter, &v_iter);
-    /* TODO */
-    dbus_message_iter_next(&a_iter);
-  }
-  return 1;
 }
 
 static void
@@ -180,7 +139,16 @@ cb_properties_changed(void *data, DBusMessage *msg)
   if (!msg || !data) return;
 
   dev = data;
-  if (!parse_properties(dev, msg, NULL)) return;
+  parse_properties(dev, device_properties, msg);
+  switch (dev->dev.device_type)
+  {
+    case E_NM_DEVICE_TYPE_WIRED:
+      parse_properties(dev, device_wired_properties, msg);
+      break;
+    case E_NM_DEVICE_TYPE_WIRELESS:
+      parse_properties(dev, device_wireless_properties, msg);
+      break;
+  }
 
   if (dev->properties_changed)
     dev->properties_changed(&(dev->dev));
@@ -188,7 +156,7 @@ cb_properties_changed(void *data, DBusMessage *msg)
 
 EAPI int
 e_nm_device_get(E_NM *nm, const char *device,
-                int (*cb_func)(void *data, void *reply),
+                int (*cb_func)(void *data, E_NM_Device *device),
                 void *data)
 {
   E_NM_Internal *nmi;
@@ -210,7 +178,7 @@ e_nm_device_get(E_NM *nm, const char *device,
   ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "StateChanged", cb_state_changed, nmi));
   ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "PropertiesChanged", cb_properties_changed, nmi));
  
-  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, d->property->func, d) ? 1 : 0;
+  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
 }
 
 EAPI void
@@ -241,7 +209,7 @@ e_nm_device_free(E_NM_Device *device)
 
     while ((sh = ecore_list_first_remove(dev->handlers)))
       e_dbus_signal_handler_del(dev->nmi->conn, sh);
-    ecore_list_destroy(dev->nmi->handlers);
+    ecore_list_destroy(dev->handlers);
   }
   free(dev);
 }

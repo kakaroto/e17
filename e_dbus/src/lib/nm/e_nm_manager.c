@@ -66,7 +66,7 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
  * @param data user data to pass to the callback function
  **/
 EAPI int
-e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, void *reply), void *data)
+e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data)
 {
   DBusMessage *msg;
   E_NM_Data   *d;

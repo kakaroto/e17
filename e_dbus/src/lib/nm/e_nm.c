@@ -4,63 +4,15 @@
 #include <string.h>
 
 static Property properties[] = {
-  { .name = "WirelessEnabled", .func = property_bool, .offset = offsetof(E_NM, wireless_enabled) },
-  { .name = "WirelessHardwareEnabled", .func = property_bool, .offset = offsetof(E_NM, wireless_hardware_enabled) },
+  { .name = "WirelessEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_enabled) },
+  { .name = "WirelessHardwareEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_hardware_enabled) },
 #if 0
-  { .name = "ActiveConnections", .func = property_object_path_list, .offset = offsetof(E_NM, ...) },
+  { .name = "ActiveConnections", .sig = "ao", .offset = offsetof(E_NM, ...) },
 #endif
-  { .name = "State", .func = property_uint32, .offset = offsetof(E_NM, state) },
-  { .name = NULL, .func = NULL, .offset = 0 }
+  { .name = "State", .sig = "u", .offset = offsetof(E_NM, state) },
+  { .name = NULL }
 };
  
-static int
-parse_properties(E_NM_Internal *nmi, DBusMessage *msg, DBusError *err)
-{
-  DBusMessageIter iter, a_iter;
-
-  if (dbus_error_is_set(err))
-    return 0;
-  if (!dbus_message_has_signature(msg, "a{sv}"))
-    return 0;
-
-  dbus_message_iter_init(msg, &iter);
-
-  dbus_message_iter_recurse(&iter, &a_iter);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
-  {
-    DBusMessageIter d_iter, v_iter;
-    const char *name, *value;
-
-    dbus_message_iter_recurse(&a_iter, &d_iter);
-    dbus_message_iter_get_basic(&d_iter, &name);
-
-    dbus_message_iter_next(&d_iter);
-    dbus_message_iter_recurse(&d_iter, &v_iter);
-    if (!strcmp(name, "WirelessEnabled"))
-    {
-      if (!nm_check_arg_type(&v_iter, 'b')) return 0;
-      dbus_message_iter_get_basic(&v_iter, &(nmi->nm.wireless_enabled));
-    }
-    else if (!strcmp(name, "WirelessHardwareEnabled"))
-    {
-      if (!nm_check_arg_type(&v_iter, 'b')) return 0;
-      dbus_message_iter_get_basic(&v_iter, &(nmi->nm.wireless_hardware_enabled));
-    }
-    else if (!strcmp(name, "ActiveConnections"))
-    {
-      if (!nm_check_arg_type(&v_iter, 'a')) return 0;
-      /* TODO */
-    }
-    else if (!strcmp(name, "State"))
-    {
-      if (!nm_check_arg_type(&v_iter, 'u')) return 0;
-      dbus_message_iter_get_basic(&v_iter, &(nmi->nm.state));
-    }
-    dbus_message_iter_next(&a_iter);
-  }
-  return 1;
-}
-
 static void
 cb_state_changed(void *data, DBusMessage *msg)
 {
@@ -90,7 +42,7 @@ cb_properties_changed(void *data, DBusMessage *msg)
   if (!msg || !data) return;
 
   nmi = data;
-  if (!parse_properties(nmi, msg, NULL)) return;
+  parse_properties(nmi, properties, msg);
 
   if (nmi->properties_changed)
     nmi->properties_changed(&(nmi->nm));
@@ -153,7 +105,7 @@ cb_devices(void *data, void *reply)
 #endif
 
 EAPI int
-e_nm_get(int (*cb_func)(void *data, void *reply), void *data)
+e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
 {
   E_NM_Internal *nmi = NULL;
   E_NM_Data     *d = NULL;
@@ -178,7 +130,7 @@ e_nm_get(int (*cb_func)(void *data, void *reply), void *data)
   d->property = properties;
   d->object = strdup(_E_NM_PATH);
 
-  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, d->property->func, d) ? 1 : 0;
+  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
 
 error:
   if (d) free(d);

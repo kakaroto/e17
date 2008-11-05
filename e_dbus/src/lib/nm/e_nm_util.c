@@ -17,186 +17,149 @@
     return NULL;                                             \
   }
 
-void
-property_string(void *data, DBusMessage *msg, DBusError *err)
+static void property_string(DBusMessageIter *iter, void *value);
+static void property_object_path(DBusMessageIter *iter, void *value);
+static void property_uint32(DBusMessageIter *iter, void *value);
+static void property_bool(DBusMessageIter *iter, void *value);
+static void property_string_list(DBusMessageIter *iter, void *value);
+
+typedef void (*property_cb)(DBusMessageIter *iter, void *value);
+
+typedef struct SigProperty SigProperty;
+struct SigProperty
 {
-  DBusMessageIter iter, v_iter;
-  E_NM_Data *d;
+  const char *sig;
+  property_cb func;
+};
+
+static SigProperty sigs[] = {
+  { .sig = "s", property_string },
+  { .sig = "o", property_object_path },
+  { .sig = "u", property_uint32 },
+  { .sig = "b", property_bool },
+  { .sig = "as", property_string_list },
+  { .sig = NULL }
+};
+
+static property_cb
+find_property_cb(const char *sig)
+{
+  SigProperty *t;
+
+  if (!sig) return NULL;
+
+  for (t = sigs; t->sig; t++)
+  {
+    if (!strcmp(t->sig, sig))
+      return t->func;
+  }
+  return NULL;
+}
+
+static Property *
+find_property(const char *name, Property *properties)
+{
+  Property *p;
+
+  if (!name) return NULL;
+
+  for (p = properties; p->name; p++)
+  {
+    if (!strcmp(p->name, name))
+      return p;
+  }
+  return NULL;
+}
+
+static void
+property_string(DBusMessageIter *iter, void *value)
+{
   const char *str;
-  char **value;
 
-  d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
+  if (!nm_check_arg_type(iter, 's')) return;
 
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 's')) goto error;
-
-  dbus_message_iter_get_basic(&v_iter, &str);
-
-  value = (char **)((char *)d->reply + d->property->offset);
-  *value = strdup(str);
-  d->property++;
-  if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
-  else
-  {
-    if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
-  }
-  return;
-
-error:
-  if (d->reply) free(d->reply); /* TODO: Correct free for object */
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  dbus_message_iter_get_basic(iter, &str);
+  *((char **)value) = strdup(str);
 }
 
-void
-property_object_path(void *data, DBusMessage *msg, DBusError *err)
+static void
+property_object_path(DBusMessageIter *iter, void *value)
 {
-  DBusMessageIter iter, v_iter;
-  E_NM_Data *d;
   const char *str;
-  char **value;
 
-  d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
+  if (!nm_check_arg_type(iter, 'o')) return;
 
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'o')) goto error;
-
-  dbus_message_iter_get_basic(&v_iter, &str);
-
-  value = (char **)((char *)d->reply + d->property->offset);
-  *value = strdup(str);
-  d->property++;
-  if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
-  else
-  {
-    if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
-  }
-  return;
-
-error:
-  if (d->reply) free(d->reply); /* TODO: Correct free for object */
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  dbus_message_iter_get_basic(iter, &str);
+  *((char **)value) = strdup(str);
 }
 
-void
-property_uint32(void *data, DBusMessage *msg, DBusError *err)
+static void
+property_uint32(DBusMessageIter *iter, void *value)
 {
-  DBusMessageIter iter, v_iter;
-  E_NM_Data *d;
-  uint *value;
+  if (!nm_check_arg_type(iter, 'u')) return;
 
-  d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
-
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'u')) goto error;
-
-  value = (uint *)((char *)d->reply + d->property->offset);
-  dbus_message_iter_get_basic(&v_iter, value);
-  d->property++;
-  if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
-  else
-  {
-    if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
-  }
-  return;
-
-error:
-  if (d->reply) free(d->reply); /* TODO: Correct free for object */
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  dbus_message_iter_get_basic(iter, value);
 }
 
-void
-property_bool(void *data, DBusMessage *msg, DBusError *err)
+static void
+property_bool(DBusMessageIter *iter, void *value)
 {
-  DBusMessageIter iter, v_iter;
-  E_NM_Data *d;
-  dbus_bool_t *value;
+  if (!nm_check_arg_type(iter, 'b')) return;
 
-  d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
-
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'b')) goto error;
-
-  value = (uint *)((char *)d->reply + d->property->offset);
-  dbus_message_iter_get_basic(&v_iter, value);
-  d->property++;
-  if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
-  else
-  {
-    if (d->cb_func) d->cb_func(d->data, d->reply);
-    e_nm_data_free(d);
-  }
-  return;
-
-error:
-  if (d->reply) free(d->reply); /* TODO: Correct free for object */
-  if (d->cb_func) d->cb_func(d->data, NULL);
-  e_nm_data_free(d);
+  dbus_message_iter_get_basic(iter, value);
 }
 
-void
-property_uint32_list_list(void *data, DBusMessage *msg, DBusError *err)
+static void
+property_string_list(DBusMessageIter *iter, void *value)
 {
-}
+  DBusMessageIter a_iter;
+  Ecore_List **list;
 
-void
-property_uint32_list(void *data, DBusMessage *msg, DBusError *err)
-{
-}
+  if (!nm_check_arg_type(iter, 'a')) return;
+  dbus_message_iter_recurse(iter, &a_iter);
+  if (!nm_check_arg_type(&a_iter, 's')) return;
 
-void
-property_string_list(void *data, DBusMessage *msg, DBusError *err)
-{
-  DBusMessageIter iter, v_iter, a_iter;
-  E_NM_Data *d;
-  Ecore_List **value;
-
-  d = data;
-  if (dbus_error_is_set(err)) goto error;
-  if (!dbus_message_has_signature(msg, "v")) goto error;
-
-  dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_recurse(&iter, &v_iter);
-  if (!nm_check_arg_type(&v_iter, 'a')) goto error;
-  dbus_message_iter_recurse(&v_iter, &a_iter);
-  if (!nm_check_arg_type(&a_iter, 's')) goto error;
-
-  value = (Ecore_List **)((char *)d->reply + d->property->offset);
-  *value = ecore_list_new();
-  ecore_list_free_cb_set(*value, free);
+  list = (Ecore_List **)value;
+  *list = ecore_list_new();
+  ecore_list_free_cb_set(*list, free);
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
     const char *str;
 
     dbus_message_iter_get_basic(&a_iter, &str);
-    if (str) ecore_list_append(*value, strdup(str));
+    if (str) ecore_list_append(*list, strdup(str));
     dbus_message_iter_next(&a_iter);
   }
+}
+
+void
+property(void *data, DBusMessage *msg, DBusError *err)
+{
+  DBusMessageIter iter, v_iter;
+  E_NM_Data *d;
+  void *value;
+  void (*func)(DBusMessageIter *iter, void *value) = NULL;
+
+  d = data;
+  if (dbus_error_is_set(err)) goto error;
+  if (!dbus_message_has_signature(msg, "v")) goto error;
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_recurse(&iter, &v_iter);
+  if (d->property->func)
+  {
+    d->property->func(data, &v_iter);
+    return;
+  }
+
+  value = ((char *)d->reply + d->property->offset);
+  func = find_property_cb(d->property->sig);
+  if (func) (*func)(&v_iter, value);
 
   d->property++;
   if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, d->property->func, d);
+  {
+    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
+  }
   else
   {
     if (d->cb_func) d->cb_func(d->data, d->reply);
@@ -208,6 +171,48 @@ error:
   if (d->reply) free(d->reply); /* TODO: Correct free for object */
   if (d->cb_func) d->cb_func(d->data, NULL);
   e_nm_data_free(d);
+}
+
+void
+parse_properties(void *data, Property *properties, DBusMessage *msg)
+{
+  DBusMessageIter iter, a_iter;
+
+  if (!dbus_message_has_signature(msg, "a{sv}")) return;
+
+  dbus_message_iter_init(msg, &iter);
+
+  dbus_message_iter_recurse(&iter, &a_iter);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    DBusMessageIter d_iter, v_iter;
+    Property *p;
+    const char *name;
+    void *value;
+
+    dbus_message_iter_recurse(&a_iter, &d_iter);
+    dbus_message_iter_get_basic(&d_iter, &name);
+
+    dbus_message_iter_next(&d_iter);
+    dbus_message_iter_recurse(&d_iter, &v_iter);
+
+    p = find_property(name, properties);
+    if (!p) goto next;
+    value = ((char *)data + p->offset);
+    if (p->func)
+      p->func(&v_iter, value);
+    else
+    {
+      property_cb func;
+
+      func = find_property_cb(p->sig);
+      if (!func) goto next;
+      func(&v_iter, value);
+    }
+
+next:
+    dbus_message_iter_next(&a_iter);
+  }
 }
 
 /**

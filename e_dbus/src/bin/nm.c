@@ -4,12 +4,10 @@
 E_NM *nm = NULL;
 
 static int
-cb_get_devices(void *data, void *reply)
+cb_get_devices(void *data, Ecore_List *list)
 {
-    Ecore_List *list;
     E_NM_Device *device;
 
-    list = reply;
     if (list)
     {
         ecore_list_first_goto(list);
@@ -17,12 +15,12 @@ cb_get_devices(void *data, void *reply)
             e_nm_device_dump(device);
         ecore_list_destroy(list);
     }
-    ecore_main_loop_quit();
+    //ecore_main_loop_quit();
     return 1;
 }
 
 static int
-cb_nm(void *data, void *reply)
+cb_nm(void *data, E_NM *reply)
 {
     if (!reply)
     {

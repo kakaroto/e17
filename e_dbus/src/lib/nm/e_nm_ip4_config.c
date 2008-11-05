@@ -5,19 +5,19 @@
 
 static Property ip4_config_properties[] = {
 #if 0
-  { .name = "Addresses", .func = property_uint32_list_list, .offset = offsetof(E_NM_IP4_Config, addresses) },
-  { .name = "Nameservers", .func = property_uint32_list, .offset = offsetof(E_NM_IP4_Config, nameservers) },
+  { .name = "Addresses", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, addresses) },
+  { .name = "Nameservers", .sig = "au", .offset = offsetof(E_NM_IP4_Config, nameservers) },
 #endif
-  { .name = "Domains", .func = property_string_list, .offset = offsetof(E_NM_IP4_Config, domains) },
+  { .name = "Domains", .sig = "as", .offset = offsetof(E_NM_IP4_Config, domains) },
 #if 0
-  { .name = "Routes", .func = property_uint32_list_list, .offset = offsetof(E_NM_IP4_Config, routes) },
+  { .name = "Routes", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, routes) },
 #endif
-  { .name = NULL, .func = NULL, .offset = 0 }
+  { .name = NULL }
 };
 
 EAPI int
 e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
-                    int (*cb_func)(void *data, void *reply),
+                    int (*cb_func)(void *data, E_NM_IP4_Config *config),
                     void *data)
 {
   E_NM_Internal            *nmi;

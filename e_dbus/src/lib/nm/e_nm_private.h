@@ -17,13 +17,15 @@
 #define e_nm_ip4_config_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_IP4CONFIG, prop, (E_DBus_Method_Return_Cb) cb, data)
 
 #define e_nm_signal_handler_add(con, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, _E_NM_PATH, _E_NM_INTERFACE, sig, cb, data)
-#define e_nm_device_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE, sig, cb, data)
+#define e_nm_access_point_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, sig, cb, data)
+#define e_nm_device_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, sig, cb, data)
 
 typedef struct Property Property;
 struct Property
 {
   const char *name;
-  void (*func)(void *data, DBusMessage *msg, DBusError *err);
+  const char *sig;
+  void (*func)(void *data, DBusMessageIter *iter);
   size_t offset;
 };
 
@@ -96,22 +98,9 @@ struct E_NM_Data
   Property             *property;
 };
 
-void property_string(void *data, DBusMessage *msg, DBusError *err);
-void property_object_path(void *data, DBusMessage *msg, DBusError *err);
-void property_uint32(void *data, DBusMessage *msg, DBusError *err);
-void property_bool(void *data, DBusMessage *msg, DBusError *err);
-void property_uint32_list_list(void *data, DBusMessage *msg, DBusError *err);
-void property_uint32_list(void *data, DBusMessage *msg, DBusError *err);
-void property_string_list(void *data, DBusMessage *msg, DBusError *err);
+void property(void *data, DBusMessage *msg, DBusError *err);
+void parse_properties(void *data, Property *properties, DBusMessage *msg);
 
-#if 0
-void *cb_nm_generic(DBusMessage *msg, DBusError *err);
-void  free_nm_generic(void *data);
-void *cb_nm_int32(DBusMessage *msg, DBusError *err);
-void *cb_nm_uint32(DBusMessage *msg, DBusError *err);
-void *cb_nm_object_path(DBusMessage *msg, DBusError *err);
-void *cb_nm_boolean(DBusMessage *msg, DBusError *err);
-#endif
 void *cb_nm_object_path_list(DBusMessage *msg, DBusError *err);
 void  free_nm_object_path_list(void *data);
 
