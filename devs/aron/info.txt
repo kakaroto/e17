@@ -3,4 +3,4 @@ IRC Nick: Aron
 Name:     Aron Xu
 Location: JiLin, China
 E-Mail:   aronmalache@163.com
-Managing: zh_CN translation
+Managing: Translations
