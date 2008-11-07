@@ -36,20 +36,8 @@
 
 #define SMART_NAME "enna_location"
 
-#define API_ENTRY \
-   E_Smart_Data *sd; \
-   sd = evas_object_smart_data_get(obj); \
-   if ((!obj) || (!sd) || \
-      (evas_object_type_get(obj) \
-      && strcmp(evas_object_type_get(obj), SMART_NAME)))
-
-#define INTERNAL_ENTRY \
-   E_Smart_Data *sd; \
-   sd = evas_object_smart_data_get(obj); \
-   if (!sd) return;
-
-typedef struct _E_Smart_Data E_Smart_Data;
-struct _E_Smart_Data
+typedef struct _Smart_Data Smart_Data;
+struct _Smart_Data
 {
     Evas_Coord x, y, w, h;
     Evas_Object *smart_obj;
@@ -63,7 +51,7 @@ typedef struct _Enna_Location_Item Enna_Location_Item;
 
 struct _Enna_Location_Item
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
     Evas_Object *o_base;
     Evas_Object *o_icon;
     unsigned char selected : 1;
@@ -73,33 +61,33 @@ struct _Enna_Location_Item
 };
 
 /* local subsystem functions */
-static void _enna_location_smart_reconfigure(E_Smart_Data * sd);
+static void _enna_location_smart_reconfigure(Smart_Data * sd);
 static void _enna_location_smart_init(void);
-static void _e_smart_add(Evas_Object * obj);
-static void _e_smart_del(Evas_Object * obj);
-static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y);
-static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h);
-static void _e_smart_show(Evas_Object * obj);
-static void _e_smart_hide(Evas_Object * obj);
-static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
-static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip);
-static void _e_smart_clip_unset(Evas_Object * obj);
-static void _e_smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
+static void _smart_add(Evas_Object * obj);
+static void _smart_del(Evas_Object * obj);
+static void _smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y);
+static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h);
+static void _smart_show(Evas_Object * obj);
+static void _smart_hide(Evas_Object * obj);
+static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
+static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip);
+static void _smart_clip_unset(Evas_Object * obj);
+static void _smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
         void *event_info);
-static void _e_smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
+static void _smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
         void *event_info);
 /* local subsystem globals */
 static Evas_Smart *_e_smart = NULL;
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_location_add(Evas * evas)
 {
     _enna_location_smart_init();
     return evas_object_smart_add(evas, _e_smart);
 }
 
-EAPI void enna_location_append(Evas_Object *obj, const char *label,
+void enna_location_append(Evas_Object *obj, const char *label,
         Evas_Object *icon, void (*func) (void *data, void *data2), void *data, void *data2)
 {
     Enna_Location_Item *si;
@@ -136,25 +124,23 @@ EAPI void enna_location_append(Evas_Object *obj, const char *label,
     sd->items = eina_list_append(sd->items, si);
 
     edje_object_size_min_calc(si->o_base, &mw, &mh);
-    enna_box_freeze(sd->o_box);
+
     enna_box_pack_end(sd->o_box, si->o_base);
-    enna_box_pack_options_set(si->o_base, 0, 1, 0, 1, 0, 0, mw, mh, 99999,
-            99999);
-    mh = sd->h ? sd->h : 48;
+    evas_object_size_hint_min_set(si->o_base, mw, sd->h);
+    evas_object_size_hint_align_set(si->o_base, 0, 0.5);
+    evas_object_size_hint_weight_set(si->o_base, 1.0, 1.0);
 
-    enna_box_min_size_get(sd->o_box, &mw, NULL);
-    //evas_object_geometry_get(sd->o_scroll, NULL, NULL, NULL, &mh);
-    enna_log(ENNA_MSG_EVENT, NULL, "Resize o_box : %dx%d", mw, mh);
-    evas_object_resize(sd->o_box, mw, mh);
+    mh = sd->h ? sd->h : 64;
 
-    enna_box_thaw(sd->o_box);
+    evas_object_size_hint_min_get(sd->o_box, &mw, NULL);
+    evas_object_resize(sd->o_box, mw, sd->h);
 
     evas_object_lower(si->o_base);
     edje_object_signal_emit(si->o_base, "location,show", "enna");
     evas_object_event_callback_add(si->o_base, EVAS_CALLBACK_MOUSE_DOWN,
-            _e_smart_event_mouse_down, si);
+            _smart_event_mouse_down, si);
     evas_object_event_callback_add(si->o_base, EVAS_CALLBACK_MOUSE_UP,
-            _e_smart_event_mouse_up, si);
+            _smart_event_mouse_up, si);
 
     evas_object_geometry_get(si->o_base, &x, &y, &w, &h);
     enna_scrollframe_child_region_show(sd->o_scroll, x, y, w, h);
@@ -165,35 +151,42 @@ EAPI void enna_location_append(Evas_Object *obj, const char *label,
 static void _location_hide_end(void *data, Evas_Object *o, const char *sig,
         const char *src)
 {
+    Smart_Data *sd;
     Enna_Location_Item *si;
     Evas_Coord x, y, w, h;
     si = data;
 
+    if (!si) return;
+
+    sd = si->sd;
+    sd->items = eina_list_remove(sd->items, si);
+    enna_box_unpack(si->o_base);
     evas_object_geometry_get(si->o_base, &x, &y, &w, &h);
-    enna_scrollframe_child_region_show(si->sd->o_scroll, x, y, w, h);
-    evas_object_del(si->o_icon);
-    evas_object_del(si->o_base);
-    free(si);
+     enna_scrollframe_child_region_show(sd->o_scroll, x, y, w, h);
+     edje_object_signal_callback_del(si->o_base, "location,hide,end", "edje",
+       _location_hide_end);
+     evas_object_del(si->o_icon);
+     evas_object_del(si->o_base);
+     free(si);
+     _enna_location_smart_reconfigure(sd);
 }
 
-EAPI void enna_location_remove_nth(Evas_Object *obj, int n)
+void enna_location_remove_nth(Evas_Object *obj, int n)
 {
     Enna_Location_Item *si = NULL;
 
-    API_ENTRY
-    return;
+    API_ENTRY return;
     if (!sd->items)
         return;
     if (!(si = eina_list_nth(sd->items, n)))
         return;
-    sd->items = eina_list_remove(sd->items, si);
+
     edje_object_signal_emit(si->o_base, "location,hide", "enna");
     edje_object_signal_callback_add(si->o_base, "location,hide,end", "edje",
             _location_hide_end, si);
-
 }
 
-EAPI const char * enna_location_label_get_nth(Evas_Object *obj, int n)
+const char * enna_location_label_get_nth(Evas_Object *obj, int n)
 {
     Enna_Location_Item *si = NULL;
 
@@ -206,7 +199,7 @@ EAPI const char * enna_location_label_get_nth(Evas_Object *obj, int n)
     return edje_object_part_text_get(si->o_base, "enna.text.label");
 }
 
-EAPI int enna_location_count(Evas_Object *obj)
+int enna_location_count(Evas_Object *obj)
 {
     API_ENTRY
     return 0;
@@ -214,18 +207,23 @@ EAPI int enna_location_count(Evas_Object *obj)
 }
 
 /* local subsystem globals */
-static void _enna_location_smart_reconfigure(E_Smart_Data * sd)
+static void _enna_location_smart_reconfigure(Smart_Data * sd)
 {
-    Evas_Coord x, y, w, h;
+    Evas_Coord mw, w = 0;
+    Evas_List *l;
 
-    x = sd->x;
-    y = sd->y;
-    w = sd->w;
-    h = sd->h;
 
-    evas_object_move(sd->o_scroll, x, y);
-    evas_object_resize(sd->o_scroll, w, h);
+    for (l = sd->items; l; l = l->next)
+    {
+	Enna_Location_Item *si = l->data;
+	evas_object_size_hint_min_get(si->o_base, &mw, NULL);
+	w+= mw;
+    }
 
+    evas_object_resize(sd->o_box, w, sd->h);
+
+    evas_object_move(sd->o_scroll, sd->x, sd->y);
+    evas_object_resize(sd->o_scroll, sd->w, sd->h);
 }
 
 static void _enna_location_smart_init(void)
@@ -233,25 +231,27 @@ static void _enna_location_smart_init(void)
     if (_e_smart)
         return;
     static const Evas_Smart_Class sc =
-    { SMART_NAME, EVAS_SMART_CLASS_VERSION, _e_smart_add, _e_smart_del,
-            _e_smart_move, _e_smart_resize, _e_smart_show, _e_smart_hide,
-            _e_smart_color_set, _e_smart_clip_set, _e_smart_clip_unset, NULL,
+    { SMART_NAME, EVAS_SMART_CLASS_VERSION, _smart_add, _smart_del,
+            _smart_move, _smart_resize, _smart_show, _smart_hide,
+            _smart_color_set, _smart_clip_set, _smart_clip_unset, NULL,
             NULL };
     _e_smart = evas_smart_class_new(&sc);
 }
 
-static void _e_smart_add(Evas_Object * obj)
+static void _smart_add(Evas_Object * obj)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
-    sd = calloc(1, sizeof(E_Smart_Data));
+    sd = calloc(1, sizeof(Smart_Data));
     if (!sd)
         return;
 
     sd->o_box = enna_box_add(evas_object_evas_get(obj));
-    //enna_box_align_set(sd->o_box, 0, 0.5);
     enna_box_homogenous_set(sd->o_box, 0);
     enna_box_orientation_set(sd->o_box, 1);
+    evas_object_size_hint_align_set(sd->o_box, 0, 0.5);
+    evas_object_size_hint_weight_set(sd->o_box, 1.0, 0.0);
+
     sd->x = 0;
     sd->y = 0;
     sd->w = 0;
@@ -266,27 +266,31 @@ static void _e_smart_add(Evas_Object * obj)
     evas_object_smart_data_set(obj, sd);
 }
 
-static void _e_smart_del(Evas_Object * obj)
+static void _smart_del(Evas_Object * obj)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
 
-    /*
-     * FIXME if sd->o_box is deleting
-     * Segv in enna ?!!
-     */
-
-    /*evas_object_del(sd->o_box);*/
     evas_object_del(sd->o_scroll);
+    evas_object_del(sd->o_box);
+
+    while (sd->items)
+    {
+	Enna_Location_Item *si = sd->items->data;
+	sd->items = eina_list_remove_list(sd->items, sd->items);
+	evas_object_del(si->o_base);
+	evas_object_del(si->o_icon);
+	free(si);
+    }
     free(sd);
 }
 
-static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
+static void _smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -298,9 +302,9 @@ static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
     _enna_location_smart_reconfigure(sd);
 }
 
-static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
+static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -312,9 +316,9 @@ static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
     _enna_location_smart_reconfigure(sd);
 }
 
-static void _e_smart_show(Evas_Object * obj)
+static void _smart_show(Evas_Object * obj)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -322,9 +326,9 @@ static void _e_smart_show(Evas_Object * obj)
     evas_object_show(sd->o_scroll);
 }
 
-static void _e_smart_hide(Evas_Object * obj)
+static void _smart_hide(Evas_Object * obj)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -332,9 +336,9 @@ static void _e_smart_hide(Evas_Object * obj)
     evas_object_hide(sd->o_scroll);
 }
 
-static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
+static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -342,9 +346,9 @@ static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
     evas_object_color_set(sd->o_scroll, r, g, b, a);
 }
 
-static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip)
+static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -352,9 +356,9 @@ static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip)
     evas_object_clip_set(sd->o_scroll, clip);
 }
 
-static void _e_smart_clip_unset(Evas_Object * obj)
+static void _smart_clip_unset(Evas_Object * obj)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
 
     sd = evas_object_smart_data_get(obj);
     if (!sd)
@@ -362,10 +366,10 @@ static void _e_smart_clip_unset(Evas_Object * obj)
     evas_object_clip_unset(sd->o_scroll);
 }
 
-static void _e_smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
+static void _smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
         void *event_info)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
     Evas_Event_Mouse_Down *ev;
     Enna_Location_Item *si;
 
@@ -383,10 +387,10 @@ static void _e_smart_event_mouse_down(void *data, Evas *evas, Evas_Object *obj,
 
 }
 
-static void _e_smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
+static void _smart_event_mouse_up(void *data, Evas *evas, Evas_Object *obj,
         void *event_info)
 {
-    E_Smart_Data *sd;
+    Smart_Data *sd;
     Evas_Event_Mouse_Up *ev;
     Enna_Location_Item *si;
 

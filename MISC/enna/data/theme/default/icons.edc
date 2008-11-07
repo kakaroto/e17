@@ -4,19 +4,17 @@ images { \
 } \
 group { \
    name: icon_name; \
-   min: size size;\
+   min: size size;                           \
    parts { \
       part { \
          name: "icon"; \
          description { \
             state: "default" 0.0; \
             rel1 { \
-               relative: 0.1 0.1; \
-               offset: 0 0; \
+               relative: 0 0; \
             } \
             rel2 { \
-               relative: 0.9 0.9; \
-               offset: -1 -1; \
+               relative: 1.0 1.0; \
             } \
             image { \
                normal: icon_file; \
@@ -57,7 +55,8 @@ STOCK_ICON("icon_directory.png",  "icon/directory", 128)
 /* STOCK_ICON("icon_artist.png",  "icon_artist", 128) */
 /* STOCK_ICON("icon_album.png",  "icon_album", 128) */
 //STOCK_ICON("icon_unknown.png",  "icon_unknown", 128)
-//STOCK_ICON("unknown_cover.png",  "unknown_cover", 300)
+STOCK_ICON("unknown_cover.png",  "icon/unknown_cover", 600)
 STOCK_ICON("icon_shoutcast.png", "icon/shoutcast", 256)
 STOCK_ICON("icon_freeboxtv.png", "icon/freeboxtv", 256)
 STOCK_ICON("icon_nofile.png", "icon_nofile", 256)
+STOCK_ICON("arrow_left.png", "icon/arrow_left", 256)

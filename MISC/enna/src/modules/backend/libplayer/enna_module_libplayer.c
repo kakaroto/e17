@@ -24,6 +24,7 @@ typedef struct _Enna_Module_libplayer
     void *event_cb_data;
     char *uri;
     char *label;
+    Ecore_Event_Handler *key_down_event_handler;
 } Enna_Module_libplayer;
 
 static Enna_Module_libplayer *mod;
@@ -43,6 +44,7 @@ static void _class_shutdown(int dummy)
         free(mod->uri);
     if (mod->label)
         free(mod->label);
+    ecore_event_handler_del(mod->key_down_event_handler);
     player_playback_stop(mod->player);
     player_uninit(mod->player);
 }
@@ -184,7 +186,7 @@ static Enna_Metadata *_class_metadata_get(void)
     char *track_nb;
     int frameduration = 0;
     char *codec_id;
-    
+
     meta = enna_metadata_new();
 
     meta->uri = strdup(mod->uri+7);
@@ -216,7 +218,7 @@ static Enna_Metadata *_class_metadata_get(void)
     codec_id = mrl_get_audio_codec(mod->player, NULL);
     meta->music->codec = get_codec_name (codec_id);
     free (codec_id);
-    
+
     meta->music->bitrate = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_AUDIO_BITRATE);
     meta->music->channels = mrl_get_property(mod->player, NULL,
@@ -227,7 +229,7 @@ static Enna_Metadata *_class_metadata_get(void)
     codec_id = mrl_get_video_codec(mod->player, NULL);
     meta->video->codec = get_codec_name (codec_id);
     free (codec_id);
-    
+
     meta->video->width = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_VIDEO_WIDTH);
     meta->video->height = mrl_get_property(mod->player, NULL,
@@ -277,6 +279,26 @@ static int _event_cb(player_event_t e, void *data)
     return 0;
 }
 
+static int
+_x_event_key_down(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   Ecore_X_Event_Key_Down *e;
+   e = event;
+   /*
+      HACK !
+      If e->win is the same than enna winid, don't manage this event
+      ecore_evas_x will do this for us.
+      But if e->win is different than enna winid event are sent to
+      libplayer subwindow and we must broadcast this event to Evas
+   */
+   if (e->win != enna->ee_winid)
+   {
+       enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME, "Ecore_X_Event_Key_Down %s", e->keyname);
+       evas_event_feed_key_down(enna->evas, e->keyname, e->keysymbol, e->key_compose, NULL, e->time, NULL);
+   }
+   return 1;
+}
+
 static Enna_Class_MediaplayerBackend class = {
   "libplayer",
   1,
@@ -301,13 +323,13 @@ static Enna_Class_MediaplayerBackend class = {
 /*                          Public Module API                                */
 /*****************************************************************************/
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "libplayer"
 };
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     Enna_Config_Data *cfgdata;
     char *value = NULL;
@@ -422,7 +444,10 @@ EAPI void module_init(Enna_Module *em)
     mod = calloc(1, sizeof(Enna_Module_libplayer));
     mod->em = em;
     mod->evas = em->evas;
-    mod->player = player_init(type, ao, vo, verbosity, enna->ee_winid,
+
+    mod->key_down_event_handler  = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _x_event_key_down, NULL);
+
+    mod->player = player_init(type, ao, vo, verbosity,enna->ee_winid,
             _event_cb);
 
     if (!mod->player)
@@ -437,7 +462,7 @@ EAPI void module_init(Enna_Module *em)
     mod->label = NULL;
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     _class_shutdown(0);
     free(mod);

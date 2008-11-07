@@ -80,14 +80,14 @@ static void _e_smart_clip_unset(Evas_Object * obj);
 static Evas_Smart *_e_smart = NULL;
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_smart_player_add(Evas * evas)
 {
     _enna_mediaplayer_smart_init();
     return evas_object_smart_add(evas, _e_smart);
 }
 
-EAPI void enna_smart_player_show_video(Evas_Object *obj)
+void enna_smart_player_show_video(Evas_Object *obj)
 {
     Evas_Object *o_video;
 
@@ -101,7 +101,7 @@ EAPI void enna_smart_player_show_video(Evas_Object *obj)
 
 }
 
-EAPI void enna_smart_player_hide_video(Evas_Object *obj)
+void enna_smart_player_hide_video(Evas_Object *obj)
 {
     Evas_Object *o_video;
 
@@ -116,7 +116,7 @@ EAPI void enna_smart_player_hide_video(Evas_Object *obj)
     }
 }
 
-EAPI void enna_smart_player_snapshot_set(Evas_Object *obj,
+void enna_smart_player_snapshot_set(Evas_Object *obj,
                                          Enna_Metadata *metadata)
 {
     char *snap_file = NULL;
@@ -154,7 +154,7 @@ EAPI void enna_smart_player_snapshot_set(Evas_Object *obj,
     }
 }
 
-EAPI void enna_smart_player_cover_set(Evas_Object *obj,
+void enna_smart_player_cover_set(Evas_Object *obj,
                                       Enna_Metadata *metadata)
 {
     char *cover_file = NULL;
@@ -187,7 +187,7 @@ EAPI void enna_smart_player_cover_set(Evas_Object *obj,
     }
 }
 
-EAPI void enna_smart_player_metadata_set(Evas_Object *obj,
+void enna_smart_player_metadata_set(Evas_Object *obj,
         Enna_Metadata *metadata)
 {
     char buf[4096];

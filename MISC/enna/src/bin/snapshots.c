@@ -2,18 +2,18 @@
 
 #define SNAPSHOTS_PATH "snapshots"
 
-EAPI char *
+char *
 enna_snapshot_get(const char *uri)
 {
     char dst[1024];
     char *md5;
-    
+
     if (!uri)
         return NULL;
 
     if (!enna->use_snapshots)
         return NULL;
-    
+
     /* try to create snapshot directory storage first */
     memset(dst, '\0', sizeof (dst));
     snprintf(dst, sizeof (dst),
@@ -31,6 +31,6 @@ enna_snapshot_get(const char *uri)
     /* ask mediaplayer to take a snapshot if file do not already exists */
     if (!ecore_file_exists (dst))
         enna_mediaplayer_snapshot(uri, dst);
-    
+
     return strdup (dst);
 }

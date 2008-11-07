@@ -220,13 +220,13 @@ static Enna_Class_CoverPlugin class =
 /*                          Public Module API                                */
 /*****************************************************************************/
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "amazon"
 };
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -241,7 +241,7 @@ EAPI void module_init(Enna_Module *em)
     enna_cover_plugin_register(&class);
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     if (mod->curl)
         curl_easy_cleanup(mod->curl);

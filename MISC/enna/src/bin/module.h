@@ -30,10 +30,10 @@ struct _Enna_Module_Api
     const char *name;
 };
 
-EAPI int enna_module_init(void);
-EAPI int enna_module_shutdown(void);
-EAPI Enna_Module *enna_module_open(const char *name, Evas *evas);
-EAPI int enna_module_enable(Enna_Module *m);
-EAPI int enna_module_disable(Enna_Module *m);
+int enna_module_init(void);
+int enna_module_shutdown(void);
+Enna_Module *enna_module_open(const char *name, Evas *evas);
+int enna_module_enable(Enna_Module *m);
+int enna_module_disable(Enna_Module *m);
 
 #endif

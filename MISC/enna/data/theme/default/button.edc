@@ -24,7 +24,7 @@ group
                 }
             }
 
-            
+
         }
 
         part
@@ -146,6 +146,12 @@ group
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 0.2;
             target: "fg";
+        }
+        program {
+            name:   "mouse,click";
+            signal: "mouse,clicked,1";
+            source: "event";
+            action: SIGNAL_EMIT "enna,action,click" "";
         }
     }
 }

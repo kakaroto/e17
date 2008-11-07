@@ -32,6 +32,80 @@
 #include "enna.h"
 #include "enna_config.h"
 
+#define DEFAULT_FILE							\
+    "[enna]\n"								\
+    "#none,event,info,warning,error,critical\n"				\
+    "verbosity=info\n"							\
+    "\n"								\
+    "\n"								\
+    "#0,1\n"								\
+    "fullscreen=0\n"							\
+    "\n"								\
+    "#0,1\n"								\
+    "use_covers=1\n"							\
+    "\n"								\
+    "#0,1\n"								\
+    "use_snapshots=1\n"							\
+    "\n"								\
+    "#/home/user/theme.edj for specific file or just 'default' if theme is\n" \
+    "#located at /usr/share/enna/theme/default.edj\n"			\
+    "theme=default\n"							\
+    "\n"								\
+    "#x11,xrender,gl,x11_16\n"						\
+    "engine=x11\n"							\
+    "\n"								\
+    "#libplayer,emotion\n"						\
+    "backend=libplayer\n"						\
+    "\n"								\
+    "music_ext=3gp,aac,ape,apl,flac,m4a,mac,mka,mp2,mp3,mp4,mpc,ogg,ra,wav,wma\n" \
+    "video_ext=asf,avi,divx,dvr-ms,evo,flv,m1v,m2v,m4p,m4v,mkv,mov,mp4,mp4v,mpe,mpeg,mpg,ogm,qt,rm,rmvb,swf,ts,vdr,vob,vro,wmv,y4m\n" \
+    "photo_ext=jpg,jpeg,png,gif,tif,tiff,xpm\n"				\
+    "\n"								\
+    "[emotion]\n"							\
+    "#gstreamer,xine,vlc\n"						\
+    "backend=gstreamer\n"						\
+    "\n"								\
+    "[libplayer]\n"							\
+    "# Values by default are 'mplayer' type, 'auto' video_out, 'auto' audio_out\n" \
+    "# and 'warning' verbosity. Change these parameters only if that is really\n" \
+    "# necessary.\n"							\
+    "\n"								\
+    "#gstreamer,mplayer,vlc,xine\n"					\
+    "#type=\n"								\
+    "\n"								\
+    "#auto,x11,xv,gl,fb\n"						\
+    "#video_out=\n"							\
+    "\n"								\
+    "#auto,alsa,oss\n"							\
+    "#audio_out=\n"							\
+    "\n"								\
+    "#verbose,info,warning,error,critical,none\n"			\
+    "#verbosity=\n"							\
+    "\n"								\
+    "[localfiles]\n"							\
+    "path_music=file:///path/to/Music,Music,icon_hd\n"			\
+    "path_music=file:///path/to/server/Medias/Music,Server,icon_network\n" \
+    "path_video=file:///path/to/Videos,Videos,icon_hd\n"		\
+    "path_video=file:///path/to/server/Medias/Videos,Server,icon_network\n" \
+    "path_photo=file:///path/to/Photos,Photos,icon_hd\n"		\
+    "path_photo=file:///path/to/server/Medias/Photos,Server,icon_network\n" \
+    "\n"								\
+    "[netstreams]\n"							\
+    "stream_video=http://mafreebox.freebox.fr/freeboxtv/playlist.m3u,FreeboxTV,icon_freeboxtv\n" \
+    "\n"								\
+    "[lms]\n"								\
+    "path=file:///path/to/Music\n"					\
+    "path=file:///path/to/server/Medias/Music\n"			\
+    "parser=mp3,ogg,flac,rm,dummy\n"					\
+    "slave_timeout=1000\n"						\
+    "commit_interval=100\n"						\
+
+
+
+
+
+
+
 static Evas_Hash *hash_config;
 
 static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
@@ -39,12 +113,12 @@ static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
 static Evas_Hash *_config_load_conf_file(char *filename);
 static Evas_Hash *_config_load_conf(char *conffile, int size);
 
-EAPI const char * enna_config_theme_get()
+const char * enna_config_theme_get()
 {
     return enna_config->theme_file;
 }
 
-EAPI const char * enna_config_theme_file_get(const char *s)
+const char * enna_config_theme_file_get(const char *s)
 {
     if (!s)
         return NULL;
@@ -64,7 +138,7 @@ EAPI const char * enna_config_theme_file_get(const char *s)
     return NULL;
 }
 
-EAPI void enna_config_value_store(void *var, char *section,
+void enna_config_value_store(void *var, char *section,
         ENNA_CONFIG_TYPE type, Config_Pair *pair)
 {
     if (!strcmp(pair->key, section))
@@ -108,7 +182,7 @@ EAPI void enna_config_value_store(void *var, char *section,
     }
 }
 
-EAPI Enna_Config_Data *
+Enna_Config_Data *
 enna_config_module_pair_get(const char *module_name)
 {
     if(!hash_config || !module_name)
@@ -117,7 +191,7 @@ enna_config_module_pair_get(const char *module_name)
     return evas_hash_find(hash_config, module_name);
 }
 
-EAPI void enna_config_init()
+void enna_config_init()
 {
     char filename[4096];
 
@@ -128,7 +202,7 @@ EAPI void enna_config_init()
     evas_hash_foreach(hash_config, _hash_foreach, NULL);
 }
 
-EAPI void enna_config_shutdown()
+void enna_config_shutdown()
 {
 
 }
@@ -195,20 +269,7 @@ static Evas_Hash * _config_load_conf_file(char *filename)
             return NULL;
         else
         {
-            fprintf(f, "[enna]\n"
-                "\n"
-                "verbosity=info\n\n"
-                "fullscreen=0\n\n"
-                "use_covers=1\n\n"
-                "use_snapshots=1\n\n"    
-                "theme=default\n\n"
-                "#x11,xrender,gl,x11_16\n"
-                "engine=x11\n\n"
-                "#libplayer,emotion\n"
-                "backend=libplayer\n\n"
-                "music_ext=ogg,mp3,flac,wav,wma\n"
-                "video_ext=avi,wmv,mkv,ogg,mpg,mpeg\n"
-                "photo_ext=jpg,jpeg,png\n");
+            fprintf(f, DEFAULT_FILE);
             fclose(f);
         }
 

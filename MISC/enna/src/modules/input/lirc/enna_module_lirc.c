@@ -27,7 +27,7 @@ struct _Enna_Module_Lirc
 
 static Enna_Module_Lirc *mod;
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "lirc"
@@ -35,7 +35,7 @@ EAPI Enna_Module_Api module_api =
 
 static Enna_Class_Input class =
 { "lirc",
-{ _class_init, _class_shutdown, _class_event_cb_set, 
+{ _class_init, _class_shutdown, _class_event_cb_set,
 }
 };
 
@@ -130,7 +130,7 @@ static int em_shutdown(Enna_Module *em)
     return 1;
 }
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -139,7 +139,7 @@ EAPI void module_init(Enna_Module *em)
         return;
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     em_shutdown(em);
 }

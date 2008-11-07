@@ -32,6 +32,7 @@ typedef struct _Enna_Module_Photo
     char *prev_selected;
     unsigned char is_root : 1;
     unsigned char list_selected : 1;
+    unsigned char no_dir : 1;
 } Enna_Module_Photo;
 
 static Enna_Module_Photo *mod;
@@ -117,22 +118,34 @@ static void _list_transition_core(Eina_List *files, unsigned char direction)
 	if (!nb_dir)
 	{
 	    mod->list_selected = 0;
+	    mod->no_dir = 1;
 	    edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
+
 	}
 	else
 	{
 	    mod->list_selected = 1;
+	    mod->no_dir = 0;
 	    edje_object_signal_emit(mod->o_edje, "list,show", "enna");
 	    edje_object_part_swallow(mod->o_edje, "enna.swallow.list", o_list);
 	}
 	edje_object_part_swallow(mod->o_edje, "enna.swallow.wall", o_wall);
+	enna_wall_select_nth(o_wall, 0, 0);
 
     }
     else if (!direction)
     {
+	Evas_Object *icon;
+	Evas_Object *item;
         /* No files returned : create no media item */
 	enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "No file found");
 	mod->list_selected = 1;
+        mod->is_root = 0;
+        icon = edje_object_add(mod->em->evas);
+        edje_object_file_set(icon, enna_config_theme_get(), "icon_nofile");
+        item = enna_listitem_add(mod->em->evas);
+        enna_listitem_create_simple(item, icon, "No Media found!");
+        enna_list_append(o_list, item, NULL, NULL, NULL, NULL);
     }
     else
     {
@@ -326,6 +339,7 @@ static void _create_gui(void)
     mod->prev_selected = NULL;
     mod->is_root = 1;
     mod->list_selected = 1;
+    mod->no_dir = 0;
     mod->state = WALL_VIEW;
     /* Create List */
     o = enna_list_add(mod->em->evas);
@@ -400,7 +414,7 @@ static void _class_hide(int dummy)
 
 static void _class_event(void *event_info)
 {
-    Ecore_X_Event_Key_Down *ev = event_info;
+    Evas_Event_Key_Down *ev = event_info;
     enna_key_t key = enna_get_key(ev);
 
     switch (mod->state)
@@ -409,27 +423,42 @@ static void _class_event(void *event_info)
             switch (key)
             {
                 case ENNA_KEY_CANCEL:
-		    if (!mod->is_root)
-                        _browse_down();
-                    else
+		    if (mod->is_root)
                     {
                         enna_content_hide();
                         enna_mainmenu_show(enna->o_mainmenu);
                     }
+		    else if (mod->list_selected || mod->no_dir)
+		    {
+			_browse_down();
+			mod->list_selected = 1;
+		    }
+		    else
+		    {
+			mod->list_selected = 1;
+			edje_object_signal_emit(mod->o_edje, "list,show", "enna");
+		    }
                     break;
 
                 case ENNA_KEY_OK:
 	        case ENNA_KEY_SPACE:
-                    _activate();
+		    if (mod->list_selected)
+			_activate();
                     break;
                 case ENNA_KEY_RIGHT:
 		    if (mod->list_selected)
+		    {
 			mod->list_selected = 0;
+			edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
+		    }
 		    enna_wall_right_select(mod->o_wall);
 		    break;
                 case ENNA_KEY_LEFT:
 		    if (mod->list_selected)
+		    {
 			mod->list_selected = 0;
+			edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
+		    }
 		    enna_wall_left_select(mod->o_wall);
 		    break;
                 case ENNA_KEY_UP:
@@ -490,13 +519,13 @@ static Enna_Class_Activity
 /*                          Public Module API                                */
 /*****************************************************************************/
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "photo"
 };
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -508,7 +537,7 @@ EAPI void module_init(Enna_Module *em)
     enna_activity_add(&class);
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     evas_object_del(mod->o_edje);
 

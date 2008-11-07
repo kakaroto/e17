@@ -19,11 +19,11 @@ group {
 	    aspect_preference: VERTICAL;
             //	    fixed:    1 1;
 	    rel1 {
-	       relative: 0.0  0.0;
+	       relative: 0.0  0.1;
                to: "event";
 	    }
 	    rel2 {
-	       relative: 0.0  1.0;
+	       relative: 0.0  0.9;
                to: "event";
 	    }
 	 }
@@ -38,6 +38,7 @@ group {
 	       to_x:     "enna.swallow.icon";
                to_y: "event";
 	       relative: 1.1  0.0;
+            offset: 20 0;
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;

@@ -34,6 +34,7 @@ AC_PROG_LIBTOOL
 
 PKG_CHECK_MODULES([ENNA],
   [
+   eina-0 >= 0.0.1
    eet >= 1.0.0
    evas >= 0.9.9
    ecore >= 0.9.9.40

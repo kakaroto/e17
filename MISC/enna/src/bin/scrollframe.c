@@ -1,8 +1,6 @@
 #include "enna.h"
 
 #define SMART_NAME "enna_scrollframe"
-#define API_ENTRY Smart_Data *sd; sd = evas_object_smart_data_get(obj); if ((!obj) || (!sd) || (evas_object_type_get(obj) && strcmp(evas_object_type_get(obj), SMART_NAME)))
-#define INTERNAL_ENTRY Smart_Data *sd; sd = evas_object_smart_data_get(obj); if (!sd) return;
 
 #define thumbscroll_friction 1.0
 #define thumbscroll_momentum_threshhold 100
@@ -246,7 +244,7 @@ void enna_scrollframe_child_pos_set(Evas_Object *obj, Evas_Coord x, Evas_Coord y
     sd->pan_func.get(sd->pan_obj, &px, &py);
     sd->pan_func.set(sd->pan_obj, x, y);
     if ((px != x) || (py != y))
-        edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "e");
+        edje_object_signal_emit(sd->edje_obj, "enna,action,scroll", "enna");
 }
 
 void enna_scrollframe_child_pos_get(Evas_Object *obj, Evas_Coord *x,
@@ -718,12 +716,12 @@ static void _smart_scrollbar_read(Smart_Data *sd)
     sd->pan_func.get(sd->pan_obj, &px, &py);
     sd->pan_func.set(sd->pan_obj, x, y);
     if ((px != x) || (py != y))
-        edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "e");
+        edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "enna");
 }
 
 static void _smart_scrollbar_reset(Smart_Data *sd)
 {
-    Evas_Coord px, py;
+    Evas_Coord px = 0, py = 0;
 
     edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.vbar", 0.0, 0.0);
     edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.hbar", 0.0, 0.0);
@@ -737,7 +735,7 @@ static void _smart_scrollbar_reset(Smart_Data *sd)
     sd->pan_func.get(sd->pan_obj, &px, &py);
     sd->pan_func.set(sd->pan_obj, 0, 0);
     if ((px != 0) || (py != 0))
-        edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "e");
+        edje_object_signal_emit(sd->edje_obj, "enna,action,scroll", "enna");
 }
 
 static int _smart_scrollbar_bar_v_visibility_adjust(Smart_Data *sd)
@@ -794,9 +792,9 @@ static int _smart_scrollbar_bar_v_visibility_adjust(Smart_Data *sd)
     if (scroll_v_vis_change)
     {
         if (sd->vbar_visible)
-            edje_object_signal_emit(sd->edje_obj, "e,action,show,vbar", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,show,vbar", "enna");
         else
-            edje_object_signal_emit(sd->edje_obj, "e,action,hide,vbar", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,hide,vbar", "enna");
         edje_object_message_signal_process(sd->edje_obj);
         _smart_scrollbar_size_adjust(sd);
     }
@@ -857,9 +855,9 @@ static int _smart_scrollbar_bar_h_visibility_adjust(Smart_Data *sd)
     if (scroll_h_vis_change)
     {
         if (sd->hbar_visible)
-            edje_object_signal_emit(sd->edje_obj, "e,action,show,hbar", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,show,hbar", "enna");
         else
-            edje_object_signal_emit(sd->edje_obj, "e,action,hide,hbar", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,hide,hbar", "enna");
         edje_object_message_signal_process(sd->edje_obj);
         _smart_scrollbar_size_adjust(sd);
     }
@@ -883,7 +881,7 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
 {
     if ((sd->child_obj) || (sd->extern_pan))
     {
-        Evas_Coord x, y, w, h, mx = 0, my = 0, vw = 0, vh = 0, px, py;
+        Evas_Coord x, y, w, h, mx = 0, my = 0, vw = 0, vh = 0, px = 0, py = 0;
         double vx, vy, size;
 
         edje_object_part_geometry_get(sd->edje_obj, "e.swallow.content", NULL,
@@ -944,11 +942,11 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
         sd->pan_func.get(sd->pan_obj, &px, &py);
         sd->pan_func.set(sd->pan_obj, x, y);
         if ((px != 0) || (py != 0))
-            edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,scroll", "enna");
     }
     else
     {
-        Evas_Coord px, py;
+        Evas_Coord px = 0, py = 0;
 
         edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.vbar", 1.0,
                 1.0);
@@ -957,7 +955,7 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
         sd->pan_func.get(sd->pan_obj, &px, &py);
         sd->pan_func.set(sd->pan_obj, 0, 0);
         if ((px != 0) || (py != 0))
-            edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "e");
+            edje_object_signal_emit(sd->edje_obj, "enna,action,scroll", "enna");
     }
     _smart_scrollbar_bar_visibility_adjust(sd);
 }
@@ -1109,10 +1107,21 @@ static void _smart_init(void)
         return;
     {
         static const Evas_Smart_Class sc =
-        { SMART_NAME, EVAS_SMART_CLASS_VERSION, _smart_add, _smart_del,
-                _smart_move, _smart_resize, _smart_show, _smart_hide,
-                _smart_color_set, _smart_clip_set, _smart_clip_unset, NULL,
-                NULL };
+        {
+	    SMART_NAME,
+	    EVAS_SMART_CLASS_VERSION,
+	    _smart_add,
+	    _smart_del,
+	    _smart_move,
+	    _smart_resize,
+	    _smart_show,
+	    _smart_hide,
+	    _smart_color_set,
+	    _smart_clip_set,
+	    _smart_clip_unset,
+	    NULL,
+	    NULL
+	};
         _smart = evas_smart_class_new(&sc);
     }
 }

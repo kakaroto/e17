@@ -78,15 +78,15 @@ struct _Enna_Class_Input
 };
 
 /* Input ecore event */
-EAPI int ENNA_EVENT_INPUT_KEY_DOWN;
+int ENNA_EVENT_INPUT_KEY_DOWN;
 
 /* Enna Event API functions */
-EAPI enna_key_t enna_get_key (void *event);
-EAPI int enna_key_is_alpha(enna_key_t key);
-EAPI char enna_key_get_alpha(enna_key_t key);
-EAPI void enna_input_init();
-EAPI void enna_input_shutdown();
-EAPI int
+enna_key_t enna_get_key (void *event);
+int enna_key_is_alpha(enna_key_t key);
+char enna_key_get_alpha(enna_key_t key);
+void enna_input_init();
+void enna_input_shutdown();
+int
         enna_input_class_register(Enna_Module *module, Enna_Class_Input *class);
 
 #endif /* _EVENT_KEY_H_ */

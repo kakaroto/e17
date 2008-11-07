@@ -8,7 +8,7 @@ static Eina_List *_enna_activities = NULL;
  * @param em enna module
  * @return -1 if error occurs, 0 otherwise
  */
-EAPI int enna_activity_add(Enna_Class_Activity *class)
+int enna_activity_add(Enna_Class_Activity *class)
 {
     Eina_List *l;
     Enna_Class_Activity *act;
@@ -34,7 +34,7 @@ EAPI int enna_activity_add(Enna_Class_Activity *class)
  * @param em enna module
  * @return -1 if error occurs, 0 otherwise
  */
-EAPI int enna_activity_del(const char *name)
+int enna_activity_del(const char *name)
 {
     Eina_List *l;
     Enna_Class_Activity *act;
@@ -55,7 +55,7 @@ EAPI int enna_activity_del(const char *name)
  * @brief Get list of activities registred
  * @return Eina_List of activities
  */
-EAPI Eina_List *
+ Eina_List *
 enna_activities_get(void)
 {
     return _enna_activities;
@@ -82,7 +82,7 @@ static Enna_Class_Activity * enna_get_activity(const char *name)
     return NULL;
 }
 
-EAPI int enna_activity_init(const char *name)
+int enna_activity_init(const char *name)
 {
     Enna_Class_Activity *act;
 
@@ -96,7 +96,7 @@ EAPI int enna_activity_init(const char *name)
     return 0;
 }
 
-EAPI int enna_activity_show(const char *name)
+int enna_activity_show(const char *name)
 {
     Enna_Class_Activity *act;
 
@@ -110,7 +110,7 @@ EAPI int enna_activity_show(const char *name)
     return 0;
 }
 
-EAPI int enna_activity_shutdown(const char *name)
+int enna_activity_shutdown(const char *name)
 {
     Enna_Class_Activity *act;
 
@@ -124,7 +124,7 @@ EAPI int enna_activity_shutdown(const char *name)
     return 0;
 }
 
-EAPI int enna_activity_hide(const char *name)
+int enna_activity_hide(const char *name)
 {
     Enna_Class_Activity *act;
 
@@ -138,7 +138,7 @@ EAPI int enna_activity_hide(const char *name)
     return 0;
 }
 
-EAPI int enna_activity_event(Enna_Class_Activity *act, void *event_info)
+int enna_activity_event(Enna_Class_Activity *act, void *event_info)
 {
 
     if (!act)

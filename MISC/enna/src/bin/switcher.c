@@ -36,18 +36,6 @@
 
 #define SMART_NAME "enna_switcher"
 
-#define API_ENTRY \
-   Smart_Data *sd; \
-   sd = evas_object_smart_data_get(obj); \
-   if ((!obj) || (!sd) || \
-      (evas_object_type_get(obj) \
-      && strcmp(evas_object_type_get(obj), SMART_NAME)))
-
-#define INTERNAL_ENTRY \
-   Smart_Data *sd; \
-   sd = evas_object_smart_data_get(obj); \
-   if (!sd) return;
-
 typedef struct _Smart_Data Smart_Data;
 
 struct _Smart_Data
@@ -78,7 +66,7 @@ static void _smart_clip_unset(Evas_Object * obj);
 static Evas_Smart *_smart = NULL;
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_switcher_add(Evas * evas)
 {
     _smart_init();
@@ -86,7 +74,7 @@ enna_switcher_add(Evas * evas)
 }
 
 
-EAPI void
+void
 enna_switcher_transition_set(Evas_Object *obj, const char *transition)
 {
     API_ENTRY return;
@@ -97,7 +85,7 @@ enna_switcher_transition_set(Evas_Object *obj, const char *transition)
     edje_object_signal_callback_add(sd->o_transition, "*", "*", _edje_cb, sd);
 }
 
-EAPI void enna_switcher_objects_switch(Evas_Object *obj, Evas_Object * new_slide)
+void enna_switcher_objects_switch(Evas_Object *obj, Evas_Object * new_slide)
 {
     API_ENTRY return;
     if (!new_slide)
@@ -167,17 +155,17 @@ static void _smart_init(void)
     if (_smart)
         return;
     static const Evas_Smart_Class sc =
-    { 
-            SMART_NAME, 
-            EVAS_SMART_CLASS_VERSION, 
-            _smart_add, 
+    {
+            SMART_NAME,
+            EVAS_SMART_CLASS_VERSION,
+            _smart_add,
             _smart_del,
-            _smart_move, 
-            _smart_resize, 
-            _smart_show, 
+            _smart_move,
+            _smart_resize,
+            _smart_show,
             _smart_hide,
             _smart_color_set,
-            _smart_clip_set, 
+            _smart_clip_set,
             _smart_clip_unset,
             NULL,
             NULL };
@@ -275,7 +263,7 @@ static void _smart_clip_unset(Evas_Object * obj)
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-        
+
     evas_object_clip_unset(sd->o_transition);
 }
 

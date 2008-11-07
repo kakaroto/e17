@@ -49,7 +49,7 @@ static int run_gl = 0;
 static void _create_gui(void);
 
 /* Calbacks */
-static int _event_bg_key_down_cb(void *data, int type, void *event)
+static void _event_bg_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event)
 {
     Enna *enna;
     enna_key_t key;
@@ -61,7 +61,7 @@ static int _event_bg_key_down_cb(void *data, int type, void *event)
 
     enna = (Enna *) data;
     if (!enna)
-        return 0;
+        return;
 
     if (key == ENNA_KEY_QUIT)
         ecore_main_loop_quit();
@@ -117,7 +117,7 @@ static int _event_bg_key_down_cb(void *data, int type, void *event)
                 break;
         }
     }
-    return 0;
+    return;
 }
 static void _resize_viewport_cb(Ecore_Evas * ee)
 {
@@ -201,6 +201,24 @@ static int _enna_init(int run_gl)
         if (enna->ee)
             enna->ee_winid = ecore_evas_software_x11_window_get(enna->ee);
     }
+    else if (!strcmp(enna_config->engine, "fb")
+            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_FB))
+    {
+        enna_log(ENNA_MSG_INFO, NULL, "Load Framebuffer engine");
+        enna->ee = ecore_evas_fb_new(NULL, 0,64, 64);
+    }
+   else if (!strcmp(enna_config->engine, "directfb")
+            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_DIRECTFB))
+    {
+        enna_log(ENNA_MSG_INFO, NULL, "Load DirectFB engine");
+        enna->ee = ecore_evas_directfb_new(NULL, 0, 0, 0, 64, 64);
+    }
+   else if (!strcmp(enna_config->engine, "sdl")
+            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SDL))
+    {
+        enna_log(ENNA_MSG_INFO, NULL, "Load SDL engine");
+        enna->ee = ecore_evas_sdl_new(NULL, 64, 64, 1, 0, 0, 1);
+    }
     else if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
     {
         enna_log(
@@ -273,11 +291,9 @@ static void _create_gui()
     edje_object_signal_emit(enna->o_edje, "mainmenu,show", "enna");
     evas_object_focus_set(enna->o_edje, 1);
 
-    /*evas_object_event_callback_add(enna->o_edje,
-     EVAS_CALLBACK_KEY_DOWN,
-     _event_bg_key_down_cb, enna);*/
+    evas_object_event_callback_add(enna->o_edje, EVAS_CALLBACK_KEY_DOWN, _event_bg_key_down_cb, enna);
 
-    ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _event_bg_key_down_cb, enna);
+//    ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _event_bg_key_down_cb, enna);
 
     ecore_evas_callback_resize_set(enna->ee, _resize_viewport_cb);
     /* Create Content Object */
@@ -313,7 +329,10 @@ static void _create_gui()
     enna_mainmenu_load_from_activities(enna->o_mainmenu);
     enna_mainmenu_select_nth(enna->o_mainmenu, 0);
 
+    enna_content_select("music");
+    enna_content_hide();
     enna_mainmenu_show(enna->o_mainmenu);
+
     ecore_evas_show(enna->ee);
 
     /* Initialize and load mediaplayer modules */

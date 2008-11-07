@@ -273,25 +273,25 @@ static void class_init(const char *name, netstreams_priv_t **priv,
 
 static Enna_Class_Vfs class_music =
 { "netstreams_music", 1, "Browse Network Streams", NULL, "icon/music",
-{ NULL, NULL, browse_up_music, browse_down_music, vfs_get_music, 
+{ NULL, NULL, browse_up_music, browse_down_music, vfs_get_music,
 },
 };
 
 static Enna_Class_Vfs class_video =
 { "netstreams_video", 1, "Browse Network Streams", NULL, "icon/video",
-{ NULL, NULL, browse_up_video, browse_down_video, vfs_get_video, 
+{ NULL, NULL, browse_up_video, browse_down_video, vfs_get_video,
 },
 };
 
 /* Module interface */
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "netstreams"
 };
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -309,7 +309,7 @@ EAPI void module_init(Enna_Module *em)
             "stream_video");
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     Enna_Module_Netstreams *mod;
 

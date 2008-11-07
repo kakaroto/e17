@@ -1,6 +1,6 @@
 #include "enna.h"
 
-EAPI Enna_Metadata *
+Enna_Metadata *
 enna_metadata_new()
 {
 
@@ -12,7 +12,7 @@ enna_metadata_new()
     return m;
 }
 
-EAPI void enna_metadata_free(Enna_Metadata *m)
+void enna_metadata_free(Enna_Metadata *m)
 {
 
     if (!m)

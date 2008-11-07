@@ -88,52 +88,44 @@ static const struct
 
 static void _event_cb(void *data, char *event)
 {
-    Ecore_X_Event_Key_Down *ev;
 
     if (!event)
         return;
 
-    ev = calloc(1, sizeof(Ecore_X_Event_Key_Down));
-
-    ev->keyname = event;
-    ev->keysymbol = event;
-    ev->key_compose = event;
-    ev->modifiers = 0;
-
+    evas_event_feed_key_down(enna->evas, event, event, event, NULL, ecore_time_get(), data);
     enna_log(ENNA_MSG_EVENT, NULL, "LIRC event : %s", event);
 
-    ecore_event_add(ECORE_X_EVENT_KEY_DOWN, ev, NULL, NULL);
 
 }
 
 /* Public Functions */
 
-EAPI enna_key_t
+enna_key_t
 enna_get_key (void *event)
 {
     int i;
-    Ecore_X_Event_Key_Down *ev;
+    Evas_Event_Key_Down *ev;
 
     ev = event;
 
     if (!ev)
     return ENNA_KEY_UNKNOWN;
 
-    enna_log (ENNA_MSG_EVENT, NULL, "Key pressed : %s", ev->keysymbol);
+    enna_log (ENNA_MSG_EVENT, NULL, "Key pressed : %s", ev->key);
 
     for (i = 0; enna_keymap[i].keyname; i++)
-    if (!strcmp (enna_keymap[i].keyname, ev->keysymbol))
+    if (!strcmp (enna_keymap[i].keyname, ev->key))
     return enna_keymap[i].keycode;
 
     return ENNA_KEY_UNKNOWN;
 }
 
-EAPI int enna_key_is_alpha(enna_key_t key)
+int enna_key_is_alpha(enna_key_t key)
 {
     return (key >= ENNA_KEY_A && key <= ENNA_KEY_Z);
 }
 
-EAPI char enna_key_get_alpha(enna_key_t key)
+char enna_key_get_alpha(enna_key_t key)
 {
     int i;
 
@@ -144,7 +136,7 @@ EAPI char enna_key_get_alpha(enna_key_t key)
     return ' ';
 }
 
-EAPI void enna_input_init()
+void enna_input_init()
 {
 #ifdef BUILD_LIRC_MODULE
     Enna_Module *em;
@@ -166,7 +158,7 @@ EAPI void enna_input_init()
 
 }
 
-EAPI void enna_input_shutdown()
+void enna_input_shutdown()
 {
     Eina_List *l = NULL;
 
@@ -179,7 +171,7 @@ EAPI void enna_input_shutdown()
     eina_list_free(_input_modules);
 }
 
-EAPI int enna_input_class_register(Enna_Module *module, Enna_Class_Input *class)
+int enna_input_class_register(Enna_Module *module, Enna_Class_Input *class)
 {
     Eina_List *l = NULL;
 

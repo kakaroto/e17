@@ -49,7 +49,7 @@ static Eina_List *_enna_contents = NULL;
 /* local subsystem functions */
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_content_add(Evas *evas)
 {
     Evas_Object *o;
@@ -60,7 +60,7 @@ enna_content_add(Evas *evas)
     return o;
 }
 
-EAPI int enna_content_append(const char *name, Evas_Object *content)
+int enna_content_append(const char *name, Evas_Object *content)
 {
     Eina_List *l;
     Enna_Content_Element *elem;
@@ -77,14 +77,14 @@ EAPI int enna_content_append(const char *name, Evas_Object *content)
             return -1;
     }
     elem = calloc(1, sizeof(Enna_Content_Element));
-    elem->name = evas_stringshare_add(name);
+    elem->name = eina_stringshare_add(name);
     elem->content = content;
     elem->selected = 0;
     _enna_contents = eina_list_append(_enna_contents, elem);
     return 0;
 }
 
-EAPI int enna_content_select(const char *name)
+int enna_content_select(const char *name)
 {
 
     Eina_List *l;
@@ -103,11 +103,8 @@ EAPI int enna_content_select(const char *name)
 
         if (!strcmp(name, e->name))
         {
-            if (!e->selected)
-            {
-                new = e;
-                e->selected = 1;
-            }
+	    new = e;
+            e->selected = 1;
         }
         else if (e->selected)
         {
@@ -130,10 +127,10 @@ EAPI int enna_content_select(const char *name)
     return 0;
 }
 
-EAPI void enna_content_hide()
+void enna_content_hide()
 {
     Eina_List *l;
-    
+
     for (l = _enna_contents; l; l = l->next)
     {
         Enna_Content_Element *e;
@@ -144,15 +141,15 @@ EAPI void enna_content_hide()
         if (e->selected)
         {
             enna_activity_hide(e->name);
-            return;   
+            return;
         }
     }
 }
 
-EAPI void enna_content_show()
+void enna_content_show()
 {
     Eina_List *l;
-    
+
     for (l = _enna_contents; l; l = l->next)
     {
         Enna_Content_Element *e;
@@ -163,7 +160,7 @@ EAPI void enna_content_show()
         if (e->selected)
         {
             enna_activity_show(e->name);
-            return;   
+            return;
         }
     }
 }

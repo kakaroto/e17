@@ -47,13 +47,16 @@ typedef struct _Smart_Data Smart_Data;
 struct _Smart_Data
 {
     Evas_Coord x, y, w, h;
+    Evas_Object *obj;
     Evas_Object *o_edje;
     Evas_Object *o_icon;
     char *label;
+
     Evas_Hash *funcs;       /* Callback functions hash */
 };
 
 /* local subsystem functions */
+static void _smart_signal_clicked_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _smart_reconfigure(Smart_Data * sd);
 static void _smart_init(void);
 static void _smart_add(Evas_Object * obj);
@@ -70,41 +73,41 @@ static void _smart_clip_unset(Evas_Object * obj);
 static Evas_Smart *_smart = NULL;
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_button_add(Evas * evas)
 {
-    
+
     _smart_init();
     return evas_object_smart_add(evas, _smart);
 }
 
 /* Add Callback function */
-EAPI void
+void
 enna_button_cb_add(Evas_Object *obj, void (*func_cb) (void *data), const char *event, void *data)
 {
     //Button_Cb_Func *f;
     API_ENTRY;
     if (!func_cb || !event) return;
-    
+
     /*f = malloc(sizeof(Button_Cb_Func));
     f->func = func;
     f->data = data;
-    evas_hash_append(sd->funcs, event, f);*/       
+    evas_hash_append(sd->funcs, event, f);*/
 }
 
-EAPI void
+void
 enna_button_label_set(Evas_Object *obj, const char *label)
 {
     API_ENTRY;
-    
-    if (!label) return; 
-    
+
+    if (!label) return;
+
     ENNA_FREE(sd->label);
     sd->label = strdup(label);
     edje_object_part_text_set(sd->o_edje, "enna.text.label", label);
 }
 
-EAPI void
+void
 enna_button_icon_set(Evas_Object *obj, const char *icon)
 {
     API_ENTRY;
@@ -125,6 +128,13 @@ enna_button_icon_set(Evas_Object *obj, const char *icon)
 }
 
 /* local subsystem globals */
+
+static void _smart_signal_clicked_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Smart_Data *sd = data;
+   evas_object_smart_callback_call(sd->obj, "clicked", NULL);
+}
+
 static void _smart_reconfigure(Smart_Data * sd)
 {
     Evas_Coord x, y, w, h;
@@ -144,17 +154,17 @@ static void _smart_init(void)
     if (_smart)
         return;
     static const Evas_Smart_Class sc =
-    { 
-            SMART_NAME, 
-            EVAS_SMART_CLASS_VERSION, 
-            _smart_add, 
+    {
+            SMART_NAME,
+            EVAS_SMART_CLASS_VERSION,
+            _smart_add,
             _smart_del,
-            _smart_move, 
-            _smart_resize, 
-            _smart_show, 
+            _smart_move,
+            _smart_resize,
+            _smart_show,
             _smart_hide,
             _smart_color_set,
-            _smart_clip_set, 
+            _smart_clip_set,
             _smart_clip_unset,
             NULL,
             NULL };
@@ -164,13 +174,15 @@ static void _smart_init(void)
 static void _smart_add(Evas_Object * obj)
 {
     Smart_Data *sd;
-    
+
     sd = calloc(1, sizeof(Smart_Data));
     if (!sd)
         return;
     sd->o_edje = edje_object_add(evas_object_evas_get(obj));
     edje_object_file_set(sd->o_edje, enna_config_theme_get(), "enna/button");
     evas_object_show(sd->o_edje);
+    edje_object_signal_callback_add(sd->o_edje, "enna,action,click", "", _smart_signal_clicked_cb, sd);
+    sd->obj = obj;
     evas_object_smart_member_add(sd->o_edje, obj);
     evas_object_smart_data_set(obj, sd);
 }

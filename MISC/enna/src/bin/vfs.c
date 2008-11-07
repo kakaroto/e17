@@ -39,13 +39,13 @@ static Eina_List *_enna_vfs_photo = NULL;
 /* local subsystem functions */
 
 /* externally accessible functions */
-EAPI int enna_vfs_init(Evas *evas)
+int enna_vfs_init(Evas *evas)
 {
 
     return 0;
 }
 
-EAPI int enna_vfs_append(const char *name, unsigned char type,
+int enna_vfs_append(const char *name, unsigned char type,
         Enna_Class_Vfs *vfs)
 {
     if (!vfs)
@@ -63,7 +63,7 @@ EAPI int enna_vfs_append(const char *name, unsigned char type,
     return 0;
 }
 
-EAPI Eina_List *
+Eina_List *
 enna_vfs_get(ENNA_VFS_CAPS type)
 {
 

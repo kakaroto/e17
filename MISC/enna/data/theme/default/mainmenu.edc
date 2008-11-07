@@ -17,23 +17,23 @@ group
         {
             new year, month, day, yearday, weekday, hour, minute;
             new Float:second;
-            
+
             date(year, month, day, yearday, weekday, hour, minute, second);
-    
-            new buf1[3], buf2[3], buf3[20], buf4[10];
+
+            new buf1[3], buf2[3], buf3[20], buf4[11];
             if (hour < 10) snprintf(buf1, 3, "0%d", hour);
             else           snprintf(buf1, 3, "%d", hour);
-    
+
             if (minute < 10) snprintf(buf2, 3, "0%d", minute);
             else             snprintf(buf2, 3, "%d", minute);
-                
-            snprintf(buf4, 10, "%i/%i/%i", day, month, year)
-            
+
+            snprintf(buf4, 11, "%i/%i/%i", day, month, year)
+
             snprintf(buf3, 20, "%s | %s:%s", buf4, buf1, buf2);
             set_text(PART:"titlebar.date", buf3);
-             
+
             new Float:in;
-   
+
             in = 60.0 - second;
             timer(in, "clock_cb", 1);
 
@@ -41,7 +41,7 @@ group
     }
     parts
     {
-        
+
         part
         {
             name: "enna.clip.mainmenu";
@@ -132,7 +132,7 @@ group
         {
             name: "title_bar_bg";
             type: IMAGE;
- 
+
             description
             {
                 state: "default" 0.0;
@@ -143,7 +143,7 @@ group
                 {
                     normal: "title_bar.png";
                     border: 0 0 0 0;
-                } 
+                }
                 fill {
                     smooth: 0;
                     size
@@ -178,13 +178,10 @@ group
             description
             {
                 visible: 1;
-                align: 0 0.5;
-                aspect: 1.0 1.0;
-                aspect_preference: BOTH;
                 state: "default" 0.0;
                 rel1.relative: 0 0;
                 rel1.to: "titlebar.zone";
-                rel2.relative: 0.2 1;
+                rel2.relative: 0.1 1;
                 rel2.to: "titlebar.zone";
             }
         }
@@ -203,13 +200,13 @@ group
                 //      fixed:    1 1;
                 rel1
                 {
-                    relative: 0.0 0.0;
+                    relative: 0.1 0.1;
                     to: titlebar.iconbox;
                     //offset: 4 5;
                 }
                 rel2
                 {
-                    relative: 0.0 1.0;
+                    relative: 0.1 0.9;
                     to: titlebar.iconbox;
                     //offset: 4 -19;
                 }
@@ -255,12 +252,9 @@ group
             description
             {
                 state: "default" 0.0;
-                //align: 0.5 0.5;
-                //aspect: 1.0 1.0;
-                //aspect_preference: BOTH;
                 rel1
                 {
-                    relative: 0.0 0.0;
+                    relative: 0 0;
                     to: titlebar.buttonbox;
                 }
                 rel2
@@ -342,7 +336,7 @@ group
 group
 {
     name: "enna/mainmenu/item";
-    min: 32 32;
+    min: 256 256;
     parts
     {
         part
@@ -398,16 +392,15 @@ group
                 align: 0.5 0.5;
                 aspect: 1.0 1.0;
                 aspect_preference: VERTICAL;
-                //	    fixed:    1 1;
                 rel1
                 {
-                    relative: 0.0 0.0;
-                    //offset:   4    4;
+                    relative: 0.1 0.1;
+                    offset:   10    10;
                 }
                 rel2
                 {
-                    relative: 1.0 0.8;
-                    //offset:   4   -4;
+                    relative: 0.9 0.8;
+                    offset:   10   -10;
                 }
             }
             description
@@ -416,16 +409,13 @@ group
                 align: 0.5 0.5;
                 aspect: 1.0 1.0;
                 aspect_preference: VERTICAL;
-                //	    fixed:    1 1;
                 rel1
                 {
-                    relative: -0.1 -0.1;
-                    //offset:   4    4;
+                    relative: 0 0;
                 }
                 rel2
                 {
-                    relative: 1.1 0.9;
-                    //offset:   4   -4;
+                    relative: 1 0.9;
                 }
             }
 

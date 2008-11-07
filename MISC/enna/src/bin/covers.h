@@ -10,9 +10,9 @@ struct _Enna_Class_CoverPlugin
     char *(*movie_cover_get)(const char *movie);
 };
 
-EAPI int enna_cover_plugin_register(Enna_Class_CoverPlugin *class);
+int enna_cover_plugin_register(Enna_Class_CoverPlugin *class);
 
-EAPI char *enna_cover_album_get(const char *artist, const char *album,
+char *enna_cover_album_get(const char *artist, const char *album,
         const char *filename);
-EAPI char *enna_cover_video_get(const char *filename);
+char *enna_cover_video_get(const char *filename);
 #endif

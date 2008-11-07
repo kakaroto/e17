@@ -144,19 +144,19 @@ static Enna_Vfs_File * _class_vfs_get(void)
 
 static Enna_Class_Vfs class_shoutcast =
 { "shoutcast", 1, "SHOUTcast Streaming", NULL, "icon/shoutcast",
-{ NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get, 
+{ NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get,
 },
 };
 
 /* Module interface */
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "shoutcast"
 };
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -171,7 +171,7 @@ EAPI void module_init(Enna_Module *em)
     enna_vfs_append("shoutcast", ENNA_CAPS_MUSIC, &class_shoutcast);
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     Enna_Module_Music *mod = em->mod;
 

@@ -42,11 +42,11 @@ struct _Enna_Class_Vfs
     } func;
 
 };
-EAPI int enna_vfs_init(Evas *evas);
-EAPI int enna_vfs_append(const char *name, unsigned char type,
+int enna_vfs_init(Evas *evas);
+int enna_vfs_append(const char *name, unsigned char type,
         Enna_Class_Vfs *vfs);
-EAPI Eina_List *enna_vfs_get(ENNA_VFS_CAPS type);
-EAPI Enna_Vfs_File *enna_vfs_create_file (char *uri, char *label, char *icon, char *icon_file);
-EAPI Enna_Vfs_File *enna_vfs_create_directory (char *uri, char *label, char *icon, char *icon_file);
-EAPI void enna_vfs_remove(Enna_Vfs_File *f);
+Eina_List *enna_vfs_get(ENNA_VFS_CAPS type);
+Enna_Vfs_File *enna_vfs_create_file (char *uri, char *label, char *icon, char *icon_file);
+Enna_Vfs_File *enna_vfs_create_directory (char *uri, char *label, char *icon, char *icon_file);
+void enna_vfs_remove(Enna_Vfs_File *f);
 #endif

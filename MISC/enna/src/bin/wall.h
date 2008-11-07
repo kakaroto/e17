@@ -9,4 +9,5 @@ void enna_wall_right_select(Evas_Object *obj);
 void enna_wall_left_select(Evas_Object *obj);
 void enna_wall_up_select(Evas_Object *obj);
 void enna_wall_down_select(Evas_Object *obj);
+void enna_wall_select_nth(Evas_Object *obj, int col, int row);
 #endif

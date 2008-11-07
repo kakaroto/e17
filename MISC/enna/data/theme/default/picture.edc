@@ -178,6 +178,7 @@ group
             transition: LINEAR 0.2;
             target: "bg";
             target: "fg";
+            target: "shadow_picture";
         }
         program
         {   name: "sel1";

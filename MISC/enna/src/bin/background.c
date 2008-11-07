@@ -34,9 +34,9 @@
 
 #define SMART_NAME "enna_background"
 
-typedef struct _E_Smart_Data E_Smart_Data;
+typedef struct _smart_Data E_Smart_Data;
 
-struct _E_Smart_Data
+struct _smart_Data
 {
     Evas_Coord x, y, w, h;
     Evas_Object *obj;
@@ -47,21 +47,21 @@ struct _E_Smart_Data
 /* local subsystem functions */
 static void _enna_background_smart_reconfigure(E_Smart_Data * sd);
 static void _enna_background_smart_init(void);
-static void _e_smart_add(Evas_Object * obj);
-static void _e_smart_del(Evas_Object * obj);
-static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y);
-static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h);
-static void _e_smart_show(Evas_Object * obj);
-static void _e_smart_hide(Evas_Object * obj);
-static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
-static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip);
-static void _e_smart_clip_unset(Evas_Object * obj);
+static void _smart_add(Evas_Object * obj);
+static void _smart_del(Evas_Object * obj);
+static void _smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y);
+static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h);
+static void _smart_show(Evas_Object * obj);
+static void _smart_hide(Evas_Object * obj);
+static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
+static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip);
+static void _smart_clip_unset(Evas_Object * obj);
 
 /* local subsystem globals */
 static Evas_Smart *_e_smart = NULL;
 
 /* externally accessible functions */
-EAPI Evas_Object *
+Evas_Object *
 enna_background_add(Evas * evas)
 {
     _enna_background_smart_init();
@@ -83,14 +83,14 @@ static void _enna_background_smart_init(void)
     if (_e_smart)
         return;
     static const Evas_Smart_Class sc =
-    { SMART_NAME, EVAS_SMART_CLASS_VERSION, _e_smart_add, _e_smart_del,
-            _e_smart_move, _e_smart_resize, _e_smart_show, _e_smart_hide,
-            _e_smart_color_set, _e_smart_clip_set, _e_smart_clip_unset, NULL,
+    { SMART_NAME, EVAS_SMART_CLASS_VERSION, _smart_add, _smart_del,
+            _smart_move, _smart_resize, _smart_show, _smart_hide,
+            _smart_color_set, _smart_clip_set, _smart_clip_unset, NULL,
             NULL };
     _e_smart = evas_smart_class_new(&sc);
 }
 
-static void _e_smart_add(Evas_Object * obj)
+static void _smart_add(Evas_Object * obj)
 {
     E_Smart_Data *sd;
     Evas *e;
@@ -119,7 +119,7 @@ static void _e_smart_add(Evas_Object * obj)
     evas_object_smart_data_set(obj, sd);
 }
 
-static void _e_smart_del(Evas_Object * obj)
+static void _smart_del(Evas_Object * obj)
 {
     E_Smart_Data *sd;
 
@@ -131,7 +131,7 @@ static void _e_smart_del(Evas_Object * obj)
     free(sd);
 }
 
-static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
+static void _smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
 {
     E_Smart_Data *sd;
 
@@ -145,7 +145,7 @@ static void _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
     _enna_background_smart_reconfigure(sd);
 }
 
-static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
+static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 {
     E_Smart_Data *sd;
 
@@ -159,7 +159,7 @@ static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
     _enna_background_smart_reconfigure(sd);
 }
 
-static void _e_smart_show(Evas_Object * obj)
+static void _smart_show(Evas_Object * obj)
 {
     E_Smart_Data *sd;
 
@@ -170,7 +170,7 @@ static void _e_smart_show(Evas_Object * obj)
     evas_object_show(sd->o_edje);
 }
 
-static void _e_smart_hide(Evas_Object * obj)
+static void _smart_hide(Evas_Object * obj)
 {
     E_Smart_Data *sd;
 
@@ -182,7 +182,7 @@ static void _e_smart_hide(Evas_Object * obj)
 
 }
 
-static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
+static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
 {
     E_Smart_Data *sd;
 
@@ -191,7 +191,7 @@ static void _e_smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
         return;
 }
 
-static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip)
+static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip)
 {
     E_Smart_Data *sd;
 
@@ -202,7 +202,7 @@ static void _e_smart_clip_set(Evas_Object * obj, Evas_Object * clip)
     evas_object_clip_set(sd->o_edje, clip);
 }
 
-static void _e_smart_clip_unset(Evas_Object * obj)
+static void _smart_clip_unset(Evas_Object * obj)
 {
     E_Smart_Data *sd;
 

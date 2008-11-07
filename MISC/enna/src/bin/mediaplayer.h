@@ -40,31 +40,31 @@ struct _Enna_Class_MediaplayerBackend
 };
 
 /* Mediaplayer event */
-EAPI int ENNA_EVENT_MEDIAPLAYER_EOS;
-EAPI int ENNA_EVENT_MEDIAPLAYER_METADATA_UPDATE;
+int ENNA_EVENT_MEDIAPLAYER_EOS;
+int ENNA_EVENT_MEDIAPLAYER_METADATA_UPDATE;
 
 /* Mediaplayer API functions */
-EAPI int enna_mediaplayer_init(void);
-EAPI void enna_mediaplayer_shutdown(void);
-EAPI void enna_mediaplayer_uri_append(const char *uri, const char *label);
-EAPI int enna_mediaplayer_select_nth(int n);
-EAPI int enna_mediaplayer_selected_get(void);
-EAPI void enna_mediaplayer_snapshot(const char *uri, const char *file);
-EAPI Enna_Metadata *enna_mediaplayer_metadata_get(void);
-EAPI int enna_mediaplayer_play(void);
-EAPI int enna_mediaplayer_stop(void);
-EAPI int enna_mediaplayer_pause(void);
-EAPI int enna_mediaplayer_next(void);
-EAPI int enna_mediaplayer_prev(void);
-EAPI double enna_mediaplayer_position_get(void);
-EAPI double enna_mediaplayer_length_get(void);
-EAPI int enna_mediaplayer_seek(double percent);
-EAPI void enna_mediaplayer_video_resize(int x, int y, int w, int h);
-EAPI int enna_mediaplayer_playlist_load(const char *filename);
-EAPI int enna_mediaplayer_playlist_save(const char *filename);
-EAPI void enna_mediaplayer_playlist_clear(void);
-EAPI int enna_mediaplayer_playlist_count(void);
-EAPI Evas_Object *enna_mediaplayer_video_obj_get(void);
-EAPI int
+int enna_mediaplayer_init(void);
+void enna_mediaplayer_shutdown(void);
+void enna_mediaplayer_uri_append(const char *uri, const char *label);
+int enna_mediaplayer_select_nth(int n);
+int enna_mediaplayer_selected_get(void);
+void enna_mediaplayer_snapshot(const char *uri, const char *file);
+Enna_Metadata *enna_mediaplayer_metadata_get(void);
+int enna_mediaplayer_play(void);
+int enna_mediaplayer_stop(void);
+int enna_mediaplayer_pause(void);
+int enna_mediaplayer_next(void);
+int enna_mediaplayer_prev(void);
+double enna_mediaplayer_position_get(void);
+double enna_mediaplayer_length_get(void);
+int enna_mediaplayer_seek(double percent);
+void enna_mediaplayer_video_resize(int x, int y, int w, int h);
+int enna_mediaplayer_playlist_load(const char *filename);
+int enna_mediaplayer_playlist_save(const char *filename);
+void enna_mediaplayer_playlist_clear(void);
+int enna_mediaplayer_playlist_count(void);
+Evas_Object *enna_mediaplayer_video_obj_get(void);
+int
         enna_mediaplayer_backend_register(Enna_Class_MediaplayerBackend *class);
 #endif

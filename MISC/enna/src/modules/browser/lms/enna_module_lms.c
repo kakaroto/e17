@@ -81,7 +81,7 @@ struct _Enna_Module_Lms
 
 static Enna_Module_Lms *mod;
 
-EAPI Enna_Module_Api module_api =
+Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
     "lms"
@@ -89,7 +89,7 @@ EAPI Enna_Module_Api module_api =
 
 static Enna_Class_Vfs class =
 { "lms", 1, "Browse Library", NULL, "icon/library",
-{ NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get, 
+{ NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get,
 },
 };
 
@@ -278,7 +278,7 @@ _nb_medias_get(int type)
     nb = sqlite3_column_int(stmt, 0);
     ret = 0;
     enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Nb of medias in files db : %d", nb);
-    done:
+done:
     _db_reset_stmt(stmt);
     return ret;
 }
@@ -362,7 +362,7 @@ _audio_metadata_get(const char *filename)
 
     return m;
 
-    done:
+done:
     _db_reset_stmt(stmt);
     return NULL;
 
@@ -388,7 +388,7 @@ _audio_nb_albums_get()
     nb = sqlite3_column_int(stmt, 0);
     ret = 0;
     enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Nb of medias in audio_albums db : %d", nb);
-    done:
+done:
     _db_reset_stmt(stmt);
     return ret;
 }
@@ -413,7 +413,7 @@ _audio_nb_artists_get()
     nb = sqlite3_column_int(stmt, 0);
     ret = 0;
     enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Nb of medias in audio_artists db : %d", nb);
-    done:
+done:
     _db_reset_stmt(stmt);
     return ret;
 }
@@ -438,7 +438,7 @@ _audio_nb_genres_get()
     nb = sqlite3_column_int(stmt, 0);
     ret = 0;
     enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Nb of medias in audio_genres db : %d", nb);
-    done:
+done:
     _db_reset_stmt(stmt);
     return ret;
 }
@@ -464,7 +464,8 @@ static Eina_List * _audio_artists_list_get()
     }
     return artists;
 
-    done: _db_reset_stmt(stmt);
+done:
+    _db_reset_stmt(stmt);
     return NULL;
 }
 
@@ -488,7 +489,8 @@ static Eina_List * _audio_albums_list_get()
     }
     return albums;
 
-    done: _db_reset_stmt(stmt);
+done:
+    _db_reset_stmt(stmt);
     return NULL;
 }
 
@@ -512,7 +514,8 @@ static Eina_List * _audio_genres_list_get()
     }
     return genres;
 
-    done: _db_reset_stmt(stmt);
+done:
+    _db_reset_stmt(stmt);
     return NULL;
 }
 
@@ -543,7 +546,8 @@ static Eina_List * _audio_albums_of_artist_list_get(const char *artist)
     }
     return albums;
 
-    done: _db_reset_stmt(stmt);
+done:
+    _db_reset_stmt(stmt);
     return NULL;
 
 }
@@ -586,7 +590,8 @@ static Eina_List * _audio_tracks_of_album_list_get(const char *artist,
     }
     return tracks;
 
-    done: _db_reset_stmt(stmt);
+done:
+    _db_reset_stmt(stmt);
     return NULL;
 
 }
@@ -954,7 +959,8 @@ static int em_init(Enna_Module *em)
     /*   */
     return 0;
 
-    error: enna_log(ENNA_MSG_ERROR, ENNA_MODULE_NAME,
+error:
+    enna_log(ENNA_MSG_ERROR, ENNA_MODULE_NAME,
             "lms module initialisation");
     lms_free(mod->scanner->lms);
     evas_stringshare_del(mod->scanner->db_path);
@@ -980,7 +986,7 @@ static int em_shutdown(Enna_Module *em)
     return 1;
 }
 
-EAPI void module_init(Enna_Module *em)
+void module_init(Enna_Module *em)
 {
     if (!em)
         return;
@@ -989,7 +995,7 @@ EAPI void module_init(Enna_Module *em)
         return;
 }
 
-EAPI void module_shutdown(Enna_Module *em)
+void module_shutdown(Enna_Module *em)
 {
     em_shutdown(em);
 }

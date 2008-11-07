@@ -198,8 +198,8 @@ group {
    programs {
       program {
          name: "vbar_show";
-         signal: "e,action,show,vbar";
-         source: "e";
+         signal: "enna,action,show,vbar";
+         source: "enna";
          action:  STATE_SET "visible" 0.0;
          transition: ACCELERATE 0.1;
          target: "vbar";
@@ -214,8 +214,8 @@ group {
 
       program {
          name: "vbar_hide";
-         signal: "e,action,hide,vbar";
-         source: "e";
+         signal: "enna,action,hide,vbar";
+         source: "enna";
          action:  STATE_SET "default" 0.0;
          transition: DECELERATE 0.5;
          target: "vbar2";
@@ -231,16 +231,16 @@ group {
 
       program {
          name: "focus_in";
-         signal: "e,state,focused";
-         source: "e";
+         signal: "enna,state,focused";
+         source: "enna";
          action: STATE_SET "visible" 0.0;
          transition: DECELERATE 0.2;
          target: "clip";
       }
       program {
          name: "focus_out";
-         signal: "e,state,unfocused";
-         source: "e";
+         signal: "enna,state,unfocused";
+         source: "enna";
          action: STATE_SET "default" 0.0;
          transition: ACCELERATE 0.5;
          target: "clip";
