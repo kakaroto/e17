@@ -108,7 +108,10 @@ setup(int argc, char **argv, Elicit *el)
   elicit_config_init(el);
 
   ecore_evas_borderless_set(el->ee, 1);
-  ecore_evas_shaped_set(el->ee, 1);
+  if (ecore_x_screen_is_composited(0))
+    ecore_evas_alpha_set(el->ee, 1);
+  else
+    ecore_evas_shaped_set(el->ee, 1);
 
   el->gui = edje_object_add(el->evas);
   evas_object_name_set(el->gui, "gui");
@@ -188,6 +191,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   /* set up edje callbacks */
   edje_object_signal_callback_add(el->gui, "elicit,pick,*", "*", elicit_cb_pick, el);
   edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_move, el);
+  edje_object_signal_callback_add(el->gui, "elicit,ruler,toggle", "ruler", elicit_cb_ruler, el);
   edje_object_signal_callback_add(el->gui, "elicit,shoot,*", "*", elicit_cb_shoot, el);
   edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
   edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);

@@ -34,6 +34,7 @@ images
   image, "left-shadow.png" COMP;
   image, "left-deco-left.png" COMP;
   image, "left-deco-right.png" COMP;
+  image, "left-deco-bottom.png" COMP;
 
   image, "roundedbox.png" COMP;
   image, "inset-bd.png" COMP;
@@ -65,12 +66,26 @@ images
 
   image: "trough.png" COMP;
   image: "slider.png" COMP;
+
+  image: "ruler_bg_top.png" COMP;
+  image: "ruler_bg_right.png" COMP;
+  image: "ruler_bg_bottom.png" COMP;
+  image: "ruler_bg_left.png" COMP;
+  image: "ruler_icon.png" COMP;
+  image: "ruler_icon2.png" COMP;
+  image: "ruler_rotate.png" COMP;
+  image: "ruler_rotate2.png" COMP;
+  image: "ruler_px.png" COMP;
+  image: "ruler_cm.png" COMP;
+  image: "ruler_in.png" COMP;
+  image: "ruler_pc.png" COMP;
+  image: "ruler_pt.png" COMP;
 }
 
 collections {
   group {
     name, "elicit";
-    min, 220 125;
+    min, 235 125;
     parts {
 #include "parts/main.edc"
 #include "parts/buttons.edc"
@@ -107,6 +122,8 @@ collections {
   group {
 #include "groups/theme.edc"
   }
+
+#include "groups/ruler.edc"
     
 }
 

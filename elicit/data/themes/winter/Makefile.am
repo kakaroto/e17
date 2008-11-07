@@ -1,3 +1,5 @@
+SUBDIRS = fonts groups img macros parts programs
+
 THEME = winter
 EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.edj)

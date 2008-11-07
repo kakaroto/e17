@@ -92,6 +92,15 @@ void elicit_cb_move(void *data, Evas_Object *o, const char *sig, const char *src
   }
 }
 
+void elicit_cb_ruler(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+
+  if (el->flags.ruler)
+    elicit_ruler_hide(el);
+  else
+    elicit_ruler_show(el);
+}
 
 void
 elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)

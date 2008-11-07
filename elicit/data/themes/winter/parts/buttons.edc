@@ -9,3 +9,6 @@ BUTTON("dropper", "dropper.png", "dropper2.png", 18, 18,
        "center", 1 1, -64 -30,
        "center", 1 1, -44 -12)
 
+BUTTON("ruler", "ruler_icon.png", "ruler_icon2.png", 18, 17,
+       "center", 1 1, -82 -30,
+       "center", 1 1, -66 -13)

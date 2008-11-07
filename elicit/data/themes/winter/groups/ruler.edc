@@ -1,0 +1,709 @@
+#define ORIENT_TARGETS \
+    target: "base"; \
+    target: "draggie"; \
+    target: "rule"; \
+    target: "resize"; \
+    target: "resize_arrow"; \
+    target: "rotate"; \
+    target: "unit_selector"; \
+
+group {
+    name: "ruler";
+    min: 60 60;
+    max: 9999 9999;
+
+    data {
+        item: "line_color" "80 80 80 200";
+    }
+
+    parts {
+        part {
+            name: "base";
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    relative: 0.0 0.0;
+                }
+                rel2 {
+                    relative: 1.0 1.0;
+                    offset: -1 -1;
+                }
+                color: 255 255 255 240;
+                image {
+                    normal: "ruler_bg_top.png";
+                    border: 0 0 12 0;
+                }
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                image {
+                    normal: "ruler_bg_right.png";
+                    border: 0 12 0 0;
+                }
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                image {
+                    normal: "ruler_bg_bottom.png";
+                    border: 0 0 0 12;
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                image {
+                    normal: "ruler_bg_left.png";
+                    border: 12 0 0 0;
+                }
+            }
+        }
+        part {
+            name: "draggie";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -9 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -9;
+                    to: "base";
+                }
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -9 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -9;
+                    to: "base";
+                }
+            }
+        }
+        part {
+            name: "rule";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 0 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+        }
+        part {
+            name: "resize";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    relative: 1 0;
+                    offset: -8 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 -8;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 1 0;
+                    offset: -8 0;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 -8;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 -1;
+                    to: "base";
+                }
+            }
+        }
+        part {
+            name: "resize_arrow";
+            description {
+                state: "default" 0.0;
+                min: 3 17;
+                max: 3 17;
+                align: 0.5 0.9;
+                rel1.to: "resize";
+                rel2.to: "resize";
+                image.normal: "left-deco-right.png";
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                min: 17 3;
+                max: 17 3;
+                align: 0.1 0.5;
+                image.normal: "left-deco-bottom.png";
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                min: 3 17;
+                max: 3 17;
+                align: 0.5 0.1;
+                image.normal: "left-deco-right.png";
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                min: 17 3;
+                max: 17 3;
+                align: 0.9 0.5;
+                image.normal: "left-deco-bottom.png";
+            }
+        }
+        part {
+            name: "rotate";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 1 1;
+                    offset: -26 -21;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -10 -5;
+                    to: "base";
+                }
+                image.normal: "ruler_rotate.png";
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 1;
+                    offset: 5 -26;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 0 1;
+                    offset: 21 -10;
+                    to: "base";
+                }
+                image.normal: "ruler_rotate2.png";
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 1 0;
+                    offset: -26 5;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 0;
+                    offset: -10 21;
+                    to: "base";
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 1 1;
+                    offset: -21 -26;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -5 -10;
+                    to: "base";
+                }
+                image.normal: "ruler_rotate2.png";
+            }
+        }
+        part {
+            name: "unit_selector";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 1;
+                    offset: 15 -21;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 0 1;
+                    offset: 31 -5;
+                    to: "base";
+                }
+            }
+            description {
+                state: "right" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 5 15;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 0 0;
+                    offset: 21 31;
+                    to: "base";
+                }
+            }
+            description {
+                state: "bottom" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 0 0;
+                    offset: 15 5;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 0 0;
+                    offset: 31 21;
+                    to: "base";
+                }
+            }
+            description {
+                state: "left" 0.0;
+                inherit: "default" 0.0;
+                rel1 {
+                    relative: 1 0;
+                    offset: -21 15;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 0;
+                    offset: -5 31;
+                    to: "base";
+                }
+            }
+        }
+    }
+    programs {
+        program {
+            name: "ruler-rotate-click";
+            signal: "mouse,clicked,1";
+            source: "rotate";
+            action: SIGNAL_EMIT "elicit,ruler,rotate" "ruler";
+        }
+        program {
+            name: "ruler-selector-click";
+            signal: "mouse,clicked,1";
+            source: "unit_selector";
+            action: SIGNAL_EMIT "elicit,ruler,selector" "ruler";
+        }
+        program {
+            name: "orient-top";
+            signal: "elicit,ruler,orient,top";
+            source: "Elicit";
+            action: STATE_SET "default" 0.0;
+            ORIENT_TARGETS
+        }
+        program {
+            name: "orient-right";
+            signal: "elicit,ruler,orient,right";
+            source: "Elicit";
+            action: STATE_SET "right" 0.0;
+            ORIENT_TARGETS
+        }
+        program {
+            name: "orient-bottom";
+            signal: "elicit,ruler,orient,bottom";
+            source: "Elicit";
+            action: STATE_SET "bottom" 0.0;
+            ORIENT_TARGETS
+        }
+        program {
+            name: "orient-left";
+            signal: "elicit,ruler,orient,left";
+            source: "Elicit";
+            action: STATE_SET "left" 0.0;
+            ORIENT_TARGETS
+        }
+    }
+}
+
+group {
+    name: "ruler/label";
+    parts {
+        part {
+            name: "ruler.label";
+            type: TEXT;
+            effect: FAR_SOFT_SHADOW;
+            description {
+                state: "default" 0.0;
+                color: 60 60 60 250;
+                color3: 255 255 255 64;
+                text {
+                  size: 8;
+                  text: "10";
+                  font: "Vera";
+                  min: 1 1;
+                  size: TEXT_SIZE;
+                }
+            }
+        }
+    }
+}
+
+group {
+    name: "ruler/px";
+    min: 16 16;
+    max: 16 16;
+
+    parts {
+        part {
+            name: "px";
+            description {
+                state: "default" 0.0;
+                image.normal: "ruler_px.png";
+            }
+        }
+    }
+}
+group {
+    name: "ruler/cm";
+    min: 16 16;
+    max: 16 16;
+
+    parts {
+        part {
+            name: "cm";
+            description {
+                state: "default" 0.0;
+                image.normal: "ruler_cm.png";
+            }
+        }
+    }
+}
+group {
+    name: "ruler/in";
+    min: 16 16;
+    max: 16 16;
+
+    parts {
+        part {
+            name: "in";
+            description {
+                state: "default" 0.0;
+                image.normal: "ruler_in.png";
+            }
+        }
+    }
+}
+group {
+    name: "ruler/pc";
+    min: 16 16;
+    max: 16 16;
+
+    parts {
+        part {
+            name: "pc";
+            description {
+                state: "default" 0.0;
+                image.normal: "ruler_pc.png";
+            }
+        }
+    }
+}
+group {
+    name: "ruler/pt";
+    min: 16 16;
+    max: 16 16;
+
+    parts {
+        part {
+            name: "pt";
+            description {
+                state: "default" 0.0;
+                image.normal: "ruler_pt.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "ruler/popup";
+    min: 22 94;
+    max: 22 94;
+
+    parts {
+        part {
+            name: "border";
+            type: RECT;
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                color: 194 202 216 255;
+                rel1.relative: 0 0;
+                rel2.relative: 1 1;
+
+            }
+        }
+        part {
+            name: "base";
+            type: RECT;
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                color: 243 242 241 255;
+                rel1 {
+                    relative: 0 0;
+                    offset: 1 1;
+                    to: "border";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -2 -2;
+                    to: "border";
+                }
+            }
+        }
+        part {
+            name: "px";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 0;
+                    offset: 1 2;
+                    to: "base";
+                }
+                rel2 {
+                    relative: 1 0;
+                    offset: -2 18;
+                    to: "base";
+                }
+                image.normal: "ruler_px.png";
+            }
+        }
+        part {
+            name: "cm";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 2;
+                    to: "px";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 18;
+                    to: "px";
+                }
+                image.normal: "ruler_cm.png";
+            }
+        }
+        part {
+            name: "in";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 2;
+                    to: "cm";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 18;
+                    to: "cm";
+                }
+                image.normal: "ruler_in.png";
+            }
+        }
+        part {
+            name: "pc";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 2;
+                    to: "in";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 18;
+                    to: "in";
+                }
+                image.normal: "ruler_pc.png";
+            }
+        }
+        part {
+            name: "pt";
+            description {
+                state: "default" 0.0;
+                min: 16 16;
+                max: 16 16;
+                rel1 {
+                    relative: 0 1;
+                    offset: 0 2;
+                    to: "pc";
+                }
+                rel2 {
+                    relative: 1 1;
+                    offset: -1 18;
+                    to: "pc";
+                }
+                image.normal: "ruler_pt.png";
+            }
+        }
+    }
+    programs {
+        program {
+            name: "ruler-px-click";
+            signal: "mouse,clicked,1";
+            source: "px";
+            action: SIGNAL_EMIT "elicit,ruler,units,px" "ruler";
+        }
+        program {
+            name: "ruler-cm-click";
+            signal: "mouse,clicked,1";
+            source: "cm";
+            action: SIGNAL_EMIT "elicit,ruler,units,cm" "ruler";
+        }
+        program {
+            name: "ruler-in-click";
+            signal: "mouse,clicked,1";
+            source: "in";
+            action: SIGNAL_EMIT "elicit,ruler,units,in" "ruler";
+        }
+        program {
+            name: "ruler-pc-click";
+            signal: "mouse,clicked,1";
+            source: "pc";
+            action: SIGNAL_EMIT "elicit,ruler,units,pc" "ruler";
+        }
+        program {
+            name: "ruler-pt-click";
+            signal: "mouse,clicked,1";
+            source: "pt";
+            action: SIGNAL_EMIT "elicit,ruler,units,pt" "ruler";
+        }
+    }
+}

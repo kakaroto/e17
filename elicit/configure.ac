@@ -66,6 +66,7 @@ PKG_CHECK_MODULES(ELICIT, [
   eet
   esmart_draggies
   esmart_container
+  esmart_resize
   ecore
   ecore-config
   ecore-evas
@@ -81,6 +82,12 @@ data/Makefile
 data/images/Makefile
 data/themes/Makefile
 data/themes/winter/Makefile
+data/themes/winter/fonts/Makefile
+data/themes/winter/groups/Makefile
+data/themes/winter/img/Makefile
+data/themes/winter/macros/Makefile
+data/themes/winter/parts/Makefile
+data/themes/winter/programs/Makefile
 data/themes/summer/Makefile
 debian/changelog
 ])

@@ -1,3 +1,10 @@
 BUTTON_PROG("x", "", "elicit,quit");
 BUTTON_PROG("dropper", "elicit,pick,start", "elicit,pick,stop");
 BUTTON_PROG("target", "elicit,shoot,start", "elicit,shoot,stop");
+BUTTON_PROG_ANIM("ruler");
+program {
+    name: "ruler-sig-click";
+    signal: "mouse,clicked,1";
+    source: "ruler";
+    action: SIGNAL_EMIT "elicit,ruler,toggle" "ruler";
+}

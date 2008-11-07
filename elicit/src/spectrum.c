@@ -168,7 +168,7 @@ static void
 _smart_init(void)
 {
    if (_smart) return;
-	 _smart = evas_smart_class_new(&_smart_class);
+   _smart = evas_smart_class_new(&_smart_class);
 }
 
 static void
