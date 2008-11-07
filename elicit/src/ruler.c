@@ -409,6 +409,7 @@ _elicit_lines_create(Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
       line_height = broad / 3 - 12;
 
     line = evas_object_line_add(_ruler->evas);
+    evas_object_pass_events_set(line, 1);
     switch(_ruler->orient)
     {
       case (ELICIT_RULER_ORIENT_TOP):
@@ -435,6 +436,7 @@ _elicit_lines_create(Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
 
       label = edje_object_add(_ruler->evas);
       edje_object_file_set(label, _ruler->theme, "ruler/label");
+      evas_object_pass_events_set(label, 1);
       switch(_ruler->units)
       {
         case (ELICIT_RULER_UNITS_PX):
