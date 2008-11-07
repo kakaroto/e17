@@ -57,6 +57,7 @@ static Config *config;
 static Ecore_X_Display *dpy;
 static int scr;
 static Ecore_X_Window root;
+static Ecore_X_Window reg;
 static Ecore_X_Picture rootPicture;
 static Ecore_X_Picture rootBuffer;
 static Ecore_X_Picture blackPicture;
@@ -2019,13 +2020,10 @@ int
 composite_init(Bling *b)
 {
    Ecore_X_Window *children;
-   Ecore_X_Atom a;
-   Ecore_X_Window w;
    int nchildren;
    int i;
    XRenderPictureAttributes pa;
    int composite_major, composite_minor;
-   char buf[16];
 
    bling = b;
    config = b->config;
@@ -2097,10 +2095,16 @@ composite_init(Bling *b)
    allDamage = None;
    clipChanged = True;
 
-   snprintf(buf, sizeof(buf), "_NET_WM_CM_S%d", scr);
-   a = XInternAtom(dpy, buf, False);
-   w = ecore_x_window_input_new(0, 0, 0, 1, 1);
-   XSetSelectionOwner(dpy, a, w, 0);
+   if (!reg)
+     {
+	Ecore_X_Atom a;
+	char buf[16];
+
+	snprintf(buf, sizeof(buf), "_NET_WM_CM_S%d", scr);
+	a = XInternAtom(dpy, buf, False);
+	reg = ecore_x_window_input_new(0, 0, 0, 1, 1);
+	XSetSelectionOwner(dpy, a, reg, 0);
+     }
 
    ecore_x_grab();
    if (autoRedirect)
@@ -2162,6 +2166,8 @@ composite_shutdown(void)
    ecore_event_handler_del(_window_damage_hnd);
    ecore_event_handler_del(_window_property_hnd);
    ecore_event_handler_del(_damage_notify_hnd);
+
+   ecore_x_window_del(reg);
 
    XCompositeUnredirectSubwindows(dpy, root, CompositeRedirectManual);
    XRenderFreePicture(dpy, rootPicture);
