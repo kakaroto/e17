@@ -265,7 +265,7 @@ _get_cpu_load(void)
    size_t len;
 #else
    FILE *stat;
-   static unsigned long old_u[4], old_n[4], old_s[4], old_i[4], old_wa[4], old_hi[4], old_si[4];
+   static unsigned long old_u[8], old_n[8], old_s[8], old_i[8], old_wa[8], old_hi[8], old_si[8];
    unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, dummy3, ticks_past;
    int tmp_u = 0, tmp_n = 0, tmp_s = 0;
    char dummy[16];
