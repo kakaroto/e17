@@ -1428,7 +1428,7 @@ PagerHandleMouseDown(Pager * p, int px, int py, int button)
    else if (button == Conf_pagers.win_button)
      {
 	ewin = EwinInPagerAt(p, px, py);
-	if ((ewin) && (ewin->type != EWIN_TYPE_PAGER))
+	if (ewin && ewin->type != EWIN_TYPE_PAGER && !ewin->state.inhibit_move)
 	  {
 	     PagerHiwinShow(p, ewin, 1, !Mode.wm.window);
 	     Mode.mode = MODE_PAGER_DRAG_PENDING;
