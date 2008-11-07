@@ -2,6 +2,7 @@
 "Close"			NULL "wop * close"
 "Annihilate"		NULL "wop * kill"
 "Iconify"		NULL "wop * iconify"
+"Leave Alone"		NULL "wop * alone"
 "Raise"			NULL "wop * raise"
 "Lower"			NULL "wop * lower"
 "Shade/Unshade"		NULL "wop * shade"

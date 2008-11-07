@@ -968,6 +968,7 @@ AddInternalToFamily(Win win, const char *bname, int type,
    if (!ewin)
       goto done;
 
+   ewin->props.donthide = 1;
    EwinGetAttributes(ewin, win, None);
    WindowMatchEwinOps(ewin);	/* Window matches */
    EwinManage(ewin);

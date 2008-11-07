@@ -477,6 +477,10 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	   EwinOpIconify(ewin, OPSRC_USER, on);
 	break;
 
+     case EWIN_OP_ALONE:
+	EwinAlone(ewin);
+	break;
+
      case EWIN_OP_SHADE:
 	on = ewin->state.shaded;
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
@@ -1533,7 +1537,7 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> border <BORDERNAME>\n"
     "  win_op <windowid> title <title>\n"
     "  win_op <windowid> <close/kill>\n"
-    "  win_op <windowid> <focus/iconify/shade/stick>\n"
+    "  win_op <windowid> <focus/iconify/alone/shade/stick>\n"
 #if USE_COMPOSITE
     "  win_op <windowid> <fade/shadow>\n"
 #endif

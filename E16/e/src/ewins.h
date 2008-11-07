@@ -400,6 +400,7 @@ void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 void                EwinMoveToDesktop(EWin * ewin, Desk * d);
 void                EwinMoveToDesktopAt(EWin * ewin, Desk * d, int x, int y);
 void                EwinIconify(EWin * ewin);
+void                EwinAlone(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
 void                EwinInstantShade(EWin * ewin, int force);
 void                EwinInstantUnShade(EWin * ewin);

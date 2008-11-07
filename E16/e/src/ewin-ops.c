@@ -45,6 +45,7 @@ static const WinOp  winops[] = {
    {"close", 2, 1, 0, EWIN_OP_CLOSE},
    {"kill", 0, 1, 0, EWIN_OP_KILL},
    {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
+   {"alone", 0, 1, 0, EWIN_OP_ALONE},
    {"opacity", 2, 1, 1, EWIN_OP_OPACITY},
    {"focused_opacity", 0, 1, 1, EWIN_OP_FOCUSED_OPACITY},
    {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
@@ -568,6 +569,26 @@ EwinIconify(EWin * ewin)
    HintsSetWindowState(ewin);
 
    call_depth--;
+}
+
+void
+EwinAlone(EWin * ewin)
+{
+   EWin               *const *lst, *item;
+   int                 i, num;
+
+   lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
+
+   for (i = 0; i < num; i++)
+     {
+	item = lst[i];
+
+	if (item == ewin || EwinIsTransient(item) ||
+	    item->state.iconified || item->props.donthide ||
+	    item->area_x != ewin->area_x || item->area_y != ewin->area_y)
+	   continue;
+	EwinIconify(item);
+     }
 }
 
 static void
@@ -1334,8 +1355,8 @@ EwinsShowDesktop(int on)
 
 	if (on)
 	  {
-	     if (EwinIsInternal(ewin) || ewin->state.iconified
-		 || ewin->props.donthide || EwinIsTransient(ewin))
+	     if (EwinIsTransient(ewin) ||
+		 ewin->state.iconified || ewin->props.donthide)
 		continue;
 
 	     ewin->state.showingdesk = 1;
