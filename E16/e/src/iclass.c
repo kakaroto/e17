@@ -940,7 +940,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 }
 
 #define LINE(x1, y1, x2, y2) \
-   XDrawLine(disp, win, gc, x + x1, y + y1, x + x2, y + y2)
+   XDrawLine(disp, win, gc, x + (x1), y + (y1), x + (x2), y + (y2))
 #define RECT(x, y, w, h) \
 	XDrawRectangle(disp, win, gc, x, y, w, h);
 

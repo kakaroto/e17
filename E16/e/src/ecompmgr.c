@@ -35,7 +35,6 @@
 #include "eobj.h"
 #include "events.h"
 #include "hints.h"
-#include "settings.h"
 #include "timers.h"
 #include "windowmatch.h"
 #include "xwin.h"
