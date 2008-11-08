@@ -79,11 +79,9 @@ _create_data (E_Config_Dialog * cfd)
 static void
 _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
-  if (!mail_config)
-    return;
-  mail_config->config_dialog = NULL;
-  free (cfdata);
-  cfdata = NULL;
+   if (!mail_config) return;
+   mail_config->config_dialog = NULL;
+   E_FREE(cfdata);
 }
 
 static Evas_Object *

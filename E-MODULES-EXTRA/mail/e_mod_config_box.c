@@ -141,16 +141,15 @@ _create_data (E_Config_Dialog * cfd)
 static void
 _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
-  E_FREE (cfdata->name);
-  E_FREE (cfdata->port);
-  E_FREE (cfdata->host);
-  E_FREE (cfdata->user);
-  E_FREE (cfdata->pass);
-  E_FREE (cfdata->new_path);
-  E_FREE (cfdata->cur_path);
-  E_FREE (cfdata->exec);
-
-  free (cfdata);
+   E_FREE(cfdata->name);
+   E_FREE(cfdata->port);
+   E_FREE(cfdata->host);
+   E_FREE(cfdata->user);
+   E_FREE(cfdata->pass);
+   E_FREE(cfdata->new_path);
+   E_FREE(cfdata->cur_path);
+   E_FREE(cfdata->exec);
+   E_FREE(cfdata);
 }
 
 static Evas_Object *
