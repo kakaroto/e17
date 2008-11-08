@@ -1,1 +1,1 @@
-SUBDIRS = edje esmart etk ewl emotion ecore signals debug
+SUBDIRS = edje esmart etk ewl emotion ecore signals debug eet

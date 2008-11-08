@@ -194,6 +194,8 @@ examples/angstrom/bootmanager/Makefile
 examples/evas/Makefile
 examples/evas/hash/Makefile
 examples/evas/list/Makefile
+examples/eet/Makefile
+examples/eet/simple_write_read/Makefile
 data/Makefile
 data/edjes/Makefile
 data/fonts/Makefile
