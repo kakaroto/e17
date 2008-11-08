@@ -1405,7 +1405,7 @@ void
 SnapshotEwinApply(EWin * ewin)
 {
    Snapshot           *sn;
-   int                 i, ax, ay;
+   int                 ax, ay;
    unsigned int        use_flags;
 
    _SnapEwinFind(ewin);		/* Find a saved settings match */
@@ -1476,8 +1476,8 @@ SnapshotEwinApply(EWin * ewin)
    if (use_flags & SNAP_USE_BORDER)
       EwinSetBorderByName(ewin, sn->border_name);
 
-   for (i = 0; i < sn->num_groups; i++)
-      GroupsEwinAdd(ewin, sn->groups[i]);
+   if (use_flags & SNAP_USE_GROUPS)
+      GroupsEwinAdd(ewin, sn->groups, sn->num_groups);
 
 #if USE_COMPOSITE
    if (use_flags & SNAP_USE_OPACITY)

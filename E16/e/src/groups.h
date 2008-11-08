@@ -66,7 +66,7 @@ EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 /* groups.c */
 Group              *const *EwinGetGroups(const EWin * ewin, int *num);
 Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
-void                GroupsEwinAdd(EWin * ewin, int gid);
+void                GroupsEwinAdd(EWin * ewin, const int *pgid, int ngid);
 void                GroupsEwinRemove(EWin * ewin);
 void                GroupsLoad(void);
 void                GroupsSave(void);

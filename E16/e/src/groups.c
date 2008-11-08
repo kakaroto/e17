@@ -33,6 +33,13 @@
 #include "timers.h"
 #include <math.h>
 
+#define DEBUG_GROUPS 0
+#if DEBUG_GROUPS
+#define Dprintf(fmt, ...) Eprintf("%s: " fmt, __func__, __VA_ARGS__)
+#else
+#define Dprintf(fmt...)
+#endif
+
 #define USE_GROUP_SHOWHIDE 0	/* Don't think this is useful. */
 
 #define SET_OFF    0
@@ -94,6 +101,7 @@ GroupCreate(int gid)
    g->cfg.shade = Conf_groups.dflt.shade;
    g->cfg.mirror = Conf_groups.dflt.mirror;
 
+   Dprintf("grp=%p gid=%d\n", g, g->index);
    return g;
 }
 
@@ -103,6 +111,7 @@ GroupDestroy(Group * g)
    if (!g)
       return;
 
+   Dprintf("grp=%p gid=%d\n", g, g->index);
    ecore_list_node_remove(group_list, g);
 
    if (g == Mode_groups.current)
@@ -169,6 +178,7 @@ BreakWindowGroup(EWin * ewin, Group * g)
    EWin               *ewin2;
    Group              *g2;
 
+   Dprintf("ewin=%p group=%p gid=%d\n", ewin, g, g->index);
    if (!ewin || !ewin->groups)
       return;
 
@@ -265,40 +275,54 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
 }
 
 static void
-AddEwinToGroup(EWin * ewin, Group * g)
+_GroupAddEwin(Group * g, EWin * ewin)
 {
    int                 i;
 
-   if (ewin && g)
-     {
-	for (i = 0; i < ewin->num_groups; i++)
-	   if (ewin->groups[i] == g)
-	      return;
-	ewin->num_groups++;
-	ewin->groups = EREALLOC(Group *, ewin->groups, ewin->num_groups);
-	ewin->groups[ewin->num_groups - 1] = g;
-	g->num_members++;
-	g->members = EREALLOC(EWin *, g->members, g->num_members);
-	g->members[g->num_members - 1] = ewin;
-	SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
-     }
+   for (i = 0; i < ewin->num_groups; i++)
+      if (ewin->groups[i] == g)
+	 return;
+
+   ewin->num_groups++;
+   ewin->groups = EREALLOC(Group *, ewin->groups, ewin->num_groups);
+   ewin->groups[ewin->num_groups - 1] = g;
+   g->num_members++;
+   g->members = EREALLOC(EWin *, g->members, g->num_members);
+   g->members[g->num_members - 1] = ewin;
+}
+
+static void
+AddEwinToGroup(EWin * ewin, Group * g)
+{
+   if (!ewin || !g)
+      return;
+
+   _GroupAddEwin(g, ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
 }
 
 void
-GroupsEwinAdd(EWin * ewin, int gid)
+GroupsEwinAdd(EWin * ewin, const int *pgid, int ngid)
 {
-   Group              *group;
+   Group              *g;
+   int                 i, gid;
 
-   group = GroupFind(gid);
-   if (!group)
+   for (i = 0; i < ngid; i++)
      {
-	/* This should not happen, but may if group/snap configs are corrupted */
-	BuildWindowGroup(&ewin, 1, gid);
+	gid = pgid[i];
+	g = GroupFind(gid);
+	Dprintf("ewin=%p gid=%d grp=%p\n", ewin, gid, g);
+	if (!g)
+	  {
+	     /* This should not happen, but may if group/snap configs are corrupted */
+	     BuildWindowGroup(&ewin, 1, gid);
+	  }
+	else
+	  {
+	     _GroupAddEwin(g, ewin);
+	  }
      }
-   else
-     {
-	AddEwinToGroup(ewin, group);
-     }
+   SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
 }
 
 static int
