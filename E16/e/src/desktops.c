@@ -2419,15 +2419,11 @@ static void
 CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
    static int          prev_ax = 0, prev_ay = 0;
-   static char         called = 0;
    static Win          awin;
    char                s[64];
    DItem              *di;
    Win                 win;
    int                 w, h;
-
-   if (val == 1)
-      called = 0;
 
    if ((val != 1) && ((prev_ax == tmp_area_x) && (prev_ay == tmp_area_y)))
       return;
@@ -2439,18 +2435,19 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   if (!called)
+   if (val == 1)
      {
 	ImageClass         *ic;
+	Pixmap              pmap;
 
 	ic = ImageclassFind("SETTINGS_AREA_AREA", 1);
 	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
 
+	/* Note: awin is destroyed when the dialog is destroyed */
 	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
 	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 1);
-	ImageclassApply(ic, awin, 0, 0, STATE_NORMAL, ST_SOLID);
-
-	called = 1;
+	pmap = EGetWindowBackgroundPixmap(awin);
+	ImageclassApplySimple(ic, awin, pmap, STATE_NORMAL, 0, 0, 18, 14);
      }
    EMoveResizeWindow(awin, ((w / 2) - (9 * tmp_area_x)),
 		     ((h / 2) - (7 * (9 - tmp_area_y))), 18 * tmp_area_x,

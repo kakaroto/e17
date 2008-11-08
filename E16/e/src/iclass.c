@@ -761,13 +761,20 @@ EImage             *
 ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 			  int sticky, int state, int image_type)
 {
+   ImageState         *is;
    EImage             *im, *bg;
    int                 flags;
 
    if (!ic)
       return NULL;
 
-   im = ImageclassGetImage(ic, active, sticky, state);
+   is = ImageclassGetImageState(ic, state, active, sticky);
+   if (!is)
+      return NULL;
+
+   if (is->im == NULL)
+      ImagestateRealize(is);
+   im = is->im;
    if (!im)
       return NULL;
 
@@ -778,6 +785,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
 	if (bg)
 	  {
+	     /* FIXME - Tiling not implemented */
 	     EImageBlendCM(bg, im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
 	     goto done;
 	  }
@@ -787,12 +795,35 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
    win = None;
 #endif
 
-   bg = EImageCreateScaled(im, 0, 0, 0, 0, w, h);
+   if (is->pixmapfillstyle == FILL_STRETCH)
+     {
+	bg = EImageCreateScaled(im, 0, 0, 0, 0, w, h);
+     }
+   else
+     {
+	int                 iw, ih, tw, th;
+
+	EImageGetSize(im, &iw, &ih);
+
+	tw = w;
+	th = h;
+	if (is->pixmapfillstyle & FILL_TILE_H)
+	   tw = iw;
+	if (is->pixmapfillstyle & FILL_TILE_V)
+	   th = ih;
+
+	bg = EImageCreate(w, h);
+	EImageTile(bg, im, 0, tw, th, 0, 0, w, h, 0, 0);
+     }
 
 #ifdef ENABLE_TRANSPARENCY
  done:
 #endif
-   EImageFree(im);
+   if ((is->unloadable) || (Conf.memory_paranoia))
+     {
+	EImageFree(is->im);
+	is->im = NULL;
+     }
 
    return bg;
 }

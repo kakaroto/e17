@@ -165,25 +165,24 @@ CopyGroupConfig(GroupConfig * src, GroupConfig * dest)
 static void
 BreakWindowGroup(EWin * ewin, Group * g)
 {
-   int                 i, j, num;
+   int                 i, j;
    EWin               *ewin2;
+   Group              *g2;
 
-   if (ewin)
+   if (!ewin || !ewin->groups)
+      return;
+
+   for (j = 0; j < ewin->num_groups; j++)
      {
-	if (ewin->groups)
+	g2 = ewin->groups[j];
+	if (g && g != g2)
+	   continue;
+
+	for (i = 0; i < g2->num_members; i++)
 	  {
-	     for (j = 0; j < ewin->num_groups; j++)
-		if (ewin->groups[j] == g)
-		  {
-		     num = g->num_members;
-		     for (i = 0; i < num; i++)
-		       {
-			  ewin2 = g->members[0];
-			  RemoveEwinFromGroup(g->members[0], g);
-			  SnapshotEwinUpdate(ewin2, SNAP_USE_GROUPS);
-		       }
-		     return;
-		  }
+	     ewin2 = g2->members[0];
+	     RemoveEwinFromGroup(ewin2, g2);
+	     SnapshotEwinUpdate(ewin2, SNAP_USE_GROUPS);
 	  }
      }
 }
