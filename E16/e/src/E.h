@@ -233,7 +233,7 @@ typedef struct {
       int                 slidemode;
       int                 slidespeedmap;
       int                 slidespeedcleanup;
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
       char                extra_head;	/* Not used */
 #endif
    } place;
@@ -321,7 +321,7 @@ typedef struct {
    } conf;
    struct {
       char                dummy;	/* Prevent empty struct */
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
       char                xinerama_active;
 #endif
 #if USE_XSYNC

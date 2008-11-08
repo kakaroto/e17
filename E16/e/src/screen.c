@@ -26,7 +26,7 @@
 #include "ipc.h"
 #include "screen.h"
 #include "xwin.h"
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
 
@@ -60,14 +60,14 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 void
 ScreenInit(void)
 {
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
    XineramaScreenInfo *screens;
    int                 i, num_screens;
 #endif
 
    n_screens = 0;		/* Causes reconfiguration */
 
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
    if (Mode.wm.window)
       return;
 
@@ -109,7 +109,7 @@ ScreenShowInfo(const char *prm __UNUSED__)
 {
    int                 i;
 
-#ifdef HAVE_XINERAMA
+#ifdef USE_XINERAMA
    if (XineramaIsActive(disp))
      {
 	XineramaScreenInfo *scrns;

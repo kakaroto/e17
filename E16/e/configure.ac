@@ -200,7 +200,7 @@ AC_ARG_ENABLE(xinerama,
   enable_xinerama=yes)
 if test "x$enable_xinerama" = "xyes"; then
   AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
-    AC_DEFINE(HAVE_XINERAMA, 1, [Xinerama support])
+    AC_DEFINE(USE_XINERAMA, 1, [Xinerama support])
     XINERAMA_LIBS="-lXinerama",
     enable_xinerama=no
     AC_MSG_WARN([Xinerama support was requested but not found]),
