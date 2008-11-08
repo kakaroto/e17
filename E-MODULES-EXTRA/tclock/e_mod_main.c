@@ -176,7 +176,7 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
     {
       E_Menu *mn;
       E_Menu_Item *mi;
-      int x, y, w, h;
+      int x, y;
 
       mn = e_menu_new ();
       e_menu_post_deactivate_callback_set (mn, _tclock_menu_cb_post, inst);
@@ -191,7 +191,7 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       e_menu_item_separator_set (mi, 1);
 
       e_gadcon_client_util_menu_items_append (inst->gcc, mn, 0);
-      e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, &w, &h);
+      e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, NULL, NULL);
       e_menu_activate_mouse (mn,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
