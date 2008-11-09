@@ -7,7 +7,6 @@ static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
-static void _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _skel_conf_new(void);
@@ -46,7 +45,7 @@ static const E_Gadcon_Client_Class _gc_class =
 {
    GADCON_CLIENT_CLASS_VERSION, "skel", 
      {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, 
-          _gc_id_new, _gc_id_del},
+          _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -54,7 +53,7 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
 
 /*
  * Module Functions
-*/
+ */
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
@@ -73,7 +72,6 @@ e_modapi_init(E_Module *m)
                                  NULL, buf, e_int_config_skel_module);
 
    /* Define EET Data Storage */
-
    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    #undef T
    #undef D
@@ -178,12 +176,15 @@ e_modapi_shutdown(E_Module *m)
 
         /* Grab an item from the list */
         ci = skel_conf->conf_items->data;
+
         /* remove it */
         skel_conf->conf_items = 
           eina_list_remove_list(skel_conf->conf_items, 
                                 skel_conf->conf_items);
-        /* cleanup stringshares !! ) */
+
+        /* cleanup stringshares */
         if (ci->id) eina_stringshare_del(ci->id);
+
         /* keep the planet green */
         E_FREE(ci);
      }
@@ -296,26 +297,6 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 
    ci = _skel_conf_item_get(NULL);
    return ci->id;
-}
-
-/* gets called when container says remove this item */
-static void 
-_gc_id_del(E_Gadcon_Client_Class *client_class, const char *id) 
-{
-/* yes - don't do this. on shutdown gadgets are deleted and this means config
- * for them is deleted - that means empty config is saved. keep them around
- * as if u add a gadget back it can pick up its old config again
- * 
-   Config_Item *ci = NULL;
-   printf("SKEL ID_DEL: [%s]\n", id);
-   if (!(ci = _skel_conf_item_get(id))) return;
-
-   // cleanup !!
-   if (ci->id) eina_stringshare_del(ci->id);
-
-   skel_conf->conf_items = eina_list_remove(skel_conf->conf_items, ci);
-   E_FREE(ci);
- */
 }
 
 static Evas_Object *
