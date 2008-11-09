@@ -1,53 +1,53 @@
 # Snow module (e17), Simplified Chinese translation
 # This file is put in the public domain.
 # Jani väyrynen <janivayrynen@gmail.com>, 2008.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Snow module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:36+0200\n"
-"PO-Revision-Date: 2008-10-22 22:00+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-05 23:10+0800\n"
+"PO-Revision-Date: 2008-11-09 20:52+0800\n"
+"Last-Translator: stone gao <gaoghy@gmail.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: e_mod_config.c:42
 msgid "Snow Configuration"
-msgstr ""
+msgstr "飘雪设置"
 
 #: e_mod_config.c:99
 msgid "General Settings"
-msgstr ""
+msgstr "常规设置"
 
 #: e_mod_config.c:100
 msgid "Show Trees"
-msgstr ""
+msgstr "显示树木"
 
 #: e_mod_config.c:104
 msgid "Snow Density"
-msgstr ""
+msgstr "雪花密度"
 
 #: e_mod_config.c:106
 msgid "Sparse"
-msgstr ""
+msgstr "稀疏"
 
 #: e_mod_config.c:108
 msgid "Medium"
-msgstr ""
+msgstr "中等"
 
 #: e_mod_config.c:110
 msgid "Dense"
-msgstr ""
+msgstr "密集"
 
 #: e_mod_main.c:33
 msgid "Appearance"
-msgstr ""
+msgstr "外观"
 
 #: e_mod_main.c:35
 msgid "Snow"
-msgstr ""
+msgstr "飘雪"
 
