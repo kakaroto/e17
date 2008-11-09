@@ -1,0 +1,41 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
+    <h3>What is Enlightenment?</h3>
+    <p>
+     Enlightenment is a window manager. Enlightenment is a desktop shell.
+     Enlightenment is the building blocks to create beautiful applications.
+     Enlightenment, or simply <em><strong>e</strong></em>, is a group of people trying to make a
+     new generation of software.
+    </p>
+
+    <p>
+     If you want to learn more about the history behind the Enlightenment
+     Project check out the <?php a("about", "about");?> pages. For the casual
+     user there are various <?php a("support", "support");?> resources
+     available. For anyone looking to help out with the project the <?php a("contribute",
+     "contributing");?> pages should give you a good idea where to start
+     looking.
+    </p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <center>
+     <?php img("logo.png", "E"); ?>
+     <?php blink("i/logo-s.png", "DOWNLOAD E", "download"); ?>
+    </center>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <h3>Enlightenment News</h3>
+    <p><?php include 'p/news/latestnews.php' ?></p>
+   </div>
+  </td>
+ </tr>
+</table>
+
