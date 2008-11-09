@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-09 18:15+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:39
+msgid "Skeleton Module"
+msgstr ""
+
+#: ../src/e_mod_config.c:79
+msgid "General"
+msgstr ""
+
+#: ../src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr ""
+
+#: ../src/e_mod_main.c:104
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+
+#: ../src/e_mod_main.c:124
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+
+#: ../src/e_mod_main.c:288
+msgid "Skeleton"
+msgstr ""
+
+#: ../src/e_mod_main.c:386
+msgid "Skeleton Configuration Updated"
+msgstr ""
+
+#: ../src/e_mod_main.c:443
+msgid "Configuration"
+msgstr ""

@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-09 18:17+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+msgid "Tiling"
+msgstr ""
+
+#: ../e_mod_main.c:999
+msgid "Windows"
+msgstr ""
+
+#: ../e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr ""
+
+#. General settings
+#: ../e_mod_config.c:217
+msgid "General"
+msgstr ""
+
+#: ../e_mod_config.c:227
+msgid "Horizontal:"
+msgstr ""
+
+#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr ""
+
+#: ../e_mod_config.c:231
+msgid "Vertical:"
+msgstr ""
+
+#. Virtual desktop settings
+#: ../e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr ""
+
+#. Grid mode settings
+#: ../e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr ""
+
+#: ../e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr ""
+
+#. Bigmain settings
+#: ../e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr ""
+
+#: ../e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr ""
+
+#: ../e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr ""
+
+#: ../e_mod_config.c:296
+msgid "Tiling border"
+msgstr ""
+
+#: ../e_mod_config.c:310
+msgid "Floating border"
+msgstr ""
