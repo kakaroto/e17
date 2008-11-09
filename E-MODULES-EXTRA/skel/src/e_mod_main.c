@@ -302,15 +302,20 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 static void 
 _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id) 
 {
+/* yes - don't do this. on shutdown gadgets are deleted and this means config
+ * for them is deleted - that means empty config is saved. keep them around
+ * as if u add a gadget back it can pick up its old config again
+ * 
    Config_Item *ci = NULL;
-
+   printf("SKEL ID_DEL: [%s]\n", id);
    if (!(ci = _skel_conf_item_get(id))) return;
 
-   /* cleanup !! */
+   // cleanup !!
    if (ci->id) eina_stringshare_del(ci->id);
 
    skel_conf->conf_items = eina_list_remove(skel_conf->conf_items, ci);
    E_FREE(ci);
+ */
 }
 
 static Evas_Object *
