@@ -190,6 +190,11 @@ class EvasEdje : public EvasObject
 
     bool hasPart( const char* partname ) const;
     EdjePart* operator[]( const char* partname );
+    
+    /*!
+     * @param partname Loads a EdjePart into the EvasEdje.
+     * @throw PartNotExistingException
+     */
     EdjePart* part( const char* partname );
 
     /* signals and slots */
