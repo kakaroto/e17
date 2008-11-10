@@ -9,6 +9,15 @@ using std::endl;
 
 namespace efl {
 
+const char* PartNotExistingException::what () const throw ()
+{
+  static std::string s;
+  s = "EvasEdje loaded with not existing part '";
+  s += txt;
+  s += "'.";
+  return static_cast <const char*> (s.c_str ());
+}
+  
 //===============================================================================================
 // EvasEdje
 //===============================================================================================
@@ -102,7 +111,7 @@ EdjePart* EvasEdje::part( const char* partname )
         _parts[partname] = ep;
         return ep;
     }
-    DoutFatal( dc::fatal, *this << " EvasEdje::part() '%s' not existing" );
+    throw PartNotExistingException (partname);
 }
 
 void EvasEdje::connect( const char* emission, const char* source, const EdjeSignalSlot& slot )

@@ -32,6 +32,16 @@ typedef std::map<const char*, EdjePart*> EdjePartMap;
 typedef sigc::signal<void, const char*, const char*> EdjeSignalSignal;
 typedef sigc::slot2<void, const char*, const char*> EdjeSignalSlot;
 
+class PartNotExistingException : public std::exception
+{
+public:
+  PartNotExistingException (const char *partname) : txt (partname) {}
+  const char* what () const throw ();
+    
+private:
+  const char *txt;
+};
+  
 //===============================================================================================
 // Edje
 //===============================================================================================
