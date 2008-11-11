@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Snow module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:38+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-02-13 14:09+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,39 +16,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Snökonfiguration"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "General Settings"
 msgstr ""
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Visa träd"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Snö densitet"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "Sparse"
 msgstr "Tunn"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Medium"
 msgstr ""
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Dense"
 msgstr "Tät"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr ""
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Snow"
 msgstr ""
 

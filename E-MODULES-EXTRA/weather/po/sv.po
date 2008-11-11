@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Weather module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:42+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-07-06 23:42+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,60 +16,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:40
+#: ../e_mod_config.c:40
 msgid "Weather Configuration"
 msgstr "Väder konfiguration"
 
-#: e_mod_config.c:86
+#: ../e_mod_config.c:86
 msgid "Display Settings"
 msgstr "Visa"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:88
 msgid "Simple"
 msgstr "Enkel"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Detailed"
 msgstr "Detaljerad"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Poll Time"
 msgstr "Uppdateringsintervall"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minuter"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Degree Settings"
 msgstr "Grader"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Celsius"
 msgstr "Celsius"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: e_mod_config.c:108 e_mod_config.c:109
+#: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
 msgstr "ICAO kod"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
 msgstr "Hitta din ICAO kod på:"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:177
+#: ../e_mod_main.c:179
 msgid "Weather"
 msgstr "Väder"
 
-#: e_mod_main.c:222
+#: ../e_mod_main.c:224
 msgid "Configuration"
 msgstr "Konfiguration"
 

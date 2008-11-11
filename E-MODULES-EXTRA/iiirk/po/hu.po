@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-17 08:24+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-07-18 17:49+0200\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <mypclinuxos.com>\n"
@@ -16,139 +16,140 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/e_mod_main.c:231
+#: ../src/e_mod_main.c:236
 msgid "IIirk"
 msgstr "Ilirk"
 
-#: src/e_mod_main.c:363 src/e_mod_main.c:781
+#: ../src/e_mod_main.c:368 ../src/e_mod_main.c:785
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: src/e_mod_main.c:1553
+#: ../src/e_mod_main.c:1553
 msgid "Applications"
 msgstr "Alkalmazások"
 
-#: src/e_mod_main.c:1555 src/e_int_config_iiirk.c:52
-#: src/e_int_config_iiirk.c:67
+#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
+#: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Ilirk alkalmazások"
 
-#: src/e_mod_main.c:1557
+#: ../src/e_mod_main.c:1557
 msgid "Internal"
 msgstr "Belső"
 
-#: src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1558
 msgid "IIirk Other"
 msgstr "Ilirk egyéb"
 
-#: src/e_mod_config.c:58
+#: ../src/e_mod_config.c:58
 msgid "Iiirk Configuration"
 msgstr "llirk beállítás"
 
-#: src/e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Selected Iiirk Source"
 msgstr "Kijelölt llirk forrás"
 
-#: src/e_mod_config.c:118 src/e_int_config_iiirk.c:157
+#: ../src/e_mod_config.c:118 ../src/e_int_config_iiirk.c:157
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: src/e_mod_config.c:120 src/e_int_config_iiirk.c:183
+#: ../src/e_mod_config.c:120 ../src/e_int_config_iiirk.c:183
 msgid "Delete"
 msgstr "Törlés"
 
-#: src/e_mod_config.c:122
+#: ../src/e_mod_config.c:122
 msgid "Configure"
 msgstr "Beállítás"
 
-#: src/e_mod_config.c:131
+#: ../src/e_mod_config.c:131
 msgid "General Settings"
 msgstr "Általános beállítások"
 
-#: src/e_mod_config.c:132
+#: ../src/e_mod_config.c:132
 msgid "Hide window from any list when iconified"
 msgstr "Ablak elrejtése bármely listából minimalizált állapotban"
 
-#: src/e_mod_config.c:134
+#: ../src/e_mod_config.c:134
 msgid "Show Icon Label"
 msgstr "Ikon címke megjelenítése"
 
-#: src/e_mod_config.c:137
+#: ../src/e_mod_config.c:137
 msgid "Display Name"
 msgstr "Név megjelenítése"
 
-#: src/e_mod_config.c:139
+#: ../src/e_mod_config.c:139
 msgid "Display Title"
 msgstr "Cím megjelenítése"
 
-#: src/e_mod_config.c:141
+#: ../src/e_mod_config.c:141
 msgid "Display Class"
 msgstr "Osztály megjelenítése"
 
-#: src/e_mod_config.c:143
+#: ../src/e_mod_config.c:143
 msgid "Display Icon Name"
 msgstr "Ikon név megjelenítése"
 
-#: src/e_mod_config.c:145
+#: ../src/e_mod_config.c:145
 msgid "Display Border Caption"
 msgstr "Szegély felirat megjelenítése"
 
-#: src/e_mod_config.c:150
+#: ../src/e_mod_config.c:150
 msgid "Screen"
 msgstr "Képernyő"
 
-#: src/e_mod_config.c:170
+#: ../src/e_mod_config.c:170
 msgid "Show windows from all screens"
 msgstr "Ablakok megjelenítése az összes képernyőről"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Show windows from current screen"
 msgstr "Ablakok megjelenítése az aktuális képernyőről"
 
-#: src/e_mod_config.c:181
+#: ../src/e_mod_config.c:181
 msgid "Desktop"
 msgstr "Munkaasztal"
 
-#: src/e_mod_config.c:184
+#: ../src/e_mod_config.c:184
 msgid "Show windows from all desktops"
 msgstr "Minden asztal ablakainak megjelenítése"
 
-#: src/e_mod_config.c:189
+#: ../src/e_mod_config.c:189
 msgid "Show windows from active desktop"
 msgstr "Ablakok megjelenítése az aktív asztalról"
 
-#: src/e_mod_config.c:228
+#: ../src/e_mod_config.c:228
 msgid "Create new IIirk source"
 msgstr "Új Ilirk forrás létrehozása"
 
-#: src/e_mod_config.c:229
+#: ../src/e_mod_config.c:229
 msgid "Enter a name for this new source:"
 msgstr "Adj meg egy nevet az új forrásnak:"
 
-#: src/e_mod_config.c:244
+#: ../src/e_mod_config.c:244
 #, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
 "iiirk source?"
-msgstr "\"%s\" törlését kérted.<br><br>Biztosan tötölni szeretnéd ezt az iiirk forrást?"
+msgstr ""
+"\"%s\" törlését kérted.<br><br>Biztosan tötölni szeretnéd ezt az iiirk "
+"forrást?"
 
-#: src/e_mod_config.c:248
+#: ../src/e_mod_config.c:248
 msgid "Are you sure you want to delete this iiirk source?"
 msgstr "Biztosan törölni szeretnéd ezt a iiirk forrást?"
 
-#: src/e_int_config_iiirk.c:150
+#: ../src/e_int_config_iiirk.c:150
 msgid "All Applications"
 msgstr "Minden alkalmazás"
 
-#: src/e_int_config_iiirk.c:164
+#: ../src/e_int_config_iiirk.c:164
 msgid "Selected Applications"
 msgstr "Kiválasztott alkalmazások"
 
-#: src/e_int_config_iiirk.c:172
+#: ../src/e_int_config_iiirk.c:172
 msgid "Up"
 msgstr "Fel"
 
-#: src/e_int_config_iiirk.c:177
+#: ../src/e_int_config_iiirk.c:177
 msgid "Down"
 msgstr "Le"
-

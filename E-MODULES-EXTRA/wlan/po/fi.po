@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Wlan module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:37+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,43 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Wlanin asetukset"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "Yleisasetukset"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Näytä teksti aina"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Näytä teksti hiiren ollessa kohdalla"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Näytä teksti prosentteina"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Tarkistusväli:"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekuntia"
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Laiteasetukset"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr "Wlan"
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 msgid "Configuration"
 msgstr "Asetukset"

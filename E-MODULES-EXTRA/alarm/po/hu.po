@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:15+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-07-18 17:23+0200\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <mypclinuxos.com>\n"
@@ -18,244 +18,266 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config.c:55
+#: ../e_mod_config.c:55
 msgid "Alarm Configuration"
 msgstr "Az emlékeztető beállítási"
 
-#: e_mod_config.c:155 e_mod_main.c:180
+#: ../e_mod_config.c:155 ../e_mod_main.c:187
 msgid "Alarm"
 msgstr "Emlékeztető"
 
-#: e_mod_config.c:157 e_mod_config_alarm.c:190
+#: ../e_mod_config.c:157 ../e_mod_config_alarm.c:190
 msgid "Active"
 msgstr "Aktív"
 
-#: e_mod_config.c:166
+#: ../e_mod_config.c:166
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: e_mod_config.c:168
+#: ../e_mod_config.c:168
 msgid "Delete"
 msgstr "Törlés"
 
-#: e_mod_config.c:170
+#: ../e_mod_config.c:170
 msgid "Configure"
 msgstr "Beállítás"
 
-#: e_mod_config.c:172
+#: ../e_mod_config.c:172
 msgid "Duplicate"
 msgstr "Megkettőzés"
 
-#: e_mod_config.c:226
+#: ../e_mod_config.c:226
 msgid "Alarm Options"
 msgstr "Emlékeztető beállítások"
 
-#: e_mod_config.c:238
+#.
+#. ob = e_widget_label_add(evas, D_("Time format"));
+#. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
+#. rg = e_widget_radio_group_new(&(cfdata->time_format));
+#. ob = e_widget_radio_add(evas, D_("12h"), TIME_FORMAT_12, rg);
+#. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+#. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
+#. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
+#.
+#: ../e_mod_config.c:238
 msgid "Show next alarm"
 msgstr "Következő emlékeztető mutatása"
 
-#: e_mod_config.c:244
+#: ../e_mod_config.c:244
 msgid "Alarms Defaults"
 msgstr "Emlékeztetők alapértelmezései"
 
-#: e_mod_config.c:246 e_mod_config_alarm.c:404
+#: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
 msgid "Open popup"
 msgstr "Felugró megnyitása"
 
-#: e_mod_config.c:249
+#: ../e_mod_config.c:249
 msgid "Run program"
 msgstr "Program futtatása"
 
-#: e_mod_config.c:256
+#: ../e_mod_config.c:256
 msgid "Auto-Remove alarms"
 msgstr "Emlékesztető automatikus eltávolítása"
 
-#: e_mod_config_alarm.c:71
+#: ../e_mod_config_alarm.c:71
 msgid "Alarm Configuration : Setup an alarm"
 msgstr "Emlékeztető beállítás : Emlékeztető hozzáadása"
 
-#: e_mod_config_alarm.c:188
+#: ../e_mod_config_alarm.c:188
 msgid "Informations"
 msgstr "Információk"
 
-#: e_mod_config_alarm.c:192
+#: ../e_mod_config_alarm.c:192
 msgid "Name"
 msgstr "Név"
 
-#: e_mod_config_alarm.c:197
+#: ../e_mod_config_alarm.c:197
 msgid "Description"
 msgstr "Leírás"
 
-#: e_mod_config_alarm.c:207
+#: ../e_mod_config_alarm.c:207
 msgid "Schedule"
 msgstr "Ütemezés"
 
-#: e_mod_config_alarm.c:209
+#: ../e_mod_config_alarm.c:209
 #, c-format
 msgid "%1.0f hour"
 msgstr "%1.0f óra"
 
-#: e_mod_config_alarm.c:212
+#: ../e_mod_config_alarm.c:212
 #, c-format
 msgid "%1.0f minute"
 msgstr "%1.0f perc"
 
-#: e_mod_config_alarm.c:218
+#: ../e_mod_config_alarm.c:218
 msgid "Days of the week"
 msgstr "A hét napjai"
 
-#: e_mod_config_alarm.c:222
+#: ../e_mod_config_alarm.c:222
 msgid "Monday"
 msgstr "hétfő"
 
-#: e_mod_config_alarm.c:224
+#: ../e_mod_config_alarm.c:224
 msgid "Tuesday"
 msgstr "kedd"
 
-#: e_mod_config_alarm.c:226
+#: ../e_mod_config_alarm.c:226
 msgid "Wenesday"
 msgstr "szerda"
 
-#: e_mod_config_alarm.c:228
+#: ../e_mod_config_alarm.c:228
 msgid "Thursday"
 msgstr "csütörtök"
 
-#: e_mod_config_alarm.c:230
+#: ../e_mod_config_alarm.c:230
 msgid "Friday"
 msgstr "péntek"
 
-#: e_mod_config_alarm.c:232
+#: ../e_mod_config_alarm.c:232
 msgid "Saturday"
 msgstr "szombat"
 
-#: e_mod_config_alarm.c:234
+#: ../e_mod_config_alarm.c:234
 msgid "Sunday"
 msgstr "vasárnap"
 
-#: e_mod_config_alarm.c:239
+#: ../e_mod_config_alarm.c:239
 msgid "One day"
 msgstr "egy nap"
 
-#: e_mod_config_alarm.c:243
+#: ../e_mod_config_alarm.c:243
 msgid "Date (YYYY/MM/DD)"
 msgstr "Dátum (ÉÉÉÉ/HH/NN)"
 
-#: e_mod_config_alarm.c:248
+#: ../e_mod_config_alarm.c:248
 msgid "Today"
 msgstr "Ma"
 
-#: e_mod_config_alarm.c:250
+#: ../e_mod_config_alarm.c:250
 msgid "Tomorrow"
 msgstr "Holnap"
 
-#: e_mod_config_alarm.c:288
+#: ../e_mod_config_alarm.c:288
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
 "in the informations / schedule of your alarm"
-msgstr "<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Hiba van az információkban / időzitésben."
+msgstr ""
+"<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Hiba "
+"van az információkban / időzitésben."
 
-#: e_mod_config_alarm.c:293
+#: ../e_mod_config_alarm.c:293
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
 "a name for the alarm"
-msgstr "<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Meg kell adnod az emlékeztető nevét."
+msgstr ""
+"<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Meg "
+"kell adnod az emlékeztető nevét."
 
-#: e_mod_config_alarm.c:298
+#: ../e_mod_config_alarm.c:298
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
 "select at least one day in the week"
-msgstr "<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Ki kell választanod egyet a hét napjai közül."
+msgstr ""
+"<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> Ki "
+"kell választanod egyet a hét napjai közül."
 
-#: e_mod_config_alarm.c:303
+#: ../e_mod_config_alarm.c:303
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered for the alarm has incorrect syntax<br><br>You have to respect this "
 "format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr "<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> A dátum formátuma, amit megadtál nem megfelelő<br><br>Ezek közül választhatsz :<br>   ÉÉÉÉ/HH/NN<br>ÉÉÉÉ ahol az év 4 szám<br>HH a hónap, ami 2 szám<br>DD, ami a nap, ennek 2 számjegynek kell lennie<br> "
+msgstr ""
+"<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> A "
+"dátum formátuma, amit megadtál nem megfelelő<br><br>Ezek közül választhatsz :"
+"<br>   ÉÉÉÉ/HH/NN<br>ÉÉÉÉ ahol az év 4 szám<br>HH a hónap, ami 2 szám<br>DD, "
+"ami a nap, ennek 2 számjegynek kell lennie<br> "
 
-#: e_mod_config_alarm.c:313
+#: ../e_mod_config_alarm.c:313
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered is before now"
-msgstr "<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> A dátum, amit megadtál, az korábbi, mint a mostani"
+msgstr ""
+"<hilight>Hiba, a figyelmeztetés nem lett hozzáadva!</hilight><br><br> A "
+"dátum, amit megadtál, az korábbi, mint a mostani"
 
-#: e_mod_config_alarm.c:317 e_mod_main.c:419
+#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
 msgid "Alarm Module Error"
 msgstr "Figyelmeztető modul hiba"
 
-#: e_mod_config_alarm.c:354 e_mod_config_alarm.c:442
+#: ../e_mod_config_alarm.c:354 ../e_mod_config_alarm.c:442
 msgid "Test this alarm"
 msgstr "Figyelmeztetés tesztelése"
 
-#: e_mod_config_alarm.c:382
+#: ../e_mod_config_alarm.c:382
 msgid "Ring Options"
 msgstr "Csengő beállítások"
 
-#: e_mod_config_alarm.c:384
+#: ../e_mod_config_alarm.c:384
 msgid "Remove alarm"
 msgstr "Figyelmeztetés eltávolítása"
 
-#: e_mod_config_alarm.c:391 e_mod_config_alarm.c:411
+#: ../e_mod_config_alarm.c:391 ../e_mod_config_alarm.c:411
 msgid "No [default]"
 msgstr "Nem [alapértelmezés]"
 
-#: e_mod_config_alarm.c:393 e_mod_config_alarm.c:413
+#: ../e_mod_config_alarm.c:393 ../e_mod_config_alarm.c:413
 msgid "Yes"
 msgstr "Igen"
 
-#: e_mod_config_alarm.c:398 e_mod_config_alarm.c:418 e_mod_config_alarm.c:429
+#: ../e_mod_config_alarm.c:398 ../e_mod_config_alarm.c:418
+#: ../e_mod_config_alarm.c:429
 msgid "No"
 msgstr "Nem"
 
-#: e_mod_config_alarm.c:400 e_mod_config_alarm.c:420
+#: ../e_mod_config_alarm.c:400 ../e_mod_config_alarm.c:420
 msgid "Yes [default]"
 msgstr "Igen [alapértelmezés]"
 
-#: e_mod_config_alarm.c:424
+#: ../e_mod_config_alarm.c:424
 msgid "Run a program"
 msgstr "Program futtatása"
 
-#: e_mod_config_alarm.c:431
+#: ../e_mod_config_alarm.c:431
 msgid "Run default one"
 msgstr "alapértelmezett futtatás"
 
-#: e_mod_config_alarm.c:433
+#: ../e_mod_config_alarm.c:433
 msgid "Run this program"
 msgstr "Futtasd ezt a programot"
 
-#: e_mod_config_alarm.c:478
+#: ../e_mod_config_alarm.c:478
 msgid ""
 "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
-"<hilight>Emlékeztető teszt SIKERÜLT!</hilight><br><br>De NE FELEJTSD EL AKTIVÁLNI, <br>az Aktivál gomb megnyomásával, ami "
-"<br>az emlékeztető "
+"<hilight>Emlékeztető teszt SIKERÜLT!</hilight><br><br>De NE FELEJTSD EL "
+"AKTIVÁLNI, <br>az Aktivál gomb megnyomásával, ami <br>az emlékeztető "
 "főpanelján található."
 
-#: e_mod_config_alarm.c:484
+#: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
 msgstr "<hilight>Emlékeztető teszt SIKERÜLT!</hilight>"
 
-#: e_mod_config_alarm.c:489
+#: ../e_mod_config_alarm.c:489
 msgid "<hilight>Alarm test FAILED !</hilight>"
 msgstr "<hilight>Emlékeztető teszt SIKERTELEN!</hilight>"
 
-#: e_mod_config_alarm.c:491
+#: ../e_mod_config_alarm.c:491
 msgid "Alarm Module Test Report"
 msgstr "Emlékeztető modul teszt jelentés"
 
-#: e_mod_main.c:391
+#: ../e_mod_main.c:398
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Emlékeztető: %s</hilight><br><br>%s"
 
-#: e_mod_main.c:394
+#: ../e_mod_main.c:401
 msgid "Alarm Module Popup"
 msgstr "Emlékesztető modul elugró"
 
-#: e_mod_main.c:417
+#: ../e_mod_main.c:424
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
@@ -263,63 +285,68 @@ msgstr ""
 "<hilight>Sikertelen!</hilight><br><br>Az Emlékeztető nem tudja elindítani a "
 "megadott programot"
 
-#: e_mod_main.c:651 e_mod_main.c:830
+#: ../e_mod_main.c:658 ../e_mod_main.c:837
 #, c-format
 msgid "Snooze %s"
 msgstr "Szundi %s"
 
-#: e_mod_main.c:655
+#: ../e_mod_main.c:662
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f óra"
 
-#: e_mod_main.c:658
+#: ../e_mod_main.c:665
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f perc"
 
-#: e_mod_main.c:665
+#: ../e_mod_main.c:672
 msgid "Ok"
 msgstr "OK"
 
-#: e_mod_main.c:666
+#: ../e_mod_main.c:673
 msgid "Close"
 msgstr "Bezárás"
 
-#: e_mod_main.c:838
+#: ../e_mod_main.c:845
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "szundi %.14s of %.2d:%.2d"
 
-#: e_mod_main.c:852
+#: ../e_mod_main.c:859
 msgid "Snooze (No alarm to delay)"
 msgstr "Szundi (Nincs késleltethető emlékeztetők)"
 
-#: e_mod_main.c:859
+#: ../e_mod_main.c:866
 msgid "Add an alarm"
 msgstr "Emlékeztető hozzáadása"
 
-#: e_mod_main.c:866
+#: ../e_mod_main.c:873
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: e_mod_main.c:1047
+#: ../e_mod_main.c:1054
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
 "configuration of alarm module<br>has been upgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Emlékeztető modul: Beállítások frissítve</hilight><br><br>Az emlékeztető modulod beállításai<br> frissítve lettek.<br> A korábbi beállítások el lettek távolítva. <br>Elnézést kérünk.<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Emlékeztető modul: Beállítások frissítve</hilight><br><br>Az "
+"emlékeztető modulod beállításai<br> frissítve lettek.<br> A korábbi "
+"beállítások el lettek távolítva. <br>Elnézést kérünk.<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1053 e_mod_main.c:1067
+#: ../e_mod_main.c:1060 ../e_mod_main.c:1074
 msgid "Alarm Module version "
 msgstr "Emlékeztető modul verziója"
 
-#: e_mod_main.c:1061
+#: ../e_mod_main.c:1068
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Emlékeztető modul: Beállítások viszaállítva</hilight><br><br>Az emlékeztető modulod beállításai<br> vissza lettek állítva.<br> A korábbi beállítások el lettek távolítva. <br>Elnézést kérünk.<br><br>(%d -> %d)"
-
+msgstr ""
+"<hilight>Emlékeztető modul: Beállítások viszaállítva</hilight><br><br>Az "
+"emlékeztető modulod beállításai<br> vissza lettek állítva.<br> A korábbi "
+"beállítások el lettek távolítva. <br>Elnézést kérünk.<br><br>(%d -> %d)"

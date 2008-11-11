@@ -1,37 +1,36 @@
 # Simplified Chinese translation for Calendar module in e17 
 # Copyright 2008 GNU project.
-# 
+#
 # Aron Xu <aronmalache@163.com>
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Calendar module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 18:08+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-22 21:02+0800\n"
 "Last-Translator: Aron Xu <>\n"
 "Language-Team: zh_CN <i18n-tranlations@lists.i18n.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:432
+#: ../e_mod_main.c:439
 msgid "Sunday"
 msgstr "星期日"
 
-#: e_mod_main.c:439
+#: ../e_mod_main.c:446
 msgid "Monday"
 msgstr "星期一"
 
-#: e_mod_main.c:451
+#: ../e_mod_main.c:458
 msgid "First Day of Week"
 msgstr "每星期的第一天"
 
-#: e_mod_main.c:547 e_mod_main.c:563
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Calendar"
 msgstr "日历"
 
-#: e_mod_main.c:547 e_mod_main.c:563
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Monthview Popup (Show/Hide)"
 msgstr "每月弹出显示(显示/隐藏)"
-

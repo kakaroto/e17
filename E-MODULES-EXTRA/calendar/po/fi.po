@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Calendar module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 18:08+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,22 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:432
+#: ../e_mod_main.c:439
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: e_mod_main.c:439
+#: ../e_mod_main.c:446
 msgid "Monday"
 msgstr "Maanantai"
 
-#: e_mod_main.c:451
+#: ../e_mod_main.c:458
 msgid "First Day of Week"
 msgstr "Viikon ensimmäinen päivä"
 
-#: e_mod_main.c:547 e_mod_main.c:563
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Calendar"
 msgstr "Kalenteri"
 
-#: e_mod_main.c:547 e_mod_main.c:563
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Kuukausinäytön ponnahdus (Näytä/Piilota)"

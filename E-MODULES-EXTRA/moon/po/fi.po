@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Moon module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 19:28+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,78 +14,78 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "Kuun asetukset"
 
-#: src/e_mod_config.c:157
+#: ../src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "Näytön asetukset§"
 
-#: src/e_mod_config.c:158
+#: ../src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "Animoidut pilvet"
 
-#: src/e_mod_config.c:162
+#: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "Kuun vaiheen arvo"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Show always"
 msgstr "Näytä aina"
 
-#: src/e_mod_config.c:166
+#: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "Näytä hiiren ollessa kohdalla"
 
-#: src/e_mod_config.c:168
+#: ../src/e_mod_config.c:168
 msgid "Never show"
 msgstr "Älä näytä koskaan"
 
-#: src/e_mod_config.c:172
+#: ../src/e_mod_config.c:172
 msgid "Description"
 msgstr "Kuvaus"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "Numeerinen"
 
-#: src/e_mod_main.c:207
+#: ../src/e_mod_main.c:207
 msgid "Moon"
 msgstr "Kuu"
 
-#: src/e_mod_main.c:247
+#: ../src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "Asetukset"
 
-#: src/e_mod_main.c:491
+#: ../src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "Uusi kuu"
 
-#: src/e_mod_main.c:493
+#: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "Kasvava kuunsirppi"
 
-#: src/e_mod_main.c:495
+#: ../src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "Ensimmäinen neljännes"
 
-#: src/e_mod_main.c:497
+#: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "Kasvava kuu"
 
-#: src/e_mod_main.c:499
+#: ../src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "Täysikuu"
 
-#: src/e_mod_main.c:501
+#: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "Vähenevä kuu"
 
-#: src/e_mod_main.c:503
+#: ../src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "Viimeinen neljännes"
 
-#: src/e_mod_main.c:505
+#: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "Vähenevä kuunsirppi"

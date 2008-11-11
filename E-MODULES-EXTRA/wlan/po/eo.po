@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:43+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 19:42+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,44 +15,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Konfiguraĵo de Wlan"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "Ĝeneralaj Alĝustigoj"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Ĉiam Vidigi Tekston"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Vidigi Tekston Dum Muso supras"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Vidigi Tekston Kiel Percento"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Kontroli Intervalon"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekundoj"
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Aparataj Agordoj"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr "Sendrata reto"
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 msgid "Configuration"
 msgstr "Konfiguraĵo"
-

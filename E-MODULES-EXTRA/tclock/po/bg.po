@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tclock 0.3.2\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 09:16-0500\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-05-28 17:16+0300\n"
 "Last-Translator: Luchezar P. Petkov <>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -14,45 +14,45 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:45
+#: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Конфигурация на Tclock"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Top"
 msgstr ""
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 #, fuzzy
 msgid "Show Top Line"
 msgstr "Показване на времето"
 
-#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
+#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Консултирайте се със strftime(3) за синтаксиса на формата"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Bottom"
 msgstr ""
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr ""
 
-#: e_mod_config.c:122
+#: ../e_mod_config.c:122
 msgid "Tool Tip"
 msgstr ""
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 #, fuzzy
 msgid "Show Tooltip"
 msgstr "Показване на времето"
 
-#: e_mod_main.c:141
+#: ../e_mod_main.c:141
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:186
+#: ../e_mod_main.c:186
 msgid "Configuration"
 msgstr "Конфигурация"
 

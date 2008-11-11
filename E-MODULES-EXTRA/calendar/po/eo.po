@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calendar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-09 18:37+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-12-09 18:38+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -14,22 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:432
+#: ../e_mod_main.c:439
 msgid "Sunday"
 msgstr "Dimancxo"
 
-#: e_mod_main.c:439
+#: ../e_mod_main.c:446
 msgid "Monday"
 msgstr "Lundo"
 
-#: e_mod_main.c:451
+#: ../e_mod_main.c:458
 msgid "First Day of Week"
 msgstr "Unua tago de la semajno"
 
-#: e_mod_main.c:546 e_mod_main.c:562
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Calendar"
 msgstr "Kalendaro"
 
-#: e_mod_main.c:546 e_mod_main.c:562
+#: ../e_mod_main.c:554 ../e_mod_main.c:570
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Sprucxfenestra monato (Vidigi/Kasxi)"

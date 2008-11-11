@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rain module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:35+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,38 +14,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Sademoduuli"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "General Settings"
 msgstr "Yleisasetukset"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Näytä pilvet"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Sateen tiheys"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Tihkusade"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Normaali sade"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Downpour"
 msgstr "Kaatosade"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Ulkonäkö"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Rain"
 msgstr "Sade"

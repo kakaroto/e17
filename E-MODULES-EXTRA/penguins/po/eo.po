@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Penguins\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 19:07+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-11-18 19:27+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -14,40 +14,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:41
 msgid "Population Settings"
 msgstr "Agordo de logxantaro"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:91
 msgid "Number of penguins:"
 msgstr "Numbro da pingvenoj:"
 
-#: e_mod_config.c:94 e_mod_config.c:104
+#: ../e_mod_config.c:93 ../e_mod_config.c:103
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:97
+#: ../e_mod_config.c:96
 msgid "Zoom factor:"
 msgstr "Pligrandigo:"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:98
 #, c-format
 msgid "%1.1f X"
 msgstr "%1.1f X"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:101
 msgid "Transparency:"
 msgstr "Travidebleco:"
 
-#: e_mod_config.c:108
+#. Lista
+#: ../e_mod_config.c:107
 msgid "Select population:"
 msgstr "Elekti logxantaron:"
 
-#: e_mod_main.c:60
+#: ../e_mod_main.c:60
 msgid "Appearance"
 msgstr "Aspekto"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Penguins"
 msgstr "Pingvenoj"

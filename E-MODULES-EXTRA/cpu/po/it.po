@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cpu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:16+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-11-18 18:52+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,30 +14,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_main.c:131
+#: ../e_mod_main.c:129
 msgid "Cpu"
 msgstr "Cpu"
 
-#: e_mod_main.c:366
+#: ../e_mod_main.c:363
 msgid "Fast (0.5 sec)"
 msgstr "Veloce (0.5 sec)"
 
-#: e_mod_main.c:373
+#: ../e_mod_main.c:370
 msgid "Medium (1 sec)"
 msgstr "Media (1 sec)"
 
-#: e_mod_main.c:380
+#: ../e_mod_main.c:377
 msgid "Normal (2 sec)"
 msgstr "Normale (2 sec)"
 
-#: e_mod_main.c:387
+#: ../e_mod_main.c:384
 msgid "Slow (5 sec)"
 msgstr "Lenta (5 sec)"
 
-#: e_mod_main.c:394
+#: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
 msgstr "Molto lenta (30 sec)"
 
-#: e_mod_main.c:405
+#: ../e_mod_main.c:402
 msgid "Time Between Updates"
 msgstr "Frequenza di aggiornamento"

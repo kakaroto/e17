@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Wlan module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:43+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-03-09 15:19+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,47 +16,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Wlan konfiguration"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "Allmänna inställningar"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 #, fuzzy
 msgid "Always Show Text"
 msgstr "Visa text"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 #, fuzzy
 msgid "Show Text On Mouse Over"
 msgstr "Visa text"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 #, fuzzy
 msgid "Show Text As Percent"
 msgstr "Visa text"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Kontrollintervall"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr ""
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Enhetsinställningar"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr ""
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 #, fuzzy
 msgid "Configuration"
 msgstr "Wlan konfiguration"

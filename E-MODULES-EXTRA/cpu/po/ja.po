@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cpu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-20 14:55+0900\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 22:06+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,31 +15,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:129
+#: ../e_mod_main.c:129
 msgid "Cpu"
 msgstr ""
 
-#: e_mod_main.c:363
+#: ../e_mod_main.c:363
 msgid "Fast (0.5 sec)"
 msgstr "短い(0.5秒ごと)"
 
-#: e_mod_main.c:370
+#: ../e_mod_main.c:370
 msgid "Medium (1 sec)"
 msgstr "やや短い(1秒ごと)"
 
-#: e_mod_main.c:377
+#: ../e_mod_main.c:377
 msgid "Normal (2 sec)"
 msgstr "普通(2秒ごと)"
 
-#: e_mod_main.c:384
+#: ../e_mod_main.c:384
 msgid "Slow (5 sec)"
 msgstr "長い(5秒ごと)"
 
-#: e_mod_main.c:391
+#: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
 msgstr "もっと長い(30秒)"
 
-#: e_mod_main.c:402
+#: ../e_mod_main.c:402
 msgid "Time Between Updates"
 msgstr "更新間隔"
 

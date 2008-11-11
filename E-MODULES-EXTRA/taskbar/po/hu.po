@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: taskbar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-19 14:57+0200\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 23:33+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config.c:30
+#: ../e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Feladatlista beállítás"
 
-#: e_mod_config.c:71
+#: ../e_mod_config.c:71
 msgid "Display"
 msgstr "Megjelenítés"
 
-#: e_mod_config.c:72
+#: ../e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "Minden asztal ablakainak megjelenítése"
 
-#: e_mod_main.c:293 e_mod_main.c:681
+#: ../e_mod_main.c:291 ../e_mod_main.c:676
 msgid "Taskbar"
 msgstr "Feladatlista"
 
-#: e_mod_main.c:673
+#: ../e_mod_main.c:668
 msgid "Configuration"
 msgstr "Beállítás"
 

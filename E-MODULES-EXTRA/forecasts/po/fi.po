@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Forecasts module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 18:59+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,108 +14,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Sääennusteen asetukset"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Näytön asetukset"
 
-#: e_mod_config.c:91
+#: ../e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Kyselyväli"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minuuttia"
 
-#: e_mod_config.c:97
+#: ../e_mod_config.c:97
 msgid "Show Description"
 msgstr "Näytä kuvaus"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "Ponnahdus hiiren ollessa kohdalla"
 
-#: e_mod_config.c:103
+#: ../e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Yksikköasetukset"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Metric"
 msgstr "Metrinen"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "English"
 msgstr "Englantilainen"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Yahoo Forecasts -koodi"
 
-#: e_mod_config.c:112
+#: ../e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo Forecasts -koodi/Postiosoite"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Löytääksesi alueesi koodin, mene:"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, etsi alueesi ja katso URL:ia"
 
-#: e_mod_main.c:243
+#: ../e_mod_main.c:256
 msgid "Forecasts"
 msgstr "Sääennuste"
 
-#: e_mod_main.c:288
+#: ../e_mod_main.c:301
 msgid "Configuration"
 msgstr "Asetukset"
 
-#: e_mod_main.c:969
+#: ../e_mod_main.c:1025
 msgid "Wind Chill"
 msgstr "Tuulen hyytävyys"
 
-#: e_mod_main.c:975
+#: ../e_mod_main.c:1031
 msgid "Wind Speed"
 msgstr "Tuulennopeus"
 
-#: e_mod_main.c:981
+#: ../e_mod_main.c:1037
 msgid "Humidity"
 msgstr "Kosteus"
 
-#: e_mod_main.c:987
+#: ../e_mod_main.c:1043
 msgid "Visibility"
 msgstr "Näkyvyys"
 
-#: e_mod_main.c:993
+#: ../e_mod_main.c:1049
 msgid "Pressure"
 msgstr "Ilmanpaine"
 
-#: e_mod_main.c:1000
+#: ../e_mod_main.c:1056
 msgid "Rising"
 msgstr "Nousee"
 
-#: e_mod_main.c:1002
+#: ../e_mod_main.c:1058
 msgid "Falling"
 msgstr "Laskee"
 
-#: e_mod_main.c:1004
+#: ../e_mod_main.c:1060
 msgid "Steady"
 msgstr "Vakaa"
 
-#: e_mod_main.c:1008
+#: ../e_mod_main.c:1064
 msgid "Sunrise / Sunset"
 msgstr "Auringonnousu / Auringonlasku"
 
-#: e_mod_main.c:1031
+#: ../e_mod_main.c:1088
 msgid "High"
 msgstr "Korkea"
 
-#: e_mod_main.c:1042
+#: ../e_mod_main.c:1099
 msgid "Low"
 msgstr "Matala"

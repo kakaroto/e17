@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cpu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:17+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 20:13+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,31 +17,30 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_main.c:131
+#: ../e_mod_main.c:129
 msgid "Cpu"
 msgstr "CPU"
 
-#: e_mod_main.c:366
+#: ../e_mod_main.c:363
 msgid "Fast (0.5 sec)"
 msgstr "Gyors (0.5 mp)"
 
-#: e_mod_main.c:373
+#: ../e_mod_main.c:370
 msgid "Medium (1 sec)"
 msgstr "Közepes (1 mp)"
 
-#: e_mod_main.c:380
+#: ../e_mod_main.c:377
 msgid "Normal (2 sec)"
 msgstr "Normál (2 mp)"
 
-#: e_mod_main.c:387
+#: ../e_mod_main.c:384
 msgid "Slow (5 sec)"
 msgstr "Lassú (5 mp)"
 
-#: e_mod_main.c:394
+#: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
 msgstr "Nagyon lassú (30 mp)"
 
-#: e_mod_main.c:405
+#: ../e_mod_main.c:402
 msgid "Time Between Updates"
 msgstr "Frissítési időköz"
-

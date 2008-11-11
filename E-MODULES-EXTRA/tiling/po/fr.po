@@ -6,79 +6,80 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiling module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-27 10:42+0400\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-27 18:23+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
+"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: e_mod_main.c:113
-#: e_mod_main.c:118
-#: e_mod_main.c:1000
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
 msgid "Tiling"
 msgstr "Pavage"
 
-#: e_mod_main.c:999
+#: ../e_mod_main.c:999
 msgid "Windows"
 msgstr "Fenêtres"
 
-#: e_mod_config.c:70
+#: ../e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Configuration du pavage"
 
-#: e_mod_config.c:217
+#. General settings
+#: ../e_mod_config.c:217
 msgid "General"
 msgstr "Général"
 
-#: e_mod_config.c:227
+#: ../e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Horizontal:"
 
-#: e_mod_config.c:228
-#: e_mod_config.c:232
+#: ../e_mod_config.c:228 ../e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f pixels"
 
-#: e_mod_config.c:231
+#: ../e_mod_config.c:231
 msgid "Vertical:"
 msgstr "Vertical:"
 
-#: e_mod_config.c:241
+#. Virtual desktop settings
+#: ../e_mod_config.c:241
 msgid "Virtual Desktops"
 msgstr "Bureaux virtuels"
 
-#: e_mod_config.c:279
+#. Grid mode settings
+#: ../e_mod_config.c:279
 msgid "Grid mode settings"
 msgstr "Paramètre du mode grille"
 
-#: e_mod_config.c:283
+#: ../e_mod_config.c:283
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:288
+#. Bigmain settings
+#: ../e_mod_config.c:288
 msgid "Bigmain settings"
 msgstr "Paramètres de la super-fenêtre"
 
-#: e_mod_config.c:289
+#: ../e_mod_config.c:289
 msgid "Big win takes percent of screen:"
 msgstr "La super-fenêtre recouvre ce pourcentage de l'écran:"
 
-#: e_mod_config.c:290
+#: ../e_mod_config.c:290
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: e_mod_config.c:296
+#: ../e_mod_config.c:296
 msgid "Tiling border"
 msgstr "Bordure du pavage"
 
-#: e_mod_config.c:310
+#: ../e_mod_config.c:310
 msgid "Floating border"
 msgstr "Bordure flottante"
-

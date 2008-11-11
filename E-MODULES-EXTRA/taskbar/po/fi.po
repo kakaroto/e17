@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-19 14:57+0200\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,23 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:30
+#: ../e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Tehtäväpalkin asetukset"
 
-#: e_mod_config.c:71
+#: ../e_mod_config.c:71
 msgid "Display"
 msgstr "Näyttö"
 
-#: e_mod_config.c:72
+#: ../e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "Näytä kaikkien työpöytien ikkunat"
 
-#: e_mod_main.c:293 e_mod_main.c:681
+#: ../e_mod_main.c:291 ../e_mod_main.c:676
 msgid "Taskbar"
 msgstr "Tehtäväpalkki"
 
-#: e_mod_main.c:673
+#: ../e_mod_main.c:668
 msgid "Configuration"
 msgstr "Asetukset"
 

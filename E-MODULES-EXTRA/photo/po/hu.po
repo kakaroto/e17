@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:27+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 23:21+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,304 +17,312 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/module/e_mod_main.c:52 src/module/e_mod_main.c:59
-#: src/module/e_mod_main.c:66 src/module/e_mod_main.c:73
-#: src/module/e_mod_main.c:80 src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
+#: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
+#: ../src/module/e_mod_main.c:80 ../src/module/e_mod_main.c:87
 msgid "Photo Module"
 msgstr "Fénykép modul"
 
-#: src/module/e_mod_main.c:52
+#: ../src/module/e_mod_main.c:52
 msgid "E Canvas init failed !"
 msgstr "E Vászon indítás nem sikerült!"
 
-#: src/module/e_mod_main.c:59
+#: ../src/module/e_mod_main.c:59
 msgid "Theme init failed !"
 msgstr "Téma indítás nem sikerült!"
 
-#: src/module/e_mod_main.c:66
+#: ../src/module/e_mod_main.c:66
 msgid "Config init failed"
 msgstr "Konfiguráció indítás nem sikerült"
 
-#: src/module/e_mod_main.c:73
+#: ../src/module/e_mod_main.c:73
 msgid "Picture subsystem init failed"
 msgstr "Kép alrendszer indítás nem sikerült"
 
-#: src/module/e_mod_main.c:80
+#: ../src/module/e_mod_main.c:80
 msgid "Popup warn subsystem init failed"
 msgstr "Felugró ablak alrendszerindítás nem sikerült"
 
-#: src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:87
 msgid "Popup info subsystem init failed"
 msgstr "felugró információ indítása nem sikerült"
 
-#: src/module/e_mod_main.c:180
+#: ../src/module/e_mod_main.c:180
 msgid "Photo"
 msgstr "Fénykép"
 
-#: src/module/photo_config.c:65
+#: ../src/module/photo_config.c:65
 #, c-format
 msgid ""
 "<hilight>Photo module : Configuration Upgraded</hilight><br><br>Your "
 "configuration of photo module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Fénykép modul : Beállítások frisstve</hilight><br><br> A beállításaid<br> frisstve lettek<br>. A korábbi beállításaid törölve lettek<br> Elnézést kérünk<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Fénykép modul : Beállítások frisstve</hilight><br><br> A "
+"beállításaid<br> frisstve lettek<br>. A korábbi beállításaid törölve "
+"lettek<br> Elnézést kérünk<br><br>(%d -> %d)"
 
-#: src/module/photo_config.c:71 src/module/photo_config.c:85
+#: ../src/module/photo_config.c:71 ../src/module/photo_config.c:85
 msgid "Photo Module version "
 msgstr "Fénykép modul verzió "
 
-#: src/module/photo_config.c:79
+#: ../src/module/photo_config.c:79
 #, c-format
 msgid ""
 "<hilight>Photo module : Configuration Downgraded</hilight><br><br>Your "
 "configuration of Photo module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Fénykép modul : Beállítások visszaállítva</hilight><br><br> A beállításaid<br> vissza lettek állítva<br>. A korábbi beállításaid törölve lettek<br> Elnézést kérünk<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Fénykép modul : Beállítások visszaállítva</hilight><br><br> A "
+"beállításaid<br> vissza lettek állítva<br>. A korábbi beállításaid törölve "
+"lettek<br> Elnézést kérünk<br><br>(%d -> %d)"
 
-#: src/module/photo_config_dialog.c:64
+#: ../src/module/photo_config_dialog.c:64
 msgid "Photo Configuration"
 msgstr "Fénykép beállítás"
 
-#: src/module/photo_config_dialog.c:220
+#: ../src/module/photo_config_dialog.c:220
 msgid "Picture directories"
 msgstr "Kép könyvtár"
 
-#: src/module/photo_config_dialog.c:235
+#: ../src/module/photo_config_dialog.c:235
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: src/module/photo_config_dialog.c:237
+#: ../src/module/photo_config_dialog.c:237
 msgid "Delete"
 msgstr "Törlés"
 
-#: src/module/photo_config_dialog.c:239
+#: ../src/module/photo_config_dialog.c:239
 msgid "Configure"
 msgstr "Beállítás"
 
-#: src/module/photo_config_dialog.c:242
+#: ../src/module/photo_config_dialog.c:242
 msgid "Reload picture directories"
 msgstr "Kép könyvtár újratöltése"
 
-#: src/module/photo_config_dialog.c:245
+#: ../src/module/photo_config_dialog.c:245
 msgid "Stop loading"
 msgstr "Betöltés leállítása"
 
-#: src/module/photo_config_dialog.c:252
-#: src/module/photo_config_dialog_item.c:127
+#: ../src/module/photo_config_dialog.c:252
+#: ../src/module/photo_config_dialog_item.c:127
 msgid "Appearance"
 msgstr "Megjelenés"
 
-#: src/module/photo_config_dialog.c:254
-#: src/module/photo_config_dialog_item.c:136
+#: ../src/module/photo_config_dialog.c:254
+#: ../src/module/photo_config_dialog_item.c:136
 msgid "Always show label"
 msgstr "Mindig mutasd a címkét"
 
-#: src/module/photo_config_dialog.c:256
+#: ../src/module/photo_config_dialog.c:256
 msgid "Nice transitions"
 msgstr "Kellemes megjelenés"
 
-#: src/module/photo_config_dialog.c:262
+#: ../src/module/photo_config_dialog.c:262
 msgid "Default Mouse actions"
 msgstr "Alapértelmezett egérműveletek"
 
-#: src/module/photo_config_dialog.c:264
-#: src/module/photo_config_dialog_item.c:191
+#: ../src/module/photo_config_dialog.c:264
+#: ../src/module/photo_config_dialog_item.c:191
 msgid "Over"
 msgstr "Felül"
 
-#: src/module/photo_config_dialog.c:268
-#: src/module/photo_config_dialog_item.c:195
+#: ../src/module/photo_config_dialog.c:268
+#: ../src/module/photo_config_dialog_item.c:195
 msgid "Left"
 msgstr "Balra"
 
-#: src/module/photo_config_dialog.c:270 src/module/photo_config_dialog.c:276
-#: src/module/photo_config_dialog_item.c:197
-#: src/module/photo_config_dialog_item.c:203
+#: ../src/module/photo_config_dialog.c:270
+#: ../src/module/photo_config_dialog.c:276
+#: ../src/module/photo_config_dialog_item.c:197
+#: ../src/module/photo_config_dialog_item.c:203
 msgid "click"
 msgstr "kattints"
 
-#: src/module/photo_config_dialog.c:274
-#: src/module/photo_config_dialog_item.c:201
+#: ../src/module/photo_config_dialog.c:274
+#: ../src/module/photo_config_dialog_item.c:201
 msgid "Middle"
 msgstr "Középre"
 
-#: src/module/photo_config_dialog.c:279
-#: src/module/photo_config_dialog_item.c:142
+#: ../src/module/photo_config_dialog.c:279
+#: ../src/module/photo_config_dialog_item.c:142
 msgid "No"
 msgstr "Nem"
 
-#: src/module/photo_config_dialog.c:318
+#: ../src/module/photo_config_dialog.c:318
 msgid "Popups"
 msgstr "Felugró ablakok"
 
-#: src/module/photo_config_dialog.c:320
+#: ../src/module/photo_config_dialog.c:320
 msgid "Picture loader popup"
 msgstr "Felugró képbetöltés"
 
-#: src/module/photo_config_dialog.c:323
+#: ../src/module/photo_config_dialog.c:323
 msgid "Never"
 msgstr "Soha"
 
-#: src/module/photo_config_dialog.c:325
+#: ../src/module/photo_config_dialog.c:325
 msgid "Summary"
 msgstr "Összegzés"
 
-#: src/module/photo_config_dialog.c:327
+#: ../src/module/photo_config_dialog.c:327
 msgid "Verbose"
 msgstr "Bőbeszédű"
 
-#: src/module/photo_config_dialog.c:332
+#: ../src/module/photo_config_dialog.c:332
 msgid "Miscellaneous"
 msgstr "Egyebek"
 
-#: src/module/photo_config_dialog.c:334
+#: ../src/module/photo_config_dialog.c:334
 msgid "Remove generated backgrounds"
 msgstr "Hátterek eltávolítása"
 
-#: src/module/photo_config_dialog.c:338
+#: ../src/module/photo_config_dialog.c:338
 msgid "Pictures viewer"
 msgstr "Képnéző"
 
-#: src/module/photo_config_dialog.c:344
+#: ../src/module/photo_config_dialog.c:344
 msgid "Images Quality"
 msgstr "Képek minősége"
 
-#: src/module/photo_config_dialog.c:346
+#: ../src/module/photo_config_dialog.c:346
 #, c-format
 msgid "%1.0f pix"
 msgstr "%1.0f pixel"
 
-#: src/module/photo_config_dialog.c:353
+#: ../src/module/photo_config_dialog.c:353
 msgid "Automaticly reload directories"
 msgstr "Könyvtárak automatikus újratöltése"
 
-#: src/module/photo_config_dialog.c:356
+#: ../src/module/photo_config_dialog.c:356
 msgid "when add / modify directory list"
 msgstr "könyvtárlista módosításánál / hozzáadásánál"
 
-#: src/module/photo_config_dialog.h:36
+#: ../src/module/photo_config_dialog.h:36
 msgid "Show label"
 msgstr "Címke megjelenítése"
 
-#: src/module/photo_config_dialog.h:38
+#: ../src/module/photo_config_dialog.h:38
 msgid "Show informations"
 msgstr "Információk megjelenítése"
 
-#: src/module/photo_config_dialog.h:40 src/module/photo_menu.c:44
+#: ../src/module/photo_config_dialog.h:40 ../src/module/photo_menu.c:44
 msgid "Previous picture"
 msgstr "Előző kép"
 
-#: src/module/photo_config_dialog.h:42 src/module/photo_menu.c:40
+#: ../src/module/photo_config_dialog.h:42 ../src/module/photo_menu.c:40
 msgid "Next picture"
 msgstr "Következő kép"
 
-#: src/module/photo_config_dialog.h:44
+#: ../src/module/photo_config_dialog.h:44
 msgid "Pause"
 msgstr "Szünet"
 
-#: src/module/photo_config_dialog.h:46 src/module/photo_menu.c:58
+#: ../src/module/photo_config_dialog.h:46 ../src/module/photo_menu.c:58
 msgid "Set as background"
 msgstr "Beállítás háttérképnek"
 
-#: src/module/photo_config_dialog.h:48
+#: ../src/module/photo_config_dialog.h:48
 msgid "Open viewer"
 msgstr "Néző megnyitása"
 
-#: src/module/photo_config_dialog.h:50
+#: ../src/module/photo_config_dialog.h:50
 msgid "Show menu"
 msgstr "A menü megjelenítése"
 
-#: src/module/photo_config_dialog_dir.c:38
+#: ../src/module/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
 msgstr "Fénykép könyvtár beállítás"
 
-#: src/module/photo_config_dialog_dir.c:118
+#: ../src/module/photo_config_dialog_dir.c:118
 msgid "Directory"
 msgstr "Könyvtár"
 
-#: src/module/photo_config_dialog_dir.c:127
+#: ../src/module/photo_config_dialog_dir.c:127
 msgid "Loading options"
 msgstr "Betöltési opciók"
 
-#: src/module/photo_config_dialog_dir.c:129
+#: ../src/module/photo_config_dialog_dir.c:129
 msgid "Recursive"
 msgstr "Rekurzív:"
 
-#: src/module/photo_config_dialog_dir.c:131
+#: ../src/module/photo_config_dialog_dir.c:131
 msgid "Read hidden files"
 msgstr "Rejtett fájlok olvasása"
 
-#: src/module/photo_config_dialog_dir.c:158
+#: ../src/module/photo_config_dialog_dir.c:158
 msgid "Photo Module Warning"
 msgstr "Fénykép modul figyelmeztetés"
 
-#: src/module/photo_config_dialog_item.c:48
+#: ../src/module/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
 msgstr "Fénykép elem beállítás"
 
-#: src/module/photo_config_dialog_item.c:112
+#: ../src/module/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
 msgstr "Képváltási időközök"
 
-#: src/module/photo_config_dialog_item.c:114
+#: ../src/module/photo_config_dialog_item.c:114
 msgid "Activate"
 msgstr "Aktiválás"
 
-#: src/module/photo_config_dialog_item.c:117
+#: ../src/module/photo_config_dialog_item.c:117
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f másodperc"
 
-#: src/module/photo_config_dialog_item.c:129
+#: ../src/module/photo_config_dialog_item.c:129
 msgid "Alpha"
 msgstr "Alfa"
 
-#: src/module/photo_config_dialog_item.c:132
+#: ../src/module/photo_config_dialog_item.c:132
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: src/module/photo_config_dialog_item.c:140
+#: ../src/module/photo_config_dialog_item.c:140
 msgid "Yes"
 msgstr "Igen"
 
-#: src/module/photo_config_dialog_item.c:144
-#: src/module/photo_config_dialog_item.c:206
+#: ../src/module/photo_config_dialog_item.c:144
+#: ../src/module/photo_config_dialog_item.c:206
 msgid "Default setting"
 msgstr "Alapértelmezett"
 
-#: src/module/photo_config_dialog_item.c:189
+#: ../src/module/photo_config_dialog_item.c:189
 msgid "Mouse actions"
 msgstr "Egérműveletek"
 
-#: src/module/photo_item.c:389
+#: ../src/module/photo_item.c:389
 #, c-format
 msgid ""
 "<hilight>File %s doesnt exists.</hilight><br><br>This file is in Photo "
 "module picture list, but it seems you removed it from the disk<br>It cant be "
 "set as background, sorry."
 msgstr ""
-"<hilight>%s fájl nem létezik. </hilight><br><br>A fájl benne van a fényképlistában, de úgy látszik már letörölted a merevlemezről, <br>ezért "
+"<hilight>%s fájl nem létezik. </hilight><br><br>A fájl benne van a "
+"fényképlistában, de úgy látszik már letörölted a merevlemezről, <br>ezért "
 "nem tudom beállítani háttérképnek, bocsika."
 
-#: src/module/photo_item.c:392 src/module/photo_item.c:417
-#: src/module/photo_item.c:455 src/module/photo_item.c:475
-#: src/module/photo_picture_local.c:259
+#: ../src/module/photo_item.c:392 ../src/module/photo_item.c:417
+#: ../src/module/photo_item.c:455 ../src/module/photo_item.c:475
+#: ../src/module/photo_picture_local.c:259
 msgid "Photo Module Error"
 msgstr "Fénykép modul hiba"
 
-#: src/module/photo_item.c:413
+#: ../src/module/photo_item.c:413
 #, c-format
 msgid ""
 "<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
 "<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
-"<hilight>e17setroot szükséges</hilight><br><br>%s nem egy edje fájl! "
-"<br>A fényép modulnak szüksége van az e17setroot eszközre az e_utils csomagból, "
+"<hilight>e17setroot szükséges</hilight><br><br>%s nem egy edje fájl! <br>A "
+"fényép modulnak szüksége van az e17setroot eszközre az e_utils csomagból, "
 "hogy beállíthassa a képedet háttérképnek."
 
-#: src/module/photo_item.c:452
+#: ../src/module/photo_item.c:452
 #, c-format
 msgid ""
 "<hilight>File %s doesnt exists !</hilight><br><br>This file is in Photo's "
@@ -325,48 +333,48 @@ msgstr ""
 "module picture list, but it seems you removed it from the disk<br>It cant be "
 "set as background, sorry."
 
-#: src/module/photo_item.c:472
+#: ../src/module/photo_item.c:472
 #, c-format
 msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
 "for images in Photo module configuration panel (Advanced view)"
 msgstr ""
-"<hilight>%s Nézegető nem található!</hilight><br><br> "
-"Megváltoztathatod a nézegetőt a fénykép modul beállításoknál. (speciális beállítások)"
+"<hilight>%s Nézegető nem található!</hilight><br><br> Megváltoztathatod a "
+"nézegetőt a fénykép modul beállításoknál. (speciális beállítások)"
 
-#: src/module/photo_menu.c:30
+#: ../src/module/photo_menu.c:30
 msgid "Pause slideshow"
 msgstr "Diavetítés szüneteltetése"
 
-#: src/module/photo_menu.c:35
+#: ../src/module/photo_menu.c:35
 msgid "Resume slideshow"
 msgstr "Diavetítés folytatása"
 
-#: src/module/photo_menu.c:54
+#: ../src/module/photo_menu.c:54
 msgid "Picture informations"
 msgstr "Kép információk"
 
-#: src/module/photo_menu.c:62
+#: ../src/module/photo_menu.c:62
 msgid "Open in"
 msgstr "Megnyitás -ban, -ben"
 
-#: src/module/photo_menu.c:71
+#: ../src/module/photo_menu.c:71
 msgid "Configure Photo module"
 msgstr "Fénykép modul beállítása"
 
-#: src/module/photo_menu.c:75
+#: ../src/module/photo_menu.c:75
 msgid "Configure this Photo gadget"
 msgstr "Fénykép modul beállítása"
 
-#: src/module/photo_menu.c:82
+#: ../src/module/photo_menu.c:82
 msgid "Configure Gadget and Shelf"
 msgstr "Polc és modul beállítása"
 
-#: src/module/photo_picture_histo.c:121
+#: ../src/module/photo_picture_histo.c:121
 msgid "Historic"
 msgstr "Történet"
 
-#: src/module/photo_picture_local.c:253
+#: ../src/module/photo_picture_local.c:253
 #, c-format
 msgid ""
 "<hilight>Directory %s doesnt exists.</hilight><br><br>You can change the "
@@ -374,13 +382,17 @@ msgid ""
 "png<br><br>After import, if you can remove these files and the pictures "
 "still can<br>be viewed, but you wont be able to set them as wallpaper "
 "anymore<br><br>"
-msgstr "<hilight>%s könyvtár nem létezik.</hilight><br><br> Megváltoztathatod a képek könyvtárát az alap beállításoknál.<br> Ezek lehetnek jpeg vagy png képek.<br><br> Az importálás után bármikor eltávolíthatja ezeket a képeket, de a továbbiakban ugyanúgy <br>megnézheti őket."
+msgstr ""
+"<hilight>%s könyvtár nem létezik.</hilight><br><br> Megváltoztathatod a "
+"képek könyvtárát az alap beállításoknál.<br> Ezek lehetnek jpeg vagy png "
+"képek.<br><br> Az importálás után bármikor eltávolíthatja ezeket a képeket, "
+"de a továbbiakban ugyanúgy <br>megnézheti őket."
 
-#: src/module/photo_picture_local.c:593
+#: ../src/module/photo_picture_local.c:593
 msgid "Photo Module Information"
 msgstr "Fénykép modul információ"
 
-#: src/module/photo_picture_local.c:594
+#: ../src/module/photo_picture_local.c:594
 #, fuzzy
 msgid ""
 "<hilight>Creating thumbs</hilight><br><br>Some pictures are being thumbed in "
@@ -389,5 +401,8 @@ msgid ""
 "pictures that haven't been loaded in Photo module before,<br>they will be "
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
-msgstr "<hilight> Létrehozás hüvelykujjak</hilight><br><br> Néhány in a<hilight> feladat</hilight><br> a while ez után: és<br><br> Minden idő betöltéskor t betöltve in Fénykép modul ez előtt:<br><br><br> létrehozás te nem eddig bármely in Fénykép<br> I i eddig változtatás"
-
+msgstr ""
+"<hilight> Létrehozás hüvelykujjak</hilight><br><br> Néhány in a<hilight> "
+"feladat</hilight><br> a while ez után: és<br><br> Minden idő betöltéskor t "
+"betöltve in Fénykép modul ez előtt:<br><br><br> létrehozás te nem eddig "
+"bármely in Fénykép<br> I i eddig változtatás"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: net 0.0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-04 05:58+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-06 17:54+0100\n"
 "Last-Translator: Andreas Volz <andreas.volz@tux-style.de>\n"
 "Language-Team: German\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Net Modul Konfiguration"
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Text anzeigen"
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Zeige Popup mit Übertragungsdetails"
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Führe die folgende Applikation bei einem Doppelklick aus:"
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Sensibilität für Netzwerkverkehr"
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Hoch (MB)"
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Mittel (KB)"
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Niedrig (Byte)"
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Geräte-Einstellung"
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Net"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: src/e_mod_net.c:203
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Gerät - %s"

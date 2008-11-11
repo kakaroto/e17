@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wlan\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-14 22:43+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-05-14 19:41+0100\n"
 "Last-Translator: TeB <pasaeljabon@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,43 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Configuracion de Wlan"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "Parametros Generales"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Siempre mostrar texto"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Mostrar texto al pasar el mouse"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Mostrar texto como porcentaje"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Intervalo de comprobacion:"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f segundos"
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Opciones del dispositivo"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr "Wlan"
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 msgid "Configuration"
 msgstr "Configuracion"

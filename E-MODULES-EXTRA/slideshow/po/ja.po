@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:37+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 16:14+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,56 +15,61 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:37
+#: ../e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "スライドショーの設定"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "切替間隔"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "背景を切り替えない"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f 秒"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Directory"
 msgstr "ディレクトリ"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "背景の保管場所"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Extra"
 msgstr "その他"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Randomize order"
 msgstr "切替順をランダムにする"
 
-#: e_mod_config.c:113
+#: ../e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
 msgstr "すべてのデスクトップの壁紙を設定する"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
 msgstr "現在のデスクトップに壁紙を設定する"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:117
+#, fuzzy
+msgid "Set wallpaper on current screen"
+msgstr "現在のデスクトップに壁紙を設定する"
+
+#: ../e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "現在のモニター(Xinerama対応の場合)に壁紙を設定する"
 
-#: e_mod_main.c:140
+#: ../e_mod_main.c:140
 msgid "Slideshow"
 msgstr ""
 
-#: e_mod_main.c:184
+#: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "設定"
 

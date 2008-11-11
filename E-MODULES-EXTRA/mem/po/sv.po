@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Mem module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:28+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-07-05 23:33+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,48 +16,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:43
+#: ../e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Mem konfiguration"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "General Settings"
 msgstr "Allmänna inställningar"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Visa alltid text"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Visa text när musen är över"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Visa text som procent"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "Ignorera buffers"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "Ignorera cached"
 
-#: e_mod_config.c:112
+#: ../e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Kontrollintervall"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr ""
 
-#: e_mod_main.c:105
+#: ../e_mod_main.c:105
 msgid "Mem"
 msgstr "Mem"
 
-#: e_mod_main.c:163
+#: ../e_mod_main.c:162
 msgid "Configuration"
 msgstr "Konfiguration"
 

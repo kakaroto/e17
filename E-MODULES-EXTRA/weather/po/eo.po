@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:42+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 19:43+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,60 +15,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:40
+#: ../e_mod_config.c:40
 msgid "Weather Configuration"
 msgstr "Vetera Konfiguraĵo"
 
-#: e_mod_config.c:86
+#: ../e_mod_config.c:86
 msgid "Display Settings"
 msgstr "Vidigaj Agordoj"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:88
 msgid "Simple"
 msgstr "Simpla"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Detailed"
 msgstr "Detala"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Poll Time"
 msgstr ""
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutoj"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Degree Settings"
 msgstr "Degraj Agordoj"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Celsius"
 msgstr "Celsius"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: e_mod_config.c:108 e_mod_config.c:109
+#: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
 msgstr "Kodo de ICAO"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
 msgstr "Akhavi vian Kodo de ICAO en :"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:177
+#: ../e_mod_main.c:179
 msgid "Weather"
 msgstr "Vetero"
 
-#: e_mod_main.c:222
+#: ../e_mod_main.c:224
 msgid "Configuration"
 msgstr "Konfiguraĵo"
-

@@ -7,52 +7,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Penguins module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-27 10:39+0400\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-27 13:30+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
+"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: e_mod_config.c:41
+#: ../e_mod_config.c:41
 msgid "Population Settings"
 msgstr "Paramètres de population"
 
-#: e_mod_config.c:91
+#: ../e_mod_config.c:91
 msgid "Number of penguins:"
 msgstr "Nombre de pingouins:"
 
-#: e_mod_config.c:93
-#: e_mod_config.c:103
+#: ../e_mod_config.c:93 ../e_mod_config.c:103
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Zoom factor:"
 msgstr "Facteur de zoom:"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 #, c-format
 msgid "%1.1f X"
 msgstr "%1.1f X"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Transparency:"
 msgstr "Transparence:"
 
-#: e_mod_config.c:107
+#. Lista
+#: ../e_mod_config.c:107
 msgid "Select population:"
 msgstr "Sélection de la population:"
 
-#: e_mod_main.c:60
+#: ../e_mod_main.c:60
 msgid "Appearance"
 msgstr "Aspect"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Penguins"
 msgstr "Pingouins"
-

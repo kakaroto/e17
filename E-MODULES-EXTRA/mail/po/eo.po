@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-23 22:38+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 22:50+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -14,151 +14,151 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:53
-msgid "Mail Configuration"
-msgstr "Agordo de Retmesagxo"
+#: ../e_mod_config_box.c:71
+msgid "Mailbox Configuration"
+msgstr "Agordo de retposxtkesto"
 
-#: e_mod_config.c:96 e_mod_config_box.c:164
+#: ../e_mod_config_box.c:163 ../e_mod_config.c:94
 msgid "General Settings"
 msgstr "Gxenerala agordoj"
 
-#: e_mod_config.c:98
+#: ../e_mod_config_box.c:165
+msgid "Start Program When New Mail Arrives"
+msgstr "Eki programaron kiam nova retmesagxo alvenas"
+
+#: ../e_mod_config_box.c:170
+msgid "Program:"
+msgstr "Programaro:"
+
+#: ../e_mod_config_box.c:182
+msgid "Mailbox Type"
+msgstr "Tipo de retposxtkesto"
+
+#: ../e_mod_config_box.c:184
+msgid "Pop3"
+msgstr "Pop3"
+
+#: ../e_mod_config_box.c:187
+msgid "Imap"
+msgstr "Imap"
+
+#: ../e_mod_config_box.c:190
+msgid "Maildir"
+msgstr "Maildir"
+
+#: ../e_mod_config_box.c:193
+msgid "Mbox"
+msgstr "Mbox"
+
+#: ../e_mod_config_box.c:196
+msgid "Monitor Mbox file permanently"
+msgstr "Elrigardi la dosieron Mbox cxiam"
+
+#: ../e_mod_config_box.c:213
+msgid "Port Settings"
+msgstr "Agordoj de pordo"
+
+#: ../e_mod_config_box.c:215
+msgid "Use SSL:"
+msgstr "Uzi SSL:"
+
+#: ../e_mod_config_box.c:222
+msgid "v2"
+msgstr "v2"
+
+#: ../e_mod_config_box.c:225
+msgid "v3"
+msgstr "v3"
+
+#: ../e_mod_config_box.c:229
+msgid "Port:"
+msgstr "Pordo:"
+
+#: ../e_mod_config_box.c:235
+msgid "Local:"
+msgstr "Loka:"
+
+#: ../e_mod_config_box.c:241
+msgid "Mailbox Settings"
+msgstr "Konto de retposxtkesto"
+
+#: ../e_mod_config_box.c:242
+msgid "Name:"
+msgstr "Nomo:"
+
+#: ../e_mod_config_box.c:247
+msgid "Mail Host:"
+msgstr "Servilo retmesagxoj:"
+
+#: ../e_mod_config_box.c:252
+msgid "Username:"
+msgstr "Uzantanomo:"
+
+#: ../e_mod_config_box.c:257
+msgid "Password:"
+msgstr "Pasvorto:"
+
+#: ../e_mod_config_box.c:263
+msgid "New Mail Path:"
+msgstr "Nova vojo de retmesagxoj:"
+
+#: ../e_mod_config_box.c:275
+msgid "Current Mail Path:"
+msgstr "Nuna vojo de retmesagxoj:"
+
+#: ../e_mod_config_box.c:433
+msgid "Inbox"
+msgstr "Enirkesto"
+
+#: ../e_mod_config.c:53
+msgid "Mail Configuration"
+msgstr "Agordo de Retmesagxo"
+
+#: ../e_mod_config.c:96
 msgid "Always Show Labels"
 msgstr "Cxiam vidigi etikedojn"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:99
 msgid "Show Mailbox Popup"
 msgstr "Vidigi sprucxfenetran de retposxtkesto"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:102
 msgid "Show All Boxes In Popup"
 msgstr "Vidigi cxiujn kestojn en sprucxfenestro"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:104
 msgid "Check Interval"
 msgstr "Intervalo de inspekto"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:107
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutoj"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:112
 msgid "Mail Boxes"
 msgstr "Retposxtkestoj"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:122
 msgid "Add"
 msgstr "Aldoni"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:126
 msgid "Delete"
 msgstr "Forvisxi"
 
-#: e_mod_config.c:134
+#: ../e_mod_config.c:132
 msgid "Configure..."
 msgstr "Agordi..."
 
-#: e_mod_config_box.c:71
-msgid "Mailbox Configuration"
-msgstr "Agordo de retposxtkesto"
-
-#: e_mod_config_box.c:166
-msgid "Start Program When New Mail Arrives"
-msgstr "Eki programaron kiam nova retmesagxo alvenas"
-
-#: e_mod_config_box.c:171
-msgid "Program:"
-msgstr "Programaro:"
-
-#: e_mod_config_box.c:183
-msgid "Mailbox Type"
-msgstr "Tipo de retposxtkesto"
-
-#: e_mod_config_box.c:185
-msgid "Pop3"
-msgstr "Pop3"
-
-#: e_mod_config_box.c:188
-msgid "Imap"
-msgstr "Imap"
-
-#: e_mod_config_box.c:191
-msgid "Maildir"
-msgstr "Maildir"
-
-#: e_mod_config_box.c:194
-msgid "Mbox"
-msgstr "Mbox"
-
-#: e_mod_config_box.c:197
-msgid "Monitor Mbox file permanently"
-msgstr "Elrigardi la dosieron Mbox cxiam"
-
-#: e_mod_config_box.c:214
-msgid "Port Settings"
-msgstr "Agordoj de pordo"
-
-#: e_mod_config_box.c:216
-msgid "Use SSL:"
-msgstr "Uzi SSL:"
-
-#: e_mod_config_box.c:223
-msgid "v2"
-msgstr "v2"
-
-#: e_mod_config_box.c:226
-msgid "v3"
-msgstr "v3"
-
-#: e_mod_config_box.c:230
-msgid "Port:"
-msgstr "Pordo:"
-
-#: e_mod_config_box.c:236
-msgid "Local:"
-msgstr "Loka:"
-
-#: e_mod_config_box.c:242
-msgid "Mailbox Settings"
-msgstr "Konto de retposxtkesto"
-
-#: e_mod_config_box.c:243
-msgid "Name:"
-msgstr "Nomo:"
-
-#: e_mod_config_box.c:248
-msgid "Mail Host:"
-msgstr "Servilo retmesagxoj:"
-
-#: e_mod_config_box.c:253
-msgid "Username:"
-msgstr "Uzantanomo:"
-
-#: e_mod_config_box.c:258
-msgid "Password:"
-msgstr "Pasvorto:"
-
-#: e_mod_config_box.c:264
-msgid "New Mail Path:"
-msgstr "Nova vojo de retmesagxoj:"
-
-#: e_mod_config_box.c:276
-msgid "Current Mail Path:"
-msgstr "Nuna vojo de retmesagxoj:"
-
-#: e_mod_config_box.c:434
-msgid "Inbox"
-msgstr "Enirkesto"
-
-#: e_mod_main.c:189
+#: ../e_mod_main.c:189
 msgid "Mail"
 msgstr "Retposxto"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "Retposxtkestoj"
 
-#: e_mod_main.c:266
+#: ../e_mod_main.c:266
 msgid "Configuration"
 msgstr "Agordo"

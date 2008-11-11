@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-04 05:58+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-22 21:42+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -15,55 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr ""
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr ""
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr ""
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr ""
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr ""
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr ""
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr ""
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr ""
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr ""
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr ""
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Net"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "配置"
 
-#: src/e_mod_net.c:203
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr ""

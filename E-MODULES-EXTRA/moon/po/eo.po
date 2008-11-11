@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:30+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 20:11+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,79 +15,78 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "Luna Konfiguraĵo"
 
-#: src/e_mod_config.c:157
+#: ../src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "Vidigaj Agordoj"
 
-#: src/e_mod_config.c:158
+#: ../src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "Animitaj Nuboj"
 
-#: src/e_mod_config.c:162
+#: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "Valuo de luna fazo"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Show always"
 msgstr "Montru ĉiam"
 
-#: src/e_mod_config.c:166
+#: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "Vidigi dum musa movado"
 
-#: src/e_mod_config.c:168
+#: ../src/e_mod_config.c:168
 msgid "Never show"
 msgstr "Neniam vidigi"
 
-#: src/e_mod_config.c:172
+#: ../src/e_mod_config.c:172
 msgid "Description"
 msgstr "Priskribo"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "Cifereca"
 
-#: src/e_mod_main.c:207
+#: ../src/e_mod_main.c:207
 msgid "Moon"
 msgstr "Luno"
 
-#: src/e_mod_main.c:247
+#: ../src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: src/e_mod_main.c:491
+#: ../src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "Novluno"
 
-#: src/e_mod_main.c:493
+#: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "Kreskanta Lunarko"
 
-#: src/e_mod_main.c:495
+#: ../src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "Kreskanta kvaronluno"
 
-#: src/e_mod_main.c:497
+#: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "Pleniĝanta Luno"
 
-#: src/e_mod_main.c:499
+#: ../src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "Plenluno"
 
-#: src/e_mod_main.c:501
+#: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "Malpleniĝanta Luno"
 
-#: src/e_mod_main.c:503
+#: ../src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "Malkreskanta kvaronluno"
 
-#: src/e_mod_main.c:505
+#: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "Malkreskanta Lunarko"
-

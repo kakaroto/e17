@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 09:16-0500\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-05-22 15:52+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,45 +16,45 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:45
+#: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Tclock konfiguration"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Top"
 msgstr ""
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 #, fuzzy
 msgid "Show Top Line"
 msgstr "Visa klocka"
 
-#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
+#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Konsultera  strftime(3) för format syntax"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Bottom"
 msgstr ""
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr ""
 
-#: e_mod_config.c:122
+#: ../e_mod_config.c:122
 msgid "Tool Tip"
 msgstr ""
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 #, fuzzy
 msgid "Show Tooltip"
 msgstr "Visa klocka"
 
-#: e_mod_main.c:141
+#: ../e_mod_main.c:141
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:186
+#: ../e_mod_main.c:186
 msgid "Configuration"
 msgstr "Konfiguration"
 

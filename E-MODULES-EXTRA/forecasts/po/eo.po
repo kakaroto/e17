@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-10 17:14+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 20:16+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -20,105 +20,108 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e17/apps/ephoto/src\n"
 
-#: e_mod_config.c:41
+#: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Konfiguraĵo de Vetero"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Vidigaj Agordoj"
 
-#: e_mod_config.c:89
+#: ../e_mod_config.c:91
 msgid "Poll Time"
 msgstr ""
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutoj"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:97
 msgid "Show Description"
 msgstr "Vidigi Priskibon"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr ""
+
+#: ../e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Agordoj de Unuoj"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:105
 msgid "Metric"
 msgstr "Metriko"
 
-#: e_mod_config.c:103
+#: ../e_mod_config.c:107
 msgid "English"
 msgstr "Angla"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Vetera Kodo de Yahoo"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo Forecasts Code/Usona Poŝtkodo"
 
-#: e_mod_config.c:113
+#: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Por trovi la kodon por via zono, iru al:"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trovu vian zonon, kaj rigardu la URL-on"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:256
 msgid "Forecasts"
 msgstr "Veteroj"
 
-#: e_mod_main.c:287
+#: ../e_mod_main.c:301
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:962
+#: ../e_mod_main.c:1025
 msgid "Wind Chill"
 msgstr "Venta malvarmigo"
 
-#: e_mod_main.c:968
+#: ../e_mod_main.c:1031
 msgid "Wind Speed"
 msgstr "Venta Rapideco"
 
-#: e_mod_main.c:974
+#: ../e_mod_main.c:1037
 msgid "Humidity"
 msgstr "Humideco"
 
-#: e_mod_main.c:980
+#: ../e_mod_main.c:1043
 msgid "Visibility"
 msgstr "Videbleco"
 
-#: e_mod_main.c:986
+#: ../e_mod_main.c:1049
 msgid "Pressure"
 msgstr "Aerpremo"
 
-#: e_mod_main.c:993
+#: ../e_mod_main.c:1056
 msgid "Rising"
 msgstr "Sunleviĝo"
 
-#: e_mod_main.c:995
+#: ../e_mod_main.c:1058
 msgid "Falling"
 msgstr "Krepusko"
 
-#: e_mod_main.c:997
+#: ../e_mod_main.c:1060
 msgid "Steady"
 msgstr "Konstanta"
 
-#: e_mod_main.c:1001
+#: ../e_mod_main.c:1064
 msgid "Sunrise / Sunset"
 msgstr "Suna leviĝo / malleviĝo"
 
-#: e_mod_main.c:1024
+#: ../e_mod_main.c:1088
 msgid "High"
 msgstr "Alta"
 
-#: e_mod_main.c:1035
+#: ../e_mod_main.c:1099
 msgid "Low"
 msgstr "Malalta"
-

@@ -6,71 +6,70 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-27 10:43+0400\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-27 17:41+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
+"sourceforge.net>\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
-"MIME-Version: 1.0\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: e_mod_config.c:40
+#: ../e_mod_config.c:40
 msgid "Weather Configuration"
 msgstr "Configuration de la météo"
 
-#: e_mod_config.c:86
+#: ../e_mod_config.c:86
 msgid "Display Settings"
 msgstr "Paramètres d'affichage"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:88
 msgid "Simple"
 msgstr "Simple"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Detailed"
 msgstr "Détaillé"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Poll Time"
 msgstr "Délai d'interrogation"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutes"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Degree Settings"
 msgstr "Paramètres de l'unité"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Celsius"
 msgstr "Celsius"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: e_mod_config.c:108
-#: e_mod_config.c:109
+#: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
 msgstr "Code ICAO"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
 msgstr "Récupérer votre code ICAO sur:"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:179
+#: ../e_mod_main.c:179
 msgid "Weather"
 msgstr "Météo"
 
-#: e_mod_main.c:224
+#: ../e_mod_main.c:224
 msgid "Configuration"
 msgstr "Configuration"
-

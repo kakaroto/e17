@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Moon module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 19:28+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-11-09 23:55+0800\n"
 "Last-Translator: gao stone <gaoghy@gmail.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -16,79 +16,78 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "月亮设置"
 
-#: src/e_mod_config.c:157
+#: ../src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "显示设置"
 
-#: src/e_mod_config.c:158
+#: ../src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "动画云彩"
 
-#: src/e_mod_config.c:162
+#: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "月相值"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Show always"
 msgstr "总是显示"
 
-#: src/e_mod_config.c:166
+#: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "鼠标移过显示"
 
-#: src/e_mod_config.c:168
+#: ../src/e_mod_config.c:168
 msgid "Never show"
 msgstr "从不显示"
 
-#: src/e_mod_config.c:172
+#: ../src/e_mod_config.c:172
 msgid "Description"
 msgstr "描述"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "数字"
 
-#: src/e_mod_main.c:207
+#: ../src/e_mod_main.c:207
 msgid "Moon"
 msgstr "月亮"
 
-#: src/e_mod_main.c:247
+#: ../src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "设置"
 
-#: src/e_mod_main.c:491
+#: ../src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "新月"
 
-#: src/e_mod_main.c:493
+#: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "娥眉月"
 
-#: src/e_mod_main.c:495
+#: ../src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "上弦月"
 
-#: src/e_mod_main.c:497
+#: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "盈凸月"
 
-#: src/e_mod_main.c:499
+#: ../src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "满月"
 
-#: src/e_mod_main.c:501
+#: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "亏凸月"
 
-#: src/e_mod_main.c:503
+#: ../src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "下弦月"
 
-#: src/e_mod_main.c:505
+#: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "残月"
-

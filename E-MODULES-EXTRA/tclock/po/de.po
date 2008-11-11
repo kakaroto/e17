@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tclock 0.3.2\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 09:16-0500\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-06 17:45+0100\n"
 "Last-Translator: Andreas Volz <andreas.volz@tux-style.de>\n"
 "Language-Team: German\n"
@@ -18,42 +18,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:45
+#: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Tclock Konfiguration"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Top"
 msgstr "Obere Zeile"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Show Top Line"
 msgstr "Zeige obere Zeile an"
 
-#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
+#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Siehe strftime(3) für Formatierung"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Bottom"
 msgstr "Untere Zeile"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr "Zeige untere Zeile an"
 
-#: e_mod_config.c:122
+#: ../e_mod_config.c:122
 msgid "Tool Tip"
 msgstr "Tooltip"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Tooltip"
 msgstr "Zeige Tooltip an"
 
-#: e_mod_main.c:141
+#: ../e_mod_main.c:141
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:186
+#: ../e_mod_main.c:186
 msgid "Configuration"
 msgstr "Konfiguration"

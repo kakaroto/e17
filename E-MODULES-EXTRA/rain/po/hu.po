@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rain\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:27+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 23:24+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,39 +17,38 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Eső modul"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "General Settings"
 msgstr "Általános beállítások"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Felhők megjelenítése"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Eső intenzitása"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Szórás"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Szitáló eső"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Downpour"
 msgstr "Felhőszakadás"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Megjelenés"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Rain"
 msgstr "Eső"
-

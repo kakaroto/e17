@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wlan\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:43+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 22:18+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,44 +15,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "wlan の設定"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "一般の設定"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "常に情報を表示する"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "マウスが乗ったときに情報を表示する"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "情報を百分率で表示する"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "監視間隔"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f 秒"
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "デバイスの設定"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr ""
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 msgid "Configuration"
 msgstr "設定"
 

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Weather module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:37+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:40
+#: ../e_mod_config.c:40
 msgid "Weather Configuration"
 msgstr "Sään asetukset"
 
-#: e_mod_config.c:86
+#: ../e_mod_config.c:86
 msgid "Display Settings"
 msgstr "Näyttöasetukset"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:88
 msgid "Simple"
 msgstr "Yksinkertainen"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Detailed"
 msgstr "Yksityiskohtainen"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Poll Time"
 msgstr "Kyselyväli"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minuuttia"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Degree Settings"
 msgstr "Asteasetukset"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Celsius"
 msgstr "Celsius"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Farenheit"
 msgstr "Fahrenheit"
 
-#: e_mod_config.c:108 e_mod_config.c:109
+#: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
 msgstr "ICAO-koodi"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
 msgstr "Hae ICAO-koodisi:"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:177
+#: ../e_mod_main.c:179
 msgid "Weather"
 msgstr "Sää"
 
-#: e_mod_main.c:222
+#: ../e_mod_main.c:224
 msgid "Configuration"
 msgstr "Asetukset"

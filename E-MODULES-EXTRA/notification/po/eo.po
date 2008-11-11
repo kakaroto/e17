@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-09-22 18:30+1000\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-04-17 22:22+0200\n"
 "Last-Translator:  <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -16,23 +16,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/e_mod_main.c:118
+#: ../src/e_mod_main.c:118
 msgid "Notification Box"
 msgstr "Kesto de atentigo"
 
-#: src/e_mod_main.c:171
+#. register config panel entry
+#: ../src/e_mod_main.c:171
 msgid "Extensions"
 msgstr "Kromajxoj"
 
-#: src/e_mod_main.c:173
+#: ../src/e_mod_main.c:173
 msgid "Notification"
 msgstr "Atentigo"
 
-#: src/e_mod_main.c:216 src/e_mod_main.c:234
+#: ../src/e_mod_main.c:216 ../src/e_mod_main.c:234
 msgid "Notification Configuration Updated"
 msgstr "Agordo gxisdatigita de atentigo"
 
-#: src/e_mod_main.c:217
+#: ../src/e_mod_main.c:217
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -43,7 +44,7 @@ msgid ""
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: src/e_mod_main.c:235
+#: ../src/e_mod_main.c:235
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -53,71 +54,71 @@ msgid ""
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: src/e_mod_main.c:269
+#: ../src/e_mod_main.c:269
 msgid "Error During DBus Init!"
 msgstr ""
 
-#: src/e_mod_main.c:270
+#: ../src/e_mod_main.c:270
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr ""
 
-#: src/e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Notification Configuration"
 msgstr "Agordo de la modulo Atentigo"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 msgid "Urgency"
 msgstr "Urgxo"
 
-#: src/e_mod_config.c:87
+#: ../src/e_mod_config.c:87
 msgid "Levels of urgency to popup : "
 msgstr "Niveloj de urgxo sxprucfenestrendaj:"
 
-#: src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89
 msgid "low"
 msgstr "malalta"
 
-#: src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "normal"
 msgstr "normala"
 
-#: src/e_mod_config.c:93
+#: ../src/e_mod_config.c:93
 msgid "critical"
 msgstr "kritika"
 
-#: src/e_mod_config.c:98
+#: ../src/e_mod_config.c:98
 msgid "Placement"
 msgstr "Posicio"
 
-#: src/e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 #, c-format
 msgid "%2.0f x"
 msgstr "%2.0f x"
 
-#: src/e_mod_config.c:102
+#: ../src/e_mod_config.c:102
 #, c-format
 msgid "%2.0f y"
 msgstr "%2.0f y"
 
-#: src/e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "Direction"
 msgstr "Direkto"
 
-#: src/e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Direction in which popups will stack themselves : "
 msgstr "Direkto en kiuj sxprucfenestroj stakigxos: "
 
-#: src/e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Gap"
 msgstr "Intervalo"
 
-#: src/e_mod_config.c:122
+#: ../src/e_mod_config.c:122
 msgid "Size of the gap between two popups : "
 msgstr "Intervalo inter du sxprucfenestroj:"
 
-#: src/e_mod_config.c:124
+#: ../src/e_mod_config.c:124
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f rastrumeroj"

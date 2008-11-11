@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:21+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-10 16:44+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,152 +17,151 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config_box.c:71
+#: ../e_mod_config_box.c:71
 msgid "Mailbox Configuration"
 msgstr "Postafiók beállítások"
 
-#: e_mod_config_box.c:164 e_mod_config.c:96
+#: ../e_mod_config_box.c:163 ../e_mod_config.c:94
 msgid "General Settings"
 msgstr "Általános beállítások"
 
-#: e_mod_config_box.c:166
+#: ../e_mod_config_box.c:165
 msgid "Start Program When New Mail Arrives"
 msgstr "Indítsd a programot, ha új levél érkezik"
 
-#: e_mod_config_box.c:171
+#: ../e_mod_config_box.c:170
 msgid "Program:"
 msgstr "Program:"
 
-#: e_mod_config_box.c:183
+#: ../e_mod_config_box.c:182
 msgid "Mailbox Type"
 msgstr "Postafiók típus"
 
-#: e_mod_config_box.c:185
+#: ../e_mod_config_box.c:184
 msgid "Pop3"
 msgstr "Pop3"
 
-#: e_mod_config_box.c:188
+#: ../e_mod_config_box.c:187
 msgid "Imap"
 msgstr "Imap"
 
-#: e_mod_config_box.c:191
+#: ../e_mod_config_box.c:190
 msgid "Maildir"
 msgstr "Mail könyvtár"
 
-#: e_mod_config_box.c:194
+#: ../e_mod_config_box.c:193
 msgid "Mbox"
 msgstr "Postafiók"
 
-#: e_mod_config_box.c:197
+#: ../e_mod_config_box.c:196
 msgid "Monitor Mbox file permanently"
 msgstr "Postafiók fájl monitorozása folyamatosan"
 
-#: e_mod_config_box.c:214
+#: ../e_mod_config_box.c:213
 msgid "Port Settings"
 msgstr "Port beállítások"
 
-#: e_mod_config_box.c:216
+#: ../e_mod_config_box.c:215
 msgid "Use SSL:"
 msgstr "SSL használata:"
 
-#: e_mod_config_box.c:223
+#: ../e_mod_config_box.c:222
 msgid "v2"
 msgstr "v2"
 
-#: e_mod_config_box.c:226
+#: ../e_mod_config_box.c:225
 msgid "v3"
 msgstr "v3"
 
-#: e_mod_config_box.c:230
+#: ../e_mod_config_box.c:229
 msgid "Port:"
 msgstr "Port:"
 
-#: e_mod_config_box.c:236
+#: ../e_mod_config_box.c:235
 msgid "Local:"
 msgstr "Helyi:"
 
-#: e_mod_config_box.c:242
+#: ../e_mod_config_box.c:241
 msgid "Mailbox Settings"
 msgstr "Postafiók beállítások"
 
-#: e_mod_config_box.c:243
+#: ../e_mod_config_box.c:242
 msgid "Name:"
 msgstr "Név:"
 
-#: e_mod_config_box.c:248
+#: ../e_mod_config_box.c:247
 msgid "Mail Host:"
 msgstr "Levelezést kiszolgáló:"
 
-#: e_mod_config_box.c:253
+#: ../e_mod_config_box.c:252
 msgid "Username:"
 msgstr "Felhasználónév:"
 
-#: e_mod_config_box.c:258
+#: ../e_mod_config_box.c:257
 msgid "Password:"
 msgstr "Jelszó:"
 
-#: e_mod_config_box.c:264
+#: ../e_mod_config_box.c:263
 msgid "New Mail Path:"
 msgstr "Új levelezési útvonal:"
 
-#: e_mod_config_box.c:276
+#: ../e_mod_config_box.c:275
 msgid "Current Mail Path:"
 msgstr "Jelenlegi levelezési útvonal:"
 
-#: e_mod_config_box.c:434
+#: ../e_mod_config_box.c:433
 msgid "Inbox"
 msgstr "Beérkezett levelek"
 
-#: e_mod_config.c:53
+#: ../e_mod_config.c:53
 msgid "Mail Configuration"
 msgstr "Levelezés beállítása"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:96
 msgid "Always Show Labels"
 msgstr "Cimkék jelenjenek meg mindig"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:99
 msgid "Show Mailbox Popup"
 msgstr "Postaláda felbukkanó ablak engedélyezése"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:102
 msgid "Show All Boxes In Popup"
 msgstr "Minden postafiók megjelenhet egy felugró ablakban"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:104
 msgid "Check Interval"
 msgstr "Ellenőrzési időköz"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:107
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f perc"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:112
 msgid "Mail Boxes"
 msgstr "Postaládák"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:122
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:126
 msgid "Delete"
 msgstr "Törlés"
 
-#: e_mod_config.c:134
+#: ../e_mod_config.c:132
 msgid "Configure..."
 msgstr "Beállítás..."
 
-#: e_mod_main.c:189
+#: ../e_mod_main.c:189
 msgid "Mail"
 msgstr "Levelezés"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "Posatfiókok"
 
-#: e_mod_main.c:266
+#: ../e_mod_main.c:266
 msgid "Configuration"
 msgstr "Beállítás"
-

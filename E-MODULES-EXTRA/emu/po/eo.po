@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-15 20:12+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 20:20+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,115 +15,116 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/modules/emu/border_props.c:52
+#. Create The Dialog
+#: ../src/modules/emu/border_props.c:52
 msgid "Window properties"
 msgstr "Fenestraj Ecoj"
 
-#: src/modules/emu/border_props.c:221 src/modules/emu/border_props.c:276
+#: ../src/modules/emu/border_props.c:221 ../src/modules/emu/border_props.c:276
 msgid "Window identification"
 msgstr "Identigo de fenestroj"
 
-#: src/modules/emu/border_props.c:222 src/modules/emu/border_props.c:289
+#: ../src/modules/emu/border_props.c:222 ../src/modules/emu/border_props.c:289
 msgid "Title (%T)"
 msgstr "Titolo (%T)"
 
-#: src/modules/emu/border_props.c:228 src/modules/emu/border_props.c:307
+#: ../src/modules/emu/border_props.c:228 ../src/modules/emu/border_props.c:307
 msgid "Properties"
 msgstr "Ecoj"
 
-#: src/modules/emu/border_props.c:229 src/modules/emu/border_props.c:308
+#: ../src/modules/emu/border_props.c:229 ../src/modules/emu/border_props.c:308
 #, c-format
 msgid "Position (%p)"
 msgstr "Pozicio (%p)"
 
-#: src/modules/emu/border_props.c:233 src/modules/emu/border_props.c:312
+#: ../src/modules/emu/border_props.c:233 ../src/modules/emu/border_props.c:312
 #, c-format
 msgid "Size (%s)"
 msgstr "Grandeco (%s)"
 
-#: src/modules/emu/border_props.c:237 src/modules/emu/border_props.c:320
+#: ../src/modules/emu/border_props.c:237 ../src/modules/emu/border_props.c:320
 msgid "Border style (%b)"
 msgstr "Randa stilo (%b)"
 
-#: src/modules/emu/border_props.c:241
+#: ../src/modules/emu/border_props.c:241
 #, c-format
 msgid "Stickiness (%p)"
 msgstr "Glueco (%p)"
 
-#: src/modules/emu/border_props.c:245 src/modules/emu/border_props.c:328
+#: ../src/modules/emu/border_props.c:245 ../src/modules/emu/border_props.c:328
 #, c-format
 msgid "Virtual desktop (%d)"
 msgstr "Virtuala labortablo (%d)"
 
-#: src/modules/emu/border_props.c:249 src/modules/emu/border_props.c:332
+#: ../src/modules/emu/border_props.c:249 ../src/modules/emu/border_props.c:332
 msgid "Shaded state (%r)"
 msgstr "Ombra stato (%r)"
 
-#: src/modules/emu/border_props.c:253 src/modules/emu/border_props.c:344
+#: ../src/modules/emu/border_props.c:253 ../src/modules/emu/border_props.c:344
 #, c-format
 msgid "Fullscreen (%f)"
 msgstr "Tutekreano (%f)"
 
-#: src/modules/emu/border_props.c:257 src/modules/emu/border_props.c:348
+#: ../src/modules/emu/border_props.c:257 ../src/modules/emu/border_props.c:348
 #, c-format
 msgid "Iconified (%i)"
 msgstr "Piktogramigita (%i)"
 
-#: src/modules/emu/border_props.c:277
+#: ../src/modules/emu/border_props.c:277
 msgid "Window ID (%I)"
 msgstr "Fenestra ID (%i)"
 
-#: src/modules/emu/border_props.c:281
+#: ../src/modules/emu/border_props.c:281
 msgid "Window name (%N)"
 msgstr "Fenestra nomo (%N)"
 
-#: src/modules/emu/border_props.c:285
+#: ../src/modules/emu/border_props.c:285
 #, c-format
 msgid "Window class (%C)"
 msgstr "Fenestra klaso (%C)"
 
-#: src/modules/emu/border_props.c:293
+#: ../src/modules/emu/border_props.c:293
 msgid "Window role (%R)"
 msgstr "Fenestra rolo (%R)"
 
-#: src/modules/emu/border_props.c:297
+#: ../src/modules/emu/border_props.c:297
 #, c-format
 msgid "Window type (%S)"
 msgstr "Fenestra tipo (%S)"
 
-#: src/modules/emu/border_props.c:301
+#: ../src/modules/emu/border_props.c:301
 msgid "Transient (%H)"
 msgstr "Nedaŭro (%H)"
 
-#: src/modules/emu/border_props.c:316
+#: ../src/modules/emu/border_props.c:316
 msgid "Layer (%l)"
 msgstr "Tavolo  (%I)"
 
-#: src/modules/emu/border_props.c:324
+#: ../src/modules/emu/border_props.c:324
 msgid "Stickiness (%y)"
 msgstr "Glueco (%y)"
 
-#: src/modules/emu/border_props.c:336
+#: ../src/modules/emu/border_props.c:336
 msgid "Screen zone (%z)"
 msgstr "Ekrana zono (%z)"
 
-#: src/modules/emu/border_props.c:340
+#: ../src/modules/emu/border_props.c:340
 msgid "Window list skip (%w)"
 msgstr "Preterpso de Fenestra listo (%w)"
 
-#: src/modules/emu/e_mod_config.c:40
+#. Create The Dialog
+#: ../src/modules/emu/e_mod_config.c:40
 msgid "Emu Configuration"
 msgstr "Konfigurajxo de Emu"
 
-#: src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:211
 msgid "Enlightenment Emu Module - error"
 msgstr "Modulo Emu de Enlightenment - eraro"
 
-#: src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:211
 msgid "There is no emu."
 msgstr "Neniu emu ĉeestas ."
 
-#: src/modules/emu/e_mod_main.c:285
+#: ../src/modules/emu/e_mod_main.c:285
 msgid "Emu"
 msgstr "Emu"
-

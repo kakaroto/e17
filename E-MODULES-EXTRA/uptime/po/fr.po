@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uptime\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:41+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-12 19:40+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
@@ -13,53 +13,52 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: e_mod_config.c:52
+#: ../e_mod_config.c:52
 msgid "Uptime Configuration"
 msgstr "Configuration de l'uptime"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Uptime Settings"
 msgstr "Paramètres  de l'uptime"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Update Interval:"
 msgstr "Intervalle d'actualisation:"
 
-#: e_mod_config.c:110
-#: e_mod_config.c:117
+#: ../e_mod_config.c:110 ../e_mod_config.c:117
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f secondes"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Check Interval:"
 msgstr "Délai de vérification:"
 
-#: e_mod_main.c:162
+#: ../e_mod_main.c:162
 msgid "Uptime"
 msgstr "Uptime"
 
-#: e_mod_main.c:211
+#: ../e_mod_main.c:211
 msgid "Configuration"
 msgstr "Configuration"
 
-#: e_mod_main.c:568
+#: ../e_mod_main.c:568
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
 msgstr "up: %d jours, %d:%02d:%02ld"
 
-#: e_mod_main.c:575
+#: ../e_mod_main.c:575
 #, c-format
 msgid "la: %.2f %.2f %.2f"
 msgstr "la: %.2f %.2f %.2f"
 
-#: e_mod_main.c:580
+#: ../e_mod_main.c:580
 #, c-format
 msgid "users: %d"
 msgstr "utilisateurs: %d"
 
 #~ msgid "Enlightenment Uptime Monitor Module"
 #~ msgstr "Module d'affichage d'uptime"
+
 #~ msgid "This module is used to monitor uptime."
 #~ msgstr "Ce module sert à afficher l'uptime."
-

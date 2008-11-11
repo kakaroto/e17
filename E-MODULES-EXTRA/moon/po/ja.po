@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Moon\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:30+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 15:54+0900\n"
 "Last-Translator: David <david35472@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,79 +14,79 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "moon の設定"
 
-#: src/e_mod_config.c:157
+#: ../src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: src/e_mod_config.c:158
+#: ../src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "雲を表示する"
 
-#: src/e_mod_config.c:162
+#: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "月の満ち欠け"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Show always"
 msgstr "常に表示する"
 
-#: src/e_mod_config.c:166
+#: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "マウスが乗れば表示する"
 
-#: src/e_mod_config.c:168
+#: ../src/e_mod_config.c:168
 msgid "Never show"
 msgstr "表示しない"
 
-#: src/e_mod_config.c:172
+#: ../src/e_mod_config.c:172
 msgid "Description"
 msgstr "月の満ち欠けを名前で表示"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "月の満ち欠けを数値で表示"
 
-#: src/e_mod_main.c:207
+#: ../src/e_mod_main.c:207
 msgid "Moon"
 msgstr ""
 
-#: src/e_mod_main.c:247
+#: ../src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "設定"
 
-#: src/e_mod_main.c:491
+#: ../src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "新月"
 
-#: src/e_mod_main.c:493
+#: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "三日月"
 
-#: src/e_mod_main.c:495
+#: ../src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "上弦"
 
-#: src/e_mod_main.c:497
+#: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "凸月"
 
-#: src/e_mod_main.c:499
+#: ../src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "満月"
 
-#: src/e_mod_main.c:501
+#: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "欠月"
 
-#: src/e_mod_main.c:503
+#: ../src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "下弦"
 
-#: src/e_mod_main.c:505
+#: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "衰月"
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Efm_path\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-24 21:56+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-11-25 09:27+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,10 +14,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:70
+#: ../src/e_mod_main.c:68
 msgid "Location:"
 msgstr "Percorso:"
 
-#: src/e_mod_main.c:146
+#: ../src/e_mod_main.c:137
 msgid "EFM Path"
 msgstr "Percorso EFM"

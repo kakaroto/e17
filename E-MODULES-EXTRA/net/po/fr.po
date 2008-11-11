@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-10 08:42+0400\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-11 18:30+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: \n"
@@ -13,61 +13,61 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Configuration du module réseau"
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr "Paramètres généraux"
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Afficher le texte"
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Montrer le pop-up au survol"
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Lancer une application avec un double-clic"
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Fréquence du rapport d'activité"
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Haute (Mo)"
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Moyenne (Ko)"
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Basse (o)"
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Choix de l'interface"
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Réseau"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/e_mod_net.c:203
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Interface - %s"
 
 #~ msgid "Network Monitor Module"
 #~ msgstr "Module de surveillance réseau"
+
 #~ msgid "Module to monitor network traffic"
 #~ msgstr "Module permettant la surveillance de l'activité réseau"
-

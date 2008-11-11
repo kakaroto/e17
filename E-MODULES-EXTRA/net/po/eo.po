@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-04 05:58+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-06-04 15:41+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -17,55 +17,55 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Agordo de la modulo pri reto"
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr "Gxenerala agordo"
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Vidigi tekston"
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Vidigi sxprucfenestron (muso supre)"
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Lauxncxi aplikajxon per duobla alklako"
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Ofteco de atentigo pri aktiveco"
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Alta (MB)"
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Meza (KB)"
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Malalta (B)"
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Agordoj pri aparato"
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Reto"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Agordo"
 
-#: src/e_mod_net.c:203
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Aparato - %s"

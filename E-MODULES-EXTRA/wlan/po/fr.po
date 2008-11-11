@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wlan\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:43+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-10-12 07:12+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
@@ -13,49 +13,49 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: e_mod_config.c:44
+#: ../e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Configuration du réseau sans fil"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "General Settings"
 msgstr "Paramètres généraux"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Toujours afficher le texte"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Afficher le texte au survol"
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Afficher le texte en pourcentage"
 
-#: e_mod_config.c:128
+#: ../e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Délai d'actualisation:"
 
-#: e_mod_config.c:131
+#: ../e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f secondes"
 
-#: e_mod_config.c:138
+#: ../e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Interface"
 
-#: e_mod_main.c:107
+#: ../e_mod_main.c:107
 msgid "Wlan"
 msgstr "Réseau sans fil"
 
-#: e_mod_main.c:165
+#: ../e_mod_main.c:165
 msgid "Configuration"
 msgstr "Configuration"
 
 #~ msgid "Enlightenment Wlan Monitor Module"
 #~ msgstr "Module de surveillance Réseau Sans fil"
+
 #~ msgid "This module is used to monitor wireless devices."
 #~ msgstr "Ce module sert a surveiller le réseau sans fil."
-

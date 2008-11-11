@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 09:16-0500\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 19:48+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,43 +15,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:45
+#: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Konfiguraĵo de \"TClock\""
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Top"
 msgstr "Supre"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Show Top Line"
 msgstr "Vidigi Supran Linion"
 
-#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
+#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Konsultu strftime(3) por sintakso aranĝo"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Bottom"
 msgstr "Malsupre"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr "Vidigi Malsupran Linion"
 
-#: e_mod_config.c:122
+#: ../e_mod_config.c:122
 msgid "Tool Tip"
 msgstr ""
 
-#: e_mod_config.c:124
+#: ../e_mod_config.c:124
 #, fuzzy
 msgid "Show Tooltip"
 msgstr "Vidigi Supran Linion"
 
-#: e_mod_main.c:141
+#: ../e_mod_main.c:141
 msgid "TClock"
 msgstr "TClock THorloĝo"
 
-#: e_mod_main.c:186
+#: ../e_mod_main.c:186
 msgid "Configuration"
 msgstr "Konfiguraĵo"

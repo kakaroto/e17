@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Snow module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:36+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,38 +14,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Lumen asetukset"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "General Settings"
 msgstr "Yleisasetukset"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Näytä puut"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Lumen tiheys"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "Sparse"
 msgstr "Harva"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Medium"
 msgstr "Keskitaso"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Dense"
 msgstr "Sankka"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Ulkonäkö"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Snow"
 msgstr "Lumi"

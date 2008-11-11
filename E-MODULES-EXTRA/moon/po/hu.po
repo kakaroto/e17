@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moon\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:23+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 21:07+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,79 +17,78 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "Hold beállítás"
 
-#: src/e_mod_config.c:157
+#: ../src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "Megjelenítési beállítások"
 
-#: src/e_mod_config.c:158
+#: ../src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "Animált felhők"
 
-#: src/e_mod_config.c:162
+#: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "Hold fázis érték"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Show always"
 msgstr "Megjelenítés mindig"
 
-#: src/e_mod_config.c:166
+#: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "Megjelenítés, ha az egér felette van"
 
-#: src/e_mod_config.c:168
+#: ../src/e_mod_config.c:168
 msgid "Never show"
 msgstr "Sose mutasd"
 
-#: src/e_mod_config.c:172
+#: ../src/e_mod_config.c:172
 msgid "Description"
 msgstr "Leírás"
 
-#: src/e_mod_config.c:175
+#: ../src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "Számszerű"
 
-#: src/e_mod_main.c:207
+#: ../src/e_mod_main.c:207
 msgid "Moon"
 msgstr "Hold"
 
-#: src/e_mod_main.c:247
+#: ../src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: src/e_mod_main.c:491
+#: ../src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "Újhold"
 
-#: src/e_mod_main.c:493
+#: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "Holdtölte"
 
-#: src/e_mod_main.c:495
+#: ../src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "Első negyed"
 
-#: src/e_mod_main.c:497
+#: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "Növekvő"
 
-#: src/e_mod_main.c:499
+#: ../src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "Telihold"
 
-#: src/e_mod_main.c:501
+#: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "Fogyó"
 
-#: src/e_mod_main.c:503
+#: ../src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "Utolsó negyed"
 
-#: src/e_mod_main.c:505
+#: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "Fogyó hold"
-

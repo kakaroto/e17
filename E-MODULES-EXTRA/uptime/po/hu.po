@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 21:48+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 23:40+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,47 +17,46 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config.c:52
+#: ../e_mod_config.c:52
 msgid "Uptime Configuration"
 msgstr "Futási idő beállítás"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Uptime Settings"
 msgstr "Futási idő Beállítások"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Update Interval:"
 msgstr "Frissítés Időköz:"
 
-#: e_mod_config.c:110 e_mod_config.c:117
+#: ../e_mod_config.c:110 ../e_mod_config.c:117
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f másodperc"
 
-#: e_mod_config.c:114
+#: ../e_mod_config.c:114
 msgid "Check Interval:"
 msgstr "Ellenőrzés Időköz:"
 
-#: e_mod_main.c:162
+#: ../e_mod_main.c:162
 msgid "Uptime"
 msgstr "Futási idő"
 
-#: e_mod_main.c:211
+#: ../e_mod_main.c:211
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: e_mod_main.c:568
+#: ../e_mod_main.c:568
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
 msgstr "üzemben: %d napja, %d:%02d:%02ld"
 
-#: e_mod_main.c:575
+#: ../e_mod_main.c:575
 #, c-format
 msgid "la: %.2f %.2f %.2f"
 msgstr "la: %.2f %.2f %.2f"
 
-#: e_mod_main.c:580
+#: ../e_mod_main.c:580
 #, c-format
 msgid "users: %d"
 msgstr "felhasználók: %d"
-

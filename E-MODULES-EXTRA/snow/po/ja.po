@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Snow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:38+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 16:18+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,39 +15,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "snow モジュールの設定"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "General Settings"
 msgstr "一般の設定"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Show Trees"
 msgstr "木を表示する"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Snow Density"
 msgstr "雪の密度"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "Sparse"
 msgstr "まばらに"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Medium"
 msgstr "普通"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Dense"
 msgstr "もうもうと"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr ""
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Snow"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:36+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-11 19:54+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,39 +15,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Pluva Modulo"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "General Settings"
 msgstr "Ĝeneralaj Agordoj"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Vidigi Nubojn"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Pluva Dendeco"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "ĵetkovri"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Pluveti"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Downpour"
 msgstr "Pluvego"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Aspekto"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Rain"
 msgstr "Pluvo"
-

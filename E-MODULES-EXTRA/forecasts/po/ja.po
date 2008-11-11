@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-20 15:24+0900\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-03-20 21:58+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,109 +15,109 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "forecasts の設定"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: e_mod_config.c:91
+#: ../e_mod_config.c:91
 msgid "Poll Time"
 msgstr "監視間隔"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f 分"
 
-#: e_mod_config.c:97
+#: ../e_mod_config.c:97
 msgid "Show Description"
 msgstr "説明を表示する"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "マウスが乗ったらポップアップ表示"
 
-#: e_mod_config.c:103
+#: ../e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "単位設定"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Metric"
 msgstr "メートル法"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "English"
 msgstr "ヤード・ポンド法"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Yahoo 天気予報コード"
 
-#: e_mod_config.c:112
+#: ../e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo 天気予報コード／米国郵便番号"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "自分の居住地のコードは以下のサイトに行き:"
 
-#: e_mod_config.c:119
+#: ../e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, 自分の居住地を探して、そのURLを見てください"
 
-#: e_mod_main.c:243
+#: ../e_mod_main.c:256
 msgid "Forecasts"
 msgstr ""
 
-#: e_mod_main.c:288
+#: ../e_mod_main.c:301
 msgid "Configuration"
 msgstr "設定"
 
-#: e_mod_main.c:969
+#: ../e_mod_main.c:1025
 msgid "Wind Chill"
 msgstr "体感温度"
 
-#: e_mod_main.c:975
+#: ../e_mod_main.c:1031
 msgid "Wind Speed"
 msgstr "風速"
 
-#: e_mod_main.c:981
+#: ../e_mod_main.c:1037
 msgid "Humidity"
 msgstr "湿度"
 
-#: e_mod_main.c:987
+#: ../e_mod_main.c:1043
 msgid "Visibility"
 msgstr "視界"
 
-#: e_mod_main.c:993
+#: ../e_mod_main.c:1049
 msgid "Pressure"
 msgstr "気圧"
 
-#: e_mod_main.c:1000
+#: ../e_mod_main.c:1056
 msgid "Rising"
 msgstr "上昇"
 
-#: e_mod_main.c:1002
+#: ../e_mod_main.c:1058
 msgid "Falling"
 msgstr "下降"
 
-#: e_mod_main.c:1004
+#: ../e_mod_main.c:1060
 msgid "Steady"
 msgstr "横ばい"
 
-#: e_mod_main.c:1008
+#: ../e_mod_main.c:1064
 msgid "Sunrise / Sunset"
 msgstr "日の出／日の入り"
 
-#: e_mod_main.c:1031
+#: ../e_mod_main.c:1088
 msgid "High"
 msgstr "高"
 
-#: e_mod_main.c:1042
+#: ../e_mod_main.c:1099
 msgid "Low"
 msgstr "低"
 

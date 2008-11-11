@@ -6,8 +6,7 @@
     <p>
      Enlightenment is a window manager. Enlightenment is a desktop shell.
      Enlightenment is the building blocks to create beautiful applications.
-     Enlightenment, or simply <em><strong>e</strong></em>, is a group of people trying to make a
-     new generation of software.
+     Enlightenment, or simply <em><strong>e</strong></em>, is a group of people trying to make a new generation of software.
     </p>
 
     <p>
@@ -32,7 +31,7 @@
 
   <td class='main'>
    <div class="main">
-    <h3>Enlightenment News</h3>
+    <h3>Enlightenment 新闻</h3>
     <p><?php include 'p/news/latestnews.php' ?></p>
    </div>
   </td>

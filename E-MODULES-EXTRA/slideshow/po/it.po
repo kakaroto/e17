@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-04-05 18:03+0200\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-04-05 18:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:37
+#: ../e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "Configurazione modulo Slideshow"
 
-#: e_mod_config.c:90
+#: ../e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "Durata singola visualizzazione"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Disabilita timer"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f secondi"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Directory"
 msgstr "Directory"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Sottodirectory per gli sfondi"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Extra"
 msgstr "Extra"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Randomize order"
 msgstr "Ordina in modo casuale"
 
-#: e_mod_config.c:113
+#: ../e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
 msgstr "Imposta sfondo su tutti i desktop"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
 msgstr "Imposta sfondo sul desktop attuale"
 
-#: e_mod_config.c:117
+#: ../e_mod_config.c:117
 msgid "Set wallpaper on current screen"
 msgstr "Imposta sfondo sullo schermo attuale"
 
-#: e_mod_config.c:121
+#: ../e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Imposta sfondo sul monitor attuale (supporto Xinerama)"
 
-#: e_mod_main.c:140
+#: ../e_mod_main.c:140
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: e_mod_main.c:184
+#: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "Configurazione"

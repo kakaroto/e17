@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-04 05:58+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2007-11-18 19:22+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,55 +14,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Configurazione modulo Net"
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Mostra testo"
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Mostra popup al passaggio del mouse"
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Lancia applicazione al doppio click"
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Livello di notifica attività"
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Alto (MB)"
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Medio (KB)"
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Basso (B)"
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Impostazione del dispositivo"
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Net"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_net.c:203
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Dispositivo - %s"

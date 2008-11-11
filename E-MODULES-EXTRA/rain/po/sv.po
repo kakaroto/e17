@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Rain module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:36+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2006-02-13 13:58+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,39 +16,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Regn modul"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "General Settings"
 msgstr ""
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Visa moln"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Regn densitet"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Småregn"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Duggregn"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Downpour"
 msgstr "Ösregn"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr ""
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Rain"
 msgstr ""
 
