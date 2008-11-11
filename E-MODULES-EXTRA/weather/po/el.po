@@ -1,0 +1,75 @@
+# translation of el.po to Greek
+# Weather module (e17), French translation
+# This file is put in the public domain.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 23:37+0200\n"
+"PO-Revision-Date: 2008-11-11 10:09+0200\n"
+"Last-Translator: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Greek <en@li.org>\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: e_mod_config.c:40
+msgid "Weather Configuration"
+msgstr "Ρύθμιση Καιρού"
+
+#: e_mod_config.c:86
+msgid "Display Settings"
+msgstr "Ρυθμίσεις Προβολής"
+
+#: e_mod_config.c:88
+msgid "Simple"
+msgstr "Απλό"
+
+#: e_mod_config.c:90
+msgid "Detailed"
+msgstr "Αναλυτικό"
+
+#: e_mod_config.c:92
+msgid "Poll Time"
+msgstr ""
+
+#: e_mod_config.c:95
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f λεπτά"
+
+#: e_mod_config.c:100
+msgid "Degree Settings"
+msgstr "Ρυθμίσεις Κλίμακας"
+
+#: e_mod_config.c:102
+msgid "Celsius"
+msgstr "Κελσίου"
+
+#: e_mod_config.c:104
+msgid "Farenheit"
+msgstr "Φαρενάιτ"
+
+#: e_mod_config.c:108 e_mod_config.c:109
+msgid "ICAO Code"
+msgstr "Κωδικός ICAO"
+
+#: e_mod_config.c:114
+msgid "Get your ICAO code at:"
+msgstr "Βρείτε τον κωδικό ICAO σας, στο:"
+
+#: e_mod_config.c:117
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
+
+#: e_mod_main.c:177
+msgid "Weather"
+msgstr "Καιρός"
+
+#: e_mod_main.c:222
+msgid "Configuration"
+msgstr "Ρύθμιση"
+

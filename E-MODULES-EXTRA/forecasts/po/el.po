@@ -1,0 +1,122 @@
+# translation of el.po to Greek
+# French translation of forecast
+# Copyright (C) 2008 Enlightenment development team
+# This file is distributed under the same license as the forecast package.
+#
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-10-19 17:14+0100\n"
+"PO-Revision-Date: 2008-11-09 15:09+0200\n"
+"Last-Translator: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Greek <en@li.org>\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+
+#: e_mod_config.c:41
+msgid "Forecasts Configuration"
+msgstr "Ρύθμιση Προβλέψεων"
+
+#: e_mod_config.c:88
+msgid "Display Settings"
+msgstr "Ρυθμίσεις Προβολής"
+
+#: e_mod_config.c:89
+msgid "Poll Time"
+msgstr ""
+
+#: e_mod_config.c:92
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f λεπτά"
+
+#: e_mod_config.c:95
+msgid "Show Description"
+msgstr "Εμφάνιση Περιγραφής"
+
+#: e_mod_config.c:99
+msgid "Unit Settings"
+msgstr "Ρυθμίσεις Μονάδων Μέτρησης"
+
+#: e_mod_config.c:101
+msgid "Metric"
+msgstr "Μετρικό"
+
+#: e_mod_config.c:103
+msgid "English"
+msgstr "Αγγλικό"
+
+#: e_mod_config.c:107
+msgid "Yahoo Forecasts Code"
+msgstr "Κωδικός Yahoo Forecasts"
+
+#: e_mod_config.c:108
+msgid "Yahoo Forecasts Code/US Zip Code"
+msgstr "Κωδικός/Τ.Κ ΗΠΑ Yahoo Forecasts"
+
+#: e_mod_config.c:113
+msgid "To find the code for your area, go to:"
+msgstr "Για την εύρεση του κωδικού της περιοχής σας, πηγαίνετε στο:"
+
+#: e_mod_config.c:115
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr "%s, βρείτε την περιοχή σας, και κοιτάξτε το URL"
+
+#: e_mod_main.c:242
+msgid "Forecasts"
+msgstr "Καιρικές Προβλέψεις"
+
+#: e_mod_main.c:287
+msgid "Configuration"
+msgstr "Ρύθμιση"
+
+#: e_mod_main.c:962
+msgid "Wind Chill"
+msgstr "Ψύχος Ανέμου"
+
+#: e_mod_main.c:968
+msgid "Wind Speed"
+msgstr "Ταχύτητα Ανέμου"
+
+#: e_mod_main.c:974
+msgid "Humidity"
+msgstr "Υγρασία"
+
+#: e_mod_main.c:980
+msgid "Visibility"
+msgstr "Ορατότητα"
+
+#: e_mod_main.c:986
+msgid "Pressure"
+msgstr "Πίεση"
+
+#: e_mod_main.c:993
+msgid "Rising"
+msgstr "Ανατολή"
+
+#: e_mod_main.c:995
+msgid "Falling"
+msgstr "Δύση"
+
+#: e_mod_main.c:997
+msgid "Steady"
+msgstr "Σταθερά"
+
+#: e_mod_main.c:1001
+msgid "Sunrise / Sunset"
+msgstr "Ανατολή/Δύση Ηλίου"
+
+#: e_mod_main.c:1024
+msgid "High"
+msgstr "Υψηλά"
+
+#: e_mod_main.c:1035
+msgid "Low"
+msgstr "Χαμηλά"
+

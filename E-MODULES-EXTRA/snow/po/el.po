@@ -1,0 +1,54 @@
+# translation of el.po to Greek
+# French translation for Snow module for Enlightenment DR0.17
+# This file is put in the public domain.
+# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:38+0100\n"
+"PO-Revision-Date: 2008-11-11 09:56+0200\n"
+"Last-Translator: \n"
+"Language-Team: Greek <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: e_mod_config.c:42
+msgid "Snow Configuration"
+msgstr "Ρύθμιση Χιονιού"
+
+#: e_mod_config.c:99
+msgid "General Settings"
+msgstr "Γενικές Ρυθμίσεις"
+
+#: e_mod_config.c:100
+msgid "Show Trees"
+msgstr "Εμφάνιση Δέντρων"
+
+#: e_mod_config.c:104
+msgid "Snow Density"
+msgstr "Πυκνότητα Χιονιού"
+
+#: e_mod_config.c:106
+msgid "Sparse"
+msgstr "Αραιό"
+
+#: e_mod_config.c:108
+msgid "Medium"
+msgstr "Μέτριο"
+
+#: e_mod_config.c:110
+msgid "Dense"
+msgstr "Πυκνό"
+
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr "Εμφάνιση"
+
+#: e_mod_main.c:35
+msgid "Snow"
+msgstr "Χιόνι"
+
