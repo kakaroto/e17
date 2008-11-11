@@ -7,147 +7,150 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iiirk e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-10-22 21:31+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"POT-Creation-Date: 2008-03-17 08:24+0100\n"
+"PO-Revision-Date: 2008-11-11 11:17+0800\n"
+"Last-Translator: gao stone <gaoghy@gmail.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/e_mod_main.c:236
+#: src/e_mod_main.c:231
 msgid "IIirk"
 msgstr "Ilirk"
 
-#: ../src/e_mod_main.c:368 ../src/e_mod_main.c:785
+#: src/e_mod_main.c:363
+#: src/e_mod_main.c:781
 msgid "Configuration"
-msgstr ""
+msgstr "设置"
 
-#: ../src/e_mod_main.c:1553
+#: src/e_mod_main.c:1553
 msgid "Applications"
-msgstr ""
+msgstr "应用程序"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
-#: ../src/e_int_config_iiirk.c:67
+#: src/e_mod_main.c:1555
+#: src/e_int_config_iiirk.c:52
+#: src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
-msgstr ""
+msgstr "IIirk 应用程序"
 
-#: ../src/e_mod_main.c:1557
+#: src/e_mod_main.c:1557
 msgid "Internal"
-msgstr ""
+msgstr "内部"
 
-#: ../src/e_mod_main.c:1558
+#: src/e_mod_main.c:1558
 msgid "IIirk Other"
-msgstr ""
+msgstr "IIirk 其他"
 
-#: ../src/e_mod_config.c:58
+#: src/e_mod_config.c:58
 msgid "Iiirk Configuration"
-msgstr ""
+msgstr "Iiirk 设置"
 
-#: ../src/e_mod_config.c:110
+#: src/e_mod_config.c:110
 msgid "Selected Iiirk Source"
-msgstr ""
+msgstr "选定的 Iiirk 源"
 
-#: ../src/e_mod_config.c:118 ../src/e_int_config_iiirk.c:157
+#: src/e_mod_config.c:118
+#: src/e_int_config_iiirk.c:157
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
-#: ../src/e_mod_config.c:120 ../src/e_int_config_iiirk.c:183
+#: src/e_mod_config.c:120
+#: src/e_int_config_iiirk.c:183
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
-#: ../src/e_mod_config.c:122
+#: src/e_mod_config.c:122
 msgid "Configure"
-msgstr ""
+msgstr "设置"
 
-#: ../src/e_mod_config.c:131
+#: src/e_mod_config.c:131
 msgid "General Settings"
-msgstr ""
+msgstr "常规设置"
 
-#: ../src/e_mod_config.c:132
+#: src/e_mod_config.c:132
 msgid "Hide window from any list when iconified"
-msgstr ""
+msgstr "图标化时从列表隐藏窗口"
 
-#: ../src/e_mod_config.c:134
+#: src/e_mod_config.c:134
 msgid "Show Icon Label"
-msgstr ""
+msgstr "显示图标标签"
 
-#: ../src/e_mod_config.c:137
+#: src/e_mod_config.c:137
 msgid "Display Name"
-msgstr ""
+msgstr "显示名称"
 
-#: ../src/e_mod_config.c:139
+#: src/e_mod_config.c:139
 msgid "Display Title"
-msgstr ""
+msgstr "显示标题"
 
-#: ../src/e_mod_config.c:141
+#: src/e_mod_config.c:141
 msgid "Display Class"
-msgstr ""
+msgstr "显示类别"
 
-#: ../src/e_mod_config.c:143
+#: src/e_mod_config.c:143
 msgid "Display Icon Name"
-msgstr ""
+msgstr "显示图标名称"
 
-#: ../src/e_mod_config.c:145
+#: src/e_mod_config.c:145
 msgid "Display Border Caption"
-msgstr ""
+msgstr "显示边界标注"
 
-#: ../src/e_mod_config.c:150
+#: src/e_mod_config.c:150
 msgid "Screen"
-msgstr ""
+msgstr "屏幕"
 
-#: ../src/e_mod_config.c:170
+#: src/e_mod_config.c:170
 msgid "Show windows from all screens"
-msgstr ""
+msgstr "显示所有屏幕窗口"
 
-#: ../src/e_mod_config.c:175
+#: src/e_mod_config.c:175
 msgid "Show windows from current screen"
-msgstr ""
+msgstr "显示当前屏幕窗口"
 
-#: ../src/e_mod_config.c:181
+#: src/e_mod_config.c:181
 msgid "Desktop"
-msgstr ""
+msgstr "桌面"
 
-#: ../src/e_mod_config.c:184
+#: src/e_mod_config.c:184
 msgid "Show windows from all desktops"
-msgstr ""
+msgstr "显示所有桌面窗口"
 
-#: ../src/e_mod_config.c:189
+#: src/e_mod_config.c:189
 msgid "Show windows from active desktop"
-msgstr ""
+msgstr "显示活动桌面窗口"
 
-#: ../src/e_mod_config.c:228
+#: src/e_mod_config.c:228
 msgid "Create new IIirk source"
-msgstr ""
+msgstr "创建新的 Iiirk 源"
 
-#: ../src/e_mod_config.c:229
+#: src/e_mod_config.c:229
 msgid "Enter a name for this new source:"
-msgstr ""
+msgstr "为新源起个名字："
 
-#: ../src/e_mod_config.c:244
+#: src/e_mod_config.c:244
 #, c-format
-msgid ""
-"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
-"iiirk source?"
-msgstr ""
+msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this iiirk source?"
+msgstr "您要求删除  \"%s\"，<br><br>确定要删除这个 Iiirk 源吗？ "
 
-#: ../src/e_mod_config.c:248
+#: src/e_mod_config.c:248
 msgid "Are you sure you want to delete this iiirk source?"
-msgstr ""
+msgstr "确定要删除这个 Iiirk 源吗？ "
 
-#: ../src/e_int_config_iiirk.c:150
+#: src/e_int_config_iiirk.c:150
 msgid "All Applications"
-msgstr ""
+msgstr "所有应用程序"
 
-#: ../src/e_int_config_iiirk.c:164
+#: src/e_int_config_iiirk.c:164
 msgid "Selected Applications"
-msgstr ""
+msgstr "选定的应用程序"
 
-#: ../src/e_int_config_iiirk.c:172
+#: src/e_int_config_iiirk.c:172
 msgid "Up"
-msgstr ""
+msgstr "上"
 
-#: ../src/e_int_config_iiirk.c:177
+#: src/e_int_config_iiirk.c:177
 msgid "Down"
-msgstr ""
+msgstr "下"
+
