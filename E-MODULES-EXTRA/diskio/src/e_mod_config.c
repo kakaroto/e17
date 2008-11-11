@@ -127,12 +127,13 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
 	    if (pos == cfdata->diskpos)
 		  {
-			 if (ci->disk) evas_stringshare_del(ci->disk);
-			 ci->disk = evas_stringshare_add(disk);
+			 if (ci->disk) eina_stringshare_del(ci->disk);
+			 ci->disk = eina_stringshare_add(disk);
 			 break;
 		  }
 	}
 
    e_config_save_queue();
+   printf ("disk='%s'\n", ci->disk);
    return 1;
 }

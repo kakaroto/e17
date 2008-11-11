@@ -7,6 +7,10 @@
 #define MOD_CONFIG_FILE_VERSION \
    ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
+/* Gettext: you need to use the D_ prefix for all your messages,
+ * like  printf D_("Hello World\n");  so can be replaced by gettext */
+#define D_(str) dgettext(PACKAGE, str)
+
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 

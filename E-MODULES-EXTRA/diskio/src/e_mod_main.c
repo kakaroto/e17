@@ -7,7 +7,6 @@ static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
-static void _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _diskio_conf_new(void);
@@ -52,7 +51,7 @@ static const E_Gadcon_Client_Class _gc_class =
 {
    GADCON_CLIENT_CLASS_VERSION, "diskio", 
      {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, 
-          _gc_id_new, _gc_id_del},
+		  _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -60,7 +59,7 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "DiskIO"};
 
 /*
  * Module Functions
-*/
+ */
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
@@ -172,7 +171,7 @@ e_modapi_shutdown(E_Module *m)
           eina_list_remove_list(diskio_conf->conf_items, 
                                 diskio_conf->conf_items);
         /* cleanup stringshares !! ) */
-        if (ci->id) evas_stringshare_del(ci->id);
+        if (ci->id) eina_stringshare_del(ci->id);
         /* keep the planet green */
         E_FREE(ci);
      }
@@ -212,7 +211,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    /* New visual instance, any config ? */
    inst = E_NEW(Instance, 1);
    inst->conf_item = _diskio_conf_item_get(id);
-   if (inst->conf_item->disk) evas_stringshare_add(inst->conf_item->disk);
+   if (inst->conf_item->disk) eina_stringshare_add(inst->conf_item->disk);
 
    /* create on-screen object */
    inst->o_diskio = edje_object_add(gc->evas);
@@ -340,7 +339,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
-   return "DiskIO";
+   return D_("DiskIO");
 }
 
 /* so E can keep a unique instance per-container */
@@ -351,22 +350,6 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 
    ci = _diskio_conf_item_get(NULL);
    return ci->id;
-}
-
-/* gets called when container says remove this item */
-static void 
-_gc_id_del(E_Gadcon_Client_Class *client_class, const char *id) 
-{
-   Config_Item *ci = NULL;
-
-   if (!(ci = _diskio_conf_item_get(id))) return;
-
-   /* cleanup !! */
-   if (ci->id)   evas_stringshare_del(ci->id);
-   if (ci->disk) evas_stringshare_del(ci->disk);
-
-   diskio_conf->conf_items = eina_list_remove(diskio_conf->conf_items, ci);
-   E_FREE(ci);
 }
 
 static Evas_Object *
@@ -427,8 +410,8 @@ _diskio_conf_free(void)
           eina_list_remove_list(diskio_conf->conf_items, 
                                 diskio_conf->conf_items);
         /* EPA */
-        if (ci->id) evas_stringshare_del(ci->id);
-        if (ci->disk) evas_stringshare_del(ci->disk);
+        if (ci->id) eina_stringshare_del(ci->id);
+        if (ci->disk) eina_stringshare_del(ci->disk);
         E_FREE(ci);
      }
 
@@ -439,7 +422,7 @@ _diskio_conf_free(void)
 static int 
 _diskio_conf_timer(void *data) 
 {
-   e_util_dialog_show("DiskIO Configuration Updated", data);
+   e_util_dialog_show( D_("DiskIO Configuration Updated"), data);
    return 0;
 }
 
@@ -467,8 +450,8 @@ _diskio_conf_item_get(const char *id)
           }
      }
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
-   ci->disk = evas_stringshare_add("???");
+   ci->id = eina_stringshare_add(id);
+   ci->disk = eina_stringshare_add("???");
    diskio_conf->conf_items = eina_list_append(diskio_conf->conf_items, ci);
    return ci;
 }
@@ -497,7 +480,7 @@ _diskio_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
                                             inst);
 
         mi = e_menu_item_new(inst->menu);
-        e_menu_item_label_set(mi, "Configuration");
+		e_menu_item_label_set(mi, D_("Configuration"));
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _diskio_cb_menu_configure, inst);
 
