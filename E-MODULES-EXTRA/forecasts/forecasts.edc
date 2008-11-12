@@ -170,7 +170,6 @@ collections {
 		       text:  "Description";
 		       font:  "Vera Bold";
 		       size:  10;
-		       min:   1 1;
                        fit:   1 1;
 		       align: 0.5 0.5;
 		       text_class: "module_normal";
@@ -186,7 +185,7 @@ collections {
 		   inherit: "default" 0.0;
                    rel1 {
                        relative: 0.0 0.0;
-                       offset: -2 -14;
+                       offset: 1 -14;
                        to: "e.text.temp";
                    }
                    rel2 {
