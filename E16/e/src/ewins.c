@@ -212,6 +212,10 @@ EwinHintsInferProps(EWin * ewin)
 	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
      }
+
+   if (ewin->props.skip_ext_task || ewin->props.skip_winlist ||
+       ewin->props.skip_focuslist)
+      ewin->props.donthide = 1;
 }
 
 static void
