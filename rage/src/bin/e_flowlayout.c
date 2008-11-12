@@ -825,9 +825,9 @@ _e_flowlayout_smart_init(void)
 {
    if (_e_smart) return;
 
-   static Evas_Smart_Class _e_smart_class = {
+   static const Evas_Smart_Class _e_smart_class = {
 	"e_flowlayout",
-	2,
+	EVAS_SMART_CLASS_VERSION,	
 	_e_flowlayout_smart_add,
 	_e_flowlayout_smart_del,
 	_e_flowlayout_smart_move,
@@ -837,7 +837,7 @@ _e_flowlayout_smart_init(void)
 	_e_flowlayout_smart_color_set,
 	_e_flowlayout_smart_clip_set,
 	_e_flowlayout_smart_clip_unset,
-	NULL, NULL };
+	NULL, NULL, NULL, NULL };
 
    _e_smart = evas_smart_class_new(&_e_smart_class);
 }
