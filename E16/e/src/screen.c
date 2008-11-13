@@ -40,6 +40,21 @@ typedef struct {
 static EScreen     *p_screens = NULL;
 static int          n_screens = 0;
 
+#ifdef USE_XINERAMA
+static XineramaScreenInfo *
+EXineramaQueryScreens(int *number)
+{
+   int                 event_base, error_base;
+
+   *number = 0;
+
+   if (!XineramaQueryExtension(disp, &event_base, &error_base))
+      return NULL;
+
+   return XineramaQueryScreens(disp, number);
+}
+#endif
+
 void
 ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 {
@@ -71,12 +86,11 @@ ScreenInit(void)
    if (Mode.wm.window)
       return;
 
-   Mode.display.xinerama_active = XineramaIsActive(disp);
-   if (!Mode.display.xinerama_active)
-      return;
+   screens = EXineramaQueryScreens(&num_screens);
 
-   num_screens = 0;
-   screens = XineramaQueryScreens(disp, &num_screens);
+   Mode.display.xinerama_active = (XineramaIsActive(disp)) ? 1 : 0;
+   if (!Mode.display.xinerama_active && num_screens > 0)
+      Mode.display.xinerama_active = 2;
 
    for (i = 0; i < num_screens; i++)
       ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
@@ -95,7 +109,13 @@ ScreenSplit(unsigned int nx, unsigned int ny)
    if (nx > 8 || ny > 8)	/* At least some limit */
       return;
 
-   ScreenInit();		/* Reset screen configuration */
+   if (nx == 0 || ny == 0)
+     {
+	ScreenInit();
+	return;
+     }
+
+   n_screens = 0;		/* Causes reconfiguration */
 
    for (i = 0; i < nx; i++)
       for (j = 0; j < ny; j++)
@@ -110,15 +130,28 @@ ScreenShowInfo(const char *prm __UNUSED__)
    int                 i;
 
 #ifdef USE_XINERAMA
-   if (XineramaIsActive(disp))
+   static const char  *const mt[] = { "Off", "On", "TV", "???" };
+   XineramaScreenInfo *scrns;
+   int                 num, mode;
+#endif
+
+   IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
+   IpcPrintf("Screen:\n");
+   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+	     0, Dpy.screen, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
+
+#ifdef USE_XINERAMA
+   scrns = EXineramaQueryScreens(&num);
+
+   mode = (XineramaIsActive(disp)) ? 1 : 0;
+   if (!mode && num > 0)
+      mode = 2;
+
+   IpcPrintf("Xinerama mode: %s\n", mt[mode]);
+
+   if (scrns)
      {
-	XineramaScreenInfo *scrns;
-	int                 num;
-
-	scrns = XineramaQueryScreens(disp, &num);
-
 	IpcPrintf("Xinerama screens:\n");
-	IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
 	for (i = 0; i < num; i++)
 	   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
 		     i, scrns[i].screen_number,
@@ -126,16 +159,11 @@ ScreenShowInfo(const char *prm __UNUSED__)
 		     scrns[i].height);
 	XFree(scrns);
      }
-   else
-     {
-	IpcPrintf("Xinerama is not active\n");
-     }
 #endif
 
-   IpcPrintf("E-screens:\n");
-   IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
    if (n_screens)
      {
+	IpcPrintf("E-screens:\n");
 	for (i = 0; i < n_screens; i++)
 	  {
 	     EScreen            *ps = p_screens + i;
@@ -143,11 +171,6 @@ ScreenShowInfo(const char *prm __UNUSED__)
 	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
 		       i, ps->head, ps->x, ps->y, ps->w, ps->h);
 	  }
-     }
-   else
-     {
-	IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		  0, Dpy.screen, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
      }
 }
 
