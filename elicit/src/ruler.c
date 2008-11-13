@@ -236,6 +236,7 @@ _elicit_ruler_cb_resize(Ecore_Evas *ee)
 {
   int w, h;
 
+  _elicit_ruler_units_popdown();
   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
   evas_object_resize(_ruler->ruler, w, h);
 }

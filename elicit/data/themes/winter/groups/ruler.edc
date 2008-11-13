@@ -274,14 +274,15 @@ group {
             }
         }
         part {
-            name: "rotate";
+            name: "unit_selector";
+            type: SWALLOW;
             description {
                 state: "default" 0.0;
                 min: 16 16;
                 max: 16 16;
                 rel1 {
                     relative: 1 1;
-                    offset: -26 -21;
+                    offset: -31 -21;
                     to: "base";
                 }
                 rel2 {
@@ -289,14 +290,13 @@ group {
                     offset: -10 -5;
                     to: "base";
                 }
-                image.normal: "ruler_rotate.png";
             }
             description {
                 state: "right" 0.0;
                 inherit: "default" 0.0;
                 rel1 {
                     relative: 0 1;
-                    offset: 5 -26;
+                    offset: 5 -31;
                     to: "base";
                 }
                 rel2 {
@@ -304,14 +304,13 @@ group {
                     offset: 21 -10;
                     to: "base";
                 }
-                image.normal: "ruler_rotate2.png";
             }
             description {
                 state: "bottom" 0.0;
                 inherit: "default" 0.0;
                 rel1 {
                     relative: 1 0;
-                    offset: -26 5;
+                    offset: -31 5;
                     to: "base";
                 }
                 rel2 {
@@ -325,7 +324,7 @@ group {
                 inherit: "default" 0.0;
                 rel1 {
                     relative: 1 1;
-                    offset: -21 -26;
+                    offset: -21 -31;
                     to: "base";
                 }
                 rel2 {
@@ -333,12 +332,10 @@ group {
                     offset: -5 -10;
                     to: "base";
                 }
-                image.normal: "ruler_rotate2.png";
             }
         }
         part {
-            name: "unit_selector";
-            type: SWALLOW;
+            name: "rotate";
             description {
                 state: "default" 0.0;
                 min: 16 16;
@@ -353,6 +350,7 @@ group {
                     offset: 31 -5;
                     to: "base";
                 }
+                image.normal: "ruler_rotate.png";
             }
             description {
                 state: "right" 0.0;
@@ -367,6 +365,7 @@ group {
                     offset: 21 31;
                     to: "base";
                 }
+                image.normal: "ruler_rotate2.png";
             }
             description {
                 state: "bottom" 0.0;
@@ -395,6 +394,7 @@ group {
                     offset: -5 31;
                     to: "base";
                 }
+                image.normal: "ruler_rotate2.png";
             }
         }
     }
