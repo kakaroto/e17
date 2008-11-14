@@ -1005,19 +1005,20 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	     EMapWindow(di->win);
 	     ESelectInput(di->win,
-			  EnterWindowMask | LeaveWindowMask | ButtonPressMask
-			  | ButtonReleaseMask);
+			  EnterWindowMask | LeaveWindowMask |
+			  ButtonPressMask | ButtonReleaseMask);
 	  }
 	di->item.slider.base_win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->item.slider.base_win);
 	di->item.slider.knob_win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->item.slider.knob_win);
 	ESelectInput(di->item.slider.base_win,
-		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
-		     ButtonReleaseMask);
+		     EnterWindowMask | LeaveWindowMask |
+		     ButtonPressMask | ButtonReleaseMask);
 	EventCallbackRegister(di->item.slider.base_win, 0, DItemHandleEvents,
 			      di);
 	ESelectInput(di->item.slider.knob_win,
+		     EnterWindowMask | LeaveWindowMask |
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 	EventCallbackRegister(di->item.slider.knob_win, 0, DItemHandleEvents,
 			      di);
