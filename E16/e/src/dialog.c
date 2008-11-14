@@ -452,13 +452,12 @@ DialogRedraw(Dialog * d)
 
    FreePmapMask(&(d->pmm_bg));
    ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
-		       &(d->pmm_bg), IC_FLAG_NONE, ST_DIALOG);
+		       &(d->pmm_bg), IC_FLAG_FULL_SIZE, ST_DIALOG);
    if (d->pmm_bg.pmap == None)
       return;
 
    EGetWindowBackgroundPixmap(d->win);
-   EXCopyAreaTiled(d->pmm_bg.pmap, None, WinGetPmap(d->win), 0, 0, d->w, d->h,
-		   0, 0);
+   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win), 0, 0, d->w, d->h, 0, 0);
 
    d->redraw = 1;
 
@@ -1669,7 +1668,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	di->state = state;
 	if (!di->text || !di->tclass)
 	   break;
-	if (!d->redraw)
+	if (!d->redraw || di->update)
 	   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win),
 		      di->x, di->y, di->w, di->h, di->x, di->y);
 	TextDraw(di->tclass, d->win, WinGetPmap(d->win), 0, 0, state, di->text,
@@ -1684,11 +1683,15 @@ DialogDrawItem(Dialog * d, DItem * di)
 static void
 DialogUpdate(Dialog * d)
 {
-   if (d->item)
-      DialogDrawItem(d, d->item);
+   do
+     {
+	d->update = 0;
+	if (d->item)
+	   DialogDrawItem(d, d->item);
+     }
+   while (d->update);
    if (d->xu1 < d->xu2 && d->yu1 < d->yu2)
       EClearArea(d->win, d->xu1, d->yu1, d->xu2 - d->xu1, d->yu2 - d->yu1);
-   d->update = 0;
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;
 }
