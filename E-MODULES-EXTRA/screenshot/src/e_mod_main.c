@@ -15,37 +15,28 @@
 #endif
 #include "e_mod_main.h"
 
-static E_Gadcon_Client *_gc_init        (E_Gadcon *gc, const char *name, 
-					 const char *id, const char *style);
-static void             _gc_shutdown    (E_Gadcon_Client *gcc);
-static void             _gc_orient      (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char            *_gc_label       (E_Gadcon_Client_Class *client_class);
-static Evas_Object     *_gc_icon        (E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char      *_gc_id_new      (E_Gadcon_Client_Class *client_class);
-static void             _cfg_free       (void);
-static int              _cfg_timer      (void *data);
-static void             _cfg_new        (void);
-static void             _cb_mouse_down  (void *data, Evas *evas, 
-					 Evas_Object *obj, void *event_info);
-static void             _cb_menu_post   (void *data, E_Menu *menu);
-static void             _cb_menu_cfg    (void *data, E_Menu *menu, 
-					 E_Menu_Item *mi);
-static void             _cb_normal      (void *data, E_Menu *menu, 
-					 E_Menu_Item *mi);
-static void             _cb_window      (void *data, E_Menu *menu, 
-					 E_Menu_Item *mi);
-static void             _cb_region      (void *data, E_Menu *menu, 
-					 E_Menu_Item *mi);
-static void             _cb_start_shot  (void *data, Evas_Object *obj, 
-					 const char *emission, 
-					 const char *source);
-static void             _cb_exec_shot   (void *data, Evas_Object *obj, 
-					 const char *emission, 
-					 const char *source);
-static void             _cb_dialog_ok   (char *text, void *data);
-static void             _cb_send_msg    (void *data);
-static void             _cb_do_shot     (void);
-static void             _cb_take_shot   (E_Object *obj, const char *params);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char *_gc_label(E_Gadcon_Client_Class *client_class);
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static void _cfg_free(void);
+static int _cfg_timer(void *data);
+static void _cfg_new(void);
+static void _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _cb_menu_post(void *data, E_Menu *menu);
+static void _cb_menu_cfg(void *data, E_Menu *menu, E_Menu_Item *mi);
+static void _cb_normal(void *data, E_Menu *menu, E_Menu_Item *mi);
+static void _cb_window(void *data, E_Menu *menu, E_Menu_Item *mi);
+static void _cb_region(void *data, E_Menu *menu, E_Menu_Item *mi);
+static void _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_exec_shot(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _cb_dialog_ok(char *text, void *data);
+static void _cb_send_msg(void *data);
+static void _cb_do_shot(void);
+static void _cb_take_shot(E_Object *obj, const char *params);
+static int _cb_timer(void *data);
 
 typedef struct _Instance Instance;
 struct _Instance 
@@ -53,6 +44,8 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *o_base;
    E_Menu *menu, *menu_mode;
+   Ecore_Timer *timer;
+   int counter;
 };
 
 static Eina_List *instances = NULL;
@@ -213,6 +206,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
 
+   edje_object_part_text_set(inst->o_base, "e.text.counter", "");
+
    instances = eina_list_append(instances, inst);
    return inst->gcc;
 }
@@ -223,6 +218,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst = NULL;
 
    if (!(inst = gcc->data)) return;
+   if (inst->timer) ecore_timer_del(inst->timer);
    instances = eina_list_remove(instances, inst);
    if (inst->menu) 
      {
@@ -457,7 +453,7 @@ _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *s
 			    NULL, NULL, NULL, _cb_dialog_ok, NULL, inst);
      }
    else 
-     _cb_send_msg(inst);
+     inst->timer = ecore_timer_add(1.0, _cb_timer, inst);
 }
 
 static void 
@@ -469,7 +465,7 @@ _cb_exec_shot(void *data, Evas_Object *obj, const char *emission, const char *so
 
    _cb_do_shot();
    edje_object_signal_emit(inst->o_base, "e,action,screenshot,stop", "");
-   edje_object_message_signal_process(inst->o_base);
+   edje_object_part_text_set(inst->o_base, "e.text.counter", "");
 }
 
 static void 
@@ -493,7 +489,7 @@ _cb_dialog_ok(char *text, void *data)
    if (ss_cfg->filename) eina_stringshare_del(ss_cfg->filename);
    ss_cfg->filename = eina_stringshare_add(buf);
 
-   _cb_send_msg(inst);
+   inst->timer = ecore_timer_add(1.0, _cb_timer, inst);
 }
 
 static void 
@@ -678,4 +674,24 @@ _cb_take_shot(E_Object *obj, const char *params)
    snprintf(buf, sizeof(buf), "emprint %s", tmp);
    exe = ecore_exe_run(buf, NULL);
    if (exe) ecore_exe_free(exe);
+}
+
+static int 
+_cb_timer(void *data) 
+{
+   Instance *inst = NULL;
+   char buf[256];
+
+   if (!(inst = data)) return 0;
+   snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
+   edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
+   if ((ss_cfg->delay - inst->counter) == 0) 
+     {
+        inst->timer = NULL;
+        inst->counter = 0;
+        _cb_send_msg(inst);
+        return 0;
+     }
+   inst->counter++;
+   return 1;
 }

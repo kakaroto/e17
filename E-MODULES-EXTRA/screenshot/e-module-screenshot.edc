@@ -40,35 +40,12 @@ collections
 	max: 128 128;
 	script 
 	  {
-	     public counter, gint;
-
-	     public _cb_timer(val) 
-	       {
-		  new str[100], i;
-
-		  i = get_int(gint);
-		  set_int(gint, (i - 1));
-		  if (i >= 1) 
-		    {
-		       snprintf(str, sizeof(str), "%d", i);
-		       set_text(PART:"e.text.counter", str);
-		       counter = timer(1.0, "_cb_timer", gint);
-		    }
-		  else
-		    run_program(PROGRAM:"do_shot");
-	       }
-
 	   public message(Msg_Type:type, id, ...) 
 	       {
 		  if (type == MSG_INT_SET) 
 		    {
-		       new tmp;
-
-		       tmp = getarg(2);
-		       set_int(gint, tmp);
-		       set_state(PART:"e.text.counter", "visible", 0.0);
-		       set_text(PART:"e.text.counter", "");
-		       counter = timer(1.0, "_cb_timer", gint);
+                       set_text(PART:"e.text.counter", "");
+                       run_program(PROGRAM:"do_shot");
 		    }
 	       }
 	  }
@@ -105,10 +82,10 @@ collections
 		  description 
 		    {
 		       state: "default" 0.0;
-		       color: 255 255 255 0;
-		       color3: 0 0 0 0;
+		       color: 255 255 255 255;
+		       color3: 0 0 0 32;
 		       color_class: "module_label";
-		       visible: 0;
+		       visible: 1;
 		       text 
 			 {
 			    text: "";
@@ -117,14 +94,6 @@ collections
 			    min: 1 1;
 			    align: 0.5 0.5;
 			 }
-		    }
-		  description 
-		    {
-		       state: "visible" 0.0;
-		       inherit: "default" 0.0;
-		       visible: 1;
-		       color: 255 255 255 255;
-		       color3: 0 0 0 32;
 		    }
 	       }
 	     part 
