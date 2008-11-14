@@ -60,7 +60,6 @@ typedef struct {
    ImageClass         *ic_knob;
 
    char                in_drag;
-   int                 wanted_val;
 
    Win                 base_win;
    Win                 knob_win;
@@ -790,7 +789,6 @@ DialogAddItem(DItem * dii, int type)
 	di->item.slider.numeric_w = 0;
 	di->item.slider.numeric_h = 0;
 	di->item.slider.in_drag = 0;
-	di->item.slider.wanted_val = 0;
 	break;
      }
 
@@ -2083,8 +2081,6 @@ DialogHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 static void
 DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 {
-   int                 dx, dy;
-
    switch (di->type)
      {
      case DITEM_AREA:
@@ -2097,34 +2093,25 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	   break;
 	if (ev->xmotion.window == WinGetXwin(di->item.slider.knob_win))
 	  {
-	     dx = Mode.events.mx - Mode.events.px;
-	     dy = Mode.events.my - Mode.events.py;
+	     int                 dx, sr, vr;
+
 	     if (di->item.slider.horizontal)
 	       {
-		  di->item.slider.wanted_val += dx;
-		  di->item.slider.val =
-		     di->item.slider.lower +
-		     (((di->item.slider.wanted_val *
-			(di->item.slider.upper -
-			 di->item.slider.lower)) /
-		       (di->item.slider.base_w -
-			di->item.slider.knob_w)) /
-		      di->item.slider.unit) * di->item.slider.unit;
+		  sr = di->item.slider.base_w - di->item.slider.knob_w;
+		  dx = ev->xbutton.x + di->item.slider.knob_x -
+		     di->item.slider.knob_w / 2;
 	       }
 	     else
 	       {
-		  di->item.slider.wanted_val += dy;
-		  di->item.slider.val =
-		     di->item.slider.lower +
-		     ((((di->item.
-			 slider.base_h - di->item.slider.knob_h -
-			 di->item.slider.wanted_val) *
-			(di->item.slider.upper -
-			 di->item.slider.lower)) /
-		       (di->item.slider.base_h -
-			di->item.slider.knob_h)) /
-		      di->item.slider.unit) * di->item.slider.unit;
+		  sr = di->item.slider.base_h - di->item.slider.knob_h;
+		  dx = ev->xbutton.y + di->item.slider.knob_y -
+		     di->item.slider.knob_h / 2;
+		  dx = sr - dx;
 	       }
+	     vr = di->item.slider.upper - di->item.slider.lower;
+	     dx = (int)(((float)dx / (sr * di->item.slider.unit)) * vr + .5);
+	     dx *= di->item.slider.unit;
+	     di->item.slider.val = di->item.slider.lower + dx;
 	     if (di->item.slider.val < di->item.slider.lower)
 		di->item.slider.val = di->item.slider.lower;
 	     if (di->item.slider.val > di->item.slider.upper)
@@ -2158,10 +2145,6 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	     if (ev->xbutton.button >= 1 && ev->xbutton.button <= 3)
 	       {
 		  di->item.slider.in_drag = 1;
-		  if (di->item.slider.horizontal)
-		     di->item.slider.wanted_val = di->item.slider.knob_x;
-		  else
-		     di->item.slider.wanted_val = di->item.slider.knob_y;
 		  break;
 	       }
 	  }
