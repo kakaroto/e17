@@ -2330,7 +2330,8 @@ DItemEventMouseOut(Win win __UNUSED__, DItem * di, XEvent * ev)
 	break;
      }
 
-   di->hilited = 0;
+   if (!di->clicked)
+      di->hilited = 0;
 
    DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
