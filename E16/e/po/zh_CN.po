@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-19 01:02+0200\n"
+"POT-Creation-Date: 2008-11-14 00:51+0100\n"
 "PO-Revision-Date: 2008-10-19 19:41+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -36,7 +36,7 @@ msgid ""
 msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
-#: src/cursors.c:172 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:170 src/iclass.c:333 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr ""
@@ -137,12 +137,12 @@ msgstr "关于 Enlightenment"
 msgid "Attention !!!"
 msgstr "注意"
 
-#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/alert.c:583 src/dialog.c:843 src/dialog.c:2033 src/events.c:87
 #: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "确定"
 
-#: src/backgrounds.c:1525
+#: src/backgrounds.c:1506
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -150,53 +150,53 @@ msgid ""
 "File: %s\n"
 msgstr ""
 
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1507
 msgid "-NONE-"
 msgstr ""
 
-#: src/backgrounds.c:1704 src/backgrounds.c:1706
+#: src/backgrounds.c:1685 src/backgrounds.c:1687
 #, fuzzy
 msgid ""
 "No\n"
 "Background"
 msgstr "设为背景"
 
-#: src/backgrounds.c:1800 src/backgrounds.c:2229
+#: src/backgrounds.c:1781 src/backgrounds.c:2210
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr ""
 
-#: src/backgrounds.c:2015
+#: src/backgrounds.c:1996
 #, fuzzy
 msgid "Use background image"
 msgstr "背景变化"
 
-#: src/backgrounds.c:2019
+#: src/backgrounds.c:2000
 msgid "Keep aspect on scale"
 msgstr ""
 
-#: src/backgrounds.c:2023
+#: src/backgrounds.c:2004
 msgid "Tile image across background"
 msgstr ""
 
-#: src/backgrounds.c:2032
+#: src/backgrounds.c:2013
 msgid "Move to Front\n"
 msgstr ""
 
-#: src/backgrounds.c:2037
+#: src/backgrounds.c:2018
 msgid "Duplicate\n"
 msgstr ""
 
-#: src/backgrounds.c:2041
+#: src/backgrounds.c:2022
 msgid "Unlist\n"
 msgstr ""
 
-#: src/backgrounds.c:2046
+#: src/backgrounds.c:2027
 #, fuzzy
 msgid "Delete File\n"
 msgstr "删除键"
 
-#: src/backgrounds.c:2057
+#: src/backgrounds.c:2038
 msgid ""
 "Background\n"
 "Image\n"
@@ -205,65 +205,65 @@ msgid ""
 "Alignment\n"
 msgstr ""
 
-#: src/backgrounds.c:2114
+#: src/backgrounds.c:2095
 #, fuzzy
 msgid "BG Colour\n"
 msgstr "颜色"
 
-#: src/backgrounds.c:2119
+#: src/backgrounds.c:2100
 msgid "Red:\n"
 msgstr ""
 
-#: src/backgrounds.c:2130
+#: src/backgrounds.c:2111
 #, fuzzy
 msgid "Green:\n"
 msgstr "屏幕"
 
-#: src/backgrounds.c:2141
+#: src/backgrounds.c:2122
 msgid "Blue:\n"
 msgstr ""
 
-#: src/backgrounds.c:2174
+#: src/backgrounds.c:2155
 msgid "Pre-scan BG's"
 msgstr ""
 
-#: src/backgrounds.c:2182
+#: src/backgrounds.c:2163
 msgid "Sort by File"
 msgstr ""
 
-#: src/backgrounds.c:2187
+#: src/backgrounds.c:2168
 msgid "Sort by Attr."
 msgstr ""
 
-#: src/backgrounds.c:2193
+#: src/backgrounds.c:2174
 #, fuzzy
 msgid "Sort by Image"
 msgstr "选择一个图像"
 
-#: src/backgrounds.c:2213
+#: src/backgrounds.c:2194
 msgid "Use dithering in Hi-Colour"
 msgstr ""
 
-#: src/backgrounds.c:2217
+#: src/backgrounds.c:2198
 #, fuzzy
 msgid "Background overrides theme"
 msgstr "背景变化"
 
-#: src/backgrounds.c:2222
+#: src/backgrounds.c:2203
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2246 src/mod-trans.c:199
+#: src/backgrounds.c:2227 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
 msgstr "设为背景"
 
-#: src/backgrounds.c:2247
+#: src/backgrounds.c:2228
 #, fuzzy
 msgid "Desktop Background Settings"
 msgstr "桌面设置"
 
-#: src/backgrounds.c:2250
+#: src/backgrounds.c:2231
 #, fuzzy
 msgid ""
 "Enlightenment Desktop\n"
@@ -286,17 +286,17 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/config.c:195 src/config.c:296
+#: src/config.c:197 src/config.c:297
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr ""
 
-#: src/config.c:203 src/config.c:303
+#: src/config.c:205 src/config.c:304
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr ""
 
-#: src/config.c:213
+#: src/config.c:215
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -305,26 +305,26 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:221
+#: src/config.c:223
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:312
+#: src/config.c:313
 msgid "Theme versioning ERROR"
 msgstr ""
 
-#: src/config.c:313
+#: src/config.c:314
 msgid "Restart with Defaults"
 msgstr ""
 
-#: src/config.c:314
+#: src/config.c:315
 msgid "Abort and Exit"
 msgstr ""
 
-#: src/config.c:315
+#: src/config.c:316
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -345,7 +345,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:577
+#: src/config.c:578
 #, fuzzy
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 正在启动。请稍候。"
@@ -355,7 +355,7 @@ msgstr "Enlightenment 正在启动。请稍候。"
 msgid "Settings..."
 msgstr "设定"
 
-#: src/container.c:1211 src/dialog.c:858 src/pager.c:1013 config/strings.c:30
+#: src/container.c:1211 src/dialog.c:855 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "关闭"
@@ -509,143 +509,120 @@ msgid ""
 "to the bottom.\n"
 msgstr ""
 
-#: src/desktops.c:2260 src/desktops.c:2299
-#, fuzzy, c-format
-msgid "%i Desktops"
-msgstr "桌面"
-
-#: src/desktops.c:2262 src/desktops.c:2301
-#, fuzzy, c-format
-msgid "%i Desktop"
-msgstr "这个桌面"
-
-#: src/desktops.c:2294
+#: src/desktops.c:2290
 #, fuzzy
 msgid "Number of virtual desktops:\n"
 msgstr "桌面数目"
 
-#: src/desktops.c:2323
+#: src/desktops.c:2315
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2329
+#: src/desktops.c:2321
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "桌面文件扫描"
 
-#: src/desktops.c:2343
+#: src/desktops.c:2335
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2351
+#: src/desktops.c:2343
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2357
+#: src/desktops.c:2349
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2361
+#: src/desktops.c:2353
 msgid "Top"
 msgstr ""
 
-#: src/desktops.c:2367
+#: src/desktops.c:2359
 #, fuzzy
 msgid "Bottom"
 msgstr "按钮"
 
-#: src/desktops.c:2373 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2365 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr ""
 
-#: src/desktops.c:2379 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2371 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 #, fuzzy
 msgid "Right"
 msgstr "右："
 
-#: src/desktops.c:2387 src/menus-misc.c:697
+#: src/desktops.c:2379 src/menus-misc.c:586
 #, fuzzy
 msgid "Desks"
 msgstr "桌面"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2380
 #, fuzzy
 msgid "Multiple Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2383
 #, fuzzy
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr "Enlightenment 桌面名模块"
 
-#: src/desktops.c:2461 src/desktops.c:2496
-#, c-format
-msgid ""
-"%i x %i\n"
-"Screens in size"
-msgstr ""
-
-#: src/desktops.c:2464 src/desktops.c:2499
-msgid ""
-"1\n"
-"Screen in size"
-msgstr ""
-
-#: src/desktops.c:2492
+#: src/desktops.c:2475
 #, fuzzy
 msgid "Virtual Desktop size:\n"
 msgstr "虚拟桌面"
 
-#: src/desktops.c:2533
+#: src/desktops.c:2511
 #, fuzzy
 msgid "Wrap virtual desktops around"
 msgstr "虚拟桌面"
 
-#: src/desktops.c:2540
+#: src/desktops.c:2518
 #, fuzzy
 msgid "Edge Flip Mode:"
 msgstr "结束编辑模式"
 
-#: src/desktops.c:2543
+#: src/desktops.c:2521
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2548
+#: src/desktops.c:2526
 #, fuzzy
 msgid "On"
 msgstr "打开"
 
-#: src/desktops.c:2553
+#: src/desktops.c:2531
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2559
+#: src/desktops.c:2537
 msgid "Resistance at edge of screen:\n"
 msgstr ""
 
-#: src/desktops.c:2571
+#: src/desktops.c:2549
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2572
+#: src/desktops.c:2550
 #, fuzzy
 msgid "Virtual Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2553
 #, fuzzy
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr "虚拟桌面设置"
 
-#: src/dialog.c:851
+#: src/dialog.c:848
 msgid "Apply"
 msgstr ""
 
-#: src/ecompmgr.c:2626
+#: src/ecompmgr.c:2625
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -810,24 +787,24 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:717
+#: src/groups.c:740
 #, fuzzy
 msgid "Window Group Selection"
 msgstr "窗口边框选择"
 
-#: src/groups.c:720
+#: src/groups.c:743
 #, fuzzy
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr "Enlightenment Randr 模块"
 
-#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
+#: src/groups.c:766 src/groups.c:775 src/groups.c:783 src/groups.c:969
 #, fuzzy
 msgid "Window Group Error"
 msgstr "窗口组"
 
-#: src/groups.c:745
+#: src/groups.c:768
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -836,7 +813,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/groups.c:753
+#: src/groups.c:776
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -845,117 +822,117 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/groups.c:762
+#: src/groups.c:785
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
 "\n"
 msgstr ""
 
-#: src/groups.c:852
+#: src/groups.c:875
 msgid "   Pick the group to configure:   "
 msgstr ""
 
-#: src/groups.c:883
+#: src/groups.c:906
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:911 src/groups.c:1013
 #, fuzzy
 msgid "Changing Border Style"
 msgstr "默认边框样式"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:916 src/groups.c:1018
 msgid "Iconifying"
 msgstr ""
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:921 src/groups.c:1023
 #, fuzzy
 msgid "Killing"
 msgstr "杀死"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:926 src/groups.c:1028
 #, fuzzy
 msgid "Moving"
 msgstr "无"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:931 src/groups.c:1033
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/groups.c:913 src/groups.c:1015
+#: src/groups.c:936 src/groups.c:1038
 #, fuzzy
 msgid "Sticking"
 msgstr "粘住状态"
 
-#: src/groups.c:918 src/groups.c:1020
+#: src/groups.c:941 src/groups.c:1043
 #, fuzzy
 msgid "Shading"
 msgstr "正在启动"
 
-#: src/groups.c:923 src/groups.c:1025
+#: src/groups.c:946 src/groups.c:1048
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/groups.c:930
+#: src/groups.c:953
 #, fuzzy
 msgid "Window Group Settings"
 msgstr "窗口列表设置"
 
-#: src/groups.c:933
+#: src/groups.c:956
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:948
+#: src/groups.c:971
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
 "\n"
 msgstr ""
 
-#: src/groups.c:983
+#: src/groups.c:1006
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "弹出设置"
 
-#: src/groups.c:1034
+#: src/groups.c:1057
 #, fuzzy
 msgid " Global settings: "
 msgstr "常规设置"
 
-#: src/groups.c:1038
+#: src/groups.c:1061
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "窗口：动作"
 
-#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1067 src/menus-misc.c:646 config/strings.c:147
 msgid "Groups"
 msgstr ""
 
-#: src/groups.c:1045
+#: src/groups.c:1068
 #, fuzzy
 msgid "Default Group Control Settings"
 msgstr "网络连接设置"
 
-#: src/groups.c:1048
+#: src/groups.c:1071
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1080
+#: src/groups.c:1103
 msgid "Pick the group the window will belong to:"
 msgstr ""
 
-#: src/groups.c:1086
+#: src/groups.c:1109
 msgid "Select the group to remove the window from:"
 msgstr ""
 
-#: src/groups.c:1091
+#: src/groups.c:1114
 msgid "Select the group to break:"
 msgstr ""
 
@@ -1029,49 +1006,49 @@ msgstr "选项"
 msgid "Iconbox Settings"
 msgstr "登陆框设置"
 
-#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
+#: src/ipc.c:194 src/ipc.c:1440 src/ipc.c:1447
 #, fuzzy
 msgid "Message"
 msgstr "信息"
 
-#: src/ipc.c:1436 src/ipc.c:1443
+#: src/ipc.c:1440 src/ipc.c:1447
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1437
+#: src/ipc.c:1441
 msgid "composite"
 msgstr ""
 
-#: src/ipc.c:1444
+#: src/ipc.c:1448
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1785
+#: src/ipc.c:1789
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC设置错误！"
 
-#: src/ipc.c:1789
+#: src/ipc.c:1793
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
+#: src/ipc.c:1795 src/ipc.c:1815 src/ipc.c:1827
 msgid "Commands currently available:\n"
 msgstr ""
 
-#: src/ipc.c:1809
+#: src/ipc.c:1813
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1810
+#: src/ipc.c:1814
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1812 src/ipc.c:1824
+#: src/ipc.c:1816 src/ipc.c:1828
 msgid "         <command>     : <description>\n"
 msgstr ""
 
@@ -1117,62 +1094,62 @@ msgstr ""
 msgid "Magnifier"
 msgstr "管理器"
 
-#: src/menus-misc.c:569 config/strings.c:91
+#: src/menus-misc.c:458 config/strings.c:91
 msgid "Themes"
 msgstr ""
 
-#: src/menus-misc.c:595
+#: src/menus-misc.c:484
 msgid "Border"
 msgstr ""
 
-#: src/menus-misc.c:657
+#: src/menus-misc.c:546
 msgid "Window List"
 msgstr ""
 
-#: src/menus-misc.c:679
+#: src/menus-misc.c:568
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "这个桌面"
 
-#: src/menus-misc.c:683 src/menus-misc.c:779
+#: src/menus-misc.c:572 src/menus-misc.c:668
 #, fuzzy, c-format
 msgid "Desktop %i"
 msgstr "桌面  %i, %i"
 
-#: src/menus-misc.c:726
+#: src/menus-misc.c:615
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus-misc.c:731
+#: src/menus-misc.c:620
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:742
+#: src/menus-misc.c:631
 #, c-format
 msgid "Group %i"
 msgstr ""
 
-#: src/menus.c:2061
+#: src/menus.c:2080
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2066
+#: src/menus.c:2085
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2071
+#: src/menus.c:2090
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2077
+#: src/menus.c:2096
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2078
+#: src/menus.c:2097
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2081
+#: src/menus.c:2100
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2706,3 +2683,11 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "事件"
+
+#, fuzzy
+#~ msgid "%i Desktops"
+#~ msgstr "桌面"
+
+#, fuzzy
+#~ msgid "%i Desktop"
+#~ msgstr "这个桌面"
