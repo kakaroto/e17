@@ -2249,17 +2249,14 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 	EMapWindow(wins[i]);
      }
 
-   for (i = tmp_desktops; i < (int)Conf.desks.num; i++)
+   for (i = tmp_desktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
 	if (!wins[i])
 	   continue;
 	EUnmapWindow(wins[i]);
      }
 
-   if (tmp_desktops > 1)
-      Esnprintf(s, sizeof(s), _("%i Desktops"), tmp_desktops);
-   else
-      Esnprintf(s, sizeof(s), _("%i Desktop"), tmp_desktops);
+   Esnprintf(s, sizeof(s), "%i", tmp_desktops);
    DialogItemSetText(tmp_desk_text, s);
    DialogDrawItems(d, tmp_desk_text, 0, 0, 99999, 99999);
 }
@@ -2275,7 +2272,6 @@ static void
 _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *slider, *radio;
-   char                s[64];
 
    tmp_desktops = Conf.desks.num;
    tmp_desktop_slide = Conf.desks.slidein;
@@ -2295,11 +2291,7 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    di = tmp_desk_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
-   if (tmp_desktops > 1)
-      Esnprintf(s, sizeof(s), _("%i Desktops"), tmp_desktops);
-   else
-      Esnprintf(s, sizeof(s), _("%i Desktop"), tmp_desktops);
-   DialogItemSetText(di, s);
+   DialogItemSetText(di, "X");
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 1, 32);
@@ -2423,9 +2415,9 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    char                s[64];
    DItem              *di;
    Win                 win;
-   int                 w, h;
+   int                 w, h, ww, hh;
 
-   if ((val != 1) && ((prev_ax == tmp_area_x) && (prev_ay == tmp_area_y)))
+   if ((val != 1) && (prev_ax == tmp_area_x) && (prev_ay == tmp_area_y))
       return;
 
    prev_ax = tmp_area_x;
@@ -2449,16 +2441,12 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	pmap = EGetWindowBackgroundPixmap(awin);
 	ImageclassApplySimple(ic, awin, pmap, STATE_NORMAL, 0, 0, 18, 14);
      }
-   EMoveResizeWindow(awin, ((w / 2) - (9 * tmp_area_x)),
-		     ((h / 2) - (7 * tmp_area_y)), 18 * tmp_area_x,
-		     14 * tmp_area_y);
+   ww = 18 * prev_ax;
+   hh = 14 * prev_ay;
+   EMoveResizeWindow(awin, (w - ww) / 2, (h - hh) / 2, ww, hh);
    EMapWindow(awin);
 
-   if ((tmp_area_x > 1) || (tmp_area_y > 1))
-      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"),
-		tmp_area_x, tmp_area_y);
-   else
-      Esnprintf(s, sizeof(s), _("1\nScreen in size"));
+   Esnprintf(s, sizeof(s), "%i x %i", prev_ax, prev_ay);
    DialogItemSetText(tmp_area_text, s);
    DialogDrawItems(d, tmp_area_text, 0, 0, 99999, 99999);
 }
@@ -2473,7 +2461,6 @@ static void
 _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *slider, *slider2, *table2, *radio;
-   char                s[64];
 
    tmp_area_wraparound = Conf.desks.areas_wraparound;
 
@@ -2488,12 +2475,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Virtual Desktop size:\n"));
 
    di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
-   if ((tmp_area_x > 1) || (tmp_area_y > 1))
-      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"),
-		tmp_area_x, tmp_area_y);
-   else
-      Esnprintf(s, sizeof(s), _("1\nScreen in size"));
-   DialogItemSetText(di, s);
+   DialogItemSetText(di, "X");
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemTableSetOptions(table2, 2, 0, 0, 0);
