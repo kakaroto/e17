@@ -2039,6 +2039,23 @@ DialogOKstr(const char *title, const char *txt)
 /*
  * Dialog event handlers
  */
+static int
+_DlgPixToVal(const DItem * di, int dx, int sr)
+{
+   int                 vr, value;
+
+   vr = di->item.slider.upper - di->item.slider.lower;
+   dx = (int)(((float)dx / (sr * di->item.slider.unit)) * vr + .5);
+   dx *= di->item.slider.unit;
+   value = di->item.slider.lower + dx;
+
+   if (value < di->item.slider.lower)
+      value = di->item.slider.lower;
+   if (value > di->item.slider.upper)
+      value = di->item.slider.upper;
+
+   return value;
+}
 
 static void
 DialogEventKeyPress(Dialog * d, XEvent * ev)
@@ -2086,28 +2103,24 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	   break;
 	if (ev->xmotion.window == WinGetXwin(di->item.slider.knob_win))
 	  {
-	     int                 dx, sr, vr;
-
 	     if (di->item.slider.horizontal)
 	       {
-		  sr = di->item.slider.base_w - di->item.slider.knob_w;
-		  dx = ev->xbutton.x + di->item.slider.knob_x -
-		     di->item.slider.knob_w / 2;
+		  di->item.slider.val =
+		     _DlgPixToVal(di,
+				  ev->xbutton.x + di->item.slider.knob_x -
+				  di->item.slider.knob_w / 2,
+				  di->item.slider.base_w -
+				  di->item.slider.knob_w);
 	       }
 	     else
 	       {
-		  sr = di->item.slider.base_h - di->item.slider.knob_h;
-		  dx = ev->xbutton.y + di->item.slider.knob_y -
-		     di->item.slider.knob_h / 2;
+		  di->item.slider.val =
+		     _DlgPixToVal(di,
+				  ev->xbutton.y + di->item.slider.knob_y -
+				  di->item.slider.knob_h / 2,
+				  di->item.slider.base_h -
+				  di->item.slider.knob_h);
 	       }
-	     vr = di->item.slider.upper - di->item.slider.lower;
-	     dx = (int)(((float)dx / (sr * di->item.slider.unit)) * vr + .5);
-	     dx *= di->item.slider.unit;
-	     di->item.slider.val = di->item.slider.lower + dx;
-	     if (di->item.slider.val < di->item.slider.lower)
-		di->item.slider.val = di->item.slider.lower;
-	     if (di->item.slider.val > di->item.slider.upper)
-		di->item.slider.val = di->item.slider.upper;
 	     if (di->item.slider.val_ptr)
 		*di->item.slider.val_ptr = di->item.slider.val;
 	     if (di->func)
@@ -2169,11 +2182,21 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 
 	  case 2:
 	     if (di->item.slider.horizontal)
-		di->item.slider.val = x *
-		   (di->item.slider.upper - di->item.slider.lower) / di->w;
+	       {
+		  di->item.slider.val =
+		     _DlgPixToVal(di,
+				  ev->xbutton.x - di->item.slider.knob_w / 2,
+				  di->item.slider.base_w -
+				  di->item.slider.knob_w);
+	       }
 	     else
-		di->item.slider.val = y *
-		   (di->item.slider.upper - di->item.slider.lower) / di->h;
+	       {
+		  di->item.slider.val =
+		     _DlgPixToVal(di,
+				  ev->xbutton.y - di->item.slider.knob_h / 2,
+				  di->item.slider.base_h -
+				  di->item.slider.knob_h);
+	       }
 	     break;
 
 	  case 4:
