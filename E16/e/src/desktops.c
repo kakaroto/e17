@@ -2405,7 +2405,7 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (val < 2)
      {
-	SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
+	SetNewAreaSize(tmp_area_x, tmp_area_y);
 	Conf.desks.areas_wraparound = tmp_area_wraparound;
 	Conf.desks.edge_flip_mode = tmp_edge_flip;
 	if (tmp_edge_resist < 1)
@@ -2450,13 +2450,13 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	ImageclassApplySimple(ic, awin, pmap, STATE_NORMAL, 0, 0, 18, 14);
      }
    EMoveResizeWindow(awin, ((w / 2) - (9 * tmp_area_x)),
-		     ((h / 2) - (7 * (9 - tmp_area_y))), 18 * tmp_area_x,
-		     14 * (9 - tmp_area_y));
+		     ((h / 2) - (7 * tmp_area_y)), 18 * tmp_area_x,
+		     14 * tmp_area_y);
    EMapWindow(awin);
 
-   if ((tmp_area_x > 1) || ((9 - tmp_area_y) > 1))
-      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
-		9 - tmp_area_y);
+   if ((tmp_area_x > 1) || (tmp_area_y > 1))
+      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"),
+		tmp_area_x, tmp_area_y);
    else
       Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemSetText(tmp_area_text, s);
@@ -2481,7 +2481,6 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_edge_resist = Conf.desks.edge_flip_resistance;
 
    DesksGetAreaSize(&tmp_area_x, &tmp_area_y);
-   tmp_area_y = 9 - tmp_area_y;
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
@@ -2490,8 +2489,8 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
    if ((tmp_area_x > 1) || (tmp_area_y > 1))
-      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
-		9 - tmp_area_y);
+      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"),
+		tmp_area_x, tmp_area_y);
    else
       Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemSetText(di, s);

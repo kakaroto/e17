@@ -1428,9 +1428,9 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tmp_bg->bg.xjust = tmp_bg_xjust;
-	tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
+	tmp_bg->bg.yjust = tmp_bg_yjust;
 	tmp_bg->bg.xperc = tmp_bg_xperc;
-	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
+	tmp_bg->bg.yperc = tmp_bg_yperc;
 	if (!tmp_bg_image)
 	   BackgroundFilesRemove(tmp_bg);
 
@@ -1467,13 +1467,13 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
    ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
    SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = BackgroundCreate("TEMP", &color, fbg, tmp_bg_tile,
-			 tmp_bg_keep_aspect, tmp_bg_xjust,
-			 1024 - tmp_bg_yjust, tmp_bg_xperc,
-			 1024 - tmp_bg_yperc, ffg,
-			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			 tmp_bg->top.yjust, tmp_bg->top.xperc,
-			 tmp_bg->top.yperc);
+   bg = BackgroundCreate("TEMP", &color,
+			 fbg, tmp_bg_tile, tmp_bg_keep_aspect,
+			 tmp_bg_xjust, tmp_bg_yjust,
+			 tmp_bg_xperc, tmp_bg_yperc,
+			 ffg, tmp_bg->top.keep_aspect,
+			 tmp_bg->top.xjust, tmp_bg->top.yjust,
+			 tmp_bg->top.xperc, tmp_bg->top.yperc);
 
    BackgroundApplyPmap(bg, win, pmap, w, h);
    BackgroundDestroy(bg);
@@ -1490,9 +1490,9 @@ BG_GetValues(void)
    tmp_bg_tile = tmp_bg->bg_tile;
    tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
    tmp_bg_xjust = tmp_bg->bg.xjust;
-   tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+   tmp_bg_yjust = tmp_bg->bg.yjust;
    tmp_bg_xperc = tmp_bg->bg.xperc;
-   tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+   tmp_bg_yperc = tmp_bg->bg.yperc;
 }
 
 static void
@@ -1559,13 +1559,13 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
 
    SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
 
-   tmp_bg = BackgroundCreate(s, &color, tmp_bg->bg.file, tmp_bg_tile,
-			     tmp_bg_keep_aspect, tmp_bg_xjust,
-			     1024 - tmp_bg_yjust, tmp_bg_xperc,
-			     1024 - tmp_bg_yperc, tmp_bg->top.file,
-			     tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			     tmp_bg->top.yjust, tmp_bg->top.xperc,
-			     tmp_bg->top.yperc);
+   tmp_bg = BackgroundCreate(s, &color,
+			     tmp_bg->bg.file, tmp_bg_tile, tmp_bg_keep_aspect,
+			     tmp_bg_xjust, tmp_bg_yjust,
+			     tmp_bg_xperc, tmp_bg_yperc,
+			     tmp_bg->top.file, tmp_bg->top.keep_aspect,
+			     tmp_bg->top.xjust, tmp_bg->top.yjust,
+			     tmp_bg->top.xperc, tmp_bg->top.yperc);
 
    DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
    upper += 4;

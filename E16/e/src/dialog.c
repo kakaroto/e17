@@ -1552,27 +1552,20 @@ DialogDrawItem(Dialog * d, DItem * di)
      case DITEM_SLIDER:
 	if (di->item.slider.horizontal)
 	  {
-	     di->item.slider.knob_x =
-		di->item.slider.base_x +
-		(((di->item.slider.base_w -
-		   di->item.slider.knob_w) * (di->item.slider.val -
-					      di->item.slider.lower)) /
+	     di->item.slider.knob_x = di->item.slider.base_x +
+		(((di->item.slider.base_w - di->item.slider.knob_w) *
+		  (di->item.slider.val - di->item.slider.lower)) /
 		 (di->item.slider.upper - di->item.slider.lower));
-	     di->item.slider.knob_y =
-		di->item.slider.base_y +
+	     di->item.slider.knob_y = di->item.slider.base_y +
 		((di->item.slider.base_h - di->item.slider.knob_h) / 2);
 	  }
 	else
 	  {
-	     di->item.slider.knob_y =
-		(di->item.slider.base_y + di->item.slider.base_h -
-		 di->item.slider.knob_h) -
-		(((di->item.slider.base_h -
-		   di->item.slider.knob_h) * (di->item.slider.val -
-					      di->item.slider.lower)) /
+	     di->item.slider.knob_y = di->item.slider.base_y +
+		(((di->item.slider.base_h - di->item.slider.knob_h) *
+		  (di->item.slider.val - di->item.slider.lower)) /
 		 (di->item.slider.upper - di->item.slider.lower));
-	     di->item.slider.knob_x =
-		di->item.slider.base_x +
+	     di->item.slider.knob_x = di->item.slider.base_x +
 		((di->item.slider.base_w - di->item.slider.knob_w) / 2);
 	  }
 	if (di->item.slider.knob_win)
@@ -2106,7 +2099,6 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 		  sr = di->item.slider.base_h - di->item.slider.knob_h;
 		  dx = ev->xbutton.y + di->item.slider.knob_y -
 		     di->item.slider.knob_h / 2;
-		  dx = sr - dx;
 	       }
 	     vr = di->item.slider.upper - di->item.slider.lower;
 	     dx = (int)(((float)dx / (sr * di->item.slider.unit)) * vr + .5);
@@ -2169,9 +2161,9 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	       {
 		  if (ev->xbutton.y >
 		      (di->item.slider.knob_y + (di->item.slider.knob_h / 2)))
-		     di->item.slider.val -= di->item.slider.jump;
-		  else
 		     di->item.slider.val += di->item.slider.jump;
+		  else
+		     di->item.slider.val -= di->item.slider.jump;
 	       }
 	     break;
 
@@ -2180,9 +2172,8 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 		di->item.slider.val = x *
 		   (di->item.slider.upper - di->item.slider.lower) / di->w;
 	     else
-		di->item.slider.val = ((di->h - y) *
-				       (di->item.slider.upper -
-					di->item.slider.lower) / di->h);
+		di->item.slider.val = y *
+		   (di->item.slider.upper - di->item.slider.lower) / di->h;
 	     break;
 
 	  case 4:
