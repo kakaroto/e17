@@ -99,6 +99,50 @@ e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *d
 }
 
 EAPI int
+e_nm_activate_connection(E_NM *nm, E_NMS_Connection *conn, E_NM_Device *device, const char *specific_object)
+{
+  DBusMessage *msg;
+  E_NM_Internal *nmi;
+  int ret;
+  const char *service_name;
+
+  nmi = (E_NM_Internal *)nm;
+
+  msg = e_nm_call_new("ActivateConnection");
+  if (conn->context == E_NMS_CONTEXT_USER) service_name = _E_NMS_SERVICE_USER;
+  else if (conn->context == E_NMS_CONTEXT_SYSTEM) service_name = _E_NMS_SERVICE_SYSTEM;
+  dbus_message_append_args(msg,
+                           DBUS_TYPE_STRING, &service_name,
+                           DBUS_TYPE_OBJECT_PATH, &conn->path,
+                           DBUS_TYPE_OBJECT_PATH, &device->udi,
+                           DBUS_TYPE_OBJECT_PATH, &specific_object,
+                           DBUS_TYPE_INVALID);
+
+  ret = e_dbus_message_send(nmi->conn, msg, NULL, -1, NULL) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
+}
+
+EAPI int
+e_nm_deactivate_connection(E_NM *nm, E_NM_Active_Connection *conn)
+{
+  DBusMessage *msg;
+  E_NM_Internal *nmi;
+  int ret;
+
+  nmi = (E_NM_Internal *)nm;
+
+  msg = e_nm_call_new("DeactivateConnection");
+  dbus_message_append_args(msg,
+                           DBUS_TYPE_OBJECT_PATH, &conn->path,
+                           DBUS_TYPE_INVALID);
+
+  ret = e_dbus_message_send(nmi->conn, msg, NULL, -1, NULL) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
+}
+
+EAPI int
 e_nm_sleep(E_NM *nm, int sleep)
 {
   DBusMessage *msg;

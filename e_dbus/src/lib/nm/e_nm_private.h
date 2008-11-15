@@ -105,9 +105,8 @@ struct E_NMS_Internal
 typedef struct E_NMS_Connection_Internal E_NMS_Connection_Internal;
 struct E_NMS_Connection_Internal
 {
+  E_NMS_Connection conn;
   E_NM_Internal *nmi;
-  char          *path;
-  E_NMS_Context  context;
 
   void *data;
 };
@@ -118,6 +117,7 @@ struct E_NM_Active_Connection_Internal
   E_NM_Active_Connection conn;
 
   E_NM_Internal *nmi;
+  char          *path;
 };
 
 typedef int (*Object_Cb)(void *data, void *reply);

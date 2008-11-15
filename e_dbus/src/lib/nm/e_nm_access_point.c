@@ -43,6 +43,7 @@ e_nm_access_point_get(E_NM *nm, const char *access_point,
   nmi = (E_NM_Internal *)nm;
   ap = calloc(1, sizeof(E_NM_Access_Point_Internal));
   ap->nmi = nmi;
+  ap->ap.path = strdup(access_point);
   d = calloc(1, sizeof(Property_Data));
   d->nmi = nmi;
   d->cb_func = OBJECT_CB(cb_func);
@@ -64,6 +65,7 @@ e_nm_access_point_free(E_NM_Access_Point *access_point)
 
   if (!access_point) return;
   ap = (E_NM_Access_Point_Internal *)access_point;
+  if (ap->ap.path) free(ap->ap.path);
   if (ap->ap.ssid) ecore_list_destroy(ap->ap.ssid);
   if (ap->ap.hw_address) free(ap->ap.hw_address);
   if (ap->handlers)

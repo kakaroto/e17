@@ -181,6 +181,7 @@ struct E_NM
 typedef struct E_NM_Access_Point E_NM_Access_Point;
 struct E_NM_Access_Point
 {
+  char                 *path;
   E_NM_802_11_Ap_Flags  flags;
   E_NM_802_11_Ap_Sec    wpa_flags;
   E_NM_802_11_Ap_Sec    rsn_flags;
@@ -240,11 +241,16 @@ typedef struct E_NMS E_NMS;
 /* No properties */
 
 typedef struct E_NMS_Connection E_NMS_Connection;
-/* No properties */
+struct E_NMS_Connection
+{
+  E_NMS_Context  context;
+  char *path;
+};
 
 typedef struct E_NM_Active_Connection E_NM_Active_Connection;
 struct E_NM_Active_Connection
 {
+  char                         *path;
   char                         *service_name;
   char                         *connection; /* object_path */
   char                         *specific_object; /* object_path */
@@ -283,8 +289,8 @@ extern "C" {
    EAPI int   e_nm_wireless_enabled_set(E_NM *nm, int enabled);
 
    EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
-   /* TODO: e_nm_activate_connection */
-   /* TODO: e_nm_deactivate_connection */
+   EAPI int   e_nm_activate_connection(E_NM *nm, E_NMS_Connection *connection, E_NM_Device *device, const char *specific_object);
+   EAPI int   e_nm_deactivate_connection(E_NM *nm, E_NM_Active_Connection *connection);
    EAPI int   e_nm_sleep(E_NM *nm, int sleep);
 
    EAPI void  e_nm_data_set(E_NM *nm, void *data);

@@ -30,29 +30,25 @@ e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, 
   nmsi = (E_NMS_Internal *)nms;
   conn = calloc(1, sizeof(E_NMS_Connection_Internal));
   conn->nmi = nmsi->nmi;
-  conn->path = strdup(connection);
-  conn->context = context;
+  conn->conn.path = strdup(connection);
+  conn->conn.context = context;
   (*cb_func)(data, (E_NMS_Connection *)conn);
   return 1;
 }
 
 EAPI void
-e_nms_connection_free(E_NMS_Connection *connection)
+e_nms_connection_free(E_NMS_Connection *conn)
 {
-  E_NMS_Connection_Internal *conn;
-  if (!connection) return;
-  conn = (E_NMS_Connection_Internal *)connection;
+  if (!conn) return;
 
   if (conn->path) free(conn->path);
   free(conn);
 }
 
 EAPI void
-e_nms_connection_dump(E_NMS_Connection *connection)
+e_nms_connection_dump(E_NMS_Connection *conn)
 {
-  E_NMS_Connection_Internal *conn;
-  if (!connection) return;
-  conn = (E_NMS_Connection_Internal *)connection;
+  if (!conn) return;
 
   printf("E_NMS_Connection:\n");
   printf("context: ");
@@ -83,7 +79,7 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
   d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
 
-  msg = e_nms_connection_call_new(conn->context, conn->path, "GetSettings");
+  msg = e_nms_connection_call_new(conn->conn.context, conn->conn.path, "GetSettings");
 
   ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_nm_settings, cb_nms_settings, free_nm_settings, -1, d) ? 1 : 0;
   dbus_message_unref(msg);

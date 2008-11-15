@@ -26,6 +26,7 @@ e_nm_active_connection_get(E_NM *nm, const char *connection,
   nmi = (E_NM_Internal *)nm;
   conn = calloc(1, sizeof(E_NM_Active_Connection_Internal));
   conn->nmi = nmi;
+  conn->conn.path = strdup(connection);
   d = calloc(1, sizeof(Property_Data));
   d->nmi = nmi;
   d->cb_func = OBJECT_CB(cb_func);
@@ -41,6 +42,7 @@ EAPI void
 e_nm_active_connection_free(E_NM_Active_Connection *conn)
 {
   if (!conn) return;
+  if (conn->path) free(conn->path);
   if (conn->service_name) free(conn->service_name);
   if (conn->connection) free(conn->connection);
   if (conn->specific_object) free(conn->specific_object);
