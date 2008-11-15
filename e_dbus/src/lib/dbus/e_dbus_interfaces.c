@@ -169,6 +169,7 @@ e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const ch
   DBusMessageIter iter, sub;
   DBusError err;
   DBusPendingCall *ret;
+  char sig[2];
 
   if (!dbus_type_is_basic(value_type))
   {
@@ -188,8 +189,10 @@ e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const ch
     return NULL;
 
   dbus_message_iter_init_append(msg, &iter);
-  dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, dbus_message_type_to_string(value_type), &sub);
-  dbus_message_iter_append_basic(&sub, value_type, &value);
+  sig[0] = value_type;
+  sig[1] = 0;
+  dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, sig, &sub);
+  dbus_message_iter_append_basic(&sub, value_type, value);
   dbus_message_iter_close_container(&iter, &sub);
 
   ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);

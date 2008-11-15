@@ -232,3 +232,12 @@ e_nm_callback_device_removed_set(E_NM *nm, int (*cb_func)(E_NM *nm, const char *
   nmi = (E_NM_Internal *)nm;
   nmi->device_removed = cb_func;
 }
+
+EAPI int
+e_nm_wireless_enabled_set(E_NM *nm, int enabled)
+{
+  E_NM_Internal *nmi;
+
+  nmi = (E_NM_Internal *)nm;
+  return e_nm_properties_set(nmi->conn, "WirelessEnabled", DBUS_TYPE_BOOLEAN, &enabled, NULL, NULL) ? 1 : 0;
+}

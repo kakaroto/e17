@@ -157,8 +157,8 @@ cb_nm(void *data, E_NM *reply)
         return 1;
     }
     nm = reply;
+    e_nm_wireless_enabled_set(nm, 1);
     /*
-    e_nm_dump(nm);
     if (nm->active_connections)
     {
         const char *conn;
@@ -167,8 +167,8 @@ cb_nm(void *data, E_NM *reply)
             e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
     }
     e_nm_get_devices(nm, cb_get_devices, nm);
-    */
     e_nms_get(nm, cb_nms, nm);
+    */
     return 1;
 }
    

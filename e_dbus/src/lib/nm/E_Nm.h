@@ -280,7 +280,8 @@ extern "C" {
    EAPI void  e_nm_free(E_NM *nm);
    EAPI void  e_nm_dump(E_NM *nm);
 
-   /* TODO: e_nm_wireless_enabled_set */
+   EAPI int   e_nm_wireless_enabled_set(E_NM *nm, int enabled);
+
    EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
    /* TODO: e_nm_activate_connection */
    /* TODO: e_nm_deactivate_connection */

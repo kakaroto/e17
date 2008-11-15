@@ -21,6 +21,7 @@
 #define e_nms_connection_call_new(ctxt, conn, member) ctxt == E_NMS_CONTEXT_USER ? dbus_message_new_method_call(_E_NMS_SERVICE_USER, conn, _E_NMS_INTERFACE_CONNECTION, member) : dbus_message_new_method_call(_E_NMS_SERVICE_SYSTEM, conn, _E_NMS_INTERFACE_CONNECTION, member);
 
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
+#define e_nm_properties_set(con, prop, type, value, cb, data) e_dbus_properties_set(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, type, value, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_device_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_device_wired_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE_WIRED, prop, (E_DBus_Method_Return_Cb) cb, data)
