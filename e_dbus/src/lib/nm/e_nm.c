@@ -15,8 +15,8 @@ static void
 cb_state_changed(void *data, DBusMessage *msg)
 {
   E_NM_Internal *nmi;
-  dbus_uint32_t state;
-  DBusError err;
+  unsigned int   state;
+  DBusError      err;
   if (!msg || !data) return;
 
   nmi = data;
@@ -151,9 +151,12 @@ e_nm_dump(E_NM *nm)
   printf("wireless_enabled         : %d\n", nm->wireless_enabled);
   printf("wireless_hardware_enabled: %d\n", nm->wireless_hardware_enabled);
   printf("active_connections       :\n");
-  ecore_list_first_goto(nm->active_connections);
-  while ((conn = ecore_list_next(nm->active_connections)))
-    printf(" - %s\n", conn);
+  if (nm->active_connections)
+  {
+    ecore_list_first_goto(nm->active_connections);
+    while ((conn = ecore_list_next(nm->active_connections)))
+      printf(" - %s\n", conn);
+  }
   printf("state                    : ");
   switch (nm->state)
   {

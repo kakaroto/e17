@@ -17,18 +17,13 @@
     return NULL;                                             \
   }
 
-static void property_string(DBusMessageIter *iter, void *value);
-static void property_object_path(DBusMessageIter *iter, void *value);
-static void property_uint32(DBusMessageIter *iter, void *value);
-static void property_bool(DBusMessageIter *iter, void *value);
-static void property_uchar(DBusMessageIter *iter, void *value);
-static void property_string_list(DBusMessageIter *iter, void *value);
-static void property_object_path_list(DBusMessageIter *iter, void *value);
-static void property_uchar_list(DBusMessageIter *iter, void *value);
-static void property_uint_list(DBusMessageIter *iter, void *value);
-static void property_uint_list_list(DBusMessageIter *iter, void *value);
+static E_NM_Property *property_string(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Property *property_basic(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Property *property_variant(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Property *property_array(DBusMessageIter *iter, const char *sig, void *value);
+static void           property_free(E_NM_Property *prop);
 
-typedef void (*Property_Cb)(DBusMessageIter *iter, void *value);
+typedef E_NM_Property *(*Property_Cb)(DBusMessageIter *iter, const char *sig, void *value);
 
 typedef struct Sig_Property Sig_Property;
 struct Sig_Property
@@ -39,15 +34,18 @@ struct Sig_Property
 
 static Sig_Property sigs[] = {
   { .sig = "s", property_string },
-  { .sig = "o", property_object_path },
-  { .sig = "u", property_uint32 },
-  { .sig = "b", property_bool },
-  { .sig = "y", property_uchar },
-  { .sig = "as", property_string_list },
-  { .sig = "ao", property_object_path_list },
-  { .sig = "ay", property_uchar_list },
-  { .sig = "au", property_uint_list },
-  { .sig = "aau", property_uint_list_list },
+  { .sig = "o", property_string },
+  { .sig = "u", property_basic },
+  { .sig = "b", property_basic },
+  { .sig = "y", property_basic },
+  { .sig = "t", property_basic },
+  { .sig = "v", property_variant },
+  { .sig = "a", property_array },
+  { .sig = "as", property_array },
+  { .sig = "ao", property_array },
+  { .sig = "ay", property_array },
+  { .sig = "au", property_array },
+  { .sig = "aau", property_array },
   { .sig = NULL }
 };
 
@@ -82,186 +80,154 @@ find_property(const char *name, Property *properties)
   return NULL;
 }
 
-static void
-property_string(DBusMessageIter *iter, void *value)
+static E_NM_Property *
+property_string(DBusMessageIter *iter, const char *sig, void *value)
 {
-  const char *str;
+  const char    *str;
+  E_NM_Property *prop = NULL;
 
-  if (!check_arg_type(iter, 's')) return;
-
+  if ((value) && (!sig))
+  {
+    printf("Error: Can't have value and no sig\n");
+    return NULL;
+  }
   dbus_message_iter_get_basic(iter, &str);
+  if (sig)
+  {
+    if (!check_arg_type(iter, sig[0])) return NULL;
+    if (!value) value = &prop;
+  }
+  else
+  {
+    prop = malloc(sizeof(E_NM_Property));
+    prop->type = dbus_message_iter_get_arg_type(iter);
+    value = &prop->s;
+  }
   *((char **)value) = strdup(str);
+
+  return prop;
 }
 
-static void
-property_object_path(DBusMessageIter *iter, void *value)
+static E_NM_Property *
+property_basic(DBusMessageIter *iter, const char *sig, void *value)
 {
-  const char *str;
+  E_NM_Property *prop = NULL;
 
-  if (!check_arg_type(iter, 'o')) return;
-
-  dbus_message_iter_get_basic(iter, &str);
-  *((char **)value) = strdup(str);
-}
-
-static void
-property_uint32(DBusMessageIter *iter, void *value)
-{
-  if (!check_arg_type(iter, 'u')) return;
-
-  dbus_message_iter_get_basic(iter, value);
-}
-
-static void
-property_bool(DBusMessageIter *iter, void *value)
-{
-  if (!check_arg_type(iter, 'b')) return;
-
-  dbus_message_iter_get_basic(iter, value);
-}
-
-static void
-property_uchar(DBusMessageIter *iter, void *value)
-{
-  if (!check_arg_type(iter, 'y')) return;
-
-  dbus_message_iter_get_basic(iter, value);
-}
-
-static void
-property_string_list(DBusMessageIter *iter, void *value)
-{
-  DBusMessageIter a_iter;
-  Ecore_List **list;
-
-  if (!check_arg_type(iter, 'a')) return;
-  dbus_message_iter_recurse(iter, &a_iter);
-  if (!check_arg_type(&a_iter, 's')) return;
-
-  list = (Ecore_List **)value;
-  *list = ecore_list_new();
-  ecore_list_free_cb_set(*list, free);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  if ((value) && (!sig))
   {
-    const char *str;
-
-    dbus_message_iter_get_basic(&a_iter, &str);
-    if (str) ecore_list_append(*list, strdup(str));
-    dbus_message_iter_next(&a_iter);
+    printf("Error: Can't have value and no sig\n");
+    return NULL;
   }
-}
-
-static void
-property_object_path_list(DBusMessageIter *iter, void *value)
-{
-  DBusMessageIter a_iter;
-  Ecore_List **list;
-
-  if (!check_arg_type(iter, 'a')) return;
-  dbus_message_iter_recurse(iter, &a_iter);
-  if (!check_arg_type(&a_iter, 'o')) return;
-
-  list = (Ecore_List **)value;
-  *list = ecore_list_new();
-  ecore_list_free_cb_set(*list, free);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  if (sig)
   {
-    const char *str;
-
-    dbus_message_iter_get_basic(&a_iter, &str);
-    if (str) ecore_list_append(*list, strdup(str));
-    dbus_message_iter_next(&a_iter);
-  }
-}
-
-static void
-property_uchar_list(DBusMessageIter *iter, void *value)
-{
-  DBusMessageIter a_iter;
-  Ecore_List **list;
-
-  if (!check_arg_type(iter, 'a')) return;
-  dbus_message_iter_recurse(iter, &a_iter);
-  if (!check_arg_type(&a_iter, 'y')) return;
-
-  list = (Ecore_List **)value;
-  *list = ecore_list_new();
-  ecore_list_free_cb_set(*list, free);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
-  {
-    unsigned char *c;
-
-    c = malloc(sizeof(unsigned char));
-    dbus_message_iter_get_basic(&a_iter, c);
-    if (c) ecore_list_append(*list, c);
-    dbus_message_iter_next(&a_iter);
-  }
-}
-
-static void
-property_uint_list(DBusMessageIter *iter, void *value)
-{
-  DBusMessageIter a_iter;
-  Ecore_List **list;
-
-  if (!check_arg_type(iter, 'a')) return;
-  dbus_message_iter_recurse(iter, &a_iter);
-  if (!check_arg_type(&a_iter, 'u')) return;
-
-  list = (Ecore_List **)value;
-  *list = ecore_list_new();
-  ecore_list_free_cb_set(*list, free);
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
-  {
-    unsigned int *c;
-
-    c = malloc(sizeof(unsigned int));
-    dbus_message_iter_get_basic(&a_iter, c);
-    if (c) ecore_list_append(*list, c);
-    dbus_message_iter_next(&a_iter);
-  }
-}
-
-static void
-property_uint_list_list(DBusMessageIter *iter, void *value)
-{
-  DBusMessageIter a_iter, a2_iter;
-  Ecore_List **list, *list2;
-
-  if (!check_arg_type(iter, 'a')) return;
-  dbus_message_iter_recurse(iter, &a_iter);
-  if (!check_arg_type(&a_iter, 'a')) return;
-
-  list = (Ecore_List **)value;
-  *list = ecore_list_new();
-  ecore_list_free_cb_set(*list, ECORE_FREE_CB(ecore_list_destroy));
-  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
-  {
-    dbus_message_iter_recurse(&a_iter, &a2_iter);
-    if (!check_arg_type(&a2_iter, 'u')) return;
-    list2 = ecore_list_new();
-    ecore_list_free_cb_set(list2, free);
-    ecore_list_append(*list, list2);
-    while (dbus_message_iter_get_arg_type(&a2_iter) != DBUS_TYPE_INVALID)
+    if (!check_arg_type(iter, sig[0])) return NULL;
+    if (!value)
     {
-      unsigned int *c;
-
-      c = malloc(sizeof(unsigned int));
-      dbus_message_iter_get_basic(&a2_iter, c);
-      if (c) ecore_list_append(list2, c);
-      dbus_message_iter_next(&a2_iter);
+      // TODO: Only alloc right size
+      prop = malloc(sizeof(long long));
+      value = prop;
     }
+  }
+  else
+  {
+    prop = malloc(sizeof(E_NM_Property));
+    prop->type = dbus_message_iter_get_arg_type(iter);
+    value = prop;
+  }
+  dbus_message_iter_get_basic(iter, value);
+
+  return prop;
+}
+
+static E_NM_Property *
+property_variant(DBusMessageIter *iter, const char *sig, void *value)
+{
+  DBusMessageIter v_iter;
+  Property_Cb     func;
+  char            tmp[2];
+
+  if (!check_arg_type(iter, 'v')) return NULL;
+  dbus_message_iter_recurse(iter, &v_iter);
+  tmp[0] = dbus_message_iter_get_arg_type(&v_iter);
+  tmp[1] = 0;
+  func = find_property_cb(tmp);
+  if (!func) return NULL;
+  return (*func)(&v_iter, NULL, NULL);
+}
+
+static E_NM_Property *
+property_array(DBusMessageIter *iter, const char *sig, void *value)
+{
+  DBusMessageIter   a_iter;
+  Ecore_List      **list;
+  Property_Cb       func;
+  E_NM_Property    *prop = NULL;
+  const char       *subsig = NULL;
+
+  if ((value) && (!sig))
+  {
+    printf("Error: Can't have value and no sig\n");
+    return NULL;
+  }
+
+  dbus_message_iter_recurse(iter, &a_iter);
+  if (sig)
+  {
+
+    if (!check_arg_type(iter, sig[0])) return NULL;
+    subsig = (sig + 1);
+    func = find_property_cb(subsig);
+    if (!func) return NULL;
+    if (!value) value = &prop;
+    list = (Ecore_List **)value;
+    *list = ecore_list_new();
+    if (subsig[0] == 'a') 
+      ecore_list_free_cb_set(*list, ECORE_FREE_CB(ecore_list_destroy));
+    else
+      ecore_list_free_cb_set(*list, free);
+  }
+  else
+  {
+    char tmp[] = { dbus_message_iter_get_arg_type(&a_iter), 0 };
+    func = find_property_cb(tmp);
+    if (!func) return NULL;
+    prop = malloc(sizeof(E_NM_Property));
+    prop->type = dbus_message_iter_get_arg_type(iter);
+    list = (Ecore_List **)&prop->a;
+    *list = ecore_list_new();
+    ecore_list_free_cb_set(*list, ECORE_FREE_CB(property_free));
+  }
+
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    void *subprop;
+
+    subprop = (*func)(&a_iter, subsig, NULL);
+    if (subprop) ecore_list_append(*list, subprop);
     dbus_message_iter_next(&a_iter);
   }
+
+  return prop;
+}
+
+static void
+property_free(E_NM_Property *prop)
+{
+  if (!prop) return;
+  if ((prop->type == 's') || (prop->type == 'o'))
+    free(prop->s);
+  else if (prop->type == 'a')
+    ecore_list_destroy(prop->a);
+  free(prop);
 }
 
 void
 property(void *data, DBusMessage *msg, DBusError *err)
 {
-  DBusMessageIter iter, v_iter;
-  Property_Data *d;
-  void *value;
-  void (*func)(DBusMessageIter *iter, void *value) = NULL;
+  DBusMessageIter  iter, v_iter;
+  Property_Data   *d;
+  void            *value;
+  Property_Cb      func = NULL;
 
   d = data;
   if (dbus_error_is_set(err))
@@ -280,7 +246,7 @@ property(void *data, DBusMessage *msg, DBusError *err)
 
   value = ((char *)d->reply + d->property->offset);
   func = find_property_cb(d->property->sig);
-  if (func) (*func)(&v_iter, value);
+  if (func) (*func)(&v_iter, d->property->sig, value);
 
   d->property++;
   if (d->property->name)
@@ -317,9 +283,11 @@ parse_properties(void *data, Property *properties, DBusMessage *msg)
     void *value;
 
     dbus_message_iter_recurse(&a_iter, &d_iter);
+    if (!check_arg_type(&d_iter, 's')) return;
     dbus_message_iter_get_basic(&d_iter, &name);
 
     dbus_message_iter_next(&d_iter);
+    if (!check_arg_type(&d_iter, 'v')) return;
     dbus_message_iter_recurse(&d_iter, &v_iter);
 
     p = find_property(name, properties);
@@ -327,7 +295,7 @@ parse_properties(void *data, Property *properties, DBusMessage *msg)
     value = ((char *)data + p->offset);
     func = find_property_cb(p->sig);
     if (!func) goto next;
-    func(&v_iter, value);
+    func(&v_iter, p->sig, value);
 
 next:
     dbus_message_iter_next(&a_iter);
@@ -455,12 +423,16 @@ cb_nm_object_path_list(DBusMessage *msg, DBusError *err)
   {
     char *dev = NULL;
 
+    if (!check_arg_type(&sub, 'o')) goto error;
     dbus_message_iter_get_basic(&sub, &dev);
     if (dev) ecore_list_append(devices, dev);
     dbus_message_iter_next(&sub);
   }
 
   return devices;
+error:
+  ecore_list_destroy(devices);
+  return NULL;
 }
 
 void
@@ -469,6 +441,68 @@ free_nm_object_path_list(void *data)
   Ecore_List *list = data;
 
   if (list) ecore_list_destroy(list);
+}
+
+void *
+cb_nm_settings(DBusMessage *msg, DBusError *err)
+{
+  Ecore_Hash *settings;
+  DBusMessageIter iter, a_iter;
+
+  CHECK_SIGNATURE(msg, err, "a{sa{sv}}");
+
+  dbus_message_iter_init(msg, &iter);
+
+  settings = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+  ecore_hash_free_key_cb_set(settings, free);
+  ecore_hash_free_value_cb_set(settings, ECORE_FREE_CB(ecore_hash_destroy));
+  dbus_message_iter_recurse(&iter, &a_iter);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+  {
+    DBusMessageIter  d_iter, a2_iter;
+    E_NM_Property   *prop;
+    const char      *name;
+    Ecore_Hash      *value;
+
+    dbus_message_iter_recurse(&a_iter, &d_iter);
+    if (!check_arg_type(&d_iter, 's')) goto error;
+    dbus_message_iter_get_basic(&d_iter, &name);
+
+    dbus_message_iter_next(&d_iter);
+    if (!check_arg_type(&d_iter, 'a')) goto error;
+    dbus_message_iter_recurse(&d_iter, &a2_iter);
+
+    value = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(value, free);
+    ecore_hash_free_value_cb_set(value, ECORE_FREE_CB(property_free));
+    ecore_hash_set(settings, strdup(name), value);
+    while (dbus_message_iter_get_arg_type(&a2_iter) != DBUS_TYPE_INVALID)
+    {
+      dbus_message_iter_recurse(&a2_iter, &d_iter);
+      if (!check_arg_type(&d_iter, 's')) goto error;
+      dbus_message_iter_get_basic(&d_iter, &name);
+      dbus_message_iter_next(&d_iter);
+      if (!check_arg_type(&d_iter, 'v')) goto error;
+      prop = property_variant(&d_iter, NULL, NULL);
+      if (prop) ecore_hash_set(value, strdup(name), prop);
+      dbus_message_iter_next(&a2_iter);
+    }
+
+    dbus_message_iter_next(&a_iter);
+  }
+
+  return settings;
+error:
+  ecore_hash_destroy(settings);
+  return NULL;
+}
+
+void
+free_nm_settings(void *data)
+{
+  Ecore_Hash *hash = data;
+
+  if (hash) ecore_hash_destroy(hash);
 }
 
 int

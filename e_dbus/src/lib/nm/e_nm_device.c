@@ -44,7 +44,7 @@ static void
 cb_state_changed(void *data, DBusMessage *msg)
 {
   E_NM_Device_Internal *dev;
-  dbus_uint32_t new_state, old_state, reason;
+  unsigned int new_state, old_state, reason;
   DBusError err;
   if (!msg || !data) return;
 

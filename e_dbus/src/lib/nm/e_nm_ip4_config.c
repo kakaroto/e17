@@ -20,6 +20,8 @@ e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
   E_NM_IP4_Config_Internal *config;
   Property_Data            *d;
 
+  if (!ip4_config) return 0;
+
   nmi = (E_NM_Internal *)nm;
   config = calloc(1, sizeof(E_NM_IP4_Config_Internal));
   config->nmi = nmi;
@@ -48,9 +50,9 @@ e_nm_ip4_config_free(E_NM_IP4_Config *config)
 EAPI void
 e_nm_ip4_config_dump(E_NM_IP4_Config *config)
 {
-  uint       *u;
-  const char *domain;
-  Ecore_List *list;
+  unsigned int *u;
+  const char   *domain;
+  Ecore_List   *list;
 
   if (!config) return;
   printf("E_NM_IP4_Config:\n");

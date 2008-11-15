@@ -38,6 +38,8 @@ e_nm_access_point_get(E_NM *nm, const char *access_point,
   E_NM_Access_Point_Internal *ap;
   Property_Data     *d;
 
+  if (!access_point) return 0;
+
   nmi = (E_NM_Internal *)nm;
   ap = calloc(1, sizeof(E_NM_Access_Point_Internal));
   ap->nmi = nmi;
@@ -137,10 +139,13 @@ e_nm_access_point_dump(E_NM_Access_Point *ap)
     printf(" E_NM_802_11_AP_SEC_NONE");
   printf("\n");
   printf("ssid       : ");
-  ecore_list_first_goto(ap->ssid);
-  while ((c = ecore_list_next(ap->ssid)))
-    printf("%u", *c);
-  printf("\n");
+  if (ap->ssid)
+  {
+    ecore_list_first_goto(ap->ssid);
+    while ((c = ecore_list_next(ap->ssid)))
+      printf("%u", *c);
+    printf("\n");
+  }
   printf("frequency  : %u\n", ap->frequency);
   printf("hw_address : %s\n", ap->hw_address);
   printf("mode       : ");

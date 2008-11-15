@@ -18,6 +18,7 @@
 
 #define e_nm_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, member)
 #define e_nms_call_new(service, member) dbus_message_new_method_call(service, _E_NMS_PATH, _E_NMS_INTERFACE, member)
+#define e_nms_connection_call_new(service, conn, member) dbus_message_new_method_call(service, conn, _E_NMS_INTERFACE_CONNECTION, member)
 
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
@@ -152,6 +153,8 @@ void  parse_properties(void *data, Property *properties, DBusMessage *msg);
 
 void *cb_nm_object_path_list(DBusMessage *msg, DBusError *err);
 void  free_nm_object_path_list(void *data);
+void *cb_nm_settings(DBusMessage *msg, DBusError *err);
+void  free_nm_settings(void *data);
 
 int   check_arg_type(DBusMessageIter *iter, char type);
 

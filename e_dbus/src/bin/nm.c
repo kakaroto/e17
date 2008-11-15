@@ -4,6 +4,70 @@
 E_NM *nm = NULL;
 E_NMS *nms = NULL;
 
+static void
+dump_prop(E_NM_Property *prop)
+{
+    if (!prop) return;
+    switch (prop->type)
+    {
+        case 'a': {
+          E_NM_Property *subprop;
+
+          printf("\n   - ");
+          ecore_list_first_goto(prop->a);
+          while ((subprop = ecore_list_next(prop->a)))
+              dump_prop(subprop);
+          break;
+        }
+        case 's':
+        case 'o':
+            printf("%s ", prop->s);
+            break;
+        case 'u':
+            printf("%d ", prop->u);
+            break;
+        case 'b':
+            printf("%d ", prop->b);
+            break;
+        case 'y':
+            printf("%d ", prop->y);
+            break;
+        case 't':
+            printf("%lld ", prop->t);
+            break;
+    }
+}
+
+static void
+dump_values(void *value, void *data)
+{
+    Ecore_Hash_Node *node;
+
+    node = value;
+    printf(" - name: %s - ", (char *)node->key);
+    dump_prop(node->value);
+    printf("\n");
+}
+ 
+static void
+dump_settings(void *value, void *data)
+{
+    Ecore_Hash_Node *node;
+
+    node = value;
+    printf("name: %s\n", (char *)node->key);
+    printf("values:\n");
+    ecore_hash_for_each_node(node->value, dump_values, NULL);
+    printf("\n");
+}
+
+static int
+cb_nms_connection_settings(void *data, Ecore_Hash *settings)
+{
+    ecore_hash_for_each_node(settings, dump_settings, NULL);
+    return 1;
+}
+
 static int
 cb_nms_connections(void *data, Ecore_List *list)
 {
@@ -13,7 +77,10 @@ cb_nms_connections(void *data, Ecore_List *list)
     {
         ecore_list_first_goto(list);
         while ((conn = ecore_list_next(list)))
+        {
             e_nms_connection_dump(conn);
+            e_nms_connection_get_settings(conn, cb_nms_connection_settings, NULL);
+        }
         ecore_list_destroy(list);
     }
     //ecore_main_loop_quit();
@@ -56,10 +123,10 @@ cb_get_devices(void *data, Ecore_List *list)
         {
             e_nm_device_dump(device);
             if (device->device_type == E_NM_DEVICE_TYPE_WIRELESS)
-	    {
+            {
                 e_nm_access_point_get(nm, device->wireless.active_access_point, cb_access_point, NULL);
                 e_nm_ip4_config_get(nm, device->ip4_config, cb_ip4_config, NULL);
-	    }
+            }
         }
         ecore_list_destroy(list);
     }
@@ -84,19 +151,23 @@ cb_nms(void *data, E_NMS *reply)
 static int
 cb_nm(void *data, E_NM *reply)
 {
-    const char *conn;
-
     if (!reply)
     {
         ecore_main_loop_quit();
         return 1;
     }
     nm = reply;
+    /*
     e_nm_dump(nm);
-    ecore_list_first_goto(nm->active_connections);
-    while ((conn = ecore_list_next(nm->active_connections)))
-        e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
+    if (nm->active_connections)
+    {
+        const char *conn;
+        ecore_list_first_goto(nm->active_connections);
+        while ((conn = ecore_list_next(nm->active_connections)))
+            e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
+    }
     e_nm_get_devices(nm, cb_get_devices, nm);
+    */
     e_nms_get(nm, cb_nms, nm);
     return 1;
 }

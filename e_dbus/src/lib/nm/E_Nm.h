@@ -185,10 +185,10 @@ struct E_NM_Access_Point
   E_NM_802_11_Ap_Sec    wpa_flags;
   E_NM_802_11_Ap_Sec    rsn_flags;
   Ecore_List           *ssid; /* unsigned char */
-  uint                  frequency;
+  unsigned int          frequency;
   char                 *hw_address;
   E_NM_802_11_Mode      mode;
-  uint                  max_bitrate;
+  unsigned int          max_bitrate;
   unsigned char         strength;
 };
 
@@ -208,14 +208,14 @@ struct E_NM_Device
   union
   {
     struct {
-      char *hw_address;
-      uint  speed;
-      int   carrier;
+      char         *hw_address;
+      unsigned int  speed;
+      int           carrier;
     } wired;
     struct {
       char                   *hw_address;
       E_NM_802_11_Mode        mode;
-      uint                    bitrate;
+      unsigned int            bitrate;
       char                   *active_access_point; /* object_path */
       E_NM_802_11_Device_Cap  wireless_capabilities;
     } wireless;
@@ -228,10 +228,10 @@ struct E_NM_Device
 typedef struct E_NM_IP4_Config E_NM_IP4_Config;
 struct E_NM_IP4_Config
 {
-  Ecore_List *addresses;  /* list uint */
-  Ecore_List *nameservers;/* uint */
+  Ecore_List *addresses;  /* list unsigned int */
+  Ecore_List *nameservers;/* unsigned int */
   Ecore_List *domains;    /* char* */
-  Ecore_List *routes;     /* list uint */
+  Ecore_List *routes;     /* list unsigned int */
 };
 
 /* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
@@ -255,6 +255,21 @@ struct E_NM_Active_Connection
 
 /* TODO typedef struct E_NM_VPN_Connection E_NM_VPN_Connection */
 /* TODO typedef struct E_NM_VPN_Plugin E_NM_VPN_Plugin */
+
+typedef struct E_NM_Property E_NM_Property;
+struct E_NM_Property
+{
+  union
+  {
+    unsigned char       y;
+    unsigned int        u;
+    char               *s;
+    unsigned long long  t;
+    int                 b;
+    Ecore_List         *a;
+  };
+  char type;
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -331,7 +346,7 @@ extern "C" {
 
    /* TODO: e_nms_connection_update */
    /* TODO: e_nms_connection_delete */
-   /* TODO: e_nms_connection_get_settings */
+   EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Ecore_Hash *settings), void *data);
    /* TODO: e_nms_connection_secrets_get_secrets */
 
    /* TODO: e_nms_connection_callback_updated_set */
