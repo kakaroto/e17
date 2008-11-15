@@ -124,7 +124,7 @@ new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
 
   nmsi = data;
   dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &conn, DBUS_TYPE_INVALID);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &conn, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
     printf("Error: %s - %s\n", err.name, err.message);

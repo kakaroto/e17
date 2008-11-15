@@ -93,6 +93,54 @@ cb_wireless_properties_changed(void *data, DBusMessage *msg)
 }
 
 static void
+cb_wireless_access_point_added(void *data, DBusMessage *msg)
+{
+  E_NM_Device_Internal *dev;
+  DBusError err;
+  const char *path;
+  if (!msg || !data) return;
+
+  dev = data;
+  dbus_error_init(&err);
+  dbus_message_get_args(msg, &err,
+                        DBUS_TYPE_OBJECT_PATH, &path,
+                        DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(&err))
+  {
+    printf("Error: %s - %s\n", err.name, err.message);
+    return;
+  }
+
+
+  if (dev->access_point_added)
+    dev->access_point_added(&(dev->dev), path);
+}
+
+static void
+cb_wireless_access_point_removed(void *data, DBusMessage *msg)
+{
+  E_NM_Device_Internal *dev;
+  DBusError err;
+  const char *path;
+  if (!msg || !data) return;
+
+  dev = data;
+  dbus_error_init(&err);
+  dbus_message_get_args(msg, &err,
+                        DBUS_TYPE_OBJECT_PATH, &path,
+                        DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(&err))
+  {
+    printf("Error: %s - %s\n", err.name, err.message);
+    return;
+  }
+
+
+  if (dev->access_point_removed)
+    dev->access_point_removed(&(dev->dev), path);
+}
+
+static void
 cb_properties_changed(void *data, DBusMessage *msg)
 {
   E_NM_Device_Internal *dev;
@@ -124,6 +172,8 @@ property_device_type(Property_Data *data, DBusMessageIter *iter)
     case E_NM_DEVICE_TYPE_WIRELESS:
       data->property = device_wireless_properties;
       ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "PropertiesChanged", cb_wireless_properties_changed, dev));
+      ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "AccessPointAdded", cb_wireless_access_point_added, dev));
+      ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "AccessPointRemoved", cb_wireless_access_point_removed, dev));
       e_nm_device_wireless_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
       break;
     default:
@@ -334,3 +384,24 @@ e_nm_device_callback_properties_changed_set(E_NM_Device *device, int (*cb_func)(
   dev = (E_NM_Device_Internal *)device;
   dev->properties_changed = cb_func;
 }
+
+EAPI void
+e_nm_device_wireless_callback_access_point_added_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, const char *access_point))
+{
+  E_NM_Device_Internal *dev;
+
+  if (device->device_type != E_NM_DEVICE_TYPE_WIRELESS) return;
+  dev = (E_NM_Device_Internal *)device;
+  dev->access_point_added = cb_func;
+}
+
+EAPI void
+e_nm_device_wireless_callback_access_point_removed_set(E_NM_Device *device, int (*cb_func)(E_NM_Device *device, const char *access_point))
+{
+  E_NM_Device_Internal *dev;
+
+  if (device->device_type != E_NM_DEVICE_TYPE_WIRELESS) return;
+  dev = (E_NM_Device_Internal *)device;
+  dev->access_point_removed = cb_func;
+}
+

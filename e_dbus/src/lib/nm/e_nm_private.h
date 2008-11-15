@@ -62,6 +62,9 @@ struct E_NM_Device_Internal
 
   int  (*state_changed)(E_NM_Device *device, E_NM_State new_state, E_NM_State old_state, E_NM_Device_State_Reason reason);
   int  (*properties_changed)(E_NM_Device *device);
+  /* TODO: Save some bytes by having internal wired and wireless object */
+  int  (*access_point_added)(E_NM_Device *device, const char *access_point);
+  int  (*access_point_removed)(E_NM_Device *device, const char *access_point);
   Ecore_List *handlers;
 
   void *data;

@@ -56,7 +56,7 @@ cb_device_added(void *data, DBusMessage *msg)
 
   nmi = data;
   dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &device, DBUS_TYPE_INVALID);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
     printf("Error: %s - %s\n", err.name, err.message);
@@ -77,7 +77,7 @@ cb_device_removed(void *data, DBusMessage *msg)
 
   nmi = data;
   dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &device, DBUS_TYPE_INVALID);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_OBJECT_PATH, &device, DBUS_TYPE_INVALID);
   if (dbus_error_is_set(&err))
   {
     printf("Error: %s - %s\n", err.name, err.message);
