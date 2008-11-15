@@ -17,13 +17,13 @@
     return NULL;                                             \
   }
 
-static E_NM_Property *property_string(DBusMessageIter *iter, const char *sig, void *value);
-static E_NM_Property *property_basic(DBusMessageIter *iter, const char *sig, void *value);
-static E_NM_Property *property_variant(DBusMessageIter *iter, const char *sig, void *value);
-static E_NM_Property *property_array(DBusMessageIter *iter, const char *sig, void *value);
-static void           property_free(E_NM_Property *prop);
+static E_NM_Variant *property_string(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Variant *property_basic(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Variant *property_variant(DBusMessageIter *iter, const char *sig, void *value);
+static E_NM_Variant *property_array(DBusMessageIter *iter, const char *sig, void *value);
+static void          property_free(E_NM_Variant *var);
 
-typedef E_NM_Property *(*Property_Cb)(DBusMessageIter *iter, const char *sig, void *value);
+typedef E_NM_Variant *(*Property_Cb)(DBusMessageIter *iter, const char *sig, void *value);
 
 typedef struct Sig_Property Sig_Property;
 struct Sig_Property
@@ -80,11 +80,11 @@ find_property(const char *name, Property *properties)
   return NULL;
 }
 
-static E_NM_Property *
+static E_NM_Variant *
 property_string(DBusMessageIter *iter, const char *sig, void *value)
 {
-  const char    *str;
-  E_NM_Property *prop = NULL;
+  const char   *str;
+  E_NM_Variant *var = NULL;
 
   if ((value) && (!sig))
   {
@@ -95,23 +95,23 @@ property_string(DBusMessageIter *iter, const char *sig, void *value)
   if (sig)
   {
     if (!check_arg_type(iter, sig[0])) return NULL;
-    if (!value) value = &prop;
+    if (!value) value = &var;
   }
   else
   {
-    prop = malloc(sizeof(E_NM_Property));
-    prop->type = dbus_message_iter_get_arg_type(iter);
-    value = &prop->s;
+    var = malloc(sizeof(E_NM_Variant));
+    var->type = dbus_message_iter_get_arg_type(iter);
+    value = &var->s;
   }
   *((char **)value) = strdup(str);
 
-  return prop;
+  return var;
 }
 
-static E_NM_Property *
+static E_NM_Variant *
 property_basic(DBusMessageIter *iter, const char *sig, void *value)
 {
-  E_NM_Property *prop = NULL;
+  E_NM_Variant *var = NULL;
 
   if ((value) && (!sig))
   {
@@ -124,22 +124,22 @@ property_basic(DBusMessageIter *iter, const char *sig, void *value)
     if (!value)
     {
       // TODO: Only alloc right size
-      prop = malloc(sizeof(long long));
-      value = prop;
+      var = malloc(sizeof(long long));
+      value = var;
     }
   }
   else
   {
-    prop = malloc(sizeof(E_NM_Property));
-    prop->type = dbus_message_iter_get_arg_type(iter);
-    value = prop;
+    var = malloc(sizeof(E_NM_Variant));
+    var->type = dbus_message_iter_get_arg_type(iter);
+    value = var;
   }
   dbus_message_iter_get_basic(iter, value);
 
-  return prop;
+  return var;
 }
 
-static E_NM_Property *
+static E_NM_Variant *
 property_variant(DBusMessageIter *iter, const char *sig, void *value)
 {
   DBusMessageIter v_iter;
@@ -155,13 +155,13 @@ property_variant(DBusMessageIter *iter, const char *sig, void *value)
   return (*func)(&v_iter, NULL, NULL);
 }
 
-static E_NM_Property *
+static E_NM_Variant *
 property_array(DBusMessageIter *iter, const char *sig, void *value)
 {
   DBusMessageIter   a_iter;
   Ecore_List      **list;
   Property_Cb       func;
-  E_NM_Property    *prop = NULL;
+  E_NM_Variant    *var = NULL;
   const char       *subsig = NULL;
 
   if ((value) && (!sig))
@@ -178,7 +178,7 @@ property_array(DBusMessageIter *iter, const char *sig, void *value)
     subsig = (sig + 1);
     func = find_property_cb(subsig);
     if (!func) return NULL;
-    if (!value) value = &prop;
+    if (!value) value = &var;
     list = (Ecore_List **)value;
     *list = ecore_list_new();
     if (subsig[0] == 'a') 
@@ -191,34 +191,34 @@ property_array(DBusMessageIter *iter, const char *sig, void *value)
     char tmp[] = { dbus_message_iter_get_arg_type(&a_iter), 0 };
     func = find_property_cb(tmp);
     if (!func) return NULL;
-    prop = malloc(sizeof(E_NM_Property));
-    prop->type = dbus_message_iter_get_arg_type(iter);
-    list = (Ecore_List **)&prop->a;
+    var = malloc(sizeof(E_NM_Variant));
+    var->type = dbus_message_iter_get_arg_type(iter);
+    list = (Ecore_List **)&var->a;
     *list = ecore_list_new();
     ecore_list_free_cb_set(*list, ECORE_FREE_CB(property_free));
   }
 
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
-    void *subprop;
+    void *subvar;
 
-    subprop = (*func)(&a_iter, subsig, NULL);
-    if (subprop) ecore_list_append(*list, subprop);
+    subvar = (*func)(&a_iter, subsig, NULL);
+    if (subvar) ecore_list_append(*list, subvar);
     dbus_message_iter_next(&a_iter);
   }
 
-  return prop;
+  return var;
 }
 
 static void
-property_free(E_NM_Property *prop)
+property_free(E_NM_Variant *var)
 {
-  if (!prop) return;
-  if ((prop->type == 's') || (prop->type == 'o'))
-    free(prop->s);
-  else if (prop->type == 'a')
-    ecore_list_destroy(prop->a);
-  free(prop);
+  if (!var) return;
+  if ((var->type == 's') || (var->type == 'o'))
+    free(var->s);
+  else if (var->type == 'a')
+    ecore_list_destroy(var->a);
+  free(var);
 }
 
 void
@@ -460,7 +460,7 @@ cb_nm_settings(DBusMessage *msg, DBusError *err)
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
     DBusMessageIter  d_iter, a2_iter;
-    E_NM_Property   *prop;
+    E_NM_Variant   *prop;
     const char      *name;
     Ecore_Hash      *value;
 

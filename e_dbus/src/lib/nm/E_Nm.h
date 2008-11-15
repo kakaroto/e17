@@ -256,8 +256,8 @@ struct E_NM_Active_Connection
 /* TODO typedef struct E_NM_VPN_Connection E_NM_VPN_Connection */
 /* TODO typedef struct E_NM_VPN_Plugin E_NM_VPN_Plugin */
 
-typedef struct E_NM_Property E_NM_Property;
-struct E_NM_Property
+typedef struct E_NM_Variant E_NM_Variant;
+struct E_NM_Variant
 {
   union
   {

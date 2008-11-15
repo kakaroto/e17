@@ -5,35 +5,35 @@ E_NM *nm = NULL;
 E_NMS *nms = NULL;
 
 static void
-dump_prop(E_NM_Property *prop)
+dump_variant(E_NM_Variant *var)
 {
-    if (!prop) return;
-    switch (prop->type)
+    if (!var) return;
+    switch (var->type)
     {
         case 'a': {
-          E_NM_Property *subprop;
+          E_NM_Variant *subvar;
 
           printf("\n   - ");
-          ecore_list_first_goto(prop->a);
-          while ((subprop = ecore_list_next(prop->a)))
-              dump_prop(subprop);
+          ecore_list_first_goto(var->a);
+          while ((subvar = ecore_list_next(var->a)))
+              dump_variant(subvar);
           break;
         }
         case 's':
         case 'o':
-            printf("%s ", prop->s);
+            printf("%s ", var->s);
             break;
         case 'u':
-            printf("%d ", prop->u);
+            printf("%d ", var->u);
             break;
         case 'b':
-            printf("%d ", prop->b);
+            printf("%d ", var->b);
             break;
         case 'y':
-            printf("%d ", prop->y);
+            printf("%d ", var->y);
             break;
         case 't':
-            printf("%lld ", prop->t);
+            printf("%lld ", var->t);
             break;
     }
 }
@@ -45,7 +45,7 @@ dump_values(void *value, void *data)
 
     node = value;
     printf(" - name: %s - ", (char *)node->key);
-    dump_prop(node->value);
+    dump_variant(node->value);
     printf("\n");
 }
  
