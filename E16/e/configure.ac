@@ -330,13 +330,9 @@ AC_ARG_ENABLE(gcc-cpp,
 if test "x$enable_gcc_cpp" = "xyes"; then
   CC="g++"
   CPPFLAGS="$CPPFLAGS -x c++"
-fi
-
-if test "x$GCC" = "xyes"; then
-  CFLAGS="$CFLAGS -W -Wall -Waggregate-return -Wcast-align -Wpointer-arith -Wshadow -Wwrite-strings"
-  if test "x$enable_gcc_cpp" != "xyes"; then
-    CFLAGS="$CFLAGS -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes"
-  fi
+  AC_C_WARNFLAGS([cpp])
+else
+  AC_C_WARNFLAGS()
 fi
 
 AC_DEFINE(_GNU_SOURCE, 1, [Enable extensions])

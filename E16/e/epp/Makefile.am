@@ -29,7 +29,7 @@ epp_SOURCES = \
 	cpplib.c \
 	cppmain.c 
 
-epp_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
+epp_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(CWARNFLAGS)
 
 DEFS= \
 -DHAVE_STRERROR \
