@@ -212,10 +212,6 @@ EwinHintsInferProps(EWin * ewin)
 	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
      }
-
-   if (ewin->props.skip_ext_task || ewin->props.skip_winlist ||
-       ewin->props.skip_focuslist)
-      ewin->props.donthide = 1;
 }
 
 static void
@@ -664,6 +660,10 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_change_desk = ewin->state.iconified;
    ewin->state.inhibit_close = EwinInhGetApp(ewin, close) ||
       EwinInhGetUser(ewin, close);
+
+   ewin->state.donthide = ewin->props.donthide ||
+       ewin->props.skip_ext_task || ewin->props.skip_winlist ||
+       ewin->props.skip_focuslist;
 
    SnapshotEwinUpdate(ewin, SNAP_USE_FLAGS);
 }

@@ -109,6 +109,7 @@ struct _ewin {
 
       /* Derived state flags. Change only in EwinStateUpdate() */
       unsigned            no_border:1;
+      unsigned            donthide:1;	/* Don't hide on show desktop */
 
       unsigned            inhibit_move:1;
       unsigned            inhibit_resize:1;

@@ -584,7 +584,7 @@ EwinAlone(EWin * ewin)
 	item = lst[i];
 
 	if (item == ewin || EwinIsTransient(item) ||
-	    item->state.iconified || item->props.donthide ||
+	    item->state.iconified || item->state.donthide ||
 	    item->area_x != ewin->area_x || item->area_y != ewin->area_y)
 	   continue;
 	EwinIconify(item);
@@ -1356,7 +1356,7 @@ EwinsShowDesktop(int on)
 	if (on)
 	  {
 	     if (EwinIsTransient(ewin) ||
-		 ewin->state.iconified || ewin->props.donthide)
+		 ewin->state.iconified || ewin->state.donthide)
 		continue;
 
 	     ewin->state.showingdesk = 1;
