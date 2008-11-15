@@ -83,16 +83,7 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
   d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
 
-  switch (conn->context)
-  {
-    case E_NMS_CONTEXT_USER:
-      msg = e_nms_connection_call_new(E_NMS_SERVICE_USER, conn->path, "GetSettings");
-      break;
-    case E_NMS_CONTEXT_SYSTEM:
-    default:
-      msg = e_nms_connection_call_new(E_NMS_SERVICE_SYSTEM, conn->path, "GetSettings");
-      break;
-  }
+  msg = e_nms_connection_call_new(conn->context, conn->path, "GetSettings");
 
   ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_nm_settings, cb_nms_settings, free_nm_settings, -1, d) ? 1 : 0;
   dbus_message_unref(msg);

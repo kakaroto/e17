@@ -11,14 +11,14 @@
 #define _E_NM_INTERFACE_IP4CONFIG "org.freedesktop.NetworkManager.IP4Config"
 #define _E_NM_INTERFACE_CONNECTION_ACTIVE "org.freedesktop.NetworkManager.Connection.Active"
 #define _E_NMS_PATH "/org/freedesktop/NetworkManagerSettings"
-#define E_NMS_SERVICE_SYSTEM "org.freedesktop.NetworkManagerSystemSettings"
-#define E_NMS_SERVICE_USER "org.freedesktop.NetworkManagerUserSettings"
+#define _E_NMS_SERVICE_SYSTEM "org.freedesktop.NetworkManagerSystemSettings"
+#define _E_NMS_SERVICE_USER "org.freedesktop.NetworkManagerUserSettings"
 #define _E_NMS_INTERFACE "org.freedesktop.NetworkManagerSettings"
 #define _E_NMS_INTERFACE_CONNECTION "org.freedesktop.NetworkManagerSettings.Connection"
 
 #define e_nm_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, member)
-#define e_nms_call_new(service, member) dbus_message_new_method_call(service, _E_NMS_PATH, _E_NMS_INTERFACE, member)
-#define e_nms_connection_call_new(service, conn, member) dbus_message_new_method_call(service, conn, _E_NMS_INTERFACE_CONNECTION, member)
+#define e_nms_call_new(ctxt, member) ctxt == E_NMS_CONTEXT_USER ? dbus_message_new_method_call(_E_NMS_SERVICE_USER, _E_NMS_PATH, _E_NMS_INTERFACE, member) : dbus_message_new_method_call(_E_NMS_SERVICE_SYSTEM, _E_NMS_PATH, _E_NMS_INTERFACE, member);
+#define e_nms_connection_call_new(ctxt, conn, member) ctxt == E_NMS_CONTEXT_USER ? dbus_message_new_method_call(_E_NMS_SERVICE_USER, conn, _E_NMS_INTERFACE_CONNECTION, member) : dbus_message_new_method_call(_E_NMS_SERVICE_SYSTEM, conn, _E_NMS_INTERFACE_CONNECTION, member);
 
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_access_point_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_ACCESSPOINT, prop, (E_DBus_Method_Return_Cb) cb, data)
@@ -34,7 +34,7 @@
 #define e_nm_device_wired_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE_WIRED, sig, cb, data)
 #define e_nm_device_wireless_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE_WIRELESS, sig, cb, data)
 
-#define e_nms_signal_handler_add(con, service, sig, cb, data) e_dbus_signal_handler_add(con, service, _E_NMS_PATH, _E_NMS_INTERFACE, sig, cb, data)
+#define e_nms_signal_handler_add(con, ctxt, sig, cb, data) ctxt == E_NMS_CONTEXT_USER ? e_dbus_signal_handler_add(con, _E_NMS_SERVICE_USER, _E_NMS_PATH, _E_NMS_INTERFACE, sig, cb, data) : e_dbus_signal_handler_add(con, _E_NMS_SERVICE_SYSTEM, _E_NMS_PATH, _E_NMS_INTERFACE, sig, cb, data)
 
 typedef struct E_NM_Internal E_NM_Internal;
 struct E_NM_Internal
