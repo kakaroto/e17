@@ -305,11 +305,7 @@ static void
 _SnapUpdateEwinBorder(Snapshot * sn, const EWin * ewin)
 {
    Efree(sn->border_name);
-   sn->border_name = NULL;
-   if (ewin->previous_border)
-      sn->border_name = Estrdup(BorderGetName(ewin->previous_border));
-   else if (ewin->normal_border)
-      sn->border_name = Estrdup(BorderGetName(ewin->normal_border));
+   sn->border_name = Estrdup(BorderGetName(ewin->normal_border));
 }
 
 static void
