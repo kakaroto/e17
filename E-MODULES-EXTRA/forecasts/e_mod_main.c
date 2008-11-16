@@ -1094,7 +1094,7 @@ _forecasts_popup_content_create(Instance *inst)
 	ob = e_widget_image_add_from_object(evas,
 	      _forecasts_popup_icon_create(inst->popup->win->evas,
 		 inst->forecast[i].code), 0, 0);
-	e_widget_frametable_object_append(of, ob, 2, row, 1, 2, 0, 0, 0, 0);
+	e_widget_frametable_object_append(of, ob, 2, row, 1, 2, 1, 1, 0, 0);
 
 	ob = e_widget_label_add(evas, D_("Low"));
 	e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 1, 0);
