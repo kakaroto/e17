@@ -1,0 +1,34 @@
+From 77ffe8cda49054a282855351e54c6b2d303fa06d Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 17 Nov 2008 09:29:41 +1100
+Subject: [PATCH] e-wm: fix package to include AUTHORS and COPYING
+
+---
+ packages/e17/e-wm_svn.bb |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
+index a2fabc7..7734bf2 100644
+--- a/packages/e17/e-wm_svn.bb
++++ b/packages/e17/e-wm_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
+ DEPENDS = "eet evas ecore edje efreet edbus"
+ LICENSE = "MIT BSD"
+ PV = "0.16.999.043+svnr${SRCREV}"
+-PR = "r17"
++PR = "r18"
+ 
+ inherit e update-alternatives
+ 
+@@ -92,6 +92,8 @@ FILES_${PN} = "\
+   ${datadir}/enlightenment/data/icons \
+   ${datadir}/enlightenment/data/input_methods \
+   ${datadir}/enlightenment/data/config/profile.cfg \
++  ${datadir}/enlightenment/AUTHORS \
++  ${datadir}/enlightenment/COPYING \
+   ${sysconfdir} \
+ "
+ FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
+-- 
+1.5.4.3
+
