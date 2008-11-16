@@ -22,7 +22,7 @@ cb_nms_settings(void *data, void *reply, DBusError *err)
 }
 
 EAPI int
-e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data)
+e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data)
 {
   E_NMS_Internal            *nmsi;
   E_NMS_Connection_Internal *conn;
@@ -31,7 +31,7 @@ e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, 
   conn = calloc(1, sizeof(E_NMS_Connection_Internal));
   conn->nmi = nmsi->nmi;
   conn->conn.path = strdup(connection);
-  conn->conn.context = context;
+  conn->conn.service_name = strdup(service_name);
   (*cb_func)(data, (E_NMS_Connection *)conn);
   return 1;
 }
@@ -41,6 +41,7 @@ e_nms_connection_free(E_NMS_Connection *conn)
 {
   if (!conn) return;
 
+  if (conn->service_name) free(conn->service_name);
   if (conn->path) free(conn->path);
   free(conn);
 }
@@ -51,17 +52,8 @@ e_nms_connection_dump(E_NMS_Connection *conn)
   if (!conn) return;
 
   printf("E_NMS_Connection:\n");
-  printf("context: ");
-  switch (conn->context)
-  {
-    case E_NMS_CONTEXT_SYSTEM:
-      printf("E_NMS_CONTEXT_SYSTEM\n");
-      break;
-    case E_NMS_CONTEXT_USER:
-      printf("E_NMS_CONTEXT_USER\n");
-      break;
-  }
-  printf("path   : %s\n", conn->path);
+  printf("service_name: %s\n", conn->service_name);
+  printf("path        : %s\n", conn->path);
   printf("\n");
 }
 
@@ -79,7 +71,7 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
   d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
 
-  msg = e_nms_connection_call_new(conn->conn.context, conn->conn.path, "GetSettings");
+  msg = e_nms_connection_call_new(conn->conn.service_name, conn->conn.path, "GetSettings");
 
   ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_nm_settings, cb_nms_settings, free_nm_settings, -1, d) ? 1 : 0;
   dbus_message_unref(msg);

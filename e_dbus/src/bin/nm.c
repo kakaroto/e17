@@ -1,6 +1,8 @@
 #include <E_Nm.h>
 #include <Ecore_Data.h>
 
+#include <unistd.h>
+
 E_NM *nm = NULL;
 E_NMS *nms = NULL;
 
@@ -96,10 +98,29 @@ cb_access_point(void *data, E_NM_Access_Point *ap)
 }
 
 static int
+cb_activate_connection(void *data, E_NM_Device *device)
+{
+    E_NM_Active_Connection *conn;
+
+    conn = data;
+    sleep(1);
+    e_nm_active_connection_dump(conn);
+    e_nm_activate_connection(nm, conn->service_name, conn->path, device, conn->specific_object);
+    return 1;
+}
+
+static int
 cb_active_connection(void *data, E_NM_Active_Connection *conn)
 {
+    const char *device;
+    e_nm_deactivate_connection(nm, conn);
+    ecore_list_first_goto(conn->devices);
+    while ((device = ecore_list_next(conn->devices)))
+         e_nm_device_get(nm, device, cb_activate_connection, conn);
+    /*
     e_nm_active_connection_dump(conn);
     e_nm_active_connection_free(conn);
+    */
     return 1;
 }
 
@@ -159,6 +180,7 @@ cb_nm(void *data, E_NM *reply)
     nm = reply;
     /*
     e_nm_wireless_enabled_set(nm, 1);
+    */
     if (nm->active_connections)
     {
         const char *conn;
@@ -166,9 +188,10 @@ cb_nm(void *data, E_NM *reply)
         while ((conn = ecore_list_next(nm->active_connections)))
             e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
     }
+    /*
     e_nm_get_devices(nm, cb_get_devices, nm);
-    */
     e_nms_get(nm, cb_nms, nm);
+    */
     return 1;
 }
    

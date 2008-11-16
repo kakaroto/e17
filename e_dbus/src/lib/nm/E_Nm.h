@@ -154,13 +154,6 @@ enum E_NM_802_11_Device_Cap
   E_NM_802_11_DEVICE_CAP_RSN = 0x20
 };
 
-typedef enum E_NMS_Context E_NMS_Context;
-enum E_NMS_Context
-{
-  E_NMS_CONTEXT_USER,
-  E_NMS_CONTEXT_SYSTEM,
-};
-
 typedef enum E_NM_Active_Connection_State E_NM_Active_Connection_State;
 enum E_NM_Active_Connection_State
 {
@@ -243,7 +236,7 @@ typedef struct E_NMS E_NMS;
 typedef struct E_NMS_Connection E_NMS_Connection;
 struct E_NMS_Connection
 {
-  E_NMS_Context  context;
+  char *service_name;
   char *path;
 };
 
@@ -289,7 +282,7 @@ extern "C" {
    EAPI int   e_nm_wireless_enabled_set(E_NM *nm, int enabled);
 
    EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
-   EAPI int   e_nm_activate_connection(E_NM *nm, E_NMS_Connection *connection, E_NM_Device *device, const char *specific_object);
+   EAPI int   e_nm_activate_connection(E_NM *nm, const char *service_name, const char *connection, E_NM_Device *device, const char *specific_object);
    EAPI int   e_nm_deactivate_connection(E_NM *nm, E_NM_Active_Connection *connection);
    EAPI int   e_nm_sleep(E_NM *nm, int sleep);
 
@@ -344,10 +337,10 @@ extern "C" {
                         int (*cb_func)(void *data, Ecore_List *list),
                         void *data);
 
-   EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, E_NMS_Context context, const char *connection));
+   EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
 
    /* org.freedesktop.NetworkManagerSettings.Connection(.*) api */
-   EAPI int   e_nms_connection_get(E_NMS *nms, E_NMS_Context context, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
+   EAPI int   e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
    EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
    EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
 

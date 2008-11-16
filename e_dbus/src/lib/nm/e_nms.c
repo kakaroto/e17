@@ -63,7 +63,7 @@ cb_nms_user_connections(void *data, void *reply, DBusError *err)
   while ((path = ecore_list_first_remove(list)))
   {
     ecore_list_prepend(list2, (void *)-1);
-    e_nms_connection_get(nms, E_NMS_CONTEXT_SYSTEM, path, cb_nms_connection, d);
+    e_nms_connection_get(nms, E_NMS_SERVICE_SYSTEM, path, cb_nms_connection, d);
     free(path);
   }
   ecore_list_destroy(list);
@@ -73,7 +73,7 @@ cb_nms_user_connections(void *data, void *reply, DBusError *err)
   while ((path = ecore_list_next(connections)))
   {
     ecore_list_prepend(list2, (void *)-1);
-    e_nms_connection_get(nms, E_NMS_CONTEXT_USER, path, cb_nms_connection, d);
+    e_nms_connection_get(nms, E_NMS_SERVICE_USER, path, cb_nms_connection, d);
   }
   ecore_list_first_remove(list2);
 
@@ -108,14 +108,14 @@ cb_nms_system_connections(void *data, void *reply, DBusError *err)
   while ((conn = ecore_list_next(connections)))
     ecore_list_append(list, strdup(conn));
 
-  msg = e_nms_call_new(E_NMS_CONTEXT_USER, "ListConnections");
+  msg = e_nms_call_new(E_NMS_SERVICE_USER, "ListConnections");
 
   e_dbus_method_call_send(nmsi->nmi->conn, msg, cb_nm_object_path_list, cb_nms_user_connections, free_nm_object_path_list, -1, d);
   dbus_message_unref(msg);
 }
 
 static void
-new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
+new_connection(const char *service_name, void *data, DBusMessage *msg)
 {
   E_NMS_Internal *nmsi;
   const char *conn;
@@ -132,19 +132,19 @@ new_connection(E_NMS_Context context, void *data, DBusMessage *msg)
   }
 
   if (nmsi->new_connection)
-    nmsi->new_connection((E_NMS *)nmsi, context, conn);
+    nmsi->new_connection((E_NMS *)nmsi, service_name, conn);
 }
 
 static void
 cb_new_system_connection(void *data, DBusMessage *msg)
 {
-  new_connection(E_NMS_CONTEXT_SYSTEM, data, msg);
+  new_connection(E_NMS_SERVICE_SYSTEM, data, msg);
 }
 
 static void
 cb_new_user_connection(void *data, DBusMessage *msg)
 {
-  new_connection(E_NMS_CONTEXT_USER, data, msg);
+  new_connection(E_NMS_SERVICE_USER, data, msg);
 }
 
 EAPI int
@@ -155,8 +155,8 @@ e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
   nmsi = calloc(1, sizeof(E_NMS_Internal));
   nmsi->nmi = (E_NM_Internal *)nm;
   nmsi->handlers = ecore_list_new();
-  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_CONTEXT_SYSTEM, "NewConnection", cb_new_system_connection, nmsi));
-  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_CONTEXT_USER, "NewConnection", cb_new_user_connection, nmsi));
+  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_SYSTEM, "NewConnection", cb_new_system_connection, nmsi));
+  ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_USER, "NewConnection", cb_new_user_connection, nmsi));
 
   (*cb_func)(data, (E_NMS *)nmsi);
   return 1;
@@ -202,7 +202,7 @@ e_nms_list_connections(E_NMS *nms, int (*cb_func)(void *data, Ecore_List *list),
   d->data = data;
   d->object = nmsi;
 
-  msg = e_nms_call_new(E_NMS_CONTEXT_SYSTEM, "ListConnections");
+  msg = e_nms_call_new(E_NMS_SERVICE_SYSTEM, "ListConnections");
 
   ret = e_dbus_method_call_send(nmsi->nmi->conn, msg, cb_nm_object_path_list, cb_nms_system_connections, free_nm_object_path_list, -1, d) ? 1 : 0;
   dbus_message_unref(msg);
@@ -228,7 +228,7 @@ e_nms_data_get(E_NMS *nms)
 }
 
 EAPI void
-e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, E_NMS_Context context, const char *connection))
+e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection))
 {
   E_NMS_Internal *nmsi;
 
