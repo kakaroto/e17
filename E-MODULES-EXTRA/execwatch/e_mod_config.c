@@ -183,9 +183,9 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    if (!strlen(cfdata->status_cmd)) return 0;
    switch (cfdata->okstate_mode)
      {
-	case 0: if (!strlen(cfdata->okstate_exitcode)) return 0;
-	case 1: if (!strlen(cfdata->okstate_string)) return 0;
-	case 2: if (!strlen(cfdata->okstate_lines)) return 0;
+	case 0: if (!strlen(cfdata->okstate_exitcode)) return 0; break;
+	case 1: if (!strlen(cfdata->okstate_string)) return 0; break;
+	case 2: if (!strlen(cfdata->okstate_lines)) return 0; break;
      }
    if (!cfdata->poll_time_mins && !cfdata->poll_time_hours) return 0;
 
