@@ -330,19 +330,19 @@ extern "C" {
    /* TODO: org.freedesktop.NetworkManager.DHCP4Config api */
 
    /* org.freedesktop.NetworkManagerSettings api */
-   EAPI int   e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data);
-   EAPI void  e_nms_free(E_NMS *nms);
-   EAPI void  e_nms_dump(E_NMS *nms);
-   EAPI int   e_nms_list_connections(E_NMS *nms,
+   EAPI E_NMS *e_nms_get(E_NM *nm);
+   EAPI void   e_nms_free(E_NMS *nms);
+   EAPI void   e_nms_dump(E_NMS *nms);
+   EAPI int    e_nms_list_connections(E_NMS *nms,
                         int (*cb_func)(void *data, Ecore_List *list),
                         void *data);
 
    EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
 
    /* org.freedesktop.NetworkManagerSettings.Connection(.*) api */
-   EAPI int   e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data);
-   EAPI void  e_nms_connection_free(E_NMS_Connection *conn);
-   EAPI void  e_nms_connection_dump(E_NMS_Connection *conn);
+   EAPI E_NMS_Connection *e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection);
+   EAPI void              e_nms_connection_free(E_NMS_Connection *conn);
+   EAPI void              e_nms_connection_dump(E_NMS_Connection *conn);
 
    /* TODO: e_nms_connection_update */
    /* TODO: e_nms_connection_delete */

@@ -21,8 +21,8 @@ cb_nms_settings(void *data, void *reply, DBusError *err)
   free(d);
 }
 
-EAPI int
-e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection, int (*cb_func)(void *data, E_NMS_Connection *conn), void *data)
+EAPI E_NMS_Connection *
+e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection)
 {
   E_NMS_Internal            *nmsi;
   E_NMS_Connection_Internal *conn;
@@ -32,8 +32,7 @@ e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connectio
   conn->nmi = nmsi->nmi;
   conn->conn.path = strdup(connection);
   conn->conn.service_name = strdup(service_name);
-  (*cb_func)(data, (E_NMS_Connection *)conn);
-  return 1;
+  return &conn->conn;
 }
 
 EAPI void

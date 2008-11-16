@@ -156,20 +156,6 @@ cb_get_devices(void *data, Ecore_List *list)
 }
 
 static int
-cb_nms(void *data, E_NMS *reply)
-{
-    if (!reply)
-    {
-        ecore_main_loop_quit();
-        return 1;
-    }
-    nms = reply;
-    e_nms_dump(nms);
-    e_nms_list_connections(nms, cb_nms_connections, nms);
-    return 1;
-}
-
-static int
 cb_nm(void *data, E_NM *reply)
 {
     if (!reply)
@@ -190,8 +176,10 @@ cb_nm(void *data, E_NM *reply)
     }
     /*
     e_nm_get_devices(nm, cb_get_devices, nm);
-    e_nms_get(nm, cb_nms, nm);
     */
+    nms = e_nms_get(nm);
+    e_nms_dump(nms);
+    e_nms_list_connections(nms, cb_nms_connections, nms);
     return 1;
 }
    

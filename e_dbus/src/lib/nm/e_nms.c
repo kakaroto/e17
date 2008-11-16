@@ -4,39 +4,6 @@
 #include <string.h>
 
 static void
-check_done(Reply_Data *d, Ecore_List *list)
-{
-  ecore_list_first_goto(list);
-  if (ecore_list_empty_is(list))
-  {
-    d->cb_func(d->data, NULL);
-    ecore_list_destroy(list);
-    free(d);
-  }
-  else if (ecore_list_current(list) != (void *)-1)
-  {
-    d->cb_func(d->data, list);
-    free(d);
-  }
-}
-
-static int
-cb_nms_connection(void *data, E_NMS_Connection *conn)
-{
-  Reply_Data  *d;
-  Ecore_List  *list;
-
-  d = data;
-  list = d->reply;
-  if (conn)
-    ecore_list_append(list, conn);
-  ecore_list_first_remove(list);
-
-  check_done(d, list);
-  return 1;
-}
-
-static void
 cb_nms_user_connections(void *data, void *reply, DBusError *err)
 {
   Reply_Data  *d;
@@ -57,13 +24,10 @@ cb_nms_user_connections(void *data, void *reply, DBusError *err)
     return;
   }
   list2 = ecore_list_new();
-  d->reply = list2;
   ecore_list_free_cb_set(list2, ECORE_FREE_CB(e_nms_connection_free));
-  ecore_list_append(list2, (void *)-1);
   while ((path = ecore_list_first_remove(list)))
   {
-    ecore_list_prepend(list2, (void *)-1);
-    e_nms_connection_get(nms, E_NMS_SERVICE_SYSTEM, path, cb_nms_connection, d);
+    ecore_list_append(list2, e_nms_connection_get(nms, E_NMS_SERVICE_SYSTEM, path));
     free(path);
   }
   ecore_list_destroy(list);
@@ -71,13 +35,9 @@ cb_nms_user_connections(void *data, void *reply, DBusError *err)
   connections = reply;
   ecore_list_first_goto(connections);
   while ((path = ecore_list_next(connections)))
-  {
-    ecore_list_prepend(list2, (void *)-1);
-    e_nms_connection_get(nms, E_NMS_SERVICE_USER, path, cb_nms_connection, d);
-  }
-  ecore_list_first_remove(list2);
-
-  check_done(d, list2);
+    ecore_list_append(list2, e_nms_connection_get(nms, E_NMS_SERVICE_USER, path));
+  d->cb_func(d->data, list2);
+  free(d);
 }
 
 static void
@@ -147,8 +107,8 @@ cb_new_user_connection(void *data, DBusMessage *msg)
   new_connection(E_NMS_SERVICE_USER, data, msg);
 }
 
-EAPI int
-e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
+EAPI E_NMS *
+e_nms_get(E_NM *nm)
 {
   E_NMS_Internal *nmsi;
 
@@ -158,8 +118,7 @@ e_nms_get(E_NM *nm, int (*cb_func)(void *data, E_NMS *nms), void *data)
   ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_SYSTEM, "NewConnection", cb_new_system_connection, nmsi));
   ecore_list_append(nmsi->handlers, e_nms_signal_handler_add(nmsi->nmi->conn, E_NMS_SERVICE_USER, "NewConnection", cb_new_user_connection, nmsi));
 
-  (*cb_func)(data, (E_NMS *)nmsi);
-  return 1;
+  return (E_NMS *)nmsi;
 }
 
 EAPI void
