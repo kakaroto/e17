@@ -149,8 +149,7 @@ DeskControlsCreate(Desk * dsk)
 	a = ActionCreate(EVENT_MOUSE_UP, 1, 0, 1, 0, 0, NULL, NULL);
 	ActionclassAddAction(ac, a);
 
-	Esnprintf(s, sizeof(s), "desk raise %i", dsk->num);
-	ActionAddTo(a, s);
+	ActionAddTo(a, "desk next");
 	t = _("Click here to raise this desktop\nto the top.\n");
 	ActionclassSetTooltipString(ac, t);
      }
@@ -162,8 +161,7 @@ DeskControlsCreate(Desk * dsk)
 	a = ActionCreate(EVENT_MOUSE_UP, 1, 0, 1, 0, 0, NULL, NULL);
 	ActionclassAddAction(ac, a);
 
-	Esnprintf(s, sizeof(s), "desk lower %i", dsk->num);
-	ActionAddTo(a, s);
+	ActionAddTo(a, "desk prev");
 	t = _("Click here to lower this desktop\nto the bottom.\n");
 	ActionclassSetTooltipString(ac, t);
      }
