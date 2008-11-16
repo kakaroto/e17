@@ -662,8 +662,8 @@ EwinStateUpdate(EWin * ewin)
       EwinInhGetUser(ewin, close);
 
    ewin->state.donthide = ewin->props.donthide ||
-       ewin->props.skip_ext_task || ewin->props.skip_winlist ||
-       ewin->props.skip_focuslist;
+      ewin->props.skip_ext_task || ewin->props.skip_winlist ||
+      ewin->props.skip_focuslist;
 
    SnapshotEwinUpdate(ewin, SNAP_USE_FLAGS);
 }
