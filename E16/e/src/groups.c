@@ -526,7 +526,7 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 
 	if (b)
 	  {
-	     EwinSetBorder(gwins[i], b, 1);
+	     EwinBorderChange(gwins[i], b, 1);
 	     SnapshotEwinUpdate(gwins[i], SNAP_USE_GROUPS);
 	  }
      }

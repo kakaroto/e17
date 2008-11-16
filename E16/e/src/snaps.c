@@ -1470,7 +1470,7 @@ SnapshotEwinApply(EWin * ewin)
       ewin->state.shaded = sn->shaded;
 
    if (use_flags & SNAP_USE_BORDER)
-      EwinSetBorderByName(ewin, sn->border_name);
+      EwinBorderSetInitially(ewin, sn->border_name);
 
    if (use_flags & SNAP_USE_GROUPS)
       GroupsEwinAdd(ewin, sn->groups, sn->num_groups);

@@ -574,7 +574,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 }
 
 void
-EwinSetBorder(EWin * ewin, const Border * b, int apply)
+EwinBorderChange(EWin * ewin, const Border * b, int apply)
 {
    if (!b || ewin->border == b || ewin->inh_wm.b.border)
       return;
@@ -598,9 +598,9 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
 }
 
 void
-EwinSetBorderByName(EWin * ewin, const char *name)
+EwinBorderSetInitially(EWin * ewin, const char *name)
 {
-   EwinSetBorder(ewin, BorderFind(name), 0);
+   EwinBorderChange(ewin, BorderFind(name), 0);
 }
 
 static Border      *

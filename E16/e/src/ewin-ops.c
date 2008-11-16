@@ -1717,7 +1717,7 @@ EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
 		  shadechange = 1;
 		  EwinInstantUnShade(gwins[i]);
 	       }
-	     EwinSetBorder(gwins[i], b, 1);
+	     EwinBorderChange(gwins[i], b, 1);
 	     if (shadechange)
 		EwinInstantShade(gwins[i], 0);
 	  }

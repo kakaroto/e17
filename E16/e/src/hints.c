@@ -461,7 +461,7 @@ EHintsGetInfo(EWin * ewin)
       ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
 				     E16_ATOM_WIN_BORDER);
    if (str)
-      EwinSetBorderByName(ewin, str);
+      EwinBorderSetInitially(ewin, str);
    Efree(str);
 
    if (EDebug(EDBUG_TYPE_SNAPS))
