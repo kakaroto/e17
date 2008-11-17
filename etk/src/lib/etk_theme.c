@@ -434,6 +434,9 @@ Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const 
    else
       snprintf(full_group, PATH_MAX, "etk/%s", group);
 
+   if (!edje_file_group_exists(file, full_group))
+       file = _etk_theme_widget_default;
+
    if (edje_object_file_set(object, file, full_group))
       return ETK_TRUE;
    else
