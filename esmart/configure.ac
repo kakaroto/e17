@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(esmart, 0.9.0.042, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(esmart, 0.9.0.050, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 
