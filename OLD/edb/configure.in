@@ -1,4 +1,4 @@
-AC_INIT(edb, 1.0.5.042, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(edb, 1.0.5.050, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.in)
 AC_CANONICAL_BUILD
