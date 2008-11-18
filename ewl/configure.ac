@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(ewl, 0.5.2.042, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(ewl, 0.5.2.050, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
