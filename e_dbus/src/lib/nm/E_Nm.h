@@ -311,7 +311,7 @@ extern "C" {
    EAPI void  e_nm_device_free(E_NM_Device *device);
    EAPI void  e_nm_device_dump(E_NM_Device *device);
 
-   /* TODO: e_nm_device_wireless_get_access_points */
+   EAPI int   e_nm_device_wireless_get_access_points(E_NM_Device *device, int (*cb_func)(void *data, Ecore_List *access_points), void *data);
 
    EAPI void  e_nm_device_data_set(E_NM_Device *device, void *data);
    EAPI void *e_nm_device_data_get(E_NM_Device *device);

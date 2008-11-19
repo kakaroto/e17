@@ -145,7 +145,7 @@ e_nm_access_point_dump(E_NM_Access_Point *ap)
   {
     ecore_list_first_goto(ap->ssid);
     while ((c = ecore_list_next(ap->ssid)))
-      printf("%u", *c);
+      printf("%c", *c);
     printf("\n");
   }
   printf("frequency  : %u\n", ap->frequency);

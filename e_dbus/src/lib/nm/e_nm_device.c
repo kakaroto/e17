@@ -189,6 +189,72 @@ error:
   property_data_free(data);
 }
 
+static void
+check_done(Reply_Data *d, Ecore_List *list)
+{
+  ecore_list_first_goto(list);
+  if (ecore_list_empty_is(list))
+  {
+    d->cb_func(d->data, NULL);
+    ecore_list_destroy(list);
+    free(d);
+  }
+  else if (ecore_list_current(list) != (void *)-1)
+  {
+    d->cb_func(d->data, list);
+    free(d);
+  }
+}
+
+static int
+cb_access_point(void *data, E_NM_Access_Point *ap)
+{
+  Reply_Data  *d;
+  Ecore_List  *list;
+
+  d = data;
+  list = d->reply;
+  if (ap)
+    ecore_list_append(list, ap);
+  ecore_list_first_remove(list);
+
+  check_done(d, list);
+  return 1;
+}
+
+static void
+cb_access_points(void *data, void *reply, DBusError *err)
+{
+  Reply_Data           *d;
+  E_NM_Device_Internal *dev;
+  Ecore_List           *access_points;
+  Ecore_List           *list;
+  const char           *ap;
+
+  d = data;
+  dev = d->object;
+  if (dbus_error_is_set(err))
+  {
+    printf("Error: %s - %s\n", err->name, err->message);
+    d->cb_func(d->data, NULL);
+    free(d);
+    return;
+  }
+  access_points = reply;
+  ecore_list_first_goto(access_points);
+  list = ecore_list_new();
+  ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_access_point_free));
+  d->reply = list;
+  ecore_list_append(list, (void *)-1);
+  while ((ap = ecore_list_next(access_points)))
+  {
+    ecore_list_prepend(list, (void *)-1);
+    e_nm_access_point_get(dev->nmi, ap, cb_access_point, d);
+  }
+  ecore_list_first_remove(list);
+  check_done(d, list);
+}
+
 EAPI int
 e_nm_device_get(E_NM *nm, const char *device,
                 int (*cb_func)(void *data, E_NM_Device *device),
@@ -347,6 +413,29 @@ e_nm_device_dump(E_NM_Device *dev)
       break;
   }
   printf("\n");
+}
+
+EAPI int
+e_nm_device_wireless_get_access_points(E_NM_Device *device, int (*cb_func)(void *data, Ecore_List *access_points), void *data)
+{
+  DBusMessage          *msg;
+  Reply_Data           *d;
+  E_NM_Device_Internal *dev;
+  int                   ret;
+
+  if (device->device_type != E_NM_DEVICE_TYPE_WIRELESS) return 0;
+
+  dev = (E_NM_Device_Internal *)device;
+  d = calloc(1, sizeof(Reply_Data));
+  d->object = dev;
+  d->cb_func = OBJECT_CB(cb_func);
+  d->data = data;
+
+  msg = e_nm_device_wireless_call_new(dev->dev.udi, "GetAccessPoints");
+
+  ret = e_dbus_method_call_send(dev->nmi->conn, msg, cb_nm_object_path_list, cb_access_points, free_nm_object_path_list, -1, d) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 EAPI void

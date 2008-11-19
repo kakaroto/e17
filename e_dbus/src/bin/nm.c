@@ -133,6 +133,23 @@ cb_ip4_config(void *data, E_NM_IP4_Config *config)
 }
 
 static int
+cb_access_points(void *data, Ecore_List *list)
+{
+    E_NM_Access_Point *ap;
+
+    if (list)
+    {
+        ecore_list_first_goto(list);
+        while ((ap = ecore_list_next(list)))
+        {
+            e_nm_access_point_dump(ap);
+        }
+        ecore_list_destroy(list);
+    }
+    return 1;
+}
+
+static int
 cb_get_devices(void *data, Ecore_List *list)
 {
     E_NM_Device *device;
@@ -145,11 +162,14 @@ cb_get_devices(void *data, Ecore_List *list)
             e_nm_device_dump(device);
             if (device->device_type == E_NM_DEVICE_TYPE_WIRELESS)
             {
+                e_nm_device_wireless_get_access_points(device, cb_access_points, NULL);
+		/*
                 e_nm_access_point_get(nm, device->wireless.active_access_point, cb_access_point, NULL);
                 e_nm_ip4_config_get(nm, device->ip4_config, cb_ip4_config, NULL);
+		*/
             }
         }
-        ecore_list_destroy(list);
+        //ecore_list_destroy(list);
     }
     //ecore_main_loop_quit();
     return 1;
@@ -166,7 +186,6 @@ cb_nm(void *data, E_NM *reply)
     nm = reply;
     /*
     e_nm_wireless_enabled_set(nm, 1);
-    */
     if (nm->active_connections)
     {
         const char *conn;
@@ -174,12 +193,13 @@ cb_nm(void *data, E_NM *reply)
         while ((conn = ecore_list_next(nm->active_connections)))
             e_nm_active_connection_get(nm, conn, cb_active_connection, NULL);
     }
-    /*
-    e_nm_get_devices(nm, cb_get_devices, nm);
     */
+    e_nm_get_devices(nm, cb_get_devices, nm);
+    /*
     nms = e_nms_get(nm);
     e_nms_dump(nms);
     e_nms_list_connections(nms, cb_nms_connections, nms);
+    */
     return 1;
 }
    
