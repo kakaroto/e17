@@ -165,6 +165,7 @@ engine_software_16_wince_args(int argc, char **argv)
              if (!strcmp(argv[i], "wince-fb")) { ok = 1; backend = 1; }
              if (!strcmp(argv[i], "wince-gapi")) { ok = 1; backend = 2; }
              if (!strcmp(argv[i], "wince-ddraw")) { ok = 1; backend = 3; }
+             if (!strcmp(argv[i], "wince-gdi")) { ok = 1; backend = 4; }
           }
      }
    if (!ok) return 0;
@@ -221,6 +222,7 @@ engine_software_16_wince_args(int argc, char **argv)
      }
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_wince"));
+
    einfo = (Evas_Engine_Info_Software_16_WinCE *)evas_engine_info_get(evas);
    if (!einfo)
      {

@@ -1312,6 +1312,7 @@ _engine_args(int argc, char **argv)
                " wince-fb"
                " wince-gapi"
                " wince-ddraw"
+               " wince-gdi"
 #endif
 		"\n"
 		"Where PROFILE can be one of:\n"
