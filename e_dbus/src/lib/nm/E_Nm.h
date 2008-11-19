@@ -352,7 +352,7 @@ extern "C" {
    /* TODO: e_nms_connection_callback_updated_set */
    /* TODO: e_nms_connection_callback_removed_set */
 
-   /* TODO: org.freedesktop.NetworkManager.Connection.Active api */
+   /* org.freedesktop.NetworkManager.Connection.Active api */
    EAPI int   e_nm_active_connection_get(E_NM *nm, const char *conn, int (*cb_func)(void *data, E_NM_Active_Connection *conn), void *data);
    EAPI void  e_nm_active_connection_free(E_NM_Active_Connection *conn);
    EAPI void  e_nm_active_connection_dump(E_NM_Active_Connection *conn);
