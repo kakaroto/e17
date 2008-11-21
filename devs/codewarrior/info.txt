@@ -1,7 +1,7 @@
 Login:        codewarrior
 IRC Nick:     codewarrior
 Name:         Hisham Mardam Bey
-Location:     Beirut, Lebanon
+Location:     Montreal, Canada
 E-Mail:       -hisham.mardambey@gmail.com
 WWW:          http://www.hisham.cc/
 Managing:     Etk, Exhibit, Extrackt, Etk-Server, Evolve, E17, Enterminus, 
