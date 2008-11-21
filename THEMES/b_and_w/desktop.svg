@@ -111,10 +111,6 @@
          offset="0"
          id="stop4306" />
       <stop
-         id="stop4312"
-         offset="0.5"
-         style="stop-color:#ffffff;stop-opacity:1;" />
-      <stop
          style="stop-color:#ffffff;stop-opacity:0;"
          offset="0.75"
          id="stop4314" />
@@ -593,13 +589,13 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#254a4d"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="32"
+     inkscape:zoom="14.46875"
+     inkscape:cx="20.596112"
      inkscape:cy="32"
      inkscape:current-layer="layer2"
      showgrid="false"
