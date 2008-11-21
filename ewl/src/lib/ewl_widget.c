@@ -2032,6 +2032,12 @@ ewl_widget_flags_remove(Ewl_Widget *w, unsigned int flags, unsigned int mask)
  * @param w: the widget to receive keyboard focus
  * @return Returns no value.
  * @brief Changes the keyboard focus to the widget @a w.
+ *
+ * This function will send the keyboard focus to the given widget.
+ *
+ * @note Since the focus handling is done by the embed, this function will only
+ *       work proper if the widget has already an embed (in most cases a window)
+ *       as an (indirect) parent.
  */
 void
 ewl_widget_focus_send(Ewl_Widget *w)
