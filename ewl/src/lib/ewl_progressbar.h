@@ -62,9 +62,10 @@ struct Ewl_Progressbar
 Ewl_Widget      *ewl_progressbar_new(void);
 int              ewl_progressbar_init(Ewl_Progressbar *p);
 
-void             ewl_progressbar_label_set(Ewl_Progressbar *p, char *label);
+void             ewl_progressbar_label_set(Ewl_Progressbar *p,
+                                        const char *label);
 void             ewl_progressbar_custom_label_set(Ewl_Progressbar *p,
-                                        char *format_string);
+                                        const char *format_string);
 
 void             ewl_progressbar_label_show(Ewl_Progressbar *p);
 void             ewl_progressbar_label_hide(Ewl_Progressbar *p);

@@ -95,7 +95,7 @@ ewl_progressbar_init(Ewl_Progressbar *p)
  * @brief Sets the given text on the progressbar
  */
 void
-ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
+ewl_progressbar_label_set(Ewl_Progressbar *p, const char *label)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(p);
@@ -116,7 +116,7 @@ ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
  * @brief Sets the given format string on the progressbar (%lf of %lf beers)
  */
 void
-ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
+ewl_progressbar_custom_label_set(Ewl_Progressbar *p, const char *format_string)
 {
         Ewl_Range *r;
         char label[PATH_MAX];
