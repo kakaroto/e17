@@ -76,7 +76,6 @@ void _start_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name,
 void _end_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name);
 void _chars_theme_list_cb(Theme_List_Parser *state, const xmlChar *chars, int len);
 int _theme_list_connect(const char *filter, int limit, int offset);
-void _theme_list_free_data(void);
 
 /**
  * @endcond

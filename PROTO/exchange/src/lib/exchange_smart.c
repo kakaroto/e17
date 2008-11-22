@@ -50,6 +50,7 @@ static void _exchange_smart_clip_unset(Evas_Object *obj);
 
 //Internals protos
 static void _exchange_smart_size_hint_changed_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _exchange_smart_separator_append(Exchange_Smart_Data *sd, const char *text);
 static void _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td);
 static void _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td);
@@ -266,10 +267,11 @@ exchange_smart_object_run(Evas_Object *obj)
    Exchange_Smart_Data *sd;
    Eina_List *themes = NULL, *l;
    Eina_Hash *themes_hash = eina_hash_string_superfast_new(NULL);
-   //EINA_ERROR_PDBG("RUN\n");
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
+   
+   evas_object_box_remove_all(sd->obj_box, 1);
 
    EINA_ERROR_PDBG("group: '%s' local_sys: '%s' local_usr: '%s' mode: %d\n",
                    sd->group, sd->local_sys, sd->local_usr, sd->mode);
@@ -283,7 +285,7 @@ exchange_smart_object_run(Evas_Object *obj)
       themes = exchange_local_theme_list_get(sd->local_sys);
       EINA_LIST_FOREACH(themes, l, td)
          _exchange_smart_element_append(sd, td);
-      //TODO FREE themes
+      eina_list_free(themes);
       themes = NULL;
    }
 
@@ -291,7 +293,7 @@ exchange_smart_object_run(Evas_Object *obj)
    if (sd->mode == EXCHANGE_SMART_SHOW_LOCAL ||
        sd->mode == EXCHANGE_SMART_SHOW_BOTH)
    {
-      evas_object_text_text_set(sd->obj_lbl, "Fetching user files...");
+      evas_object_text_text_set(sd->obj_lbl, "Fetching user themes...");
       _exchange_smart_separator_append(sd, "Personal");
       themes = exchange_local_theme_list_get(sd->local_usr);
       EINA_LIST_FOREACH(themes, l, td)
@@ -304,7 +306,7 @@ exchange_smart_object_run(Evas_Object *obj)
    {
       Eina_List *remos;
       EINA_ERROR_PDBG("GET REMOTES\n");
-      evas_object_text_text_set(sd->obj_lbl, "Fetching user files...");
+      evas_object_text_text_set(sd->obj_lbl, "Fetching online themes...");
       if (sd->group)
          remos = exchange_theme_list_filter_by_group_title(sd->group, 0, 0);
       else
@@ -315,16 +317,18 @@ exchange_smart_object_run(Evas_Object *obj)
          EINA_ERROR_PDBG("REMOTE %s\n", td->name);
          if ((ll = eina_hash_find(themes_hash, td->name)))
          {
-            td->url = NULL;
-            //TODO Free ll->data
+            td->url = NULL; //TODO FIXME
+            exchange_theme_free(ll->data);
             ll->data = td;
             //EINA_ERROR_PDBG("** %s [%s]\n", td->name, ((Theme_List_Data*)ll->data)->name);
          }
          else
             themes = eina_list_append(themes, td);
       }
+      eina_list_free(remos);
+      remos = NULL;
    }
-   
+
    /* Populate the List */
    themes = eina_list_sort(themes, 0, _exchange_smart_themes_sort_cb);
    int online = 0;
@@ -338,9 +342,12 @@ exchange_smart_object_run(Evas_Object *obj)
       _exchange_smart_element_append(sd, td);
    }
 
+   eina_list_free(themes);
+   themes = NULL;
+   eina_hash_free(themes_hash);
+   themes_hash = NULL;
+   
    evas_object_hide(sd->obj_lbl);
-   //TODO FREE HASH
-   //TODO WHERE TO FREE themes (remember we are using all the *td)
    return 1;
 }
 
@@ -622,6 +629,20 @@ _exchange_smart_size_hint_changed_cb(void *data, Evas *e, Evas_Object *obj, void
    evas_object_size_hint_min_set(smart, w, h);
 }
 
+
+static void
+_exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Exchange_Theme *td = data;
+   Evas_Object *img;
+
+   if (!td) return;
+   exchange_theme_free(td);
+
+   img = edje_object_part_swallow_get(obj, "thumb.swallow");
+   if (img) evas_object_del(img);
+}
+
 static const char*
 _exchange_smart_thumb_get(Evas_Object *elem, int id, const char *url)
 {
@@ -786,6 +807,8 @@ _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td)
    evas_object_data_set(elem, "EXCHANGE_SMART_DATA", sd);
    edje_object_signal_callback_add(elem, "clicked", "btn_*",
                                    _exchange_smart_button_click_cb,  td); //TODO FREEME ??
+   evas_object_event_callback_add(elem, EVAS_CALLBACK_DEL,
+                                  _exchange_smart_child_delete_cb, td); //TODO FREE??
 
    /* Append the element to the box */
    opt = evas_object_box_append(sd->obj_box, elem);

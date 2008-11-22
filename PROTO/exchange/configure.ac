@@ -51,7 +51,7 @@ PKG_CHECK_MODULES(EXCHANGE, [
   libxml-2.0
 ])
 
-requirements="eina-0 ecore edje libxml-2.0"
+requirements="eina-0 ecore ecore-evas ecore-file edje libxml-2.0"
 AC_SUBST(requirements)
 
 if test "x${enable_etk}" = "xyes"

@@ -197,44 +197,7 @@ exchange_theme_list_all(int limit, int offset)
  */
 
 /*** Private functions ***/
-
-void
-_theme_list_free_data(void)
-{
-   if (tl)
-   {
-      Eina_List *l;
-      for (l = tl; l; l = l->next)
-      {
-         Exchange_Theme *tld;
-         
-         tld = l->data;
-         if (tld->name)
-            free(tld->name);
-         if (tld->author)
-            free(tld->author);
-         if (tld->license)
-            free(tld->license);
-         if (tld->version)
-            free(tld->version);
-         if (tld->url)
-            free(tld->url);
-         if (tld->screenshot)
-            free(tld->screenshot);
-         if (tld->thumbnail)
-            free(tld->thumbnail);
-         if (tld->created_at)
-            free(tld->created_at);
-         if (tld->updated_at)
-            free(tld->updated_at);
-         free(tld);
-         tld = NULL;
-      }
-      tl = eina_list_free(tl);
-   }
-}
-
-int 
+int
 _theme_list_connect(const char *filter, int limit, int offset)
 {
    int ret;
@@ -257,7 +220,8 @@ _theme_list_connect(const char *filter, int limit, int offset)
       snprintf(off, sizeof(off), "&offset=%d", offset);
       strcat(url, off);
    }
-   
+
+   tl = NULL;
    xmlInitParser();
    ret = xmlSAXUserParseFile(&ThemeListParser, &state, url);
    xmlCleanupParser();

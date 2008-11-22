@@ -113,6 +113,8 @@ extern "C" {
 EAPI int  exchange_init(void);
 EAPI int  exchange_shutdown(void);
 
+EAPI unsigned char exchange_theme_free(Exchange_Theme *theme);
+
 #ifdef __cplusplus
 }
 #endif

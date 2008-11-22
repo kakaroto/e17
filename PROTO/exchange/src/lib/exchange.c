@@ -56,7 +56,6 @@ exchange_shutdown(void)
    _theme_free_data();
    _login_free_data();
    _theme_group_free_data();
-   _theme_list_free_data();
    _application_list_free_data();
    _module_list_free_data();
    exchange_smart_shutdown();
