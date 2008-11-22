@@ -857,7 +857,7 @@ typedef enum Ewl_Selection_Type Ewl_Selection_Type;
 enum Ewl_Selection_Mode
 {
         EWL_SELECTION_MODE_NONE,        /**< No selection allowed */
-        EWL_SELECTION_MODE_SINGLE,        /**< Single select only */
+        EWL_SELECTION_MODE_SINGLE,      /**< Single select only */
         EWL_SELECTION_MODE_MULTI        /**< Multi select mode */
 };
 
