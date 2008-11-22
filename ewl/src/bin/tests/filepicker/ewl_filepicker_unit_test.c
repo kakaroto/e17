@@ -79,11 +79,10 @@ test_directory_path_split(char *buf, int len)
         Ewl_Widget *fp;
         char *t;
         int i = 0, ret = 1;
-        char *rez[] = {"/usr/local/bin", "/usr/local", "/usr", "/"};
+        char *rez[] = {"/usr/share/icons", "/usr/share", "/usr", "/"};
 
         fp = ewl_filepicker_new();
-        ewl_filepicker_directory_set(EWL_FILEPICKER(fp),
-                                        "/usr/local/bin/");
+        ewl_filepicker_directory_set(EWL_FILEPICKER(fp), rez[0]);
 
         ecore_list_first_goto(EWL_FILEPICKER(fp)->path);
         while ((t = ecore_list_next(EWL_FILEPICKER(fp)->path)))
