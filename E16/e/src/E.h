@@ -149,6 +149,7 @@ typedef struct {
    struct {
       char                hiquality;
       char                user;
+      char                no_scan;
       int                 timeout;
    } backgrounds;
    struct {

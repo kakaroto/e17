@@ -1643,7 +1643,6 @@ BG_RedrawView(void)
    int                 x, w, h, num;
    Win                 win;
    Pixmap              pmap;
-   GC                  gc;
    ImageClass         *ic_button;
 
    num = ecore_list_count(bg_list);
@@ -1654,12 +1653,10 @@ BG_RedrawView(void)
    DialogItemAreaGetSize(bg_sel, &w, &h);
 
    pmap = EGetWindowBackgroundPixmap(win);
-   gc = EXCreateGC(pmap, 0, NULL);
 
    ic_button = ImageclassFind("DIALOG_BUTTON", 1);
 
-   XSetForeground(disp, gc, Dpy.pixel_black);
-   XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+   ImageclassApplySimple(ic_button, win, pmap, STATE_NORMAL, 0, 0, w, h);
 
    x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
@@ -1669,11 +1666,9 @@ BG_RedrawView(void)
 	{
 	   EImage             *im;
 
-	   if (ic_button)
-	      ImageclassApplySimple(ic_button, win, pmap,
-				    (bg == tmp_bg) ?
-				    STATE_CLICKED : STATE_NORMAL,
-				    x, 0, 64 + 8, 48 + 8);
+	   ImageclassApplySimple(ic_button, win, pmap,
+				 (bg == tmp_bg) ? STATE_CLICKED : STATE_NORMAL,
+				 x, 0, 64 + 8, 48 + 8);
 
 	   if (BackgroundIsNone(bg))
 	     {
@@ -1703,7 +1698,6 @@ BG_RedrawView(void)
 	}
       x += (64 + 8);
    }
-   EXFreeGC(gc);
 
    EClearWindow(win);
 }
@@ -1720,18 +1714,15 @@ CB_BGAreaSlide(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 static void
 CB_BGScan(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
-   int                 slider, lower, upper;
+   int                 num;
 
    SoundPlay("SOUND_WAIT");
+   ScanBackgroundMenu();
 
-   DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
-
-   for (slider = lower; slider <= upper; slider += 8)
-     {
-	DialogItemSliderSetVal(bg_sel_slider, slider);
-	DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-	DialogItemCallCallback(d, bg_sel_slider);
-     }
+   num = ecore_list_count(bg_list);
+   DialogItemSliderSetBounds(bg_sel_slider, 0, num * 4);
+   DialogDrawItems(d, bg_sel_slider, 0, 0, 99999, 99999);
+   DialogItemCallCallback(d, bg_sel_slider);
 }
 
 static void
@@ -1967,7 +1958,8 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    int                 i, num;
    char                s[1024];
 
-   ScanBackgroundMenu();
+   if (!Conf.backgrounds.no_scan)
+      ScanBackgroundMenu();
 
    if (!bg)
       bg = DeskBackgroundGet(DesksGetCurrent());
@@ -2555,6 +2547,7 @@ static const IpcItem BackgroundsIpcArray[] = {
 static const CfgItem BackgroundsCfgItems[] = {
    CFG_ITEM_BOOL(Conf.backgrounds, hiquality, 1),
    CFG_ITEM_BOOL(Conf.backgrounds, user, 1),
+   CFG_ITEM_BOOL(Conf.backgrounds, no_scan, 0),
    CFG_ITEM_INT(Conf.backgrounds, timeout, 240),
 };
 #define N_CFG_ITEMS (sizeof(BackgroundsCfgItems)/sizeof(CfgItem))
