@@ -1002,6 +1002,8 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
+        /* Is this call really correct? Because we are probably loosing focus
+         * atm */
         ewl_embed_active_set(embed, TRUE);
 
         ev.base.modifiers = mods;
@@ -1674,7 +1676,16 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
         if ((w == e->last.focused)
                         || (RECURSIVE(w)
                                 && ewl_widget_parent_of(w, e->last.focused)))
-                e->last.focused = ewl_embed_info_parent_find(w);
+        {
+                Ewl_Widget *new_focused; 
+                
+                /* we pass simply the the focus to the next possible parent */
+                new_focused = ewl_embed_info_parent_find(w);
+                if (!new_focused)
+                        e->last.focused = NULL;
+                else
+                        ewl_widget_focus_send(new_focused);
+        }
 
         if ((w == e->last.clicked)
                         || (RECURSIVE(w)
@@ -1684,7 +1695,17 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
         if ((w == e->last.mouse_in)
                         || (RECURSIVE(w)
                                 && ewl_widget_parent_of(w, e->last.mouse_in)))
+        {
+                Ewl_Event_Mouse_Out ev;
+
+                ev.base.modifiers = ewl_ev_modifiers_get();
+                ev.base.x = ewl_embed_last_mouse_x - e->x;
+                ev.base.y = ewl_embed_last_mouse_y - e->y;
+                /* XXX we probably need to re-adjust the mouse cursor here */
+                ewl_callback_call_with_event_data(e->last.mouse_in,
+                                                  EWL_CALLBACK_MOUSE_OUT, &ev);
                 e->last.mouse_in = ewl_embed_info_parent_find(w);
+        }
 
         if ((w == e->last.drop_widget)
                         || (RECURSIVE(w)

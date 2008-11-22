@@ -1140,9 +1140,17 @@ ewl_widget_disable(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (!DISABLED(w)) {
+                Ewl_Embed *emb;
+
+                emb = ewl_embed_widget_find(w);
+                /* call the callback first, so we give possible child widgets
+                 * the way to remove them from the embed info widget list */
+                ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
+                /* and now remove us self from the info widget list */
+                ewl_embed_info_widgets_cleanup(emb, w);
+                /* finally remove the state flags and set us to disabled*/
                 ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
                 ewl_widget_state_add(w, EWL_FLAG_STATE_DISABLED);
-                ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
