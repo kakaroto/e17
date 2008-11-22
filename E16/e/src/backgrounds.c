@@ -325,6 +325,9 @@ BackgroundCreate(const char *name, EColor * solid, const char *bgn, char tile,
 static int
 BackgroundCmp(Background * bg, Background * bgx)
 {
+   if (*bgx->name != '.')	/* Discard only generated backgrounds */
+      return 1;
+
    if (bg->bg.file && bgx->bg.file)
      {
 	if ((strcmp(bg->bg.file, bgx->bg.file)) ||
