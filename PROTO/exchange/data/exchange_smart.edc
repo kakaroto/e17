@@ -1,0 +1,791 @@
+/* EXCHANGE - a library to interact with exchange.enlightenment.org
+ * Copyright (C) 2008 Massimiliano Calamelli
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library;
+ * if not, see <http://www.gnu.org/licenses/>.
+ */
+
+images {
+   image: "shadow.png" COMP;
+   image: "star.png" COMP;
+   image: "button.png" COMP;
+   image: "update.png" COMP;
+   image: "busy-1.png" COMP;
+   image: "busy-2.png" COMP;
+   image: "busy-3.png" COMP;
+   image: "busy-4.png" COMP;
+   image: "busy-5.png" COMP;
+   image: "busy-6.png" COMP;
+   image: "busy-7.png" COMP;
+   image: "busy-8.png" COMP;
+   image: "busy-9.png" COMP;
+}
+
+styles {
+   style {
+      name: "text_style";
+      base: "font=Sans font_size=10 align=left color=#000 wrap=word";
+      tag:  "br" "\n";
+      tag:  "tab" "\t";
+      tag:  "title" "+ style=Bold font_size=16";
+      tag:  "version" "+ font=Sans:style=Oblique color=#666";
+      tag:  "b" "+ font=Sans:style=Bold";
+      tag:  "u" "+ underline=on underline_color=#000";
+  }
+}
+
+collections {
+   group { name: "exchange/smart/test";
+      parts {
+         part { name: "btn_local";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 90 25;
+               max: 90 25;
+               color: 255 255 255 255;
+               align: 0.0 0.0;
+               image {
+                  normal: "button.png";
+                  border: 9 9 9 9;
+               }
+            }
+         }
+         part { name: "btn_local.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_local";
+               rel2.to: "btn_local";
+               text {
+                  text: "Local";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+         }
+         part { name: "btn_remote";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 90 25;
+               max: 90 25;
+               color: 255 255 255 255;
+               align: 0.0 0.0;
+               rel1.offset: 110 0;
+               image {
+                  normal: "button.png";
+                  border: 9 9 9 9;
+               }
+            }
+         }
+         part { name: "btn_remote.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_remote";
+               rel2.to: "btn_remote";
+               text {
+                  text: "Remote";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+         }
+         part { name: "btn_both";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 90 25;
+               max: 90 25;
+               color: 255 255 255 255;
+               align: 0.0 0.0;
+               rel1.offset: 220 0;
+               image {
+                  normal: "button.png";
+                  border: 9 9 9 9;
+               }
+            }
+         }
+         part { name: "btn_both.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_both";
+               rel2.to: "btn_both";
+               text {
+                  text: "Both";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+         }
+         part { name: "clip";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "shadow";
+               rel2.to: "shadow";
+            }
+         }
+         part { name: "swallow.content";
+            mouse_events: 1;
+            type: SWALLOW;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               color: 100 100 100 100;
+               rel1.to: "shadow";
+               rel2.to: "shadow";
+            }
+         }
+         part { name: "shadow";
+            mouse_events: 1;
+            repeat_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               aspect_preference: BOTH;
+               image {
+                  normal: "shadow.png";
+                  border: 9 9 9 9;
+               }
+               rel1.offset: 0 40;
+               rel2.offset: -25 0;
+            }
+         }
+         part { name: "scroller.confine";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               aspect_preference: BOTH;
+               color: 0 0 100 50;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -20 40;
+               }
+            }
+         }
+         part { name: "scroller";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 20 40;
+               aspect_preference: BOTH;
+               image {
+                  normal: "button.png";
+                  border: 9 9 9 9;
+               }
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -20 0;
+               }
+            }
+            dragable {
+               x: 0 0 0;
+               y: 1 1 0;
+               confine: "scroller.confine";
+            }
+         }
+      }
+   }
+   group { name: "exchange/smart/separator";
+      min: 400 40;
+      parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 200;
+            }
+         }
+         part { name: "text";
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 200 200 200 200;
+               text {
+                  font: "Sans";
+                  size: 20;
+               }
+            }
+         }
+      }
+   }
+   group { name: "exchange/smart/element";
+      min: 400 90;
+      parts {
+         part { name: "bg";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 55 0 55 50;
+            }
+         }
+         part { name: "textblock";
+            mouse_events: 0;
+            type: TEXTBLOCK;
+            entry_mode: PLAIN;
+            multiline: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "text_style";
+               }
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 3 0;
+                  to: "thumb";
+               }
+            }
+         }
+         part { name: "star_1";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 100;
+               min: 15 15;
+               max: 15 15;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 3 23;
+                  to: "thumb";
+               }
+               image {
+                  normal: "star.png";
+               }
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "star_2";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 100;
+               min: 15 15;
+               max: 15 15;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 19 23;
+                  to: "thumb";
+               }
+               image {
+                  normal: "star.png";
+               }
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "star_3";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 100;
+               min: 15 15;
+               max: 15 15;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 35 23;
+                  to: "thumb";
+               }
+               image {
+                  normal: "star.png";
+               }
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "star_4";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 100;
+               min: 15 15;
+               max: 15 15;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 51 23;
+                  to: "thumb";
+               }
+               image {
+                  normal: "star.png";
+               }
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "star_5";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 100;
+               min: 15 15;
+               max: 15 15;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: 67 23;
+                  to: "thumb";
+               }
+               image {
+                  normal: "star.png";
+               }
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "btn_use";
+            mouse_events: 1;
+            repeat_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               min: 90 25;
+               max: 90 25;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 0.3 0.6;
+                  to: "thumb";
+               }
+               image {
+                  normal: "button.png";
+                  border: 6 6 6 6;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.6;
+                  offset: 110 0;
+               }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 200;
+               rel1 {
+                  relative: 1.0 0.6;
+                  offset: 110 0;
+               }
+            }
+         }
+         part { name: "btn_use.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_use";
+               rel2.to: "btn_use";
+               text {
+                  text: "Select";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               color: 100 100 100 255;
+            }
+         }
+         part { name: "btn_download";
+            mouse_events: 1;
+            repeat_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               min: 90 25;
+               max: 90 25;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 0.3 0.6;
+                  to: "thumb";
+               }
+               image {
+                  normal: "button.png";
+                  border: 6 6 6 6;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.6;
+                  offset: 10 0;
+               }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 200;
+               rel1 {
+                  relative: 1.0 0.6;
+                  offset: 10 0;
+               }
+            }
+         }
+         part { name: "btn_download.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_download";
+               rel2.to: "btn_download";
+               text {
+                  text: "Download";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               color: 100 100 100 255;
+            }
+         }
+         part { name: "thumb";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 100 55 255;
+               rel1 {
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 150 -1;
+               }
+            }
+         }
+         part { name: "thumb.swallow";
+            mouse_events: 0;
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.to: "thumb";
+               rel2.to: "thumb";
+            }
+         }
+         part { name: "update";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 50 45;
+               max: 50 45;
+               color: 0 0 0 0;
+               rel1.to: "thumb";
+               rel2.to: "thumb";
+               image {
+                  normal: "update.png";
+               }
+            }
+            description { state: "updatable" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "busy";
+            mouse_events:  0;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               color: 0 0 0 0;
+               align: 0.5 0.35;
+               rel1.to: "thumb";
+               rel2.to: "thumb";
+               image {
+                  normal: "busy-9.png";
+                  tween:  "busy-1.png";
+                  tween:  "busy-2.png";
+                  tween:  "busy-3.png";
+                  tween:  "busy-4.png";
+                  tween:  "busy-5.png";
+                  tween:  "busy-6.png";
+                  tween:  "busy-7.png";
+                  tween:  "busy-8.png";
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "gauge.bg";
+            mouse_events:  0;
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 110 12;
+               max: 110 12;
+               color: 0 0 0 0;
+               rel1 {
+                  to: "busy";
+                  offset: 0 70;
+               }
+               rel2 {
+                  to: "busy";
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 200 200 200 200;
+            }
+         }
+         part { name: "gauge.bar";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 0 12;
+               max: 110 12;
+               color: 0 0 0 0;
+               rel1 {
+                  to: "gauge.bg";
+                  offset: 2 2;
+               }
+               rel2 {
+                  to: "gauge.bg";
+                  offset: -3 -3;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            dragable {
+               x: 1 1 0;
+               y: 0 0 0;
+               confine:"gauge.bg";
+            }
+         }
+      }
+      programs {
+         program { name: "hide_all_star";
+            signal: "set,star,hide,all";
+            source: "exchange";
+            action: STATE_SET "hidden" 0.0;
+            target: "star_1";
+            target: "star_2";
+            target: "star_3";
+            target: "star_4";
+            target: "star_5";
+         }
+         program { name: "set_star_0";
+            signal: "set,star,0";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "star_1";
+            target: "star_2";
+            target: "star_3";
+            target: "star_4";
+            target: "star_5";
+         }
+         program { name: "set_star_1";
+            signal: "set,star,1";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "star_2";
+            target: "star_3";
+            target: "star_4";
+            target: "star_5";
+            after: "set_star_1_finish";
+         }
+         program { name: "set_star_1_finish";
+            action: STATE_SET "on" 0.0;
+            target: "star_1";
+         }
+         program { name: "set_star_2";
+            signal: "set,star,2";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "star_3";
+            target: "star_4";
+            target: "star_5";
+            after: "set_star_2_finish";
+         }
+         program { name: "set_star_2_finish";
+            action: STATE_SET "on" 0.0;
+            target: "star_1";
+            target: "star_2";
+         }
+         program { name: "set_star_3";
+            signal: "set,star,3";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "star_4";
+            target: "star_5";
+            after: "set_star_3_finish";
+         }
+         program { name: "set_star_3_finish";
+            action: STATE_SET "on" 0.0;
+            target: "star_1";
+            target: "star_2";
+            target: "star_3";
+         }
+         program { name: "set_star_4";
+            signal: "set,star,4";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "star_5";
+            after: "set_star_4_finish";
+         }
+         program { name: "set_star_4_finish";
+            action: STATE_SET "on" 0.0;
+            target: "star_1";
+            target: "star_2";
+            target: "star_3";
+            target: "star_4";
+         }
+         program { name: "set_star_5";
+            signal: "set,star,5";
+            source: "exchange";
+            action: STATE_SET "on" 0.0;
+            target: "star_1";
+            target: "star_2";
+            target: "star_3";
+            target: "star_4";
+            target: "star_5";
+         }
+         program { name: "buttons_show";
+            signal: "mouse,in";
+            source: "bg";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.4;
+            target: "btn_download";
+            target: "btn_use";
+         }
+         program { name: "buttons_hide";
+            signal: "mouse,out";
+            source: "bg";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "btn_download";
+            target: "btn_use";
+         }
+         program { name: "download_press";
+            signal: "mouse,down,1";
+            source: "btn_download";
+            action: STATE_SET "clicked" 0.0;
+            target: "btn_download";
+            target: "btn_download.text";
+            after: "download_signal";
+         }
+         program { name: "download_signal";
+            action: SIGNAL_EMIT "clicked" "btn_download";
+         }
+         program { name: "download_release";
+            signal: "mouse,up,1";
+            source: "btn_download";
+            action: STATE_SET "visible" 0.0;
+            target: "btn_download.text";
+            target: "btn_download";
+         }
+         program { name: "use_press";
+            signal: "mouse,down,1";
+            source: "btn_use";
+            action: STATE_SET "clicked" 0.0;
+            target: "btn_use";
+            target: "btn_use.text";
+            after: "use_signal";
+         }
+         program { name: "use_signal";
+            action: SIGNAL_EMIT "clicked" "btn_use";
+         }
+         program { name: "use_release";
+            signal: "mouse,up,1";
+            source: "btn_use";
+            action: STATE_SET "visible" 0.0;
+            target: "btn_use";
+            target: "btn_use.text";
+         }
+         program { name: "set_busy";
+            signal: "set,busy";
+            source: "exchange";
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.0;
+            target: "busy";
+            after: "run_tween";
+         }
+         program { name: "run_tween";
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.3;
+            target: "busy";
+            after: "run_tween";
+         }
+         program { name: "set_idle";
+            signal: "set,idle";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "busy";
+         }
+         program { name: "gauge_show";
+            signal: "gauge,show";
+            source: "exchange";
+            action: STATE_SET "visible" 0.0;
+            target: "gauge.bg";
+            target: "gauge.bar";
+         }
+         program { name: "gauge_hide";
+            signal: "gauge,hide";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "gauge.bg";
+            target: "gauge.bar";
+         }
+         program { name: "set_updated";
+            signal: "set,updated";
+            source: "exchange";
+            action: STATE_SET "default" 0.0;
+            target: "update";
+         }
+         program { name: "set_updatable";
+            signal: "set,updatable";
+            source: "exchange";
+            action: STATE_SET "updatable" 0.0;
+            target: "update";
+         }
+      }
+   }
+}
