@@ -40,7 +40,7 @@
 #define Dprintf(fmt...)
 #endif
 
-#define USE_GROUP_SHOWHIDE 0	/* Don't think this is useful. */
+#define USE_GROUP_SHOWHIDE 1	/* Enable group borders */
 
 #define SET_OFF    0
 #define SET_ON     1
@@ -464,7 +464,6 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
    EWin              **gwins;
    int                 i, num;
    const Border       *b = NULL;
-   const Border       *previous_border;
 
    if (!ewin || group_index >= ewin->num_groups)
       return;
@@ -479,60 +478,20 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 	num = ewin->groups[group_index]->num_members;
      }
 
-   previous_border = ewin->previous_border;
+   if (onoff == SET_TOGGLE)
+      onoff = (ewin->border == ewin->normal_border) ? SET_ON : SET_OFF;
 
    for (i = 0; i < num; i++)
      {
-	b = NULL;
-	switch (onoff)
-	  {
-	  case SET_TOGGLE:
-	     if ((!previous_border) && (!gwins[i]->previous_border))
-	       {
-		  if (!gwins[i]->border->group_border_name)
-		     continue;
+	if (onoff == SET_ON)
+	   b = BorderFind(gwins[i]->border->group_border_name);
+	else
+	   b = gwins[i]->normal_border;
 
-		  b = BorderFind(gwins[i]->border->group_border_name);
-		  if (b)
-		     gwins[i]->previous_border = gwins[i]->border;
-	       }
-	     else if ((previous_border) && (gwins[i]->previous_border))
-	       {
-		  b = gwins[i]->previous_border;
-		  gwins[i]->previous_border = NULL;
-	       }
-	     break;
-	  case SET_ON:
-	     if (!gwins[i]->previous_border)
-	       {
-		  if (!gwins[i]->border->group_border_name)
-		     continue;
-
-		  b = BorderFind(gwins[i]->border->group_border_name);
-		  if (b)
-		     gwins[i]->previous_border = gwins[i]->border;
-	       }
-	     break;
-	  case SET_OFF:
-	     if (gwins[i]->previous_border)
-	       {
-		  b = gwins[i]->previous_border;
-		  gwins[i]->previous_border = NULL;
-	       }
-	     break;
-	  default:
-	     break;
-	  }
-
-	if (b)
-	  {
-	     EwinBorderChange(gwins[i], b, 1);
-	     SnapshotEwinUpdate(gwins[i], SNAP_USE_GROUPS);
-	  }
+	EwinBorderChange(gwins[i], b, 0);
      }
    if (group_index < 0)
       Efree(gwins);
-   GroupsSave();
 }
 #else
 

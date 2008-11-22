@@ -574,33 +574,37 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 }
 
 void
-EwinBorderChange(EWin * ewin, const Border * b, int apply)
+EwinBorderChange(EWin * ewin, const Border * b, int normal)
+{
+   if (!b || ewin->border == b ||
+       ewin->inh_wm.b.border || ewin->state.fullscreen)
+      return;
+
+   EwinBorderSetTo(ewin, b);
+   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+		  ewin->client.w, ewin->client.h);
+
+   if (normal)
+      ewin->normal_border = b;
+}
+
+static void
+EwinBorderAssign(EWin * ewin, const Border * b)
 {
    if (!b || ewin->border == b || ewin->inh_wm.b.border)
       return;
 
-   if (apply)
-     {
-	EwinBorderSetTo(ewin, b);
-	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
-		       ewin->client.w, ewin->client.h);
-     }
-   else
-     {
-	if (ewin->border)
-	   BorderDecRefcount(ewin->border);
-	ewin->border = b;
-	BorderIncRefcount(b);
-     }
+   if (ewin->border)
+      BorderDecRefcount(ewin->border);
+   BorderIncRefcount(b);
 
-   if (!ewin->state.fullscreen)
-      ewin->normal_border = b;
+   ewin->border = ewin->normal_border = b;
 }
 
 void
 EwinBorderSetInitially(EWin * ewin, const char *name)
 {
-   EwinBorderChange(ewin, BorderFind(name), 0);
+   EwinBorderAssign(ewin, BorderFind(name));
 }
 
 static Border      *

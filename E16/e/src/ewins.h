@@ -69,7 +69,6 @@ struct _ewin {
 
    const Border       *border;
    const Border       *normal_border;
-   const Border       *previous_border;
    EWinBit            *bits;
 
    struct {
