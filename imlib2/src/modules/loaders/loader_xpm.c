@@ -253,8 +253,8 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                                  return 0;
                               }
                             ptr = im->data;
-                            end = ptr + (sizeof(DATA32) * w * h);
                             pixels = w * h;
+                            end = ptr + (pixels);
                          }
                        else
                          {
