@@ -33,5 +33,7 @@ EAPI char *exchange_local_theme_author_get(const char *file);
 EAPI char *exchange_local_theme_license_get(const char *file);
 EAPI char *exchange_local_theme_version_get(const char *file);
 EAPI int  exchange_local_theme_check_update(const char *file);
+EAPI Exchange_Theme *exchange_local_theme_all_data_get(const char *file);
+EAPI Eina_List *exchange_local_theme_list_get(const char *dir);
 
 #endif /* _EXCHANGE_LOCAL_THEME_H */

@@ -47,7 +47,7 @@ xmlSAXHandler ThemeParser = {
    0  /* fatalError */
 };
 
-Theme_Data *tdata;
+Exchange_Theme *tdata;
 
 /**
  * @addtogroup Exchange_Remote_Theme_Group Exchange Remote Theme Functions
@@ -67,7 +67,7 @@ exchange_remote_theme_id_get(const char *theme_name)
 {
    if (!theme_name)
       return -1;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->id;
    else
@@ -85,7 +85,7 @@ exchange_remote_theme_author_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->author;
    else
@@ -102,7 +102,7 @@ exchange_remote_theme_license_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->license;
    else
@@ -120,7 +120,7 @@ exchange_remote_theme_version_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->version;
    else
@@ -137,7 +137,7 @@ exchange_remote_theme_description_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->description;
    else
@@ -154,7 +154,7 @@ exchange_remote_theme_url_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->url;
    else
@@ -171,7 +171,7 @@ exchange_remote_theme_thumbnail_url_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->thumbnail;
    else
@@ -188,7 +188,7 @@ exchange_remote_theme_screenshot_url_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->screenshot;
    else
@@ -205,7 +205,7 @@ exchange_remote_theme_rating_get(const char *theme_name)
 {
    if (!theme_name)
       return -1;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->rating;
    else
@@ -222,7 +222,7 @@ exchange_remote_theme_user_id_get(const char *theme_name)
 {
    if (!theme_name)
       return -1;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->user_id;
    else
@@ -240,7 +240,7 @@ exchange_remote_theme_updated_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->updated_at;
    else
@@ -257,7 +257,7 @@ exchange_remote_theme_created_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
       return tdata->created_at;
    else
@@ -269,12 +269,12 @@ exchange_remote_theme_created_get(const char *theme_name)
  * @return Theme_Data pointer that contains all available data, NULL otherwise. The returning Theme_Data * must be freed before exit
  * @brief Get all available remote theme data from the theme name. 
  */
-EAPI Theme_Data *
+EAPI Exchange_Theme *
 exchange_remote_theme_all_data_get(const char *theme_name)
 {
    if (!theme_name)
       return NULL;
-   tdata = calloc(1, sizeof(Theme_Data));
+   tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
    {
       return tdata;

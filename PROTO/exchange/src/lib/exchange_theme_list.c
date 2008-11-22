@@ -47,7 +47,7 @@ xmlSAXHandler ThemeListParser = {
    0  /* fatalError */
 };
 
-Theme_List_Data *tldata;
+Exchange_Theme *tldata;
 Eina_List *tl = NULL;
 
 /**
@@ -206,15 +206,27 @@ _theme_list_free_data(void)
       Eina_List *l;
       for (l = tl; l; l = l->next)
       {
-         Theme_List_Data *tld;
+         Exchange_Theme *tld;
          
          tld = l->data;
+         if (tld->name)
+            free(tld->name);
+         if (tld->author)
+            free(tld->author);
+         if (tld->license)
+            free(tld->license);
          if (tld->version)
             free(tld->version);
          if (tld->url)
             free(tld->url);
          if (tld->screenshot)
             free(tld->screenshot);
+         if (tld->thumbnail)
+            free(tld->thumbnail);
+         if (tld->created_at)
+            free(tld->created_at);
+         if (tld->updated_at)
+            free(tld->updated_at);
          free(tld);
          tld = NULL;
       }
@@ -271,13 +283,18 @@ _start_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name, cons
 {
    if (!strcmp((char *)name, "theme"))
    {
-      tldata = calloc(1, sizeof(Theme_List_Data));
+      tldata = calloc(1, sizeof(Exchange_Theme));
       state->state = PARSER_THEME_LIST;
-      state->prev_state = PARSER_THEME_LIST_START;      
+      state->prev_state = PARSER_THEME_LIST_START;
    }
    if (!strcmp((char *)name, "name"))
    {
       state->state = PARSER_THEME_LIST_NAME;
+      state->prev_state = PARSER_THEME_LIST_START;
+   }
+   if (!strcmp((char *)name, "id"))
+   {
+      state->state = PARSER_THEME_LIST_ID;
       state->prev_state = PARSER_THEME_LIST_START;
    }
    if (!strcmp((char *)name, "version"))
@@ -299,7 +316,17 @@ _start_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name, cons
    {
       state->state = PARSER_THEME_LIST_SCREENSHOT;
       state->prev_state = PARSER_THEME_LIST_START;
-   }   
+   }
+   if (!strcmp((char *)name, "thumbnail"))
+   {
+      state->state = PARSER_THEME_LIST_THUMBNAIL;
+      state->prev_state = PARSER_THEME_LIST_START;
+   }
+   if (!strcmp((char *)name, "rating"))
+   {
+      state->state = PARSER_THEME_LIST_RATING;
+      state->prev_state = PARSER_THEME_LIST_START;
+   }
 }
 
 void
@@ -307,7 +334,7 @@ _end_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name)
 {
    if (!strcmp((char *)name, "theme"))
    {
-      tl = eina_list_append(tl, (Theme_List_Data *)tldata);
+      tl = eina_list_append(tl, (Exchange_Theme *)tldata);
       state->state = PARSER_THEME_LIST_START;
       state->prev_state = PARSER_THEME_LIST;
    }
@@ -315,6 +342,11 @@ _end_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name)
    {
       state->state = PARSER_THEME_LIST_START;
       state->prev_state = PARSER_THEME_LIST_NAME;
+   }
+   if (!strcmp((char *)name, "id"))
+   {
+      state->state = PARSER_THEME_LIST_START;
+      state->prev_state = PARSER_THEME_LIST_ID;
    }
    if (!strcmp((char *)name, "version"))
    {
@@ -335,7 +367,17 @@ _end_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name)
    {
       state->state = PARSER_THEME_LIST_START;
       state->prev_state = PARSER_THEME_LIST_SCREENSHOT;
-   } 
+   }
+   if (!strcmp((char *)name, "thunmbail"))
+   {
+      state->state = PARSER_THEME_LIST_START;
+      state->prev_state = PARSER_THEME_LIST_THUMBNAIL;
+   }
+   if (!strcmp((char *)name, "rating"))
+   {
+      state->state = PARSER_THEME_LIST_START;
+      state->prev_state = PARSER_THEME_LIST_RATING;
+   }
 }
 
 void
@@ -346,8 +388,14 @@ _chars_theme_list_cb(Theme_List_Parser *state, const xmlChar *chars, int len)
    switch (state->state)
    {
       case PARSER_THEME_LIST_NAME:
-         strncat((char *)tldata->name, (char *)chars, len);
+         buf[0] = '\0';
+         strncat((char *)buf, (char *)chars, len);
+         tldata->name = strdup(buf);  //TODO Better to use stringshare here
          break;
+      case PARSER_THEME_LIST_ID:
+         buf[0] = '\0';
+         strncat((char *)buf, (char *)chars, len);
+         tldata->id = atoi(buf);
       case PARSER_THEME_LIST_VERSION:
          buf[0] = '\0';
          strncat((char *)buf, (char *)chars, len);
@@ -365,6 +413,16 @@ _chars_theme_list_cb(Theme_List_Parser *state, const xmlChar *chars, int len)
          buf[0] = '\0';
          strncat((char *)buf, (char *)chars, len);
          tldata->screenshot = strdup(buf);
+         break;
+      case PARSER_THEME_LIST_THUMBNAIL:
+         buf[0] = '\0';
+         strncat((char *)buf, (char *)chars, len);
+         tldata->thumbnail = strdup(buf);
+         break;
+      case PARSER_THEME_LIST_RATING:
+         buf[0] = '\0';
+         strncat((char *)buf, (char *)chars, len);
+         tldata->rating = atof(buf);
          break;
       default:
          break;

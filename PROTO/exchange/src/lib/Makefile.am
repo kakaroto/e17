@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-AM_CPPFLAGS = \
+AM_CPPFLAGS = -Wall \
 -I. \
 -I$(top_srcdir)/src/lib \
 @EXCHANGE_CFLAGS@ \
@@ -18,6 +18,7 @@ exchange_theme_group.h \
 exchange_theme_list.h \
 exchange_application_list.h \
 exchange_module_list.h \
+exchange_smart.h \
 exchange_private.h \
 Exchange.h
 
@@ -30,6 +31,7 @@ exchange_theme_group.c \
 exchange_theme_list.c \
 exchange_application_list.c \
 exchange_module_list.c \
+exchange_smart.c \
 $(EXCHANGEHEADERS)
 
 libexchange_la_SOURCES = \

@@ -63,25 +63,6 @@ typedef struct _Theme_Parser {
  * @endcond
  */
 
-/**
- * \struct _Theme_Data
- * \brief Theme_Data structure
- */
-typedef struct _Theme_Data { /**< Metadata from a remote theme */
-   int id; /** Theme id */
-   char *name; /** Theme name */
-   char *author; /** Theme author */
-   char *license; /** Theme license */
-   char *version; /** Theme version */
-   char description[4096]; /** Theme description */
-   char *url; /** Theme URL */
-   char *thumbnail; /** Theme thumbnail URL */
-   char *screenshot; /** Theme screenshot URL */
-   float rating; /** Theme rating */ 
-   int user_id; /** User id of theme author */
-   char *created_at; /** Theme creation timestamp */
-   char *updated_at; /** Theme last update timestamp */
-} Theme_Data;
 
 EAPI int  exchange_remote_theme_id_get(const char *theme_name);
 EAPI char *exchange_remote_theme_author_get(const char *theme_name);
@@ -95,7 +76,7 @@ EAPI float exchange_remote_theme_rating_get(const char *theme_name);
 EAPI int  exchange_remote_theme_user_id_get(const char *theme_name);
 EAPI char *exchange_remote_theme_created_get(const char *theme_name);
 EAPI char *exchange_remote_theme_updated_get(const char *theme_name);
-EAPI Theme_Data *exchange_remote_theme_all_data_get(const char *theme_name);
+EAPI Exchange_Theme *exchange_remote_theme_all_data_get(const char *theme_name);
 
 /**
  * @cond LOCAL

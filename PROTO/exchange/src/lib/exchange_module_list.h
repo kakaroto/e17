@@ -57,16 +57,16 @@ typedef struct _Module_List_Parser {
 
 /**
  * \struct _Module_List_Data
- * \brief Module_List_Data structure
+ * \brief Metadata from a remote application 
  */
-typedef struct _Module_List_Data { /**< Metadata from a remote application */
-   int id; /** Module ID */
-   char name[4096]; /** Module name */
-   char description[4096]; /** Module description */
-   char *url; /** Module URL */
-   char *screenshot; /** Module screenshot URL */
-   int application_id; /** The ID of application */ 
-   int user_id; /** The ID of user */ 
+typedef struct _Module_List_Data {
+   int id; /**< Module ID */
+   char name[4096]; /**< Module name */
+   char description[4096]; /**< Module description */
+   char *url; /**< Module URL */
+   char *screenshot; /**< Module screenshot URL */
+   int application_id; /**< The ID of application */ 
+   int user_id; /**< The ID of user */ 
 } Module_List_Data;
 
 EAPI Eina_List *exchange_module_list_filter_by_user_id(int user_id, int limit, int offset);

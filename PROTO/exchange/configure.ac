@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 rm -f config.cache
 
-AC_INIT(exchange, 0.0.0.001, mcalamelli@gmail.com)
+AC_INIT(exchange, 0.0.0.002, mcalamelli@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -45,6 +45,8 @@ AC_ARG_ENABLE(ewl,
 PKG_CHECK_MODULES(EXCHANGE, [
   eina-0
   ecore
+  ecore-evas
+  ecore-file
   edje
   libxml-2.0
 ])
@@ -73,5 +75,6 @@ Makefile
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
+data/Makefile
 ], []
 )

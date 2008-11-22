@@ -37,10 +37,13 @@ typedef enum {
    PARSER_THEME_LIST_RSP,
    PARSER_THEME_LIST,
    PARSER_THEME_LIST_NAME,
+   PARSER_THEME_LIST_ID,
    PARSER_THEME_LIST_VERSION,
    PARSER_THEME_LIST_DESCRIPTION,
    PARSER_THEME_LIST_URL,
    PARSER_THEME_LIST_SCREENSHOT,
+   PARSER_THEME_LIST_THUMBNAIL,
+   PARSER_THEME_LIST_RATING,
    PARSER_THEME_LIST_UNKNOWN
 } Theme_List_States;
 
@@ -53,17 +56,6 @@ typedef struct _Theme_List_Parser {
  * @endcond
  */
 
-/**
- * \struct _Theme_List_Data
- * \brief Theme_List_Data structure
- */
-typedef struct _Theme_List_Data { /**< Metadata from a remote theme */
-   char name[4096]; /** Theme name */
-   char *version; /** Theme version */
-   char description[4096]; /** Theme description */
-   char *url; /** Theme URL */
-   char *screenshot; /** Theme screenshot URL */
-} Theme_List_Data;
 
 EAPI Eina_List *exchange_theme_list_filter_by_user_id(int user_id, int limit, int offset);
 EAPI Eina_List *exchange_theme_list_filter_by_user_name(const char *user_name, int limit, int offset);

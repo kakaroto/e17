@@ -59,10 +59,35 @@ exchange_shutdown(void)
    _theme_list_free_data();
    _application_list_free_data();
    _module_list_free_data();
+   exchange_smart_shutdown();
 
    edje_shutdown();
    
    return _exchange_init_count;
+}
+
+/**
+ * @param theme The Theme to free
+ * @return 1 on success or 0 on errors
+ * @brief Free an Exchange_Theme structure
+ */
+EAPI unsigned char
+exchange_theme_free(Exchange_Theme *theme)
+{
+   if (!theme) return 0;
+
+   if (theme->author) free(theme->author);
+   if (theme->license) free(theme->license);
+   if (theme->version) free(theme->version);
+   if (theme->url) free(theme->url);
+   if (theme->thumbnail) free(theme->thumbnail);
+   if (theme->screenshot) free(theme->screenshot);
+   if (theme->created_at) free(theme->created_at);
+   if (theme->updated_at) free(theme->updated_at);
+
+   free(theme);
+   theme = NULL;
+   return 1;
 }
 
 /**

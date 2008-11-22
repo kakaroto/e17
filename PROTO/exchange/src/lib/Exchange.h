@@ -36,18 +36,39 @@
  * Exchange is a library designed to help apps to interact with
  * exchange.enlightenment.org contents.
  * Exchange provides : \n
- * @li @link Exchange.h Core functions; @endlink
- * @li @link exchange_local_theme.h Functions that handles the metadata stored into local theme file; @endlink
- * @li @link exchange_remote_theme.h Functions that handles the data relative to a remote theme; @endlink
- * @li @link exchange_login.h Functions to login into exchange website; @endlink
- * @li @link exchange_theme_group.h Functions that handles theme_groups; @endlink
- * @li @link exchange_theme_list.h Functions that handles theme listing; @endlink
- * @li @link exchange_application_list.h Functions that handles application listing; @endlink
- * @li @link exchange_module_list.h Functions that handles module listing; @endlink
+ * @li @link Exchange.h Core functions @endlink
+ * @li @link exchange_local_theme.h Functions that work with local themes. @endlink
+ * @li @link exchange_remote_theme.h Functions that work with remote themes. @endlink
+ * @li @link exchange_login.h Functions to login into exchange website. @endlink
+ * @li @link exchange_theme_group.h Functions to work with theme_groups. @endlink
+ * @li @link exchange_theme_list.h Functions that list remote themes @endlink
+ * @li @link exchange_application_list.h Functions that list remote applications @endlink
+ * @li @link exchange_module_list.h Functions that list remote modules @endlink
+ * @li @link exchange_smart.h The Exchange Smart Object @endlink
  */
 
 #include <libxml/parser.h>
 #include <Edje.h>
+
+/**
+ * \struct _Theme_Data
+ * \brief Metadata for themes
+ */
+typedef struct _Exchange_Theme {
+   int id; /**< Theme id */
+   char *name; /**< Theme name */
+   char *author; /**< Theme author */
+   char *license; /**< Theme license */
+   char *version; /**< Theme version */
+   char description[4096]; /**< Theme description */
+   char *url; /**< Theme URL */
+   char *thumbnail; /**< Theme thumbnail URL */
+   char *screenshot; /**< Theme screenshot URL */
+   float rating; /**< Theme rating */ 
+   int user_id; /**< User id of theme author */
+   char *created_at; /**< Theme creation timestamp */
+   char *updated_at; /**< Theme last update timestamp */
+} Exchange_Theme;
 
 #include "exchange_local_theme.h"
 #include "exchange_remote_theme.h"
@@ -56,6 +77,8 @@
 #include "exchange_theme_list.h"
 #include "exchange_application_list.h"
 #include "exchange_module_list.h"
+#include "exchange_smart.h"
+
 
 #ifdef EAPI
 # undef EAPI

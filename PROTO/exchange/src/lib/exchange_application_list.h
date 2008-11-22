@@ -56,15 +56,15 @@ typedef struct _Application_List_Parser {
 
 /**
  * \struct _Application_List_Data
- * \brief Application_List_Data structure
+ * \brief Metadata from a remote application 
  */
-typedef struct _Application_List_Data { /**< Metadata from a remote application */
-   int id; /** Application ID */
-   char name[4096]; /** Application name */
-   char description[4096]; /** Application description */
-   char *url; /** Application URL */
-   char *screenshot; /** Application screenshot URL */
-   int user_id; /** The ID of user */ 
+typedef struct _Application_List_Data {
+   int id; /**< Application ID */
+   char name[4096]; /**< Application name */
+   char description[4096]; /**< Application description */
+   char *url; /**< Application URL */
+   char *screenshot; /**< Application screenshot URL */
+   int user_id; /**< The ID of user */ 
 } Application_List_Data;
 
 EAPI Eina_List *exchange_application_list_filter_by_user_id(int user_id, int limit, int offset);

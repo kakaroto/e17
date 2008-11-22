@@ -56,13 +56,13 @@ typedef struct _Theme_Group_Parser {
 
 /**
  * \struct _Theme_Group_Data
- * \brief Theme_Gruop_Data structure
+ * \brief Metadata for a Theme_Group 
  */
-typedef struct _Theme_Group_Data { /**< Metadata for a Theme_Group */
-   int id; /** Theme group id */
-   char name[4096]; /** Theme group name */
-   char title[4096]; /** Theme group title */
-   int known; /** Is it known? */
+typedef struct _Theme_Group_Data {
+   int id; /**< Theme group id */
+   char name[4096]; /**< Theme group name */
+   char title[4096]; /**< Theme group title */
+   int known; /**< Is it known? */
 } Theme_Group_Data;
 
 EAPI Eina_List *exchange_theme_group_list_available(void);

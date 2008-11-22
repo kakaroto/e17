@@ -58,16 +58,16 @@ typedef struct _Login_Parser {
 
 /**
  * \struct _Login_Data
- * \brief Login_Data structure
+ * \brief Metadata from a login request
  */
-typedef struct _Login_Data { /**< Metadata from a login request */
-   int id; /** User id */
-   char *name; /** User name */
-   char *email; /** User email */
-   char *role; /** User role */
-   char *api_key; /** User API key */
-   char *created_at; /** User creation timestamp */
-   char *updated_at; /** User last update timestamp */
+typedef struct _Login_Data {
+   int id; /**< User id */
+   char *name; /**< User name */
+   char *email; /**< User email */
+   char *role; /**< User role */
+   char *api_key; /**< User API key */
+   char *created_at; /**< User creation timestamp */
+   char *updated_at; /**< User last update timestamp */
 } Login_Data;
 
 EAPI Login_Data *exchange_login(const char *username, const char *password);

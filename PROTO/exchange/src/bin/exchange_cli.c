@@ -242,8 +242,8 @@ main(int argc, char **argv)
                      Q_PRINTF("Theme: %s, updated at: %s\n", argv[argc - 1], exchange_remote_theme_updated_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "all_data"))
                   {
-                        Theme_Data *tdata;
-                        tdata = (Theme_Data *)exchange_remote_theme_all_data_get(argv[argc - 1]);
+                        Exchange_Theme *tdata;
+                        tdata = (Exchange_Theme *)exchange_remote_theme_all_data_get(argv[argc - 1]);
                         Q_PRINTF1("Theme: %s\n", argv[argc - 1], "%s\n");
                         Q_PRINTF1("ID: %d\n", tdata->id, "%d\n");
                         Q_PRINTF1("Name: %s\n", tdata->name, "%s\n");
@@ -270,8 +270,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -291,8 +291,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -312,8 +312,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -333,8 +333,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -354,8 +354,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -375,8 +375,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                            Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
@@ -396,8 +396,8 @@ main(int argc, char **argv)
                      {
                         if (l1->data)
                         {
-                           Theme_List_Data *tld;
-                           tld = (Theme_List_Data *)l1->data;
+                           Exchange_Theme *tld;
+                           tld = (Exchange_Theme *)l1->data;
                            Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                         }
                      }
