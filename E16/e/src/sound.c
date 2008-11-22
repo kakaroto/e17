@@ -43,6 +43,7 @@ static struct {
 } Conf_sound;
 
 static struct {
+   char                cfg_loaded;
    char               *theme_path;
 } Mode_sound;
 
@@ -61,6 +62,8 @@ extern const SoundOps SoundOps_pa;
 static const SoundOps *ops = &SoundOps_pa;
 #endif
 #endif
+
+static void         _SoundConfigLoad(void);
 
 static void
 _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
@@ -107,6 +110,12 @@ SclassDestroy(SoundClass * sclass)
    Efree(sclass->file);
 
    Efree(sclass);
+}
+
+static void
+_SclassDestroy(void *data, void *user_data __UNUSED__)
+{
+   SclassDestroy((SoundClass *) data);
 }
 
 static void
@@ -212,11 +221,7 @@ SoundInit(void)
 		 "now be disabled.\n"));
      }
 
-   Efree(Mode_sound.theme_path);
-   if (Conf_sound.theme)
-      Mode_sound.theme_path = ThemeFind(Conf_sound.theme);
-   else
-      Mode_sound.theme_path = NULL;
+   _SoundConfigLoad();
 }
 
 static void
@@ -235,7 +240,7 @@ SoundExit(void)
  */
 
 static int
-SoundConfigLoad(FILE * fs)
+_SoundConfigParse(FILE * fs)
 {
    int                 err = 0;
    SoundClass         *sc;
@@ -266,6 +271,37 @@ SoundConfigLoad(FILE * fs)
    return err;
 }
 
+static void
+_SoundConfigLoad(void)
+{
+   if (Mode_sound.cfg_loaded)
+      return;
+   Mode_sound.cfg_loaded = 1;
+
+   Efree(Mode_sound.theme_path);
+   if (Conf_sound.theme)
+      Mode_sound.theme_path = ThemeFind(Conf_sound.theme);
+   else
+      Mode_sound.theme_path = NULL;
+
+   ConfigFileLoad("sound.cfg", SOUND_THEME_PATH, _SoundConfigParse, 1);
+}
+
+static void
+_SoundConfigUnload(void)
+{
+   ecore_list_for_each(sound_list, _SclassDestroy, NULL);
+   Mode_sound.cfg_loaded = 0;
+}
+
+static void
+_SoundThemeChange(void *item __UNUSED__, const char *theme)
+{
+   _SoundConfigUnload();
+   _EFDUP(Conf_sound.theme, theme);
+   _SoundConfigLoad();
+}
+
 /*
  * Sound module
  */
@@ -277,10 +313,9 @@ SoundSighan(int sig, void *prm __UNUSED__)
      {
      case ESIGNAL_INIT:
 	memset(&Mode_sound, 0, sizeof(Mode_sound));
-	SoundInit();
 	break;
      case ESIGNAL_CONFIGURE:
-	ConfigFileLoad("sound.cfg", SOUND_THEME_PATH, SoundConfigLoad, 1);
+	SoundInit();
 	break;
      case ESIGNAL_START:
 	if (!Conf_sound.enable)
@@ -407,7 +442,7 @@ static const IpcItem SoundIpcArray[] = {
 
 static const CfgItem SoundCfgItems[] = {
    CFG_ITEM_BOOL(Conf_sound, enable, 0),
-   CFG_ITEM_STR(Conf_sound, theme),
+   CFG_FUNC_STR(Conf_sound, theme, _SoundThemeChange),
 };
 #define N_CFG_ITEMS (sizeof(SoundCfgItems)/sizeof(CfgItem))
 
