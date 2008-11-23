@@ -40,8 +40,6 @@ typedef struct {
    ECfgFileItem       *pitms;
 } ECfgFile;
 
-#define E_DB_File ECfgFile
-
 static ECfgFile    *
 e16_db_open(const char *name)
 {
@@ -216,7 +214,7 @@ e16_db_str_set(ECfgFile * ecf, const char *key, const char *value)
  */
 
 static void
-CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
+CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
 {
    char                buf[1024];
    const char         *name = buf;
@@ -238,30 +236,30 @@ CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
-	if (!edf || !e16_db_int_get(edf, name, &my_int))
+	if (!ecf || !e16_db_int_get(ecf, name, &my_int))
 	   my_int = (ci->dflt) ? 1 : 0;
 	*((char *)ci->ptr) = my_int;
 	break;
      case ITEM_TYPE_INT:
      case ITEM_TYPE_HEX:
-	if (!edf || !e16_db_int_get(edf, name, &my_int))
+	if (!ecf || !e16_db_int_get(ecf, name, &my_int))
 	   my_int = ci->dflt;
 	*((int *)ci->ptr) = my_int;
 	break;
      case ITEM_TYPE_FLOAT:
-	if (!edf || !e16_db_float_get(edf, name, &my_float))
+	if (!ecf || !e16_db_float_get(ecf, name, &my_float))
 	   my_float = ci->dflt;
 	*((float *)ci->ptr) = my_float;
 	break;
      case ITEM_TYPE_STRING:
-	s = (edf) ? e16_db_str_get(edf, name) : NULL;
+	s = (ecf) ? e16_db_str_get(ecf, name) : NULL;
 	*((char **)ci->ptr) = s;
 	break;
      }
 }
 
 static void
-CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
+CfgItemSave(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
 {
    char                buf[1024];
    const char         *name = buf;
@@ -281,20 +279,20 @@ CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
-	e16_db_int_set(edf, name, *((char *)ci->ptr));
+	e16_db_int_set(ecf, name, *((char *)ci->ptr));
 	break;
      case ITEM_TYPE_INT:
-	e16_db_int_set(edf, name, *((int *)ci->ptr));
+	e16_db_int_set(ecf, name, *((int *)ci->ptr));
 	break;
      case ITEM_TYPE_HEX:
-	e16_db_hex_set(edf, name, *((unsigned int *)ci->ptr));
+	e16_db_hex_set(ecf, name, *((unsigned int *)ci->ptr));
 	break;
      case ITEM_TYPE_FLOAT:
-	e16_db_float_set(edf, name, *((float *)ci->ptr));
+	e16_db_float_set(ecf, name, *((float *)ci->ptr));
 	break;
      case ITEM_TYPE_STRING:
 	s = *(char **)(ci->ptr);
-	e16_db_str_set(edf, name, s);
+	e16_db_str_set(ecf, name, s);
 	break;
      }
 }
@@ -313,14 +311,14 @@ ConfigurationLoad(void)
    const EModule     **pml, *pm;
    const CfgItem      *pcl;
    char                buf[4096];
-   E_DB_File          *edf;
+   ECfgFile           *ecf;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigurationLoad\n");
 
    memset(&Conf, 0, sizeof(EConf));
 
-   edf = e16_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
+   ecf = e16_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
    /* NB! We have to assign the defaults even if it doesn't exist */
 
    /* Load module configs */
@@ -331,12 +329,12 @@ ConfigurationLoad(void)
 	ncl = pm->cfg.num;
 	pcl = pm->cfg.lst;
 	for (j = 0; j < ncl; j++)
-	   CfgItemLoad(edf, pm->name, pcl + j);
+	   CfgItemLoad(ecf, pm->name, pcl + j);
      }
    ModuleListFree(pml);
 
-   if (edf)
-      e16_db_close(edf);
+   if (ecf)
+      e16_db_close(ecf);
 }
 
 void
@@ -346,13 +344,13 @@ ConfigurationSave(void)
    const EModule     **pml, *pm;
    const CfgItem      *pcl;
    char                buf[4096];
-   E_DB_File          *edf;
+   ECfgFile           *ecf;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigurationSave\n");
 
-   edf = e16_db_open(ConfigurationGetFile(buf, sizeof(buf)));
-   if (edf == NULL)
+   ecf = e16_db_open(ConfigurationGetFile(buf, sizeof(buf)));
+   if (ecf == NULL)
       return;
 
    /* Load module configs */
@@ -363,11 +361,11 @@ ConfigurationSave(void)
 	ncl = pm->cfg.num;
 	pcl = pm->cfg.lst;
 	for (j = 0; j < ncl; j++)
-	   CfgItemSave(edf, pm->name, pcl + j);
+	   CfgItemSave(ecf, pm->name, pcl + j);
      }
    ModuleListFree(pml);
 
-   e16_db_close(edf);
+   e16_db_close(ecf);
    e16_db_flush();
 }
 
