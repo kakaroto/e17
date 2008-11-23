@@ -26,13 +26,13 @@
  *
  *    SMART OBJECT 
  * Kill all download in progress
- * Free well td
+ * Watch for updatable themes
  *
  *    EXCHANGE
  * Add to Theme_Data the field filename
  * Screenshots and description for local themes ?? must be placed inside themes !!
- * Fix all the free functions
- * fix all the typedef names wit exchange_*
+ * Fix all the remaining free functions
+ * fix all the typedef names with exchange_*
  */
 
 typedef struct _Exchange_Smart_Data Exchange_Smart_Data;
@@ -272,6 +272,7 @@ exchange_smart_object_run(Evas_Object *obj)
    if (!sd) return 0;
    
    evas_object_box_remove_all(sd->obj_box, 1);
+   exchange_smart_object_offset_set(obj, 0, 0);
 
    EINA_ERROR_PDBG("group: '%s' local_sys: '%s' local_usr: '%s' mode: %d\n",
                    sd->group, sd->local_sys, sd->local_usr, sd->mode);
@@ -891,6 +892,8 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
 
       edje_object_signal_emit(obj, "set,updated","exchange");
       edje_object_signal_emit(obj, "set,busy","exchange");
+      edje_object_signal_emit(obj, "set,downloading","exchange");
+      
       edje_object_signal_emit(obj, "gauge,show","exchange");
       edje_object_part_drag_size_set(obj, "gauge.bar", 0.0, 0.0);
       edje_object_part_text_set(obj, "btn_download.text", "Downloading...");

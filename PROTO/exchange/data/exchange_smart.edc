@@ -790,7 +790,7 @@ collections {
             action: STATE_SET "visible" 0.0;
             transition: LINEAR 0.0;
             target: "busy";
-            after: "sticky_btn";
+            //after: "sticky_btn";
             after: "run_tween";
          }
          program { name: "run_tween";
@@ -800,6 +800,13 @@ collections {
             after: "run_tween";
          }
          program { name: "sticky_btn";
+            script {
+               set_int(downloading, 1);
+            }
+         }
+         program { name: "set_download_sticky";
+            signal: "set,downloading";
+            source: "exchange";
             script {
                set_int(downloading, 1);
             }
