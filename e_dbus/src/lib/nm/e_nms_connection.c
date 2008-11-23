@@ -17,23 +17,11 @@ cb_updated(void *data, DBusMessage *msg)
     conn->updated(&(conn->conn), settings);
 }
 
-static void *
-cb_unmarshal_settings(DBusMessage *msg, DBusError *err)
-{
-  if (dbus_error_is_set(err)) return NULL;
-  return parse_settings(msg);
-}
-
 static void
-cb_free_settings(void *data)
+cb_nms_settings(void *data, DBusMessage *msg, DBusError *err)
 {
-  ecore_hash_destroy(data);
-}
-
-static void
-cb_nms_settings(void *data, void *reply, DBusError *err)
-{
-  Reply_Data  *d;
+  Reply_Data *d;
+  Ecore_Hash *settings;
 
   d = data;
   if (dbus_error_is_set(err))
@@ -44,7 +32,8 @@ cb_nms_settings(void *data, void *reply, DBusError *err)
     return;
   }
 
-  d->cb_func(d->data, reply);
+  settings = parse_settings(msg);
+  d->cb_func(d->data, settings);
   free(d);
 }
 
@@ -113,7 +102,7 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
 
   msg = e_nms_connection_call_new(conn->conn.service_name, conn->conn.path, "GetSettings");
 
-  ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_unmarshal_settings, cb_nms_settings, cb_free_settings, -1, d) ? 1 : 0;
+  ret = e_dbus_message_send(conn->nmi->conn, msg, cb_nms_settings, -1, d) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }

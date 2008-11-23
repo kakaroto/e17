@@ -7,6 +7,8 @@
 /*
  * TODO:
  * - Return objects instead of object paths.
+ * - Define who is responsible to clean up mem
+ * - Only listen to signals if a callback is connected
  */
 
 #ifdef EAPI
