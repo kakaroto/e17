@@ -40,6 +40,9 @@ typedef struct {
    ECfgFileItem       *pitms;
 } ECfgFile;
 
+static void         CfgItemSetFromString(const CfgItem * ci, const char *str,
+					 int set_dflt);
+
 static ECfgFile    *
 e16_db_open(const char *name)
 {
@@ -143,72 +146,6 @@ ECfgFileFindValue(ECfgFile * ecf, const char *key)
    return NULL;
 }
 
-static int
-e16_db_int_get(ECfgFile * ecf, const char *key, int *pint)
-{
-   const char         *value;
-
-   value = ECfgFileFindValue(ecf, key);
-   if (!value)
-      return 0;
-
-   if (sscanf(value, "%i", pint) < 1)
-      return 0;
-
-   return 1;
-}
-
-static int
-e16_db_float_get(ECfgFile * ecf, const char *key, float *pflt)
-{
-   const char         *value;
-
-   value = ECfgFileFindValue(ecf, key);
-   if (!value)
-      return 0;
-
-   if (sscanf(value, "%f", pflt) < 1)
-      return 0;
-
-   return 1;
-}
-
-static char        *
-e16_db_str_get(ECfgFile * ecf, const char *key)
-{
-   const char         *value;
-
-   value = ECfgFileFindValue(ecf, key);
-   if (!value || !value[0])
-      return NULL;
-
-   return Estrdup(value);
-}
-
-static void
-e16_db_int_set(ECfgFile * ecf, const char *key, int value)
-{
-   fprintf(ecf->fs, "%s = %d\n", key, value);
-}
-
-static void
-e16_db_hex_set(ECfgFile * ecf, const char *key, unsigned int value)
-{
-   fprintf(ecf->fs, "%s = %#x\n", key, value);
-}
-
-static void
-e16_db_float_set(ECfgFile * ecf, const char *key, float value)
-{
-   fprintf(ecf->fs, "%s = %f\n", key, value);
-}
-
-static void
-e16_db_str_set(ECfgFile * ecf, const char *key, const char *value)
-{
-   fprintf(ecf->fs, "%s = %s\n", key, (value) ? value : "");
-}
-
 /*
  * Configuration handling.
  */
@@ -218,9 +155,7 @@ CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
 {
    char                buf[1024];
    const char         *name = buf;
-   int                 my_int;
-   float               my_float;
-   char               *s;
+   const char         *value;
 
    if (prefix)
       Esnprintf(buf, sizeof(buf), "%s.%s", prefix, ci->name);
@@ -233,37 +168,15 @@ CfgItemLoad(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
    if (!ci->ptr)
       return;
 
-   switch (ci->type)
-     {
-     case ITEM_TYPE_BOOL:
-	if (!ecf || !e16_db_int_get(ecf, name, &my_int))
-	   my_int = (ci->dflt) ? 1 : 0;
-	*((char *)ci->ptr) = my_int;
-	break;
-     case ITEM_TYPE_INT:
-     case ITEM_TYPE_HEX:
-	if (!ecf || !e16_db_int_get(ecf, name, &my_int))
-	   my_int = ci->dflt;
-	*((int *)ci->ptr) = my_int;
-	break;
-     case ITEM_TYPE_FLOAT:
-	if (!ecf || !e16_db_float_get(ecf, name, &my_float))
-	   my_float = ci->dflt;
-	*((float *)ci->ptr) = my_float;
-	break;
-     case ITEM_TYPE_STRING:
-	s = (ecf) ? e16_db_str_get(ecf, name) : NULL;
-	*((char **)ci->ptr) = s;
-	break;
-     }
+   value = (ecf) ? ECfgFileFindValue(ecf, name) : NULL;
+   CfgItemSetFromString(ci, value, 1);
 }
 
 static void
 CfgItemSave(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
 {
-   char                buf[1024];
+   char                buf[1024], buf2[1024];
    const char         *name = buf;
-   char               *s;
 
    if (prefix)
       Esnprintf(buf, sizeof(buf), "%s.%s", prefix, ci->name);
@@ -276,25 +189,8 @@ CfgItemSave(ECfgFile * ecf, const char *prefix, const CfgItem * ci)
    if (!ci->ptr)
       return;
 
-   switch (ci->type)
-     {
-     case ITEM_TYPE_BOOL:
-	e16_db_int_set(ecf, name, *((char *)ci->ptr));
-	break;
-     case ITEM_TYPE_INT:
-	e16_db_int_set(ecf, name, *((int *)ci->ptr));
-	break;
-     case ITEM_TYPE_HEX:
-	e16_db_hex_set(ecf, name, *((unsigned int *)ci->ptr));
-	break;
-     case ITEM_TYPE_FLOAT:
-	e16_db_float_set(ecf, name, *((float *)ci->ptr));
-	break;
-     case ITEM_TYPE_STRING:
-	s = *(char **)(ci->ptr);
-	e16_db_str_set(ecf, name, s);
-	break;
-     }
+   CfgItemToString(ci, buf2, sizeof(buf2));
+   fprintf(ecf->fs, "%s = %s\n", name, buf2);
 }
 
 static const char  *
@@ -381,35 +277,49 @@ CfgItemFind(const CfgItem * pcl, int ncl, const char *name)
 }
 
 static void
-CfgItemSetFromString(const CfgItem * ci, const char *str)
+CfgItemSetFromString(const CfgItem * ci, const char *str, int set_dflt)
 {
    int                 n, ival;
    float               fval;
+   char               *ptr;
 
+   ptr = (char *)str;
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
-	n = sscanf(str, "%i", &ival);
-	if (n <= 0)
-	   break;
+	ival = (str) ? strtoul(str, &ptr, 0) : 0;
+	if (ptr <= str)
+	  {
+	     if (!set_dflt)
+		break;
+	     ival = (ci->dflt) ? 1 : 0;
+	  }
 	*((char *)ci->ptr) = ival;
 	break;
      case ITEM_TYPE_INT:
      case ITEM_TYPE_HEX:
-	n = sscanf(str, "%i", &ival);
-	if (n <= 0)
-	   break;
+	ival = (str) ? strtoul(str, &ptr, 0) : 0;
+	if (ptr <= str)
+	  {
+	     if (!set_dflt)
+		break;
+	     ival = ci->dflt;
+	  }
 	*((int *)ci->ptr) = ival;
 	break;
      case ITEM_TYPE_FLOAT:
-	n = sscanf(str, "%f", &fval);
+	n = (str) ? sscanf(str, "%f", &fval) : 0;
 	if (n <= 0)
-	   break;
+	  {
+	     if (!set_dflt)
+		break;
+	     fval = ci->dflt;
+	  }
 	*((float *)ci->ptr) = fval;
 	break;
      case ITEM_TYPE_STRING:
 	Efree(*(char **)ci->ptr);
-	if (*str == '\0')
+	if (str && *str == '\0')
 	   str = NULL;
 	*((char **)ci->ptr) = Estrdup(str);
 	break;
@@ -419,6 +329,7 @@ CfgItemSetFromString(const CfgItem * ci, const char *str)
 void
 CfgItemToString(const CfgItem * ci, char *buf, int len)
 {
+   buf[0] = '\0';
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
@@ -436,8 +347,6 @@ CfgItemToString(const CfgItem * ci, char *buf, int len)
      case ITEM_TYPE_STRING:
 	if (*((char **)ci->ptr))
 	   Esnprintf(buf, len, "%s", *((char **)ci->ptr));
-	else
-	   buf[0] = '\0';
 	break;
      }
 }
@@ -455,7 +364,7 @@ CfgItemListNamedItemSet(const CfgItem * pcl, int ncl, const char *item,
    if (ci->func)
       ci->func(ci->ptr, value);
    else
-      CfgItemSetFromString(ci, value);
+      CfgItemSetFromString(ci, value, 0);
 
    return 0;
 }
