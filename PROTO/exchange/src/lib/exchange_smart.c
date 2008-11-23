@@ -25,8 +25,7 @@
 /* TODO
  *
  *    SMART OBJECT 
- * Kill all download in progress
- * Watch for updatable themes
+ * Kill download in progress on exit
  *
  *    EXCHANGE
  * Add to Theme_Data the field filename
@@ -74,14 +73,14 @@ struct _Exchange_Smart_Data
    struct {
       Evas_Coord    x, y;        //Offset to use
    } offset;
-   
+
    Evas_Object     *obj_box;     //The Evas Smart Box
    Evas_Object     *obj_lbl;     //The big label
    const char      *group;       //Exchange theme group
    const char      *local_sys;   //Local system themes directory
    const char      *local_usr;   //Local user themes directory
    unsigned char    mode;        //LOCAL, REMOTE or BOTH
-   
+
    struct {
       void (*func)(const char *path, void *data);
       void *data;
@@ -270,13 +269,13 @@ exchange_smart_object_run(Evas_Object *obj)
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
-   
+
    evas_object_box_remove_all(sd->obj_box, 1);
    exchange_smart_object_offset_set(obj, 0, 0);
 
    EINA_ERROR_PDBG("group: '%s' local_sys: '%s' local_usr: '%s' mode: %d\n",
                    sd->group, sd->local_sys, sd->local_usr, sd->mode);
-   
+
    /* Scan Local System Files */
    if ((sd->mode == EXCHANGE_SMART_SHOW_LOCAL ||
         sd->mode == EXCHANGE_SMART_SHOW_BOTH) && sd->local_sys)
@@ -355,7 +354,7 @@ exchange_smart_object_run(Evas_Object *obj)
    themes = NULL;
    eina_hash_free(themes_hash);
    themes_hash = NULL;
-   
+
    evas_object_hide(sd->obj_lbl);
    return 1;
 }
@@ -368,7 +367,7 @@ exchange_smart_init(void)
 {
    char buf[4096]; //TODO FIXME MAX_PATH
 
-   eina_error_log_level_set(EINA_ERROR_LEVEL_DBG); //TODO REMOVE ME
+   eina_error_log_level_set(EINA_ERROR_LEVEL_WARN);
    EINA_ERROR_PDBG("\n");
 
    /* check theme file */
@@ -387,7 +386,6 @@ exchange_smart_init(void)
    if (!_smart_cache)
    {
       snprintf(buf, sizeof(buf), "%s/.exchange", _exchange_user_homedir_get());
-      printf("CACHE_DIR: %s\n", _smart_cache);
       if (!ecore_file_exists(buf) &&
           !ecore_file_mkpath(buf))
       {
@@ -495,7 +493,7 @@ _exchange_smart_del(Evas_Object *obj)
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
-   
+
    //TODO Kill all download in progress
    if (sd->group) eina_stringshare_del(sd->group);
    if (sd->local_sys) eina_stringshare_del(sd->local_sys);
@@ -548,7 +546,7 @@ _exchange_smart_show(Evas_Object *obj)
    Exchange_Smart_Data *sd;
 
    if (!obj) return;
-   
+
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    if (sd->obj_box) evas_object_show(sd->obj_box);
@@ -670,7 +668,7 @@ _exchange_smart_thumb_get(Evas_Object *elem, int id, const char *url)
    //...else start downloading
    ecore_file_download(url, dst, _download_thumb_complete_cb, _download_thumb_progress_cb, elem);
    edje_object_signal_emit(elem, "set,busy", "exchange");
-   
+
    return NULL;
 }
 
@@ -678,7 +676,7 @@ void
 _download_thumb_complete_cb(void *data, const char *file, int status)
 {
    Evas_Object *elem = data;
-   
+
    printf("THUMB COMPLETE %d %s\n", status, file);
    //TODO check if download finish well
    edje_object_signal_emit(elem, "set,idle", "exchange");
@@ -698,7 +696,7 @@ _exchange_smart_thumb_swallow(Evas_Object *elem, const char *thumb)
 {
    Evas_Object *img;
    Evas_Coord w, h;
-   
+
    //EINA_ERROR_PDBG("SWALLOW %s\n", thumb);
    img = evas_object_image_add(evas_object_evas_get(elem));
    evas_object_image_file_set(img, thumb, NULL);
@@ -733,9 +731,9 @@ _exchange_smart_separator_append(Exchange_Smart_Data *sd, const char *text)
    Evas_Object *sep;
    Evas_Coord w, h;
    Evas_Object_Box_Option *opt;
-   
+
    if (!sd || !_smart_theme) return;
-   
+
    sep = edje_object_add(evas_object_evas_get(sd->obj_box));
    edje_object_file_set(sep, _smart_theme, "exchange/smart/separator");
    edje_object_size_min_get(sep, &w, &h);
@@ -745,12 +743,12 @@ _exchange_smart_separator_append(Exchange_Smart_Data *sd, const char *text)
    evas_object_show(sep); //TODO WE NEED THIS???
    evas_object_smart_member_add(sep, sd->obj_box); //???
    //evas_object_data_set(elem, "EXCHANGE_SMART_DATA", sd);
-   
+
    opt = evas_object_box_append(sd->obj_box, sep);
    evas_object_size_hint_align_set(opt->obj, 0.0, 0.0);
    evas_object_size_hint_padding_set(opt->obj, 0, 0, 0, 0);
    evas_object_size_hint_weight_set(opt->obj, 0.0, 0.0);
-   
+
    if (text) edje_object_part_text_set(sep, "text", text);
 }
 
@@ -759,7 +757,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
 {
    char buf[4096];
    const char *thumb;
-   
+
    snprintf(buf, sizeof(buf), "<title>%s </title> <version>%s</version><br><br>%s", td->name,
             td->version ? td->version : "",
             strlen(td->description) ? td->description : "No description available");
@@ -792,7 +790,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    //edje_object_signal_emit(elem, "download,enable","exchange");
    //edje_object_signal_emit(elem, "use,disable","exchange");
    //edje_object_signal_emit(elem, "use,enable","exchange");
-   
+
    if (td->local == 1) // local updated
    {
       edje_object_signal_emit(elem, "download,disable","exchange");
@@ -856,7 +854,7 @@ _download_theme_complete_cb(void *data, const char *file, int status)
 {
    Evas_Object *obj = data;
    Exchange_Smart_Data *sd = evas_object_data_get(obj, "EXCHANGE_SMART_DATA");
-   
+
    if (!obj || !sd) return;
 
    EINA_ERROR_PDBG("[status %d] %s\n", status, file);
@@ -908,11 +906,11 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
       edje_object_signal_emit(obj, "set,updated","exchange");
       edje_object_signal_emit(obj, "set,busy","exchange");
       edje_object_signal_emit(obj, "set,downloading","exchange");
-      
+
       edje_object_signal_emit(obj, "gauge,show","exchange");
       edje_object_part_drag_size_set(obj, "gauge.bar", 0.0, 0.0);
       edje_object_part_text_set(obj, "btn_download.text", "Downloading...");
-      
+
       if (ecore_file_exists(dst)) ecore_file_unlink(dst);
       ecore_file_download(td->url, dst, _download_theme_complete_cb,
                           _download_theme_progress_cb, obj);
