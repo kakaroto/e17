@@ -297,6 +297,8 @@ _SoundConfigUnload(void)
 static void
 _SoundThemeChange(void *item __UNUSED__, const char *theme)
 {
+   if (*theme == '\0')
+      theme = NULL;
    _SoundConfigUnload();
    _EFDUP(Conf_sound.theme, theme);
    _SoundConfigLoad();
