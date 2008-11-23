@@ -315,13 +315,21 @@ exchange_smart_object_run(Evas_Object *obj)
       EINA_LIST_FOREACH(remos, l, td)
       {
          Eina_List *ll;
-         EINA_ERROR_PDBG("REMOTE %s\n", td->name);
+         /* Check if we also have this theme in personal */
          if ((ll = eina_hash_find(themes_hash, td->name)))
          {
-            td->local = 1;
-            exchange_theme_free(ll->data);
+            Exchange_Theme *loc;
+            
+            loc = ll->data;
+            if (strcmp(td->version, loc->version) > 0)
+               td->local = 2;
+            else
+               td->local = 1;
+            //EINA_ERROR_PDBG("REMOTE %s (%s)\n", td->name, td->version);
+            //EINA_ERROR_PDBG("LOCAL %s (%s) [%d]\n", loc->name, loc->version, td->local);
+            /* Put in the list the online theme in place of the local one */
             ll->data = td;
-            //EINA_ERROR_PDBG("** %s [%s]\n", td->name, ((Theme_List_Data*)ll->data)->name);
+            exchange_theme_free(loc);
          }
          else
             themes = eina_list_append(themes, td);
@@ -756,8 +764,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
             td->version ? td->version : "",
             strlen(td->description) ? td->description : "No description available");
    edje_object_part_text_set(elem, "textblock", buf);
-   //printf("ID: %d\n", td->id);
-   //printf("RAT: %f\n", td->rating);
+
    if (td->rating < 0.0)
       edje_object_signal_emit(elem, "set,star,hide,all", "exchange");
    else if (td->rating < 1.0)
@@ -786,17 +793,25 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    //edje_object_signal_emit(elem, "use,disable","exchange");
    //edje_object_signal_emit(elem, "use,enable","exchange");
    
-   if (td->local)
+   if (td->local == 1) // local updated
    {
       edje_object_signal_emit(elem, "download,disable","exchange");
       edje_object_signal_emit(elem, "use,enable","exchange");
+      edje_object_signal_emit(elem, "set,updated", "exchange");
    }
-   else
+   else if (td->local == 2) //local need update
+   {
+      edje_object_signal_emit(elem, "use,enable","exchange");
+      edje_object_signal_emit(elem, "download,enable","exchange");
+      edje_object_part_text_set(elem, "btn_download.text", "Update");
+      edje_object_signal_emit(elem, "set,updatable", "exchange");
+   }
+   else //remote
    {
       edje_object_signal_emit(elem, "download,enable","exchange");
       edje_object_signal_emit(elem, "use,disable","exchange");
    }
-   
+
    thumb = _exchange_smart_thumb_get(elem, td->id, td->thumbnail);
    if (thumb)
    {
@@ -906,10 +921,6 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    {
       if (sd->apply.func)
          sd->apply.func(td->name, sd->apply.data);
-
-      //edje_object_signal_emit(obj, "set,idle","exchange");
-      //edje_object_signal_emit(obj, "gauge,hide","exchange");
-      //edje_object_part_drag_size_set(elem, "gauge.bar", 0.3, 0.0);
    }
 }
 
