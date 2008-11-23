@@ -26,10 +26,12 @@ static const E_Gadcon_Client_Class _gadcon_class = {
 typedef struct _Instance Instance;
 struct _Instance
 {
-  E_Gadcon_Client *gcc;
-  Evas_Object     *o_button;
-  Evas_Object     *bd_icon;
-  E_Menu          *win_menu;
+  E_Gadcon_Client	*gcc;
+  Evas_Object		*o_button;
+  Evas_Object		*bd_icon;
+  E_Menu		*win_menu;
+
+  Eina_List		*handlers;
 };
 
 static void _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
@@ -61,7 +63,6 @@ static void _win_menu_add_by_desk (E_Desk *curr_desk, Eina_List *borders, E_Menu
 static void _win_menu_add_by_none (Eina_List *borders, E_Menu *m);
 
 static E_Module *winsel_module = NULL;
-Eina_List *handlers;
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -90,13 +91,13 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   e_gadcon_client_util_menu_attach (gcc);
 
-  handlers = eina_list_append (handlers, ecore_event_handler_add
+  inst->handlers = eina_list_append (inst->handlers, ecore_event_handler_add
 	(ECORE_X_EVENT_WINDOW_FOCUS_IN, _window_cb_focus_in, inst));
-  handlers = eina_list_append (handlers, ecore_event_handler_add
+  inst->handlers = eina_list_append (inst->handlers, ecore_event_handler_add
 	(ECORE_X_EVENT_WINDOW_FOCUS_OUT, _window_cb_focus_out, inst));
-  handlers = eina_list_append (handlers, ecore_event_handler_add
+  inst->handlers = eina_list_append (inst->handlers, ecore_event_handler_add
 	(E_EVENT_BORDER_ICON_CHANGE, _window_cb_icon_change, inst));
-  handlers = eina_list_append (handlers, ecore_event_handler_add
+  inst->handlers = eina_list_append (inst->handlers, ecore_event_handler_add
 	(E_EVENT_BORDER_REMOVE, _window_cb_border_remove, inst));
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 	_button_cb_mouse_down, inst);
@@ -125,6 +126,12 @@ _gc_shutdown (E_Gadcon_Client * gcc)
     {
        evas_object_del(inst->o_button);
        inst->o_button = NULL;
+    }
+
+  while (inst->handlers) 
+    {
+       ecore_event_handler_del(inst->handlers->data);
+       inst->handlers = eina_list_remove_list(inst->handlers, inst->handlers);
     }
   free (inst);
 }
@@ -505,7 +512,7 @@ static void _focus_in(E_Border *bd, Instance *inst)
    _focus_out(inst);
    inst->bd_icon = e_border_icon_add(bd, evas_object_evas_get(inst->o_button));
    edje_object_signal_emit(inst->o_button, "focus_in", "");
-   edje_object_part_swallow(inst->o_button, "icon", inst->bd_icon);
+   edje_object_part_swallow(inst->o_button, "e.swallow.icon", inst->bd_icon);
    evas_object_show(inst->bd_icon);
 }
 
@@ -517,7 +524,6 @@ static void _focus_out(Instance *inst)
    edje_object_signal_emit(inst->o_button, "focus_out", "");
    if (inst->bd_icon)
      {
-	edje_object_part_unswallow(inst->o_button, inst->bd_icon);
 	evas_object_del(inst->bd_icon);
 	inst->bd_icon = NULL;
      }
@@ -841,11 +847,6 @@ EAPI int
 e_modapi_shutdown (E_Module * m)
 {
   winsel_module = NULL;
-  while (handlers) 
-    {
-       ecore_event_handler_del(handlers->data);
-       handlers = eina_list_remove_list(handlers, handlers);
-    }
   e_gadcon_provider_unregister (&_gadcon_class);
   return 1;
 }
