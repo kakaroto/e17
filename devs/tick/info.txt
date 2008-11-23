@@ -1,0 +1,11 @@
+Login:        tick
+IRC Nick:     tick35
+Name:         I-Fan Chen
+Location:     Taipei, Taiwan
+E-Mail:       -tick@openmoko.com
+WWW:          http://linuxocarina.blogspot.com/
+Managing:     none 
+Contributing: Etk, misc of EFL
+Group:        Core, Applications, Libraries
+Platform:     Ubuntu (Linux)
+GeoData:      25.039 121.575
