@@ -32,7 +32,7 @@ struct Sig_Property
   Property_Cb func;
 };
 
-static Sig_Property sigs[] = {
+static const Sig_Property sigs[] = {
   { .sig = "s", property_string },
   { .sig = "o", property_string },
   { .sig = "u", property_basic },
@@ -49,10 +49,10 @@ static Sig_Property sigs[] = {
   { .sig = NULL }
 };
 
-static Property_Cb
+static const Property_Cb
 find_property_cb(const char *sig)
 {
-  Sig_Property *t;
+  const Sig_Property *t;
 
   if (!sig) return NULL;
 
@@ -65,10 +65,10 @@ find_property_cb(const char *sig)
   return NULL;
 }
 
-static Property *
-find_property(const char *name, Property *properties)
+static const Property *
+find_property(const char *name, const Property *properties)
 {
-  Property *p;
+  const Property *p;
 
   if (!name) return NULL;
 
@@ -265,7 +265,7 @@ error:
 }
 
 void
-parse_properties(void *data, Property *properties, DBusMessage *msg)
+parse_properties(void *data, const Property *properties, DBusMessage *msg)
 {
   DBusMessageIter iter, a_iter;
 
@@ -277,7 +277,7 @@ parse_properties(void *data, Property *properties, DBusMessage *msg)
   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
     DBusMessageIter d_iter, v_iter;
-    Property *p;
+    const Property *p;
     Property_Cb func;
     const char *name;
     void *value;
@@ -302,6 +302,7 @@ next:
   }
 }
 
+#if 0
 /**
  * @internal
  * @brief Generic callback for methods that return nothing
@@ -401,6 +402,7 @@ cb_nm_object_path(DBusMessage *msg, DBusError *err)
 
   return str;
 }
+#endif
 
 
 /**
@@ -443,13 +445,13 @@ free_nm_object_path_list(void *data)
   if (list) ecore_list_destroy(list);
 }
 
-void *
-cb_nm_settings(DBusMessage *msg, DBusError *err)
+Ecore_Hash *
+parse_settings(DBusMessage *msg)
 {
   Ecore_Hash *settings;
   DBusMessageIter iter, a_iter;
 
-  CHECK_SIGNATURE(msg, err, "a{sa{sv}}");
+  if (!dbus_message_has_signature(msg, "a{sa{sv}}")) return NULL;
 
   dbus_message_iter_init(msg, &iter);
 
@@ -495,14 +497,6 @@ cb_nm_settings(DBusMessage *msg, DBusError *err)
 error:
   ecore_hash_destroy(settings);
   return NULL;
-}
-
-void
-free_nm_settings(void *data)
-{
-  Ecore_Hash *hash = data;
-
-  if (hash) ecore_hash_destroy(hash);
 }
 
 int

@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-static Property properties[] = {
+static const Property properties[] = {
   { .name = "WirelessEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_enabled) },
   { .name = "WirelessHardwareEnabled", .sig = "b", .offset = offsetof(E_NM, wireless_hardware_enabled) },
   { .name = "ActiveConnections", .sig = "ao", .offset = offsetof(E_NM, active_connections) },

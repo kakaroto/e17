@@ -4,6 +4,33 @@
 #include <string.h>
 
 static void
+cb_updated(void *data, DBusMessage *msg)
+{
+  E_NMS_Connection_Internal *conn;
+  Ecore_Hash                *settings;
+  if (!msg || !data) return;
+
+  conn = data;
+  settings = parse_settings(msg);
+
+  if (conn->updated)
+    conn->updated(&(conn->conn), settings);
+}
+
+static void *
+cb_unmarshal_settings(DBusMessage *msg, DBusError *err)
+{
+  if (dbus_error_is_set(err)) return NULL;
+  return parse_settings(msg);
+}
+
+static void
+cb_free_settings(void *data)
+{
+  ecore_hash_destroy(data);
+}
+
+static void
 cb_nms_settings(void *data, void *reply, DBusError *err)
 {
   Reply_Data  *d;
@@ -32,16 +59,30 @@ e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connectio
   conn->nmi = nmsi->nmi;
   conn->conn.path = strdup(connection);
   conn->conn.service_name = strdup(service_name);
+  conn->handlers = ecore_list_new();
+  ecore_list_append(conn->handlers, e_nms_connection_signal_handler_add(nmsi->nmi->conn, service_name, connection, "Updated", cb_updated, conn));
+
   return &conn->conn;
 }
 
 EAPI void
-e_nms_connection_free(E_NMS_Connection *conn)
+e_nms_connection_free(E_NMS_Connection *connection)
 {
-  if (!conn) return;
+  E_NMS_Connection_Internal *conn;
 
-  if (conn->service_name) free(conn->service_name);
-  if (conn->path) free(conn->path);
+  if (!connection) return;
+  conn = (E_NMS_Connection_Internal *)connection;
+
+  if (conn->conn.service_name) free(conn->conn.service_name);
+  if (conn->conn.path) free(conn->conn.path);
+  if (conn->handlers)
+  {
+    E_DBus_Signal_Handler *sh;
+
+    while ((sh = ecore_list_first_remove(conn->handlers)))
+      e_dbus_signal_handler_del(conn->nmi->conn, sh);
+    ecore_list_destroy(conn->handlers);
+  }
   free(conn);
 }
 
@@ -72,8 +113,17 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
 
   msg = e_nms_connection_call_new(conn->conn.service_name, conn->conn.path, "GetSettings");
 
-  ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_nm_settings, cb_nms_settings, free_nm_settings, -1, d) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn->nmi->conn, msg, cb_unmarshal_settings, cb_nms_settings, cb_free_settings, -1, d) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
+}
+
+EAPI void
+e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Ecore_Hash *settings))
+{
+  E_NMS_Connection_Internal *conn;
+
+  conn = (E_NMS_Connection_Internal*)connection;
+  conn->updated = cb_func;
 }
 

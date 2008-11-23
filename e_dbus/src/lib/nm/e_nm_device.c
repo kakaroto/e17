@@ -10,14 +10,14 @@
 
 static void property_device_type(Property_Data *data, DBusMessageIter *iter);
 
-static Property device_wired_properties[] = {
+static const Property device_wired_properties[] = {
   { .name = "HwAddress", .sig = "s", .offset = offsetof(E_NM_Device, wired.hw_address) },
   { .name = "Speed", .sig = "u", .offset = offsetof(E_NM_Device, wired.speed) },
   { .name = "Carrier", .sig = "b", .offset = offsetof(E_NM_Device, wired.carrier) },
   { .name = NULL }
 };
 
-static Property device_wireless_properties[] = {
+static const Property device_wireless_properties[] = {
   { .name = "HwAddress", .sig = "s", .offset = offsetof(E_NM_Device, wireless.hw_address) },
   { .name = "Mode", .sig = "u", .offset = offsetof(E_NM_Device, wireless.mode) },
   { .name = "Bitrate", .sig = "u", .offset = offsetof(E_NM_Device, wireless.bitrate) },
@@ -26,7 +26,7 @@ static Property device_wireless_properties[] = {
   { .name = NULL }
 };
 
-static Property device_properties[] = {
+static const Property device_properties[] = {
   { .name = "Udi", .sig = "s", .offset = offsetof(E_NM_Device, udi) },
   { .name = "Interface", .sig = "s", .offset = offsetof(E_NM_Device, interface) },
   { .name = "Driver", .sig = "s", .offset = offsetof(E_NM_Device, driver) },
@@ -249,7 +249,7 @@ cb_access_points(void *data, void *reply, DBusError *err)
   while ((ap = ecore_list_next(access_points)))
   {
     ecore_list_prepend(list, (void *)-1);
-    e_nm_access_point_get(dev->nmi, ap, cb_access_point, d);
+    e_nm_access_point_get(&(dev->nmi->nm), ap, cb_access_point, d);
   }
   ecore_list_first_remove(list);
   check_done(d, list);

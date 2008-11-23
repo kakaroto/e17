@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-static Property access_point_properties[] = {
+static const Property access_point_properties[] = {
   { .name = "Flags", .sig = "u", .offset = offsetof(E_NM_Access_Point, flags) },
   { .name = "WpaFlags", .sig = "u", .offset = offsetof(E_NM_Access_Point, wpa_flags) },
   { .name = "RsnFlags", .sig = "u", .offset = offsetof(E_NM_Access_Point, rsn_flags) },

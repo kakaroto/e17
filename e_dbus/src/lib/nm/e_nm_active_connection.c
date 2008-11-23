@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-static Property active_connection_properties[] = {
+static const Property active_connection_properties[] = {
   { .name = "ServiceName", .sig = "s", .offset = offsetof(E_NM_Active_Connection, service_name) },
   { .name = "Connection", .sig = "o", .offset = offsetof(E_NM_Active_Connection, connection) },
   { .name = "SpecificObject", .sig = "o", .offset = offsetof(E_NM_Active_Connection, specific_object) },

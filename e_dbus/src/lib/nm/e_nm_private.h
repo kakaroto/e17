@@ -37,6 +37,7 @@
 #define e_nm_device_wireless_signal_handler_add(con, dev, sig, cb, data) e_dbus_signal_handler_add(con, _E_NM_SERVICE, dev, _E_NM_INTERFACE_DEVICE_WIRELESS, sig, cb, data)
 
 #define e_nms_signal_handler_add(con, service, sig, cb, data) e_dbus_signal_handler_add(con, service, _E_NMS_PATH, _E_NMS_INTERFACE, sig, cb, data)
+#define e_nms_connection_signal_handler_add(con, service, dev, sig, cb, data) e_dbus_signal_handler_add(con, service, dev, _E_NMS_INTERFACE, sig, cb, data)
 
 typedef struct E_NM_Internal E_NM_Internal;
 struct E_NM_Internal
@@ -109,6 +110,10 @@ struct E_NMS_Connection_Internal
   E_NMS_Connection conn;
   E_NM_Internal *nmi;
 
+  int  (*updated)(E_NMS_Connection *conn, Ecore_Hash *settings);
+/* TODO:  int  (*removed)(E_NMS_Connection *conn); */
+  Ecore_List *handlers;
+
   void *data;
 };
 
@@ -141,7 +146,7 @@ struct Property_Data
   void            *reply;
   void            *data;
 
-  Property        *property;
+  const Property  *property;
 };
 
 typedef struct Reply_Data Reply_Data;
@@ -154,12 +159,11 @@ struct Reply_Data
 };
 
 void  property(void *data, DBusMessage *msg, DBusError *err);
-void  parse_properties(void *data, Property *properties, DBusMessage *msg);
+void  parse_properties(void *data, const Property *properties, DBusMessage *msg);
 
 void *cb_nm_object_path_list(DBusMessage *msg, DBusError *err);
 void  free_nm_object_path_list(void *data);
-void *cb_nm_settings(DBusMessage *msg, DBusError *err);
-void  free_nm_settings(void *data);
+Ecore_Hash *parse_settings(DBusMessage *msg);
 
 int   check_arg_type(DBusMessageIter *iter, char type);
 

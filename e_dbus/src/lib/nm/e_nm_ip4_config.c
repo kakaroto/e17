@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-static Property ip4_config_properties[] = {
+static const Property ip4_config_properties[] = {
   { .name = "Addresses", .sig = "aau", .offset = offsetof(E_NM_IP4_Config, addresses) },
   { .name = "Nameservers", .sig = "au", .offset = offsetof(E_NM_IP4_Config, nameservers) },
   { .name = "Domains", .sig = "as", .offset = offsetof(E_NM_IP4_Config, domains) },
