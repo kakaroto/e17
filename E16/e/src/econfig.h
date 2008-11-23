@@ -36,13 +36,10 @@ typedef struct {
    const CfgItem      *lst;
 } CfgItemList;
 
-typedef enum {
-   ITEM_TYPE_BOOL,
-   ITEM_TYPE_INT,
-   ITEM_TYPE_HEX,
-   ITEM_TYPE_FLOAT,
-   ITEM_TYPE_STRING
-} cfg_item_type_e;
+#define ITEM_TYPE_BOOL    0
+#define ITEM_TYPE_INT     1
+#define ITEM_TYPE_HEX     2
+#define ITEM_TYPE_STRING  3
 
 #define CFG_ITEM_BOOL(conf, name, dflt)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt, NULL }
 #define CFG_ITEM_INT(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_INT, dflt, NULL }

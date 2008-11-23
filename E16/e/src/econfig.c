@@ -279,8 +279,12 @@ CfgItemFind(const CfgItem * pcl, int ncl, const char *name)
 static void
 CfgItemSetFromString(const CfgItem * ci, const char *str, int set_dflt)
 {
-   int                 n, ival;
+   int                 ival;
+
+#ifdef ITEM_TYPE_FLOAT
+   int                 n;
    float               fval;
+#endif
    char               *ptr;
 
    ptr = (char *)str;
@@ -307,6 +311,7 @@ CfgItemSetFromString(const CfgItem * ci, const char *str, int set_dflt)
 	  }
 	*((int *)ci->ptr) = ival;
 	break;
+#ifdef ITEM_TYPE_FLOAT
      case ITEM_TYPE_FLOAT:
 	n = (str) ? sscanf(str, "%f", &fval) : 0;
 	if (n <= 0)
@@ -317,6 +322,7 @@ CfgItemSetFromString(const CfgItem * ci, const char *str, int set_dflt)
 	  }
 	*((float *)ci->ptr) = fval;
 	break;
+#endif
      case ITEM_TYPE_STRING:
 	Efree(*(char **)ci->ptr);
 	if (str && *str == '\0')
@@ -341,9 +347,11 @@ CfgItemToString(const CfgItem * ci, char *buf, int len)
      case ITEM_TYPE_HEX:
 	Esnprintf(buf, len, "%#x", *((unsigned int *)ci->ptr));
 	break;
+#ifdef ITEM_TYPE_FLOAT
      case ITEM_TYPE_FLOAT:
 	Esnprintf(buf, len, "%.3f", *((float *)ci->ptr));
 	break;
+#endif
      case ITEM_TYPE_STRING:
 	if (*((char **)ci->ptr))
 	   Esnprintf(buf, len, "%s", *((char **)ci->ptr));
