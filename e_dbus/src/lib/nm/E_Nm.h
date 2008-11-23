@@ -284,6 +284,7 @@ extern "C" {
    EAPI int   e_nm_wireless_enabled_set(E_NM *nm, int enabled);
 
    EAPI int   e_nm_get_devices(E_NM *nm, int (*cb_func)(void *data, Ecore_List *list), void *data);
+   /* TODO: Add return value cb */
    EAPI int   e_nm_activate_connection(E_NM *nm, const char *service_name, const char *connection, E_NM_Device *device, const char *specific_object);
    EAPI int   e_nm_deactivate_connection(E_NM *nm, E_NM_Active_Connection *connection);
    EAPI int   e_nm_sleep(E_NM *nm, int sleep);
