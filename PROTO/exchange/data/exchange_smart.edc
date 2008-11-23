@@ -228,6 +228,18 @@ collections {
    }
    group { name: "exchange/smart/element";
       min: 400 90;
+      script {
+         public download_enable;
+         public use_enable;
+         public downloading;
+         public downloaded;
+         public onload() {
+            set_int(download_enable, 1);
+            set_int(use_enable, 1);
+            set_int(downloading, 0);
+            set_int(downloaded, 0);
+         }
+      }
       parts {
          part { name: "bg";
             mouse_events: 1;
@@ -403,16 +415,18 @@ collections {
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                rel1 {
-                  relative: 1.0 0.6;
-                  offset: 110 0;
+                  to: "btn_download";
+                  relative: 1.0 0.0;
+                  offset: 25 0;
                }
             }
             description { state: "clicked" 0.0;
                inherit: "default" 0.0;
                color: 255 255 255 200;
                rel1 {
-                  relative: 1.0 0.6;
-                  offset: 110 0;
+                  to: "btn_download";
+                  relative: 1.0 0.0;
+                  offset: 25 0;
                }
             }
          }
@@ -602,6 +616,13 @@ collections {
          }
       }
       programs {
+         program { name: "init";
+            signal: "load";
+            source: "";
+            script {
+               onload();
+            }
+         }
          program { name: "hide_all_star";
             signal: "set,star,hide,all";
             source: "exchange";
@@ -691,17 +712,40 @@ collections {
          program { name: "buttons_show";
             signal: "mouse,in";
             source: "bg";
+            script {
+               if (get_int(download_enable))
+                  run_program(PROGRAM:"button_down_show");
+               if (get_int(use_enable))
+                  run_program(PROGRAM:"button_use_show");
+            }
+         }
+         program { name: "button_down_show";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.4;
             target: "btn_download";
+         }
+         program { name: "button_use_show";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.4;
             target: "btn_use";
          }
-         program { name: "buttons_hide";
+         program { name: "mouse_out";
             signal: "mouse,out";
             source: "bg";
+            script {
+               if (!get_int(downloading))
+                  run_program(PROGRAM:"download_hide");
+               run_program(PROGRAM:"use_hide");
+            }
+         }
+         program { name: "download_hide";
             action: STATE_SET "default" 0.0;
             transition: ACCELERATE 0.4;
             target: "btn_download";
+         }
+         program { name: "use_hide";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
             target: "btn_use";
          }
          program { name: "download_press";
@@ -746,6 +790,7 @@ collections {
             action: STATE_SET "visible" 0.0;
             transition: LINEAR 0.0;
             target: "busy";
+            after: "sticky_btn";
             after: "run_tween";
          }
          program { name: "run_tween";
@@ -753,6 +798,11 @@ collections {
             transition: LINEAR 0.3;
             target: "busy";
             after: "run_tween";
+         }
+         program { name: "sticky_btn";
+            script {
+               set_int(downloading, 1);
+            }
          }
          program { name: "set_idle";
             signal: "set,idle";
@@ -786,6 +836,35 @@ collections {
             action: STATE_SET "updatable" 0.0;
             target: "update";
          }
+         program { name: "download_disable";
+            signal: "download,disable";
+            source: "exchange";
+            script {
+               set_int(download_enable, 0);
+            }
+         }
+         program { name: "download_enable";
+            signal: "download,enable";
+            source: "exchange";
+            script {
+               set_int(download_enable, 1);
+            }
+         }
+         program { name: "use_disable";
+            signal: "use,disable";
+            source: "exchange";
+            script {
+               set_int(use_enable, 0);
+            }
+         }
+         program { name: "use_enable";
+            signal: "use,enable";
+            source: "exchange";
+            script {
+               set_int(use_enable, 1);
+            }
+         }
+
       }
    }
 }

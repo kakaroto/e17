@@ -139,6 +139,7 @@ exchange_local_theme_all_data_get(const char *file)
    td->screenshot = NULL;
    td->created_at = NULL;
    td->updated_at = NULL;
+   td->local = 1;
 
    return td;
 }

@@ -276,9 +276,7 @@ exchange_remote_theme_all_data_get(const char *theme_name)
       return NULL;
    tdata = calloc(1, sizeof(Exchange_Theme));
    if (_theme_connect(theme_name) == 0)
-   {
       return tdata;
-   }
    else
       return NULL;
 }
@@ -324,6 +322,7 @@ _theme_connect(const char *theme)
    
    xmlInitParser();
    tdata->name = (char *)theme;
+   tdata->local = 0;
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/read?object=theme&name=%s", theme);
    //snprintf(url, sizeof(url), "http://localhost/cerium.xml", theme);
    ret = xmlSAXUserParseFile(&ThemeParser, &state, url);

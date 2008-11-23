@@ -68,6 +68,7 @@ typedef struct _Exchange_Theme {
    int user_id; /**< User id of theme author */
    char *created_at; /**< Theme creation timestamp */
    char *updated_at; /**< Theme last update timestamp */
+   unsigned char local; /**< TRUE means the theme is online, FALSE means local */
 } Exchange_Theme;
 
 #include "exchange_local_theme.h"

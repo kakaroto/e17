@@ -129,6 +129,7 @@ main(int argc, char **argv)
    ecore_evas_callback_destroy_set(ee, on_destroy);
    ecore_evas_size_min_set(ee, 200, 200);
    ecore_evas_resize(ee, 450, 400);
+   ecore_evas_resize(ee, 550, 800); //TODO REMOVE ME
    ecore_evas_show(ee);
 
    /* White Background */

@@ -317,7 +317,7 @@ exchange_smart_object_run(Evas_Object *obj)
          EINA_ERROR_PDBG("REMOTE %s\n", td->name);
          if ((ll = eina_hash_find(themes_hash, td->name)))
          {
-            td->url = NULL; //TODO FIXME
+            td->local = 1;
             exchange_theme_free(ll->data);
             ll->data = td;
             //EINA_ERROR_PDBG("** %s [%s]\n", td->name, ((Theme_List_Data*)ll->data)->name);
@@ -334,7 +334,7 @@ exchange_smart_object_run(Evas_Object *obj)
    int online = 0;
    EINA_LIST_FOREACH(themes, l, td)
    {
-      if (td->url && !online)
+      if (!td->local && !online)
       {
          _exchange_smart_separator_append(sd, "Online");
          online = 1;
@@ -712,8 +712,8 @@ _exchange_smart_themes_sort_cb(const void *d1, const void *d2)
    if(!t1 || !t1->name) return 1;
    if(!t2 || !t2->name) return -1;
 
-   if ((t1->url) && (!t2->url)) return 1;
-   if ((!t1->url) && (t2->url)) return -1;
+   if ((t1->local) && (!t2->local)) return -1;
+   if ((!t1->local) && (t2->local)) return 1;
 
    return strcmp(t1->name, t2->name);
 }
@@ -772,6 +772,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    else 
       edje_object_signal_emit(elem, "set,star,5", "exchange");
 
+   //This are all the signals that the element accept
    //edje_object_signal_emit(elem, "set,updatable", "exchange");
    //edje_object_signal_emit(elem, "set,updated", "exchange");
    //edje_object_signal_emit(elem, "set,busy", "exchange");
@@ -779,7 +780,22 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    //edje_object_signal_emit(elem, "gauge,show","exchange");
    //edje_object_signal_emit(obj, "gauge,hide","exchange");
    //edje_object_part_drag_size_set(elem, "gauge.bar", 0.3, 0.0);
-
+   //edje_object_signal_emit(elem, "download,disable","exchange");
+   //edje_object_signal_emit(elem, "download,enable","exchange");
+   //edje_object_signal_emit(elem, "use,disable","exchange");
+   //edje_object_signal_emit(elem, "use,enable","exchange");
+   
+   if (td->local)
+   {
+      edje_object_signal_emit(elem, "download,disable","exchange");
+      edje_object_signal_emit(elem, "use,enable","exchange");
+   }
+   else
+   {
+      edje_object_signal_emit(elem, "download,enable","exchange");
+      edje_object_signal_emit(elem, "use,disable","exchange");
+   }
+   
    thumb = _exchange_smart_thumb_get(elem, td->id, td->thumbnail);
    if (thumb)
    {
@@ -830,6 +846,8 @@ _download_theme_complete_cb(void *data, const char *file, int status)
    EINA_ERROR_PDBG("[status %d] %s\n", status, file);
    edje_object_signal_emit(obj, "set,idle","exchange");
    edje_object_signal_emit(obj, "gauge,hide","exchange");
+   edje_object_part_text_set(obj, "btn_download.text", "Completed");
+   edje_object_signal_emit(obj, "use,enable","exchange");
 }
 
 int
@@ -875,6 +893,7 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
       edje_object_signal_emit(obj, "set,busy","exchange");
       edje_object_signal_emit(obj, "gauge,show","exchange");
       edje_object_part_drag_size_set(obj, "gauge.bar", 0.0, 0.0);
+      edje_object_part_text_set(obj, "btn_download.text", "Downloading...");
       
       if (ecore_file_exists(dst)) ecore_file_unlink(dst);
       ecore_file_download(td->url, dst, _download_theme_complete_cb,

@@ -248,6 +248,7 @@ _start_element_theme_list_cb(Theme_List_Parser *state, const xmlChar *name, cons
    if (!strcmp((char *)name, "theme"))
    {
       tldata = calloc(1, sizeof(Exchange_Theme));
+      tldata->local = 0;
       state->state = PARSER_THEME_LIST;
       state->prev_state = PARSER_THEME_LIST_START;
    }
