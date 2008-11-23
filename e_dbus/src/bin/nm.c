@@ -66,7 +66,18 @@ dump_settings(void *value, void *data)
 static int
 cb_nms_connection_settings(void *data, Ecore_Hash *settings)
 {
-    ecore_hash_for_each_node(settings, dump_settings, NULL);
+    printf("Secrets:\n");
+    if (settings)
+        ecore_hash_for_each_node(settings, dump_settings, NULL);
+    return 1;
+}
+
+static int
+cb_nms_connection_secrets(void *data, Ecore_Hash *secrets)
+{
+    printf("Secrets:\n");
+    if (secrets)
+        ecore_hash_for_each_node(secrets, dump_settings, NULL);
     return 1;
 }
 
@@ -82,6 +93,7 @@ cb_nms_connections(void *data, Ecore_List *list)
         {
             e_nms_connection_dump(conn);
             e_nms_connection_get_settings(conn, cb_nms_connection_settings, NULL);
+            e_nms_connection_secrets_get_secrets(conn, "802-11-wireless-security", NULL, 0, cb_nms_connection_secrets, NULL);
         }
         ecore_list_destroy(list);
     }

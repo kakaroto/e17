@@ -15,11 +15,13 @@
 #define E_NMS_SERVICE_USER "org.freedesktop.NetworkManagerUserSettings"
 #define _E_NMS_INTERFACE "org.freedesktop.NetworkManagerSettings"
 #define _E_NMS_INTERFACE_CONNECTION "org.freedesktop.NetworkManagerSettings.Connection"
+#define _E_NMS_INTERFACE_CONNECTION_SECRETS "org.freedesktop.NetworkManagerSettings.Connection.Secrets"
 
 #define e_nm_call_new(member) dbus_message_new_method_call(_E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, member)
 #define e_nm_device_wireless_call_new(device, member) dbus_message_new_method_call(_E_NM_SERVICE, device, _E_NM_INTERFACE_DEVICE_WIRELESS, member)
 #define e_nms_call_new(service, member) dbus_message_new_method_call(service, _E_NMS_PATH, _E_NMS_INTERFACE, member)
 #define e_nms_connection_call_new(service, conn, member) dbus_message_new_method_call(service, conn, _E_NMS_INTERFACE_CONNECTION, member)
+#define e_nms_connection_secrets_call_new(service, conn, member) dbus_message_new_method_call(service, conn, _E_NMS_INTERFACE_CONNECTION_SECRETS, member)
 
 #define e_nm_properties_get(con, prop, cb, data) e_dbus_properties_get(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, (E_DBus_Method_Return_Cb) cb, data)
 #define e_nm_properties_set(con, prop, type, value, cb, data) e_dbus_properties_set(con, _E_NM_SERVICE, E_NM_PATH, _E_NM_INTERFACE, prop, type, value, (E_DBus_Method_Return_Cb) cb, data)

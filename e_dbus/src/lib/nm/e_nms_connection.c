@@ -18,7 +18,7 @@ cb_updated(void *data, DBusMessage *msg)
 }
 
 static void
-cb_nms_settings(void *data, DBusMessage *msg, DBusError *err)
+cb_settings(void *data, DBusMessage *msg, DBusError *err)
 {
   Reply_Data *d;
   Ecore_Hash *settings;
@@ -34,6 +34,26 @@ cb_nms_settings(void *data, DBusMessage *msg, DBusError *err)
 
   settings = parse_settings(msg);
   d->cb_func(d->data, settings);
+  free(d);
+}
+
+static void
+cb_secrets(void *data, DBusMessage *msg, DBusError *err)
+{
+  Reply_Data *d;
+  Ecore_Hash *secrets;
+
+  d = data;
+  if (dbus_error_is_set(err))
+  {
+    printf("Error: %s - %s\n", err->name, err->message);
+    d->cb_func(d->data, NULL);
+    free(d);
+    return;
+  }
+
+  secrets = parse_settings(msg);
+  d->cb_func(d->data, secrets);
   free(d);
 }
 
@@ -102,7 +122,41 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
 
   msg = e_nms_connection_call_new(conn->conn.service_name, conn->conn.path, "GetSettings");
 
-  ret = e_dbus_message_send(conn->nmi->conn, msg, cb_nms_settings, -1, d) ? 1 : 0;
+  ret = e_dbus_message_send(conn->nmi->conn, msg, cb_settings, -1, d) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
+}
+
+EAPI int
+e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Ecore_Hash *secrets), void *data)
+{
+  DBusMessage      *msg;
+  DBusMessageIter   iter, a_iter;
+  Reply_Data       *d;
+  E_NMS_Connection_Internal *conn;
+  int ret;
+
+  conn = (E_NMS_Connection_Internal *)connection;
+  d = calloc(1, sizeof(Reply_Data));
+  d->object = conn;
+  d->cb_func = OBJECT_CB(cb_func);
+  d->data = data;
+
+  msg = e_nms_connection_secrets_call_new(conn->conn.service_name, conn->conn.path, "GetSecrets");
+  dbus_message_iter_init_append(msg, &iter);
+  dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &setting_name);
+  dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "s", &a_iter);
+  if (hints)
+  {
+    const char *hint;
+    ecore_list_first_goto(hints);
+    while ((hint = ecore_list_next(hints)))
+      dbus_message_iter_append_basic(&a_iter, DBUS_TYPE_STRING, &hint);
+  }
+  dbus_message_iter_close_container(&iter, &a_iter);
+  dbus_message_iter_append_basic(&iter, DBUS_TYPE_BOOLEAN, &request_new);
+
+  ret = e_dbus_message_send(conn->nmi->conn, msg, cb_secrets, -1, d) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
