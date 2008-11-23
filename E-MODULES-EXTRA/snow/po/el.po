@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:38+0100\n"
+"POT-Creation-Date: 2008-11-23 20:16+0800\n"
 "PO-Revision-Date: 2008-11-11 09:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,39 +16,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Ρύθμιση Χιονιού"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "General Settings"
 msgstr "Γενικές Ρυθμίσεις"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Εμφάνιση Δέντρων"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Πυκνότητα Χιονιού"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "Sparse"
 msgstr "Αραιό"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Medium"
 msgstr "Μέτριο"
 
-#: e_mod_config.c:110
+#: ../e_mod_config.c:110
 msgid "Dense"
 msgstr "Πυκνό"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Εμφάνιση"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Snow"
 msgstr "Χιόνι"
-

@@ -2,13 +2,13 @@
 # Greek translation for Enlightenment17.
 # This file is put in the public domain.
 # Geo Kou <ragecryx@yahoo.gr>, 2008.
-# 
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ephoto e17\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 22:18+0100\n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
 "PO-Revision-Date: 2008-10-31 14:29+0200\n"
 "Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -17,197 +17,197 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/ephoto.c:52
-#: src/ephoto_viewer.c:253
-msgid "Menu|File"
-msgstr "Μενού|Αρχείο"
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr ""
 
-#: src/ephoto.c:60
-#: src/ephoto_viewer.c:271
-msgid "Menu|File|Exit"
-msgstr "Μενού|Αρχείο|Έξοδος"
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr ""
 
-#: src/ephoto.c:68
-msgid "Menu|Albums"
-msgstr "Μενού|Άλμπουμ"
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr ""
 
-#: src/ephoto.c:76
-msgid "Menu|Albums|Add Album"
-msgstr "Μενού|Άλμπουμ|Προσθήκη"
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr ""
 
-#: src/ephoto.c:86
-msgid "Menu|Albums|Remove Album"
-msgstr "Μενού|Άλμπουμ|Αφαίρεση"
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr ""
 
-#: src/ephoto.c:93
-msgid "Menu|Viewer"
-msgstr "Μενού|Προβολέας"
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr ""
 
-#: src/ephoto.c:101
-msgid "Menu|Viewer|Image Viewer"
-msgstr "Μενού|Προβολέας|Προβολέας Εικόνων"
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr ""
 
-#: src/ephoto.c:109
-msgid "Menu|Slideshow"
-msgstr "Μενού|Slideshow"
-
-#: src/ephoto.c:118
-msgid "Menu|Slideshow|Configure Slideshow"
-msgstr "Μενού|Slideshow|Ρύθμιση Slideshow"
-
-#: src/ephoto.c:129
-msgid "Menu|Slideshow|Start Slideshow"
-msgstr "Μενού|Slideshow|Εκκίνηση Slideshow"
-
-#: src/ephoto.c:170
-msgid "  Location:"
-msgstr "  Περιοχή:"
-
-#: src/ephoto.c:216
-msgid "Albums"
-msgstr "Άλμπουμ"
-
-#: src/ephoto_callbacks.c:218
-msgid "Add an Album"
-msgstr "Προσθήκη Άλμπουμ"
-
-#: src/ephoto_callbacks.c:231
-msgid "Enter the new album name:"
-msgstr "Εισαγωγή ονόματος νέου άλμπουμ:"
-
-#: src/ephoto_callbacks.c:243
-msgid "Enter the new album description:"
-msgstr "Εισαγωγή περιγραφής νέου άλμπουμ:"
-
-#: src/ephoto_callbacks.c:263
-#: src/ephoto_slideshow.c:493
-msgid "save"
-msgstr "αποθήκευση"
-
-#: src/ephoto_callbacks.c:272
-#: src/ephoto_slideshow.c:503
-msgid "cancel"
-msgstr "ακύρωση"
-
-#: src/ephoto_slideshow.c:115
-msgid "Ephoto Slideshow"
-msgstr "Ephoto Slideshow"
-
-#: src/ephoto_slideshow.c:329
-msgid "Slideshow Configuration"
-msgstr "Ρυθμίσεις Slideshow"
-
-#: src/ephoto_slideshow.c:348
-msgid "Window Size"
-msgstr "Μέγεθος Παραθύρου"
-
-#: src/ephoto_slideshow.c:361
-msgid "Fullscreen"
-msgstr "Πλήρης Οθόνη"
-
-#: src/ephoto_slideshow.c:369
-msgid "Custom"
-msgstr "Προσαρμοσμένο"
-
-#: src/ephoto_slideshow.c:384
-msgid "Width"
-msgstr "Πλάτος"
-
-#: src/ephoto_slideshow.c:398
-msgid "Height"
-msgstr "Ύψος"
-
-#: src/ephoto_slideshow.c:412
+#: src/bin/ephoto_single_view.c:108
 #, fuzzy
-msgid "Order"
-msgstr "Σειρά"
-
-#: src/ephoto_slideshow.c:419
-msgid "Loop Slideshow"
-msgstr "Επανάληψη Slideshow"
-
-#: src/ephoto_slideshow.c:426
-msgid "Random Order"
-msgstr "Τυχαία Σειρά"
-
-#: src/ephoto_slideshow.c:439
-msgid "Image Size"
-msgstr "Μέγεθος Εικόνας"
-
-#: src/ephoto_slideshow.c:446
-msgid "Zoom Images to Fill Window"
-msgstr "Εστίαση εικόνων για Γέμισμα του Παραθύρου"
-
-#: src/ephoto_slideshow.c:453
-msgid "Keep Aspect"
-msgstr "Κράτα Αναλογία"
-
-#: src/ephoto_slideshow.c:460
-msgid "Transitions"
-msgstr "Μεταβάσεις"
-
-#: src/ephoto_slideshow.c:478
-msgid "Show File Name On Change"
-msgstr "Εμφάνισε Όνομα Αρχείου Όταν Αλλάξει"
-
-#: src/ephoto_viewer.c:235
-msgid "Ephoto Image Viewer"
-msgstr "Προβολέας Εικόνων Ephoto"
-
-#: src/ephoto_viewer.c:261
-msgid "Menu|File|Save Image"
-msgstr "Μενού|Αρχείο|Αποθήκευση Εικόνας"
-
-#: src/ephoto_viewer.c:279
-msgid "Menu|Actions"
-msgstr "Μενού|Ενέργειες"
-
-#: src/ephoto_viewer.c:287
-msgid "Menu|Actions|Zoom In"
-msgstr "Μενού|Ενέργειες|Εστίαση"
-
-#: src/ephoto_viewer.c:297
-msgid "Menu|Actions|Zoom Out"
-msgstr "Μενού|Ενέργειες|Σμίκρυνση"
-
-#: src/ephoto_viewer.c:307
-#, fuzzy
-msgid "Menu|Actions|Zoom To Fit"
-msgstr "Μενού|Ενέργειες|Εστίαση για Προσαρμογή"
-
-#: src/ephoto_viewer.c:317
-msgid "Menu|Actions|Zoom 1:1"
-msgstr "Μενού|Ενέργειες|Εστίαση 1:1"
-
-#: src/ephoto_viewer.c:328
-msgid "Menu|Actions|Flip Horizontally"
-msgstr "Μενού|Ενέργειες|Αναστροφή Οριζόντια"
-
-#: src/ephoto_viewer.c:338
-msgid "Menu|Actions|Flip Vertically"
-msgstr "Μενού|Ενέργειες|Αναστροφή Κατακόρυφα"
-
-#: src/ephoto_viewer.c:348
-msgid "Menu|Actions|Rotate Left"
+msgid "Rotate Left"
 msgstr "Μενού|Ενέργειες|Περιστροφή Αριστερά"
 
-#: src/ephoto_viewer.c:358
-msgid "Menu|Actions|Rotate Right"
+#: src/bin/ephoto_single_view.c:116
+#, fuzzy
+msgid "Rotate Right"
 msgstr "Μενού|Ενέργειες|Περιστροφή Δεξιά"
 
-#: src/ephoto_viewer.c:400
-msgid "In"
-msgstr "Εστίαση +"
+#: src/bin/ephoto_single_view.c:124
+#, fuzzy
+msgid "Flip Horizontally"
+msgstr "Μενού|Ενέργειες|Αναστροφή Οριζόντια"
 
-#: src/ephoto_viewer.c:410
-msgid "Out"
-msgstr "Εστίαση -"
+#: src/bin/ephoto_single_view.c:132
+#, fuzzy
+msgid "Flip Vertically"
+msgstr "Μενού|Ενέργειες|Αναστροφή Κατακόρυφα"
 
-#: src/ephoto_viewer.c:440
-msgid "Left"
-msgstr "Αριστερά"
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr ""
 
-#: src/ephoto_viewer.c:450
-msgid "Right"
-msgstr "Δεξιά"
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr ""
 
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr ""
+
+#~ msgid "Menu|File"
+#~ msgstr "Μενού|Αρχείο"
+
+#~ msgid "Menu|File|Exit"
+#~ msgstr "Μενού|Αρχείο|Έξοδος"
+
+#~ msgid "Menu|Albums"
+#~ msgstr "Μενού|Άλμπουμ"
+
+#~ msgid "Menu|Albums|Add Album"
+#~ msgstr "Μενού|Άλμπουμ|Προσθήκη"
+
+#~ msgid "Menu|Albums|Remove Album"
+#~ msgstr "Μενού|Άλμπουμ|Αφαίρεση"
+
+#~ msgid "Menu|Viewer"
+#~ msgstr "Μενού|Προβολέας"
+
+#~ msgid "Menu|Viewer|Image Viewer"
+#~ msgstr "Μενού|Προβολέας|Προβολέας Εικόνων"
+
+#~ msgid "Menu|Slideshow"
+#~ msgstr "Μενού|Slideshow"
+
+#~ msgid "Menu|Slideshow|Configure Slideshow"
+#~ msgstr "Μενού|Slideshow|Ρύθμιση Slideshow"
+
+#~ msgid "Menu|Slideshow|Start Slideshow"
+#~ msgstr "Μενού|Slideshow|Εκκίνηση Slideshow"
+
+#~ msgid "  Location:"
+#~ msgstr "  Περιοχή:"
+
+#~ msgid "Albums"
+#~ msgstr "Άλμπουμ"
+
+#~ msgid "Add an Album"
+#~ msgstr "Προσθήκη Άλμπουμ"
+
+#~ msgid "Enter the new album name:"
+#~ msgstr "Εισαγωγή ονόματος νέου άλμπουμ:"
+
+#~ msgid "Enter the new album description:"
+#~ msgstr "Εισαγωγή περιγραφής νέου άλμπουμ:"
+
+#~ msgid "save"
+#~ msgstr "αποθήκευση"
+
+#~ msgid "cancel"
+#~ msgstr "ακύρωση"
+
+#~ msgid "Ephoto Slideshow"
+#~ msgstr "Ephoto Slideshow"
+
+#~ msgid "Slideshow Configuration"
+#~ msgstr "Ρυθμίσεις Slideshow"
+
+#~ msgid "Window Size"
+#~ msgstr "Μέγεθος Παραθύρου"
+
+#~ msgid "Fullscreen"
+#~ msgstr "Πλήρης Οθόνη"
+
+#~ msgid "Custom"
+#~ msgstr "Προσαρμοσμένο"
+
+#~ msgid "Width"
+#~ msgstr "Πλάτος"
+
+#~ msgid "Height"
+#~ msgstr "Ύψος"
+
+#, fuzzy
+#~ msgid "Order"
+#~ msgstr "Σειρά"
+
+#~ msgid "Loop Slideshow"
+#~ msgstr "Επανάληψη Slideshow"
+
+#~ msgid "Random Order"
+#~ msgstr "Τυχαία Σειρά"
+
+#~ msgid "Image Size"
+#~ msgstr "Μέγεθος Εικόνας"
+
+#~ msgid "Zoom Images to Fill Window"
+#~ msgstr "Εστίαση εικόνων για Γέμισμα του Παραθύρου"
+
+#~ msgid "Keep Aspect"
+#~ msgstr "Κράτα Αναλογία"
+
+#~ msgid "Transitions"
+#~ msgstr "Μεταβάσεις"
+
+#~ msgid "Show File Name On Change"
+#~ msgstr "Εμφάνισε Όνομα Αρχείου Όταν Αλλάξει"
+
+#~ msgid "Ephoto Image Viewer"
+#~ msgstr "Προβολέας Εικόνων Ephoto"
+
+#~ msgid "Menu|File|Save Image"
+#~ msgstr "Μενού|Αρχείο|Αποθήκευση Εικόνας"
+
+#~ msgid "Menu|Actions"
+#~ msgstr "Μενού|Ενέργειες"
+
+#~ msgid "Menu|Actions|Zoom In"
+#~ msgstr "Μενού|Ενέργειες|Εστίαση"
+
+#~ msgid "Menu|Actions|Zoom Out"
+#~ msgstr "Μενού|Ενέργειες|Σμίκρυνση"
+
+#, fuzzy
+#~ msgid "Menu|Actions|Zoom To Fit"
+#~ msgstr "Μενού|Ενέργειες|Εστίαση για Προσαρμογή"
+
+#~ msgid "Menu|Actions|Zoom 1:1"
+#~ msgstr "Μενού|Ενέργειες|Εστίαση 1:1"
+
+#~ msgid "In"
+#~ msgstr "Εστίαση +"
+
+#~ msgid "Out"
+#~ msgstr "Εστίαση -"
+
+#~ msgid "Left"
+#~ msgstr "Αριστερά"
+
+#~ msgid "Right"
+#~ msgstr "Δεξιά"

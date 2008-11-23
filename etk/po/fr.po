@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk 0.1\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2005-10-16 01:45+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:29+0800\n"
 "PO-Revision-Date: 2008-10-12 19:48+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -14,193 +14,236 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/etk_button_test.c:28
-msgid "Etk Button test"
-msgstr "Test bouton ETK"
-
-#: src/bin/etk_button_test.c:35
-msgid "Normal button"
-msgstr "Bouton normal"
-
-#: src/bin/etk_button_test.c:39
-msgid "Button with an image"
-msgstr "Bouton avec une image"
-
-#: src/bin/etk_button_test.c:46
-msgid "Check button"
-msgstr "Bouton à cocher"
-
-#: src/bin/etk_button_test.c:52
-msgid "Radio button"
-msgstr "Bouton radio"
-
-#: src/bin/etk_button_test.c:58
-msgid "Toggle button"
-msgstr "Bouton-poussoir"
-
-#: src/bin/etk_canvas_test.c:29
-msgid "Etk Canvas Test"
-msgstr "Test canevas Etk"
-
-#: src/bin/etk_canvas_test.c:40
-msgid "Add object"
-msgstr "Ajouter un objet"
-
-#: src/bin/etk_colorpicker_test.c:24
-msgid "Etk Color Picker"
-msgstr "Selectionneur de couleur Etk"
-
-#: src/bin/etk_entry_test.c:31
-msgid "Etk Entry test"
-msgstr "Test saisie de texte Etk"
-
-#: src/bin/etk_entry_test.c:41
-msgid "Print the text!!!"
-msgstr "Imprimer le texte !!"
-
-#: src/bin/etk_image_test.c:25
-msgid "Etk Image Test"
-msgstr "Test Image Etk"
-
-#: src/bin/etk_image_test.c:34
-msgid "Keep aspect"
-msgstr "Conserver l'aspect"
-
-#: src/bin/etk_image_test.c:35
-msgid "Don't keep aspect"
-msgstr "Ne pas conserver l'aspect"
-
-#: src/bin/etk_scale_test.c:22
-msgid "Etk Scale test"
-msgstr "Test d'échelle Etk"
-
-#: src/bin/etk_table_test.c:25
-msgid "Etk Table Test"
-msgstr "Test table Etk"
-
-#: src/bin/etk_table_test.c:30
-msgid "Set Icon"
-msgstr "Sélectionner un icone"
-
-#: src/bin/etk_table_test.c:36
-msgid "App name"
-msgstr "Nom de l'application"
-
-#: src/bin/etk_table_test.c:39
-msgid "Generic Info"
-msgstr "Info générique"
-
-#: src/bin/etk_table_test.c:42
-msgid "Comments"
-msgstr "Commentaires"
-
-#: src/bin/etk_table_test.c:45
-msgid "Executable"
-msgstr "Exécutable"
-
-#: src/bin/etk_table_test.c:48
-msgid "Window name"
-msgstr "Nom de la fenêtre"
-
-#: src/bin/etk_table_test.c:51
-msgid "Window class"
-msgstr "Classe de la fenêtre"
-
-#: src/bin/etk_table_test.c:54
-msgid "Startup notify"
-msgstr "Notification de démarrage"
-
-#: src/bin/etk_table_test.c:57
-msgid "Wait exit"
-msgstr "Attendre la sortie"
-
-#: src/bin/etk_table_test.c:61
-msgid "Cancel"
-msgstr "Annuler"
-
-#: src/bin/etk_table_test.c:65
-msgid "Save"
-msgstr "Enregistrer"
-
-#: src/bin/etk_test.c:55
-msgid "Etk Test Application"
-msgstr "Test application Etk"
-
-#: src/bin/etk_tree_test.c:27
-msgid "Etk Tree Test"
+#: src/tools/etk_prefs/etk_prefs.c:60
+#, fuzzy
+msgid "Etk Preferences"
 msgstr "Test arborescence Etk"
 
-#: src/bin/etk_tree_test.c:33
-msgid "<h1>Tree:</h1>"
-msgstr "<h1>Arbre:</h1>"
+#: src/tools/etk_prefs/etk_prefs.c:76
+msgid "Category"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:36
-msgid "<h1>List:</h1>"
-msgstr "<h1>Liste:</h1>"
+#: src/tools/etk_prefs/etk_prefs.c:81
+msgid "Theme"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:46
-#: src/bin/etk_tree_test.c:81
-msgid "Column 1"
-msgstr "Colonne 1"
+#: src/tools/etk_prefs/etk_prefs.c:82
+#, fuzzy
+msgid "Fonts"
+msgstr "Commentaires"
 
-#: src/bin/etk_tree_test.c:47
-#: src/bin/etk_tree_test.c:82
-msgid "Column 2"
-msgstr "Colonne 2"
+#: src/tools/etk_prefs/etk_prefs.c:83
+msgid "Language"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:48
-#: src/bin/etk_tree_test.c:83
-msgid "Column 3"
-msgstr "Colonne 3"
+#: src/tools/etk_prefs/etk_prefs.c:84
+msgid "User Preferences"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:60
-#: src/bin/etk_tree_test.c:89
-msgid "Row1"
-msgstr "Rangée1"
+#: src/tools/etk_prefs/etk_prefs.c:85
+msgid "General"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:61
-#: src/bin/etk_tree_test.c:90
-msgid "Row2"
-msgstr "Rangée2"
+#: src/lib/etk_message_dialog.c:109
+msgid "Warning"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:62
-#: src/bin/etk_tree_test.c:91
-msgid "Row3"
-msgstr "Rangée3"
+#: src/lib/etk_message_dialog.c:113
+msgid "Question"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:92
-msgid "Row4"
-msgstr "Rangée4"
+#: src/lib/etk_message_dialog.c:117
+msgid "Error"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:93
-msgid "Row5"
-msgstr "Rangée5"
+#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
+msgid "Information"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:94
-msgid "Row6"
-msgstr "Rangée6"
+#: src/lib/etk_filechooser_widget.c:495
+msgid "Places"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:95
-msgid "Row7"
-msgstr "Rangée7"
+#: src/lib/etk_filechooser_widget.c:506
+msgid "Favorites"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:96
-msgid "Row8"
-msgstr "Rangée8"
+#: src/lib/etk_filechooser_widget.c:517
+msgid "Filename"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:97
-msgid "Row9"
-msgstr "Rangée9"
+#: src/lib/etk_filechooser_widget.c:521
+msgid "Date"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:98
-msgid "Row10"
-msgstr "Rangée10"
+#: src/lib/etk_filechooser_widget.c:730
+msgid "Home"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:99
-msgid "Row11"
-msgstr "Rangée11"
+#: src/lib/etk_filechooser_widget.c:735
+msgid "Root"
+msgstr ""
 
-#: src/bin/etk_tree_test.c:100
-msgid "Row12"
-msgstr "Rangée12"
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
+msgstr ""
 
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
+msgstr ""
+
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
+msgstr ""
+
+#~ msgid "Etk Button test"
+#~ msgstr "Test bouton ETK"
+
+#~ msgid "Normal button"
+#~ msgstr "Bouton normal"
+
+#~ msgid "Button with an image"
+#~ msgstr "Bouton avec une image"
+
+#~ msgid "Check button"
+#~ msgstr "Bouton à cocher"
+
+#~ msgid "Radio button"
+#~ msgstr "Bouton radio"
+
+#~ msgid "Toggle button"
+#~ msgstr "Bouton-poussoir"
+
+#~ msgid "Etk Canvas Test"
+#~ msgstr "Test canevas Etk"
+
+#~ msgid "Add object"
+#~ msgstr "Ajouter un objet"
+
+#~ msgid "Etk Color Picker"
+#~ msgstr "Selectionneur de couleur Etk"
+
+#~ msgid "Etk Entry test"
+#~ msgstr "Test saisie de texte Etk"
+
+#~ msgid "Print the text!!!"
+#~ msgstr "Imprimer le texte !!"
+
+#~ msgid "Etk Image Test"
+#~ msgstr "Test Image Etk"
+
+#~ msgid "Keep aspect"
+#~ msgstr "Conserver l'aspect"
+
+#~ msgid "Don't keep aspect"
+#~ msgstr "Ne pas conserver l'aspect"
+
+#~ msgid "Etk Scale test"
+#~ msgstr "Test d'échelle Etk"
+
+#~ msgid "Etk Table Test"
+#~ msgstr "Test table Etk"
+
+#~ msgid "Set Icon"
+#~ msgstr "Sélectionner un icone"
+
+#~ msgid "App name"
+#~ msgstr "Nom de l'application"
+
+#~ msgid "Generic Info"
+#~ msgstr "Info générique"
+
+#~ msgid "Executable"
+#~ msgstr "Exécutable"
+
+#~ msgid "Window name"
+#~ msgstr "Nom de la fenêtre"
+
+#~ msgid "Window class"
+#~ msgstr "Classe de la fenêtre"
+
+#~ msgid "Startup notify"
+#~ msgstr "Notification de démarrage"
+
+#~ msgid "Wait exit"
+#~ msgstr "Attendre la sortie"
+
+#~ msgid "Cancel"
+#~ msgstr "Annuler"
+
+#~ msgid "Save"
+#~ msgstr "Enregistrer"
+
+#~ msgid "Etk Test Application"
+#~ msgstr "Test application Etk"
+
+#~ msgid "<h1>Tree:</h1>"
+#~ msgstr "<h1>Arbre:</h1>"
+
+#~ msgid "<h1>List:</h1>"
+#~ msgstr "<h1>Liste:</h1>"
+
+#~ msgid "Column 1"
+#~ msgstr "Colonne 1"
+
+#~ msgid "Column 2"
+#~ msgstr "Colonne 2"
+
+#~ msgid "Column 3"
+#~ msgstr "Colonne 3"
+
+#~ msgid "Row1"
+#~ msgstr "Rangée1"
+
+#~ msgid "Row2"
+#~ msgstr "Rangée2"
+
+#~ msgid "Row3"
+#~ msgstr "Rangée3"
+
+#~ msgid "Row4"
+#~ msgstr "Rangée4"
+
+#~ msgid "Row5"
+#~ msgstr "Rangée5"
+
+#~ msgid "Row6"
+#~ msgstr "Rangée6"
+
+#~ msgid "Row7"
+#~ msgstr "Rangée7"
+
+#~ msgid "Row8"
+#~ msgstr "Rangée8"
+
+#~ msgid "Row9"
+#~ msgstr "Rangée9"
+
+#~ msgid "Row10"
+#~ msgstr "Rangée10"
+
+#~ msgid "Row11"
+#~ msgstr "Rangée11"
+
+#~ msgid "Row12"
+#~ msgstr "Rangée12"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ephoto 2.15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-03 02:26+0200\n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
 "PO-Revision-Date: 2006-10-03 02:28+0200\n"
 "Last-Translator:  <nisselarsson@home.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -16,126 +16,155 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ephoto.c:163
-msgid "  Location:"
-msgstr "Adress"
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr ""
 
-#: ephoto.c:72
-msgid "Add Album"
-msgstr "Lägg till Album"
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr ""
 
-#: ephoto.c:64 ephoto.c:210
-msgid "Albums"
-msgstr "Album"
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr ""
 
-#: ephoto.c:112
-msgid "Configure Slideshow"
-msgstr "Konfigurera Bildspel"
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr ""
 
-#: ephoto.c:56
-msgid "Exit"
-msgstr "Avsluta"
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr ""
 
-#: ephoto.c:48
-msgid "File"
-msgstr "Arkiv"
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr ""
 
-#: ephoto.c:96
-msgid "Image Viewer"
-msgstr "Bild Visare"
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr ""
 
-#: ephoto.c:81
-msgid "Remove Album"
-msgstr "Ta bort Album"
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr ""
 
-#: ephoto.c:104
-msgid "Slideshow"
-msgstr "Bildspel"
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr ""
 
-#: ephoto.c:122
-msgid "Start Slideshow"
-msgstr "Starta Bildspel"
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr ""
 
-#: ephoto.c:88
-msgid "Viewer"
-msgstr "Visare"
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr ""
 
-#: ephoto_viewer.c:96
-msgid "Ephoto Image Viewer"
-msgstr "Ephoto Bild Visare"
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr ""
 
-#: ephoto_viewer.c:143
-msgid "In"
-msgstr "In"
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr ""
 
-#: ephoto_viewer.c:173
-msgid "Left"
-msgstr "Vänster"
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr ""
 
-#: ephoto_viewer.c:153
-msgid "Out"
-msgstr "Ut"
+#~ msgid "  Location:"
+#~ msgstr "Adress"
 
-#: ephoto_viewer.c:182
-msgid "Right"
-msgstr "Höger"
+#~ msgid "Add Album"
+#~ msgstr "Lägg till Album"
 
-#: ephoto_slideshow.c:369
-msgid "Custom"
-msgstr "Annan"
+#~ msgid "Albums"
+#~ msgstr "Album"
 
-#: ephoto_slideshow.c:115
-msgid "Ephoto Slideshow"
-msgstr "Ephoto Bildspel"
+#~ msgid "Configure Slideshow"
+#~ msgstr "Konfigurera Bildspel"
 
-#: ephoto_slideshow.c:361
-msgid "Fullscreen"
-msgstr "Helskärm"
+#~ msgid "Exit"
+#~ msgstr "Avsluta"
 
-#: ephoto_slideshow.c:398
-msgid "Height"
-msgstr "Höjd"
+#~ msgid "File"
+#~ msgstr "Arkiv"
 
-#: ephoto_slideshow.c:439
-msgid "Image Size"
-msgstr "Bildstorlek"
+#~ msgid "Image Viewer"
+#~ msgstr "Bild Visare"
 
-#: ephoto_slideshow.c:453
-msgid "Keep Aspect"
-msgstr "Behåll Aspekt"
+#~ msgid "Remove Album"
+#~ msgstr "Ta bort Album"
 
-#: ephoto_slideshow.c:419
-msgid "Loop Slideshow"
-msgstr "Upprepa Bildspel"
+#~ msgid "Slideshow"
+#~ msgstr "Bildspel"
 
-#: ephoto_slideshow.c:412
-msgid "Order"
-msgstr "Följd"
+#~ msgid "Start Slideshow"
+#~ msgstr "Starta Bildspel"
 
-#: ephoto_slideshow.c:426
-msgid "Random Order"
-msgstr "Slumpmässig Följd"
+#~ msgid "Viewer"
+#~ msgstr "Visare"
 
-#: ephoto_slideshow.c:478
-msgid "Show File Name On Change"
-msgstr "Visa filnamn efter byte"
+#~ msgid "Ephoto Image Viewer"
+#~ msgstr "Ephoto Bild Visare"
 
-#: ephoto_slideshow.c:329
-msgid "Slideshow Configuration"
-msgstr "Konfigurera Bildspel"
+#~ msgid "In"
+#~ msgstr "In"
 
-#: ephoto_slideshow.c:460
-msgid "Transitions"
-msgstr "Transitioner"
+#~ msgid "Left"
+#~ msgstr "Vänster"
 
-#: ephoto_slideshow.c:384
-msgid "Width"
-msgstr "Bredd"
+#~ msgid "Out"
+#~ msgstr "Ut"
 
-#: ephoto_slideshow.c:348
-msgid "Window Size"
-msgstr "Fönsterstorlet"
+#~ msgid "Right"
+#~ msgstr "Höger"
 
-#: ephoto_slideshow.c:446
-msgid "Zoom Images to Fill Window"
-msgstr "Fyll fönstret"
+#~ msgid "Custom"
+#~ msgstr "Annan"
+
+#~ msgid "Ephoto Slideshow"
+#~ msgstr "Ephoto Bildspel"
+
+#~ msgid "Fullscreen"
+#~ msgstr "Helskärm"
+
+#~ msgid "Height"
+#~ msgstr "Höjd"
+
+#~ msgid "Image Size"
+#~ msgstr "Bildstorlek"
+
+#~ msgid "Keep Aspect"
+#~ msgstr "Behåll Aspekt"
+
+#~ msgid "Loop Slideshow"
+#~ msgstr "Upprepa Bildspel"
+
+#~ msgid "Order"
+#~ msgstr "Följd"
+
+#~ msgid "Random Order"
+#~ msgstr "Slumpmässig Följd"
+
+#~ msgid "Show File Name On Change"
+#~ msgstr "Visa filnamn efter byte"
+
+#~ msgid "Slideshow Configuration"
+#~ msgstr "Konfigurera Bildspel"
+
+#~ msgid "Transitions"
+#~ msgstr "Transitioner"
+
+#~ msgid "Width"
+#~ msgstr "Bredd"
+
+#~ msgid "Window Size"
+#~ msgstr "Fönsterstorlet"
+
+#~ msgid "Zoom Images to Fill Window"
+#~ msgstr "Fyll fönstret"

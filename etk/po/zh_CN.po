@@ -1,207 +1,116 @@
 # Simplified Chinese translation of Etk.
 # This file is put in the public domain.
-# 
-# 
-# 
+#
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk 0.1\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2005-10-16 01:45+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:29+0800\n"
 "PO-Revision-Date: 2008-11-03 23:12+0800\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: fr <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/etk_button_test.c:28
-msgid "Etk Button test"
+#: src/tools/etk_prefs/etk_prefs.c:60
+msgid "Etk Preferences"
 msgstr ""
 
-#: src/bin/etk_button_test.c:35
-msgid "Normal button"
+#: src/tools/etk_prefs/etk_prefs.c:76
+msgid "Category"
 msgstr ""
 
-#: src/bin/etk_button_test.c:39
-msgid "Button with an image"
+#: src/tools/etk_prefs/etk_prefs.c:81
+msgid "Theme"
 msgstr ""
 
-#: src/bin/etk_button_test.c:46
-msgid "Check button"
+#: src/tools/etk_prefs/etk_prefs.c:82
+msgid "Fonts"
 msgstr ""
 
-#: src/bin/etk_button_test.c:52
-msgid "Radio button"
+#: src/tools/etk_prefs/etk_prefs.c:83
+msgid "Language"
 msgstr ""
 
-#: src/bin/etk_button_test.c:58
-msgid "Toggle button"
+#: src/tools/etk_prefs/etk_prefs.c:84
+msgid "User Preferences"
 msgstr ""
 
-#: src/bin/etk_canvas_test.c:29
-msgid "Etk Canvas Test"
+#: src/tools/etk_prefs/etk_prefs.c:85
+msgid "General"
 msgstr ""
 
-#: src/bin/etk_canvas_test.c:40
-msgid "Add object"
+#: src/lib/etk_message_dialog.c:109
+msgid "Warning"
 msgstr ""
 
-#: src/bin/etk_colorpicker_test.c:24
-msgid "Etk Color Picker"
+#: src/lib/etk_message_dialog.c:113
+msgid "Question"
 msgstr ""
 
-#: src/bin/etk_entry_test.c:31
-msgid "Etk Entry test"
+#: src/lib/etk_message_dialog.c:117
+msgid "Error"
 msgstr ""
 
-#: src/bin/etk_entry_test.c:41
-msgid "Print the text!!!"
+#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
+msgid "Information"
 msgstr ""
 
-#: src/bin/etk_image_test.c:25
-msgid "Etk Image Test"
+#: src/lib/etk_filechooser_widget.c:495
+msgid "Places"
 msgstr ""
 
-#: src/bin/etk_image_test.c:34
-msgid "Keep aspect"
+#: src/lib/etk_filechooser_widget.c:506
+msgid "Favorites"
 msgstr ""
 
-#: src/bin/etk_image_test.c:35
-msgid "Don't keep aspect"
+#: src/lib/etk_filechooser_widget.c:517
+msgid "Filename"
 msgstr ""
 
-#: src/bin/etk_scale_test.c:22
-msgid "Etk Scale test"
+#: src/lib/etk_filechooser_widget.c:521
+msgid "Date"
 msgstr ""
 
-#: src/bin/etk_table_test.c:25
-msgid "Etk Table Test"
+#: src/lib/etk_filechooser_widget.c:730
+msgid "Home"
 msgstr ""
 
-#: src/bin/etk_table_test.c:30
-msgid "Set Icon"
+#: src/lib/etk_filechooser_widget.c:735
+msgid "Root"
 msgstr ""
 
-#: src/bin/etk_table_test.c:36
-msgid "App name"
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
 msgstr ""
 
-#: src/bin/etk_table_test.c:39
-msgid "Generic Info"
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
 msgstr ""
 
-#: src/bin/etk_table_test.c:42
-msgid "Comments"
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
 msgstr ""
 
-#: src/bin/etk_table_test.c:45
-msgid "Executable"
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
 msgstr ""
 
-#: src/bin/etk_table_test.c:48
-msgid "Window name"
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
 msgstr ""
 
-#: src/bin/etk_table_test.c:51
-msgid "Window class"
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
 msgstr ""
 
-#: src/bin/etk_table_test.c:54
-msgid "Startup notify"
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
 msgstr ""
 
-#: src/bin/etk_table_test.c:57
-msgid "Wait exit"
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
 msgstr ""
-
-#: src/bin/etk_table_test.c:61
-msgid "Cancel"
-msgstr ""
-
-#: src/bin/etk_table_test.c:65
-msgid "Save"
-msgstr ""
-
-#: src/bin/etk_test.c:55
-msgid "Etk Test Application"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:27
-msgid "Etk Tree Test"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:33
-msgid "<h1>Tree:</h1>"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:36
-msgid "<h1>List:</h1>"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:46
-#: src/bin/etk_tree_test.c:81
-msgid "Column 1"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:47
-#: src/bin/etk_tree_test.c:82
-msgid "Column 2"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:48
-#: src/bin/etk_tree_test.c:83
-msgid "Column 3"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:60
-#: src/bin/etk_tree_test.c:89
-msgid "Row1"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:61
-#: src/bin/etk_tree_test.c:90
-msgid "Row2"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:62
-#: src/bin/etk_tree_test.c:91
-msgid "Row3"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:92
-msgid "Row4"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:93
-msgid "Row5"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:94
-msgid "Row6"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:95
-msgid "Row7"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:96
-msgid "Row8"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:97
-msgid "Row9"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:98
-msgid "Row10"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:99
-msgid "Row11"
-msgstr ""
-
-#: src/bin/etk_tree_test.c:100
-msgid "Row12"
-msgstr ""
-

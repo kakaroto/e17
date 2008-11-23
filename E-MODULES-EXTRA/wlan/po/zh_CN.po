@@ -1,20 +1,20 @@
 # Wlan module (e17), Simplifed Chinese translation
 # This file is put in the public domain.
-# 
+#
 # Aron Xu <aronmalache@163.com>, 2008.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Wlan module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2008-11-23 20:16+0800\n"
 "PO-Revision-Date: 2008-10-24 17:00+0400\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
-"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"sourceforge.net>\n"
 
 #: ../e_mod_config.c:44
 msgid "Wlan Configuration"

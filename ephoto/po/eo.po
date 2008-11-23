@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-10 16:11+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
 "PO-Revision-Date: 2007-12-10 22:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -19,87 +19,98 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e17/apps/ephoto/src\n"
 
-#: src/bin/ephoto_exif.c:103
+#: src/bin/ephoto_exif.c:95
 msgid "No Exif Data Exists"
 msgstr "Neniu EXIF-datumo ekzistas"
 
-#: src/bin/ephoto_list_view.c:96
-msgid "Name"
-msgstr "Nomo"
-
-#: src/bin/ephoto_list_view.c:98
-msgid "Pixels"
-msgstr "Rastrumeroj"
-
-#: src/bin/ephoto_list_view.c:100
-msgid "Size"
-msgstr "Grando"
-
-#: src/bin/ephoto_main.c:115
-msgid "Normal View"
-msgstr "Normala Vidigo"
-
-#: src/bin/ephoto_main.c:123
-msgid "List View"
-msgstr "Listorigardo"
-
-#: src/bin/ephoto_main.c:131
-msgid "Single View"
-msgstr "Unuopa Vidigo"
-
-#: src/bin/ephoto_main.c:139
-msgid "Move to edit view"
-msgstr "Ŝanĝi al redakta vidigo"
-
-#: src/bin/ephoto_main.c:151
-msgid "You do not have libexif 0.6.13"
-msgstr "Vi ne havas libexif 0.6.13"
-
-#: src/bin/ephoto_main.c:157
-msgid "View Exif Data"
-msgstr "Vidi EXIF-datumojn"
-
-#: src/bin/ephoto_main.c:164
-msgid "Toggle Fullscreen"
-msgstr "Baskuli Plenekranen"
-
-#: src/bin/ephoto_main.c:172
-msgid "Start a Slideshow"
-msgstr "Eki Bildoprezentadon"
-
-#: src/bin/ephoto_utils.c:9
+#: src/bin/ephoto_utils.c:10
 #, c-format
 msgid "%'.0f Bytes"
 msgstr "%'.0f Bytes"
 
-#: src/bin/ephoto_utils.c:14
+#: src/bin/ephoto_utils.c:15
 #, c-format
 msgid "%'.0f KB"
 msgstr "%'.0f KB"
 
-#: src/bin/ephoto_utils.c:20
+#: src/bin/ephoto_utils.c:21
 #, c-format
 msgid "%'.0f MB"
 msgstr "%'.0f MB"
 
-#: src/bin/ephoto_utils.c:25
+#: src/bin/ephoto_utils.c:26
 #, c-format
 msgid "%'.1f GB"
 msgstr "%'.1f GB"
 
-#: src/bin/ephoto_single_view.c:33 src/bin/ephoto_edit_view.c:72
-msgid "Previous Image"
-msgstr "Antaŭa Bildo"
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr ""
 
-#: src/bin/ephoto_single_view.c:39 src/bin/ephoto_edit_view.c:76
-msgid "Next Image"
-msgstr "Sekva Bildo"
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr ""
 
-#: src/bin/ephoto_edit_view.c:42
-msgid "Standard Tools"
-msgstr "Defaŭlta Iloj"
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr ""
 
-#: src/bin/ephoto_edit_view.c:50
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:140
 msgid "Advanced Tools"
 msgstr "Plidetalaj Iloj"
 
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr "Antaŭa Bildo"
+
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr "Sekva Bildo"
+
+#~ msgid "Name"
+#~ msgstr "Nomo"
+
+#~ msgid "Pixels"
+#~ msgstr "Rastrumeroj"
+
+#~ msgid "Size"
+#~ msgstr "Grando"
+
+#~ msgid "Normal View"
+#~ msgstr "Normala Vidigo"
+
+#~ msgid "List View"
+#~ msgstr "Listorigardo"
+
+#~ msgid "Single View"
+#~ msgstr "Unuopa Vidigo"
+
+#~ msgid "Move to edit view"
+#~ msgstr "Ŝanĝi al redakta vidigo"
+
+#~ msgid "You do not have libexif 0.6.13"
+#~ msgstr "Vi ne havas libexif 0.6.13"
+
+#~ msgid "View Exif Data"
+#~ msgstr "Vidi EXIF-datumojn"
+
+#~ msgid "Toggle Fullscreen"
+#~ msgstr "Baskuli Plenekranen"
+
+#~ msgid "Start a Slideshow"
+#~ msgstr "Eki Bildoprezentadon"
+
+#~ msgid "Standard Tools"
+#~ msgstr "Defaŭlta Iloj"

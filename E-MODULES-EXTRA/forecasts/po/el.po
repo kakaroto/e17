@@ -8,115 +8,118 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-19 17:14+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-23 20:16+0800\n"
 "PO-Revision-Date: 2008-11-09 15:09+0200\n"
 "Last-Translator: \n"
+"Language-Team: Greek <en@li.org>\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: Greek <en@li.org>\n"
 "X-Generator: KBabel 1.11.4\n"
-"MIME-Version: 1.0\n"
 
-#: e_mod_config.c:41
+#: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Ρύθμιση Προβλέψεων"
 
-#: e_mod_config.c:88
+#: ../e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Ρυθμίσεις Προβολής"
 
-#: e_mod_config.c:89
+#: ../e_mod_config.c:91
 msgid "Poll Time"
 msgstr ""
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f λεπτά"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:97
 msgid "Show Description"
 msgstr "Εμφάνιση Περιγραφής"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr ""
+
+#: ../e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Ρυθμίσεις Μονάδων Μέτρησης"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:105
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: e_mod_config.c:103
+#: ../e_mod_config.c:107
 msgid "English"
 msgstr "Αγγλικό"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Κωδικός Yahoo Forecasts"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Κωδικός/Τ.Κ ΗΠΑ Yahoo Forecasts"
 
-#: e_mod_config.c:113
+#: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Για την εύρεση του κωδικού της περιοχής σας, πηγαίνετε στο:"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, βρείτε την περιοχή σας, και κοιτάξτε το URL"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:256
 msgid "Forecasts"
 msgstr "Καιρικές Προβλέψεις"
 
-#: e_mod_main.c:287
+#: ../e_mod_main.c:301
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: e_mod_main.c:962
+#: ../e_mod_main.c:1025
 msgid "Wind Chill"
 msgstr "Ψύχος Ανέμου"
 
-#: e_mod_main.c:968
+#: ../e_mod_main.c:1031
 msgid "Wind Speed"
 msgstr "Ταχύτητα Ανέμου"
 
-#: e_mod_main.c:974
+#: ../e_mod_main.c:1037
 msgid "Humidity"
 msgstr "Υγρασία"
 
-#: e_mod_main.c:980
+#: ../e_mod_main.c:1043
 msgid "Visibility"
 msgstr "Ορατότητα"
 
-#: e_mod_main.c:986
+#: ../e_mod_main.c:1049
 msgid "Pressure"
 msgstr "Πίεση"
 
-#: e_mod_main.c:993
+#: ../e_mod_main.c:1056
 msgid "Rising"
 msgstr "Ανατολή"
 
-#: e_mod_main.c:995
+#: ../e_mod_main.c:1058
 msgid "Falling"
 msgstr "Δύση"
 
-#: e_mod_main.c:997
+#: ../e_mod_main.c:1060
 msgid "Steady"
 msgstr "Σταθερά"
 
-#: e_mod_main.c:1001
+#: ../e_mod_main.c:1064
 msgid "Sunrise / Sunset"
 msgstr "Ανατολή/Δύση Ηλίου"
 
-#: e_mod_main.c:1024
+#: ../e_mod_main.c:1088
 msgid "High"
 msgstr "Υψηλά"
 
-#: e_mod_main.c:1035
+#: ../e_mod_main.c:1099
 msgid "Low"
 msgstr "Χαμηλά"
-

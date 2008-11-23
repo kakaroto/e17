@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 19:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-23 20:16+0800\n"
 "PO-Revision-Date: 2008-11-09 15:17+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,48 +16,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:43
+#: ../e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Ρύθμιση Mem"
 
-#: e_mod_config.c:92
+#: ../e_mod_config.c:92
 msgid "General Settings"
 msgstr "Γενικές Ρυθμίσεις"
 
-#: e_mod_config.c:94
+#: ../e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Εμφάνιση Κειμένου Πάντα"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Εμφάνιση Κειμένου όταν βρίσκεται Πάνω το Ποντίκι"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Εμφάνιση Κειμένου Ως Ποσοστό"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr ""
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr ""
 
-#: e_mod_config.c:112
+#: ../e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Χρονικό Διάστημα Ελέγχου:"
 
-#: e_mod_config.c:115
+#: ../e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f δευτερόλεπτα"
 
-#: e_mod_main.c:105
+#: ../e_mod_main.c:105
 msgid "Mem"
 msgstr "Mem"
 
-#: e_mod_main.c:162
+#: ../e_mod_main.c:162
 msgid "Configuration"
 msgstr "Ρύθμιση"
-
