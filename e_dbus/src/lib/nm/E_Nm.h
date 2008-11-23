@@ -334,10 +334,12 @@ extern "C" {
    EAPI void   e_nms_free(E_NMS *nms);
    EAPI void   e_nms_dump(E_NMS *nms);
    EAPI int    e_nms_list_connections(E_NMS *nms,
-                        int (*cb_func)(void *data, Ecore_List *list),
-                        void *data);
+                                      int (*cb_func)(void *data, Ecore_List *list),
+                                      void *data);
 
    EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
+
+   /* TODO: org.freedesktop.NetworkManagerSettings.System */
 
    /* org.freedesktop.NetworkManagerSettings.Connection(.*) api */
    EAPI E_NMS_Connection *e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection);
@@ -349,7 +351,7 @@ extern "C" {
    EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Ecore_Hash *settings), void *data);
    /* TODO: e_nms_connection_secrets_get_secrets */
 
-   /* TODO: e_nms_connection_callback_updated_set */
+   EAPI void  e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Ecore_Hash *settings));
    /* TODO: e_nms_connection_callback_removed_set */
 
    /* org.freedesktop.NetworkManager.Connection.Active api */
