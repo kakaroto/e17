@@ -63,13 +63,13 @@ static Etk_Bool _etk_scrolled_view_child_added_cb(Etk_Object *object, void *chil
 static Etk_Bool _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data);
 static Etk_Bool _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data);
 static int _etk_scrolled_view_motive_bounce(void *data); 
+static Etk_Bool _etk_scrolled_view_stoptoobject_boundary_check(Etk_Scrolled_View *scrolled_view);
 
 
 static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data); 
 static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static Etk_Bool _etk_scrolled_view_mouse_click(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data); 
-
 static Etk_Bool _etk_scrolled_view_bar_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data); 
 /**************************
  *
@@ -724,6 +724,43 @@ static inline void _speed_out_of_boundary(Etk_Range *range, unsigned int margin,
    *delta_ptr = delta;
 }
 
+
+static Etk_Bool _etk_scrolled_view_stoptoobject_boundary_check(Etk_Scrolled_View *scrolled_view) {
+   Etk_Range *vscrollbar_range;
+   Etk_Range *hscrollbar_range;
+   Etk_Bool flag = ETK_FALSE;
+   if (! scrolled_view)
+      return flag;
+   if ( scrolled_view->drag.bouncy != ETK_BOUNCY_STOPTOOBJECT )
+      return  flag;
+   if ( scrolled_view->extra_hmargin == 0 && scrolled_view->extra_vmargin == 0)
+      return flag;
+
+   vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
+   hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
+   if (vscrollbar_range->value < (vscrollbar_range->lower + scrolled_view->extra_vmargin))
+      flag = ETK_TRUE;
+   else if (vscrollbar_range->value > 
+         (vscrollbar_range->upper - vscrollbar_range->page_size - scrolled_view->extra_vmargin))
+      flag = ETK_TRUE;
+
+   if (flag) 
+      ;
+   else if (hscrollbar_range->value < (hscrollbar_range->lower + scrolled_view->extra_hmargin))
+      flag = ETK_TRUE;
+   else if (hscrollbar_range->value > 
+         (hscrollbar_range->upper - hscrollbar_range->page_size - scrolled_view->extra_hmargin))
+      flag = ETK_TRUE;
+
+   if (!flag)
+      return flag;
+
+   // Do animation here. 
+   if (scrolled_view->drag.Vx == 0 && scrolled_view->drag.Vy == 0)
+      ecore_animator_add(_etk_scrolled_view_motive_bounce, scrolled_view);
+   return flag;
+}
+
 /* Animator for inertial scrolling */
 static int _etk_scrolled_view_motive_bounce(void *data) 
 {
@@ -835,15 +872,17 @@ static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key
    else if (strcmp(event->keyname, "Up") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->step_increment);
    else if (strcmp(event->keyname, "Home") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower - scrolled_view->extra_vmargin);
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower + scrolled_view->extra_vmargin);
    else if (strcmp(event->keyname, "End") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->upper - scrolled_view->extra_vmargin - vscrollbar_range->page_size );
    else if (strcmp(event->keyname, "Next") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
    else if (strcmp(event->keyname, "Prior") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
    else
       propagate = ETK_TRUE;
+
+   _etk_scrolled_view_stoptoobject_boundary_check(scrolled_view);
 
    return propagate;
 }
@@ -1139,6 +1178,8 @@ static Etk_Bool _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *objec
       return ETK_TRUE;
    child->scroll(child, value, ETK_RANGE(scrolled_view->vscrollbar)->value);
 
+   _etk_scrolled_view_stoptoobject_boundary_check(scrolled_view);
+
    return ETK_TRUE;
 }
 
@@ -1164,6 +1205,7 @@ static Etk_Bool _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *objec
       return ETK_TRUE;
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
 
+   _etk_scrolled_view_stoptoobject_boundary_check(scrolled_view);
    return ETK_TRUE;
 }
 
