@@ -39,12 +39,6 @@ cdef void _virtual_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size,
     scroll_size.w = w
     scroll_size.h = h
 
-cdef void _virtual_scroll_margins_get(Etk_Widget *widget, Etk_Size *margin_size) with gil:
-    self = Object_from_instance(<Etk_Object *>widget)
-    (w, h) = self._scroll_margins_get()
-    margin_size.w = w
-    margin_size.h = h
-
 cdef void _virtual_scroll(Etk_Widget *widget, int x, int y) with gil:
     self = Object_from_instance(<Etk_Object *>widget)
     self._scroll(x, y)
@@ -72,9 +66,6 @@ cdef public class Widget(Object) [object PyEtk_Widget, type PyEtk_Widget_Type]:
 
         if getattr3(self.__class__, "_scroll_size_get", None) is not None:
             w.scroll_size_get = _virtual_scroll_size_get
-
-        if getattr3(self.__class__, "_scroll_margins_get", None) is not None:
-            w.scroll_margins_get = _virtual_scroll_margins_get
 
         if getattr3(self.__class__, "_scroll", None) is not None:
             w.scroll = _virtual_scroll

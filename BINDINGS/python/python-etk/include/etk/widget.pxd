@@ -56,7 +56,6 @@ cdef extern from "etk_widget.h":
         void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry)
         void (*theme_signal_emit)(Etk_Widget *widget, char *signal, Etk_Bool size_recalc)
         void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
-        void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size)
         void (*scroll)(Etk_Widget *widget, int x, int y)
         unsigned int realized
         Evas_Object *theme_object
