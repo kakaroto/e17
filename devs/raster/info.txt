@@ -1,7 +1,7 @@
 Login:        raster
 IRC Nick:     raster
 Name:         Carsten Haitzler
-Location:     Sydney, Australia / Taipie, Taiwan
+Location:     Sydney, Australia
 E-Mail:       raster@rasterman.com
 WWW:          http://www.rasterman.com
 Managing:     eet, evas, embryo, ecore, edje, e, emotion, rage, imlib2, imlib2_loaders, entice, edb, epeg, expedite, exquisite
