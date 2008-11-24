@@ -1,0 +1,8 @@
+Login:        sachiel
+IRC Nick:     Sachiel
+Name:         Iván Briano
+Location:     Buenos Aires, Argentina
+E-Mail:       sachieru@gmail.com
+Contributing: edje, e
+Platform:     Arch (Linux)
+GeoData:      -34.6074 -58.4321
