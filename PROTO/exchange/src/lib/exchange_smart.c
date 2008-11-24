@@ -266,6 +266,8 @@ exchange_smart_object_run(Evas_Object *obj)
    Exchange_Smart_Data *sd;
    Eina_List *themes = NULL, *l;
    Eina_Hash *themes_hash = eina_hash_string_superfast_new(NULL);
+   char buf[255];
+   int local_num;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
@@ -280,9 +282,10 @@ exchange_smart_object_run(Evas_Object *obj)
    if ((sd->mode == EXCHANGE_SMART_SHOW_LOCAL ||
         sd->mode == EXCHANGE_SMART_SHOW_BOTH) && sd->local_sys)
    {
-       evas_object_text_text_set(sd->obj_lbl, "Fetching system files...");
-       _exchange_smart_separator_append(sd, "System");
+      evas_object_text_text_set(sd->obj_lbl, "Fetching system files...");
       themes = exchange_local_theme_list_get(sd->local_sys);
+      snprintf(buf, sizeof(buf),"%s (%d)", "System", eina_list_count(themes));
+      _exchange_smart_separator_append(sd, buf);
       EINA_LIST_FOREACH(themes, l, td)
          _exchange_smart_element_append(sd, td);
       eina_list_free(themes);
@@ -294,8 +297,10 @@ exchange_smart_object_run(Evas_Object *obj)
        sd->mode == EXCHANGE_SMART_SHOW_BOTH)
    {
       evas_object_text_text_set(sd->obj_lbl, "Fetching user themes...");
-      _exchange_smart_separator_append(sd, "Personal");
       themes = exchange_local_theme_list_get(sd->local_usr);
+      local_num = eina_list_count(themes);
+      snprintf(buf, sizeof(buf),"%s (%d)", "Personal", local_num);
+      _exchange_smart_separator_append(sd, buf);
       EINA_LIST_FOREACH(themes, l, td)
          eina_hash_direct_add(themes_hash, td->name, l);
    }
@@ -344,7 +349,8 @@ exchange_smart_object_run(Evas_Object *obj)
    {
       if (!td->local && !online)
       {
-         _exchange_smart_separator_append(sd, "Online");
+         snprintf(buf, sizeof(buf),"%s (%d)", "Online", eina_list_count(themes) - local_num);
+         _exchange_smart_separator_append(sd, buf);
          online = 1;
       }
       _exchange_smart_element_append(sd, td);
