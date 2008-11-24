@@ -128,7 +128,6 @@ struct Etk_Widget
    void (*theme_signal_emit)(Etk_Widget *widget, const char *signal, Etk_Bool size_recalc);
 
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
-   void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
    Etk_Bool (*shown_handler)(Etk_Widget *widget);

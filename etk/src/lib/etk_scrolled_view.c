@@ -102,10 +102,16 @@ Etk_Type *etk_scrolled_view_type_get(void)
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
 
       etk_type_property_add(scrolled_view_type, "drag-bouncy", ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_BOUNCY_NOBOUNCE));
 
       etk_type_property_add(scrolled_view_type, "drag-damping", ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC));
+
+      etk_type_property_add(scrolled_view_type, "hmargin", ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+
+      etk_type_property_add(scrolled_view_type, "vmargin", ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
 
       etk_type_property_add(scrolled_view_type, "drag-sample-interval", ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC));
@@ -250,9 +256,9 @@ Etk_Bool etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view)
 /**
  * @brief Set the scrolled view boucy or not.
  * @param scrolled_view  a scrolled view
- * @param bouncy The scrolled view is bouncy or not (Default TRUE)
+ * @param bouncy The scrolled view is bouncy or not (Default NOBOUNCE)
  */ 
-void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy) 
+void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Bouncy_Policy bouncy) 
 {
    if (!scrolled_view || scrolled_view->drag.bouncy == bouncy)
       return;
@@ -264,9 +270,9 @@ void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Boo
 /**
  * @brief  Get the scrolled view bouncy flag
  * @param scrolled_view  a scrolled view
- * @return Returns ETK_TURE if the scrolled view is bouncy
+ * @return Returns bounce type
  */ 
-Etk_Bool etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view) 
+Etk_Scrolled_View_Bouncy_Policy etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view) 
 {
    if (!scrolled_view)
       return ETK_FALSE;
@@ -341,6 +347,8 @@ void etk_scrolled_view_extra_vmargin_set(Etk_Scrolled_View *scrolled_view, int m
       return;
    margin = margin > 0 ? margin : 0;
    scrolled_view->extra_vmargin = margin;
+   etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
+   etk_object_notify(ETK_OBJECT(scrolled_view), "vmargin");
 }
 
 /**
@@ -355,6 +363,7 @@ int etk_scrolled_view_extra_vmargin_get(Etk_Scrolled_View *scrolled_view)
    return scrolled_view->extra_vmargin;
 }
 
+
 /**
  * @brief Set the horizontal extra margin to the scrolled view
  * @param  scrolled_view a scrolled view
@@ -366,6 +375,8 @@ void etk_scrolled_view_extra_hmargin_set(Etk_Scrolled_View *scrolled_view, int m
       return;
    margin = margin > 0 ? margin : 0;
    scrolled_view->extra_hmargin = margin;
+   etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
+   etk_object_notify(ETK_OBJECT(scrolled_view), "hmargin");
 }
 
 /**
@@ -380,6 +391,7 @@ int etk_scrolled_view_extra_hmargin_get(Etk_Scrolled_View *scrolled_view)
       return -1;
    return scrolled_view->extra_hmargin;
 }
+
 
 /**************************
  *
@@ -401,7 +413,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->drag.mouse_down  = ETK_FALSE;
    scrolled_view->drag.bar_pressed = ETK_FALSE;
    scrolled_view->drag.dragable    = ETK_FALSE;
-   scrolled_view->drag.bouncy      = ETK_TRUE;
+   scrolled_view->drag.bouncy      = ETK_BOUNCY_NOBOUNCE;
    scrolled_view->drag.damping_magic = ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC;
    scrolled_view->extra_hmargin    = 0;
    scrolled_view->extra_vmargin    = 0;
@@ -460,7 +472,7 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
          etk_scrolled_view_dragable_set(scrolled_view, etk_property_value_bool_get(value));
          break;
        case ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY:
-         etk_scrolled_view_drag_bouncy_set(scrolled_view, etk_property_value_bool_get(value));
+         etk_scrolled_view_drag_bouncy_set(scrolled_view, etk_property_value_int_get(value));
          break;
        case ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY:
          etk_scrolled_view_drag_damping_set(scrolled_view, etk_property_value_int_get(value));
@@ -493,7 +505,7 @@ static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id,
          etk_property_value_bool_set(value, scrolled_view->drag.dragable);
          break;
        case ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY:
-         etk_property_value_bool_set(value, scrolled_view->drag.bouncy);
+         etk_property_value_int_set(value, scrolled_view->drag.bouncy);
          break;
        case ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY:
          etk_property_value_int_set(value, scrolled_view->drag.damping_magic);
@@ -572,30 +584,22 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 
    scrollview_size.w = geometry.w - child->inset.left - child->inset.right;
    scrollview_size.h = geometry.h - child->inset.top - child->inset.bottom;
-   if (child->scroll_margins_get)
-   {
-      Etk_Size margins_size;
-
-      child->scroll_margins_get(child, &margins_size);
-      scrollview_size.w -= margins_size.w;
-      scrollview_size.h -= margins_size.h;
-   }
 
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
 
    if ((scrolled_view->hpolicy == ETK_POLICY_AUTO 
-            && (scroll_size.w + 2 * scrolled_view->extra_hmargin) > scrollview_size.w)
+            && (scroll_size.w + (scrolled_view->extra_hmargin * 2)) > scrollview_size.w)
          || scrolled_view->hpolicy == ETK_POLICY_SHOW)
    {
       show_hscrollbar = ETK_TRUE;
    }
    if ((scrolled_view->vpolicy == ETK_POLICY_AUTO
-         && (scroll_size.h + 2 * scrolled_view->extra_vmargin) > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0) ))
+         && (scroll_size.h + (scrolled_view->extra_vmargin * 2)) > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0) ))
       || scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = ETK_TRUE;
       if (scrolled_view->hpolicy == ETK_POLICY_AUTO && 
-            (scroll_size.w + 2 * scrolled_view->extra_hmargin) > (scrollview_size.w - vscrollbar_size.w))
+            (scroll_size.w + (scrolled_view->extra_hmargin * 2)) > (scrollview_size.w - vscrollbar_size.w))
          show_hscrollbar = ETK_TRUE;
    }
 
@@ -636,6 +640,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scroll_size.w );
    else 
       etk_range_page_size_set(ETK_RANGE(scrolled_view->hscrollbar), scrollview_size.w );
+
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 
          0 - scrolled_view->extra_vmargin, 
          scroll_size.h + scrolled_view->extra_vmargin);
@@ -653,7 +658,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 }
 
 /* Check if reaching the boundary */
-static inline double _etk_scrolled_view_bounce_check(Etk_Range * range, double delta,double v) 
+static inline double _etk_scrolled_view_bounce_check(Etk_Range * range, double delta, double v) 
 {
    double pos = (range->value + delta);
    if (pos <= range->lower) 
@@ -665,6 +670,58 @@ static inline double _etk_scrolled_view_bounce_check(Etk_Range * range, double d
    if (pos > range->value) 
       v *= -1;
    return v;
+}
+
+static inline void _speed_out_of_boundary(Etk_Range *range, unsigned int margin, double *delta_ptr, double *V_ptr)
+{
+   double delta = (*delta_ptr);
+   double V =  (*V_ptr);
+   double rate = 0;
+   double dV = 0 ;
+   if (range->value < ( range->lower + margin)) // Lower
+   {
+      if ( margin == 0 )
+      {
+         V = 0;
+         delta = 0;
+         etk_range_value_set(range, 0);
+      }
+      else 
+      {
+         rate = ((double)(margin-abs(range->value))/margin);
+         dV = 2 * margin * (1 - 1/(1+exp(-10*(2*(rate-0.3)-1)))) +10;
+         V = (V + dV) * 0.5;
+      }
+      if (range->value + delta > (range->lower + margin))
+      {
+         V = 0;
+         delta = 0;
+         etk_range_value_set(range, 0);
+      }
+   }
+   else if (range->value > (range->upper - range->page_size - margin)) 
+   {
+      if ( margin == 0 )
+      {
+         V = 0;
+         delta = 0;
+         etk_range_value_set(range, range->upper - range->page_size - margin);
+      }
+      else 
+      {
+         rate = 1 - ((double)(abs(range->value - (range->upper - range->page_size - margin)))/margin);
+         dV = 0 - 2 * margin * (1 - 1/(1+exp(-10*(2*(rate-0.3)-1)))) - 10;
+         V = (V + dV) * 0.5;
+      }
+      if (range->value + delta < (range->upper - range->page_size - margin))
+      {
+         V = 0;
+         delta = 0;
+         etk_range_value_set(range, (range->upper - range->page_size - margin));
+      }
+   }
+   *V_ptr = V;
+   *delta_ptr = delta;
 }
 
 /* Animator for inertial scrolling */
@@ -721,21 +778,30 @@ static int _etk_scrolled_view_motive_bounce(void *data)
       drag->Vy = drag->Vy + delta_V;
    }
 
-   if (drag->Vx == 0 && drag->Vy == 0) 
-      return 0;
-
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
    hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
-   if (drag->bouncy)  
+   if (drag->bouncy == ETK_BOUNCY_BOUNCE )  
    {
       drag->Vx = _etk_scrolled_view_bounce_check(hscrollbar_range, delta_x, drag->Vx);
       drag->Vy = _etk_scrolled_view_bounce_check(vscrollbar_range, delta_y, drag->Vy);
    }
-   else 
+   else if ( drag->bouncy == ETK_BOUNCY_STOPTOOBJECT ) 
+   {
+      _speed_out_of_boundary(hscrollbar_range, scrolled_view->extra_hmargin, &delta_x, &drag->Vx);
+      drag->Vx = _etk_scrolled_view_bounce_check(hscrollbar_range, delta_x, drag->Vx);
+
+      _speed_out_of_boundary(vscrollbar_range, scrolled_view->extra_vmargin, &delta_y, &drag->Vy);
+      drag->Vy = _etk_scrolled_view_bounce_check(vscrollbar_range, delta_y, drag->Vy);
+   }
+   else // default is NOBOUNCE   
    {
       drag->Vx = drag->Vx == _etk_scrolled_view_bounce_check(hscrollbar_range, delta_x, drag->Vx) ? drag->Vx : 0.0f;
       drag->Vy = drag->Vy == _etk_scrolled_view_bounce_check(vscrollbar_range, delta_y, drag->Vy) ? drag->Vy : 0.0f;
-   }
+   }   
+
+   if (drag->Vx == 0 && drag->Vy == 0) 
+      return 0;
+
    drag->timestamp = ecore_time_get();
    return 1;
 }
@@ -769,7 +835,7 @@ static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key
    else if (strcmp(event->keyname, "Up") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->step_increment);
    else if (strcmp(event->keyname, "Home") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower + scrolled_view->extra_vmargin);
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower - scrolled_view->extra_vmargin);
    else if (strcmp(event->keyname, "End") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
    else if (strcmp(event->keyname, "Next") == 0)
@@ -866,10 +932,21 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
       {
          double _value = vscrollbar_range->value - (event->cur.widget.y - drag->position.y);
          if (_value > vscrollbar_range->lower && _value < vscrollbar_range->upper) {
+            if (_value < vscrollbar_range->lower + scrolled_view->extra_vmargin || 
+                  _value > vscrollbar_range->upper - vscrollbar_range->page_size - scrolled_view->extra_vmargin) 
+            {
+               _value = vscrollbar_range->value - (event->cur.widget.y - drag->position.y)*0.5;
+            }
             etk_range_value_set(vscrollbar_range, _value);
          }
          _value = hscrollbar_range->value - (event->cur.widget.x - drag->position.x);
          if (_value > hscrollbar_range->lower && _value < hscrollbar_range->upper) {
+            if (_value < hscrollbar_range->lower + scrolled_view->extra_hmargin || 
+                  _value > hscrollbar_range->upper - hscrollbar_range->page_size - scrolled_view->extra_hmargin) 
+            {
+               _value = hscrollbar_range->value - (event->cur.widget.x - drag->position.x)*0.5;
+            }
+
             etk_range_value_set(hscrollbar_range, _value);
          }
       }
@@ -908,6 +985,8 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
 {
    Etk_Scrolled_View *scrolled_view;
    struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
+   Etk_Range *vscrollbar_range;
+   Etk_Range *hscrollbar_range;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return ETK_FALSE;
@@ -934,6 +1013,7 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
       int i, idelt;
       double tlast, tdelt;
       Etk_Position lastpos;
+      int boundary_flag=0;
       
       drag->old_timestamp = drag->timestamp;
       drag->timestamp = ecore_time_get();
@@ -957,14 +1037,55 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
 		idelt++;
 	     }
 	}
-      if (idelt < 1)
-	return ETK_FALSE;
-      if ((tdelt / idelt) * 4 < (drag->position_timestamp - drag->prev_position_timestamp[0]))
-	return ETK_FALSE;
-      if ((((drag->position.x - lastpos.x) * (drag->position.x - lastpos.x)) +
-	   ((drag->position.y - lastpos.y) * (drag->position.y - lastpos.y)))
-	  <= (20 * 20))
-	return ETK_FALSE;
+      vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
+      hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
+
+      if ( drag->bouncy == ETK_BOUNCY_STOPTOOBJECT  && 
+            ((vscrollbar_range->value <= vscrollbar_range->lower + scrolled_view->extra_vmargin)  || 
+            (vscrollbar_range->value >= vscrollbar_range->upper - vscrollbar_range->page_size - scrolled_view->extra_vmargin) ))
+      {
+         if ((vscrollbar_range->value <= vscrollbar_range->lower + scrolled_view->extra_vmargin))
+         {
+            tdelt = 1.0f;
+            drag->Vy = 10;
+         }
+         else 
+         {
+            tdelt = -1.0f;
+            drag->Vy = -10;
+         }
+         _speed_out_of_boundary(vscrollbar_range, scrolled_view->extra_vmargin, &tdelt, &drag->Vy);
+         boundary_flag = 1;
+      } 
+      if (drag->bouncy == ETK_BOUNCY_STOPTOOBJECT  &&
+            ((hscrollbar_range->value <= hscrollbar_range->lower + scrolled_view->extra_hmargin) ||
+            (hscrollbar_range->value >= hscrollbar_range->upper - hscrollbar_range->page_size - scrolled_view->extra_hmargin) ))
+      {
+         if ((hscrollbar_range->value <= hscrollbar_range->lower + scrolled_view->extra_hmargin))
+         {
+            tdelt = 1.0f;
+            drag->Vx = 10;
+         }
+         else
+         {
+            tdelt = -1.0f;
+            drag->Vx = -10;
+         }
+
+         _speed_out_of_boundary(hscrollbar_range, scrolled_view->extra_hmargin, &tdelt, &drag->Vx);
+         boundary_flag = 1;
+      }
+      if (!boundary_flag) {
+         if (idelt < 1)
+           return ETK_FALSE;
+         if ((tdelt / idelt) * 4 < (drag->position_timestamp - drag->prev_position_timestamp[0]))
+           return ETK_FALSE;
+         if ((((drag->position.x - lastpos.x) * (drag->position.x - lastpos.x)) +
+              ((drag->position.y - lastpos.y) * (drag->position.y - lastpos.y)))
+             <= (20 * 20))
+           return ETK_FALSE;
+      }
+
       drag->Vx = drag->Vx > 0 ?  
          drag->Vx > max_speed ?  max_speed : drag->Vx : 
          drag->Vx < -max_speed ? -max_speed : drag->Vx;

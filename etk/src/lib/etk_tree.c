@@ -2825,8 +2825,8 @@ static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geome
       return;
 
    depth = 0;
-   row_id = tree->scroll_y / tree->rows_height;
-   row_y = -(tree->scroll_y % tree->rows_height);
+   row_id = tree->scroll_y >= 0 ? tree->scroll_y / tree->rows_height: 0;
+   row_y = tree->scroll_y >= 0 ? -(tree->scroll_y % tree->rows_height) : -tree->scroll_y;
    for (row = tree->root.first_child, i = 0; i < row_id && row; i++)
       row = _etk_tree_row_next_to_render_get(row, &depth);
    show_expanders = (tree->expanders_visible && tree->total_rows > tree->root.num_children && first_visible_col);

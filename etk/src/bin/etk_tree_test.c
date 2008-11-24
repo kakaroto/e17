@@ -64,6 +64,9 @@ void etk_test_tree_window_create(void *data)
    /* Create the tree widget */
    tree = etk_tree_new();
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
+   etk_scrolled_view_extra_vmargin_set(etk_tree_scrolled_view_get(ETK_TREE(tree)), 250);
+   etk_scrolled_view_drag_bouncy_set(etk_tree_scrolled_view_get(ETK_TREE(tree)), ETK_BOUNCY_STOPTOOBJECT);
+   etk_scrolled_view_dragable_set(etk_tree_scrolled_view_get(ETK_TREE(tree)), ETK_TRUE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    etk_widget_padding_set(tree, 5, 5, 5, 5);
    etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

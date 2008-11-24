@@ -54,6 +54,16 @@ typedef enum
    ETK_POLICY_HIDE,     /**< The scrollbar is always hidden */
 } Etk_Scrolled_View_Policy;
 
+/**
+ * @brief Etk_Scrolled_View_Bouncy_Policy describes how the scrolled view bounce when hit the margin.
+ */ 
+typedef enum
+{
+   ETK_BOUNCY_NOBOUNCE=0,     /** < No bounce at all, stop at margin. It's default */
+   ETK_BOUNCY_BOUNCE,         /** < Bounce to the margin, and do not stop. */
+   ETK_BOUNCY_STOPTOOBJECT,   /** < Do not bounce, and stop at the margin of object.  */
+} Etk_Scrolled_View_Bouncy_Policy;
+
 struct Etk_Scrolled_View_Mouse_Drag 
 {
    Etk_Position position;
@@ -71,7 +81,7 @@ struct Etk_Scrolled_View_Mouse_Drag
    Etk_Bool mouse_down;
    Etk_Bool bar_pressed;
    Etk_Bool dragable;
-   Etk_Bool bouncy;
+   Etk_Scrolled_View_Bouncy_Policy bouncy;
 };
 
 /**
@@ -108,8 +118,8 @@ void        etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_S
 void        etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy);
 void        etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk_Bool dragable);
 Etk_Bool    etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view);
-void        etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy);
-Etk_Bool    etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view);
+void        etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Bouncy_Policy bouncy);
+Etk_Scrolled_View_Bouncy_Policy etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view);
 double      etk_scrolled_view_drag_sample_interval_set(Etk_Scrolled_View *scrolled_view, double interval);
 double      etk_scrolled_view_drag_sample_interval_get(Etk_Scrolled_View *scrolled_view);
 unsigned int etk_scrolled_view_drag_damping_set(Etk_Scrolled_View *scrolled_view, unsigned int damping);
@@ -118,7 +128,6 @@ void        etk_scrolled_view_extra_vmargin_set(Etk_Scrolled_View *scrolled_view
 int        etk_scrolled_view_extra_vmargin_get(Etk_Scrolled_View *scrolled_view);
 void        etk_scrolled_view_extra_hmargin_set(Etk_Scrolled_View *scrolled_view, int margin);
 int        etk_scrolled_view_extra_hmargin_get(Etk_Scrolled_View *scrolled_view);
-
 
 /** @} */
 

@@ -2007,7 +2007,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->size_allocate = NULL;
    widget->theme_signal_emit = NULL;
    widget->scroll_size_get = NULL;
-   widget->scroll_margins_get = NULL;
    widget->scroll = NULL;
 
    widget->realized = ETK_FALSE;
