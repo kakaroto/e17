@@ -325,62 +325,6 @@ group {
 }
 
 group {
-   name: "etk/entry/cursor";
-   min: 1 0;
-   parts {
-      part {
-         name: "cursor";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 255;
-            visible: 0;
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      program {
-         name: "on_cursor_show";
-         signal:  "etk,action,show,cursor";
-         source:  "etk";
-         action: ACTION_STOP;
-         target: "cursor_show";
-         target: "cursor_hide";
-         target: "cursor_show_timer";
-         target: "cursor_hide_timer";
-         after: "cursor_show";
-      }
-      program {
-         name: "cursor_show";
-         action: STATE_SET "visible" 0.0;
-         target: "cursor";
-         after: "cursor_show_timer";
-      }
-      program {
-         name: "cursor_hide";
-         action: STATE_SET "default" 0.0;
-         target: "cursor";
-         after: "cursor_hide_timer";
-      }
-      program {
-         name: "cursor_show_timer";
-         in: 1.0 0.0;
-         after: "cursor_hide";
-      }
-      program {
-         name: "cursor_hide_timer";
-         in: 0.25 0.0;
-         after: "cursor_show";
-      }
-   }
-}
-
-group {
    name: "etk/combobox_entry/entry/selection";
    data {
       item: "on_foreground" "1";
