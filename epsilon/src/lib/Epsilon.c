@@ -351,9 +351,7 @@ epsilon_info_get (Epsilon * e)
 #endif
 #ifdef HAVE_PNG_H
   if ((fp = _epsilon_open_png_file_reading (e->thumb)))
-#endif
     {
-#ifdef HAVE_PNG_H
       png_structp png_ptr = NULL;
       png_infop info_ptr = NULL;
       png_textp text_ptr;
@@ -397,9 +395,9 @@ epsilon_info_get (Epsilon * e)
       /* png_read_end(png_ptr,info_ptr); */
       png_destroy_read_struct (&png_ptr, &info_ptr, (png_infopp) NULL);
       fclose (fp);
-#endif
     }
   else
+#endif
      return NULL;
 
   if ((p->eei = epsilon_exif_info_get (e)))
