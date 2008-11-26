@@ -59,6 +59,7 @@ Gui *main_window_show(const char *file)
    Etk_Widget *source_label, *source_entry;
    Etk_Widget *send_button;
    Etk_Widget *separator;
+   Etk_Widget *scrolled_view;
    Evas *evas;
    Eina_List *l;
 
@@ -176,8 +177,13 @@ Gui *main_window_show(const char *file)
 			      ETK_CALLBACK(_gui_tree_key_down_cb), gui);
    etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_FALSE);
 
+   /* Edje area */
+   scrolled_view = etk_scrolled_view_new();
+   etk_paned_child2_set(ETK_PANED(paned), scrolled_view, ETK_TRUE);
+   etk_widget_size_request_set(scrolled_view, 490, 430);
+
    gui->mdi_area = etk_mdi_area_new();
-   etk_paned_child2_set(ETK_PANED(paned), gui->mdi_area, ETK_TRUE);
+   etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(scrolled_view), gui->mdi_area);
 
    gui->output = etk_tree_new();
    etk_tree_headers_visible_set(ETK_TREE(gui->output), ETK_TRUE);
@@ -185,7 +191,6 @@ Gui *main_window_show(const char *file)
    etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_col_expand_set(col, ETK_TRUE);
    etk_tree_build(ETK_TREE(gui->output));
-   etk_widget_size_request_set(gui->output, 0, 100);
    etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
 
    hbox = etk_hbox_new(ETK_FALSE, 0);
