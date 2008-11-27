@@ -40,27 +40,27 @@ msgstr "%'.1f GB"
 
 #: src/bin/ephoto_single_view.c:92
 msgid "Zoom In"
-msgstr ""
+msgstr "Zoom avanti"
 
 #: src/bin/ephoto_single_view.c:100
 msgid "Zoom Out"
-msgstr ""
+msgstr "Zoom indietro"
 
 #: src/bin/ephoto_single_view.c:108
 msgid "Rotate Left"
-msgstr ""
+msgstr "Ruota a sinistra"
 
 #: src/bin/ephoto_single_view.c:116
 msgid "Rotate Right"
-msgstr ""
+msgstr "Ruota a destra"
 
 #: src/bin/ephoto_single_view.c:124
 msgid "Flip Horizontally"
-msgstr ""
+msgstr "Gira orizzontalmente"
 
 #: src/bin/ephoto_single_view.c:132
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Gira verticalmente"
 
 #: src/bin/ephoto_single_view.c:140
 msgid "Advanced Tools"
@@ -73,48 +73,3 @@ msgstr "Immagine precedente"
 #: src/bin/ephoto_single_view.c:156
 msgid "Next Image"
 msgstr "Immagine successiva"
-
-#~ msgid "Standard Tools"
-#~ msgstr "Strumenti standard"
-
-#~ msgid "Name"
-#~ msgstr "Nome"
-
-#~ msgid "Pixels"
-#~ msgstr "Pixel"
-
-#~ msgid "Size"
-#~ msgstr "Dimensione"
-
-#~ msgid "Albums"
-#~ msgstr "Album"
-
-#~ msgid "File System"
-#~ msgstr "File system"
-
-#~ msgid "Normal View"
-#~ msgstr "Vista normale"
-
-#~ msgid "List View"
-#~ msgstr "Vista elenco"
-
-#~ msgid "Single View"
-#~ msgstr "Vista singola"
-
-#~ msgid "You do not have libexif 0.6.13"
-#~ msgstr "Non avete libexif 0.6.13"
-
-#~ msgid "View Exif Data"
-#~ msgstr "Mostra dati Exif"
-
-#~ msgid "Toggle Fullscreen"
-#~ msgstr "Schermo intero / Finestra"
-
-#~ msgid "Start a Slideshow"
-#~ msgstr "Inizia presentazione"
-
-#~ msgid "Move to edit view"
-#~ msgstr "Strumenti di modifica"
-
-#~ msgid "Complete Library"
-#~ msgstr "Libreria completa"

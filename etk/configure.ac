@@ -149,7 +149,7 @@ AM_CONDITIONAL(BUILD_ENGINE_E_FB, test "x$have_ecore_fb" = "xyes")
 
 #####################################################################
 ## Gettext
-ALL_LINGUAS="fr"
+ALL_LINGUAS="fr it"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
