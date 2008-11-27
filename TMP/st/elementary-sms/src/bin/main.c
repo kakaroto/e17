@@ -1,9 +1,7 @@
 #include <Elementary.h>
 
-
-// generic callback - delete any window (close button/remove) and it just exits
 static void
-on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
+on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 {
    elm_exit();
 }
@@ -12,45 +10,18 @@ on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
 static void
 create_main_win(void)
 {
-   Elm_Win *win;
-   Elm_Bg *bg;
-   Elm_Frame *frame;
-   Elm_Box *box, *subbox;
-   Elm_Toggle *toggle;
-   Elm_Clock *cloc;
-   Elm_Button *button;
-   Elm_Pad *pad;
+   Evas_Object *win, *bg;
 
-   win = elm_win_new();
-   win->name_set(win, "main");
-   win->title_set(win, "SMS");
-   win->autodel = 0;
-   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
-
-   bg = elm_bg_new(win);
-   bg->show(bg);
+   win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+   elm_win_title_set(win, "SMS");
+   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
    
-   box = elm_box_new(win);
-   box->expand_x = 1;
-   box->expand_y = 1;
-   elm_widget_sizing_update(box);
-   box->show(box);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, 1.0, 1.0);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
    
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Messages");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
-   
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
-
-   win->show(win);
+   evas_object_show(win);
 }
 
 int

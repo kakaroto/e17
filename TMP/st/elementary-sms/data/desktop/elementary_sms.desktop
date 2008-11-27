@@ -2,8 +2,8 @@
 Encoding=UTF-8
 Name=SMS
 Comment=SMS Editor/Viewer
-Exec=sms
-Icon=sms
+Exec=elementary_sms
+Icon=elementary_sms
 Terminal=false
 Type=Application
 Categories=Application;Utilities;

@@ -6,9 +6,9 @@ INCLUDES = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/bin \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-@SMS_CFLAGS@
+@ELEMENTARY_CFLAGS@
 
-bin_PROGRAMS = sms
+bin_PROGRAMS = elementary_sms
 
-sms_SOURCES = main.c
-sms_LDADD = @SMS_LIBS@
+elementary_sms_SOURCES = main.c
+elementary_sms_LDADD = @ELEMENTARY_LIBS@

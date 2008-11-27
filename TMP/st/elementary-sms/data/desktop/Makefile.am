@@ -2,9 +2,9 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 desktopdir = $(datadir)/applications
-desktop_DATA = sms.desktop
+desktop_DATA = elementary_sms.desktop
 
 icondir = $(datadir)/icons
-icon_DATA = sms.png
+icon_DATA = elementary_sms.png
 
-EXTRA_DIST = sms.desktop sms.png
+EXTRA_DIST = elementary_sms.desktop elementary_sms.png
