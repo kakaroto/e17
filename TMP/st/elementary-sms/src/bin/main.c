@@ -29,6 +29,7 @@ struct _Message_UI
    struct {
       Evas_Object *options_hv, *delete_hv, *bx, *bt;
    } hover;
+   void *handle;
 };
 
 static const char *
@@ -36,6 +37,20 @@ find_contact_icon(const char *contact)
 {
    // FIXME: find contact with address 'contact'. NULL == owner
    return NULL;
+}
+
+static void
+on_anchor(void *data, Evas_Object *obj, void *event_info)
+{
+   Message_UI *mui = data;
+   Elm_Entry_Anchorblock_Info *ei = event_info;
+}
+
+static void
+on_reply(void *data, Evas_Object *obj, void *event_info)
+{
+   Message_UI *mui = data;
+   printf("reply to message\n");
 }
 
 static void
@@ -147,6 +162,7 @@ create_message(Evas_Object *win,
    
    mui = calloc(1, sizeof(Message_UI));
    mui->win = win;
+   mui->handle = handle;
    
    bb = elm_bubble_add(win);
    elm_bubble_label_set(bb, title);
@@ -171,7 +187,7 @@ create_message(Evas_Object *win,
    elm_anchorblock_hover_style_set(ab, "popout");
    elm_anchorblock_hover_parent_set(ab, win);
    elm_anchorblock_text_set(ab, text);
-//   evas_object_smart_callback_add(ab, "anchor,clicked", my_anchorblock_anchor, av);
+   evas_object_smart_callback_add(ab, "anchor,clicked", on_anchor, mui);
    evas_object_size_hint_align_set(ab, -1.0, 0.0);
    evas_object_size_hint_align_set(ab, -1.0, -1.0);
    elm_box_pack_end(bx, ab);
@@ -184,7 +200,7 @@ create_message(Evas_Object *win,
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "Reply");
-//   evas_object_smart_callback_add(bt, "clicked", on_new_message, NULL);
+   evas_object_smart_callback_add(bt, "clicked", on_reply, NULL);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_align_set(bt, 0.0, -1.0);
    elm_box_pack_end(bx2, bt);
