@@ -351,6 +351,7 @@ create_main_win(void)
    
    evas_object_show(bx);
    
+   evas_object_resize(win, 240, 280);
    
    evas_object_show(win);
 }
