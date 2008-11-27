@@ -54,7 +54,7 @@ int                 ActionGetEvent(Action * aa);
 int                 ActionGetButton(Action * aa);
 int                 ActionGetModifiers(Action * aa);
 
-void                GrabButtonGrabs(EWin * ewin);
-void                UnGrabButtonGrabs(EWin * ewin);
+void                GrabButtonGrabs(Win win);
+void                UnGrabButtonGrabs(Win win);
 
 #endif /* _ACLASS_H */

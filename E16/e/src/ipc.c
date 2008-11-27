@@ -745,9 +745,9 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  {
 	     ewin->props.no_button_grabs = on;
 	     if (ewin->props.no_button_grabs)
-		UnGrabButtonGrabs(ewin);
+		UnGrabButtonGrabs(EoGetWin(ewin));
 	     else
-		GrabButtonGrabs(ewin);
+		GrabButtonGrabs(EoGetWin(ewin));
 	  }
 	goto ewin_update_snap_flags;
 

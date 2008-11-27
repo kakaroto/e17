@@ -1410,7 +1410,7 @@ const EModule       ModAclass = {
 };
 
 void
-GrabButtonGrabs(EWin * ewin)
+GrabButtonGrabs(Win win)
 {
    ActionClass        *ac;
    int                 j;
@@ -1433,12 +1433,12 @@ GrabButtonGrabs(EWin * ewin)
 	button = (aa->anybutton) ? AnyButton : aa->button;
 	mask = ButtonPressMask | ButtonReleaseMask;
 
-	GrabButtonSet(button, mod, EoGetWin(ewin), mask, ECSR_PGRAB, 1);
+	GrabButtonSet(button, mod, win, mask, ECSR_PGRAB, 1);
      }
 }
 
 void
-UnGrabButtonGrabs(EWin * ewin)
+UnGrabButtonGrabs(Win win)
 {
    ActionClass        *ac;
    int                 j;
@@ -1460,7 +1460,7 @@ UnGrabButtonGrabs(EWin * ewin)
 	mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
 	button = (aa->anybutton) ? AnyButton : aa->button;
 
-	GrabButtonRelease(button, mod, EoGetWin(ewin));
+	GrabButtonRelease(button, mod, win);
      }
 }
 

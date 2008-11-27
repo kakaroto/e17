@@ -336,7 +336,7 @@ EwinConfigure(EWin * ewin)
    EwinBorderSetTo(ewin, NULL);
 
    if (!ewin->props.no_button_grabs)
-      GrabButtonGrabs(ewin);
+      GrabButtonGrabs(EoGetWin(ewin));
 
    if (ewin->state.shaded)
       EwinInstantShade(ewin, 1);
