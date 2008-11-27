@@ -215,6 +215,7 @@ typedef struct {
       char                avoid_server_grab;
       char                update_while_moving;
       char                enable_sync_request;
+      char                dragbar_nocover;
    } movres;
    struct {
       int                 movres;

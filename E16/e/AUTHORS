@@ -254,6 +254,9 @@ Dan Sinclair <zero@perplexity.org>, and others
 Tristan D. <trinine@free.fr>
 	French translation updates
 
+Pietro Cerutti <gahr@freebsd.org>
+	"alone" window operation
+	Optionally don't cover dragbar when maximising
 
 And others whose names we probably forgot to add (email us and we'll put you
 in here)

@@ -29,6 +29,7 @@ static int          tmp_move;
 static int          tmp_resize;
 static int          tmp_geominfo;
 static int          tmp_maximize;
+static char         tmp_dragbar_nocover;
 static char         tmp_avoid_server_grab;
 static char         tmp_update_while_moving;
 static char         tmp_sync_request;
@@ -45,6 +46,7 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.movres.avoid_server_grab = tmp_avoid_server_grab;
 	Conf.movres.update_while_moving = tmp_update_while_moving;
 	Conf.movres.enable_sync_request = tmp_sync_request;
+	Conf.movres.dragbar_nocover = tmp_dragbar_nocover;
      }
    autosave();
 }
@@ -61,6 +63,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_avoid_server_grab = Conf.movres.avoid_server_grab;
    tmp_update_while_moving = Conf.movres.update_while_moving;
    tmp_sync_request = Conf.movres.enable_sync_request;
+   tmp_dragbar_nocover = Conf.movres.dragbar_nocover;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -206,6 +209,11 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Synchronize move/resize with application"));
    DialogItemCheckButtonSetPtr(di, &tmp_sync_request);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Do not cover dragbar"));
+   DialogItemCheckButtonSetPtr(di, &tmp_dragbar_nocover);
 }
 
 const DialogDef     DlgMoveResize = {

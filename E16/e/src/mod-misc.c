@@ -158,6 +158,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, movres.avoid_server_grab, 1),
    CFG_ITEM_BOOL(Conf, movres.update_while_moving, 0),
    CFG_ITEM_BOOL(Conf, movres.enable_sync_request, 0),
+   CFG_ITEM_BOOL(Conf, movres.dragbar_nocover, 0),
 
    CFG_ITEM_INT(Conf, opacity.menus, 85),
    CFG_ITEM_INT(Conf, opacity.movres, 60),

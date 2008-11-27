@@ -102,6 +102,36 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	x2 += x1;
 	y2 += y1;
 
+	if (Conf.movres.dragbar_nocover && type != MAX_ABSOLUTE)
+	  {
+	     /* Leave room for the dragbar */
+	     switch (Conf.desks.dragdir)
+	       {
+	       case 0:		/* left */
+		  if (x1 < Conf.desks.dragbar_width)
+		     x1 = Conf.desks.dragbar_width;
+		  break;
+
+	       case 1:		/* right */
+		  if (x2 > WinGetW(VROOT) - Conf.desks.dragbar_width)
+		     x2 = WinGetW(VROOT) - Conf.desks.dragbar_width;
+		  break;
+
+	       case 2:		/* top */
+		  if (y1 < Conf.desks.dragbar_width)
+		     y1 = Conf.desks.dragbar_width;
+		  break;
+
+	       case 3:		/* bottom */
+		  if (y2 > WinGetH(VROOT) - Conf.desks.dragbar_width)
+		     y2 = WinGetH(VROOT) - Conf.desks.dragbar_width;
+		  break;
+
+	       default:
+		  break;
+	       }
+	  }
+
 	if (type == MAX_ABSOLUTE)
 	  {
 	     /* Simply ignore all windows */
