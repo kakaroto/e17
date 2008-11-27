@@ -70,8 +70,10 @@ struct Ewl_Window
         Ewl_Window_Flags old_flags; /**< Flags used on our last state set call */
 };
 
-extern unsigned int EWL_CALLBACK_EXPOSE; /**< Triggered when the window needs redrawing */
-extern unsigned int EWL_CALLBACK_DELETE_WINDOW; /**< The window is being closed */
+extern unsigned int EWL_CALLBACK_EXPOSE; /**< Triggered when the window needs 
+                                                redrawing */
+extern unsigned int EWL_CALLBACK_DELETE_WINDOW; /**< Triggered when the window
+                                                gets a close request */
 
 Ewl_Widget              *ewl_window_new(void);
 int                      ewl_window_init(Ewl_Window *win);
