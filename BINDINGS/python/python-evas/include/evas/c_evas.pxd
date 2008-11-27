@@ -42,6 +42,8 @@ cdef extern from "Evas.h":
         EVAS_CALLBACK_RESTACK
         EVAS_CALLBACK_DEL
         EVAS_CALLBACK_HOLD
+        EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        EVAS_CALLBACK_IMAGE_PRELOADED
 
 
     cdef enum Evas_Load_Error:

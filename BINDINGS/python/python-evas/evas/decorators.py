@@ -94,3 +94,11 @@ def del_callback(func):
 def hold_callback(func):
     func.evas_event_callback = evas.EVAS_CALLBACK_HOLD
     return staticmethod(func)
+
+def changed_size_hints_callback(func):
+    func.evas_event_callback = evas.EVAS_CALLBACK_CHANGED_SIZE_HINTS
+    return staticmethod(func)
+
+def image_preloaded(func):
+    func.evas_event_callback = evas.EVAS_CALLBACK_IMAGE_PRELOADED
+    return staticmethod(func)

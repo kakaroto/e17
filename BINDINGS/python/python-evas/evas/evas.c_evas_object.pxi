@@ -1124,6 +1124,14 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         "Same as event_callback_del(EVAS_CALLBACK_HOLD, ...)"
         self.event_callback_del(EVAS_CALLBACK_HOLD, func)
 
+    def on_changed_size_hints_add(self, func, *a, **k):
+        "Same as event_callback_add(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"
+        self.event_callback_add(EVAS_CALLBACK_CHANGED_SIZE_HINTS, func, *a, **k)
+
+    def on_changed_size_hints_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"
+        self.event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, func)
+
     def pass_events_get(self):
         "@rtype: bool"
         return bool(evas_object_pass_events_get(self.obj))

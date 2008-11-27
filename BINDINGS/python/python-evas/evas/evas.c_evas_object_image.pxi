@@ -561,6 +561,14 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         """
         evas_object_image_data_update_add(self.obj, x, y, w, h)
 
+    def on_image_preloaded_add(self, func, *a, **k):
+        "Same as event_callback_add(EVAS_CALLBACK_IMAGE_PRELOADED, ...)"
+        self.event_callback_add(EVAS_CALLBACK_IMAGE_PRELOADED, func, *a, **k)
+
+    def on_image_preloaded_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, ...)"
+        self.event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, func)
+
 
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasImage_Type # hack to install metaclass
