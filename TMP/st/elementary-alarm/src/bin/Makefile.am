@@ -8,7 +8,7 @@ INCLUDES = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @ALARM_CFLAGS@
 
-bin_PROGRAMS = alarm
+bin_PROGRAMS = elementary_alarm
 
-alarm_SOURCES = main.c
-alarm_LDADD = @ALARM_LIBS@
+elementary_alarm_SOURCES = main.c
+elementary_alarm_LDADD = @ALARM_LIBS@

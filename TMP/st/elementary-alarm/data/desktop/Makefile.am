@@ -2,9 +2,9 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 desktopdir = $(datadir)/applications
-desktop_DATA = alarm.desktop
+desktop_DATA = elementary_alarm.desktop
 
 icondir = $(datadir)/icons
-icon_DATA = alarm.png
+icon_DATA = elementary_alarm.png
 
-EXTRA_DIST = alarm.desktop alarm.png
+EXTRA_DIST = elementary_alarm.desktop elementary_alarm.png

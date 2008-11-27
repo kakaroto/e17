@@ -2,8 +2,8 @@
 Encoding=UTF-8
 Name=Alarm
 Comment=Alarm Clock
-Exec=alarm
-Icon=alarm
+Exec=elementary_alarm
+Icon=elementary_alarm
 Terminal=false
 Type=Application
 Categories=Application;Utility;

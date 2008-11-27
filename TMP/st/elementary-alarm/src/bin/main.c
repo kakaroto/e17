@@ -35,7 +35,7 @@ load_alarm(void)
    
    home = getenv("HOME");
    if (!home) home = "/";
-   snprintf(buf, sizeof(buf), "%s/.alarm-config", home);
+   snprintf(buf, sizeof(buf), "%s/.elementary-alarm-config", home);
    f = fopen(buf, "r");
    if (!f) return;
    if (fscanf(f, "%i %i %i %i %i\n", 
@@ -59,7 +59,7 @@ save_alarm(void)
    
    home = getenv("HOME");
    if (!home) home = "/";
-   snprintf(buf, sizeof(buf), "%s/.alarm-config", home);
+   snprintf(buf, sizeof(buf), "%s/.elementary-alarm-config", home);
    f = fopen(buf, "w");
    if (!f) return;
    fprintf(f, "%i %i %i %i %i\n",
@@ -85,15 +85,15 @@ set_alarm(void)
    char buf[1024];
 
    snprintf(buf, sizeof(buf), 
-	    "echo 'alarm -activate' | waker add %i:%02i:00 1 X > /tmp/alarm-waker-out", 
+	    "echo 'elementary_alarm -activate' | waker add %i:%02i:00 1 X > /tmp/alarm-waker-out", 
 	    alm.hours, alm.minutes);
    system(buf);
-   f = fopen("/tmp/alarm-waker-out", "r");
+   f = fopen("/tmp/elementary_alarm-waker-out", "r");
    if (f)
      {
 	while (fgets(buf, sizeof(buf), f)) alm.job = atoi(buf);
 	fclose(f);
-	unlink("/tmp/alarm-waker-out");
+	unlink("/tmp/elementary_alarm-waker-out");
      }
 }
 
