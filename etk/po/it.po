@@ -1,0 +1,116 @@
+# Italian translation for Etk.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Etk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:29+0800\n"
+"PO-Revision-Date: 2008-11-27 13:34+0400\n"
+"Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:60
+msgid "Etk Preferences"
+msgstr "Preferenze per Etk"
+
+#: src/tools/etk_prefs/etk_prefs.c:76
+msgid "Category"
+msgstr "Categorie"
+
+#: src/tools/etk_prefs/etk_prefs.c:81
+msgid "Theme"
+msgstr "Tema"
+
+#: src/tools/etk_prefs/etk_prefs.c:82
+msgid "Fonts"
+msgstr "Font"
+
+#: src/tools/etk_prefs/etk_prefs.c:83
+msgid "Language"
+msgstr "Lingua"
+
+#: src/tools/etk_prefs/etk_prefs.c:84
+msgid "User Preferences"
+msgstr "Preferenze utente"
+
+#: src/tools/etk_prefs/etk_prefs.c:85
+msgid "General"
+msgstr "Generale"
+
+#: src/lib/etk_message_dialog.c:109
+msgid "Warning"
+msgstr "Avvertenza"
+
+#: src/lib/etk_message_dialog.c:113
+msgid "Question"
+msgstr "Domanda"
+
+#: src/lib/etk_message_dialog.c:117
+msgid "Error"
+msgstr "Errore"
+
+#: src/lib/etk_message_dialog.c:122
+#: src/lib/etk_message_dialog.c:264
+msgid "Information"
+msgstr "Informazione"
+
+#: src/lib/etk_filechooser_widget.c:495
+msgid "Places"
+msgstr "Posti"
+
+#: src/lib/etk_filechooser_widget.c:506
+msgid "Favorites"
+msgstr "Preferiti"
+
+#: src/lib/etk_filechooser_widget.c:517
+msgid "Filename"
+msgstr "Nome file"
+
+#: src/lib/etk_filechooser_widget.c:521
+msgid "Date"
+msgstr "Data"
+
+#: src/lib/etk_filechooser_widget.c:730
+msgid "Home"
+msgstr "Home"
+
+#: src/lib/etk_filechooser_widget.c:735
+msgid "Root"
+msgstr "Root"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
+msgstr "H"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
+msgstr "S"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
+msgstr "V"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
+msgstr "R"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
+msgstr "G"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
+msgstr "B"
+
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
+msgstr "Alpha"
+
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
+msgstr "Attuale"
