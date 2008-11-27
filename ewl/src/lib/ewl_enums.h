@@ -841,7 +841,7 @@ typedef enum Ewl_Rotate Ewl_Rotate;
  */
 enum Ewl_Selection_Type
 {
-        EWL_SELECTION_TYPE_INDEX,        /**< Single index */
+        EWL_SELECTION_TYPE_INDEX,       /**< Single index */
         EWL_SELECTION_TYPE_RANGE        /**< Range of indices */
 };
 
@@ -858,7 +858,9 @@ enum Ewl_Selection_Mode
 {
         EWL_SELECTION_MODE_NONE,        /**< No selection allowed */
         EWL_SELECTION_MODE_SINGLE,      /**< Single select only */
-        EWL_SELECTION_MODE_MULTI        /**< Multi select mode */
+        EWL_SELECTION_MODE_MULTI,       /**< Multi select mode */
+        EWL_SELECTION_MODE_USER         /**< The user is responsible for the 
+                                                items' selection */
 };
 
 /**

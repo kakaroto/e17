@@ -423,7 +423,8 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
         ewl_mvc_selected_insert(mvc, NULL, NULL,
                         ecore_list_first_remove(list), 0, 0);
 
-        if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI)
+        if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI
+                        || mvc->selection_mode == EWL_SELECTION_MODE_USER)
         {
                 while ((sel = ecore_list_first_remove(list)))
                         ewl_mvc_selected_insert(mvc, NULL, NULL, sel, 0, 0);
@@ -1204,6 +1205,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         switch (ewl_mvc_selection_mode_get(mvc))
         {
                 case EWL_SELECTION_MODE_NONE:
+                case EWL_SELECTION_MODE_USER:
                         DRETURN(DLEVEL_STABLE);
                 case EWL_SELECTION_MODE_MULTI:
                         multi_select = TRUE;
