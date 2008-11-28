@@ -520,6 +520,7 @@ cdef extern from "Evas.h":
     Evas_Bool evas_object_image_alpha_get(Evas_Object *obj)
     void evas_object_image_smooth_scale_set(Evas_Object *obj, Evas_Bool smooth_scale)
     Evas_Bool evas_object_image_smooth_scale_get(Evas_Object *obj)
+    void evas_object_image_preload(Evas_Object *obj, Evas_Bool cancel)
     void evas_object_image_reload(Evas_Object *obj)
     Evas_Bool evas_object_image_save(Evas_Object *obj, char *file, char *key, char *flags)
     #Evas_Bool evas_object_image_pixels_import(Evas_Object *obj, Evas_Pixel_Import_Source *pixels)

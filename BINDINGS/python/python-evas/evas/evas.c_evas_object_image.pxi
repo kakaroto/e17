@@ -462,6 +462,30 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
     def rotate(self, int rotation):
         evas_object_image_rotate(self.obj, <Evas_Object_Image_Rotation>rotation)
 
+    def preload(self, int cancel=0):
+        """Preload image data asynchronously.
+
+        This will request Evas to create a thread to load image data
+        from file, decompress and convert to pre-multiplied format
+        used internally.
+
+        This will emit EVAS_CALLBACK_IMAGE_PRELOADED event callback
+        when it is done, see on_image_preloaded_add().
+
+        If one calls this function with cancel=True, then preload will
+        be canceled and load will hapen when image is made visible.
+
+        If image is required before preload is done (ie: pixels are
+        retrieved by user or when drawing), then it will be
+        automatically canceled and load will be synchronous.
+
+        @parm: B{cancel=False} if True, will cancel preload request.
+
+        @see L{on_image_preloaded_add}
+        """
+        evas_object_image_preload(self.obj, cancel)
+
+
     def reload(self):
         "Force reload of image data."
         evas_object_image_reload(self.obj)
