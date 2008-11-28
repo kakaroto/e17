@@ -1,0 +1,207 @@
+/*
+    Author:
+        Andres Blanc <andresblanc@gmail.com>
+
+    Supported Browsers:
+        ie7, opera9, konqueror4 and firefox3
+
+        Please use a different file for ie6, ie5, etc. hacks.
+        Assumes CSS reset and CSS base from YUI.
+*/
+
+/* Necessary to place the footer at the bottom of the page */
+html, body {
+    height: 100%;
+}
+
+#container {
+    min-height: 100%;
+}
+
+* html #container {
+    height: 100%;
+}
+
+/* Prevent floating elements overflowing containers */
+.clear
+{
+    clear: both;
+    width: 0px;
+    height: 0px;
+}
+
+/* Hide all the submenus but the current */
+.submenu ul
+{
+    display: none;
+}
+
+.submenu .current
+{
+    display: block;
+}
+
+
+/* Flexible & centered layout from 750 to 960 pixels */
+.layout
+{
+    height: 100%;
+    max-width: 960px;
+    min-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+/*     FIXME: (uncomment) Gridfox hack */
+/*     padding-right: 17px; */ 
+    padding-left: 17px;
+}
+
+#header
+{
+    width: 100%;
+    height: 136px;
+    background-image: url('../img/header_background.png'); 
+    background-repeat: repeat-x;
+
+}
+
+#header h1
+{
+    width: 63px;
+    height: 63px;
+    margin: 0px;
+    padding: 0px;
+    background-image: url("../img/logo.png");
+    background-repeat: no-repeat;
+    float: left;
+}
+
+#header h1 span
+{
+    display: none;
+}
+
+#header h2
+{
+    display: none;
+}
+
+#header .menu-container
+{
+    height: 100%;
+}
+
+#header .menu-container ul
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+#header .menu-container ul li
+{
+    list-style-type: none;
+    list-style-position: inside;
+    display: block;
+    float: right;
+}
+
+#header .menu
+{
+    height: 63px;
+    background-image: url("../img/header_menu_background.png");
+    background-repeat: repeat-x;
+    padding-right: 17px;
+}
+
+#header .menu a
+{
+    color: #cdcdcd;
+    text-decoration: none;
+    font-size: 1.1em;
+    line-height: 63px;
+    display: block;
+}
+
+#header .menu li
+{
+    height: 63px;
+    width: 160px;
+
+    text-align: center;
+
+    background-image: url("../img/header_menu_unselected_background.png");
+    background-repeat: no-repeat;
+}
+
+#header .menu li:hover
+{
+    background-image: url("../img/header_menu_hover_background.png");
+    background-repeat: no-repeat;
+}
+
+#header .menu li:hover a
+{
+    color: #FFFFFF;
+}
+
+#header .menu li.current
+{
+    background-image: url("../img/header_menu_current_background.png");
+    background-repeat: no-repeat;
+}
+
+
+#header .menu li.current a
+{
+    color: #646464;
+}
+
+#header .submenu
+{
+    margin-right: -1em; /* Align the Y axis of submenu & menu's right side */
+}
+
+#header .submenu li
+{
+    display: block;
+    height: 73px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#header .submenu a
+{
+    display: block;
+    height: 25px;
+    margin-top: 48px;
+
+    text-decoration: none;
+    color: #646464;
+}
+
+#header .submenu a:hover
+{
+    color: #000000;
+}
+
+#header .submenu li.current a
+{
+    height: 27px;
+    margin-top: 46px;
+
+    font-weight: bold;
+
+    background-image: url("../img/header_submenu_arrow.png");
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+#container
+{
+    background-color: #f3f3f3;
+}
+
+#footer
+{
+    clear: both;
+    position: relative;
+}
