@@ -438,6 +438,9 @@ cdef extern from "Evas.h":
     char *evas_object_name_get(Evas_Object *obj)
     Evas_Object *evas_object_name_find(Evas *e, char *name)
 
+    int evas_async_events_fd_get()
+    int evas_async_events_process()
+
     void evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, evas_event_callback_t func, void *data)
     void *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, evas_event_callback_t func)
 

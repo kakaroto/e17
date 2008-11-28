@@ -54,6 +54,34 @@ def render_method_list():
     evas_render_method_list_free(lst)
     return ret
 
+
+def async_events_fd_get():
+    """Retrive the file descriptor used to poll for asynchronous events.
+
+    If this is >= 0 it represents the file descriptor to poll in your
+    main loop. When there is something to read you should call
+    L{async_events_process()}.
+
+    @note ecore.evas already does this for you, you just need this if
+    you are not using ecore.evas.
+
+    @return: -1 on failure or the file descriptor on success (>= 0).
+    """
+    return evas_async_events_fd_get()
+
+
+def async_events_process():
+    """Process pending asynchronous events.
+
+    You should monitor the file descriptor returned by
+    L{async_events_fd_get()} and call this function when there is
+    something to read.
+
+    @return number of processed events.
+    """
+    return evas_async_events_process()
+
+
 cdef object canvas_mapping
 
 canvas_mapping = dict()
