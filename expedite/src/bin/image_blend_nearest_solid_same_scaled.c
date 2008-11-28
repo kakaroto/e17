@@ -48,8 +48,8 @@ static void _loop(double t, int f)
      {
         w0 = 80;
 	h0 = 80;
-	w = 5 + ((1.0 + cos((double)(f + (i * 10)) / (7.4 * SLOW) )) * w0 * 2);
-	h = 5 + ((1.0 + sin((double)(f + (i * 19)) / (12.6 * SLOW) )) * h0 * 2);
+	w = 40 + ((i % 3) * (w0 / 2));
+	h = 40 + ((i % 3) * (h0 / 2));
 	x = (win_w / 2) - (w / 2);
 	x += sin((double)(f + (i * 13)) / (36.7 * SLOW)) * (w0 / 2);
 	y = (win_h / 2) - (h / 2);

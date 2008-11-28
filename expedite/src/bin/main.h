@@ -68,7 +68,7 @@
 #include "about.h"
 
 #define OBNUM 128
-#define LOOPS 512
+#define LOOPS 128
 
 extern Evas *evas;
 extern int   win_w, win_h;

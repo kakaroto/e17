@@ -1342,8 +1342,8 @@ _engine_args(int argc, char **argv)
    evas_key_lock_add(evas, "Num_Lock");
    evas_key_lock_add(evas, "Scroll_Lock");
    evas_font_path_append(evas, buf);
-   evas_image_cache_set(evas, 0 * 1024 * 1024);
-   evas_font_cache_set(evas, 0 * 1024 * 1024);
+   evas_image_cache_set(evas, 4 * 1024 * 1024);
+   evas_font_cache_set(evas, 1 * 1024 * 1024);
 }
 
 int
