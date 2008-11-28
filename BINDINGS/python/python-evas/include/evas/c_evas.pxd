@@ -121,6 +121,14 @@ cdef extern from "Evas.h":
         EVAS_OBJECT_POINTER_MODE_NOGRAB
 
 
+    ctypedef enum Evas_Aspect_Control:
+        EVAS_ASPECT_CONTROL_NONE
+        EVAS_ASPECT_CONTROL_NEITHER
+        EVAS_ASPECT_CONTROL_HORIZONTAL
+        EVAS_ASPECT_CONTROL_VERTICAL
+        EVAS_ASPECT_CONTROL_BOTH
+
+
     ####################################################################
     # Structures
     #
@@ -383,6 +391,21 @@ cdef extern from "Evas.h":
     void evas_object_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
     void evas_object_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
     void evas_object_geometry_get(Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
+
+    void evas_object_size_hint_min_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
+    void evas_object_size_hint_min_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+    void evas_object_size_hint_max_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
+    void evas_object_size_hint_max_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+    void evas_object_size_hint_request_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
+    void evas_object_size_hint_request_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+    void evas_object_size_hint_aspect_get(Evas_Object *obj, Evas_Aspect_Control *aspect, Evas_Coord *w, Evas_Coord *h)
+    void evas_object_size_hint_aspect_set(Evas_Object *obj, Evas_Aspect_Control aspect, Evas_Coord w, Evas_Coord h)
+    void evas_object_size_hint_align_get(Evas_Object *obj, double *x, double *y)
+    void evas_object_size_hint_align_set(Evas_Object *obj, double x, double y)
+    void evas_object_size_hint_weight_get(Evas_Object *obj, double *x, double *y)
+    void evas_object_size_hint_weight_set(Evas_Object *obj, double x, double y)
+    void evas_object_size_hint_padding_get(Evas_Object *obj, Evas_Coord *l, Evas_Coord *r, Evas_Coord *t, Evas_Coord *b)
+    void evas_object_size_hint_padding_set(Evas_Object *obj, Evas_Coord l, Evas_Coord r, Evas_Coord t, Evas_Coord b)
 
     void evas_object_show(Evas_Object *obj)
     void evas_object_hide(Evas_Object *obj)

@@ -642,6 +642,288 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, r.x0, r.y0)
             evas_object_resize(self.obj, r._w, r._h)
 
+    def size_hint_min_get(self):
+        """Retrieve minimum size hint.
+
+        @rtype: tuple of integers (w, h)
+        """
+        cdef int w, h
+        evas_object_size_hint_min_get(self.obj, &w, &h)
+        return (w, h)
+
+    def size_hint_min_set(self, int w, int h):
+        """Set hint for minimum size.
+
+        This is a hint and not an enforcement. value 0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{w} horizontal value.
+        @parm: B{h} vertical value.
+        """
+        evas_object_size_hint_min_set(self.obj, w, h)
+
+    property size_hint_min:
+        """Hint about minimum size.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Value 0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_min_get()
+
+        def __set__(self, spec):
+            self.size_hint_min_set(*spec)
+
+    def size_hint_max_get(self):
+        """Retrieve maximum size hint.
+
+        @rtype: tuple of integers (w, h)
+        """
+        cdef int w, h
+        evas_object_size_hint_max_get(self.obj, &w, &h)
+        return (w, h)
+
+    def size_hint_max_set(self, int w, int h):
+        """Set hint for maximum size.
+
+        This is a hint and not an enforcement. value -1 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{w} horizontal value.
+        @parm: B{h} vertical value.
+        """
+        evas_object_size_hint_max_set(self.obj, w, h)
+
+    property size_hint_max:
+        """Hint about maximum size.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Value -1 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_max_get()
+
+        def __set__(self, spec):
+            self.size_hint_max_set(*spec)
+
+    def size_hint_request_get(self):
+        """Retrieve request size hint.
+
+        @rtype: tuple of integers (w, h)
+        """
+        cdef int w, h
+        evas_object_size_hint_request_get(self.obj, &w, &h)
+        return (w, h)
+
+    def size_hint_request_set(self, int w, int h):
+        """Set hint for request size.
+
+        This is a hint and not an enforcement. value 0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{w} horizontal value.
+        @parm: B{h} vertical value.
+        """
+        evas_object_size_hint_request_set(self.obj, w, h)
+
+    property size_hint_request:
+        """Hint about request size.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Value 0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_request_get()
+
+        def __set__(self, spec):
+            self.size_hint_request_set(*spec)
+
+    def size_hint_aspect_get(self):
+        """Retrieve aspect hint.
+
+        @rtype: tuple of integers (aspect, w, h)
+        """
+        cdef int w, h
+        cdef Evas_Aspect_Control aspect
+        evas_object_size_hint_aspect_get(self.obj, &aspect, &w, &h)
+        return (<int>aspect, w, h)
+
+    def size_hint_aspect_set(self, int aspect, int w, int h):
+        """Set hint for aspect.
+
+        This is a hint and not an enforcement. If aspect is
+        EVAS_ASPECT_CONTROL_NONE (0), then it's disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{aspect} aspect value, one of EVAS_ASPECT_CONTROL_*.
+        @parm: B{w} horizontal value.
+        @parm: B{h} vertical value.
+        """
+        evas_object_size_hint_aspect_set(self.obj, <Evas_Aspect_Control>aspect,
+                                         w, h)
+
+    property size_hint_aspect:
+        """Hint about aspect.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Aspect EVAS_ASPECT_CONTROL_NONE is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_aspect_get()
+
+        def __set__(self, spec):
+            self.size_hint_aspect_set(*spec)
+
+    def size_hint_align_get(self):
+        """Retrieve alignment hint.
+
+        @rtype: tuple of floats (x, y)
+        """
+        cdef double x, y
+        evas_object_size_hint_align_get(self.obj, &x, &y)
+        return (x, y)
+
+    def size_hint_align_set(self, float x, float y):
+        """Set hint for alignment.
+
+        This is a hint and not an enforcement. Accepted values are in
+        the 0.0 to 1.0 range, with the special value -1.0 used to
+        specify"justify" or "fill" by some users. See documentation of
+        possible users.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{x} horizontal value.
+        @parm: B{y} vertical value.
+        """
+        evas_object_size_hint_align_set(self.obj, x, y)
+
+    property size_hint_align:
+        """Hint about alignment.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Accepted values are in the 0.0 to 1.0 range, with the special
+        value -1.0 used to specify"justify" or "fill" by some users.
+        See documentation of possible users.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_align_get()
+
+        def __set__(self, spec):
+            self.size_hint_align_set(*spec)
+
+    def size_hint_weight_get(self):
+        """Retrieve weight hint.
+
+        @rtype: tuple of floats (x, y)
+        """
+        cdef double x, y
+        evas_object_size_hint_weight_get(self.obj, &x, &y)
+        return (x, y)
+
+    def size_hint_weight_set(self, float x, float y):
+        """Set hint for weight.
+
+        This is a hint and not an enforcement. Value 0.0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{x} horizontal value.
+        @parm: B{y} vertical value.
+        """
+        evas_object_size_hint_weight_set(self.obj, x, y)
+
+    property size_hint_weight:
+        """Hint about weight.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        Value 0.0 is disabled.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_weight_get()
+
+        def __set__(self, spec):
+            self.size_hint_weight_set(*spec)
+
+    def size_hint_padding_get(self):
+        """Retrieve padding hint.
+
+        @rtype: tuple of integers (l, r, t, b)
+        """
+        cdef int l, r, t, b
+        evas_object_size_hint_padding_get(self.obj, &l, &r, &t, &b)
+        return (l, r, t, b)
+
+    def size_hint_padding_set(self, int l, int r, int t, int b):
+        """Set hint for padding.
+
+        This is a hint and not an enforcement.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+
+        @parm: B{l} left value.
+        @parm: B{r} right value.
+        @parm: B{t} top value.
+        @parm: B{b} bottom value.
+        """
+        evas_object_size_hint_padding_set(self.obj, l, r, t, b)
+
+    property size_hint_padding:
+        """Hint about padding.
+
+        This is not an enforcement, just a hint that can be used by
+        other objects like Edje, boxes, tables and others.
+
+        When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
+        will be emitted.
+        """
+        def __get__(self):
+            return self.size_hint_padding_get()
+
+        def __set__(self, spec):
+            self.size_hint_padding_set(*spec)
+
     def move(self, int x, int y):
         "Same as L{pos_set()}."
         evas_object_move(self.obj, x, y)
