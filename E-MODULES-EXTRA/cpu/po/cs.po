@@ -1,0 +1,46 @@
+# Czech translation for Enlightenment DR17 - Cpu module
+# This file is distributed under the same license as Enlightenment DR17.
+# Josef Lusticky alias 'EVRAMP' <evramp@gamil.com>, 2008
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Cpu module (e17)\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"PO-Revision-Date: 2008-11-25 18:30+0100\n"
+"Last-Translator: Josef Lusticky <evramp@gmail.com>\n"
+"Language-Team: Enlightenment i18n Czech <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Czech\n"
+"X-Poedit-Country: CZECH REPUBLIC\n"
+
+#: ../e_mod_main.c:129
+msgid "Cpu"
+msgstr "Cpu"
+
+#: ../e_mod_main.c:363
+msgid "Fast (0.5 sec)"
+msgstr "Velmi rychle (0.5 s)"
+
+#: ../e_mod_main.c:370
+msgid "Medium (1 sec)"
+msgstr "Rychle (1 s)"
+
+#: ../e_mod_main.c:377
+msgid "Normal (2 sec)"
+msgstr "Normálně (2 s)"
+
+#: ../e_mod_main.c:384
+msgid "Slow (5 sec)"
+msgstr "Pomalu (5 s)"
+
+#: ../e_mod_main.c:391
+msgid "Very Slow (30 sec)"
+msgstr "Velmi pomalu (30 s)"
+
+#: ../e_mod_main.c:402
+msgid "Time Between Updates"
+msgstr "Čas mezi aktualizací"
+

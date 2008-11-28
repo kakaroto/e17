@@ -1,0 +1,101 @@
+# Czech translation for Enlightenment DR17 - Language module
+# This file is distributed under the same license as Enlightenment DR17.
+# Josef Lusticky alias 'EVRAMP' <evramp@gamil.com>, 2008
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Language\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:26+0100\n"
+"PO-Revision-Date: 2008-11-27 14:07+0100\n"
+"Last-Translator: Josef Lusticky <evramp@gmail.com>\n"
+"Language-Team: Enlightenment i18n Czech <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Czech\n"
+"X-Poedit-Country: CZECH REPUBLIC\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Nastavení modulu Jazyky"
+
+#: src/module/e_mod_config.c:174
+#: src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Dostupné jazyky"
+
+#: src/module/e_mod_config.c:182
+#: src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Vybrané jazyky"
+
+#: src/module/e_mod_config.c:198
+#: src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Nahoru"
+
+#: src/module/e_mod_config.c:203
+#: src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Dolů"
+
+#: src/module/e_mod_config.c:211
+#: src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Jazyk určuje:"
+
+#: src/module/e_mod_config.c:214
+#: src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Globální nastavení"
+
+#: src/module/e_mod_config.c:217
+#: src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Aktivní okno"
+
+#: src/module/e_mod_config.c:220
+#: src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Aplikace"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Model klávesnice"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Rozložení"
+
+#: src/module/e_mod_keybindings.c:6
+#: src/module/e_mod_main.c:113
+msgid "Language"
+msgstr "Jazyk"
+
+#: src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Přepnout na další jazyk"
+
+#: src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Přepnout na předchozí jazyk"
+
+#: src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr "Nastavení"
+
+#: src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr "Nastavení klávesových zkratek"
+
+#: src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr "Nastavení modulu"
+
+#~ msgid "Enlightenment Language Enhancment Module"
+#~ msgstr "Module amélioré de gestion des langes d'Enlightenment"
+#~ msgid "This module is used to switch between input languages."
+#~ msgstr "Ce module sert à changé la lange saisie du clavier"
+
