@@ -778,27 +778,6 @@ AclassConfigLoadConfig(const char *name)
    fclose(fs);
 }
 
-/* This is now only for backward compatibility */
-static void
-AclassConfigLoadUser(void)
-{
-   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
-   FILE               *fs;
-
-   Esnprintf(s, sizeof(s), "%s.bindings", EGetSavePrefixCommon());
-   fs = fopen(s, "r");
-   if (!fs)
-      return;
-
-   AclassConfigLoad2(fs);
-
-   fclose(fs);
-
-   /* This file should no longer be used. Rename. */
-   Esnprintf(ss, sizeof(ss), "%s.old", s);
-   E_mv(s, ss);
-}
-
 static void
 AclassConfigWrite(const ActionClass * ac, void (*prf) (const char *fmt, ...))
 {
@@ -1136,7 +1115,6 @@ AclassSighan(int sig, void *prm __UNUSED__)
      {
      case ESIGNAL_INIT:
 	AclassConfigLoadConfig("bindings.cfg");
-	AclassConfigLoadUser();
 	break;
      }
 }
