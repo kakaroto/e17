@@ -59,20 +59,18 @@ html, body {
 {
     width: 100%;
     height: 136px;
-    background-image: url('../img/header_background.png'); 
+    background-image: url('../img/header_background.png');
     background-repeat: repeat-x;
-
 }
 
 #header h1
 {
     width: 63px;
     height: 63px;
-    margin: 0px;
-    padding: 0px;
+    background-color: red;
     background-image: url("../img/logo.png");
     background-repeat: no-repeat;
-    float: left;
+    position: absolute;
 }
 
 #header h1 span
@@ -85,6 +83,7 @@ html, body {
     display: none;
 }
 
+/* .menu-container is used to set properties common to .menu and .submenu */
 #header .menu-container
 {
     height: 100%;
@@ -92,14 +91,12 @@ html, body {
 
 #header .menu-container ul
 {
-    margin: 0px;
-    padding: 0px;
-}
-
-#header .menu-container ul li
-{
     list-style-type: none;
     list-style-position: inside;
+}
+
+#header .menu-container li
+{
     display: block;
     float: right;
 }
@@ -107,29 +104,45 @@ html, body {
 #header .menu
 {
     height: 63px;
+    display: block;
     background-image: url("../img/header_menu_background.png");
     background-repeat: repeat-x;
-    padding-right: 17px;
 }
 
-#header .menu a
+#header .menu ul
 {
-    color: #cdcdcd;
-    text-decoration: none;
-    font-size: 1.1em;
-    line-height: 63px;
+    height: 63px;
     display: block;
+    background-image: url("../img/header_menu_background_last.png");
+    background-repeat: no-repeat;
+    background-position: top right;
+    padding-right: 17px;
 }
 
 #header .menu li
 {
-    height: 63px;
     width: 160px;
-
     text-align: center;
-
     background-image: url("../img/header_menu_unselected_background.png");
     background-repeat: no-repeat;
+}
+
+#header .menu li.last
+{
+    display: block;
+    width: 17px;
+    background-image: url("../img/header_menu_background_last.png");
+    background-repeat: no-repeat;
+}
+
+#header .menu a
+{
+    display: block;
+    color: #cdcdcd;
+    text-decoration: none;
+    font-size: 1.1em;
+    line-height: 63px; /* Determines the menu's height */
+    text-align: center;
 }
 
 #header .menu li:hover
@@ -149,31 +162,36 @@ html, body {
     background-repeat: no-repeat;
 }
 
-
 #header .menu li.current a
 {
     color: #646464;
 }
 
-#header .submenu
+#header .submenu ul.current
 {
-    margin-right: -1em; /* Align the Y axis of submenu & menu's right side */
+    display: block;
+    float: right;
+    clear: both;
+    background-image: url("../img/header_submenu_separator.png");
+    background-repeat: no-repeat;
+    background-position: bottom left;
 }
 
 #header .submenu li
 {
-    display: block;
-    height: 73px;
-    padding-left: 1em;
-    padding-right: 1em;
+    text-align: center;
+    background-image: url("../img/header_submenu_separator.png");
+    background-repeat: no-repeat;
+    background-position: bottom right;
 }
 
 #header .submenu a
 {
     display: block;
-    height: 25px;
-    margin-top: 48px;
-
+    margin-top: 39px; /* Heigh under menu + 2 pixels to cover header shadows */
+    line-height: 34px;
+    padding-left: 2em;
+    padding-right: 2em;
     text-decoration: none;
     color: #646464;
 }
@@ -185,19 +203,12 @@ html, body {
 
 #header .submenu li.current a
 {
-    height: 27px;
-    margin-top: 46px;
-
     font-weight: bold;
-
-    background-image: url("../img/header_submenu_arrow.png");
-    background-repeat: no-repeat;
-    background-position: bottom center;
 }
 
 #container
 {
-    background-color: #f3f3f3;
+/*     background-color: #f3f3f3; */
 }
 
 #footer
