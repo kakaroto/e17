@@ -6,11 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2008-11-29 22:00+0800\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Language-Team: MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
+#, fuzzy
+msgid "Configuration"
+msgstr "Huomautuksen asetukset"
 
 #: ../src/e_mod_main.c:118
 msgid "Notification Box"
@@ -64,7 +69,7 @@ msgstr ""
 msgid "Notification Configuration"
 msgstr "Huomautuksen asetukset"
 
-#: ../src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr ""
 
@@ -72,15 +77,15 @@ msgstr ""
 msgid "Levels of urgency to popup : "
 msgstr ""
 
-#: ../src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr ""
 
-#: ../src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr ""
 
-#: ../src/e_mod_config.c:93
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr ""
 
@@ -117,4 +122,29 @@ msgstr ""
 #: ../src/e_mod_config.c:124
 #, c-format
 msgid "%2.0f pixels"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:37
+#, fuzzy
+msgid "Notification Box Configuration"
+msgstr "Huomautuksen asetukset"
+
+#: ../src/e_mod_config_item.c:82
+msgid "General Settings"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:83
+msgid "Show Icon Label"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:85
+msgid "Show the popup on mouse over"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:87
+msgid "Focus the source window when clicking"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:92
+msgid "Levels of urgency to store : "
 msgstr ""

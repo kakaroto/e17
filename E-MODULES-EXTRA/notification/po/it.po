@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 10:35+0200\n"
+"POT-Creation-Date: 2008-11-29 22:00+0800\n"
 "PO-Revision-Date: 2008-08-25 20:36+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,110 +14,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: src/e_mod_box.c:675 src/e_mod_box.c:823
+#: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_config.c:42
-msgid "Notification Configuration"
-msgstr "Configurazione modulo Notification"
-
-#: src/e_mod_config.c:86 src/e_mod_config_item.c:91
-msgid "Urgency"
-msgstr "Urgenza"
-
-#: src/e_mod_config.c:87
-msgid "Levels of urgency to popup : "
-msgstr "Livelli di urgenza da notificare:"
-
-#: src/e_mod_config.c:89 src/e_mod_config_item.c:94
-msgid "low"
-msgstr "basso"
-
-#: src/e_mod_config.c:91 src/e_mod_config_item.c:96
-msgid "normal"
-msgstr "normale"
-
-#: src/e_mod_config.c:93 src/e_mod_config_item.c:98
-msgid "critical"
-msgstr "critico"
-
-#: src/e_mod_config.c:98
-msgid "Placement"
-msgstr "Posizione"
-
-#: src/e_mod_config.c:99
-#, c-format
-msgid "%2.0f x"
-msgstr "%2.0f x"
-
-#: src/e_mod_config.c:102
-#, c-format
-msgid "%2.0f y"
-msgstr "%2.0f y"
-
-#: src/e_mod_config.c:107
-msgid "Direction"
-msgstr "Direzione"
-
-#: src/e_mod_config.c:108
-msgid "Direction in which popups will stack themselves : "
-msgstr "Direzione per l'affiancamento dei popup:"
-
-#: src/e_mod_config.c:121
-msgid "Gap"
-msgstr "Intervallo"
-
-#: src/e_mod_config.c:122
-msgid "Size of the gap between two popups : "
-msgstr "Intervallo tra due popup:"
-
-#: src/e_mod_config.c:124
-#, c-format
-msgid "%2.0f pixels"
-msgstr "%2.0f pixel"
-
-#: src/e_mod_config_item.c:37
-msgid "Notification Box Configuration"
-msgstr "Configurazione modulo Notification"
-
-#: src/e_mod_config_item.c:82
-msgid "General Settings"
-msgstr "Impostazioni generali"
-
-#: src/e_mod_config_item.c:83
-msgid "Show Icon Label"
-msgstr "Mostra etichetta icona"
-
-#: src/e_mod_config_item.c:85
-msgid "Show the popup on mouse over"
-msgstr "Mostra popup al passaggio del mouse"
-
-#: src/e_mod_config_item.c:87
-msgid "Focus the source window when clicking"
-msgstr "Sposta fuoco su finestra sorgente al click"
-
-#: src/e_mod_config_item.c:92
-msgid "Levels of urgency to store : "
-msgstr "Livelli di urgenza da salvare:"
-
-#: src/e_mod_main.c:118
+#: ../src/e_mod_main.c:118
 msgid "Notification Box"
 msgstr "Notification"
 
-#: src/e_mod_main.c:171
+#. register config panel entry
+#: ../src/e_mod_main.c:171
 msgid "Extensions"
 msgstr "Estensioni"
 
-#: src/e_mod_main.c:173
+#: ../src/e_mod_main.c:173
 msgid "Notification"
 msgstr "Notification"
 
-#: src/e_mod_main.c:216 src/e_mod_main.c:234
+#: ../src/e_mod_main.c:216 ../src/e_mod_main.c:234
 msgid "Notification Configuration Updated"
 msgstr "Configurazione modulo Notification aggiornata"
 
-#: src/e_mod_main.c:217
+#: ../src/e_mod_main.c:217
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -137,7 +55,7 @@ msgstr ""
 "Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
 "l'inconveniente."
 
-#: src/e_mod_main.c:235
+#: ../src/e_mod_main.c:235
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -154,14 +72,97 @@ msgstr ""
 "vostra<br>configurazione è stata adesso ripristinata ai valori predefiniti."
 "<br>Ci scusiamo per l'inconveniente."
 
-#: src/e_mod_main.c:269
+#: ../src/e_mod_main.c:269
 msgid "Error During DBus Init!"
 msgstr "Errore nell'inizializzazione di DBus!"
 
-#: src/e_mod_main.c:270
+#: ../src/e_mod_main.c:270
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr ""
 "Errore nell'inizializzazione di DBus! Si prega di controllare che dbus sia "
 "correttamente installato e in funzione."
+
+#: ../src/e_mod_config.c:42
+msgid "Notification Configuration"
+msgstr "Configurazione modulo Notification"
+
+#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
+msgid "Urgency"
+msgstr "Urgenza"
+
+#: ../src/e_mod_config.c:87
+msgid "Levels of urgency to popup : "
+msgstr "Livelli di urgenza da notificare:"
+
+#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
+msgid "low"
+msgstr "basso"
+
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
+msgid "normal"
+msgstr "normale"
+
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
+msgid "critical"
+msgstr "critico"
+
+#: ../src/e_mod_config.c:98
+msgid "Placement"
+msgstr "Posizione"
+
+#: ../src/e_mod_config.c:99
+#, c-format
+msgid "%2.0f x"
+msgstr "%2.0f x"
+
+#: ../src/e_mod_config.c:102
+#, c-format
+msgid "%2.0f y"
+msgstr "%2.0f y"
+
+#: ../src/e_mod_config.c:107
+msgid "Direction"
+msgstr "Direzione"
+
+#: ../src/e_mod_config.c:108
+msgid "Direction in which popups will stack themselves : "
+msgstr "Direzione per l'affiancamento dei popup:"
+
+#: ../src/e_mod_config.c:121
+msgid "Gap"
+msgstr "Intervallo"
+
+#: ../src/e_mod_config.c:122
+msgid "Size of the gap between two popups : "
+msgstr "Intervallo tra due popup:"
+
+#: ../src/e_mod_config.c:124
+#, c-format
+msgid "%2.0f pixels"
+msgstr "%2.0f pixel"
+
+#: ../src/e_mod_config_item.c:37
+msgid "Notification Box Configuration"
+msgstr "Configurazione modulo Notification"
+
+#: ../src/e_mod_config_item.c:82
+msgid "General Settings"
+msgstr "Impostazioni generali"
+
+#: ../src/e_mod_config_item.c:83
+msgid "Show Icon Label"
+msgstr "Mostra etichetta icona"
+
+#: ../src/e_mod_config_item.c:85
+msgid "Show the popup on mouse over"
+msgstr "Mostra popup al passaggio del mouse"
+
+#: ../src/e_mod_config_item.c:87
+msgid "Focus the source window when clicking"
+msgstr "Sposta fuoco su finestra sorgente al click"
+
+#: ../src/e_mod_config_item.c:92
+msgid "Levels of urgency to store : "
+msgstr "Livelli di urgenza da salvare:"

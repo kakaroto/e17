@@ -5,140 +5,133 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire 0.1\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-11-27 07:44+0400\n"
+"POT-Creation-Date: 2008-11-29 21:59+0800\n"
 "PO-Revision-Date: 2008-11-27 13:19+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
+"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: src/edje_frontend_game.cpp:61
-#: src/edje_frontend_gui.cpp:701
-#: src/edje_frontend_gui.cpp:755
+#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
+#: ../src/edje_frontend_gui.cpp:755
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
 msgstr "Erreur de Elitaire dans %s: Valeur de l'élément manquante !\n"
 
-#: src/edje_frontend_game.cpp:68
-#: src/edje_frontend_gui.cpp:708
-#: src/edje_frontend_gui.cpp:762
+#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
+#: ../src/edje_frontend_gui.cpp:762
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
 msgstr "Erreur de Elitaire dans %s: Groupe de l'élément manquant !\n"
 
-#: src/edje_frontend_game.cpp:101
+#: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
 msgstr "Vous avez gagné !"
 
-#: src/edje_frontend_game.cpp:108
+#: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
 msgstr "Vous avez perdu !"
 
-#: src/edje_frontend_game.cpp:118
+#: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
 msgstr "Partie terminée"
 
-#: src/edje_frontend_game.cpp:223
+#: ../src/edje_frontend_game.cpp:223
 #, c-format
 msgid "Elitaire Error: cards file %s not found!\n"
 msgstr "Erreur de Elitaire: Le fichier de cartes %s est introuvable !\n"
 
-#: src/edje_frontend_game.cpp:234
+#: ../src/edje_frontend_game.cpp:234
 #, c-format
 msgid "Elitaire Error in %s: elitaire_card_field does not exist!\n"
 msgstr "Erreur de Elitaire dans %s: elitaire_card_field n'existe pas !\n"
 
-#: src/edje_frontend_gui.cpp:208
+#: ../src/edje_frontend_gui.cpp:208
 #, c-format
 msgid "Elitaire Error: unable to find %s theme!\n"
 msgstr "Erreur de Elitaire: Le thème %s est introuvable !\n"
 
-#: src/edje_frontend_gui.cpp:404
+#. set the label text
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
 msgstr "Jeux"
 
-#: src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
 msgstr "Thèmes"
 
-#: src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
 msgstr "Cartes"
 
-#: src/edje_frontend_menu.cpp:24
-#: src/edje_frontend_menu.cpp:57
+#: ../src/edje_frontend_menu.cpp:24 ../src/edje_frontend_menu.cpp:57
 msgid "CONTEXT|Undo"
 msgstr "Annuler"
 
-#: src/edje_frontend_menu.cpp:25
-#: src/edje_frontend_menu.cpp:61
+#: ../src/edje_frontend_menu.cpp:25 ../src/edje_frontend_menu.cpp:61
 msgid "CONTEXT|Highscore"
 msgstr "Classement"
 
-#: src/edje_frontend_menu.cpp:26
-#: src/edje_frontend_menu.cpp:63
+#: ../src/edje_frontend_menu.cpp:26 ../src/edje_frontend_menu.cpp:63
 msgid "CONTEXT|Preferences"
 msgstr "Préférences"
 
-#: src/edje_frontend_menu.cpp:27
-#: src/edje_frontend_menu.cpp:65
+#: ../src/edje_frontend_menu.cpp:27 ../src/edje_frontend_menu.cpp:65
 msgid "CONTEXT|About"
 msgstr "À propos"
 
-#: src/edje_frontend_menu.cpp:28
-#: src/edje_frontend_menu.cpp:67
+#: ../src/edje_frontend_menu.cpp:28 ../src/edje_frontend_menu.cpp:67
 msgid "CONTEXT|Help"
 msgstr "Aide"
 
-#: src/edje_frontend_menu.cpp:79
+#: ../src/edje_frontend_menu.cpp:79
 msgid "CONTEXT|New"
 msgstr "Nouveau"
 
-#: src/eli_app.cpp:290
+#: ../src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "Erreur de Elitaire: Aucun fichier de thème dans %s !\n"
 
-#: src/eli_app.cpp:306
+#: ../src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Erreur de Elitaire: Aucun fichier de cartes dans %s !\n"
 
-#: src/elitaire_card.cpp:49
-#: src/elitaire_card.cpp:221
+#: ../src/elitaire_card.cpp:49 ../src/elitaire_card.cpp:221
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
 msgstr "Erreur de Elitaire: La carte %s est manquante !\n"
 
-#: src/elitaire_card.cpp:55
-#: src/elitaire_card.cpp:227
+#: ../src/elitaire_card.cpp:55 ../src/elitaire_card.cpp:227
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
 msgstr "Erreur de Elitaire: L'image de fond est manquante !\n"
 
-#: src/elitaire_card_jobs.cpp:394
+#: ../src/elitaire_card_jobs.cpp:394
 #, c-format
 msgid "Elitaire Error: The shadow pic is missed!\n"
 msgstr "Erreur de Elitaire: L'image de l'ombre est manquante !\n"
 
-#: src/elitaire.cpp:134
+#: ../src/elitaire.cpp:134
 #, c-format
 msgid "Elitaire Error: unknown game %s\n"
 msgstr "Erreur de Elitaire: Jeu %s inconnu !\n"
 
-#: src/elitaire.cpp:221
+#: ../src/elitaire.cpp:221
 #, c-format
 msgid "Elitaire Error: Callback registering failed!\n"
 msgstr "Erreur de Elitaire: Échec du registre de rappel !\n"
 
-#: src/ewl_dialog_about.cpp:19
+#: ../src/ewl_dialog_about.cpp:19
 msgid "About"
 msgstr "À propos"
 
-#: src/ewl_dialog_about.cpp:38
+#: ../src/ewl_dialog_about.cpp:38
 #, c-format
 msgid ""
 "%s version %s\n"
@@ -163,115 +156,109 @@ msgstr ""
 "  %s\n"
 "  %s"
 
-#: src/ewl_dialog_config.cpp:41
+#: ../src/ewl_dialog_config.cpp:41
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/ewl_dialog_config.cpp:86
+#: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
 msgstr "Graphisme"
 
-#: src/ewl_dialog_config.cpp:93
-#: src/ewl_dialog_config.cpp:286
+#: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
 msgstr "animations"
 
-#: src/ewl_dialog_config.cpp:102
-#: src/ewl_dialog_config.cpp:289
+#: ../src/ewl_dialog_config.cpp:102 ../src/ewl_dialog_config.cpp:289
 msgid "shadows"
 msgstr "ombres"
 
-#: src/ewl_dialog_config.cpp:118
+#: ../src/ewl_dialog_config.cpp:118
 msgid "velocity:"
 msgstr "vélocité:"
 
-#: src/ewl_dialog_config.cpp:150
+#: ../src/ewl_dialog_config.cpp:150
 msgid "frame rate:"
 msgstr "Images par seconde:"
 
-#: src/ewl_dialog_config.cpp:182
+#: ../src/ewl_dialog_config.cpp:182
 msgid "Laziness"
 msgstr "Lenteur"
 
-#: src/ewl_dialog_config.cpp:187
-#: src/ewl_dialog_config.cpp:301
+#: ../src/ewl_dialog_config.cpp:187 ../src/ewl_dialog_config.cpp:301
 msgid "normal mode"
 msgstr "mode normal"
 
-#: src/ewl_dialog_config.cpp:195
-#: src/ewl_dialog_config.cpp:298
+#: ../src/ewl_dialog_config.cpp:195 ../src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
 msgstr "mode lent"
 
-#: src/ewl_dialog_config.cpp:211
+#: ../src/ewl_dialog_config.cpp:211
 msgid "Render Engine"
 msgstr "Moteur de rendu"
 
-#: src/ewl_dialog_config.cpp:219
+#: ../src/ewl_dialog_config.cpp:219
 msgid "Changes only affect after new start"
 msgstr "Redémarrage de l'application requise pour tout changement"
 
-#: src/ewl_dialog_config.cpp:226
-#: src/ewl_dialog_config.cpp:292
+#: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
 msgstr "Logiciel"
 
-#: src/ewl_dialog_config.cpp:234
-#: src/ewl_dialog_config.cpp:295
+#: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
 msgstr "OpenGL (experimental)"
 
-#: src/ewl_dialog_config.cpp:271
+#: ../src/ewl_dialog_config.cpp:271
 #, c-format
 msgid "Elitaire Error: Could not save configuration.\n"
 msgstr "Erreur de Elitaire: Sauvegarde de la configuration impossible.\n"
 
-#: src/ewl_dialog_hiscore.cpp:50
+#: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
 msgstr "Meilleur score"
 
-#: src/ewl_dialog_hiscore.cpp:119
+#: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
 msgstr "Nom"
 
-#: src/ewl_dialog_hiscore.cpp:145
+#: ../src/ewl_dialog_hiscore.cpp:145
 msgid "Please insert your name"
 msgstr "Veuillez entrer votre nom"
 
-#: src/ewl_dialog_hiscore.cpp:218
+#: ../src/ewl_dialog_hiscore.cpp:218
 msgid "Won Games:"
 msgstr "Parties gagnées:"
 
-#: src/ewl_dialog_hiscore.cpp:233
+#: ../src/ewl_dialog_hiscore.cpp:233
 msgid "Lost Games:"
 msgstr "Parties perdues:"
 
-#: src/ewl_dialog_hiscore.cpp:248
+#: ../src/ewl_dialog_hiscore.cpp:248
 msgid "relative Quote:"
 msgstr "Quota:"
 
-#: src/main.cpp:33
+#: ../src/main.cpp:33
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore\n"
 msgstr "Erreur de Elitaire: Initialisation de Ecore impossible\n"
 
-#: src/main.cpp:37
+#: ../src/main.cpp:37
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore File\n"
 msgstr "Erreur de Elitaire: Initialisation du fichier Ecore impossible\n"
 
-#: src/main.cpp:42
+#: ../src/main.cpp:42
 #, c-format
 msgid "Elitaire Error: Cannot init Edje\n"
 msgstr "Erreur de Elitaire: Initialisation de Edje impossible\n"
 
-#: src/main.cpp:47
+#: ../src/main.cpp:47
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore Config\n"
-msgstr "Erreur de Elitaire: Impossible d'initialiser la configuration de Ecore\n"
+msgstr ""
+"Erreur de Elitaire: Impossible d'initialiser la configuration de Ecore\n"
 
-#: src/main.cpp:52
+#: ../src/main.cpp:52
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
 msgstr "Erreur de Elitaire: Initialisation de Ewl impossible\n"
-

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-23 20:16+0800\n"
+"POT-Creation-Date: 2008-11-29 22:00+0800\n"
 "PO-Revision-Date: 2008-11-11 09:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -15,6 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
+#, fuzzy
+msgid "Configuration"
+msgstr "Ρύθμιση Ειδοποίησης"
 
 #: ../src/e_mod_main.c:118
 msgid "Notification Box"
@@ -68,7 +73,7 @@ msgstr ""
 msgid "Notification Configuration"
 msgstr "Ρύθμιση Ειδοποίησης"
 
-#: ../src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Προτεραιότητα"
 
@@ -76,15 +81,15 @@ msgstr "Προτεραιότητα"
 msgid "Levels of urgency to popup : "
 msgstr "Επίπεδα προτεραιότητας των ειδοποιήσεων :"
 
-#: ../src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr "χαμηλό"
 
-#: ../src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "κανονικό"
 
-#: ../src/e_mod_config.c:93
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "κρίσιμο"
 
@@ -122,3 +127,29 @@ msgstr "Το μέγεθος του κενού ανάμεσα στις ειδοπ
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f pixel"
+
+#: ../src/e_mod_config_item.c:37
+#, fuzzy
+msgid "Notification Box Configuration"
+msgstr "Ρύθμιση Ειδοποίησης"
+
+#: ../src/e_mod_config_item.c:82
+msgid "General Settings"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:83
+msgid "Show Icon Label"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:85
+msgid "Show the popup on mouse over"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:87
+msgid "Focus the source window when clicking"
+msgstr ""
+
+#: ../src/e_mod_config_item.c:92
+#, fuzzy
+msgid "Levels of urgency to store : "
+msgstr "Επίπεδα προτεραιότητας των ειδοποιήσεων :"

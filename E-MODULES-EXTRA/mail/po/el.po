@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 19:12+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-29 22:00+0800\n"
 "PO-Revision-Date: 2008-11-28 22:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -17,153 +17,152 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:53
-msgid "Mail Configuration"
-msgstr "Ρύθμιση Μηνύματος"
-
-#: e_mod_config.c:96 e_mod_config_box.c:164
-msgid "General Settings"
-msgstr "Γενικές Ρυθμίσεις"
-
-#: e_mod_config.c:98
-msgid "Always Show Labels"
-msgstr "Εμφάνιση Ετικετών Πάντα"
-
-#: e_mod_config.c:101
-msgid "Show Mailbox Popup"
-msgstr "Εμφάνιση Ειδοποίησης Ταχυδρομικού Κουτιού"
-
-#: e_mod_config.c:104
-msgid "Show All Boxes In Popup"
-msgstr "Εμφάνιση όλων των κουτιών στην Ειδοποίηση"
-
-#: e_mod_config.c:106
-msgid "Check Interval"
-msgstr "Χρονικό Διάστημα Ενημέρωσης"
-
-#: e_mod_config.c:109
-#, c-format
-msgid "%2.0f minutes"
-msgstr "%2.0f λεπτά"
-
-#: e_mod_config.c:114
-msgid "Mail Boxes"
-msgstr "Γραμματοκιβώτια"
-
-#: e_mod_config.c:124
-msgid "Add"
-msgstr "Προσθήκη"
-
-#: e_mod_config.c:128
-msgid "Delete"
-msgstr "Διαγραφή"
-
-#: e_mod_config.c:134
-msgid "Configure..."
-msgstr "Ρύθμιση..."
-
-#: e_mod_config_box.c:71
+#: ../e_mod_config_box.c:71
 msgid "Mailbox Configuration"
 msgstr "Ρύθμιση Γραμματοκιβωτίου"
 
-#: e_mod_config_box.c:166
+#: ../e_mod_config_box.c:163 ../e_mod_config.c:94
+msgid "General Settings"
+msgstr "Γενικές Ρυθμίσεις"
+
+#: ../e_mod_config_box.c:165
 msgid "Start Program When New Mail Arrives"
 msgstr "Εκκίνηση προγράμματος κατά την παραλαβή νέου μηνύματος"
 
-#: e_mod_config_box.c:171
+#: ../e_mod_config_box.c:170
 msgid "Program:"
 msgstr "Πρόγραμμα:"
 
-#: e_mod_config_box.c:183
+#: ../e_mod_config_box.c:182
 msgid "Mailbox Type"
 msgstr "Τύπος Γραμματοκιβωτίου"
 
-#: e_mod_config_box.c:185
+#: ../e_mod_config_box.c:184
 msgid "Pop3"
 msgstr "Pop3"
 
-#: e_mod_config_box.c:188
+#: ../e_mod_config_box.c:187
 msgid "Imap"
 msgstr "Imap"
 
-#: e_mod_config_box.c:191
+#: ../e_mod_config_box.c:190
 msgid "Maildir"
 msgstr ""
 
-#: e_mod_config_box.c:194
+#: ../e_mod_config_box.c:193
 msgid "Mbox"
 msgstr ""
 
-#: e_mod_config_box.c:197
+#: ../e_mod_config_box.c:196
 msgid "Monitor Mbox file permanently"
 msgstr ""
 
-#: e_mod_config_box.c:214
+#: ../e_mod_config_box.c:213
 msgid "Port Settings"
 msgstr "Ρυθμίσεις Πόρτας"
 
-#: e_mod_config_box.c:216
+#: ../e_mod_config_box.c:215
 msgid "Use SSL:"
 msgstr "Χρήση SSL:"
 
-#: e_mod_config_box.c:223
+#: ../e_mod_config_box.c:222
 msgid "v2"
 msgstr "v2"
 
-#: e_mod_config_box.c:226
+#: ../e_mod_config_box.c:225
 msgid "v3"
 msgstr "v3"
 
-#: e_mod_config_box.c:230
+#: ../e_mod_config_box.c:229
 msgid "Port:"
 msgstr "Πόρτα:"
 
-#: e_mod_config_box.c:236
+#: ../e_mod_config_box.c:235
 #, fuzzy
 msgid "Local:"
 msgstr "Τοπικό:"
 
-#: e_mod_config_box.c:242
+#: ../e_mod_config_box.c:241
 msgid "Mailbox Settings"
 msgstr "Ρυθμίσεις Γραμματοκιβωτίου"
 
-#: e_mod_config_box.c:243
+#: ../e_mod_config_box.c:242
 msgid "Name:"
 msgstr "Όνομα:"
 
-#: e_mod_config_box.c:248
+#: ../e_mod_config_box.c:247
 msgid "Mail Host:"
 msgstr "Υπολογιστής Μηνύματων:"
 
-#: e_mod_config_box.c:253
+#: ../e_mod_config_box.c:252
 msgid "Username:"
 msgstr "Όνομα Χρήστη:"
 
-#: e_mod_config_box.c:258
+#: ../e_mod_config_box.c:257
 msgid "Password:"
 msgstr "Κωδικός Χρήστη:"
 
-#: e_mod_config_box.c:264
+#: ../e_mod_config_box.c:263
 msgid "New Mail Path:"
 msgstr "Νέα Διαδρομή Μηνύματος:"
 
-#: e_mod_config_box.c:276
+#: ../e_mod_config_box.c:275
 msgid "Current Mail Path:"
 msgstr "Τρέχουσα Διαδρομή Μηνύματος:"
 
-#: e_mod_config_box.c:434
+#: ../e_mod_config_box.c:433
 msgid "Inbox"
 msgstr "Εισερχόμενα"
 
-#: e_mod_main.c:189
+#: ../e_mod_config.c:53
+msgid "Mail Configuration"
+msgstr "Ρύθμιση Μηνύματος"
+
+#: ../e_mod_config.c:96
+msgid "Always Show Labels"
+msgstr "Εμφάνιση Ετικετών Πάντα"
+
+#: ../e_mod_config.c:99
+msgid "Show Mailbox Popup"
+msgstr "Εμφάνιση Ειδοποίησης Ταχυδρομικού Κουτιού"
+
+#: ../e_mod_config.c:102
+msgid "Show All Boxes In Popup"
+msgstr "Εμφάνιση όλων των κουτιών στην Ειδοποίηση"
+
+#: ../e_mod_config.c:104
+msgid "Check Interval"
+msgstr "Χρονικό Διάστημα Ενημέρωσης"
+
+#: ../e_mod_config.c:107
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f λεπτά"
+
+#: ../e_mod_config.c:112
+msgid "Mail Boxes"
+msgstr "Γραμματοκιβώτια"
+
+#: ../e_mod_config.c:122
+msgid "Add"
+msgstr "Προσθήκη"
+
+#: ../e_mod_config.c:126
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: ../e_mod_config.c:132
+msgid "Configure..."
+msgstr "Ρύθμιση..."
+
+#: ../e_mod_main.c:189
 msgid "Mail"
 msgstr "Ταχυδρομείο"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "Ταχυδρομικά Κουτιά"
 
-#: e_mod_main.c:266
+#: ../e_mod_main.c:266
 msgid "Configuration"
 msgstr "Ρύθμιση"
-

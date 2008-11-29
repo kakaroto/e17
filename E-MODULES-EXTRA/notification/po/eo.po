@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2008-11-29 22:00+0800\n"
 "PO-Revision-Date: 2008-04-17 22:22+0200\n"
 "Last-Translator:  <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,6 +15,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
+msgid "Configuration"
+msgstr "Agordo"
 
 #: ../src/e_mod_main.c:118
 msgid "Notification Box"
@@ -68,7 +72,7 @@ msgstr ""
 msgid "Notification Configuration"
 msgstr "Agordo de la modulo Atentigo"
 
-#: ../src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Urgxo"
 
@@ -76,15 +80,15 @@ msgstr "Urgxo"
 msgid "Levels of urgency to popup : "
 msgstr "Niveloj de urgxo sxprucfenestrendaj:"
 
-#: ../src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr "malalta"
 
-#: ../src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "normala"
 
-#: ../src/e_mod_config.c:93
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "kritika"
 
@@ -123,23 +127,26 @@ msgstr "Intervalo inter du sxprucfenestroj:"
 msgid "%2.0f pixels"
 msgstr "%2.0f rastrumeroj"
 
-#~ msgid "Configuration"
-#~ msgstr "Agordo"
+#: ../src/e_mod_config_item.c:37
+msgid "Notification Box Configuration"
+msgstr "Agordo de la kesto de atentigo"
 
-#~ msgid "Notification Box Configuration"
-#~ msgstr "Agordo de la kesto de atentigo"
+#: ../src/e_mod_config_item.c:82
+msgid "General Settings"
+msgstr "Gxeneralaj agordoj"
 
-#~ msgid "General Settings"
-#~ msgstr "Gxeneralaj agordoj"
+#: ../src/e_mod_config_item.c:83
+msgid "Show Icon Label"
+msgstr "Vidigi piktograman etikedon"
 
-#~ msgid "Show Icon Label"
-#~ msgstr "Vidigi piktograman etikedon"
+#: ../src/e_mod_config_item.c:85
+msgid "Show the popup on mouse over"
+msgstr "Vidigi la sxprucfenestron (muso supre)"
 
-#~ msgid "Show the popup on mouse over"
-#~ msgstr "Vidigi la sxprucfenestron (muso supre)"
+#: ../src/e_mod_config_item.c:87
+msgid "Focus the source window when clicking"
+msgstr "Fokusigi la fontan fenestron dum alklako"
 
-#~ msgid "Focus the source window when clicking"
-#~ msgstr "Fokusigi la fontan fenestron dum alklako"
-
-#~ msgid "Levels of urgency to store : "
-#~ msgstr "Niveloj de urgxo memorendaj:"
+#: ../src/e_mod_config_item.c:92
+msgid "Levels of urgency to store : "
+msgstr "Niveloj de urgxo memorendaj:"
