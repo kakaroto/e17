@@ -68,7 +68,7 @@ Some settings will not be effective until E is restarted.
 To get a list of all eesh commands:
 $ eesh help full
 
-0.16.8.1 should be compatible with most e16 themes. However, user installed
+0.16.8 should be compatible with most e16 themes. However, user installed
 themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
 A few themes will have to be tweaked to work with e16.8. The most likely
 problem is that configuration settings are included in .cfg files where they
@@ -77,15 +77,11 @@ See the "Migrating ..." section below for additional information.
 
 e16keyedit >= 0.3 works with e16.8.
 If used to change the keybindings, the modified settings will be stored in
-~/.e16/e_config.bindings.
+~/.e16/bindings.cfg.
 It should also be fairly straightforward to modify the key- and buttonbindings
 by hand. Copy /usr/share/e16/config/bindings.cfg to ~/.e16/bindings.cfg and
 modify as desired.
-NB! e16keyedit only modifies keybindings. Keybindings set using e16keyedit
-will override keybindings defined in bindings.cfg.
-
-e16menuedit will no longer work. e16menuedit2 will.
-
+NB! e16keyedit only modifies keybindings.
 
 NB!!! Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
 
@@ -96,7 +92,6 @@ Skip this section unless you *really* want to know...
 
 It is here assumed that --prefix is /usr, and that the default user
 configuration directory (~/.e16) is used.
-Localization is ignored for simplicity.
 
 In general, the configuration search order for theme related configuration
 files, say xyz.cfg, is:
@@ -105,14 +100,9 @@ files, say xyz.cfg, is:
    ~/.e16/themes/<theme>/xyz.cfg.
 3) Default configuration directory, i.e. /usr/share/e16/config/xyz.cfg.
 
-Mouse and keybindings are defined in bindings.cfg, and optionally in
-~/.e16/e_config.bindings. The latter may be generated as a result of using
-e16keyedit.
-bindings.cfg is loaded first, and searched in
+Mouse and keybindings are defined in bindings.cfg. bindings.cfg is searched in
 1) User configuration directory, i.e. ~/.e16/bindings.cfg.
 2) Default configuration directory, i.e. /usr/share/e16/config/bindings.cfg.
-~/.e16/e_config.bindings is loaded next, and will override settings
-defined in bindings.cfg.
 
 Window matches (border and icon associations) are defined in windowmatches.cfg
 and matches.cfg.
@@ -291,6 +281,8 @@ The available configuration options are shown below. Values are the defaults.
 backgrounds.hiquality = 1
 # [bool] Prefer user selected backgrounds over theme settings
 backgrounds.user = 1
+# [bool] Do not scan all backgrounds when starting background configuration dialog
+backgrounds.no_scan = 0
 # [int] Time out for unused background image pixmaps
 backgrounds.timeout = 240
 
@@ -465,6 +457,8 @@ misc.movres.avoid_server_grab = 1
 misc.movres.update_while_moving = 0
 # [bool] Use SYNC_REQUEST's to synchronize move/resize with client
 misc.movres.enable_sync_request = 0
+# [bool] Do not cover dragbar when maximizing
+misc.movres.dragbar_nocover = 0
 
 # [int] Composite opacity of menu windows
 misc.opacity.menus = 85
@@ -745,31 +739,4 @@ __E_CFG_VERSION 0
 The absolute path is obviously no longer valid.
 The most sensible fix for these themes is to remove the themes
 actionclasses.cfg. e16 will then fall back to the default one.
-
-
-Note! The section below is obsolete as of 0.16.8.1.
-
-For the AQUA theme (and derivatives) this can be done as follows:
-
-1) move to AQUA theme directory
-2) edit menustyles.cfg to comment out "#include <menus/menus.cfg>":
-
-#include <definitions>
-__E_CFG_VERSION 0
-
-#include <menustyles/menustyles.cfg>
-/*#include <menus/menus.cfg>*/
-
-3) move to ~/.e16
-4) copy /usr/local/share/e16/config/menus.cfg to ~/.e16 like:
-   (assuming the installation prefix is /usr/local)
-
-$ cp /usr/local/share/e16/config/menus.cfg ~/.e16
-
-5) append the contents of menus/menus.cfg in AQUA theme to
-   menus.cfg in ~/.e16:
-
-$ cat /path/to/aqua-theme/menus/menus.cfg >> menus.cfg
-
-6) You may need to restart e16.8 after purging all caches
 
