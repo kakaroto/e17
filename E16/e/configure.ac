@@ -1,5 +1,5 @@
 m4_define([pkg_version],  [0.16.8.15])
-m4_define([pkg_revision], [0.00])
+m4_define([pkg_revision], [0.01])
 m4_define([pkg_ver_rev],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
 m4_define([rpm_revision], m4_ifdef([pkg_revision], [pkg_revision], [1]))
 

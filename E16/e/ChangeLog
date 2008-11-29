@@ -4831,3 +4831,83 @@ Sat Aug  9 15:17:44 CEST 2008
 --- 0.16.8.14 ---
 Fix config item size.
 
+
+-------------------------------------------------------------------------------
+
+Sat Nov 29 10:06:12 CET 2008
+(Kim)
+
+--- 0.16.8.15 0.01 ---
+Provide strcase functions if not available.
+e_gen_menu: Patch from gmk@caoslinux.org to find XFCE Terminal too.
+Fix "focus prev" when focus list is not enabled.
+Fix dox links followed by punctuation.
+Drop timestamp.h (rcs date tag).
+Avoid crash when showing "watch cursor" during restart in certain situations.
+If not showing startup windows don't show progress bars either (faster starup).
+In window mode, map virtual root earlier.
+Use XRenderCreateCursor for bitmap cursors when available.
+configure.in -> configure.ac
+Introduce EDEBUG_EXIT to exit during startup (debug stuff).
+Fix dialog text rendering in certain themes.
+Fix build on Solaris 10 (Don Harrop).
+ALL_LINGUAS -> po/LINGUAS.
+Rename no.po to nb.po and update (Kjartan Maraas).
+Eliminate dup in fullfileof().
+Look for theme in <path>/<themename>/e16 too (suggested by Don Harrop).
+Simplify activating configuration dialogs.
+Disable localization of theme files.
+Fix certain cases of text rendering on tiled pixmap (noted by Don Harrop).
+Clean up theme finding/listing.
+Enable selecting sound from other theme.
+PA sound: fix ('/'->'_' in sample name), fix lockup, cleanups.
+Tweak _NET_WM_STATE_ABOVE/BELOW client message handling.
+Fix certain group menu operations on unfocused window groups (e.g. pagers,
+ noted by Don Harrop).
+Fix incorrect group info in remember dialog.
+Fix breakage when group in snapshot is unknown.
+Fix group info sometimes not being saved.
+DialogAlert... -> Alert...
+Updated ja.po in E16 by Yasufumi Haga <yasufumi.haga@nifty.com>.
+Remove accumulated po cruft.
+No need to keep cursor pixmap file name.
+Free imagestate image file name when no longer needed.
+Enable // comments in theme files (suggested by Don Harrop).
+Don't look for background image files until actually used.
+Enable specifying theme default desktop background (suggested by Don Harrop).
+Enable rotating imageclass images (suggested by Don Harrop).
+Remove generation of menus from dirs with .desktop files.
+Fix potential segv when processing invalid menus.cfg.
+Max E_CFG_VERSION 1->2.
+Add DEFAULT_BACKGROUND macro.
+e_gen_menu: Don't quit when directory cannot be read.
+Config option theme.localise is gone.
+Add sanity check to avoid X-errors.
+Disable moving fixed position windows using pager (pfritz, ticket 116).
+Add winop "alone" to iconify windows on desktop excexpt the selected one (patch
+ by Pietro Cerutti).
+Fix various issues noted by Don Harrop
+- Fix using tiles in iconbox background
+- Fix breaking window group using winops menu
+- Fix virtual desktop configuration area when SETTINGS_AREADESK_AREA is shaped
+Fix handling of windows in multiple groups after restart.
+HAVE_XINERAMA->USE_XINERAMA as for the other extensions.
+Tweak "wop alone" and "show desktop" window selection.
+Tweaks around xinerama/screen handling.
+Slider tweaks.
+Make coordinate system in vertical sliders same as in horizontal.
+Fix dialog text redraws when bg is tiled.
+Remove some redundant dialog code. Fix Multiple desktop selector area update.
+Keep slider knob highlited when over (noted by Don Harrop).
+Fix certain cases of clicking in slider.
+Update donthide state if window properties change.
+Move compiler warning stuff to m4 macro. Add --enable-werror.
+We only need to save real border name.
+Change dragbar buttons to do next/prev in stead of raise/lower.
+Restore group border show/hide feature.
+Discard only generated background duplicates.
+Enable not scanning backgrounds when starting background dialog.
+Refactor config stuff. Fix setting MSB in hex value.
+Not using float config values.
+Optionally don't cover dragbar when maximising (patch by Pietro Cerutti).
+Remove ancient e_config.bindings compatibility fallback.
