@@ -10,5 +10,5 @@ INCLUDES = \
 
 bin_PROGRAMS = elementary_sms
 
-elementary_sms_SOURCES = main.c
+elementary_sms_SOURCES = main.c message.c list.c edit.c contact.c data.c common.h
 elementary_sms_LDADD = @ELEMENTARY_LIBS@
