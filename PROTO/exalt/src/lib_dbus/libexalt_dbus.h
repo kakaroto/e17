@@ -45,7 +45,7 @@ typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_
 /** type of the callback function used to return the result of a network scan
  * networks is a list of essid (char*)
  */
-typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* networks, void* user_data);
+typedef void (exalt_scan_notify_cb) (char* eth, Eina_List* networks, void* user_data);
 
 
 #include "define.h"
@@ -53,7 +53,6 @@ typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* networks, void* user
 #include "exalt_dbus_wireless.h"
 #include "exalt_dbus_wireless_network.h"
 #include "exalt_dbus_dns.h"
-#include "exalt_dbus_bootprocess.h"
 #include "exalt_dbus_response.h"
 
 /** type of the callback function used when we receive a response */

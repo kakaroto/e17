@@ -452,7 +452,7 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
                 "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i");
     }
 
-    char* cmd = exalt_conn_get_cmd(c);
+    const char* cmd = exalt_conn_get_cmd(c);
     if(!cmd)
         cmd="";
     EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd),

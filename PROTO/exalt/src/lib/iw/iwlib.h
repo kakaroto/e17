@@ -32,10 +32,15 @@
 #include <sys/time.h>		/* struct timeval */
 #include <unistd.h>
 
+/* An exalt header, define a list of wpa type, cypher name and auth suites
+ */
+#include "exalt_wireless_network.h"
+
+
 /* This is our header selection. Try to hide the mess and the misery :-(
  * Don't look, you would go blind ;-)
  * Note : compatibility with *old* distributions has been removed,
- * you will need Glibc 2.2 and older to compile (which means 
+ * you will need Glibc 2.2 and older to compile (which means
  * Mandrake 8.0, Debian 2.3, RH 7.1 or older).
  */
 
@@ -247,6 +252,25 @@ typedef struct wireless_scan
   int		has_stats;
   iwparam	maxbitrate;		/* Max bit rate in bps */
   int		has_maxbitrate;
+
+  /* Added by Watchwolf for Exalt
+   * Add the WPA/WEP detection of a wireless network
+   */
+  short has_ie;
+  Exalt_Wireless_Network_Wpa_Type wpa_type;
+  int wpa_version;
+  Exalt_Wireless_Network_Cypher_Name group_cypher;
+
+  Exalt_Wireless_Network_Cypher_Name pairwise_cypher[EXALT_WIRELESS_NETWORK_CYPHER_NAME_NUM];
+  int pairwise_cypher_number;
+
+  Exalt_Wireless_Network_Auth_Suites auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
+  int auth_suites_number;
+
+  short preauth_supported;
+
+  /*
+   */
 } wireless_scan;
 
 /*
@@ -470,7 +494,9 @@ int
 	iw_process_scan(int			skfd,
 			char *			ifname,
 			int			we_version,
-			wireless_scan_head *	context);
+                        Eina_List**             networks,
+                        Exalt_Wireless*         w,
+			int*                    retry);
 int
 	iw_scan(int			skfd,
 		char *			ifname,

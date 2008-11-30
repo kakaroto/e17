@@ -320,13 +320,13 @@ Eet_Data_Descriptor * _exalt_eth_save_edd_new()
     edd_conn = exalt_conn_edd_new();
 
     edd = eet_data_descriptor_new("Interface", sizeof(Exalt_Eth_Save),
-            eina_list_next,
-            eina_list_append,
-            eina_list_data_get,
-            eina_list_free,
-            evas_hash_foreach,
-            evas_hash_add,
-            evas_hash_free);
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
+            (void*(*)(void*,const char*,void*))evas_hash_add,
+            (void(*)(void*))evas_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "up", state, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "driver", driver, EET_T_STRING);

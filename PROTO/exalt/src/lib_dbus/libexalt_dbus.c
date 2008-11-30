@@ -125,8 +125,8 @@ void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb,
         conn -> scan_notify -> cb = cb;
         conn -> scan_notify -> user_data = user_data;
 
-        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH,
-                EXALTD_INTERFACE_READ, "SCAN_NOTIFY",
+        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
+                EXALTD_INTERFACE_NOTIFY, "scan_notify",
                 _exalt_dbus_scan_notify, conn);
     }
     else

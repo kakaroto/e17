@@ -22,7 +22,6 @@ exalt_dbus_ethernet.h \
 exalt_dbus_wireless.h\
 exalt_dbus_wireless_network.h \
 exalt_dbus_dns.h \
-exalt_dbus_bootprocess.h \
 exalt_dbus_response.h
 
 libexalt_dbus_la_SOURCES = \
@@ -33,7 +32,6 @@ exalt_dbus_wireless_network.c \
 libexalt_dbus_private.h \
 libexalt_dbus_private.c \
 exalt_dbus_dns.c \
-exalt_dbus_bootprocess.c \
 exalt_dbus_response.c \
 $(EXALTHEADERS)
 

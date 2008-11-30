@@ -78,12 +78,61 @@ void notify(char* eth, Exalt_Enum_Action action, void* user_data)
             NOTIF_PRINT("A new configuration is apply on the interface\n");
             break;
         case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
-            NOTIF_PRINT("The new configuration is apply on the interface\n");
+            NOTIF_PRINT("The new configuration is applied on the interface\n");
             break;
+        default: ;
     }
 }
 
-void response(Exalt_DBus_Response* response, void* data)
+void notify_scan(char* eth, Eina_List* networks, void* user_data __UNUSED__)
+{
+    Exalt_DBus_Wireless_Network* w;
+    Eina_List *l;
+    int i;
+
+    printf("scan network on %s\n",eth);
+    EINA_LIST_FOREACH(networks,l,w)
+    {
+        printf("# %s\n",exalt_dbus_wireless_network_essid_get(w));
+        printf("\tAdress: %s\n",exalt_dbus_wireless_network_address_get(w));
+        printf("\tquality: %d\n",exalt_dbus_wireless_network_quality_get(w));
+        printf("\tencryption ?: %d\n",exalt_dbus_wireless_network_encryption_is(w));
+        Exalt_Wireless_Network_Security security = exalt_dbus_wireless_network_security_mode_get(w);
+        printf("\tsecurity mode: %s\n",exalt_wireless_network_name_from_security(security));
+        Exalt_Wireless_Network_Mode m = exalt_dbus_wireless_network_mode_get(w);
+        printf("\tmode: %s\n",exalt_wirelessnetwork_name_from_id(m));
+        printf("\tHas IE: %d\n",exalt_dbus_wireless_network_has_ie_is(w));
+        if(exalt_dbus_wireless_network_has_ie_is(w))
+        {
+            Exalt_Wireless_Network_Wpa_Type wpa_type = exalt_dbus_wireless_network_wpa_type_get(w);
+            printf("\t\twpa type: %s\n",exalt_wireless_network_name_from_wpa_type(wpa_type));
+            printf("\t\twpa version: %d\n",exalt_dbus_wireless_network_wpa_version_get(w));
+            printf("\t\tpre auth supported: %d\n",exalt_dbus_wireless_network_preauth_supported_is(w));
+            printf("\t\tgroup cypher: %d\n",exalt_dbus_wireless_network_group_cypher_get(w));
+            printf("\t\tpairwise cypher: ");
+            for(i=0;i<exalt_dbus_wireless_network_pairwise_cypher_number_get(w);i++)
+            {
+                Exalt_Wireless_Network_Cypher_Name name;
+                name = exalt_dbus_wireless_network_pairwise_cypher_get(w,i);
+                printf("%s ",exalt_wireless_network_name_from_cypher_name(name));
+            }
+            printf("\n");
+            printf("\t\tauth suites: ");
+            for(i=0;i<exalt_dbus_wireless_network_auth_suites_number_get(w);i++)
+            {
+                Exalt_Wireless_Network_Auth_Suites name;
+                name = exalt_dbus_wireless_network_auth_suites_get(w,i);
+                printf("%s ",exalt_wireless_network_name_from_auth_suites(name));
+            }
+            printf("\n");
+
+        }
+    }
+    printf("\n");
+    //exalt_dbus_wireless_scan(user_data,eth);
+}
+
+void response(Exalt_DBus_Response* response, void* data __UNUSED__)
 {
     printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
@@ -200,6 +249,7 @@ void response(Exalt_DBus_Response* response, void* data)
             print_response_error();
             printf("The new driver is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
             break;
+        default: ;
     }
 }
 
@@ -263,7 +313,7 @@ void dns(int argc, char** argv)
     }
 }
 
-void ethernet_list(int argc, char** argv)
+void ethernet_list(int argc __UNUSED__, char** argv)
 {
     if(strcmp(argv[1],"list_get")==0)
     {
@@ -327,6 +377,8 @@ void wireless(int argc, char** argv)
         exalt_dbus_wireless_essid_get(conn,iface);
     else if(strcmp(argv[1],"wpasupplicant_driver_get")==0)
         exalt_dbus_wireless_wpasupplicant_driver_get(conn,iface);
+    else if(strcmp(argv[1],"scan")==0)
+        exalt_dbus_wireless_scan(conn,iface);
     else if(strcmp(argv[1],"wpasupplicant_driver_set")==0)
     {
         if(argc<4)
@@ -344,6 +396,9 @@ int main(int argc, char** argv)
     conn = exalt_dbus_connect();
 
     exalt_dbus_response_notify_set(conn,response,conn);
+
+    exalt_dbus_notify_set(conn,notify,conn);
+    exalt_dbus_scan_notify_set(conn,notify_scan,conn);
 
     if(argc>1 && (strcmp(argv[1],"dns_add")==0
             || strcmp(argv[1],"dns_del")==0
@@ -370,12 +425,11 @@ int main(int argc, char** argv)
     else if(argc>1 && (strcmp(argv[1],"essid_get")==0
                 || strcmp(argv[1],"wpasupplicant_driver_get")==0
                 || strcmp(argv[1],"wpasupplicant_driver_set")==0
+                || strcmp(argv[1],"scan")==0
                 ))
         wireless(argc,argv);
     else
         help();
-
-    exalt_dbus_notify_set(conn,notify,conn);
 
     ecore_main_loop_begin();
 
@@ -411,6 +465,7 @@ void help()
             "essid_get eth0\t\t\t: print the essid of eth0\n"
             "wpasupplicant_driver_get eth0\t: print the wpa_supplicant driver of eth0\n"
             "wpasupplicant_driver_set eth0 wext: set the wpa_supplicant driver of eth0 with wext\n"
+            "scan eth0: launch a wireless scan ont eth0\n"
             );
 
     exit(EXIT_FAILURE);

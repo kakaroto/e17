@@ -23,6 +23,10 @@
 #include <string.h>
 #include <libexalt_dbus.h>
 #include <libexalt.h>
+#include <Eina.h>
+
+#undef __UNUSED__
+#define __UNUSED__ __attribute__((unused))
 
 void help();
 

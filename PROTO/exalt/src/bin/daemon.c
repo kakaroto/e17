@@ -31,11 +31,18 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
     snprintf(binterface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,exalt_eth_get_name(eth));
     iface = e_dbus_interface_new(binterface);
 
-    e_dbus_interface_method_add(iface, "command_get", NULL, "s", dbus_cb_eth_cmd_get);
-    e_dbus_interface_method_add(iface, "command_set", NULL, "s", dbus_cb_eth_cmd_set);
+
+    if(exalt_eth_is_wireless(eth))
+    {
+        e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_wireless_essid_get);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_wireless_wpasupplicant_driver_get);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_wireless_wpasupplicant_driver_set);
+        e_dbus_interface_method_add(iface, "scan", NULL, NULL, dbus_cb_wireless_scan);
+    }
+
+
     e_dbus_interface_method_add(iface, "up", NULL, NULL, dbus_cb_eth_up);
     e_dbus_interface_method_add(iface, "down", NULL, NULL, dbus_cb_eth_down);
-
 
     e_dbus_interface_method_add(iface, "ip_get", NULL, "s", dbus_cb_eth_ip_get);
 
@@ -47,13 +54,9 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
     e_dbus_interface_method_add(iface, "up_is", NULL, "b", dbus_cb_eth_up_is);
     e_dbus_interface_method_add(iface, "dhcp_is", NULL, "b", dbus_cb_eth_dhcp_is);
     e_dbus_interface_method_add(iface, "wireless_is", NULL, "b", dbus_cb_eth_wireless_is);
+    e_dbus_interface_method_add(iface, "command_set", NULL, "s", dbus_cb_eth_cmd_set);
+    e_dbus_interface_method_add(iface, "command_get", NULL, "s", dbus_cb_eth_cmd_get);
 
-    if(exalt_eth_is_wireless(eth))
-    {
-        e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_wireless_essid_get);
-        e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_wireless_wpasupplicant_driver_get);
-        e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_wireless_wpasupplicant_driver_set);
-    }
     e_dbus_object_interface_attach(obj, iface);
 }
 
@@ -224,7 +227,8 @@ int main(int argc, char** argv)
         size = snprintf(buf, PATH_MAX, "%d\n", getpid());
         if ((fp = fopen(EXALTD_PIDFILE, "w+")))
         {
-            fwrite(buf, sizeof(char), size, fp);
+            int ret;
+            ret = fwrite(buf, sizeof(char), size, fp);
             fclose(fp);
         }
         else
@@ -384,24 +388,22 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     dbus_message_unref(msg);
 }
 
-void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* networks, void* data)
+void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;
     DBusMessageIter args;
+    DBusMessageIter iter_array;
     const char* name;
-    const char* essid;
+
     Exalt_Wireless_Network *wi;
-
-    Ecore_List* l;
-
-    EXALT_ASSERT_RETURN_VOID(networks!=NULL);
+    Eina_List* l;
 
     conn = (E_DBus_Connection*) data;
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
 
     //send a broadcast
-    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "SCAN_NOTIFY");
+    msg = dbus_message_new_signal(EXALTD_PATH_NOTIFY,EXALTD_INTERFACE_NOTIFY, "scan_notify");
     EXALT_ASSERT_RETURN_VOID(msg!=NULL);
 
     name = exalt_eth_get_name(eth);
@@ -414,20 +416,181 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* networks, void* data)
     dbus_message_iter_init_append(msg, &args);
     EXALT_ASSERT_RETURN_VOID(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name));
 
-    l=networks;
-    ecore_list_first_goto(l);
-    while ( (wi =  ecore_list_next(l)))
+
+    if(networks!=NULL)
     {
-        essid = exalt_wirelessnetwork_get_essid(wi);
-        EXALT_ASSERT_ADV(essid!=NULL,
-                dbus_message_unref(msg);return ,
-                "essud!=NULL failed");
+        EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&args,
+                    DBUS_TYPE_STRUCT,
+                    NULL,
+                    &iter_array));
 
-        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
-                dbus_message_unref(msg);return ,
-                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid) failed");
+        EINA_LIST_FOREACH(networks, l, wi)
+        {
+            int integer;
+            const char* string;
+            DBusMessageIter iter_w;
+            DBusMessageIter iter_integer;
+            int i;
+
+            EXALT_ASSERT_RETURN_VOID(
+                    dbus_message_iter_open_container(&iter_array,
+                        DBUS_TYPE_STRUCT,
+                        NULL,
+                        &iter_w));
+
+            //add the address
+            string = exalt_wirelessnetwork_address_get(wi);
+            if(!string)
+                string="";
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_STRING,
+                        &string),
+                    dbus_message_unref(msg);return );
+
+            //add the essid
+            string = exalt_wirelessnetwork_essid_get(wi);
+            if(!string)
+                string="";
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_STRING,
+                        &string),
+                    dbus_message_unref(msg);return );
+
+            //add the encryption (yes or no)
+            integer = exalt_wirelessnetwork_encryption_is(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &integer),
+                    dbus_message_unref(msg);return );
+
+            //add the security mode
+            integer = exalt_wirelessnetwork_security_mode_get(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &integer),
+                    dbus_message_unref(msg);return );
+
+
+            //add the quality
+            integer = exalt_wirelessnetwork_quality_get(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &integer),
+                    dbus_message_unref(msg);return );
+
+            //add the mode (Exalt_Wireless_Network_Mode)
+            Exalt_Wireless_Network_Mode m = exalt_wirelessnetwork_mode_get(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &m),
+                    dbus_message_unref(msg);return );
+
+
+            //add if the network use an IE extension
+            integer = exalt_wirelessnetwork_has_ie_is(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &integer),
+                    dbus_message_unref(msg);return );
+            if(integer)
+            {
+                //the wpa type
+                integer = exalt_wirelessnetwork_wpa_type_get(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+                //the wpa version
+                integer = exalt_wirelessnetwork_wpa_version_get(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+                //if preauth is supported
+                integer = exalt_wirelessnetwork_preauth_supported_is(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+                //the cypher group
+                integer = exalt_wirelessnetwork_group_cypher_get(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+
+                //the number of pairwise cypher
+                integer = exalt_wirelessnetwork_pairwise_cypher_number_get(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+                //add the pairwise cypher list
+                EXALT_ASSERT_RETURN_VOID(
+                        dbus_message_iter_open_container(&iter_w,
+                            DBUS_TYPE_ARRAY,
+                            "i",
+                            &iter_integer));
+
+                for(i=0;i<exalt_wirelessnetwork_pairwise_cypher_number_get(wi);i++)
+                {
+                    integer = exalt_wirelessnetwork_pairwise_cypher_get(wi,i);
+                    EXALT_ASSERT_CUSTOM_RET(
+                            dbus_message_iter_append_basic(&iter_integer,
+                                DBUS_TYPE_INT32,
+                                &integer),
+                            dbus_message_unref(msg);return );
+                }
+                dbus_message_iter_close_container (&iter_w,&iter_integer);
+
+                //the number of auth suites
+                integer = exalt_wirelessnetwork_auth_suites_number_get(wi);
+                EXALT_ASSERT_CUSTOM_RET(
+                        dbus_message_iter_append_basic(&iter_w,
+                            DBUS_TYPE_INT32,
+                            &integer),
+                        dbus_message_unref(msg);return );
+
+                //add the auth suites list
+                EXALT_ASSERT_RETURN_VOID(
+                        dbus_message_iter_open_container(&iter_w,
+                            DBUS_TYPE_ARRAY,
+                            "i",
+                            &iter_integer));
+
+                for(i=0;i<exalt_wirelessnetwork_auth_suites_number_get(wi);i++)
+                {
+                    integer = exalt_wirelessnetwork_auth_suites_get(wi,i);
+                    EXALT_ASSERT_CUSTOM_RET(
+                            dbus_message_iter_append_basic(&iter_integer,
+                                DBUS_TYPE_INT32,
+                                &integer),
+                            dbus_message_unref(msg);return );
+                }
+                dbus_message_iter_close_container (&iter_w,&iter_integer);
+
+            }
+            dbus_message_iter_close_container (&iter_array,&iter_w);
+        }
+        dbus_message_iter_close_container (&args,&iter_array);
     }
-
     e_dbus_message_send(conn, msg, NULL, -1,NULL);
     dbus_message_unref(msg);
 }
@@ -455,29 +618,17 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
 Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg)
 {
     DBusMessageIter args;
-    char* interface = NULL;
-    Exalt_Ethernet* eth;
     char* essid = NULL;
+    Exalt_Ethernet* eth;
     Exalt_Wireless_Network* wi;
 
     if(!dbus_message_iter_init(msg, &args))
         return NULL;
 
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-        return NULL;
-    else
-        dbus_message_iter_get_basic(&args, &interface);
-
     //search the interface
-/*  bentejuy
-    eth = exalt_eth_get_ethernet_byname(interface);
-    if(!eth)
+    if(!(eth = dbus_get_eth(msg)))
         return NULL;
-*/
-	if(!(eth = exalt_eth_get_ethernet_byname(interface)))
-		return NULL;
 
-    dbus_message_iter_next(&args);
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         return NULL;
     else
@@ -493,8 +644,7 @@ Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
 {
     Exalt_Wireless* w;
     Exalt_Wireless_Network* wi;
-    Ecore_List *l;
-    void *data;
+    Eina_List *networks,*l;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
     EXALT_ASSERT_RETURN(essid!=NULL);
@@ -502,16 +652,11 @@ Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
     EXALT_ASSERT_RETURN(exalt_eth_is_wireless(eth)!=0);
     w = exalt_eth_get_wireless(eth);
 
-    l = exalt_wireless_get_networks_list(w);
+    networks = exalt_wireless_get_networks_list(w);
 
-    // by bentejuy
-    EXALT_ASSERT_RETURN(l!=NULL);
-
-    ecore_list_first_goto(l);
-    while( (data=ecore_list_next(l)))
+    EINA_LIST_FOREACH(networks,l,wi)
     {
-        wi = Exalt_Wireless_Network(data);
-        if(strcmp(essid,exalt_wirelessnetwork_get_essid(wi))==0 )
+        if(strcmp(essid,exalt_wirelessnetwork_essid_get(wi))==0 )
             return wi;
     }
     return NULL;

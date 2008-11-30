@@ -35,7 +35,7 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include <linux/rtnetlink.h>
 
 #include <sys/wait.h>
-
+#include <time.h>
 
 extern Exalt_Ethernets exalt_eth_interfaces;
 
@@ -83,7 +83,7 @@ typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, Exalt_Enum_Action action, voi
 
 
 /** callback function used for notification during a scan */
-typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* networks, void* user_data);
+typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Eina_List* networks, void* user_data);
 
 Exalt_Ethernet* exalt_eth_new(const char* name);
 

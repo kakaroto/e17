@@ -108,7 +108,7 @@ const char* exalt_dbus_error_get_msg(DBusMessage *msg);
 
 
 void print_error(const char* file,const char* fct, int line, const char* msg, ...);
-char* dbus_get_eth(DBusMessage* msg);
+const char* dbus_get_eth(DBusMessage* msg);
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_PRIVATE_INC  ----- */
 

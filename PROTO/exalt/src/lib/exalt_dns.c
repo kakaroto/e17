@@ -50,6 +50,8 @@ int exalt_dns_add(const char* dns)
 {
     char buf[1024];
     FILE* f;
+    int ret;
+
     EXALT_ASSERT_RETURN(dns!=NULL);
     EXALT_ASSERT_RETURN(exalt_is_address(dns));
 
@@ -57,7 +59,7 @@ int exalt_dns_add(const char* dns)
     EXALT_ASSERT_RETURN(f!=NULL);
 
     sprintf(buf,"nameserver %s\n", dns);
-    fwrite( buf, sizeof(char), strlen(buf), f);
+    ret = fwrite( buf, sizeof(char), strlen(buf), f);
 
     EXALT_FCLOSE(f);
     return 1;
@@ -74,6 +76,8 @@ int exalt_dns_delete(const char* dns)
 {
     char buf[1024], buf2[1024];
     FILE* fw, *fr;
+    int ret;
+
     EXALT_ASSERT_RETURN(dns!=NULL);
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
@@ -87,7 +91,7 @@ int exalt_dns_delete(const char* dns)
     sprintf(buf,"nameserver %s\n",dns);
     while(fgets(buf2,1024,fr))
         if( strcmp(buf,buf2) != 0)
-            fwrite( buf2, sizeof(char), strlen(buf2), fw);
+            ret = fwrite( buf2, sizeof(char), strlen(buf2), fw);
     EXALT_FCLOSE(fr);
     EXALT_FCLOSE(fw);
     remove(EXALT_TEMP_FILE);
@@ -106,6 +110,7 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
 {
     char buf[1024], buf2[1024], buf3[1024];;
     FILE* fw, *fr;
+    int ret;
 
     EXALT_ASSERT_RETURN(old_dns!=NULL);
     EXALT_ASSERT_RETURN(new_dns!=NULL);
@@ -122,9 +127,9 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
     sprintf(buf3,"nameserver %s\n",new_dns);
     while(fgets(buf2,1024,fr))
         if( strcmp(buf,buf2) != 0)
-            fwrite( buf2, sizeof(char), strlen(buf2), fw);
+            ret = fwrite( buf2, sizeof(char), strlen(buf2), fw);
         else
-            fwrite( buf3, sizeof(char), strlen(buf3), fw);
+            ret = fwrite( buf3, sizeof(char), strlen(buf3), fw);
     EXALT_FCLOSE(fr);
     EXALT_FCLOSE(fw);
     remove(EXALT_TEMP_FILE);

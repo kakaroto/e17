@@ -148,42 +148,23 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
  */
 void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
 {
-    int find = 0;
     Eina_List *elt;
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN_VOID(l!=NULL);
     EXALT_ASSERT_RETURN_VOID(l->l!=NULL);
 
-/*  by bentejuy
-
-    elt = l->l;
-
-    while(!find && elt)
+    for(elt = l->l; elt; elt = eina_list_next(elt))
     {
-        data = eina_list_data_get(elt);
-        if(data->interface && strcmp(exalt_eth_get_name(eth),data->interface) == 0)
-            find = 1;
-        else
-            elt = eina_list_next(elt);
-    }
-    if(!find)
-        //the iface is not in the list
-        return ;
-
-    l->l = eina_list_remove(l->l,eina_list_data_get(elt));
-*/
-	for(elt = l->l; elt; elt = eina_list_next(elt))
-	{
         if(!(data = eina_list_data_get(elt)))
-        	continue;
+            continue;
 
         if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
         {
-			l->l = eina_list_remove(l->l,eina_list_data_get(elt));
-        	return;
+            l->l = eina_list_remove(l->l,eina_list_data_get(elt));
+            return;
         }
-	}
+    }
 }
 
 /*
@@ -399,25 +380,25 @@ Eet_Data_Descriptor * waiting_iface_edd_new()
     Eet_Data_Descriptor *edd_elt, *edd_l;
 
     edd_elt = eet_data_descriptor_new("elt", sizeof(Boot_Process_Elt),
-            eina_list_next,
-            eina_list_append,
-            eina_list_data_get,
-            eina_list_free,
-            evas_hash_foreach,
-            evas_hash_add,
-            evas_hash_free);
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
+            (void*(*)(void*,const char*,void*))evas_hash_add,
+            (void(*)(void*))evas_hash_free);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd_elt, Boot_Process_Elt, "interface", interface, EET_T_STRING);
 
 
 
     edd_l = eet_data_descriptor_new("boot process interface list", sizeof(Boot_Process_List),
-            eina_list_next,
-            eina_list_append,
-            eina_list_data_get,
-            eina_list_free,
-            evas_hash_foreach,
-            evas_hash_add,
-            evas_hash_free);
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
+            (void*(*)(void*,const char*,void*))evas_hash_add,
+            (void(*)(void*))evas_hash_free);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd_l, Boot_Process_List, "timeout (sec)", timeout, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_LIST(edd_l, Boot_Process_List, "interface list", l, edd_elt);
 

@@ -48,7 +48,7 @@ short exalt_ioctl(void* argp, int request)
 {
     int fd;
     short busy = 0;
-    char* ioctl_msg_buf[1024];
+    char ioctl_msg_buf[1024];
     char* ioctl_msg;
 
     snprintf(ioctl_msg_buf,1024,"%d",request);

@@ -19,6 +19,7 @@
 #ifndef  DEFINE_INC
 #define  DEFINE_INC
 
+#undef __UNUSED__
 #define __UNUSED__ __attribute__((unused))
 
 #define EXALTD_SERVICE "org.e.Exalt"

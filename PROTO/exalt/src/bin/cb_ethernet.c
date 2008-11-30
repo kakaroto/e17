@@ -584,10 +584,9 @@ DBusMessage * dbus_cb_eth_cmd_get(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     dbus_message_iter_init_append(reply, &args);
 
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd),
-            EXALT_FREE(cmd);return reply);
+            return reply);
 
 
-    EXALT_FREE(cmd);
     return reply;
 }
 

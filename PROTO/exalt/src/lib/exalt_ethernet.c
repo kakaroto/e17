@@ -835,12 +835,6 @@ void exalt_eth_printf()
         printf("mask: %s\n",exalt_eth_get_netmask(eth));
         printf("gateway: %s\n",exalt_eth_get_gateway(eth));
         printf("Wifi: %s\n",(eth->wireless==NULL?"no":"yes"));
-        if(eth->wireless!=NULL)
-        {
-            exalt_wireless_scan_wait(eth);
-            Exalt_Wireless *w = exalt_eth_get_wireless(eth);
-            exalt_wireless_printf(w);
-        }
         data = ecore_list_next(exalt_eth_interfaces.ethernets);
     }
 }
@@ -1375,6 +1369,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 {
 #ifdef HAVE_DHCP
+    char* ret;
     Ecore_Exe * exe;
     int status;
     char command[1024];
@@ -1393,7 +1388,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     usleep(500);
     f = fopen(DHCLIENT_PID_FILE,"r");
     EXALT_ASSERT_RETURN(f!=NULL);
-    fgets(buf,1024,f);
+    ret = fgets(buf,1024,f);
     pid = atoi(buf);
     if(pid!=getpid());
         kill(pid,SIGKILL);

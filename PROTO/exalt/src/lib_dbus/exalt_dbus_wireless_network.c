@@ -263,53 +263,6 @@ char* exalt_dbus_wirelessnetwork_get_addr(const exalt_dbus_conn* conn, const cha
 
 
 /**
- * @brief Get the bit rates of a wireless network
- * @param conn a connection
- * @param eth a wireless interface name
- * @param essid a wireless network name
- * @return Returns the bit rates
- */
-char* exalt_dbus_wirelessnetwork_get_bitrates(const exalt_dbus_conn* conn, const char* eth, const char* essid)
-{
-    DBusPendingCall * ret;
-    DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
-
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(essid!=NULL);
-
-    msg = exalt_dbus_read_call_new("NETWORK_GET_BITRATES");
-    dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
-            dbus_message_unref(msg); return 0,
-            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
-
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
-
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
-}
-
-/**
  * @brief Get the mode of a wireless network (Master)
  * @param conn a connection
  * @param eth a wireless interface name
@@ -355,54 +308,6 @@ char* exalt_dbus_wirelessnetwork_get_mode(const exalt_dbus_conn* conn, const cha
     dbus_message_unref(msg);
     return res;
 }
-
-/**
- * @brief Get the quality of a wireless network
- * @param conn a connection
- * @param eth a wireless interface name
- * @param essid a wireless network name
- * @return Returns the quality, else 0
- */
-char* exalt_dbus_wirelessnetwork_get_protocol(const exalt_dbus_conn* conn, const char* eth, const char* essid)
-{
-    DBusPendingCall * ret;
-    DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
-
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(essid!=NULL);
-
-    msg = exalt_dbus_read_call_new("NETWORK_GET_PROTOCOL");
-    dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
-            dbus_message_unref(msg); return 0,
-            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
-
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
-
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
-}
-
 
 /**
  * @brief Get the latest connection used for this network
@@ -481,6 +386,156 @@ Exalt_Connection * exalt_dbus_wirelessnetwork_get_default_conn(const exalt_dbus_
     dbus_message_unref(msg);
     return c;
 }
+
+
+
+struct Exalt_DBus_Wireless_Network
+{
+    char* address;
+    char* essid;
+    int encryption;
+    Exalt_Wireless_Network_Security security_mode;
+    int quality;
+    Exalt_Wireless_Network_Mode mode;
+
+    //if the wireless network has an IE definition
+    int has_ie;
+
+    Exalt_Wireless_Network_Wpa_Type wpa_type;
+    int wpa_version;
+
+    Exalt_Wireless_Network_Cypher_Name group_cypher;
+
+    Exalt_Wireless_Network_Cypher_Name
+        pairwise_cypher[EXALT_WIRELESS_NETWORK_CYPHER_NAME_NUM];
+    int pairwise_cypher_number;
+
+    Exalt_Wireless_Network_Auth_Suites
+        auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
+    int auth_suites_number;
+
+    int preauth_supported;
+};
+
+#define EXALT_DBUS_WIRELESS_NETWORK_STRING_SET(attribut)\
+    void exalt_dbus_wireless_network_##attribut##_set(  \
+            Exalt_DBus_Wireless_Network *w,             \
+            char* attribut)                             \
+{                                                   \
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);              \
+    if(attribut!=NULL)                              \
+    w->attribut = strdup(attribut);             \
+    else                                            \
+    w->attribut = NULL;                         \
+}
+
+
+#define EXALT_DBUS_WIRELESS_NETWORK_SET(attribut,type)   \
+    void exalt_dbus_wireless_network_##attribut##_set(   \
+            Exalt_DBus_Wireless_Network *w,             \
+            type attribut)                              \
+{                                                   \
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);              \
+    w->attribut = attribut;                         \
+}
+
+#define EXALT_DBUS_WIRELESS_NETWORK_TAB_SET(attribut,type)   \
+    void exalt_dbus_wireless_network_##attribut##_set(       \
+            Exalt_DBus_Wireless_Network *w,                 \
+            type attribut,                                  \
+            int i)                                          \
+{                                                       \
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);                  \
+    w->attribut[i] = attribut;                          \
+}
+
+
+#define EXALT_DBUS_WIRELESS_NETWORK_GET(attribut,type)   \
+    type exalt_dbus_wireless_network_##attribut##_get(        \
+            Exalt_DBus_Wireless_Network *w)                  \
+{                                                   \
+    EXALT_ASSERT_RETURN(w!=NULL);                   \
+    return w->attribut;                             \
+}
+
+#define EXALT_DBUS_WIRELESS_NETWORK_IS(attribut,type)         \
+    type exalt_dbus_wireless_network_##attribut##_is(         \
+            Exalt_DBus_Wireless_Network *w)                  \
+{                                                   \
+    EXALT_ASSERT_RETURN(w!=NULL);                   \
+    return w->attribut;                             \
+}
+
+
+
+#define EXALT_DBUS_WIRELESS_NETWORK_TAB_GET(attribut,type)        \
+    type exalt_dbus_wireless_network_##attribut##_get(            \
+            Exalt_DBus_Wireless_Network *w,                      \
+            int i)                                          \
+{                                                       \
+    EXALT_ASSERT_RETURN(w!=NULL);                       \
+    return w->attribut[i];                              \
+}
+
+Exalt_DBus_Wireless_Network* exalt_dbus_wireless_network_new()
+{
+    Exalt_DBus_Wireless_Network *w = calloc(1,sizeof(Exalt_DBus_Wireless_Network));
+    EXALT_ASSERT_RETURN(w!=NULL);
+    return w;
+}
+
+void exalt_dbus_wireless_network_free(Exalt_DBus_Wireless_Network** w)
+{
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(*w!=NULL);
+    EXALT_FREE((*w)->essid);
+    EXALT_FREE((*w)->address);
+    EXALT_FREE(*w);
+}
+
+EXALT_DBUS_WIRELESS_NETWORK_GET(essid,const char*);
+EXALT_DBUS_WIRELESS_NETWORK_GET(quality,int);
+EXALT_DBUS_WIRELESS_NETWORK_GET(address,const char*);
+EXALT_DBUS_WIRELESS_NETWORK_IS(encryption,int);
+EXALT_DBUS_WIRELESS_NETWORK_GET(mode,Exalt_Wireless_Network_Mode);
+EXALT_DBUS_WIRELESS_NETWORK_GET(security_mode,Exalt_Wireless_Network_Security);
+
+
+EXALT_DBUS_WIRELESS_NETWORK_STRING_SET(essid);
+EXALT_DBUS_WIRELESS_NETWORK_SET(quality,int);
+EXALT_DBUS_WIRELESS_NETWORK_STRING_SET(address);
+EXALT_DBUS_WIRELESS_NETWORK_SET(encryption,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET(mode,Exalt_Wireless_Network_Mode);
+EXALT_DBUS_WIRELESS_NETWORK_SET(security_mode,Exalt_Wireless_Network_Security);
+
+
+EXALT_DBUS_WIRELESS_NETWORK_SET(has_ie,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET(wpa_type,
+        Exalt_Wireless_Network_Wpa_Type);
+EXALT_DBUS_WIRELESS_NETWORK_SET(wpa_version,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET(group_cypher,
+        Exalt_Wireless_Network_Cypher_Name);
+EXALT_DBUS_WIRELESS_NETWORK_TAB_SET(pairwise_cypher,
+        Exalt_Wireless_Network_Cypher_Name);
+EXALT_DBUS_WIRELESS_NETWORK_SET(pairwise_cypher_number,int);
+EXALT_DBUS_WIRELESS_NETWORK_TAB_SET(auth_suites,
+        Exalt_Wireless_Network_Auth_Suites);
+EXALT_DBUS_WIRELESS_NETWORK_SET(auth_suites_number,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET(preauth_supported,int);
+
+EXALT_DBUS_WIRELESS_NETWORK_IS(has_ie,int);
+EXALT_DBUS_WIRELESS_NETWORK_GET(wpa_type,
+        Exalt_Wireless_Network_Wpa_Type);
+EXALT_DBUS_WIRELESS_NETWORK_GET(wpa_version,int);
+EXALT_DBUS_WIRELESS_NETWORK_GET(group_cypher,
+        Exalt_Wireless_Network_Cypher_Name);
+EXALT_DBUS_WIRELESS_NETWORK_TAB_GET(pairwise_cypher,
+        Exalt_Wireless_Network_Cypher_Name);
+EXALT_DBUS_WIRELESS_NETWORK_GET(pairwise_cypher_number,int);
+EXALT_DBUS_WIRELESS_NETWORK_TAB_GET(auth_suites,
+        Exalt_Wireless_Network_Auth_Suites);
+EXALT_DBUS_WIRELESS_NETWORK_GET(auth_suites_number,int);
+EXALT_DBUS_WIRELESS_NETWORK_IS(preauth_supported,int);
 
 /** @} */
 

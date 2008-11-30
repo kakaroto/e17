@@ -32,7 +32,6 @@
 #include "cb_bootprocess.h"
 #include <time.h>
 
-
 #ifndef PATH_MAX
 #define PATH_MAX 1024
 #endif
@@ -49,7 +48,7 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
 Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg);
 Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
-void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* networks, void* data);
+void wireless_scan_cb(Exalt_Ethernet* eth, Eina_List* networks, void* data);
 
 int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error);
 int dbus_args_valid_append(DBusMessage *msg);
