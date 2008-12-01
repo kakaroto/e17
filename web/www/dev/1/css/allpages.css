@@ -172,26 +172,21 @@ html, body {
     display: block;
     float: right;
     clear: both;
-    background-image: url("../img/header_submenu_separator.png");
-    background-repeat: no-repeat;
-    background-position: bottom left;
+    margin-right: -17px;
 }
 
 #header .submenu li
 {
     text-align: center;
-    background-image: url("../img/header_submenu_separator.png");
-    background-repeat: no-repeat;
-    background-position: bottom right;
 }
 
 #header .submenu a
 {
     display: block;
-    margin-top: 39px; /* Heigh under menu + 2 pixels to cover header shadows */
+    margin-top: 39px;
     line-height: 34px;
-    padding-left: 2em;
-    padding-right: 2em;
+    padding-left: 17px;
+    padding-right: 17px;
     text-decoration: none;
     color: #646464;
 }
