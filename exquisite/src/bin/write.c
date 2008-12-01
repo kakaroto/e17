@@ -14,28 +14,25 @@
 static void _help(void);
 
 static int wait_mode = 0;
-static double wait_time = 10.0;
+static int wait_time = 10;
 
 int
 main(int argc, char **argv)
 {
    int fd;
    char *fifo;
+   char buf[4096];
    
    if ((argc == 3) && (!strcmp(argv[1], "-wait")))
      {
 	wait_mode = 1;
-	wait_time = atof(argv[2]);
+	wait_time = (int)(atof(argv[2]));
+        printf("wait mode %i\n", wait_time);
      }
    if ((argc == 2) && (!strncmp(argv[1], "-h", 2)))
      {
         _help();
         return 0;
-     }
-   if (argc != 2)
-     {
-	_help();
-	return 0;
      }
    fifo = getenv("EXQUISITE_IPC");
    if (!fifo) fifo = "/tmp/exquisite-fifo";
@@ -43,7 +40,7 @@ main(int argc, char **argv)
    if ((wait_mode) && (fd < 0))
      {
         int left = wait_time;
-        
+
         while (left > 0)
           {
              left--;
@@ -53,12 +50,10 @@ main(int argc, char **argv)
           }
         return 0;
      }
-   if (fd < 0)
-     {
-	return 0;
-     }
-   write(fd, argv[1], strlen(argv[1]));
-   write(fd, "\n", 1);
+   if (fd < 0) return 0;
+   if (argc != 2) return 0;
+   snprintf(buf, sizeof(buf), "%s\n", argv[1]);
+   write(fd, buf, strlen(buf));
    close(fd);
    return 0;
 }

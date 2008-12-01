@@ -100,7 +100,7 @@ static int
 fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
    int fd;
-   char buf[4096];
+   char buf[4096], buf2[4096], *p, *q;
    int size;
    
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
@@ -111,12 +111,23 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
              size = read(fd, buf, sizeof(buf) - 1);
              if (size <= 0) break;
              buf[size] = 0;
-             if (size > 0)
+             q = buf2;
+             for (p = buf; *p; p++)
                {
-                  if (buf[size - 1] == '\n')
-                    buf[size - 1] = 0;
+                  if (*p == '\n')
+                    {
+                       *q = 0;
+                       if (strlen(buf2) > 0) fifo_cmd(buf2);
+                       q = buf2;
+                    }
+                  else
+                    {
+                       *q = *p;
+                       q++;
+                    }
                }
-             if (strlen(buf) > 0) fifo_cmd(buf);
+             *q = 0;
+             if (strlen(buf2) > 0) fifo_cmd(buf2);
           }
      }
    return 1;
