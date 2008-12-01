@@ -37,7 +37,7 @@ case "$host_os" in
 esac
 AC_SUBST(create_shared_lib)
 
-PKG_CHECK_MODULES(EINA, [eina >= 0.0.1])
+PKG_CHECK_MODULES(EINA, [eina-0 >= 0.0.1])
 PKG_CHECK_MODULES(PNG, [libpng >= 0.22], [have_png="yes"], [have_png="no"])
 #PKG_CHECK_MODULES(SDL, [sdl >= 1.2.10], [have_sdl="yes"], [have_sdl="no"])
 

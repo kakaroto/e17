@@ -31,8 +31,6 @@ $(ARGB8888_UNPRE_REQ) \
 $(RGB565_XA5_REQ) \
 $(RGB565_B1A3_REQ)
 
-argb8888.c: Makefile
-	$(top_builddir)/$(native_tools)/src/tool/enesim_generator drawer argb8888 $@
 $(ARGB8888_UNPRE_REQ): Makefile
 	$(top_builddir)/$(native_tools)/src/tool/enesim_generator drawer argb8888_unpre $@
 $(RGB565_XA5_REQ): Makefile
@@ -48,4 +46,6 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libenesim_drawer.la
 
 libenesim_drawer_la_SOURCES = \
-$(BUILT_SOURCES)
+argb8888.c \
+argb8888_unpre.c
+#$(BUILT_SOURCES)

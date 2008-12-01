@@ -60,7 +60,9 @@ enesim_surface_new(Enesim_Surface_Format f, int w, int h)
 	switch (s->format)
 	{
 		case ENESIM_SURFACE_ARGB8888:
-		s->data.argb8888.plane0 = calloc(w * h, sizeof(unsigned int));
+		//s->data.argb8888.plane0 = calloc(w * h, sizeof(unsigned int));
+		s->data.argb8888.plane0 = memalign(16, w * h * sizeof(unsigned int));
+		printf("POINTER %p\n", s->data.argb8888.plane0);
 		break;
 		
 		case ENESIM_SURFACE_ARGB8888_UNPRE:
@@ -174,7 +176,7 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	eina_rectangle_coords_from(&dr, 0, 0, d->w, d->h);
 	enesim_transformation_apply(tx, s, &sr, d, &dr);
 	
-	enesim_matrix_free(matrix);
+	enesim_matrix_delete(matrix);
 }
 /**
  * To be documented

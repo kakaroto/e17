@@ -51,7 +51,7 @@ EAPI Enesim_Matrix * enesim_matrix_new(void)
 /**
  * 
  */
-EAPI void enesim_matrix_free(Enesim_Matrix *m)
+EAPI void enesim_matrix_delete(Enesim_Matrix *m)
 {
 	free(m);
 }
@@ -309,7 +309,7 @@ EAPI Enesim_Quad * enesim_quad_new(void)
 /**
  * 
  */
-EAPI void enesim_quad_free(Enesim_Quad *q)
+EAPI void enesim_quad_delete(Enesim_Quad *q)
 {
 	free(q);
 }

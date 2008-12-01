@@ -41,6 +41,7 @@ typedef enum
 	ENESIM_SURFACE_b1A3, /**< */
 	ENESIM_SURFACE_FORMATS,
 } Enesim_Surface_Format;
+/* TODO add the concept of colorspace? Buffer format (texture, linear?)? */
 /**
  * 
  */

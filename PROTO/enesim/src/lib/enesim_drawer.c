@@ -34,6 +34,9 @@ Enesim_Drawer _unbuilt;
 
 /* this is the main surface format drawer */
 extern Enesim_Drawer argb8888_drawer;
+#if defined(__MMX__)
+extern Enesim_Drawer argb8888_drawer_mmx;
+#endif
 
 
 #ifdef BUILD_SURFACE_ARGB8888_UNPRE
@@ -56,12 +59,12 @@ Enesim_Drawer *drawer[ENESIM_SURFACE_FORMATS] = {
 		[ENESIM_SURFACE_ARGB8888_UNPRE] = &_unbuilt,
 #endif
 #ifdef BUILD_SURFACE_RGB565_XA5
-		[ENESIM_SURFACE_RGB565_XA5] = &rgb565_xa5_drawer,
+		[ENESIM_SURFACE_RGB565_XA5] = &_unbuilt, //&rgb565_xa5_drawer,
 #else
 		[ENESIM_SURFACE_RGB565_XA5] = &_unbuilt,
 #endif
 #ifdef BUILD_SURFACE_RGB565_B1A3
-		[ENESIM_SURFACE_RGB565_B1A3] = &rgb565_b1a3_drawer,
+		[ENESIM_SURFACE_RGB565_B1A3] = &_unbuilt, //&rgb565_b1a3_drawer,
 #else
 		[ENESIM_SURFACE_RGB565_B1A3] = &_unbuilt,
 #endif

@@ -16,8 +16,8 @@
 #include "image.h"
 
 int opt_shift = 0;
-int opt_width = 256;
-int opt_height = 256;
+int opt_width = 1020;
+int opt_height = 1020;
 int opt_times = 1;
 FILE *opt_file;
 int opt_debug = 0;
@@ -239,6 +239,19 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 	surface_save(dst, file);
 }
 
+void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Enesim_Color color)
+{
+	int i;
+	int t;
+	Enesim_Surface_Data dtmp;
+	enesim_surface_data_get(dst, &dtmp);
+
+	for (t = 0; t < opt_times; t++)
+	{
+		point(&dtmp, NULL, color, NULL);
+	}
+}
+
 void span_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
 		Enesim_Color color)
 {
@@ -373,6 +386,36 @@ void drawer_span_pixel_bench(Enesim_Rop rop, Enesim_Surface_Format dsf, Enesim_S
 	enesim_surface_delete(src);
 }
 
+void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Surface_Format dsf)
+{
+	double start, end;
+	Enesim_Surface *dst;
+	Enesim_Surface_Data ddata;
+	Enesim_Drawer_Point dpoint;
+	Enesim_Color color;
+
+	dst = enesim_surface_new(dsf, 1, 1);
+	enesim_color_get(&color, 0xaa, 0xbb, 0xcc, 0xdd);
+	enesim_surface_data_get(dst, &ddata);
+	*ddata.argb8888.plane0 = color;
+	enesim_color_get(&color, 0x11, 0x22, 0x33, 0x44);
+	dpoint = enesim_drawer_point_color_get(rop, dsf, color);
+	if (dpoint)
+	{
+		start = get_time();
+		point_color_draw(dpoint, dst, color);
+		end = get_time();
+		printf("    Point transparent color [%3.3f sec]\n", end - start);
+	}
+	else
+	{
+		printf("    Point transparent color [NOT BUILT]\n");
+		return;
+	}
+	test_finish("point_color_transparent", rop, dst, NULL, NULL);
+	enesim_surface_delete(dst);
+}
+
 void drawer_bench(void)
 {
 	Enesim_Surface_Format ssf;
@@ -381,6 +424,9 @@ void drawer_bench(void)
 	printf("* Drawer Bench *\n");
 	printf("****************\n");
 
+	/* point functions */
+	drawer_point_color_transparent_bench(opt_rop, opt_fmt);
+	/* span functions */
 	drawer_span_color_solid_bench(opt_rop, opt_fmt);
 	drawer_span_color_transparent_bench(opt_rop, opt_fmt);
 
@@ -422,7 +468,7 @@ const char * transformer_get(Enesim_Transformation *tx)
 		else
 			return "affine";
 	}
-	enesim_matrix_free(t);
+	enesim_matrix_delete(t);
 }
 void transformer_go(Enesim_Transformation *tx)
 {
@@ -503,10 +549,10 @@ void transformer_bench(void)
 	printf("Projective\n");
 	transformer_go(tx);
 	
-	enesim_quad_free(q1);
-	enesim_quad_free(q2);
-	enesim_matrix_free(matrix);
-	enesim_matrix_free(tmp);
+	enesim_quad_delete(q1);
+	enesim_quad_delete(q2);
+	enesim_matrix_delete(matrix);
+	enesim_matrix_delete(tmp);
 }
 void matrix_bench(void)
 {
@@ -552,10 +598,10 @@ void matrix_bench(void)
 	enesim_matrix_point_transform(m, x, y, &xr, &yr);
 	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
 	
-	enesim_matrix_free(m);
-	enesim_matrix_free(m2);
-	enesim_quad_free(q1);
-	enesim_quad_free(q2);
+	enesim_matrix_delete(m);
+	enesim_matrix_delete(m2);
+	enesim_quad_delete(q1);
+	enesim_quad_delete(q2);
 #endif
 }
 /******************************************************************************

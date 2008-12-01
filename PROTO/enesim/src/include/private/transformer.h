@@ -42,13 +42,16 @@ struct _Enesim_Transformation
 	float ox;
 	float oy;
 	int quality; // TODO fix this
-	/* TODO also add the case were the src surface uses borders */
+	struct {
+		int l, t, r, b;
+		Eina_Bool used;	
+	} border;
 	Enesim_Rop rop;
 };
 
-/* identity[quality][xscale][yscale]
- * affine[quality][xscale][yscale]
- * projective[quality][xscale][yscale]
+/* identity[quality][border][xscale][yscale]
+ * affine[quality][border][xscale][yscale]
+ * projective[quality][border][xscale][yscale]
  */
 
 typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t, Enesim_Surface *ss, Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect);

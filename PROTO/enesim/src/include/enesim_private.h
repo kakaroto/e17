@@ -122,6 +122,33 @@ static inline int enesim_hline_cut(int x, int *w, int *rx, int *rw, int cx)
 	return 0;
 }
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <limits.h>
+
+#ifndef _ISOC99_SOURCE // truncf support
+#define _ISOC99_SOURCE
+#endif
+
+#include <math.h>
+/* SIMD intrinsics */
+#ifdef __MMX__
+#include <mmintrin.h>
+typedef __m64 mmx_t;
+#endif
+
+#ifdef  __SSE__
+#include <xmmintrin.h>
+#endif
+
+#ifdef __SSE2__
+#include <emmintrin.h>
+typedef __m128i sse2_t;
+#endif
+
+
+
 #include "extender_int.h"
 // #include "extender_float.h"
 #include "private/curve.h"
@@ -153,7 +180,6 @@ static inline int enesim_hline_cut(int x, int *w, int *rx, int *rw, int cx)
 #include "private/surface_rgb565_b1a3_core.h"
 #include "private/surface_rgb565_b1a3_rop.h"
 #endif
-
 
 /** @} */
 #endif

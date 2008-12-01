@@ -319,7 +319,7 @@ EAPI Enesim_Transformation * enesim_transformation_new(void)
  */
 EAPI void enesim_transformation_delete(Enesim_Transformation *t)
 {
-	enesim_matrix_free(t->matrix);
+	enesim_matrix_delete(t->matrix);
 	free(t);
 }
 /**
@@ -427,6 +427,35 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	}
 	tfunc(t, s, sr, d, dr);
 	return EINA_TRUE;
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_border_set(Enesim_Transformation *tx, int l, int t, int r, int b)
+{
+	tx->border.l = l;
+	tx->border.t = t;
+	tx->border.r = r;
+	tx->border.b = b;
+	tx->border.used = EINA_TRUE;
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_border_unset(Enesim_Transformation *t)
+{
+	t->border.used = EINA_FALSE;
+}
+/**
+ * 
+ */
+EAPI Eina_Bool enesim_transformation_border_get(Enesim_Transformation *tx, int *l, int *t, int *r, int *b)
+{
+	if (l) *l = tx->border.l;
+	if (t) *t = tx->border.t;
+	if (r) *r = tx->border.r;
+	if (b) *b = tx->border.b;
+	return tx->border.used;
 }
 /**
  * 

@@ -12,7 +12,7 @@ typedef struct _Enesim_Quad Enesim_Quad;
 
 
 EAPI Enesim_Matrix * enesim_matrix_new(void);
-EAPI void enesim_matrix_free(Enesim_Matrix *m);
+EAPI void enesim_matrix_delete(Enesim_Matrix *m);
 EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,
 		float d, float e, float f, float g, float h, float i);
 EAPI void enesim_matrix_values_get(Enesim_Matrix *m, float *a, float *b, 
@@ -32,7 +32,7 @@ EAPI Eina_Bool enesim_matrix_quad_quad_to(Enesim_Matrix *m, Enesim_Quad *src, En
 EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m, Enesim_Quad *q);
 EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m, Enesim_Quad *q);
 EAPI Enesim_Quad * enesim_quad_new(void);
-EAPI void enesim_quad_free(Enesim_Quad *q);
+EAPI void enesim_quad_delete(Enesim_Quad *q);
 EAPI void enesim_quad_coords_set(Enesim_Quad *q, float x1, float y1, float x2,
 		float y2, float x3, float y3, float x4, float y4);
 EAPI void enesim_quad_coords_get(Enesim_Quad *q, float *x1, float *y1, 

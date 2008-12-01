@@ -42,7 +42,7 @@ EAPI void enesim_shutdown(void)
 }
 
 /**
- * 
+ * TODO rename this
  */
 EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -51,3 +51,22 @@ EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g,
 	*color = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
 		| ((b * alpha) >> 8);
 }
+#if 0
+/**
+ * 
+ */
+EAPI void enesim_color_components_from(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
+{
+	unsigned int alpha = a + 1;
+		
+	*color = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
+		| ((b * alpha) >> 8);
+}
+/**
+ * 
+ */
+EAPI void enesim_color_components_to(Enesim_Color *color, uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)
+{
+	
+}
+#endif
