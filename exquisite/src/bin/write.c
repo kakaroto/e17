@@ -27,7 +27,6 @@ main(int argc, char **argv)
      {
 	wait_mode = 1;
 	wait_time = (int)(atof(argv[2]));
-        printf("wait mode %i\n", wait_time);
      }
    if ((argc == 2) && (!strncmp(argv[1], "-h", 2)))
      {
