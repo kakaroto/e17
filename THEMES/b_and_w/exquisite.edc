@@ -112,6 +112,11 @@ collections {
 	       }
 	       image.normal: "exq-barglow.png";
 	       image.border: 0 10 10 10;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
 	    }
 	 }
 	 part { name: "bar_clip";
@@ -216,6 +221,7 @@ collections {
 	    action: STATE_SET "visible" 0.0;
             transition: LINEAR 2.0;
 	    target: "bar";
+	    target: "barglow";
 	 }
 	 
 	 program { name: "title1";
@@ -277,6 +283,7 @@ collections {
 	    action: STATE_SET "default" 0.0;
 	    transition: ACCELERATE 0.5;
 	    target: "bar";
+	    target: "barglow";
 	    after: "exit2";
 	 }
 	 program { name: "exit2";
