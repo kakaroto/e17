@@ -2,9 +2,13 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <string.h>
 
 #include <Evas.h>
@@ -12,7 +16,9 @@
 #include <Ecore_Evas.h>
 #include <Eet.h>
 #include <Edje.h>
+/*
 #include <Ecore_Ipc.h>
+*/
 
 #include "ipc.h"
 

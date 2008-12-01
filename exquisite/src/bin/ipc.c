@@ -1,146 +1,153 @@
 #include "main.h"
 
-static int _ipc_cb_client_add(void *data, int type, void *event);
-static int _ipc_cb_client_del(void *data, int type, void *event);
-static int _ipc_cb_client_data(void *data, int type, void *event);
 static int _ipc_cb_timeout(void *data);
 static void _ipc_cb_theme_exit_done(void *data);
 
-static Ecore_Ipc_Server *_ipc_server = NULL;
-static Ecore_Ipc_Client *_ipc_exit_client = NULL;
 static Ecore_Timer *timeout = NULL;
 static int timeout_seconds = 0;
+static int fd = -1;
+
 int quitting;
+
+static void
+fifo_cmd(char *cmd)
+{
+   char *p, *q;
+   char buf[4096];
+
+   p = buf;
+   for (q = cmd; *q && (*q != ' ') && (p < (buf + sizeof(buf) - 1)); q++)
+     {
+        *p = *q;
+        p++;
+     }
+   *p = 0;
+   if (*q == ' ') q++;
+   
+   if (timeout) 
+     {
+        ecore_timer_del(timeout);
+        timeout = NULL;
+        timeout = ecore_timer_add(timeout_seconds, _ipc_cb_timeout, NULL);
+     }
+   
+   if (!strcmp(buf, "QUIT"))
+     {
+        ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "PROGRESS"))
+     {
+	theme_progress_set(atoi(q) / 100.0);
+     }
+   else if (!strcmp(buf, "MSG"))
+     {
+        theme_message_set(q);
+     }
+   else if (!strcmp(buf, "TITLE"))
+     {
+        theme_title_set(q);
+     }
+   else if (!strcmp(buf, "END"))
+     {
+        theme_exit(_ipc_cb_theme_exit_done, NULL);
+     }
+   else if (!strcmp(buf, "TICK"))
+     {
+	theme_tick();
+     }
+   else if (!strcmp(buf, "PULSATE"))
+     {
+	theme_pulsate();
+     }
+   else if (!strcmp(buf, "TEXT"))
+     {
+        if (!quiet)
+          theme_text_add(q);
+     }
+   else if (!strcmp(buf, "TEXT-URGENT"))
+     {
+        theme_text_add(q);
+     }
+   else if (!strcmp(buf, "STATUS"))
+     {
+        theme_status_set(q, -1);
+     }
+   else if (!strcmp(buf, "SUCCESS"))
+     {
+        theme_status_set(q, 1);
+     }
+   else if (!strcmp(buf, "FAILURE"))
+     {
+        theme_status_set(q, 0);
+     }
+   else if (!strcmp(buf, "CLEAR"))
+     {
+        theme_text_clear();
+     }
+   else if (!strcmp(buf, "TIMEOUT"))
+     {
+        timeout_seconds = atoi(q);
+        if (timeout) 
+          {
+             ecore_timer_del(timeout);
+             timeout = NULL;
+          }
+        timeout = ecore_timer_add(timeout_seconds, _ipc_cb_timeout, NULL);
+     }
+}
+
+static int
+fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
+{
+   int fd;
+   char buf[4096];
+   int size;
+   
+   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
+     {
+        fd = ecore_main_fd_handler_fd_get(fd_handler);
+        for (;;)
+          {
+             size = read(fd, buf, sizeof(buf) - 1);
+             if (size <= 0) break;
+             buf[size] = 0;
+             if (size > 0)
+               {
+                  if (buf[size - 1] == '\n')
+                    buf[size - 1] = 0;
+               }
+             if (strlen(buf) > 0) fifo_cmd(buf);
+          }
+     }
+   return 1;
+}
 
 void
 ipc_init(void)
 {
-   ecore_ipc_init();
-   if (getenv("EXQUISITE_IPC"))
-     _ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, getenv("EXQUISITE_IPC"), 0, NULL);
-   else
-     _ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
-   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, _ipc_cb_client_add, NULL);
-   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, _ipc_cb_client_del, NULL);
-   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, _ipc_cb_client_data, NULL);
+   char *fifo;
+
+   fifo = getenv("EXQUISITE_IPC");
+   if (!fifo) fifo = "/tmp/exquisite-fifo";
+   mkfifo(fifo, S_IRUSR | S_IWUSR |  S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+   fd = open(fifo, O_RDONLY);
+   fcntl(fd, F_SETFL, O_NONBLOCK);
+   if (fd < 0)
+     {
+        printf("EXQUISITE ERROR: cannot open fifo: %s\n", fifo);
+        exit(-1);
+     }
+   ecore_main_fd_handler_add(fd, ECORE_FD_READ, fifo_input, NULL, NULL, NULL);
 }
 
 void
 ipc_shutdown(void)
 {
-   ecore_ipc_server_del(_ipc_server);
-   _ipc_server = NULL;
-   ecore_ipc_shutdown();
-}
+   char *fifo;
 
-static int
-_ipc_cb_client_add(void *data, int type, void *event)
-{
-   Ecore_Ipc_Event_Client_Add *e;
-   
-   e = event;
-   if (ecore_ipc_client_server_get(e->client) != _ipc_server) return 1;
-   return 1;
-}
-
-static int
-_ipc_cb_client_del(void *data, int type, void *event)
-{
-   Ecore_Ipc_Event_Client_Del *e;
-   
-   e = event;
-   if (ecore_ipc_client_server_get(e->client) != _ipc_server) return 1;
-   if (e->client == _ipc_exit_client)
-     {
-	theme_exit_abort();
-	_ipc_exit_client = NULL;
-     }
-   ecore_ipc_client_del(e->client);
-   return 1;
-}
-
-static int
-_ipc_cb_client_data(void *data, int type, void *event)
-{
-   Ecore_Ipc_Event_Client_Data *e;
-   
-   if(quitting) return 1;
-
-   e = event;
-   if (ecore_ipc_client_server_get(e->client) != _ipc_server) return 1;
-   
-   if(timeout) 
-    {
-       ecore_timer_del(timeout);
-       timeout = NULL;
-       timeout = ecore_timer_add(timeout_seconds, _ipc_cb_timeout, NULL);
-    }
-   
-   switch (e->major)
-     {
-      case EXIT_NOW:
-	ecore_main_loop_quit();
-	break;
-      case EXIT:
-	if (!_ipc_exit_client)
-	  {
-	     theme_exit(_ipc_cb_theme_exit_done, e->client);
-	     _ipc_exit_client = e->client;
-	  }
-	break;
-      case TITLE:
-	if ((e->data) && ((char *)e->data)[e->size - 1] == 0)
-	  theme_title_set(e->data);
-	break;
-      case MESSAGE:
-	if ((e->data) && ((char *)e->data)[e->size - 1] == 0)
-	  theme_message_set(e->data);
-	break;
-      case PROGRESS:
-	theme_progress_set(e->ref / 100.0);
-	break;
-      case TICK:
-	theme_tick();
-	break;
-      case PULSATE:
-	theme_pulsate();
-	break;
-      case TEXT:
-        if (!quiet && (e->data) && ((char *)e->data)[e->size -1] == 0)
-          theme_text_add(e->data);
-        break;
-      case TEXT_URGENT:
-        if ((e->data) && ((char *)e->data)[e->size -1] == 0)
-          theme_text_add(e->data);
-        break;
-      case STATUS:
-        if ((e->data) && ((char *)e->data)[e->size -1] == 0)
-          theme_status_set(e->data, -1);
-        break;
-      case SUCCESS:
-        if ((e->data) && ((char *)e->data)[e->size -1] == 0)
-          theme_status_set(e->data, 1);
-        break;
-      case FAILURE:
-        if ((e->data) && ((char *)e->data)[e->size -1] == 0)
-          theme_status_set(e->data, 0);
-        break;
-      case CLEAR:
-        theme_text_clear();
-        break;
-      case TIMEOUT:
-        timeout_seconds = e->ref;
-        if(timeout) 
-          {
-             ecore_timer_del(timeout);
-             timeout = NULL;
-          }
-          timeout = ecore_timer_add(timeout_seconds, _ipc_cb_timeout, NULL);
-        break;
-      default:
-	break;
-     }
-   return 1;
+   fifo = getenv("EXQUISITE_IPC");
+   if (!fifo) fifo = "/tmp/exquisite-fifo";
+   unlink(fifo);
 }
 
 static int
@@ -153,11 +160,5 @@ _ipc_cb_timeout(void *data)
 static void
 _ipc_cb_theme_exit_done(void *data)
 {
-   if(data)
-     {
-        ecore_ipc_client_send(data, 0, 0, 0, 0, 0, NULL, 0);
-        ecore_ipc_client_flush(data);
-     }
    ecore_main_loop_quit();
-   _ipc_exit_client = NULL;
 }

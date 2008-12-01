@@ -102,9 +102,7 @@ PKG_CHECK_MODULES([EET], eet)
 PKG_CHECK_MODULES([EVAS], evas)
 PKG_CHECK_MODULES([EDJE], edje)
 PKG_CHECK_MODULES([ECORE], [
-   ecore-con
-   ecore-evas
-   ecore-ipc])
+   ecore-evas])
 
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],

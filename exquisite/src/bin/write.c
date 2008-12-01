@@ -2,109 +2,59 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <string.h>
-
-#include <Ecore.h>
-#include <Ecore_Ipc.h>
-
-#include "ipc.h"
-
-int ipc_connect_retry(void *data);
-int ipc_connect_timeout(void *data);
-void ipc_init(void);
-void ipc_shutdown(void);
 
 static void _help(void);
 
-static int _ipc_cb_server_add(void *data, int type, void *event);
-static int _ipc_cb_server_del(void *data, int type, void *event);
-static int _ipc_cb_server_data(void *data, int type, void *event);
-
-static Ecore_Ipc_Server *_ipc_server = NULL;
 static int wait_mode = 0;
 static double wait_time = 10.0;
-static Ecore_Timer *connect_timer = NULL;
-static Ecore_Timer *connect_timeout = NULL;
-
-int
-ipc_connect_retry(void *data)
-{
-   if (getenv("EXQUISITE_IPC"))
-     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, (getenv("EXQUISITE_IPC")), 0, NULL);
-   else
-     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
-   if (_ipc_server)
-     {
-	connect_timer = NULL;
-	return 0;
-     }
-   return 1;
-}
-
-int
-ipc_connect_timeout(void *data)
-{
-   ecore_main_loop_quit();
-   connect_timeout = NULL;
-   return 0;
-}
-
-void
-ipc_init(void)
-{
-   ecore_ipc_init();
-   if (getenv("EXQUISITE_IPC"))
-     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, (getenv("EXQUISITE_IPC")), 0, NULL);
-   else
-     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
-   if (!wait_mode)
-     {
-	if (!_ipc_server)
-	  {
-	     _help();
-	     ecore_main_loop_quit();
-	  }
-     }
-   else
-     {
-	if (!_ipc_server)
-	  connect_timer = ecore_timer_add(0.25, ipc_connect_retry, NULL);
-     }
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, _ipc_cb_server_add, NULL);
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, _ipc_cb_server_del, NULL);
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, _ipc_cb_server_data, NULL);
-}
-
-void
-ipc_shutdown(void)
-{
-   if (_ipc_server)
-     {
-	ecore_ipc_server_del(_ipc_server);
-	_ipc_server = NULL;
-     }
-   ecore_ipc_shutdown();
-}
 
 int
 main(int argc, char **argv)
 {
-   if (!ecore_init()) return -1;
-   ecore_app_args_set(argc, (const char **)argv);
+   int fd;
+   char *fifo;
+   
    if ((argc == 3) && (!strcmp(argv[1], "-wait")))
      {
 	wait_mode = 1;
 	wait_time = atof(argv[2]);
      }
-   ipc_init();
-   if (wait_mode)
-     connect_timeout = ecore_timer_add(wait_time, ipc_connect_timeout, NULL);
-   ecore_main_loop_begin();
-   ipc_shutdown();
-   ecore_shutdown();
+   if (argc != 2)
+     {
+	_help();
+	return 0;
+     }
+   fifo = getenv("EXQUISITE_IPC");
+   if (!fifo) fifo = "/tmp/exquisite-fifo";
+   fd = open(fifo, O_WRONLY);
+   if ((wait_mode) && (fd < 0))
+     {
+        int left = wait_time;
+        
+        while (left > 0)
+          {
+             left--;
+             sleep(1);
+             fd = open(fifo, O_WRONLY);
+             if (fd >= 0) break;
+          }
+     }
+   if (fd < 0)
+     {
+	_help();
+	return 0;
+     }
+   write(fd, argv[1], strlen(argv[1]));
+   write(fd, "\n", 1);
+   close(fd);
    return 0;
 }
 
@@ -137,7 +87,7 @@ _help(void)
 	  "and exquisitie-write for communication.\n"
 	  );
 }
-
+/*
 static int
 _ipc_cb_server_add(void *data, int type, void *event)
 {
@@ -157,7 +107,6 @@ _ipc_cb_server_add(void *data, int type, void *event)
      }
    
    ecore_app_args_get(&argc, &argv);
-   /* parse options */
    if (argc != 2)
      {
 	_help();
@@ -165,7 +114,6 @@ _ipc_cb_server_add(void *data, int type, void *event)
 	return 0;
      }
 		 
-   /* Split argument string */ 
    p = buf;
    for (q = argv[1]; *q && (*q != ' ') && (p < (buf + sizeof(buf) - 1)); q++)
      {
@@ -175,7 +123,6 @@ _ipc_cb_server_add(void *data, int type, void *event)
    *p = 0;
    if (*q == ' ') q++;
    
-   /* psplash compat */
    if (!strcmp(buf, "-h"))
      {
 	_help();
@@ -197,7 +144,6 @@ _ipc_cb_server_add(void *data, int type, void *event)
 	ecore_ipc_server_send(e->server, MESSAGE, 0, 0, 0, 0, q, strlen(q) + 1);
 	ecore_main_loop_quit();
      }
-   /* extras */
    else if (!strcmp(buf, "TITLE"))
      {
 	ecore_ipc_server_send(e->server, TITLE, 0, 0, 0, 0, q, strlen(q) + 1);
@@ -261,23 +207,4 @@ _ipc_cb_server_add(void *data, int type, void *event)
    ecore_ipc_server_flush(e->server);
    return 1;
 }
-
-static int
-_ipc_cb_server_del(void *data, int type, void *event)
-{
-   Ecore_Ipc_Event_Server_Del *e;
-   
-   e = event;
-   ecore_main_loop_quit();
-   return 1;
-}
-
-static int
-_ipc_cb_server_data(void *data, int type, void *event)
-{
-   Ecore_Ipc_Event_Server_Data *e;
-   
-   e = event;
-   ecore_main_loop_quit();
-   return 1;
-}
+*/
