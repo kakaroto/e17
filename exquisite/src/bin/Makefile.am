@@ -17,4 +17,4 @@ exquisite_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 exquisite_write_SOURCES = \
 write.c
 
-exquisite_write_LDADD = @ECORE_LIBS@
+exquisite_write_LDADD =
