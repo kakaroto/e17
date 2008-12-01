@@ -71,7 +71,7 @@ ipc_init(void)
    else
      {
 	if (!_ipc_server)
-	  connect_timer = ecore_timer_add(0.1, ipc_connect_retry, NULL);
+	  connect_timer = ecore_timer_add(0.25, ipc_connect_retry, NULL);
      }
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, _ipc_cb_server_add, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, _ipc_cb_server_del, NULL);
