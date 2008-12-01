@@ -1,7 +1,14 @@
+body {
+    background-color: #f3f3f3;
+}
+
 #content
 {
     padding-top: 3em;
-
+    background-image: url("../img/tmp_BORRAR.png");
+    background-repeat: no-repeat;
+    background-position: top center;
+    height: 500px;
 }
 
 #welcome-buttons
