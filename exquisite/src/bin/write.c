@@ -27,6 +27,11 @@ main(int argc, char **argv)
 	wait_mode = 1;
 	wait_time = atof(argv[2]);
      }
+   if ((argc == 2) && (!strncmp(argv[1], "-h", 2)))
+     {
+        _help();
+        return 0;
+     }
    if (argc != 2)
      {
 	_help();
@@ -46,10 +51,10 @@ main(int argc, char **argv)
              fd = open(fifo, O_WRONLY);
              if (fd >= 0) break;
           }
+        return 0;
      }
    if (fd < 0)
      {
-	_help();
 	return 0;
      }
    write(fd, argv[1], strlen(argv[1]));

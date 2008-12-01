@@ -18,8 +18,10 @@ static char *theme = NULL;
 static int  _cb_exit(void *data, int ev_type, void *ev);
 static void _cb_delete_request(Ecore_Evas *ee);
 static void _cb_resize(Ecore_Evas *ee);
+static int  _cb_idle_enterer(void *data);
 static int  _args(void);
-    
+
+
 int
 main(int argc, char **argv)
 {
@@ -32,8 +34,8 @@ main(int argc, char **argv)
    _args();
    
    theme_init(theme);
-   ipc_init();
-   
+
+   ecore_idle_enterer_add(_cb_idle_enterer, NULL);
    ecore_main_loop_begin();
    
    ipc_shutdown();
@@ -63,6 +65,13 @@ _cb_resize(Ecore_Evas *ee)
 {
    evas_output_viewport_get(evas, NULL, NULL, &scr_w, &scr_h);
    theme_resize();
+}
+
+static int
+_cb_idle_enterer(void *data)
+{
+   ipc_init();
+   return 0;
 }
 
 static int
