@@ -1108,7 +1108,23 @@ msgid "Selection Error!"
 msgstr "¥»¥ì¥¯¥·¥ç¥ó¥¨¥é¡¼"
 
 #: src/hints.c:600
-#, c-formatÖ÷7BÆ–¶VÇ’'Vrâ—B—2&V6öÖÖVæFVBFõÆâ ¢'&W7F'Bæ÷râ–b–÷Rv—6‚Fò†VÇf—‚F†—2ÆV6R6ö×–ÆUÆâ ¢$VæÆ–v‡FVæÖVçBv—F‚FV'Vvv–ær7–Ö&öÇ2–âæB'VâVæÆ–v‡FVæÖVçEÆâ ¢'VæFW"vF"6ò–÷R6â&6·G&6Rf÷"v†W&R—BF–VBæB6VæB–âÆâ ¢'W6VgVÂ'Vr&W÷'Bv—F‚&6·G&6R–æ: src/ipc.c:1440 src/ipc.c:1447
+#, c-format
+msgid "Could not acquire selection: %s"
+msgstr "¥»¥ì¥¯¥·¥ç¥ó %s ¤ò³ÍÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+
+#: src/iconify.c:469
+msgid "Iconbox Options"
+msgstr "¥¢¥¤¥³¥ó¥Ü¥Ã¥¯¥¹¥ª¥×¥·¥ç¥ó"
+
+#: src/iconify.c:470
+msgid "Iconbox Settings"
+msgstr "¥¢¥¤¥³¥ó¥Ü¥Ã¥¯¥¹¤ÎÀßÄê"
+
+#: src/ipc.c:194 src/ipc.c:1440 src/ipc.c:1447
+msgid "Message"
+msgstr "¥á¥Ã¥»¡¼¥¸"
+
+#: src/ipc.c:1440 src/ipc.c:1447
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "¤³¤Îe16¤Ï %s ¤ËÂÐ±þ¤·¤Æ¤¤¤Þ¤»¤ó"
