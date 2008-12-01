@@ -30,6 +30,7 @@ EAPI int enesim_init(void)
 	{
 		/* initialize the drawer */
 		enesim_drawer_init();
+		/* TODO Dump the information about SIMD extensions */
 	}
 	return _init;
 }

@@ -28,7 +28,7 @@ static inline mmx_t c2v_mmx(uint32_t c)
 	return r;
 }
 
-static inline blend_mmx(uint32_t *d, mmx_t alpha, mmx_t color)
+static inline void blend_mmx(uint32_t *d, mmx_t alpha, mmx_t color)
 {
 	mmx_t r;
 
@@ -44,7 +44,7 @@ static void argb8888_pt_color_blend_mmx(Enesim_Surface_Data *d, Enesim_Surface_D
 {
 	uint8_t a;
 	uint32_t *dtmp = d->argb8888.plane0;
-	mmx_t r0, r1, r2;
+	mmx_t r0, r1;
 		
 	a = color >> 24;
 	r0 = a2v_mmx(256 - a);

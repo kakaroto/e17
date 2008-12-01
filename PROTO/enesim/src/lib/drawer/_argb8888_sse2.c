@@ -73,10 +73,9 @@ static inline sse2_t cc2v_sse2(uint64_t c)
 	return r;
 }
 
-static inline blend_sse2(uint64_t *d, sse2_t alpha, sse2_t color)
+static inline void blend_sse2(uint64_t *d, sse2_t alpha, sse2_t color)
 {
 	sse2_t r;
-	sse2_d m;
 
 	r = cc2v_sse2(*d);
 	r = _mm_mullo_epi16(alpha, r);
@@ -96,8 +95,7 @@ static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d, unsigned int le
 	uint8_t a;
 
 #if 1
-	sse2_t r0, r1, r2;
-	sse2_d d0;
+	sse2_t r0, r1;
 			
 	a = color >> 24;
 	r0 = a2v_sse2(256 - a);

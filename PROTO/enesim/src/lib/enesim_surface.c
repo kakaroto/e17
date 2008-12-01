@@ -60,9 +60,7 @@ enesim_surface_new(Enesim_Surface_Format f, int w, int h)
 	switch (s->format)
 	{
 		case ENESIM_SURFACE_ARGB8888:
-		//s->data.argb8888.plane0 = calloc(w * h, sizeof(unsigned int));
-		s->data.argb8888.plane0 = memalign(16, w * h * sizeof(unsigned int));
-		printf("POINTER %p\n", s->data.argb8888.plane0);
+		s->data.argb8888.plane0 = calloc(w * h, sizeof(unsigned int));
 		break;
 		
 		case ENESIM_SURFACE_ARGB8888_UNPRE:
