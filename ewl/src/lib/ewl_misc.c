@@ -4,6 +4,7 @@
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
 #include "ewl_text_context.h"
+#include "ewl_mvc.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
@@ -289,6 +290,9 @@ ewl_init(int *argc, char **argv)
         /* allocate the two window callbacks */
         EWL_CALLBACK_EXPOSE = ewl_callback_type_add();
         EWL_CALLBACK_DELETE_WINDOW = ewl_callback_type_add();
+
+        /* allocate the mvc callback */
+        EWL_CALLBACK_MVC_CLICKED = ewl_callback_type_add();
 
         if (!ewl_theme_init()) {
                 fprintf(stderr, "Could not setup Ewl Theme system.\n");

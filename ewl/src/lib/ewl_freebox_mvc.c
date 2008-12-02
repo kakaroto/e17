@@ -198,8 +198,9 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Sets the clicked widget as selected
  */
 void
-ewl_freebox_mvc_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+ewl_freebox_mvc_cb_item_clicked(Ewl_Widget *w, void *ev, void *data)
 {
+        const Ewl_Event_Mouse_Down *event;
         const Ewl_Model *model;
         void *mvc_data;
         int row;
@@ -209,6 +210,8 @@ ewl_freebox_mvc_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         DCHECK_PARAM_PTR(data);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
         DCHECK_TYPE(data, EWL_FREEBOX_MVC_TYPE);
+
+        event = ev;
 
         if (ewl_mvc_selection_mode_get(EWL_MVC(data)) == 
                                        EWL_SELECTION_MODE_NONE)
@@ -225,7 +228,16 @@ ewl_freebox_mvc_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
                 DRETURN(DLEVEL_STABLE);
         }
 
-        ewl_mvc_handle_click(EWL_MVC(data), NULL, mvc_data, row, 0);
+        /* set up the event structure */
+        {
+                Ewl_Event_MVC_Clicked mvc_event = {
+                        event->base.modifiers, event->button, event->clicks,
+                        model, mvc_data, row, 0
+                };
+
+                ewl_callback_call_with_event_data(EWL_WIDGET(data), 
+                                        EWL_CALLBACK_MVC_CLICKED, &mvc_event);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

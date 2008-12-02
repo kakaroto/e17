@@ -372,6 +372,34 @@ struct Ewl_Event_State_Change
         Ewl_State_Type flag;
 };
 
+#include <ewl_model.h>
+/**
+ * @def EWL_EVENT_MVC_CLICKED(e)
+ * Casts a pointer to an Ewl_Event_MVC_Clicked pointer
+ */
+#define EWL_EVENT_MVC_CLICKED(e) ((Ewl_Event_MVC_Clicked*)(e))
+
+/**
+ * The Ewl_Event_MVC_Clicked type
+ */
+typedef struct Ewl_Event_MVC_Clicked Ewl_Event_MVC_Clicked;
+
+/**
+ * @brief Provides information about the MVC clicked event
+ */
+struct Ewl_Event_MVC_Clicked
+{
+        unsigned int modifiers; /**< Modifiers that were pressed */
+        int button;             /**< The mouse button that was released */
+        int clicks;             /**< Number of consecutive clicks */
+
+        const Ewl_Model *model; /**< The model used for the item */
+        void *mvc_data;         /**< The data the model is working with */
+
+        unsigned int row;       /**< the row of the item */
+        unsigned int column;    /**< the column of the item */
+};
+
 unsigned int         ewl_ev_modifiers_get(void);
 void                 ewl_ev_modifiers_set(unsigned int modifiers);
 

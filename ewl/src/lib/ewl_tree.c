@@ -1019,9 +1019,9 @@ ewl_tree_cb_header_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_tree_cb_row_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-                                void *data)
+ewl_tree_cb_row_clicked(Ewl_Widget *w __UNUSED__, void *ev,  void *data)
 {
+        const Ewl_Event_Mouse_Down *event;
         Ewl_Tree *tree;
         Ewl_Tree_Node *node;
 
@@ -1031,12 +1031,21 @@ ewl_tree_cb_row_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         node = data;
         tree = EWL_TREE(node->tree);
+        event = ev;
         if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
                 DRETURN(DLEVEL_STABLE);
 
-        ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_model_get(EWL_MVC(node)),
-                                ewl_mvc_data_get(EWL_MVC(node)),
-                                node->row_num, 0);
+        /* set up the event structure */
+        {
+                Ewl_Event_MVC_Clicked mvc_event = {
+                        event->base.modifiers, event->button, event->clicks,
+                        ewl_mvc_model_get(EWL_MVC(node)),
+                        ewl_mvc_data_get(EWL_MVC(node)), node->row_num, 0
+                };
+
+                ewl_callback_call_with_event_data(EWL_WIDGET(tree), 
+                                        EWL_CALLBACK_MVC_CLICKED, &mvc_event);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1069,6 +1078,7 @@ ewl_tree_cb_row_unhighlight(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNU
 static void
 ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
+        const Ewl_Event_Mouse_Down *event;        
         Ewl_Row *row;
         Ewl_Tree *tree;
         Ewl_Tree_Node *node;
@@ -1080,6 +1090,7 @@ ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
         DCHECK_TYPE(data, EWL_TREE_NODE_TYPE);
 
+        event = ev;
         row = EWL_ROW(w->parent);
         node = EWL_TREE_NODE(data);
         tree = EWL_TREE(node->tree);
@@ -1087,12 +1098,20 @@ ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
                 DRETURN(DLEVEL_STABLE);
 
         column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
-        if (column < 0) DRETURN(DLEVEL_STABLE);
-
-        ewl_mvc_handle_click(EWL_MVC(node->tree),
+        if (column < 0)
+                DRETURN(DLEVEL_STABLE);
+        
+        /* set up the event structure */
+        {
+                Ewl_Event_MVC_Clicked mvc_event = {
+                        event->base.modifiers, event->button, event->clicks,
                         ewl_mvc_model_get(EWL_MVC(node)),
-                        ewl_mvc_data_get(EWL_MVC(node)),
-                        node->row_num, column);
+                        ewl_mvc_data_get(EWL_MVC(node)), node->row_num, column
+                };
+
+                ewl_callback_call_with_event_data(EWL_WIDGET(node->tree), 
+                                        EWL_CALLBACK_MVC_CLICKED, &mvc_event);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

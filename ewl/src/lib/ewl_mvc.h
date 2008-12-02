@@ -136,6 +136,12 @@ struct Ewl_MVC
         unsigned char dirty:1;                          /**< Is the data dirty */
 };
 
+/** 
+ * This event is triggered when an item a cell or a row of the mvc 
+ * is clicked
+ */
+extern unsigned int EWL_CALLBACK_MVC_CLICKED;
+
 int                      ewl_mvc_init(Ewl_MVC *mvc);
 
 void                     ewl_mvc_view_set(Ewl_MVC *mvc, const Ewl_View *view);
@@ -206,15 +212,13 @@ void                     ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 /*
  * internal
  */
-void                 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
-void                 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
+void ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
+void ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 
-void                 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
-void                 ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev, void *data);
-
-void                 ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model,
-                                        void *data, unsigned int row,
-                                        unsigned int column);
+void ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+void ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev, void *data);
+void ewl_mvc_cb_clicked_single(Ewl_Widget *w, void *ev, void *data);
+void ewl_mvc_cb_clicked_multi(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

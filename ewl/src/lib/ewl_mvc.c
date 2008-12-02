@@ -5,6 +5,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+unsigned int EWL_CALLBACK_MVC_CLICKED = 0;
+
 static void ewl_mvc_selected_clear_private(Ewl_MVC *mvc, Ewl_Selection *set);
 static unsigned int ewl_mvc_selected_goto(Ewl_MVC *mvc,
                         unsigned int row, unsigned int column);
@@ -279,6 +281,38 @@ ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 
         if (mvc->selection_mode == mode)
                 DRETURN(DLEVEL_STABLE);
+
+        switch (mvc->selection_mode)
+        {
+                case EWL_SELECTION_MODE_SINGLE:
+                        ewl_callback_del(EWL_WIDGET(mvc),
+                                        EWL_CALLBACK_MVC_CLICKED,
+                                        ewl_mvc_cb_clicked_single);
+                        break;
+                case EWL_SELECTION_MODE_MULTI:
+                        ewl_callback_del(EWL_WIDGET(mvc),
+                                        EWL_CALLBACK_MVC_CLICKED,
+                                        ewl_mvc_cb_clicked_multi);
+                        break;
+                default:
+                        break;
+        }
+        
+        switch (mode)
+        {
+                case EWL_SELECTION_MODE_SINGLE:
+                        ewl_callback_append(EWL_WIDGET(mvc),
+                                        EWL_CALLBACK_MVC_CLICKED,
+                                        ewl_mvc_cb_clicked_single, NULL);
+                        break;
+                case EWL_SELECTION_MODE_MULTI:
+                        ewl_callback_append(EWL_WIDGET(mvc),
+                                        EWL_CALLBACK_MVC_CLICKED,
+                                        ewl_mvc_cb_clicked_multi, NULL);
+                        break;
+                default:
+                        break;
+        }
 
         mvc->selection_mode = mode;
         if (mode == EWL_SELECTION_MODE_NONE)
@@ -1182,99 +1216,6 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
 
 /**
  * @internal
- * @param mvc: The mvc to work with
- * @param model: A model to use. If NULL the MVC model will be used
- * @param data: The data the model was working with
- * @param row: The row to add
- * @param column: The column to add
- * @return Returns no value
- * @brief Handles the click of the given cell
- */
-void
-ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-                        unsigned int row, unsigned int column)
-{
-        unsigned int modifiers;
-        int multi_select = FALSE;
-        const Ewl_Model *mod;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(mvc);
-        DCHECK_TYPE(mvc, EWL_MVC_TYPE);
-
-        switch (ewl_mvc_selection_mode_get(mvc))
-        {
-                case EWL_SELECTION_MODE_NONE:
-                case EWL_SELECTION_MODE_USER:
-                        DRETURN(DLEVEL_STABLE);
-                case EWL_SELECTION_MODE_MULTI:
-                        multi_select = TRUE;
-                        break;
-                default:
-                        break;
-        }
-
-        if (model) mod = model;
-        else mod = ewl_mvc_model_get(mvc);
-
-        modifiers = ewl_ev_modifiers_get();
-        if (multi_select && (modifiers & EWL_KEY_MODIFIER_SHIFT))
-        {
-                /* is this the first click? */
-                if (ewl_mvc_selected_count_get(mvc) > 0)
-                {
-                        Ewl_Selection *sel;
-                        void *sdata;
-                        unsigned int srow, scolumn;
-                        const Ewl_Model *smod;
-
-                        /* A shift will add the current position into a
-                         * range with the last selected item. If the
-                         * last selected is a range, it will take the
-                         * start position */
-                        sel = ecore_list_last_goto(mvc->selected);
-                        if (sel->type == EWL_SELECTION_TYPE_INDEX)
-                        {
-                                Ewl_Selection_Idx *idx;
-
-                                idx = EWL_SELECTION_IDX(sel);
-                                smod = sel->model;
-                                sdata = sel->data;
-                                srow = idx->row;
-                                scolumn = idx->column;
-                        }
-                        else
-                        {
-                                Ewl_Selection_Range *idx;
-
-                                idx = EWL_SELECTION_RANGE(sel);
-                                smod = sel->model;
-                                sdata = sel->data;
-                                srow = idx->start.row;
-                                scolumn = idx->start.column;
-                        }
-
-                        ewl_mvc_selected_range_add(mvc, smod, data, srow, scolumn,
-                                                        row, column);
-                }
-                else
-                        ewl_mvc_selected_set(mvc, mod, data, row, column);
-        }
-        else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
-        {
-                if (ewl_mvc_selected_is(mvc, data, row, column))
-                        ewl_mvc_selected_rm(mvc, data, row, column);
-                else
-                        ewl_mvc_selected_add(mvc, mod, data, row, column);
-        }
-        else
-                ewl_mvc_selected_set(mvc, mod, data, row, column);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
  * @param mvc: The Ewl_MVC widget to highlight
  * @param c: The Ewl_Container to put the highlight widgets into
  * @param widget: The callback to get the widget for a given index
@@ -1433,6 +1374,113 @@ ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
                 mvc->model->unref(mvc->data);
                 mvc->data = NULL;
         }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The wiget to deal with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief to be written
+ */
+void
+ewl_mvc_cb_clicked_multi(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+        Ewl_Event_MVC_Clicked *e;
+        Ewl_MVC *mvc;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_MVC_TYPE);
+
+        e = ev;
+        mvc = EWL_MVC(w);
+
+        if (e->modifiers & EWL_KEY_MODIFIER_SHIFT)
+        {
+                /* is this the first click? */
+                if (ewl_mvc_selected_count_get(mvc) > 0)
+                {
+                        Ewl_Selection *sel;
+                        void *sdata;
+                        unsigned int srow, scolumn;
+                        const Ewl_Model *smod;
+
+                        /* A shift will add the current position into a
+                         * range with the last selected item. If the
+                         * last selected is a range, it will take the
+                         * start position */
+                        sel = ecore_list_last_goto(mvc->selected);
+                        if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                        {
+                                Ewl_Selection_Idx *idx;
+
+                                idx = EWL_SELECTION_IDX(sel);
+                                smod = sel->model;
+                                sdata = sel->data;
+                                srow = idx->row;
+                                scolumn = idx->column;
+                        }
+                        else
+                        {
+                                Ewl_Selection_Range *idx;
+
+                                idx = EWL_SELECTION_RANGE(sel);
+                                smod = sel->model;
+                                sdata = sel->data;
+                                srow = idx->start.row;
+                                scolumn = idx->start.column;
+                        }
+
+                        ewl_mvc_selected_range_add(mvc, smod, sdata, srow,
+                                                        scolumn, e->row,
+                                                        e->column);
+                }
+                else
+                        ewl_mvc_selected_set(mvc, e->model, e->mvc_data,
+                                        e->row, e->column);
+        }
+        else if (e->modifiers & EWL_KEY_MODIFIER_CTRL)
+        {
+                if (ewl_mvc_selected_is(mvc, e->mvc_data, e->row, e->column))
+                        ewl_mvc_selected_rm(mvc, e->mvc_data, e->row,
+                                                e->column);
+                else
+                        ewl_mvc_selected_add(mvc, e->model, e->mvc_data,
+                                        e->row, e->column);
+        }
+        else
+                ewl_mvc_selected_set(mvc, e->model, e->mvc_data, e->row,
+                                        e->column);
+
+        printf("yippy\n");
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The wiget to deal with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief to be written
+ */
+void
+ewl_mvc_cb_clicked_single(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+        Ewl_Event_MVC_Clicked *e;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_MVC_TYPE);
+
+        e = ev;
+        ewl_mvc_selected_set(EWL_MVC(w), e->model, e->mvc_data, e->row,
+                                        e->column);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
