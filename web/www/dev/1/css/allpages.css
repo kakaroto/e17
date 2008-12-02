@@ -58,7 +58,7 @@ html, body {
 #header
 {
     width: 100%;
-    height: 136px;
+    height: 102px;
     background-image: url('../img/header_background.png');
     background-repeat: repeat-x;
 }
@@ -167,6 +167,7 @@ html, body {
     color: #646464;
 }
 
+/*
 #header .submenu ul.current
 {
     display: block;
@@ -200,11 +201,7 @@ html, body {
 {
     font-weight: bold;
 }
-
-#container
-{
-/*     background-color: #f3f3f3; */
-}
+*/
 
 #footer
 {
