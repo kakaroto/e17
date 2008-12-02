@@ -41,7 +41,6 @@ html, body {
     display: block;
 }
 
-
 /* Flexible & centered layout from 750 to 960 pixels */
 .layout
 {
@@ -50,24 +49,32 @@ html, body {
     min-width: 760px;
     margin-left: auto;
     margin-right: auto;
-/*     FIXME: (uncomment) Gridfox hack */
-/*     padding-right: 17px; */ 
+}
+
+body
+{
+    font-family: Lucida Grande, Helvetica, sans-serif;
+}
+
+/* Prevent design overflowing the viewport in small resolutions */
+#container
+{
+    padding-right: 17px;
     padding-left: 17px;
+    background-image: url('../img/header_background.png');
+    background-repeat: repeat-x;
 }
 
 #header
 {
     width: 100%;
     height: 102px;
-    background-image: url('../img/header_background.png');
-    background-repeat: repeat-x;
 }
 
 #header h1
 {
     width: 63px;
     height: 63px;
-    background-color: red;
     background-image: url("../img/logo.png");
     background-repeat: no-repeat;
     position: absolute;
@@ -111,7 +118,7 @@ html, body {
 
 #header .menu ul
 {
-    height: 63px;
+    height: 100%;
     display: block;
     background-image: url("../img/header_menu_background_last.png");
     background-repeat: no-repeat;
@@ -121,27 +128,21 @@ html, body {
 
 #header .menu li
 {
+    height: 100%;
     width: 160px;
     text-align: center;
     background-image: url("../img/header_menu_unselected_background.png");
     background-repeat: no-repeat;
 }
 
-#header .menu li.last
-{
-    display: block;
-    width: 17px;
-    background-image: url("../img/header_menu_background_last.png");
-    background-repeat: no-repeat;
-}
-
 #header .menu a
 {
+    height: 100%;
     display: block;
     color: #cdcdcd;
     text-decoration: none;
     font-size: 1.1em;
-    line-height: 63px; /* Determines the menu's height */
+    line-height: 59px;
     text-align: center;
 }
 
@@ -207,4 +208,28 @@ html, body {
 {
     clear: both;
     position: relative;
+}
+
+/* These news summaries are used in almost every page */
+.news-summary
+{
+    margin-bottom: 17px;
+}
+
+.news-summary h4 a
+{
+    font-size: 100%;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.news-summary p
+{
+    font-size: 93%;
+}
+
+.news-summary .data
+{
+    font-size: 77%;
+    margin-bottom: 8px;
 }

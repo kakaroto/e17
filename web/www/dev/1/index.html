@@ -30,35 +30,11 @@
     <div class="menu-container">
         <div class="menu">
             <ul>
-                <li class="current"><a id="header-menu-main" href="#">main</a></li>
+                <li class="current"><a id="header-menu-home" href="#">home</a></li>
                 <li><a id="header-menu-about" href="#">about</a></li>
                 <li><a id="header-menu-trac" href="#">trac</a></li>
             </ul>
         </div>
-        <!--<div class="submenu">
-            <ul id="header-submenu-documentation">
-                <li><a href="#">Wiki</a></li>
-                <li><a href="#">Manuals</a></li>
-                <li><a href="#">API Reference</a></li>
-            </ul>
-            <ul id="header-submenu-project">
-                <li><a href="#">About</a></li>
-                <li><a href="#">People</a></li>
-                <li><a href="#">Tracker</a></li>
-                <li><a href="#">Download</a></li>
-            </ul>
-            <ul class="current" id="header-submenu-news">
-                <li class="current"><a href="#">Main</a></li>
-                <li><a href="#">Archives</a></li>
-                <li><a href="#">Planet</a></li>
-            </ul>
-            <ul id="header-submenu-community">
-                <li><a href="#">Forums</a></li>
-                <li><a href="#">Mailing Lists</a></li>
-                <li><a href="#">IRC</a></li>
-                <li><a href="#">eXchange</a></li>
-            </ul>
-        </div>-->
     </div>
 
     <div class="clear"></div>
@@ -69,121 +45,113 @@
 <div class="layout">
 <!-- Here should begin the dynamic content -->
 
+    <h2><span class="e">Enlightenment</span>, create lean and beautiful software.</h2>
 
-<!--<div id="colum-news">
+    <div class="column" id="content-desktop">
+    </div>
 
-        <h2><span>Enlightenment News</span></h2>
+    <div class="column" id="content-developers">
+        <h3>Developers empowered.</h3>
+        <ul>
+            <li>A new approach to interface development.</li>
+            <li>The API is intuitive and consistent along a broad number of
+            uses beyond the interface.</li>
+            <li>Written in portable C99 with a footprint suitable for desktops
+            and handleds.</li>
+        </ul>
+        <p><a href="edevelopers.html"><span>Learn more</span></a></p>
+    </div>
 
-        <div class="news-blurb">
+    <div class="column" id="content-artists">
+        <h3>Artists unleashed.</h3>
+        <ul>
+            <li>An abstract language created exclusively for interface
+            design.</li>
+            <li>Easier to learn html/css with more features and none of the
+            shortcommings.</li>
+            <li>Applications and utilities to aid designers already under
+            development</li>
+        </ul>
+        <p><a href="eartists.html"><span>Learn more</span></a></p>
+    </div>
+
+    <div class="column" id="content-exchange">
+        <h3>Featured E17 themes</h3>
+        <div class="theme-shot">
+            <h4><a href="http://exchange.enlightenment.org/theme/show/294">Cerium</a></h4>
+            <img src="http://exchange.enlightenment.org/files/theme/294/smallthumb.png">
+        </div>
+        <div class="theme-shot">
+            <h4><a href="http://exchange.enlightenment.org/theme/show/154">Grunge</a></h4>
+            <img src="http://exchange.enlightenment.org/files/theme/154/smallthumb.png">
+        </div>
+    </div>
+
+    <div class="column" id="content-news">
+        <h3>Official News</h3>
+        <div class="news-summary">
             <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
-            <p class="time-stamp">Sep 25, 2008 at 12:50 PM</p>
+            <p class="data">
+                <a href="mailto:raster@rasterman.com">Carsten Haitzler
+                (Rasterman)</a> - <span class="time-stamp"> Sep 25, 2008 at
+                12:50 PM</span>
+            </p>
             <p>
                 I did a new snapshot release of E17 + Core EFL. This includes
                 Eet 1.1.0, Ecore 0.9.9.050, E_DBus 0.5.0.050, Edje 0.9.9.050,
                 Efreet 0.5.0.050, Embryo 0.9.9.050 and Enlightenment
                 0.16.999.050. Lots of improvements and fixes. Too many to count.
             </p>
-            <p>
-                Please see <a href="http://download.enlightenment.org/snapshots/2008-09-25/">This Link</a>
-                for the list of available files in this snapshot.
+        </div>
+        <div class="news-summary">
+            <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
+            <p class="data">
+                <a href="mailto:raster@rasterman.com">Carsten Haitzler
+                (Rasterman)</a> - <span class="time-stamp"> Sep 25, 2008 at
+                12:50 PM</span>
             </p>
-            <p class="see-more">
-                <a href="p.php?p=news/show&amp;l=en&amp;news_id=0">more &raquo;</a>
+            <p>
+                I did a new snapshot release of E17 + Core EFL. This includes
+                Eet 1.1.0, Ecore 0.9.9.050, E_DBus 0.5.0.050, Edje 0.9.9.050,
+                Efreet 0.5.0.050, Embryo 0.9.9.050 and Enlightenment
+                0.16.999.050. Lots of improvements and fixes. Too many to count.
             </p>
         </div>
-
-        <div class="news-blurb">
-            <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=8">Eet 1.1.0 released</a></h4>
-            <p class="time-stamp">Sep 25, 2008 at 12:45 PM</p>
-            <p>
-                Eet 1.1.0 has been released. This release includes the following changes from
-                1.0.0: Fixes to data codecs (data descriptors). Fixes for non-existing files
-                opened READ/WRITE and other miscellanouse bugs found. Speedups for decoding and
-                lookups, make inline-image decode better on some platforms and add signed-eet
-                file support as well as opening eet files from memory.
-            </p>
-            <p>
-                Please see the about page for download
-                links and information.
-            </p>
-            <p class="see-more">
-                <a href="p.php?p=news/show&amp;l=en&amp;news_id=8">more &raquo;</a>
-            </p>
-        </div>
-
-        <div class="news-blurb">
-            <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=8">Eet 1.1.0 released</a></h4>
-            <p class="time-stamp">Sep 25, 2008 at 12:45 PM</p>
-            <p>
-                Eet 1.1.0 has been released. This release includes the following changes from
-                1.0.0: Fixes to data codecs (data descriptors). Fixes for non-existing files
-                opened READ/WRITE and other miscellanouse bugs found. Speedups for decoding and
-                lookups, make inline-image decode better on some platforms and add signed-eet
-                file support as well as opening eet files from memory.
-            </p>
-            <p>
-                Please see the about page for download
-                links and information.
-            </p>
-            <p class="see-more">
-                <a href="p.php?p=news/show&amp;l=en&amp;news_id=8">more &raquo;</a>
-            </p>
-        </div>
-
     </div>
 
-    <div id="colum-content">
-
-        <div id="introduction">
-        <div class="level1">
-        <div class="level2">
-            <h3><span>What is Enlightenment?</span></h3>
-            <p>
-                Enlightenment is a window manager. Enlightenment is a desktop
-                shell. Enlightenment is the building blocks to create beautiful
-                applications. Enlightenment, or simply <em><strong>e</strong></em>,
-                is a group of people trying to make a new generation of software.
+    <div class="column" id="content-planet">
+        <h3>Planet Enlightenment</h3>
+        <div class="news-summary">
+            <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
+            <p class="data">
+                <a href="mailto:raster@rasterman.com">Carsten Haitzler
+                (Rasterman)</a> - <span class="time-stamp"> Sep 25, 2008 at
+                12:50 PM</span>
             </p>
-
-            <ul>
-                <li><a href="about.html#desktop_shell">The desktop shell</a></li>
-                <li><a href="about.html#development_libraires">The development libraries</a></li>
-            </ul>
+            <p>
+                I did a new snapshot release of E17 + Core EFL. This includes
+                Eet 1.1.0, Ecore 0.9.9.050, E_DBus 0.5.0.050, Edje 0.9.9.050,
+                Efreet 0.5.0.050, Embryo 0.9.9.050 and Enlightenment
+                0.16.999.050. Lots of improvements and fixes. Too many to count.
+            </p>
         </div>
+        <div class="news-summary">
+            <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
+            <p class="data">
+                <a href="mailto:raster@rasterman.com">Carsten Haitzler
+                (Rasterman)</a> - <span class="time-stamp"> Sep 25, 2008 at
+                12:50 PM</span>
+            </p>
+            <p>
+                I did a new snapshot release of E17 + Core EFL. This includes
+                Eet 1.1.0, Ecore 0.9.9.050, E_DBus 0.5.0.050, Edje 0.9.9.050,
+                Efreet 0.5.0.050, Embryo 0.9.9.050 and Enlightenment
+                0.16.999.050. Lots of improvements and fixes. Too many to count.
+            </p>
         </div>
-        </div>
+    </div>
 
-        <div id="welcome-buttons">
-            <table>
-            <tr>
-            <td id="welcome-button-use">
-                <h3><span>Use.</span></h3>
-                <ul>
-                    <li><a href="#">Download</a></li>
-                    <li><a href="#">Install</a></li>
-                    <li><a href="#">Exchange</a></li>
-                </ul>
-            </td><td id="welcome-button-learn">
-                <h3><span>Learn.</span></h3>
-                <ul>
-                    <li><a href="">Wiki</a></li>
-                    <li><a href="#">Documentation</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </td><td id="welcome-button-contribute">
-                <h3><span>Contribute.</span></h3>
-                <ul>
-                    <li><a href="#">Project Tracker</a></li>
-                    <li><a href="#">Bug reports</a></li>
-                </ul>
-            </td>
-            </tr>
-            </table>
-        </div>
-
-    </div>-->
-
-    <!-- Here should end the dynamic content -->
+<!-- Here should end the dynamic content -->
     <div class="clear"></div>
 </div> <!-- #content -->
 </div> <!-- .layout -->

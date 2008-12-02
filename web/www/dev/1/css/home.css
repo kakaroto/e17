@@ -1,208 +1,99 @@
-#content
+#content .layout
 {
-    padding-top: 3em;
-    background-image: url("../img/tmp_BORRAR.png");
-    background-repeat: no-repeat;
-    background-position: top center;
-    height: 500px;
-}
-
-#welcome-buttons
-{
-    margin-top: 4em;
-    margin-right: 3em;                                              /* Sunc B */
-}
-
-#colum-content
-{
-    margin-right: 458px;                                             /* Sync A */
-}
-
-#colum-news
-{
-    width: 458px;                                                    /* Sync A */
-    float: right;
-/*     background-color: red; */
-    padding: 1em;
-}
-
-#introduction
-{
-    margin-right: 3em;                                              /* Sync B */
-    background-color: black;
-    background-image: url("../img/home_page/banner_background.png");
-    background-repeat: repeat-x;
-    background-position: top right;
-/*     max-width: 463px; */
-}
-
-#introduction .level1
-{
-    background-image: url("../img/home_page/banner_corner_left.png");
+    background-image: url("../img/home/banner.png");
     background-repeat: no-repeat;
     background-position: top left;
 }
 
-#introduction .level2
+#content .column
 {
-    background-image: url("../img/home_page/banner_corner_right.png");
-    background-repeat: no-repeat;
-    background-position: top right;
-    padding-right: 25px;
-    padding-left: 25px;
-    padding-bottom: 25px;
-    padding-top: 55px;
+    width: 33.3%;
+    float: left;
+    min-height: 200px;
 }
 
-#introduction h3
+#content h2
 {
-    margin-left: 25px;
-    margin-bottom: 15px;
-    width: 269px;
-    height: 42px;
-    background-image: url("../img/home_page/what_is.png");
-    background-repeat: no-repeat;
-    background-position: top right;
-/*     font-size: 3em; */
-/*     color: white; */
+    width: 960px;
+    line-height: 50px;
+    margin-bottom: 11px;
+    font-family: Lucida Grande;
+    font-size: 138.5%;
+    font-weight: bold;
+    text-align: center;
+    color: #252525;
 }
 
-#introduction h3 span
+#content-developers h3, #content-artists h3
 {
-    display: none;
+    width: 99%;
+    margin-top: 75px;
+    text-align: right;
+    font-size: 123.1%;
+    font-weight: bold;
+    color: #FFFFFF;
 }
 
-#introduction p
-{
-/*     margin-top: 1em; */
-/*     margin-left: 245px; */
-    color: white;
-}
-
-#introduction ul
+#content-developers ul, #content-artists ul
 {
     display: block;
-/*     margin-left: 245px; */
-    list-style-position: inside;
-    list-style-type: none;
-    margin-top: 25px;
+    margin-top: 20px; /* 17px in spirit */
+    margin-bottom: 17px;
+    margin-left: 17px;
 }
 
-#introduction li
+#content-developers li, #content-artists li
 {
-    line-height: 25px;
+    display: block;
+    text-align: right;
+    font-size: 93%;
+    height: 3em;
+    margin-bottom: 1em;
 }
 
-#introduction li a
+#content-developers a, #content-artists a
 {
+    display: block;
+    width: 80px;
+    line-height: 40px;
+    background-color: black;
+    float: right;
+    text-align: center;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 77%;
+    font-weight: bold;
+}
+
+#content-exchange, #content-news, #content-planet
+{
+    margin-top: 34px;
+    background-color: #f0f0f0;
+}
+
+#content-exchange h3, #content-news h3, #content-planet h3
+{
+    font-weight: bold;
+    font-size: 123.1%;
+    text-align: center;
+    margin-bottom: 17px;
+    margin-top: 17px;
+}
+
+ #content-news .news-summary, #content-planet .news-summary
+{
+    margin-left: 17px;
+}
+
+#content-exchange .theme-shot
+{
+    text-align: center;
+    margin-bottom: 17px;
+}
+
+#content-exchange .theme-shot h4 a
+{
+    font-size: 100%;
     text-decoration: none;
     font-weight: bold;
-    color: black;
-    color: white;
 }
-
-#introduction .images
-{
-    float: left;
-    margin-left: 27px;
-    margin-top: 20px;
-}
-
-
-
-    #welcome-buttons ul
-    {
-        list-style-type: none;
-        margin-top: 1em;
-    }
-
-    #welcome-buttons li
-    {
-        line-height: 2em;
-        font-size: 0.75em;
-    }
-
-    #welcome-buttons a
-    {
-        text-decoration: none;
-        color: black;
-    }
-
-    #welcome-buttons td
-    {
-        vertical-align: top;
-        text-align: center;
-    }
-
-    #welcome-buttons table
-    {
-        width: 100%;
-        border-collapse: collapse;
-        border-width: 0;
-        table-layout: fixed;
-    }
-
-    #welcome-buttons h3
-    {
-        background-repeat: no-repeat;
-        background-position: top center;
-        padding-top: 68px;
-    }
-
-    #welcome-button-use h3
-    {
-        background-image: url("../img/icons/applications-system.png");
-        color: #8d8d9f;
-    }
-
-    #welcome-button-learn h3
-    {
-        background-image: url("../img/icons/applications-education.png");
-        color: #577453;
-    }
-
-    #welcome-button-contribute h3
-    {
-        background-image: url("../img/icons/applications-engineering.png");
-        color: #a99803;
-    }
-
-
-
-
-
-#colum-news h2
-{
-    margin-bottom: 25px;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    background-image: url("../img/separator_background.png");
-    background-repeat: repeat-x;
-    background-position: top right;
-    color: #646464;
-    display: none; /* !!! */
-}
-.news-blurb
-{
-    display: block;
-    margin-bottom: 2em;
-}
-
-    .news-blurb h4
-    {
-        font-weight: bold;
-        font-size: 1em;
-    }
-
-    .news-blurb .time-stamp
-    {
-        font-size: 0.7em;
-        margin-bottom: 10px;
-    }
-
-    .news-blurb .see-more
-    {
-        margin-top: 10px;
-        text-align: right;
-    }
