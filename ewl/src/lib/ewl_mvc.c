@@ -1456,8 +1456,6 @@ ewl_mvc_cb_clicked_multi(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 ewl_mvc_selected_set(mvc, e->model, e->mvc_data, e->row,
                                         e->column);
 
-        printf("yippy\n");
-
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
