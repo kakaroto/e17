@@ -103,9 +103,9 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
    char buf[4096], buf2[4096], *p, *q;
    int size;
    
+   fd = ecore_main_fd_handler_fd_get(fd_handler);
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
      {
-        fd = ecore_main_fd_handler_fd_get(fd_handler);
         for (;;)
           {
              size = read(fd, buf, sizeof(buf) - 1);
@@ -130,25 +130,29 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
              if (strlen(buf2) > 0) fifo_cmd(buf2);
           }
      }
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 void
 ipc_init(void)
 {
    char *fifo;
-
+   Ecore_Fd_Handler *fdh;
+   
    fifo = getenv("EXQUISITE_IPC");
    if (!fifo) fifo = "/tmp/exquisite-fifo";
    mkfifo(fifo, S_IRUSR | S_IWUSR |  S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-   fd = open(fifo, O_RDONLY);
+   fd = open(fifo, O_RDWR);
    fcntl(fd, F_SETFL, O_NONBLOCK);
    if (fd < 0)
      {
         printf("EXQUISITE ERROR: cannot open fifo: %s\n", fifo);
         exit(-1);
      }
-   ecore_main_fd_handler_add(fd, ECORE_FD_READ, fifo_input, NULL, NULL, NULL);
+   fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ, 
+                                   fifo_input, NULL, 
+                                   NULL, NULL);
+   sleep(2);
 }
 
 void

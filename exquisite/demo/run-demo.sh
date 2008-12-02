@@ -27,7 +27,7 @@ $WRITE "PULSATE"
 sleep 4
 $WRITE "MSG Services Starting"
 $WRITE "PROGRESS 5"
-sleep 1
+sleep 4
 $WRITE "TEXT Random Number Generator"
 sleep 2
 $WRITE "SUCCESS OK"
