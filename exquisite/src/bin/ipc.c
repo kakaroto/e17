@@ -141,6 +141,7 @@ ipc_init(void)
    
    fifo = getenv("EXQUISITE_IPC");
    if (!fifo) fifo = "/tmp/exquisite-fifo";
+   unlink(fifo);
    mkfifo(fifo, S_IRUSR | S_IWUSR |  S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
    fd = open(fifo, O_RDWR);
    fcntl(fd, F_SETFL, O_NONBLOCK);
@@ -152,7 +153,6 @@ ipc_init(void)
    fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ, 
                                    fifo_input, NULL, 
                                    NULL, NULL);
-   sleep(2);
 }
 
 void
