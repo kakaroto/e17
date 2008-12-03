@@ -1,5 +1,6 @@
 Login:        sachiel
 IRC Nick:     Sachiel
+Cloak:        developer/Sachiel
 Name:         Iván Briano
 Location:     Buenos Aires, Argentina
 E-Mail:       sachieru@gmail.com
