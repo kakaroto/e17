@@ -189,7 +189,7 @@ ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
 {
         char buf[PATH_MAX];
         Ewl_Event_Dnd_Data_Received *ev = event;
-        snprintf(buf, PATH_MAX, "Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
+        snprintf(buf, PATH_MAX, "Data event on widget %p: %p length %d format %d\n", w, ev->data, ev->len, ev->format);
         ewl_dnd_snoop_output(buf);
 }
 
@@ -208,8 +208,7 @@ ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event,
         ewl_dnd_snoop_output(buf);
         emb = ewl_embed_widget_find(w);
         if (emb)
-                ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
-                                (void *)w->inheritance,
+                ewl_dnd_drag_data_send(emb, ev->handle, (void *)w->inheritance,
                                 strlen(w->inheritance) + 1);
 }
 

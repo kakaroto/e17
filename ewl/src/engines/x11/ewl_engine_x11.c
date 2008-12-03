@@ -1465,7 +1465,6 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
         Ecore_X_Event_Xdnd_Drop *ev;
-        int internal = 0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(e, FALSE);
@@ -1479,13 +1478,10 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
                 ewl_embed_window_position_get(embed, &wx, &wy);
 
-                if (ev->source == UINTPTR_TO_UINT(embed->canvas_window))
-                        internal = 1;
-
                 x = ev->position.x - wx;
                 y = ev->position.y - wy;
 
-                type = ewl_embed_dnd_drop_feed(embed, x, y, internal);
+                type = ewl_embed_dnd_drop_feed(embed, x, y);
                 if (type)
                         ecore_x_selection_xdnd_request(ev->win, (char *)type);
         }

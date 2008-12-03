@@ -82,8 +82,7 @@ ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w, void *event,
                 len = strlen(buf);
         }
 
-        ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
-                                (void *)uri, len);
+        ewl_dnd_drag_data_send(emb, ev->handle, (void *)uri, len);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

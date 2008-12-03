@@ -840,7 +840,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends the event for a DND drop into an embed.
  */
 const char *
-ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal __UNUSED__)
+ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y)
 {
         Ewl_Widget *widget = NULL, *parent = NULL;
         const char *result = NULL;
@@ -1017,6 +1017,10 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
                                                   EWL_CALLBACK_MOUSE_OUT, &ev);
                 embed->last.mouse_in = embed->last.mouse_in->parent;
         }
+
+        if ((embed->last.drag_widget) && (ewl_widget_state_has
+                                (embed->last.drag_widget, EWL_FLAG_STATE_DND)))
+                ewl_dnd_external_drag_start(embed->last.drag_widget);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

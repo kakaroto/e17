@@ -3181,7 +3181,7 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
                 if (!ewl_widget_state_has(w, EWL_FLAG_STATE_DND)) {
                         ewl_widget_state_add(w, EWL_FLAG_STATE_DND);
                         embed->last.drag_widget = w;
-                        ewl_dnd_drag_start(w);
+                        ewl_dnd_internal_drag_start(w);
                 }
 
                 if (ev && (ev->x > CURRENT_X(embed) &&

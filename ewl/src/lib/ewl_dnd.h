@@ -19,8 +19,11 @@ extern unsigned int EWL_CALLBACK_SELECTION_CLEAR;
 int              ewl_dnd_init(void);
 void             ewl_dnd_shutdown(void);
 
-void             ewl_dnd_drag_start(Ewl_Widget *w);
+void             ewl_dnd_internal_drag_start(Ewl_Widget *w);
+void             ewl_dnd_external_drag_start(Ewl_Widget *w);
 void             ewl_dnd_drag_drop(Ewl_Widget *w);
+void             ewl_dnd_drag_data_send(Ewl_Embed *emb, void *handle,
+                                                        void *data, int len);
 void             ewl_dnd_drag_widget_clear(void);
 Ewl_Widget      *ewl_dnd_drag_widget_get(void);
 

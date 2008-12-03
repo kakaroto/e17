@@ -5,6 +5,9 @@
 #include "ewl_debug.h"
 
 #define EWL_DND_WINDOW_ROOT 0
+#define EWL_DRAGGING_NONE 0
+#define EWL_DRAGGING_INTERNAL 1
+#define EWL_DRAGGING_EXTERNAL 2
 
 unsigned int EWL_CALLBACK_DND_POSITION; /**< A DND position event **/
 unsigned int EWL_CALLBACK_DND_ENTER; /**< On enter of a widget **/
@@ -16,6 +19,9 @@ unsigned int EWL_CALLBACK_SELECTION_CLEAR; /**< Selection clear event **/
 
 static int ewl_dragging_current;
 static int ewl_dnd_status;
+
+static void *ewl_dnd_req_data;
+static int ewl_dnd_req_data_len;
 
 static Ewl_Widget *ewl_dnd_widget;
 static Ewl_Widget *ewl_dnd_default_cursor;
@@ -60,7 +66,7 @@ ewl_dnd_init(void)
         ecore_hash_free_value_cb_set(ewl_dnd_accepted_hash, free);
         ewl_dnd_widget = NULL;
         ewl_dnd_default_cursor = NULL;
-        ewl_dragging_current = 0;
+        ewl_dragging_current = EWL_DRAGGING_NONE;
         ewl_dnd_status = 1;
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -256,40 +262,25 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 /**
  * @param w: The widget to start dragging
  * @return Returns no value
- * @brief Tells the widget to start dragging
+ * @brief Creates the proper condition for internal dragging
  */
 void
-ewl_dnd_drag_start(Ewl_Widget *w)
+ewl_dnd_internal_drag_start(Ewl_Widget *w)
 {
-        unsigned int i;
-        char **types;
         Ewl_Embed *emb;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (!ewl_dnd_status || ewl_dragging_current)
+        if (!ewl_dnd_status)
                 DRETURN(DLEVEL_STABLE);
 
         emb = ewl_embed_widget_find(w);
         if (!emb) DRETURN(DLEVEL_STABLE);
 
-        ewl_dragging_current = 1;
+        ewl_dragging_current = EWL_DRAGGING_INTERNAL;
         ewl_dnd_widget = w;
-
-        types = ewl_dnd_provided_types_get(w);
-        /*
-         * Count the number of mime types set on the widget.
-         */
-        for (i = 0; types && types[i]; i++)
-                ;
-
-        /*
-         * Flag the provided DND types on the embed and begin the DND process.
-         */
-        ewl_engine_embed_dnd_drag_types_set(emb, types, i);
-        ewl_engine_embed_dnd_drag_start(emb);
 
         /*
          * Create a fallback cursor to display during DND operations.
@@ -317,7 +308,48 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 /**
  * @param w: The widget to start dragging
  * @return Returns no value
- * @brief Tells the widget to start dragging
+ * @brief Creates the proper condition for external dragging
+ */
+void
+ewl_dnd_external_drag_start(Ewl_Widget *w)
+{
+        unsigned int i;
+        char ** types;
+        Ewl_Embed *emb;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        
+        if ((!ewl_dnd_status) || (ewl_dragging_current !=
+                                                EWL_DRAGGING_INTERNAL))
+                DRETURN(DLEVEL_STABLE);
+
+        emb = ewl_embed_widget_find(w);
+        if (!emb) DRETURN(DLEVEL_STABLE);
+
+        ewl_dragging_current = EWL_DRAGGING_EXTERNAL;
+
+        types = ewl_dnd_provided_types_get(w);
+        /*
+         * Count the number of mime types set on the widget
+         */
+        for (i = 0; types && types[i]; i++)
+                ;
+
+        /*
+         * Flag the provided DND types on the embed and begin the DND process
+         */
+        ewl_engine_embed_dnd_drag_types_set(emb, types, i);
+        ewl_engine_embed_dnd_drag_start(emb);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to stop dragging
+ * @return Returns no value
+ * @brief Tells the widget to drop its data
  */
 void
 ewl_dnd_drag_drop(Ewl_Widget *w)
@@ -328,7 +360,6 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        ewl_dragging_current = 0;
         ewl_dnd_widget = NULL;
 
         emb = ewl_embed_widget_find(w);
@@ -338,9 +369,76 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
         ewl_attach_list_del(EWL_WIDGET(emb)->attach,
                         EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR);
         ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
-        ewl_engine_embed_dnd_drag_drop(emb);
+
+        if (ewl_dragging_current == EWL_DRAGGING_EXTERNAL)
+        {
+                ewl_engine_embed_dnd_drag_drop(emb);
+        }
+        else if (ewl_dragging_current == EWL_DRAGGING_INTERNAL)
+        {
+                Ewl_Event_Dnd_Data_Request req_ev;
+                Ewl_Widget *drop, *drag;
+                char ** types;
+                int i;
+
+                drop = emb->last.drop_widget;
+                drag = emb->last.drag_widget;
+                if (!drop || !drag) DRETURN(DLEVEL_STABLE);
+
+                types = ewl_dnd_provided_types_get(drag);
+                for (i = 0; types && types[i]; i++)
+                {
+                        if (ewl_dnd_accepted_types_contains(drop, types[i]))
+                        {
+                                req_ev.type = types[i];
+                                ewl_callback_call_with_event_data
+                                        (emb->last.drag_widget,
+                                        EWL_CALLBACK_DND_DATA_REQUEST, &req_ev);
+                                break;
+                        }
+                }
+
+                if (!ewl_dnd_req_data || !ewl_dnd_req_data_len)
+                {
+                        DWARNING("No data received for internal drop!\n");
+                        DRETURN(DLEVEL_STABLE);
+                }
+
+                /* FIXME What is the format parameter supposed to be?! */
+                ewl_embed_dnd_data_received_feed(emb, req_ev.type,
+                                ewl_dnd_req_data, ewl_dnd_req_data_len, 0);
+        }
+
+        ewl_dragging_current = EWL_DRAGGING_NONE;
+        ewl_dnd_req_data = NULL;
+        ewl_dnd_req_data_len = 0;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param emb: Embed to send to
+ * @param handle: Handle to the window
+ * @param data: Data to send
+ * @param len: The size of the data
+ */
+void
+ewl_dnd_drag_data_send(Ewl_Embed *emb, void *handle, void *data, int len)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(emb);
+
+        if (ewl_dragging_current == EWL_DRAGGING_INTERNAL)
+        {
+                ewl_dnd_req_data = data;
+                ewl_dnd_req_data_len = len;
+        }
+        else
+        {
+                ewl_engine_embed_dnd_drag_data_send(emb, handle, data, len);
+        }
+
+        DRETURN(DLEVEL_STABLE);
 }
 
 /**
