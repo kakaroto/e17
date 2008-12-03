@@ -762,7 +762,6 @@ ewl_filepicker_filter_add(Ewl_Filepicker *fp, const char *name,
 
         ecore_list_prepend(fp->filters, f);
         ewl_mvc_dirty_set(EWL_MVC(fp->mvc_filters.combo), TRUE);
-        ewl_mvc_selected_set(EWL_MVC(fp->mvc_filters.combo), NULL, fp->filters, 0, 0);
 
         DRETURN_PTR(f, DLEVEL_STABLE);
 }
