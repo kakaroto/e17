@@ -1,0 +1,166 @@
+# Czech translation.
+# This file is put in the public domain.
+# quaker66@gmail.com
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Mail\n"
+"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
+"POT-Creation-Date: 2008-07-28 08:54+0200\n"
+"PO-Revision-Date: 2008-08-11 15:41+0100\n"
+"Last-Translator: quaker <quaker66@gmail.com>\n"
+"Language-Team: easylinux <easylinux@sachiel.eu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config_box.c:71
+msgid "Mailbox Configuration"
+msgstr "Nastavení mailboxu"
+
+#: e_mod_config_box.c:164
+#: e_mod_config.c:96
+msgid "General Settings"
+msgstr "Hlavní nastavení"
+
+#: e_mod_config_box.c:166
+msgid "Start Program When New Mail Arrives"
+msgstr "Spustit program, když přijde mail"
+
+#: e_mod_config_box.c:171
+msgid "Program:"
+msgstr "Aplikace:"
+
+#: e_mod_config_box.c:183
+msgid "Mailbox Type"
+msgstr "Typ mailboxu"
+
+#: e_mod_config_box.c:185
+msgid "Pop3"
+msgstr "Pop3"
+
+#: e_mod_config_box.c:188
+msgid "Imap"
+msgstr "Imap"
+
+#: e_mod_config_box.c:191
+msgid "Maildir"
+msgstr "Maildir"
+
+#: e_mod_config_box.c:194
+msgid "Mbox"
+msgstr "Mbox"
+
+#: e_mod_config_box.c:197
+msgid "Monitor Mbox file permanently"
+msgstr "Monitorovat Mbox soubor permanentně"
+
+#: e_mod_config_box.c:214
+msgid "Port Settings"
+msgstr "Nastavení portů"
+
+#: e_mod_config_box.c:216
+msgid "Use SSL:"
+msgstr "Použít SSL:"
+
+#: e_mod_config_box.c:223
+msgid "v2"
+msgstr "v2"
+
+#: e_mod_config_box.c:226
+msgid "v3"
+msgstr "v3"
+
+#: e_mod_config_box.c:230
+msgid "Port:"
+msgstr "Port:"
+
+#: e_mod_config_box.c:236
+msgid "Local:"
+msgstr "Lokální:"
+
+#: e_mod_config_box.c:242
+msgid "Mailbox Settings"
+msgstr "Nastavení mailboxu"
+
+#: e_mod_config_box.c:243
+msgid "Name:"
+msgstr "Jméno:"
+
+#: e_mod_config_box.c:248
+msgid "Mail Host:"
+msgstr "Mail Host:"
+
+#: e_mod_config_box.c:253
+msgid "Username:"
+msgstr "Uživatelské jméno:"
+
+#: e_mod_config_box.c:258
+msgid "Password:"
+msgstr "Heslo:"
+
+#: e_mod_config_box.c:264
+msgid "New Mail Path:"
+msgstr "Nová mail cesta:"
+
+#: e_mod_config_box.c:276
+msgid "Current Mail Path:"
+msgstr "Aktuální mail cesta:"
+
+#: e_mod_config_box.c:434
+msgid "Inbox"
+msgstr "Inbox"
+
+#: e_mod_config.c:53
+msgid "Mail Configuration"
+msgstr "Nastavení mailu"
+
+#: e_mod_config.c:98
+msgid "Always Show Labels"
+msgstr "Vždy zobrazit popisky"
+
+#: e_mod_config.c:101
+msgid "Show Mailbox Popup"
+msgstr "Zobrazit mailbox popup"
+
+#: e_mod_config.c:104
+msgid "Show All Boxes In Popup"
+msgstr "Zobrazit všechny boxy v popup"
+
+#: e_mod_config.c:106
+msgid "Check Interval"
+msgstr "Interval kontroly"
+
+#: e_mod_config.c:109
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minut"
+
+#: e_mod_config.c:114
+msgid "Mail Boxes"
+msgstr "Mail boxy"
+
+#: e_mod_config.c:124
+msgid "Add"
+msgstr "Přidat"
+
+#: e_mod_config.c:128
+msgid "Delete"
+msgstr "Smazat"
+
+#: e_mod_config.c:134
+msgid "Configure..."
+msgstr "Konfigurovat..."
+
+#: e_mod_main.c:189
+msgid "Mail"
+msgstr "Mail"
+
+#: e_mod_main.c:242
+msgid "Mailboxes"
+msgstr "Mailboxy"
+
+#: e_mod_main.c:266
+msgid "Configuration"
+msgstr "Konfigurace"
+

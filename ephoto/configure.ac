@@ -18,7 +18,7 @@ AM_PROG_LIBTOOL
 AM_WITH_DMALLOC
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="de eo fr hu it sv ru"
+ALL_LINGUAS="cs de el eo fr hu it sv ru"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
