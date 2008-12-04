@@ -20,6 +20,46 @@ struct _Data_Message
    const char             *body; // utf8 message (converted when received)
 };
 
+typedef enum {
+   DATA_CONTACT_TEL_NONE = 0,
+   DATA_CONTACT_TEL_HOME = (1 << 0),
+   DATA_CONTACT_TEL_MSG = (1 << 1),
+   DATA_CONTACT_TEL_WORK = (1 << 2),
+   DATA_CONTACT_TEL_PREF = (1 << 3),
+   DATA_CONTACT_TEL_VOICE = (1 << 4),
+   DATA_CONTACT_TEL_FAX = (1 << 5),
+   DATA_CONTACT_TEL_CELL = (1 << 6),
+   DATA_CONTACT_TEL_VIDEO = (1 << 7),
+   DATA_CONTACT_TEL_PAGER = (1 << 8),
+   DATA_CONTACT_TEL_BBS = (1 << 9),
+   DATA_CONTACT_TEL_MODEM = (1 << 10),
+   DATA_CONTACT_TEL_CAR = (1 << 11),
+   DATA_CONTACT_TEL_ISDN = (1 << 12),
+   DATA_CONTACT_TEL_PCS = (1 << 13)
+} Data_Contact_Tel_Flags;
+typedef struct _Data_Contact Data_Contact;
+typedef struct _Data_Contact_Tel Data_Contact_Tel;
+
+struct _Data_Contact
+{
+   const char *version;
+   struct {
+      const char *display;
+      Eina_List *nicks, *lasts, *firsts, *others, *titles, *honorifics;
+   } name;
+   struct {
+      Eina_List *numbers;
+   } tel;
+   const char *photo_file;
+   Eina_List *extra_lines;
+};
+
+struct _Data_Contact_Tel
+{
+   Data_Contact_Tel_Flags flags;
+   const char *number;
+};
+
 void data_init(void);
 void data_shutdown(void);
 void data_message_sent_store(Data_Message *reply_to, const char *contact, const char *message);

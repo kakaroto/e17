@@ -6,10 +6,12 @@ main(int argc, char **argv)
    int i;
    
    elm_init(argc, argv);
+   
    for (i = 1; i < argc; i++)
      {
 	// parse args
      }
+   
    data_init();
    
    create_main_win();

@@ -25,6 +25,7 @@ void
 create_main_win(void)
 {
    Evas_Object *win, *bg, *bx, *bt, *sc, *bx2;
+   Eina_List *l;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
@@ -84,43 +85,23 @@ create_main_win(void)
    elm_scroller_content_set(sc, bx2);
    evas_object_show(bx2);
 
+   for (l = (Eina_List *)data_message_all_list(); l; l = l->next)
      {
-        Evas_Object *msg;
+        Data_Message *msg = l->data;
+        Evas_Object *msgui;
+        const char *title;
+        const char *when;
         
-        msg = create_message
-          (win, "Me", "Yesterday", find_contact_icon(NULL), 1,
-           "Hello world. This is my first SMS.", 
-           NULL);
-        elm_box_pack_end(bx2, msg);
-        evas_object_show(msg);
-        
-        msg = create_message
-          (win, "Friend", "today", find_contact_icon("1234"), 0,
-           "Great! You have a phone that works. This is fantastic.<br>"
-           "Now We can send messages all day!<br>"
-           "This is cool!", 
-           NULL);
-        elm_box_pack_end(bx2, msg);
-        evas_object_show(msg);
-        
-        msg = create_message
-          (win, "Another ", "10 minutes ago", find_contact_icon("321"), 0,
-           "I just love to send you long SMS's so this one will be no "
-           "exception. I'll fill it with all sorts of junk to see if your "
-           "Messages application on your phone works well and can handle "
-           "long messages. I hope it can, because this one is long.<br>"
-           "<br>"
-           "Now as to me actually saying something useful - forget it. "
-           "I won't be doing any such silliness. This will just waste "
-           "lots of space and time and fill up part of your phone, so "
-           "don't bother trying to extrať any usefulness from this message "
-           "as it won't be useful at all. I hope that helps you skip this "
-           "message quickly and get on with something useful. Actually I "
-           "don't hope that - that would be contrary to the point of this "
-           "message. I hope it wastes lots of your time!",
-           NULL);
-        elm_box_pack_end(bx2, msg);
-        evas_object_show(msg);
+        title = msg->from_to;
+        when = "???";
+        msgui = create_message
+          (win, title, when, 
+           find_contact_icon(NULL), 
+           (msg->flags & DATA_MESSAGE_SENT) ? 1 : 0,
+           msg->body, 
+           msg);
+        elm_box_pack_end(bx2, msgui);
+        evas_object_show(msgui);
      }
    
    evas_object_show(bx);
