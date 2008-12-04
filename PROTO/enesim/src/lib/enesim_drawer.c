@@ -19,13 +19,20 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 /* 
- * 
+ * TODO
  * rop functions 
  * pixel
  * color in ARGB format
  * pixel_color
  * mask_color
  * pixel_mask
+ * TODO
+ * color *done*
+ * mask_color 
+ * pixel *done*
+ * pixel_color
+ * pixel_mask
+ * 
  */
 /*============================================================================*
  *                                  Local                                     * 
@@ -34,10 +41,6 @@ Enesim_Drawer _unbuilt;
 
 /* this is the main surface format drawer */
 extern Enesim_Drawer argb8888_drawer;
-#if defined(__MMX__)
-extern Enesim_Drawer argb8888_drawer_mmx;
-#endif
-
 
 #ifdef BUILD_SURFACE_ARGB8888_UNPRE
 extern Enesim_Drawer argb8888_unpre_drawer;
@@ -81,63 +84,152 @@ Enesim_Drawer *drawer[ENESIM_SURFACE_FORMATS] = {
 		[ENESIM_SURFACE_b1A3] = &_unbuilt,
 #endif
 };
+
+void _pixel_blend(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
+{
+	switch (d->format)
+	{
+	case ENESIM_SURFACE_ARGB8888:
+		argb8888_pixel_blend(d, p);
+		break;
+#ifdef BUILD_SURFACE_ARGB8888_UNPRE
+	case ENESIM_SURFACE_ARGB8888_UNPRE:
+		argb8888_unpre_pixel_blend(d, p);
+		break;
+#endif
+#ifdef BUILD_SURFACE_RGB565_XA5
+	case ENESIM_SURFACE_RGB565_XA5:
+		break;
+#endif
+#ifdef BUILD_SURFACE_RGB565_B1A3
+	case ENESIM_SURFACE_RGB565_B1A3:
+		break;
+#endif
+	default:
+		break;
+	}
+}
+
+void _pixel_fill(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
+{
+	switch (d->format)
+	{
+	case ENESIM_SURFACE_ARGB8888:
+		argb8888_pixel_fill(d, p);
+		break;
+#ifdef BUILD_SURFACE_ARGB8888_UNPRE
+	case ENESIM_SURFACE_ARGB8888_UNPRE:
+		argb8888_unpre_pixel_fill(d, p);
+		break;
+#endif
+#ifdef BUILD_SURFACE_RGB565_XA5
+	case ENESIM_SURFACE_RGB565_XA5:
+		break;
+#endif
+#ifdef BUILD_SURFACE_RGB565_B1A3
+	case ENESIM_SURFACE_RGB565_B1A3:
+		break;
+#endif
+	default:
+		break;
+	}
+}
 /*============================================================================*
  *                                 Global                                     * 
  *============================================================================*/
-void enesim_drawer_pt_unbuilt(Enesim_Surface_Data *d, Enesim_Surface_Data *s,
-		unsigned int color, unsigned char *mask)
+void enesim_drawer_pt_color_blend(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m)
 {
-	//EINA_ERROR_PWARN("Point function not supported\n");
+	_pixel_blend(d, color);
 }
-void enesim_drawer_span_unbuilt(Enesim_Surface_Data *d, unsigned int len,
-		Enesim_Surface_Data *s, unsigned int color, unsigned char *mask)
+void enesim_drawer_pt_pixel_blend(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m)
 {
-	//EINA_ERROR_PWARN("Span function not supported\n");
+	_pixel_blend(d, color);
 }
 
-void enesim_drawer_init(void)
+void enesim_drawer_sp_color_blend(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
+	Enesim_Surface_Data dtmp = *d;
 	int i;
-	int j;
-
-	memset(&_unbuilt, 0, sizeof(Enesim_Drawer));
-#if 0
-	for (i = 0; i < ENESIM_ROPS; i++)
+	
+	for (i = 0; i < len; i++)
 	{
-		int j;
-		
-		/* sp_color, pt_color */
-		_unbuilt.sp_color[i] = &enesim_drawer_span_unbuilt;
-		_unbuilt.pt_color[i] = &enesim_drawer_pt_unbuilt;
-		/* sp_pixel, sp_pixel_mask, pt_pixel, pt_pixel_mask */
-		for (j = 0; j < ENESIM_SURFACE_FORMATS; j++)
-		{
-			int k;
-			
-			_unbuilt.sp_pixel[i][j] = &enesim_drawer_span_unbuilt;
-			_unbuilt.sp_pixel_mask[i][j] = &enesim_drawer_span_unbuilt;
-			_unbuilt.pt_pixel_mask[i][j] = &enesim_drawer_pt_unbuilt;
-			_unbuilt.pt_pixel_mask[i][j] = &enesim_drawer_pt_unbuilt;
-			/* sp_pixel_color, pt_pixel_color */
-			for (k = 0; k < COLOR_TYPES; k++)
-			{
-				_unbuilt.pt_pixel_color[i][j][k] = enesim_drawer_pt_unbuilt;
-				_unbuilt.sp_pixel_color[i][j][k] = enesim_drawer_span_unbuilt;
-			}
-		}
-		/* sp_mask_color, pt_mask_color */
-		for (j = 0; j < COLOR_TYPES; j++)
-		{
-			_unbuilt.pt_mask_color[i][j] = &enesim_drawer_pt_unbuilt;
-			_unbuilt.sp_mask_color[i][j] = &enesim_drawer_span_unbuilt;
-		}
+		_pixel_blend(&dtmp, color);
+		enesim_surface_data_increment(&dtmp, 1);
 	}
-#endif
+}
+void enesim_drawer_sp_pixel_blend(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
+{
+	Enesim_Surface_Data dtmp = *d, stmp = *s;
+	int i;
+	
+	for (i = 0; i < len; i++)
+	{
+		Enesim_Surface_Pixel p;
+		uint32_t argb;
+		
+		argb = enesim_surface_data_argb_to(&stmp);
+		enesim_surface_pixel_argb_from(&p, dtmp.format, argb);
+		_pixel_blend(&dtmp, &p);
+		enesim_surface_data_increment(&dtmp, 1);
+		enesim_surface_data_increment(&stmp, 1);
+	}
+}
+void enesim_drawer_pt_color_fill(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m)
+{
+	_pixel_fill(d, color);
+}
+void enesim_drawer_pt_pixel_fill(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m)
+{
+	Enesim_Surface_Pixel p;
+
+	enesim_surface_pixel_convert(s, &p, d->format);
+	_pixel_fill(d, &p);
 }
 
-void enesim_drawer_shutdown(void)
+void enesim_drawer_sp_color_fill(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	/* do nothing */
+	Enesim_Surface_Data dtmp = *d;
+	int i;
+	
+	for (i = 0; i < len; i++)
+	{
+		_pixel_fill(&dtmp, color);
+		enesim_surface_data_increment(&dtmp, 1);
+	}
+}
+void enesim_drawer_sp_pixel_fill(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
+{
+	Enesim_Surface_Data dtmp = *d, stmp = *s;
+	int i;
+
+	printf("filling %d => %d (%d)\n", s->format, d->format, len);
+	for (i = 0; i < len; i++)
+	{
+		Enesim_Surface_Pixel p;
+		uint32_t argb;
+
+		argb = enesim_surface_data_argb_to(&stmp);
+		enesim_surface_pixel_argb_from(&p, dtmp.format, argb);
+		_pixel_fill(&dtmp, &p);
+		enesim_surface_data_increment(&dtmp, 1);
+		enesim_surface_data_increment(&stmp, 1);
+	}
 }
 /*============================================================================*
  *                                   API                                      * 
@@ -145,7 +237,7 @@ void enesim_drawer_shutdown(void)
 /**
  * 
  */
-EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, unsigned int color)
+EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color)
 {
 	/* TODO check if the color is opaque */
 #if 0
@@ -170,7 +262,7 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop, Enesim_Su
  * Returns a function that will draw a span of pixels using the raster
  * operation rop for a surface format dfmt with color color
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Color color)
+EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color)
 {
 	/* TODO check if the color is opaque */
 	return drawer[dfmt]->sp_color[rop];
@@ -216,4 +308,12 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop, Enesim
 {
 	return drawer[dfmt]->sp_pixel_mask[rop][sfmt];
 }
-
+#if 0
+/**
+ * 
+ */
+EAPI void enesim_drawer_context_rop_set(Enesim_Drawer_Context *c, Enesim_rop rop)
+{
+	
+}
+#endif

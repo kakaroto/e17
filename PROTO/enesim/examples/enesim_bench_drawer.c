@@ -2,7 +2,7 @@
 /******************************************************************************
  *                         Drawer benchmark functions                         *
  ******************************************************************************/
-static void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Enesim_Color color)
+static void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Enesim_Surface_Pixel *color)
 {
 	int t;
 	Enesim_Surface_Data dtmp;
@@ -15,11 +15,10 @@ static void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Ene
 }
 
 static void span_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
-		Enesim_Color color)
+		Enesim_Surface_Pixel *color)
 {
 	int i;
 	int t;
-	Enesim_Surface_Format format = enesim_surface_format_get(dst);
 
 	for (t = 0; t < opt_times; t++)
 	{
@@ -29,7 +28,7 @@ static void span_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsign
 		for (i = 0; i < opt_height; i++)
 		{
 			span(&dtmp, len, NULL, color, NULL);
-			enesim_surface_data_increment(&dtmp, format, len);
+			enesim_surface_data_increment(&dtmp, len);
 		}
 	}
 }
@@ -39,8 +38,6 @@ void span_pixel_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int 
 {
 	int i;
 	int t;
-	Enesim_Surface_Format dfmt = enesim_surface_format_get(dst);
-	Enesim_Surface_Format sfmt = enesim_surface_format_get(src);
 
 	for (t = 0; t < opt_times; t++)
 	{
@@ -52,8 +49,8 @@ void span_pixel_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int 
 		for (i = 0; i < opt_height; i++)
 		{
 			span(&dtmp, len, &stmp, 0, NULL);
-			enesim_surface_data_increment(&dtmp, dfmt, len);
-			enesim_surface_data_increment(&stmp, sfmt, len);
+			enesim_surface_data_increment(&dtmp, len);
+			enesim_surface_data_increment(&stmp, len);
 		}
 	}
 }
@@ -63,18 +60,18 @@ void span_pixel_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int 
 static void drawer_span_color_solid_bench(Enesim_Rop rop, Enesim_Surface_Format dsf)
 {
 	double start, end;
-	Enesim_Color color;
+	Enesim_Surface_Pixel color;
 	Enesim_Surface *dst;
 	Enesim_Drawer_Span dspan;
 
 	dst = enesim_surface_new(dsf, opt_width, opt_height);
 	test_gradient2(dst);
-	enesim_color_get(&color, 0xff, 0xff, 0x89, 0x89);
-	dspan = enesim_drawer_span_color_get(rop, dsf, color);
+	enesim_surface_pixel_components_from(&color, dsf, 0xff, 0xff, 0x89, 0x89);
+	dspan = enesim_drawer_span_color_get(rop, dsf, &color);
 	if (dspan)
 	{
 		start = get_time();
-		span_color_draw(dspan, dst, opt_width, color);
+		span_color_draw(dspan, dst, opt_width, &color);
 		end = get_time();
 		printf("    Span solid color [%3.3f sec]\n", end - start);
 	}
@@ -92,16 +89,16 @@ static void drawer_span_color_transparent_bench(Enesim_Rop rop, Enesim_Surface_F
 	double start, end;
 	Enesim_Surface *dst;
 	Enesim_Drawer_Span dspan;
-	Enesim_Color color;
+	Enesim_Surface_Pixel color;
 
 	dst = enesim_surface_new(dsf, opt_width, opt_height);
 	test_gradient2(dst);
-	enesim_color_get(&color, 0x55, 0x00, 0xff, 0x00);
-	dspan = enesim_drawer_span_color_get(rop, dsf, color);
+	enesim_surface_pixel_components_from(&color, dsf, 0x55, 0x00, 0xff, 0x00);
+	dspan = enesim_drawer_span_color_get(rop, dsf, &color);
 	if (dspan)
 	{
 		start = get_time();
-		span_color_draw(dspan, dst, opt_width, color);
+		span_color_draw(dspan, dst, opt_width, &color);
 		end = get_time();
 		printf("    Span transparent color [%3.3f sec]\n", end - start);
 	}
@@ -147,20 +144,16 @@ static void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Surface_
 {
 	double start, end;
 	Enesim_Surface *dst;
-	Enesim_Surface_Data ddata;
 	Enesim_Drawer_Point dpoint;
-	Enesim_Color color;
+	Enesim_Surface_Pixel color;
 
 	dst = enesim_surface_new(dsf, 1, 1);
-	enesim_color_get(&color, 0xaa, 0xbb, 0xcc, 0xdd);
-	enesim_surface_data_get(dst, &ddata);
-	*ddata.argb8888.plane0 = color;
-	enesim_color_get(&color, 0x11, 0x22, 0x33, 0x44);
-	dpoint = enesim_drawer_point_color_get(rop, dsf, color);
+	enesim_surface_pixel_components_from(&color, dsf, 0x11, 0x22, 0x33, 0x44);
+	dpoint = enesim_drawer_point_color_get(rop, dsf, &color);
 	if (dpoint)
 	{
 		start = get_time();
-		point_color_draw(dpoint, dst, color);
+		point_color_draw(dpoint, dst, &color);
 		end = get_time();
 		printf("    Point transparent color [%3.3f sec]\n", end - start);
 	}

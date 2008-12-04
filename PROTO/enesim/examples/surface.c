@@ -89,7 +89,7 @@ void surface_blt(Enesim_Surface *s, SDL_Surface *sdl)
 			
 			for (i = 0; i < w * h; i++)
 			{
-				argb = enesim_surface_data_to_argb(&sdata, fmt);
+				argb = enesim_surface_data_argb_to(&sdata, fmt);
 				enesim_surface_data_increment(&sdata, fmt, 1);
 				*ptr = argb;
 				ptr++;

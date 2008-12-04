@@ -18,9 +18,13 @@
 #include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
-
+/*============================================================================*
+ *                                  Local                                     * 
+ *============================================================================*/
 static int _init = 0;
-
+/*============================================================================*
+ *                                   API                                      * 
+ *============================================================================*/
 /**
  * 
  */
@@ -28,9 +32,16 @@ EAPI int enesim_init(void)
 {
 	if (!_init++)
 	{
-		/* initialize the drawer */
-		enesim_drawer_init();
-		/* TODO Dump the information about SIMD extensions */
+		/* TODO Dump the information about SIMD extensions
+		 * get the cpuid for this
+		 */
+		eina_init();
+#ifdef __MMX__
+		EINA_ERROR_PINFO("MMX Drawer available\n");
+#endif
+#ifdef __SSE2__
+		EINA_ERROR_PINFO("SSE2 Drawer available\n");
+#endif
 	}
 	return _init;
 }
@@ -39,35 +50,6 @@ EAPI int enesim_init(void)
  */
 EAPI void enesim_shutdown(void)
 {
-	
+	eina_shutdown();
 }
 
-/**
- * TODO rename this
- */
-EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
-{
-	unsigned int alpha = a + 1;
-	
-	*color = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
-		| ((b * alpha) >> 8);
-}
-#if 0
-/**
- * 
- */
-EAPI void enesim_color_components_from(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
-{
-	unsigned int alpha = a + 1;
-		
-	*color = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
-		| ((b * alpha) >> 8);
-}
-/**
- * 
- */
-EAPI void enesim_color_components_to(Enesim_Color *color, uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)
-{
-	
-}
-#endif

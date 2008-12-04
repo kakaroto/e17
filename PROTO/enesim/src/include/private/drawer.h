@@ -29,6 +29,33 @@ enum Color_Type
 	COLOR_TYPES,
 };
 
+/**
+ * Generic (and very slow) drawer functions.
+ */
+void enesim_drawer_pt_color_blend(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m);
+void enesim_drawer_pt_pixel_blend(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m);
+void enesim_drawer_sp_color_blend(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
+void enesim_drawer_sp_pixel_blend(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
+void enesim_drawer_pt_color_fill(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m);
+void enesim_drawer_pt_pixel_fill(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m);
+void enesim_drawer_sp_color_fill(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
+void enesim_drawer_sp_pixel_fill(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
 /* 
  * A drawer should implement functions for every format in case of using
  * pixel source. For color source it should implement the function with
@@ -49,13 +76,5 @@ typedef struct _Enesim_Drawer
 	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS][ENESIM_SURFACE_FORMATS][COLOR_TYPES];
 	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
 } Enesim_Drawer;
-
-void enesim_drawer_init(void);
-void enesim_drawer_shutdown(void);
-
-void enesim_drawer_pt_unbuilt(Enesim_Surface_Data *d, Enesim_Surface_Data *s,
-		unsigned int color, unsigned char *mask);
-void enesim_drawer_span_unbuilt(Enesim_Surface_Data *d, unsigned int len,
-		Enesim_Surface_Data *s, unsigned int color, unsigned char *mask);
 
 #endif /*DRAWER_H_*/

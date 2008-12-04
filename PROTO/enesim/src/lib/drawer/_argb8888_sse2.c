@@ -85,21 +85,23 @@ static inline void blend_sse2(uint64_t *d, sse2_t alpha, sse2_t color)
 	*(mmx_t *)d = _mm_movepi64_pi64(r);
 }
 
-static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d, unsigned int len, Enesim_Surface_Data *s, Enesim_Color color, Enesim_Surface_Data *m)
+static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
 	int r = (len % 2);
 	int l = len - r;
 
-	uint32_t *dtmp = d->argb8888.plane0;
-	uint32_t *end = d->argb8888.plane0 + l;
+	uint32_t *dtmp = d->data.argb8888.plane0;
+	uint32_t *end = d->data.argb8888.plane0 + l;
 	uint8_t a;
 
 #if 1
 	sse2_t r0, r1;
 			
-	a = color >> 24;
+	a = color->pixel.argb8888.plane0 >> 24;
 	r0 = a2v_sse2(256 - a);
-	r1 = c2v_sse2(color);
+	r1 = c2v_sse2(color->pixel.argb8888.plane0);
 
 	while (dtmp < end)
 	{
@@ -122,13 +124,16 @@ static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d, unsigned int le
 	_mm_empty();
 }
 
-static void argb8888_sp_pixel_blend_argb8888_sse2(Enesim_Surface_Data *d, unsigned int len, Enesim_Surface_Data *s, Enesim_Color color, Enesim_Surface_Data *m)
+static void argb8888_sp_pixel_blend_argb8888_sse2(Enesim_Surface_Data *d,
+		unsigned int len, Enesim_Surface_Data *s,
+		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
 	int r = (len % 2);
 	int l = len - r;
 	sse2_t r0, r1;
-	uint32_t *stmp = s->argb8888.plane0, *dtmp = d->argb8888.plane0;
-	uint32_t *end = d->argb8888.plane0 + l;
+	uint32_t *stmp = s->data.argb8888.plane0;
+	uint32_t *dtmp = d->data.argb8888.plane0;
+	uint32_t *end = d->data.argb8888.plane0 + l;
 
 	while (dtmp < end)
 	{

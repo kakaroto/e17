@@ -53,15 +53,25 @@ int bench_get(const char *name)
 	if (!strcmp(name, "help"))
 		return 0;
 	else if (!strcmp(name, "renderer"))
+	{
+		opt_bench = "renderer";
 		return 1;
+	}
 	else if (!strcmp(name, "rasterizer"))
+	{
+		opt_bench = "rasterizer";
 		return 1;
+	}
 	else if (!strcmp(name, "drawer"))
+	{
+		opt_bench = "drawer";
 		return 1;
+	}
 	else if (!strcmp(name, "transformer"))
+	{
+		opt_bench = "transformer";
 		return 1;
-	else if (!strcmp(name, "help"))
-		return 1;
+	}
 	return 0;
 }
 
@@ -102,14 +112,15 @@ void test_gradient(Enesim_Surface *s)
 	Enesim_Drawer_Span dspan;
 	Enesim_Surface_Data sdata;
 	Enesim_Surface_Format sfmt;
+	Enesim_Surface_Pixel color;
 	int i;
-	Enesim_Color color;
 	int skip = 0;
 
 	enesim_surface_data_get(s, &sdata);
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
-	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, 0xffffffff);
+	enesim_surface_pixel_components_from(&color, sfmt, 0xff, 0xff, 0xff, 0xff);
+	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, &color);
 	if (!dspan)
 	{
 		return;
@@ -121,21 +132,21 @@ void test_gradient(Enesim_Surface *s)
 		unsigned char col = ((opt_height - 1) - i) >> opt_shift;
 
 		sdata_tmp = sdata;
-		enesim_color_get(&color, col, col, 0, col);
+		enesim_surface_pixel_components_from(&color, sfmt, col, 0, 0, col);
 #if 1
 		if (!((i + 1) % 16))
 			skip = (skip + 1) % 2;
 		if (skip)
-			enesim_surface_data_increment(&sdata_tmp, sfmt, 16);
+			enesim_surface_data_increment(&sdata_tmp, 16);
 		for (j = 0; j < opt_width; j += 32)
 		{
-			dspan(&sdata_tmp, 16, NULL, color, NULL);
-			enesim_surface_data_increment(&sdata_tmp, sfmt, 32);
+			dspan(&sdata_tmp, 16, NULL, &color, NULL);
+			enesim_surface_data_increment(&sdata_tmp, 32);
 		}
 #else
 		dspan(&sdata_tmp, opt_width, NULL, color, NULL);
 #endif
-		enesim_surface_data_increment(&sdata, sfmt, opt_width);
+		enesim_surface_data_increment(&sdata, opt_width);
 	}
 	surface_save(s, "gradient.png");
 }
@@ -145,13 +156,14 @@ void test_gradient2(Enesim_Surface *s)
 	Enesim_Drawer_Span dspan;
 	Enesim_Surface_Data sdata;
 	Enesim_Surface_Format sfmt;
+	Enesim_Surface_Pixel color;
 	int i;
-	Enesim_Color color;
 
 	enesim_surface_data_get(s, &sdata);
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
-	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, 0xffffffff);
+	enesim_surface_pixel_components_from(&color, sfmt, 0xff, 0xff, 0xff, 0xff);
+	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, &color);
 	if (!dspan)
 	{
 		return;
@@ -160,9 +172,9 @@ void test_gradient2(Enesim_Surface *s)
 	{
 		unsigned char col = i >> opt_shift;
 
-		enesim_color_get(&color, col, 0, 0, col);
-		dspan(&sdata, opt_width, NULL, color, NULL);
-		enesim_surface_data_increment(&sdata, sfmt, opt_width);
+		enesim_surface_pixel_components_from(&color, sfmt, col, col, 0, col);
+		dspan(&sdata, opt_width, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, opt_width);
 	}
 	surface_save(s, "gradient2.png");
 }
@@ -171,36 +183,40 @@ Enesim_Surface * test_pattern(int w)
 {
 	Enesim_Surface *s;
 	Enesim_Drawer_Span spfnc;
-	Enesim_Color color;
+	Enesim_Surface_Pixel color;
 	Enesim_Surface_Data sdata;
 	int i;
 	int spaces = w / 2;
 	
-	enesim_color_get(&color, 0xff, 0xff, 0xff, 0);
-	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, color);
+	enesim_surface_pixel_components_from(&color, opt_fmt, 0xff, 0xff, 0xff, 0);
+	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, &color);
 	if (!spfnc)
 		return NULL;
 	s = enesim_surface_new(opt_fmt, w, w);
 	
 	/* draw the pattern */
 	enesim_surface_data_get(s, &sdata);
-	enesim_surface_data_increment(&sdata, opt_fmt, spaces);
+	enesim_surface_data_increment(&sdata, spaces);
 	for (i = 0; i < w / 2; i++)
 	{
 		int len = i * 2 +1;
+		int nspaces = spaces - 1;
 		
-		spfnc(&sdata, len, NULL, color, NULL);
-		enesim_surface_data_increment(&sdata, opt_fmt, len + spaces + --spaces);
+		spfnc(&sdata, len, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
+		spaces--;
 	}
-	spfnc(&sdata, w, NULL, color, NULL);
-	enesim_surface_data_increment(&sdata, opt_fmt, w + 1);
+	spfnc(&sdata, w, NULL, &color, NULL);
+	enesim_surface_data_increment(&sdata,  w + 1);
 	spaces = 1;
 	for (i = 0; i < w / 2; i++)
 	{
 		int len = (w - 1) - (i * 2 +1);
+		int nspaces = spaces + 1;
 		
-		spfnc(&sdata, len, NULL, color, NULL);
-		enesim_surface_data_increment(&sdata, opt_fmt, len + spaces + ++spaces);
+		spfnc(&sdata, len, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
+		spaces++;
 	}
 	surface_save(s, "pattern.png");
 	return s;

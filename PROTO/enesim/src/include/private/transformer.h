@@ -53,7 +53,15 @@ struct _Enesim_Transformation
  * affine[quality][border][xscale][yscale]
  * projective[quality][border][xscale][yscale]
  */
+typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t,
+		Enesim_Surface *ss, Eina_Rectangle *srect, Enesim_Surface *ds,
+		Eina_Rectangle *drect);
 
-typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t, Enesim_Surface *ss, Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect);
+typedef struct _Enesim_Transformer
+{
+	Enesim_Transformer_Func identity;
+	Enesim_Transformer_Func projective;
+	Enesim_Transformer_Func affine;
+} Enesim_Transformer;
 
 #endif /*TRANSFORMER_H_*/

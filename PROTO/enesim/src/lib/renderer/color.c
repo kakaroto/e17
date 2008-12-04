@@ -27,7 +27,7 @@ typedef struct _Renderer_Color
 #ifdef DEBUG
 	unsigned int magic;
 #endif
-	uint32_t	color;
+	Enesim_Surface_Pixel color;
 } Renderer_Color;
 
 static Eina_Bool _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, Enesim_Surface *dst)
@@ -43,12 +43,12 @@ static Eina_Bool _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, Enes
 	f = r->data;
 	
 	sfmt = enesim_surface_format_get(dst);
-	cfnc = enesim_drawer_span_color_get(r->rop, sfmt, f->color);
+	//cfnc = enesim_drawer_span_color_get(r->rop, sfmt, f->color);
 	assert(cfnc);
 	offset = (dst->w * sl->y) + sl->x;
 	enesim_surface_data_get(dst, &ddata);
-	enesim_surface_data_increment(&ddata, sfmt, offset);
-	cfnc(&ddata, sl->w, NULL, f->color, NULL);
+	enesim_surface_data_increment(&ddata, offset);
+	cfnc(&ddata, sl->w, NULL, &(f->color), NULL);
 	
 	return EINA_TRUE;
 }
@@ -133,5 +133,5 @@ EAPI void enesim_renderer_color_color_set(Enesim_Renderer *r, uint32_t color)
 	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
 	f = r->data;
 	ENESIM_MAGIC_CHECK(f, ENESIM_RENDERER_FILLCOLOR_MAGIC);
-	f->color = color;
+	//f->color = color;
 }

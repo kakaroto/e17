@@ -2,7 +2,7 @@
 #include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
-
+#if 0
 static void rgb565_b1a3_pt_color_blend(Enesim_Surface_Data *d, Enesim_Surface_Data *s, Enesim_Color color, Enesim_Surface_Data *m)
 {
 	uint16_t data0;
@@ -201,3 +201,4 @@ Enesim_Drawer rgb565_b1a3_drawer = {
 	.sp_pixel[ENESIM_FILL][ENESIM_SURFACE_RGB565_B1A3] = rgb565_b1a3_sp_pixel_fill_rgb565_b1a3,
 	.pt_pixel[ENESIM_FILL][ENESIM_SURFACE_RGB565_B1A3] = rgb565_b1a3_pt_pixel_fill_rgb565_b1a3,
 };
+#endif

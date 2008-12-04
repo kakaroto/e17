@@ -108,32 +108,6 @@ ENESIM_LIBS="$EINA_LIBS $COVERAGE_LIBS"
 AC_SUBST(ENESIM_CFLAGS)
 AC_SUBST(ENESIM_LIBS)
 
-## The tool directory
-## Code taken from texinfo
-if test "$cross_compiling" = no; then
-  native_tools=
-else
-  native_tools=tools
-  test -d "$native_tools" || mkdir "$native_tools"
-  confdir=`(cd "$srcdir";pwd)`
-  # Make sure the secondary configure won't fail with
-  # "error: source directory already configured".
-  rm -f config.status
-  AC_MSG_NOTICE([[Doing configure of native tools (${build}).]])
-  cd "$native_tools" || exit 1
-  # Run secondary configure in alternate environment or
-  # it gets the wrong CC etc.
-  # env -i gives this build host configure a clean environment;
-  # consequently, we have to re-initialize $PATH.
-  env -i CC="$BUILD_CC" AR="$BUILD_AR" RANLIB="$BUILD_RANLIB" \
-      PATH="$PATH" \
-      tools_only=1 \
-    ${confdir}/configure --build=${build} --host=${build} 
-  cd .. || exit 1
-  AC_MSG_NOTICE([[Continuing with main configure (${host}).]])
-fi
-AC_SUBST(native_tools)
-AM_CONDITIONAL(TOOLS_ONLY, [[test "x$tools_only" = x1]])
 
 ## Make the debug preprocessor configurable
 
@@ -147,6 +121,7 @@ src/lib/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
 src/lib/drawer/Makefile
+src/lib/transformer/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile

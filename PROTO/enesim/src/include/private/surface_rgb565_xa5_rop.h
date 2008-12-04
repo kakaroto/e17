@@ -18,6 +18,10 @@
 #ifndef SURFACE_RGB565_XA5_ROP_H_
 #define SURFACE_RGB565_XA5_ROP_H_
 
+/*============================================================================*
+ *                                   Core                                     *
+ *============================================================================*/
+
 static inline unsigned char rgb565_xa5_alpha_get(uint16_t plane0, uint8_t plane1)
 {
 	return plane1 << 3;

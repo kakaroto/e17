@@ -15,20 +15,12 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _SURFACE_H
-#define _SURFACE_H
+#include "Enesim.h"
+#include "enesim_private.h"
+#include "_argb8888_c.c"
 
-struct _Enesim_Surface
-{
-	int w;
-	int h;
-	int flags;
-	Enesim_Surface_Data sdata;
-	int stride; /* TODO make all code use this */
-#ifdef DEBUG
-	Enesim_Magic magic;
-#endif
+Enesim_Transformer argb8888_tx = {
+		.affine = argb8888_argb8888_good_affine_no_no,
+		.identity = argb8888_argb8888_good_affine_no_no,
 };
 
-
-#endif

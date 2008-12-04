@@ -18,6 +18,33 @@
 #ifndef SURFACE_RGB565_B1A3_ROP_H_
 #define SURFACE_RGB565_B1A3_ROP_H_
 
+/*============================================================================*
+ *                                   Core                                     *
+ *============================================================================*/
+static inline void rgb565_b1a3_data_copy(Enesim_Surface_Data *s, Enesim_Surface_Data *d)
+{
+	d->data.rgb565_b1a3.plane0 = s->data.rgb565_b1a3.plane0;
+	d->data.rgb565_b1a3.pixel_plane1 = s->data.rgb565_b1a3.pixel_plane1;
+	d->data.rgb565_b1a3.plane1 = s->data.rgb565_b1a3.plane1;
+}
+static inline void rgb565_b1a3_data_increment(Enesim_Surface_Data *d, unsigned int len)
+{
+	d->data.rgb565_b1a3.plane0 += len;
+	d->data.rgb565_b1a3.pixel_plane1 = (d->data.rgb565_b1a3.pixel_plane1 + len) % 2;
+	d->data.rgb565_b1a3.plane1 += (d->data.rgb565_b1a3.pixel_plane1 + len) / 2;
+}
+static inline void rgb565_b1a3_data_offset(Enesim_Surface_Data *s, Enesim_Surface_Data *d, unsigned int offset)
+{
+	d->data.rgb565_b1a3.plane0 = s->data.rgb565_b1a3.plane0 + offset;
+	d->data.rgb565_b1a3.plane1 = s->data.rgb565_b1a3.plane1 + ((s->data.rgb565_b1a3.pixel_plane1 + offset) / 2);
+	d->data.rgb565_b1a3.pixel_plane1 = ((s->data.rgb565_b1a3.pixel_plane1 + offset) % 2);
+}
+static inline unsigned char rgb565_b1a3_data_alpha_get(Enesim_Surface_Data *d)
+{
+	return (*d->data.rgb565_b1a3.plane1 >> 0) & 0x7;
+}
+
+
 static inline unsigned char rgb565_b1a3_alpha_get(uint16_t plane0, uint8_t plane1)
 {
 	return (plane1 & 0x3) << 5;

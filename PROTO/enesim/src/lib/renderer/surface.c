@@ -70,15 +70,15 @@ static inline void _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, En
 			return;
 	}
 	/* setup */
-	spfnc = enesim_drawer_span_pixel_get(r->rop, dst->format, f->s->format);
+	spfnc = enesim_drawer_span_pixel_get(r->rop, dst->sdata.format, f->s->sdata.format);
 	/* the source surface data should be at offset SRECT.x and sl->y */
 	enesim_surface_size_get(f->s, &ssw, &ssh);
 	enesim_surface_data_get(f->s, &sdata);
-	enesim_surface_data_increment(&sdata, f->s->format, (((slrect.y - DRECT.y) % SRECT.h) * ssw) + SRECT.x);
+	enesim_surface_data_increment(&sdata, (((slrect.y - DRECT.y) % SRECT.h) * ssw) + SRECT.x);
 	/* the desitination surface data should be at offset sl->x and sl->y */ 
 	enesim_surface_size_get(dst, &dsw, &dsh);
 	enesim_surface_data_get(dst, &ddata);
-	enesim_surface_data_increment(&ddata, dst->format, (slrect.y * dsw) + slrect.x);
+	enesim_surface_data_increment(&ddata, (slrect.y * dsw) + slrect.x);
 	
 	/* left */
 	//printf("1 %d %d %d %d\n", slrect.x, slrect.y, slrect.w, slrect.h);
@@ -88,10 +88,10 @@ static inline void _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, En
 		int len;
 		
 		tmp = sdata;
-		enesim_surface_data_increment(&tmp, f->s->format, slrect.x - DRECT.x);
+		enesim_surface_data_increment(&tmp, slrect.x - DRECT.x);
 		len = MIN(slrect.w, SRECT.w - slrect.x);
 		spfnc(&ddata, len, &tmp, /* mul_color */0, NULL);
-		enesim_surface_data_increment(&ddata, dst->format, len);
+		enesim_surface_data_increment(&ddata, len);
 		//printf("left %d\n", len);
 		slrect.x += len;
 		slrect.w -= len;
@@ -112,7 +112,7 @@ static inline void _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, En
 		for (i = 0; i < count; i++)
 		{
 			spfnc(&ddata, len, &sdata, /* mul_color */0, NULL);
-			enesim_surface_data_increment(&ddata, dst->format, len);
+			enesim_surface_data_increment(&ddata, len);
 		}
 		slrect.w -= total;
 		slrect.x += total;

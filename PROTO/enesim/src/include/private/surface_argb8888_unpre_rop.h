@@ -18,6 +18,28 @@
 #ifndef SURFACE_ARGB8888_UNPRE_ROP_H_
 #define SURFACE_ARGB8888_UNPRE_ROP_H_
 
+/*============================================================================*
+ *                                   Core                                     *
+ *============================================================================*/
+static inline void argb8888_unpre_data_copy(Enesim_Surface_Data *s, Enesim_Surface_Data *d)
+{
+	d->data.argb8888_unpre.plane0 = s->data.argb8888_unpre.plane0;
+}
+static inline void argb8888_unpre_data_increment(Enesim_Surface_Data *d, unsigned int len)
+{
+	d->data.argb8888_unpre.plane0 += len;
+}
+static inline void argb8888_unpre_data_offset(Enesim_Surface_Data *s, Enesim_Surface_Data *d, unsigned int offset)
+{
+	d->data.argb8888_unpre.plane0 = s->data.argb8888_unpre.plane0 + offset;
+}
+static inline unsigned char argb8888_unpre_data_alpha_get(Enesim_Surface_Data *d)
+{
+	return (*d->data.argb8888_unpre.plane0 >> 24) & 0xff;
+}
+
+
+
 #define BLEND_ARGB_256(a, aa, c0, c1) \
  ( ((((0xff0000 - (((c1) >> 8) & 0xff0000)) * (a)) \
    + ((c1) & 0xff000000)) & 0xff000000) + \
@@ -101,6 +123,19 @@ static inline void argb8888_unpre_fill(unsigned int *dplane0, unsigned int splan
 {
 	//printf("filling unpre %08x %08x\n", *dplane0, splane0);
 	*dplane0 = splane0;
+}
+
+/*============================================================================*
+ *                                Surface                                     *
+ *============================================================================*/
+static inline void argb8888_unpre_pixel_blend(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
+{
+	argb8888_unpre_blend(d->data.argb8888_unpre.plane0, p->pixel.argb8888_unpre.plane0);
+}
+
+static inline void argb8888_unpre_pixel_fill(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
+{
+	argb8888_unpre_fill(d->data.argb8888_unpre.plane0, p->pixel.argb8888_unpre.plane0);
 }
 
 #endif /*SURFACE_ARGB8888_H_*/

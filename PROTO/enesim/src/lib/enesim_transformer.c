@@ -15,7 +15,6 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
 /*============================================================================*
@@ -54,24 +53,13 @@ static void _transformation_debug(Enesim_Transformation *t)
 #endif
 }
 
-/* TODO
- * remove this
- */
-#define INTERP_256(a, c0, c1) \
- ( (((((((c0) >> 8) & 0xff00ff) - (((c1) >> 8) & 0xff00ff)) * (a)) \
-   + ((c1) & 0xff00ff00)) & 0xff00ff00) + \
-   (((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (a)) >> 8) \
-   + ((c1) & 0xff00ff)) & 0xff00ff) )
-#define interp_256 INTERP_256
-
 /*
  * TODO
  * this function is very expensive because we have convert every time to argb
  * in case of argb8888_pre means several muls and divs
  */
-static unsigned int convolution2x2(Enesim_Surface_Data *data, 
-		Enesim_Surface_Format fmt, Eina_F16p16 x, Eina_F16p16 y,
-		unsigned w, unsigned int h)
+static inline void convolution2x2(Enesim_Surface_Data *data, Eina_F16p16 x, Eina_F16p16 y,
+		unsigned w, unsigned int h, Enesim_Surface_Pixel *ret)
 {
 	Enesim_Surface_Data tmp;
 	unsigned int p3 = 0, p2 = 0, p1 = 0, p0 = 0;
@@ -87,28 +75,28 @@ static unsigned int convolution2x2(Enesim_Surface_Data *data,
 
 	if ((sx > -1) && (sy > -1))
 	{
-		p0 = enesim_surface_data_to_argb(data, fmt);
+		p0 = enesim_surface_data_argb_to(data);
 	}
 	if ((sy > -1) && ((sx + 1) < w))
 	{
 		tmp = *data;
 		
-		enesim_surface_data_increment(&tmp, fmt, 1);
-		p1 = enesim_surface_data_to_argb(&tmp, fmt);
+		enesim_surface_data_increment(&tmp, 1);
+		p1 = enesim_surface_data_argb_to(&tmp);
 	}
 	if ((sy + 1) < h)
 	{
 		if (sx > -1)
 		{
 			tmp = *data;
-			enesim_surface_data_increment(&tmp, fmt, w);
-			p2 = enesim_surface_data_to_argb(&tmp, fmt);
+			enesim_surface_data_increment(&tmp, w);
+			p2 = enesim_surface_data_argb_to(&tmp);
 		}
 		if ((sx + 1) < w)
 		{
 			tmp = *data;
-			enesim_surface_data_increment(&tmp, fmt, w + 1);
-			p3 = enesim_surface_data_to_argb(&tmp, fmt);
+			enesim_surface_data_increment(&tmp, w + 1);
+			p3 = enesim_surface_data_argb_to(&tmp);
 		}
 	}
 	if (p0 != p1)
@@ -117,7 +105,9 @@ static unsigned int convolution2x2(Enesim_Surface_Data *data,
 		p2 = interp_256(ax, p3, p2);
 	if (p0 != p2)
 		p0 = interp_256(ay, p2, p0);
-	return p0;
+	
+	ret->pixel.argb8888.plane0 = p0;
+	ret->format = ENESIM_SURFACE_ARGB8888;
 }
 /* TODO
  * handle the origin
@@ -130,21 +120,21 @@ static void transformer_identity_no_no(Enesim_Transformation *t, Enesim_Surface 
 	int h;
 	
 	/* TODO, pixel or pixel_color */
-	spfnc = enesim_drawer_span_pixel_get(t->rop, ds->format, ss->format);
+	spfnc = enesim_drawer_span_pixel_get(t->rop, ds->sdata.format, ss->sdata.format);
 	if (!spfnc)
 		return;
 	
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_get(ds, &ddata);
-	enesim_surface_data_increment(&sdata, ss->format, (srect->y * ss->w) + srect->x);
-	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
+	enesim_surface_data_increment(&sdata, (srect->y * ss->w) + srect->x);
+	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);
 	h = drect->h;
 	
 	while (h--)
 	{
-		spfnc(&ddata, drect->w, &sdata, /* mul_color */0, NULL);
-		enesim_surface_data_increment(&sdata, ss->format, ss->w);
-		enesim_surface_data_increment(&ddata, ds->format, ds->w);
+		spfnc(&ddata, drect->w, &sdata, /* mul_color */NULL, NULL);
+		enesim_surface_data_increment(&sdata, ss->w);
+		enesim_surface_data_increment(&ddata, ds->w);
 	}	
 }
 
@@ -155,11 +145,13 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 	Eina_F16p16 sx, sy;
 	Enesim_Drawer_Point ptfnc;
 	Eina_F16p16 a, b, c, d, e, f, g, h, i;
+	Enesim_Surface_Pixel color;
 
 	int hlen;
 
 	/* force an alpha color, return if we dont have a point function */
-	ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, 0x55555555);
+	enesim_surface_pixel_argb_from(&color, ds->sdata.format, 0x55555555);
+	ptfnc = enesim_drawer_point_color_get(t->rop, ds->sdata.format, &color);
 	if (!ptfnc)
 		return;
 	
@@ -171,7 +163,7 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 	
 	enesim_surface_data_get(ds, &ddata);
 	enesim_surface_data_get(ss, &sdata);
-	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
+	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);
 
 	hlen = drect->h;
 	while (hlen--)
@@ -197,18 +189,19 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 			/* check that we are inside the source rectangle */
 			if ((eina_rectangle_xcoord_inside(srect, six)) && (eina_rectangle_ycoord_inside(srect, siy)))
 			{
-				unsigned int argb;
+				Enesim_Surface_Pixel argb;
 				
 				/* use 2x2 convolution kernel to interpolate */
-				enesim_surface_data_increment(&sdata2, ss->format, (siy * ss->w) + six);
-				argb = convolution2x2(&sdata2, ss->format, sxx, syy, ss->w, ss->h);
-				ptfnc(&ddata2, NULL, argb, NULL);
+				enesim_surface_data_increment(&sdata2, (siy * ss->w) + six);
+				convolution2x2(&sdata2, sxx, syy, ss->w, ss->h, &argb);
+				enesim_surface_pixel_convert(&argb, &color, ddata.format);
+				ptfnc(&ddata2, NULL, &color, NULL);
 			}
-			enesim_surface_data_increment(&ddata2, ds->format, 1);
+			enesim_surface_data_increment(&ddata2, 1);
 			sxx += a;
 			syy += d;
 		}
-		enesim_surface_data_increment(&ddata, ds->format, ds->w);
+		enesim_surface_data_increment(&ddata, ds->w);
 		sx += b;
 		sy += e;
 	}
@@ -221,11 +214,13 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 	Eina_F16p16 sx, sy, sz;
 	Enesim_Drawer_Point ptfnc;
 	Eina_F16p16 a, b, c, d, e, f, g, h, i, ox, oy;
+	Enesim_Surface_Pixel color;
 
 	int hlen;
 
 	/* force an alpha color, return if we dont have a point function */
-	ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, 0x55555555);
+	enesim_surface_pixel_argb_from(&color, ds->sdata.format, 0x55555555);
+	ptfnc = enesim_drawer_point_color_get(t->rop, ds->sdata.format, &color);
 	if (!ptfnc)
 		return;
 	
@@ -238,8 +233,8 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 	
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_get(ds, &ddata);
-	enesim_surface_data_increment(&sdata, ss->format, (srect->y * ss->w) + srect->x);
-	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
+	enesim_surface_data_increment(&sdata, (srect->y * ss->w) + srect->x);
+	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);
 	
 	hlen = drect->h;
 	while (hlen--)
@@ -272,26 +267,32 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 			/* check that we are inside the source rectangle */
 			if ((eina_rectangle_xcoord_inside(srect, six)) && (eina_rectangle_ycoord_inside(srect, siy)))
 			{
-				unsigned int argb;
-							
+				Enesim_Surface_Pixel argb;
+
 				/* use 2x2 convolution kernel to interpolate */
-				enesim_surface_data_increment(&sdata2, ss->format, (siy * ss->w) + six);
-				argb = convolution2x2(&sdata2, ss->format, sxxx, syyy, ss->w, ss->h);
-				ptfnc(&ddata2, NULL, argb, NULL);
+				enesim_surface_data_increment(&sdata2, (siy * ss->w) + six);
+#if 1
+				convolution2x2(&sdata2, sxxx, syyy, ss->w, ss->h, &argb);
+				enesim_surface_pixel_convert(&argb, &color, ds->sdata.format);
+				ptfnc(&ddata2, NULL, &color, NULL);
+#else
+				enesim_surface_data_pixel_get(&sdata2, &color);
+#endif
+				ptfnc(&ddata2, NULL, &color, NULL);
 			}
 iterate:
-			enesim_surface_data_increment(&ddata2, ds->format, 1);
+			enesim_surface_data_increment(&ddata2, 1);
 			sxx += a;
 			syy += d;
 			szz += g;
 		}
-		enesim_surface_data_increment(&ddata, ds->format, ds->w);
+		enesim_surface_data_increment(&ddata, ds->w);
 		sx += b;
 		sy += e;
 		sz += h;
 	}
 }
-
+extern Enesim_Transformer argb8888_tx;
 static Enesim_Transformer_Func _functions[ENESIM_TRANSFORMATIONS] = {
 		[ENESIM_TRANSFORMATION_AFFINE] = &transformer_affine_no_no,
 		[ENESIM_TRANSFORMATION_IDENTITY] = &transformer_identity_no_no,
@@ -420,6 +421,15 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		yscale = ENESIM_SCALE_DOWN;
 	/* get the correct transfomer function */
 	/* TODO use xscale and yscale */
+#if 0
+	/* HACK to get the argb8888 transformer */
+	if ((s->sdata.format == d->sdata.format) && (d->sdata.format == ENESIM_SURFACE_ARGB8888))
+	{
+		//printf("[%d] %d %d\n", _transformation_get(t->matrix), s->sdata.format, d->sdata.format);
+		tfunc = argb8888_tx.affine;
+	}
+	else
+#endif
 	if (!(tfunc = _functions[_transformation_get(t->matrix)]))
 	{
 		//ENESIM_ERROR(ENESIM_ERROR_TRANSFORMATION_NOT_SUPPORTED);

@@ -159,25 +159,21 @@ typedef __m128i sse2_t;
 #include "private/surface.h"
 #include "private/transformer.h"
 /* now the surface format backends */
-#include "private/surface_argb8888_core.h"
 #include "private/surface_argb8888_rop.h"
 /* common rgb565 code in case some other uses it */
 #include "private/surface_rgb565_rop.h"
 
 #ifdef BUILD_SURFACE_ARGB8888_UNPRE
-#include "private/surface_argb8888_unpre_core.h"
 #include "private/surface_argb8888_unpre_rop.h"
 #endif
 
 
 #ifdef BUILD_SURFACE_RGB565_XA5
-#include "private/surface_rgb565_xa5_core.h"
 #include "private/surface_rgb565_xa5_rop.h"
 #endif
 
 
 #ifdef BUILD_SURFACE_RGB565_B1A3
-#include "private/surface_rgb565_b1a3_core.h"
 #include "private/surface_rgb565_b1a3_rop.h"
 #endif
 

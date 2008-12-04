@@ -23,7 +23,7 @@
  * type
  * The color is premultiplied!!!!!!
  */
-typedef uint32_t Enesim_Color;
+//typedef uint32_t Enesim_Color;
 
 /*
  * 
@@ -35,7 +35,7 @@ typedef enum
 	ENESIM_ROPS
 } Enesim_Rop;
 
-EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
+//EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
 
 EAPI int enesim_init(void);
 EAPI void enesim_shutdown(void);
