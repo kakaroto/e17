@@ -1,82 +1,80 @@
-# Czech translation for Enlightenment DR17 - Flame module
-# This file is distributed under the same license as Enlightenment DR17.
-# Josef Lusticky alias 'EVRAMP' <evramp@gamil.com>, 2008
+# Czech translation.
+# This file is put in the public domain.
+# quaker66@gmail.com
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Flame module (e17)\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-11-27 14:20+0100\n"
-"Last-Translator: Josef Lusticky <evramp@gmail.com>\n"
-"Language-Team: Enlightenment i18n Czech <enlightenment-intl@lists.sourceforge.net>\n"
+"Project-Id-Version: Flame\n"
+"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
+"POT-Creation-Date: 2007-11-14 22:24+0100\n"
+"PO-Revision-Date: 2008-08-11 14:59+0100\n"
+"Last-Translator: quaker <quaker66@gmail.com>\n"
+"Language-Team: easylinux <easylinux@sachiel.eu>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
-"X-Poedit-Country: CZECH REPUBLIC\n"
 
-#: ../e_mod_main.c:61
+#: e_mod_main.c:61
 msgid "Appearance"
 msgstr "Vzhled"
 
-#: ../e_mod_main.c:63
+#: e_mod_main.c:63
 msgid "Flame"
 msgstr "Plamen"
 
-#: ../e_mod_config.c:47
+#: e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Nastavení plamene"
 
-#: ../e_mod_config.c:94
-#: ../e_mod_config.c:177
+#: e_mod_config.c:94
+#: e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Barva plamene"
 
-#: ../e_mod_config.c:96
+#: e_mod_config.c:96
 msgid "Gold"
-msgstr "Zlatá"
+msgstr "Zlatý"
 
-#: ../e_mod_config.c:98
+#: e_mod_config.c:98
 msgid "Fire"
-msgstr "Požár"
+msgstr "Oheň"
 
-#: ../e_mod_config.c:100
+#: e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plasma"
 
-#: ../e_mod_config.c:102
+#: e_mod_config.c:102
 msgid "Matrix"
 msgstr "Matrix"
 
-#: ../e_mod_config.c:104
+#: e_mod_config.c:104
 msgid "Ice"
 msgstr "Led"
 
-#: ../e_mod_config.c:106
+#: e_mod_config.c:106
 msgid "White"
-msgstr "Bílá"
+msgstr "Bílý"
 
-#: ../e_mod_config.c:108
+#: e_mod_config.c:108
 msgid "Custom"
 msgstr "Vlastní"
 
-#: ../e_mod_config.c:179
+#: e_mod_config.c:179
 msgid "Red Amount"
-msgstr "Podíl červené"
+msgstr "Množství červené"
 
-#: ../e_mod_config.c:182
-#: ../e_mod_config.c:189
-#: ../e_mod_config.c:196
+#: e_mod_config.c:182
+#: e_mod_config.c:189
+#: e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../e_mod_config.c:186
+#: e_mod_config.c:186
 msgid "Blue Amount"
-msgstr "Podíl modré"
+msgstr "Množství modré"
 
-#: ../e_mod_config.c:193
+#: e_mod_config.c:193
 msgid "Green Amount"
-msgstr "Podíl zelené"
+msgstr "Množství zelené"
 
