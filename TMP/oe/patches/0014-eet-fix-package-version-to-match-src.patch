@@ -1,0 +1,27 @@
+From fcd2ff9c6cda959d04eb7238850033a32326bcee Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:47:17 +1100
+Subject: [PATCH] eet: fix package version to match src
+
+---
+ packages/efl1/eet_svn.bb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/efl1/eet_svn.bb b/packages/efl1/eet_svn.bb
+index 6f7a615..4af40da 100644
+--- a/packages/efl1/eet_svn.bb
++++ b/packages/efl1/eet_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "EET is the Enlightenment data storage library"
+ DEPENDS = "zlib jpeg openssl eina"
+ LICENSE = "MIT BSD"
+-PV = "1.0.1+svnr${SRCREV}"
+-PR = "r3"
++PV = "1.1.0+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+-- 
+1.5.4.3
+

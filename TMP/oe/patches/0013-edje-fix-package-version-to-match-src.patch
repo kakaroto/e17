@@ -1,0 +1,54 @@
+From 49bde6627114b173ae648994f88022eeafc411ea Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:46:44 +1100
+Subject: [PATCH] edje: fix package version to match src
+
+---
+ packages/efl1/edje-native_svn.bb |    2 +-
+ packages/efl1/edje-sdk_svn.bb    |    2 +-
+ packages/efl1/edje_svn.bb        |    4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/packages/efl1/edje-native_svn.bb b/packages/efl1/edje-native_svn.bb
+index d71d38d..238bfd0 100644
+--- a/packages/efl1/edje-native_svn.bb
++++ b/packages/efl1/edje-native_svn.bb
+@@ -1,6 +1,6 @@
+ require edje_${PV}.bb
+ inherit native
+-PR = "r2"
++PR = "r1"
+ 
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+ 
+diff --git a/packages/efl1/edje-sdk_svn.bb b/packages/efl1/edje-sdk_svn.bb
+index de307d7..2bd75a0 100644
+--- a/packages/efl1/edje-sdk_svn.bb
++++ b/packages/efl1/edje-sdk_svn.bb
+@@ -1,7 +1,7 @@
+ require edje_svn.bb
+ 
+ inherit sdk
+-PR = "r0"
++PR = "r1"
+ 
+ SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-sdk', '')}"
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+diff --git a/packages/efl1/edje_svn.bb b/packages/efl1/edje_svn.bb
+index 5e767ac..7cf257f 100644
+--- a/packages/efl1/edje_svn.bb
++++ b/packages/efl1/edje_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
+ DEPENDS = "eet evas ecore embryo edje-native"
+ LICENSE = "MIT BSD"
+-PV = "0.5.0.043+svnr${SRCREV}"
+-PR = "r6"
++PV = "0.5.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+-- 
+1.5.4.3
+

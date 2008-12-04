@@ -1,0 +1,28 @@
+From 6debc87aebc1f0a79910fe909322d65d6a8c71b7 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 30 Oct 2008 17:19:22 +1100
+Subject: [PATCH] distro-angstrom: remove avahi and sftp from angstrom for openmoko
+
+remove avahi-daemon, avahi-autoipd and openssh-sftp-server as none of them
+are really used or needed and just slow down boot.
+---
+ conf/distro/include/angstrom-2007-for-openmoko.inc |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/conf/distro/include/angstrom-2007-for-openmoko.inc b/conf/distro/include/angstrom-2007-for-openmoko.inc
+index 7a4d498..d837413 100644
+--- a/conf/distro/include/angstrom-2007-for-openmoko.inc
++++ b/conf/distro/include/angstrom-2007-for-openmoko.inc
+@@ -230,9 +230,6 @@ DISTRO_EXTRA_RRECOMMENDS += " \
+     kernel-module-vfat \
+     kernel-module-ext2 \
+     kernel-module-af-packet \
+-    avahi-daemon \
+-    avahi-autoipd \
+-    openssh-sftp-server \
+     "
+ 
+ SEPPUKU_NEWREPORT    = "http://bugs.openembedded.net/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%202007.12&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+-- 
+1.5.4.3
+

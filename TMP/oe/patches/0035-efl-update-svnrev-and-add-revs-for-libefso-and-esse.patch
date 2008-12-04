@@ -1,0 +1,33 @@
+From 35e96b283f8c4ef91c7ab6ee78a5fecc52e403f1 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 09:19:18 +1100
+Subject: [PATCH] efl: update svnrev and add revs for libefso and essential-dialler too
+
+---
+ conf/distro/include/sane-srcrevs.inc |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index 1d82cc9..9b19262 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -212,7 +212,7 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "37395"
++EFL_SRCREV ?= "37697"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+@@ -282,3 +282,7 @@ SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
+ SRCREV_pn-waker ?= "${EFL_SRCREV}"
+ SRCREV_pn-elementary ?= "${EFL_SRCREV}"
+ SRCREV_pn-elementary-alarm ?= "${EFL_SRCREV}"
++
++# ST
++SRCREV_pn-libefso ?= "60"
++SRCREV_pn-essential-dialer ?= "60"
+-- 
+1.5.4.3
+

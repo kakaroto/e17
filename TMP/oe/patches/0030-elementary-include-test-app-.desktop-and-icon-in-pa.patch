@@ -1,0 +1,41 @@
+From 5ab42aa0640624d36395f25ce3a286ba7a2680cf Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Thu, 4 Dec 2008 12:57:55 +1100
+Subject: [PATCH] elementary: include test app .desktop and icon in package
+
+---
+ packages/efl1/elementary_svn.bb |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/packages/efl1/elementary_svn.bb b/packages/efl1/elementary_svn.bb
+index caf2c37..eb880ae 100644
+--- a/packages/efl1/elementary_svn.bb
++++ b/packages/efl1/elementary_svn.bb
+@@ -1,13 +1,14 @@
+-DESCRIPTION = "An EFL based Alarm app"
+-LICENSE = "MIT BSD"
++DESCRIPTION = "EFL based widget set for mobile devices"
++LICENSE = "LGPL"
+ DEPENDS = "evas ecore edje eet edbus"
+ PV = "0.0.0+svnr${SRCREV}"
+-PR = "r2"
++PR = "r3"
+ 
+ inherit efl
+ 
+ SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary;proto=http"
+ S = "${WORKDIR}/elementary"
++PACKAGES =+ "${PN}-tests"
+ 
+ RDEPENDS = "elementary-themes"
+ RRECOMMENDS = "elementary-tests"
+@@ -26,4 +27,6 @@ FILES_${PN}-tests = "\
+   ${bindir}/elementary* \
+   ${datadir}/elementary/images \
+   ${datadir}/elementary/objects \
++  ${datadir}/applications/* \
++  ${datadir}/icons/* \
+ "
+-- 
+1.5.4.3
+

@@ -1,0 +1,27 @@
+From 16779ced109ec71d70c7b34910c369a0e5a716dc Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:45:50 +1100
+Subject: [PATCH] edbus: fix package version to match src
+
+---
+ packages/efl1/edbus_svn.bb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/efl1/edbus_svn.bb b/packages/efl1/edbus_svn.bb
+index 16b19e9..b9fc1a6 100644
+--- a/packages/efl1/edbus_svn.bb
++++ b/packages/efl1/edbus_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "DBus and HAL convenience wrappers for EFL"
+ DEPENDS = "dbus ecore"
+ LICENSE = "MIT BSD"
+-PV = "0.5.0.043+svnr${SRCREV}"
+-PR = "r3"
++PV = "0.5.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+-- 
+1.5.4.3
+

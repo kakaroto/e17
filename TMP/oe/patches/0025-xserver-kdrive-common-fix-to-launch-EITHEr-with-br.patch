@@ -1,0 +1,30 @@
+From 8fb4f6ef73ae22366e2985846cbf459ff344ed99 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 19:36:59 +1100
+Subject: [PATCH] xserver-kdrive-common: fix to launch EITHEr with -br or -ppm, but not both
+
+using both is broken and it is no guarantee which will be used (and as i saw
+-br takes preference) so make $PPM use -br and then it will be overriden by
+-ppm if the case warrants it.
+---
+ .../xserver-kdrive-common/openmoko/Xserver         |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+index a57b4ff..fd04361 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+@@ -40,8 +40,8 @@ module_id() {
+ export USER=root
+ 
+ SCREEN_SIZE=`fallback_screen_arg`
+-PPM=""
+-ARGS=" -br -pn"
++PPM="-br"
++ARGS=" -pn"
+ 
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+-- 
+1.5.4.3
+

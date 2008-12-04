@@ -1,0 +1,26 @@
+From 3b39657edec5348cb298c31b8279eb6517b3e0fe Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Thu, 4 Dec 2008 12:51:59 +1100
+Subject: [PATCH] xserver-kdrive-common: update package rev to make package rebuild with fixes
+
+pervious patch didnt include a PV update. this does it
+---
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index 5c6b80d..9667c47 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -1,7 +1,7 @@
+ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+-PR = "r33"
++PR = "r34"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+-- 
+1.5.4.3
+

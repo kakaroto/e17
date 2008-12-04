@@ -1,0 +1,27 @@
+From b66b0a8ea43a6fb28aab5690adee9ab76e19dedb Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:44:51 +1100
+Subject: [PATCH] edb: fix package version to match src
+
+---
+ packages/efl1/edb_svn.bb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/efl1/edb_svn.bb b/packages/efl1/edb_svn.bb
+index 4f8143a..a3d2d3d 100644
+--- a/packages/efl1/edb_svn.bb
++++ b/packages/efl1/edb_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "Edb is the Enlightenment database library"
+ LICENSE = "MIT BSD"
+ DEPENDS = "zlib"
+-PV = "1.0.5.043+svnr${SRCREV}"
+-PR = "r2"
++PV = "1.0.5.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+-- 
+1.5.4.3
+

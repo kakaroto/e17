@@ -1,0 +1,314 @@
+From 87a16560614372ecd274a16b0d2d08e47721e5ac Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 09:20:03 +1100
+Subject: [PATCH] efl: fix package versions to match upstream correctly
+
+---
+ packages/e17/e-wm_svn.bb          |    4 ++--
+ packages/e17/elementary_svn.bb    |    4 +++-
+ packages/efl1/ecore-native_svn.bb |    2 +-
+ packages/efl1/ecore.inc           |    2 +-
+ packages/efl1/ecore_svn.bb        |    2 +-
+ packages/efl1/edb_svn.bb          |    4 ++--
+ packages/efl1/edbus_svn.bb        |    4 ++--
+ packages/efl1/edje-native_svn.bb  |    2 +-
+ packages/efl1/edje-sdk_svn.bb     |    2 +-
+ packages/efl1/edje_svn.bb         |    4 ++--
+ packages/efl1/eet_svn.bb          |    4 ++--
+ packages/efl1/efreet_svn.bb       |    4 ++--
+ packages/efl1/embryo_svn.bb       |    4 ++--
+ packages/efl1/emotion_svn.bb      |    4 ++--
+ packages/efl1/esmart_svn.bb       |    4 ++--
+ packages/efl1/evas-native_svn.bb  |    2 +-
+ packages/efl1/evas.inc            |    2 +-
+ packages/efl1/evas_svn.bb         |    2 +-
+ packages/efl1/ewl_svn.bb          |    4 ++--
+ packages/efl1/imlib2_svn.bb       |    4 ++--
+ 20 files changed, 33 insertions(+), 31 deletions(-)
+
+diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
+index 7734bf2..2c2a8dd 100644
+--- a/packages/e17/e-wm_svn.bb
++++ b/packages/e17/e-wm_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "The Enlightenment Window Manager Version 17"
+ DEPENDS = "eet evas ecore edje efreet edbus"
+ LICENSE = "MIT BSD"
+-PV = "0.16.999.043+svnr${SRCREV}"
+-PR = "r18"
++PV = "0.16.999.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit e update-alternatives
+ 
+diff --git a/packages/e17/elementary_svn.bb b/packages/e17/elementary_svn.bb
+index ad451ca..c4ba860 100644
+--- a/packages/e17/elementary_svn.bb
++++ b/packages/e17/elementary_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "An EFL based Alarm app"
+ LICENSE = "MIT BSD"
+ DEPENDS = "evas ecore edje eet edbus"
+ PV = "0.0.0+svnr${SRCREV}"
+-PR = "r0.23"
++PR = "r0.25"
+ 
+ inherit efl
+ 
+@@ -22,4 +22,6 @@ FILES_${PN}-tests = "\
+   ${bindir}/elementary* \
+   ${datadir}/elementary/images \
+   ${datadir}/elementary/objects \
++  ${datadir}/applications/* \
++  ${datadir}/icons/* \
+ "
+diff --git a/packages/efl1/ecore-native_svn.bb b/packages/efl1/ecore-native_svn.bb
+index 2fc383b..f84c658 100644
+--- a/packages/efl1/ecore-native_svn.bb
++++ b/packages/efl1/ecore-native_svn.bb
+@@ -1,7 +1,7 @@
+ require ecore.inc
+ inherit native
+ DEPENDS = "eet-native evas-native"
+-PR = "r2"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+                 --enable-ecore-txt \
+diff --git a/packages/efl1/ecore.inc b/packages/efl1/ecore.inc
+index adb4378..653fb18 100644
+--- a/packages/efl1/ecore.inc
++++ b/packages/efl1/ecore.inc
+@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
+ DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
+ # optional
+ # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
+-PV = "0.9.9.043+svnr${SRCREV}"
++PV = "0.9.9.050+svnr${SRCREV}"
+ PR = "r1"
+ 
+ inherit efl
+diff --git a/packages/efl1/ecore_svn.bb b/packages/efl1/ecore_svn.bb
+index 3bc5184..f36cc73 100644
+--- a/packages/efl1/ecore_svn.bb
++++ b/packages/efl1/ecore_svn.bb
+@@ -1,5 +1,5 @@
+ require ecore.inc
+-PR = "r5"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+   --x-includes=${STAGING_INCDIR}/X11 \
+diff --git a/packages/efl1/edb_svn.bb b/packages/efl1/edb_svn.bb
+index 4f8143a..a3d2d3d 100644
+--- a/packages/efl1/edb_svn.bb
++++ b/packages/efl1/edb_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "Edb is the Enlightenment database library"
+ LICENSE = "MIT BSD"
+ DEPENDS = "zlib"
+-PV = "1.0.5.043+svnr${SRCREV}"
+-PR = "r2"
++PV = "1.0.5.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/edbus_svn.bb b/packages/efl1/edbus_svn.bb
+index 16b19e9..b9fc1a6 100644
+--- a/packages/efl1/edbus_svn.bb
++++ b/packages/efl1/edbus_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "DBus and HAL convenience wrappers for EFL"
+ DEPENDS = "dbus ecore"
+ LICENSE = "MIT BSD"
+-PV = "0.5.0.043+svnr${SRCREV}"
+-PR = "r3"
++PV = "0.5.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/edje-native_svn.bb b/packages/efl1/edje-native_svn.bb
+index d71d38d..238bfd0 100644
+--- a/packages/efl1/edje-native_svn.bb
++++ b/packages/efl1/edje-native_svn.bb
+@@ -1,6 +1,6 @@
+ require edje_${PV}.bb
+ inherit native
+-PR = "r2"
++PR = "r1"
+ 
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+ 
+diff --git a/packages/efl1/edje-sdk_svn.bb b/packages/efl1/edje-sdk_svn.bb
+index de307d7..2bd75a0 100644
+--- a/packages/efl1/edje-sdk_svn.bb
++++ b/packages/efl1/edje-sdk_svn.bb
+@@ -1,7 +1,7 @@
+ require edje_svn.bb
+ 
+ inherit sdk
+-PR = "r0"
++PR = "r1"
+ 
+ SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-sdk', '')}"
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+diff --git a/packages/efl1/edje_svn.bb b/packages/efl1/edje_svn.bb
+index 5cbeec9..7cf257f 100644
+--- a/packages/efl1/edje_svn.bb
++++ b/packages/efl1/edje_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
+ DEPENDS = "eet evas ecore embryo edje-native"
+ LICENSE = "MIT BSD"
+-PV = "0.5.0.043+svnr${SRCREV}"
+-PR = "r5"
++PV = "0.5.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/eet_svn.bb b/packages/efl1/eet_svn.bb
+index 6f7a615..4af40da 100644
+--- a/packages/efl1/eet_svn.bb
++++ b/packages/efl1/eet_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "EET is the Enlightenment data storage library"
+ DEPENDS = "zlib jpeg openssl eina"
+ LICENSE = "MIT BSD"
+-PV = "1.0.1+svnr${SRCREV}"
+-PR = "r3"
++PV = "1.1.0+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/efreet_svn.bb b/packages/efl1/efreet_svn.bb
+index 37e9443..218d22e 100644
+--- a/packages/efl1/efreet_svn.bb
++++ b/packages/efl1/efreet_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "The Enlightenment freedesktop.org library"
+ DEPENDS = "ecore"
+ LICENSE = "MIT BSD"
+-PV = "0.5.0.043+svnr${SRCREV}"
+-PR = "r2"
++PV = "0.5.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/embryo_svn.bb b/packages/efl1/embryo_svn.bb
+index 956ff77..688ec22 100644
+--- a/packages/efl1/embryo_svn.bb
++++ b/packages/efl1/embryo_svn.bb
+@@ -1,7 +1,7 @@
+ DESCRIPTION = "The Enlightenment C-like scripting language for Edje"
+ LICENSE = "MIT BSD"
+-PV = "0.9.9.043+svnr${SRCREV}"
+-PR = "r2"
++PV = "0.9.9.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/emotion_svn.bb b/packages/efl1/emotion_svn.bb
+index c1d3ff3..455bc82 100644
+--- a/packages/efl1/emotion_svn.bb
++++ b/packages/efl1/emotion_svn.bb
+@@ -2,8 +2,8 @@ DESCRIPTION = "The Enlightenment multimedia library"
+ LICENSE = "MIT BSD"
+ # we no longer build the libxine backend, since the gstreamer backend seems more promising
+ DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
+-PV = "0.1.0+svnr${SRCREV}"
+-PR = "r3"
++PV = "0.1.0.042+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/esmart_svn.bb b/packages/efl1/esmart_svn.bb
+index d0983e0..1ff75a4 100644
+--- a/packages/efl1/esmart_svn.bb
++++ b/packages/efl1/esmart_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "ESmart is a collection of smart Evas objects"
+ LICENSE = "MIT BSD"
+ DEPENDS = "evas ecore edje imlib2 epsilon libtool"
+-PV = "0.9.0.043+svnr${SRCREV}"
+-PR = "r3"
++PV = "0.9.0.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/evas-native_svn.bb b/packages/efl1/evas-native_svn.bb
+index 3f85757..5cf72c2 100644
+--- a/packages/efl1/evas-native_svn.bb
++++ b/packages/efl1/evas-native_svn.bb
+@@ -1,7 +1,7 @@
+ require evas.inc
+ inherit native
+ DEPENDS = "freetype-native libpng-native jpeg-native eet-native"
+-PR = "r2"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+ 		--x-includes=${STAGING_INCDIR}/X11  \
+diff --git a/packages/efl1/evas.inc b/packages/efl1/evas.inc
+index f1a2660..d820979 100644
+--- a/packages/efl1/evas.inc
++++ b/packages/efl1/evas.inc
+@@ -2,7 +2,7 @@ DESCRIPTION = "Evas is the Enlightenment canvas API"
+ LICENSE = "MIT BSD"
+ # can also depend on valgrind, libsdl-x11, directfb
+ DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
+-PV = "0.9.9.043+svnr${SRCREV}"
++PV = "0.9.9.050+svnr${SRCREV}"
+ PR = "r1"
+ 
+ 
+diff --git a/packages/efl1/evas_svn.bb b/packages/efl1/evas_svn.bb
+index a94ae1f..6f7b379 100644
+--- a/packages/efl1/evas_svn.bb
++++ b/packages/efl1/evas_svn.bb
+@@ -1,5 +1,5 @@
+ require evas.inc
+-PR = "r3"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+ 		--x-includes=${STAGING_INCDIR}/X11  \
+diff --git a/packages/efl1/ewl_svn.bb b/packages/efl1/ewl_svn.bb
+index 336d3ed..6425e86 100644
+--- a/packages/efl1/ewl_svn.bb
++++ b/packages/efl1/ewl_svn.bb
+@@ -1,8 +1,8 @@
+ DESCRIPTION = "The Enlightened Widget Library"
+ DEPENDS = "evas ecore edje emotion efreet epsilon"
+ LICENSE = "MIT BSD"
+-PV = "0.5.2.042+svnr${SRCREV}"
+-PR = "r3"
++PV = "0.5.2.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+diff --git a/packages/efl1/imlib2_svn.bb b/packages/efl1/imlib2_svn.bb
+index 56cd61d..ac9ed80 100644
+--- a/packages/efl1/imlib2_svn.bb
++++ b/packages/efl1/imlib2_svn.bb
+@@ -3,8 +3,8 @@ LICENSE = "BSD"
+ # can also depend on tiff34, ungif or gif, z, bz2, id3tag
+ DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
+ PROVIDES = "virtual/imlib2"
+-PV = "1.4.1.001+svnr${SRCREV}"
+-PR = "r5"
++PV = "1.4.2.001+svnr${SRCREV}"
++PR = "r1"
+ 
+ inherit efl
+ 
+-- 
+1.5.4.3
+
