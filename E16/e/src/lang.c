@@ -45,6 +45,10 @@
 #include <iconv.h>
 #define BAD_CD ((iconv_t)-1)
 
+#ifndef ICONV_CONST		/* Not sure this is necessary */
+#define ICONV_CONST
+#endif
+
 static iconv_t      iconv_cd_int2utf8 = BAD_CD;
 static iconv_t      iconv_cd_utf82int = BAD_CD;
 static iconv_t      iconv_cd_int2loc = BAD_CD;
@@ -54,10 +58,11 @@ static char        *
 Eiconv(iconv_t icd, const char *txt, size_t len)
 {
    char                buf[4096];
-   char               *pi, *po;
+   ICONV_CONST char   *pi;
+   char               *po;
    size_t              err, ni, no;
 
-   pi = (char *)txt;
+   pi = (ICONV_CONST char *)txt;
    po = buf;
    ni = (len > 0) ? len : strlen(txt);
    if (icd == BAD_CD)
@@ -213,11 +218,12 @@ int
 EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
 {
 #if HAVE_ICONV
-   char               *pi, *po;
+   ICONV_CONST char   *pi;
+   char               *po;
    size_t              ni, no, rc;
    char                buf[4096];
 
-   pi = (char *)str;
+   pi = (ICONV_CONST char *)str;
    ni = len;
 
    if (!wcs)
@@ -253,10 +259,10 @@ int
 EwcWcsToStr(const wchar_t * wcs, int wcl, char *str, int len)
 {
 #if HAVE_ICONV
-   char               *pi;
+   ICONV_CONST char   *pi;
    size_t              ni, no, rc;
 
-   pi = (char *)wcs;
+   pi = (ICONV_CONST char *)wcs;
    ni = wcl * sizeof(wchar_t);
    no = len;
    rc = iconv(iconv_cd_wcs2str, &pi, &ni, &str, &no);
