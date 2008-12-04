@@ -185,11 +185,17 @@ static void
 esmart_text_entry_buffer_backspace (Evas_Object * o)
 {
   Esmart_Text_Entry *e = NULL;
-
+  int len, val, pos;
+   
   e = evas_object_smart_data_get (o);
+  len = strlen(e->buf.text);
 
-  if (e->buf.index > 0)
-    e->buf.text[--e->buf.index] = 0;
+  if (len > 0)
+  {
+    pos = evas_string_char_prev_get(e->buf.text, len, &val);
+    e->buf.text[pos] = 0; 
+  }
+  
   esmart_text_entry_text_fix (o);
 }
 static void
@@ -223,72 +229,31 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
   Esmart_Text_Entry *entry = NULL;
 
   down = ev;
-  entry = evas_object_smart_data_get (data);
+  entry = evas_object_smart_data_get(data);
 
   /* handle modifiers */
-   if (evas_key_modifier_is_set (down->modifiers, "Control_L")
-       || evas_key_modifier_is_set (down->modifiers, "Control_R"))
-     {
-	switch ((int) down->keyname[0])
-	  {
-	   case 117:
-	     esmart_text_entry_text_set (data, "");
-	     break;
-	   default:
-#if DEBUG
-	     fprintf (stderr, "(%d) is the key value\n",
-		      (int) down->keyname[0]);
-#endif
-	     break;
-	  }
-	
-     }
-   else if ((strlen (down->keyname) > 1)
-	    && (!down->string || (strlen (down->string) > 1)))
-     {
-	if (!strcmp (down->keyname, "BackSpace"))
-	  {
-	     esmart_text_entry_buffer_backspace (data);
-	  }
-#if DEBUG
-	else
-	  {
-	     fprintf (stderr, "Unknown string %s\n", down->keyname);
-	  }
-#endif
-     }
-   else if (down->string)
-     {
-	switch ((int) down->string[0])
-	  {
-	   case 127: /* Delete */
-	   case 9:	  /* \t */
-	     break;
-	   case 8:	  /* Backspace */
-	     esmart_text_entry_buffer_backspace (data);
-	     break;
-	   case 13:  /* \r */
-	     if (entry->return_key.func)
-	       {
-		  entry->return_key.func (entry->return_key.arg,
-					  entry->buf.text);
-#if DEBUG
-		  fprintf (stderr, "Buffer Length %d\n",
-			   strlen (entry->buf.text));
-#endif
-	       }
-	     break;
-	   default:
-	     esmart_text_entry_buffer_char_append (data,
-						   down->string[0]);
-#if DEBUG
-	     fprintf (stderr, "(%d) is the string value\n",
-		      (int) down->key_string[0]);
-#endif
-	     break;
-	  }
-     }
-   esmart_text_entry_text_fix (data);
+  if (evas_key_modifier_is_set(down->modifiers, "Control"))
+  {
+    if (strcmp(down->keyname, "a") == 0)
+      esmart_text_entry_text_set(data, "");
+  }
+  else if (strcmp(down->keyname, "BackSpace") == 0)
+  {
+    esmart_text_entry_buffer_backspace(data);
+  }
+  else if (strcmp(down->keyname, "Return") == 0 ||
+           strcmp(down->keyname, "KP_Enter") == 0)
+  {
+    if (entry->return_key.func)
+      entry->return_key.func(entry->return_key.arg, entry->buf.text);
+  }
+  else if (down->string && *down->string && (strlen(down->string) != 1 || down->string[0] >= 0x20))
+  {
+     int i;
+     for(i = 0; i < strlen(down->string); i++)
+       esmart_text_entry_buffer_char_append(data, down->string[i]);
+  }
+  esmart_text_entry_text_fix(data);
 }
 
 static void
@@ -304,10 +269,9 @@ esmart_text_entry_add (Evas_Object * o)
 
   evas_object_smart_data_set (o, entry);
 
-  evas_key_modifier_add (evas_object_evas_get (o), "Control_L");
-  evas_key_modifier_add (evas_object_evas_get (o), "Control_R");
-  evas_key_modifier_add (evas_object_evas_get (o), "Shift_L");
-  evas_key_modifier_add (evas_object_evas_get (o), "Shift_R");
+  evas_key_modifier_add (evas_object_evas_get (o), "Control");
+  evas_key_modifier_add (evas_object_evas_get (o), "Shift");
+  evas_key_modifier_add (evas_object_evas_get (o), "Alt");
 
   entry->clip = evas_object_rectangle_add (evas_object_evas_get (o));
   evas_object_layer_set (entry->clip, 0);
