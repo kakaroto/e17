@@ -53,8 +53,14 @@ cdef class IdleExiter:
        Idle exiters should be stopped/deleted by means of L{delete()} or
        returning False from B{func}, otherwise they'll continue alive, even
        if the current python context delete it's reference to it.
+
+       B{func} signature: C{func(*args, **kargs): bool}
     """
     def __init__(self, func, *args, **kargs):
+        """Constructor.
+
+        @parm: B{func} function to call when system exits idle.
+        """
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
         self.func = func
@@ -101,6 +107,10 @@ cdef class IdleExiter:
 
 def idle_exiter_add(func, *args, **kargs):
     """L{IdleExiter} factory, for C-api compatibility.
+
+       B{func} signature: C{func(*args, **kargs): bool}
+
+       @parm: B{func} function to call when system exits idle.
 
        @rtype: L{IdleExiter}
     """

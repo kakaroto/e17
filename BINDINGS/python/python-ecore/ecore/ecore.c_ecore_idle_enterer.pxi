@@ -55,8 +55,14 @@ cdef class IdleEnterer:
        if the current python context delete it's reference to it.
 
        Idle enterer are useful for post-work jobs, like garbage collection.
+
+       B{func} signature: C{func(*args, **kargs): bool}
     """
     def __init__(self, func, *args, **kargs):
+        """Constructor.
+
+        @parm: B{func} function to call when system enters idle.
+        """
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
         self.func = func
@@ -103,6 +109,10 @@ cdef class IdleEnterer:
 
 def idle_enterer_add(func, *args, **kargs):
     """L{IdleEnterer} factory, for C-api compatibility.
+
+       B{func} signature: C{func(*args, **kargs): bool}
+
+       @parm: B{func} function to call when system enters idle.
 
        @rtype: L{IdleEnterer}
     """

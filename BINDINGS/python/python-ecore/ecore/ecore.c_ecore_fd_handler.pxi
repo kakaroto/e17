@@ -78,8 +78,16 @@ cdef class FdHandler:
         - handle multiple socket connections using a single process;
         - thread wake-up and synchronization;
         - non-blocking file description operations.
+
+       B{func} signature: C{func(fd_handler, *args, **kargs): bool}
     """
     def __init__(self, fd, int flags, func, *args, **kargs):
+        """Constructor.
+
+        @parm: B{fd} file descriptor or object with C{fileno()} method.
+        @parm: B{flags} bitwise OR of ECORE_FD_READ, ECORE_FD_WRITE...
+        @parm: B{func} function to call when file descriptor state changes.
+        """
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
         self.func = func
@@ -210,6 +218,12 @@ cdef class FdHandler:
 
 def fd_handler_add(fd, int flags, func, *args, **kargs):
     """L{FdHandler} factory, for C-api compatibility.
+
+       B{func} signature: C{func(fd_handler, *args, **kargs): bool}
+
+       @parm: B{fd} file descriptor or object with C{fileno()} method.
+       @parm: B{flags} bitwise OR of ECORE_FD_READ, ECORE_FD_WRITE...
+       @parm: B{func} function to call when file descriptor state changes.
 
        @rtype: L{FdHandler}
     """

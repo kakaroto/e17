@@ -53,9 +53,15 @@ cdef class Timer:
        Timers should be stopped/deleted by means of L{delete()} or
        returning False from B{func}, otherwise they'll continue alive, even
        if the current python context delete it's reference to it.
+
+       B{func} signature: C{func(*args, **kargs): bool}
     """
     def __init__(self, double interval, func, *args, **kargs):
-        "@parm: B{interval} interval in seconds (float)."
+        """Constructor.
+
+           @parm: B{interval} interval in seconds (float).
+           @parm: B{func} function to callback when timer expires.
+        """
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
         self._interval = interval
@@ -121,6 +127,11 @@ cdef class Timer:
 
 def timer_add(double t, func, *args, **kargs):
     """L{Timer} factory, for C-api compatibility.
+
+       B{func} signature: C{func(*args, **kargs): bool}
+
+       @parm: B{interval} interval in seconds (float).
+       @parm: B{func} function to callback when timer expires.
 
        @rtype: L{Timer}
     """

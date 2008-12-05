@@ -55,8 +55,14 @@ cdef class Idler:
        if the current python context delete it's reference to it.
 
        Idlers are useful for progressively prossessing data without blocking.
+
+       B{func} signature: C{func(*args, **kargs): bool}
     """
     def __init__(self, func, *args, **kargs):
+        """Constructor.
+
+        @parm: B{func} function to call when system is idle.
+        """
         self.func = func
         self.args = args
         self.kargs = kargs
@@ -101,6 +107,10 @@ cdef class Idler:
 
 def idler_add(func, *args, **kargs):
     """L{Idler} factory, for C-api compatibility.
+
+       B{func} signature: C{func(*args, **kargs): bool}
+
+       @parm: B{func} function to call when system is idle.
 
        @rtype: L{Idler}
     """
