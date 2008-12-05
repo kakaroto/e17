@@ -12,6 +12,7 @@ typedef time_t Data_Message_Timestamp; // time_t good enough for now
 typedef struct _Data_Message Data_Message;
 struct _Data_Message
 {
+   const char             *path;
    Data_Message_Id         id; // id of message - 0 == unknown.
    Data_Message_Id         reply_to_id; // if != 0 this is a reply to message id
    Data_Message_Flags      flags; // message flags
@@ -42,22 +43,23 @@ typedef struct _Data_Contact_Tel Data_Contact_Tel;
 
 struct _Data_Contact
 {
-   const char *version;
+   const char    *path;
+   const char    *version;
    struct {
       const char *display;
-      Eina_List *nicks, *lasts, *firsts, *others, *titles, *honorifics;
+      Eina_List  *nicks, *lasts, *firsts, *others, *titles, *honorifics;
    } name;
    struct {
-      Eina_List *numbers;
+      Eina_List  *numbers;
    } tel;
-   const char *photo_file;
-   Eina_List *extra_lines;
+   const char    *photo_file;
+   Eina_List     *extra_lines;
 };
 
 struct _Data_Contact_Tel
 {
-   Data_Contact_Tel_Flags flags;
-   const char *number;
+   Data_Contact_Tel_Flags  flags;
+   const char             *number;
 };
 
 void data_init(void);
@@ -70,6 +72,9 @@ void data_message_del_callback_del(void (*func) (void *data, Data_Message *msg),
 const Eina_List *data_message_all_list(void);
 void data_message_trash(Data_Message *msg);
 void data_message_del(Data_Message *msg);
+
+Data_Contact *data_contact_by_tel_find(const char *number);
+char *data_contact_photo_file_get(Data_Contact *ctc);
     
 //////////////////////////////////////////////////////////////////////////////
 Evas_Object *
@@ -78,6 +83,3 @@ Evas_Object *
                  Evas_Bool is_me, const char *text, void *handle);
 void
   create_main_win(void);
-const char *
-  find_contact_icon(const char *contact);
-   

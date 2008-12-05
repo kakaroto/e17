@@ -148,6 +148,7 @@ _data_message_load(const char *file)
         free(msg);
         return NULL;
      }
+   msg->path = eina_stringshare_add(file);
    while (fgets(buf, sizeof(buf), f))
      {
         if (headers)
@@ -489,6 +490,7 @@ _data_contact_load(const char *file)
         free(ctc);
         return NULL;
      }
+   ctc->path = eina_stringshare_add(file);
    while (fgets(buf, sizeof(buf), f))
      {
         int len;
@@ -532,14 +534,14 @@ _data_contact_load(const char *file)
    return ctc;
 }
 
-static void
-_data_contact_dump(Data_Contact *ctc)
+static int
+_data_contact_save(Data_Contact *ctc, const char *file)
 {
    FILE *f;
    Eina_List *l;
    
-   f = stdout;
-   
+   f = fopen(file, "wb");
+   if (!f) return 0;
    fprintf(f, "BEGIN:VCARD\n");
    if (ctc->version)
      {
@@ -690,6 +692,8 @@ _data_contact_dump(Data_Contact *ctc)
         fprintf(f, "%s\n", l->data);
      }
    fprintf(f, "END:VCARD\n");
+   fclose(f);
+   return 1;
 }
 
 static void
@@ -716,15 +720,149 @@ _data_contact_dir_load(const char *dir)
                   snprintf(buf, sizeof(buf), "%s/%s", dir, file);
                   ctc = _data_contact_load(buf);
                   if (ctc)
-                    {
-                       _data_contact_dump(ctc);
-                       contacts = evas_list_prepend(contacts, ctc);
-                    }
+                    contacts = evas_list_prepend(contacts, ctc);
                }
              ecore_list_next(files);
           }
         ecore_list_destroy(files);
      }
+}
+
+static char *
+_del_tel_canonicalise(const char *tel)
+{
+   char *t = NULL, *p;
+   int t_len = 0, t_alloc = 0;
+   
+   // FIXME: need to canonicalise based on current location (country/telco)
+   // and local numbers vs full intl number svs intl dialcode numbers
+   // that caller-id may report. eg canonicalising when in +61 (australia)
+   //  02 1234 5678 -> +61212345678
+   // when in the '02" dial prefix (state of nsw):
+   //  1234 5678 -> +61212345678
+   // or if in another state (victoria is 03):
+   //  1234 5678 -> +61312345678
+   // and 0011 is one of several inlt dial prefixes:
+   //  0011 61 2 1234 5678 -> +61212345678
+   // 
+   // same with all countries. canonicalising depends on:
+   // 1. the current country, telco and locality/prefix.
+   // 2. on what's alread there in whats listed, but in the end the number
+   // should uniquely refer to a fully qualified international dial line
+   // for that number. some regions may not allow this to work and so when
+   // dialled it needs to be simplified again.
+   for (p = (char *)tel; *p; p++)
+     {
+        switch (*p)
+          {
+          case '0':
+             t = _buf_append(t, "0", &t_len, &t_alloc);
+             break;
+          case '1':
+             t = _buf_append(t, "1", &t_len, &t_alloc);
+             break;
+          case '2':
+          case 'a':
+          case 'b':
+          case 'c':
+          case 'A':
+          case 'B':
+          case 'C':
+             t = _buf_append(t, "2", &t_len, &t_alloc);
+             break;
+          case '3':
+          case 'd':
+          case 'e':
+          case 'f':
+          case 'D':
+          case 'E':
+          case 'F':
+             t = _buf_append(t, "3", &t_len, &t_alloc);
+             break;
+          case '4':
+          case 'g':
+          case 'h':
+          case 'i':
+          case 'G':
+          case 'H':
+          case 'I':
+             t = _buf_append(t, "4", &t_len, &t_alloc);
+             break;
+          case '5':
+          case 'j':
+          case 'k':
+          case 'l':
+          case 'J':
+          case 'K':
+          case 'L':
+             t = _buf_append(t, "5", &t_len, &t_alloc);
+             break;
+          case '6':
+          case 'm':
+          case 'n':
+          case 'o':
+          case 'M':
+          case 'N':
+          case 'O':
+             t = _buf_append(t, "6", &t_len, &t_alloc);
+             break;
+          case '7':
+          case 'p':
+          case 'q':
+          case 'r':
+          case 's':
+          case 'P':
+          case 'Q':
+          case 'R':
+          case 'S':
+             t = _buf_append(t, "7", &t_len, &t_alloc);
+             break;
+          case '8':
+          case 't':
+          case 'u':
+          case 'v':
+          case 'T':
+          case 'U':
+          case 'V':
+             t = _buf_append(t, "8", &t_len, &t_alloc);
+             break;
+          case '9':
+          case 'w':
+          case 'x':
+          case 'y':
+          case 'z':
+          case 'W':
+          case 'X':
+          case 'Y':
+          case 'Z':
+             t = _buf_append(t, "9", &t_len, &t_alloc);
+             break;
+          case '*':
+             t = _buf_append(t, "*", &t_len, &t_alloc);
+             break;
+          case '#':
+             t = _buf_append(t, "#", &t_len, &t_alloc);
+             break;
+          default:
+             break;
+          }
+     }
+   if (!t) t = strdup("");
+   return t;
+}
+
+static int
+_data_tel_match(const char *tel1, const char *tel2)
+{
+   char *t1, *t2;
+   int match = 0;
+   
+   t1 = _del_tel_canonicalise(tel1);
+   t2 = _del_tel_canonicalise(tel2);
+   if ((t1) && (t2)) match = !strcmp(t1, t2);
+   if (t1) free(t1);
+   if (t2) free(t2);
+   return match;
 }
 
 void
@@ -817,12 +955,39 @@ data_message_del(Data_Message *msg)
    _callback_call(del_callbacks, &del_walking, &del_deletes, msg);
    // FIXME: delete file
    messages = eina_list_remove(messages, msg);
+   eina_stringshare_del(msg->path);
    eina_stringshare_del(msg->from_to);
    eina_stringshare_del(msg->body);
    free(msg);
 }
 
 Data_Contact *
-data_contact_by_tel_find(const char *tel)
+data_contact_by_tel_find(const char *number)
 {
+   Eina_List *l, *l2;
+   
+   for (l = contacts; l; l = l->next)
+     {
+        Data_Contact *ctc = l->data;
+        for (l2 = ctc->tel.numbers; l2; l2 = l2->next)
+          {
+             Data_Contact_Tel *tel = l2->data;
+             if (_data_tel_match(tel->number, number))
+               return ctc;
+          }
+     }
+   return NULL;
+}
+
+char *
+data_contact_photo_file_get(Data_Contact *ctc)
+{
+   char buf[PATH_MAX];
+   
+   if (!ctc->photo_file) return NULL;
+   if (ctc->photo_file[0] == '/')
+     snprintf(buf, sizeof(buf), "%s", ctc->photo_file);
+   else
+     snprintf(buf, sizeof(buf), "%s/%s", contactdir, ctc->photo_file);
+   return strdup(buf);
 }

@@ -26,6 +26,8 @@ create_main_win(void)
 {
    Evas_Object *win, *bg, *bx, *bt, *sc, *bx2;
    Eina_List *l;
+   time_t tnow;
+   struct tm *tmnow;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
@@ -85,21 +87,80 @@ create_main_win(void)
    elm_scroller_content_set(sc, bx2);
    evas_object_show(bx2);
 
+   tzset();
+   tnow = time(NULL);
+   tmnow = localtime(&tnow);
    for (l = (Eina_List *)data_message_all_list(); l; l = l->next)
      {
         Data_Message *msg = l->data;
+        Data_Contact *ctc;
         Evas_Object *msgui;
         const char *title;
         const char *when;
+        char *icon;
+        time_t t;
+        struct tm *tm;
+        char tbuf[256], fbuf[512], tobuf[512];
         
-        title = msg->from_to;
+        title = "???";
+        ctc = data_contact_by_tel_find(msg->from_to);
+        if (ctc)
+          {
+             if (ctc->name.nicks)
+               title = ctc->name.nicks->data;
+             else if (ctc->name.display)
+               title = ctc->name.display;
+             else if ((ctc->name.lasts) && (ctc->name.firsts))
+               {
+                  snprintf(fbuf, sizeof(fbuf), "%s %s", ctc->name.firsts, ctc->name.lasts);
+                  title = fbuf;
+               }
+             else if (ctc->name.lasts)
+               title = ctc->name.lasts->data;
+             else
+               title = msg->from_to;
+          }
+        else
+          title = msg->from_to;
+        if (msg->flags & DATA_MESSAGE_SENT)
+          {
+             snprintf(tobuf, sizeof(tobuf), "To: %s", title);
+             title = tobuf;
+          }
         when = "???";
+        t = msg->timestamp;
+        tm = localtime(&t);
+        if (tm)
+          {
+             if (t > tnow)
+               {
+                  snprintf(tbuf, sizeof(tbuf), "Future");
+                  when = tbuf;
+               }
+             else if ((tnow - t) < (24 * 60 * 60))
+               {
+                  strftime(tbuf, sizeof(tbuf) - 1, "%H:%M:%S", tm);
+                  when = tbuf;
+               }
+             else if ((tnow - t) < (6 * 24 * 60 * 60))
+               {
+                  strftime(tbuf, sizeof(tbuf) - 1, "%a %H:%M", tm);
+                  when = tbuf;
+               }
+             else
+               {
+                  strftime(tbuf, sizeof(tbuf) - 1, "%d/%m/%y %H:%M", tm);
+                  when = tbuf;
+               }
+          }
+        icon = NULL;
+        if (ctc) icon = data_contact_photo_file_get(ctc);
         msgui = create_message
-          (win, title, when, 
-           find_contact_icon(NULL), 
+          (win, title, when, icon,
            (msg->flags & DATA_MESSAGE_SENT) ? 1 : 0,
            msg->body, 
            msg);
+        if (icon) free(icon);
         elm_box_pack_end(bx2, msgui);
         evas_object_show(msgui);
      }

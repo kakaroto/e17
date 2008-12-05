@@ -130,24 +130,25 @@ create_message(Evas_Object *win,
                Evas_Bool is_me, const char *text, void *handle)
 {
    Message_UI *mui;
-   Evas_Object *bb, *bx, *bx2, *bt, *ab, *hv;
+   Evas_Object *bb, *bx, *bx2, *bt, *ab, *hv, *ph;
    
    mui = calloc(1, sizeof(Message_UI));
    mui->win = win;
    mui->handle = handle;
    
    bb = elm_bubble_add(win);
+   evas_object_data_set(bb, "message_data", mui);
+   
+   if (is_me) elm_bubble_corner_set(bb, "top_right");
    elm_bubble_label_set(bb, title);
    elm_bubble_info_set(bb, date);
 
-   evas_object_data_set(bb, "message_data", mui);
+   ph = elm_photo_add(win);
+   elm_photo_size_set(ph, 40);
+   elm_photo_file_set(ph, icon);
+   elm_bubble_icon_set(bb, ph);
+   evas_object_show(ph);
    
-   if (icon)
-     {
-        // FIXME: need a photoframe widget
-//        elm_bubble_icon_set(bb, ic);
-//        evas_object_show(ic);
-     }
    evas_object_size_hint_weight_set(bb, 1.0, 0.0);
    evas_object_size_hint_align_set(bb, -1.0,-1.0);
    
