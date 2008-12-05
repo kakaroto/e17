@@ -32,7 +32,7 @@ def _event_mapping_register(int type, cls):
 
 def _event_mapping_unregister(int type):
     "Forget about previous registration of this event type."
-    del _event_type_mapping[type]
+    _event_type_mapping.pop(type)
 
 
 cdef int event_handler_cb(void *data, int type, void *event) with gil:

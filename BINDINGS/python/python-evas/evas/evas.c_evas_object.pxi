@@ -101,7 +101,7 @@ cdef _del_callback_from_list(Object obj, int type, func):
         raise ValueError("Callback %s was not registered with type %d" %
                          (func, type))
 
-    del lst[i]
+    lst.pop(i)
     if len(lst) == 0:
         obj._callbacks[type] = None
         return True

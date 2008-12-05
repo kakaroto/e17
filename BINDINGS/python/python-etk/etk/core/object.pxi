@@ -458,7 +458,7 @@ cdef public class Object [object PyEtk_Object, type PyEtk_Object_Type]:
             conn = conns[i]
             etk_signal_disconnect_by_code(signal_code, self.obj,
                                           <Etk_Callback>conn.cb, <void *>conn)
-            del conns[i]
+            conns.pop(i)
 
     def disconnect_by_id(self, SignalConnection id):
         if self.obj == NULL:
@@ -476,7 +476,7 @@ cdef public class Object [object PyEtk_Object, type PyEtk_Object_Type]:
         idx = conns.index(id)
         etk_signal_disconnect_by_code(id.signal.code, self.obj,
                                       <Etk_Callback>id.cb, <void *>id)
-        del conns[idx]
+        conns.pop(idx)
 
     def disconnect_all(self, s):
         cdef SignalConnection conn
@@ -496,7 +496,7 @@ cdef public class Object [object PyEtk_Object, type PyEtk_Object_Type]:
         conn = self._connections.get(signal_code, None)
         if conn is not None:
             conn.callbacks = None
-            del self._connections[signal_code]
+            self._connections.pop(signal_code)
 
     def block(self, s, func, *a, **ka):
         cdef SignalConnection conn

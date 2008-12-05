@@ -67,7 +67,7 @@ def _object_mapping_register(char *name, cls):
     object_mapping[name] = cls
 
 def _object_mapping_unregister(char *name):
-    del object_mapping[name]
+    object_mapping.pop(name)
 
 
 class EtkMeta(type):

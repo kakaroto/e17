@@ -53,7 +53,7 @@ cdef void signal_cb(void *data,
                     char *emission, char *source) with gil:
     cdef Edje self
     self = <Edje>evas.c_evas._Object_from_instance(<long>obj)
-    lst = <object>data
+    lst = tuple(<object>data)
     for func, args, kargs in lst:
         try:
             func(self, emission, source, *args, **kargs)
@@ -718,7 +718,8 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         if not callable(func):
             raise TypeError("func must be callable")
 
-        lst = self._signal_callbacks.setdefault((emission, source), [])
+        d = self._signal_callbacks.setdefault(emission, {})
+        lst = d.setdefault(source, [])
         if not lst:
             edje_object_signal_callback_add(self.obj, emission, source,
                                             signal_cb, <void*>lst)
@@ -726,17 +727,31 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
     def signal_callback_del(self, char *emission, char *source, func):
         "Remove the callable associated with given emission and source."
-        key = (emission, source)
-        lst = self._signal_callbacks[key]
+        try:
+            d = self._signal_callbacks[emission]
+            lst = d[source]
+        except KeyError:
+            raise ValueError(("function %s not associated with "
+                              "emission %r, source %r") %
+                             (func, emission, source))
+
         i = -1
         for i, (f, a, k) in enumerate(lst):
             if func == f:
                 break
-        del lst[i]
-        if not lst:
-            del self._signal_callbacks[key]
-            edje_object_signal_callback_del(self.obj, emission, source,
-                                            signal_cb)
+        else:
+            raise ValueError(("function %s not associated with "
+                              "emission %r, source %r") %
+                             (func, emission, source))
+
+        lst.pop(i)
+        if lst:
+            return
+        d.pop(source)
+        if d:
+            return
+        self._signal_callbacks.pop(emission)
+        edje_object_signal_callback_del(self.obj, emission, source, signal_cb)
 
     def signal_emit(self, char *emission, char *source):
         "Emit signal with B{emission} and B{source}"

@@ -24,7 +24,7 @@ cdef void _emotion_callback(void *data,
     cdef object event
     obj = <Emotion>evas.c_evas._Object_from_instance(<long>o)
     event = <object>data
-    lst = obj._emotion_callbacks[event]
+    lst = tuple(obj._emotion_callbacks[event])
     for func, args, kargs in lst:
         try:
             func(obj, *args, **kargs)
@@ -434,7 +434,14 @@ cdef class Emotion(evas.c_evas.Object):
             return self.meta_info_dict_get()
 
     def callback_add(self, char *event, func, *args, **kargs):
-        e = event
+        """Add callback to given emotion event.
+
+        Signature: C{function(object, *args, **kargs)}
+
+        @parm: B{event} event to listen, like "frame_decode".
+        @parm: B{func} callable to use.
+        """
+        e = intern(event)
         lst = self._emotion_callbacks.setdefault(e, [])
         if not lst:
             evas.c_evas.evas_object_smart_callback_add(self.obj, event,
@@ -443,16 +450,30 @@ cdef class Emotion(evas.c_evas.Object):
         lst.append((func, args, kargs))
 
     def callback_del(self, char *event, func):
-        lst = self._emotion_callbacks[event]
+        """Remove previously connected callback.
+
+        @parm: B{event}
+        @parm: B{func}
+        """
+        try:
+            lst = self._emotion_callbacks[event]
+        except KeyError, e:
+            raise ValueError("function %s not associated with event %r" %
+                             (func, event))
+
         i = -1
         for i, (f, a, k) in enumerate(lst):
             if func == f:
                 break
-        del lst[i]
-        if not lst:
-            del self._emotion_callbacks[event]
-            evas.c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                       _emotion_callback)
+        else:
+            raise ValueError("function %s not associated with event %r" %
+                             (func, event))
+        lst.pop(i)
+        if lst:
+            return
+        self._emotion_callbacks.pop(event)
+        evas.c_evas.evas_object_smart_callback_del(self.obj, event,
+                                                   _emotion_callback)
 
     def on_frame_decode_add(self, func, *args, **kargs):
         self.callback_add("frame_decode", func, *args, **kargs)

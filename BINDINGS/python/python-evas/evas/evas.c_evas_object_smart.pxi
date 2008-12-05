@@ -218,11 +218,7 @@ cdef void _smart_callback(void *data,
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     event = <object>data
     ei = <object>event_info
-    try:
-        lst = obj._smart_callbacks[event]
-    except KeyError, e:
-        traceback.print_exc()
-        return
+    lst = tuple(obj._smart_callbacks[event])
     for func, args, kargs in lst:
         try:
             func(obj, ei, *args, **kargs)
@@ -473,7 +469,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         if not callable(func):
             raise TypeError("func must be callable")
 
-        e = event
+        e = intern(event)
         lst = self._smart_callbacks.setdefault(e, [])
         if not lst:
             evas_object_smart_callback_add(self.obj, event, _smart_callback,
@@ -505,10 +501,11 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             raise ValueError("Callback %s was not registered with event %r" %
                              (func, e))
 
-        del lst[i]
-        if not lst:
-            del self._smart_callbacks[event]
-            evas_object_smart_callback_del(self.obj, event, _smart_callback)
+        lst.pop(i)
+        if lst:
+            return
+        self._smart_callbacks.pop(event)
+        evas_object_smart_callback_del(self.obj, event, _smart_callback)
 
     def callback_call(self, char *event, event_info=None):
         """Call any smart callbacks for event.

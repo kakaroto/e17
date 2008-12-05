@@ -143,7 +143,7 @@ def _object_mapping_register(char *name, cls):
 
 
 def _object_mapping_unregister(char *name):
-    del object_mapping[name]
+    object_mapping.pop(name)
 
 
 cdef Object Object_from_instance(Evas_Object *obj):
