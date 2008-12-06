@@ -39,9 +39,6 @@ static void _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void
 static void _places_cb_menu_post(void *data, E_Menu *menu);
 static void _places_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
-/* Local Structures */
-E_DBus_Connection *conn;
-
 /* Local Variables */
 static int uuid = 0;
 static E_Config_DD *conf_edd = NULL;
@@ -315,8 +312,8 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
      //~ }
    //~ e_gadcon_client_min_size_set(gcc, 16, 16);
    
-   e_gadcon_client_aspect_set(gcc, 200, 30 * eina_list_count(volumes) + 30);
-   e_gadcon_client_min_size_set(gcc, 200, 30 * eina_list_count(volumes) + 30);
+   e_gadcon_client_aspect_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
+   e_gadcon_client_min_size_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
 }
 
 /* Gadget/Module label */

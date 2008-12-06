@@ -42,7 +42,7 @@ static void _places_update_size(Evas_Object *obj, Volume *vol);
 // Edje callbacks
 void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
-//Hal callbacks
+// Hal callbacks
 void _places_mount_cb(void *user_data, void *method_return, DBusError *error);
 void _places_unmount_cb(void *user_data, void *method_return, DBusError *error);
 void _places_eject_cb(void *user_data, void *method_return, DBusError *error);
@@ -928,7 +928,7 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
    //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
    
-   _places_print_volume(v);  //TODO Remove this
+   //_places_print_volume(v);  //Use this for debug
    v->valid = 1;
    
    if (v->to_mount && !v->mounted)
