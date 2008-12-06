@@ -1,0 +1,88 @@
+# Italian translation for the places module.
+# This file is distributed under the same license as the places package.
+# DaveMDS <dave@gurumeditaiton.it>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Places\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-06 19:06+0100\n"
+"PO-Revision-Date: 2008-10-24 15:22+200\n"
+"Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:43
+msgid "Places Configuration"
+msgstr "Configurazione Places"
+
+#: src/e_mod_config.c:90
+msgid "General"
+msgstr "Impostazioni generali"
+
+#: src/e_mod_config.c:92
+msgid "Show header"
+msgstr "Mostra intestazione"
+
+#: src/e_mod_config.c:96
+msgid "Mount volumes on insert"
+msgstr "Monta i dispositivi collegati"
+
+#: src/e_mod_config.c:100
+msgid "Open filemanager on insert"
+msgstr "Sfoglia i dispositivi collegati"
+
+#: src/e_mod_config.c:105
+msgid "File manager (if blank uses Enlightenment)"
+msgstr ""
+
+#: src/e_mod_main.c:488
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: src/e_mod_places.c:164 src/e_mod_places.c:317
+msgid "Filesystem"
+msgstr "Filesystem"
+
+#: src/e_mod_places.c:169
+msgid "No Name"
+msgstr ""
+
+#: src/e_mod_places.c:241
+msgid "p  l  a  c  e  s"
+msgstr "r  i  s  o  r  s  e"
+
+#: src/e_mod_places.c:298
+msgid "Home"
+msgstr "Home"
+
+#: src/e_mod_places.c:304
+msgid "Desktop"
+msgstr "Scrivania"
+
+#: src/e_mod_places.c:311
+msgid "Trash"
+msgstr "Cestino"
+
+#: src/e_mod_places.c:380
+msgid "Places"
+msgstr "Risorse"
+
+#: src/e_mod_places.c:587
+msgid "free of"
+msgstr "liberi di"
+
+#: src/e_mod_places.c:593
+#, c-format
+msgid "%s Not Mounted"
+msgstr ""
+
+#: src/e_mod_places.c:610
+msgid "unmount"
+msgstr "smonta"
+
+#: src/e_mod_places.c:616
+msgid "eject"
+msgstr "espelli"

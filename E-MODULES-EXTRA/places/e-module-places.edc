@@ -1,0 +1,458 @@
+fonts
+{
+   font: "VeraBd.ttf" "VeraBd";
+   font: "Vera.ttf" "Vera";
+}
+
+images
+{
+   image: "eject.png" COMP;
+   image: "eject_bg.png" COMP;
+   image: "icon_hdd.png" COMP;
+   image: "icon_cdrom.png" COMP;
+   image: "icon_dvd.png" COMP;
+   image: "icon_ipod.png" COMP;
+   image: "icon_sdmmc.png" COMP;
+   image: "icon_ms.png" COMP;
+   image: "icon_ext3.png" COMP;
+   image: "icon_vfat.png" COMP;
+   image: "icon_hfs.png" COMP;
+}
+
+#define ICONS(_name) \
+   group { \
+      name: "modules/places/icon/"_name; \
+      parts { \
+         part { \
+            name: "image"; \
+            mouse_events: 0; \
+            type: IMAGE; \
+            description { \
+               state: "default" 0.0; \
+               image.normal: "icon_"_name".png"; \
+            } \
+         } \
+      } \
+   }
+
+collections
+{
+/****************************************************/
+/**  MODULE ICON  ***********************************/
+/****************************************************/
+   group { name: "icon";
+      max: 24 24;
+      parts {
+         part { name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               image.normal: "icon_hdd.png";
+            }
+         }
+      }
+   }
+/****************************************************/
+/**  VOLUMES ICON  **********************************/
+/****************************************************/
+   group { name: "modules/places/icon/generic";
+      parts {
+         part { name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               image.normal: "icon_hdd.png";
+            }
+         }
+      }
+   }
+   ICONS("cdrom");
+   ICONS("dvd");
+   ICONS("ipod");
+   ICONS("sdmmc");
+   ICONS("ext3");
+   ICONS("hfs");
+   ICONS("vfat");
+   ICONS("ms");
+/****************************************************/
+/**  GADGET HEADER  *********************************/
+/****************************************************/
+   group { name: "modules/places/header";
+      min: 90 30;
+      max: 384 30;
+      parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 100 100 100 150;
+            }
+         }
+         part { name: "title";
+            type: TEXT;
+            effect: GLOW;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               color2: 255 255 255 255;
+               color3: 255 255 255 255;
+               text {
+                  font: "VeraBd";
+                  size: 14;
+                  text: "P  l  a  c  e  s";
+               }
+            }
+         }
+      }
+   }
+/****************************************************/
+/**  GADGET VOLUME  *********************************/
+/****************************************************/
+   group { name: "modules/places/main";
+      min: 90 50;
+      max: 384 60;
+      script { /* this set the gauge value */
+         public message(Msg_Type:type, id, ...) {
+            if ((type == MSG_FLOAT) && (id == 1)) {
+               new Float:val;
+               val = getfarg(2);
+               set_state(PART:"gauge", "default", val);
+            }
+         }
+      }
+      parts {
+         part { name: "bg";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "separator";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               rel1.offset: 0 -1;
+               color: 0 0 0 255;
+            }
+         }
+         part { name: "event";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               color:  0 0 0 0;
+            }
+         }
+         part { name: "icon_events";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel2.offset: 45 45;
+               color: 255 0 0 0;
+            }
+         }
+         part { name: "icon";
+            mouse_events: 0;
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0 0;
+               rel2.relative: 0 0;
+               rel1.offset: 5 5;
+               rel2.offset: 45 45;
+            }
+         }
+         part { name: "icon_ghost_clip";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0 0;
+               rel2.relative: 0 0;
+               rel1.offset: -10 -10;
+               rel2.offset: 60 60;
+               color: 255 255 255 200;
+            }
+            description { state: "big" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+         part { name: "icon_ghost";
+            mouse_events: 0;
+            type: SWALLOW;
+            clip_to: "icon_ghost_clip";
+            description { state: "default" 0.0;
+               rel1.relative: 0 0;
+               rel2.relative: 0 0;
+               rel1.offset: 5 5;
+               rel2.offset: 45 45;
+            }
+            description { state: "big" 0.0;
+               rel1.relative: 0 0;
+               rel2.relative: 0 0;
+               rel1.offset: -10 -10;
+               rel2.offset: 60 60;
+            }
+         }
+         part { name: "gauge_bg";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "volume_label";
+               rel1.relative: 0.0 1.0;
+               rel2.to_x: "eject_bg";
+               rel2.relative: -0.1 0.65;
+               color: 0 0 0 150;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               rel2.relative: -0.1 0.40;
+               visible: 1;
+            }
+         }
+         part { name: "gauge";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "gauge_bg";
+               rel1.offset: 1 1;
+               rel2.to: "gauge_bg";
+               rel2.offset: -2 -2;
+               rel2.relative: 0.0 1.0;
+               color: 0 200 0 200;
+            }
+            description { state: "default" 0.1;
+               inherit: "default" 0.0;
+               rel2.relative: 0.1 1.0;
+            }
+            description { state: "default" 0.2;
+               inherit: "default" 0.0;
+               rel2.relative: 0.2 1.0;
+            }
+            description { state: "default" 0.3;
+               inherit: "default" 0.0;
+               rel2.relative: 0.3 1.0;
+            }
+            description { state: "default" 0.4;
+               inherit: "default" 0.0;
+               rel2.relative: 0.4 1.0;
+            }
+            description { state: "default" 0.5;
+               inherit: "default" 0.0;
+               rel2.relative: 0.5 1.0;
+            }
+            description { state: "default" 0.6;
+               inherit: "default" 0.0;
+               rel2.relative: 0.6 1.0;
+            }
+            description { state: "default" 0.7;
+               inherit: "default" 0.0;
+               rel2.relative: 0.7 1.0;
+            }
+            description { state: "default" 0.8;
+               inherit: "default" 0.0;
+               rel2.relative: 0.8 1.0;
+               color: 200 0 0 200;
+            }
+            description { state: "default" 0.9;
+               inherit: "default" 0.0;
+               rel2.relative: 0.9 1.0;
+               color: 200 0 0 200;
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               rel2.relative: 1.0 1.0;
+               color: 200 0 0 200;
+            }
+         }
+         part { name: "volume_label";
+            mouse_events: 0;
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.25 0.1;
+               rel2.relative: 0.98 0.40;
+               rel2.to: "bg";
+               color: 255 255 255 255;
+               color3: 0 0 0 60;
+               text {
+                  font: "VeraBd";
+                  size: 10;
+                  text: "";
+                  align: 0.0 0.5;
+                  
+               }
+            }
+         }
+         part { name: "size_label";
+            mouse_events: 0;
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel1.to: "gauge_bg";
+               rel2.relative: 0.98 1.0;
+               rel2.to: "bg";
+               color: 255 255 255 255;
+               color3: 0 0 0 60;
+               text {
+                  font: "Vera";
+                  size: 10;
+                  text: "";
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "percent_label";
+            mouse_events: 0;
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.to: "gauge_bg";
+               rel2.to: "gauge_bg";
+               color: 255 255 255 255;
+               color3: 0 0 0 60;
+               text {
+                  font: "Vera";
+                  text: "10%";
+                  fit: 0 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part { name: "eject_bg";
+            mouse_events: 0;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "eject_icon";
+               rel2.to: "eject_icon";
+               image {
+                  normal: "eject_bg.png";
+                  border: 5 5 5 5;
+               }
+            }
+            description { state: "moved" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: -70 0;
+               color: 255 255 255 180;
+            }
+         }
+         part { name: "eject_label";
+            mouse_events: 0;
+            type: TEXT;
+            effect: NONE;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "eject_bg";
+               rel2.to: "eject_bg";
+               text {
+                  font: "VeraBD";
+                  text: "unmount";
+                  size: 12;
+                  align: 0.2 0.5;
+               }
+            }
+            description { state: "moved" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "eject_icon";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -30 10;
+               rel2.offset: 0 -10;
+               image {normal: "eject.png";}
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+/****************************************************/
+/**  INTERNAL PROGRAMS  *****************************/
+/****************************************************/
+         program { name: "pulse";
+            signal: "mouse,in";
+            source: "icon_events";
+            action: STATE_SET "big" 0.0;
+            transition: DECELERATE 0.5;
+            target: "icon_ghost_clip";
+            target: "icon_ghost";
+            after: "reset_pulse";
+            after: "pulse";
+         }
+         program { name: "icon_mouse_out";
+            signal: "mouse,out";
+            source: "icon_events";
+            action: ACTION_STOP;
+            target: "pulse";
+            after: "reset_pulse";
+         }
+         program { name: "reset_pulse";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.0;
+            target: "icon_ghost_clip";
+            target: "icon_ghost";
+         }
+         program { name: "eject_mouse_in";
+            signal: "mouse,in";
+            source: "eject_icon";
+            action: STATE_SET "moved" 0.0;
+            transition: SINUSOIDAL 0.4;
+            target: "eject_bg";
+            target: "eject_label";
+         }
+         program { name: "eject_mouse_out";
+            signal: "mouse,out";
+            source: "eject_icon";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.4;
+            target: "eject_bg";
+            target: "eject_label";
+         }
+/****************************************************/
+/**  SIGNALS EMITTED TO THE MODULE  *****************/
+/****************************************************/
+         program { name: "icon_activated";
+            signal: "mouse,down,1";
+            source: "icon_events";
+            action: SIGNAL_EMIT "icon,activated" "places";
+         }
+         program { name: "eject_activated";
+            signal: "mouse,down,1";
+            source: "eject_icon";
+            action: SIGNAL_EMIT "eject,activated" "places";
+         }
+/****************************************************/
+/**  SIGNALS RECEIVED FROM THE MODULE  **************/
+/****************************************************/
+         program { name: "hide_gauge";
+            signal: "gauge,hide";
+            source: "places";
+            action: STATE_SET "hidden" 0.0;
+            target: "gauge_bg";
+         }
+         program { name: "set_eject_hidden";
+            signal: "icon,eject,hide";
+            source: "places";
+            action: STATE_SET "default" 0.0;
+            target: "eject_icon";
+         }
+         program { name: "set_eject_visible";
+            signal: "icon,eject,show";
+            source: "places";
+            action: STATE_SET "visible" 0.0;
+            target: "eject_icon";
+         }
+      }
+   }
+}
