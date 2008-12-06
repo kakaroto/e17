@@ -168,42 +168,6 @@ body
     color: #646464;
 }
 
-/*
-#header .submenu ul.current
-{
-    display: block;
-    float: right;
-    clear: both;
-    margin-right: -17px;
-}
-
-#header .submenu li
-{
-    text-align: center;
-}
-
-#header .submenu a
-{
-    display: block;
-    margin-top: 39px;
-    line-height: 34px;
-    padding-left: 17px;
-    padding-right: 17px;
-    text-decoration: none;
-    color: #646464;
-}
-
-#header .submenu a:hover
-{
-    color: #000000;
-}
-
-#header .submenu li.current a
-{
-    font-weight: bold;
-}
-*/
-
 #footer
 {
     clear: both;
