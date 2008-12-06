@@ -1,7 +1,7 @@
 #include "common.h"
 
 // this is a really simple data store for messages. it's a directory in ~/ with
-// 1 message per file in .txt format
+// 1 message per file in text formats
 
 typedef struct _Callback Callback;
 

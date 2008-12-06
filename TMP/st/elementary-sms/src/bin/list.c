@@ -1,5 +1,88 @@
 #include "common.h"
 
+static Evas_Object *
+_create_message(Evas_Object *win, Data_Message *msg)
+{
+   Data_Contact *ctc;
+   Evas_Object *msgui;
+   const char *title;
+   const char *when;
+   char *icon;
+   time_t t, tnow;
+   struct tm *tm, tmnow;
+   char tbuf[256], fbuf[512], tobuf[512];
+   
+   tnow = time(NULL);
+   tm = localtime(&tnow);
+   memcpy(&tmnow, tm, sizeof(struct tm));
+   
+   title = "???";
+   ctc = data_contact_by_tel_find(msg->from_to);
+   if (ctc)
+     {
+        if (ctc->name.nicks)
+          title = ctc->name.nicks->data;
+        else if (ctc->name.display)
+          title = ctc->name.display;
+        else if ((ctc->name.lasts) && (ctc->name.firsts))
+          {
+             snprintf(fbuf, sizeof(fbuf), "%s %s", ctc->name.firsts, ctc->name.lasts);
+             title = fbuf;
+          }
+        else if (ctc->name.lasts)
+          title = ctc->name.lasts->data;
+        else
+          title = msg->from_to;
+     }
+   else
+     title = msg->from_to;
+   if (msg->flags & DATA_MESSAGE_SENT)
+     {
+        snprintf(tobuf, sizeof(tobuf), "To: %s", title);
+        title = tobuf;
+     }
+   when = "???";
+   t = msg->timestamp;
+   tm = localtime(&t);
+   if (t > tnow)
+     {
+        snprintf(tbuf, sizeof(tbuf), "Future");
+        when = tbuf;
+     }
+   else if ((tnow - t) < (24 * 60 * 60))
+     {
+        if (tmnow.tm_yday != tm->tm_yday)
+          {
+             strftime(tbuf, sizeof(tbuf) - 1, "Yesterday %H:%M", tm);
+             when = tbuf;
+          }
+        else
+          {
+             strftime(tbuf, sizeof(tbuf) - 1, "%H:%M:%S", tm);
+             when = tbuf;
+          }
+     }
+   else if ((tnow - t) < (6 * 24 * 60 * 60))
+     {
+        strftime(tbuf, sizeof(tbuf) - 1, "%a %H:%M", tm);
+        when = tbuf;
+     }
+   else
+     {
+        strftime(tbuf, sizeof(tbuf) - 1, "%d/%m/%y %H:%M", tm);
+        when = tbuf;
+     }
+   icon = NULL;
+   if (ctc) icon = data_contact_photo_file_get(ctc);
+   msgui = create_message
+     (win, title, when, icon,
+      (msg->flags & DATA_MESSAGE_SENT) ? 1 : 0,
+      msg->body, 
+      msg);
+   if (icon) free(icon);
+   return msgui;
+}
+
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 {
@@ -21,13 +104,21 @@ on_chats(void *data, Evas_Object *obj, void *event_info)
 {
 }
 
+static int
+_sort_msg_newset(const void *data1, const void *data2)
+{
+   const Data_Message *msg1 = data1;
+   const Data_Message *msg2 = data2;
+   if (msg1->timestamp > msg2->timestamp) return -1;
+   else if (msg1->timestamp < msg2->timestamp) return 1;
+   return 0;
+}
+
 void
 create_main_win(void)
 {
    Evas_Object *win, *bg, *bx, *bt, *sc, *bx2;
-   Eina_List *l;
-   time_t tnow;
-   struct tm *tmnow;
+   Eina_List *l, *mlist = NULL;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
@@ -88,82 +179,22 @@ create_main_win(void)
    evas_object_show(bx2);
 
    tzset();
-   tnow = time(NULL);
-   tmnow = localtime(&tnow);
+
    for (l = (Eina_List *)data_message_all_list(); l; l = l->next)
+     mlist = eina_list_append(mlist, l->data);
+
+   // sort newest first
+   mlist = eina_list_sort(mlist, eina_list_count(mlist), _sort_msg_newset);
+   
+   for (l = mlist; l; l = l->next)
      {
         Data_Message *msg = l->data;
-        Data_Contact *ctc;
-        Evas_Object *msgui;
-        const char *title;
-        const char *when;
-        char *icon;
-        time_t t;
-        struct tm *tm;
-        char tbuf[256], fbuf[512], tobuf[512];
-        
-        title = "???";
-        ctc = data_contact_by_tel_find(msg->from_to);
-        if (ctc)
-          {
-             if (ctc->name.nicks)
-               title = ctc->name.nicks->data;
-             else if (ctc->name.display)
-               title = ctc->name.display;
-             else if ((ctc->name.lasts) && (ctc->name.firsts))
-               {
-                  snprintf(fbuf, sizeof(fbuf), "%s %s", ctc->name.firsts, ctc->name.lasts);
-                  title = fbuf;
-               }
-             else if (ctc->name.lasts)
-               title = ctc->name.lasts->data;
-             else
-               title = msg->from_to;
-          }
-        else
-          title = msg->from_to;
-        if (msg->flags & DATA_MESSAGE_SENT)
-          {
-             snprintf(tobuf, sizeof(tobuf), "To: %s", title);
-             title = tobuf;
-          }
-        when = "???";
-        t = msg->timestamp;
-        tm = localtime(&t);
-        if (tm)
-          {
-             if (t > tnow)
-               {
-                  snprintf(tbuf, sizeof(tbuf), "Future");
-                  when = tbuf;
-               }
-             else if ((tnow - t) < (24 * 60 * 60))
-               {
-                  strftime(tbuf, sizeof(tbuf) - 1, "%H:%M:%S", tm);
-                  when = tbuf;
-               }
-             else if ((tnow - t) < (6 * 24 * 60 * 60))
-               {
-                  strftime(tbuf, sizeof(tbuf) - 1, "%a %H:%M", tm);
-                  when = tbuf;
-               }
-             else
-               {
-                  strftime(tbuf, sizeof(tbuf) - 1, "%d/%m/%y %H:%M", tm);
-                  when = tbuf;
-               }
-          }
-        icon = NULL;
-        if (ctc) icon = data_contact_photo_file_get(ctc);
-        msgui = create_message
-          (win, title, when, icon,
-           (msg->flags & DATA_MESSAGE_SENT) ? 1 : 0,
-           msg->body, 
-           msg);
-        if (icon) free(icon);
+        Evas_Object *msgui = _create_message(win, msg);
         elm_box_pack_end(bx2, msgui);
         evas_object_show(msgui);
      }
+   
+   eina_list_free(mlist);
    
    evas_object_show(bx);
    
