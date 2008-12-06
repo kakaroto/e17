@@ -226,12 +226,13 @@ Eprintf(const char *fmt, ...)
 	tv1 = tv;
 
 	nreq = (disp) ? NextRequest(disp) : 0;
-	fprintf(stdout, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(),
-		nreq, tv1.tv_sec, tv1.tv_usec, tvd.tv_sec, tvd.tv_usec);
+	fprintf(stdout, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(), nreq,
+		(long)tv1.tv_sec, tv1.tv_usec, (long)tvd.tv_sec, tvd.tv_usec);
      }
    else
      {
-	fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec, tv.tv_usec);
+	fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(),
+		(long)tv.tv_sec, tv.tv_usec);
      }
 
    va_start(args, fmt);
