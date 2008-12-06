@@ -114,11 +114,13 @@ _sort_msg_newset(const void *data1, const void *data2)
    return 0;
 }
 
+
 void
 create_main_win(void)
 {
    Evas_Object *win, *bg, *bx, *bt, *sc, *bx2;
    Eina_List *l, *mlist = NULL;
+   int from, num, i;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
@@ -181,17 +183,41 @@ create_main_win(void)
    tzset();
 
    for (l = (Eina_List *)data_message_all_list(); l; l = l->next)
-     mlist = eina_list_append(mlist, l->data);
+     {
+        // FIXME: use filter
+        mlist = eina_list_append(mlist, l->data);
+     }
 
    // sort newest first
    mlist = eina_list_sort(mlist, eina_list_count(mlist), _sort_msg_newset);
+   // FIXME: from and num are inputs
+   from = 0; // from message # 0
+   num = 50; // 50 messages max;
    
-   for (l = mlist; l; l = l->next)
+   for (l = mlist, i = 0; l; l = l->next, i++)
      {
         Data_Message *msg = l->data;
-        Evas_Object *msgui = _create_message(win, msg);
-        elm_box_pack_end(bx2, msgui);
-        evas_object_show(msgui);
+        if (i >= from)
+          {
+             if (i == from)
+               {
+                  if (l->prev)
+                    {
+                       // FIXME: add a "newer" button
+                    }
+               }
+             Evas_Object *msgui = _create_message(win, msg);
+             elm_box_pack_end(bx2, msgui);
+             evas_object_show(msgui);
+          }
+        if (i >= (from + num - 1))
+          {
+             if (l->next)
+               {
+                  // FIXME: add a "older" button
+               }
+             break;
+          }
      }
    
    eina_list_free(mlist);
