@@ -28,11 +28,11 @@ msgstr "Monta i dispositivi collegati"
 
 #: src/e_mod_config.c:100
 msgid "Open filemanager on insert"
-msgstr "Sfoglia i dispositivi collegati"
+msgstr "Apri i dispositivi collegati"
 
 #: src/e_mod_config.c:105
 msgid "File manager (if blank uses Enlightenment)"
-msgstr ""
+msgstr "File manager (se vuoto si userà Enlightenment)"
 
 #: src/e_mod_main.c:485
 msgid "Configuration"
@@ -44,7 +44,7 @@ msgstr "Filesystem"
 
 #: src/e_mod_places.c:169
 msgid "No Name"
-msgstr ""
+msgstr "Sconosciuto"
 
 #: src/e_mod_places.c:298
 msgid "Home"
@@ -52,7 +52,7 @@ msgstr "Home"
 
 #: src/e_mod_places.c:304
 msgid "Desktop"
-msgstr "Scrivania"
+msgstr "Desktop"
 
 #: src/e_mod_places.c:311
 msgid "Trash"
@@ -69,7 +69,7 @@ msgstr "liberi di"
 #: src/e_mod_places.c:593
 #, c-format
 msgid "%s Not Mounted"
-msgstr ""
+msgstr "%s non è montato"
 
 #: src/e_mod_places.c:610
 msgid "unmount"

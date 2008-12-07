@@ -36,11 +36,11 @@ msgstr "Lingua"
 
 #: src/tools/etk_prefs/etk_prefs.c:84
 msgid "User Preferences"
-msgstr "Preferenze utente"
+msgstr "Impostazioni utente"
 
 #: src/tools/etk_prefs/etk_prefs.c:85
 msgid "General"
-msgstr "Generale"
+msgstr "Impostazioni generali"
 
 #: src/lib/etk_message_dialog.c:109
 msgid "Warning"

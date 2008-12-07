@@ -4,6 +4,6 @@ Type=Link
 Name=Places
 Icon=e-module-places
 Comment=<title>Places module:</title><br>This module manage the volumes device attached to the system.
-Comment[it]=<title>Places module:</title><br>Questo module gestisce i dischi connessi al sistema
+Comment[it]=<title>Modulo Places</title><br>Questo modulo gestisce le unità connesse al sistema.
 
 X-Enlightenment-ModuleType=system
