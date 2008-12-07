@@ -122,7 +122,7 @@ class EvasObject
     Evas_Object* obj() const { return o; };
     EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
     
-    // event signals
+    /* event signals */
     sigc::signal <bool, const EvasMouseInEvent&> signalHandleMouseIn;
     sigc::signal <bool, const EvasMouseOutEvent&> signalHandleMouseOut;
     sigc::signal <bool, const EvasMouseDownEvent&> signalHandleMouseDown;
@@ -190,24 +190,6 @@ class EvasObject
     /* Focus */
     virtual void setFocus( bool focus );
     virtual bool hasFocus() const;
-
-    /* Events */
-    /*virtual bool handleMouseIn( const EvasMouseInEvent& );
-    virtual bool handleMouseOut( const EvasMouseOutEvent& );
-    virtual bool handleMouseDown( const EvasMouseDownEvent& );
-    virtual bool handleMouseUp( const EvasMouseUpEvent& );
-    virtual bool handleMouseMove( const EvasMouseMoveEvent& );
-    virtual bool handleMouseWheel( const EvasMouseWheelEvent& );
-    virtual bool handleFree();
-    virtual bool handleKeyDown( const EvasKeyDownEvent& );
-    virtual bool handleKeyUp( const EvasKeyUpEvent& );
-    virtual bool handleFocusIn();
-    virtual bool handleFocusOut();
-    virtual bool handleShow();
-    virtual bool handleHide();
-    virtual bool handleMove();
-    virtual bool handleResize();
-    virtual bool handleRestack();*/
 
   private:
     static EvasObject* objectLink( Evas_Object* evas_object = 0 );
