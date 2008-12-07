@@ -226,9 +226,8 @@ drawer_source_list(Drawer_Source *s)
 /*    XXX: needs to be switched off via conf */
    if (min > 10)
      _launcher_sources_rating_discount(inst, min);
-   /* XXX: commenting the sorting line stops the segfaulting */
-   return eina_list_sort(inst->items, eina_list_count(inst->items),
-	 _launcher_cb_sort_rating);
+   inst->items = eina_list_sort(inst->items, eina_list_count(inst->items),
+                                _launcher_cb_sort_rating);
    return inst->items;
 }
 
