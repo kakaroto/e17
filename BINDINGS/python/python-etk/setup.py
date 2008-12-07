@@ -34,7 +34,7 @@ etkmodule = Extension('etk.c_etk',
                        sources=['etk/etk.c_etk.pyx'],
                        depends=glob('include/etk/*.pxd') + \
                           glob('etk/core/*.pxi'),
-                       **pkgconfig('"etk >= 0.1.0.042"'))
+                       **pkgconfig('"etk >= 0.1.0.042" ''"eina-0 >= 0.0.1"'))
 
 headers = []
 
