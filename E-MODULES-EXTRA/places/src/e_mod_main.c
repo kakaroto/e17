@@ -57,9 +57,7 @@ static const E_Gadcon_Client_Class _gc_class =
 
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Places"};
 
-/*
- * Module Functions
-*/
+/* Module Functions */
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
@@ -74,16 +72,12 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module-places.edj", m->dir);
 
    /* Display this Modules config info in the main Config Panel */
-
-   /* starts with a category */
    e_configure_registry_category_add("extensions", 80, "extensions", 
                                      NULL, "enlightenment/extensions");
-   /* add right-side item */
    e_configure_registry_item_add("extensions/places", 110, "Places", 
                                  NULL, buf, e_int_config_places_module);
 
    /* Define EET Data Storage */
-
    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    #undef T
    #undef D
@@ -102,13 +96,12 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, show_header, UCHAR);
    E_CONFIG_VAL(D, T, auto_mount, UCHAR); 
    E_CONFIG_VAL(D, T, auto_open, UCHAR); 
-   E_CONFIG_LIST(D, T, conf_items, conf_item_edd); /* the list */
+   E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
 
    /* Tell E to find any existing module data. First run ? */
    places_conf = e_config_domain_load("module.places", conf_edd);
    if (places_conf) 
      {
-        /* Check config version */
         if ((places_conf->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
           {
              /* config too old */
@@ -127,7 +120,6 @@ e_modapi_init(E_Module *m)
 			     "You can re-configure things now to your<br>"
 			     "liking. Sorry for the inconvenience.<br>");
           }
-
         /* Ardvarks */
         else if (places_conf->version > MOD_CONFIG_FILE_VERSION) 
           {
@@ -151,39 +143,25 @@ e_modapi_init(E_Module *m)
     * then create a default one */
    if (!places_conf) _places_conf_new();
 
-   /* create a link from the modules config to the module
-    * this is not written */
    places_conf->module = m;
-
-   /* Tell any gadget containers (shelves, etc) that we provide a module
-    * for the user to enjoy */
    e_gadcon_provider_register(&_gc_class);
-
    places_init();
    
    E_Int_Menu_Augmentation *maug;
    maug = e_int_menus_menu_augmentation_add("main/1",
                                             places_augmentation,
                                             NULL, NULL, NULL);
-   
-   
-   /* Give E the module */
+
    return m;
 }
 
-/*
- * Function to unload the module
- */
+
 EAPI int 
 e_modapi_shutdown(E_Module *m) 
 {
    places_shutdown();
 
-   /* Unregister the config dialog from the main panel */
    e_configure_registry_item_del("extensions/places");
-
-   /* Remove the config panel category if we can. E will tell us.
-    category stays if other items using it */
    e_configure_registry_category_del("extensions");
 
    /* Kill the config dialog */
@@ -196,15 +174,11 @@ e_modapi_shutdown(E_Module *m)
 
    _places_conf_free();
 
-   /* Clean EET */
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
    return 1;
 }
 
-/*
- * Function to Save the modules config
- */ 
 EAPI int 
 e_modapi_save(E_Module *m) 
 {
@@ -212,42 +186,32 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-/* Local Functions */
-
-/* Called when Gadget_Container says go */
+/* Gadcon Functions */
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
    Instance *inst = NULL;
 
-   /* New visual instance, any config ? */
    inst = E_NEW(Instance, 1);
    inst->conf_item = _places_conf_item_get(id);
 
-   /* create on-screen object */
    inst->o_box = e_box_add(gc->evas);
    e_box_homogenous_set(inst->o_box, 0);
    e_box_orientation_set(inst->o_box, 0);
    e_box_align_set(inst->o_box, 0.5, 0.0);
-   
-   /* Start loading our module on screen via container */
+
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_box);
    inst->gcc->data = inst;
 
-   /* hook a mouse down. we want/have a popup menu, right ? */
    evas_object_event_callback_add(inst->o_box, EVAS_CALLBACK_MOUSE_DOWN, 
                                   _places_cb_mouse_down, inst);
 
-   /* add to list of running instances so we can cleanup later */
    instances = eina_list_append(instances, inst);
-   
    places_fill_box(inst->o_box);
 
-   /* return the Gadget_Container Client */
    return inst->gcc;
 }
 
-/* Called when Gadget_Container says stop */
 static void 
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
@@ -256,7 +220,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (!(inst = gcc->data)) return;
    instances = eina_list_remove(instances, inst);
 
-   /* kill popup menu */
    if (inst->menu) 
      {
         e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
@@ -264,10 +227,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
         inst->menu = NULL;
      }
 
-   /* delete the visual */
    if (inst->o_box) 
      {
-        /* remove mouse down callback hook */
         evas_object_event_callback_del(inst->o_box, EVAS_CALLBACK_MOUSE_DOWN, 
                                        _places_cb_mouse_down);
         places_empty_box(inst->o_box);
@@ -277,7 +238,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    E_FREE(inst);
 }
 
-/* For for when container says we are changing position */
 static void 
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
@@ -316,14 +276,12 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    e_gadcon_client_min_size_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
 }
 
-/* Gadget/Module label */
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
    return "Places";
 }
 
-/* so E can keep a unique instance per-container */
 static const char *
 _gc_id_new(E_Gadcon_Client_Class *client_class) 
 {
@@ -333,19 +291,17 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
    return ci->id;
 }
 
-/* gets called when container says remove this item */
 static void 
 _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id) 
 {
-   Config_Item *ci = NULL;
+   // Config_Item *ci = NULL;
 
-   if (!(ci = _places_conf_item_get(id))) return;
+   // if (!(ci = _places_conf_item_get(id))) return;
 
-   /* cleanup !! */
-   if (ci->id) eina_stringshare_del(ci->id);
+   // if (ci->id) eina_stringshare_del(ci->id);
 
-   places_conf->conf_items = eina_list_remove(places_conf->conf_items, ci);
-   E_FREE(ci);
+   // places_conf->conf_items = eina_list_remove(places_conf->conf_items, ci);
+   // E_FREE(ci);
 }
 
 static Evas_Object *
@@ -354,19 +310,13 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    Evas_Object *o = NULL;
    char buf[4096];
 
-   /* theme */
    snprintf(buf, sizeof(buf), "%s/e-module-places.edj", places_conf->module->dir);
-
-   /* create icon object */
    o = edje_object_add(evas);
-
-   /* load icon from theme */
    edje_object_file_set(o, buf, "icon");
-
    return o;
 }
 
-/* new module needs a new config :), or config too old and we need one anyway */
+/* Conf functions */
 static void 
 _places_conf_new(void) 
 {
@@ -403,7 +353,6 @@ _places_conf_new(void)
 static void 
 _places_conf_free(void) 
 {
-   /* cleanup any stringshares here */
    while (places_conf->conf_items) 
      {
         Config_Item *ci = NULL;
@@ -412,7 +361,6 @@ _places_conf_free(void)
         places_conf->conf_items = 
           eina_list_remove_list(places_conf->conf_items, 
                                 places_conf->conf_items);
-        /* EPA */
         if (ci->id) eina_stringshare_del(ci->id);
         E_FREE(ci);
      }
@@ -421,7 +369,6 @@ _places_conf_free(void)
    E_FREE(places_conf);
 }
 
-/* timer for the config oops dialog */
 static int 
 _places_conf_timer(void *data) 
 {
@@ -429,8 +376,6 @@ _places_conf_timer(void *data)
    return 0;
 }
 
-/* function to search for any Config_Item struct for this Item
- * create if needed */
 static Config_Item *
 _places_conf_item_get(const char *id) 
 {
@@ -459,7 +404,6 @@ _places_conf_item_get(const char *id)
    return ci;
 }
 
-/* Pants On */
 static void 
 _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
@@ -500,7 +444,6 @@ _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
      }
 }
 
-/* popup menu closing, cleanup */
 static void 
 _places_cb_menu_post(void *data, E_Menu *menu) 
 {
@@ -512,7 +455,6 @@ _places_cb_menu_post(void *data, E_Menu *menu)
    inst->menu = NULL;
 }
 
-/* call configure from popup */
 static void 
 _places_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
 {
