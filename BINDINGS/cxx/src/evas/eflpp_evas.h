@@ -123,22 +123,22 @@ class EvasObject
     EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
     
     /* event signals */
-    sigc::signal <bool, const EvasMouseInEvent&> signalHandleMouseIn;
-    sigc::signal <bool, const EvasMouseOutEvent&> signalHandleMouseOut;
-    sigc::signal <bool, const EvasMouseDownEvent&> signalHandleMouseDown;
-    sigc::signal <bool, const EvasMouseUpEvent&> signalHandleMouseUp;
-    sigc::signal <bool, const EvasMouseMoveEvent&> signalHandleMouseMove;
-    sigc::signal <bool, const EvasMouseWheelEvent&> signalHandleMouseWheel;
-    sigc::signal <bool> signalHandleFree;
-    sigc::signal <bool, const EvasKeyDownEvent&> signalHandleKeyDown;
-    sigc::signal <bool, const EvasKeyUpEvent&> signalHandleKeyUp;
-    sigc::signal <bool> signalHandleFocusIn;
-    sigc::signal <bool> signalHandleFocusOut;
-    sigc::signal <bool> signalHandleShow;
-    sigc::signal <bool> signalHandleHide;
-    sigc::signal <bool> signalHandleMove;
-    sigc::signal <bool> signalHandleResize;
-    sigc::signal <bool> signalHandleRestack;
+    sigc::signal <void, const EvasMouseInEvent&> signalHandleMouseIn;
+    sigc::signal <void, const EvasMouseOutEvent&> signalHandleMouseOut;
+    sigc::signal <void, const EvasMouseDownEvent&> signalHandleMouseDown;
+    sigc::signal <void, const EvasMouseUpEvent&> signalHandleMouseUp;
+    sigc::signal <void, const EvasMouseMoveEvent&> signalHandleMouseMove;
+    sigc::signal <void, const EvasMouseWheelEvent&> signalHandleMouseWheel;
+    sigc::signal <void> signalHandleFree;
+    sigc::signal <void, const EvasKeyDownEvent&> signalHandleKeyDown;
+    sigc::signal <void, const EvasKeyUpEvent&> signalHandleKeyUp;
+    sigc::signal <void> signalHandleFocusIn;
+    sigc::signal <void> signalHandleFocusOut;
+    sigc::signal <void> signalHandleShow;
+    sigc::signal <void> signalHandleHide;
+    sigc::signal <void> signalHandleMove;
+    sigc::signal <void> signalHandleResize;
+    sigc::signal <void> signalHandleRestack;
 
     /* Name */
     const char* name() const;
