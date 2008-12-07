@@ -26,7 +26,7 @@ main(int argc, char **argv)
    char *file;
    char buf[4096];
 
-   for (i=1; i < argc-1; ++i)
+   for (i=1; i < argc; ++i)
      {
         if (!strcmp(argv[i], "-h"))
              _help();
@@ -162,6 +162,7 @@ _help(void)
 	  "to give a fill path to any file to be used as the base\n"
 	  "filename of the IPC socket to be used between exquisite\n"
 	  "and exquisitie-write for communication.\n"
+          "\n"
           "EXQUISITE_IPC_METHOD can be used as an alternative to\n"
           "the -ipc option.  The same method names are used.\n"
 	  );
