@@ -404,7 +404,7 @@ bool EvasObject::hasFocus() const
     return evas_object_focus_get( o );
 }
 
-bool EvasObject::handleMouseIn( const EvasMouseInEvent& e )
+/*bool EvasObject::handleMouseIn( const EvasMouseInEvent& e )
 {
     Dout( dc::notice, *this << " handleMouseIn" );
     return false;
@@ -498,7 +498,7 @@ bool EvasObject::handleRestack()
 {
     Dout( dc::notice, *this << " handleRestack" );
     return false;
-}
+}*/
 
 EvasObject* EvasObject::objectLink( Evas_Object* evas_object )
 {
@@ -535,79 +535,79 @@ void EvasObject::dispatcher( void *data, Evas *evas, Evas_Object *evas_object, v
         case EVAS_CALLBACK_MOUSE_IN:
         {
             const EvasMouseInEvent e( static_cast<Evas_Event_Mouse_In*>( event_info ) );
-            object->handleMouseIn( e );
+            object->signalHandleMouseIn.emit( e );
             break;
         }
         case EVAS_CALLBACK_MOUSE_OUT:
         {
             const EvasMouseOutEvent e( static_cast<Evas_Event_Mouse_Out*>( event_info ) );
-            object->handleMouseOut( e );
+            object->signalHandleMouseOut.emit( e );
             break;
         }
         case EVAS_CALLBACK_MOUSE_DOWN:
         {
             const EvasMouseDownEvent e( static_cast<Evas_Event_Mouse_Down*>( event_info ) );
-            object->handleMouseDown( e );
+            object->signalHandleMouseDown.emit( e );
             break;
         }
         case EVAS_CALLBACK_MOUSE_UP:
         {
             const EvasMouseUpEvent e( static_cast<Evas_Event_Mouse_Up*>( event_info ) );
-            object->handleMouseUp( e );
+            object->signalHandleMouseUp.emit( e );
             break;
         }
         case EVAS_CALLBACK_MOUSE_MOVE:
         {
             const EvasMouseMoveEvent e( static_cast<Evas_Event_Mouse_Move*>( event_info ) );
-            object->handleMouseMove( e );
+            object->signalHandleMouseMove.emit( e );
             break;
         }
         case EVAS_CALLBACK_MOUSE_WHEEL:
         {
             const EvasMouseWheelEvent e( static_cast<Evas_Event_Mouse_Wheel*>( event_info ) );
-            object->handleMouseWheel( e );
+            object->signalHandleMouseWheel.emit( e );
             break;
         }
         case EVAS_CALLBACK_KEY_DOWN:
         {
             const EvasKeyDownEvent e( static_cast<Evas_Event_Key_Down*>( event_info ) );
-            object->handleKeyDown( e );
+            object->signalHandleKeyDown.emit( e );
             break;
         }
         case EVAS_CALLBACK_KEY_UP:
         {
             const EvasKeyUpEvent e( static_cast<Evas_Event_Key_Up*>( event_info ) );
-            object->handleKeyUp( e );
+            object->signalHandleKeyUp.emit( e );
             break;
         }
         case EVAS_CALLBACK_FREE:
         {
-            object->handleFree();
+            object->signalHandleFree.emit();
             break;
         }
         case EVAS_CALLBACK_SHOW:
         {
-            object->handleShow();
+            object->signalHandleShow.emit();
             break;
         }
         case EVAS_CALLBACK_HIDE:
         {
-            object->handleHide();
+            object->signalHandleHide.emit();
             break;
         }
         case EVAS_CALLBACK_MOVE:
         {
-            object->handleMove();
+            object->signalHandleMove.emit();
             break;
         }
         case EVAS_CALLBACK_RESIZE:
         {
-            object->handleResize();
+            object->signalHandleResize.emit();
             break;
         }
         case EVAS_CALLBACK_RESTACK:
         {
-            object->handleRestack();
+            object->signalHandleRestack.emit();
             break;
         }
         default: assert( 0 );

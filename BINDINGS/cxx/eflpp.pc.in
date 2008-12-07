@@ -6,7 +6,7 @@ includedir=@prefix@/include/eflpp
 Name: @PACKAGE@
 Description: EFL C++ Wrapper
 Version: @VERSION@
-Requires: sigc++-2.0
+Requires: sigc++-2.0 edje evas ecore eet
 Conflicts: 
 Libs: -L${libdir} -leflpp
 Cflags: -I${includedir}

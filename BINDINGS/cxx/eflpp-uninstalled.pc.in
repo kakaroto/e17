@@ -6,7 +6,7 @@ includedir=src
 Name: @PACKAGE@
 Description: EFL C++ Wrapper, Not installed
 Version: @VERSION@
-Requires: sigc++-2.0 
+Requires: sigc++-2.0 edje evas ecore eet
 Conflicts: 
 Libs: ${pcfiledir}/${libdir}/libeflpp.la
 Cflags: -I${pcfiledir}/${includedir}/common -I${pcfiledir}/${includedir}/ecore -I${pcfiledir}/${includedir}/edb -I${pcfiledir}/${includedir}/edje -I${pcfiledir}/${includedir}/eet -I${pcfiledir}/${includedir}/embryo -I${pcfiledir}/${includedir}/emotion -I${pcfiledir}/${includedir}/esmart -I${pcfiledir}/${includedir}/etk -I${pcfiledir}/${includedir}/evas -I${pcfiledir}/${includedir}/ewl -I${pcfiledir}/${includedir}/misc

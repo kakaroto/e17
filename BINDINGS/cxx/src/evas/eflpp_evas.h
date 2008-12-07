@@ -121,6 +121,24 @@ class EvasObject
     /* don't use these */
     Evas_Object* obj() const { return o; };
     EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
+    
+    // event signals
+    sigc::signal <bool, const EvasMouseInEvent&> signalHandleMouseIn;
+    sigc::signal <bool, const EvasMouseOutEvent&> signalHandleMouseOut;
+    sigc::signal <bool, const EvasMouseDownEvent&> signalHandleMouseDown;
+    sigc::signal <bool, const EvasMouseUpEvent&> signalHandleMouseUp;
+    sigc::signal <bool, const EvasMouseMoveEvent&> signalHandleMouseMove;
+    sigc::signal <bool, const EvasMouseWheelEvent&> signalHandleMouseWheel;
+    sigc::signal <bool> signalHandleFree;
+    sigc::signal <bool, const EvasKeyDownEvent&> signalHandleKeyDown;
+    sigc::signal <bool, const EvasKeyUpEvent&> signalHandleKeyUp;
+    sigc::signal <bool> signalHandleFocusIn;
+    sigc::signal <bool> signalHandleFocusOut;
+    sigc::signal <bool> signalHandleShow;
+    sigc::signal <bool> signalHandleHide;
+    sigc::signal <bool> signalHandleMove;
+    sigc::signal <bool> signalHandleResize;
+    sigc::signal <bool> signalHandleRestack;
 
     /* Name */
     const char* name() const;
@@ -174,7 +192,7 @@ class EvasObject
     virtual bool hasFocus() const;
 
     /* Events */
-    virtual bool handleMouseIn( const EvasMouseInEvent& );
+    /*virtual bool handleMouseIn( const EvasMouseInEvent& );
     virtual bool handleMouseOut( const EvasMouseOutEvent& );
     virtual bool handleMouseDown( const EvasMouseDownEvent& );
     virtual bool handleMouseUp( const EvasMouseUpEvent& );
@@ -189,7 +207,7 @@ class EvasObject
     virtual bool handleHide();
     virtual bool handleMove();
     virtual bool handleResize();
-    virtual bool handleRestack();
+    virtual bool handleRestack();*/
 
   private:
     static EvasObject* objectLink( Evas_Object* evas_object = 0 );
