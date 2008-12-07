@@ -72,9 +72,9 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module-places.edj", m->dir);
 
    /* Display this Modules config info in the main Config Panel */
-   e_configure_registry_category_add("extensions", 80, "extensions", 
-                                     NULL, "enlightenment/extensions");
-   e_configure_registry_item_add("extensions/places", 110, "Places", 
+   e_configure_registry_category_add("fileman", 80, D_("Files"), 
+                                     NULL, "enlightenment/fileman");
+   e_configure_registry_item_add("fileman/places", 80, D_("Places"), 
                                  NULL, buf, e_int_config_places_module);
 
    /* Define EET Data Storage */
