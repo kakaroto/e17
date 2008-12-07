@@ -1,3 +1,4 @@
+# translation of el.po to Greek
 # translation of el.po to
 # Greek translation for Enlightenment17.
 # This file is put in the public domain.
@@ -6,86 +7,84 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: etk HEAD\n"
+"Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:29+0800\n"
-"PO-Revision-Date: 2008-10-31 13:50+0200\n"
-"Last-Translator: Geo Kou <ragecryx@yahoo.gr>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"PO-Revision-Date: 2008-12-07 15:36+0200\n"
+"Last-Translator: \n"
+"Language-Team: Greek <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: src/tools/etk_prefs/etk_prefs.c:60
-#, fuzzy
 msgid "Etk Preferences"
-msgstr "Δοκιμή Δέντρου Etk"
+msgstr "Ρυθμίσεις Etk"
 
 #: src/tools/etk_prefs/etk_prefs.c:76
 msgid "Category"
-msgstr ""
+msgstr "Κατηγορία"
 
 #: src/tools/etk_prefs/etk_prefs.c:81
 msgid "Theme"
-msgstr ""
+msgstr "Θέμα"
 
 #: src/tools/etk_prefs/etk_prefs.c:82
-#, fuzzy
 msgid "Fonts"
-msgstr "Σχόλια"
+msgstr "Γραμματοσειρές"
 
 #: src/tools/etk_prefs/etk_prefs.c:83
 msgid "Language"
-msgstr ""
+msgstr "Γλώσσα"
 
 #: src/tools/etk_prefs/etk_prefs.c:84
 msgid "User Preferences"
-msgstr ""
+msgstr "Ρυθμίσεις Χρήστη"
 
 #: src/tools/etk_prefs/etk_prefs.c:85
 msgid "General"
-msgstr ""
+msgstr "Γενικά"
 
 #: src/lib/etk_message_dialog.c:109
 msgid "Warning"
-msgstr ""
+msgstr "Προσοχή"
 
 #: src/lib/etk_message_dialog.c:113
 msgid "Question"
-msgstr ""
+msgstr "Ερώτηση"
 
 #: src/lib/etk_message_dialog.c:117
 msgid "Error"
-msgstr ""
+msgstr "Σφάλμα"
 
 #: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
 msgid "Information"
-msgstr ""
+msgstr "Πληροφορίες"
 
 #: src/lib/etk_filechooser_widget.c:495
 msgid "Places"
-msgstr ""
+msgstr "Τοποθεσίες"
 
 #: src/lib/etk_filechooser_widget.c:506
 msgid "Favorites"
-msgstr ""
+msgstr "Αγαπημένα"
 
 #: src/lib/etk_filechooser_widget.c:517
 msgid "Filename"
-msgstr ""
+msgstr "Όνομα Αρχείου"
 
 #: src/lib/etk_filechooser_widget.c:521
 msgid "Date"
-msgstr ""
+msgstr "Ημερομηνία"
 
 #: src/lib/etk_filechooser_widget.c:730
 msgid "Home"
-msgstr ""
+msgstr "Σπιτικός Κατάλογος"
 
 #: src/lib/etk_filechooser_widget.c:735
 msgid "Root"
-msgstr ""
+msgstr "Ριζικός Κατάλογος"
 
 #: src/lib/etk_colorpicker.c:306
 msgid "H"
@@ -117,138 +116,5 @@ msgstr ""
 
 #: src/lib/etk_colorpicker.c:424
 msgid "Current"
-msgstr ""
+msgstr "Τρέχον"
 
-#~ msgid "Etk Button test"
-#~ msgstr "Δοκιμή κουμπιού Etk"
-
-#~ msgid "Normal button"
-#~ msgstr "Κανονικό Κουμπί"
-
-#~ msgid "Button with an image"
-#~ msgstr "Κουμπί με εικόνα"
-
-#~ msgid "Check button"
-#~ msgstr "Κουμπί ενεργοποίησης"
-
-#~ msgid "Radio button"
-#~ msgstr "Κουμπί επιλογής"
-
-#~ msgid "Toggle button"
-#~ msgstr "Κουμπί εναλλαγής"
-
-#~ msgid "Etk Canvas Test"
-#~ msgstr "Δοκιμή Etk Καμβά"
-
-#~ msgid "Add object"
-#~ msgstr "Προσθήκη αντικειμένου"
-
-#~ msgid "Etk Color Picker"
-#~ msgstr "Επιλογέας Χρωμάτων Etk"
-
-#~ msgid "Etk Entry test"
-#~ msgstr "Δοκιμή Καταχώρησης Etk"
-
-#~ msgid "Print the text!!!"
-#~ msgstr "Εκτύπωση του κειμένου!!!"
-
-#~ msgid "Etk Image Test"
-#~ msgstr "Δοκιμή Εικόνας Etk"
-
-#~ msgid "Keep aspect"
-#~ msgstr "Κράτα την αναλογία"
-
-#~ msgid "Don't keep aspect"
-#~ msgstr "Μην κρατάς την αναλογία"
-
-#~ msgid "Etk Scale test"
-#~ msgstr "Δοκιμή Κλίμακας Etk"
-
-#~ msgid "Etk Table Test"
-#~ msgstr "Δοκιμή Πίνακα Etk"
-
-#~ msgid "Set Icon"
-#~ msgstr "Ορισμός Εικονιδίου"
-
-#~ msgid "App name"
-#~ msgstr "Όνομα εφαρμογής"
-
-#~ msgid "Generic Info"
-#~ msgstr "Γενικές Πληροφορίες"
-
-#~ msgid "Executable"
-#~ msgstr "Εκτελέσιμο"
-
-#~ msgid "Window name"
-#~ msgstr "Όνομα Παραθύρου"
-
-#, fuzzy
-#~ msgid "Window class"
-#~ msgstr "Τύπος Παραθύρου"
-
-#, fuzzy
-#~ msgid "Startup notify"
-#~ msgstr "Ειδοποίηση εκκίνησης"
-
-#~ msgid "Wait exit"
-#~ msgstr "Αναμονή εξόδου"
-
-#~ msgid "Cancel"
-#~ msgstr "Ακύρωση"
-
-#~ msgid "Save"
-#~ msgstr "Αποθήκευση"
-
-#~ msgid "Etk Test Application"
-#~ msgstr "Δοκιμαστική Εφαρμογή Etk"
-
-#~ msgid "<h1>Tree:</h1>"
-#~ msgstr "<h1>Δέντρο:</h1>"
-
-#~ msgid "<h1>List:</h1>"
-#~ msgstr "<h1>Λίστα:</h1>"
-
-#~ msgid "Column 1"
-#~ msgstr "Στήλη 1"
-
-#~ msgid "Column 2"
-#~ msgstr "Στήλη 2"
-
-#~ msgid "Column 3"
-#~ msgstr "Στήλη 3"
-
-#~ msgid "Row1"
-#~ msgstr "Γραμμή1"
-
-#~ msgid "Row2"
-#~ msgstr "Γραμμή2"
-
-#~ msgid "Row3"
-#~ msgstr "Γραμμή3"
-
-#~ msgid "Row4"
-#~ msgstr "Γραμμή4"
-
-#~ msgid "Row5"
-#~ msgstr "Γραμμή5"
-
-#~ msgid "Row6"
-#~ msgstr "Γραμμή6"
-
-#~ msgid "Row7"
-#~ msgstr "Γραμμή7"
-
-#~ msgid "Row8"
-#~ msgstr "Γραμμή8"
-
-#~ msgid "Row9"
-#~ msgstr "Γραμμή9"
-
-#~ msgid "Row10"
-#~ msgstr "Γραμμή10"
-
-#~ msgid "Row11"
-#~ msgstr "Γραμμή11"
-
-#~ msgid "Row12"
-#~ msgstr "Γραμμή12"

@@ -1,0 +1,83 @@
+# translation of el.po to Greek
+# Italian translation for the places module.
+# This file is distributed under the same license as the places package.
+# DaveMDS <dave@gurumeditaiton.it>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-06 23:32+0100\n"
+"PO-Revision-Date: 2008-12-07 16:43+0200\n"
+"Last-Translator: \n"
+"Language-Team: Greek <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: src/e_mod_config.c:43
+msgid "Places Configuration"
+msgstr "Ρύθμιση Τοποθεσιών"
+
+#: src/e_mod_config.c:90
+msgid "General"
+msgstr "Γενικά"
+
+#: src/e_mod_config.c:96
+msgid "Mount volumes on insert"
+msgstr "Προσάρτηση τόμων κατα την εισαγωγή"
+
+#: src/e_mod_config.c:100
+msgid "Open filemanager on insert"
+msgstr "Άνοιγμα διαχειριστή αρχείων κατά την εισαγωγή"
+
+#: src/e_mod_config.c:105
+msgid "File manager (if blank uses Enlightenment)"
+msgstr "Διαχειριστής Αρχείων (όταν κενό χρησιμοποιεί το Enlightenment)"
+
+#: src/e_mod_main.c:485
+msgid "Configuration"
+msgstr "Ρύθμιση"
+
+#: src/e_mod_places.c:164 src/e_mod_places.c:317
+msgid "Filesystem"
+msgstr "Σύστημα Αρχείων"
+
+#: src/e_mod_places.c:169
+msgid "No Name"
+msgstr "Χωρίς Όνομα"
+
+#: src/e_mod_places.c:298
+msgid "Home"
+msgstr "Home"
+
+#: src/e_mod_places.c:304
+msgid "Desktop"
+msgstr "Επιφάνεια Εργασίας"
+
+#: src/e_mod_places.c:311
+msgid "Trash"
+msgstr "Απορρίμματα"
+
+#: src/e_mod_places.c:380
+msgid "Places"
+msgstr "Τοποθεσίες"
+
+#: src/e_mod_places.c:587
+msgid "free of"
+msgstr ""
+
+#: src/e_mod_places.c:593
+#, c-format
+msgid "%s Not Mounted"
+msgstr "%s δεν είναι Προσαρτημένο"
+
+#: src/e_mod_places.c:610
+msgid "unmount"
+msgstr "αποπροσάρτηση"
+
+#: src/e_mod_places.c:616
+msgid "eject"
+msgstr "εξαγωγή"
+

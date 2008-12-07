@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-11-25 12:27+0200\n"
+"PO-Revision-Date: 2008-12-07 16:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -139,12 +139,12 @@ msgstr "κλικ"
 #: ../src/module/photo_config_dialog.c:274
 #: ../src/module/photo_config_dialog_item.c:201
 msgid "Middle"
-msgstr "Milieu"
+msgstr "Μέση"
 
 #: ../src/module/photo_config_dialog.c:279
 #: ../src/module/photo_config_dialog_item.c:142
 msgid "No"
-msgstr ""
+msgstr "Όχι"
 
 #: ../src/module/photo_config_dialog.c:318
 msgid "Popups"
@@ -160,7 +160,7 @@ msgstr "Ποτέ"
 
 #: ../src/module/photo_config_dialog.c:325
 msgid "Summary"
-msgstr ""
+msgstr "Σύνοψη"
 
 #: ../src/module/photo_config_dialog.c:327
 msgid "Verbose"
@@ -168,11 +168,11 @@ msgstr ""
 
 #: ../src/module/photo_config_dialog.c:332
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Διάφορα"
 
 #: ../src/module/photo_config_dialog.c:334
 msgid "Remove generated backgrounds"
-msgstr ""
+msgstr "Αφαίρεση φόντων που έχουν παραχθεί"
 
 #: ../src/module/photo_config_dialog.c:338
 msgid "Pictures viewer"
@@ -189,11 +189,11 @@ msgstr "%1.0f pixel"
 
 #: ../src/module/photo_config_dialog.c:353
 msgid "Automaticly reload directories"
-msgstr ""
+msgstr "Αυτόματη επαναφόρτωση καταλόγων"
 
 #: ../src/module/photo_config_dialog.c:356
 msgid "when add / modify directory list"
-msgstr ""
+msgstr "όταν προσθέτεις / τροποποιείς μια λίστα καταλόγων"
 
 #: ../src/module/photo_config_dialog.h:36
 msgid "Show label"
