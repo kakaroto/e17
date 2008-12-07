@@ -11,49 +11,126 @@
 #include <fcntl.h>
 #include <string.h>
 
+#include <Ecore_Con.h>
+
 static void _help(void);
 
 static int wait_mode = 0;
 static int wait_time = 10;
+static const char *method = NULL;
 
 int
 main(int argc, char **argv)
 {
-   int fd;
-   char *fifo;
+   int i;
+   char *file;
    char buf[4096];
-   
-   if ((argc == 3) && (!strcmp(argv[1], "-wait")))
-     {
-	wait_mode = 1;
-	wait_time = (int)(atof(argv[2]));
-     }
-   if ((argc == 2) && (!strncmp(argv[1], "-h", 2)))
-     {
-        _help();
-        return 0;
-     }
-   fifo = getenv("EXQUISITE_IPC");
-   if (!fifo) fifo = "/tmp/exquisite-fifo";
-   fd = open(fifo, O_WRONLY);
-   if ((wait_mode) && (fd < 0))
-     {
-        int left = wait_time;
 
-        while (left > 0)
+   for (i=1; i < argc-1; ++i)
+     {
+        if (!strcmp(argv[i], "-h"))
+             _help();
+        else if (!strcmp(argv[i], "-wait"))
           {
-             left--;
-             sleep(1);
-             fd = open(fifo, O_WRONLY);
-             if (fd >= 0) break;
+             if (++i > argc) _help();
+             wait_mode = 1;
+             if (!(wait_time = (int)(atof(argv[i]))))
+               {
+                  printf("Invalid wait time\n");
+                  return 1;
+               }
           }
-        return 0;
+        else if (!strcmp(argv[i], "-ipc"))
+          {
+             if (i++ > argc) _help();
+             method = strdup(argv[i]);
+          }
      }
-   if (fd < 0) return 0;
-   if (argc != 2) return 0;
-   snprintf(buf, sizeof(buf), "%s\n", argv[1]);
-   write(fd, buf, strlen(buf));
-   close(fd);
+
+   file = getenv("EXQUISITE_IPC");
+   if (!file || !file[0]) file = "/tmp/exquisite";
+   
+   if (!method) method = getenv("EXQUISITE_IPC_METHOD");
+   
+   // Assume last arg is command to send
+   snprintf(buf, sizeof(buf), "%s\n", argv[argc-1]);
+        
+   if (!method || !method[0] || !strcmp(method, "fifo"))
+     {
+        int fd;
+
+        fd = open(file, O_WRONLY);
+        if ((wait_mode) && (fd < 0))
+          {
+             int left = wait_time;
+
+             while (left > 0)
+               {
+                  left--;
+                  sleep(1);
+                  fd = open(file, O_WRONLY);
+                  if (fd >= 0) break;
+               }
+          }
+        if (fd < 0) 
+          {
+             printf("Cannot find fifo at %s.\n", file);
+             return 1;
+          }
+        write(fd, buf, strlen(buf));
+        close(fd);
+     }
+   else if (!strcmp(method, "socket") ||
+            !strcmp(method, "abstract_socket"))
+     {
+        Ecore_Con_Server *sock = NULL;
+
+        ecore_con_init();
+
+        if (method[0] == 's')
+          sock = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM, file, 0,
+                                          NULL);
+        else
+          sock = ecore_con_server_connect(ECORE_CON_LOCAL_ABSTRACT, file, 0,
+                                          NULL);
+
+        if ((wait_mode) && !sock)
+        {
+           int left = wait_time;
+
+           while (left > 0)
+             {
+                left--;
+                sleep(1);
+                if (method[0] == 's')
+                  sock = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
+                                                  file, 0, NULL);
+                else
+                  sock = ecore_con_server_connect(ECORE_CON_LOCAL_ABSTRACT,
+                                                  file, 0, NULL);
+                if (sock) break;
+             }
+        }
+
+        if (!sock) 
+          {
+             printf("Could not connect to socket %s\n", file);
+             return 1;
+          }
+
+        if (strlen(buf) != ecore_con_server_send(sock, buf, strlen(buf)))
+          {
+             printf("Command has been truncated.\n");
+             return 1;
+          }
+
+        ecore_con_shutdown();
+     }
+   else
+     {
+       _help();
+     }
+   
    return 0;
 }
 
@@ -63,6 +140,7 @@ _help(void)
    printf("Usage:\n"
 	  "  -h            This help\n"
 	  "  -wait N       Wait up to N seconds for exquisite's socket to exist then exit\n"
+          "  -ipc M        Use M (fifo [default], socket, abstract_socket) for ipc.\n"
 	  "  QUIT          Tell splash to exit immediately\n"
 	  "  PROGRESS N    Indicate boot progress is at N percent\n"
 	  "  MSG X         Display string message X\n"
@@ -84,5 +162,9 @@ _help(void)
 	  "to give a fill path to any file to be used as the base\n"
 	  "filename of the IPC socket to be used between exquisite\n"
 	  "and exquisitie-write for communication.\n"
+          "EXQUISITE_IPC_METHOD can be used as an alternative to\n"
+          "the -ipc option.  The same method names are used.\n"
 	  );
+          
+   exit(0);
 }

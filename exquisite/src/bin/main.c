@@ -11,7 +11,8 @@ int         im_cache = 4096 * 1024;
 int         fn_cache = 512 * 1024;
 int         engine = SOFT_X;
 int         scr_w, scr_h;
-int         quiet;
+int         flags;
+char       *method;
 
 static char *theme = NULL;
 
@@ -30,17 +31,17 @@ main(int argc, char **argv)
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _cb_exit, NULL);
    if (!ecore_evas_init()) return -1;
    if (!edje_init()) return -1;
-   
+
    _args();
-   
+
    theme_init(theme);
 
    ecore_idle_enterer_add(_cb_idle_enterer, NULL);
    ecore_main_loop_begin();
-   
+
    ipc_shutdown();
    theme_shutdown();
-   
+
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
@@ -86,15 +87,16 @@ _args(void)
    double fps = 60.0;
    int fullscreen = 0;
    int rot = 0;
-   quiet = 1;
+   flags = EXQUISITE_FLAG_QUIET;
+   method = NULL;
 
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
-	if      ((!strcmp(argv[i], "-x11"))) engine = SOFT_X;
-	else if ((!strcmp(argv[i], "-gl")))  engine = GL_X;
-	else if ((!strcmp(argv[i], "-fb")))  engine = FB;
-	else if ((!strcmp(argv[i], "-xr")))  engine = XRENDER_X;
+	if      (!strcmp(argv[i], "-x11")) engine = SOFT_X;
+	else if (!strcmp(argv[i], "-gl"))  engine = GL_X;
+	else if (!strcmp(argv[i], "-fb"))  engine = FB;
+	else if (!strcmp(argv[i], "-xr"))  engine = XRENDER_X;
         else if (!strcmp(argv[i], "-fs")) fullscreen = 1;
 	else if ((!strcmp(argv[i], "-t")) && (i < (argc - 1)))
 	  {
@@ -148,27 +150,34 @@ _args(void)
 	  }
         else if ((!strcmp(argv[i], "-verbose")))
           {
-             quiet = 0;
+             flags &= ~EXQUISITE_FLAG_QUIET;
+          }
+        else if ((!strcmp(argv[i], "-ipc")))
+          {
+             // Read next arg as ipc method
+             if (i++ > argc) exit(0);
+             method = strdup(argv[i]);
           }
 	else if ((!strcmp(argv[i], "-h")))
 	  {
 	     printf("%s [OPTIONS]\n"
 		    "Where OPTIONS is 0 or more of the following:\n"
 		    "\n"
-		    "-x11       Display using software X11\n"
-		    "-gl        Display using OpenGL in X11\n"
-		    "-fb        Display using Framebuffer\n"
-		    "-xr        Display using XRender\n"
-		    "-fs        Display fullscreen (use current screen res)\n" 
-		    "-t theme   Use Theme file 'theme'\n"
-		    "-x res     Use horizontal res 'res'\n"
-		    "-y res     Use vertical res 'res'\n" 
-		    "-rot deg   Use rotation 'deg' if supported by engine (0, 90, 180, 270)\n"
-		    "-ic Kb     Set image cache in Kb\n"
-		    "-fc Kb     Set font cache in Kb\n"
-		    "-fps fps   Set attempted framerate in frames per second\n"
-		    "-verbose   Run Exquisite in verbose mode\n"
-		    "-h         Display this help\n",
+		    "-x11         Display using software X11\n"
+		    "-gl          Display using OpenGL in X11\n"
+		    "-fb          Display using Framebuffer\n"
+		    "-xr          Display using XRender\n"
+		    "-fs          Display fullscreen (use current screen res)\n" 
+		    "-t theme     Use Theme file 'theme'\n"
+		    "-x res       Use horizontal res 'res'\n"
+		    "-y res       Use vertical res 'res'\n" 
+		    "-rot deg     Use rotation 'deg' if supported by engine (0, 90, 180, 270)\n"
+		    "-ic Kb       Set image cache in Kb\n"
+		    "-fc Kb       Set font cache in Kb\n"
+		    "-fps fps     Set attempted framerate in frames per second\n"
+		    "-verbose     Run Exquisite in verbose mode\n"
+                    "-ipc [mode]  Choose ipc mechanism (fifo [default], socket, abstract_socket)\n"
+		    "-h           Display this help\n",
 		    "\n"
 		    "Notes:\n"
 		    "\n"
@@ -180,7 +189,7 @@ _args(void)
 	     exit(0);
 	  }
      }
-   
+
    if (engine == SOFT_X)
      ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, w, h);
    else if (engine == GL_X)
@@ -194,7 +203,7 @@ _args(void)
 	printf("Error. Cannot create canvas. Abort.\n");
 	exit(-1);
      }
-   
+
    ecore_evas_rotation_set(ee, rot);
    ecore_evas_size_min_set(ee, w, h);
    ecore_evas_size_max_set(ee, w, h);

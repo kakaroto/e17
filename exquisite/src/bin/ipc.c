@@ -6,11 +6,12 @@ static void _ipc_cb_theme_exit_done(void *data);
 static Ecore_Timer *timeout = NULL;
 static int timeout_seconds = 0;
 static int fd = -1;
+static Ecore_Con_Server *sock;
 
 int quitting;
 
 static void
-fifo_cmd(char *cmd)
+parse_cmd(char *cmd)
 {
    char *p, *q;
    char buf[4096];
@@ -61,7 +62,7 @@ fifo_cmd(char *cmd)
      }
    else if (!strcmp(buf, "TEXT"))
      {
-        if (!quiet)
+        if (!(flags & EXQUISITE_FLAG_QUIET))
           theme_text_add(q);
      }
    else if (!strcmp(buf, "TEXT-URGENT"))
@@ -99,10 +100,10 @@ fifo_cmd(char *cmd)
 static int
 fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
-   int fd;
    char buf[4096], buf2[4096], *p, *q;
    int size;
-   
+   int fd;
+
    fd = ecore_main_fd_handler_fd_get(fd_handler);
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
      {
@@ -117,7 +118,7 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
                   if (*p == '\n')
                     {
                        *q = 0;
-                       if (strlen(buf2) > 0) fifo_cmd(buf2);
+                       if (strlen(buf2) > 0) parse_cmd(buf2);
                        q = buf2;
                     }
                   else
@@ -127,42 +128,136 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
                     }
                }
              *q = 0;
-             if (strlen(buf2) > 0) fifo_cmd(buf2);
+             if (strlen(buf2) > 0) parse_cmd(buf2);
           }
      }
    return ECORE_CALLBACK_RENEW;
 }
 
+static int
+socket_input(void *data, int type, void *ev)
+{
+   Ecore_Con_Event_Client_Data *cl_data;
+   char buf2[4096], *p, *q;
+   int size;
+
+   cl_data = ev;
+
+   size = cl_data->size;
+   for (;;)
+     {
+        if (size <= 0) break;
+
+        q = buf2;
+        for (p = cl_data->data; *p; p++)
+          {
+             if (*p == '\n')
+               {
+                  *q = 0;
+                  if (strlen(buf2) > 0) parse_cmd(buf2);
+                  q = buf2;
+                  size -= strlen(buf2)+1;
+               }
+             else
+               {
+                  *q = *p;
+                  q++;
+               }
+          }
+        *q = 0;
+        if (strlen(buf2) > 0) parse_cmd(buf2);
+        size -= strlen(buf2);
+     }
+   return ECORE_CALLBACK_RENEW;
+}
+
+static int
+socket_del(void *data, int type, void *ev)
+{
+  Ecore_Con_Event_Client_Del *cl_ev;
+
+  cl_ev = ev;
+
+  ecore_con_client_del(cl_ev->client);
+}
+
 void
 ipc_init(void)
 {
-   char *fifo;
+   char *file = NULL;
    Ecore_Fd_Handler *fdh;
    
-   fifo = getenv("EXQUISITE_IPC");
-   if (!fifo) fifo = "/tmp/exquisite-fifo";
-   unlink(fifo);
-   mkfifo(fifo, S_IRUSR | S_IWUSR |  S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-   fd = open(fifo, O_RDWR);
-   fcntl(fd, F_SETFL, O_NONBLOCK);
-   if (fd < 0)
+   file = getenv("EXQUISITE_IPC");
+   if (!file || !file[0]) file = "/tmp/exquisite";
+
+   if (!method) method = getenv("EXQUISITE_IPC_METHOD");
+
+   if (!method || !method[0] || !strcmp(method, "fifo"))
      {
-        printf("EXQUISITE ERROR: cannot open fifo: %s\n", fifo);
-        exit(-1);
+        unlink(file);
+        mkfifo(file, S_IRUSR | S_IWUSR |  S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+        fd = open(file, O_RDWR);
+        fcntl(fd, F_SETFL, O_NONBLOCK);
+        if (fd < 0)
+          {
+             printf("EXQUISITE ERROR: Cannot create fifo: %s\n", file);
+             exit(-1);
+          }
+        fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ, 
+                                        fifo_input, NULL, 
+                                        NULL, NULL);
      }
-   fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ, 
-                                   fifo_input, NULL, 
-                                   NULL, NULL);
+   else if (strstr(method, "socket"))
+     {
+        ecore_con_init();
+
+        if (!strcmp(method, "socket"))
+          {
+             sock = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM, 
+                                         file,
+                                         0, NULL);
+          }
+        else
+          {
+             sock = ecore_con_server_add(ECORE_CON_LOCAL_ABSTRACT, 
+                                         file,
+                                         0, NULL);
+          }
+
+        if (!sock)
+          {
+            printf("EXQUISITE ERROR: Cannot create socket %s.\n", file);
+            exit(-1);
+          }
+
+        ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA,
+                                socket_input, NULL);
+        ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL,
+                                socket_del, NULL);
+     }
+   else
+     {
+        printf("Invalid ipc method: %s\n", method);
+        exit(0);
+     }
 }
 
 void
 ipc_shutdown(void)
 {
-   char *fifo;
+   char *ipc;
 
-   fifo = getenv("EXQUISITE_IPC");
-   if (!fifo) fifo = "/tmp/exquisite-fifo";
-   unlink(fifo);
+   if (!method || !strcmp(method, "fifo"))
+     {
+        ipc = getenv("EXQUISITE_IPC");
+        if (!ipc) ipc = "/tmp/exquisite";
+        unlink(ipc);
+     }
+   else if (strstr(method, "socket"))
+     {
+        if (sock) ecore_con_server_del(sock);
+        ecore_con_shutdown();
+     }
 }
 
 static int

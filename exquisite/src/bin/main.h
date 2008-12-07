@@ -16,9 +16,7 @@
 #include <Ecore_Evas.h>
 #include <Eet.h>
 #include <Edje.h>
-/*
-#include <Ecore_Ipc.h>
-*/
+#include <Ecore_Con.h>
 
 #include "ipc.h"
 
@@ -29,8 +27,14 @@ extern Ecore_Evas *ee;
 extern Evas       *evas;
 extern Evas_Coord  scr_w;
 extern Evas_Coord  scr_h;
-extern int         quiet;
 extern int         quitting;
+
+/* Some flags that define the behavior of exquisite. */
+extern int         flags;
+#define     EXQUISITE_FLAG_QUIET 1
+
+/* IPC method being used */
+extern char       *method;
 
 void theme_init(const char *theme);
 void theme_shutdown(void);
