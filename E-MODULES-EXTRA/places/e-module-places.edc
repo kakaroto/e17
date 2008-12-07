@@ -1,8 +1,3 @@
-fonts
-{
-   font: "VeraBd.ttf" "VeraBd";
-   font: "Vera.ttf" "Vera";
-}
 
 images
 {
@@ -260,7 +255,7 @@ collections
                color: 255 255 255 255;
                color3: 0 0 0 60;
                text {
-                  font: "VeraBd";
+                  font: "Sans:style=Bold";
                   size: 10;
                   text: "";
                   align: 0.0 0.5;
@@ -280,7 +275,7 @@ collections
                color: 255 255 255 255;
                color3: 0 0 0 60;
                text {
-                  font: "Vera";
+                  font: "Sans";
                   size: 10;
                   text: "";
                   align: 0.0 0.5;
