@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-06 19:06+0100\n"
+"POT-Creation-Date: 2008-12-06 23:32+0100\n"
 "PO-Revision-Date: 2008-10-24 15:22+200\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
@@ -22,10 +22,6 @@ msgstr "Configurazione Places"
 msgid "General"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_config.c:92
-msgid "Show header"
-msgstr "Mostra intestazione"
-
 #: src/e_mod_config.c:96
 msgid "Mount volumes on insert"
 msgstr "Monta i dispositivi collegati"
@@ -38,7 +34,7 @@ msgstr "Sfoglia i dispositivi collegati"
 msgid "File manager (if blank uses Enlightenment)"
 msgstr ""
 
-#: src/e_mod_main.c:488
+#: src/e_mod_main.c:485
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -49,10 +45,6 @@ msgstr "Filesystem"
 #: src/e_mod_places.c:169
 msgid "No Name"
 msgstr ""
-
-#: src/e_mod_places.c:241
-msgid "p  l  a  c  e  s"
-msgstr "r  i  s  o  r  s  e"
 
 #: src/e_mod_places.c:298
 msgid "Home"

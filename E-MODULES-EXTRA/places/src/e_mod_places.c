@@ -210,6 +210,12 @@ places_fill_box(Evas_Object *box)
       else
         edje_object_signal_emit(o, "icon,eject,hide", "places");
 
+      /* orient the separator*/
+      if (!e_box_orientation_get(box))
+         edje_object_signal_emit(o, "separator,set,horiz", "places");
+      else
+         edje_object_signal_emit(o, "separator,set,vert", "places");
+      
       /* connect signals from edje */
       edje_object_signal_callback_add(o, "icon,activated", "places",
                                       _places_icon_activated_cb, vol);
@@ -230,25 +236,6 @@ places_fill_box(Evas_Object *box)
                               0.5, 0.0, /* align */
                               min_w, min_h, /* min */
                               max_w, max_h /* max */
-                            );
-   }
-
-   /* header */
-   if (places_conf->show_header)
-   {
-      o = edje_object_add(evas_object_evas_get(box));
-      edje_object_file_set(o, theme_file, "modules/places/header");
-      edje_object_part_text_set(o, "title", D_("p  l  a  c  e  s"));
-      edje_object_size_min_get(o, &min_w, &min_h);
-      edje_object_size_max_get(o, &max_w, &max_h);
-      evas_object_show(o);
-      e_box_pack_start(box, o);
-      e_box_pack_options_set(o,
-                             1, 0, /* fill */
-                             1, 0, /* expand */
-                             0.5, 0.0, /* align */
-                             min_w, min_h, /* min */
-                             max_w, max_h /* max */
                             );
    }
 }

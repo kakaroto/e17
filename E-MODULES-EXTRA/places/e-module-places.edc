@@ -75,35 +75,6 @@ collections
    ICONS("vfat");
    ICONS("ms");
 /****************************************************/
-/**  GADGET HEADER  *********************************/
-/****************************************************/
-   group { name: "modules/places/header";
-      min: 90 30;
-      max: 384 30;
-      parts {
-         part { name: "bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 100 100 100 150;
-            }
-         }
-         part { name: "title";
-            type: TEXT;
-            effect: GLOW;
-            description { state: "default" 0.0;
-               color: 0 0 0 255;
-               color2: 255 255 255 255;
-               color3: 255 255 255 255;
-               text {
-                  font: "VeraBd";
-                  size: 14;
-                  text: "P  l  a  c  e  s";
-               }
-            }
-         }
-      }
-   }
-/****************************************************/
 /**  GADGET VOLUME  *********************************/
 /****************************************************/
    group { name: "modules/places/main";
@@ -130,9 +101,20 @@ collections
             mouse_events: 0;
             type: RECT;
             description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "horiz" 0.0;
                rel1.relative: 0.0 1.0;
                rel2.relative: 1.0 1.0;
                rel1.offset: 0 -1;
+               color: 0 0 0 255;
+            }
+            description { state: "vert" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 1.0 1.0;
+               rel1.offset: -1 0;
                color: 0 0 0 255;
             }
          }
@@ -452,6 +434,18 @@ collections
             source: "places";
             action: STATE_SET "visible" 0.0;
             target: "eject_icon";
+         }
+         program { name: "set_separator_horiz";
+            signal: "separator,set,horiz";
+            source: "places";
+            action: STATE_SET "horiz" 0.0;
+            target: "separator";
+         }
+         program { name: "set_separator_vert";
+            signal: "separator,set,vert";
+            source: "places";
+            action: STATE_SET "vert" 0.0;
+            target: "separator";
          }
       }
    }

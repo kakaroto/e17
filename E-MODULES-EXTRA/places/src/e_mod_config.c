@@ -4,7 +4,6 @@
 
 struct _E_Config_Dialog_Data 
 {
-   int show_header;
    int auto_mount;
    int auto_open;
    char *fm;
@@ -71,7 +70,6 @@ static void
 _fill_data(E_Config_Dialog_Data *cfdata) 
 {
    /* load a temp copy of the config variables */
-   cfdata->show_header = places_conf->show_header;
    cfdata->auto_mount = places_conf->auto_mount;
    cfdata->auto_open = places_conf->auto_open;
    if (places_conf->fm)
@@ -89,14 +87,11 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    of = e_widget_framelist_add(evas, D_("General"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
-   ow = e_widget_check_add(evas, D_("Show header"), 
-                           &(cfdata->show_header));
-   e_widget_framelist_object_append(of, ow);
-   
+
    ow = e_widget_check_add(evas, D_("Mount volumes on insert"),
                            &(cfdata->auto_mount));
    e_widget_framelist_object_append(of, ow);
-   
+
    ow = e_widget_check_add(evas, D_("Open filemanager on insert"),
                            &(cfdata->auto_open));
    e_widget_framelist_object_append(of, ow);
@@ -116,7 +111,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int 
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   places_conf->show_header = cfdata->show_header;
    places_conf->auto_mount = cfdata->auto_mount;
    places_conf->auto_open = cfdata->auto_open;
 

@@ -93,7 +93,6 @@ e_modapi_init(E_Module *m)
    #define D conf_edd
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, fm, STR);
-   E_CONFIG_VAL(D, T, show_header, UCHAR);
    E_CONFIG_VAL(D, T, auto_mount, UCHAR); 
    E_CONFIG_VAL(D, T, auto_open, UCHAR); 
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
@@ -241,39 +240,39 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 static void 
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
-   //~ Instance *inst;
-   
-   //~ inst = gcc->data;
-   //~ switch (orient)
-     //~ {
-      //~ case E_GADCON_ORIENT_FLOAT:
-      //~ case E_GADCON_ORIENT_HORIZ:
-      //~ case E_GADCON_ORIENT_TOP:
-      //~ case E_GADCON_ORIENT_BOTTOM:
-      //~ case E_GADCON_ORIENT_CORNER_TL:
-      //~ case E_GADCON_ORIENT_CORNER_TR:
-      //~ case E_GADCON_ORIENT_CORNER_BL:
-      //~ case E_GADCON_ORIENT_CORNER_BR:
-	//~ _ibar_orient_set(inst->ibar, 1);
-	//~ e_gadcon_client_aspect_set(gcc, evas_list_count(inst->ibar->icons) * 16, 16);
-	//~ break;
-      //~ case E_GADCON_ORIENT_VERT:
-      //~ case E_GADCON_ORIENT_LEFT:
-      //~ case E_GADCON_ORIENT_RIGHT:
-      //~ case E_GADCON_ORIENT_CORNER_LT:
-      //~ case E_GADCON_ORIENT_CORNER_RT:
-      //~ case E_GADCON_ORIENT_CORNER_LB:
-      //~ case E_GADCON_ORIENT_CORNER_RB:
-	//~ _ibar_orient_set(inst->ibar, 0);
-	//~ e_gadcon_client_aspect_set(gcc, 16, evas_list_count(inst->ibar->icons) * 16);
-	//~ break;
-      //~ default:
-	//~ break;
-     //~ }
-   //~ e_gadcon_client_min_size_set(gcc, 16, 16);
-   
-   e_gadcon_client_aspect_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
-   e_gadcon_client_min_size_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
+   Instance *inst;
+
+   inst = gcc->data;
+   switch (orient)
+     {
+      case E_GADCON_ORIENT_HORIZ:
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+      case E_GADCON_ORIENT_CORNER_BL:
+      case E_GADCON_ORIENT_CORNER_BR:
+         e_gadcon_client_aspect_set(gcc, 100 * eina_list_count(volumes), 50);
+         e_gadcon_client_min_size_set(gcc, 100 * eina_list_count(volumes), 50);
+         e_box_orientation_set(inst->o_box, 1);
+         break;
+      case E_GADCON_ORIENT_FLOAT:
+      case E_GADCON_ORIENT_VERT:
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_RIGHT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_LB:
+      case E_GADCON_ORIENT_CORNER_RB:
+         e_gadcon_client_aspect_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
+         e_gadcon_client_min_size_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
+         e_box_orientation_set(inst->o_box, 0);
+         break;
+      default:
+         break;
+     }
+
+   places_fill_box(inst->o_box);
 }
 
 static char *
@@ -331,7 +330,6 @@ _places_conf_new(void)
 
    /* setup defaults */
    IFMODCFG(0x008d);
-   places_conf->show_header = 1;
    places_conf->auto_mount = 0;
    places_conf->auto_open = 0;
    _places_conf_item_get(NULL);
