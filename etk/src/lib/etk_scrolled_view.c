@@ -71,6 +71,9 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
 static Etk_Bool _etk_scrolled_view_mouse_click(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data); 
 static Etk_Bool _etk_scrolled_view_bar_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data); 
+static void _etk_evas_scrolled_view_mouse_down(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event);
+static void _etk_evas_scrolled_view_mouse_up(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event);
+static void _etk_evas_scrolled_view_mouse_move(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event);
 /**************************
  *
  * Implementation
@@ -165,6 +168,7 @@ Etk_Range *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view)
 void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child)
 {
    Etk_Widget *viewport;
+   Evas_Object *evas_obj;
 
    if (!scrolled_view || !child)
       return;
@@ -179,6 +183,10 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
       etk_widget_show(viewport);
    }
 
+   evas_obj = ETK_VIEWPORT(viewport)->event;
+   evas_object_event_callback_add(evas_obj, EVAS_CALLBACK_MOUSE_DOWN, _etk_evas_scrolled_view_mouse_down, scrolled_view);
+   evas_object_event_callback_add(evas_obj, EVAS_CALLBACK_MOUSE_UP, _etk_evas_scrolled_view_mouse_up, scrolled_view);
+   evas_object_event_callback_add(evas_obj, EVAS_CALLBACK_MOUSE_MOVE, _etk_evas_scrolled_view_mouse_move, scrolled_view);
    etk_container_add(ETK_CONTAINER(viewport), child);
    scrolled_view->viewport = viewport;
 }
@@ -887,6 +895,16 @@ static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key
    return propagate;
 }
 
+/* a wrapper to the real _etk_scrolled_view_mouse_down */
+static void _etk_evas_scrolled_view_mouse_down(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event)
+{
+   Etk_Event_Mouse_Down event;
+   Etk_Scrolled_View *scrolled_view = ETK_SCROLLED_VIEW(object);
+   etk_event_mouse_down_wrap(ETK_WIDGET(scrolled_view), (Evas_Event_Mouse_Down *) evas_event, &event);
+   _etk_scrolled_view_mouse_down(ETK_OBJECT(scrolled_view), &event, &scrolled_view->drag);
+   return;
+}
+
 /* Called when mouse button has been pressed down */
 static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data) 
 {
@@ -921,6 +939,16 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
       etk_viewport_hold_events_set(ETK_VIEWPORT(scrolled_view->viewport), ETK_FALSE);
    }
    return ETK_FALSE;
+}
+
+/* a wrapper to the real _etk_scrolled_view_mouse_move */
+static void _etk_evas_scrolled_view_mouse_move(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event)
+{
+   Etk_Event_Mouse_Move event;
+   Etk_Scrolled_View *scrolled_view = ETK_SCROLLED_VIEW(object);
+   etk_event_mouse_move_wrap(ETK_WIDGET(scrolled_view), (Evas_Event_Mouse_Move *) evas_event, &event);
+   _etk_scrolled_view_mouse_move(ETK_OBJECT(scrolled_view), &event, &scrolled_view->drag);
+   return;
 }
 
 /* Called when mouse is dragging */
@@ -1017,6 +1045,16 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
       return ETK_TRUE;
    }
    return ETK_FALSE;
+}
+
+/* a wrapper to the real _etk_scrolled_view_mouse_up */
+static void _etk_evas_scrolled_view_mouse_up(void *object, Evas *e, Evas_Object *evas_obj, void *evas_event)
+{
+   Etk_Event_Mouse_Up event;
+   Etk_Scrolled_View *scrolled_view = ETK_SCROLLED_VIEW(object);
+   etk_event_mouse_up_wrap(ETK_WIDGET(scrolled_view), (Evas_Event_Mouse_Up *) evas_event, &event);
+   _etk_scrolled_view_mouse_up(ETK_OBJECT(scrolled_view), &event, &scrolled_view->drag);
+   return;
 }
 
 /* Called when mouse button has been released */
