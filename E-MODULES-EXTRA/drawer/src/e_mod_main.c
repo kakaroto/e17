@@ -28,7 +28,6 @@ struct _Instance
    
    Eina_List *handlers;
 
-   Eina_Bool updated_content : 1;
    Eina_Bool is_floating : 1;
 };
 
@@ -928,10 +927,14 @@ _drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__)
 
    inst = data;
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
-   inst->updated_content = EINA_TRUE;
 
-   if (inst->view && inst->is_floating)
-     _drawer_container_update(inst);
+   if (inst->is_floating)
+     {
+	if (inst->view)
+	  _drawer_container_update(inst);
+     }
+   else if (inst->popup)
+     _drawer_popup_update(inst);
 
    return 1;
 }
@@ -973,11 +976,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	if (inst->popup->win->visible)
 	  _drawer_popup_hide(inst);
 	else
-	  {
-	     if (inst->updated_content)
-	       _drawer_popup_update(inst);
-	     _drawer_popup_show(inst);
-	  }
+	  _drawer_popup_show(inst);
 	return;
      }
    else if ((ev->button == 3) && (!inst->menu)) 
