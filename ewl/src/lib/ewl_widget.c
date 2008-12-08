@@ -824,6 +824,12 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
                 tmp = tmp->parent;
         }
 
+        /* this is the last point where we can unrealize the widget with
+         * a parent, this is important because else the canvas object cannot
+         * be cleaned up without problems */
+        if (REALIZED(w))
+                ewl_widget_unrealize(w);
+
         /* 
          * set the parent to NULL before doing the child remove, because
          * ewl_container_child_remove() will call this function if there
@@ -2920,8 +2926,6 @@ ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         pc = EWL_CONTAINER(w->parent);
-        if (REALIZED(w))
-                ewl_widget_unrealize(w);
 
         if (pc && REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
                 ewl_realize_request(w);
