@@ -34,6 +34,8 @@ typedef struct _Drawer_Source_Item Drawer_Source_Item;
 typedef struct _Drawer_Event_Source_Update Drawer_Event_Source_Update;
 typedef struct _Drawer_Event_View_Activate Drawer_Event_View_Activate;
 
+typedef struct _Drawer_Content_Margin Drawer_Content_Margin;
+
 #define DRAWER_PLUGIN(obj) ((Drawer_Plugin *) obj)
 #define DRAWER_SOURCE(obj) ((Drawer_Source *) obj)
 #define DRAWER_VIEW(obj)   ((Drawer_View *) obj)
@@ -115,7 +117,8 @@ struct _Drawer_Source
       Eina_List * (*list)        (Drawer_Source *s);
 
       /* optional */
-      void	  (*activate)    (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+      void	   (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+      const char * (*description_get) (Drawer_Source *s);
    } func;
 };
 
@@ -128,7 +131,7 @@ struct _Drawer_View
       Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
-      void	    (*content_size_get)	(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *h);
+      void	    (*content_size_get)	(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h);
       void	    (*orient_set)	(Drawer_View *v, E_Gadcon_Orient orient);
    } func;
 };
@@ -161,6 +164,11 @@ struct _Drawer_Event_View_Activate
 {
    Drawer_View *view;
    void *data;
+};
+
+struct _Drawer_Content_Margin
+{
+   Evas_Coord top, right, bottom, left;
 };
 
 /* Setup the E Module Version, Needed to check if module can run. */

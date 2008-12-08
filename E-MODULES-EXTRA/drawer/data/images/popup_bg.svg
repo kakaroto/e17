@@ -55,14 +55,24 @@
        y1="971.86218"
        x2="18.75"
        y2="971.86218" />
-    <filter
+    <linearGradient
        inkscape:collect="always"
-       id="filter3233">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.75"
-         id="feGaussianBlur3235" />
-    </filter>
+       xlink:href="#linearGradient2381"
+       id="linearGradient2398"
+       gradientUnits="userSpaceOnUse"
+       x1="50"
+       y1="946.86218"
+       x2="50"
+       y2="973.11218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2381"
+       id="linearGradient2400"
+       gradientUnits="userSpaceOnUse"
+       x1="-5.0118394"
+       y1="971.86218"
+       x2="18.75"
+       y2="971.86218" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -74,9 +84,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="75.794904"
-     inkscape:cy="19.670744"
+     inkscape:zoom="2"
+     inkscape:cx="229.32568"
+     inkscape:cy="37.704056"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -111,29 +121,36 @@
        inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
-    <rect
-       style="opacity:0.29999999999999999;fill:url(#linearGradient2391);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       id="rect3155"
-       width="80"
-       height="80"
-       x="10"
-       y="962.36218"
-       rx="5"
-       ry="5"
+    <g
+       id="g2389"
+       transform="matrix(1,0,0,0.9375,0,65.147636)"
        inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
-    <rect
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
-       ry="5"
-       rx="5"
-       y="962.36218"
-       x="10"
-       height="80"
-       width="80"
-       id="rect2393"
-       style="opacity:0.29999999999999999;fill:url(#linearGradient2397);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       inkscape:export-ydpi="90">
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
+         ry="5"
+         rx="5"
+         y="962.36218"
+         x="10"
+         height="80"
+         width="80"
+         id="rect3155"
+         style="opacity:0.3;fill:url(#linearGradient2398);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <rect
+         style="opacity:0.3;fill:url(#linearGradient2400);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect2393"
+         width="80"
+         height="80"
+         x="10"
+         y="962.36218"
+         rx="5"
+         ry="5"
+         inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90" />
+    </g>
   </g>
 </svg>

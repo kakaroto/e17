@@ -4,8 +4,6 @@
 #include <e.h>
 #include "list.h"
 
-#define PADDING 20
-
 /* Local Structures */
 typedef struct _Instance Instance;
 typedef struct _Entry Entry;
@@ -155,7 +153,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 }
 
 EAPI void
-drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *h)
+drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h)
 {
    Instance *inst = NULL;
    Evas_Coord bw, bh, gx, gy, gw, gh, zw, zh, zx, zy;
@@ -166,7 +164,6 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *
    edje_object_size_min_calc(inst->o_con, w, h);
    edje_extern_object_min_size_set(inst->o_box, 0, 0);
 
-   /* XXX: Include real the size of the popup, instead of PADDING? */
    e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
    zx = gcc->gadcon->zone->x;
    zy = gcc->gadcon->zone->y;
@@ -177,30 +174,30 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *
       case E_GADCON_ORIENT_CORNER_RT:
       case E_GADCON_ORIENT_CORNER_RB:
       case E_GADCON_ORIENT_RIGHT:
-	 if (gx - *w < zx)
-	   *w = gx - zx - PADDING;
+	 if (gx - *w < zx + margin->left)
+	   *w = gx - zx - margin->left;
 	break;
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_CORNER_LT:
       case E_GADCON_ORIENT_CORNER_LB:
-	if (gx + gw + *w > zx + zw)
-	  *w = zx + zw - gx - gw - PADDING;
+	if (gx + gw + *w > zx + zw + margin->right)
+	  *w = zx + zw - gx - gw + margin->right;
 	break;
       case E_GADCON_ORIENT_TOP:
       case E_GADCON_ORIENT_CORNER_TL:
       case E_GADCON_ORIENT_CORNER_TR:
-	if (gy + gh + *h > zy + zh)
-	  *h = zy + zh - gy - gh - PADDING;
+	if (gy + gh + *h > zy + zh + margin->bottom)
+	  *h = zy + zh - gy - gh + margin->bottom;
 	break;
       case E_GADCON_ORIENT_BOTTOM:
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
-	if (gy - *h < zy)
-	  *h = gy - zy - PADDING;
+	if (gy - *h < zy + margin->top)
+	  *h = gy - zy - margin->top;
 	break;
       case E_GADCON_ORIENT_FLOAT:
-	if (*w > zw)
-	  *w = zw - 2 * PADDING;
+	if (*w > zw - margin->left - margin->right)
+	  *w = zw - margin->left - margin->right;
 	break;
      }
 }

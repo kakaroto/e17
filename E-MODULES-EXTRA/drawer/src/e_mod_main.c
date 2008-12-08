@@ -444,12 +444,17 @@ _drawer_popup_update(Instance *inst)
 {
    Evas_Object *o = NULL;
    Eina_List *l = NULL;
+   Drawer_Source *s;
 
-   l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+   s = DRAWER_SOURCE(inst->source);
+   l = s->func.list(s);
    _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
 
    o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
 	 inst->popup->win->evas, l);
+   if (s->func.description_get)
+     edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
+	   s->func.description_get(s));
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 }
@@ -459,15 +464,21 @@ _drawer_container_update(Instance *inst)
 {
    Evas_Object *o = NULL;
    Eina_List *l = NULL;
+   Drawer_Source *s;
 
    o = edje_object_part_swallow_get(inst->o_drawer, "e.swallow.content");
    if (o) {
 	evas_object_del(o);
 	o = NULL;
    }
-   l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+   s = DRAWER_SOURCE(inst->source);
+   l = s->func.list(s);
    o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
 	 evas_object_evas_get(inst->o_drawer), l);
+
+   if (s->func.description_get)
+     edje_object_part_text_set(inst->o_drawer, "e.text.description",
+	   s->func.description_get(s));
    edje_object_part_swallow(inst->o_drawer, "e.swallow.content", o);
    evas_object_show(o);
 }
@@ -625,7 +636,7 @@ _drawer_source_new(Instance *inst, const char *name)
      }
 
    s->func.activate = dlsym(p->handle, "drawer_source_activate");
-   /* XXX: Needs an optional description method */
+   s->func.description_get = dlsym(p->handle, "drawer_source_description_get");
 
 init_done:
 
@@ -1044,12 +1055,18 @@ _drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h)
 {
    Instance *inst = NULL;
    Drawer_View *v = NULL;
-   int cw, ch;
+   Drawer_Content_Margin margin = {0, 0, 0, 0};
+   int cw, ch, px, py, pw, ph, ew, eh;
 
    inst = evas_object_data_get(obj, "drawer_popup_data");
    v = DRAWER_VIEW(inst->view);
    if (!v->func.content_size_get) return;
-   v->func.content_size_get(v, inst->popup->gcc, &cw, &ch);
+
+   edje_object_part_geometry_get(inst->popup->o_bg, "e.swallow.content", &px, &py, &pw, &ph);
+   evas_object_geometry_get(inst->popup->o_bg, NULL, NULL, &ew, &eh);
+   margin.top = py + 10; margin.right = ew - px - pw + 10;
+   margin.bottom = eh - py - ph + 10; margin.left = px + 10;
+   v->func.content_size_get(v, inst->popup->gcc, &margin, &cw, &ch);
 
    if (cw) *w = cw;
    if (ch) *h = ch;

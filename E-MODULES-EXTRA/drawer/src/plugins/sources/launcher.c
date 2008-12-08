@@ -18,6 +18,8 @@ struct _Instance
    Eina_List *items;
 
    Conf *conf;
+
+   const char *description;
 };
 
 struct _Launcher_Conf
@@ -57,6 +59,7 @@ struct _E_Config_Dialog_Data
 #define CONF_RATING(obj) ((Conf_Rating *) obj)
 
 static void _launcher_conf_new(Instance *inst, const char *id);
+static void _launcher_description_create(Instance *inst);
 static void _launcher_sources_rating_discount(Instance *inst, int min);
 
 static int _launcher_cb_sort_rating(const void *data1, const void *data2);
@@ -132,6 +135,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
      }
 
    _launcher_conf_new(inst, id);
+   _launcher_description_create(inst);
 
    return inst;
 }
@@ -145,6 +149,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
    _launcher_source_item_free(inst);
 
+   if (inst->description) eina_stringshare_del(inst->description);
    if (inst->conf->id) eina_stringshare_del(inst->conf->id);
    if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
 
@@ -258,6 +263,16 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
      _launcher_cb_app_change(inst, NULL);
 }
 
+EAPI const char *
+drawer_source_description_get(Drawer_Source *s)
+{
+   Instance *inst;
+
+   inst = DRAWER_PLUGIN(s)->data;
+
+   return inst->description;
+}
+
 static void
 _launcher_conf_new(Instance *inst, const char *id)
 {
@@ -284,6 +299,16 @@ _launcher_conf_new(Instance *inst, const char *id)
 
 	e_config_save_queue();
      }
+}
+
+static void
+_launcher_description_create(Instance *inst)
+{
+   char buf[1024];
+
+   if (inst->description) eina_stringshare_del(inst->description);
+   snprintf(buf, sizeof(buf), "<title>Launcher : </title> <hilight>%s</hilight> source", inst->conf->dir);
+   inst->description = eina_stringshare_add(buf);
 }
 
 static void
@@ -501,6 +526,8 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
    cfdata->inst->conf->sort_rel = cfdata->sort_rel;
+
+   _launcher_description_create(inst);
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;

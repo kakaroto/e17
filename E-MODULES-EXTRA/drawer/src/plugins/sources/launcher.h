@@ -15,5 +15,6 @@ EAPI void drawer_plugin_config_save(Drawer_Plugin *p);
 
 EAPI Eina_List *drawer_source_list(Drawer_Source *s);
 EAPI void  drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+EAPI const char * drawer_source_description_get(Drawer_Source *s);
 
 #endif
