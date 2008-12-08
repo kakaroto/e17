@@ -29,6 +29,7 @@ struct _Instance
    Eina_List *handlers;
 
    Eina_Bool updated_content : 1;
+   Eina_Bool is_floating : 1;
 };
 
 /* Local Function Prototypes */
@@ -51,6 +52,8 @@ static void _drawer_popup_create(Instance *inst);
 static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
+static void _drawer_container_update(Instance *inst);
+static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
 
 static Drawer_Plugin *_drawer_plugin_new(Instance *inst, const char *name, const char *category, size_t size);
 static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
@@ -326,6 +329,9 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
     return DRAWER_PLUGIN(_drawer_source_new(inst, name));
    else if (cat == DRAWER_VIEWS)
      return DRAWER_PLUGIN(_drawer_view_new(inst, name));
+
+   if (inst->source && inst->view && inst->is_floating)
+     _drawer_container_update(inst);
 }
 
 EAPI Evas_Object *
@@ -415,8 +421,6 @@ _drawer_popup_create(Instance *inst)
      }
    e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
 
-   inst->source->evas = inst->view->evas = inst->popup->win->evas;
-
    _drawer_popup_update(inst);
 }
 
@@ -441,14 +445,64 @@ _drawer_popup_update(Instance *inst)
 {
    Evas_Object *o = NULL;
    Eina_List *l = NULL;
-   int w, h;
 
    l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
    _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
 
-   o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view), l);
+   o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
+	 inst->popup->win->evas, l);
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
+}
+
+static void
+_drawer_container_update(Instance *inst)
+{
+   Evas_Object *o = NULL;
+   Eina_List *l = NULL;
+
+   o = edje_object_part_swallow_get(inst->o_drawer, "e.swallow.content");
+   if (o) {
+	evas_object_del(o);
+	o = NULL;
+   }
+   l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+   o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
+	 evas_object_evas_get(inst->o_drawer), l);
+   edje_object_part_swallow(inst->o_drawer, "e.swallow.content", o);
+   evas_object_show(o);
+}
+
+static void
+_drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
+{
+   Evas_Object *o = NULL;
+   char buf[4096];
+
+   inst->is_floating = (orient == E_GADCON_ORIENT_FLOAT);
+
+   /* theme file */
+   snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
+            drawer_conf->module->dir);
+
+   o = edje_object_part_swallow_get(inst->o_drawer, "e.swallow.content");
+   if (o)
+     edje_object_part_unswallow(inst->o_drawer, o);
+   if (inst->is_floating)
+     {
+	if (!e_theme_edje_object_set(inst->o_drawer, "base/theme/modules/drawer", 
+		 "modules/drawer/main_float"))
+	  edje_object_file_set(inst->o_drawer, buf, "modules/drawer/main_float");
+     }
+   else
+     {
+	if (!e_theme_edje_object_set(inst->o_drawer, "base/theme/modules/drawer", 
+		 "modules/drawer/main"))
+	  edje_object_file_set(inst->o_drawer, buf, "modules/drawer/main");
+     }
+   if (o)
+     edje_object_part_swallow(inst->o_drawer, "e.swallow.content", o);
+
 }
 
 static Drawer_Plugin *
@@ -572,6 +626,7 @@ _drawer_source_new(Instance *inst, const char *name)
      }
 
    s->func.activate = dlsym(p->handle, "drawer_source_activate");
+   /* XXX: Needs an optional description method */
 
 init_done:
 
@@ -581,7 +636,8 @@ init_done:
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
      p->enabled = EINA_TRUE;
 
-   _drawer_shelf_update(inst, NULL);
+   if (!inst->is_floating)
+     _drawer_shelf_update(inst, NULL);
    return s;
 }
 
@@ -622,6 +678,9 @@ init_done:
 
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
      p->enabled = EINA_TRUE;
+
+   if (v->func.orient_set)
+     v->func.orient_set(v, inst->gcc->gadcon->orient);
    return v;
 }
 
@@ -630,11 +689,6 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
    Instance *inst = NULL;
-   char buf[4096];
-
-   /* theme file */
-   snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
-            drawer_conf->module->dir);
 
    /* New visual instance, any config ? */
    inst = E_NEW(Instance, 1);
@@ -642,11 +696,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    /* create on-screen object */
    inst->o_drawer = edje_object_add(gc->evas);
-   /* we have a theme ? */
-   if (!e_theme_edje_object_set(inst->o_drawer, "base/theme/modules/drawer", 
-                                "modules/drawer/main"))
-     edje_object_file_set(inst->o_drawer, buf, "modules/drawer/main");
 
+   _drawer_container_setup(inst, gc->orient);
    /* Start loading our module on screen via container */
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_drawer);
    inst->gcc->data = inst;
@@ -667,11 +718,14 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    if (inst->conf_item->source)
      _drawer_source_new(inst, inst->conf_item->source);
-   else
+   else if (!inst->is_floating)
      _drawer_shelf_update(inst, NULL);
 
    if (inst->conf_item->view)
      _drawer_view_new(inst, inst->conf_item->view);
+
+   if (inst->source && inst->view && inst->is_floating)
+     _drawer_container_update(inst);
 
    /* return the Gadget_Container Client */
    return inst->gcc;
@@ -715,10 +769,10 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 static void 
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
-   /* XXX: don't create a popup when in FLOAT mode */
    Instance *inst = NULL;
    
    inst = gcc->data;
+   _drawer_container_setup(inst, orient);
    if (inst->view && DRAWER_VIEW(inst->view)->func.orient_set)
      DRAWER_VIEW(inst->view)->func.orient_set(DRAWER_VIEW(inst->view), orient);
 
@@ -870,6 +924,9 @@ _drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__)
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
    inst->updated_content = EINA_TRUE;
 
+   if (inst->view && inst->is_floating)
+     _drawer_container_update(inst);
+
    return 1;
 }
 
@@ -888,7 +945,8 @@ _drawer_view_activate_cb(void *data, int ev_type, void *event)
 
    DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source), ev->data, inst->gcc->gadcon->zone);
 
-   _drawer_popup_hide(inst);
+   if (!inst->is_floating)
+     _drawer_popup_hide(inst);
 
    return 0;
 }
@@ -902,7 +960,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
-   if (ev->button == 1 && inst->source && inst->view
+   if (ev->button == 1 && !inst->is_floating && inst->source && inst->view
 	 && inst->source->enabled && inst->view->enabled)
      {
 	if (!inst->popup) _drawer_popup_create(inst);

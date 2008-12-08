@@ -92,8 +92,6 @@ struct _Drawer_Plugin
    
    Eina_Bool            enabled : 1;
    Eina_Bool            error : 1;
-   
-   Evas		       *evas;
 
    struct {
       void        * (*init)            (Drawer_Plugin *p, const char *id);
@@ -125,9 +123,9 @@ struct _Drawer_Source
 struct _Drawer_View
 {
    Drawer_Plugin	plugin;
-
+   
    struct {
-      Evas_Object * (*render)      (Drawer_View *v, Eina_List *items);
+      Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
       void	    (*content_size_get)	(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *h);

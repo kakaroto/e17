@@ -23,6 +23,8 @@ struct _Instance
 {
    Drawer_View *view;
 
+   Evas *evas;
+
    Eina_List *entries;
 
    Evas_Object *o_box, *o_con;
@@ -91,12 +93,14 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 }
 
 EAPI Evas_Object *
-drawer_view_render(Drawer_View *v, Eina_List *items)
+drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 {
    Instance *inst = NULL;
    Eina_List *l, *ll;
 
    inst = DRAWER_PLUGIN(v)->data;
+
+   inst->evas = evas;
 
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
@@ -247,7 +251,7 @@ _list_containers_create(Instance *inst)
    Evas *evas;
    const char *group;
 
-   evas = DRAWER_PLUGIN(inst->view)->evas;
+   evas = inst->evas;
    inst->o_con = edje_object_add(evas);
 
    inst->o_box = e_box_add(evas);
@@ -301,14 +305,14 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e = E_NEW(Entry, 1);
 
-   e->o_holder = edje_object_add(DRAWER_PLUGIN(inst->view)->evas);
+   e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
 	 "modules/drawer/list/horizontal_entry"))
      edje_object_file_set(e->o_holder, inst->theme_file,
 	   "modules/drawer/list/horizontal_entry");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
-   e->o_icon = drawer_util_icon_create(si, DRAWER_PLUGIN(inst->view)->evas, w, h);
+   e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
 
    edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
    evas_object_pass_events_set(e->o_icon, 1);
@@ -333,13 +337,13 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e = E_NEW(Entry, 1);
 
-   e->o_holder = edje_object_add(DRAWER_PLUGIN(inst->view)->evas);
+   e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
 	 "modules/drawer/list/vertical_entry"))
      edje_object_file_set(e->o_holder, inst->theme_file, "modules/drawer/list/vertical_entry");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
-   e->o_icon = drawer_util_icon_create(si, DRAWER_PLUGIN(inst->view)->evas, w, h);
+   e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
 
    edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
    evas_object_pass_events_set(e->o_icon, 1);

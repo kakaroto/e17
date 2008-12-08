@@ -10,6 +10,7 @@ images {
    image: "popup_overlay.png" COMP;
    image: "pin.png" COMP;
    image: "glow.png" COMP;
+   image: "gadman_border.png" COMP;
 }
 
 collections {
@@ -29,7 +30,6 @@ collections {
       }
    }
    group {
-      /* XXX: handle e,action,popup_show|hide */
       name: "modules/drawer/main";
       max: 128 128;
       script {
@@ -219,6 +219,34 @@ collections {
 	       state: "default" 0.0;
 	       visible: 1;
 	       image.normal: "logo_white_128.png";
+	    }
+	 }
+      }
+   }
+   group {
+      /* XXX: Accomodate a title */
+      name: "modules/drawer/main_float";
+      parts {
+	 part {
+	    name: "border";
+	    mouse_events:  0;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "gadman_border.png";
+		  border: 8 8 8 8;
+		  middle: 0;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+	 part {
+	    name: "e.swallow.content";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       rel1.offset: 8 8;
+	       rel2.offset: -9 -9;
 	    }
 	 }
       }
