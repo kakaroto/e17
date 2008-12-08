@@ -2982,7 +2982,7 @@ iw_process_auth_name(unsigned int		    value,
     static inline void
 iw_process_ie_wpa(unsigned char* iebuf,
         int buflen,
-        Exalt_Wireless_Network* wscan)
+        Exalt_Wireless_Network_IE* ie)
 {
     int ielen = iebuf[1] +2;
     int offset = 2;
@@ -3002,7 +3002,7 @@ iw_process_ie_wpa(unsigned char* iebuf,
             /* Check if we have enough data */
             if(ielen < 4)
             {
-                exalt_wirelessnetwork_wpa_type_set(wscan,WPA_TYPE_UNKNOWN);
+                exalt_wireless_network_ie_wpa_type_set(ie,WPA_TYPE_UNKNOWN);
                 return;
             }
 
@@ -3017,7 +3017,7 @@ iw_process_ie_wpa(unsigned char* iebuf,
                     || (memcmp(&iebuf[offset], wpa_oui, 3) !=0)
                     || (iebuf[offset+3]!= 0x01))
             {
-                exalt_wirelessnetwork_wpa_type_set(wscan,WPA_TYPE_UNKNOWN);
+                exalt_wireless_network_ie_wpa_type_set(ie,WPA_TYPE_UNKNOWN);
                 return ;
             }
 
@@ -3033,26 +3033,26 @@ iw_process_ie_wpa(unsigned char* iebuf,
     offset += 2;
 
     if(iebuf[0] == 0xdd)
-        exalt_wirelessnetwork_wpa_type_set(wscan,WPA_TYPE_WPA);
+        exalt_wireless_network_ie_wpa_type_set(ie,WPA_TYPE_WPA);
     if(iebuf[0] == 0x30)
-        exalt_wirelessnetwork_wpa_type_set(wscan,WPA_TYPE_WPA2);
-    exalt_wirelessnetwork_wpa_version_set(wscan,ver);
+        exalt_wireless_network_ie_wpa_type_set(ie,WPA_TYPE_WPA2);
+    exalt_wireless_network_ie_wpa_version_set(ie,ver);
 
     /* Check if we are done */
     if(ielen < (offset + 4))
     {
         /* We have a short UE, So we should assume TKIP/TKIP */
-        exalt_wirelessnetwork_group_cypher_set(wscan,CYPHER_NAME_TKIP);
-        exalt_wirelessnetwork_pairwise_cypher_set(wscan,CYPHER_NAME_TKIP,0);
-        exalt_wirelessnetwork_pairwise_cypher_number_set(wscan,1);
+        exalt_wireless_network_ie_group_cypher_set(ie,CYPHER_NAME_TKIP);
+        exalt_wireless_network_ie_pairwise_cypher_set(ie,CYPHER_NAME_TKIP,0);
+        exalt_wireless_network_ie_pairwise_cypher_number_set(ie,1);
         return ;
     }
 
     /* Next we have our group cipher */
     if(memcmp(&iebuf[offset], wpa_oui, 3) != 0)
-        exalt_wirelessnetwork_group_cypher_set(wscan,CYPHER_NAME_PROPRIETARY);
+        exalt_wireless_network_ie_group_cypher_set(ie,CYPHER_NAME_PROPRIETARY);
     else
-        exalt_wirelessnetwork_group_cypher_set(wscan,iw_process_cypher_name(iebuf[offset+3], iw_ie_cypher_name, IW_IE_CYPHER_NUM));
+        exalt_wireless_network_ie_group_cypher_set(ie,iw_process_cypher_name(iebuf[offset+3], iw_ie_cypher_name, IW_IE_CYPHER_NUM));
 
     offset += 4;
 
@@ -3060,15 +3060,15 @@ iw_process_ie_wpa(unsigned char* iebuf,
     if(ielen < (offset + 2))
     {
         /* We don't have a pairwise cipher, or auth method. Assume TKIP */
-        exalt_wirelessnetwork_pairwise_cypher_set(wscan,CYPHER_NAME_TKIP,0);
-        exalt_wirelessnetwork_pairwise_cypher_number_set(wscan,1);
+        exalt_wireless_network_ie_pairwise_cypher_set(ie,CYPHER_NAME_TKIP,0);
+        exalt_wireless_network_ie_pairwise_cypher_number_set(ie,1);
         return;
     }
 
     /* otherwise, we have some number of pairwise ciphers */
     cnt = iebuf[offset] | (iebuf[offset + 1] << 8);
     offset += 2;
-    exalt_wirelessnetwork_pairwise_cypher_number_set(wscan,cnt);
+    exalt_wireless_network_ie_pairwise_cypher_number_set(ie,cnt);
 
     if(ielen < (offset + 4*cnt))
         return;
@@ -3077,13 +3077,13 @@ iw_process_ie_wpa(unsigned char* iebuf,
     {
         if(memcmp(&iebuf[offset], wpa_oui, 3) != 0)
         {
-            exalt_wirelessnetwork_pairwise_cypher_set(wscan,
+            exalt_wireless_network_ie_pairwise_cypher_set(ie,
                     CYPHER_NAME_PROPRIETARY,
                     i);
         }
         else
         {
-            exalt_wirelessnetwork_pairwise_cypher_set(wscan,
+            exalt_wireless_network_ie_pairwise_cypher_set(ie,
                     iw_process_cypher_name(iebuf[offset+3],
                         iw_ie_cypher_name, IW_IE_CYPHER_NUM),
                     i);
@@ -3098,7 +3098,7 @@ iw_process_ie_wpa(unsigned char* iebuf,
     /* Now, we have authentication suites. */
     cnt = iebuf[offset] | (iebuf[offset + 1] << 8);
     offset += 2;
-    exalt_wirelessnetwork_auth_suites_number_set(wscan,cnt);
+    exalt_wireless_network_ie_auth_suites_number_set(ie,cnt);
 
     if(ielen < (offset + 4*cnt))
         return;
@@ -3107,13 +3107,13 @@ iw_process_ie_wpa(unsigned char* iebuf,
     {
         if(memcmp(&iebuf[offset], wpa_oui, 3) != 0)
         {
-            exalt_wirelessnetwork_auth_suites_set(wscan,
+            exalt_wireless_network_ie_auth_suites_set(ie,
                     AUTH_SUITES_UNKNOWN,
                     i);
         }
         else
         {
-            exalt_wirelessnetwork_auth_suites_set(wscan,
+            exalt_wireless_network_ie_auth_suites_set(ie,
                     iw_process_auth_name(iebuf[offset+3],
                         iw_ie_key_mgmt_name, IW_IE_KEY_MGMT_NUM),
                     i);
@@ -3130,13 +3130,13 @@ iw_process_ie_wpa(unsigned char* iebuf,
      * first byte.  (But, preauth with WPA version 1 isn't supposed to be
      * allowed.) 8-) */
     if(iebuf[offset] & 0x01)
-        exalt_wirelessnetwork_preauth_supported_set(wscan,1);
+        exalt_wireless_network_ie_preauth_supported_set(ie,1);
 }
 
     static inline void
 iw_process_gen_ie(unsigned char* buffer,
         int buflen,
-        Exalt_Wireless_Network* wscan)
+        Exalt_Wireless_Network_IE* ie)
 {
     int offset =  0;
 
@@ -3148,7 +3148,7 @@ iw_process_gen_ie(unsigned char* buffer,
         {
             case 0xdd: /* WPA1 (and other) */
             case 0x30: /* WPA2 */
-                iw_process_ie_wpa(buffer+offset, buflen, wscan);
+                iw_process_ie_wpa(buffer+offset, buflen, ie);
                 break;
             default:
                 //iw_process_ie_unknown(buffer+offset , bufflen);
@@ -3174,7 +3174,7 @@ iw_process_scanning_token(struct iw_event *	    event,
     {
         case SIOCGIWAP:
             /* New cell description. Allocate new cell descriptor, zero it. */
-            wscan = exalt_wirelessnetwork_create(w);
+            wscan = exalt_wireless_network_new(w);
             if(wscan == NULL)
                 return(wscan);
             (*networks) = eina_list_append(*networks,wscan);
@@ -3182,7 +3182,7 @@ iw_process_scanning_token(struct iw_event *	    event,
             char buf[18];
             iw_ether_ntop((struct ether_addr* )event->u.ap_addr.sa_data,buf);
 
-            exalt_wirelessnetwork_address_set(wscan,buf);
+            exalt_wireless_network_address_set(wscan,buf);
             break;
         case SIOCGIWNWID:
             break;
@@ -3192,36 +3192,41 @@ iw_process_scanning_token(struct iw_event *	    event,
             if((event->u.mode < IW_NUM_OPER_MODE)
                     && (event->u.mode >= 0))
             {
-                exalt_wirelessnetwork_mode_set(wscan,exalt_wirelessnetwork_mode_from_id(event->u.mode));
+                exalt_wireless_network_mode_set(wscan,exalt_wireless_network_mode_from_id(event->u.mode));
             }
             break;
         case SIOCGIWESSID:
             if((event->u.essid.pointer) && (event->u.essid.length))
-                exalt_wirelessnetwork_essid_set(wscan,
+                exalt_wireless_network_essid_set(wscan,
                         event->u.essid.pointer);
             break;
         case SIOCGIWENCODE:
             if(!event->u.data.pointer)
                 event->u.data.flags |= IW_ENCODE_NOKEY;
             if(event->u.data.flags & IW_ENCODE_DISABLED)
-                exalt_wirelessnetwork_encryption_set(wscan,0);
+                exalt_wireless_network_encryption_set(wscan,0);
             else
             {
-                exalt_wirelessnetwork_encryption_set(wscan,1);
+                exalt_wireless_network_encryption_set(wscan,1);
                 if(event->u.data.flags & IW_ENCODE_RESTRICTED)
-                    exalt_wirelessnetwork_security_mode_set(wscan,SECURITY_RESTRICTED);
+                    exalt_wireless_network_security_mode_set(wscan,SECURITY_RESTRICTED);
                 if(event->u.data.flags & IW_ENCODE_OPEN)
-                    exalt_wirelessnetwork_security_mode_set(wscan,SECURITY_OPEN);
+                    exalt_wireless_network_security_mode_set(wscan,SECURITY_OPEN);
             }
             break;
         case IWEVQUAL:
-            exalt_wirelessnetwork_quality_set(wscan,event->u.qual.qual);
+            exalt_wireless_network_quality_set(wscan,event->u.qual.qual);
             break;
         case SIOCGIWRATE:
             break;
         case IWEVGENIE:
-            exalt_wirelessnetwork_has_ie_set(wscan,1);
-            iw_process_gen_ie(event->u.data.pointer, event->u.data.length, wscan);
+            {
+                Exalt_Wireless_Network_IE* ie = exalt_wireless_network_ie_new();
+                Eina_List* l = exalt_wireless_network_ie_get(wscan);
+                l = eina_list_append(l,ie);
+                exalt_wireless_network_ie_set(wscan,l);
+                iw_process_gen_ie(event->u.data.pointer, event->u.data.length, ie);
+            }
             break;
         case IWEVCUSTOM:
         default:

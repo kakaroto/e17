@@ -92,33 +92,8 @@ EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(signal_lvl,int);
 EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(mode,Exalt_Wireless_Network_Mode);
 EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(security_mode,Exalt_Wireless_Network_Security);
 
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(has_ie,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(wpa_version,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_SET_HEADER(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(pairwise_cypher_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_SET_HEADER(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(auth_suites_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(preauth_supported,int);
-
-EXALT_DBUS_WIRELESS_NETWORK_IS_HEADER(has_ie,int);
-EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type);
-EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(wpa_version,int);
-EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_GET_HEADER(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(pairwise_cypher_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_GET_HEADER(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites);
-EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(auth_suites_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_IS_HEADER(preauth_supported,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET_HEADER(ie,Eina_List*);
+EXALT_DBUS_WIRELESS_NETWORK_GET_HEADER(ie,Eina_List*);
 
 
 /** @} */

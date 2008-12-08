@@ -90,6 +90,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             int integer;
             Exalt_DBus_Wireless_Network* w;
             DBusMessageIter iter_w;
+            DBusMessageIter iter_ie;
             DBusMessageIter iter_integer;
             int i;
 
@@ -120,51 +121,55 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             dbus_message_iter_get_basic(&iter_w, &integer);
             exalt_dbus_wireless_network_mode_set(w,integer);
 
-            dbus_message_iter_next(&iter_w);
-            dbus_message_iter_get_basic(&iter_w, &integer);
-            exalt_dbus_wireless_network_has_ie_set(w,integer);
-
-            if(exalt_dbus_wireless_network_has_ie_is(w))
+            //the list of WPA IE
+            while(dbus_message_iter_next(&iter_w))
             {
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_wpa_type_set(w,integer);
+                Exalt_Wireless_Network_IE* ie =
+                    exalt_wireless_network_ie_new();
+                Eina_List* l = exalt_dbus_wireless_network_ie_get(w);
+                l = eina_list_append(l,ie);
+                exalt_dbus_wireless_network_ie_set(w,l);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_wpa_version_set(w,integer);
+                dbus_message_iter_recurse (&iter_w, &iter_ie);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_preauth_supported_set(w,integer);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_wpa_type_set(ie,integer);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_group_cypher_set(w,integer);
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_wpa_version_set(ie,integer);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_pairwise_cypher_number_set(w,integer);
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_preauth_supported_set(ie,integer);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_recurse (&iter_w, &iter_integer);
-                for(i=0;i<exalt_dbus_wireless_network_pairwise_cypher_number_get(w);i++)
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_group_cypher_set(ie,integer);
+
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_pairwise_cypher_number_set(ie,integer);
+
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_recurse (&iter_ie, &iter_integer);
+                for(i=0;i<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);i++)
                 {
                     dbus_message_iter_get_basic(&iter_integer, &integer);
-                    exalt_dbus_wireless_network_pairwise_cypher_set(w,integer,i);
+                    exalt_wireless_network_ie_pairwise_cypher_set(ie,integer,i);
                     dbus_message_iter_next(&iter_integer);
                 }
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_get_basic(&iter_w, &integer);
-                exalt_dbus_wireless_network_auth_suites_number_set(w,integer);
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_get_basic(&iter_ie, &integer);
+                exalt_wireless_network_ie_auth_suites_number_set(ie,integer);
 
-                dbus_message_iter_next(&iter_w);
-                dbus_message_iter_recurse (&iter_w, &iter_integer);
-                for(i=0;i<exalt_dbus_wireless_network_auth_suites_number_get(w);i++)
+                dbus_message_iter_next(&iter_ie);
+                dbus_message_iter_recurse (&iter_ie, &iter_integer);
+                for(i=0;i<exalt_wireless_network_ie_auth_suites_number_get(ie);i++)
                 {
                     dbus_message_iter_get_basic(&iter_integer, &integer);
-                    exalt_dbus_wireless_network_auth_suites_set(w,integer,i);
+                    exalt_wireless_network_ie_auth_suites_set(ie,integer,i);
                     dbus_message_iter_next(&iter_integer);
                 }
             }

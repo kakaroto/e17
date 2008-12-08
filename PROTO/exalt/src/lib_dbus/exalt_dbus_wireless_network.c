@@ -398,23 +398,8 @@ struct Exalt_DBus_Wireless_Network
     int quality;
     Exalt_Wireless_Network_Mode mode;
 
-    //if the wireless network has an IE definition
-    int has_ie;
-
-    Exalt_Wireless_Network_Wpa_Type wpa_type;
-    int wpa_version;
-
-    Exalt_Wireless_Network_Cypher_Name group_cypher;
-
-    Exalt_Wireless_Network_Cypher_Name
-        pairwise_cypher[EXALT_WIRELESS_NETWORK_CYPHER_NAME_NUM];
-    int pairwise_cypher_number;
-
-    Exalt_Wireless_Network_Auth_Suites
-        auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
-    int auth_suites_number;
-
-    int preauth_supported;
+    /* contains a list of Exalt_Wireless_Network_IE* . */
+    Eina_List* ie;
 };
 
 #define EXALT_DBUS_WIRELESS_NETWORK_STRING_SET(attribut)\
@@ -481,6 +466,7 @@ Exalt_DBus_Wireless_Network* exalt_dbus_wireless_network_new()
 {
     Exalt_DBus_Wireless_Network *w = calloc(1,sizeof(Exalt_DBus_Wireless_Network));
     EXALT_ASSERT_RETURN(w!=NULL);
+    w->ie = NULL;
     return w;
 }
 
@@ -509,33 +495,8 @@ EXALT_DBUS_WIRELESS_NETWORK_SET(mode,Exalt_Wireless_Network_Mode);
 EXALT_DBUS_WIRELESS_NETWORK_SET(security_mode,Exalt_Wireless_Network_Security);
 
 
-EXALT_DBUS_WIRELESS_NETWORK_SET(has_ie,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type);
-EXALT_DBUS_WIRELESS_NETWORK_SET(wpa_version,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_SET(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_SET(pairwise_cypher_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_SET(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites);
-EXALT_DBUS_WIRELESS_NETWORK_SET(auth_suites_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_SET(preauth_supported,int);
-
-EXALT_DBUS_WIRELESS_NETWORK_IS(has_ie,int);
-EXALT_DBUS_WIRELESS_NETWORK_GET(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type);
-EXALT_DBUS_WIRELESS_NETWORK_GET(wpa_version,int);
-EXALT_DBUS_WIRELESS_NETWORK_GET(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_GET(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name);
-EXALT_DBUS_WIRELESS_NETWORK_GET(pairwise_cypher_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_TAB_GET(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites);
-EXALT_DBUS_WIRELESS_NETWORK_GET(auth_suites_number,int);
-EXALT_DBUS_WIRELESS_NETWORK_IS(preauth_supported,int);
+EXALT_DBUS_WIRELESS_NETWORK_SET(ie,Eina_List*);
+EXALT_DBUS_WIRELESS_NETWORK_GET(ie,Eina_List*);
 
 /** @} */
 

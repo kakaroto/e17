@@ -93,6 +93,10 @@ void notify_scan(char* eth, Eina_List* networks, void* user_data __UNUSED__)
     printf("scan network on %s\n",eth);
     EINA_LIST_FOREACH(networks,l,w)
     {
+        Eina_List* l = exalt_dbus_wireless_network_ie_get(w);
+        Eina_List* l1;
+        Exalt_Wireless_Network_IE *ie;
+
         printf("# %s\n",exalt_dbus_wireless_network_essid_get(w));
         printf("\tAdress: %s\n",exalt_dbus_wireless_network_address_get(w));
         printf("\tquality: %d\n",exalt_dbus_wireless_network_quality_get(w));
@@ -100,32 +104,33 @@ void notify_scan(char* eth, Eina_List* networks, void* user_data __UNUSED__)
         Exalt_Wireless_Network_Security security = exalt_dbus_wireless_network_security_mode_get(w);
         printf("\tsecurity mode: %s\n",exalt_wireless_network_name_from_security(security));
         Exalt_Wireless_Network_Mode m = exalt_dbus_wireless_network_mode_get(w);
-        printf("\tmode: %s\n",exalt_wirelessnetwork_name_from_id(m));
-        printf("\tHas IE: %d\n",exalt_dbus_wireless_network_has_ie_is(w));
-        if(exalt_dbus_wireless_network_has_ie_is(w))
+        printf("\tmode: %s\n",exalt_wireless_network_name_from_id(m));
+        l = exalt_dbus_wireless_network_ie_get(w);
+        EINA_LIST_FOREACH(l,l1,ie)
         {
-            Exalt_Wireless_Network_Wpa_Type wpa_type = exalt_dbus_wireless_network_wpa_type_get(w);
-            printf("\t\twpa type: %s\n",exalt_wireless_network_name_from_wpa_type(wpa_type));
-            printf("\t\twpa version: %d\n",exalt_dbus_wireless_network_wpa_version_get(w));
-            printf("\t\tpre auth supported: %d\n",exalt_dbus_wireless_network_preauth_supported_is(w));
-            printf("\t\tgroup cypher: %d\n",exalt_dbus_wireless_network_group_cypher_get(w));
-            printf("\t\tpairwise cypher: ");
-            for(i=0;i<exalt_dbus_wireless_network_pairwise_cypher_number_get(w);i++)
+            printf("\t\tIE\n");
+            Exalt_Wireless_Network_Wpa_Type wpa_type = exalt_wireless_network_ie_wpa_type_get(ie);
+            printf("\t\t\twpa type: %s\n",exalt_wireless_network_name_from_wpa_type(wpa_type));
+            printf("\t\t\twpa version: %d\n",exalt_wireless_network_ie_wpa_version_get(ie));
+            printf("\t\t\tpre auth supported: %d\n",exalt_wireless_network_ie_preauth_supported_is(ie));
+            Exalt_Wireless_Network_Cypher_Name name = exalt_wireless_network_ie_group_cypher_get(ie);
+            printf("\t\t\tgroup cypher: %s\n",exalt_wireless_network_name_from_cypher_name(name));
+            printf("\t\t\tpairwise cypher: ");
+            for(i=0;i<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);i++)
             {
                 Exalt_Wireless_Network_Cypher_Name name;
-                name = exalt_dbus_wireless_network_pairwise_cypher_get(w,i);
+                name = exalt_wireless_network_ie_pairwise_cypher_get(ie,i);
                 printf("%s ",exalt_wireless_network_name_from_cypher_name(name));
             }
             printf("\n");
-            printf("\t\tauth suites: ");
-            for(i=0;i<exalt_dbus_wireless_network_auth_suites_number_get(w);i++)
+            printf("\t\t\tauth suites: ");
+            for(i=0;i<exalt_wireless_network_ie_auth_suites_number_get(ie);i++)
             {
                 Exalt_Wireless_Network_Auth_Suites name;
-                name = exalt_dbus_wireless_network_auth_suites_get(w,i);
+                name = exalt_wireless_network_ie_auth_suites_get(ie,i);
                 printf("%s ",exalt_wireless_network_name_from_auth_suites(name));
             }
             printf("\n");
-
         }
     }
     printf("\n");

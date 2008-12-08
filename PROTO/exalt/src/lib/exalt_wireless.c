@@ -220,7 +220,7 @@ Exalt_Wireless_Network* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* 
 
     EINA_LIST_FOREACH(w->networks,l,wi)
     {
-        if(!strcmp(essid, exalt_wirelessnetwork_essid_get(wi)))
+        if(!strcmp(essid, exalt_wireless_network_essid_get(wi)))
             return wi;
     }
     return NULL;
