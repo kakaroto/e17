@@ -879,8 +879,14 @@ _drawer_conf_item_get(const char *id)
 
    if (!id) 
      {
-        /* nothing passed, return a new id */
+        /* Nothing passed, create a new id */
         snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, ++uuid);
+	/* Check whether the newly generated id is taken */
+	EINA_LIST_FOREACH(drawer_conf->conf_items, l, ci)
+	  {
+	     if ((ci) && (ci->id) && (!strcmp(ci->id, buf)))
+	       return _drawer_conf_item_get(NULL);
+	  }
         id = buf;
      }
    else 
