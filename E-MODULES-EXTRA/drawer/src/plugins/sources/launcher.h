@@ -8,7 +8,7 @@
 
 EAPI extern Drawer_Plugin_Api drawer_plugin_api;
 
-EAPI void *drawer_plugin_init(Drawer_Plugin *p);
+EAPI void *drawer_plugin_init(Drawer_Plugin *p, const char *id);
 EAPI int   drawer_plugin_shutdown(Drawer_Plugin *p);
 EAPI Evas_Object * drawer_plugin_config_get(Drawer_Plugin *p, Evas *evas);
 EAPI void drawer_plugin_config_save(Drawer_Plugin *p);

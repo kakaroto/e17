@@ -8,7 +8,7 @@
 
 EAPI extern Drawer_Plugin_Api drawer_plugin_api;
 
-EAPI void *drawer_plugin_init(Drawer_Plugin *p);
+EAPI void *drawer_plugin_init(Drawer_Plugin *p, const char *id);
 EAPI int   drawer_plugin_shutdown(Drawer_Plugin *p);
 
 EAPI void  drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, int *w, int *h);

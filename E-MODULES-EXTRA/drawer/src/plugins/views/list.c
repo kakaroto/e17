@@ -61,7 +61,7 @@ static void _list_event_activate_free(void *data __UNUSED__, void *event);
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "List"};
 
 EAPI void *
-drawer_plugin_init(Drawer_Plugin *p)
+drawer_plugin_init(Drawer_Plugin *p, const char *id)
 {
    Instance *inst = NULL;
 

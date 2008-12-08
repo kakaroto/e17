@@ -106,6 +106,7 @@ collections {
 	       state: "default" 0.0;
 	       aspect: 1.0 1.0;
 	       aspect_preference: BOTH;
+	       color: 255 255 255 200;
 	       rel1.to: "bg";
 	       rel2.to: "bg";
 	       image.normal: "env_fg.png";

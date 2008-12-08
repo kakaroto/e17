@@ -31,6 +31,8 @@ struct _Conf
 
    const char *dir;
 
+   int sort_rel;
+
    Eina_List *ratings;
 };
 
@@ -49,11 +51,12 @@ struct _E_Config_Dialog_Data
    E_Confirm_Dialog *dialog_delete;
 
    char *dir;
+   int sort_rel;
 };
 
 #define CONF_RATING(obj) ((Conf_Rating *) obj)
 
-static void _launcher_conf_new(Instance *inst);
+static void _launcher_conf_new(Instance *inst, const char *id);
 static void _launcher_sources_rating_discount(Instance *inst, int min);
 
 static int _launcher_cb_sort_rating(const void *data1, const void *data2);
@@ -81,13 +84,12 @@ EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Launcher
 
 static Launcher_Conf *launcher_conf = NULL;
 static E_Config_Dialog *_cfd = NULL;
-static int uuid = 0;
 static E_Config_DD *_launcher_conf_edd = NULL;
 static E_Config_DD *_conf_edd = NULL;
 static E_Config_DD *_conf_rel_edd = NULL;
 
 EAPI void *
-drawer_plugin_init(Drawer_Plugin *p)
+drawer_plugin_init(Drawer_Plugin *p, const char *id)
 {
    Instance *inst = NULL;
 
@@ -111,6 +113,7 @@ drawer_plugin_init(Drawer_Plugin *p)
    #define D _conf_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
+   E_CONFIG_VAL(D, T, sort_rel, INT);
    E_CONFIG_LIST(D, T, ratings, _conf_rel_edd); /* the list */
 
    _launcher_conf_edd = E_CONFIG_DD_NEW("Launcher_Conf", Launcher_Conf);
@@ -128,7 +131,7 @@ drawer_plugin_init(Drawer_Plugin *p)
 	e_config_save_queue();
      }
 
-   _launcher_conf_new(inst);
+   _launcher_conf_new(inst, id);
 
    return inst;
 }
@@ -223,17 +226,19 @@ drawer_source_list(Drawer_Source *s)
 	  }
      }
 
-/*    XXX: needs to be switched off via conf */
-   if (min > 10)
+   if (min > 20000)
      _launcher_sources_rating_discount(inst, min);
-   inst->items = eina_list_sort(inst->items, eina_list_count(inst->items),
-                                _launcher_cb_sort_rating);
+   if (inst->conf->sort_rel)
+	inst->items = eina_list_sort(inst->items,
+	      eina_list_count(inst->items), _launcher_cb_sort_rating);
    return inst->items;
 }
 
 EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
+   Instance *inst = NULL;
+
    if (si->desktop->type == EFREET_DESKTOP_TYPE_APPLICATION)
      e_exec(zone, si->desktop, NULL, NULL, "drawer");
    else if (si->desktop->type == EFREET_DESKTOP_TYPE_LINK)
@@ -247,19 +252,20 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 	  }
      }
 
-   /* XXX: needs to be switched off via conf */
+   inst = DRAWER_PLUGIN(s)->data;
    CONF_RATING(si->priv)->rating++;
-   _launcher_cb_app_change(DRAWER_PLUGIN(s)->data, NULL);
+   if (inst->conf->sort_rel)
+     _launcher_cb_app_change(inst, NULL);
 }
 
 static void
-_launcher_conf_new(Instance *inst)
+_launcher_conf_new(Instance *inst, const char *id)
 {
    Eina_List *l;
    Conf *ci;
    char buf[128];
 
-   snprintf(buf, sizeof(buf), "drawer.launcher.%d", ++uuid);
+   snprintf(buf, sizeof(buf), "%s.launcher", id);
    EINA_LIST_FOREACH(launcher_conf->items, l, ci)
      {
 	if (!(ci = l->data)) continue;
@@ -300,7 +306,10 @@ _launcher_cb_sort_rating(const void *data1, const void *data2)
    if(!si1) return(1);
    if(!si2) return(-1);
 
-   return CONF_RATING(si1->priv)->rating - CONF_RATING(si2->priv)->rating;
+   /* reverse the list if equal */
+   if (CONF_RATING(si2->priv)->rating == CONF_RATING(si1->priv)->rating)
+     return -1;
+   return CONF_RATING(si2->priv)->rating - CONF_RATING(si1->priv)->rating;
 }
 
 static void
@@ -440,6 +449,7 @@ static void
 _launcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->dir = strdup(cfdata->inst->conf->dir);
+   cfdata->sort_rel = cfdata->inst->conf->sort_rel;
 }
 
 static Evas_Object *
@@ -470,6 +480,12 @@ _launcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
    e_widget_frametable_object_append(of, ot, 1, 0, 1, 1, 1, 1, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+   of = e_widget_framelist_add(evas, D_("Sorting options"), 0);
+   ob = e_widget_check_add(evas, D_("Sort applications by usage"), &(cfdata->sort_rel));
+   e_widget_framelist_object_append(of, ob);  
+
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
    return o;
 }
 
@@ -484,6 +500,7 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      eina_stringshare_del(cfdata->inst->conf->dir);
 
    cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
+   cfdata->inst->conf->sort_rel = cfdata->sort_rel;
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;

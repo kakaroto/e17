@@ -27,6 +27,8 @@ struct _Instance
    Drawer_Plugin *view;
    
    Eina_List *handlers;
+
+   Eina_Bool updated_content : 1;
 };
 
 /* Local Function Prototypes */
@@ -44,7 +46,7 @@ static Config_Item *_drawer_conf_item_get(const char *id);
 
 static Instance *_drawer_instance_get(Config_Item *ci);
 
-static void _drawer_shelf_update(Instance *inst);
+static void _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si);
 static void _drawer_popup_create(Instance *inst);
 static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
@@ -354,11 +356,9 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 /* Local Functions */
 
 static void
-_drawer_shelf_update(Instance *inst)
+_drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 {
-   Drawer_Source_Item *si = NULL;
    Evas_Object *o = NULL;
-   Eina_List *l = NULL;
 
    o = edje_object_part_swallow_get(inst->o_drawer, "e.swallow.content");
    if (o)
@@ -367,8 +367,10 @@ _drawer_shelf_update(Instance *inst)
 	o = NULL;
      }
 
-   if (inst->source)
+   if (!si && inst->source && inst->source->enabled)
      {
+	Eina_List *l = NULL;
+
 	/* XXX: better to have a function that retuns the first list instead */
 	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
 	if (l)
@@ -438,13 +440,13 @@ static void
 _drawer_popup_update(Instance *inst)
 {
    Evas_Object *o = NULL;
+   Eina_List *l = NULL;
    int w, h;
 
-   o = DRAWER_VIEW(inst->view)->func.render(
-	 DRAWER_VIEW(inst->view),
-	 DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source))
-   );
+   l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+   _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
 
+   o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view), l);
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 }
@@ -576,10 +578,10 @@ init_done:
    inst->conf_item->source = eina_stringshare_add(name);
    inst->source = p;
 
-   if (!p->error && (p->data = p->func.init(p)))
+   if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
      p->enabled = EINA_TRUE;
 
-   _drawer_shelf_update(inst);
+   _drawer_shelf_update(inst, NULL);
    return s;
 }
 
@@ -618,7 +620,7 @@ init_done:
    inst->conf_item->view = eina_stringshare_add(name);
    inst->view = p;
 
-   if (!p->error && (p->data = p->func.init(p)))
+   if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
      p->enabled = EINA_TRUE;
    return v;
 }
@@ -666,7 +668,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    if (inst->conf_item->source)
      _drawer_source_new(inst, inst->conf_item->source);
    else
-     _drawer_shelf_update(inst);
+     _drawer_shelf_update(inst, NULL);
 
    if (inst->conf_item->view)
      _drawer_view_new(inst, inst->conf_item->view);
@@ -866,14 +868,7 @@ _drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__)
 
    inst = data;
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
-   if (!inst->view || !inst->popup) return 1;
-
-   visible = inst->popup->win->visible;
-   if (visible)
-     _drawer_popup_hide(inst);
-   _drawer_popup_update(inst);
-   if (visible)
-     _drawer_popup_show(inst);
+   inst->updated_content = EINA_TRUE;
 
    return 1;
 }
@@ -893,6 +888,8 @@ _drawer_view_activate_cb(void *data, int ev_type, void *event)
 
    DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source), ev->data, inst->gcc->gadcon->zone);
 
+   _drawer_popup_hide(inst);
+
    return 0;
 }
 
@@ -905,13 +902,18 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
-   if (ev->button == 1 && inst->source && inst->view)
+   if (ev->button == 1 && inst->source && inst->view
+	 && inst->source->enabled && inst->view->enabled)
      {
 	if (!inst->popup) _drawer_popup_create(inst);
 	if (inst->popup->win->visible)
 	  _drawer_popup_hide(inst);
 	else
-	  _drawer_popup_show(inst);
+	  {
+	     if (inst->updated_content)
+	       _drawer_popup_update(inst);
+	     _drawer_popup_show(inst);
+	  }
 	return;
      }
    else if ((ev->button == 3) && (!inst->menu)) 

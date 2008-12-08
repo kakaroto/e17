@@ -96,7 +96,7 @@ struct _Drawer_Plugin
    Evas		       *evas;
 
    struct {
-      void        * (*init)            (Drawer_Plugin *p);
+      void        * (*init)            (Drawer_Plugin *p, const char *id);
       int           (*shutdown)        (Drawer_Plugin *p);
 
       /* optional */
