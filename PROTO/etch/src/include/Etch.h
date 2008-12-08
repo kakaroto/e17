@@ -90,6 +90,7 @@ typedef struct _Etch_Animation_Keyframe Etch_Animation_Keyframe; /**< Animation 
 
 typedef enum _Etch_Animation_Type
 {
+	ETCH_ANIMATION_DISCRETE, 
 	ETCH_ANIMATION_LINEAR,
 	ETCH_ANIMATION_COSIN,
 	ETCH_ANIMATION_QUADRATIC,

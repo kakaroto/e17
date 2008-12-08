@@ -8,7 +8,9 @@ lib_LTLIBRARIES = libetch.la
 
 libetch_la_SOURCES = \
 etch.c \
-etch_animation.c
+etch_animation.c \
+etch_interpolator_argb.c \
+etch_interpolator_uint32.c
 
 libetch_la_LIBADD = -lm @ETCH_LIBS@
 

@@ -100,6 +100,13 @@ static inline double etch_timeval_to_double(struct timeval *t)
 	return (double)t->tv_sec + (((double)t->tv_usec) / 1000000);
 }
 
+
+typedef void (*Etch_Interpolator_Func)(Etch_Data *a, Etch_Data *b, double m, Etch_Data *res, void *data);
+typedef struct _Etch_Interpolator
+{
+	Etch_Interpolator_Func funcs[ETCH_ANIMATION_TYPES];
+} Etch_Interpolator;
+
 void etch_animation_animate(Etch_Animation *a, double curr);
 Etch_Animation * etch_animation_new(Etch_Data_Type dtype, Etch_Animation_Callback cb, void *data);
 

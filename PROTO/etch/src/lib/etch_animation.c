@@ -31,6 +31,8 @@
  * - define animatinos based on two properties: PERIODIC, UNIQUE, PERIODIC_MIRROR
  * - the integer return values of the interpolators should be rounded?
  */
+extern Etch_Interpolator etch_interpolator_uint32;
+extern Etch_Interpolator etch_interpolator_argb;
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
@@ -67,83 +69,9 @@ static void _animation_debug(Etch_Animation *a)
 	}
 }
 
-static void _linear_argb(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	unsigned int range;
-	unsigned int a, b, ag, rb;
-	
-	a = da->data.argb;
-	b = db->data.argb;
-	
-	/* handle specific case where a and b are equal (constant) */
-	if (a == b)
-	{
-		res->data.u32 = a;
-		return;
-	}
-	/* b - a*m + a */
-	range = rint(256 * m);
-	ag = ((((((b >> 8) & 0xff00ff) - ((a >> 8) & 0xff00ff)) * range) + (a & 0xff00ff00)) & 0xff00ff00);  
-	rb = ((((((b & 0xff00ff) - (a & 0xff00ff)) * (range)) >> 8) + (a & 0xff00ff)) & 0xff00ff);
-	
-	res->data.u32 = ag + rb;
-}
-
-static void _linear_uint32(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	double r;
-	uint32_t a, b;
-	
-	a = da->data.u32;
-	b = db->data.u32;
-	
-	/* handle specific case where a and b are equal (constant) */
-	if (a == b)
-	{
-		res->data.u32 = a;
-		return;
-	}
-	r = ((1 - m) * a) + (m * b);
-	res->data.u32 = ceil(r);
-}
-
-static void _cosin_uint32(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	double m2;
-	uint32_t a, b;
-		
-	a = da->data.u32;
-	b = db->data.u32;
-	
-	m2 = (1 - cos(m * M_PI))/2;
-	
-	res->data.u32 = ceil((double)(a * (1 - m2) + b * m2));
-}
-
-static void _bquad_uint32(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	Etch_Animation_Quadratic *q = data;
-	uint32_t a, b;
-		
-	a = da->data.u32;
-	b = db->data.u32;
-	
-	res->data.u32 =  (1 - m) * (1 - m) * a + 2 * m * (1 - m) * (q->cp.data.u32) + m * m * b;
-}
-
-static void _bcubic_uint32(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	/* 
-	 */
-}
-/* prototype of the function table */
-typedef void (*Etch_Interpolator)(Etch_Data *a, Etch_Data *b, double m, Etch_Data *res, void *data);
-
-Etch_Interpolator _interpolators[ETCH_ANIMATION_TYPES][ETCH_DATATYPES] = {
-		[ETCH_ANIMATION_LINEAR][ETCH_UINT32] = (Etch_Interpolator)_linear_uint32,
-		[ETCH_ANIMATION_COSIN][ETCH_UINT32] = (Etch_Interpolator)_cosin_uint32,
-		[ETCH_ANIMATION_QUADRATIC][ETCH_UINT32] = (Etch_Interpolator)_bquad_uint32,
-		[ETCH_ANIMATION_LINEAR][ETCH_ARGB] = (Etch_Interpolator)_linear_argb,
+Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
+		[ETCH_UINT32] = &etch_interpolator_uint32,
+		[ETCH_ARGB] = &etch_interpolator_argb,
 };
 /*============================================================================*
  *                                 Global                                     * 
@@ -176,12 +104,17 @@ void etch_animation_animate(Etch_Animation *a, double curr)
 		//printf("-> [%g] %g %g\n", curr, start->time, end->time);
 		if ((curr >= start->time) && (curr <= end->time))
 		{
-			Etch_Interpolator ifnc;
+			Etch_Interpolator_Func ifnc;
 			Etch_Data old;
 			double m;
 			
 			/* get the interval between 0 and 1 based on current frame and two keyframes */
-			m = (curr - start->time)/(end->time - start->time);
+			if (curr == start->time)
+				m = 0;
+			else if (curr == end->time)
+				m = 1;
+			else
+				m = (curr - start->time)/(end->time - start->time);
 			/* accelerate the calculations if we get the same m as the previous call */
 			if (m == a->m)
 			{
@@ -191,10 +124,13 @@ void etch_animation_animate(Etch_Animation *a, double curr)
 			/* store old value */
 			old = a->curr;
 			/* interpolate the new value */
-			ifnc = _interpolators[start->type][a->dtype];
+			ifnc = _interpolators[a->dtype]->funcs[start->type];
+			if (!ifnc)
+				return;
 			ifnc(&(start->value), &(end->value), m, &a->curr, &start->data);
 			/* once the value has been set, call the callback */
 			a->cb(&a->curr, &old, a->data);
+			return;
 		}
 		l = l->next;
 	}
@@ -364,7 +300,8 @@ EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, ...)
 	/* now get the type specific data, for example the bezier forms need 
 	 * control points, etc */
 	switch (k->type)
-	{	
+	{
+		case ETCH_ANIMATION_DISCRETE:
 		case ETCH_ANIMATION_LINEAR:
 		{
 			switch (k->animation->dtype)

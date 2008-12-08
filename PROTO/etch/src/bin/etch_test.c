@@ -60,7 +60,7 @@ void animation_setup(Etch *e)
 	etch_animation_keyframe_time_set(ek, 15, 2530);
 	/* fourth keyframe */
 	ek = etch_animation_keyframe_add(ea);
-	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
 	etch_animation_keyframe_value_set(ek, 25);
 	etch_animation_keyframe_time_set(ek, 1, 2530);
 }
