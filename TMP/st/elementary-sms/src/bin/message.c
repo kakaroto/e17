@@ -44,16 +44,11 @@ on_options(void *data, Evas_Object *obj, void *event_info)
    win = mui->win;
    hv = mui->hover.options_hv;
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Options");
-   elm_hover_content_set(hv, "middle", bt);
-   mui->hover.bt = bt;
-   evas_object_show(bt);
-   
    bx = elm_box_add(win);
    mui->hover.bx = bx;
    
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Add");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
@@ -61,6 +56,7 @@ on_options(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
    
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Ignore");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
@@ -68,6 +64,7 @@ on_options(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Filter");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
@@ -91,17 +88,12 @@ on_delete(void *data, Evas_Object *obj, void *event_info)
 
    win = mui->win;
    hv = mui->hover.delete_hv;
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Delete");
-   elm_hover_content_set(hv, "middle", bt);
-   mui->hover.bt = bt;
-   evas_object_show(bt);
    
    bx = elm_box_add(win);
    mui->hover.bx = bx;
    
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Wipe");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
@@ -109,6 +101,7 @@ on_delete(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
    
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Trash");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
@@ -130,7 +123,7 @@ create_message(Evas_Object *win,
                Evas_Bool is_me, const char *text, void *handle)
 {
    Message_UI *mui;
-   Evas_Object *bb, *bx, *bx2, *bt, *ab, *hv, *ph;
+   Evas_Object *bb, *bx, *bx2, *bt, *ab, *hv, *ph, *fr;
    
    mui = calloc(1, sizeof(Message_UI));
    mui->win = win;
@@ -166,10 +159,13 @@ create_message(Evas_Object *win,
    elm_box_pack_end(bx, ab);
    evas_object_show(ab);
    
+   fr = elm_frame_add(win);
+   elm_frame_style_set(fr, "outdent_bottom");
+   evas_object_size_hint_weight_set(fr, 1.0, 0.0);
+   evas_object_size_hint_align_set(fr, -1.0, -1.0);
+   
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "Reply");
@@ -180,6 +176,7 @@ create_message(Evas_Object *win,
    evas_object_show(bt);
    
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical");
    elm_button_label_set(bt, "Options");
    evas_object_smart_callback_add(bt, "clicked", on_options, mui);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
@@ -190,11 +187,12 @@ create_message(Evas_Object *win,
    hv = elm_hover_add(win);
    mui->hover.options_hv = hv;
    evas_object_smart_callback_add(hv, "clicked", on_hover_down, mui);
-   elm_hover_style_set(hv, "popout");
+   elm_hover_style_set(hv, "hoversel_vertical");
    elm_hover_parent_set(hv, win);
    elm_hover_target_set(hv, bt);
 
    bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical");
    elm_button_label_set(bt, "Delete");
    evas_object_smart_callback_add(bt, "clicked", on_delete, mui);
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
@@ -205,13 +203,15 @@ create_message(Evas_Object *win,
    hv = elm_hover_add(win);
    mui->hover.delete_hv = hv;
    evas_object_smart_callback_add(hv, "clicked", on_hover_down, mui);
-   elm_hover_style_set(hv, "popout");
+   elm_hover_style_set(hv, "hoversel_vertical");
    elm_hover_parent_set(hv, win);
    elm_hover_target_set(hv, bt);
 
-   
-   elm_box_pack_end(bx, bx2);
+   elm_frame_content_set(fr, bx2);
    evas_object_show(bx2);
+
+   elm_box_pack_end(bx, fr);
+   evas_object_show(fr);
    
    elm_bubble_content_set(bb, bx);
    evas_object_show(bx);
