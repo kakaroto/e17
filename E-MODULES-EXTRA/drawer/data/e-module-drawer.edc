@@ -231,7 +231,6 @@ collections {
       }
    }
    group {
-      /* XXX: Accomodate a title */
       name: "modules/drawer/main_float";
       parts {
 	 part {
@@ -259,6 +258,7 @@ collections {
 	       state: "default" 0.0;
 	       rel1 {
 		  relative: 0 1;
+		  offset: 0 -7;
 		  to_y: "e.text.description";
 	       }
 	       image {
