@@ -25,6 +25,19 @@ static int _exchange_init_count = 0;
  *
  * Functions that init and shut down Exchange library.
  *
+ * Sample code
+ * @code
+ * int main(int argc, char **argv)
+ * {
+ *    exchange_init();
+ *
+ *    // some code
+ *
+ *    exchange_shutdown();
+ *
+ *    return 0;
+ * }
+ * @endcode
  * @{
  */
 

@@ -1,22 +1,25 @@
-Guidelines from thread on e-devel
+TODO list
 
-PARTIALLY DONE (Login only) Register new users & Login/Logout
-DONE Retrieve a list of themes
-DONE This list can be filtered by a theme group / application / module / user
-DONE This list should be sorted & paginated
-DONE List should contain name and description, with optional retrieval of screenshot, thumbnail and the .edj itself
-DONE Retrieve a list of apps / modules (same things as above apply)
-PARTIALLY DONE (Single theme) Check for updates for a list of themes
-TODO Check for new themes / apps / modules
-TODO (NOTE1) Rate themes, apps and modules
-TODO Add / Delete comments
-TODO Upload / Delete themes
-TODO Add / Delete apps and modules
-TODO Provide a mechanism to store what's installed (especially themes, so you can check for updates).
-TODO (NOTE2) Create an evas smart object
-
-NOTE1
-Rating aren't covered by API, need some works on server side
-
-NOTE2
-Never created a smart object, DaveMDS can help me
+* Register new users & Login/Logout
+  Partially done: login only, registration and logout seems uncovered by API;
+  
+* Check for updates for a list of themes
+  Partially done: atm i check for update for a single theme only;
+  
+* Check for new themes / apps / modules
+  TODO
+  
+* Rate themes, apps and modules
+  TODO, and a note: rating aren't covered by API, need some works on server side;
+  
+* Add / Delete comments
+  TODO
+  
+* Upload / Delete themes
+  TODO
+  
+* Add / Delete apps and modules
+  TODO
+  
+* Provide a mechanism to store what's installed (especially themes, so you can check for updates).
+  TODO

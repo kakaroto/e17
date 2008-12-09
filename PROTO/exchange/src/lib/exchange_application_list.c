@@ -55,6 +55,10 @@ Eina_List *al = NULL;
  *
  * Functions that handles application listing.
  *
+ * Sample code
+ *
+ * @code
+ * @endcode
  * @{
  */
 
