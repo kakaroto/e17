@@ -616,6 +616,8 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Image.__init__(self, canvas, **kargs)
+        w, h = self.size_get()
+        Image.fill_set(self, 0, 0, w, h)
         evas_object_event_callback_add(self.obj, EVAS_CALLBACK_RESIZE,
                                        _cb_on_filled_image_resize, NULL)
 
