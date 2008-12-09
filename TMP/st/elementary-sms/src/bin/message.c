@@ -49,6 +49,14 @@ on_options(void *data, Evas_Object *obj, void *event_info)
    
    bt = elm_button_add(win);
    elm_button_style_set(bt, "hoversel_vertical_entry");
+   elm_button_label_set(bt, "Forward");
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, -1.0);
+   elm_box_pack_end(bx, bt);
+   evas_object_show(bt);
+   
+   bt = elm_button_add(win);
+   elm_button_style_set(bt, "hoversel_vertical_entry");
    elm_button_label_set(bt, "Add");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, -1.0);
