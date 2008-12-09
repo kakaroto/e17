@@ -763,10 +763,13 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    char buf[4096];
    const char *thumb;
 
-   snprintf(buf, sizeof(buf), "<title>%s </title> <version>%s</version><br><br>%s", td->name,
-            td->version ? td->version : "",
-            strlen(td->description) ? td->description : "No description available");
+   snprintf(buf, sizeof(buf), "<title>%s </title> <version>%s</version>",
+            td->name, td->version ? td->version : "");
    edje_object_part_text_set(elem, "textblock", buf);
+   if (strlen(td->description))
+      edje_object_part_text_set(elem, "textblock2", td->description);
+   else
+      edje_object_part_text_set(elem, "textblock2", "No description available");
 
    if (td->rating < 0.0)
       edje_object_signal_emit(elem, "set,star,hide,all", "exchange");

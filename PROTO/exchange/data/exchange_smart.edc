@@ -264,6 +264,22 @@ collections {
                }
             }
          }
+         part { name: "textblock2";
+            mouse_events: 0;
+            type: TEXTBLOCK;
+            entry_mode: PLAIN;
+            multiline: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "text_style";
+               }
+               rel1 {
+                  relative: 1.0 0.42;
+                  offset: 3 0;
+                  to: "thumb";
+               }
+            }
+         }
          part { name: "star_1";
             mouse_events: 0;
             type: IMAGE;
