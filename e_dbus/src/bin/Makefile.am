@@ -89,9 +89,9 @@ e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(to
 e_dbus_notification_daemon_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 
 e_notify_send_SOURCES = \
- notify-send.c
+	notify-send.c
 
 e_notify_send_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_notify_send_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
-e_notify_send_DEPENDENCIES = $(top_builddir)/src/lib/notification/libenotify.la
+e_notify_send_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
+e_notify_send_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 endif 
