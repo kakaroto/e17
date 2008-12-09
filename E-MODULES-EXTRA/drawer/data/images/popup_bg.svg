@@ -58,21 +58,47 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient2381"
-       id="linearGradient2398"
-       gradientUnits="userSpaceOnUse"
-       x1="50"
-       y1="946.86218"
-       x2="50"
-       y2="973.11218" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient2381"
-       id="linearGradient2400"
+       id="linearGradient2404"
        gradientUnits="userSpaceOnUse"
        x1="-5.0118394"
        y1="971.86218"
        x2="18.75"
-       y2="971.86218" />
+       y2="971.86218"
+       gradientTransform="matrix(1,0,0,0.9375,0,65.147636)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2381"
+       id="linearGradient2407"
+       gradientUnits="userSpaceOnUse"
+       x1="50"
+       y1="946.86218"
+       x2="50"
+       y2="973.11218"
+       gradientTransform="matrix(1,0,0,0.9375,0,65.147636)" />
+    <filter
+       inkscape:collect="always"
+       id="filter3227"
+       x="-0.11625001"
+       width="1.2325"
+       y="-0.12399998"
+       height="1.248">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.8750005"
+         id="feGaussianBlur3229" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3255"
+       x="-0.11656828"
+       width="1.2331366"
+       y="-0.1236399"
+       height="1.2472798">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="4.1521349"
+         id="feGaussianBlur3257" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -85,8 +111,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="229.32568"
-     inkscape:cy="37.704056"
+     inkscape:cx="47.058522"
+     inkscape:cy="20.102711"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -106,11 +132,27 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer4"
+     inkscape:label="f"
+     sodipodi:insensitive="true"
+     style="display:none">
     <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:0.7631579;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="opacity:1;fill:#0d0d0d;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.05;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3209"
+       width="272.5"
+       height="177.5"
+       x="-104.5"
+       y="917.36218"
+       rx="5"
+       ry="4.6875" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="bg">
+    <rect
+       style="opacity:1;fill:#efefef;fill-opacity:0.76470588;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect2383"
        width="100"
        height="100"
@@ -121,36 +163,34 @@
        inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
-    <g
-       id="g2389"
-       transform="matrix(1,0,0,0.9375,0,65.147636)"
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="base">
+    <rect
+       style="opacity:1;fill:#efefef;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.05;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2417"
+       width="80"
+       height="75"
+       x="10"
+       y="967.36218"
+       rx="5"
+       ry="4.6875"
        inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90">
-      <rect
-         inkscape:export-ydpi="90"
-         inkscape:export-xdpi="90"
-         inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
-         ry="5"
-         rx="5"
-         y="962.36218"
-         x="10"
-         height="80"
-         width="80"
-         id="rect3155"
-         style="opacity:0.3;fill:url(#linearGradient2398);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-      <rect
-         style="opacity:0.3;fill:url(#linearGradient2400);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         id="rect2393"
-         width="80"
-         height="80"
-         x="10"
-         y="962.36218"
-         rx="5"
-         ry="5"
-         inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90" />
-    </g>
+       inkscape:export-ydpi="90" />
+  </g>
+  <g
+     inkscape:label="shadows"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.05;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 15,967.375 C 12.23,967.375 10,969.46563 10,972.0625 L 10,1037.6875 C 10,1040.2844 12.23,1042.375 15,1042.375 L 85,1042.375 C 87.77,1042.375 90,1040.2844 90,1037.6875 L 90,972.0625 C 90,969.46563 87.77,967.375 85,967.375 L 15,967.375 z M 15.4375,967.84375 L 84.5625,967.84375 C 87.297875,967.84375 89.5,969.90434 89.5,972.46875 L 89.5,1037.25 C 89.5,1039.8144 87.297875,1041.9062 84.5625,1041.9062 L 15.4375,1041.9062 C 12.702125,1041.9062 10.5,1039.8144 10.5,1037.25 L 10.5,972.46875 C 10.5,969.90434 12.702125,967.84375 15.4375,967.84375 z"
+       id="rect3261"
+       inkscape:export-filename="/home/urandom/.e17_src/E-MODULES-EXTRA/drawer/data/images/popup_bg.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
