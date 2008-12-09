@@ -102,7 +102,9 @@ e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
   d->cb_func = OBJECT_CB(cb_func);
   d->data = data;
   d->property = properties;
+  d->service = E_NM_SERVICE;
   d->object = strdup(E_NM_PATH);
+  d->interface = E_NM_INTERFACE;
   d->reply = nmi;
 
   nmi->conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
@@ -113,7 +115,7 @@ e_nm_get(int (*cb_func)(void *data, E_NM *nm), void *data)
   ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceAdded", cb_device_added, nmi));
   ecore_list_append(nmi->handlers, e_nm_signal_handler_add(nmi->conn, "DeviceRemoved", cb_device_removed, nmi));
 
-  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
+  return property_get(nmi->conn, d);
 
 error:
   if (d) free(d);

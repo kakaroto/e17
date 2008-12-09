@@ -50,12 +50,14 @@ e_nm_access_point_get(E_NM *nm, const char *access_point,
   d->data = data;
   d->reply = ap;
   d->property = access_point_properties;
+  d->service = E_NM_SERVICE;
   d->object = strdup(access_point);
+  d->interface = E_NM_INTERFACE_ACCESSPOINT;
 
   ap->handlers = ecore_list_new();
   ecore_list_append(ap->handlers, e_nm_access_point_signal_handler_add(nmi->conn, access_point, "PropertiesChanged", cb_properties_changed, ap));
  
-  return e_nm_access_point_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
+  return property_get(nmi->conn, d);
 }
 
 EAPI void

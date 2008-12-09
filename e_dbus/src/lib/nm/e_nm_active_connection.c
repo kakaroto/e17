@@ -33,9 +33,11 @@ e_nm_active_connection_get(E_NM *nm, const char *connection,
   d->data = data;
   d->reply = conn;
   d->property = active_connection_properties;
+  d->service = E_NM_SERVICE;
   d->object = strdup(connection);
+  d->interface = E_NM_INTERFACE_CONNECTION_ACTIVE;
 
-  return e_nm_active_connection_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
+  return property_get(nmi->conn, d);
 }
 
 EAPI void

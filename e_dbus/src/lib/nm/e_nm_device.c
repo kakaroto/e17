@@ -166,15 +166,17 @@ property_device_type(Property_Data *data, DBusMessageIter *iter)
   {
     case E_NM_DEVICE_TYPE_WIRED:
       data->property = device_wired_properties;
+      data->interface = E_NM_INTERFACE_DEVICE_WIRED;
       ecore_list_append(dev->handlers, e_nm_device_wired_signal_handler_add(data->nmi->conn, dev->dev.udi, "PropertiesChanged", cb_wired_properties_changed, dev));
-      e_nm_device_wired_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
+      property_get(data->nmi->conn, data);
       break;
     case E_NM_DEVICE_TYPE_WIRELESS:
       data->property = device_wireless_properties;
+      data->interface = E_NM_INTERFACE_DEVICE_WIRELESS;
       ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "PropertiesChanged", cb_wireless_properties_changed, dev));
       ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "AccessPointAdded", cb_wireless_access_point_added, dev));
       ecore_list_append(dev->handlers, e_nm_device_wireless_signal_handler_add(data->nmi->conn, dev->dev.udi, "AccessPointRemoved", cb_wireless_access_point_removed, dev));
-      e_nm_device_wireless_properties_get(data->nmi->conn, data->object, data->property->name, property, data);
+      property_get(data->nmi->conn, data);
       break;
     default:
       if (data->cb_func) data->cb_func(data->data, dev);
@@ -270,13 +272,15 @@ e_nm_device_get(E_NM *nm, const char *device,
   d->data = data;
   d->reply = dev;
   d->property = device_properties;
+  d->service = E_NM_SERVICE;
   d->object = strdup(device);
+  d->interface = E_NM_INTERFACE_DEVICE;
 
   dev->handlers = ecore_list_new();
   ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "StateChanged", cb_state_changed, dev));
   ecore_list_append(dev->handlers, e_nm_device_signal_handler_add(nmi->conn, device, "PropertiesChanged", cb_properties_changed, dev));
  
-  return e_nm_device_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
+  return property_get(nmi->conn, d);
 }
 
 EAPI void

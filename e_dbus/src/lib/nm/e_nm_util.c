@@ -221,6 +221,13 @@ property_free(E_NM_Variant *var)
   free(var);
 }
 
+int
+property_get(E_DBus_Connection *conn, Property_Data *data)
+
+{
+  return e_dbus_properties_get(conn, data->service, data->object, data->interface, data->property->name, property, data) ? 1 : 0;
+}
+
 void
 property(void *data, DBusMessage *msg, DBusError *err)
 {
@@ -250,7 +257,7 @@ property(void *data, DBusMessage *msg, DBusError *err)
 
   d->property++;
   if (d->property->name)
-    e_nm_device_properties_get(d->nmi->conn, d->object, d->property->name, property, d);
+    e_dbus_properties_get(d->nmi->conn, d->service, d->object, d->interface, d->property->name, property, d);
   else
   {
     if (d->cb_func) d->cb_func(d->data, d->reply);
@@ -527,3 +534,4 @@ ip4_address2str(unsigned int address)
            ((address >> 24) & 0xff));
   return buf;
 }
+

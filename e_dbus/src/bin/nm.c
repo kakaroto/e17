@@ -2,9 +2,20 @@
 #include <Ecore_Data.h>
 
 #include <unistd.h>
+#include <string.h>
 
 E_NM *nm = NULL;
 E_NMS *nms = NULL;
+
+static void *
+memdup(const void *p, size_t n)
+{
+    void *q;
+
+    q = malloc(n);
+    memcpy(q, p, n);
+    return q;
+}
 
 static void
 dump_variant(E_NM_Variant *var)
@@ -15,27 +26,33 @@ dump_variant(E_NM_Variant *var)
         case 'a': {
           E_NM_Variant *subvar;
 
-          printf("\n   - ");
+          printf("a:");
           ecore_list_first_goto(var->a);
           while ((subvar = ecore_list_next(var->a)))
+          {
               dump_variant(subvar);
+              printf(";");
+          }
+          printf("\n");
           break;
         }
         case 's':
+            printf("s:%s", var->s);
+            break;
         case 'o':
-            printf("%s ", var->s);
+            printf("o:%s", var->s);
             break;
         case 'u':
-            printf("%d ", var->u);
+            printf("u:%d", var->u);
             break;
         case 'b':
-            printf("%d ", var->b);
+            printf("b:%d", var->b);
             break;
         case 'y':
-            printf("%d ", var->y);
+            printf("y:%d", var->y);
             break;
         case 't':
-            printf("%lld ", var->t);
+            printf("t:%lld", var->t);
             break;
     }
 }
@@ -64,20 +81,24 @@ dump_settings(void *value, void *data)
 }
 
 static int
-cb_nms_connection_settings(void *data, Ecore_Hash *settings)
-{
-    printf("Secrets:\n");
-    if (settings)
-        ecore_hash_for_each_node(settings, dump_settings, NULL);
-    return 1;
-}
-
-static int
 cb_nms_connection_secrets(void *data, Ecore_Hash *secrets)
 {
     printf("Secrets:\n");
     if (secrets)
         ecore_hash_for_each_node(secrets, dump_settings, NULL);
+    return 1;
+}
+
+static int
+cb_nms_connection_settings(void *data, Ecore_Hash *settings)
+{
+    printf("Settings:\n");
+    if (settings)
+    {
+        if (ecore_hash_get(settings, "802-11-wireless-security"))
+            e_nms_connection_secrets_get_secrets(data, "802-11-wireless-security", NULL, 0, cb_nms_connection_secrets, NULL);
+        ecore_hash_for_each_node(settings, dump_settings, NULL);
+    }
     return 1;
 }
 
@@ -92,12 +113,12 @@ cb_nms_connections(void *data, Ecore_List *list)
         while ((conn = ecore_list_next(list)))
         {
             e_nms_connection_dump(conn);
-            e_nms_connection_get_settings(conn, cb_nms_connection_settings, NULL);
-            e_nms_connection_secrets_get_secrets(conn, "802-11-wireless-security", NULL, 0, cb_nms_connection_secrets, NULL);
+            e_nms_connection_get_settings(conn, cb_nms_connection_settings, conn);
         }
-        ecore_list_destroy(list);
+        //ecore_list_destroy(list);
     }
     //ecore_main_loop_quit();
+    //e_nms_list_connections(nms, cb_nms_connections, nms);
     return 1;
 }
 
@@ -174,16 +195,103 @@ cb_get_devices(void *data, Ecore_List *list)
             e_nm_device_dump(device);
             if (device->device_type == E_NM_DEVICE_TYPE_WIRELESS)
             {
-		/*
+                /*
                 e_nm_device_wireless_get_access_points(device, cb_access_points, NULL);
                 e_nm_access_point_get(nm, device->wireless.active_access_point, cb_access_point, NULL);
                 e_nm_ip4_config_get(nm, device->ip4_config, cb_ip4_config, NULL);
-		*/
+                */
             }
         }
         //ecore_list_destroy(list);
     }
     //ecore_main_loop_quit();
+    return 1;
+}
+
+static int
+cb_nms(void *data, E_NMS *reply)
+{
+    Ecore_Hash *settings, *values;
+    E_NM_Variant variant;
+    const char ssid[] = { };
+    const char *bssids[] = { };
+
+    settings = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(settings, free);
+    ecore_hash_free_value_cb_set(settings, ECORE_FREE_CB(ecore_hash_destroy));
+    /* connection */
+    values = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(values, free);
+    ecore_hash_free_value_cb_set(values, ECORE_FREE_CB(e_nm_variant_free));
+    ecore_hash_set(settings, strdup("connection"), values);
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 't';
+    variant.t = 1228201388;
+    ecore_hash_set(values, strdup("timestamp"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("");
+    ecore_hash_set(values, strdup("id"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("");
+    ecore_hash_set(values, strdup("uuid"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("802-11-wireless");
+    ecore_hash_set(values, strdup("type"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 'b';
+    variant.b = 0;
+    ecore_hash_set(values, strdup("autoconnect"), memdup(&variant, sizeof(E_NM_Variant)));
+    /* 802-11-wireless */
+    values = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(values, free);
+    ecore_hash_free_value_cb_set(values, ECORE_FREE_CB(e_nm_variant_free));
+    ecore_hash_set(settings, strdup("802-11-wireless"), values);
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("mode");
+    ecore_hash_set(values, strdup("infrastructure"), memdup(&variant, sizeof(E_NM_Variant)));
+    ecore_hash_set(values, strdup("ssid"), e_nm_variant_array_new('y', ssid, sizeof(ssid) / sizeof(ssid[0])));
+    ecore_hash_set(values, strdup("seen-bssids"), e_nm_variant_array_new('s', bssids, sizeof(bssids) / sizeof(bssids[0])));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("802-11-wireless-security");
+    ecore_hash_set(values, strdup("security"), memdup(&variant, sizeof(E_NM_Variant)));
+    /* ipv4 */
+    values = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(values, free);
+    ecore_hash_free_value_cb_set(values, ECORE_FREE_CB(e_nm_variant_free));
+    ecore_hash_set(settings, strdup("ipv4"), values);
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("auto");
+    ecore_hash_set(values, strdup("method"), memdup(&variant, sizeof(E_NM_Variant)));
+    /* 802-11-wireless-security */
+    values = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(values, free);
+    ecore_hash_free_value_cb_set(values, ECORE_FREE_CB(e_nm_variant_free));
+    ecore_hash_set(settings, strdup("802-11-wireless-security"), values);
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("none");
+    ecore_hash_set(values, strdup("key-mgmt"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("open");
+    ecore_hash_set(values, strdup("auth-alg"), memdup(&variant, sizeof(E_NM_Variant)));
+    memset(&variant, 0, sizeof(E_NM_Variant));
+    variant.type = 's';
+    variant.s = strdup("");
+    ecore_hash_set(values, strdup("wep-key0"), memdup(&variant, sizeof(E_NM_Variant)));
+
+    nms = reply;
+    e_nms_dump(nms);
+    //ecore_hash_for_each_node(settings, dump_settings, NULL);
+    //e_nms_system_add_connection(nms, settings);
+    //sleep(1);
+    e_nms_list_connections(nms, cb_nms_connections, nms);
     return 1;
 }
 
@@ -209,9 +317,7 @@ cb_nm(void *data, E_NM *reply)
     /*
     e_nm_get_devices(nm, cb_get_devices, nm);
     */
-    nms = e_nms_get(nm);
-    e_nms_dump(nms);
-    e_nms_list_connections(nms, cb_nms_connections, nms);
+    e_nms_get(nm, E_NMS_CONTEXT_SYSTEM, cb_nms, NULL);
     return 1;
 }
    

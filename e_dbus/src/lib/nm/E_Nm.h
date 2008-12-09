@@ -9,6 +9,7 @@
  * - Return objects instead of object paths.
  * - Define who is responsible to clean up mem
  * - Only listen to signals if a callback is connected
+ * - Free properties on property changed
  */
 
 #ifdef EAPI
@@ -232,8 +233,20 @@ struct E_NM_IP4_Config
 
 /* TODO typedef struct E_NM_DHCP4_Config E_NM_DHCP4_Config; */
 
+typedef enum E_NMS_Context E_NMS_Context;
+enum E_NMS_Context
+{
+  E_NMS_CONTEXT_SYSTEM
+  /* TODO: E_NMS_CONTEXT_USER */
+};
+
 typedef struct E_NMS E_NMS;
-/* No properties */
+struct E_NMS
+{
+  const char *service_name;
+  Ecore_List *unmanaged_devices; /* object_path */
+  char       *hostname;
+};
 
 typedef struct E_NMS_Connection E_NMS_Connection;
 struct E_NMS_Connection
@@ -333,16 +346,20 @@ extern "C" {
    /* TODO: org.freedesktop.NetworkManager.DHCP4Config api */
 
    /* org.freedesktop.NetworkManagerSettings api */
-   EAPI E_NMS *e_nms_get(E_NM *nm);
+   EAPI int    e_nms_get(E_NM *nm, E_NMS_Context context, int (*cb_func)(void *data, E_NMS *nms), void *data);
    EAPI void   e_nms_free(E_NMS *nms);
    EAPI void   e_nms_dump(E_NMS *nms);
    EAPI int    e_nms_list_connections(E_NMS *nms,
                                       int (*cb_func)(void *data, Ecore_List *list),
                                       void *data);
 
-   EAPI void  e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
+   EAPI void   e_nms_callback_new_connection_set(E_NMS *nms, int (*cb_func)(E_NMS *nms, const char *service_name, const char *connection));
 
-   /* TODO: org.freedesktop.NetworkManagerSettings.System */
+   /* org.freedesktop.NetworkManagerSettings.System */
+   EAPI int    e_nms_system_save_hostname(E_NMS *nms, const char *hostname);
+   EAPI int    e_nms_system_add_connection(E_NMS *nms, Ecore_Hash *settings);
+
+   EAPI void   e_nms_system_callback_properties_changed_set(E_NMS *nms, int (*cb_func)(E_NMS *nms));
 
    /* org.freedesktop.NetworkManagerSettings.Connection(.*) api */
    EAPI E_NMS_Connection *e_nms_connection_get(E_NMS *nms, const char *service_name, const char *connection);
@@ -353,8 +370,6 @@ extern "C" {
    /* TODO: e_nms_connection_delete */
    EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Ecore_Hash *settings), void *data);
    EAPI int  e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Ecore_Hash *secrets), void *data);
-
-   /* TODO: e_nms_connection_secrets_get_secrets */
 
    EAPI void  e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Ecore_Hash *settings));
    /* TODO: e_nms_connection_callback_removed_set */
@@ -368,6 +383,10 @@ extern "C" {
 
    /* TODO: org.freedesktop.NetworkManager.VPN.Connection api */
    /* TODO: org.freedesktop.NetworkManager.VPN.Plugin api */
+
+   EAPI E_NM_Variant *e_nm_variant_new(int type, const void *value);
+   EAPI E_NM_Variant *e_nm_variant_array_new(int type, const void *value, int size);
+   EAPI void          e_nm_variant_free(E_NM_Variant *variant);
 
 #ifdef __cplusplus
 }

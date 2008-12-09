@@ -31,9 +31,11 @@ e_nm_ip4_config_get(E_NM *nm, const char *ip4_config,
   d->data = data;
   d->reply = config;
   d->property = ip4_config_properties;
+  d->service = E_NM_SERVICE;
   d->object = strdup(ip4_config);
+  d->interface = E_NM_INTERFACE_IP4CONFIG;
 
-  return e_nm_ip4_config_properties_get(nmi->conn, d->object, d->property->name, property, d) ? 1 : 0;
+  return property_get(nmi->conn, d);
 }
 
 EAPI void
