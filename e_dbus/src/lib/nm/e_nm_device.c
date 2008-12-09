@@ -245,14 +245,11 @@ cb_access_points(void *data, void *reply, DBusError *err)
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_access_point_free));
   d->reply = list;
-  ecore_list_append(list, (void *)-1);
   while ((ap = ecore_list_next(access_points)))
   {
     ecore_list_prepend(list, (void *)-1);
     e_nm_access_point_get(&(dev->nmi->nm), ap, cb_access_point, d);
   }
-  ecore_list_first_remove(list);
-  check_done(d, list);
 }
 
 EAPI int

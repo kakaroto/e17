@@ -57,14 +57,11 @@ cb_nm_devices(void *data, void *reply, DBusError *err)
   list = ecore_list_new();
   ecore_list_free_cb_set(list, ECORE_FREE_CB(e_nm_device_free));
   d->reply = list;
-  ecore_list_append(list, (void *)-1);
   while ((dev = ecore_list_next(devices)))
   {
     ecore_list_prepend(list, (void *)-1);
     e_nm_device_get(nm, dev, cb_nm_device, d);
   }
-  ecore_list_first_remove(list);
-  check_done(d, list);
 }
 
 /**
