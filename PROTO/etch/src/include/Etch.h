@@ -35,7 +35,7 @@
  * TODO on the object but on the animation itself
  * TODO etch_animation_add(Etch *e, Etch_Data_Type dt, callback)
  * TODO etch_animation_clone(Etch_Animation *a, Etch_Animation *clone)
- * TODO etch_timer_get(Etch *e, unsigned long *secs, unsigned long *msecs);
+ * TODO etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs);
  * TODO remove every double and convert it into secs/usecs
  */
 
@@ -51,6 +51,7 @@ EAPI unsigned int etch_timer_fps_get(Etch *e);
 EAPI void etch_timer_tick(Etch *e);
 EAPI int etch_timer_has_end(Etch *e);
 EAPI void etch_timer_goto(Etch *e, unsigned long frame);
+EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs);
 
 /**
  * Data types for a property
@@ -104,6 +105,7 @@ typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
 		Etch_Animation_Callback cb, void *data);
 EAPI void etch_animation_delete(Etch_Animation *a);
+EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times);
 EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a);
 EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe *m);
 EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *m, Etch_Animation_Type t);

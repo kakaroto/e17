@@ -18,7 +18,7 @@
 #include "Etch.h"
 #include "etch_private.h"
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 static void _discrete(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
@@ -46,7 +46,7 @@ static void _linear(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void
 	res->data.u32 = ag + rb;
 }
 /*============================================================================*
- *                                 Global                                     * 
+ *                                 Global                                     *
  *============================================================================*/
 Etch_Interpolator etch_interpolator_argb = {
 	.funcs[ETCH_ANIMATION_DISCRETE] = _discrete,

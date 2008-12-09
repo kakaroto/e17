@@ -30,6 +30,26 @@
 
 #include "Eina.h"
 
+/* 
+ * Abstract implementation of the internal timer implementation
+ */
+typedef struct _Etch_Time
+{
+#ifdef ETCH_TIME_DOUBLE
+	double t;
+#else
+	unsigned long int secs;
+	unsigned long int usecs;
+#endif
+} Etch_Time;
+
+Eina_Bool etch_time_between(Etch_Time *first, Etch_Time *last, Etch_Time *cmp);
+void etch_time_increment(Etch_Time *t, Etch_Time *a);
+void etch_time_secs_from(Etch_Time *t, unsigned long int secs, unsigned long int usecs);
+void etch_time_secs_to(Etch_Time *t, unsigned long int *secs, unsigned long int *usecs);
+double etch_time_double_to(Etch_Time *t);
+void etch_time_double_from(Etch_Time *t, double d);
+
 /**
  * 
  */
@@ -38,6 +58,7 @@ struct _Etch
 	Eina_Inlist *animations; /** List of objects */
 	unsigned long frame; /** Current frame */
 	unsigned int fps; /** Number of frames per second */
+	Etch_Time tpf; /** Time per frame */
 	double curr; /** Current time in seconds */
 	double start; /** Time where an animation starts in seconds */
 	double end; /** Time where an animation ends in seconds */	
@@ -94,12 +115,6 @@ struct _Etch_Animation
 	Etch_Animation_Callback cb; /** function to call when a value has been set */
 	void *data; /** user provided data */
 };
-
-static inline double etch_timeval_to_double(struct timeval *t)
-{
-	return (double)t->tv_sec + (((double)t->tv_usec) / 1000000);
-}
-
 
 typedef void (*Etch_Interpolator_Func)(Etch_Data *a, Etch_Data *b, double m, Etch_Data *res, void *data);
 typedef struct _Etch_Interpolator

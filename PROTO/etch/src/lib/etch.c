@@ -23,6 +23,7 @@
  * + maybe a function to call whenever the fps timer has match? like:
  * etc_timer_notify(Etch *)
  * + maybe remove the _timer_ prefix?
+ * TODO remove every double and use Etch_Time
  */
 /*============================================================================*
  *                                  Local                                     * 
@@ -87,8 +88,13 @@ EAPI void etch_delete(Etch *e)
  */
 EAPI void etch_timer_fps_set(Etch *e, unsigned int fps)
 {
+	double spf;
+
 	assert(e);
+
 	e->fps = fps;
+	spf = (double)1/fps;
+	etch_time_double_from(&e->tpf, spf);
 }
 /**
  * To be documented
@@ -127,9 +133,13 @@ EAPI int etch_timer_has_end(Etch *e)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *msecs)
+EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs)
 {
+	Etch_Time t;
 	
+	etch_time_double_from(&t, e->curr);
+	if (secs) *secs = t.secs;
+	if (usecs) *usecs = t.usecs;
 }
 /**
  * To be documented
@@ -141,7 +151,6 @@ EAPI void etch_timer_goto(Etch *e, unsigned long frame)
 	e->curr = (double)frame/e->fps;
 	_process(e);
 }
-
 /**
  * Create a new animation
  * @param dtype Data type the animation will animate

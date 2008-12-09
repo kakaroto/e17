@@ -164,6 +164,13 @@ EAPI void etch_animation_delete(Etch_Animation *a)
 	free(a);
 }
 /**
+ * Set the number of times the animation should repeat
+ */
+EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times)
+{
+	
+}
+/**
  * Add a new mark to the animation
  */
 EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a)
@@ -213,15 +220,15 @@ EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyfram
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned long secs, unsigned long usecs)
 {
 	Etch_Animation *a;
-	struct timeval t;
+	Etch_Time t;
 	double new_time;
 	Eina_Inlist *l;
 	
 	assert(k);
 	
-	t.tv_sec = secs;
-	t.tv_usec = usecs;
-	new_time = etch_timeval_to_double(&t);
+	t.secs = secs;
+	t.usecs = usecs;
+	new_time = etch_time_double_to(&t);
 	/* if the time is the same, do nothing */
 	if (new_time == k->time)
 		return;
@@ -270,16 +277,17 @@ EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *k, ...)
  */ 
 EAPI void etch_animation_offset_add(Etch_Animation *a, unsigned long secs, unsigned long usecs)
 {
-	struct timeval t;
+	Etch_Time t;
 	double new_time;
 	Eina_Inlist *l;
 		
 	assert(a);
 		
-	t.tv_sec = secs;
-	t.tv_usec = usecs;
-	new_time = etch_timeval_to_double(&t);
+	t.secs = secs;
+	t.usecs = usecs;
+	new_time = etch_time_double_to(&t);
 	l = (Eina_Inlist *)(a->keys);
+	/* increment every keyframe by secs.usecs */
 	while (l)
 	{
 		Etch_Animation_Keyframe *k = (Etch_Animation_Keyframe *)l;
