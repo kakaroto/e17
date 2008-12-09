@@ -20,13 +20,53 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+#define USECS_MAX 1000000
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 const char * etch_time_string_to(Etch_Time *t)
 {
+
+}
+
+void etch_time_init_max(Etch_Time *t)
+{
+	//a->start.secs = DBL_MAX;
+	t->secs = ULONG_MAX;
+	t->usecs = USECS_MAX;
+}
+
+double etch_time_interpolate(Etch_Time *first, Etch_Time *last, Etch_Time *curr)
+{
+	Etch_Time tmp1, tmp2;
+	double d1, d2;
 	
-	
+	//m = (curr - start->time)/(end->time - start->time);
+	etch_time_sub(last, first, &tmp1);
+	etch_time_sub(curr, first, &tmp2);
+	/* TODO fix the division */
+	d1 = etch_time_double_to(&tmp1);
+	d2 = etch_time_double_to(&tmp2);
+
+	return d2/d1;
+}
+
+Eina_Bool etch_time_equal(Etch_Time *t, Etch_Time *cmp)
+{
+	if ((t->secs == cmp->secs) && (t->usecs == cmp->usecs))
+		return EINA_TRUE;
+	else
+		return EINA_FALSE;
+}
+
+Eina_Bool etch_time_ge(Etch_Time *l, Etch_Time *r)
+{
+	if (l->secs > r->secs)
+		return EINA_TRUE;
+	else if (l->secs == r->secs && l->usecs >= r->usecs)
+		return EINA_TRUE;
+	else
+		return EINA_FALSE;
 }
 
 Eina_Bool etch_time_between(Etch_Time *first, Etch_Time *last, Etch_Time *cmp)
@@ -44,10 +84,37 @@ void etch_time_increment(Etch_Time *t, Etch_Time *a)
 {
 	t->usecs += a->usecs;
 	t->secs += a->secs;
-	if (t->usecs >= 1000000)
+	if (t->usecs >= USECS_MAX)
 	{
-		t->usecs -= 1000000;
+		t->usecs -= USECS_MAX;
 		t->secs++;
+	}
+}
+
+/* this suppose that a is > b */
+void etch_time_sub(Etch_Time *a, Etch_Time *b, Etch_Time *res)
+{
+	long int r;
+
+	res->secs = a->secs - b->secs;
+	r = a->usecs - b->usecs;
+	if (r > 0)
+		res->usecs = r;
+	else
+	{
+		res->secs--;
+		res->usecs =  USECS_MAX + r;
+	}
+}
+
+void etch_time_multiply(Etch_Time *t, unsigned int scalar)
+{
+	t->usecs *= scalar;
+	t->secs *= scalar;
+	if (t->usecs >= USECS_MAX)
+	{
+		t->secs += t->usecs / USECS_MAX;
+		t->usecs = t->usecs % USECS_MAX;
 	}
 }
 
@@ -65,11 +132,11 @@ void etch_time_secs_to(Etch_Time *t, unsigned long int *secs, unsigned long int 
 
 double etch_time_double_to(Etch_Time *t)
 {
-	return (double)t->secs + (((double)t->usecs) / 1000000);
+	return (double)t->secs + (((double)t->usecs) / USECS_MAX);
 }
 
 void etch_time_double_from(Etch_Time *t, double d)
 {
 	t->secs = (unsigned long int)d;
-	t->usecs = (d - t->secs) * 1000000;
+	t->usecs = (d - t->secs) * USECS_MAX;
 }

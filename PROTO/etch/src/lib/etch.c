@@ -45,9 +45,10 @@ static void _process(Etch *e)
 	{
 		/* check that the animation start and end is between our time */
 		//printf("[%g] %g %g\n", e->curr, a->start, a->end);
-		if ((e->curr >= a->start) && (e->curr <= a->end))
+		if (etch_time_between(&a->start, &a->end, &e->curr) == EINA_TRUE)
+		//if ((e->curr >= a->start) && (e->curr <= a->end))
 		{
-			etch_animation_animate(a, e->curr);
+			etch_animation_animate(a, &e->curr);
 		}		
 	}
 }
@@ -65,10 +66,7 @@ EAPI Etch * etch_new(void)
 {
 	Etch *e;
 	
-	e = malloc(sizeof(Etch));
-	e->animations = NULL;
-	e->frame = 0;
-	e->curr = 0;
+	e = calloc(1, sizeof(Etch));
 	e->fps = DEFAULT_FPS;
 	return e;
 }
@@ -114,7 +112,7 @@ EAPI void etch_timer_tick(Etch *e)
 	assert(e);
 	/* TODO check for overflow */
 	e->frame++;
-	e->curr += (double)1/e->fps;
+	etch_time_increment(&e->curr, &e->tpf);
 	_process(e);
 }
 /**
@@ -135,11 +133,7 @@ EAPI int etch_timer_has_end(Etch *e)
  */
 EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs)
 {
-	Etch_Time t;
-	
-	etch_time_double_from(&t, e->curr);
-	if (secs) *secs = t.secs;
-	if (usecs) *usecs = t.usecs;
+	etch_time_secs_to(&e->curr, secs, usecs);
 }
 /**
  * To be documented
@@ -147,8 +141,12 @@ EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs)
  */
 EAPI void etch_timer_goto(Etch *e, unsigned long frame)
 {
+	Etch_Time t;
+
 	e->frame = frame;
-	e->curr = (double)frame/e->fps;
+	t = e->tpf;
+	etch_time_multiply(&t, frame);
+	e->curr = t;
 	_process(e);
 }
 /**

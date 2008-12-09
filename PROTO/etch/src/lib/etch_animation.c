@@ -80,7 +80,7 @@ Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
  * To be documented
  * FIXME: To be fixed
  */
-void etch_animation_animate(Etch_Animation *a, double curr)
+void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 {
 	Eina_Inlist *l;
 	Etch_Animation_Keyframe *start;
@@ -102,19 +102,19 @@ void etch_animation_animate(Etch_Animation *a, double curr)
 			break;
 		/* get the keyframe affected */
 		//printf("-> [%g] %g %g\n", curr, start->time, end->time);
-		if ((curr >= start->time) && (curr <= end->time))
+		if (etch_time_between(&start->time, &end->time, curr) == EINA_TRUE)
 		{
 			Etch_Interpolator_Func ifnc;
 			Etch_Data old;
 			double m;
 			
 			/* get the interval between 0 and 1 based on current frame and two keyframes */
-			if (curr == start->time)
+			if (etch_time_equal(&start->time, curr) == EINA_TRUE)
 				m = 0;
-			else if (curr == end->time)
+			else if (etch_time_equal(&end->time, curr) == EINA_TRUE) 
 				m = 1;
 			else
-				m = (curr - start->time)/(end->time - start->time);
+				m = etch_time_interpolate(&start->time, &end->time, curr);
 			/* accelerate the calculations if we get the same m as the previous call */
 			if (m == a->m)
 			{
@@ -143,11 +143,12 @@ Etch_Animation * etch_animation_new(Etch_Data_Type dtype, Etch_Animation_Callbac
 	a = calloc(1, sizeof(Etch_Animation));
 	/* common values */
 	a->m = -1; /* impossible, so the first keyframe will overwrite this */
-	a->start = DBL_MAX;
+	etch_time_init_max(&a->start);
 	a->dtype = dtype;
-	a->keys = NULL;
 	a->cb = cb;
 	a->data = data;
+	
+	return a;
 }
 
 /*============================================================================*
@@ -221,16 +222,13 @@ EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned 
 {
 	Etch_Animation *a;
 	Etch_Time t;
-	double new_time;
 	Eina_Inlist *l;
 	
 	assert(k);
-	
-	t.secs = secs;
-	t.usecs = usecs;
-	new_time = etch_time_double_to(&t);
+
+	etch_time_secs_from(&t, secs, usecs);
 	/* if the time is the same, do nothing */
-	if (new_time == k->time)
+	if (etch_time_equal(&t, &k->time))
 		return;
 	a = k->animation;
 	/* find the greater element with the value less than the one to set */
@@ -239,7 +237,7 @@ EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned 
 	{
 		Etch_Animation_Keyframe *k2 = (Etch_Animation_Keyframe *)l;
 		
-		if (k2->time >= new_time)
+		if (etch_time_ge(&k2->time, &t) == EINA_TRUE)
 			break;
 		l = l->next;
 	}
@@ -260,7 +258,7 @@ EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned 
 	}
 	/* update the start and end values */
 update:
-	k->time = new_time;
+	k->time = t;
 	a->start = ((Etch_Animation_Keyframe *)a->keys)->time;
 	a->end = ((Etch_Animation_Keyframe *)((Eina_Inlist *)(a->keys))->last)->time;
 }
@@ -277,22 +275,19 @@ EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *k, ...)
  */ 
 EAPI void etch_animation_offset_add(Etch_Animation *a, unsigned long secs, unsigned long usecs)
 {
-	Etch_Time t;
-	double new_time;
+	Etch_Time inc;
 	Eina_Inlist *l;
 		
 	assert(a);
-		
-	t.secs = secs;
-	t.usecs = usecs;
-	new_time = etch_time_double_to(&t);
+
+	etch_time_secs_from(&inc, secs, usecs);
 	l = (Eina_Inlist *)(a->keys);
 	/* increment every keyframe by secs.usecs */
 	while (l)
 	{
 		Etch_Animation_Keyframe *k = (Etch_Animation_Keyframe *)l;
 		
-		k->time += new_time;
+		etch_time_increment(&k->time, &inc);
 		l = l->next;
 	}
 }

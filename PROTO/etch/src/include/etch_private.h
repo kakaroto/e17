@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include <math.h> 
 #include <sys/time.h>
+#include <limits.h>
 
 #include <assert.h>
 
@@ -43,12 +44,18 @@ typedef struct _Etch_Time
 #endif
 } Etch_Time;
 
+void etch_time_init_max(Etch_Time *t);
+Eina_Bool etch_time_equal(Etch_Time *t, Etch_Time *cmp);
+Eina_Bool etch_time_ge(Etch_Time *l, Etch_Time *r);
 Eina_Bool etch_time_between(Etch_Time *first, Etch_Time *last, Etch_Time *cmp);
+double etch_time_interpolate(Etch_Time *first, Etch_Time *last, Etch_Time *curr);
 void etch_time_increment(Etch_Time *t, Etch_Time *a);
 void etch_time_secs_from(Etch_Time *t, unsigned long int secs, unsigned long int usecs);
 void etch_time_secs_to(Etch_Time *t, unsigned long int *secs, unsigned long int *usecs);
 double etch_time_double_to(Etch_Time *t);
 void etch_time_double_from(Etch_Time *t, double d);
+void etch_time_multiply(Etch_Time *t, unsigned int scalar);
+void etch_time_sub(Etch_Time *a, Etch_Time *b, Etch_Time *res);
 
 /**
  * 
@@ -59,9 +66,8 @@ struct _Etch
 	unsigned long frame; /** Current frame */
 	unsigned int fps; /** Number of frames per second */
 	Etch_Time tpf; /** Time per frame */
-	double curr; /** Current time in seconds */
-	double start; /** Time where an animation starts in seconds */
-	double end; /** Time where an animation ends in seconds */	
+	Etch_Time curr; /** Current time in seconds */
+	/* TODO do we need to cache the next animation to be animated here? */
 };
 
 /**
@@ -90,7 +96,10 @@ struct _Etch_Animation_Keyframe
 	EINA_INLIST; /** A keyframe is always a list */
 	Etch_Animation *animation; /** reference to the animation */
 	Etch_Data value; /** the property value for this mark */
-	double time; /** the time where the keyframe is, already transformed to seconds */
+	Etch_Time time; /** the time where the keyframe is */
+	/* TODO do we need to cache the diff between this keyframe and the next?
+	 * to avoid substracting them every time?
+	 */
 	Etch_Animation_Type type; /** type of interpolation between this mark and the next */
 	union {
 		Etch_Animation_Quadratic q;
@@ -107,8 +116,8 @@ struct _Etch_Animation
 	Eina_Inlist *keys; /** list of keyframes */
 	/* TODO if the marks are already ordered do we need to have the start
 	 * and end time duplicated here? */
-	double start; /** initial time already transformed to seconds */
-	double end; /** end time already transformed to seconds */
+	Etch_Time start; /** initial time */
+	Etch_Time end; /** end time already */
 	double m; /** last interpolator value in the range [0,1] */
 	Etch_Data curr;
 	Etch_Data_Type dtype; /** animations only animates data types, no properties */
@@ -122,7 +131,7 @@ typedef struct _Etch_Interpolator
 	Etch_Interpolator_Func funcs[ETCH_ANIMATION_TYPES];
 } Etch_Interpolator;
 
-void etch_animation_animate(Etch_Animation *a, double curr);
+void etch_animation_animate(Etch_Animation *a, Etch_Time *curr);
 Etch_Animation * etch_animation_new(Etch_Data_Type dtype, Etch_Animation_Callback cb, void *data);
 
 #endif /*ETCH_PRIVATE_H_*/
