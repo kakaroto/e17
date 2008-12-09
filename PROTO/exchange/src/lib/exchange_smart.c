@@ -267,7 +267,7 @@ exchange_smart_object_run(Evas_Object *obj)
    Eina_List *themes = NULL, *l;
    Eina_Hash *themes_hash = eina_hash_string_superfast_new(NULL);
    char buf[255];
-   int local_num;
+   int local_num = 0;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
@@ -642,7 +642,6 @@ _exchange_smart_size_hint_changed_cb(void *data, Evas *e, Evas_Object *obj, void
    evas_object_size_hint_min_set(smart, w, h);
 }
 
-
 static void
 _exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -839,8 +838,8 @@ _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td)
    //evas_object_size_hint_min_set(elem, w, h);
    //evas_object_size_hint_request_set(elem, w, h);
    evas_object_show(elem);
-   evas_object_smart_member_add(elem, sd->obj_box); //???
-   evas_object_data_set(elem, "EXCHANGE_SMART_DATA", sd);
+   evas_object_smart_member_add(elem, sd->obj_box);
+   evas_object_data_set(elem, "EXCHANGE_SMART_DATA", sd); //TODO FREE ??
    edje_object_signal_callback_add(elem, "clicked", "btn_*",
                                    _exchange_smart_button_click_cb,  td); //TODO FREEME ??
    evas_object_event_callback_add(elem, EVAS_CALLBACK_DEL,
@@ -899,6 +898,7 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    Exchange_Smart_Data *sd;
    Exchange_Theme *td = data;
    char dst[4096];
+   char name[4096];
 
    sd = evas_object_data_get(obj, "EXCHANGE_SMART_DATA");
    if (!sd) return;
@@ -921,10 +921,26 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
       ecore_file_download(td->url, dst, _download_theme_complete_cb,
                           _download_theme_progress_cb, obj);
    }
-   else if (!strcmp(src, "btn_use"))
+   else if (!strcmp(src, "btn_use") && sd->apply.func)
    {
-      if (sd->apply.func)
-         sd->apply.func(td->name, sd->apply.data);
+      if (strstr(td->name, ".edj")) //theme don't have name
+      {
+         snprintf(dst, sizeof(dst),"%s/%s", sd->local_usr, td->name);
+         if (!ecore_file_exists(dst))
+            snprintf(dst, sizeof(dst),"%s/%s", sd->local_sys, td->name);
+         printf("USE: %s\n", dst);
+         if (ecore_file_exists(dst))
+            sd->apply.func(dst, sd->apply.data);
+      }
+      else //theme have name
+      {
+         snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_usr, td->name);
+         if (!ecore_file_exists(dst))
+            snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_sys, td->name);
+         printf("USE: %s\n", dst);
+         if (ecore_file_exists(dst))
+            sd->apply.func(dst, sd->apply.data);
+      }
    }
 }
 
