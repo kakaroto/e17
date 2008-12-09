@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
 #include <e.h>
 #include "launcher.h"
@@ -166,6 +166,9 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
 	E_FREE(r);
      }
+   launcher_conf->items = eina_list_remove(launcher_conf->items, inst->conf);
+   if (!eina_list_count(launcher_conf->items))
+     E_FREE(launcher_conf);
    E_FREE(inst->conf);
    E_FREE(inst);
 
@@ -189,10 +192,7 @@ drawer_plugin_config_get(Drawer_Plugin *p, Evas *evas)
 EAPI void
 drawer_plugin_config_save(Drawer_Plugin *p)
 {
-   Instance *inst = NULL;
-   
-   inst = p->data;
-
+   if (!_launcher_conf_edd) return;
    e_config_domain_save("module.drawer.launcher", _launcher_conf_edd, launcher_conf);
 }
 
@@ -399,6 +399,7 @@ _launcher_source_item_free(Instance *inst)
 	inst->items = eina_list_remove_list(inst->items, inst->items);
 	if (si->label) eina_stringshare_del(si->label);
 	if (si->description) eina_stringshare_del(si->description);
+	if (si->category) eina_stringshare_del(si->category);
 
 	free(si);
      }

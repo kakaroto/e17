@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
 #include <e.h>
 #include "e_mod_main.h"
@@ -751,8 +751,18 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (!(inst = gcc->data)) return;
    instances = eina_list_remove(instances, inst);
 
+   if (inst->source)
+     _drawer_plugin_destroy(inst, inst->source);
+   if (inst->view)
+     _drawer_plugin_destroy(inst, inst->view);
+
+   /* XXX: this returns NULL when in FLOAT mode, the actual object isn't removed */
    o = edje_object_part_swallow_get(inst->o_drawer, "e.swallow.content");
-   if (o) evas_object_del(o);
+   if (o)
+     {
+	edje_object_part_unswallow(inst->o_drawer, o);
+	evas_object_del(o);
+     }
    /* kill popup menu */
    if (inst->menu) 
      {

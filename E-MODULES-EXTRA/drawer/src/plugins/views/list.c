@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
 #include <e.h>
 #include "list.h"
@@ -48,12 +48,15 @@ struct _Entry
 static void _list_containers_create(Instance *inst);
 static Entry * _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si);
+static Entry * _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si);
+static Entry * _list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si);
 static void _list_item_pack_options(Instance *inst, Entry *e);
 static void _list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y);
 
 static int _list_scroll_timer(void *data);
 static int _list_scroll_animator(void *data);
 static void _list_cb_list_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static int  _list_sort_by_category_cb(const void *d1, const void *d2);
 static void _list_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_event_activate_free(void *data __UNUSED__, void *event);
@@ -70,7 +73,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    inst->view = DRAWER_VIEW(p);
 
    snprintf(inst->theme_file, sizeof(inst->theme_file),
-	 "%s/e-module-drawer.edj", drawer_conf->module->dir);
+	    "%s/e-module-drawer.edj", drawer_conf->module->dir);
 
    return inst;
 }
@@ -94,7 +97,10 @@ EAPI Evas_Object *
 drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 {
    Instance *inst = NULL;
-   Eina_List *l, *ll;
+   Eina_List *l = NULL, *ll = NULL;
+   Drawer_Source_Item *si;
+   const char *cat = NULL;
+   Eina_Bool change = EINA_FALSE;
 
    inst = DRAWER_PLUGIN(v)->data;
 
@@ -110,37 +116,77 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	Entry *e;
 
 	e = inst->entries->data;
-	evas_object_del(e->o_icon);
-	evas_object_del(e->o_holder);
+	if (e->o_icon)
+	  evas_object_del(e->o_icon);
+	if (e->o_holder)
+	  evas_object_del(e->o_holder);
 	E_FREE(e);
 
 	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
      }
+
+   EINA_LIST_FOREACH(items, l, si)
+      ll = eina_list_append(ll, si);
+   ll = eina_list_sort(ll, eina_list_count(ll), _list_sort_by_category_cb);
    switch (inst->orient)
      {
       case LIST_BOTTOM:
       case LIST_RIGHT:
-	 ll = eina_list_reverse(items);
-	 break;
-      default:
-	 ll = items;
+	 ll = eina_list_reverse(ll);
 	 break;
      }
 
-   for (l = ll; l; l = l->next)
+   EINA_LIST_FOREACH(ll, l, si)
      {
-	Drawer_Source_Item *si;
 	Entry *e;
 
-	si = l->data;
+	if (!cat && si->category)
+	  {
+	     cat = eina_stringshare_add(si->category);
+	     change = EINA_TRUE;
+	  }
+	else if (cat && !si->category)
+	  {
+	     eina_stringshare_del(cat);
+	     cat = NULL;
+	     change = EINA_TRUE;
+	  }
+	else if (cat && si->category && (strcmp(cat, si->category)))
+	  {
+	     eina_stringshare_del(cat);
+	     cat = eina_stringshare_add(si->category);
+	     change = EINA_TRUE;
+	  }
+	else
+	  change = EINA_FALSE;
 
 	switch(inst->orient)
 	  {
 	   case LIST_TOP:
 	   case LIST_BOTTOM:
+	      if (change)
+		{
+		   Entry *c;
+
+		   c = _list_vertical_cat_create(inst, si);
+		   inst->entries = eina_list_append(inst->entries, c);
+		   e_box_pack_end(inst->o_box, c->o_holder);
+		   _list_item_pack_options(inst, c);
+		}
 	      e = _list_vertical_entry_create(inst, si);
 	      break;
-	   default:
+	   case LIST_RIGHT:
+	   case LIST_LEFT:
+	   case LIST_FLOAT:
+	      if (change)
+		{
+		   Entry *c;
+
+		   c = _list_horizontal_cat_create(inst, si);
+		   inst->entries = eina_list_append(inst->entries, c);
+		   e_box_pack_end(inst->o_box, c->o_holder);
+		   _list_item_pack_options(inst, c);
+		}
 	      e = _list_horizontal_entry_create(inst, si);
 	      break;
 	  }
@@ -149,6 +195,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	_list_item_pack_options(inst, e);
      }
    e_box_thaw(inst->o_box);
+   if (cat) eina_stringshare_del(cat);
    return inst->o_con;
 }
 
@@ -252,7 +299,7 @@ _list_containers_create(Instance *inst)
    inst->o_con = edje_object_add(evas);
 
    inst->o_box = e_box_add(evas);
-   e_box_homogenous_set(inst->o_box, 1);
+   e_box_homogenous_set(inst->o_box, 0);
    switch(inst->orient)
      {
       case LIST_TOP:
@@ -291,7 +338,7 @@ _list_containers_create(Instance *inst)
    evas_object_show(inst->o_con);
 
    evas_object_event_callback_add(inst->o_con, EVAS_CALLBACK_MOUSE_MOVE,
-	 _list_cb_list_mouse_move, inst);
+				  _list_cb_list_mouse_move, inst);
 }
 
 static Entry *
@@ -304,9 +351,9 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-	 "modules/drawer/list/horizontal_entry"))
+				"modules/drawer/list/horizontal_entry"))
      edje_object_file_set(e->o_holder, inst->theme_file,
-	   "modules/drawer/list/horizontal_entry");
+			  "modules/drawer/list/horizontal_entry");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
    e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
@@ -319,9 +366,9 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
    e->si = si;
 
    edje_object_signal_callback_add(e->o_holder, "e,action,select", "drawer", 
-	 _list_entry_select_cb, e);
+				   _list_entry_select_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
-	 _list_entry_activate_cb, e);
+				   _list_entry_activate_cb, e);
 
    return e;
 }
@@ -336,7 +383,7 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-	 "modules/drawer/list/vertical_entry"))
+				"modules/drawer/list/vertical_entry"))
      edje_object_file_set(e->o_holder, inst->theme_file, "modules/drawer/list/vertical_entry");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
@@ -353,9 +400,65 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
    e->si = si;
 
    edje_object_signal_callback_add(e->o_holder, "e,action,select", "drawer", 
-	 _list_entry_select_cb, e);
+				   _list_entry_select_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
-	 _list_entry_activate_cb, e);
+				   _list_entry_activate_cb, e);
+
+   return e;
+}
+
+static Entry *
+_list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si)
+{
+   Entry *e;
+   Evas_Coord w, h;
+   char buf[1024];
+
+   e = E_NEW(Entry, 1);
+
+   e->o_holder = edje_object_add(inst->evas);
+   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
+				"modules/drawer/list/horizontal_category"))
+     edje_object_file_set(e->o_holder, inst->theme_file,
+			  "modules/drawer/list/horizontal_category");
+
+   if (si->category)
+     snprintf(buf, sizeof(buf), "%s", si->category);
+   else
+     snprintf(buf, sizeof(buf), "Uncategorised");
+
+   edje_object_part_text_set(e->o_holder, "e.text.category", buf);
+
+   e->inst = inst;
+   e->si = si;
+
+   return e;
+}
+
+static Entry *
+_list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si)
+{
+   Entry *e;
+   Evas_Coord w, h;
+   char buf[1024];
+
+   e = E_NEW(Entry, 1);
+
+   e->o_holder = edje_object_add(inst->evas);
+   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
+				"modules/drawer/list/vertical_category"))
+     edje_object_file_set(e->o_holder, inst->theme_file,
+			  "modules/drawer/list/vertical_category");
+
+   if (si->category)
+     snprintf(buf, sizeof(buf), "%s", si->category);
+   else
+     snprintf(buf, sizeof(buf), "Uncategorised");
+
+   edje_object_part_text_set(e->o_holder, "e.text.category", buf);
+
+   e->inst = inst;
+   e->si = si;
 
    return e;
 }
@@ -368,22 +471,13 @@ _list_item_pack_options(Instance *inst, Entry *e)
    w = h = 0;
    edje_object_size_min_calc(e->o_holder, &w, &h);
    edje_object_size_max_get(e->o_holder, &mw, &mh);
-   if (e_box_orientation_get(inst->o_box) == 1)
-     e_box_pack_options_set(e->o_holder,
-			    1, 1, /* fill */
-			    1, 1, /* expand */
-			    0.5, 0.5, /* align */
-			    w, h, /* min */
-			    mw, mh /* max */
-			    );
-   else
-     e_box_pack_options_set(e->o_holder,
-			    1, 1, /* fill */
-			    1, 1, /* expand */
-			    0.5, 0.5, /* align */
-			    w, h, /* min */
-			    mw, mh /* max */
-			    );
+   e_box_pack_options_set(e->o_holder,
+			  1, 1, /* fill */
+			  1, 1, /* expand */
+			  0.5, 0.5, /* align */
+			  w, h, /* min */
+			  mw, mh /* max */
+			 );
    evas_object_show(e->o_holder);
 }
 
@@ -467,7 +561,25 @@ _list_cb_list_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
    inst = data;
    evas_object_geometry_get(inst->o_box, &x, &y, NULL, NULL);
    _list_autoscroll_update(inst, ev->cur.output.x - x, 
-	 ev->cur.output.y - y);
+			   ev->cur.output.y - y);
+}
+
+static int
+_list_sort_by_category_cb(const void *d1, const void *d2)
+{
+   const Drawer_Source_Item *si1;
+   const Drawer_Source_Item *si2;
+   int ret;
+
+   if (!(si1 = d1)) return -1;
+   if (!(si2 = d2)) return 1;
+
+   if (!si1->category) return -1;
+   if (!si2->category) return 1;
+
+   ret = strcmp(si1->category, si2->category);
+   
+   return ret > 0 ? 1 : -1;
 }
 
 static void

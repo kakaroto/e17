@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
@@ -141,15 +141,14 @@ struct _Drawer_Source_Item
 {
    /* image from desktop file */
    Efreet_Desktop *desktop;
-   /* image from icon file */
-   const char	  *icon_path;
-   /* thumbnail from file */
+   /* file for thumbnailing */
    const char	  *file_path;
 
    const char     *label;
    const char     *description;
+   const char	  *category;
 
-   /* Categories, tags, etc */
+   /* tags, etc */
    Eina_Hash	  *data;
 
    void *priv;
