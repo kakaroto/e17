@@ -39,11 +39,11 @@ EXPEDITE_CHECK_ENGINE([opengl-x11], [OpenGL X11], "yes")
 EXPEDITE_CHECK_ENGINE([software-xcb], [Software XCB], "yes")
 
 # DirectDraw
-EXPEDITE_CHECK_ENGINE([software-ddraw], [Software DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
+EXPEDITE_CHECK_ENGINE([software-ddraw], [Software DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid -lgdi32"])
 AC_SUBST(ddraw_libs)
 
 # Direct3D
-EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d"])
+EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d -lgdi32"])
 AC_SUBST(d3d_libs)
 
 # OpenGL GLEW
