@@ -28,6 +28,8 @@ struct _Instance
    Eina_List *handlers;
 
    Eina_Bool is_floating : 1;
+   Eina_Bool pop_hiding : 1;
+   Eina_Bool pop_update : 1;
 };
 
 /* Local Function Prototypes */
@@ -437,6 +439,7 @@ _drawer_popup_hide(Instance *inst)
 {
    edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide", "drawer");
    edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide", "drawer");
+   inst->pop_hiding = EINA_TRUE;
 }
 
 static void
@@ -445,6 +448,12 @@ _drawer_popup_update(Instance *inst)
    Evas_Object *o = NULL;
    Eina_List *l = NULL;
    Drawer_Source *s;
+
+   if (inst->pop_hiding)
+     {
+	inst->pop_update = EINA_TRUE;
+	return;
+     }
 
    s = DRAWER_SOURCE(inst->source);
    l = s->func.list(s);
@@ -457,6 +466,8 @@ _drawer_popup_update(Instance *inst)
 	   s->func.description_get(s));
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
+
+   inst->pop_update = EINA_FALSE;
 }
 
 static void
@@ -990,6 +1001,10 @@ _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emi
    inst = data;
    e_gadcon_popup_hide(inst->popup);
    e_shelf_locked_set(inst->gcc->gadcon->shelf, 0);
+
+   inst->pop_hiding = EINA_FALSE;
+   if (inst->pop_update)
+     _drawer_popup_update(inst);
 }
 
 /* Pants On */
