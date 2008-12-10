@@ -85,6 +85,20 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
    inst = p->data;
 
+   while (inst->entries)
+     {
+	Entry *e;
+
+	e = inst->entries->data;
+	if (e->o_icon)
+	  evas_object_del(e->o_icon);
+	if (e->o_holder)
+	  evas_object_del(e->o_holder);
+	E_FREE(e);
+
+	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
+     }
+
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
 
