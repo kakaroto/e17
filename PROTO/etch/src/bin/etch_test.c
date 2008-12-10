@@ -62,7 +62,18 @@ void animation_setup(Etch *e)
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
 	etch_animation_keyframe_value_set(ek, 25);
-	etch_animation_keyframe_time_set(ek, 1, 2530);
+	etch_animation_keyframe_time_set(ek, 1, 0);
+	/* fifth keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
+	etch_animation_keyframe_value_set(ek, 15);
+	etch_animation_keyframe_time_set(ek, 2, 0);
+	
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
+	etch_animation_keyframe_value_set(ek, 25);
+	etch_animation_keyframe_time_set(ek, 3, 0);
+	etch_animation_repeat_set(ea, 2);
 }
 
 int main(void)

@@ -79,6 +79,9 @@ Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
 /**
  * To be documented
  * FIXME: To be fixed
+ * This functions gets called on etch_process with curr time in an absolute
+ * form, isnt better to pass a relative time (i.e relative to the start and end
+ * of the animation) ?
  */
 void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 {
@@ -147,7 +150,8 @@ Etch_Animation * etch_animation_new(Etch_Data_Type dtype, Etch_Animation_Callbac
 	a->dtype = dtype;
 	a->cb = cb;
 	a->data = data;
-	
+	a->repeat = 1;
+
 	return a;
 }
 
@@ -169,7 +173,7 @@ EAPI void etch_animation_delete(Etch_Animation *a)
  */
 EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times)
 {
-	
+	a->repeat = times;
 }
 /**
  * Add a new mark to the animation

@@ -47,6 +47,7 @@ typedef struct _Etch_Time
 void etch_time_init_max(Etch_Time *t);
 Eina_Bool etch_time_equal(Etch_Time *t, Etch_Time *cmp);
 Eina_Bool etch_time_ge(Etch_Time *l, Etch_Time *r);
+Eina_Bool etch_time_le(Etch_Time *l, Etch_Time *r);
 Eina_Bool etch_time_between(Etch_Time *first, Etch_Time *last, Etch_Time *cmp);
 double etch_time_interpolate(Etch_Time *first, Etch_Time *last, Etch_Time *curr);
 void etch_time_increment(Etch_Time *t, Etch_Time *a);
@@ -119,7 +120,8 @@ struct _Etch_Animation
 	Etch_Time start; /** initial time */
 	Etch_Time end; /** end time already */
 	double m; /** last interpolator value in the range [0,1] */
-	Etch_Data curr;
+	Etch_Data curr; /** current value in the whole animation */
+	unsigned int repeat; /** number of times the animation will repeat, 0 for infinite */
 	Etch_Data_Type dtype; /** animations only animates data types, no properties */
 	Etch_Animation_Callback cb; /** function to call when a value has been set */
 	void *data; /** user provided data */

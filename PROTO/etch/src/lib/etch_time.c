@@ -69,6 +69,16 @@ Eina_Bool etch_time_ge(Etch_Time *l, Etch_Time *r)
 		return EINA_FALSE;
 }
 
+Eina_Bool etch_time_le(Etch_Time *l, Etch_Time *r)
+{
+	if (l->secs < r->secs)
+		return EINA_TRUE;
+	else if (l->secs == r->secs && l->usecs <= r->usecs)
+		return EINA_TRUE;
+	else
+		return EINA_FALSE;
+}
+
 Eina_Bool etch_time_between(Etch_Time *first, Etch_Time *last, Etch_Time *cmp)
 {
 	if ((cmp->secs < first->secs) || (cmp->secs > last->secs))
@@ -117,6 +127,17 @@ void etch_time_multiply(Etch_Time *t, unsigned int scalar)
 		t->usecs = t->usecs % USECS_MAX;
 	}
 }
+
+void etch_time_mod(Etch_Time *t, Etch_Time *m, Etch_Time *res)
+{
+	double a, b;
+	/* TODO we should use the integer version */
+	a = etch_time_double_to(t);
+	b = etch_time_double_to(m);
+	a = fmod(a, b);
+	etch_time_double_from(res, a);
+}
+
 
 void etch_time_secs_from(Etch_Time *t, unsigned long int secs, unsigned long int usecs)
 {

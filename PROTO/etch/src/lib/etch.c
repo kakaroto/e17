@@ -43,13 +43,51 @@ static void _process(Etch *e)
 	/* iterate over the list of animations */
 	EINA_INLIST_FOREACH(e->animations, a)
 	{
-		/* check that the animation start and end is between our time */
-		//printf("[%g] %g %g\n", e->curr, a->start, a->end);
-		if (etch_time_between(&a->start, &a->end, &e->curr) == EINA_TRUE)
-		//if ((e->curr >= a->start) && (e->curr <= a->end))
+		Etch_Time rcurr;
+
+		/*printf("[%g] %g %g %d\n", etch_time_double_to(&e->curr),
+				etch_time_double_to(&a->start),
+				etch_time_double_to(&a->end),
+				a->repeat);*/
+		if (etch_time_ge(&e->curr, &a->start) == EINA_FALSE)
+			continue;
+		/* only once */
+		if (a->repeat == 1)
 		{
-			etch_animation_animate(a, &e->curr);
-		}		
+			if (etch_time_le(&e->curr, &a->end) == EINA_FALSE)
+				continue;
+			rcurr = e->curr;
+		}
+		/* in case the animation repeats check for it */
+		else
+		{
+			Etch_Time tmp;
+			Etch_Time length;
+
+			/* n times */
+			if (a->repeat)
+			{
+				Etch_Time tmp2;
+				Etch_Time rend;
+				
+				/* FIXME the length can be precalculated when repeat is set */
+				tmp2 = a->end;
+				etch_time_multiply(&tmp2, a->repeat);
+				etch_time_sub(&tmp2, &a->start, &rend);
+				if (etch_time_le(&e->curr, &rend) == EINA_FALSE)
+					continue;
+			}
+			/* FIXME the length can be precalculated when a keyframe time is set */
+			etch_time_sub(&a->end, &a->start, &length);
+			//printf("length %g\n", etch_time_double_to(&length));
+			etch_time_sub(&e->curr, &a->start, &tmp);
+			//printf("relative %g\n", etch_time_double_to(&tmp));
+			etch_time_mod(&tmp, &length, &rcurr);
+			//printf("mod %g\n", etch_time_double_to(&rcurr));
+			etch_time_increment(&rcurr, &a->start);
+			//printf("final %g (%g)\n", etch_time_double_to(&rcurr), etch_time_double_to(&e->curr));
+		}
+		etch_animation_animate(a, &rcurr);
 	}
 }
 /*============================================================================*
