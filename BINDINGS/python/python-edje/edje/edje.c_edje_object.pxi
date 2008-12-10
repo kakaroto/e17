@@ -748,9 +748,8 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         if lst:
             return
         d.pop(source)
-        if d:
-            return
-        self._signal_callbacks.pop(emission)
+        if not d:
+            self._signal_callbacks.pop(emission)
         edje_object_signal_callback_del(self.obj, emission, source, signal_cb)
 
     def signal_emit(self, char *emission, char *source):
