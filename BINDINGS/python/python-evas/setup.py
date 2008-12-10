@@ -2,7 +2,7 @@ import sys
 import os
 
 from ez_setup import use_setuptools
-use_setuptools('0.6c3')
+use_setuptools('0.6c9')
 
 from setuptools import setup, find_packages, Extension
 from distutils.command.install_headers import install_headers
