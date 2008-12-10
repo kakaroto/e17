@@ -33,6 +33,7 @@
  */
 extern Etch_Interpolator etch_interpolator_uint32;
 extern Etch_Interpolator etch_interpolator_argb;
+extern Etch_Interpolator etch_interpolator_string;
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
@@ -47,6 +48,10 @@ static void _keyframe_debug(Etch_Animation_Keyframe *k)
 
 		case ETCH_ARGB:
 		printf("value = 0x%8x\n", k->value.data.argb);
+		break;
+		
+		case ETCH_STRING:
+		printf("value = %s\n", k->value.data.string);
 		break;
 		
 		default:
@@ -72,6 +77,7 @@ static void _animation_debug(Etch_Animation *a)
 Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
 		[ETCH_UINT32] = &etch_interpolator_uint32,
 		[ETCH_ARGB] = &etch_interpolator_argb,
+		[ETCH_STRING] = &etch_interpolator_string,
 };
 /*============================================================================*
  *                                 Global                                     * 
@@ -158,6 +164,15 @@ Etch_Animation * etch_animation_new(Etch_Data_Type dtype, Etch_Animation_Callbac
 /*============================================================================*
  *                                   API                                      * 
  *============================================================================*/
+/**
+ * Gets the current data value
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void etch_animation_data_get(Etch_Animation *a, Etch_Data *v)
+{
+	if (v) *v = a->curr;
+}
 /**
  * To be documented
  * FIXME: To be fixed
@@ -318,6 +333,9 @@ EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, ...)
 					break;
 				case ETCH_ARGB:
 					k->value.data.argb = va_arg(va, unsigned int);
+					break;
+				case ETCH_STRING:
+					k->value.data.string = strdup(va_arg(va, char *));
 					break;
 				default:
 					break;

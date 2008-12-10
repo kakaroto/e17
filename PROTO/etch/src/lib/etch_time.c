@@ -36,6 +36,7 @@ void etch_time_init_max(Etch_Time *t)
 	t->usecs = USECS_MAX;
 }
 
+/* make this function return a 1.31 fixed point variable */ 
 double etch_time_interpolate(Etch_Time *first, Etch_Time *last, Etch_Time *curr)
 {
 	Etch_Time tmp1, tmp2;

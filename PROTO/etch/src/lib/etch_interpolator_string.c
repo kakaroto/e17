@@ -22,34 +22,11 @@
  *============================================================================*/
 static void _discrete(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
-	res->data.argb = da->data.argb;
-}
-static void _linear(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
-{
-	unsigned int range;
-	unsigned int a, b, ag, rb;
-	
-	a = da->data.argb;
-	b = db->data.argb;
-	
-	/* handle specific case where a and b are equal (constant) */
-	if (a == b)
-	{
-		res->data.u32 = a;
-		return;
-	}
-	/* b - a*m + a */
-	range = rint(256 * m);
-	/* FIXME this can be optimized with MMX */
-	ag = ((((((b >> 8) & 0xff00ff) - ((a >> 8) & 0xff00ff)) * range) + (a & 0xff00ff00)) & 0xff00ff00);  
-	rb = ((((((b & 0xff00ff) - (a & 0xff00ff)) * (range)) >> 8) + (a & 0xff00ff)) & 0xff00ff);
-	
-	res->data.u32 = ag + rb;
+	res->data.string = da->data.string;
 }
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-Etch_Interpolator etch_interpolator_argb = {
+Etch_Interpolator etch_interpolator_string = {
 	.funcs[ETCH_ANIMATION_DISCRETE] = _discrete,
-	.funcs[ETCH_ANIMATION_LINEAR] = _linear,
 };

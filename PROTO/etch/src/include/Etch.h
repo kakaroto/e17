@@ -55,6 +55,7 @@ EAPI void etch_timer_get(Etch *e, unsigned long *secs, unsigned long *usecs);
 
 /**
  * Data types for a property
+ * TODO add fixed point types too
  */
 typedef enum _Etch_Data_Type
 {
@@ -63,6 +64,7 @@ typedef enum _Etch_Data_Type
 	ETCH_FLOAT, /**< Single precision float */
 	ETCH_DOUBLE, /**< Double precision float */
 	ETCH_ARGB, /**< Color (Alpha, Red, Green, Blue) of 32 bits */
+	ETCH_STRING,
 	ETCH_DATATYPES,
 } Etch_Data_Type;
 
@@ -78,6 +80,7 @@ typedef struct _Etch_Data
 		float f;
 		double d;
 		unsigned int argb;
+		char *string;
 	} data;
 } Etch_Data;
 
@@ -105,6 +108,7 @@ typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
 		Etch_Animation_Callback cb, void *data);
 EAPI void etch_animation_delete(Etch_Animation *a);
+EAPI void etch_animation_data_get(Etch_Animation *a, Etch_Data *v);
 EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times);
 EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a);
 EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe *m);

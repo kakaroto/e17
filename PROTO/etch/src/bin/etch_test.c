@@ -9,10 +9,21 @@
 
 int _timer_event = 0;
 
-void _animation_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
+void _uint32_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
 {
 	printf("curr %d old %d\n", curr->data.u32, prev->data.u32);
 }
+
+void _color_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
+{
+	printf("curr %08x old %08x\n", curr->data.argb, prev->data.argb);
+}
+
+void _string_cb(const Etch_Data *curr, const Etch_Data *prev, void *data)
+{
+	printf("curr %s old %s\n", curr->data.string, prev->data.string);
+}
+
 
 /* Timer function */
 void timer_signal_cb(int s)
@@ -37,12 +48,12 @@ void timer_setup(void)
 	setitimer(ITIMER_REAL, &value, NULL);	
 }
 
-void animation_setup(Etch *e)
+void animation_uint32_setup(Etch *e)
 {
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
 	
-	ea = etch_animation_add(e, ETCH_UINT32, _animation_cb, NULL);
+	ea = etch_animation_add(e, ETCH_UINT32, _uint32_cb, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_COSIN);
@@ -76,13 +87,56 @@ void animation_setup(Etch *e)
 	etch_animation_repeat_set(ea, 2);
 }
 
+void animation_argb_setup(Etch *e)
+{
+	Etch_Animation *ea;
+	Etch_Animation_Keyframe *ek;
+		
+	ea = etch_animation_add(e, ETCH_ARGB, _color_cb, NULL);
+	/* first keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
+	etch_animation_keyframe_value_set(ek, 0xff000000);
+	etch_animation_keyframe_time_set(ek, 1, 0);
+	/* second keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
+	etch_animation_keyframe_value_set(ek, 0x00ff00ff);
+	etch_animation_keyframe_time_set(ek, 5, 0);
+}
+
+void animation_string_setup(Etch *e)
+{
+	Etch_Animation *ea;
+	Etch_Animation_Keyframe *ek;
+			
+	ea = etch_animation_add(e, ETCH_STRING, _string_cb, NULL);
+	/* first keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
+	etch_animation_keyframe_value_set(ek, "hello");
+	etch_animation_keyframe_time_set(ek, 1, 0);
+	/* second keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
+	etch_animation_keyframe_value_set(ek, "bye");
+	etch_animation_keyframe_time_set(ek, 5, 0);
+	/* third keyframe */
+	ek = etch_animation_keyframe_add(ea);
+	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);
+	etch_animation_keyframe_value_set(ek, "nothing");
+	etch_animation_keyframe_time_set(ek, 8, 0);
+}
+
 int main(void)
 {
 	Etch *e;
 	
 	e = etch_new();
 	etch_timer_fps_set(e, 30);
-	animation_setup(e);
+	//animation_setup(e);
+	//animation_argb_setup(e);
+	animation_string_setup(e);
 	timer_setup();
 	/* to exit the main loop we should check that the etch animation has finished */
 	while (!(etch_timer_has_end(e)))

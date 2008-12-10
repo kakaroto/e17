@@ -119,6 +119,7 @@ struct _Etch_Animation
 	 * and end time duplicated here? */
 	Etch_Time start; /** initial time */
 	Etch_Time end; /** end time already */
+	/* TODO make m a fixed point var of type 1.31 */
 	double m; /** last interpolator value in the range [0,1] */
 	Etch_Data curr; /** current value in the whole animation */
 	unsigned int repeat; /** number of times the animation will repeat, 0 for infinite */
