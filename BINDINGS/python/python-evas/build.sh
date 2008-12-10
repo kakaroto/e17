@@ -14,7 +14,7 @@ for arg in $@; do
     esac
 done
 
-PYINCDIR=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
-INCDIR="$(dirname $PREFIX)/$PYINCDIR"
+PYINCDIR=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()" | cut -d/ -f3-`
+INCDIR="$PREFIX/$PYINCDIR"
 
 python setup.py develop --prefix="$PREFIX" install_headers --install-dir="$INCDIR"
