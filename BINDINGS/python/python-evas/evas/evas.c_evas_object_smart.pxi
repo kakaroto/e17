@@ -737,12 +737,16 @@ cdef public class ClippedSmartObject(SmartObject) \
 
     def member_add(self, Object child):
         "Set an evas object as a member of this object, already clipping."
+        if self.clipper is None or self.clipper is child:
+            return
         evas_object_clip_set(child.obj, self.clipper.obj)
         if evas_object_visible_get(self.obj):
             evas_object_show(self.clipper.obj)
 
     def member_del(self, Object child):
         "Removes a member object from a smart object, already unsets its clip."
+        if self.clipper is child:
+            return
         evas_object_clip_unset(child.obj)
         if evas_object_clipees_get(self.clipper.obj) == NULL:
             evas_object_hide(self.clipper.obj)
