@@ -1,5 +1,7 @@
 Shelf icon should move towards the position of the popup
 
+emit e,popup,shelf,show|hide_DIRECTION
+
 Horizontal list needs a way to show the category name
 
 Needs a file source to present and watch the contents of a given directory

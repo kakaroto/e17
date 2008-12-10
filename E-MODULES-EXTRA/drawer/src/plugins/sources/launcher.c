@@ -307,7 +307,7 @@ _launcher_description_create(Instance *inst)
    char buf[1024];
 
    if (inst->description) eina_stringshare_del(inst->description);
-   snprintf(buf, sizeof(buf), "<title>Launcher : </title> <hilight>%s</hilight> source", inst->conf->dir);
+   snprintf(buf, sizeof(buf), D_("%s source"), inst->conf->dir);
    inst->description = eina_stringshare_add(buf);
 }
 
