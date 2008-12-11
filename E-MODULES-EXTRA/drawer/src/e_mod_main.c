@@ -60,8 +60,8 @@ static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
 static Drawer_Source *_drawer_source_new(Instance *inst, const char *name);
 static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
 
-static int _drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__);
-static int _drawer_view_activate_cb(void *data, int ev_type, void *event);
+static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
+static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 
@@ -428,8 +428,33 @@ _drawer_popup_create(Instance *inst)
 static void
 _drawer_popup_show(Instance *inst)
 {
-   edje_object_signal_emit(inst->o_drawer, "e,action,popup,show", "drawer");
-   edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show", "drawer");
+   switch(inst->gcc->gadcon->orient)
+     {
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,show,right", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,right", "drawer");
+	break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,show,left", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,left", "drawer");
+	 break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,show,top", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,top", "drawer");
+	break;
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_BL:
+      case E_GADCON_ORIENT_CORNER_BR:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,show,bottom", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,bottom", "drawer");
+	break;
+     }
    e_gadcon_popup_show(inst->popup);
    e_shelf_locked_set(inst->gcc->gadcon->shelf, 1);
 }
@@ -437,8 +462,33 @@ _drawer_popup_show(Instance *inst)
 static void
 _drawer_popup_hide(Instance *inst)
 {
-   edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide", "drawer");
-   edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide", "drawer");
+   switch(inst->gcc->gadcon->orient)
+     {
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide,right", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,right", "drawer");
+	break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide,left", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,left", "drawer");
+	 break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide,top", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,top", "drawer");
+	break;
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_BL:
+      case E_GADCON_ORIENT_CORNER_BR:
+	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide,bottom", "drawer");
+	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,bottom", "drawer");
+	break;
+     }
    inst->pop_hiding = EINA_TRUE;
 }
 
@@ -518,6 +568,29 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
 	if (!e_theme_edje_object_set(inst->o_drawer, "base/theme/modules/drawer", 
 		 "modules/drawer/main"))
 	  edje_object_file_set(inst->o_drawer, buf, "modules/drawer/main");
+	switch(orient)
+	  {
+	   case E_GADCON_ORIENT_CORNER_RT:
+	   case E_GADCON_ORIENT_CORNER_RB:
+	   case E_GADCON_ORIENT_RIGHT:
+	      edje_object_signal_emit(inst->o_drawer, "e,state,orient,right", "drawer");
+	      break;
+	   case E_GADCON_ORIENT_LEFT:
+	   case E_GADCON_ORIENT_CORNER_LT:
+	   case E_GADCON_ORIENT_CORNER_LB:
+	      edje_object_signal_emit(inst->o_drawer, "e,state,orient,left", "drawer");
+	      break;
+	   case E_GADCON_ORIENT_TOP:
+	   case E_GADCON_ORIENT_CORNER_TL:
+	   case E_GADCON_ORIENT_CORNER_TR:
+	      edje_object_signal_emit(inst->o_drawer, "e,state,orient,top", "drawer");
+	      break;
+	   case E_GADCON_ORIENT_BOTTOM:
+	   case E_GADCON_ORIENT_CORNER_BL:
+	   case E_GADCON_ORIENT_CORNER_BR:
+	      edje_object_signal_emit(inst->o_drawer, "e,state,orient,bottom", "drawer");
+	      break;
+	  }
      }
    if (inst->o_content)
      edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
@@ -730,10 +803,10 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_SOURCE_UPDATE,
-	    _drawer_source_update_cb, inst));
+	    _drawer_source_update_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_ACTIVATE,
-	    _drawer_view_activate_cb, inst));
+	    _drawer_view_activate_cb, NULL));
 
    if (inst->conf_item->source)
      _drawer_source_new(inst, inst->conf_item->source);
@@ -953,13 +1026,15 @@ _drawer_instance_get(Config_Item *ci)
 }
 
 static int
-_drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__)
+_drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Instance *inst = NULL;
+   Drawer_Event_Source_Update *ev;
    int visible = 0;
 
-   inst = data;
+   ev = event;
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
 
    if (inst->is_floating)
      {
@@ -973,21 +1048,21 @@ _drawer_source_update_cb(void *data, int ev_type, void *event __UNUSED__)
 }
 
 static int
-_drawer_view_activate_cb(void *data, int ev_type, void *event)
+_drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Drawer_View *v = NULL;
    Drawer_Event_View_Activate *ev = NULL;
    Eina_List *l = NULL;
    Instance *inst = NULL;
 
-   if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return 1;
-   inst = data;
    ev = event;
+   if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return 1;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
    v = ev->view;
 
    DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source), ev->data, inst->gcc->gadcon->zone);
 
-   if (!inst->is_floating)
+   if (inst->popup)
      _drawer_popup_hide(inst);
 
    return 0;
@@ -1019,6 +1094,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    if (ev->button == 1 && !inst->is_floating && inst->source && inst->view
 	 && inst->source->enabled && inst->view->enabled)
      {
+	if (inst->pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
 	if (inst->popup->win->visible)
 	  _drawer_popup_hide(inst);

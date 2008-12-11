@@ -3,8 +3,14 @@
  */
 images {
    image: "module_icon.png" COMP;
-   image: "env_bg.png" COMP;
-   image: "env_fg.png" COMP;
+   image: "env_bg_top.png" COMP;
+   image: "env_fg_top.png" COMP;
+   image: "env_bg_right.png" COMP;
+   image: "env_fg_right.png" COMP;
+   image: "env_bg_bottom.png" COMP;
+   image: "env_fg_bottom.png" COMP;
+   image: "env_bg_left.png" COMP;
+   image: "env_fg_left.png" COMP;
    image: "logo_white_128.png" COMP;
    image: "popup_bg.png" COMP;
    image: "popup_overlay.png" COMP;
@@ -38,8 +44,15 @@ collections {
       max: 128 128;
       script {
 	 public popup_visible;
+	 public orient; /* 0 - default, 1 - left, 2 - top, 3 - right */
       }
       parts {
+
+#undef ORIENT_TARGETS
+#define ORIENT_TARGETS \
+target: "bg"; \
+target: "fg";
+
 	 part {
 	    name: "bg";
 	    mouse_events: 0;
@@ -51,8 +64,23 @@ collections {
 	       rel1.offset: 1 1;
 	       rel2.offset: -2 -2;
 	       image {
-		  normal: "env_bg.png";
+		  normal: "env_bg_bottom.png";
 	       }
+	    }
+	    description {
+	       state: "left" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_bg_left.png";
+	    }
+	    description {
+	       state: "top" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_bg_top.png";
+	    }
+	    description {
+	       state: "right" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_bg_right.png";
 	    }
 	 }
 	 part {
@@ -66,7 +94,7 @@ collections {
 	       rel2.to: "bg";
 	    }
 	    description {
-	       state: "over" 0.0;
+	       state: "over_bottom" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 {
 		  relative: 0 -0.15;
@@ -78,14 +106,89 @@ collections {
 	       }
 	    }
 	    description {
-	       state: "popup_show" 0.0;
-	       inherit: "over" 0.0;
+	       state: "over_left" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.15 0;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 1.15 1;
+		  to: "bg";
+	       }
+	    }
+	    description {
+	       state: "over_top" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0 0.15;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 1 1.15;
+		  to: "bg";
+	       }
+	    }
+	    description {
+	       state: "over_right" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.15 0;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 0.85 1;
+		  to: "bg";
+	       }
+	    }
+	    description {
+	       state: "popup_show_bottom" 0.0;
+	       inherit: "over_bottom" 0.0;
 	       rel1 {
 		  relative: 0 -1.5;
 		  to: "bg";
 	       }
 	       rel2 {
 		  relative: 1 -0.5;
+		  to: "bg";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "popup_show_left" 0.0;
+	       inherit: "over_left" 0.0;
+	       rel1 {
+		  relative: 1.5 0;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 2.5 1;
+		  to: "bg";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "popup_show_top" 0.0;
+	       inherit: "over_top" 0.0;
+	       rel1 {
+		  relative: 0 1.5;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: 1 2.5;
+		  to: "bg";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "popup_show_right" 0.0;
+	       inherit: "over_right" 0.0;
+	       rel1 {
+		  relative: -1.5 0;
+		  to: "bg";
+	       }
+	       rel2 {
+		  relative: -0.5 1;
 		  to: "bg";
 	       }
 	       color: 255 255 255 0;
@@ -111,7 +214,22 @@ collections {
 	       aspect_preference: BOTH;
 	       rel1.to: "bg";
 	       rel2.to: "bg";
-	       image.normal: "env_fg.png";
+	       image.normal: "env_fg_bottom.png";
+	    }
+	    description {
+	       state: "left" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_fg_left.png";
+	    }
+	    description {
+	       state: "top" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_fg_top.png";
+	    }
+	    description {
+	       state: "right" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "env_fg_right.png";
 	    }
 	 }
 	 part {
@@ -139,16 +257,42 @@ collections {
 	    source: "event";
 	    script {
 	       if (get_int(popup_visible) == 0) {
-		  run_program(PROGRAM:"mouse_in2");
+		  if (get_int(orient) == 0)
+		     run_program(PROGRAM:"mouse_in2_bottom");
+		  else if (get_int(orient) == 1)
+		     run_program(PROGRAM:"mouse_in2_left");
+		  else if (get_int(orient) == 2)
+		     run_program(PROGRAM:"mouse_in2_top");
+		  else if (get_int(orient) == 3)
+		     run_program(PROGRAM:"mouse_in2_right");
 	       }
 	    }
 	 }
 	 program {
-	    name: "mouse_in2";
-	    action: STATE_SET "over" 0.0;
+	    name: "mouse_in2_bottom";
+	    action: STATE_SET "over_bottom" 0.0;
 	    transition: LINEAR 0.1;
 	    target: "content_clipper";
 	 }
+	 program {
+	    name: "mouse_in2_left";
+	    action: STATE_SET "over_left" 0.0;
+	    transition: LINEAR 0.1;
+	    target: "content_clipper";
+	 }
+	 program {
+	    name: "mouse_in2_top";
+	    action: STATE_SET "over_top" 0.0;
+	    transition: LINEAR 0.1;
+	    target: "content_clipper";
+	 }
+	 program {
+	    name: "mouse_in2_right";
+	    action: STATE_SET "over_right" 0.0;
+	    transition: LINEAR 0.1;
+	    target: "content_clipper";
+	 }
+
 	 program {
 	    name: "mouse_out";
 	    signal: "mouse,out";
@@ -167,31 +311,48 @@ collections {
 	 }
 	 program {
 	    name: "popup_show";
-	    signal: "e,action,popup,show";
+	    signal: "e,action,popup,show,*";
 	    source: "drawer";
 	    script {
 	       set_int(popup_visible, 1);
-	       run_program(PROGRAM:"popup_show2");
+	       if (get_int(orient) == 0)
+		  run_program(PROGRAM:"popup_show2_bottom");
+	       else if (get_int(orient) == 1)
+		  run_program(PROGRAM:"popup_show2_left");
+	       else if (get_int(orient) == 2)
+		  run_program(PROGRAM:"popup_show2_top");
+	       else if (get_int(orient) == 3)
+		  run_program(PROGRAM:"popup_show2_right");
 	    }
 	 }
 	 program {
-	    name: "popup_show2";
-	    action: STATE_SET "over" 0.0;
+	    name: "popup_show2_bottom";
+	    action: STATE_SET "popup_show_bottom" 0.0;
+	    transition: ACCELERATE 0.3;
 	    target: "content_clipper";
-	    after: "popup_show3";
 	 }
 	 program {
-	    name: "popup_show3";
-	    action: STATE_SET "popup_show" 0.0;
+	    name: "popup_show2_left";
+	    action: STATE_SET "popup_show_left" 0.0;
+	    transition: ACCELERATE 0.3;
+	    target: "content_clipper";
+	 }
+	 program {
+	    name: "popup_show2_top";
+	    action: STATE_SET "popup_show_top" 0.0;
+	    transition: ACCELERATE 0.3;
+	    target: "content_clipper";
+	 }
+	 program {
+	    name: "popup_show2_right";
+	    action: STATE_SET "popup_show_right" 0.0;
 	    transition: ACCELERATE 0.3;
 	    target: "content_clipper";
 	 }
 	 program {
 	    name: "popup_hide";
-	    signal: "e,action,popup,hide";
+	    signal: "e,action,popup,hide,*";
 	    source: "drawer";
-	    action: STATE_SET "popup_show" 0.0;
-	    target: "content_clipper";
 	    after: "popup_hide2";
 	 }
 	 program {
@@ -205,7 +366,63 @@ collections {
 	    name: "popup_hide3";
 	    script {
 	       set_int(popup_visible, 0);
-	       run_program(PROGRAM:"popup_hide2");
+	    }
+	 }
+
+	 program {
+	    name: "orient_bottom";
+	    signal: "e,state,orient,bottom";
+	    source: "drawer";
+	    action: STATE_SET "default" 0.0;
+	    ORIENT_TARGETS
+	    after: "orient_bottom_scr";
+	 }
+	 program {
+	    name: "orient_bottom_scr";
+	    script {
+	       set_int(orient, 0);
+	    }
+	 }
+	 program {
+	    name: "orient_left";
+	    signal: "e,state,orient,left";
+	    source: "drawer";
+	    action: STATE_SET "left" 0.0;
+	    ORIENT_TARGETS
+	    after: "orient_left_scr";
+	 }
+	 program {
+	    name: "orient_left_scr";
+	    script {
+	       set_int(orient, 1);
+	    }
+	 }
+	 program {
+	    name: "orient_top";
+	    signal: "e,state,orient,top";
+	    source: "drawer";
+	    action: STATE_SET "top" 0.0;
+	    ORIENT_TARGETS
+	    after: "orient_top_scr";
+	 }
+	 program {
+	    name: "orient_top_scr";
+	    script {
+	       set_int(orient, 2);
+	    }
+	 }
+	 program {
+	    name: "orient_right";
+	    signal: "e,state,orient,right";
+	    source: "drawer";
+	    action: STATE_SET "right" 0.0;
+	    ORIENT_TARGETS
+	    after: "orient_right_scr";
+	 }
+	 program {
+	    name: "orient_right_scr";
+	    script {
+	       set_int(orient, 3);
 	    }
 	 }
       }
@@ -293,28 +510,43 @@ collections {
       parts {
 #undef TARGETS
 #define TARGETS \
-target: "bg"; \
-target: "e.text.description"; \
-target: "clipper"; \
-target: "overlay";
+target: "bg";
 
 	 part {
 	    name:          "bg";
 	    mouse_events:  0;
 	    description {
 	       state:    "default" 0.0;
-	       visible: 1;
-	       color: 255 255 255 255;
+	       rel1.relative: 0 0;
+	       rel2.relative: 1 1;
 	       image {
 		  normal: "popup_bg.png";
-		  border: 30 15 35 15;
+		  border: 10 10 15 10;
 	       }
 	    }
 	    description {
-	       state: "hidden" 0.0;
+	       state: "hidden_bottom" 0.0;
 	       inherit: "default" 0.0;
-	       visible: 0;
-	       color: 0 0 0 0;
+	       rel1.relative: 0 1;
+	       rel2.relative: 1 1;
+	    }
+	    description {
+	       state: "hidden_left" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0 0;
+	       rel2.relative: 0 1;
+	    }
+	    description {
+	       state: "hidden_top" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0 0;
+	       rel2.relative: 1 0;
+	    }
+	    description {
+	       state: "hidden_right" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 1 0;
+	       rel2.relative: 1 1;
 	    }
 	 }
 	 part {
@@ -327,10 +559,14 @@ target: "overlay";
 	       state: "default" 0.0;
 	       fixed: 0 1;
 	       visible: 1;
-	       rel1.offset: 20 1;
+	       rel1 {
+		  offset: 20 1;
+		  to: "bg";
+	       }
 	       rel2 {
 		  relative: 1 0;
 		  offset: -1 15;
+		  to: "bg";
 	       }
 	       color: 255 255 255 255;
 	       color3: 0 0 0 90;
@@ -342,33 +578,24 @@ target: "overlay";
 		  size: 10;
 	       }
 	    }
-	    description {
-	       state: "hidden" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 0;
-	       color: 255 255 255 0;
-	       color3: 0 0 0 0;
-	    }
 	 }
 	 part {
 	    name: "clipper";
+	    mouse_events:  0;
 	    type: RECT;
 	    description {
 	       state: "default" 0.0;
 	       visible: 1;
 	       color: 255 255 255 255;
 	       rel1 {
-		  relative: 0 1;
-		  offset: 9 1;
-		  to_y: "e.text.description";
+		  relative: 0 0;
+		  offset: 9 14;
+		  to: "bg";
 	       }
-	       rel2.offset: -10 -15;
-	    }
-	    description {
-	       state: "hidden" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 0;
-	       color: 0 0 0 0;
+	       rel2 {
+		  offset: -10 -10;
+		  to: "bg";
+	       }
 	    }
 	 }
 	 part {
@@ -379,12 +606,8 @@ target: "overlay";
 	       state: "default" 0.0;
 	       align: 0.5 0.5;
 	       color: 255 255 255 255;
-	       rel1 {
-		  relative: 0 1;
-		  offset: 9 1;
-		  to_y: "e.text.description";
-	       }
-	       rel2.offset: -10 -15;
+	       rel1.to: "clipper";
+	       rel2.to: "clipper";
 	    }
 	 }
 	 part {
@@ -394,28 +617,28 @@ target: "overlay";
 	       state: "default" 0.0;
 	       visible: 1;
 	       color: 255 255 255 255;
-	       rel1.offset: 1 1;
-	       rel2.offset: -2 -2;
+	       rel1 {
+		  offset: 1 1;
+		  to: "bg";
+	       }
+	       rel2 {
+		  offset: -2 -2;
+		  to: "bg";
+	       }
 	       image {
 		  normal: "popup_overlay.png";
 		  border: 10 10 25 10;
 	       }
 	       fill.smooth: 1;
 	    }
-	    description {
-	       state: "hidden" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 0;
-	       color: 0 0 0 0;
-	    }
 	 }
       }
       programs {
 	 program {
-	    name: "popup_show";
-	    signal: "e,action,popup,show";
+	    name: "popup_show_bottom";
+	    signal: "e,action,popup,show,bottom";
 	    source: "drawer";
-	    action: STATE_SET "hidden" 0.0;
+	    action: STATE_SET "hidden_bottom" 0.0;
 	    TARGETS
 	    after: "popup_show2";
 	 }
@@ -426,23 +649,99 @@ target: "overlay";
 	    TARGETS
 	 }
 	 program {
-	    name: "popup_hide";
-	    signal: "e,action,popup,hide";
+	    name: "popup_hide_bottom";
+	    signal: "e,action,popup,hide,bottom";
 	    source: "drawer";
 	    action: STATE_SET "default" 0.0;
 	    TARGETS
-	    after: "popup_hide2";
+	    after: "popup_hide2_bottom";
 	 }
 	 program {
-	    name: "popup_hide2";
-	    action: STATE_SET "hidden" 0.0;
+	    name: "popup_hide2_bottom";
+	    action: STATE_SET "hidden_bottom" 0.0;
 	    transition: ACCELERATE 0.5;
 	    TARGETS
 	    after: "popup_hide3";
 	 }
 	 program {
+	    name: "popup_show_left";
+	    signal: "e,action,popup,show,left";
+	    source: "drawer";
+	    action: STATE_SET "hidden_left" 0.0;
+	    TARGETS
+	    after: "popup_show2";
+	 }
+	 program {
+	    name: "popup_hide_left";
+	    signal: "e,action,popup,hide,left";
+	    source: "drawer";
+	    action: STATE_SET "default" 0.0;
+	    TARGETS
+	    after: "popup_hide2_left";
+	 }
+	 program {
+	    name: "popup_hide2_left";
+	    action: STATE_SET "hidden_left" 0.0;
+	    transition: ACCELERATE 0.5;
+	    TARGETS
+	    after: "popup_hide3";
+	 }
+	 program {
+	    name: "popup_show_top";
+	    signal: "e,action,popup,show,top";
+	    source: "drawer";
+	    action: STATE_SET "hidden_top" 0.0;
+	    TARGETS
+	    after: "popup_show2";
+	 }
+	 program {
+	    name: "popup_hide_top";
+	    signal: "e,action,popup,hide,top";
+	    source: "drawer";
+	    action: STATE_SET "default" 0.0;
+	    TARGETS
+	    after: "popup_hide2_top";
+	 }
+	 program {
+	    name: "popup_hide2_top";
+	    action: STATE_SET "hidden_top" 0.0;
+	    transition: ACCELERATE 0.5;
+	    TARGETS
+	    after: "popup_hide3";
+	 }
+	 program {
+	    name: "popup_show_right";
+	    signal: "e,action,popup,show,right";
+	    source: "drawer";
+	    action: STATE_SET "hidden_right" 0.0;
+	    TARGETS
+	    after: "popup_show2";
+	 }
+	 program {
+	    name: "popup_hide_right";
+	    signal: "e,action,popup,hide,right";
+	    source: "drawer";
+	    action: STATE_SET "default" 0.0;
+	    TARGETS
+	    after: "popup_hide2_right";
+	 }
+	 program {
+	    name: "popup_hide2_right";
+	    action: STATE_SET "hidden_right" 0.0;
+	    transition: ACCELERATE 0.5;
+	    TARGETS
+	    after: "popup_hide3";
+	 }
+
+	 program {
 	    name: "popup_hide3";
 	    action: SIGNAL_EMIT "e,action,popup,hidden" "drawer";
+	    after: "popup_hide4";
+	 }
+	 program {
+	    name: "popup_hide4";
+	    action: STATE_SET "default" 0.0;
+	    TARGETS
 	 }
       }
    }
@@ -589,7 +888,7 @@ target: "overlay";
 	 }
 	 program {
 	    name: "popup_show";
-	    signal: "e,action,popup,show";
+	    signal: "e,action,popup,show,*";
 	    source: "drawer";
 	    action: STATE_SET "hidden" 0.0;
 	    target: "swallow_clipper";
@@ -607,7 +906,7 @@ target: "overlay";
 	 }
 	 program {
 	    name: "popup_hide";
-	    signal: "e,action,popup,hide";
+	    signal: "e,action,popup,hide,*";
 	    source: "drawer";
 	    action: STATE_SET "default" 0.0;
 	    target: "swallow_clipper";
@@ -706,7 +1005,6 @@ target: "overlay";
 	 }
       }
    }
-   /* XXX: Make the activation better for both orientations */
    group {
       name: "modules/drawer/list/horizontal_entry";
       min: 68 68;
@@ -715,7 +1013,6 @@ target: "overlay";
 
 #define MOUSE_IN_TARGETS \
 target: "bg"; \
-target: "content_clipper"; \
 target: "fg1"; \
 target: "fg2";
 #define MOUSE_CLICK_TARGETS \
@@ -757,22 +1054,8 @@ target: "glow";
 	    }
 	 }
 	 part {
-	    name: "content_clipper";
-	    type: RECT;
-	    mouse_events: 0;
-	    description {
-	       state: "default" 0.0;
-	       color: 255 255 255 200;
-	    }
-	    description {
-	       state: "selected" 0.0;
-	       color: 45 148 212 255;
-	    }
-	 }
-	 part {
 	    name: "e.swallow.content";
 	    type: SWALLOW;
-	    clip_to: "content_clipper";
 	    mouse_events: 0;
 	    description {
 	       state: "default" 0.0;

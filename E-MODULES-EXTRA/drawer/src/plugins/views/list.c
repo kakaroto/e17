@@ -34,6 +34,8 @@ struct _Instance
 
    char theme_file[4096];
 
+   const char *parent_id;
+
    List_Orient orient;
 };
 
@@ -72,6 +74,8 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 
    inst->view = DRAWER_VIEW(p);
 
+   inst->parent_id = eina_stringshare_add(id);
+
    snprintf(inst->theme_file, sizeof(inst->theme_file),
 	    "%s/e-module-drawer.edj", drawer_conf->module->dir);
 
@@ -99,6 +103,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
      }
 
+   if (inst->parent_id) eina_stringshare_del(inst->parent_id);
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
 
@@ -620,6 +625,7 @@ _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNU
    ev = E_NEW(Drawer_Event_View_Activate, 1);
    ev->data = e->si;
    ev->view = e->inst->view;
+   ev->id = eina_stringshare_add(e->inst->parent_id);
    ecore_event_add(DRAWER_EVENT_VIEW_ITEM_ACTIVATE, ev, _list_event_activate_free, NULL);
 
    /* XXX: this doesn't seem to work */
@@ -629,5 +635,9 @@ _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNU
 static void
 _list_event_activate_free(void *data __UNUSED__, void *event)
 {
-   free(event);
+   Drawer_Event_View_Activate *ev;
+
+   ev = event;
+   if (ev->id) eina_stringshare_del(ev->id);
+   free(ev);
 }

@@ -157,11 +157,13 @@ struct _Drawer_Source_Item
 struct _Drawer_Event_Source_Update
 {
    Drawer_Source *source;
+   const char *id;
 };
 
 struct _Drawer_Event_View_Activate
 {
    Drawer_View *view;
+   const char *id;
    void *data;
 };
 

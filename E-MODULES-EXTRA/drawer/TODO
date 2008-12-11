@@ -1,6 +1,6 @@
-Shelf icon should move towards the position of the popup
+D&D actions
 
-emit e,popup,shelf,show|hide_DIRECTION
+Optional source function for filling up a context menu
 
 Horizontal list needs a way to show the category name
 

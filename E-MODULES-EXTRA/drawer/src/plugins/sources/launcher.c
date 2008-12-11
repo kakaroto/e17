@@ -20,6 +20,7 @@ struct _Instance
    Conf *conf;
 
    const char *description;
+   const char *parent_id;
 };
 
 struct _Launcher_Conf
@@ -134,6 +135,8 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 	e_config_save_queue();
      }
 
+   inst->parent_id = eina_stringshare_add(id);
+
    _launcher_conf_new(inst, id);
    _launcher_description_create(inst);
 
@@ -150,6 +153,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    _launcher_source_item_free(inst);
 
    if (inst->description) eina_stringshare_del(inst->description);
+   if (inst->parent_id) eina_stringshare_del(inst->parent_id);
    if (inst->conf->id) eina_stringshare_del(inst->conf->id);
    if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
 
@@ -347,6 +351,7 @@ _launcher_cb_app_change(void *data, E_Order *eo __UNUSED__)
    if (!inst->apps) return;
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
+   ev->id = eina_stringshare_add(inst->parent_id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _launcher_event_update_free, NULL);
 }
 
@@ -414,7 +419,11 @@ _launcher_source_item_free(Instance *inst)
 static void
 _launcher_event_update_free(void *data __UNUSED__, void *event)
 {
-   free(event);
+   Drawer_Event_Source_Update *ev;
+
+   ev = event;
+   if (ev->id) eina_stringshare_del(ev->id);
+   free(ev);
 }
 
 static void
@@ -532,6 +541,7 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
+   ev->id = eina_stringshare_add(inst->parent_id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _launcher_event_update_free, NULL);
 
    e_config_save_queue();
