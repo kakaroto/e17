@@ -19,6 +19,12 @@ struct _Instance
 
    Conf *conf;
 
+   struct {
+	E_Config_DD *launcher;
+	E_Config_DD *conf;
+	E_Config_DD *conf_rel;
+   } edd;
+
    const char *description;
    const char *parent_id;
 };
@@ -88,9 +94,6 @@ EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Launcher
 
 static Launcher_Conf *launcher_conf = NULL;
 static E_Config_Dialog *_cfd = NULL;
-static E_Config_DD *_launcher_conf_edd = NULL;
-static E_Config_DD *_conf_edd = NULL;
-static E_Config_DD *_conf_rel_edd = NULL;
 
 EAPI void *
 drawer_plugin_init(Drawer_Plugin *p, const char *id)
@@ -102,33 +105,33 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    inst->source = DRAWER_SOURCE(p);
 
    /* Define EET Data Storage */
-   _conf_rel_edd = E_CONFIG_DD_NEW("Conf_Rating", Conf_Rating);
+   inst->edd.conf_rel = E_CONFIG_DD_NEW("Conf_Rating", Conf_Rating);
    #undef T
    #undef D
    #define T Conf_Rating 
-   #define D _conf_rel_edd
+   #define D inst->edd.conf_rel
    E_CONFIG_VAL(D, T, label, STR);
    E_CONFIG_VAL(D, T, rating, INT);
 
-   _conf_edd = E_CONFIG_DD_NEW("Conf", Conf);
+   inst->edd.conf = E_CONFIG_DD_NEW("Conf", Conf);
    #undef T
    #undef D
    #define T Conf
-   #define D _conf_edd
+   #define D inst->edd.conf
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
    E_CONFIG_VAL(D, T, sort_rel, INT);
-   E_CONFIG_LIST(D, T, ratings, _conf_rel_edd); /* the list */
+   E_CONFIG_LIST(D, T, ratings, inst->edd.conf_rel); /* the list */
 
-   _launcher_conf_edd = E_CONFIG_DD_NEW("Launcher_Conf", Launcher_Conf);
+   inst->edd.launcher = E_CONFIG_DD_NEW("Launcher_Conf", Launcher_Conf);
    #undef T
    #undef D
    #define T Launcher_Conf
-   #define D _launcher_conf_edd
-   E_CONFIG_LIST(D, T, items, _conf_edd); /* the list */
+   #define D inst->edd.launcher 
+   E_CONFIG_LIST(D, T, items, inst->edd.conf); /* the list */
 
    if (!launcher_conf)
-     launcher_conf = e_config_domain_load("module.drawer.launcher", _launcher_conf_edd);
+     launcher_conf = e_config_domain_load("module.drawer.launcher", inst->edd.launcher);
    if (!launcher_conf)
      {
 	launcher_conf = E_NEW(Launcher_Conf, 1);
@@ -174,11 +177,11 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    if (!eina_list_count(launcher_conf->items))
      E_FREE(launcher_conf);
    E_FREE(inst->conf);
-   E_FREE(inst);
 
-   E_CONFIG_DD_FREE(_launcher_conf_edd);
-   E_CONFIG_DD_FREE(_conf_edd);
-   E_CONFIG_DD_FREE(_conf_rel_edd);
+   E_CONFIG_DD_FREE(inst->edd.launcher);
+   E_CONFIG_DD_FREE(inst->edd.conf);
+   E_CONFIG_DD_FREE(inst->edd.conf_rel);
+   E_FREE(inst);
 
    return 1;
 }
@@ -196,8 +199,11 @@ drawer_plugin_config_get(Drawer_Plugin *p, Evas *evas)
 EAPI void
 drawer_plugin_config_save(Drawer_Plugin *p)
 {
-   if (!_launcher_conf_edd) return;
-   e_config_domain_save("module.drawer.launcher", _launcher_conf_edd, launcher_conf);
+   Instance *inst;
+
+   inst = p->data;
+   if (!inst->edd.launcher) return;
+   e_config_domain_save("module.drawer.launcher", inst->edd.launcher, launcher_conf);
 }
 
 EAPI Eina_List *
