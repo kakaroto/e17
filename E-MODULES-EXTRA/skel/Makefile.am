@@ -20,6 +20,8 @@ EXTRA_DIST = $(files_DATA) \
 	     e-module-skel.edc \
 	     fonts/VeraBd.ttf
 
+e-module-skel.edj: $(EXTRA_DIST)
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
