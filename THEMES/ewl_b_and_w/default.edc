@@ -1,0 +1,184 @@
+/* EWL TODO:
+
+FIXME: FORMATTING.
+
+Note: If adding parts, try to use nothing but B&W parts and images so that
+   the themer can simply place this .edc file in the B&W dir and compile an 
+   EWL theme from that. This will save themers a whole lot of time.
+
+data  {
+   // Theme Information
+   item: "/theme/author" "EWL Team";
+   item: "/theme/font_path" "fonts";
+   item: "/theme/license" "3-Clause BSD / Enlightened License";
+   item: "/theme/name" "Black & White";
+   
+   // Global settings
+   item: "/entry/color/a" 255;
+   item: "/entry/font" "Sans";
+   item: "/entry/font_size" 12;
+   item: "/freebox/auto/padding" 5;
+   item: "/filepicker/hbox/hbox/tree/vbox/scrollpane/overlay/vbox/freebox/auto/padding" 0;
+   item: "/combo/popup/height" 130;
+   item: "/tooltip/voffset" 10;
+   item: "/tooltip/hoffset" 10;
+   item: "/tooltip/delay" "1.0";
+   item: "/tooltip/tolerance" "5";
+   item: "/context_menu/voffset" 1;
+   item: "/context_menu/hoffset" 1;
+   item: "/spinner/acceleration" 5;
+   item: "/spinner/velocity" 5;
+   item: "/text/color/a" 255;
+   item: "/text/font" "Sans";
+   item: "/text/font_size" 12;
+   item: "/text/style" "none";
+
+   // Buttons
+   item: "/button/group" "ewl/button";
+   item: "/radiobutton/group" "ewl/button/other";
+   item: "/checkbutton/group" "ewl/button/other";
+   item: "/radio/group" "ewl/button/radio/item";
+   item: "/check/group" "ewl/button/check/item";
+   
+   // Blank group as a place holder
+   item: "/blank/group" "ewl/blank";
+
+   // Borders
+   item: "/border/group" "ewl/border";
+   item: "/border/label/group" "ewl/border/label";
+	 
+   // Combo select widget
+   item: "/combo/group" "ewl/combo";
+   item: "/combo/cell/group" "ewl/combo/contents";
+   item: "/combo/popup/group" "ewl/menu";
+   item: "/combo_cell/group" "ewl/combo/popup/contents";
+   item: "/combo_menu/body/group" "ewl/combo/popup/submenu";
+   item: "/combo/button/group" "ewl/combo/button";
+
+   // Drag and drop
+   item: "/dndcursor/group" "ewl/sphere-cursor";
+
+   // Text
+   item: "/entry/group" "ewl/entry";
+   item: "/entry/cursor/group" "ewl/entry/cursor";
+   item: "/selection_area/group" "ewl/entry/selection";
+   item: "/highlight/group" "ewl/highlight";
+
+   // Label
+   item: "/label/group" "ewl/label";
+   item: "/label/textpart" "ewl/label/text";
+
+   // Menu, Toolbar and Statusbar
+   item: "/menu/group" "ewl/menu";
+   item: "/menu_item/body/label/group" "ewl/menu/item";
+   item: "/menu/vbox/menu_container/body/label/group" "ewl/menu/subitem";
+   item: "/menubar/group" "ewl/menu";
+   item: "/statusbar/group" "ewl/menu";
+   item: "/htoolbar/group" "ewl/menu";
+   item: "/vtoolbar/group" "ewl/menu";
+   item: "/htoolbar/hbox/icon/group" "ewl/toolbar/icon";
+   item: "/vtoolbar/vbox/icon/group" "ewl/toolbar/icon";
+
+   // Notebook widget
+   item: "/notebook/pages/group" "ewl/notebook/pages";
+
+   item: "/notebook/top/tabbar/group" "ewl/notebook/top";
+   item: "/notebook/bottom/tabbar/group" "ewl/notebook/top";
+   item: "/notebook/left/tabbar/group" "ewl/notebook/left";
+   item: "/notebook/right/tabbar/group" "ewl/notebook/left";
+
+   item: "/notebook/top/tabbar/tab/group" "ewl/notebook/top/tab";
+   item: "/notebook/bottom/tabbar/tab/group" "ewl/notebook/bottom/tab";
+   item: "/notebook/left/tabbar/tab/group" "ewl/notebook/left/tab";
+   item: "/notebook/right/tabbar/tab/group" "ewl/notebook/right/tab";
+
+   // Seperators
+   item: "/grabber/vertical/group" "ewl/separator/vertical";
+   item: "/grabber/horizontal/group" "ewl/separator/horizontal";
+   item: "/hseparator/group" "ewl/separator/horizontal";
+   item: "/vseparator/group" "ewl/separator/vertical";
+   item: "/spacer/group" "ewl/spacer";
+
+   // Progress
+   item: "/progressbar/group" "ewl/progressbar";
+   item: "/progressbar_bar/group" "ewl/progressbar/bar";
+
+   // Scroll widget
+   item: "/scrollpane/group" "ewl/scrollpane/background";
+   item: "/vscrollbar/decrement/group" "ewl/scrollbar/vertical/decrement";
+   item: "/vscrollbar/increment/group" "ewl/scrollbar/vertical/increment";
+   item: "/hscrollbar/decrement/group" "ewl/scrollbar/horizontal/decrement";
+   item: "/hscrollbar/increment/group" "ewl/scrollbar/horizontal/increment";
+
+   // Seeker widget
+   item: "/vseeker/group" "ewl/seeker/vertical";
+   item: "/hseeker/group" "ewl/seeker/horizontal";
+   item: "/vseeker/vbutton/group" "ewl/seeker/vertical/button";
+   item: "/hseeker/hbutton/group" "ewl/seeker/horizontal/button";
+   item: "/hscrollbar/hseeker/hbutton/group" "ewl/scrollbar/horizontal/button";
+   item: "/vscrollbar/vseeker/vbutton/group" "ewl/scrollbar/vertical/button";
+
+   // Shadows
+   item: "/shadow/group" "ewl/shadow";
+
+   // Spinner Widget
+   item: "/spinner/controls/decrement/group" "ewl/spinner/decrement";
+   item: "/spinner/controls/increment/group" "ewl/spinner/increment";
+
+   // Tree widget
+   item: "/tree/group" "ewl/tree";
+   item: "/tree/vbox/group" "ewl/tree/vbox";
+   item: "/tree/vbox/scrollpane/group" "ewl/tree/scrollpane/background";	
+   item: "/tree_header/group" "ewl/tree/header";
+   item: "/tree_header/button/group" "ewl/tree/header/button";
+   item: "/tree_header/grabber/vertical/group" "ewl/separator/vertical";
+   item: "/tree_header/header/button/group" "ewl/tree/header/button";
+   item: "/cell/group" "ewl/tree/cell";
+   item: "/row/group" "ewl/row";
+   item: "/expansion/group" "ewl/tree/expansion";
+
+   // Windows
+   item: "/tooltip/group" "ewl/window";
+   item: "/popup/group" "ewl/window";
+   item: "/window/group" "ewl/window";
+   item: "/dialog/group" "ewl/dialog";
+   item: "/dialog/vbox/hseparator/group" "ewl/spacer";
+   item: "/dialog/vbox/actionarea/group" "ewl/dialog/actionarea";
+   item: "/icondialog/group" "ewl/dialog";
+   item: "/icondialog/vbox/hseparator/group" "ewl/spacer";
+   item: "/icondialog/vbox/actionarea/group" "ewl/dialog/actionarea";
+   item: "/icondialog/vbox/hbox/group" "ewl/icondialog/box";
+   item: "/icondialog/vbox/hbox/image/group" "ewl/icondialog/icon";
+   item: "/icondialog/icon_size" 64;
+	
+}
+
+
+/// *** Blank *** ///
+
+   group { name: "ewl/blank"; }
+
+
+border.edc
+button.edc
+combo.edc
+cursor.edc
+dialog.edc
+highlight.edc
+label.edc
+menu.edc
+notebook.edc
+progress.edc
+scroll.edc
+separator.edc
+shadow.edc
+spacer.edc
+spinner.edc
+text.edc
+toolbar.edc
+tree.edc
+window.edc
+
+
+*/
+
