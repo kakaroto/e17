@@ -53,6 +53,21 @@ Login_Data *ldata;
  *
  * Function for login.
  *
+ * Sample code
+ *
+ * @code
+ * Login_Data *ldata;
+ *
+ * ldata = (Login_Data *)exchange_login("myusername", "mypassword");
+ * printf("ID: %d\n", ldata->id);
+ * printf("Name: %s\n", ldata->name);
+ * printf("Email: %s\n", ldata->email);
+ * printf("Role: %s\n", ldata->role);
+ * printf("API key: %s\n", ldata->api_key);
+ * printf("Created at: %s\n", ldata->created_at);
+ * printf("Updated at: %s\n", ldata->updated_at);
+ * @endcode
+ *
  * @{
  */
 
