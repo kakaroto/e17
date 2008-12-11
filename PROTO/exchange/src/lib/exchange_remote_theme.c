@@ -54,6 +54,28 @@ Exchange_Theme *tdata;
  *
  * Functions that handles remote theme metadata.
  *
+ * Sample code
+ *
+ * @code
+ * Exchange_Theme *tdata;
+ *
+ * tdata = (Exchange_Theme *)exchange_remote_theme_all_data_get("Cerium");
+ * printf("Theme: %s\n", "Cerium");
+ * printf("ID: %d\n", tdata->id);
+ * printf("Name: %s\n", tdata->name);
+ * printf("Author: %s\n", tdata->author);
+ * printf("License: %s\n", tdata->license);
+ * printf("Version: %s\n", tdata->version);
+ * printf("Description: %s\n", tdata->description);
+ * printf("Url: %s\n", tdata->url);
+ * printf("Thumbnail: %s\n", tdata->thumbnail);
+ * printf("Screenshot: %s\n", tdata->screenshot);
+ * printf("Rating: %f\n", tdata->rating);
+ * printf("User ID: %d\n", tdata->user_id);
+ * printf("Created at: %s\n", tdata->created_at);
+ * printf("Updated at: %s\n", tdata->updated_at);
+ * @endcode
+ *
  * @{
  */
 
