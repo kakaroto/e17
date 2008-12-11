@@ -58,6 +58,19 @@ Eina_List *al = NULL;
  * Sample code
  *
  * @code
+ * Eina_List *l, *l1;
+ *
+ * l = exchange_application_list_all(0, 0);
+ * printf("All applications available\n");
+ * for (l1 = l; l1; l1 = eina_list_next(l1))
+ * {
+ *   if (l1->data)
+ *     {
+ *       Application_List_Data *ald;
+ *       ald = (Application_List_Data *)l1->data;
+ *       printf("ID: %d, Name: %s\n", ald->id, (char *)ald->name);
+ *     }
+ * }
  * @endcode
  * @{
  */

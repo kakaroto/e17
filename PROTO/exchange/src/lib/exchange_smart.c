@@ -99,7 +99,6 @@ static const char *_smart_cache = NULL;
 
 /**
  * @param evas The evas canvas
- * @param macro The macro category selectory (could be "themes" or "backgrounds")
  * @return A new exchange smart object
  * @brief Create a new exchange smart object
  */
@@ -213,7 +212,7 @@ exchange_smart_object_offset_set(Evas_Object *obj, int x, int y)
 /**
  * @param obj The exchange smart object
  * @param x The address where to store the horizontal offset
- * @param x The address where to store the vertical offset
+ * @param y The address where to store the vertical offset
  * @return 1 on success, 0 on errors
  * @brief Get the offset of the smart object.
  * Usefull for use the object inside a scroller container

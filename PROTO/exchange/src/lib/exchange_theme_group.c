@@ -59,7 +59,6 @@ Eina_List *fel = NULL;
  */
 
 /**
- * @param void
  * @return An Eina_List *, NULL otherwise. The list contains the available theme_gropus
  * @brief Get a list of available theme_groups.
  */
