@@ -55,6 +55,24 @@ Eina_List *ml = NULL;
  *
  * Functions that handles module listing.
  *
+ * Sample code
+ *
+ * @code
+ * Eina_List *l, *l1;
+ *
+ * l = exchange_module_list_all(0, 0);
+ * printf("All modules available\n");
+ * for (l1 = l; l1; l1 = eina_list_next(l1))
+ * {
+ *   if (l1->data)
+ *     {
+ *       Module_List_Data *mld;
+ *       mld = (Module_List_Data *)l1->data;
+ *       printf("ID: %d, Name: %s\n", mld->id, (char *)mld->name);
+ *     }
+ * }
+ * @endcode
+ +
  * @{
  */
 
