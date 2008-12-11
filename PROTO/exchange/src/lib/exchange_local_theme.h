@@ -22,6 +22,17 @@
 /**
  * @file exchange_local_theme.h
  * @brief This file contains local theme functions
+ *
+ * Sample code
+ *
+ * @code
+ * char *out;
+ *
+ * out = exchange_local_theme_author_get("~/.e/e/themes/fireball.edj");
+ * printf("Theme: %s, author: %s\n", "~/.e/e/themes/fireball.edj", out);
+ * free(out);
+ * @endcode 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
