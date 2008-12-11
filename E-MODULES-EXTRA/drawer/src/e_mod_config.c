@@ -6,14 +6,13 @@
 
 struct _E_Config_Dialog_Data 
 {
-   int sources_index, views_index;
-
    Evas_Object *toolbar, *main_list;
    Evas_Object *sources_comment, *views_comment;
+   Evas_Object *s_ilist, *v_ilist;
    Eina_List *packed_widgets;
 
    Eina_List *sources, *views;
-   const char *source, *view;
+   char *source, *view;
 
    Config_Item *ci;
    void *data;
@@ -27,8 +26,8 @@ static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dia
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _conf_plugin_sel(void *data1, void *data2);
 static void _conf_plugin_set(void *data1, void *data2);
-static void _sources_change_cb(void *data, Evas_Object *obj, void *event_info);
-static void _views_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void _sources_list_cb_change(void *data, Evas_Object *obj);
+static void _views_list_cb_change(void *data, Evas_Object *obj);
 
 /* External Functions */
 EAPI E_Config_Dialog *
@@ -80,9 +79,9 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    drawer_plugins_list_free(cfdata->sources);
 
    if (cfdata->view)
-     eina_stringshare_del(cfdata->view);
+     E_FREE(cfdata->view);
    if (cfdata->source)
-     eina_stringshare_del(cfdata->source);
+     E_FREE(cfdata->source);
 
    drawer_conf->cfd = NULL;
    E_FREE(cfdata);
@@ -91,8 +90,8 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void 
 _fill_data(E_Config_Dialog_Data *cfdata) 
 {
-   cfdata->view = eina_stringshare_add(cfdata->ci->view);
-   cfdata->source = eina_stringshare_add(cfdata->ci->source);
+   cfdata->view = strdup(cfdata->ci->view);
+   cfdata->source = strdup(cfdata->ci->source);
 }
 
 static Evas_Object *
@@ -147,12 +146,11 @@ _conf_plugin_sel(void *data1, void *data2)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
-   Evas_Object *of, *ol, *or, *packed, *otx;
-   E_Radio_Group *org;
+   Evas_Object *of, *ol, *or, *packed, *otx, *oi;
    Evas *evas;
    Eina_List *l;
    const char *comment = NULL;
-   int i = 0;
+   int i = 0, selnum = -1;
 
    cfd = data1;
    cfdata = data2;
@@ -170,60 +168,65 @@ _conf_plugin_sel(void *data1, void *data2)
    e_widget_list_object_append(of, ol, 1, 1, 0.5);
    cfdata->packed_widgets = eina_list_append(cfdata->packed_widgets, ol);
 
-   /* XXX: replace radio widgets with ilist? */
-   of = e_widget_framelist_add(evas, D_("Source plugins"), 0);
-   org = e_widget_radio_group_new(&cfdata->sources_index);
+   of = e_widget_list_add(evas, 0, 0);
+   cfdata->s_ilist = oi = e_widget_ilist_add(evas, 32, 32, &(cfdata->source));
+   e_widget_ilist_header_append(oi, NULL, D_("Source plugins"));
+   e_widget_list_object_append(of, oi, 1, 1, 0.5);
+   cfdata->sources_comment = otx = e_widget_textblock_add(evas);
+   e_widget_list_object_append(of, otx, 1, 1, 0.5);
    cfdata->sources = drawer_plugins_list(DRAWER_SOURCES);
+   e_widget_ilist_freeze(oi);
    for (l = cfdata->sources; l; l = l->next)
      {
 	Drawer_Plugin_Type *pi = l->data;
 
+	i++;
 	if (!(strcmp(cfdata->source, pi->name)))
 	  {
-	     cfdata->sources_index = i;
+	     selnum = i;
 	     if (pi->comment)
 	       comment = pi->comment;
 	  }
 
-	or = e_widget_radio_add(evas, pi->title, i++, org);
-	e_widget_framelist_object_append(of, or);
-	evas_object_data_set(or, "drawer_plugin_type", pi);
-	evas_object_smart_callback_add(or, "changed", _sources_change_cb, cfdata);
+	/* XXX: plugin icon if one exists */
+	e_widget_ilist_append(oi, NULL, pi->title, NULL, pi, pi->name);
+	e_widget_on_change_hook_set(oi, _sources_list_cb_change, cfdata);
      }
-   cfdata->sources_comment = otx = e_widget_textblock_add(evas);
-   if (comment)
-     e_widget_textblock_markup_set(otx, comment);
-   else
-     e_widget_textblock_markup_set(otx, D_("Description: Unavailable"));
-   e_widget_framelist_object_append(of, otx);
+   e_widget_ilist_go(oi);
+   if (selnum >= 0)
+     e_widget_ilist_selected_set(oi, selnum);
+   e_widget_ilist_thaw(oi);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("View plugins"), 0);
-   org = e_widget_radio_group_new(&cfdata->views_index);
+   of = e_widget_list_add(evas, 0, 0);
+   cfdata->v_ilist = oi = e_widget_ilist_add(evas, 32, 32, &(cfdata->view));
+   e_widget_ilist_header_append(oi, NULL, D_("View plugins"));
+   e_widget_list_object_append(of, oi, 1, 1, 0.5);
+   cfdata->views_comment = otx = e_widget_textblock_add(evas);
+   e_widget_list_object_append(of, otx, 1, 1, 0.5);
    cfdata->views = drawer_plugins_list(DRAWER_VIEWS);
-   for (l = cfdata->views, i = 0, comment = NULL; l; l = l->next)
+   e_widget_ilist_freeze(oi);
+   for (l = cfdata->views, i = 0, selnum = -1, comment = NULL; l; l = l->next)
      {
 	Drawer_Plugin_Type *pi = l->data;
 
+	i++;
 	if (!(strcmp(cfdata->view, pi->name)))
 	  {
-	     cfdata->views_index = i;
+	     selnum = i;
 	     if (pi->comment)
 	       comment = pi->comment;
 	  }
 
-	or = e_widget_radio_add(evas, pi->title, i++, org);
-	e_widget_framelist_object_append(of, or);
-	evas_object_data_set(or, "drawer_plugin_type", pi);
-	evas_object_smart_callback_add(or, "changed", _views_change_cb, cfdata);
+	/* XXX: plugin icon if one exists */
+	e_widget_ilist_append(oi, NULL, pi->title, NULL, pi, pi->name);
+	e_widget_on_change_hook_set(oi, _views_list_cb_change, cfdata);
      }
-   cfdata->views_comment = otx = e_widget_textblock_add(evas);
-   if (comment)
-     e_widget_textblock_markup_set(otx, comment);
-   else
-     e_widget_textblock_markup_set(otx, D_("Description: Unavailable"));
-   e_widget_framelist_object_append(of, otx);
+   e_widget_ilist_go(oi);
+   if (selnum >= 0)
+     e_widget_ilist_selected_set(oi, selnum);
+   e_widget_ilist_thaw(oi);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
@@ -231,15 +234,19 @@ _conf_plugin_sel(void *data1, void *data2)
    evas_event_thaw(evas);
 }
 
-static void
-_sources_change_cb(void *data, Evas_Object *obj, void *event_info)
+static void 
+_sources_list_cb_change(void *data, Evas_Object *obj) 
 {
-   E_Config_Dialog_Data *cfdata;
+   E_Config_Dialog_Data *cfdata = NULL;
    Drawer_Plugin_Type *pi;
-   
-   cfdata = data;
-   pi = evas_object_data_get(obj, "drawer_plugin_type");
-   cfdata->source = eina_list_nth(cfdata->sources, cfdata->sources_index);
+
+   if (!(cfdata = data)) return;
+
+   /* Make sure something is selected */
+   if (e_widget_ilist_selected_count_get(cfdata->s_ilist) < 1) return;
+
+   pi = e_widget_ilist_nth_data_get(cfdata->s_ilist,
+				    e_widget_ilist_selected_get(cfdata->s_ilist));
 
    if (pi->comment)
      e_widget_textblock_markup_set(cfdata->sources_comment, pi->comment);
@@ -249,15 +256,18 @@ _sources_change_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_views_change_cb(void *data, Evas_Object *obj, void *event_info)
+_views_list_cb_change(void *data, Evas_Object *obj)
 {
    E_Config_Dialog_Data *cfdata;
    Drawer_Plugin_Type *pi;
-   const char *name;
-   
-   cfdata = data;
-   pi = evas_object_data_get(obj, "drawer_plugin_type");
-   cfdata->view = eina_list_nth(cfdata->views, cfdata->views_index);
+
+   if (!(cfdata = data)) return;
+
+   /* Make sure something is selected */
+   if (e_widget_ilist_selected_count_get(cfdata->v_ilist) < 1) return;
+
+   pi = e_widget_ilist_nth_data_get(cfdata->v_ilist,
+				    e_widget_ilist_selected_get(cfdata->v_ilist));
 
    if (pi->comment)
      e_widget_textblock_markup_set(cfdata->views_comment, pi->comment);
