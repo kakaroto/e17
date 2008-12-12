@@ -22,6 +22,24 @@
 /**
  * @file exchange_theme_list.h
  * @brief This file contains theme listing functions
+ *
+ * Sample code
+ *
+ * @code
+ * Eina_List *l, *l1;
+ * l = exchange_theme_list_all(0, 0);
+ * printf("All themes available\n");
+ * for (l1 = l; l1; l1 = eina_list_next(l1))
+ * {
+ *   if (l1->data)
+ *   {
+ *     Exchange_Theme *tld;
+ *     tld = (Exchange_Theme *)l1->data;
+ *     printf("Name: %s\n", (char *)tld->name);
+ *   }
+ * }
+ * @endcode 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
