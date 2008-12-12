@@ -196,6 +196,7 @@ _conf_plugin_sel(void *data1, void *data2)
    if (selnum >= 0)
      e_widget_ilist_selected_set(oi, selnum);
    e_widget_ilist_thaw(oi);
+   e_widget_min_size_set(oi, 230, 150);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
@@ -227,6 +228,7 @@ _conf_plugin_sel(void *data1, void *data2)
    if (selnum >= 0)
      e_widget_ilist_selected_set(oi, selnum);
    e_widget_ilist_thaw(oi);
+   e_widget_min_size_set(oi, 230, 150);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 

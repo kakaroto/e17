@@ -328,9 +328,9 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
    inst = _drawer_instance_get(ci);
 
    if (cat == DRAWER_SOURCES)
-    return DRAWER_PLUGIN(_drawer_source_new(inst, name));
+     DRAWER_PLUGIN(_drawer_source_new(inst, name));
    else if (cat == DRAWER_VIEWS)
-     return DRAWER_PLUGIN(_drawer_view_new(inst, name));
+     DRAWER_PLUGIN(_drawer_view_new(inst, name));
 
    if (inst->source && inst->view && inst->is_floating)
      _drawer_container_update(inst);
@@ -359,6 +359,55 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 {
    if (si->desktop)
      return e_util_desktop_icon_add(si->desktop, MAX(w, h), evas);
+   else if (si->file_path)
+     {
+	Evas_Object *o;
+
+	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
+	    (e_util_glob_case_match(si->file_path, "*.directory")))
+	  {
+	     Efreet_Desktop *desktop;
+
+	     desktop = efreet_desktop_new(si->file_path);
+	     if (!desktop) return NULL;
+	     o = e_util_desktop_icon_add(desktop, MAX(w, h), evas);
+
+	     efreet_desktop_free(desktop);
+	     if (!o)
+	       {
+		  char buf[4096];
+
+		  snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
+			   drawer_conf->module->dir);
+		  o = edje_object_add(evas);
+		  if (!e_theme_edje_object_set(o, "base/theme/modules/drawer", 
+					       "modules/drawer/main/content"))
+		    edje_object_file_set(o, buf, "modules/drawer/main/content");
+	       }
+	     return o;
+	  }
+
+	o = e_thumb_icon_add(evas);
+	if ((e_util_glob_case_match(si->file_path, "*.edj")))
+	  {
+	     /* FIXME: There is probably a quicker way of doing this. */
+	     if (edje_file_group_exists(si->file_path, "icon"))
+	       e_thumb_icon_file_set(o, si->file_path, "icon");
+	     else if (edje_file_group_exists(si->file_path, "e/desktop/background"))
+	       e_thumb_icon_file_set(o, si->file_path, "e/desktop/background");
+	     else if (edje_file_group_exists(si->file_path, "e/init/splash"))
+	       e_thumb_icon_file_set(o, si->file_path, "e/init/splash");
+	     e_thumb_icon_size_set(o, w, w/4*3);
+	  }
+	else
+	  {
+	     e_thumb_icon_file_set(o, si->file_path, NULL);
+	     e_thumb_icon_size_set(o, w, h);
+	  }
+
+	e_thumb_icon_begin(o);
+	return o;
+     }
 }
 
 /* Local Functions */
