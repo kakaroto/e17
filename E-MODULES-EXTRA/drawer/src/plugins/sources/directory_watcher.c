@@ -240,14 +240,13 @@ _dirwatcher_description_create(Instance *inst)
    homedir = e_user_homedir_get();
    if (!(strncmp(inst->conf->dir, homedir, strlen(inst->conf->dir))))
      snprintf(buf, sizeof(buf), D_("Home"));
-   else
+   else if (!(strncmp(inst->conf->dir, homedir, strlen(homedir))))
      {
-	snprintf(path, sizeof(path), "%s/Desktop", homedir);
-	if (!(strncmp(inst->conf->dir, path, strlen(inst->conf->dir))))
-	  snprintf(buf, sizeof(buf), D_("Desktop"));
-	else
-	  snprintf(buf, sizeof(buf), "%s", inst->conf->dir);
+	snprintf(path, sizeof(path), "%s", inst->conf->dir);
+	snprintf(buf, sizeof(buf), "%s", path + strlen(homedir) + 1);
      }
+   else
+     snprintf(buf, sizeof(buf), "%s", inst->conf->dir);
    inst->description = eina_stringshare_add(buf);
 }
 
