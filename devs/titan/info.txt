@@ -1,5 +1,6 @@
 Login:		titan
 IRC Nick:	okra
+Cloak:		enlightenment/developer
 Name:		Stephen Houston
 Location:	Mississippi, USA
 E-Mail:		-unixtitan@gmail.com
