@@ -233,10 +233,21 @@ static void
 _dirwatcher_description_create(Instance *inst)
 {
    char buf[1024];
+   char path[4096];
+   const char *homedir;
 
    if (inst->description) eina_stringshare_del(inst->description);
-   /* XXX: display path here, or special strings, like Desktop or Home */
-   snprintf(buf, sizeof(buf), D_("Desktop"));
+   homedir = e_user_homedir_get();
+   if (!(strncmp(inst->conf->dir, homedir, strlen(inst->conf->dir))))
+     snprintf(buf, sizeof(buf), D_("Home"));
+   else
+     {
+	snprintf(path, sizeof(path), "%s/Desktop", homedir);
+	if (!(strncmp(inst->conf->dir, path, strlen(inst->conf->dir))))
+	  snprintf(buf, sizeof(buf), D_("Desktop"));
+	else
+	  snprintf(buf, sizeof(buf), "%s", inst->conf->dir);
+     }
    inst->description = eina_stringshare_add(buf);
 }
 
