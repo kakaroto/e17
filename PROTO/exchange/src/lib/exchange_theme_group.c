@@ -55,6 +55,23 @@ Eina_List *fel = NULL;
  *
  * Function for theme_groups.
  *
+ * Sample code
+ *
+ * @code
+ * Eina_List *l, *l1;
+ * l = exchange_theme_group_list_available();
+ * printf("Available theme_groups (%d):\n", eina_list_count(l));
+ * for (l1 = l; l1; l1 = eina_list_next(l1))
+ * {
+ *   if (l1->data)
+ *   {
+ *     Theme_Group_Data *tgd;
+ *     tgd = (Theme_Group_Data *)l1->data;
+ *     printf("[Name] %s, [Title] %s\n", (char *)tgd->name, (char *)tgd->title);
+ *   }
+ * }
+ * @endcode
+ *
  * @{
  */
 
