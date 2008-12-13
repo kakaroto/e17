@@ -12,25 +12,22 @@ namespace efl {
 //===========================================================================//
 
 EvasEsmartGroup::EvasEsmartGroup( EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
-    o = newEsmart( name );
+    o = newEsmart( canvas, name );
     init( name ? name : "esmart_group" );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
-    o = newEsmart( name );
+    o = newEsmart( canvas, name );
     init( name ? name : "esmart_group" );
 
     move( x, y );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
-    o = newEsmart( name );
+    o = newEsmart( canvas, name );
     init( name ? name : "esmart_group" );
   
     move( x, y );

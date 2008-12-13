@@ -14,38 +14,40 @@ using namespace std;
 
 #define DOTSIZE 2
 
-static int callback( void* data, int type, void *event )
-{
-    cout << "CALLBACK RECEIVED: type = " << type << ", pevent = " << event << "pdata = " << data << endl;
-    return 0;
-}
-
 class PaintArea : public EvasRectangle
 {
 public:
-    PaintArea( EvasCanvas* evas ) : EvasRectangle( evas ), mouseDown( false )
+    PaintArea( EvasCanvas* evas ) : 
+      EvasRectangle( evas ), 
+      mouseDown( false ),
+      mEvas (evas)
     {
         setLayer( 10 );
         setColor( 255, 255, 255, 0 ); // fully transparent, to catch the mouse events
         setFocus( true );
+      
+        signalHandleKeyUp.connect (sigc::mem_fun (this, &PaintArea::handleKeyUp));
+        signalHandleMouseUp.connect (sigc::mem_fun (this, &PaintArea::handleMouseUp));
+        signalHandleMouseDown.connect (sigc::mem_fun (this, &PaintArea::handleMouseDown));
+        signalHandleMouseMove.connect (sigc::mem_fun (this, &PaintArea::handleMouseMove));
     }
     virtual ~PaintArea() { };
 
-    virtual bool handleMouseUp( const EvasMouseUpEvent& e )
+    virtual void handleMouseUp( const EvasMouseUpEvent& e )
     {
         cout << "PA::mouseUp" << endl;
         mouseDown = false;
     }
-    virtual bool handleMouseDown( const EvasMouseDownEvent& e )
+    virtual void handleMouseDown( const EvasMouseDownEvent& e )
     {
         cout << "PA::mouseDown" << endl;
         mouseDown = true;
-        EvasObject* l = new EvasRectangle( e.data->canvas.x, e.data->canvas.y, 2, 2, canvas() );
+        EvasObject* l = new EvasRectangle( e.data->canvas.x, e.data->canvas.y, 2, 2, mEvas );
         int b=200+(int) (55.0*rand()/(RAND_MAX+1.0));
         l->setColor( b, b, b, 255 );
         l->show();
     }
-    virtual bool handleMouseMove( const EvasMouseMoveEvent& e )
+    virtual void handleMouseMove( const EvasMouseMoveEvent& e )
     {
         cout << "PA::mouseMove" << endl;
         if ( mouseDown )
@@ -53,13 +55,13 @@ public:
             int width = 2 + abs( e.data->cur.canvas.x - e.data->prev.canvas.x );
             int height = 2 + abs( e.data->cur.canvas.y - e.data->prev.canvas.y );
             cout << "width = " << width << ", height = " << height << endl;
-            EvasObject* l = new EvasRectangle( e.data->cur.canvas.x - width/2, e.data->cur.canvas.y - height/2, width, height, canvas() );
+            EvasObject* l = new EvasRectangle( e.data->cur.canvas.x - width/2, e.data->cur.canvas.y - height/2, width, height, mEvas );
             int b=200+(int) (55.0*rand()/(RAND_MAX+1.0));
             l->setColor( b, b, b, 255 );
             l->show();
         }
     }
-    virtual bool handleKeyUp( const EvasKeyUpEvent& e )
+    virtual void handleKeyUp( const EvasKeyUpEvent& e )
     {
         cout << "PA:::keyUp - released '" << e.data->keyname << "'" << endl;
         if ( strcmp( e.data->keyname, "Escape" ) == 0 )
@@ -87,6 +89,7 @@ public:
     }
 private:
     bool mouseDown;
+    EvasCanvas* mEvas;
 };
 
 int main( int argc, const char **argv )
@@ -124,3 +127,4 @@ int main( int argc, const char **argv )
 
     return 0;
 }
+

@@ -114,7 +114,7 @@ class EtkEmbed : public EtkTopLevelWidget
 class EvasEtk : public EvasObject
 {
     public:
-    EvasEtk( EtkEmbed* ewlobj, EvasCanvas* canvas, const char* name = 0 );
+    EvasEtk( EtkEmbed* ewlobj, const char* name = 0 );
     ~EvasEtk();
 };
 

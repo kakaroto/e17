@@ -11,14 +11,12 @@ namespace efl {
 //===============================================================================================
 
 EvasEsmartContainer::EvasEsmartContainer( EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
     o = esmart_container_new( canvas->obj() );
     init( name ? name : "esmart_container" );
 }
 
 EvasEsmartContainer::EvasEsmartContainer( Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
     o = esmart_container_new( canvas->obj() );
     init( name ? name : "esmart_container" );
@@ -27,7 +25,6 @@ EvasEsmartContainer::EvasEsmartContainer( Direction dir, EvasCanvas* canvas, con
 }
 
 EvasEsmartContainer::EvasEsmartContainer( int x, int y, Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
     o = esmart_container_new( canvas->obj() );
   
@@ -38,7 +35,6 @@ EvasEsmartContainer::EvasEsmartContainer( int x, int y, Direction dir, EvasCanva
 }
 
 EvasEsmartContainer::EvasEsmartContainer( int x, int y, int width, int height, Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas )
 {
     o = esmart_container_new( canvas->obj() );
     init( name ? name : "esmart_container" );

@@ -105,7 +105,10 @@ class EdjePart
 
     void swallow( EvasObject* );
     void unswallow( EvasObject* );
-    EvasObject* swallow();
+    
+    Evas_Object* swallow();
+    
+    const EvasObject* getObject ( const char* name );
 
   private:
     EvasEdje* _parent;
@@ -147,7 +150,12 @@ class EvasEdje : public EvasObject
     EvasEdje( EvasCanvas* canvas, const char* name = 0 );
     EvasEdje( const char* filename, const char* groupname, EvasCanvas* canvas, const char* name = 0 );
     EvasEdje( int x, int y, const char* filename, const char* groupname, EvasCanvas* canvas, const char* name = 0 );
+    
+    /*!
+     *  Connect to existing Evas_Object
+     */
     //EvasEdje( Evas_Object* object, EvasCanvas* canvas, const char* name = 0 );
+    
     ~EvasEdje();
 
     /*
@@ -192,7 +200,7 @@ class EvasEdje : public EvasObject
     EdjePart* operator[]( const char* partname );
     
     /*!
-     * @param partname Loads a EdjePart into the EvasEdje.
+     * @param partname Access a EdjePart in the EvasEdje.
      * @throw PartNotExistingException
      */
     EdjePart* part( const char* partname );

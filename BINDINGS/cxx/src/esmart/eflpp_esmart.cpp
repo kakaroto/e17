@@ -10,8 +10,7 @@ namespace efl {
 //===============================================================================================
 // EvasEsmart
 //===============================================================================================
-EvasEsmart::EvasEsmart(EvasCanvas *canvas, const char *type, const char *name )
-    :EvasObject( canvas )
+EvasEsmart::EvasEsmart()
 {
 	printf ("EvasEsmart constructor\n");
 }
@@ -20,11 +19,11 @@ EvasEsmart::~EvasEsmart()
 {
 }
 
-Evas_Object *EvasEsmart::newEsmart( const char *name )
+Evas_Object *EvasEsmart::newEsmart(EvasCanvas *canvas, const char *name )
 {
   Evas_Object *evasobj;
 
-  evasobj = evas_object_smart_add(canvas()->obj(), getEsmart(name));
+  evasobj = evas_object_smart_add(canvas->obj(), getEsmart(name));
 
   //evas_object_smart_data_set(evasobj, this);
 

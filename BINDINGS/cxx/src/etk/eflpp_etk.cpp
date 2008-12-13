@@ -169,8 +169,7 @@ void EtkEmbed::setFocus( bool b )
 // EvasEtk
 //==========================================================================//
 
-EvasEtk::EvasEtk( EtkEmbed* ewlobj, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas )
+EvasEtk::EvasEtk( EtkEmbed* ewlobj, const char* name )
 
 {
     o = etk_embed_object_get( ETK_EMBED(ewlobj->obj()) );

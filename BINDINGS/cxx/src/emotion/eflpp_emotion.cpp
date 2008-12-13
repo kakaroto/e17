@@ -15,7 +15,6 @@ namespace efl {
 //===============================================================================================
 
 EvasEmotion::EvasEmotion( const char * module_filename, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas )
 {
     o = emotion_object_add( canvas->obj() );
     init( name ? name : "emotion" );
@@ -23,7 +22,7 @@ EvasEmotion::EvasEmotion( const char * module_filename, EvasCanvas* canvas, cons
 }
 
 EvasEmotion::EvasEmotion( const char* filename, const char * module_filename, 
-						 EvasCanvas* canvas, const char* name ) :EvasObject( canvas )
+						 EvasCanvas* canvas, const char* name )
 {
     o = emotion_object_add( canvas->obj() );
     init( name ? name : filename );
@@ -33,7 +32,6 @@ EvasEmotion::EvasEmotion( const char* filename, const char * module_filename,
 
 EvasEmotion::EvasEmotion( int x, int y, const char* filename, const char * module_filename, 
 						 EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas )
 {
     o = emotion_object_add( canvas->obj() );
     init( name ? name : filename );
@@ -44,7 +42,6 @@ EvasEmotion::EvasEmotion( int x, int y, const char* filename, const char * modul
 
 EvasEmotion::EvasEmotion( int x, int y, int width, int height, const char* filename, 
 						 const char * module_filename, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas )
 {
 	printf("EvasEmotion::EvasEmotion, begin \n");
    	o = emotion_object_add( canvas->obj() );
@@ -56,7 +53,8 @@ EvasEmotion::EvasEmotion( int x, int y, int width, int height, const char* filen
     resize( width, height );
 }
 
-void EvasEmotion::engineInit (const char * module_filename) {
+void EvasEmotion::engineInit (const char * module_filename)
+{
 	if (!emotion_object_init(o, module_filename))
      	return;
 }

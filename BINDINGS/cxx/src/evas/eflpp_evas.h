@@ -111,16 +111,22 @@ class EvasObject
 
   protected:
     // construction/destruction
-    EvasObject( EvasCanvas* canvas,
-            const char* name = "(null)" );
+    //EvasObject( EvasCanvas* canvas,
+    //        const char* name = "(null)" );
 
   public:
+    /*!
+     *  Construct from existing Evas_Object
+     */
+    EvasObject (Evas_Object *eo);
+    EvasObject () {}
+    
     virtual ~EvasObject();
     bool operator==(const EvasObject& rhs) { return rhs.o == o; };
 
     /* don't use these */
     Evas_Object* obj() const { return o; };
-    EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
+    //EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
     
     /* event signals */
     sigc::signal <void, const EvasMouseInEvent&> signalHandleMouseIn;
@@ -193,17 +199,18 @@ class EvasObject
 
   private:
     static EvasObject* objectLink( Evas_Object* evas_object = 0 );
+    static const EvasObject* objectLink( const Evas_Object* evas_object = 0 );
     void registerCallbacks();
     static void dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void *event_info);
 
   protected:
     Evas_Object* o;
-    EvasCanvas* _canvas;
+    //EvasCanvas* _canvas;
 
     void init (const char *name);
 
   private:
-    EvasObject(); // disable default constructor
+    //EvasObject(); // disable default constructor
     EvasObject( const EvasObject& ); // disable copy constructor
     bool operator=(const EvasObject& ); // disable assignment operator
 };
@@ -252,7 +259,7 @@ class EvasPolygon : public EvasObject
 class EvasText : public EvasObject
 {
   public:
-    EvasText( EvasText* ao );
+    EvasText( EvasText* ao, EvasCanvas* canvas );
     EvasText( EvasCanvas* canvas, const char* name = 0 );
     EvasText( int x, int y, const char* text, EvasCanvas* canvas, const char* name = 0 );
     EvasText( const char* font, int size, const char* text, EvasCanvas* canvas, const char* name = 0 );

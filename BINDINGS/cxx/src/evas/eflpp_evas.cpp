@@ -190,12 +190,17 @@ EvasObject* EvasCanvas::objectAtBottom() const
 // EvasObject
 //===============================================================================================
 
-EvasObject::EvasObject( EvasCanvas* canvas, const char* name )
+EvasObject::EvasObject (Evas_Object *eo)
+{
+  o = eo;
+}
+
+/*EvasObject::EvasObject( EvasCanvas* canvas, const char* name )
     : _canvas( canvas )
 {
     AllocTag( this, type );
     Dout( dc::notice, "EvasObject::Object " << "created new " << type << " (" << ( name ? name : "null" ) << ")" );
-}
+}*/
 
 void EvasObject::init (const char *name)
 {
@@ -406,7 +411,13 @@ bool EvasObject::hasFocus() const
 
 EvasObject* EvasObject::objectLink( Evas_Object* evas_object )
 {
-    return static_cast<EvasObject*>( evas_object_data_get( evas_object, "obj_c++" ) );
+    void *v = evas_object_data_get( evas_object, "obj_c++" );
+    return static_cast<EvasObject*>( v );
+}
+
+const EvasObject* EvasObject::objectLink( const Evas_Object* evas_object )
+{
+    return static_cast<const EvasObject*>( evas_object_data_get( evas_object, "obj_c++" ) );
 }
 
 // PRIVATE
@@ -523,14 +534,12 @@ void EvasObject::dispatcher( void *data, Evas *evas, Evas_Object *evas_object, v
 //===============================================================================================
 
 EvasLine::EvasLine( EvasCanvas* canvas, const char* name )
-     :EvasObject( canvas )
 {
     o = evas_object_line_add( canvas->obj() );
     init( name ? name : "line" );
 }
 
 EvasLine::EvasLine( int x1, int y1, int x2, int y2, EvasCanvas* canvas, const char* name )
-     :EvasObject( canvas )
 {
     o = evas_object_line_add( canvas->obj() );
     init( name ? name : "line" );
@@ -553,14 +562,12 @@ void EvasLine::setGeometry( int x, int y, int width, int height )
 //===============================================================================================
 
 EvasRectangle::EvasRectangle( EvasCanvas* canvas, const char* name )
-              :EvasObject( canvas )
 {
     o = evas_object_rectangle_add( canvas->obj() );
     init( name ? name : "rectangle" );
 }
 
 EvasRectangle::EvasRectangle( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-:EvasObject( canvas )
 {
     o = evas_object_rectangle_add( canvas->obj() );
     init( name ? name : "rectangle" );
@@ -569,7 +576,6 @@ EvasRectangle::EvasRectangle( int x, int y, int width, int height, EvasCanvas* c
 }
 
 EvasRectangle::EvasRectangle( const Rect& r, EvasCanvas* canvas, const char* name )
-              :EvasObject( canvas )
 {
     o = evas_object_rectangle_add( canvas->obj() );
     init( name ? name : "rectangle" );
@@ -587,7 +593,6 @@ EvasRectangle::~EvasRectangle()
 //===============================================================================================
 
 EvasPolygon::EvasPolygon( EvasCanvas* canvas, const char* name )
-            :EvasObject( canvas )
 {
     o = evas_object_polygon_add( canvas->obj() );
     init( name ? name : "polygon" );
@@ -614,7 +619,6 @@ void EvasPolygon::clearPoints()
 //===============================================================================================
 
 EvasText::EvasText( EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas )
 {
     o = evas_object_text_add( canvas->obj() );
     init( name ? name : "text" );
@@ -623,7 +627,6 @@ EvasText::EvasText( EvasCanvas* canvas, const char* name )
 }
 
 EvasText::EvasText( int x, int y, const char* text, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas )
 {
     o = evas_object_text_add( canvas->obj() );
     init( name ? name : "text" );;
@@ -634,7 +637,6 @@ EvasText::EvasText( int x, int y, const char* text, EvasCanvas* canvas, const ch
 }
 
 EvasText::EvasText( const char* font, int size, const char* text, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas )
 {
     o = evas_object_text_add( canvas->obj() );
     init( name ? name : "text" );
@@ -644,7 +646,6 @@ EvasText::EvasText( const char* font, int size, const char* text, EvasCanvas* ca
 }
 
 EvasText::EvasText( const char* font, int size, int x, int y, const char* text, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas )
 {
     o = evas_object_text_add( canvas->obj() );
     init( name ? name : "text" );
@@ -654,11 +655,10 @@ EvasText::EvasText( const char* font, int size, int x, int y, const char* text, 
     setText( text );
 }
 
-EvasText::EvasText( EvasText* ao )
-         :EvasObject( ao->canvas() )
+EvasText::EvasText( EvasText* ao, EvasCanvas* canvas )
 {
     Dout( dc::notice, *this << " EvasText::EvasText copy constructor" );
-    o = evas_object_text_add( ao->canvas()->obj() );
+    o = evas_object_text_add( canvas->obj() );
     init( "text" );
 
     setGeometry( ao->geometry() );
@@ -758,14 +758,12 @@ EvasText::~EvasText()
 //===============================================================================================
 
 EvasTextblock::EvasTextblock( EvasCanvas* canvas, const char* name )
-     :EvasObject( canvas )
 {
     o = evas_object_textblock_add( canvas->obj() );
     init( name ? name : "textblock" );
 }
 
 EvasTextblock::EvasTextblock( int x, int y, const char* text, EvasCanvas* canvas, const char* name )
-     :EvasObject( canvas )
 {
     o = evas_object_textblock_add( canvas->obj() );
     init( name ? name : "textblock" );
@@ -799,7 +797,6 @@ EvasTextblock::~EvasTextblock()
 //===============================================================================================
 
 EvasImage::EvasImage( EvasCanvas* canvas, const char* name )
-      :EvasObject( canvas )
 {
     o = evas_object_image_add( canvas->obj() );
     init( name ? name : "image" );
@@ -809,7 +806,6 @@ EvasImage::EvasImage( EvasCanvas* canvas, const char* name )
 }
 
 EvasImage::EvasImage( const char* filename, EvasCanvas* canvas, const char* name )
-      :EvasObject( canvas )
 {
     o = evas_object_image_add( canvas->obj() );
     init( name ? name : filename );
@@ -820,7 +816,6 @@ EvasImage::EvasImage( const char* filename, EvasCanvas* canvas, const char* name
 }
 
 EvasImage::EvasImage( int x, int y, const char* filename, EvasCanvas* canvas, const char* name )
-      :EvasObject( canvas )
 {
     o = evas_object_image_add( canvas->obj() );
     init( name ? name : filename );
@@ -834,7 +829,6 @@ EvasImage::EvasImage( int x, int y, const char* filename, EvasCanvas* canvas, co
 // attach temporary disabled
 #if 0
 EvasImage::EvasImage( Evas_Object* object, EvasCanvas* canvas, const char* name )
-      :EvasObject( canvas, "<attach>", name )
 {
     o = evas_object_image_add( canvas->obj() );
     init( name ? name : type );
@@ -943,14 +937,12 @@ void EvasImage::addDataUpdate (int x, int y, int w, int h)
 //===============================================================================================
 
 EvasGradient::EvasGradient( EvasCanvas* canvas, const char* name )
-        : EvasObject( canvas )
 {
     o = evas_object_gradient_add( canvas->obj() );
     init( name ? name : "gradient" );
 }
 
 EvasGradient::EvasGradient( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-        :EvasObject( canvas )
 {
     o = evas_object_gradient_add( canvas->obj() );
     init( name ? name : "gradient" );

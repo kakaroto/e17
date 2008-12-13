@@ -22,7 +22,6 @@ const char* PartNotExistingException::what () const throw ()
 // EvasEdje
 //===============================================================================================
 EvasEdje::EvasEdje( EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas )
 {
     o = edje_object_add( canvas->obj() );
     init( name ? name : "edje" );
@@ -34,7 +33,6 @@ EvasEdje::EvasEdje( EvasCanvas* canvas, const char* name )
 }
 
 EvasEdje::EvasEdje( const char* filename, const char* groupname, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas  )
 {
     o = edje_object_add( canvas->obj() );
     init( name ? name : groupname );
@@ -47,7 +45,6 @@ EvasEdje::EvasEdje( const char* filename, const char* groupname, EvasCanvas* can
 }
 
 EvasEdje::EvasEdje( int x, int y, const char* filename, const char* groupname, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas )
 {
     o = edje_object_add( canvas->obj() );
     init( name ? name : groupname );
@@ -61,6 +58,11 @@ EvasEdje::EvasEdje( int x, int y, const char* filename, const char* groupname, E
     //_size = size();
     //resize( _size );
 }
+
+/*EvasEdje::EvasEdje( Evas_Object* object, EvasCanvas* canvas, const char* name )
+{
+  o = object;
+}*/
 
 bool EvasEdje::setFile( const char* filename, const char* groupname )
 {
@@ -182,13 +184,19 @@ void EdjePart::swallow( EvasObject* object )
 
 void EdjePart::unswallow( EvasObject* object )
 {
-    //FIXME Move to EvasEdje?
     edje_object_part_unswallow( _parent->obj(), object->obj() );
 }
 
-EvasObject* EdjePart::swallow()
+Evas_Object* EdjePart::swallow()
 {
-    return EvasObject::objectLink( edje_object_part_swallow_get( _parent->obj(), _partname ) );
+    return edje_object_part_swallow_get( _parent->obj(), _partname );//, _parent->canvas ();
 }
 
+const EvasObject* EdjePart::getObject ( const char* name )
+{
+  return EvasObject::objectLink( edje_object_part_object_get( static_cast <const Evas_Object*> (_parent->obj()), name ) );
 }
+
+
+} // end namespace efl
+

@@ -46,7 +46,7 @@ int main( int argc, const char **argv )
 #endif
 
     EtkEmbed* embed = new EtkEmbed( evas );
-    EvasEtk* evasetk = new EvasEtk( embed, evas, "evasetk" );
+    EvasEtk* evasetk = new EvasEtk( embed, "evasetk" );
 
     embed->setFocus( true );
     evasetk->move( 5, 5 );

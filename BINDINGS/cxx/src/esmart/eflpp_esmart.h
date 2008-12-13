@@ -21,13 +21,11 @@ namespace efl {
 class EvasEsmart : public EvasObject
 {
 public:
-  EvasEsmart( EvasCanvas *canvas,
-              const char* type = "unknown",
-              const char* name = "(null)"  );
+  EvasEsmart();
   virtual ~EvasEsmart();
 
 protected:
-  Evas_Object *newEsmart( const char *name );
+  Evas_Object *newEsmart( EvasCanvas *canvas, const char *name );
   Evas_Smart *getEsmart( const char *name );
 
   // smart object handlers
