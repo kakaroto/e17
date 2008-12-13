@@ -6,7 +6,6 @@
 
 /* Local Structures */
 typedef struct _Instance Instance;
-typedef struct _Launcher_Conf Launcher_Conf;
 typedef struct _Conf Conf;
 typedef struct _Conf_Rating Conf_Rating;
 
@@ -20,18 +19,11 @@ struct _Instance
    Conf *conf;
 
    struct {
-	E_Config_DD *launcher;
 	E_Config_DD *conf;
 	E_Config_DD *conf_rel;
    } edd;
 
    const char *description;
-   const char *parent_id;
-};
-
-struct _Launcher_Conf
-{
-   Eina_List *items;
 };
 
 struct _Conf
@@ -65,7 +57,6 @@ struct _E_Config_Dialog_Data
 
 #define CONF_RATING(obj) ((Conf_Rating *) obj)
 
-static void _launcher_conf_new(Instance *inst, const char *id);
 static void _launcher_description_create(Instance *inst);
 static void _launcher_sources_rating_discount(Instance *inst, int min);
 
@@ -92,13 +83,13 @@ static void _launcher_cf_load_ilist(E_Config_Dialog_Data *cfdata);
 
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Launcher"};
 
-static Launcher_Conf *launcher_conf = NULL;
 static E_Config_Dialog *_cfd = NULL;
 
 EAPI void *
 drawer_plugin_init(Drawer_Plugin *p, const char *id)
 {
    Instance *inst = NULL;
+   char buf[128];
 
    inst = E_NEW(Instance, 1);
 
@@ -123,24 +114,17 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    E_CONFIG_VAL(D, T, sort_rel, INT);
    E_CONFIG_LIST(D, T, ratings, inst->edd.conf_rel); /* the list */
 
-   inst->edd.launcher = E_CONFIG_DD_NEW("Launcher_Conf", Launcher_Conf);
-   #undef T
-   #undef D
-   #define T Launcher_Conf
-   #define D inst->edd.launcher 
-   E_CONFIG_LIST(D, T, items, inst->edd.conf); /* the list */
-
-   if (!launcher_conf)
-     launcher_conf = e_config_domain_load("module.drawer.launcher", inst->edd.launcher);
-   if (!launcher_conf)
+   snprintf(buf, sizeof(buf), "module.drawer/%s.launcher", id);
+   inst->conf = e_config_domain_load(buf, inst->edd.conf);
+   if (!inst->conf)
      {
-	launcher_conf = E_NEW(Launcher_Conf, 1);
+	inst->conf = E_NEW(Conf, 1);
+	inst->conf->dir = eina_stringshare_add("default");
+	inst->conf->id = eina_stringshare_add(id);
+
 	e_config_save_queue();
      }
 
-   inst->parent_id = eina_stringshare_add(id);
-
-   _launcher_conf_new(inst, id);
    _launcher_description_create(inst);
 
    return inst;
@@ -156,7 +140,6 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    _launcher_source_item_free(inst);
 
    if (inst->description) eina_stringshare_del(inst->description);
-   if (inst->parent_id) eina_stringshare_del(inst->parent_id);
    if (inst->conf->id) eina_stringshare_del(inst->conf->id);
    if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
 
@@ -173,14 +156,10 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
 	E_FREE(r);
      }
-   launcher_conf->items = eina_list_remove(launcher_conf->items, inst->conf);
-   if (!eina_list_count(launcher_conf->items))
-     E_FREE(launcher_conf);
-   E_FREE(inst->conf);
 
-   E_CONFIG_DD_FREE(inst->edd.launcher);
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_CONFIG_DD_FREE(inst->edd.conf_rel);
+   E_FREE(inst->conf);
    E_FREE(inst);
 
    return 1;
@@ -200,10 +179,11 @@ EAPI void
 drawer_plugin_config_save(Drawer_Plugin *p)
 {
    Instance *inst;
+   char buf[128];
 
    inst = p->data;
-   if (!inst->edd.launcher) return;
-   e_config_domain_save("module.drawer.launcher", inst->edd.launcher, launcher_conf);
+   snprintf(buf, sizeof(buf), "module.drawer/%s.launcher", inst->conf->id);
+   e_config_domain_save(buf, inst->edd.conf, inst->conf);
 }
 
 EAPI Eina_List *
@@ -284,34 +264,6 @@ drawer_source_description_get(Drawer_Source *s)
 }
 
 static void
-_launcher_conf_new(Instance *inst, const char *id)
-{
-   Eina_List *l;
-   Conf *ci;
-   char buf[128];
-
-   snprintf(buf, sizeof(buf), "%s.launcher", id);
-   EINA_LIST_FOREACH(launcher_conf->items, l, ci)
-     {
-	if (!(ci = l->data)) continue;
-	if ((ci->id) && (!strcmp(ci->id, buf))) break;
-     }
-   if (ci)
-     inst->conf = ci;
-   else
-     {
-	inst->conf = E_NEW(Conf, 1);
-	inst->conf->dir = eina_stringshare_add("default");
-
-	inst->conf->id = eina_stringshare_add(buf);
-
-	launcher_conf->items = eina_list_append(launcher_conf->items, inst->conf);
-
-	e_config_save_queue();
-     }
-}
-
-static void
 _launcher_description_create(Instance *inst)
 {
    char buf[1024];
@@ -357,7 +309,7 @@ _launcher_cb_app_change(void *data, E_Order *eo __UNUSED__)
    if (!inst->apps) return;
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
-   ev->id = eina_stringshare_add(inst->parent_id);
+   ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _launcher_event_update_free, NULL);
 }
 
@@ -547,7 +499,7 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
-   ev->id = eina_stringshare_add(inst->parent_id);
+   ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _launcher_event_update_free, NULL);
 
    e_config_save_queue();

@@ -42,6 +42,7 @@ static Evas_Object *_drawer_gc_icon(E_Gadcon_Client_Class *client_class, Evas *e
 
 static void _drawer_conf_new(void);
 static void _drawer_conf_free(void);
+static void _drawer_conf_item_free(Config_Item *ci);
 static int _drawer_conf_timer(void *data);
 static Config_Item *_drawer_conf_item_get(const char *id);
 
@@ -98,6 +99,12 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    char buf[4096];
+   const char *homedir;
+
+   homedir = e_user_homedir_get();
+   snprintf(buf, sizeof(buf), "%s/.e/e/config/%s/module.drawer", 
+	    homedir, e_config_profile_get());
+   ecore_file_mkdir(buf);
 
    /* Location of theme to load for this module */
    snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", m->dir);
@@ -161,6 +168,28 @@ e_modapi_init(E_Module *m)
 			     "restored to<br>defaults. Sorry for the "
 			     "inconvenience.<br>"));
           }
+	/* Millepedes */
+	else
+	  {
+	     Config_Item *ci = NULL;
+	     Eina_List *l, *l_next;
+	     const char *dup = NULL;
+
+	     EINA_LIST_FOREACH_SAFE(drawer_conf->conf_items, l, l_next, ci)
+	       {
+		  if ((!dup) || (strcmp(dup, ci->id)))
+		    {
+		       dup = ci->id;
+		       continue;
+		    }
+		  else
+		    {
+		       _drawer_conf_item_free(ci);
+		       drawer_conf->conf_items =
+			  eina_list_remove_list(drawer_conf->conf_items, l);
+		    }
+	       }
+	  }
      }
 
    /* if we don't have a config yet, or it got erased above, 
@@ -218,11 +247,7 @@ e_modapi_shutdown(E_Module *m)
           eina_list_remove_list(drawer_conf->conf_items, 
                                 drawer_conf->conf_items);
 
-        /* cleanup stringshares */
-        if (ci->id) eina_stringshare_del(ci->id);
-
-        /* keep the planet green */
-        E_FREE(ci);
+	_drawer_conf_item_free(ci);
      }
 
    /* Cleanup the main config structure */
@@ -1004,14 +1029,19 @@ _drawer_conf_free(void)
         drawer_conf->conf_items = 
           eina_list_remove_list(drawer_conf->conf_items, 
                                 drawer_conf->conf_items);
-        /* EPA */
-        if (ci->id) eina_stringshare_del(ci->id);
-        if (ci->source) eina_stringshare_del(ci->source);
-        if (ci->view) eina_stringshare_del(ci->view);
-        E_FREE(ci);
+	_drawer_conf_item_free(ci);
      }
 
    E_FREE(drawer_conf);
+}
+
+static void
+_drawer_conf_item_free(Config_Item *ci)
+{
+   if (ci->id) eina_stringshare_del(ci->id);
+   if (ci->source) eina_stringshare_del(ci->source);
+   if (ci->view) eina_stringshare_del(ci->view);
+   E_FREE(ci);
 }
 
 /* timer for the config oops dialog */
@@ -1033,23 +1063,22 @@ _drawer_conf_item_get(const char *id)
 
    if (!id) 
      {
+	Instance *inst;
+
         /* Nothing passed, create a new id */
         snprintf(buf, sizeof(buf), "%s.%d", _drawer_gc_class.name, ++uuid);
 	/* Check whether the newly generated id is taken */
-	EINA_LIST_FOREACH(drawer_conf->conf_items, l, ci)
+	EINA_LIST_FOREACH(instances, l, inst)
 	  {
-	     if ((ci) && (ci->id) && (!strcmp(ci->id, buf)))
+	     if ((inst) && (inst->conf_item->id) && (!strcmp(inst->conf_item->id, buf)))
 	       return _drawer_conf_item_get(NULL);
 	  }
         id = buf;
      }
    else 
      {
-        for (l = drawer_conf->conf_items; l; l = l->next) 
-          {
-             if (!(ci = l->data)) continue;
-             if ((ci->id) && (!strcmp(ci->id, id))) return ci;
-          }
+	EINA_LIST_FOREACH(drawer_conf->conf_items, l, ci)
+	   if ((ci->id) && (!strcmp(ci->id, id))) return ci;
      }
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);

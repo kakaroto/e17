@@ -6,7 +6,6 @@
 
 /* Local Structures */
 typedef struct _Instance Instance;
-typedef struct _Dirwatcher_Conf Dirwatcher_Conf;
 typedef struct _Conf Conf;
 
 struct _Instance 
@@ -18,19 +17,12 @@ struct _Instance
    Eina_List *items;
 
    struct {
-	E_Config_DD *dirwatcher;
 	E_Config_DD *conf;
    } edd;
 
    Ecore_File_Monitor *monitor;
 
    const char *description;
-   const char *parent_id;
-};
-
-struct _Dirwatcher_Conf
-{
-   Eina_List *items;
 };
 
 struct _Conf
@@ -50,7 +42,6 @@ struct _E_Config_Dialog_Data
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Directory Watcher"};
 
 static void _dirwatcher_description_create(Instance *inst);
-static void _dirwatcher_conf_new(Instance *inst, const char *id);
 static void _dirwatcher_source_items_free(Instance *inst);
 static Drawer_Source_Item * _dirwatcher_source_item_fill(Instance *inst, const char *file);
 static void _dirwatcher_event_update_free(void *data __UNUSED__, void *event);
@@ -64,13 +55,13 @@ static void _dirwatcher_cf_fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object * _dirwatcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-static Dirwatcher_Conf *dirwatcher_conf = NULL;
 static E_Config_Dialog *_cfd = NULL;
 
 EAPI void *
 drawer_plugin_init(Drawer_Plugin *p, const char *id)
 {
    Instance *inst = NULL;
+   char buf[128];
 
    inst = E_NEW(Instance, 1);
 
@@ -85,24 +76,20 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
 
-   inst->edd.dirwatcher = E_CONFIG_DD_NEW("Dirwatcher_Conf", Dirwatcher_Conf);
-   #undef T
-   #undef D
-   #define T Dirwatcher_Conf
-   #define D inst->edd.dirwatcher
-   E_CONFIG_LIST(D, T, items, inst->edd.conf); /* the list */
-
-   if (!dirwatcher_conf)
-     dirwatcher_conf = e_config_domain_load("module.drawer.dirwatcher", inst->edd.dirwatcher);
-   if (!dirwatcher_conf)
+   snprintf(buf, sizeof(buf), "module.drawer/%s.dirwatcher", id);
+   inst->conf = e_config_domain_load(buf, inst->edd.conf);
+   if (!inst->conf)
      {
-	dirwatcher_conf = E_NEW(Dirwatcher_Conf, 1);
+	char buf2[4096];
+
+	snprintf(buf2, sizeof(buf2), "%s/Desktop", e_user_homedir_get());
+
+	inst->conf = E_NEW(Conf, 1);
+	inst->conf->dir = eina_stringshare_add(buf2);
+	inst->conf->id = eina_stringshare_add(id);
+
 	e_config_save_queue();
      }
-
-
-   inst->parent_id = eina_stringshare_add(id);
-   _dirwatcher_conf_new(inst, id);
 
    _dirwatcher_description_create(inst);
 
@@ -120,15 +107,9 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
      ecore_file_monitor_del(inst->monitor);
 
    if (inst->description) eina_stringshare_del(inst->description);
-   if (inst->parent_id) eina_stringshare_del(inst->parent_id);
    if (inst->conf->id) eina_stringshare_del(inst->conf->id);
    if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
 
-   dirwatcher_conf->items = eina_list_remove(dirwatcher_conf->items, inst->conf);
-   if (!eina_list_count(dirwatcher_conf->items))
-     E_FREE(dirwatcher_conf);
-
-   E_CONFIG_DD_FREE(inst->edd.dirwatcher);
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_FREE(inst->conf);
    E_FREE(inst);
@@ -189,10 +170,11 @@ EAPI void
 drawer_plugin_config_save(Drawer_Plugin *p)
 {
    Instance *inst;
+   char buf[128];
 
    inst = p->data;
-   if (!inst->edd.dirwatcher) return;
-   e_config_domain_save("module.drawer.dirwatcher", inst->edd.dirwatcher, dirwatcher_conf);
+   snprintf(buf, sizeof(buf), "module.drawer/%s.dirwatcher", inst->conf->id);
+   e_config_domain_save(buf, inst->edd.conf, inst->conf);
 }
 
 EAPI const char *
@@ -203,37 +185,6 @@ drawer_source_description_get(Drawer_Source *s)
    inst = DRAWER_PLUGIN(s)->data;
 
    return inst->description;
-}
-
-static void
-_dirwatcher_conf_new(Instance *inst, const char *id)
-{
-   Eina_List *l;
-   Conf *ci;
-   char buf[128];
-
-   snprintf(buf, sizeof(buf), "%s.dirwatcher", id);
-   EINA_LIST_FOREACH(dirwatcher_conf->items, l, ci)
-     {
-	if (!(ci = l->data)) continue;
-	if ((ci->id) && (!strcmp(ci->id, buf))) break;
-     }
-   if (ci)
-     inst->conf = ci;
-   else
-     {
-	char buf2[4096];
-
-	snprintf(buf2, sizeof(buf2), "%s/Desktop", e_user_homedir_get());
-
-	inst->conf = E_NEW(Conf, 1);
-	inst->conf->dir = eina_stringshare_add(buf2);
-	inst->conf->id = eina_stringshare_add(buf);
-
-	dirwatcher_conf->items = eina_list_append(dirwatcher_conf->items, inst->conf);
-
-	e_config_save_queue();
-     }
 }
 
 static void
@@ -324,7 +275,7 @@ _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
-   ev->id = eina_stringshare_add(inst->parent_id);
+   ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _dirwatcher_event_update_free, NULL);
 }
 
@@ -422,7 +373,7 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
-   ev->id = eina_stringshare_add(inst->parent_id);
+   ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _dirwatcher_event_update_free, NULL);
 
    e_config_save_queue();
