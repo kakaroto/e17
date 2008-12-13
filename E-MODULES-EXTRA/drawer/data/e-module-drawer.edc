@@ -449,7 +449,6 @@ target: "fg";
 	    name:	"e.text.description";
 	    type:	TEXT;
 	    effect:	GLOW;
-	    mouse_events:  0;
 	    scale: 1;
 	    description {
 	       state: "default" 0.0;
@@ -471,7 +470,6 @@ target: "fg";
 	 }
 	 part {
 	    name: "border";
-	    mouse_events:  0;
 	    description {
 	       state: "default" 0.0;
 	       rel1 {

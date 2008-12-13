@@ -1,9 +1,6 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
-#include <limits.h>
-#include <stdlib.h>
-
 #include <e.h>
 #include "launcher.h"
 
@@ -248,7 +245,7 @@ _dirwatcher_description_create(Instance *inst)
 
    if (inst->description) eina_stringshare_del(inst->description);
    homedir = e_user_homedir_get();
-   if (!(strncmp(inst->conf->dir, homedir, strlen(inst->conf->dir))))
+   if (!(strncmp(inst->conf->dir, homedir, 4096)))
      snprintf(buf, sizeof(buf), D_("Home"));
    else if (!(strncmp(inst->conf->dir, homedir, strlen(homedir))))
      {
@@ -411,14 +408,15 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Update *ev;
-   char buf[4096];
+   char *path;
 
    inst = cfdata->inst;
    if (cfdata->inst->conf->dir)
      eina_stringshare_del(cfdata->inst->conf->dir);
 
-   realpath(cfdata->dir, buf);
-   cfdata->inst->conf->dir = eina_stringshare_add(buf);
+   path = ecore_file_realpath(cfdata->dir);
+   cfdata->inst->conf->dir = eina_stringshare_add(path);
+   E_FREE(path);
 
    _dirwatcher_description_create(inst);
 
