@@ -61,7 +61,7 @@ msgstr "Použít wallpaper na aktivní obrazovce"
 
 #: e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
-msgstr "Imposta sfondo sul monitor attuale (supporto Xinerama)"
+msgstr "Nastavit pozadí na aktuálním monitoru (Podpora Xineramy)"
 
 #: e_mod_main.c:140
 msgid "Slideshow"
@@ -69,5 +69,5 @@ msgstr "Slideshow"
 
 #: e_mod_main.c:184
 msgid "Configuration"
-msgstr "Configurazione"
+msgstr "Konfigurace"
 
