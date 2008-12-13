@@ -5,9 +5,8 @@
  * make the gradient functions draw pattern boxes
  */
 
-int opt_shift = 0;
-int opt_width = 1020;
-int opt_height = 1020;
+int opt_width = 256;
+int opt_height = 256;
 int opt_times = 1;
 FILE *opt_file;
 int opt_debug = 0;
@@ -75,6 +74,17 @@ int bench_get(const char *name)
 	return 0;
 }
 
+char * opacity_get(Enesim_Surface_Pixel *p)
+{
+	uint8_t alpha;
+
+	enesim_surface_pixel_components_to(p, &alpha, NULL, NULL, NULL);
+	if (alpha == 0xff)
+		return "opaque";
+	else
+		return "transparent";
+}
+
 int fmt_get(const char *name, Enesim_Surface_Format *fmt)
 {
 	int ret = 1;
@@ -129,7 +139,7 @@ void test_gradient(Enesim_Surface *s)
 	{
 		int j;
 		Enesim_Surface_Data sdata_tmp;
-		unsigned char col = ((opt_height - 1) - i) >> opt_shift;
+		uint8_t col = ((opt_height - 1) - i) * 255 / opt_height;
 
 		sdata_tmp = sdata;
 		enesim_surface_pixel_components_from(&color, sfmt, col, 0, 0, col);
@@ -148,7 +158,6 @@ void test_gradient(Enesim_Surface *s)
 #endif
 		enesim_surface_data_increment(&sdata, opt_width);
 	}
-	surface_save(s, "gradient.png");
 }
 
 void test_gradient2(Enesim_Surface *s)
@@ -162,7 +171,7 @@ void test_gradient2(Enesim_Surface *s)
 	enesim_surface_data_get(s, &sdata);
 	sfmt = enesim_surface_format_get(s);
 	/* create a simple gradient */
-	enesim_surface_pixel_components_from(&color, sfmt, 0xff, 0xff, 0xff, 0xff);
+	enesim_surface_pixel_components_from(&color, sfmt, 0xaa, 0xff, 0xff, 0xff);
 	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, &color);
 	if (!dspan)
 	{
@@ -170,13 +179,39 @@ void test_gradient2(Enesim_Surface *s)
 	}
 	for (i = 0; i < opt_height; i++)
 	{
-		unsigned char col = i >> opt_shift;
+		uint8_t col = (i * 255)/opt_height;
 
-		enesim_surface_pixel_components_from(&color, sfmt, col, col, 0, col);
+		enesim_surface_pixel_components_from(&color, sfmt, col, col, col, 0);
 		dspan(&sdata, opt_width, NULL, &color, NULL);
 		enesim_surface_data_increment(&sdata, opt_width);
 	}
-	surface_save(s, "gradient2.png");
+}
+
+void test_gradient3(Enesim_Surface *s)
+{
+	Enesim_Drawer_Span dspan;
+	Enesim_Surface_Data sdata;
+	Enesim_Surface_Format sfmt;
+	Enesim_Surface_Pixel color;
+	int i;
+
+	enesim_surface_data_get(s, &sdata);
+	sfmt = enesim_surface_format_get(s);
+	/* create a simple gradient */
+	enesim_surface_pixel_components_from(&color, sfmt, 0xaa, 0xff, 0xff, 0xff);
+	dspan = enesim_drawer_span_color_get(ENESIM_FILL, sfmt, &color);
+	if (!dspan)
+	{
+		return;
+	}
+	for (i = 0; i < opt_height; i++)
+	{
+		uint8_t col = 255 - (i * 255)/opt_height;
+
+		enesim_surface_pixel_components_from(&color, sfmt, col, 0, col / 2, col);
+		dspan(&sdata, opt_width, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, opt_width);
+	}
 }
 
 Enesim_Surface * test_pattern(int w)
@@ -223,7 +258,7 @@ Enesim_Surface * test_pattern(int w)
 }
 
 void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
-		Enesim_Surface *src, Enesim_Surface *mask)
+		Enesim_Surface *src, Enesim_Surface_Pixel *color, Enesim_Surface *mask)
 {
 	Enesim_Surface_Format sfmt;
 	char file[256];
@@ -250,6 +285,14 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		snprintf(tmp2, 256, "_%s", enesim_surface_format_name_get(sfmt));
 		strncat(tmp, tmp2, 256);
 	}
+	/* append the color (transparent/opaque) */
+	if (color)
+	{
+		char tmp2[256];
+	
+		snprintf(tmp2, 256, "_%s", opacity_get(color));
+		strncat(tmp, tmp2, 256);
+	}
 	/* now save the source image in case it exists */
 	if (src)
 	{
@@ -259,6 +302,7 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		snprintf(tmp2, 256, "%s_source.png", tmp);
 		surface_save(src, tmp2);
 	}
+	
 	snprintf(file, 256, "%s.png", tmp);
 	surface_save(dst, file);
 }

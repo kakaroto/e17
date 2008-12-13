@@ -37,6 +37,6 @@ void renderer_bench(void)
 	}
 	end = get_time();
 	printf("Surface Renderer [%3.3f sec]\n", end - start);
-	test_finish("renderer_surface", opt_rop, dst, NULL, NULL);
+	test_finish("renderer_surface", opt_rop, dst, NULL, NULL, NULL);
 	/* color renderer */
 }

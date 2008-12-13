@@ -17,6 +17,9 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation *t,
+		Enesim_Surface *d,
+		Enesim_Surface *s);
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
@@ -149,9 +152,7 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 
 	int hlen;
 
-	/* force an alpha color, return if we dont have a point function */
-	enesim_surface_pixel_argb_from(&color, ds->sdata.format, 0x55555555);
-	ptfnc = enesim_drawer_point_color_get(t->rop, ds->sdata.format, &color);
+	ptfnc = enesim_transformation_drawer_point_get(t, ds, ss);
 	if (!ptfnc)
 		return;
 	
@@ -195,7 +196,7 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 				enesim_surface_data_increment(&sdata2, (siy * ss->w) + six);
 				convolution2x2(&sdata2, sxx, syy, ss->w, ss->h, &argb);
 				enesim_surface_pixel_convert(&argb, &color, ddata.format);
-				ptfnc(&ddata2, NULL, &color, NULL);
+				ptfnc(&ddata2, &color, t->color, NULL);
 			}
 			enesim_surface_data_increment(&ddata2, 1);
 			sxx += a;
@@ -274,10 +275,14 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 #if 1
 				convolution2x2(&sdata2, sxxx, syyy, ss->w, ss->h, &argb);
 				enesim_surface_pixel_convert(&argb, &color, ds->sdata.format);
-				ptfnc(&ddata2, NULL, &color, NULL);
+
 #else
-				enesim_surface_data_pixel_get(&sdata2, &color);
+				/* avoid the convolution and just convert the src
+				 * pixel to the destination format
+				 */ 
+				//enesim_surface_data_pixel_get(&sdata2, &color);
 #endif
+				
 				ptfnc(&ddata2, NULL, &color, NULL);
 			}
 iterate:
@@ -293,12 +298,40 @@ iterate:
 	}
 }
 extern Enesim_Transformer argb8888_tx;
+static Enesim_Transformer *transformer[ENESIM_SURFACE_FORMATS] = {
+		[ENESIM_SURFACE_ARGB8888] = &argb8888_tx,
+};
+
+/* TODO create a generic transformer */
 static Enesim_Transformer_Func _functions[ENESIM_TRANSFORMATIONS] = {
 		[ENESIM_TRANSFORMATION_AFFINE] = &transformer_affine_no_no,
 		[ENESIM_TRANSFORMATION_IDENTITY] = &transformer_identity_no_no,
 		[ENESIM_TRANSFORMATION_PROJECTIVE] = &transformer_projective_no_no,
 };
-
+/*============================================================================*
+ *                                 Global                                     * 
+ *============================================================================*/
+Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation *t,
+		Enesim_Surface *d,
+		Enesim_Surface *s)
+{
+	Enesim_Drawer_Point pfunc;
+	Enesim_Surface_Pixel src;
+	
+	/* TODO convert the color to the destination format */
+	/* get a transparent pixel source */
+	enesim_surface_pixel_components_from(&src, s->sdata.format, 0xaa, 0xff, 0xff, 0xff);
+	if (t->mask)
+	{
+		Enesim_Surface_Pixel mask;
+		/* get a transparent color for the mask format, to force a
+		 * real operation */
+		enesim_surface_pixel_components_from(&mask, t->mask->sdata.format, 0xaa, 0xff, 0xff, 0xff);
+		return enesim_drawer_point_get(t->rop, d->sdata.format, &src, NULL, &mask);
+	}
+	else
+		return enesim_drawer_point_get(t->rop, d->sdata.format, &src, t->color, NULL);
+}
 /*============================================================================*
  *                                   API                                      * 
  *============================================================================*/
@@ -356,6 +389,23 @@ EAPI void enesim_transformation_rop_set(Enesim_Transformation *t, Enesim_Rop rop
 /**
  * 
  */
+EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surface *mask)
+{
+	t->mask = mask;
+	if (t->color) t->color = NULL;
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surface_Pixel *color)
+{
+	t->color = color;
+	if (t->mask) t->mask = NULL;
+}
+
+/**
+ * 
+ */
 EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		Enesim_Surface *s, Eina_Rectangle *sr, Enesim_Surface *d,
 		Eina_Rectangle *dr)
@@ -376,6 +426,7 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	yscale = ENESIM_SCALE_NO;
 	
 	/* TODO check if we are out of bounds */
+	/* TODO check that the mask should be of the same size of the src */
 	/* setup the destination clipping */
 	cdr.x = 0;
 	cdr.y = 0;
@@ -421,6 +472,7 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		yscale = ENESIM_SCALE_DOWN;
 	/* get the correct transfomer function */
 	/* TODO use xscale and yscale */
+	/* TODO get the ptfunc from the new function and return if NULL */
 #if 0
 	/* HACK to get the argb8888 transformer */
 	if ((s->sdata.format == d->sdata.format) && (d->sdata.format == ENESIM_SURFACE_ARGB8888))
@@ -429,10 +481,28 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		tfunc = argb8888_tx.affine;
 	}
 	else
-#endif
+
 	if (!(tfunc = _functions[_transformation_get(t->matrix)]))
 	{
 		//ENESIM_ERROR(ENESIM_ERROR_TRANSFORMATION_NOT_SUPPORTED);
+		return EINA_FALSE;
+	}
+#endif
+	if (t->mask)
+	{
+		if (transformer[d->sdata.format])
+			tfunc = transformer[d->sdata.format]->mask[s->sdata.format][t->mask->sdata.format][_transformation_get(t->matrix)][t->quality];
+
+	}
+	else
+	{
+		if (transformer[d->sdata.format])
+			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][_transformation_get(t->matrix)][t->quality];
+	}
+	if (!tfunc)
+	{
+		/* TODO handle here the generic transformer */
+		printf("TFUNC not found!\n");
 		return EINA_FALSE;
 	}
 	tfunc(t, s, sr, d, dr);
@@ -449,6 +519,14 @@ EAPI void enesim_transformation_border_set(Enesim_Transformation *tx, int l, int
 	tx->border.b = b;
 	tx->border.used = EINA_TRUE;
 }
+/**
+ * 
+ */
+EAPI void enesim_transformation_quality_set(Enesim_Transformation *tx, Enesim_Quality q)
+{
+	tx->quality = q;
+}
+
 /**
  * 
  */

@@ -61,7 +61,7 @@ void transformer_go(Enesim_Transformation *tx)
 		printf("        %s [%3.3f sec]\n", enesim_surface_format_name_get(ssf), end - start);
 
 		test_finish(transformer_get(tx), opt_rop, dst,
-					src, NULL);
+					src, NULL, NULL);
 		enesim_surface_delete(src);
 		enesim_surface_delete(dst);
 	}

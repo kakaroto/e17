@@ -111,12 +111,12 @@ typedef struct _B1a3_Data
 typedef struct _Enesim_Surface_Data
 {
 	union {
+		Argb8888_Data argb8888;
+		Argb8888_Unpre_Data argb8888_unpre;
+		A8_Data a8;
 		Rgb565_Xa5_Data rgb565_xa5;
 		Rgb565_B1a3_Data rgb565_b1a3;
 		Rgb888_Data rgb888;
-		A8_Data a8;
-		Argb8888_Unpre_Data argb8888_unpre;
-		Argb8888_Data argb8888;
 	} data;
 	Enesim_Surface_Format format;
 } Enesim_Surface_Data;

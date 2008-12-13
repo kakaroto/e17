@@ -15,9 +15,9 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
+/* TODO add a fixed point matrix too, to speed up the matrix_rotate sin/cos */
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
@@ -34,11 +34,46 @@ static inline _quad_dump(Enesim_Quad *q)
 	printf("Q = %f %f, %f %f, %f %f, %f %f\n", QUAD_X0(q), QUAD_Y0(q), QUAD_X1(q), QUAD_Y1(q), QUAD_X2(q), QUAD_Y2(q), QUAD_X3(q), QUAD_Y3(q), q[8]);
 }
 
+/* 
+ * In the range [-pi pi]
+ * (4/pi)*x - ((4/(pi*pi))*x*abs(x))
+ * http://www.devmaster.net/forums/showthread.php?t=5784
+ */
+#define EXTRA_PRECISION
+static float _sin(float x)
+{
+	const float B = 4/M_PI;
+	const float C = -4/(M_PI*M_PI);
+
+	float y = (B * x) + (C * x * fabsf(x));
+
+#ifdef EXTRA_PRECISION
+	//  const float Q = 0.775;
+	const float P = 0.225;
+
+	y = P * (y * fabsf(y) - y) + y; // Q * y + P * y * abs(y)
+#endif
+	return y;
+}
+
+static float _cos(float x)
+{
+	x += M_PI_2;
+
+	if (x > M_PI)   // Original x > pi/2
+	{
+	    x -= 2 * M_PI;   // Wrap: cos(x) = cos(x - 2 pi)
+	}
+
+	return _sin(x);
+}
+
 /*============================================================================*
  *                                   API                                      * 
  *============================================================================*/
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI Enesim_Matrix * enesim_matrix_new(void)
 {
@@ -49,14 +84,16 @@ EAPI Enesim_Matrix * enesim_matrix_new(void)
 	return m;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_delete(Enesim_Matrix *m)
 {
 	free(m);
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,
 		float d, float e, float f, float g, float h, float i)
@@ -72,7 +109,8 @@ EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,
 	MATRIX_ZZ(m) = i;	
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_values_get(Enesim_Matrix *m, float *a, float *b, float *c,
 		float *d, float *e, float *f, float *g, float *h, float *i)
@@ -105,7 +143,8 @@ EAPI void enesim_matrix_fixed_values_get(Enesim_Matrix *m, Eina_F16p16 *a,
 	if (i) *i = eina_f16p16_float_from(MATRIX_ZZ(m));
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, float *xr, float *yr)
 {
@@ -128,7 +167,8 @@ EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, floa
 	}
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a)
 {
@@ -161,7 +201,8 @@ EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a)
 	
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI float enesim_matrix_determinant(Enesim_Matrix *m)
 {
@@ -174,7 +215,8 @@ EAPI float enesim_matrix_determinant(Enesim_Matrix *m)
 	return det;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_divide(Enesim_Matrix *m, float scalar)
 {
@@ -191,7 +233,8 @@ EAPI void enesim_matrix_divide(Enesim_Matrix *m, float scalar)
 	MATRIX_ZZ(m) /= scalar;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_inverse(Enesim_Matrix *m, Enesim_Matrix *m2)
 {
@@ -205,7 +248,8 @@ EAPI void enesim_matrix_inverse(Enesim_Matrix *m, Enesim_Matrix *m2)
 	enesim_matrix_divide(m2, scalar);
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Matrix *dst)
 {
@@ -234,7 +278,8 @@ EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Mat
 	MATRIX_ZZ(dst) = a33;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_translate(Enesim_Matrix *m, float tx, float ty)
 {
@@ -249,7 +294,8 @@ EAPI void enesim_matrix_translate(Enesim_Matrix *m, float tx, float ty)
 	MATRIX_ZZ(m) = 1;	
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_scale(Enesim_Matrix *m, float sx, float sy)
 {
@@ -264,12 +310,20 @@ EAPI void enesim_matrix_scale(Enesim_Matrix *m, float sx, float sy)
 	MATRIX_ZZ(m) = 1;
 }
 /**
- * 
+ * FIXME fix this, is incredible slow.
  */
 EAPI void enesim_matrix_rotate(Enesim_Matrix *m, float rad)
 {
-	float c = cos(rad);
-	float s = sin(rad);
+	float c, s;
+#if 0
+	c = cosf(rad);
+	s = sinf(rad);
+#else
+	/* normalize the angle between -pi,pi */
+	rad = fmod(rad + M_PI, 2 * M_PI) - M_PI;
+	c = _cos(rad);
+	s = _sin(rad);
+#endif
 	
 	MATRIX_XX(m) = c;
 	MATRIX_XY(m) = -s;
@@ -282,7 +336,8 @@ EAPI void enesim_matrix_rotate(Enesim_Matrix *m, float rad)
 	MATRIX_ZZ(m) = 1;	
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_matrix_identity(Enesim_Matrix *m)
 {
@@ -297,7 +352,8 @@ EAPI void enesim_matrix_identity(Enesim_Matrix *m)
 	MATRIX_ZZ(m) = 1;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI Enesim_Quad * enesim_quad_new(void)
 {
@@ -307,14 +363,16 @@ EAPI Enesim_Quad * enesim_quad_new(void)
 	return q;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_quad_delete(Enesim_Quad *q)
 {
 	free(q);
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_quad_rectangle_from(Enesim_Quad *q,
 		Eina_Rectangle *r)
@@ -329,7 +387,8 @@ EAPI void enesim_quad_rectangle_from(Enesim_Quad *q,
 	QUAD_Y3(q) = r->y + r->h;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_quad_coords_get(Enesim_Quad *q, float *x1, float *y1,
 		float *x2, float *y2, float *x3, float *y3, float *x4,
@@ -345,7 +404,8 @@ EAPI void enesim_quad_coords_get(Enesim_Quad *q, float *x1, float *y1,
 	if (y4) *y4 = q->y3;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_quad_coords_set(Enesim_Quad *q, float x1,
 		float y1, float x2, float y2, float x3, float y3, float x4,
@@ -361,7 +421,8 @@ EAPI void enesim_quad_coords_set(Enesim_Quad *q, float x1,
 	QUAD_Y3(q) = y4;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m,
 		Enesim_Quad *q)
@@ -411,9 +472,9 @@ EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m,
 		return EINA_TRUE;
 	}
 }
-
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m,
 		Enesim_Quad *q)
@@ -433,7 +494,6 @@ EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m,
 	
 	return EINA_TRUE;
 }
-
 /**
  * Creates a projective matrix that maps a quadrangle to a quadrangle
  */

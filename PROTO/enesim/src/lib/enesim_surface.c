@@ -473,7 +473,31 @@ EAPI void enesim_surface_pixel_components_from(Enesim_Surface_Pixel *color,
 EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
 		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)
 {
-	
+	switch (color->format)
+	{
+		case ENESIM_SURFACE_ARGB8888:
+			argb8888_pixel_components_to(color, a, r, g, b);
+			break;
+	#ifdef BUILD_SURFACE_ARGB8888_UNPRE
+		case ENESIM_SURFACE_ARGB8888_UNPRE:
+			
+			break;
+	#endif
+	#if 0
+	#ifdef BUILD_SURFACE_RGB565_XA5
+		case ENESIM_SURFACE_RGB565_XA5:
+			//rgb565_xa5_from_argb(argb, &(dp->pixel.rgb565_xa5.plane0), &(dp->pixel.rgb565_xa5.plane1));
+			break;
+	#endif
+	#ifdef BUILD_SURFACE_RGB565_B1A3
+		case ENESIM_SURFACE_RGB565_B1A3:
+			//rgb565_b1a3_from_argb(argb, &(dp->pixel.rgb565_b1a3.plane0), &(dp->pixel.rgb565_b1a3.plane1), dp->rgb565_b1a3.pixel_plane1);
+			break;
+	#endif
+	#endif
+		default:
+			break;
+	}	
 }
 /**
  * Debug routine that returns the format of a surface

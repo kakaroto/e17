@@ -35,6 +35,13 @@ typedef enum
 	ENESIM_ROPS
 } Enesim_Rop;
 
+typedef enum
+{
+	ENESIM_GOOD,
+	ENESIM_FAST,
+	ENESIM_QUALITIES
+} Enesim_Quality;
+
 //EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
 
 EAPI int enesim_init(void);

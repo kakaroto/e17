@@ -33,6 +33,9 @@ typedef enum
 	ENESIM_SCALE_DOWN
 } Enesim_Scale;
 
+/* TODO override this from a drawer context
+ * TODO rename to transformer context
+ */
 struct _Enesim_Transformation
 {
 #ifdef DEBUG
@@ -41,27 +44,28 @@ struct _Enesim_Transformation
 	Enesim_Matrix *matrix;
 	float ox;
 	float oy;
-	int quality; // TODO fix this
 	struct {
 		int l, t, r, b;
 		Eina_Bool used;	
 	} border;
 	Enesim_Rop rop;
+	Enesim_Surface *mask;
+	Enesim_Surface_Pixel *color;
+	Enesim_Quality quality;
 };
 
-/* identity[quality][border][xscale][yscale]
- * affine[quality][border][xscale][yscale]
- * projective[quality][border][xscale][yscale]
- */
+
 typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t,
 		Enesim_Surface *ss, Eina_Rectangle *srect, Enesim_Surface *ds,
 		Eina_Rectangle *drect);
 
+/* 
+ * TODO Later we can add [border][xscale][yscale]
+ */
 typedef struct _Enesim_Transformer
 {
-	Enesim_Transformer_Func identity;
-	Enesim_Transformer_Func projective;
-	Enesim_Transformer_Func affine;
+	Enesim_Transformer_Func mask[ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS][ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
+	Enesim_Transformer_Func normal[ENESIM_SURFACE_FORMATS][ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
 } Enesim_Transformer;
 
 #endif /*TRANSFORMER_H_*/

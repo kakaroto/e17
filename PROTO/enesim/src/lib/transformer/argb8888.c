@@ -20,7 +20,11 @@
 #include "_argb8888_c.c"
 
 Enesim_Transformer argb8888_tx = {
-		.affine = argb8888_argb8888_good_affine_no_no,
-		.identity = argb8888_argb8888_good_affine_no_no,
+	//.mask[ENESIM_SURFACE_ARGB8888][ENESIM_SURFACE_ARGB8888][ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] = 
+	//	mask_argb8888_argb8888_affine_good_no_no,
+	.normal[ENESIM_SURFACE_ARGB8888][ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] =
+		normal_argb8888_argb8888_affine_good_no_no,
+	.normal[ENESIM_SURFACE_ARGB8888][ENESIM_TRANSFORMATION_AFFINE][ENESIM_FAST] =
+		normal_argb8888_argb8888_affine_fast_no_no,
 };
 

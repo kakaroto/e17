@@ -15,7 +15,6 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
 /*============================================================================*
@@ -26,7 +25,8 @@ static int _init = 0;
  *                                   API                                      * 
  *============================================================================*/
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI int enesim_init(void)
 {
@@ -46,7 +46,8 @@ EAPI int enesim_init(void)
 	return _init;
 }
 /**
- * 
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI void enesim_shutdown(void)
 {

@@ -28,5 +28,8 @@ EAPI void enesim_transformation_rop_set(Enesim_Transformation *t, Enesim_Rop rop
 EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t, Enesim_Surface *s, Eina_Rectangle *sr, Enesim_Surface *d, Eina_Rectangle *dr);
 EAPI void enesim_transformation_origin_set(Enesim_Transformation *t, float ox, float oy);
 EAPI void enesim_transformation_origin_get(Enesim_Transformation *t, float *ox, float *oy);
+EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surface *mask);
+EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surface_Pixel *color);
+EAPI void enesim_transformation_quality_set(Enesim_Transformation *tx, Enesim_Quality q);
 
 #endif /*ENESIM_TRANSFORMER_H_*/
