@@ -155,7 +155,7 @@ void enesim_drawer_pt_pixel_blend(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
 		Enesim_Surface_Pixel *m)
 {
-	_pixel_blend(d, color);
+	_pixel_blend(d, s);
 }
 
 void enesim_drawer_sp_color_blend(Enesim_Surface_Data *d,

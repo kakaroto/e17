@@ -411,7 +411,7 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		Eina_Rectangle *dr)
 {
 	Eina_Rectangle csr, cdr;
-	Enesim_Transformer_Func tfunc;
+	Enesim_Transformer_Func tfunc = NULL;
 	Enesim_Scale xscale, yscale;
 	
 	ENESIM_ASSERT(t, ENESIM_ERROR_HANDLE_INVALID);
@@ -499,12 +499,14 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		if (transformer[d->sdata.format])
 			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][_transformation_get(t->matrix)][t->quality];
 	}
+	/* TODO handle here the generic transformer */
 	if (!tfunc)
 	{
-		/* TODO handle here the generic transformer */
-		printf("TFUNC not found!\n");
-		return EINA_FALSE;
+		
+		tfunc = _functions[_transformation_get(t->matrix)];
 	}
+	if (!tfunc)
+		return EINA_FALSE;
 	tfunc(t, s, sr, d, dr);
 	return EINA_TRUE;
 }
