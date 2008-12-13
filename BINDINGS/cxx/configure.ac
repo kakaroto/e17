@@ -18,6 +18,21 @@ AC_PROG_CXX
 AC_HEADER_STDC
 AC_PROG_LIBTOOL
 
+dnl Check for option to enable debug
+AC_MSG_CHECKING(whether to enable debugging)
+AC_ARG_ENABLE(debug,
+        [  --enable-debug=[no/yes]        enables debug build (default=no)],,
+                 enable_debug=no)
+
+dnl Checks for libraries
+if [ ! test "x$enable_debug" != "xyes"]; then
+  AC_DEFINE(DEBUG, 1, [Define to enable debug build])
+  CXXFLAGS="-ggdb -O0"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+
 dnl Check for option to enable esmart
 AC_MSG_CHECKING(whether to enable esmart)
 AC_ARG_ENABLE(emotion,
