@@ -22,14 +22,15 @@ cdef class Window:
                  input=False, argb=False, override_redirect=False):
         """Create a new X window.
 
-        @parm parent: window to use as parent, or None to use the root window.
-        @parm x: horizontal position.
-        @parm y: vertical position.
-        @parm w: horizontal size.
-        @parm h: vertical size.
-        @parm input: if should be an input-only window or not.
-        @parm argb: if window should be ARGB.
-        @parm override_redirect: if override redirect attribute must be set.
+        @parm: B{parent:} window to use as parent, or None to use the
+               root window.
+        @parm: B{x:} horizontal position.
+        @parm: B{y:} vertical position.
+        @parm: B{w:} horizontal size.
+        @parm: B{h:} vertical size.
+        @parm: B{input:} if should be an input-only window or not.
+        @parm: B{argb:} if window should be ARGB.
+        @parm: B{override_redirect:} if override redirect attribute must be set.
         """
         cdef Ecore_X_Window p_xid, xid
         if parent is <Window>None:
@@ -114,10 +115,10 @@ cdef class Window:
     def reparent(self, Window new_parent=None, int x=0, int y=0):
         """Moves this window to within another window at a given position.
 
-        @parm new_parent: window to use as parent, or None to use the root
+        @parm: B{new_parent:} window to use as parent, or None to use the root
            window.
-        @parm x: horizontal position within the new parent.
-        @parm y: vertical position within the new parent.
+        @parm: B{x:} horizontal position within the new parent.
+        @parm: B{y:} vertical position within the new parent.
         """
         cdef Ecore_X_Window p_xid
         if new_parent is <Window>None:
@@ -129,7 +130,7 @@ cdef class Window:
     def parent_set(self, Window new_parent=None):
         """Set window parent.
 
-        @parm new_parent: window to use as parent, or None to use the root
+        @parm: B{new_parent:} window to use as parent, or None to use the root
            window.
         @see: same as L{reparent()} with both x and y being 0.
         """
@@ -184,7 +185,7 @@ cdef class Window:
     def focus_at_time(self, Ecore_X_Time time):
         """Sets the focus this window at a specific time.
 
-        @parm time: time specification, see L{current_time_get()}.
+        @parm: B{time:} time specification, see L{current_time_get()}.
         """
         ecore_x_window_focus_at_time(self.xid, time)
 
@@ -202,16 +203,16 @@ cdef class Window:
     def move(self, int x, int y):
         """Set window position.
 
-        @parm x: horizontal.
-        @parm y: vertical.
+        @parm: B{x:} horizontal.
+        @parm: B{y:} vertical.
         """
         ecore_x_window_move(self.xid, x, y)
 
     def pos_set(self, int x, int y):
         """Set window position.
 
-        @parm x: horizontal.
-        @parm y: vertical.
+        @parm: B{x:} horizontal.
+        @parm: B{y:} vertical.
         @note: alias for L{move()}
         """
         ecore_x_window_move(self.xid, x, y)
@@ -232,16 +233,16 @@ cdef class Window:
     def resize(self, int w, int h):
         """Set window size.
 
-        @parm w: horizontal.
-        @parm h: vertical.
+        @parm: B{w:} horizontal.
+        @parm: B{h:} vertical.
         """
         ecore_x_window_resize(self.xid, w, h)
 
     def size_set(self, int w, int h):
         """Set window size.
 
-        @parm w: horizontal.
-        @parm h: vertical.
+        @parm: B{w:} horizontal.
+        @parm: B{h:} vertical.
         @note: alias for L{resize()}
         """
         ecore_x_window_resize(self.xid, w, h)
@@ -262,20 +263,20 @@ cdef class Window:
     def move_resize(self, int x, int y, int w, int h):
         """Set both position and size.
 
-        @parm x: horizontal position.
-        @parm y: vertical position.
-        @parm w: horizontal size.
-        @parm h: vertical size.
+        @parm: B{x:} horizontal position.
+        @parm: B{y:} vertical position.
+        @parm: B{w:} horizontal size.
+        @parm: B{h:} vertical size.
         """
         ecore_x_window_move_resize(self.xid, x, y, w, h)
 
     def geometry_set(self, int x, int y, int w, int h):
         """Set both position and size.
 
-        @parm x: horizontal position.
-        @parm y: vertical position.
-        @parm w: horizontal size.
-        @parm h: vertical size.
+        @parm: B{x:} horizontal position.
+        @parm: B{y:} vertical position.
+        @parm: B{w:} horizontal size.
+        @parm: B{h:} vertical size.
         """
         ecore_x_window_move_resize(self.xid, x, y, w, h)
 
@@ -295,7 +296,7 @@ cdef class Window:
     def border_width_set(self, int width):
         """Sets the width of the border of this window.
 
-        @parm width: border width, in pixels.
+        @parm: B{width:} border width, in pixels.
         """
         ecore_x_window_border_width_set(self.xid, width)
 
@@ -357,9 +358,9 @@ cdef class Window:
     def background_color_set(self, int r, int g, int b):
         """Set background color.
 
-        @parm r: red (0...65536, 16 bits)
-        @parm g: green (0...65536, 16 bits)
-        @parm b: blue (0...65536, 16 bits)
+        @parm: B{r:} red (0...65536, 16 bits)
+        @parm: B{g:} green (0...65536, 16 bits)
+        @parm: B{b:} blue (0...65536, 16 bits)
         """
         ecore_x_window_background_color_set(self.xid, r, g, b)
 
@@ -395,7 +396,7 @@ cdef class Window:
 def Window_from_xid(unsigned long xid):
     """Create a Python wrapper for given window id.
 
-    @parm xid: window id.
+    @parm: B{xid:} window id.
     @rtype: L{Window}
     """
     cdef Window w

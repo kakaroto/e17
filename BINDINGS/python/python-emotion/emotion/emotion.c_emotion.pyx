@@ -18,6 +18,10 @@
 cimport evas.c_evas as c_evas
 import evas.c_evas
 
+__extra_epydoc_fields__ = (
+    ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
+    )
+
 cdef void _emotion_callback(void *data,
                             evas.c_evas.Evas_Object *o, void *ei) with gil:
     cdef Emotion obj

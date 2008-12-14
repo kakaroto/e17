@@ -1108,46 +1108,45 @@ cdef class EcoreEvas:
     def associate(self, c_evas.Object obj, int flags=0):
         """Associate the given object to this ecore evas.
 
-        Association means that operations on one will affect the
-        other, for example moving the object will move the window,
-        resize the object will also affect the ecore evas window, hide
-        and show applies as well.
+           Association means that operations on one will affect the
+           other, for example moving the object will move the window,
+           resize the object will also affect the ecore evas window, hide
+           and show applies as well.
 
-        This is meant to simplify development, since you often need to
-        associate these events with your"base" objects, background or
-        bottom-most object.
+           This is meant to simplify development, since you often need to
+           associate these events with your"base" objects, background or
+           bottom-most object.
 
-        Be aware that some methods might not be what you would like,
-        deleting either the window or the object will delete the
-        other. If you want to change that behavior, let's say to hide
-        window when it's closed, you must use
-        ecore_evas_callback_delete_request_set() and set your own
-        code, like ecore_evas_hide(). Just remember that if you
-        override delete_request and still want to delete the
-        window/object, you must do that yourself.
+           Be aware that some methods might not be what you would like,
+           deleting either the window or the object will delete the
+           other. If you want to change that behavior, let's say to hide
+           window when it's closed, you must use
+           ecore_evas_callback_delete_request_set() and set your own
+           code, like ecore_evas_hide(). Just remember that if you
+           override delete_request and still want to delete the
+           window/object, you must do that yourself.
 
-        Since we now define delete_request, deleting windows will not
-        quit main loop, if you wish to do so, you should listen for
-        EVAS_CALLBACK_FREE on the object, that way you get notified
-        and you can call ecore_main_loop_quit().
+           Since we now define delete_request, deleting windows will not
+           quit main loop, if you wish to do so, you should listen for
+           EVAS_CALLBACK_FREE on the object, that way you get notified
+           and you can call ecore_main_loop_quit().
 
-        Flags can be OR'ed of:
-         * ECORE_EVAS_OBJECT_ASSOCIATE_BASE (or 0): to listen to basic
-           events like delete, resize and move, but no stacking or
-           layer are used.
-        * ECORE_EVAS_OBJECT_ASSOCIATE_STACK: stacking operations will
-          act on the Ecore_Evas, not the object. So
-          evas_object_raise() will call ecore_evas_raise(). Relative
-          operations (stack_above, stack_below) are still not
-          implemented.
+           Flags can be OR'ed of:
+            - ECORE_EVAS_OBJECT_ASSOCIATE_BASE (or 0): to listen to basic
+              events like delete, resize and move, but no stacking or
+              layer are used.
+            - ECORE_EVAS_OBJECT_ASSOCIATE_STACK: stacking operations will
+              act on the Ecore_Evas, not the object. So
+              evas_object_raise() will call ecore_evas_raise(). Relative
+              operations (stack_above, stack_below) are still not
+              implemented.
+            - ECORE_EVAS_OBJECT_ASSOCIATE_LAYER: stacking operations will
+              act on the Ecore_Evas, not the object. So
+              evas_object_layer_set() will call ecore_evas_layer_set().
 
-        * ECORE_EVAS_OBJECT_ASSOCIATE_LAYER: stacking operations will
-          act on the Ecore_Evas, not the object. So
-          evas_object_layer_set() will call ecore_evas_layer_set().
-
-          @parm B{obj} The object to associate
-          @return true on success, false otherwise.
-          @rtype: bool
+           @parm: B{obj:} The object to associate
+           @return: true on success, false otherwise.
+           @rtype: bool
         """
         cdef Ecore_Evas_Object_Associate_Flags f
         f = <Ecore_Evas_Object_Associate_Flags>flags

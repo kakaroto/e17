@@ -133,15 +133,16 @@ def engines_get():
 def new(engine_name=None, int x=0, int y=0, int w=320, int h=240, extra_options=None):
     """Creates a new EcoreEvas based on engine name.
 
-    @parm B{engine_name} name of engine to use (as of engines_get()) or None
-          to use auto discovery.
-    @parm B{x} horizontal placement.
-    @parm B{y} vertical placement.
-    @parm B{w} window width.
-    @parm B{h} window height.
-    @parm B{extra_options} if not None, a textual description of parameters.
+       @parm: B{engine_name:} name of engine to use (as of engines_get()) or
+              None to use auto discovery.
+       @parm: B{x:} horizontal placement.
+       @parm: B{y:} vertical placement.
+       @parm: B{w:} window width.
+       @parm: B{h:} window height.
+       @parm: B{extra_options:} if not None, a textual description of
+              parameters.
 
-    @raise SystemError if problems occur.
+       @raise SystemError: if problems occur.
     """
     cdef Ecore_Evas *ee
     cdef EcoreEvas o

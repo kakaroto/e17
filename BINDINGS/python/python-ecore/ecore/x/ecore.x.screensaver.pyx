@@ -33,10 +33,10 @@ def screensaver_set(int timeout, int interval, int prefer_blanking,
                     int allow_exposures):
     """Configure screensaver.
 
-    @parm timeout: how long to wait until screen saver turns on (in seconds).
-    @parm interval: time between screen saver alterations (in seconds).
-    @parm prefer_blanking: True to enable blank, False to disable.
-    @parm allow_exposures: if to allow expose generation event or not.
+    @parm: B{timeout:} time to wait until screen saver turns on (in seconds).
+    @parm: B{interval:} time between screen saver alterations (in seconds).
+    @parm: B{prefer_blanking:} True to enable blank, False to disable.
+    @parm: B{allow_exposures:} if to allow expose generation event or not.
     """
     ecore_x_screensaver_set(timeout, interval, prefer_blanking,
                             allow_exposures)

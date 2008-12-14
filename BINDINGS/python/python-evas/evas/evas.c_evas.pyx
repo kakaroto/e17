@@ -62,7 +62,7 @@ def async_events_fd_get():
     main loop. When there is something to read you should call
     L{async_events_process()}.
 
-    @note ecore.evas already does this for you, you just need this if
+    @note: ecore.evas already does this for you, you just need this if
     you are not using ecore.evas.
 
     @return: -1 on failure or the file descriptor on success (>= 0).
@@ -77,7 +77,7 @@ def async_events_process():
     L{async_events_fd_get()} and call this function when there is
     something to read.
 
-    @return number of processed events.
+    @return: number of processed events.
     """
     return evas_async_events_process()
 

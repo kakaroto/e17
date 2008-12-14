@@ -25,7 +25,7 @@ __extra_epydoc_fields__ = (
 def init(name=None):
     """Initialize the X display connection to the given display.
 
-    @parm name: display target name, if None, default will be used.
+    @parm: B{name:} display target name, if None, default will be used.
     @rtype: int
     """
     cdef char *s
@@ -154,12 +154,12 @@ def window_shadow_tree_at_xy_with_skip_get(Window base, int x, int y, skip_list=
     """Retrieves the top, visible window at the given location,
        but skips the windows in the list. This uses a shadow tree built from the
        window tree that is only updated the first time
-       L{shadow_tree_at_xy_with_skip_get()} is called, or the next time
-       it is called after a L{shadow_tree_flush()}.
+       L{window_shadow_tree_at_xy_with_skip_get()} is called, or the next time
+       it is called after a L{window_shadow_tree_flush()}.
 
-       @parm base: Window to use as base, or None to use root window.
-       @parm x: The given X position.
-       @parm y: The given Y position.
+       @parm: B{base:} Window to use as base, or None to use root window.
+       @parm: B{x:} The given X position.
+       @parm: B{y:} The given Y position.
        @rtype: Window
     """
     cdef Ecore_X_Window base_xid, ret_xid, *skips
@@ -186,8 +186,8 @@ def window_shadow_tree_flush():
 def window_at_xy_get(int x, int y):
     """Retrieves the top, visible window at the given location.
 
-    @parm x: horizontal position.
-    @parm y: vertical position.
+    @parm: B{x:} horizontal position.
+    @parm: B{y:} vertical position.
     @rtype: Window
     """
     cdef Ecore_X_Window xid
@@ -198,8 +198,8 @@ def window_at_xy_get(int x, int y):
 def window_at_xy_with_skip_get(int x, int y, skip_list=None):
     """Retrieves the top, visible window at the given location.
 
-    @parm x: horizontal position.
-    @parm y: vertical position.
+    @parm: B{x:} horizontal position.
+    @parm: B{y:} vertical position.
     @rtype: Window
     """
     cdef Ecore_X_Window xid, *skips
@@ -218,10 +218,10 @@ def window_at_xy_begin_get(Window begin, int x, int y):
     """Retrieves the top, visible window at the given location, starting from
        begin.
 
-    @parm begin: Window to start at.
-    @parm x: horizontal position.
-    @parm y: vertical position.
-    @rtype: Window
+       @parm: B{begin:} Window to start at.
+       @parm: B{x:} horizontal position.
+       @parm: B{y:} vertical position.
+       @rtype: Window
     """
     cdef Ecore_X_Window xid, begin_xid
     if begin is <Window>None:

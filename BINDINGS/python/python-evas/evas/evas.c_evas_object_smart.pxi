@@ -591,7 +591,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         """Mark object as changed, so it's L{calculate()} will be called.
 
         If an object is changed and it provides a calculate() method,
-        it will be called from L{Evas.render()}, what we call pre-render
+        it will be called from L{Canvas.render()}, what we call pre-render
         calculate.
 
         This can be used to postpone heavy calculations until you need to
@@ -611,7 +611,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
         If no calculate() is provided, this flag will be left unchanged.
 
-        @note just setting this flag will not make scene dirty and
+        @note: just setting this flag will not make scene dirty and
         evas_render() will have no effect. To do that, use
         evas_object_smart_changed(), that will automatically call this
         function with 1 as parameter.
@@ -622,7 +622,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
     def need_recalculate_get(self):
         """Get the current value of need_recalculate flag.
 
-        @note this flag will be unset during the render phase, after
+        @note: this flag will be unset during the render phase, after
         calculate() is called if one is provided.  If no calculate()
         is provided, then the flag will be left unchanged after render
         phase.
@@ -721,7 +721,7 @@ cdef public class ClippedSmartObject(SmartObject) \
     @ivar clipper: the internal object used for clipping. You shouldn't
        mess with it.
 
-    @todo remove current code and wrap C version (now it's in evas).
+    @todo: remove current code and wrap C version (now it's in evas).
     """
     def __init__(self, Canvas canvas not None, **kargs):
         if type(self) is ClippedSmartObject:

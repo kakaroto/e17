@@ -481,7 +481,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 
         @parm: B{cancel=False} if True, will cancel preload request.
 
-        @see L{on_image_preloaded_add}
+        @see: L{on_image_preloaded_add}
         """
         evas_object_image_preload(self.obj, cancel)
 
