@@ -186,10 +186,20 @@ ActionclassCreate(const char *name, int global)
 }
 
 static void
-ActionclassDestroy(ActionClass * ac)
+ActionclassEmpty(ActionClass * ac)
 {
    int                 i;
 
+   for (i = 0; i < ac->num; i++)
+      ActionDestroy(ac->list[i]);
+   ac->num = 0;
+   _EFREE(ac->list);
+   _EFREE(ac->tooltipstring);
+}
+
+static void
+ActionclassDestroy(ActionClass * ac)
+{
    if (!ac)
       return;
 
@@ -202,11 +212,8 @@ ActionclassDestroy(ActionClass * ac)
 
    ecore_list_node_remove(aclass_list, ac);
 
-   for (i = 0; i < ac->num; i++)
-      ActionDestroy(ac->list[i]);
-   Efree(ac->list);
+   ActionclassEmpty(ac);
    Efree(ac->name);
-   Efree(ac->tooltipstring);
 
    Efree(ac);
    mode_action_destroy = 1;
@@ -302,19 +309,17 @@ AclassConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case ACLASS_NAME:
-	     ac = (ActionClass *) ecore_list_node_remove(aclass_list,
-							 ActionclassFind(s2));
-	     if (!ac)
-		ac = (ActionClass *) ecore_list_node_remove(aclass_list_global,
-							    ActionclassFindGlobal
-							    (s2));
+	     ac = ActionclassFindAny(s2);
 	     if (ac)
 	       {
 		  if (!strcmp(s2, "KEYBINDINGS"))
 		     Mode.keybinds_changed = 1;
-		  ActionclassDestroy(ac);
+		  ActionclassEmpty(ac);
 	       }
-	     ac = ActionclassCreate(s2, 0);
+	     else
+	       {
+		  ac = ActionclassCreate(s2, 0);
+	       }
 	     break;
 	  case CONFIG_TYPE:
 	  case ACLASS_TYPE:
@@ -712,16 +717,9 @@ AclassConfigLoad2(FILE * fs)
 	       }
 	     else
 	       {
-		  ac = (ActionClass *) ecore_list_node_remove(aclass_list,
-							      ActionclassFind
-							      (prm2));
-		  if (!ac)
-		     ac = (ActionClass *)
-			ecore_list_node_remove(aclass_list_global,
-					       ActionclassFindGlobal(prm2));
+		  ac = ActionclassFindAny(prm2);
 		  if (ac)
-		     ActionclassDestroy(ac);
-		  ac = NULL;
+		     ActionclassEmpty(ac);
 	       }
 
 	     if (!ac)
@@ -1269,13 +1267,11 @@ IPC_KeybindingsSet(const char *params)
 
    Mode.keybinds_changed = 1;
 
-   ac = (ActionClass *) ecore_list_node_remove(aclass_list_global,
-					       ActionclassFindGlobal
-					       ("KEYBINDINGS"));
+   ac = ActionclassFindGlobal("KEYBINDINGS");
    if (ac)
-      ActionclassDestroy(ac);
-
-   ac = ActionclassCreate("KEYBINDINGS", 1);
+      ActionclassEmpty(ac);
+   else
+      ac = ActionclassCreate("KEYBINDINGS", 1);
    if (!ac)
       return;
 
@@ -1382,8 +1378,7 @@ extern const EModule ModAclass;
 const EModule       ModAclass = {
    "aclass", "ac",
    AclassSighan,
-   {N_IPC_FUNCS, AclassIpcArray}
-   ,
+   {N_IPC_FUNCS, AclassIpcArray},
    {0, NULL}
 };
 
@@ -1403,8 +1398,8 @@ GrabButtonGrabs(Win win)
    for (j = 0; j < ac->num; j++)
      {
 	aa = ac->list[j];
-	if ((!aa) || ((aa->event != EVENT_MOUSE_DOWN)
-		      && (aa->event != EVENT_MOUSE_UP)))
+	if ((!aa) || ((aa->event != EVENT_MOUSE_DOWN) &&
+		      (aa->event != EVENT_MOUSE_UP)))
 	   continue;
 
 	mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
