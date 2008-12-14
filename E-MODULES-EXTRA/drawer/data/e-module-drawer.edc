@@ -1166,6 +1166,11 @@ target: "glow";
 	    source: "event";
 	    action: STATE_SET "selected" 0.0;
 	    MOUSE_IN_TARGETS
+	    after: "item_out_emit";
+	 }
+	 program {
+	    name: "item_out_emit";
+	    action: SIGNAL_EMIT "e,action,deselect" "drawer";
 	    after: "item_out_after";
 	 }
 	 program {

@@ -60,6 +60,7 @@ static int _list_scroll_animator(void *data);
 static void _list_cb_list_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static int  _list_sort_by_category_cb(const void *d1, const void *d2);
 static void _list_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void _list_entry_deselect_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_event_activate_free(void *data __UNUSED__, void *event);
 
@@ -386,6 +387,8 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    edje_object_signal_callback_add(e->o_holder, "e,action,select", "drawer", 
 				   _list_entry_select_cb, e);
+   edje_object_signal_callback_add(e->o_holder, "e,action,deselect", "drawer", 
+				   _list_entry_deselect_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
 				   _list_entry_activate_cb, e);
 
@@ -420,6 +423,8 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    edje_object_signal_callback_add(e->o_holder, "e,action,select", "drawer", 
 				   _list_entry_select_cb, e);
+   edje_object_signal_callback_add(e->o_holder, "e,action,deselect", "drawer", 
+				   _list_entry_deselect_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
 				   _list_entry_activate_cb, e);
 
@@ -613,6 +618,18 @@ _list_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSE
    si = e->si;
    edje_object_part_text_set(inst->o_con, "e.text.label", si->label);
    edje_object_part_text_set(inst->o_con, "e.text.description", si->description);
+}
+
+static void
+_list_entry_deselect_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Entry *e = NULL;
+   Instance *inst = NULL;
+
+   e = data;
+   inst = e->inst;
+   edje_object_part_text_set(inst->o_con, "e.text.label", NULL);
+   edje_object_part_text_set(inst->o_con, "e.text.description", NULL);
 }
 
 static void
