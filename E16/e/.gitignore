@@ -36,6 +36,11 @@ m4/progtest.m4
 m4/stdint_h.m4
 m4/uintmax_t.m4
 m4/ulonglong.m4
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
 missing
 mkinstalldirs
 po/Makefile.in.in
