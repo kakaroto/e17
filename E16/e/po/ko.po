@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-27 21:16+0100\n"
+"POT-Creation-Date: 2008-12-14 17:31+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:208 src/backgrounds.c:234 src/borders.c:640 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:333 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -178,7 +178,7 @@ msgid "Attention !!!"
 msgstr "주목 !!!"
 
 #: src/alert.c:583 src/dialog.c:843 src/dialog.c:2033 src/events.c:87
-#: src/setup.c:157 src/sound.c:218
+#: src/setup.c:157 src/sound.c:302
 msgid "OK"
 msgstr "확인"
 
@@ -2083,11 +2083,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "스냅 파일 저장 오류\n"
 
-#: src/sound.c:139
+#: src/sound.c:205
 msgid "Error finding sound file"
 msgstr "사운드 파일 찾기 오류"
 
-#: src/sound.c:140
+#: src/sound.c:206
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2102,11 +2102,11 @@ msgstr ""
 "인라이튼먼트는 동작을 계속할 것입니다만\n"
 "당신의 환경설정을 확인해 보시기 바랍니다.\n"
 
-#: src/sound.c:218
+#: src/sound.c:302
 msgid "Error initialising sound"
 msgstr "사운드 초기화 오류"
 
-#: src/sound.c:219
+#: src/sound.c:303
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2116,19 +2116,19 @@ msgstr ""
 "통신 오류가 발생했습니다. 오디오는 지금부터 사용되지\n"
 "않을 것입니다.\n"
 
-#: src/sound.c:366
+#: src/sound.c:450
 msgid "Enable sounds"
 msgstr "사운드 사용"
 
-#: src/sound.c:372
+#: src/sound.c:456
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:373
+#: src/sound.c:457
 msgid "Audio Settings"
 msgstr "오디오 설정"
 
-#: src/sound.c:376
+#: src/sound.c:460
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

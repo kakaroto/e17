@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-27 21:16+0100\n"
+"POT-Creation-Date: 2008-12-14 17:31+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -33,7 +33,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:208 src/backgrounds.c:234 src/borders.c:640 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:333 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -162,7 +162,7 @@ msgid "Attention !!!"
 msgstr "Dikkat !!!"
 
 #: src/alert.c:583 src/dialog.c:843 src/dialog.c:2033 src/events.c:87
-#: src/setup.c:157 src/sound.c:218
+#: src/setup.c:157 src/sound.c:302
 msgid "OK"
 msgstr "Oldu"
 
@@ -2086,11 +2086,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Yakalam dosyasýný kaydederken hata oldu\n"
 
-#: src/sound.c:139
+#: src/sound.c:205
 msgid "Error finding sound file"
 msgstr "Ses dosyasýný ararken hata oldu"
 
-#: src/sound.c:140
+#: src/sound.c:206
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2105,11 +2105,11 @@ msgstr ""
 ", fakat sen ayar dosyalarýný bir gözden \n"
 "geçirmek istersin ( herhalde ) .\n"
 
-#: src/sound.c:218
+#: src/sound.c:302
 msgid "Error initialising sound"
 msgstr "Sesi baþlatýrken hata oldu"
 
-#: src/sound.c:219
+#: src/sound.c:303
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2119,19 +2119,19 @@ msgstr ""
 "E ses sunucusuyla iletiþim kurarken (\"Esound\") hata oldu .\n"
 "Ses kapatýlcaktýr .\n"
 
-#: src/sound.c:366
+#: src/sound.c:450
 msgid "Enable sounds"
 msgstr "Sesi aç"
 
-#: src/sound.c:372
+#: src/sound.c:456
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:373
+#: src/sound.c:457
 msgid "Audio Settings"
 msgstr "Ses ayarlarý"
 
-#: src/sound.c:376
+#: src/sound.c:460
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
