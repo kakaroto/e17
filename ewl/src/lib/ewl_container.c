@@ -457,7 +457,8 @@ ewl_container_child_count_get_helper(Ewl_Container *c, int skip)
         ecore_dlist_first_goto(container->children);
         while ((child = ecore_dlist_next(container->children)))
         {
-                if (skip && ewl_widget_internal_is(child)) continue;
+                if (skip && ewl_widget_internal_is(child))
+                        continue;
                 count++;
         }
 
