@@ -53,6 +53,8 @@ static E_Config_DD *conf_edd = NULL;
 static E_Action *act = NULL;
 E_Module *ss_mod = NULL;
 Config *ss_cfg = NULL;
+static int aspect_width = 1;
+static int aspect_height = 1;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -196,6 +198,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				"modules/screenshot/main"))
      edje_object_file_set(inst->o_base, buf, "modules/screenshot/main");
 
+   // respect theme aspect, but ignore Evas_Aspect_Control
+   evas_object_size_hint_aspect_get(inst->o_base, NULL, &aspect_width, 
+                                    &aspect_height);
+
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_base);
    inst->gcc->data = inst;
 
@@ -238,7 +244,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 static void 
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
 {
-   e_gadcon_client_aspect_set(gcc, 16, 16);
+   e_gadcon_client_aspect_set(gcc, aspect_width, aspect_height);
    e_gadcon_client_min_size_set(gcc, 16, 16);
 }
 
@@ -266,7 +272,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
    char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
-	    eina_list_count(instances));
+            eina_list_count(instances));
    return strdup(buf);
 }
 
@@ -683,6 +689,11 @@ _cb_timer(void *data)
    char buf[256];
 
    if (!(inst = data)) return 0;
+
+   // a count down timer should never be less zero, reset timer in that case
+   if ((ss_cfg->delay - inst->counter) < 0)
+      inst->counter = 0;
+
    snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
    edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
    if ((ss_cfg->delay - inst->counter) == 0) 
