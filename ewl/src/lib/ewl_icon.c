@@ -211,17 +211,20 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->image)
+        {
                 ewl_widget_destroy(icon->image);
+                icon->image = NULL;
+        }
 
         img = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(img), file, key);
 
         if (icon->thumbnailing)
-        {
                 icon->image = ewl_image_thumbnail_get(EWL_IMAGE(img));
+
+        if (icon->image)
                 ewl_callback_append(icon->image, EWL_CALLBACK_VALUE_CHANGED,
                                         ewl_icon_cb_thumb_value_changed, icon);
-        }
         else
                 icon->image = img;
 
