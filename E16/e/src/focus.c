@@ -416,7 +416,7 @@ doFocusToEwin(EWin * ewin, int why)
 	break;
      }
 
-   SoundPlay("SOUND_FOCUS_SET");
+   SoundPlay(SOUND_FOCUS_SET);
  done:
 
    ClickGrabsUpdate();
@@ -838,7 +838,7 @@ const DialogDef     DlgFocus = {
    "CONFIGURE_FOCUS",
    N_("Focus"),
    N_("Focus Settings"),
-   "SOUND_SETTINGS_FOCUS",
+   SOUND_SETTINGS_FOCUS,
    "pix/focus.png",
    N_("Enlightenment Focus\n" "Settings Dialog\n"),
    _DlgFillFocus,

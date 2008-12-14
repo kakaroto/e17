@@ -389,7 +389,7 @@ HandleEvent(XEvent * ev)
 	break;
 
      case ButtonPress:		/*  4 */
-	SoundPlay("SOUND_BUTTON_CLICK");
+	SoundPlay(SOUND_BUTTON_CLICK);
 
 	Mode.events.double_click =
 	   ((ev->xbutton.time - Mode.events.last_btime < DOUBLE_CLICK_TIME) &&
@@ -402,7 +402,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.last_button = ev->xbutton.button;
 	break;
      case ButtonRelease:	/*  5 */
-	SoundPlay("SOUND_BUTTON_RAISE");
+	SoundPlay(SOUND_BUTTON_RAISE);
 	break;
      }
 

@@ -58,7 +58,7 @@ static const DialogDef DlgAbout = {
    "ABOUT_ENLIGHTENMENT",
    NULL,
    NULL,
-   NULL,
+   SOUND_NONE,
    NULL,
    NULL,
    _DlgFillAbout,

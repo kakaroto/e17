@@ -28,6 +28,9 @@
 #include "emodule.h"
 #include "settings.h"
 #include "sound.h"
+#include "sounds.h"
+
+#define N_SOUNDS (SOUND_NOT_USED - 1)
 
 typedef struct {
    char               *name;
@@ -40,6 +43,7 @@ typedef struct {
 static struct {
    char                enable;
    char               *theme;
+   unsigned int        mask1, mask2;
 } Conf_sound;
 
 static struct {
@@ -64,6 +68,68 @@ static const SoundOps *ops = &SoundOps_pa;
 #endif
 
 static void         _SoundConfigLoad(void);
+
+static const char  *const sound_names[N_SOUNDS] = {
+   "SOUND_ALERT",		/*  0 0x00000001 */
+   "SOUND_BUTTON_CLICK",
+   "SOUND_BUTTON_RAISE",
+   "SOUND_DEICONIFY",
+   "SOUND_DESKTOP_LOWER",	/*  4 0x00000010 */
+   "SOUND_DESKTOP_RAISE",
+   "SOUND_DESKTOP_SHUT",
+   "SOUND_ERROR_IPC",
+   "SOUND_EXIT",		/*  8 0x00000100 */
+   "SOUND_FOCUS_SET",
+   "SOUND_ICONIFY",
+   "SOUND_INSERT_KEYS",
+   "SOUND_LOGOUT",		/* 12 0x00001000 */
+   "SOUND_LOWER",
+   "SOUND_MENU_SHOW",
+   "SOUND_MOVE_AREA_DOWN",
+   "SOUND_MOVE_AREA_LEFT",	/* 16 0x00010000 */
+   "SOUND_MOVE_AREA_RIGHT",
+   "SOUND_MOVE_AREA_UP",
+   "SOUND_MOVE_RESIST",
+   "SOUND_MOVE_START",		/* 20 0x00100000 */
+   "SOUND_MOVE_STOP",
+   "SOUND_RAISE",
+   "SOUND_RESIZE_START",
+   "SOUND_RESIZE_STOP",		/* 24 0x01000000 */
+   "SOUND_SCANNING",
+   "SOUND_SETTINGS_ACTIVE",
+   "SOUND_SETTINGS_ALL",
+   "SOUND_SETTINGS_AREA",	/* 28 0x10000000 */
+   "SOUND_SETTINGS_AUDIO",
+   "SOUND_SETTINGS_AUTORAISE",
+   "SOUND_SETTINGS_BG",
+   "SOUND_SETTINGS_COMPOSITE",	/*  0 0x00000001 */
+   "SOUND_SETTINGS_DESKTOPS",
+   "SOUND_SETTINGS_FOCUS",
+   "SOUND_SETTINGS_FX",
+   "SOUND_SETTINGS_GROUP",	/*  4 0x00000010 */
+   "SOUND_SETTINGS_ICONBOX",
+   "SOUND_SETTINGS_MENUS",
+   "SOUND_SETTINGS_MISCELLANEOUS",
+   "SOUND_SETTINGS_MOVERESIZE",	/*  8 0x00000100 */
+   "SOUND_SETTINGS_PAGER",
+   "SOUND_SETTINGS_PLACEMENT",
+   "SOUND_SETTINGS_SESSION",
+   "SOUND_SETTINGS_TOOLTIPS",	/* 12 0x00001000 */
+   "SOUND_SETTINGS_TRANS",
+   "SOUND_SHADE",
+   "SOUND_SLIDEOUT_SHOW",
+   "SOUND_STARTUP",		/* 16 0x00010000 */
+   "SOUND_UNSHADE",
+   "SOUND_WAIT",
+   "SOUND_WINDOW_BORDER_CHANGE",
+   "SOUND_WINDOW_CHANGE_LAYER_DOWN",	/* 20 0x00100000 */
+   "SOUND_WINDOW_CHANGE_LAYER_UP",
+   "SOUND_WINDOW_CLOSE",
+   "SOUND_WINDOW_SLIDE",
+   "SOUND_WINDOW_SLIDE_END",	/* 24 0x01000000 */
+   "SOUND_WINDOW_STICK",
+   "SOUND_WINDOW_UNSTICK",
+};
 
 static void
 _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
@@ -162,8 +228,8 @@ SclassFind(const char *name)
    return (SoundClass *) ecore_list_find(sound_list, _SclassMatchName, name);
 }
 
-void
-SoundPlay(const char *name)
+static void
+_SoundPlayByName(const char *name)
 {
    SoundClass         *sclass;
 
@@ -179,6 +245,24 @@ SoundPlay(const char *name)
       Eprintf("%s: %s file=%s\n", "SclassApply", name, SC_NAME(sclass));
 
    SclassApply(sclass);
+}
+
+#define _SoundMasked(i) \
+    (((i) <= 32) ? Conf_sound.mask1 & (1 << ((i) - 1)) : \
+                   Conf_sound.mask2 & (1 << ((i) - 1)))
+void
+SoundPlay(int sound)
+{
+   if (!Conf_sound.enable)
+      return;
+
+   if (sound <= 0 || sound > N_SOUNDS)
+      return;
+
+   if (_SoundMasked(sound))
+      return;
+
+   _SoundPlayByName(sound_names[sound - 1]);
 }
 
 static int
@@ -322,7 +406,7 @@ SoundSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_START:
 	if (!Conf_sound.enable)
 	   break;
-	SoundPlay("SOUND_STARTUP");
+	SoundPlay(SOUND_STARTUP);
 	SoundFree("SOUND_STARTUP");
 	break;
      case ESIGNAL_EXIT:
@@ -371,7 +455,7 @@ const DialogDef     DlgSound = {
    "CONFIGURE_AUDIO",
    N_("Sound"),
    N_("Audio Settings"),
-   "SOUND_SETTINGS_AUDIO",
+   SOUND_SETTINGS_AUDIO,
    "pix/sound.png",
    N_("Enlightenment Audio\n" "Settings Dialog\n"),
    _DlgFillSound,
@@ -424,7 +508,7 @@ SoundIpc(const char *params)
      }
    else if (!strncmp(cmd, "play", 2))
      {
-	SoundPlay(prm);
+	_SoundPlayByName(prm);
      }
 }
 
@@ -445,6 +529,8 @@ static const IpcItem SoundIpcArray[] = {
 static const CfgItem SoundCfgItems[] = {
    CFG_ITEM_BOOL(Conf_sound, enable, 0),
    CFG_FUNC_STR(Conf_sound, theme, _SoundThemeChange),
+   CFG_ITEM_HEX(Conf_sound, mask1, 0),
+   CFG_ITEM_HEX(Conf_sound, mask2, 0),
 };
 #define N_CFG_ITEMS (sizeof(SoundCfgItems)/sizeof(CfgItem))
 

@@ -1457,7 +1457,7 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
      {
 	DeskGoto(p->dsk);
 	if (p->dsk != DesksGetCurrent())
-	   SoundPlay("SOUND_DESKTOP_SHUT");
+	   SoundPlay(SOUND_DESKTOP_SHUT);
 	DeskCurrentGotoArea(px / p->dw, py / p->dh);
      }
    else if (button == Conf_pagers.win_button)
@@ -1992,7 +1992,7 @@ const DialogDef     DlgPagers = {
    "CONFIGURE_PAGER",
    N_("Pagers"),
    N_("Pager Settings"),
-   "SOUND_SETTINGS_PAGER",
+   SOUND_SETTINGS_PAGER,
    "pix/pager.png",
    N_("Enlightenment Desktop & Area\n" "Pager Settings Dialog\n"),
    _DlgFillPagers,

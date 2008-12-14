@@ -699,7 +699,7 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
      }
    else if (!strcmp(type, "dirscan"))
      {
-	SoundPlay("SOUND_SCANNING");
+	SoundPlay(SOUND_SCANNING);
 	m = MenuCreateFromDirectory(name, NULL, ms, prm);
      }
    else if (!strcmp(type, "borders"))

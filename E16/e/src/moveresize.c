@@ -90,7 +90,7 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
 
    EventsGetXY(&cx, &cy);
 
-   SoundPlay("SOUND_MOVE_START");
+   SoundPlay(SOUND_MOVE_START);
 
    GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
@@ -144,7 +144,7 @@ ActionMoveEnd(EWin * ewin)
 
    GrabPointerRelease();
 
-   SoundPlay("SOUND_MOVE_STOP");
+   SoundPlay(SOUND_MOVE_STOP);
 
    ewin = Mode_mr.ewin;
    if (!ewin)
@@ -299,7 +299,7 @@ ActionResizeStart(EWin * ewin, int hv)
 
    EventsGetXY(&cx, &cy);
 
-   SoundPlay("SOUND_RESIZE_START");
+   SoundPlay(SOUND_RESIZE_START);
 
    if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
       Conf.movres.mode_resize = 0;
@@ -431,7 +431,7 @@ ActionResizeEnd(EWin * ewin)
 
    GrabPointerRelease();
 
-   SoundPlay("SOUND_RESIZE_STOP");
+   SoundPlay(SOUND_RESIZE_STOP);
 
    ewin = Mode_mr.ewin;
    if (!ewin)
@@ -847,7 +847,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 
    firstlast = 0;
    FocusEnable(0);
-   SoundPlay("SOUND_WINDOW_SLIDE");
+   SoundPlay(SOUND_WINDOW_SLIDE);
 
    Mode_mr.grab_server = _NeedServerGrab(mode);
    if (Mode_mr.grab_server)
@@ -893,5 +893,5 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    if (Mode_mr.grab_server)
       EUngrabServer();
 
-   SoundPlay("SOUND_WINDOW_SLIDE_END");
+   SoundPlay(SOUND_WINDOW_SLIDE_END);
 }

@@ -274,7 +274,7 @@ const DialogDef     DlgThemeTrans = {
    "CONFIGURE_TRANS",
    N_("Transparency"),
    N_("Selective Transparency Settings"),
-   "SOUND_SETTINGS_TRANS",
+   SOUND_SETTINGS_TRANS,
    "pix/tips.png",
    N_("Enlightenment Selective Transparency\n" "Settings Dialog\n"),
    _DlgFillThemeTrans,

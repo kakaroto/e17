@@ -486,7 +486,7 @@ IPC_Slideout(const char *params)
    if (!s)
       return;
 
-   SoundPlay("SOUND_SLIDEOUT_SHOW");
+   SoundPlay(SOUND_SLIDEOUT_SHOW);
    SlideoutShow(s, GetContextEwin(), Mode.context_win);
 }
 

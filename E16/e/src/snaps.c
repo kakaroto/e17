@@ -918,7 +918,7 @@ static const DialogDef DlgSnap = {
    NULL,
    NULL,
    N_("Remembered Application Attributes"),
-   NULL,
+   SOUND_NONE,
    "pix/snapshots.png",
    N_("Select the attributes of this\n"
       "window you wish to Remember\n" "from now on\n"),
@@ -1066,7 +1066,7 @@ const DialogDef     DlgRemember = {
    "CONFIGURE_PAGER",
    N_("Remember"),
    N_("Remembered Windows Settings"),
-   "SOUND_SETTINGS_PAGER",
+   SOUND_SETTINGS_PAGER,
    "pix/snapshots.png",
    N_("Enlightenment Remembered\n" "Windows Settings Dialog\n"),
    _DlgFillRemember,

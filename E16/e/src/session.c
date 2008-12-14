@@ -527,7 +527,7 @@ doSMExit(int mode, const char *params)
    switch (mode)
      {
      case EEXIT_EXEC:
-	SoundPlay("SOUND_EXIT");
+	SoundPlay(SOUND_EXIT);
 	EDisplayClose();
 
 	Esnprintf(s, sizeof(s), "exec %s", params);
@@ -539,7 +539,7 @@ doSMExit(int mode, const char *params)
      case EEXIT_THEME:
 	ss = params;
      case EEXIT_RESTART:
-	SoundPlay("SOUND_WAIT");
+	SoundPlay(SOUND_WAIT);
 #ifdef USE_EXT_INIT_WIN
 	if (disp && !Mode.wm.window)
 	   new_init_win_ext = ExtInitWinCreate();
@@ -575,7 +575,7 @@ doSMExit(int mode, const char *params)
      }
 
    restarting = False;
-   SoundPlay("SOUND_EXIT");
+   SoundPlay(SOUND_EXIT);
    EExit(0);
 }
 
@@ -636,7 +636,7 @@ SessionLogoutConfirm(void)
    d = DialogFind("LOGOUT_DIALOG");
    if (!d)
      {
-	SoundPlay("SOUND_LOGOUT");
+	SoundPlay(SOUND_LOGOUT);
 	d = DialogCreate("LOGOUT_DIALOG");
 	table = DialogInitItem(d);
 	DialogSetTitle(d, _("Are you sure?"));
@@ -807,7 +807,7 @@ const DialogDef     DlgSession = {
    "CONFIGURE_SESSION",
    N_("Session"),
    N_("Session Settings"),
-   "SOUND_SETTINGS_SESSION",
+   SOUND_SETTINGS_SESSION,
    "pix/miscellaneous.png",
    N_("Enlightenment Session\n" "Settings Dialog\n"),
    _DlgFillSession,

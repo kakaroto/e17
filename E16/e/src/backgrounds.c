@@ -1716,7 +1716,7 @@ CB_BGScan(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
    int                 num;
 
-   SoundPlay("SOUND_WAIT");
+   SoundPlay(SOUND_WAIT);
    ScanBackgroundMenu();
 
    num = ecore_list_count(bg_list);
@@ -2221,7 +2221,7 @@ const DialogDef     DlgBackground = {
    "CONFIGURE_BG",
    N_("Background"),
    N_("Desktop Background Settings"),
-   "SOUND_SETTINGS_BG",
+   SOUND_SETTINGS_BG,
    "pix/bg.png",
    N_("Enlightenment Desktop\n" "Background Settings Dialog\n"),
    _DlgFillBackground,

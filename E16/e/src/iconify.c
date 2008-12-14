@@ -302,7 +302,7 @@ IconboxesEwinIconify(EWin * ewin)
    if (!ct)
       return;
 
-   SoundPlay("SOUND_ICONIFY");
+   SoundPlay(SOUND_ICONIFY);
 
    if (EoIsShown(ewin) && ct->anim_mode && !ewin->state.showingdesk)
       IB_Animate(ct, 1, ewin);
@@ -319,7 +319,7 @@ IconboxesEwinDeIconify(EWin * ewin)
    if (!ct)
       return;
 
-   SoundPlay("SOUND_DEICONIFY");
+   SoundPlay(SOUND_DEICONIFY);
 
    if (ct->anim_mode && !ewin->state.showingdesk)
       IB_Animate(ct, 0, ewin);

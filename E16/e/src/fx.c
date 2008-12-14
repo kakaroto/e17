@@ -949,7 +949,7 @@ const DialogDef     DlgFx = {
    "CONFIGURE_FX",
    N_("FX"),
    N_("Special FX Settings"),
-   "SOUND_SETTINGS_FX",
+   SOUND_SETTINGS_FX,
    "pix/fx.png",
    N_("Enlightenment Special Effects\n" "Settings Dialog\n"),
    _DlgFillFx,

@@ -61,7 +61,7 @@ typedef struct {
    const char         *name;
    const char         *label;
    const char         *title;
-   const char         *sound;
+   int                 sound;
    const char         *header_image;
    const char         *header_text;
    void                (*fill) (Dialog * d, DItem * table, void *data);

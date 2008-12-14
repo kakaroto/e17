@@ -675,7 +675,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      {
 	if (!last_res)
 	  {
-	     /* SoundPlay("SOUND_MOVE_RESIST"); */
+	     /* SoundPlay(SOUND_MOVE_RESIST); */
 	     last_res = 1;
 	  }
      }

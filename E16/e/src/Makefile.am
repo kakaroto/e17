@@ -92,6 +92,7 @@ e16_SOURCES = \
 	slideout.c		\
 	snaps.c                 snaps.h			\
 	sound.c			sound.h			\
+	sounds.h		\
 	stacking.c		\
 	startup.c		\
 	string.c		\

@@ -642,7 +642,7 @@ DialogShowSimpleWithName(const DialogDef * dd, const char *name, void *data)
    d = DialogFind(name);
    if (d)
      {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	SoundPlay(SOUND_SETTINGS_ACTIVE);
 	DialogShow(d);
 	return;
      }

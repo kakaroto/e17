@@ -1376,7 +1376,7 @@ IPC_InsertKeys(const char *params, Client * c __UNUSED__)
    if (win == None)
       return;
 
-   SoundPlay("SOUND_INSERT_KEYS");
+   SoundPlay(SOUND_INSERT_KEYS);
    ev.window = win;
    for (i = 0; i < (int)strlen(s); i++)
      {

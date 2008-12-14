@@ -2095,7 +2095,7 @@ const DialogDef     DlgMenus = {
    "CONFIGURE_MENUS",
    N_("Menus"),
    N_("Menu Settings"),
-   "SOUND_SETTINGS_MENUS",
+   SOUND_SETTINGS_MENUS,
    "pix/place.png",
    N_("Enlightenment Menu\n" "Settings Dialog\n"),
    _DlgFillMenus,
@@ -2145,7 +2145,7 @@ MenusIpc(const char *params)
 	     Esnprintf(prm, sizeof(prm), "%s", p);
 	     p = NULL;
 	  }
-	SoundPlay("SOUND_MENU_SHOW");
+	SoundPlay(SOUND_MENU_SHOW);
 	MenusShowNamed(prm, p);
      }
 }

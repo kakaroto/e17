@@ -29,7 +29,7 @@
 #include "alert.h"
 #include "edebug.h"
 #include "lang.h"
-#include "sound.h"
+#include "sounds.h"
 #include "util.h"
 
 #include <X11/X.h>

@@ -31,7 +31,7 @@
 #include "alert.h"
 #include "lang.h"
 #include "session.h"
-#include "sound.h"
+#include "sounds.h"
 #include "util.h"
 
 #define ExTextExtents XmbTextExtents
@@ -187,7 +187,7 @@ ShowAlert(const char *title,
    XFontStruct       **font_struct_list_return;
    char              **font_name_list_return;
 
-   SoundPlay("SOUND_ALERT");
+   SoundPlay(SOUND_ALERT);
 
    if (!text)
       return;

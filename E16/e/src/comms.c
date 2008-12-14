@@ -241,7 +241,7 @@ ClientHandleComms(XClientMessageEvent * ev)
 		 _("Received Unknown Client Message.\n"
 		   "Client Name:    %s\n" "Client Version: %s\n"
 		   "Message Contents:\n\n" "%s\n"), s1, s2, s);
-	SoundPlay("SOUND_ERROR_IPC");
+	SoundPlay(SOUND_ERROR_IPC);
      }
 
  done:

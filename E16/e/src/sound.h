@@ -23,8 +23,6 @@
 #ifndef _SOUND_H_
 #define _SOUND_H_
 
-#include "config.h"
-
 typedef struct {
    unsigned int        channels;
    unsigned int        bit_per_sample;
@@ -42,13 +40,6 @@ typedef struct {
    void                (*SampleDestroy) (Sample * s);
    void                (*SamplePlay) (Sample * s);
 } SoundOps;
-
-/* sound.c */
-#if HAVE_SOUND
-void                SoundPlay(const char *name);
-#else
-#define             SoundPlay(name) do{}while(0)
-#endif
 
 int                 SoundSampleGetData(const char *file, SoundSampleData * ssd);
 

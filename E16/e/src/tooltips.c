@@ -886,7 +886,7 @@ const DialogDef     DlgTooltips = {
    "CONFIGURE_TOOLTIPS",
    N_("Tooltips"),
    N_("Tooltip Settings"),
-   "SOUND_SETTINGS_TOOLTIPS",
+   SOUND_SETTINGS_TOOLTIPS,
    "pix/tips.png",
    N_("Enlightenment Tooltip\n" "Settings Dialog\n"),
    _DlgFillTooltips,

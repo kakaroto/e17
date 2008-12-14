@@ -1609,13 +1609,13 @@ DeskCurrentGotoArea(int ax, int ay)
    dy = WinGetH(VROOT) * (ay - pay);
 
    if (dx < 0)
-      SoundPlay("SOUND_MOVE_AREA_LEFT");
+      SoundPlay(SOUND_MOVE_AREA_LEFT);
    else if (dx > 0)
-      SoundPlay("SOUND_MOVE_AREA_RIGHT");
+      SoundPlay(SOUND_MOVE_AREA_RIGHT);
    else if (dy < 0)
-      SoundPlay("SOUND_MOVE_AREA_UP");
+      SoundPlay(SOUND_MOVE_AREA_UP);
    else if (dy > 0)
-      SoundPlay("SOUND_MOVE_AREA_DOWN");
+      SoundPlay(SOUND_MOVE_AREA_DOWN);
 
    ActionsSuspend();
 
@@ -2376,7 +2376,7 @@ const DialogDef     DlgDesks = {
    "CONFIGURE_DESKTOPS",
    N_("Desks"),
    N_("Multiple Desktop Settings"),
-   "SOUND_SETTINGS_DESKTOPS",
+   SOUND_SETTINGS_DESKTOPS,
    "pix/desktops.png",
    N_("Enlightenment Multiple Desktop\n" "Settings Dialog\n"),
    _DlgFillDesks,
@@ -2546,7 +2546,7 @@ const DialogDef     DlgAreas = {
    "CONFIGURE_AREA",
    N_("Areas"),
    N_("Virtual Desktop Settings"),
-   "SOUND_SETTINGS_AREA",
+   SOUND_SETTINGS_AREA,
    "pix/areas.png",
    N_("Enlightenment Virtual Desktop\n" "Settings Dialog\n"),
    _DlgFillAreas,
@@ -2571,7 +2571,7 @@ DeskOpGoto(unsigned int desk)
    DeskGoto(dsk);
 
    if (DesksGetCurrent() != pd)
-      SoundPlay("SOUND_DESKTOP_SHUT");
+      SoundPlay(SOUND_DESKTOP_SHUT);
 }
 
 static void
@@ -2654,13 +2654,13 @@ DesksIpcDesk(const char *params)
    else if (!strncmp(cmd, "raise", 2))
      {
 	sscanf(prm, "%i", &desk);
-	SoundPlay("SOUND_DESKTOP_RAISE");
+	SoundPlay(SOUND_DESKTOP_RAISE);
 	DeskRaise(desk);
      }
    else if (!strncmp(cmd, "lower", 2))
      {
 	sscanf(prm, "%i", &desk);
-	SoundPlay("SOUND_DESKTOP_LOWER");
+	SoundPlay(SOUND_DESKTOP_LOWER);
 	DeskLower(desk);
      }
    else if (!strcmp(cmd, "drag"))

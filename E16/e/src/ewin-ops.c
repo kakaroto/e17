@@ -1417,7 +1417,7 @@ EwinOpClose(EWin * ewin, int source __UNUSED__)
    for (i = 0; i < num; i++)
      {
 	ICCCM_Delete(gwins[i]);
-	SoundPlay("SOUND_WINDOW_CLOSE");
+	SoundPlay(SOUND_WINDOW_CLOSE);
      }
    Efree(gwins);
 }
@@ -1425,7 +1425,7 @@ EwinOpClose(EWin * ewin, int source __UNUSED__)
 void
 EwinOpKill(EWin * ewin, int source __UNUSED__)
 {
-   SoundPlay("SOUND_WINDOW_CLOSE");
+   SoundPlay(SOUND_WINDOW_CLOSE);
    EwinKill(ewin);
 }
 
@@ -1435,7 +1435,7 @@ EwinOpRaise(EWin * ewin, int source __UNUSED__)
    EWin              **gwins = NULL;
    int                 i, num;
 
-   SoundPlay("SOUND_RAISE");
+   SoundPlay(SOUND_RAISE);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_RAISE,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
@@ -1449,7 +1449,7 @@ EwinOpLower(EWin * ewin, int source __UNUSED__)
    EWin              **gwins = NULL;
    int                 i, num;
 
-   SoundPlay("SOUND_LOWER");
+   SoundPlay(SOUND_LOWER);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_LOWER,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
@@ -1503,13 +1503,13 @@ EwinOpRaiseLower(EWin * ewin)
 
    if (!raise)
      {
-	SoundPlay("SOUND_LOWER");
+	SoundPlay(SOUND_LOWER);
 	for (j = 0; j < gnum; j++)
 	   EwinLower(gwins[j]);
      }
    else
      {
-	SoundPlay("SOUND_RAISE");
+	SoundPlay(SOUND_RAISE);
 	for (j = 0; j < gnum; j++)
 	   EwinRaise(gwins[j]);
      }
@@ -1533,13 +1533,13 @@ EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
 	if (EoIsSticky(gwins[i])
 	    && ((curr_group && !curr_group->cfg.mirror) || !on))
 	  {
-	     SoundPlay("SOUND_WINDOW_UNSTICK");
+	     SoundPlay(SOUND_WINDOW_UNSTICK);
 	     EwinUnStick(gwins[i]);
 	  }
 	else if (!EoIsSticky(gwins[i])
 		 && ((curr_group && !curr_group->cfg.mirror) || on))
 	  {
-	     SoundPlay("SOUND_WINDOW_STICK");
+	     SoundPlay(SOUND_WINDOW_STICK);
 	     EwinStick(gwins[i]);
 	  }
      }
@@ -1642,13 +1642,13 @@ EwinOpShade(EWin * ewin, int source __UNUSED__, int on)
 	if (gwins[i]->state.shaded
 	    && ((curr_group && !curr_group->cfg.mirror) || !on))
 	  {
-	     SoundPlay("SOUND_UNSHADE");
+	     SoundPlay(SOUND_UNSHADE);
 	     EwinUnShade(gwins[i]);
 	  }
 	else if (!gwins[i]->state.shaded
 		 && ((curr_group && !curr_group->cfg.mirror) || on))
 	  {
-	     SoundPlay("SOUND_SHADE");
+	     SoundPlay(SOUND_SHADE);
 	     EwinShade(gwins[i]);
 	  }
 	SnapshotEwinUpdate(gwins[i], SNAP_USE_SHADED);
@@ -1661,11 +1661,11 @@ EwinOpSetLayer(EWin * ewin, int source __UNUSED__, int layer)
 {
    if (EoGetLayer(ewin) > layer)
      {
-	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_DOWN");
+	SoundPlay(SOUND_WINDOW_CHANGE_LAYER_DOWN);
      }
    else if (EoGetLayer(ewin) < layer)
      {
-	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_UP");
+	SoundPlay(SOUND_WINDOW_CHANGE_LAYER_UP);
      }
    EoSetLayer(ewin, layer);
    EwinRaise(ewin);
@@ -1710,7 +1710,7 @@ EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
      {
 	if (b != gwins[i]->border)
 	  {
-	     SoundPlay("SOUND_WINDOW_BORDER_CHANGE");
+	     SoundPlay(SOUND_WINDOW_BORDER_CHANGE);
 	     shadechange = 0;
 	     if (gwins[i]->state.shaded)
 	       {
