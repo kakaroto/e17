@@ -194,6 +194,7 @@ esmart_text_entry_buffer_backspace (Evas_Object * o)
   {
     pos = evas_string_char_prev_get(e->buf.text, len, &val);
     e->buf.text[pos] = 0; 
+    e->buf.index = pos;
   }
   
   esmart_text_entry_text_fix (o);
