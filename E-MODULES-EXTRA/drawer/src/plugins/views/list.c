@@ -104,7 +104,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
      }
 
-   if (inst->parent_id) eina_stringshare_del(inst->parent_id);
+   eina_stringshare_del(inst->parent_id);
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
 
@@ -215,7 +215,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	_list_item_pack_options(inst, e);
      }
    e_box_thaw(inst->o_box);
-   if (cat) eina_stringshare_del(cat);
+   eina_stringshare_del(cat);
    return inst->o_con;
 }
 
@@ -353,7 +353,7 @@ _list_containers_create(Instance *inst)
 	edje_object_file_set(inst->o_con, buf, group);
      }
 
-   if (group) eina_stringshare_del(group);
+   eina_stringshare_del(group);
    edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
    evas_object_show(inst->o_con);
 
@@ -655,6 +655,6 @@ _list_event_activate_free(void *data __UNUSED__, void *event)
    Drawer_Event_View_Activate *ev;
 
    ev = event;
-   if (ev->id) eina_stringshare_del(ev->id);
+   eina_stringshare_del(ev->id);
    free(ev);
 }

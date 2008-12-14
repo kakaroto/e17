@@ -139,9 +139,9 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
    _launcher_source_item_free(inst);
 
-   if (inst->description) eina_stringshare_del(inst->description);
-   if (inst->conf->id) eina_stringshare_del(inst->conf->id);
-   if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
+   eina_stringshare_del(inst->description);
+   eina_stringshare_del(inst->conf->id);
+   eina_stringshare_del(inst->conf->dir);
 
    while (inst->conf->ratings)
      {
@@ -152,7 +152,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 	inst->conf->ratings = eina_list_remove_list(
 	      inst->conf->ratings, inst->conf->ratings);
 
-	if (r->label) eina_stringshare_del(r->label);
+	eina_stringshare_del(r->label);
 
 	E_FREE(r);
      }
@@ -268,7 +268,7 @@ _launcher_description_create(Instance *inst)
 {
    char buf[1024];
 
-   if (inst->description) eina_stringshare_del(inst->description);
+   eina_stringshare_del(inst->description);
    snprintf(buf, sizeof(buf), D_("%s source"), inst->conf->dir);
    inst->description = eina_stringshare_add(buf);
 }
@@ -360,9 +360,9 @@ _launcher_source_item_free(Instance *inst)
 	
 	si = inst->items->data;
 	inst->items = eina_list_remove_list(inst->items, inst->items);
-	if (si->label) eina_stringshare_del(si->label);
-	if (si->description) eina_stringshare_del(si->description);
-	if (si->category) eina_stringshare_del(si->category);
+	eina_stringshare_del(si->label);
+	eina_stringshare_del(si->description);
+	eina_stringshare_del(si->category);
 
 	free(si);
      }
@@ -380,7 +380,7 @@ _launcher_event_update_free(void *data __UNUSED__, void *event)
    Drawer_Event_Source_Update *ev;
 
    ev = event;
-   if (ev->id) eina_stringshare_del(ev->id);
+   eina_stringshare_del(ev->id);
    free(ev);
 }
 
@@ -489,8 +489,7 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Drawer_Event_Source_Update *ev;
 
    inst = cfdata->inst;
-   if (cfdata->inst->conf->dir)
-     eina_stringshare_del(cfdata->inst->conf->dir);
+   eina_stringshare_del(cfdata->inst->conf->dir);
 
    cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
    cfdata->inst->conf->sort_rel = cfdata->sort_rel;

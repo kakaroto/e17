@@ -338,9 +338,9 @@ drawer_plugins_list_free(Eina_List *list)
 
    EINA_LIST_FOREACH(list, l, pi)
      {
-	if (pi->title) eina_stringshare_del(pi->title);
-	if (pi->name) eina_stringshare_del(pi->name);
-	if (pi->comment) eina_stringshare_del(pi->comment);
+	eina_stringshare_del(pi->title);
+	eina_stringshare_del(pi->name);
+	eina_stringshare_del(pi->comment);
      }
    eina_list_free(list);
 }
@@ -752,8 +752,8 @@ _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p)
    if (p->func.config_save)
      p->func.config_save(p);
    p->func.shutdown(p);
-   if (p->name) eina_stringshare_del(p->name);
-   if (p->dir) eina_stringshare_del(p->dir);
+   eina_stringshare_del(p->name);
+   eina_stringshare_del(p->dir);
    if (p->handle) dlclose(p->handle);
 
    if (inst->source == p)
@@ -1038,9 +1038,9 @@ _drawer_conf_free(void)
 static void
 _drawer_conf_item_free(Config_Item *ci)
 {
-   if (ci->id) eina_stringshare_del(ci->id);
-   if (ci->source) eina_stringshare_del(ci->source);
-   if (ci->view) eina_stringshare_del(ci->view);
+   eina_stringshare_del(ci->id);
+   eina_stringshare_del(ci->source);
+   eina_stringshare_del(ci->view);
    E_FREE(ci);
 }
 

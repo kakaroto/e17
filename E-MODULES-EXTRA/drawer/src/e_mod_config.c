@@ -129,8 +129,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int 
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   if (cfdata->ci->view) eina_stringshare_del(cfdata->ci->view);
-   if (cfdata->ci->source) eina_stringshare_del(cfdata->ci->source);
+   eina_stringshare_del(cfdata->ci->view);
+   eina_stringshare_del(cfdata->ci->source);
 
    if (strcmp(cfdata->ci->view, cfdata->view))
      drawer_plugin_load(cfdata->ci, DRAWER_VIEWS, cfdata->view);

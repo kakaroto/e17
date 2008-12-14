@@ -106,9 +106,9 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    if (inst->monitor)
      ecore_file_monitor_del(inst->monitor);
 
-   if (inst->description) eina_stringshare_del(inst->description);
-   if (inst->conf->id) eina_stringshare_del(inst->conf->id);
-   if (inst->conf->dir) eina_stringshare_del(inst->conf->dir);
+   eina_stringshare_del(inst->description);
+   eina_stringshare_del(inst->conf->id);
+   eina_stringshare_del(inst->conf->dir);
 
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_FREE(inst->conf);
@@ -194,7 +194,7 @@ _dirwatcher_description_create(Instance *inst)
    char path[4096];
    const char *homedir;
 
-   if (inst->description) eina_stringshare_del(inst->description);
+   eina_stringshare_del(inst->description);
    homedir = e_user_homedir_get();
    if (!(strncmp(inst->conf->dir, homedir, 4096)))
      snprintf(buf, sizeof(buf), D_("Home"));
@@ -217,9 +217,9 @@ _dirwatcher_source_items_free(Instance *inst)
 	
 	si = inst->items->data;
 	inst->items = eina_list_remove_list(inst->items, inst->items);
-	if (si->label) eina_stringshare_del(si->label);
-	if (si->description) eina_stringshare_del(si->description);
-	if (si->category) eina_stringshare_del(si->category);
+	eina_stringshare_del(si->label);
+	eina_stringshare_del(si->description);
+	eina_stringshare_del(si->category);
 
 	free(si);
      }
@@ -261,7 +261,7 @@ _dirwatcher_event_update_free(void *data __UNUSED__, void *event)
    Drawer_Event_Source_Update *ev;
 
    ev = event;
-   if (ev->id) eina_stringshare_del(ev->id);
+   eina_stringshare_del(ev->id);
    free(ev);
 }
 
@@ -362,8 +362,7 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    char *path;
 
    inst = cfdata->inst;
-   if (cfdata->inst->conf->dir)
-     eina_stringshare_del(cfdata->inst->conf->dir);
+   eina_stringshare_del(cfdata->inst->conf->dir);
 
    path = ecore_file_realpath(cfdata->dir);
    cfdata->inst->conf->dir = eina_stringshare_add(path);
