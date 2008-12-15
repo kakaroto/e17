@@ -257,6 +257,9 @@ ewl_widget_unrealize(Ewl_Widget *w)
 
         ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
         ewl_widget_visible_remove(w, EWL_FLAG_VISIBLE_REALIZED);
+        
+        if (VISIBLE(w))
+                ewl_container_child_hide_call(EWL_CONTAINER(w->parent), w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -299,7 +302,8 @@ ewl_widget_reveal(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Indicate a widget is obscured.
  */
-void ewl_widget_obscure(Ewl_Widget *w)
+void
+ewl_widget_obscure(Ewl_Widget *w)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
