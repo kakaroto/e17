@@ -213,7 +213,7 @@ esmart_text_entry_text_fix (Evas_Object * o)
 	  int i, len;
 	  char buf[e->buf.size];
 
-	  len = strlen (e->buf.text);
+	  len = evas_string_char_len_get (e->buf.text);
 	  memset (buf, 0, e->buf.size);
 	  for (i = 0; i < len; i++)
 	    buf[i] = '*';
