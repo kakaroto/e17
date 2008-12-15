@@ -165,6 +165,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         Evas_Engine_Info *info = NULL;
         Evas_Engine_Info_FB *fbinfo;
         Ewl_Object *o;
+        int w, h;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
@@ -187,7 +188,9 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         fbinfo->info.refresh = 0;
         fbinfo->info.rotation = 0;
         evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
-        ewl_object_geometry_request(EWL_OBJECT(win), 0, 0, 240, 320);
+
+        ecore_fb_size_get(&w, &h);
+        ewl_object_geometry_request(EWL_OBJECT(win), 0, 0, w, h);
 
         o = EWL_OBJECT(win);
         evas_engine_info_set(evas, info);
