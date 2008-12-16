@@ -1151,8 +1151,8 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
         {
                 Ewl_Tree_Expansions_List *exp;
 
-                exp = ecore_hash_get(tree->expansions, data);
-                if (!exp)
+                if (!tree->expansions || 
+                                !(exp = ecore_hash_get(tree->expansions, data)))
                         DRETURN_PTR(NULL, DLEVEL_STABLE);
 
                 c = exp->c;
