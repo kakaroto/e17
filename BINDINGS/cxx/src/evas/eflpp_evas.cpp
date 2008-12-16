@@ -205,6 +205,9 @@ EvasObject::EvasObject (Evas_Object *eo)
 void EvasObject::init (const char *name)
 {
     setName( name );
+  
+    // TODO: do this in a constructor?
+    mManaged = true;
 
     /* Set up magic object back link */
     evas_object_data_set( o, "obj_c++", this );
@@ -216,7 +219,11 @@ void EvasObject::init (const char *name)
 EvasObject::~EvasObject()
 {
     Dout( dc::notice, *this << " EvasObject::~EvasObject" );
-    evas_object_del( o );
+  
+    if( mManaged )
+    {
+        evas_object_del( o );
+    }
 }
 
 const char* EvasObject::name() const
@@ -228,6 +235,11 @@ const char* EvasObject::name() const
 void EvasObject::setName( const char* name )
 {
     evas_object_name_set( o, name );
+}
+
+const char* EvasObject::type () const
+{
+   return evas_object_type_get( o );
 }
 
 void EvasObject::move( const Point& point )

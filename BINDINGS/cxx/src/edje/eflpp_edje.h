@@ -9,6 +9,7 @@
 #include <eflpp_evas.h>
 #include <eflpp_evasutils.h>
 #include <eflpp_common.h>
+#include <eflpp_countedptr.h>
 
 /* EFL */
 #include <Edje.h>
@@ -106,9 +107,9 @@ class EdjePart
     void swallow( EvasObject* );
     void unswallow( EvasObject* );
     
-    Evas_Object* swallow();
+    CountedPtr <EvasObject> swallow();
     
-    const EvasObject* getObject ( const char* name );
+    //const EvasObject* getObject ( const char* name );
 
   private:
     EvasEdje* _parent;
@@ -150,11 +151,6 @@ class EvasEdje : public EvasObject
     EvasEdje( EvasCanvas* canvas, const char* name = 0 );
     EvasEdje( const char* filename, const char* groupname, EvasCanvas* canvas, const char* name = 0 );
     EvasEdje( int x, int y, const char* filename, const char* groupname, EvasCanvas* canvas, const char* name = 0 );
-    
-    /*!
-     *  Connect to existing Evas_Object
-     */
-    //EvasEdje( Evas_Object* object, EvasCanvas* canvas, const char* name = 0 );
     
     ~EvasEdje();
 
@@ -208,6 +204,8 @@ class EvasEdje : public EvasObject
     /* signals and slots */
     void connect( const char* emission, const char* source, const EdjeSignalSlot& slot );
     void emit( const char* emission, const char* source );
+    
+    static EvasEdje *wrap( Evas_Object* o );
 
   protected:
     mutable EdjePartMap _parts;
@@ -218,6 +216,9 @@ class EvasEdje : public EvasObject
 
     EvasEdje();
     EvasEdje( const EvasEdje& );
+
+    EvasEdje( Evas_Object* object );
+    
     bool operator=( const EvasEdje& );
     bool operator==( const EvasEdje& );
 };

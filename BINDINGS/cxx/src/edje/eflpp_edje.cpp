@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <cassert>
+#include <string>
 
-using std::cerr;
-using std::endl;
+using namespace std;
 
 namespace efl {
 
@@ -55,14 +55,13 @@ EvasEdje::EvasEdje( int x, int y, const char* filename, const char* groupname, E
 #endif
     setFile( filename, groupname );
     move( x, y );
-    //_size = size();
-    //resize( _size );
 }
 
-/*EvasEdje::EvasEdje( Evas_Object* object, EvasCanvas* canvas, const char* name )
+EvasEdje::EvasEdje( Evas_Object* object)
 {
   o = object;
-}*/
+  mManaged = false;
+}
 
 bool EvasEdje::setFile( const char* filename, const char* groupname )
 {
@@ -143,6 +142,11 @@ void EvasEdje::_edje_signal_handler_callback( void *data, Evas_Object *obj, cons
     else Dout( dc::warning, "EvasEdje::_edje_signal_handler_callback() - got callback without valid signal" );
 }
 
+EvasEdje* EvasEdje::wrap( Evas_Object* o )
+{
+    return new EvasEdje( o );
+}
+
 //===============================================================================================
 // EdjePart
 //===============================================================================================
@@ -187,15 +191,24 @@ void EdjePart::unswallow( EvasObject* object )
     edje_object_part_unswallow( _parent->obj(), object->obj() );
 }
 
-Evas_Object* EdjePart::swallow()
+CountedPtr <EvasObject> EdjePart::swallow()
 {
-    return edje_object_part_swallow_get( _parent->obj(), _partname );//, _parent->canvas ();
+    Evas_Object *eo = edje_object_part_swallow_get( _parent->obj(), _partname );
+    const char *t = evas_object_type_get( eo );
+    EvasObject *ret_o = NULL;
+  
+    if (t == string ("edje"))
+    {
+        ret_o = EvasEdje::wrap (eo);
+    }
+  
+    return CountedPtr <EvasObject> (ret_o);
 }
 
-const EvasObject* EdjePart::getObject ( const char* name )
+/*const EvasObject* EdjePart::getObject ( const char* name )
 {
   return EvasObject::objectLink( edje_object_part_object_get( static_cast <const Evas_Object*> (_parent->obj()), name ) );
-}
+}*/
 
 
 } // end namespace efl

@@ -110,6 +110,7 @@ class EvasObject
   friend class EdjePart;
 
   protected:
+    EvasObject () {}
     // construction/destruction
     //EvasObject( EvasCanvas* canvas,
     //        const char* name = "(null)" );
@@ -119,7 +120,7 @@ class EvasObject
      *  Construct from existing Evas_Object
      */
     EvasObject (Evas_Object *eo);
-    EvasObject () {}
+
     
     virtual ~EvasObject();
     bool operator==(const EvasObject& rhs) { return rhs.o == o; };
@@ -149,6 +150,8 @@ class EvasObject
     /* Name */
     const char* name() const;
     void setName( const char* name );
+    
+    const char* type () const;
 
     /* Geometry */
     virtual const Size size() const;
@@ -205,7 +208,7 @@ class EvasObject
 
   protected:
     Evas_Object* o;
-    //EvasCanvas* _canvas;
+    bool mManaged;
 
     void init (const char *name);
 

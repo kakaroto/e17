@@ -17,6 +17,7 @@ libeflpp_include_DATA = \
 	eflpp_common.h\
 	eflpp_debug.h\
 	eflpp_debug_internal.h\
-	eflpp_sys.h
+	eflpp_sys.h\
+	eflpp_countedptr.h
 
 EXTRA_DIST = $(libeflpp_include_DATA)
