@@ -258,7 +258,7 @@ ewl_widget_unrealize(Ewl_Widget *w)
         ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
         ewl_widget_visible_remove(w, EWL_FLAG_VISIBLE_REALIZED);
         
-        if (VISIBLE(w))
+        if (VISIBLE(w) && w->parent)
                 ewl_container_child_hide_call(EWL_CONTAINER(w->parent), w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2836,6 +2836,10 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 int p_l, p_r, p_t, p_b;
                 int l, r, t, b;
 
+                printf("**********\n\n\tunrealize with theme_object\n"
+                       "this seems to be dead code, please report when"
+                       "you see these lines"         
+                       "***********\n\n");
                 ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
 
                 ewl_object_insets_get(EWL_OBJECT(w), &i_l, &i_r, &i_t, &i_b);
