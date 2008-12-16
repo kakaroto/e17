@@ -81,7 +81,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    Evas_Object *o = NULL, *of = NULL, *ob = NULL;
    E_Radio_Group *rg;
    char path[128], *disk;
-   int pos = -1;
+   int pos = -1, disk_found = 0;
 
    ci = cfd->data;
 
@@ -95,16 +95,27 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      {
 		while ((disk = ecore_list_next(cfdata->disks)))
 		  {
-			 pos++;
+		     pos++;
 
 			 snprintf (path, sizeof (path), "/sys/block/%s/device", disk);
 			 if (!ecore_file_exists(path)) continue;
 
-			 ob = e_widget_radio_add (evas, disk, pos, rg);
-			 if (strcmp(disk, ci->disk)==0) e_widget_radio_toggle_set(ob, 1);
+			 ob = e_widget_radio_add (evas, D_ (disk), pos, rg);
+			 if (strcmp(disk, ci->disk)==0)
+			   {
+			 	  e_widget_radio_toggle_set(ob, 1);
+				  disk_found = 1;
+			   }
 			 e_widget_framelist_object_append(of, ob);
 		  }
      }
+
+   if (!disk_found)
+	 {
+		ob = e_widget_radio_add (evas, D_ (ci->disk), -1, rg);
+		e_widget_radio_toggle_set(ob, 1);
+		e_widget_framelist_object_append(of, ob);
+	 }
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -134,6 +145,5 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	}
 
    e_config_save_queue();
-   printf ("disk='%s'\n", ci->disk);
    return 1;
 }
