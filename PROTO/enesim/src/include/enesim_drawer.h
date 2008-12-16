@@ -54,6 +54,9 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_color_get(Enesim_Rop rop,
 EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color);
 EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt);
 EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format mfmt, Enesim_Surface_Pixel *color);
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt, Enesim_Surface_Format mfmt);
-
+EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop,
+		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt,
+		Enesim_Surface_Format mfmt);
+EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop,
+		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt, Enesim_Surface_Pixel *color);
 #endif /*ENESIM_DRAWER_H_*/

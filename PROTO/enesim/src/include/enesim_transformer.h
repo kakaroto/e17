@@ -31,5 +31,6 @@ EAPI void enesim_transformation_origin_get(Enesim_Transformation *t, float *ox, 
 EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surface *mask);
 EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surface_Pixel *color);
 EAPI void enesim_transformation_quality_set(Enesim_Transformation *tx, Enesim_Quality q);
+EAPI Enesim_Quality enesim_transformation_quality_get(Enesim_Transformation *tx);
 
 #endif /*ENESIM_TRANSFORMER_H_*/

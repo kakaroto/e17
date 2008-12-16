@@ -29,33 +29,6 @@ enum Color_Type
 	COLOR_TYPES,
 };
 
-/**
- * Generic (and very slow) drawer functions.
- */
-void enesim_drawer_pt_color_blend(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m);
-void enesim_drawer_pt_pixel_blend(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m);
-void enesim_drawer_sp_color_blend(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
-void enesim_drawer_sp_pixel_blend(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
-void enesim_drawer_pt_color_fill(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m);
-void enesim_drawer_pt_pixel_fill(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m);
-void enesim_drawer_sp_color_fill(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
-void enesim_drawer_sp_pixel_fill(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
 /* 
  * A drawer should implement functions for every format in case of using
  * pixel source. For color source it should implement the function with
@@ -77,6 +50,25 @@ typedef struct _Enesim_Drawer
 	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS][ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS];
 } Enesim_Drawer;
 
+/*
+ * A generic drawer dont care about colors or surface formats
+ * it convert on the fly to argb8888
+ */
+typedef struct _Enesim_Drawer_Generic
+{
+	/* Scanlines */
+	Enesim_Drawer_Span sp_color[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_mask_color[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_pixel[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_pixel_color[ENESIM_ROPS];	
+	Enesim_Drawer_Span sp_pixel_mask[ENESIM_ROPS];
+	/* Points */
+	Enesim_Drawer_Point pt_color[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_mask_color[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS];
+} Enesim_Drawer_Generic;
 
 typedef struct _Enesim_Drawer_Context
 {

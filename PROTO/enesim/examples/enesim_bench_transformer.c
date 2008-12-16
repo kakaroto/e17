@@ -3,7 +3,7 @@
  *                      Transfomer benchmark functions                        *
  ******************************************************************************/
 /* FIXME, this code is repeated, shall we export this function from the lib? */
-const char * transformer_get(Enesim_Transformation *tx)
+static const char * transformer_get(Enesim_Transformation *tx)
 {
 	Enesim_Matrix *t;
 	float a, b, c, d, e, f, g, h, i;
@@ -33,7 +33,25 @@ const char * transformer_get(Enesim_Transformation *tx)
 	}
 	enesim_matrix_delete(t);
 }
-void transformer_go(Enesim_Transformation *tx)
+
+static const char * _quality_get(Enesim_Transformation *tx)
+{
+	Enesim_Quality q = enesim_transformation_quality_get(tx);
+
+	switch (q)
+	{
+		case ENESIM_FAST:
+		return "fast";
+		break;
+		
+		case ENESIM_GOOD:
+		return "good";
+		break;
+	}
+	return NULL;
+}
+
+static void transformer_go(Enesim_Transformation *tx)
 {
 	Eina_Rectangle sr, dr;
 	Enesim_Surface_Format ssf;
@@ -46,29 +64,33 @@ void transformer_go(Enesim_Transformation *tx)
 		Enesim_Surface *dst;
 		Enesim_Surface *src;
 		int t;
+		char name[256];
 
 		src = enesim_surface_new(opt_fmt, opt_width, opt_height);
 		test_gradient(src);
 		dst = enesim_surface_new(ssf, opt_width, opt_height);
-		test_gradient2(dst);	
-			
+		test_gradient2(dst);
+
 		start = get_time();
 		for (t = 0; t < opt_times; t++)
 		{
 			enesim_transformation_apply(tx, src, &sr, dst, &dr);
 		}
 		end = get_time();
-		printf("        %s [%3.3f sec]\n", enesim_surface_format_name_get(ssf), end - start);
+		printf("        %s %s [%3.3f sec]\n", enesim_surface_format_name_get(ssf), _quality_get(tx), end - start);
 
-		test_finish(transformer_get(tx), opt_rop, dst,
-					src, NULL, NULL);
+		snprintf(name, 256, "%s_%s", transformer_get(tx), _quality_get(tx));
+		test_finish(name, opt_rop, dst, src, NULL, NULL);
 		enesim_surface_delete(src);
 		enesim_surface_delete(dst);
 	}
 }
-
+/*
+ * TODO transform with a mask/color and without
+ */
 void transformer_bench(void)
 {
+	Enesim_Surface_Pixel color;
 	Enesim_Matrix *matrix, *tmp;
 	Enesim_Quad *q1, *q2;
 	Enesim_Transformation *tx;
@@ -83,11 +105,16 @@ void transformer_bench(void)
 	
 	tx = enesim_transformation_new();
 	enesim_transformation_rop_set(tx, opt_rop);
-	
+	enesim_surface_pixel_components_from(&color, opt_fmt, 0xff, 0x00, 0x00, 0xff);
+	enesim_transformation_color_set(tx, &color);
+
 	/* identity matrix */
 	enesim_matrix_identity(matrix);
 	enesim_transformation_matrix_set(tx, matrix);
 	printf("Identity\n");
+	enesim_transformation_quality_set(tx, ENESIM_GOOD);
+	transformer_go(tx);
+	enesim_transformation_quality_set(tx, ENESIM_FAST);
 	transformer_go(tx);
 	/* affine matrix */
 	/* do a scale, rotate and translate */
@@ -100,16 +127,22 @@ void transformer_bench(void)
 	enesim_matrix_compose(matrix, tmp, matrix);
 	enesim_transformation_matrix_set(tx, matrix);
 	printf("Affine\n");
+	enesim_transformation_quality_set(tx, ENESIM_GOOD);
+	transformer_go(tx);
+	enesim_transformation_quality_set(tx, ENESIM_FAST);
 	transformer_go(tx);
 	/* projective */	
 	q1 = enesim_quad_new();
 	q2 = enesim_quad_new();
 	enesim_quad_coords_set(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
 	enesim_quad_coords_set(q2, 0, 100, 180, 0, 250, 180, 190, 240);
-	//enesim_quad_coords_from(q2, 50, 50, 190, 10, 195, 140, 50, 240);
+	//enesim_quad_coords_set(q2, 50, 50, 190, 10, 195, 140, 50, 240);
 	enesim_matrix_quad_quad_to(matrix, q2, q1);
 	enesim_transformation_matrix_set(tx, matrix);
 	printf("Projective\n");
+	enesim_transformation_quality_set(tx, ENESIM_GOOD);
+	transformer_go(tx);
+	enesim_transformation_quality_set(tx, ENESIM_FAST);
 	transformer_go(tx);
 	
 	enesim_quad_delete(q1);

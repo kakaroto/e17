@@ -169,7 +169,6 @@ static void argb8888_unpre_sp_pixel_fill_rgb565_b1a3(Enesim_Surface_Data *d, uns
 		argb8888_unpre_data_increment(&dtmp, 1);
 	}
 }
-#endif
 #ifdef BUILD_SURFACE_ARGB8888_UNPRE
 
 #define argb8888_unpre_sp_color_blend enesim_drawer_sp_color_blend
@@ -212,5 +211,5 @@ Enesim_Drawer argb8888_unpre_drawer = {
 	.sp_pixel[ENESIM_FILL][ENESIM_SURFACE_RGB565_B1A3] = argb8888_unpre_sp_pixel_fill_rgb565_b1a3,
 	.pt_pixel[ENESIM_FILL][ENESIM_SURFACE_RGB565_B1A3] = argb8888_unpre_pt_pixel_fill_rgb565_b1a3,
 };
-
+#endif
 #endif

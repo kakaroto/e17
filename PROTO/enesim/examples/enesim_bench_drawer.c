@@ -128,6 +128,28 @@ void span_mask_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned
 	}
 }
 
+void span_pixel_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
+		Enesim_Surface *s, Enesim_Surface_Pixel *color)
+{
+	int i;
+	int t;
+
+	for (t = 0; t < opt_times; t++)
+	{
+		Enesim_Surface_Data dtmp;
+		Enesim_Surface_Data stmp;
+
+		enesim_surface_data_get(dst, &dtmp);
+		enesim_surface_data_get(s, &stmp);
+		for (i = 0; i < opt_height; i++)
+		{
+			span(&dtmp, len, &stmp, color, NULL);
+			enesim_surface_data_increment(&dtmp, len);
+			enesim_surface_data_increment(&stmp, len);
+		}
+	}
+}
+
 static void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Surface_Format dsf)
 {
 	double start, end;
@@ -229,6 +251,31 @@ static void drawer_span_mask_color_bench(Enesim_Rop rop, Enesim_Surface *dst,
 	test_finish("span_mask_color", rop, dst, NULL, color, msk);
 }
 
+static void drawer_span_pixel_color_bench(Enesim_Rop rop, Enesim_Surface *dst,
+		Enesim_Surface *src, Enesim_Surface_Pixel *color)
+{
+	double start, end;
+	Enesim_Surface_Format dfmt, sfmt;
+	Enesim_Drawer_Span dspan;
+	
+	dfmt = enesim_surface_format_get(dst);
+	sfmt = enesim_surface_format_get(src);
+	dspan = enesim_drawer_span_pixel_color_get(rop, dfmt, sfmt, color);
+	if (dspan)
+	{
+		start = get_time();
+		span_pixel_color_draw(dspan, dst, opt_width, src, color);
+		end = get_time();
+		printf("        %s %s [%3.3f sec]\n", enesim_surface_format_name_get(sfmt), opacity_get(color), end - start);
+	}
+	else
+	{
+		printf("        %s %s [NOT BUILT]\n", enesim_surface_format_name_get(sfmt), opacity_get(color));
+		return;
+	}
+	test_finish("span_pixel_color", rop, dst, NULL, color, src);
+}
+
 static void drawer_span_pixel_mask_bench(Enesim_Rop rop,
 		Enesim_Surface *dst, Enesim_Surface *src, Enesim_Surface *msk)
 {
@@ -296,6 +343,12 @@ void drawer_bench(void)
 	{
 		surfaces_create(&src, ssf, &dst, opt_fmt, NULL, 0);
 		drawer_span_pixel_bench(opt_rop, dst, src);
+	}
+	printf("    Span pixel color\n");
+	for (ssf = ENESIM_SURFACE_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)
+	{
+		surfaces_create(&src, ssf, &dst, opt_fmt, NULL, 0);
+		drawer_span_pixel_color_bench(opt_rop, dst, src, &opaque);
 	}
 	printf("    Span pixel mask\n");
 	for (ssf = ENESIM_SURFACE_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)

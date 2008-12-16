@@ -68,4 +68,14 @@ typedef struct _Enesim_Transformer
 	Enesim_Transformer_Func normal[ENESIM_SURFACE_FORMATS][ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
 } Enesim_Transformer;
 
+typedef struct _Enesim_Transformer_Generic
+{
+	Enesim_Transformer_Func mask[ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
+	Enesim_Transformer_Func normal[ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
+} Enesim_Transformer_Generic;
+
+Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation *t,
+		Enesim_Surface *d,
+		Enesim_Surface *s);
+
 #endif /*TRANSFORMER_H_*/

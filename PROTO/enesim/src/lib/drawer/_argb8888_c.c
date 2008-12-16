@@ -1,5 +1,5 @@
 /*============================================================================*
- *                                 Blend                                      * 
+ *                                 Blend                                      *
  *============================================================================*/
 static void argb8888_pt_color_blend_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
@@ -253,7 +253,7 @@ static void argb8888_pt_pixel_color_fill_argb8888_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *color,
 		Enesim_Surface_Pixel *m)
 {
-	argb8888_fill(d->data.argb8888.plane0, argb8888_mul4_sym(color->pixel.argb8888.plane0, s->pixel.argb8888.plane0));
+	argb8888_fill(d->data.argb8888.plane0, argb8888_mul4_sym(color->pixel.argb8888.plane0, s->pixel.argb8888.plane0));	
 }
 
 

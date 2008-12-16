@@ -3,6 +3,9 @@
 #include "_argb8888_c.c"
 #include "_argb8888_mmx.c"
 #include "_argb8888_sse2.c"
+/* Now include the generic functions wich will use the argb8888 functions */
+#include "_generic.c"
+
 
 Enesim_Drawer argb8888_drawer = {
 	.pt_color[ENESIM_BLEND] = argb8888_pt_color_blend,

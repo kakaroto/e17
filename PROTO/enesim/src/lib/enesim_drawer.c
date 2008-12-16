@@ -36,208 +36,13 @@
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
-Enesim_Drawer _unbuilt;
-
 /* this is the main surface format drawer */
 extern Enesim_Drawer argb8888_drawer;
-
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-extern Enesim_Drawer argb8888_unpre_drawer;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_XA5
-extern Enesim_Drawer rgb565_xa5_drawer;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_B1A3
-extern Enesim_Drawer rgb565_b1a3_drawer;
-#endif
+extern Enesim_Drawer_Generic generic_drawer;
 
 Enesim_Drawer *drawer[ENESIM_SURFACE_FORMATS] = {
 		[ENESIM_SURFACE_ARGB8888] = &argb8888_drawer,
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-		[ENESIM_SURFACE_ARGB8888_UNPRE] = &argb8888_unpre_drawer,
-#else
-		[ENESIM_SURFACE_ARGB8888_UNPRE] = &_unbuilt,
-#endif
-#ifdef BUILD_SURFACE_RGB565_XA5
-		[ENESIM_SURFACE_RGB565_XA5] = &_unbuilt, //&rgb565_xa5_drawer,
-#else
-		[ENESIM_SURFACE_RGB565_XA5] = &_unbuilt,
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-		[ENESIM_SURFACE_RGB565_B1A3] = &_unbuilt, //&rgb565_b1a3_drawer,
-#else
-		[ENESIM_SURFACE_RGB565_B1A3] = &_unbuilt,
-#endif
-#ifdef BUILD_SURFACE_RGB888_A8
-#else
-		[ENESIM_SURFACE_RGB888_A8] = &_unbuilt,
-#endif
-#ifdef BUILD_SURFACE_A8
-#else
-		[ENESIM_SURFACE_A8] = &_unbuilt,
-#endif
-#ifdef BUILD_SURFACE_B1A3
-#else
-		[ENESIM_SURFACE_b1A3] = &_unbuilt,
-#endif
 };
-
-void _pixel_blend(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
-{
-	switch (d->format)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		argb8888_pixel_blend(d, p);
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_pixel_blend(d, p);
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		break;
-#endif
-	default:
-		break;
-	}
-}
-
-void _pixel_fill(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
-{
-	switch (d->format)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		argb8888_pixel_fill(d, p);
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_pixel_fill(d, p);
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		break;
-#endif
-	default:
-		break;
-	}
-}
-/*============================================================================*
- *                                 Global                                     * 
- *============================================================================*/
-/*
- * TODO
- * all the above generic functions should convert the src, dst and mask
- * to argb8888 (internal format) and handle the real operation in that
- * format. This will incredible slow, but works as a generic way
- * to handle this, any surface format implementor should just
- * create the converters from/to argb8888 in case it wants a accelerated drawer
- * he must implement a specifc drawer
- */
-void enesim_drawer_pt_color_blend(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m)
-{
-	_pixel_blend(d, color);
-}
-void enesim_drawer_pt_pixel_blend(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m)
-{
-	_pixel_blend(d, s);
-}
-
-void enesim_drawer_sp_color_blend(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
-{
-	Enesim_Surface_Data dtmp = *d;
-	int i;
-	
-	for (i = 0; i < len; i++)
-	{
-		_pixel_blend(&dtmp, color);
-		enesim_surface_data_increment(&dtmp, 1);
-	}
-}
-void enesim_drawer_sp_pixel_blend(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
-{
-	Enesim_Surface_Data dtmp = *d, stmp = *s;
-	int i;
-	
-	for (i = 0; i < len; i++)
-	{
-		Enesim_Surface_Pixel p;
-		uint32_t argb;
-		
-		argb = enesim_surface_data_argb_to(&stmp);
-		enesim_surface_pixel_argb_from(&p, dtmp.format, argb);
-		_pixel_blend(&dtmp, &p);
-		enesim_surface_data_increment(&dtmp, 1);
-		enesim_surface_data_increment(&stmp, 1);
-	}
-}
-void enesim_drawer_pt_color_fill(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m)
-{
-	_pixel_fill(d, color);
-}
-void enesim_drawer_pt_pixel_fill(Enesim_Surface_Data *d,
-		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *m)
-{
-	Enesim_Surface_Pixel p;
-
-	enesim_surface_pixel_convert(s, &p, d->format);
-	_pixel_fill(d, &p);
-}
-
-void enesim_drawer_sp_color_fill(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
-{
-	Enesim_Surface_Data dtmp = *d;
-	int i;
-	
-	for (i = 0; i < len; i++)
-	{
-		_pixel_fill(&dtmp, color);
-		enesim_surface_data_increment(&dtmp, 1);
-	}
-}
-void enesim_drawer_sp_pixel_fill(Enesim_Surface_Data *d,
-		unsigned int len, Enesim_Surface_Data *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
-{
-	Enesim_Surface_Data dtmp = *d, stmp = *s;
-	int i;
-
-	for (i = 0; i < len; i++)
-	{
-		Enesim_Surface_Pixel p;
-		uint32_t argb;
-
-		argb = enesim_surface_data_argb_to(&stmp);
-		enesim_surface_pixel_argb_from(&p, dtmp.format, argb);
-		_pixel_fill(&dtmp, &p);
-		enesim_surface_data_increment(&dtmp, 1);
-		enesim_surface_data_increment(&stmp, 1);
-	}
-}
 /*============================================================================*
  *                                   API                                      * 
  *============================================================================*/
@@ -273,6 +78,7 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_get(Enesim_Rop rop,
 EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color)
 {
+	Enesim_Drawer_Point pt = NULL;
 	/* TODO check if the color is opaque */
 #if 0
 	if ((rop == ENESIM_BLEND) && (alpha(color) == 0xff))
@@ -280,7 +86,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop,
 		rop = RENESIM_FILL;
 	}
 #endif
-	return drawer[dfmt]->pt_color[rop];
+	if (drawer[dfmt])
+	{
+		pt = drawer[dfmt]->pt_color[rop]; 
+	}
+	if (!pt)
+		pt = generic_drawer.pt_color[rop]; 
+	return pt;
 }
 /**
  * To be documented
@@ -290,7 +102,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_color_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *src,
 		Enesim_Surface_Pixel *color)
 {
-	return drawer[dfmt]->pt_pixel_color[rop][src->format];
+	Enesim_Drawer_Point pt = NULL;
+
+	if (drawer[dfmt])
+		pt = drawer[dfmt]->pt_pixel_color[rop][src->format];
+	if (!pt)
+		pt = generic_drawer.pt_pixel_color[rop]; 
+	return pt;
 }
 /**
  * To be documented
@@ -300,7 +118,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_mask_color_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color,
 		Enesim_Surface_Pixel *mask)
 {
-	return drawer[dfmt]->pt_mask_color[rop][mask->format];
+	Enesim_Drawer_Point pt = NULL;
+
+	if (drawer[dfmt])
+		pt = drawer[dfmt]->pt_mask_color[rop][mask->format];
+	if (!pt)
+		pt = generic_drawer.pt_mask_color[rop]; 
+	return pt;
 }
 /**
  * To be documented
@@ -310,7 +134,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt,
 		Enesim_Surface_Pixel *src)
 {
-	return drawer[dfmt]->pt_pixel[rop][src->format];
+	Enesim_Drawer_Point pt = NULL;
+
+	if (drawer[dfmt])
+		pt = drawer[dfmt]->pt_pixel[rop][src->format];
+	if (!pt)
+		pt = generic_drawer.pt_pixel[rop]; 
+	return pt;
 }
 /**
  * To be documented
@@ -320,7 +150,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *src,
 		Enesim_Surface_Pixel *mask)
 {
-	return drawer[dfmt]->pt_pixel_mask[rop][src->format][mask->format];
+	Enesim_Drawer_Point pt = NULL;
+	
+	if (drawer[dfmt])
+		pt = drawer[dfmt]->pt_pixel_mask[rop][src->format][mask->format];
+	if (!pt)
+		pt = generic_drawer.pt_pixel_mask[rop]; 
+	return pt;
 }
 
 /* Span functions */
@@ -332,8 +168,13 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop,
 EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Pixel *color)
 {
+	Enesim_Drawer_Span sp = NULL;
 	/* TODO check if the color is opaque */
-	return drawer[dfmt]->sp_color[rop];
+	if (drawer[dfmt])
+		sp = drawer[dfmt]->sp_color[rop];
+	if (!sp)
+		sp = generic_drawer.sp_color[rop]; 
+	return sp;
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
@@ -344,8 +185,13 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Format mfmt,
 		Enesim_Surface_Pixel *color)
 {
+	Enesim_Drawer_Span sp = NULL;
 	/* TODO check if the color is opaque */
-	return drawer[dfmt]->sp_mask_color[rop][mfmt];
+	if (drawer[dfmt])
+		sp = drawer[dfmt]->sp_mask_color[rop][mfmt];
+	if (!sp)
+		sp = generic_drawer.sp_mask_color[rop]; 
+	return sp;
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
@@ -354,7 +200,13 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop,
 EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
 {
-	return drawer[dfmt]->sp_pixel[rop][sfmt];
+	Enesim_Drawer_Span sp = NULL;
+
+	if (drawer[dfmt])
+		sp = drawer[dfmt]->sp_pixel[rop][sfmt];
+	if (!sp)
+		sp = generic_drawer.sp_pixel[rop]; 
+	return sp;
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
@@ -362,11 +214,17 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop,
  * multypling with color color
  */
 EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop,
-		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
+		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt,
+		Enesim_Surface_Pixel *color)
 {
+	Enesim_Drawer_Span sp = NULL;
 	/* FIXME if the surface is alpha only, use the mask_color */
 	/* TODO check if the color is opaque */
-	return drawer[dfmt]->sp_pixel_color[rop][sfmt];
+	if (drawer[dfmt])
+		sp = drawer[dfmt]->sp_pixel_color[rop][sfmt];
+	if (!sp)
+		sp = generic_drawer.sp_pixel_color[rop]; 
+	return sp;
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
@@ -379,5 +237,10 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop,
 		Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt,
 		Enesim_Surface_Format mfmt)
 {
-	return drawer[dfmt]->sp_pixel_mask[rop][sfmt][mfmt];
+	Enesim_Drawer_Span sp = NULL;
+	if (drawer[dfmt])
+		sp = drawer[dfmt]->sp_pixel_mask[rop][sfmt][mfmt];
+	if (!sp)
+		sp = generic_drawer.sp_pixel_mask[rop]; 
+	return sp;
 }

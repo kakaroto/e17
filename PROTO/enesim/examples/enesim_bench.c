@@ -3,6 +3,7 @@
 /**
  * TODO
  * make the gradient functions draw pattern boxes
+ * add a html output mode, for easy viewing of every format/op/time
  */
 
 int opt_width = 256;
@@ -142,7 +143,7 @@ void test_gradient(Enesim_Surface *s)
 		uint8_t col = ((opt_height - 1) - i) * 255 / opt_height;
 
 		sdata_tmp = sdata;
-		enesim_surface_pixel_components_from(&color, sfmt, col, 0, 0, col);
+		enesim_surface_pixel_components_from(&color, sfmt, col, col/2, 0, col);
 #if 1
 		if (!((i + 1) % 16))
 			skip = (skip + 1) % 2;

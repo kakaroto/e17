@@ -49,7 +49,9 @@ static inline uint32_t argb8888_mul_sym(uint16_t a, uint32_t c)
 	return ( (((((c) >> 8) & 0x00ff00ff) * (a) + 0xff00ff) & 0xff00ff00) +
 	   (((((c) & 0x00ff00ff) * (a) + 0xff00ff) >> 8) & 0x00ff00ff) );
 }
-
+/*
+ * [a1 r1 g1 b1], [a2 r2 g2 b2] => [a1*a2 r1*r2 g1*g2 b1*b2] 
+ */
 static inline uint32_t argb8888_mul4_sym(uint32_t c1, uint32_t c2)
 {
 	return ( ((((((c1) >> 16) & 0xff00) * (((c2) >> 16) & 0xff00)) + 0xff0000) & 0xff000000) + \

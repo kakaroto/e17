@@ -18,7 +18,9 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "_argb8888_c.c"
-
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
 Enesim_Transformer argb8888_tx = {
 	//.mask[ENESIM_SURFACE_ARGB8888][ENESIM_SURFACE_ARGB8888][ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] = 
 	//	mask_argb8888_argb8888_affine_good_no_no,
