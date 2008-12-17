@@ -1,5 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
-#include "Ewl_Engine_Evas_Software_Xcb.h"
+#include "Ewl_Engine_Evas_Software_X11.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
@@ -105,7 +105,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         Evas *evas;
         Ewl_Object *o;
         Evas_Engine_Info *info = NULL;
-        Evas_Engine_Info_Software_Xcb *sinfo;
+        Evas_Engine_Info_Software_X11 *sinfo;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
@@ -125,9 +125,10 @@ ee_canvas_setup(Ewl_Window *win, int debug)
                 exit(-1);
         }
 
-        sinfo = (Evas_Engine_Info_Software_Xcb *)info;
+        sinfo = (Evas_Engine_Info_Software_X11 *)info;
 
-        sinfo->info.conn = ecore_x_connection_get();
+        sinfo->info.backend = 1;
+        sinfo->info.connection = ecore_x_connection_get();
         sinfo->info.screen = ecore_x_default_screen_get();
         sinfo->info.visual = visualtype_get(sinfo->info.conn,
                                 sinfo->info.screen);
