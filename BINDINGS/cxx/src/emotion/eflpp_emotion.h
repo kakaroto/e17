@@ -31,13 +31,13 @@ class EvasEmotion : public EvasObject
 				const char * module_filename, EvasCanvas* canvas, const char* name = 0 );
     //EvasEmotion( Evas_Object* object, EvasCanvas* canvas, const char* name = 0 );
     ~EvasEmotion();
-	
-	/**
-	* Initialize video engine to either use xine or gstreamer 
-	*
-	* @param module_filename	name of viedo engine to be used
-	*/
-	void engineInit(const char * module_filename);
+    
+    /**
+    * Initialize video engine to either use xine or gstreamer 
+    *
+    * @param module_filename	name of viedo engine to be used
+    */
+    void engineInit(const char * module_filename);
 		
     void setFile( const char* filename );
     void setPlay( bool b );
