@@ -1,6 +1,0 @@
-libeflpp_edb.la
-.deps
-.libs
-Makefile
-Makefile.in
-eflpp_edb.lo
