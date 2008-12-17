@@ -1005,8 +1005,8 @@ target: "bg";
    }
    group {
       name: "modules/drawer/list/horizontal_entry";
-      min: 68 68;
-      max: 68 68;
+      min: 73 73;
+      max: 73 73;
       parts {
 
 #define MOUSE_IN_TARGETS \
@@ -1023,14 +1023,8 @@ target: "glow";
 	       state: "default" 0.0;
 	       visible: 0;
 	       color: 255 255 255 0;
-	       rel1 {
-		  relative: 0.0 0.0;
-		  offset: -5 -5;
-	       }
-	       rel2 {
-		  relative: 1.0 1.0;
-		  offset: 4 4;
-	       }
+	       min: 73 73;
+	       max: 73 73;
 	       image {
 		  normal: "bt_sm_base1.png";
 		  border: 6 6 6 6;
@@ -1041,14 +1035,6 @@ target: "glow";
 	       inherit: "default" 0.0;
 	       visible: 1;
 	       color: 255 255 255 255;
-	       rel1 {
-		  relative: 0.0 0.0;
-		  offset: 0 -5;
-	       }
-	       rel2 {
-		  relative: 1.0 1.0;
-		  offset: -1 4;
-	       }
 	    }
 	 }
 	 part {
@@ -1060,10 +1046,8 @@ target: "glow";
 	       min: 64 64;
 	       max: 64 64;
 	       align: 0.5 0.5;
-	       rel2 {
-		  relative: 1 1;
-		  offset: -2 -2;
-	       }
+	       rel1.offset: 4 4;
+	       rel2.offset: -5 -5;
 	    }
 	 }
 	 part {
@@ -1221,8 +1205,8 @@ target: "glow";
    }
    group {
       name: "modules/drawer/list/vertical_entry";
-      min: 68 68;
-      max: 9999 68;
+      min: 73 73;
+      max: 9999 73;
       parts {
 
 #undef MOUSE_IN_TARGETS
@@ -1244,14 +1228,8 @@ target: "e.text.label";
 	       state: "default" 0.0;
 	       visible: 0;
 	       color: 255 255 255 0;
-	       rel1 {
-		  relative: 0.0 0.0;
-		  offset: -5 -5;
-	       }
-	       rel2 {
-		  relative: 1.0 1.0;
-		  offset: 4 4;
-	       }
+	       min: 73 73;
+	       max: 9999 73;
 	       image {
 		  normal: "bt_sm_base1.png";
 		  border: 6 6 6 6;
@@ -1294,10 +1272,10 @@ target: "e.text.label";
 	       state: "default" 0.0;
 	       min: 64 64;
 	       max: 64 64;
-	       align: 1 0;
+	       align: 1 1;
 	       rel2 {
 		  relative: 1 1;
-		  offset: -2 -2;
+		  offset: -5 -5;
 	       }
 	    }
 	 }

@@ -148,9 +148,6 @@ struct _Drawer_Source_Item
    const char     *description;
    const char	  *category;
 
-   /* tags, etc */
-   Eina_Hash	  *data;
-
    void *priv;
 };
 
