@@ -2,8 +2,10 @@
 
 /**
  * TODO
- * make the gradient functions draw pattern boxes
- * add a html output mode, for easy viewing of every format/op/time
+ * + Make the gradient functions draw pattern boxes
+ * + Add a html output mode, for easy viewing of every format/op/time
+ * + Split this into differnet benchs instead of only one?
+ * + Add a mask and src formats
  */
 
 int opt_width = 256;
@@ -118,6 +120,31 @@ void surface_save(Enesim_Surface *s, const char *name)
 	enesim_surface_delete(img);
 }
 
+void surfaces_create(Enesim_Surface **src, Enesim_Surface_Format sfmt,
+		Enesim_Surface **dst, Enesim_Surface_Format dfmt,
+		Enesim_Surface **msk, Enesim_Surface_Format mfmt)
+{
+	if (src)
+	{
+		if (*src) enesim_surface_delete(*src);
+		*src = enesim_surface_new(sfmt, opt_width, opt_height);
+		test_gradient(*src);
+	}
+	if (dst)
+	{
+		if (*dst) enesim_surface_delete(*dst);
+		*dst = enesim_surface_new(dfmt, opt_width, opt_height);
+		test_gradient2(*dst);
+	}
+	if (msk)
+	{
+		if (*msk) enesim_surface_delete(*msk);
+		*msk = enesim_surface_new(mfmt, opt_width, opt_height);
+		test_gradient3(*msk);
+	}
+}
+
+
 void test_gradient(Enesim_Surface *s)
 {
 	Enesim_Drawer_Span dspan;
@@ -205,9 +232,17 @@ void test_gradient3(Enesim_Surface *s)
 	{
 		return;
 	}
-	for (i = 0; i < opt_height; i++)
+	for (i = 0; i < opt_height/2; i++)
 	{
-		uint8_t col = 255 - (i * 255)/opt_height;
+		uint8_t col = (i * 255)/(opt_height/2);
+
+		enesim_surface_pixel_components_from(&color, sfmt, col, 0, col / 2, col);
+		dspan(&sdata, opt_width, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, opt_width);
+	}
+	for (i = 0; i < opt_height/2; i++)
+	{
+		uint8_t col = 255 - (i * 255)/(opt_height/2);
 
 		enesim_surface_pixel_components_from(&color, sfmt, col, 0, col / 2, col);
 		dspan(&sdata, opt_width, NULL, &color, NULL);
@@ -294,16 +329,6 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		snprintf(tmp2, 256, "_%s", opacity_get(color));
 		strncat(tmp, tmp2, 256);
 	}
-	/* now save the source image in case it exists */
-	if (src)
-	{
-		char tmp2[256];
-
-		sfmt = enesim_surface_format_get(src);
-		snprintf(tmp2, 256, "%s_source.png", tmp);
-		surface_save(src, tmp2);
-	}
-	
 	snprintf(file, 256, "%s.png", tmp);
 	surface_save(dst, file);
 }

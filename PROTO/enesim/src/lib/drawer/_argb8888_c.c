@@ -240,6 +240,30 @@ static void argb8888_pt_mask_color_fill_argb8888_c(Enesim_Surface_Data *d,
 	}	
 }
 
+static void argb8888_pt_pixel_mask_fill_argb8888_argb8888_c(Enesim_Surface_Data *d,
+		Enesim_Surface_Pixel *s,
+		Enesim_Surface_Pixel *color,
+		Enesim_Surface_Pixel *m)
+{
+	uint16_t a = argb8888_alpha_get(m->pixel.argb8888.plane0);
+	switch (a)
+	{
+		case 0:
+		break;
+		
+		case 255:
+		argb8888_fill(d->data.argb8888.plane0, s->pixel.argb8888.plane0);
+		break;
+
+		default:
+		argb8888_fill(d->data.argb8888.plane0,
+				argb8888_interp_256(a + 1,
+				s->pixel.argb8888.plane0,
+				*d->data.argb8888.plane0));
+		break;
+	}
+}
+
 static void argb8888_pt_pixel_fill_argb8888_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s,
 		Enesim_Surface_Pixel *color,
@@ -405,6 +429,7 @@ static void argb8888_sp_pixel_fill_generic_c(Enesim_Surface_Data *d,
 #define argb8888_pt_pixel_fill_argb8888 argb8888_pt_pixel_fill_argb8888_c
 #define argb8888_pt_pixel_fill_argb8888_unpre argb8888_pt_pixel_fill_generic_c
 #define argb8888_pt_pixel_fill_rgb565_b1a3 argb8888_pt_pixel_fill_generic_c
+#define argb8888_pt_pixel_mask_fill_argb8888_argb8888 argb8888_pt_pixel_mask_fill_argb8888_argb8888_c
 
 #define argb8888_sp_color_fill argb8888_sp_color_fill_c
 #define argb8888_sp_mask_color_fill_argb8888 argb8888_sp_mask_color_fill_argb8888_c

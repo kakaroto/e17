@@ -181,6 +181,9 @@ EAPI void
 enesim_surface_delete(Enesim_Surface *s)
 {
 	assert(s);
+	/* FIXME delete correctly, when a user provides the data
+	 * we should NOT delete it */
+	free(s->sdata.data.argb8888.plane0);
 	free(s);
 }
 /**

@@ -33,6 +33,8 @@ void rasterizer_bench(void);
 void drawer_bench(void);	
 void transformer_bench(void);
 char * opacity_get(Enesim_Surface_Pixel *p);
-
+void surfaces_create(Enesim_Surface **src, Enesim_Surface_Format sfmt,
+		Enesim_Surface **dst, Enesim_Surface_Format dfmt,
+		Enesim_Surface **msk, Enesim_Surface_Format mfmt);
 
 #endif /*ENESIM_BENCH_COMMON_H_*/

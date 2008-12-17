@@ -254,8 +254,76 @@ iterate:									\
 	}									\
 
 
-#define mask_generic_generic_affine_no_no(body) body
-
+#define mask_generic_generic_affine_no_no(body)					\
+	Enesim_Surface_Data sdata, ddata, mdata;				\
+	Eina_F16p16 sx, sy;							\
+	Enesim_Drawer_Point ptfnc;						\
+	Eina_F16p16 a, b, c, d, e, f, g, h, i;					\
+	Enesim_Surface_Pixel color;						\
+										\
+	int hlen;								\
+										\
+	ptfnc = enesim_transformation_drawer_point_get(t, ds, ss);		\
+	if (!ptfnc)								\
+		return;								\
+										\
+	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d,		\
+			&e, &f, &g, &h, &i);					\
+	c += eina_f16p16_float_from(t->ox);					\
+	f += eina_f16p16_float_from(t->oy);					\
+	sx = eina_f16p16_mul(a, drect->x) + eina_f16p16_mul(b, drect->y) + c;	\
+	sy = eina_f16p16_mul(d, drect->x) + eina_f16p16_mul(e, drect->y) + f;	\
+										\
+	enesim_surface_data_get(ds, &ddata);					\
+	enesim_surface_data_get(ss, &sdata);					\
+	enesim_surface_data_get(t->mask, &mdata);				\
+	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);	\
+										\
+	hlen = drect->h;							\
+	while (hlen--)								\
+	{									\
+		Enesim_Surface_Data ddata2;					\
+		int wlen;							\
+		Eina_F16p16 sxx, syy;						\
+										\
+		ddata2 = ddata;							\
+		sxx = sx;							\
+		syy = sy;							\
+										\
+		wlen = drect->w;						\
+		while (wlen--)							\
+		{								\
+			int six, siy;						\
+			Enesim_Surface_Data sdata2;				\
+			Enesim_Surface_Data mdata2;				\
+										\
+			sdata2 = sdata;						\
+			mdata2 = mdata;						\
+			six = eina_f16p16_int_to(sxx);				\
+			siy = eina_f16p16_int_to(syy);				\
+										\
+			/* check that we are inside the source rectangle */	\
+			if ((eina_rectangle_xcoord_inside(srect, six)) &&	\
+				(eina_rectangle_ycoord_inside(srect, siy)))	\
+			{							\
+				Enesim_Surface_Pixel argb, m_argb;		\
+										\
+				enesim_surface_data_increment(&sdata2,		\
+					(siy * ss->w) + six); 			\
+				enesim_surface_data_increment(&mdata2,		\
+					(siy * ss->w) + six); 			\
+				body 						\
+										\
+				ptfnc(&ddata2, &color, NULL, &m_argb);		\
+			}							\
+			enesim_surface_data_increment(&ddata2, 1);		\
+			sxx += a;						\
+			syy += d;						\
+		}								\
+		enesim_surface_data_increment(&ddata, ds->w);			\
+		sx += b;							\
+		sy += e;							\
+	}									\
 
 static void normal_generic_affine_fast_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
 		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
@@ -266,13 +334,35 @@ static void normal_generic_affine_fast_no_no(Enesim_Transformation *t, Enesim_Su
 	);
 }
 
-
 static void normal_generic_affine_good_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
 		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
 {
 	normal_generic_generic_affine_no_no(
 		/* use 2x2 convolution kernel to interpolate */
 		convolution2x2(&sdata2, sxx, syy, ss->w, ss->h, &argb);
+		enesim_surface_pixel_convert(&argb, &color, ddata.format);
+	);
+}
+
+static void mask_generic_affine_fast_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
+		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
+{
+	mask_generic_generic_affine_no_no(
+		enesim_surface_data_pixel_get(&mdata2, &color);
+		enesim_surface_pixel_convert(&color, &m_argb, ddata.format);
+		enesim_surface_data_pixel_get(&sdata2, &argb);
+		enesim_surface_pixel_convert(&argb, &color, ddata.format);
+	);
+}
+
+static void mask_generic_affine_good_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
+		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
+{
+	mask_generic_generic_affine_no_no(
+		/* use 2x2 convolution kernel to interpolate */
+		convolution2x2(&sdata2, sxx, syy, ss->w, ss->h, &argb);
+		enesim_surface_data_pixel_get(&mdata2, &color);
+		enesim_surface_pixel_convert(&color, &m_argb, ddata.format);
 		enesim_surface_pixel_convert(&argb, &color, ddata.format);
 	);
 }
@@ -301,6 +391,8 @@ static void normal_generic_projective_good_no_no(Enesim_Transformation *t, Enesi
 Enesim_Transformer_Generic generic_tx = {
 	.normal[ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] = normal_generic_affine_good_no_no,
 	.normal[ENESIM_TRANSFORMATION_AFFINE][ENESIM_FAST] = normal_generic_affine_fast_no_no,
+	.mask[ENESIM_TRANSFORMATION_AFFINE][ENESIM_FAST] = mask_generic_affine_fast_no_no,
+	.mask[ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] = mask_generic_affine_good_no_no,
 	.normal[ENESIM_TRANSFORMATION_PROJECTIVE][ENESIM_GOOD] = normal_generic_projective_good_no_no,
 	.normal[ENESIM_TRANSFORMATION_PROJECTIVE][ENESIM_FAST] = normal_generic_projective_fast_no_no,
 };

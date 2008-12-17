@@ -2,32 +2,6 @@
 /******************************************************************************
  *                         Drawer benchmark functions                         *
  ******************************************************************************/
-static void surfaces_create(Enesim_Surface **src, Enesim_Surface_Format sfmt,
-		Enesim_Surface **dst, Enesim_Surface_Format dfmt,
-		Enesim_Surface **msk, Enesim_Surface_Format mfmt)
-{
-	if (src)
-	{
-		if (*src) enesim_surface_delete(*src);
-		*src = enesim_surface_new(sfmt, opt_width, opt_height);
-		test_gradient(*src);
-	}
-	if (dst)
-	{
-		if (*dst) enesim_surface_delete(*dst);
-		*dst = enesim_surface_new(dfmt, opt_width, opt_height);
-		test_gradient2(*dst);
-	}
-	if (msk)
-	{
-		if (*msk) enesim_surface_delete(*msk);
-		*msk = enesim_surface_new(mfmt, opt_width, opt_height);
-		test_gradient3(*msk);
-	}
-}
-
-
-
 static void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Enesim_Surface_Pixel *color)
 {
 	int t;
