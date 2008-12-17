@@ -179,7 +179,6 @@ src/ecore/Makefile
 src/edje/Makefile
 src/esmart/Makefile
 src/evas/Makefile
-src/edb/Makefile
 src/eet/Makefile
 src/emotion/Makefile
 src/etk/Makefile

@@ -96,9 +96,10 @@ class EdjePart
 
   private:
     EdjePart( EvasEdje* parent, const char* partname );
-    ~EdjePart();
 
   public:
+    ~EdjePart();
+    
     Rect geometry() const;
 
     void setText( const char* text );
@@ -193,22 +194,19 @@ class EvasEdje : public EvasObject
     void recalculateLayout();
 
     bool hasPart( const char* partname ) const;
-    EdjePart* operator[]( const char* partname );
+    CountedPtr <EdjePart> operator[]( const char* partname );
     
     /*!
      * @param partname Access a EdjePart in the EvasEdje.
      * @throw PartNotExistingException
      */
-    EdjePart* part( const char* partname );
+    CountedPtr <EdjePart> part( const char* partname );
 
     /* signals and slots */
     void connect( const char* emission, const char* source, const EdjeSignalSlot& slot );
     void emit( const char* emission, const char* source );
     
     static EvasEdje *wrap( Evas_Object* o );
-
-  protected:
-    mutable EdjePartMap _parts;
 
   private:
     static void _edje_message_handler_callback( void* data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg );

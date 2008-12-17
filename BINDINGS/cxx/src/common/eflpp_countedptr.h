@@ -62,7 +62,7 @@ class CountedPtr {
     {
         return ptr;
     }
-
+    
   private:
     void dispose() 
     {

@@ -98,19 +98,17 @@ bool EvasEdje::hasPart( const char* partname ) const
     return edje_object_part_exists( o, partname );
 }
 
-EdjePart* EvasEdje::operator[]( const char* partname )
+CountedPtr <EdjePart> EvasEdje::operator[]( const char* partname )
 {
     return part( partname );
 }
 
-EdjePart* EvasEdje::part( const char* partname )
+CountedPtr <EdjePart> EvasEdje::part( const char* partname )
 {
     if ( hasPart( partname ) )
     {
-        EdjePart* ep = _parts[partname];
-        if ( !ep ) ep = new EdjePart( this, partname );
-        _parts[partname] = ep;
-        return ep;
+        EdjePart* ep = new EdjePart( this, partname );
+        return CountedPtr <EdjePart> (ep);
     }
     throw PartNotExistingException (partname);
 }
