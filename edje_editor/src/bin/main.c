@@ -385,11 +385,11 @@ main(int argc, char **argv)
    //Start main loop
    etk_main();
 
-   //Main loop is finished
-   etk_shutdown();
-
    //Remove temp file
    ecore_file_unlink(Cur.edj_temp_name->string);
+
+   //Main loop is finished
+   etk_shutdown();
 
    return 0;
 }
