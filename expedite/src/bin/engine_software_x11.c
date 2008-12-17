@@ -38,10 +38,12 @@ engine_software_x11_args(int argc, char **argv)
 	return 0;
      }
 
-   einfo->info.display = disp;
-   einfo->info.visual = einfo->func.best_visual_get(disp, DefaultScreen(disp));
-   einfo->info.colormap = einfo->func.best_colormap_get(disp, DefaultScreen(disp));
-   einfo->info.depth = einfo->func.best_depth_get(disp, DefaultScreen(disp));
+   einfo->info.backend = 0;
+   einfo->info.connection = disp;
+   einfo->info.screen = NULL;
+   einfo->info.visual = einfo->func.best_visual_get(0, disp, DefaultScreen(disp));
+   einfo->info.colormap = einfo->func.best_colormap_get(0, disp, DefaultScreen(disp));
+   einfo->info.depth = einfo->func.best_depth_get(0, disp, DefaultScreen(disp));
    einfo->info.rotation = 0;
    einfo->info.debug = 0;
    attr.backing_store = NotUseful;

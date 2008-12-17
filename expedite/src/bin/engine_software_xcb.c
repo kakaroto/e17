@@ -2,7 +2,7 @@
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_keysyms.h>
-#include <Evas_Engine_Software_Xcb.h>
+#include <Evas_Engine_Software_X11.h>
 
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
@@ -43,7 +43,7 @@ engine_software_xcb_args(int argc, char **argv)
    struct xcb_size_hints_t        hints;
    uint32_t                       value_list[6];
    xcb_screen_iterator_t          iter;
-   Evas_Engine_Info_Software_Xcb *einfo;
+   Evas_Engine_Info_Software_X11 *einfo;
    xcb_intern_atom_reply_t       *reply;
    char                          *str;
    xcb_intern_atom_cookie_t       cookie1;
@@ -58,6 +58,7 @@ engine_software_xcb_args(int argc, char **argv)
    xcb_atom_t                     wm_size_hint;
    uint32_t                       value_mask;
    int                            s;
+   int                            s_tmp;
    int                            l1;
    int                            l2;
    int                            i;
@@ -76,27 +77,29 @@ engine_software_xcb_args(int argc, char **argv)
    conn = xcb_connect(NULL, &s);
    if (!conn) return 0;
 
+   s_tmp = s;
    iter = xcb_setup_roots_iterator(xcb_get_setup(conn));
-   for (; iter.rem; --s, xcb_screen_next (&iter))
-     if (s == 0)
+   for (; iter.rem; --s_tmp, xcb_screen_next (&iter))
+     if (s_tmp == 0)
        {
           screen = iter.data;
           break;
        }
 
-   evas_output_method_set(evas, evas_render_method_lookup("software_xcb"));
-   einfo = (Evas_Engine_Info_Software_Xcb *)evas_engine_info_get(evas);
+   evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
+   einfo = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
    if (!einfo)
      {
 	printf("Evas does not support the Software XCB Engine\n");
 	return 0;
      }
 
-   einfo->info.conn = conn;
+   einfo->info.backend = 1;
+   einfo->info.connection = conn;
    einfo->info.screen = screen;
-   einfo->info.visual = einfo->func.best_visual_get(screen);
-   einfo->info.colormap = einfo->func.best_colormap_get(screen);
-   einfo->info.depth = einfo->func.best_depth_get(screen);
+   einfo->info.visual = einfo->func.best_visual_get(1, conn, s);
+   einfo->info.colormap = einfo->func.best_colormap_get(1, conn, s);
+   einfo->info.depth = einfo->func.best_depth_get(1, conn, s);
    einfo->info.rotation = 0;
    einfo->info.debug = 0;
 
@@ -121,7 +124,7 @@ engine_software_xcb_args(int argc, char **argv)
                      einfo->info.depth,
                      win, screen->root, 0, 0, win_w, win_h, 0,
                      XCB_WINDOW_CLASS_INPUT_OUTPUT,
-                     einfo->info.visual->visual_id,
+                     ((xcb_visualtype_t *)einfo->info.visual)->visual_id,
                      value_mask,
                      value_list);
    einfo->info.drawable = win;

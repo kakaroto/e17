@@ -1211,7 +1211,7 @@ _engine_args(int argc, char **argv)
    if (engine_gl_x11_args(argc, argv))
      loop_func = engine_gl_x11_loop;
 #endif
-#if BUILD_XCB
+#if HAVE_EVAS_SOFTWARE_XCB
    if (engine_software_xcb_args(argc, argv))
      loop_func = engine_software_xcb_loop;
 #endif

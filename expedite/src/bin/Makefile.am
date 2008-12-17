@@ -83,7 +83,7 @@ expedite_SOURCES += \
 engine_gl_x11.c engine_gl_x11.h
 endif
 
-if BUILD_XCB
+if BUILD_SOFTWARE_XCB
 expedite_SOURCES += \
 engine_software_xcb.c engine_software_xcb.h
 endif
@@ -120,7 +120,7 @@ endif
 
 if BUILD_QUARTZ
 expedite_SOURCES += \
-engine_quartz.h
+engine_quartz.m engine_quartz.h
 
 ### add to SOURCES one we know how to fix:
 # /usr/share/automake-1.9/am/depend2.am: am__fastdepOBJC does not appear in
