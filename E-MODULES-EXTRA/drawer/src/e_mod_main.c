@@ -80,6 +80,7 @@ static void _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void
 static void _drawer_cb_menu_post(void *data, E_Menu *menu);
 static void _drawer_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h);
+static void _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 
 /* Local Variables */
 static int uuid = 0;
@@ -1222,9 +1223,7 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 	       {
 		  o = edje_object_add(evas);
 		  if (e_theme_edje_object_set(o, "base/theme/fileman", icon))
-		    {
-		       e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
-		    }
+		    e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
 	       }
 	     else
 	       {
@@ -1238,12 +1237,13 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 			 e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
 		    }
 		  else
-		    {
-		       o = e_icon_add(evas);
-		       e_icon_file_set(o, icon);
-		       e_icon_fill_inside_set(o, 1);
-		    }
+		    e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
 	       }
+	  }
+	else
+	  {
+	     o = edje_object_add(evas);
+	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
 	  }
      }
 
@@ -1259,6 +1259,7 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 	     edje_object_file_set(ep->o_icon, buf, "modules/drawer/icon/thumbnail");
 	  }
 	edje_object_part_swallow(ep->o_icon, "e.swallow.content", o);
+	evas_object_event_callback_add(ep->o_icon, EVAS_CALLBACK_DEL, _drawer_thumbnail_del_cb, o);
      }
 
    free(ep);
@@ -1381,4 +1382,14 @@ _drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h)
 
    if (cw) *w = cw;
    if (ch) *h = ch;
+}
+
+static void
+_drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
+{
+   Evas_Object *o = NULL;
+
+   if (!(o = data)) return;
+
+   evas_object_del(o);
 }
