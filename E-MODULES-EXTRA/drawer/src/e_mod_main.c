@@ -414,19 +414,18 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	     desktop = efreet_desktop_new(si->file_path);
 	     if (!desktop) return NULL;
 	     o = e_util_desktop_icon_add(desktop, MAX(w, h), evas);
-
-	     efreet_desktop_free(desktop);
 	     if (!o)
 	       {
-		  char buf[4096];
-
-		  snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
-			   drawer_conf->module->dir);
 		  o = edje_object_add(evas);
-		  if (!e_theme_edje_object_set(o, "base/theme/modules/drawer", 
-					       "modules/drawer/main/content"))
-		    edje_object_file_set(o, buf, "modules/drawer/main/content");
+		  if (!e_util_edje_icon_set(o, desktop->icon))
+		    {
+		       evas_object_del(o);
+		       o = NULL;
+		    }
 	       }
+
+	     efreet_desktop_free(desktop);
+
 	     return o;
 	  }
 	else if (ecore_file_is_dir(si->file_path))
@@ -1214,16 +1213,12 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 	     const char *icon;
 
 	     icon = e_fm_mime_icon_get(mime);
-	     if (!icon)
-	       {
-		  o = edje_object_add(evas);
-		  e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
-	       }
+	     if (!icon);
 	     else if (!strncmp(icon, "e/icons/fileman/mime/", 21))
 	       {
 		  o = edje_object_add(evas);
-		  if (e_theme_edje_object_set(o, "base/theme/fileman", icon))
-		    e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+		  if (!e_theme_edje_object_set(o, "base/theme/fileman", icon))
+		    o = NULL;
 	       }
 	     else
 	       {
@@ -1234,13 +1229,12 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 		    {
 		       o = edje_object_add(evas);
 		       if (!edje_object_file_set(o, icon, "icon"))
-			 e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+			 o = NULL;
 		    }
-		  else
-		    e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
 	       }
 	  }
-	else
+
+	if (!o)
 	  {
 	     o = edje_object_add(evas);
 	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");

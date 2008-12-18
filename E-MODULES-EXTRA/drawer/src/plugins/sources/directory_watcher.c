@@ -228,7 +228,8 @@ static Drawer_Source_Item *
 _dirwatcher_source_item_fill(Instance *inst, const char *file)
 {
    Drawer_Source_Item *si = NULL;
-   char buf[4096], *mime;
+   char buf[4096];
+   const char *mime;
 
    si = E_NEW(Drawer_Source_Item, 1);
 
