@@ -26,36 +26,35 @@ static void
 on_forward(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
+   printf("forward message\n");
 }
 
 static void
 on_add(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
-}
-
-static void
-on_ignore(void *data, Evas_Object *obj, void *event_info)
-{
-   Message_UI *mui = data;
+   printf("add contact\n");
 }
 
 static void
 on_filter(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
+   printf("filter messages to/from this contact only\n");
 }
 
 static void
 on_wipe(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
+   printf("delete message completely\n");
 }
 
 static void
 on_trash(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
+   printf("move message to trash\n");
 }
 
 Evas_Object *
@@ -126,8 +125,6 @@ create_message(Evas_Object *win,
         // FIXME: if not matched in contacts only
         elm_hoversel_item_add(bt, "Add", NULL, ELM_ICON_NONE, on_add, mui);
      }
-   if (!is_me)
-     elm_hoversel_item_add(bt, "Ignore", NULL, ELM_ICON_NONE, on_ignore, mui);
    elm_hoversel_item_add(bt, "Filter", NULL, ELM_ICON_NONE, on_filter, mui);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_align_set(bt, 0.0, -1.0);
