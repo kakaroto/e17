@@ -335,14 +335,13 @@ create_alarm_win(void)
    evas_object_show(win);
 }
 
-int
-main(int argc, char **argv)
+EAPI int
+elm_main(int argc, char **argv)
 {
    int i;
    int activate = 0;
    int repeat = 0;
    
-   elm_init(argc, argv);
    for (i = 1; i < argc; i++)
      {
 	if (!strcmp(argv[i], "-activate")) activate = 1;
@@ -366,4 +365,11 @@ main(int argc, char **argv)
    elm_run();
    elm_shutdown();
    return 0; 
+}
+
+int
+main(int argc, char **argv)
+{
+   elm_init(argc, argv);
+   return elm_main(argc, argv);
 }
