@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flame\n"
-"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
-"POT-Creation-Date: 2007-11-14 22:24+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-18 02:18+0100\n"
 "PO-Revision-Date: 2008-08-11 14:59+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -26,8 +26,7 @@ msgstr "Plamen"
 msgid "Flame Configuration"
 msgstr "Nastavení plamene"
 
-#: e_mod_config.c:94
-#: e_mod_config.c:177
+#: e_mod_config.c:94 e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Barva plamene"
 
@@ -63,9 +62,7 @@ msgstr "Vlastní"
 msgid "Red Amount"
 msgstr "Množství červené"
 
-#: e_mod_config.c:182
-#: e_mod_config.c:189
-#: e_mod_config.c:196
+#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
@@ -77,4 +74,3 @@ msgstr "Množství modré"
 #: e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Množství zelené"
-

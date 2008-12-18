@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Flame module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2008-12-18 02:18+0100\n"
 "PO-Revision-Date: 2008-10-27 13:23+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
@@ -17,63 +17,63 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: ../e_mod_main.c:61
+#: e_mod_main.c:61
 msgid "Appearance"
 msgstr "Aspect"
 
-#: ../e_mod_main.c:63
+#: e_mod_main.c:63
 msgid "Flame"
 msgstr "Flamme"
 
-#: ../e_mod_config.c:47
+#: e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Configuration de flamme"
 
-#: ../e_mod_config.c:94 ../e_mod_config.c:177
+#: e_mod_config.c:94 e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Couleur de flamme"
 
-#: ../e_mod_config.c:96
+#: e_mod_config.c:96
 msgid "Gold"
 msgstr "Or"
 
-#: ../e_mod_config.c:98
+#: e_mod_config.c:98
 msgid "Fire"
 msgstr "Feu"
 
-#: ../e_mod_config.c:100
+#: e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plasma"
 
-#: ../e_mod_config.c:102
+#: e_mod_config.c:102
 msgid "Matrix"
 msgstr "Matrix"
 
-#: ../e_mod_config.c:104
+#: e_mod_config.c:104
 msgid "Ice"
 msgstr "Glace"
 
-#: ../e_mod_config.c:106
+#: e_mod_config.c:106
 msgid "White"
 msgstr "Blanc"
 
-#: ../e_mod_config.c:108
+#: e_mod_config.c:108
 msgid "Custom"
 msgstr "Personnalisé"
 
-#: ../e_mod_config.c:179
+#: e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Niveau de rouge"
 
-#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
+#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../e_mod_config.c:186
+#: e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Niveau de bleu"
 
-#: ../e_mod_config.c:193
+#: e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Niveau de vert"
