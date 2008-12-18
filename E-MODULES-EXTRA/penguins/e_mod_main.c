@@ -459,7 +459,7 @@ static void
 _cb_click_r (void *data, Evas_Object *o, const char *emi, const char *src)
 {
    //printf("Right-click on TUX !!!\n");
-   e_int_config_penguins_module(NULL, NULL);
+   e_int_config_penguins_module(NULL);
 }
 static void
 _cb_click_c (void *data, Evas_Object *o, const char *emi, const char *src)
