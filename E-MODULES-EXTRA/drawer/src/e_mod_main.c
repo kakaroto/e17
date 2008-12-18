@@ -1,12 +1,14 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
-#include <e.h>
 #include "e_mod_main.h"
 #include <strings.h>
+#include <Epsilon_Request.h>
 
 /* Local Structures */
 typedef struct _Instance Instance;
+typedef struct _Drawer_Epsilon_Data Drawer_Epsilon_Data;
+
 struct _Instance 
 {
    /* pointer to this gadget's container */
@@ -30,6 +32,13 @@ struct _Instance
    Eina_Bool is_floating : 1;
    Eina_Bool pop_hiding : 1;
    Eina_Bool pop_update : 1;
+};
+
+struct _Drawer_Epsilon_Data
+{
+   Evas_Object *o_icon;
+
+   int w, h;
 };
 
 /* Local Function Prototypes */
@@ -63,6 +72,7 @@ static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
+static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 
@@ -100,6 +110,8 @@ e_modapi_init(E_Module *m)
 {
    char buf[4096];
    const char *homedir;
+
+   epsilon_request_init();
 
    homedir = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/config/%s/module.drawer", 
@@ -256,6 +268,9 @@ e_modapi_shutdown(E_Module *m)
    /* Clean EET */
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
+
+   epsilon_request_shutdown();
+
    return 1;
 }
 
@@ -315,7 +330,7 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 	snprintf(buf2, sizeof(buf2), "%s%s", moddir, mod);
 	if (!(desk = efreet_desktop_get(buf2))) continue;
 	if (desk->x) 
-	  pi->title = eina_stringshare_add(ecore_hash_get(desk->x, "X-Drawer-Title"));
+	  pi->title = eina_stringshare_add(eina_hash_find(desk->x, "X-Drawer-Title"));
 	if (!pi->title) pi->title = eina_stringshare_add(desk->name);
 
 	pi->name = evas_stringshare_add(desk->name);
@@ -382,6 +397,8 @@ drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Categ
 EAPI Evas_Object *
 drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 {
+   Drawer_Epsilon_Data *ep = NULL;
+
    if (si->desktop)
      return e_util_desktop_icon_add(si->desktop, MAX(w, h), evas);
    else if (si->file_path)
@@ -411,7 +428,15 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	       }
 	     return o;
 	  }
+	else if (ecore_file_is_dir(si->file_path))
+	  {
+	     o = edje_object_add(evas);
+	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/folder");
 
+	     return o;
+	  }
+
+#if 0
 	o = e_thumb_icon_add(evas);
 	if ((e_util_glob_case_match(si->file_path, "*.edj")))
 	  {
@@ -431,6 +456,16 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	  }
 
 	e_thumb_icon_begin(o);
+	return o;
+#endif
+	o = edje_object_add(evas);
+
+	ep = calloc(1, sizeof(Drawer_Epsilon_Data));
+	ep->o_icon = o;
+	ep->w = w;
+	ep->h = h;
+
+	epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
 	return o;
      }
 }
@@ -877,10 +912,13 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_SOURCE_UPDATE,
-	    _drawer_source_update_cb, NULL));
+				 _drawer_source_update_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_ACTIVATE,
-	    _drawer_view_activate_cb, NULL));
+				 _drawer_view_activate_cb, NULL));
+   inst->handlers = eina_list_append(inst->handlers,
+	 ecore_event_handler_add(EPSILON_EVENT_DONE,
+				 _drawer_thumbnail_done_cb, NULL));
 
    if (inst->conf_item->source)
      _drawer_source_new(inst, inst->conf_item->source);
@@ -1144,6 +1182,89 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
      _drawer_popup_hide(inst);
 
    return 0;
+}
+
+static int
+_drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
+{
+   Epsilon_Request *ev;
+   Drawer_Epsilon_Data *ep;
+   Evas_Object *o = NULL;
+   Evas *evas;
+
+   if (!(ev = event) || !(ep = ev->data)) return 1;
+
+   evas = evas_object_evas_get(ep->o_icon);
+   if (ev->dest)
+     {
+	o = evas_object_image_add(evas);
+	evas_object_image_size_set(o, ep->w, ep->h);
+	evas_object_image_load_size_set(o, ep->w, ep->h);
+	evas_object_image_fill_set(o, 0, 0, ep->w, ep->h);
+	evas_object_image_file_set(o, ev->dest, NULL);
+     }
+   else if (ev->path)
+     {
+	const char *mime = NULL;
+
+	mime = efreet_mime_globs_type_get(ev->path);
+	if (mime)
+	  {
+	     const char *icon;
+
+	     icon = e_fm_mime_icon_get(mime);
+	     if (!icon)
+	       {
+		  o = edje_object_add(evas);
+		  e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+	       }
+	     else if (!strncmp(icon, "e/icons/fileman/mime/", 21))
+	       {
+		  o = edje_object_add(evas);
+		  if (e_theme_edje_object_set(o, "base/theme/fileman", icon))
+		    {
+		       e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+		    }
+	       }
+	     else
+	       {
+		  char *p;
+
+		  p = strrchr(icon, '.');
+		  if ((p) && (!strcmp(p, ".edj")))
+		    {
+		       o = edje_object_add(evas);
+		       if (!edje_object_file_set(o, icon, "icon"))
+			 e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+		    }
+		  else
+		    {
+		       o = e_icon_add(evas);
+		       e_icon_file_set(o, icon);
+		       e_icon_fill_inside_set(o, 1);
+		    }
+	       }
+	  }
+     }
+
+   if (o)
+     {
+	if (!e_theme_edje_object_set(ep->o_icon, "base/theme/modules/drawer", 
+				     "modules/drawer/icon/thumbnail"))
+	  {
+	     char buf[4096];
+
+	     snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
+		      drawer_conf->module->dir);
+	     edje_object_file_set(ep->o_icon, buf, "modules/drawer/icon/thumbnail");
+	  }
+	edje_object_part_swallow(ep->o_icon, "e.swallow.content", o);
+     }
+
+   free(ep);
+   ev->data = NULL;
+
+   return 1;
 }
 
 static void

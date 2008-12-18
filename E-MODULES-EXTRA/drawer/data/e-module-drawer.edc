@@ -501,6 +501,18 @@ target: "fg";
       }
    }
    group {
+      name: "modules/drawer/icon/thumbnail";
+      parts {
+	 part {
+	    name: "e.swallow.content";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	    }
+	 }
+      }
+   }
+   group {
       name: "modules/drawer/container";
       data {
 	 item: "shaped" "1";

@@ -4,6 +4,12 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include <e.h>
+
+#ifndef __UNUSED__
+#define __UNUSED__
+#endif
+
 /* Macros used for config file versioning */
 #define MOD_CONFIG_FILE_EPOCH 0x0001
 #define MOD_CONFIG_FILE_GENERATION 0x008d

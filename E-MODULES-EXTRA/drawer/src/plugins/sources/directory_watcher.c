@@ -1,8 +1,7 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
-#include <e.h>
-#include "launcher.h"
+#include "directory_watcher.h"
 
 /* Local Structures */
 typedef struct _Instance Instance;
@@ -229,7 +228,7 @@ static Drawer_Source_Item *
 _dirwatcher_source_item_fill(Instance *inst, const char *file)
 {
    Drawer_Source_Item *si = NULL;
-   char buf[4096];
+   char buf[4096], *mime;
 
    si = E_NEW(Drawer_Source_Item, 1);
 
@@ -249,7 +248,16 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
 
    si->file_path = eina_stringshare_add(buf);
 
-   snprintf(buf, sizeof(buf), "%s (%s)", e_fm_mime_filename_get(si->file_path), e_util_size_string_get(ecore_file_size(si->file_path)));
+   mime = e_fm_mime_filename_get(si->file_path);
+   if (mime)
+     snprintf(buf, sizeof(buf), "%s (%s)", mime,
+	      e_util_size_string_get(ecore_file_size(si->file_path)));
+   else if (ecore_file_is_dir(si->file_path))
+     snprintf(buf, sizeof(buf), D_("Directory (%s)"),
+	      e_util_size_string_get(ecore_file_size(si->file_path)));
+   else
+     snprintf(buf, sizeof(buf), "%s (%s)", basename(si->file_path),
+	      e_util_size_string_get(ecore_file_size(si->file_path)));
    si->description = eina_stringshare_add(buf);
 
    return si;

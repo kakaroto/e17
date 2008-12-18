@@ -45,7 +45,7 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
-PKG_CHECK_MODULES(E, [enlightenment])
+PKG_CHECK_MODULES(E, [enlightenment epsilon])
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 
