@@ -6,6 +6,7 @@
 /* Local Structures */
 typedef struct _Instance Instance;
 typedef struct _Conf Conf;
+typedef struct _Dirwatcher_Priv Dirwatcher_Priv;
 
 struct _Instance 
 {
@@ -29,6 +30,15 @@ struct _Conf
    const char *id;
 
    const char *dir;
+};
+
+struct _Dirwatcher_Priv
+{
+   Eina_Bool dir : 1;
+   Eina_Bool link : 1;
+   Eina_Bool mount : 1;
+
+   const char *mime;
 };
 
 struct _E_Config_Dialog_Data 
@@ -153,6 +163,43 @@ drawer_source_list(Drawer_Source *s)
 EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
+   Dirwatcher_Priv *p = NULL;
+
+   p = si->priv;
+   if (p->dir)
+     {
+	E_Action *act = NULL;
+
+	act = e_action_find("fileman");
+	if (act)
+	  {
+	     if (act && act->func.go)
+	       act->func.go(E_OBJECT(e_manager_current_get()),
+			    si->file_path);
+	  }
+	return;
+     }
+   if (si->file_path)
+     {
+	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
+	    (e_util_glob_case_match(si->file_path, "*.directory")))
+	  {
+	     Efreet_Desktop *desktop;
+
+	     desktop = efreet_desktop_new(si->file_path);
+	     if (!desktop) return;
+
+	     e_exec(e_util_zone_current_get(e_manager_current_get()),
+		    desktop, NULL, NULL, NULL);
+	     if (p->mime)
+	       e_exehist_mime_desktop_add(p->mime, desktop);
+
+	     efreet_desktop_free(desktop);
+	  }
+
+	/* XXX: open the file with the default application */
+	return;
+     }
 }
 
 EAPI Evas_Object *
@@ -220,7 +267,8 @@ _dirwatcher_source_items_free(Instance *inst)
 	eina_stringshare_del(si->description);
 	eina_stringshare_del(si->category);
 
-	free(si);
+	E_FREE(si->priv);
+	E_FREE(si);
      }
 }
 
@@ -228,10 +276,14 @@ static Drawer_Source_Item *
 _dirwatcher_source_item_fill(Instance *inst, const char *file)
 {
    Drawer_Source_Item *si = NULL;
+   Dirwatcher_Priv *p = NULL;
    char buf[4096];
    const char *mime;
 
    si = E_NEW(Drawer_Source_Item, 1);
+   p = E_NEW(Dirwatcher_Priv, 1);
+
+   si->priv = p;
 
    snprintf(buf, sizeof(buf), "%s/%s", inst->conf->dir, file);
    if ((e_util_glob_case_match(buf, "*.desktop")) ||
@@ -251,11 +303,17 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
 
    mime = e_fm_mime_filename_get(si->file_path);
    if (mime)
-     snprintf(buf, sizeof(buf), "%s (%s)", mime,
-	      e_util_size_string_get(ecore_file_size(si->file_path)));
+     {
+	snprintf(buf, sizeof(buf), "%s (%s)", mime,
+		 e_util_size_string_get(ecore_file_size(si->file_path)));
+	p->mime = mime;
+     }
    else if (ecore_file_is_dir(si->file_path))
-     snprintf(buf, sizeof(buf), D_("Directory (%s)"),
-	      e_util_size_string_get(ecore_file_size(si->file_path)));
+     {
+	snprintf(buf, sizeof(buf), D_("Directory (%s)"),
+		 e_util_size_string_get(ecore_file_size(si->file_path)));
+	p->dir = EINA_TRUE;
+     }
    else
      snprintf(buf, sizeof(buf), "%s (%s)", basename(si->file_path),
 	      e_util_size_string_get(ecore_file_size(si->file_path)));
