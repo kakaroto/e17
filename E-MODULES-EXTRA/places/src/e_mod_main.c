@@ -458,5 +458,5 @@ _places_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 {
    if (!places_conf) return;
    if (places_conf->cfd) return;
-   e_int_config_places_module(mn->zone->container, NULL);
+   e_int_config_places_module(mn->zone->container);
 }
