@@ -41,7 +41,7 @@ static int _save_menu(E_Config_Dialog_Data *cfdata);
 static int _save_order(E_Config_Dialog_Data *cfdata);
 
 EAPI E_Config_Dialog *
-e_int_config_apps_iiirk(E_Container *con, const char *params __UNUSED__) 
+e_int_config_apps_iiirk(E_Container *con) 
 {
    E_Config_Data *data;
    char buf[4096];
