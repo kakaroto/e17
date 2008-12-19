@@ -15,7 +15,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* External Functions */
 EAPI E_Config_Dialog *
-e_int_config_skel_module(E_Container *con, const char *params __UNUSED__) 
+e_int_config_skel_module(E_Container *con) 
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;

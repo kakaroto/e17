@@ -465,5 +465,5 @@ _skel_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 {
    if (!skel_conf) return;
    if (skel_conf->cfd) return;
-   e_int_config_skel_module(mn->zone->container, NULL);
+   e_int_config_skel_module(mn->zone->container);
 }
