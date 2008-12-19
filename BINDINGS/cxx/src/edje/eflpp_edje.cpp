@@ -195,10 +195,11 @@ CountedPtr <EvasObject> EdjePart::swallow()
     const char *t = evas_object_type_get( eo );
     EvasObject *ret_o = NULL;
   
-    if (t == string ("edje"))
+    if( !strcmp( t,"edje" ) )
     {
         ret_o = EvasEdje::wrap (eo);
     }
+    // TODO: support other types
   
     return CountedPtr <EvasObject> (ret_o);
 }

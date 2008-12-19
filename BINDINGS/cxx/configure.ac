@@ -85,17 +85,13 @@ fi
 AM_CONDITIONAL(EFLPP_ENABLE_FB, test "x$have_fbcon" = xyes)
 
 
-
-
 dnl Check for option to enable examples
-AC_MSG_CHECKING(whether to enable debugging)
+AC_MSG_CHECKING(whether to enable examples)
 AC_ARG_ENABLE(examples,
         [  --enable-examples=[no/yes]        enables to build examples (default=yes)],,
                  enable_examples=yes)
 
-AM_CONDITIONAL(ENABLE_EXAMPLES, test "x$enable_examples" != "xyes")
-
-
+AM_CONDITIONAL(ENABLE_EXAMPLES, test "x$enable_examples" = "xyes")
 
 dnl Check for pkg-config stuff
 pkg_modules="$esmart_modules $emotion_modules evas ecore ecore-config ecore-evas ecore-ipc ecore-txt ecore-con ecore-job sigc++-2.0 etk ewl"

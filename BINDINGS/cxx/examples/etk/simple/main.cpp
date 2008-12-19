@@ -16,6 +16,8 @@ int main( int argc, const char **argv )
     mainWindow->resize( Size( 200, 100 ) );
 
     EtkButton* button = new EtkButton( "Hello World" );
+    button->setFromStock( ETK_STOCK_BOOKMARK_NEW );
+    button->setStockSize( ETK_STOCK_BIG );
     mainWindow->appendChild( button );
     mainWindow->showAll();
 
