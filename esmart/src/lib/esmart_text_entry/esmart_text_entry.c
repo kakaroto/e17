@@ -179,7 +179,6 @@ esmart_text_entry_buffer_char_append (Evas_Object * o, char c)
   if (e->buf.index < e->buf.size)
     e->buf.text[e->buf.index++] = c;
   e->buf.text[e->buf.index] = 0;
-  esmart_text_entry_text_fix (o);
 }
 static void
 esmart_text_entry_buffer_backspace (Evas_Object * o)
