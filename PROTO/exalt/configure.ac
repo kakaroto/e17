@@ -6,7 +6,9 @@ rm -f config.cache
 
 AC_INIT(configure.ac)
 
+
 AC_CANONICAL_BUILD
+
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
