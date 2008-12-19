@@ -488,8 +488,6 @@ ewl_object_x_request(Ewl_Object *o, int x)
         DCHECK_PARAM_PTR(o);
 
         o->current.x = x + PADDING_LEFT(o) + INSET_LEFT(o);
-        if (EWL_WINDOW_IS(o))
-                printf("move window to %i (%i)\n", x, o->current.x);
         ewl_widget_configure(EWL_WIDGET(o));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
