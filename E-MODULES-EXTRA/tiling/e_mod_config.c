@@ -51,7 +51,7 @@ get_vdesk(E_Config_Dialog_Data *cfdata, int x, int y, int zone_num)
 }
 
 EAPI E_Config_Dialog *
-e_int_config_tiling_module(E_Container *con, const char *params __UNUSED__)
+e_int_config_tiling_module(E_Container *con)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;

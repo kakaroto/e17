@@ -20,7 +20,7 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Rain *rn, E_Config_Dialog_Data *cfdata);
 
-EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con, const char *params __UNUSED__)
+EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;

@@ -34,6 +34,6 @@ struct _E_Config_Dialog_Data
    Evas *evas;
 };
 
-EAPI E_Config_Dialog *e_int_config_tiling_module(E_Container *con, const char *params __UNUSED__);
+EAPI E_Config_Dialog *e_int_config_tiling_module(E_Container *con);
 #endif
 #endif

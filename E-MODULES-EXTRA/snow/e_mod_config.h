@@ -4,7 +4,7 @@
 #define E_MOD_CONFIG_H
 #include "e_mod_main.h"
 
-EAPI E_Config_Dialog *e_int_config_snow_module(E_Container *con, const char *params __UNUSED__);
+EAPI E_Config_Dialog *e_int_config_snow_module(E_Container *con);
 
 #endif
 #endif
