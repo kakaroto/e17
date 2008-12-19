@@ -488,6 +488,8 @@ ewl_object_x_request(Ewl_Object *o, int x)
         DCHECK_PARAM_PTR(o);
 
         o->current.x = x + PADDING_LEFT(o) + INSET_LEFT(o);
+        if (EWL_WINDOW_IS(o))
+                printf("move window to %i (%i)\n", x, o->current.x);
         ewl_widget_configure(EWL_WIDGET(o));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -944,17 +946,27 @@ void
 ewl_object_padding_set(Ewl_Object *o, int l, int r, int t, int b)
 {
         int dh, dv;
+        int dx, dy;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
-        dh = (l - o->pad.l) + (r - o->pad.r);
-        dv = (t - o->pad.t) + (b - o->pad.t);
+        dx = (l - o->pad.l);
+        dy = (t - o->pad.t);
+        dh = dx + (r - o->pad.r);
+        dv = dy + (b - o->pad.t);
 
         o->pad.l = l;
         o->pad.r = r;
         o->pad.t = t;
         o->pad.b = b;
+        
+        /* keep the outer size and position unchanged, this is mostly important
+         * for widgets that doesn't have a parent */
+        o->current.w -= dh;
+        o->current.h -= dv;
+        o->current.x += dx;
+        o->current.y += dy;
 
         /*
          * Now update the widgets parent of the change in size.
@@ -1065,17 +1077,28 @@ void
 ewl_object_insets_set(Ewl_Object *o, int l, int r, int t, int b)
 {
         int dh, dv;
+        int dx, dy;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
-        dh = (l - o->insets.l) + (r - o->insets.r);
-        dv = (t - o->insets.t) + (b - o->insets.t);
+        dx = (l - o->insets.l);
+        dy = (t - o->insets.t);
+        dh = dx + (r - o->insets.r);
+        dv = dy + (b - o->insets.t);
 
         o->insets.l = l;
         o->insets.r = r;
         o->insets.t = t;
         o->insets.b = b;
+
+        /* keep the outer size and position unchanged, this is mostly important
+         * for widgets that doesn't have a parent */
+        o->current.w -= dh;
+        o->current.h -= dv;
+        o->current.x += dx;
+        o->current.y += dy;
+
 
         /*
          * Now update the widgets parent of the change in size.

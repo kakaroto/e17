@@ -2772,11 +2772,6 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
                 ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
 
-                i_l = CURRENT_X(w);
-                i_t = CURRENT_Y(w);
-                ewl_object_x_request(EWL_OBJECT(w), i_l);
-                ewl_object_y_request(EWL_OBJECT(w), i_t);
-
                 /*
                  * Propagate minimum sizes from the bit theme to the widget.
                  */
@@ -2836,10 +2831,10 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 int p_l, p_r, p_t, p_b;
                 int l, r, t, b;
 
-                printf("**********\n\n\tunrealize with theme_object\n"
-                       "this seems to be dead code, please report when"
-                       "you see these lines"         
-                       "***********\n\n");
+                DWARNING("**********\n\n\tunrealize with theme_object\n"
+                         "this seems to be dead code, please report when"
+                         "you see these lines"         
+                         "***********\n\n");
                 ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
 
                 ewl_object_insets_get(EWL_OBJECT(w), &i_l, &i_r, &i_t, &i_b);
@@ -2867,6 +2862,11 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
                  */
                 ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
                 ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+        }
+        else
+        {
+                ewl_object_insets_set(EWL_OBJECT(w), 0, 0, 0, 0);
+                ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 0, 0);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
