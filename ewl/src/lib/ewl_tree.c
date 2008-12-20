@@ -635,6 +635,65 @@ ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data, unsigned int row)
 }
 
 /**
+ * @param tree: The tree to work with
+ * @param row: The row that would be made visible, if it is not
+ * @return Returns no value
+ * @brief Ensures that the requested row is visible, if it is not the 
+ *        tree is scrolled, so that the row becomes visible.
+ */
+void
+ewl_tree_row_visible_ensure(Ewl_Tree *tree, unsigned int row)
+{
+        Ewl_Widget     *w, *row_last, *row_first;
+        Ewl_Container  *c;
+        Ewl_Scrollpane *scrollpane;
+        double         scroll_value;
+        int            row_count;
+        double         y_offset;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(tree);
+        DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+        c = EWL_CONTAINER(tree->rows);
+        if (row >= ewl_container_child_count_get(c))
+        {
+                DWARNING("You have passed row number bigger than the count of rows");
+                DRETURN(DLEVEL_UNSTABLE);
+        }
+
+        w = ewl_container_child_get(c, row);
+        scrollpane = ewl_tree_kinetic_scrollpane_get(tree);
+
+        if (!( (CURRENT_Y(w) + CURRENT_H(w) < CURRENT_Y(c))
+               || (CURRENT_Y(w)  > CURRENT_Y(c) + CURRENT_H(c))
+             ))
+        {
+                DRETURN(DLEVEL_STABLE);
+        }
+
+        row_count = ewl_container_child_count_get(c);
+
+        if (row_count > 0)
+        {
+                row_first = ewl_container_child_get(c, 0);
+                row_last = ewl_container_child_get(c, row_count - 1);
+        }
+        else
+                DRETURN(DLEVEL_STABLE);
+
+        if (!REALIZED(w))
+                DRETURN(DLEVEL_STABLE);
+
+        y_offset = (double)(CURRENT_Y(w) -  CURRENT_Y(row_first));
+        scroll_value = y_offset / (CURRENT_Y(row_last) - CURRENT_Y(row_first));
+
+        ewl_scrollpane_vscrollbar_value_set(scrollpane, scroll_value);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev: UNUSED

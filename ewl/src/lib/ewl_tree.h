@@ -169,6 +169,9 @@ void                     ewl_tree_row_collapse(Ewl_Tree *tree, void *data,
 unsigned int             ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data,
                                         unsigned int row);
 
+void                     ewl_tree_row_visible_ensure(Ewl_Tree *tree,
+                                        unsigned int row);
+
 void                     ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree,
                                         Ewl_Kinetic_Scroll type);
 Ewl_Kinetic_Scroll       ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree);
