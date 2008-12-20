@@ -52,7 +52,7 @@ static Entry * _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *s
 static Entry * _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si);
 static void _list_item_pack_options(Instance *inst, Entry *e);
-static void _list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y);
+static void _list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
 
 static int _list_scroll_timer(void *data);
 static int _list_scroll_animator(void *data);
@@ -505,12 +505,10 @@ _list_item_pack_options(Instance *inst, Entry *e)
 }
 
 static void
-_list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y)
+_list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
 {
-   Evas_Coord w, h;
    double d;
    
-   evas_object_geometry_get(inst->o_box, NULL, NULL, &w, &h);
    if (e_box_orientation_get(inst->o_box))
      {
 	if (w > 1) d = (double)x / (double)(w - 1);
@@ -536,7 +534,7 @@ static int
 _list_scroll_timer(void *data)
 {
    Instance *inst = NULL;
-   double d, v;
+   double d;
    
    inst = data;
    d = inst->scroll_wanted - inst->scroll_pos;
@@ -547,8 +545,7 @@ _list_scroll_timer(void *data)
 	inst->scroll_timer = NULL;
 	return 0;
      }
-   v = 0.05;
-   inst->scroll_pos = (inst->scroll_pos * (1.0 - v)) + (inst->scroll_wanted * v);
+   inst->scroll_pos = (inst->scroll_pos * 0.95) + (inst->scroll_wanted * 0.05);
    return 1;
 }
 
@@ -578,13 +575,13 @@ _list_cb_list_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Move *ev;
-   Evas_Coord x, y;
+   Evas_Coord x, y, w, h;
    
    ev = event_info;
    inst = data;
-   evas_object_geometry_get(inst->o_box, &x, &y, NULL, NULL);
+   evas_object_geometry_get(inst->o_box, &x, &y, &w, &h);
    _list_autoscroll_update(inst, ev->cur.output.x - x, 
-			   ev->cur.output.y - y);
+			   ev->cur.output.y - y, w, h);
 }
 
 static int

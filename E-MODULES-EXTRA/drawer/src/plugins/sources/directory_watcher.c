@@ -55,7 +55,7 @@ static void _dirwatcher_source_items_free(Instance *inst);
 static Drawer_Source_Item * _dirwatcher_source_item_fill(Instance *inst, const char *file);
 static void _dirwatcher_event_update_free(void *data __UNUSED__, void *event);
 
-static void _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path __UNUSED__);
+static void _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path);
 static void _dirwatcher_conf_activation_cb(void *data1, void *data2 __UNUSED__);
 
 static void * _dirwatcher_cf_create_data(E_Config_Dialog *cfd);
@@ -100,6 +100,8 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 	e_config_save_queue();
      }
 
+   inst->monitor = ecore_file_monitor_add(inst->conf->dir,
+					  _dirwatcher_monitor_cb, inst);
    _dirwatcher_description_create(inst);
 
    return inst;
@@ -135,9 +137,6 @@ drawer_source_list(Drawer_Source *s)
 
    if (!(inst = DRAWER_PLUGIN(s)->data)) return NULL;
    if (!(ecore_file_is_dir(inst->conf->dir))) return NULL;
-   if (!inst->monitor)
-     inst->monitor = ecore_file_monitor_add(inst->conf->dir,
-					    _dirwatcher_monitor_cb, inst);
 
    _dirwatcher_source_items_free(inst);
 
@@ -315,7 +314,7 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
 	p->dir = EINA_TRUE;
      }
    else
-     snprintf(buf, sizeof(buf), "%s (%s)", basename(si->file_path),
+     snprintf(buf, sizeof(buf), "%s (%s)", basename((char *) si->file_path),
 	      e_util_size_string_get(ecore_file_size(si->file_path)));
    si->description = eina_stringshare_add(buf);
 
@@ -333,12 +332,15 @@ _dirwatcher_event_update_free(void *data __UNUSED__, void *event)
 }
 
 static void
-_dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path __UNUSED__)
+_dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path)
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Update *ev;
+   char *base;
 
    inst = data;
+   base = basename((char *) path);
+   if (base[0] == '.') return;
 
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
@@ -434,6 +436,11 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    path = ecore_file_realpath(cfdata->dir);
    cfdata->inst->conf->dir = eina_stringshare_add(path);
    E_FREE(path);
+
+   if (inst->monitor)
+     ecore_file_monitor_del(inst->monitor);
+   inst->monitor = ecore_file_monitor_add(inst->conf->dir,
+					  _dirwatcher_monitor_cb, inst);
 
    _dirwatcher_description_create(inst);
 
