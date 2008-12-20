@@ -75,8 +75,7 @@ main(int argc, char **argv)
 	     char buf[16], buf2[16];
 
 	     n = sscanf(argv[i +1], "%10[^x]x%10s", buf, buf2);
-	     if (n == 2)
-	       {
+	     if (n == 2)	       {
 		  w = atoi(buf);
 		  h = atoi(buf2);
 		  startw = w;
@@ -285,7 +284,9 @@ main_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Event_Key_Down *ev;
 
    ev = (Evas_Event_Key_Down *)event_info;
-   if      (!strcmp(ev->keyname, "Escape"))
+   if      ((!strcmp(ev->keyname, "Escape")) ||
+            (!strcmp(ev->keyname, "q")) ||
+            (!strcmp(ev->keyname, "Q")))
      {
 	eet_close(eet_config);
 	ecore_main_loop_quit();
@@ -751,7 +752,8 @@ main_menu_scan(void *data)
 static void
 main_menu_tv(void *data)
 {
-   system("tvtime -m -n PAL -f custom");
+//   system("tvtime -m -n PAL -f custom");
+   system("xine -f dvb://1 --no-gui");
 }
 
 int

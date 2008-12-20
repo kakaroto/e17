@@ -94,4 +94,8 @@
 #include "e_layout.h"
 #include "e_flowlayout.h"
 
+#ifndef __UNUSED__
+#define __UNUSED__
+#endif
+
 #endif
