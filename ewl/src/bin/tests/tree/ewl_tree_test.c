@@ -57,6 +57,7 @@ static void ewl_tree_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 static void tree_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void tree_cb_select_mode_change(Ewl_Widget *w, void *ev, void *data);
+static void tree_cb_ensure_visible(Ewl_Widget *w, void *ev, void *data);
 
 extern Ewl_Unit_Test tree_unit_tests[];
 
@@ -173,6 +174,14 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 tree_cb_select_mode_change, NULL);
+        ewl_widget_show(o);
+
+	o = ewl_button_new();
+        ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+        ewl_button_label_set(EWL_BUTTON(o), "Ensure visible");
+        ewl_container_child_append(EWL_CONTAINER(o2), o);
+        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                tree_cb_ensure_visible, NULL);
         ewl_widget_show(o);
 
         return 1;
@@ -575,4 +584,16 @@ tree_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         }
 }
 
+static void
+tree_cb_ensure_visible(Ewl_Widget *w, void *ev, void *data)
+{
+        Ewl_Widget *tree, *spinner;
+	int row;
 
+        tree = ewl_widget_name_find("tree");
+	spinner = ewl_widget_name_find("rows_spinner");
+	
+	row = ewl_range_value_get(EWL_RANGE(spinner));
+
+	ewl_tree_row_visible_ensure(EWL_TREE(tree), row);
+}
