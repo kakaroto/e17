@@ -68,17 +68,16 @@ files_DATA = edje_editor.edj blank.edj
 desktopdir   = $(datadir)/applications
 desktop_DATA = edje_editor.desktop
 
-#http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
-icondir = $(datadir)/icons/hicolor/48x48/apps
+icondir = $(datadir)/icons
 icon_DATA = edje_editor.png
 
 
-edje_editor.edj: Makefile
+edje_editor.edj: edje_editor.edc Makefile
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/edje_editor.edc \
 	$(top_builddir)/data/edje_editor.edj
 
-blank.edj: Makefile
+blank.edj: blank.edc Makefile
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/blank.edc \
 	$(top_builddir)/data/blank.edj
