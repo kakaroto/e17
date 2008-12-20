@@ -174,6 +174,7 @@ engine_direct3d_args(int argc, char **argv)
    HDC                        dc;
    MSG                        msg;
    Evas_Engine_Info_Direct3D *einfo;
+   DWORD                      style;
    int                        depth;
    int                        i;
    int                        ok = 0;

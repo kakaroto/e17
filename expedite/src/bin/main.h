@@ -64,6 +64,11 @@
 #include "engine_software_16_wince.h"
 #endif
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "ui.h"
 #include "about.h"
 
@@ -79,6 +84,10 @@ double       get_time(void);
 const char  *build_path(const char *filename);
 void         engine_loop(void);
 int          engine_abort(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #define KEY_STD \
    if ((!strcmp(key, "Escape")) || (!strcmp(key, "q")) || (!strcmp(key, "Q")) || (!strcmp(key, "Return"))) \
