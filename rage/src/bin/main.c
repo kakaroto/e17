@@ -753,7 +753,32 @@ static void
 main_menu_tv(void *data)
 {
 //   system("tvtime -m -n PAL -f custom");
-   system("xine -f dvb://1 --no-gui");
+   system("xine -f --no-gui "
+          "dvb://0 "
+          "dvb://1 "
+          "dvb://2 "
+          "dvb://3 "
+          "dvb://4 "
+          "dvb://5 "
+          "dvb://6 "
+          "dvb://7 "
+          "dvb://8 "
+          "dvb://9 "
+          "dvb://10 "
+          "dvb://11 "
+          "dvb://12 "
+          "dvb://13 "
+          "dvb://14 "
+          "dvb://15 "
+          "dvb://16 "
+          "dvb://17 "
+          "dvb://18 "
+          "dvb://19 "
+          "dvb://20 "
+          "dvb://21 "
+          "dvb://22 "
+          "dvb://23 "
+          );
 }
 
 int
