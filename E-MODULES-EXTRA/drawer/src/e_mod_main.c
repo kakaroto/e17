@@ -1197,11 +1197,9 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
    evas = evas_object_evas_get(ep->o_icon);
    if (ev->dest)
      {
-	o = evas_object_image_add(evas);
-	evas_object_image_size_set(o, ep->w, ep->h);
-	evas_object_image_load_size_set(o, ep->w, ep->h);
-	evas_object_image_fill_set(o, 0, 0, ep->w, ep->h);
-	evas_object_image_file_set(o, ev->dest, NULL);
+	o = e_icon_add(evas);
+	e_icon_file_set(o, ev->dest);
+	e_icon_scale_size_set(o, MAX(ep->w, ep->h));
      }
    else if (ev->path)
      {
