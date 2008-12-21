@@ -258,8 +258,9 @@ _grid_containers_create(Instance *inst)
      edje_object_file_set(inst->o_box, inst->theme_file, "modules/drawer/grid/box");
 
 
-   inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);
-   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);
+/*   inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);*/
+/*   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);*/
+   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
    evas_object_show(inst->o_box);
 }
 
@@ -287,6 +288,10 @@ _grid_item_create(Instance *inst, Drawer_Source_Item *si)
    edje_object_part_text_set(e->o_holder, "e.text.label", si->label);
 
    evas_object_show(e->o_holder);
+
+   /* XXX: remove this once evas_box is fixed */
+   edje_object_size_min_calc(e->o_holder, &w, &h);
+   evas_object_resize(e->o_holder, w, h);
 
    e->inst = inst;
    e->si = si;

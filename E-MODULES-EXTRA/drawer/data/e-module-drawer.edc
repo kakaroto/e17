@@ -1689,7 +1689,7 @@ target: "e.text.label";
 	    description {
 	       state: "default" 0.0;
 	       box {
-		  align: 0 0.5;
+		  align: 0.0 0.5;
 		  padding: 1 1;
 		  layout: "horizontal_flow";
 	       }
