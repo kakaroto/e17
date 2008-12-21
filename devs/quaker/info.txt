@@ -1,0 +1,10 @@
+Login:        quaker
+IRC Nick:     quaker66
+Jabber:       quaker@jabbim.cz
+MSN:          quaker6667@hotmail.com
+Name:         Daniel Kolesa
+Location:     Kyjov, Czech Republic
+E-Mail:       quaker66@gmail.com
+Managing:     Debian packaging, Czech translations
+Platform:     Debian(Linux), Ubuntu(Linux)
+GeoData:      49.00596302341608 17.122246026992798
