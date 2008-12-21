@@ -109,12 +109,15 @@ ewl_theme_theme_set(const char *theme_name)
         while ((w = ecore_list_next(ewl_embed_list)))
         {
                 int vis;
+                int vis2;
 
                 vis = REALIZED(w);
+                vis2 = VISIBLE(w);
 
                 ewl_widget_hide(w);
                 ewl_widget_unrealize(w);
                 if (vis) ewl_widget_realize(w);
+                if (vis2) ewl_widget_show(w);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -200,7 +203,7 @@ ewl_theme_font_path_get(void)
  * the list of paths that are searched for fonts.
  */
 void
-ewl_theme_font_path_add(char *path)
+ewl_theme_font_path_add(const char *path)
 {
         char *temp;
 
@@ -221,7 +224,7 @@ ewl_theme_font_path_add(char *path)
  * @brief retrieve the path to an image from a widgets theme
  */
 char *
-ewl_theme_image_get(Ewl_Widget *w, char *k)
+ewl_theme_image_get(Ewl_Widget *w, const char *k)
 {
         const char *data;
         char *ret;
@@ -335,7 +338,7 @@ ewl_theme_data_reset(Ewl_Widget *w)
  * @brief Retrieve an string value from a widgets theme
  */
 const char *
-ewl_theme_data_str_get(Ewl_Widget *w, char *k)
+ewl_theme_data_str_get(Ewl_Widget *w, const char *k)
 {
         Ecore_Hash *cache = NULL;
         const char *ret = NULL;
@@ -450,7 +453,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
  * @brief Retrieve an integer value from a widgets theme
  */
 int
-ewl_theme_data_int_get(Ewl_Widget *w, char *k)
+ewl_theme_data_int_get(Ewl_Widget *w, const char *k)
 {
         const char *temp;
         int ret = 0;
@@ -475,11 +478,19 @@ ewl_theme_data_int_get(Ewl_Widget *w, char *k)
  * associated with value @a v.
  */
 void
-ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
+ewl_theme_data_str_set(Ewl_Widget *w, const char *k, const char *v)
 {
+        int was_realized = FALSE;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_PARAM_PTR(k);
+
+        if (REALIZED(w))
+        {
+                ewl_widget_unrealize(w);
+                was_realized = TRUE;
+        }
 
         if (!w->theme || w->theme == ewl_theme_def_data) {
                 w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -495,10 +506,8 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
                 ecore_hash_set(w->theme, (void *)ecore_string_instance(k),
                                                 EWL_THEME_KEY_NOMATCH);
 
-        if (REALIZED(w)) {
-                ewl_widget_unrealize(w);
+        if (was_realized)
                 ewl_widget_realize(w);
-        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -514,7 +523,7 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
  * associated with value @a v.
  */
 void
-ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v)
+ewl_theme_data_int_set(Ewl_Widget *w, const char *k, int v)
 {
         char value[16];
 

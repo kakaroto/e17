@@ -1084,7 +1084,7 @@ ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
         ewl_embed_cache_cleanup(embed);
         ewl_canvas_destroy(embed->canvas);
         embed->canvas = NULL;
-
+        
         if (REALIZED(w))
         {
                 ewl_engine_window_hide(win);

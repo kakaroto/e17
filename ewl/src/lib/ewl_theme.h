@@ -20,17 +20,18 @@ const char      *ewl_theme_path_get(void);
 int              ewl_theme_theme_set(const char *theme);
 
 Ecore_List      *ewl_theme_font_path_get(void);
-void             ewl_theme_font_path_add(char *path);
+void             ewl_theme_font_path_add(const char *path);
 
-char            *ewl_theme_image_get(Ewl_Widget *w, char *k);
+char            *ewl_theme_image_get(Ewl_Widget *w, const char *k);
 
 void             ewl_theme_data_reset(Ewl_Widget *w);
 
-const char      *ewl_theme_data_str_get(Ewl_Widget *w, char *k);
-void             ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
+const char      *ewl_theme_data_str_get(Ewl_Widget *w, const char *k);
+void             ewl_theme_data_str_set(Ewl_Widget *w, const char *k,
+                                        const char *v);
 
-int              ewl_theme_data_int_get(Ewl_Widget *w, char *k);
-void             ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v);
+int              ewl_theme_data_int_get(Ewl_Widget *w, const char *k);
+void             ewl_theme_data_int_set(Ewl_Widget *w, const char *k, int v);
 
 /**
  * @internal

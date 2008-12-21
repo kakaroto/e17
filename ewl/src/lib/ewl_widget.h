@@ -184,6 +184,7 @@ void            *ewl_widget_data_get(Ewl_Widget *w, void *k);
 void             ewl_widget_state_set(Ewl_Widget *w, const char *state,
                                                 Ewl_State_Type flag);
 
+void             ewl_widget_theme_path_set(Ewl_Widget *w, const char *path);
 void             ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
 const char      *ewl_widget_appearance_get(Ewl_Widget *w);
 char            *ewl_widget_appearance_path_get(Ewl_Widget *w);

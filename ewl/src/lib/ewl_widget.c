@@ -602,6 +602,48 @@ ewl_widget_data_get(Ewl_Widget *w, void *k)
 }
 
 /**
+ * @param w: the widget to change the theme path
+ * @param path: the new path to find the theme file for the widget's appearance
+ * @return Returns no value.
+ * @brief Change the path of the specified widget
+ *
+ * Sets and applies the theme path for the given widget. This will also change
+ * the theme of possible children. If the @a path is NULL, the default path
+ * will be used instead.
+ */
+void
+ewl_widget_theme_path_set(Ewl_Widget *w, const char *path)
+{
+        int vis;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        vis = VISIBLE(w);
+        
+        ewl_widget_hide(w);
+        if (path)
+        {
+                ewl_theme_data_reset(w);
+                ewl_theme_data_str_set(w, "/file", path);
+        }
+        else if (REALIZED(w))
+        {
+                ewl_widget_unrealize(w);
+                ewl_theme_data_reset(w);
+                ewl_widget_realize(w);
+        }
+        else
+                ewl_theme_data_reset(w);
+
+        if (vis)
+                ewl_widget_show(w);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to change the appearance
  * @param appearance: the new key for the widgets appearance
  * @return Returns no value.
@@ -2868,6 +2910,9 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 ewl_object_insets_set(EWL_OBJECT(w), 0, 0, 0, 0);
                 ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 0, 0);
         }
+
+        IF_RELEASE(w->theme_path);
+        IF_RELEASE(w->theme_group);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

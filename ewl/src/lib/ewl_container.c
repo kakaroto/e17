@@ -1195,9 +1195,12 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 
         c->visible_children++;
         if (c->visible_children > ecore_dlist_count(c->children))
+        {
                 DWARNING("visible children count exceed total child count "
                                 "(%d > %d)\n", c->visible_children,
                                 ecore_dlist_count(c->children));
+                ewl_widget_print(EWL_WIDGET(c));
+        }
 
         if (c->child_show)
                 c->child_show(c, w);
@@ -1238,7 +1241,10 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 
         c->visible_children--;
         if (c->visible_children < 0)
+        {
                 DWARNING("visible_children is %d\n", c->visible_children);
+                ewl_widget_print(EWL_WIDGET(c));
+        }
 
         if (c->child_hide)
                 c->child_hide(c, w);
@@ -1650,9 +1656,12 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
          * exist at this point. Is this legitimate ordering?
          */
         if (c->children) {
-                ecore_dlist_first_goto(c->children);
-                while ((child = ecore_dlist_next(c->children))) {
+                int index = 0;
+
+                while ((child = ecore_dlist_index_goto(c->children, index))) 
+                {
                         ewl_widget_unrealize(child);
+                        index++;
                 }
         }
 
