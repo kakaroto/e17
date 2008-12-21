@@ -1192,6 +1192,12 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
         /* ignore unmanaged children */
         if (UNMANAGED(w))
                 DRETURN(DLEVEL_STABLE);
+        
+        if (ewl_widget_visible_has(EWL_WIDGET(w), EWL_FLAG_VISIBLE_NOTIFIED))
+                DRETURN(DLEVEL_STABLE);
+
+        /* else we can add that flag now */
+        ewl_widget_visible_add(EWL_WIDGET(w), EWL_FLAG_VISIBLE_NOTIFIED);
 
         c->visible_children++;
         if (c->visible_children > ecore_dlist_count(c->children))
@@ -1238,6 +1244,12 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
         /* do nothing if the container is being destroyed */
         if (DESTROYED(c))
                 DRETURN(DLEVEL_STABLE);
+
+        if (!ewl_widget_visible_has(EWL_WIDGET(w), EWL_FLAG_VISIBLE_NOTIFIED))
+                DRETURN(DLEVEL_STABLE);
+
+        /* else we can remove that flag now */
+        ewl_widget_visible_remove(EWL_WIDGET(w), EWL_FLAG_VISIBLE_NOTIFIED);
 
         c->visible_children--;
         if (c->visible_children < 0)
