@@ -1216,7 +1216,10 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 	       {
 		  o = edje_object_add(evas);
 		  if (!e_theme_edje_object_set(o, "base/theme/fileman", icon))
-		    o = NULL;
+		    {
+		       evas_object_del(o);
+		       o = NULL;
+		    }
 	       }
 	     else
 	       {
@@ -1227,7 +1230,10 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 		    {
 		       o = edje_object_add(evas);
 		       if (!edje_object_file_set(o, icon, "icon"))
-			 o = NULL;
+			 {
+			    evas_object_del(o);
+			    o = NULL;
+			 }
 		    }
 	       }
 	  }

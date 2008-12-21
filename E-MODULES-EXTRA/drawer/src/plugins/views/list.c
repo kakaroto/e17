@@ -345,12 +345,7 @@ _list_containers_create(Instance *inst)
      }
 
    if (!e_theme_edje_object_set(inst->o_con, "base/theme/modules/drawer", group))
-     {
-	char buf[4096];
-
-	snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", drawer_conf->module->dir);
-	edje_object_file_set(inst->o_con, buf, group);
-     }
+     edje_object_file_set(inst->o_con, inst->theme_file, group);
 
    eina_stringshare_del(group);
    edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
@@ -370,9 +365,9 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-				"modules/drawer/list/horizontal_entry"))
+				"modules/drawer/list/horizontal_item"))
      edje_object_file_set(e->o_holder, inst->theme_file,
-			  "modules/drawer/list/horizontal_entry");
+			  "modules/drawer/list/horizontal_item");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
    e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
@@ -404,8 +399,8 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 
    e->o_holder = edje_object_add(inst->evas);
    if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-				"modules/drawer/list/vertical_entry"))
-     edje_object_file_set(e->o_holder, inst->theme_file, "modules/drawer/list/vertical_entry");
+				"modules/drawer/list/vertical_item"))
+     edje_object_file_set(e->o_holder, inst->theme_file, "modules/drawer/list/vertical_item");
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
    e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);

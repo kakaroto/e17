@@ -6,8 +6,6 @@ Optional source function for filling up a context menu
 
 Horizontal list needs a way to show the category name
 
-Needs a file source to present and watch the contents of a given directory
-
 Needs a scrollable grid view (using edje_box's 'horizontal_flow' layout)
 
 Python plugins? (3 vs 2.x?)
