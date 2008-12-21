@@ -256,10 +256,10 @@ collections
                color3: 0 0 0 60;
                text {
                   font: "Sans:style=Bold";
-                  size: 10;
+                  size: 11;
                   text: "";
                   align: 0.0 0.5;
-                  
+                  text_class: "module_large";
                }
             }
          }
@@ -279,6 +279,7 @@ collections
                   size: 10;
                   text: "";
                   align: 0.0 0.5;
+                  text_class: "module_normal";
                }
             }
          }
@@ -292,10 +293,12 @@ collections
                color: 255 255 255 255;
                color3: 0 0 0 60;
                text {
-                  font: "Vera";
-                  text: "10%";
-                  fit: 0 1;
-                  align: 0.5 0.5;
+                  font: "Sans";
+                  size: 9;
+                  text: "";
+                  min: 0 1;
+                  align: 0.5 1.0;
+                  text_class: "module_small";
                }
             }
          }
@@ -326,10 +329,11 @@ collections
                rel1.to: "eject_bg";
                rel2.to: "eject_bg";
                text {
-                  font: "VeraBD";
+                  font: "Sans:style=Bold";
                   text: "unmount";
-                  size: 12;
+                  size: 11;
                   align: 0.2 0.5;
+                  text_class: "module_large";
                }
             }
             description { state: "moved" 0.0;
