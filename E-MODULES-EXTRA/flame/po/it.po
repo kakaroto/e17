@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Flame\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-18 02:18+0100\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2007-11-18 19:06+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,63 +14,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Appearance"
 msgstr "Aspetto"
 
-#: e_mod_main.c:63
+#: ../e_mod_main.c:63
 msgid "Flame"
 msgstr "Fiamma"
 
-#: e_mod_config.c:47
+#: ../e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Configurazione di Flame"
 
-#: e_mod_config.c:94 e_mod_config.c:177
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Colore della fiamma"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Gold"
 msgstr "Oro"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 msgid "Fire"
 msgstr "Fuoco"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plasma"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Matrix"
 msgstr "Matrix"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ice"
 msgstr "Ghiaccio"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "White"
 msgstr "Bianca"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Custom"
 msgstr "Personalizzato"
 
-#: e_mod_config.c:179
+#: ../e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Quantità di rosso"
 
-#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:186
+#: ../e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Quantità di blu"
 
-#: e_mod_config.c:193
+#: ../e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Quantità di verde"

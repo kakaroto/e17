@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
-"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
-"POT-Creation-Date: 2008-01-06 17:47+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2008-08-12 17:17+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,56 +14,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_configure.c:44
+#: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Nastavení modulu Net"
 
-#: src/e_mod_configure.c:114
+#: ../src/e_mod_configure.c:114
 msgid "General Settings"
 msgstr "Hlavní nastavení"
 
-#: src/e_mod_configure.c:115
+#: ../src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Zobrazit text"
 
-#: src/e_mod_configure.c:117
+#: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Zobrazit popup, když je kurzor na ikoně"
 
-#: src/e_mod_configure.c:119
+#: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Spustit aplikaci při dvojitém kliknutí"
 
-#: src/e_mod_configure.c:125
+#: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Level notifikační aktivity"
 
-#: src/e_mod_configure.c:127
+#: ../src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Vysoký (MB)"
 
-#: src/e_mod_configure.c:129
+#: ../src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Střední (kB)"
 
-#: src/e_mod_configure.c:131
+#: ../src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Nízký (B)"
 
-#: src/e_mod_configure.c:137
+#: ../src/e_mod_configure.c:137
 msgid "Device Settings"
 msgstr "Nastavení zařízení"
 
-#: src/e_mod_gadcon.c:91
+#: ../src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Síť"
 
-#: src/e_mod_net.c:168
+#: ../src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: src/e_mod_net.c:204
+#: ../src/e_mod_net.c:203
 #, c-format
 msgid "Device - %s"
 msgstr "Zařízení - %s"
-

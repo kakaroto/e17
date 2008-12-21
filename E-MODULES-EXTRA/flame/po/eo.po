@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-18 02:18+0100\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2008-02-11 20:18+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -16,63 +16,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Appearance"
 msgstr "Aspekto"
 
-#: e_mod_main.c:63
+#: ../e_mod_main.c:63
 msgid "Flame"
 msgstr "Flamoj"
 
-#: e_mod_config.c:47
+#: ../e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Konfigurajxo de Flamoj"
 
-#: e_mod_config.c:94 e_mod_config.c:177
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Koloro de Flamoj"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Gold"
 msgstr "Oro"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 msgid "Fire"
 msgstr "Fajro"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plasmo"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Matrix"
 msgstr "Matrico"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ice"
 msgstr "Glacio"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "White"
 msgstr "Blanko"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Custom"
 msgstr "Propra"
 
-#: e_mod_config.c:179
+#: ../e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Kvanto da ruĝo"
 
-#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:186
+#: ../e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Kvanto da Bluo"
 
-#: e_mod_config.c:193
+#: ../e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Kvanto da Verdo"

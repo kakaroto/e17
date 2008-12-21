@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rain\n"
-"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
-"POT-Creation-Date: 2007-11-14 22:36+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2008-08-12 17:51+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,39 +14,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: ../e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Rain modul"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "General Settings"
 msgstr "Hlavní nastavení"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Zobrazit mraky"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Hustota deště"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Přeháňka"
 
-#: e_mod_config.c:109
+#: ../e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Mrholení"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Downpour"
 msgstr "Liják"
 
-#: e_mod_main.c:33
+#: ../e_mod_main.c:33
 msgid "Appearance"
 msgstr "Vzhled"
 
-#: e_mod_main.c:35
+#: ../e_mod_main.c:35
 msgid "Rain"
 msgstr "Déšť"
-

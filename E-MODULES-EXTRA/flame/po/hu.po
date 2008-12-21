@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: flame\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-18 02:18+0100\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2008-02-02 20:32+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,63 +17,63 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Appearance"
 msgstr "Megjelenés"
 
-#: e_mod_main.c:63
+#: ../e_mod_main.c:63
 msgid "Flame"
 msgstr "Láng"
 
-#: e_mod_config.c:47
+#: ../e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Láng beállítás"
 
-#: e_mod_config.c:94 e_mod_config.c:177
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Láng szín"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Gold"
 msgstr "Arany"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 msgid "Fire"
 msgstr "Tűz"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plazma"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Matrix"
 msgstr "Mátrix"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ice"
 msgstr "Jég"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "White"
 msgstr "Fehér"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Custom"
 msgstr "Egyéni"
 
-#: e_mod_config.c:179
+#: ../e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Vörös mennyisége"
 
-#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:186
+#: ../e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Kék mennyisége"
 
-#: e_mod_config.c:193
+#: ../e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Zöld mennyisége"

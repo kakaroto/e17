@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Flame\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-18 02:18+0100\n"
+"POT-Creation-Date: 2008-12-20 19:42+0800\n"
 "PO-Revision-Date: 2008-03-20 15:18+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,64 +15,64 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Appearance"
 msgstr ""
 
-#: e_mod_main.c:63
+#: ../e_mod_main.c:63
 msgid "Flame"
 msgstr "炎"
 
-#: e_mod_config.c:47
+#: ../e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "flame の設定"
 
-#: e_mod_config.c:94 e_mod_config.c:177
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
 msgid "Flame Color"
 msgstr "炎の色"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Gold"
 msgstr "金色"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 msgid "Fire"
 msgstr "普通の火"
 
-#: e_mod_config.c:100
+#: ../e_mod_config.c:100
 msgid "Plasma"
 msgstr "プラズマ"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Matrix"
 msgstr "マトリックス"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Ice"
 msgstr "氷のような冷たい色"
 
-#: e_mod_config.c:106
+#: ../e_mod_config.c:106
 msgid "White"
 msgstr "白"
 
-#: e_mod_config.c:108
+#: ../e_mod_config.c:108
 msgid "Custom"
 msgstr "カスタム"
 
-#: e_mod_config.c:179
+#: ../e_mod_config.c:179
 msgid "Red Amount"
 msgstr "赤の量"
 
-#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr ""
 
-#: e_mod_config.c:186
+#: ../e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "青の量"
 
-#: e_mod_config.c:193
+#: ../e_mod_config.c:193
 msgid "Green Amount"
 msgstr "緑の量"
 
