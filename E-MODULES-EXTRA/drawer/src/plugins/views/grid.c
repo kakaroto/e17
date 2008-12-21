@@ -102,11 +102,12 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 
    inst->evas = evas;
 
+   _grid_items_free(inst);
+
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
    if (inst->o_scroll) evas_object_del(inst->o_scroll);
    _grid_containers_create(inst);
-   _grid_items_free(inst);
 
    EINA_LIST_FOREACH(items, l, si)
       ll = eina_list_append(ll, si);
@@ -254,13 +255,12 @@ _grid_containers_create(Instance *inst)
    if (!e_theme_edje_object_set(inst->o_con, "base/theme/modules/drawer", "modules/drawer/grid"))
      edje_object_file_set(inst->o_con, inst->theme_file, "modules/drawer/grid");
    if (!e_theme_edje_object_set(inst->o_box, "base/theme/modules/drawer", "modules/drawer/grid/box"))
-     edje_object_file_set(inst->o_con, inst->theme_file, "modules/drawer/grid/box");
+     edje_object_file_set(inst->o_box, inst->theme_file, "modules/drawer/grid/box");
 
 
-/*   inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);*/
-   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
+   inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);
+   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);
    evas_object_show(inst->o_box);
-   evas_object_show(inst->o_con);
 }
 
 static Item *

@@ -349,7 +349,6 @@ _list_containers_create(Instance *inst)
 
    eina_stringshare_del(group);
    edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
-   evas_object_show(inst->o_con);
 
    evas_object_event_callback_add(inst->o_con, EVAS_CALLBACK_MOUSE_MOVE,
 				  _list_cb_list_mouse_move, inst);
