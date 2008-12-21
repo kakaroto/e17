@@ -43,6 +43,7 @@ epsilon_request_init(void)
 	/*
 	 * Init required subsystems.
 	 */
+        if (!eina_stringshare_init()) goto init_error;
 	if (!ecore_init()) goto init_error;
 	if (!ecore_ipc_init()) goto con_init_error;
 	if (!epsilon_init()) goto init_error;
@@ -145,9 +146,8 @@ epsilon_cb_server_del(void *data, int type, void *event)
 static void
 epsilon_request_free(Epsilon_Request *thumb)
 {
-	free(thumb->path);
-	if (thumb->dest)
-		free(thumb->dest);
+	eina_stringshare_del(thumb->path);
+        eina_stringshare_del(thumb->dest);
 	free(thumb);
 }
 
@@ -189,13 +189,8 @@ epsilon_request_resolve_thumb_file(Epsilon_Request *thumb)
 	 */
 	tb = epsilon_new(thumb->path);
 	epsilon_thumb_size(tb, thumb->size);
-	if (epsilon_exists(tb) == EPSILON_OK) {
-		const char *dest;
-
-		dest = epsilon_thumb_file_get(tb);
-		if (dest)
-			thumb->dest = strdup(dest);
-	}
+	if (epsilon_exists(tb) == EPSILON_OK)
+          thumb->dest = eina_stringshare_add(epsilon_thumb_file_get(tb));
 	epsilon_free(tb);
 
 	return thumb->dest != NULL;
@@ -326,13 +321,13 @@ epsilon_request_add_advanced(const char *path, Epsilon_Thumb_Size size,
 
 	thumb = calloc(1, sizeof(Epsilon_Request));
 	if (!thumb)
-		return NULL;
+          return NULL;
 
-	thumb->path = strdup(path);
-	if (!thumb->path) {
-		free(thumb);
-		return NULL;
+	if (!path) {
+             free(thumb);
+             return NULL;
 	}
+	thumb->path = eina_stringshare_add(path);
 	thumb->size = size;
 	thumb->data = data;
 	thumb->format = format;

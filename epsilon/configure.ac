@@ -23,6 +23,8 @@ SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 AC_SUBST(version_info)
 
+PKG_CHECK_MODULES(EINA, [eina-0])
+
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 
 PKG_CHECK_MODULES(ECORE, [

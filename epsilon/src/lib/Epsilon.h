@@ -36,10 +36,10 @@ typedef void Epsilon_Exif_Info;
 
 struct _Epsilon
 {
-  char *hash;
-  char *src;
-  char *thumb;
-  char *key;
+  const char *hash;
+  const char *src;
+  const char *thumb;
+  const char *key;
   int w, h;
   int tw, th;
   int tsize;
@@ -49,10 +49,10 @@ typedef struct _Epsilon Epsilon;
 
 struct _Epsilon_Info
 {
-  char *uri;
+  const char *uri;
   unsigned long long int mtime;
   int w, h;
-  char *mimetype;
+  const char *mimetype;
   Epsilon_Exif_Info *eei;
 };
 typedef struct _Epsilon_Info Epsilon_Info;

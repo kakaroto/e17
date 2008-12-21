@@ -20,8 +20,8 @@ struct _Epsilon_Request
 	unsigned int   size;     /**< Thumbnail size to be generated */
 	unsigned int   format;   /**< Thumbnail format to be generated */
 	unsigned int   status;   /**< Status code of the thumbnail generation */
-	char          *path;     /**< Path to file requiring thumbnail */
-	char          *dest;     /**< Path to generated file, NULL on error */
+	const char    *path;     /**< Path to file requiring thumbnail */
+	const char    *dest;     /**< Path to generated file, NULL on error */
 	void          *data;     /**< Data associated with this thumbnail. */
 	void          *_event;   /**< private, Pointer to Ecore_Event if it existent. */
 };

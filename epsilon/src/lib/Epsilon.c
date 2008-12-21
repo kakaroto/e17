@@ -37,10 +37,10 @@
 #include <Edje.h>
 #include <dlfcn.h>
 
-static char *PATH_DIR_LARGE = NULL;
-static char *PATH_DIR_NORMAL = NULL;
-static char *PATH_DIR_CUSTOM = NULL;
-static char *PATH_DIR_FAIL = NULL;
+static const char *PATH_DIR_LARGE = NULL;
+static const char *PATH_DIR_NORMAL = NULL;
+static const char *PATH_DIR_CUSTOM = NULL;
+static const char *PATH_DIR_FAIL = NULL;
 static unsigned LEN_DIR_LARGE = 0;
 static unsigned LEN_DIR_NORMAL = 0;
 static unsigned LEN_DIR_CUSTOM = 0;
@@ -60,7 +60,7 @@ extern void epsilon_exif_info_free (Epsilon_Exif_Info * eei);
 extern Epsilon_Exif_Info *epsilon_exif_info_get (Epsilon * e);
 
 static int _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time_t *mtime);
-static char *epsilon_hash (const char *file);
+static const char *epsilon_hash (const char *file);
 #ifdef HAVE_PNG_H
 static FILE *_epsilon_open_png_file_reading (const char *filename);
 static int _epsilon_png_write (const char *file, unsigned int * ptr,
@@ -78,8 +78,8 @@ epsilon_new (const char *file)
     {
       if (file[0] == '/')
 	{
-	  result = calloc (1, sizeof (Epsilon));
-	  result->src = strdup (file);
+	  result = calloc(1, sizeof(Epsilon));
+	  result->src = eina_stringshare_add(file);
 	  result->tw = THUMB_SIZE_LARGE;
 	  result->th = THUMB_SIZE_LARGE;
 	  result->format = EPSILON_THUMB_FDO;
@@ -98,15 +98,11 @@ epsilon_free (Epsilon * e)
 {
   if (e)
     {
-      if (e->key)
-	free (e->key);
-      if (e->hash)
-	free (e->hash);
-      if (e->src)
-	free (e->src);
-      if (e->thumb)
-	free (e->thumb);
-      free (e);
+       eina_stringshare_del(e->key);
+       eina_stringshare_del(e->hash);
+       eina_stringshare_del(e->src);
+       eina_stringshare_del(e->thumb);
+       free (e);
     }
 }
 
@@ -133,6 +129,8 @@ epsilon_plugin_load(char* path)
 }
 
 static int epsilon_init_count = 0;
+
+/* XXX: no epsilon_shutdown? */
 int
 epsilon_init (void)
 {
@@ -146,22 +144,23 @@ epsilon_init (void)
   char plugin_path[PATH_MAX];
 
   if (epsilon_init_count) return ++epsilon_init_count;
+  eina_stringshare_init();
 
   home = getenv("HOME");
   base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails", home);
   if (!PATH_DIR_LARGE) {
      strncpy(buf + base_len, "/large", PATH_MAX - base_len);
-     PATH_DIR_LARGE = strdup(buf);
+     PATH_DIR_LARGE = eina_stringshare_add(buf);
      LEN_DIR_LARGE = strlen(buf);
   }
   if (!PATH_DIR_NORMAL) {
      strncpy(buf + base_len, "/normal", PATH_MAX - base_len);
-     PATH_DIR_NORMAL = strdup(buf);
+     PATH_DIR_NORMAL = eina_stringshare_add(buf);
      LEN_DIR_NORMAL = strlen(buf);
   }
   if (!PATH_DIR_FAIL) {
      strncpy(buf + base_len, "/fail/epsilon", PATH_MAX - base_len);
-     PATH_DIR_FAIL = strdup(buf);
+     PATH_DIR_FAIL = eina_stringshare_add(buf);
      LEN_DIR_FAIL = strlen(buf);
   }
 
@@ -201,12 +200,8 @@ epsilon_key_set (Epsilon * e, const char *key)
 {
   if (e)
     {
-      if (e->key)
-	free (e->key);
-      if (key)
-	e->key = strdup (key);
-      else
-	e->key = NULL;
+       eina_stringshare_del(e->key);
+       e->key = eina_stringshare_add(key);
     }
 }
 
@@ -230,10 +225,10 @@ epsilon_format_set (Epsilon * e, Epsilon_Thumb_Format f)
 const char *
 epsilon_file_get (Epsilon * e)
 {
-  char *result = NULL;
+  const char *result = NULL;
   if (e)
     result = e->src;
-  return (result);
+  return result;
 }
 
 const char *
@@ -243,26 +238,26 @@ epsilon_thumb_file_get (Epsilon * e)
   char buf[PATH_MAX];
 
   if (!e)
-    return (NULL);
+    return NULL;
   if (e->thumb)
-    return (e->thumb);
+    return e->thumb;
 
   if (_epsilon_exists_ext(e, "jpg", buf, sizeof(buf), &mtime))
     {
-       e->thumb = strdup(buf);
-       return (e->thumb);
+       e->thumb = eina_stringshare_add(buf);
+       return e->thumb;
     }
 #ifdef HAVE_PNG_H
   if (_epsilon_exists_ext(e, "png", buf, sizeof(buf), &mtime))
     {
-       e->thumb = strdup (buf);
-       return (e->thumb);
+       e->thumb = eina_stringshare_add(buf);
+       return e->thumb;
     }
 #endif
-  return (NULL);
+  return NULL;
 }
 
-static char *
+static const char *
 epsilon_hash (const char *file)
 {
   int n;
@@ -287,7 +282,7 @@ epsilon_hash (const char *file)
       md5out[2 * n + 1] = hex[hash[n] & 0x0f];
     }
   md5out[2 * n] = '\0';
-  return (strdup (md5out));
+  return eina_stringshare_add(md5out);
 }
 
 static Epsilon_Info *
@@ -304,13 +299,11 @@ epsilon_info_free (Epsilon_Info * info)
 {
   if (info)
     {
-      if (info->uri)
-	free (info->uri);
-      if (info->mimetype)
-	free (info->mimetype);
-      if (info->eei)
-	epsilon_exif_info_free (info->eei);
-      free (info);
+       eina_stringshare_del(info->uri);
+       eina_stringshare_del(info->mimetype);
+       if (info->eei)
+         epsilon_exif_info_free(info->eei);
+       free(info);
     }
 }
 
@@ -340,10 +333,8 @@ epsilon_info_get (Epsilon * e)
 	  p->mtime = info.mtime;
 	  p->w = info.w;
 	  p->h = info.h;
-	  if (info.uri)
-	    p->uri = strdup (info.uri);
-	  if (info.mimetype)
-	    p->mimetype = strdup (info.mimetype);
+          p->uri = eina_stringshare_add(info.uri);
+          p->mimetype = eina_stringshare_add(info.mimetype);
 	}
       epeg_close (im);
     }
@@ -388,9 +379,9 @@ epsilon_info_get (Epsilon * e)
 	  if (!strcmp (text.key, "Thumb::Image::Height"))
 	    p->h = atoi (text.text);
 	  if (!strcmp (text.key, "Thumb::URI"))
-	    p->uri = strdup (text.text);
+	    p->uri = eina_stringshare_add(text.text);
 	  if (!strcmp (text.key, "Thumb::Mimetype"))
-	    p->mimetype = strdup (text.text);
+	    p->mimetype = eina_stringshare_add(text.text);
 	}
       /* png_read_end(png_ptr,info_ptr); */
       png_destroy_read_struct (&png_ptr, &info_ptr, (png_infopp) NULL);
@@ -446,7 +437,7 @@ epsilon_mime_for_extension_get(const char* extension)
 static void
 _epsilon_file_name(unsigned thumb_size, const char *hash, const char *ext, char *path, int path_size)
 {
-   char *dir;
+   const char *dir;
    int dir_len;
 
    if (thumb_size == THUMB_SIZE_LARGE)
@@ -768,10 +759,9 @@ epsilon_custom_thumb_size (Epsilon * e, int w, int h, const char *dir)
       base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails/", home);
       strncpy(buf + base_len, dir, PATH_MAX - base_len);
 
-      if (PATH_DIR_CUSTOM)
-        free(PATH_DIR_CUSTOM);
+      eina_stringshare_del(PATH_DIR_CUSTOM);
 
-      PATH_DIR_CUSTOM = strdup(buf);
+      PATH_DIR_CUSTOM = eina_stringshare_add(buf);
       LEN_DIR_CUSTOM = strlen(buf);
       ecore_file_mkpath(PATH_DIR_CUSTOM);
     }
