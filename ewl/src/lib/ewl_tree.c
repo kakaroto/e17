@@ -42,8 +42,11 @@ static void ewl_tree_cb_row_highlight(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree_cb_row_unhighlight(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree_cb_selected_change(Ewl_MVC *mvc);
+
 static Ewl_Widget *ewl_tree_widget_at(Ewl_MVC *mvc, void *data,
                                         unsigned int row, unsigned int column);
+static Ewl_Widget *ewl_tree_widget_node_at(Ewl_Tree *tree, void *data,
+                                          unsigned int row);
 
 static void ewl_tree_expansions_hash_create(Ewl_Tree *tree);
 
@@ -640,53 +643,57 @@ ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data, unsigned int row)
  * @return Returns no value
  * @brief Ensures that the requested row is visible, if it is not the 
  *        tree is scrolled, so that the row becomes visible.
+ *
+ * @bugs At the moment it does not work for sub tree nodes.
  */
 void
-ewl_tree_row_visible_ensure(Ewl_Tree *tree, unsigned int row)
+ewl_tree_row_visible_ensure(Ewl_Tree *tree, void *data, unsigned int row)
 {
-        Ewl_Widget     *w, *row_last, *row_first;
-        Ewl_Container  *c;
+        Ewl_Widget *w;
+        Ewl_Container *c;
         Ewl_Scrollpane *scrollpane;
-        double         scroll_value;
-        int            row_count;
-        double         y_offset;
+        double scroll_value;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
         c = EWL_CONTAINER(tree->rows);
-        if (row >= ewl_container_child_count_get(c))
+
+        if (data)
+                w = ewl_tree_widget_node_at(tree, data, row);
+        else
+                w = ewl_tree_widget_node_at(tree,
+                                ewl_mvc_data_get(EWL_MVC(tree)), row);
+
+        if (!w)
         {
-                DWARNING("You have passed row number bigger than the count of rows");
+                DWARNING("Can't find the requested row!");
                 DRETURN(DLEVEL_UNSTABLE);
         }
 
-        w = ewl_container_child_get(c, row);
         scrollpane = ewl_tree_kinetic_scrollpane_get(tree);
-
-        if (!( (CURRENT_Y(w) + CURRENT_H(w) < CURRENT_Y(c))
-               || (CURRENT_Y(w)  > CURRENT_Y(c) + CURRENT_H(c))
-             ))
+        if (!scrollpane)
         {
-                DRETURN(DLEVEL_STABLE);
+                DWARNING("Ensure visible doesn't work on tree having no "
+                                "scrollpane");
+                DRETURN(DLEVEL_UNSTABLE);
         }
 
-        row_count = ewl_container_child_count_get(c);
-
-        if (row_count > 0)
-        {
-                row_first = ewl_container_child_get(c, 0);
-                row_last = ewl_container_child_get(c, row_count - 1);
-        }
-        else
+        /*
+         * Checks if the row is already visible
+         */
+        if (!((CURRENT_Y(w) + CURRENT_H(w) > CURRENT_Y(c) + CURRENT_H(c))
+                                || (CURRENT_Y(w) < CURRENT_Y(c))))
                 DRETURN(DLEVEL_STABLE);
+
+        c = ewl_container_end_redirect_get(c);
 
         if (!REALIZED(w))
                 DRETURN(DLEVEL_STABLE);
 
-        y_offset = (double)(CURRENT_Y(w) -  CURRENT_Y(row_first));
-        scroll_value = y_offset / (CURRENT_Y(row_last) - CURRENT_Y(row_first));
+        scroll_value = (double)(CURRENT_Y(w) - CURRENT_Y(c)) 
+                                / (CURRENT_H(c) - CURRENT_H(w));
 
         ewl_scrollpane_vscrollbar_value_set(scrollpane, scroll_value);
 
@@ -1183,7 +1190,7 @@ ewl_tree_cb_selected_change(Ewl_MVC *mvc)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         ewl_mvc_highlight(mvc, EWL_CONTAINER(EWL_TREE(mvc)->rows),
-                                                ewl_tree_widget_at);
+                          ewl_tree_widget_at);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1193,7 +1200,6 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
                         unsigned int column)
 {
         Ewl_Widget *r, *w;
-        Ewl_Container *c;
         Ewl_Tree *tree;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1203,15 +1209,39 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 
         tree = EWL_TREE(mvc);
 
+        /* get the row */
+        r = ewl_tree_widget_node_at(tree, data, row);
+        r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
+
+        if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
+                DRETURN_PTR(r, DLEVEL_STABLE);
+
+        /* we are not in row selection, so find the right cell */
+        w = ewl_container_child_get(EWL_CONTAINER(r), column);
+
+        DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_tree_widget_node_at(Ewl_Tree *tree, void *data, unsigned int row)
+{
+        Ewl_Widget *r;
+        Ewl_Container *c;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(tree, NULL);
+        DCHECK_PARAM_PTR_RET(data, NULL);
+        DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+
         /* get the container that holds the wished row */
-        if (ewl_mvc_data_get(mvc) == data)
+        if (ewl_mvc_data_get(EWL_MVC(tree)) == data)
                 c = EWL_CONTAINER(tree->rows);
         else
         {
                 Ewl_Tree_Expansions_List *exp;
 
-                if (!tree->expansions || 
-                                !(exp = ecore_hash_get(tree->expansions, data)))
+                if (!tree->expansions ||
+                    !(exp = ecore_hash_get(tree->expansions, data)))
                         DRETURN_PTR(NULL, DLEVEL_STABLE);
 
                 c = exp->c;
@@ -1219,18 +1249,11 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 
         /* find the row in the container */
         r = ewl_container_child_get(c, row);
-        r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
 
-        if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
-                w = r;
-        else
-        {
-                /* infact our row is a node so we have to get the row
-                 * to search for the right container */
-                w = ewl_container_child_get(EWL_CONTAINER(r), column);
-        }
+        if (!r)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        DRETURN_PTR(w, DLEVEL_STABLE);
+        DRETURN_PTR(r, DLEVEL_STABLE);
 }
 
 static void

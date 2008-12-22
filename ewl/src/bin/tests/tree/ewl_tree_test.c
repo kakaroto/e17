@@ -595,5 +595,5 @@ tree_cb_ensure_visible(Ewl_Widget *w, void *ev, void *data)
 	
 	row = ewl_range_value_get(EWL_RANGE(spinner));
 
-	ewl_tree_row_visible_ensure(EWL_TREE(tree), row);
+	ewl_tree_row_visible_ensure(EWL_TREE(tree), ewl_mvc_data_get(EWL_MVC(tree)), row);
 }
