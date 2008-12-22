@@ -1,0 +1,12 @@
+Login:		raoul
+IRC Nick:	raoulh
+Cloak:          developer/raoulh
+Name:		Raoul HECKY
+Location:	NONE, France
+E-Mail:		raoul.hecky@gmail.com
+WWW:		http://blog.calaos.fr/
+Managing:	none
+Contributing:	ewww
+Group:		Applications
+Platform:	None
+GeoData:	Unknown
