@@ -493,8 +493,12 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         p = EWL_POPUP(w);
         if (p->follow)
+        {
                 ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
                                         ewl_popup_cb_follow_destroy, p);
+                ewl_callback_del_with_data(p->follow, EWL_CALLBACK_CONFIGURE,
+                                        ewl_popup_cb_follow_configure, p);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
