@@ -419,7 +419,6 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_SPECTRUM_TYPE);
 
-        sp = EWL_SPECTRUM(w);
         ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
                          ewl_spectrum_cb_mouse_move);
 
