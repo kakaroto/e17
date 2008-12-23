@@ -198,7 +198,6 @@ ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         r = EWL_RANGE(p);
 
         dx = CURRENT_X(p);
-        dy = CURRENT_Y(p);
         dw = CURRENT_W(p);
 
         dw = dw * (r->value - r->min_val) / (r->max_val - r->min_val);
