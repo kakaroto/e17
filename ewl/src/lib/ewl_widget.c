@@ -1093,9 +1093,10 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
                 else {
                         for (i = 0; i < w->theme_text.len; i++) {
                                 Ewl_Pair *current = w->theme_text.list[i];
-                                if (part == match->key ||
-                                                (part && match->key &&
-                                                 !strcmp(part, match->key))) {
+                                if (part == current->key ||
+                                                (part && current->key &&
+                                                 !strcmp(part, current->key)))
+                                {
                                         match = current;
                                         break;
                                 }

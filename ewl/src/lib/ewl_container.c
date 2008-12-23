@@ -1516,17 +1516,17 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         c = EWL_CONTAINER(w);
 
-        e = ewl_embed_widget_find(EWL_WIDGET(w));
-        if (e && !c->clip_box) {
-                c->clip_box = ewl_embed_object_request(e, "rectangle");
-        }
-
         /*
          * Create the clip box for this container, this keeps children clipped
          * to the wanted area.
          */
-        if (!c->clip_box)
-                c->clip_box = evas_object_rectangle_add(e->canvas);
+        e = ewl_embed_widget_find(EWL_WIDGET(w));
+        if (e && !c->clip_box)
+        {
+                c->clip_box = ewl_embed_object_request(e, "rectangle");
+                if (!c->clip_box)
+                        c->clip_box = evas_object_rectangle_add(e->canvas);
+        }
 
         /*
          * Setup the remaining properties for the clip box.

@@ -458,7 +458,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx,
 
         /* if we didn't count the last item, move us over to the other side
          * of it */
-        if (shifting) *x += *w;
+        if (x && shifting) *x += tw;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1211,8 +1211,8 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
         int line;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         cur_char_idx = ewl_text_cursor_position_get(t);
         byte_idx = ewl_text_char_to_drawn_byte(t, cur_char_idx);
@@ -1260,8 +1260,8 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
         int line;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         cur_char_idx = ewl_text_cursor_position_get(t);
         ewl_text_fmt_char_to_byte(t->formatting.nodes, cur_char_idx,
