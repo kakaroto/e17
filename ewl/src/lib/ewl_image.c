@@ -910,6 +910,9 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         if (!i->oh)
                 i->oh = 1;
 
+        sw = i->sw;
+        sh = i->sh;
+
         /*
          * Bound the scales when proportional.
          */
@@ -919,9 +922,6 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                 else
                         sw = i->sh;
         }
-
-        sw = i->sw;
-        sh = i->sh;
 
         /*
          * Bound to absolute size.

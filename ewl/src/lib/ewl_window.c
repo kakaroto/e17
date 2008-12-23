@@ -1214,7 +1214,7 @@ ewl_window_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
         IF_FREE(win->name);
         IF_FREE(win->classname);
 
-        if ((win = ecore_list_goto(ewl_window_list, win)))
+        if (ecore_list_goto(ewl_window_list, win))
                 ecore_list_remove(ewl_window_list);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

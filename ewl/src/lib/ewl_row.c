@@ -313,7 +313,7 @@ ewl_row_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(c);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+        DCHECK_TYPE(c, EWL_ROW_TYPE);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         row = EWL_ROW(c);
@@ -334,15 +334,12 @@ ewl_row_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 void
 ewl_row_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
-        Ewl_Row *row;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(c);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+        DCHECK_TYPE(c, EWL_ROW_TYPE);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        row = EWL_ROW(c);
         ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
         ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) -
                         ewl_object_preferred_w_get(EWL_OBJECT(w)));
@@ -367,7 +364,7 @@ ewl_row_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(c);
-        DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+        DCHECK_TYPE(c, EWL_ROW_TYPE);
 
         row = EWL_ROW(c);
         if (o == EWL_ORIENTATION_VERTICAL)

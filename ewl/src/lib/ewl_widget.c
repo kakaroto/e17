@@ -2730,7 +2730,6 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
         char *i = NULL;
         const char *group = NULL;
         Evas_Coord width, height;
-        Ewl_Embed *emb = NULL;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);

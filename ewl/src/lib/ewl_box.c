@@ -425,7 +425,6 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         Ewl_Box *b;
 
         int fill_count;
-        int total_fill = 0;
         int x, y;
         int width, height;
         int *fill, *align;
@@ -473,11 +472,6 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                 align_size = &width;
                 ewl_box_info = ewl_box_vertical;
         }
-
-        /*
-         * Save the starting fill size.
-         */
-        total_fill = *fill_size;
 
         /*
          * Split the children up for configuration based on alignment.

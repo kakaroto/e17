@@ -769,7 +769,6 @@ ewl_print_help(void)
 void
 ewl_configure_request(Ewl_Widget * w)
 {
-        Ewl_Embed *emb;
         Ewl_Widget *search;
         Ewl_Configure_Queue *queue_buffer;
 
@@ -812,7 +811,6 @@ ewl_configure_request(Ewl_Widget * w)
          */
         if (!ewl_widget_toplevel_get(search))
                 DRETURN(DLEVEL_STABLE);
-        emb = EWL_EMBED(search);
 
         /*
          * No parent of this widget is queued so add it to the queue. All
