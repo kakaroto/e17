@@ -2735,8 +2735,6 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        emb = ewl_embed_widget_find(w);
-
         /*
          * Retrieve the path to the theme file that will be loaded
          * return if no file to be loaded.
