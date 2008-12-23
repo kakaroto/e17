@@ -413,8 +413,6 @@ void
 ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
                                                 void *data __UNUSED__)
 {
-        Ewl_Spectrum *sp;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_SPECTRUM_TYPE);
