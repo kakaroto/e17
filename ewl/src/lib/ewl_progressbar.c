@@ -187,7 +187,7 @@ ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
         Ewl_Progressbar *p;
         Ewl_Range *r;
-        int dx, dy;
+        int dx;
         int dw;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
