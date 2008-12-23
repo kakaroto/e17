@@ -531,7 +531,6 @@ void
 ewl_paned_arrange(Ewl_Paned *p, int pane_num)
 {
         Ewl_Widget *w;
-        Ewl_Container *c;
         Ewl_Paned_Pane_Info *panes;
         int available;
         int main_size, main_pos;
@@ -543,7 +542,6 @@ ewl_paned_arrange(Ewl_Paned *p, int pane_num)
         DCHECK_TYPE(p, EWL_PANED_TYPE);
 
         w = EWL_WIDGET(p);
-        c = EWL_CONTAINER(p);
 
         if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
         {
