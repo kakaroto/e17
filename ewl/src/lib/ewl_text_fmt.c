@@ -857,7 +857,6 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
                         Ewl_Text_Context *change, unsigned int char_idx,
                         unsigned int char_len)
 {
-        Ewl_Text *t;
         unsigned int cursor_idx;
         Ewl_Text_Fmt_Node *node;
 
@@ -872,7 +871,6 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
         /* make sure we're where we think we are */
         ewl_text_fmt_goto(fmt, cursor_idx);
 
-        t = fmt->text;
         node = ecore_dlist_current(fmt->nodes);
         while (char_len > 0)
         {

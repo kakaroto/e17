@@ -479,7 +479,6 @@ ewl_scrollbar_cb_scroll_start(Ewl_Widget *w, void *ev_data __UNUSED__,
                                                         void *user_data)
 {
         Ewl_Scrollbar *s;
-        Ewl_Orientation o;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -497,7 +496,6 @@ ewl_scrollbar_cb_scroll_start(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Need to scroll in the opposite direction for the vertical
          * scrollbar.
          */
-        o = ewl_box_orientation_get(EWL_BOX(s));
         s->direction = s->direction * s->invert;
 
         s->start_time = ecore_time_get();

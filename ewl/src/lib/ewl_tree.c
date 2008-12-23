@@ -1035,8 +1035,6 @@ ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model,
                 /* check if this is an expansion point */
                 if (model->expansion.is && model->expansion.is(data, i))
                 {
-                        int hidden = TRUE;
-
                         if (!model->expansion.data)
                         {
                                 DWARNING("In ewl_tree_build_tree_rows, "
@@ -1047,11 +1045,11 @@ ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model,
 
                         ewl_tree_node_expandable_set(EWL_TREE_NODE(node), TRUE);
 
-                        if (model->expansion.data &&
-                                        ewl_tree_row_expanded_is(tree, data, i))
+                        if (model->expansion.data
+                                        && ewl_tree_row_expanded_is(tree,
+                                                data, i))
                         {
                                 ewl_tree_node_expand(EWL_TREE_NODE(node));
-                                hidden = FALSE;
                         }
                 }
                 else

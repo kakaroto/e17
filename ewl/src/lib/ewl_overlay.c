@@ -79,14 +79,11 @@ void
 ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         void *user_data __UNUSED__)
 {
-        Ewl_Object *o;
         Ewl_Object *child;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_OVERLAY_TYPE);
-
-        o = EWL_OBJECT(w);
 
         /*
          * Configure each of the child widgets.
@@ -168,7 +165,6 @@ ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
         DCHECK_TYPE(c, EWL_OVERLAY_TYPE);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        child = EWL_OBJECT(w);
         overlay = EWL_OVERLAY(c);
 
         ecore_dlist_first_goto(EWL_CONTAINER(overlay)->children);

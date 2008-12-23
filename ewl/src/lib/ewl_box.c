@@ -1007,7 +1007,7 @@ void
 ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
                         int size, Ewl_Orientation o)
 {
-        int align_size, fill_size;
+        int fill_size;
         Ewl_Box_Orientation *info;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1020,7 +1020,6 @@ ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
          */
         if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
                 fill_size = PREFERRED_W(c);
-                align_size = PREFERRED_H(c);
                 info = ewl_box_horizontal;
         }
         else {

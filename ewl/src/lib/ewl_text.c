@@ -3882,7 +3882,6 @@ static void
 ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 {
         Ewl_Text *t;
-        unsigned int start_pos;
         unsigned int base;
         char *txt;
 
@@ -3892,7 +3891,6 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 
         t = EWL_TEXT(s->text_parent);
         base = ewl_text_trigger_base_get(s);
-        start_pos = ewl_text_trigger_start_pos_get(s);
 
         if (char_idx < base)
         {

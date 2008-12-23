@@ -225,7 +225,6 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
         struct tm *date;
         char display_top[50];
         time_t tm;
-        int today = 0;
         int cur_row, cur_col, cur_day, days = 30;
         Ewl_Widget *day_label;
 
@@ -240,7 +239,6 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
         snprintf(display_top, sizeof(display_top), "%s %d",
                                 months[cal->cur_month], cal->cur_year);
         ewl_label_text_set(EWL_LABEL(cal->month_label), display_top);
-        today = cal->cur_day;
 
         /* Get the DAY of the first day of this month */
         tm = time(NULL);
