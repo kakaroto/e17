@@ -682,8 +682,6 @@ ewl_container_child_index_internal_get(Ewl_Container *parent, Ewl_Widget *w)
 void
 ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
 {
-        int old_w, old_h;
-        int new_w, new_h;
         Ewl_Container *c;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -705,22 +703,10 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
                 DRETURN(DLEVEL_STABLE);
 
         /*
-         * Store the parents current size so we can determine if it changes
-         */
-        old_w = PREFERRED_W(w);
-        old_h = PREFERRED_H(w);
-
-        /*
          * Run the parents child resize function to allow it to update it's
          * preferred size.
          */
         c->child_resize(c, w, size, o);
-
-        /*
-         * Get the new preferred size of the parent to see if it changed.
-         */
-        new_w = PREFERRED_W(w);
-        new_h = PREFERRED_H(w);
 
         /*
          * The parent will only end up on the configure queue if it didn't
