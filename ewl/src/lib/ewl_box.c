@@ -1031,7 +1031,6 @@ ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
         }
         else {
                 fill_size = PREFERRED_H(c);
-                align_size = PREFERRED_W(c);
                 info = ewl_box_vertical;
         }
 
