@@ -277,7 +277,6 @@ ewl_media_play_set(Ewl_Media *m, int p)
 #endif
 
         DRETURN(DLEVEL_STABLE);
-        p = p;
 }
 
 /**
