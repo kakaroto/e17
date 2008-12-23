@@ -36,7 +36,7 @@ copy_message(DBusMessageIter *from, DBusMessageIter *to)
         DBusMessageIter fsub, tsub;
         char *sig;
         dbus_message_iter_recurse(from, &fsub);
-        dbus_message_iter_get_signature(&fsub);
+        sig = dbus_message_iter_get_signature(&fsub);
         dbus_message_iter_open_container(to, type, sig, &tsub);
         copy_message(&fsub, &tsub);
         dbus_message_iter_close_container(to, &tsub);

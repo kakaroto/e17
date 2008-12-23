@@ -488,6 +488,7 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         }
       else if (!strcmp(key, "desktop-entry"))
         {
+          dbus_message_iter_get_basic(&variant, &s_val);
           e_notification_hint_desktop_set(n, s_val);
         }
       else if (!strcmp(key, "sound-file"))

@@ -7,8 +7,6 @@
 #include "e_dbus_private.h"
 #include "dbus/dbus.h"
 
-static int init = 0;
-
 struct E_DBus_Signal_Handler
 {
   char *sender;
@@ -45,10 +43,8 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
 {
   const char *unique_name = NULL;
   struct cb_name_owner_data *d = data;
-  E_DBus_Connection *conn;
   E_DBus_Signal_Handler *sh;
 
-  conn = d->conn;
   sh = d->sh;
   free(d);
 

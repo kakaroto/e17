@@ -54,7 +54,6 @@ static int
 e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
 {
   E_DBus_Handler_Data *hd;
-  DBusConnection *conn;
   unsigned int condition = 0;
 
   DEBUG(5, "fd handler (%ld)!\n", (long int)fd_handler);
@@ -67,9 +66,6 @@ e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
     hd->fd_handler = NULL;
     return 0;
   }
-
-  conn = hd->cd->conn;
-
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ)) condition |= DBUS_WATCH_READABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_WRITE)) condition |= DBUS_WATCH_WRITABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR)) condition |= DBUS_WATCH_ERROR;
@@ -344,9 +340,7 @@ cb_watch_add(DBusWatch *watch, void *data)
 static void
 cb_watch_del(DBusWatch *watch, void *data)
 {
-  E_DBus_Connection *cd;
   E_DBus_Handler_Data *hd;
-  cd = data;
 
   DEBUG(5, "cb_watch_del\n");
   hd = (E_DBus_Handler_Data *)dbus_watch_get_data(watch);
