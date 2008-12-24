@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0,W4
  */
 #include "directory_watcher.h"
 
@@ -7,6 +7,15 @@
 typedef struct _Instance Instance;
 typedef struct _Conf Conf;
 typedef struct _Dirwatcher_Priv Dirwatcher_Priv;
+
+typedef enum
+{
+   SORT_NAME,
+   SORT_ATIME,
+   SORT_MTIME,
+   SORT_CTIME,
+   SORT_SIZE,
+} Sort_Type;
 
 struct _Instance 
 {
@@ -30,6 +39,10 @@ struct _Conf
    const char *id;
 
    const char *dir;
+
+   Sort_Type sort_type;
+
+   Eina_Bool sort_dir;
 };
 
 struct _Dirwatcher_Priv
@@ -39,6 +52,8 @@ struct _Dirwatcher_Priv
    Eina_Bool mount : 1;
 
    const char *mime;
+
+   Instance *inst;
 };
 
 struct _E_Config_Dialog_Data 
@@ -46,6 +61,9 @@ struct _E_Config_Dialog_Data
    Instance *inst;
 
    char *dir;
+
+   int sort_dir;
+   int sort_type;
 };
 
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Directory Watcher"};
@@ -63,6 +81,8 @@ static void _dirwatcher_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data 
 static void _dirwatcher_cf_fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object * _dirwatcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static int _dirwatcher_cb_sort(const void *data1, const void *data2);
+static int _dirwatcher_cb_sort_dir(const Drawer_Source_Item *si1, const Drawer_Source_Item *si2);
 
 static E_Config_Dialog *_cfd = NULL;
 
@@ -84,6 +104,8 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    #define D inst->edd.conf
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
+   E_CONFIG_VAL(D, T, sort_type, INT);
+   E_CONFIG_VAL(D, T, sort_dir, INT);
 
    snprintf(buf, sizeof(buf), "module.drawer/%s.dirwatcher", id);
    inst->conf = e_config_domain_load(buf, inst->edd.conf);
@@ -94,6 +116,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 	snprintf(buf2, sizeof(buf2), "%s/Desktop", e_user_homedir_get());
 
 	inst->conf = E_NEW(Conf, 1);
+	inst->conf->sort_dir = EINA_TRUE;
 	inst->conf->dir = eina_stringshare_add(buf2);
 	inst->conf->id = eina_stringshare_add(id);
 
@@ -155,6 +178,9 @@ drawer_source_list(Drawer_Source *s)
 	  }
 	ecore_list_destroy(files);
      }
+
+   inst->items = eina_list_sort(inst->items,
+	      eina_list_count(inst->items), _dirwatcher_cb_sort);
 
    return inst->items;
 }
@@ -318,6 +344,8 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
 	      e_util_size_string_get(ecore_file_size(si->file_path)));
    si->description = eina_stringshare_add(buf);
 
+   p->inst = inst;
+
    return si;
 }
 
@@ -405,18 +433,38 @@ static void
 _dirwatcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->dir = strdup(cfdata->inst->conf->dir);
+   cfdata->sort_dir = cfdata->inst->conf->sort_dir;
 }
 
 static Evas_Object *
 _dirwatcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ob;
+   E_Radio_Group *gr;
 
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_framelist_add(evas, D_("Watch path"), 1);
    ob = e_widget_entry_add(evas, &cfdata->dir, NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);  
+
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   of = e_widget_framelist_add(evas, D_("Sort Options"), 0);
+   ob = e_widget_check_add(evas, D_("Sort directories first"), &cfdata->sort_dir);
+   e_widget_framelist_object_append(of, ob);
+
+   gr = e_widget_radio_group_new(&cfdata->sort_type);
+   ob = e_widget_radio_add(evas, D_("Sort by name"), SORT_NAME, gr);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort by access time"), SORT_ATIME, gr);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort by modification time"), SORT_MTIME, gr);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort by change time"), SORT_CTIME, gr);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort by size"), SORT_SIZE, gr);
+   e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -432,6 +480,8 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    inst = cfdata->inst;
    eina_stringshare_del(cfdata->inst->conf->dir);
+   cfdata->inst->conf->sort_dir = cfdata->sort_dir;
+   cfdata->inst->conf->sort_type = cfdata->sort_type;
 
    path = ecore_file_realpath(cfdata->dir);
    cfdata->inst->conf->dir = eina_stringshare_add(path);
@@ -451,5 +501,91 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    e_config_save_queue();
    return 1;
+}
+
+static int
+_dirwatcher_cb_sort_dir(const Drawer_Source_Item *si1, const Drawer_Source_Item *si2)
+{
+   int d1, d2;
+
+   d1 = ecore_file_is_dir(si1->file_path);
+   d2 = ecore_file_is_dir(si2->file_path);
+
+   if (d1 && d2)
+     return strcmp(si1->file_path, si2->file_path);
+
+   if (d1)
+     return -1;
+   if (d2)
+     return 1;
+   return 0;
+}
+
+static int
+_dirwatcher_cb_sort(const void *data1, const void *data2)
+{
+   const Drawer_Source_Item *si1 = NULL, *si2 = NULL;
+   Instance *inst;
+   const char *name1;
+   const char *name2;
+   struct stat st1, st2;
+   long long size1, size2;
+
+   si1 = data1;
+   si2 = data2;
+   inst = ((Dirwatcher_Priv *) si1->priv)->inst;
+   switch (inst->conf->sort_type)
+     {
+      case SORT_NAME:
+	 if (inst->conf->sort_dir)
+	   {
+	      int ret = _dirwatcher_cb_sort_dir(si1, si2);
+	      if (ret) return ret;
+	   }
+
+	 name1 = ecore_file_file_get(si1->file_path);
+	 name2 = ecore_file_file_get(si2->file_path);
+	 return strcmp(name1, name2);
+      case SORT_MTIME:
+	 if (inst->conf->sort_dir)
+	   {
+	      int ret = _dirwatcher_cb_sort_dir(si1, si2);
+	      if (ret) return ret;
+	   }
+
+	 if (stat(si1->file_path, &st1) < 0) return 0;
+	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 return st1.st_mtime - st2.st_mtime;
+      case SORT_CTIME:
+	 if (inst->conf->sort_dir)
+	   {
+	      int ret = _dirwatcher_cb_sort_dir(si1, si2);
+	      if (ret) return ret;
+	   }
+
+	 if (stat(si1->file_path, &st1) < 0) return 0;
+	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 return st1.st_ctime - st2.st_ctime;
+      case SORT_ATIME:
+	 if (inst->conf->sort_dir)
+	   {
+	      int ret = _dirwatcher_cb_sort_dir(si1, si2);
+	      if (ret) return ret;
+	   }
+
+	 if (stat(si1->file_path, &st1) < 0) return 0;
+	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 return st1.st_atime - st2.st_atime;
+      case SORT_SIZE:
+	 if (inst->conf->sort_dir)
+	   {
+	      int ret = _dirwatcher_cb_sort_dir(si1, si2);
+	      if (ret) return ret;
+	   }
+
+	 size1 = ecore_file_size(si1->file_path);
+	 size2 = ecore_file_size(si2->file_path);
+	 return size1 - size2;
+     }
 }
 
