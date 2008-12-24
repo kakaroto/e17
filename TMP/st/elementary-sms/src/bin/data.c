@@ -235,7 +235,11 @@ _data_message_load(const char *file)
                }
           }
      }
-   msg->body = body;
+   if (body)
+     {
+        msg->body = eina_stringshare_add(body);
+        free(body);
+     }
    fclose(f);
    return msg;
 }

@@ -77,6 +77,7 @@ _create_message(Evas_Object *win, Data_Message *msg)
    msgui = create_message
      (win, title, when, icon,
       (msg->flags & DATA_MESSAGE_SENT) ? 1 : 0,
+      (ctc ? 1 : 0),
       msg->body, 
       msg);
    if (icon) free(icon);

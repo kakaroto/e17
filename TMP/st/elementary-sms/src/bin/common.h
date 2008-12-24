@@ -80,6 +80,7 @@ char *data_contact_photo_file_get(Data_Contact *ctc);
 Evas_Object *
   create_message(Evas_Object *win,
                  const char *title, const char *date, const char *icon,
-                 Evas_Bool is_me, const char *text, void *handle);
+                 Evas_Bool is_me, Evas_Bool have_contact,
+                 const char *text, void *handle);
 void
   create_main_win(void);

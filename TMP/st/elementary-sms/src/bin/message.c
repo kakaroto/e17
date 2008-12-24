@@ -48,6 +48,9 @@ on_wipe(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
    printf("delete message completely\n");
+   evas_object_del(mui->bb);
+   data_message_del(mui->handle);
+   free(mui);
 }
 
 static void
@@ -55,12 +58,16 @@ on_trash(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
    printf("move message to trash\n");
+   evas_object_del(mui->bb);
+   data_message_trash(mui->handle);
+   free(mui);
 }
 
 Evas_Object *
 create_message(Evas_Object *win, 
                const char *title, const char *date, const char *icon, 
-               Evas_Bool is_me, const char *text, void *handle)
+               Evas_Bool is_me, Evas_Bool have_contact,
+               const char *text, void *handle)
 {
    Message_UI *mui;
    Evas_Object *bb, *bx, *bx2, *bt, *ab, *hv, *ph, *fr;
@@ -108,28 +115,28 @@ create_message(Evas_Object *win,
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Reply");
-   evas_object_smart_callback_add(bt, "clicked", on_reply, NULL);
-   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
-   evas_object_size_hint_align_set(bt, 0.0, -1.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-   
    bt = elm_hoversel_add(win);
    elm_hoversel_hover_parent_set(bt, win);
    elm_hoversel_label_set(bt, "Options");
    elm_hoversel_item_add(bt, "Forward", NULL, ELM_ICON_NONE, on_forward, mui);
-   if (!is_me)
-     {
-        // FIXME: if not matched in contacts only
-        elm_hoversel_item_add(bt, "Add", NULL, ELM_ICON_NONE, on_add, mui);
-     }
+   if ((!is_me) && (!have_contact))
+     elm_hoversel_item_add(bt, "Add", NULL, ELM_ICON_NONE, on_add, mui);
    elm_hoversel_item_add(bt, "Filter", NULL, ELM_ICON_NONE, on_filter, mui);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_align_set(bt, 0.0, -1.0);
    elm_box_pack_end(bx2, bt);
    evas_object_show(bt);
+
+   if (!is_me)
+     {
+        bt = elm_button_add(win);
+        elm_button_label_set(bt, "Reply");
+        evas_object_smart_callback_add(bt, "clicked", on_reply, NULL);
+        evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+        evas_object_size_hint_align_set(bt, 0.0, -1.0);
+        elm_box_pack_end(bx2, bt);
+        evas_object_show(bt);
+     }
    
    bt = elm_hoversel_add(win);
    elm_hoversel_hover_parent_set(bt, win);
