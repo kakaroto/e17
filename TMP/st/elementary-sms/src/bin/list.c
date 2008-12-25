@@ -84,6 +84,8 @@ _create_message(Evas_Object *win, Data_Message *msg)
    return msgui;
 }
 
+static Evas_Object *window, *box, *content;
+
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 {
@@ -93,20 +95,22 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 static void
 on_write(void *data, Evas_Object *obj, void *event_info)
 {
-}
-
-static void
-on_recent(void *data, Evas_Object *obj, void *event_info)
-{
-}
-
-static void
-on_chats(void *data, Evas_Object *obj, void *event_info)
-{
+   Evas_Object *np;
+   
+   /* FIXME: content -> editor + to who display + select "who" */
+   if (content) evas_object_del(content);
+   
+   np = elm_notepad_add(window);
+   evas_object_size_hint_weight_set(np, 1.0, 1.0);
+   evas_object_size_hint_align_set(np, -1.0, -1.0);
+   elm_box_pack_end(box, np);
+   evas_object_show(np);
+   
+   content = np;
 }
 
 static int
-_sort_msg_newset(const void *data1, const void *data2)
+_sort_msg_newest(const void *data1, const void *data2)
 {
    const Data_Message *msg1 = data1;
    const Data_Message *msg2 = data2;
@@ -115,67 +119,24 @@ _sort_msg_newset(const void *data1, const void *data2)
    return 0;
 }
 
-
-void
-create_main_win(void)
+static void
+on_recent(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *win, *bg, *bx, *bt, *sc, *bx2;
+   Evas_Object *sc, *bx2;
    Eina_List *l, *mlist = NULL;
    int from, num, i;
-
-   win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Messages");
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
    
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, 1.0, 1.0);
-   elm_win_resize_object_add(win, bg);
-   evas_object_show(bg);
+   if (content) evas_object_del(content);
    
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   elm_win_resize_object_add(win, bx);
-
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Write");
-   evas_object_smart_callback_add(bt, "clicked", on_write, NULL);
-   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-   evas_object_size_hint_align_set(bt, -1.0, -1.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Recent");
-   evas_object_smart_callback_add(bt, "clicked", on_recent, NULL);
-   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-   evas_object_size_hint_align_set(bt, -1.0, -1.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Chats");
-   evas_object_smart_callback_add(bt, "clicked", on_chats, NULL);
-   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-   evas_object_size_hint_align_set(bt, -1.0, -1.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-   
-   sc = elm_scroller_add(win);
+   sc = elm_scroller_add(window);
    evas_object_size_hint_weight_set(sc, 1.0, 1.0);
    evas_object_size_hint_align_set(sc, -1.0, -1.0);
-   elm_box_pack_end(bx, sc);
+   elm_box_pack_end(box, sc);
    evas_object_show(sc);
+   
+   content = sc;
 
-   bx2 = elm_box_add(win);
+   bx2 = elm_box_add(window);
    evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
    evas_object_size_hint_align_set(bx2, -1.0, -1.0);
    elm_scroller_content_set(sc, bx2);
@@ -190,7 +151,7 @@ create_main_win(void)
      }
 
    // sort newest first
-   mlist = eina_list_sort(mlist, eina_list_count(mlist), _sort_msg_newset);
+   mlist = eina_list_sort(mlist, eina_list_count(mlist), _sort_msg_newest);
    // FIXME: from and num are inputs
    from = 0; // from message # 0
    num = 50; // 50 messages max;
@@ -198,6 +159,8 @@ create_main_win(void)
    for (l = mlist, i = 0; l; l = l->next, i++)
      {
         Data_Message *msg = l->data;
+        if ((msg->flags & DATA_MESSAGE_TRASH))
+          continue;
         if (i >= from)
           {
              if (i == from)
@@ -207,7 +170,7 @@ create_main_win(void)
                        // FIXME: add a "newer" button
                     }
                }
-             Evas_Object *msgui = _create_message(win, msg);
+             Evas_Object *msgui = _create_message(window, msg);
              elm_box_pack_end(bx2, msgui);
              evas_object_show(msgui);
           }
@@ -222,6 +185,150 @@ create_main_win(void)
      }
    
    eina_list_free(mlist);
+}
+
+static void
+on_chats(void *data, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *sc, *bx2;
+   
+   if (content) evas_object_del(content);
+   
+   sc = elm_scroller_add(window);
+   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_box_pack_end(box, sc);
+   evas_object_show(sc);
+   
+   content = sc;
+
+   bx2 = elm_box_add(window);
+   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+   elm_scroller_content_set(sc, bx2);
+   evas_object_show(bx2);
+
+   /* FIXME: delete content and add a scrolled list of everyone who has sent
+    * you and sms or that you have sent one to - in order of most recent */
+}
+
+static void
+on_trash(void *data, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *sc, *bx2;
+   Eina_List *l, *mlist = NULL;
+   int from, num, i;
+   
+   if (content) evas_object_del(content);
+   
+   sc = elm_scroller_add(window);
+   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_box_pack_end(box, sc);
+   evas_object_show(sc);
+   
+   content = sc;
+
+   bx2 = elm_box_add(window);
+   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+   elm_scroller_content_set(sc, bx2);
+   evas_object_show(bx2);
+
+   tzset();
+
+   for (l = (Eina_List *)data_message_all_list(); l; l = l->next)
+     {
+        // FIXME: use filter
+        mlist = eina_list_append(mlist, l->data);
+     }
+
+   // sort newest first
+   mlist = eina_list_sort(mlist, eina_list_count(mlist), _sort_msg_newest);
+   // FIXME: from and num are inputs
+   from = 0; // from message # 0
+   num = 50; // 50 messages max;
+   
+   for (l = mlist, i = 0; l; l = l->next, i++)
+     {
+        Data_Message *msg = l->data;
+        if (!(msg->flags & DATA_MESSAGE_TRASH))
+          continue;
+        if (i >= from)
+          {
+             if (i == from)
+               {
+                  if (l->prev)
+                    {
+                       // FIXME: add a "newer" button
+                    }
+               }
+             Evas_Object *msgui = _create_message(window, msg);
+             elm_box_pack_end(bx2, msgui);
+             evas_object_show(msgui);
+          }
+        if (i >= (from + num - 1))
+          {
+             if (l->next)
+               {
+                  // FIXME: add a "older" button
+               }
+             break;
+          }
+     }
+   
+   eina_list_free(mlist);
+}
+
+void
+create_main_win(void)
+{
+   Evas_Object *win, *bg, *bx, *sc, *tb, *ic;
+   Elm_Toolbar_Item *tbi;
+
+   win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+   elm_win_title_set(win, "Messages");
+   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   
+   window = win;
+   
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, 1.0, 1.0);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+   evas_object_size_hint_align_set(bx, -1.0, -1.0);
+   elm_win_resize_object_add(win, bx);
+   
+   box = bx;
+
+   tb = elm_toolbar_add(win);
+   evas_object_size_hint_weight_set(tb, 1.0, 0.0);
+   evas_object_size_hint_align_set(tb, -1.0, -1.0);
+
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "apps");
+   elm_toolbar_item_add(tb, ic, "Write", on_write, NULL);
+   evas_object_show(ic);
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "apps");
+   tbi = elm_toolbar_item_add(tb, ic, "Recent", on_recent, NULL);
+   evas_object_show(ic);
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "apps");
+   elm_toolbar_item_add(tb, ic, "Chats", on_chats, NULL);
+   evas_object_show(ic);
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "apps");
+   elm_toolbar_item_add(tb, ic, "Trash", on_trash, NULL);
+   evas_object_show(ic);
+   
+   elm_box_pack_end(bx, tb);
+   evas_object_show(tb);
+
+   elm_toolbar_item_select(tbi);
    
    evas_object_show(bx);
    
