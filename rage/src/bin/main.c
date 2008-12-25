@@ -310,6 +310,7 @@ main_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	  {
 	   case MENU: menu_key(ev); break;
 	   case VIDEO: video_key(ev); break;
+	   case DVB: dvb_key(ev); break;
 	   default: break;
 	  }
      }
@@ -752,7 +753,20 @@ main_menu_scan(void *data)
 static void
 main_menu_tv(void *data)
 {
+   if (over_delay_timer)
+     {
+	ecore_timer_del(over_delay_timer);
+	over_delay_timer = NULL;
+     }
+   main_mode_push(DVB);
+   if (over_video)
+     {
+	minivid_del(over_video);
+	over_video = NULL;
+     }
+   dvb_init("xine", "", "video");
 //   system("tvtime -m -n PAL -f custom");
+/*
    system("xine -f --no-gui "
           "dvb://0 "
           "dvb://1 "
@@ -779,6 +793,7 @@ main_menu_tv(void *data)
           "dvb://22 "
           "dvb://23 "
           );
+ */
 }
 
 int

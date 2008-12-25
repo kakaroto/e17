@@ -37,7 +37,9 @@ e_layout.h \
 e_flowlayout.c \
 e_flowlayout.h \
 conf_options.c \
-conf_options.h
+conf_options.h \
+dvb.c \
+dvb.h
 
 rage_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
 
