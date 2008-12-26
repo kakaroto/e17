@@ -309,19 +309,19 @@ create_main_win(void)
    evas_object_size_hint_align_set(tb, -1.0, -1.0);
 
    ic = elm_icon_add(win);
-   elm_icon_standard_set(ic, "apps");
+   elm_icon_standard_set(ic, "edit");
    elm_toolbar_item_add(tb, ic, "Write", on_write, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
-   elm_icon_standard_set(ic, "apps");
+   elm_icon_standard_set(ic, "clock");
    tbi = elm_toolbar_item_add(tb, ic, "Recent", on_recent, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
-   elm_icon_standard_set(ic, "apps");
+   elm_icon_standard_set(ic, "chat");
    elm_toolbar_item_add(tb, ic, "Chats", on_chats, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
-   elm_icon_standard_set(ic, "apps");
+   elm_icon_standard_set(ic, "delete");
    elm_toolbar_item_add(tb, ic, "Trash", on_trash, NULL);
    evas_object_show(ic);
    
