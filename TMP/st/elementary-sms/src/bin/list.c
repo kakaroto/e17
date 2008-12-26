@@ -93,20 +93,69 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_to_select(void *data, Evas_Object *obj, void *event_info)
+{
+   printf("FIXME: show contact list to select from or phone number entry\n");
+}
+
+static void
+on_send(void *data, Evas_Object *obj, void *event_info)
+{
+   printf("FIXME: send sms\n");
+}
+
+static void
 on_write(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *np;
+   Evas_Object *np, *bx, *bx2, *ph, *lb, *bt;
    
    /* FIXME: content -> editor + to who display + select "who" */
    if (content) evas_object_del(content);
    
+   bx = elm_box_add(window);
+   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+   evas_object_size_hint_align_set(bx, -1.0, -1.0);
+   
+   content = bx;
+   
+   bx2 = elm_box_add(window);
+   elm_box_horizontal_set(bx2, 1);
+   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+   
+   ph = elm_photo_add(window);
+   evas_object_smart_callback_add(ph, "clicked", on_to_select, NULL);
+   evas_object_size_hint_weight_set(ph, 0.0, 1.0);
+   evas_object_size_hint_align_set(ph, -1.0, -1.0);
+   elm_box_pack_end(bx2, ph);
+   evas_object_show(ph);
+   
+   lb = elm_label_add(window);
+   elm_label_label_set(lb, "Select...");
+   evas_object_size_hint_weight_set(lb, 1.0, 1.0);
+   evas_object_size_hint_align_set(lb, -1.0, 0.5);
+   elm_box_pack_end(bx2, lb);
+   evas_object_show(lb);
+   
+   elm_box_pack_end(bx, bx2);
+   evas_object_show(bx2);
+   
    np = elm_notepad_add(window);
    evas_object_size_hint_weight_set(np, 1.0, 1.0);
    evas_object_size_hint_align_set(np, -1.0, -1.0);
-   elm_box_pack_end(box, np);
+   elm_box_pack_end(bx, np);
    evas_object_show(np);
    
-   content = np;
+   bt = elm_button_add(window);
+   elm_button_label_set(bt, "Send");
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, -1.0);
+   elm_box_pack_end(bx, bt);
+   evas_object_smart_callback_add(bt, "clicked", on_send, NULL);
+   evas_object_show(bt);   
+
+   elm_box_pack_end(box, bx);
+   evas_object_show(bx);
 }
 
 static int
