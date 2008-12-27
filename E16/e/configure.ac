@@ -360,6 +360,7 @@ man/Makefile
 config/Makefile
 config/pix/Makefile
 themes/Makefile
+fonts/Makefile
 scripts/Makefile
 misc/Makefile
 po/Makefile.in
