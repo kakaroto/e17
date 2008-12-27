@@ -105,9 +105,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      edje_object_part_text_set(execwatch->execwatch_obj, "e.text.display_name",
 			       inst->ci->display_name);
    if (inst->ci->status_cmd && strlen(inst->ci->status_cmd) &&
-       (inst->ci->poll_time_mins || inst->ci->poll_time_hours))
+       (inst->ci->poll_time_hours || inst->ci->poll_time_mins || inst->ci->poll_time_secs))
      {
-	inst->poll_timer = ecore_timer_add((inst->ci->poll_time_mins + inst->ci->poll_time_hours),
+	inst->poll_timer = ecore_timer_add((inst->ci->poll_time_hours + inst->ci->poll_time_mins + inst->ci->poll_time_secs),
 					   _execwatch_status_cmd_exec, inst);
 	_execwatch_status_cmd_exec(inst);
      }	
@@ -218,8 +218,9 @@ _config_item_get(const char *id)
    ci->okstate_string = eina_stringshare_add("");
    ci->okstate_lines = 0;
    ci->refresh_after_dblclk_cmd = 0;
-   ci->poll_time_mins = 0.0;
    ci->poll_time_hours = 0.0;
+   ci->poll_time_mins = 0.0;
+   ci->poll_time_secs = 0.0;
 
    execwatch_config->items = eina_list_append(execwatch_config->items, ci);
    return ci;
@@ -543,7 +544,7 @@ _execwatch_config_updated(Config_Item *ci)
 	if (inst->ci->display_name)
 	  edje_object_part_text_set(inst->execwatch->execwatch_obj, "e.text.display_name",
 				    inst->ci->display_name);
-	inst->poll_timer = ecore_timer_add((inst->ci->poll_time_mins + inst->ci->poll_time_hours),
+	inst->poll_timer = ecore_timer_add((inst->ci->poll_time_hours + inst->ci->poll_time_mins + inst->ci->poll_time_secs),
 					    _execwatch_status_cmd_exec, inst);
 	_execwatch_status_cmd_exec(inst);
      }
@@ -573,8 +574,9 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, okstate_string, STR);
    E_CONFIG_VAL(D, T, okstate_lines, INT);
    E_CONFIG_VAL(D, T, refresh_after_dblclk_cmd, INT);
-   E_CONFIG_VAL(D, T, poll_time_mins, DOUBLE);
    E_CONFIG_VAL(D, T, poll_time_hours, DOUBLE);
+   E_CONFIG_VAL(D, T, poll_time_mins, DOUBLE);
+   E_CONFIG_VAL(D, T, poll_time_secs, DOUBLE);
    
    #undef T
    #define T Config
@@ -598,8 +600,9 @@ e_modapi_init(E_Module *m)
 	ci->okstate_string = eina_stringshare_add("");
 	ci->okstate_lines = 0;
 	ci->refresh_after_dblclk_cmd = 0;
-	ci->poll_time_mins = 0.0;
 	ci->poll_time_hours = 0.0;
+	ci->poll_time_mins = 0.0;
+	ci->poll_time_secs = 0.0;
 	
 	execwatch_config->items = eina_list_append(execwatch_config->items, ci);
      }

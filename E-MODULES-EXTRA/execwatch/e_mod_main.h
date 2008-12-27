@@ -28,8 +28,9 @@ struct _Config_Item
    int okstate_lines;
    int okstate_mode;
    int refresh_after_dblclk_cmd;
-   double poll_time_mins;
    double poll_time_hours;
+   double poll_time_mins;
+   double poll_time_secs;
 };
 
 EAPI extern E_Module_Api e_modapi;
