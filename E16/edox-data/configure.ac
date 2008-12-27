@@ -23,7 +23,7 @@ AM_MAINTAINER_MODE
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-edocdata=`cd $srcdir/E-docs; ls -1 MAIN *.png Vera.ttf VeraBd.ttf`
+edocdata=`cd $srcdir/E-docs; ls -1 MAIN *.png`
 edocdata=`eval echo $edocdata`
 AC_SUBST(edocdata)
 
