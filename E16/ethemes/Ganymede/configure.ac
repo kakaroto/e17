@@ -16,12 +16,6 @@ fi
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-AC_ARG_ENABLE(fsstd,
-  [  --enable-fsstd          install files following FSSTD [default=yes]], ,enable_fsstd=yes)
-
-if test "x$enable_fsstd" != "xyes"; then
-  datadir=${prefix}
-fi
 ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
 AC_SUBST(ENLIGHTENMENT_ROOT)
 

@@ -25,13 +25,8 @@ This is part of the Enlightenment distribution.
 %setup -n %{name}-%{version}%{rev_name}
 
 %build
-CFLAGS="${RPM_OPT_FLAGS}"
-if [ ! -f configure ]; then
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd
-else
-  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd
-fi
-make
+%{configure} %{?acflags}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
