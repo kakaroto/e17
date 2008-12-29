@@ -146,13 +146,13 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
 
    ob = e_widget_label_add(evas, D_("Poll Time"));
    e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f hours"), 0.0, 59.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f hours"), 0.0, 24.0, 1.0, 0,
 			  &(cfdata->poll_time_hours), NULL, 40);
    e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f mins"), 0.0, 24.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f mins"), 0.0, 59.0, 1.0, 0,
 			  &(cfdata->poll_time_mins), NULL, 40);
    e_widget_frametable_object_append(of, ob, 1, 6, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f secs"), 0.0, 24.0, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f secs"), 0.0, 59.0, 1.0, 0,
 			  &(cfdata->poll_time_secs), NULL, 40);
    e_widget_frametable_object_append(of, ob, 1, 7, 2, 1, 1, 0, 1, 0);
 
