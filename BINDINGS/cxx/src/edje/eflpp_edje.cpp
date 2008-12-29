@@ -192,14 +192,8 @@ void EdjePart::unswallow( EvasObject* object )
 CountedPtr <EvasObject> EdjePart::swallow()
 {
     Evas_Object *eo = edje_object_part_swallow_get( _parent->obj(), _partname );
-    const char *t = evas_object_type_get( eo );
-    EvasObject *ret_o = NULL;
   
-    if( !strcmp( t,"edje" ) )
-    {
-        ret_o = EvasEdje::wrap (eo);
-    }
-    // TODO: support other types
+    EvasObject *ret_o = EvasObject::wrap (eo);
   
     return CountedPtr <EvasObject> (ret_o);
 }

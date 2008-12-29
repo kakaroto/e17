@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <assert.h>
+
 using namespace std;
 
 namespace efl {
@@ -103,19 +104,6 @@ bool EtkWidget::isVisible() const
     return etk_widget_is_visible( ETK_WIDGET(_o) );
 }
 
-void EtkWidget::setVisibilityLock( bool b )
-{
-    // hack: [audifahrer]
-    //etk_widget_visibility_locked_set( ETK_WIDGET(_o), b );
-}
-
-bool EtkWidget::visibilityLock() const
-{
-    // hack: [audifahrer]
-    //return etk_widget_visibility_locked_get( ETK_WIDGET(_o) );
-    return false;
-}
-
 //==========================================================================//
 // EtkContainer
 //==========================================================================//
@@ -126,18 +114,59 @@ EtkContainer::EtkContainer( EtkObject* parent, const char* type, const char* nam
     init( );
 }
 
+EtkContainer::EtkContainer (Etk_Object *o)
+{
+  _o = o;
+  _managed = false;
+}
+
 EtkContainer::~EtkContainer()
 {
 }
 
-void EtkContainer::appendChild( EtkWidget* child )
+void EtkContainer::add( EtkWidget* child )
 {
    etk_container_add( ETK_CONTAINER(_o), ETK_WIDGET(child->obj()) );
 }
 
+void EtkContainer::remove (EtkWidget *widget)
+{
+    etk_container_remove (ETK_WIDGET (widget->obj ()));
+}
+
+void EtkContainer::removeAll ()
+{
+    etk_container_remove_all (ETK_CONTAINER(_o));
+}
+
 void EtkContainer::setBorderWidth( int width )
 {
-   etk_container_border_width_set( ETK_CONTAINER(_o), 5);
+   etk_container_border_width_set( ETK_CONTAINER (_o), width);
+}
+
+int EtkContainer::getBorderWidth ()
+{
+    return etk_container_border_width_get (ETK_CONTAINER (_o));
+}
+
+Eina_List *EtkContainer::getChildren ()
+{
+    return etk_container_children_get (ETK_CONTAINER (_o));
+}
+
+bool EtkContainer::isChild (EtkWidget *widget)
+{
+    return etk_container_is_child(ETK_CONTAINER (_o), ETK_WIDGET (widget->obj ()));
+}
+
+void EtkContainer::fillChildSpace (EtkWidget *child, Etk_Geometry &out_child_space, bool hfill, bool vfill, float xalign, float yalign)
+{
+    etk_container_child_space_fill (ETK_WIDGET (child->obj ()), &out_child_space, hfill, vfill, xalign, yalign);
+}
+
+EtkContainer *EtkContainer::wrap( Etk_Object* o )
+{
+    return new EtkContainer (o);
 }
 
 //==========================================================================//
@@ -260,6 +289,133 @@ EtkImage::EtkImage( Etk_Object *o )
     _managed = false;
 }
 
+void EtkImage::setFromFile( const string &filename, const string &key )
+{
+    etk_image_set_from_file( ETK_IMAGE( _o ), filename.c_str (), key.c_str () );
+}
+
+void EtkImage::getFile( string &outFilename, string &outKey, bool eetLoaded )
+{
+    char *filename = NULL;
+    char *key = NULL;
+  
+    etk_image_file_get( ETK_IMAGE( _o ), &filename, &key);
+    outFilename = filename;
+    if (key)
+    {
+        outKey = key;
+        eetLoaded = true;
+    }
+    else
+    {
+        eetLoaded = false;
+    }
+}
+
+void EtkImage::setFromEdje (const string &filename, const string &group)
+{
+    etk_image_set_from_edje (ETK_IMAGE( _o ), filename.c_str (), group.c_str ());
+}
+
+void EtkImage::getEdje (string &outFilename, string &outGroup)
+{
+    char *filename = NULL;
+    char *group = NULL;
+  
+    etk_image_edje_get( ETK_IMAGE( _o ), &filename, &group);
+    outFilename = filename;
+    outGroup = group;
+}
+
+void EtkImage::setFromStock (Etk_Stock_Id stock_id, Etk_Stock_Size stock_size)
+{
+    etk_image_set_from_stock (ETK_IMAGE( _o ), stock_id, stock_size);
+}
+
+Etk_Stock_Id EtkImage::getStockId ()
+{
+    Etk_Stock_Id stock_id;
+    etk_image_stock_get (ETK_IMAGE (_o), &stock_id, NULL);
+    return stock_id;
+}
+
+Etk_Stock_Size EtkImage::getStockSize ()
+{
+    Etk_Stock_Size stock_size;
+    etk_image_stock_get (ETK_IMAGE (_o), NULL, &stock_size);
+    return stock_size;
+}
+
+void EtkImage::setFromEvasObject (const EvasObject &eo)
+{
+    etk_image_set_from_evas_object (ETK_IMAGE (_o), eo.obj ());
+}
+
+CountedPtr <EvasObject> EtkImage::getEvasObject ()
+{
+    Evas_Object *eo = etk_image_evas_object_get (ETK_IMAGE (_o));
+    return CountedPtr <EvasObject> (EvasObject::wrap (eo));
+}
+
+void EtkImage::setFromData (int width, int height, void *data, bool copy)
+{
+    etk_image_set_from_data (ETK_IMAGE (_o), width, height, data, copy);
+}
+
+void *EtkImage::getData (bool for_writing)
+{
+    return etk_image_data_get (ETK_IMAGE (_o), for_writing);
+}
+
+Etk_Image_Source EtkImage::getSource ()
+{
+    return etk_image_source_get (ETK_IMAGE (_o));
+}
+
+void EtkImage::update ()
+{
+    etk_image_update (ETK_IMAGE (_o));
+}
+
+void EtkImage::rectUpdate (int x, int y, int w, int h)
+{
+    etk_image_update_rect (ETK_IMAGE (_o), x, y, w, h);
+}
+
+int EtkImage::getWidth ()
+{
+    int width;
+    etk_image_size_get (ETK_IMAGE (_o), &width, NULL);
+    return width;
+}
+
+int EtkImage::getHeight ()
+{
+    int height;
+    etk_image_size_get (ETK_IMAGE (_o), NULL, &height);
+    return height;
+}
+
+void EtkImage::setAspect (bool keep_aspect)
+{
+    etk_image_keep_aspect_set (ETK_IMAGE (_o), keep_aspect);
+}
+
+bool EtkImage::getKeepAspect ()
+{
+    return etk_image_keep_aspect_get (ETK_IMAGE (_o));
+}
+
+void EtkImage::setRatio (double aspect_ratio)
+{
+    etk_image_aspect_ratio_set (ETK_IMAGE (_o), aspect_ratio);
+}
+
+double EtkImage::getRatio ()
+{
+    return etk_image_aspect_ratio_get (ETK_IMAGE (_o));
+}
+
 EtkImage *EtkImage::wrap( Etk_Object* o )
 {
     return new EtkImage( o );
@@ -273,13 +429,13 @@ EtkButton::EtkButton( EtkObject* parent, const char* type, const char* name )
     :EtkBox( parent, type, name )
 {
     init( );
-    setText( name ? name : "unnamed" );
+    setLabel( name ? name : "unnamed" );
 }
 
 EtkButton::EtkButton( const char* text, EtkObject* parent, const char* type, const char* name )
     :EtkBox( parent, type, name )
 {
-    setText( text );
+    setLabel( text );
 }
 
 EtkButton::EtkButton( Etk_Object *o )
@@ -292,12 +448,12 @@ EtkButton::~EtkButton()
 {
 }
 
-void EtkButton::setText( const char* text )
+void EtkButton::setLabel( const string &label )
 {
-    etk_button_label_set( ETK_BUTTON(_o), const_cast<char*>( text ) );
+    etk_button_label_set( ETK_BUTTON(_o), label.c_str () );
 }
 
-const char *EtkButton::getText( )
+const string EtkButton::getLabel( )
 {
     return etk_button_label_get (ETK_BUTTON(_o));
 }

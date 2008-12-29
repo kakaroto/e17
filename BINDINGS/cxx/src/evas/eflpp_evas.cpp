@@ -193,14 +193,13 @@ EvasObject* EvasCanvas::objectAtBottom() const
 EvasObject::EvasObject (Evas_Object *eo)
 {
   o = eo;
+  mManaged = false;
 }
 
-/*EvasObject::EvasObject( EvasCanvas* canvas, const char* name )
-    : _canvas( canvas )
+EvasObject *EvasObject::wrap( Evas_Object* o )
 {
-    AllocTag( this, type );
-    Dout( dc::notice, "EvasObject::Object " << "created new " << type << " (" << ( name ? name : "null" ) << ")" );
-}*/
+    return new EvasObject (o);
+}
 
 void EvasObject::init (const char *name)
 {

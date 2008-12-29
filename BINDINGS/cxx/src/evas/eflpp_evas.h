@@ -111,23 +111,13 @@ class EvasObject
 
   protected:
     EvasObject () {}
-    // construction/destruction
-    //EvasObject( EvasCanvas* canvas,
-    //        const char* name = "(null)" );
 
-  public:
-    /*!
-     *  Construct from existing Evas_Object
-     */
-    EvasObject (Evas_Object *eo);
-
-    
+  public:    
     virtual ~EvasObject();
     bool operator==(const EvasObject& rhs) { return rhs.o == o; };
 
     /* don't use these */
     Evas_Object* obj() const { return o; };
-    //EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
     
     /* event signals */
     sigc::signal <void, const EvasMouseInEvent&> signalHandleMouseIn;
@@ -199,6 +189,8 @@ class EvasObject
     /* Focus */
     virtual void setFocus( bool focus );
     virtual bool hasFocus() const;
+    
+    static EvasObject *wrap( Evas_Object* o );
 
   private:
     static EvasObject* objectLink( Evas_Object* evas_object = 0 );
@@ -214,6 +206,12 @@ class EvasObject
 
   private:
     //EvasObject(); // disable default constructor
+    
+    /*!
+     *  Construct from existing Evas_Object
+     */
+    EvasObject (Evas_Object *eo);
+    
     EvasObject( const EvasObject& ); // disable copy constructor
     bool operator=(const EvasObject& ); // disable assignment operator
 };
