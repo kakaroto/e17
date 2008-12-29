@@ -107,7 +107,7 @@ e_nms_connection_dump(E_NMS_Connection *conn)
 }
 
 EAPI int
-e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void *data, Ecore_Hash *settings), void *data)
+e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void *data, Eina_Hash *settings), void *data)
 {
   DBusMessage *msg;
   Reply_Data   *d;
@@ -128,7 +128,7 @@ e_nms_connection_get_settings(E_NMS_Connection *connection, int (*cb_func)(void 
 }
 
 EAPI int
-e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Ecore_Hash *secrets), void *data)
+e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Eina_Hash *secrets), void *data)
 {
   DBusMessage      *msg;
   DBusMessageIter   iter, a_iter;

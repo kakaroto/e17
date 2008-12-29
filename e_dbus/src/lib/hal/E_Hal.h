@@ -83,7 +83,7 @@ struct E_Hal_Property
 
 struct E_Hal_Properties
 {
-  Ecore_Hash *properties;
+  Eina_Hash *properties;
 };
 
 typedef struct E_Hal_Properties E_Hal_Device_Get_All_Properties_Return;

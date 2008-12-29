@@ -88,10 +88,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
     return NULL;
   }
 
-  ret->properties = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-  ecore_hash_free_key_cb_set(ret->properties, ECORE_FREE_CB(eina_stringshare_del));
-  ecore_hash_free_value_cb_set(ret->properties, ECORE_FREE_CB(e_hal_property_free));
-
+  ret->properties = eina_hash_string_small_new(EINA_FREE_CB(e_hal_property_free));
 
   dbus_message_iter_init(msg, &iter);
   dbus_message_iter_recurse(&iter, &a_iter);
@@ -145,7 +142,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
         printf("Error: unexpected property type (%s): %c\n", name, dbus_message_iter_get_arg_type(&v_iter));
         break;
     }
-    ecore_hash_set(ret->properties, (void *)eina_stringshare_add(name), prop);
+    eina_hash_add(ret->properties, name, prop);
 
     dbus_message_iter_next(&a_iter);
   }
@@ -159,7 +156,7 @@ free_device_get_all_properties(void *data)
   E_Hal_Device_Get_All_Properties_Return *ret = data;
 
   if (!ret) return;
-  ecore_hash_destroy(ret->properties);
+  eina_hash_free(ret->properties);
   free(ret);
 }
 

@@ -368,8 +368,9 @@ extern "C" {
 
    /* TODO: e_nms_connection_update */
    /* TODO: e_nms_connection_delete */
-   EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Ecore_Hash *settings), void *data);
-   EAPI int  e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Ecore_Hash *secrets), void *data);
+
+   EAPI int  e_nms_connection_get_settings(E_NMS_Connection *conn, int (*cb_func)(void *data, Eina_Hash *settings), void *data);
+   EAPI int  e_nms_connection_secrets_get_secrets(E_NMS_Connection *connection, const char *setting_name, Ecore_List *hints, int request_new, int (*cb_func)(void *data, Eina_Hash *secrets), void *data);
 
    EAPI void  e_nms_connection_callback_updated_set(E_NMS_Connection *connection, int (*cb_func)(E_NMS_Connection *conn, Ecore_Hash *settings));
    /* TODO: e_nms_connection_callback_removed_set */

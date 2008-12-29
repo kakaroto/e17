@@ -57,26 +57,20 @@ dump_variant(E_NM_Variant *var)
     }
 }
 
-static void
-dump_values(void *value, void *data)
+static Eina_Bool
+dump_values(const Eina_Hash *hash, const void *key, void *value, void *data)
 {
-    Ecore_Hash_Node *node;
-
-    node = value;
-    printf(" - name: %s - ", (char *)node->key);
-    dump_variant(node->value);
+    printf(" - name: %s - ", (char *)key);
+    dump_variant(value);
     printf("\n");
 }
  
-static void
-dump_settings(void *value, void *data)
+static Eina_Bool
+dump_settings(const Eina_Hash *hash, const void *key, void *value, void *fdata)
 {
-    Ecore_Hash_Node *node;
-
-    node = value;
-    printf("name: %s\n", (char *)node->key);
+    printf("name: %s\n", (char *)key);
     printf("values:\n");
-    ecore_hash_for_each_node(node->value, dump_values, NULL);
+    eina_hash_foreach(value, dump_values, NULL);
     printf("\n");
 }
 
@@ -85,7 +79,7 @@ cb_nms_connection_secrets(void *data, Ecore_Hash *secrets)
 {
     printf("Secrets:\n");
     if (secrets)
-        ecore_hash_for_each_node(secrets, dump_settings, NULL);
+        eina_hash_foreach(secrets, dump_settings, NULL);
     return 1;
 }
 
@@ -97,7 +91,7 @@ cb_nms_connection_settings(void *data, Ecore_Hash *settings)
     {
         if (ecore_hash_get(settings, "802-11-wireless-security"))
             e_nms_connection_secrets_get_secrets(data, "802-11-wireless-security", NULL, 0, cb_nms_connection_secrets, NULL);
-        ecore_hash_for_each_node(settings, dump_settings, NULL);
+        eina_hash_foreach(settings, dump_settings, NULL);
     }
     return 1;
 }
