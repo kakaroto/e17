@@ -125,9 +125,8 @@ _ift_Load(TextState * ts, const char *name __UNUSED__)
    if (len > 1000)
       return -1;
 
-   Esnprintf(s, sizeof(s) - 8, "%s.ttf", ts->fontname);
-   strncpy(s, ts->fontname, len);
-   strcpy(s + len, ".ttf");
+   memcpy(s, ts->fontname, len);
+   s[len] = '\0';
    font = Efont_load(s, atoi(ss + 1));
    if (!font)
       return -1;
