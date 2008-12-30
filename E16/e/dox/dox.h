@@ -122,6 +122,7 @@ void                TextDraw(TextState * ts, Window win, char *text,
 			     int justification);
 
 /* file.c */
+int                 exists(char *s);
 void                freestrlist(char **l, int num);
 void                word(char *s, int num, char *wd);
 

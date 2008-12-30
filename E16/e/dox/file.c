@@ -26,7 +26,7 @@
 # include <wctype.h>
 #endif
 
-static int
+int
 exists(char *s)
 {
    struct stat         st;

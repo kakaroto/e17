@@ -168,13 +168,13 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
 static              Imlib_Image
 ImageLoad(const char *dir, const char *file)
 {
-   Imlib_Image         im;
    char                tmp[4096];
 
    Esnprintf(tmp, sizeof(tmp), "%s/%s", dir, file);
-   im = imlib_load_image(tmp);
+   if (!exists(tmp))
+      return NULL;
 
-   return im;
+   return imlib_load_image(tmp);
 }
 
 static              Imlib_Image
@@ -186,7 +186,15 @@ ImageLoadDox(const char *file)
 Imlib_Image
 ImageLoadDoc(const char *file)
 {
-   return ImageLoad(docdir, file);
+   Imlib_Image         im;
+
+   im = ImageLoad(docdir, file);
+   if (im)
+      return im;
+
+   im = ImageLoadDox(file);
+
+   return im;
 }
 
 static void
