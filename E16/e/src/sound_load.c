@@ -39,7 +39,7 @@ SoundSampleGetData(const char *file, SoundSampleData * ssd)
       return -1;
 
    frame_count = afGetFrameCount(in_file, AF_DEFAULT_TRACK);
-   ssd->channels = ssd->channels = afGetChannels(in_file, AF_DEFAULT_TRACK);
+   ssd->channels = afGetChannels(in_file, AF_DEFAULT_TRACK);
    ssd->rate = (unsigned int)(afGetRate(in_file, AF_DEFAULT_TRACK) + .5);
    afGetSampleFormat(in_file, AF_DEFAULT_TRACK, &in_format, &in_width);
    ssd->bit_per_sample = in_width;
