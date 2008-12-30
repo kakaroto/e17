@@ -86,7 +86,7 @@ Efont_load(const char *file, int size)
    if (!fp_set)
      {
 	imlib_add_path_to_font_path(docdir);
-	sprintf(s, "%s/../ttfonts", docdir);
+	sprintf(s, "%s/fonts", ENLIGHTENMENT_ROOT);
 	imlib_add_path_to_font_path(s);
 	fp_set = 1;
      }
