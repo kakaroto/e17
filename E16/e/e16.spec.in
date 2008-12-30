@@ -15,6 +15,7 @@ BuildRequires: imlib2-devel freetype-devel
 #BuildSuggests: esound-devel
 Obsoletes: enlightenment < 0.16.8
 Requires: imlib2 >= 1.2.0
+Provides: e16-edox
 
 %description
 Enlightenment is a window manager for the X Window System that
