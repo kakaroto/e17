@@ -5,3 +5,5 @@
 * split eflpp into seperate libs (e.g. eflpp-edje, eflpp-evas, ...)
 * replace char* with string
 * create a wrap() function for all classes
+* use PImpl implementation to avoid include of EFL headers direct in applications
+* one header and cpp file for each class

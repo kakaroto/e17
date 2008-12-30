@@ -18,7 +18,7 @@ int main( int argc, const char **argv )
     EtkButton* button = new EtkButton( "Hello World" );
     button->setFromStock( ETK_STOCK_BOOKMARK_NEW );
     button->setStockSize( ETK_STOCK_BIG );
-    mainWindow->appendChild( button );
+    mainWindow->add( button );
     mainWindow->showAll();
 
     cout << "calling main now" << endl;

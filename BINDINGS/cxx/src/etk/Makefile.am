@@ -9,11 +9,19 @@ AM_CXXFLAGS = @PACKAGE_CFLAGS@ \
 noinst_LTLIBRARIES = libeflpp_etk.la
 
 libeflpp_etk_la_SOURCES = \
-	eflpp_etk.cpp
+	eflpp_etk.cpp \
+	eflpp_etkimage.cpp \
+	eflpp_etkcontainer.cpp \
+	eflpp_etkwidget.cpp \
+	eflpp_etkobject.cpp
     
 libeflpp_includedir = $(pkgincludedir)
 
 libeflpp_include_DATA = \
-	eflpp_etk.h
+	eflpp_etk.h \
+	eflpp_etkimage.h \
+	eflpp_etkcontainer.h \
+	eflpp_etkwidget.h \
+	eflpp_etkobject.h
 
 EXTRA_DIST = $(libeflpp_include_DATA)

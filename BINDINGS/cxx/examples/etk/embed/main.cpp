@@ -56,7 +56,7 @@ int main( int argc, const char **argv )
     embed->show();
 
     EtkButton* button = new EtkButton( "Hello World!" );
-    embed->appendChild( button );
+    embed->add( button );
     button->show();
     embed->show();
 
