@@ -86,6 +86,8 @@ _create_message(Evas_Object *win, Data_Message *msg)
 
 static Evas_Object *window, *box, *content;
 
+static Evas_Object *inwin;
+
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 {
@@ -93,9 +95,66 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_select_ok(void *data, Evas_Object *obj, void *event_info)
+{
+   printf("FIXME: take number in entry\n");
+   evas_object_del(inwin);
+   inwin = NULL;
+}
+
+static void
 on_to_select(void *data, Evas_Object *obj, void *event_info)
 {
+   Evas_Object *win, *sc, *bx, *en, *bx2, *bt;
+   
+   win = window;
    printf("FIXME: show contact list to select from or phone number entry\n");
+   inwin = elm_win_inwin_add(win);
+
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx, -1.0, -1.0);
+   
+   sc = elm_scroller_add(win);
+   elm_scroller_content_min_limit(sc, 0, 1);
+   evas_object_size_hint_weight_set(sc, 1.0, 0.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_box_pack_end(bx, sc);
+   
+   en = elm_entry_add(win);
+   elm_entry_single_line_set(en, 1);
+   elm_entry_entry_set(en, "Select or Enter");
+   evas_object_size_hint_weight_set(en, 1.0, 0.0);
+   evas_object_size_hint_align_set(en, -1.0, 0.0);
+   elm_entry_select_all(en);
+   elm_scroller_content_set(sc, en);
+   evas_object_show(en);
+   evas_object_show(sc);
+   
+   sc = elm_scroller_add(win);
+   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+   evas_object_size_hint_align_set(sc,  -1.0, -1.0);
+   elm_box_pack_end(bx, sc);
+   evas_object_show(sc);
+   
+   bx2 = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+   elm_scroller_content_set(sc, bx2);
+   evas_object_show(bx2);
+
+   bt = elm_button_add(window);
+   elm_button_label_set(bt, "OK");
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, -1.0);
+   elm_box_pack_end(bx, bt);
+   evas_object_smart_callback_add(bt, "clicked", on_select_ok, NULL);
+   evas_object_show(bt);   
+   
+   elm_win_inwin_content_set(inwin, bx);
+   evas_object_show(bx);
+   
+   elm_win_inwin_activate(inwin);
 }
 
 static void
