@@ -1,0 +1,13 @@
+.svn
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+install-sh
+missing
+
+e16-docs.spec
+e16-docs-*.tar.gz
