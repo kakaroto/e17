@@ -99,7 +99,7 @@ EFont_draw_string(EImage * im, EFont * f, int x, int y,
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, 255);
    imlib_context_set_font(f);
-   imlib_text_draw(x, y - imlib_get_font_ascent(), text);
+   imlib_text_draw(x, y - imlib_get_maximum_font_ascent(), text);
 }
 
 typedef struct {

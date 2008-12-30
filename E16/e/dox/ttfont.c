@@ -46,9 +46,9 @@ EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
 		  Colormap cm)
 {
    Imlib_Image         im;
-   int                 w, h, ascent, descent;
+   int                 w, h, ascent, descent, max_asc;
 
-   Efont_extents(f, text, &ascent, &descent, &w, NULL, NULL, NULL, NULL);
+   Efont_extents(f, text, &ascent, &descent, &w, &max_asc, NULL, NULL, NULL);
    h = ascent + descent;
 
    imlib_context_set_drawable(win);
@@ -57,8 +57,9 @@ EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
 
    imlib_context_set_font(f->face);
    ImlibSetFgColorFromGC(dpy, gc, cm);
-   imlib_text_draw(0, 0, text);
+   imlib_text_draw(0, ascent - max_asc, text);
    imlib_render_image_on_drawable(x, y - ascent);
+
    imlib_free_image();
 }
 
