@@ -47,6 +47,7 @@ Action             *ActionclassGetAction(ActionClass * ac, int ix);
 int                 ActionclassEvent(ActionClass * ac, XEvent * ev,
 				     EWin * ewin);
 int                 ActionclassesGlobalEvent(XEvent * ev);
+void                ActionclassesReload(void);
 
 const char         *ActionGetTooltipString(Action * aa);
 int                 ActionGetAnybutton(Action * aa);

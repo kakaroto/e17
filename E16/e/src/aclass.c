@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "file.h"
 #include "grabs.h"
+#include "timers.h"
 #include <ctype.h>
 
 typedef struct _actiontype {
@@ -1100,6 +1101,22 @@ ActionclassesGlobalEvent(XEvent * ev)
       match |= ActionclassEvent(ac, ev, GetFocusEwin());
 
    return match;
+}
+
+static int
+_ac_reload(void *data __UNUSED__)
+{
+   AclassConfigLoadConfig("bindings.cfg");
+   return 0;
+}
+
+void
+ActionclassesReload(void)
+{
+   static Timer       *ac_reload_timer;
+
+   TIMER_DEL(ac_reload_timer);
+   TIMER_ADD(ac_reload_timer, 0.2, _ac_reload, NULL);
 }
 
 /*

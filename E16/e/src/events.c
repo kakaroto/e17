@@ -422,6 +422,11 @@ HandleEvent(XEvent * ev)
 	EUnregisterXwin(ev->xdestroywindow.window);
 	break;
 #endif
+
+     case MappingNotify:
+	if (Conf.testing.bindings_reload)
+	   ActionclassesReload();
+	break;
      }
 }
 
@@ -997,6 +1002,11 @@ EventShow(const XEvent * ev)
 		ev->xclient.data.l[2], ev->xclient.data.l[3],
 		ev->xclient.data.l[4]);
 	XFree(txt);
+	break;
+     case MappingNotify:
+	Eprintf("%s req=%d first=%d count=%d\n",
+		buf, ev->xmapping.request,
+		ev->xmapping.first_keycode, ev->xmapping.count);
 	break;
 
      case EX_EVENT_SHAPE_NOTIFY:

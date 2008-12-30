@@ -303,6 +303,7 @@ typedef struct {
       int                 mask_alpha_threshold;
       char                enable_startup_id;
       char                use_render_for_scaling;
+      char                bindings_reload;
       unsigned int        no_sync_mask;
    } testing;
 

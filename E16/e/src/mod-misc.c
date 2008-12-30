@@ -202,6 +202,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, testing.mask_alpha_threshold, 8),
    CFG_ITEM_BOOL(Conf, testing.enable_startup_id, 1),
    CFG_ITEM_BOOL(Conf, testing.use_render_for_scaling, 0),
+   CFG_ITEM_BOOL(Conf, testing.bindings_reload, 1),
    CFG_ITEM_HEX(Conf, testing.no_sync_mask, 0),
 
    CFG_ITEM_BOOL(Conf, autosave, 1),
