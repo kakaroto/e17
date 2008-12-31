@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include <string>
+#include <cstring>
 
 using namespace std;
 
