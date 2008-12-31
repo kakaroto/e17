@@ -1,0 +1,20 @@
+Source: python-emotion
+Section: python
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, python-evas, libemotion0-dev
+Standards-Version: 3.7.3
+Homepage: http://enlightenment.org
+
+Package: python-emotion
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: Python bindings for emotion
+ This package contains python emotion module.
+ .
+ Emotion is a video playback library used in Enlightenment DR17.
+
+
+

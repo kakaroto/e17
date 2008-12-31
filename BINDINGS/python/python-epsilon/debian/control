@@ -1,0 +1,19 @@
+Source: python-epsilon
+Section: python
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, python-evas, python-ecore, libepsilon0-dev
+Standards-Version: 3.7.3
+Homepage: http://enlightenment.org
+
+Package: python-epsilon
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: Python bindings for epsilon
+ This package contains python epsilon module.
+ .
+ Epsilon is a small, display independent, and quick thumbnailing library.
+
+

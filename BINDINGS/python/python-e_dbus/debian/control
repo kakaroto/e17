@@ -1,0 +1,24 @@
+Source: python-e_dbus
+Section: python
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, libedbus-dev
+Standards-Version: 3.7.3
+Homepage: http://enlightenment.org
+
+Package: python-edbus
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: Python bindings for edbus
+ This package contains python module for edbus.
+ .
+ Edbus are D-Bus and HAL wrapper libraries for use with the EFL.
+ Edbus contains:
+ - libedbus0 and libehal0 : D-Bus and HAL-related wrappers to ease integrating
+ D-Bus and HAL with EFL-based applications
+ - libenotify0 : provides an EFL-based notification support
+
+
+

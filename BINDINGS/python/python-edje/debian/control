@@ -1,0 +1,21 @@
+Source: python-edje
+Section: python
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, python-evas, libedje-dev, libevas-dev
+Standards-Version: 3.7.3
+Homepage: http://enlightenment.org
+
+Package: python-edje
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: Python bindings for edje
+ This package contains python edje module.
+ .
+ Edje is a graphical layout and animation library for animated resizable,
+ compressed and scalable themes. It is the theming engine behind
+ Enlightenment DR 0.17.
+
+

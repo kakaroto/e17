@@ -1,0 +1,18 @@
+Source: python-etk
+Section: python
+Priority: extra
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, python-evas, python-ecore, libetk1
+Standards-Version: 3.7.3
+Homepage: http://enlightenment.org
+
+Package: python-etk
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: Python bindings for Etk
+ This package contains python Etk module.
+ .
+ ETK is a widget toolkit based on the Enlightenment Foundation Libraries.
+

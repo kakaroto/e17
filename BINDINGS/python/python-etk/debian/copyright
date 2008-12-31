@@ -1,0 +1,20 @@
+This package was debianized by quaker <quaker66@gmail.com> on Fri, 26 Dec 2008 10:22:31 +0100.
+
+Authors: 
+ Caio Marcelo de Oliveira Filho <caio.oliveira@openbossa.org>
+ Gustavo Sverzut Barbieri <barbieri@profusion.mobi>
+ Karel "laBrute" Malbroukou <wax.kenryu@gmail.com>
+ Boris "billiob" Faure <billiob@gmail.com>
+
+License:
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+The Debian packaging is licensed under the same license as a original package.
