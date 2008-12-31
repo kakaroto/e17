@@ -1,0 +1,8 @@
+Login:          morphis
+IRC Nick:       morphis
+Name:           Simon Busch
+Location:       Bremen, Deutschland
+E-Mail:         morphis@gravedo.de
+WWW:            http://mm.gravedo.de/
+Managing:       python-elementary
+Plattform:      ArchLinux (Linux), Openembedded/Openmoko (Linux)
