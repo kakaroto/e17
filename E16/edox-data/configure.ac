@@ -1,4 +1,4 @@
-m4_define([pkg_version],  [0.16.8.0.1])
+m4_define([pkg_version],  [0.16.8.0.2])
 dnl m4_define([pkg_revision], [0.00])
 m4_define([pkg_ver_rev],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
 m4_define([rpm_revision], m4_ifdef([pkg_revision], [pkg_revision], [1]))
@@ -23,7 +23,7 @@ AM_MAINTAINER_MODE
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-edocdata=`cd $srcdir/E-docs; ls -1 MAIN *.png`
+edocdata=`cat $srcdir/E-docs/FILES`
 edocdata=`eval echo $edocdata`
 AC_SUBST(edocdata)
 
