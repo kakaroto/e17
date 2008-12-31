@@ -28,13 +28,15 @@ static int          _adv_apply    (E_Config_Dialog *cfd,
 				   E_Config_Dialog_Data *cfdata);
 
 EAPI E_Config_Dialog *
-e_int_config_screenshot_module(E_Container *con)
+e_int_config_screenshot_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
    char buf[4096];
 
-   if (e_config_dialog_find("Screenshot", "_e_modules_screenshot_config_dialog")) return NULL;
+   if (e_config_dialog_find("Screenshot", 
+                            "_e_modules_screenshot_config_dialog")) 
+     return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -48,7 +50,8 @@ e_int_config_screenshot_module(E_Container *con)
 
    snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
    cfd = e_config_dialog_new(con, "Screenshot Configuration", "Screenshot", 
-			     "_e_modules_screenshot_config_dialog", buf, 0, v, NULL);
+			     "_e_modules_screenshot_config_dialog", buf, 0, 
+                             v, NULL);
    ss_cfg->cfd = cfd;
    return cfd;
 }

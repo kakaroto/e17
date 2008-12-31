@@ -413,7 +413,7 @@ _cb_menu_cfg(void *data, E_Menu *menu, E_Menu_Item *mi)
    E_Container *con;
 
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_screenshot_module(con);
+   e_int_config_screenshot_module(con, NULL);
 }
 
 static void 
