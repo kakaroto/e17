@@ -12,7 +12,7 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN gendoc \
              Doxyfile \
 	     README.in README \
 	     imlib2.pc.in \
-	     imlib2.spec.in imlib2.spec \
+	     imlib2.spec.in imlib2.spec
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = imlib2.pc
