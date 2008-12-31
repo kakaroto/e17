@@ -1,0 +1,89 @@
+# translation of fr.po to Hungarian
+# French translation for E17 tiling module.
+# This file is put in the public domain.
+#
+#
+# Lisovszki Sándor <lisovszki@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"PO-Revision-Date: 2008-12-30 22:39+0100\n"
+"Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
+"Language-Team: Hungarian <pclinuxos-i18n@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+msgid "Tiling"
+msgstr "Tiling"
+
+#: ../e_mod_main.c:999
+msgid "Windows"
+msgstr "Ablakok"
+
+#: ../e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr "Beállítások"
+
+#. General settings
+#: ../e_mod_config.c:217
+msgid "General"
+msgstr "Általános"
+
+#: ../e_mod_config.c:227
+msgid "Horizontal:"
+msgstr "Horizontális:"
+
+#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr "%1.0f pixel"
+
+#: ../e_mod_config.c:231
+msgid "Vertical:"
+msgstr "Vertikális:"
+
+#. Virtual desktop settings
+#: ../e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr "Virtuális munkaasztalok"
+
+#. Grid mode settings
+#: ../e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr "Rács mód beállítások"
+
+#: ../e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#. Bigmain settings
+#: ../e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr "Nagy  alap beállítások"
+
+#: ../e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr "Nagyított ablakok a képernyő ennyi %-át foglalják el:"
+
+#: ../e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: ../e_mod_config.c:296
+msgid "Tiling border"
+msgstr "Keret csempézése"
+
+#: ../e_mod_config.c:310
+msgid "Floating border"
+msgstr "Keret úsztatása"
+

@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=Tiling
+Name[hu]=Tiling
 Icon=e-module-tiling
 Comment=<title>Tiling Module</title><br>Positions/resizes your windows tilingly, like ion for example.
 Comment[it]=<title>Modulo Tiling</title><br>Posiziona/ridimensiona le finestre affiancandole, come ad esempio ion.
+Comment[hu]=<title>Tiling modul</title><br>Ablakok pozicionálása/átméretezése, mint pl.:az ion.
 X-Enlightenment-ModuleType=appearance
