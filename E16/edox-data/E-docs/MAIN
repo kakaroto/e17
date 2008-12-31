@@ -1,10 +1,10 @@
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_logo.png x=32 y=77>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p align=50%>
 <br>
 Enlightenment version 0.16.8
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 <br>
 <br>
@@ -22,14 +22,14 @@ _Frequently_Asked_Questions(faq)<br>
 <br>
 <br>
 <br>
-<font face=Vera/10 color=#ffffff>
+<font face=normal/10 color=#ffffff>
 Welcome to the Enlightenment Documentation Viewer.  Please select a topic from
 the list.
 
 
 
 <page columns=1 padding=16 name=aboutdox background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 This Documentation is intended to take you step by step through Enlightenment(E16)
 and its default setup, how to use it, modify settings, and put it to use for
@@ -55,7 +55,7 @@ any time during the program.
 
 
 <page columns=1 padding=16 name=about background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 E16 is your Window Manager. The Window Manager controls the 
 appearance of the borders of your windows, their behavior and
@@ -81,10 +81,10 @@ at least can have fun playing around with what we have created.
 
 
 <page columns=1 padding=16 name=res background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Resources
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Web site: http://www.enlightenment.org/
 <p>
@@ -103,10 +103,10 @@ IRC: #E on freenode
 
 
 <page columns=2 padding=16 name=docindex background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Documentation Index
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 _Basic_Intro(basicintro)<br>
 _Using_Menus(rootmenu)<br>
@@ -151,7 +151,7 @@ _Maintenance_Scripts(maint)<br>
 
 
 <page columns=1 padding=16 name=basicintro background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_screen_start.png x=16 y=16>
 <p>
 Now that you have started E16, if you are using it for your desktop 
@@ -171,10 +171,10 @@ else is your desktop background.
 
 <page columns=1 padding=16 name=rootmenu background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_menu.png x=350 y=38>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Using Menus
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 When you click with your left mouse button on the desktop _background(backgrounds) you will
 see an "User Menus" menu appear (example displayed on the right here). 
@@ -191,7 +191,7 @@ select an entry.
 
 
 <page columns=1 padding=16 name=tut4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_settings_menu.png x=285 y=235>
 <img src=E_enlightenment_menu.png x=4 y=30>
 <p>
@@ -214,10 +214,10 @@ better suit your needs.
 
 
 <page columns=1 padding=16 name=mousebind background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Mouse Bindings
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Of course, when you click on the _desktop(desktops) _background(backgrounds) of
 your screen, normally you will bring up a _menu(rootmenu).  And of course, when you
@@ -242,10 +242,10 @@ desktop sub-menu.
 
 
 <page columns=1 padding=16 name=mouseconfig background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Mouse Configuration
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -269,7 +269,7 @@ assumed to be there, and is used by many applications, including E.
 
 
 <page columns=1 padding=16 name=tut6 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_mousewheel.png x=370 y=30>
 <img src=E_mouse.png x=410 y=330>
 <p>
@@ -283,7 +283,7 @@ forward a desktop.
 If this doesn't work, then it may be you haven't configured your X server to
 understand a mouse with a wheel. You may need to edit your X server
 configuration to have a "Pointer" Section like:
-<font face=Vera/11 color=#ccaacc>
+<font face=normal/11 color=#ccaacc>
 <p>
 Section "Pointer"<br>
 Protocol    "MousemanPlusPS/2"<br>
@@ -291,17 +291,17 @@ Device      "/dev/mouse"<br>
 ZAxisMapping 4 5<br>
 Buttons      5<br>
 EndSection
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 You may need to modify this for your mouse.
 
 
 
 <page columns=1 padding=16 name=border background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Using the Window Border
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 When you start an application, unless it has special properties, it will come 
 up on your screen with a border surrounding it that contains a titlebar and
 several control buttons.
@@ -326,14 +326,14 @@ start with).
 
 
 <page columns=1 padding=16 name=tut8 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_window_diagram.png x=16 y=48>
 <p>
 
 
 
 <page columns=1 padding=16 name=tut9 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Clicking left mouse button on the iconify button will iconify the window
 and send it off to the _Iconbox(iconbox) . Hitting the Maximize button will
@@ -361,10 +361,10 @@ operations menu.
 
 <page columns=1 padding=16 name=changeborder background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_border_selector.png x=300 y=40>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Changing Window Borders
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 You may find that you don't like a particular border that a
 window uses, for some reason or another.  You can easily change the border
@@ -384,14 +384,14 @@ the current window border.
 
 
 <page columns=1 padding=16 name=defkeys background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <img src=E_keyboard.png x=312 y=0>
 <p>
 Default Keybindings
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Below are the keybindings for E as it comes "from the factory"
-<font face=Vera/10 color=#112222>
+<font face=normal/10 color=#112222>
 <p>
 CTRL+ALT+Home - Re-shuffle windows on screen to be Clean
 <br>
@@ -423,13 +423,13 @@ CTRL+ALT+F - Toggle fullscreen mode of the currently focused window
 <br>
 CTRL+ALT+(F1 - F8) - Go directly to desktops 0 - 7
 <br>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 (more on next page ...)
 
 
 
 <page columns=1 padding=16 name=tut11 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/10 color=#112222>
+<font face=normal/10 color=#112222>
 <p>
 ALT+Tab - Switch focus to the next window
 <br>
@@ -443,13 +443,13 @@ one
 SHIFT+ALT+Up-Arrow - Move to the virtual desktop above if there is one
 <br>
 SHIFT+ALT+Down-Arrow - Move to the virtual desktop below if there is one
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Note: Zooming in and out of windows will only work if you have an X server
 that implements the Xf86VidMode extension. You also need to define multiple
 screen modes for your display, e.g. with a "Display" subsection of the X11
 configuration that looks like:
-<font face=Vera/11 color=#ccaacc>
+<font face=normal/11 color=#ccaacc>
 <p>
 SubSection "Display"<br>
 	Depth 16<br>
@@ -459,11 +459,11 @@ EndSubSection
 
 
 <page columns=1 padding=16 name=desktops background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <img src=E_deskstack.png x=360 y=70>
 <p>
 Multiple & Virtual Desktops
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 supports both Multiple and Virtual desktops. There are
 distinct difference between the two, and E16 treats them differently.
@@ -482,7 +482,7 @@ application windows.
 
 
 <page columns=1 padding=16 name=desktops2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_deskarray.png x=350 y=140>
 <p>
 Windows normally live on one desktop, but can be made
@@ -504,7 +504,7 @@ automatically scroll over to that part of the desktop.
 
 
 <page columns=1 padding=16 name=desktops3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_virtual_desk_settings.png x=335 y=51>
 <img src=E_area_settings.png x=30 y=190>
 <p>
@@ -527,7 +527,7 @@ virtual areas.
 
 
 <page columns=1 padding=16 name=desktops4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_deskimg.png x=275 y=81>
 <p>
 E16 also allows you to set a different desktop backdrop per desktop
@@ -544,10 +544,10 @@ _Desktop_Backgrounds(backgrounds) section.
 
 
 <page columns=1 padding=16 name=changedesk background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Changing Desktops
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 There are several ways that you can change your current desktop - let's go over
 a few of them here.
@@ -569,10 +569,10 @@ KDE panel's pager to navigate desktops and/or applications.<br>
 
 
 <page columns=1 padding=16 name=appsdesk background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Moving Applications Between Desktops
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 There are several ways that you can move applications from one desktop to
 another.  We'll go over a few of them now.
@@ -591,12 +591,12 @@ change desktops using _keybinding(defkeys) .
 
 
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <img src=E_dragbar.png x=10 y=345>
 <img src=E_dragging_desktops.png x=315 y=20>
 <p>
 The Dragbar
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 If you look along the top of your screen, you will notice a long thin bar that
 looks something like the bar pictured below.  This is called your Dragbar.  It
@@ -616,11 +616,11 @@ windowlist sorted by desktops.
 
 
 <page columns=1 padding=16 name=pager background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <img src=E_pager.png x=320 y=70>
 <p>
 The Pager
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Pagers may not be a new idea in desktop environments, but the Pager in
 E16 (as seen on the right) is a highly advanced and highly
@@ -640,7 +640,7 @@ You can also drag a window into the _Iconbox(iconbox) to iconify the window.
 
 
 <page columns=1 padding=16 name=pager2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_pager_settings_menu.png x=8 y=30>
 <img src=E_pager_settings.png x=208 y=180>
 <p>
@@ -659,7 +659,7 @@ intended for high end machines.
 
 
 <page columns=1 padding=16 name=pager3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_pager.png x=340 y=140>
 <p>
 You can resize the pager to make it the size you'd like.  Hold down
@@ -678,11 +678,11 @@ allow you to move the pager about, just like the titlebar of any window.
 
 
 <page columns=1 padding=16 name=iconbox background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <img src=E_iconbox.png x=300 y=90>
 <p>
 The Iconbox
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The iconbox is the place the icons for all your iconified windows go.  It is
 one method of recovering _minimized(minimized) applications.  Whenever
@@ -703,7 +703,7 @@ section.
 
 
 <page columns=1 padding=16 name=iconbox2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_iconbox_menu.png x=300 y=20>
 <img src=E_iconbox_settings.png x=10 y=200>
 <p>
@@ -724,7 +724,7 @@ Iconbox location.
 
 
 <page columns=1 padding=16 name=iconbox3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 If you want to customize the images used for the icons in your iconbox, there 
 is already an example configuration supplied. To make your own configuration
@@ -738,10 +738,10 @@ matches.cfg file. Use that as a reference for your own additions.
 
 
 <page columns=1 padding=16 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Recovering Minimized Applications
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 There are several ways to recover an application once you have minimized it.
 The most obvious way is to use the<br>
@@ -764,10 +764,10 @@ _settings(settings) .
 
 <page columns=1 padding=16 name=properties background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_remember_settings.png x=320 y=50>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Remembering Application Properties
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 In the _window_operations(windowops) menu of every window you will see an
 entry labeled
@@ -788,10 +788,10 @@ if you so wish.
 
 <page columns=1 padding=16 name=settings background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_settings_menu.png x=240 y=87>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Settings
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 When you click the right mouse button on the desktop background you will pop 
 up the Settings menu. From here you can select an aspect of E16 to
@@ -808,10 +808,10 @@ clicking on Apply again.
 
 <page columns=1 padding=16 name=groups background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_group_settings.png x=370 y=255>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Window Groups
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Sometimes you have a number of windows on your desktop that logically go
 together. E16 allows you to group windows
@@ -833,7 +833,7 @@ the right.
 
 <page columns=1 padding=16 name=groups2 background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_groups_menu.png x=320 y=25>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 There are two different methods for manipulating window groups. First, there's a
 comprehensive submenu available in each window's operations menu
@@ -856,10 +856,10 @@ at the top of the dialog windows.
 
 
 <page columns=1 padding=16 name=backgrounds background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Selecting and Adding backgrounds
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Often you will want to change the background of a particular desktop.  There
 are several ways you can do this.  But of course, to change your desktop,
@@ -884,7 +884,7 @@ mkdir ~/.e16/backgrounds
 
 
 <page columns=1 padding=16 name=backgrounds2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_backgrounds_menu.png x=163 y=70>
 <p>
 Once you have added your backgrounds, you should be
@@ -907,7 +907,7 @@ menus.
 
 
 <page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_backgrounds_menu_view.png x=3 y=84>
 <p>
 Once you have opened up the backgrounds menu, you should see something similar
@@ -926,7 +926,7 @@ bring up a dialog that looks something like the one on the next page . . .
 
 
 <page columns=1 padding=16 name=backgrounds4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_backgrounds_settings.png x=0 y=0>
 <p>
 <br>
@@ -957,10 +957,10 @@ all the various settings for each individual background available.
 <page columns=1 padding=16 name=tooltips background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_tooltips.png x=260 y=65>
 <img src=E_tooltip_settings.png x=20 y=245>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Tooltips
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 From time to time, as you use E16, if you don't remember what does
 what, if you keep the mouse still for a little bit a tooltip will pop up.  The
@@ -978,10 +978,10 @@ shown here on the left.
 
 <page columns=1 padding=16 name=audio background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_audio_settings.png x=300 y=180>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Audio
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Of course, E16 comes preconfigured to play lots of little blips and
 beeps when you do various things on your desktop.  In order to use sound in
@@ -999,10 +999,10 @@ shown here at right.
 
 <page columns=1 padding=16 name=fx background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_special_fx_settings.png x=320 y=60>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Special Effects
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 has many features that are configured via the "Special FX"<br>
 _settings(settings) dialog.  Here you can configure the _Dragbar(dragbar) ,
@@ -1019,10 +1019,10 @@ E16 on your X server, depending on server and configuration.
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_mouse.png x=410 y=330>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Setting the Focus
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 offers lots of different options for focusing windows.  By
 default, it comes up in sloppy focus mode.  There are two other primary focus
@@ -1042,7 +1042,7 @@ Next we'll tell you how to change these settings.
 
 <page columns=1 padding=16 name=focus2 background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_focus_settings.png x=320 y=20>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 allows you to change your focus settings at any time.  Simply
 bring up the _Settings(settings) menu and then select "Focus Settings" to bring
@@ -1061,10 +1061,10 @@ _Keybinding(defkeys) .
 
 <page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_move_resize_settings.png x=300 y=50>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Moving Windows
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 comes with several different available methods for moving a
 window.  You can perform the actual moves using the  Window
@@ -1087,10 +1087,10 @@ however.
 
 <page columns=1 padding=16 name=resizemode background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_move_resize_settings.png x=300 y=50>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Resizing Windows
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 also comes with several available methods for resizing windows.
 You can perform the actual resize on the window by clicking on any
@@ -1111,10 +1111,10 @@ nearest edge.
 
 <page columns=1 padding=16 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_rightmouse_menu.png x=360 y=40>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 The Window Operations Menu
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The Window Operations menu is a commonly used menu that allows you to perform
 many different actions onto the current window.  
@@ -1140,7 +1140,7 @@ lowers it below windows it is obscuring.
 
 
 <page columns=1 padding=16 name=windowops2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Shade/Unshade toggles the shaded state of the window. Note that borderless
 windows are not allowed to be shaded.
@@ -1167,7 +1167,7 @@ a new state of the window.
 
 
 <page columns=1 padding=16 name=windowops3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 In the _Window_Groups(groups) submenu there are various options for
 configuring window
@@ -1189,10 +1189,10 @@ change it again.
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_placement_settings.png x=220 y=70>
 <img src=E_autoraise_settings.png x=10 y=270>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Window Placement and Autoraise
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 These two _Settings(settings) dialogs allow you to configure various options
 for the placement of windows.  The two Dialog window options are for windows
@@ -1206,10 +1206,10 @@ can enable it here, as well as change the timer.
 
 
 <page columns=1 padding=16 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 E16 and IPC
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 has a fairly interesting IPC system that allows external
 applications (such as Eterm) to talk to E16 and both ask for
@@ -1233,10 +1233,10 @@ To exit eesh, hit CTRL + D (EOF)
 
 
 <page columns=1 padding=16 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Editing E16's Menus
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The first time you run E16 as a user after you've installed it, it
 should create a directory under your home directory called .e16/menus.  In
@@ -1244,16 +1244,16 @@ this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
 of this file contains the title for the menu, and the remainder of the file
 looks something like this:
-<font face=Vera/10 color=#112222>
+<font face=normal/10 color=#112222>
 <p>
 "Eterm" NULL exec "Eterm"
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Where each column represents:
-<font face=Vera/10 color=#112222>
+<font face=normal/10 color=#112222>
 <p>
 Entry title , graphic for menu (or NULL) , exec "commandline"
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 You may have several files in here, including a KDE menu and a Gnome menu if
 E16 has detected their presence during installation.  If
@@ -1263,10 +1263,10 @@ user_apps.menu.  Each of these files is for you to edit as desired.
 
 
 <page columns=1 padding=16 name=editkeys background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Editing Your Keybindings
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 To set your own keybindings, all you have to do is find the bindings.cfg
 file that was installed with E16, and make a copy in your
@@ -1282,10 +1282,10 @@ it should reload the default keybindings into memory.
 
 
 <page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 E16 and Themes
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 One of the strong points of E16, of course, is that you can change
 around the complete look and feel of your desktop whenever you want to.
@@ -1308,10 +1308,10 @@ choose it just like any other theme.
 
 
 <page columns=1 padding=16 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 E16's Eyecandy Features
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Of course, E16 wouldn't be complete without just a few bits of
 eyecandy to play with.
@@ -1331,10 +1331,10 @@ respect to the desktop background.
 
 <page columns=1 padding=16 name=maint background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_maint_menu.png x=265 y=60>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Included Maintenance Scripts
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 E16 comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
@@ -1350,10 +1350,10 @@ on a theme.  This will help keep your disk usage by E16 down.
 
 
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -1380,10 +1380,10 @@ _These_docs_didn't_help,_where_can_I_get_more_help?(faqend)
 
 
 <page columns=1 padding=16 name=faq2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 1
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -1408,10 +1408,10 @@ Rebuild them using the _Maintenance(maint) menu.
 
 
 <page columns=1 padding=16 name=faq3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 2
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 Q:  All My Settings Are Mangled And I Can't Fix It
@@ -1434,10 +1434,10 @@ will use the old files, which causes this problem.
 
 
 <page columns=1 padding=16 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 3
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 Q:  I set my window to borderless and can't set it back or move it.
@@ -1463,10 +1463,10 @@ _settings(settings) menu.
 
 
 <page columns=1 padding=16 name=faq5 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 4
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 
 <p>
 Q: How do I set up E16 to work with GNOME?
@@ -1484,10 +1484,10 @@ export KDEWM=e16<br>
 exec startkde<br>
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
-<font face=VeraBd/16 color=#ffffff>
+<font face=bold/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 5
-<font face=Vera/11 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 <br>
 <br>
