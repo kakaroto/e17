@@ -45,7 +45,7 @@ EFonts_Init(void)
 
    Esnprintf(s, sizeof(s), "%s/ttfonts", Mode.theme.path);
    imlib_add_path_to_font_path(s);
-   Esnprintf(s, sizeof(s), "%s/fonts", ENLIGHTENMENT_ROOT);
+   Esnprintf(s, sizeof(s), "%s/fonts", EDirRoot());
    imlib_add_path_to_font_path(s);
    lst = StrlistFromString(Conf.theme.ttfont_path, ':', &num);
    for (i = 0; i < num; i++)
