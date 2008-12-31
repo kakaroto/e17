@@ -1,10 +1,6 @@
 #ifndef EVAS_UTILS_H
 #define EVAS_UTILS_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 /* EFL++ */
 #include <eflpp_sys.h>
 

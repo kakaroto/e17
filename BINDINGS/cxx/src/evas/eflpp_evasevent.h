@@ -1,10 +1,6 @@
 #ifndef EVAS_EVENT_H
 #define EVAS_EVENT_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <Evas.h>
 
 /**

@@ -1,10 +1,6 @@
 #ifndef EVAS_FONT_H
 #define EVAS_FONT_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <Evas.h>
 
 /* STD */
