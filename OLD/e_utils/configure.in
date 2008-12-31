@@ -199,7 +199,6 @@ src/bin/eapp_edit/Makefile
 src/bin/e17setroot/Makefile
 src/bin/entangle/Makefile
 src/bin/exige/Makefile
-debian/changelog
 ],[
 ])
 

@@ -230,7 +230,6 @@ data/icons/default/icons/48x48/status/Makefile
 data/icons/default/Makefile
 po/Makefile
 intl/Makefile
-debian/changelog
 ])
 
 #####################################################################

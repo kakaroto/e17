@@ -84,7 +84,6 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
-debian/changelog
 ],[
 touch emphasis_docs.tar.gz
 ])

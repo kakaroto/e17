@@ -4,13 +4,8 @@ AUTOMAKE_OPTIONS       = 1.7 foreign
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                 config.h.in config.sub configure install-sh \
-		depcomp libtool missing debian/changelog
+		depcomp libtool missing
 
-EXTRA_DIST = README AUTHORS \
-             debian/changelog \
-	     debian/changelog.in \
-	     debian/control \
-	     debian/copyright \
-	     debian/rules
+EXTRA_DIST = README AUTHORS
 
 SUBDIRS = src data

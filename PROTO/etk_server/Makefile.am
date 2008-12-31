@@ -6,8 +6,7 @@ SUBDIRS = scripts src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
-		       stamp-h.in $(MYAPPNAME).c \
-		       debian/changelog 
+		       stamp-h.in $(MYAPPNAME).c
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -34,10 +33,4 @@ COPYING-PLAIN \
 $(MYAPPNAME).spec.in \
 $(MYAPPNAME).c.in \
 gendoc \
-Doxyfile \
-debian/changelog \
-debian/changelog.in \
-debian/compat \
-debian/control \
-debian/copyright \
-debian/rules
+Doxyfile

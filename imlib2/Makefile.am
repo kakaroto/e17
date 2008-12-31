@@ -13,17 +13,6 @@ EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN gendoc \
 	     README.in README \
 	     imlib2.pc.in \
 	     imlib2.spec.in imlib2.spec \
-	     debian/changelog \
-	     debian/changelog.in \
-	     debian/control \
-	     debian/copyright \
-	     debian/imlib2-config.1 \
-	     debian/imlib2-demo.install \
-	     debian/imlib2-test.install \
-	     debian/libimlib2-dev.doc-base \
-	     debian/libimlib2-dev.install \
-	     debian/libimlib2.install \
-	     debian/rules
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = imlib2.pc

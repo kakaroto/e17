@@ -89,6 +89,5 @@ data/themes/winter/macros/Makefile
 data/themes/winter/parts/Makefile
 data/themes/winter/programs/Makefile
 data/themes/summer/Makefile
-debian/changelog
 ])
 

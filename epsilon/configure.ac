@@ -94,7 +94,6 @@ src/lib/Makefile
 src/lib/exiftags/Makefile
 src/bin/Makefile
 src/plugins/Makefile
-debian/changelog
 ])
 
 

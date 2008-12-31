@@ -6,8 +6,7 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
-		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
-		       debian/changelog
+		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
 
 install-data-local:
         @$(NORMAL_INSTALL)
@@ -22,9 +21,4 @@ EXTRA_DIST = README \
 AUTHORS \
 COPYING \
 COPYING-PLAIN \
-$(MYAPPNAME).c.in \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules
+$(MYAPPNAME).c.in

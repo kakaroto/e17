@@ -5,16 +5,11 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 			config.sub configure install-sh ltconfig ltmain.sh \
 			missing mkinstalldirs stamp-h.in config.h.in depcomp \
-			debian/changelog esmart.spec
+			esmart.spec
 
 bin_SCRIPTS = 
 
 EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
-	     debian/control debian/copyright debian/rules \
-	     debian/changelog \
-	     debian/changelog.in \
-	     debian/libesmart0-dev.files debian/esmart0-bin.files \
-	     debian/libesmart0.files debian/esmart0-bin.files \
 	     esmart_container.pc.in \
 	     esmart_draggies.pc.in \
 	     esmart_file_dialog.pc.in \

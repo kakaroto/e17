@@ -52,5 +52,4 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
-debian/changelog
 ])

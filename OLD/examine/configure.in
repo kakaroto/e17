@@ -99,7 +99,6 @@ LIBS="$save_LIBS"
 AC_OUTPUT([
 Makefile
 src/Makefile
-debian/changelog
 ],[
 touch examine_docs.tar.gz
 ])

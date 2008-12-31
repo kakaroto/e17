@@ -127,7 +127,6 @@ enhance.pc
 src/Makefile
 src/lib/Makefile
 enhance-config
-debian/changelog
 ], [
 chmod +x enhance-config
 ])

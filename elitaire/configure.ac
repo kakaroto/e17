@@ -103,8 +103,7 @@ AC_CONFIG_FILES([Makefile
                  data/themes/e17/Makefile
                  data/themes/e17/images/Makefile
                  data/themes/e17/fonts/Makefile
-                 src/Makefile
-		 debian/changelog])
+                 src/Makefile])
 
 AC_OUTPUT
 

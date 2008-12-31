@@ -26,7 +26,4 @@ dist-hook:
 	fi
 							  
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
-	     debian/changelog debian/changelog.in \
-	     debian/rules debian/docs debian/copyright \
-	     debian/control
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN

@@ -199,7 +199,6 @@ src/lib/esmart_cairo/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
-debian/changelog
 ])
 
 echo

@@ -310,7 +310,6 @@ data/themes/default/img/Makefile
 data/themes/darkrock/Makefile
 data/themes/darkrock/img/Makefile
 entrance.spec
-debian/changelog
 ],
 [
  chmod +x src/lib/entrance_edit-config

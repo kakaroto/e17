@@ -155,7 +155,6 @@ Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
-debian/changelog
 ],[
 touch exhibit_docs.tar.gz
 ])

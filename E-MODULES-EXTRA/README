@@ -26,6 +26,8 @@ cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 deskshow - A module to iconify/uniconify all current windows to show the
 desktop.  This is probably obsolete, the functionality is now in E.
 
+diskio - visualize disk i/o.
+
 echo - A module to replace the broken 'mixer' module for E17.
 
 emu - Experimental generic scriptable module for E17.
@@ -53,6 +55,8 @@ news - A module to display rss feeds.
 penguins - A module to display fancy penguins on your desktop.
 
 photo - A module to display pictures on the desktop.
+
+places - manage volumes attached to the system.
 
 rain - A module to display rain on the desktop.
 

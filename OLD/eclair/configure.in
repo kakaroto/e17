@@ -113,7 +113,6 @@ data/themes/gant/Makefile
 data/themes/swallow_me/Makefile
 data/widget_themes/Makefile
 data/widget_themes/default/Makefile
-debian/changelog
 ],[
 ])
 

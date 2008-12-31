@@ -121,6 +121,5 @@ scripts/etk_server_gen_signals.pl
 src/Makefile
 src/bin/Makefile
 etk_server.spec
-debian/changelog
 ],[
 ])

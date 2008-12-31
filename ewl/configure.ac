@@ -411,7 +411,6 @@ tools/ewl_config/Makefile
 doc/Makefile
 doc/tutorials/Makefile
 doc/tutorials/widgets/Makefile
-debian/changelog
 ])
 
 echo

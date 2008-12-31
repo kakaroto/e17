@@ -9,10 +9,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       epsilon.spec epsilon.pc depcomp
 
 EXTRA_DIST = README AUTHORS COPYING epsilon.spec.in epsilon.spec gendoc \
-	     Doxyfile debian/changelog debian/changelog.in debian/rules \
-	     debian/copyright debian/control debian/libepsilon-bin.install \
-	     debian/libepsilon0.install debian/libepsilon-dev.install \
-	     epsilon.pc.in
+	     Doxyfile epsilon.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = epsilon.pc

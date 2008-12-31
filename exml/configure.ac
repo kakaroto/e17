@@ -41,7 +41,6 @@ exml.pc
 README
 src/Makefile
 exml.spec
-debian/changelog
 ]
 )
 

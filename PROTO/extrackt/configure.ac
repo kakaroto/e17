@@ -225,7 +225,6 @@ src/bin/etk_fe/Makefile
 data/Makefile
 data/etk_fe/Makefile
 data/images/Makefile
-debian/changelog
 ])
 
 echo

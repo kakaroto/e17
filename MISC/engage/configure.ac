@@ -115,6 +115,5 @@ src/Makefile
 data/Makefile
 data/icons/Makefile
 data/themes/Makefile
-debian/changelog
 ],[
 ])

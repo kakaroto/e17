@@ -119,7 +119,6 @@ empower.spec
 src/Makefile
 src/bin/Makefile
 src/bin/ewl/Makefile
-debian/changelog
 ])
 
 echo

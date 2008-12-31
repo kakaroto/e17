@@ -16,6 +16,8 @@ cpu - e_module maintainers.
 
 deskshow - e_module maintainers.
 
+diskio - Brian 'morlenxus' Miculcy <morlenxus@gmx.net>
+
 emu - David 'onefang' Seikel <onefang@gmail.com>
 
 engage - e_module maintainers.
@@ -39,7 +41,11 @@ net - e_module maintainers.
 
 news - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
 
+penguins - Dave Andreoli <dave@gurumeditation.it>
+
 photo - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
+
+places - Dave Andreoli <dave@gurumeditation.it>
 
 rain - e_module maintainers
 
@@ -64,10 +70,10 @@ wlan - e_module maintainers.
 
 These are not modules, but part of it all anyway.
 
-debian packager - kaethorn?
+debian packager - quaker? kaethorn?
 
 RPM packager - mej?
 
 top level autofoo - vapier?
 
-translations - e-taro? maiurana? maxerba? troback?
+translations - quaker? e-taro? maiurana? maxerba? troback?

@@ -53,7 +53,6 @@ engrave.pc
 src/Makefile
 src/bin/Makefile
 src/lib/Makefile
-debian/changelog
 ])
 
 

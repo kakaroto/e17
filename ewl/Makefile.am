@@ -7,27 +7,11 @@ SUBDIRS = src data tools doc
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		   config.h.in config.sub configure install-sh \
 		   ltconfig ltmain.sh missing mkinstalldirs \
-		   stamp-h.in debian/changelog
+		   stamp-h.in
 
 bin_SCRIPTS = 
 
-EXTRA_DIST = README AUTHORS COPYING ewl.spec ewl.pc.in \
-	     debian/rules \
-	     debian/control \
-	     debian/changelog \
-	     debian/copyright \
-	     debian/changelog.in \
-	     debian/libewl-bin.install \
-	     debian/libewl-dev.install \
-	     debian/libewl-engine-evas-buffer.install \
-	     debian/libewl-engine-evas-fb.install \
-	     debian/libewl-engine-evas-gl-x11.install \
-	     debian/libewl-engine-evas.install \
-	     debian/libewl-engine-evas-software-x11.install \
-	     debian/libewl-engine-evas-xrender.install \
-	     debian/libewl-engines-all.install \
-	     debian/libewl-engine-x11.install \
-	     debian/libewl0.install
+EXTRA_DIST = README AUTHORS COPYING ewl.spec ewl.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ewl.pc

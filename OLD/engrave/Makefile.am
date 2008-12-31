@@ -6,7 +6,7 @@ SUBDIRS = src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess engrave.spec \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in debian/changelog depcomp ylwrap
+		       stamp-h.in depcomp ylwrap
 
 bin_SCRIPTS =
 
@@ -31,10 +31,7 @@ dist-hook:
 	  done \
 	fi
 
-EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in engrave.pc.in \
-	     debian/control debian/rules debian/copyright \
-	     debian/changelog \
-	     debian/libengrave0.install debian/libengrave0-dev.install
+EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in engrave.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = engrave.pc

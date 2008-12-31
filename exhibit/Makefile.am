@@ -7,8 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
 		       stamp-h.in $(MYAPPNAME)_docs.tar \
-		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
-		       debian/changelog
+		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
 
 dist-hook:
 	./gendoc; \
@@ -25,9 +24,4 @@ $(MYAPPNAME).spec \
 $(MYAPPNAME).c.in \
 gendoc \
 Doxyfile \
-$(MYAPPNAME)_docs.tar.gz \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules
+$(MYAPPNAME)_docs.tar.gz

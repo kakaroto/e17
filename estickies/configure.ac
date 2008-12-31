@@ -103,5 +103,4 @@ data/themes/postit/Makefile
 data/themes/postit/images/Makefile
 data/themes/mc/Makefile
 data/themes/mc/images/Makefile
-debian/changelog
 ])

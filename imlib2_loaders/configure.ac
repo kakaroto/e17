@@ -168,7 +168,6 @@ src/modules/Makefile
 src/modules/loaders/Makefile
 README
 imlib2_loaders.spec
-debian/changelog
 ],[
 ])
 

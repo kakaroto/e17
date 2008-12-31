@@ -5,9 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in build-stamp configure-stamp depcomp \
 		       README \
-		       imlib2_loaders.spec \
-		       debian/changelog
+		       imlib2_loaders.spec
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN COPYING.loader_xcf imlib2_loaders.spec imlib2_loaders.spec.in \
-             README.in README \
-	     debian/changelog.in debian/changelog debian/control debian/copyright debian/rules
+             README.in README

@@ -162,7 +162,6 @@ data/images/Makefile
 po/Makefile
 src/Makefile
 src/bin/Makefile
-debian/changelog
 ])
 
 echo
