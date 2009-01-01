@@ -40,17 +40,11 @@ EFonts_Init(void)
 {
 #if !TEST_TTFONT
    char                s[4096];
-   char              **lst;
-   int                 i, num;
 
    Esnprintf(s, sizeof(s), "%s/ttfonts", Mode.theme.path);
    imlib_add_path_to_font_path(s);
    Esnprintf(s, sizeof(s), "%s/fonts", EDirRoot());
    imlib_add_path_to_font_path(s);
-   lst = StrlistFromString(Conf.theme.ttfont_path, ':', &num);
-   for (i = 0; i < num; i++)
-      imlib_add_path_to_font_path(lst[i]);
-   StrlistFree(lst, num);
 #endif
 }
 

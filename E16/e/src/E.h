@@ -264,7 +264,6 @@ typedef struct {
       char                use_alt_font_cfg;
       char               *name;
       char               *extra_path;
-      char               *ttfont_path;
       char               *font_cfg;
    } theme;
 #ifdef ENABLE_THEME_TRANSPARENCY

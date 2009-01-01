@@ -568,8 +568,6 @@ sound.theme =
 theme.name = winter
 # [string] Colon separated list of directories containing e16 themes
 theme.extra_path = 
-# [string] Colon separated list of additional TrueType font directories
-theme.ttfont_path = 
 # [bool] Use alternative font configuration file (specified by theme.font_cfg)
 theme.use_alt_font_cfg = 1
 # [string] Alternative font configuration file
@@ -628,9 +626,8 @@ in TextClass definitions in the theme configuration files.
 There are several ways to specify a font:
 
 1) "<font name>/<size>", e.g. "Vera/8".
-In this case e16 must be able to find "Vera.ttf" in its TrueType font path.
-The e16 default TrueType font path is <theme dir>/ttfont, additional paths
-may be given via the theme.ttfont_path configuration setting.
+In this case e16 must be able to find "Vera.ttf" in <theme dir>/ttfonts or
+/usr/share/e16/fonts.
 
 2) XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
 xfontsel, xlsfonts, and xfd can be used to select and show these fonts.
