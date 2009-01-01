@@ -1,3 +1,5 @@
 src/e_mod_config.c
 src/e_mod_main.c
 src/e_mod_main.h
+src/plugins/sources/directory_watcher.c
+src/plugins/sources/launcher.c

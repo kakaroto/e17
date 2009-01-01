@@ -2,5 +2,6 @@
 Type=Link
 Name=list
 Comment=A list representation of elements
+Comment[it]=Rappresentazione ad elenco degli elementi
 
 X-Drawer-Title=List

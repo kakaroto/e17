@@ -2,5 +2,6 @@
 Type=Link
 Name=grid
 Comment=A grid representation of elements
+Comment[it]=Rappresentazione in griglia degli elementi
 
 X-Drawer-Title=Grid

@@ -2,5 +2,6 @@
 Type=Link
 Name=directory_watcher
 Comment=A directory watcher source plugin
+Comment[it]=Un plugin sorgenti per il controllo di directory
 
 X-Drawer-Title=Directory Watcher

@@ -2,5 +2,6 @@
 Type=Link
 Name=launcher
 Comment=An application launcher source plugin
+Comment[it]=Un plugin sorgenti per lanciare applicazioni
 
 X-Drawer-Title=Launcher

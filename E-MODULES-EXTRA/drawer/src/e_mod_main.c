@@ -110,6 +110,9 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    char buf[4096];
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
    const char *homedir;
 
    epsilon_request_init();
