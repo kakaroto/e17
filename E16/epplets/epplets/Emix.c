@@ -78,12 +78,12 @@ open_mixer(void)
 {
    if ((fd_mixer = open(MIXER_DEV, O_RDWR)) < 0)
      {
-	fprintf(stderr, "Mixer device open failed...\n");
+	fprintf(stderr, "Mixer device (%s) open failed.\n", MIXER_DEV);
 	return 0;
      }
    if (ioctl(fd_mixer, SOUND_MIXER_READ_DEVMASK, &msk_mixerdevs) == -1)
      {
-	fprintf(stderr, "Mixer device mask read failed...\n");
+	fprintf(stderr, "Mixer device (%s) mask read failed.\n", MIXER_DEV);
 	return 0;
      }
    return 1;
