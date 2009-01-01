@@ -569,8 +569,7 @@ epsilon_generate (Epsilon * e)
    Epsilon_Image *img_thm = NULL;
    Epsilon_Plugin *plugin = NULL;
    
-   if (stat(e->src, &filestatus) != 0)
-     return ret;
+   if (stat(e->src, &filestatus) != 0) return ret;
    
    mtime = filestatus.st_mtime;
    evas_init();
@@ -581,6 +580,7 @@ epsilon_generate (Epsilon * e)
    edje_file_cache_set(0);
    edje_collection_cache_set(0);
    ee = ecore_evas_buffer_new(1, 1);
+   if (!ee) return ret;
    evas = ecore_evas_get(ee);
    evas_image_cache_set(evas, 0);
    evas_font_cache_set(evas, 0);
