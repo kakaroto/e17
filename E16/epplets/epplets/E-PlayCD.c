@@ -535,7 +535,7 @@ open_cdrom(char *cdrom_device)
 {
    if ((cd_desc = cd_init_device(cdrom_device)) < 0)
      {
-	printf("error\n");
+	printf("Could not open %s\n", cdrom_device);
 	exit(0);
      }
 }
