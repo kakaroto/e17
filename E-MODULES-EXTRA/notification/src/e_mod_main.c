@@ -166,6 +166,10 @@ e_modapi_init(E_Module *m)
    E_Notification_Daemon *d;
    char buf[PATH_MAX];
 
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", m->dir);
    /* register config panel entry */
    e_configure_registry_category_add("extensions", 90, D_("Extensions"), NULL, 

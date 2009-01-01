@@ -59,6 +59,11 @@ e_modapi_init(E_Module *m)
 {
    char buf[4096];
 
+   /* Location of message catalogs for localization */
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    /* Location of theme to load for this module */
    snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", m->dir);
 

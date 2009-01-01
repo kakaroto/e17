@@ -225,6 +225,11 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
+   char buf[4095];
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    nav_mod = m;
    e_gadcon_provider_register(&_gc_class);
    return m;
