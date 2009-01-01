@@ -8,6 +8,8 @@
 /* EFL++ */
 #include <eflpp_common.h>
 #include <eflpp_evas.h>
+#include <eflpp_evascanvas.h>
+#include <eflpp_evasobject.h>
 
 /* STD */
 #include <iostream>

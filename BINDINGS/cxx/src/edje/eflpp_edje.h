@@ -10,6 +10,7 @@
 #include <eflpp_evasutils.h>
 #include <eflpp_common.h>
 #include <eflpp_countedptr.h>
+#include <eflpp_evascanvas.h>
 
 /* EFL */
 #include <Edje.h>

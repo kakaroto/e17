@@ -3,6 +3,7 @@
 #endif
 
 #include "eflpp_ecore_window.h"
+#include <eflpp_evascanvas.h>
 #include <errno.h>
 #include <assert.h>
 #include <sys/types.h>

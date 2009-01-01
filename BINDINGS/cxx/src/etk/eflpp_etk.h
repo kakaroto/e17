@@ -8,6 +8,7 @@
 #include <eflpp_common.h>
 #include <eflpp_evas.h>
 #include <eflpp_countedptr.h>
+#include <eflpp_evascanvas.h>
 
 #include "eflpp_etkcontainer.h"
 #include "eflpp_etkimage.h"

@@ -8,6 +8,7 @@
 /* EFL++ */
 #include <eflpp_common.h>
 #include <eflpp_evas.h>
+#include <eflpp_evascanvas.h>
 
 /**
  * C++ Wrapper for the Enlightenment Smart Object Library (ESMART)
