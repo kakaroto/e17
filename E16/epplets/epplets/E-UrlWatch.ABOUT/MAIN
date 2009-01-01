@@ -1,11 +1,11 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
-<font face=aircut3/32 color=#ffffff>
+<font face=normal/24 color=#ffffff>
 <p align=50%>
 E-UrlWatch
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 An Enlightenment Url Watcher.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 By Tom Gilbert - 1999
 <p>
@@ -18,10 +18,10 @@ _Url_Launcher(launcher)
 _Url_Catcher(catcher)
 
 <page columns=1 padding=16 name=launcher background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Url Launching.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Ok. The three buttons: www, ftp, get all run a command (configurable via the
 config) on a url in the X paste buffer.  
@@ -35,10 +35,10 @@ browse ftp, or download a file, you choose a button.
 _Url_Catcher(catcher)
 
 <page columns=1 padding=16 name=catcher background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 File Watching.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The second feature is the url catcher bit. I use TE for IRC, which is a
 script running on EPIC. This catches urls from conversations, and sticks

@@ -1,12 +1,12 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
 <img src=shot.png x=230 y=170>
-<font face=aircut3/32 color=#ffffff>
+<font face=normal/24 color=#ffffff>
 <p align=50%>
 E-Mountbox
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 "The Nicest Mount Epplet Around" (tm). <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 Version 0.4
 <p align=50%>
 Written by Christian Kreibich - 1999
@@ -28,7 +28,7 @@ _Configuration(config)
 <page columns=1 padding=16 name=usage background=bg.png linkcolor=#88dddd>
 <img src=shot.png x=140 y=240>
 <img src=shot_unmounted.png x=315 y=240>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The Mountbox was designed with the the way Enlightenment's iconbox
 works in mind. For every user-mountable device you have in your system, the
@@ -52,7 +52,7 @@ mountpoints, respectively.
 
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
 <img src=dialog.png x=140 y=80>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 You can configure the images for the Mountbox background, the types of devices
 that the Mountbox recognizes and icons for these types using the configuration
@@ -76,7 +76,7 @@ the corresponding image is used. You can browse, add or delete definitions
 using the control elements below.
 
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 By default, E-Mountbox ejects media after unmounting. You can disable
 this feature in the configuration dialog completely or enable manual
@@ -88,8 +88,6 @@ By default E-Mountbox also polls the mountpoints on your system in regular
 intervals to see if their status has changed and updates its display accordingly.
 You can disable the feature or set the interval length in the configuration
 dialog.
-<p>
-<p>
 <p>
 <p>
 <p>

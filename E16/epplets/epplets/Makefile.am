@@ -277,17 +277,7 @@ E-Toolbox-data/ee2.png E-Toolbox-data/folder.png E-Toolbox-data/linux.png \
 E-Toolbox-data/sample.cfg E-Toolbox-data/popup-sample.cfg \
 E-Toolbox-data/default.cfg
 
-
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
-E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo \
-E-Pinger E-Pants E-Cpu E-Wireless
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
-E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo \
-E-Pinger E-Pants E-Cpu E-Wireless
-BG_SRC = bg.png
-FONT_SRC = aircut3.ttf
-
-EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES} ${BG_SRC} ${FONT_SRC}
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_icons
@@ -296,39 +286,19 @@ install-data-hook:
 	  if test -d $${i}-data ; then \
 	    echo $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i ; \
 	    $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i ; \
-	    data=`echo $$i-data/* | sed s#$$i-data/CVS##`;\
+	    data=`echo $$i-data/*`;\
 	    echo $(INSTALL_DATA) $$data $(DESTDIR)$(edatadir)/epplet_data/$$i/ ; \
 	    $(INSTALL_DATA) $$data $(DESTDIR)$(edatadir)/epplet_data/$$i/ ; \
 	  fi ; \
 	  if test -d $${i}.ABOUT ; then \
-	    echo $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT ; \
-	    $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT ; \
-	    ABOUT=`echo $$i.ABOUT/* | sed s#$$i.ABOUT/CVS##`;\
-	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	    $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	    echo $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/ABOUT ; \
+	    $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/ABOUT ; \
+	    ABOUT=`echo $$i.ABOUT/*`;\
+	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/ABOUT/ ; \
+	    $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/ABOUT/ ; \
 	  fi ; \
 	  if test -f icons/$${i}.icon ; then \
 	    echo $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(edatadir)/epplet_icons/ ; \
 	    $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(edatadir)/epplet_icons/ ; \
 	  fi ; \
 	done
-	$(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(edatadir)/epplet_data/
-	$(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(edatadir)/epplet_data/
-	@for i in $(NEED_BG) ; do \
-	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
-	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
-	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
-	  echo "test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || :" ; \
-	  test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || : ; \
-	done
-	@for i in $(NEED_FONT) ; do \
-	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
-	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
-	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
-	  echo "test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || :" ; \
-	  test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || : ; \
-	done
-
-uninstall-local:
-	$(RM) $(DESTDIR)$(edatadir)/epplet_data/$(BG_SRC)
-	$(RM) $(DESTDIR)$(edatadir)/epplet_data/$(FONT_SRC)

@@ -2,7 +2,7 @@
 <p align=50%>
 <center>
 <img src=EPlayCD.jpg x=70 y=0>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 <br><br>
 E-PlayCD 0.5.2<br>
@@ -20,7 +20,7 @@ _NEXT(buttons) and I'll explain them.
 <p><p>
 Comments or suggestions? rahsheen@cc.gatech.edu.
 </font>
-<font face=aircut3/6 color=#ffffff>
+<font face=normal/6 color=#ffffff>
 <p>If you don't like this epplet...fawk yeW! :)
 <p>
 Mad Props go out to:
@@ -31,9 +31,9 @@ srl (for the kickass graphics he's done, moral support, and for bitchin at me to
 
 <page columns=1 padding=16 name=buttons background=bg.png linkcolor=#88dddd>
 <p align=50%>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 Control Overview
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Tracks will popup a list of all the tracks and allow you to play one. Repeat
 doesn't do anything yet. Config will eventually allow you to configure the

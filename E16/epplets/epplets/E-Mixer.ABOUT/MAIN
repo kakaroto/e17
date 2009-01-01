@@ -1,20 +1,21 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
-<font face=aircut3/32 color=#ffffff>
+<font face=normal/24 color=#ffffff>
 <img src=E-Mixer-standard.png x=65 y=265>
 <img src=E-Mixer-wide.png x=195 y=280>
 <img src=E-Mixer-tall.png x=395 y=245>
 <p align=50%>
 E-Mixer
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 An Enlightenment Volume Control.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 By Tom Gilbert - 1999
 <p>
 This epplet controls your sound volume. There is a mute control, too. E-Mixer comes with three different layouts, which you can pick via command line options:
 <p align=50%>
 (default) .............. with "--wide" .............. with "--tall" 
+<p>
 <p>
 <p>
 <p>

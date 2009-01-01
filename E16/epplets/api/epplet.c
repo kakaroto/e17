@@ -5556,7 +5556,7 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "edox %s/%s.ABOUT", Epplet_data_dir(), name);
+   Esnprintf(s, sizeof(s), "edox %s/ABOUT", Epplet_data_dir());
    Epplet_spawn_command(s);
 }
 

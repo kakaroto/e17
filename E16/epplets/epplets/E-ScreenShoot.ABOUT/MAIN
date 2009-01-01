@@ -1,11 +1,11 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
-<font face=aircut3/32 color=#ffffff>
+<font face=normal/24 color=#ffffff>
 <p align=50%>
 E-ScreenShoot
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 An Enlightenment Screenshot Grabber.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 By Tom Gilbert - 1999
 <p>
@@ -22,20 +22,20 @@ o _Misc_Info(misc)<br>
 Tom Gilbert   (gilbertt@tomgilbert.freeserve.co.uk)
 
 <page columns=1 padding=16 name=overview background=bg.png linkcolor=#88dddd>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 Control Overview
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_ScreenShoot_buttons.png x=100 y=70>
 <p>
 
 
 
 <page columns=1 padding=16 name=cloaking background=bg.png linkcolor=#88dddd>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 Cloaking
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <img src=E_ScreenShoot_cloak.png x=80 y=290>
 <p>
 I couldn't just write a screenshot grabber. It had to do something.... Else.
@@ -54,10 +54,10 @@ to tell them apart ;-)
 
 
 <page columns=1 padding=16 name=buttons background=bg.png linkcolor=#88dddd>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 What do all these buttons do?
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Ok, so you are confronted with quite a few buttons, and a slider.
 <p>
@@ -76,10 +76,10 @@ modes to see which ones you like.
 _There's_more,_click_here_to_continue(buttons2)
 
 <page columns=1 padding=16 name=buttons2 background=bg.png linkcolor=#88dddd>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 What do all these buttons do? (2nd Row)
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The leftmost button on the second row toggles root/window mode. In root
 mode (the default), the button is not depressed. When you take a screenshot
@@ -99,10 +99,10 @@ _There's_more,_click_here_to_continue(buttons3)
 
 
 <page columns=1 padding=16 name=buttons3 background=bg.png linkcolor=#88dddd>
-<font face=aircut3/16 color=#88eeff>
+<font face=normal/16 color=#88eeff>
 <p align=50%>
 What do all these buttons do? (3rd Row)
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 The left-hand button on the bottom row is used to change the colour of the
 RasterFire clock-animation (whose intensity is proprtional to screenshot
@@ -116,10 +116,10 @@ _Config_File_Options(config)<br>
 
 
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Configuration File Options
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 Once the epplet has been run once, a configuration file will be created in
 ~/enlightenment/epplet_configs/E-ScreenShooter/E-ScreenShooter.cfg
@@ -131,10 +131,10 @@ _Interface_Options(intopt)<br>
 _Screen-shot_Options(shotopt)<br>
 
 <page columns=1 padding=16 name=confile background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Example Configuration File
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 <p>
 ### Automatically generated Epplet config file for E-ScreenShoot.
 <br>
@@ -168,36 +168,36 @@ _Interface_Options(intopt)<br>
 _Screen-shot_Options(shotopt)<br>
 
 <page columns=1 padding=16 name=intopt background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Interface Configuration File Options
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 DO_CLOAK 1
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 0/1: This option determines whether the applet is ever cloaked. 1
 mean yes, 0 means no.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 CLOAK_ANIM 1
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 NUMERIC INTEGER: This determines which cloak animation to use. Don't fiddle
 with this in the config, as you can do so using the popup menu.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 CLOAK_DELAY 4.0
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 NUMERIC FLOAT: This determines the time interval before the epplet is cloaked. Again, this
 can be changed using a popup on the epplet.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 DRAW_INTERVAL 0.1
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 NUMERIC FLOAT: This is the frequency of cloak-animation draws. A low value
 means lots of draws, a high value means jerky, slow updates. All the
 animations are tuned to work best for a value of 0.1, but you have the
@@ -207,37 +207,37 @@ _Screen-shot_Options(shotopt)<br>
 
 
 <page columns=1 padding=16 name=shotopt background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Screen-Shot Configuration File Options
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 BEEP 1
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 0/1: This determines whether you hear a beep just before, and just
 after the screen-shot is taken. If 1, you will get audio feedback, if 0,
 things'll be quiet.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 QUALITY 75
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 NUMERIC INT 1-100: Screenshot quality, as a percentage. 100 is full quality,
 large filesize. This option applies only to jpg, png and miff image files.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 WIN_AREA 0
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 0/1: This is configurable from a button on the epplet. If 1, a
 window or rectangular area will be grabbed, if 0, the whole desktop.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 WM_FRAME 1
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 0/1: If you are grabbing single windows, do you also want the window
 manager decorations? 1 means yes, 0 means no. Does not effect
 entire-desktop shots.
@@ -245,42 +245,42 @@ entire-desktop shots.
 _More_Screen-Shot_Options(shotopt2)
 
 <page columns=1 padding=16 name=shotopt2 background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Screen-Shot Configuration File Options
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 SHOT_DELAY 0.0
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 NUMERIC FLOAT: Delay before taking shot. Can be altered using epplet popup.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 DIRECTORY ~/
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: Directory in which to save images. Can include shell variable or
 command substitution. You must be able to write to this directory.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 FILE_PREFIX shot_
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: Bit to stick on the front of the filename.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 FILE_STAMP `date +%d-%m-%y_%H%M%S`
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: Middle bit of filename. I recommend the use of something similar to
 the above. This is command substitution, and uses the date program to give
 the shot a unique name.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 FILE_TYPE jpg
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: File extension. This also determines the file type. For a list of
 possible filetypes, see man convert(1). It'll do almost any filetype you can
 think of. I recommend jpg, png, or html (yes html - try it and see!)
@@ -289,47 +289,47 @@ _More_Screen-Shot_Options(shotopt3)
 
 
 <page columns=1 padding=16 name=shotopt3 background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Screen-Shot Configuration File Options
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 RUN_SCRIPT
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 0/1: Run a script using the image filename when the shot has been taken?
 <br>
 I use this to run a script to add the file to my website screenshot page,
 you could also use it to play a sound, submit the shot, whatever.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 SCRIPT_TO_RUN
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: What script (or program) would you like to run? The image filename will be
 sent as a parameter.
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 VIEW_SHOT
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 BOOLEAN 1/0: Would you like to view the screenshot after taking it?
 <br>
-<font face=aircut3/12 color=#112222>
+<font face=normal/11 color=#112222>
 VIEWER
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 STRING: What application would you like to use to view the file? (default ee)
 <p>
 _Misc_Info(misc)<br>
 
 
 <page columns=1 padding=16 name=misc background=bg.png linkcolor=#88dddd>
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 Miscellaneous details
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p>
 I like eyecandy. Not everyone does, so feel free to turn off the cloaking
 stuff.

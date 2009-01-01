@@ -1,11 +1,11 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
-<font face=aircut3/32 color=#ffffff>
+<font face=normal/24 color=#ffffff>
 <p align=50%>
 E-ScreenSave
-<font face=aircut3/18 color=#88eeff>
+<font face=normal/14 color=#88eeff>
 <p align=50%>
 An Enlightenment X-Screensaver controller.
-<font face=aircut3/12 color=#ffffff>
+<font face=normal/11 color=#ffffff>
 <p align=50%>
 By Tom Gilbert - 1999
 <p>
