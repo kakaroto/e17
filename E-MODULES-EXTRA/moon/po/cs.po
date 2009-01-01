@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Moon\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-20 19:42+0800\n"
+"POT-Creation-Date: 2009-01-01 13:43+0100\n"
 "PO-Revision-Date: 2008-08-12 17:15+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,78 +14,78 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_config.c:101
+#: src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "Konfigurace moon modulu"
 
-#: ../src/e_mod_config.c:157
+#: src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "Nastavení zobrazení"
 
-#: ../src/e_mod_config.c:158
+#: src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "Animované mraky"
 
-#: ../src/e_mod_config.c:162
+#: src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "Hodnota fáze měsíce"
 
-#: ../src/e_mod_config.c:164
+#: src/e_mod_config.c:164
 msgid "Show always"
 msgstr "Zobrazit vždy"
 
-#: ../src/e_mod_config.c:166
+#: src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "Zobrazit, když je kurzor na ikoně"
 
-#: ../src/e_mod_config.c:168
+#: src/e_mod_config.c:168
 msgid "Never show"
 msgstr "Nikdy nezobrazovat"
 
-#: ../src/e_mod_config.c:172
+#: src/e_mod_config.c:172
 msgid "Description"
 msgstr "Popis"
 
-#: ../src/e_mod_config.c:175
+#: src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "Numerická"
 
-#: ../src/e_mod_main.c:207
+#: src/e_mod_main.c:207
 msgid "Moon"
 msgstr "Měsíc"
 
-#: ../src/e_mod_main.c:247
+#: src/e_mod_main.c:247
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: ../src/e_mod_main.c:491
+#: src/e_mod_main.c:491
 msgid "New Moon"
 msgstr "Nov"
 
-#: ../src/e_mod_main.c:493
+#: src/e_mod_main.c:493
 msgid "Waxing Crescent"
 msgstr "Dorůstající srpek"
 
-#: ../src/e_mod_main.c:495
+#: src/e_mod_main.c:495
 msgid "First Quarter"
 msgstr "První čtvrť"
 
-#: ../src/e_mod_main.c:497
+#: src/e_mod_main.c:497
 msgid "Waxing Gibbous"
 msgstr "Dorůstající Měsíc"
 
-#: ../src/e_mod_main.c:499
+#: src/e_mod_main.c:499
 msgid "Full Moon"
 msgstr "Úplněk"
 
-#: ../src/e_mod_main.c:501
+#: src/e_mod_main.c:501
 msgid "Waning Gibbous"
 msgstr "Couvající Měsíc"
 
-#: ../src/e_mod_main.c:503
+#: src/e_mod_main.c:503
 msgid "Last Quarter"
 msgstr "Poslední čtvrť"
 
-#: ../src/e_mod_main.c:505
+#: src/e_mod_main.c:505
 msgid "Waning Crescent"
 msgstr "Ubývající srpek"

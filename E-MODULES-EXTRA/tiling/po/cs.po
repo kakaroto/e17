@@ -1,0 +1,82 @@
+# Italian translation for E17 tiling module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiling\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-01-01 13:39+0100\n"
+"PO-Revision-Date: 2009-01-01 14:24+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_main.c:113
+#: e_mod_main.c:118
+#: e_mod_main.c:1000
+msgid "Tiling"
+msgstr "Dlaždicce"
+
+#: e_mod_main.c:999
+msgid "Windows"
+msgstr "Okna"
+
+#: e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr "Nastavení modulu"
+
+#: e_mod_config.c:217
+msgid "General"
+msgstr "IHlavní"
+
+#: e_mod_config.c:227
+msgid "Horizontal:"
+msgstr "Horizontální:"
+
+#: e_mod_config.c:228
+#: e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr "%1.0f px"
+
+#: e_mod_config.c:231
+msgid "Vertical:"
+msgstr "Vertikální:"
+
+#: e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr "Virtuální plochy"
+
+#: e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr "Nastavení módu mřížky"
+
+#: e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr "Nastavení bigmain"
+
+#: e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr "Velká okna zaberou procent z obrazovky:"
+
+#: e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: e_mod_config.c:296
+msgid "Tiling border"
+msgstr "Okraj"
+
+#: e_mod_config.c:310
+msgid "Floating border"
+msgstr "Plovoucí okraj"
+

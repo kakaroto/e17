@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cpu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-20 19:42+0800\n"
+"POT-Creation-Date: 2009-01-01 13:37+0100\n"
 "PO-Revision-Date: 2008-08-11 13:47+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,30 +14,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:129
+#: e_mod_main.c:129
 msgid "Cpu"
 msgstr "Cpu"
 
-#: ../e_mod_main.c:363
+#: e_mod_main.c:363
 msgid "Fast (0.5 sec)"
 msgstr "Rychlý (0.5 sec)"
 
-#: ../e_mod_main.c:370
+#: e_mod_main.c:370
 msgid "Medium (1 sec)"
 msgstr "Střední (1 sec)"
 
-#: ../e_mod_main.c:377
+#: e_mod_main.c:377
 msgid "Normal (2 sec)"
 msgstr "Normální (2 sec)"
 
-#: ../e_mod_main.c:384
+#: e_mod_main.c:384
 msgid "Slow (5 sec)"
 msgstr "Pomalý (5 sec)"
 
-#: ../e_mod_main.c:391
+#: e_mod_main.c:391
 msgid "Very Slow (30 sec)"
 msgstr "Velmi pomalý (30 sec)"
 
-#: ../e_mod_main.c:402
+#: e_mod_main.c:402
 msgid "Time Between Updates"
 msgstr "Čas mezi aktualizacemi"

@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Enlightenment development team
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PLACES\n"
+"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
+"POT-Creation-Date: 2008-10-24 18:00+0200\n"
+"PO-Revision-Date: 2008-11-08 14:06+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: easylinux <quaker66@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:42
+msgid "Places Configuration"
+msgstr "Nastavení modulu Místa"
+
+#: src/e_mod_config.c:84
+msgid "General"
+msgstr "Hlavní"
+
+#: src/e_mod_config.c:86
+msgid "Show header"
+msgstr "Zobrazit nadpis"
+
+#: src/e_mod_config.c:90
+msgid "Mount volumes on insert"
+msgstr "Připojit zařízení při vložení"
+
+#: src/e_mod_config.c:94
+msgid "Open filemanager on insert"
+msgstr "Otevřít správce souborů při vložení"
+
+#: src/e_mod_main.c:482
+msgid "Configuration"
+msgstr "Konfigurace"
+
+#: src/e_mod_places.c:219
+msgid "p  l  a  c  e  s"
+msgstr "m  í  s  t  a"
+
+#: src/e_mod_places.c:276
+msgid "Home"
+msgstr "Domovská složka"
+
+#: src/e_mod_places.c:282
+msgid "Desktop"
+msgstr "Plocha"
+
+#: src/e_mod_places.c:289
+msgid "Trash"
+msgstr "Koš"
+
+#: src/e_mod_places.c:295
+msgid "Filesystem"
+msgstr "Systém souborů"
+
+#: src/e_mod_places.c:348
+msgid "Places"
+msgstr "Místa"
+
+#: src/e_mod_places.c:525
+msgid "free of"
+msgstr "volných z"
+
+#: src/e_mod_places.c:548
+msgid "unmount"
+msgstr "odpojit"
+
+#: src/e_mod_places.c:554
+msgid "eject"
+msgstr "vysunout"
+

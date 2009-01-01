@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-20 19:42+0800\n"
+"POT-Creation-Date: 2009-01-01 13:38+0100\n"
 "PO-Revision-Date: 2008-12-04 21:38+0100\n"
 "Last-Translator: Josef Lusticky <evramp@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,108 +15,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Nastavení předpovědi počasí"
 
-#: ../e_mod_config.c:90
+#: e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Nastavení zobrazení"
 
-#: ../e_mod_config.c:91
+#: e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Aktualizace počasí každých.."
 
-#: ../e_mod_config.c:94
+#: e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minut"
 
-#: ../e_mod_config.c:97
+#: e_mod_config.c:97
 msgid "Show Description"
 msgstr "Zobrazit popis"
 
-#: ../e_mod_config.c:99
+#: e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "Zobrazit více, když je kurzor nad gadgetem"
 
-#: ../e_mod_config.c:103
+#: e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Nastavení jednotek"
 
-#: ../e_mod_config.c:105
+#: e_mod_config.c:105
 msgid "Metric"
 msgstr "Metrické"
 
-#: ../e_mod_config.c:107
+#: e_mod_config.c:107
 msgid "English"
 msgstr "Anglické"
 
-#: ../e_mod_config.c:111
+#: e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Yahoo kód předpovědi"
 
-#: ../e_mod_config.c:112
+#: e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo kód předpovědi/USA zip kód"
 
-#: ../e_mod_config.c:117
+#: e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Pokud chcete kód vaší oblasti, jděte na:"
 
-#: ../e_mod_config.c:119
+#: e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, najděte vaši oblast a podívejte se na URL"
 
-#: ../e_mod_main.c:256
+#: e_mod_main.c:256
 msgid "Forecasts"
 msgstr "Předpověď počasí"
 
-#: ../e_mod_main.c:301
+#: e_mod_main.c:301
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: ../e_mod_main.c:1025
+#: e_mod_main.c:1025
 msgid "Wind Chill"
 msgstr "Teplota"
 
-#: ../e_mod_main.c:1031
+#: e_mod_main.c:1031
 msgid "Wind Speed"
 msgstr "Rychlost větru"
 
-#: ../e_mod_main.c:1037
+#: e_mod_main.c:1037
 msgid "Humidity"
 msgstr "Vlhkost"
 
-#: ../e_mod_main.c:1043
+#: e_mod_main.c:1043
 msgid "Visibility"
 msgstr "Viditelnost"
 
-#: ../e_mod_main.c:1049
+#: e_mod_main.c:1049
 msgid "Pressure"
 msgstr "Tlak"
 
-#: ../e_mod_main.c:1056
+#: e_mod_main.c:1056
 msgid "Rising"
 msgstr "Východ slunce"
 
-#: ../e_mod_main.c:1058
+#: e_mod_main.c:1058
 msgid "Falling"
 msgstr "Západ slunce"
 
-#: ../e_mod_main.c:1060
+#: e_mod_main.c:1060
 msgid "Steady"
 msgstr "Vyrovnaný"
 
-#: ../e_mod_main.c:1064
+#: e_mod_main.c:1064
 msgid "Sunrise / Sunset"
 msgstr "Východ / Západ"
 
-#: ../e_mod_main.c:1088
+#: e_mod_main.c:1088
 msgid "High"
 msgstr "Nejvyšší"
 
-#: ../e_mod_main.c:1099
+#: e_mod_main.c:1099
 msgid "Low"
 msgstr "Nejnižší"

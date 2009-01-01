@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-20 19:42+0800\n"
+"POT-Creation-Date: 2009-01-01 13:39+0100\n"
 "PO-Revision-Date: 2008-08-12 17:53+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:37
+#: e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "Nastavení slideshow"
 
-#: ../e_mod_config.c:90
+#: e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "Čas cyklu"
 
-#: ../e_mod_config.c:92
+#: e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Zakázat časovač"
 
-#: ../e_mod_config.c:95
+#: e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f sekund"
 
-#: ../e_mod_config.c:100
+#: e_mod_config.c:100
 msgid "Directory"
 msgstr "Adresář"
 
-#: ../e_mod_config.c:102
+#: e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Subadresář pro použití jako pozadí"
 
-#: ../e_mod_config.c:109
+#: e_mod_config.c:109
 msgid "Extra"
 msgstr "Extra"
 
-#: ../e_mod_config.c:110
+#: e_mod_config.c:110
 msgid "Randomize order"
 msgstr "Náhodné řazení"
 
-#: ../e_mod_config.c:113
+#: e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
 msgstr "Použít wallpaper na všech plochách"
 
-#: ../e_mod_config.c:115
+#: e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
 msgstr "Použít wallpaper na aktivní ploše"
 
-#: ../e_mod_config.c:117
+#: e_mod_config.c:117
 msgid "Set wallpaper on current screen"
 msgstr "Použít wallpaper na aktivní obrazovce"
 
-#: ../e_mod_config.c:121
+#: e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Nastavit pozadí na aktuálním monitoru (Podpora Xineramy)"
 
-#: ../e_mod_main.c:140
+#: e_mod_main.c:140
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: ../e_mod_main.c:184
+#: e_mod_main.c:184
 msgid "Configuration"
 msgstr "Konfigurace"

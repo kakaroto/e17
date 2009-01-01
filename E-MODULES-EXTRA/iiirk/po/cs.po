@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Iiirk\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-20 19:42+0800\n"
+"POT-Creation-Date: 2009-01-01 13:43+0100\n"
 "PO-Revision-Date: 2008-08-12 17:00+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,116 +14,116 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_main.c:236
+#: src/e_mod_main.c:236
 msgid "IIirk"
 msgstr "Iiirk"
 
-#: ../src/e_mod_main.c:368 ../src/e_mod_main.c:785
+#: src/e_mod_main.c:368 src/e_mod_main.c:785
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: ../src/e_mod_main.c:1553
+#: src/e_mod_main.c:1553
 msgid "Applications"
 msgstr "Aplikace"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
-#: ../src/e_int_config_iiirk.c:67
+#: src/e_mod_main.c:1555 src/e_int_config_iiirk.c:52
+#: src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Iiirk aplikace"
 
-#: ../src/e_mod_main.c:1557
+#: src/e_mod_main.c:1557
 msgid "Internal"
 msgstr "Interní"
 
-#: ../src/e_mod_main.c:1558
+#: src/e_mod_main.c:1558
 msgid "IIirk Other"
 msgstr "Jiné"
 
-#: ../src/e_mod_config.c:58
+#: src/e_mod_config.c:58
 msgid "Iiirk Configuration"
 msgstr "Iiirk konfigurace"
 
-#: ../src/e_mod_config.c:110
+#: src/e_mod_config.c:110
 msgid "Selected Iiirk Source"
 msgstr "Zvolený iiirk zdroj"
 
-#: ../src/e_mod_config.c:118 ../src/e_int_config_iiirk.c:157
+#: src/e_mod_config.c:118 src/e_int_config_iiirk.c:157
 msgid "Add"
 msgstr "Přidat"
 
-#: ../src/e_mod_config.c:120 ../src/e_int_config_iiirk.c:183
+#: src/e_mod_config.c:120 src/e_int_config_iiirk.c:183
 msgid "Delete"
 msgstr "Smazat"
 
-#: ../src/e_mod_config.c:122
+#: src/e_mod_config.c:122
 msgid "Configure"
 msgstr "Konfigurovat"
 
-#: ../src/e_mod_config.c:131
+#: src/e_mod_config.c:131
 msgid "General Settings"
 msgstr "Hlavní nastavení"
 
-#: ../src/e_mod_config.c:132
+#: src/e_mod_config.c:132
 msgid "Hide window from any list when iconified"
 msgstr "Skrýt okno ze všech seznamů, když je ikonifikováno"
 
-#: ../src/e_mod_config.c:134
+#: src/e_mod_config.c:134
 msgid "Show Icon Label"
 msgstr "Zobrazit titulek okna"
 
-#: ../src/e_mod_config.c:137
+#: src/e_mod_config.c:137
 msgid "Display Name"
 msgstr "Zobrazit jméno"
 
-#: ../src/e_mod_config.c:139
+#: src/e_mod_config.c:139
 msgid "Display Title"
 msgstr "Zobrazit titulek"
 
-#: ../src/e_mod_config.c:141
+#: src/e_mod_config.c:141
 msgid "Display Class"
 msgstr "Zobrazit třídu"
 
-#: ../src/e_mod_config.c:143
+#: src/e_mod_config.c:143
 msgid "Display Icon Name"
 msgstr "Zobrazit jméno ikony"
 
-#: ../src/e_mod_config.c:145
+#: src/e_mod_config.c:145
 msgid "Display Border Caption"
 msgstr "Zobrazit titulek rámu"
 
-#: ../src/e_mod_config.c:150
+#: src/e_mod_config.c:150
 msgid "Screen"
 msgstr "Obrazovka"
 
-#: ../src/e_mod_config.c:170
+#: src/e_mod_config.c:170
 msgid "Show windows from all screens"
 msgstr "Zobrazit okna ze všech obrazovek"
 
-#: ../src/e_mod_config.c:175
+#: src/e_mod_config.c:175
 msgid "Show windows from current screen"
 msgstr "Zobrazit okna z aktivní obrazovky"
 
-#: ../src/e_mod_config.c:181
+#: src/e_mod_config.c:181
 msgid "Desktop"
 msgstr "Plocha"
 
-#: ../src/e_mod_config.c:184
+#: src/e_mod_config.c:184
 msgid "Show windows from all desktops"
 msgstr "Zobrazit okna ze všech ploch"
 
-#: ../src/e_mod_config.c:189
+#: src/e_mod_config.c:189
 msgid "Show windows from active desktop"
 msgstr "Zobrazit okna z aktivní plochy"
 
-#: ../src/e_mod_config.c:228
+#: src/e_mod_config.c:228
 msgid "Create new IIirk source"
 msgstr "Vytvořit nový iiirk zdroj"
 
-#: ../src/e_mod_config.c:229
+#: src/e_mod_config.c:229
 msgid "Enter a name for this new source:"
 msgstr "Zadejte jméno pro tento zdroj:"
 
-#: ../src/e_mod_config.c:244
+#: src/e_mod_config.c:244
 #, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
@@ -131,22 +131,22 @@ msgid ""
 msgstr ""
 "Vybrali jste si smazání \"%s\".<br><br>Jste si jisti, že to chcete udělat?"
 
-#: ../src/e_mod_config.c:248
+#: src/e_mod_config.c:248
 msgid "Are you sure you want to delete this iiirk source?"
 msgstr "Jste si jisti, že chcete smazat tento iiirk zdroj?"
 
-#: ../src/e_int_config_iiirk.c:150
+#: src/e_int_config_iiirk.c:150
 msgid "All Applications"
 msgstr "Všechny aplikace"
 
-#: ../src/e_int_config_iiirk.c:164
+#: src/e_int_config_iiirk.c:164
 msgid "Selected Applications"
 msgstr "Vybrané aplikace"
 
-#: ../src/e_int_config_iiirk.c:172
+#: src/e_int_config_iiirk.c:172
 msgid "Up"
 msgstr "Nahoru"
 
-#: ../src/e_int_config_iiirk.c:177
+#: src/e_int_config_iiirk.c:177
 msgid "Down"
 msgstr "Dolů"
