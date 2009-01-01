@@ -1,5 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/penguins/themes/*
-debian/tmp/usr/lib/enlightenment/modules/penguins/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/penguins/*.edj
-debian/tmp/usr/lib/enlightenment/modules/penguins/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/penguins/locale/*

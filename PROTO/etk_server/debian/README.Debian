@@ -1,9 +1,0 @@
-Etk_Server - Program Etk using any language (*)
-
-Etk_Server allows Etk applications to be programmed using almost any
-language. The user interacts with a fifo that allows for the sending of
-commands, receiving of output, and event programming. Examples can be found
-in the examples directory.
-
-(*) Language should support interacting with files / fifos. This is not a
-total replacement for full blown C programs using Etk.

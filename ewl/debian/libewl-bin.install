@@ -1,4 +1,0 @@
-debian/tmp/usr/bin/ewl_*
-debian/tmp/usr/lib/ewl/tests/*.so
-debian/tmp/usr/share/ewl/images/*
-debian/tmp/usr/share/ewl/themes/ewl_embed_test.edj

@@ -1,6 +1,0 @@
-etk-server (@VERSION@-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- E17 Debian Team <debian@edevelop.org>  Tue, 21 Mar 2006 02:50:45 +0100
-

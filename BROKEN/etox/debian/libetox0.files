@@ -1,5 +1,0 @@
-usr/lib/lib*.so.*
-usr/share/etox/*.db
-usr/share/etox/fonts/*.ttf
-usr/share/etox/images/*.png
-usr/share/etox/styles/*.style.db

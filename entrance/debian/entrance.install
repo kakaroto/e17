@@ -1,7 +1,0 @@
-debian/tmp/etc/entrance_config.cfg
-debian/tmp/usr/bin/entrance
-debian/tmp/usr/bin/entrance_edit
-debian/tmp/usr/bin/entrance_wrapper
-debian/tmp/usr/sbin/*
-debian/tmp/usr/libexec/entrance/*
-debian/tmp/usr/share/entrance/*

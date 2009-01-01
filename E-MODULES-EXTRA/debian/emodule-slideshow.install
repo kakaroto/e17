@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/slideshow/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/slideshow/*.edj
-debian/tmp/usr/lib/enlightenment/modules/slideshow/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/slideshow/locale/*

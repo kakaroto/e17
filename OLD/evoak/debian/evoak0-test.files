@@ -1,6 +1,0 @@
-usr/bin/evoak
-usr/bin/evoak_*
-usr/share/evoak/data/*.png
-usr/share/evoak/data/*.eet
-usr/share/evoak/data/fonts/fonts.*
-usr/share/evoak/data/fonts/*.ttf

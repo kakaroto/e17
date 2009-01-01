@@ -1,6 +1,0 @@
-engrave (@VERSION@-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- Falko Schmidt <falko@alphagemini.org>  Sun, 29 Jun 2008 13:07:34 +0000
-
