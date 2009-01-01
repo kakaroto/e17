@@ -132,7 +132,7 @@ SetupX(const char *dstr)
      {
 	VROOT = ECreateWindow(RROOT, 0, 0, Mode.wm.win_w, Mode.wm.win_h, 0);
 
-	/* Enable eesh and edox to pix up the virtual root */
+	/* Enable eesh and edox to pick up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", WinGetXwin(VROOT));
 	Esetenv("ENL_WM_ROOT", buf);
      }
