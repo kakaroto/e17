@@ -1003,62 +1003,23 @@ Epplet_cleanup(void)
 {
    char                s[1024];
 
-#if 0				/* No, I think this causes unintended e16 snaps/respawning */
-   printf("Epplet_cleanup remember=%d\n", need_remember);
-   if (need_remember)
-      Epplet_remember();
-#endif
-
-   /* remove lock file */
-   Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, epplet_instance);
-   if (unlink(s) < 0)
+   if (conf_dir)
      {
-	char                err[255];
+	/* remove lock file */
+	Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, epplet_instance);
+	if (unlink(s) < 0)
+	  {
+	     char                err[255];
 
-	Esnprintf(err, sizeof(err), "Unable to remove lock file %s -- %s.\n",
-		  s, strerror(errno));
-	Epplet_dialog_ok(err);
+	     Esnprintf(err, sizeof(err),
+		       "Unable to remove lock file %s -- %s.\n", s,
+		       strerror(errno));
+	     Epplet_dialog_ok(err);
+	  }
      }
 
    /* save config settings */
    Epplet_save_config();
-
-   /* Freeing all this memory right before you exit is pretty pointless.... -- mej */
-#if 0
-   /* free config stuff */
-   if (config_dict)
-     {
-	int                 i;
-
-	for (i = 0; i < config_dict->num_entries; i++)
-	  {
-	     if (config_dict->entries[i].key)
-		free(config_dict->entries[i].key);
-	     if (config_dict->entries[i].value)
-		free(config_dict->entries[i].value);
-	  }
-	free(config_dict->entries);
-	free(config_dict);
-	config_dict = NULL;
-     }
-
-   if (conf_dir)
-     {
-	free(conf_dir);
-	conf_dir = NULL;
-     }
-   if (epplet_name)
-     {
-	free(epplet_name);
-	epplet_name = NULL;
-     }
-   if (epplet_cfg_file)
-     {
-	free(epplet_cfg_file);
-	epplet_cfg_file = NULL;
-     }
-#endif
-
 }
 
 void
@@ -1903,7 +1864,7 @@ ECommsSend(char *s)
    XEvent              ev;
    Atom                a = 0;
 
-   if (!s)
+   if (!s || !dd)
       return;
    len = strlen(s);
    if (!a)
@@ -5564,6 +5525,12 @@ void
 Epplet_dialog_ok(char *text)
 {
    char               *s;
+
+   if (!dd)
+     {
+	printf("*** %s\n", text);
+	return;
+     }
 
    s = malloc(strlen(text) + 32);
    sprintf(s, "dialog_ok %s", text);
