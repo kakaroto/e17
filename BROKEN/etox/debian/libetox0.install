@@ -1,0 +1,5 @@
+debian/tmp/usr/lib/lib*.so.*
+debian/tmp/usr/share/etox/*.db
+debian/tmp/usr/share/etox/fonts/*.ttf
+debian/tmp/usr/share/etox/images/*.png
+debian/tmp/usr/share/etox/styles/*.style.db

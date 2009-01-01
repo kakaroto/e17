@@ -1,0 +1,17 @@
+Source: rage
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6)
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: rage
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: EFL-based media center
+ Rage is a media center designed mostly for use on a television hooked up to
+ your pc via a remote control. see the key controls at the end to make your
+ remote send the right keystrokes - eventually this will be 100% configurable
+ via the gui.
+

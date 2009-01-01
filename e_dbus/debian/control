@@ -1,0 +1,28 @@
+Source: edbus
+Section: libs
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: debhelper (>= 6), cdbs, libecore-dev, libdbus-1-dev, libevas-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: libedbus-dev
+Section: libdevel
+Architecture: any
+Depends: libedbus0 (= ${binary:Version}), libdbus-1-dev
+Replaces: libe-dbus0-dev
+Description: D-Bus and HAL wrapper libraries for use with the EFL - Development files
+ Wrappers around D-Bus to ease integrating D-Bus with EFL based applications.
+ .
+ This packages contains headers and static libraries for libedbus, libehal and
+ libenotify
+
+Package: libedbus0
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libe-dbus0
+Description: D-Bus and HAL wrapper libraries for use with the EFL
+ This package contains:
+ - libedbus0 and libehal0 : D-Bus and HAL-related wrappers to ease integrating
+   D-Bus and HAL with EFL-based applications
+ - libenotify0 : provides an EFL-based notification support

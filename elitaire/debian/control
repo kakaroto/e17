@@ -1,0 +1,21 @@
+Source: elitaire
+Section: games
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libewl1-dev, libedje-dev, libesmart0-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: elitaire
+Architecture: any
+Depends: ${shlibs:Depends}, libewl1-engines-all
+Description: The enlightenment card game collection
+ Elitaire is a solitaire card game based on the Enlightenment foundation
+ libraries. Currently implemented variants are:
+  - Freecell
+  - Thougthful
+  - Vegas
+  - Spider
+  - Golf
+  - Baker's Dozen
+  - Klondike.

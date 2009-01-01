@@ -1,0 +1,17 @@
+This package was debianized by Falko Schmidt <falko@alphagemini.org> on
+Tue, 21 Oct 2008 13:51:44 +0000.
+
+The source code is from the E17/PROTO/extrackt module of the enlightenment SVN
+tree. For more information, see:
+
+http://www.enlightenment.org
+
+Upstream Author: Hisham Mardam Bey <hisham.mardambey@gmail.com>
+
+Copyright:
+
+none
+
+The Debian packaging is:
+  (C) 2008 Falko Schmidt <falko@alphagemini.org> and is licensed under
+  the GPL, see `/usr/share/common-licenses/GPL'.

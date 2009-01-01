@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/moon/*.edj
+debian/tmp/usr/lib/enlightenment/modules/moon/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/moon/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/moon/locale/*

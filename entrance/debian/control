@@ -1,0 +1,37 @@
+Source: entrance
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 6), libtool, libpam0g-dev, libevas-dev, libecore-dev, libecore-bin, libedje-dev, libedje-bin, libesmart0-dev, libxp-dev
+Standards-Version: 3.7.3
+
+Package: entrance
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: The enlightened login manager.
+ Entrance is a login manager similar to gdm or kdm, it is based on the 
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+
+Package: libentrance-edit0
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libentrance-edit
+Description: Entrance configuration editing library
+ Entrance is a login manager similar to gdm or kdm, it is based on the 
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides the Entrance configuration data editing library.
+
+Package: libentrance-edit-dev
+Section: libdevel
+Architecture: any
+Depends: libecore-dev, libentrance-edit0, libpam0g-dev, libxp-dev
+Provides: libentrance-edit0-dev
+Description: Entrance configuration editing library development files
+ Entrance is a login manager similar to gdm or kdm, it is based on the 
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides headers and static libraries to develop against
+ the Entrance configuration data editing library.

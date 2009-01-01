@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/screenshot/*.edj
+debian/tmp/usr/lib/enlightenment/modules/screenshot/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/screenshot/*/*.so

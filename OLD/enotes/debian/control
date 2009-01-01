@@ -1,0 +1,13 @@
+Source: enotes
+Section: x11
+Priority: optional
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Build-Depends: libxml2-dev, libevas-dev, libecore-dev, libedb1-dev, libedje-dev, libewl1-dev, libesmart0-dev, debhelper (>= 6), cdbs, examine
+Standards-Version: 3.6.0
+
+Package: enotes
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: a sticky notes system based on the enlightenment foundation
+ libraries. It is aimed at being a functionable, easy to use and nice to look
+ at themable sticky notes system.

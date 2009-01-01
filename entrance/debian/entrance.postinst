@@ -1,0 +1,109 @@
+#!/bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+THIS_PACKAGE=entrance
+DEFAULT_DISPLAY_MANAGER_FILE=/etc/X11/default-display-manager
+
+# creating entrance group if he isn't already there
+if ! getent group entrance >/dev/null; then
+        addgroup --system entrance
+fi
+
+# creating entrance user if he isn't already there
+if ! getent passwd entrance >/dev/null; then
+        adduser --system --ingroup entrance --home /var/lib/entrance entrance
+	usermod -c "Enlightened Display Manager" entrance
+	usermod -d "/var/lib/entrance"          entrance
+	usermod -g "entrance"                   entrance
+	usermod -s "/bin/false"            entrance
+fi
+
+if [ -d /var/lib/entrance ]; then
+  chown -R entrance:entrance /var/lib/entrance
+  chmod 0750 /var/lib/entrance
+fi
+
+# debconf is not a registry, so we only fiddle with the default file if it
+# does not exist
+if [ ! -e $DEFAULT_DISPLAY_MANAGER_FILE ]; then
+  if db_get shared/default-x-display-manager; then
+    if [ "$THIS_PACKAGE" != "$RET" ]; then
+      echo "Please be sure to run \"dpkg --configure $RET\"."
+    fi
+    if db_get "$RET"/daemon_name; then
+      echo "$RET" > $DEFAULT_DISPLAY_MANAGER_FILE
+    fi
+  fi
+fi
+if [ ! -e /etc/default/entrance ]; then
+  if db_get "locales/default_environment_locale"; then
+    if [ "$RET" = "None" ]; then
+      RET=
+    fi
+    # If there's a space in the answer, it's not valid, so go with the blank
+    # default instead.
+    if echo "$RET" | grep -q ' '; then
+      RET=
+    fi
+  else
+    RET=
+  fi
+  cat <<EOF > /etc/default/entrance
+# entrance Defaults, source in the init script that starts entrance.  LANG setting is
+# taken from the locales package by default.
+EOF
+  if [ -z "$RET" ]; then
+    cat <<EOF >> /etc/default/entrance
+#LANG=
+EOF
+  else
+    cat <<EOF >> /etc/default/entrance
+LANG=$RET
+EOF
+  fi
+fi
+# debconf hangs if entrance gets started below without this
+db_stop || true
+
+entrance_running=
+
+# NOTE: the binary on disk most likely has changed, so we can't use --exec
+if start-stop-daemon --stop --quiet --name entrance --signal 0 --pid /var/run/entranced.pid; then
+  entrance_running=yes
+fi
+
+if [ -d /var/state/entrance ]; then
+  if [ "$entrance_running" ]; then
+    echo "Note: obsolete directory /var/state/entrance cannot be removed when entrance"
+    echo "is running.  Reinstall the entrance package (or remove the directory"
+    echo "manually) when entrance is not running."
+  else
+    rm -r /var/state/entrance
+  fi
+fi
+
+if [ -x /etc/init.d/entrance ]; then
+  update-rc.d entrance defaults 99 01 >/dev/null 2>&1
+  # xdm has some rather involved  logic to prompt the user
+  # in prerm to see if they want to stop xdm if its already running a session.
+  # That can be added to entrance later, but for now, just start it if its not running,
+  # otherwise just leave it running.
+  invoke-rc.d entrance start 2> /dev/null || true
+fi
+
+# Automatically added by dh_installmenu
+if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then
+	update-menus
+fi
+# End automatically added section
+# Automatically added by dh_scrollkeeper
+if [ "$1" = "configure" ] && which scrollkeeper-update >/dev/null 2>&1; then
+	scrollkeeper-update -q
+fi
+# End automatically added section
+
+
+exit 0

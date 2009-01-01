@@ -1,0 +1,17 @@
+Source: etk_extra
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev, libemotion0-dev, libcairo2-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: libetk1-extra
+Architecture: any
+Depends: ${shlibs:Depends}, libetk1, libemotion0, libcairo2
+Description: ETK extra widgets
+ Some extra widgets for ETK:
+ - cairo widget
+ - tree-model-wobbly
+ - emotion video widget
+

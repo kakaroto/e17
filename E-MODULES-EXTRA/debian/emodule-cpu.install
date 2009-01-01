@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/cpu/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/cpu/*.edj
+debian/tmp/usr/lib/enlightenment/modules/cpu/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/cpu/locale/*

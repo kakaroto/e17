@@ -1,0 +1,14 @@
+Source: estickies
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev
+Standards-Version: 3.7.2
+
+Package: estickies
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libetk1
+Description: A sticky notes application based on Etk
+ Estickies is a sticky notes application that uses Etk. It
+ uses Etk's runtime theming support to change the look and
+ feel of the windows and buttons.

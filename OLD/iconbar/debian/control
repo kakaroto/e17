@@ -1,0 +1,13 @@
+Source: iconbar
+Section: x11
+Priority: optional
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Build-Depends: libeet-dev, libevas-dev, libimlib2-dev, libedje-dev, libesmart0-dev, debhelper (>= 6), cdbs
+Standards-Version: 3.6.1.0
+
+Package: iconbar
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Enlightenment iconbar
+ This is a standalone iconbar based on the e17 iconbar by raster and rephorm.

@@ -1,0 +1,14 @@
+Source: engage
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: cdbs, libeet-dev, libevas-dev, libimlib2-dev, libedje-dev, libesmart0-dev, debhelper (>= 6), libetk1-dev, libecore-dev, e17-dev
+Standards-Version: 3.6.1.0
+
+Package: engage
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}, examine
+Description: Enlightenment dock-like app
+ Engage is an application launcher with application state tracking and system 
+ tray functionality.  It has nice icon zooming and full theming.

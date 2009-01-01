@@ -1,0 +1,14 @@
+Source: eclair
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 6), automake1.7 | automaken, libecore-dev, libedje-dev, libevas-dev, libesmart0-dev, libemotion0-dev, libtagc0-dev, libxml2-dev, libsqlite3-dev, libglade2-dev
+Standards-Version: 3.7.2
+
+Package: eclair
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: EFL powered media player
+ Eclair is an EFL powered media player front-end using Enlightenment's
+ video playback library (emotion).

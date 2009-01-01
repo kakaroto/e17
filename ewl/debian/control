@@ -1,0 +1,128 @@
+Source: ewl
+Section: libs
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: debhelper (>= 6), cdbs, automake1.9, libtool, pkg-config, libevas-dev, libecore-dev, libedje-dev, libemotion0-dev, libedje-bin, libembryo-dev, libepsilon0-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: libewl1
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl0
+Provides: libewl
+Description: The Enlightened Widget Library (EWL)
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the EWL runtime library including a basic software
+ X11 render engine.
+
+Package: libewl1-dev
+Architecture: any
+Section: libdevel
+Replaces: libewl-dev
+Depends: libewl1 (= ${Source-Version}), libc6-dev | libc-dev, libevas-dev, libecore-dev, libemotion0-dev
+Description: Development files for EWL
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package contains headers, static libraries and examples for
+ development with EWL.
+
+Package: libewl1-engines-all
+Architecture: any
+Depends: libewl1-engine-evas-fb, libewl1-engine-evas-software-x11, libewl1-engine-x11, libewl1-engine-evas, libewl1-engine-evas-xrender, libewl1-engine-evas-buffer
+Description: virtual package providing all available EWL engines
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides all available render engines for EWL.
+
+Package: libewl1-engine-evas
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas
+Description: The main EVAS engine for EWL
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the main EVAS engine for EWL.
+
+Package: libewl1-engine-evas-buffer
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas-buffer
+Description: The buffer engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides buffer render engine for EWL.
+
+Package: libewl1-engine-evas-fb
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas-fb
+Description: The framebuffer engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the framebuffer render engine for EWL.
+
+Package: libewl1-engine-evas-software-x11
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas-software-x11
+Description: The software X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the software X11 render for EWL.
+
+Package: libewl1-engine-evas-gl-x11
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas-gl-x11
+Description: The OpenGL X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides an experimental OpenGL render engine for EWL.
+
+Package: libewl1-engine-evas-xrender
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-evas-xrender
+Description: The Xrender X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the Xrender engine for EWL.
+
+Package: libewl1-engine-x11
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-engine-x11
+Description: The base X11 engine for EWL 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the base X11 engine for EWL.
+
+Package: libewl1-plugins
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Replaces: libewl-plugins
+Description: The base X11 engine for EWL 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides plugins for EWL.
+
+Package: ewl1-test
+Section: utils
+Architecture: any
+Replaces: libewl-bin
+Provides: libewl1-bin
+Depends: ${shlibs:Depends}
+Description: Programs for EWL
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides test programs packaged with EWL.

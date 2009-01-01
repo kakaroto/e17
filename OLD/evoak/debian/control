@@ -1,0 +1,38 @@
+Source: evoak
+Priority: optional
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Build-Depends: cdbs, debhelper (>= 6), libeet-dev, libevas-dev, libecore-dev, libedje-dev, libembryo-dev, automake1.7 | automaken, libtool
+Standards-Version: 3.6.0
+
+Package: libevoak0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Suggests: evoak0-test (= ${Source-Version})
+Description: Evoak library
+ Evoak is a canvas server. This is similar to an X server that serves out a
+ display and graphics operations. Evoak servers out a single canvas to be
+ shared by multiple applications (clients) allowing each client to manipulate
+ its set of objects.
+
+Package: libevoak0-dev
+Section: libdevel
+Architecture: any
+Depends: libevoak0 (= ${Source-Version})
+Description: Evoak development files
+ Evoak is a canvas server. This is similar to an X server that serves out a
+ display and graphics operations. Evoak servers out a single canvas to be
+ shared by multiple applications (clients) allowing each client to manipulate
+ its set of objects.
+
+Package: evoak0-test
+Section: graphics
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Evoak binaries
+ This package contains the evoak binary and test programs packaged with Evoak. 
+ .
+ Evoak is a canvas server. This is similar to an X server that serves out a
+ display and graphics operations. Evoak servers out a single canvas to be
+ shared by multiple applications (clients) allowing each client to manipulate
+ its set of objects.

@@ -1,0 +1,20 @@
+Source: extrackt
+Section: x11
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev, libenhance0-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: extrackt
+Architecture: any
+Depends: ${shlibs:Depends}, libeet1
+Description: An audio CD ripper and encoder based on the EFL
+ Extrackt is essentially an audio CD ripper and encoder. It
+ allows you to choose your ripper and encoder based on
+ templates which give Extrackt the ability to use multiple
+ built in and user defined ones. Extrackt is logically  split
+ into a frontend (gui) and a backend (ripping / encoding /
+ cddb etc.) and allows for frontends to be written using any
+ toolkit like Etk, Ewl, Gtk, or even pure Evas / Edje (not to
+ mention ncurses or simlpe shell ones).

@@ -1,0 +1,16 @@
+Source: etk-server
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev, libevas-dev, libecore-dev
+Standards-Version: 3.6.2
+
+Package: etk-server
+Architecture: any
+Depends: ${shlibs:Depends}, libetk1, libevas0, libecore0
+Description: program Etk using any language
+ Etk_Server allows Etk applications to be programmed
+ using almost any language. The user interacts with
+ a fifo that allows for the sending of commands,
+ receiving of output, and event programming. Examples
+ can be found in the examples directory.

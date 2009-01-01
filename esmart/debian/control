@@ -1,0 +1,23 @@
+Source: esmart
+Section: libs
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libtool, pkg-config, libecore-dev, libevas-dev, libepsilon0-dev, libimlib2-dev, libedje-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: libesmart0
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libesmart
+Description: The Esmart Prototype Library
+ Esmart provides a series of smart object prototypes for a variety of uses.
+
+Package: libesmart0-dev
+Architecture: any
+Section: libdevel
+Depends: libesmart0 (= ${Source-Version}), libecore-dev, libevas-dev, libepsilon0-dev, libedje-dev
+Replaces: libesmart-dev
+Description: Development files for Esmart
+ Esmart is a utility library based on the libraries provided by the
+ Enlightenment project.

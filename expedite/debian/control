@@ -1,0 +1,14 @@
+Source: expedite
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libevas-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: expedite
+Architecture: any
+Depends: ${shlibs:Depends}, libevas0, libevas-engines, libevas-engines-extras
+Description: Benchmarking suite for Evas
+ This is meant to be a detailed and comprehensive benchmark suite for Evas.
+

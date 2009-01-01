@@ -1,0 +1,5 @@
+debian/tmp/usr/lib/enlightenment/modules/rain/*.png
+debian/tmp/usr/lib/enlightenment/modules/rain/*.edj
+debian/tmp/usr/lib/enlightenment/modules/rain/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/rain/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/rain/locale/*

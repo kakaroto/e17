@@ -1,0 +1,33 @@
+#!/bin/sh
+if [ "$1" = "purge" ] ; then
+	update-rc.d entrance remove >/dev/null
+	rm -f /etc/default/entrance
+	if [ -d /var/lib/entrance ]; then
+		rm -r /var/lib/entrance
+	fi
+	if [ -d /var/log/entrance ]; then
+		rm -r /var/log/entrance
+	fi
+	if getent passwd entrance >/dev/null; then
+		deluser entrance
+	fi
+	if getent group entrance >/dev/null; then
+		delgroup entrance
+	fi
+fi
+# Automatically added by dh_installdebconf
+if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	db_purge
+fi
+# End automatically added section
+# Automatically added by dh_installmenu
+if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus ; fi
+# End automatically added section
+# Automatically added by dh_scrollkeeper
+if [ "$1" = "remove" ] && which scrollkeeper-update >/dev/null 2>&1; then
+	scrollkeeper-update -q
+fi
+# End automatically added section
+
+exit 0

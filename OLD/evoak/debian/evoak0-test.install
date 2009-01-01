@@ -1,0 +1,6 @@
+debian/tmp/usr/bin/evoak
+debian/tmp/usr/bin/evoak_*
+debian/tmp/usr/share/evoak/data/*.png
+debian/tmp/usr/share/evoak/data/*.eet
+debian/tmp/usr/share/evoak/data/fonts/fonts.*
+debian/tmp/usr/share/evoak/data/fonts/*.ttf

@@ -1,0 +1,26 @@
+Source: exhibit
+Section: x11
+Priority: optional
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev, libepsilon0-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: exhibit
+Architecture: any
+Depends: ${shlibs:Depends}, libetk1, libepsilon0
+Suggests: e17
+Description: the Etk-based image viewer
+ Exhibit is an image viewer that uses Etk as its toolkit.
+ Exhibit supports  image previews for image types supported
+ by Evas and allows for  directory changing using a point
+ and click interface or a text input box with tab
+ autocompletion support.
+ Common operations include:
+ - rotation / flipping
+ - sharpen / blur
+ - saving
+ - resizing (needs implementation)
+ - zooming in and out (needs implementation)
+ - drag and drop (needs implementation)
+ - image sorting (needs implementation).

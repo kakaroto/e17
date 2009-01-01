@@ -1,0 +1,7 @@
+debian/tmp/usr/lib/libentrance_widgets.a
+debian/tmp/usr/lib/libentrance_widgets.la
+debian/tmp/usr/lib/libentrance_widgets.so
+debian/tmp/usr/lib/libentrance_smarts.a
+debian/tmp/usr/lib/libentrance_smarts.la
+debian/tmp/usr/lib/libentrance_smarts.so
+debian/tmp/usr/include/*

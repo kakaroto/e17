@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/places/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/places/*.edj
+debian/tmp/usr/lib/enlightenment/modules/places/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/places/locale/*

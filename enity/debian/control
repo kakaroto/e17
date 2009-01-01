@@ -1,0 +1,14 @@
+Source: enity
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libetk1-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: enity
+Architecture: any
+Depends: ${shlibs:Depends}, libetk1
+Description: Create Etk dialogs from command line
+ Simillar tool with zenity, but for Etk widget toolkit.
+

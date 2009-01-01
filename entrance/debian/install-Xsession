@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Created By: Horms <horms@verge.net.au>
+#
+# On debian /etc/X11/Xsession is not execuatble (at the time of writing)
+# Rather, it is intended to be sourced. Presumably this is to allow 
+# parts of its functionality to be overriden.
+
+. /etc/X11/Xsession

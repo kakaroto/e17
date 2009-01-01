@@ -1,0 +1,16 @@
+Source: examine
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: cdbs, debhelper (>= 6), automake1.7 | automaken, libecore-dev, libewl1-dev
+Standards-Version: 3.5.7.0
+
+Package: examine
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Examine is an interface for configuring applications
+ that use ecore_config from the Enlightenment Foundation Libraries (EFL).
+ In the Examine package are two applications, examine (still very basic) and
+ exsh.  These applications connect to the configuration library and allow the
+ user to alter configurations.
