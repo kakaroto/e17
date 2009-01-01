@@ -585,6 +585,11 @@ main(int argc, char **argv)
    esd.fd =
       esd_monitor_stream(ESD_BITS16 | ESD_STEREO | ESD_STREAM | ESD_PLAY,
 			 RATE, NULL, "E-SD");
+   if (esd.fd < 0)
+     {
+	printf("No ESD - exiting!\n");
+	exit(1);
+     }
 
    fcntl(esd.fd, F_SETFL, O_NONBLOCK);
 
