@@ -57,7 +57,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 %{_libdir}/libepplet*.*
 %{_bindir}/*
-%{_datadir}/e16/epplet_icons/*
-%{_datadir}/e16/epplet_data/*
+%{_datadir}/e16/epplet_icons
+%{_datadir}/e16/epplet_data
 
 %changelog
