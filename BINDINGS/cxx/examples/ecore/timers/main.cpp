@@ -42,7 +42,7 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
     logo->setColor( 255, 255, 255, 0 );
     logo->show();
 
-    for( int i = 0; i < NUMBALLS; ++i )
+    for( unsigned int i = 0; i < NUMBALLS; ++i )
     {
         balls[i] = new efl::EvasImage( 20*i, 20*i, PACKAGE_DATA_DIR "/images/boing-shadow.png", evas );
         balls[i]->resize( BALLSIZE, BALLSIZE, true );
@@ -57,6 +57,7 @@ efl::EcoreEvasWindowSoftwareX11* mw;
 efl::EvasCanvas* evas;
 efl::EvasImage* image, *shadow, *logo;
 efl::EvasImage* balls[NUMBALLS];
+
 double xoffset; double yoffset;
 double xstep; double ystep;
 int size; int direction;
@@ -70,7 +71,7 @@ virtual bool timerEvent()
     alpha += alphadirection;
     if ( alpha == 0 || alpha == 255 ) alphadirection *= -1;
 
-    for ( int i = 0; i < NUMBALLS; ++i )
+    for ( unsigned int i = 0; i < NUMBALLS; ++i )
     {
         balls[i]->move( BALLWIDTH  / 2 + sin( xoffset + xaddfactor*i*(2*PI/NUMBALLS) ) * BALLWIDTH/2,
                         BALLHEIGHT / 2 + cos( yoffset + yaddfactor*i*(2*PI/NUMBALLS) ) * BALLHEIGHT/2 );

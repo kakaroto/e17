@@ -13,7 +13,8 @@ libeflpp_evas_la_SOURCES = \
 	eflpp_evastextblockstyle.cpp\
 	eflpp_evasobject.cpp\
 	eflpp_evascanvas.cpp\
-	eflpp_evasimage.cpp
+	eflpp_evasimage.cpp\
+	eflpp_evastext.cpp
     
 libeflpp_includedir = $(pkgincludedir)
 
@@ -25,6 +26,7 @@ libeflpp_include_DATA = \
 	eflpp_evasutils.h\
 	eflpp_evasobject.h\
 	eflpp_evascanvas.h\
-	eflpp_evasimage.h
+	eflpp_evasimage.h\
+	eflpp_evastext.h
 
 EXTRA_DIST = $(libeflpp_include_DATA)

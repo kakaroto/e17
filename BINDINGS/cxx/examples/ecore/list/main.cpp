@@ -30,11 +30,13 @@ int main( int argc, const char **argv )
     // char* test
     EcoreList <char> strList;
     
-    char *str[3] = {"First", "Second", "Third"};
-  
-    strList.append( str[0] );
-    strList.append( str[1] );
-    strList.append( str[2] );
+    char first[] = "First";
+    char second[] = "Second";
+    char third[] = "Third";
+    
+    strList.append( first );
+    strList.append( second );
+    strList.append( third );
     
     char *s = strList.gotoFirst ();
     s = strList.next ();
