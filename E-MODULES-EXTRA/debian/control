@@ -305,7 +305,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
+Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.
