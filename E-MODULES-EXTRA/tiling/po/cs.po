@@ -1,6 +1,5 @@
-# Italian translation for E17 tiling module.
-# This file is put in the public domain.
-# Massimo Maiurana <maiurana@gmail.com>, 2008.
+# Czech translation for E17 tiling module.
+# quaker <quaker66@gmail.com>
 #
 msgid ""
 msgstr ""

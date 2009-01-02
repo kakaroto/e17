@@ -1,0 +1,178 @@
+# Czech translation for E17 drawer module.
+# quaker <quaker66@gmail.com>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drawer\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-23 18:23+0100\n"
+"PO-Revision-Date: 2009-01-02 10:36+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: none>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:54
+msgid "Drawer Module"
+msgstr "Modul Drawer"
+
+#: src/e_mod_config.c:109
+msgid "Plugins selection"
+msgstr "Výběr pluginů"
+
+#: src/e_mod_config.c:112
+msgid "Plugins settings"
+msgstr "Nastavení pluginů"
+
+#: src/e_mod_config.c:172
+msgid "Source plugins"
+msgstr "Zdrojové pluginy"
+
+#: src/e_mod_config.c:204
+msgid "View plugins"
+msgstr "Zobrazovací pluginy"
+
+#: src/e_mod_config.c:256
+#: src/e_mod_config.c:277
+msgid "Description: Unavailable"
+msgstr "Popis: Nedostupný"
+
+#: src/e_mod_config.c:305
+msgid "Source settings"
+msgstr "Nastavení zdroje"
+
+#: src/e_mod_config.c:310
+msgid "View settings"
+msgstr "Nastavení zobrazení"
+
+#: src/e_mod_main.c:153
+msgid "Drawer Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "Nastavení drawer modulu potřebuje aktualizaci. Vaše staré nastavení<br> bylo nahrazeno novým výchozím. Toto<br>se bude stávat často během vývoje, takže nereportujte<br>bug. Prostě to znamená, že modul potřebuje nová data<br>nastavení pro funkce, které vaše staré<br>nastavení neobsahuje. Nové nastavení<br>to spraví. Nyní si můžete modul nastavit, jak<br>chcete. Omlouváme se za vzniklé potíže.<br>"
+
+#: src/e_mod_main.c:173
+msgid "Your Drawer Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "Vaše nastavení je NOVĚJŠÍ než verze modulu. Je to velmi<br>divné. Toto by se nemělo stát, pokud jste ovšem nedowngradovali<br>modul nebo nezkopírovali nastavení odněkud,<br>kde běžela novější verze modulu. Jako protiopatření<br>bylo vaše nastavení obnoveno na<br>výchozí. Omlouváme se za vzniklé potíže.<br>"
+
+#: src/e_mod_main.c:395
+msgid "The plugin is not configurable"
+msgstr "Plugin není nastavitelný"
+
+#: src/e_mod_main.c:722
+#: src/e_mod_main.c:730
+#: src/e_mod_main.c:744
+#: src/e_mod_main.c:756
+#: src/e_mod_main.c:822
+#: src/e_mod_main.c:865
+msgid "Drawer Plugins"
+msgstr "Pluginy pro Drawer"
+
+#: src/e_mod_main.c:723
+#, c-format
+msgid "The plugin '%s' was not found."
+msgstr "Plugin '%s' nebyl nalezen."
+
+#: src/e_mod_main.c:731
+#, c-format
+msgid "The plugin '%s' could not be opened."
+msgstr "Plugin '%s' nemůže být otevřen."
+
+#: src/e_mod_main.c:745
+#: src/e_mod_main.c:823
+#: src/e_mod_main.c:866
+#, c-format
+msgid "The plugin '%s' does not contain all required functions."
+msgstr "Plugin '%s' neobsahuje všechny důležité funkce."
+
+#: src/e_mod_main.c:757
+#, c-format
+msgid "The plugin '%s' does not have the required API version."
+msgstr "Plugin '%s' nemá vyžadovanou verzi API."
+
+#: src/e_mod_main.c:1005
+msgid "Drawer"
+msgstr "Drawer"
+
+#: src/e_mod_main.c:1090
+msgid "Drawer Configuration Updated"
+msgstr "Drawer konfigurace aktualizována"
+
+#: src/e_mod_main.c:1320
+msgid "Settings"
+msgstr "Nastavení"
+
+#: src/plugins/sources/directory_watcher.c:209
+msgid "Directory Watcher settings"
+msgstr "Nastavení hlídače složek"
+
+#: src/plugins/sources/directory_watcher.c:245
+msgid "Home"
+msgstr "Domov"
+
+#: src/plugins/sources/directory_watcher.c:312
+#, c-format
+msgid "Directory (%s)"
+msgstr "Adresář (%s)"
+
+#: src/plugins/sources/directory_watcher.c:378
+msgid "Drawer Plugin : Directory Watcher"
+msgstr "Drawer plugin: hlídač složek"
+
+#: src/plugins/sources/directory_watcher.c:417
+msgid "Watch path"
+msgstr "Cesta"
+
+#: src/plugins/sources/launcher.c:172
+msgid "Launcher settings"
+msgstr "Nastavení spouštěče"
+
+#: src/plugins/sources/launcher.c:271
+#, c-format
+msgid "%s source"
+msgstr "%s zdroj"
+
+#: src/plugins/sources/launcher.c:413
+msgid "Drawer Plugin : Launcher"
+msgstr "Drawer Plugin : Spouštěč"
+
+#: src/plugins/sources/launcher.c:454
+msgid "Selected Bar Source"
+msgstr "Vybraný zdroj lišty"
+
+#: src/plugins/sources/launcher.c:462
+msgid "Add"
+msgstr "Přidat"
+
+#: src/plugins/sources/launcher.c:464
+msgid "Delete"
+msgstr "Smazat"
+
+#: src/plugins/sources/launcher.c:466
+msgid "Configure"
+msgstr "Nastavit"
+
+#: src/plugins/sources/launcher.c:475
+msgid "Sorting options"
+msgstr "Nastavení řazení"
+
+#: src/plugins/sources/launcher.c:476
+msgid "Sort applications by usage"
+msgstr "Seřadit podle použití"
+
+#: src/plugins/sources/launcher.c:513
+msgid "Create new Launcher source"
+msgstr "Vytvořit nový zdroj spouštěče"
+
+#: src/plugins/sources/launcher.c:514
+msgid "Enter a name for this new source:"
+msgstr "Zadejte jméno pro tento zdroj:"
+
+#: src/plugins/sources/launcher.c:529
+#, c-format
+msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this bar source?"
+msgstr "Zadali jste smazat \"%s\".<br><br>Opravdu to chcete udělat?"
+
+#: src/plugins/sources/launcher.c:533
+msgid "Are you sure you want to delete this bar source?"
+msgstr "Opravdu chcete smazat tento zdroj lišty?"
+

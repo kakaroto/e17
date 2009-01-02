@@ -51,6 +51,13 @@ Provides: emodule0-diskio
 Description: E17 module for visualizing disk i/o
  Visualize your disk I/O.
  
+Package: emodule-drawer
+Architecture: any
+Depends: ${shlibs:Depends}, e17 (>= 0.16.999)
+Provides: emodule0-drawer
+Description: A drawer module
+ A drawer module, which is/will be able to present different types of information
+ 
 Package: emodule-efm-nav
 Architecture: any
 Depends: ${shlibs:Depends}, e17 (>= 0.16.999)
