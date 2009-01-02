@@ -1,0 +1,15 @@
+Run: 
+
+python setup.py build_ext
+
+or 
+
+make
+
+As root run:
+
+python setup.py install
+
+or 
+
+make install
