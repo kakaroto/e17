@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire 0.0.4\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2009-01-01 13:35+0100\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2009-01-01 14:03+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -16,130 +16,122 @@ msgstr ""
 "X-Poedit-Language: Czech\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/edje_frontend_game.cpp:61
-#: src/edje_frontend_gui.cpp:701
-#: src/edje_frontend_gui.cpp:755
+#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
+#: ../src/edje_frontend_gui.cpp:755
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
 msgstr "Chyba v %s: chybí element_value součást!\n"
 
-#: src/edje_frontend_game.cpp:68
-#: src/edje_frontend_gui.cpp:708
-#: src/edje_frontend_gui.cpp:762
+#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
+#: ../src/edje_frontend_gui.cpp:762
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
 msgstr "Chyba v %s: chybí skupina prvků!\n"
 
-#: src/edje_frontend_game.cpp:101
+#: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
 msgstr "Vyhrál jsi!"
 
-#: src/edje_frontend_game.cpp:108
+#: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
 msgstr "Prohrál jsi!"
 
-#: src/edje_frontend_game.cpp:118
+#: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
 msgstr "Konec hry"
 
-#: src/edje_frontend_game.cpp:223
+#: ../src/edje_frontend_game.cpp:223
 #, c-format
 msgid "Elitaire Error: cards file %s not found!\n"
 msgstr "Chyba: Soubor karet %s nenalezen!\n"
 
-#: src/edje_frontend_game.cpp:234
+#: ../src/edje_frontend_game.cpp:234
 #, c-format
 msgid "Elitaire Error in %s: elitaire_card_field does not exist!\n"
 msgstr "Chyba v %s: elitaire_card_field neexistuje!\n"
 
-#: src/edje_frontend_gui.cpp:208
+#: ../src/edje_frontend_gui.cpp:208
 #, c-format
 msgid "Elitaire Error: unable to find %s theme!\n"
 msgstr "Chyba: nemůžu najít %s téma!\n"
 
-#: src/edje_frontend_gui.cpp:404
+#. set the label text
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
 msgstr "Hry"
 
-#: src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
 msgstr "Témata"
 
-#: src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
 msgstr "Karty"
 
-#: src/edje_frontend_menu.cpp:24
-#: src/edje_frontend_menu.cpp:57
+#: ../src/edje_frontend_menu.cpp:24 ../src/edje_frontend_menu.cpp:57
 msgid "CONTEXT|Undo"
 msgstr "Zpět"
 
-#: src/edje_frontend_menu.cpp:25
-#: src/edje_frontend_menu.cpp:61
+#: ../src/edje_frontend_menu.cpp:25 ../src/edje_frontend_menu.cpp:61
 msgid "CONTEXT|Highscore"
 msgstr "Nejvyšší skóre"
 
-#: src/edje_frontend_menu.cpp:26
-#: src/edje_frontend_menu.cpp:63
+#: ../src/edje_frontend_menu.cpp:26 ../src/edje_frontend_menu.cpp:63
 msgid "CONTEXT|Preferences"
 msgstr "Nastavení"
 
-#: src/edje_frontend_menu.cpp:27
-#: src/edje_frontend_menu.cpp:65
+#: ../src/edje_frontend_menu.cpp:27 ../src/edje_frontend_menu.cpp:65
 msgid "CONTEXT|About"
 msgstr "O programu"
 
-#: src/edje_frontend_menu.cpp:28
-#: src/edje_frontend_menu.cpp:67
+#: ../src/edje_frontend_menu.cpp:28 ../src/edje_frontend_menu.cpp:67
 msgid "CONTEXT|Help"
 msgstr "Pomoc"
 
-#: src/edje_frontend_menu.cpp:79
+#: ../src/edje_frontend_menu.cpp:79
 msgid "CONTEXT|New"
 msgstr "Nový"
 
-#: src/eli_app.cpp:290
+#: ../src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "Chyba: Žádný soubor tématu v %s!\n"
 
-#: src/eli_app.cpp:306
+#: ../src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Chyba: Nenalezen soubor karet %s!\n"
 
-#: src/elitaire_card.cpp:49
-#: src/elitaire_card.cpp:221
+#: ../src/elitaire_card.cpp:49 ../src/elitaire_card.cpp:221
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
 msgstr "Chyba: karta %s chybí!\n"
 
-#: src/elitaire_card.cpp:55
-#: src/elitaire_card.cpp:227
+#: ../src/elitaire_card.cpp:55 ../src/elitaire_card.cpp:227
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
 msgstr "Chyba: Obrázek pozadí chybí!\n"
 
-#: src/elitaire_card_jobs.cpp:394
+#: ../src/elitaire_card_jobs.cpp:394
 #, c-format
 msgid "Elitaire Error: The shadow pic is missed!\n"
 msgstr "Chyba: Obrázek stínu chybí!\n"
 
-#: src/elitaire.cpp:134
+#: ../src/elitaire.cpp:134
 #, c-format
 msgid "Elitaire Error: unknown game %s\n"
 msgstr "Chyba: neznámá hra %s\n"
 
-#: src/elitaire.cpp:221
+#: ../src/elitaire.cpp:221
 #, c-format
 msgid "Elitaire Error: Callback registering failed!\n"
 msgstr "Chyba: Registrace odvolání selhala!\n"
 
-#: src/ewl_dialog_about.cpp:19
+#: ../src/ewl_dialog_about.cpp:19
 msgid "About"
 msgstr "O programu"
 
-#: src/ewl_dialog_about.cpp:38
+#: ../src/ewl_dialog_about.cpp:38
 #, c-format
 msgid ""
 "%s version %s\n"
@@ -164,118 +156,111 @@ msgstr ""
 "  %s\n"
 "  %s"
 
-#: src/ewl_dialog_config.cpp:41
+#: ../src/ewl_dialog_config.cpp:41
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: src/ewl_dialog_config.cpp:86
+#: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
 msgstr "Grafika"
 
-#: src/ewl_dialog_config.cpp:93
-#: src/ewl_dialog_config.cpp:286
+#: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
 msgstr "Animované pohyby"
 
-#: src/ewl_dialog_config.cpp:102
-#: src/ewl_dialog_config.cpp:289
+#: ../src/ewl_dialog_config.cpp:102 ../src/ewl_dialog_config.cpp:289
 msgid "shadows"
 msgstr "Stíny"
 
-#: src/ewl_dialog_config.cpp:118
+#: ../src/ewl_dialog_config.cpp:118
 msgid "velocity:"
 msgstr "Rychlost:"
 
-#: src/ewl_dialog_config.cpp:150
+#: ../src/ewl_dialog_config.cpp:150
 msgid "frame rate:"
 msgstr "Framerate:"
 
-#: src/ewl_dialog_config.cpp:182
+#: ../src/ewl_dialog_config.cpp:182
 msgid "Laziness"
 msgstr "Pomalost"
 
-#: src/ewl_dialog_config.cpp:187
-#: src/ewl_dialog_config.cpp:301
+#: ../src/ewl_dialog_config.cpp:187 ../src/ewl_dialog_config.cpp:301
 msgid "normal mode"
 msgstr "Normální mód"
 
-#: src/ewl_dialog_config.cpp:195
-#: src/ewl_dialog_config.cpp:298
+#: ../src/ewl_dialog_config.cpp:195 ../src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
 msgstr "Pomalý mód"
 
-#: src/ewl_dialog_config.cpp:211
+#: ../src/ewl_dialog_config.cpp:211
 msgid "Render Engine"
 msgstr "Vykreslovací engine"
 
-#: src/ewl_dialog_config.cpp:219
+#: ../src/ewl_dialog_config.cpp:219
 msgid "Changes only affect after new start"
 msgstr "Změny se projeví po dalším startu."
 
-#: src/ewl_dialog_config.cpp:226
-#: src/ewl_dialog_config.cpp:292
+#: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
 msgstr "Software"
 
-#: src/ewl_dialog_config.cpp:234
-#: src/ewl_dialog_config.cpp:295
+#: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
 msgstr "OpenGL (testuje se)"
 
-#: src/ewl_dialog_config.cpp:271
+#: ../src/ewl_dialog_config.cpp:271
 #, c-format
 msgid "Elitaire Error: Could not save configuration.\n"
 msgstr "Chyba: Nemůžu uložit konfiguraci.\n"
 
-#: src/ewl_dialog_hiscore.cpp:50
+#: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
 msgstr "Nejvyšší skóre"
 
-#: src/ewl_dialog_hiscore.cpp:119
+#: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
 msgstr "Jméno"
 
-#: src/ewl_dialog_hiscore.cpp:145
+#: ../src/ewl_dialog_hiscore.cpp:145
 msgid "Please insert your name"
 msgstr "Prosím zadejte vaše jméno"
 
-#: src/ewl_dialog_hiscore.cpp:218
+#: ../src/ewl_dialog_hiscore.cpp:218
 msgid "Won Games:"
 msgstr "Vyhrané hry:"
 
-#: src/ewl_dialog_hiscore.cpp:233
+#: ../src/ewl_dialog_hiscore.cpp:233
 msgid "Lost Games:"
 msgstr "Prohrané hry:"
 
-#: src/ewl_dialog_hiscore.cpp:248
+#: ../src/ewl_dialog_hiscore.cpp:248
 msgid "relative Quote:"
 msgstr "relative Quote:"
 
-#: src/main.cpp:33
+#: ../src/main.cpp:33
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore\n"
 msgstr "Chyba: Nemohu načíst Ecore\n"
 
-#: src/main.cpp:37
+#: ../src/main.cpp:37
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore File\n"
 msgstr "Chyba: Nemohu načíst Ecore File\n"
 
-#: src/main.cpp:42
+#: ../src/main.cpp:42
 #, c-format
 msgid "Elitaire Error: Cannot init Edje\n"
 msgstr "Chyba: Nemohu načíst Edje\n"
 
-#: src/main.cpp:47
+#: ../src/main.cpp:47
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore Config\n"
 msgstr "Chyba: Nemohu načíst Ecore Config\n"
 
-#: src/main.cpp:52
+#: ../src/main.cpp:52
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
 msgstr "Chyba: Nemohu načíst EWL\n"
 
 #~ msgid "Points: %'.f"
 #~ msgstr "Punkte: %'.f"
-

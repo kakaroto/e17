@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Iiirk\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-03-15 21:00+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -22,20 +22,20 @@ msgstr "Iiirk"
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: ../src/e_mod_main.c:1553
+#: ../src/e_mod_main.c:1558
 msgid "Applications"
 msgstr "Applicazioni"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Applicazioni per Iiirk"
 
-#: ../src/e_mod_main.c:1557
+#: ../src/e_mod_main.c:1562
 msgid "Internal"
 msgstr "Interni"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1563
 msgid "IIirk Other"
 msgstr "Altro"
 

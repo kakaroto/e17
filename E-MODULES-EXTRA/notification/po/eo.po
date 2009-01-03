@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-29 22:00+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-04-17 22:22+0200\n"
 "Last-Translator:  <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -25,19 +25,19 @@ msgid "Notification Box"
 msgstr "Kesto de atentigo"
 
 #. register config panel entry
-#: ../src/e_mod_main.c:171
+#: ../src/e_mod_main.c:175
 msgid "Extensions"
 msgstr "Kromajxoj"
 
-#: ../src/e_mod_main.c:173
+#: ../src/e_mod_main.c:177
 msgid "Notification"
 msgstr "Atentigo"
 
-#: ../src/e_mod_main.c:216 ../src/e_mod_main.c:234
+#: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
 msgid "Notification Configuration Updated"
 msgstr "Agordo gxisdatigita de atentigo"
 
-#: ../src/e_mod_main.c:217
+#: ../src/e_mod_main.c:221
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -48,7 +48,7 @@ msgid ""
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:235
+#: ../src/e_mod_main.c:239
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -58,11 +58,11 @@ msgid ""
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:269
+#: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
 msgstr ""
 
-#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."

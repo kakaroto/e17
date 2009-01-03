@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calendar module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-10-22 21:02+0800\n"
 "Last-Translator: Aron Xu <>\n"
 "Language-Team: zh_CN <i18n-tranlations@lists.i18n.linux.net.cn>\n"
@@ -27,10 +27,10 @@ msgstr "星期一"
 msgid "First Day of Week"
 msgstr "每星期的第一天"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Calendar"
 msgstr "日历"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Monthview Popup (Show/Hide)"
 msgstr "每月弹出显示(显示/隐藏)"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calendar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-02-02 20:11+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -29,10 +29,10 @@ msgstr "hétfő"
 msgid "First Day of Week"
 msgstr "A hét első napja"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Calendar"
 msgstr "Naptár"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Felugró hónap nézet (megjelenítés/elrejtés)"

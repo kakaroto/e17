@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-25 11:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -27,20 +27,20 @@ msgstr "IIirk"
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: ../src/e_mod_main.c:1553
+#: ../src/e_mod_main.c:1558
 msgid "Applications"
 msgstr "Εφαρμογές"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Εφαρμογές IIirk"
 
-#: ../src/e_mod_main.c:1557
+#: ../src/e_mod_main.c:1562
 msgid "Internal"
 msgstr "Εσωτερικό"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1563
 msgid "IIirk Other"
 msgstr "IIirk (Άλλα)"
 
@@ -70,7 +70,8 @@ msgstr "Γενικές Ρυθμίσεις"
 
 #: ../src/e_mod_config.c:132
 msgid "Hide window from any list when iconified"
-msgstr "Απόκρυψη του παραθύρου απο όλες τις λίστες όταν είναι εικονιδιοποιημένο"
+msgstr ""
+"Απόκρυψη του παραθύρου απο όλες τις λίστες όταν είναι εικονιδιοποιημένο"
 
 #: ../src/e_mod_config.c:134
 msgid "Show Icon Label"
@@ -135,8 +136,8 @@ msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
 "iiirk source?"
 msgstr ""
-"Ζητήσατε διαγραφή του \"%s\".<br><br>Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή "
-"την πηγή iiirk?"
+"Ζητήσατε διαγραφή του \"%s\".<br><br>Είστε σίγουροι ότι θέλετε να διαγράψετε "
+"αυτή την πηγή iiirk?"
 
 #: ../src/e_mod_config.c:248
 msgid "Are you sure you want to delete this iiirk source?"
@@ -157,4 +158,3 @@ msgstr "Πάνω"
 #: ../src/e_int_config_iiirk.c:177
 msgid "Down"
 msgstr "Κάτω"
-

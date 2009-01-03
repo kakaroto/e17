@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: skel HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-23 20:35+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-23 20:32+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese (simplified) <i18n-translation@lists.linux.net.cn>\n"
@@ -29,7 +29,7 @@ msgstr "常规"
 msgid "Use Switch 1"
 msgstr ""
 
-#: ../src/e_mod_main.c:102
+#: ../src/e_mod_main.c:107
 msgid ""
 "Skeleton Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -40,7 +40,7 @@ msgid ""
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:122
+#: ../src/e_mod_main.c:127
 msgid ""
 "Your Skeleton Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -49,14 +49,14 @@ msgid ""
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:289
+#: ../src/e_mod_main.c:294
 msgid "Skeleton"
 msgstr "Skeleton"
 
-#: ../src/e_mod_main.c:372
+#: ../src/e_mod_main.c:377
 msgid "Skeleton Configuration Updated"
 msgstr ""
 
-#: ../src/e_mod_main.c:429
+#: ../src/e_mod_main.c:434
 msgid "Configuration"
 msgstr ""

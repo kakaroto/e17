@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calendar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2007-12-09 18:38+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -26,10 +26,10 @@ msgstr "Lunedì"
 msgid "First Day of Week"
 msgstr "Primo giorno della settimana"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Calendar"
 msgstr "Calendar"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Popup mese (mostra/nascondi)"

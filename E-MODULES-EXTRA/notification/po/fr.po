@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-29 22:00+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-27 12:27+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
@@ -26,19 +26,19 @@ msgid "Notification Box"
 msgstr "Boîte de notification"
 
 #. register config panel entry
-#: ../src/e_mod_main.c:171
+#: ../src/e_mod_main.c:175
 msgid "Extensions"
 msgstr "Extensions"
 
-#: ../src/e_mod_main.c:173
+#: ../src/e_mod_main.c:177
 msgid "Notification"
 msgstr "Notification"
 
-#: ../src/e_mod_main.c:216 ../src/e_mod_main.c:234
+#: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
 msgid "Notification Configuration Updated"
 msgstr "Configuration de la notification actualisée"
 
-#: ../src/e_mod_main.c:217
+#: ../src/e_mod_main.c:221
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -57,7 +57,7 @@ msgstr ""
 "maintenant tout reconfigurer selon votre goût.<br>Désolé pour la gêne "
 "occasionnée.<br>"
 
-#: ../src/e_mod_main.c:235
+#: ../src/e_mod_main.c:239
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -74,11 +74,11 @@ msgstr ""
 "de précaution, votre configuration a été<br>remise à zéro. Désolé pour le "
 "désagrément.<br>"
 
-#: ../src/e_mod_main.c:269
+#: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
 msgstr "Échec de l'initialisation de DBus !"
 
-#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."

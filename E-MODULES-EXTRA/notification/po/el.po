@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-29 22:00+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-11 09:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -26,19 +26,19 @@ msgid "Notification Box"
 msgstr "Κουτί Ειδοποίησης"
 
 #. register config panel entry
-#: ../src/e_mod_main.c:171
+#: ../src/e_mod_main.c:175
 msgid "Extensions"
 msgstr "Επεκτάσεις"
 
-#: ../src/e_mod_main.c:173
+#: ../src/e_mod_main.c:177
 msgid "Notification"
 msgstr "Ειδοποίηση"
 
-#: ../src/e_mod_main.c:216 ../src/e_mod_main.c:234
+#: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
 msgid "Notification Configuration Updated"
 msgstr "Ρύθμιση Ειδοποιήσεων Ενημερώθηκε"
 
-#: ../src/e_mod_main.c:217
+#: ../src/e_mod_main.c:221
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -49,7 +49,7 @@ msgid ""
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:235
+#: ../src/e_mod_main.c:239
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -59,11 +59,11 @@ msgid ""
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:269
+#: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
 msgstr ""
 
-#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."

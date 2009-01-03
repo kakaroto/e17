@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-01 13:38+0100\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-08-11 15:41+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,151 +14,151 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config_box.c:71
+#: ../e_mod_config_box.c:71
 msgid "Mailbox Configuration"
 msgstr "Nastavení mailboxu"
 
-#: e_mod_config_box.c:163 e_mod_config.c:94
+#: ../e_mod_config_box.c:163 ../e_mod_config.c:94
 msgid "General Settings"
 msgstr "Hlavní nastavení"
 
-#: e_mod_config_box.c:165
+#: ../e_mod_config_box.c:165
 msgid "Start Program When New Mail Arrives"
 msgstr "Spustit program, když přijde mail"
 
-#: e_mod_config_box.c:170
+#: ../e_mod_config_box.c:170
 msgid "Program:"
 msgstr "Aplikace:"
 
-#: e_mod_config_box.c:182
+#: ../e_mod_config_box.c:182
 msgid "Mailbox Type"
 msgstr "Typ mailboxu"
 
-#: e_mod_config_box.c:184
+#: ../e_mod_config_box.c:184
 msgid "Pop3"
 msgstr "Pop3"
 
-#: e_mod_config_box.c:187
+#: ../e_mod_config_box.c:187
 msgid "Imap"
 msgstr "Imap"
 
-#: e_mod_config_box.c:190
+#: ../e_mod_config_box.c:190
 msgid "Maildir"
 msgstr "Maildir"
 
-#: e_mod_config_box.c:193
+#: ../e_mod_config_box.c:193
 msgid "Mbox"
 msgstr "Mbox"
 
-#: e_mod_config_box.c:196
+#: ../e_mod_config_box.c:196
 msgid "Monitor Mbox file permanently"
 msgstr "Monitorovat Mbox soubor permanentně"
 
-#: e_mod_config_box.c:213
+#: ../e_mod_config_box.c:213
 msgid "Port Settings"
 msgstr "Nastavení portů"
 
-#: e_mod_config_box.c:215
+#: ../e_mod_config_box.c:215
 msgid "Use SSL:"
 msgstr "Použít SSL:"
 
-#: e_mod_config_box.c:222
+#: ../e_mod_config_box.c:222
 msgid "v2"
 msgstr "v2"
 
-#: e_mod_config_box.c:225
+#: ../e_mod_config_box.c:225
 msgid "v3"
 msgstr "v3"
 
-#: e_mod_config_box.c:229
+#: ../e_mod_config_box.c:229
 msgid "Port:"
 msgstr "Port:"
 
-#: e_mod_config_box.c:235
+#: ../e_mod_config_box.c:235
 msgid "Local:"
 msgstr "Lokální:"
 
-#: e_mod_config_box.c:241
+#: ../e_mod_config_box.c:241
 msgid "Mailbox Settings"
 msgstr "Nastavení mailboxu"
 
-#: e_mod_config_box.c:242
+#: ../e_mod_config_box.c:242
 msgid "Name:"
 msgstr "Jméno:"
 
-#: e_mod_config_box.c:247
+#: ../e_mod_config_box.c:247
 msgid "Mail Host:"
 msgstr "Mail Host:"
 
-#: e_mod_config_box.c:252
+#: ../e_mod_config_box.c:252
 msgid "Username:"
 msgstr "Uživatelské jméno:"
 
-#: e_mod_config_box.c:257
+#: ../e_mod_config_box.c:257
 msgid "Password:"
 msgstr "Heslo:"
 
-#: e_mod_config_box.c:263
+#: ../e_mod_config_box.c:263
 msgid "New Mail Path:"
 msgstr "Nová mail cesta:"
 
-#: e_mod_config_box.c:275
+#: ../e_mod_config_box.c:275
 msgid "Current Mail Path:"
 msgstr "Aktuální mail cesta:"
 
-#: e_mod_config_box.c:433
+#: ../e_mod_config_box.c:433
 msgid "Inbox"
 msgstr "Inbox"
 
-#: e_mod_config.c:53
+#: ../e_mod_config.c:53
 msgid "Mail Configuration"
 msgstr "Nastavení mailu"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Always Show Labels"
 msgstr "Vždy zobrazit popisky"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Show Mailbox Popup"
 msgstr "Zobrazit mailbox popup"
 
-#: e_mod_config.c:102
+#: ../e_mod_config.c:102
 msgid "Show All Boxes In Popup"
 msgstr "Zobrazit všechny boxy v popup"
 
-#: e_mod_config.c:104
+#: ../e_mod_config.c:104
 msgid "Check Interval"
 msgstr "Interval kontroly"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minut"
 
-#: e_mod_config.c:112
+#: ../e_mod_config.c:112
 msgid "Mail Boxes"
 msgstr "Mail boxy"
 
-#: e_mod_config.c:122
+#: ../e_mod_config.c:122
 msgid "Add"
 msgstr "Přidat"
 
-#: e_mod_config.c:126
+#: ../e_mod_config.c:126
 msgid "Delete"
 msgstr "Smazat"
 
-#: e_mod_config.c:132
+#: ../e_mod_config.c:132
 msgid "Configure..."
 msgstr "Konfigurovat..."
 
-#: e_mod_main.c:189
+#: ../e_mod_main.c:189
 msgid "Mail"
 msgstr "Mail"
 
-#: e_mod_main.c:242
+#: ../e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "Mailboxy"
 
-#: e_mod_main.c:266
+#: ../e_mod_main.c:266
 msgid "Configuration"
 msgstr "Konfigurace"

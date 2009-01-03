@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iiirk e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-23 20:16+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-11 11:17+0800\n"
 "Last-Translator: gao stone <gaoghy@gmail.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -24,20 +24,20 @@ msgstr "Ilirk"
 msgid "Configuration"
 msgstr "设置"
 
-#: ../src/e_mod_main.c:1553
+#: ../src/e_mod_main.c:1558
 msgid "Applications"
 msgstr "应用程序"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "IIirk 应用程序"
 
-#: ../src/e_mod_main.c:1557
+#: ../src/e_mod_main.c:1562
 msgid "Internal"
 msgstr "内部"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1563
 msgid "IIirk Other"
 msgstr "IIirk 其他"
 
