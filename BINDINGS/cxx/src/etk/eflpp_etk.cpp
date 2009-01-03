@@ -53,6 +53,7 @@ EvasEtk::~EvasEtk()
 EtkHBox::EtkHBox( EtkObject* parent, const char* type, const char* name )
     :EtkBox( parent, type, name )
 {
+    //Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing);
     init( );
     //ewl_box_orientation_set( EWL_BOX(_o), EWL_ORIENTATION_HORIZONTAL );
 }
@@ -68,6 +69,7 @@ EtkHBox::~EtkHBox()
 EtkVBox::EtkVBox( EtkObject* parent, const char* type, const char* name )
     :EtkBox( parent, type, name )
 {
+    //Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing);
     init( );
     //ewl_box_orientation_set( EWL_BOX(_o), EWL_ORIENTATION_VERTICAL );
 }
