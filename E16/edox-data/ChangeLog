@@ -1,0 +1,7 @@
+--- 0.16.8.0.2 ---
+configure.in -> configure.ac
+Remove Vera font from e16-docs package.
+Use font name aliases.
+Remove obsolete image.
+Package requires e16-edox.
+FILES now contains the files to be installed.
