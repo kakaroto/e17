@@ -4911,3 +4911,26 @@ Refactor config stuff. Fix setting MSB in hex value.
 Not using float config values.
 Optionally don't cover dragbar when maximising (patch by Pietro Cerutti).
 Remove ancient e_config.bindings compatibility fallback.
+
+-------------------------------------------------------------------------------
+
+Fri Jan  2 22:01:29 CET 2009
+(Kim)
+
+--- 0.16.8.15 ---
+Japanese translation update (Yasufumi Haga).
+Fix iconv related warnings on FreeBSD.
+Fix some warnings on FreeBSD (patch by Pietro Cerutti).
+Avoid destroying actionclasses, empty/refill in stead.
+Play sounds by number in stead of by name. Enable disabling specific sounds.
+Install Vera font as part of basic e16 stuff.
+only assign ssd->channels once
+Reload keybindings on MappingNotify.
+Fix imlib2/ttf text vertical positioning with certain fonts.
+edox: Add default background image.
+Adjust imlib2/ttf paths.
+imlib2/ttf loading tweaks.
+Add normal/bold.ttf as links to default fonts.
+Let e16 package provide e16-edox.
+Update theme (no fonts, use font name aliases).
+Remove theme.ttfont_path configuration option.
