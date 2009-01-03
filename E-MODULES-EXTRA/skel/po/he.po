@@ -1,0 +1,74 @@
+# Hebrew translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2008-11-29 23:35+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:39
+msgid "Skeleton Module"
+msgstr "מודל השלד"
+
+#: ../src/e_mod_config.c:79
+msgid "General"
+msgstr "כללי"
+
+#: ../src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "השתמש במפסק 1"
+
+#: ../src/e_mod_main.c:102
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"תצורת מודול השלד נזקקה לעדכון. התצורה הישנה שלך<br>נמחקה ובמקומה נטענה ערכת "
+"הגדרות ברירת המחדל.<br>פעולה זו עלולה לקרות באופן סדיר במהלך פיתוח, לכן אין "
+"סיבה לדווח על תקלה.<br>משמעות התופעה היא שהמודול זקוק לנתוני תצורה<br>חדשים "
+"כברירת מחדל כדי לאפשר תכונות החסרות<br>בתצורה הישנה שלך. ערכת ברירות מחדל זו "
+"תתקן<br>זאת על ידי הוספתן. תוכל לשנות את ההגדרות בחזרה לצורה המועדפת "
+"עליך.<br>סליחה על אי הנעימות.<br>"
+
+#: ../src/e_mod_main.c:122
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+"תצורת מודול השלד שלך הינה חדשה יותר מגירסת המודול. דבר זה מוכתר<br>כמוזר "
+"מאוד. דבר כזה לא אמור לקרות אלא אם כן החזרת את המודול<br>לגירסה קודמת או "
+"שהעתקת את ההגדרות ממיקום בו<br>פועלת גירסה חדשה יותר של המודול. פעולה "
+"זו<br>אינה רצויה וכאמצעי בטיחות התצורה שלך שוחזרה לברירות המחדל.<br>סליחה על "
+"אי הנעימות.<br>"
+
+#: ../src/e_mod_main.c:289
+msgid "Skeleton"
+msgstr "שלד"
+
+#: ../src/e_mod_main.c:372
+msgid "Skeleton Configuration Updated"
+msgstr "תצורת השלד עודכנה"
+
+#: ../src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "תצורה"

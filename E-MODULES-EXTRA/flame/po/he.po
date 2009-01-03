@@ -1,0 +1,79 @@
+# Hebrew translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-12-21 18:40+0800\n"
+"PO-Revision-Date: 2008-11-29 21:36+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../e_mod_main.c:61
+msgid "Appearance"
+msgstr "חזות"
+
+#: ../e_mod_main.c:63
+msgid "Flame"
+msgstr "להבה"
+
+#: ../e_mod_config.c:47
+msgid "Flame Configuration"
+msgstr "תצורת להבה"
+
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
+msgid "Flame Color"
+msgstr "צבע הלהבה"
+
+#: ../e_mod_config.c:96
+msgid "Gold"
+msgstr "זהב"
+
+#: ../e_mod_config.c:98
+msgid "Fire"
+msgstr "אש"
+
+#: ../e_mod_config.c:100
+msgid "Plasma"
+msgstr "פלזמה"
+
+#: ../e_mod_config.c:102
+msgid "Matrix"
+msgstr "מטריקס"
+
+#: ../e_mod_config.c:104
+msgid "Ice"
+msgstr "קרח"
+
+#: ../e_mod_config.c:106
+msgid "White"
+msgstr "לבן"
+
+#: ../e_mod_config.c:108
+msgid "Custom"
+msgstr "מותאם אישית"
+
+#: ../e_mod_config.c:179
+msgid "Red Amount"
+msgstr "כמות האדום"
+
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: ../e_mod_config.c:186
+msgid "Blue Amount"
+msgstr "כמות הכחול"
+
+#: ../e_mod_config.c:193
+msgid "Green Amount"
+msgstr "כמות הירוק"

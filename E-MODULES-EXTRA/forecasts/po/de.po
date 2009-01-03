@@ -1,0 +1,124 @@
+# German translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2008-12-13 21:56+0000\n"
+"Last-Translator: Ansgar Burchardt <Unknown>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../e_mod_config.c:42
+msgid "Forecasts Configuration"
+msgstr ""
+
+#: ../e_mod_config.c:90
+msgid "Display Settings"
+msgstr ""
+
+#: ../e_mod_config.c:91
+msgid "Poll Time"
+msgstr ""
+
+#: ../e_mod_config.c:94
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f Minuten"
+
+#: ../e_mod_config.c:97
+msgid "Show Description"
+msgstr ""
+
+#: ../e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr ""
+
+#: ../e_mod_config.c:103
+msgid "Unit Settings"
+msgstr ""
+
+#: ../e_mod_config.c:105
+msgid "Metric"
+msgstr ""
+
+#: ../e_mod_config.c:107
+msgid "English"
+msgstr "Englisch"
+
+#: ../e_mod_config.c:111
+msgid "Yahoo Forecasts Code"
+msgstr ""
+
+#: ../e_mod_config.c:112
+msgid "Yahoo Forecasts Code/US Zip Code"
+msgstr ""
+
+#: ../e_mod_config.c:117
+msgid "To find the code for your area, go to:"
+msgstr ""
+
+#: ../e_mod_config.c:119
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr ""
+
+#: ../e_mod_main.c:256
+msgid "Forecasts"
+msgstr ""
+
+#: ../e_mod_main.c:301
+msgid "Configuration"
+msgstr ""
+
+#: ../e_mod_main.c:1025
+msgid "Wind Chill"
+msgstr ""
+
+#: ../e_mod_main.c:1031
+msgid "Wind Speed"
+msgstr "Windgeschwindigkeit"
+
+#: ../e_mod_main.c:1037
+msgid "Humidity"
+msgstr "Luftfeuchtigkeit"
+
+#: ../e_mod_main.c:1043
+msgid "Visibility"
+msgstr "Sicht"
+
+#: ../e_mod_main.c:1049
+msgid "Pressure"
+msgstr "Luftdruck"
+
+#: ../e_mod_main.c:1056
+msgid "Rising"
+msgstr ""
+
+#: ../e_mod_main.c:1058
+msgid "Falling"
+msgstr ""
+
+#: ../e_mod_main.c:1060
+msgid "Steady"
+msgstr ""
+
+#: ../e_mod_main.c:1064
+msgid "Sunrise / Sunset"
+msgstr ""
+
+#: ../e_mod_main.c:1088
+msgid "High"
+msgstr ""
+
+#: ../e_mod_main.c:1099
+msgid "Low"
+msgstr ""

@@ -1,0 +1,133 @@
+# Spanish translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Francisco Perez Lopez, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2008-11-29 08:19+0000\n"
+"Last-Translator: chilicuil <Unknown>\n"
+"Language-Team: Spanish <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. Create The Dialog
+#: ../src/modules/emu/border_props.c:52
+msgid "Window properties"
+msgstr "Propiedades de la ventana"
+
+#: ../src/modules/emu/border_props.c:221 ../src/modules/emu/border_props.c:276
+msgid "Window identification"
+msgstr "Identificación de la ventana"
+
+#: ../src/modules/emu/border_props.c:222 ../src/modules/emu/border_props.c:289
+msgid "Title (%T)"
+msgstr "Título (%T)"
+
+#: ../src/modules/emu/border_props.c:228 ../src/modules/emu/border_props.c:307
+msgid "Properties"
+msgstr "Propiedades"
+
+#: ../src/modules/emu/border_props.c:229 ../src/modules/emu/border_props.c:308
+#, c-format
+msgid "Position (%p)"
+msgstr "Posición (%p)"
+
+#: ../src/modules/emu/border_props.c:233 ../src/modules/emu/border_props.c:312
+#, c-format
+msgid "Size (%s)"
+msgstr "Tamaño (%s)"
+
+#: ../src/modules/emu/border_props.c:237 ../src/modules/emu/border_props.c:320
+msgid "Border style (%b)"
+msgstr "Estilo del borde (%b)"
+
+#: ../src/modules/emu/border_props.c:241
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Pegocidad (%p)"
+
+#: ../src/modules/emu/border_props.c:245 ../src/modules/emu/border_props.c:328
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Escritorio virtual (%d)"
+
+#: ../src/modules/emu/border_props.c:249 ../src/modules/emu/border_props.c:332
+msgid "Shaded state (%r)"
+msgstr "Estado sombreado (%r)"
+
+#: ../src/modules/emu/border_props.c:253 ../src/modules/emu/border_props.c:344
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "Pantalla completa (%f)"
+
+#: ../src/modules/emu/border_props.c:257 ../src/modules/emu/border_props.c:348
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Iconificar (%i)"
+
+#: ../src/modules/emu/border_props.c:277
+msgid "Window ID (%I)"
+msgstr "ID de la ventana (%I)"
+
+#: ../src/modules/emu/border_props.c:281
+msgid "Window name (%N)"
+msgstr "Nombre de la ventana (%N)"
+
+#: ../src/modules/emu/border_props.c:285
+#, c-format
+msgid "Window class (%C)"
+msgstr "Clase de la ventana (%C)"
+
+#: ../src/modules/emu/border_props.c:293
+msgid "Window role (%R)"
+msgstr "Papel de la ventana (%R)"
+
+#: ../src/modules/emu/border_props.c:297
+#, c-format
+msgid "Window type (%S)"
+msgstr "Tipo de la ventana (%S)"
+
+#: ../src/modules/emu/border_props.c:301
+msgid "Transient (%H)"
+msgstr "Transitorio (%H)"
+
+#: ../src/modules/emu/border_props.c:316
+msgid "Layer (%l)"
+msgstr "Capa (%I)"
+
+#: ../src/modules/emu/border_props.c:324
+msgid "Stickiness (%y)"
+msgstr "Pegocidad (%y)"
+
+#: ../src/modules/emu/border_props.c:336
+msgid "Screen zone (%z)"
+msgstr "Zona de la pantalla (%z)"
+
+#: ../src/modules/emu/border_props.c:340
+msgid "Window list skip (%w)"
+msgstr "Saltar lista de la ventana (%w)"
+
+#. Create The Dialog
+#: ../src/modules/emu/e_mod_config.c:40
+msgid "Emu Configuration"
+msgstr "Configuración de Emu"
+
+#: ../src/modules/emu/e_mod_main.c:211
+msgid "Enlightenment Emu Module - error"
+msgstr "Error - Modulo Emu de Enlightenement"
+
+#: ../src/modules/emu/e_mod_main.c:211
+msgid "There is no emu."
+msgstr "No hay emu."
+
+#: ../src/modules/emu/e_mod_main.c:285
+msgid "Emu"
+msgstr "Emu"

@@ -1,0 +1,75 @@
+# Polish translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2008-11-26 12:59+0000\n"
+"Last-Translator: Andrzej MoST (Marcin Ostajewski) <Unknown>\n"
+"Language-Team: Polish <pl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../e_mod_config.c:40
+msgid "Weather Configuration"
+msgstr "Konfiguracja wtyczki Pogoda"
+
+#: ../e_mod_config.c:86
+msgid "Display Settings"
+msgstr "Ustawienia wyglądu"
+
+#: ../e_mod_config.c:88
+msgid "Simple"
+msgstr "Prosty"
+
+#: ../e_mod_config.c:90
+msgid "Detailed"
+msgstr "Szczegółowy"
+
+#: ../e_mod_config.c:92
+msgid "Poll Time"
+msgstr "Sprawdź czas"
+
+#: ../e_mod_config.c:95
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minut"
+
+#: ../e_mod_config.c:100
+msgid "Degree Settings"
+msgstr "Jednostki temperatury"
+
+#: ../e_mod_config.c:102
+msgid "Celsius"
+msgstr "stopnie Celsjusza"
+
+#: ../e_mod_config.c:104
+msgid "Farenheit"
+msgstr "stopnie Farenheita"
+
+#: ../e_mod_config.c:108 ../e_mod_config.c:109
+msgid "ICAO Code"
+msgstr "Kod ICAO"
+
+#: ../e_mod_config.c:114
+msgid "Get your ICAO code at:"
+msgstr "Zdobądź swój kod ICAO na:"
+
+#: ../e_mod_config.c:117
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
+
+#: ../e_mod_main.c:179
+msgid "Weather"
+msgstr "Pogoda"
+
+#: ../e_mod_main.c:224
+msgid "Configuration"
+msgstr "Konfiguracja"

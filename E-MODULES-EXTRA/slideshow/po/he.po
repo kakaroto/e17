@@ -1,0 +1,75 @@
+# Hebrew translation for enlightenment
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2008-11-29 23:45+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-03 07:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../e_mod_config.c:37
+msgid "Slideshow Configuration"
+msgstr "תצורת המצגת"
+
+#: ../e_mod_config.c:90
+msgid "Cycle Time"
+msgstr "זמן ההחלפה"
+
+#: ../e_mod_config.c:92
+msgid "Disable Timer"
+msgstr "ביטול קוצב הזמן"
+
+#: ../e_mod_config.c:95
+#, c-format
+msgid "%3.0f seconds"
+msgstr "%3.0f שניות"
+
+#: ../e_mod_config.c:100
+msgid "Directory"
+msgstr "תיקייה"
+
+#: ../e_mod_config.c:102
+msgid "Sub-directory to use for backgrounds"
+msgstr "תת־התיקייה לשימוש עבור הרקעים"
+
+#: ../e_mod_config.c:109
+msgid "Extra"
+msgstr "נוספים"
+
+#: ../e_mod_config.c:110
+msgid "Randomize order"
+msgstr "רצף אקראי"
+
+#: ../e_mod_config.c:113
+msgid "Set wallpaper on all desktops"
+msgstr "הגדר רקע עבור כול שולחנות העבודה"
+
+#: ../e_mod_config.c:115
+msgid "Set wallpaper on current desktop"
+msgstr "הגדר רקע עבור שולחן העבודה הנוכחי"
+
+#: ../e_mod_config.c:117
+msgid "Set wallpaper on current screen"
+msgstr "הגדר רקע עבור הצג הנוכחי"
+
+#: ../e_mod_config.c:121
+msgid "Set wallpaper on current monitor (Xinerama support)"
+msgstr "הגדר רקע עבור הצג הנוכחי (תמיכה ב־Xinerama)"
+
+#: ../e_mod_main.c:140
+msgid "Slideshow"
+msgstr "מצגת"
+
+#: ../e_mod_main.c:184
+msgid "Configuration"
+msgstr "תצורה"
