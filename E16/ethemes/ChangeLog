@@ -6,3 +6,7 @@ ShinyMetal - Correct pager textclass.
 New style AC_INIT, autofoo cleanups.
 ShinyMetal - Make border and menu fonts separately configurable.
 Add ChangeLog
+
+--- 0.16.8.0.3 ---
+configure.in -> configure.ac
+Remove duplicate fonts, put all fonts in ttfonts/.
