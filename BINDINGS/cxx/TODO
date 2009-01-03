@@ -7,3 +7,4 @@
 * create a wrap() function for all classes
 * use PImpl implementation to avoid include of EFL headers direct in applications
 * one header and cpp file for each class
+* data lookup function to let examples also run without installing

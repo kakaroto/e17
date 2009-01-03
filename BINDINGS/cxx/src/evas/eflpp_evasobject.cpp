@@ -146,7 +146,7 @@ void EvasObject::setColor( int r, int g, int b, int alpha )
 
 void EvasObject::setColor( const Color& c )
 {
-    setColor( c.r(), c.g(), c.b(), c.alpha() );
+    setColor( c.red(), c.green(), c.blue(), c.alpha() );
 }
 
 int EvasObject::colorInterpolation() const

@@ -83,23 +83,31 @@ class Rect
 class Color
 {
     public:
-        Color( int r = 255, int g = 255, int b = 255, int alpha = 255 ) : _r(r), _g(g), _b(b), _alpha(alpha) {};
+        Color( int r = 255, int g = 255, int b = 255, int a = 255 ) : _r(r), _g(g), _b(b), _a(a) {};
         ~Color() {};
-        void set( int r, int g, int b, int alpha = 255 ) { _r = r; _g = g; _b = b; _alpha = alpha; };
-        int r() const { return _r; };
-        int g() const { return _g; };
-        int b() const { return _b; };
-        int alpha() const { return _alpha; };
+    
+        void set( int r, int g, int b, int a = 255 ) { _r = r; _g = g; _b = b; _a = a; };
+    
+        void red ( int r ) { _r = r; }
+        void green ( int g ) { _g = g; }
+        void blue ( int b ) { _b = b; }
+        void alpha ( int a ) { _a = a; }
+
+        int red() const { return _r; };
+        int green() const { return _g; };
+        int blue() const { return _b; };
+        int alpha() const { return _a; };
+    
     private:
         int _r;
         int _g;
         int _b;
-        int _alpha;
+        int _a;
 };
 
 inline ostream& operator<<( ostream& s, const Color& color )
 {
-    return s << "(RGBA " << color.r() << "," << color.g() << "," << color.b() << "," << color.alpha() << ")";
+    return s << "(RGBA " << color.red() << "," << color.green() << "," << color.blue() << "," << color.alpha() << ")";
 }
 inline ostream& operator<<( ostream& s, const Point& point )
 {

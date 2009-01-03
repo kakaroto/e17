@@ -407,7 +407,7 @@ bool CalibrationAnimator::tick()
             if ( c.alpha() == _x ) return false;
             if ( newx > _x ) newx--;
             if ( newx < _x ) newx++;
-            _o->setColor( c.r(), c.g(), c.b(), newx );
+            _o->setColor( c.red(), c.green(), c.blue(), newx );
             return true;
     }
   
