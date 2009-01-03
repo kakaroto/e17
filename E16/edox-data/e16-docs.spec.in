@@ -1,10 +1,10 @@
 Summary:	Documentation for the Enlightenment window manager.
 Name: 		@PACKAGE@
-Version:	@E_PKG_VERSION@
+Version:	@VERSION@
 Release:	@E_RPM_REVISION@%{?_vendorsuffix:.%{_vendorsuffix}}
 License:	BSD
 Group:		User Interface/Desktops
-Source:		http://prdownloads.sourceforge.net/enlightenment/%{name}-@VERSION@.tar.gz
+Source:		http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Prefix:		%{_prefix}
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
@@ -20,7 +20,7 @@ DOX is a very very very simple document viewer for help docs for Enlightenment.
 This is part of the Enlightenment distribution.
 
 %prep
-%setup -n %{name}-@VERSION@
+%setup -n %{name}-%{version}
 
 %build
 %{configure} %{?acflags}

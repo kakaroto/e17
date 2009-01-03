@@ -1,13 +1,11 @@
 m4_define([pkg_version],  [0.16.8.0.2])
-dnl m4_define([pkg_revision], [0.00])
-m4_define([pkg_ver_rev],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
+m4_define([pkg_revision], [0.00])
+m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
 m4_define([rpm_revision], m4_ifdef([pkg_revision], [pkg_revision], [1]))
 
-AC_INIT(e16-docs, [pkg_ver_rev], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT(e16-docs, [pkg_version], [enlightenment-devel@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 
-AC_DEFINE(E_PKG_VERSION, ["pkg_version"], [Version])
-AC_SUBST(E_PKG_VERSION,  [pkg_version])
 AC_SUBST(E_RPM_REVISION, [rpm_revision])
 
 dnl reasonable guesses for where stuff is installed
