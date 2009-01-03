@@ -254,7 +254,7 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 	     "-D USER_SHELL=%s " "-D ENLIGHTENMENT_VERSION_015=1 "
 	     "%s %s",
 	     epp_path, EDirRoot(), themepath, EDirRoot(),
-	     E_PKG_VERSION, EDirRoot(), EDirBin(),
+	     "0.16.8", EDirRoot(), EDirBin(),
 	     themepath, EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
 	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);

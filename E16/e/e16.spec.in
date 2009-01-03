@@ -1,11 +1,11 @@
 Summary: The Enlightenment window manager, DR16.
 Name: @PACKAGE@
-Version: @E_PKG_VERSION@
+Version: @VERSION@
 Release: @E_RPM_REVISION@%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_rpm_pkg_ext:%{_rpm_pkg_ext}}%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
-Source: http://prdownloads.sourceforge.net/enlightenment/%{name}-@VERSION@.tar.gz
+Source: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
@@ -31,7 +31,7 @@ define their own policy, down to every last detail.
 This package will install the Enlightenment window manager.
 
 %prep
-%setup -n %{name}-@VERSION@
+%setup -n %{name}-%{version}
 
 %build
 %{configure} %{?acflags}
