@@ -1,0 +1,73 @@
+Ewl 0.5.3 Released
+Nathan Ingersoll
+ningerso@gmail.com
+<p>
+I'm pleased to announce the release of EWL version 0.5.3. This release has some
+extensive changes, including the following highlights:
+</p>
+
+<ul>
+	<li>Fixed compile warnings on 64-bit systems</li>
+	<li>Improved entry selection and cursor handling</li>
+	<li>A variety of bug fixes and type corrections</li>
+	<li>Formatting improvements</li>
+	<li>Normalized widget realize/unrealize and show/hide</li>
+	<li>Cleaned out private headers to reduce build times</li>
+	<li>Rewrite of paned widget</li>
+	<li>Addition of constructor unit tests</li>
+	<li>'Create Directory' button added to filepicker</li>
+	<li>Kinetic scrolling added to the scrollpane</li>
+	<li>Stop building unneeded static libraries to reduce build time</li>
+	<li>The ewl_password widget is now part of ewl_entry to reduce code</li>
+	<li>duplication</li>
+	<li>Various feature additions to the filepicker family of widgets</li>
+	<li>Better robustness of ewl_progressbar widget</li>
+	<li>Split flags into attributes of the ewl_object and ewl_widget objects</li>
+	<li>Internal XDND support</li>
+	<li>Improved MVC selection handling</li>
+	<li>Addition of a SHRINKABLE fill policy</li>
+	<li>Improved container behaviour</li>
+	<li>Keybinding support for the ewl_text widget</li>
+	<li>Addition of an ewl_icondialog widget</li>
+	<li>Improvement of model terminology</li>
+	<li>Add an UNMANAGED flag to improve container behaviour</li>
+	<li>EWL is now Evilized!</li>
+	<li>Addition of a alpha channel slider to the ewl_colorpicker widget</li>
+	<li>Autofoo improvements</li>
+	<li>Expanded support for config key removal</li>
+	<li>General window management hint improvements</li>
+	<li>Improved robustness of the ewl_grid widget</li>
+	<li>Improved widget signal handling</li>
+	<li>Use merged software X11 engine</li>
+	<li>Various code cleanups thanks to LLVM static analysis</li>
+	<li>Removal of original ewl_tree, rename ewl_tree2 to ewl_tree</li>
+	<li>Moved tutorials from the test files to seperate directory</li>
+	<li>Creation of coverage report with gcov and lcov is now supported</li>
+	<li>Addition of ewl_freebox_mvc widget</li>
+	<li>ewl_embed now inherits from ewl_cell instead of ewl_overlay</li>
+	<li>Expanding of the ewl_tree widget API</li>
+	<li>Various fixes and feature additions for the ewl_text widget</li>
+	<li>Allow the ewl_label widget to be trunctated with '...'</li>
+	<li>Improved the cosmetics of the debugging macros</li>
+	<li>Revamped ewl_combo MVC API and implementation</li>
+	<li>Split widget tests into GUI and unit test cases</li>
+	<li>Fixed widget reparenting</li>
+
+</ul>
+
+<p>Thank you to the following contributors for making this release possible:</p>
+
+<ul>
+	<li>Peter Wehrfritz</li>
+        <li>Jaime Thomas</li>
+        <li>Teodor Petrov</li>
+        <li>Dan Sinclair</li>
+        <li>Vincent Torri</li>
+        <li>Nick Hughart</li>
+        <li>Stephen Houston</li>
+</ul>
+
+<!-- cut -->
+
+<p>
+</p>
