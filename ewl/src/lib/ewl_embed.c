@@ -1099,7 +1099,7 @@ ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data,
                         ev.type = type;
                         ev.data = data;
                         ev.len = len;
-                        ev.format= format;
+                        ev.format = format;
                         ewl_callback_call_with_event_data(embed->last.drop_widget,
                                           EWL_CALLBACK_DND_DATA_RECEIVED, &ev);
                 }

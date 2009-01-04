@@ -1,3 +1,41 @@
+Sun Jan 4 16:06:00 2009 Jaime Thomas <avi.thomas@gmail.com>
+	* Version 0.5.3:
+	  - Fixed compile warnings on 64-bit systems
+	  - Improved entry selection and cursor handling
+	  - A variety of bug fixes and type corrections
+	  - Formatting improvements
+	  - Normalized widget realize/unrealize and show/hide
+	  - Cleaned out private headers
+	  - Rewrite of paned widget
+	  - Addition of constructor unit tests
+	  - 'Create Directory' button added to filepicker
+	  - Kinetic scrolling added to the scrollpane
+	  - Stop building unneeded static libraries to reduce build time
+	  - The ewl_password widget is now part of ewl_entry to reduce code
+	  duplication
+	  - Various feature additions to the filepicker family of widgets
+	  - Better robustness of ewl_progressbar widget
+	  - Split flags into attributes of the ewl_object and ewl_widget
+	  objects
+	  - Internal XDND support
+	  - Improved MVC selection handling
+	  - Addition of a SHRINKABLE fill policy
+	  - Improved container behaviour
+	  - Keybinding support for the ewl_text widget
+	  - Addition of an ewl_icondialog widget
+	  - Improvement of model terminology
+	  - Add an UNMANAGED flag to improve container behaviour
+	  - EWL is now Evilized!
+	  - Addition of a alpha channel slider to the ewl_colorpicker widget
+	  - Autofoo improvements
+	  - Expanded support for config key removal
+	  - General window management hint improvements
+	  - Improved robustness of the ewl_grid widget
+	  - Improved widget signal handling
+	  - Use merged software X11 engine
+	  - Various code cleanups thanks to LLVM static analysis
+	  - Removal of original ewl_tree, rename ewl_tree2 to ewl_tree
+
 Tue Dec 4 11:03:00 2007 Nathan Ingersoll <ningerso@gmail.com>
 	* Version 0.5.2:
 	  - Obligatory yearly release
