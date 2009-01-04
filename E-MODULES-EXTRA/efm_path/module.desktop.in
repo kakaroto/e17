@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Path
+Name[cs]=EFM Cesta
 Name[de]=
 Name[es]=Ruta EFM
 Name[fr]=
@@ -15,6 +16,7 @@ Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_path
 Comment=<title>Efm Path Module</title><br>A module that allows a user to type a location into the filemanager.
+Comment[cs]=<title>Modul EFM Cesta</title><br>Modul umožňující uživateli zadat cestu do správce souborů.
 Comment[de]=
 Comment[es]=<title>Módulo de Ruta EFM</title><br>Un módulo que permite al usuario escribir una dirección dentro del Administrador de archivos.
 Comment[fr]=

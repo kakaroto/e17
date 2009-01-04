@@ -3,4 +3,5 @@ Type=Link
 Name=DiskIO
 Icon=e-module-diskio
 Comment=<title>DiskIO Module Gadget:</title><br>Visualize disk i/o.
+Comment[cs]=<title>Modul DiskIO:</title><br>Zviditelní I/O disku.
 Comment[it]=<title>Modulo DiskIO</title><br>Visualizza l'input/output del disco.

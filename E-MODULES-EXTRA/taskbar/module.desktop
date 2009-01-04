@@ -6,6 +6,7 @@ Name[hu]=Folyamatjelző
 X-Enlightenment-IconClass=taskbar,gadget
 Icon=e-module-taskbar
 Comment=<title>Taskbar Gadget</title><br>Gadget to provide a taskbar.
+Comment[cs]=<title>Taskbar gadget</title><br>Gadget poskytující taskbar.
 Comment[eo]=<title>Modulo de taskopleto</title><br>Provizi taskopleton.
 Comment[hu]=<title>Folyamatjelző modul</title><br>Egy folyamatjelző modul.
 Comment[it]=<title>Modulo Taskbar</title><br>Modulo che fornisce una taskbar.

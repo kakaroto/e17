@@ -5,6 +5,7 @@ Name[eo]=Ĉeforgano
 Name[hu]=Processzor
 Icon=e-module-cpu
 Comment=<title>CPU Gadget</title><br>Used to monitor CPU utilization.
+Comment[cs]=<title>CPU gadget</title><br>Použitý k měření vytížení CPU.
 Comment[eo]=<title>Modulo de Ĉeforgano</title><br>Elrigardi la uzadon de la ĉeforgano.
 Comment[hu]=<title>Processzor modul</title><br>A processzor monitorozására (felügyeletére) használható modul.
 Comment[it]=<title>Modulo CPU</title><br>Usato per monitorare l'utilizzo della CPU.

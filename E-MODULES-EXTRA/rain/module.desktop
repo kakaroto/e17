@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=Rain
+Name[cs]=Déšť
 Name[eo]=Pluvo
 Name[hu]=Nyári Zápor
 Icon=e-module-rain
 X-Enlightenment-ModuleType=appearance
 Comment=<title>Rain Module</title><br>Module to display rain on the desktop.
+Comment[cs]=<title>Modul Déšť</title><br>Zobrazí déšť na ploše.
 Comment[eo]=<title>Modulo de pluvo</title><br>Vidigi pluvon sur la labortablo.
 Comment[hu]=<title>Nyári zápor modul</title><br>Nyári záporral áztathatjuk a munkaasztalunkat.
 Comment[it]=<title>Modulo Rain</title><br>Modulo per visualizzare la pioggia sul desktop.

@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=Forecasts
+Name[cs]=Předpověď počasí
 Name[eo]=Veteraj prognozoj
 Name[hu]=Elõrejelzés
 Icon=e-module-forecasts
 Comment=<title>Forecasts Gadget</title><br>The forecasts gadget will display the current weather conditions plus a few days forecast.
+Comment[cs]=<title>Gadget pro předpověď počasí</title><br>Zobrazuje aktuální počasí plus předpověď na několik dní.
 Comment[eo]=<title>Modulo de veteraj prognozoj</title><br>Vidigi la nunan veteron kaj prognozo por kelkaj tagoj.
 Comment[hu]=<title>Elõrejelzõ modul</title><br>Az elõrejelzõ modul megmutatja az aktuális idõjárást, és elõre jelzi a következõ két nap idõjárását.
 Comment[it]=<title>Modulo Forecasts</title><br>Il modulo forecasts mostrerà le attuali condizioni del tempo e le previsioni per qualche giorno.

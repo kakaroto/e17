@@ -8,6 +8,7 @@ X-Enlightenment-IconClass=bling,gadget
 X-Enlightenment-ModuleType=appearance
 Icon=e-module-bling
 Comment=<title>Bling Module</title><br>An xcompmgr derived, EFLized composite manager for E17.
+Comment[cs]=<title>Bling modul</title><br>Kompozitní manažer pro E17 založený na xcompmgr.
 Comment[eo]=<title>Modulo Bling</title><br>EFLigita composite-administrilo por E17, derivita el xcompmgr.
 Comment[hu]=<title>Bling modul</title><br>Egy xcompmgr által szállított kompozit menedzser az E17-hez.
 Comment[it]=<title>Modulo Bling</title><br>Un composite manager per E17 derivato da xcompmgr e adattato alle EFL.

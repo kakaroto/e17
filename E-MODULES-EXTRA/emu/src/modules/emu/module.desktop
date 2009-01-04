@@ -6,5 +6,6 @@ Comment=Experimental generic scriptable module for E17
 X-Enlightenment-IconClass=emu,gadget
 Icon=e-module-emu
 Comment=<title>Emu Module</title><br>Generic scriptable module.<br><hilight>Experimental!</hilight>
+Comment[cs]=<title>Emu modul</title><br>Obecný skriptovatelný modul.<br><hilight>Experimentalní!</hilight>
 Comment[hu]=<title>Emu modul</title><br>Általános, szkriptelhető modul.<br><hilight>Kísérleti modul!</hilight>
 Comment[it]=<title>Modulo Emu</title><br>Modulo scriptabile generico.<br><hilight>Sperimentale!</hilight>

@@ -9,6 +9,7 @@ X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=photo,gadget
 Icon=e-module-photo
 Comment=<title>Photo Gadget</title><br>View photos or a mini slideshow within this gadget.
+Comment[cs]=<title>Photo gadget</title><br>Zobrazí fotky nebo malou slideshow uvnitř gadgetu.
 Comment[eo]=<title>Modulo de fotoj</title><br>Vidigi fotojn aŭ malgrandan bildoprezenton ene de tiu vanaĵo.
 Comment[hu]=<title>Fénykép modul</title><br>Fényképeket nézhetünk a munkaasztalunkon egy mini diavetítés formájában.
 Comment[it]=<title>Modulo Photo</title><br>Guarda le tue foto o un mini slideshow con questo modulo.

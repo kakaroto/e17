@@ -3,5 +3,6 @@ Type=Link
 Name=Execwatch
 Icon=e-module-execwatch
 Comment=<title>ExecWatch Gadget</title><br>Shows the last state of a periodic executed cmd. Useful as an update checker or for checking if a remote host is available (through ping).
+Comment[cs]=<title>ExecWatch Gadget</title><br>Zobrazuje poslední stav periodicky spouštěného příkazu. Užitečný jako kontrola aktualizací nebo jestli je dostupný vzdálený PC(přes ping).
 Comment[hu]=<title>ExecWatch bigyó :)</title><br>Egy időszakonként lefuttatott parancs legutóbbi állapotát mutatja meg. Ideális egy frissítéskezelőhöz, vagy mondjuk egy távoli kiszolgáló ellenőrzéséhez. 
 Comment[it]=<title>Modulo ExecWatch</title><br>Mostra l'ultimo stato di un comando eseguito periodicamente. Utile per il controlo di aggiornamenti o per il controllo della disponibilità di un host remoto (tramite ping).

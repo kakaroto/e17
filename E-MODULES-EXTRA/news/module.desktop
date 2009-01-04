@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=News
+Name[cs]=Novinky
 Name[eo]=Novaĵoj
 Name[hu]=Hírek
 Icon=e-module-news
 Comment=<title>News Gadget</title><br>Gadget to monitor RSS feeds.
+Comment[cs]=<title>Gadget Novinky</title><br>Gadget k monitorování RSS.
 Comment[eo]=<title>Modulo de novaĵoj</title><br>Elrigardi la RSS-abonfluojn.
 Comment[fr]=<title>Module de nouvelles</title><br>Module pour suivre les flux RSS.
 Comment[hu]=<title>Hírek modul</title><br>RSS hírforrásokat olvashatunk.

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Language
+Name[cs]=Přepínač rozložení klávesnice
 Name[eo]=Lingvo
 Name[hu]=Billentyűzet nyelvezete
 Exec=enlightenment
@@ -9,6 +10,7 @@ X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
 Icon=e-module-language
 Comment=<title>Language Gadget</title><br>Gadget to control active keyboard, keyboard layout, and layout variant.
+Comment[cs]=<title>Přepínač rozložení klávesnice</title><br>Gadget pro ovládání aktivní klávesnice, jejího rozložení a varianty rozložení.
 Comment[eo]=<title>Modulo de lingvoj</title><br>Kontroli la aktivan klavaron, klavaran aranĝon kaj klavaran variaĵon.
 Comment[hu]=<title>Nyelvi modul</title><br>Modul az aktív billentyűzet beállításához (billentyűzet kimenete, nyelve).
 Comment[it]=<title>Modulo Language</title><br>Modulo per controllare la tastiera attiva, il layout di tastiera e le varianti del layout.

@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=Flame
+Name[cs]=Plamen
 Name[eo]=Flamoj
 Name[hu]=Lángoló asztal
 Icon=e-module-flame
 X-Enlightenment-ModuleType=appearance
 Comment=<title>Flame Module</title><br>A module to display flames on the desktop.
+Comment[cs]=<title>Modul Plamen</title><br>Modul zobrazující plameny na ploše.
 Comment[eo]=<title>Modulo de Flamoj</title><br>Vidigi flamojn sur la labortablo.
 Comment[hu]=<title>Láng modul</title><br>Egy modul, amellyel lángra tudjuk lobbantani az asztalt.
 Comment[it]=<title>Modulo Flame</title><br>Un modulo per visualizzare fiamme sul desktop.

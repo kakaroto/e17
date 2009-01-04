@@ -5,6 +5,7 @@ Name[eo]=Ekrankopio
 Name[hu]=Képernyőkép készítő
 Icon=e-module-screenshot
 Comment=<title>Screenshot Gadget</title><br>Gadget to take screenshots using emprint.
+Comment[cs]=<title>Screenshot gadget</title><br>Gadget umožňující vytvářet snímky obrazovky pomocí emprint.
 Comment[eo]=<title>Modulo de ekrankopio</title><br>Ekrankopii per emprint.
 Comment[hu]=<title>Képernyőkép készítő</title><br>Képernyőkép készítő modul, amely az emprintet használja.
 Comment[it]=<title>Modulo Screenshot</title><br>Modulo per la cattura di istantanee dello schermo utilizzando emprint.

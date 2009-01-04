@@ -1,9 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Notification
+Name[cs]=Notifikace
 Name[hu]=Értesítések
 Icon=e-module-notification
 Comment=<title>Notification Daemon</title><br>libnotify alternative.<br>Popup if an event occur.
+Comment[cs]=<title>Notifikační démon</title><br>Alternativa k libnotify.<br>Zobrazí bublinu při události.
 Comment[it]=<title>Modulo Notification</title><br>Alternativa a libnotify.<br>Mostra un popup al verificarsi di un evento.
 Comment[hu]=<title>Értesítések modul</title><br>libnotify alternatíva.<br>Egy esemény megtörténtét jelzi.
 X-Enlightenment-ModuleType=system

@@ -1,9 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Places
+Name[cs]=Místa
 Name[hu]=Helyek
 Icon=e-module-places
 Comment=<title>Places module:</title><br>This module manage the volumes device attached to the system.
+Comment[cs]=<title>Modul Místa:</title><br>Tento modul spravuje disky/USB/CD/DVD připojené k systému.
 Comment[it]=<title>Modulo Places</title><br>Questo modulo gestisce le unità connesse al sistema.
 Comment[hu]=<title>Helyek modul:</title><br>Kezeld a különböző médiákat (merevlemez, pendrive, CD).
 X-Enlightenment-ModuleType=system

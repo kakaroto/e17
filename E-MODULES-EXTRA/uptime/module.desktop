@@ -5,6 +5,7 @@ Name[eo]=Daŭro de funkciado
 Name[hu]=Üzemóra
 Icon=e-module-uptime
 Comment=<title>Uptime Gadget</title><br>Gadget to display the current uptime of the system.
+Comment[cs]=<title>Uptime gadget</title><br>Zobrazuje aktuální uptime systému.
 Comment[eo]=<title>Modulo de daŭro de funkciado</title><br>Vidigi la nunan daŭron de funkciado de la operaciumo.
 Comment[hu]=<title>Üzemóra modul</title><br>Egy modul, amely megmutatja mióta van folyamatosan üzemben a rendszer.
 Comment[it]=<title>Modulo Uptime</title><br>Modulo per visualizzare il tempo di servizio del sistema.

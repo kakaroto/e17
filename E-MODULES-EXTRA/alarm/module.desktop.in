@@ -9,6 +9,7 @@ X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
 Icon=e-module-alarm
 Comment=<title>Alarm Module</title><br>A module which allows you to set popup reminders.
+Comment[cs]=<title>Alarm Modul</title><br>Modul umožňující nastavit upomínky.
 Comment[eo]=<title>Modulo Alarmilo</title><br>Difini spruĉfenestrajn memorigilojn.
 Comment[hu]=<title>Emlékeztető modul</title><br>Egy modul, amellyel felugró figyelmeztetéseket állíthatsz be magadnak.
 Comment[it]=<title>Modulo Alarm</title><br>Un modulo che consente di impostare dei popup di promemoria.

@@ -4,6 +4,7 @@ Name=TClock
 Name[eo]=TClock horloĝo
 Icon=e-module-tclock
 Comment=<title>TClock Gadget</title><br>A digital clock gadget.
+Comment[cs]=<title>TClock gadget</title><br>Gadget poskytující digitální hodiny.
 Comment[eo]=<title>Modulo de horloĝo TClock</title><br>Vidigi ciferecan horloĝon.
 Comment[hu]=<title>TClock modul</title><br>Egy digitális óra.
 Comment[it]=<title>Modulo TClock</title><br>Un modulo per un orologio digitale.

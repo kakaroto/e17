@@ -4,6 +4,7 @@ Name=Wlan
 Name[eo]=Sendrata loka reto
 Icon=e-module-wlan
 Comment=<title>WLan Gadget</title><br>Gadget to monitor a wlan device.
+Comment[cs]=<title>WLan gadget</title><br>Gadget k monitorování wlan zařízení.
 Comment[eo]=<title>Modulo de sendrata loka reto</title><br>Elrigardi aparaton de sendrata loka reto.
 Comment[hu]=<title>Wlan modul</title><br>Modul a wlan monitorozásához.
 Comment[it]=<title>Modulo WLan</title><br>Modulo per il monitoraggio di un dispositivo di rete wireless.

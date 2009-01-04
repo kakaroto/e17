@@ -3,6 +3,7 @@ Type=Link
 Name=Drawer
 Icon=e-module-drawer
 Comment=<title>Drawer Module:</title><br>A Gadget that acts as a container for data.
+Comment[cs]=<title>Drawer Modul:</title><br>Gadget sloužící jako kontejner pro data.
 Comment[it]=<title>Modulo Drawer</title><br>Un modulo che fa da contenitore per dati.
 
 X-Enlightenment-ModuleType=shelf
