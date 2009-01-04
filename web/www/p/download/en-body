@@ -6,7 +6,7 @@
     <p>There are a few different ways to get Enlightenment depending on your
     requirements.</p>
 
-    <p>The latest version of DR16 is 0.16.8.14, released on August 9th, 2008.
+    <p>The latest version of DR16 is 0.16.8.15, released on January 3rd, 2009.
     Packages for the current, and previous, releases of DR16, core
     themes, epplets, e16menuedit, e16keyedit, and imlib2 can be found on the
     <a href="http://sourceforge.net/project/showfiles.php?group_id=2">SourceForge
@@ -27,7 +27,7 @@
        <tr class="team-dark">
         <td class='tab1'>Enlightenment Source Code TAR.GZ</td>
         <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.14.tar.gz?download">e16-0.16.8.14.tar.gz</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.15.tar.gz?download">e16-0.16.8.15.tar.gz</a>
         </td>
         <td class='tab1'>&nbsp;</td>
        </tr>
@@ -35,7 +35,7 @@
        <tr class="team-light">
         <td class='tab2'>Source Package RPM</td>
         <td class='tab2'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.14-1.fc8.src.rpm?download">e16-0.16.8.14-1.fc8.src.rpm</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.15-1.fc8.src.rpm?download">e16-0.16.8.15-1.fc8.src.rpm</a>
         </td>
         <td class='tab2'>&nbsp;</td>
        </tr>
@@ -43,7 +43,7 @@
        <tr class="team-dark">
         <td class='tab1'>Linux i386 Binary RPM</td>
         <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.14-1.fc8.i386.rpm?download">e16-0.16.8.14-1.fc8.i386.rpm</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.15-1.fc8.i386.rpm?download">e16-0.16.8.15-1.fc8.i386.rpm</a>
         </td>
         <td class='tab1'>&nbsp;</td>
        </tr>
