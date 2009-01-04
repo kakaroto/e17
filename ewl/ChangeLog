@@ -5,18 +5,16 @@ Sun Jan 4 16:06:00 2009 Jaime Thomas <avi.thomas@gmail.com>
 	  - A variety of bug fixes and type corrections
 	  - Formatting improvements
 	  - Normalized widget realize/unrealize and show/hide
-	  - Cleaned out private headers
+	  - Cleaned out private headers to reduce build times
 	  - Rewrite of paned widget
 	  - Addition of constructor unit tests
 	  - 'Create Directory' button added to filepicker
 	  - Kinetic scrolling added to the scrollpane
 	  - Stop building unneeded static libraries to reduce build time
-	  - The ewl_password widget is now part of ewl_entry to reduce code
-	  duplication
+	  - The ewl_password widget is now part of ewl_entry to reduce code duplication
 	  - Various feature additions to the filepicker family of widgets
 	  - Better robustness of ewl_progressbar widget
-	  - Split flags into attributes of the ewl_object and ewl_widget
-	  objects
+	  - Split flags into attributes of the ewl_object and ewl_widget objects
 	  - Internal XDND support
 	  - Improved MVC selection handling
 	  - Addition of a SHRINKABLE fill policy
@@ -35,6 +33,17 @@ Sun Jan 4 16:06:00 2009 Jaime Thomas <avi.thomas@gmail.com>
 	  - Use merged software X11 engine
 	  - Various code cleanups thanks to LLVM static analysis
 	  - Removal of original ewl_tree, rename ewl_tree2 to ewl_tree
+	  - Moved tutorials from the test files to seperate directory
+	  - Creation of coverage report with gcov and lcov is now supported
+	  - Addition of ewl_freebox_mvc widget
+	  - ewl_embed now inherits from ewl_cell instead of ewl_overlay
+	  - Expanding of the ewl_tree widget API
+	  - Various fixes and feature additions for the ewl_text widget
+	  - Allow the ewl_label widget to be trunctated with '...'
+	  - Improved the cosmetics of the debugging macros
+	  - Revamped ewl_combo MVC API and implementation
+	  - Split widget tests into GUI and unit test cases
+	  - Fixed widget reparenting
 
 Tue Dec 4 11:03:00 2007 Nathan Ingersoll <ningerso@gmail.com>
 	* Version 0.5.2:
