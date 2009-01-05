@@ -254,6 +254,8 @@ _sound_pa_Load(const char *file)
    if (err)
       goto bail_out;
 
+   _EFREE(s->ssd.data);
+
    return s;
 
  bail_out:
