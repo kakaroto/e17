@@ -100,7 +100,7 @@ struct _Entrance_Config
    {
       int remember;
       int remember_n;
-      Evas_Hash *hash;
+      Eina_Hash *hash;
       Eina_List *keys;
    } users;
 
@@ -109,7 +109,7 @@ struct _Entrance_Config
     */
    struct
    {
-      Evas_Hash *hash;
+      Eina_Hash *hash;
       Eina_List *keys;
    } sessions;
 

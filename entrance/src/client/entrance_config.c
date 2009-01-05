@@ -20,8 +20,8 @@ struct _Entrance_Config_And_Path
 static void _cb_xsessions_foreach(void *list_data, void *data);
 static void _cb_desktop_xsessions_foreach(void *list_data, void *data);
 static void _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e);
-static Evas_Bool _cb_users_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _cb_x_sessions_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _cb_users_free(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool _cb_x_sessions_free(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 
 /**
 @file entrance_config.c
@@ -142,7 +142,8 @@ entrance_config_populate(Entrance_Config * e)
 
          if ((eu = entrance_user_new(user, icon, session)))
          {
-            e->users.hash = evas_hash_add(e->users.hash, user, eu);
+	    if (!e->users.hash) e->users.hash = eina_hash_string_superfast_new(NULL);
+            eina_hash_add(e->users.hash, user, eu);
             e->users.keys = eina_list_append(e->users.keys, eu->name);
          }
          else
@@ -182,7 +183,8 @@ entrance_config_populate(Entrance_Config * e)
       if ((exs = entrance_x_session_new(title, icon, session)))
       {
          e->sessions.keys = eina_list_append(e->sessions.keys, title);
-         e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
+	 if (!e->sessions.hash) e->sessions.hash = eina_hash_string_superfast_new(NULL);
+	 eina_hash_add(e->sessions.hash, exs->name, exs);
       }
    }
 
@@ -268,7 +270,7 @@ entrance_config_print(Entrance_Config * e)
    }
    for (i = 0, l = e->users.keys; l; l = l->next, i++)
    {
-      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+      if ((eu = eina_hash_find(e->users.hash, (char *) l->data)))
       {
          snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
          printf("%s %s\n", buf, eu->name);
@@ -286,7 +288,7 @@ entrance_config_print(Entrance_Config * e)
    {
       if (l->data)
       {
-         if ((exs = evas_hash_find(e->sessions.hash, (char *) l->data)))
+         if ((exs = eina_hash_find(e->sessions.hash, (char *) l->data)))
          {
             snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
             printf("%s %s\n", buf, exs->name);
@@ -338,7 +340,7 @@ entrance_config_store(Entrance_Config * e)
    }
    for (i = 0, l = e->users.keys; l; l = l->next, i++)
    {
-      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+      if ((eu = eina_hash_find(e->users.hash, (char *) l->data)))
       {
          snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
          ecore_config_string_set(buf, eu->name);
@@ -356,7 +358,7 @@ entrance_config_store(Entrance_Config * e)
    {
       if (l->data)
       {
-         if ((exs = evas_hash_find(e->sessions.hash, (char *) l->data)))
+         if ((exs = eina_hash_find(e->sessions.hash, (char *) l->data)))
          {
             snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
             ecore_config_string_set(buf, exs->name);
@@ -409,15 +411,15 @@ entrance_config_free(Entrance_Config * e)
          free(e->autologin.username);
       if (e->users.hash)
       {
-         evas_hash_foreach(e->users.hash, _cb_users_free, NULL);
-         evas_hash_free(e->users.hash);
+         eina_hash_foreach(e->users.hash, _cb_users_free, NULL);
+         eina_hash_free(e->users.hash);
       }
       if (e->users.keys)
          eina_list_free(e->users.keys);
       if (e->sessions.hash)
       {
-         evas_hash_foreach(e->sessions.hash, _cb_x_sessions_free, NULL);
-         evas_hash_free(e->sessions.hash);
+         eina_hash_foreach(e->sessions.hash, _cb_x_sessions_free, NULL);
+         eina_hash_free(e->sessions.hash);
       }
       if (e->sessions.keys)
          eina_list_free(e->sessions.keys);
@@ -444,7 +446,7 @@ entrance_config_user_list_save(Entrance_Config * e, const char *file)
    for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
         l = l->next, i++)
    {
-      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+      if ((eu = eina_hash_find(e->users.hash, (char *) l->data)))
       {
          if (eu->name)
          {
@@ -528,10 +530,11 @@ _cb_xsessions_foreach(void *list_data, void *data)
    {
       /* Sessions found earlier in the FDO search sequence override those
          found later. */
-      if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
+      if (eina_hash_find(e->sessions.hash, exs->name) == NULL)
       {
          e->sessions.keys = eina_list_append(e->sessions.keys, exs->name);
-         e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
+	 if (!e->sessions.hash) e->sessions.hash = eina_hash_string_superfast_new(NULL);
+	 eina_hash_add(e->sessions.hash, exs->name, exs);
       }
       else
       {
@@ -572,16 +575,16 @@ _cb_desktop_xsessions_foreach(void *list_data, void *data)
    _entrance_xsessions_dir_scan(buf, e);
 }
 
-static Evas_Bool
-_cb_users_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_cb_users_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
   Entrance_User *user = data;
   entrance_user_free(user);
   return TRUE;
 }
 
-static Evas_Bool
-_cb_x_sessions_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_cb_x_sessions_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
   Entrance_X_Session *x_session = data;
   entrance_x_session_free(x_session);

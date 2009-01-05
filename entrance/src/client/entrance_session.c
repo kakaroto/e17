@@ -194,7 +194,7 @@ entrance_session_run(Entrance_Session * e)
         break;
      case ENTRANCE_AUTOLOGIN_DEFAULT:
         if ((eu =
-             evas_hash_find(e->config->users.hash,
+             eina_hash_find(e->config->users.hash,
                             e->config->autologin.username)))
         {
            ok = 1;
@@ -205,7 +205,7 @@ entrance_session_run(Entrance_Session * e)
      case ENTRANCE_AUTOLOGIN_THEME:
         ecore_evas_show(e->ee);
         if ((eu =
-             evas_hash_find(e->config->users.hash,
+             eina_hash_find(e->config->users.hash,
                             e->config->autologin.username)))
         {
            e->authed = 1;
@@ -281,12 +281,12 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
       }
       if (!entrance_auth_user_set(e->auth, user))
       {
-         if ((eu = evas_hash_find(e->config->users.hash, user)) == NULL)
+         if ((eu = eina_hash_find(e->config->users.hash, user)) == NULL)
             eu = entrance_user_new(strdup(user), NULL, e->session);
 
          if (!(e->session_selected) && (eu->session) && (eu->session[0] != 0))
          {
-            if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
+            if ((exs = eina_hash_find(e->config->sessions.hash, eu->session)))
             {
                if (e->session)
                   free(e->session);
@@ -344,7 +344,7 @@ entrance_session_user_session_default_set(Entrance_Session * e)
    {
       Entrance_User *eu = NULL;
 
-      if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
+      if ((eu = eina_hash_find(e->config->users.hash, e->auth->user)))
       {
          if (eu->session)
             free(eu->session);
@@ -397,7 +397,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    Entrance_X_Session *exs = NULL;
 
    if (e->session)
-      exs = evas_hash_find(e->config->sessions.hash, e->session);
+      exs = eina_hash_find(e->config->sessions.hash, e->session);
 
    entrance_auth_setup_environment(e->auth, e->display);
    if ((exs->session) && (exs->session[0] != 0))
@@ -592,7 +592,7 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
          e->session = strdup(exs->name);
 
          if ((eu =
-              evas_hash_find(e->config->users.hash, e->auth->user)) != NULL)
+              eina_hash_find(e->config->users.hash, e->auth->user)) != NULL)
          {
             if (eu->session)
                free(eu->session);
@@ -687,7 +687,7 @@ entrance_session_xsession_list_add(Entrance_Session * e)
       for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (const char *) l->data;
-         if ((exs = evas_hash_find(e->config->sessions.hash, key)))
+         if ((exs = eina_hash_find(e->config->sessions.hash, key)))
          {
             edje = entrance_x_session_button_new(exs, e->edje);
             if (edje)
@@ -759,7 +759,7 @@ entrance_session_user_list_add(Entrance_Session * e)
       for (l = e->config->users.keys; l; l = l->next)
       {
          str = (char *) l->data;
-         if ((key = evas_hash_find(e->config->users.hash, str)))
+         if ((key = eina_hash_find(e->config->users.hash, str)))
          {
             if ((edje = entrance_user_edje_get(key, e->edje, file)))
                esmart_container_element_append(container, edje);
@@ -787,7 +787,7 @@ entrance_session_x_session_default_get(Entrance_Session * e)
       if ((l = e->config->sessions.keys))
       {
          result =
-            evas_hash_find(e->config->sessions.hash, (const char *) l->data);
+            eina_hash_find(e->config->sessions.hash, (const char *) l->data);
       }
    }
    return (result);
@@ -817,7 +817,7 @@ entrance_session_xsession_edje_load(Entrance_Session * e, const char *key)
       snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
                e->config->theme);
 
-   icon = (char *) evas_hash_find(e->config->sessions.icons, key);
+   icon = (char *) eina_hash_find(e->config->sessions.icons, key);
    return (entrance_x_session_xsession_load(e->edje, buf, icon, key));
 }
 #endif
@@ -844,7 +844,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
       {
          if (!strcmp(e->auth->user, (char *) l->data))
          {
-            if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
+            if ((eu = eina_hash_find(e->config->users.hash, e->auth->user)))
             {
                e->config->users.keys =
                   eina_list_prepend(eina_list_remove
@@ -858,8 +858,9 @@ _entrance_session_user_list_fix(Entrance_Session * e)
       snprintf(buf, PATH_MAX, "default.edj");
       if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
       {
-         e->config->users.hash =
-            evas_hash_add(e->config->users.hash, eu->name, eu);
+	 if (!e->config->users.hash)
+	   e->config->users.hash = eina_hash_string_superfast_new(NULL);
+	 eina_hash_add(e->config->users.hash, eu->name, eu);
          e->config->users.keys =
             eina_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_save(e->config, e->db);
