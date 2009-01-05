@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-26 13:27+0100\n"
+"POT-Creation-Date: 2009-01-05 20:56+0100\n"
 "PO-Revision-Date: 2008-11-30 07:53+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -992,7 +992,7 @@ msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:147
+#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
 msgid "Groups"
 msgstr "グループ"
 
@@ -1800,7 +1800,7 @@ msgstr "ログイン後、上下にスライドする初期画面を出す"
 msgid "Use saveunders to reduce window exposures"
 msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理を減らす"
 
-#: src/settings.c:569 config/strings.c:145 config/strings.c:161
+#: src/settings.c:569 config/strings.c:146 config/strings.c:162
 msgid "Miscellaneous"
 msgstr "その他"
 
@@ -1976,7 +1976,7 @@ msgstr "位置"
 msgid "Border style"
 msgstr "ボーダースタイル"
 
-#: src/snaps.c:832 config/strings.c:181
+#: src/snaps.c:832 config/strings.c:183
 msgid "Size"
 msgstr "サイズ"
 
@@ -2000,7 +2000,7 @@ msgstr "ウィンドウの上下関係"
 msgid "Window List Skip"
 msgstr "ウィンドウリストのスキップ"
 
-#: src/snaps.c:863 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:863 config/strings.c:145 config/strings.c:171
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -2342,7 +2342,7 @@ msgid "This button does nothing interesting."
 msgstr "このボタンは何もしません"
 
 #
-#: config/strings.c:47 config/strings.c:137
+#: config/strings.c:47 config/strings.c:138
 msgid "Shade/Unshade"
 msgstr "シェード／アンシェード"
 
@@ -2359,7 +2359,7 @@ msgstr "さらにボタンを"
 msgid "Show more buttons."
 msgstr "さらにボタンを表示する"
 
-#: config/strings.c:56 config/strings.c:135
+#: config/strings.c:56 config/strings.c:136
 msgid "Raise"
 msgstr "上へ出す"
 
@@ -2368,7 +2368,7 @@ msgstr "上へ出す"
 msgid "Raise this window to the top."
 msgstr "このウィンドウを上へ出す"
 
-#: config/strings.c:58 config/strings.c:136
+#: config/strings.c:58 config/strings.c:137
 msgid "Lower"
 msgstr "下に移す"
 
@@ -2377,7 +2377,7 @@ msgid "Lower this window."
 msgstr "このウィンドウを下に移す"
 
 #
-#: config/strings.c:60 config/strings.c:138
+#: config/strings.c:60 config/strings.c:139
 msgid "Stick/Unstick"
 msgstr "常時表示／解除"
 
@@ -2466,7 +2466,7 @@ msgstr "拡大ツールを表示する"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:195
+#: config/strings.c:88 config/strings.c:197
 msgid "User Menus"
 msgstr "ユーザーメニュー"
 
@@ -2492,12 +2492,12 @@ msgstr "Enlightenment について"
 msgid "About this theme"
 msgstr "このテーマについて"
 
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:96 config/strings.c:201
 msgid "Restart"
 msgstr "再起動"
 
 #
-#: config/strings.c:97 config/strings.c:200
+#: config/strings.c:97 config/strings.c:202
 msgid "Log Out"
 msgstr "ログアウト"
 
@@ -2632,200 +2632,210 @@ msgstr "セッションの設定 ..."
 msgid "Miscellaneous Settings ..."
 msgstr "その他の設定 ..."
 
+#: config/strings.c:135
+msgid "Leave Alone"
+msgstr ""
+
 #
-#: config/strings.c:139
+#: config/strings.c:140
 msgid "Remember..."
 msgstr "記憶する..."
 
 #
-#: config/strings.c:140
+#: config/strings.c:141
 msgid "Window Size"
 msgstr "ウィンドウサイズ"
 
 #
-#: config/strings.c:141
+#: config/strings.c:142
 msgid "Set Stacking"
 msgstr "積み重ね順"
 
-#: config/strings.c:142
+#: config/strings.c:143
 msgid "Set Border Style"
 msgstr "ボーダースタイルの設定"
 
-#: config/strings.c:143
+#: config/strings.c:144
 msgid "Window Groups"
 msgstr "ウィンドウグループ"
 
 #
-#: config/strings.c:148
+#: config/strings.c:149
 msgid "Configure this window's group(s)"
 msgstr "このウィンドウのグループを設定する"
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Start a new group"
 msgstr "新しいグループを開始する"
 
-#: config/strings.c:150
+#: config/strings.c:151
 msgid "Add this window to the current group"
 msgstr "このウィンドウを現在のグループに追加する"
 
 #
-#: config/strings.c:151
+#: config/strings.c:152
 msgid "Select group to add this window to"
 msgstr " このウィンドウを追加するグループを選択する"
 
 #
-#: config/strings.c:152
+#: config/strings.c:153
 msgid "Remove this window from a group"
 msgstr "このウィンドウをグループから削除する"
 
 #
-#: config/strings.c:153
+#: config/strings.c:154
 msgid "Destroy a group this window belongs to"
 msgstr " このウィンドウが属するグループを破棄する"
 
-#: config/strings.c:155
+#: config/strings.c:156
 msgid "Stacking"
 msgstr "積み重ね順"
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Below"
 msgstr "下に"
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Normal"
 msgstr "普通"
 
-#: config/strings.c:158
+#: config/strings.c:159
 msgid "Above"
 msgstr "上に"
 
-#: config/strings.c:159
+#: config/strings.c:160
 msgid "On Top"
 msgstr "常に上に"
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Skip Window Lists"
 msgstr "ウィンドウリストのスキップ／解除"
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Position"
 msgstr "位置固定／解除"
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "Toggle Fixed Size"
 msgstr "サイズ固定／解除"
 
 #
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "Toggle Never Focus"
 msgstr "フォーカスを受けない／受ける"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "Toggle Click to Focus"
 msgstr "クリックでフォーカス／解除"
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "Toggle Never Use Area"
 msgstr "エリアを使わない／使う"
 
 #
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "Toggle Button Grabs"
 msgstr "ボタンのグラブ／解除"
 
-#: config/strings.c:171
+#
+#: config/strings.c:172
+#, fuzzy
+msgid "Default"
+msgstr "削除"
+
+#: config/strings.c:173
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:172
+#: config/strings.c:174
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:175
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:174
+#: config/strings.c:176
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:175
+#: config/strings.c:177
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:176
+#: config/strings.c:178
 msgid "Focused opacity 100%"
 msgstr "フォーカスがあれば100％不透明にする"
 
-#: config/strings.c:177
+#: config/strings.c:179
 msgid "Focused opacity follows unfocused"
 msgstr "常にフォーカスが無いときの不透明度を適用する"
 
-#: config/strings.c:178
+#: config/strings.c:180
 msgid "Toggle Fading"
 msgstr "フェーディングを切り替える"
 
-#: config/strings.c:179
+#: config/strings.c:181
 msgid "Toggle Shadows"
 msgstr "シャドー切替え"
 
-#: config/strings.c:182
+#: config/strings.c:184
 msgid "Max Size Toggle"
 msgstr "最大サイズ切替え"
 
-#: config/strings.c:183
+#: config/strings.c:185
 msgid "Available Max Size Toggle"
 msgstr "利用可能な最大サイズで切替え"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Absolute Max Size Toggle"
 msgstr "絶対最大サイズで切替え"
 
-#: config/strings.c:185
+#: config/strings.c:187
 msgid "Span Xinerama Screens"
 msgstr "Xineramaスクリーン拡張"
 
-#: config/strings.c:186
+#: config/strings.c:188
 msgid "Max Height Toggle"
 msgstr "最大高切替え"
 
-#: config/strings.c:187
+#: config/strings.c:189
 msgid "Available Max Height Toggle"
 msgstr "利用可能な最大高で切替え"
 
-#: config/strings.c:188
+#: config/strings.c:190
 msgid "Absolute Max Height Toggle"
 msgstr "絶対最大高で切替え"
 
-#: config/strings.c:189
+#: config/strings.c:191
 msgid "Max Width Toggle"
 msgstr "最大幅切替え"
 
-#: config/strings.c:190
+#: config/strings.c:192
 msgid "Available Max Width Toggle"
 msgstr "利用可能な最大幅で切替え"
 
-#: config/strings.c:191
+#: config/strings.c:193
 msgid "Absolute Max Width Toggle"
 msgstr "絶対最大幅で切替え"
 
-#: config/strings.c:192
+#: config/strings.c:194
 msgid "Fullscreen/Normal"
 msgstr "全画面／通常"
 
-#: config/strings.c:193
+#: config/strings.c:195
 msgid "Zoom/Unzoom"
 msgstr "拡大／縮小"
 
-#: config/strings.c:196
+#: config/strings.c:198
 msgid "User Application List"
 msgstr "ユーザーアプリケーション"
 
-#: config/strings.c:197
+#: config/strings.c:199
 msgid "Other"
 msgstr "その他"
 
-#: config/strings.c:198
+#: config/strings.c:200
 msgid "Epplets"
 msgstr ""
 

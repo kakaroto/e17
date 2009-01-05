@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-26 13:27+0100\n"
+"POT-Creation-Date: 2009-01-05 20:56+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -995,7 +995,7 @@ msgstr " 공통 설정: "
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:147
+#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "그룹 %i"
@@ -1808,7 +1808,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "창 노출을 줄이기 위해 세이브언더 사용"
 
-#: src/settings.c:569 config/strings.c:145 config/strings.c:161
+#: src/settings.c:569 config/strings.c:146 config/strings.c:162
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "기타 설정"
@@ -1985,7 +1985,7 @@ msgstr "위치"
 msgid "Border style"
 msgstr "테두리 스타일"
 
-#: src/snaps.c:832 config/strings.c:181
+#: src/snaps.c:832 config/strings.c:183
 msgid "Size"
 msgstr "크기"
 
@@ -2009,7 +2009,7 @@ msgstr "계층 스택킹"
 msgid "Window List Skip"
 msgstr "창 목록 건너뜀"
 
-#: src/snaps.c:863 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:863 config/strings.c:145 config/strings.c:171
 msgid "Opacity"
 msgstr ""
 
@@ -2354,7 +2354,7 @@ msgstr "스냅샷 사용"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:137
+#: config/strings.c:47 config/strings.c:138
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "쉐이드 상태"
@@ -2372,7 +2372,7 @@ msgstr "아래"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:135
+#: config/strings.c:56 config/strings.c:136
 msgid "Raise"
 msgstr ""
 
@@ -2383,7 +2383,7 @@ msgstr ""
 "데스크탑을 제일 위로 올리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: config/strings.c:58 config/strings.c:136
+#: config/strings.c:58 config/strings.c:137
 msgid "Lower"
 msgstr ""
 
@@ -2391,7 +2391,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:138
+#: config/strings.c:60 config/strings.c:139
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "고착 / 잡아뗌"
@@ -2481,7 +2481,7 @@ msgstr ""
 msgid "Enlightenment"
 msgstr "인라이튼먼트 종료"
 
-#: config/strings.c:88 config/strings.c:195
+#: config/strings.c:88 config/strings.c:197
 #, fuzzy
 msgid "User Menus"
 msgstr "메뉴:"
@@ -2508,11 +2508,11 @@ msgstr "인라이튼먼트 %s에 대하여"
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:96 config/strings.c:201
 msgid "Restart"
 msgstr "재시작"
 
-#: config/strings.c:97 config/strings.c:200
+#: config/strings.c:97 config/strings.c:202
 #, fuzzy
 msgid "Log Out"
 msgstr "  예, 로그아웃  "
@@ -2635,208 +2635,217 @@ msgstr "오디오 설정"
 msgid "Miscellaneous Settings ..."
 msgstr "기타 설정"
 
-#: config/strings.c:139
+#: config/strings.c:135
+msgid "Leave Alone"
+msgstr ""
+
+#: config/strings.c:140
 #, fuzzy
 msgid "Remember..."
 msgstr "기억할 설정..."
 
-#: config/strings.c:140
+#: config/strings.c:141
 #, fuzzy
 msgid "Window Size"
 msgstr "창 목록 건너뜀"
 
-#: config/strings.c:141
+#: config/strings.c:142
 #, fuzzy
 msgid "Set Stacking"
 msgstr "포커스 설정"
 
-#: config/strings.c:142
+#: config/strings.c:143
 #, fuzzy
 msgid "Set Border Style"
 msgstr "테두리 스타일"
 
-#: config/strings.c:143
+#: config/strings.c:144
 #, fuzzy
 msgid "Window Groups"
 msgstr "창 그룹 오류"
 
-#: config/strings.c:148
+#: config/strings.c:149
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "이 창의 그룹 기억"
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:150
+#: config/strings.c:151
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:151
+#: config/strings.c:152
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: config/strings.c:152
+#: config/strings.c:153
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "이 창의 그룹 기억"
 
-#: config/strings.c:153
+#: config/strings.c:154
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: config/strings.c:155
+#: config/strings.c:156
 #, fuzzy
 msgid "Stacking"
 msgstr "고착"
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:159
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:159
+#: config/strings.c:160
 #, fuzzy
 msgid "On Top"
 msgstr "위"
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:165
+#: config/strings.c:166
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "포커스 갖지않음"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:167
+#: config/strings.c:168
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "포커스 갖지않음"
 
-#: config/strings.c:168
+#: config/strings.c:169
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "아래"
 
-#: config/strings.c:171
+#: config/strings.c:172
+#, fuzzy
+msgid "Default"
+msgstr "파일 삭제\n"
+
+#: config/strings.c:173
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:172
+#: config/strings.c:174
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:175
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:174
+#: config/strings.c:176
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:175
+#: config/strings.c:177
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:176
+#: config/strings.c:178
 msgid "Focused opacity 100%"
 msgstr ""
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Focused opacity follows unfocused"
 msgstr "포커스가 마우스 클릭을 따라감"
 
-#: config/strings.c:178
+#: config/strings.c:180
 #, fuzzy
 msgid "Toggle Fading"
 msgstr "에지 플립 사용"
 
-#: config/strings.c:179
+#: config/strings.c:181
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:184
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: config/strings.c:185
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:188
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:187
+#: config/strings.c:189
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:188
+#: config/strings.c:190
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:189
+#: config/strings.c:191
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:190
+#: config/strings.c:192
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:191
+#: config/strings.c:193
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:192
+#: config/strings.c:194
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:193
+#: config/strings.c:195
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:196
+#: config/strings.c:198
 #, fuzzy
 msgid "User Application List"
 msgstr "기억할 응용프로그램 속성"
 
-#: config/strings.c:197
+#: config/strings.c:199
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:198
+#: config/strings.c:200
 #, fuzzy
 msgid "Epplets"
 msgstr "잔물결"

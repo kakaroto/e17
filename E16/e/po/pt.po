@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-26 13:27+0100\n"
+"POT-Creation-Date: 2009-01-05 20:56+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -974,7 +974,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Opções da Janela"
 
-#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:147
+#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Usar saveunders para reduzir exposições da janela"
 
-#: src/settings.c:569 config/strings.c:145 config/strings.c:161
+#: src/settings.c:569 config/strings.c:146 config/strings.c:162
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Configuração desta Caixa de Icones ..."
@@ -1947,7 +1947,7 @@ msgstr "Posição"
 msgid "Border style"
 msgstr "Tipo de janelas"
 
-#: src/snaps.c:832 config/strings.c:181
+#: src/snaps.c:832 config/strings.c:183
 msgid "Size"
 msgstr "Tamanho"
 
@@ -1971,7 +1971,7 @@ msgstr "Nivel de empilhamento"
 msgid "Window List Skip"
 msgstr "Não aparecer na Lista de Janelas"
 
-#: src/snaps.c:863 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:863 config/strings.c:145 config/strings.c:171
 msgid "Opacity"
 msgstr ""
 
@@ -2301,7 +2301,7 @@ msgstr "Ligar Miniaturização"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:137
+#: config/strings.c:47 config/strings.c:138
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Enrolar"
@@ -2319,7 +2319,7 @@ msgstr "Baixo"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:135
+#: config/strings.c:56 config/strings.c:136
 msgid "Raise"
 msgstr ""
 
@@ -2330,7 +2330,7 @@ msgstr ""
 "Prima aqui para elevar este desktop\n"
 "para o topo.\n"
 
-#: config/strings.c:58 config/strings.c:136
+#: config/strings.c:58 config/strings.c:137
 msgid "Lower"
 msgstr ""
 
@@ -2338,7 +2338,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:138
+#: config/strings.c:60 config/strings.c:139
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Colar / Descolar"
@@ -2430,7 +2430,7 @@ msgstr ""
 msgid "Enlightenment"
 msgstr "Sair do Enlightenment"
 
-#: config/strings.c:88 config/strings.c:195
+#: config/strings.c:88 config/strings.c:197
 #, fuzzy
 msgid "User Menus"
 msgstr "Tipo de janelas"
@@ -2457,11 +2457,11 @@ msgstr "Sobre o Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:96 config/strings.c:201
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: config/strings.c:97 config/strings.c:200
+#: config/strings.c:97 config/strings.c:202
 #, fuzzy
 msgid "Log Out"
 msgstr "  Sim, Terminar  "
@@ -2598,208 +2598,217 @@ msgstr "Opções do Som"
 msgid "Miscellaneous Settings ..."
 msgstr "Configuração desta Caixa de Icones ..."
 
-#: config/strings.c:139
+#: config/strings.c:135
+msgid "Leave Alone"
+msgstr ""
+
+#: config/strings.c:140
 #, fuzzy
 msgid "Remember..."
 msgstr "Opções do Pager..."
 
-#: config/strings.c:140
+#: config/strings.c:141
 #, fuzzy
 msgid "Window Size"
 msgstr "Não aparecer na Lista de Janelas"
 
-#: config/strings.c:141
+#: config/strings.c:142
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Definições de Foco"
 
-#: config/strings.c:142
+#: config/strings.c:143
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Tipo de janelas"
 
-#: config/strings.c:143
+#: config/strings.c:144
 #, fuzzy
 msgid "Window Groups"
 msgstr "Erro no Grupo da Janela"
 
-#: config/strings.c:148
+#: config/strings.c:149
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Lembrar o(s) grupo(s) desta janela"
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:150
+#: config/strings.c:151
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:151
+#: config/strings.c:152
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "   Escolha o grupo ao qual quer remover a janela.  "
 
-#: config/strings.c:152
+#: config/strings.c:153
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "Lembrar o(s) grupo(s) desta janela"
 
-#: config/strings.c:153
+#: config/strings.c:154
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr " Escolha o grupo ao qual a janela irá pertencer: \n"
 
-#: config/strings.c:155
+#: config/strings.c:156
 #, fuzzy
 msgid "Stacking"
 msgstr "Colar"
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:159
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:159
+#: config/strings.c:160
 #, fuzzy
 msgid "On Top"
 msgstr "Topo"
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:165
+#: config/strings.c:166
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Nunca ter foco"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:167
+#: config/strings.c:168
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Nunca ter foco"
 
-#: config/strings.c:168
+#: config/strings.c:169
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Baixo"
 
-#: config/strings.c:171
+#: config/strings.c:172
+#, fuzzy
+msgid "Default"
+msgstr "Apagar Ficheiro\n"
+
+#: config/strings.c:173
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:172
+#: config/strings.c:174
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:175
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:174
+#: config/strings.c:176
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:175
+#: config/strings.c:177
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:176
+#: config/strings.c:178
 msgid "Focused opacity 100%"
 msgstr ""
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Focused opacity follows unfocused"
 msgstr "Foco segue click do rato"
 
-#: config/strings.c:178
+#: config/strings.c:180
 #, fuzzy
 msgid "Toggle Fading"
 msgstr "Ligar passagem no limiar"
 
-#: config/strings.c:179
+#: config/strings.c:181
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:184
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: config/strings.c:185
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:188
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:187
+#: config/strings.c:189
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:188
+#: config/strings.c:190
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:189
+#: config/strings.c:191
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:190
+#: config/strings.c:192
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:191
+#: config/strings.c:193
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:192
+#: config/strings.c:194
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:193
+#: config/strings.c:195
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:196
+#: config/strings.c:198
 #, fuzzy
 msgid "User Application List"
 msgstr "Recomeçar a aplicação no login"
 
-#: config/strings.c:197
+#: config/strings.c:199
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:198
+#: config/strings.c:200
 msgid "Epplets"
 msgstr ""
 

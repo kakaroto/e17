@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-26 13:27+0100\n"
+"POT-Creation-Date: 2009-01-05 20:56+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -848,7 +848,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:147
+#: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
 msgid "Groups"
 msgstr ""
 
@@ -1559,7 +1559,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:569 config/strings.c:145 config/strings.c:161
+#: src/settings.c:569 config/strings.c:146 config/strings.c:162
 msgid "Miscellaneous"
 msgstr ""
 
@@ -1718,7 +1718,7 @@ msgstr ""
 msgid "Border style"
 msgstr ""
 
-#: src/snaps.c:832 config/strings.c:181
+#: src/snaps.c:832 config/strings.c:183
 msgid "Size"
 msgstr ""
 
@@ -1742,7 +1742,7 @@ msgstr ""
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:863 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:863 config/strings.c:145 config/strings.c:171
 msgid "Opacity"
 msgstr ""
 
@@ -2043,7 +2043,7 @@ msgstr ""
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:137
+#: config/strings.c:47 config/strings.c:138
 msgid "Shade/Unshade"
 msgstr ""
 
@@ -2059,7 +2059,7 @@ msgstr ""
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:135
+#: config/strings.c:56 config/strings.c:136
 msgid "Raise"
 msgstr ""
 
@@ -2067,7 +2067,7 @@ msgstr ""
 msgid "Raise this window to the top."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:136
+#: config/strings.c:58 config/strings.c:137
 msgid "Lower"
 msgstr ""
 
@@ -2075,7 +2075,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:138
+#: config/strings.c:60 config/strings.c:139
 msgid "Stick/Unstick"
 msgstr ""
 
@@ -2153,7 +2153,7 @@ msgstr ""
 msgid "Enlightenment"
 msgstr ""
 
-#: config/strings.c:88 config/strings.c:195
+#: config/strings.c:88 config/strings.c:197
 msgid "User Menus"
 msgstr ""
 
@@ -2177,11 +2177,11 @@ msgstr ""
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:96 config/strings.c:201
 msgid "Restart"
 msgstr ""
 
-#: config/strings.c:97 config/strings.c:200
+#: config/strings.c:97 config/strings.c:202
 msgid "Log Out"
 msgstr ""
 
@@ -2297,190 +2297,198 @@ msgstr ""
 msgid "Miscellaneous Settings ..."
 msgstr ""
 
-#: config/strings.c:139
-msgid "Remember..."
+#: config/strings.c:135
+msgid "Leave Alone"
 msgstr ""
 
 #: config/strings.c:140
-msgid "Window Size"
+msgid "Remember..."
 msgstr ""
 
 #: config/strings.c:141
-msgid "Set Stacking"
+msgid "Window Size"
 msgstr ""
 
 #: config/strings.c:142
-msgid "Set Border Style"
+msgid "Set Stacking"
 msgstr ""
 
 #: config/strings.c:143
+msgid "Set Border Style"
+msgstr ""
+
+#: config/strings.c:144
 msgid "Window Groups"
 msgstr ""
 
-#: config/strings.c:148
+#: config/strings.c:149
 msgid "Configure this window's group(s)"
 msgstr ""
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:150
+#: config/strings.c:151
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:151
+#: config/strings.c:152
 msgid "Select group to add this window to"
 msgstr ""
 
-#: config/strings.c:152
+#: config/strings.c:153
 msgid "Remove this window from a group"
 msgstr ""
 
-#: config/strings.c:153
+#: config/strings.c:154
 msgid "Destroy a group this window belongs to"
 msgstr ""
 
-#: config/strings.c:155
+#: config/strings.c:156
 msgid "Stacking"
 msgstr ""
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:159
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:159
+#: config/strings.c:160
 msgid "On Top"
 msgstr ""
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "Toggle Never Focus"
 msgstr ""
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "Toggle Never Use Area"
 msgstr ""
 
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "Toggle Button Grabs"
 msgstr ""
 
-#: config/strings.c:171
-msgid "20%"
-msgstr ""
-
 #: config/strings.c:172
-msgid "40%"
+msgid "Default"
 msgstr ""
 
 #: config/strings.c:173
-msgid "60%"
+msgid "20%"
 msgstr ""
 
 #: config/strings.c:174
-msgid "80%"
+msgid "40%"
 msgstr ""
 
 #: config/strings.c:175
-msgid "100%"
+msgid "60%"
 msgstr ""
 
 #: config/strings.c:176
-msgid "Focused opacity 100%"
+msgid "80%"
 msgstr ""
 
 #: config/strings.c:177
-msgid "Focused opacity follows unfocused"
+msgid "100%"
 msgstr ""
 
 #: config/strings.c:178
-msgid "Toggle Fading"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:179
+msgid "Focused opacity follows unfocused"
+msgstr ""
+
+#: config/strings.c:180
+msgid "Toggle Fading"
+msgstr ""
+
+#: config/strings.c:181
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:184
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: config/strings.c:185
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:188
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:187
+#: config/strings.c:189
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:188
+#: config/strings.c:190
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:189
+#: config/strings.c:191
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:190
+#: config/strings.c:192
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:191
+#: config/strings.c:193
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:192
+#: config/strings.c:194
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:193
+#: config/strings.c:195
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:196
+#: config/strings.c:198
 msgid "User Application List"
 msgstr ""
 
-#: config/strings.c:197
+#: config/strings.c:199
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:198
+#: config/strings.c:200
 msgid "Epplets"
 msgstr ""
