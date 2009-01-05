@@ -53,7 +53,7 @@ main(int argc, char **argv)
       { "urgency",     required_argument,      NULL,           'u' },
       { "expire-time", required_argument,      NULL,           't' },
       { "icon",        required_argument,      NULL,           'i' },
-      { "categorie",   required_argument,      NULL,           'c' },
+      { "category",    required_argument,      NULL,           'c' },
       { "version",     no_argument,            NULL,           'v' },
       { NULL,          0,                      NULL,             0 }
   };
