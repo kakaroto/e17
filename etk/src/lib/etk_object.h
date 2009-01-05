@@ -94,16 +94,16 @@ struct Etk_Object
    Etk_Object *prev;
    Etk_Object *next;
 
-   Evas_Hash *data_hash;
+   Eina_Hash *data_hash;
    Eina_List **signal_callbacks;
    Eina_List *weak_pointers;
-   Evas_Hash *notification_callbacks;
+   Eina_Hash *notification_callbacks;
    int notifying;
    Etk_Bool should_delete_cbs:1;
    Etk_Bool destroy_me:1;
 };
 
-
+void        etk_object_init(void);
 void        etk_object_shutdown(void);
 void        etk_object_purge(void);
 

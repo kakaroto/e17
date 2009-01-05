@@ -37,11 +37,11 @@
  */
 
 static void _etk_type_free(Etk_Type *type);
-static Evas_Bool _etk_type_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_type_property_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_type_property_add_to_list(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _etk_type_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool _etk_type_property_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool _etk_type_property_add_to_list(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 
-static Evas_Hash *_etk_type_types_hash = NULL;
+static Eina_Hash *_etk_type_types_hash = NULL;
 
 /**************************
  *
@@ -50,13 +50,22 @@ static Evas_Hash *_etk_type_types_hash = NULL;
  **************************/
 
 /**
+ * @brief Create types
+ * @warning Shouldn't be called manually, etk_init() calls it
+ */
+void etk_type_init(void)
+{
+   _etk_type_types_hash = eina_hash_string_superfast_new(NULL);
+}
+
+/**
  * @brief Deletes all the created types
  * @warning Shouldn't be called manually, etk_shutdown() calls it
  */
 void etk_type_shutdown(void)
 {
-   evas_hash_foreach(_etk_type_types_hash, _etk_type_free_cb, NULL);
-   evas_hash_free(_etk_type_types_hash);
+   eina_hash_foreach(_etk_type_types_hash, _etk_type_free_cb, NULL);
+   eina_hash_free(_etk_type_types_hash);
    _etk_type_types_hash = NULL;
 }
 
@@ -88,7 +97,7 @@ Etk_Type *etk_type_new(const char *type_name,
    new_type->destructor = destructor;
    new_type->property_set = NULL;
    new_type->property_get = NULL;
-   new_type->properties_hash = NULL;
+   new_type->properties_hash = eina_hash_string_superfast_new(NULL);
    new_type->signals = NULL;
 
    /* Count how many new signals we have. */
@@ -139,7 +148,7 @@ Etk_Type *etk_type_new(const char *type_name,
          etk_signal_new_with_desc(new_type, s);
    }
 
-   _etk_type_types_hash = evas_hash_add(_etk_type_types_hash, new_type->name, new_type);
+   eina_hash_add(_etk_type_types_hash, new_type->name, new_type);
 
    return new_type;
 }
@@ -154,7 +163,7 @@ void etk_type_delete(Etk_Type *type)
    if (!type)
       return;
 
-   _etk_type_types_hash = evas_hash_del(_etk_type_types_hash, type->name, NULL);
+   eina_hash_del(_etk_type_types_hash, type->name, NULL);
    _etk_type_free(type);
 }
 
@@ -306,7 +315,7 @@ Etk_Type *etk_type_get_from_name(const char *name)
 {
    if (!name)
       return NULL;
-   return evas_hash_find(_etk_type_types_hash, name);
+   return eina_hash_find(_etk_type_types_hash, name);
 }
 
 /**
@@ -366,7 +375,7 @@ Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int proper
       return NULL;
 
    new_property = etk_property_new(name, property_id, property_type, flags, default_value);
-   type->properties_hash = evas_hash_add(type->properties_hash, name, new_property);
+   eina_hash_add(type->properties_hash, name, new_property);
 
    return new_property;
 }
@@ -388,7 +397,7 @@ Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **pro
 
    for (t = type; t; t = etk_type_parent_type_get(t))
    {
-      if ((*property = evas_hash_find(t->properties_hash, name)))
+      if ((*property = eina_hash_find(t->properties_hash, name)))
       {
          if (property_owner)
             *property_owner = t;
@@ -407,7 +416,7 @@ void etk_type_property_list(Etk_Type *type, Eina_List **properties)
 {
    if (!type || !properties)
       return;
-   evas_hash_foreach(type->properties_hash, _etk_type_property_add_to_list, properties);
+   eina_hash_foreach(type->properties_hash, _etk_type_property_add_to_list, properties);
 }
 
 /**************************
@@ -422,8 +431,8 @@ static void _etk_type_free(Etk_Type *type)
    if (!type)
       return;
 
-   evas_hash_foreach(type->properties_hash, _etk_type_property_free_cb, NULL);
-   evas_hash_free(type->properties_hash);
+   eina_hash_foreach(type->properties_hash, _etk_type_property_free_cb, NULL);
+   eina_hash_free(type->properties_hash);
 
    /* The signals themselves will be freed by etk_signal_shutdown() */
    if (type->signals)
@@ -436,21 +445,21 @@ static void _etk_type_free(Etk_Type *type)
 }
 
 /* Used by etk_type_shutdown() */
-static Evas_Bool _etk_type_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_type_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    _etk_type_free(data);
    return 1;
 }
 
 /* Used by _etk_type_free() */
-static Evas_Bool _etk_type_property_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_type_property_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    etk_property_delete(data);
    return 1;
 }
 
 /* Used by etk_type_property_list() */
-static Evas_Bool _etk_type_property_add_to_list(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_type_property_add_to_list(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Eina_List **properties;
 

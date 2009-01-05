@@ -41,7 +41,7 @@
  * @{
  */
 
-static Evas_Bool _etk_tooltips_hash_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _etk_tooltips_hash_free(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 static Etk_Bool _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
 static Etk_Bool _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
 static Etk_Bool _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
@@ -58,7 +58,7 @@ static double _etk_tooltips_delay = 1.0;
 static Etk_Bool _etk_tooltips_enabled = ETK_FALSE;
 static Etk_Bool _etk_tooltips_initialized = ETK_FALSE;
 static Ecore_Timer *_etk_tooltips_timer = NULL;
-static Evas_Hash *_etk_tooltips_hash = NULL;
+static Eina_Hash *_etk_tooltips_hash = NULL;
 
 /**************************
  *
@@ -80,6 +80,8 @@ void etk_tooltips_init()
    _etk_tooltips_label = etk_label_new(NULL);
    etk_container_add(ETK_CONTAINER(_etk_tooltips_window), _etk_tooltips_label);
 
+   _etk_tooltips_hash = eina_hash_string_superfast_new(NULL);
+
    _etk_tooltips_initialized = ETK_TRUE;
 }
 
@@ -92,8 +94,8 @@ void etk_tooltips_shutdown()
      return;
 
    //etk_object_destroy(_etk_tooltips_window);
-   evas_hash_foreach(_etk_tooltips_hash, _etk_tooltips_hash_free, NULL);
-   evas_hash_free(_etk_tooltips_hash);
+   eina_hash_foreach(_etk_tooltips_hash, _etk_tooltips_hash_free, NULL);
+   eina_hash_free(_etk_tooltips_hash);
    _etk_tooltips_initialized = ETK_FALSE;
 }
 
@@ -134,12 +136,12 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", widget);
 
-   if((tip_text = evas_hash_find(_etk_tooltips_hash, key)) != NULL)
+   if((tip_text = eina_hash_find(_etk_tooltips_hash, key)) != NULL)
    {
       if(text == NULL)
       {
 	 etk_tooltips_pop_down();
-	 _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, tip_text);
+	 eina_hash_del(_etk_tooltips_hash, key, tip_text);
 	 etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_in_cb), NULL);
 	 etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_out_cb), NULL);
 	 etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_move_cb), NULL);
@@ -153,14 +155,14 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
       {
 	 free(tip_text);
 	 tip_text = strdup(text);
-	 _etk_tooltips_hash = evas_hash_modify(_etk_tooltips_hash, key, tip_text);
+	 eina_hash_modify(_etk_tooltips_hash, key, tip_text);
       }
    }
    else
    {
       if(text != NULL)
       {
-	 _etk_tooltips_hash = evas_hash_add(_etk_tooltips_hash, key, strdup(text));
+	 eina_hash_add(_etk_tooltips_hash, key, strdup(text));
 	 etk_signal_connect_by_code(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_in_cb), NULL);
 	 etk_signal_connect_by_code(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_out_cb), NULL);
 	 etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_move_cb), NULL);
@@ -185,7 +187,7 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
 
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", widget);
-   if((tip_text = evas_hash_find(_etk_tooltips_hash, key)) != NULL)
+   if((tip_text = eina_hash_find(_etk_tooltips_hash, key)) != NULL)
    {
       free(key);
       return tip_text;
@@ -225,7 +227,7 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
 
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", ETK_OBJECT(widget));
-   if((text = evas_hash_find(_etk_tooltips_hash, key)) == NULL)
+   if((text = eina_hash_find(_etk_tooltips_hash, key)) == NULL)
    {
       free(key);
       _etk_tooltips_timer = NULL;
@@ -368,19 +370,19 @@ static Etk_Bool _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *dat
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", ETK_WIDGET(object));
 
-   if((value = evas_hash_find(_etk_tooltips_hash, key)) == NULL)
+   if((value = eina_hash_find(_etk_tooltips_hash, key)) == NULL)
    {
       free(key);
       return ETK_TRUE;
    }
 
-   _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, value);
+   eina_hash_del(_etk_tooltips_hash, key, value);
    free(key);
    return ETK_TRUE;
 }
 
 /* free hash items */
-static Evas_Bool _etk_tooltips_hash_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_tooltips_hash_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    if(data)
      free(data);

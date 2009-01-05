@@ -53,13 +53,13 @@ static void _etk_object_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_object_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
 static void _etk_object_free(Etk_Object *object);
-static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_object_data_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _etk_object_notification_callbacks_clean_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool _etk_object_notification_callbacks_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool _etk_object_data_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 
 static Etk_Object *_etk_object_objects = NULL;
 static Etk_Object *_etk_object_last_object = NULL;
-static Evas_Hash *_etk_object_name_hash = NULL;
+static Eina_Hash *_etk_object_name_hash = NULL;
 
 int ETK_OBJECT_DESTROYED_SIGNAL;
 
@@ -68,6 +68,14 @@ int ETK_OBJECT_DESTROYED_SIGNAL;
  * Implementation
  *
  **************************/
+/**
+ * @internal
+ * @brief Inits the object system.
+ */
+void etk_object_init(void)
+{
+   _etk_object_name_hash = eina_hash_string_superfast_new(NULL);
+}
 
 /**
  * @internal
@@ -77,7 +85,7 @@ void etk_object_shutdown(void)
 {
    while (_etk_object_objects)
       _etk_object_free(_etk_object_objects);
-   evas_hash_free(_etk_object_name_hash);
+   eina_hash_free(_etk_object_name_hash);
    _etk_object_name_hash = NULL;
 }
 /**
@@ -233,11 +241,11 @@ void etk_object_name_set(Etk_Object *object, const char *name)
 
       free(object->name);
       object->name = strdup(name);
-      _etk_object_name_hash = evas_hash_add(_etk_object_name_hash, object->name, object);
+      eina_hash_add(_etk_object_name_hash, object->name, object);
    }
    else
    {
-      _etk_object_name_hash = evas_hash_del(_etk_object_name_hash, object->name, object);
+      eina_hash_del(_etk_object_name_hash, object->name, object);
       free(object->name);
       object->name = NULL;
    }
@@ -266,7 +274,7 @@ Etk_Object *etk_object_name_find(const char *name)
 {
    if (!name)
       return NULL;
-   return ETK_OBJECT(evas_hash_find(_etk_object_name_hash, name));
+   return ETK_OBJECT(eina_hash_find(_etk_object_name_hash, name));
 }
 
 /**
@@ -441,18 +449,18 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
    if (!object || !key)
       return;
 
-   if ((data = evas_hash_find(object->data_hash, key)))
+   if ((data = eina_hash_find(object->data_hash, key)))
    {
       if (data->free_cb)
          data->free_cb(data->value);
-      object->data_hash = evas_hash_del(object->data_hash, key, NULL);
+      eina_hash_del(object->data_hash, key, NULL);
       free(data);
    }
 
    data = malloc(sizeof(Etk_Object_Data));
    data->value = value;
    data->free_cb = free_cb;
-   object->data_hash = evas_hash_add(object->data_hash, key, data);
+   eina_hash_add(object->data_hash, key, data);
 }
 
 /**
@@ -465,7 +473,7 @@ void *etk_object_data_get(Etk_Object *object, const char *key)
 {
    Etk_Object_Data *data;
 
-   if (!object || !key || !(data = evas_hash_find(object->data_hash, key)))
+   if (!object || !key || !(data = eina_hash_find(object->data_hash, key)))
       return NULL;
    return data->value;
 }
@@ -622,7 +630,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
 
    if (!object || !property_name)
       return;
-   if (!(callbacks = evas_hash_find(object->notification_callbacks, property_name)))
+   if (!(callbacks = eina_hash_find(object->notification_callbacks, property_name)))
       return;
 
    object->notifying++;
@@ -637,7 +645,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
    object->notifying--;
    if (object->notifying <= 0 && object->should_delete_cbs)
    {
-      evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_clean_cb, NULL);
+      eina_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_clean_cb, NULL);
       object->should_delete_cbs = ETK_FALSE;
    }
 }
@@ -659,11 +667,11 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
    if (!object || !property_name || !callback)
       return;
 
-   if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
+   if (!(list = eina_hash_find(object->notification_callbacks, property_name)))
    {
       list = malloc(sizeof(Eina_List *));
       *list = NULL;
-      object->notification_callbacks = evas_hash_add(object->notification_callbacks, property_name, list);
+      eina_hash_add(object->notification_callbacks, property_name, list);
    }
 
    new_callback = malloc(sizeof(Etk_Notification_Callback));
@@ -687,7 +695,7 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
 
    if (!object || !property_name || !callback)
       return;
-   if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
+   if (!(list = eina_hash_find(object->notification_callbacks, property_name)))
       return;
 
    for (l = *list; l; l = next)
@@ -727,9 +735,9 @@ static void _etk_object_constructor(Etk_Object *object)
 
    object->name = NULL;
    object->destroy_me = ETK_FALSE;
-   object->data_hash = NULL;
+   object->data_hash = eina_hash_string_superfast_new(NULL);
    object->weak_pointers = NULL;
-   object->notification_callbacks = NULL;
+   object->notification_callbacks = eina_hash_string_superfast_new(NULL);
    object->should_delete_cbs = ETK_FALSE;
    object->notifying = 0;
 
@@ -749,11 +757,11 @@ static void _etk_object_destructor(Etk_Object *object)
    if (!object)
       return;
 
-   evas_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
-   evas_hash_free(object->data_hash);
+   eina_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
+   eina_hash_free(object->data_hash);
 
-   evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_free_cb, NULL);
-   evas_hash_free(object->notification_callbacks);
+   eina_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_free_cb, NULL);
+   eina_hash_free(object->notification_callbacks);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -817,7 +825,7 @@ static void _etk_object_free(Etk_Object *object)
 }
 
 /* Removes the notification-callbacks marked as "deleted" from the list (called by etk_object_notify()) */
-static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_object_notification_callbacks_clean_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Eina_List *l, *next;
    Eina_List **callbacks;
@@ -842,7 +850,7 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *ha
 }
 
 /* Frees a list of notification callbacks (called by _etk_object_destructor()) */
-static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_object_notification_callbacks_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Eina_List **list;
 
@@ -860,7 +868,7 @@ static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *has
 }
 
 /* Frees data from the data hash of the object */
-static Evas_Bool _etk_object_data_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _etk_object_data_free_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Etk_Object_Data *object_data;
 

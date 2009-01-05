@@ -82,6 +82,9 @@ static Ecore_Idle_Enterer *_etk_main_idle_enterer = NULL;
  */
 int etk_init(int argc, char **argv)
 {
+   etk_object_init();
+   etk_type_init();
+
    return etk_init_full(argc, argv, NULL);
 }
 

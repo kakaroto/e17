@@ -65,9 +65,9 @@ typedef struct _Etk_Config
 			      (void *(*) (void *, void *))eina_list_append, \
 			      (void *(*) (void *))eina_list_data_get, \
 			      (void *(*) (void *))eina_list_free, \
-			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
-			      (void *(*) (void *, const char *, void *))evas_hash_add, \
-			      (void  (*) (void *))evas_hash_free)
+			      (void  (*) (const Eina_Hash *, Eina_Bool (*) (const Eina_Hash *, const void *, void *, void *), const void *))eina_hash_foreach, \
+			      (Eina_Bool (*) (const Eina_Hash *, const void *, void *))eina_hash_add, \
+			      (void  (*) (Eina_Hash *))eina_hash_free)
 
 #define FREED(eed) \
        if (eed) \

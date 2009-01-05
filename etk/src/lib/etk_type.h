@@ -61,10 +61,10 @@ struct Etk_Type
    unsigned int signals_count;
 
    Etk_Signal **signals;
-   Evas_Hash *properties_hash;
+   Eina_Hash *properties_hash;
 };
 
-
+void          etk_type_init(void);
 void          etk_type_shutdown(void);
 
 Etk_Type     *etk_type_new(const char *type_name, Etk_Type *parent_type,
