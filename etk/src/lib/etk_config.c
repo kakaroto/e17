@@ -66,7 +66,7 @@ typedef struct _Etk_Config
 			      (void *(*) (void *))eina_list_data_get, \
 			      (void *(*) (void *))eina_list_free, \
 			      (void  (*) (const Eina_Hash *, Eina_Bool (*) (const Eina_Hash *, const void *, void *, void *), const void *))eina_hash_foreach, \
-			      (Eina_Bool (*) (const Eina_Hash *, const void *, void *))eina_hash_add, \
+			      etk_eina_hash_add, \
 			      (void  (*) (Eina_Hash *))eina_hash_free)
 
 #define FREED(eed) \
@@ -86,6 +86,7 @@ static Etk_Config *_etk_config = NULL;
 static void _etk_config_defaults_apply();
 static int _etk_config_version_compare(Etk_Config_Version *v1, Etk_Config_Version *v2);
 static Etk_Config_Version * _etk_config_version_parse(char *version);
+static Eina_Hash *etk_eina_hash_add(const Eina_Hash *hash, const char *key, void *data);
 
 /**************************
  *
@@ -461,3 +462,15 @@ static Etk_Config_Version *_etk_config_version_parse(char *version)
 
    return v;
 }
+
+static Eina_Hash *
+etk_eina_hash_add(const Eina_Hash *hash, const char *key, void *data)
+{
+   if (!hash) hash = eina_hash_string_small_new(NULL);
+   if (!hash) return NULL;
+
+   eina_hash_add(hash, key, data);
+
+   return hash;
+}
+
