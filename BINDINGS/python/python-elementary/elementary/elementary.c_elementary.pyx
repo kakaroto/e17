@@ -22,25 +22,19 @@ cimport evas.c_evas as c_evas
 cimport evas.python
 
 def init():
-    # From python-etk
-    cdef int argc, argc_orig, i, arg_len, ret
-    cdef char **argv, **argv_copy, *arg
+    # Partly from python-etk
+    cdef int argc, i, arg_len
+    cdef char **argv, *arg
     argc_orig = argc = len(sys.argv)
     argv = <char **>PyMem_Malloc(argc * sizeof(char *))
-    argv_copy = <char **>PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
         arg = sys.argv[i]
         arg_len = len(sys.argv[i])
         argv[i] = <char *>PyMem_Malloc(arg_len + 1)
-        argv_copy[i] = argv[i]
         memcpy(argv[i], arg, arg_len + 1)
 
     elm_init(argc, argv)
 
-    for i from 0 <= i < argc_orig:
-        obj = argc_orig
-        evas.python.PyMem_Free(argv_copy[i])
-    evas.python.PyMem_Free(argv_copy)
     evas.python.PyMem_Free(argv)
 
 def shutdown():
@@ -273,7 +267,7 @@ cdef class Background(Object):
         
         @parm: B{parent} Parent window
         """
-        self.obj = elm_bg_add(parent.obj)
+        self._set_obj(elm_bg_add(parent.obj))
         
     def file_set(self, filename, group = ""):
         """
