@@ -1297,6 +1297,112 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
         DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
 
+
+static void
+ewl_text_cursor_back(Evas_Textblock_Cursor *c)
+{
+        if(!evas_textblock_cursor_char_prev(c))
+        {
+                if(evas_textblock_cursor_node_prev(c))
+                {
+                        while(evas_textblock_cursor_node_format_get(c))
+                        {
+                                if(evas_textblock_cursor_node_format_is_visible_get(c))
+                                        break;
+                                if(!evas_textblock_cursor_node_prev(c))
+                                        break;
+                        }
+                }
+        }
+}
+
+static void
+ewl_text_cursor_next(Evas_Textblock_Cursor *c)
+{
+        if (!evas_textblock_cursor_char_next(c))
+        {
+                if (evas_textblock_cursor_node_next(c))
+                {
+                        while (evas_textblock_cursor_node_format_get(c))
+                        {
+                                if (evas_textblock_cursor_node_format_is_visible_get(c))
+                                        break;
+                                if (!evas_textblock_cursor_node_next(c))
+                                break;
+                        }
+                }
+        }
+        else
+        {
+                int len, pos;
+
+                len = evas_textblock_cursor_node_text_length_get(c);
+                pos = evas_textblock_cursor_pos_get(c);
+                if (pos == len)
+                        evas_textblock_cursor_node_next(c);
+        }
+}
+
+unsigned int
+ewl_text_cursor_position_line_start_get(Ewl_Text *t)
+{
+        Evas_Textblock_Cursor *cursor;
+        unsigned int char_idx, byte_idx;
+        char const *format;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+
+        char_idx = ewl_text_cursor_position_get(t);
+        byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
+
+        cursor = ewl_text_textblock_cursor_position(t, byte_idx);
+
+        format = evas_textblock_cursor_node_format_get(cursor);
+        if (format)
+        {
+                if (!strcmp(format, "-"))
+                        ewl_text_cursor_back(cursor);
+        }
+
+        evas_textblock_cursor_line_first(cursor);
+
+        byte_idx = ewl_text_textblock_cursor_to_index(cursor);
+        char_idx = ewl_text_drawn_byte_to_char(t, byte_idx);
+
+        evas_textblock_cursor_free(cursor);
+
+        DRETURN_INT(char_idx, DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_text_cursor_position_line_end_get(Ewl_Text *t)
+{
+        Evas_Textblock_Cursor *cursor;
+        unsigned int char_idx, byte_idx;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+
+        char_idx = ewl_text_cursor_position_get(t);
+        byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
+
+        cursor = ewl_text_textblock_cursor_position(t, byte_idx);
+
+        evas_textblock_cursor_line_last(cursor);
+        if (!evas_textblock_cursor_node_format_get(cursor))
+            ewl_text_cursor_next(cursor);
+
+        byte_idx = ewl_text_textblock_cursor_to_index(cursor);
+        char_idx = ewl_text_drawn_byte_to_char(t, byte_idx);
+
+        evas_textblock_cursor_free(cursor);
+
+        DRETURN_INT(char_idx, DLEVEL_STABLE);
+}
+
 /**
  * @param t: The Ewl_Widget to set the font into
  * @param font: The font to set
@@ -3353,6 +3459,7 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
          * then need to add the length of all the nodes before it plus any
          * formatting nodes that are \n or \t */
         char_idx = evas_textblock_cursor_pos_get(cursor);
+
         while (evas_textblock_cursor_node_prev(cursor))
         {
                 const char *txt;
@@ -3361,6 +3468,7 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
                 if (!txt) char_idx += evas_textblock_cursor_node_text_length_get(cursor);
                 else if (!strcmp(txt, "\n")) char_idx ++;
                 else if (!strcmp(txt, "\t")) char_idx ++;
+
         }
 
         DRETURN_INT(char_idx, DLEVEL_STABLE);
@@ -3457,6 +3565,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
                 len = strlen(ctx->format) + 12;  /* 12 == DEFAULT='' + \n + \0 */
                 fmt2 = NEW(char, len);
                 snprintf(fmt2, len, "DEFAULT='%s'\n", ctx->format);
+                printf("textblock_style: %s\n", fmt2);
 
                 st = evas_textblock_style_new();
                 evas_textblock_style_set(st, fmt2);
@@ -3782,9 +3891,11 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         if ((!event->keyname) || (!event->keyname[0]))
                 DRETURN(DLEVEL_STABLE);
 
-        if ((!(event->modifiers & EWL_KEY_MODIFIER_SHIFT)) ||
-                        (event->keyname[1] == '\0'))
+        if ( (!(event->modifiers & EWL_KEY_MODIFIER_SHIFT))
+             || (event->keyname[1] == '\0'))
+        {
                 DRETURN(DLEVEL_STABLE);
+        }
 
         if (!t->selection)
         {
@@ -3817,10 +3928,27 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         }
 
         else if (!strcmp(event->keyname, "Up"))
+        {
                 pos = ewl_text_cursor_position_line_up_get(t);
-
+        }
         else if (!strcmp(event->keyname, "Down"))
+        {
                 pos = ewl_text_cursor_position_line_down_get(t);
+        }
+        else if (!strcmp(event->keyname, "Home"))
+        {
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        pos = 0;
+                else
+                        pos = ewl_text_cursor_position_line_start_get(t);
+        }
+        else if (!strcmp(event->keyname, "End"))
+        {
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        pos = t->length.chars;
+                else
+                        pos = ewl_text_cursor_position_line_end_get(t);
+        }
         else
                 DRETURN(DLEVEL_STABLE);
 

@@ -167,6 +167,9 @@ unsigned int     ewl_text_cursor_position_get(Ewl_Text *t);
 unsigned int     ewl_text_cursor_position_line_up_get(Ewl_Text *t);
 unsigned int     ewl_text_cursor_position_line_down_get(Ewl_Text *t);
 
+unsigned int     ewl_text_cursor_position_line_start_get(Ewl_Text *t);
+unsigned int     ewl_text_cursor_position_line_end_get(Ewl_Text *t);
+
 void             ewl_text_font_set(Ewl_Text *t, const char *font);
 void             ewl_text_font_apply(Ewl_Text *t, const char *font,
                                         unsigned int char_len);

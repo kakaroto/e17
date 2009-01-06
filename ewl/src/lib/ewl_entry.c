@@ -429,6 +429,27 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 if (!ewl_entry_selection_clear(e))
                         ewl_entry_delete_right(e);
         }
+        else if (!strcmp(event->keyname, "Home"))
+        {
+                if (sel)
+                        ewl_text_trigger_length_set(sel, 0);
+
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        ewl_entry_cursor_move_start(e);
+                else
+                        ewl_entry_cursor_move_line_start(e);
+
+        }
+        else if (!strcmp(event->keyname, "End"))
+        {
+                if (sel)
+                    ewl_text_trigger_length_set(sel, 0);
+
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        ewl_entry_cursor_move_end(e);
+                else
+                        ewl_entry_cursor_move_line_end(e);
+        }
         else if ((!strcmp(event->keyname, "Return"))
                         || (!strcmp(event->keyname, "KP_Return"))
                         || (!strcmp(event->keyname, "Enter"))
@@ -730,7 +751,7 @@ ewl_entry_cursor_move_right(Ewl_Entry *e)
 void
 ewl_entry_cursor_move_up(Ewl_Entry *e)
 {
-        unsigned int current_pos = 0;
+        unsigned int current_pos;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(e);
@@ -751,13 +772,96 @@ ewl_entry_cursor_move_up(Ewl_Entry *e)
 void
 ewl_entry_cursor_move_down(Ewl_Entry *e)
 {
-        unsigned int current_pos = 0;
+        unsigned int current_pos;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(e);
         DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
         current_pos = ewl_text_cursor_position_line_down_get(EWL_TEXT(e));
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the beginning of the line
+ */
+void
+ewl_entry_cursor_move_line_start(Ewl_Entry *e)
+{
+        unsigned int current_pos;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        current_pos = ewl_text_cursor_position_line_start_get(EWL_TEXT(e));
+
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the end of the line
+ */
+void
+ewl_entry_cursor_move_line_end(Ewl_Entry *e)
+{
+        unsigned int current_pos;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        current_pos = ewl_text_cursor_position_line_end_get(EWL_TEXT(e));
+
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the first position
+ */
+void
+ewl_entry_cursor_move_start(Ewl_Entry *e)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the last position
+ */
+void
+ewl_entry_cursor_move_end(Ewl_Entry *e)
+{
+        unsigned int current_pos;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        current_pos = ewl_text_length_get(EWL_TEXT(e));
         ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
         ewl_widget_configure(EWL_WIDGET(e));
 
