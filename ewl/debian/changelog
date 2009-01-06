@@ -1,3 +1,9 @@
+ewl (0.5.3.050-1) unstable; urgency=low
+
+  * a new release 0.5.3.
+  
+ -- quaker <quaker66@gmail.com>  Tue, 6 Jan 2008 18:21:07 +0100
+
 ewl (0.5.2.050-1) unstable; urgency=low
 
   * a SVN release.
