@@ -6,6 +6,8 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import commands
 
+debug = False
+
 class elementary_build_ext(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
@@ -30,9 +32,17 @@ def pkgconfig(*packages, **kw):
             kw.setdefault("extra_compile_args", []).append(token)
     return kw
 
-elementary_mod = Extension('elementary.c_elementary',
+if not debug:
+    elementary_mod = Extension('elementary.c_elementary',
                        sources=['elementary/elementary.c_elementary.pyx'],
                        depends=['include/elementary/c_elementary.pxd'],
+                       **pkgconfig('"elementary"'))
+else:
+    elementary_mod = Extension('elementary.c_elementary',
+                       sources=['elementary/elementary.c_elementary.pyx'],
+                       depends=['include/elementary/c_elementary.pxd'],
+                       extra_compile_args=["-g"],
+                       extra_link_args=["-g"],
                        **pkgconfig('"elementary"'))
 
 setup(

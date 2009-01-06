@@ -546,6 +546,49 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
 
+def tb_1(obj, event, *args, **kargs):
+    print "toolbar-item: test"
+
+def toolbar_clicked(obj, event, *args, **kargs):
+    win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
+    win.title_set("Entry Scrolled")
+    win.autodel_set(True)
+    
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    bx = elementary.Box(win)
+    win.resize_object_add(bx)
+    bx.size_hint_weight_set(1.0, 1.0)
+    bx.show()
+    
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.scale_set(0, 0)
+    ic.size_hint_align_set(0.5, 0.5)
+    bx.pack_end(ic)
+    ic.show()
+
+    tb = elementary.Toolbar(win)
+    tb.size_hint_weight_set(0.0, 0.0)
+    tb.size_hint_align_set(-1.0, 0.0)
+    
+    tb.item_add(ic, "Hello", tb_1)
+    tb.item_add(ic, "World,", tb_1)
+    tb.item_add(ic, "here", tb_1)
+    tb.item_add(ic, "comes", tb_1)
+    tb.item_add(ic, "python-elementary!", tb_1)
+
+    bx.pack_end(tb)
+    tb.show()
+
+    win.resize(320, 320)
+    win.show()
+
+
+
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
@@ -601,7 +644,9 @@ if __name__ == "__main__":
                ("Entry Scrolled", entry_scrolled_clicked),
                ("Notepad", notepad_clicked),
                ("Anchorview", anchorview_clicked),
-               ("Anchorblock", anchorblock_clicked)]
+               ("Anchorblock", anchorblock_clicked),
+               ("Toolbar", toolbar_clicked)]
+    
     
     for btn in buttons:
         bt = elementary.Button(win)

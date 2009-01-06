@@ -700,63 +700,38 @@ cdef class Hoversel(Object):
         pass
         
 
-  
-cdef object _toolbar_callback_mappings
-_toolbar_callback_mappings = dict()
+ 
+cdef object _toolbar_callback_mapping
+_toolbar_callback_mapping = dict()
 
-cdef void _toolbar_object_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    mapping = _toolbar_callback_mappings.get(<long>obj, None)
-    if mapping is not None:
-        func = mapping.get(<char*>data, None)
-        
-        if not callable(func):
-            raise TypeError("func is not callable")
-        
-        func(mapping["__class__"], <char*>data)   
+cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+    pass
+    """
+    callback_func = _toolbar_callback_mapping.get(<long>data, None)
+    print callback_func
+    if not callable(callback_func):
+        print "ERROR: callback function is not callable"
+        return
+    callback_func(None, "clicked")
+    """
 
 cdef class Toolbar(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_toolbar_add(parent.obj))
-        
-    """
-    Elm_Toolbar_Item *elm_toolbar_item_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon, char *label, 
-                    void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    """
-    """
-    def item_add(c_evas.Object icon, label, callback, data):
+       
+    def item_add(self, c_evas.Object icon, label, callback):
         cdef Elm_Toolbar_Item *item
-        item = elm_toolbar_item_add(self.obj, icon.obj, label, _toolbar_object_callback, 
-        
+        if icon is not None:
+            item = elm_toolbar_item_add(self.obj, icon.obj, label, _toolbar_callback, NULL)
+        else:
+            item = elm_toolbar_item_add(self.obj, NULL, label, _toolbar_callback, NULL)
+    
+#        _toolbar_callback_mapping[<long>item.base] = callback
         
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked", value)
-    """        
-            
-"""
-def _callback_add(self, event, func):
-
-        if not callable(func):
-            raise TypeError("func is not callable")
-        
-        # implement per object event <> func list in global var _callback_mappings
-        # _object_callback looks for the object, saved in Evas_Object in the callback list
-        # and calls every func that matched the event
-        
-        mapping = _callback_mappings.get(<long>self.obj,None)
-        if mapping is None:
-            mapping = dict()
-            mapping["__class__"] =  self
-            mapping[event] = func
-            _callback_mappings[<long>self.obj] = mapping
-        else:
-            mapping[event] = func
-            _callback_mappings[<long>self.obj] = mapping
-        
-        # register callback
-        e = event
-        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,<char *>e)
-"""
+       
     
 
 
