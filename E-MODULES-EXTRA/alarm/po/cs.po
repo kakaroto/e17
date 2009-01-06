@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Alarm\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-08-11 13:32+0100\n"
-"Last-Translator: quaker <quaker66@gmail.com>\n"
+"PO-Revision-Date: 2009-01-06 18:26+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,11 +18,13 @@ msgstr ""
 msgid "Alarm Configuration"
 msgstr "Nastavení alarmu"
 
-#: ../e_mod_config.c:155 ../e_mod_main.c:187
+#: ../e_mod_config.c:155
+#: ../e_mod_main.c:187
 msgid "Alarm"
 msgstr "Alarm"
 
-#: ../e_mod_config.c:157 ../e_mod_config_alarm.c:190
+#: ../e_mod_config.c:157
+#: ../e_mod_config_alarm.c:190
 msgid "Active"
 msgstr "Aktivní"
 
@@ -63,7 +65,8 @@ msgstr "Zobrazit další alarm"
 msgid "Alarms Defaults"
 msgstr "Výchozí alarmy"
 
-#: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
+#: ../e_mod_config.c:246
+#: ../e_mod_config_alarm.c:404
 msgid "Open popup"
 msgstr "Otevřít popup"
 
@@ -154,53 +157,32 @@ msgid "Tomorrow"
 msgstr "Zítra"
 
 #: ../e_mod_config_alarm.c:288
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
-"in the informations / schedule of your alarm"
-msgstr ""
-"<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Máte chybu v "
-"informacích / rozvrhu vašeho alarmu"
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error in the informations / schedule of your alarm"
+msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Máte chybu v informacích / rozvrhu vašeho alarmu"
 
 #: ../e_mod_config_alarm.c:293
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
-"a name for the alarm"
-msgstr ""
-"<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte zadat jméno."
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter a name for the alarm"
+msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte zadat jméno."
 
 #: ../e_mod_config_alarm.c:298
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
-"select at least one day in the week"
-msgstr ""
-"<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte vybrat alespoň "
-"jeden den z týdnu"
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to select at least one day in the week"
+msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte vybrat alespoň jeden den z týdnu"
 
 #: ../e_mod_config_alarm.c:303
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
-"entered for the alarm has incorrect syntax<br><br>You have to respect this "
-"format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
-"month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr ""
-"<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum má špatnou "
-"syntaxi.<br><br>Musíte dodržovat tento formát :<br>   RRRR/MM/DD<br>RRRR je "
-"rok o čtyřech číslech.<br>MM měsíc o dvou číslech.<br>DD je den také o dvou "
-"číslech.<br>"
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered for the alarm has incorrect syntax<br><br>You have to respect this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the month on 2 numbers<br>DD is the day on 2 numbers<br>"
+msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum má špatnou syntaxi.<br><br>Musíte dodržovat tento formát :<br>   RRRR/MM/DD<br>RRRR je rok o čtyřech číslech.<br>MM měsíc o dvou číslech.<br>DD je den také o dvou číslech.<br>"
 
 #: ../e_mod_config_alarm.c:313
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
-"entered is before now"
-msgstr ""
-"<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum je menší než je "
-"aktuální datum."
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered is before now"
+msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum je menší než je aktuální datum."
 
-#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
+#: ../e_mod_config_alarm.c:317
+#: ../e_mod_main.c:426
 msgid "Alarm Module Error"
 msgstr "Chyba modulu Alarm"
 
-#: ../e_mod_config_alarm.c:354 ../e_mod_config_alarm.c:442
+#: ../e_mod_config_alarm.c:354
+#: ../e_mod_config_alarm.c:442
 msgid "Test this alarm"
 msgstr "Testovat"
 
@@ -212,20 +194,24 @@ msgstr "Nastavení zvuku"
 msgid "Remove alarm"
 msgstr "Odstranit"
 
-#: ../e_mod_config_alarm.c:391 ../e_mod_config_alarm.c:411
+#: ../e_mod_config_alarm.c:391
+#: ../e_mod_config_alarm.c:411
 msgid "No [default]"
 msgstr "Ne [výchozí]"
 
-#: ../e_mod_config_alarm.c:393 ../e_mod_config_alarm.c:413
+#: ../e_mod_config_alarm.c:393
+#: ../e_mod_config_alarm.c:413
 msgid "Yes"
 msgstr "Ano"
 
-#: ../e_mod_config_alarm.c:398 ../e_mod_config_alarm.c:418
+#: ../e_mod_config_alarm.c:398
+#: ../e_mod_config_alarm.c:418
 #: ../e_mod_config_alarm.c:429
 msgid "No"
 msgstr "Ano"
 
-#: ../e_mod_config_alarm.c:400 ../e_mod_config_alarm.c:420
+#: ../e_mod_config_alarm.c:400
+#: ../e_mod_config_alarm.c:420
 msgid "Yes [default]"
 msgstr "Ne [výchozí]"
 
@@ -242,13 +228,8 @@ msgid "Run this program"
 msgstr "Spustit tento program"
 
 #: ../e_mod_config_alarm.c:478
-msgid ""
-"<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
-"the alarms<br>via the 'Active' check button on the<br>main Alarm "
-"configuration panel."
-msgstr ""
-"<hilight>Test byl ÚSPĚŠNÝ !</hilight><br><br>Ale NEZAPOMEŇTE AKTIVOVAT "
-"alarmy<br>přes 'Aktivní' checkbox v<br>hlavním konfiguračním panelu alarmu."
+msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
+msgstr "<hilight>Test byl ÚSPĚŠNÝ !</hilight><br><br>Ale NEZAPOMEŇTE AKTIVOVAT alarmy<br>přes 'Aktivní' checkbox v<br>hlavním konfiguračním panelu alarmu."
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -272,12 +253,11 @@ msgid "Alarm Module Popup"
 msgstr "Popup alarm modulu"
 
 #: ../e_mod_main.c:424
-msgid ""
-"<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
-"specified"
+msgid "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you specified"
 msgstr "<hilight>Chyba !</hilight><br><br>Nemůžu spustit zadaný program."
 
-#: ../e_mod_main.c:658 ../e_mod_main.c:837
+#: ../e_mod_main.c:658
+#: ../e_mod_main.c:837
 #, c-format
 msgid "Snooze %s"
 msgstr "Dřímat %s"
@@ -319,26 +299,16 @@ msgstr "Konfigurace"
 
 #: ../e_mod_main.c:1054
 #, c-format
-msgid ""
-"<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
-"configuration of alarm module<br>has been upgraded<br>Your settings and "
-"alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr ""
-"<hilight>Alarm modul : Konfigurace aktualizována</hilight><br><br>Vaše "
-"konfigurace<br>byla aktualizována.<br>Vaše nastavení bylo odebráno."
-"<br>Omlouváme se za vzniklé potíže.<br><br>(%d -> %d)"
+msgid "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your configuration of alarm module<br>has been upgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr "<hilight>Alarm modul : Konfigurace aktualizována</hilight><br><br>Vaše konfigurace<br>byla aktualizována.<br>Vaše nastavení bylo odebráno.<br>Omlouváme se za vzniklé potíže.<br><br>(%d -> %d)"
 
-#: ../e_mod_main.c:1060 ../e_mod_main.c:1074
+#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1074
 msgid "Alarm Module version "
 msgstr "Verze modulu"
 
 #: ../e_mod_main.c:1068
 #, c-format
-msgid ""
-"<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
-"configuration of Alarm module<br>has been downgraded<br>Your settings and "
-"alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr ""
-"<hilight>Alarm module : Konfigurace degradována</hilight><br><br>Vaše "
-"konfigurace modulu<br>byla degradována.<br>Vaše nastavení a alarmy byly "
-"smazány.<br>Omlováme se za vzniklé potíže.<br><br>(%d ->%d)"
+msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr "<hilight>Alarm modul : Konfigurace degradována</hilight><br><br>Vaše konfigurace modulu<br>byla degradována.<br>Vaše nastavení a alarmy byly smazány.<br>Omlováme se za vzniklé potíže.<br><br>(%d ->%d)"
+
