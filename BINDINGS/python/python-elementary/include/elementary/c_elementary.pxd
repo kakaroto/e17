@@ -62,6 +62,7 @@ cdef extern from "Ecore_X.h":
     ctypedef Ecore_X_ID Ecore_X_Window
 
 # Dirty hack to manage callback functions for the toolbar
+"""
 cdef struct Elm_Toolbar_Item:
     evas.c_evas.Evas_Object *obj
     evas.c_evas.Evas_Object *base
@@ -69,6 +70,7 @@ cdef struct Elm_Toolbar_Item:
     void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info)
     void *data
     evas.c_evas.Evas_Bool selected
+"""
 
 # For Debugging
 """
@@ -100,7 +102,7 @@ cdef extern from "Elementary.h":
     cdef struct Elm_Entry_Anchorview_Info
     cdef struct Elm_Entry_Anchorblock_Info
     cdef struct Elm_Hoversel_Item
- #   cdef struct Elm_Toolbar_Item
+    cdef struct Elm_Toolbar_Item
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)

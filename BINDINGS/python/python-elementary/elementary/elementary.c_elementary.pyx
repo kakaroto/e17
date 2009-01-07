@@ -414,9 +414,9 @@ cdef class Toggle(Object):
         
     def state_set(self, state):
         if state == True:
-            self.state_ptr = 1
+            elm_toggle_state_set(self.obj, 1)
         elif state == False:
-            self.state_ptr = 0
+            elm_toggle_state_set(self.obj, 0)
 
     def state_get(self):
         if self.state_ptr == 1:
@@ -700,14 +700,6 @@ _toolbar_callback_mapping = dict()
 
 cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
     pass
-    """
-    callback_func = _toolbar_callback_mapping.get(<long>data, None)
-    print callback_func
-    if not callable(callback_func):
-        print "ERROR: callback function is not callable"
-        return
-    callback_func(None, "clicked")
-    """
 
 cdef class Toolbar(Object):
     def __init__(self, c_evas.Object parent):
@@ -719,8 +711,6 @@ cdef class Toolbar(Object):
             item = elm_toolbar_item_add(self.obj, icon.obj, label, _toolbar_callback, NULL)
         else:
             item = elm_toolbar_item_add(self.obj, NULL, label, _toolbar_callback, NULL)
-    
-#        _toolbar_callback_mapping[<long>item.base] = callback
         
     property clicked:
         def __set__(self, value):
