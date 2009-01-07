@@ -3565,7 +3565,6 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
                 len = strlen(ctx->format) + 12;  /* 12 == DEFAULT='' + \n + \0 */
                 fmt2 = NEW(char, len);
                 snprintf(fmt2, len, "DEFAULT='%s'\n", ctx->format);
-                printf("textblock_style: %s\n", fmt2);
 
                 st = evas_textblock_style_new();
                 evas_textblock_style_set(st, fmt2);
