@@ -270,7 +270,7 @@ ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
  * @brief Displays the given status message on the statusbar
  */
 void
-ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
+ewl_statusbar_push(Ewl_Statusbar *sb, const char *txt)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(sb);

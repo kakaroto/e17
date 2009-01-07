@@ -72,7 +72,7 @@ void             ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
 void             ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w);
 void             ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
 
-void             ewl_statusbar_push(Ewl_Statusbar *sb, char *txt);
+void             ewl_statusbar_push(Ewl_Statusbar *sb, const char *txt);
 void             ewl_statusbar_pop(Ewl_Statusbar *sb);
 
 /*
