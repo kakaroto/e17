@@ -3,6 +3,7 @@
 #endif
 
 #include <cassert>
+#include <cstring>
 #include <etk/etk_window.h>
 #include <etk/etk_button.h>
 #include "eflpp_etkobject.h"

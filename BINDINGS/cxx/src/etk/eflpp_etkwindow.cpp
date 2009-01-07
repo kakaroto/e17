@@ -3,6 +3,7 @@
 #endif
 
 #include "eflpp_etkwindow.h"
+#include <cstring>
 
 /* EFL */
 #include <etk/Etk.h>
