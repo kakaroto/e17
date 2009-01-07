@@ -118,7 +118,7 @@ void etk_test_combobox_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    combobox = etk_combobox_entry_new_default();
-   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(combobox), 0, strcasestr);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(combobox), 0, strstr);
 
    for (i = 0; _keywords[i]; i++)
      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(combobox), _keywords[i], NULL);
