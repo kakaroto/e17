@@ -466,7 +466,18 @@ cdef class Clock(Object):
         elm_clock_time_set(self.obj, hours, minutes, seconds)
         
     def time_get(self):
-        pass
+        """
+        Returns the current time of the clock
+
+        @rtype: list of int
+        """
+        cdef int hrs
+        cdef int min
+        cdef int sec
+
+        elm_clock_time_get(self.obj, &hrs, &min, &sec)
+
+        return (hrs, min, sec)
         
     def edit_set(self, edit):
         elm_clock_edit_set(self.obj, edit)

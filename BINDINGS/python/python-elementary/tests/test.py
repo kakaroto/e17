@@ -319,6 +319,8 @@ def clock_clicked(obj, event, *args, **kargs):
     ck.show_am_pm_set(True)
     bx.pack_end(ck)
     ck.show()
+
+    print ck.time_get()
     
     ck = elementary.Clock(win)
     ck.show_seconds_set(True)
