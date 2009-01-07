@@ -122,8 +122,8 @@ cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         y = (int)((double)(event->base.y - CURRENT_Y(w)) *
                         ((double)CURRENT_H(pointer_win) / (double)CURRENT_H(w)));
 
-        ewl_embed_mouse_up_feed(EWL_EMBED(pointer_win), event->button, x, y,
-                        event->base.modifiers);
+        ewl_embed_mouse_up_feed(EWL_EMBED(pointer_win), event->button,
+                        event->clicks, x, y, event->base.modifiers);
 }
 
 static void

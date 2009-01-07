@@ -649,8 +649,8 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
  * @brief Sends the event for a mouse button release into an embed.
  */
 void
-ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
-                        unsigned int mods)
+ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int clicks,
+                        int x, int y, unsigned int mods)
 {
         Ewl_Widget *temp;
         Ewl_Event_Mouse_Up ev;
@@ -672,6 +672,7 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
         ev.base.x = x;
         ev.base.y = y;
         ev.button = b;
+        ev.clicks = clicks;
 
         /*
          * When the mouse is released the widget no longer has a pressed state,
@@ -2054,8 +2055,10 @@ ewl_embed_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
         if (!emb->last.focused)
                 DRETURN(DLEVEL_STABLE);
 
+        /* since we lose focus here, it cannot be a double or triple click,
+         * hence feed one */
         if (ewl_widget_state_has(emb->last.focused, EWL_FLAG_STATE_PRESSED))
-                ewl_embed_mouse_up_feed(emb, 1, 0, 0, ewl_ev_modifiers_get());
+                ewl_embed_mouse_up_feed(emb, 1, 1, 0, 0, ewl_ev_modifiers_get());
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2448,6 +2451,7 @@ static void
 ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__,
                                 Evas_Object *obj __UNUSED__, void *event_info)
 {
+        int clicks;
         Ewl_Embed *embed;
         Evas_Event_Mouse_Up *ev;
 
@@ -2457,7 +2461,16 @@ ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__,
 
         ev = event_info;
         embed = data;
-        ewl_embed_mouse_up_feed(embed, ev->button, ev->canvas.x,
+
+        /* Proper number of clicks here */
+        if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK)
+                clicks = 3;
+        else if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
+                clicks = 2;
+        else
+                clicks = 1;
+
+        ewl_embed_mouse_up_feed(embed, ev->button, clicks, ev->canvas.x,
                                   ev->canvas.y, ewl_ev_modifiers_get());
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

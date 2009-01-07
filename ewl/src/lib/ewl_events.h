@@ -150,6 +150,7 @@ struct Ewl_Event_Mouse_Up
 {
         Ewl_Event_Mouse base;   /**< Base mouse information */
         int button;             /**< The mouse button that was released */
+        int clicks;             /**< Number of consecutive clicks */
 };
 
 /**

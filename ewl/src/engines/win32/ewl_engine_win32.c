@@ -1086,6 +1086,7 @@ ewl_ev_win32_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 static int
 ewl_ev_win32_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
+        int clicks = 1;
         Ewl_Window *window;
         Ecore_Win32_Event_Mouse_Button_Up *ev;
         unsigned int key_modifiers;
@@ -1098,10 +1099,14 @@ ewl_ev_win32_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        key_modifiers = ewl_ev_modifiers_get();
+        if (ev->double_click)
+                clicks = 2;
+        if (ev->triple_click)
+                clicks = 3;
 
-        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->button, ev->x,
-                                                ev->y, key_modifiers);
+        key_modifiers = ewl_ev_modifiers_get();
+        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->button, clicks,
+                                ev->x, ev->y, key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

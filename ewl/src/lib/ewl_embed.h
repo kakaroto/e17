@@ -122,8 +122,8 @@ void             ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
                                         unsigned int modifiers);
 void             ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
                                         int x, int y, unsigned int modifiers);
-void             ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
-                                        int y, unsigned int modifiers);
+void             ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int clicks,
+                                         int x, int y, unsigned int modifiers);
 void             ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
                                         unsigned int modifiers);
 

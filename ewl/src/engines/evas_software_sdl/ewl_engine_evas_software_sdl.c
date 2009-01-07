@@ -285,6 +285,7 @@ ewl_ev_sdl_mouse_down(void *data, int type __UNUSED__, void *e)
 static int
 ewl_ev_sdl_mouse_up(void *data, int type __UNUSED__, void *e)
 {
+        int clicks = 1;
         Ewl_Embed *embed;
         Ewl_Engine_Evas_Software_SDL *engine;
         Ecore_Sdl_Event_Mouse_Button_Up *ev;
@@ -299,9 +300,15 @@ ewl_ev_sdl_mouse_up(void *data, int type __UNUSED__, void *e)
         if (!embed)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+        if (ev->double_click)
+                clicks = 2;
+        if (ev->triple_click)
+                clicks = 3;
+
         key_modifiers = ewl_ev_modifiers_get();
         ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
-        ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
+        ewl_embed_mouse_up_feed(embed, ev->button, clicks, ev->x, ev->y,
+                                key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
