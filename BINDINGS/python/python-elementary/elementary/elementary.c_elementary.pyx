@@ -710,21 +710,62 @@ cdef object _toolbar_callback_mapping
 _toolbar_callback_mapping = dict()
 
 cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    pass
+    mapping = _toolbar_callback_mapping.get(<long>event_info)
+    if mapping is not None:
+        callback = mapping["callback"] 
+        if callback is not None and callable(callback):
+            callback(mapping["class"], "clicked")
+    else:
+        print "DEBUG: no callback there for the item!"
 
 cdef class Toolbar(Object):
+    """
+    A toolbar
+    """
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_toolbar_add(parent.obj))
+
+    def scrollable_set(self, scrollable):
+        """
+        Set the scrollable property
+
+        @parm: L{scrollable}
+        """
+        if scrollable:
+            elm_toolbar_scrollable_set(self.obj, 1)
+        else:
+            elm_toolbar_scrollable_set(self.obj, 0)
        
     def item_add(self, c_evas.Object icon, label, callback):
+        """
+        Adds a new item to the toolbar
+
+        @note: Never pass the the same icon object to more than one item. For 
+               a every item you must create a new icon!
+
+        @parm: L{icon} icon for the item
+        @parm: L{label} label for the item
+        @parm: L{callback} function to click if the user clicked on the item
+        """
         cdef Elm_Toolbar_Item *item
         if icon is not None:
             item = elm_toolbar_item_add(self.obj, icon.obj, label, _toolbar_callback, NULL)
         else:
             item = elm_toolbar_item_add(self.obj, NULL, label, _toolbar_callback, NULL)
-        
+    
+        # Add a new callback in our mapping dict
+        mapping = dict()
+        mapping["class"] = self
+        mapping["callback"] = callback
+        _toolbar_callback_mapping[<long>item] = mapping
+       
     property clicked:
         def __set__(self, value):
+            """
+            Set the callback function for the clicked-event
+
+            @parm: L{value} callback function
+            """
             self._callback_add("clicked", value)
        
     

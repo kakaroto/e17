@@ -549,7 +549,23 @@ def entry_scrolled_clicked(obj, event, *args, **kargs):
     bx.show()
 
 def tb_1(obj, event, *args, **kargs):
-    print "toolbar-item: test"
+    print "toolbar-item: test 1"
+
+def tb_2(obj, event, *args, **kargs):
+    print "toolbar-item: test 2"
+
+def tb_3(obj, event, *args, **kargs):
+    print "toolbar-item: test 3"
+
+def tb_4(obj, event, *args, **kargs):
+    print "toolbar-item: test 4"
+
+def tb_5(obj, event, *args, **kargs):
+    print "toolbar-item: test 5"
+
+
+
+
 
 def toolbar_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
@@ -565,6 +581,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
+   
     
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
@@ -576,12 +593,26 @@ def toolbar_clicked(obj, event, *args, **kargs):
     tb = elementary.Toolbar(win)
     tb.size_hint_weight_set(0.0, 0.0)
     tb.size_hint_align_set(-1.0, 0.0)
-    
+  
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
     tb.item_add(ic, "Hello", tb_1)
-    tb.item_add(ic, "World,", tb_1)
-    tb.item_add(ic, "here", tb_1)
-    tb.item_add(ic, "comes", tb_1)
-    tb.item_add(ic, "python-elementary!", tb_1)
+    
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    tb.item_add(ic, "World,", tb_2)
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    tb.item_add(ic, "here", tb_3)
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    tb.item_add(ic, "comes", tb_4)
+    
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    tb.item_add(ic, "python-elementary!", tb_5)
 
     bx.pack_end(tb)
     tb.show()
