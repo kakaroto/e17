@@ -68,7 +68,7 @@ ewl_button_init(Ewl_Button *b)
         ewl_container_child_append(EWL_CONTAINER(b), b->body);
         ewl_widget_appearance_set(b->body, "body");
         ewl_object_alignment_set(EWL_OBJECT(b->body), EWL_FLAG_ALIGN_CENTER);
-        ewl_object_fill_policy_set(EWL_OBJECT(b->body), EWL_FLAG_FILL_VFILL);
+        ewl_object_fill_policy_set(EWL_OBJECT(b->body), EWL_FLAG_FILL_ALL);
         ewl_widget_internal_set(b->body, TRUE);
         ewl_widget_show(b->body);
 
@@ -118,7 +118,8 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
                 b->label_object = ewl_label_new();
                 ewl_label_text_set(EWL_LABEL(b->label_object), l);
                 ewl_object_fill_policy_set(EWL_OBJECT(b->label_object),
-                                           EWL_FLAG_FILL_VFILL);
+                                                EWL_FLAG_FILL_HSHRINKABLE
+                                                | EWL_FLAG_FILL_HFILL);
                 ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
                 ewl_widget_internal_set(b->label_object, TRUE);
                 ewl_widget_show(b->label_object);
