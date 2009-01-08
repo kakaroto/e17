@@ -104,7 +104,7 @@ void notify_scan(char* eth, Eina_List* networks, void* user_data __UNUSED__)
         Exalt_Wireless_Network_Security security = exalt_dbus_wireless_network_security_mode_get(w);
         printf("\tsecurity mode: %s\n",exalt_wireless_network_name_from_security(security));
         Exalt_Wireless_Network_Mode m = exalt_dbus_wireless_network_mode_get(w);
-        printf("\tmode: %s\n",exalt_wireless_network_name_from_id(m));
+        printf("\tmode: %s\n",exalt_wireless_network_name_from_mode_id(m));
         l = exalt_dbus_wireless_network_ie_get(w);
         EINA_LIST_FOREACH(l,l1,ie)
         {

@@ -26,12 +26,6 @@ int _exalt_eet_wireless_conn_save(const char* file,Exalt_Connection* c);
 
 
 
-/**
- * @brief save the wpa_supplicant configuration for a wireless interface
- * This configuration is saved in the wpa_supplicant configuration file
- * @param w the wireless card
- * @return Return 1 if success, else -0
- */
 int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 {
     FILE *fw;
@@ -41,10 +35,10 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 
     EXALT_ASSERT_RETURN(w!=NULL);
 
-    eth = exalt_wireless_get_ethernet(w);
-    c = exalt_eth_get_connection(eth);
-    EXALT_ASSERT_RETURN(exalt_conn_is_valid(c));
-    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
+    eth = exalt_wireless_eth_get(w);
+    c = exalt_eth_connection_get(eth);
+    EXALT_ASSERT_RETURN(exalt_conn_valid_is(c));
+    EXALT_ASSERT_RETURN(exalt_conn_wireless_is(c));
 
     //its more easy to recreate a new file
     //so we don't modify the old file, just delete it :)
@@ -60,9 +54,9 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 
     //add the new essid
     fprintf(fw,"network={\n");
-    fprintf(fw,"\tssid=\"%s\"\n",exalt_conn_get_essid(c));
+    fprintf(fw,"\tssid=\"%s\"\n",exalt_conn_essid_get(c));
 
-    enc_mode = exalt_conn_get_encryption_mode(c);
+    enc_mode = exalt_conn_encryption_mode_get(c);
 
     if(enc_mode == EXALT_ENCRYPTION_WPA_PSK_CCMP_ASCII)
     {
@@ -71,7 +65,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
         fprintf(fw,"\tkey_mgmt=WPA-PSK\n");
         fprintf(fw,"\tpairwise=CCMP\n");
         fprintf(fw,"\tgroup=CCMP\n");
-        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_get_key(c));
+        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_key_get(c));
     }
     else if(enc_mode==EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII)
     {
@@ -80,7 +74,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
         fprintf(fw,"\tkey_mgmt=WPA-PSK\n");
         fprintf(fw,"\tpairwise=TKIP\n");
         fprintf(fw,"\tgroup=TKIP\n");
-        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_get_key(c));
+        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_key_get(c));
     }
     else if(enc_mode==EXALT_ENCRYPTION_WPA2_PSK_CCMP_ASCII)
     {
@@ -89,7 +83,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
         fprintf(fw,"\tkey_mgmt=WPA-PSK\n");
         fprintf(fw,"\tpairwise=CCMP\n");
         fprintf(fw,"\tgroup=CCMP\n");
-        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_get_key(c));
+        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_key_get(c));
     }
     else if(enc_mode==EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII)
     {
@@ -98,7 +92,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
         fprintf(fw,"\tkey_mgmt=WPA-PSK\n");
         fprintf(fw,"\tpairwise=TKIP\n");
         fprintf(fw,"\tgroup=TKIP\n");
-        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_get_key(c));
+        fprintf(fw,"\tpsk=\"%s\"\n",exalt_conn_key_get(c));
     }
 
     fprintf(fw,"}\n");
@@ -108,91 +102,56 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
     return 1;
 }
 
-/**
- * @brief save the connection associated to an essid
- * @param file the file where save
- * @param c the connection
- * @return Return 1 if success, else 0
- */
 int exalt_wireless_conn_save(const char* file, Exalt_Connection* c)
 {
     EXALT_ASSERT_RETURN(c!=NULL);
     return _exalt_eet_wireless_conn_save(file, c);
 }
 
-/**
- * @brief load the connection for an essid
- * @param file the configuration file
- * @param essid the essid
- * @return Returns the connection if success, else NULL
- */
 Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid)
 {
     return _exalt_eet_wireless_conn_load(file,essid);
 }
 
 
-/**
- * @brief save the configuration of a card
- * @param file the configuration file
- * @param eth the card
- * @return Return 1 if success, else 0
- */
 int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 {
     Exalt_Eth_Save s;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    s.state = exalt_eth_is_up(eth);
-    s.connection = exalt_eth_get_connection(eth);
-    if(exalt_eth_is_wireless(eth))
-        s.driver = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));
+    s.state = exalt_eth_up_is(eth);
+    s.connection = exalt_eth_connection_get(eth);
+    if(exalt_eth_wireless_is(eth))
+        s.driver = (char*)exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
     else
         s.driver = "wext";
 
-    return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
+    return _exalt_eet_eth_save(file, &s, exalt_eth_udi_get(eth));
 }
 
-/**
- * @brief Load the state (up/down) of an interface from the configuration file
- * @param file the configuration file
- * @param udi the hal udi of the interface
- * @return Returns the state
- */
 Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Enum_State st = s->state;
     EXALT_FREE(s->driver);
-    exalt_conn_free(s->connection);
+    exalt_conn_free(&(s->connection));
     EXALT_FREE(s);
     return st;
 }
 
-/**
- * @brief Load the driver of an <ireless interface from the configuration file
- * @param file the configuration file
- * @param udi the hal udi of the interface
- * @return Returns the state
- */
 char* exalt_eth_driver_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
     EXALT_ASSERT_RETURN(s!=NULL);
     char* driver = s->driver;
-    exalt_conn_free(s->connection);
+    exalt_conn_free(&(s->connection));
     EXALT_FREE(s);
     return driver;
 }
 
-/**
- * @brief Load the configuration of an interface from the configuration file
- * @param file the configuration file
- * @param udi the hal udi of the interface
- * @return Returns the state
- */
+
 Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
@@ -301,7 +260,7 @@ int _exalt_eet_wireless_conn_save(const char*file, Exalt_Connection* c)
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if(!f)
         f = eet_open(file, EET_FILE_MODE_WRITE);
-    res=eet_data_write(f, edd,exalt_conn_get_essid(c), c, 0);
+    res=eet_data_write(f, edd,exalt_conn_essid_get(c), c, 0);
     EXALT_ASSERT(res!=0);
 
     eet_close(f);

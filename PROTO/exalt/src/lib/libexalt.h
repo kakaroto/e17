@@ -75,6 +75,102 @@
 
 
 
+#define EXALT_STRING_SET(attribut)                      \
+    EXALT_STRING_SET1(EXALT_FCT_NAME,attribut)
+
+#define EXALT_STRING_SET1(exalt_file_name,attribut)     \
+    EXALT_STRING_SET2(exalt_file_name,attribut)
+
+#define EXALT_STRING_SET2(exalt_file_name,attribut)     \
+    void exalt_file_name##_##attribut##_set(            \
+            EXALT_STRUCT_TYPE *s,                       \
+            const char* attribut)                       \
+    {                                                   \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
+        if(attribut!=NULL)                              \
+            s->attribut = strdup(attribut);             \
+        else                                            \
+            s->attribut=NULL;                           \
+    }
+
+
+#define EXALT_SET(attribut,type)                        \
+    EXALT_SET1(EXALT_FCT_NAME,attribut,type)
+
+#define EXALT_SET1(exalt_file_name,attribut,type)       \
+    EXALT_SET2(exalt_file_name,attribut,type)
+
+#define EXALT_SET2(exalt_file_name,attribut,type)       \
+    void exalt_file_name##_##attribut##_set(            \
+            EXALT_STRUCT_TYPE *s,                       \
+            type attribut)                              \
+    {                                                   \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
+        s->attribut=attribut;                           \
+    }
+
+#define EXALT_TAB_SET(attribut,type)                    \
+    EXALT_TAB_SET1(EXALT_FCT_NAME,attribut,type)
+
+#define EXALT_TAB_SET1(exalt_file_name,attribut,type)   \
+    EXALT_TAB_SET2(exalt_file_name,attribut,type)
+
+#define EXALT_TAB_SET2(exalt_file_name,attribut,type)   \
+    void exalt_file_name##_##attribut##_set(            \
+            EXALT_STRUCT_TYPE *s,                       \
+            type attribut,                              \
+            int i)                                      \
+    {                                                   \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
+        s->attribut[i]=attribut;                        \
+    }
+
+
+
+#define EXALT_GET(attribut,type)                        \
+    EXALT_GET1(EXALT_FCT_NAME,attribut,type)
+
+#define EXALT_GET1(exalt_file_name,attribut,type)       \
+    EXALT_GET2(exalt_file_name,attribut,type)
+
+#define EXALT_GET2(exalt_file_name,attribut,type)       \
+    type exalt_file_name##_##attribut##_get(            \
+            EXALT_STRUCT_TYPE *s)                       \
+    {                                                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
+        return s->attribut;                             \
+    }
+
+#define EXALT_TAB_GET(attribut,type)                    \
+    EXALT_TAB_GET1(EXALT_FCT_NAME,attribut,type)
+
+#define EXALT_TAB_GET1(exalt_file_name,attribut,type)   \
+    EXALT_TAB_GET2(exalt_file_name,attribut,type)
+
+#define EXALT_TAB_GET2(exalt_file_name,attribut,type)   \
+    type exalt_file_name##_##attribut##_get(            \
+            EXALT_STRUCT_TYPE *s,                       \
+            int i)                                      \
+    {                                                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
+        return s->attribut[i];                          \
+    }
+
+
+#define EXALT_IS(attribut,type)                         \
+    EXALT_IS1(EXALT_FCT_NAME,attribut,type)
+
+#define EXALT_IS1(exalt_file_name,attribut,type)        \
+    EXALT_IS2(exalt_file_name,attribut,type)
+
+#define EXALT_IS2(exalt_file_name,attribut,type)        \
+    type exalt_file_name##_##attribut##_is(             \
+            EXALT_STRUCT_TYPE *s)                       \
+    {                                                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
+        return s->attribut;                             \
+    }
+
 
 #include <netinet/in.h>
 #include <arpa/inet.h>

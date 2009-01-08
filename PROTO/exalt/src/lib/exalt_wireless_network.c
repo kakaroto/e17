@@ -2,94 +2,9 @@
 #include "exalt_wireless_network.h"
 #include "libexalt_private.h"
 
-#define EXALT_WIRELESS_NETWORK_STRING_SET(attribut)      \
-    void exalt_wireless_network_##attribut##_set(        \
-            Exalt_Wireless_Network *w,                  \
-            char* attribut)                             \
-    {                                                   \
-        EXALT_ASSERT_RETURN_VOID(w!=NULL);              \
-        if(attribut!=NULL)                              \
-            w->attribut = strdup(attribut);             \
-        else                                            \
-            w->attribut=NULL;                           \
-    }
-
-
-#define EXALT_WIRELESS_NETWORK_SET(attribut,type) \
-    void exalt_wireless_network_##attribut##_set(        \
-            Exalt_Wireless_Network *w,                  \
-            type attribut)                              \
-    {                                                   \
-        EXALT_ASSERT_RETURN_VOID(w!=NULL);              \
-        w->attribut = attribut;                         \
-    }
-
-#define EXALT_WIRELESS_NETWORK_GET(attribut,type)        \
-    type exalt_wireless_network_##attribut##_get(        \
-            Exalt_Wireless_Network *w)                  \
-    {                                                   \
-        EXALT_ASSERT_RETURN(w!=NULL);                   \
-        return w->attribut;                             \
-    }
-
-#define EXALT_WIRELESS_NETWORK_IS(attribut,type)         \
-    type exalt_wireless_network_##attribut##_is(         \
-            Exalt_Wireless_Network *w)                  \
-    {                                                   \
-        EXALT_ASSERT_RETURN(w!=NULL);                   \
-        return w->attribut;                             \
-    }
-
-
-
-#define EXALT_WIRELESS_NETWORK_IE_SET(attribut,type)    \
-    void exalt_wireless_network_ie_##attribut##_set(    \
-            Exalt_Wireless_Network_IE *w,               \
-            type attribut)                              \
-    {                                                   \
-        EXALT_ASSERT_RETURN_VOID(w!=NULL);              \
-        w->attribut = attribut;                         \
-    }
-
-#define EXALT_WIRELESS_NETWORK_IE_TAB_SET(attribut,type)    \
-    void exalt_wireless_network_ie_##attribut##_set(        \
-            Exalt_Wireless_Network_IE *w,                   \
-            type attribut,                                  \
-            int i)                                          \
-    {                                                       \
-        EXALT_ASSERT_RETURN_VOID(w!=NULL);                  \
-        w->attribut[i] = attribut;                          \
-    }
-
-
-#define EXALT_WIRELESS_NETWORK_IE_GET(attribut,type)    \
-    type exalt_wireless_network_ie_##attribut##_get(    \
-            Exalt_Wireless_Network_IE *w)               \
-    {                                                   \
-        EXALT_ASSERT_RETURN(w!=NULL);                   \
-        return w->attribut;                             \
-    }
-
-#define EXALT_WIRELESS_NETWORK_IE_IS(attribut,type)     \
-    type exalt_wireless_network_ie_##attribut##_is(     \
-            Exalt_Wireless_Network_IE *w)               \
-    {                                                   \
-        EXALT_ASSERT_RETURN(w!=NULL);                   \
-        return w->attribut;                             \
-    }
-
-
-
-#define EXALT_WIRELESS_NETWORK_IE_TAB_GET(attribut,type)    \
-    type exalt_wireless_network_ie_##attribut##_get(        \
-            Exalt_Wireless_Network_IE *w,                   \
-            int i)                                          \
-    {                                                       \
-        EXALT_ASSERT_RETURN(w!=NULL);                       \
-        return w->attribut[i];                              \
-    }
-
-
+/*
+ * TODO: update exalt_wireless_network_free()
+ * */
 
 /**
  * @addtogroup Exalt_Wireless_Network
@@ -222,25 +137,30 @@ Exalt_Wireless_Network_Wpa_Type_List exalt_wireless_network_wpa_type_tab[]=
  * @param w the interface which be associated to the new network
  * @return Returns the new network
  */
-Exalt_Wireless_Network* exalt_wireless_network_new(Exalt_Wireless* w)
+Exalt_Wireless_Network* exalt_wireless_network_new(
+        Exalt_Wireless* w)
 {
-    Exalt_Wireless_Network* wi = calloc(1,sizeof(Exalt_Wireless_Network));
-    EXALT_ASSERT_RETURN(wi!=NULL);
-    wi->iface = w;
-    wi->security_mode = SECURITY_NONE;
-    wi->ie = NULL;
-    return wi;
+    Exalt_Wireless_Network* wn = calloc(1,sizeof(Exalt_Wireless_Network));
+    EXALT_ASSERT_RETURN(wn!=NULL);
+    wn->iface = w;
+    wn->security_mode = SECURITY_NONE;
+    wn->ie = NULL;
+    return wn;
 }
 
 /**
  * @brief free Exalt_Wireless_Network
  * @param data the Exalt_Wireless_Network
  */
-void exalt_wireless_network_free(void* data)
+void exalt_wireless_network_free(
+        Exalt_Wireless_Network** wn)
 {
-    Exalt_Wireless_Network* wi = Exalt_Wireless_Network(data);
-    EXALT_FREE(wi->address);
-    EXALT_FREE(wi->essid);
+    Exalt_Wireless_Network* wn2;
+    EXALT_ASSERT_RETURN_VOID(wn!=NULL);
+    wn2 = *wn;
+    EXALT_ASSERT_RETURN_VOID(wn2!=NULL);
+    EXALT_FREE(wn2->address);
+    EXALT_FREE(wn2->essid);
     //eina_list_destroy(wi->ie);
 }
 
@@ -248,7 +168,7 @@ void exalt_wireless_network_free(void* data)
  * @brief Create a new exalt_Wireless_Network_IE structure
  * @return Returns the new network IE structure
  */
-Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new(Exalt_Wireless* w)
+Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new()
 {
     Exalt_Wireless_Network_IE* ie = calloc(1,sizeof(Exalt_Wireless_Network_IE));
     EXALT_ASSERT_RETURN(ie!=NULL);
@@ -256,66 +176,69 @@ Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new(Exalt_Wireless* w)
 }
 
 /**
- * @brief free Exalt_Wireless_Network
- * @param data the Exalt_Wireless_Network
+ * @brief free Exalt_Wireless_Network_IE
+ * @param data the Exalt_Wireless_Network_IE
  */
-void exalt_wireless_network_ie_free(Exalt_Wireless_Network_IE** ie)
+void exalt_wireless_network_ie_free(
+        Exalt_Wireless_Network_IE** ie)
 {
     EXALT_ASSERT_RETURN_VOID(ie!=NULL);
     EXALT_FREE(*ie);
 }
 
-EXALT_WIRELESS_NETWORK_SET(iface,Exalt_Wireless*)
-EXALT_WIRELESS_NETWORK_STRING_SET(address)
-EXALT_WIRELESS_NETWORK_STRING_SET(essid)
-EXALT_WIRELESS_NETWORK_SET(encryption,int)
-EXALT_WIRELESS_NETWORK_SET(quality,int)
-EXALT_WIRELESS_NETWORK_SET(mode,Exalt_Wireless_Network_Mode)
-EXALT_WIRELESS_NETWORK_SET(security_mode,Exalt_Wireless_Network_Security)
-EXALT_WIRELESS_NETWORK_SET(ie,Eina_List*)
-EXALT_WIRELESS_NETWORK_SET(default_conn,
-        Exalt_Connection*)
+#define EXALT_FCT_NAME exalt_wireless_network
+#define EXALT_STRUCT_TYPE Exalt_Wireless_Network
+
+EXALT_STRING_SET(essid)
+EXALT_STRING_SET(address);
+EXALT_SET(iface,Exalt_Wireless*)
+EXALT_SET(encryption,int)
+EXALT_SET(quality,int)
+EXALT_SET(mode,Exalt_Wireless_Network_Mode)
+EXALT_SET(security_mode,Exalt_Wireless_Network_Security)
+EXALT_SET(ie,Eina_List*)
+EXALT_SET(default_conn,Exalt_Connection*)
+
+EXALT_GET(iface,Exalt_Wireless*)
+EXALT_GET(address,const char*)
+EXALT_GET(essid,const char*)
+EXALT_IS(encryption,int)
+EXALT_GET(quality,int)
+EXALT_GET(mode,Exalt_Wireless_Network_Mode)
+EXALT_GET(security_mode,Exalt_Wireless_Network_Security)
+EXALT_GET(ie,Eina_List*)
+EXALT_GET(default_conn,Exalt_Connection*)
+
+#undef EXALT_FCT_NAME
+#undef EXALT_STRUCT_TYPE
+
+#define EXALT_FCT_NAME exalt_wireless_network_ie
+#define EXALT_STRUCT_TYPE Exalt_Wireless_Network_IE
+
+EXALT_SET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
+EXALT_SET(wpa_version,int)
+EXALT_SET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
+EXALT_TAB_SET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
+EXALT_SET(pairwise_cypher_number,int)
+EXALT_TAB_SET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
+EXALT_SET(auth_suites_number,int)
+EXALT_SET(preauth_supported,int)
+
+EXALT_GET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
+EXALT_GET(wpa_version,int)
+EXALT_GET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
+EXALT_TAB_GET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
+EXALT_GET(pairwise_cypher_number,int)
+EXALT_TAB_GET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
+EXALT_GET(auth_suites_number,int)
+EXALT_IS(preauth_supported,int)
+
+#undef EXALT_FCT_NAME
+#undef EXALT_STRUCT_TYPE
 
 
-EXALT_WIRELESS_NETWORK_GET(iface,Exalt_Wireless*)
-EXALT_WIRELESS_NETWORK_GET(address,const char*)
-EXALT_WIRELESS_NETWORK_GET(essid,const char*)
-EXALT_WIRELESS_NETWORK_IS(encryption,int)
-EXALT_WIRELESS_NETWORK_GET(quality,int)
-EXALT_WIRELESS_NETWORK_GET(mode,Exalt_Wireless_Network_Mode)
-EXALT_WIRELESS_NETWORK_GET(security_mode,Exalt_Wireless_Network_Security)
-EXALT_WIRELESS_NETWORK_GET(ie,Eina_List*)
-EXALT_WIRELESS_NETWORK_GET(default_conn,
-        Exalt_Connection*)
-
-
-
-EXALT_WIRELESS_NETWORK_IE_SET(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type)
-EXALT_WIRELESS_NETWORK_IE_SET(wpa_version,int)
-EXALT_WIRELESS_NETWORK_IE_SET(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name)
-EXALT_WIRELESS_NETWORK_IE_TAB_SET(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name)
-EXALT_WIRELESS_NETWORK_IE_SET(pairwise_cypher_number,int)
-EXALT_WIRELESS_NETWORK_IE_TAB_SET(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites)
-EXALT_WIRELESS_NETWORK_IE_SET(auth_suites_number,int)
-EXALT_WIRELESS_NETWORK_IE_SET(preauth_supported,int)
-EXALT_WIRELESS_NETWORK_IE_GET(wpa_type,
-        Exalt_Wireless_Network_Wpa_Type)
-EXALT_WIRELESS_NETWORK_IE_GET(wpa_version,int)
-EXALT_WIRELESS_NETWORK_IE_GET(group_cypher,
-        Exalt_Wireless_Network_Cypher_Name)
-EXALT_WIRELESS_NETWORK_IE_TAB_GET(pairwise_cypher,
-        Exalt_Wireless_Network_Cypher_Name)
-EXALT_WIRELESS_NETWORK_IE_GET(pairwise_cypher_number,int)
-EXALT_WIRELESS_NETWORK_IE_TAB_GET(auth_suites,
-        Exalt_Wireless_Network_Auth_Suites)
-EXALT_WIRELESS_NETWORK_IE_GET(auth_suites_number,int)
-EXALT_WIRELESS_NETWORK_IE_IS(preauth_supported,int)
-
-const char* exalt_wireless_network_name_from_id(int id)
+const char* exalt_wireless_network_name_from_mode_id(
+        int id)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
@@ -325,7 +248,8 @@ const char* exalt_wireless_network_name_from_id(int id)
     return exalt_wireless_network_name_from_mode(MODE_UNKNOW_BUG);
 }
 
-Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_id(int id)
+Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
+        int id)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
@@ -335,7 +259,8 @@ Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_id(int id)
     return MODE_UNKNOW_BUG;
 }
 
-const char* exalt_wireless_network_name_from_mode(Exalt_Wireless_Network_Mode mode)
+const char* exalt_wireless_network_name_from_mode(
+        Exalt_Wireless_Network_Mode mode)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
@@ -346,7 +271,8 @@ const char* exalt_wireless_network_name_from_mode(Exalt_Wireless_Network_Mode mo
 }
 
 
-const char* exalt_wireless_network_name_from_wpa_type(Exalt_Wireless_Network_Wpa_Type wpa_type)
+const char* exalt_wireless_network_name_from_wpa_type(
+        Exalt_Wireless_Network_Wpa_Type wpa_type)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_wpa_type_tab) / sizeof(Exalt_Wireless_Network_Wpa_Type_List);i++)
@@ -356,7 +282,8 @@ const char* exalt_wireless_network_name_from_wpa_type(Exalt_Wireless_Network_Wpa
     return exalt_wireless_network_name_from_wpa_type(WPA_TYPE_UNKNOWN);
 }
 
-const char* exalt_wireless_network_name_from_cypher_name(Exalt_Wireless_Network_Cypher_Name cypher_name)
+const char* exalt_wireless_network_name_from_cypher_name(
+        Exalt_Wireless_Network_Cypher_Name cypher_name)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_cypher_name_tab) / sizeof(Exalt_Wireless_Network_Cypher_Name_List);i++)
@@ -366,7 +293,8 @@ const char* exalt_wireless_network_name_from_cypher_name(Exalt_Wireless_Network_
     return exalt_wireless_network_name_from_cypher_name(CYPHER_NAME_UNKNOWN);
 }
 
-const char* exalt_wireless_network_name_from_auth_suites(Exalt_Wireless_Network_Auth_Suites auth_suites)
+const char* exalt_wireless_network_name_from_auth_suites(
+        Exalt_Wireless_Network_Auth_Suites auth_suites)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_auth_suites_tab) / sizeof(Exalt_Wireless_Network_Auth_Suites_List);i++)
@@ -377,7 +305,8 @@ const char* exalt_wireless_network_name_from_auth_suites(Exalt_Wireless_Network_
 }
 
 
-const char* exalt_wireless_network_name_from_security(Exalt_Wireless_Network_Security security)
+const char* exalt_wireless_network_name_from_security(
+        Exalt_Wireless_Network_Security security)
 {
     int i;
     for(i = 0; i < sizeof(exalt_wireless_network_security_tab) / sizeof(Exalt_Wireless_Network_Security_List);i++)

@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* OLD CODE never used, need to be update before complete */
+
 /**
  * @brief informations about a vpnc connection
  * @structinfo

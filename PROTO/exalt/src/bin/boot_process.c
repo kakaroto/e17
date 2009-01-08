@@ -106,28 +106,14 @@ void waiting_iface_free(Boot_Process_List** l)
  * @param eth the interface
  * @return Returns 1 if yes, else 0
  */
-int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
+int waiting_iface_is(const Boot_Process_List* l,Exalt_Ethernet* eth)
 {
-//  int find = 0;
     Eina_List *elt;
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN(l!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-/*  by bentejuy
-
-    elt = l->l;
-    while(!find && elt)
-    {
-        data = eina_list_data_get(elt);
-        if(data->interface && strcmp(exalt_eth_get_name(eth),data->interface) == 0)
-            find = 1;
-        else
-            elt = eina_list_next(elt);
-    }
-    return find;
-*/
     EXALT_ASSERT_RETURN(l->l!=NULL);
 
 	for(elt = l->l; elt; elt = eina_list_next(elt))
@@ -135,7 +121,7 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
         if(!(data = eina_list_data_get(elt)))
         	continue;
 
-        if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
+        if(data->interface && !strcmp(exalt_eth_name_get(eth),data->interface))
         	return 1;
 	}
 	return 0;
@@ -146,7 +132,7 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
  * @param l the list of interface
  * @param eth the interface
  */
-void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
+void waiting_iface_done(Boot_Process_List* l,Exalt_Ethernet* eth)
 {
     Eina_List *elt;
     Boot_Process_Elt *data;
@@ -159,7 +145,7 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
         if(!(data = eina_list_data_get(elt)))
             continue;
 
-        if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
+        if(data->interface && !strcmp(exalt_eth_name_get(eth),data->interface))
         {
             l->l = eina_list_remove(l->l,eina_list_data_get(elt));
             return;

@@ -26,6 +26,87 @@ int exalt_dbus_msg_id_next(exalt_dbus_conn* conn)
     return id;
 }
 
+int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
+{
+    const char* s;
+    int i;
+    DBusMessageIter args;
+
+    dbus_message_iter_init_append(msg, &args);
+    //add the connection
+    i=exalt_conn_mode_get(c);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+            dbus_message_unref(msg); return 0);
+
+    if(exalt_conn_mode_get(c)==EXALT_STATIC)
+    {
+        s = exalt_conn_ip_get(c);
+        if(!s)
+            s="";
+        EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                dbus_message_unref(msg); return 0);
+
+
+        s = exalt_conn_netmask_get(c);
+        if(!s)
+            s="";
+        EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                dbus_message_unref(msg); return 0);
+
+        s = exalt_conn_gateway_get(c);
+        if(!s)
+            s="";
+        EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                dbus_message_unref(msg); return 0);
+    }
+
+    i=exalt_conn_wireless_is(c);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+            dbus_message_unref(msg); return 0);
+
+
+    if(exalt_conn_wireless_is(c))
+    {
+        /*s = exalt_conn_get_essid(c);
+          if(!s)
+          s="";
+          EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+          dbus_message_unref(msg); return 0,
+          "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s");
+
+          i=exalt_conn_get_encryption_mode(c);
+          dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+
+          if(exalt_conn_get_encryption_mode(c)!=EXALT_ENCRYPTION_NONE)
+          {
+          s = exalt_conn_get_key(c);
+          if(!s)
+          s="";
+          EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+          dbus_message_unref(msg); return 0,
+          "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s");
+          }
+          i=exalt_conn_get_connection_mode(c);
+          EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+          dbus_message_unref(msg); return 0,
+          "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i");
+          i=exalt_conn_get_security_mode(c);
+          EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+          dbus_message_unref(msg); return 0,
+          "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i");
+          */
+    }
+
+    const char* cmd = exalt_conn_cmd_after_apply_get(c);
+    if(!cmd)
+        cmd="";
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd),
+            dbus_message_unref(msg); return 0);
+
+    return 1;
+}
+
+
 void _exalt_dbus_notify(void *data, DBusMessage *msg)
 {
     char* eth;

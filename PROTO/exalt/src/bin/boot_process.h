@@ -40,8 +40,8 @@ Ecore_Timer* waiting_iface_timer;
 void waiting_iface_free(Boot_Process_List** l);
 void waiting_iface_save(const Boot_Process_List* l, const char* file);
 Boot_Process_List* waiting_iface_load(const char* file);
-int waiting_iface_is(const Boot_Process_List* l, const Exalt_Ethernet* eth);
-void waiting_iface_done(Boot_Process_List* l, const Exalt_Ethernet* eth);
+int waiting_iface_is(const Boot_Process_List* l, Exalt_Ethernet* eth);
+void waiting_iface_done(Boot_Process_List* l, Exalt_Ethernet* eth);
 int waiting_iface_is_done(const Boot_Process_List* l );
 int waiting_iface_stop(void* data);
 

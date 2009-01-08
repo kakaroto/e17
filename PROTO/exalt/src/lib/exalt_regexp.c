@@ -5,13 +5,6 @@
 
 
 
-/**
- * @brief create a new regex
- * @param str_request the request string
- * @param str_regex the regular expression
- * @debug 1 if you want use the debug mode, else 0
- * @return Return a Exalt_Regex structure
- */
 Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex, short debug)
 {
     Exalt_Regex *r = (Exalt_Regex*)malloc((unsigned int)sizeof(Exalt_Regex));
@@ -32,11 +25,6 @@ Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex, sho
 
 
 
-/**
- * @brief change the request string
- * @param r the Exalt_Regex
- * @param str_request the new request string
- */
 void exalt_regex_set_request(Exalt_Regex* r,const char* str_request)
 {
     EXALT_FREE(r->str_request);
@@ -45,11 +33,6 @@ void exalt_regex_set_request(Exalt_Regex* r,const char* str_request)
 
 
 
-/**
- * @brief change the regular expression
- * @param r the Exalt_Regex
- * @param str_regex the new regular expression
- */
 void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex)
 {
     EXALT_FREE(r->str_regex);
@@ -58,11 +41,6 @@ void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex)
 
 
 
-/**
- * @brief set the debug mode
- * @param r the Exalt_Regex
- * @param debug the new debig mode, 0 or 1
- */
 void exalt_regex_set_debug(Exalt_Regex *r, short debug)
 {
     r->debug = debug;
@@ -70,10 +48,6 @@ void exalt_regex_set_debug(Exalt_Regex *r, short debug)
 
 
 
-/**
- * @brief clear the current result
- * @param r the Exalt_Regex
- */
 void exalt_regex_clear_result(Exalt_Regex* r)
 {
     if(r!= NULL && r->res!=NULL)
@@ -92,10 +66,6 @@ void exalt_regex_clear_result(Exalt_Regex* r)
 
 
 
-/*
- * @brief free tje regex
- * @param r the Exalt_Regex
- */
 void exalt_regex_free(Exalt_Regex **r)
 {
     if(r!=NULL && *r!=NULL)
@@ -114,11 +84,6 @@ void exalt_regex_free(Exalt_Regex **r)
 
 
 
-/*
- * @brief execute a regular expression
- * @param r the Exalt_Regex
- * @return Return 1 if the regular expression is found int the request string, else 0
- */
 int exalt_regex_execute(Exalt_Regex* r)
 {
     int err;

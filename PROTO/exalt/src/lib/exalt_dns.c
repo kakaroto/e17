@@ -8,10 +8,6 @@
  */
 
 
-/**
- * @brief get the dns list
- * @return Return the dns list
- */
 Ecore_List* exalt_dns_get_list()
 {
     FILE* f;
@@ -41,11 +37,7 @@ Ecore_List* exalt_dns_get_list()
 
 
 
-/**
- * @brief add a dns
- * @param dns the news dns
- * @return Return 1 if the dns is add, else -0
- */
+
 int exalt_dns_add(const char* dns)
 {
     char buf[1024];
@@ -67,11 +59,7 @@ int exalt_dns_add(const char* dns)
 
 
 
-/**
- * @brief delete a dns
- * @param dns the dns
- * @return Return 1 if the dns is delete, else 0
- */
+
 int exalt_dns_delete(const char* dns)
 {
     char buf[1024], buf2[1024];
@@ -100,12 +88,7 @@ int exalt_dns_delete(const char* dns)
 
 
 
-/**
- * @brief replace a dns by a new
- * @param old_dns the old dns
- * @param new_dns the new dns
- * @return Return 1 if the dns is replace, else 0
- */
+
 int exalt_dns_replace(const char* old_dns, const char* new_dns)
 {
     char buf[1024], buf2[1024], buf3[1024];;
@@ -138,9 +121,6 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
 
 
 
-/**
- * @brief print the dns list in the standard output
- */
 void exalt_dns_printf()
 {
     Ecore_List* l = exalt_dns_get_list();

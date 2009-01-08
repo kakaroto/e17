@@ -359,29 +359,29 @@ Exalt_Connection * exalt_dbus_wirelessnetwork_get_default_conn(const exalt_dbus_
 
     c = exalt_conn_new();
     pos = 1;
-    exalt_conn_set_mode(c,exalt_dbus_response_integer(msg,pos++));
-    if(!exalt_conn_is_dhcp(c))
+    exalt_conn_mode_set(c,exalt_dbus_response_integer(msg,pos++));
+    if(exalt_conn_mode_get(c) == EXALT_STATIC)
     {
-        exalt_conn_set_ip(c,exalt_dbus_response_string(msg,pos++));
-        exalt_conn_set_netmask(c,exalt_dbus_response_string(msg,pos++));
-        exalt_conn_set_gateway(c,exalt_dbus_response_string(msg,pos++));
+        exalt_conn_ip_set(c,exalt_dbus_response_string(msg,pos++));
+        exalt_conn_netmask_set(c,exalt_dbus_response_string(msg,pos++));
+        exalt_conn_gateway_set(c,exalt_dbus_response_string(msg,pos++));
     }
 
-    exalt_conn_set_wireless(c,exalt_dbus_response_integer(msg,pos++));
+    exalt_conn_wireless_set(c,exalt_dbus_response_integer(msg,pos++));
 
-    if(exalt_conn_is_wireless(c))
+    if(exalt_conn_wireless_is(c))
     {
-        exalt_conn_set_encryption_mode(c,exalt_dbus_response_integer(msg,pos++));
+        exalt_conn_encryption_mode_set(c,exalt_dbus_response_integer(msg,pos++));
 
-        if(exalt_conn_get_encryption_mode(c)!= EXALT_ENCRYPTION_NONE)
-            exalt_conn_set_key(c,exalt_dbus_response_string(msg,pos++));
+        if(exalt_conn_encryption_mode_get(c)!= EXALT_ENCRYPTION_NONE)
+            exalt_conn_key_set(c,exalt_dbus_response_string(msg,pos++));
 
-        exalt_conn_set_connection_mode(c,exalt_dbus_response_integer(msg,pos++));
+        exalt_conn_connection_mode_set(c,exalt_dbus_response_integer(msg,pos++));
 
-        exalt_conn_set_security_mode(c,exalt_dbus_response_integer(msg,pos++));
+        exalt_conn_security_mode_set(c,exalt_dbus_response_integer(msg,pos++));
     }
 
-    exalt_conn_set_cmd(c,exalt_dbus_response_string(msg,pos++));
+    exalt_conn_cmd_after_apply_set(c,exalt_dbus_response_string(msg,pos++));
 
     dbus_message_unref(msg);
     return c;

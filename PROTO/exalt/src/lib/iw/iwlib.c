@@ -3192,7 +3192,7 @@ iw_process_scanning_token(struct iw_event *	    event,
             if((event->u.mode < IW_NUM_OPER_MODE)
                     && (event->u.mode >= 0))
             {
-                exalt_wireless_network_mode_set(wscan,exalt_wireless_network_mode_from_id(event->u.mode));
+                exalt_wireless_network_mode_set(wscan,exalt_wireless_network_mode_from_mode_id(event->u.mode));
             }
             break;
         case SIOCGIWESSID:

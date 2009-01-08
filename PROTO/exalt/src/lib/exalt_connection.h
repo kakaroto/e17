@@ -94,48 +94,166 @@ typedef enum Exalt_Enum_Mode
 #include <Eet.h>
 
 
-
+/**
+ * @brief create a default connection
+ * - no wireless
+ * - dhcp mode
+ * @return Returns the new connection
+ */
 Exalt_Connection* exalt_conn_new();
-short exalt_conn_is_dhcp(Exalt_Connection* c);
-Exalt_Connection* exalt_conn_custom_new(Exalt_Enum_Mode mode,
-        const char* ip, const char* netmask, const char* gateway,
-        short is_wireless, const char* essid,
-        Exalt_Enum_Encryption_Mode encryption_mode,
-        const char* key,
-        Exalt_Enum_Connection_Mode connection_mode,
+
+/**
+ * @brief free a connection
+ * @param c the connection
+ */
+void exalt_conn_free(Exalt_Connection** c);
+
+/**
+ * @brief test if a connection is valid (valid address ...)
+ * @param c the connection
+ * @return Returns 1 if the connection is valid, else 0
+ */
+short exalt_conn_valid_is(Exalt_Connection* c);
+
+/**
+ * @brief set the mode (dhcp or static)
+ */
+void exalt_conn_mode_set(
+        Exalt_Connection* conn,
+        Exalt_Enum_Mode mode);
+
+/**
+ * @brief set the IP address
+ */
+void exalt_conn_ip_set(
+        Exalt_Connection* conn,
+        const char* ip);
+
+/**
+ * @brief set the netmask address
+ */
+void exalt_conn_netmask_set(
+        Exalt_Connection* conn,
+        const char* netmask);
+
+/**
+ * @brief set the gateway address
+ */
+void exalt_conn_gateway_set(
+        Exalt_Connection* conn,
+        const char* gateway);
+
+/**
+ * @brief set the command execute after the connection is applied
+ */
+void exalt_conn_cmd_after_apply_set(
+        Exalt_Connection* conn,
+        const char* cmd);
+
+/**
+ * @brief set if the connection has a wireless extension
+ */
+void exalt_conn_wireless_set(
+        Exalt_Connection* conn,
+        int is_wireless);
+
+/**
+ * @brief set the essid
+ */
+void exalt_conn_essid_set(
+        Exalt_Connection* conn,
+        const char* essid);
+
+/**
+ * @brief set the key
+ */
+void exalt_conn_key_set(
+        Exalt_Connection* conn,
+        const char* key);
+
+/**
+ * @brief set the encryption mode
+ */
+void exalt_conn_encryption_mode_set(
+        Exalt_Connection* conn,
+        Exalt_Enum_Encryption_Mode encryption_mode);
+
+/**
+ * @brief set the connection mode
+ */
+void exalt_conn_connection_mode_set(
+        Exalt_Connection* conn,
+        Exalt_Enum_Connection_Mode connection_mode);
+/**
+ * @brief set the security mode
+ */
+void exalt_conn_security_mode_set(
+        Exalt_Connection* conn,
         Exalt_Enum_Security_Mode security_mode);
-void exalt_conn_free(Exalt_Connection* c);
-
-short exalt_conn_is_valid(Exalt_Connection* c);
-
-short exalt_conn_set_mode(Exalt_Connection* c, Exalt_Enum_Mode mode);
-short exalt_conn_set_ip(Exalt_Connection* c, const char* ip);
-short exalt_conn_set_netmask(Exalt_Connection* c, const char* netmask);
-short exalt_conn_set_gateway(Exalt_Connection* c, const char* gateway);
-short exalt_conn_set_wireless(Exalt_Connection* c, short is_wireless);
-short exalt_conn_set_essid(Exalt_Connection* c, const char* essid);
-short exalt_conn_set_key(Exalt_Connection* c, const char* key);
-short exalt_conn_set_encryption_mode(Exalt_Connection* c, Exalt_Enum_Encryption_Mode encryption_mode);
-short exalt_conn_set_connection_mode(Exalt_Connection* c, Exalt_Enum_Connection_Mode connection_mode);
-short exalt_conn_set_security_mode(Exalt_Connection* c, Exalt_Enum_Security_Mode security_mode);
-
-short exalt_conn_is_dhcp(Exalt_Connection* c);
-Exalt_Enum_Mode exalt_conn_get_mode(Exalt_Connection* c);
-const char* exalt_conn_get_ip(Exalt_Connection *c);
-const char* exalt_conn_get_gateway(Exalt_Connection *c);
-const char* exalt_conn_get_netmask(Exalt_Connection *c);
-short exalt_conn_is_wireless(Exalt_Connection* c);
-const char* exalt_conn_get_essid(Exalt_Connection *c);
-const char* exalt_conn_get_key(Exalt_Connection *c);
-Exalt_Enum_Encryption_Mode exalt_conn_get_encryption_mode(Exalt_Connection* c);
-Exalt_Enum_Security_Mode exalt_conn_get_security_mode(Exalt_Connection* c);
-Exalt_Enum_Connection_Mode exalt_conn_get_connection_mode(Exalt_Connection* c);
 
 
+/**
+ * @brief return the mode of the connection
+ */
+Exalt_Enum_Mode exalt_conn_mode_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the IP address of the connection
+ */
+const char* exalt_conn_ip_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the netmask address of the connection
+ */
+const char* exalt_conn_netmask_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the gateway address of the connection
+ */
+const char* exalt_conn_gateway_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the command execute after the connection is applied
+ */
+const char* exalt_conn_cmd_after_apply_get(Exalt_Connection* conn);
+
+/**
+ * @brief return test if the connection has a wireless extension
+ */
+int exalt_conn_wireless_is(Exalt_Connection* conn);
+
+/**
+ * @brief return the essid of the connection
+ */
+const char* exalt_conn_essid_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the key of the connection
+ */
+const char* exalt_conn_key_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the encryption mode of the connection
+ */
+Exalt_Enum_Encryption_Mode exalt_conn_encryption_mode_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the security mode of the connection
+ */
+Exalt_Enum_Security_Mode exalt_conn_security_mode_get(Exalt_Connection* conn);
+
+/**
+ * @brief return the connection mode of the connection
+ */
+Exalt_Enum_Connection_Mode exalt_conn_connection_mode_get(Exalt_Connection* conn);
+
+
+/**
+ * @brief create an eet descriptor of the structure Exalt_Connection
+ * @return Returns the descriptor
+ */
 Eet_Data_Descriptor * exalt_conn_edd_new();
 
-int exalt_conn_set_cmd(Exalt_Connection *c, const char* cmd);
-const char* exalt_conn_get_cmd(Exalt_Connection* c);
 
 /** @} */
 
