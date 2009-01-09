@@ -1,0 +1,55 @@
+# Chinese translations for exalt package
+# exalt 软件包的简体中文翻译.
+# Copyright (C) 2009 Enlightenment development team
+# This file is distributed under the same license as the exalt package.
+# Aron Xu <aronmalache@163.com>, 2009.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: exalt e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-12-19 11:43+0000\n"
+"PO-Revision-Date: 2009-01-09 20:29+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/e_mod_config.c:39
+msgid "exalt Module"
+msgstr "exalt 模块"
+
+#: src/e_mod_config.c:79
+msgid "General"
+msgstr "常规"
+
+#: src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr ""
+
+#: src/e_mod_main.c:299 src/e_mod_main.c:450
+msgid "exalt"
+msgstr "exalt"
+
+#: src/e_mod_main.c:382
+msgid "exalt Configuration Updated"
+msgstr "exalt 配置已更新"
+
+#: src/e_mod_main.c:460
+msgid "submenu"
+msgstr "子菜单"
+
+#: src/e_mod_main.c:465
+msgid "exalt sub 1"
+msgstr ""
+
+#: src/e_mod_main.c:473 src/e_mod_main.c:482
+msgid "radio button 1"
+msgstr ""
+
+#: src/e_mod_main.c:512
+msgid "Configuration"
+msgstr "配置"
+
