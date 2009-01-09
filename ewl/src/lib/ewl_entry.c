@@ -402,7 +402,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
                         ewl_entry_cursor_move_word_previous(e);
                 else
-                ewl_entry_cursor_move_left(e);
+                        ewl_entry_cursor_move_left(e);
         }
 
         else if (!strcmp(event->keyname, "Right"))
@@ -412,7 +412,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
                         ewl_entry_cursor_move_word_next(e);
                 else
-                ewl_entry_cursor_move_right(e);
+                        ewl_entry_cursor_move_right(e);
         }
 
         else if (!strcmp(event->keyname, "Up"))
@@ -890,7 +890,7 @@ ewl_entry_cursor_move_word_previous(Ewl_Entry *e)
         DCHECK_PARAM_PTR(e);
         DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
-        current_pos = ewl_text_cursor_position_word_previous_get(EWL_TEXT(e), 0);
+        current_pos = ewl_text_cursor_position_word_previous_get(EWL_TEXT(e));
         ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
         ewl_widget_configure(EWL_WIDGET(e));
 
@@ -911,7 +911,7 @@ ewl_entry_cursor_move_word_next(Ewl_Entry *e)
         DCHECK_PARAM_PTR(e);
         DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
-        current_pos = ewl_text_cursor_position_word_next_get(EWL_TEXT(e), 0);
+        current_pos = ewl_text_cursor_position_word_next_get(EWL_TEXT(e));
         ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
         ewl_widget_configure(EWL_WIDGET(e));
 

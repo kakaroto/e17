@@ -169,8 +169,8 @@ unsigned int     ewl_text_cursor_position_line_down_get(Ewl_Text *t);
 
 unsigned int     ewl_text_cursor_position_line_start_get(Ewl_Text *t);
 unsigned int     ewl_text_cursor_position_line_end_get(Ewl_Text *t);
-unsigned int     ewl_text_cursor_position_word_previous_get(Ewl_Text *t, int selecting);
-unsigned int     ewl_text_cursor_position_word_next_get(Ewl_Text *t, int selecting);
+unsigned int     ewl_text_cursor_position_word_previous_get(Ewl_Text *t);
+unsigned int     ewl_text_cursor_position_word_next_get(Ewl_Text *t);
 
 
 void             ewl_text_font_set(Ewl_Text *t, const char *font);

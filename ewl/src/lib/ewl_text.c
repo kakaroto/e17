@@ -1424,12 +1424,11 @@ ewl_text_cursor_position_line_end_get(Ewl_Text *t)
 
 /**
  * @param t: The Ewl_Text to get the cursor position of the beginning of previous word
- * @param selecting: 1 - if the call is made while selecting text, else 0
  * @return Returns the cursor position if we moved to the beginning of the previous word
  * @brief Get the index if we were to move the cursor to the beginning of the previous word
  */
 unsigned int
-ewl_text_cursor_position_word_previous_get(Ewl_Text *t, int selecting)
+ewl_text_cursor_position_word_previous_get(Ewl_Text *t)
 {
         const char   *ptr;
         unsigned int char_idx, byte_idx;
@@ -1456,19 +1455,18 @@ ewl_text_cursor_position_word_previous_get(Ewl_Text *t, int selecting)
 
 /**
  * @param t: The Ewl_Text to get the cursor position of the beginning of the next word
- * @param selecting: 1 - if the call is made while selecting text, else 0
  * @return Returns the cursor position if we moved to the beginning of the next word
  * @brief Get the index if we were to move the cursor to the beginning of the next word
  */
 unsigned int
-ewl_text_cursor_position_word_next_get(Ewl_Text *t, int selecting)
+ewl_text_cursor_position_word_next_get(Ewl_Text *t)
 {
-        const char   *ptr;
+        const char *ptr;
         unsigned int char_idx, byte_idx;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         char_idx = ewl_text_cursor_position_get(t);
         ewl_text_fmt_char_to_byte(t->formatting.nodes,
@@ -4001,23 +3999,23 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         if (!strcmp(event->keyname, "Left"))
         {
                 if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
-                        pos = ewl_text_cursor_position_word_previous_get(t, 1);
+                        pos = ewl_text_cursor_position_word_previous_get(t);
                 else
                 {
-                pos = t->cursor_position;
-                if (pos > 0) pos--;
-        }
+                        pos = t->cursor_position;
+                        if (pos > 0) pos--;
+                }
         }
         
         else if (!strcmp(event->keyname, "Right"))
         {
                 if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
-                        pos = ewl_text_cursor_position_word_next_get(t, 1);
+                        pos = ewl_text_cursor_position_word_next_get(t);
                 else
                 {
-                pos = t->cursor_position;
-                if (pos < t->length.chars) pos++;
-        }
+                        pos = t->cursor_position;
+                        if (pos < t->length.chars) pos++;
+                }
         }
 
         else if (!strcmp(event->keyname, "Up"))
