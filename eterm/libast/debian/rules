@@ -1,0 +1,75 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper. 
+# GNU copyright 1997 by Joey Hess.
+#
+# This version is for a hypothetical package that builds an
+# architecture-dependant package, as well as an architecture-independent
+# package.
+
+# This file uses bash-isms, and you might have ash installed,
+# whose Debian package has /bin/sh pointing to it.
+export SHELL=/bin/bash
+
+export DH_COMPAT=2
+
+export DH_OPTIONS
+
+INSTALL=/usr/bin/install
+
+configure: configure-stamp
+configure-stamp:
+	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
+	touch configure-stamp
+
+build: configure build-stamp
+build-stamp:
+	dh_testdir
+	$(MAKE) 
+	touch build-stamp
+
+clean:
+	dh_testdir
+	rm -f build-stamp configure-stamp
+
+	-$(MAKE) distclean
+	-rm -f configure-stamp build-stamp
+
+	dh_clean
+
+install: DH_OPTIONS=
+install: build 
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/libast1/
+	$(INSTALL) -d debian/libast1-dev/usr/lib
+	mv debian/libast1/usr/lib/*.{so,la,a} debian/libast1-dev/usr/lib/
+	mv debian/libast1/usr/{bin,include} debian/libast1-dev/usr
+
+	$(INSTALL) -d debian/libast1-dev/usr/share/man/man1
+	$(INSTALL) debian/libast-config.1 debian/libast1-dev/usr/share/man/man1
+
+binary-indep:
+
+binary-arch: DH_OPTIONS=-a
+binary-arch: build install
+	dh_testversion 2 
+	dh_testdir
+	dh_testroot
+	dh_installdocs README
+	dh_installexamples
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
