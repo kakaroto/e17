@@ -366,10 +366,4 @@ elm_main(int argc, char **argv)
    elm_shutdown();
    return 0; 
 }
-
-int
-main(int argc, char **argv)
-{
-   elm_init(argc, argv);
-   return elm_main(argc, argv);
-}
+ELM_MAIN()
