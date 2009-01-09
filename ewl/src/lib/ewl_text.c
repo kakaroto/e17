@@ -1343,6 +1343,24 @@ ewl_text_cursor_next(Evas_Textblock_Cursor *c)
         }
 }
 
+/**
+ * @param ch: character to test
+ * @return Returns 1 if the @ch is a word break character
+ * @brief Test if a character is a word break character
+ */
+static int
+ewl_text_word_break(char ch)
+{
+        return ch == ' ' || ch == '\t'
+               || ch == '(' || ch == ')'
+               || ch == '[' || ch == ']'
+               || ch == ',' || ch == '.'
+               || ch == ':' || ch == ';'
+               || ch == '\n'
+              ;
+}
+
+
 unsigned int
 ewl_text_cursor_position_line_start_get(Ewl_Text *t)
 {
@@ -1399,6 +1417,72 @@ ewl_text_cursor_position_line_end_get(Ewl_Text *t)
         char_idx = ewl_text_drawn_byte_to_char(t, byte_idx);
 
         evas_textblock_cursor_free(cursor);
+
+        DRETURN_INT(char_idx, DLEVEL_STABLE);
+}
+
+
+/**
+ * @param t: The Ewl_Text to get the cursor position of the beginning of previous word
+ * @param selecting: 1 - if the call is made while selecting text, else 0
+ * @return Returns the cursor position if we moved to the beginning of the previous word
+ * @brief Get the index if we were to move the cursor to the beginning of the previous word
+ */
+unsigned int
+ewl_text_cursor_position_word_previous_get(Ewl_Text *t, int selecting)
+{
+        const char   *ptr;
+        unsigned int char_idx, byte_idx;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+
+        char_idx = ewl_text_cursor_position_get(t);
+        ewl_text_fmt_char_to_byte(t->formatting.nodes,
+                                  char_idx, 0, &byte_idx, NULL);
+        ptr = t->text + byte_idx - 1;
+
+        while (ptr >= t->text && ewl_text_word_break(*ptr))
+                --ptr;
+        while (ptr >= t->text && !ewl_text_word_break(*ptr))
+                --ptr;
+
+        byte_idx = ptr - t->text + 1;
+        ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx, 0, &char_idx, NULL);
+
+        DRETURN_INT(char_idx, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the cursor position of the beginning of the next word
+ * @param selecting: 1 - if the call is made while selecting text, else 0
+ * @return Returns the cursor position if we moved to the beginning of the next word
+ * @brief Get the index if we were to move the cursor to the beginning of the next word
+ */
+unsigned int
+ewl_text_cursor_position_word_next_get(Ewl_Text *t, int selecting)
+{
+        const char   *ptr;
+        unsigned int char_idx, byte_idx;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+
+        char_idx = ewl_text_cursor_position_get(t);
+        ewl_text_fmt_char_to_byte(t->formatting.nodes,
+                                  char_idx, 0, &byte_idx, NULL);
+
+        ptr = t->text + byte_idx;
+
+        while (*ptr && !ewl_text_word_break(*ptr))
+                ++ptr;
+        while (*ptr && ewl_text_word_break(*ptr))
+                ++ptr;
+
+        byte_idx = ptr - t->text;
+        ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx, 0, &char_idx, NULL);
 
         DRETURN_INT(char_idx, DLEVEL_STABLE);
 }
@@ -3916,14 +4000,24 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         if (!strcmp(event->keyname, "Left"))
         {
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        pos = ewl_text_cursor_position_word_previous_get(t, 1);
+                else
+                {
                 pos = t->cursor_position;
                 if (pos > 0) pos--;
+        }
         }
         
         else if (!strcmp(event->keyname, "Right"))
         {
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        pos = ewl_text_cursor_position_word_next_get(t, 1);
+                else
+                {
                 pos = t->cursor_position;
                 if (pos < t->length.chars) pos++;
+        }
         }
 
         else if (!strcmp(event->keyname, "Up"))

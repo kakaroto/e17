@@ -101,6 +101,9 @@ void ewl_entry_cursor_move_start(Ewl_Entry *e);
 void ewl_entry_cursor_move_end(Ewl_Entry *e);
 void ewl_entry_cursor_move_line_start(Ewl_Entry *e);
 void ewl_entry_cursor_move_line_end(Ewl_Entry *e);
+void ewl_entry_cursor_move_word_previous(Ewl_Entry *e);
+void ewl_entry_cursor_move_word_next(Ewl_Entry *e);
+
 
 void ewl_entry_delete_left(Ewl_Entry *e);
 void ewl_entry_delete_right(Ewl_Entry *e);

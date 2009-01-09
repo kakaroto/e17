@@ -398,12 +398,20 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         if (!strcmp(event->keyname, "Left"))
         {
                 if (sel) ewl_text_trigger_length_set(sel, 0);
+
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        ewl_entry_cursor_move_word_previous(e);
+                else
                 ewl_entry_cursor_move_left(e);
         }
 
         else if (!strcmp(event->keyname, "Right"))
         {
                 if (sel) ewl_text_trigger_length_set(sel, 0);
+
+                if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        ewl_entry_cursor_move_word_next(e);
+                else
                 ewl_entry_cursor_move_right(e);
         }
 
@@ -867,6 +875,49 @@ ewl_entry_cursor_move_end(Ewl_Entry *e)
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the beginning of the previous word
+ */
+void
+ewl_entry_cursor_move_word_previous(Ewl_Entry *e)
+{
+        unsigned int current_pos = 0;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        current_pos = ewl_text_cursor_position_word_previous_get(EWL_TEXT(e), 0);
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to work with
+ * @return Returns no value.
+ * @brief Moves the cursor to the beginning of the next word
+ */
+void
+ewl_entry_cursor_move_word_next(Ewl_Entry *e)
+{
+        unsigned int current_pos = 0;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(e);
+        DCHECK_TYPE(e, EWL_ENTRY_TYPE);
+
+        current_pos = ewl_text_cursor_position_word_next_get(EWL_TEXT(e), 0);
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
+        ewl_widget_configure(EWL_WIDGET(e));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 /**
  * @param e: The Ewl_Entry to work with
