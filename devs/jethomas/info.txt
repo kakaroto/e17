@@ -1,7 +1,8 @@
 Login:          jethomas
 IRC Nick:       jethomas
+Cloak:		developer/jethomas
 Name:           Jaime Thomas
-Location:       Waterloo, Ontario, Canada
+Location:       Ottawa, Ontario, Canada
 E-Mail:         -avi.thomas@gmail.com
 WWW:            
 Managing:       
