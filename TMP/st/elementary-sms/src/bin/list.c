@@ -123,7 +123,7 @@ on_to_select(void *data, Evas_Object *obj, void *event_info)
    
    en = elm_entry_add(win);
    elm_entry_single_line_set(en, 1);
-   elm_entry_entry_set(en, "Select or Enter");
+   elm_entry_entry_set(en, "");
    evas_object_size_hint_weight_set(en, 1.0, 0.0);
    evas_object_size_hint_align_set(en, -1.0, 0.0);
    elm_entry_select_all(en);
