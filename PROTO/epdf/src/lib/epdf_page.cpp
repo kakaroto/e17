@@ -20,16 +20,6 @@
 #include "epdf_private.h"
 #include "Epdf.h"
 
-double
-get_time(void)
-{
-  struct timeval timev;
-
-  gettimeofday(&timev, NULL);
-
-  return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
-}
-
 
 Epdf_Page *
 epdf_page_new (const Epdf_Document *doc)
@@ -90,8 +80,6 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
   int              width;
   int              height;
 
-  double t1, t2;
-
   white[0] = 255;
   white[1] = 255;
   white[2] = 255;
@@ -133,8 +121,6 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
 
-  t1 = get_time ();
-
   evas_object_image_size_set(o, width, height);
   evas_object_image_fill_set(o, 0, 0, width, height);
 //   evas_object_image_data_set(o, color_ptr);
@@ -146,9 +132,6 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
   //  evas_object_image_alpha_set (o, 0);
-
-  t2 = get_time ();
-  printf ("rendering time : %.5f\n", t2 - t1);
 
  sortie:
   delete output_dev;
@@ -167,8 +150,6 @@ epdf_page_render_slice (Epdf_Page *page, Evas_Object *o, int x, int y, int w, in
   int              rotate;
   int              width;
   int              height;
-
-  double t1, t2;
 
   white[0] = 255;
   white[1] = 255;
@@ -211,8 +192,6 @@ epdf_page_render_slice (Epdf_Page *page, Evas_Object *o, int x, int y, int w, in
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
 
-  t1 = get_time ();
-
   evas_object_image_size_set(o, width, height);
   evas_object_image_fill_set(o, 0, 0, width, height);
 //   evas_object_image_data_set(o, color_ptr);
@@ -224,9 +203,6 @@ epdf_page_render_slice (Epdf_Page *page, Evas_Object *o, int x, int y, int w, in
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
   //  evas_object_image_alpha_set (o, 0);
-
-  t2 = get_time ();
-  printf ("rendering time : %.5f\n", t2 - t1);
 
  sortie:
   delete output_dev;
@@ -417,14 +393,8 @@ epdf_page_scale_set (Epdf_Page *page, double hscale, double vscale)
 void
 epdf_page_scale_get (const Epdf_Page *page, double *hscale, double *vscale)
 {
-  if (!page)
-    {
-      if (hscale) *hscale = 1.0;
-      if (vscale) *vscale = 1.0;
-    }
-
-  if (hscale) *hscale = page->hscale;
-  if (vscale) *vscale = page->vscale;
+  if (hscale) *hscale = page ? page->hscale : 1.0;
+  if (vscale) *vscale = page ? page->vscale : 1.0;
 }
 
 void

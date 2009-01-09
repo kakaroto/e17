@@ -1,3 +1,16 @@
+2009-01-09  Mikhail Gusarov <dottedmag at dottedmag dot net>
+
+	reviewed by: Vincent Torri  <doursse at users dot sf dot net>
+	patch by: Mikhail Gusarov <dottedmag at dottedmag dot net>
+
+	* src/lib/epdf_page.cpp:
+	Remove timing printfs.
+	Fix segfault in page_scale_get with page == 0.
+
+	* src/lib/ewl_pdf.c:
+	correct size hints for landscape orientation.
+	PDF documents without an outline are perfectly valid.
+
 2008-07-14  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/epdf_esmart_test.c: (main):

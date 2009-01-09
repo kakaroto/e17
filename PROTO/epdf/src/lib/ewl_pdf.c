@@ -169,13 +169,6 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
         }
 
         pdf->pdf_index = epdf_index_new(pdf->pdf_document);
-        if (!pdf->pdf_index) {
-                epdf_page_delete(pdf->pdf_page);
-                pdf->pdf_page = NULL;
-                epdf_document_delete(pdf->pdf_document);
-                pdf->pdf_document = NULL;
-                DRETURN_INT(FALSE, DLEVEL_STABLE);
-        }
 
         if (REALIZED(w)) {
                 ewl_widget_obscure(w);
@@ -674,6 +667,15 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
         epdf_page_scale_get(pdf->pdf_page, &hscale, &vscale);
         ow = (int)(ow * hscale);
         oh = (int)(oh * vscale);
+
+        if (epdf_page_orientation_get(pdf->pdf_page) == EPDF_PAGE_ORIENTATION_LANDSCAPE)
+        {
+               int tmp;
+
+               tmp = ow;
+               ow = oh;
+               oh = tmp;
+        }
 
         ww = CURRENT_W(w);
         hh = CURRENT_H(w);
