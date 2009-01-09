@@ -1003,7 +1003,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
         }
 
         /* Reset to the original cursor index */
-        if (!node) node = ecore_dlist_last_goto(fmt->nodes);
+        if (!node) ecore_dlist_last_goto(fmt->nodes);
         ewl_text_fmt_goto(fmt, cursor_idx);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

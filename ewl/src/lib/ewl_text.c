@@ -1351,8 +1351,8 @@ ewl_text_cursor_position_line_start_get(Ewl_Text *t)
         char const *format;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         char_idx = ewl_text_cursor_position_get(t);
         byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
@@ -1383,8 +1383,8 @@ ewl_text_cursor_position_line_end_get(Ewl_Text *t)
         unsigned int char_idx, byte_idx;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         char_idx = ewl_text_cursor_position_get(t);
         byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
