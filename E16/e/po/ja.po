@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-05 20:56+0100\n"
-"PO-Revision-Date: 2008-11-30 07:53+0900\n"
+"PO-Revision-Date: 2009-01-08 07:41+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2634,7 +2634,7 @@ msgstr "その他の設定 ..."
 
 #: config/strings.c:135
 msgid "Leave Alone"
-msgstr ""
+msgstr "これは残す"
 
 #
 #: config/strings.c:140
@@ -2739,9 +2739,8 @@ msgstr "ボタンのグラブ／解除"
 
 #
 #: config/strings.c:172
-#, fuzzy
 msgid "Default"
-msgstr "削除"
+msgstr "既定値"
 
 #: config/strings.c:173
 msgid "20%"
