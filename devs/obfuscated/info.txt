@@ -1,0 +1,10 @@
+Login:          obfuscated
+IRC Nick:       obfuscated
+Name:           Teodor Petrov
+Location:       Sofia, Bulgaria
+E-Mail:         fuscated@gmail.com
+WWW:           
+Managing:       
+Contributing:   Ewl
+Group:          Libraries
+Platform:       Gentoo Linux
