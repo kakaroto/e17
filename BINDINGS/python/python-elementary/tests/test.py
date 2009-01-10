@@ -563,10 +563,6 @@ def tb_4(obj, event, *args, **kargs):
 def tb_5(obj, event, *args, **kargs):
     print "toolbar-item: test 5"
 
-
-
-
-
 def toolbar_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
     win.title_set("Entry Scrolled")
@@ -596,11 +592,12 @@ def toolbar_clicked(obj, event, *args, **kargs):
   
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
-    tb.item_add(ic, "Hello", tb_1)
+    item = tb.item_add(ic, "Hello", tb_1)
     
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
-    tb.item_add(ic, "World,", tb_2)
+    item = tb.item_add(ic, "World,", tb_2)
+    item.select()
 
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")

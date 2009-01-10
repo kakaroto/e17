@@ -56,6 +56,11 @@ cdef enum Elm_Icon_Type:
     ELM_ICON_NONE
     ELM_ICON_FILE
     ELM_ICON_STANDARD
+
+cdef enum Elm_List_Mode:
+    ELM_LIST_COMPRESS
+    ELM_LIST_SCROLL
+    ELM_LIST_LIMIT
     
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_ID
@@ -92,6 +97,7 @@ cdef extern from "Elementary.h":
     cdef struct Elm_Entry_Anchorblock_Info
     cdef struct Elm_Hoversel_Item
     cdef struct Elm_Toolbar_Item
+    cdef struct Elm_List_Item
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)
@@ -256,4 +262,13 @@ cdef extern from "Elementary.h":
     void         elm_toolbar_item_del(Elm_Toolbar_Item *item)
     void         elm_toolbar_item_select(Elm_Toolbar_Item *item)
     void         elm_toolbar_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool scrollable)
-    
+
+    # List object
+    evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
+    Elm_List_Item *elm_list_item_append(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *indicator, evas.c_evas.Evas_Object *end, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+
+# Forward declaration of some classes
+cdef class Object
+cdef class Hoversel(Object)
+cdef class Toolbar(Object)
+cdef class List(Object)

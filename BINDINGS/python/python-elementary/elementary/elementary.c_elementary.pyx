@@ -35,8 +35,6 @@ def init():
 
     elm_init(argc, argv)
 
-    evas.python.PyMem_Free(argv)
-
 def shutdown():
     elm_shutdown()
 
@@ -86,7 +84,7 @@ cdef class Object(evas.c_evas.Object):
         # _object_callback looks for the object, saved in Evas_Object in the callback list
         # and calls every func that matched the event
         
-        mapping = _callback_mappings.get(<long>self.obj,None)
+        mapping = _callback_mappings.get(<long>self.obj, None)
         if mapping is None:
             mapping = dict()
             mapping["__class__"] =  self
@@ -98,7 +96,7 @@ cdef class Object(evas.c_evas.Object):
         
         # register callback
         e = event
-        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback,<char *>e)
+        c_evas.evas_object_smart_callback_add(self.obj, event, _object_callback, <char *>e)
             
     def _callback_remove(self, event):
         """Removes all callback functions for the event
@@ -108,7 +106,7 @@ cdef class Object(evas.c_evas.Object):
         @parm: B{event} Name of the event whose events should be removed
         """
 
-        mapping = _callback_mappings.get(<long>self.obj,None)
+        mapping = _callback_mappings.get(<long>self.obj, None)
         if mapping is not None:
             mapping.pop(event)
             _callback_mappings[<long>self.obj] = mapping
@@ -131,16 +129,6 @@ cdef class Window(Object):
         """
         self._set_obj(elm_win_add(NULL, name, type))
     
-    """
-    def _print_debug_infos(self):
-        cdef Elm_Win *win
-        cdef int w, h
-        
-        win = <Elm_Win*>c_evas.evas_object_data_get(self.obj, "__Elm")
-        c_evas.evas_object_geometry_get(self.obj,NULL,NULL,&w,&h)
-        print "object-width: %i" % w
-        print "object-height: %i" % h
-    """
     property canvas:
         def __get__(self):
             """
@@ -436,17 +424,8 @@ cdef class Frame(Object):
     def style_set(self, style):
         elm_frame_style_set(self.obj, style)
 
-    # TODO
-    """
-    def best_content_location_get(self, pref_axis):
-        cdef Elm_Hover_Axis axis
-        if pref_axis == ELM_HOVER_AXIS_NONE:
-            axis = Elm_Hover_Axis.ELM_HOVER_AXIS_NONE
-        elif pref_axis == ELM_HOVER_AXIS_HORIZONTAL:
-            axis = Elm_Hover_Axis.ELM_HOVER_AXIS_HORIZONTAL
-
+    def best_content_location_get(self, axis):
         elm_hover_best_content_location_get(self.obj, axis)
-    """
         
 cdef class Table(Object):
     def __init__(self, c_evas.Object parent):
@@ -672,6 +651,22 @@ cdef class Photo(Object):
     def size_set(self, size):
         elm_photo_size_set(self.obj, size)
 
+
+cdef object _hoversel_callback_mapping
+_hoversel_callback_mapping = dict()
+
+cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+    mapping = _hoversel_callback_mapping.get(<long>event_info)
+    if mapping is not None:
+        callback = mapping["callback"] 
+        if callback is not None and callable(callback):
+            callback(mapping["class"], "clicked")
+    else:
+        print "DEBUG: no callback there for the item!"
+
+cdef class HoverselItem:
+    pass
+
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_hoversel_add(parent.obj))
@@ -701,10 +696,15 @@ cdef class Hoversel(Object):
     def hover_end(self):
         elm_hoversel_hover_end(self.obj)
     
-    def item_add(self, label, icon_file, icon_type, callback, data):
-        pass
-        
+    def item_add(self, label, icon_file, icon_type, callback):
+        cdef Elm_Hoversel_Item *item
+        item = elm_hoversel_item_add(self.obj, label, icon_file, icon_type, _hoversel_callback, NULL)
 
+        # Save the callback
+        mapping = dict()
+        mapping["class"] = self
+        mapping["callback"] = callback
+        _hoversel_callback_mapping[<long>item] = mapping
  
 cdef object _toolbar_callback_mapping
 _toolbar_callback_mapping = dict()
@@ -717,6 +717,35 @@ cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_inf
             callback(mapping["class"], "clicked")
     else:
         print "DEBUG: no callback there for the item!"
+
+cdef class ToolbarItem:
+    """
+    A item for the toolbar
+    """
+    cdef Elm_Toolbar_Item *item
+
+    def __new__(self):
+        self.item = NULL
+
+    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label, callback):
+        if icon is not None:
+            self.item = elm_toolbar_item_add(toolbar.obj, icon.obj, label, _toolbar_callback, NULL)
+        else:
+            self.item = elm_toolbar_item_add(toolbar.obj, NULL, label, _toolbar_callback, NULL)
+        
+        # Add a new callback in our mapping dict
+        mapping = dict()
+        mapping["class"] = self
+        mapping["callback"] = callback
+        _toolbar_callback_mapping[<long>self.item] = mapping
+
+    def delete(self):
+        """Delete the item"""
+        elm_toolbar_item_del(self.item)
+
+    def select(self):
+        """Select the item"""
+        elm_toolbar_item_select(self.item)
 
 cdef class Toolbar(Object):
     """
@@ -747,18 +776,10 @@ cdef class Toolbar(Object):
         @parm: L{label} label for the item
         @parm: L{callback} function to click if the user clicked on the item
         """
-        cdef Elm_Toolbar_Item *item
-        if icon is not None:
-            item = elm_toolbar_item_add(self.obj, icon.obj, label, _toolbar_callback, NULL)
-        else:
-            item = elm_toolbar_item_add(self.obj, NULL, label, _toolbar_callback, NULL)
-    
-        # Add a new callback in our mapping dict
-        mapping = dict()
-        mapping["class"] = self
-        mapping["callback"] = callback
-        _toolbar_callback_mapping[<long>item] = mapping
-       
+        # Everything is done in the ToolbarItem class, because of wrapping the
+        # C structures in python classes
+        return ToolbarItem(self, icon, label, callback)
+
     property clicked:
         def __set__(self, value):
             """
@@ -767,9 +788,6 @@ cdef class Toolbar(Object):
             @parm: L{value} callback function
             """
             self._callback_add("clicked", value)
-       
-    
 
-
-
-
+cdef class List(Object):
+    pass
