@@ -1,0 +1,25 @@
+From a490993fe7631a56818943b7d3483d21afa5a938 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:42:48 +1100
+Subject: [PATCH] e-wm: fix package version to match src
+
+---
+ packages/e17/e-wm_svn.bb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
+index f9962ca..f7706cb 100644
+--- a/packages/e17/e-wm_svn.bb
++++ b/packages/e17/e-wm_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
+ DEPENDS = "eet evas ecore edje efreet edbus"
+ LICENSE = "MIT BSD"
+ PV = "0.16.999.050+svnr${SRCREV}"
+-PR = "r0"
++PR = "r1"
+ 
+ inherit e update-alternatives
+ 
+-- 
+1.5.4.3
+

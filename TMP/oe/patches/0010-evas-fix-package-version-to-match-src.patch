@@ -1,0 +1,38 @@
+From 8ee38d048f0352451e4387a4d0a3eb5c893d2953 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:56:23 +1100
+Subject: [PATCH] evas: fix package version to match src
+
+---
+ packages/efl1/evas-native_svn.bb |    2 +-
+ packages/efl1/evas.inc           |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/packages/efl1/evas-native_svn.bb b/packages/efl1/evas-native_svn.bb
+index dbd03f5..56723ca 100644
+--- a/packages/efl1/evas-native_svn.bb
++++ b/packages/efl1/evas-native_svn.bb
+@@ -1,7 +1,7 @@
+ require evas.inc
+ inherit native
+ DEPENDS = "freetype-native libpng-native jpeg-native eet-native eina-native"
+-PR = "r0"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+ 		--x-includes=${STAGING_INCDIR}/X11  \
+diff --git a/packages/efl1/evas.inc b/packages/efl1/evas.inc
+index ff7a184..0fb01f3 100644
+--- a/packages/efl1/evas.inc
++++ b/packages/efl1/evas.inc
+@@ -3,6 +3,7 @@ LICENSE = "MIT BSD"
+ # can also depend on valgrind, libsdl-x11, directfb
+ DEPENDS = "eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
+ PV = "0.9.9.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ 
+ # disable thumb mode for arm
+-- 
+1.5.4.3
+

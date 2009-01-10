@@ -1,5 +1,5 @@
-From 577ea90e1e2a1e66cb9234504a7ad8d4b82b1272 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From c089c9df8b8441a5a5f281900a168ef53d573913 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 11:05:28 +1100
 Subject: [PATCH] xserver-kdrive-common: fix Xserver script to properly check splash ppm
 

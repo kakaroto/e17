@@ -1,4 +1,4 @@
-From bf1379b6076ee695bf64fcf6adf8eebb61ce6f59 Mon Sep 17 00:00:00 2001
+From d0f26b42e728d40e5273fbc3497f4e87c08b1fe3 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 17:09:02 +1100
 Subject: [PATCH] palmt650.conf: use palmt650-keyboard-modmap in palmt650 machine conf

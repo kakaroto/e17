@@ -1,5 +1,5 @@
-From 32577e14160fc080dda32f2daa2fb353e0c595a6 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster) <raster@rasterman.com>
+From ed997d92be3b02f67dfe9a446b2b3dda21741a5b Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 19:19:51 +1100
 Subject: [PATCH] qemu: fix qemu to build again. otherwise qemu fails with assembler errors
 
@@ -8,12 +8,12 @@ Subject: [PATCH] qemu: fix qemu to build again. otherwise qemu fails with assemb
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/packages/qemu/qemu_svn.bb b/packages/qemu/qemu_svn.bb
-index e8d9883..199856b 100644
+index b4acae7..fa06f59 100644
 --- a/packages/qemu/qemu_svn.bb
 +++ b/packages/qemu/qemu_svn.bb
 @@ -3,6 +3,8 @@ DEPENDS = "zlib"
  PV = "0.9.1+svnr${SRCREV}"
- PR = "r13"
+ PR = "r14"
  
 +DEFAULT_PREFERENCE = "-99"
 +

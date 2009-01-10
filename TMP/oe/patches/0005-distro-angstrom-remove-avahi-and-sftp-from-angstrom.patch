@@ -1,4 +1,4 @@
-From 6debc87aebc1f0a79910fe909322d65d6a8c71b7 Mon Sep 17 00:00:00 2001
+From 467d74bd19a9c9e0b7c101641d90f538ab425349 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 17:19:22 +1100
 Subject: [PATCH] distro-angstrom: remove avahi and sftp from angstrom for openmoko
@@ -10,7 +10,7 @@ are really used or needed and just slow down boot.
  1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/conf/distro/include/angstrom-2007-for-openmoko.inc b/conf/distro/include/angstrom-2007-for-openmoko.inc
-index 7a4d498..d837413 100644
+index 34fbc52..8beaf2e 100644
 --- a/conf/distro/include/angstrom-2007-for-openmoko.inc
 +++ b/conf/distro/include/angstrom-2007-for-openmoko.inc
 @@ -230,9 +230,6 @@ DISTRO_EXTRA_RRECOMMENDS += " \

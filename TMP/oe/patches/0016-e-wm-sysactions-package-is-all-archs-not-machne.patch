@@ -1,0 +1,25 @@
+From 5f45d15bba8bb8ee161bf9ff3dc309686dd4936d Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 4 Dec 2008 12:55:47 +1100
+Subject: [PATCH] e-wm: sysactions package is "all" archs, not machne-specific and preload.a is not used for anything at all. not even dev.
+
+---
+ packages/e17/e-wm_svn.bb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
+index f7706cb..e384181 100644
+--- a/packages/e17/e-wm_svn.bb
++++ b/packages/e17/e-wm_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
+ DEPENDS = "eet evas ecore edje efreet edbus"
+ LICENSE = "MIT BSD"
+ PV = "0.16.999.050+svnr${SRCREV}"
+-PR = "r1"
++PR = "r4"
+ 
+ inherit e update-alternatives
+ 
+-- 
+1.5.4.3
+
