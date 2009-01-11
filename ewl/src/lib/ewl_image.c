@@ -125,6 +125,7 @@ ewl_image_init(Ewl_Image *i)
 
         ewl_widget_appearance_set(w, EWL_IMAGE_TYPE);
         ewl_widget_inherit(w, EWL_IMAGE_TYPE);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_SMARTOBJ);
 
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
@@ -896,11 +897,6 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         }
 
         evas_object_smart_member_add(i->image, w->smart_object);
-        if (w->fx_clip_box)
-                evas_object_stack_below(i->image, w->fx_clip_box);
-
-        if (w->fx_clip_box)
-                evas_object_clip_set(i->image, w->fx_clip_box);
 
         evas_object_pass_events_set(i->image, TRUE);
         evas_object_show(i->image);

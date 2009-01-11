@@ -7,9 +7,11 @@
 #include <Evas.h>
 #include <Edje.h>
 
+#define EWL_WIDGET_SMART_NAME "Ewl Widget Smart"
+
 static Ecore_Hash *ewl_widget_name_table = NULL;
 static Ecore_Hash *ewl_widget_data_table = NULL;
-static Evas_Smart *widget_smart = NULL;
+static Evas_Smart *ewl_widget_smart = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
                                                 int *t, int *b);
@@ -19,10 +21,14 @@ static void ewl_widget_appearance_part_text_apply(Ewl_Widget *w,
                                                   const char *part, const char *text);
 static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
-static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
-static Evas_Object *ewl_widget_layer_neighbor_find_below(Ewl_Widget *w);
-
+static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w,
+                                                        Evas_Object *clip);
+static Evas_Object *ewl_widget_layer_neighbor_find_below(Ewl_Widget *w,
+                                                        Evas_Object *clip);
 static void ewl_widget_name_table_shutdown(void);
+
+static Evas_Object *ewl_widget_smart_new(void *canvas);
+static Evas_Object *ewl_widget_smart_clip_get(Evas_Object *smart);
 
 /**
  * @return Returns a newly allocated widget on success, NULL on failure.
@@ -1966,68 +1972,6 @@ ewl_widget_onscreen_is(Ewl_Widget *w)
 }
 
 /**
- * @param w: the widget to mark as unclipped
- * @param val: the state of the clipping flag
- * @return Returns no value.
- * @brief Marks whether the widget should be clipped at it's boundaries.
- */
-void
-ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        if (val)
-                ewl_widget_flags_remove(w, EWL_FLAG_VISIBLE_NOCLIP,
-                                        EWL_FLAGS_VISIBLE_MASK);
-        else
-                ewl_widget_flags_add(w, EWL_FLAG_VISIBLE_NOCLIP,
-                                        EWL_FLAGS_VISIBLE_MASK);
-
-        if (!REALIZED(w) || (val && w->fx_clip_box) ||
-                        (!val && !w->fx_clip_box))
-                DRETURN(DLEVEL_STABLE);
-
-        if (val) {
-                Ewl_Embed *emb;
-
-                emb = ewl_embed_widget_find(w);
-                if (!emb || !emb->canvas)
-                        DRETURN(DLEVEL_STABLE);
-
-                w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
-                evas_object_pass_events_set(w->fx_clip_box, TRUE);
-                ewl_widget_configure(w);
-        }
-        else {
-                ewl_canvas_object_destroy(w->fx_clip_box);
-                w->fx_clip_box = NULL;
-        }
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param w: the widget to check if it clips it's theme object
- * @return Returns TRUE if the widget clips, otherwise FALSE.
- * @brief Checks if a widget clips it's theme object.
- */
-unsigned int
-ewl_widget_clipped_is(Ewl_Widget *w)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, FALSE);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
-
-        if (ewl_widget_flags_has(w, EWL_FLAG_VISIBLE_NOCLIP,
-                                        EWL_FLAGS_VISIBLE_MASK))
-                DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
  * @param c: the widget to compare against
  * @param w: the widget to check parentage
  * @return Returns TRUE if @a c is a parent of @a w, otherwise returns FALSE.
@@ -2150,7 +2094,6 @@ ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
                                         unsigned int b, unsigned int a)
 {
         Ewl_Color_Set *color;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
@@ -2162,8 +2105,10 @@ ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
         color->a = a;
         ewl_attach_color_set(w, color);
 
-        if (w->fx_clip_box)
-                evas_object_color_set(w->fx_clip_box, r, g, b, a);
+        if (w->theme_object)
+                evas_object_color_set(w->theme_object, r, g, b, a);
+        else if (w->smart_object)
+                evas_object_color_set(w->smart_object, r, g, b, a);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2207,28 +2152,32 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (w->parent && !REVEALED(w->parent))
-                DRETURN(DLEVEL_STABLE);
-
         if (w->parent && !TOPLAYERED(w))
                 smart_parent = w->parent->smart_object;
-        else {
+        else
+        {
                 Ewl_Embed *emb;
 
                 emb = ewl_embed_widget_find(w);
                 smart_parent = emb->smart;
         }
 
-        evas_object_smart_member_add(w->smart_object, smart_parent);
+        if (!smart_parent)
+                DRETURN(DLEVEL_STABLE);
 
         if (w->theme_object)
-                evas_object_smart_member_add(w->theme_object, w->smart_object);
-
-        if (w->fx_clip_box)
-                evas_object_smart_member_add(w->fx_clip_box, w->smart_object);
-
-        if (w->theme_object && w->fx_clip_box)
-                evas_object_stack_below(w->theme_object, w->fx_clip_box);
+        {
+                evas_object_smart_member_add(w->theme_object, smart_parent);
+                if (w->smart_object && !w->swallowed)
+                {
+                        evas_object_smart_member_add(w->smart_object,
+                                        smart_parent);
+                        evas_object_stack_above(w->smart_object,
+                                        w->theme_object);
+                }
+        }
+        else if (w->smart_object)
+                evas_object_smart_member_add(w->smart_object, smart_parent);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2236,6 +2185,7 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
 static void
 ewl_widget_layer_update(Ewl_Widget *w)
 {
+        Evas_Object *anchor;
         Ewl_Widget *p;
         int layer;
 
@@ -2246,54 +2196,64 @@ ewl_widget_layer_update(Ewl_Widget *w)
         if (!(p = w->parent))
                 DRETURN(DLEVEL_STABLE);
 
+        if (w->theme_object)
+                anchor = w->theme_object;
+        else if (w->smart_object)
+                anchor = w->smart_object;
+        else
+                DRETURN(DLEVEL_STABLE);
+
         /* check first if the widget should be on the top */
         if (TOPLAYERED(w))
+                evas_object_raise(anchor);
+        else
         {
-                evas_object_raise(w->smart_object);
-                DRETURN(DLEVEL_STABLE);
-        }
+                Evas_Object *clip;
 
-        layer = ewl_widget_layer_priority_get(w);
-        if (layer == 0)
-                evas_object_stack_above(w->smart_object, p->fx_clip_box);
+                clip = ewl_widget_smart_clip_get(p->smart_object);
+                layer = ewl_widget_layer_priority_get(w);
+                if (layer == 0)
+                        evas_object_stack_above(anchor, clip);
+                else if (layer > 0) {
+                        Evas_Object *above;
 
-        else if (layer > 0) {
-                Evas_Object *above;
-
-                if (!(above = ewl_widget_layer_neighbor_find_above(w)))
-                {
-                        DWARNING("No object to stack above.");
-                        DRETURN(DLEVEL_STABLE);
+                        if (!(above = ewl_widget_layer_neighbor_find_above(w,
+                                                        clip)))
+                        {
+                                DWARNING("No object to stack above.");
+                                DRETURN(DLEVEL_STABLE);
+                        }
+                        evas_object_stack_above(anchor, above);
                 }
-                evas_object_stack_above(w->smart_object, above);
-        }
-        else {
-                Evas_Object *below;
+                else {
+                        Evas_Object *below;
 
-                if (!(below = ewl_widget_layer_neighbor_find_below(w)))
-                {
-                        DWARNING("No object to stack below.");
-                        DRETURN(DLEVEL_STABLE);
+                        if (!(below = ewl_widget_layer_neighbor_find_below(w,
+                                                        clip)))
+                        {
+                                DWARNING("No object to stack below.");
+                                DRETURN(DLEVEL_STABLE);
+                        }
+                        evas_object_stack_below(anchor, below);
                 }
-                evas_object_stack_below(w->smart_object, below);
         }
+        if (!w->swallowed && w->smart_object && w->theme_object)
+               evas_object_stack_above(w->smart_object, w->theme_object);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static Evas_Object *
-ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
+ewl_widget_layer_neighbor_find_above(Ewl_Widget *w, Evas_Object *clip)
 {
         Evas_Object *o, *ol;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(clip, NULL);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-        if (!w->parent)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-        o = ol = w->parent->fx_clip_box;
+        o = ol = clip;
 
         while ((o = evas_object_above_get(o)))
         {
@@ -2317,18 +2277,16 @@ ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 }
 
 static Evas_Object *
-ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
+ewl_widget_layer_neighbor_find_below(Ewl_Widget *w, Evas_Object *clip)
 {
         Evas_Object *o, *ol;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(clip, NULL);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-        if (!w->parent)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-        o = ol = w->parent->fx_clip_box;
+        o = ol = clip;
 
         while ((o = evas_object_below_get(o)))
         {
@@ -2434,7 +2392,6 @@ ewl_widget_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (w->smart_object) evas_object_show(w->smart_object);
-        if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
         if (w->theme_object) evas_object_show(w->theme_object);
 
         pc = EWL_CONTAINER(w->parent);
@@ -2509,30 +2466,18 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Smart Object allocation
          */
-        if (!w->smart_object) {
-                /*
-                 * Attempt to load a cached object first, fallback to adding a
-                 * new one.
-                 */
-                w->smart_object = ewl_embed_object_request(emb, "Ewl Widget Smart Object");
-                if (!w->smart_object) {
-                        if (!widget_smart) {
-                                static const Evas_Smart_Class sc = {
-                                        "Ewl Widget Smart Object",
-                                        EVAS_SMART_CLASS_VERSION,
-                                        NULL, NULL, NULL, NULL, NULL,
-                                        NULL, NULL, NULL, NULL, NULL,
-                                        NULL, NULL, NULL
-                                };
-                                widget_smart = evas_smart_class_new(&sc);
-                        }
-                        w->smart_object = evas_object_smart_add(emb->canvas, widget_smart);
-                }
+        if (!w->smart_object &&
+                        ewl_widget_flags_get(w, EWL_FLAG_VISIBLE_SMARTOBJ))
+        {
+                w->smart_object = ewl_embed_object_request(emb,
+                                                        EWL_WIDGET_SMART_NAME);
+                if (!w->smart_object)
+                        w->smart_object = ewl_widget_smart_new(emb->canvas);
                 evas_object_data_set(w->smart_object, "EWL", w);
         }
 
         /*
-         * No object allocated yet for this widget
+         * No theme object allocated yet for this widget
          */
         if (!w->theme_object && w->theme_path && w->theme_group) {
                 /*
@@ -2543,11 +2488,12 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                 if (!w->theme_object)
                         w->theme_object = edje_object_add(emb->canvas);
 
+                evas_object_data_set(w->theme_object, "EWL", w);
                 /*
                  * Attempt to load the theme object
                  */
-                evas_object_repeat_events_set(w->theme_object, 1);
-                if (!edje_object_file_set(w->theme_object, w->theme_path, w->theme_group))
+                if (!edje_object_file_set(w->theme_object, w->theme_path,
+                                                w->theme_group))
                         DWARNING("Error setting edje object %s, %s.",
                                         w->theme_path, w->theme_group);
 
@@ -2565,18 +2511,18 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                  */
                 if (w->theme_state)
                         ewl_widget_state_set(w, (char *)w->theme_state,
-                                                EWL_STATE_PERSISTENT);
+                                                EWL_STATE_TRANSIENT);
 
                 if (DISABLED(w))
                         ewl_widget_state_set(w, "disabled",
-                                                EWL_STATE_PERSISTENT);
+                                                EWL_STATE_TRANSIENT);
 
                 /*
                  * Apply any text overrides
                  */
                 if (w->theme_object && w->theme_text.list) {
                         const char *key;
-                               char *value;
+                        char *value;
 
                         if (w->theme_text.direct) {
                                 key = EWL_PAIR(w->theme_text.list)->key;
@@ -2592,55 +2538,35 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                                 }
                         }
                 }
-        }
-
-        /*
-         * Create clip box if necessary
-         */
-        if (!w->fx_clip_box && !ewl_widget_flags_get(w,
-                                                EWL_FLAG_VISIBLE_NOCLIP)) {
-                w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
-                if (!w->fx_clip_box)
-                        w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
-
-                evas_object_pass_events_set(w->fx_clip_box, TRUE);
-        }
-
-        if (w->theme_object && w->fx_clip_box)
-                evas_object_clip_set(w->theme_object, w->fx_clip_box);
-
-        /*
-         * Setup the appropriate clippings.
-         */
-        if (w->parent && EWL_CONTAINER(w->parent)->clip_box && w->fx_clip_box) {
-                evas_object_clip_set(w->fx_clip_box,
-                                EWL_CONTAINER(w->parent)->clip_box);
-                evas_object_show(EWL_CONTAINER(w->parent)->clip_box);
+                /*
+                 * Swallow the smart object into the theme object if we have
+                 * both of them
+                 */
+                if (w->theme_object && w->smart_object
+                                && edje_object_part_exists(w->theme_object,
+                                        "swallow"))
+                {
+                        edje_object_part_swallow(w->theme_object,
+                                                "swallow", w->smart_object);
+                        w->swallowed = TRUE;
+                }
+                else
+                        w->swallowed = FALSE;
         }
 
         /*
          * Set the layer of the clip box and theme object
          */
         ewl_widget_layer_stack_add(w);
-
         if (w->parent && REVEALED(w->parent))
                 ewl_widget_layer_update(w);
-
-        if (w->fx_clip_box) {
-                Ewl_Color_Set *color;
-
-                color = ewl_attach_color_get(w);
-                if (color)
-                        evas_object_color_set(w->fx_clip_box, color->r,
-                                                color->g, color->b, color->a);
-        }
-
+        
         /*
          * Show the theme and clip box if widget is visible
          */
         if (VISIBLE(w)) {
-                if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
                 if (w->theme_object) evas_object_show(w->theme_object);
+                if (w->smart_object) evas_object_show(w->smart_object);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2680,33 +2606,21 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Remove all properties on the edje and hand it back to the embed for
          * caching.
          */
-        if (w->theme_object) {
+        if (w->theme_object)
+        {
+                if (w->swallowed)
+                        edje_object_part_unswallow(w->theme_object,
+                                                        w->smart_object);
+                evas_object_data_del(w->theme_object, "EWL");
                 ewl_embed_object_cache(emb, w->theme_object);
                 w->theme_object = NULL;
         }
 
-        /*
-         * Repeat the process for the clip rect, but also hide the parent clip
-         * box if there are no visible children. If we don't hide it, there
-         * will be a white rectangle displayed.
-         */
-        if (w->fx_clip_box) {
-                ewl_embed_object_cache(emb, w->fx_clip_box);
-                w->fx_clip_box = NULL;
-        }
-
-        if (w->smart_object) {
+        if (w->smart_object)
+        {
                 evas_object_data_del(w->smart_object, "EWL");
                 ewl_embed_object_cache(emb, w->smart_object);
                 w->smart_object = NULL;
-        }
-
-        /*
-         * This has to happen last to be sure we've removed all clipped parts
-         */
-        if (pc && pc->clip_box) {
-                if (!evas_object_clipees_get(pc->clip_box))
-                        evas_object_hide(pc->clip_box);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2934,13 +2848,11 @@ ewl_widget_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Adjust the clip box to display the widget.
          */
-        if (w->fx_clip_box) {
-                evas_object_move(w->fx_clip_box,
-                                CURRENT_X(w) - INSET_LEFT(w),
-                                CURRENT_Y(w) - INSET_TOP(w));
-                evas_object_resize(w->fx_clip_box,
-                                CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
-                                CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
+        if (w->smart_object && !w->swallowed)
+        {
+                evas_object_move(w->smart_object, CURRENT_X(w), CURRENT_Y(w));
+                evas_object_resize(w->smart_object, CURRENT_W(w),
+                                CURRENT_H(w));
         }
 
         /*
@@ -3337,4 +3249,191 @@ ewl_widget_name_table_shutdown(void)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static Evas_Object *
+ewl_widget_smart_clip_get(Evas_Object *smart)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(smart, NULL);
+
+        DRETURN_PTR(evas_object_smart_data_get(smart), DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_del(Evas_Object *obj)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_del(clip);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_move(clip, x, y);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_resize(clip, w, h);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_show(Evas_Object *obj)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj))
+                        && evas_object_clipees_get(clip))
+                evas_object_show(clip);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_hide(Evas_Object *obj)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_hide(clip);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_color_set(Evas_Object *obj, int r, int g, int b, int a)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_color_set(clip, r, g, b, a);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_clip_set(Evas_Object *obj, Evas_Object *clip_to)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_clip_set(clip, clip_to);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_clip_unset(Evas_Object *obj)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+                evas_object_clip_unset(clip);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_widget_smart_member_add(Evas_Object *obj, Evas_Object *member)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+        {
+                evas_object_clip_set(member, clip);
+                if (evas_object_visible_get(obj))
+                        evas_object_show(clip);
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_smart_member_del(Evas_Object *obj, Evas_Object *member)
+{
+        Evas_Object *clip;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if ((clip = evas_object_smart_data_get(obj)))
+        {
+                evas_object_clip_unset(member);
+                if (!evas_object_clipees_get(clip))
+                        evas_object_hide(clip);
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Evas_Object *
+ewl_widget_smart_new(void *canvas)
+{
+        Evas_Object *obj;
+        Evas_Object *clip;
+        
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(canvas, NULL);
+
+        if (!ewl_widget_smart)
+        {
+                static const Evas_Smart_Class sc = {
+                        EWL_WIDGET_SMART_NAME,
+                        EVAS_SMART_CLASS_VERSION,
+                        NULL, /* add */
+                        ewl_widget_smart_del,
+                        ewl_widget_smart_move,
+                        ewl_widget_smart_resize,
+                        ewl_widget_smart_show,
+                        ewl_widget_smart_hide,
+                        ewl_widget_smart_color_set,
+                        ewl_widget_smart_clip_set,
+                        ewl_widget_smart_clip_unset,
+                        NULL, /* calculate */
+                        ewl_widget_smart_member_add,
+                        ewl_widget_smart_member_del,
+                        NULL
+                };
+                ewl_widget_smart = evas_smart_class_new(&sc);
+        }
+        obj = evas_object_smart_add(canvas, ewl_widget_smart);
+
+        /* create the clip object */
+        clip = evas_object_rectangle_add(canvas);
+        evas_object_smart_data_set(obj, clip);
+        evas_object_smart_member_add(clip, obj);
+
+        DRETURN_PTR(obj, DLEVEL_STABLE);
+}
 

@@ -4,8 +4,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-
 static void ewl_container_child_insert_helper(Ewl_Container *pc,
                                                 Ewl_Widget *child,
                                                 int index,
@@ -65,6 +63,7 @@ ewl_container_init(Ewl_Container *c)
 
         ewl_widget_inherit(w, EWL_CONTAINER_TYPE);
         ewl_widget_recursive_set(w, TRUE);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_SMARTOBJ);
 
         /*
          * Initialize the fields specific to the container class.
@@ -73,16 +72,12 @@ ewl_container_init(Ewl_Container *c)
 
         /*
          * All containers need to perform the function of updating the
-         * children with necessary window and evas information.
+         * children with necessary window and canvas information.
          */
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
                             ewl_container_cb_configure, NULL);
         ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
                             ewl_container_cb_obscure, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_REVEAL,
-                            ewl_container_cb_reveal, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-                            ewl_container_cb_reveal, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
                             ewl_container_cb_realize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
@@ -1197,12 +1192,6 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
         if (c->child_show)
                 c->child_show(c, w);
 
-        /*
-         * Only show it if there are visible children.
-         */
-        if (c->clip_box)
-                evas_object_show(c->clip_box);
-
         ewl_widget_configure(EWL_WIDGET(c));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1246,13 +1235,6 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 
         if (c->child_hide)
                 c->child_hide(c, w);
-
-        if (c->clip_box) {
-                const Eina_List *clippees;
-                clippees = evas_object_clipees_get(c->clip_box);
-                if (!clippees)
-                        evas_object_hide(c->clip_box);
-        }
 
         ewl_widget_configure(EWL_WIDGET(c));
 
@@ -1359,7 +1341,7 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
  * @param user_data: UNUSED
  * @return Returns no value
  * @brief When reparenting a container, it's children need the updated
- * information about the container, such as the evas.
+ * information about the container, such as the canvas.
  */
 void
 ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -1461,7 +1443,6 @@ void
 ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
                          void *user_data __UNUSED__)
 {
-        Ewl_Embed *e;
         Ewl_Container *c;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1469,15 +1450,6 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         c = EWL_CONTAINER(w);
-
-        /*
-         * Give up the clip box object in use.
-         */
-        e = ewl_embed_widget_find(EWL_WIDGET(w));
-        if (e && c->clip_box) {
-                ewl_embed_object_cache(e, c->clip_box);
-                c->clip_box = NULL;
-        }
 
         /*
          * Notify children that they are now obscured, they will not receive a
@@ -1495,56 +1467,6 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief Callback for when the container is revealed
- */
-void
-ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-                        void *user_data __UNUSED__)
-{
-        Ewl_Embed *e;
-        Ewl_Container *c;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
-
-        c = EWL_CONTAINER(w);
-
-        /*
-         * Create the clip box for this container, this keeps children clipped
-         * to the wanted area.
-         */
-        e = ewl_embed_widget_find(EWL_WIDGET(w));
-        if (e && !c->clip_box)
-        {
-                c->clip_box = ewl_embed_object_request(e, "rectangle");
-                if (!c->clip_box)
-                        c->clip_box = evas_object_rectangle_add(e->canvas);
-        }
-
-        /*
-         * Setup the remaining properties for the clip box.
-         */
-        if (c->clip_box) {
-                evas_object_pass_events_set(c->clip_box, TRUE);
-                evas_object_smart_member_add(c->clip_box, w->smart_object);
-
-                if (w->fx_clip_box) {
-                        evas_object_clip_set(c->clip_box, w->fx_clip_box);
-                        evas_object_stack_below(c->clip_box, w->fx_clip_box);
-                }
-
-                evas_object_color_set(c->clip_box, 255, 255, 255, 255);
-        }
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 
 /**
  * @internal
@@ -1576,7 +1498,7 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * If this container has not yet been realized, then it's children
          * haven't either. So we call ewl_widget_reparent to get each child
-         * to update it's evas related fields to the new information, and then
+         * to update it's canvas related fields to the new information, and then
          * realize any of them that should be visible.
          */
         while ((child = ecore_dlist_index_goto(c->children, i))) {
@@ -1606,17 +1528,6 @@ ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
-        if (EWL_CONTAINER(w)->clip_box) {
-                /*
-                 * Move the clip box into the new position and size of the
-                 * container.
-                 */
-                evas_object_move(EWL_CONTAINER(w)->clip_box,
-                          CURRENT_X(w), CURRENT_Y(w));
-                evas_object_resize(EWL_CONTAINER(w)->clip_box,
-                            CURRENT_W(w), CURRENT_H(w));
-        }
-
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1640,14 +1551,6 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         c = EWL_CONTAINER(w);
-
-        /*
-         * Clean up the clip box of the container.
-         */
-        if (c->clip_box) {
-                ewl_canvas_object_destroy(c->clip_box);
-                c->clip_box = NULL;
-        }
 
         /*
          * FIXME: If called from a destroy callback, the child list may not

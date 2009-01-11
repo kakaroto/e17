@@ -144,9 +144,8 @@ struct Ewl_Widget
         Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
         void *smart_object; /**< Smart Object for the layer stuff */
-        void *fx_clip_box;  /**< Clipping rectangle of widget */
-
         void *theme_object; /**< Appearance shown on canvas */
+
         const char *theme_path;     /**< Path to the file for loading */
         const char *theme_group;    /**< Group in theme to use */
         const char *theme_state;    /**< State of the appearance */
@@ -157,6 +156,7 @@ struct Ewl_Widget
         Ecore_Hash *theme;          /**< Overriding theme settings */
         Ewl_Pair_List theme_text;   /**< Overriding text in theme */
         unsigned int flags;         /**< the widget flags */
+        unsigned char swallowed:1;
 };
 
 Ewl_Widget      *ewl_widget_new(void);
@@ -223,9 +223,6 @@ unsigned int     ewl_widget_internal_is(Ewl_Widget *w);
 
 void             ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_unmanaged_is(Ewl_Widget *w);
-
-void             ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
-unsigned int     ewl_widget_clipped_is(Ewl_Widget *w);
 
 void             ewl_widget_focus_send(Ewl_Widget *w);
 Ewl_Widget      *ewl_widget_focused_get(void);

@@ -94,8 +94,6 @@ struct Ewl_Container
         Ecore_DList *children; /**< List of children that are contained. */
         int visible_children; /**< the number of visible children */
 
-        void *clip_box; /**< Clip box to bound widgets inside. */
-
         Ewl_Container *redirect; /**< Alternate parent for children */
 
         Ewl_Child_Add child_add; /**< Function called on child add */
@@ -181,7 +179,6 @@ void             ewl_container_redirect_set(Ewl_Container *c,
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_configure(Ewl_Widget * w, void *ev_data, void *user_data);

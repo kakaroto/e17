@@ -3656,18 +3656,9 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
                 ewl_text_context_release(ctx);
                 FREE(fmt2);
 
-                if (EWL_CONTAINER(w)->clip_box)
-                {
-                        evas_object_clip_set(t->textblock, 
-                                        EWL_CONTAINER(w)->clip_box);
-                        evas_object_show(EWL_CONTAINER(w)->clip_box);
-                }
-                else
-                        DWARNING("Text does not have a clip box!");
-
                 evas_object_pass_events_set(t->textblock, 1);
                 evas_object_smart_member_add(t->textblock, w->smart_object);
-                if (w->fx_clip_box) evas_object_raise(t->textblock);
+                evas_object_raise(t->textblock);
 
                 ewl_text_display(t);
                 evas_object_show(t->textblock);

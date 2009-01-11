@@ -2307,7 +2307,9 @@ ewl_embed_smart_cb_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
         DCHECK_PARAM_PTR(obj);
 
         emb = evas_object_smart_data_get(obj);
-        if (emb)
+        if (emb && (ewl_object_current_x_get(EWL_OBJECT(emb)) != (int)x
+                                || ewl_object_current_y_get(EWL_OBJECT(emb))
+                                        != (int)y))
                 ewl_object_position_request(EWL_OBJECT(emb),
                                                 (int)(x), (int)(y));
 
@@ -2323,7 +2325,9 @@ ewl_embed_smart_cb_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
         DCHECK_PARAM_PTR(obj);
 
         emb = evas_object_smart_data_get(obj);
-        if (emb)
+        if (emb && (ewl_object_current_w_get(EWL_OBJECT(emb)) != (int)w
+                                || ewl_object_current_h_get(EWL_OBJECT(emb)) 
+                                        != (int)h))
                 ewl_object_size_request(EWL_OBJECT(emb), (int)(w), (int)(h));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2368,8 +2372,13 @@ ewl_embed_smart_cb_clip_set(Evas_Object *obj, Evas_Object *clip)
 
         emb = evas_object_smart_data_get(obj);
         w = EWL_WIDGET(emb);
-        if (emb && w->fx_clip_box && (clip != w->fx_clip_box))
-                evas_object_clip_set(w->fx_clip_box, clip);
+        if (!emb)
+                DRETURN(DLEVEL_STABLE);
+        
+        if (w->theme_object)
+                evas_object_clip_set(w->theme_object, clip);
+        else
+                evas_object_clip_set(w->smart_object, clip);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2385,8 +2394,13 @@ ewl_embed_smart_cb_clip_unset(Evas_Object *obj)
 
         emb = evas_object_smart_data_get(obj);
         w = EWL_WIDGET(emb);
-        if (emb && w->fx_clip_box)
-                evas_object_clip_unset(w->fx_clip_box);
+        if (!emb)
+                DRETURN(DLEVEL_STABLE);
+        
+        if (w->theme_object)
+                evas_object_clip_unset(w->theme_object);
+        else
+                evas_object_clip_unset(w->smart_object);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

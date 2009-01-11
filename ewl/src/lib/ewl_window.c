@@ -4,6 +4,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 Ecore_List *ewl_window_list = NULL;
 unsigned int EWL_CALLBACK_EXPOSE = 0;
 unsigned int EWL_CALLBACK_DELETE_WINDOW = 0;
@@ -1233,6 +1235,8 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         void *user_data __UNUSED__)
 {
         Ewl_Window *win;
+        int cx, cy, cw, ch;
+        void *smart;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -1251,12 +1255,19 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                 win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
         else
                 ewl_engine_window_resize(win);
+                        
+        cx = ewl_object_current_x_get(EWL_OBJECT(win));
+        cy = ewl_object_current_y_get(EWL_OBJECT(win));
+        cw = ewl_object_current_w_get(EWL_OBJECT(win));
+        ch = ewl_object_current_h_get(EWL_OBJECT(win));
 
-        ewl_engine_canvas_output_set(EWL_EMBED(win),
-                        ewl_object_current_x_get(EWL_OBJECT(win)),
-                        ewl_object_current_y_get(EWL_OBJECT(win)),
-                        ewl_object_current_w_get(EWL_OBJECT(win)),
-                        ewl_object_current_h_get(EWL_OBJECT(win)));
+        ewl_engine_canvas_output_set(EWL_EMBED(win), cx, cy, cw, ch);
+
+        if ((smart = EWL_EMBED(win)->smart))
+        {
+                evas_object_resize(smart, cw, ch);
+                evas_object_move(smart, cx, cy);
+        }
 
         /*
          * Adjust the minimum and maximum window bounds to match the widget.

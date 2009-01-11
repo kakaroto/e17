@@ -154,9 +154,9 @@ enum Ewl_Widget_Flags
         EWL_FLAG_VISIBLE_SHOWN    = 0x1,        /**< Widget shown */
         EWL_FLAG_VISIBLE_REALIZED = 0x2,        /**< Widget realized */
         EWL_FLAG_VISIBLE_REVEALED = 0x4,        /**< Widget revealed */
-        EWL_FLAG_VISIBLE_NOCLIP   = 0x8,        /**< Widget has no clip */
-        EWL_FLAG_VISIBLE_NOTIFIED = 0x10,       /**< Container is notified */
-
+        EWL_FLAG_VISIBLE_NOTIFIED = 0x8,        /**< Container is notified */
+        EWL_FLAG_VISIBLE_SMARTOBJ = 0x10,       /**< Widget has more canvas
+                                                objects then a theme object */
         /*
          * Behavior modifying properties.
          */
@@ -201,7 +201,7 @@ enum Ewl_Widget_Flags
  */
 #define EWL_FLAGS_VISIBLE_MASK (EWL_FLAG_VISIBLE_HIDDEN | \
                 EWL_FLAG_VISIBLE_SHOWN | EWL_FLAG_VISIBLE_REALIZED | \
-                EWL_FLAG_VISIBLE_REVEALED | EWL_FLAG_VISIBLE_NOCLIP | \
+                EWL_FLAG_VISIBLE_REVEALED | EWL_FLAG_VISIBLE_SMARTOBJ | \
                 EWL_FLAG_VISIBLE_NOTIFIED)
 
 /**

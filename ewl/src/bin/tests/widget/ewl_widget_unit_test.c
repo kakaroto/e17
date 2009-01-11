@@ -28,7 +28,6 @@ static int test_internal_set_get(char *buf, int len);
 static int test_unmanaged_set_get(char *buf, int len);
 static int test_toplayered_set_get(char *buf, int len);
 static int test_layer_priority_set_get(char *buf, int len);
-static int test_clipped_set_get(char *buf, int len);
 static int test_data_set_get(char *buf, int len);
 static int test_data_set_remove(char *buf, int len);
 
@@ -70,7 +69,6 @@ Ewl_Unit_Test widget_unit_tests[] = {
                 {"unmanaged set/get", test_unmanaged_set_get, NULL, -1, 0},
                 {"layer top set/get", test_toplayered_set_get, NULL, -1, 0},
                 {"layer priority set/get", test_layer_priority_set_get, NULL, -1, 0},
-                {"clipped set/get", test_clipped_set_get, NULL, -1, 0},
                 {"data set/get", test_data_set_get, NULL, -1, 0},
                 {"data set/remove", test_data_set_remove, NULL, -1, 0},
                 {"new", test_new, NULL, -1, 0},
@@ -114,8 +112,6 @@ test_constructor(char *buf, int len)
                 LOG_FAILURE(buf, len, "widget is internal");
         else if (ewl_widget_unmanaged_is(w))
                 LOG_FAILURE(buf, len, "widget is unmanaged");
-        else if (!ewl_widget_clipped_is(w))
-                LOG_FAILURE(buf, len, "widget is not clipped");
         else if (!ewl_widget_focusable_get(w))
                 LOG_FAILURE(buf, len, "widget is not focusable");
         else if (ewl_widget_ignore_focus_change_get(w))
@@ -341,37 +337,6 @@ test_layer_priority_set_get(char *buf, int len)
         else
                 LOG_FAILURE(buf, len, "layer priority is unequal zero "
                                         "after widget_init");
-
-        return ret;
-}
-
-
-/*
- * Verify that the clipped flag on a widget is set properly after changing
- * between states.
- */
-static int
-test_clipped_set_get(char *buf, int len)
-{
-        Ewl_Widget *w;
-        int ret = 0;
-
-        w = ewl_widget_new();
-
-        if (ewl_widget_clipped_is(w)) {
-                ewl_widget_clipped_set(w, FALSE);
-                if (!ewl_widget_clipped_is(w)) {
-                        ewl_widget_clipped_set(w, TRUE);
-                        if (!ewl_widget_clipped_is(w))
-                                LOG_FAILURE(buf, len, "clipped flag not TRUE");
-                        else
-                                ret = 1;
-                }
-                else
-                        LOG_FAILURE(buf, len, "clipped flag not FALSE");
-        }
-        else
-                LOG_FAILURE(buf, len, "clipped not set after widget_init");
 
         return ret;
 }

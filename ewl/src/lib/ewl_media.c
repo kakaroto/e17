@@ -62,6 +62,7 @@ ewl_media_init(Ewl_Media *m)
 
         ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
         ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
+        ewl_widget_visible_add(EWL_WIDGET(w), EWL_FLAG_VISIBLE_SMARTOBJ);
 
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
                                 ewl_media_cb_realize, NULL);
@@ -529,13 +530,8 @@ ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         m = EWL_MEDIA(w);
 
-        if (m->video) {
+        if (m->video)
                 evas_object_smart_member_add(m->video, w->smart_object);
-                if (w->fx_clip_box) {
-                        evas_object_clip_set(m->video, w->fx_clip_box);
-                        evas_object_stack_above(m->video, w->fx_clip_box);
-                }
-        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
