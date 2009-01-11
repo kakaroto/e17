@@ -2,8 +2,10 @@
 [Desktop Entry]
 Type=Link
 Name=exalt
+Name[it]=Exalt
 Icon=e-module-exalt
 Comment=<hilight>exalt Module</hilight>
+Comment[it]=<hilight>Modulo Exalt</hilight>
 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system
