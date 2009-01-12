@@ -1434,8 +1434,8 @@ ewl_text_cursor_position_word_previous_get(Ewl_Text *t)
         unsigned int char_idx, byte_idx;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(t, t->cursor_position);
-        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
+        DCHECK_PARAM_PTR_RET(t, 0);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         char_idx = ewl_text_cursor_position_get(t);
         ewl_text_fmt_char_to_byte(t->formatting.nodes,
