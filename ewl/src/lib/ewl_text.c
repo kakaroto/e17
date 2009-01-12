@@ -17,7 +17,7 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 
 static const char ewl_text_trailing_bytes[32] =
 {
-        1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 
+        1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,
         1,1,1,1, 1,1,1,1, 2,2,2,2, 3,3,4,6
 };
 
@@ -197,7 +197,7 @@ ewl_text_length_maximum_set(Ewl_Text *t, unsigned int char_num)
 
 /**
  * @param t: The Ewl_Text to get the maximum number of characters
- * @return Returns the maximum length of characters, if the number is 
+ * @return Returns the maximum length of characters, if the number is
  *         unlimited it returns 0
  * @brief Retrieve if maximum number of characters
  */
@@ -314,7 +314,7 @@ ewl_text_minmax_size_update(Ewl_Text *t)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(t);
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
-        
+
         emb = ewl_embed_widget_find(EWL_WIDGET(t));
         if (!emb)
         {
@@ -344,13 +344,13 @@ ewl_text_minmax_size_update(Ewl_Text *t)
         fn = evas_imaging_font_load(source, font, tx->size);
         if (t->min.size_string)
         {
-                evas_imaging_font_string_size_query(fn, t->min.size_string, 
+                evas_imaging_font_string_size_query(fn, t->min.size_string,
                                                                 &width, NULL);
                 ewl_object_minimum_w_set(EWL_OBJECT(t), width);
         }
         if (t->max.size_string)
         {
-                evas_imaging_font_string_size_query(fn, t->max.size_string, 
+                evas_imaging_font_string_size_query(fn, t->max.size_string,
                                                                 &width, NULL);
                 ewl_object_maximum_w_set(EWL_OBJECT(t), width);
         }
@@ -986,7 +986,7 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
                 ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_KEY_DOWN,
                                                 ewl_text_cb_key_down, NULL);
                 ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_SELECTION_CLEAR,
-                                                ewl_text_cb_selection_clear, 
+                                                ewl_text_cb_selection_clear,
                                                 NULL);
         }
         else
@@ -3218,7 +3218,7 @@ ewl_text_char_utf8_is(const char *c)
         /* check for ascii chars first */
         if (t[0] < 0x80) DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        /* the first byte will give use the length of the character, we 
+        /* the first byte will give use the length of the character, we
          * already checked if it is an ASCII, wrong lengths like 1 and 5
          * are catched by the switch.
          * So we only have to check if the following bytes are valid UTF-8
@@ -3227,19 +3227,19 @@ ewl_text_char_utf8_is(const char *c)
          * 0b10xxxxxx. Anding this with 0b11000000 (0xc0) must result in
          * 0b10000000 (0x80) else it is not a legal UTF-8 trailing byte
          * and thus not a valid utf8 character.
-         */ 
+         */
         switch (EWL_TEXT_CHAR_BYTE_LEN(t))
         {
-                case 4: 
-                        if ((*(++t) & 0xc0) != 0x80) 
+                case 4:
+                        if ((*(++t) & 0xc0) != 0x80)
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
                         /* fall through */
-                case 3: 
-                        if ((*(++t) & 0xc0) != 0x80) 
+                case 3:
+                        if ((*(++t) & 0xc0) != 0x80)
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
                         /* fall through */
-                case 2: 
-                        if ((*(++t) & 0xc0) != 0x80) 
+                case 2:
+                        if ((*(++t) & 0xc0) != 0x80)
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
                         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -3371,7 +3371,7 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
                 if (strlen(ptr) < node->byte_len)
                         DWARNING("Byte length of node %u overruns actual"
                                  " text %d", node->byte_len, (int)strlen(ptr));
-                                
+
                 *(ptr + node->byte_len) = '\0';
 
                 ewl_text_plaintext_parse(t->textblock, ptr);
@@ -3845,7 +3845,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         if (!t->selection)
                 t->selection = ewl_text_selection_new(t);
-        
+
         sel = EWL_TEXT_TRIGGER(t->selection);
 
         char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
@@ -3976,7 +3976,7 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 /* This can happen after key/mouse actions, so default to
                  * wherever the cursor is at this point, not 0
                  */
-                ewl_text_trigger_base_set(EWL_TEXT_TRIGGER(t->selection), 
+                ewl_text_trigger_base_set(EWL_TEXT_TRIGGER(t->selection),
                                 ewl_text_cursor_position_get(t));
 
                 /* Same problem as mouse_down... place it inside the
@@ -3997,7 +3997,7 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                         if (pos > 0) pos--;
                 }
         }
-        
+
         else if (!strcmp(event->keyname, "Right"))
         {
                 if (event->modifiers & EWL_KEY_MODIFIER_CTRL)
@@ -4045,7 +4045,7 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 }
 
 void
-ewl_text_cb_selection_clear(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_text_cb_selection_clear(Ewl_Widget *w, void *ev __UNUSED__,
                                 void *data __UNUSED__)
 {
         Ewl_Text *t;
@@ -4204,7 +4204,7 @@ ewl_text_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
                         if (EWL_TEXT(c)->selection != w)
                                 DWARNING("We are removing a selection, that"
                                          "isn't our own. WTF is happening?");
-                                        
+
                         EWL_TEXT(c)->selection = NULL;
                 }
         }
