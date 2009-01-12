@@ -14,6 +14,7 @@ AM_CPPFLAGS = \
 @EVIL_CFLAGS@
 
 bin_PROGRAMS = expedite
+bin_SCRIPTS = expedite-cmp
 
 expedite_SOURCES = \
 main.c main.h \

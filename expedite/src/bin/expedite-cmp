@@ -1,0 +1,212 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import os.path
+import csv
+from optparse import OptionParser
+
+parser = OptionParser(usage="%prog [options] <reference> <file2> .. <fileN>",
+                      description="""\
+Generate reports comparing two or more outputs of expedite.
+
+Just run expedite and save output to a file and then feed them to this
+program. The first file is used as base for comparison and other files
+will print relative improvements.
+""")
+parser.add_option("-e", "--accepted-error",
+                  help=("maximum error to accept as percentage 0.0-1.0. "
+                        "[default=%default]"),
+                  action="store", type="float", default=0.05)
+parser.add_option("-r", "--report",
+                  help=("kind of report to use. One of text or html. "
+                        "[default=%default]"),
+                  action="store", type="choice", default="text",
+                  choices=["text", "html"])
+parser.add_option("-p", "--percentual",
+                  help=("show percentual instead of raw numbers for "
+                        "non-reference values."),
+                  action="store_true", default=False)
+parser.add_option("-C", "--no-color", dest="color",
+                  help="do not use color in reports.",
+                  action="store_false", default=True)
+
+options, files = parser.parse_args()
+if len(files) < 2:
+    raise SystemExit("need at least 2 files to compare")
+
+
+ref_f = files[0]
+others_f = files[1:]
+
+max_test_name = 0
+data = {}
+tests = []
+for f in files:
+    d = data[f] = {}
+    for row in csv.reader(open(f)):
+        t = row[1].strip()
+        if f == ref_f:
+            tests.append(t)
+        d[t] = float(row[0])
+        max_test_name = max(len(t), max_test_name)
+
+def report_text():
+    test_name_fmt = "%%%ds:" % max_test_name
+
+    print test_name_fmt % "\\",
+    for f in files:
+        n, e = os.path.splitext(f)
+        print "%7.7s" % n[-7:],
+    print
+
+    if options.color and os.environ.get("TERM", "") == "xterm":
+        color_good = "\033[1;32m"
+        color_bad = "\033[1;31m"
+        color_equal = "\033[1;30m"
+        color_reset = "\033[0m"
+    else:
+        color_good = ""
+        color_bad = ""
+        color_equal = ""
+        color_reset = ""
+
+
+    def print_row(test):
+        print test_name_fmt % test,
+        ref_val = data[ref_f][test]
+        print "%7.2f" % ref_val,
+        for f in others_f:
+            try:
+                val = data[f][test]
+            except KeyError:
+                print "-?????-",
+                continue
+
+            percent = (val - ref_val) / ref_val
+            if percent < -options.accepted_error:
+                c = color_bad
+            elif percent > options.accepted_error:
+                c = color_good
+            else:
+                c = color_equal
+
+            if options.percentual:
+                print "%s%+6.1f%%%s" % (c, (percent * 100), color_reset),
+            else:
+                print "%s%7.2f%s" % (c, val, color_reset),
+
+        print
+
+    for t in tests:
+        print_row(t)
+
+
+def report_html():
+    import time
+
+    fnames = [os.path.basename(f) for f in files]
+    print """\
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>expedite comparison sheet: %(files)s</title>
+  </head>
+  <style type="text/css">
+    td.value, td.value-reference, td.value-missing, td.value-good, td.value-bad, td.value-equal
+    {
+       font-family: courier, monospaced;
+       font-size: 10pt;
+       text-align: right;
+    }
+    td.test-name, thead tr td { text-align: right; }\
+"""
+    if options.color:
+        print """\
+    td.value-good { background-color: #aaffaa; }
+    td.value-bad { background-color: #ffaaaa; }
+    td.value-missing { background-color: #ffffaa; }
+    td.test-name, thead tr td
+    {
+       font-weight: bold;
+       background-color: #d9d9d9;
+    }
+"""
+
+    print """
+  </style>
+  <body>
+     <p>Comparison sheet for %(files)s, created at %(date)s.</p>
+     <table>
+       <thead>
+         <tr>
+           <td>\\</td>\
+""" % {"files": ", ".join(fnames),
+       "date": time.asctime(),
+       }
+
+    for f in fnames:
+        print """\
+           <td>%s</td>\
+""" % f
+    print """\
+         </tr>
+       </thead>
+       <tbody>\
+"""
+
+    def print_row(test):
+        ref_val = data[ref_f][test]
+        print """\
+         <tr>
+           <td class="test-name">%s</td>
+           <td class="value-reference">%7.2f</td>\
+""" % (test, ref_val)
+
+        for f in others_f:
+            try:
+                val = data[f][test]
+            except KeyError:
+                print """\
+           <td class="value-missing">-?????-</td>\
+"""
+                continue
+
+            percent = (val - ref_val) / ref_val
+            if percent < -options.accepted_error:
+                c = 'bad'
+            elif percent > options.accepted_error:
+                c = 'good'
+            else:
+                c = 'equal'
+
+            if options.percentual:
+                v = "%+6.1f%%" % (percent * 100)
+            else:
+                v = "%7.2f" % val
+
+            print """\
+           <td class="value-%s">%s</td>\
+""" % (c, v)
+
+        print """\
+         </tr>\
+"""
+
+    for t in tests:
+        print_row(t)
+
+    print """\
+       </tbody>
+     </table>
+  </body>
+</html>
+"""
+
+if options.report == "text":
+    report_text()
+elif options.report == "html":
+    report_html()
