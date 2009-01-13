@@ -19,6 +19,7 @@ collections
 #include "groups/cursor.edc"
 #include "groups/dialog.edc"
 #include "groups/highlight.edc"
+#include "groups/image.edc"
 #include "groups/label.edc"
 #include "groups/menu.edc"
 #include "groups/notebook.edc"
@@ -69,6 +70,9 @@ data
 
 	/* highlight group */
 	item: "/highlight/group" "ewl/highlight";
+
+	/* image group */
+	item: "/image/group" "ewl/image";
 
 	/* label groups */
 	item: "/label/group" "ewl/label";

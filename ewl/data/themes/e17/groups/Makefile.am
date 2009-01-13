@@ -10,6 +10,7 @@ combo.edc \
 cursor.edc \
 dialog.edc \
 highlight.edc \
+image.edc \
 label.edc \
 menu.edc \
 notebook.edc \
