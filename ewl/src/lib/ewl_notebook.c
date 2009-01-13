@@ -419,6 +419,8 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
                 idx = ewl_container_child_index_get(EWL_CONTAINER(n), page);
                 ewl_container_child_insert(EWL_CONTAINER(n->body.tabbar), t, idx);
         }
+        else
+                ewl_container_reset(EWL_CONTAINER(t));
 
         /* if this is the current page set it's tab to selected */
         if (n->cur_page == page)
