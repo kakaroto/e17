@@ -1,3 +1,43 @@
+2009-01-13  Vincent Torri  <doursse at users dot sf dot net>
+
+	* Makefile.am:
+	* autogen.sh:
+	* configure.ac:
+	* epdf-etk.pc.in:
+	* epdf-ewl.pc.in:
+	* m4/ac_attribute.m4:
+	* m4/efl_doxygen.m4:
+	* src/bin/Makefile.am:
+	* src/bin/epdf_ewl_test.c:
+	* src/lib/Makefile.am:
+	separate the ewl and etk widgets from epdf.
+	use epdf-ewl. pc and epf-etk.pc files to get
+	the correct flags to pass to gcc.
+
+	* src/plugins/epsilon/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	add always -no-undefined.
+
+	* doc/Doxyfile:
+	* doc/Makefile.am:
+	* doc/e.css:
+	* doc/foot.html:
+	* doc/head.html:
+	* doc/img/_.gif:
+	* doc/img/b.png:
+	* doc/img/eet.png:
+	* doc/img/eet_big.png:
+	* doc/img/eet_mini.png:
+	* doc/img/eet_small.png:
+	* doc/img/hilite.png:
+	* doc/img/n.gif:
+	* doc/img/n.png:
+	* doc/img/t.gif:
+	* doc/img/t.png:
+	* doc/img/tl.gif:
+	* doc/img/tl.png:
+	add doc rule to build the documentation.
+
 2009-01-09  Mikhail Gusarov <dottedmag at dottedmag dot net>
 
 	reviewed by: Vincent Torri  <doursse at users dot sf dot net>

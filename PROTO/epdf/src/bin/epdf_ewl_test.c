@@ -241,7 +241,6 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (sp), list);
   ewl_widget_show (list);
 
-  ewl_pdf_scale_set (EWL_PDF (pdf), 0.5, 0.5);
   ewl_container_child_append (EWL_CONTAINER (hbox), pdf);
   ewl_widget_show (pdf);
 
