@@ -455,7 +455,7 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
-        o = ewl_container_child_get(EWL_CONTAINER(n), 0);
+        o = ewl_container_child_get(EWL_CONTAINER(t), 0);
 
         DRETURN_PTR(o, DLEVEL_STABLE);
 }
