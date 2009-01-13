@@ -10,9 +10,9 @@ install/entrance::
 	mkdir -p debian/entrance/etc/init.d
 	install -c -m 755 debian/install-initscript debian/entrance/etc/init.d/entrance
 	mkdir -p debian/entrance/etc/pam.d
-	install -c -m 644 debian/etc/install-pam debian/entrance/etc/pam.d/entrance
+	install -c -m 644 debian/install-pam debian/entrance/etc/pam.d/entrance
 	mkdir -p debian/entrance/etc/entrance
-	install -c -m 755 debian/etc/install-Xsession debian/entrance/etc/entrance/Xsession
+	install -c -m 755 debian/install-Xsession debian/entrance/etc/entrance/Xsession
 
 clean::
 	./autogen.sh --prefix=/usr $(DEB_CONFIGURE_EXTRA_FLAGS)
