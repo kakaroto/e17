@@ -1,5 +1,13 @@
 2009-01-13  Vincent Torri  <doursse at users dot sf dot net>
 
+	* COPYING.LESSER:
+	* LICENCE:
+	the LGPL licence is used for the source files that are in
+	src/lib and src/plugins and the GPL licence is used for
+	the source files that are in src/bin
+
+2009-01-13  Vincent Torri  <doursse at users dot sf dot net>
+
 	* Makefile.am:
 	* autogen.sh:
 	* configure.ac:

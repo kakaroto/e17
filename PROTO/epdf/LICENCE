@@ -1,0 +1,9 @@
+
+Epdf comes with two licence: the LGPL (see COPYING.LESSER)
+and the GPL (see COPYING) ones.
+
+The LGPL licence is used for the files located in the
+src/lib and src/plugins directories
+
+The GPL licence is used for the files located in the
+src/bin directory.
