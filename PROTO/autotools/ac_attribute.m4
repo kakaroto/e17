@@ -21,14 +21,14 @@ AC_CACHE_VAL([ac_cv___attribute__],
    [AC_TRY_COMPILE(
        [
 #include <stdlib.h>
-       ],
-       [
+
 int func(int x);
 int foo(int x __attribute__ ((unused)))
 {
    exit(1);
 }
        ],
+       [],
        [ac_cv___attribute__="yes"],
        [ac_cv___attribute__="no"]
     )]
