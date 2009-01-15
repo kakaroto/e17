@@ -57,7 +57,7 @@ cdef enum Elm_Icon_Type:
     ELM_ICON_FILE
     ELM_ICON_STANDARD
 
-cdef enum Elm_List_Mode:
+cdef enum Elementary_List_Mode:
     ELM_LIST_COMPRESS
     ELM_LIST_SCROLL
     ELM_LIST_LIMIT
@@ -266,6 +266,22 @@ cdef extern from "Elementary.h":
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
     Elm_List_Item *elm_list_item_append(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *indicator, evas.c_evas.Evas_Object *end, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    Elm_List_Item *elm_list_item_prepend(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
+    Elm_List_Item *elm_list_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_List_Item *before, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
+    Elm_List_Item *elm_list_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_List_Item *after, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
+    void         elm_list_go(evas.c_evas.Evas_Object *obj) 
+    void      elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool multi) 
+    void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode) 
+    evas.c_evas.Eina_List     *elm_list_items_get(evas.c_evas.Evas_Object *obj) 
+    Elm_List_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj) 
+    evas.c_evas.Eina_List     *elm_list_selected_items_get(evas.c_evas.Evas_Object *obj) 
+    void         elm_list_item_selected_set(Elm_List_Item *item, evas.c_evas.Evas_Bool selected) 
+    void         elm_list_item_show(Elm_List_Item *item) 
+    void         elm_list_item_del(Elm_List_Item *item) 
+    void  *elm_list_item_data_get(Elm_List_Item *item) 
+    evas.c_evas.Evas_Object *elm_list_item_icon_get(Elm_List_Item *item) 
+    evas.c_evas.Evas_Object *elm_list_item_end_get(Elm_List_Item *item) 
+
 
 # Forward declaration of some classes
 cdef class Object

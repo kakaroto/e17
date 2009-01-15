@@ -4,6 +4,7 @@ import evas
 
 def destroy(obj, event, *args, **kargs):
     print "DEBUG: window destroy callback called!"
+    raise Exception()
     elementary.exit()
     
 def bg_plain_clicked(obj, event, *args, **kargs):

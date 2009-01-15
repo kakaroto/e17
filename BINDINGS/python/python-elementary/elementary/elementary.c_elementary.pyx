@@ -20,6 +20,7 @@ import sys
 import evas.c_evas
 cimport evas.c_evas as c_evas
 cimport evas.python
+import traceback
 
 def init():
     # Partly from python-etk
@@ -50,14 +51,17 @@ cdef object _callback_mappings
 _callback_mappings = dict()
 
 cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    mapping = _callback_mappings.get(<long>obj,None)
-    if mapping is not None:
-        func = mapping.get(<char*>data,None)
+    try:
+        mapping = _callback_mappings.get(<long>obj,None)
+        if mapping is not None:
+            func = mapping.get(<char*>data,None)
         
-        if not callable(func):
-            raise TypeError("func is not callable")
+            if not callable(func):
+                raise TypeError("func is not callable")
         
-        func(mapping["__class__"],<char*>data)
+            func(mapping["__class__"],<char*>data)
+    except Exception, e:
+        traceback.print_exc()
 
 cdef class Object(evas.c_evas.Object):
     """
@@ -656,21 +660,37 @@ cdef object _hoversel_callback_mapping
 _hoversel_callback_mapping = dict()
 
 cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    mapping = _hoversel_callback_mapping.get(<long>event_info)
-    if mapping is not None:
-        callback = mapping["callback"] 
-        if callback is not None and callable(callback):
-            callback(mapping["class"], "clicked")
-    else:
-        print "DEBUG: no callback there for the item!"
+    try:
+        mapping = _hoversel_callback_mapping.get(<long>event_info)
+        if mapping is not None:
+            callback = mapping["callback"] 
+            if callback is not None and callable(callback):
+                callback(mapping["class"], "clicked")
+        else:
+            print "ERROR: no callback available for the hoversel-item"
+    except Exception, e:
+        traceback.print_exc()
 
 cdef class HoverselItem:
-    pass
+    """A item for the hoversel widget"""
+    cdef Elm_Hoversel_Item *item
+
+    def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type, callback, data = None):
+        self.item = elm_hoversel_item_add(hoversel.obj, label, icon_file, icon_type,_hoversel_callback, NULL)
+       
+        # Create the mapping
+        mapping = dict()
+        mapping["class"] = hoversel
+        mapping["callback"] = callback
+        _hoversel_callback_mapping[<long>self.item] = mapping
+
+    def delete(self):
+        """Delete the hoversel item"""
+        elm_hoversel_item_del(self.item)
 
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_hoversel_add(parent.obj))
-        self.items = {}
 
     property clicked:
         def __set__(self, value):
@@ -697,26 +717,22 @@ cdef class Hoversel(Object):
         elm_hoversel_hover_end(self.obj)
     
     def item_add(self, label, icon_file, icon_type, callback):
-        cdef Elm_Hoversel_Item *item
-        item = elm_hoversel_item_add(self.obj, label, icon_file, icon_type, _hoversel_callback, NULL)
+        return HoverselItem(self, label, icon_file, icon_type, callback)
 
-        # Save the callback
-        mapping = dict()
-        mapping["class"] = self
-        mapping["callback"] = callback
-        _hoversel_callback_mapping[<long>item] = mapping
- 
 cdef object _toolbar_callback_mapping
 _toolbar_callback_mapping = dict()
 
 cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    mapping = _toolbar_callback_mapping.get(<long>event_info)
-    if mapping is not None:
-        callback = mapping["callback"] 
-        if callback is not None and callable(callback):
-            callback(mapping["class"], "clicked")
-    else:
-        print "DEBUG: no callback there for the item!"
+    try:
+        mapping = _toolbar_callback_mapping.get(<long>event_info)
+        if mapping is not None:
+            callback = mapping["callback"] 
+            if callback is not None and callable(callback):
+                callback(mapping["class"], "clicked")
+        else:
+            print "ERROR: no callback available for the item"
+    except Exception, e:
+        traceback.print_exc()
 
 cdef class ToolbarItem:
     """

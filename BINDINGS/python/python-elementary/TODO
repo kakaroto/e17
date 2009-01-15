@@ -1,10 +1,8 @@
 - implement complete elementary api
+    - currently missing:
+        - elementary.List
 - write test application (similar to the c-elementary test application to test 
   all functionality from all widgets)
-- implement set method for hover object for callback functions like
-    hv = elm_hover_add(win);
-    bt = elm_button_add(win);
-    elm_button_label_set(bt, "Button");
-    evas_object_smart_callback_add(bt, "clicked", my_hover_bt_1, hv);
 - user defined parameters for callback functions
+    - needed for hoversel widget!!!
 
