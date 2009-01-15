@@ -900,7 +900,6 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    Exchange_Smart_Data *sd;
    Exchange_Theme *td = data;
    char dst[4096];
-   char name[4096];
 
    sd = evas_object_data_get(obj, "EXCHANGE_SMART_DATA");
    if (!sd) return;
@@ -908,8 +907,8 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    if (!strcmp(src, "btn_download") && td->url)
    {
       snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_usr, td->name);
-      EINA_ERROR_PDBG("DOANLOAD URL %s\n", td->url);
-      EINA_ERROR_PDBG("DOANLOAD DST %s\n", dst);
+      EINA_ERROR_PDBG("DOWNLOAD URL %s\n", td->url);
+      EINA_ERROR_PDBG("DOWNLOAD DST %s\n", dst);
 
       edje_object_signal_emit(obj, "set,updated","exchange");
       edje_object_signal_emit(obj, "set,busy","exchange");
