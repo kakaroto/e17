@@ -284,7 +284,7 @@ cdef extern from "Elementary.h":
 
 
 # Forward declaration of some classes
-cdef class Object
+cdef class Object(evas.c_evas.Object)
 cdef class Hoversel(Object)
 cdef class Toolbar(Object)
 cdef class List(Object)
