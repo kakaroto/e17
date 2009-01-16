@@ -667,39 +667,37 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         Ewl_Icon *icon;
         Ewl_Widget *entry;
         Ewl_Embed *emb;
-        int x, y;
+        int ww, wh;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(data);
         DCHECK_TYPE(data, EWL_ICON_TYPE);
 
         icon = data;
+
         emb = ewl_embed_widget_find(EWL_WIDGET(icon));
-
-        ewl_widget_hide(icon->label);
-
         entry = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(entry), icon->label_text);
-        ewl_container_child_append(EWL_CONTAINER(emb), entry);
+        ewl_container_child_append(EWL_CONTAINER(icon), entry);
 
         /* put the entry in the same spot as the label */
-        ewl_object_current_geometry_get(EWL_OBJECT(icon->label), &x, &y,
-                                                        NULL, NULL);
-        ewl_object_position_request(EWL_OBJECT(entry), x, y);
+        ewl_object_current_geometry_get(EWL_OBJECT(icon->label), NULL, NULL,
+                                                                &ww, &wh);
+        ewl_object_minimum_size_set(EWL_OBJECT(entry), ww, wh);
+        ewl_widget_hide(icon->label);
         ewl_widget_show(entry);
 
         ewl_callback_append(entry, EWL_CALLBACK_FOCUS_OUT,
                                 ewl_icon_cb_entry_focus_out, icon);
         ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_icon_cb_entry_value_changed, icon);
-
         ewl_embed_focused_widget_set(emb, entry);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__,        void *data)
+ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
         Ewl_Icon *icon;
 
