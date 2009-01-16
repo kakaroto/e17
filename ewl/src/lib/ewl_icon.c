@@ -730,6 +730,8 @@ ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         ewl_icon_label_set(icon, ewl_text_text_get(EWL_TEXT(w)));
 
         ewl_widget_show(icon->label);
+        ewl_callback_del(w, EWL_CALLBACK_FOCUS_OUT,
+                                                ewl_icon_cb_entry_focus_out);
         ewl_widget_destroy(w);
 
         ewl_callback_call(EWL_WIDGET(icon), EWL_CALLBACK_VALUE_CHANGED);
