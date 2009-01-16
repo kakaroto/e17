@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: epdf
 Description: Enlightenment Foundations Library based pdf renderer, based on Poppler.
-Requires: @requirements@
+Requires: @requirements_epdf@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lepdf
 Cflags: -I${includedir}/epdf

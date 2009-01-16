@@ -1,3 +1,11 @@
+2009-01-16  Vincent Torri  <doursse at users dot sf dot net>
+
+	reviewed by: Vincent Torri
+	patch by: Alexander Kerner <lunohod@openinkpot.org>
+
+	* epdf.pc.in:
+	typo
+
 2009-01-13  Vincent Torri  <doursse at users dot sf dot net>
 
 	* COPYING.LESSER:
