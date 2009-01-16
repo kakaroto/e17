@@ -251,7 +251,7 @@ create_image_fd_window_response(Ewl_Widget *w, void *ev, void *data)
 
         e = ev;
 
-        if (e->response == EWL_STOCK_OK) {
+        if (e->response == EWL_STOCK_OPEN) {
                 char *filename;
                 const char *dir;
 
