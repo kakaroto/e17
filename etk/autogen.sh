@@ -4,13 +4,18 @@ rm -rf autom4te.cache
 rm -f aclocal.m4 ltmain.sh
 
 touch config.rpath
-
 echo "Running autopoint..." ; autopoint -f || exit 1
+touch config.rpath
 echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS -I m4 || exit 1
+touch config.rpath
 echo "Running autoheader..." ; autoheader || exit 1
+touch config.rpath
 echo "Running autoconf..." ; autoconf || exit 1
+touch config.rpath
 echo "Running libtoolize..." ; (libtoolize --copy --automake || glibtoolize --automake) || exit 1
+touch config.rpath
 echo "Running automake..." ; automake --add-missing --copy --gnu || exit 1
+touch config.rpath
 
 echo "Generating gettext etk.pot template"; \
 xgettext \
