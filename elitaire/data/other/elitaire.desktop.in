@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Elitaire
+Comment=Nice looking card solitaire games for the E17 Desktop Shell
+Comment[cs]=Solitaire hry pro E17
+Comment[it]=Raccolta di solitari per il Desktop Shell di E17
+Version=1.0
+Encoding=UTF-8
+Exec=elitaire
+Terminal=false
+Type=Application
+Categories=Game;BoardGame;
+StartupNotify=true
+Icon=@prefix@/share/pixmaps/elitaire.png
+GenericName=Elitaire Card Games
+GenericName[cs]=Karetní hry Elitaire
+

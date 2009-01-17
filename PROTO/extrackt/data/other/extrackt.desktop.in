@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Extrackt
+Comment=An Audio CD Ripper and Encoder
+Comment[it]=Un gestore ed estrattore di tracce Audio CD
+Comment[cs]=Ripper zvukových CD pro E17
+Version=1.0
+Encoding=UTF-8
+Exec=extrackt
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;
+StartupNotify=true
+Icon=@prefix@/share/pixmaps/extrackt.png
+GenericName=E17 Audio CD Tracks Extractor
+GenericName[cs]=Extraktor zvukových CD pro E17

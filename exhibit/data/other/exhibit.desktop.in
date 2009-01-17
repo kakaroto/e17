@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Exhibit
+Comment=An Enlightened Photo Viewer
+Comment[cs]=Prohlížeč obrázků v ETK
+Exec=exhibit
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=text/plain;
+Icon=@prefix@/share/pixmaps/exhibit.png
+Categories=Graphics;

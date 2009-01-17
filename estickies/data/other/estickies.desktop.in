@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Estickies
+Comment=An Enlightened Stickies handler
+Comment[cs]=Lepicí poznámky pro E17
+Exec=estickies
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=text/plain;
+Icon=@prefix@/share/pixmaps/estickies.png
+GenericName=E17 Sticky Notes
+GenericName[cs]=E17 Lepicí poznámky
+Categories=Utility;

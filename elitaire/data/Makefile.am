@@ -1,4 +1,4 @@
-SUBDIRS = themes
+SUBDIRS = themes other
 #EXTRA_DIST = elitaire.score.dummy
 
 #localstate_DATA = elitaire.score.dummy

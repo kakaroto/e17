@@ -1,3 +1,4 @@
+SUBDIRS = other
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = gui.edc \
 				 images/e17_mini_button_shadow2.png \
