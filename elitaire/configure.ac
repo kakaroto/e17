@@ -97,6 +97,8 @@ AC_CONFIG_FILES([Makefile
                  po/Makefile.in 
                  data/Makefile
                  doc/Makefile
+		 data/other/Makefile
+		 data/other/elitaire.desktop
                  data/themes/Makefile
                  data/themes/default_cards/Makefile
                  data/themes/default_cards/images/Makefile

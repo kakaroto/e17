@@ -158,6 +158,8 @@ AC_OUTPUT([
 Makefile 
 ephoto.spec
 data/Makefile
+data/other/Makefile
+data/other/ephoto.desktop
 data/images/Makefile
 po/Makefile
 src/Makefile

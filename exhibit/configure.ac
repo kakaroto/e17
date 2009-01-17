@@ -155,6 +155,8 @@ Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
+data/other/Makefile
+data/other/exhibit.desktop
 ],[
 touch exhibit_docs.tar.gz
 ])

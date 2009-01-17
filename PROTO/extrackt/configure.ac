@@ -223,6 +223,8 @@ src/Makefile
 src/bin/Makefile
 src/bin/etk_fe/Makefile
 data/Makefile
+data/other/Makefile
+data/other/extrackt.desktop
 data/etk_fe/Makefile
 data/images/Makefile
 ])

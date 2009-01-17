@@ -95,6 +95,8 @@ Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
+data/other/Makefile
+data/other/estickies.desktop
 data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
