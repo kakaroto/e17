@@ -9,6 +9,7 @@ Homepage: http://www.enlightenment.org
 Package: ephoto
 Architecture: any
 Depends: ${shlibs:Depends}
+Replaces: ephoto-data
 Description: A slideshow creator and much more
  Ephoto is a powerful slideshow creator which can be used as an image viewer
  or image editor/manipulator as well.

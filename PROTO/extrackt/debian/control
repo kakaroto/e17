@@ -9,6 +9,7 @@ Homepage: http://www.enlightenment.org
 Package: extrackt
 Architecture: any
 Depends: ${shlibs:Depends}, libeet1
+Replaces: extrackt-data
 Description: An audio CD ripper and encoder based on the EFL
  Extrackt is essentially an audio CD ripper and encoder. It
  allows you to choose your ripper and encoder based on
