@@ -7,3 +7,4 @@ EXTRA_DIST = AUTHORS COPYING README INSTALL NEWS ChangeLog \
 	     debian/embrace.postinst debian/changelog \
 	     debian/changelog.in debian/README.Debian
 
+ACLOCAL_AMFLAGS = -I m4

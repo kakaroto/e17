@@ -21,6 +21,8 @@ EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
 	     images/close_btn.png
 
+ACLOCAL_AMFLAGS = -I m4
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 

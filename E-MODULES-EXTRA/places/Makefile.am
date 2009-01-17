@@ -29,6 +29,8 @@ EXTRA_DIST = $(files_DATA) \
 	     fonts/VeraBd.ttf \
 	     fonts/Vera.ttf
 
+ACLOCAL_AMFLAGS = -I m4
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 

@@ -9,6 +9,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       stamp-h.in $(MYAPPNAME)_docs.tar \
 		       $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
 
+ACLOCAL_AMFLAGS = -I m4
+
 dist-hook:
 	./gendoc; \
 	tar cvf $(MYAPPNAME)_docs.tar doc; \

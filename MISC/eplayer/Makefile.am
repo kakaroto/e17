@@ -2,3 +2,4 @@ SUBDIRS = data etc m4 src
 
 EXTRA_DIST = TODO
 
+ACLOCAL_AMFLAGS = -I m4

@@ -18,6 +18,8 @@ EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
 	     fonts/VeraBd.ttf
 
+ACLOCAL_AMFLAGS = -I m4
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 

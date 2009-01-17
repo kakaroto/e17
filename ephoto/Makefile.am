@@ -10,6 +10,8 @@ SUBDIRS = src data po
 EXTRA_DIST = \
 	README AUTHORS COPYING ephoto.spec
 
+ACLOCAL_AMFLAGS = -I m4
+
 dist-hook:
 	if test -d data; then \
 		(cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -; rm -rf `find . -name CVS`) \

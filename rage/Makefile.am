@@ -6,3 +6,5 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       stamp-h.in acconfig.h
 		       
 EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN TODO
+
+ACLOCAL_AMFLAGS = -I m4

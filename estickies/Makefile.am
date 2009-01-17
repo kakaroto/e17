@@ -8,6 +8,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs depcomp \
 		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
 
+ACLOCAL_AMFLAGS = -I m4
+
 install-data-local:
         @$(NORMAL_INSTALL)
 	if test -d $(srcdir)/data; then \
