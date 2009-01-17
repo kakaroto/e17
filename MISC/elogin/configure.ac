@@ -12,23 +12,23 @@ AC_HEADER_STDC
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [PACKAGE_DATA_DIR])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [PACKAGE_DATA_DIR])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [PACKAGE_DATA_DIR])
 fi
 
 if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/")
+    AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/", [PREFIX])
 else
-    AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+    AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [PREFIX])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [PACKAGE_SOURCE_DIR])
 
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
@@ -128,7 +128,7 @@ AC_SUBST(ewd_cflags)
 AC_CHECK_HEADERS(security/pam_appl.h, [
     LIBS="$LIBS -lpam"
     VRFY="verify-pam"
-    AC_DEFINE(HAVE_PAM)])
+    AC_DEFINE(HAVE_PAM, 1, [pam support enabled])])
 
 #AC_CONFIG_FILES([src/daemon/elogin_wrapper:src/daemon/elogin_wrapper.in],
 #				[chmod a+x src/daemon/elogin_wrapper])
