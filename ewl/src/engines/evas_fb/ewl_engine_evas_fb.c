@@ -302,10 +302,12 @@ ewl_ev_fb_mouse_up(void *data, int type __UNUSED__, void *e)
         if (!embed)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+        /* XXX The button up structure has no info about mouse clicks
         if (ev->double_click)
                 clicks = 2;
         if (ev->triple_click)
                 clicks = 3;
+        */
 
         key_modifiers = ewl_ev_modifiers_get();
         ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
