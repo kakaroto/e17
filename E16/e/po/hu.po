@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-05 20:56+0100\n"
+"POT-Creation-Date: 2009-01-18 14:01+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:209 src/backgrounds.c:234 src/borders.c:640 src/buttons.c:181
-#: src/cursors.c:170 src/iclass.c:333 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referencia maradt\n"
@@ -1155,7 +1155,7 @@ msgid ""
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:692
+#: src/main.c:677
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1172,7 +1172,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:706
+#: src/main.c:691
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1446,7 +1446,7 @@ msgstr ""
 "Enlightenment Asztal\n"
 "Lapozó beállításai\n"
 
-#: src/session.c:343
+#: src/session.c:344
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1461,11 +1461,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:642
+#: src/session.c:643
 msgid "Are you sure?"
 msgstr "Biztos benne?"
 
-#: src/session.c:644
+#: src/session.c:645
 msgid ""
 "\n"
 "\n"
@@ -1479,48 +1479,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:654
+#: src/session.c:655
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:656
+#: src/session.c:657
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:659
+#: src/session.c:660
 msgid "  Yes, Log Out  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:661
+#: src/session.c:662
 msgid "  No  "
 msgstr "  Nem  "
 
-#: src/session.c:792
+#: src/session.c:793
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:797
+#: src/session.c:798
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "Fejléc párbeszédablakoknak"
 
-#: src/session.c:802
+#: src/session.c:803
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:809
 #, fuzzy
 msgid "Session"
 msgstr "Vegyes beállítások"
 
-#: src/session.c:809
+#: src/session.c:810
 #, fuzzy
 msgid "Session Settings"
 msgstr "Vegyes beállítások"
 
-#: src/session.c:812
+#: src/session.c:813
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -2050,19 +2050,19 @@ msgstr ""
 "de nem sikerült kommunikálni a hangszerverrel (Esound).\n"
 "Nem lesznek hangok.\n"
 
-#: src/sound.c:450
+#: src/sound.c:452
 msgid "Enable sounds"
 msgstr "Hangok engedélyezése"
 
-#: src/sound.c:456
+#: src/sound.c:458
 msgid "Sound"
 msgstr "Hang"
 
-#: src/sound.c:457
+#: src/sound.c:459
 msgid "Audio Settings"
 msgstr "Hang beállításai"
 
-#: src/sound.c:460
+#: src/sound.c:462
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2097,7 +2097,7 @@ msgstr "Asztal beállításai"
 msgid "Systray Settings"
 msgstr "Auto-felemelkedési beállítások"
 
-#: src/theme.c:353
+#: src/theme.c:339
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
