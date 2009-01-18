@@ -1,41 +1,40 @@
 # Swedish translation of Tclock module for E17.
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
-# , fuzzy
-#
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2006-05-22 15:52+0200\n"
-"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:50+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../e_mod_config.c:45
 msgid "Tclock Configuration"
-msgstr "Tclock konfiguration"
+msgstr "Konfiguration av Tclock"
 
 #: ../e_mod_config.c:94
 msgid "Top"
-msgstr ""
+msgstr "Överst"
 
 #: ../e_mod_config.c:96
-#, fuzzy
 msgid "Show Top Line"
-msgstr "Visa klocka"
+msgstr ""
 
 #: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
-msgstr "Konsultera  strftime(3) för format syntax"
+msgstr "Konsultera  strftime(3) för formatsyntax"
 
 #: ../e_mod_config.c:108
 msgid "Bottom"
-msgstr ""
+msgstr "Nederst"
 
 #: ../e_mod_config.c:110
 msgid "Show Bottom Line"
@@ -43,12 +42,11 @@ msgstr ""
 
 #: ../e_mod_config.c:122
 msgid "Tool Tip"
-msgstr ""
+msgstr "Verktygstips"
 
 #: ../e_mod_config.c:124
-#, fuzzy
 msgid "Show Tooltip"
-msgstr "Visa klocka"
+msgstr "Visa verktygstips"
 
 #: ../e_mod_main.c:141
 msgid "TClock"
@@ -76,8 +74,8 @@ msgstr "Konfiguration"
 #~ msgid "Time"
 #~ msgstr "Klocka"
 
-#~ msgid "Displays a digital clock on the desktop"
-#~ msgstr "Visar en digital klocka på skrivbordet"
-
 #~ msgid "Simple Digital Clock"
 #~ msgstr "Enkel digital klocka"
+
+#~ msgid "Displays a digital clock on the desktop"
+#~ msgstr "Visar en digital klocka på skrivbordet"

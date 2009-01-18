@@ -1,24 +1,25 @@
 # Swedish translation of Mem module for E17.
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
-# , fuzzy
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Mem module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2006-07-05 23:33+0200\n"
-"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:40+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../e_mod_config.c:43
 msgid "Mem Configuration"
-msgstr "Mem konfiguration"
+msgstr "Minneskonfiguration"
 
 #: ../e_mod_config.c:92
 msgid "General Settings"
@@ -38,15 +39,15 @@ msgstr "Visa text som procent"
 
 #: ../e_mod_config.c:104
 msgid "Ignore Buffers"
-msgstr "Ignorera buffers"
+msgstr "Ignorera buffertar"
 
 #: ../e_mod_config.c:108
 msgid "Ignore Cached"
-msgstr "Ignorera cached"
+msgstr "Ignorera cachat"
 
 #: ../e_mod_config.c:112
 msgid "Check Interval:"
-msgstr "Kontrollintervall"
+msgstr "Kontrollintervall:"
 
 #: ../e_mod_config.c:115
 #, c-format
@@ -55,7 +56,7 @@ msgstr ""
 
 #: ../e_mod_main.c:105
 msgid "Mem"
-msgstr "Mem"
+msgstr "Minne"
 
 #: ../e_mod_main.c:162
 msgid "Configuration"

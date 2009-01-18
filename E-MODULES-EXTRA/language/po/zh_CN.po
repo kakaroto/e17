@@ -17,47 +17,47 @@ msgstr ""
 
 #: src/module/e_mod_config.c:104
 msgid "Language Module Settings"
-msgstr ""
+msgstr "语言模式设置"
 
 #: src/module/e_mod_config.c:174
 #: src/module/e_mod_config.c:249
 msgid "Available Languages"
-msgstr ""
+msgstr "可用语言"
 
 #: src/module/e_mod_config.c:182
 #: src/module/e_mod_config.c:257
 msgid "Selected Languages"
-msgstr ""
+msgstr "选择语言"
 
 #: src/module/e_mod_config.c:198
 #: src/module/e_mod_config.c:273
 msgid "Up"
-msgstr ""
+msgstr "向上"
 
 #: src/module/e_mod_config.c:203
 #: src/module/e_mod_config.c:278
 msgid "Down"
-msgstr ""
+msgstr "向下"
 
 #: src/module/e_mod_config.c:211
 #: src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
-msgstr ""
+msgstr "语言切换规则"
 
 #: src/module/e_mod_config.c:214
 #: src/module/e_mod_config.c:307
 msgid "Global"
-msgstr ""
+msgstr "全局"
 
 #: src/module/e_mod_config.c:217
 #: src/module/e_mod_config.c:310
 msgid "Window"
-msgstr ""
+msgstr "窗口"
 
 #: src/module/e_mod_config.c:220
 #: src/module/e_mod_config.c:313
 msgid "Application"
-msgstr ""
+msgstr "应用程序"
 
 #: src/module/e_mod_config.c:287
 msgid "Keyboard Model"
@@ -74,15 +74,15 @@ msgstr ""
 
 #: src/module/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
-msgstr ""
+msgstr "切换到下一个语言"
 
 #: src/module/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
-msgstr ""
+msgstr "切换到前一个语言"
 
 #: src/module/e_mod_main.c:399
 msgid "Configuration"
-msgstr ""
+msgstr "配置"
 
 #: src/module/e_mod_main.c:404
 msgid "Configure Key Bindings"
@@ -90,7 +90,7 @@ msgstr ""
 
 #: src/module/e_mod_main.c:421
 msgid "Module Configuration"
-msgstr ""
+msgstr "模块设置"
 
 #~ msgid "Enlightenment Language Enhancment Module"
 #~ msgstr "Module amélioré de gestion des langes d'Enlightenment"

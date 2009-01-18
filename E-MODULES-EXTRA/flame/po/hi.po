@@ -1,0 +1,77 @@
+# Hindi translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# DarkAce <paliwalshreyak@hotmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-05 03:33+0000\n"
+"Last-Translator: DarkAce <paliwalshreyak@hotmail.com>\n"
+"Language-Team: Hindi <hi@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_main.c:61
+msgid "Appearance"
+msgstr "प्रकटन"
+
+#: ../e_mod_main.c:63
+msgid "Flame"
+msgstr "ज्वाला"
+
+#: ../e_mod_config.c:47
+msgid "Flame Configuration"
+msgstr "ज्वाला विन्यास"
+
+#: ../e_mod_config.c:94 ../e_mod_config.c:177
+msgid "Flame Color"
+msgstr "ज्वाला रंग"
+
+#: ../e_mod_config.c:96
+msgid "Gold"
+msgstr "सुनहरा"
+
+#: ../e_mod_config.c:98
+msgid "Fire"
+msgstr "आग"
+
+#: ../e_mod_config.c:100
+msgid "Plasma"
+msgstr "प्लाज्मा"
+
+#: ../e_mod_config.c:102
+msgid "Matrix"
+msgstr "मैट्रिक्स"
+
+#: ../e_mod_config.c:104
+msgid "Ice"
+msgstr "बर्फ"
+
+#: ../e_mod_config.c:106
+msgid "White"
+msgstr "सफेद"
+
+#: ../e_mod_config.c:108
+msgid "Custom"
+msgstr "अनुकूलित"
+
+#: ../e_mod_config.c:179
+msgid "Red Amount"
+msgstr "लाल मात्रा"
+
+#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: ../e_mod_config.c:186
+msgid "Blue Amount"
+msgstr "नीली मात्रा"
+
+#: ../e_mod_config.c:193
+msgid "Green Amount"
+msgstr "हरी मात्रा"

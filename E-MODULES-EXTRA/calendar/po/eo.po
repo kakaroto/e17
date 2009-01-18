@@ -1,5 +1,5 @@
 # Esperanto translation for E17 calendar module.
-# This file is put in the public domain.
+# This file is distributed under the same license as the enlightenment package.
 # Olivier M. <olivierweb@ifrance.com>, 2008.
 #
 msgid ""

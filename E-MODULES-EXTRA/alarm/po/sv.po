@@ -1,22 +1,24 @@
 # Swedish translation of Alarm module for E17.
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Alarm module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2007-11-07 21:44+0100\n"
-"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:03+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../e_mod_config.c:55
 msgid "Alarm Configuration"
-msgstr ""
+msgstr "Alarmkonfiguration"
 
 #: ../e_mod_config.c:155 ../e_mod_main.c:187
 msgid "Alarm"
@@ -28,25 +30,25 @@ msgstr "Aktiv"
 
 #: ../e_mod_config.c:166
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 #: ../e_mod_config.c:168
 msgid "Delete"
-msgstr ""
+msgstr "Ta bort"
 
 #: ../e_mod_config.c:170
 msgid "Configure"
-msgstr ""
+msgstr "Konfigurera"
 
 #: ../e_mod_config.c:172
 msgid "Duplicate"
-msgstr ""
+msgstr "Dubblett"
 
 #: ../e_mod_config.c:226
 msgid "Alarm Options"
-msgstr "Alarminställningar"
+msgstr "Alarmalternativ"
 
-#.
+#. 
 #. ob = e_widget_label_add(evas, D_("Time format"));
 #. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 #. rg = e_widget_radio_group_new(&(cfdata->time_format));
@@ -54,14 +56,14 @@ msgstr "Alarminställningar"
 #. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 #. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
 #. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-#.
+#. 
 #: ../e_mod_config.c:238
 msgid "Show next alarm"
-msgstr "Visa detaljer"
+msgstr "Visa nästa alarm"
 
 #: ../e_mod_config.c:244
 msgid "Alarms Defaults"
-msgstr ""
+msgstr "Alarmstandarder"
 
 #: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
 msgid "Open popup"
@@ -73,11 +75,11 @@ msgstr "Kör program"
 
 #: ../e_mod_config.c:256
 msgid "Auto-Remove alarms"
-msgstr "Ta bort alarm"
+msgstr "Ta automatiskt bort alarm"
 
 #: ../e_mod_config_alarm.c:71
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "Inställningar för Eveil alarm"
+msgstr "Alarmkonfiguration : Konfigurera ett alarm"
 
 #: ../e_mod_config_alarm.c:188
 msgid "Informations"
@@ -85,7 +87,7 @@ msgstr "Information"
 
 #: ../e_mod_config_alarm.c:192
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 #: ../e_mod_config_alarm.c:197
 msgid "Description"
@@ -158,18 +160,24 @@ msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
 "in the informations / schedule of your alarm"
 msgstr ""
+"<hilight>Fel, alarmet lades inte till!</hilight><br><br>Det finns ett fel i "
+"informationen / schemaläggningen av ditt alarm"
 
 #: ../e_mod_config_alarm.c:293
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
 "a name for the alarm"
 msgstr ""
+"<hilight>Fel, alarmet lades inte till!</hilight><br><br>Du måste ange ett "
+"namn för alarmet"
 
 #: ../e_mod_config_alarm.c:298
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
 "select at least one day in the week"
 msgstr ""
+"<hilight>Fel, alarmet lades inte till!</hilight><br><br>Du måste välja minst "
+"en veckodag"
 
 #: ../e_mod_config_alarm.c:303
 msgid ""
@@ -178,16 +186,22 @@ msgid ""
 "format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
 msgstr ""
+"<hilight>Fel, alarmet lades inte till!</hilight><br><br>Datumet som du angav "
+"för alarmet har en felaktig syntax<br><br>Du måste respektera formatet:<br>  "
+" YYYY/MM/DD<br>YYYY är året med 4 siffror<br>MM är månaden med 2 "
+"siffror<br>DD är dagen med 2 siffror<br>"
 
 #: ../e_mod_config_alarm.c:313
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered is before now"
 msgstr ""
+"<hilight>Fel, alarmet lades inte till!</hilight><br><br>Datum som du angav "
+"är i dåtid"
 
 #: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
 msgid "Alarm Module Error"
-msgstr ""
+msgstr "Fel i alarmmodul"
 
 #: ../e_mod_config_alarm.c:354 ../e_mod_config_alarm.c:442
 msgid "Test this alarm"
@@ -195,7 +209,7 @@ msgstr "Testa detta alarm"
 
 #: ../e_mod_config_alarm.c:382
 msgid "Ring Options"
-msgstr "Ringinställningar"
+msgstr "Ringalternativ"
 
 #: ../e_mod_config_alarm.c:384
 msgid "Remove alarm"
@@ -203,20 +217,20 @@ msgstr "Ta bort alarm"
 
 #: ../e_mod_config_alarm.c:391 ../e_mod_config_alarm.c:411
 msgid "No [default]"
-msgstr ""
+msgstr "Nej [standard]"
 
 #: ../e_mod_config_alarm.c:393 ../e_mod_config_alarm.c:413
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: ../e_mod_config_alarm.c:398 ../e_mod_config_alarm.c:418
 #: ../e_mod_config_alarm.c:429
 msgid "No"
-msgstr ""
+msgstr "Nej"
 
 #: ../e_mod_config_alarm.c:400 ../e_mod_config_alarm.c:420
 msgid "Yes [default]"
-msgstr ""
+msgstr "Ja [standard]"
 
 #: ../e_mod_config_alarm.c:424
 msgid "Run a program"
@@ -224,7 +238,7 @@ msgstr "Kör ett program"
 
 #: ../e_mod_config_alarm.c:431
 msgid "Run default one"
-msgstr ""
+msgstr "Kör standardprogrammet"
 
 #: ../e_mod_config_alarm.c:433
 msgid "Run this program"
@@ -236,18 +250,20 @@ msgid ""
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
+"<hilight>Alarmtestet LYCKADES!</hilight><br><br>Men GLÖM INTE att AKTIVERA "
+"alarmen<br>via knappen \"Aktiv\" i<br>konfigurationspanelen för Alarm."
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr "<hilight>Alarm testet LYCKADES !</hilight>"
+msgstr "<hilight>Alarmtestet LYCKADES!</hilight>"
 
 #: ../e_mod_config_alarm.c:489
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>Alarm testet MISSLYCKADES !</hilight>"
+msgstr "<hilight>Alarmtestet MISSLYCKADES !</hilight>"
 
 #: ../e_mod_config_alarm.c:491
 msgid "Alarm Module Test Report"
-msgstr ""
+msgstr "Testrapport för alarmmodulen"
 
 #: ../e_mod_main.c:398
 #, c-format
@@ -256,18 +272,20 @@ msgstr "<hilight>Alarm : %s</hilight><br><br>%s"
 
 #: ../e_mod_main.c:401
 msgid "Alarm Module Popup"
-msgstr ""
+msgstr "Popup för alarmmodulen"
 
 #: ../e_mod_main.c:424
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
+"<hilight>Misslyckades!</hilight><br><br>Alarm kunde inte starta programmet "
+"som du angav"
 
 #: ../e_mod_main.c:658 ../e_mod_main.c:837
 #, c-format
 msgid "Snooze %s"
-msgstr "Snooze %s"
+msgstr "Slumra %s"
 
 #: ../e_mod_main.c:662
 #, c-format
@@ -281,20 +299,20 @@ msgstr "%1.0f minuter"
 
 #: ../e_mod_main.c:672
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: ../e_mod_main.c:673
 msgid "Close"
-msgstr ""
+msgstr "Stäng"
 
 #: ../e_mod_main.c:845
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
-msgstr "Snooze %.14s of %.2d:%.2d"
+msgstr "Slumra %.14s av %.2d:%.2d"
 
 #: ../e_mod_main.c:859
 msgid "Snooze (No alarm to delay)"
-msgstr "Snooze (Inget alarm att fördröja)"
+msgstr "Slumra (Inget alarm att fördröja)"
 
 #: ../e_mod_main.c:866
 msgid "Add an alarm"
@@ -302,7 +320,7 @@ msgstr "Lägg till ett alarm"
 
 #: ../e_mod_main.c:873
 msgid "Configuration"
-msgstr "Inställningar för Eveil alarm"
+msgstr "Konfiguration"
 
 #: ../e_mod_main.c:1054
 #, c-format
@@ -311,10 +329,13 @@ msgid ""
 "configuration of alarm module<br>has been upgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
+"<hilight>Alarmmodul : Konfigurationen uppgraderad</hilight><br><br>Din "
+"konfiguration av alarmmodulen<br>har uppgraderats<br>Dina inställningar och "
+"alarm togs bort<br>Ursäkta för detta<br><br>(%d -> %d)"
 
 #: ../e_mod_main.c:1060 ../e_mod_main.c:1074
 msgid "Alarm Module version "
-msgstr ""
+msgstr "Alarmmodul version "
 
 #: ../e_mod_main.c:1068
 #, c-format
@@ -323,3 +344,6 @@ msgid ""
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
+"<hilight>Alarmmodul : Konfigurationen nedgraderad</hilight><br><br>Din "
+"konfiguration av alarmmodulen<br>har nedgraderats<br>Dina inställningar och "
+"alarm togs bort<br>Ursäkta för detta<br><br>(%d ->%d)"

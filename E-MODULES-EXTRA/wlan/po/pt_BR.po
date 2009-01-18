@@ -1,0 +1,57 @@
+# Brazilian Portuguese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Enrico Nicoletto <liverig@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-16 01:35+0000\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_config.c:44
+msgid "Wlan Configuration"
+msgstr "Configuração do Wlan"
+
+#: ../e_mod_config.c:117
+msgid "General Settings"
+msgstr "Configurações gerais"
+
+#: ../e_mod_config.c:119
+msgid "Always Show Text"
+msgstr "Sempre mostrar texto"
+
+#: ../e_mod_config.c:121
+msgid "Show Text On Mouse Over"
+msgstr "Mostrar texto ao passar com o mouse"
+
+#: ../e_mod_config.c:124
+msgid "Show Text As Percent"
+msgstr "Mostrar texto como porcentagem"
+
+#: ../e_mod_config.c:128
+msgid "Check Interval:"
+msgstr "Intervalo de checagem"
+
+#: ../e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f segundos"
+
+#: ../e_mod_config.c:138
+msgid "Device Settings"
+msgstr "Configurações do dispositivo"
+
+#: ../e_mod_main.c:107
+msgid "Wlan"
+msgstr "Wlan"
+
+#: ../e_mod_main.c:165
+msgid "Configuration"
+msgstr "Configuração"

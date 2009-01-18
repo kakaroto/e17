@@ -1,0 +1,36 @@
+# Hindi translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# DarkAce <paliwalshreyak@hotmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-05 03:24+0000\n"
+"Last-Translator: DarkAce <paliwalshreyak@hotmail.com>\n"
+"Language-Team: Hindi <hi@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_main.c:439
+msgid "Sunday"
+msgstr "रविवार"
+
+#: ../e_mod_main.c:446
+msgid "Monday"
+msgstr "सोमवार"
+
+#: ../e_mod_main.c:458
+msgid "First Day of Week"
+msgstr "सप्ताह का पहला दिन"
+
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
+msgid "Calendar"
+msgstr "कैलेन्डर"
+
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
+msgid "Monthview Popup (Show/Hide)"
+msgstr "मासिकदृश्य पॉपअप (दिखायें/छिपायें)"

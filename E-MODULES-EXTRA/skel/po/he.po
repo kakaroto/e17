@@ -1,21 +1,19 @@
 # Hebrew translation for enlightenment
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Yaron <sh.yaron@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-29 23:35+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-01-03 07:53+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+
 
 #. create new config dialog
 #: ../src/e_mod_config.c:39
@@ -30,7 +28,7 @@ msgstr "כללי"
 msgid "Use Switch 1"
 msgstr "השתמש במפסק 1"
 
-#: ../src/e_mod_main.c:102
+#: ../src/e_mod_main.c:107
 msgid ""
 "Skeleton Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -47,7 +45,7 @@ msgstr ""
 "תתקן<br>זאת על ידי הוספתן. תוכל לשנות את ההגדרות בחזרה לצורה המועדפת "
 "עליך.<br>סליחה על אי הנעימות.<br>"
 
-#: ../src/e_mod_main.c:122
+#: ../src/e_mod_main.c:127
 msgid ""
 "Your Skeleton Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -61,14 +59,14 @@ msgstr ""
 "זו<br>אינה רצויה וכאמצעי בטיחות התצורה שלך שוחזרה לברירות המחדל.<br>סליחה על "
 "אי הנעימות.<br>"
 
-#: ../src/e_mod_main.c:289
+#: ../src/e_mod_main.c:294
 msgid "Skeleton"
 msgstr "שלד"
 
-#: ../src/e_mod_main.c:372
+#: ../src/e_mod_main.c:377
 msgid "Skeleton Configuration Updated"
 msgstr "תצורת השלד עודכנה"
 
-#: ../src/e_mod_main.c:429
+#: ../src/e_mod_main.c:434
 msgid "Configuration"
 msgstr "תצורה"

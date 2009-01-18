@@ -1,0 +1,82 @@
+# Swedish translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:51+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+msgid "Tiling"
+msgstr ""
+
+#: ../e_mod_main.c:999
+msgid "Windows"
+msgstr "Fönster"
+
+#: ../e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr ""
+
+#. General settings
+#: ../e_mod_config.c:217
+msgid "General"
+msgstr "Allmänt"
+
+#: ../e_mod_config.c:227
+msgid "Horizontal:"
+msgstr "Horisontellt:"
+
+#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr "%1.0f bildpunkter"
+
+#: ../e_mod_config.c:231
+msgid "Vertical:"
+msgstr "Vertikalt:"
+
+#. Virtual desktop settings
+#: ../e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr "Virtuella skrivbord"
+
+#. Grid mode settings
+#: ../e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr ""
+
+#: ../e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#. Bigmain settings
+#: ../e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr ""
+
+#: ../e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr ""
+
+#: ../e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: ../e_mod_config.c:296
+msgid "Tiling border"
+msgstr ""
+
+#: ../e_mod_config.c:310
+msgid "Floating border"
+msgstr ""

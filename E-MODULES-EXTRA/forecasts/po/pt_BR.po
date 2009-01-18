@@ -1,0 +1,122 @@
+# Brazilian Portuguese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Enrico Nicoletto <liverig@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 01:58+0000\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_config.c:42
+msgid "Forecasts Configuration"
+msgstr "Configurações do Tempo"
+
+#: ../e_mod_config.c:90
+msgid "Display Settings"
+msgstr "Exibir Configurações"
+
+#: ../e_mod_config.c:91
+msgid "Poll Time"
+msgstr "Tempo da enquete"
+
+#: ../e_mod_config.c:94
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minutos"
+
+#: ../e_mod_config.c:97
+msgid "Show Description"
+msgstr "Mostrar Descrição"
+
+#: ../e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr "Popup ao passar com o mouse"
+
+#: ../e_mod_config.c:103
+msgid "Unit Settings"
+msgstr "Configurações de unidade"
+
+#: ../e_mod_config.c:105
+msgid "Metric"
+msgstr "Métrico"
+
+#: ../e_mod_config.c:107
+msgid "English"
+msgstr "Inglês"
+
+#: ../e_mod_config.c:111
+msgid "Yahoo Forecasts Code"
+msgstr "Código do Yahoo Tempo"
+
+#: ../e_mod_config.c:112
+msgid "Yahoo Forecasts Code/US Zip Code"
+msgstr "Código do Yahoo Tempo/CEP"
+
+#: ../e_mod_config.c:117
+msgid "To find the code for your area, go to:"
+msgstr "Para encontrar o código para a sua área, vá em:"
+
+#: ../e_mod_config.c:119
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr "%s, encontre a sua área, e veja o URL"
+
+#: ../e_mod_main.c:256
+msgid "Forecasts"
+msgstr "Tempo"
+
+#: ../e_mod_main.c:301
+msgid "Configuration"
+msgstr "Configuração"
+
+#: ../e_mod_main.c:1025
+msgid "Wind Chill"
+msgstr "Frente fria"
+
+#: ../e_mod_main.c:1031
+msgid "Wind Speed"
+msgstr "Velocidade do Vento"
+
+#: ../e_mod_main.c:1037
+msgid "Humidity"
+msgstr "Umidade"
+
+#: ../e_mod_main.c:1043
+msgid "Visibility"
+msgstr "Visibilidade"
+
+#: ../e_mod_main.c:1049
+msgid "Pressure"
+msgstr "Pressão"
+
+#: ../e_mod_main.c:1056
+msgid "Rising"
+msgstr "Subindo"
+
+#: ../e_mod_main.c:1058
+msgid "Falling"
+msgstr "Caindo"
+
+#: ../e_mod_main.c:1060
+msgid "Steady"
+msgstr "Estável"
+
+#: ../e_mod_main.c:1064
+msgid "Sunrise / Sunset"
+msgstr "ao amanhecer / ao anoitecer"
+
+#: ../e_mod_main.c:1088
+msgid "High"
+msgstr "Máxima"
+
+#: ../e_mod_main.c:1099
+msgid "Low"
+msgstr "Mínima"

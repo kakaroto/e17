@@ -1,8 +1,8 @@
 # Efm_path module (e17), Simplified Chinese translation
 # This file is put in the public domain.
 #
-# Aron Xu <aronmalache@163.com>, 2008. <aronmalache@163.com>, 2008.
-#
+# Aron Xu <aronmalache@163.com>, 2008.
+# rainofchaos <rainofchaos@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../src/e_mod_main.c:68
 msgid "Location:"
-msgstr "位置"
+msgstr "位置："
 
 #: ../src/e_mod_main.c:137
 msgid "EFM Path"
