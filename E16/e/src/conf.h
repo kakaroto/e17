@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,7 +21,6 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#define CONFIG_CONTROL 0
 #define CONFIG_TEXT 1
 #define CONFIG_MENU 2
 #define CONFIG_BORDER 3
@@ -29,17 +29,13 @@
 #define CONFIG_ICONBOX 6
 #define CONFIG_KEYBIND 8
 #define CONFIG_SOUND 9
-#define CONFIG_SLIDERS 10
 #define CONFIG_ACTIONCLASS 11
 #define CONFIG_IMAGECLASS 12
 #define CONFIG_WINDOWMATCH 14
 #define CONFIG_COLORMOD 15
 #define CONFIG_SLIDEOUT 16
 #define CONFIG_TOOLTIP 17
-#define CONFIG_FX 18
 #define CONFIG_IBOX 19
-#define CONFIG_EXTRAS 20
-#define CONFIG_FONTS 21
 
 #define CONFIG_CLASSNAME 100
 #define CONFIG_MODIFIER  101
@@ -73,7 +69,6 @@
 #define ICLASS_STICKY_ACTIVE_NORMAL 362
 #define ICLASS_STICKY_ACTIVE_CLICKED 363
 #define ICLASS_STICKY_ACTIVE_HILITED 364
-#define ICLASS_SUPERIMPOSE 365
 #define ICLASS_DISABLED 366
 #define ICLASS_ACTIVE_DISABLED 367
 #define ICLASS_STICKY_DISABLED 368
@@ -147,7 +142,7 @@
 #define BORDER_TOP 503
 #define BORDER_BOTTOM 504
 #define BORDER_INIT 505
-#define SHADEDIR 506
+#define BORDER_SHADEDIR 506
 #define BORDER_CHANGES_SHAPE 507
 #define BORDER_GROUP_NAME 508
 
@@ -246,7 +241,6 @@
 #define CONFIG_ANYKEY 931
 #define CONFIG_OPEN  999
 #define CONFIG_CLOSE 1000
-#define CONFIG_NORMAL 5
 
 #define CONFIG_CURSOR 800
 #define CURS_BG_RGB 801

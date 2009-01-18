@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1190,7 +1190,7 @@ BorderConfigLoad(FILE * fs)
 	  case BORDER_BOTTOM:
 	     b->border.bottom = i2;
 	     break;
-	  case SHADEDIR:
+	  case BORDER_SHADEDIR:
 	     b->shadedir = i2;
 	     break;
 	  case BORDER_CHANGES_SHAPE:
