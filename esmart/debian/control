@@ -10,6 +10,7 @@ Package: libesmart0
 Architecture: any
 Depends: ${shlibs:Depends}
 Provides: libesmart
+Replaces: libesmart-bin
 Description: The Esmart Prototype Library
  Esmart provides a series of smart object prototypes for a variety of uses.
 
