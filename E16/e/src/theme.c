@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -162,12 +162,6 @@ ThemesList(int *number)
    return list;
 }
 
-static void
-ThemeCleanup(void)
-{
-   /* TBD */
-}
-
 static const char  *
 ThemeGetPath(const char *path, char *buf, unsigned int len)
 {
@@ -255,8 +249,6 @@ ThemeExtract(const char *path)
       return Estrdup(path);
 
    /* failed */
-   ThemeCleanup();
-
    return NULL;
 }
 
@@ -278,18 +270,16 @@ ThemeFind(const char *theme)
      {
 	theme = NULL;
      }
-   else
+   else if (!strcmp(theme, "-"))	/* Use fallbacks */
      {
-	if (!strcmp(theme, "-"))	/* Use fallbacks */
-	   return NULL;
-
-	if (isabspath(theme))
-	  {
-	     path = ThemeExtract(theme);
-	     if (path)
-		return path;
-	     theme = NULL;
-	  }
+	return NULL;
+     }
+   else if (isabspath(theme))
+     {
+	path = ThemeExtract(theme);
+	if (path)
+	   return path;
+	theme = NULL;
      }
 
    lst = StrlistFromString(Mode.theme.paths, ':', &num);
@@ -332,23 +322,19 @@ ThemeFind(const char *theme)
    return path;
 }
 
-/*
- * Theme module
- */
-
 void
 ThemePathFind(void)
 {
-   char               *theme;
+   char               *name, *path;
 
    /*
     * Conf.theme.name is read from the configuration.
     * Mode.theme.path may be assigned on the command line.
     */
-   theme = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
-   theme = ThemeFind(theme);
+   name = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
+   path = ThemeFind(name);
 
-   if (!theme)
+   if (!path && (!name || strcmp(name, "-")))
      {
 	Alert(_("No themes were found in the default directories:\n"
 		" %s\n"
@@ -357,24 +343,15 @@ ThemePathFind(void)
      }
 
    Efree(Conf.theme.name);
-   Conf.theme.name = ThemePathName(theme);
+   Conf.theme.name = ThemePathName(path);
 
    Efree(Mode.theme.path);
-   Mode.theme.path = (theme) ? theme : Estrdup("-");
+   Mode.theme.path = (path) ? path : Estrdup("-");
 }
 
-static void
-ThemesSighan(int sig, void *prm __UNUSED__)
-{
-   switch (sig)
-     {
-     case ESIGNAL_CONFIGURE:
-	break;
-     case ESIGNAL_EXIT:
-	ThemeCleanup();
-	break;
-     }
-}
+/*
+ * Theme module
+ */
 
 static void
 ThemesIpc(const char *params)
@@ -396,7 +373,7 @@ ThemesIpc(const char *params)
      {
 	char               *path;
 
-	IpcPrintf("Name: %s\n", Conf.theme.name);
+	IpcPrintf("Name: %s\n", (Conf.theme.name) ? Conf.theme.name : "-");
 	IpcPrintf("Full: %s\n", Mode.theme.path);
 	path = ThemeFind(NULL);
 	IpcPrintf("Default: %s\n", path);
@@ -448,7 +425,7 @@ static const CfgItem ThemeCfgItems[] = {
 extern const EModule ModTheme;
 const EModule       ModTheme = {
    "theme", "th",
-   ThemesSighan,
+   NULL,
    {N_IPC_FUNCS, ThemeIpcArray},
    {N_CFG_ITEMS, ThemeCfgItems}
 };
