@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -443,64 +443,25 @@ ImageclassConfigLoad(FILE * fs)
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   char               *p2;
    int                 i1;
    ImageClass         *ic = NULL;
-   ImageState         *ICToRead = NULL;
+   ImageState         *is = NULL;
    int                 l, r, t, b;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	i1 = ConfigParseline1(s, s2, NULL, NULL);
+	i1 = ConfigParseline1(s, s2, &p2, NULL);
+
+	/* ic not needed */
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
 	     ImageclassPopulate(ic);
 	     goto done;
-	  case ICLASS_LRTB:
-	     ICToRead->border = EMALLOC(EImageBorder, 1);
-
-	     l = r = t = b = 0;
-	     sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
-	     ICToRead->border->left = l;
-	     ICToRead->border->right = r;
-	     ICToRead->border->top = t;
-	     ICToRead->border->bottom = b;
-	     /* Hmmm... imlib2 works better with this */
-	     ICToRead->border->right++;
-	     ICToRead->border->bottom++;
-	     break;
-	  case ICLASS_FILLRULE:
-	     ICToRead->pixmapfillstyle = atoi(s2);
-	     break;
-	  case ICLASS_TRANSPARENT:
-	     ICToRead->transparent = strtoul(s2, NULL, 0);
-	     break;
-	  case ICLASS_ROTATE:
-	     ICToRead->rotate = strtoul(s2, NULL, 0);
-	     break;
-	  case CONFIG_INHERIT:
-	     {
-		ImageClass         *ICToInherit;
-
-		ICToInherit = ImageclassFind(s2, 0);
-		ic->norm = ICToInherit->norm;
-		ic->active = ICToInherit->active;
-		ic->sticky = ICToInherit->sticky;
-		ic->sticky_active = ICToInherit->sticky_active;
-		ic->padding = ICToInherit->padding;
-	     }
-	     break;
 	  case CONFIG_COLORMOD:
 	  case ICLASS_COLORMOD:
-	     break;
-	  case ICLASS_PADDING:
-	     l = r = t = b = 0;
-	     sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
-	     ic->padding.left = l;
-	     ic->padding.right = r;
-	     ic->padding.top = t;
-	     ic->padding.bottom = b;
-	     break;
+	     continue;
 	  case CONFIG_CLASSNAME:
 	  case ICLASS_NAME:
 	     if (ImageclassFind(s2, 0))
@@ -509,62 +470,121 @@ ImageclassConfigLoad(FILE * fs)
 		  goto done;
 	       }
 	     ic = ImageclassCreate(s2);
+	     continue;
+	  }
+
+	/* ic needed */
+	if (!ic)
+	   break;
+
+	switch (i1)
+	  {
+	  case CONFIG_INHERIT:
+	     {
+		ImageClass         *ic2;
+
+		ic2 = ImageclassFind(s2, 0);
+		if (!ic2)
+		   goto not_ok;
+		ic->norm = ic2->norm;
+		ic->active = ic2->active;
+		ic->sticky = ic2->sticky;
+		ic->sticky_active = ic2->sticky_active;
+		ic->padding = ic2->padding;
+	     }
 	     break;
+	  case ICLASS_PADDING:
+	     l = r = t = b = 0;
+	     sscanf(p2, "%i %i %i %i", &l, &r, &t, &b);
+	     ic->padding.left = l;
+	     ic->padding.right = r;
+	     ic->padding.top = t;
+	     ic->padding.bottom = b;
+	     continue;
 	  case CONFIG_DESKTOP:
 	     /* don't ask... --mandrake */
 	  case ICLASS_NORMAL:
-	     ic->norm.normal = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->norm.normal = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_CLICKED:
-	     ic->norm.clicked = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->norm.clicked = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_HILITED:
-	     ic->norm.hilited = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->norm.hilited = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_DISABLED:
-	     ic->norm.disabled = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->norm.disabled = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_NORMAL:
-	     ic->sticky.normal = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky.normal = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_CLICKED:
-	     ic->sticky.clicked = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky.clicked = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_HILITED:
-	     ic->sticky.hilited = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky.hilited = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_DISABLED:
-	     ic->sticky.disabled = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky.disabled = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_NORMAL:
-	     ic->active.normal = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->active.normal = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_CLICKED:
-	     ic->active.clicked = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->active.clicked = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_HILITED:
-	     ic->active.hilited = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->active.hilited = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_DISABLED:
-	     ic->active.disabled = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->active.disabled = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     ic->sticky_active.normal = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky_active.normal = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     ic->sticky_active.clicked = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky_active.clicked = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     ic->sticky_active.hilited = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky_active.hilited = is = ImagestateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     ic->sticky_active.disabled = ICToRead = ImagestateCreate(s2);
-	     break;
+	     ic->sticky_active.disabled = is = ImagestateCreate(s2);
+	     continue;
+	  }
+
+	/* is needed */
+	if (!is)
+	   break;
+
+	switch (i1)
+	  {
+	  case ICLASS_LRTB:
+	     is->border = EMALLOC(EImageBorder, 1);
+	     l = r = t = b = 0;
+	     sscanf(p2, "%i %i %i %i", &l, &r, &t, &b);
+	     is->border->left = l;
+	     is->border->right = r;
+	     is->border->top = t;
+	     is->border->bottom = b;
+	     /* Hmmm... imlib2 works better with this */
+	     is->border->right++;
+	     is->border->bottom++;
+	     continue;
+	  case ICLASS_FILLRULE:
+	     is->pixmapfillstyle = atoi(s2);
+	     continue;
+	  case ICLASS_TRANSPARENT:
+	     is->transparent = strtoul(s2, NULL, 0);
+	     continue;
+	  case ICLASS_ROTATE:	/* flip goes here too */
+	     is->rotate = strtoul(s2, NULL, 0);
+	     continue;
 	  default:
-	     ConfigParseError("ImageClass", s);
-	     break;
+	     goto not_ok;
 	  }
      }
+ not_ok:
    err = -1;
 
  done:
