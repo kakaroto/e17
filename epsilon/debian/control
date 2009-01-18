@@ -21,6 +21,7 @@ Package: libepsilon0
 Architecture: any
 Depends: ${shlibs:Depends}, libevas-engines
 Provides: libepsilon
+Replaces: libepsilon-bin
 Description: Enlightenment thumbnailing library API
  This is a small, display independent, and quick thumbnailing library.
  .
