@@ -187,10 +187,16 @@
 #define __MODIFIER 370
 #define __FILLRULE 371
 #define __TRANSPARENT 372
+
 #define __ROTATE 373
 #define __ROTATE_90 1
 #define __ROTATE_180 2
 #define __ROTATE_270 3
+#define __FLIP 373
+#define __FLIP_HORIZONTAL 4
+#define __FLIP_90 5
+#define __FLIP_VERTICAL 6
+#define __FLIP_270 7
 
 #define __KEEP_ON_TOP 453
 #define __FLAGS 454
