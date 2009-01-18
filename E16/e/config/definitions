@@ -198,6 +198,15 @@
 #define __FLIP_VERTICAL 6
 #define __FLIP_270 7
 
+#define __BEVEL 374
+#define __BEVEL_AMIGA 1
+#define __BEVEL_MOTIF 2
+#define __BEVEL_NEXT 3
+#define __BEVEL_DOUBLE 4
+#define __BEVEL_WIDEDOUBLE 5
+#define __BEVEL_THINPOINT 6
+#define __BEVEL_THICKPOINT 7
+
 #define __KEEP_ON_TOP 453
 #define __FLAGS 454
 #define __IS_A_REGION 455

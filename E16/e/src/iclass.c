@@ -584,6 +584,27 @@ ImageclassConfigLoad(FILE * fs)
 	  case ICLASS_ROTATE:	/* flip goes here too */
 	     is->rotate = strtoul(s2, NULL, 0);
 	     continue;
+	  case ICLASS_BEVEL:
+#define _R(x) (((x) >> 16) & 0xff)
+#define _G(x) (((x) >>  8) & 0xff)
+#define _B(x) (((x)      ) & 0xff)
+#define INT_TO_COLOR(xc, rgb) \
+    do { (&(xc))->red = _R(rgb); (&(xc))->green = _G(rgb); (&(xc))->blue = _B(rgb); } while(0)
+	     {
+		int                 n, bevel, hihi, hi, bg, lo, lolo;
+
+		n = sscanf(p2, "%i %i %i %i %i %i",
+			   &bevel, &hihi, &hi, &bg, &lo, &lolo);
+		if (n < 6)
+		   goto not_ok;
+		is->bevelstyle = bevel;
+		INT_TO_COLOR(is->hihi, hihi);
+		INT_TO_COLOR(is->hi, hi);
+		INT_TO_COLOR(is->bg, bg);
+		INT_TO_COLOR(is->lo, lo);
+		INT_TO_COLOR(is->lolo, lolo);
+	     }
+	     break;
 	  default:
 	     goto not_ok;
 	  }
@@ -1122,7 +1143,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	  {
 	     Pixmap              pmap = pmm.pmap;
 
-	     if (ts && text)
+	     if ((ts && text) || (is->bevelstyle != BEVEL_NONE))
 	       {
 		  if (pmm.type != 0)
 		    {
@@ -1130,9 +1151,20 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 		       EXCopyAreaTiled(pmm.pmap, None, pmap, 0, 0, w, h, 0, 0);
 		    }
 
-		  TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
-				    &(ic->padding), 0,
-				    TextclassGetJustification(tc), flags);
+		  if (is->bevelstyle != BEVEL_NONE)
+		    {
+		       GC                  gc;
+
+		       gc = EXCreateGC(WinGetXwin(win), 0, NULL);
+		       Eprintf("%s: bevel=%d\n", __func__, is->bevelstyle);
+		       ImagestateDrawBevel(is, pmap, gc, 0, 0, w, h);
+		       EXFreeGC(gc);
+		    }
+
+		  if (ts && text)
+		     TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
+				       &(ic->padding), 0,
+				       TextclassGetJustification(tc), flags);
 	       }
 
 	     /* Set window pixmap */
@@ -1167,20 +1199,13 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	else
 	  {
 	     Pixmap              pmap;
-	     GC                  gc;
 
 	     pmap = EGetWindowBackgroundPixmap(win);
-	     gc = EXCreateGC(WinGetXwin(win), 0, NULL);
-	     XSetFillStyle(disp, gc, FillSolid);
-	     XSetForeground(disp, gc, is->bg.pixel);
-	     XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	     if (is->bevelstyle != BEVEL_NONE)
-		ImagestateDrawBevel(is, pmap, gc, 0, 0, w, h);
+	     ImagestateDrawNoImg(is, pmap, 0, 0, w, h);
 	     if (ts && text)
 		TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				  &(ic->padding), 0,
 				  TextclassGetJustification(tc), flags);
-	     EXFreeGC(gc);
 	  }
      }
    EClearWindow(win);
