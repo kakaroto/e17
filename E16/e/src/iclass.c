@@ -250,9 +250,13 @@ ImagestateRealize(ImageState * is)
    if (is->im)			/* Image is already loaded */
       return;
 
-   /* not loaded, load and setup */
-   if (!is->real_file && is->im_file)
-      is->real_file = ThemeFileFind(is->im_file);
+   if (!is->real_file)
+     {
+	if (!is->im_file)
+	   return;		/* No file - quit */
+	/* not loaded, load and setup */
+	is->real_file = ThemeFileFind(is->im_file);
+     }
    if (is->real_file)
      {
 	is->im = EImageLoad(is->real_file);
