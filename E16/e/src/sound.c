@@ -344,13 +344,15 @@ _SoundConfigParse(FILE * fs)
 	fields = sscanf(s, "%4000s %4000s", s1, s2);
 	if (fields != 2)
 	  {
-	     Eprintf("Ignoring line: %s\n", s);
+	     Eprintf("*** Ignoring line: %s\n", s);
 	     continue;
 	  }
 	sc = SclassCreate(s1, s2);
      }
+#if 0				/* Errors here are just ignored */
    if (err)
       ConfigAlertLoad("Sound");
+#endif
 
    return err;
 }

@@ -1113,7 +1113,7 @@ _ac_reload(void *data __UNUSED__)
 void
 ActionclassesReload(void)
 {
-   static Timer       *ac_reload_timer;
+   static Timer       *ac_reload_timer = NULL;
 
    TIMER_DEL(ac_reload_timer);
    TIMER_ADD(ac_reload_timer, 0.2, _ac_reload, NULL);

@@ -132,8 +132,7 @@ TimersRun(double tt)
    if (t <= 0.)
       t = timer->at_time;
 
-   q_run = NULL;
-   q_old = q_first;
+   q_run = q_old = q_first;
    for (; timer; timer = q_first)
      {
 	if (timer->at_time > t + 200e-6)	/* Within 200 us is close enough */

@@ -665,21 +665,6 @@ EGetSavePrefix(void)
    return def_prefix;
 }
 
-const char         *
-EGetSavePrefixCommon(void)
-{
-   static char        *pfx = NULL;
-   char                buf[1024];
-
-   if (pfx)
-      return pfx;
-
-   Esnprintf(buf, sizeof(buf), "%s/%s", EDirUser(), EConfName());
-   pfx = Estrdup(buf);
-
-   return pfx;
-}
-
 static void
 ECheckEprog(const char *name)
 {
