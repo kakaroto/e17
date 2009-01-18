@@ -59,6 +59,7 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_HOME);
         ewl_widget_show(o);
+        ewl_widget_disable(o);
 
         o = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(o2), o);
