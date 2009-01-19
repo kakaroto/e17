@@ -15,7 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: ../e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Configuración de Mem"
