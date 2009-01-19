@@ -2,7 +2,7 @@ Source: evolve
 Section: x11
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), libeet-dev, libetk1-dev, libedje-dev
+Build-Depends: cdbs, debhelper (>= 6), libeet-dev, libetk1-dev, libedje-dev, libevas-dev, bison, flex
 Standards-Version: 3.7.3
 Homepage: http://www.enlightenment.org
 
