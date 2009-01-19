@@ -360,12 +360,18 @@ static char* id3_pic_types [] = {
 	/* $14 */  "Publisher/Studio logotype"
 };
 
+#define NUM_OF_ID3_PIC_TYPES \
+    (sizeof(id3_pic_types) / sizeof(id3_pic_types[0]))
+
 static char* id3_text_encodings [] = {
 	/* $00 */  "ISO-8859-1",
 	/* $01 */  "UTF-16 encoded Unicode with BOM",
 	/* $02 */  "UTF-16BE encoded Unicode without BOM",
 	/* $03 */  "UTF-8 encoded Unicode"
 };
+
+#define NUM_OF_ID3_TEXT_ENCODINGS \
+    (sizeof(id3_text_encodings) / sizeof(id3_text_encodings[0]))
 
 static void write_tags (ImlibImage* im, lopt* opt)
 {
@@ -396,12 +402,12 @@ static void write_tags (ImlibImage* im, lopt* opt)
 		__imlib_AttachTag (im, "id3-description-text-encoding",
 				   (num_data = (int)
 				    id3_field_gettextencoding (field)),
-				   num_data < sizeof (id3_text_encodings) ?
+				   num_data < NUM_OF_ID3_TEXT_ENCODINGS ?
 				   id3_text_encodings[num_data] : NULL, NULL);
 	if (field = id3_frame_field (frame, 2))
 		__imlib_AttachTag (im, "id3-picture-type",
 				   (num_data = id3_field_getint (field)),
-				   num_data < sizeof (id3_pic_types) ?
+				   num_data < NUM_OF_ID3_PIC_TYPES ?
 				   id3_pic_types[num_data] : NULL, NULL);
 	__imlib_AttachTag (im, "count", id3_tag_get_numframes (opt->ctx->tag),
 			   NULL, NULL);
