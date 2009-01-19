@@ -51,12 +51,11 @@ have_evas="no"
 PKG_CHECK_MODULES([EVAS], [evas >= 0.9.9], [have_evas="yes"])
 AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
-PKG_CHECK_MODULES([EFREET], [efreet >= 0.0.3 efreet-mime])
 PKG_CHECK_MODULES([ECORE], [ecore ecore-txt ecore-file])
 PKG_CHECK_MODULES([ECORE_EVAS], [ecore-evas])
 PKG_CHECK_MODULES([EDJE], [edje >= 0.5.0])
 
-requirements="evas ecore edje efreet"
+requirements="evas ecore edje"
 
 # Check for libraries needed by engines
 PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 0.9.9], [have_ecore_x="yes"], [have_ecore_x="no"])
@@ -74,6 +73,7 @@ PKG_CHECK_MODULES([ECORE_FB], [ecore-fb >= 0.9.9], [have_ecore_framebuffer="yes"
 # Check for optional libraries
 
 PKG_CHECK_MODULES([EMOTION], [emotion >= 0.0.1], [have_emotion="yes"], [have_emotion="no"])
+PKG_CHECK_MODULES([EFREET], [efreet >= 0.0.3 efreet-mime], [have_efreet="yes"], [have_efreet="no"])
 PKG_CHECK_MODULES([EPSILON], [epsilon >= 0.3.0], [have_epsilon="yes"], [have_epsilon="no"])
 
 
@@ -244,6 +244,11 @@ if test "x${have_emotion}" = "xyes" ; then
   AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable Emotion Support for Ewl_Media])
 fi
 AC_SUBST(ewl_media_include)
+
+if test "x${have_efreet}" = "xyes" ; then
+  requirements="$requirements efreet"
+  AC_DEFINE(BUILD_EFREET_SUPPORT, 1, [Enable Efreet Support])
+fi
 
 if test "x${have_epsilon}" = "xyes" ; then
   requirements="$requirements epsilon"
@@ -432,6 +437,7 @@ echo
 echo "Optional Components:"
 echo
 echo "  Emotion Support..........................: ${have_emotion}"
+echo "  Efreet Support...........................: ${have_efreet}"
 echo "  Epsilon Support..........................: ${have_epsilon}"
 echo
 echo "Debug Support..............................: ${enable_debug}"

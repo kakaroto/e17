@@ -4,7 +4,10 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
-#include <Efreet.h>
+
+#ifdef BUILD_EFREET_SUPPORT
+# include <Efreet.h>
+#endif
 
 static int ewl_icon_theme_is_edje = 0;
 
@@ -143,6 +146,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, unsigned int size,
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(icon, EWL_THEME_KEY_NOMATCH);
 
+#if BUILD_EFREET_SUPPORT
         ret = ecore_hash_get(cache, key);
         if (!ret)
         {
@@ -151,8 +155,11 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, unsigned int size,
                 if (!ret) ret = EWL_THEME_KEY_NOMATCH;
                 else ecore_hash_set(cache, strdup(key), (void *)ret);
         }
+#else
+        ret = EWL_THEME_KEY_NOMATCH;
+#endif
 
-        DRETURN_PTR(ret, DLEVEL_STABLE);;
+        DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 static void

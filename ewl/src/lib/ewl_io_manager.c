@@ -6,7 +6,9 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-#include <Efreet_Mime.h>
+#ifdef BUILD_EFREET_SUPPORT
+# include <Efreet_Mime.h>
+#endif
 
 static Ecore_Hash *ewl_io_manager_plugins = NULL;
 static Ecore_Hash *ewl_io_manager_ext_icon_map = NULL;
@@ -157,8 +159,11 @@ ewl_io_manager_uri_mime_type_get(const char *uri)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(uri, NULL);
-
+#if BUILD_EFREET_SUPPORT
         mime = efreet_mime_type_get(uri);
+#else
+        mime = "application/octet-stream";
+#endif
 
         DRETURN_PTR(mime, DLEVEL_STABLE);
 }

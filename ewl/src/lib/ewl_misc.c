@@ -12,8 +12,11 @@
 #include <Evas.h>
 
 #include <Edje.h>
-#include <Efreet.h>
-#include <Efreet_Mime.h>
+
+#ifdef BUILD_EFREET_SUPPORT
+# include <Efreet.h>
+# include <Efreet_Mime.h>
+#endif
 
 #ifdef __GLIBC__
 #include <execinfo.h>
@@ -202,6 +205,7 @@ ewl_init(int *argc, char **argv)
         }
         ecore_list_prepend(shutdown_queue, ecore_shutdown);
 
+#ifdef BUILD_EFREET_SUPPORT
         if (!efreet_init()) {
                 fprintf(stderr, "Could not initialize Efreet.\n");
                 goto ERROR;
@@ -213,6 +217,7 @@ ewl_init(int *argc, char **argv)
                 goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, efreet_mime_shutdown);
+#endif
 
         if (!ecore_string_init()) {
                 fprintf(stderr, "Could not initialize Ecore Strings.\n");
