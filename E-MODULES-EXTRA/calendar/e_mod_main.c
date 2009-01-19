@@ -167,7 +167,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 	if (p) num = atoi(p + 1) + 1;
      }
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
-   id = buf;
+   id = eina_stringshare_add(buf);
    return id;
 }
 
