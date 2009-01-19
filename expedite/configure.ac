@@ -69,7 +69,7 @@ AM_CONDITIONAL(BUILD_QUARTZ, test "x$have_quartz" = "xyes")
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
 # 16bit DirectDraw
-EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
+EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes", [ddraw_16_libs="-lddraw -ldxguid"])
 AC_SUBST(ddraw_16_libs)
 
 # 16bit WinCE
