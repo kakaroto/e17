@@ -6,3 +6,7 @@ DEB_PYTHON_SYSTEM=pysupport
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
+install/python-edbus::
+	mkdir -p debian/python-edbus/usr/share/python-edbus
+	cp -r tests debian/python-edbus/usr/share/python-edbus
+

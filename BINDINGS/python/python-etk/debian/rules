@@ -6,3 +6,7 @@ DEB_PYTHON_SYSTEM=pysupport
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
+install/python-etk::
+	mkdir -p debian/python-etk/usr/share/python-etk
+	cp -r examples debian/python-etk/usr/share/python-etk
+

@@ -6,3 +6,7 @@ DEB_PYTHON_SYSTEM=pysupport
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
+install/python-evas::
+	mkdir -p debian/python-evas/usr/share/python-evas
+	cp -r tests debian/python-evas/usr/share/python-evas
+	cp -r examples debian/python-evas/usr/share/python-evas

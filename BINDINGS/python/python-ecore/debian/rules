@@ -6,3 +6,8 @@ DEB_PYTHON_SYSTEM=pysupport
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
+install/python-ecore::
+	mkdir -p debian/python-ecore/usr/share/python-ecore
+	cp -r tests debian/python-ecore/usr/share/python-ecore
+	cp -r examples debian/python-ecore/usr/share/python-ecore
+
