@@ -15,6 +15,7 @@ label.edc \
 menu.edc \
 notebook.edc \
 progress.edc \
+rectangle.edc \
 scroll.edc \
 separator.edc \
 shadow.edc \

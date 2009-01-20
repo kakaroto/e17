@@ -18,7 +18,10 @@ static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
                                                 int *t, int *b);
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget *w,
-                                                  const char *part, const char *text);
+                                                  const char *part,
+                                                  const char *text);
+static void ewl_widget_color_apply(Ewl_Widget *w, Ewl_Color_Set *color);
+
 static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w,
@@ -2098,17 +2101,44 @@ ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        color = NEW(Ewl_Color_Set, 1);
+        color = ewl_attach_color_get(w);
+
+        if (!color)
+        {
+                color = NEW(Ewl_Color_Set, 1);
+                ewl_attach_color_set(w, color);
+        }
+
         color->r = r;
         color->g = g;
         color->b = b;
         color->a = a;
-        ewl_attach_color_set(w, color);
 
+        if (REALIZED(w))
+                ewl_widget_color_apply(w, color);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_widget_color_apply(Ewl_Widget *w, Ewl_Color_Set *color)
+{
+        int a;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(color);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        a = color->a;
         if (w->theme_object)
-                evas_object_color_set(w->theme_object, r, g, b, a);
+                evas_object_color_set(w->theme_object, (color->r * a) / 0xff,
+                                (color->g * a) / 0xff, (color->b * a) / 0xff,
+                                a);
         else if (w->smart_object)
-                evas_object_color_set(w->smart_object, r, g, b, a);
+                evas_object_color_set(w->smart_object, (color->r * a) / 0xff,
+                                (color->g * a) / 0xff, (color->b * a) / 0xff,
+                                a);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2448,6 +2478,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                                           void *user_data __UNUSED__)
 {
         Ewl_Embed *emb;
+        Ewl_Color_Set *color;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -2560,7 +2591,12 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         ewl_widget_layer_stack_add(w);
         if (w->parent && REVEALED(w->parent))
                 ewl_widget_layer_update(w);
-        
+       
+        /* set the color if present */
+        color = ewl_attach_color_get(w);
+        if (color)
+                ewl_widget_color_apply(w, color);
+
         /*
          * Show the theme and clip box if widget is visible
          */

@@ -193,10 +193,9 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_show(o);
 
-        o = NEW(Ewl_Widget, 1);
-        ewl_widget_init(o);
+        o = ewl_widget_new();
         ewl_widget_internal_set(o, TRUE);
-        ewl_widget_appearance_set(o, "coloured_rect");
+        ewl_widget_appearance_set(o, "rectangle");
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_color_set(o, r, g, b, 255);
         ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
@@ -212,10 +211,9 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_show(o);
 
-        o = NEW(Ewl_Widget, 1);
-        ewl_widget_init(o);
+        o = ewl_widget_new();
         ewl_widget_internal_set(o, TRUE);
-        ewl_widget_appearance_set(o, "coloured_rect");
+        ewl_widget_appearance_set(o, "rectangle");
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_color_set(o, r, g, b, 255);
         ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);

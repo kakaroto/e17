@@ -19,6 +19,7 @@ collections
 #include "groups/cursor.edc"
 #include "groups/dialog.edc"
 #include "groups/highlight.edc"
+#include "groups/rectangle.edc"
 #include "groups/image.edc"
 #include "groups/label.edc"
 #include "groups/menu.edc"
@@ -47,6 +48,9 @@ data
 
 	/* A blank group to be used if you want to remove a theme */
 	item: "/blank/group" "ewl/blank";
+
+	/* rectangle */
+	item: "/rectangle/group" "ewl/rectangle";
 
 	/* border groups */
 	item: "/border/group" "ewl/border";

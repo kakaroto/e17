@@ -30,8 +30,8 @@ create_test(Ewl_Container *box)
 {
         Ewl_Widget *o;
 
-        o = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(o);
+        o = ewl_widget_new();
+        ewl_widget_appearance_set(o, "rectangle");
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_object_minimum_size_set(EWL_OBJECT(o), 150, 20);
         ewl_widget_name_set(o, "colour_preview");
