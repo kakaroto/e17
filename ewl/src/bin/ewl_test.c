@@ -418,6 +418,7 @@ run_unit_tests(Ewl_Test *test)
         /* no unit tests, nothign to do */
         if (!test->unit_tests) return 0;
 
+        printf("%s\n", test->name);
         for (i = 0; test->unit_tests[i].func; i++)
         {
                 int ret;
@@ -428,7 +429,7 @@ run_unit_tests(Ewl_Test *test)
                 ret = test->unit_tests[i].func(buf, sizeof(buf));
                 if (!ret || !hide_passed)
                 {
-                        printf("Running %s: ", test->unit_tests[i].name);
+                        printf("\t%s: ", test->unit_tests[i].name);
                         printf("%s %s\n", (ret ? "PASSED" : "FAILED"),
                                                         (ret ? "" : buf));
                 }
@@ -439,6 +440,7 @@ run_unit_tests(Ewl_Test *test)
                 if (test->unit_tests[i].quiet)
                         ewl_test_stderr_enable();
         }
+        printf("\n");
 
         return failures;
 }
