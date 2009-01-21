@@ -25,6 +25,8 @@ def init():
 
 EPSILON_THUMB_NORMAL = 0
 EPSILON_THUMB_LARGE = 1
+EPSILON_THUMB_FDO = 0
+EPSILON_THUMB_JPEG = 1
 
 cdef class Epsilon:
     """Epsilon thumbnail generator.
@@ -149,6 +151,30 @@ cdef class Epsilon:
 
         def __get__(self):
             return self.thumb_size_get()
+
+    def format_set(self, int format):
+        """Specify thumbnail format, either EPSILON_THUMB_FDO or
+           EPSILON_THUMB_JPEG.
+        """
+        if format != EPSILON_THUMB_FDO and format != EPSILON_THUMB_JPEG:
+            raise ValueError("value must be either EPSILON_THUMB_FDO, "
+                             "EPSILON_THUMB_JPEG")
+        epsilon_format_set(self.obj, format)
+
+    def format_get(self):
+        "@rtype: int"
+        if self.obj:
+            if self.obj.format == EPSILON_THUMB_FDO:
+                return EPSILON_THUMB_FDO
+            else:
+                return EPSILON_THUMB_JPEG
+
+    property format:
+        def __set__(self, int format):
+            self.format_set(format)
+
+        def __get__(self):
+            return self.format_get()
 
     def thumb_custom_size_set(self, int w, int h, char *dir):
         """Specify a custom thumbnail size.
