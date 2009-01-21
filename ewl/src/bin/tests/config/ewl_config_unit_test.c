@@ -20,6 +20,8 @@ static int test_float_overwrite(char *buf, int len);
 static int test_color_overwrite(char *buf, int len);
 
 static int test_remove_key(char *buf, int len);
+static int test_keys_remove(char *buf, int len);
+static int test_keys_get(char *buf, int len);
 
 /*
  * This set of tests is targeted at config
@@ -35,6 +37,8 @@ Ewl_Unit_Test config_unit_tests[] = {
                 {"float overwrite", test_float_overwrite, NULL, -1, 0},
                 {"color overwrite", test_color_overwrite, NULL, -1, 0},
                 {"remove key", test_remove_key, NULL, -1, 0},
+                {"remove keys get", test_keys_remove, NULL, -1, 0},
+                {"test keys get", test_keys_get, NULL, -1, 0},
                 {NULL, NULL, NULL, -1, 0}
         };
 
@@ -183,7 +187,7 @@ test_color_get_set(char *buf, int len)
 
         conf = ewl_config_new("unit test");
 
-        ewl_config_color_set(conf, "bg_color", 0, 100, 200, 255, 
+        ewl_config_color_set(conf, "bg_color", 0, 100, 200, 255,
                                                         EWL_STATE_TRANSIENT);
 
         /* first try to get a value that cannot exist */
@@ -234,7 +238,7 @@ test_string_overwrite(char *buf, int len)
         while (*string == NULL) {
                 const char *value;
 
-                ewl_config_string_set(conf, "test key", *string, 
+                ewl_config_string_set(conf, "test key", *string,
                                                 EWL_STATE_TRANSIENT);
                 value = ewl_config_string_get(conf, "test key");
 
@@ -476,4 +480,131 @@ EXIT:
         return ret;
 }
 
+static int
+test_key_pressent(char *buf, int len, Ecore_Hash *hash, const char *key, const char *hash_name)
+{
+        if (ecore_hash_get(hash, key))
+        {
+                LOG_FAILURE(buf, len, "%s hash contains key %s after instance key remove", hash_name, key);
+                return 0;
+        }
+        return 1;
+}
 
+static Ecore_Hash*
+test_make_hash()
+{
+        Ecore_Hash *hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+        ecore_hash_free_key_cb_set(hash, free);
+        ecore_hash_free_value_cb_set(hash, free);
+        ecore_hash_set(hash, strdup("/test/key"), strdup("value"));
+        ecore_hash_set(hash, strdup("/system/remove"), strdup("value"));
+        ecore_hash_set(hash, strdup("/system/remove1"), strdup("value"));
+        ecore_hash_set(hash, strdup("/system/remove2"), strdup("value"));
+        ecore_hash_set(hash, strdup("/system/remove5"), strdup("value"));
+        ecore_hash_set(hash, strdup("/user/remove"), strdup("value"));
+        ecore_hash_set(hash, strdup("/instance/remove"), strdup("value"));
+
+        return hash;
+}
+
+static int
+test_keys_remove(char *buf, int len)
+{
+#define TEST_KEY_SYSTEM(key) if(ret) ret = test_key_pressent(buf, len, cfg->data.system, key, "System")
+#define TEST_KEY_USER(key) if(ret) ret = test_key_pressent(buf, len, cfg->data.user, key, "User")
+#define TEST_KEY_INSTANCE(key) if(ret) ret = test_key_pressent(buf, len, cfg->data.instance, key, "Instance")
+
+        int ret = 1;
+        Ewl_Config *cfg;
+        cfg = ewl_config_new("unit test");
+
+        cfg->data.system = test_make_hash();
+        cfg->data.user = test_make_hash();
+        cfg->data.instance = test_make_hash();
+
+        ewl_config_keys_remove(cfg, "/system/remove");
+
+        TEST_KEY_SYSTEM("/system/remove");
+        TEST_KEY_SYSTEM("/system/remove1");
+        TEST_KEY_SYSTEM("/system/remove2");
+        TEST_KEY_SYSTEM("/system/remove5");
+
+        TEST_KEY_USER("/system/remove");
+        TEST_KEY_USER("/system/remove1");
+        TEST_KEY_USER("/system/remove2");
+        TEST_KEY_USER("/system/remove5");
+
+        TEST_KEY_INSTANCE("/system/remove");
+        TEST_KEY_INSTANCE("/system/remove1");
+        TEST_KEY_INSTANCE("/system/remove2");
+        TEST_KEY_INSTANCE("/system/remove5");
+
+        ewl_config_destroy(cfg);
+
+#undef TEST_KEY_SYSTEM
+#undef TEST_KEY_USER
+#undef TEST_KEY_INSTANCE
+
+        return ret;
+}
+
+static int
+test_current_key(char *buf, int len, Ecore_List *list, const char *key)
+{
+        const char *str;
+        str = ecore_list_next(list);
+        if (str)
+        {
+                printf("DEBUG: test key: %s; found key: %s\n", key, str);
+                if (!strcmp(str, key))
+                        return 1;
+                else
+                {
+                        LOG_FAILURE(buf, len, "Returned wrong key: %s not %s", str, key);
+                        return 0;
+                }
+        }
+        else
+        {
+                LOG_FAILURE(buf, len, "Missing key: %s", key);
+                return 0;
+        }
+}
+
+static int
+test_keys_get(char *buf, int len)
+{
+#define TEST(key)   \
+    if(ret) ret = test_current_key(buf, len, keys_list, key);
+
+        int ret = 1;
+        Ewl_Config *cfg;
+        Ecore_List *keys_list;
+        char const *str;
+
+        cfg = ewl_config_new("unit test");
+
+        cfg->data.system = test_make_hash();
+        cfg->data.user = test_make_hash();
+        cfg->data.instance = test_make_hash();
+
+        keys_list = ewl_config_keys_get(cfg, "/system/remo");
+
+        if (keys_list)
+        {
+                TEST("/system/remove");
+                TEST("/system/remove1");
+                TEST("/system/remove2");
+                TEST("/system/remove5");
+        }
+        else
+        {
+                LOG_FAILURE(buf, len, "The list with keys is empty");
+                ret = 0;
+        }
+
+        ewl_config_destroy(cfg);
+#undef TEST
+        return ret;
+}
