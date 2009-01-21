@@ -18,7 +18,6 @@ collections
 #include "groups/combo.edc"
 #include "groups/cursor.edc"
 #include "groups/dialog.edc"
-#include "groups/highlight.edc"
 #include "groups/rectangle.edc"
 #include "groups/image.edc"
 #include "groups/label.edc"
@@ -71,9 +70,6 @@ data
 	item: "/entry/group" "ewl/entry";
 	item: "/entry/cursor/group" "ewl/entry/cursor";
 	item: "/selection_area/group" "ewl/entry/selection";
-
-	/* highlight group */
-	item: "/highlight/group" "ewl/highlight";
 
 	/* image group */
 	item: "/image/group" "ewl/image";

@@ -22,7 +22,6 @@ e17_DEPS = \
         groups/border.edc \
         groups/button.edc \
         groups/combo.edc \
-        groups/highlight.edc \
         groups/label.edc \
         groups/menu.edc \
         groups/notebook.edc \
