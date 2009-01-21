@@ -45,6 +45,8 @@ static void (*key_func) (char *key) = NULL;
 static void (*loop_func) (double t, int f) = NULL;
 
 static int run_all = 0;
+static int run_test = 0;
+static int list_test = 0;
 
 static void
 _ui_exit(void)
@@ -59,6 +61,13 @@ _ui_all(void)
    double fps = 0.0;
    int t_count = 0;
 
+   evas_object_hide(o_menu_logo);
+   evas_object_hide(o_menu_title);
+   evas_object_hide(o_menu_title2);
+   evas_object_hide(o_menu_icon);
+   evas_object_hide(o_menu_icon_sel);
+   evas_object_hide(o_menu_icon_sel2);
+   evas_object_hide(o_menu_text_sel);
    for (l = menu; l; l = l->next)
      {
 	Menu_Item *mi;
@@ -83,6 +92,48 @@ _ui_all(void)
 	fps += p_fps;
 	key_func("Escape");
      }
+   if (t_count > 0) printf("%4.2f , EVAS SPEED\n", fps / t_count);
+}
+
+
+static void
+_ui_num(int n)
+{
+   Eina_List *l;
+   double fps = 0.0;
+   int t_count = 0;
+   Menu_Item *mi;
+
+   evas_object_hide(o_menu_logo);
+   evas_object_hide(o_menu_title);
+   evas_object_hide(o_menu_title2);
+   evas_object_hide(o_menu_icon);
+   evas_object_hide(o_menu_icon_sel);
+   evas_object_hide(o_menu_icon_sel2);
+   evas_object_hide(o_menu_text_sel);
+   mi = eina_list_nth(menu, n);
+   if (mi)
+     {
+	if ((mi->func == about_start) ||
+	    (mi->func == _ui_exit) ||
+	    (mi->func == _ui_all))
+	  goto done;
+	if (mi->func) mi->func();
+	while (p_fps == 0.0)
+	  {
+	     ui_loop();
+	     engine_loop();
+	     evas_render(evas);
+	  }
+	/* This give time to delete the objects of the previous test and make
+	   the result of next test more accurate. Draw back, some time is not
+	   counted at all. */
+	evas_render(evas);
+	t_count++;
+	fps += p_fps;
+	key_func("Escape");
+     }
+   done:
    if (t_count > 0) printf("%4.2f , EVAS SPEED\n", fps / t_count);
 }
 
@@ -364,6 +415,24 @@ _ui_setup(void)
 	_ui_all();
 	_ui_exit();
      }
+   else if (run_test > 0)
+     {
+        _ui_num(run_test);
+     }
+   else if (list_test > 0)
+     {
+        Eina_List *l;
+        int i;
+          
+        for (l = menu, i = -1; l; l = l->next, i++)
+          {
+             Menu_Item *mi;
+             
+             mi = l->data;
+             if (i > 0)
+               printf("%3i - %s\n", i, mi->text);
+          }
+     }
    else
      {
 	menu_active = 1;
@@ -380,6 +449,15 @@ ui_args(int argc, char **argv)
 	if (!strcmp(argv[i], "-a"))
 	  {
 	     run_all = 1;
+	  }
+	else if ((!strcmp(argv[i], "-t")) && (i < (argc - 1)))
+	  {
+             run_test = atoi(argv[i + 1]) + 1;
+             if (run_test < 2) run_test = 2;
+	  }
+	else if (!strcmp(argv[i], "-l"))
+	  {
+             list_test = 1;
 	  }
      }
    _ui_setup();

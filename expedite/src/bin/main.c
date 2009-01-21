@@ -1263,6 +1263,8 @@ _engine_args(int argc, char **argv)
 		"Options:\n"
 		"  -datadir path/to/data\n"
 		"  -a (autorun all tests)\n"
+                "  -l (list tests)\n"
+		"  -t TEST-NUM\n"
 		"  -e ENGINE\n"
 		"  -p PROFILE\n"
 		"\n"
