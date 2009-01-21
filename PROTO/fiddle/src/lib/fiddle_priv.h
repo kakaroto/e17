@@ -12,4 +12,9 @@
 # define alloca _alloca
 #endif
 
+struct _Fiddle_Context
+{
+   Fiddle_Event *events;
+};
+
 #endif
