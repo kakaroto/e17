@@ -981,13 +981,10 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
                         || (ewl_object_current_h_get(EWL_OBJECT(window)) != ev->h)) {
 
                 /*
-                 * Right now this is commented out, as it was preventing windows
-                 * from resizing when WE were the ones setting the size
-                 * (mainly on initial show of the window). It would be nice to
-                 * add this back in to limit the # of window resizes occuring.
-                 * (As long as it doesn't break initial size.)
+                 * This flag prevent the configure cb of the window to reset
+                 * the size of the window
                  */
-                if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE;
+                window->flags |= EWL_WINDOW_USER_CONFIGURE;
                 ewl_object_size_request(EWL_OBJECT(window), ev->w, ev->h);
         }
 
