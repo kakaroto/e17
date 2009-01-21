@@ -22,7 +22,11 @@ ui.c ui.h \
 about.c about.h \
 tests.h \
 image_blend_unscaled.c \
+image_blend_fade_unscaled.c \
+image_blend_fade_pow2_unscaled.c \
 image_blend_solid_unscaled.c \
+image_blend_solid_fade_unscaled.c \
+image_blend_solid_fade_pow2_unscaled.c \
 image_blend_nearest_scaled.c \
 image_blend_nearest_solid_scaled.c \
 image_blend_smooth_scaled.c \
@@ -47,8 +51,10 @@ text_change.c \
 textblock_basic.c \
 textblock_intl.c \
 rect_blend.c \
+rect_blend_pow2.c \
 rect_solid.c \
 rect_blend_few.c \
+rect_blend_pow2_few.c \
 rect_solid_few.c \
 image_blend_occlude1_few.c \
 image_blend_occlude2_few.c \
