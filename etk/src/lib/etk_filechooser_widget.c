@@ -280,7 +280,7 @@ const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *fil
    const char *filename = NULL;
    Etk_Tree_Row *row;
 
-   if (!filechooser_widget && !(filechooser_widget->files_tree))
+   if (!filechooser_widget || !(filechooser_widget->files_tree))
       return NULL;
 
    if (!filechooser_widget->is_save)
