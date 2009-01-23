@@ -9,13 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire e17\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-11-11 21:38+0800\n"
-"PO-Revision-Date: 2008-11-03 22:49+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"PO-Revision-Date: 2009-01-22 17:45+0000\n"
+"Last-Translator: Aron Xu <Unknown>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-23 08:20+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
 #: ../src/edje_frontend_gui.cpp:755
@@ -31,11 +33,11 @@ msgstr ""
 
 #: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
-msgstr ""
+msgstr "您赢了！"
 
 #: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
-msgstr ""
+msgstr "您输了！"
 
 #: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
@@ -59,11 +61,11 @@ msgstr ""
 #. set the label text
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
-msgstr ""
+msgstr "游戏"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
-msgstr ""
+msgstr "主题"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
@@ -163,7 +165,7 @@ msgstr "配置"
 
 #: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
-msgstr ""
+msgstr "图形"
 
 #: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
@@ -216,7 +218,7 @@ msgstr ""
 
 #: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
-msgstr ""
+msgstr "最高分"
 
 #: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
