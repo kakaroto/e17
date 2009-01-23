@@ -7,13 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-10-22 21:58+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-22 18:02+0000\n"
+"Last-Translator: Aron Xu <Unknown>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../e_mod_config.c:37
 msgid "Slideshow Configuration"
@@ -42,7 +44,7 @@ msgstr ""
 
 #: ../e_mod_config.c:109
 msgid "Extra"
-msgstr ""
+msgstr "附加"
 
 #: ../e_mod_config.c:110
 msgid "Randomize order"
@@ -66,8 +68,8 @@ msgstr ""
 
 #: ../e_mod_main.c:140
 msgid "Slideshow"
-msgstr ""
+msgstr "幻灯演示"
 
 #: ../e_mod_main.c:184
 msgid "Configuration"
-msgstr ""
+msgstr "配置"
