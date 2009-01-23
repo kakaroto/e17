@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-12-18 20:20+0000\n"
-"Last-Translator: Federico Vera <Unknown>\n"
+"PO-Revision-Date: 2009-01-23 01:00+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,7 @@ msgstr "Módulo foto"
 
 #: ../src/module/e_mod_main.c:52
 msgid "E Canvas init failed !"
-msgstr ""
+msgstr "¡Y falló la inicialización del lienzo!"
 
 #: ../src/module/e_mod_main.c:59
 msgid "Theme init failed !"
@@ -43,7 +43,7 @@ msgstr "¡Fallo inicialización del subsistema de avisos emergentes!"
 
 #: ../src/module/e_mod_main.c:87
 msgid "Popup info subsystem init failed"
-msgstr ""
+msgstr "Falló la inicialización del subsistema de notificaciones emergentes"
 
 #: ../src/module/e_mod_main.c:180
 msgid "Photo"
@@ -71,6 +71,9 @@ msgid ""
 "configuration of Photo module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
+"<hilight>Módulo de fotos: configuración revertida</hilight><br><br>La "
+"configuración del módulo de fotos <br>ha sido revertida<br>Tus preferencias "
+"se han borrado<br>Sentimos las molestias<br><br>(%d ->%d)"
 
 #: ../src/module/photo_config_dialog.c:64
 msgid "Photo Configuration"
@@ -112,7 +115,7 @@ msgstr "Siempre mostrar etiqueta"
 
 #: ../src/module/photo_config_dialog.c:256
 msgid "Nice transitions"
-msgstr ""
+msgstr "Efectos de transición"
 
 #: ../src/module/photo_config_dialog.c:262
 msgid "Default Mouse actions"
@@ -192,7 +195,7 @@ msgstr "Recarga automática de directorios"
 
 #: ../src/module/photo_config_dialog.c:356
 msgid "when add / modify directory list"
-msgstr ""
+msgstr "al añadir/modificar lista de directorios"
 
 #: ../src/module/photo_config_dialog.h:36
 msgid "Show label"
@@ -248,11 +251,11 @@ msgstr "Leer archivos ocultos"
 
 #: ../src/module/photo_config_dialog_dir.c:158
 msgid "Photo Module Warning"
-msgstr ""
+msgstr "Avisos del módulo de fotos"
 
 #: ../src/module/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
-msgstr ""
+msgstr "Configuración de fotografía"
 
 #: ../src/module/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
@@ -304,7 +307,7 @@ msgstr ""
 #: ../src/module/photo_item.c:455 ../src/module/photo_item.c:475
 #: ../src/module/photo_picture_local.c:259
 msgid "Photo Module Error"
-msgstr ""
+msgstr "Error del módulo de fotos"
 
 #: ../src/module/photo_item.c:413
 #, c-format
@@ -321,6 +324,9 @@ msgid ""
 "module picture list, but it seems you removed it from the disk.<br>It cant "
 "be set opened in a viewer, sorry."
 msgstr ""
+"<hilight>¡El archivo %s no existe!</hilight><br><br>Este archivo está en la "
+"lista de fotos del módulo pero parece haber sido eliminado del disco.<br>No "
+"se puede abrir con el visor, lo siento."
 
 #: ../src/module/photo_item.c:472
 #, c-format
@@ -328,6 +334,9 @@ msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
 "for images in Photo module configuration panel (Advanced view)"
 msgstr ""
+"<hilight>¡No se ha encontrado el visor %s!</hilight><br><br>Puedes cambiar "
+"el visor de imágenes en el panel de configuración del módulo de fotos (Vista "
+"avanzada)."
 
 #: ../src/module/photo_menu.c:30
 msgid "Pause slideshow"
@@ -343,19 +352,19 @@ msgstr "Imformaciones de imágenes"
 
 #: ../src/module/photo_menu.c:62
 msgid "Open in"
-msgstr ""
+msgstr "Abrir en"
 
 #: ../src/module/photo_menu.c:71
 msgid "Configure Photo module"
-msgstr ""
+msgstr "Configurar módulo de fotos"
 
 #: ../src/module/photo_menu.c:75
 msgid "Configure this Photo gadget"
-msgstr ""
+msgstr "Configurar este gadget de fotos"
 
 #: ../src/module/photo_menu.c:82
 msgid "Configure Gadget and Shelf"
-msgstr ""
+msgstr "Configurar gadget y a sí mismo"
 
 #: ../src/module/photo_picture_histo.c:121
 msgid "Historic"
@@ -373,7 +382,7 @@ msgstr ""
 
 #: ../src/module/photo_picture_local.c:593
 msgid "Photo Module Information"
-msgstr ""
+msgstr "Información del módulo de fotos"
 
 #: ../src/module/photo_picture_local.c:594
 msgid ""
