@@ -9,33 +9,34 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-12-05 19:08+0000\n"
-"Last-Translator: Paco Molinero <paco@byasl.com>\n"
+"PO-Revision-Date: 2009-01-23 00:55+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
-msgstr ""
+msgstr "¡Ha fallado la inicialización de configuración!"
 
 #: ../src/module/e_mod_main.c:53
 msgid "Parser init failed"
-msgstr ""
+msgstr "Falló la inicialización del analizador"
 
 #: ../src/module/e_mod_main.c:54
 msgid "Feeds init failed"
-msgstr ""
+msgstr "Falló la inicialización de los canales de noticias"
 
 #: ../src/module/e_mod_main.c:55
 msgid "Viewer init failed"
-msgstr ""
+msgstr "Fallón la inicialización del visor"
 
 #: ../src/module/e_mod_main.c:56
 msgid "Popup subsystem init failed"
-msgstr ""
+msgstr "Fallón la inicializaciónd el subsistema de emergentes"
 
 #: ../src/module/e_mod_main.c:219
 msgid "News"
@@ -60,6 +61,9 @@ msgid ""
 "configuration of News module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
+"<hilight>Módulo de noticias: configuración revertida</hilight><br><br>Tu "
+"configuración del módulo de noticias<br>ha sido revertida<br>Tus "
+"preferencias se han eliminado<br>Lamentamos el problema<br><br>(%d ->%d)"
 
 #: ../src/module/news_config_dialog.c:90
 msgid "News Main Configuration"
@@ -69,7 +73,7 @@ msgstr "Configuración principal de noticia"
 #: ../src/module/news_config_dialog.c:228
 #: ../src/module/news_config_dialog_feeds.c:358
 msgid "Feeds"
-msgstr "Suministros"
+msgstr "Canales de noticias"
 
 #: ../src/module/news_config_dialog.c:192
 #: ../src/module/news_config_dialog.c:236
@@ -116,7 +120,7 @@ msgstr "Usar script xdg-open, de freedesktop.org"
 
 #: ../src/module/news_config_dialog.c:248
 msgid "Popup On News"
-msgstr ""
+msgstr "Mostrar emergentes en noticias"
 
 #: ../src/module/news_config_dialog.c:251
 msgid "Never"
@@ -124,7 +128,7 @@ msgstr "Nunca"
 
 #: ../src/module/news_config_dialog.c:257
 msgid "Only on urgent feeds"
-msgstr ""
+msgstr "Sólo en canales urgentes"
 
 #: ../src/module/news_config_dialog.c:263
 msgid "On all feeds"
@@ -138,19 +142,19 @@ msgstr "%1.0f s"
 
 #: ../src/module/news_config_dialog.c:280
 msgid "Popup On Warning / Error"
-msgstr ""
+msgstr "Mostrar emergentes en avisos/errores"
 
 #: ../src/module/news_config_dialog.c:285
 msgid "Show on timeout ?"
-msgstr ""
+msgstr "¿Mostrar al vencer tiempo?"
 
 #: ../src/module/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr ""
+msgstr "Primero canales sin leer"
 
 #: ../src/module/news_config_dialog.c:309
 msgid "Unread articles first"
-msgstr "Primero artículos no leidos"
+msgstr "Primero artículos no leídos"
 
 #: ../src/module/news_config_dialog.c:311
 msgid "Sort articles by date"
@@ -162,7 +166,7 @@ msgstr "Tipo de letra"
 
 #: ../src/module/news_config_dialog.c:324
 msgid "Font Shadow"
-msgstr ""
+msgstr "Sombra de fuente"
 
 #: ../src/module/news_config_dialog.c:336
 msgid "Proxy"
@@ -182,7 +186,7 @@ msgstr "Puerto"
 
 #: ../src/module/news_config_dialog_category.c:50
 msgid "News Category Configuration"
-msgstr ""
+msgstr "Configuración de categoría de noticias"
 
 #: ../src/module/news_config_dialog_category.c:135
 msgid "Icon"
@@ -196,7 +200,7 @@ msgstr "Nombre"
 #: ../src/module/news_config_dialog_category.c:203
 #: ../src/module/news_config_dialog_feed.c:539
 msgid "Select an Icon"
-msgstr "Seleccion un ícono"
+msgstr "Seleccionar un icono"
 
 #. buttons at the bottom
 #: ../src/module/news_config_dialog_category.c:228
@@ -211,11 +215,11 @@ msgstr "Cancelar"
 
 #: ../src/module/news_config_dialog_feed.c:63
 msgid "You need to <hilight>create a category</hilight> first"
-msgstr "Primero necesita <hilight>crear una categoria</hilight>"
+msgstr "Primero necesitas <hilight>crear una categoría</hilight>"
 
 #: ../src/module/news_config_dialog_feed.c:77
 msgid "News Feed Configuration"
-msgstr ""
+msgstr "Configuración de canal de noticias"
 
 #: ../src/module/news_config_dialog_feed.c:329
 msgid "Basic informations"
@@ -232,11 +236,11 @@ msgstr "Nombre :"
 
 #: ../src/module/news_config_dialog_feed.c:349
 msgid "Feed url :"
-msgstr ""
+msgstr "URL del canal:"
 
 #: ../src/module/news_config_dialog_feed.c:353
 msgid "Mark as important feed"
-msgstr "Marcar como un importante suministro"
+msgstr "Marcar como canal importante"
 
 #: ../src/module/news_config_dialog_feed.c:358
 msgid "Category"
@@ -249,7 +253,7 @@ msgstr "Idioma"
 
 #: ../src/module/news_config_dialog_feed.c:391
 msgid "Advanced informations"
-msgstr "Información avanzada"
+msgstr "Informaciones avanzadas"
 
 #: ../src/module/news_config_dialog_feed.c:393
 #: ../src/module/news_config_dialog_feed.c:414
@@ -259,7 +263,7 @@ msgstr "Descripción"
 #: ../src/module/news_config_dialog_feed.c:397
 #: ../src/module/news_config_dialog_feed.c:416
 msgid "Home url"
-msgstr "url de inicio"
+msgstr "Dirección de inicio"
 
 #: ../src/module/news_config_dialog_feed.c:405
 msgid "Server informations"
@@ -267,20 +271,21 @@ msgstr "Información del servidor"
 
 #: ../src/module/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr "Permitir al servidor sobrescribir la información que ha introducido?"
+msgstr ""
+"¿Permitir al servidor sobrescribir la información que has introducido?"
 
 #: ../src/module/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
-msgstr "Configuración de las fuentes de noticias"
+msgstr "Configuración de canales de noticias"
 
 #: ../src/module/news_config_dialog_feeds.c:290
 msgid "Categories"
-msgstr "Categorias"
+msgstr "Categorías"
 
 #: ../src/module/news_config_dialog_feeds.c:314
 #: ../src/module/news_config_dialog_feeds.c:388
 msgid "Add"
-msgstr "Agregar"
+msgstr "Añadir"
 
 #: ../src/module/news_config_dialog_feeds.c:316
 #: ../src/module/news_config_dialog_feeds.c:390
@@ -307,7 +312,7 @@ msgstr "Seleccionar"
 
 #: ../src/module/news_config_dialog_feeds.c:346
 msgid "Empty the lists"
-msgstr "Vacias las listas"
+msgstr "Vaciar las listas"
 
 #: ../src/module/news_config_dialog_feeds.c:349
 msgid "Restore default lists"
@@ -318,49 +323,49 @@ msgid ""
 "There are <hilight>feeds</hilight> in this category.<br>You have to "
 "<hilight>remove them first</hilight>"
 msgstr ""
-"Hay <hilight>suministros</hilight>  en esta categoría.<br>Primero "
-"tiene<hilight>removerlos</hilight>"
+"Hay <hilight>canales</hilight> en esta categoría.<br>Primero tiene que "
+"<hilight>eliminarlos</hilight>"
 
 #: ../src/module/news_config_dialog_feeds.c:754
 #: ../src/module/news_config_dialog_feeds.c:779
 msgid "News Module - Are you sure ?"
-msgstr "Módulo de News - ¿Ésta seguro?"
+msgstr "Módulo de noticias - ¿Éstas seguro?"
 
 #: ../src/module/news_config_dialog_item.c:40
 msgid "News Gadget Configuration"
-msgstr ""
+msgstr "Configuración de nuevo gadget"
 
 #: ../src/module/news_config_dialog_item.c:104
 msgid "View Mode"
-msgstr "Modo visor"
+msgstr "Modo de visualización"
 
 #: ../src/module/news_config_dialog_item.c:107
 msgid "Show one icon for all feeds"
-msgstr ""
+msgstr "Mostrar un icono para todos los canales"
 
 #: ../src/module/news_config_dialog_item.c:109
 msgid "Show all feeds"
-msgstr ""
+msgstr "Mostrar todos los canales"
 
 #: ../src/module/news_config_dialog_item.c:111
 msgid "Show unread feeds"
-msgstr "Mostrar suministros no leídos"
+msgstr "Mostrar canales no leídos"
 
 #: ../src/module/news_config_dialog_item.c:113
 msgid "Show all feeds marked as important"
-msgstr ""
+msgstr "Mostrar todos los canales marcados como importantes"
 
 #: ../src/module/news_config_dialog_item.c:115
 msgid "Show unread feeds marked as important"
-msgstr ""
+msgstr "Mostrar canales sin leer marcados como importantes"
 
 #: ../src/module/news_config_dialog_item.c:120
 msgid "Feed open in"
-msgstr ""
+msgstr "Abrir canal en"
 
 #: ../src/module/news_config_dialog_item.c:123
 msgid "the feed viewer"
-msgstr "el visor del suministro"
+msgstr "visor del canal"
 
 #: ../src/module/news_config_dialog_item.c:125
 msgid "my favorite browser"
@@ -368,55 +373,55 @@ msgstr "mi navegador favorito"
 
 #: ../src/module/news_config_dialog_item.c:127
 msgid "Browser opens home url"
-msgstr "Abrir navegador en la página de inicio"
+msgstr "Abrir navegador en dirección de inicio"
 
 #: ../src/module/news_config_dialog_item.c:129
 msgid "instead of feed url"
-msgstr "en lugar de la dirección del suministro"
+msgstr "en lugar de la dirección del canal"
 
 #: ../src/module/news_config_dialog_item.c:136
 msgid "Apply this to all News gadgets"
-msgstr ""
+msgstr "Aplicar a todos los gadgets nuevos"
 
 #: ../src/module/news_config_dialog_item_content.c:53
 msgid "News Gadget Content Configuration"
-msgstr ""
+msgstr "Configuración de contenido de nuevo gadget"
 
 #: ../src/module/news_config_dialog_item_content.c:258
 msgid "Avalaible Feeds"
-msgstr ""
+msgstr "Canales disponibles"
 
 #: ../src/module/news_config_dialog_item_content.c:267
 msgid "Add this Feed"
-msgstr ""
+msgstr "Añadir este canal"
 
 #: ../src/module/news_config_dialog_item_content.c:274
 msgid "Selected Feeds"
-msgstr ""
+msgstr "Canales seleccionados"
 
 #: ../src/module/news_config_dialog_item_content.c:292
 msgid "Remove this Feed"
-msgstr ""
+msgstr "Eliminar este canal"
 
 #: ../src/module/news_config_dialog_langs.c:45
 msgid "News Feeds Language Configuration"
-msgstr ""
+msgstr "Configuración de idioma de canales de noticias"
 
 #: ../src/module/news_config_dialog_langs.c:123
 msgid "Welcome to News Module !"
-msgstr "¡Bienvenido al módulo de News!"
+msgstr "¡Bienvenido al módulo de noticias!"
 
 #: ../src/module/news_config_dialog_langs.c:125
 msgid "Please select the languages that you are able to read"
-msgstr "Seleccione los idiomas que puede leer"
+msgstr "Selecciona los idiomas que sabe leer"
 
 #: ../src/module/news_feed.c:291
 msgid "The <hilight>name</hilight> you entered is not correct"
-msgstr "El <hilight>nombre</hilight> que introdujo es incorrecto"
+msgstr "El <hilight>nombre</hilight> que has introducido no es correcto"
 
 #: ../src/module/news_feed.c:296
 msgid "The need to <hilight>select a category</hilight>."
-msgstr "Necesita <hilight>seleccionar una categoría</hilight>."
+msgstr "Se necesita <hilight>seleccionar una categoría</hilight>."
 
 #: ../src/module/news_feed.c:302
 #, c-format
@@ -425,6 +430,9 @@ msgid ""
 "exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
 "with the same name<br>in one category."
 msgstr ""
+"Un canal de noticias con el <hilight>nombre</hilight> %s <hilight>ya "
+"existe</hilighit><br> en la categoría %s<br><br>No es posible tener "
+"alimentadores con el mismo nombre<br>en una categoría."
 
 #: ../src/module/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -432,7 +440,7 @@ msgstr "Es necesario seleccionar un <hilight>idioma</hilight>."
 
 #: ../src/module/news_feed.c:318
 msgid "The <hilight>url</hilight> you specified is not correct"
-msgstr "La <hilight>url</hilight> que especificó es incorrecta"
+msgstr "La <hilight>dirección</hilight> especificada es incorrecta"
 
 #: ../src/module/news_feed.c:880
 msgid "You need to enter a <hilight>name</hilight> !"
@@ -443,16 +451,16 @@ msgid ""
 "The <hilight>name</hilight> you entered is <hilight>already "
 "used</hilight><br>by another category"
 msgstr ""
-"El <hilight>nombre</hilight> que introdujó <hilight> "
-"yaexiste</hilight><br>en otra categoría"
+"El <hilight>nombre</hilight> introducido <hilight>ya existe</hilight><br>en "
+"otra categoría"
 
 #: ../src/module/news_menu.c:56
 msgid "Configure this feed"
-msgstr ""
+msgstr "Configurar este canal"
 
 #: ../src/module/news_menu.c:130
 msgid "Set all feeds as read"
-msgstr ""
+msgstr "Marcar todos los canales como leídos"
 
 #: ../src/module/news_menu.c:136
 msgid "Update all feeds"
@@ -460,7 +468,7 @@ msgstr "Actualizar todos los canales"
 
 #: ../src/module/news_menu.c:147
 msgid "Configure gadget"
-msgstr ""
+msgstr "Configurar gadget"
 
 #: ../src/module/news_menu.c:151
 msgid "Configure gadget content"
@@ -480,7 +488,7 @@ msgstr "Configuración"
 
 #: ../src/module/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
-msgstr ""
+msgstr "Módulo de noticias DEBUG DEBUG DEBUG DEBUG"
 
 #: ../src/module/news_utils.h:20
 msgid "News Module"
@@ -488,11 +496,11 @@ msgstr "Módulo de noticias"
 
 #: ../src/module/news_utils.h:27
 msgid "News Module Error"
-msgstr "Módulo de error en News"
+msgstr "Error del módulo de noticias"
 
 #: ../src/module/news_viewer.c:376
 msgid "Feeds in this gadget"
-msgstr ""
+msgstr "Canales en este gadget"
 
 #: ../src/module/news_viewer.c:442
 msgid "Articles in selected feed"
