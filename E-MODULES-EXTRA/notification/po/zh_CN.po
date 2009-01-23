@@ -7,15 +7,17 @@ msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-01-23 01:50+0200\n"
-"Last-Translator: Language-Team: MIME-Version: 1.0\n"
+"PO-Revision-Date: 2009-01-22 17:56+0000\n"
+"Last-Translator: Aron Xu <Unknown>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
-#, fuzzy
 msgid "Configuration"
-msgstr "Huomautuksen asetukset"
+msgstr "配置"
 
 #: ../src/e_mod_main.c:118
 msgid "Notification Box"
@@ -24,11 +26,11 @@ msgstr ""
 #. register config panel entry
 #: ../src/e_mod_main.c:175
 msgid "Extensions"
-msgstr ""
+msgstr "扩展"
 
 #: ../src/e_mod_main.c:177
 msgid "Notification"
-msgstr ""
+msgstr "通知"
 
 #: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
 msgid "Notification Configuration Updated"
@@ -71,7 +73,7 @@ msgstr "Huomautuksen asetukset"
 
 #: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
-msgstr ""
+msgstr "紧急程度"
 
 #: ../src/e_mod_config.c:87
 msgid "Levels of urgency to popup : "
@@ -79,19 +81,19 @@ msgstr ""
 
 #: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
-msgstr ""
+msgstr "低"
 
 #: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
-msgstr ""
+msgstr "普通"
 
 #: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
 msgid "critical"
-msgstr ""
+msgstr "严重"
 
 #: ../src/e_mod_config.c:98
 msgid "Placement"
-msgstr "Asettelu"
+msgstr "位置"
 
 #: ../src/e_mod_config.c:99
 #, c-format
@@ -105,7 +107,7 @@ msgstr "%2.0f y"
 
 #: ../src/e_mod_config.c:107
 msgid "Direction"
-msgstr ""
+msgstr "方向"
 
 #: ../src/e_mod_config.c:108
 msgid "Direction in which popups will stack themselves : "
@@ -113,7 +115,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:121
 msgid "Gap"
-msgstr ""
+msgstr "间隔"
 
 #: ../src/e_mod_config.c:122
 msgid "Size of the gap between two popups : "
@@ -122,20 +124,19 @@ msgstr ""
 #: ../src/e_mod_config.c:124
 #, c-format
 msgid "%2.0f pixels"
-msgstr ""
+msgstr "%2.0f 像素"
 
 #: ../src/e_mod_config_item.c:37
-#, fuzzy
 msgid "Notification Box Configuration"
-msgstr "Huomautuksen asetukset"
+msgstr ""
 
 #: ../src/e_mod_config_item.c:82
 msgid "General Settings"
-msgstr ""
+msgstr "常规设置"
 
 #: ../src/e_mod_config_item.c:83
 msgid "Show Icon Label"
-msgstr ""
+msgstr "显示图标标签"
 
 #: ../src/e_mod_config_item.c:85
 msgid "Show the popup on mouse over"
