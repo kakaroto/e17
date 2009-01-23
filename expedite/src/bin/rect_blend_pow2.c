@@ -28,7 +28,7 @@ static void _setup(void)
 
 	o = evas_object_rectangle_add(evas);
 	o_images[i] = o;
-	a = 1 << (rnd() & 0x7);
+	a = 256 - (1 << (rnd() & 0x7));
         if (a > 255) a = 255;
 	r = ((rnd()&0xff) * a) / 255;
 	g = ((rnd()&0xff) * a) / 255;
