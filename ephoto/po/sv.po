@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: ephoto 2.15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:28+0800\n"
-"PO-Revision-Date: 2006-10-03 02:28+0200\n"
-"Last-Translator:  <nisselarsson@home.se>\n"
+"PO-Revision-Date: 2009-01-19 08:45+0000\n"
+"Last-Translator: Nisselarsson <Unknown>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"
 
 #: src/bin/ephoto_exif.c:95
 msgid "No Exif Data Exists"
@@ -76,14 +76,14 @@ msgstr ""
 msgid "Next Image"
 msgstr ""
 
+#~ msgid "Albums"
+#~ msgstr "Album"
+
 #~ msgid "  Location:"
-#~ msgstr "Adress"
+#~ msgstr "  Adress"
 
 #~ msgid "Add Album"
 #~ msgstr "Lägg till Album"
-
-#~ msgid "Albums"
-#~ msgstr "Album"
 
 #~ msgid "Configure Slideshow"
 #~ msgstr "Konfigurera Bildspel"
