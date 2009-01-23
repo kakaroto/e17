@@ -7,13 +7,14 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-12-05 19:19+0000\n"
-"Last-Translator: Paco Molinero <paco@byasl.com>\n"
+"PO-Revision-Date: 2009-01-18 05:00+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../e_mod_config.c:45
 msgid "Tclock Configuration"
@@ -25,11 +26,11 @@ msgstr "Arriba"
 
 #: ../e_mod_config.c:96
 msgid "Show Top Line"
-msgstr ""
+msgstr "Mostra línea superior"
 
 #: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
-msgstr ""
+msgstr "Consulta strftime(3) para la sintaxis del formato"
 
 #: ../e_mod_config.c:108
 msgid "Bottom"
@@ -37,15 +38,15 @@ msgstr "Abajo"
 
 #: ../e_mod_config.c:110
 msgid "Show Bottom Line"
-msgstr ""
+msgstr "Mostrar línea inferior"
 
 #: ../e_mod_config.c:122
 msgid "Tool Tip"
-msgstr ""
+msgstr "Consejo"
 
 #: ../e_mod_config.c:124
 msgid "Show Tooltip"
-msgstr ""
+msgstr "Mostrar consejo"
 
 #: ../e_mod_main.c:141
 msgid "TClock"
