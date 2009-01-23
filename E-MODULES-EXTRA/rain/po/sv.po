@@ -8,21 +8,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rain module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2006-02-13 13:58+0100\n"
-"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:47+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../e_mod_config.c:42
 msgid "Rain Module"
-msgstr "Regn modul"
+msgstr "Regnmodul"
 
 #: ../e_mod_config.c:100
 msgid "General Settings"
-msgstr ""
+msgstr "Allmänna inställningar"
 
 #: ../e_mod_config.c:101
 msgid "Show Clouds"
@@ -30,11 +32,11 @@ msgstr "Visa moln"
 
 #: ../e_mod_config.c:105
 msgid "Rain Density"
-msgstr "Regn densitet"
+msgstr "Regndensitet"
 
 #: ../e_mod_config.c:107
 msgid "Sprinkle"
-msgstr "Småregn"
+msgstr "Skurar"
 
 #: ../e_mod_config.c:109
 msgid "Drizzle"
@@ -46,11 +48,11 @@ msgstr "Ösregn"
 
 #: ../e_mod_main.c:33
 msgid "Appearance"
-msgstr ""
+msgstr "Utseende"
 
 #: ../e_mod_main.c:35
 msgid "Rain"
-msgstr ""
+msgstr "Regn"
 
 #~ msgid "Enlightenment Rain Module"
 #~ msgstr "Enlightenment regn modul"
