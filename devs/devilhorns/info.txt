@@ -1,5 +1,6 @@
 Login: devilhorns
 IRC Nick: devilhorns
+Cloak: developer/devilhorns
 Name: Christopher Michael
 Location: New Jersey, USA
 E-Mail: devilhorns@devilhorns.us
