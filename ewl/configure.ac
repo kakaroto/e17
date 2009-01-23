@@ -9,6 +9,17 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(ewl-config.h)
 
+# AC_PROG_CC sets automatically CFLAGS to -g -O2
+# if CFLAGS is empty and gcc is used. We just set
+# a variable to know if CFLAGS is empty or not.
+AC_MSG_CHECKING(whether to use default CFLAGS)
+if test  "x${CFLAGS}" = "x" ; then
+  _ewl_force_default_cc_options="yes"
+else
+   _ewl_force_default_cc_options="no"
+fi
+AC_MSG_RESULT([${_ewl_force_default_cc_options}])
+
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
@@ -91,14 +102,9 @@ AC_C_CONST
 AC_C___ATTRIBUTE__
 
 # Use -Wall if we have gcc.
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
+if test "x$GCC" = "xyes" ; then
+  ewl_default_cflags="-Wall"
 fi
-changequote([,])dnl
 
 # Cross compiling
 WIN32_CFLAGS=""
@@ -297,8 +303,6 @@ if test "x${enable_gcov}" = "xyes" ; then
   if test "x${have_lcov}" = "xyes" ; then
     GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
     GCOV_LIBS="-lgcov"
-dnl remove any optimisation flag
-    CFLAGS="-O0"
   else
     AC_MSG_WARN([lcov is not found, disable profiling instrumentation])
     enable_gcov="no"
@@ -309,6 +313,18 @@ AC_SUBST(GCOV_LIBS)
 
 AM_CONDITIONAL(EWL_ENABLE_GCOV, test "x${enable_gcov}" = "xyes")
 
+# we set now CFLAGS correctly
+if test "x$GCC" = "xyes" ; then
+  if test "x${enable_debug}" = "xyes" -o "x${enable_gcov}" = "xyes"; then
+    ewl_default_cflags="${ewl_default_cflags} -g -O0"
+  else
+    ewl_default_cflags="${ewl_default_cflags} -O2"
+  fi
+fi
+
+if test "x${_ewl_force_default_cc_options}" = "xyes" ; then
+  CFLAGS="${ewl_default_cflags}"
+fi
 
 AC_SUBST(requirements)
 
