@@ -199,7 +199,7 @@ ewl_widget_name_find(const char *name)
 }
 
 /**
- * @param w: the widget to realize
+ * @param w: The widget to realize
  * @return Returns no value.
  * @brief Realize the specified widget.
  *
@@ -243,7 +243,38 @@ ewl_widget_realize(Ewl_Widget *w)
 }
 
 /**
- * @param w: the widget to unrealize
+ * @param w: The widget to realize
+ * @return Returns no value.
+ * @brief Forces a widget to be realized (in normal use use ewl_widget_realize).
+ * Used to immediately generate the widget sizing values.
+ */
+void
+ewl_widget_realize_force(Ewl_Widget *w)
+{
+        Ewl_Container *pc;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        if (REALIZED(w))
+                DRETURN(DLEVEL_STABLE);
+
+        ewl_widget_queued_add(w, EWL_FLAG_QUEUED_PROCESS_REVEAL);
+        ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+        ewl_widget_queued_remove(w, EWL_FLAG_QUEUED_PROCESS_REVEAL);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_REALIZED);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_SHOWN);
+
+
+        pc = EWL_CONTAINER(w->parent);
+        if (pc) ewl_container_child_show_call(pc, w);
+        
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to unrealize
  * @return Returns no value.
  * @brief Unrealize the specified widget
  *

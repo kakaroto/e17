@@ -337,20 +337,20 @@ enum Ewl_Notebook_Flags
 typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 
 /**
- * @enum Ewl_Scrollpane_Flags
- * The possible scrollpane settings
+ * @enum Ewl_Scrollport_Flags
+ * The possible scrollport settings
  */
-enum Ewl_Scrollpane_Flags
+enum Ewl_Scrollport_Flags
 {
-        EWL_SCROLLPANE_FLAG_NONE,                /**< No flags set */
-        EWL_SCROLLPANE_FLAG_AUTO_VISIBLE,        /**< Hide if possible */
-        EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN        /**< Always hide */
+        EWL_SCROLLPORT_FLAG_NONE,                /**< No flags set */
+        EWL_SCROLLPORT_FLAG_AUTO_VISIBLE,        /**< Hide if possible */
+        EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN        /**< Always hide */
 };
 
 /**
  * The Ewl_Scrollpane_Flags type
  */
-typedef enum Ewl_Scrollpane_Flags Ewl_Scrollpane_Flags;
+typedef enum Ewl_Scrollport_Flags Ewl_Scrollport_Flags;
 
 /**
  * @enum Ewl_Key_Modifiers

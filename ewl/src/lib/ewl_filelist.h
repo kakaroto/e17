@@ -98,8 +98,8 @@ struct Ewl_Filelist
         Ewl_Filelist_View view_flag;     /**< The view to use for controller */
 
         struct
-        {        Ewl_Scrollpane_Flags h; /**< Horizontal scroll flag */
-                Ewl_Scrollpane_Flags v;  /**< Vertical scroll flag */
+        {        Ewl_Scrollport_Flags h; /**< Horizontal scroll flag */
+                Ewl_Scrollport_Flags v;  /**< Vertical scroll flag */
         } scroll_flags;                  /**< Flags to modify a containing scrollpane */
         Ecore_File_Monitor *fm;          /**< File monitor */
 };
@@ -211,12 +211,12 @@ void                     ewl_filelist_selected_signal_all(Ewl_Filelist *fl,
                                                 const char *signal);
 
 void                     ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl,
-                                                Ewl_Scrollpane_Flags v);
-Ewl_Scrollpane_Flags     ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl);
+                                                Ewl_Scrollport_Flags v);
+Ewl_Scrollport_Flags     ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl);
 
 void                     ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl,
-                                                Ewl_Scrollpane_Flags h);
-Ewl_Scrollpane_Flags     ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
+                                                Ewl_Scrollport_Flags h);
+Ewl_Scrollport_Flags     ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 
 const char              *ewl_filelist_stock_icon_get(const char *path);
 

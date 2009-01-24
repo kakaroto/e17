@@ -109,6 +109,7 @@ data
 
 	/* scroll groups */
 	item: "/scrollpane/group" "ewl/scrollpane/background";
+	item: "/scrollport/group" "ewl/scrollpane/background";
 
 	item: "/vscrollbar/decrement/group" "ewl/scrollbar/vertical/decrement";
 	item: "/vscrollbar/increment/group" "ewl/scrollbar/vertical/increment";

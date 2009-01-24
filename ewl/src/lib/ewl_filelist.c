@@ -70,8 +70,8 @@ ewl_filelist_init(Ewl_Filelist *fl)
         ewl_widget_inherit(EWL_WIDGET(fl), EWL_FILELIST_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(fl), EWL_FLAG_FILL_FILL);
 
-        fl->scroll_flags.h = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
-        fl->scroll_flags.v = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
+        fl->scroll_flags.h = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
+        fl->scroll_flags.v = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
 
         ewl_callback_prepend(EWL_WIDGET(fl), EWL_CALLBACK_DESTROY,
                                 ewl_filelist_cb_destroy, NULL);
@@ -1041,7 +1041,7 @@ ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
  * @brief Sets the value to use for flags on the vertical scrollbar
  */
 void
-ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags v)
+ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollport_Flags v)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(fl);
@@ -1057,13 +1057,13 @@ ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags v)
  * @return Returns the flags for the vertical scrollbar
  * @brief Retrieves the flags for the vertical scrollbar
  */
-Ewl_Scrollpane_Flags
+Ewl_Scrollport_Flags
 ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPANE_FLAG_NONE);
+        DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPORT_FLAG_NONE);
         DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE,
-                                        EWL_SCROLLPANE_FLAG_NONE);
+                                        EWL_SCROLLPORT_FLAG_NONE);
 
         DRETURN_INT(fl->scroll_flags.v, DLEVEL_STABLE);
 }
@@ -1075,7 +1075,7 @@ ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
  * @brief Sets the value to use for flags on the horizontal scrollbar
  */
 void
-ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags h)
+ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollport_Flags h)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(fl);
@@ -1091,13 +1091,13 @@ ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags h)
  * @return Returns the flags for the horizontal scrollbar
  * @brief Retrieves the flags for the horizontal scrollbar
  */
-Ewl_Scrollpane_Flags
+Ewl_Scrollport_Flags
 ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPANE_FLAG_NONE);
+        DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPORT_FLAG_NONE);
         DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE,
-                                        EWL_SCROLLPANE_FLAG_NONE);
+                                        EWL_SCROLLPORT_FLAG_NONE);
 
         DRETURN_INT(fl->scroll_flags.h, DLEVEL_STABLE);
 }

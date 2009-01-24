@@ -187,8 +187,8 @@ create_test(Ewl_Container *box)
         }
 
         scroll = ewl_scrollpane_new();
-        ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll),
-                                        EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+        ewl_scrollport_hscrollbar_flag_set(EWL_SCROLLPORT(scroll),
+                                        EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN);
         ewl_container_child_append(EWL_CONTAINER(box), scroll);
         ewl_widget_name_set(scroll, "scrollpane");
         ewl_widget_show(scroll);

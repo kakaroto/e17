@@ -59,6 +59,7 @@ EWLHEADERS = \
 	ewl_io_manager.h \
 	ewl_image.h \
 	ewl_list.h \
+	ewl_list2.h \
 	ewl_macros.h \
 	ewl_media.h \
 	ewl_menu.h \
@@ -78,6 +79,7 @@ EWLHEADERS = \
 	ewl_range.h \
 	ewl_row.h \
 	ewl_scrollbar.h \
+	ewl_scrollport.h \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
 	ewl_separator.h \
@@ -144,6 +146,7 @@ EWLSOURCES= \
 	ewl_io_manager.c \
 	ewl_image.c \
 	ewl_list.c \
+	ewl_list2.c \
 	ewl_media.c \
 	ewl_menu.c \
 	ewl_menubar.c \
@@ -162,6 +165,7 @@ EWLSOURCES= \
 	ewl_range.c \
 	ewl_row.c \
 	ewl_scrollbar.c \
+	ewl_scrollport.c \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
 	ewl_separator.c \

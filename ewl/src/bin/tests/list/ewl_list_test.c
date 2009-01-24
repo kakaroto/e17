@@ -5,7 +5,6 @@
 #include "ewl_button.h"
 #include "ewl_label.h"
 #include "ewl_list.h"
-#include "ewl_scrollpane.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,37 +52,15 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-        Ecore_List *str_data, *long_data;
-        Ewl_Widget *list, *o, *scroll;
+        Ecore_List *str_data;
+        Ewl_Widget *list, *o;
         Ewl_Model *model;
         Ewl_View *view;
         void *data;
-        int i;
 
         model = ewl_model_ecore_list_instance();
         view = ewl_label_view_get();
 
-        /* Create a very long list to test performance */
-        o = ewl_hbox_new();
-        ewl_container_child_append(EWL_CONTAINER(box), o);
-        ewl_widget_show(o);
-
-        scroll = ewl_scrollpane_new();
-        ewl_container_child_append(EWL_CONTAINER(o), scroll);
-        ewl_widget_show(scroll);
-        
-        long_data = ecore_list_new();
-        for (i = 0; i < 10000; i++)
-                ecore_list_append(long_data, "Unique string... Ha");
-
-        list = ewl_list_new();
-        ewl_container_child_append(EWL_CONTAINER(scroll), list);
-        ewl_mvc_model_set(EWL_MVC(list), model);
-        ewl_mvc_view_set(EWL_MVC(list), view);
-        ewl_mvc_data_set(EWL_MVC(list), long_data);
-        ewl_widget_show(list);
-
-        /* create a list using an ecore_list of strings of labels */
         o = ewl_border_new();
         ewl_border_label_set(EWL_BORDER(o), "Label List (single select)");
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
@@ -128,7 +105,6 @@ create_test(Ewl_Container *box)
          * view */
         o = ewl_border_new();
         ewl_border_label_set(EWL_BORDER(o), "Custom List");
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_widget_show(o);
 

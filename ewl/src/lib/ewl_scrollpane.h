@@ -2,6 +2,8 @@
 #ifndef EWL_SCROLLPANE_H
 #define EWL_SCROLLPANE_H
 
+#include "ewl_scrollport.h"
+
 /**
  * @addtogroup Ewl_Scrollpane Ewl_Scrollpane: A Scrollable Viewing Area
  * Provides a scrollable area for viewing large sets of widgets in a smaller
@@ -77,14 +79,9 @@ typedef struct Ewl_Scrollpane Ewl_Scrollpane;
  */
 struct Ewl_Scrollpane
 {
-        Ewl_Container container;        /**< Inherit from Ewl_Container */
+        Ewl_Scrollport scrollport;        /**< Inherit from Ewl_Scrollport */
 
-        Ewl_Widget *overlay;            /**< Clips the enclosed widget */
         Ewl_Widget *box;                /**< Lays out enclosed widget */
-        Ewl_Widget *hscrollbar;         /**< Horizontal scrollbar */
-        Ewl_Widget *vscrollbar;         /**< Vertical scrollbar */
-        Ewl_Scrollpane_Flags hflag;     /**< Flags for horizontal scrollbar */
-        Ewl_Scrollpane_Flags vflag;     /**< Flags for vertical scrollbar */
         Ewl_Scrollpane_Scroll_Info_Base *kinfo;         /**< Kinetic scrolling 
                                                              info */
         Ewl_Kinetic_Scroll type;        /**< If the scrollpane is to use 
@@ -109,23 +106,6 @@ void                     ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s,
                                                 int fps); 
 int                      ewl_scrollpane_kinetic_fps_get(Ewl_Scrollpane *s);
 
-void                     ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
-                                                Ewl_Scrollpane_Flags f);
-void                     ewl_scrollpane_vscrollbar_flag_set(Ewl_Scrollpane *s,
-                                                Ewl_Scrollpane_Flags f);
-
-Ewl_Scrollpane_Flags     ewl_scrollpane_hscrollbar_flag_get(Ewl_Scrollpane *s);
-Ewl_Scrollpane_Flags     ewl_scrollpane_vscrollbar_flag_get(Ewl_Scrollpane *s);
-
-double                   ewl_scrollpane_hscrollbar_value_get(Ewl_Scrollpane *s);
-double                   ewl_scrollpane_vscrollbar_value_get(Ewl_Scrollpane *s);
-
-void                     ewl_scrollpane_hscrollbar_value_set(Ewl_Scrollpane *s, double val);
-void                     ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val);
-
-double                   ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s);
-double                   ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s);
-
 /*
  * Internally used callbacks, override at your own risk.
  */
@@ -133,17 +113,10 @@ void ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data,
                                                 void *user_data);
 void ewl_scrollpane_cb_focus_jump(Ewl_Widget *w, void *ev_data,
                                                  void *user_data);
-void ewl_scrollpane_cb_hscroll(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_scrollpane_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
-                                                        void *user_data);
 
 void ewl_scrollpane_cb_child_show(Ewl_Container *p, Ewl_Widget *c);
 void ewl_scrollpane_cb_child_resize(Ewl_Container *p, Ewl_Widget *c, int size,
                                                 Ewl_Orientation o);
-void ewl_scrollpane_cb_overlay_child_show(Ewl_Container *p, Ewl_Widget *c);
-void ewl_scrollpane_cb_overlay_child_resize(Ewl_Container *p, Ewl_Widget *c, 
-                                                int size, Ewl_Orientation o);
 
 /**
  * @}

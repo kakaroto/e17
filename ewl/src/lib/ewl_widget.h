@@ -169,6 +169,7 @@ Ewl_Widget      *ewl_widget_name_find(const char *name);
 
 void             ewl_widget_reparent(Ewl_Widget *widget);
 void             ewl_widget_realize(Ewl_Widget *widget);
+void             ewl_widget_realize_force(Ewl_Widget *widget);
 void             ewl_widget_unrealize(Ewl_Widget *w);
 void             ewl_widget_reveal(Ewl_Widget *w);
 void             ewl_widget_obscure(Ewl_Widget *w);

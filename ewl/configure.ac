@@ -368,6 +368,7 @@ src/bin/tests/kinetic_scrollpane/Makefile
 src/bin/tests/label/Makefile
 src/bin/tests/layer/Makefile
 src/bin/tests/list/Makefile
+src/bin/tests/list2/Makefile
 src/bin/tests/media/Makefile
 src/bin/tests/menu/Makefile
 src/bin/tests/menubar/Makefile

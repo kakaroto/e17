@@ -695,7 +695,8 @@ ewl_tree_row_visible_ensure(Ewl_Tree *tree, void *data, unsigned int row)
         scroll_value = (double)(CURRENT_Y(w) - CURRENT_Y(c)) 
                                 / (CURRENT_H(c) - CURRENT_H(w));
 
-        ewl_scrollpane_vscrollbar_value_set(scrollpane, scroll_value);
+        ewl_scrollport_vscrollbar_value_set(EWL_SCROLLPORT(scrollpane),
+                                                                scroll_value);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1209,6 +1210,13 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 
         /* get the row */
         r = ewl_tree_widget_node_at(tree, data, row);
+
+        /*
+         * If this occurs, then the user has changed the mvc_data.  At
+         * that point the mvc is dirty, so this row is no longer valid
+         */
+        if (!r)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
 
         if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)

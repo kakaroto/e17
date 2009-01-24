@@ -34,6 +34,7 @@ SUBDIRS				= \
 	label \
 	layer \
 	list \
+	list2 \
 	media \
 	menu \
 	menubar \

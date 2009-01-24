@@ -74,6 +74,7 @@ extern"C" {
 #include <ewl_notebook.h>
 #include <ewl_progressbar.h>
 #include <ewl_paned.h>
+#include <ewl_scrollport.h>
 #include <ewl_scrollpane.h>
 #include <ewl_statusbar.h>
 #include <ewl_shadow.h>
@@ -88,6 +89,7 @@ extern"C" {
 #include <ewl_tree_view_plain.h>
 #include <ewl_tree_view_scrolled.h>
 #include <ewl_list.h>
+#include <ewl_list2.h>
 
 #include <ewl_freebox.h>
 #include <ewl_freebox_mvc.h>
