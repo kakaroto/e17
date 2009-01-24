@@ -1762,6 +1762,7 @@ PagersReconfigure(void)
    TIMER_ADD(pg_timer_cfg, .5, _PagersReconfigureTimeout, NULL);
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
@@ -1998,6 +1999,7 @@ const DialogDef     DlgPagers = {
    _DlgFillPagers,
    DLG_OAC, CB_ConfigurePager,
 };
+#endif /* ENABLE_DIALOGS */
 
 /*
  * Pagers Module

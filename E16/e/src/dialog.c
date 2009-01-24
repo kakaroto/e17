@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#if ENABLE_DIALOGS
 #include "dialog.h"
 #include "e16-ecore_list.h"
 #include "eimage.h"
@@ -2399,3 +2400,5 @@ FindADialog(void)
 
    return n;
 }
+
+#endif /* ENABLE_DIALOGS */

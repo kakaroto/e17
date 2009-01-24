@@ -1452,6 +1452,7 @@ ContainerEventIconWin(Win win __UNUSED__, XEvent * ev, void *prm)
       ct->ops->Event(ct, ev);
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
@@ -1714,6 +1715,7 @@ static const DialogDef DlgContainer = {
    _DlgFillContainer,
    DLG_OAC, CB_ConfigureContainer,
 };
+#endif /* ENABLE_DIALOGS */
 
 /*
  * Configuration load/save
@@ -1876,6 +1878,7 @@ ContainersSighan(int sig, void *prm)
 #endif
 }
 
+#if ENABLE_DIALOGS
 static void
 ContainersConfigure(const char *params)
 {
@@ -1888,6 +1891,7 @@ ContainersConfigure(const char *params)
    if (ct)
       DialogShowSimple(&DlgContainer, ct);
 }
+#endif /* ENABLE_DIALOGS */
 
 Container          *
 ContainersIterate(ContainerIterator * cti, int type, void *data)
@@ -1934,10 +1938,12 @@ ContainerIpc(const char *params)
      {
 	/* List iconboxes */
      }
+#if ENABLE_DIALOGS
    else if (!strncmp(cmd, "cfg", 3))
      {
 	ContainersConfigure(prm);
      }
+#endif
    else if (!strncmp(cmd, "new", 3))
      {
 	Container          *ct;

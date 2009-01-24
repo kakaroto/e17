@@ -32,15 +32,8 @@
 /*
  * Theme transparency settings
  */
-static int          tmp_theme_transparency;
 
-static int          tmp_st_border;
-static int          tmp_st_widget;
-static int          tmp_st_dialog;
-static int          tmp_st_menu;
-static int          tmp_st_tooltip;
-static int          tmp_st_hilight;
-
+#if ENABLE_DIALOGS
 static Timer       *st_timer = NULL;
 
 static int
@@ -58,6 +51,18 @@ TransparencyChange(int val)
    TIMER_DEL(st_timer);
    TIMER_ADD(st_timer, .01, TransparencyChangeTimeout, INT2PTR(val));
 }
+
+/*
+ * Configuration dialog
+ */
+static int          tmp_theme_transparency;
+
+static int          tmp_st_border;
+static int          tmp_st_widget;
+static int          tmp_st_dialog;
+static int          tmp_st_menu;
+static int          tmp_st_tooltip;
+static int          tmp_st_hilight;
 
 static void
 CB_ConfigureTrans(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -280,6 +285,7 @@ const DialogDef     DlgThemeTrans = {
    _DlgFillThemeTrans,
    DLG_OAC, CB_ConfigureTrans,
 };
+#endif /* ENABLE_DIALOGS */
 
 static void
 TransparencySighan(int sig, void *prm __UNUSED__)

@@ -317,9 +317,15 @@ AC_ARG_ENABLE(visibility-hiding,
   [  --enable-visibility-hiding enable visibility hiding @<:@default=no@:>@],,
   enable_visibility_hiding=no
 )
-
 if test "x$enable_visibility_hiding" = xyes ; then
   CPPFLAGS="$CPPFLAGS -fvisibility=hidden"
+fi
+
+AC_ARG_ENABLE(dialogs,
+  [  --enable-dialogs        enable support for configuration dialogs @<:@default=yes@:>@],,
+  enable_dialogs=yes)
+if test "x$enable_dialogs" = "xyes"; then
+  AC_DEFINE(ENABLE_DIALOGS, 1, [Configuration dialog support])
 fi
 
 AC_ARG_ENABLE(gcc-cpp,

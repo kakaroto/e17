@@ -960,11 +960,13 @@ IPC_Exit(const char *params)
       SessionExit(EEXIT_EXEC, p2);
 }
 
+#if ENABLE_DIALOGS
 static void
 IPC_About(const char *params __UNUSED__)
 {
    About();
 }
+#endif
 
 static void
 IPC_Version(const char *params __UNUSED__)
@@ -1497,10 +1499,12 @@ static const IpcItem IPCArray[] = {
     "nop", NULL,
     "IPC No-operation - returns nop",
     NULL},
+#if ENABLE_DIALOGS
    {
     IPC_About, "about", NULL, "Show E info", NULL},
    {
-    IPC_Cfg, "configure", "cfg", "Configuration", NULL},
+    IPC_Cfg, "configure", "cfg", "Configuration dialogs", NULL},
+#endif
    {
     IPC_Exec,
     "exec", NULL,

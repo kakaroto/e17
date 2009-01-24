@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#if ENABLE_DIALOGS
 #include "dialog.h"
 #include "settings.h"
 
@@ -817,3 +818,4 @@ IPC_Cfg(const char *params)
 	DialogShowSimple(dialogs[i], NULL);
      }
 }
+#endif /* ENABLE_DIALOGS */

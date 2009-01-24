@@ -453,8 +453,13 @@ int                 ConfigFileRead(FILE * fs);
 int                 ThemeConfigLoad(void);
 
 /* dialog.c */
+#if ENABLE_DIALOGS
 void __PRINTF_2__   DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
+#else
+#define DialogOK(title, fmt, ...) do {} while(0)
+#define DialogOKstr(title, fmt) do {} while(0)
+#endif /* ENABLE_DIALOGS */
 
 /* econfig.c */
 void                ConfigurationLoad(void);

@@ -162,6 +162,7 @@ GroupFind2(const char *groupid)
    return GroupFind(gid);
 }
 
+#if ENABLE_DIALOGS
 static void
 CopyGroupConfig(GroupConfig * src, GroupConfig * dest)
 {
@@ -170,6 +171,7 @@ CopyGroupConfig(GroupConfig * src, GroupConfig * dest)
 
    memcpy(dest, src, sizeof(GroupConfig));
 }
+#endif /* ENABLE_DIALOGS */
 
 static void
 BreakWindowGroup(EWin * ewin, Group * g)
@@ -222,6 +224,7 @@ EwinGetGroups(const EWin * ewin, int *num)
    return ewin->groups;
 }
 
+#if ENABLE_DIALOGS
 static Group      **
 ListWinGroups(const EWin * ewin, char group_select, int *num)
 {
@@ -273,6 +276,7 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
 
    return groups;
 }
+#endif /* ENABLE_DIALOGS */
 
 static void
 _GroupAddEwin(Group * g, EWin * ewin)
@@ -422,6 +426,7 @@ GroupsEwinRemove(EWin * ewin)
       RemoveEwinFromGroup(ewin, ewin->groups[0]);
 }
 
+#if ENABLE_DIALOGS
 static char       **
 GetWinGroupMemberNames(Group ** groups, int num)
 {
@@ -456,6 +461,7 @@ GetWinGroupMemberNames(Group ** groups, int num)
 
    return group_member_strings;
 }
+#endif /* ENABLE_DIALOGS */
 
 #if USE_GROUP_SHOWHIDE
 static void
@@ -598,6 +604,8 @@ GroupsLoad(void)
      }
    fclose(f);
 }
+
+#if ENABLE_DIALOGS
 
 #define GROUP_OP_ADD	1
 #define GROUP_OP_DEL	2
@@ -1032,10 +1040,6 @@ const DialogDef     DlgGroupDefaults = {
    DLG_OAC, CB_ConfigureDefaultGroupSettings,
 };
 
-/*
- * Groups module
- */
-
 static void
 GroupsConfigure(const char *params)
 {
@@ -1074,6 +1078,11 @@ GroupsConfigure(const char *params)
 			  GROUP_SELECT_EWIN_ONLY, GROUP_OP_BREAK);
      }
 }
+#endif /* ENABLE_DIALOGS */
+
+/*
+ * Groups module
+ */
 
 static void
 GroupShow(Group * g)
@@ -1304,6 +1313,7 @@ IPC_Group(const char *params)
       IpcPrintf("%s: off", operation);
 }
 
+#if ENABLE_DIALOGS
 static void
 GroupsIpc(const char *params)
 {
@@ -1329,14 +1339,17 @@ GroupsIpc(const char *params)
 	GroupsConfigure(prm);
      }
 }
+#endif /* ENABLE_DIALOGS */
 
 static const IpcItem GroupsIpcArray[] = {
+#if ENABLE_DIALOGS
    {
     GroupsIpc,
     "groups", "grp",
     "Configure window groups",
     "  groups cfg           Configure groups\n"}
    ,
+#endif /* ENABLE_DIALOGS */
    {
     IPC_GroupInfo,
     "group_info", "gl",

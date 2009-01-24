@@ -418,10 +418,10 @@ SoundSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
-
 static char         tmp_audio;
 
 static void
@@ -463,6 +463,7 @@ const DialogDef     DlgSound = {
    _DlgFillSound,
    DLG_OAC, CB_ConfigureAudio,
 };
+#endif /* ENABLE_DIALOGS */
 
 /*
  * IPC functions

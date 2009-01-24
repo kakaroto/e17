@@ -901,6 +901,7 @@ FxSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 static char         tmp_effect_raindrops;
 static char         tmp_effect_ripples;
 static char         tmp_effect_waves;
@@ -955,6 +956,7 @@ const DialogDef     DlgFx = {
    _DlgFillFx,
    DLG_OAC, CB_ConfigureFX,
 };
+#endif /* ENABLE_DIALOGS */
 
 static void
 FxIpc(const char *params)

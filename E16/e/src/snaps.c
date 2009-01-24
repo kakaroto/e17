@@ -543,6 +543,7 @@ _EwinSnapRemove(EWin * ewin)
    ewin->snap = NULL;
 }
 
+#if ENABLE_DIALOGS
 /*
  * Snapshot dialogs
  */
@@ -1072,6 +1073,7 @@ const DialogDef     DlgRemember = {
    _DlgFillRemember,
    DLG_OC, CB_ApplyRemember,
 };
+#endif /* ENABLE_DIALOGS */
 
 /* ... combine writes, only save after a timeout */
 void
@@ -1536,11 +1538,13 @@ SnapshotEwinParse(EWin * ewin, const char *params)
 	  {
 	     use_flags = SNAP_USE_ALL;
 	  }
+#if ENABLE_DIALOGS
 	else if (!strcmp(param, "dialog"))
 	  {
 	     _EwinSnapDialog(ewin);
 	     break;
 	  }
+#endif
 	else if (!strcmp(param, "none"))
 	   _EwinSnapRemove(ewin);
 	else if (!strcmp(param, "auto"))

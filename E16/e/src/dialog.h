@@ -24,6 +24,10 @@
 #ifndef _DIALOG_H_
 #define _DIALOG_H_
 
+#include "config.h"
+
+#if ENABLE_DIALOGS
+
 /* Dialog items */
 #define DITEM_NONE         0
 #define DITEM_BUTTON       1
@@ -154,5 +158,7 @@ DItem              *DialogItemAddButton(DItem * parent, const char *text,
 void                DialogCallbackClose(Dialog * d, int val, void *data);
 
 void                DialogsInit(void);
+
+#endif /* ENABLE_DIALOGS */
 
 #endif /* _DIALOG_H_ */

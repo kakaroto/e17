@@ -831,6 +831,7 @@ TooltipsSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
@@ -892,6 +893,7 @@ const DialogDef     DlgTooltips = {
    _DlgFillTooltips,
    DLG_OAC, CB_ConfigureTooltips,
 };
+#endif /* ENABLE_DIALOGS */
 
 static const CfgItem TooltipsCfgItems[] = {
    CFG_ITEM_BOOL(Conf_tooltips, enable, 1),

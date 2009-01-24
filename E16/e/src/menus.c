@@ -2044,6 +2044,7 @@ MenusSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
@@ -2101,6 +2102,7 @@ const DialogDef     DlgMenus = {
    _DlgFillMenus,
    DLG_OAC, CB_ConfigureMenus,
 };
+#endif /* ENABLE_DIALOGS */
 
 static void
 MenusIpc(const char *params)

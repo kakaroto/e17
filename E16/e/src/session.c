@@ -596,6 +596,7 @@ SessionLogout(void)
      }
 }
 
+#if ENABLE_DIALOGS
 static void
 LogoutCB(Dialog * d, int val, void *data __UNUSED__)
 {
@@ -666,6 +667,7 @@ SessionLogoutConfirm(void)
 
    DialogShowCentered(d);
 }
+#endif /* ENABLE_DIALOGS */
 
 void
 SessionExit(int mode, const char *param)
@@ -706,9 +708,11 @@ SessionExit(int mode, const char *param)
 	break;
 
      case EEXIT_LOGOUT:
+#if ENABLE_DIALOGS
 	if (Conf.session.enable_logout_dialog)
 	   SessionLogoutConfirm();
 	else
+#endif
 	   SessionLogout();
 	return;
      }
@@ -758,6 +762,7 @@ SessionHelper(int when)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Session dialog
  */
@@ -814,3 +819,4 @@ const DialogDef     DlgSession = {
    _DlgFillSession,
    DLG_OAC, CB_ConfigureSession,
 };
+#endif /* ENABLE_DIALOGS */

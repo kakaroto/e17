@@ -24,6 +24,8 @@
 #include "E.h"
 #include "dialog.h"
 
+#if ENABLE_DIALOGS
+
 static void
 _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
 {
@@ -70,3 +72,5 @@ About(void)
 {
    DialogShowSimple(&DlgAbout, NULL);
 }
+
+#endif /* ENABLE_DIALOGS */

@@ -2140,6 +2140,7 @@ DesksSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Dialogs
  */
@@ -2552,6 +2553,7 @@ const DialogDef     DlgAreas = {
    _DlgFillAreas,
    DLG_OAC, CB_ConfigureAreas,
 };
+#endif /* ENABLE_DIALOGS */
 
 /*
  * IPC functions

@@ -287,7 +287,9 @@ main(int argc, char **argv)
 #endif
 
    ModulesSignal(ESIGNAL_START, NULL);
+#if ENABLE_DIALOGS
    DialogsInit();
+#endif
    EwinsManage();
 
    RunInitPrograms();

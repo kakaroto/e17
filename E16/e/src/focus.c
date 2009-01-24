@@ -619,6 +619,7 @@ FocusHandleClick(EWin * ewin, Win win)
      }
 }
 
+#if ENABLE_DIALOGS
 /*      
  * Configuration dialog
  */
@@ -844,6 +845,7 @@ const DialogDef     DlgFocus = {
    _DlgFillFocus,
    DLG_OAC, CB_ConfigureFocus,
 };
+#endif /* ENABLE_DIALOGS */
 
 /*
  * Focus Module

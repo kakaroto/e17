@@ -189,6 +189,7 @@ BackgroundImagesFree(Background * bg)
      }
 }
 
+#if ENABLE_DIALOGS
 static void
 BackgroundImagesKeep(Background * bg, int onoff)
 {
@@ -202,6 +203,7 @@ BackgroundImagesKeep(Background * bg, int onoff)
 	BackgroundImagesFree(bg);
      }
 }
+#endif /* ENABLE_DIALOGS */
 
 static void
 BackgroundFilesRemove(Background * bg)
@@ -248,6 +250,7 @@ BackgroundDestroy(Background * bg)
    return 0;
 }
 
+#if ENABLE_DIALOGS
 static void
 BackgroundDelete(Background * bg)
 {
@@ -276,6 +279,7 @@ BackgroundDelete(Background * bg)
 	  }
      }
 }
+#endif /* ENABLE_DIALOGS */
 
 static Background  *
 BackgroundCreate(const char *name, EColor * solid, const char *bgn, char tile,
@@ -889,6 +893,7 @@ BackgroundGetName(const Background * bg)
    return bg->name;
 }
 
+#if ENABLE_DIALOGS
 static const char  *
 BackgroundGetBgFile(const Background * bg)
 {
@@ -900,6 +905,7 @@ BackgroundGetFgFile(const Background * bg)
 {
    return bg->top.file;
 }
+#endif /* ENABLE_DIALOGS */
 
 Pixmap
 BackgroundGetPixmap(const Background * bg)
@@ -919,6 +925,7 @@ BackgroundIsNone(const Background * bg)
    return (bg) ? bg->external : 1;
 }
 
+#if ENABLE_DIALOGS
 static EImage      *
 BackgroundCacheMini(Background * bg, int keep, int nuke)
 {
@@ -951,6 +958,7 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
    EImageFree(im);
    return NULL;
 }
+#endif /* ENABLE_DIALOGS */
 
 #define S(str) ((str) ? str : "(null)")
 static void
@@ -1377,6 +1385,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+#if ENABLE_DIALOGS
 /*
  * Configuration dialog
  */
@@ -2227,6 +2236,8 @@ const DialogDef     DlgBackground = {
    _DlgFillBackground,
    DLG_OAC, CB_ConfigureBG,
 };
+
+#endif /* ENABLE_DIALOGS */
 
 /*
  * IPC functions
