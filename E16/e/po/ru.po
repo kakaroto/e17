@@ -1,6 +1,6 @@
 # This is the Russian locale definition for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>, 1999-2000. (2 балла, Владимир! "Вым" порадовал...)
+# Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>, 1999-2000. (2 п╠п╟п╩п╩п╟, п▓п╩п╟п╢п╦п╪п╦я─! "п▓я▀п╪" п©п╬я─п╟п╢п╬п╡п╟п╩...)
 #
 # converted to UTF-8 and improved by sda <sda00@himki.net>, 2009, SOAD Linux Team
 #
@@ -13,7 +13,7 @@ msgstr ""
 "Last-Translator: sda <sda00@himki.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-r\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:33
@@ -34,11 +34,11 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
-"Вас приветствует %s версия\n"
-"Enlightenment-DR16 менеджера.\n"
-"Пожалуйста, пришлите нам багрепорт\n"
-"в случае возникновения неполадок.\n"
-"С наилучшими пожеланиями.\n"
+"п▓п╟я│ п©я─п╦п╡п╣я┌я│я┌п╡я┐п╣я┌ %s п╡п╣я─я│п╦я▐\n"
+"Enlightenment-DR16 п╪п╣п╫п╣п╢п╤п╣я─п╟.\n"
+"п÷п╬п╤п╟п╩я┐п╧я│я┌п╟, п©я─п╦я┬п╩п╦я┌п╣ п╫п╟п╪ п╠п╟пЁя─п╣п©п╬я─я┌\n"
+"п╡ я│п╩я┐я┤п╟п╣ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦я▐ п╫п╣п©п╬п╩п╟п╢п╬п╨.\n"
+"п║ п╫п╟п╦п╩я┐я┤я┬п╦п╪п╦ п©п╬п╤п╣п╩п╟п╫п╦я▐п╪п╦.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -58,10 +58,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена,\n"
-"так как необходимый файл отсутствует.\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟,\n"
+"я┌п╟п╨ п╨п╟п╨ п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╧ я└п╟п╧п╩ п╬я┌я│я┐я┌я│я┌п╡я┐п╣я┌.\n"
 
 #: src/actions.c:115
 #, c-format
@@ -74,14 +74,14 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена.\n"
-"Вероятнее всего, она отсутствует в определенных Вами\n"
-"для исполняемых файлов местах\n"
-"(переменная path вашего shell = %s).\n"
-"Вам рекомендуется прочесть описание Вашего shell,\n"
-"в особенности ту часть, где описывается изменение переменной path.\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟.\n"
+"п▓п╣я─п╬я▐я┌п╫п╣п╣ п╡я│п╣пЁп╬, п╬п╫п╟ п╬я┌я│я┐я┌я│я┌п╡я┐п╣я┌ п╡ п╬п©я─п╣п╢п╣п╩п╣п╫п╫я▀я┘ п▓п╟п╪п╦\n"
+"п╢п╩я▐ п╦я│п©п╬п╩п╫я▐п╣п╪я▀я┘ я└п╟п╧п╩п╬п╡ п╪п╣я│я┌п╟я┘\n"
+"(п©п╣я─п╣п╪п╣п╫п╫п╟я▐ path п╡п╟я┬п╣пЁп╬ shell = %s).\n"
+"п▓п╟п╪ я─п╣п╨п╬п╪п╣п╫п╢я┐п╣я┌я│я▐ п©я─п╬я┤п╣я│я┌я▄ п╬п©п╦я│п╟п╫п╦п╣ п▓п╟я┬п╣пЁп╬ shell,\n"
+"п╡ п╬я│п╬п╠п╣п╫п╫п╬я│я┌п╦ я┌я┐ я┤п╟я│я┌я▄, пЁп╢п╣ п╬п©п╦я│я▀п╡п╟п╣я┌я│я▐ п╦п╥п╪п╣п╫п╣п╫п╦п╣ п©п╣я─п╣п╪п╣п╫п╫п╬п╧ path.\n"
 
 #: src/actions.c:134
 #, c-format
@@ -93,12 +93,12 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена по непонятной причине...\n"
-"Файл действительно существует, является файлом,\n"
-"и у Вас есть право на его выполнение. Вам придется\n"
-"проверить все самостоятельно....\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟ п©п╬ п╫п╣п©п╬п╫я▐я┌п╫п╬п╧ п©я─п╦я┤п╦п╫п╣...\n"
+"п╓п╟п╧п╩ п╢п╣п╧я│я┌п╡п╦я┌п╣п╩я▄п╫п╬ я│я┐я┴п╣я│я┌п╡я┐п╣я┌, я▐п╡п╩я▐п╣я┌я│я▐ я└п╟п╧п╩п╬п╪,\n"
+"п╦ я┐ п▓п╟я│ п╣я│я┌я▄ п©я─п╟п╡п╬ п╫п╟ п╣пЁп╬ п╡я▀п©п╬п╩п╫п╣п╫п╦п╣. п▓п╟п╪ п©я─п╦п╢п╣я┌я│я▐\n"
+"п©я─п╬п╡п╣я─п╦я┌я▄ п╡я│п╣ я│п╟п╪п╬я│я┌п╬я▐я┌п╣п╩я▄п╫п╬....\n"
 
 #: src/actions.c:144
 #, c-format
@@ -109,12 +109,12 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена.\n"
-"Файл действительно существует,является файлом,\n"
-"но Вы не можете его выполнить, так как\n"
-"не имеете права выполнять этот файл.\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟.\n"
+"п╓п╟п╧п╩ п╢п╣п╧я│я┌п╡п╦я┌п╣п╩я▄п╫п╬ я│я┐я┴п╣я│я┌п╡я┐п╣я┌,я▐п╡п╩я▐п╣я┌я│я▐ я└п╟п╧п╩п╬п╪,\n"
+"п╫п╬ п▓я▀ п╫п╣ п╪п╬п╤п╣я┌п╣ п╣пЁп╬ п╡я▀п©п╬п╩п╫п╦я┌я▄, я┌п╟п╨ п╨п╟п╨\n"
+"п╫п╣ п╦п╪п╣п╣я┌п╣ п©я─п╟п╡п╟ п╡я▀п©п╬п╩п╫я▐я┌я▄ я█я┌п╬я┌ я└п╟п╧п╩.\n"
 
 #: src/actions.c:157
 #, c-format
@@ -124,10 +124,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена,\n"
-"так как файл в действительности является директорией.\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟,\n"
+"я┌п╟п╨ п╨п╟п╨ я└п╟п╧п╩ п╡ п╢п╣п╧я│я┌п╡п╦я┌п╣п╩я▄п╫п╬я│я┌п╦ я▐п╡п╩я▐п╣я┌я│я▐ п╢п╦я─п╣п╨я┌п╬я─п╦п╣п╧.\n"
 
 #: src/actions.c:164
 #, c-format
@@ -137,10 +137,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Ошибка при выполнении программы:\n"
+"п·я┬п╦п╠п╨п╟ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
-"Программа не может быть выполнена,\n"
-"так как файл не является обычным файлом.\n"
+"п÷я─п╬пЁя─п╟п╪п╪п╟ п╫п╣ п╪п╬п╤п╣я┌ п╠я▀я┌я▄ п╡я▀п©п╬п╩п╫п╣п╫п╟,\n"
+"я┌п╟п╨ п╨п╟п╨ я└п╟п╧п╩ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п╬п╠я▀я┤п╫я▀п╪ я└п╟п╧п╩п╬п╪.\n"
 
 #: src/actions.c:189
 #, c-format
@@ -148,37 +148,37 @@ msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
-"Обнаружены ошибки при выполнении программы:\n"
+"п·п╠п╫п╟я─я┐п╤п╣п╫я▀ п╬я┬п╦п╠п╨п╦ п©я─п╦ п╡я▀п©п╬п╩п╫п╣п╫п╦п╦ п©я─п╬пЁя─п╟п╪п╪я▀:\n"
 "%s\n"
 
 #: src/alert.c:210
 msgid "Enlightenment Error"
-msgstr "Ошибка Enlightenment"
+msgstr "п·я┬п╦п╠п╨п╟ Enlightenment"
 
 #: src/alert.c:569
 msgid "Enlightenment Message Dialog"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/alert.c:569
 msgid "Ignore this"
-msgstr "Игнорировать"
+msgstr "п≤пЁп╫п╬я─п╦я─п╬п╡п╟я┌я▄"
 
 #: src/alert.c:570
 msgid "Restart Enlightenment"
-msgstr "Перезапустить Enlightenment"
+msgstr "п÷п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌я▄ Enlightenment"
 
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
-msgstr "Выйти из Enlightenment"
+msgstr "п▓я▀п╧я┌п╦ п╦п╥ Enlightenment"
 
 #: src/alert.c:583
 msgid "Attention !!!"
-msgstr "Внимание !!!"
+msgstr "п▓п╫п╦п╪п╟п╫п╦п╣ !!!"
 
 #: src/alert.c:583 src/dialog.c:843 src/dialog.c:2033 src/events.c:87
 #: src/setup.c:157 src/sound.c:302
 msgid "OK"
-msgstr "ОК"
+msgstr "п·п "
 
 #: src/backgrounds.c:1509
 #, c-format
@@ -187,54 +187,54 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Информация о фоновом рисунке:\n"
-"Название: %s\n"
-"Файл: %s\n"
+"п≤п╫я└п╬я─п╪п╟я├п╦я▐ п╬ я└п╬п╫п╬п╡п╬п╪ я─п╦я│я┐п╫п╨п╣:\n"
+"п²п╟п╥п╡п╟п╫п╦п╣: %s\n"
+"п╓п╟п╧п╩: %s\n"
 
 #: src/backgrounds.c:1510
 msgid "-NONE-"
-msgstr "-ПУСТО-"
+msgstr "-п÷пёп║п╒п·-"
 
 #: src/backgrounds.c:1683 src/backgrounds.c:1685
 msgid ""
 "No\n"
 "Background"
 msgstr ""
-"Без\n"
-"рисунка"
+"п▒п╣п╥\n"
+"я─п╦я│я┐п╫п╨п╟"
 
 #: src/backgrounds.c:1775 src/backgrounds.c:2205
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr "Освобождать неиcпользуемые картинки после %2i:%02i:%02i"
+msgstr "п·я│п╡п╬п╠п╬п╤п╢п╟я┌я▄ п╫п╣п╦cп©п╬п╩я▄п╥я┐п╣п╪я▀п╣ п╨п╟я─я┌п╦п╫п╨п╦ п©п╬я│п╩п╣ %2i:%02i:%02i"
 
 #: src/backgrounds.c:1991
 msgid "Use background image"
-msgstr "Использовать картинку"
+msgstr "п≤я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ п╨п╟я─я┌п╦п╫п╨я┐"
 
 #: src/backgrounds.c:1995
 msgid "Keep aspect on scale"
-msgstr "Сохранять аспектное отношение"
+msgstr "п║п╬я┘я─п╟п╫я▐я┌я▄ п╟я│п©п╣п╨я┌п╫п╬п╣ п╬я┌п╫п╬я┬п╣п╫п╦п╣"
 
 #: src/backgrounds.c:1999
 msgid "Tile image across background"
-msgstr "Расположить картинку черепицей"
+msgstr "п═п╟я│п©п╬п╩п╬п╤п╦я┌я▄ п╨п╟я─я┌п╦п╫п╨я┐ я┤п╣я─п╣п©п╦я├п╣п╧"
 
 #: src/backgrounds.c:2008
 msgid "Move to Front\n"
-msgstr "Переместить вперед\n"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄ п╡п©п╣я─п╣п╢\n"
 
 #: src/backgrounds.c:2013
 msgid "Duplicate\n"
-msgstr "Дублировать\n"
+msgstr "п■я┐п╠п╩п╦я─п╬п╡п╟я┌я▄\n"
 
 #: src/backgrounds.c:2017
 msgid "Unlist\n"
-msgstr "Убрать\n"
+msgstr "пёп╠я─п╟я┌я▄\n"
 
 #: src/backgrounds.c:2022
 msgid "Delete File\n"
-msgstr "Стереть файл\n"
+msgstr "п║я┌п╣я─п╣я┌я▄ я└п╟п╧п╩\n"
 
 #: src/backgrounds.c:2033
 msgid ""
@@ -244,76 +244,76 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"Пропорции\n"
-"и\n"
-"выравнивание\n"
-"фонового\n"
-"рисунка\n"
+"п÷я─п╬п©п╬я─я├п╦п╦\n"
+"п╦\n"
+"п╡я▀я─п╟п╡п╫п╦п╡п╟п╫п╦п╣\n"
+"я└п╬п╫п╬п╡п╬пЁп╬\n"
+"я─п╦я│я┐п╫п╨п╟\n"
 
 #: src/backgrounds.c:2090
 msgid "BG Colour\n"
-msgstr "Цвет фона\n"
+msgstr "п╕п╡п╣я┌ я└п╬п╫п╟\n"
 
 #: src/backgrounds.c:2095
 msgid "Red:\n"
-msgstr "Красный:\n"
+msgstr "п я─п╟я│п╫я▀п╧:\n"
 
 #: src/backgrounds.c:2106
 msgid "Green:\n"
-msgstr "Зеленый:\n"
+msgstr "п≈п╣п╩п╣п╫я▀п╧:\n"
 
 #: src/backgrounds.c:2117
 msgid "Blue:\n"
-msgstr "Синий:\n"
+msgstr "п║п╦п╫п╦п╧:\n"
 
 #: src/backgrounds.c:2150
 msgid "Pre-scan BG's"
-msgstr "Предварительно сканировать"
+msgstr "п÷я─п╣п╢п╡п╟я─п╦я┌п╣п╩я▄п╫п╬ я│п╨п╟п╫п╦я─п╬п╡п╟я┌я▄"
 
 #: src/backgrounds.c:2158
 msgid "Sort by File"
-msgstr "По имени файла"
+msgstr "п÷п╬ п╦п╪п╣п╫п╦ я└п╟п╧п╩п╟"
 
 #: src/backgrounds.c:2163
 msgid "Sort by Attr."
-msgstr "По аттрибутам"
+msgstr "п÷п╬ п╟я┌я┌я─п╦п╠я┐я┌п╟п╪"
 
 #: src/backgrounds.c:2169
 msgid "Sort by Image"
-msgstr "По имени"
+msgstr "п÷п╬ п╦п╪п╣п╫п╦"
 
 #: src/backgrounds.c:2189
 msgid "Use dithering in Hi-Colour"
-msgstr "Использовать сглаживание в Hi-Colour"
+msgstr "п≤я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ я│пЁп╩п╟п╤п╦п╡п╟п╫п╦п╣ п╡ Hi-Colour"
 
 #: src/backgrounds.c:2193
 msgid "Background overrides theme"
-msgstr "Фоновый рисунок перекрывает установки темы"
+msgstr "п╓п╬п╫п╬п╡я▀п╧ я─п╦я│я┐п╫п╬п╨ п©п╣я─п╣п╨я─я▀п╡п╟п╣я┌ я┐я│я┌п╟п╫п╬п╡п╨п╦ я┌п╣п╪я▀"
 
 #: src/backgrounds.c:2198
 msgid "Enable background transparency compatibility mode"
-msgstr "Включить режим поддержки ARGB для фонового рисунка"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ я─п╣п╤п╦п╪ п©п╬п╢п╢п╣я─п╤п╨п╦ ARGB п╢п╩я▐ я└п╬п╫п╬п╡п╬пЁп╬ я─п╦я│я┐п╫п╨п╟"
 
 #: src/backgrounds.c:2222 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
-msgstr "Фоновый рисунок"
+msgstr "п╓п╬п╫п╬п╡я▀п╧ я─п╦я│я┐п╫п╬п╨"
 
 #: src/backgrounds.c:2223
 msgid "Desktop Background Settings"
-msgstr "Установки фонового рисунка"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я└п╬п╫п╬п╡п╬пЁп╬ я─п╦я│я┐п╫п╨п╟"
 
 #: src/backgrounds.c:2226
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
-"Диалог настройки фона\n"
-"рабочего стола Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╫п╟\n"
+"я─п╟п╠п╬я┤п╣пЁп╬ я│я┌п╬п╩п╟ Enlightenment\n"
 
 #: src/comms.c:240
 msgid "E IPC Error"
-msgstr "Ошибка E IPC"
+msgstr "п·я┬п╦п╠п╨п╟ E IPC"
 
 #: src/comms.c:241
 #, c-format
@@ -325,22 +325,22 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"От клиента получено неизвестное сообщение.\n"
-"Имя клиента:    %s\n"
-"Версия клиента: %s\n"
-"Сообщение:\n"
+"п·я┌ п╨п╩п╦п╣п╫я┌п╟ п©п╬п╩я┐я┤п╣п╫п╬ п╫п╣п╦п╥п╡п╣я│я┌п╫п╬п╣ я│п╬п╬п╠я┴п╣п╫п╦п╣.\n"
+"п≤п╪я▐ п╨п╩п╦п╣п╫я┌п╟:    %s\n"
+"п▓п╣я─я│п╦я▐ п╨п╩п╦п╣п╫я┌п╟: %s\n"
+"п║п╬п╬п╠я┴п╣п╫п╦п╣:\n"
 "\n"
 "%s\n"
 
 #: src/config.c:197 src/config.c:297
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: игнорирую лишние данные в \"%s\"\n"
+msgstr "CONFIG: п╦пЁп╫п╬я─п╦я─я┐я▌ п╩п╦я┬п╫п╦п╣ п╢п╟п╫п╫я▀п╣ п╡ \"%s\"\n"
 
 #: src/config.c:205 src/config.c:304
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
+msgstr "CONFIG: п╡ \"%s\" п╬я┌я│я┐я┌я│я┌п╡я┐я▌я┌ я┌я─п╣п╠я┐п╣п╪я▀п╣ п╢п╟п╫п╫я▀п╣\n"
 
 #: src/config.c:215
 #, fuzzy, c-format
@@ -350,10 +350,10 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Предупреждение: невозможно определить, что делать\n"
-"со следующим текстом в текущем определении Extras:\n"
+"п÷я─п╣п╢я┐п©я─п╣п╤п╢п╣п╫п╦п╣: п╫п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╬п©я─п╣п╢п╣п╩п╦я┌я▄, я┤я┌п╬ п╢п╣п╩п╟я┌я▄\n"
+"я│п╬ я│п╩п╣п╢я┐я▌я┴п╦п╪ я┌п╣п╨я│я┌п╬п╪ п╡ я┌п╣п╨я┐я┴п╣п╪ п╬п©я─п╣п╢п╣п╩п╣п╫п╦п╦ Extras:\n"
 "%s\n"
-"Игнорирую и продолжаю...\n"
+"п≤пЁп╫п╬я─п╦я─я┐я▌ п╦ п©я─п╬п╢п╬п╩п╤п╟я▌...\n"
 
 #: src/config.c:223
 #, fuzzy, c-format
@@ -361,20 +361,20 @@ msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Предупреждение:  Похоже, кофигурирование завершилось до\n"
-"окончания загрузки блока Menu.  Результат сомнителен...\n"
+"п÷я─п╣п╢я┐п©я─п╣п╤п╢п╣п╫п╦п╣:  п÷п╬я┘п╬п╤п╣, п╨п╬я└п╦пЁя┐я─п╦я─п╬п╡п╟п╫п╦п╣ п╥п╟п╡п╣я─я┬п╦п╩п╬я│я▄ п╢п╬\n"
+"п╬п╨п╬п╫я┤п╟п╫п╦я▐ п╥п╟пЁя─я┐п╥п╨п╦ п╠п╩п╬п╨п╟ Menu.  п═п╣п╥я┐п╩я▄я┌п╟я┌ я│п╬п╪п╫п╦я┌п╣п╩п╣п╫...\n"
 
 #: src/config.c:313
 msgid "Theme versioning ERROR"
-msgstr "ОШИБКА версии темы"
+msgstr "п·п╗п≤п▒п п░ п╡п╣я─я│п╦п╦ я┌п╣п╪я▀"
 
 #: src/config.c:314
 msgid "Restart with Defaults"
-msgstr "Перезапуск \"по умолчанию\""
+msgstr "п÷п╣я─п╣п╥п╟п©я┐я│п╨ \"п©п╬ я┐п╪п╬п╩я┤п╟п╫п╦я▌\""
 
 #: src/config.c:315
 msgid "Abort and Exit"
-msgstr "Выход"
+msgstr "п▓я▀я┘п╬п╢"
 
 #: src/config.c:316
 #, fuzzy, c-format
@@ -396,146 +396,146 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"ОШИБКА:\n"
+"п·п╗п≤п▒п п░:\n"
 "\n"
-"Тема, которую Вы используете, несовместима\n"
-"с версией Enlightenment. Версия данной темы -  %i.\n"
-"Требуется, чтобы ее версия была по крайней мере %i\n"
+"п╒п╣п╪п╟, п╨п╬я┌п╬я─я┐я▌ п▓я▀ п╦я│п©п╬п╩я▄п╥я┐п╣я┌п╣, п╫п╣я│п╬п╡п╪п╣я│я┌п╦п╪п╟\n"
+"я│ п╡п╣я─я│п╦п╣п╧ Enlightenment. п▓п╣я─я│п╦я▐ п╢п╟п╫п╫п╬п╧ я┌п╣п╪я▀ -  %i.\n"
+"п╒я─п╣п╠я┐п╣я┌я│я▐, я┤я┌п╬п╠я▀ п╣п╣ п╡п╣я─я│п╦я▐ п╠я▀п╩п╟ п©п╬ п╨я─п╟п╧п╫п╣п╧ п╪п╣я─п╣ %i\n"
 "\n"
-"Пожалуйста, свяжитесь с автором или разработчиком этой темы,\n"
-"и проинформируйте их, что для работы темы\n"
-"в данной версии Enlightenment им требуется обновить\n"
-"до текущих установок, а также привести в соответствие\n"
-"номер версии.\n"
+"п÷п╬п╤п╟п╩я┐п╧я│я┌п╟, я│п╡я▐п╤п╦я┌п╣я│я▄ я│ п╟п╡я┌п╬я─п╬п╪ п╦п╩п╦ я─п╟п╥я─п╟п╠п╬я┌я┤п╦п╨п╬п╪ я█я┌п╬п╧ я┌п╣п╪я▀,\n"
+"п╦ п©я─п╬п╦п╫я└п╬я─п╪п╦я─я┐п╧я┌п╣ п╦я┘, я┤я┌п╬ п╢п╩я▐ я─п╟п╠п╬я┌я▀ я┌п╣п╪я▀\n"
+"п╡ п╢п╟п╫п╫п╬п╧ п╡п╣я─я│п╦п╦ Enlightenment п╦п╪ я┌я─п╣п╠я┐п╣я┌я│я▐ п╬п╠п╫п╬п╡п╦я┌я▄\n"
+"п╢п╬ я┌п╣п╨я┐я┴п╦я┘ я┐я│я┌п╟п╫п╬п╡п╬п╨, п╟ я┌п╟п╨п╤п╣ п©я─п╦п╡п╣я│я┌п╦ п╡ я│п╬п╬я┌п╡п╣я┌я│я┌п╡п╦п╣\n"
+"п╫п╬п╪п╣я─ п╡п╣я─я│п╦п╦.\n"
 "\n"
-"Если номер версии темы превосходит версию Enlightenment,\n"
-"то, скорее всего, Вы какое-то время не обновляли Ваш любимый\n"
-"window manager, и эта тема уже использует преимущества новых\n"
-"возможностей Enlightenment.\n"
+"п∙я│п╩п╦ п╫п╬п╪п╣я─ п╡п╣я─я│п╦п╦ я┌п╣п╪я▀ п©я─п╣п╡п╬я│я┘п╬п╢п╦я┌ п╡п╣я─я│п╦я▌ Enlightenment,\n"
+"я┌п╬, я│п╨п╬я─п╣п╣ п╡я│п╣пЁп╬, п▓я▀ п╨п╟п╨п╬п╣-я┌п╬ п╡я─п╣п╪я▐ п╫п╣ п╬п╠п╫п╬п╡п╩я▐п╩п╦ п▓п╟я┬ п╩я▌п╠п╦п╪я▀п╧\n"
+"window manager, п╦ я█я┌п╟ я┌п╣п╪п╟ я┐п╤п╣ п╦я│п©п╬п╩я▄п╥я┐п╣я┌ п©я─п╣п╦п╪я┐я┴п╣я│я┌п╡п╟ п╫п╬п╡я▀я┘\n"
+"п╡п╬п╥п╪п╬п╤п╫п╬я│я┌п╣п╧ Enlightenment.\n"
 
 #: src/config.c:578
 msgid "Enlightenment Starting..."
-msgstr "Запуск Enlightenment..."
+msgstr "п≈п╟п©я┐я│п╨ Enlightenment..."
 
 #: src/container.c:1207
 #, fuzzy
 msgid "Settings..."
-msgstr "Настройки фокуса"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╨я┐я│п╟"
 
 #: src/container.c:1211 src/dialog.c:855 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
-msgstr "Закрыть"
+msgstr "п≈п╟п╨я─я▀я┌я▄"
 
 #: src/container.c:1216 config/strings.c:83
 msgid "Create New Iconbox"
-msgstr "Сделать новый Iconbox"
+msgstr "п║п╢п╣п╩п╟я┌я▄ п╫п╬п╡я▀п╧ Iconbox"
 
 #: src/container.c:1512 src/container.c:1585
 #, fuzzy, c-format
 msgid "Icon size: %2d"
-msgstr "Размер пиктограммы"
+msgstr "п═п╟п╥п╪п╣я─ п©п╦п╨я┌п╬пЁя─п╟п╪п╪я▀"
 
 #: src/container.c:1549
 msgid "Transparent background"
-msgstr "Прозрачный фон"
+msgstr "п÷я─п╬п╥я─п╟я┤п╫я▀п╧ я└п╬п╫"
 
 #: src/container.c:1553
 #, fuzzy
 msgid "Hide inner border"
-msgstr "Показать/спрятать эту группу"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄/я│п©я─я▐я┌п╟я┌я▄ я█я┌я┐ пЁя─я┐п©п©я┐"
 
 #: src/container.c:1557
 msgid "Draw base image behind Icons"
-msgstr "Рисовать основной фон под пиктограммами"
+msgstr "п═п╦я│п╬п╡п╟я┌я▄ п╬я│п╫п╬п╡п╫п╬п╧ я└п╬п╫ п©п╬п╢ п©п╦п╨я┌п╬пЁя─п╟п╪п╪п╟п╪п╦"
 
 #: src/container.c:1561
 msgid "Hide scrollbar when not needed"
-msgstr "Прятать полосу прокрутки, когда она не нужна"
+msgstr "п÷я─я▐я┌п╟я┌я▄ п©п╬п╩п╬я│я┐ п©я─п╬п╨я─я┐я┌п╨п╦, п╨п╬пЁп╢п╟ п╬п╫п╟ п╫п╣ п╫я┐п╤п╫п╟"
 
 #: src/container.c:1565
 msgid "Automatically resize to fit Icons"
-msgstr "Автоматически менять размер по количеству пиктограмм"
+msgstr "п░п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╦ п╪п╣п╫я▐я┌я▄ я─п╟п╥п╪п╣я─ п©п╬ п╨п╬п╩п╦я┤п╣я│я┌п╡я┐ п©п╦п╨я┌п╬пЁя─п╟п╪п╪"
 
 #: src/container.c:1572
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Выравнивание при автоматическом изменении размера"
+msgstr "п▓я▀я─п╟п╡п╫п╦п╡п╟п╫п╦п╣ п©я─п╦ п╟п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╬п╪ п╦п╥п╪п╣п╫п╣п╫п╦п╦ я─п╟п╥п╪п╣я─п╟"
 
 #: src/container.c:1603
 msgid "Orientation:"
-msgstr "Ориентация:"
+msgstr "п·я─п╦п╣п╫я┌п╟я├п╦я▐:"
 
 #: src/container.c:1608
 msgid "Scrollbar side:"
-msgstr "Полоса прокрутки:"
+msgstr "п÷п╬п╩п╬я│п╟ п©я─п╬п╨я─я┐я┌п╨п╦:"
 
 #: src/container.c:1613
 msgid "Scrollbar arrows:"
-msgstr "Стрелки:"
+msgstr "п║я┌я─п╣п╩п╨п╦:"
 
 #: src/container.c:1616
 msgid "Horizontal"
-msgstr "Горизонтальная"
+msgstr "п⌠п╬я─п╦п╥п╬п╫я┌п╟п╩я▄п╫п╟я▐"
 
 #: src/container.c:1621
 msgid "Left / Top"
-msgstr "Слева / вверху"
+msgstr "п║п╩п╣п╡п╟ / п╡п╡п╣я─я┘я┐"
 
 #: src/container.c:1626
 msgid "Start"
-msgstr "В начале"
+msgstr "п▓ п╫п╟я┤п╟п╩п╣"
 
 #: src/container.c:1631
 msgid "Vertical"
-msgstr "Вертикальная"
+msgstr "п▓п╣я─я┌п╦п╨п╟п╩я▄п╫п╟я▐"
 
 #: src/container.c:1637
 msgid "Right / Bottom"
-msgstr "Справа / внизу"
+msgstr "п║п©я─п╟п╡п╟ / п╡п╫п╦п╥я┐"
 
 #: src/container.c:1643
 msgid "Both ends"
-msgstr "С обеих сторон"
+msgstr "п║ п╬п╠п╣п╦я┘ я│я┌п╬я─п╬п╫"
 
 #: src/container.c:1651
 msgid "End"
-msgstr "В конце"
+msgstr "п▓ п╨п╬п╫я├п╣"
 
 #: src/container.c:1659 src/focus.c:831
 msgid "None"
-msgstr "Нигде"
+msgstr "п²п╦пЁп╢п╣"
 
 #: src/container.c:1669
 msgid "Show icon names"
-msgstr "Показывать имена пиктограмм"
+msgstr "п÷п╬п╨п╟п╥я▀п╡п╟я┌я▄ п╦п╪п╣п╫п╟ п©п╦п╨я┌п╬пЁя─п╟п╪п╪"
 
 #: src/container.c:1673
 msgid "Animate when iconifying to this Iconbox"
-msgstr "Анимировать сворачивание в этот Iconbox"
+msgstr "п░п╫п╦п╪п╦я─п╬п╡п╟я┌я▄ я│п╡п╬я─п╟я┤п╦п╡п╟п╫п╦п╣ п╡ я█я┌п╬я┌ Iconbox"
 
 #: src/container.c:1683
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
-"Способ отображения пиктограмм (если один не работает, пробовать следующий):"
+"п║п©п╬я│п╬п╠ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦я▐ п©п╦п╨я┌п╬пЁя─п╟п╪п╪ (п╣я│п╩п╦ п╬п╢п╦п╫ п╫п╣ я─п╟п╠п╬я┌п╟п╣я┌, п©я─п╬п╠п╬п╡п╟я┌я▄ я│п╩п╣п╢я┐я▌я┴п╦п╧):"
 
 #: src/container.c:1688
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Снимок окна, Пиктограмма приложения, Пиктограмма Enlightenment"
+msgstr "п║п╫п╦п╪п╬п╨ п╬п╨п╫п╟, п÷п╦п╨я┌п╬пЁя─п╟п╪п╪п╟ п©я─п╦п╩п╬п╤п╣п╫п╦я▐, п÷п╦п╨я┌п╬пЁя─п╟п╪п╪п╟ Enlightenment"
 
 #: src/container.c:1695
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Пиктограмма приложения, Пиктограмма Enlightenment, Снимок окна"
+msgstr "п÷п╦п╨я┌п╬пЁя─п╟п╪п╪п╟ п©я─п╦п╩п╬п╤п╣п╫п╦я▐, п÷п╦п╨я┌п╬пЁя─п╟п╪п╪п╟ Enlightenment, п║п╫п╦п╪п╬п╨ п╬п╨п╫п╟"
 
 #: src/container.c:1700
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Пиктограмма Enlightenment, Снимок окна"
+msgstr "п÷п╦п╨я┌п╬пЁя─п╟п╪п╪п╟ Enlightenment, п║п╫п╦п╪п╬п╨ п╬п╨п╫п╟"
 
 #: src/container.c:1713
 #, fuzzy
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/desktops.c:124
 msgid ""
@@ -547,15 +547,15 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Нажав кнопку мыши и перемещая мышь,\n"
-"Вы можете двигать рабочий стол\n"
-"вперед-назад.\n"
-"Кликните правой кнопкой мыши для получения\n"
-"списка всех рабочих столов и находящихся на них\n"
-"приложений.\n"
-"Кликните средней кнопкой мыши для\n"
-"получения списка всех работающих\n"
-"приложений.\n"
+"п²п╟п╤п╟п╡ п╨п╫п╬п©п╨я┐ п╪я▀я┬п╦ п╦ п©п╣я─п╣п╪п╣я┴п╟я▐ п╪я▀я┬я▄,\n"
+"п▓я▀ п╪п╬п╤п╣я┌п╣ п╢п╡п╦пЁп╟я┌я▄ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩\n"
+"п╡п©п╣я─п╣п╢-п╫п╟п╥п╟п╢.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ п©я─п╟п╡п╬п╧ п╨п╫п╬п©п╨п╬п╧ п╪я▀я┬п╦ п╢п╩я▐ п©п╬п╩я┐я┤п╣п╫п╦я▐\n"
+"я│п©п╦я│п╨п╟ п╡я│п╣я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡ п╦ п╫п╟я┘п╬п╢я▐я┴п╦я┘я│я▐ п╫п╟ п╫п╦я┘\n"
+"п©я─п╦п╩п╬п╤п╣п╫п╦п╧.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ я│я─п╣п╢п╫п╣п╧ п╨п╫п╬п©п╨п╬п╧ п╪я▀я┬п╦ п╢п╩я▐\n"
+"п©п╬п╩я┐я┤п╣п╫п╦я▐ я│п©п╦я│п╨п╟ п╡я│п╣я┘ я─п╟п╠п╬я┌п╟я▌я┴п╦я┘\n"
+"п©я─п╦п╩п╬п╤п╣п╫п╦п╧.\n"
 
 #: src/desktops.c:135
 msgid ""
@@ -566,34 +566,34 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Это - \"корневой\" рабочий стол.\n"
-"Вы не можете его перемещать.\n"
-"Кликните правой кнопкой мыши для получения\n"
-"списка всех рабочих столов и находящихся на них\n"
-"приложений.\n"
-"Кликните средней кнопкой мыши для\n"
-"получения списка всех работающих\n"
-"приложений.\n"
+"п╜я┌п╬ - \"п╨п╬я─п╫п╣п╡п╬п╧\" я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩.\n"
+"п▓я▀ п╫п╣ п╪п╬п╤п╣я┌п╣ п╣пЁп╬ п©п╣я─п╣п╪п╣я┴п╟я┌я▄.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ п©я─п╟п╡п╬п╧ п╨п╫п╬п©п╨п╬п╧ п╪я▀я┬п╦ п╢п╩я▐ п©п╬п╩я┐я┤п╣п╫п╦я▐\n"
+"я│п©п╦я│п╨п╟ п╡я│п╣я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡ п╦ п╫п╟я┘п╬п╢я▐я┴п╦я┘я│я▐ п╫п╟ п╫п╦я┘\n"
+"п©я─п╦п╩п╬п╤п╣п╫п╦п╧.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ я│я─п╣п╢п╫п╣п╧ п╨п╫п╬п©п╨п╬п╧ п╪я▀я┬п╦ п╢п╩я▐\n"
+"п©п╬п╩я┐я┤п╣п╫п╦я▐ я│п©п╦я│п╨п╟ п╡я│п╣я┘ я─п╟п╠п╬я┌п╟я▌я┴п╦я┘\n"
+"п©я─п╦п╩п╬п╤п╣п╫п╦п╧.\n"
 
 #: src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
-"Кликните здесь, чтобы поднять этот\n"
-"рабочий стол наверх.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ п╥п╢п╣я│я▄, я┤я┌п╬п╠я▀ п©п╬п╢п╫я▐я┌я▄ я█я┌п╬я┌\n"
+"я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩ п╫п╟п╡п╣я─я┘.\n"
 
 #: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
-"Кликните здесь, чтобы опустить этот\n"
-"рабочий стол вниз.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ п╥п╢п╣я│я▄, я┤я┌п╬п╠я▀ п╬п©я┐я│я┌п╦я┌я▄ я█я┌п╬я┌\n"
+"я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩ п╡п╫п╦п╥.\n"
 
 #: src/desktops.c:2288
 msgid "Number of virtual desktops:\n"
-msgstr "Количество виртуальных рабочих столов:\n"
+msgstr "п п╬п╩п╦я┤п╣я│я┌п╡п╬ п╡п╦я─я┌я┐п╟п╩я▄п╫я▀я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡:\n"
 
 #: src/desktops.c:2313
 msgid "Slide desktops around when changing"
@@ -609,92 +609,92 @@ msgstr ""
 
 #: src/desktops.c:2341
 msgid "Display desktop dragbar"
-msgstr "Показывать Dragbar"
+msgstr "п÷п╬п╨п╟п╥я▀п╡п╟я┌я▄ Dragbar"
 
 #: src/desktops.c:2347
 msgid "Drag bar position:"
-msgstr "Сторона экрана, на которой расположен Dragbar"
+msgstr "п║я┌п╬я─п╬п╫п╟ я█п╨я─п╟п╫п╟, п╫п╟ п╨п╬я┌п╬я─п╬п╧ я─п╟я│п©п╬п╩п╬п╤п╣п╫ Dragbar"
 
 #: src/desktops.c:2351
 msgid "Top"
-msgstr "Верхняя"
+msgstr "п▓п╣я─я┘п╫я▐я▐"
 
 #: src/desktops.c:2357
 msgid "Bottom"
-msgstr "Нижняя"
+msgstr "п²п╦п╤п╫я▐я▐"
 
 #: src/desktops.c:2363 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
-msgstr "Левая"
+msgstr "п⌡п╣п╡п╟я▐"
 
 #: src/desktops.c:2369 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
-msgstr "Правая"
+msgstr "п÷я─п╟п╡п╟я▐"
 
 #: src/desktops.c:2377 src/menus-misc.c:586
 #, fuzzy
 msgid "Desks"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/desktops.c:2378
 msgid "Multiple Desktop Settings"
-msgstr "Установки рабочих столов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #: src/desktops.c:2381
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки виртуальных\n"
-"рабочих столов Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ п╡п╦я─я┌я┐п╟п╩я▄п╫я▀я┘\n"
+"я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡ Enlightenment\n"
 
 #: src/desktops.c:2473
 msgid "Virtual Desktop size:\n"
-msgstr "Размер виртуального рабочего стола:\n"
+msgstr "п═п╟п╥п╪п╣я─ п╡п╦я─я┌я┐п╟п╩я▄п╫п╬пЁп╬ я─п╟п╠п╬я┤п╣пЁп╬ я│я┌п╬п╩п╟:\n"
 
 #: src/desktops.c:2509
 msgid "Wrap virtual desktops around"
-msgstr "Замкнуть смену рабочих столов в 'петлю'"
+msgstr "п≈п╟п╪п╨п╫я┐я┌я▄ я│п╪п╣п╫я┐ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡ п╡ 'п©п╣я┌п╩я▌'"
 
 #: src/desktops.c:2516
 msgid "Edge Flip Mode:"
-msgstr "Смена рабочего стола при подходе мышки к краю экрана:"
+msgstr "п║п╪п╣п╫п╟ я─п╟п╠п╬я┤п╣пЁп╬ я│я┌п╬п╩п╟ п©я─п╦ п©п╬п╢я┘п╬п╢п╣ п╪я▀я┬п╨п╦ п╨ п╨я─п╟я▌ я█п╨я─п╟п╫п╟:"
 
 #: src/desktops.c:2519
 msgid "Off"
-msgstr "Выкл."
+msgstr "п▓я▀п╨п╩."
 
 #: src/desktops.c:2524
 msgid "On"
-msgstr "Вкл."
+msgstr "п▓п╨п╩."
 
 #: src/desktops.c:2529
 msgid "Only when moving window"
-msgstr "Только при перемещении окон"
+msgstr "п╒п╬п╩я▄п╨п╬ п©я─п╦ п©п╣я─п╣п╪п╣я┴п╣п╫п╦п╦ п╬п╨п╬п╫"
 
 #: src/desktops.c:2535
 msgid "Resistance at edge of screen:\n"
-msgstr "\"Сопротивление\" на границе экрана:\n"
+msgstr "\"п║п╬п©я─п╬я┌п╦п╡п╩п╣п╫п╦п╣\" п╫п╟ пЁя─п╟п╫п╦я├п╣ я█п╨я─п╟п╫п╟:\n"
 
 #: src/desktops.c:2547
 msgid "Areas"
-msgstr "Зоны"
+msgstr "п≈п╬п╫я▀"
 
 #: src/desktops.c:2548
 msgid "Virtual Desktop Settings"
-msgstr "Установки виртуальных рабочих столов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╡п╦я─я┌я┐п╟п╩я▄п╫я▀я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #: src/desktops.c:2551
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки виртуальных\n"
-"рабочих столов Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ п╡п╦я─я┌я┐п╟п╩я▄п╫я▀я┘\n"
+"я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡ Enlightenment\n"
 
 #: src/dialog.c:848
 msgid "Apply"
-msgstr "Применить"
+msgstr "п÷я─п╦п╪п╣п╫п╦я┌я▄"
 
 #: src/ecompmgr.c:2625
 msgid ""
@@ -703,14 +703,14 @@ msgid ""
 "Composite, Damage, Fixes, and Render\n"
 "extensions are loaded."
 msgstr ""
-"Не удалось активировать Composite Manager.\n"
-"Используйте xdpyinfo для проверки\n"
-"Composite, Damage, Fixes, и Render\n"
-"загруженных расширений X-сервера."
+"п²п╣ я┐п╢п╟п╩п╬я│я▄ п╟п╨я┌п╦п╡п╦я─п╬п╡п╟я┌я▄ Composite Manager.\n"
+"п≤я│п©п╬п╩я▄п╥я┐п╧я┌п╣ xdpyinfo п╢п╩я▐ п©я─п╬п╡п╣я─п╨п╦\n"
+"Composite, Damage, Fixes, п╦ Render\n"
+"п╥п╟пЁя─я┐п╤п╣п╫п╫я▀я┘ я─п╟я│я┬п╦я─п╣п╫п╦п╧ X-я│п╣я─п╡п╣я─п╟."
 
 #: src/events.c:87
 msgid "X server setup error"
-msgstr "Ошибка установки X-сервера"
+msgstr "п·я┬п╦п╠п╨п╟ я┐я│я┌п╟п╫п╬п╡п╨п╦ X-я│п╣я─п╡п╣я─п╟"
 
 #: src/events.c:88
 msgid ""
@@ -723,138 +723,138 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
-"ФАТАЛЬНАЯ ОШИБКА:\n"
+"п╓п░п╒п░п⌡п╛п²п░п╞ п·п╗п≤п▒п п░:\n"
 "\n"
-"Ваш X-сервер не поддерживает расширение Shape.\n"
-"Поддержка этого расширения необходима для работы Enlightenment.\n"
+"п▓п╟я┬ X-я│п╣я─п╡п╣я─ п╫п╣ п©п╬п╢п╢п╣я─п╤п╦п╡п╟п╣я┌ я─п╟я│я┬п╦я─п╣п╫п╦п╣ Shape.\n"
+"п÷п╬п╢п╢п╣я─п╤п╨п╟ я█я┌п╬пЁп╬ я─п╟я│я┬п╦я─п╣п╫п╦я▐ п╫п╣п╬п╠я┘п╬п╢п╦п╪п╟ п╢п╩я▐ я─п╟п╠п╬я┌я▀ Enlightenment.\n"
 "\n"
-"Возможно, Ваш X-сервер слишком старой версии, или\n"
-"он неверно настроен.\n"
+"п▓п╬п╥п╪п╬п╤п╫п╬, п▓п╟я┬ X-я│п╣я─п╡п╣я─ я│п╩п╦я┬п╨п╬п╪ я│я┌п╟я─п╬п╧ п╡п╣я─я│п╦п╦, п╦п╩п╦\n"
+"п╬п╫ п╫п╣п╡п╣я─п╫п╬ п╫п╟я│я┌я─п╬п╣п╫.\n"
 "\n"
-"Выходим.\n"
+"п▓я▀я┘п╬п╢п╦п╪.\n"
 
 #: src/focus.c:703
 msgid "Focus follows pointer"
-msgstr "Фокус следует за мышью"
+msgstr "п╓п╬п╨я┐я│ я│п╩п╣п╢я┐п╣я┌ п╥п╟ п╪я▀я┬я▄я▌"
 
 #: src/focus.c:709
 msgid "Focus follows pointer sloppily"
-msgstr "Фокус следует за мышью свободно"
+msgstr "п╓п╬п╨я┐я│ я│п╩п╣п╢я┐п╣я┌ п╥п╟ п╪я▀я┬я▄я▌ я│п╡п╬п╠п╬п╢п╫п╬"
 
 #: src/focus.c:715
 msgid "Focus follows mouse clicks"
-msgstr "Фокус по нажатию кнопки мыши"
+msgstr "п╓п╬п╨я┐я│ п©п╬ п╫п╟п╤п╟я┌п╦я▌ п╨п╫п╬п©п╨п╦ п╪я▀я┬п╦"
 
 #: src/focus.c:725
 msgid "Clicking in a window always raises it"
-msgstr "Нажатие кнопки мыши всегда поднимает окно наверх"
+msgstr "п²п╟п╤п╟я┌п╦п╣ п╨п╫п╬п©п╨п╦ п╪я▀я┬п╦ п╡я│п╣пЁп╢п╟ п©п╬п╢п╫п╦п╪п╟п╣я┌ п╬п╨п╫п╬ п╫п╟п╡п╣я─я┘"
 
 #: src/focus.c:733
 msgid "All new windows first get the focus"
-msgstr "Все новые окна получают фокус"
+msgstr "п▓я│п╣ п╫п╬п╡я▀п╣ п╬п╨п╫п╟ п©п╬п╩я┐я┤п╟я▌я┌ я└п╬п╨я┐я│"
 
 #: src/focus.c:738
 msgid "Only new dialog windows get the focus"
-msgstr "Только новые диалоги получают фокус"
+msgstr "п╒п╬п╩я▄п╨п╬ п╫п╬п╡я▀п╣ п╢п╦п╟п╩п╬пЁп╦ п©п╬п╩я┐я┤п╟я▌я┌ я└п╬п╨я┐я│"
 
 #: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "Только новые диалоги окон в фокусе получают фокус"
+msgstr "п╒п╬п╩я▄п╨п╬ п╫п╬п╡я▀п╣ п╢п╦п╟п╩п╬пЁп╦ п╬п╨п╬п╫ п╡ я└п╬п╨я┐я│п╣ п©п╬п╩я┐я┤п╟я▌я┌ я└п╬п╨я┐я│"
 
 #: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
-msgstr "Поднимать окна наверх после переключения фокуса"
+msgstr "п÷п╬п╢п╫п╦п╪п╟я┌я▄ п╬п╨п╫п╟ п╫п╟п╡п╣я─я┘ п©п╬я│п╩п╣ п©п╣я─п╣п╨п╩я▌я┤п╣п╫п╦я▐ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
-msgstr "Посылать курсор в окно при получении фокуса"
+msgstr "п÷п╬я│я▀п╩п╟я┌я▄ п╨я┐я─я│п╬я─ п╡ п╬п╨п╫п╬ п©я─п╦ п©п╬п╩я┐я┤п╣п╫п╦п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
-msgstr "Посылать курсор в окно при получении фокуса"
+msgstr "п÷п╬я│я▀п╩п╟я┌я▄ п╨я┐я─я│п╬я─ п╡ п╬п╨п╫п╬ п©я─п╦ п©п╬п╩я┐я┤п╣п╫п╦п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:770
 msgid "Display and use focus list"
-msgstr "Отображать и использовать список окон для передачи фокуса"
+msgstr "п·я┌п╬п╠я─п╟п╤п╟я┌я▄ п╦ п╦я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ я│п©п╦я│п╬п╨ п╬п╨п╬п╫ п╢п╩я▐ п©п╣я─п╣п╢п╟я┤п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:775
 msgid "Include sticky windows in focus list"
-msgstr "Включать зафиксированные окна в список передачи фокуса"
+msgstr "п▓п╨п╩я▌я┤п╟я┌я▄ п╥п╟я└п╦п╨я│п╦я─п╬п╡п╟п╫п╫я▀п╣ п╬п╨п╫п╟ п╡ я│п©п╦я│п╬п╨ п©п╣я─п╣п╢п╟я┤п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:780
 msgid "Include shaded windows in focus list"
-msgstr "Включать скрытые окна в список передачи фокуса"
+msgstr "п▓п╨п╩я▌я┤п╟я┌я▄ я│п╨я─я▀я┌я▀п╣ п╬п╨п╫п╟ п╡ я│п©п╦я│п╬п╨ п©п╣я─п╣п╢п╟я┤п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:785
 msgid "Include iconified windows in focus list"
-msgstr "Включать свёрнутые окна в список передачи фокуса"
+msgstr "п▓п╨п╩я▌я┤п╟я┌я▄ я│п╡я▒я─п╫я┐я┌я▀п╣ п╬п╨п╫п╟ п╡ я│п©п╦я│п╬п╨ п©п╣я─п╣п╢п╟я┤п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
-msgstr "Располагать окна вручную"
+msgstr "п═п╟я│п©п╬п╩п╟пЁп╟я┌я▄ п╬п╨п╫п╟ п╡я─я┐я┤п╫я┐я▌"
 
 #: src/focus.c:795
 msgid "Focus windows while switching"
-msgstr "При переключении в другое окно передавать ему фокус"
+msgstr "п÷я─п╦ п©п╣я─п╣п╨п╩я▌я┤п╣п╫п╦п╦ п╡ п╢я─я┐пЁп╬п╣ п╬п╨п╫п╬ п©п╣я─п╣п╢п╟п╡п╟я┌я▄ п╣п╪я┐ я└п╬п╨я┐я│"
 
 #: src/focus.c:800
 msgid "Raise windows after focus switch"
-msgstr "Поднимать окна наверх после переключения фокуса"
+msgstr "п÷п╬п╢п╫п╦п╪п╟я┌я▄ п╬п╨п╫п╟ п╫п╟п╡п╣я─я┘ п©п╬я│п╩п╣ п©п╣я─п╣п╨п╩я▌я┤п╣п╫п╦я▐ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
-msgstr "Посылать курсор в окно после получении фокуса"
+msgstr "п÷п╬я│я▀п╩п╟я┌я▄ п╨я┐я─я│п╬я─ п╡ п╬п╨п╫п╬ п©п╬я│п╩п╣ п©п╬п╩я┐я┤п╣п╫п╦п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:815
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
-"Способ отображения пиктограмм (если один не работает, пробовать следующий):"
+"п║п©п╬я│п╬п╠ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦я▐ п©п╦п╨я┌п╬пЁя─п╟п╪п╪ (п╣я│п╩п╦ п╬п╢п╦п╫ п╫п╣ я─п╟п╠п╬я┌п╟п╣я┌, п©я─п╬п╠п╬п╡п╟я┌я▄ я│п╩п╣п╢я┐я▌я┴п╦п╧):"
 
 #: src/focus.c:819
 msgid "First E Icon, then App Icon"
-msgstr "Сперва - мконку E, потом - иконку приложения"
+msgstr "п║п©п╣я─п╡п╟ - п╪п╨п╬п╫п╨я┐ E, п©п╬я┌п╬п╪ - п╦п╨п╬п╫п╨я┐ п©я─п╦п╩п╬п╤п╣п╫п╦я▐"
 
 #: src/focus.c:825
 msgid "First App Icon, then E Icon"
-msgstr "Сперва - иконку приложения, потом - мконку E"
+msgstr "п║п©п╣я─п╡п╟ - п╦п╨п╬п╫п╨я┐ п©я─п╦п╩п╬п╤п╣п╫п╦я▐, п©п╬я┌п╬п╪ - п╪п╨п╬п╫п╨я┐ E"
 
 #: src/focus.c:839
 msgid "Focus"
-msgstr "Фокус"
+msgstr "п╓п╬п╨я┐я│"
 
 #: src/focus.c:840
 msgid "Focus Settings"
-msgstr "Настройки фокуса"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╨я┐я│п╟"
 
 #: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки\n"
-"фокуса Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦\n"
+"я└п╬п╨я┐я│п╟ Enlightenment\n"
 
 #: src/fx.c:933
 msgid "Effects"
-msgstr "Эффекты"
+msgstr "п╜я└я└п╣п╨я┌я▀"
 
 #: src/fx.c:936
 #, fuzzy
 msgid "Enable Effect: Raindrops"
-msgstr "Невозможно показать дождевые капли"
+msgstr "п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п©п╬п╨п╟п╥п╟я┌я▄ п╢п╬п╤п╢п╣п╡я▀п╣ п╨п╟п©п╩п╦"
 
 #: src/fx.c:940
 msgid "Ripples"
-msgstr "Рябь"
+msgstr "п═я▐п╠я▄"
 
 #: src/fx.c:944
 msgid "Waves"
-msgstr "Волны"
+msgstr "п▓п╬п╩п╫я▀"
 
 #: src/fx.c:950
 msgid "FX"
@@ -862,31 +862,31 @@ msgstr "FX"
 
 #: src/fx.c:951
 msgid "Special FX Settings"
-msgstr "Установки спецэффектов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я│п©п╣я├я█я└я└п╣п╨я┌п╬п╡"
 
 #: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки\n"
-"спецэффектов Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦\n"
+"я│п©п╣я├я█я└я└п╣п╨я┌п╬п╡ Enlightenment\n"
 
 #: src/groups.c:699
 msgid "Window Group Selection"
-msgstr "Выбор Группы Окон"
+msgstr "п▓я▀п╠п╬я─ п⌠я─я┐п©п©я▀ п·п╨п╬п╫"
 
 #: src/groups.c:702
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
-"Диалог настройки\n"
-"групп окон Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦\n"
+"пЁя─я┐п©п© п╬п╨п╬п╫ Enlightenment\n"
 
 #: src/groups.c:725 src/groups.c:734 src/groups.c:742 src/groups.c:928
 msgid "Window Group Error"
-msgstr "Ошибка Группы Окон"
+msgstr "п·я┬п╦п╠п╨п╟ п⌠я─я┐п©п©я▀ п·п╨п╬п╫"
 
 #: src/groups.c:727
 msgid ""
@@ -897,9 +897,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В настоящий момент, это окно не входит ни в одну группу.  \n"
-"  Вы можете разрывать группы или удалять окна из групп  \n"
-"  только из окна, которое входит по крайней мере в одну группу.\n"
+"  п▓ п╫п╟я│я┌п╬я▐я┴п╦п╧ п╪п╬п╪п╣п╫я┌, я█я┌п╬ п╬п╨п╫п╬ п╫п╣ п╡я┘п╬п╢п╦я┌ п╫п╦ п╡ п╬п╢п╫я┐ пЁя─я┐п©п©я┐.  \n"
+"  п▓я▀ п╪п╬п╤п╣я┌п╣ я─п╟п╥я─я▀п╡п╟я┌я▄ пЁя─я┐п©п©я▀ п╦п╩п╦ я┐п╢п╟п╩я▐я┌я▄ п╬п╨п╫п╟ п╦п╥ пЁя─я┐п©п©  \n"
+"  я┌п╬п╩я▄п╨п╬ п╦п╥ п╬п╨п╫п╟, п╨п╬я┌п╬я─п╬п╣ п╡я┘п╬п╢п╦я┌ п©п╬ п╨я─п╟п╧п╫п╣п╧ п╪п╣я─п╣ п╡ п╬п╢п╫я┐ пЁя─я┐п©п©я┐.\n"
 "\n"
 
 #: src/groups.c:735
@@ -911,9 +911,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В настоящий момент, не существует ни одной группы  \n"
-"  или это окно уже входит во все существующие группы.  \n"
-"  Вам надо сперва начать другие группы.  \n"
+"  п▓ п╫п╟я│я┌п╬я▐я┴п╦п╧ п╪п╬п╪п╣п╫я┌, п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌ п╫п╦ п╬п╢п╫п╬п╧ пЁя─я┐п©п©я▀  \n"
+"  п╦п╩п╦ я█я┌п╬ п╬п╨п╫п╬ я┐п╤п╣ п╡я┘п╬п╢п╦я┌ п╡п╬ п╡я│п╣ я│я┐я┴п╣я│я┌п╡я┐я▌я┴п╦п╣ пЁя─я┐п©п©я▀.  \n"
+"  п▓п╟п╪ п╫п╟п╢п╬ я│п©п╣я─п╡п╟ п╫п╟я┤п╟я┌я▄ п╢я─я┐пЁп╦п╣ пЁя─я┐п©п©я▀.  \n"
 "\n"
 
 #: src/groups.c:744
@@ -923,65 +923,65 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В настоящий момент, не существует ни одной группы.\n"
-"  Вам надо сперва начать группу.  \n"
+"  п▓ п╫п╟я│я┌п╬я▐я┴п╦п╧ п╪п╬п╪п╣п╫я┌, п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌ п╫п╦ п╬п╢п╫п╬п╧ пЁя─я┐п©п©я▀.\n"
+"  п▓п╟п╪ п╫п╟п╢п╬ я│п©п╣я─п╡п╟ п╫п╟я┤п╟я┌я▄ пЁя─я┐п©п©я┐.  \n"
 "\n"
 
 #: src/groups.c:834
 msgid "   Pick the group to configure:   "
-msgstr "  Выберите группу для настройки:  "
+msgstr "  п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐ п╢п╩я▐ п╫п╟я│я┌я─п╬п╧п╨п╦:  "
 
 #: src/groups.c:865
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  Эти действия применяются  \n"
-"  ко всем членам группы окон:  "
+"  п╜я┌п╦ п╢п╣п╧я│я┌п╡п╦я▐ п©я─п╦п╪п╣п╫я▐я▌я┌я│я▐  \n"
+"  п╨п╬ п╡я│п╣п╪ я┤п╩п╣п╫п╟п╪ пЁя─я┐п©п©я▀ п╬п╨п╬п╫:  "
 
 #: src/groups.c:870 src/groups.c:972
 msgid "Changing Border Style"
-msgstr "Изменить стиль бордюра окна"
+msgstr "п≤п╥п╪п╣п╫п╦я┌я▄ я│я┌п╦п╩я▄ п╠п╬я─п╢я▌я─п╟ п╬п╨п╫п╟"
 
 #: src/groups.c:875 src/groups.c:977
 msgid "Iconifying"
-msgstr "Свернуть"
+msgstr "п║п╡п╣я─п╫я┐я┌я▄"
 
 #: src/groups.c:880 src/groups.c:982
 msgid "Killing"
-msgstr "Уничтожить"
+msgstr "пёп╫п╦я┤я┌п╬п╤п╦я┌я▄"
 
 #: src/groups.c:885 src/groups.c:987
 msgid "Moving"
-msgstr "Переместить"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄"
 
 #: src/groups.c:890 src/groups.c:992
 msgid "Raising/Lowering"
-msgstr "Поднять/Опустить"
+msgstr "п÷п╬п╢п╫я▐я┌я▄/п·п©я┐я│я┌п╦я┌я▄"
 
 #: src/groups.c:895 src/groups.c:997
 msgid "Sticking"
-msgstr "Зафиксировать"
+msgstr "п≈п╟я└п╦п╨я│п╦я─п╬п╡п╟я┌я▄"
 
 #: src/groups.c:900 src/groups.c:1002
 msgid "Shading"
-msgstr "Скрыть"
+msgstr "п║п╨я─я▀я┌я▄"
 
 #: src/groups.c:905 src/groups.c:1007
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Скрыть/Свернуть/Зафиксировать"
+msgstr "п║п╨я─я▀я┌я▄/п║п╡п╣я─п╫я┐я┌я▄/п≈п╟я└п╦п╨я│п╦я─п╬п╡п╟я┌я▄"
 
 #: src/groups.c:912
 msgid "Window Group Settings"
-msgstr "Установки группы окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ пЁя─я┐п©п©я▀ п╬п╨п╬п╫"
 
 #: src/groups.c:915
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки\n"
-"групп окон Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦\n"
+"пЁя─я┐п©п© п╬п╨п╬п╫ Enlightenment\n"
 
 #: src/groups.c:930
 msgid ""
@@ -990,54 +990,54 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В настоящий момент это окно не входит ни в одну группу.  \n"
+"  п▓ п╫п╟я│я┌п╬я▐я┴п╦п╧ п╪п╬п╪п╣п╫я┌ я█я┌п╬ п╬п╨п╫п╬ п╫п╣ п╡я┘п╬п╢п╦я┌ п╫п╦ п╡ п╬п╢п╫я┐ пЁя─я┐п©п©я┐.  \n"
 "\n"
 
 #: src/groups.c:965
 #, fuzzy
 msgid " Per-group settings: "
-msgstr "Настройки Pager-а"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ Pager-п╟"
 
 #: src/groups.c:1016
 msgid " Global settings: "
-msgstr "Глобальные настройки:"
+msgstr "п⌠п╩п╬п╠п╟п╩я▄п╫я▀п╣ п╫п╟я│я┌я─п╬п╧п╨п╦:"
 
 #: src/groups.c:1020
 #, fuzzy
 msgid "Swap Window Locations"
-msgstr "Изменить расположение окна"
+msgstr "п≤п╥п╪п╣п╫п╦я┌я▄ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦п╣ п╬п╨п╫п╟"
 
 #: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
-msgstr "Группа %i"
+msgstr "п⌠я─я┐п©п©п╟ %i"
 
 #: src/groups.c:1027
 msgid "Default Group Control Settings"
-msgstr "Установки группы по умолчанию"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ пЁя─я┐п©п©я▀ п©п╬ я┐п╪п╬п╩я┤п╟п╫п╦я▌"
 
 #: src/groups.c:1030
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
-"Диалог настройки контроля\n"
-"групп окон Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ п╨п╬п╫я┌я─п╬п╩я▐\n"
+"пЁя─я┐п©п© п╬п╨п╬п╫ Enlightenment\n"
 
 #: src/groups.c:1062
 #, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
+msgstr "  п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐, п╨ п╨п╬я┌п╬я─п╬п╧ п╠я┐п╢п╣я┌ п©я─п╦п╫п╟п╢п╩п╣п╤п╟я┌я▄ п╬п╨п╫п╬:  \n"
 
 #: src/groups.c:1068
 #, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "   Выберите группу, из которой нужно убрать это окно.  "
+msgstr "   п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐, п╦п╥ п╨п╬я┌п╬я─п╬п╧ п╫я┐п╤п╫п╬ я┐п╠я─п╟я┌я▄ я█я┌п╬ п╬п╨п╫п╬.  "
 
 #: src/groups.c:1073
 #, fuzzy
 msgid "Select the group to break:"
-msgstr "  Выберите группу, которую хотите разорвать  "
+msgstr "  п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐, п╨п╬я┌п╬я─я┐я▌ я┘п╬я┌п╦я┌п╣ я─п╟п╥п╬я─п╡п╟я┌я▄  "
 
 #: src/handlers.c:61
 #, c-format
@@ -1051,14 +1051,14 @@ msgid ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
-"Enlightenment выполнил запрещенную операцию.\n"
+"Enlightenment п╡я▀п©п╬п╩п╫п╦п╩ п╥п╟п©я─п╣я┴п╣п╫п╫я┐я▌ п╬п©п╣я─п╟я├п╦я▌.\n"
 "\n"
-"Скорее всего, Вы используете бинарную версию Enlightenment,\n"
-"откомпилированную для типа или модели процессора, не идентичной\n"
-"или несовместимой с Вашим. Пожалуйста, установите подходящую\n"
-"для Вашей системы бинарную версию Enlightenment, или же\n"
-"перекомпилируйте Enlightenment (а также, возможно, необходимые\n"
-"библиотеки) самостоятельно.\n"
+"п║п╨п╬я─п╣п╣ п╡я│п╣пЁп╬, п▓я▀ п╦я│п©п╬п╩я▄п╥я┐п╣я┌п╣ п╠п╦п╫п╟я─п╫я┐я▌ п╡п╣я─я│п╦я▌ Enlightenment,\n"
+"п╬я┌п╨п╬п╪п©п╦п╩п╦я─п╬п╡п╟п╫п╫я┐я▌ п╢п╩я▐ я┌п╦п©п╟ п╦п╩п╦ п╪п╬п╢п╣п╩п╦ п©я─п╬я├п╣я│я│п╬я─п╟, п╫п╣ п╦п╢п╣п╫я┌п╦я┤п╫п╬п╧\n"
+"п╦п╩п╦ п╫п╣я│п╬п╡п╪п╣я│я┌п╦п╪п╬п╧ я│ п▓п╟я┬п╦п╪. п÷п╬п╤п╟п╩я┐п╧я│я┌п╟, я┐я│я┌п╟п╫п╬п╡п╦я┌п╣ п©п╬п╢я┘п╬п╢я▐я┴я┐я▌\n"
+"п╢п╩я▐ п▓п╟я┬п╣п╧ я│п╦я│я┌п╣п╪я▀ п╠п╦п╫п╟я─п╫я┐я▌ п╡п╣я─я│п╦я▌ Enlightenment, п╦п╩п╦ п╤п╣\n"
+"п©п╣я─п╣п╨п╬п╪п©п╦п╩п╦я─я┐п╧я┌п╣ Enlightenment (п╟ я┌п╟п╨п╤п╣, п╡п╬п╥п╪п╬п╤п╫п╬, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣\n"
+"п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦) я│п╟п╪п╬я│я┌п╬я▐я┌п╣п╩я▄п╫п╬.\n"
 
 #: src/handlers.c:71
 msgid ""
@@ -1073,17 +1073,17 @@ msgid ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment вызвал ошибку операции с плавающей точкой (FPE).\n"
+"Enlightenment п╡я▀п╥п╡п╟п╩ п╬я┬п╦п╠п╨я┐ п╬п©п╣я─п╟я├п╦п╦ я│ п©п╩п╟п╡п╟я▌я┴п╣п╧ я┌п╬я┤п╨п╬п╧ (FPE).\n"
 "\n"
-"Это означает, что Enlightenment (или вызыванная им из\n"
-"поддерживающей библиотеки процедура) выполнил(а) запрещенную\n"
-"математическую операцию (скорее всего, деление на ноль).\n"
-"Скорее всего, это баг. Рекомендуется немедленно перезапуститься.\n"
-"Если Вы хотите помочь исправить баг, пожалуйста откомпилируйте\n"
-"Enlightenment с включенной отладочной информацией.\n"
-"Затем запустите Enlightenment под отладчиком и сделайте backtrace\n"
-"до момента возникновения ошибки. Пошлите нам багрепорт\n"
-"с полученной в отладчике информацией, дампами переменных и т.д.\n"
+"п╜я┌п╬ п╬п╥п╫п╟я┤п╟п╣я┌, я┤я┌п╬ Enlightenment (п╦п╩п╦ п╡я▀п╥я▀п╡п╟п╫п╫п╟я▐ п╦п╪ п╦п╥\n"
+"п©п╬п╢п╢п╣я─п╤п╦п╡п╟я▌я┴п╣п╧ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦ п©я─п╬я├п╣п╢я┐я─п╟) п╡я▀п©п╬п╩п╫п╦п╩(п╟) п╥п╟п©я─п╣я┴п╣п╫п╫я┐я▌\n"
+"п╪п╟я┌п╣п╪п╟я┌п╦я┤п╣я│п╨я┐я▌ п╬п©п╣я─п╟я├п╦я▌ (я│п╨п╬я─п╣п╣ п╡я│п╣пЁп╬, п╢п╣п╩п╣п╫п╦п╣ п╫п╟ п╫п╬п╩я▄).\n"
+"п║п╨п╬я─п╣п╣ п╡я│п╣пЁп╬, я█я┌п╬ п╠п╟пЁ. п═п╣п╨п╬п╪п╣п╫п╢я┐п╣я┌я│я▐ п╫п╣п╪п╣п╢п╩п╣п╫п╫п╬ п©п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌я▄я│я▐.\n"
+"п∙я│п╩п╦ п▓я▀ я┘п╬я┌п╦я┌п╣ п©п╬п╪п╬я┤я▄ п╦я│п©я─п╟п╡п╦я┌я▄ п╠п╟пЁ, п©п╬п╤п╟п╩я┐п╧я│я┌п╟ п╬я┌п╨п╬п╪п©п╦п╩п╦я─я┐п╧я┌п╣\n"
+"Enlightenment я│ п╡п╨п╩я▌я┤п╣п╫п╫п╬п╧ п╬я┌п╩п╟п╢п╬я┤п╫п╬п╧ п╦п╫я└п╬я─п╪п╟я├п╦п╣п╧.\n"
+"п≈п╟я┌п╣п╪ п╥п╟п©я┐я│я┌п╦я┌п╣ Enlightenment п©п╬п╢ п╬я┌п╩п╟п╢я┤п╦п╨п╬п╪ п╦ я│п╢п╣п╩п╟п╧я┌п╣ backtrace\n"
+"п╢п╬ п╪п╬п╪п╣п╫я┌п╟ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦я▐ п╬я┬п╦п╠п╨п╦. п÷п╬я┬п╩п╦я┌п╣ п╫п╟п╪ п╠п╟пЁя─п╣п©п╬я─я┌\n"
+"я│ п©п╬п╩я┐я┤п╣п╫п╫п╬п╧ п╡ п╬я┌п╩п╟п╢я┤п╦п╨п╣ п╦п╫я└п╬я─п╪п╟я├п╦п╣п╧, п╢п╟п╪п©п╟п╪п╦ п©п╣я─п╣п╪п╣п╫п╫я▀я┘ п╦ я┌.п╢.\n"
 
 #: src/handlers.c:83
 msgid ""
@@ -1098,17 +1098,17 @@ msgid ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment вызвал нарушение сегмента (Segfault).\n"
+"Enlightenment п╡я▀п╥п╡п╟п╩ п╫п╟я─я┐я┬п╣п╫п╦п╣ я│п╣пЁп╪п╣п╫я┌п╟ (Segfault).\n"
 "\n"
-"Это означает, что Enlightenment (или вызыванная им из\n"
-"поддерживающей библиотеки процедура) выполнил(а) обращение\n"
-"к области системной памяти, доступ к которой ему запрещен.\n"
-"Скорее всего, это баг. Рекомендуется немедленно перезапуститься.\n"
-"Если Вы хотите помочь исправить баг, пожалуйста откомпилируйте\n"
-"Enlightenment с включенной отладочной информацией.\n"
-"Затем запустите Enlightenment под отладчиком и сделайте backtrace\n"
-"до момента возникновения ошибки. Пошлите нам багрепорт\n"
-"с полученной в отладчике информацией, дампами переменных и т.д.\n"
+"п╜я┌п╬ п╬п╥п╫п╟я┤п╟п╣я┌, я┤я┌п╬ Enlightenment (п╦п╩п╦ п╡я▀п╥я▀п╡п╟п╫п╫п╟я▐ п╦п╪ п╦п╥\n"
+"п©п╬п╢п╢п╣я─п╤п╦п╡п╟я▌я┴п╣п╧ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦ п©я─п╬я├п╣п╢я┐я─п╟) п╡я▀п©п╬п╩п╫п╦п╩(п╟) п╬п╠я─п╟я┴п╣п╫п╦п╣\n"
+"п╨ п╬п╠п╩п╟я│я┌п╦ я│п╦я│я┌п╣п╪п╫п╬п╧ п©п╟п╪я▐я┌п╦, п╢п╬я│я┌я┐п© п╨ п╨п╬я┌п╬я─п╬п╧ п╣п╪я┐ п╥п╟п©я─п╣я┴п╣п╫.\n"
+"п║п╨п╬я─п╣п╣ п╡я│п╣пЁп╬, я█я┌п╬ п╠п╟пЁ. п═п╣п╨п╬п╪п╣п╫п╢я┐п╣я┌я│я▐ п╫п╣п╪п╣п╢п╩п╣п╫п╫п╬ п©п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌я▄я│я▐.\n"
+"п∙я│п╩п╦ п▓я▀ я┘п╬я┌п╦я┌п╣ п©п╬п╪п╬я┤я▄ п╦я│п©я─п╟п╡п╦я┌я▄ п╠п╟пЁ, п©п╬п╤п╟п╩я┐п╧я│я┌п╟ п╬я┌п╨п╬п╪п©п╦п╩п╦я─я┐п╧я┌п╣\n"
+"Enlightenment я│ п╡п╨п╩я▌я┤п╣п╫п╫п╬п╧ п╬я┌п╩п╟п╢п╬я┤п╫п╬п╧ п╦п╫я└п╬я─п╪п╟я├п╦п╣п╧.\n"
+"п≈п╟я┌п╣п╪ п╥п╟п©я┐я│я┌п╦я┌п╣ Enlightenment п©п╬п╢ п╬я┌п╩п╟п╢я┤п╦п╨п╬п╪ п╦ я│п╢п╣п╩п╟п╧я┌п╣ backtrace\n"
+"п╢п╬ п╪п╬п╪п╣п╫я┌п╟ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦я▐ п╬я┬п╦п╠п╨п╦. п÷п╬я┬п╩п╦я┌п╣ п╫п╟п╪ п╠п╟пЁя─п╣п©п╬я─я┌\n"
+"я│ п©п╬п╩я┐я┤п╣п╫п╫п╬п╧ п╡ п╬я┌п╩п╟п╢я┤п╦п╨п╣ п╦п╫я└п╬я─п╪п╟я├п╦п╣п╧, п╢п╟п╪п©п╟п╪п╦ п©п╣я─п╣п╪п╣п╫п╫я▀я┘ п╦ я┌.п╢.\n"
 
 #: src/handlers.c:95
 msgid ""
@@ -1118,21 +1118,21 @@ msgid ""
 "It is highly unusual to cause Bus Errors on operational\n"
 "hardware.\n"
 msgstr ""
-"Enlightenment вызвал ошибку шины (Bus Error).\n"
+"Enlightenment п╡я▀п╥п╡п╟п╩ п╬я┬п╦п╠п╨я┐ я┬п╦п╫я▀ (Bus Error).\n"
 "\n"
-"Вам рекомендуется проверить все компоненты компьютера\n"
-"и установку ОС. Такая ошибка встречается крайне редко на рабочем\n"
-"оборудовании.\n"
+"п▓п╟п╪ я─п╣п╨п╬п╪п╣п╫п╢я┐п╣я┌я│я▐ п©я─п╬п╡п╣я─п╦я┌я▄ п╡я│п╣ п╨п╬п╪п©п╬п╫п╣п╫я┌я▀ п╨п╬п╪п©я▄я▌я┌п╣я─п╟\n"
+"п╦ я┐я│я┌п╟п╫п╬п╡п╨я┐ п·п║. п╒п╟п╨п╟я▐ п╬я┬п╦п╠п╨п╟ п╡я│я┌я─п╣я┤п╟п╣я┌я│я▐ п╨я─п╟п╧п╫п╣ я─п╣п╢п╨п╬ п╫п╟ я─п╟п╠п╬я┤п╣п╪\n"
+"п╬п╠п╬я─я┐п╢п╬п╡п╟п╫п╦п╦.\n"
 
 #: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
-msgstr "Не могу получить контроль над: %s"
+msgstr "п²п╣ п╪п╬пЁя┐ п©п╬п╩я┐я┤п╦я┌я▄ п╨п╬п╫я┌я─п╬п╩я▄ п╫п╟п╢: %s"
 
 #: src/iconify.c:469
 msgid "Iconbox Options"
@@ -1140,30 +1140,30 @@ msgstr "Iconbox"
 
 #: src/iconify.c:470
 msgid "Iconbox Settings"
-msgstr "Установки Iconbox"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Iconbox"
 
 #: src/ipc.c:194 src/ipc.c:1440 src/ipc.c:1447
 msgid "Message"
-msgstr "Сообщение"
+msgstr "п║п╬п╬п╠я┴п╣п╫п╦п╣"
 
 #: src/ipc.c:1440 src/ipc.c:1447
 #, c-format
 msgid "e16 was built without %s support"
-msgstr "Меня собрали без поддержки %s !"
+msgstr "п°п╣п╫я▐ я│п╬п╠я─п╟п╩п╦ п╠п╣п╥ п©п╬п╢п╢п╣я─п╤п╨п╦ %s !"
 
 #: src/ipc.c:1441
 #, fuzzy
 msgid "composite"
-msgstr "Композит"
+msgstr "п п╬п╪п©п╬п╥п╦я┌"
 
 #: src/ipc.c:1448
 msgid "sound"
-msgstr "Звук"
+msgstr "п≈п╡я┐п╨"
 
 #: src/ipc.c:1789
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Справка по командам Enlightenment IPC"
+msgstr "п║п©я─п╟п╡п╨п╟ п©п╬ п╨п╬п╪п╟п╫п╢п╟п╪ Enlightenment IPC"
 
 #: src/ipc.c:1793
 #, fuzzy
@@ -1172,8 +1172,8 @@ msgid ""
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"\"help all\": описание всех команд\n"
-"\"help <команда>\": описание команды\n"
+"\"help all\": п╬п©п╦я│п╟п╫п╦п╣ п╡я│п╣я┘ п╨п╬п╪п╟п╫п╢\n"
+"\"help <п╨п╬п╪п╟п╫п╢п╟>\": п╬п©п╦я│п╟п╫п╦п╣ п╨п╬п╪п╟п╫п╢я▀\n"
 "\n"
 
 #: src/ipc.c:1795 src/ipc.c:1815 src/ipc.c:1827
@@ -1181,21 +1181,21 @@ msgstr ""
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
-"доступные команды:\n"
+"п╢п╬я│я┌я┐п©п╫я▀п╣ п╨п╬п╪п╟п╫п╢я▀:\n"
 
 #: src/ipc.c:1813
 msgid "Use \"help full\" for full descriptions of each command\n"
-msgstr "Набери \"help full\" для получения полного справочника\n"
+msgstr "п²п╟п╠п╣я─п╦ \"help full\" п╢п╩я▐ п©п╬п╩я┐я┤п╣п╫п╦я▐ п©п╬п╩п╫п╬пЁп╬ я│п©я─п╟п╡п╬я┤п╫п╦п╨п╟\n"
 
 #: src/ipc.c:1814
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
-msgstr "\"help <команда>\": описание команды\n"
+msgstr "\"help <п╨п╬п╪п╟п╫п╢п╟>\": п╬п©п╦я│п╟п╫п╦п╣ п╨п╬п╪п╟п╫п╢я▀\n"
 
 #: src/ipc.c:1816 src/ipc.c:1828
 #, fuzzy
 msgid "         <command>     : <description>\n"
-msgstr "<команда> : <описание>\n"
+msgstr "<п╨п╬п╪п╟п╫п╢п╟> : <п╬п©п╦я│п╟п╫п╦п╣>\n"
 
 #: src/main.c:582
 #, c-format
@@ -1203,8 +1203,8 @@ msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
-"%s должен быть каталогом, в котором вы имеете\n"
-"права на чтение, запись и исполнение приложений.\n"
+"%s п╢п╬п╩п╤п╣п╫ п╠я▀я┌я▄ п╨п╟я┌п╟п╩п╬пЁп╬п╪, п╡ п╨п╬я┌п╬я─п╬п╪ п╡я▀ п╦п╪п╣п╣я┌п╣\n"
+"п©я─п╟п╡п╟ п╫п╟ я┤я┌п╣п╫п╦п╣, п╥п╟п©п╦я│я▄ п╦ п╦я│п©п╬п╩п╫п╣п╫п╦п╣ п©я─п╦п╩п╬п╤п╣п╫п╦п╧.\n"
 
 #: src/main.c:677
 #, c-format
@@ -1222,18 +1222,18 @@ msgid ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 msgstr ""
-"!!!!!!!! ***** ОШИБКА ***** !!!!!!!!\n"
+"!!!!!!!! ***** п·п╗п≤п▒п п░ ***** !!!!!!!!\n"
 "\n"
-"Невозможно найти утилиту Enlightenment в:\n"
+"п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╫п╟п╧я┌п╦ я┐я┌п╦п╩п╦я┌я┐ Enlightenment п╡:\n"
 "\n"
 "%s\n"
-"Ошибка фатальна - Enlightenment не может продолжить работу.\n"
-"Пожалуйста, разберитесь в ситуации и убедитесь, что\n"
-"утилита установлена правильно.\n"
+"п·я┬п╦п╠п╨п╟ я└п╟я┌п╟п╩я▄п╫п╟ - Enlightenment п╫п╣ п╪п╬п╤п╣я┌ п©я─п╬п╢п╬п╩п╤п╦я┌я▄ я─п╟п╠п╬я┌я┐.\n"
+"п÷п╬п╤п╟п╩я┐п╧я│я┌п╟, я─п╟п╥п╠п╣я─п╦я┌п╣я│я▄ п╡ я│п╦я┌я┐п╟я├п╦п╦ п╦ я┐п╠п╣п╢п╦я┌п╣я│я▄, я┤я┌п╬\n"
+"я┐я┌п╦п╩п╦я┌п╟ я┐я│я┌п╟п╫п╬п╡п╩п╣п╫п╟ п©я─п╟п╡п╦п╩я▄п╫п╬.\n"
 "\n"
-"Возможные причины ошибки - пакеты собраны неверно, пакеты\n"
-"кем-то удалены, программа стерта кем-либо, либо ошибка в\n"
-"установке Enlightenment.\n"
+"п▓п╬п╥п╪п╬п╤п╫я▀п╣ п©я─п╦я┤п╦п╫я▀ п╬я┬п╦п╠п╨п╦ - п©п╟п╨п╣я┌я▀ я│п╬п╠я─п╟п╫я▀ п╫п╣п╡п╣я─п╫п╬, п©п╟п╨п╣я┌я▀\n"
+"п╨п╣п╪-я┌п╬ я┐п╢п╟п╩п╣п╫я▀, п©я─п╬пЁя─п╟п╪п╪п╟ я│я┌п╣я─я┌п╟ п╨п╣п╪-п╩п╦п╠п╬, п╩п╦п╠п╬ п╬я┬п╦п╠п╨п╟ п╡\n"
+"я┐я│я┌п╟п╫п╬п╡п╨п╣ Enlightenment.\n"
 
 #: src/main.c:691
 #, fuzzy, c-format
@@ -1247,14 +1247,14 @@ msgid ""
 "Please rectify this situation and ensure it is installed\n"
 "correctly.\n"
 msgstr ""
-"!!!!!!!! ***** ОШИБКА ***** !!!!!!!!\n"
+"!!!!!!!! ***** п·п╗п≤п▒п п░ ***** !!!!!!!!\n"
 "\n"
-"Невозможно запустить программу \"dox\":\n"
+"п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╥п╟п©я┐я│я┌п╦я┌я▄ п©я─п╬пЁя─п╟п╪п╪я┐ \"dox\":\n"
 "\n"
 "%s\n"
-"Ошибка фатальна - Enlightenment не может продолжить работу.\n"
-"Пожалуйста, разберитесь в ситуации и убедитесь, что\n"
-"\"dox\" установлен правильно.\n"
+"п·я┬п╦п╠п╨п╟ я└п╟я┌п╟п╩я▄п╫п╟ - Enlightenment п╫п╣ п╪п╬п╤п╣я┌ п©я─п╬п╢п╬п╩п╤п╦я┌я▄ я─п╟п╠п╬я┌я┐.\n"
+"п÷п╬п╤п╟п╩я┐п╧я│я┌п╟, я─п╟п╥п╠п╣я─п╦я┌п╣я│я▄ п╡ я│п╦я┌я┐п╟я├п╦п╦ п╦ я┐п╠п╣п╢п╦я┌п╣я│я▄, я┤я┌п╬\n"
+"\"dox\" я┐я│я┌п╟п╫п╬п╡п╩п╣п╫ п©я─п╟п╡п╦п╩я▄п╫п╬.\n"
 
 #: src/magwin.c:462
 msgid "Magnifier"
@@ -1263,255 +1263,255 @@ msgstr ""
 #: src/menus-misc.c:458 config/strings.c:91
 #, fuzzy
 msgid "Themes"
-msgstr "Некорректная тема"
+msgstr "п²п╣п╨п╬я─я─п╣п╨я┌п╫п╟я▐ я┌п╣п╪п╟"
 
 #: src/menus-misc.c:484
 #, fuzzy
 msgid "Border"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: src/menus-misc.c:546
 #, fuzzy
 msgid "Window List"
-msgstr "Окно"
+msgstr "п·п╨п╫п╬"
 
 #: src/menus-misc.c:568
 #, fuzzy
 msgid "Go to this Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/menus-misc.c:572 src/menus-misc.c:668
 #, c-format
 msgid "Desktop %i"
-msgstr "Рабочий стол %i"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩ %i"
 
 #: src/menus-misc.c:615
 msgid "Show/Hide this group"
-msgstr "Показать/спрятать эту группу"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄/я│п©я─я▐я┌п╟я┌я▄ я█я┌я┐ пЁя─я┐п©п©я┐"
 
 #: src/menus-misc.c:620
 msgid "Iconify this group"
-msgstr "Свернуть эту группу"
+msgstr "п║п╡п╣я─п╫я┐я┌я▄ я█я┌я┐ пЁя─я┐п©п©я┐"
 
 #: src/menus-misc.c:631
 #, c-format
 msgid "Group %i"
-msgstr "Группа %i"
+msgstr "п⌠я─я┐п©п©п╟ %i"
 
 #: src/menus.c:2080
 msgid "Animated display of menus"
-msgstr "Анимированный показ окон"
+msgstr "п░п╫п╦п╪п╦я─п╬п╡п╟п╫п╫я▀п╧ п©п╬п╨п╟п╥ п╬п╨п╬п╫"
 
 #: src/menus.c:2085
 msgid "Always pop up menus on screen"
-msgstr "Всегда показывать меню поверх остальных окон"
+msgstr "п▓я│п╣пЁп╢п╟ п©п╬п╨п╟п╥я▀п╡п╟я┌я▄ п╪п╣п╫я▌ п©п╬п╡п╣я─я┘ п╬я│я┌п╟п╩я▄п╫я▀я┘ п╬п╨п╬п╫"
 
 #: src/menus.c:2090
 msgid "Warp pointer after moving menus"
-msgstr "Следить за перемещением меню"
+msgstr "п║п╩п╣п╢п╦я┌я▄ п╥п╟ п©п╣я─п╣п╪п╣я┴п╣п╫п╦п╣п╪ п╪п╣п╫я▌"
 
 #: src/menus.c:2096
 #, fuzzy
 msgid "Menus"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: src/menus.c:2097
 #, fuzzy
 msgid "Menu Settings"
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: src/menus.c:2100
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/mod-trans.c:109 src/mod-trans.c:259
 #, c-format
 msgid "Theme transparency: %2d"
-msgstr "\"Прозрачность\" темы: %2d"
+msgstr "\"п÷я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄\" я┌п╣п╪я▀: %2d"
 
 #: src/mod-trans.c:138
 msgid "Changes Might Require Restart:"
-msgstr "Изменения могут потребовать рестарт Е"
+msgstr "п≤п╥п╪п╣п╫п╣п╫п╦я▐ п╪п╬пЁя┐я┌ п©п╬я┌я─п╣п╠п╬п╡п╟я┌я▄ я─п╣я│я┌п╟я─я┌ п∙"
 
 #: src/mod-trans.c:147
 #, fuzzy
 msgid "Borders:"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: src/mod-trans.c:151
 #, fuzzy
 msgid "Menus:"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: src/mod-trans.c:155
 msgid "Hilights:"
-msgstr "Выделить:"
+msgstr "п▓я▀п╢п╣п╩п╦я┌я▄:"
 
 #: src/mod-trans.c:159
 msgid "E Widgets:"
-msgstr "Виджеты Е:"
+msgstr "п▓п╦п╢п╤п╣я┌я▀ п∙:"
 
 #: src/mod-trans.c:163
 msgid "E Dialogs:"
-msgstr "Диалоги Е:"
+msgstr "п■п╦п╟п╩п╬пЁп╦ п∙:"
 
 #: src/mod-trans.c:167
 #, fuzzy
 msgid "Tooltips:"
-msgstr "Задержка подсказки:\n"
+msgstr "п≈п╟п╢п╣я─п╤п╨п╟ п©п╬п╢я│п╨п╟п╥п╨п╦:\n"
 
 #: src/mod-trans.c:171 src/settings.c:81 src/settings.c:86 src/settings.c:353
 msgid "Opaque"
-msgstr "Как есть"
+msgstr "п п╟п╨ п╣я│я┌я▄"
 
 #: src/mod-trans.c:230
 msgid "Glass"
-msgstr "Стекло"
+msgstr "п║я┌п╣п╨п╩п╬"
 
 #: src/mod-trans.c:275
 #, fuzzy
 msgid "Transparency"
-msgstr "Прозрачный фон"
+msgstr "п÷я─п╬п╥я─п╟я┤п╫я▀п╧ я└п╬п╫"
 
 #: src/mod-trans.c:276
 msgid "Selective Transparency Settings"
-msgstr "\"Прозрачность\" диалога сообщений"
+msgstr "\"п÷я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄\" п╢п╦п╟п╩п╬пЁп╟ я│п╬п╬п╠я┴п╣п╫п╦п╧"
 
 #: src/mod-trans.c:279
 #, fuzzy
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
-msgstr "Окно"
+msgstr "п·п╨п╫п╬"
 
 #: src/pager.c:1009 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
-msgstr "Свернуть"
+msgstr "п║п╡п╣я─п╫я┐я┌я▄"
 
 #: src/pager.c:1017 config/strings.c:133
 msgid "Annihilate"
-msgstr "Уничтожить"
+msgstr "пёп╫п╦я┤я┌п╬п╤п╦я┌я▄"
 
 #: src/pager.c:1021
 msgid "Stick / Unstick"
-msgstr "Закрепить / Освободить"
+msgstr "п≈п╟п╨я─п╣п©п╦я┌я▄ / п·я│п╡п╬п╠п╬п╢п╦я┌я▄"
 
 #: src/pager.c:1030
 msgid "Desktop Options"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/pager.c:1032
 msgid "Pager Settings..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: src/pager.c:1037
 msgid "Snapshotting Off"
-msgstr "Выключить отображение экрана"
+msgstr "п▓я▀п╨п╩я▌я┤п╦я┌я▄ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦п╣ я█п╨я─п╟п╫п╟"
 
 #: src/pager.c:1041
 msgid "High Quality Off"
-msgstr "Низкое качество"
+msgstr "п²п╦п╥п╨п╬п╣ п╨п╟я┤п╣я│я┌п╡п╬"
 
 #: src/pager.c:1043
 msgid "High Quality On"
-msgstr "Высокое качество"
+msgstr "п▓я▀я│п╬п╨п╬п╣ п╨п╟я┤п╣я│я┌п╡п╬"
 
 #: src/pager.c:1048
 msgid "Snapshotting On"
-msgstr "Включить отображение экрана"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦п╣ я█п╨я─п╟п╫п╟"
 
 #: src/pager.c:1052
 msgid "Zoom Off"
-msgstr "Выключить зум"
+msgstr "п▓я▀п╨п╩я▌я┤п╦я┌я▄ п╥я┐п╪"
 
 #: src/pager.c:1054
 msgid "Zoom On"
-msgstr "Включить зум"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╥я┐п╪"
 
 #: src/pager.c:1812 src/pager.c:1903
 msgid "Pager scanning speed:"
-msgstr "Скорость сканирования:"
+msgstr "п║п╨п╬я─п╬я│я┌я▄ я│п╨п╟п╫п╦я─п╬п╡п╟п╫п╦я▐:"
 
 #: src/pager.c:1813 src/pager.c:1904
 msgid "lines per second"
-msgstr "линий в секунду"
+msgstr "п╩п╦п╫п╦п╧ п╡ я│п╣п╨я┐п╫п╢я┐"
 
 #: src/pager.c:1842
 msgid "Enable pager display"
-msgstr "Включить Pager"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ Pager"
 
 #: src/pager.c:1852
 msgid "Pager Mode:"
-msgstr "Режим пейджера"
+msgstr "п═п╣п╤п╦п╪ п©п╣п╧п╢п╤п╣я─п╟"
 
 #: src/pager.c:1856
 #, fuzzy
 msgid "Simple"
-msgstr "Размер"
+msgstr "п═п╟п╥п╪п╣я─"
 
 #: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
-msgstr "Отображать экран"
+msgstr "п·я┌п╬п╠я─п╟п╤п╟я┌я▄ я█п╨я─п╟п╫"
 
 #: src/pager.c:1869
 msgid "Live Update"
-msgstr "Постоянное сканирование"
+msgstr "п÷п╬я│я┌п╬я▐п╫п╫п╬п╣ я│п╨п╟п╫п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "Высокое качество иконок в режиме отображения экрана"
+msgstr "п▓я▀я│п╬п╨п╬п╣ п╨п╟я┤п╣я│я┌п╡п╬ п╦п╨п╬п╫п╬п╨ п╡ я─п╣п╤п╦п╪п╣ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦я▐ я█п╨я─п╟п╫п╟"
 
 #: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Увеличивать иконки окон при прохождении курсора"
+msgstr "пёп╡п╣п╩п╦я┤п╦п╡п╟я┌я▄ п╦п╨п╬п╫п╨п╦ п╬п╨п╬п╫ п©я─п╦ п©я─п╬я┘п╬п╤п╢п╣п╫п╦п╦ п╨я┐я─я│п╬я─п╟"
 
 #: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
-msgstr "Показывать заголовок окна, когда курсор над иконкой"
+msgstr "п÷п╬п╨п╟п╥я▀п╡п╟я┌я▄ п╥п╟пЁп╬п╩п╬п╡п╬п╨ п╬п╨п╫п╟, п╨п╬пЁп╢п╟ п╨я┐я─я│п╬я─ п╫п╟п╢ п╦п╨п╬п╫п╨п╬п╧"
 
 #: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
-msgstr "Непрерывно сканировать экран"
+msgstr "п²п╣п©я─п╣я─я▀п╡п╫п╬ я│п╨п╟п╫п╦я─п╬п╡п╟я┌я▄ я█п╨я─п╟п╫"
 
 #: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
-msgstr "Кнопка для выбора и перемещения окон:"
+msgstr "п п╫п╬п©п╨п╟ п╢п╩я▐ п╡я▀п╠п╬я─п╟ п╦ п©п╣я─п╣п╪п╣я┴п╣п╫п╦я▐ п╬п╨п╬п╫:"
 
 #: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
-msgstr "Средняя"
+msgstr "п║я─п╣п╢п╫я▐я▐"
 
 #: src/pager.c:1944
 msgid "Mouse button to select desktops:"
-msgstr "Кнопка для выбора рабочих столов:"
+msgstr "п п╫п╬п©п╨п╟ п╢п╩я▐ п╡я▀п╠п╬я─п╟ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡:"
 
 #: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
-msgstr "Кнопка для отображения меню Pager-а:"
+msgstr "п п╫п╬п©п╨п╟ п╢п╩я▐ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦я▐ п╪п╣п╫я▌ Pager-п╟:"
 
 #: src/pager.c:1993
 #, fuzzy
 msgid "Pagers"
-msgstr "Настройки Pager-а"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ Pager-п╟"
 
 #: src/pager.c:1994
 msgid "Pager Settings"
-msgstr "Настройки Pager-а"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ Pager-п╟"
 
 #: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
-"Диалог настройки Десктопа,\n"
-"Зон и Пейджера Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ п■п╣я│п╨я┌п╬п©п╟,\n"
+"п≈п╬п╫ п╦ п÷п╣п╧п╢п╤п╣я─п╟ Enlightenment\n"
 
 #: src/session.c:344
 msgid ""
@@ -1527,21 +1527,21 @@ msgid ""
 "\n"
 "... I hope.\n"
 msgstr ""
-"ОШИБКА!\n"
+"п·п╗п≤п▒п п░!\n"
 "\n"
-"Что, потерялся Session Manager?\n"
-"Ага, тэк-с, session manager... иди-ка сюда... колбаски хошь?\n"
-"Да ладно, хорош дуться! Ну и зараза. Ладно, черт с ним.\n"
-"Без него обойдемся.\n"
+"п╖я┌п╬, п©п╬я┌п╣я─я▐п╩я│я▐ Session Manager?\n"
+"п░пЁп╟, я┌я█п╨-я│, session manager... п╦п╢п╦-п╨п╟ я│я▌п╢п╟... п╨п╬п╩п╠п╟я│п╨п╦ я┘п╬я┬я▄?\n"
+"п■п╟ п╩п╟п╢п╫п╬, я┘п╬я─п╬я┬ п╢я┐я┌я▄я│я▐! п²я┐ п╦ п╥п╟я─п╟п╥п╟. п⌡п╟п╢п╫п╬, я┤п╣я─я┌ я│ п╫п╦п╪.\n"
+"п▒п╣п╥ п╫п╣пЁп╬ п╬п╠п╬п╧п╢п╣п╪я│я▐.\n"
 "\n"
-"Проживем как-нибудь.\n"
+"п÷я─п╬п╤п╦п╡п╣п╪ п╨п╟п╨-п╫п╦п╠я┐п╢я▄.\n"
 "\n"
 "\n"
-"... надеюсь.\n"
+"... п╫п╟п╢п╣я▌я│я▄.\n"
 
 #: src/session.c:643
 msgid "Are you sure?"
-msgstr "Вы уверены?"
+msgstr "п▓я▀ я┐п╡п╣я─п╣п╫я▀?"
 
 #: src/session.c:645
 msgid ""
@@ -1553,352 +1553,352 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Вы действительно хотите выйти ?    \n"
+"    п▓я▀ п╢п╣п╧я│я┌п╡п╦я┌п╣п╩я▄п╫п╬ я┘п╬я┌п╦я┌п╣ п╡я▀п╧я┌п╦ ?    \n"
 "\n"
 "\n"
 
 #: src/session.c:655
 #, fuzzy
 msgid "  Yes, Shut Down  "
-msgstr "  Да, хочу  "
+msgstr "  п■п╟, я┘п╬я┤я┐  "
 
 #: src/session.c:657
 #, fuzzy
 msgid "  Yes, Reboot  "
-msgstr "  Да, хочу  "
+msgstr "  п■п╟, я┘п╬я┤я┐  "
 
 #: src/session.c:660
 msgid "  Yes, Log Out  "
-msgstr "  Да, хочу  "
+msgstr "  п■п╟, я┘п╬я┤я┐  "
 
 #: src/session.c:662
 msgid "  No  "
-msgstr "  Нет  "
+msgstr "  п²п╣я┌  "
 
 #: src/session.c:793
 msgid "Enable Session Script"
-msgstr "Разрешить сохранение сессии"
+msgstr "п═п╟п╥я─п╣я┬п╦я┌я▄ я│п╬я┘я─п╟п╫п╣п╫п╦п╣ я│п╣я│я│п╦п╦"
 
 #: src/session.c:798
 msgid "Enable Logout Dialog"
-msgstr "Разрешить вывод диалога завершения сессии"
+msgstr "п═п╟п╥я─п╣я┬п╦я┌я▄ п╡я▀п╡п╬п╢ п╢п╦п╟п╩п╬пЁп╟ п╥п╟п╡п╣я─я┬п╣п╫п╦я▐ я│п╣я│я│п╦п╦"
 
 #: src/session.c:803
 msgid "Enable Reboot/Halt on Logout"
-msgstr "Разрешить перезагрузку/выключение при завершении сессии"
+msgstr "п═п╟п╥я─п╣я┬п╦я┌я▄ п©п╣я─п╣п╥п╟пЁя─я┐п╥п╨я┐/п╡я▀п╨п╩я▌я┤п╣п╫п╦п╣ п©я─п╦ п╥п╟п╡п╣я─я┬п╣п╫п╦п╦ я│п╣я│я│п╦п╦"
 
 #: src/session.c:809
 #, fuzzy
 msgid "Session"
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: src/session.c:810
 #, fuzzy
 msgid "Session Settings"
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: src/session.c:813
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/settings.c:73
 msgid "Move Methods:"
-msgstr "Режимы перемещения:"
+msgstr "п═п╣п╤п╦п╪я▀ п©п╣я─п╣п╪п╣я┴п╣п╫п╦я▐:"
 
 #: src/settings.c:78
 msgid "Resize Methods:"
-msgstr "Режимы изменения размера:"
+msgstr "п═п╣п╤п╦п╪я▀ п╦п╥п╪п╣п╫п╣п╫п╦я▐ я─п╟п╥п╪п╣я─п╟:"
 
 #: src/settings.c:91 src/settings.c:96 src/settings.c:358
 msgid "Technical"
-msgstr "Технический"
+msgstr "п╒п╣я┘п╫п╦я┤п╣я│п╨п╦п╧"
 
 #: src/settings.c:101 src/settings.c:106 src/settings.c:363
 msgid "Box"
-msgstr "Границы окна"
+msgstr "п⌠я─п╟п╫п╦я├я▀ п╬п╨п╫п╟"
 
 #: src/settings.c:111 src/settings.c:116 src/settings.c:368
 msgid "Shaded"
-msgstr "Затененный"
+msgstr "п≈п╟я┌п╣п╫п╣п╫п╫я▀п╧"
 
 #: src/settings.c:121 src/settings.c:126 src/settings.c:373
 msgid "Semi-Solid"
-msgstr "Полу-непрозрачный"
+msgstr "п÷п╬п╩я┐-п╫п╣п©я─п╬п╥я─п╟я┤п╫я▀п╧"
 
 #: src/settings.c:132
 msgid "Translucent"
-msgstr "Полупрозрачный"
+msgstr "п÷п╬п╩я┐п©я─п╬п╥я─п╟я┤п╫я▀п╧"
 
 #: src/settings.c:141
 msgid "Avoid server grab"
-msgstr "Сказать X-серверу, чтобы не мешал..."
+msgstr "п║п╨п╟п╥п╟я┌я▄ X-я│п╣я─п╡п╣я─я┐, я┤я┌п╬п╠я▀ п╫п╣ п╪п╣я┬п╟п╩..."
 
 #: src/settings.c:151
 msgid "Move/Resize Geometry Info Postion:"
-msgstr "Позиционирование окна информации о рабочих координатах  приложения:"
+msgstr "п÷п╬п╥п╦я├п╦п╬п╫п╦я─п╬п╡п╟п╫п╦п╣ п╬п╨п╫п╟ п╦п╫я└п╬я─п╪п╟я├п╦п╦ п╬ я─п╟п╠п╬я┤п╦я┘ п╨п╬п╬я─п╢п╦п╫п╟я┌п╟я┘  п©я─п╦п╩п╬п╤п╣п╫п╦я▐:"
 
 #: src/settings.c:155
 msgid "Window Center (O/T/B Methods)"
-msgstr "Центр Окна (O/T/B Методы)"
+msgstr "п╕п╣п╫я┌я─ п·п╨п╫п╟ (O/T/B п°п╣я┌п╬п╢я▀)"
 
 #: src/settings.c:161
 msgid "Always Screen corner"
-msgstr "Всегда в углу экрана"
+msgstr "п▓я│п╣пЁп╢п╟ п╡ я┐пЁп╩я┐ я█п╨я─п╟п╫п╟"
 
 #: src/settings.c:167
 msgid "Don't show"
-msgstr "Не показывать"
+msgstr "п²п╣ п©п╬п╨п╟п╥я▀п╡п╟я┌я▄"
 
 #: src/settings.c:179
 msgid "Default Resize Policy:"
-msgstr "Использовать политику изменения размера по умолчанию:"
+msgstr "п≤я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ п©п╬п╩п╦я┌п╦п╨я┐ п╦п╥п╪п╣п╫п╣п╫п╦я▐ я─п╟п╥п╪п╣я─п╟ п©п╬ я┐п╪п╬п╩я┤п╟п╫п╦я▌:"
 
 #: src/settings.c:183
 msgid "Conservative"
-msgstr "Консервативная схема"
+msgstr "п п╬п╫я│п╣я─п╡п╟я┌п╦п╡п╫п╟я▐ я│я┘п╣п╪п╟"
 
 #: src/settings.c:189
 msgid "Available"
-msgstr "На доступную площадь"
+msgstr "п²п╟ п╢п╬я│я┌я┐п©п╫я┐я▌ п©п╩п╬я┴п╟п╢я▄"
 
 #: src/settings.c:195
 msgid "Absolute"
-msgstr "Схема абсолютных координат"
+msgstr "п║я┘п╣п╪п╟ п╟п╠я│п╬п╩я▌я┌п╫я▀я┘ п╨п╬п╬я─п╢п╦п╫п╟я┌"
 
 #: src/settings.c:205
 msgid "Update window while moving"
-msgstr "Рисовать содержимое окна при перетаскивании"
+msgstr "п═п╦я│п╬п╡п╟я┌я▄ я│п╬п╢п╣я─п╤п╦п╪п╬п╣ п╬п╨п╫п╟ п©я─п╦ п©п╣я─п╣я┌п╟я│п╨п╦п╡п╟п╫п╦п╦"
 
 #: src/settings.c:210
 msgid "Synchronize move/resize with application"
-msgstr "Синхронизировать изменения размеров/геометрии окна с приложением"
+msgstr "п║п╦п╫я┘я─п╬п╫п╦п╥п╦я─п╬п╡п╟я┌я▄ п╦п╥п╪п╣п╫п╣п╫п╦я▐ я─п╟п╥п╪п╣я─п╬п╡/пЁп╣п╬п╪п╣я┌я─п╦п╦ п╬п╨п╫п╟ я│ п©я─п╦п╩п╬п╤п╣п╫п╦п╣п╪"
 
 #: src/settings.c:215
 msgid "Do not cover dragbar"
-msgstr "Не перекрывать драгбар"
+msgstr "п²п╣ п©п╣я─п╣п╨я─я▀п╡п╟я┌я▄ п╢я─п╟пЁп╠п╟я─"
 
 #: src/settings.c:221
 #, fuzzy
 msgid "Move/Resize"
-msgstr "Переместить/Изменить размер"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄/п≤п╥п╪п╣п╫п╦я┌я▄ я─п╟п╥п╪п╣я─"
 
 #: src/settings.c:222
 msgid "Move & Resize Settings"
-msgstr "Установки перемещения/изменения размера"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╣я─п╣п╪п╣я┴п╣п╫п╦я▐/п╦п╥п╪п╣п╫п╣п╫п╦я▐ я─п╟п╥п╪п╣я─п╟"
 
 #: src/settings.c:225
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
-"Настройки перемещения/изменения\n"
-"размера приложений\n"
+"п²п╟я│я┌я─п╬п╧п╨п╦ п©п╣я─п╣п╪п╣я┴п╣п╫п╦я▐/п╦п╥п╪п╣п╫п╣п╫п╦я▐\n"
+"я─п╟п╥п╪п╣я─п╟ п©я─п╦п╩п╬п╤п╣п╫п╦п╧\n"
 
 #: src/settings.c:312
 msgid "Dialog windows appear together with their owner"
-msgstr "Диалоги появляются вместе с хозяевами"
+msgstr "п■п╦п╟п╩п╬пЁп╦ п©п╬я▐п╡п╩я▐я▌я┌я│я▐ п╡п╪п╣я│я┌п╣ я│ я┘п╬п╥я▐п╣п╡п╟п╪п╦"
 
 #: src/settings.c:317
 msgid "Switch to desktop where dialog appears"
-msgstr "Переключаться на рабочий стол, где появляется диалог"
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╟я┌я▄я│я▐ п╫п╟ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩, пЁп╢п╣ п©п╬я▐п╡п╩я▐п╣я┌я│я▐ п╢п╦п╟п╩п╬пЁ"
 
 #: src/settings.c:325
 msgid "Place windows manually"
-msgstr "Располагать окна вручную"
+msgstr "п═п╟я│п©п╬п╩п╟пЁп╟я┌я▄ п╬п╨п╫п╟ п╡я─я┐я┤п╫я┐я▌"
 
 #: src/settings.c:330
 #, fuzzy
 msgid "Place windows under mouse"
-msgstr "Располагать окна под курсором мышки"
+msgstr "п═п╟я│п©п╬п╩п╟пЁп╟я┌я▄ п╬п╨п╫п╟ п©п╬п╢ п╨я┐я─я│п╬я─п╬п╪ п╪я▀я┬п╨п╦"
 
 #: src/settings.c:335
 #, fuzzy
 msgid "Center windows when desk is full"
-msgstr "Располагать окна по центру экрана"
+msgstr "п═п╟я│п©п╬п╩п╟пЁп╟я┌я▄ п╬п╨п╫п╟ п©п╬ я├п╣п╫я┌я─я┐ я█п╨я─п╟п╫п╟"
 
 #: src/settings.c:340
 msgid "Slide windows in when they appear"
-msgstr "Перемещать окна на передний план при их появлении"
+msgstr "п÷п╣я─п╣п╪п╣я┴п╟я┌я▄ п╬п╨п╫п╟ п╫п╟ п©п╣я─п╣п╢п╫п╦п╧ п©п╩п╟п╫ п©я─п╦ п╦я┘ п©п╬я▐п╡п╩п╣п╫п╦п╦"
 
 #: src/settings.c:345
 msgid "Slide windows around when cleaning up"
-msgstr "Раскидать окна при разгребании мусора на рабочем столе"
+msgstr "п═п╟я│п╨п╦п╢п╟я┌я▄ п╬п╨п╫п╟ п©я─п╦ я─п╟п╥пЁя─п╣п╠п╟п╫п╦п╦ п╪я┐я│п╬я─п╟ п╫п╟ я─п╟п╠п╬я┤п╣п╪ я│я┌п╬п╩п╣"
 
 #: src/settings.c:350
 msgid "Slide Method:"
-msgstr "Метод \"Скольжения\":"
+msgstr "п°п╣я┌п╬п╢ \"п║п╨п╬п╩я▄п╤п╣п╫п╦я▐\":"
 
 #: src/settings.c:383
 msgid "Appear Slide speed:"
-msgstr "Скорость появления:"
+msgstr "п║п╨п╬я─п╬я│я┌я▄ п©п╬я▐п╡п╩п╣п╫п╦я▐:"
 
 #: src/settings.c:394
 #, fuzzy
 msgid "Cleanup Slide speed:"
-msgstr "%i рабочий стол"
+msgstr "%i я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/settings.c:407
 msgid "Animate shading and unshading of windows"
-msgstr "Анимировать скрытие и восстановление окон"
+msgstr "п░п╫п╦п╪п╦я─п╬п╡п╟я┌я▄ я│п╨я─я▀я┌п╦п╣ п╦ п╡п╬я│я│я┌п╟п╫п╬п╡п╩п╣п╫п╦п╣ п╬п╨п╬п╫"
 
 #: src/settings.c:413
 msgid "Window Shading speed:"
-msgstr "Скорость скрытия окна"
+msgstr "п║п╨п╬я─п╬я│я┌я▄ я│п╨я─я▀я┌п╦я▐ п╬п╨п╫п╟"
 
 #: src/settings.c:426
 #, fuzzy
 msgid "Ignore struts"
-msgstr "Игнорировать"
+msgstr "п≤пЁп╫п╬я─п╦я─п╬п╡п╟я┌я▄"
 
 #: src/settings.c:431
 msgid "Raise fullscreen windows"
-msgstr "Поднимать окна в фулскрине выше всех остальных"
+msgstr "п÷п╬п╢п╫п╦п╪п╟я┌я▄ п╬п╨п╫п╟ п╡ я└я┐п╩я│п╨я─п╦п╫п╣ п╡я▀я┬п╣ п╡я│п╣я┘ п╬я│я┌п╟п╩я▄п╫я▀я┘"
 
 #: src/settings.c:439
 #, fuzzy
 msgid "Place windows on another head when full"
-msgstr "Располагать окна на другом столе если текущий уже заполнен"
+msgstr "п═п╟я│п©п╬п╩п╟пЁп╟я┌я▄ п╬п╨п╫п╟ п╫п╟ п╢я─я┐пЁп╬п╪ я│я┌п╬п╩п╣ п╣я│п╩п╦ я┌п╣п╨я┐я┴п╦п╧ я┐п╤п╣ п╥п╟п©п╬п╩п╫п╣п╫"
 
 #: src/settings.c:447
 msgid "Placement"
-msgstr "Расположение"
+msgstr "п═п╟я│п©п╬п╩п╬п╤п╣п╫п╦п╣"
 
 #: src/settings.c:448
 msgid "Window Placement Settings"
-msgstr "Установки расположения окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦я▐ п╬п╨п╬п╫"
 
 #: src/settings.c:451
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
-"Настройки расположения окон\n"
+"п²п╟я│я┌я─п╬п╧п╨п╦ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦я▐ п╬п╨п╬п╫\n"
 "\n"
 
 #: src/settings.c:482
 msgid "Raise Windows Automatically"
-msgstr "Поднимать окна на передний план вручную"
+msgstr "п÷п╬п╢п╫п╦п╪п╟я┌я▄ п╬п╨п╫п╟ п╫п╟ п©п╣я─п╣п╢п╫п╦п╧ п©п╩п╟п╫ п╡я─я┐я┤п╫я┐я▌"
 
 #: src/settings.c:488
 msgid "Autoraise delay:"
-msgstr "Задержка подъема:"
+msgstr "п≈п╟п╢п╣я─п╤п╨п╟ п©п╬п╢я┼п╣п╪п╟:"
 
 #: src/settings.c:499
 #, fuzzy
 msgid "Autoraise"
-msgstr "Задержка подъема:"
+msgstr "п≈п╟п╢п╣я─п╤п╨п╟ п©п╬п╢я┼п╣п╪п╟:"
 
 #: src/settings.c:500
 msgid "Autoraise Settings"
-msgstr "Установки автоматического поднятия окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╟п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╬пЁп╬ п©п╬п╢п╫я▐я┌п╦я▐ п╬п╨п╬п╫"
 
 #: src/settings.c:503
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
-"Автоматически поднимать диалог\n"
-"параметров окна выше других\n"
+"п░п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╦ п©п╬п╢п╫п╦п╪п╟я┌я▄ п╢п╦п╟п╩п╬пЁ\n"
+"п©п╟я─п╟п╪п╣я┌я─п╬п╡ п╬п╨п╫п╟ п╡я▀я┬п╣ п╢я─я┐пЁп╦я┘\n"
 
 #: src/settings.c:540
 msgid "Enable Dialog Headers"
-msgstr "Включить показ заголовков"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╨п╟п╥ п╥п╟пЁп╬п╩п╬п╡п╨п╬п╡"
 
 #: src/settings.c:546
 #, fuzzy
 msgid "Enable Button Images"
-msgstr "Включить поддержу звука"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╢п╢п╣я─п╤я┐ п╥п╡я┐п╨п╟"
 
 #: src/settings.c:555
 msgid "Enable sliding startup windows"
-msgstr "Включить анимированную заставку при старте"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╟п╫п╦п╪п╦я─п╬п╡п╟п╫п╫я┐я▌ п╥п╟я│я┌п╟п╡п╨я┐ п©я─п╦ я│я┌п╟я─я┌п╣"
 
 #: src/settings.c:563
 msgid "Use saveunders to reduce window exposures"
-msgstr "Использовать \"saveunders\""
+msgstr "п≤я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ \"saveunders\""
 
 #: src/settings.c:569 config/strings.c:146 config/strings.c:162
 #, fuzzy
 msgid "Miscellaneous"
-msgstr "Настройки этого Iconbox-а..."
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я█я┌п╬пЁп╬ Iconbox-п╟..."
 
 #: src/settings.c:570
 msgid "Miscellaneous Settings"
-msgstr "Прочие Настройки"
+msgstr "п÷я─п╬я┤п╦п╣ п²п╟я│я┌я─п╬п╧п╨п╦"
 
 #: src/settings.c:573
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог прочих настроек\n"
+"п■п╦п╟п╩п╬пЁ п©я─п╬я┤п╦я┘ п╫п╟я│я┌я─п╬п╣п╨\n"
 
 #: src/settings.c:614
 #, fuzzy
 msgid "Enable Composite"
-msgstr "Включить поддержу звука"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╢п╢п╣я─п╤я┐ п╥п╡я┐п╨п╟"
 
 #: src/settings.c:622
 #, fuzzy
 msgid "Enable Fading"
-msgstr "Разрешить переход через край"
+msgstr "п═п╟п╥я─п╣я┬п╦я┌я▄ п©п╣я─п╣я┘п╬п╢ я┤п╣я─п╣п╥ п╨я─п╟п╧"
 
 #: src/settings.c:628
 msgid "Fading Speed:"
-msgstr "Скорость угасания:"
+msgstr "п║п╨п╬я─п╬я│я┌я▄ я┐пЁп╟я│п╟п╫п╦я▐:"
 
 #: src/settings.c:641
 msgid "Shadows Off"
-msgstr "Выключить тени"
+msgstr "п▓я▀п╨п╩я▌я┤п╦я┌я▄ я┌п╣п╫п╦"
 
 #: src/settings.c:647
 msgid "Shadows Sharp"
-msgstr "Точные тени"
+msgstr "п╒п╬я┤п╫я▀п╣ я┌п╣п╫п╦"
 
 #: src/settings.c:653
 msgid "Shadows Sharp2"
-msgstr "Точные тени 2 (а теперь - банановые!)"
+msgstr "п╒п╬я┤п╫я▀п╣ я┌п╣п╫п╦ 2 (п╟ я┌п╣п©п╣я─я▄ - п╠п╟п╫п╟п╫п╬п╡я▀п╣!)"
 
 #: src/settings.c:659
 msgid "Shadows Blurred"
-msgstr "Размытые тени от окна"
+msgstr "п═п╟п╥п╪я▀я┌я▀п╣ я┌п╣п╫п╦ п╬я┌ п╬п╨п╫п╟"
 
 #: src/settings.c:670
 msgid "Default focused window opacity:"
-msgstr "Прозрачность активного окна по умолчанию:"
+msgstr "п÷я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄ п╟п╨я┌п╦п╡п╫п╬пЁп╬ п╬п╨п╫п╟ п©п╬ я┐п╪п╬п╩я┤п╟п╫п╦я▌:"
 
 #: src/settings.c:681
 msgid "Default unfocused window opacity:"
-msgstr "Прозрачность неактивного окна:"
+msgstr "п÷я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄ п╫п╣п╟п╨я┌п╦п╡п╫п╬пЁп╬ п╬п╨п╫п╟:"
 
 #: src/settings.c:692
 msgid "Default pop-up window opacity:"
-msgstr "Прозрачность всплывающего окна:"
+msgstr "п÷я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄ п╡я│п©п╩я▀п╡п╟я▌я┴п╣пЁп╬ п╬п╨п╫п╟:"
 
 #: src/settings.c:703
 #, fuzzy
 msgid "Composite"
-msgstr "Включить поддержу звука"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╢п╢п╣я─п╤я┐ п╥п╡я┐п╨п╟"
 
 #: src/settings.c:704
 #, fuzzy
 msgid "Composite Settings"
-msgstr "Установки подсказок"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╬п╢я│п╨п╟п╥п╬п╨"
 
 #: src/settings.c:707
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr "п■п╦п╟п╩п╬пЁ я│п╬п╬п╠я┴п╣п╫п╦я▐ Enlightenment"
 
 #: src/settings.c:792
 #, fuzzy
 msgid "Enlightenment Settings"
-msgstr "Запуск Enlightenment..."
+msgstr "п≈п╟п©я┐я│п╨ Enlightenment..."
 
 #: src/setup.c:58
 msgid ""
@@ -1913,20 +1913,20 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
-"Enlightenment не может установить соединение и дисплеем,\n"
-"который указан в переменной DISPLAY Вашего shell. Вы можете\n"
-"менять эту переменную и таким образом указывать Enlightenment,\n"
-"с каким дисплеем работать. Возможно, Ваш X-сервер не настроен\n"
-"на обслуживание подключения к этому дисплею, или у Вас нет\n"
-"прав на подключение к нему. Убедитесь в том, что все в порядке,\n"
-"прежде чем запускать Enlightenment снова. Запустите X-сервер\n"
-"(команда xdm или startx), или свяжитесь со своим системным\n"
-"администратором, с разработчиком X-сервера, или же изучите\n"
-"man-страницы (описания) команд X, xdm  и startx.\n"
+"Enlightenment п╫п╣ п╪п╬п╤п╣я┌ я┐я│я┌п╟п╫п╬п╡п╦я┌я▄ я│п╬п╣п╢п╦п╫п╣п╫п╦п╣ п╦ п╢п╦я│п©п╩п╣п╣п╪,\n"
+"п╨п╬я┌п╬я─я▀п╧ я┐п╨п╟п╥п╟п╫ п╡ п©п╣я─п╣п╪п╣п╫п╫п╬п╧ DISPLAY п▓п╟я┬п╣пЁп╬ shell. п▓я▀ п╪п╬п╤п╣я┌п╣\n"
+"п╪п╣п╫я▐я┌я▄ я█я┌я┐ п©п╣я─п╣п╪п╣п╫п╫я┐я▌ п╦ я┌п╟п╨п╦п╪ п╬п╠я─п╟п╥п╬п╪ я┐п╨п╟п╥я▀п╡п╟я┌я▄ Enlightenment,\n"
+"я│ п╨п╟п╨п╦п╪ п╢п╦я│п©п╩п╣п╣п╪ я─п╟п╠п╬я┌п╟я┌я▄. п▓п╬п╥п╪п╬п╤п╫п╬, п▓п╟я┬ X-я│п╣я─п╡п╣я─ п╫п╣ п╫п╟я│я┌я─п╬п╣п╫\n"
+"п╫п╟ п╬п╠я│п╩я┐п╤п╦п╡п╟п╫п╦п╣ п©п╬п╢п╨п╩я▌я┤п╣п╫п╦я▐ п╨ я█я┌п╬п╪я┐ п╢п╦я│п©п╩п╣я▌, п╦п╩п╦ я┐ п▓п╟я│ п╫п╣я┌\n"
+"п©я─п╟п╡ п╫п╟ п©п╬п╢п╨п╩я▌я┤п╣п╫п╦п╣ п╨ п╫п╣п╪я┐. пёп╠п╣п╢п╦я┌п╣я│я▄ п╡ я┌п╬п╪, я┤я┌п╬ п╡я│п╣ п╡ п©п╬я─я▐п╢п╨п╣,\n"
+"п©я─п╣п╤п╢п╣ я┤п╣п╪ п╥п╟п©я┐я│п╨п╟я┌я▄ Enlightenment я│п╫п╬п╡п╟. п≈п╟п©я┐я│я┌п╦я┌п╣ X-я│п╣я─п╡п╣я─\n"
+"(п╨п╬п╪п╟п╫п╢п╟ xdm п╦п╩п╦ startx), п╦п╩п╦ я│п╡я▐п╤п╦я┌п╣я│я▄ я│п╬ я│п╡п╬п╦п╪ я│п╦я│я┌п╣п╪п╫я▀п╪\n"
+"п╟п╢п╪п╦п╫п╦я│я┌я─п╟я┌п╬я─п╬п╪, я│ я─п╟п╥я─п╟п╠п╬я┌я┤п╦п╨п╬п╪ X-я│п╣я─п╡п╣я─п╟, п╦п╩п╦ п╤п╣ п╦п╥я┐я┤п╦я┌п╣\n"
+"man-я│я┌я─п╟п╫п╦я├я▀ (п╬п©п╦я│п╟п╫п╦я▐) п╨п╬п╪п╟п╫п╢ X, xdm  п╦ startx.\n"
 
 #: src/setup.c:156
 msgid "Another Window Manager is already running"
-msgstr "Уже запущен другой Window Manager"
+msgstr "пёп╤п╣ п╥п╟п©я┐я┴п╣п╫ п╢я─я┐пЁп╬п╧ Window Manager"
 
 #: src/setup.c:158
 msgid ""
@@ -1935,18 +1935,18 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 msgstr ""
-"Слышь, Хозяин! У тебя уже запущен какой-то WM.\n"
+"п║п╩я▀я┬я▄, п╔п╬п╥я▐п╦п╫! пё я┌п╣п╠я▐ я┐п╤п╣ п╥п╟п©я┐я┴п╣п╫ п╨п╟п╨п╬п╧-я┌п╬ WM.\n"
 "\n"
-"Ты его прибей сперва - \"htop\" тебе в помощь,\n"
-"а потом меня запускай!\n"
+"п╒я▀ п╣пЁп╬ п©я─п╦п╠п╣п╧ я│п©п╣я─п╡п╟ - \"htop\" я┌п╣п╠п╣ п╡ п©п╬п╪п╬я┴я▄,\n"
+"п╟ п©п╬я┌п╬п╪ п╪п╣п╫я▐ п╥п╟п©я┐я│п╨п╟п╧!\n"
 
 #: src/setup.c:167
 msgid "X server version error"
-msgstr "Ошибка версии X-сервера"
+msgstr "п·я┬п╦п╠п╨п╟ п╡п╣я─я│п╦п╦ X-я│п╣я─п╡п╣я─п╟"
 
 #: src/setup.c:167
 msgid "Ignore this error"
-msgstr "Игнорировать эту ошибку"
+msgstr "п≤пЁп╫п╬я─п╦я─п╬п╡п╟я┌я▄ я█я┌я┐ п╬я┬п╦п╠п╨я┐"
 
 #: src/setup.c:169
 #, c-format
@@ -1958,93 +1958,93 @@ msgid ""
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ:\n"
-"X-сервер не является сервером X11. На самом деле, этот сервер\n"
-"работает по протоколу X%i. Это может привести к тому, что\n"
-"Enlightenment либо не будет работать, либо будет работать\n"
-"некорректно. Если Ваш X-сервер более поздней версии, чем X11,\n"
-"то автор Enlightenment о таком еще не слышал и не видел такового.\n"
+"п÷п═п∙п■пёп÷п═п∙п√п■п∙п²п≤п∙:\n"
+"X-я│п╣я─п╡п╣я─ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ я│п╣я─п╡п╣я─п╬п╪ X11. п²п╟ я│п╟п╪п╬п╪ п╢п╣п╩п╣, я█я┌п╬я┌ я│п╣я─п╡п╣я─\n"
+"я─п╟п╠п╬я┌п╟п╣я┌ п©п╬ п©я─п╬я┌п╬п╨п╬п╩я┐ X%i. п╜я┌п╬ п╪п╬п╤п╣я┌ п©я─п╦п╡п╣я│я┌п╦ п╨ я┌п╬п╪я┐, я┤я┌п╬\n"
+"Enlightenment п╩п╦п╠п╬ п╫п╣ п╠я┐п╢п╣я┌ я─п╟п╠п╬я┌п╟я┌я▄, п╩п╦п╠п╬ п╠я┐п╢п╣я┌ я─п╟п╠п╬я┌п╟я┌я▄\n"
+"п╫п╣п╨п╬я─я─п╣п╨я┌п╫п╬. п∙я│п╩п╦ п▓п╟я┬ X-я│п╣я─п╡п╣я─ п╠п╬п╩п╣п╣ п©п╬п╥п╢п╫п╣п╧ п╡п╣я─я│п╦п╦, я┤п╣п╪ X11,\n"
+"я┌п╬ п╟п╡я┌п╬я─ Enlightenment п╬ я┌п╟п╨п╬п╪ п╣я┴п╣ п╫п╣ я│п╩я▀я┬п╟п╩ п╦ п╫п╣ п╡п╦п╢п╣п╩ я┌п╟п╨п╬п╡п╬пЁп╬.\n"
 
 #: src/snaps.c:726
 msgid "Title:"
-msgstr "Заголовок:"
+msgstr "п≈п╟пЁп╬п╩п╬п╡п╬п╨:"
 
 #: src/snaps.c:738
 msgid "Name:"
-msgstr "Имя:"
+msgstr "п≤п╪я▐:"
 
 #: src/snaps.c:751
 msgid "Class:"
-msgstr "Класс:"
+msgstr "п п╩п╟я│я│:"
 
 #: src/snaps.c:764
 #, fuzzy
 msgid "Role:"
-msgstr "Роль:\n"
+msgstr "п═п╬п╩я▄:\n"
 
 #: src/snaps.c:777
 msgid "Command:"
-msgstr "Команда:"
+msgstr "п п╬п╪п╟п╫п╢п╟:"
 
 #: src/snaps.c:817
 msgid "Track Changes"
-msgstr "Отслеживать изменения"
+msgstr "п·я┌я│п╩п╣п╤п╦п╡п╟я┌я▄ п╦п╥п╪п╣п╫п╣п╫п╦я▐"
 
 #: src/snaps.c:822
 msgid "Location"
-msgstr "Положение"
+msgstr "п÷п╬п╩п╬п╤п╣п╫п╦п╣"
 
 #: src/snaps.c:827
 msgid "Border style"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: src/snaps.c:832 config/strings.c:183
 msgid "Size"
-msgstr "Размер"
+msgstr "п═п╟п╥п╪п╣я─"
 
 #: src/snaps.c:837 config/strings.c:89
 msgid "Desktop"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/snaps.c:842
 msgid "Shaded state"
-msgstr "Статус - скрыто"
+msgstr "п║я┌п╟я┌я┐я│ - я│п╨я─я▀я┌п╬"
 
 #: src/snaps.c:847
 msgid "Sticky state"
-msgstr "Прикрепленность"
+msgstr "п÷я─п╦п╨я─п╣п©п╩п╣п╫п╫п╬я│я┌я▄"
 
 #: src/snaps.c:852
 msgid "Stacking layer"
-msgstr "Уровень"
+msgstr "пёя─п╬п╡п╣п╫я▄"
 
 #: src/snaps.c:857
 msgid "Window List Skip"
-msgstr "Не включать в список запущенных приложений"
+msgstr "п²п╣ п╡п╨п╩я▌я┤п╟я┌я▄ п╡ я│п©п╦я│п╬п╨ п╥п╟п©я┐я┴п╣п╫п╫я▀я┘ п©я─п╦п╩п╬п╤п╣п╫п╦п╧"
 
 #: src/snaps.c:863 config/strings.c:145 config/strings.c:171
 msgid "Opacity"
-msgstr "Непрозрачность"
+msgstr "п²п╣п©я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄"
 
 #: src/snaps.c:868
 msgid "Shadowing"
-msgstr "Тени"
+msgstr "п╒п╣п╫п╦"
 
 #: src/snaps.c:874
 msgid "Flags"
-msgstr "Флаги"
+msgstr "п╓п╩п╟пЁп╦"
 
 #: src/snaps.c:893
 msgid "Restart application on login"
-msgstr "Запускать при входе"
+msgstr "п≈п╟п©я┐я│п╨п╟я┌я▄ п©я─п╦ п╡я┘п╬п╢п╣"
 
 #: src/snaps.c:912
 msgid "Remember this window's group(s)"
-msgstr "Запомнить группу этого окна"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ пЁя─я┐п©п©я┐ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: src/snaps.c:920
 msgid "Remembered Application Attributes"
-msgstr "Запомнить аттрибуты приложения"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ п╟я┌я┌я─п╦п╠я┐я┌я▀ п©я─п╦п╩п╬п╤п╣п╫п╦я▐"
 
 #: src/snaps.c:923
 msgid ""
@@ -2052,51 +2052,51 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
-"Выберите атрибуты этого приолжения\n"
-"для запоминания их параметров\n"
-"отныне и навеки вечные...\n"
+"п▓я▀п╠п╣я─п╦я┌п╣ п╟я┌я─п╦п╠я┐я┌я▀ я█я┌п╬пЁп╬ п©я─п╦п╬п╩п╤п╣п╫п╦я▐\n"
+"п╢п╩я▐ п╥п╟п©п╬п╪п╦п╫п╟п╫п╦я▐ п╦я┘ п©п╟я─п╟п╪п╣я┌я─п╬п╡\n"
+"п╬я┌п╫я▀п╫п╣ п╦ п╫п╟п╡п╣п╨п╦ п╡п╣я┤п╫я▀п╣...\n"
 
 #: src/snaps.c:1013
 #, fuzzy
 msgid "Delete"
-msgstr "Стереть файл\n"
+msgstr "п║я┌п╣я─п╣я┌я▄ я└п╟п╧п╩\n"
 
 #: src/snaps.c:1041
 msgid "Remembered Settings..."
-msgstr "Запомнить настройки..."
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ п╫п╟я│я┌я─п╬п╧п╨п╦..."
 
 #: src/snaps.c:1048
 msgid "Unused"
-msgstr "Не используется"
+msgstr "п²п╣ п╦я│п©п╬п╩я▄п╥я┐п╣я┌я│я▐"
 
 #: src/snaps.c:1061
 msgid "There are no active windows with remembered attributes."
-msgstr "Нет запущенных приложений с настройками, что мы храним в памяти своей..."
+msgstr "п²п╣я┌ п╥п╟п©я┐я┴п╣п╫п╫я▀я┘ п©я─п╦п╩п╬п╤п╣п╫п╦п╧ я│ п╫п╟я│я┌я─п╬п╧п╨п╟п╪п╦, я┤я┌п╬ п╪я▀ я┘я─п╟п╫п╦п╪ п╡ п©п╟п╪я▐я┌п╦ я│п╡п╬п╣п╧..."
 
 #: src/snaps.c:1067
 #, fuzzy
 msgid "Remember"
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: src/snaps.c:1068
 msgid "Remembered Windows Settings"
-msgstr "Настройки окон, что я храню для тебя, Хозяин..."
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ п╬п╨п╬п╫, я┤я┌п╬ я▐ я┘я─п╟п╫я▌ п╢п╩я▐ я┌п╣п╠я▐, п╔п╬п╥я▐п╦п╫..."
 
 #: src/snaps.c:1071
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
-"Диалог настройки хранимых\n"
-"аттрибутов рабочих приложений\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ я┘я─п╟п╫п╦п╪я▀я┘\n"
+"п╟я┌я┌я─п╦п╠я┐я┌п╬п╡ я─п╟п╠п╬я┤п╦я┘ п©я─п╦п╩п╬п╤п╣п╫п╦п╧\n"
 
 #: src/snaps.c:1164
 msgid "Error saving snaps file\n"
-msgstr "Ошибка сохранения сессионного файла\n"
+msgstr "п·я┬п╦п╠п╨п╟ я│п╬я┘я─п╟п╫п╣п╫п╦я▐ я│п╣я│я│п╦п╬п╫п╫п╬пЁп╬ я└п╟п╧п╩п╟\n"
 
 #: src/sound.c:205
 msgid "Error finding sound file"
-msgstr "Ошибка: звуковой файл не найден"
+msgstr "п·я┬п╦п╠п╨п╟: п╥п╡я┐п╨п╬п╡п╬п╧ я└п╟п╧п╩ п╫п╣ п╫п╟п╧п╢п╣п╫"
 
 #: src/sound.c:206
 #, c-format
@@ -2107,15 +2107,15 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
-"Предупреждение!  Enlightenment не смог загрузить\n"
-"звуковой файл:\n"
+"п÷я─п╣п╢я┐п©я─п╣п╤п╢п╣п╫п╦п╣!  Enlightenment п╫п╣ я│п╪п╬пЁ п╥п╟пЁя─я┐п╥п╦я┌я▄\n"
+"п╥п╡я┐п╨п╬п╡п╬п╧ я└п╟п╧п╩:\n"
 "%s\n"
-"Enlightenment продолжит работу, однако, возможно,\n"
-"Вам следует проверить установки конфигурации.\n"
+"Enlightenment п©я─п╬п╢п╬п╩п╤п╦я┌ я─п╟п╠п╬я┌я┐, п╬п╢п╫п╟п╨п╬, п╡п╬п╥п╪п╬п╤п╫п╬,\n"
+"п▓п╟п╪ я│п╩п╣п╢я┐п╣я┌ п©я─п╬п╡п╣я─п╦я┌я▄ я┐я│я┌п╟п╫п╬п╡п╨п╦ п╨п╬п╫я└п╦пЁя┐я─п╟я├п╦п╦.\n"
 
 #: src/sound.c:302
 msgid "Error initialising sound"
-msgstr "Ошибка инициализации звука"
+msgstr "п·я┬п╦п╠п╨п╟ п╦п╫п╦я├п╦п╟п╩п╦п╥п╟я├п╦п╦ п╥п╡я┐п╨п╟"
 
 #: src/sound.c:303
 msgid ""
@@ -2123,56 +2123,56 @@ msgid ""
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
-"Была включена поддержка звука в Enlightenment, однако произошла\n"
-"ошибка при установлении соединения с Esound. Поддержка звука\n"
-"будет сейчас отключена.\n"
+"п▒я▀п╩п╟ п╡п╨п╩я▌я┤п╣п╫п╟ п©п╬п╢п╢п╣я─п╤п╨п╟ п╥п╡я┐п╨п╟ п╡ Enlightenment, п╬п╢п╫п╟п╨п╬ п©я─п╬п╦п╥п╬я┬п╩п╟\n"
+"п╬я┬п╦п╠п╨п╟ п©я─п╦ я┐я│я┌п╟п╫п╬п╡п╩п╣п╫п╦п╦ я│п╬п╣п╢п╦п╫п╣п╫п╦я▐ я│ Esound. п÷п╬п╢п╢п╣я─п╤п╨п╟ п╥п╡я┐п╨п╟\n"
+"п╠я┐п╢п╣я┌ я│п╣п╧я┤п╟я│ п╬я┌п╨п╩я▌я┤п╣п╫п╟.\n"
 
 #: src/sound.c:452
 msgid "Enable sounds"
-msgstr "Включить поддержу звука"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╢п╢п╣я─п╤я┐ п╥п╡я┐п╨п╟"
 
 #: src/sound.c:458
 msgid "Sound"
-msgstr "Звук"
+msgstr "п≈п╡я┐п╨"
 
 #: src/sound.c:459
 msgid "Audio Settings"
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: src/sound.c:462
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки Аудио\n"
-"для Enlightenment\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦ п░я┐п╢п╦п╬\n"
+"п╢п╩я▐ Enlightenment\n"
 
 #: src/systray.c:331 src/systray.c:434 src/systray.c:442
 #, fuzzy
 msgid "Systray Error!"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr "Ты куды систему увёл, гадёныш?!?"
+msgstr "п╒я▀ п╨я┐п╢я▀ я│п╦я│я┌п╣п╪я┐ я┐п╡я▒п╩, пЁп╟п╢я▒п╫я▀я┬?!?"
 
 #: src/systray.c:434
 msgid "Only one systray is allowed"
-msgstr "Запускать только один систрей"
+msgstr "п≈п╟п©я┐я│п╨п╟я┌я▄ я┌п╬п╩я▄п╨п╬ п╬п╢п╦п╫ я│п╦я│я┌я─п╣п╧"
 
 #: src/systray.c:442
 msgid "Could not activate systray"
-msgstr "Не могу запустить систрей (оно нам не нужно, Хозяин!)"
+msgstr "п²п╣ п╪п╬пЁя┐ п╥п╟п©я┐я│я┌п╦я┌я▄ я│п╦я│я┌я─п╣п╧ (п╬п╫п╬ п╫п╟п╪ п╫п╣ п╫я┐п╤п╫п╬, п╔п╬п╥я▐п╦п╫!)"
 
 #: src/systray.c:452
 #, fuzzy
 msgid "Systray Options"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: src/systray.c:453
 #, fuzzy
 msgid "Systray Settings"
-msgstr "Установки автоматического поднятия окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╟п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╬пЁп╬ п©п╬п╢п╫я▐я┌п╦я▐ п╬п╨п╬п╫"
 
 #: src/theme.c:339
 #, c-format
@@ -2181,312 +2181,312 @@ msgid ""
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
-"В моём шкафу одежды нет:\n"
+"п▓ п╪п╬я▒п╪ я┬п╨п╟я└я┐ п╬п╢п╣п╤п╢я▀ п╫п╣я┌:\n"
 " %s\n"
-"Голышом работать не буду!\n"
+"п⌠п╬п╩я▀я┬п╬п╪ я─п╟п╠п╬я┌п╟я┌я▄ п╫п╣ п╠я┐п╢я┐!\n"
 
 #: src/tooltips.c:866
 msgid "Display Tooltips"
-msgstr "Показывать подсказки"
+msgstr "п÷п╬п╨п╟п╥я▀п╡п╟я┌я▄ п©п╬п╢я│п╨п╟п╥п╨п╦"
 
 #: src/tooltips.c:871
 msgid "Display Root Window Tips"
-msgstr "Показывать подсказки на \"корневом\" окне"
+msgstr "п÷п╬п╨п╟п╥я▀п╡п╟я┌я▄ п©п╬п╢я│п╨п╟п╥п╨п╦ п╫п╟ \"п╨п╬я─п╫п╣п╡п╬п╪\" п╬п╨п╫п╣"
 
 #: src/tooltips.c:876
 msgid "Tooltip Delay:\n"
-msgstr "Задержка подсказки:\n"
+msgstr "п≈п╟п╢п╣я─п╤п╨п╟ п©п╬п╢я│п╨п╟п╥п╨п╦:\n"
 
 #: src/tooltips.c:887
 #, fuzzy
 msgid "Tooltips"
-msgstr "Задержка подсказки:\n"
+msgstr "п≈п╟п╢п╣я─п╤п╨п╟ п©п╬п╢я│п╨п╟п╥п╨п╦:\n"
 
 #: src/tooltips.c:888
 msgid "Tooltip Settings"
-msgstr "Установки подсказок"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╬п╢я│п╨п╟п╥п╬п╨"
 
 #: src/tooltips.c:891
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
-"Диалог настройки\n"
-"всплывающих подсказок\n"
+"п■п╦п╟п╩п╬пЁ п╫п╟я│я┌я─п╬п╧п╨п╦\n"
+"п╡я│п©п╩я▀п╡п╟я▌я┴п╦я┘ п©п╬п╢я│п╨п╟п╥п╬п╨\n"
 
 #: config/strings.c:5
 msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
 msgstr ""
-"Кликни и тяни весь десктоп\n"
-"(куды хош, кроме нумера 0)"
+"п п╩п╦п╨п╫п╦ п╦ я┌я▐п╫п╦ п╡п╣я│я▄ п╢п╣я│п╨я┌п╬п©\n"
+"(п╨я┐п╢я▀ я┘п╬я┬, п╨я─п╬п╪п╣ п╫я┐п╪п╣я─п╟ 0)"
 
 #: config/strings.c:6 config/strings.c:8
 #, fuzzy
 msgid "Switch Desktops"
-msgstr "%i рабочих столов"
+msgstr "%i я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #: config/strings.c:7
 #, fuzzy
 msgid "Go to the next desktop."
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:9
 #, fuzzy
 msgid "Go to the previous desktop."
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:10
 msgid "Move"
-msgstr "Переместить"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄"
 
 #: config/strings.c:11 config/strings.c:23 config/strings.c:26
 #: config/strings.c:29
 msgid "Move this window."
-msgstr "Переместить это окно"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄ я█я┌п╬ п╬п╨п╫п╬"
 
 #: config/strings.c:12 config/strings.c:14 config/strings.c:48
 msgid "Shade/Unshade this window."
-msgstr "Скрыть/восстановить это окно"
+msgstr "п║п╨я─я▀я┌я▄/п╡п╬я│я│я┌п╟п╫п╬п╡п╦я┌я▄ я█я┌п╬ п╬п╨п╫п╬"
 
 #: config/strings.c:13 config/strings.c:50 config/strings.c:53
 #, fuzzy
 msgid "Show the Window Options menu."
-msgstr "Показать меню опций этого окна"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ п╬п©я├п╦п╧ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:15
 #, fuzzy
 msgid "Show/Hide group borders."
-msgstr "Показать/спрятать эту группу"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄/я│п©я─я▐я┌п╟я┌я▄ я█я┌я┐ пЁя─я┐п©п©я┐"
 
 #: config/strings.c:16
 msgid "Start a group."
-msgstr "Создать группу"
+msgstr "п║п╬п╥п╢п╟я┌я▄ пЁя─я┐п©п©я┐"
 
 #: config/strings.c:17
 msgid "Add to current group."
-msgstr "Добавить в текущую группу"
+msgstr "п■п╬п╠п╟п╡п╦я┌я▄ п╡ я┌п╣п╨я┐я┴я┐я▌ пЁя─я┐п©п©я┐"
 
 #: config/strings.c:18
 #, fuzzy
 msgid "Break this window's group."
-msgstr "Запомнить группу этого окна"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ пЁя─я┐п©п©я┐ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:19
 #, fuzzy
 msgid "Shade."
-msgstr "Затененный"
+msgstr "п≈п╟я┌п╣п╫п╣п╫п╫я▀п╧"
 
 #: config/strings.c:20
 msgid "Unshade."
-msgstr "Показать"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄"
 
 #: config/strings.c:21
 #, fuzzy
 msgid "Resize"
-msgstr "Размер"
+msgstr "п═п╟п╥п╪п╣я─"
 
 #: config/strings.c:22
 #, fuzzy
 msgid "Resize this window."
-msgstr "Запомнить группу этого окна"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ пЁя─я┐п©п©я┐ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:24
 #, fuzzy
 msgid "Resize Horizontally"
-msgstr "Горизонтальная"
+msgstr "п⌠п╬я─п╦п╥п╬п╫я┌п╟п╩я▄п╫п╟я▐"
 
 #: config/strings.c:25
 msgid "Resize this window horizontally."
-msgstr "Изменить размер этого окна по горизонтали"
+msgstr "п≤п╥п╪п╣п╫п╦я┌я▄ я─п╟п╥п╪п╣я─ я█я┌п╬пЁп╬ п╬п╨п╫п╟ п©п╬ пЁп╬я─п╦п╥п╬п╫я┌п╟п╩п╦"
 
 #: config/strings.c:27
 #, fuzzy
 msgid "Resize Vertically"
-msgstr "Вертикальная"
+msgstr "п▓п╣я─я┌п╦п╨п╟п╩я▄п╫п╟я▐"
 
 #: config/strings.c:28
 msgid "Resize this window vertically."
-msgstr "Изменить размер этого окна по вертикали"
+msgstr "п≤п╥п╪п╣п╫п╦я┌я▄ я─п╟п╥п╪п╣я─ я█я┌п╬пЁп╬ п╬п╨п╫п╟ п©п╬ п╡п╣я─я┌п╦п╨п╟п╩п╦"
 
 #: config/strings.c:31
 msgid "Close this window."
-msgstr "Закрыть это окно"
+msgstr "п≈п╟п╨я─я▀я┌я▄ я█я┌п╬ п╬п╨п╫п╬"
 
 #: config/strings.c:32
 msgid "Forcibly destroy this window."
-msgstr "Уничтожить и развеять прах этого окна"
+msgstr "пёп╫п╦я┤я┌п╬п╤п╦я┌я▄ п╦ я─п╟п╥п╡п╣я▐я┌я▄ п©я─п╟я┘ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:33
 msgid "Maximize Height"
-msgstr "Увеличить размер окна по вертикали до максимума"
+msgstr "пёп╡п╣п╩п╦я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟ п©п╬ п╡п╣я─я┌п╦п╨п╟п╩п╦ п╢п╬ п╪п╟п╨я│п╦п╪я┐п╪п╟"
 
 #: config/strings.c:34 config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
-msgstr "Переключить размер окна по вертикали: максимум - норма"
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟ п©п╬ п╡п╣я─я┌п╦п╨п╟п╩п╦: п╪п╟п╨я│п╦п╪я┐п╪ - п╫п╬я─п╪п╟"
 
 #: config/strings.c:35
 msgid "Maximize Width"
-msgstr "Увеличить размер окна по горизонтали до максимума"
+msgstr "пёп╡п╣п╩п╦я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟ п©п╬ пЁп╬я─п╦п╥п╬п╫я┌п╟п╩п╦ п╢п╬ п╪п╟п╨я│п╦п╪я┐п╪п╟"
 
 #: config/strings.c:36 config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
-msgstr "Переключить размер окна по горизонтали: максимум - норма"
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟ п©п╬ пЁп╬я─п╦п╥п╬п╫я┌п╟п╩п╦: п╪п╟п╨я│п╦п╪я┐п╪ - п╫п╬я─п╪п╟"
 
 #: config/strings.c:37
 msgid "Maximize"
-msgstr "Увеличить размер окна до максимума"
+msgstr "пёп╡п╣п╩п╦я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟ п╢п╬ п╪п╟п╨я│п╦п╪я┐п╪п╟"
 
 #: config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
-msgstr "Переключить размер окна: максимум - норма"
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╦я┌я▄ я─п╟п╥п╪п╣я─ п╬п╨п╫п╟: п╪п╟п╨я│п╦п╪я┐п╪ - п╫п╬я─п╪п╟"
 
 #: config/strings.c:41 config/strings.c:43
 #, fuzzy
 msgid "Send To Another Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:42
 msgid "Send this Window to the next desktop."
-msgstr "Переместить окно на следующий рабочий стол"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄ п╬п╨п╫п╬ п╫п╟ я│п╩п╣п╢я┐я▌я┴п╦п╧ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:44
 msgid "Send this Window to the previous desktop."
-msgstr "Переместить окно на предыдущий рабочий стол"
+msgstr "п÷п╣я─п╣п╪п╣я│я┌п╦я┌я▄ п╬п╨п╫п╬ п╫п╟ п©я─п╣п╢я▀п╢я┐я┴п╦п╧ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:45
 #, fuzzy
 msgid "Snapshot"
-msgstr "Включить отображение экрана"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╬я┌п╬п╠я─п╟п╤п╣п╫п╦п╣ я█п╨я─п╟п╫п╟"
 
 #: config/strings.c:46
 msgid "This button does nothing interesting."
-msgstr "Я не знаю, Хозяин, что делает эта кнопка."
+msgstr "п╞ п╫п╣ п╥п╫п╟я▌, п╔п╬п╥я▐п╦п╫, я┤я┌п╬ п╢п╣п╩п╟п╣я┌ я█я┌п╟ п╨п╫п╬п©п╨п╟."
 
 #: config/strings.c:47 config/strings.c:138
 #, fuzzy
 msgid "Shade/Unshade"
-msgstr "Затененный"
+msgstr "п≈п╟я┌п╣п╫п╣п╫п╫я▀п╧"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
-msgstr "Свернуть в иконку (минимизировать) это окно."
+msgstr "п║п╡п╣я─п╫я┐я┌я▄ п╡ п╦п╨п╬п╫п╨я┐ (п╪п╦п╫п╦п╪п╦п╥п╦я─п╬п╡п╟я┌я▄) я█я┌п╬ п╬п╨п╫п╬."
 
 #: config/strings.c:54
 #, fuzzy
 msgid "More Buttons"
-msgstr "Нижняя"
+msgstr "п²п╦п╤п╫я▐я▐"
 
 #: config/strings.c:55
 msgid "Show more buttons."
-msgstr "Показать больше кнопок управления окнами."
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╠п╬п╩я▄я┬п╣ п╨п╫п╬п©п╬п╨ я┐п©я─п╟п╡п╩п╣п╫п╦я▐ п╬п╨п╫п╟п╪п╦."
 
 #: config/strings.c:56 config/strings.c:136
 msgid "Raise"
-msgstr "Поднять"
+msgstr "п÷п╬п╢п╫я▐я┌я▄"
 
 #: config/strings.c:57
 #, fuzzy
 msgid "Raise this window to the top."
 msgstr ""
-"Кликните здесь, чтобы поднять этот\n"
-"рабочий стол наверх.\n"
+"п п╩п╦п╨п╫п╦я┌п╣ п╥п╢п╣я│я▄, я┤я┌п╬п╠я▀ п©п╬п╢п╫я▐я┌я▄ я█я┌п╬я┌\n"
+"я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩ п╫п╟п╡п╣я─я┘.\n"
 
 #: config/strings.c:58 config/strings.c:137
 msgid "Lower"
-msgstr "Опустить"
+msgstr "п·п©я┐я│я┌п╦я┌я▄"
 
 #: config/strings.c:59
 msgid "Lower this window."
-msgstr "Опустить это окно (в хорошем смысле этого слова)"
+msgstr "п·п©я┐я│я┌п╦я┌я▄ я█я┌п╬ п╬п╨п╫п╬ (п╡ я┘п╬я─п╬я┬п╣п╪ я│п╪я▀я│п╩п╣ я█я┌п╬пЁп╬ я│п╩п╬п╡п╟)"
 
 #: config/strings.c:60 config/strings.c:139
 #, fuzzy
 msgid "Stick/Unstick"
-msgstr "Закрепить / Освободить"
+msgstr "п≈п╟п╨я─п╣п©п╦я┌я▄ / п·я│п╡п╬п╠п╬п╢п╦я┌я▄"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
-msgstr "Включить показ окна на всех рабочих столах"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п©п╬п╨п╟п╥ п╬п╨п╫п╟ п╫п╟ п╡я│п╣я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╟я┘"
 
 #: config/strings.c:63
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
-"Что можно огрести, кликая мышой\n"
-"на рабочем столе"
+"п╖я┌п╬ п╪п╬п╤п╫п╬ п╬пЁя─п╣я│я┌п╦, п╨п╩п╦п╨п╟я▐ п╪я▀я┬п╬п╧\n"
+"п╫п╟ я─п╟п╠п╬я┤п╣п╪ я│я┌п╬п╩п╣"
 
 #: config/strings.c:64
 msgid "Display User Menus"
-msgstr "Показать меню пользователя"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩я▐"
 
 #: config/strings.c:65 config/strings.c:67
 #, fuzzy
 msgid "Display Enlightenment Menu"
-msgstr "Выйти из Enlightenment"
+msgstr "п▓я▀п╧я┌п╦ п╦п╥ Enlightenment"
 
 #: config/strings.c:66 config/strings.c:71
 #, fuzzy
 msgid "Display Settings Menu"
-msgstr "Показать меню настроек"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ п╫п╟я│я┌я─п╬п╣п╨"
 
 #: config/strings.c:68
 msgid "Display Task List Menu"
-msgstr "Показать меню задач"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ п╥п╟п╢п╟я┤"
 
 #: config/strings.c:69
 #, fuzzy
 msgid "Display Desktop Menu"
-msgstr "Показать меню рабочего стола"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ я─п╟п╠п╬я┤п╣пЁп╬ я│я┌п╬п╩п╟"
 
 #: config/strings.c:70
 msgid "Display Group Menu"
-msgstr "Показать меню группы"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╪п╣п╫я▌ пЁя─я┐п©п©я▀"
 
 #: config/strings.c:72
 #, fuzzy
 msgid "Go Back a Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:73
 #, fuzzy
 msgid "Go Forward a Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:76 config/strings.c:79
 #, fuzzy
 msgid "Backgrounds"
-msgstr "Фоновые рисунки"
+msgstr "п╓п╬п╫п╬п╡я▀п╣ я─п╦я│я┐п╫п╨п╦"
 
 #: config/strings.c:78
 #, fuzzy
 msgid "Desktop Operations"
-msgstr "Рабочий стол"
+msgstr "п═п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:80
 #, fuzzy
 msgid "Cleanup Desktop"
-msgstr "Очистить рабочий стол"
+msgstr "п·я┤п╦я│я┌п╦я┌я▄ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:81
 #, fuzzy
 msgid "Goto Next Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:82
 #, fuzzy
 msgid "Goto Previous Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ я█я┌п╬я┌ я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #: config/strings.c:84
 msgid "Create Systray"
-msgstr "Создать систрей"
+msgstr "п║п╬п╥п╢п╟я┌я▄ я│п╦я│я┌я─п╣п╧"
 
 #: config/strings.c:85
 msgid "Show Magnifier"
-msgstr "Показать лупу"
+msgstr "п÷п╬п╨п╟п╥п╟я┌я▄ п╩я┐п©я┐"
 
 #: config/strings.c:87
 #, fuzzy
@@ -2496,20 +2496,20 @@ msgstr "Enlightenment"
 #: config/strings.c:88 config/strings.c:197
 #, fuzzy
 msgid "User Menus"
-msgstr "Меню Пользователя"
+msgstr "п°п╣п╫я▌ п÷п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩я▐"
 
 #: config/strings.c:90 config/strings.c:110
 #, fuzzy
 msgid "Settings"
-msgstr "Настройки"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦"
 
 #: config/strings.c:92 config/strings.c:99
 msgid "Maintenance"
-msgstr "Техобслуживание"
+msgstr "п╒п╣я┘п╬п╠я│п╩я┐п╤п╦п╡п╟п╫п╦п╣"
 
 #: config/strings.c:93
 msgid "Help"
-msgstr "Помощь"
+msgstr "п÷п╬п╪п╬я┴я▄"
 
 #: config/strings.c:94
 #, fuzzy
@@ -2518,261 +2518,261 @@ msgstr "Enlightenment %s"
 
 #: config/strings.c:95
 msgid "About this theme"
-msgstr "О теме"
+msgstr "п· я┌п╣п╪п╣"
 
 #: config/strings.c:96 config/strings.c:201
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "п÷п╣я─п╣п╥п╟п©я┐я│п╨"
 
 #: config/strings.c:97 config/strings.c:202
 #, fuzzy
 msgid "Log Out"
-msgstr "  Да, хочу  "
+msgstr "  п■п╟, я┘п╬я┤я┐  "
 
 #: config/strings.c:100
 msgid "Purge config file cache"
-msgstr "Спустить в унитаз кэш конфигов"
+msgstr "п║п©я┐я│я┌п╦я┌я▄ п╡ я┐п╫п╦я┌п╟п╥ п╨я█я┬ п╨п╬п╫я└п╦пЁп╬п╡"
 
 #: config/strings.c:101
 #, fuzzy
 msgid "Purge pager background cache"
-msgstr "Очистить кэш фоновых картинок"
+msgstr "п·я┤п╦я│я┌п╦я┌я▄ п╨я█я┬ я└п╬п╫п╬п╡я▀я┘ п╨п╟я─я┌п╦п╫п╬п╨"
 
 #: config/strings.c:102
 msgid "Purge background selector cache"
-msgstr "Очистить кэш прочих картинок"
+msgstr "п·я┤п╦я│я┌п╦я┌я▄ п╨я█я┬ п©я─п╬я┤п╦я┘ п╨п╟я─я┌п╦п╫п╬п╨"
 
 #: config/strings.c:103
 msgid "Purge all caches"
-msgstr "Сжечь напалмом весь кэш"
+msgstr "п║п╤п╣я┤я▄ п╫п╟п©п╟п╩п╪п╬п╪ п╡п╣я│я▄ п╨я█я┬"
 
 #: config/strings.c:104
 msgid "Query config file cache usage"
-msgstr "Протестировать конфиги в кэше"
+msgstr "п÷я─п╬я┌п╣я│я┌п╦я─п╬п╡п╟я┌я▄ п╨п╬п╫я└п╦пЁп╦ п╡ п╨я█я┬п╣"
 
 #: config/strings.c:105
 msgid "Query pager background cache usage"
-msgstr "Протестировать конфиги кэша пейджера"
+msgstr "п÷я─п╬я┌п╣я│я┌п╦я─п╬п╡п╟я┌я▄ п╨п╬п╫я└п╦пЁп╦ п╨я█я┬п╟ п©п╣п╧п╢п╤п╣я─п╟"
 
 #: config/strings.c:106
 msgid "Query background selector cache usage"
-msgstr "Протестировать конфиги кэша фоновых картинок"
+msgstr "п÷я─п╬я┌п╣я│я┌п╦я─п╬п╡п╟я┌я▄ п╨п╬п╫я└п╦пЁп╦ п╨я█я┬п╟ я└п╬п╫п╬п╡я▀я┘ п╨п╟я─я┌п╦п╫п╬п╨"
 
 #: config/strings.c:107
 msgid "Query all cache usage"
-msgstr "Протестировать все кэши конфигов"
+msgstr "п÷я─п╬я┌п╣я│я┌п╦я─п╬п╡п╟я┌я▄ п╡я│п╣ п╨я█я┬п╦ п╨п╬п╫я└п╦пЁп╬п╡"
 
 #: config/strings.c:108
 msgid "Regenerate Menus"
-msgstr "Воссоздать меню"
+msgstr "п▓п╬я│я│п╬п╥п╢п╟я┌я▄ п╪п╣п╫я▌"
 
 #: config/strings.c:111
 #, fuzzy
 msgid "Enlightenment Settings ..."
-msgstr "Запуск Enlightenment..."
+msgstr "п≈п╟п©я┐я│п╨ Enlightenment..."
 
 #: config/strings.c:112
 #, fuzzy
 msgid "Focus Settings ..."
-msgstr "Настройки фокуса"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╨я┐я│п╟"
 
 #: config/strings.c:113
 #, fuzzy
 msgid "Move & Resize Settings ..."
-msgstr "Установки перемещения/изменения размера"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╣я─п╣п╪п╣я┴п╣п╫п╦я▐/п╦п╥п╪п╣п╫п╣п╫п╦я▐ я─п╟п╥п╪п╣я─п╟"
 
 #: config/strings.c:114
 #, fuzzy
 msgid "Window Placement Settings ..."
-msgstr "Установки расположения окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦я▐ п╬п╨п╬п╫"
 
 #: config/strings.c:115
 #, fuzzy
 msgid "Multiple Desktop Settings ..."
-msgstr "Установки рабочих столов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #: config/strings.c:116
 #, fuzzy
 msgid "Virtual Desktop Settings ..."
-msgstr "Установки виртуальных рабочих столов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╡п╦я─я┌я┐п╟п╩я▄п╫я▀я┘ я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #: config/strings.c:117
 #, fuzzy
 msgid "Pager Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: config/strings.c:118
 #, fuzzy
 msgid "Menu Settings ..."
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: config/strings.c:119
 #, fuzzy
 msgid "Autoraise Settings ..."
-msgstr "Установки автоматического поднятия окон"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╟п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╬пЁп╬ п©п╬п╢п╫я▐я┌п╦я▐ п╬п╨п╬п╫"
 
 #: config/strings.c:120
 #, fuzzy
 msgid "Tooltip Settings ..."
-msgstr "Установки подсказок"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╬п╢я│п╨п╟п╥п╬п╨"
 
 #: config/strings.c:121
 #, fuzzy
 msgid "Audio Settings ..."
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: config/strings.c:122
 #, fuzzy
 msgid "Group Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: config/strings.c:123
 #, fuzzy
 msgid "Remember Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: config/strings.c:124
 #, fuzzy
 msgid "Special FX Settings ..."
-msgstr "Установки спецэффектов"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я│п©п╣я├я█я└я└п╣п╨я┌п╬п╡"
 
 #: config/strings.c:125
 #, fuzzy
 msgid "Desktop Background Settings ..."
-msgstr "Установки фонового рисунка"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ я└п╬п╫п╬п╡п╬пЁп╬ я─п╦я│я┐п╫п╨п╟"
 
 #: config/strings.c:126
 #, fuzzy
 msgid "Theme Transparency Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: config/strings.c:127
 #, fuzzy
 msgid "Composite Settings ..."
-msgstr "Установки подсказок"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п©п╬п╢я│п╨п╟п╥п╬п╨"
 
 #: config/strings.c:128
 #, fuzzy
 msgid "Session Settings ..."
-msgstr "Установки звука"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ п╥п╡я┐п╨п╟"
 
 #: config/strings.c:129
 #, fuzzy
 msgid "Miscellaneous Settings ..."
-msgstr "Настройки этого Iconbox-а..."
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я█я┌п╬пЁп╬ Iconbox-п╟..."
 
 #: config/strings.c:135
 msgid "Leave Alone"
-msgstr "Отвали... Оставь меня в покое."
+msgstr "п·я┌п╡п╟п╩п╦... п·я│я┌п╟п╡я▄ п╪п╣п╫я▐ п╡ п©п╬п╨п╬п╣."
 
 #: config/strings.c:140
 #, fuzzy
 msgid "Remember..."
-msgstr "Установки Pager-а..."
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦ Pager-п╟..."
 
 #: config/strings.c:141
 #, fuzzy
 msgid "Window Size"
-msgstr "Окно"
+msgstr "п·п╨п╫п╬"
 
 #: config/strings.c:142
 #, fuzzy
 msgid "Set Stacking"
-msgstr "Настройки фокуса"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╨я┐я│п╟"
 
 #: config/strings.c:143
 #, fuzzy
 msgid "Set Border Style"
-msgstr "Стиль рамки"
+msgstr "п║я┌п╦п╩я▄ я─п╟п╪п╨п╦"
 
 #: config/strings.c:144
 #, fuzzy
 msgid "Window Groups"
-msgstr "Ошибка Группы Окон"
+msgstr "п·я┬п╦п╠п╨п╟ п⌠я─я┐п©п©я▀ п·п╨п╬п╫"
 
 #: config/strings.c:149
 #, fuzzy
 msgid "Configure this window's group(s)"
-msgstr "Запомнить группу этого окна"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ пЁя─я┐п©п©я┐ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:150
 msgid "Start a new group"
-msgstr "Создать новую группу"
+msgstr "п║п╬п╥п╢п╟я┌я▄ п╫п╬п╡я┐я▌ пЁя─я┐п©п©я┐"
 
 #: config/strings.c:151
 msgid "Add this window to the current group"
-msgstr "Добавить это окно к текущей группе"
+msgstr "п■п╬п╠п╟п╡п╦я┌я▄ я█я┌п╬ п╬п╨п╫п╬ п╨ я┌п╣п╨я┐я┴п╣п╧ пЁя─я┐п©п©п╣"
 
 #: config/strings.c:152
 #, fuzzy
 msgid "Select group to add this window to"
-msgstr "   Выберите группу, из которой нужно убрать это окно.  "
+msgstr "   п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐, п╦п╥ п╨п╬я┌п╬я─п╬п╧ п╫я┐п╤п╫п╬ я┐п╠я─п╟я┌я▄ я█я┌п╬ п╬п╨п╫п╬.  "
 
 #: config/strings.c:153
 #, fuzzy
 msgid "Remove this window from a group"
-msgstr "Запомнить группу этого окна"
+msgstr "п≈п╟п©п╬п╪п╫п╦я┌я▄ пЁя─я┐п©п©я┐ я█я┌п╬пЁп╬ п╬п╨п╫п╟"
 
 #: config/strings.c:154
 #, fuzzy
 msgid "Destroy a group this window belongs to"
-msgstr "Выберите группу, к которой будет принадлежать окно:\n"
+msgstr "п▓я▀п╠п╣я─п╦я┌п╣ пЁя─я┐п©п©я┐, п╨ п╨п╬я┌п╬я─п╬п╧ п╠я┐п╢п╣я┌ п©я─п╦п╫п╟п╢п╩п╣п╤п╟я┌я▄ п╬п╨п╫п╬:\n"
 
 #: config/strings.c:156
 #, fuzzy
 msgid "Stacking"
-msgstr "Настройки фокуса"
+msgstr "п²п╟я│я┌я─п╬п╧п╨п╦ я└п╬п╨я┐я│п╟"
 
 #: config/strings.c:157
 msgid "Below"
-msgstr "Под"
+msgstr "п÷п╬п╢"
 
 #: config/strings.c:158
 msgid "Normal"
-msgstr "Норма"
+msgstr "п²п╬я─п╪п╟"
 
 #: config/strings.c:159
 msgid "Above"
-msgstr "Над"
+msgstr "п²п╟п╢"
 
 #: config/strings.c:160
 #, fuzzy
 msgid "On Top"
-msgstr "Верхняя"
+msgstr "п▓п╣я─я┘п╫я▐я▐"
 
 #: config/strings.c:163
 msgid "Toggle Skip Window Lists"
-msgstr "Переключатель \"Skip Window Lists\""
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╟я┌п╣п╩я▄ \"Skip Window Lists\""
 
 #: config/strings.c:164
 msgid "Toggle Fixed Position"
-msgstr "Переключатель фиксированного расположения окна"
+msgstr "п÷п╣я─п╣п╨п╩я▌я┤п╟я┌п╣п╩я▄ я└п╦п╨я│п╦я─п╬п╡п╟п╫п╫п╬пЁп╬ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦я▐ п╬п╨п╫п╟"
 
 #: config/strings.c:165
 msgid "Toggle Fixed Size"
-msgstr "Включить фиксированное расположение окна"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ я└п╦п╨я│п╦я─п╬п╡п╟п╫п╫п╬п╣ я─п╟я│п©п╬п╩п╬п╤п╣п╫п╦п╣ п╬п╨п╫п╟"
 
 #: config/strings.c:166
 msgid "Toggle Never Focus"
-msgstr "Включить игнорирование фокуса"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╦пЁп╫п╬я─п╦я─п╬п╡п╟п╫п╦п╣ я└п╬п╨я┐я│п╟"
 
 #: config/strings.c:167
 msgid "Toggle Click to Focus"
-msgstr "Включить фокус по клику мышкой"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ я└п╬п╨я┐я│ п©п╬ п╨п╩п╦п╨я┐ п╪я▀я┬п╨п╬п╧"
 
 #: config/strings.c:168
 msgid "Toggle Never Use Area"
-msgstr "Включить \"никогда не ходить на Зону\""
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ \"п╫п╦п╨п╬пЁп╢п╟ п╫п╣ я┘п╬п╢п╦я┌я▄ п╫п╟ п≈п╬п╫я┐\""
 
 #: config/strings.c:169
 #, fuzzy
 msgid "Toggle Button Grabs"
-msgstr "Нижняя"
+msgstr "п²п╦п╤п╫я▐я▐"
 
 #: config/strings.c:172
 #, fuzzy
 msgid "Default"
-msgstr "Дефолт"
+msgstr "п■п╣я└п╬п╩я┌"
 
 #: config/strings.c:173
 msgid "20%"
@@ -2796,99 +2796,99 @@ msgstr "100%"
 
 #: config/strings.c:178
 msgid "Focused opacity 100%"
-msgstr "Непрозрачность фокусированного активного окна 100%"
+msgstr "п²п╣п©я─п╬п╥я─п╟я┤п╫п╬я│я┌я▄ я└п╬п╨я┐я│п╦я─п╬п╡п╟п╫п╫п╬пЁп╬ п╟п╨я┌п╦п╡п╫п╬пЁп╬ п╬п╨п╫п╟ 100%"
 
 #: config/strings.c:179
 #, fuzzy
 msgid "Focused opacity follows unfocused"
-msgstr "Фокус по нажатию кнопки мыши"
+msgstr "п╓п╬п╨я┐я│ п©п╬ п╫п╟п╤п╟я┌п╦я▌ п╨п╫п╬п©п╨п╦ п╪я▀я┬п╦"
 
 #: config/strings.c:180
 #, fuzzy
 msgid "Toggle Fading"
-msgstr "Разрешить переход через край"
+msgstr "п═п╟п╥я─п╣я┬п╦я┌я▄ п©п╣я─п╣я┘п╬п╢ я┤п╣я─п╣п╥ п╨я─п╟п╧"
 
 #: config/strings.c:181
 msgid "Toggle Shadows"
-msgstr "Включить тени"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ я┌п╣п╫п╦"
 
 #: config/strings.c:184
 msgid "Max Size Toggle"
-msgstr "Разворачивать на полную"
+msgstr "п═п╟п╥п╡п╬я─п╟я┤п╦п╡п╟я┌я▄ п╫п╟ п©п╬п╩п╫я┐я▌"
 
 #: config/strings.c:185
 msgid "Available Max Size Toggle"
-msgstr "Разворачивать на всё доступное пространство"
+msgstr "п═п╟п╥п╡п╬я─п╟я┤п╦п╡п╟я┌я▄ п╫п╟ п╡я│я▒ п╢п╬я│я┌я┐п©п╫п╬п╣ п©я─п╬я│я┌я─п╟п╫я│я┌п╡п╬"
 
 #: config/strings.c:186
 msgid "Absolute Max Size Toggle"
-msgstr "Конкретно разворачивать на полную"
+msgstr "п п╬п╫п╨я─п╣я┌п╫п╬ я─п╟п╥п╡п╬я─п╟я┤п╦п╡п╟я┌я▄ п╫п╟ п©п╬п╩п╫я┐я▌"
 
 #: config/strings.c:187
 msgid "Span Xinerama Screens"
-msgstr "Управление Экранами Xinerama"
+msgstr "пёп©я─п╟п╡п╩п╣п╫п╦п╣ п╜п╨я─п╟п╫п╟п╪п╦ Xinerama"
 
 #: config/strings.c:188
 msgid "Max Height Toggle"
-msgstr "Включить на максимальную высоту"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ п╡я▀я│п╬я┌я┐"
 
 #: config/strings.c:189
 msgid "Available Max Height Toggle"
-msgstr "Включить на доступную максимальную высоту"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╢п╬я│я┌я┐п©п╫я┐я▌ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ п╡я▀я│п╬я┌я┐"
 
 #: config/strings.c:190
 msgid "Absolute Max Height Toggle"
-msgstr "Включить на абсолютную максимальную высоту"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╟п╠я│п╬п╩я▌я┌п╫я┐я▌ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ п╡я▀я│п╬я┌я┐"
 
 #: config/strings.c:191
 msgid "Max Width Toggle"
-msgstr "Включить на максимальную ширину"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ я┬п╦я─п╦п╫я┐"
 
 #: config/strings.c:192
 msgid "Available Max Width Toggle"
-msgstr "Включить на доступную максимальную ширину"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╢п╬я│я┌я┐п©п╫я┐я▌ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ я┬п╦я─п╦п╫я┐"
 
 #: config/strings.c:193
 msgid "Absolute Max Width Toggle"
-msgstr "Включить на абсолютную максимальную ширину"
+msgstr "п▓п╨п╩я▌я┤п╦я┌я▄ п╫п╟ п╟п╠я│п╬п╩я▌я┌п╫я┐я▌ п╪п╟п╨я│п╦п╪п╟п╩я▄п╫я┐я▌ я┬п╦я─п╦п╫я┐"
 
 #: config/strings.c:194
 msgid "Fullscreen/Normal"
-msgstr "Во весь экран / Норма"
+msgstr "п▓п╬ п╡п╣я│я▄ я█п╨я─п╟п╫ / п²п╬я─п╪п╟"
 
 #: config/strings.c:195
 msgid "Zoom/Unzoom"
-msgstr "Увеличить/Сбросить увеличение"
+msgstr "пёп╡п╣п╩п╦я┤п╦я┌я▄/п║п╠я─п╬я│п╦я┌я▄ я┐п╡п╣п╩п╦я┤п╣п╫п╦п╣"
 
 #: config/strings.c:198
 #, fuzzy
 msgid "User Application List"
-msgstr "Список приложений Пользователя"
+msgstr "п║п©п╦я│п╬п╨ п©я─п╦п╩п╬п╤п╣п╫п╦п╧ п÷п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩я▐"
 
 #: config/strings.c:199
 msgid "Other"
-msgstr "Прочее"
+msgstr "п÷я─п╬я┤п╣п╣"
 
 #: config/strings.c:200
 msgid "Epplets"
-msgstr "Модули E16-го"
+msgstr "п°п╬п╢я┐п╩п╦ E16-пЁп╬"
 
 #~ msgid "%i Desktops"
-#~ msgstr "%i рабочих столов"
+#~ msgstr "%i я─п╟п╠п╬я┤п╦я┘ я│я┌п╬п╩п╬п╡"
 
 #~ msgid "%i Desktop"
-#~ msgstr "%i рабочий стол"
+#~ msgstr "%i я─п╟п╠п╬я┤п╦п╧ я│я┌п╬п╩"
 
 #~ msgid ""
 #~ "%i x %i\n"
 #~ "Screens in size"
 #~ msgstr ""
 #~ "%i x %i\n"
-#~ "экранов"
+#~ "я█п╨я─п╟п╫п╬п╡"
 
 #~ msgid ""
 #~ "1\n"
 #~ "Screen in size"
 #~ msgstr ""
 #~ "1\n"
-#~ "экран"
+#~ "я█п╨я─п╟п╫"
