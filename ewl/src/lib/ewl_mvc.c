@@ -175,8 +175,11 @@ ewl_mvc_data_set(Ewl_MVC *mvc, void *data)
         mvc->data = data;
 
         /* new data, clear out the old selection list */
-        ewl_mvc_selected_clear(mvc);
-        ewl_mvc_dirty_set(mvc, TRUE);
+        if (mvc->model && mvc->view)
+        {
+		ewl_mvc_selected_clear(mvc);
+		ewl_mvc_dirty_set(mvc, TRUE);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
