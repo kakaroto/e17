@@ -9,6 +9,6 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-emotion::
 	mkdir -p debian/python-emotion/usr/share/python-emotion
 	cp -r examples debian/python-emotion/usr/share/python-emotion
-	rm -f debian/python-emotion/usr/share/python-emotion/examples/.svn
+	rm -rf debian/python-emotion/usr/share/python-emotion/examples/.svn
 	chmod -R 755 debian/python-emotion/usr/share/python-emotion
 
