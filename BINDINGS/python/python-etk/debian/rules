@@ -9,4 +9,6 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-etk::
 	mkdir -p debian/python-etk/usr/share/python-etk
 	cp -r examples debian/python-etk/usr/share/python-etk
+	rm -f debian/python-etk/usr/share/python-etk/examples/.svn
+	chmod -R 755 debian/python-etk/usr/share/python-etk
 

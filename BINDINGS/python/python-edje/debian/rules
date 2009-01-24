@@ -10,3 +10,6 @@ install/python-edje::
 	mkdir -p debian/python-edje/usr/share/python-edje
 	cp -r tests debian/python-edje/usr/share/python-edje
 	cp -r examples debian/python-edje/usr/share/python-edje
+	rm -f debian/python-edje/usr/share/python-edje/tests/.svn
+	rm -f debian/python-edje/usr/share/python-edje/examples/.svn
+	chmod -R 755 debian/python-edje/usr/share/python-edje

@@ -10,3 +10,6 @@ install/python-evas::
 	mkdir -p debian/python-evas/usr/share/python-evas
 	cp -r tests debian/python-evas/usr/share/python-evas
 	cp -r examples debian/python-evas/usr/share/python-evas
+	rm -f debian/python-evas/usr/share/python-evas/tests/.svn
+	rm -f debian/python-evas/usr/share/python-evas/examples/.svn
+	chmod -R 755 debian/python-evas/usr/share/python-evas
