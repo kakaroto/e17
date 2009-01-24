@@ -389,7 +389,7 @@ LangInit(void)
      {
 	Eprintf("Locale: %s\n", setlocale(LC_ALL, NULL));
 	Eprintf("Character encoding: locale=%s internal=%s MB_CUR_MAX=%d\n",
-		enc_loc, enc_int, MB_CUR_MAX);
+		enc_loc, enc_int, (int)MB_CUR_MAX);
      }
 
    if (!Estrcasecmp(enc_loc, "utf8") || !Estrcasecmp(enc_loc, "utf-8"))
