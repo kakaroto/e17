@@ -1,0 +1,92 @@
+# Spanish translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-09 18:00+0000\n"
+"PO-Revision-Date: 2009-01-18 04:52+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Configuración del módulo de idiomas"
+
+#: src/module/e_mod_config.c:174
+#: src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Idiomas disponibles"
+
+#: src/module/e_mod_config.c:182
+#: src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Idiomas Seleccionados"
+
+#: src/module/e_mod_config.c:198
+#: src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Arriba"
+
+#: src/module/e_mod_config.c:203
+#: src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Abajo"
+
+#: src/module/e_mod_config.c:211
+#: src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Política de cambio de Idioma"
+
+#: src/module/e_mod_config.c:214
+#: src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Global"
+
+#: src/module/e_mod_config.c:217
+#: src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Ventana"
+
+#: src/module/e_mod_config.c:220
+#: src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Programa"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Modelo de teclado"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variante de tipo"
+
+#: src/module/e_mod_keybindings.c:6
+#: src/module/e_mod_main.c:113
+msgid "Language"
+msgstr "Idioma"
+
+#: src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Cambiar al idioma siguiente"
+
+#: src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Cambiar al idioma anterior"
+
+#: src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr "Configuración"
+
+#: src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr "Configurar asociaciones de teclas"
+
+#: src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr "Configuración de módulos"
