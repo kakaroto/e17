@@ -52,7 +52,7 @@ msgstr "Filesystem"
 
 #: src/e_mod_places.c:169
 msgid "No Name"
-msgstr "Sconosciuto"
+msgstr "Senza nome"
 
 #: src/e_mod_places.c:285
 msgid "Home"
