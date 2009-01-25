@@ -30,8 +30,8 @@ static void _setup(void)
         evas_object_image_file_set(o, build_path("image.png"), NULL);
 	evas_object_image_fill_set(o, 0, 0, 120, 160);
 	evas_object_resize(o, 120, 160);
-        a = 256 - (1 << (rnd() & 0x7));
-        if (a > 255) a = 255;
+        a = 256 - (1 << ((rnd() % 8) + 1));
+        if (a < 128) a = 128;
         evas_object_color_set(o, a, a, a, a);
         evas_object_show(o);
      }
