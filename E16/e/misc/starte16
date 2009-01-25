@@ -5,11 +5,13 @@ test -z "$s" && s=$0
 
 case "$s" in
 *gnome|GNOME)
-	export WINDOW_MANAGER=e16
+	WINDOW_MANAGER=e16
+	export WINDOW_MANAGER
 	exec gnome-session
 	;;
 *kde|KDE)
-	export KDEWM=e16
+	KDEWM=e16
+	export KDEWM
 	exec startkde
 	;;
 *)
