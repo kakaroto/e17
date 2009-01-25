@@ -4,7 +4,6 @@ images
    image: "eject.png" COMP;
    image: "eject_bg.png" COMP;
    image: "icon_hdd.png" COMP;
-   image: "icon_dvd.png" COMP;
    image: "icon_ipod.png" COMP;
    image: "icon_sdmmc.png" COMP;
    image: "icon_ms.png" COMP;
@@ -12,6 +11,7 @@ images
    image: "tag_ext3.png" COMP;
    image: "tag_fat.png" COMP;
    image: "tag_hfs.png" COMP;
+   image: "tag_dvd.png" COMP;
 }
 
 #define ICONS(_name) \
@@ -61,7 +61,6 @@ collections
          }
       }
    }
-   ICONS("dvd");
    ICONS("ipod");
    ICONS("sdmmc");
    ICONS("ms");
@@ -181,6 +180,13 @@ collections
             description { state: "hfs" 0.0;
                image.normal: "tag_hfs.png";
                inherit: "default" 0.0;
+               color: 255 255 255 240;
+            }
+            description { state: "dvd" 0.0;
+               image.normal: "tag_dvd.png";
+               inherit: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.5;
                color: 255 255 255 240;
             }
          }
@@ -467,6 +473,12 @@ collections
             signal: "icon,tag,hfs";
             source: "places";
             action: STATE_SET "hfs" 0.0;
+            target: "icon_tag";
+         }
+         program { name: "set_tag_dvd";
+            signal: "icon,tag,dvd";
+            source: "places";
+            action: STATE_SET "dvd" 0.0;
             target: "icon_tag";
          }
          program { name: "set_separator_horiz";

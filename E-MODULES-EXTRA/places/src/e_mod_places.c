@@ -129,6 +129,8 @@ _places_volume_sort_cb(const void *d1, const void *d2)
    const Volume *v1 = d1;
    const Volume *v2 = d2;
 
+   if (v1->removable && !v2->removable) return(1);
+   if (v2->removable && !v1->removable) return(-1);
    if(!v1 || !v1->label) return(1);
    if(!v2 || !v2->label) return(-1);
 
@@ -175,10 +177,9 @@ places_fill_box(Evas_Object *box)
       vol->icon = "e/icons/drive-harddisk";
       if (!strcmp(vol->drive_type, "cdrom"))
       {
+         vol->icon = "e/icons/drive-optical";
          if (!strcmp(vol->fstype, "udf"))
-            vol->icon = "modules/places/icon/dvd";
-         else
-            vol->icon = "e/icons/drive-optical";
+            edje_object_signal_emit(o, "icon,tag,dvd", "places");
       }
       else if (!strcmp(vol->model, "\"PSP\" MS"))
          vol->icon = "modules/places/icon/psp";

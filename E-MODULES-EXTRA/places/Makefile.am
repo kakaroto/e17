@@ -17,7 +17,6 @@ files_DATA = module.desktop \
 EXTRA_DIST = $(files_DATA) \
 	     images/eject.png \
 	     images/eject_bg.png \
-	     images/icon_dvd.png \
 	     images/icon_hdd.png \
 	     images/icon_ipod.png \
 	     images/icon_ms.png \
