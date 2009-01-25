@@ -64,34 +64,30 @@ enum Ewl_Engine_Theme_Hooks
 {
         EWL_ENGINE_THEME_FREEZE,
         EWL_ENGINE_THEME_THAW,
+        EWL_ENGINE_THEME_LAYER_STACK_ADD,
+        EWL_ENGINE_THEME_LAYER_STACK_DEL,
+        EWL_ENGINE_THEME_LAYER_UPDATE,
 
-        EWL_ENGINE_THEME_DATA_GET,
-
-        EWL_ENGINE_THEME_WIDGET_GROUP,
-
-        EWL_ENGINE_THEME_OBJECT_ADD,
         EWL_ENGINE_THEME_OBJECT_DEL,
+        EWL_ENGINE_THEME_OBJECT_COLOR_SET,
+        EWL_ENGINE_THEME_OBJECT_SHOW,
         EWL_ENGINE_THEME_OBJECT_MOVE,
         EWL_ENGINE_THEME_OBJECT_RESIZE,
-        EWL_ENGINE_THEME_OBJECT_SHOW,
-        EWL_ENGINE_THEME_OBJECT_HIDE,
-        EWL_ENGINE_THEME_OBJECT_CLIP_SET,
-        EWL_ENGINE_THEME_OBJECT_CLIP_UNSET,
-        EWL_ENGINE_THEME_OBJECT_FILE_SET,
-        EWL_ENGINE_THEME_OBJECT_LOAD_ERROR,
-        EWL_ENGINE_THEME_OBJECT_MIN_SIZE_GET,
-        EWL_ENGINE_THEME_OBJECT_MAX_SIZE_GET,
-        EWL_ENGINE_THEME_OBJECT_SIGNAL_SEND,
-        EWL_ENGINE_THEME_OBJECT_PART_TEXT_SET,
-        EWL_ENGINE_THEME_OBJECT_COLOR_CLASS_SET,
 
-        EWL_ENGINE_THEME_CLIP_ADD,
-        EWL_ENGINE_THEME_CLIP_DEL,
-        EWL_ENGINE_THEME_CLIP_CLIPEES_GET,
-        EWL_ENGINE_THEME_CLIP_COLOR_SET,
+        EWL_ENGINE_THEME_GROUP_ADD,
 
-        EWL_ENGINE_THEME_WIDGET_STACK_ADD,
-        EWL_ENGINE_THEME_WIDGET_LAYER_UPDATE,
+        EWL_ENGINE_THEME_ELEMENT_ADD,
+        EWL_ENGINE_THEME_ELEMENT_FILE_SET,
+        EWL_ENGINE_THEME_ELEMENT_LOAD_ERROR_GET,
+        EWL_ENGINE_THEME_ELEMENT_STATE_SET,
+        EWL_ENGINE_THEME_ELEMENT_TEXT_SET,
+        EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_GET,
+        EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_CALC,
+        EWL_ENGINE_THEME_ELEMENT_MAXIMUM_SIZE_GET,
+        EWL_ENGINE_THEME_ELEMENT_DATA_GET,
+        EWL_ENGINE_THEME_ELEMENT_SWALLOW,
+        EWL_ENGINE_THEME_ELEMENT_UNSWALLOW,
+
         EWL_ENGINE_THEME_MAX,
 };
 
@@ -217,10 +213,51 @@ void             ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y,
 
 void             ewl_engine_theme_freeze(Ewl_Embed *embed);
 void             ewl_engine_theme_thaw(Ewl_Embed *embed);
-char            *ewl_engine_theme_data_get(Ewl_Widget *w, char *key);
+void             ewl_engine_theme_layer_stack_add(Ewl_Embed *emb,
+                                                Ewl_Widget *w);
+void             ewl_engine_theme_layer_stack_del(Ewl_Embed *emb,
+                                                Ewl_Widget *w);
+void             ewl_engine_theme_layer_update(Ewl_Embed *emb,
+                                                Ewl_Widget *w);
+
+void             ewl_engine_theme_object_del(Ewl_Embed *emb, void *obj);
+void             ewl_engine_theme_object_color_set(Ewl_Embed *emb, void *obj, 
+                                                Ewl_Color_Set *color);
+void             ewl_engine_theme_object_show(Ewl_Embed *emb, void *obj);
+void             ewl_engine_theme_object_move(Ewl_Embed *emb, void *obj,
+                                                int x, int y);
+void             ewl_engine_theme_object_resize(Ewl_Embed *emb, void *obj,
+                                                int w, int h);
+
+void            *ewl_engine_theme_group_add(Ewl_Embed *emb);
+
+void            *ewl_engine_theme_element_add(Ewl_Embed *emb);
+unsigned int     ewl_engine_theme_element_file_set(Ewl_Embed *emb, void *obj,
+                                                const char *path,
+                                                const char *group);
+unsigned int     ewl_engine_theme_element_load_error_get(Ewl_Embed *emb,
+                                                void *obj);
+void             ewl_engine_theme_element_state_set(Ewl_Embed *emb, void *obj,
+                                                const char *state);
+void             ewl_engine_theme_element_text_set(Ewl_Embed *emb, void *obj,
+                                                const char *part,
+                                                const char *text);
+void             ewl_engine_theme_element_minimum_size_get(Ewl_Embed *emb,
+                                                void *obj, int *w, int *h);
+void             ewl_engine_theme_element_minimum_size_calc(Ewl_Embed *emb,
+                                                void *obj, int *w, int *h);
+void             ewl_engine_theme_element_maximum_size_get(Ewl_Embed *emb,
+                                                void *obj, int *w, int *h);
+const char      *ewl_engine_theme_element_data_get(Ewl_Embed *emb, void *obj,
+                                                const char *key);
+unsigned int     ewl_engine_theme_element_swallow(Ewl_Embed *emb, void *obj,
+                                                void *swallow);
+void            *ewl_engine_theme_element_unswallow(Ewl_Embed *emb, void *obj,
+                                                void *swallow);
 
 int              ewl_engine_pointer_data_new(Ewl_Embed *embed,
-                                                unsigned int *data, int w, int h);
+                                                unsigned int *data,
+                                                int w, int h);
 void             ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
 void             ewl_engine_pointer_set(Ewl_Embed *embed, int pointer);
 int              ewl_engine_pointer_get(Ewl_Embed *embed);
@@ -282,38 +319,41 @@ typedef void  (*Ewl_Engine_Cb_Canvas_Freeze)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Thaw)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Damage_Add)(Ewl_Embed *embed,
                                                 int x, int y, int w, int h);
-typedef void  (*Ewl_Engine_Cb_Theme_Freeze)();
-typedef void  (*Ewl_Engine_Cb_Theme_Thaw)();
-typedef char *(*Ewl_Engine_Cb_Theme_Data_Get)(const char *path, char *key);
-typedef void *(*Ewl_Engine_Cb_Theme_Widget_Group)(Ewl_Widget *w);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Add)(Ewl_Embed *embed);
+typedef void  (*Ewl_Engine_Cb_Theme_Freeze)(void);
+typedef void  (*Ewl_Engine_Cb_Theme_Thaw)(void);
+typedef void  (*Ewl_Engine_Cb_Theme_Layer_Stack_Add)(Ewl_Widget *w);
+typedef void  (*Ewl_Engine_Cb_Theme_Layer_Stack_Del)(Ewl_Widget *w);
+typedef void  (*Ewl_Engine_Cb_Theme_Layer_Update)(Ewl_Widget *w);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Del)(void *obj);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Set)(void *obj,
+                                                Ewl_Color_Set *c);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Show)(void *obj);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Move)(void *obj, int x, int y);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Resize)(void *obj, int w, int h);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Show)(void *obj);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Hide)(void *obj);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Set)(void *obj, void *clip);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Unset)(void *obj);
-typedef void (*Ewl_Engine_Cb_Theme_Object_Stack_Add)(Ewl_Widget *w);
-typedef void (*Ewl_Engine_Cb_Theme_Object_Layer_Update)(Ewl_Widget *w);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_File_Set)(void *obj, char *path,
-                                                                char *group);
-typedef void *(*Ewl_Engine_Cb_Theme_Object_Load_Error)(void *obj);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Min_Size_Get)(void *obj, int *w, int *h);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Max_Size_Get)(void *obj, int *w, int *h);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Signal_Send)(void *obj,
-                                                        char *state, char *source);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Part_Text_Set)(void *obj,
-                                                        char *part, char *text);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Class_Set)(char *name, int r,
-                                                        int g, int b, int r2,
-                                                        int g2, int b2, int r3,
-                                                        int g3, int b3);
-typedef void *(*Ewl_Engine_Cb_Theme_Clip_Add)(Ewl_Embed *embed);
-typedef void  (*Ewl_Engine_Cb_Theme_Clip_Del)(void *clip);
-typedef void *(*Ewl_Engine_Cb_Theme_Clip_Clipees_Get)(void *clip);
-typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g,
-                                                                int b, int a);
+typedef void *(*Ewl_Engine_Cb_Theme_Group_Add)(Ewl_Embed *emb);
+typedef void *(*Ewl_Engine_Cb_Theme_Element_Add)(Ewl_Embed *emb);
+typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_File_Set)(void *obj,
+                                                const char *path,
+                                                const char *group);
+typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_Load_Error_Get)(void *obj);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_State_Set)(void *obj,
+                                                const char *state);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_Text_Set)(void *obj,
+                                                const char *part,
+                                                const char *text);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_Minimum_Size_Get)(void *obj,
+                                                int *w, int *h);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_Minimum_Size_Calc)(void *obj,
+                                                int *w, int *h);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_Maximum_Size_Get)(void *obj,
+                                                int *w, int *h);
+typedef const char *(*Ewl_Engine_Cb_Theme_Element_Data_Get)(void *obj,
+                                                const char *key);
+typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_Swallow)(void *obj,
+                                                void *swallow);
+typedef void *(*Ewl_Engine_Cb_Theme_Element_Unswallow)(void *obj,
+                                                void *swallow);
+
 
 typedef int   (*Ewl_Engine_Cb_Pointer_Data_New)(Ewl_Embed *embed,
                                                 unsigned int *data,

@@ -1156,6 +1156,84 @@ ewl_engine_theme_thaw(Ewl_Embed *embed)
 }
 
 /**
+ * @param embed: Embed used to lookup the current theme engine.
+ * @param widget: The widget to add to the layer stack
+ * @return Returns no value
+ * @brief add the widget into the appropriated layer stack
+ */
+void
+ewl_engine_theme_layer_stack_add(Ewl_Embed *embed, Ewl_Widget *w)
+{
+        Ewl_Engine_Cb_Theme_Layer_Stack_Add stack_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        stack_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_LAYER_STACK_ADD);
+        if (stack_add)
+                stack_add(w);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed used to lookup the current theme engine.
+ * @param widget: The widget to remove from the layer stack
+ * @return Returns no value
+ * @brief remove the widget into the appropriated layer stack
+ */
+void
+ewl_engine_theme_layer_stack_del(Ewl_Embed *embed, Ewl_Widget *w)
+{
+        Ewl_Engine_Cb_Theme_Layer_Stack_Del stack_del;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        stack_del = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_LAYER_STACK_DEL);
+        if (stack_del)
+                stack_del(w);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed used to lookup the current theme engine.
+ * @param widget: The widget to update the layer position
+ * @return Returns no value
+ * @brief update the layer postion of the given widget
+ */
+void
+ewl_engine_theme_layer_update(Ewl_Embed *embed, Ewl_Widget *w)
+{
+        Ewl_Engine_Cb_Theme_Layer_Update layer_update;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        layer_update = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_LAYER_UPDATE);
+        if (layer_update)
+                layer_update(w);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+#if 0
+/**
  * @param w: Widget used to lookup the current theme key.
  * @param key: The key to lookup
  * @return Returns the theme data
@@ -1183,54 +1261,7 @@ ewl_engine_theme_data_get(Ewl_Widget *w, char *key)
 
         DRETURN_PTR(value, DLEVEL_STABLE);
 }
-
-/**
- * @return Returns a new object group on success, NULL on failure
- * @brief Create a grouping for theme objects.
- */
-void *
-ewl_engine_theme_widget_group(Ewl_Widget *w)
-{
-        Ewl_Embed *embed;
-        Ewl_Engine_Cb_Theme_Widget_Group theme_widget_group;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(w, NULL);
-        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
-
-        embed = ewl_embed_widget_find(w);
-        if (embed) {
-                theme_widget_group = ewl_engine_hook_get(embed,
-                                                EWL_ENGINE_HOOK_TYPE_THEME,
-                                                EWL_ENGINE_THEME_WIDGET_GROUP);
-                if (theme_widget_group)
-                        DRETURN_PTR(theme_widget_group(w), DLEVEL_STABLE);
-        }
-
-        DRETURN_PTR(NULL, DLEVEL_STABLE);
-}
-
-/**
- * @return Returns a new theme object on success, NULL on failure
- * @brief Add a theme object.
- */
-void *
-ewl_engine_theme_object_add(Ewl_Embed *embed)
-{
-        Ewl_Engine_Cb_Theme_Object_Add theme_object_add;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(embed, NULL);
-        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
-
-        theme_object_add = ewl_engine_hook_get(embed,
-                                        EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_ADD);
-        if (theme_object_add)
-                DRETURN_PTR(theme_object_add(embed), DLEVEL_STABLE);
-
-        DRETURN_PTR(NULL, DLEVEL_STABLE);
-}
+#endif
 
 /**
  * @return Returns a new theme object on success, NULL on failure
@@ -1254,6 +1285,76 @@ ewl_engine_theme_object_del(Ewl_Embed *embed, void *obj)
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @return Returns no value.
+ * @brief Show a theme object.
+ */
+void
+ewl_engine_theme_object_color_set(Ewl_Embed *embed, void *obj,
+                Ewl_Color_Set *color)
+{
+        Ewl_Engine_Cb_Theme_Object_Color_Set color_set;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        color_set = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_OBJECT_COLOR_SET);
+        if (color_set)
+                color_set(obj, color);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @return Returns no value.
+ * @brief Show a theme object.
+ */
+void
+ewl_engine_theme_object_show(Ewl_Embed *embed, void *obj)
+{
+        Ewl_Engine_Cb_Theme_Object_Show theme_object_show;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        theme_object_show = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_OBJECT_SHOW);
+        if (theme_object_show)
+                theme_object_show(obj);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+#if 0
+/**
+ * @return Returns no value.
+ * @brief Hide a theme object.
+ */
+void
+ewl_engine_theme_object_hide(Ewl_Embed *embed, void *obj)
+{
+        Ewl_Engine_Cb_Theme_Object_Hide theme_object_hide;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        theme_object_hide = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_OBJECT_HIDE);
+        if (theme_object_hide)
+                theme_object_hide(obj);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+#endif
 
 /**
  * @return Returns no value.
@@ -1299,115 +1400,269 @@ ewl_engine_theme_object_resize(Ewl_Embed *embed, void *obj, int width, int heigh
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
- * @return Returns no value.
- * @brief Show a theme object.
+ * @return Returns a new object group on success, NULL on failure
+ * @brief Create a grouping for theme objects.
+ */
+void *
+ewl_engine_theme_group_add(Ewl_Embed *embed)
+{
+        Ewl_Engine_Cb_Theme_Group_Add group_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        group_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_GROUP_ADD);
+        if (group_add)
+                DRETURN_PTR(group_add(embed), DLEVEL_STABLE);
+
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a new theme object on success, NULL on failure
+ * @brief Add a theme object.
+ */
+void *
+ewl_engine_theme_element_add(Ewl_Embed *embed)
+{
+        Ewl_Engine_Cb_Theme_Element_Add element_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        element_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_ADD);
+        if (element_add)
+                DRETURN_PTR(element_add(embed), DLEVEL_STABLE);
+
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+
+
+/**
+ * @brief File set a theme element.
+ */
+unsigned int
+ewl_engine_theme_element_file_set(Ewl_Embed *embed, void *obj, const char *file,
+                                const char *group)
+{
+        Ewl_Engine_Cb_Theme_Element_File_Set file_set;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, FALSE);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, FALSE);
+
+        file_set = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_FILE_SET);
+        if (file_set)
+                DRETURN_INT(file_set(obj, file, group), DLEVEL_STABLE);
+
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+unsigned int
+ewl_engine_theme_element_load_error_get(Ewl_Embed *embed, void *obj)
+{
+        Ewl_Engine_Cb_Theme_Element_Load_Error_Get error_get;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, TRUE);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, TRUE);
+
+        error_get = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_LOAD_ERROR_GET);
+        if (error_get)
+                DRETURN_INT(error_get(obj), DLEVEL_STABLE);
+
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
  */
 void
-ewl_engine_theme_object_show(Ewl_Embed *embed, void *obj)
+ewl_engine_theme_element_state_set(Ewl_Embed *embed, void *obj,
+                const char *state)
 {
-        Ewl_Engine_Cb_Theme_Object_Show theme_object_show;
+        Ewl_Engine_Cb_Theme_Element_State_Set state_set;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        theme_object_show = ewl_engine_hook_get(embed,
+        state_set = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_SHOW);
-        if (theme_object_show)
-                theme_object_show(obj);
+                                        EWL_ENGINE_THEME_ELEMENT_STATE_SET);
+        if (state_set)
+                state_set(obj, state);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @return Returns no value.
- * @brief Hide a theme object.
+ * @brief
  */
 void
-ewl_engine_theme_object_hide(Ewl_Embed *embed, void *obj)
+ewl_engine_theme_element_text_set(Ewl_Embed *embed, void *obj,
+                const char *part, const char *text)
 {
-        Ewl_Engine_Cb_Theme_Object_Hide theme_object_hide;
+        Ewl_Engine_Cb_Theme_Element_Text_Set text_set;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        theme_object_hide = ewl_engine_hook_get(embed,
+        text_set = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_HIDE);
-        if (theme_object_hide)
-                theme_object_hide(obj);
+                                        EWL_ENGINE_THEME_ELEMENT_TEXT_SET);
+        if (text_set)
+                text_set(obj, part, text);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @return Returns no value.
- * @brief Clip set a theme object.
+ * @brief
  */
 void
-ewl_engine_theme_object_clip_set(Ewl_Embed *embed, void *obj, void *clip)
+ewl_engine_theme_element_minimum_size_get(Ewl_Embed *embed, void *obj,
+                int *w, int *h)
 {
-        Ewl_Engine_Cb_Theme_Object_Clip_Set theme_object_clip_set;
+        Ewl_Engine_Cb_Theme_Element_Minimum_Size_Get min_get;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        theme_object_clip_set = ewl_engine_hook_get(embed,
+        min_get = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_CLIP_SET);
-        if (theme_object_clip_set)
-                theme_object_clip_set(obj, clip);
+                                        EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_GET);
+        if (min_get)
+                min_get(obj, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @return Returns no value.
- * @brief Clip unset a theme object.
+ * @brief
  */
 void
-ewl_engine_theme_object_clip_unset(Ewl_Embed *embed, void *obj)
+ewl_engine_theme_element_minimum_size_calc(Ewl_Embed *embed, void *obj,
+                int *w, int *h)
 {
-        Ewl_Engine_Cb_Theme_Object_Clip_Unset theme_object_clip_unset;
+        Ewl_Engine_Cb_Theme_Element_Minimum_Size_Calc min_calc;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        theme_object_clip_unset = ewl_engine_hook_get(embed,
+        min_calc = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_CLIP_UNSET);
-        if (theme_object_clip_unset)
-                theme_object_clip_unset(obj);
+                                        EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_CALC);
+        if (min_calc)
+                min_calc(obj, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @return Returns no value.
- * @brief File set a theme object.
+ * @brief
  */
 void
-ewl_engine_theme_object_file_set(Ewl_Embed *embed, void *obj, char *file, char *group)
+ewl_engine_theme_element_maximum_size_get(Ewl_Embed *embed, void *obj,
+                int *w, int *h)
 {
-        Ewl_Engine_Cb_Theme_Object_File_Set theme_object_file_set;
+        Ewl_Engine_Cb_Theme_Element_Maximum_Size_Get max_get;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        theme_object_file_set = ewl_engine_hook_get(embed,
+        max_get = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_OBJECT_FILE_SET);
-        if (theme_object_file_set)
-                theme_object_file_set(obj, file, group);
+                                        EWL_ENGINE_THEME_ELEMENT_MAXIMUM_SIZE_GET);
+        if (max_get)
+                max_get(obj, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @brief
+ */
+const char *
+ewl_engine_theme_element_data_get(Ewl_Embed *embed, void *obj, const char *key)
+{
+        Ewl_Engine_Cb_Theme_Element_Data_Get data_get;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        data_get = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_DATA_GET);
+        if (data_get)
+                DRETURN_PTR(data_get(obj, key), DLEVEL_STABLE);
+
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+unsigned int
+ewl_engine_theme_element_swallow(Ewl_Embed *embed, void *obj, void *sw)
+{
+        Ewl_Engine_Cb_Theme_Element_Swallow swallow;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, FALSE);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, FALSE);
+
+        swallow = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_SWALLOW);
+        if (swallow)
+                DRETURN_INT(swallow(obj, sw), DLEVEL_STABLE);
+
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void *
+ewl_engine_theme_element_unswallow(Ewl_Embed *embed, void *obj, void *swallow)
+{
+        Ewl_Engine_Cb_Theme_Element_Unswallow unswallow;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        unswallow = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_UNSWALLOW);
+        if (unswallow)
+                DRETURN_PTR(unswallow(obj, swallow), DLEVEL_STABLE);
+
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
 
 /**
  * @return Returns a pointer id on success, zero on failure.
