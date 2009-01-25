@@ -41,7 +41,6 @@ struct Ewl_Attach
         Ewl_Attach_Data_Type data_type; /**< The data type of the attachment */
 
         void *data;                        /**< The attachment data */
-        void *priv_data;                /**< Any private data in the attachment */
 };
 
 /**
@@ -55,8 +54,8 @@ typedef struct Ewl_Attach_Dnd Ewl_Attach_Dnd;
 struct Ewl_Attach_Dnd
 {
         Ewl_Widget *cursor;        /**< Cursor displayed for DND */
-        void *data;                /**< The attachment data */
-        int size;                /**< Any private data in the attachment */
+        void *data;                /**< The data to transfer */
+        int size;                  /**< The size of the data */
 };
 
 /**
