@@ -11,14 +11,6 @@
 
 #include <Ecore_File.h>
 
-#ifndef uid_t
-# define uid_t unsigned long
-#endif
-
-#ifndef gid_t
-# define gid_t unsigned long
-#endif
-
 /**
  * @addtogroup Ewl_Filelist Ewl_Filelist: The base widget for the filelists
  * A base class to be extended to provide different views on the file list
@@ -30,7 +22,7 @@
  *
  * @{
  */
- 
+
 /**
  * @def EWL_FILELIST_FILTER_TYPE
  * The type name
