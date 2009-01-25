@@ -162,7 +162,7 @@ places_fill_box(Evas_Object *box)
          edje_object_part_text_set(o, "volume_label", vol->label);
       else if (vol->mount_point && !strcmp(vol->mount_point, "/"))
          edje_object_part_text_set(o, "volume_label", D_("Filesystem"));
-      else if (vol->mount_point)
+      else if (vol->mount_point && strlen(vol->mount_point) > 0)
          edje_object_part_text_set(o, "volume_label",
                                    ecore_file_file_get(vol->mount_point));
       else
@@ -918,7 +918,7 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
    //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
    
-   _places_print_volume(v);  //Use this for debug
+   //_places_print_volume(v);  //Use this for debug
    v->valid = 1;
    
    if (v->to_mount && !v->mounted)
