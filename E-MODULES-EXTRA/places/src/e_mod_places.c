@@ -180,6 +180,8 @@ places_fill_box(Evas_Object *box)
          else
             vol->icon = "modules/places/icon/cdrom";
       }
+      else if (!strcmp(vol->model, "\"PSP\" MS"))
+         vol->icon = "modules/places/icon/psp";
       else if (!strcmp(vol->drive_type, "sd_mmc"))
          vol->icon = "modules/places/icon/sdmmc";
       else if (!strcmp(vol->drive_type, "memory_stick"))
@@ -209,6 +211,7 @@ places_fill_box(Evas_Object *box)
         edje_object_signal_emit(o, "icon,eject,show", "places");
       else
         edje_object_signal_emit(o, "icon,eject,hide", "places");
+
 
       /* orient the separator*/
       if (!e_box_orientation_get(box))
@@ -915,7 +918,7 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
    //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
    
-   //_places_print_volume(v);  //Use this for debug
+   _places_print_volume(v);  //Use this for debug
    v->valid = 1;
    
    if (v->to_mount && !v->mounted)

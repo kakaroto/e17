@@ -12,6 +12,7 @@ images
    image: "icon_ext3.png" COMP;
    image: "icon_vfat.png" COMP;
    image: "icon_hfs.png" COMP;
+   image: "icon_psp.png" COMP;
 }
 
 #define ICONS(_name) \
@@ -69,6 +70,7 @@ collections
    ICONS("hfs");
    ICONS("vfat");
    ICONS("ms");
+   ICONS("psp");
 /****************************************************/
 /**  GADGET VOLUME  *********************************/
 /****************************************************/
@@ -444,6 +446,12 @@ collections
             signal: "separator,set,vert";
             source: "places";
             action: STATE_SET "vert" 0.0;
+            target: "separator";
+         }
+         program { name: "set_separator_hidden";
+            signal: "separator,set,hidden";
+            source: "places";
+            action: STATE_SET "default" 0.0;
             target: "separator";
          }
       }

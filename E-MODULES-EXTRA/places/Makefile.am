@@ -26,6 +26,7 @@ EXTRA_DIST = $(files_DATA) \
 	     images/icon_ms.png \
 	     images/icon_sdmmc.png \
 	     images/icon_vfat.png \
+	     images/icon_psp.png \
 	     fonts/VeraBd.ttf \
 	     fonts/Vera.ttf
 
