@@ -517,8 +517,8 @@ test_keys_remove(char *buf, int len)
 
         int ret = 1;
         Ewl_Config *cfg;
-        cfg = ewl_config_new("unit test");
 
+        cfg = ewl_config_new("unit test");
         cfg->data.system = test_make_hash();
         cfg->data.user = test_make_hash();
         cfg->data.instance = test_make_hash();
@@ -553,6 +553,7 @@ static int
 test_current_key(char *buf, int len, Ecore_List *list, const char *key)
 {
         const char *str;
+
         str = ecore_list_next(list);
         if (str)
         {
@@ -581,10 +582,8 @@ test_keys_get(char *buf, int len)
         int ret = 1;
         Ewl_Config *cfg;
         Ecore_List *keys_list;
-        char const *str;
 
         cfg = ewl_config_new("unit test");
-
         cfg->data.system = test_make_hash();
         cfg->data.user = test_make_hash();
         cfg->data.instance = test_make_hash();
