@@ -4,15 +4,14 @@ images
    image: "eject.png" COMP;
    image: "eject_bg.png" COMP;
    image: "icon_hdd.png" COMP;
-   image: "icon_cdrom.png" COMP;
    image: "icon_dvd.png" COMP;
    image: "icon_ipod.png" COMP;
    image: "icon_sdmmc.png" COMP;
    image: "icon_ms.png" COMP;
-   image: "icon_ext3.png" COMP;
-   image: "icon_vfat.png" COMP;
-   image: "icon_hfs.png" COMP;
    image: "icon_psp.png" COMP;
+   image: "tag_ext3.png" COMP;
+   image: "tag_fat.png" COMP;
+   image: "tag_hfs.png" COMP;
 }
 
 #define ICONS(_name) \
@@ -62,13 +61,9 @@ collections
          }
       }
    }
-   ICONS("cdrom");
    ICONS("dvd");
    ICONS("ipod");
    ICONS("sdmmc");
-   ICONS("ext3");
-   ICONS("hfs");
-   ICONS("vfat");
    ICONS("ms");
    ICONS("psp");
 /****************************************************/
@@ -136,43 +131,57 @@ collections
          part { name: "icon";
             mouse_events: 0;
             type: SWALLOW;
+            clip_to: "icon_clip";
             description { state: "default" 0.0;
-               rel1.relative: 0 0;
                rel2.relative: 0 0;
                rel1.offset: 5 5;
                rel2.offset: 45 45;
             }
-         }
-         part { name: "icon_ghost_clip";
-            mouse_events: 0;
-            type: RECT;
-            description { state: "default" 0.0;
-               rel1.relative: 0 0;
+            description { state: "big" 0.0;
+               color: 255 255 255 0;
                rel2.relative: 0 0;
                rel1.offset: -10 -10;
                rel2.offset: 60 60;
-               color: 255 255 255 200;
+            }
+         }
+         part { name: "icon_clip";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel2.relative: 0 0;
+               rel1.offset: -10 -10;
+               rel2.offset: 60 60;
+               color: 255 255 255 255;
             }
             description { state: "big" 0.0;
                inherit: "default" 0.0;
                color: 255 255 255 0;
             }
          }
-         part { name: "icon_ghost";
+         part { name: "icon_tag";
             mouse_events: 0;
-            type: SWALLOW;
-            clip_to: "icon_ghost_clip";
+            clip_to: "icon_clip";
             description { state: "default" 0.0;
-               rel1.relative: 0 0;
-               rel2.relative: 0 0;
-               rel1.offset: 5 5;
-               rel2.offset: 45 45;
+               image.normal: "tag_ext3.png";
+               rel1.to: "icon";
+               rel2.relative: 0.5 0.5;
+               rel2.to: "icon";
+               color: 255 255 255 0;
             }
-            description { state: "big" 0.0;
-               rel1.relative: 0 0;
-               rel2.relative: 0 0;
-               rel1.offset: -10 -10;
-               rel2.offset: 60 60;
+            description { state: "ext3" 0.0;
+               image.normal: "tag_ext3.png";
+               inherit: "default" 0.0;
+               color: 255 255 255 240;
+            }
+            description { state: "fat" 0.0;
+               image.normal: "tag_fat.png";
+               inherit: "default" 0.0;
+               color: 255 255 255 240;
+            }
+            description { state: "hfs" 0.0;
+               image.normal: "tag_hfs.png";
+               inherit: "default" 0.0;
+               color: 255 255 255 240;
             }
          }
          part { name: "gauge_bg";
@@ -368,8 +377,8 @@ collections
             source: "icon_events";
             action: STATE_SET "big" 0.0;
             transition: DECELERATE 0.5;
-            target: "icon_ghost_clip";
-            target: "icon_ghost";
+            target: "icon_clip";
+            target: "icon";
             after: "reset_pulse";
             after: "pulse";
          }
@@ -383,8 +392,8 @@ collections
          program { name: "reset_pulse";
             action: STATE_SET "default" 0.0;
             transition: LINEAR 0.0;
-            target: "icon_ghost_clip";
-            target: "icon_ghost";
+            target: "icon_clip";
+            target: "icon";
          }
          program { name: "eject_mouse_in";
             signal: "mouse,in";
@@ -435,6 +444,30 @@ collections
             source: "places";
             action: STATE_SET "visible" 0.0;
             target: "eject_icon";
+         }
+         program { name: "set_tag_none";
+            signal: "icon,tag,none";
+            source: "places";
+            action: STATE_SET "default" 0.0;
+            target: "icon_tag";
+         }
+         program { name: "set_tag_ext3";
+            signal: "icon,tag,ext3";
+            source: "places";
+            action: STATE_SET "ext3" 0.0;
+            target: "icon_tag";
+         }
+         program { name: "set_tag_fat";
+            signal: "icon,tag,fat";
+            source: "places";
+            action: STATE_SET "fat" 0.0;
+            target: "icon_tag";
+         }
+         program { name: "set_tag_hfs";
+            signal: "icon,tag,hfs";
+            source: "places";
+            action: STATE_SET "hfs" 0.0;
+            target: "icon_tag";
          }
          program { name: "set_separator_horiz";
             signal: "separator,set,horiz";

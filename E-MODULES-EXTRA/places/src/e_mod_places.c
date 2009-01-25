@@ -172,13 +172,13 @@ places_fill_box(Evas_Object *box)
       _places_update_size(o, vol);
 
       //choose icon
-      vol->icon = "modules/places/icon/generic";
+      vol->icon = "e/icons/drive-harddisk";
       if (!strcmp(vol->drive_type, "cdrom"))
       {
          if (!strcmp(vol->fstype, "udf"))
             vol->icon = "modules/places/icon/dvd";
          else
-            vol->icon = "modules/places/icon/cdrom";
+            vol->icon = "e/icons/drive-optical";
       }
       else if (!strcmp(vol->model, "\"PSP\" MS"))
          vol->icon = "modules/places/icon/psp";
@@ -189,29 +189,28 @@ places_fill_box(Evas_Object *box)
       else if (!strcmp(vol->model, "iPod"))
          vol->icon = "modules/places/icon/ipod";
       else if (!strcmp(vol->fstype, "ext3"))
-         vol->icon = "modules/places/icon/ext3";
+         edje_object_signal_emit(o, "icon,tag,ext3", "places");
       else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs"))
-         vol->icon = "modules/places/icon/vfat";
+         edje_object_signal_emit(o, "icon,tag,fat", "places");
       else if (!strcmp(vol->fstype, "hfs") || !strcmp(vol->fstype, "hfsplus"))
-         vol->icon = "modules/places/icon/hfs";
+         edje_object_signal_emit(o, "icon,tag,hfs", "places");
 
       //set icon
       icon = edje_object_add(evas_object_evas_get(box));
-      edje_object_file_set(icon, theme_file, vol->icon);
+      if (strncmp(vol->icon, "e/", 2))
+         edje_object_file_set(icon, theme_file, vol->icon);
+      else
+         edje_object_file_set(icon,
+                              e_theme_edje_file_get("base/theme/fileman",
+                                                    vol->icon), vol->icon);
       edje_object_part_swallow(o, "icon", icon);
 
-      //set ghost icon
-      icon = edje_object_add(evas_object_evas_get(box));
-      edje_object_file_set(icon, theme_file, vol->icon);
-      edje_object_part_swallow(o, "icon_ghost", icon);
-      
       //set mount/eject icon
       if (vol->requires_eject || (vol->mounted && strcmp(vol->mount_point, "/")) ||
           !strcmp(vol->bus, "usb")) //Some usb key don't have requires_eject set (probably an hal error)
         edje_object_signal_emit(o, "icon,eject,show", "places");
       else
         edje_object_signal_emit(o, "icon,eject,hide", "places");
-
 
       /* orient the separator*/
       if (!e_box_orientation_get(box))
@@ -256,12 +255,6 @@ places_empty_box(Evas_Object *box)
       Evas_Object *swal;
 
       o = e_box_pack_object_nth(box, count);
-      swal = edje_object_part_swallow_get(o, "icon_ghost");
-      if (swal)
-      {
-         edje_object_part_unswallow(o, swal);
-         evas_object_del(swal);
-      }
       swal = edje_object_part_swallow_get(o, "icon");
       if (swal)
       {

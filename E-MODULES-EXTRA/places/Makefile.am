@@ -17,16 +17,15 @@ files_DATA = module.desktop \
 EXTRA_DIST = $(files_DATA) \
 	     images/eject.png \
 	     images/eject_bg.png \
-	     images/icon_cdrom.png \
 	     images/icon_dvd.png \
-	     images/icon_ext3.png \
 	     images/icon_hdd.png \
-	     images/icon_hfs.png \
 	     images/icon_ipod.png \
 	     images/icon_ms.png \
 	     images/icon_sdmmc.png \
-	     images/icon_vfat.png \
-	     images/icon_psp.png
+	     images/icon_psp.png \
+	     images/tag_ext3.png \
+	     images/tag_fat.png \
+	     images/tag_hfs.png
 
 ACLOCAL_AMFLAGS = -I m4
 
