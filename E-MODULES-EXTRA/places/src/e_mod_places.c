@@ -369,12 +369,15 @@ places_generate_menu(void *data, E_Menu *em)
       else
          e_menu_item_label_set(mi, ecore_file_file_get(vol->mount_point));
 
-      if (strncmp(vol->icon, "e/", 2))
-         e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
-      else
-         e_menu_item_icon_edje_set(mi,
-                                   e_theme_edje_file_get("base/theme/fileman",
-                                                          vol->icon), vol->icon);
+      if (vol->icon)
+      {
+         if (strncmp(vol->icon, "e/", 2))
+            e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
+         else
+            e_menu_item_icon_edje_set(mi,
+                                      e_theme_edje_file_get("base/theme/fileman",
+                                                            vol->icon), vol->icon);
+      }
       e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
    }
 
