@@ -95,7 +95,7 @@ trove_classifiers = [
     "Environment :: Console :: Framebuffer",
     "Environment :: X11 Applications",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX",
     "Programming Language :: C",
