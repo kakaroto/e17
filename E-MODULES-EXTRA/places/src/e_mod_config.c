@@ -41,8 +41,6 @@ e_int_config_places_module(E_Container *con)
    /* create new config dialog */
    cfd = e_config_dialog_new(con, D_("Places Configuration"), "Places", 
                              "_e_module_places_cfg_dlg", buf, 0, v, NULL);
-
-   e_dialog_resizable_set(cfd->dia, 1);
    places_conf->cfd = cfd;
    return cfd;
 }

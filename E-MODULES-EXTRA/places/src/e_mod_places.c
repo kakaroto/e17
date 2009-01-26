@@ -39,6 +39,7 @@ static void _places_mount_volume(Volume *vol);
 static const char *_places_human_size_get(unsigned long long size);
 static unsigned long long _places_free_space_get(const char *mount);
 static void _places_update_size(Evas_Object *obj, Volume *vol);
+
 // Edje callbacks
 void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
@@ -272,6 +273,54 @@ places_empty_box(Evas_Object *box)
 }
 
 void
+places_parse_bookmarks(E_Menu *em)
+{
+   char line[PATH_MAX];
+   char buf[PATH_MAX];
+   E_Menu_Item *mi;
+   Efreet_Uri *uri;
+   char *alias;
+   FILE* fp;
+
+   snprintf(buf, sizeof(buf), "%s/.gtk-bookmarks", e_user_homedir_get());
+   fp = fopen(buf, "r");
+   if (fp)
+   {
+      while(fgets(line, sizeof(line), fp))
+      {
+         alias = NULL;
+         line[strlen(line) - 1] = '\0';
+         alias = strchr(line, ' ');
+         if (alias)
+         {
+            line[alias-line] =  '\0';
+            alias++;
+         }
+         uri = efreet_uri_decode(line);
+         if (uri && uri->path)
+         {
+            if (ecore_file_exists(uri->path))
+            {
+               mi = e_menu_item_new(em);
+               e_menu_item_label_set(mi, alias ? alias :
+                                        ecore_file_file_get(uri->path));
+               e_util_menu_item_edje_icon_set(mi, "fileman/folder");
+               e_menu_item_callback_set(mi, _places_run_fm, strdup(uri->path)); //TODO free somewhere
+            }
+         }
+         if (uri) efreet_uri_free(uri);
+      }
+      fclose(fp);
+   }
+}
+
+void
+places_menu_click_cb(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   _places_icon_activated_cb(data, NULL, NULL, NULL);
+}
+
+void
 places_generate_menu(void *data, E_Menu *em)
 {
    E_Menu_Item *mi;
@@ -296,15 +345,15 @@ places_generate_menu(void *data, E_Menu *em)
    e_util_menu_item_edje_icon_set(mi, "fileman/folder");
    e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
 
+   //separator
+   mi = e_menu_item_new(em);
+   e_menu_item_separator_set(mi, 1);
+
    /* File System */
    mi = e_menu_item_new(em);
    e_menu_item_label_set(mi, D_("Filesystem"));
    e_util_menu_item_edje_icon_set(mi, "fileman/hdd");
    e_menu_item_callback_set(mi, _places_run_fm, "/");
-
-   //separator
-   mi = e_menu_item_new(em);
-   e_menu_item_separator_set(mi, 1);
 
    /* Volumes */
    Eina_List *l;
@@ -312,7 +361,6 @@ places_generate_menu(void *data, E_Menu *em)
    {
       Volume *vol = l->data;
       if (!vol->valid) continue;
-      if (!vol->mounted) continue;
       if (vol->mount_point && !strcmp(vol->mount_point, "/")) continue;
 
       mi = e_menu_item_new(em);
@@ -321,8 +369,13 @@ places_generate_menu(void *data, E_Menu *em)
       else
          e_menu_item_label_set(mi, ecore_file_file_get(vol->mount_point));
 
-      e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
-      e_menu_item_callback_set(mi, _places_run_fm, (void*)vol->mount_point);
+      if (strncmp(vol->icon, "e/", 2))
+         e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
+      else
+         e_menu_item_icon_edje_set(mi,
+                                   e_theme_edje_file_get("base/theme/fileman",
+                                                          vol->icon), vol->icon);
+      e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
    }
 
    //separator
@@ -330,26 +383,7 @@ places_generate_menu(void *data, E_Menu *em)
    e_menu_item_separator_set(mi, 1);
 
    /* Favorites */
-   char line[PATH_MAX];
-   FILE* fp;
-
-   snprintf(buf, sizeof(buf), "%s/.gtk-bookmarks", e_user_homedir_get());
-   fp = fopen(buf, "r");
-   if (fp)
-   {
-      while(fgets(line, sizeof(line), fp))
-      {
-         line[strlen(line) - 1] = '\0';
-         if (ecore_file_exists(line + 7))
-         {
-            mi = e_menu_item_new(em);
-            e_menu_item_label_set(mi, ecore_file_file_get(line));
-            e_util_menu_item_edje_icon_set(mi, "fileman/folder");
-            e_menu_item_callback_set(mi, _places_run_fm, strdup(line + 7)); //TODO free somewhere
-         }
-      }
-      fclose(fp);
-   }
+   places_parse_bookmarks(em);
 
    e_menu_pre_activate_callback_set(em, NULL, NULL);
 }
@@ -625,7 +659,6 @@ void
 _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    Volume *vol;
-   E_Fm2_Mount *emount;
 
    vol = data;
 
