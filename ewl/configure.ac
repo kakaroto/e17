@@ -160,12 +160,19 @@ AC_SUBST(lt_enable_auto_import)
 
 
 have_locking="no"
+CPPFLAGS_save=${CPPFLAGS}
+LDFLAGS_save=${LDLAGS}
+CPPFLAGS="${CPPFLAGS} ${EVIL_CFLAGS}"
+LDFLAGS="${LDFLAGS} ${EVIL_LIBS}"
 AC_COMPILE_IFELSE(
   [AC_LANG_PROGRAM(
      [[
 #include <stdlib.h>
 #if HAVE_FCNTL_H
 # include <fcntl.h>
+#endif
+#if HAVE_EVIL
+# include <Evil.h>
 #endif
      ]],
      [[
@@ -176,28 +183,11 @@ fcntl (1, F_SETLKW, NULL);
   [AC_DEFINE(HAVE_FCNTL, 1, [Define to 1 if fcntl() is available])
    have_locking="yes"]
 )
+CPPFLAGS=${CPPFLAGS_save}
+LDFLAGS=${LDFLAGS_save}
 
 if test "x${have_locking}" = "xno"; then
-  AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM(
-       [[
-#if HAVE_FCNTL_H
-# include <fcntl.h>
-#endif
-#include <sys/locking.h>
-       ]],
-       [[
-_locking (1, _LK_LOCK, 10);
-       ]]
-     )
-    ],
-    [AC_DEFINE(HAVE__LOCKING, 1, [Define to 1 if _locking() is available])
-     have_locking="yes"]
-  )
-fi
-
-if test "x${have_locking}" = "xno"; then
-  AC_MSG_ERROR([Error: no fcntl() nor _locking() is available.])
+  AC_MSG_ERROR([Error: fcntl() not available.])
 fi
 
 ## Engines

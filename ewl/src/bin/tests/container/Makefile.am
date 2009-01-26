@@ -19,7 +19,7 @@ pkg_LTLIBRARIES= ewl_container_test.la
 
 ewl_container_test_la_SOURCES = ewl_container_test.c \
 				ewl_container_unit_test.c
-ewl_container_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_container_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_container_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = ewl_container_test.c

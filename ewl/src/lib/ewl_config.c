@@ -37,9 +37,9 @@ Ewl_Config_Cache ewl_config_cache;
 
 extern Ecore_List *ewl_embed_list;
 
-static int ewl_config_file_read_lock(int fd, long size);
-static int ewl_config_file_write_lock(int fd, long size);
-static int ewl_config_file_unlock(int fd, long size);
+static int ewl_config_file_read_lock(int fd);
+static int ewl_config_file_write_lock(int fd);
+static int ewl_config_file_unlock(int fd);
 static int ewl_config_load(Ewl_Config *cfg);
 static int ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system,
                                                         const char *file);
@@ -747,7 +747,7 @@ ewl_config_system_save(Ewl_Config *cfg)
 }
 
 static int
-ewl_config_file_read_lock(int fd, long size)
+ewl_config_file_read_lock(int fd)
 {
 #if defined(F_SETLKW)
         struct flock fl;
@@ -758,16 +758,11 @@ ewl_config_file_read_lock(int fd, long size)
         fl.l_len = 0;
 
         return (fcntl(fd, F_SETLKW, &fl) == 0);
-#else
-# if HAVE__LOCKING
-        return (_locking(fd, _LK_LOCK, size) == 0);
-# endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
-        size = size;
 }
 
 static int
-ewl_config_file_write_lock(int fd, long size)
+ewl_config_file_write_lock(int fd)
 {
 #if defined(F_SETLKW)
         struct flock fl;
@@ -778,16 +773,11 @@ ewl_config_file_write_lock(int fd, long size)
         fl.l_len = 0;
 
         return (fcntl(fd, F_SETLKW, &fl) == 0);
-#else
-# if HAVE__LOCKING
-        return (_locking(fd, _LK_LOCK, size) == 0);
-# endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
-        size = size;
 }
 
 static int
-ewl_config_file_unlock(int fd, long size)
+ewl_config_file_unlock(int fd)
 {
 #if defined(F_SETLKW)
         struct flock fl;
@@ -798,12 +788,7 @@ ewl_config_file_unlock(int fd, long size)
         fl.l_len = 0;
 
         return (fcntl(fd, F_SETLK, &fl) == 0);
-#else
-# if HAVE__LOCKING
-        return (_locking(fd, _LK_UNLCK, size) == 0);
-# endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
-        size = size;
 }
 
 static int
@@ -811,7 +796,6 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 {
         Ecore_List *keys;
         char *key, data[512], *path;
-        long size;
         int fd;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -840,9 +824,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
-        size = ecore_file_size(file);
-
-        if (!ewl_config_file_write_lock(fd, size))
+        if (!ewl_config_file_write_lock(fd))
         {
                 DWARNING("Unable to lock %s for write.", file);
                 close(fd);
@@ -864,7 +846,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
         }
 
         /* release the lock */
-        ewl_config_file_unlock(fd, size);
+        ewl_config_file_unlock(fd);
         close(fd);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1187,7 +1169,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 
         size = ecore_file_size(file);
 
-        if (!ewl_config_file_read_lock(fd, size))
+        if (!ewl_config_file_read_lock(fd))
         {
                 DWARNING("Unable to lock %s for read.", file);
 
@@ -1205,7 +1187,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
         data[size] = '\0';
 
         /* release the lock as the file is in memory */
-        ewl_config_file_unlock(fd, size);
+        ewl_config_file_unlock(fd);
         close(fd);
 
         /* create the hash to store the values */
@@ -1310,5 +1292,3 @@ ewl_config_trim(char *v2)
 
         DRETURN_PTR(v2, DLEVEL_STABLE);
 }
-
-

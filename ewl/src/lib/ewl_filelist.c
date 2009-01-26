@@ -21,6 +21,9 @@
 # include <grp.h>
 #endif /* HAVE_GRP_H */
 #include <time.h>
+#if HAVE_EVIL
+# include <Evil.h>
+#endif /* HAVE_EVIL */
 
 static void ewl_filelist_setup(Ewl_Filelist *fl);
 static void ewl_filelist_view_setup(Ewl_Filelist *fl);
