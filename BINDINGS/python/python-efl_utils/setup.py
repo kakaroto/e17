@@ -10,7 +10,7 @@ trove_classifiers = [
     "Environment :: Console :: Framebuffer",
     "Environment :: X11 Applications",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX",
     "Programming Language :: C",
@@ -27,7 +27,7 @@ These utilities include transition effects, timeline animators and more.
 
 setup(name = 'python-efl-utils',
       version = '0.1.0',
-      license = 'BSD',
+      license = 'LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',
