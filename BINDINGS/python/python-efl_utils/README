@@ -1,0 +1,26 @@
+                      UTILITIES TO WORK WITH EFL
+
+REQUIREMENTS
+============
+
+ * Python-Evas >= 0.1.1
+ * Python-Ecore >= 0.1.1
+ * Python >= 2.4
+ * Python-setuptools >= 0.6_rc3
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses setuptools, so execute:
+
+Install::
+
+        python setup.py install
+
+You can choose where to install by using command options, see output
+of "python setup.py $COMMAND --help", example:
+
+        python setup.py install --help
+
+Options can also be set in file "setup.cfg".

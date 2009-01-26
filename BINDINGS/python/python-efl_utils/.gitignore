@@ -1,0 +1,6 @@
+*.pyo
+*.pyc
+python_efl_utils.egg-info
+build
+dist
+*~

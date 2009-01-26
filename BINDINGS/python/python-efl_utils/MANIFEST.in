@@ -1,0 +1,5 @@
+recursive-include efl_utils *.py
+recursive-include examples *.py
+include ez_setup.py
+include AUTHORS COPYING-PLAIN COPYING README
+
