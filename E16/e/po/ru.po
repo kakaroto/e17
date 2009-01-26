@@ -1,6 +1,5 @@
 # This is the Russian locale definition for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>, 1999-2000. (2 балла, Владимир! "Вым" порадовал...)
 #
 # converted to UTF-8 and improved by sda <sda00@himki.net>, 2009, SOAD Linux Team
 #
@@ -295,7 +294,6 @@ msgid "Enable background transparency compatibility mode"
 msgstr "Включить режим поддержки ARGB для фонового рисунка"
 
 #: src/backgrounds.c:2222 src/mod-trans.c:199
-#, fuzzy
 msgid "Background"
 msgstr "Фоновый рисунок"
 
@@ -343,7 +341,6 @@ msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
 
 #: src/config.c:215
-#, fuzzy, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
 "the following text in the middle of current %s definition:\n"
@@ -356,7 +353,6 @@ msgstr ""
 "Игнорирую и продолжаю...\n"
 
 #: src/config.c:223
-#, fuzzy, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
@@ -377,7 +373,6 @@ msgid "Abort and Exit"
 msgstr "Выход"
 
 #: src/config.c:316
-#, fuzzy, c-format
 msgid ""
 "ERROR:\n"
 "\n"
@@ -418,9 +413,8 @@ msgid "Enlightenment Starting..."
 msgstr "Запуск Enlightenment..."
 
 #: src/container.c:1207
-#, fuzzy
 msgid "Settings..."
-msgstr "Настройки фокуса"
+msgstr "Настройки..."
 
 #: src/container.c:1211 src/dialog.c:855 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
@@ -432,7 +426,6 @@ msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
 #: src/container.c:1512 src/container.c:1585
-#, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Размер пиктограммы"
 
@@ -441,7 +434,6 @@ msgid "Transparent background"
 msgstr "Прозрачный фон"
 
 #: src/container.c:1553
-#, fuzzy
 msgid "Hide inner border"
 msgstr "Показать/спрятать эту группу"
 
@@ -503,7 +495,7 @@ msgstr "В конце"
 
 #: src/container.c:1659 src/focus.c:831
 msgid "None"
-msgstr "Нигде"
+msgstr "Не использовать"
 
 #: src/container.c:1669
 msgid "Show icon names"
@@ -531,11 +523,12 @@ msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Пиктограмма Enlightenment, Снимок окна"
 
 #: src/container.c:1713
-#, fuzzy
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr ""
+"Диалог настройки\n"
+"Iconbox-а Enlightenment\n"
 
 #: src/desktops.c:124
 msgid ""
@@ -597,15 +590,15 @@ msgstr "Количество виртуальных рабочих столов:
 
 #: src/desktops.c:2313
 msgid "Slide desktops around when changing"
-msgstr ""
+msgstr "Скользящая анимация при смене рабочего стола"
 
 #: src/desktops.c:2319
 msgid "Desktop Slide speed:\n"
-msgstr ""
+msgstr "Скорость \"скольжения\" десктопа:\n"
 
 #: src/desktops.c:2333
 msgid "Wrap desktops around"
-msgstr ""
+msgstr "Закольцевать перемещение по рабочим столам"
 
 #: src/desktops.c:2341
 msgid "Display desktop dragbar"
@@ -632,7 +625,6 @@ msgid "Right"
 msgstr "Правая"
 
 #: src/desktops.c:2377 src/menus-misc.c:586
-#, fuzzy
 msgid "Desks"
 msgstr "Рабочий стол"
 
@@ -762,17 +754,14 @@ msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Только новые диалоги окон в фокусе получают фокус"
 
 #: src/focus.c:750
-#, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Поднимать окна наверх после переключения фокуса"
 
 #: src/focus.c:756
-#, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Посылать курсор в окно при получении фокуса"
 
 #: src/focus.c:762
-#, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Посылать курсор в окно при получении фокуса"
 
@@ -793,7 +782,6 @@ msgid "Include iconified windows in focus list"
 msgstr "Включать свёрнутые окна в список передачи фокуса"
 
 #: src/focus.c:790
-#, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Располагать окна вручную"
 
@@ -810,18 +798,17 @@ msgid "Send mouse pointer to window after focus switch"
 msgstr "Посылать курсор в окно после получении фокуса"
 
 #: src/focus.c:815
-#, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
 #: src/focus.c:819
 msgid "First E Icon, then App Icon"
-msgstr "Сперва - мконку E, потом - иконку приложения"
+msgstr "Сперва - иконку E, потом - иконку приложения"
 
 #: src/focus.c:825
 msgid "First App Icon, then E Icon"
-msgstr "Сперва - иконку приложения, потом - мконку E"
+msgstr "Сперва - иконку приложения, потоиииииконку E"
 
 #: src/focus.c:839
 msgid "Focus"
@@ -844,7 +831,6 @@ msgid "Effects"
 msgstr "Эффекты"
 
 #: src/fx.c:936
-#, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Невозможно показать дождевые капли"
 
@@ -994,23 +980,20 @@ msgstr ""
 "\n"
 
 #: src/groups.c:965
-#, fuzzy
 msgid " Per-group settings: "
-msgstr "Настройки Pager-а"
+msgstr "Настройки каждой группы окон:"
 
 #: src/groups.c:1016
 msgid " Global settings: "
 msgstr "Глобальные настройки:"
 
 #: src/groups.c:1020
-#, fuzzy
 msgid "Swap Window Locations"
 msgstr "Изменить расположение окна"
 
 #: src/groups.c:1026 src/menus-misc.c:646 config/strings.c:148
-#, fuzzy
 msgid "Groups"
-msgstr "Группа %i"
+msgstr "Группы окон"
 
 #: src/groups.c:1027
 msgid "Default Group Control Settings"
@@ -1025,19 +1008,16 @@ msgstr ""
 "групп окон Enlightenment\n"
 
 #: src/groups.c:1062
-#, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
+msgstr "Выберите группу, к которой будет принадлежать окно:"
 
 #: src/groups.c:1068
-#, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "   Выберите группу, из которой нужно убрать это окно.  "
+msgstr "Выберите группу, из которой нужно убрать это окно:"
 
 #: src/groups.c:1073
-#, fuzzy
 msgid "Select the group to break:"
-msgstr "  Выберите группу, которую хотите разорвать  "
+msgstr "Выберите группу, которую хотите разорвать:"
 
 #: src/handlers.c:61
 #, c-format
@@ -1125,7 +1105,6 @@ msgstr ""
 "оборудовании.\n"
 
 #: src/hints.c:600
-#, fuzzy
 msgid "Selection Error!"
 msgstr "Рабочий стол"
 
@@ -1152,7 +1131,6 @@ msgid "e16 was built without %s support"
 msgstr "Меня собрали без поддержки %s !"
 
 #: src/ipc.c:1441
-#, fuzzy
 msgid "composite"
 msgstr "Композит"
 
@@ -1161,12 +1139,10 @@ msgid "sound"
 msgstr "Звук"
 
 #: src/ipc.c:1789
-#, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Справка по командам Enlightenment IPC"
+msgstr "Справка по командам Enlightenment IPC\n"
 
 #: src/ipc.c:1793
-#, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1177,23 +1153,18 @@ msgstr ""
 "\n"
 
 #: src/ipc.c:1795 src/ipc.c:1815 src/ipc.c:1827
-#, fuzzy
 msgid "Commands currently available:\n"
-msgstr ""
-"\n"
-"доступные команды:\n"
+msgstr "Доступные команды:\n"
 
 #: src/ipc.c:1813
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Набери \"help full\" для получения полного справочника\n"
 
 #: src/ipc.c:1814
-#, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
 #: src/ipc.c:1816 src/ipc.c:1828
-#, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
@@ -1236,7 +1207,6 @@ msgstr ""
 "установке Enlightenment.\n"
 
 #: src/main.c:691
-#, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1261,22 +1231,18 @@ msgid "Magnifier"
 msgstr ""
 
 #: src/menus-misc.c:458 config/strings.c:91
-#, fuzzy
 msgid "Themes"
-msgstr "Некорректная тема"
+msgstr "Темы оформления рабочего стола"
 
 #: src/menus-misc.c:484
-#, fuzzy
 msgid "Border"
 msgstr "Стиль рамки"
 
 #: src/menus-misc.c:546
-#, fuzzy
 msgid "Window List"
 msgstr "Окно"
 
 #: src/menus-misc.c:568
-#, fuzzy
 msgid "Go to this Desktop"
 msgstr "Перейти на этот рабочий стол"
 
@@ -1311,21 +1277,20 @@ msgid "Warp pointer after moving menus"
 msgstr "Следить за перемещением меню"
 
 #: src/menus.c:2096
-#, fuzzy
 msgid "Menus"
 msgstr "Стиль рамки"
 
 #: src/menus.c:2097
-#, fuzzy
 msgid "Menu Settings"
-msgstr "Установки звука"
+msgstr "Настройки меню"
 
 #: src/menus.c:2100
-#, fuzzy
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr ""
+"Диалог настройки\n"
+"Меню Enlightenment\n"
 
 #: src/mod-trans.c:109 src/mod-trans.c:259
 #, c-format
@@ -1337,12 +1302,10 @@ msgid "Changes Might Require Restart:"
 msgstr "Изменения могут потребовать рестарт Е"
 
 #: src/mod-trans.c:147
-#, fuzzy
 msgid "Borders:"
 msgstr "Стиль рамки"
 
 #: src/mod-trans.c:151
-#, fuzzy
 msgid "Menus:"
 msgstr "Стиль рамки"
 
@@ -1359,9 +1322,8 @@ msgid "E Dialogs:"
 msgstr "Диалоги Е:"
 
 #: src/mod-trans.c:167
-#, fuzzy
 msgid "Tooltips:"
-msgstr "Задержка подсказки:\n"
+msgstr "Всплывающие подсказки:"
 
 #: src/mod-trans.c:171 src/settings.c:81 src/settings.c:86 src/settings.c:353
 msgid "Opaque"
@@ -1372,7 +1334,6 @@ msgid "Glass"
 msgstr "Стекло"
 
 #: src/mod-trans.c:275
-#, fuzzy
 msgid "Transparency"
 msgstr "Прозрачный фон"
 
@@ -1381,11 +1342,12 @@ msgid "Selective Transparency Settings"
 msgstr "\"Прозрачность\" диалога сообщений"
 
 #: src/mod-trans.c:279
-#, fuzzy
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr ""
+"Диалог настройки\n"
+"прозрачности Enlightenment\n"
 
 #: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
@@ -1452,7 +1414,6 @@ msgid "Pager Mode:"
 msgstr "Режим пейджера"
 
 #: src/pager.c:1856
-#, fuzzy
 msgid "Simple"
 msgstr "Размер"
 
@@ -1497,7 +1458,6 @@ msgid "Mouse button to display pager menu:"
 msgstr "Кнопка для отображения меню Pager-а:"
 
 #: src/pager.c:1993
-#, fuzzy
 msgid "Pagers"
 msgstr "Настройки Pager-а"
 
@@ -1558,18 +1518,16 @@ msgstr ""
 "\n"
 
 #: src/session.c:655
-#, fuzzy
 msgid "  Yes, Shut Down  "
-msgstr "  Да, хочу  "
+msgstr "  Да, выключить компьютер  "
 
 #: src/session.c:657
-#, fuzzy
 msgid "  Yes, Reboot  "
-msgstr "  Да, хочу  "
+msgstr "  Да, перезагрузить компьютер  "
 
 #: src/session.c:660
 msgid "  Yes, Log Out  "
-msgstr "  Да, хочу  "
+msgstr "  Да, завершить сессию  "
 
 #: src/session.c:662
 msgid "  No  "
@@ -1588,21 +1546,20 @@ msgid "Enable Reboot/Halt on Logout"
 msgstr "Разрешить перезагрузку/выключение при завершении сессии"
 
 #: src/session.c:809
-#, fuzzy
 msgid "Session"
-msgstr "Установки звука"
+msgstr "Сессия"
 
 #: src/session.c:810
-#, fuzzy
 msgid "Session Settings"
-msgstr "Установки звука"
+msgstr "Настройки сессии"
 
 #: src/session.c:813
-#, fuzzy
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr ""
+"Диалог настройки\n"
+"Сессии Пользователя\n"
 
 #: src/settings.c:73
 msgid "Move Methods:"
@@ -1681,9 +1638,8 @@ msgid "Do not cover dragbar"
 msgstr "Не перекрывать драгбар"
 
 #: src/settings.c:221
-#, fuzzy
 msgid "Move/Resize"
-msgstr "Переместить/Изменить размер"
+msgstr "Перемещение, изменение размера окон"
 
 #: src/settings.c:222
 msgid "Move & Resize Settings"
@@ -1710,12 +1666,10 @@ msgid "Place windows manually"
 msgstr "Располагать окна вручную"
 
 #: src/settings.c:330
-#, fuzzy
 msgid "Place windows under mouse"
 msgstr "Располагать окна под курсором мышки"
 
 #: src/settings.c:335
-#, fuzzy
 msgid "Center windows when desk is full"
 msgstr "Располагать окна по центру экрана"
 
@@ -1736,7 +1690,6 @@ msgid "Appear Slide speed:"
 msgstr "Скорость появления:"
 
 #: src/settings.c:394
-#, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "%i рабочий стол"
 
@@ -1749,7 +1702,6 @@ msgid "Window Shading speed:"
 msgstr "Скорость скрытия окна"
 
 #: src/settings.c:426
-#, fuzzy
 msgid "Ignore struts"
 msgstr "Игнорировать"
 
@@ -1758,7 +1710,6 @@ msgid "Raise fullscreen windows"
 msgstr "Поднимать окна в фулскрине выше всех остальных"
 
 #: src/settings.c:439
-#, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Располагать окна на другом столе если текущий уже заполнен"
 
@@ -1787,7 +1738,6 @@ msgid "Autoraise delay:"
 msgstr "Задержка подъема:"
 
 #: src/settings.c:499
-#, fuzzy
 msgid "Autoraise"
 msgstr "Задержка подъема:"
 
@@ -1808,9 +1758,8 @@ msgid "Enable Dialog Headers"
 msgstr "Включить показ заголовков"
 
 #: src/settings.c:546
-#, fuzzy
 msgid "Enable Button Images"
-msgstr "Включить поддержу звука"
+msgstr "Включить картинки кнопок"
 
 #: src/settings.c:555
 msgid "Enable sliding startup windows"
@@ -1821,9 +1770,8 @@ msgid "Use saveunders to reduce window exposures"
 msgstr "Использовать \"saveunders\""
 
 #: src/settings.c:569 config/strings.c:146 config/strings.c:162
-#, fuzzy
 msgid "Miscellaneous"
-msgstr "Настройки этого Iconbox-а..."
+msgstr "Прочее"
 
 #: src/settings.c:570
 msgid "Miscellaneous Settings"
@@ -1835,14 +1783,13 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Диалог прочих настроек\n"
+"\n"
 
 #: src/settings.c:614
-#, fuzzy
 msgid "Enable Composite"
-msgstr "Включить поддержу звука"
+msgstr "Включить композит"
 
 #: src/settings.c:622
-#, fuzzy
 msgid "Enable Fading"
 msgstr "Разрешить переход через край"
 
@@ -1879,26 +1826,24 @@ msgid "Default pop-up window opacity:"
 msgstr "Прозрачность всплывающего окна:"
 
 #: src/settings.c:703
-#, fuzzy
 msgid "Composite"
-msgstr "Включить поддержу звука"
+msgstr "Композит"
 
 #: src/settings.c:704
-#, fuzzy
 msgid "Composite Settings"
 msgstr "Установки подсказок"
 
 #: src/settings.c:707
-#, fuzzy
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
-msgstr "Диалог сообщения Enlightenment"
+msgstr ""
+"Диалог настройки композита\n"
+"(прозрачность окон)\n"
 
 #: src/settings.c:792
-#, fuzzy
 msgid "Enlightenment Settings"
-msgstr "Запуск Enlightenment..."
+msgstr "Настройки  Enlightenment..."
 
 #: src/setup.c:58
 msgid ""
@@ -1978,9 +1923,8 @@ msgid "Class:"
 msgstr "Класс:"
 
 #: src/snaps.c:764
-#, fuzzy
 msgid "Role:"
-msgstr "Роль:\n"
+msgstr "Роль:"
 
 #: src/snaps.c:777
 msgid "Command:"
@@ -2057,9 +2001,8 @@ msgstr ""
 "отныне и навеки вечные...\n"
 
 #: src/snaps.c:1013
-#, fuzzy
 msgid "Delete"
-msgstr "Стереть файл\n"
+msgstr "Удалить"
 
 #: src/snaps.c:1041
 msgid "Remembered Settings..."
@@ -2074,13 +2017,12 @@ msgid "There are no active windows with remembered attributes."
 msgstr "Нет запущенных приложений с настройками, что мы храним в памяти своей..."
 
 #: src/snaps.c:1067
-#, fuzzy
 msgid "Remember"
-msgstr "Установки Pager-а..."
+msgstr "Запомнить"
 
 #: src/snaps.c:1068
 msgid "Remembered Windows Settings"
-msgstr "Настройки окон, что я храню для тебя, Хозяин..."
+msgstr "Зафиксированные настройки окон рабочих приложений"
 
 #: src/snaps.c:1071
 msgid ""
@@ -2129,7 +2071,7 @@ msgstr ""
 
 #: src/sound.c:452
 msgid "Enable sounds"
-msgstr "Включить поддержу звука"
+msgstr "Включить поддержку звука"
 
 #: src/sound.c:458
 msgid "Sound"
@@ -2148,13 +2090,12 @@ msgstr ""
 "для Enlightenment\n"
 
 #: src/systray.c:331 src/systray.c:434 src/systray.c:442
-#, fuzzy
 msgid "Systray Error!"
 msgstr "Рабочий стол"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr "Ты куды систему увёл, гадёныш?!?"
+msgstr "Куда-то запропастился систрей... Вот же пьянь!"
 
 #: src/systray.c:434
 msgid "Only one systray is allowed"
@@ -2165,12 +2106,10 @@ msgid "Could not activate systray"
 msgstr "Не могу запустить систрей (оно нам не нужно, Хозяин!)"
 
 #: src/systray.c:452
-#, fuzzy
 msgid "Systray Options"
 msgstr "Рабочий стол"
 
 #: src/systray.c:453
-#, fuzzy
 msgid "Systray Settings"
 msgstr "Установки автоматического поднятия окон"
 
@@ -2198,9 +2137,8 @@ msgid "Tooltip Delay:\n"
 msgstr "Задержка подсказки:\n"
 
 #: src/tooltips.c:887
-#, fuzzy
 msgid "Tooltips"
-msgstr "Задержка подсказки:\n"
+msgstr "Всплывающие подсказки"
 
 #: src/tooltips.c:888
 msgid "Tooltip Settings"
@@ -2223,19 +2161,16 @@ msgstr ""
 "(куды хош, кроме нумера 0)"
 
 #: config/strings.c:6 config/strings.c:8
-#, fuzzy
 msgid "Switch Desktops"
 msgstr "%i рабочих столов"
 
 #: config/strings.c:7
-#, fuzzy
 msgid "Go to the next desktop."
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на следующий рабочий стол"
 
 #: config/strings.c:9
-#, fuzzy
 msgid "Go to the previous desktop."
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на предыдущий рабочий стол"
 
 #: config/strings.c:10
 msgid "Move"
@@ -2251,12 +2186,10 @@ msgid "Shade/Unshade this window."
 msgstr "Скрыть/восстановить это окно"
 
 #: config/strings.c:13 config/strings.c:50 config/strings.c:53
-#, fuzzy
 msgid "Show the Window Options menu."
 msgstr "Показать меню опций этого окна"
 
 #: config/strings.c:15
-#, fuzzy
 msgid "Show/Hide group borders."
 msgstr "Показать/спрятать эту группу"
 
@@ -2269,12 +2202,10 @@ msgid "Add to current group."
 msgstr "Добавить в текущую группу"
 
 #: config/strings.c:18
-#, fuzzy
 msgid "Break this window's group."
 msgstr "Запомнить группу этого окна"
 
 #: config/strings.c:19
-#, fuzzy
 msgid "Shade."
 msgstr "Затененный"
 
@@ -2283,17 +2214,14 @@ msgid "Unshade."
 msgstr "Показать"
 
 #: config/strings.c:21
-#, fuzzy
 msgid "Resize"
 msgstr "Размер"
 
 #: config/strings.c:22
-#, fuzzy
 msgid "Resize this window."
 msgstr "Запомнить группу этого окна"
 
 #: config/strings.c:24
-#, fuzzy
 msgid "Resize Horizontally"
 msgstr "Горизонтальная"
 
@@ -2302,7 +2230,6 @@ msgid "Resize this window horizontally."
 msgstr "Изменить размер этого окна по горизонтали"
 
 #: config/strings.c:27
-#, fuzzy
 msgid "Resize Vertically"
 msgstr "Вертикальная"
 
@@ -2343,9 +2270,8 @@ msgid "Toggle between maximum screen size and normal size."
 msgstr "Переключить размер окна: максимум - норма"
 
 #: config/strings.c:41 config/strings.c:43
-#, fuzzy
 msgid "Send To Another Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "Переместить на другой рабочий стол"
 
 #: config/strings.c:42
 msgid "Send this Window to the next desktop."
@@ -2356,7 +2282,6 @@ msgid "Send this Window to the previous desktop."
 msgstr "Переместить окно на предыдущий рабочий стол"
 
 #: config/strings.c:45
-#, fuzzy
 msgid "Snapshot"
 msgstr "Включить отображение экрана"
 
@@ -2365,7 +2290,6 @@ msgid "This button does nothing interesting."
 msgstr "Я не знаю, Хозяин, что делает эта кнопка."
 
 #: config/strings.c:47 config/strings.c:138
-#, fuzzy
 msgid "Shade/Unshade"
 msgstr "Затененный"
 
@@ -2374,7 +2298,6 @@ msgid "Iconify (Minimize) this window."
 msgstr "Свернуть в иконку (минимизировать) это окно."
 
 #: config/strings.c:54
-#, fuzzy
 msgid "More Buttons"
 msgstr "Нижняя"
 
@@ -2387,11 +2310,8 @@ msgid "Raise"
 msgstr "Поднять"
 
 #: config/strings.c:57
-#, fuzzy
 msgid "Raise this window to the top."
-msgstr ""
-"Кликните здесь, чтобы поднять этот\n"
-"рабочий стол наверх.\n"
+msgstr "Поднять это окно наверх."
 
 #: config/strings.c:58 config/strings.c:137
 msgid "Lower"
@@ -2402,7 +2322,6 @@ msgid "Lower this window."
 msgstr "Опустить это окно (в хорошем смысле этого слова)"
 
 #: config/strings.c:60 config/strings.c:139
-#, fuzzy
 msgid "Stick/Unstick"
 msgstr "Закрепить / Освободить"
 
@@ -2423,12 +2342,10 @@ msgid "Display User Menus"
 msgstr "Показать меню пользователя"
 
 #: config/strings.c:65 config/strings.c:67
-#, fuzzy
 msgid "Display Enlightenment Menu"
 msgstr "Выйти из Enlightenment"
 
 #: config/strings.c:66 config/strings.c:71
-#, fuzzy
 msgid "Display Settings Menu"
 msgstr "Показать меню настроек"
 
@@ -2437,7 +2354,6 @@ msgid "Display Task List Menu"
 msgstr "Показать меню задач"
 
 #: config/strings.c:69
-#, fuzzy
 msgid "Display Desktop Menu"
 msgstr "Показать меню рабочего стола"
 
@@ -2446,39 +2362,32 @@ msgid "Display Group Menu"
 msgstr "Показать меню группы"
 
 #: config/strings.c:72
-#, fuzzy
 msgid "Go Back a Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на предыдущий рабочий стол"
 
 #: config/strings.c:73
-#, fuzzy
 msgid "Go Forward a Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на следующий рабочий стол"
 
 #: config/strings.c:76 config/strings.c:79
-#, fuzzy
 msgid "Backgrounds"
 msgstr "Фоновые рисунки"
 
 #: config/strings.c:78
-#, fuzzy
 msgid "Desktop Operations"
 msgstr "Рабочий стол"
 
 #: config/strings.c:80
-#, fuzzy
 msgid "Cleanup Desktop"
 msgstr "Очистить рабочий стол"
 
 #: config/strings.c:81
-#, fuzzy
 msgid "Goto Next Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на следующий рабочий стол"
 
 #: config/strings.c:82
-#, fuzzy
 msgid "Goto Previous Desktop"
-msgstr "Перейти на этот рабочий стол"
+msgstr "Перейти на предыдущий рабочий стол"
 
 #: config/strings.c:84
 msgid "Create Systray"
@@ -2489,17 +2398,14 @@ msgid "Show Magnifier"
 msgstr "Показать лупу"
 
 #: config/strings.c:87
-#, fuzzy
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
 #: config/strings.c:88 config/strings.c:197
-#, fuzzy
 msgid "User Menus"
 msgstr "Меню Пользователя"
 
 #: config/strings.c:90 config/strings.c:110
-#, fuzzy
 msgid "Settings"
 msgstr "Настройки"
 
@@ -2512,7 +2418,6 @@ msgid "Help"
 msgstr "Помощь"
 
 #: config/strings.c:94
-#, fuzzy
 msgid "About Enlightenment"
 msgstr "Enlightenment %s"
 
@@ -2522,19 +2427,17 @@ msgstr "О теме"
 
 #: config/strings.c:96 config/strings.c:201
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "Рестарт Е"
 
 #: config/strings.c:97 config/strings.c:202
-#, fuzzy
 msgid "Log Out"
-msgstr "  Да, хочу  "
+msgstr "Завершить текущую сессию"
 
 #: config/strings.c:100
 msgid "Purge config file cache"
-msgstr "Спустить в унитаз кэш конфигов"
+msgstr "Уничтожить кэш конфигов"
 
 #: config/strings.c:101
-#, fuzzy
 msgid "Purge pager background cache"
 msgstr "Очистить кэш фоновых картинок"
 
@@ -2567,133 +2470,108 @@ msgid "Regenerate Menus"
 msgstr "Воссоздать меню"
 
 #: config/strings.c:111
-#, fuzzy
 msgid "Enlightenment Settings ..."
-msgstr "Запуск Enlightenment..."
+msgstr "Настройки Enlightenment..."
 
 #: config/strings.c:112
-#, fuzzy
 msgid "Focus Settings ..."
 msgstr "Настройки фокуса"
 
 #: config/strings.c:113
-#, fuzzy
 msgid "Move & Resize Settings ..."
 msgstr "Установки перемещения/изменения размера"
 
 #: config/strings.c:114
-#, fuzzy
 msgid "Window Placement Settings ..."
 msgstr "Установки расположения окон"
 
 #: config/strings.c:115
-#, fuzzy
 msgid "Multiple Desktop Settings ..."
 msgstr "Установки рабочих столов"
 
 #: config/strings.c:116
-#, fuzzy
 msgid "Virtual Desktop Settings ..."
 msgstr "Установки виртуальных рабочих столов"
 
 #: config/strings.c:117
-#, fuzzy
 msgid "Pager Settings ..."
 msgstr "Установки Pager-а..."
 
 #: config/strings.c:118
-#, fuzzy
 msgid "Menu Settings ..."
-msgstr "Установки звука"
+msgstr "Настройки меню"
 
 #: config/strings.c:119
-#, fuzzy
 msgid "Autoraise Settings ..."
 msgstr "Установки автоматического поднятия окон"
 
 #: config/strings.c:120
-#, fuzzy
 msgid "Tooltip Settings ..."
 msgstr "Установки подсказок"
 
 #: config/strings.c:121
-#, fuzzy
 msgid "Audio Settings ..."
 msgstr "Установки звука"
 
 #: config/strings.c:122
-#, fuzzy
 msgid "Group Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "Установки групп окон..."
 
 #: config/strings.c:123
-#, fuzzy
 msgid "Remember Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "Установки сохранения настроек окон..."
 
 #: config/strings.c:124
-#, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Установки спецэффектов"
 
 #: config/strings.c:125
-#, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Установки фонового рисунка"
 
 #: config/strings.c:126
-#, fuzzy
 msgid "Theme Transparency Settings ..."
-msgstr "Установки Pager-а..."
+msgstr "Установки прозрачности текущей темы..."
 
 #: config/strings.c:127
-#, fuzzy
 msgid "Composite Settings ..."
-msgstr "Установки подсказок"
+msgstr "Установки композита (прозрачность окон)..."
 
 #: config/strings.c:128
-#, fuzzy
 msgid "Session Settings ..."
-msgstr "Установки звука"
+msgstr "Установки сессии Пользователя"
 
 #: config/strings.c:129
-#, fuzzy
 msgid "Miscellaneous Settings ..."
-msgstr "Настройки этого Iconbox-а..."
+msgstr "Прочие настройки..."
 
 #: config/strings.c:135
 msgid "Leave Alone"
-msgstr "Отвали... Оставь меня в покое."
+msgstr "Убрать все окна, кроме текущего"
 
 #: config/strings.c:140
-#, fuzzy
 msgid "Remember..."
-msgstr "Установки Pager-а..."
+msgstr "Запомнить..."
 
 #: config/strings.c:141
-#, fuzzy
 msgid "Window Size"
 msgstr "Окно"
 
 #: config/strings.c:142
-#, fuzzy
 msgid "Set Stacking"
-msgstr "Настройки фокуса"
+msgstr "Настроить позиционирование"
 
 #: config/strings.c:143
-#, fuzzy
 msgid "Set Border Style"
 msgstr "Стиль рамки"
 
 #: config/strings.c:144
-#, fuzzy
 msgid "Window Groups"
-msgstr "Ошибка Группы Окон"
+msgstr "Группы Окон"
 
 #: config/strings.c:149
-#, fuzzy
 msgid "Configure this window's group(s)"
-msgstr "Запомнить группу этого окна"
+msgstr "Настроить эту группу окон"
 
 #: config/strings.c:150
 msgid "Start a new group"
@@ -2704,24 +2582,20 @@ msgid "Add this window to the current group"
 msgstr "Добавить это окно к текущей группе"
 
 #: config/strings.c:152
-#, fuzzy
 msgid "Select group to add this window to"
-msgstr "   Выберите группу, из которой нужно убрать это окно.  "
+msgstr "Выберите группу, к которой нужно добавить это окно"
 
 #: config/strings.c:153
-#, fuzzy
 msgid "Remove this window from a group"
-msgstr "Запомнить группу этого окна"
+msgstr "Удалить это окно из группы"
 
 #: config/strings.c:154
-#, fuzzy
 msgid "Destroy a group this window belongs to"
-msgstr "Выберите группу, к которой будет принадлежать окно:\n"
+msgstr "Уничтожить группу, к которой принадлежит это окно"
 
 #: config/strings.c:156
-#, fuzzy
 msgid "Stacking"
-msgstr "Настройки фокуса"
+msgstr "Позиционирование"
 
 #: config/strings.c:157
 msgid "Below"
@@ -2736,9 +2610,8 @@ msgid "Above"
 msgstr "Над"
 
 #: config/strings.c:160
-#, fuzzy
 msgid "On Top"
-msgstr "Верхняя"
+msgstr "На самом верху"
 
 #: config/strings.c:163
 msgid "Toggle Skip Window Lists"
@@ -2765,12 +2638,10 @@ msgid "Toggle Never Use Area"
 msgstr "Включить \"никогда не ходить на Зону\""
 
 #: config/strings.c:169
-#, fuzzy
 msgid "Toggle Button Grabs"
-msgstr "Нижняя"
+msgstr "Переключатель перехвата сигнала от кнопок"
 
 #: config/strings.c:172
-#, fuzzy
 msgid "Default"
 msgstr "Дефолт"
 
@@ -2799,12 +2670,10 @@ msgid "Focused opacity 100%"
 msgstr "Непрозрачность фокусированного активного окна 100%"
 
 #: config/strings.c:179
-#, fuzzy
 msgid "Focused opacity follows unfocused"
 msgstr "Фокус по нажатию кнопки мыши"
 
 #: config/strings.c:180
-#, fuzzy
 msgid "Toggle Fading"
 msgstr "Разрешить переход через край"
 
@@ -2861,7 +2730,6 @@ msgid "Zoom/Unzoom"
 msgstr "Увеличить/Сбросить увеличение"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "User Application List"
 msgstr "Список приложений Пользователя"
 
@@ -2871,7 +2739,7 @@ msgstr "Прочее"
 
 #: config/strings.c:200
 msgid "Epplets"
-msgstr "Модули E16-го"
+msgstr "Модули (эпплеты)"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i рабочих столов"
