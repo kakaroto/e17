@@ -1,11 +1,13 @@
 #include "common.h"
 
+static void on_recent(void *data, Evas_Object *obj, void *event_info);
+
 static Evas_Object *
 _create_message(Evas_Object *win, Data_Message *msg)
 {
    Data_Contact *ctc;
    Evas_Object *msgui;
-   const char *title;
+   char *title = NULL;
    const char *when;
    char *icon;
    time_t t, tnow;
@@ -17,29 +19,17 @@ _create_message(Evas_Object *win, Data_Message *msg)
    memcpy(&tmnow, tm, sizeof(struct tm));
    
    title = "???";
+   if (msg->from_to) title = (char *)msg->from_to;
    ctc = data_contact_by_tel_find(msg->from_to);
    if (ctc)
-     {
-        if (ctc->name.nicks)
-          title = ctc->name.nicks->data;
-        else if (ctc->name.display)
-          title = ctc->name.display;
-        else if ((ctc->name.lasts) && (ctc->name.firsts))
-          {
-             snprintf(fbuf, sizeof(fbuf), "%s %s", ctc->name.firsts, ctc->name.lasts);
-             title = fbuf;
-          }
-        else if (ctc->name.lasts)
-          title = ctc->name.lasts->data;
-        else
-          title = msg->from_to;
-     }
+     title = data_contact_name_get(ctc);
    else
-     title = msg->from_to;
+     title = strdup(title);
    if (msg->flags & DATA_MESSAGE_SENT)
      {
         snprintf(tobuf, sizeof(tobuf), "To: %s", title);
-        title = tobuf;
+        if (title) free(title);
+        title = strdup(tobuf);
      }
    when = "???";
    t = msg->timestamp;
@@ -81,12 +71,16 @@ _create_message(Evas_Object *win, Data_Message *msg)
       msg->body, 
       msg);
    if (icon) free(icon);
+   if (title) free(title);
    return msgui;
 }
 
-static Evas_Object *window, *box, *content;
-
-static Evas_Object *inwin;
+static Evas_Object *window = NULL, *box = NULL, *content = NULL;
+static Evas_Object *inwin = NULL, *inwin2 = NULL;
+static Evas_Object *number_entry = NULL;
+static Evas_Object *sms_entry = NULL;
+static Evas_Object *write_ph = NULL, *write_lb = NULL;
+static char *number = NULL;
 
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
@@ -97,52 +91,252 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 static void
 on_select_ok(void *data, Evas_Object *obj, void *event_info)
 {
-   printf("FIXME: take number in entry\n");
    evas_object_del(inwin);
    inwin = NULL;
 }
 
 static void
+on_number_ok(void *data, Evas_Object *obj, void *event_info)
+{
+   const char *n = elm_entry_entry_get(number_entry);
+   if (number) free(number);
+   if (n) number = strdup(n);
+   else number = NULL;
+   elm_photo_file_set(write_ph, NULL);
+   elm_label_label_set(write_lb, number);
+   evas_object_del(inwin2);
+   inwin2 = NULL;
+}
+
+static void
+on_number_list_ok(void *data, Evas_Object *obj, void *event_info)
+{
+   evas_object_del(inwin2);
+   inwin2 = NULL;
+}
+
+static void
+on_number_select(void *data, Evas_Object *obj, void *event_info)
+{
+   Data_Contact_Tel *tel = data;
+   if (number) free(number);
+   number = strdup(tel->number);
+}
+
+static void
+on_contact_select(void *data, Evas_Object *obj, void *event_info)
+{
+   Data_Contact *ctc = data;
+   if (!ctc)
+     {
+        Evas_Object *win, *bx, *bt, *sc, *en;
+
+        win = window;
+        inwin2 = elm_win_inwin_add(win);
+
+        bx = elm_box_add(win);
+        evas_object_size_hint_weight_set(bx, 1.0, 0.0);
+        evas_object_size_hint_align_set(bx, -1.0, -1.0);
+        
+        sc = elm_scroller_add(win);
+        elm_scroller_content_min_limit(sc, 0, 1);
+        evas_object_size_hint_weight_set(sc, 1.0, 0.0);
+        evas_object_size_hint_align_set(sc, -1.0, -1.0);
+        elm_box_pack_end(bx, sc);
+        
+        en = elm_entry_add(win);
+        elm_entry_single_line_set(en, 1);
+        elm_entry_entry_set(en, "Enter number...");
+        evas_object_size_hint_weight_set(en, 1.0, 0.0);
+        evas_object_size_hint_align_set(en, -1.0, 0.0);
+        elm_entry_select_all(en);
+        elm_scroller_content_set(sc, en);
+        evas_object_show(en);
+        evas_object_show(sc);
+        number_entry = en;
+   
+        bt = elm_button_add(window);
+        elm_button_label_set(bt, "OK");
+        evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+        evas_object_size_hint_align_set(bt, -1.0, -1.0);
+        elm_box_pack_end(bx, bt);
+        evas_object_smart_callback_add(bt, "clicked", on_number_ok, NULL);
+        evas_object_show(bt);   
+        
+        elm_win_inwin_content_set(inwin2, bx);
+        evas_object_show(bx);
+
+        elm_win_inwin_activate(inwin2);
+        elm_widget_focus_set(en, 1);
+     }
+   else if (eina_list_count(ctc->tel.numbers) > 1)
+     {
+        Evas_Object *win, *bx, *bx2, *bt, *li, *fr, *ph, *lb;
+        Eina_List *l;
+        char *name, *file;
+        
+        win = window;
+        inwin2 = elm_win_inwin_add(win);
+
+        bx = elm_box_add(win);
+        evas_object_size_hint_weight_set(bx, 1.0, 0.0);
+        evas_object_size_hint_align_set(bx, -1.0, -1.0);
+
+        fr = elm_frame_add(win);
+        name = data_contact_name_get(ctc);
+        if (name)
+          {
+             elm_label_label_set(write_lb, name);
+             elm_frame_label_set(fr, name);
+             free(name);
+          }
+        evas_object_size_hint_weight_set(fr, 1.0, 0.0);
+        evas_object_size_hint_align_set(fr, -1.0, -1.0);
+        elm_box_pack_end(bx, fr);        
+        evas_object_show(fr);
+
+        bx2 = elm_box_add(win);
+        elm_box_horizontal_set(bx2, 1);
+        elm_frame_content_set(fr, bx2);
+        evas_object_show(bx2);
+        
+        ph = elm_photo_add(win);
+        file = data_contact_photo_file_get(ctc);
+        if (file)
+          {
+             elm_photo_file_set(write_ph, file);
+             elm_photo_file_set(ph, file);
+             free(file);
+          }
+        evas_object_size_hint_weight_set(ph, 0.0, 0.0);
+        evas_object_size_hint_align_set(ph, -1.0, -1.0);
+        elm_box_pack_end(bx2, ph);
+        evas_object_show(ph);
+        
+        lb = elm_label_add(win);
+        elm_label_label_set(lb, 
+                            "This contact has multiple<br>"
+                            "numbers. Select one.");
+        evas_object_size_hint_weight_set(lb, 1.0, 0.0);
+        evas_object_size_hint_align_set(lb, -1.0, -1.0);
+        elm_box_pack_end(bx2, lb);
+        evas_object_show(lb);
+        
+        li = elm_list_add(win);
+        evas_object_size_hint_weight_set(li, 1.0, 1.0);
+        evas_object_size_hint_align_set(li,  -1.0, -1.0);
+        elm_box_pack_end(bx, li);
+
+        for (l = (Eina_List *)(ctc->tel.numbers); l; l = l->next)
+          {
+             Data_Contact_Tel *tel = l->data;
+             // FIXME:
+             // tel->flags can be 0 or more of:
+             //    DATA_CONTACT_TEL_HOME = (1 << 0),
+             //    DATA_CONTACT_TEL_MSG = (1 << 1),
+             //    DATA_CONTACT_TEL_WORK = (1 << 2),
+             //    DATA_CONTACT_TEL_PREF = (1 << 3),
+             //    DATA_CONTACT_TEL_VOICE = (1 << 4),
+             //    DATA_CONTACT_TEL_FAX = (1 << 5),
+             //    DATA_CONTACT_TEL_CELL = (1 << 6),
+             //    DATA_CONTACT_TEL_VIDEO = (1 << 7),
+             //    DATA_CONTACT_TEL_PAGER = (1 << 8),
+             //    DATA_CONTACT_TEL_BBS = (1 << 9),
+             //    DATA_CONTACT_TEL_MODEM = (1 << 10),
+             //    DATA_CONTACT_TEL_CAR = (1 << 11),
+             //    DATA_CONTACT_TEL_ISDN = (1 << 12),
+             //    DATA_CONTACT_TEL_PCS = (1 << 13)
+             elm_list_item_append(li, tel->number, NULL, NULL, on_number_select, tel);
+          }
+        elm_list_go(li);
+        
+        evas_object_show(li);
+        
+        bt = elm_button_add(window);
+        elm_button_label_set(bt, "OK");
+        evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+        evas_object_size_hint_align_set(bt, -1.0, -1.0);
+        elm_box_pack_end(bx, bt);
+        evas_object_smart_callback_add(bt, "clicked", on_number_list_ok, NULL);
+        evas_object_show(bt);   
+        
+        elm_win_inwin_content_set(inwin2, bx);
+        evas_object_show(bx);
+
+        elm_win_inwin_activate(inwin2);
+        
+     }
+   else
+     {
+        Data_Contact_Tel *tel;
+        char *name, *file;
+        
+        tel = ctc->tel.numbers->data;
+        if (number) free(number);
+        number = strdup(tel->number);
+        elm_label_label_set(write_lb, number);
+        name = data_contact_name_get(ctc);
+        if (name)
+          {
+             elm_label_label_set(write_lb, name);
+             free(name);
+          }
+        file = data_contact_photo_file_get(ctc);
+        if (file)
+          {
+             elm_photo_file_set(write_ph, file);
+             free(file);
+          }
+     }
+}
+
+static void
 on_to_select(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *win, *sc, *bx, *en, *bx2, *bt;
+   Evas_Object *win, *li, *bx, *bt;
+   Eina_List *l;
    
    win = window;
-   printf("FIXME: show contact list to select from or phone number entry\n");
    inwin = elm_win_inwin_add(win);
 
    bx = elm_box_add(win);
    evas_object_size_hint_weight_set(bx, 1.0, 0.0);
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
    
-   sc = elm_scroller_add(win);
-   elm_scroller_content_min_limit(sc, 0, 1);
-   evas_object_size_hint_weight_set(sc, 1.0, 0.0);
-   evas_object_size_hint_align_set(sc, -1.0, -1.0);
-   elm_box_pack_end(bx, sc);
-   
-   en = elm_entry_add(win);
-   elm_entry_single_line_set(en, 1);
-   elm_entry_entry_set(en, "");
-   evas_object_size_hint_weight_set(en, 1.0, 0.0);
-   evas_object_size_hint_align_set(en, -1.0, 0.0);
-   elm_entry_select_all(en);
-   elm_scroller_content_set(sc, en);
-   evas_object_show(en);
-   evas_object_show(sc);
-   
-   sc = elm_scroller_add(win);
-   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
-   evas_object_size_hint_align_set(sc,  -1.0, -1.0);
-   elm_box_pack_end(bx, sc);
-   evas_object_show(sc);
-   
-   bx2 = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
-   elm_scroller_content_set(sc, bx2);
-   evas_object_show(bx2);
+   li = elm_list_add(win);
+   evas_object_size_hint_weight_set(li, 1.0, 1.0);
+   evas_object_size_hint_align_set(li,  -1.0, -1.0);
+   elm_box_pack_end(bx, li);
 
+   for (l = (Eina_List *)data_contacts_all_list(); l; l = l->next)
+     {
+        Data_Contact *ctc = l->data;
+        Evas_Object *ph;
+        char buf[1024];
+        char *file, *name;
+
+        if (!ctc->tel.numbers) continue;
+        name = data_contact_name_get(ctc);
+        if (!name) continue;
+        ph = elm_photo_add(win);
+        elm_photo_size_set(ph, 20);
+        file = data_contact_photo_file_get(ctc);
+        if (file)
+          {
+             elm_photo_file_set(ph, file);
+             free(file);
+          }
+        elm_list_item_append(li, name, ph, NULL, on_contact_select, ctc);
+        evas_object_show(ph);
+        free(name);
+     }
+
+   elm_list_item_append(li, "... Other", NULL, NULL, on_contact_select, NULL);
+   
+   elm_list_go(li);
+   
+   evas_object_show(li);
+   
    bt = elm_button_add(window);
    elm_button_label_set(bt, "OK");
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
@@ -160,14 +354,27 @@ on_to_select(void *data, Evas_Object *obj, void *event_info)
 static void
 on_send(void *data, Evas_Object *obj, void *event_info)
 {
-   printf("FIXME: send sms\n");
+   if (!number)
+     {
+        printf("NO number! tell user\n");
+        return;
+     }
+   printf("TO: <%s>\n", number);
+   printf("TEXT...\n");
+   printf("%s\n", elm_entry_entry_get(sms_entry));
+   on_recent(NULL, NULL, NULL);
 }
 
 static void
 on_write(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *np, *bx, *bx2, *ph, *lb, *bt;
+   Evas_Object *bx, *bx2, *ph, *lb, *bt, *sc, *en;
    
+   if (number)
+     {
+        free(number);
+        number = NULL;
+     }
    /* FIXME: content -> editor + to who display + select "who" */
    if (content) evas_object_del(content);
    
@@ -188,6 +395,7 @@ on_write(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(ph, -1.0, -1.0);
    elm_box_pack_end(bx2, ph);
    evas_object_show(ph);
+   write_ph = ph;
    
    lb = elm_label_add(window);
    elm_label_label_set(lb, "Select...");
@@ -195,15 +403,25 @@ on_write(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(lb, -1.0, 0.5);
    elm_box_pack_end(bx2, lb);
    evas_object_show(lb);
+   write_lb = lb;
    
    elm_box_pack_end(bx, bx2);
    evas_object_show(bx2);
    
-   np = elm_notepad_add(window);
-   evas_object_size_hint_weight_set(np, 1.0, 1.0);
-   evas_object_size_hint_align_set(np, -1.0, -1.0);
-   elm_box_pack_end(bx, np);
-   evas_object_show(np);
+   sc = elm_scroller_add(window);
+   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_box_pack_end(bx, sc);
+   
+   en = elm_entry_add(window);
+   elm_entry_entry_set(en, "");
+   evas_object_size_hint_weight_set(en, 1.0, 1.0);
+   evas_object_size_hint_align_set(en, -1.0, -1.0);
+   elm_scroller_content_set(sc, en);
+   evas_object_show(en);
+   
+   evas_object_show(sc);
+   sms_entry = en;
    
    bt = elm_button_add(window);
    elm_button_label_set(bt, "Send");

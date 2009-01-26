@@ -944,7 +944,7 @@ data_message_all_list(void)
 {
    return messages;
 }
-           
+
 void
 data_message_trash(Data_Message *msg)
 {
@@ -963,6 +963,12 @@ data_message_del(Data_Message *msg)
    eina_stringshare_del(msg->from_to);
    eina_stringshare_del(msg->body);
    free(msg);
+}
+
+const Eina_List *
+data_contacts_all_list(void)
+{
+   return contacts;
 }
 
 Data_Contact *
@@ -993,5 +999,27 @@ data_contact_photo_file_get(Data_Contact *ctc)
      snprintf(buf, sizeof(buf), "%s", ctc->photo_file);
    else
      snprintf(buf, sizeof(buf), "%s/%s", contactdir, ctc->photo_file);
+   return strdup(buf);
+}
+
+char *
+data_contact_name_get(Data_Contact *ctc)
+{
+   char buf[1024] = "Unknown";
+
+   if (ctc->name.display)
+     snprintf(buf, sizeof(buf), "%s", ctc->name.display);
+   else if (ctc->name.nicks)
+     snprintf(buf, sizeof(buf), "%s", ctc->name.nicks->data);
+   else if ((ctc->name.lasts) && (ctc->name.firsts))
+     snprintf(buf, sizeof(buf), "%s %s", ctc->name.firsts->data, ctc->name.lasts->data);
+   else if ((ctc->name.lasts) && (ctc->name.titles))
+     snprintf(buf, sizeof(buf), "%s %s", ctc->name.titles, ctc->name.lasts->data);
+   else if (ctc->name.firsts)
+     snprintf(buf, sizeof(buf), "%s", ctc->name.firsts->data);
+   else if (ctc->name.lasts)
+     snprintf(buf, sizeof(buf), "%s", ctc->name.lasts->data);
+   else if (ctc->name.others)
+     snprintf(buf, sizeof(buf), "%s", ctc->name.others->data);
    return strdup(buf);
 }

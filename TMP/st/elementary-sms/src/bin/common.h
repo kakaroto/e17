@@ -73,8 +73,10 @@ const Eina_List *data_message_all_list(void);
 void data_message_trash(Data_Message *msg);
 void data_message_del(Data_Message *msg);
 
+const Eina_List *data_contacts_all_list(void);
 Data_Contact *data_contact_by_tel_find(const char *number);
 char *data_contact_photo_file_get(Data_Contact *ctc);
+char *data_contact_name_get(Data_Contact *ctc);
     
 //////////////////////////////////////////////////////////////////////////////
 Evas_Object *
