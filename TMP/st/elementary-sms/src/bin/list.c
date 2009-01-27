@@ -167,6 +167,7 @@ on_contact_select(void *data, Evas_Object *obj, void *event_info)
         evas_object_show(bx);
 
         elm_win_inwin_activate(inwin2);
+        // FIXME: this is not exported. bad!
         elm_widget_focus_set(en, 1);
      }
    else if (eina_list_count(ctc->tel.numbers) > 1)
@@ -354,14 +355,35 @@ on_to_select(void *data, Evas_Object *obj, void *event_info)
 static void
 on_send(void *data, Evas_Object *obj, void *event_info)
 {
+   const char *text;
+   char *text2;
+   int len;
+   
    if (!number)
      {
         printf("NO number! tell user\n");
         return;
      }
+   text = elm_entry_entry_get(sms_entry);
+   if (!text)
+     {
+        printf("NO text - warn user\n");
+     }
+   text2 = elm_entry_markup_to_utf8(text);
+   if (!text2)
+     {
+        printf("ERROR: converting to plain utf8 failed\n");
+        return;
+     }
+   len = strlen(text2);
+   if (len > 0)
+     {
+        if (text2[len - 1] == '\n') text2[len - 1] = 0;
+     }
    printf("TO: <%s>\n", number);
    printf("TEXT...\n");
-   printf("%s\n", elm_entry_entry_get(sms_entry));
+   printf("%s\n", text2);
+   free(text2);
    on_recent(NULL, NULL, NULL);
 }
 
