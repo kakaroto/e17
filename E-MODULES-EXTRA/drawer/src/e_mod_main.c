@@ -1276,7 +1276,7 @@ _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emi
 
    inst = data;
    e_gadcon_popup_hide(inst->popup);
-   e_gadcon_locked_set(inst->gcc->gadcon, 1);
+   e_gadcon_locked_set(inst->gcc->gadcon, 0);
 
    inst->pop_hiding = EINA_FALSE;
    if (inst->pop_update)
