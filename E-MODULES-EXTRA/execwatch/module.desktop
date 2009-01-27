@@ -6,3 +6,4 @@ Comment=<title>ExecWatch Gadget</title><br>Shows the last state of a periodic ex
 Comment[cs]=<title>ExecWatch Gadget</title><br>Zobrazuje poslední stav periodicky spouštěného příkazu. Užitečný jako kontrola aktualizací nebo jestli je dostupný vzdálený PC(přes ping).
 Comment[hu]=<title>ExecWatch bigyó :)</title><br>Egy időszakonként lefuttatott parancs legutóbbi állapotát mutatja meg. Ideális egy frissítéskezelőhöz, vagy mondjuk egy távoli kiszolgáló ellenőrzéséhez. 
 Comment[it]=<title>Modulo ExecWatch</title><br>Mostra l'ultimo stato di un comando eseguito periodicamente. Utile per il controlo di aggiornamenti o per il controllo della disponibilità di un host remoto (tramite ping).
+Comment[fr]=<title>Gadget ExecWatch</title><br>Affiche le dernier état d'une commande exécutée périodiquement. Utile pour le contrôle de mises à jour ou de la disponibilité d'un hôte distant (via ping).

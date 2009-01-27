@@ -1,8 +1,11 @@
 [Desktop Entry]
-Type=Link
+Version=1.0
+Encoding=UTF-8
 Name=Alarm
+Type=Link
 Name[eo]=Alarmilo
 Name[hu]=Emlékeztető
+Name[fr]=Alarme
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
@@ -14,3 +17,4 @@ Comment[eo]=<title>Modulo Alarmilo</title><br>Difini spruĉfenestrajn memorigilo
 Comment[hu]=<title>Emlékeztető modul</title><br>Egy modul, amellyel felugró figyelmeztetéseket állíthatsz be magadnak.
 Comment[it]=<title>Modulo Alarm</title><br>Un modulo che consente di impostare dei popup di promemoria.
 Comment[zh_CN]=<title>Alarm 模块</title><br>Alarm 模块允许您设置弹出式提示。
+Comment[fr]=<title>Module Alarme</title><br>Un module pense-bête par pop-up.

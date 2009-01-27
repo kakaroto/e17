@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=DiskIO
+Name[fr]=DisquES
 Icon=e-module-diskio
 Comment=<title>DiskIO Module Gadget:</title><br>Visualize disk i/o.
 Comment[cs]=<title>Modul DiskIO:</title><br>Zviditelní I/O disku.
 Comment[it]=<title>Modulo DiskIO</title><br>Visualizza l'input/output del disco.
+Comment[fr]=<title>Module Gadget DisquES:</title><br>Visualise les entrées/sorties du disque.
