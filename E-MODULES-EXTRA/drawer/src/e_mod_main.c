@@ -568,8 +568,7 @@ _drawer_popup_show(Instance *inst)
 	break;
      }
    e_gadcon_popup_show(inst->popup);
-   if (inst->gcc->gadcon->shelf)
-     e_shelf_locked_set(inst->gcc->gadcon->shelf, 1);
+   e_gadcon_locked_set(inst->gcc->gadcon, 1);
 }
 
 static void
@@ -1277,8 +1276,7 @@ _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emi
 
    inst = data;
    e_gadcon_popup_hide(inst->popup);
-   if (inst->gcc->gadcon->shelf)
-     e_shelf_locked_set(inst->gcc->gadcon->shelf, 0);
+   e_gadcon_locked_set(inst->gcc->gadcon, 1);
 
    inst->pop_hiding = EINA_FALSE;
    if (inst->pop_update)
