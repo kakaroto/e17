@@ -1,4 +1,4 @@
-From af8f5aac519c19d2f2f636f37337c182061e7dd2 Mon Sep 17 00:00:00 2001
+From 67342f29c9508b9fce73063e595e4db4b3d65d37 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 9 Jan 2009 17:38:49 +1100
 Subject: [PATCH] illume-image: add in expedite for speed testing and disable exquisite, for now.
@@ -8,7 +8,7 @@ Subject: [PATCH] illume-image: add in expedite for speed testing and disable exq
  1 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
-index bb097f0..d799b22 100644
+index 549fb78..310893d 100644
 --- a/packages/images/illume-image.bb
 +++ b/packages/images/illume-image.bb
 @@ -14,9 +14,9 @@ BASE_INSTALL = "\

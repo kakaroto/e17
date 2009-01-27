@@ -1,4 +1,4 @@
-From 858d296f6835827fab2d5fadb6c0134c2cba1c00 Mon Sep 17 00:00:00 2001
+From 15213aa37b5bd4141aa9644b20d6b2f4ab523b07 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 10:39:14 +1100
 Subject: [PATCH] sercrevs: add revs for swisstelecom packages back in
@@ -8,7 +8,7 @@ Subject: [PATCH] sercrevs: add revs for swisstelecom packages back in
  1 files changed, 4 insertions(+), 0 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index 0f66f7b..1b05b5f 100644
+index 4156c97..0e7f9b4 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
 @@ -303,3 +303,7 @@ SRCREV_pn-rage ?= "${EFL_SRCREV}"

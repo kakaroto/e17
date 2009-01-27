@@ -1,22 +1,23 @@
-From b912abff0727688117dabfc8bf91e1943c11f58b Mon Sep 17 00:00:00 2001
+From a49c5e32d4b6a1bd1a8ba76650a6e8d564430043 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
-Date: Fri, 9 Jan 2009 17:50:14 +1100
-Subject: [PATCH] efl: update efl srcrev
+Date: Mon, 1 Dec 2008 12:40:54 +1100
+Subject: [PATCH] sane-srcrevs: update EFL to latest upstream working rev
 
+i don't recommend using this rev unless you like bleeding-edge
 ---
  conf/distro/include/sane-srcrevs.inc |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index 9f07a3c..4e853e1 100644
+index 0e7f9b4..a4c02b0 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -234,7 +234,7 @@ SRCREV_pn-zhone ?= "cf48d98b8e994d6a7698fbc6f0689126892895f9"
+@@ -234,7 +234,7 @@ SRCREV_pn-zhone ?= "cedaa8a6dd70fc3e13bd8bcda7fe84019cf9ef54"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.
--EFL_SRCREV ?= "37919"
-+EFL_SRCREV ?= "38459"
+-EFL_SRCREV ?= "38544"
++EFL_SRCREV ?= "37872"
  SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
  SRCREV_pn-edb ?= "${EFL_SRCREV}"
  SRCREV_pn-eina-native ?= "${EFL_SRCREV}"

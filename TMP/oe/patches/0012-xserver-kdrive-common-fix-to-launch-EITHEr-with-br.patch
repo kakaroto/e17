@@ -1,4 +1,4 @@
-From 4868d3a9b4d82d40b899e4065befa6064246c280 Mon Sep 17 00:00:00 2001
+From e00f389b32952e9530a8918e5a30ba9506ee25f8 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 19:36:59 +1100
 Subject: [PATCH] xserver-kdrive-common: fix to launch EITHEr with -br or -ppm, but not both

@@ -1,4 +1,4 @@
-From 1b844307126c0cca4ca472b3d67ad44e48c6bb5d Mon Sep 17 00:00:00 2001
+From cbae8928ad34fe0c5b10e75f3bc31aeb02640286 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sun, 2 Nov 2008 11:47:42 +1100
 Subject: [PATCH] glibc: disable patch that moves ld.so.cache to /var/run to not run ldconfig

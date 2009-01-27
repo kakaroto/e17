@@ -1,0 +1,24 @@
+From 9a042fae89fe5501bf42e7563db4f0e1dd642680 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Fri, 16 Jan 2009 11:36:44 +1100
+Subject: [PATCH] efl: force arm insturctions, not thumb to stop illegal instruction bugs.
+
+---
+ classes/efl.bbclass |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/classes/efl.bbclass b/classes/efl.bbclass
+index d333c4b..1e610de 100644
+--- a/classes/efl.bbclass
++++ b/classes/efl.bbclass
+@@ -9,6 +9,7 @@ DEPENDS += "pkgconfig-native"
+ # revision 0d93ec84b30bc1bee2caaee72d667f87bc468a70 made SRCDATE and hence PV go backwards, so we need to up PE to unbreak builds and feeds :(
+ PE = "2"
+ 
++# thumb has much unhappiness
+ ARM_INSTRUCTION_SET = "arm"
+ 
+ AUTOTOOLS_STAGE_PKGCONFIG = "1"
+-- 
+1.5.4.3
+

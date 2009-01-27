@@ -1,4 +1,4 @@
-From a85fa98d7eb6dd3fdfbcb4e0280a212da4828ba3 Mon Sep 17 00:00:00 2001
+From af98db126b981e3e70adb04c8a07ca4901d8a5be Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 4 Dec 2008 12:54:38 +1100
 Subject: [PATCH] illume-image: clean up language setup for translations and remove unsued pkgs
@@ -8,7 +8,7 @@ Subject: [PATCH] illume-image: clean up language setup for translations and remo
  1 files changed, 6 insertions(+), 20 deletions(-)
 
 diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
-index bd7b512..bb097f0 100644
+index 857d5b0..549fb78 100644
 --- a/packages/images/illume-image.bb
 +++ b/packages/images/illume-image.bb
 @@ -17,10 +17,6 @@ BASE_INSTALL = "\
@@ -53,7 +53,7 @@ index bd7b512..bb097f0 100644
  
  # audio
 @@ -116,23 +111,15 @@ ZHONE_INSTALL = "\
-   gsm0710muxd \
+   fso-gsm0710muxd \
    frameworkd \
    fso-gpsd \
 -#  zhone \

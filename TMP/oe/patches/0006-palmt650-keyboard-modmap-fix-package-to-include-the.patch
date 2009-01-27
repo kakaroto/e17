@@ -1,4 +1,4 @@
-From 892c02dbe1366d8fcd7dd8d82ae2c41eb805a99a Mon Sep 17 00:00:00 2001
+From eedbac926a5e4c04df3fd4a36ac8f7a4e82f7110 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Sat, 15 Nov 2008 14:50:16 +1100
 Subject: [PATCH] palmt650-keyboard-modmap: fix package to include the right files

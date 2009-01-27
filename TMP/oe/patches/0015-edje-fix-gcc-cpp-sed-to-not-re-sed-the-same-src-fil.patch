@@ -1,4 +1,4 @@
-From a819a01c5c6beedfd64f7b5137fd2f45f5d27f8d Mon Sep 17 00:00:00 2001
+From f6fa74584cc6d43ed6125c12f0170122c9ac6d66 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 4 Dec 2008 12:57:10 +1100
 Subject: [PATCH] edje: fix gcc+cpp sed to not re-sed the same src file on rebuild

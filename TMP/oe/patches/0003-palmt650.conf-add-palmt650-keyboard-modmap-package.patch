@@ -1,4 +1,4 @@
-From c25b68c40c3f36409942965f5e7deb60fd0c54c7 Mon Sep 17 00:00:00 2001
+From 7ed6cf97399420e118ad1ad68af94f6d0a604902 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 30 Oct 2008 16:47:23 +1100
 Subject: [PATCH] palmt650.conf: add palmt650-keyboard-modmap package to make keyboard work in x
