@@ -905,10 +905,13 @@ data_shutdown(void)
    // FIXME: free messages, and callbacks
 }
 
-void
+int
 data_message_sent_store(Data_Message *reply_to, const char *to, const char *message)
 {
    // FIXE: alloc msg, add to list and store on disk
+   printf("FIXME: store sms in Sent\n");
+   return 0; // fail
+   return 1; // succeeded
 }
 
 void

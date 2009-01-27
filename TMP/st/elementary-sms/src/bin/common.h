@@ -1,4 +1,8 @@
 #include <Elementary.h>
+#include "config.h"
+#ifdef HAVE_EFSO
+# include <efso.h>
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 typedef unsigned int Data_Message_Id; // 4 billion msg's is good enough imho
@@ -64,7 +68,7 @@ struct _Data_Contact_Tel
 
 void data_init(void);
 void data_shutdown(void);
-void data_message_sent_store(Data_Message *reply_to, const char *contact, const char *message);
+int data_message_sent_store(Data_Message *reply_to, const char *contact, const char *message);
 void data_message_add_callback_add(void (*func) (void *data, Data_Message *msg), const void *data);
 void data_message_del_callback_del(void (*func) (void *data, Data_Message *msg), const void *data);
 void data_message_add_callback_add(void (*func) (void *data, Data_Message *msg), const void *data);

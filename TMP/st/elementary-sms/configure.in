@@ -18,6 +18,11 @@ AC_C_CONST
 PKG_CHECK_MODULES([ELEMENTARY], [
    elementary
 ])
+PKG_CHECK_MODULES([EFSO], [
+   efso
+],[
+   AC_DEFINE(HAVE_EFSO, 1, [have libefso])
+])
 
 AC_OUTPUT([
 Makefile

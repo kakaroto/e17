@@ -1,6 +1,14 @@
 #include "common.h"
 
-static void on_recent(void *data, Evas_Object *obj, void *event_info);
+static Evas_Object *window = NULL, *box = NULL, *content = NULL;
+static Evas_Object *inwin = NULL, *inwin2 = NULL;
+static Evas_Object *number_entry = NULL;
+static Evas_Object *sms_entry = NULL;
+static Evas_Object *write_ph = NULL, *write_lb = NULL, *write_stat = NULL;
+static char *number = NULL;
+static Data_Message *reply_to = NULL;
+
+static void on_write(void *data, Evas_Object *obj, void *event_info);
 
 static Evas_Object *
 _create_message(Evas_Object *win, Data_Message *msg)
@@ -74,13 +82,6 @@ _create_message(Evas_Object *win, Data_Message *msg)
    if (title) free(title);
    return msgui;
 }
-
-static Evas_Object *window = NULL, *box = NULL, *content = NULL;
-static Evas_Object *inwin = NULL, *inwin2 = NULL;
-static Evas_Object *number_entry = NULL;
-static Evas_Object *sms_entry = NULL;
-static Evas_Object *write_ph = NULL, *write_lb = NULL;
-static char *number = NULL;
 
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
@@ -353,6 +354,27 @@ on_to_select(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_edit(void *data, Evas_Object *obj, void *event_info)
+{
+   char buf[256], *text, *text2;
+   int len;
+   
+   text = elm_entry_entry_get(sms_entry);
+   if (!text) return;
+   text2 = elm_entry_markup_to_utf8(text);
+   if (!text2) return;
+   len = strlen(text2);
+   if (len > 0)
+     {
+        if (text2[len - 1] == '\n') text2[len - 1] = 0;
+     }
+   len = strlen(text2);
+   free(text2);
+   snprintf(buf, sizeof(buf), "%i", len);
+   elm_label_label_set(write_stat, buf);
+}
+
+static void
 on_send(void *data, Evas_Object *obj, void *event_info)
 {
    const char *text;
@@ -381,10 +403,23 @@ on_send(void *data, Evas_Object *obj, void *event_info)
         if (text2[len - 1] == '\n') text2[len - 1] = 0;
      }
    printf("TO: <%s>\n", number);
-   printf("TEXT...\n");
    printf("%s\n", text2);
+#ifdef HAVE_EFSO
+   // FIXME: no reply handler in efso to track message send
+   // FIXME: text input is utf8 - but encoding unspecified - efso probably
+   // should allow for encoding params or convert to a proper encoding
+   // (gsm, ucs2 etc.) for you.
+   if (data_message_sent_store(reply_to, number, text2))
+     {
+        efso_gsm_sms_send_message(number, text2, NULL, NULL);
+     }
+   else
+     {
+        printf("CANNOT STORE... FIXME: need to make space\n");
+     }
+#endif   
    free(text2);
-   on_recent(NULL, NULL, NULL);
+   on_write(NULL, NULL, NULL);
 }
 
 static void
@@ -427,6 +462,14 @@ on_write(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(lb);
    write_lb = lb;
    
+   lb = elm_label_add(window);
+   elm_label_label_set(lb, "0");
+   evas_object_size_hint_weight_set(lb, 0.0, 1.0);
+   evas_object_size_hint_align_set(lb, 0.5, 0.5);
+   elm_box_pack_end(bx2, lb);
+   evas_object_show(lb);
+   write_stat = lb;
+   
    elm_box_pack_end(bx, bx2);
    evas_object_show(bx2);
    
@@ -440,6 +483,7 @@ on_write(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_weight_set(en, 1.0, 1.0);
    evas_object_size_hint_align_set(en, -1.0, -1.0);
    elm_scroller_content_set(sc, en);
+   evas_object_smart_callback_add(en, "changed", on_edit, NULL);
    evas_object_show(en);
    
    evas_object_show(sc);
