@@ -479,10 +479,14 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, const Ewl_Model *model,
                 ewl_container_child_append(c, o);
                 ewl_widget_show(o);
 
-                if (view->fetch && model->fetch)
+                if (view->constructor && model->fetch && view->assign)
                 {
-                        item = view->fetch(model->fetch(mvc_data, i, 0), i, 0,
-                                ewl_mvc_private_data_get(EWL_MVC(combo)));
+                        void *pr_data;
+
+                        pr_data = ewl_mvc_private_data_get(EWL_MVC(combo));
+                        item = view->constructor(0, pr_data);
+                        view->assign(item, model->fetch(mvc_data, i, 0), i, 0,
+                                pr_data);
                         ewl_container_child_append(EWL_CONTAINER(o), item);
                         ewl_widget_show(item);
                 }

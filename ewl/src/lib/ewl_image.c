@@ -26,7 +26,10 @@ static void ewl_image_rotate_90(Ewl_Image *img, int cc);
 
 static Ewl_Widget *ewl_image_view_cb_header_fetch(void *data, unsigned int col,
                                                         void *pr_data);
-static Ewl_Widget *ewl_image_view_cb_widget_fetch(void *data, unsigned int row,
+static Ewl_Widget *ewl_image_view_cb_constructor(unsigned int col,
+                                                        void *pr_data);
+static void ewl_image_view_cb_assign(Ewl_Widget *w, void *data,
+                                                        unsigned int row,
                                                         unsigned int col,
                                                         void *pr_data);
 
@@ -68,26 +71,35 @@ ewl_image_view_get(void)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, ewl_image_view_cb_widget_fetch);
+        ewl_view_widget_constructor_set(view, ewl_image_view_cb_constructor);
+        ewl_view_widget_assign_set(view, ewl_image_view_cb_assign);
         ewl_view_header_fetch_set(view, ewl_image_view_cb_header_fetch);
 
         DRETURN_PTR(view, DLEVEL_STABLE);
 }
 
 static Ewl_Widget *
-ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                                unsigned int col __UNUSED__,
-                                                void *pr_data __UNUSED__)
+ewl_image_view_cb_constructor(unsigned int col __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
-        Ewl_Widget *image;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        image = ewl_image_new();
-        ewl_image_file_path_set(EWL_IMAGE(image), data);
-
-        DRETURN_PTR(image, DLEVEL_STABLE);
+        DRETURN_PTR(ewl_image_new(), DLEVEL_STABLE);
 }
+
+static void
+ewl_image_view_cb_assign(Ewl_Widget *w, void *data,
+                                unsigned int row __UNUSED__,
+                                unsigned int col __UNUSED__,
+                                void *pr_data __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        ewl_image_file_path_set(EWL_IMAGE(w), data);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 static Ewl_Widget *
 ewl_image_view_cb_header_fetch(void *data, unsigned int col __UNUSED__,

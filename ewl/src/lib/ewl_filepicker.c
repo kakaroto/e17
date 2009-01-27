@@ -55,10 +55,12 @@ static void ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
                                                         void *data);
 static Ewl_Widget *ewl_filepicker_cb_type_header(void *data, unsigned int col,
                                                         void *pr_data);
-static Ewl_Widget *ewl_filepicker_cb_type_widget(void *data, unsigned int row,
+static Ewl_Widget *ewl_filepicker_cb_type_constructor(unsigned int col,
+                                                        void *pr_data);
+static void ewl_filepicker_cb_type_assign(Ewl_Widget *w, void *data,
+                                                        unsigned int row,
                                                         unsigned int col,
                                                         void *pr_data);
-
 static Ewl_Widget *ewl_filepicker_cb_path_header(void *data, 
                                                         unsigned int col,
                                                         void *pr_data);
@@ -208,8 +210,10 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
         fp->mvc_filters.model = ewl_model_ecore_list_instance();
         fp->mvc_filters.view = ewl_view_new();
-        ewl_view_widget_fetch_set(fp->mvc_filters.view,
-                                ewl_filepicker_cb_type_widget);
+        ewl_view_widget_constructor_set(fp->mvc_filters.view,
+                                ewl_filepicker_cb_type_constructor);
+        ewl_view_widget_assign_set(fp->mvc_filters.view,
+                                ewl_filepicker_cb_type_assign);
         ewl_view_header_fetch_set(fp->mvc_filters.view,
                                 ewl_filepicker_cb_type_header);
 
@@ -886,24 +890,30 @@ ewl_filepicker_favorites_populate(Ewl_Filepicker *fp)
 }
 
 static Ewl_Widget *
-ewl_filepicker_cb_type_widget(void *data, unsigned int row __UNUSED__,
+ewl_filepicker_cb_type_constructor(unsigned int col __UNUSED__,
+                                void *pr_data __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        DRETURN_PTR(ewl_label_new(), DLEVEL_STABLE);
+}
+
+static void
+ewl_filepicker_cb_type_assign(Ewl_Widget *w, void *data,
+                                unsigned int row __UNUSED__,
                                 unsigned int col __UNUSED__,
                                 void *pr_data __UNUSED__)
 {
         Ewl_Filelist_Filter *filter;
-        Ewl_Widget *w;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(data, NULL);
+        DCHECK_PARAM_PTR(data);
 
         filter = data;
-
-        w = ewl_label_new();
         ewl_label_text_set(EWL_LABEL(w), filter->name);
 
-        DRETURN_PTR(w, DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 static Ewl_Widget *
 ewl_filepicker_cb_type_header(void *data, unsigned int col __UNUSED__,

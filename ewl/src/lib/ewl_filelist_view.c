@@ -87,16 +87,14 @@ ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w, void *event,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
-                        unsigned int row __UNUSED__, unsigned int column,
-                        void *pr_data __UNUSED__)
+Ewl_Widget *
+ewl_filelist_view_constructor(unsigned int column __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *ret;
-        const char *img = NULL, *stock, *filename;
         const char *dnd_types[] = {"text/uri-list", NULL};
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(data, NULL);
 
         /* Create icon */
         ret = ewl_icon_simple_new();
@@ -107,6 +105,20 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
         ewl_box_orientation_set(EWL_BOX(ret),
                         EWL_ORIENTATION_HORIZONTAL);
         ewl_object_alignment_set(EWL_OBJECT(ret), EWL_FLAG_ALIGN_LEFT);
+
+        DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+void
+ewl_filelist_view_assign(Ewl_Widget *w, void *data,
+                        unsigned int row __UNUSED__, unsigned int column,
+                        void *pr_data __UNUSED__)
+{
+        const char *img = NULL, *stock, *filename;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(data);
+        DCHECK_PARAM_PTR(w);
 
         /* Get and set data into icon */
         if (column == 0)
@@ -121,22 +133,20 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
                         img = ewl_icon_theme_icon_path_get(stock,
                                                 EWL_ICON_SIZE_MEDIUM);
                 }
-                if (img) ewl_icon_image_set(EWL_ICON(ret), 
+                if (img) ewl_icon_image_set(EWL_ICON(w), 
                                                 img, NULL);
 
                 filename = ecore_file_file_get(data);
-                ewl_icon_label_set(EWL_ICON(ret), filename);
+                ewl_icon_label_set(EWL_ICON(w), filename);
         }
         else
-        {
-                ewl_icon_label_set(EWL_ICON(ret), data);
-        }
+                ewl_icon_label_set(EWL_ICON(w), data);
         
         FREE(data);
-        ewl_widget_show(ret);
 
-        DRETURN_PTR(ret, DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 Ewl_Widget *ewl_filelist_view_header_fetch(void *data __UNUSED__,
                                                 unsigned int column,

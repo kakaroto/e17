@@ -23,16 +23,16 @@ static void ewl_freebox_mvc_test_cb_add(Ewl_Widget *w, void *ev, void *data);
 static void ewl_freebox_mvc_test_cb_clear(Ewl_Widget *w, void *ev, void *data);
 static void ewl_freebox_mvc_test_data_append(Ecore_List *d);
 
-static void                 *ewl_freebox_mvc_test_data_setup();
-static Ewl_Widget           *ewl_freebox_mvc_test_widget_fetch(void *data, 
-                                                               unsigned int row,
-                                                               unsigned int col,
-							       void *pr_data
-							       );
-static void                 *ewl_freebox_mvc_test_data_fetch(void *data, 
-                                                             unsigned int row, 
-                                                             unsigned int column);
-static unsigned int          ewl_freebox_mvc_test_data_count_get(void *data);
+static void *ewl_freebox_mvc_test_data_setup();
+static Ewl_Widget *ewl_freebox_mvc_test_widget_fetch(unsigned int col,
+							void *pr_data);
+static void ewl_freebox_mvc_test_widget_assign(Ewl_Widget *w, void *data,
+							unsigned int row,
+							unsigned int col,
+							void *pr_data);
+static void *ewl_freebox_mvc_test_data_fetch(void *data, unsigned int row, 
+                                                        unsigned int column);
+static unsigned int ewl_freebox_mvc_test_data_count_get(void *data);
 
 extern Ewl_Unit_Test freebox_mvc_unit_tests[];
 
@@ -73,7 +73,8 @@ create_test(Ewl_Container *box)
         ewl_model_data_count_set(model, ewl_freebox_mvc_test_data_count_get);
 
         view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, ewl_freebox_mvc_test_widget_fetch);
+        ewl_view_widget_constructor_set(view, ewl_freebox_mvc_test_widget_fetch);
+        ewl_view_widget_assign_set(view, ewl_freebox_mvc_test_widget_assign);
         ewl_view_header_fetch_set(view, NULL);
 
         data = ewl_freebox_mvc_test_data_setup();
@@ -123,24 +124,31 @@ ewl_freebox_mvc_test_data_setup(void)
 }
 
 static Ewl_Widget *
-ewl_freebox_mvc_test_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                              unsigned int col __UNUSED__,
-					      void *pr_data __UNUSED__)
+ewl_freebox_mvc_test_widget_fetch(unsigned int col __UNUSED__,
+					void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
+
+        w = ewl_icon_simple_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+        ewl_object_minimum_size_set(EWL_OBJECT(w), 32, 32);
+
+        return w;
+}
+
+static void
+ewl_freebox_mvc_test_widget_assign(Ewl_Widget *w, void *data,
+					unsigned int row __UNUSED__,
+                                        unsigned int col __UNUSED__,
+					void *pr_data __UNUSED__)
+{
         Freebox_MVC_Test_Row_Data *d;
 
         d = data;
 
-        w = ewl_icon_simple_new();
         ewl_icon_image_set(EWL_ICON(w), d->image, NULL);
         ewl_icon_label_set(EWL_ICON(w), d->text);
-        ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-        ewl_object_minimum_size_set(EWL_OBJECT(w), 32, 32);
-        ewl_widget_show(w);
-
-        return w;
-};
+}
 
 static void *
 ewl_freebox_mvc_test_data_fetch(void *data, unsigned int row, 

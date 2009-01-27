@@ -72,12 +72,12 @@ ewl_view_init(Ewl_View *view)
  * @brief This will set the given widget fetch callback into the view
  */
 void
-ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
+ewl_view_widget_constructor_set(Ewl_View *v, Ewl_View_Widget_Constructor c)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(v);
 
-        v->fetch = fetch;
+        v->constructor = c;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -88,14 +88,47 @@ ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
  * none set.
  * @brief Get the constructor set on this view
  */
-Ewl_View_Widget_Fetch
-ewl_view_widget_fetch_get(const Ewl_View *v)
+Ewl_View_Widget_Constructor
+ewl_view_widget_constructor_get(const Ewl_View *v)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(v, NULL);
 
-        DRETURN_PTR(v->fetch, DLEVEL_STABLE);
+        DRETURN_PTR(v->constructor, DLEVEL_STABLE);
 }
+
+/**
+ * @param v: The Ewl_View to set the widget assign callback into
+ * @param fetch: The Ewl_View_Widget_Assign to set into the view
+ * @return Returns no value.
+ * @brief This will set the given widget assign callback into the view
+ */
+void
+ewl_view_widget_assign_set(Ewl_View *v, Ewl_View_Widget_Assign assign)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(v);
+
+        v->assign = assign;
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param v: The Ewl_View to get the assign callback from
+ * @return Returns the Ewl_View_Widget_Assign set into the view or NULL if
+ * none set.
+ * @brief Get the assign callback set on this view
+ */
+Ewl_View_Widget_Assign
+ewl_view_widget_Assign_get(const Ewl_View *v)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(v, NULL);
+
+        DRETURN_PTR(v->assign, DLEVEL_STABLE);
+}
+
 
 /**
  * @param v: The Ewl_View to set the header_fetch callback on

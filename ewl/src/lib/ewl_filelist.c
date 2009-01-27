@@ -102,8 +102,10 @@ ewl_filelist_setup(Ewl_Filelist *fl)
         DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
         fl->view = ewl_view_new();
-        ewl_view_widget_fetch_set(fl->view,
-                                ewl_filelist_view_widget_fetch);
+        ewl_view_widget_constructor_set(fl->view,
+                                ewl_filelist_view_constructor);
+        ewl_view_widget_assign_set(fl->view,
+                                ewl_filelist_view_assign);
         ewl_view_header_fetch_set(fl->view,
                                 ewl_filelist_view_header_fetch);
 

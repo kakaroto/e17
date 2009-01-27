@@ -33,7 +33,9 @@ static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data,
                                                         unsigned int col,
                                                         void *pr_data);
-static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data,
+static Ewl_Widget *combo_test_editable_cb_widget_fetch(unsigned int col,
+                                                        void *pr_data);
+static void combo_test_editable_cb_widget_assign(Ewl_Widget *w, void *data,
                                                         unsigned int row,
                                                         unsigned int col,
                                                         void *pr_data);
@@ -114,7 +116,8 @@ create_test(Ewl_Container *box)
         ewl_model_data_fetch_set(model, combo_test_data_fetch);
 
         view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, combo_test_editable_cb_widget_fetch);
+        ewl_view_widget_constructor_set(view, combo_test_editable_cb_widget_fetch);
+        ewl_view_widget_assign_set(view, combo_test_editable_cb_widget_assign);
         ewl_view_header_fetch_set(view,
                         combo_test_editable_cb_header_fetch);
 
@@ -330,30 +333,43 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__,
 }
 
 static Ewl_Widget *
-combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                                unsigned int col __UNUSED__,
+combo_test_editable_cb_widget_fetch(unsigned int col __UNUSED__,
                                                 void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
         Ewl_Widget *o;
-        char *str;
 
         w = ewl_hbox_new();
         ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
 
         o = ewl_image_new();
-        ewl_image_file_path_set(EWL_IMAGE(o), (const char *)data);
         ewl_container_child_append(EWL_CONTAINER(w), o);
         ewl_widget_show(o);
 
         o = ewl_label_new();
-        str = strrchr((const char *)data, '/');
-        ewl_label_text_set(EWL_LABEL(o), (str ? str + 1 : data));
         ewl_container_child_append(EWL_CONTAINER(w), o);
         ewl_widget_show(o);
 
         return w;
 }
+
+static void
+combo_test_editable_cb_widget_assign(Ewl_Widget *w, void *data,
+                                        unsigned int row __UNUSED__,
+                                        unsigned int col __UNUSED__,
+                                        void *pr_data __UNUSED__)
+{
+        Ewl_Widget *o;
+        char *str;
+
+        o = ewl_container_child_get(EWL_CONTAINER(w), 0);
+        ewl_image_file_path_set(EWL_IMAGE(o), (const char *)data);
+
+        o = ewl_container_child_get(EWL_CONTAINER(w), 1);
+        str = strrchr((const char *)data, '/');
+        ewl_label_text_set(EWL_LABEL(o), (str ? str + 1 : data));
+}
+
 
 static void
 combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__,

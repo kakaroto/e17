@@ -395,7 +395,7 @@ ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view)
         /* destroy the old view, create a new one and redisplay the tree */
         if (tree->rows) ewl_widget_destroy(tree->rows);
 
-        tree->rows = view->fetch(NULL, 0, 0, NULL);
+        tree->rows = view->constructor(0, NULL);
         ewl_tree_view_tree_set(EWL_TREE_VIEW(tree->rows), tree);
         ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
         ewl_widget_show(tree->rows);
@@ -904,7 +904,10 @@ ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model,
                 ewl_label_text_set(EWL_LABEL(child), " ");
         }
         else
-                child = view->fetch(val, r, c, pr_data);
+        {
+                child = view->constructor(c, pr_data);
+                view->assign(child, val, r, c, pr_data);
+        }
 
         ewl_container_child_append(EWL_CONTAINER(cell), child);
         ewl_widget_show(child);

@@ -160,7 +160,8 @@ ewl_list2_generate_widget_size(Ewl_List2 *list, unsigned int idx, int *w,
 
         cell = ewl_cell_new();
         ewl_container_child_append(EWL_CONTAINER(list->box), cell);
-        o = view->fetch(model->fetch(mvc_data, idx, 0), idx, 0, pr_data);
+        o = view->constructor(0, pr_data);
+        view->assign(o, model->fetch(mvc_data, idx, 0), idx, 0, pr_data);
         ewl_container_child_append(EWL_CONTAINER(cell), o);
         ewl_widget_realize_force(cell);
         ewl_widget_realize_force(o);
@@ -226,15 +227,15 @@ ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                 if (list->fixed)
                 {
                         ewl_list2_generate_widget_size(list, 0, &ws, &hs);
-                        list->pref_h = malloc(sizeof(int));
-                        list->pref_w = malloc(sizeof(int));
+                        list->pref_h = NEW(int, 1);
+                        list->pref_w = NEW(int, 1);
                         list->pref_w[0] = ws;
                         list->pref_h[0] = hs;
                 }
                 else
                 {
-                        list->pref_w = malloc(sizeof(int) * count);
-                        list->pref_h = malloc(sizeof(int) * count);
+                        list->pref_w = NEW(int, count);
+                        list->pref_h = NEW(int, count);
 
                         for (i = 0; i < count; i++)
                         {
@@ -479,7 +480,8 @@ ewl_list_draw(Ewl_List2 *list)
                 //                ewl_list_cb_item_clicked, list);
                 ewl_widget_show(cell);
 
-                obj = view->fetch(model->fetch(mvc_data, idx, 0), idx, 0,
+                obj = view->constructor(0, pr_data);
+                view->assign(obj, model->fetch(mvc_data, idx, 0), idx, 0,
                                                                 pr_data);
                 ewl_container_child_append(EWL_CONTAINER(cell), obj);
                 ewl_widget_show(obj);

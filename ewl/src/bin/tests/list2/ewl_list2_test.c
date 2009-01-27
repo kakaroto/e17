@@ -3,10 +3,13 @@
 #include "ewl_test_private.h"
 #include "ewl_image.h"
 #include "ewl_list2.h"
+#include "ewl_label.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <Ecore_File.h>
 
 static int create_test(Ewl_Container *win);
 
@@ -31,7 +34,7 @@ create_test(Ewl_Container *box)
         int i;
 
         model = ewl_model_ecore_list_instance();
-        view = ewl_image_view_get();
+        view = ewl_label_view_get();
 
         /* Create a very long list to test performance */
         o = ewl_hbox_new();
@@ -42,6 +45,9 @@ create_test(Ewl_Container *box)
         for (i = 0; i < 10000; i++)
                 ecore_list_append(long_data, PACKAGE_DATA_DIR
                                                 "/ewl/images/e-logo.png");
+
+        if (!ecore_file_exists(PACKAGE_DATA_DIR"/ewl/images/e-logo.png"))
+                printf("File doesn't exist\n");
 
         list = ewl_list2_new();
         ewl_container_child_append(EWL_CONTAINER(o), list);

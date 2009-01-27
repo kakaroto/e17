@@ -8,8 +8,7 @@
 
 static Ewl_View *ewl_tree_view_scrolled_view = NULL;
 
-static Ewl_Widget * ewl_tree_view_cb_widget_fetch(void *data, unsigned int col,
-                                                        unsigned int row,
+static Ewl_Widget * ewl_tree_view_cb_constructor(unsigned int col,
                                                         void *pr_data);
 
 /**
@@ -24,17 +23,15 @@ ewl_tree_view_scrolled_get(void)
         if (!ewl_tree_view_scrolled_view)
         {
                 ewl_tree_view_scrolled_view = ewl_view_new();
-                ewl_view_widget_fetch_set(ewl_tree_view_scrolled_view,
-                                        ewl_tree_view_cb_widget_fetch);
+                ewl_view_widget_constructor_set(ewl_tree_view_scrolled_view,
+                                        ewl_tree_view_cb_constructor);
         }
 
         DRETURN_PTR(ewl_tree_view_scrolled_view, DLEVEL_STABLE);
 }
 
 static Ewl_Widget *
-ewl_tree_view_cb_widget_fetch(void *data __UNUSED__,
-                                unsigned int col __UNUSED__,
-                                unsigned int row __UNUSED__,
+ewl_tree_view_cb_constructor(unsigned int col __UNUSED__,
                                 void *pr_data __UNUSED__)
 {
         Ewl_Widget *tree;

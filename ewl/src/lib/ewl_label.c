@@ -5,7 +5,10 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, unsigned int row,
+static Ewl_Widget *ewl_label_view_cb_constructor(unsigned int col,
+                                                        void *pr_data);
+static void ewl_label_view_cb_assign(Ewl_Widget *w, void *data,
+                                                        unsigned int row,
                                                         unsigned int col,
                                                         void *pr_data);
 static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, unsigned int col,
@@ -109,25 +112,33 @@ ewl_label_view_get(void)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, ewl_label_view_cb_widget_fetch);
+        ewl_view_widget_constructor_set(view, ewl_label_view_cb_constructor);
+        ewl_view_widget_assign_set(view, ewl_label_view_cb_assign);
         ewl_view_header_fetch_set(view, ewl_label_view_cb_header_fetch);
 
         DRETURN_PTR(view, DLEVEL_STABLE);
 }
 
 static Ewl_Widget *
-ewl_label_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
+ewl_label_view_cb_constructor(unsigned int col __UNUSED__,
+                                        void * pr_data __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        DRETURN_PTR(ewl_label_new(), DLEVEL_STABLE);
+}
+
+static void
+ewl_label_view_cb_assign(Ewl_Widget *w, void *data,
+                                        unsigned int row __UNUSED__,
                                         unsigned int col __UNUSED__,
                                         void * pr_data __UNUSED__)
 {
-        Ewl_Widget *label;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        label = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(label), data);
+        ewl_label_text_set(EWL_LABEL(w), data);
 
-        DRETURN_PTR(label, DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static Ewl_Widget *

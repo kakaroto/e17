@@ -30,7 +30,10 @@ static void *list_test_data_setup(void);
 static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row,
+static Ewl_Widget *list_test_cb_widget_fetch(unsigned int col,
+                                                void *pr_data);
+static void list_test_cb_widget_assign(Ewl_Widget *w, void *data,
+                                                unsigned int row,
                                                 unsigned int col,
                                                 void *pr_data);
 static void *list_test_data_fetch(void *data, unsigned int row,
@@ -113,7 +116,8 @@ create_test(Ewl_Container *box)
         ewl_model_data_count_set(model, list_test_data_count_get);
 
         view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, list_test_cb_widget_fetch);
+        ewl_view_widget_constructor_set(view, list_test_cb_widget_fetch);
+        ewl_view_widget_assign_set(view, list_test_cb_widget_assign);
         ewl_view_header_fetch_set(view, NULL);
 
         data = list_test_data_setup();
@@ -158,23 +162,29 @@ list_test_data_setup(void)
 }
 
 static Ewl_Widget *
-list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                        unsigned int col __UNUSED__,
-                                        void *pr_data __UNUSED__)
+list_test_cb_widget_fetch(unsigned int col __UNUSED__, void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
-        List_Test_Row_Data *d;
-
-        d = data;
 
         w = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(w), d->text);
-        ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(w), 24, 24);
-        ewl_widget_show(w);
 
         return w;
 }
+
+static void
+list_test_cb_widget_assign(Ewl_Widget *w, void *data,
+                                        unsigned int row __UNUSED__,
+                                        unsigned int col __UNUSED__,
+                                        void *pr_data __UNUSED__)
+{
+        List_Test_Row_Data *d;
+
+        d = data;
+        ewl_button_label_set(EWL_BUTTON(w), d->text);
+        ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+}
+
 
 static void *
 list_test_data_fetch(void *data, unsigned int row,

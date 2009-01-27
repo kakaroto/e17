@@ -8,7 +8,10 @@
  * @{
  */
 
-Ewl_Widget *ewl_filelist_view_widget_fetch(void *data, unsigned int row,
+Ewl_Widget *ewl_filelist_view_constructor(unsigned int column,
+                                                void *private_data);
+void ewl_filelist_view_assign(Ewl_Widget *w, void *data,
+                                                unsigned int row,
                                                 unsigned int column,
                                                 void *private_data);
 Ewl_Widget *ewl_filelist_view_header_fetch(void *data, unsigned int column,

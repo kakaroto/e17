@@ -177,7 +177,8 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                                     ewl_freebox_mvc_cb_item_clicked, fb_mvc);
                 ewl_widget_show(cell);
 
-                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0, pr_data);
+                o = view->constructor(0, pr_data);
+                view->assign(o, model->fetch(mvc_data, i, 0), i, 0, pr_data);
                 ewl_widget_show(o);
 
                 ewl_container_child_append(EWL_CONTAINER(cell), o);
