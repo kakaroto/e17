@@ -27,8 +27,10 @@ void _highscore_add(Ewl_Window * win, _Win_Hi_Points * wh);
 static void * highscore_data_fetch(void * data, unsigned int row, 
 		                                  unsigned int col);
 static unsigned int highscore_data_count(void * data);
-static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row,
-							unsigned int col, void * prd);
+static Ewl_Widget * highscore_widget_constructor(unsigned int col, void * prd);
+static void highscore_widget_assign(Ewl_Widget *w, void * data,
+                                    unsigned int row, unsigned int col,
+                                    void *prd);
 static Ewl_Widget * highscore_header_fetch(void * data, unsigned int column,
                                             void * prd);
 /*
@@ -283,7 +285,8 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
 
     /* the view for the first column */
     view = ewl_view_new();
-    ewl_view_widget_fetch_set(view, highscore_widget_fetch);
+    ewl_view_widget_constructor_set(view, highscore_widget_constructor);
+    ewl_view_widget_assign_set(view, highscore_widget_assign);
     ewl_view_header_fetch_set(view, highscore_header_fetch);
 
     /* set the model and the view to the tree */
@@ -350,15 +353,18 @@ static unsigned int highscore_data_count(void * data)
     return evas_list_count(l);
 }
 
-static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row, 
-                                                 unsigned int col, void *prd)
+static Ewl_Widget * highscore_widget_constructor(unsigned int col, void *prd)
 {
-    Ewl_Widget *w;
+    return ewl_label_new();
+}
+
+static void highscore_widget_assign(Ewl_Widget *w, void * data,
+                                    unsigned int row, unsigned int col,
+                                    void *prd)
+{
     Eli_Highscore_Entry *e;
 
     e = (Eli_Highscore_Entry *) data;
-
-    w = ewl_label_new();
 
     if (col == 0) {
        char buffer[8];
@@ -378,8 +384,6 @@ static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row,
        ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_RIGHT);
        ewl_label_text_set(EWL_LABEL(w), pstring);
     }
-
-    return w;
 }
 
 static Ewl_Widget * highscore_header_fetch(void *data , unsigned int column,
