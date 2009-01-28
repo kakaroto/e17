@@ -948,7 +948,7 @@ data_message_sent_store(Data_Message *reply_to, const char *to, const char *mess
    m->id = msgnum;
    if (reply_to) m->reply_to_id = reply_to->id;
    m->flags = DATA_MESSAGE_SENT;
-   m->timestamp = 0;
+   m->timestamp = t;
    m->from_to = eina_stringshare_add(to);
    m->body = eina_stringshare_add(message);
    messages = eina_list_append(messages, m);
