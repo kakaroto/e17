@@ -388,7 +388,7 @@ void
 ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
                                                         Ewl_Widget *tab)
 {
-        Ewl_Widget *t;
+        Ewl_Widget *t, *w;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(n);
@@ -408,7 +408,6 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
                 int idx = 0;
 
                 t = ewl_hbox_new();
-                ewl_widget_appearance_set(t, "tab");
                 ewl_attach_widget_association_set(page, t);
                 ewl_attach_widget_association_set(t, page);
                 ewl_widget_show(t);
@@ -417,7 +416,29 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
                                         ewl_notebook_cb_tab_clicked, n);
 
                 idx = ewl_container_child_index_get(EWL_CONTAINER(n), page);
-                ewl_container_child_insert(EWL_CONTAINER(n->body.tabbar), t, idx);
+                if (idx == 0)
+                {
+                        ewl_widget_appearance_set(t, "first/tab");
+                        w = ewl_container_child_get(
+                                        EWL_CONTAINER(n->body.tabbar), 0);
+                        if (w)
+                                 ewl_widget_appearance_set(w, "tab");
+                }
+                else if (idx == ewl_container_child_count_get(EWL_CONTAINER(n))-1)
+                {
+                        ewl_widget_appearance_set(t, "last/tab");
+                        if (idx > 1)
+                        {
+                                w = ewl_container_child_get(
+                                        EWL_CONTAINER(n->body.tabbar), idx-1);
+                                if (w)
+                                        ewl_widget_appearance_set(w, "tab");
+                        }
+                }
+                else
+                        ewl_widget_appearance_set(t, "tab");
+
+		ewl_container_child_insert(EWL_CONTAINER(n->body.tabbar), t, idx);
         }
         else
                 ewl_container_reset(EWL_CONTAINER(t));
@@ -595,7 +616,7 @@ void
 ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
                                         int rem_idx __UNUSED__)
 {
-        Ewl_Widget *t;
+        Ewl_Widget *t, *first, *last;
         Ewl_Notebook *n;
         int idx = 0;
 
@@ -613,7 +634,19 @@ ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
         {
                 idx = ewl_container_child_index_get(
                                 EWL_CONTAINER(n->body.tabbar), t);
-
+                if (idx == 0)
+                {
+                        first = ewl_container_child_get(
+                                EWL_CONTAINER(n->body.tabbar), 0);
+                        ewl_widget_appearance_set(first, "first/tab");
+	        }
+                else if (idx > 1 && idx == ewl_container_child_count_get(
+                                EWL_CONTAINER(n->body.tabbar))-1)
+                {
+                        last = ewl_container_child_get(
+                                EWL_CONTAINER(n->body.tabbar), idx-1);
+                        ewl_widget_appearance_set(last, "last/tab");
+                }
                 ewl_widget_destroy(t);
         }
 
