@@ -95,9 +95,17 @@ data
 	item: "/notebook/right/tabbar/group" "ewl/notebook/left";
 
 	item: "/notebook/top/tabbar/tab/group" "ewl/notebook/top/tab";
+	item: "/notebook/top/tabbar/first/tab/group" "ewl/notebook/top/tab";
+	item: "/notebook/top/tabbar/last/tab/group" "ewl/notebook/top/tab";
 	item: "/notebook/bottom/tabbar/tab/group" "ewl/notebook/bottom/tab";
+        item: "/notebook/bottom/tabbar/first/tab/group" "ewl/notebook/bottom/tab";
+        item: "/notebook/bottom/tabbar/last/tab/group" "ewl/notebook/bottom/tab";
 	item: "/notebook/left/tabbar/tab/group" "ewl/notebook/left/tab";
+        item: "/notebook/left/tabbar/first/tab/group" "ewl/notebook/left/tab";
+        item: "/notebook/left/tabbar/last/tab/group" "ewl/notebook/left/tab";
 	item: "/notebook/right/tabbar/tab/group" "ewl/notebook/right/tab";
+        item: "/notebook/right/tabbar/first/tab/group" "ewl/notebook/right/tab";
+        item: "/notebook/right/tabbar/last/tab/group" "ewl/notebook/right/tab";
 
 	/* paned groups */
 	item: "/grabber/vertical/group" "ewl/separator/vertical";
