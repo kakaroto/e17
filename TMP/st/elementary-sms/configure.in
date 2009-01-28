@@ -22,6 +22,8 @@ PKG_CHECK_MODULES([EFSO], [
    efso
 ],[
    AC_DEFINE(HAVE_EFSO, 1, [have libefso])
+], [
+   have_efso=false
 ])
 
 AC_OUTPUT([

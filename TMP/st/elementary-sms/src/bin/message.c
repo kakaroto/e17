@@ -19,14 +19,14 @@ static void
 on_reply(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
-   printf("reply to message\n");
+   create_compose(mui->handle, NULL, NULL);
 }
 
 static void
 on_forward(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
-   printf("forward message\n");
+   create_compose(NULL, NULL, ((Data_Message *)(mui->handle))->body);
 }
 
 static void
@@ -47,7 +47,6 @@ static void
 on_wipe(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
-   printf("delete message completely\n");
    evas_object_del(mui->bb);
    data_message_del(mui->handle);
    free(mui);
@@ -57,7 +56,6 @@ static void
 on_trash(void *data, Evas_Object *obj, void *event_info)
 {
    Message_UI *mui = data;
-   printf("move message to trash\n");
    evas_object_del(mui->bb);
    data_message_trash(mui->handle);
    free(mui);
@@ -78,6 +76,7 @@ create_message(Evas_Object *win,
    
    bb = elm_bubble_add(win);
    mui->bb = bb;
+   // FIXME: on deletion of bb - free mui
    evas_object_data_set(bb, "message_data", mui);
    
    if (is_me) elm_bubble_corner_set(bb, "top_right");
@@ -131,7 +130,7 @@ create_message(Evas_Object *win,
      {
         bt = elm_button_add(win);
         elm_button_label_set(bt, "Reply");
-        evas_object_smart_callback_add(bt, "clicked", on_reply, NULL);
+        evas_object_smart_callback_add(bt, "clicked", on_reply, mui);
         evas_object_size_hint_weight_set(bt, 0.0, 0.0);
         evas_object_size_hint_align_set(bt, 0.0, -1.0);
         elm_box_pack_end(bx2, bt);

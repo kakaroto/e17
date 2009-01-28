@@ -89,4 +89,6 @@ Evas_Object *
                  Evas_Bool is_me, Evas_Bool have_contact,
                  const char *text, void *handle);
 void
+  create_compose(Data_Message *rep_to, const char *to, const char *content);
+void
   create_main_win(void);

@@ -1,7 +1,7 @@
 #include "common.h"
 
 static Evas_Object *window = NULL, *box = NULL, *content = NULL;
-static Evas_Object *inwin = NULL, *inwin2 = NULL;
+static Evas_Object *inwin = NULL, *inwin2 = NULL, *inwin3 = NULL;
 static Evas_Object *number_entry = NULL;
 static Evas_Object *sms_entry = NULL;
 static Evas_Object *write_ph = NULL, *write_lb = NULL, *write_stat = NULL;
@@ -357,7 +357,8 @@ on_to_select(void *data, Evas_Object *obj, void *event_info)
 static void
 on_edit(void *data, Evas_Object *obj, void *event_info)
 {
-   char buf[256], *text, *text2;
+   const char *text;
+   char buf[256], *text2;
    int len;
    
    text = elm_entry_entry_get(sms_entry);
@@ -376,6 +377,46 @@ on_edit(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_alert_ok(void *data, Evas_Object *obj, void *event_info)
+{
+   evas_object_del(inwin3);
+   inwin3 = NULL;
+}
+
+static void
+alert(const char *text)
+{
+   Evas_Object *win, *bx, *lb, *bt;
+   
+   win = window;
+   inwin3 = elm_win_inwin_add(win);
+   elm_win_inwin_style_set(inwin3, "minimal_vertical");
+        
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx, -1.0, -1.0);
+   
+   lb = elm_label_add(win);
+   evas_object_size_hint_weight_set(lb, 1.0, 1.0);
+   evas_object_size_hint_align_set(lb, -1.0, 0.5);
+   elm_box_pack_end(bx, lb);
+   evas_object_show(lb);
+   
+   bt = elm_button_add(window);
+   elm_button_label_set(bt, "OK");
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, -1.0);
+   elm_box_pack_end(bx, bt);
+   evas_object_smart_callback_add(bt, "clicked", on_alert_ok, NULL);
+   evas_object_show(bt);   
+        
+   elm_win_inwin_content_set(inwin2, bx);
+   evas_object_show(bx);
+   
+   elm_win_inwin_activate(inwin3);
+}
+
+static void
 on_send(void *data, Evas_Object *obj, void *event_info)
 {
    const char *text;
@@ -384,18 +425,21 @@ on_send(void *data, Evas_Object *obj, void *event_info)
    
    if (!number)
      {
-        printf("NO number! tell user\n");
+        alert("No recipient indicated.<br>"
+              "Please specify one");
         return;
      }
    text = elm_entry_entry_get(sms_entry);
    if (!text)
      {
-        printf("NO text - warn user\n");
+        alert("The message text is<br>"
+              "empty. Cannot send");
      }
    text2 = elm_entry_markup_to_utf8(text);
    if (!text2)
      {
-        printf("ERROR: converting to plain utf8 failed\n");
+        alert("Conversion from entry<br>"
+              "to UTF8 failed");
         return;
      }
    len = strlen(text2);
@@ -416,7 +460,8 @@ on_send(void *data, Evas_Object *obj, void *event_info)
      }
    else
      {
-        printf("CANNOT STORE... FIXME: need to make space\n");
+        alert("Cannot store sent message.<br>"
+              "FIXME: select msg to delete");
      }
 #endif   
    free(text2);
@@ -426,80 +471,7 @@ on_send(void *data, Evas_Object *obj, void *event_info)
 static void
 on_write(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *bx, *bx2, *ph, *lb, *bt, *sc, *en;
-   
-   if (number)
-     {
-        free(number);
-        number = NULL;
-     }
-   /* FIXME: content -> editor + to who display + select "who" */
-   if (content) evas_object_del(content);
-   
-   bx = elm_box_add(window);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   
-   content = bx;
-   
-   bx2 = elm_box_add(window);
-   elm_box_horizontal_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
-   
-   ph = elm_photo_add(window);
-   evas_object_smart_callback_add(ph, "clicked", on_to_select, NULL);
-   evas_object_size_hint_weight_set(ph, 0.0, 1.0);
-   evas_object_size_hint_align_set(ph, -1.0, -1.0);
-   elm_box_pack_end(bx2, ph);
-   evas_object_show(ph);
-   write_ph = ph;
-   
-   lb = elm_label_add(window);
-   elm_label_label_set(lb, "Select...");
-   evas_object_size_hint_weight_set(lb, 1.0, 1.0);
-   evas_object_size_hint_align_set(lb, -1.0, 0.5);
-   elm_box_pack_end(bx2, lb);
-   evas_object_show(lb);
-   write_lb = lb;
-   
-   lb = elm_label_add(window);
-   elm_label_label_set(lb, "0");
-   evas_object_size_hint_weight_set(lb, 0.0, 1.0);
-   evas_object_size_hint_align_set(lb, 0.5, 0.5);
-   elm_box_pack_end(bx2, lb);
-   evas_object_show(lb);
-   write_stat = lb;
-   
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-   
-   sc = elm_scroller_add(window);
-   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
-   evas_object_size_hint_align_set(sc, -1.0, -1.0);
-   elm_box_pack_end(bx, sc);
-   
-   en = elm_entry_add(window);
-   elm_entry_entry_set(en, "");
-   evas_object_size_hint_weight_set(en, 1.0, 1.0);
-   evas_object_size_hint_align_set(en, -1.0, -1.0);
-   elm_scroller_content_set(sc, en);
-   evas_object_smart_callback_add(en, "changed", on_edit, NULL);
-   evas_object_show(en);
-   
-   evas_object_show(sc);
-   sms_entry = en;
-   
-   bt = elm_button_add(window);
-   elm_button_label_set(bt, "Send");
-   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-   evas_object_size_hint_align_set(bt, -1.0, -1.0);
-   elm_box_pack_end(bx, bt);
-   evas_object_smart_callback_add(bt, "clicked", on_send, NULL);
-   evas_object_show(bt);   
-
-   elm_box_pack_end(box, bx);
-   evas_object_show(bx);
+   create_compose(NULL, NULL, NULL);
 }
 
 static int
@@ -526,7 +498,7 @@ on_recent(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(sc, -1.0, -1.0);
    elm_box_pack_end(box, sc);
    evas_object_show(sc);
-   
+
    content = sc;
 
    bx2 = elm_box_add(window);
@@ -671,6 +643,121 @@ on_trash(void *data, Evas_Object *obj, void *event_info)
      }
    
    eina_list_free(mlist);
+}
+
+void
+create_compose(Data_Message *rep_to, const char *to, const char *text)
+{
+   Evas_Object *bx, *bx2, *ph, *lb, *bt, *sc, *en;
+
+   if (content) evas_object_del(content);
+   
+   reply_to = NULL;
+   if (number)
+     {
+        free(number);
+        number = NULL;
+     }
+   
+   if (rep_to)
+     {
+        reply_to = rep_to;
+        if (reply_to->from_to)
+          number = strdup(reply_to->from_to);
+     }
+   if (to)
+     {
+        if (number) free(number);
+        number = strdup(to);
+     }
+   
+   bx = elm_box_add(window);
+   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+   evas_object_size_hint_align_set(bx, -1.0, -1.0);
+   
+   content = bx;
+   
+   bx2 = elm_box_add(window);
+   elm_box_horizontal_set(bx2, 1);
+   evas_object_size_hint_weight_set(bx2, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx2, -1.0, -1.0);
+   
+   ph = elm_photo_add(window);
+   evas_object_smart_callback_add(ph, "clicked", on_to_select, NULL);
+   evas_object_size_hint_weight_set(ph, 0.0, 1.0);
+   evas_object_size_hint_align_set(ph, -1.0, -1.0);
+   elm_box_pack_end(bx2, ph);
+   evas_object_show(ph);
+   write_ph = ph;
+   
+   lb = elm_label_add(window);
+   elm_label_label_set(lb, "Select...");
+   evas_object_size_hint_weight_set(lb, 1.0, 1.0);
+   evas_object_size_hint_align_set(lb, -1.0, 0.5);
+   elm_box_pack_end(bx2, lb);
+   evas_object_show(lb);
+   write_lb = lb;
+   
+   lb = elm_label_add(window);
+   elm_label_label_set(lb, "0");
+   evas_object_size_hint_weight_set(lb, 0.0, 1.0);
+   evas_object_size_hint_align_set(lb, 0.5, 0.5);
+   elm_box_pack_end(bx2, lb);
+   evas_object_show(lb);
+   write_stat = lb;
+
+   if (number)
+     {
+        Data_Contact *ctc = data_contact_by_tel_find(number);
+        if (ctc)
+          {
+             char *name, *file;
+             elm_label_label_set(write_lb, number);
+             name = data_contact_name_get(ctc);
+             if (name)
+               {
+                  elm_label_label_set(write_lb, name);
+                  free(name);
+               }
+             file = data_contact_photo_file_get(ctc);
+             if (file)
+               {
+                  elm_photo_file_set(write_ph, file);
+                  free(file);
+               }
+          }
+     }
+   
+   elm_box_pack_end(bx, bx2);
+   evas_object_show(bx2);
+   
+   sc = elm_scroller_add(window);
+   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_box_pack_end(bx, sc);
+   
+   en = elm_entry_add(window);
+   if (text) elm_entry_entry_set(en, text);
+   else elm_entry_entry_set(en, "");
+   evas_object_size_hint_weight_set(en, 1.0, 1.0);
+   evas_object_size_hint_align_set(en, -1.0, -1.0);
+   elm_scroller_content_set(sc, en);
+   evas_object_smart_callback_add(en, "changed", on_edit, NULL);
+   evas_object_show(en);
+   
+   evas_object_show(sc);
+   sms_entry = en;
+   
+   bt = elm_button_add(window);
+   elm_button_label_set(bt, "Send");
+   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
+   evas_object_size_hint_align_set(bt, -1.0, -1.0);
+   elm_box_pack_end(bx, bt);
+   evas_object_smart_callback_add(bt, "clicked", on_send, NULL);
+   evas_object_show(bt);   
+
+   elm_box_pack_end(box, bx);
+   evas_object_show(bx);
 }
 
 void
