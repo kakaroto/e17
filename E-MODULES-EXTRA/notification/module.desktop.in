@@ -8,4 +8,5 @@ Comment=<title>Notification Daemon</title><br>libnotify alternative.<br>Popup if
 Comment[cs]=<title>Notifikační démon</title><br>Alternativa k libnotify.<br>Zobrazí bublinu při události.
 Comment[it]=<title>Modulo Notification</title><br>Alternativa a libnotify.<br>Mostra un popup al verificarsi di un evento.
 Comment[hu]=<title>Értesítések modul</title><br>libnotify alternatíva.<br>Egy esemény megtörténtét jelzi.
+Comment[fr]=<title>Démon de notification</title><br>Alternative à libnotify.<br>Signale par pop-up l'occurence d'un événement.
 X-Enlightenment-ModuleType=system
