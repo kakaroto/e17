@@ -399,6 +399,7 @@ alert(const char *text)
    lb = elm_label_add(win);
    evas_object_size_hint_weight_set(lb, 1.0, 1.0);
    evas_object_size_hint_align_set(lb, -1.0, 0.5);
+   elm_label_label_set(lb, text);
    elm_box_pack_end(bx, lb);
    evas_object_show(lb);
    
@@ -410,7 +411,7 @@ alert(const char *text)
    evas_object_smart_callback_add(bt, "clicked", on_alert_ok, NULL);
    evas_object_show(bt);   
         
-   elm_win_inwin_content_set(inwin2, bx);
+   elm_win_inwin_content_set(inwin3, bx);
    evas_object_show(bx);
    
    elm_win_inwin_activate(inwin3);
@@ -434,6 +435,7 @@ on_send(void *data, Evas_Object *obj, void *event_info)
      {
         alert("The message text is<br>"
               "empty. Cannot send");
+        return;
      }
    text2 = elm_entry_markup_to_utf8(text);
    if (!text2)
@@ -449,21 +451,23 @@ on_send(void *data, Evas_Object *obj, void *event_info)
      }
    printf("TO: <%s>\n", number);
    printf("%s\n", text2);
-#ifdef HAVE_EFSO
    // FIXME: no reply handler in efso to track message send
    // FIXME: text input is utf8 - but encoding unspecified - efso probably
    // should allow for encoding params or convert to a proper encoding
    // (gsm, ucs2 etc.) for you.
    if (data_message_sent_store(reply_to, number, text2))
      {
+#ifdef HAVE_EFSO
         efso_gsm_sms_send_message(number, text2, NULL, NULL);
+#endif   
      }
    else
      {
         alert("Cannot store sent message.<br>"
               "FIXME: select msg to delete");
+        free(text2);
+        return;
      }
-#endif   
    free(text2);
    on_write(NULL, NULL, NULL);
 }

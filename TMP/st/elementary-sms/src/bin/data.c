@@ -908,10 +908,51 @@ data_shutdown(void)
 int
 data_message_sent_store(Data_Message *reply_to, const char *to, const char *message)
 {
-   // FIXE: alloc msg, add to list and store on disk
-   printf("FIXME: store sms in Sent\n");
-   return 0; // fail
-   return 1; // succeeded
+   char buf[PATH_MAX], tim[1024];
+   int msgnum = 1, len;
+   Data_Message *m;
+   Eina_List *l;
+   FILE *f;
+   struct tm *tm;
+   time_t t;
+   
+   for (l = messages; l; l = l->next)
+     {
+        m = l->data;
+        Data_Message *m = l->data;
+        if (m->id > msgnum) msgnum = m->id + 1;
+     }
+   snprintf(buf, sizeof(buf), "%s/Sent/%i.msg", messagedir, msgnum);
+   t = time(NULL);
+   tm = localtime(&t);
+   if (tm) strftime(tim, sizeof(tim) - 1, "%a, %d %b %Y %H:%M:%S %z", tm);
+   else return 0;
+   f = fopen(buf, "w");
+   if (!f) return 0;
+   fprintf(f, "To: %s\n", to);
+   fprintf(f, "Date: %s\n", tim);
+   fprintf(f, "ID: %i\n", msgnum);
+   fprintf(f, "Content-Type: text/plain; charset=UTF-8\n");
+   fprintf(f, "Content-Transfer-Encoding: 8bit\n");
+   fprintf(f, "\n");
+   len = fprintf(f, "%s\n", message);
+   fclose(f);
+   if (len != (strlen(message) + 1))
+     {
+        unlink(buf);
+        return 0;
+     }
+   m = calloc(1, sizeof(Data_Message));
+   if (!m) return 0;
+   m->path = eina_stringshare_add(buf);
+   m->id = msgnum;
+   if (reply_to) m->reply_to_id = reply_to->id;
+   m->flags = DATA_MESSAGE_SENT;
+   m->timestamp = 0;
+   m->from_to = eina_stringshare_add(to);
+   m->body = eina_stringshare_add(message);
+   messages = eina_list_append(messages, m);
+   return 1;
 }
 
 void
