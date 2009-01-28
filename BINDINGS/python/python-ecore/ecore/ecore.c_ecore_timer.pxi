@@ -130,7 +130,7 @@ def timer_add(double t, func, *args, **kargs):
 
        B{func} signature: C{func(*args, **kargs): bool}
 
-       @parm: B{interval} interval in seconds (float).
+       @parm: B{t} interval in seconds (float).
        @parm: B{func} function to callback when timer expires.
 
        @rtype: L{Timer}
