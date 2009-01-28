@@ -1056,7 +1056,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
          * Part key exists and the value is the same as the current value.
          */
         if (match) {
-                       if (text && match->value && !strcmp(text, match->value))
+                if (text && match->value && !strcmp(text, match->value))
                         DRETURN(DLEVEL_STABLE);
 
                 IF_FREE(match->value);
