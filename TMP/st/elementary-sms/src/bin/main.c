@@ -18,11 +18,11 @@ elm_main(int argc, char **argv)
    create_main_win();
    elm_run();
    data_shutdown();
-   elm_shutdown();
 #ifdef HAVE_EFSO
    efso_gsm_sms_shutdown();
    efso_shutdown();
 #endif
+   elm_shutdown();
    return 0;
 }
 ELM_MAIN()
