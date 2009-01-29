@@ -400,6 +400,7 @@ echo "  Composite .................... $enable_composite"
 echo "  Modules ...................... $enable_modules"
 echo "  Visibility hiding ............ $enable_visibility_hiding (only useful with modules)"
 echo "  Window mode helper library ... $enable_roothacklib"
+echo "  Dialogs ...................... $enable_dialogs"
 echo
 echo "Experimental options - DO NOT USE unless you know what you are doing"
 echo "  Compile with ecore/ecore_x ... $enable_ecore"
