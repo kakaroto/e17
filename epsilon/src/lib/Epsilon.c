@@ -37,6 +37,7 @@
 #include <Edje.h>
 #include <dlfcn.h>
 
+static const char *TMPDIR = NULL;
 static const char *PATH_DIR_LARGE = NULL;
 static const char *PATH_DIR_NORMAL = NULL;
 static const char *PATH_DIR_CUSTOM = NULL;
@@ -148,20 +149,25 @@ epsilon_init (void)
 
   home = getenv("HOME");
   base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails", home);
+
+  unsetenv("TMPDIR");
+  if (!TMPDIR)
+     TMPDIR = eina_stringshare_add(buf);
+
   if (!PATH_DIR_LARGE) {
      strncpy(buf + base_len, "/large", PATH_MAX - base_len);
      PATH_DIR_LARGE = eina_stringshare_add(buf);
-     LEN_DIR_LARGE = strlen(buf);
+     LEN_DIR_LARGE = eina_stringshare_strlen(PATH_DIR_LARGE);
   }
   if (!PATH_DIR_NORMAL) {
      strncpy(buf + base_len, "/normal", PATH_MAX - base_len);
      PATH_DIR_NORMAL = eina_stringshare_add(buf);
-     LEN_DIR_NORMAL = strlen(buf);
+     LEN_DIR_NORMAL = eina_stringshare_strlen(PATH_DIR_NORMAL);
   }
   if (!PATH_DIR_FAIL) {
      strncpy(buf + base_len, "/fail/epsilon", PATH_MAX - base_len);
      PATH_DIR_FAIL = eina_stringshare_add(buf);
-     LEN_DIR_FAIL = strlen(buf);
+     LEN_DIR_FAIL = eina_stringshare_strlen(PATH_DIR_FAIL);
   }
 
   ecore_file_mkpath(PATH_DIR_LARGE);
@@ -461,6 +467,24 @@ _epsilon_file_name(unsigned thumb_size, const char *hash, const char *ext, char 
 	dir_len = LEN_DIR_FAIL;
      }
 
+   if (!dir)
+     {
+	const char *size_name;
+	if (thumb_size == THUMB_SIZE_LARGE)
+	  size_name = "THUMB_SIZE_LARGE";
+	else if (thumb_size == THUMB_SIZE_NORMAL)
+	  size_name = "THUMB_SIZE_NORMAL";
+	else if (thumb_size == THUMB_SIZE_CUSTOM)
+	  size_name = "THUMB_SIZE_CUSTOM";
+	else
+	  size_name = "UNKNOWN";
+	fprintf(stderr,
+		"epsilon: cannot find directory to store "
+		"thumbnails of size: %s\n", size_name);
+	path[0] = '\0';
+	return;
+     }
+
    if (dir) strncpy(path, dir, path_size);
    path_size -= dir_len;
    snprintf(path + dir_len, path_size, "/%s.%s", hash, ext);
@@ -562,7 +586,7 @@ epsilon_generate (Epsilon * e)
    Evas_Object *im = NULL, *edje = NULL;
    int ret = EPSILON_FAIL;
    int iw, ih, alpha, ww, hh;
-   int *data = NULL;
+   unsigned int *data = NULL;
    struct stat filestatus;
    time_t mtime = 0;
    const char *mime = NULL;
@@ -676,7 +700,7 @@ epsilon_generate (Epsilon * e)
    evas_object_show(im);
    if ((ret == EPSILON_OK) && (ww > 0))
      {
-	data = (int *)ecore_evas_buffer_pixels_get(ee);
+	data = (unsigned int *)ecore_evas_buffer_pixels_get(ee);
 	if (data)
 	  {
 	     snprintf(buf, sizeof(buf), "file://%s", e->src);
@@ -799,19 +823,12 @@ _epsilon_open_png_file_reading (const char *filename)
   return fp;
 }
 
-#define GET_TMPNAME(_tmpbuf,_file) { \
-  int _l,_ll; \
-  char _buf[21]; \
-  _l=snprintf(_tmpbuf,sizeof(_tmpbuf),"%s",_file); \
-  _ll=snprintf(_buf,sizeof(_buf),"epsilon-%06d.png",(int)getpid());  \
-  strncpy(&tmpfile[_l-35],_buf,_ll+1); }
-
 static int
 _epsilon_png_write (const char *file, unsigned int * ptr, int tw, int th, int sw,
 		    int sh, char *imformat, int mtime, char *uri)
 {
   FILE *fp = NULL;
-  char mtimebuf[32], widthbuf[10], heightbuf[10], tmpfile[PATH_MAX] = "";
+  char mtimebuf[32], widthbuf[10], heightbuf[10], *tmpfile;
   int i, j, k, has_alpha = 1, ret = 0;
 
 /*
@@ -828,7 +845,7 @@ _epsilon_png_write (const char *file, unsigned int * ptr, int tw, int th, int sw
 	  return 1;
   }
 
-  GET_TMPNAME (tmpfile, file);
+  tmpfile = tempnam(TMPDIR, "epsln");
 
 /*
   has_alpha = evas_object_image_alpha_get (e->image);
@@ -937,9 +954,12 @@ _epsilon_png_write (const char *file, unsigned int * ptr, int tw, int th, int sw
 	{
 	  if (chmod (file, S_IWUSR | S_IRUSR))
 	    fprintf (stderr,
-		     "epsilon: could not set permissions on \"%s\"!?\n",
-		     file);
+		     "epsilon: could not set permissions on \"%s\": %s\n",
+		     file, strerror(errno));
 	}
+      else
+	fprintf(stderr, "epsilon: could not rename \"%s\" to \"%s\": %s\n",
+		tmpfile, file, strerror(errno));
     }
   else
     fprintf (stderr, "epsilon: Unable to open \"%s\" for writing\n", tmpfile);
