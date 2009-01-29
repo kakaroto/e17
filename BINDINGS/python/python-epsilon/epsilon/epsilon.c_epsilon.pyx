@@ -36,22 +36,31 @@ cdef class Epsilon:
     purpose image loader, EPEG is a super-fast JPEG, external plugins
     can provide any thumbnail support, like xine to use videos.
     """
-    def __init__(self, char *path, thumb_size=None, key=None, resolution=None):
+    def __init__(self, char *path, thumb_size=None, key=None, resolution=None,
+                 format=None):
         """Epsilon constructor.
 
-        @parm path: full path of image to process.
-        @parm thumb_size: one of EPSILON_THUMB_NORMAL, EPSILON_THUMB_LARGE
-        @parm key: just used by edje to specify the part to process.
-        @parm resolution: just used by edje to specify render size.
+        @parm: B{path:} full path of image to process.
+        @parm: B{thumb_size:} a pre-defined value as an integer: one of
+              EPSILON_THUMB_NORMAL or EPSILON_THUMB_LARGE. Can be a tuple or
+              list with 2 values for custom size.
+        @parm: B{key:} just used by edje to specify the part to process.
+        @parm: B{resolution:} just used by edje to specify render size.
         """
         if self.obj == NULL:
             self.obj = epsilon_new(path)
-            if thumb_size is not None:
+            if isinstance(thumb_size, (int, long)):
                 self.thumb_size_set(thumb_size)
+            elif isinstance(thumb_size, (list, tuple)):
+                self.thumb_custom_size_set(*thumb_size)
+            else:
+                raise ValueError("thumb_size should be an integer or tuple")
             if key is not None:
                 self.key_set(key)
             if resolution is not None:
                 self.resolution_set(resolution)
+            if format is not None:
+                self.format_set(format)
 
     def __str__(self):
         return ("%s(path=%r, key=%s, thumb_file=%r, thumb_size=%r, "
@@ -176,12 +185,22 @@ cdef class Epsilon:
         def __get__(self):
             return self.format_get()
 
-    def thumb_custom_size_set(self, int w, int h, char *dir):
+    def thumb_custom_size_set(self, int w, int h, char *directory):
         """Specify a custom thumbnail size.
+
+        If one of w or h is negative, it will be calculated to be
+        the required value to make the other possible, keeping aspect ratio.
+
+        @parm: B{w:} desired width.
+        @parm: B{h:} desired height.
+        @parm: B{directory:} directory in ~/.thumbnails/ to store generated
+               file.
         """
-        if w <= 0 and h <= 0:
-            raise ValueError("either dimension value must be positive.")
-        epsilon_custom_thumb_size(self.obj, w, h, dir)
+        if w < 0 and h < 0:
+            raise ValueError("At least one of w or h must be greater than zero")
+        if not directory:
+            raise ValueError("Must specify the directory where to store files")
+        epsilon_custom_thumb_size(self.obj, w, h, directory)
 
     def file_get(self):
         "@rtype: str"
