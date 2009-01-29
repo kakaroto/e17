@@ -1,0 +1,1286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+                         "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article id="index">
+  <articleinfo>
+    <title>About Enlightenment e16 version 0.16.8</title>
+<!--
+    <author>
+      <firstname>Kim</firstname><surname>Woelders</surname>
+      <affiliation><address><email>kim@woelders.dk</email></address></affiliation>
+    </author>
+    <author>
+      <firstname>Peter</firstname><surname>Hyman</surname>
+      <affiliation><address><email>pete4abw@comcast.net</email></address></affiliation>
+    </author>
+    <author>
+      <firstname>Yasufumi</firstname><surname>Haga</surname>
+      <affiliation><address><email>yasufumi.haga@nifty.com</email></address></affiliation>
+    </author>
+-->
+    <pubdate>Jan 25, 2009</pubdate>
+    <abstract>
+      <para>
+	Coming soon. (maybe)
+      </para>
+    </abstract>
+  </articleinfo>
+
+  <sect1 id="credits">
+    <title>Credits</title>
+    <para>
+      This note contains contributions by
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    Kim Woelders <email>kim@woelders.dk</email>
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Peter Hyman <email>pete4abw@comcast.net</email>
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Yasufumi Haga <email>yasufumi.haga@nifty.com</email>
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+  </sect1>
+
+  <sect1 id="changesandfeatures">
+    <title>Major changes and new features since 0.16.7</title>
+    <para>
+      Changes:
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    "enlightenment" has been renamed to "e16".
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    The default user configuration directory is "<filename class="directory">~/.e16</filename>".
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    The data install path is "<filename class="directory">&lt;somepath&gt;/e16</filename>", e.g. "<filename class="directory">/usr/share/e16</filename>". Thus, an e16.8 installation should not clash with any other versions.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Various configuration file formats have changed and should be easier to read and modify, if needed.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    The configuration is stored per display and per screen.  E.g. for
+	    DISPLAY=:1.0 the main configuration file is "<filename>~/.e16/e_config--1.0.cfg</filename>".
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Actions(used by menus, keybindings, etc.) and IPC functions(<application>eesh</application>) have
+	    been merged.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Many IPC(<application>eesh</application>) commands have been changed, possibly breaking compatibility
+	    with a few epplets.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Window matches and icondefs have been merged (into <filename>matches.cfg</filename>), see <link linkend="configurationfiles">below</link>.
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      New features:
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    Built-in composite manager.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>An iconbox can be configured to act as System Tray
+	    (<menuchoice><interface>middle mouse</interface><guimenu>Desktop</guimenu><guimenuitem>Create Systray</guimenuitem></menuchoice>).
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Possibility to run programs on startup, restart, and shutdown, see
+	    <link linkend="sessionscripts">"Session Scripts"</link> below.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Possibility to track changes in remembered settings.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Window operations by window matches (class, name, transient, ...),
+	    e.g. for making all windows of a certain type sticky, put it on a certain
+	    layer, etc. (see <filename>matches.cfg</filename>).
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      Notes:
+    </para>
+    <para>
+      NB!!! <emphasis>imlib2 &gt;= 1.2.0</emphasis> is required.
+    </para>
+    <para>
+      All settings can be shown and set using <application>eesh</application>.
+      To get a full list of settings:
+      <programlisting>
+	$ eesh show
+      </programlisting>
+    </para>
+    <para>
+      To set some parameter:
+      <programlisting>
+	$ eesh set &lt;parameter&gt; &lt;value&gt;
+      </programlisting>
+    </para>
+    <para>
+      Some settings will not be effective until E is restarted.
+    </para>
+    <para>
+      To get a list of all <application>eesh</application> commands:
+      <programlisting>
+	$ eesh help full
+      </programlisting>
+    </para>
+    <para>
+      0.16.8 should be compatible with most e16 themes. However, user installed
+      themes will have to be moved/linked to <filename class="directory">~/.e16/themes/</filename> or <filename class="directory">&lt;datadir&gt;/e16/themes/</filename>.
+      A few themes will have to be tweaked to work with e16.8. The most likely
+      problem is that configuration settings are included in .cfg files where they
+      are no longer accepted.
+      See the <link linkend="migratingfromEnlightenment0167to0168">"Migrating ..."</link> section below for additional information.
+    </para>
+    <para>
+      <application>e16keyedit</application> &gt;= 0.3 works with e16.8.
+      If used to change the keybindings, the modified settings will be stored in
+      <filename>~/.e16/bindings.cfg</filename>.
+      It should also be fairly straightforward to modify the key- and buttonbindings
+      by hand. Copy <filename>/usr/share/e16/config/bindings.cfg</filename> to <filename>~/.e16/bindings.cfg</filename> and
+      modify as desired.
+      NB! <emphasis><application>e16keyedit</application> only modifies keybindings</emphasis>.
+    </para>
+    <para>
+      NB!!! <emphasis>Do not rename <filename class="directory">~/.enlightenment</filename> to <filename class="directory">~/.e16</filename>. It will only cause trouble.</emphasis>
+    </para>
+  </sect1>
+
+  <sect1 id="configurationfiles">
+    <title>Configuration files</title>
+    <para>
+      Skip this section unless you <emphasis>really</emphasis> want to know...
+    </para>
+    <para>
+      It is here assumed that <option>--prefix</option> is <filename class="directory">/usr</filename>, and that the default user
+      configuration directory (<filename class="directory">~/.e16</filename>) is used.
+    </para>
+    <para>
+      In general, the configuration search order for theme related configuration
+      files, say xyz.cfg, is:
+      <orderedlist>
+	<listitem>
+	  <para>
+	    User configuration directory, i.e. <filename>~/.e16/xyz.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Theme directory, i.e. <filename>/usr/share/e16/themes/&lt;theme&gt;/xyz.cfg</filename>, or
+	    <filename>~/.e16/themes/&lt;theme&gt;/xyz.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Default configuration directory, i.e. <filename>/usr/share/e16/config/xyz.cfg</filename>.
+	  </para>
+	</listitem>
+      </orderedlist>
+    </para>
+    <para>
+      Mouse and keybindings are defined in <filename>bindings.cfg</filename>. <filename>bindings.cfg</filename> is searched in
+      <orderedlist>
+	<listitem>
+	  <para>
+	    User configuration directory, i.e. <filename>~/.e16/bindings.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Default configuration directory, i.e. <filename>/usr/share/e16/config/bindings.cfg</filename>.
+	  </para>
+	</listitem>
+      </orderedlist>
+    </para>
+    <para>
+      Window matches (border and icon associations) are defined in <filename>windowmatches.cfg</filename>
+      and <filename>matches.cfg</filename>.
+      <filename>windowmatches.cfg</filename> (deprecated, border associations only) is loaded first,
+      and should be found only in theme directories.
+      <filename>matches.cfg</filename> is loaded next, and searched in
+      <orderedlist>
+	<listitem>
+	  <para>
+	    User configuration directory, i.e. <filename>~/.e16/matches.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Default configuration directory, i.e. <filename>/usr/share/e16/config/matches.cfg</filename>.
+	  </para>
+	</listitem>
+      </orderedlist>
+      Window match items are appended to the window match list, in the order
+      in which they are read from the configuration files.
+      When doing border/icon matches, the window match list is searched from the
+      start, and the first matching item will be used.
+    </para>
+  </sect1>
+  <sect1 id="sessionscripts">
+    <title>Session Scripts</title>
+    <para>
+      Enlightenment can now automatically run user scripts or applications during
+      Startup, Restart, and Shutdown. This facilitates the loading of system
+      tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
+      and allows for cleanup of programs that don't terminate properly when E
+      quits (this is especially common with KDE applications in E and the arts
+      daemon or dcop server keeps running).
+    </para>
+    <para>
+      Enlightenment accomplishes this with the addition of two new keys in
+      the <filename>$ECONFDIR/e_config--#.#.cfg</filename> (#.# may vary depending on your X setup --
+      for most people, it will be 0.0). These are:
+    </para>
+    <programlisting>
+      misc.session.enable_script
+      misc.session.script
+    </programlisting>
+    <para>
+      <varname>misc.session.enable_script</varname> is a boolean. When set to 1, Enlightenment will
+      execute the script in the <varname>misc.session.script</varname> key. By default, this feature
+      is disabled. When enabled, it will do nothing until the user configures
+      his/her home directory ($ECONFDIR -- normally <filename class="directory">~/.e16</filename>).
+    </para>
+    <para>
+      The default session.script is located in <filename>$EROOT/scripts/session.sh</filename> ($EROOT
+      is normally <filename class="directory">/usr/share/e16</filename> or <filename class="directory">/usr/local/share/e16</filename>). It will look for
+      directories in the user's <filename class="directory">$ECONFDIR/</filename> (<filename class="directory">~/.e16/</filename>) called:
+    </para>
+    <programlisting>
+      ~/.e16/ ($ECONFDIR)
+      Init/
+      Start/
+      Stop/
+    </programlisting>
+    <para>
+      and run any and/or all scripts or executables in each when E starts,
+      restarts, and shuts down. If no scripts or executables are present, or
+      if any of the directories Init, Start, and Stop do not exist, NOTHING
+      will happen and E will start up as usual. So, in order to use session
+      scripts, all the user has to do is to populate the <filename class="directory">Init</filename>, <filename class="directory">Start</filename>, and <filename class="directory">Stop</filename>
+      directories with scripts, applications, or links to applications that
+      should run during Startup, Restart, or when E is stopped.
+    </para>
+    <para>
+      The default values for the new keys are:
+    </para>
+    <programlisting>
+      misc.session.enable_script = 0
+      misc.session.script = $EROOT/scripts/session.sh
+    </programlisting>
+    <para>
+      The user may write a custom script and place it anywhere. Simply modify
+      the config file by using:
+    </para>
+    <programlisting>
+      $ eesh set misc.session.script myscript
+    </programlisting>
+    <para>
+      and modify it (be sure to <command>chmod +x</command> the file otherwise it won't run).
+      The session script is called with one of three command parameters;
+      <parameter class="command">init</parameter>, <parameter class="command">start</parameter>, and <parameter class="command">stop</parameter>. Any custom script should have a code block
+      similar to this in order to function properly in Enlightenment.
+    </para>
+    <programlisting>
+      case "$1" in
+      init)
+      # do blah
+      # or do function init
+      start)
+      # do blah
+      # of do function start
+      stop)
+      # do blah
+      # or do function stop
+      esac
+    </programlisting>
+    <para>
+      Automatic script running can be enabled/disabled via the Session Settings
+      dialog in Enlightenment and checking/unchecking the option Enable Session
+      Script, by editing the user cfg file and setting the
+      misc.session.enable_script key to 1/0, or with
+    </para>
+    <programlisting>
+      $ eesh set misc.session.enable_script 1/0
+    </programlisting>
+    <para>
+      This process is very flexible since when used, the user can turn off
+      individual scripts and applications by <command>chmod -x</command> or simply leave the
+      startup directories empty or remove them.
+    </para>
+  </sect1>
+  <sect1 id="compositemanager">
+    <title>Composite manager notes</title>
+    <para>
+      To use the composite manager it is required that the X-server has support
+      enabled for the COMPOSITE, DAMAGE, FIXES, and RENDER extensions.
+      For reasonable performance it is also required that hardware acceleration
+      of the RENDER extension is enabled.
+    </para>
+    <para>
+      As of version 0.16.8.2 it may happen that the borders on application windows
+      using ARGB visuals (for transparency) are "ugly". Applications may use ARGB
+      visuals intentionally (e.g. fdclock) or not (e.g. xv on 16 bit root depth).
+      Applications unintentionally using an ARGB visual will normally not be
+      rendered properly at all and should be started with the environment variable
+      <varname>XLIB_SKIP_ARGB_VISUALS</varname> set.
+      To fix border rendering on "real" ARGB windows it is required to use <filename>imlib2</filename>
+      with version >= 1.3.0.
+    </para>
+    <para>
+      Tweaks:
+    </para>
+    <para>
+      As of e16 &gt;= 0.16.8.9: If there is any kind of trouble with the composite
+      manager, first check compmgr.mode (<command>eesh show compmgr</command>), and set it to 1 if
+      it isn't (<command>eesh set compmgr.mode 1</command>, restart).
+    </para>
+    <para>
+      If pop-up windows disappear immediately after having appeared (may happen
+      e.g. with certain pop-up windows when using <application>gnome</application> &gt; 2.12), try:
+    </para>
+    <programlisting>
+      $ eesh set compmgr.override_redirect.mode 0
+    </programlisting>
+    <para>
+      This should make the pop-up windows usable, but not always rendered properly.
+      This problem should not occur with recent X-servers.
+    </para>
+    <para>
+      If window resize/shading with composite enabled is ugly, try:
+    </para>
+    <programlisting>
+      $ eesh set compmgr.resize_fix_enable 1
+    </programlisting>
+    <para>
+      This problem should not occur with recent X-servers.
+    </para>
+  </sect1>
+  <sect1 id="defaultkeybindings">
+    <title>Default keybindings</title>
+    <para>
+      <simplelist type="horiz" columns="3">
+	<member>Alt-Ctrl</member><member>Home</member><member>Auto-arrange windows</member>
+	<member>Alt-Ctrl</member><member>Insert</member><member>Launch Eterm</member>
+	<member>Alt-Ctrl</member><member>Delete</member><member>Log out</member>
+	<member>Alt-Ctrl</member><member>End</member><member>Exit</member>
+	<member>Alt-Ctrl</member><member>Right</member><member>Goto next desk</member>
+	<member>Alt-Ctrl</member><member>Left</member><member>Goto previous desk</member>
+	<member>Alt-Shift</member><member>Down</member><member>Move desk area down</member>
+	<member>Alt-Shift</member><member>Up</member><member>-    -    -   up</member>
+	<member>Alt-Shift</member><member>Left</member><member>-    -    -   left</member>
+	<member>Alt-Shift</member><member>Right</member><member>-    -    -   right</member>
+	<member>Alt</member><member>F1</member><member>Goto desk 0</member>
+	<member>Alt</member><member>F2</member><member>-    -   1</member>
+	<member>Alt</member><member>F3</member><member>-    -   2</member>
+	<member>Alt</member><member>F4</member><member>-    -   3</member>
+	<member>Alt</member><member>F5</member><member>-    -   4</member>
+	<member>Alt</member><member>F6</member><member>-    -   5</member>
+	<member>Alt</member><member>F7</member><member>-    -   6</member>
+	<member>Alt</member><member>F8</member><member>-    -   7</member>
+	<member>Alt</member><member>Tab</member><member>Switch focus (using focus list, if enabled)</member>
+	<member>Alt-Ctrl</member><member>Up</member><member>Raise active window</member>
+	<member>Alt-Ctrl</member><member>Down</member><member>Lower active window</member>
+	<member>Alt-Ctrl</member><member>x</member><member>Close active window</member>
+	<member>Alt-Ctrl</member><member>k</member><member>Destroy active window</member>
+	<member>Alt-Ctrl</member><member>s</member><member>Toggle active window sticky state</member>
+	<member>Alt-Ctrl</member><member>i</member><member>Iconify active window</member>
+	<member>Alt-Ctrl</member><member>r</member><member>Toggle active window shaded state</member>
+	<member>Alt-Ctrl</member><member>f</member><member>Toggle active window fullscreen state</member>
+	<member>Alt-Ctrl</member><member>m</member><member>Toggle active window maximized state</member>
+	<member>Alt-Ctrl</member><member>w</member><member>Show window-ops menu for active window</member>
+	<member>Alt</member><member>Return</member><member>Toggle active window zoomed state</member>
+	<member>Ctrl-Shift</member><member>F1</member><member>Show User menu (default left mouse button)</member>
+	<member>Ctrl-Shift</member><member>F2</member><member>Show Enlightenment menu (default middle mouse button)</member>
+	<member>Ctrl-Shift</member><member>F3</member><member>Show Configuration menu (default right mouse button)</member>
+	<member>Ctrl-Shift</member><member>F4</member><member>Show Window List menu (default Alt-middle mouse button)</member>
+
+	<member>Alt-Ctrl</member><member>a</member><member>Toggle visibility of all buttons</member>
+	<member>Alt-Ctrl</member><member>b</member><member>Toggle visibility of theme buttons</member>
+	<member>Alt-Ctrl</member><member>c</member><member>Toggle visibility of configuration buttons</member>
+	<member>Alt-Ctrl</member><member>d</member><member>Switch dragbar position</member>
+	<member>Alt-Ctrl</member><member>o</member><member>Switch dragbar button ordering</member>
+      </simplelist>
+    </para>
+  </sect1>
+  <sect1 id="configurationoptions">
+    <title>Configuration options</title>
+    <para>
+      The available configuration options are shown below. Values are the defaults.
+    </para>
+    <programlisting>
+      # [bool] High quality background rendering
+      backgrounds.hiquality = 1
+      # [bool] Prefer user selected backgrounds over theme settings
+      backgrounds.user = 1
+      # [bool] Do not scan all backgrounds when starting background configuration dialog
+      backgrounds.no_scan = 0
+      # [int] Time out for unused background image pixmaps
+      backgrounds.timeout = 240
+
+      # [bool] Enable composite manager
+      compmgr.enable = 0
+      # [int] Composite manager mode (always 1 atm)
+      compmgr.mode = 1
+      # [int] Dropshadow mode (0: off, 1: sharp, 2: blurry, 3: echo)
+      compmgr.shadows.mode = 0
+      # [int] Dropshadow offset
+      compmgr.shadows.offset_x = 3
+      compmgr.shadows.offset_y = 5
+      # [int] Blurry dropshadow radius
+      compmgr.shadows.blur.radius = 5
+      # [int] Blurry dropshadow opacity(%)
+      compmgr.shadows.blur.opacity = 75
+      # [int] Sharp dropshadow opacity(%)
+      compmgr.shadows.sharp.opacity = 30
+      # [bool] Hack to fix problems with resize on old xorg servers
+      compmgr.resize_fix_enable = 0
+      # [bool] Experimental - leave at 0
+      compmgr.use_name_pixmap = 0
+      # [bool] Use composite overlay window
+      compmgr.use_cow = 1
+      # [bool] Enable fading
+      compmgr.fading.enable = 1
+      # [int] Fading time(ms)
+      compmgr.fading.time = 200
+      # [int] Composite redirection of override-redirect windows (0: off, 1: on map, ...: testing)
+      # Should normally be 1 but 0 may be a partial workaround of problems with vanishing
+      # pop-ups on certain X-server/toolkit versions.
+      compmgr.override_redirect.mode = 1
+      # [int] Opacity of override-redirect windows (pop-up's, etc)
+      compmgr.override_redirect.opacity = 90
+
+      # [int] Number of desktops
+      desktops.num = 2
+      # [int] Desktop dragging direction
+      desktops.dragdir = 2
+      # [int] Desktop dragbar width (0: disable)
+      desktops.dragbar_width = 16
+      # [int] Desktop dragbar length (0: full)
+      desktops.dragbar_length = 0
+      # [int] Desktop dragbar button ordering
+      desktops.dragbar_ordering = 1
+      # [bool] Wrap around on desk switch (last &lt;-&gt; first on next/prev)
+      desktops.desks_wraparound = 0
+      # [bool] Slide desks in when switching
+      desktops.slidein = 1
+      # [int] Desk slide speed
+      desktops.slidespeed = 6000
+      # [int] Size of virtual desktop
+      desktops.areas_nx = 2
+      desktops.areas_ny = 1
+      # [bool] Wrap around on area switch (last &lt;-&gt; first on next/prev)
+      desktops.areas_wraparound = 0
+      # [int] Edge flip mode (0: off, 1: on, 2: only when moving window)
+      desktops.edge_flip_mode = 1
+      # [int] Edge flip resistance(pixels)
+      desktops.edge_flip_resistance = 25
+
+      # [bool] Enable ripples effect
+      effects.ripples.enabled = 0
+      # [bool] Enable waves effect
+      effects.waves.enabled = 0
+
+      # [int] Focus mode (0: pointer, 1: sloppy, 2: click)
+      focus.mode = 1
+      # [bool] Raise window when clicked
+      focus.clickraises = 1
+      # [bool] Transients are placed where leader is
+      focus.transientsfollowleader = 1
+      # [bool] When a transient is mapped the desk/area is switched to where the transient appears
+      focus.switchfortransientmap = 1
+      # [bool] Focus new windows
+      focus.all_new_windows_get_focus = 0
+      # [bool] Focus new transients
+      focus.new_transients_get_focus = 0
+      # [bool] Focus new transients if group is focused
+      focus.new_transients_get_focus_if_group_focused = 1
+      # [bool] Raise window on focus next
+      focus.raise_on_next = 1
+      # [bool] Warp pointer to window on focus next
+      focus.warp_on_next = 0
+      # [bool] Always warp pointer into window when new window is focused
+      focus.warp_always = 0
+      # [bool] Enable autoraise
+      focus.autoraise.enable = 0
+      # [int] Autoraise delay(ms)
+      focus.autoraise.delay = 500
+
+      # [bool] Default group settings
+      groups.dflt.iconify = 1
+      groups.dflt.kill = 0
+      groups.dflt.mirror = 1
+      groups.dflt.move = 1
+      groups.dflt.raise = 0
+      groups.dflt.set_border = 1
+      groups.dflt.stick = 1
+      groups.dflt.shade = 1
+      groups.swapmove = 1
+
+      # [int] Iconbox animation time(ms)
+      iconboxes.anim_time = 250
+
+      # [string] Language used by e16 (dialogs, tooltips, etc.)
+      # Inherit from environment if not set
+      locale.internal =
+      # [string] Language exported when starting applications
+      # Inherit from environment if not set
+      locale.exported =
+
+      # [bool] Animate menus
+      menus.animate = 0
+      # [bool] Keep menus on-screen
+      menus.onscreen = 1
+      # [bool] Warp pointer when sliding menus
+      menus.warp = 1
+      # [bool] Enable icons in menus
+      menus.show_icons = 1
+      # [int] Menu icon size(pixels)
+      menus.icon_size = 16
+      # [int] Menu navigation keycodes
+      menus.key.left = 0xff51
+      menus.key.right = 0xff53
+      menus.key.up = 0xff52
+      menus.key.down = 0xff54
+      menus.key.escape = 0xff1b
+      menus.key.ret = 0xff0d
+
+      # [int] Animation time step(ms)
+      misc.animation.step = 10
+
+      # [int] Button move resistance(pixels)
+      misc.buttons.move_resistance = 10
+
+      # [bool] Show headers in dialogs
+      misc.dialogs.headers = 0
+      # [bool] Enable images on dialog buttons
+      misc.dialogs.button_image = 0
+
+      # [bool] Enable docking of dockapps
+      misc.dock.enable = 1
+      # [bool] Make all dockapps sticky
+      misc.dock.sticky = 1
+      # [int] Dock direction
+      misc.dock.dirmode = 3
+      # [int] Dock start position
+      misc.dock.startx = 0
+      misc.dock.starty = 0
+
+      # [bool] Enable desktop background compatibility mode
+      # Fixes background in many apps using pseudotransparency
+      # May cause major slowdowns in certain setups
+      misc.hints.set_xroot_info_on_root_window = 0
+
+      # [int] Move mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid, 5: translucent)
+      misc.movres.mode_move = 0
+      # [int] Resize mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid)
+      misc.movres.mode_resize = 2
+      # [int] Geometry indicator mode (0: off, 1: window center, 2: screen corner)
+      misc.movres.mode_info = 1
+      # [int] Default maximize mode (0: Absolute, 1: Available, 2: Conservative)
+      misc.movres.mode_maximize_default = 1
+      # [int] Move/resize color (RGB) when using non-server-grabbing technincal/box modes.
+      misc.movres.color = 0xff0000
+      # [bool] Avoid server grab
+      # Use non-server-grabbing line drawing technique in technical and box modes.
+      misc.movres.avoid_server_grab = 1
+      # [bool] Send synthetic ConfigureNotify's while moving
+      # Causes pseudotransparent apps to update while moving (expensive)
+      misc.movres.update_while_moving = 0
+      # [bool] Use SYNC_REQUEST's to synchronize move/resize with client
+      misc.movres.enable_sync_request = 0
+      # [bool] Do not cover dragbar when maximizing
+      misc.movres.dragbar_nocover = 0
+
+      # [int] Composite opacity of menu windows
+      misc.opacity.menus = 85
+      # [int] Composite opacity of windows being moved
+      misc.opacity.movres = 60
+      # [int] Composite opacity of tooltip windows
+      misc.opacity.tooltips = 80
+      # [int] Composite opacity of focused windows
+      misc.opacity.focused = 100
+      # [int] Composite opacity of unfocused windows
+      misc.opacity.unfocused = 100
+
+      # [bool] Place windows manually
+      misc.place.manual = 0
+      # [bool] Place windows under pointer
+      misc.place.manual_mouse_pointer = 0
+      # [bool] Center windows when desk is full
+      misc.place.center_if_desk_full = 0
+      # [bool] Ignore windows with struts (e.g. panels) when placing new window
+      misc.place.ignore_struts = 0
+      # [bool] Raise fullscreen windows (increase stacking level while fullscreen)
+      misc.place.raise_fullscreen = 0
+      # [bool] Slide windows in
+      misc.place.slidein = 0
+      # [bool] Slide windows around while cleaning up
+      misc.place.cleanupslide = 1
+      # [int] Window slide-in mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid)
+      misc.place.slidemode = 0
+      # [int] Window slide-in speed
+      misc.place.slidespeedmap = 6000
+      # [int] Window cleanup slidespeed
+      misc.place.slidespeedcleanup = 8000
+
+      # [bool] Enable session scripts
+      misc.session.enable_script = 0
+      # [string] Session script
+      misc.session.script = $EROOT/scripts/session.sh
+      # [bool] Enable logout dialog
+      misc.session.enable_logout_dialog = 1
+      # [bool] Enable reboot/halt in logout dialog
+      misc.session.enable_reboot_halt = 0
+      # [string] Reboot command
+      misc.session.cmd_reboot = reboot
+      # [string] Halt command
+      misc.session.cmd_halt = poweroff
+
+      # [bool] Enable animation of window shading
+      misc.shading.animate = 1
+      # [int] Shading speed
+      misc.shading.speed = 8000
+
+      # [bool] Enable resistance when moving windows
+      misc.snap.enable = 1
+      # [int] Resistance at other window edge
+      misc.snap.edge_snap_dist = 8
+      # [int] Resistance at screen edge
+      misc.snap.screen_snap_dist = 32
+
+      # [bool] First time flag
+      misc.startup.firsttime = 0
+      # [bool] Enable sliding startup windows
+      misc.startup.animate = 1
+
+      # [bool] Test options (do not change)
+      misc.testing.argb_internal_objects = 0
+      misc.testing.argb_internal_clients = 0
+      misc.testing.argb_clients = 0
+      misc.testing.argb_clients_inherit_attr = 0
+      misc.testing.image_cache_size = -1
+      misc.testing.mask_alpha_threshold = 8
+      misc.testing.enable_startup_id = 1
+      misc.testing.use_render_for_scaling = 0
+      misc.testing.no_sync_mask = 0
+
+      # [bool] Save configuration changes
+      misc.autosave = 1
+      # [bool] Keep memory usage down (should probably always be 1)
+      misc.memory_paranoia = 1
+      # [bool] Use save-unders when appropriate
+      misc.save_under = 0
+      # [bool] Show differential time in debug output
+      misc.difftime = 0
+
+      # [bool] Enable pagers
+      pagers.enable = 1
+      # [bool] Enable zooming of pager snapshot windows
+      pagers.zoom = 1
+      # [bool] Show window name pop-ups
+      pagers.title = 1
+      # [bool] Enable high quality snapshots
+      pagers.hiq = 1
+      # [int] Pager mode (0: simple, 1: snap, 2: live)
+      pagers.mode = 2
+      # [int] Scan/update speed (lines/updates per second. Used only in snap or live mode)
+      pagers.scanspeed = 10
+      # [int] Pager buttons
+      pagers.sel_button = 2
+      pagers.win_button = 1
+      pagers.menu_button = 3
+
+      # [bool] Enable sound
+      sound.enable = 0
+      # [string] Use sounds from theme (not implemented)
+      sound.theme =
+
+      # [string] Theme
+      theme.name = winter
+      # [string] Colon separated list of directories containing e16 themes
+      theme.extra_path =
+      # [bool] Use alternative font configuration file (specified by theme.font_cfg)
+      theme.use_alt_font_cfg = 1
+      # [string] Alternative font configuration file
+      theme.font_cfg = fonts.cfg.xft
+
+      # [bool] Enable tooltips
+      tooltips.enable = 1
+      # [bool] Enable root window tooltips
+      tooltips.showroottooltip = 1
+      # [int] Tooltip delay
+      tooltips.delay = 1500
+
+      # [int] Theme transparency(0-255)
+      transparency.alpha = 0
+      # [int] Item transparencies (0: off, 1: background, 2: glass)
+      transparency.menu = 1
+      transparency.menu_item = 1
+      transparency.tooltip = 2
+      transparency.widget = 1
+      transparency.hilight = 0
+      transparency.border = 1
+      transparency.iconbox = 1
+      transparency.dialog = 1
+      transparency.pager = 1
+      transparency.warplist = 1
+
+      # [bool] Enable focus list (alt-tab)
+      warplist.enable = 1
+      # [bool] Show sticky windows
+      warplist.showsticky = 1
+      # [bool] Show shaded windows
+      warplist.showshaded = 1
+      # [bool] Show iconified windows
+      warplist.showiconified = 1
+      # [bool] Show windows on all desks
+      warplist.showalldesks = 0
+      # [bool] Warp pointer to focused window
+      warplist.warpfocused = 1
+      # [bool] Raise window while selecting
+      warplist.raise_on_select = 1
+      # [bool] Warp pointer to window while selecting
+      warplist.warp_on_select = 0
+      # [bool] Icon mode (0: none, 3: e/app/snap, 4: app/e/snap)
+      warplist.icon_mode = 3
+    </programlisting>
+  </sect1>
+  <sect1 id="fonts">
+    <title>Fonts</title>
+    <para>
+      The fonts in the default theme (winter) and core themes (BlueSteel,
+      BrushedMetal-Tigert, Ganymede, and ShinyMetal) are configured (indirectly)
+      in fonts.cfg. Directory search order is (typically):
+      <filename class="directory">~/.e16</filename>, &lt;theme-dir&gt;, and <filename>/usr/share/e16/config/fonts.cfg</filename>).
+      Other themes are likely to have font references more or less scattered around
+      in TextClass definitions in the theme configuration files.
+    </para>
+    <para>
+      There are several ways to specify a font:
+    </para>
+    <orderedlist>
+      <listitem>
+	<para>
+	  "&lt;font name&gt;/&lt;size&gt;", e.g. "Vera/8".
+	  In this case e16 must be able to find "Vera.ttf" in <filename class="directory">&lt;theme dir&gt;/ttfonts</filename> or
+	  <filename class="directory">/usr/share/e16/fonts</filename>.
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
+	  <application>xfontsel</application>, <application>xlsfonts</application>, and <application>xfd</application> can be used to select and show these fonts.
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
+	  <application>fc-list</application> and <application>xfd</application> can be used to select and show these fonts.
+	  This possibility (Xft support) is available as of version 0.16.8.5.
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  <application>Pango</application> font names, prefixed by "pango:", e.g. "pango:sans bold 10".
+	  This possibility (<application>Pango</application> support) is available as of version 0.16.8.9.
+	  <application>Pango</application> support must be explicitly enabled at build time with <option>--enable-pango</option>.
+	</para>
+      </listitem>
+    </orderedlist>
+    <para>
+      When using a 0.16.8 core theme, font rendering using <application>xft</application> or <application>pango</application> can be
+      activated with (restart after change is required):
+    </para>
+    <programlisting>
+      $ eesh set theme.use_alt_font_cfg 1
+      $ eesh set theme.font_cfg fonts.cfg.xft
+    </programlisting>
+    <para>
+      or
+    </para>
+    <programlisting>
+      $ eesh set theme.font_cfg fonts.cfg.pango
+    </programlisting>
+    <para>
+      To select the theme font settings use:
+    </para>
+    <programlisting>
+      $ eesh set theme.use_alt_font_cfg 0
+    </programlisting>
+  </sect1>
+  <sect1 id="usinge16withgnoem">
+    <title>Using e16 with GNOME</title>
+    <para>
+      (Using <application>Fedora Core 4</application>, may be pertinent to other distributions as well).
+    </para>
+    <para>
+      The <application>GNOME</application> desktop can be started using e16 as WM with:
+    </para>
+    <programlisting>
+      $ export WINDOW_MANAGER=e16
+      $ gnome-sesssion
+    </programlisting>
+    <para>
+      Alternatively, add a GNOME/e16 session entry to the display manager login:
+    </para>
+    <programlisting>
+      # cp /usr/share/e16/misc/e16-gnome.desktop /usr/share/xsessions/
+    </programlisting>
+    <para>
+      Note! The section below is obsolete as of <application>gnome-session-2.16</application>
+    </para>
+    <para>
+      However, somewhere along the way the script <filename>/usr/bin/gnome-wm</filename> is called.
+      This is supposed to handle differences in all the different WM's out there,
+      but does not know of "e16". This will cause a major delay when starting up
+      the GNOME desktop.
+      One way to fix this is to use gnome-session-properties to get rid of
+      the "gnome-wm" session entry.
+      Another is to apply this patch to <filename>/usr/bin/gnome-wm</filename>:
+    </para>
+    <programlisting>
+      --- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
+      +++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
+      @@ -69,7 +69,7 @@
+      OPT2=
+      if [ ! -z "$SMID" ] ; then
+      case `basename $WINDOW_MANAGER` in
+      -    sawfish|sawmill|metacity)
+      +    sawfish|sawmill|metacity|e16)
+      OPT1=--sm-client-id=$SMID
+      ;;
+      openbox)
+    </programlisting>
+  </sect1>
+  <sect1 id="usinge16withkde">
+    <title>Using e16 with KDE</title>
+    <para>
+      (Using <application>Fedora Core 4</application>, may work with other distributions as well).
+    </para>
+    <para>
+      The <application>KDE</application> desktop can be started using e16 as WM with:
+    </para>
+    <programlisting>
+      $ export KDEWM=e16
+      $ startkde
+    </programlisting>
+    <para>
+      Alternatively, add a KDE/e16 session entry to the display manager login:
+    </para>
+    <programlisting>
+      # cp /usr/share/e16/misc/e16-kde.desktop /usr/share/xsessions/
+    </programlisting>
+  </sect1>
+  <sect1 id="migratingfromEnlightenment0167to0168">
+    <title>Migrating from Enlightenment 0.16.7 to 0.16.8</title>
+    <para>
+      Users upgrading from enlightenment 0.16.7 need to read the following.
+    </para>
+    <para>
+      Several organizational changes have occurred that will require
+      some manual adjustments. Mainly these deal with changes to
+      configuration and shared directory names. This was done to avoid
+      collisions with the new enlightenment DR17.
+    </para>
+    <orderedlist>
+      <listitem>
+	<para>
+	  home configuration directory is now <filename class="directory">~/.e16</filename>, not <filename class="directory">~/.enlightenment</filename>.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  menu files have been moved to a subdirectory called menus
+	  you will need to move customized menus and subdirectories to
+	  <filename class="directory">~/.e16/menus</filename>.
+	</para>
+      </listitem>
+      <listitem>
+	<para>you will need to move <filename class="directory">~/.enlightenment/backgrounds</filename> files to <filename class="directory">~/.e16</filename>
+	  and any themes as well.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <filename class="directory">$prefix/share/enlightenment</filename> has been changed to <filename class="directory">$prefix/share/e16</filename>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  if installed E-docs and Epplet directories will have to be moved
+	  to <filename class="directory">$prefix/share/e16</filename>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  any additional themes that were added to the <filename class="directory">$prefix/share/enlightenment</filename>
+	  directory will have to be moved to <filename class="directory">$prefix/share/e16</filename>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  any startup scripts or Session scripts that reference the startup
+	  executable `enlightenment` must be edited to the new e16 program.
+	</para>
+      </listitem>
+    </orderedlist>
+    <para>
+      A few themes have to be tweaked to work with 0.16.8.
+    </para>
+    <para>
+      Some themes (Maw, Black E) have an <filename>actionclasses.cfg</filename> like:
+    </para>
+    <programlisting>
+      <![CDATA[
+#include <definitions>
+__E_CFG_VERSION 0
+#include </usr/local/enlightenment/config/actionclasses.cfg>
+#include </usr/share/enlightenment/config/actionclasses.cfg>
+]]>
+    </programlisting>
+    <para>
+      The absolute path is obviously no longer valid.
+      The most sensible fix for these themes is to remove the themes
+      <filename>actionclasses.cfg</filename>. e16 will then fall back to the default one.
+    </para>
+  </sect1>
+  <sect1>
+    <title>
+      Revision History
+    </title>
+    <para>
+      <revhistory>
+	<revision>
+          <revnumber>32</revnumber>
+          <date>Jan 25, 2009</date>
+          <authorinitials>Yasufumi Haga</authorinitials>
+          <revremark>
+            Add html version converted from README-0.16.8.xml
+	    rewritten by Yasufumi Haga based on the ascii version of the file.
+          </revremark>
+	</revision>
+	<revision>
+	  <revnumber>1-31</revnumber>
+	  <date>2004-2009</date>
+	  <authorinitials>Several</authorinitials>
+	  <revremark>
+	    Updates...
+	  </revremark>
+	</revision>
+<!--
+	<revision>
+	  <revnumber>31</revnumber>
+	  <date>Jan 1, 2009</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Remove theme.ttfont_path configuration option.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>30</revnumber>
+	  <date>Nov 29, 2008</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Add new config info, remove obsolete stuff.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>29</revnumber>
+	  <date>Nov 5, 2008</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Config option theme.localise is gone.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>28</revnumber>
+	  <date>Mar 22, 2008</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Update config option list.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>27</revnumber>
+	  <date>Dec 21, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Config settings update, remove obsolete note.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>26</revnumber>
+	  <date>Dec 9, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Add some info about xft/pango font selection in core themes.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>25</revnumber>
+	  <date>Aug 8, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Minor doc updates.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>24</revnumber>
+	  <date>Aug 7, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Change configuration of alternative font configuration.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>23</revnumber>
+	  <date>Jul 28, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Prefer Xft font configuration.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>22</revnumber>
+	  <date>Jul 28, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Disable theme localisation by default.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>21</revnumber>
+	  <date>Jul 11, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Minor doc updates.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>20</revnumber>
+	  <date>Jun 4, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Update configuration settings summary.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>19</revnumber>
+	  <date>Feb 4, 2007</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Update config item notes.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>18</revnumber>
+	  <date>Nov 27, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Allow disabling theme localisation.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>17</revnumber>
+	  <date>Oct 26, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Add some notes about fonts.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>16</revnumber>
+	  <date>Oct 5, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Notes on configuration options, and other info bits.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>15</revnumber>
+	  <date>Aug 13, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Add note about ARGB window borders.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>14</revnumber>
+	  <date>Mar 18, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    e16keyedit (version 0.3) now works with e16.8. Add notes/configuration data.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>13</revnumber>
+	  <date>Feb 21, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    &#045;&#045;&#045; 0.16.8.1 0.03 &#045;&#045;&#045;
+	    Add move/resize functions with action source parameter. /
+	    Yet another attempt to get pager scaling on resolution change right. /
+	    Reenable having menu definitions in theme (hmm.. why did I take this out?). /
+	    Fix background configuration when background is NONE.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>12</revnumber>
+	  <date>Feb 20, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Typo (Yasufumi Haga).
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>11</revnumber>
+	  <date>Feb 19, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Notes on tweaking the Aqua theme (Yasufumi Haga).
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>10</revnumber>
+	  <date>Feb 19, 2006</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Rearrange, add list of default key bindings.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>9</revnumber>
+	  <date>Nov 19, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    A few notes on e16 with GNOME/KDE.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>8</revnumber>
+	  <date>Nov 10, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Add user info about session settings (Peter Hyman). Minor doc updates.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>7</revnumber>
+	  <date>Sep 19, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Move README-0.16.8 to docs/.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>6</revnumber>
+	  <date>Jul 24, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    This still seems to be a problem with certain servers.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>5</revnumber>
+	  <date>May 17, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Major changes:
+	    - Top-level window handling adapted for composite manager. /
+	    - Composite manager now (mostly) works on all desktops. /
+	    French translation update (Ludwig Noujarret). /
+	    Initial ARGB client support (Rajsekar Manokaran). /
+	    Fix cruft left some times after non-opaque resizing. /
+	    Fix fullscreen window positioning after restart. /
+	    Systray fixes (avoid crashing certain clients on close). /
+	    Window shape fixes related to composite mode. /
+	    Draw queue has been eliminated.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>4</revnumber>
+	  <date>Mar 26, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Minor updates.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>3</revnumber>
+	  <date>Feb 8, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Clarification.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>2</revnumber>
+	  <date>Feb 7, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Enable running scripts on startup/restart.
+	  </revremark>
+	</revision>
+	<revision>
+	  <revnumber>1</revnumber>
+	  <date>Feb 6, 2005</date>
+	  <authorinitials>kwo</authorinitials>
+	  <revremark>
+	    Merge windowmatches and icondefs.
+	  </revremark>
+	</revision>
+-->
+	<revision>
+          <revnumber>0</revnumber>
+          <date>Dec 30, 2004</date>
+          <authorinitials>Peter Hyman</authorinitials>
+          <revremark>
+            Notes on migrating to 0.16.8
+          </revremark>
+	</revision>
+      </revhistory>
+    </para>
+  </sect1>
+</article>
+
