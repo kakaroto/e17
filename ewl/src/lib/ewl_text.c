@@ -342,19 +342,22 @@ ewl_text_minmax_size_update(Ewl_Text *t)
         }
 
         fn = evas_imaging_font_load(source, font, tx->size);
-        if (t->min.size_string)
-        {
-                evas_imaging_font_string_size_query(fn, t->min.size_string,
-                                                                &width, NULL);
-                ewl_object_minimum_w_set(EWL_OBJECT(t), width);
-        }
-        if (t->max.size_string)
-        {
-                evas_imaging_font_string_size_query(fn, t->max.size_string,
-                                                                &width, NULL);
-                ewl_object_maximum_w_set(EWL_OBJECT(t), width);
-        }
-        evas_imaging_font_free(fn);
+	if (fn)
+	{
+        	if (t->min.size_string)
+        	{
+                	evas_imaging_font_string_size_query(fn, t->min.size_string,
+                        	                            &width, NULL);
+                	ewl_object_minimum_w_set(EWL_OBJECT(t), width);
+        	}
+	        if (t->max.size_string)
+        	{
+                	evas_imaging_font_string_size_query(fn, t->max.size_string,
+                        	                            &width, NULL);
+                	ewl_object_maximum_w_set(EWL_OBJECT(t), width);
+        	}
+        	evas_imaging_font_free(fn);
+	}
         ewl_text_context_release(tx);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
