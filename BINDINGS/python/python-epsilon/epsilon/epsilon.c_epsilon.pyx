@@ -53,7 +53,7 @@ cdef class Epsilon:
                 self.thumb_size_set(thumb_size)
             elif isinstance(thumb_size, (list, tuple)):
                 self.thumb_custom_size_set(*thumb_size)
-            else:
+            elif thumb_size is not None:
                 raise ValueError("thumb_size should be an integer or tuple")
             if key is not None:
                 self.key_set(key)
