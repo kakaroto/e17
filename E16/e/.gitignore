@@ -68,6 +68,8 @@ stamp-h1
 e16.spec
 e16*.tar.gz
 
+docs/*.html
+
 misc/e16-gnome.desktop
 misc/e16-kde.desktop
 misc/e16.desktop

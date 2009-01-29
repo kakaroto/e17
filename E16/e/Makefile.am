@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = aclocal.m4 config.* configure depcomp \
 		       po/*.header po/*.sed po/*.sin po/e16.pot \
 		       *~ */*~
 
-SUBDIRS = dox eesh epp src lib config themes fonts man scripts misc po
+SUBDIRS = dox eesh epp src lib config themes fonts man scripts misc docs po
 
 EXTRA_DIST = \
 sample-scripts/bouncingball.pl \

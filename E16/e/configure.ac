@@ -328,6 +328,17 @@ if test "x$enable_dialogs" = "xyes"; then
   AC_DEFINE(ENABLE_DIALOGS, 1, [Configuration dialog support])
 fi
 
+AC_ARG_ENABLE(docs,
+  [  --enable-docs           install html docs @<:@default=yes@:>@],,
+  enable_docs=yes)
+if test "x$enable_docs" = "xyes"; then
+  AC_CHECK_PROG(XMLTO, xmlto, xmlto)
+  if test "x$XMLTO" = "x"; then
+    enable_docs=no
+  fi
+fi
+AM_CONDITIONAL([HAVE_XMLTO], [test "x$XMLTO" != "x"])
+
 AC_ARG_ENABLE(gcc-cpp,
   [  --enable-gcc-cpp        compile everything as if it were C++ @<:@default=no@:>@],,
   enable_gcc_cpp=no)
@@ -367,6 +378,7 @@ themes/Makefile
 fonts/Makefile
 scripts/Makefile
 misc/Makefile
+docs/Makefile
 po/Makefile.in
 e16.spec
 ])
@@ -409,6 +421,7 @@ echo "  ScreenSaver .................. $enable_xscrnsaver"
 echo "  D-Bus ........................ $enable_dbus"
 echo
 echo "Installation path .............. $prefix"
+echo "  Install HTML docs ............ $enable_docs"
 echo
 echo "Compilation .................... make"
 echo "Installation ................... make install"
