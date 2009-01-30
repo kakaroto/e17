@@ -2,9 +2,11 @@
 Type=Link
 Name=Tiling
 Name[hu]=Tiling
+Name[fr]=Pavage
 Icon=e-module-tiling
 Comment=<title>Tiling Module</title><br>Positions/resizes your windows tilingly, like ion for example.
 Comment[cs]=<title>Tiling modul</title><br>Seřadí/změní velikost oken do dlaždic, např. jako ion.
 Comment[it]=<title>Modulo Tiling</title><br>Posiziona/ridimensiona le finestre affiancandole, come ad esempio ion.
 Comment[hu]=<title>Tiling modul</title><br>Ablakok pozicionálása/átméretezése, mint pl.:az ion.
+Comment[fr]=<title>Module Pavage</title><br>Place/Redimensionne les fenêtres sans les superposer. à l'instar de ion.
 X-Enlightenment-ModuleType=appearance
