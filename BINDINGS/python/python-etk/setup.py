@@ -43,7 +43,7 @@ trove_classifiers = [
     "Environment :: Console :: Framebuffer",
     "Environment :: X11 Applications",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: LGPL",
+    "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX",
     "Programming Language :: C",
@@ -66,7 +66,7 @@ class etk_build_ext(build_ext):
 
 setup(name = 'python-etk',
       version = '0.1.1',
-      license = 'BSD',
+      license = 'LGPL',
       author='Caio Marcelo de Oliveira Filho',
       author_email='cmarcelo@gmail.com',
       url='http://www.enlightenment.org/',
