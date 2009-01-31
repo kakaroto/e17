@@ -17,6 +17,8 @@ xsessiondir = $(datadir)/xsessions
 
 EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) $(ICONS)
 
+CLEANFILES = $(DESKTOPS)
+
 e16.desktop: $(top_srcdir)/misc/e16.desktop.in Makefile
 e16-gnome.desktop: $(top_srcdir)/misc/e16-gnome.desktop.in Makefile
 e16-kde.desktop: $(top_srcdir)/misc/e16-kde.desktop.in Makefile
