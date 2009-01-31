@@ -949,10 +949,10 @@ ewl_object_padding_set(Ewl_Object *o, int l, int r, int t, int b)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
-        dx = (l - o->pad.l);
-        dy = (t - o->pad.t);
-        dh = dx + (r - o->pad.r);
-        dv = dy + (b - o->pad.t);
+        dx = l - PADDING_LEFT(o);
+        dy = t - PADDING_TOP(o);
+        dh = dx + r - PADDING_RIGHT(o);
+        dv = dy + b - PADDING_BOTTOM(o);
 
         o->pad.l = l;
         o->pad.r = r;
@@ -995,10 +995,10 @@ ewl_object_padding_get(Ewl_Object *o, int *l, int *r, int *t, int *b)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
-        if (l) *l = o->pad.l;
-        if (r) *r = o->pad.r;
-        if (t) *t = o->pad.t;
-        if (b) *b = o->pad.b;
+        if (l) *l = PADDING_LEFT(o);
+        if (r) *r = PADDING_RIGHT(o);
+        if (t) *t = PADDING_TOP(o);
+        if (b) *b = PADDING_BOTTOM(o);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

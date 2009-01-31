@@ -4,9 +4,6 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-#include <Edje.h>
-
 #define EWL_WIDGET_SMART_NAME "Ewl Widget Smart"
 
 static Ecore_Hash *ewl_widget_name_table = NULL;
