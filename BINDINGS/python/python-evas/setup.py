@@ -1,6 +1,19 @@
 import sys
 import os
 
+if not os.path.exists("evas/evas.c_evas.c"):
+    try:
+        import Cython
+    except ImportError:
+        raise SystemExit("You need Cython -- http://cython.org/")
+    try:
+        import Pyrex
+    except ImportError:
+        raise SystemExit(
+            "You need Pyrex -- "
+            "http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/")
+
+
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
 

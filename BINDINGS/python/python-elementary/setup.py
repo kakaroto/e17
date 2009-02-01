@@ -1,5 +1,18 @@
 import sys
 import os
+
+if not os.path.exists("elementary/elementary.c_elementary.c"):
+    try:
+        import Cython
+    except ImportError:
+        raise SystemExit("You need Cython -- http://cython.org/")
+    try:
+        import Pyrex
+    except ImportError:
+        raise SystemExit(
+            "You need Pyrex -- "
+            "http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/")
+
 from distutils.core import setup
 from setuptools import find_packages
 from distutils.extension import Extension
