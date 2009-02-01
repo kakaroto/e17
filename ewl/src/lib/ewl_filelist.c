@@ -1213,8 +1213,16 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
         
         fl = EWL_FILELIST(w);
         IF_FREE(fl->directory);
-        IF_FREE(fl->view);
-        IF_FREE(fl->model);
+        if (fl->view)
+        {
+                ewl_view_destroy(fl->view);
+                fl->view = NULL;
+        }
+        if (fl->model)
+        {
+                ewl_model_destroy(fl->model);
+                fl->model = NULL;
+        }
         fl->filter = NULL;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

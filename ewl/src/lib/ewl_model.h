@@ -175,6 +175,7 @@ struct Ewl_Model
 };
 
 Ewl_Model                       *ewl_model_new(void);
+void                             ewl_model_destroy(Ewl_Model *m);
 int                              ewl_model_init(Ewl_Model *model);
 
 Ewl_Model                       *ewl_model_ecore_list_instance(void);

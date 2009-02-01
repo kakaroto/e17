@@ -27,6 +27,22 @@ ewl_view_new(void)
 }
 
 /**
+ * @param v: View that will be destroyed
+ * @return Returns no value
+ * @brief Destroys the view, so its memory is returned to the system
+ */
+void
+ewl_view_destroy(Ewl_View *v)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(v);
+
+        FREE(v);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param src: An existing view to copy as a basis for a new view
  * @return Returns a new Ewl_View object on success or NULL on failure
  * @brief Creates a new Ewl_View object

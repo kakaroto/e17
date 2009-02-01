@@ -83,6 +83,7 @@ struct Ewl_View
 };
 
 Ewl_View                        *ewl_view_new(void);
+void                             ewl_view_destroy(Ewl_View *v);
 int                              ewl_view_init(Ewl_View *view);
 Ewl_View                        *ewl_view_clone(const Ewl_View *src);
 

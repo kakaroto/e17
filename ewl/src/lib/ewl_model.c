@@ -27,6 +27,22 @@ ewl_model_new(void)
 }
 
 /**
+ * @param m: Model that will be destroyed
+ * @return Returns no value
+ * @brief Destroys the model, so its memory is returned to the system
+ */
+void
+ewl_model_destroy(Ewl_Model *m)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(m);
+
+        FREE(m);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @return Returns a model that is setup to work with an ecore_list
  * @brief Retrieves a model pre-initialized to work with an ecore list. This
  * will setup the fetch and count methods for you
