@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-31 15:34+0100\n"
-"PO-Revision-Date: 2008-02-10 19:59+0100\n"
+"PO-Revision-Date: 2009-01-31 16:27+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgid "About Enlightenment %s"
 msgstr "Om Enlightenment %s"
 
 #: src/about.c:45
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
@@ -34,7 +34,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 "Velkommen til version %s af Enlightenment.\n"
-"Sidst opdateret %s\n"
 "\n"
 "God fornøjelse. Vi håber du får glæde af programmet.\n"
 "\n"
@@ -913,7 +912,7 @@ msgstr "Klæber"
 
 #: src/groups.c:908 src/groups.c:1010
 msgid "Shading"
-msgstr "Skygger"
+msgstr "Oprulning"
 
 #: src/groups.c:913 src/groups.c:1015
 msgid "Mirror Shade/Iconify/Stick"
@@ -1531,7 +1530,7 @@ msgstr "Synkroniser flytning/størrelsesændring med applikationen"
 
 #: src/settings.c:216
 msgid "Do not cover dragbar"
-msgstr ""
+msgstr "Dæk ikke skrivebordstræklinien"
 
 #: src/settings.c:222
 msgid "Move/Resize"
@@ -1566,9 +1565,8 @@ msgid "Place windows under mouse"
 msgstr "Placér vinduer under markør"
 
 #: src/settings.c:336
-#, fuzzy
 msgid "Center windows when desk is full"
-msgstr "Inkluder vinduer på andre skriveborde i fokuslisten"
+msgstr "Centrér vinduer når skrivebordet er fuldt"
 
 #: src/settings.c:341
 msgid "Slide windows in when they appear"
@@ -2415,7 +2413,7 @@ msgstr "Diverse indstillinger ..."
 
 #: config/strings.c:135
 msgid "Leave Alone"
-msgstr ""
+msgstr "Ikonificer de andre vinduer"
 
 #: config/strings.c:140
 msgid "Remember..."
@@ -2427,7 +2425,7 @@ msgstr "Vinduesstørrelse"
 
 #: config/strings.c:142
 msgid "Set Stacking"
-msgstr "Sæt stakbling"
+msgstr "Sæt stabling"
 
 #: config/strings.c:143
 msgid "Set Border Style"
@@ -2510,14 +2508,12 @@ msgid "Toggle Button Grabs"
 msgstr "Aktivér/deaktivér museknap 'grabs'"
 
 #: config/strings.c:170
-#, fuzzy
 msgid "Toggle Autoshade"
-msgstr "Aktivér/deaktivér skygger"
+msgstr "Aktivér/deaktivér automatisk oprulning"
 
 #: config/strings.c:173
-#, fuzzy
 msgid "Default"
-msgstr "Slet"
+msgstr "Standard"
 
 #: config/strings.c:174
 msgid "20%"
@@ -2614,23 +2610,3 @@ msgstr "Andet"
 #: config/strings.c:201
 msgid "Epplets"
 msgstr "Epplets"
-
-#~ msgid "%i Desktops"
-#~ msgstr "%i skriveborde"
-
-#~ msgid "%i Desktop"
-#~ msgstr "%i skrivebord"
-
-#~ msgid ""
-#~ "%i x %i\n"
-#~ "Screens in size"
-#~ msgstr ""
-#~ "%i x %i\n"
-#~ "skærme i størrelse"
-
-#~ msgid ""
-#~ "1\n"
-#~ "Screen in size"
-#~ msgstr ""
-#~ "1\n"
-#~ "skærm i størrelse"
