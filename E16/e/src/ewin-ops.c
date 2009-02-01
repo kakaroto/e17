@@ -34,6 +34,7 @@
 #include "iclass.h"		/* FIXME - Should not be here */
 #include "screen.h"
 #include "snaps.h"
+#include "timers.h"
 #include "xwin.h"
 
 static const WinOp  winops[] = {
@@ -843,6 +844,7 @@ typedef struct {
 } _xywh;
 typedef struct {
    EWin               *ewin;
+   int                 k, dk;
    _xywh               start;
    _xywh               final;
    int                 a, b, c, d;
@@ -854,6 +856,9 @@ _EwinShadeStart(_ewin_shade_data * esd)
    EWin               *ewin = esd->ewin;
    int                 minw, minh;
    XSetWindowAttributes att;
+
+   esd->k = 0;
+   esd->dk = 1024 * Conf.shading.speed * Conf.animation.step / 1000000;
 
    esd->start.x = EoGetX(ewin);
    esd->start.y = EoGetY(ewin);
@@ -929,13 +934,24 @@ _EwinShadeEnd(_ewin_shade_data * esd)
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
+
+   Efree(esd);
 }
 
-static void
-_EwinShadeRun(_ewin_shade_data * esd)
+static int
+_EwinShadeRun(void *data)
 {
+   _ewin_shade_data   *esd = (_ewin_shade_data *) data;
    EWin               *ewin = esd->ewin;
    int                 k, x, y, w, h, ww, hh, cow, coh, shx, shy;
+
+   if (!EwinFindByPtr(ewin))	/* Check, window may be gone */
+     {
+	Efree(esd);
+	return 0;
+     }
+
+   k = esd->k;
 
    x = esd->start.x;
    y = esd->start.y;
@@ -947,90 +963,91 @@ _EwinShadeRun(_ewin_shade_data * esd)
 
    shx = shy = 0;
 
-   ETimedLoopInit(0, 1024, Conf.shading.speed);
-   for (k = 0; k < 1024;)
+   switch (ewin->border->shadedir)
      {
-	switch (ewin->border->shadedir)
-	  {
-	  default:
-	  case 0:
-	     w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     if (w < 1)
-		w = 1;
-	     ww = w - ewin->border->border.left - ewin->border->border.right;
-	     if (ww < 1)
-		ww = 1;
-	     cow = ww;
-	     shx = ww - ewin->client.w;
-	     break;
-	  case 1:
-	     w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     if (w < 1)
-		w = 1;
-	     x = esd->c - w;
-	     ww = w - ewin->border->border.left - ewin->border->border.right;
-	     if (ww < 1)
-		ww = 1;
-	     cow = ww;
-	     break;
-	  case 2:
-	     h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     if (h < 1)
-		h = 1;
-	     hh = h - ewin->border->border.top - ewin->border->border.bottom;
-	     if (hh < 1)
-		hh = 1;
-	     coh = hh;
-	     shy = hh - ewin->client.h;
-	     break;
-	  case 3:
-	     h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     if (h < 1)
-		h = 1;
-	     y = esd->c - h;
-	     hh = h - ewin->border->border.top - ewin->border->border.bottom;
-	     if (hh < 1)
-		hh = 1;
-	     coh = hh;
-	     shy = hh - ewin->client.h;
-	     break;
-	  }
-	EMoveResizeWindow(ewin->win_container,
-			  ewin->border->border.left,
-			  ewin->border->border.top, cow, coh);
-	if (ewin->state.shaped)
-	   _EWIN_ADJUST_SHAPE(ewin, shx, shy);
-	EoMoveResize(ewin, x, y, w, h);
-	EwinBorderCalcSizes(ewin, 1);
-
-	k = ETimedLoopNext();
+     default:
+     case 0:
+	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	if (w < 1)
+	   w = 1;
+	ww = w - ewin->border->border.left - ewin->border->border.right;
+	if (ww < 1)
+	   ww = 1;
+	cow = ww;
+	shx = ww - ewin->client.w;
+	break;
+     case 1:
+	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	if (w < 1)
+	   w = 1;
+	x = esd->c - w;
+	ww = w - ewin->border->border.left - ewin->border->border.right;
+	if (ww < 1)
+	   ww = 1;
+	cow = ww;
+	break;
+     case 2:
+	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	if (h < 1)
+	   h = 1;
+	hh = h - ewin->border->border.top - ewin->border->border.bottom;
+	if (hh < 1)
+	   hh = 1;
+	coh = hh;
+	shy = hh - ewin->client.h;
+	break;
+     case 3:
+	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	if (h < 1)
+	   h = 1;
+	y = esd->c - h;
+	hh = h - ewin->border->border.top - ewin->border->border.bottom;
+	if (hh < 1)
+	   hh = 1;
+	coh = hh;
+	shy = hh - ewin->client.h;
+	break;
      }
+   EMoveResizeWindow(ewin->win_container,
+		     ewin->border->border.left,
+		     ewin->border->border.top, cow, coh);
+   if (ewin->state.shaped)
+      _EWIN_ADJUST_SHAPE(ewin, shx, shy);
+   EoMoveResize(ewin, x, y, w, h);
+   EwinBorderCalcSizes(ewin, 1);
+
+   esd->k = k += esd->dk;
+   if (k < 1024)
+      return 1;
+
+   _EwinShadeEnd(esd);
+   return 0;
 }
 
 void
 EwinShade(EWin * ewin)
 {
-   _ewin_shade_data    esd;
+   _ewin_shade_data   *esd;
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0) &&
        (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
       return;
    if (GetZoomEWin() == ewin)
       return;
-   if (ewin->state.shaded || ewin->state.iconified)
+   if (ewin->state.shaded || ewin->state.shading || ewin->state.iconified)
       return;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
 
    DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
-   esd.ewin = ewin;
-   _EwinShadeStart(&esd);
+   esd = EMALLOC(_ewin_shade_data, 1);
+   esd->ewin = ewin;
+   _EwinShadeStart(esd);
    if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
-     {
-	_EwinShadeRun(&esd);
-     }
-   _EwinShadeEnd(&esd);
+      AnimatorAdd(_EwinShadeRun, esd);
+   else
+      _EwinShadeEnd(esd);
 }
 
 static void
@@ -1040,7 +1057,9 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
    int                 cow, coh, clx, cly;
    XSetWindowAttributes att;
 
-   esd->ewin = ewin;
+   esd->k = 0;
+   esd->dk = 1024 * Conf.shading.speed * Conf.animation.step / 1000000;
+
    esd->start.x = EoGetX(ewin);
    esd->start.y = EoGetY(ewin);
    esd->start.w = EoGetW(ewin);
@@ -1145,13 +1164,24 @@ _EwinUnshadeEnd(_ewin_shade_data * esd)
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
+
+   Efree(esd);
 }
 
-static void
-_EwinUnshadeRun(_ewin_shade_data * esd)
+static int
+_EwinUnshadeRun(void *data)
 {
+   _ewin_shade_data   *esd = (_ewin_shade_data *) data;
    EWin               *ewin = esd->ewin;
    int                 k, x, y, w, h, ww, hh, cow, coh, shx, shy;
+
+   if (!EwinFindByPtr(ewin))	/* Check, window may be gone */
+     {
+	Efree(esd);
+	return 0;
+     }
+
+   k = esd->k;
 
    x = esd->start.x;
    y = esd->start.y;
@@ -1163,77 +1193,78 @@ _EwinUnshadeRun(_ewin_shade_data * esd)
 
    shx = shy = 0;
 
-   ETimedLoopInit(0, 1024, Conf.shading.speed);
-   for (k = 0; k < 1024;)
+   switch (ewin->border->shadedir)
      {
-	switch (ewin->border->shadedir)
-	  {
-	  default:
-	  case 0:
-	     w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     ww = w - esd->a;
-	     if (ww <= 0)
-		ww = 1;
-	     cow = ww;
-	     shx = ww - ewin->client.w;
-	     break;
-	  case 1:
-	     w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     x = esd->c - w;
-	     ww = w - esd->a;
-	     if (ww <= 0)
-		ww = 1;
-	     cow = ww;
-	     break;
-	  case 2:
-	     h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     hh = h - esd->a;
-	     if (hh <= 0)
-		hh = 1;
-	     coh = hh;
-	     shy = hh - ewin->client.h;
-	     break;
-	  case 3:
-	     h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
-	     y = esd->c - h;
-	     hh = h - esd->a;
-	     if (hh <= 0)
-		hh = 1;
-	     coh = hh;
-	     shy = hh - ewin->client.h;
-	     break;
-	  }
-	EMoveResizeWindow(ewin->win_container,
-			  ewin->border->border.left,
-			  ewin->border->border.top, cow, coh);
-	if (ewin->state.shaped)
-	   _EWIN_ADJUST_SHAPE(ewin, shx, shy);
-	EoMoveResize(ewin, x, y, w, h);
-	EwinBorderCalcSizes(ewin, 1);
-
-	k = ETimedLoopNext();
+     default:
+     case 0:
+	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	ww = w - esd->a;
+	if (ww <= 0)
+	   ww = 1;
+	cow = ww;
+	shx = ww - ewin->client.w;
+	break;
+     case 1:
+	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	x = esd->c - w;
+	ww = w - esd->a;
+	if (ww <= 0)
+	   ww = 1;
+	cow = ww;
+	break;
+     case 2:
+	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	hh = h - esd->a;
+	if (hh <= 0)
+	   hh = 1;
+	coh = hh;
+	shy = hh - ewin->client.h;
+	break;
+     case 3:
+	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
+	y = esd->c - h;
+	hh = h - esd->a;
+	if (hh <= 0)
+	   hh = 1;
+	coh = hh;
+	shy = hh - ewin->client.h;
+	break;
      }
+   EMoveResizeWindow(ewin->win_container,
+		     ewin->border->border.left,
+		     ewin->border->border.top, cow, coh);
+   if (ewin->state.shaped)
+      _EWIN_ADJUST_SHAPE(ewin, shx, shy);
+   EoMoveResize(ewin, x, y, w, h);
+   EwinBorderCalcSizes(ewin, 1);
+
+   esd->k = k += esd->dk;
+   if (k < 1024)
+      return 1;
+
+   _EwinUnshadeEnd(esd);
+   return 0;
 }
 
 void
 EwinUnShade(EWin * ewin)
 {
-   _ewin_shade_data    esd;
+   _ewin_shade_data   *esd;
 
    if (GetZoomEWin() == ewin)
       return;
-   if (!ewin->state.shaded || ewin->state.iconified)
+   if (!ewin->state.shaded || ewin->state.shading || ewin->state.iconified)
       return;
 
    DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
-   esd.ewin = ewin;
-   _EwinUnshadeStart(&esd);
+   esd = EMALLOC(_ewin_shade_data, 1);
+   esd->ewin = ewin;
+   _EwinUnshadeStart(esd);
    if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
-     {
-	_EwinUnshadeRun(&esd);
-     }
-   _EwinUnshadeEnd(&esd);
+      AnimatorAdd(_EwinUnshadeRun, esd);
+   else
+      _EwinUnshadeEnd(esd);
 }
 
 void
