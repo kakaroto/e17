@@ -167,6 +167,7 @@ _("Toggle Never Focus"),
 _("Toggle Click to Focus"),
 _("Toggle Never Use Area"),
 _("Toggle Button Grabs"),
+_("Toggle Autoshade"),
 /* winops_opacity.menu */
 _("Opacity"),
 _("Default"),

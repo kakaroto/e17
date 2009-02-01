@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -136,6 +136,7 @@ struct _ewin {
       unsigned            skip_winlist:1;
       unsigned            focusclick:1;	/* Click to focus */
       unsigned            no_button_grabs:1;
+      unsigned            autoshade:1;	/* Autoshade on mouse in/out */
       unsigned            no_argb:1;	/* Do not use ARGB frame */
 
       /* Derived from other properties */

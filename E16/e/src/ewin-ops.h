@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2008 Kim Woelders
+ * Copyright (C) 2005-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -63,6 +63,7 @@ typedef enum {
    EWIN_OP_NEVER_USE_AREA,
    EWIN_OP_NO_BUTTON_GRABS,
    EWIN_OP_SKIP_LISTS,
+   EWIN_OP_AUTOSHADE,
 
    EWIN_OP_INH_APP_FOCUS,
    EWIN_OP_INH_APP_MOVE,

@@ -943,11 +943,27 @@ static void
 BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
+   int                 x, y;
 
    switch (ev->type)
      {
      case EnterNotify:
+	if (ewin->props.autoshade && ewin->state.shaded)
+	  {
+	     EwinUnShade(ewin);
+	  }
+	if (ewin->border->aclass)
+	   ActionclassEvent(ewin->border->aclass, ev, ewin);
+	break;
      case LeaveNotify:
+	if (ewin->props.autoshade && !ewin->state.shaded)
+	  {
+	     EQueryPointer(EoGetWin(ewin), &x, &y, NULL, NULL);
+	     if (x >= 4 && x < EoGetW(ewin) - 4 &&
+		 y >= 4 && y < EoGetH(ewin) - 4)
+		break;
+	     EwinShade(ewin);
+	  }
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);
 	break;

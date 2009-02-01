@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1832,8 +1832,10 @@ typedef union {
       unsigned            nua:1;
       unsigned            ctf:1;
       unsigned            nbg:1;
-      unsigned:           5;
-      unsigned:           16;
+      unsigned            autoshade:1;
+      unsigned:           4;
+      unsigned:           8;
+      unsigned:           8;
       unsigned            no_fade:1;
       unsigned            no_shadow:1;
       unsigned:           6;
@@ -1855,6 +1857,7 @@ EwinFlagsEncode(const EWin * ewin, unsigned int *flags)
    fm2.f.nua = ewin->props.never_use_area;
    fm2.f.ctf = ewin->props.focusclick;
    fm2.f.nbg = ewin->props.no_button_grabs;
+   fm2.f.autoshade = ewin->props.autoshade;
 #if USE_COMPOSITE
    fm2.f.no_fade = !EoGetFade(ewin);
    fm2.f.no_shadow = !EoGetShadow(ewin);
@@ -1879,6 +1882,7 @@ EwinFlagsDecode(EWin * ewin, const unsigned int *flags)
    ewin->props.never_use_area = fm2.f.nua;
    ewin->props.focusclick = fm2.f.ctf;
    ewin->props.no_button_grabs = fm2.f.nbg;
+   ewin->props.autoshade = fm2.f.autoshade;
 #if USE_COMPOSITE
    EoSetFade(ewin, !fm2.f.no_fade);
    EoSetShadow(ewin, !fm2.f.no_shadow);

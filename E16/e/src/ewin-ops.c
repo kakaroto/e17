@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -81,6 +81,7 @@ static const WinOp  winops[] = {
    {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
    {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
    {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
+   {"autoshade", 0, 1, 1, EWIN_OP_AUTOSHADE},
 
    {"no_app_focus", 0, 1, 1, EWIN_OP_INH_APP_FOCUS},
    {"no_app_move", 0, 1, 1, EWIN_OP_INH_APP_MOVE},

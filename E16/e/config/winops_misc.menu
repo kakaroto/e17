@@ -6,3 +6,4 @@
 "Toggle Click to Focus"	NULL "wop * focusclick"
 "Toggle Never Use Area"	NULL "wop * never_use_area"
 "Toggle Button Grabs"	NULL "wop * no_button_grabs"
+"Toggle Autoshade"	NULL "wop * autoshade"

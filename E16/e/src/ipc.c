@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -737,6 +737,12 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	on = ewin->props.focusclick;
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	ewin->props.focusclick = on;
+	goto ewin_update_snap_flags;
+
+     case EWIN_OP_AUTOSHADE:
+	on = ewin->props.autoshade;
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	ewin->props.autoshade = on;
 	goto ewin_update_snap_flags;
 
      case EWIN_OP_NO_BUTTON_GRABS:

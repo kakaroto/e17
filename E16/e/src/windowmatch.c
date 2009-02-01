@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2005-2008 Kim Woelders
+ * Copyright (C) 2005-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -737,6 +737,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 
      case EWIN_OP_NO_BUTTON_GRABS:
 	WINOP_SET_BOOL(ewin->props.no_button_grabs, args);
+	break;
+
+     case EWIN_OP_AUTOSHADE:
+	WINOP_SET_BOOL(ewin->props.autoshade, args);
 	break;
 
      case EWIN_OP_INH_APP_FOCUS:
