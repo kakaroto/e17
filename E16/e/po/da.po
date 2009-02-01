@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-25 23:00+0100\n"
+"POT-Creation-Date: 2009-01-31 15:34+0100\n"
 "PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -1048,28 +1048,28 @@ msgstr "Ikonboks..."
 msgid "Iconbox Settings"
 msgstr "Ikonboksindstillinger"
 
-#: src/ipc.c:194 src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
 msgid "Message"
 msgstr "Meddelelse"
 
-#: src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:1448 src/ipc.c:1455
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 er bygget uden understøttelse for %s"
 
-#: src/ipc.c:1443
+#: src/ipc.c:1449
 msgid "composite"
 msgstr "composite"
 
-#: src/ipc.c:1450
+#: src/ipc.c:1456
 msgid "sound"
 msgstr "lyd"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1799
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC kommandohjælp\n"
 
-#: src/ipc.c:1797
+#: src/ipc.c:1803
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1079,19 +1079,19 @@ msgstr ""
 "Brug \"help <kommando>\" for en individuel beskrivelse\n"
 "\n"
 
-#: src/ipc.c:1799 src/ipc.c:1819 src/ipc.c:1831
+#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
 msgid "Commands currently available:\n"
 msgstr "Kommandoer tilgængelige lige nu:\n"
 
-#: src/ipc.c:1817
+#: src/ipc.c:1823
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Brug \"help full\" for den fulde beskrivelse af alle kommandoer\n"
 
-#: src/ipc.c:1818
+#: src/ipc.c:1824
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 
-#: src/ipc.c:1820 src/ipc.c:1832
+#: src/ipc.c:1826 src/ipc.c:1838
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
@@ -1822,7 +1822,7 @@ msgstr "Placering"
 msgid "Border style"
 msgstr "Rammestil"
 
-#: src/snaps.c:833 config/strings.c:183
+#: src/snaps.c:833 config/strings.c:184
 msgid "Size"
 msgstr "Størrelse"
 
@@ -1846,7 +1846,7 @@ msgstr "Stablingslag"
 msgid "Window List Skip"
 msgstr "Vindues 'skiplister'"
 
-#: src/snaps.c:864 config/strings.c:145 config/strings.c:171
+#: src/snaps.c:864 config/strings.c:145 config/strings.c:172
 msgid "Opacity"
 msgstr "Gennemsigtighed"
 
@@ -2269,7 +2269,7 @@ msgstr "Vis Forstørrelsesglas"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:197
+#: config/strings.c:88 config/strings.c:198
 msgid "User Menus"
 msgstr "Brugermenu"
 
@@ -2293,11 +2293,11 @@ msgstr "Om Enlightenment"
 msgid "About this theme"
 msgstr "Om dette tema"
 
-#: config/strings.c:96 config/strings.c:201
+#: config/strings.c:96 config/strings.c:202
 msgid "Restart"
 msgstr "Genstart"
 
-#: config/strings.c:97 config/strings.c:202
+#: config/strings.c:97 config/strings.c:203
 msgid "Log Out"
 msgstr "Log ud"
 
@@ -2509,104 +2509,109 @@ msgstr "Aktivér/deaktivér brug aldrig område"
 msgid "Toggle Button Grabs"
 msgstr "Aktivér/deaktivér museknap 'grabs'"
 
-#: config/strings.c:172
+#: config/strings.c:170
+#, fuzzy
+msgid "Toggle Autoshade"
+msgstr "Aktivér/deaktivér skygger"
+
+#: config/strings.c:173
 #, fuzzy
 msgid "Default"
 msgstr "Slet"
 
-#: config/strings.c:173
+#: config/strings.c:174
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:174
+#: config/strings.c:175
 msgid "40%"
 msgstr "30%"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Focused opacity 100%"
 msgstr "Fokuseret uigennemsigtighed 100%"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Focused opacity follows unfocused"
 msgstr "Fokuseret uigennemsigtighed følger ufokuseret"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Toggle Fading"
 msgstr "Aktivér/deaktivér fading"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Toggle Shadows"
 msgstr "Aktivér/deaktivér skygger"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Available Max Size Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende størrelse"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Absolute Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:187
+#: config/strings.c:188
 msgid "Span Xinerama Screens"
 msgstr "Spænd over Xinerama skærmene"
 
-#: config/strings.c:188
+#: config/strings.c:189
 msgid "Max Height Toggle"
 msgstr "Aktivér/deaktivér max højde"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "Available Max Height Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende højde"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Absolute Max Height Toggle"
 msgstr "Aktivér/deaktivér maksimal højde"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:192
+#: config/strings.c:193
 msgid "Available Max Width Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende bredde"
 
-#: config/strings.c:193
+#: config/strings.c:194
 msgid "Absolute Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:194
+#: config/strings.c:195
 msgid "Fullscreen/Normal"
 msgstr "Fuldskærm/Normal"
 
-#: config/strings.c:195
+#: config/strings.c:196
 msgid "Zoom/Unzoom"
 msgstr "Zoom ind/ud"
 
-#: config/strings.c:198
+#: config/strings.c:199
 msgid "User Application List"
 msgstr "Brugerapplikationsliste"
 
-#: config/strings.c:199
+#: config/strings.c:200
 msgid "Other"
 msgstr "Andet"
 
-#: config/strings.c:200
+#: config/strings.c:201
 msgid "Epplets"
 msgstr "Epplets"
 

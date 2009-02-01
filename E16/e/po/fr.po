@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.15\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-25 23:00+0100\n"
+"POT-Creation-Date: 2009-01-31 15:34+0100\n"
 "PO-Revision-Date: 2009-01-06 18:33+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -1111,28 +1111,28 @@ msgstr "Options de la Boîte à icônes"
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
-#: src/ipc.c:194 src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:1448 src/ipc.c:1455
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "Enlightenment a été compilé sans prise en charge de : %s"
 
-#: src/ipc.c:1443
+#: src/ipc.c:1449
 msgid "composite"
 msgstr "Extension Composite"
 
-#: src/ipc.c:1450
+#: src/ipc.c:1456
 msgid "sound"
 msgstr "Système Son"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1799
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1797
+#: src/ipc.c:1803
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1142,19 +1142,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1799 src/ipc.c:1819 src/ipc.c:1831
+#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1817
+#: src/ipc.c:1823
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1818
+#: src/ipc.c:1824
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1820 src/ipc.c:1832
+#: src/ipc.c:1826 src/ipc.c:1838
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
@@ -1936,7 +1936,7 @@ msgstr "Emplacement"
 msgid "Border style"
 msgstr "Style de bordure"
 
-#: src/snaps.c:833 config/strings.c:183
+#: src/snaps.c:833 config/strings.c:184
 msgid "Size"
 msgstr "Taille"
 
@@ -1960,7 +1960,7 @@ msgstr "Niveau"
 msgid "Window List Skip"
 msgstr "Ignoré de la liste des fenêtres"
 
-#: src/snaps.c:864 config/strings.c:145 config/strings.c:171
+#: src/snaps.c:864 config/strings.c:145 config/strings.c:172
 msgid "Opacity"
 msgstr "Opacité"
 
@@ -2396,7 +2396,7 @@ msgstr "Afficher Loupe"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:197
+#: config/strings.c:88 config/strings.c:198
 msgid "User Menus"
 msgstr "Menus Utilisateur"
 
@@ -2420,11 +2420,11 @@ msgstr "À propos d'Enlightenment"
 msgid "About this theme"
 msgstr "À propos de ce thème"
 
-#: config/strings.c:96 config/strings.c:201
+#: config/strings.c:96 config/strings.c:202
 msgid "Restart"
 msgstr "Redémarrer E16"
 
-#: config/strings.c:97 config/strings.c:202
+#: config/strings.c:97 config/strings.c:203
 msgid "Log Out"
 msgstr "Déconnexion"
 
@@ -2636,102 +2636,107 @@ msgstr "Ne jamais utiliser de zones (On/Off)"
 msgid "Toggle Button Grabs"
 msgstr "Déplacement de fenêtre par Alt+clic gauche (On/Off)"
 
-#: config/strings.c:172
+#: config/strings.c:170
+#, fuzzy
+msgid "Toggle Autoshade"
+msgstr "Ombres (On/Off)"
+
+#: config/strings.c:173
 msgid "Default"
 msgstr "Par défaut"
 
-#: config/strings.c:173
+#: config/strings.c:174
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:174
+#: config/strings.c:175
 msgid "40%"
 msgstr "40%"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Focused opacity 100%"
 msgstr "Opacité de 100% lors du focus"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Focused opacity follows unfocused"
 msgstr "Même opacité avec ou sans focus"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Toggle Fading"
 msgstr "Fondu (On/Off)"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Toggle Shadows"
 msgstr "Ombres (On/Off)"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Max Size Toggle"
 msgstr "Basculer en taille maximum"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Available Max Size Toggle"
 msgstr "Basculer en taille maximum disponible"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Absolute Max Size Toggle"
 msgstr "Basculer en taille maximum absolue"
 
-#: config/strings.c:187
+#: config/strings.c:188
 msgid "Span Xinerama Screens"
 msgstr "Étaler sur les écrans Xinerama"
 
-#: config/strings.c:188
+#: config/strings.c:189
 msgid "Max Height Toggle"
 msgstr "Basculer en hauteur maximum"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "Available Max Height Toggle"
 msgstr "Basculer en hauteur maximum disponible"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Absolute Max Height Toggle"
 msgstr "Basculer en hauteur maximum absolue"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Max Width Toggle"
 msgstr "Basculer en largeur maximum"
 
-#: config/strings.c:192
+#: config/strings.c:193
 msgid "Available Max Width Toggle"
 msgstr "Basculer en largeur maximum disponible"
 
-#: config/strings.c:193
+#: config/strings.c:194
 msgid "Absolute Max Width Toggle"
 msgstr "Basculer en largeur maximum absolue"
 
-#: config/strings.c:194
+#: config/strings.c:195
 msgid "Fullscreen/Normal"
 msgstr "Plein écran/Normal"
 
-#: config/strings.c:195
+#: config/strings.c:196
 msgid "Zoom/Unzoom"
 msgstr "Zoom Avant/Arrière"
 
-#: config/strings.c:198
+#: config/strings.c:199
 msgid "User Application List"
 msgstr "Liste d'applications de l'utilisateur"
 
-#: config/strings.c:199
+#: config/strings.c:200
 msgid "Other"
 msgstr "Autres"
 
-#: config/strings.c:200
+#: config/strings.c:201
 msgid "Epplets"
 msgstr "Epplets"

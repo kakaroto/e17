@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-25 23:00+0100\n"
+"POT-Creation-Date: 2009-01-31 15:34+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -941,47 +941,47 @@ msgstr ""
 msgid "Iconbox Settings"
 msgstr ""
 
-#: src/ipc.c:194 src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1442 src/ipc.c:1449
+#: src/ipc.c:1448 src/ipc.c:1455
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1443
+#: src/ipc.c:1449
 msgid "composite"
 msgstr ""
 
-#: src/ipc.c:1450
+#: src/ipc.c:1456
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1793
+#: src/ipc.c:1799
 msgid "Enlightenment IPC Commands Help\n"
 msgstr ""
 
-#: src/ipc.c:1797
+#: src/ipc.c:1803
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1799 src/ipc.c:1819 src/ipc.c:1831
+#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
 msgid "Commands currently available:\n"
 msgstr ""
 
-#: src/ipc.c:1817
+#: src/ipc.c:1823
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1818
+#: src/ipc.c:1824
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1820 src/ipc.c:1832
+#: src/ipc.c:1826 src/ipc.c:1838
 msgid "         <command>     : <description>\n"
 msgstr ""
 
@@ -1718,7 +1718,7 @@ msgstr ""
 msgid "Border style"
 msgstr ""
 
-#: src/snaps.c:833 config/strings.c:183
+#: src/snaps.c:833 config/strings.c:184
 msgid "Size"
 msgstr ""
 
@@ -1742,7 +1742,7 @@ msgstr ""
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:864 config/strings.c:145 config/strings.c:171
+#: src/snaps.c:864 config/strings.c:145 config/strings.c:172
 msgid "Opacity"
 msgstr ""
 
@@ -2153,7 +2153,7 @@ msgstr ""
 msgid "Enlightenment"
 msgstr ""
 
-#: config/strings.c:88 config/strings.c:197
+#: config/strings.c:88 config/strings.c:198
 msgid "User Menus"
 msgstr ""
 
@@ -2177,11 +2177,11 @@ msgstr ""
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:96 config/strings.c:201
+#: config/strings.c:96 config/strings.c:202
 msgid "Restart"
 msgstr ""
 
-#: config/strings.c:97 config/strings.c:202
+#: config/strings.c:97 config/strings.c:203
 msgid "Log Out"
 msgstr ""
 
@@ -2393,102 +2393,106 @@ msgstr ""
 msgid "Toggle Button Grabs"
 msgstr ""
 
-#: config/strings.c:172
-msgid "Default"
+#: config/strings.c:170
+msgid "Toggle Autoshade"
 msgstr ""
 
 #: config/strings.c:173
-msgid "20%"
+msgid "Default"
 msgstr ""
 
 #: config/strings.c:174
-msgid "40%"
+msgid "20%"
 msgstr ""
 
 #: config/strings.c:175
-msgid "60%"
+msgid "40%"
 msgstr ""
 
 #: config/strings.c:176
-msgid "80%"
+msgid "60%"
 msgstr ""
 
 #: config/strings.c:177
-msgid "100%"
+msgid "80%"
 msgstr ""
 
 #: config/strings.c:178
-msgid "Focused opacity 100%"
+msgid "100%"
 msgstr ""
 
 #: config/strings.c:179
-msgid "Focused opacity follows unfocused"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:180
-msgid "Toggle Fading"
+msgid "Focused opacity follows unfocused"
 msgstr ""
 
 #: config/strings.c:181
+msgid "Toggle Fading"
+msgstr ""
+
+#: config/strings.c:182
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:187
+#: config/strings.c:188
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:188
+#: config/strings.c:189
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:192
+#: config/strings.c:193
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:193
+#: config/strings.c:194
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:194
+#: config/strings.c:195
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:195
+#: config/strings.c:196
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:198
+#: config/strings.c:199
 msgid "User Application List"
 msgstr ""
 
-#: config/strings.c:199
+#: config/strings.c:200
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:200
+#: config/strings.c:201
 msgid "Epplets"
 msgstr ""
