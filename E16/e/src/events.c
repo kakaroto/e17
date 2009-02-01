@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -436,6 +436,7 @@ EventsCompress(XEvent * evq, int count)
    XEvent             *ev, *ev2;
    int                 i, j, n;
    int                 xa, ya, xb, yb;
+   int                 type;
 
 #if ENABLE_DEBUG_EVENTS
    /* Debug - should be taken out */
@@ -451,10 +452,12 @@ EventsCompress(XEvent * evq, int count)
      {
 	ev = evq + i;
 
-	switch (ev->type)
+	type = ev->type;
+	switch (type)
 	  {
 	  case 0:
 	     /* Already thrown away */
+	  default:
 	     break;
 
 	  case MotionNotify:
@@ -464,7 +467,7 @@ EventsCompress(XEvent * evq, int count)
 	     for (; j >= 0; j--)
 	       {
 		  ev2 = evq + j;
-		  if (ev2->type == ev->type)
+		  if (ev2->type == type)
 		    {
 		       n++;
 		       ev2->type = 0;
@@ -473,8 +476,38 @@ EventsCompress(XEvent * evq, int count)
 #if ENABLE_DEBUG_EVENTS
 	     if (n && EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x,y = %d,%d\n",
-			n, EventName(ev->type), ev->xmotion.window,
+			n, EventName(type), ev->xmotion.window,
 			ev->xmotion.x, ev->xmotion.y);
+#endif
+	     break;
+
+	  case LeaveNotify:
+	     for (j = i - 1; j >= 0; j--)
+	       {
+		  ev2 = evq + j;
+		  if (ev2->type == EnterNotify)
+		    {
+		       if (ev2->xcrossing.window == ev->xcrossing.window)
+			  goto do_enter_leave_nuked;
+		    }
+	       }
+	     break;
+	   do_enter_leave_nuked:
+	     ev2->type = ev->type = 0;
+	     for (n = i - 1; n > j; n--)
+	       {
+		  ev2 = evq + n;
+		  if (ev2->type == MotionNotify)
+		    {
+		       if (ev2->xmotion.window != ev->xmotion.window)
+			  continue;
+		       ev2->type = 0;
+		    }
+	       }
+#if ENABLE_DEBUG_EVENTS
+	     if (EDebug(EDBUG_TYPE_COMPRESSION))
+		Eprintf("EventsCompress n=%4d %s %#lx\n",
+			1, EventName(type), ev->xcrossing.window);
 #endif
 	     break;
 
@@ -538,7 +571,7 @@ EventsCompress(XEvent * evq, int count)
 	     for (j = i - 1; j >= 0; j--)
 	       {
 		  ev2 = evq + j;
-		  if (ev2->type == ev->type &&
+		  if (ev2->type == type &&
 		      ev2->xexpose.window == ev->xexpose.window)
 		    {
 		       n++;
@@ -563,8 +596,7 @@ EventsCompress(XEvent * evq, int count)
 #if ENABLE_DEBUG_EVENTS
 	     if (EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x=%4d-%4d y=%4d-%4d\n",
-			n, EventName(ev->type), ev->xexpose.window,
-			xa, xb, ya, yb);
+			n, EventName(type), ev->xexpose.window, xa, xb, ya, yb);
 #endif
 	     break;
 
@@ -573,8 +605,7 @@ EventsCompress(XEvent * evq, int count)
 	     for (j = i - 1; j >= 0; j--)
 	       {
 		  ev2 = evq + j;
-		  if (ev2->type == ev->type &&
-		      ev2->xany.window == ev->xany.window)
+		  if (ev2->type == type && ev2->xany.window == ev->xany.window)
 		    {
 		       n++;
 		       ev2->type = 0;
@@ -583,7 +614,7 @@ EventsCompress(XEvent * evq, int count)
 #if ENABLE_DEBUG_EVENTS
 	     if (n && EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx\n",
-			n, EventName(ev->type), ev->xmotion.window);
+			n, EventName(type), ev->xmotion.window);
 #endif
 	     break;
 
@@ -591,9 +622,6 @@ EventsCompress(XEvent * evq, int count)
 	  case NoExpose:
 	     /* Not using these */
 	     ev->type = 0;
-	     break;
-
-	  default:
 	     break;
 	  }
      }
