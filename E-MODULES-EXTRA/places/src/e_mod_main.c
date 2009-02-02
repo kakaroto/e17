@@ -93,9 +93,15 @@ e_modapi_init(E_Module *m)
    #define D conf_edd
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, fm, STR);
-   E_CONFIG_VAL(D, T, auto_mount, UCHAR); 
-   E_CONFIG_VAL(D, T, auto_open, UCHAR); 
+   E_CONFIG_VAL(D, T, auto_mount, UCHAR);
+   E_CONFIG_VAL(D, T, auto_open, UCHAR);
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
+   E_CONFIG_VAL(D, T, show_home, UCHAR);
+   E_CONFIG_VAL(D, T, show_desk, UCHAR);
+   E_CONFIG_VAL(D, T, show_trash, UCHAR);
+   E_CONFIG_VAL(D, T, show_root, UCHAR);
+   E_CONFIG_VAL(D, T, show_temp, UCHAR);
+   E_CONFIG_VAL(D, T, show_bookm, UCHAR);
 
    /* Tell E to find any existing module data. First run ? */
    places_conf = e_config_domain_load("module.places", conf_edd);
@@ -332,6 +338,12 @@ _places_conf_new(void)
    IFMODCFG(0x008d);
    places_conf->auto_mount = 0;
    places_conf->auto_open = 0;
+   places_conf->show_home = 1;
+   places_conf->show_desk = 1;
+   places_conf->show_trash = 0;
+   places_conf->show_root = 0;
+   places_conf->show_temp = 0;
+   places_conf->show_bookm = 1;
    _places_conf_item_get(NULL);
    IFMODCFGEND;
 

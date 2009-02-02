@@ -40,6 +40,13 @@ struct _Config
    const char *fm;
    unsigned char auto_mount;
    unsigned char auto_open;
+
+   unsigned char show_home;
+   unsigned char show_desk;
+   unsigned char show_trash;
+   unsigned char show_root;
+   unsigned char show_temp;
+   unsigned char show_bookm;
 };
 
 typedef struct _Config_Item Config_Item;

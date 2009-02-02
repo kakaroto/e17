@@ -42,7 +42,9 @@ static void _places_update_size(Evas_Object *obj, Volume *vol);
 
 // Edje callbacks
 void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
+void _places_custom_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
+
 // Hal callbacks
 void _places_mount_cb(void *user_data, void *method_return, DBusError *error);
 void _places_unmount_cb(void *user_data, void *method_return, DBusError *error);
@@ -138,6 +140,59 @@ _places_volume_sort_cb(const void *d1, const void *d2)
    return strcmp(v1->label, v2->label);
 }
 
+
+void
+_places_custom_volume(Evas_Object *box, const char *label, const char *icon, const char *uri)
+{
+   int min_w, min_h, max_w, max_h;
+   Evas_Object *o, *sep, *i;
+
+   /* volume object */
+   o = edje_object_add(evas_object_evas_get(box));
+   edje_object_file_set(o, theme_file, "modules/places/main");
+   
+   /* icon */
+   i = edje_object_add(evas_object_evas_get(box));
+   //edje_object_file_set(icon, theme_file, vol->icon);
+   edje_object_file_set(i, e_theme_edje_file_get("base/theme/fileman", icon),
+                        icon);
+   edje_object_part_swallow(o, "icon", i);
+   
+   /* label */
+   edje_object_part_text_set(o, "volume_label", label);
+   
+   /* gauge */
+   edje_object_signal_emit(o, "gauge,hide", "places");
+   edje_object_part_text_set(o, "size_label", "");
+   
+   
+   /* orient the separator*/
+   if (!e_box_orientation_get(box))
+      edje_object_signal_emit(o, "separator,set,horiz", "places");
+   else
+      edje_object_signal_emit(o, "separator,set,vert", "places");
+   
+   /* connect signals from edje */
+   edje_object_signal_callback_add(o, "icon,activated", "places",
+                                   _places_custom_icon_activated_cb, (void*)uri);
+
+   /* pack the volume in the box */
+   evas_object_show(o);
+   edje_object_size_min_get(o, &min_w, &min_h);
+   edje_object_size_max_get(o, &max_w, &max_h);
+   //if (!strcmp(vol->mount_point, "/"))
+   //   e_box_pack_start(box, o);
+   //else
+      e_box_pack_end(box, o);
+   e_box_pack_options_set(o,
+                           1, 0, /* fill */
+                           1, 0, /* expand */
+                           0.5, 0.0, /* align */
+                           min_w, min_h, /* min */
+                           max_w, max_h /* max */
+                         );
+}
+
 void
 places_fill_box(Evas_Object *box)
 {
@@ -147,8 +202,19 @@ places_fill_box(Evas_Object *box)
 
    places_empty_box(box);
 
+   /*if (places_conf->show_home)
+      _places_custom_volume(box, D_("Home"), "e/icons/fileman/home", "/home/dave");
+   if (places_conf->show_desk)
+      _places_custom_volume(box, D_("Desktop"), "e/icons/fileman/desktop", "/home/dave/Desktop");
+   if (places_conf->show_trash)
+      _places_custom_volume(box, D_("Trash"), "e/icons/fileman/trash", "trash:///");
+   if (places_conf->show_root)
+      _places_custom_volume(box, D_("Filesystem"), "e/icons/fileman/root", "/");
+   if (places_conf->show_temp)
+      _places_custom_volume(box, D_("Temp"), "e/icons/fileman/tmp", "/tmp");
+   */
+
    volumes = eina_list_sort(volumes, 0, _places_volume_sort_cb);
-   
    for (l = volumes; l; l = l->next)
    {
       Volume *vol = l->data;
@@ -327,33 +393,59 @@ places_generate_menu(void *data, E_Menu *em)
    char buf[PATH_MAX];
 
    /* Home */
-   mi = e_menu_item_new(em);
-   e_menu_item_label_set(mi, D_("Home"));
-   e_util_menu_item_edje_icon_set(mi, "fileman/home");
-   e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
+   if (places_conf->show_home)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_label_set(mi, D_("Home"));
+      e_util_menu_item_edje_icon_set(mi, "fileman/home");
+      e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
+   }
 
    /* Desktop */
-   mi = e_menu_item_new(em);
-   e_menu_item_label_set(mi, D_("Desktop"));
-   e_util_menu_item_edje_icon_set(mi, "fileman/desktop");
-   snprintf(buf, sizeof(buf), "%s/Desktop", (char*)e_user_homedir_get());
-   e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
+   if (places_conf->show_desk)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_label_set(mi, D_("Desktop"));
+      e_util_menu_item_edje_icon_set(mi, "fileman/desktop");
+      snprintf(buf, sizeof(buf), "%s/Desktop", (char*)e_user_homedir_get());
+      e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
+   }
 
    /* Trash */
-   mi = e_menu_item_new(em);
-   e_menu_item_label_set(mi, D_("Trash"));
-   e_util_menu_item_edje_icon_set(mi, "fileman/folder");
-   e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
-
-   //separator
-   mi = e_menu_item_new(em);
-   e_menu_item_separator_set(mi, 1);
+   if (places_conf->show_trash)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_label_set(mi, D_("Trash"));
+      e_util_menu_item_edje_icon_set(mi, "fileman/folder");
+      e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
+   }
 
    /* File System */
-   mi = e_menu_item_new(em);
-   e_menu_item_label_set(mi, D_("Filesystem"));
-   e_util_menu_item_edje_icon_set(mi, "fileman/hdd");
-   e_menu_item_callback_set(mi, _places_run_fm, "/");
+   if (places_conf->show_root)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_label_set(mi, D_("Filesystem"));
+      e_util_menu_item_edje_icon_set(mi, "fileman/hdd");
+      e_menu_item_callback_set(mi, _places_run_fm, "/");
+   }
+
+   /* Temp */
+   if (places_conf->show_temp)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_label_set(mi, D_("Temp"));
+      e_util_menu_item_edje_icon_set(mi, "fileman/tmp");
+      e_menu_item_callback_set(mi, _places_run_fm, "/tmp");
+   }
+
+   //separator
+   if (places_conf->show_home || places_conf->show_desk ||
+       places_conf->show_trash || places_conf->show_root ||
+       places_conf->show_temp)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_separator_set(mi, 1);
+   }
 
    /* Volumes */
    Eina_List *l;
@@ -381,12 +473,13 @@ places_generate_menu(void *data, E_Menu *em)
       e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
    }
 
-   //separator
-   mi = e_menu_item_new(em);
-   e_menu_item_separator_set(mi, 1);
-
    /* Favorites */
-   places_parse_bookmarks(em);
+   if (places_conf->show_bookm)
+   {
+      mi = e_menu_item_new(em);
+      e_menu_item_separator_set(mi, 1);
+      places_parse_bookmarks(em);
+   }
 
    e_menu_pre_activate_callback_set(em, NULL, NULL);
 }
@@ -552,23 +645,10 @@ _places_error_show(const char *title, const char *text1, const char *text2, cons
 static void
 _places_run_fm_external(const char *fm, const char *directory)
 {
-   pid_t pid;
+   char exec[PATH_MAX];
 
-   pid = fork();
-   if (pid < 0)
-     {
-	perror("cannot fork to launch external file manager.");
-	return;
-     }
-   else if (pid == 0)
-     {
-	const char * const cmd[3] = {fm, directory, NULL};
-	execv(fm, (char * const *)cmd);
-	fprintf(stderr,
-		"ERROR: could not exec external file manager \"%s\": %s.\n",
-		fm, strerror(errno));
-	exit(-1);
-     }
+   snprintf(exec, PATH_MAX, "%s %s", (char*)fm, (char*)directory);
+   e_exec(NULL, NULL, exec, NULL, NULL);
 }
 
 static void
@@ -672,6 +752,13 @@ _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, cons
       vol->force_open = 1;
       _places_mount_volume(vol);
    }
+}
+
+void
+_places_custom_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+   //data is char *uri
+   _places_run_fm(data, NULL, NULL);
 }
 
 void
