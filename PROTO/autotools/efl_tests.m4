@@ -26,7 +26,7 @@ AC_ARG_ENABLE([tests],
 AC_MSG_CHECKING([whether tests are built])
 AC_MSG_RESULT([${_efl_enable_tests}])
 
-PKG_PROG_PKG_CONFIG
+AC_REQUIRE([PKG_PROG_PKG_CONFIG])
 
 if test "x${_efl_enable_tests}" = "xyes" ; then
    PKG_CHECK_MODULES([CHECK],
