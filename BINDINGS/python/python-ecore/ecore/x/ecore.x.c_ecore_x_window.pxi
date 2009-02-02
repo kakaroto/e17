@@ -391,6 +391,43 @@ cdef class Window:
     def event_mask_unset(self, int mask):
         ecore_x_event_mask_unset(self.xid, <Ecore_X_Event_Mask>mask)
 
+    def icccm_hints_set(self, int accepts_focus, int initial_state,
+			int icon_pixmap, int icon_mask, int icon_window,
+                        int window_group, int is_urgent):
+        """Set ICCCM window hints.
+
+        @parm: B{accepts_focus:} if window accepts focus or not.
+        @parm: B{initial_state:} one of ECORE_X_WINDOW_STATE_HINT_*.
+        @parm: B{icon_pixmap:} pixmap id to be used as icon.
+        @parm: B{icon_mask:} pixmap id to be used as icon mask.
+        @parm: B{icon_window:} window id to be used as icon.
+        @parm: B{window_group:} window id representing the group.
+        @parm: B{is_urgent:} if window is urgent or not.
+        """
+        ecore_x_icccm_hints_set(self.xid, accepts_focus,
+                                <Ecore_X_Window_State_Hint>initial_state,
+                                icon_pixmap, icon_mask, icon_window,
+                                window_group, is_urgent)
+
+    def icccm_hints_get(self):
+        """Get ICCCM window hints.
+
+        @see: L{icccm_hints_set()}
+        @return: tuple with: accepts_focus, initial_state, icon_pixmap,
+                 icon_mask, icon_window, window_group, is_urgent
+        """
+        cdef int accepts_focus, initial_state, icon_pixmap, icon_mask, \
+             icon_window, window_group, is_urgent
+        ecore_x_icccm_hints_get(self.xid, &accepts_focus,
+                                <Ecore_X_Window_State_Hint *>&initial_state,
+                                <Ecore_X_Pixmap *>&icon_pixmap,
+                                <Ecore_X_Pixmap *>&icon_mask,
+                                <Ecore_X_Window *>&icon_window,
+                                <Ecore_X_Window *>&window_group,
+                                &is_urgent)
+        return (bool(accepts_focus), initial_state, icon_pixmap, icon_mask,
+                icon_window, window_group, bool(is_urgent))
+
 
 
 def Window_from_xid(unsigned long xid):
