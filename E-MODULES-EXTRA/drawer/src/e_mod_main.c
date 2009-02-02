@@ -619,7 +619,8 @@ _drawer_popup_update(Instance *inst)
 
    s = DRAWER_SOURCE(inst->source);
    l = s->func.list(s);
-   _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
+   if (eina_list_count(l))
+     _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
 
    o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
 	 inst->popup->win->evas, l);
