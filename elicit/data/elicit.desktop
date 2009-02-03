@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Elicit
+GenericName=color picker
+Icon=elicit
+TryExec=elicit
+Exec=elicit
+Terminal=false
+StartupWMClass=Elicit
+Categories=ENLIGHTENMENT;Applications;Graphics
