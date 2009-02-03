@@ -189,7 +189,6 @@ ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         const Ewl_Model *model;
         const Ewl_View *view;
         void *mvc_data;
-        void *pr_data;
         unsigned int i, count, old_fill, box_fill = EWL_FLAG_FILL_FILL;
         int ws, hs, xa, ya;
 
@@ -202,7 +201,6 @@ ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         model = ewl_mvc_model_get(EWL_MVC(list));
         view = ewl_mvc_view_get(EWL_MVC(list));
         mvc_data = ewl_mvc_data_get(EWL_MVC(list));
-        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
 
         /* if either the list isn't dirty or some of the MVC controls have
          * not been set on the list just leave this up to the box to handle */
@@ -466,9 +464,8 @@ ewl_list_draw(Ewl_List2 *list)
                         idx--;
                         val -= pref[idx];
                 }
-
-                set_n = off_n - val;
         }
+        set_n = off_n - val;
 
         sval = val;
         while (val < (off_n + n))
@@ -476,7 +473,7 @@ ewl_list_draw(Ewl_List2 *list)
                 cell = ewl_cell_new();
                 ewl_cell_state_change_cb_add(EWL_CELL(cell));
                 ewl_container_child_append(EWL_CONTAINER(list), cell);
-                //ewl_callback_append(cell, EWL_CALLBACK_CLICED,
+                //ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
                 //                ewl_list_cb_item_clicked, list);
                 ewl_widget_show(cell);
 
