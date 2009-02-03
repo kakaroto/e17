@@ -893,6 +893,7 @@ data_init(void)
    contactdir = eina_stringshare_add(buf);
    _data_contact_dir_load(buf);
    ecore_file_mkpath(contactdir);
+   // FIXME: listen for new sms's
 }
 
 void

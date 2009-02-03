@@ -169,8 +169,7 @@ on_contact_select(void *data, Evas_Object *obj, void *event_info)
         evas_object_show(bx);
 
         elm_win_inwin_activate(inwin2);
-        // FIXME: this is not exported. bad!
-        elm_widget_focus_set(en, 1);
+        elm_object_focus(en);
      }
    else if (eina_list_count(ctc->tel.numbers) > 1)
      {
