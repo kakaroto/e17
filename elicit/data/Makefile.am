@@ -1,7 +1,3 @@
-SUBDIRS = themes images
+SUBDIRS = themes images other
 EXTRA_DIST = README.theme
-
-desktopdir = $(datadir)/applications
-
-desktop_DATA = elicit.desktop
 

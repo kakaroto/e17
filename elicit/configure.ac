@@ -79,6 +79,7 @@ Makefile
 elicit.spec
 src/Makefile 
 data/Makefile
+data/other/Makefile
 data/images/Makefile
 data/themes/Makefile
 data/themes/winter/Makefile
