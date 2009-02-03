@@ -1,1 +1,1 @@
-SUBDIRS=theme 
+SUBDIRS=theme other

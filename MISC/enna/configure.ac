@@ -243,6 +243,7 @@ src/modules/input/lirc/Makefile
 src/modules/volumes/Makefile
 src/modules/volumes/polling/Makefile
 data/Makefile
+data/other/Makefile
 data/theme/Makefile
 data/theme/default/Makefile
 ])
