@@ -50,22 +50,9 @@
  * @cond LOCAL
  */
 
-typedef enum {
-   PARSER_THEME_GROUP_START,
-   PARSER_THEME_GROUP_RSP,
-   PARSER_THEME_GROUP,
-   PARSER_THEME_GROUP_ID,
-   PARSER_THEME_GROUP_NAME,
-   PARSER_THEME_GROUP_TITLE,
-   PARSER_THEME_GROUP_KNOWN,
-   PARSER_THEME_GROUP_CREATED,
-   PARSER_THEME_GROUP_UPDATED,
-   PARSER_THEME_GROUP_UNKNOWN
-} Theme_Group_States;
-
 typedef struct _Theme_Group_Parser {
-   Theme_Group_States state;
-   Theme_Group_States prev_state;
+   Parser_States state;
+   Parser_States prev_state;
 } Theme_Group_Parser;
 
 /**

@@ -69,8 +69,6 @@ exchange_shutdown(void)
    _theme_free_data();
    _login_free_data();
    _theme_group_free_data();
-   _application_list_free_data();
-   _module_list_free_data();
    exchange_smart_shutdown();
 
    edje_shutdown();
@@ -79,26 +77,27 @@ exchange_shutdown(void)
 }
 
 /**
- * @param theme The Theme to free
+ * @param object The object to free
  * @return 1 on success or 0 on errors
- * @brief Free an Exchange_Theme structure
+ * @brief Free an Exchange_Object structure (can be a theme, a module or an app)
  */
 EAPI unsigned char
-exchange_theme_free(Exchange_Theme *theme)
+exchange_object_free(Exchange_Object *obj)
 {
-   if (!theme) return 0;
+   if (!obj) return 0;
 
-   if (theme->author) free(theme->author);
-   if (theme->license) free(theme->license);
-   if (theme->version) free(theme->version);
-   if (theme->url) free(theme->url);
-   if (theme->thumbnail) free(theme->thumbnail);
-   if (theme->screenshot) free(theme->screenshot);
-   if (theme->created_at) free(theme->created_at);
-   if (theme->updated_at) free(theme->updated_at);
+   if (obj->name) free(obj->name);
+   if (obj->author) free(obj->author);
+   if (obj->license) free(obj->license);
+   if (obj->version) free(obj->version);
+   if (obj->url) free(obj->url);
+   if (obj->thumbnail) free(obj->thumbnail);
+   if (obj->screenshot) free(obj->screenshot);
+   if (obj->created_at) free(obj->created_at);
+   if (obj->updated_at) free(obj->updated_at);
 
-   free(theme);
-   theme = NULL;
+   free(obj);
+   obj = NULL;
    return 1;
 }
 

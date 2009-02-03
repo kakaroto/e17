@@ -15,11 +15,9 @@ exchange_local_theme.h \
 exchange_remote_theme.h \
 exchange_login.h \
 exchange_theme_group.h \
-exchange_theme_list.h \
-exchange_application_list.h \
-exchange_module_list.h \
 exchange_smart.h \
 exchange_private.h \
+exchange_async.h \
 Exchange.h
 
 EXCHANGESOURCES = \
@@ -28,10 +26,8 @@ exchange_local_theme.c \
 exchange_remote_theme.c \
 exchange_login.c \
 exchange_theme_group.c \
-exchange_theme_list.c \
-exchange_application_list.c \
-exchange_module_list.c \
 exchange_smart.c \
+exchange_async.c \
 $(EXCHANGEHEADERS)
 
 libexchange_la_SOURCES = \

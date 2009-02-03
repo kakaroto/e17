@@ -8,13 +8,14 @@ AM_CPPFLAGS = -Wall \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
 
-bin_PROGRAMS = exchange_cli exchange_smart_test
+#bin_PROGRAMS = exchange_cli exchange_smart_test
+bin_PROGRAMS = exchange_smart_test
 
-exchange_cli_DEPENDENCIES = $(top_builddir)/src/lib/libexchange.la
-exchange_cli_LDADD = $(top_builddir)/src/lib/libexchange.la \
-                    @EXCHANGE_LIBS@
-exchange_cli_SOURCES = \
-exchange_cli.c
+#exchange_cli_DEPENDENCIES = $(top_builddir)/src/lib/libexchange.la
+#exchange_cli_LDADD = $(top_builddir)/src/lib/libexchange.la \
+#                    @EXCHANGE_LIBS@
+#exchange_cli_SOURCES = \
+#exchange_cli.c
 
 exchange_smart_test_DEPENDENCIES = $(top_builddir)/src/lib/libexchange.la
 exchange_smart_test_LDADD = $(top_builddir)/src/lib/libexchange.la \

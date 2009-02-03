@@ -21,6 +21,7 @@ images {
    image: "star.png" COMP;
    image: "button.png" COMP;
    image: "update.png" COMP;
+   image: "new.png" COMP;
    image: "busy-1.png" COMP;
    image: "busy-2.png" COMP;
    image: "busy-3.png" COMP;
@@ -48,7 +49,7 @@ styles {
 collections {
    group { name: "exchange/smart/test";
       parts {
-         part { name: "btn_local";
+         part { name: "btn_themes";
             mouse_events: 1;
             type: IMAGE;
             description { state: "default" 0.0;
@@ -62,22 +63,22 @@ collections {
                }
             }
          }
-         part { name: "btn_local.text";
+         part { name: "btn_themes.text";
             mouse_events: 0;
             type: TEXT;
             description { state: "default" 0.0;
                color: 0 0 0 255;
                align: 0.0 0.0;
-               rel1.to: "btn_local";
-               rel2.to: "btn_local";
+               rel1.to: "btn_themes";
+               rel2.to: "btn_themes";
                text {
-                  text: "Local";
+                  text: "Themes";
                   font: "Sans";
                   size: 9;
                }
             }
          }
-         part { name: "btn_remote";
+         part { name: "btn_wallp";
             mouse_events: 1;
             type: IMAGE;
             description { state: "default" 0.0;
@@ -92,22 +93,22 @@ collections {
                }
             }
          }
-         part { name: "btn_remote.text";
+         part { name: "btn_wallp.text";
             mouse_events: 0;
             type: TEXT;
             description { state: "default" 0.0;
                color: 0 0 0 255;
                align: 0.0 0.0;
-               rel1.to: "btn_remote";
-               rel2.to: "btn_remote";
+               rel1.to: "btn_wallp";
+               rel2.to: "btn_wallp";
                text {
-                  text: "Remote";
+                  text: "Wallpapers";
                   font: "Sans";
                   size: 9;
                }
             }
          }
-         part { name: "btn_both";
+         part { name: "btn_apps";
             mouse_events: 1;
             type: IMAGE;
             description { state: "default" 0.0;
@@ -122,16 +123,46 @@ collections {
                }
             }
          }
-         part { name: "btn_both.text";
+         part { name: "btn_apps.text";
             mouse_events: 0;
             type: TEXT;
             description { state: "default" 0.0;
                color: 0 0 0 255;
                align: 0.0 0.0;
-               rel1.to: "btn_both";
-               rel2.to: "btn_both";
+               rel1.to: "btn_apps";
+               rel2.to: "btn_apps";
                text {
-                  text: "Both";
+                  text: "Applications";
+                  font: "Sans";
+                  size: 9;
+               }
+            }
+         }
+         part { name: "btn_mods";
+            mouse_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               min: 90 25;
+               max: 90 25;
+               color: 255 255 255 255;
+               align: 0.0 0.0;
+               rel1.offset: 330 0;
+               image {
+                  normal: "button.png";
+                  border: 9 9 9 9;
+               }
+            }
+         }
+         part { name: "btn_mods.text";
+            mouse_events: 0;
+            type: TEXT;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1.to: "btn_mods";
+               rel2.to: "btn_mods";
+               text {
+                  text: "Modules";
                   font: "Sans";
                   size: 9;
                }
@@ -557,6 +588,13 @@ collections {
                inherit: "default" 0.0;
                color: 255 255 255 255;
             }
+            description { state: "new" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               image {
+                  normal: "new.png";
+               }
+            }
          }
          part { name: "busy";
             mouse_events:  0;
@@ -857,6 +895,12 @@ collections {
             signal: "set,updatable";
             source: "exchange";
             action: STATE_SET "updatable" 0.0;
+            target: "update";
+         }
+         program { name: "set_new";
+            signal: "set,new";
+            source: "exchange";
+            action: STATE_SET "new" 0.0;
             target: "update";
          }
          program { name: "download_disable";

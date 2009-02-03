@@ -11,6 +11,7 @@ EXTRA_DIST = exchange_smart.edc \
              star.png \
              button.png \
              update.png \
+             new.png \
              busy-1.png \
              busy-2.png \
              busy-3.png \

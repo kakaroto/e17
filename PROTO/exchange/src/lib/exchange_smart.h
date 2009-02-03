@@ -24,26 +24,13 @@
 #endif
 
 
-/**
- * @typedef Exchange_Smart_Object_Mode
- * @brief Different operational mode for the Exchange Smart Object
- */
-typedef enum {
-   EXCHANGE_SMART_SHOW_LOCAL, /**< Show only local themes */
-   EXCHANGE_SMART_SHOW_REMOTE,/**< Show only remote themes */
-   EXCHANGE_SMART_SHOW_BOTH   /**< Show local and remote themes mixed up */
-} Exchange_Smart_Object_Mode;
-
-
-
 unsigned char exchange_smart_init(void);
 void exchange_smart_shutdown(void);
 
 EAPI Evas_Object* exchange_smart_object_add(Evas *evas);
 EAPI unsigned char exchange_smart_object_run(Evas_Object *obj);
-EAPI unsigned char exchange_smart_object_mode_set(Evas_Object *obj, Exchange_Smart_Object_Mode mode);
 EAPI unsigned char exchange_smart_object_remote_group_set(Evas_Object *obj, const char *group);
-EAPI unsigned char exchange_smart_object_local_path_set(Evas_Object *obj, const char *user, const char* system);
+EAPI unsigned char exchange_smart_object_local_path_set(Evas_Object *obj, const char *user_dir);
 EAPI unsigned char exchange_smart_object_offset_set(Evas_Object *obj, int x, int y);
 EAPI unsigned char exchange_smart_object_offset_get(Evas_Object *obj, int *x, int *y);
 EAPI unsigned char exchange_smart_object_apply_cb_set(Evas_Object *obj, void (*func)(const char *path, void *data), void *data);

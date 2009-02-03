@@ -130,15 +130,15 @@ _theme_group_connect(void)
 void
 _start_document_theme_group_cb(Theme_Group_Parser *state)
 {
-   state->state = PARSER_THEME_GROUP_START;
-   state->prev_state = PARSER_THEME_GROUP_UNKNOWN;
+   state->state = PARSER_START;
+   state->prev_state = PARSER_UNKNOWN;
 }
 
 void
 _end_document_theme_group_cb(Theme_Group_Parser *state)
 {
-   state->state = PARSER_THEME_GROUP_UNKNOWN;
-   state->prev_state = PARSER_THEME_GROUP_START;
+   state->state = PARSER_UNKNOWN;
+   state->prev_state = PARSER_START;
 }
 
 void
@@ -152,17 +152,17 @@ _start_element_theme_group_cb(Theme_Group_Parser *state, const xmlChar *name, co
    }
    if (!strcmp((char *)name, "name"))
    {
-      state->state = PARSER_THEME_GROUP_NAME;
+      state->state = PARSER_NAME;
       state->prev_state = PARSER_THEME_GROUP_START;
    }
    if (!strcmp((char *)name, "title"))
    {
-      state->state = PARSER_THEME_GROUP_TITLE;
+      state->state = PARSER_TITLE;
       state->prev_state = PARSER_THEME_GROUP_START;
    }   
    if (!strcmp((char *)name, "known"))
    {
-      state->state = PARSER_THEME_GROUP_KNOWN;
+      state->state = PARSER_KNOWN;
       state->prev_state = PARSER_THEME_GROUP_START;
    }
 }
@@ -187,17 +187,17 @@ _end_element_theme_group_cb(Theme_Group_Parser *state, const xmlChar *name)
    if (!strcmp((char *)name, "name"))
    {
       state->state = PARSER_THEME_GROUP_START;
-      state->prev_state = PARSER_THEME_GROUP_NAME;
+      state->prev_state = PARSER_NAME;
    }
    if (!strcmp((char *)name, "title"))
    {
       state->state = PARSER_THEME_GROUP_START;
-      state->prev_state = PARSER_THEME_GROUP_TITLE;
+      state->prev_state = PARSER_TITLE;
    }   
    if (!strcmp((char *)name, "known"))
    {
       state->state = PARSER_THEME_GROUP_START;
-      state->prev_state = PARSER_THEME_GROUP_KNOWN;
+      state->prev_state = PARSER_KNOWN;
    }
 }
 
@@ -210,15 +210,15 @@ _chars_theme_group_cb(Theme_Group_Parser *state, const xmlChar *chars, int len)
 
    switch (state->state)
    {
-      case PARSER_THEME_GROUP_NAME:
+      case PARSER_NAME:
          name[0] = '\0';
          strncat((char *)name, (char *)chars, len);
          break;
-      case PARSER_THEME_GROUP_TITLE:
+      case PARSER_TITLE:
          title[0] = '\0';
          strncat((char *)title, (char *)chars, len);
          break;
-      case PARSER_THEME_GROUP_KNOWN:
+      case PARSER_KNOWN:
          buf[0] = '\0';
          strncat((char *)buf, (char *)chars, len);
          tgdata->known = atoi(buf);

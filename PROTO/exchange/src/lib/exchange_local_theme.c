@@ -119,17 +119,17 @@ exchange_local_theme_check_update(const char *file)
  * @return Return an Eina_List* of Exchange_Theme*
  * @brief Get the list of all the themes in the given directory
  */
-EAPI Exchange_Theme*
+EAPI Exchange_Object*
 exchange_local_theme_all_data_get(const char *file)
 {
-   Exchange_Theme *td = NULL;
+   Exchange_Object *td = NULL;
    char *name;
 
    EINA_ERROR_PDBG("0 %s\n", file);
 
    if (!file || !ecore_file_exists(file)) return NULL;
   //EINA_ERROR_PDBG("1 %s\n", file);
-   td = calloc(1, sizeof(Exchange_Theme));
+   td = calloc(1, sizeof(Exchange_Object));
    if (!td) return NULL;
    
    td->id = -1;
@@ -149,7 +149,6 @@ exchange_local_theme_all_data_get(const char *file)
    td->screenshot = NULL;
    td->created_at = NULL;
    td->updated_at = NULL;
-   td->local = 1;
 
    return td;
 }
@@ -162,7 +161,7 @@ exchange_local_theme_all_data_get(const char *file)
 EAPI Eina_List*
 exchange_local_theme_list_get(const char *dir)
 {
-   Exchange_Theme *td = NULL;
+   Exchange_Object *td = NULL;
    Ecore_List *files;
    Eina_List *themes = NULL;
    char *filename;

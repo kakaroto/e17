@@ -51,8 +51,8 @@ static void _exchange_smart_clip_unset(Evas_Object *obj);
 static void _exchange_smart_size_hint_changed_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _exchange_smart_separator_append(Exchange_Smart_Data *sd, const char *text);
-static void _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td);
-static void _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td);
+static void _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Object *td);
+static void _exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_Smart_Data *sd);
 static const char *_exchange_user_homedir_get(void);
 
 //Internal Callbacks protos
@@ -77,9 +77,7 @@ struct _Exchange_Smart_Data
    Evas_Object     *obj_box;     //The Evas Smart Box
    Evas_Object     *obj_lbl;     //The big label
    const char      *group;       //Exchange theme group
-   const char      *local_sys;   //Local system themes directory
-   const char      *local_usr;   //Local user themes directory
-   unsigned char    mode;        //LOCAL, REMOTE or BOTH
+   const char      *local_dir;   //Local user themes directory
 
    struct {
       void (*func)(const char *path, void *data);
@@ -142,7 +140,7 @@ exchange_smart_object_remote_group_set(Evas_Object *obj, const char *group)
  * EXCHANGE_SMART_SHOW_LOCAL or EXCHANGE_SMART_SHOW_BOTH.
  */
 EAPI unsigned char
-exchange_smart_object_local_path_set(Evas_Object *obj, const char *user, const char* system)
+exchange_smart_object_local_path_set(Evas_Object *obj, const char *user_dir)
 {
    Exchange_Smart_Data *sd;
    //EINA_ERROR_PDBG("user:'%s' system: '%s'\n", user, system);
@@ -151,36 +149,10 @@ exchange_smart_object_local_path_set(Evas_Object *obj, const char *user, const c
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
 
-   if (sd->local_sys) eina_stringshare_del(sd->local_sys);
-   if (sd->local_usr) eina_stringshare_del(sd->local_usr);
-   sd->local_sys = ecore_file_is_dir(system) ? eina_stringshare_add(system) : NULL;
-   sd->local_usr = ecore_file_is_dir(user) ? eina_stringshare_add(user) : NULL;
+   if (sd->local_dir) eina_stringshare_del(sd->local_dir);
+   sd->local_dir = ecore_file_is_dir(user_dir) ? eina_stringshare_add(user_dir) : NULL;
    return 1;
 }
-
-
-/**
- * @param obj The exchange smart object
- * @param mode  The modality (one of Exchane_Smart_Object_Mode)
- * @return 1 on success, 0 on errors
- * @brief Set what to show in the list (defaut is local)
- * EXCHANGE_SMART_SHOW_LOCAL Show only themes in the local folder @n
- * EXCHANGE_SMART_SHOW_REMOTE Show only themes on the rmote server @n
- * EXCHANGE_SMART_SHOW_BOTH Show local and remote mixed up.
- */
-EAPI unsigned char
-exchange_smart_object_mode_set(Evas_Object *obj, Exchange_Smart_Object_Mode mode)
-{
-   Exchange_Smart_Data *sd;
-   //EINA_ERROR_PDBG("mode:%d\n", mode);
-
-   sd = evas_object_smart_data_get(obj);
-   if (!sd) return 0;
-
-   sd->mode = mode;
-   return 1;
-}
-
 
 /**
  * @param obj The exchange smart object
@@ -252,6 +224,32 @@ exchange_smart_object_apply_cb_set(Evas_Object *obj, void (*func)(const char *pa
    return 1;
 }
 
+
+
+unsigned char
+_list_complete_cb(Eina_List *results, void *data)
+{
+   Eina_List *l;
+   Exchange_Object *td;
+   Exchange_Smart_Data *sd = data;
+   char buf[255];
+   
+   printf("POPULATING... %d\n", eina_list_count(results));
+   
+   /* Populate the List */
+   evas_object_text_text_set(sd->obj_lbl, "");
+   
+   snprintf(buf, sizeof(buf),"%s (%d)", "Online", eina_list_count(results));
+   _exchange_smart_separator_append(sd, buf);
+   
+   results = eina_list_sort(results, 0, _exchange_smart_themes_sort_cb);
+   
+   EINA_LIST_FOREACH(results, l, td)
+      _exchange_smart_element_append(sd, td);
+   
+   return 0;
+}
+
 /**
  * @param obj The exchange smart object
  * @return 1 on success, 0 on errors
@@ -261,106 +259,20 @@ exchange_smart_object_apply_cb_set(Evas_Object *obj, void (*func)(const char *pa
 EAPI unsigned char
 exchange_smart_object_run(Evas_Object *obj)
 {
-   Exchange_Theme *td;
    Exchange_Smart_Data *sd;
-   Eina_List *themes = NULL, *l;
-   Eina_Hash *themes_hash = eina_hash_string_superfast_new(NULL);
-   char buf[255];
-   int local_num = 0;
-
+   
    sd = evas_object_smart_data_get(obj);
    if (!sd) return 0;
 
    evas_object_box_remove_all(sd->obj_box, 1);
    exchange_smart_object_offset_set(obj, 0, 0);
 
-   EINA_ERROR_PDBG("group: '%s' local_sys: '%s' local_usr: '%s' mode: %d\n",
-                   sd->group, sd->local_sys, sd->local_usr, sd->mode);
+   if (exchange_remote_list(sd->group, NULL, 0, 0, 0, NULL, 0, 0,
+                            _list_complete_cb, sd))
+      evas_object_text_text_set(sd->obj_lbl, "Getting data...");
+   else
+      evas_object_text_text_set(sd->obj_lbl, "Error fetching data");
 
-   /* Scan Local System Files */
-   if ((sd->mode == EXCHANGE_SMART_SHOW_LOCAL ||
-        sd->mode == EXCHANGE_SMART_SHOW_BOTH) && sd->local_sys)
-   {
-      evas_object_text_text_set(sd->obj_lbl, "Fetching system files...");
-      themes = exchange_local_theme_list_get(sd->local_sys);
-      snprintf(buf, sizeof(buf),"%s (%d)", "System", eina_list_count(themes));
-      _exchange_smart_separator_append(sd, buf);
-      EINA_LIST_FOREACH(themes, l, td)
-         _exchange_smart_element_append(sd, td);
-      eina_list_free(themes);
-      themes = NULL;
-   }
-
-   /* Scan Local Personal Files */
-   if (sd->mode == EXCHANGE_SMART_SHOW_LOCAL ||
-       sd->mode == EXCHANGE_SMART_SHOW_BOTH)
-   {
-      evas_object_text_text_set(sd->obj_lbl, "Fetching user themes...");
-      themes = exchange_local_theme_list_get(sd->local_usr);
-      local_num = eina_list_count(themes);
-      snprintf(buf, sizeof(buf),"%s (%d)", "Personal", local_num);
-      _exchange_smart_separator_append(sd, buf);
-      EINA_LIST_FOREACH(themes, l, td)
-         eina_hash_direct_add(themes_hash, td->name, l);
-   }
-
-   /* Scan Remote Site */
-   if (sd->mode == EXCHANGE_SMART_SHOW_REMOTE ||
-       sd->mode == EXCHANGE_SMART_SHOW_BOTH)
-   {
-      Eina_List *remos;
-      EINA_ERROR_PDBG("GET REMOTES\n");
-      evas_object_text_text_set(sd->obj_lbl, "Fetching online themes...");
-      if (sd->group)
-         remos = exchange_theme_list_filter_by_group_title(sd->group, 0, 0);
-      else
-         remos = exchange_theme_list_all(0, 0);
-      EINA_LIST_FOREACH(remos, l, td)
-      {
-         Eina_List *ll;
-         /* Check if we also have this theme in personal */
-         if ((ll = eina_hash_find(themes_hash, td->name)))
-         {
-            Exchange_Theme *loc;
-            
-            loc = ll->data;
-            if (strcmp(td->version, loc->version) > 0)
-               td->local = 2;
-            else
-               td->local = 1;
-            //EINA_ERROR_PDBG("REMOTE %s (%s)\n", td->name, td->version);
-            //EINA_ERROR_PDBG("LOCAL %s (%s) [%d]\n", loc->name, loc->version, td->local);
-            /* Put in the list the online theme in place of the local one */
-            ll->data = td;
-            exchange_theme_free(loc);
-         }
-         else
-            themes = eina_list_append(themes, td);
-      }
-      eina_list_free(remos);
-      remos = NULL;
-   }
-
-   /* Populate the List */
-   themes = eina_list_sort(themes, 0, _exchange_smart_themes_sort_cb);
-   int online = 0;
-   EINA_LIST_FOREACH(themes, l, td)
-   {
-      if (!td->local && !online)
-      {
-         snprintf(buf, sizeof(buf),"%s (%d)", "Online", eina_list_count(themes) - local_num);
-         _exchange_smart_separator_append(sd, buf);
-         online = 1;
-      }
-      _exchange_smart_element_append(sd, td);
-   }
-
-   eina_list_free(themes);
-   themes = NULL;
-   eina_hash_free(themes_hash);
-   themes_hash = NULL;
-
-   evas_object_hide(sd->obj_lbl);
    return 1;
 }
 
@@ -453,19 +365,14 @@ _exchange_smart_add(Evas_Object *obj)
    sd->offset.x = 0;
    sd->offset.y = 0;
    sd->group = NULL;
-   sd->local_sys = NULL;
-   sd->local_usr = NULL;
-   sd->mode = EXCHANGE_SMART_SHOW_LOCAL;
+   sd->local_dir = NULL;
    sd->apply.func = NULL;
    sd->apply.data = NULL;
 
    /* Create the evas_box */
    sd->obj_box = evas_object_box_add(evas_object_evas_get(obj));
-   evas_object_box_layout_set(sd->obj_box,
-                              //evas_object_box_layout_flow_horizontal,
-                              evas_object_box_layout_vertical,
-                              NULL,//const void *  data,
-                              NULL);//void(*)(void *data)  free_data
+   evas_object_box_layout_set(sd->obj_box, evas_object_box_layout_vertical,
+                              NULL, NULL);
    evas_object_box_align_set(sd->obj_box, 0.0, 0.0);
    evas_object_box_padding_set(sd->obj_box, 0, 5);
    evas_object_smart_member_add(sd->obj_box, obj); //???
@@ -501,8 +408,7 @@ _exchange_smart_del(Evas_Object *obj)
 
    //TODO Kill all download in progress
    if (sd->group) eina_stringshare_del(sd->group);
-   if (sd->local_sys) eina_stringshare_del(sd->local_sys);
-   if (sd->local_usr) eina_stringshare_del(sd->local_usr);
+   if (sd->local_dir) eina_stringshare_del(sd->local_dir);
    evas_object_del(sd->obj_box);//TODO is this free ok?? or we need to del all the elements??
    free(sd);
 }
@@ -644,11 +550,11 @@ _exchange_smart_size_hint_changed_cb(void *data, Evas *e, Evas_Object *obj, void
 static void
 _exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Exchange_Theme *td = data;
+   Exchange_Object *td = data;
    Evas_Object *img;
 
    if (!td) return;
-   exchange_theme_free(td);
+   exchange_object_free(td);
 
    img = edje_object_part_swallow_get(obj, "thumb.swallow");
    if (img) evas_object_del(img);
@@ -657,13 +563,16 @@ _exchange_smart_child_delete_cb(void *data, Evas *e, Evas_Object *obj, void *eve
 static const char*
 _exchange_smart_thumb_get(Evas_Object *elem, int id, const char *url)
 {
-   char dst[4096]; //TODO MAX_PATH ??
+   char dst[4096];
 
-   //EINA_ERROR_PDBG("theme %s\n", name);
-   
    if (!url) return NULL;
 
-   snprintf(dst, sizeof(dst), "%s/%d.thumb.png", _smart_cache, id);
+   if (strstr(url, "/files/module/"))
+      snprintf(dst, sizeof(dst), "%s/module.%d.thumb.png", _smart_cache, id);
+   else if (strstr(url, "/files/application/"))
+      snprintf(dst, sizeof(dst), "%s/application.%d.thumb.png", _smart_cache, id);
+   else
+      snprintf(dst, sizeof(dst), "%s/%d.thumb.png", _smart_cache, id);
 
    //check if we have a copy in cache...
    if (ecore_file_exists(dst)) //TODO check if the thumb is updated
@@ -717,14 +626,11 @@ _exchange_smart_thumb_swallow(Evas_Object *elem, const char *thumb)
 int
 _exchange_smart_themes_sort_cb(const void *d1, const void *d2)
 {
-   Exchange_Theme *t1 = (Exchange_Theme *)d1;
-   Exchange_Theme *t2 = (Exchange_Theme *)d2;
+   Exchange_Object *t1 = (Exchange_Object *)d1;
+   Exchange_Object *t2 = (Exchange_Object *)d2;
 
    if(!t1 || !t1->name) return 1;
    if(!t2 || !t2->name) return -1;
-
-   if ((t1->local) && (!t2->local)) return -1;
-   if ((!t1->local) && (t2->local)) return 1;
 
    return strcmp(t1->name, t2->name);
 }
@@ -757,11 +663,12 @@ _exchange_smart_separator_append(Exchange_Smart_Data *sd, const char *text)
 }
 
 static void
-_exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
+_exchange_smart_element_update(Evas_Object *elem, Exchange_Object *td, Exchange_Smart_Data *sd)
 {
    char buf[4096];
    const char *thumb;
-
+   char *local_ver = NULL;
+   
    snprintf(buf, sizeof(buf), "<title>%s </title> <version>%s</version>",
             td->name, td->version ? td->version : "");
    edje_object_part_text_set(elem, "textblock", buf);
@@ -798,21 +705,35 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
    //edje_object_signal_emit(elem, "use,disable","exchange");
    //edje_object_signal_emit(elem, "use,enable","exchange");
 
-   if (td->local == 1) // local updated
+   snprintf(buf, sizeof(buf), "%s/%s.edj", sd->local_dir, td->name);
+   if (ecore_file_exists(buf))
    {
-      edje_object_signal_emit(elem, "download,disable","exchange");
-      edje_object_signal_emit(elem, "use,enable","exchange");
-      edje_object_signal_emit(elem, "set,updated", "exchange");
+      local_ver = exchange_local_theme_version_get(buf);
+      if (td->version && local_ver)
+      {
+         if (strcmp(td->version, local_ver))
+         {
+            //need update
+            edje_object_signal_emit(elem, "set,updatable", "exchange");
+            edje_object_signal_emit(elem, "download,enable","exchange");
+            edje_object_signal_emit(elem, "use,enable","exchange");
+            edje_object_part_text_set(elem, "btn_download.text", "Update");
+         }
+         else
+         {
+            //updated
+            edje_object_signal_emit(elem, "set,updated", "exchange");
+            edje_object_signal_emit(elem, "download,disable","exchange");
+            edje_object_signal_emit(elem, "use,enable","exchange");
+         }
+      }
+      EINA_ERROR_PDBG("CHECKING: %s %s(%s %s)\n", td->name, td->version, buf, local_ver);
+      if (local_ver) free(local_ver);
    }
-   else if (td->local == 2) //local need update
+   else
    {
-      edje_object_signal_emit(elem, "use,enable","exchange");
-      edje_object_signal_emit(elem, "download,enable","exchange");
-      edje_object_part_text_set(elem, "btn_download.text", "Update");
-      edje_object_signal_emit(elem, "set,updatable", "exchange");
-   }
-   else //remote
-   {
+      //new theme
+      edje_object_signal_emit(elem, "set,new", "exchange");
       edje_object_signal_emit(elem, "download,enable","exchange");
       edje_object_signal_emit(elem, "use,disable","exchange");
    }
@@ -826,7 +747,7 @@ _exchange_smart_element_update(Evas_Object *elem, Exchange_Theme *td)
 }
 
 static void
-_exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td)
+_exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Object *td)
 {
    Evas_Object *elem;
    Evas_Object_Box_Option *opt;
@@ -853,7 +774,7 @@ _exchange_smart_element_append(Exchange_Smart_Data *sd, Exchange_Theme *td)
    evas_object_size_hint_padding_set(opt->obj, 0, 0, 0, 0);
    evas_object_size_hint_weight_set(opt->obj, 0.0, 0.0);
 
-   _exchange_smart_element_update(elem, td);
+   _exchange_smart_element_update(elem, td, sd);
 }
 
 void
@@ -898,7 +819,7 @@ static void
 _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, const char *src)
 {
    Exchange_Smart_Data *sd;
-   Exchange_Theme *td = data;
+   Exchange_Object *td = data;
    char dst[4096];
 
    sd = evas_object_data_get(obj, "EXCHANGE_SMART_DATA");
@@ -906,7 +827,7 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
 
    if (!strcmp(src, "btn_download") && td->url)
    {
-      snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_usr, td->name);
+      snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_dir, td->name);
       EINA_ERROR_PDBG("DOWNLOAD URL %s\n", td->url);
       EINA_ERROR_PDBG("DOWNLOAD DST %s\n", dst);
 
@@ -924,24 +845,9 @@ _exchange_smart_button_click_cb(void *data, Evas_Object *obj, const char *em, co
    }
    else if (!strcmp(src, "btn_use") && sd->apply.func)
    {
-      if (strstr(td->name, ".edj")) //theme don't have name
-      {
-         snprintf(dst, sizeof(dst),"%s/%s", sd->local_usr, td->name);
-         if (!ecore_file_exists(dst))
-            snprintf(dst, sizeof(dst),"%s/%s", sd->local_sys, td->name);
-         printf("USE: %s\n", dst);
-         if (ecore_file_exists(dst))
-            sd->apply.func(dst, sd->apply.data);
-      }
-      else //theme have name
-      {
-         snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_usr, td->name);
-         if (!ecore_file_exists(dst))
-            snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_sys, td->name);
-         printf("USE: %s\n", dst);
-         if (ecore_file_exists(dst))
-            sd->apply.func(dst, sd->apply.data);
-      }
+      snprintf(dst, sizeof(dst),"%s/%s.edj", sd->local_dir, td->name);
+      if (ecore_file_exists(dst))
+         sd->apply.func(dst, sd->apply.data);
    }
 }
 

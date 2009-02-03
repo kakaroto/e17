@@ -26,10 +26,6 @@
 # include <config.h>
 #endif
 
-#define THEME_SYS_DIR  "/usr/local/share/enlightenment/data/themes/"
-#define THEME_USER_DIR "/tmp"
-#define THEME_GROUP    "Border"
-
 static Evas_Object *bg, *cont, *exsm;
 
 static void
@@ -90,10 +86,11 @@ static void
 on_button(void *data, Evas_Object *o, const char *em, const char *src)
 {
    EINA_ERROR_PDBG("THEME SELECTED: %s [%s]\n", em, src);
-   if (!strcmp(src, "btn_local")) exchange_smart_object_mode_set(exsm, EXCHANGE_SMART_SHOW_LOCAL);
-   if (!strcmp(src, "btn_remote")) exchange_smart_object_mode_set(exsm, EXCHANGE_SMART_SHOW_REMOTE);
-   if (!strcmp(src, "btn_both")) exchange_smart_object_mode_set(exsm, EXCHANGE_SMART_SHOW_BOTH);
-   
+   if (!strcmp(src, "btn_themes")) exchange_smart_object_remote_group_set(exsm, "Border");
+   if (!strcmp(src, "btn_wallp")) exchange_smart_object_remote_group_set(exsm, "Wallpaper");
+   if (!strcmp(src, "btn_apps")) exchange_smart_object_remote_group_set(exsm, "Applications");
+   if (!strcmp(src, "btn_mods")) exchange_smart_object_remote_group_set(exsm, "Modules");
+
    exchange_smart_object_run(exsm);
 }
 
@@ -124,7 +121,7 @@ main(int argc, char **argv)
    ee = ecore_evas_software_x11_new(NULL, 0, 0, 450, 400, 0);
    //ee = ecore_evas_new(NULL, 0, 0, 300, 400, NULL);
    evas = ecore_evas_get(ee);
-   ecore_evas_title_set(ee, "Exchange Smart Class Test");
+   ecore_evas_title_set(ee, "Exchange Smart Test   (downloads goes in /tmp)");
    ecore_evas_callback_resize_set(ee, on_resize);
    ecore_evas_callback_destroy_set(ee, on_destroy);
    ecore_evas_size_min_set(ee, 200, 200);
@@ -158,9 +155,7 @@ main(int argc, char **argv)
 
    /* The Exchange Smart Object*/
    exsm = exchange_smart_object_add(evas);
-   exchange_smart_object_remote_group_set(exsm, THEME_GROUP);
-   exchange_smart_object_local_path_set(exsm, THEME_USER_DIR, THEME_SYS_DIR);
-   exchange_smart_object_mode_set(exsm, EXCHANGE_SMART_SHOW_BOTH);
+   exchange_smart_object_local_path_set(exsm, "/tmp");
    exchange_smart_object_apply_cb_set(exsm, on_apply, NULL);
 
    /* Swallow the smart object inside the edje test interface */

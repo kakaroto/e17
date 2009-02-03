@@ -41,9 +41,7 @@
  * @li @link exchange_remote_theme.h Functions that work with remote themes. @endlink
  * @li @link exchange_login.h Functions to login into exchange website. @endlink
  * @li @link exchange_theme_group.h Functions to work with theme_groups. @endlink
- * @li @link exchange_theme_list.h Functions that list remote themes @endlink
- * @li @link exchange_application_list.h Functions that list remote applications @endlink
- * @li @link exchange_module_list.h Functions that list remote modules @endlink
+ * @li @link exchange_async.h Functions that list remote themes, modules and apps @endlink
  * @li @link exchange_smart.h The Exchange Smart Object @endlink
  */
 
@@ -51,34 +49,32 @@
 #include <Edje.h>
 
 /**
- * \struct _Theme_Data
- * \brief Metadata for themes
+ * \struct _Exchange_Object
+ * \brief Metadata for themes, applications and modules
  */
-typedef struct _Exchange_Theme {
-   int id; /**< Theme id */
-   char *name; /**< Theme name */
-   char *author; /**< Theme author */
-   char *license; /**< Theme license */
-   char *version; /**< Theme version */
-   char description[4096]; /**< Theme description */
-   char *url; /**< Theme URL */
-   char *thumbnail; /**< Theme thumbnail URL */
-   char *screenshot; /**< Theme screenshot URL */
-   float rating; /**< Theme rating */ 
-   int user_id; /**< User id of theme author */
-   char *created_at; /**< Theme creation timestamp */
-   char *updated_at; /**< Theme last update timestamp */
-   unsigned char local; /**< TRUE means the theme is online, FALSE means local */
-} Exchange_Theme;
+typedef struct _Exchange_Object {
+   int id; /**< id */
+   char *name; /**< name */
+   char *author; /**< author */
+   char *license; /**< license */
+   char *version; /**< version */
+   char description[4096]; /**< description */
+   char *url; /**< URL */
+   char *thumbnail; /**< thumbnail URL */
+   char *screenshot; /**< screenshot URL */
+   float rating; /**< rating */ 
+   int user_id; /**< User id of the author */
+   char *created_at; /**< creation timestamp */
+   char *updated_at; /**< last update timestamp */
+} Exchange_Object;
 
+#include "exchange_private.h"
 #include "exchange_local_theme.h"
 #include "exchange_remote_theme.h"
 #include "exchange_login.h"
 #include "exchange_theme_group.h"
-#include "exchange_theme_list.h"
-#include "exchange_application_list.h"
-#include "exchange_module_list.h"
 #include "exchange_smart.h"
+#include "exchange_async.h"
 
 
 #ifdef EAPI
@@ -114,7 +110,7 @@ extern "C" {
 EAPI int  exchange_init(void);
 EAPI int  exchange_shutdown(void);
 
-EAPI unsigned char exchange_theme_free(Exchange_Theme *theme);
+EAPI unsigned char exchange_object_free(Exchange_Object *obj);
 
 #ifdef __cplusplus
 }

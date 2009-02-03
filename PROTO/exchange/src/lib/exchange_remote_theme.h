@@ -52,34 +52,14 @@
 # include <config.h>
 #endif
 
-typedef enum {
-   PARSER_START,
-   PARSER_RSP,
-   PARSER_THEME,
-   PARSER_THEME_ID,
-   PARSER_THEME_NAME,
-   PARSER_THEME_AUTHOR,
-   PARSER_THEME_LICENSE,
-   PARSER_THEME_VERSION,
-   PARSER_THEME_DESCRIPTION,
-   PARSER_THEME_URL,
-   PARSER_THEME_THUMBNAIL,
-   PARSER_THEME_SCREENSHOT,
-   PARSER_THEME_RATING,
-   PARSER_THEME_USER_ID,
-   PARSER_THEME_CREATED,
-   PARSER_THEME_UPDATED,
-   PARSER_FINISH,
-   PARSER_UNKNOWN
-} Theme_States;
 
 /**
  * @cond LOCAL
  */
 
 typedef struct _Theme_Parser {
-   Theme_States state;
-   Theme_States prev_state;
+   Parser_States state;
+   Parser_States prev_state;
 } Theme_Parser;
 
 /**
@@ -99,7 +79,7 @@ EAPI float exchange_remote_theme_rating_get(const char *theme_name);
 EAPI int  exchange_remote_theme_user_id_get(const char *theme_name);
 EAPI char *exchange_remote_theme_created_get(const char *theme_name);
 EAPI char *exchange_remote_theme_updated_get(const char *theme_name);
-EAPI Exchange_Theme *exchange_remote_theme_all_data_get(const char *theme_name);
+EAPI Exchange_Object *exchange_remote_theme_all_data_get(const char *theme_name);
 
 /**
  * @cond LOCAL
