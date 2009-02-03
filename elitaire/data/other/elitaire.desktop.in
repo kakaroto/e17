@@ -8,9 +8,9 @@ Encoding=UTF-8
 Exec=elitaire
 Terminal=false
 Type=Application
-Categories=Game;BoardGame;
+Categories=ENLIGHTENMENT;Application;Game;BoardGame;
 StartupNotify=true
-Icon=@prefix@/share/pixmaps/elitaire.png
+Icon=elitaire
 GenericName=Elitaire Card Games
 GenericName[cs]=Karetní hry Elitaire
 
