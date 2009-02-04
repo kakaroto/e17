@@ -1,6 +1,6 @@
 Login:        toma
 IRC Nick:     Toma-
-Cloak:        developer/Toma-
+Cloak:        developer/toma-
 Name:         Tom Haste
 Location:     Perth, Australia
 E-Mail:       tomhaste@gmail.com
