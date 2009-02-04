@@ -1,6 +1,5 @@
 Login:         thanatermesis
 IRC Nick:      Thanatermesis
-Cloak:         developer/thanatermesis
 Name:          Samuel F. Baggen
 Location:      Barcelona, Spain
 E-Mail:        thanatermesis.elive@gmail.com

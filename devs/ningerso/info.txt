@@ -1,6 +1,6 @@
 Login:    ningerso
 IRC Nick: RbdPngn
-Cloak:    developer/RbdPngn
+Cloak:    developer/ningerso
 Name:     Nathan Ingersoll
 Location: Superior, WI USA
 E-Mail:   ningerso@gmail.com

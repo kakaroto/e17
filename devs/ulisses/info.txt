@@ -1,6 +1,6 @@
 Login:        ulisses
 IRC Nick:     Ryback_
-Cloak:        developer/Ryback_
+Cloak:        developer/ryback
 Name:         Ulisses Furquim
 Location:     Recife, Brazil
 E-Mail:       -ulissesf@gmail.com

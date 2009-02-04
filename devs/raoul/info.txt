@@ -1,6 +1,5 @@
 Login:		raoul
 IRC Nick:	raoulh
-Cloak:          developer/raoulh
 Name:		Raoul HECKY
 Location:	NONE, France
 E-Mail:		raoul.hecky@gmail.com
