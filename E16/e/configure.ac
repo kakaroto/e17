@@ -118,8 +118,11 @@ if test "x$enable_sound_esound" = "xyes"; then
 fi
 AM_CONDITIONAL(USE_LIBESD, test "x$enable_sound_esound" = "xyes")
 
+# Save CPPFLAGS/LDFLAGS and add X_... to each
+SAVE_CPPFLAGS="$CPPFLAGS"
+SAVE_LDFLAGS="$LDFLAGS"
 CPPFLAGS="$X_CFLAGS $CPPFLAGS"
-LDFLAGS="$X_LIBS $LDFLAGS -L$prefix/lib"
+LDFLAGS="$X_LIBS $LDFLAGS"
 
 PKG_CHECK_MODULES(IMLIB2, imlib2 >= 1.2.0, have_good_imlib2=yes)
 AC_CHECK_LIB(Imlib2, imlib_context_set_mask_alpha_threshold,
@@ -287,6 +290,10 @@ AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [
   echo "Warning: No ales were found in your refrigerator."
   echo "  We highly suggest that you rectify this situation immediately."
 ])
+
+# Restore CPPFLAGS/LDFLAGS
+CPPFLAGS="$SAVE_CPPFLAGS"
+LDFLAGS="$SAVE_LDFLAGS"
 
 AC_ARG_ENABLE(roothacklib,
   [  --enable-roothacklib    build window mode helper library @<:@default=yes@:>@],,
