@@ -9,4 +9,4 @@ Managing:
 Contributing:   E17, ecore, efreet, e_modules
 Group:          ?
 Platform:       FreeBSD 7.x
-GeoData:	32.9164 -96.5973
+GeoData:        32.9164 -96.5973
