@@ -1,5 +1,6 @@
 Login:        raster
 IRC Nick:     raster
+Cloak:        developer/raster
 Name:         Carsten Haitzler
 Location:     Sydney, Australia
 E-Mail:       raster@rasterman.com
