@@ -950,7 +950,7 @@ BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
      case EnterNotify:
 	if (ewin->props.autoshade && ewin->state.shaded)
 	  {
-	     EwinUnShade(ewin);
+	     EwinOpShade(ewin, OPSRC_USER, 0);
 	  }
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);
@@ -962,7 +962,7 @@ BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	     if (x >= 4 && x < EoGetW(ewin) - 4 &&
 		 y >= 4 && y < EoGetH(ewin) - 4)
 		break;
-	     EwinShade(ewin);
+	     EwinOpShade(ewin, OPSRC_USER, 1);
 	  }
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);
