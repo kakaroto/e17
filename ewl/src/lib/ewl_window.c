@@ -4,8 +4,6 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-
 Ecore_List *ewl_window_list = NULL;
 unsigned int EWL_CALLBACK_EXPOSE = 0;
 unsigned int EWL_CALLBACK_DELETE_WINDOW = 0;
@@ -1263,10 +1261,11 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         ewl_engine_canvas_output_set(EWL_EMBED(win), cx, cy, cw, ch);
 
-        if ((smart = EWL_EMBED(win)->smart))
+        smart = EWL_EMBED(win)->smart;
+        if (smart)
         {
-                evas_object_resize(smart, cw, ch);
-                evas_object_move(smart, cx, cy);
+                ewl_engine_theme_object_resize(EWL_EMBED(win), smart, cw, ch);
+                ewl_engine_theme_object_move(EWL_EMBED(win), smart, cx, cy);
         }
 
         /*
