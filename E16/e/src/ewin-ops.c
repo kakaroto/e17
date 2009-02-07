@@ -934,6 +934,7 @@ _EwinShadeEnd(_ewin_shade_data * esd)
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SHADED);
 
    Efree(esd);
 }
@@ -1164,6 +1165,7 @@ _EwinUnshadeEnd(_ewin_shade_data * esd)
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SHADED);
 
    Efree(esd);
 }
@@ -1672,7 +1674,6 @@ EwinOpShade(EWin * ewin, int source __UNUSED__, int on)
 	     SoundPlay(SOUND_SHADE);
 	     EwinShade(gwins[i]);
 	  }
-	SnapshotEwinUpdate(gwins[i], SNAP_USE_SHADED);
      }
    Efree(gwins);
 }
