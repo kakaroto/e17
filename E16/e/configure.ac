@@ -166,7 +166,7 @@ AC_ARG_ENABLE(ecore,
   [  --enable-ecore          use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
   enable_ecore=no)
 if test "x$enable_ecore" = "xyes"; then
-  PKG_CHECK_MODULES(ECORE, ecore-x,
+  PKG_CHECK_MODULES(ECORE, ecore ecore-x,
     AC_DEFINE(USE_ECORE, 1, [Use libecore])
     AC_DEFINE(USE_ECORE_X, 1, [Use libecore_x]),
     enable_ecore=no)
