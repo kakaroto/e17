@@ -692,7 +692,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	   b += a;
 	a = (b < 0) ? 1 : (b > 100) ? 100 : b;
 	EwinOpSetOpacity(ewin, OPSRC_USER, a);
-	if (ewin->state.active)
+	if (a && ewin->state.active)
 	  {
 	     Timer              *op_timer;
 
