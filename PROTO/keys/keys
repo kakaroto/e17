@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+"""
+   Keys - An On screen keyboard written in Python-EFL.
+      You need python-efl bindings from the Enlightenment SVN
+      Licensed under the Beerware License (Revision 42)
+      Authored by Toma (tomhaste@gmail.com)
+
+   Changelog:
+   0.1 - Initial upload
+
+"""
+import virtkey
+import ecore.evas
+import ecore.x
+import edje
+import sys
+import os
+
+#Setup Window
+w, h = 400, 140
+v = virtkey.virtkey()
+sh = 0
+ee = ecore.evas.SoftwareX11(w=w, h=h)
+ee.callback_delete_request_set(v.unlock_mod(1))
+ex = ecore.x.Window_from_xid(ee.window_get())
+ex.icccm_hints_set(0, 1, 0, 0, 0, 0, 0)
+ee.title = "Keys"
+canvas = ee.evas
+edje_file = os.path.join(os.path.dirname(sys.argv[0]), "Keys.edj")
+
+#Setup Edje Groups
+try:
+   main = edje.Edje(canvas, file=edje_file, group="Keys")
+except Exception, e:
+   raise SystemExit("Failed to load Keys edje file: %s" % edje_file)
+main.size = canvas.size
+main.show()
+ee.data["main"] = main
+
+button = edje.Edje(canvas, file=edje_file, group="KeyButton")
+button.size = canvas.size
+button.show()
+ee.data["button"] = button
+
+#Do something on click
+def pressed(button, signal, source):
+   global sh
+   if int(source) == 50 and sh == 0:
+      v.lock_mod(1)
+      button.signal_emit("ShiftOn", "Keys")
+      sh = 1
+   elif int(source) == 50 and sh == 1:
+      v.unlock_mod(1)
+      button.signal_emit("ShiftOff", "Keys")
+      sh = 0
+   else:
+      v.press_keycode(int(source))
+      v.release_keycode(int(source))
+
+button.signal_callback_add("clicked", "*", pressed)
+
+#Make it resize
+def resize(ee):
+   r = ee.evas.rect
+   ee.data["button"].size = r.size
+   ee.data["main"].size = r.size
+
+ee.callback_resize = resize
+
+#Clean up on quit
+def quit(ee):
+   v.unlock_mod(1)
+   ecore.main_loop_quit()
+
+ee.callback_delete_request_set(quit)
+
+#Launch!
+ee.show()
+ex.show()
+ecore.main_loop_begin()

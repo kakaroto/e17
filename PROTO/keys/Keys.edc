@@ -1,0 +1,299 @@
+fonts {
+   font: "DejaVuSans.ttf" "font";
+}
+
+collections {
+   group {
+      name: "Keys";
+      images {
+	 image: "dia_grad.png" COMP;
+	 image: "dia_topshad.png" COMP;
+	 image: "dia_botshad.png" COMP;
+      }
+      parts {
+	 part { name: "base";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       image.normal: "dia_grad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "shadow";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel2.relative: 1.0 0.0;
+	       rel2.offset: -1 31;
+	       image.normal: "dia_topshad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "shadow2";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.0 1.0;
+	       rel1.offset: 0 -4;
+	       image.normal: "dia_botshad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+      }
+   }
+
+   group {
+      name: "KeyButton";
+      images {
+	 image: "bt_base1.png" COMP;
+	 image: "bt_base2.png" COMP;
+	 image: "bt_hilight.png" COMP;
+	 image: "bt_shine.png" COMP;
+	 image: "bt_glow.png" COMP;
+      }
+      script {
+	 public s;
+      }
+      parts {
+
+#define KEYPART(CHAR, CHAR2, CODE, REL1X, REL1Y, REL2X, REL2Y)	\
+	 part { name: CODE"button_image";			\
+	    mouse_events: 1;					\
+	    description { state: "default" 0.0;			\
+	       min: 32 16;					\
+	       rel1.relative: REL1X REL1Y;			\
+	       rel2.relative: REL2X REL2Y;			\
+	       image {						\
+		  normal: "bt_base2.png";			\
+		  border: 7 7 7 7;				\
+	       }						\
+	    }							\
+	    description { state: "clicked" 0.0;			\
+	       inherit: "default" 0.0;				\
+	       image.normal: "bt_base1.png";			\
+	    }							\
+	 }							\
+	 part { name: CODE;					\
+	    type: TEXT;						\
+	    repeat_events: 1;					\
+	    description {					\
+	       state: "default" 0.0;				\
+	       align: 0.5 0.5;					\
+	       rel1.to: CODE"button_image";			\
+	       rel2.to: CODE"button_image";			\
+	       color: 255 255 255 255;				\
+	       text { 						\
+		  text: CHAR;					\
+		  font: "font";					\
+		  size: 16;					\
+		  fit: 0 0;					\
+	       }						\
+	    }							\
+	    description {					\
+	       state: "shift" 0.0;				\
+	       align: 0.5 0.5;					\
+	       rel1.to: CODE"button_image";			\
+	       rel2.to: CODE"button_image";			\
+	       color: 255 255 255 255;				\
+	       text { 						\
+		  text: CHAR2;					\
+		  font: "font";					\
+		  size: 16;					\
+		  fit: 0 0;					\
+	       }						\
+	    }							\
+	 }							\
+	 part { name: CODE"over1";				\
+	    mouse_events: 0;					\
+	    description { state: "default" 0.0;			\
+	       rel1.to: CODE"button_image";			\
+	       rel2.to: CODE"button_image";			\
+	       rel2.relative: 1.0 0.5;				\
+	       image {						\
+		  normal: "bt_hilight.png";			\
+		  border: 7 7 7 0;				\
+	       }						\
+	    }							\
+	 }							\
+	 part { name: CODE"over2";				\
+	    mouse_events: 0;					\
+	    description { state: "default" 0.0;			\
+	       rel1.to: CODE"button_image";			\
+	       rel2.to: CODE"button_image";			\
+	       image {						\
+		  normal: "bt_shine.png";			\
+		  border: 7 7 7 7;				\
+	       }						\
+	    }							\
+	 }							\
+	 part { name: CODE"over3";				\
+	    mouse_events: 0;					\
+	    description { state: "default" 0.0;			\
+	       rel1.to: CODE"button_image";			\
+	       rel2.to: CODE"button_image";			\
+               visible: 0;					\
+               color: 255 255 255 0;				\
+	       image {						\
+		  normal: "bt_glow.png";			\
+		  border: 12 12 12 12;				\
+	       }						\
+	    }							\
+	    description { state: "clicked" 0.0;			\
+	       inherit:  "default" 0.0;				\
+	       visible: 1;					\
+               color: 255 255 255 255;				\
+	    }							\
+	 }
+
+	 KEYPART("q", "Q", 24, 0.0, 0.0, 0.1, 0.25)
+	 KEYPART("w", "W", 25, 0.1, 0.0, 0.2, 0.25)
+	 KEYPART("e", "E", 26, 0.2, 0.0, 0.3, 0.25)
+	 KEYPART("r", "R", 27, 0.3, 0.0, 0.4, 0.25)
+	 KEYPART("t", "T", 28, 0.4, 0.0, 0.5, 0.25)
+	 KEYPART("y", "Y", 29, 0.5, 0.0, 0.6, 0.25)
+	 KEYPART("u", "U", 30, 0.6, 0.0, 0.7, 0.25)
+	 KEYPART("i", "I", 31, 0.7, 0.0, 0.8, 0.25)
+	 KEYPART("o", "O", 32, 0.8, 0.0, 0.9, 0.25)
+	 KEYPART("p", "P", 33, 0.9, 0.0, 1.0, 0.25)
+
+	 KEYPART("a", "A", 38, 0.0, 0.25, 0.1, 0.5)
+	 KEYPART("s", "S", 39, 0.1, 0.25, 0.2, 0.5)
+	 KEYPART("d", "D", 40, 0.2, 0.25, 0.3, 0.5)
+	 KEYPART("f", "F", 41, 0.3, 0.25, 0.4, 0.5)
+	 KEYPART("g", "G", 42, 0.4, 0.25, 0.5, 0.5)
+	 KEYPART("h", "H", 43, 0.5, 0.25, 0.6, 0.5)
+	 KEYPART("j", "J", 44, 0.6, 0.25, 0.7, 0.5)
+	 KEYPART("k", "K", 45, 0.7, 0.25, 0.8, 0.5)
+	 KEYPART("l", "L", 46, 0.8, 0.25, 0.9, 0.5)
+	 KEYPART("⟵", "⟵", 22, 0.9, 0.25, 1.0, 0.5)
+
+	 KEYPART("z", "Z", 52, 0.0, 0.5, 0.1, 0.75)
+	 KEYPART("x", "X", 53, 0.1, 0.5, 0.2, 0.75)
+	 KEYPART("c", "C", 54, 0.2, 0.5, 0.3, 0.75)
+	 KEYPART("v", "V", 55, 0.3, 0.5, 0.4, 0.75)
+	 KEYPART("b", "B", 56, 0.4, 0.5, 0.5, 0.75)
+	 KEYPART("n", "N", 57, 0.5, 0.5, 0.6, 0.75)
+	 KEYPART("m", "M", 58, 0.6, 0.5, 0.7, 0.75)
+	 KEYPART(",", "!", 59, 0.7, 0.5, 0.8, 0.75)		//Different
+	 KEYPART(".", "?", 60, 0.8, 0.5, 0.9, 0.75)		//Different
+	 KEYPART("⇧", "⇩", 50, 0.9, 0.5, 1.0, 0.75)
+
+	 KEYPART("↲", "↲", 36, 0.7, 0.75, 1.0, 1.0)
+	 KEYPART("", "", 65, 0.0, 0.75, 0.7, 1.0)
+
+
+      }
+      programs {
+	 program {
+	    name:   "switch1";
+	    script {
+	       set_int(s, 1);
+	    }
+	 }
+	 program {
+	    name:   "switch2";
+	    script {
+	       set_int(s, 0);
+	    }
+	 }
+
+#define KEYPROG(CHAR, CODE, SHIFTCODE)				\
+	 program {						\
+	    name:   CODE"click";				\
+	    signal: "mouse,down,1";				\
+	    source: CODE"button_image";				\
+	    action: STATE_SET "clicked" 0.0;			\
+	    target: CODE"button_image";				\
+	    target: CODE"over3";				\
+	 }							\
+	 program {						\
+	    name:   CODE"unclick";				\
+	    signal: "mouse,up,1";				\
+	    source: CODE"button_image";				\
+	    action: STATE_SET "default" 0.0;			\
+	    target: CODE"button_image";				\
+	    target: CODE"over3";				\
+	    after:  CODE"signal";				\
+	 }							\
+	 program {						\
+	    name:   CODE"signal";				\
+	    source: CODE;					\
+	    script {						\
+	       if (get_int(s) == 0)				\
+		  emit("clicked", #CODE);			\
+	       if (get_int(s) == 1)				\
+		  emit("clicked", #SHIFTCODE);			\
+	    }							\
+	 }							\
+	 program {						\
+	    name:   CODE"ShiftOn";				\
+	    signal: "ShiftOn";					\
+	    source: "Keys";					\
+	    action: STATE_SET "shift" 0.0; 			\
+	    target: CODE;					\
+	    after:  "switch1";					\
+	 }							\
+	 program {						\
+	    name:   CODE"ShiftOff";				\
+	    signal: "ShiftOff";					\
+	    source: "Keys";					\
+	    action: STATE_SET "default" 0.0; 			\
+	    target: CODE;					\
+	    after:  "switch2";					\
+	 }
+
+	 KEYPROG("q", 24, 24)
+	 KEYPROG("w", 25, 25)
+	 KEYPROG("e", 26, 26)
+	 KEYPROG("r", 27, 27)
+	 KEYPROG("t", 28, 28)
+	 KEYPROG("y", 29, 29)
+	 KEYPROG("u", 30, 30)
+	 KEYPROG("i", 31, 31)
+	 KEYPROG("o", 32, 32)
+	 KEYPROG("p", 33, 33)
+
+	 KEYPROG("a", 38, 38)
+	 KEYPROG("s", 39, 39)
+	 KEYPROG("d", 40, 40)
+	 KEYPROG("f", 41, 41)
+	 KEYPROG("g", 42, 42)
+	 KEYPROG("h", 43, 43)
+	 KEYPROG("j", 44, 44)
+	 KEYPROG("k", 45, 45)
+	 KEYPROG("l", 46, 46)
+	 KEYPROG("<-", 22, 22)
+
+	 KEYPROG("z", 52, 52)
+	 KEYPROG("x", 53, 52)
+	 KEYPROG("c", 54, 52)
+	 KEYPROG("v", 55, 55)
+	 KEYPROG("b", 56, 56)
+	 KEYPROG("n", 57, 57)
+	 KEYPROG("m", 58, 58)
+	 KEYPROG(".", 59, 10)   //Different - !
+	 KEYPROG(",", 60, 61)   //Different - ?
+	 KEYPROG("^", 50, 50)
+
+
+	 KEYPROG("Enter", 36, 36)
+	 KEYPROG("", 65, 65)
+
+      }
+   }
+}
