@@ -874,8 +874,9 @@ data_init(void)
 {
    char buf[PATH_MAX];
    char *home;
-   
-   home = getenv("HOME");
+
+   home = getenv("ELEMENTARY_SMS_PATH");
+   if (!home) home = getenv("HOME");
    if (!home) home = ".";
    snprintf(buf, sizeof(buf), "%s/Messages", home);
    messagedir = eina_stringshare_add(buf);
