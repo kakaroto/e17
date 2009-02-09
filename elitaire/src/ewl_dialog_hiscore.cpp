@@ -218,14 +218,12 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
     /* won games */
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), _("Won Games:"));
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
    
     snprintf(buffer, sizeof(buffer), "%d", stats.won_games);
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), buffer);
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_RIGHT);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
@@ -233,14 +231,12 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
     /* lost games */
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), _("Lost Games:"));
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
 
     snprintf(buffer, sizeof(buffer), "%d", stats.lost_games);
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), buffer);
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_RIGHT);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
@@ -248,7 +244,6 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
     /* relative quoute */
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), _("relative Quote:"));
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
   
@@ -261,7 +256,6 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
     snprintf(buffer, sizeof(buffer), "%.2f", qoute);
     w = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(w), buffer);
-    ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 1, 1);
     ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_RIGHT);
     ewl_container_child_append(EWL_CONTAINER(grid), w);
     ewl_widget_show(w);
