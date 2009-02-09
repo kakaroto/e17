@@ -391,7 +391,6 @@ _notification_cfg_new(void)
   cfg->gap           = 10;
   cfg->placement.x   = 10;
   cfg->placement.y   = 10;
-  e_modapi_save(notification_mod);
 
   return cfg;
 }
