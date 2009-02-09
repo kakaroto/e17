@@ -164,7 +164,8 @@ _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *e
 	return;
      }
 
-   ewk_event_feed_key_press(priv->webview, ev);
+   if (!ewk_event_feed_key_press(priv->webview, ev))
+      return;
 
    ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 
@@ -269,16 +270,9 @@ _eve_scrolled_webview_on_mouse_down(void *data, Evas *e, Evas_Object *obj, void 
 
    evas_object_focus_set(priv->webview, 1);
 
-   accepted = ewk_event_feed_mouse_down(priv->webview, ev);
-   if (accepted)
-     {
-	_eve_scrolled_webview_pan_anim_stop(priv);
-        return;
-     }
+   ewk_event_feed_mouse_down(priv->webview, ev);
 
-   priv->mouse_move.x = ev->output.x;
-   priv->mouse_move.y = ev->output.y;
-   _eve_scrolled_webview_pan_anim_start(priv);
+   _eve_scrolled_webview_pan_anim_stop(priv);
 }
 
 static void
@@ -288,11 +282,6 @@ _eve_scrolled_webview_on_mouse_up(void *data, Evas *e, Evas_Object *obj, void *e
    Evas_Event_Mouse_Up *ev = event_info;
 
    ewk_event_feed_mouse_up(obj, ev);
-   if (!priv->mouse_move.anim)
-     return;
-
-   _eve_scrolled_webview_pan_anim(priv);
-   _eve_scrolled_webview_pan_anim_stop(priv);
 }
 
 static void
