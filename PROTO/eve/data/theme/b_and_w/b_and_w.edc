@@ -1,0 +1,992 @@
+collections {
+   group {
+      name: "eve.entry.selection.default";
+      parts {
+         part {
+            name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+               state: "default" 0.0;
+	       color: 200 200 200 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -2 -2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 1 1;
+               }
+	    }
+	 }
+      }
+   }
+
+   group {
+      name: "eve.entry.cursor.default";
+      parts {
+         part {
+            name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+               state: "default" 0.0;
+	       color: 0 0 0 128;
+               min: 3 2;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 1;
+               }
+	    }
+	    description {
+               state: "alternate" 0.0;
+               inherit: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+
+         programs {
+            program {
+               name: "load";
+               signal: "show";
+               action: STATE_SET "default" 0.0;
+               target: "bg";
+               after: "blink,1";
+            }
+            program {
+               name: "blink,1";
+               action: STATE_SET "alternate" 0.0;
+               transition: LINEAR 0.2;
+               in: 0.8 0.0;
+               target: "bg";
+               after: "blink,2";
+            }
+            program {
+               name: "blink,2";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR 0.2;
+               in: 0.8 0.0;
+               target: "bg";
+               after: "blink,1";
+            }
+         }
+      }
+   }
+
+   group {
+      name: "eve.entry.anchor.default";
+      parts {
+         part {
+            name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+               state: "default" 0.0;
+	       color: 128 128 128 255;
+	    }
+	 }
+      }
+   }
+
+   group {
+      name: "eve.navigator";
+
+      images {
+         image: "tb_base.png" COMP;
+         image: "tb_shine.png" COMP;
+         image: "back.png" COMP;
+         image: "forward.png" COMP;
+         image: "reload.png" COMP;
+         image: "favorite.png" COMP;
+         image: "go.png" COMP;
+         image: "control.png" COMP;
+      }
+
+      styles {
+         style {
+            name: "entry_location";
+            base: "font=Sans font_size=10 align=left valign=center color=#000 wrap=none";
+            tag:  "em" "+ font=Sans:style=Oblique";
+            tag:  "b" "+ font=Sans:style=Bold";
+            tag:  "light" "+ color=#999";
+            tag:  "hilight" "+ font=Sans:style=Bold";
+            tag:  "br" "\n";
+         }
+      }
+
+      script {
+	 public message(Msg_Type:type, id, ...) {
+	    if ((id == 0) && (type == MSG_FLOAT)) {
+	       new Float:v = getfarg(2);
+
+               if (v >= 1.0)
+                  run_program(PROGRAM:"eve,hide,progress");
+               else
+                  run_program(PROGRAM:"eve,show,progress");
+
+               set_tween_state(PART:"frame.loading", v,
+                               "default", 0.0, "loading", 0.0);
+	    }
+	 }
+      }
+
+      parts {
+         part {
+            name: "rect.bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+
+         part {
+            name: "toolbar.bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 39;
+               }
+               image {
+                  normal: "tb_base.png";
+                  border: 4 4 4 4;
+               }
+            }
+         }
+
+         part {
+            name: "toolbar.base";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 4;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -5 35;
+               }
+            }
+         }
+
+#define TB_BTN(pt, r, x1, x2)                                           \
+         part {                                                         \
+            name: "clipper."pt;                                         \
+            type: RECT;                                                 \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               color: 255 255 255 255;                                  \
+            }                                                           \
+            description {                                               \
+               state: "disabled" 0.0;                                   \
+               color: 255 255 255 96;                                   \
+            }                                                           \
+         }                                                              \
+                                                                        \
+         part {                                                         \
+            name: "bt."pt;                                              \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            clip_to: "clipper."pt;                                      \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1 {                                                   \
+                  relative: r 0.0;                                      \
+                  offset: x1 0;                                         \
+                  to: "toolbar.base";                                   \
+               }                                                        \
+               rel2 {                                                   \
+                  relative: r 1.0;                                      \
+                  offset: x2 -1;                                        \
+                  to: "toolbar.base";                                   \
+               }                                                        \
+               image.normal: pt".png";                                  \
+            }                                                           \
+            description {                                               \
+               state: "down" 0.0;                                       \
+               rel1 {                                                   \
+                  relative: r 0.0;                                      \
+                  offset: (x1 + 1) 1;                                   \
+                  to: "toolbar.base";                                   \
+               }                                                        \
+               rel2 {                                                   \
+                  relative: r 1.0;                                      \
+                  offset: (x2 + 1) 0;                                   \
+                  to: "toolbar.base";                                   \
+               }                                                        \
+               image.normal: pt".png";                                  \
+            }                                                           \
+         }                                                              \
+                                                                        \
+         part {                                                         \
+            name: "events."pt;                                          \
+            type: RECT;                                                 \
+            mouse_events: 1;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               color: 0 0 0 0;                                          \
+               visible: 1;                                              \
+               rel1.to: "bt."pt;                                        \
+               rel2.to: "bt."pt;                                        \
+            }                                                           \
+            description {                                               \
+               state: "disabled" 0.0;                                   \
+               color: 0 0 0 0;                                          \
+               visible: 0;                                              \
+               rel1.to: "bt."pt;                                        \
+               rel2.to: "bt."pt;                                        \
+            }                                                           \
+         }                                                              \
+                                                                        \
+         programs {                                                     \
+            program {                                                   \
+               name: "eve,disable,"pt;                                 \
+               signal: "eve,disable,"pt;                               \
+               action: STATE_SET "disabled" 0.0;                        \
+               target: "clipper."pt;                                    \
+               target: "events."pt;                                     \
+            }                                                           \
+            program {                                                   \
+               name: "eve,enable,"pt;                                  \
+               signal: "eve,enable,"pt;                                \
+               action: STATE_SET "default" 0.0;                         \
+               target: "clipper."pt;                                    \
+               target: "events."pt;                                     \
+            }                                                           \
+            program {                                                   \
+               name: "eve,"pt;                                         \
+               signal: "mouse,clicked,1";                               \
+               source: "events."pt;                                     \
+               action: SIGNAL_EMIT "eve,"pt "";                        \
+            }                                                           \
+            program {                                                   \
+               name: "eve,down,"pt;                                    \
+               signal: "mouse,down,1";                                  \
+               source: "events."pt;                                     \
+               action: STATE_SET "down" 0.0;                            \
+               target: "bt."pt;                                         \
+            }                                                           \
+            program {                                                   \
+               name: "eve,up,"pt;                                      \
+               signal: "mouse,up,1";                                    \
+               source: "events."pt;                                     \
+               action: STATE_SET "default" 0.0;                         \
+               target: "bt."pt;                                         \
+            }                                                           \
+         }
+
+         TB_BTN("back", 0.0, 0, 31);
+         TB_BTN("forward", 0.0, 34, 65);
+         TB_BTN("reload", 0.0, 68, 99);
+
+         TB_BTN("control", 1.0, -32, -1);
+
+         part {
+            name: "toolbar.shine";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 39;
+               }
+               image {
+                  normal: "tb_shine.png";
+                  border: 4 4 4 4;
+               }
+            }
+         }
+
+         part {
+            name: "clipper.loading";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+               rel1.to: "frame.text";
+               rel2.to: "frame.text";
+            }
+            description {
+               state: "visible" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+               rel1.to: "frame.text";
+               rel2.to: "frame.text";
+            }
+         }
+
+         programs {
+            program {
+               name: "eve,hide,progress";
+               action: STATE_SET "default" 0.0;
+               target: "clipper.loading";
+               transition: ACCELERATE 0.25;
+            }
+
+            program {
+               name: "eve,show,progress";
+               action: STATE_SET "visible" 0.0;
+               target: "clipper.loading";
+               transition: ACCELERATE 0.25;
+            }
+         }
+
+         part {
+            name: "frame.loading";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "clipper.loading";
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 128;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 2 2;
+                  to: "frame.text";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: -1 -3;
+                  to: "frame.text";
+               }
+            }
+            description {
+               state: "loading" 0.0;
+               color: 128 128 128 128;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 2 2;
+                  to: "frame.text";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -3 -3;
+                  to: "frame.text";
+               }
+            }
+         }
+
+         part {
+            name: "frame.text";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 102 0;
+                  to: "toolbar.base";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -34 -1;
+                  to: "toolbar.base";
+               }
+               image {
+                  normal: "inset_sunk.png";
+		  border: 7 7 7 7;
+		  middle: 0;
+               }
+            }
+         }
+
+         TB_BTN("favorite", 0.0, 102, 133);
+         TB_BTN("go", 1.0, -66, -34);
+
+         part {
+            name: "clipper.text";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 -5;
+                  to: "eve.text.location";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 1 4;
+                  to: "eve.text.location";
+               }
+            }
+         }
+
+         part {
+            name: "eve.text.location";
+            clip_to: "clipper.text";
+            type: TEXTBLOCK;
+	    mouse_events: 1;
+            repeat_events: 1;
+	    scale: 1;
+	    entry_mode: EDITABLE;
+	    multiline: 0;
+	    source: "eve.entry.selection.default"; // selection under
+	    source4: "eve.entry.cursor.default"; // cursor over
+	    source5: "eve.entry.anchor.default"; // anchor under
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               min: 32 0;
+               rel1 {
+                  relative: 0.0 0.5;
+                  offset: 136 -2;
+                  to: "toolbar.base";
+               }
+               rel2 {
+                  relative: 1.0 0.5;
+                  offset: -66 1;
+                  to: "toolbar.base";
+               }
+               text {
+                  style: "entry_location";
+                  min: 0 1;
+               }
+            }
+         }
+
+         programs {
+            program {
+               name: "eve,location,down";
+               signal: "mouse,down,1";
+               source: "frame.text";
+               action: FOCUS_SET;
+               target: "eve.text.location";
+               after: "eve,focus,location";
+            }
+
+            program {
+               name: "eve,focus,location";
+               action: SIGNAL_EMIT "eve,focus,location" "";
+            }
+
+            program {
+               name: "eve,focus,in";
+               signal: "focus,in";
+               action: FOCUS_SET;
+               target: "eve.text.location";
+            }
+
+            program {
+               name: "eve,focus,out";
+               signal: "focus,out";
+               action: FOCUS_SET;
+               target: "rect.bg";
+            }
+
+            program {
+               name: "eve,location,enter";
+               signal: "entry,key,enter";
+               source: "eve.text.location";
+               action: SIGNAL_EMIT "eve,go" "";
+            }
+
+            program {
+               name: "eve,location,changed";
+               signal: "entry,changed";
+               source: "eve.text.location";
+               after: "eve,enable,go";
+            }
+
+            program {
+               name: "eve,location,changed2";
+               signal: "entry,key,*";
+               source: "eve.text.location";
+               after: "eve,enable,go";
+            }
+
+            program {
+               name: "eve,action,load";
+               signal: "eve,action,load";
+               after: "eve,disable,go";
+            }
+         }
+
+         part {
+            name: "eve.swallow.content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 3;
+                  to_y: "toolbar.base";
+               }
+            }
+         }
+      }
+   }
+
+   group {
+      name: "eve.scrollframe";
+
+      images {
+         image: "sb_runner_v.png" COMP;
+         image: "sb_runner_h.png" COMP;
+         image: "sb_knob.png" COMP;
+         image: "sb_hilight.png" COMP;
+         image: "sb_shine.png" COMP;
+         image: "inset_sunk.png" COMP;
+      }
+
+      script {
+         public hide_timer;
+
+         public hide_both() {
+	    run_program(PROGRAM:"eve,hide,horiz");
+	    run_program(PROGRAM:"eve,hide,vert");
+         }
+
+         public hide_horiz() {
+	    run_program(PROGRAM:"eve,hide,horiz");
+            set_state(PART:"rect.base", "vert", 0.0);
+         }
+
+         public hide_vert() {
+	    run_program(PROGRAM:"eve,hide,vert");
+            set_state(PART:"rect.base", "horiz", 0.0);
+         }
+
+	 public hide_timer_cb(val) {
+            hide_both();
+	    return 0;
+	 }
+
+	 public hide_timer_stop() {
+	    new id = get_int(hide_timer);
+	    if (id <= 0)
+	      return;
+
+	    cancel_timer(id);
+	    set_int(hide_timer, 0);
+	 }
+
+	 public hide_timer_start() {
+	    set_int(hide_timer, timer(1.0, "hide_timer_cb", 0));
+	 }
+
+	 public message(Msg_Type:type, id, ...) {
+	    if ((id == 0) && (type == MSG_FLOAT_SET)) {
+	       new Float:vx, Float:vy, Float:sx, Float:sy;
+               new hide;
+
+	       vx = getfarg(2);
+	       vy = getfarg(3);
+	       sx = getfarg(4);
+	       sy = getfarg(5);
+               hide = 0;
+
+	       if (vx >= 0.0) {
+		  set_drag_size(PART:"img.knob.horiz", sx, 1.0);
+		  set_drag(PART:"img.knob.horiz", vx, 0.0);
+		  run_program(PROGRAM:"eve,show,horiz");
+	       } else
+                  hide |= 1;
+
+	       if (vy >= 0.0) {
+		  set_drag_size(PART:"img.knob.vert", 1.0, sy);
+		  set_drag(PART:"img.knob.vert", 0.0, vy);
+		  run_program(PROGRAM:"eve,show,vert");
+	       } else
+                  hide |= 2;
+
+               if (hide == 3) {
+                  hide_both();
+                  return;
+               } else if (hide == 1)
+                  hide_horiz();
+               else if (hide == 2)
+                  hide_vert();
+               else
+                  set_state(PART:"rect.base", "default", 0.0);
+
+	       hide_timer_stop();
+	       hide_timer_start();
+	    }
+	 }
+      }
+
+      parts {
+         part {
+            name: "eve.swallow.content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 2 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -3 -3;
+               }
+            }
+         }
+
+         part {
+            name: "rect.base";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -16 -16;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+            description {
+               state: "horiz" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -8 -16;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+            description {
+               state: "vert" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -16 -8;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+
+
+         part {
+            name: "rect.base.vert";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -24 7;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 -1;
+                  to_y: "rect.base";
+               }
+            }
+         }
+
+         part {
+            name: "rect.clipper.vert";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "rect.base.vert";
+               rel2.to: "rect.base.vert";
+            }
+            description {
+               state: "hidden" 0.0;
+               color: 255 255 255 0;
+               rel1.to: "rect.base.vert";
+               rel2.to: "rect.base.vert";
+            }
+         }
+
+         part {
+            name: "img.runner.vert";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "rect.clipper.vert";
+            description {
+               state: "default" 0.0;
+               min: 3 16;
+               max: 3 99999;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -12 7;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -10 -1;
+                  to_y: "rect.base.vert";
+               }
+               image.normal: "sb_runner_v.png";
+            }
+         }
+
+         part {
+            name: "img.knob.vert";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "rect.clipper.vert";
+	    dragable {
+	       x: 0 0 0;
+	       y: 1 1 0;
+	       confine: "rect.base.vert";
+	    }
+            description {
+               state: "default" 0.0;
+               min: 13 13;
+               max: 13 99999;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -17 7;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -5 -1;
+                  to_y: "rect.base.vert";
+               }
+               image {
+                  normal: "sb_knob.png";
+                  border: 6 6 6 6;
+               }
+            }
+         }
+
+	 part {
+            name: "img.highlight.vert";
+            type: IMAGE;
+	    mouse_events: 0;
+            clip_to: "rect.clipper.vert";
+	    description {
+               state: "default" 0.0;
+	       rel1.to: "img.knob.vert";
+	       rel2 {
+                  relative: 1.0 0.5;
+                  to: "img.knob.vert";
+               }
+	       image {
+		  normal: "sb_hilight.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	 }
+
+	 part {
+            name: "img.shine.vert";
+            type: IMAGE;
+	    mouse_events: 0;
+	    clip_to: "rect.clipper.vert";
+	    description {
+               state: "default" 0.0;
+	       rel1.to: "img.knob.vert";
+	       rel2.to: "img.knob.vert";
+	       image {
+		  normal: "sb_shine.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	 }
+
+
+         part {
+            name: "rect.base.horiz";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 7 -24;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: -1 -1;
+                  to_x: "rect.base";
+               }
+            }
+         }
+
+         part {
+            name: "rect.clipper.horiz";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "rect.base.horiz";
+               rel2.to: "rect.base.horiz";
+            }
+            description {
+               state: "hidden" 0.0;
+               color: 255 255 255 0;
+               rel1.to: "rect.base.horiz";
+               rel2.to: "rect.base.horiz";
+            }
+         }
+
+         part {
+            name: "img.runner.horiz";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "rect.clipper.horiz";
+            description {
+               state: "default" 0.0;
+               min: 16 3;
+               max: 99999 3;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 7 -12;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -10;
+                  to_x: "rect.base.horiz";
+               }
+               image.normal: "sb_runner_h.png";
+            }
+         }
+
+         part {
+            name: "img.knob.horiz";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "rect.clipper.horiz";
+	    dragable {
+	       x: 1 1 0;
+	       y: 0 0 0;
+	       confine: "rect.base.horiz";
+	    }
+            description {
+               state: "default" 0.0;
+               min: 13 13;
+               max: 99999 13;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 7 -17;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -5;
+                  to_x: "rect.base.horiz";
+               }
+               image {
+                  normal: "sb_knob.png";
+                  border: 6 6 6 6;
+               }
+            }
+         }
+
+	 part {
+            name: "img.highlight.horiz";
+            type: IMAGE;
+	    mouse_events: 0;
+            clip_to: "rect.clipper.horiz";
+	    description {
+               state: "default" 0.0;
+	       rel1.to: "img.knob.horiz";
+	       rel2 {
+                  relative: 1.0 0.5;
+                  to: "img.knob.horiz";
+               }
+	       image {
+		  normal: "sb_hilight.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	 }
+
+	 part {
+            name: "img.shine.horiz";
+            type: IMAGE;
+	    mouse_events: 0;
+	    clip_to: "rect.clipper.horiz";
+	    description {
+               state: "default" 0.0;
+	       rel1.to: "img.knob.horiz";
+	       rel2.to: "img.knob.horiz";
+	       image {
+		  normal: "sb_shine.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	 }
+
+         part {
+            name: "img.inset";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image {
+		  normal: "inset_sunk.png";
+		  border: 7 7 7 7;
+		  middle: 0;
+               }
+	       fill.smooth : 0;
+            }
+         }
+
+         programs {
+            program {
+               name: "load";
+               signal: "load";
+               action: STATE_SET "hidden" 0.0;
+               target: "rect.clipper.vert";
+               target: "rect.clipper.horiz";
+            }
+
+            program {
+               name: "eve,hide,vert";
+               action: STATE_SET "hidden" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "rect.clipper.vert";
+            }
+
+            program {
+               name: "eve,show,vert";
+               action: STATE_SET "default" 0.0;
+               target: "rect.clipper.vert";
+            }
+
+            program {
+               name: "eve,hide,horiz";
+               action: STATE_SET "hidden" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "rect.clipper.horiz";
+            }
+
+            program {
+               name: "eve,show,horiz";
+               action: STATE_SET "default" 0.0;
+               target: "rect.clipper.horiz";
+            }
+         }
+      }
+   }
+}
