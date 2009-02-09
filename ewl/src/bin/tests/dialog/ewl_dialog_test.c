@@ -127,7 +127,7 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         hbox = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(dialog), hbox);
-        ewl_object_padding_set(EWL_OBJECT(hbox), 20, 20, 20, 20);
+        ewl_object_padding_type_set(EWL_OBJECT(hbox), EWL_PADDING_HUGE);
         ewl_widget_show(hbox);
 
         o = ewl_image_new();
@@ -135,7 +135,7 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data)
                 ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_INFORMATION, 46),
                 EWL_ICON_DIALOG_INFORMATION);
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        ewl_object_padding_set(EWL_OBJECT(o), 0, 20, 0, 0);
+        ewl_object_padding_type_right_set(EWL_OBJECT(o), EWL_PADDING_HUGE);
         ewl_widget_show(o);
 
         o = ewl_text_new();

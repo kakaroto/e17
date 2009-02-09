@@ -34,7 +34,10 @@ create_test(Ewl_Container *box)
 
         password[0] = ewl_password_new();
         ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
-        ewl_object_padding_set(EWL_OBJECT(password[0]), 5, 5, 5, 0);
+        ewl_object_padding_type_set(EWL_OBJECT(password[0]),
+                        EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(password[0]),
+                        EWL_PADDING_DEFAULT);
         ewl_container_child_append(box, password[0]);
         ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);
@@ -44,7 +47,10 @@ create_test(Ewl_Container *box)
         ewl_text_obscure_set(EWL_TEXT(password[1]), "•");
         ewl_text_color_set(EWL_TEXT(password[1]), 255, 0, 0, 255);
         ewl_text_text_append(EWL_TEXT(password[1]), "E W L ! ! !");
-        ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
+        ewl_object_padding_type_left_set(EWL_OBJECT(password[1]),
+                        EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_right_set(EWL_OBJECT(password[1]),
+                        EWL_PADDING_MEDIUM);
         ewl_container_child_append(box, password[1]);
         ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);
@@ -53,7 +59,10 @@ create_test(Ewl_Container *box)
         password[2] = ewl_password_new();
         ewl_text_obscure_set(EWL_TEXT(password[2]), "");
         ewl_text_text_append(EWL_TEXT(password[2]), "hidden text");
-        ewl_object_padding_set(EWL_OBJECT(password[2]), 5, 5, 0, 0);
+        ewl_object_padding_type_left_set(EWL_OBJECT(password[2]),
+                        EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_right_set(EWL_OBJECT(password[2]),
+                        EWL_PADDING_MEDIUM);
         ewl_container_child_append(box, password[2]);
         ewl_callback_append(password[2], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);

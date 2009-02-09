@@ -79,31 +79,38 @@ create_test(Ewl_Container *box)
          */
         entry_box = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(box), entry_box);
-        ewl_box_spacing_set(EWL_BOX(entry_box), 10);
+        //ewl_box_spacing_set(EWL_BOX(entry_box), 10);
         ewl_widget_show(entry_box);
 
         entry[0] = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
         ewl_entry_multiline_set(EWL_ENTRY(entry[0]), 1);
-        ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
+        ewl_object_padding_type_set(EWL_OBJECT(entry[0]), EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(entry[0]),
+                                EWL_PADDING_DEFAULT);
         ewl_container_child_append(EWL_CONTAINER(entry_box), entry[0]);
         ewl_widget_show(entry[0]);
 
         entry[1] = ewl_entry_new();
-        ewl_object_padding_set(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
+        ewl_object_padding_type_set(EWL_OBJECT(entry[1]), EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(entry[1]),
+                                EWL_PADDING_DEFAULT);
         ewl_container_child_append(EWL_CONTAINER(entry_box), entry[1]);
         ewl_widget_show(entry[1]);
 
         entry[2] = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(entry[2]), "Not more than 30 characters");
+        ewl_object_padding_type_set(EWL_OBJECT(entry[2]), EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(entry[2]),
+                                EWL_PADDING_DEFAULT);
         ewl_text_length_maximum_set(EWL_TEXT(entry[2]), 30);
-        ewl_object_padding_set(EWL_OBJECT(entry[2]), 5, 5, 0, 0);
         ewl_container_child_append(EWL_CONTAINER(entry_box), entry[2]);
         ewl_widget_show(entry[2]);
 
         o = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(o), "disabled");
-        ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 0, 0);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(o), EWL_PADDING_DEFAULT);
         ewl_container_child_append(EWL_CONTAINER(entry_box), o);
         ewl_widget_disable(o);
         ewl_widget_show(o);

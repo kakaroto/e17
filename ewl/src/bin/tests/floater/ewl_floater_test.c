@@ -67,7 +67,11 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(floater), separator);
         ewl_widget_show(separator);
 
-        ewl_object_padding_set(EWL_OBJECT(separator), 2, 2, 5, 5);
+        ewl_object_padding_type_set(EWL_OBJECT(separator), EWL_PADDING_SMALL);
+        ewl_object_padding_type_top_set(EWL_OBJECT(separator),
+                        EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(separator),
+                        EWL_PADDING_MEDIUM);
 
         check_button[0] = ewl_checkbutton_new();
         ewl_button_label_set(EWL_BUTTON(check_button[0]), "With Label");

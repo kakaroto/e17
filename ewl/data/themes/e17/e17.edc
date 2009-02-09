@@ -37,6 +37,12 @@ collections
 
 data 
 {
+	/* padding */
+	item: "/small/pad" "2";
+	item: "/medium/pad" "5";
+	item: "/large/pad" "10";
+	item: "/huge/pad" "20";
+
 	/* button related groups */
 	item: "/button/group" "ewl/button";
 	item: "/radiobutton/group" "ewl/button/other";

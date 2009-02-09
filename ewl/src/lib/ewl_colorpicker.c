@@ -154,7 +154,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_spectrum_rgb_set(EWL_SPECTRUM(o), r, g, b);
         ewl_object_minimum_size_set(EWL_OBJECT(o), 150, 150);
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
-        ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_SMALL);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_colorpicker_cb_square_change, cp);
         cp->picker.square = o;
@@ -168,7 +168,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         /* XXX this shouldn't be hard coded */
         ewl_object_minimum_size_set(EWL_OBJECT(o), 15, 150);
         ewl_object_maximum_size_set(EWL_OBJECT(o), 15, EWL_OBJECT_MAX_SIZE);
-        ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_SMALL);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_colorpicker_cb_vertical_change, cp);
         cp->picker.vertical = o;
@@ -198,7 +198,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_widget_appearance_set(o, "rectangle");
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_color_set(o, r, g, b, 255);
-        ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_SMALL);
         ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
         ewl_object_fill_policy_set(EWL_OBJECT(o),
                                 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
@@ -216,7 +216,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_widget_appearance_set(o, "rectangle");
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_color_set(o, r, g, b, 255);
-        ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_SMALL);
         ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
         ewl_object_fill_policy_set(EWL_OBJECT(o),
                                 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);

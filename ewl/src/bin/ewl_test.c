@@ -1204,7 +1204,8 @@ ewl_test_create_info_window(const char *title, const char *text)
         /* give it a size hint to calculate a good preferred size in the first 
          * place */
         ewl_object_w_request(EWL_OBJECT(o), 300);
-        ewl_object_padding_set(EWL_OBJECT(o), 10, 10, 20, 10);
+        ewl_object_padding_type_set(EWL_OBJECT(o), EWL_PADDING_LARGE);
+        ewl_object_padding_type_top_set(EWL_OBJECT(o), EWL_PADDING_HUGE);
         ewl_text_font_size_set(EWL_TEXT(o), 22);
         ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
         ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_FAR_SHADOW);

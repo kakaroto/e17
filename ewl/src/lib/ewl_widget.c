@@ -2547,11 +2547,9 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
                         void *user_data __UNUSED__)
 {
         int l = 0, r = 0, t = 0, b = 0;
-        int i_l = 0, i_r = 0, i_t = 0, i_b = 0;
-        int p_l = 0, p_r = 0, p_t = 0, p_b = 0;
         char *i = NULL;
         const char *group = NULL;
-        int width, height;
+        Ewl_Embed *emb;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -2605,75 +2603,58 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
          */
         ewl_widget_reveal(w);
 
+        emb = ewl_embed_widget_find(w);
+        /* get and assign the padding values */
+        ewl_widget_theme_padding_get(emb, w, &l, &r, &t, &b);
+        ewl_object_padding_set(EWL_OBJECT(w), l, r, t, b);
+
         /*
          * Set up the theme object on the widgets canvas
          */
         if (w->theme_object)
         {
-                Ewl_Embed *emb;
-
-                emb = ewl_embed_widget_find(w);
-                ewl_widget_theme_insets_get(emb, w, &i_l, &i_r, &i_t, &i_b);
-                ewl_widget_theme_padding_get(emb, w, &p_l, &p_r, &p_t, &p_b);
-
-                ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
-
-                /*
-                 * Use previously set insets and padding if available.
-                 */
-                if (l) i_l = l;
-                if (r) i_r = r;
-                if (t) i_t = t;
-                if (b) i_b = b;
-
-                ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
-
-                if (l) p_l = l;
-                if (r) p_r = r;
-                if (t) p_t = t;
-                if (b) p_b = b;
+                int width, height;
 
                 /*
                  * Assign the relevant insets and padding.
                  */
-                ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
-                ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+                l = r = t = b = 0;
+                ewl_widget_theme_insets_get(emb, w, &l, &r, &t, &b);
+                ewl_object_insets_set(EWL_OBJECT(w), l, r, t, b);
 
                 /*
                  * Propagate minimum sizes from the bit theme to the widget.
                  */
+                width = height = 0;
                 ewl_engine_theme_element_minimum_size_get(emb, w->theme_object,
                                         &width, &height);
-                i_l = width;
-                i_t = height;
 
-                if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
-                                && i_l > EWL_OBJECT_MIN_SIZE
-                                && i_l <= EWL_OBJECT_MAX_SIZE)
-                        ewl_object_minimum_w_set(EWL_OBJECT(w), i_l);
+                if (width > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
+                                && width > EWL_OBJECT_MIN_SIZE
+                                && width <= EWL_OBJECT_MAX_SIZE)
+                        ewl_object_minimum_w_set(EWL_OBJECT(w), width);
 
-                if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
-                                && i_t > EWL_OBJECT_MIN_SIZE
-                                && i_t <= EWL_OBJECT_MAX_SIZE)
-                        ewl_object_minimum_h_set(EWL_OBJECT(w), i_t);
+                if (height > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
+                                && height > EWL_OBJECT_MIN_SIZE
+                                && height <= EWL_OBJECT_MAX_SIZE)
+                        ewl_object_minimum_h_set(EWL_OBJECT(w), height);
 
                 /*
                  * Propagate maximum sizes from the bit theme to the widget.
                  */
+                width = height = 0;
                 ewl_engine_theme_element_maximum_size_get(emb, w->theme_object,
                                                 &width, &height);
-                i_l = width;
-                i_t = height;
 
-                if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
-                                && i_l >= EWL_OBJECT_MIN_SIZE
-                                && i_l < EWL_OBJECT_MAX_SIZE)
-                        ewl_object_maximum_w_set(EWL_OBJECT(w), i_l);
+                if (height > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
+                                && height >= EWL_OBJECT_MIN_SIZE
+                                && height < EWL_OBJECT_MAX_SIZE)
+                        ewl_object_maximum_w_set(EWL_OBJECT(w), height);
 
-                if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
-                                && i_t >= EWL_OBJECT_MIN_SIZE
-                                && i_t < EWL_OBJECT_MAX_SIZE)
-                        ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
+                if (width > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
+                                && width >= EWL_OBJECT_MIN_SIZE
+                                && width < EWL_OBJECT_MAX_SIZE)
+                        ewl_object_maximum_h_set(EWL_OBJECT(w), width);
         }
 
         DRETURN(DLEVEL_STABLE);
@@ -2694,9 +2675,6 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        ewl_object_insets_set(EWL_OBJECT(w), 0, 0, 0, 0);
-        ewl_object_padding_set(EWL_OBJECT(w), 0, 0, 0, 0);
 
         IF_RELEASE(w->theme_path);
         IF_RELEASE(w->theme_group);
@@ -3045,10 +3023,64 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static int
+ewl_widget_theme_pad_get(Ewl_Embed *emb, Ewl_Widget *w, const char *dir,
+                Ewl_Padding_Type type, int dpad, int old)
+{
+        char buffer[128];
+        const char *key;
+        int ret;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, 0);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        
+        switch (type)
+        {
+                case EWL_PADDING_CUSTOM:
+                        DRETURN_INT(old, DLEVEL_STABLE);
+                case EWL_PADDING_DEFAULT:
+                        ecore_strlcpy(buffer, "pad/", sizeof(buffer));
+                        ecore_strlcat(buffer, dir, sizeof(buffer));
+                        key = ewl_engine_theme_element_data_get(emb, 
+                                        w->theme_object, buffer);
+                        if (key)
+                                ret = atoi(key);
+                        else
+                                ret = dpad;
+                        DRETURN_INT((ret), DLEVEL_STABLE);
+                case EWL_PADDING_SMALL:
+                        ecore_strlcpy(buffer, "small/pad/", sizeof(buffer));
+                        break;
+                case EWL_PADDING_MEDIUM:
+                        ecore_strlcpy(buffer, "medium/pad/", sizeof(buffer));
+                        break;
+                case EWL_PADDING_LARGE:
+                        ecore_strlcpy(buffer, "large/pad/", sizeof(buffer));
+                        break;
+                case EWL_PADDING_HUGE:
+                        ecore_strlcpy(buffer, "huge/pad/", sizeof(buffer));
+                        break;
+        }
+
+        ecore_strlcat(buffer, dir, sizeof(buffer));
+        ret = ewl_theme_data_int_get(w, buffer);
+        if (ret == 0)
+        {
+                char *ptr = strrchr(buffer, '/');
+                *ptr = '\0';
+
+                ret = ewl_theme_data_int_get(w, buffer);
+        }
+
+        DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
 static void
 ewl_widget_theme_padding_get(Ewl_Embed *emb, Ewl_Widget *w, 
                                 int *l, int *r, int *t, int *b)
 {
+        int pad = 0;
         const char *key;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3059,30 +3091,21 @@ ewl_widget_theme_padding_get(Ewl_Embed *emb, Ewl_Widget *w,
          * Read in the padding values from the edje file
          */
         key = ewl_engine_theme_element_data_get(emb, w->theme_object, "pad");
-        if (key) {
-                int val = atoi(key);
+        if (key)
+                pad = atoi(key);
 
-                if (l) *l = val;
-                if (r) *r = val;
-                if (t) *t = val;
-                if (b) *b = val;
-        }
-
-        key = ewl_engine_theme_element_data_get(emb, w->theme_object,
-                        "pad/left");
-        if (key && l) *l = atoi(key);
-
-        key = ewl_engine_theme_element_data_get(emb, w->theme_object,
-                        "pad/right");
-        if (key && r) *r = atoi(key);
-
-        key = ewl_engine_theme_element_data_get(emb, w->theme_object,
-                        "pad/top");
-        if (key && t) *t = atoi(key);
-
-        key = ewl_engine_theme_element_data_get(emb, w->theme_object,
-                        "pad/bottom");
-        if (key && b) *b = atoi(key);
+        if (l)
+                *l = ewl_widget_theme_pad_get(emb, w, "left",
+                                PADDING_TYPE_LEFT(w), pad, PADDING_LEFT(w));
+        if (r)
+                *r = ewl_widget_theme_pad_get(emb, w, "right",
+                                PADDING_TYPE_RIGHT(w), pad, PADDING_RIGHT(w));
+        if (t)
+                *t = ewl_widget_theme_pad_get(emb, w, "top",
+                                PADDING_TYPE_TOP(w), pad, PADDING_TOP(w));
+        if (b)
+                *b = ewl_widget_theme_pad_get(emb, w, "bottom",
+                                PADDING_TYPE_BOTTOM(w), pad, PADDING_BOTTOM(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

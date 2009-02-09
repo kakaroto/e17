@@ -90,7 +90,12 @@ struct Ewl_Object
         } pad, /**< The space padded around the outside of the object. */
         insets; /**< The space inside where children should not be laid out. */
 
-        unsigned int flags; /**< Bitmask indicating fill policy and alignment */
+        unsigned short flags; /**< Bitmask indicating fill policy and a
+                                lignment */
+        unsigned short pad_type_l:3;
+        unsigned short pad_type_r:3;
+        unsigned short pad_type_t:3;
+        unsigned short pad_type_b:3;
 };
 
 int              ewl_object_init(Ewl_Object *o);
@@ -154,6 +159,18 @@ void             ewl_object_padding_set(Ewl_Object *o, int l, int r, int t,
                                         int b);
 void             ewl_object_padding_get(Ewl_Object *o, int *l, int *r, int *t,
                                        int *b);
+
+void             ewl_object_padding_type_set(Ewl_Object *o,
+                                                Ewl_Padding_Type type);
+void             ewl_object_padding_type_left_set(Ewl_Object *o,
+                                                Ewl_Padding_Type type);
+void             ewl_object_padding_type_right_set(Ewl_Object *o,
+                                                Ewl_Padding_Type type);
+void             ewl_object_padding_type_top_set(Ewl_Object *o,
+                                                Ewl_Padding_Type type);
+void             ewl_object_padding_type_bottom_set(Ewl_Object *o,
+                                                Ewl_Padding_Type type);
+
 int              ewl_object_padding_top_get(Ewl_Object *o);
 int              ewl_object_padding_bottom_get(Ewl_Object *o);
 int              ewl_object_padding_left_get(Ewl_Object *o);
@@ -211,6 +228,30 @@ void             ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * Retrieve the total size of the vertical padding
  */
 #define PADDING_VERTICAL(o) (EWL_OBJECT(o)->pad.t + EWL_OBJECT(o)->pad.b)
+
+/**
+ * @def PADDING_TYPE_TOP(o)
+ * Retrieve the type of the top pad
+ */
+#define PADDING_TYPE_TOP(o) ((const Ewl_Object *)(o))->pad_type_t
+
+/**
+ * @def PADDING_TYPE_BOTTOM(o)
+ * Retrieve the type of the bottom pad
+ */
+#define PADDING_TYPE_BOTTOM(o) ((const Ewl_Object *)(o))->pad_type_b
+
+/**
+ * @def PADDING_TYPE_LEFT(o)
+ * Retrieve the type of the left pad
+ */
+#define PADDING_TYPE_LEFT(o) ((const Ewl_Object *)(o))->pad_type_l
+
+/**
+ * @def PADDING_TYPE_RIGHT(o)
+ * Retrieve the type of the right pad
+ */
+#define PADDING_TYPE_RIGHT(o) ((const Ewl_Object *)(o))->pad_type_r
 
 /**
  * @def INSET_LEFT(o)

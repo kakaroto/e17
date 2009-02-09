@@ -141,6 +141,25 @@ enum Ewl_Object_Flags
                 EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK)
 
 /**
+ * @enum Ewl_Padding
+ */
+enum Ewl_Padding_Type
+{
+        EWL_PADDING_DEFAULT = 0,        /**< the default defined by the theme */
+        EWL_PADDING_SMALL,              /**< Small padding value */
+        EWL_PADDING_MEDIUM,             /**< Medium padding value */
+        EWL_PADDING_LARGE,              /**< Large padding value */
+        EWL_PADDING_HUGE,               /**< Huge padding value */
+        EWL_PADDING_CUSTOM              /**< user defined padding */
+};
+
+/**
+ * The Ewl_Padding_Type type
+ */
+typedef enum Ewl_Padding_Type Ewl_Padding_Type;
+
+
+/**
  * @enum Ewl_Widget_Flags
  * A variety of flags that affect visibility, scheduling and
  * properties of widgets.

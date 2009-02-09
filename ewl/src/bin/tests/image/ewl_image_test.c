@@ -146,7 +146,7 @@ create_test(Ewl_Container *image_box)
 
         image = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(image), image_file, NULL);
-        ewl_object_padding_set(EWL_OBJECT(image), 0, 0, 5, 0);
+        ewl_object_padding_type_top_set(EWL_OBJECT(image), EWL_PADDING_MEDIUM);
         ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(scrollpane), image);
         ewl_widget_show(image);

@@ -1167,7 +1167,9 @@ ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev __UNUSED__,
 
         box = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(d), box);
-        ewl_object_padding_set(EWL_OBJECT(box), 5, 5, 5, 0);
+        ewl_object_padding_type_set(EWL_OBJECT(box), EWL_PADDING_MEDIUM);
+        ewl_object_padding_type_bottom_set(EWL_OBJECT(box),
+                                EWL_PADDING_DEFAULT);
         ewl_widget_show(box);
 
         path = ewl_icon_theme_icon_path_get(EWL_ICON_FOLDER_NEW,
