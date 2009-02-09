@@ -214,19 +214,21 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
     shaped = edje_object_data_get(eef->gui, "shaped");
     borderless = edje_object_data_get(eef->gui, "borderless");
 
-    if (!shaped) ecore_evas_shaped_set(eef->ee, 0);
+    if (!shaped)
+        ecore_evas_shaped_set(eef->ee, 0);
     else if (!strcmp("1", shaped)) {
         ecore_evas_shaped_set(eef->ee, 1);
         is_shaped = 1;
     }
-    else ecore_evas_shaped_set(eef->ee, 0);
+    else 
+        ecore_evas_shaped_set(eef->ee, 0);
 
     if (!borderless)
         ecore_evas_borderless_set(eef->ee, 0);
     else if (!strcmp("1", borderless)) 
-	ecore_evas_borderless_set(eef->ee, 1);
+        ecore_evas_borderless_set(eef->ee, 1);
     else 
-	ecore_evas_borderless_set(eef->ee, 0);
+        ecore_evas_borderless_set(eef->ee, 0);
 
     ecore_evas_resize(eef->ee, w, h);
     ecore_evas_size_min_set(eef->ee, w, h);
