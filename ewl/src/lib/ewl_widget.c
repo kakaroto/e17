@@ -2646,15 +2646,15 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 ewl_engine_theme_element_maximum_size_get(emb, w->theme_object,
                                                 &width, &height);
 
-                if (height > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
-                                && height >= EWL_OBJECT_MIN_SIZE
-                                && height < EWL_OBJECT_MAX_SIZE)
-                        ewl_object_maximum_w_set(EWL_OBJECT(w), height);
-
-                if (width > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
+                if (width > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
                                 && width >= EWL_OBJECT_MIN_SIZE
                                 && width < EWL_OBJECT_MAX_SIZE)
-                        ewl_object_maximum_h_set(EWL_OBJECT(w), width);
+                        ewl_object_maximum_w_set(EWL_OBJECT(w), width);
+
+                if (height > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
+                                && height >= EWL_OBJECT_MIN_SIZE
+                                && height < EWL_OBJECT_MAX_SIZE)
+                        ewl_object_maximum_h_set(EWL_OBJECT(w), height);
         }
 
         DRETURN(DLEVEL_STABLE);
