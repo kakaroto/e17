@@ -1,5 +1,6 @@
 Login:    	urandom
 IRC Nick: 	saturn_vk
+Cloak:		developer/urandom
 Name:     	Viktor Kojouharov
 Location: 	Amsterdam, The Netherlands, EU
 E-Mail:   	-vkojouharov@gmail.com
