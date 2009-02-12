@@ -132,6 +132,7 @@ PKG_CHECK_MODULES(EXALT, [
   edbus >= 0.1.0.002,
   dbus-1 >= 0.1,
   evas >= 0.9
+  elementary >= 0.1
 ])
 
 
@@ -154,7 +155,9 @@ src/bin/Makefile
 src/lib/Makefile
 src/lib_dbus/Makefile
 src/bin_command/Makefile
+src/bin_client/Makefile
 data/Makefile
+data/icons/Makefile
 data/daemon/Makefile
 data/daemon/dbus/Makefile
 exalt.pc

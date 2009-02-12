@@ -1,2 +1,2 @@
 filesdir = $(pkgdatadir)
-SUBDIRS = daemon
+SUBDIRS = daemon icons
