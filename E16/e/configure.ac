@@ -378,7 +378,6 @@ dox/E-docs/Makefile
 eesh/Makefile
 epp/Makefile
 lib/Makefile
-man/Makefile
 config/Makefile
 config/pix/Makefile
 themes/Makefile

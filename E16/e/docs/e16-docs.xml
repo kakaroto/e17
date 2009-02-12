@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<!--
+  -->
+
+<refentry id='e16.man'>
+ <refentryinfo>
+  <productname>e16</productname>
+  <!--pubdate>__date__</pubdate-->
+  <authorgroup>
+   <author>
+    <firstname>The Enlightenment Team</firstname>
+    <contrib/>
+    <email>enlightenment-devel@lists.sourceforge.net</email>
+   </author>
+   <author>
+    <firstname>Kim</firstname><surname>Woelders</surname>
+    <contrib/>
+    <email>kim@woelders.dk</email>
+   </author>
+  </authorgroup>
+ </refentryinfo>
+
+ <refmeta>
+  <refentrytitle>e16</refentrytitle>
+  <manvolnum>1</manvolnum>
+  <refmiscinfo class='date'>__date__</refmiscinfo>
+  <refmiscinfo class='source'>e16 __version__</refmiscinfo>
+  <refmiscinfo class='manual'>e16 documentation</refmiscinfo>
+ </refmeta>
+
+ <refnamediv id='name'>
+  <refname>e16</refname>
+  <refpurpose>The Enlightenment DR16 Window Manager</refpurpose>
+ </refnamediv>
+
+ <!-- body begins here -->
+
+<refsect1 id='documentation'><title>e16 documentation</title>
+
+<refsect2 id='front'><title><markup role="dox-center"/>Enlightenment version 0.16.8</title>
+<img src="E_logo.png" x="32" y="77"/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para><markup role="dox-center"/>
+Topics:
+</para>
+<para><markup role="dox-center"/><simplelist>
+<member><link linkend="aboutdox">How To Use Documentation</link></member>
+<member><link linkend="about">About Enlightenment</link></member>
+<member><link linkend="res">Resources</link></member>
+<member></member>
+<member><link linkend="docindex">User Documentation</link></member>
+<member><link linkend="faq">Frequently Asked Questions</link></member>
+</simplelist></para>
+<para/>
+<para/>
+<para/>
+<para/>
+<font face="Vera/10" color="#ffffff"/>
+<para>
+Welcome to the Enlightenment Documentation Viewer.  Please select a topic from
+the list.
+</para>
+</refsect2>
+
+
+<refsect2 id='aboutdox'><title/>
+<para>
+This Documentation is intended to take you step by step through Enlightenment(E16)
+and its default setup, how to use it, modify settings, and put it to use for
+you. When you have finished reading each page please press the NEXT button to go
+to the next page, or use the Back button until you have reached the
+<link linkend="docindex">Docs Index</link>.
+</para>
+<para>
+If you are reading this right now you have managed to get E16 itself
+installed correctly and are either running E16 for the first time or
+have just upgraded to a new version. Congratulations. Now it's time to take
+you on a quick tour of the desktop you will have before you.
+</para>
+<para>
+Please remember that if you use a <link linkend="themes">theme</link> other than
+Brushed Metal that it may look slightly or completely different to the
+contents of this User Documentation. Some behavior may also vary.
+</para>
+<para>
+To relaunch this Help Browser at any time, middle click on your
+<link linkend="desktops">desktop</link> and select the "Help" Item.  The documentation should come
+back up, reloading to the first page.
+You can also use the "Home" key to take you back to the introduction page at
+any time during the program.
+</para>
+</refsect2>
+
+
+<refsect2 id="about"><title></title>
+<para>
+E16 is your Window Manager. The Window Manager controls the
+appearance of the borders of your windows, their behavior and
+all user interaction with positioning, killing, resizing, moving, iconifying,
+shading etc. your windows, virtual desktops, multiple desktops, menus attached
+to windows and some root window menus and can also control the background
+of your desktop(s).
+</para>
+<para>
+E16 is a large and complex program and is by no means perfect,
+but it is being worked on and is as stable as possible. It has many advanced
+features, but may also be missing some features that you would like to see.
+The version you are now running (0.16.8) is by no means the
+end of development and improvements, fixes and new exciting features are
+being worked on all the time. Please visit the <link linkend="res">Web</link> site often for
+new versions, fixes, patches and updates.
+</para>
+<para>
+We hope that you enjoy using E16 as much as we have enjoyed writing
+it.  We'd like to think that even if this isn't the right software for you, you
+at least can have fun playing around with what we have created.
+</para>
+</refsect2>
+
+
+<refsect2 id="res"><title>Resources</title>
+<para>
+Web site: http://www.enlightenment.org/
+</para>
+<para>
+Forums: http://forum.enlightenment.org/
+</para>
+<para>
+Bugs: http://bugs.enlightenment.org/
+</para>
+<para/>
+<para>
+Download: http://sourceforge.net/project/showfiles.php?group_id=2
+</para>
+<para>
+Mailing lists: http://sourceforge.net/mail/?group_id=2
+</para>
+<para>
+IRC: #E on freenode
+</para>
+</refsect2>
+
+
+<!-- should have columns=2 -->
+<refsect2 id="docindex"><title>Documentation Index</title>
+<para><simplelist>
+<member><link linkend="basicintro">Basic Intro</link></member>
+<member><link linkend="rootmenu">Using Menus</link></member>
+<member><link linkend="mousebind">Mouse Bindings</link></member>
+<member><link linkend="mouseconfig">Mouse Configuration</link></member>
+<member><link linkend="border">Using The Window Border</link></member>
+<member><link linkend="changeborder">Changing Window Borders</link></member>
+<member><link linkend="defkeys">Default Keybindings</link></member>
+<member><link linkend="desktops">Multiple Desktops</link></member>
+<member><link linkend="changedesk">Changing Desktops</link></member>
+<member><link linkend="appsdesk">Taking Apps Between Desks</link></member>
+<member><link linkend="dragbar">The Dragbar</link></member>
+<member><link linkend="pager">The Pager</link></member>
+<member><link linkend="iconbox">The Iconbox</link></member>
+<member><link linkend="minimized">Recovering Minimized Apps</link></member>
+<member><link linkend="properties">Remembering App Properties</link></member>
+<member><link linkend="settings">Intro To Settings</link></member>
+<member><link linkend="groups">Window Groups</link></member>
+</simplelist></para>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para><simplelist>
+<member><link linkend="backgrounds">Desktop Backgrounds</link></member>
+<member><link linkend="tooltips">Tooltips</link></member>
+<member><link linkend="audio">Audio</link></member>
+<member><link linkend="fx">Special Effects</link></member>
+<member><link linkend="focus">Setting The Focus</link></member>
+<member><link linkend="movemode">Moving Windows</link></member>
+<member><link linkend="resizemode">Resizing Windows</link></member>
+<member><link linkend="windowops">Window Operations</link></member>
+<member><link linkend="placement">Window Placement Options</link></member>
+<member><link linkend="placement">Autoraise Settings</link></member>
+<member><link linkend="eesh">Quick Intro to IPC</link></member>
+<member><link linkend="editmenus">How To Edit Menus</link></member>
+<member><link linkend="editkeys">How To Change Keybindings</link></member>
+<member><link linkend="themes">Themes</link></member>
+<member><link linkend="eyecandy">Extra Eyecandy</link></member>
+<member><link linkend="maint">Maintenance Scripts</link></member>
+</simplelist></para>
+</refsect2>
+
+
+<refsect2 id="basicintro"><title/>
+<img src="E_screen_start.png" x="16" y="16"/>
+<para>
+Now that you have started E16, if you are using it for your desktop
+shell, your screen should look something like the image here on the left.
+</para>
+<para>
+Across the whole top of the screen you will see a bar with arrows pointing
+up and down on the left and right ends. This is your desktop
+<link linkend="dragbar">Dragbar</link>.
+</para>
+<para>
+On the bottom-left you'll see 3 boxes. The top box with the scrollbar attached
+will be your <link linkend="iconbox">Iconbox</link>.
+</para>
+<para>
+The other 2 boxes below it are <link linkend="pager">Pagers</link> for desktops 0 and 1. Everything
+else is your desktop background.
+</para>
+</refsect2>
+
+
+<refsect2 id="rootmenu"><title>Using Menus</title>
+<img src="E_app_menu.png" x="350" y="38"/>
+<para>
+When you click with your left mouse button on the desktop <link linkend="backgrounds">background</link> you will
+see an "User Menus" menu appear (example displayed on the right here).
+Applications you may have installed will appear in this menu. To launch one
+of them simply select it from the menu.
+</para>
+<para>
+Note: Menus in E16 work like most menu systems. Either hold
+down the mouse button and navigate with the button down, releasing on the
+selection you want, or release elsewhere to not select anything. You can also
+quickly click and release, then navigate: move the mouse, and click
+again on the item you wish to select, or elsewhere if you do not wish to
+select an entry.
+</para>
+</refsect2>
+
+
+<refsect2 id="tut4"><title/>
+<img src="E_settings_menu.png" x="285" y="235"/>
+<img src="E_enlightenment_menu.png" x="4" y="30"/>
+<para/>
+<para>
+Clicking the middle button on the desktop <link linkend="backgrounds">background</link> will display
+E16's main menu. You can access the other menus plus more options
+from this menu (including those to log out, restart and display Help
+information). A sample of this menu is shown to our left.
+</para>
+<para/>
+<para/>
+<para/>
+<para>
+When you click the right mouse button
+a menu with the title "Settings" will appear. This is
+E16's <link linkend="settings">settings</link> menu. From it you can select various
+configuration dialogs that will assist you in customizing your desktop to
+better suit your needs.
+</para>
+</refsect2>
+
+
+<refsect2 id="mousebind"><title>Mouse Bindings</title>
+<para>
+Of course, when you click on the <link linkend="desktops">desktop</link> <link linkend="backgrounds">background</link> of
+your screen, normally you will bring up a <link linkend="rootmenu">menu</link>.  And of course, when you
+click on the <link linkend="border">border</link> of a window, you will do various things.  But these
+are not the only things you can do with your mouse.
+</para>
+<para>
+In E16, there are several other actions that the mouse can do by
+default.  For example, by holding down the ALT key when you click the left
+mouse button anywhere in a window, you will find that you can <link linkend="movemode">move</link> the window
+around the screen, just as if you had used the titlebar.  You can also ALT
+middle-click in a window to <link linkend="resizemode">resize</link> it, or use ALT and right-click to bring up
+the <link linkend="windowops">Window Operations Menu</link>.
+</para>
+<para>
+You will find that holding down the ALT key while clicking the middle
+mouse button on the background of your <link linkend="desktops">desktop</link> will bring up a
+menu with the titles of all currently active
+application windows. Selecting one of these will take you to that application.
+By using the CTRL key instead of ALT you will get a menu displaying all
+current desktops as sub-menus, with applications on each desktop in the
+desktop sub-menu.
+</para>
+</refsect2>
+
+
+<refsect2 id="mouseconfig"><title>Mouse Configuration</title>
+<para>
+E16 makes extensive use of the mouse.
+However, you may be missing some features because of the way
+that your mouse is configured on your X server.
+</para>
+<para>
+If your mouse does not have a middle button you should enable
+"Emulate 3 Buttons" in your X server. This option allows you to
+emulate a three-button mouse by pressing both left and
+right mouse buttons at once.
+If this does not work, three-button emulation  may not be enabled. See
+your X server documentation to configure this emulation.
+</para>
+<para>
+This may vary from system to system. The OS and X server may also
+vary the method in which you do this, if it is possible. Not having
+a middle mouse button in
+E16, or for that matter X, is not a good thing as it is almost
+assumed to be there, and is used by many applications, including E.
+</para>
+</refsect2>
+
+
+<refsect2 id="tut6"><title/>
+<img src="E_mousewheel.png" x="370" y="30"/>
+<img src="E_mouse.png" x="410" y="330"/>
+<para>
+If you have a Wheel-Mouse and X is configured to use it, E16
+supports it by default.
+</para>
+<para>
+Rolling your wheel up on the desktop background will take you back a
+<link linkend="desktops">desktop</link>. Rolling your wheel downward you will advance
+forward a desktop.
+</para>
+<para>
+If this doesn't work, then it may be you haven't configured your X server to
+understand a mouse with a wheel. You may need to edit your X server
+configuration to have a "Pointer" Section like:
+</para>
+<font face="Vera/11" color="#ccaacc"/>
+<para><simplelist>
+<member>Section "Pointer"</member>
+<member>Protocol    "MousemanPlusPS/2"</member>
+<member>Device      "/dev/mouse"</member>
+<member>ZAxisMapping 4 5</member>
+<member>Buttons      5</member>
+<member>EndSection</member>
+</simplelist></para>
+<font face="Vera/11" color="#ffffff"/>
+<para>
+You may need to modify this for your mouse.
+</para>
+</refsect2>
+
+
+<refsect2 id="border"><title>Using the Window Border</title>
+<para>
+When you start an application, unless it has special properties, it will come
+up on your screen with a border surrounding it that contains a titlebar and
+several control buttons.
+This border is the primary interface to controlling an application window.
+The Default setup (shown on the next page) gives adequate control but still
+retains simplicity.
+</para>
+<para>
+If you click left mouse button on the titlebar and keep the mouse button down
+the window will follow your mouse wherever it moves. Respectively if you click
+your left mouse button and drag on any of the resize handles, the window will
+be resized in that direction. Clicking right mouse button on the resize
+handles will raise the windows to the top.
+</para>
+<para>
+Clicking right mouse button on the titlebar or any button on the window
+operations menu button on the top-left will display a menu that has window
+manipulation options in it.
+</para>
+<para>
+Double-Clicking the title bar will make the Window shade or unshade.
+</para>
+</refsect2>
+
+
+<refsect2 id="tut8"><title/>
+<img src="E_window_diagram.png" x="16" y="48"/>
+<para/>
+</refsect2>
+
+
+<refsect2 id="tut9"><title/>
+<para>
+Clicking left mouse button on the iconify button will iconify the window
+and send it off to the <link linkend="iconbox">Iconbox</link>. Hitting the Maximize button will
+maximize the
+size of the application fill your screen. Hitting it again will Unmaximize,
+bringing the window back to its normal size.
+</para>
+<para>
+Clicking with the left mouse button on the close button will close the window.
+If the application that owns that window does not respond to a nice request to
+exit, then press the right mouse button on the close button to forcibly
+terminate that window. This should not be used unless the application is
+visibly "hung".
+</para>
+<para>
+In addition to these methods, there are additional ways to manipulation
+windows.
+</para>
+<para>
+If you hold down the ALT key and hold down left mouse button anywhere in the
+window (on the border OR in the application part) while dragging, you will
+move this window around. Doing the same but with the middle mouse button will
+resize the window in that direction. Clicking the right mouse button anywhere
+in the window while holding down the ALT key will bring up the window
+operations menu.
+</para>
+</refsect2>
+
+
+<refsect2 id="changeborder"><title>Changing Window Borders</title>
+<img src="E_border_selector.png" x="300" y="40"/>
+<para>
+You may find that you don't like a particular border that a
+window uses, for some reason or another.  You can easily change the border
+style of a window in E16 using the <link linkend="windowops">Window Operations</link>
+menu, however.  Select the "Set Border Style" menu, and a list will be
+presented to you of available borders in this theme.  The most common use
+for this is to make an application shed its border, using the
+BORDERLESS border type.
+</para>
+<para>
+You can always click with ALT + Right mouse button anywhere in the window to
+bring up the window operations menu again.
+</para>
+<para>
+If you want to remember the border style for the next time you run this
+application, you can always use the <link linkend="properties">Remember</link> dialog to remember
+the current window border.
+</para>
+</refsect2>
+
+
+<refsect2 id="defkeys"><title>Default Keybindings</title>
+<img src="E_keyboard.png" x="312" y="0"/>
+<para>
+Below are the keybindings for E as it comes "from the factory"
+</para>
+<font face="Vera/10" color="#112222"/>
+<para><simplelist>
+<member>CTRL+ALT+Home - Re-shuffle windows on screen to be Clean</member>
+<member>CTRL+ALT+Del - Exit E16 and Log Out</member>
+<member>CTRL+ALT+End - Restart E16</member>
+<member>CTRL+ALT+Up-Arrow - Raise window to top</member>
+<member>CTRL+ALT+Down-Arrow - Lower window to the bottom</member>
+<member>CTRL+ALT+Left-Arrow - Go to the previous desktop</member>
+<member>CTRL+ALT+Right-Arrow - Go to the next desktop</member>
+<member>CTRL+ALT+X - Close the currently focused window</member>
+<member>CTRL+ALT+K - Kill the currently focused window nastily</member>
+<member>CTRL+ALT+I - Iconify the currently focused window</member>
+<member>CTRL+ALT+R - Shade/Unshade the currently focused window</member>
+<member>CTRL+ALT+S - Stick/Unstick the currently focused window</member>
+<member>CTRL+ALT+M - Maximize/unmaximize the currently focused window</member>
+<member>CTRL+ALT+F - Toggle fullscreen mode of the currently focused window</member>
+<member>CTRL+ALT+(F1 - F8) - Go directly to desktops 0 - 7</member>
+</simplelist></para>
+<font face="Vera/11" color="#ffffff"/>
+<para>
+(more on next page ...)
+</para>
+</refsect2>
+
+
+<refsect2 id="tut11"><title/>
+<font face="Vera/10" color="#112222"/>
+<para><simplelist>
+<member>ALT+Tab - Switch focus to the next window</member>
+<member>ALT+Enter - Zoom/Unzoom the currently focused window</member>
+<member>SHIFT+ALT+Left-Arrow - Move to the virtual desktop on the left</member>
+<member>SHIFT+ALT+Right-Arrow - Move to the virtual desktop on the right</member>
+<member>SHIFT+ALT+Up-Arrow - Move to the virtual desktop above</member>
+<member>SHIFT+ALT+Down-Arrow - Move to the virtual desktop below</member>
+</simplelist></para>
+<font face="Vera/11" color="#ffffff"/>
+<para>
+Note: Zooming in and out of windows will only work if you have an X server
+that implements the Xf86VidMode extension. You also need to define multiple
+screen modes for your display, e.g. with a "Display" subsection of the X11
+configuration that looks like:
+</para>
+<font face="Vera/11" color="#ccaacc"/>
+<para><simplelist>
+<member>SubSection "Display"</member>
+<member>	Depth 16</member>
+<member>	Modes "1600x1200" "1280x1024" "1152x864" "1024x768" "800x600" "640x480" "512x384" "400x300" "320x240"</member>
+<member>EndSubSection</member>
+</simplelist></para>
+</refsect2>
+
+
+<refsect2 id="desktops"><title>Multiple &amp; Virtual Desktops</title>
+<img src="E_deskstack.png" x="360" y="70"/>
+<para>
+E16 supports both Multiple and Virtual desktops. There are
+distinct difference between the two, and E16 treats them differently.
+</para>
+<para>
+When you start E16 you will by default have two desktops. In
+E16 desktops are geometrically unrelated work areas. They are
+visually stacked on top of each other and can even be dragged down to expose
+desktops underneath.
+</para>
+<para>
+The best way to imagine this is that each desktop is a sheet of paper with the
+first desktop (desktop 0) being glued in-place. You can re-shuffle the stack
+of papers and slide one down to reveal a piece of paper underneath - the only
+paper you can't slide is the first one. Each desktop (or sheet) contains your
+application windows.
+</para>
+</refsect2>
+
+
+<refsect2 id="desktops2"><title/>
+<img src="E_deskarray.png" x="350" y="140"/>
+<para>
+Windows normally live on one desktop, but can be made
+to exist on all desktops - whenever you change to a new desktop the window
+will follow you and be on that desktop too. This is known as being sticky.
+if a window is sticky it will "stick to the glass of your screen" and stay
+there until it is not sticky anymore or the window is closed.
+</para>
+<para>
+Virtual desktops (also known as desktop areas) is a measure of how big your
+desktops are. A desktop can be a multiple of your screen size in size (2x1,
+2x2, 3x3, 4x2 etc.). That means each desktop has an AxB screen size of area
+allocated to it and you can be looking at any screen-sized part of it at any
+time. It's just like getting more sheets of paper and taping them to the sides
+of your current sheet of paper. An easy way of changing your view is by just
+sliding your mouse in the direction of a currently unviewable part of your
+desktop. As long as you have Edge Flip enabled E16 will
+automatically scroll over to that part of the desktop.
+</para>
+</refsect2>
+
+
+<refsect2 id="desktops3"><title/>
+<img src="E_virtual_desk_settings.png" x="335" y="51"/>
+<img src="E_area_settings.png" x="30" y="190"/>
+<para>
+To change the number of virtual desktops that you have, use the "Multiple
+Desktop Settings" dialog from the right mouse <link linkend="settings">Settings Menu</link>.  You
+should see a menu that looks something like the menu to the right.  You can use
+the slider bar to quickly select the appropriate number of virtual desktops you
+would like to use.
+</para>
+<para/>
+<para/>
+<para/>
+<para>
+To change the number of virtual areas, use the "Virtual Desktop Settings"
+menu.  This will bring up a menu that looks something like the one on the left.
+Use the slider bars to extend the size of the virtual areas to the size that
+you prefer. You can also use this dialog to enable/disable edge
+resistance (when your <link linkend="mousebind">mouse</link> hits the edge of an area) moving between
+virtual areas.
+</para>
+</refsect2>
+
+
+<refsect2 id="desktops4"><title/>
+<img src="E_deskimg.png" x="275" y="81"/>
+<para>
+E16 also allows you to set a different desktop backdrop per desktop
+to help you customize your environment and differentiate which desktop is
+which.
+</para>
+<para>
+An easy way of having E16 automatically pick up any pictures you have
+is to make a directory in your ~/.e16 directory called
+backgrounds and then fill that with your favorite backdrops. E16
+will automatically discover this and index them for you allowing you to
+select them and change their settings. More on this topic is explained in the
+<link linkend="backgrounds">Desktop Backgrounds</link> section.
+</para>
+</refsect2>
+
+
+<refsect2 id="changedesk"><title>Changing Desktops</title>
+<para>
+There are several ways that you can change your current desktop - let's go over
+a few of them here.
+</para>
+<para><simplelist>
+<member>You can use the <link linkend="defkeys">Keybindings</link> alt-F1 through alt-F8 for the first 8
+desktops.</member>
+<member>You can use the <link linkend="defkeys">Keybindings</link> Ctrl-Alt-Left and Ctrl-Alt-Right to
+navigate to the next/previous desktop.</member>
+<member>You can use the <link linkend="tut11">Keybindings</link> shift-alt-directional arrow to change
+virtual areas in a given direction.</member>
+<member>You can use the <link linkend="pager">Pager</link> to quickly navigate to the desktop/area you want
+by clicking on the desired area.</member>
+<member>You can use the <link linkend="dragbar">Dragbar</link> to quickly navigate to a particular
+application or a particular desktop by using the middle and right mouse
+buttons.</member>
+<member>You can also use external applications such as the GNOME panel's pager or the
+KDE panel's pager to navigate desktops and/or applications.</member>
+</simplelist></para>
+</refsect2>
+
+
+<refsect2 id="appsdesk"><title>Moving Applications Between Desktops</title>
+<para>
+There are several ways that you can move applications from one desktop to
+another.  We'll go over a few of them now.
+</para>
+<para>
+The first way you can move apps between desktops is using the <link linkend="pager">Pager</link>.
+</para>
+<para>
+You can also move applications between desktops using the <link linkend="dragbar">Dragbar</link>.
+</para>
+<para>
+You can also move applications between desktops using the KDE or GNOME
+desktop pagers.
+</para>
+<para>
+You can also <link linkend="movemode">move</link> a window, then bring the window with you as you
+change desktops using <link linkend="defkeys">keybinding</link>.
+</para>
+</refsect2>
+
+
+<refsect2 id="dragbar"><title>The Dragbar</title>
+<img src="E_dragbar.png" x="10" y="345"/>
+<img src="E_dragging_desktops.png" x="315" y="20"/>
+<para>
+If you look along the top of your screen, you will notice a long thin bar that
+looks something like the bar pictured below.  This is called your Dragbar.  It
+gets its name from its primary purpose, which is dragging desktops around.
+</para>
+<para>
+If you are on any desktop except desktop 0, you can pick up and move that desktop
+in another direction.  <link linkend="desktops">Desktops</link> documentation has more information
+on how to change desktops.  Once you have dragged a desktop down, you can
+proceed to move windows between desktops this way, instead of using the
+<link linkend="pager">pager</link>.
+</para>
+<para>
+You can also use the Dragbar to retrieve windowlists.  Use the middle mouse
+button to retrieve a windowlist, and the right mouse button for a
+windowlist sorted by desktops.
+</para>
+</refsect2>
+
+
+<refsect2 id="pager"><title>The Pager</title>
+<img src="E_pager.png" x="320" y="70"/>
+<para>
+Pagers may not be a new idea in desktop environments, but the Pager in
+E16 (as seen on the right) is a highly advanced and highly
+configurable tool for desktop and window control, as well as a navigation tool.
+</para>
+<para>
+The pager lets you see your desktop screen area in miniature. It lets you click
+on a certain desktop to "visit" it, click and drag windows around in the pager
+itself to move them about the screen quickly, or between <link linkend="desktops">desktops</link>.
+In this example, we have two virtual areas.  You can see the current area (the
+one with the windows in it) is also highlighted.
+</para>
+<para>
+Dragging a window from
+one area of a pager to another will move it there, or to another desktop.
+Dragging it out onto the actual desktop will drop that window right there.
+You can also drag a window into the <link linkend="iconbox">Iconbox</link> to iconify the window.
+</para>
+</refsect2>
+
+
+<refsect2 id="pager2"><title/>
+<img src="E_pager_settings_menu.png" x="8" y="30"/>
+<img src="E_pager_settings.png" x="208" y="180"/>
+<para>
+Pressing right-mouse button over a blank portion of the pager gets you the
+pager menu, allowing you to change settings.  This will allow you to
+set a couple of quick options, as shown on the left.  For more available
+options, you can select the "Pager Settings" item, and another dialog will pop
+up, that looks like the one below.
+</para>
+<para>
+This dialog box will allow you to set all sorts of additional parameters, many
+of which can increase the performance of E16 on your system.
+Disabling high quality snapshots and/or snapshots in general as well as
+continuous updates can seriously improve performance - these features are
+intended for high end machines.
+</para>
+</refsect2>
+
+
+<refsect2 id="pager3"><title/>
+<img src="E_pager.png" x="340" y="140"/>
+<para>
+You can resize the pager to make it the size you'd like.  Hold down
+ALT and use the middle-mouse button to resize the pager in any direction. Using
+left-mouse button while holding ALT and dragging will move the window. Holding
+down ALT while pressing right-mouse button, just like any normal window will
+get you a window operations menu.
+</para>
+<para>
+In the default theme clicking the tab on the right side of the pager with the
+arrow pointing right will shade and unshade the pager window horizontally,
+allowing you to hide and unhide the window easily.
+</para>
+<para>
+The striped area above this tab on the pager's border is a handle that will
+allow you to move the pager about, just like the titlebar of any window.
+</para>
+</refsect2>
+
+
+<refsect2 id="iconbox"><title>The Iconbox</title>
+<img src="E_iconbox.png" x="300" y="90"/>
+<para>
+The iconbox is the place the icons for all your iconified windows go.  It is
+one method of recovering <link linkend="minimized">minimized</link> applications.  Whenever
+you iconify or minimize a window it will go into an iconbox and have an icon
+displayed for it there. Clicking on the icon again will de-iconify it.
+</para>
+<para>
+You can have as many icon boxes on your desktop as you want to.  You can create
+more by using the Middle Click <link linkend="rootmenu">Menu</link> - select Desktop->Create New Iconbox
+and a new Iconbox will pop up on your desktop.  Each of these Iconboxes can
+have individual configurations, as detailed on the next page.
+</para>
+<para>
+You can <link linkend="movemode">move</link> the Iconbox around the screen using Alt-Leftclick
+on the window, and then moving it to the desired location on the screen.  You
+can <link linkend="resizemode">resize</link> the Iconbox by alt-middleclicking on the window and
+then adjusting the size  as described in the <link linkend="mousebind">Mouse Bindings</link>
+section.
+</para>
+</refsect2>
+
+
+<refsect2 id="iconbox2"><title/>
+<img src="E_iconbox_menu.png" x="300" y="20"/>
+<img src="E_iconbox_settings.png" x="10" y="200"/>
+<para>
+Clicking the right-mouse button anywhere in the Iconbox will bring up a menu
+to configure that iconbox.  This menu will look a little something like the one
+here to the right.  This menu allows you to also close the Iconbox or open up
+an additional Iconbox.
+</para>
+<para>
+To change the settings of an individual Iconbox, we'll use the right mouse
+button <link linkend="mousebind">menu</link> and select "This
+Iconbox Settings" - this should get us a dialog that looks something like the
+one  to our left.  You can change the orientation, icon size, scrollbar
+options, display policy, base image, and many more options of the Iconbox
+from this dialog.  You may choose to change the anchor of
+alignment for resizes - play with it until it resizes appropriately for your
+Iconbox location.
+</para>
+</refsect2>
+
+
+<refsect2 id="iconbox3"><title/>
+<para>
+If you want to customize the images used for the icons in your iconbox, there
+is already an example configuration supplied. To make your own configuration
+copy the matches.cfg file installed in your E16 system config
+directory (/usr/local/e16/config/matches.cfg or
+/usr/share/e16/config/matches.cfg) to your ~/.e16 directory and then edit it.
+</para>
+<para>
+There are several examples of using the globbing and matching in the system
+matches.cfg file. Use that as a reference for your own additions.
+</para>
+</refsect2>
+
+
+<refsect2 id="minimized"><title>Recovering Minimized Applications</title>
+<para>
+There are several ways to recover an application once you have minimized it.
+The most obvious way is to use the <link linkend="iconbox">Iconbox</link>.  Of course, you might
+have had some applications in your Iconbox when you accidentally closed it.  Or
+maybe you minimized some applications and forgot you didn't have an Iconbox.
+Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
+recover them and forgot to launch them.  Never fear.  You can always
+middle click on the <link linkend="dragbar">Dragbar</link>
+and get a <link linkend="rootmenu">menu</link> that will allow you
+to recover them.  You can also Alt or Ctrl-Middleclick on the desktop to get
+the same menus (in case you don't have a Dragbar anymore).
+</para>
+<para>
+Remember, at any time you can always create a new <link linkend="iconbox">Iconbox</link> to catch
+your applications as they minimize, if you want to re-enable it.  Unfortunately
+you'll have to reconfigure it since each Iconbox can have its own
+<link linkend="settings">settings</link>.
+</para>
+</refsect2>
+
+
+<refsect2 id="properties"><title>Remembering Application Properties</title>
+<img src="E_remember_settings.png" x="320" y="50"/>
+<para>
+In the <link linkend="windowops">Window Operations</link> menu of every window you will see an
+entry labeled
+"Remember...". If you select this it will bring up the "Remember" dialog for
+that window, as shown to our right.
+</para>
+<para>
+This dialog lets you selectively snapshot certain attributes of that window at
+that time and have E16 remember them. You may choose to only remember
+some of the attributes, and possibly not have the application started
+automatically for you. Choose what you want E16 to remember about that
+window and hit "Apply" or "OK" if you don't need the dialog anymore, and
+E16 will, the next time that instance of the application is run,
+apply the current location, size, border style or any other attribute to
+that window. E16 can also launch the application for you upon startup
+if you so wish.
+</para>
+</refsect2>
+
+
+<refsect2 id="settings"><title>Settings</title>
+<img src="E_settings_menu.png" x="240" y="87"/>
+<para>
+When you click the right mouse button on the desktop background you will pop
+up the Settings menu. From here you can select an aspect of E16 to
+configure to your liking. There are too many settings to actually document
+fully right now, but the likelihood is if you want a particular behavior from
+E16, it is achievable by merely playing with these options.
+</para>
+<para>
+Combinations of options are often required to get the effect you want, so some
+experimentation may be required. Do not be frightened. Nothing you can do
+can't be undone by simply changing the options back to how they were and
+clicking on Apply again.
+</para>
+</refsect2>
+
+
+<refsect2 id="groups"><title>Window Groups</title>
+<img src="E_group_settings.png" x="370" y="255"/>
+<para>
+Sometimes you have a number of windows on your desktop that logically go
+together. E16 allows you to group windows
+together, so that whenever you change a property of one window in a group,
+the change is reflected on the other group members. If you have a group whose
+members span multiple <link linkend="desktops">desktops</link>, changing a group's property
+affects only windows of that group that are on the current desktop.
+</para>
+<para>
+The properties that you can change for an entire group include setting the window
+border, iconifying, killing, moving, raising/lowering, sticking and shading of
+a window.
+</para>
+<para>
+To define what properties are applied to a group by default, you go to the
+<link linkend="settings">settings</link> menu and pick the "Group Settings" option, which will give
+you a dialog window in which you can configure the settings, as shown here on
+the right.
+</para>
+</refsect2>
+
+
+<refsect2 id="groups2"><title/>
+<img src="E_groups_menu.png" x="320" y="25"/>
+<para>
+There are two different methods for manipulating window groups. First, there's a
+comprehensive submenu available in each window's operations menu
+called "Window Groups".  This menu is shown here on the right.  You also are
+able to configure the group individually apart from the default group settings
+(as shown on the previous page).
+</para>
+<para>
+The second way is the window titlebar, which has the most important options
+directly available for convenience. Shift-click to start a group,
+Ctrl-clicking to add a window to the youngest group (also referred to as the
+"current" group) and Shift-Ctrl-Click to destroying a group. You can also click
+the middle mouse button for visualizing the group(s) of a window. Click again
+to returning to the previous border.
+</para>
+<para>
+Windows can be in multiple groups at the same time, so for many
+options you have to indicate which group you are referring to.
+Selecting the appropriate checkboxes (showing the group members' titles)
+at the top of the dialog windows.
+</para>
+</refsect2>
+
+
+<refsect2 id="backgrounds"><title>Selecting and Adding backgrounds</title>
+<para>
+Often you will want to change the background of a particular desktop.  There
+are several ways you can do this.  But of course, to change your desktop,
+you'll need to give E16 some graphics to play with.  A desktop
+theme may add a background or two to your available selections, but
+most users want to have even more backgrounds to choose from.
+To add backgrounds to your selection, make a backgrounds directory under your
+home directory.  To do this using most shells you can type
+</para>
+<para>
+mkdir ~/.e16/backgrounds
+</para>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para>
+(more on next page ...)
+</para>
+</refsect2>
+
+
+<refsect2 id="backgrounds2"><title/>
+<img src="E_backgrounds_menu.png" x="163" y="70"/>
+<para>
+Once you have added your backgrounds, you should be
+able to go to the root menu desktop selector.  To get to this menu, middle
+click on the desktop, select "Desktop",
+and go to Backgrounds.  You should get something that looks similar to the
+image  on the right.  From here you will be able to navigate the backgrounds
+menus.
+</para>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para>
+(more on next page ...)
+</para>
+</refsect2>
+
+
+<refsect2 id="backgrounds3"><title/>
+<img src="E_backgrounds_menu_view.png" x="3" y="84"/>
+<para>
+Once you have opened up the backgrounds menu, you should see something similar
+to the image below.  From here, you can put your mouse over any of the images
+there, and it will change the desktop background of the current desktop to the
+image that you have selected.
+</para>
+<para>
+E16 will attempt to choose the best
+settings for a particular background, but if it gets it wrong you can always
+change the settings by hand.  By bringing up the settings menu with the right
+mouse button and selecting the "Desktop Background Settings" item, you can
+bring up a dialog that looks something like the one on the next page ...
+</para>
+</refsect2>
+
+
+<refsect2 id="backgrounds4"><title/>
+<img src="E_backgrounds_settings.png" x="0" y="0"/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para/>
+<para>
+You can use this dialog to change your background, too, as well as fine-tune
+all the various settings for each individual background available.
+</para>
+</refsect2>
+
+
+<refsect2 id="tooltips"><title>Tooltips</title>
+<img src="E_tooltips.png" x="260" y="65"/>
+<img src="E_tooltip_settings.png" x="20" y="245"/>
+<para>
+From time to time, as you use E16, if you don't remember what does
+what, if you keep the mouse still for a little bit a tooltip will pop up.  The
+easiest example of this is when you hold the mouse over a <link linkend="border">Window Border</link>.
+</para>
+<para/>
+<para/>
+<para/>
+<para>
+You can disable the tooltips or change the delay before they pop up by
+selecting the "Tooltip Settings" dialog from the <link linkend="settings">settings</link> menu, as
+shown here on the left.
+</para>
+</refsect2>
+
+
+<refsect2 id="audio"><title>Audio</title>
+<img src="E_audio_settings.png" x="300" y="180"/>
+<para>
+Of course, E16 comes preconfigured to play lots of little blips and
+beeps when you do various things on your desktop.  In order to use sound in
+E16, you must have both EsounD and audiofile installed.
+</para>
+<para/>
+<para/>
+<para/>
+<para>
+You can enable and/or disable sound at runtime simply by selecting from the
+<link linkend="settings">Settings</link> menu the "Audio Settings" option, which brings up a dialog,
+shown here at right.
+</para>
+</refsect2>
+
+
+<refsect2 id="fx"><title>Special Effects</title>
+<img src="E_special_fx_settings.png" x="320" y="60"/>
+<para>
+E16 has many features that are configured via the "Special FX"
+<link linkend="settings">Settings</link> dialog.  Here you can configure the <link linkend="dragbar">Dragbar</link>,
+various sliding speeds (including the speed of a windowshade), as well as
+toggle animation of different features.  You can also configure the method used
+for sliding windows, similar to <link linkend="resizemode">Resize Modes</link>.
+</para>
+<para>
+There are several FX features disabled by default
+in a new installation, including the animated display of menus.  You can also
+enable saveunders here, which may improve or slow down the performance of
+E16 on your X server, depending on server and configuration.
+</para>
+</refsect2>
+
+
+<refsect2 id="focus"><title>Setting the Focus</title>
+<img src="E_mouse.png" x="410" y="330"/>
+<para>
+E16 offers lots of different options for focusing windows.  By
+default, it comes up in sloppy focus mode.  There are two other primary focus
+modes supported by E16 - click to focus and pointer focus.
+</para>
+<para>
+Click To Focus most people are familiar with.  You click on a window and it
+receives the focus from E16.
+</para>
+<para>
+Pointer Focus gives the focus to whichever window the pointer is sitting over
+</para>
+<para>
+Sloppy Focus is similar to Pointer Focus, except that if you go over the
+<link linkend="backgrounds">Desktop Background</link> you still are focused on the last window
+</para>
+<para>
+Next we'll tell you how to change these settings.
+</para>
+</refsect2>
+
+
+<refsect2 id="focus2"><title/>
+<img src="E_focus_settings.png" x="320" y="20"/>
+<para>
+E16 allows you to change your focus settings at any time.  Simply
+bring up the <link linkend="settings">Settings</link> menu and then select "Focus Settings" to bring
+up a dialog that looks something like the one on the right.  At the top, we can
+select between our three focus modes, as described on the previous page.
+</para>
+<para>
+We can also enable some other features, such as one that will allow a simple
+<link linkend="mousebind">mouse</link> click to raise any window to the foreground, as well as several
+other advanced focus settings.
+</para>
+<para>
+Here we can also enable the focuslist feature.  The focuslist is a window list
+that pops up as you cycle through your focus using the ALT + TAB
+<link linkend="defkeys">Keybinding</link>.
+</para>
+</refsect2>
+
+
+<refsect2 id="movemode"><title>Moving Windows</title>
+<img src="E_move_resize_settings.png" x="300" y="50"/>
+<para>
+E16 comes with several different available methods for moving a
+window.  You can perform the actual moves using the Window <link linkend="border">Border</link>,
+or by using the available <link linkend="mousebind">Mouse Bindings</link>.
+This will cause the window to move until you have released the mouse button.
+</para>
+<para>
+To change the mode that the moving of the windows uses (opaque being the
+default), open up the <link linkend="settings">Settings</link> menu, and select "Move &amp; Resize
+Settings".  You can select from a list that looks similar to the one here
+above-right.  Experiment until you find one that suits you best.
+</para>
+<para>
+For some serious eyecandy, try out the Translucent move mode.  This will only
+work if your X server and E16 are running on the same machine,
+however.
+</para>
+</refsect2>
+
+
+<refsect2 id="resizemode"><title>Resizing Windows</title>
+<img src="E_move_resize_settings.png" x="300" y="50"/>
+<para>
+E16 also comes with several available methods for resizing windows.
+You can perform the actual resize on the window by clicking on any
+resize-handle of your window <link linkend="border">border</link> and dragging to the desired size.
+You can also get the same effect by using the ALT + middle button
+<link linkend="mousebind">Mouse Binding</link> in any part of the window.
+</para>
+<para>
+To change the mode that the resizing of the windows uses (opaque being the
+default), open up the <link linkend="settings">Settings</link> menu, and select "Move &amp; Resize
+Settings".  You can select from a list that looks similar to the one here
+above-right.  Experiment until you find one that suits you best.
+</para>
+<para>
+The best eyecandy resize mode is probably technical move mode.  This mode shows
+you the height and width of the window, in addition to the distance from the
+nearest edge.
+</para>
+</refsect2>
+
+
+<refsect2 id="windowops"><title>The Window Operations Menu</title>
+<img src="E_app_rightmouse_menu.png" x="360" y="40"/>
+<para>
+The Window Operations menu is a commonly used menu that allows you to perform
+many different actions onto the current window.
+</para>
+<para>
+The Close function closes the window in question.
+Annihilate destroys the window without
+regard to the application the window belongs to, which is especially useful if
+the application refuses to respond to being closed with Close.
+</para>
+<para>
+The Iconify function iconifies the window.
+If you have an <link linkend="iconbox">Iconbox</link> it is sent to the nearest one.
+</para>
+<para>
+The Raise function raises the window above any windows
+that may be obscuring it and Lower
+lowers it below windows it is obscuring.
+</para>
+<para/>
+<para>
+(more on next page ...)
+</para>
+</refsect2>
+
+
+<refsect2 id="windowops2"><title/>
+<para>
+Shade/Unshade toggles the shaded state of the window. Note that borderless
+windows are not allowed to be shaded.
+</para>
+<para>
+Stick/Unstick toggles the sticky state of a window. A window that is sticky
+remains "stuck to the glass" and thus is visible on all virtual and
+multiple <link linkend="desktops">desktops</link>.
+</para>
+<para>
+Fullscreen/Window <link linkend="tut11">zooms</link> in and out of the window changing resolutions
+if possible. This feature will only work if you have your X server configured
+correctly and it supports the XVidtune extension. Your X server may not like
+having resolutions changed - it is possible that an unstable X server could
+crash if you use this. Be aware of this when using this feature.
+</para>
+<para>
+Remember... displays the <link linkend="properties">Remember Properties</link> dialog that lets
+you select things to remember about this instance of an application. The
+attributes selected to be remembered in the state they are when you hit Apply or
+Ok in this dialog. You will have to bring it up again if you wish to remember
+a new state of the window.
+</para>
+<para/>
+<para>
+(more on next page ...)
+</para>
+</refsect2>
+
+
+<refsect2 id="windowops3"><title/>
+<para>
+In the <link linkend="groups">Window Groups</link> submenu there are various options for
+configuring window
+groups and how this window relates to any groups you may have.
+</para>
+<para>
+You can quickly modify the size of a window to one of several aspects of
+maximum sizes using the Window Size submenu.
+</para>
+<para>
+Set Stacking lets you change the stacking layer of that window.
+</para>
+<para>
+You can change the <link linkend="changeborder">border</link> using the Set Border Style menu if
+you wish to use a different window border. If you change themes after you have
+changed the border, and the new theme doesn't provide a border of the same
+name, the window will fall back to using the DEFAULT border until you
+change it again.
+</para>
+</refsect2>
+
+
+<refsect2 id="placement"><title>Window Placement and Autoraise</title>
+<img src="E_placement_settings.png" x="220" y="70"/>
+<img src="E_autoraise_settings.png" x="10" y="270"/>
+<para>
+These two <link linkend="settings">Settings</link> dialogs allow you to configure various options
+for the placement of windows.  The two Dialog window options are for windows
+like the ALT+O open URL window in Netscape.  Manual Placement will force you to
+use the mouse to position every new window that attempts to map itself.
+</para>
+<para>
+The Autoraise settings Dialog will allow you to set a timer event that causes a
+window to automatically raise itself to the foreground after a set time.  You
+can enable it here, as well as change the timer.
+</para>
+</refsect2>
+
+
+<refsect2 id="eesh"><title>E16 and IPC</title>
+<para>
+E16 has a fairly interesting IPC system that allows external
+applications (such as Eterm) to talk to E16 and both ask for
+information and change information.  There is a program that was installed with
+E16 called "eesh" that is a simple shell interface to the IPC in
+E16.  It's even got its own documentation.  You can go into
+eesh and type "help" and it should spit back a list of commands that it
+understands.
+</para>
+<para>
+Note: there are many commands that will show up in E's IPC that don't
+necessarily work yet, or aren't fully implemented.  You CAN potentially do some
+really bizarre things to your system by using eesh, but for the most part it's
+just another interesting interface to E.  In your distribution package you
+should have received some sample scripts written in Perl that interface to E
+through eesh showing how you can externally script E to do more things outside
+E's base functionality.  Expect the IPC to flesh out even more in future
+revisions.
+</para>
+<para>
+To exit eesh, hit CTRL + D (EOF)
+</para>
+</refsect2>
+
+
+<refsect2 id="editmenus"><title>Editing E16's Menus</title>
+<para>
+The first time you run E16 as a user after you've installed it, it
+should create a directory under your home directory called .e16/menus.  In
+this directory, there will be a file called "file.menu" - this file controls
+the contents of your left-mouse button <link linkend="rootmenu">Menu</link>.  The very first line
+of this file contains the title for the menu, and the remainder of the file
+looks something like this:
+</para>
+<font face="Vera/10" color="#112222"/>
+<para>
+"Eterm" NULL exec "Eterm"
+</para>
+<font face="Vera/11" color="#ffffff"/>
+<para>
+Where each column represents:
+</para>
+<font face="Vera/10" color="#112222"/>
+<para>
+Entry title, graphic for menu (or NULL), exec "commandline"
+</para>
+<font face="Vera/11" color="#ffffff"/>
+<para>
+You may have several files in here, including a KDE menu and a Gnome menu if
+E16 has detected their presence during installation.  If
+detected, your primary apps will be located in another file called
+user_apps.menu.  Each of these files is for you to edit as desired.
+</para>
+</refsect2>
+
+
+<refsect2 id="editkeys"><title>Editing Your Keybindings</title>
+<para>
+To set your own keybindings, all you have to do is find the bindings.cfg
+file that was installed with E16, and make a copy in your
+~/.e16 directory. This file shouldn't be too difficult to edit.
+Be careful!  The keybindings in this file will override ALL
+the default keybindings, as long as this file exists, so edit this file with
+extreme caution (unless you know what you're doing).
+</para>
+<para>
+To reset your keybindings back to the default, simply remove this file from
+your ~/.e16 directory.  The next time you restart E16
+it should reload the default keybindings into memory.
+</para>
+</refsect2>
+
+
+<refsect2 id="themes"><title>E16 and Themes</title>
+<para>
+One of the strong points of E16, of course, is that you can change
+around the complete look and feel of your desktop whenever you want to.
+Included with the 0.16.8 release are a few themes, to show off a little bit of
+this configurability.  You can select them by using the middle mouse button
+<link linkend="rootmenu">menu</link>, going to the "Themes" selector, and then choosing a new
+theme.  Of course, there are plenty more themes for E16 than come
+with it by default.  You can find more by going to:
+</para>
+<para>
+http://e.themes.org
+</para>
+<para>
+and searching around until you find something you like.
+</para>
+<para>
+To install a new theme
+is simple: all you need to do is take the bleh.etheme file and drop it into
+your ~/.e16/themes directory.  Once you've restarted E16,
+it will automatically show up in your Themes <link linkend="rootmenu">menu</link>, and you can
+choose it just like any other theme.
+</para>
+</refsect2>
+
+
+<refsect2 id="eyecandy"><title>E16's Eyecandy Features</title>
+<para>
+Of course, E16 wouldn't be complete without just a few bits of
+eyecandy to play with.
+</para>
+<para>
+On the "Special FX" <link linkend="settings">settings</link> dialog you can chose two toys:
+</para>
+<para>
+The ripples effect - this causes little ripplets of water to reflect on the
+bottom of your screen.
+</para>
+<para>
+The waves effect - similar to ripples, but this one waves up and down as
+opposed to side-to-side
+</para>
+<para>
+On the "Desktop Background" <link linkend="settings">settings</link> dialog you can enable "Theme
+Transparecy". A slider controls the opacity of the window borders, etc. with
+respect to the desktop background.
+</para>
+</refsect2>
+
+
+<refsect2 id="maint"><title>Included Maintenance Scripts</title>
+<img src="E_maint_menu.png" x="265" y="60"/>
+<para>
+E16 comes with several scripts that are executable out of the middle
+mouse button <link linkend="rootmenu">menu</link> - these scripts can perform all sorts of
+maintenance on the files that E16 creates automatically for you.
+When you select "Maintenance" you should get a menu that looks something like
+the one above-right.  You can also rebuild the menus from here.
+</para>
+<para>
+As a warning, when you purge configuration information, the next time you
+restart E16 it will take longer to load.  You can monitor
+E16's usage using the query tools provided.  If you change themes a
+lot you will probably want to purge the config file cache after you've settled
+on a theme.  This will help keep your disk usage by E16 down.
+</para>
+</refsect2>
+
+
+<refsect2 id="faq"><title>Frequently Asked Questions</title>
+<para>
+<link linkend="faq2">I can't find my iconbox or change its settings.</link>
+</para>
+<para>
+<link linkend="faq2">I can't seem to find my left mouse menu.</link>
+</para>
+<para>
+<link linkend="faq3">All my settings are mangled and I can't fix it.</link>
+</para>
+<para>
+<link linkend="faq3">I upgraded a theme but the new one isn't being used.</link>
+</para>
+<para>
+<link linkend="faq4">I set my window to borderless and can't set it back.</link>
+</para>
+<para>
+<link linkend="faq4">How can I move or resize the iconbox?</link>
+</para>
+<para>
+<link linkend="faq4">How can I disable that annoying desktop tooltip?</link>
+</para>
+<para>
+<link linkend="faq5">How can I set up E16 to work with GNOME?</link>
+</para>
+<para>
+<link linkend="faq5">How can I set up E16 to work with KDE?</link>
+</para>
+<para>
+<link linkend="faqend">These docs didn't help, where can I get more help?</link>
+</para>
+</refsect2>
+
+
+<refsect2 id="faq2"><title>Frequently Asked Questions: Page 1</title>
+<para>
+Q: I can't find my <link linkend="iconbox">Iconbox</link> or change its settings.
+</para>
+<para>
+A: There are two possibilities here.
+</para>
+<para>
+1. You don't have an Iconbox on your desktop right now. Just middle-click and
+select Desktop/Create new iconbox
+</para>
+<para>
+2. Your Iconbox is transparent and borderless.  Iconify a window and see if
+your icon appears.  If so, rightclick on it to reconfigure your Iconbox.
+</para>
+<para/>
+<para>
+Q:  I Can't Seem To Find My Left Mouse Menu
+</para>
+<para>
+A:  Your menu files may be destroyed.  Try rerunning the program that initially
+generated them.  First you'll want to remove the ~/.e16/menus/*.menu files.
+Rebuild them using the <link linkend="maint">Maintenance</link> menu.
+</para>
+</refsect2>
+
+
+<refsect2 id="faq3"><title>Frequently Asked Questions: Page 2</title>
+<para>
+Q:  All My Settings Are Mangled And I Can't Fix It
+</para>
+<para>
+A:  Well, if things get really messed up, you can always remove all of
+E16's automatically saved files.  Go into ~/.e16, and
+remove the e_config* files, and then blow away the cached directory.
+The next time you start E16 it should reset everything to the default.
+</para>
+<para/>
+<para>
+Q: I Upgraded My Theme, But The New One Isn't Being Used
+</para>
+<para>
+A: When you upgrade a theme that does not come with E16, when you go
+into your ~/.e16/themes directory, be sure to delete the unpacked
+directory version of your theme that should be sitting next to the theme, if it
+is there.  Otherwise when E16 attempts to start the new version it
+will use the old files, which causes this problem.
+</para>
+</refsect2>
+
+
+<refsect2 id="faq4"><title>Frequently Asked Questions: Page 3</title>
+<para>
+Q:  I set my window to borderless and can't set it back or move it.
+</para>
+<para>
+A:  ALT + Right mouse button when pressed anywhere in the window will give you
+the <link linkend="windowops">Window Operations</link> menu. ALT + Left mouse button will move the
+window and ALT + Middle mouse button will resize the window.
+</para>
+<para>
+Q: How can I move or resize the iconbox?
+</para>
+<para>
+A: As described above, ALT + Right mouse button will give you the
+<link linkend="windowops">Window Operations</link> menu, ALT + Middle mouse button will resize the
+iconbox and ALT+left mouse button will move it.  See the <link linkend="iconbox">Iconbox</link>
+documentation for more help
+</para>
+<para>
+Q: How can I disable that annoying desktop tooltip?
+</para>
+<para>
+A: There is a special config option for it under the <link linkend="tooltips">tooltip</link>
+<link linkend="settings">settings</link> menu.
+</para>
+</refsect2>
+
+
+<refsect2 id="faq5"><title>Frequently Asked Questions: Page 4</title>
+<para>
+Q: How do I set up E16 to work with GNOME?
+</para>
+<para>
+A: Start your GNOME session with
+</para>
+<para><simplelist>
+<member>export WINDOW_MANAGER=e16</member>
+<member>exec gnome-session</member>
+</simplelist></para>
+<para/>
+<para>
+Q: How do I set up E16 to work with KDE?
+</para>
+<para>
+A: Start your KDE session with
+</para>
+<para><simplelist>
+<member>export KDEWM=e16</member>
+<member>exec startkde</member>
+</simplelist></para>
+</refsect2>
+
+
+<refsect2 id="faqend"><title>Frequently Asked Questions: Page 5</title>
+<para>
+Q:  These Docs Didn't Help, Where Can I Get More Help?
+</para>
+<para>
+A: Well, we obviously can't answer all of your questions just by predicting
+them, so I would try the <link linkend="res">website</link> as well as looking at the
+<link linkend="res">mailing lists</link>, especially the mail archives.  Chances are that someone
+else has probably had the same problem that you have.  And if all that still
+fails, you might try someone on the <link linkend="res">irc</link> channel
+</para>
+</refsect2>
+
+</refsect1>
+
+ <refsect1 id='for_more_information'><title>FOR MORE INFORMATION</title>
+  <para>
+   <indexterm><primary>Header</primary><secondary>FOR MORE INFORMATION</secondary></indexterm>
+	Please see our web site at <ulink url='http://www.enlightenment.org'>http://www.enlightenment.org</ulink>
+  </para>
+ </refsect1>
+</refentry>
