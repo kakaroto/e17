@@ -6098,7 +6098,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	     int                 len;
 
 	     /* Discard all directory prefixes from filename.  */
-	     if ((q = strrchr(opts->in_fname, '/')) != NULL
+	     if ((q = (char *)strrchr(opts->in_fname, '/')) != NULL
 #ifdef DIR_SEPARATOR
 		 && (q = strrchr(opts->in_fname, DIR_SEPARATOR)) != NULL
 #endif
