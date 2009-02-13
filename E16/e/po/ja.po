@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-31 15:34+0100\n"
-"PO-Revision-Date: 2009-01-08 07:41+0900\n"
+"PO-Revision-Date: 2009-02-13 20:13+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2738,9 +2738,8 @@ msgid "Toggle Button Grabs"
 msgstr "ボタンのグラブ／解除"
 
 #: config/strings.c:170
-#, fuzzy
 msgid "Toggle Autoshade"
-msgstr "シャドー切替え"
+msgstr "自動シェーディング切替え"
 
 #
 #: config/strings.c:173
