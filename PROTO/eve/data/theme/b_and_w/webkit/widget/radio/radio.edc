@@ -1,0 +1,72 @@
+   group {
+      name: "webkit/widget/radio";
+
+      images {
+         image: "widget/radio/img_radio_on.png" COMP;
+         image: "widget/radio/img_radio_off.png" COMP;
+         image: "widget/radio/img_radio_on_hover.png" COMP;
+      }
+
+      parts {
+         part {
+            name: "radio_button";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               min: 12 12;
+               max: 12 12;
+               image {
+                  normal: "widget/radio/img_radio_off.png";
+               }
+            }
+            description {
+               state: "radio_on" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/radio/img_radio_on.png";
+               }
+            }
+            description {
+               state: "disabled_on" 0.0;
+               inherit: "radio_on" 0.0;
+               color: 255 255 255 150;
+            }
+            description {
+               state: "disabled_off" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 150;
+            }
+            description {
+               state: "hovered" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/radio/img_radio_on_hover.png";
+               }
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "selected";
+            signal: "selected";
+            source: "radio_button";
+            action: STATE_SET "radio_on" 0.0;
+            target: "radio_button";
+         }
+        program {
+            name: "unselected";
+            signal: "unselected";
+            source: "radio_button";
+            action: STATE_SET "default" 0.0;
+            target: "radio_button";
+         }
+         program {
+            name: "hovered";
+            signal: "hovered";
+            source: "radio_button";
+            action: STATE_SET "hovered" 0.0;
+            target: "radio_button";
+         }
+      }
+   }

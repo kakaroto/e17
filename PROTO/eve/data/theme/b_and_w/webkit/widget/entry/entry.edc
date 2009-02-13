@@ -1,0 +1,81 @@
+   group {
+      name: "webkit/widget/entry";
+
+      min: 89 25;
+      max: 9999 40;
+
+      images {
+         image: "widget/entry/img_normal.png" COMP;
+         image: "widget/entry/img_focused.png" COMP;
+      }
+
+      parts {
+         part {
+            name: "entry";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               min: 89 25;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               image {
+                  normal: "widget/entry/img_normal.png";
+                  border: 10 10 10 10;
+               }
+            }
+            description {
+               state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+            description {
+               state: "focused" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/entry/img_focused.png";
+                  border: 10 10 10 10;
+               }
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "clicked";
+            signal: "mouse,clicked,1";
+            source: "entry";
+            action: SIGNAL_EMIT "mouse,clicked" "";
+         }
+
+         program {
+            name: "disabled";
+            signal: "disabled";
+            action: STATE_SET "disabled" 0.0;
+            target: "entry";
+         }
+
+         program {
+            name: "enabled";
+            signal: "enabled";
+            action: STATE_SET "default" 0.0;
+            target: "entry";
+         }
+         program {
+            name: "focus_in";
+            signal: "focus,in";
+            action: STATE_SET "focused" 0.0;
+            target: "entry";
+         }
+         program {
+            name: "focus_out";
+            signal: "focus,out";
+            action: STATE_SET "default" 0.0;
+            target: "entry";
+         }
+      }
+   }

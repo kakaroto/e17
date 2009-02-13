@@ -1,0 +1,107 @@
+   group {
+      name: "webkit/widget/button";
+
+      images {
+         image: "widget/button/img_button_normal.png" COMP;
+         image: "widget/button/img_button_on_click.png" COMP;
+         image: "widget/button/img_button_on_hover.png" COMP;
+      }
+
+      parts {
+         part {
+            name: "button";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image {
+                  normal: "widget/button/img_button_normal.png";
+                  border: 10 10 10 10;
+               }
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/button/img_button_on_click.png";
+                  border: 10 10 10 10;
+               }
+            }
+            description {
+               state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 150;
+            }
+            description {
+               state: "hovered" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/button/img_button_on_hover.png";
+                  border: 10 10 10 10;
+               }
+            }
+            /*description {
+               state: "focused" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/button/img_button_on_focus.png";
+                  border: 10 10 10 10;
+               }
+            }*/
+         }
+      }
+
+      programs {
+         program {
+            name: "pressed";
+            signal: "pressed";
+            source: "button";
+            action: STATE_SET "pressed" 0.0;
+            target: "button";
+            after: "mouse_down_signal";
+         }
+         program {
+            name: "mouse_down_signal";
+            action: SIGNAL_EMIT "mouse,pressed" "";
+         }
+         program {
+            name: "mouse_up";
+            signal: "mouse,up";
+            source: "button";
+            action: STATE_SET "default" 0.0;
+            target: "button";
+         }
+         program {
+            name: "disabled";
+            signal: "disabled";
+            source: "button";
+            action: STATE_SET "disabled" 0.0;
+            target: "button";
+         }
+         program {
+            name: "enabled";
+            signal: "enabled";
+            source: "button";
+            action: STATE_SET "default" 0.0;
+            target: "button";
+         }
+        program {
+            name: "hovered";
+            signal: "hovered";
+            source: "button";
+            action: STATE_SET "hovered" 0.0;
+            target: "button";
+         }
+         /*program {
+            name: "focus_in";
+            signal: "focus_in";
+            action: STATE_SET "focused" 0.0;
+            target: "button";
+         }
+         program {
+            name: "focus_out";
+            signal: "focus_out";
+            action: STATE_SET "default" 0.0;
+            target: "button";
+         }*/
+      }
+   }

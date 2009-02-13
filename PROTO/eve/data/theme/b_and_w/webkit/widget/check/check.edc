@@ -1,0 +1,72 @@
+   group {
+      name: "webkit/widget/checkbox";
+
+      images {
+         image: "widget/check/img_check_on.png" COMP;
+         image: "widget/check/img_check_off.png" COMP;
+         image: "widget/check/img_check_on_hover.png" COMP;
+      }
+
+      parts {
+         part {
+            name: "check_button";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               min: 12 12;
+               max: 12 12;
+               image {
+                  normal: "widget/check/img_check_off.png";
+               }
+            }
+            description {
+               state: "check_on" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/check/img_check_on.png";
+               }
+            }
+            description {
+               state: "disabled_on" 0.0;
+               inherit: "check_on" 0.0;
+               color: 255 255 255 150;
+            }
+            description {
+               state: "disabled_off" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 150;
+            }
+            description {
+               state: "hovered" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "widget/check/img_check_on_hover.png";
+               }
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "selected";
+            signal: "selected";
+            source: "check_button";
+            action: STATE_SET "check_on" 0.0;
+            target: "check_button";
+         }
+        program {
+            name: "unselected";
+            signal: "unselected";
+            source: "check_button";
+            action: STATE_SET "default" 0.0;
+            target: "check_button";
+         }
+         program {
+            name: "hovered";
+            signal: "hovered";
+            source: "check_button";
+            action: STATE_SET "hovered" 0.0;
+            target: "check_button";
+         }
+      }
+   }
