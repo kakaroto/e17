@@ -203,7 +203,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->o_box = e_box_add(gc->evas);
    e_box_homogenous_set(inst->o_box, 0);
    e_box_orientation_set(inst->o_box, 0);
-   e_box_align_set(inst->o_box, 0.5, 0.0);
+   e_box_align_set(inst->o_box, 0.0, 0.0);
 
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_box);
    inst->gcc->data = inst;
