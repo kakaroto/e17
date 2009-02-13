@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-02 15:29+0100\n"
+"POT-Creation-Date: 2008-12-06 23:32+0100\n"
 "PO-Revision-Date: 2008-12-07 16:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,87 +16,68 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/e_mod_config.c:50
+#: src/e_mod_config.c:43
 msgid "Places Configuration"
 msgstr "Ρύθμιση Τοποθεσιών"
 
-#: src/e_mod_config.c:116
+#: src/e_mod_config.c:90
 msgid "General"
 msgstr "Γενικά"
 
-#: src/e_mod_config.c:119
+#: src/e_mod_config.c:96
 msgid "Mount volumes on insert"
 msgstr "Προσάρτηση τόμων κατα την εισαγωγή"
 
-#: src/e_mod_config.c:123
+#: src/e_mod_config.c:100
 msgid "Open filemanager on insert"
 msgstr "Άνοιγμα διαχειριστή αρχείων κατά την εισαγωγή"
 
-#: src/e_mod_config.c:127
-msgid "Use a custom file manager"
-msgstr ""
+#: src/e_mod_config.c:105
+msgid "File manager (if blank uses Enlightenment)"
+msgstr "Διαχειριστής Αρχείων (όταν κενό χρησιμοποιεί το Enlightenment)"
 
-#: src/e_mod_config.c:140
-msgid "Show"
-msgstr ""
-
-#: src/e_mod_config.c:143 src/e_mod_places.c:399
-msgid "Home"
-msgstr "Home"
-
-#: src/e_mod_config.c:146 src/e_mod_places.c:408
-msgid "Desktop"
-msgstr "Επιφάνεια Εργασίας"
-
-#: src/e_mod_config.c:149 src/e_mod_places.c:418
-msgid "Trash"
-msgstr "Απορρίμματα"
-
-#: src/e_mod_config.c:152 src/e_mod_places.c:233 src/e_mod_places.c:427
-msgid "Filesystem"
-msgstr "Σύστημα Αρχείων"
-
-#: src/e_mod_config.c:155 src/e_mod_places.c:436
-msgid "Temp"
-msgstr ""
-
-#: src/e_mod_config.c:158
-msgid "Favorites"
-msgstr ""
-
-#: src/e_mod_main.c:75
-#, fuzzy
-msgid "Files"
-msgstr "Σύστημα Αρχείων"
-
-#: src/e_mod_main.c:77 src/e_mod_places.c:494
-msgid "Places"
-msgstr "Τοποθεσίες"
-
-#: src/e_mod_main.c:439
+#: src/e_mod_main.c:485
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: src/e_mod_places.c:238
+#: src/e_mod_places.c:164 src/e_mod_places.c:317
+msgid "Filesystem"
+msgstr "Σύστημα Αρχείων"
+
+#: src/e_mod_places.c:169
 msgid "No Name"
 msgstr "Χωρίς Όνομα"
 
-#: src/e_mod_places.c:688
+#: src/e_mod_places.c:298
+msgid "Home"
+msgstr "Home"
+
+#: src/e_mod_places.c:304
+msgid "Desktop"
+msgstr "Επιφάνεια Εργασίας"
+
+#: src/e_mod_places.c:311
+msgid "Trash"
+msgstr "Απορρίμματα"
+
+#: src/e_mod_places.c:380
+msgid "Places"
+msgstr "Τοποθεσίες"
+
+#: src/e_mod_places.c:587
 msgid "free of"
 msgstr ""
 
-#: src/e_mod_places.c:694
+#: src/e_mod_places.c:593
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s δεν είναι Προσαρτημένο"
 
-#: src/e_mod_places.c:711
+#: src/e_mod_places.c:610
 msgid "unmount"
 msgstr "αποπροσάρτηση"
 
-#: src/e_mod_places.c:717
+#: src/e_mod_places.c:616
 msgid "eject"
 msgstr "εξαγωγή"
 
-#~ msgid "File manager (if blank uses Enlightenment)"
-#~ msgstr "Διαχειριστής Αρχείων (όταν κενό χρησιμοποιεί το Enlightenment)"
