@@ -76,44 +76,12 @@ _eina_stringshare_replace(const char **p, const char *new)
 }
 
 static void
-_eve_scrolled_webview_scroll_report(Eve_Scrolled_Webview_Data *priv)
-{
-   Edje_Message_Float_Set *msg;
-   int cw, ch, sx, sy, sw, sh;
-
-   msg = alloca(sizeof(*msg) + 3 * sizeof(double));
-   msg->count = 4;
-
-   ewk_webframe_object_contents_size_get(priv->mainframe, &cw, &ch);
-   if ((cw <= 0) || (ch <= 0)) goto no_scrollbars;
-   ewk_webframe_object_scrollbar_max_get(priv->mainframe, &sw, &sh);
-   if ((sw <= 0) && (sh <= 0)) goto no_scrollbars;
-   ewk_webframe_object_scrollbar_value_get(priv->mainframe, &sx, &sy);
-
-   msg->val[0] = (sw > 0) ? (sx / (float)sw) : -1;
-   msg->val[1] = (sh > 0) ? (sy / (float)sh) : -1;
-   msg->val[2] = (cw - sw) / (float)cw;
-   msg->val[3] = (ch - sh) / (float)ch;
-
-   edje_object_message_send(priv->edje, EDJE_MESSAGE_FLOAT_SET, 0, msg);
-   return;
-
- no_scrollbars:
-   msg->val[0] = -1.0;
-   msg->val[1] = -1.0;
-   msg->val[2] = 1.0;
-   msg->val[3] = 1.0;
-   edje_object_message_send(priv->edje, EDJE_MESSAGE_FLOAT_SET, 0, msg);
-}
-
-static void
 _eve_scrolled_webview_scroll_by(Eve_Scrolled_Webview_Data *priv, int dx, int dy)
 {
    EWebKit_Hit_Test_Contents contents;
    Evas_Object *webframe = ewk_webpage_object_mainframe_get(priv->page);
    ewk_webframe_object_hit_test(webframe, &contents, priv->mouse_move.x, priv->mouse_move.y);
    ewk_webframe_object_scroll(contents.frame, dx, dy);
-   _eve_scrolled_webview_scroll_report(priv);
 }
 
 static int
@@ -464,11 +432,4 @@ eve_scrolled_webview_page_get(const Evas_Object *o)
 {
    EVE_SCROLLED_WEBVIEW_DATA_GET_OR_RETURN_VAL(o, priv, NULL);
    return priv->page;
-}
-
-void
-eve_scrolled_webview_scroll_report(const Evas_Object *o)
-{
-   EVE_SCROLLED_WEBVIEW_DATA_GET_OR_RETURN(o, priv);
-   _eve_scrolled_webview_scroll_report(priv);
 }

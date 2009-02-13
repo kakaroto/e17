@@ -1,14 +1,20 @@
 collections {
+//#include "webkit/widget/button/button.edc"
+//#include "webkit/widget/entry/entry.edc"
+//#include "webkit/widget/radio/radio.edc"
+//#include "webkit/widget/check/check.edc"
+#include "webkit/widget/scrollbar/scrollbar.edc"
+
    group {
       name: "eve.entry.selection.default";
       parts {
          part {
             name: "bg";
-	    type: RECT;
-	    mouse_events: 0;
-	    description {
+            type: RECT;
+            mouse_events: 0;
+            description {
                state: "default" 0.0;
-	       color: 200 200 200 255;
+               color: 200 200 200 255;
                rel1 {
                   relative: 0.0 0.0;
                   offset: -2 -2;
@@ -17,8 +23,8 @@ collections {
                   relative: 1.0 1.0;
                   offset: 1 1;
                }
-	    }
-	 }
+            }
+         }
       }
    }
 
@@ -545,89 +551,7 @@ collections {
       name: "eve.scrollframe";
 
       images {
-         image: "sb_runner_v.png" COMP;
-         image: "sb_runner_h.png" COMP;
-         image: "sb_knob.png" COMP;
-         image: "sb_hilight.png" COMP;
-         image: "sb_shine.png" COMP;
          image: "inset_sunk.png" COMP;
-      }
-
-      script {
-         public hide_timer;
-
-         public hide_both() {
-	    run_program(PROGRAM:"eve,hide,horiz");
-	    run_program(PROGRAM:"eve,hide,vert");
-         }
-
-         public hide_horiz() {
-	    run_program(PROGRAM:"eve,hide,horiz");
-            set_state(PART:"rect.base", "vert", 0.0);
-         }
-
-         public hide_vert() {
-	    run_program(PROGRAM:"eve,hide,vert");
-            set_state(PART:"rect.base", "horiz", 0.0);
-         }
-
-	 public hide_timer_cb(val) {
-            hide_both();
-	    return 0;
-	 }
-
-	 public hide_timer_stop() {
-	    new id = get_int(hide_timer);
-	    if (id <= 0)
-	      return;
-
-	    cancel_timer(id);
-	    set_int(hide_timer, 0);
-	 }
-
-	 public hide_timer_start() {
-	    set_int(hide_timer, timer(1.0, "hide_timer_cb", 0));
-	 }
-
-	 public message(Msg_Type:type, id, ...) {
-	    if ((id == 0) && (type == MSG_FLOAT_SET)) {
-	       new Float:vx, Float:vy, Float:sx, Float:sy;
-               new hide;
-
-	       vx = getfarg(2);
-	       vy = getfarg(3);
-	       sx = getfarg(4);
-	       sy = getfarg(5);
-               hide = 0;
-
-	       if (vx >= 0.0) {
-		  set_drag_size(PART:"img.knob.horiz", sx, 1.0);
-		  set_drag(PART:"img.knob.horiz", vx, 0.0);
-		  run_program(PROGRAM:"eve,show,horiz");
-	       } else
-                  hide |= 1;
-
-	       if (vy >= 0.0) {
-		  set_drag_size(PART:"img.knob.vert", 1.0, sy);
-		  set_drag(PART:"img.knob.vert", 0.0, vy);
-		  run_program(PROGRAM:"eve,show,vert");
-	       } else
-                  hide |= 2;
-
-               if (hide == 3) {
-                  hide_both();
-                  return;
-               } else if (hide == 1)
-                  hide_horiz();
-               else if (hide == 2)
-                  hide_vert();
-               else
-                  set_state(PART:"rect.base", "default", 0.0);
-
-	       hide_timer_stop();
-	       hide_timer_start();
-	    }
-	 }
       }
 
       parts {
@@ -648,343 +572,17 @@ collections {
          }
 
          part {
-            name: "rect.base";
-            type: RECT;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  offset: -16 -16;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -1;
-               }
-            }
-            description {
-               state: "horiz" 0.0;
-               color: 0 0 0 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  offset: -8 -16;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -1;
-               }
-            }
-            description {
-               state: "vert" 0.0;
-               color: 0 0 0 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  offset: -16 -8;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -1;
-               }
-            }
-         }
-
-
-         part {
-            name: "rect.base.vert";
-            type: RECT;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  offset: -24 7;
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  offset: -1 -1;
-                  to_y: "rect.base";
-               }
-            }
-         }
-
-         part {
-            name: "rect.clipper.vert";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 255;
-               rel1.to: "rect.base.vert";
-               rel2.to: "rect.base.vert";
-            }
-            description {
-               state: "hidden" 0.0;
-               color: 255 255 255 0;
-               rel1.to: "rect.base.vert";
-               rel2.to: "rect.base.vert";
-            }
-         }
-
-         part {
-            name: "img.runner.vert";
-            type: IMAGE;
-            mouse_events: 0;
-            clip_to: "rect.clipper.vert";
-            description {
-               state: "default" 0.0;
-               min: 3 16;
-               max: 3 99999;
-               rel1 {
-                  relative: 1.0 0.0;
-                  offset: -12 7;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -10 -1;
-                  to_y: "rect.base.vert";
-               }
-               image.normal: "sb_runner_v.png";
-            }
-         }
-
-         part {
-            name: "img.knob.vert";
-            type: IMAGE;
-            mouse_events: 0;
-            clip_to: "rect.clipper.vert";
-	    dragable {
-	       x: 0 0 0;
-	       y: 1 1 0;
-	       confine: "rect.base.vert";
-	    }
-            description {
-               state: "default" 0.0;
-               min: 13 13;
-               max: 13 99999;
-               rel1 {
-                  relative: 1.0 0.0;
-                  offset: -17 7;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -5 -1;
-                  to_y: "rect.base.vert";
-               }
-               image {
-                  normal: "sb_knob.png";
-                  border: 6 6 6 6;
-               }
-            }
-         }
-
-	 part {
-            name: "img.highlight.vert";
-            type: IMAGE;
-	    mouse_events: 0;
-            clip_to: "rect.clipper.vert";
-	    description {
-               state: "default" 0.0;
-	       rel1.to: "img.knob.vert";
-	       rel2 {
-                  relative: 1.0 0.5;
-                  to: "img.knob.vert";
-               }
-	       image {
-		  normal: "sb_hilight.png";
-		  border: 6 6 6 0;
-	       }
-	    }
-	 }
-
-	 part {
-            name: "img.shine.vert";
-            type: IMAGE;
-	    mouse_events: 0;
-	    clip_to: "rect.clipper.vert";
-	    description {
-               state: "default" 0.0;
-	       rel1.to: "img.knob.vert";
-	       rel2.to: "img.knob.vert";
-	       image {
-		  normal: "sb_shine.png";
-		  border: 6 6 6 0;
-	       }
-	    }
-	 }
-
-
-         part {
-            name: "rect.base.horiz";
-            type: RECT;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1 {
-                  relative: 0.0 1.0;
-                  offset: 7 -24;
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  offset: -1 -1;
-                  to_x: "rect.base";
-               }
-            }
-         }
-
-         part {
-            name: "rect.clipper.horiz";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 255;
-               rel1.to: "rect.base.horiz";
-               rel2.to: "rect.base.horiz";
-            }
-            description {
-               state: "hidden" 0.0;
-               color: 255 255 255 0;
-               rel1.to: "rect.base.horiz";
-               rel2.to: "rect.base.horiz";
-            }
-         }
-
-         part {
-            name: "img.runner.horiz";
-            type: IMAGE;
-            mouse_events: 0;
-            clip_to: "rect.clipper.horiz";
-            description {
-               state: "default" 0.0;
-               min: 16 3;
-               max: 99999 3;
-               rel1 {
-                  relative: 0.0 1.0;
-                  offset: 7 -12;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -10;
-                  to_x: "rect.base.horiz";
-               }
-               image.normal: "sb_runner_h.png";
-            }
-         }
-
-         part {
-            name: "img.knob.horiz";
-            type: IMAGE;
-            mouse_events: 0;
-            clip_to: "rect.clipper.horiz";
-	    dragable {
-	       x: 1 1 0;
-	       y: 0 0 0;
-	       confine: "rect.base.horiz";
-	    }
-            description {
-               state: "default" 0.0;
-               min: 13 13;
-               max: 99999 13;
-               rel1 {
-                  relative: 0.0 1.0;
-                  offset: 7 -17;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -5;
-                  to_x: "rect.base.horiz";
-               }
-               image {
-                  normal: "sb_knob.png";
-                  border: 6 6 6 6;
-               }
-            }
-         }
-
-	 part {
-            name: "img.highlight.horiz";
-            type: IMAGE;
-	    mouse_events: 0;
-            clip_to: "rect.clipper.horiz";
-	    description {
-               state: "default" 0.0;
-	       rel1.to: "img.knob.horiz";
-	       rel2 {
-                  relative: 1.0 0.5;
-                  to: "img.knob.horiz";
-               }
-	       image {
-		  normal: "sb_hilight.png";
-		  border: 6 6 6 0;
-	       }
-	    }
-	 }
-
-	 part {
-            name: "img.shine.horiz";
-            type: IMAGE;
-	    mouse_events: 0;
-	    clip_to: "rect.clipper.horiz";
-	    description {
-               state: "default" 0.0;
-	       rel1.to: "img.knob.horiz";
-	       rel2.to: "img.knob.horiz";
-	       image {
-		  normal: "sb_shine.png";
-		  border: 6 6 6 0;
-	       }
-	    }
-	 }
-
-         part {
             name: "img.inset";
             type: IMAGE;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                image {
-		  normal: "inset_sunk.png";
-		  border: 7 7 7 7;
-		  middle: 0;
+                  normal: "inset_sunk.png";
+                  border: 7 7 7 7;
+                  middle: 0;
                }
-	       fill.smooth : 0;
-            }
-         }
-
-         programs {
-            program {
-               name: "load";
-               signal: "load";
-               action: STATE_SET "hidden" 0.0;
-               target: "rect.clipper.vert";
-               target: "rect.clipper.horiz";
-            }
-
-            program {
-               name: "eve,hide,vert";
-               action: STATE_SET "hidden" 0.0;
-               transition: ACCELERATE 0.5;
-               target: "rect.clipper.vert";
-            }
-
-            program {
-               name: "eve,show,vert";
-               action: STATE_SET "default" 0.0;
-               target: "rect.clipper.vert";
-            }
-
-            program {
-               name: "eve,hide,horiz";
-               action: STATE_SET "hidden" 0.0;
-               transition: ACCELERATE 0.5;
-               target: "rect.clipper.horiz";
-            }
-
-            program {
-               name: "eve,show,horiz";
-               action: STATE_SET "default" 0.0;
-               target: "rect.clipper.horiz";
+               fill.smooth : 0;
             }
          }
       }

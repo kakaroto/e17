@@ -125,7 +125,6 @@ _eve_navigator_on_progress(void *data, Evas_Object *obj, void *event_info)
    Edje_Message_Float msg;
    msg.val = ev->load_progress / 100.0;
    edje_object_message_send(priv->edje, EDJE_MESSAGE_FLOAT, 0, &msg);
-   eve_scrolled_webview_scroll_report(priv->scrolled);
 }
 
 static void
@@ -277,6 +276,8 @@ _eve_navigator_edje_reset(Eve_Navigator_Data *priv)
      edje_object_signal_callback_del(priv->edje, itr->sig, "", itr->cb);
 
    edje_object_part_unswallow(priv->edje, priv->scrolled);
+
+   ewk_theme_set(priv->file);
 
    if (!edje_object_file_set(priv->edje, priv->file, priv->group))
      {
