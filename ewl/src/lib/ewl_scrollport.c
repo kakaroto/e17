@@ -1,8 +1,6 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
-#include "ewl_overlay.h"
 #include "ewl_scrollport.h"
-#include "ewl_box.h"
 #include "ewl_scrollbar.h"
 #include "ewl_range.h"
 #include "ewl_macros.h"
@@ -61,19 +59,20 @@ ewl_scrollport_init(Ewl_Scrollport *s)
 	s->hflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
 
-	s->overlay = ewl_overlay_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(s), s->overlay);
-	ewl_widget_internal_set(s->overlay, TRUE);
-	ewl_widget_show(s->overlay);
+	s->visible_area = ewl_container_new();
+	ewl_container_child_append(EWL_CONTAINER(s), s->visible_area);
+	ewl_widget_internal_set(s->visible_area, TRUE);
+        ewl_callback_append(s->visible_area, EWL_CALLBACK_CONFIGURE,
+                        ewl_scrollport_cb_visible_area_configure, NULL);
+	ewl_widget_show(s->visible_area);
 
         /*
          * Notify callbacks for size changes
          */
-        ewl_container_show_notify_set(EWL_CONTAINER(s->overlay),
-                                        ewl_scrollport_cb_overlay_child_show);
-        ewl_container_resize_notify_set(EWL_CONTAINER(s->overlay),
-                                        ewl_scrollport_cb_overlay_child_resize);
+        ewl_container_show_notify_set(EWL_CONTAINER(s),
+                                        ewl_scrollport_cb_child_show);
+        ewl_container_resize_notify_set(EWL_CONTAINER(s),
+                                        ewl_scrollport_cb_child_resize);
 
 	/*
          * Create the scrollbars for the scrollpane.
@@ -88,7 +87,8 @@ ewl_scrollport_init(Ewl_Scrollport *s)
         ewl_container_child_append(EWL_CONTAINER(s), s->vscrollbar);
         ewl_widget_show(s->vscrollbar);
 	
-	ewl_container_redirect_set(EWL_CONTAINER(s), EWL_CONTAINER(s->overlay));
+	ewl_container_redirect_set(EWL_CONTAINER(s),
+                        EWL_CONTAINER(s->visible_area));
 
 	/*
          * Append necessary callbacks for the scrollpane.
@@ -97,7 +97,7 @@ ewl_scrollport_init(Ewl_Scrollport *s)
                         ewl_scrollport_cb_configure, NULL);
 
 	/*
-         * We need to know when he scrollbars have value changes in order to
+         * We need to know when the scrollbars have value changes in order to
          * know when to scroll.
          */
         ewl_callback_append(s->hscrollbar, EWL_CALLBACK_VALUE_CHANGED,
@@ -448,9 +448,36 @@ ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Now move the box into position. For the scrollpane to work we move
          * the box relative to the scroll value.
          */
-        ewl_object_geometry_request(EWL_OBJECT(s->overlay),
+        ewl_object_geometry_request(EWL_OBJECT(s->visible_area),
                                         CURRENT_X(w), CURRENT_Y(w),
                                         content_w, content_h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ */
+void
+ewl_scrollport_cb_visible_area_configure(Ewl_Widget *w,
+                        void *ev_data __UNUSED__, void *user_data __UNUSED__)
+{
+        Ewl_Container *c;
+        Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
+
+        c = EWL_CONTAINER(w);
+
+        ecore_dlist_first_goto(c->children);
+        while ((child = ecore_dlist_next(c->children)))
+                ewl_widget_configure(child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -496,10 +523,10 @@ ewl_scrollport_visible_area_geometry_get(Ewl_Scrollport *s, int *x, int *y,
 	DCHECK_PARAM_PTR(s);
 	DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
 
-	if (x) *x = CURRENT_X(s->overlay); 
-	if (y) *y = CURRENT_Y(s->overlay);
-	if (w) *w = CURRENT_W(s->overlay);
-	if (h) *h = CURRENT_H(s->overlay);
+	if (x) *x = CURRENT_X(s->visible_area); 
+	if (y) *y = CURRENT_Y(s->visible_area);
+	if (w) *w = CURRENT_W(s->visible_area);
+	if (h) *h = CURRENT_H(s->visible_area);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -530,8 +557,9 @@ ewl_scrollport_area_size_set(Ewl_Scrollport *s, int w, int h)
 	s->area_w = w;
 	s->area_h = h;
 	ewl_object_minimum_h_set(EWL_OBJECT(s), hs_h + vs_h);
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(s), vs_h + h);
         ewl_object_minimum_w_set(EWL_OBJECT(s), hs_w + vs_w);
-	ewl_widget_configure(EWL_WIDGET(s));
+        ewl_object_preferred_inner_w_set(EWL_OBJECT(s), vs_w + w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -558,16 +586,20 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
         /*
          * Adjust horizontally to show the focused widget
          */
-        if (x < CURRENT_X(s->overlay)) {
+        if (x < CURRENT_X(s->visible_area))
+        {
                 bar = s->hscrollbar;
                 endcoord = x;
         }
-        else if (x + w > CURRENT_X(s->overlay) + CURRENT_W(s->overlay)) {
+        else if (x + w > CURRENT_X(s->visible_area) 
+                        + CURRENT_W(s->visible_area))
+        {
                 bar = s->hscrollbar;
                 endcoord = x + w;
         }
 
-        if (bar) {
+        if (bar)
+        {
                 value = (double)endcoord /
                         (double)s->area_x_offset + s->area_w;
                 ewl_scrollbar_value_set(EWL_SCROLLBAR(bar), value);
@@ -577,11 +609,14 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
         /*
          * Adjust vertically to show the focused widget
          */
-        if (y < CURRENT_Y(s->overlay)) {
+        if (y < CURRENT_Y(s->visible_area))
+        {
                 bar = s->vscrollbar;
                 endcoord = y;
         }
-        else if (y+ h > CURRENT_Y(s->overlay) + CURRENT_H(s->overlay)) {
+        else if (y+ h > CURRENT_Y(s->visible_area) +
+                        CURRENT_H(s->visible_area))
+        {
                 bar = s->vscrollbar;
                 endcoord = y + h;
         }
@@ -589,7 +624,8 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
         /*
          * Adjust the value of the scrollbar to jump to the position
          */
-        if (bar) {
+        if (bar)
+        {
                 value = (double)endcoord /
                         (double)s->area_y_offset + s->area_h;
                 ewl_scrollbar_value_set(EWL_SCROLLBAR(bar), value);
@@ -597,8 +633,27 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
 
 	ewl_widget_configure(EWL_WIDGET(s));
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollport to retrieve its visible area container
+ * @return Returns the container holding the children added to the scrollport.
+ * @brief Retrieves the visible area container
+ *
+ * This function returns the container, that holds the children added to the
+ * scrollport. This is a plain container, so you can add the container
+ * callbacks to keep track of children size changes. You must not change the
+ * position and geometry of it.
+ */
+Ewl_Container *
+ewl_scrollport_visible_area_get(Ewl_Scrollport *s)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, NULL);
+        DCHECK_TYPE_RET(s, EWL_SCROLLPORT_TYPE, NULL);
+
+        DRETURN_PTR(EWL_CONTAINER(s->visible_area), DLEVEL_STABLE);
 }
 
 /**
@@ -615,6 +670,7 @@ ewl_scrollport_cb_hscroll(Ewl_Widget *w __UNUSED__,
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(user_data);
+        DCHECK_TYPE(user_data, EWL_SCROLLPORT_TYPE);
 
         ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
         ewl_widget_configure(user_data);
@@ -638,6 +694,7 @@ ewl_scrollport_cb_vscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(user_data);
+        DCHECK_TYPE(user_data, EWL_SCROLLPORT_TYPE);
 
         ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
         ewl_widget_configure(user_data);
@@ -674,41 +731,45 @@ ewl_scrollport_cb_wheel_scroll(Ewl_Widget *cb, void *ev_data,
 }
 
 void
-ewl_scrollport_cb_overlay_child_show(Ewl_Container *p, Ewl_Widget *c)
+ewl_scrollport_cb_child_show(Ewl_Container *p, Ewl_Widget *c)
 {
+        Ewl_Scrollport *s;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_OVERLAY_TYPE);
+        DCHECK_TYPE(p, EWL_SCROLLPORT_TYPE);
         DCHECK_PARAM_PTR(c);
         DCHECK_TYPE(c, EWL_WIDGET_TYPE);
 
-        ewl_overlay_cb_child_show(p, c);
+        s = EWL_SCROLLPORT(p);
+        /* we don't change the size here actually but the function does
+         * everything we need to do here, i.e. reseting the preferred
+         * and the minimum size */
+        ewl_scrollport_area_size_set(s, s->area_w, s->area_h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_scrollport_cb_overlay_child_resize(Ewl_Container *p, Ewl_Widget *c, 
+void ewl_scrollport_cb_child_resize(Ewl_Container *p, Ewl_Widget *c, 
                                                 int size, Ewl_Orientation o)
 {
         Ewl_Scrollport *s;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_OVERLAY_TYPE);
-        s = EWL_SCROLLPORT(EWL_WIDGET(p)->parent);
-        DCHECK_PARAM_PTR(s);
         DCHECK_PARAM_PTR(c);
         DCHECK_TYPE(c, EWL_WIDGET_TYPE);
-        DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
+        DCHECK_TYPE(p, EWL_SCROLLPORT_TYPE);
 	
-        ewl_overlay_cb_child_resize(p, c, size, o);
-	
+        s = EWL_SCROLLPORT(p);
+
         if (o == EWL_ORIENTATION_VERTICAL)
                 ewl_object_preferred_inner_h_set(EWL_OBJECT(s),
                                 PREFERRED_H(s) + size);
         else
                 ewl_object_preferred_inner_w_set(EWL_OBJECT(s),
                                 PREFERRED_W(s) + size);
+
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

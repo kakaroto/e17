@@ -12,7 +12,6 @@
 
 #define HIST_NUM 20
 
-static void ewl_scrollpane_preferred_size_calc(Ewl_Scrollpane *s);
 /* Normal scrolling functions */
 static void ewl_scrollpane_cb_mouse_down_normal(Ewl_Widget *w, void *ev, void *data);
 static void ewl_scrollpane_cb_mouse_up_normal(Ewl_Widget *w, void *ev, void *data);
@@ -98,6 +97,7 @@ int
 ewl_scrollpane_init(Ewl_Scrollpane *s)
 {
         Ewl_Widget *w;
+        Ewl_Container *va;
         const char *kst;
         Ewl_Kinetic_Scroll type;
 
@@ -112,8 +112,6 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
         ewl_widget_appearance_set(w, EWL_SCROLLPANE_TYPE);
         ewl_widget_inherit(w, EWL_SCROLLPANE_TYPE);
         ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
-        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_FILL 
-                                                        | EWL_FLAG_FILL_SHRINK);
 
         ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
         ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
@@ -140,18 +138,15 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
          * scrollpane to the content box */
         ewl_container_redirect_set(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
         
-        /* get informed about the children size */
-        ewl_container_show_notify_set(EWL_CONTAINER(s), 
-                                        ewl_scrollpane_cb_child_show);
-        ewl_container_resize_notify_set(EWL_CONTAINER(s), 
-                                        ewl_scrollpane_cb_child_resize);
-
-
         /*
          * Append necessary callbacks for the scrollpane.
          */
         ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
                         ewl_scrollpane_cb_focus_jump, NULL);
+        
+        va = ewl_scrollport_visible_area_get(EWL_SCROLLPORT(s));
+        ewl_container_show_notify_set(va, ewl_scrollpane_cb_container_show);
+        ewl_container_resize_notify_set(va, ewl_scrollpane_cb_container_resize);
 
         /*
          * Setup kinetic scrolling info here
@@ -183,7 +178,7 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 void
 ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
 {
-        Ewl_Scrollport *sp;
+        Ewl_Widget *va;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(s);
@@ -193,27 +188,27 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
         if ((s->type) && (type == s->type))
                 DRETURN(DLEVEL_STABLE);
 
-        sp = EWL_SCROLLPORT(s);
+        va = EWL_WIDGET(ewl_scrollport_visible_area_get(EWL_SCROLLPORT(s)));
         /* Remove all present callbacks and free the kinfo */
         if ((s->type == EWL_KINETIC_SCROLL_NORMAL) && (s->kinfo))
         {
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_DOWN,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_scrollpane_cb_mouse_down_normal);
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_UP,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_UP,
                                 ewl_scrollpane_cb_mouse_up_normal);
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_MOVE,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_scrollpane_cb_mouse_move_normal);
         }
-
         else if ((s->type == EWL_KINETIC_SCROLL_EMBEDDED) && (s->kinfo))
         {
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_DOWN,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_scrollpane_cb_mouse_down_embedded);
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_UP,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_UP,
                                 ewl_scrollpane_cb_mouse_up_embedded);
-                ewl_callback_del(sp->overlay, EWL_CALLBACK_MOUSE_MOVE,
+                ewl_callback_del(va, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_scrollpane_cb_mouse_move_embedded);
         }
+
         if (s->kinfo)
                 IF_FREE(s->kinfo->extra);
         else
@@ -227,22 +222,21 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
 
         if (type == EWL_KINETIC_SCROLL_NORMAL)
         {
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_DOWN,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_scrollpane_cb_mouse_down_normal, s);
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_UP,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_UP,
                                 ewl_scrollpane_cb_mouse_up_normal, s);
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_MOVE,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_scrollpane_cb_mouse_move_normal, s);
                 s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Normal, 1);
         }
-
         else if (type == EWL_KINETIC_SCROLL_EMBEDDED)
         {
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_DOWN,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_scrollpane_cb_mouse_down_embedded, s);
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_UP,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_UP,
                                 ewl_scrollpane_cb_mouse_up_embedded, s);
-                ewl_callback_append(sp->overlay, EWL_CALLBACK_MOUSE_MOVE,
+                ewl_callback_append(va, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_scrollpane_cb_mouse_move_embedded, s);
 
                 s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Embedded, 1);
@@ -279,45 +273,23 @@ void
 ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         void *user_data __UNUSED__)
 {
-        Ewl_Scrollpane *s;
-        int cx, cy, cw, ch;
-        unsigned int old_fill, box_fill = EWL_FLAG_FILL_FILL;
+        Ewl_Scrollpane *sp;
+        int ax, ay, aw, ah;
+        int vw, vh;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_SCROLLPANE_TYPE);
 
-        s = EWL_SCROLLPANE(w);
-
-        /*
-         * Calcuate the offset for the box position
-         */
-        if (ewl_scrollport_hscrollbar_flag_get(EWL_SCROLLPORT(s)) ==
-                                        EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
-                box_fill |= EWL_FLAG_FILL_HSHRINKABLE;
-
-        if (ewl_scrollport_vscrollbar_flag_get(EWL_SCROLLPORT(s)) ==
-                                        EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
-                box_fill |= EWL_FLAG_FILL_VSHRINKABLE;
-        
-        /*
-         * Set the fill policy on the box based on scrollbars visible.
-         */
-        old_fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
-        ewl_object_fill_policy_set(EWL_OBJECT(s->box), box_fill);
-
-        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(s), &cx, &cy,
-                                                                &cw, &ch);
-
+        sp = EWL_SCROLLPANE(w);
         /*
          * Move the box into position
          */
-        ewl_object_geometry_request(EWL_OBJECT(s->box), cx, cy, cw, ch);
-        
-        /*
-         * Reset the default fill policy on the box to get updated sizes..
-         */
-        ewl_object_fill_policy_set(EWL_OBJECT(s->box), old_fill);
+        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(w), &ax, &ay, &aw, &ah);
+        ewl_scrollport_visible_area_geometry_get(EWL_SCROLLPORT(w), NULL, NULL,
+                        &vw, &vh);
+        ewl_object_geometry_request(EWL_OBJECT(sp->box), ax, ay,
+                        (aw < vw) ? vw : aw, (ah < vh) ? vh : ah);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -329,13 +301,18 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns no value
  */
 void
-ewl_scrollpane_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
+ewl_scrollpane_cb_container_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
+        Ewl_Scrollpane *s;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_SCROLLPANE_TYPE);
+        DCHECK_TYPE(EWL_WIDGET(p)->parent, EWL_SCROLLPANE_TYPE);
 
-        ewl_scrollpane_preferred_size_calc(EWL_SCROLLPANE(p));
+        s = EWL_SCROLLPANE(EWL_WIDGET(p)->parent);
+        ewl_scrollport_area_size_set(EWL_SCROLLPORT(s),
+                        ewl_object_preferred_w_get(EWL_OBJECT(s->box)),
+                        ewl_object_preferred_h_get(EWL_OBJECT(s->box)));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -349,30 +326,17 @@ ewl_scrollpane_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
  * @return Returns no value
  */
 void
-ewl_scrollpane_cb_child_resize(Ewl_Container *p, Ewl_Widget *c __UNUSED__, 
+ewl_scrollpane_cb_container_resize(Ewl_Container *p, Ewl_Widget *c __UNUSED__, 
                                 int size __UNUSED__, 
                                 Ewl_Orientation o __UNUSED__)
 {
+        Ewl_Scrollpane *s;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_SCROLLPANE_TYPE);
+        DCHECK_TYPE(EWL_WIDGET(p)->parent, EWL_SCROLLPANE_TYPE);
 
-        ewl_scrollpane_preferred_size_calc(EWL_SCROLLPANE(p));
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_scrollpane_preferred_size_calc(Ewl_Scrollpane *s)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(s);
-        DCHECK_TYPE(s, EWL_SCROLLPANE_TYPE);
-
-        ewl_object_preferred_inner_h_set(EWL_OBJECT(s),
-                        ewl_object_preferred_h_get(EWL_OBJECT(s->box)));
-        ewl_object_preferred_inner_w_set(EWL_OBJECT(s),
-                        ewl_object_preferred_w_get(EWL_OBJECT(s->box)));
+        s = EWL_SCROLLPANE(EWL_WIDGET(p)->parent);
         ewl_scrollport_area_size_set(EWL_SCROLLPORT(s),
                         ewl_object_preferred_w_get(EWL_OBJECT(s->box)),
                         ewl_object_preferred_h_get(EWL_OBJECT(s->box)));
@@ -687,7 +651,8 @@ ewl_scrollpane_cb_mouse_up_embedded(Ewl_Widget *w __UNUSED__,
         info->vel_y = info->vel_y * ry;
 
         info->at = at;
-        ecore_timer_add(1/s->kinfo->fps, ewl_scrollpane_cb_scroll_timer_embedded, s);
+        ecore_timer_add(1.0 / s->kinfo->fps,
+                        ewl_scrollpane_cb_scroll_timer_embedded, s);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

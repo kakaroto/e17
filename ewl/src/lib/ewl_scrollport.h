@@ -53,7 +53,7 @@ struct Ewl_Scrollport
 {
         Ewl_Container container;        /**< Inherit from Ewl_Container */
 
-        Ewl_Widget *overlay;            /**< Clips the enclosed widget */
+        Ewl_Widget *visible_area;       /**< Clips the enclosed widget */
         Ewl_Widget *hscrollbar;         /**< Horizontal scrollbar */
         Ewl_Widget *vscrollbar;         /**< Vertical scrollbar */
         Ewl_Scrollport_Flags hflag;     /**< Flags for horizontal scrollbar */
@@ -84,6 +84,7 @@ Ewl_Widget              *ewl_scrollport_vscrollbar_get(Ewl_Scrollport *s);
 
 double                   ewl_scrollport_hscrollbar_step_get(Ewl_Scrollport *s);
 double                   ewl_scrollport_vscrollbar_step_get(Ewl_Scrollport *s);
+
 void			 ewl_scrollport_area_geometry_get(Ewl_Scrollport *s,
                                                          int *x, int *y,
 							 int *w, int *h);
@@ -97,14 +98,16 @@ void			 ewl_scrollport_visible_area_geometry_set
 							(Ewl_Scrollport *s,
 							 int x, int y,
                                                          int w, int h);
+Ewl_Container           *ewl_scrollport_visible_area_get(Ewl_Scrollport *s);
 
 void ewl_scrollport_cb_hscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollport_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollport_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
                                                         void *user_data);
 void ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_scrollport_cb_overlay_child_show(Ewl_Container *p, Ewl_Widget *c);
-void ewl_scrollport_cb_overlay_child_resize(Ewl_Container *p, Ewl_Widget *c, 
+void ewl_scrollport_cb_visible_area_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_scrollport_cb_child_show(Ewl_Container *p, Ewl_Widget *c);
+void ewl_scrollport_cb_child_resize(Ewl_Container *p, Ewl_Widget *c, 
                                                 int size, Ewl_Orientation o);
 
 #endif
