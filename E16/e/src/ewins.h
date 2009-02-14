@@ -456,6 +456,7 @@ int                 ActionResizeStart(EWin * ewin, int kbd, int hv);
 
 int                 ActionsSuspend(void);
 int                 ActionsResume(void);
+void                ActionsHandleKey(unsigned int key);
 void                ActionsHandleMotion(void);
 int                 ActionsEnd(EWin * ewin);
 

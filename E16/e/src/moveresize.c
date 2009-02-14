@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -33,16 +33,19 @@
 #include "hints.h"
 #include "timers.h"
 #include "xwin.h"
+#include <X11/keysym.h>
 
 static struct {
    EWin               *ewin;
-   int                 mode;
+   char                mode;
+   char                using_kbd;
+   char                nogroup;
+   char                grab_server;
    int                 start_x, start_y;
+   int                 cur_x, cur_y;
    int                 win_x, win_y, win_w, win_h;
    int                 swapcoord_x, swapcoord_y;
    int                 resize_detail;
-   char                nogroup;
-   char                grab_server;
 } Mode_mr;
 
 static int
@@ -77,7 +80,7 @@ EwinShapeSet(EWin * ewin)
 }
 
 int
-ActionMoveStart(EWin * ewin, int kbd __UNUSED__, int constrained, int nogroup)
+ActionMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
 {
    EWin              **gwins;
    int                 i, num, cx, cy;
@@ -86,19 +89,23 @@ ActionMoveStart(EWin * ewin, int kbd __UNUSED__, int constrained, int nogroup)
       return 0;
 
    Mode_mr.ewin = ewin;
+   Mode_mr.using_kbd = kbd;
    Mode_mr.nogroup = nogroup;
 
    EventsGetXY(&cx, &cy);
 
    SoundPlay(SOUND_MOVE_START);
 
-   GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
+   if (kbd)
+      GrabKeyboardSet(EoGetWin(ewin));
+   else
+      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   Mode_mr.start_x = cx;
-   Mode_mr.start_y = cy;
+   Mode_mr.start_x = Mode_mr.cur_x = cx;
+   Mode_mr.start_y = Mode_mr.cur_y = cy;
 
    Mode_mr.win_x = Mode_mr.start_x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
    Mode_mr.win_y = Mode_mr.start_y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
@@ -142,6 +149,7 @@ ActionMoveEnd(EWin * ewin)
    if (ewin && ewin != Mode_mr.ewin)
       return 0;
 
+   GrabKeyboardRelease();
    GrabPointerRelease();
 
    SoundPlay(SOUND_MOVE_STOP);
@@ -287,7 +295,7 @@ ActionMoveResume(void)
 #define RD_V(hv) (((hv)     ) & 0xff)
 
 int
-ActionResizeStart(EWin * ewin, int kbd __UNUSED__, int hv)
+ActionResizeStart(EWin * ewin, int kbd, int hv)
 {
    int                 x, y, w, h, ww, hh, cx, cy;
    unsigned int        csr;
@@ -304,6 +312,7 @@ ActionResizeStart(EWin * ewin, int kbd __UNUSED__, int hv)
    if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
       Conf.movres.mode_resize = 0;
    Mode_mr.mode = Conf.movres.mode_resize;
+   Mode_mr.using_kbd = kbd;
    Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
    if (Mode_mr.grab_server)
      {
@@ -323,6 +332,12 @@ ActionResizeStart(EWin * ewin, int kbd __UNUSED__, int hv)
      default:
      case MODE_RESIZE:
 	Mode.mode = hv;
+	if (kbd)
+	  {
+	     Mode_mr.resize_detail = 0;
+	     csr = ECSR_ACT_RESIZE_BR;
+	     break;
+	  }
 	x = cx - EoGetX(ewin);
 	y = cy - EoGetY(ewin);
 	w = EoGetW(ewin) >> 1;
@@ -404,14 +419,17 @@ ActionResizeStart(EWin * ewin, int kbd __UNUSED__, int hv)
 	break;
      }
 
-   Mode_mr.start_x = cx;
-   Mode_mr.start_y = cy;
+   Mode_mr.start_x = Mode_mr.cur_x = cx;
+   Mode_mr.start_y = Mode_mr.cur_y = cy;
    Mode_mr.win_x = EoGetX(ewin);
    Mode_mr.win_y = EoGetY(ewin);
    Mode_mr.win_w = ewin->client.w;
    Mode_mr.win_h = ewin->client.h;
 
-   GrabPointerSet(EoGetWin(ewin), csr, 1);
+   if (kbd)
+      GrabKeyboardSet(EoGetWin(ewin));
+   else
+      GrabPointerSet(EoGetWin(ewin), csr, 1);
 
    EwinShapeSet(ewin);
    ewin->state.show_coords = 1;
@@ -429,6 +447,7 @@ ActionResizeEnd(EWin * ewin)
 
    Mode.mode = MODE_NONE;
 
+   GrabKeyboardRelease();
    GrabPointerRelease();
 
    SoundPlay(SOUND_RESIZE_STOP);
@@ -745,6 +764,90 @@ ActionResizeHandleMotion(void)
      }
 
    DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1, 0);
+}
+
+void
+ActionsHandleKey(unsigned int key)
+{
+   EWin               *ewin;
+   int                 resize, delta, end = 0;
+
+   ewin = Mode_mr.ewin;
+   if (!ewin)
+      return;
+
+   resize = Mode.mode == MODE_RESIZE ||
+      Mode.mode == MODE_RESIZE_H || Mode.mode == MODE_RESIZE_V;
+
+   Mode.events.px = Mode_mr.cur_x;
+   Mode.events.py = Mode_mr.cur_y;
+   delta = 5;
+
+   switch (key)
+     {
+     default:
+	return;
+     case XK_Escape:
+	Mode_mr.cur_x = Mode_mr.start_x;
+	Mode_mr.cur_y = Mode_mr.start_y;
+     case XK_Return:
+	end = 1;
+	break;
+
+     case XK_Left:
+	if (!RD_H(Mode_mr.resize_detail))
+	   Mode_mr.resize_detail |= RD(1, 0);
+	if (resize && ewin->icccm.w_inc > delta)
+	   delta = ewin->icccm.w_inc;
+	Mode_mr.cur_x -= delta;
+	break;
+     case XK_Right:
+	if (!RD_H(Mode_mr.resize_detail))
+	   Mode_mr.resize_detail |= RD(2, 0);
+	if (resize && ewin->icccm.w_inc > delta)
+	   delta = ewin->icccm.w_inc;
+	Mode_mr.cur_x += delta;
+	break;
+     case XK_Up:
+	if (!RD_V(Mode_mr.resize_detail))
+	   Mode_mr.resize_detail |= RD(0, 1);
+	if (resize && ewin->icccm.h_inc > delta)
+	   delta = ewin->icccm.h_inc;
+	Mode_mr.cur_y -= delta;
+	break;
+     case XK_Down:
+	if (!RD_V(Mode_mr.resize_detail))
+	   Mode_mr.resize_detail |= RD(0, 2);
+	if (resize && ewin->icccm.h_inc > delta)
+	   delta = ewin->icccm.h_inc;
+	Mode_mr.cur_y += delta;
+	break;
+     }
+
+   Mode_mr.using_kbd = 2;
+   Mode.events.mx = Mode_mr.cur_x;
+   Mode.events.my = Mode_mr.cur_y;
+
+   switch (Mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveHandleMotion();
+	if (end)
+	   ActionMoveEnd(NULL);
+	break;
+
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeHandleMotion();
+	if (end)
+	   ActionResizeEnd(NULL);
+	break;
+
+     default:
+	break;
+     }
 }
 
 void

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2008 Kim Woelders
+ * Copyright (C) 2003-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -43,6 +43,7 @@
 #define _NET_WM_MOVERESIZE_MOVE             8
 #define _NET_WM_MOVERESIZE_SIZE_KEYBOARD    9
 #define _NET_WM_MOVERESIZE_MOVE_KEYBOARD   10
+#define _NET_WM_MOVERESIZE_CANCEL          11
 
 /* Window state property change actions */
 #define _NET_WM_STATE_REMOVE    0
@@ -1044,10 +1045,13 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	     break;
 
 	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
-	     /* doResize(NULL); */
+	     ActionResizeStart(ewin, 1, MODE_RESIZE);
 	     break;
 	  case _NET_WM_MOVERESIZE_MOVE_KEYBOARD:
-	     /* doMove(NULL); */
+	     ActionMoveStart(ewin, 1, 0, 0);
+	     break;
+	  case _NET_WM_MOVERESIZE_CANCEL:
+	     ActionsEnd(ewin);
 	     break;
 	  }
 	return 1;

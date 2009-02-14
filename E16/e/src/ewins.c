@@ -2260,6 +2260,9 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 
    switch (ev->type)
      {
+     case KeyPress:
+	ActionsHandleKey(XLookupKeysym(&ev->xkey, 0));
+	break;
      case ButtonPress:
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
 	break;

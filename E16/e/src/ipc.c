@@ -562,6 +562,10 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  {
 	     ActionMoveStart(ewin, 0, 0, Mode.nogroup);
 	  }
+	else if (!strcmp(param1, "kbd"))
+	  {
+	     ActionMoveStart(ewin, 1, 0, Mode.nogroup);
+	  }
 	else if (!strcmp(param1, "?"))
 	  {
 	     IpcPrintf("window location: %d %d", EoGetX(ewin), EoGetY(ewin));
@@ -597,6 +601,10 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	else if (!strcmp(param1, "ptr-v"))
 	  {
 	     ActionResizeStart(ewin, 0, MODE_RESIZE_V);
+	  }
+	else if (!strcmp(param1, "kbd"))
+	  {
+	     ActionResizeStart(ewin, 1, MODE_RESIZE);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
@@ -1553,7 +1561,7 @@ static const IpcItem IPCArray[] = {
 #endif
     "  win_op <windowid> desk <desktochangeto/next/prev>\n"
     "  win_op <windowid> area <x> <y>\n"
-    "  win_op <windowid> <move/size> <x> <y>\n"
+    "  win_op <windowid> <move/size> <x> <y> or <kbd/ptr>\n"
     "          (you can use ? and ?? to retreive client and frame locations)\n"
     "  win_op <windowid> <mr/sr> <x> <y>   (incremental move/size)\n"
     "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
