@@ -380,26 +380,26 @@ IPC_WinList(const char *params)
 static int
 doMoveConstrained(EWin * ewin, const char *params)
 {
-   return ActionMoveStart(ewin, params, 1, 0);
+   return ActionMoveStart(ewin, 0, params, 1, 0);
 }
 
 static int
 doMoveNoGroup(EWin * ewin, const char *params)
 {
-   return ActionMoveStart(ewin, params, 0, 1);
+   return ActionMoveStart(ewin, 0, params, 0, 1);
 }
 
 static int
 doSwapMove(EWin * ewin, const char *params)
 {
    Mode.move.swap = 1;
-   return ActionMoveStart(ewin, params, 0, 0);
+   return ActionMoveStart(ewin, 0, params, 0, 0);
 }
 
 static int
 doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 {
-   return ActionMoveStart(ewin, params, 1, 1);
+   return ActionMoveStart(ewin, 0, params, 1, 1);
 }
 #endif
 
@@ -560,7 +560,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionMoveStart(ewin, 0, Mode.nogroup);
+	     ActionMoveStart(ewin, 0, 0, Mode.nogroup);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
@@ -588,15 +588,15 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionResizeStart(ewin, MODE_RESIZE);
+	     ActionResizeStart(ewin, 0, MODE_RESIZE);
 	  }
 	else if (!strcmp(param1, "ptr-h"))
 	  {
-	     ActionResizeStart(ewin, MODE_RESIZE_H);
+	     ActionResizeStart(ewin, 0, MODE_RESIZE_H);
 	  }
 	else if (!strcmp(param1, "ptr-v"))
 	  {
-	     ActionResizeStart(ewin, MODE_RESIZE_V);
+	     ActionResizeStart(ewin, 0, MODE_RESIZE_V);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {

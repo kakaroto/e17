@@ -77,7 +77,7 @@ EwinShapeSet(EWin * ewin)
 }
 
 int
-ActionMoveStart(EWin * ewin, char constrained, int nogroup)
+ActionMoveStart(EWin * ewin, int kbd __UNUSED__, int constrained, int nogroup)
 {
    EWin              **gwins;
    int                 i, num, cx, cy;
@@ -287,7 +287,7 @@ ActionMoveResume(void)
 #define RD_V(hv) (((hv)     ) & 0xff)
 
 int
-ActionResizeStart(EWin * ewin, int hv)
+ActionResizeStart(EWin * ewin, int kbd __UNUSED__, int hv)
 {
    int                 x, y, w, h, ww, hh, cx, cy;
    unsigned int        csr;
