@@ -75,6 +75,7 @@ extern"C" {
 #include <ewl_progressbar.h>
 #include <ewl_paned.h>
 #include <ewl_scrollport.h>
+#include <ewl_scrollport_kinetic.h>
 #include <ewl_scrollpane.h>
 #include <ewl_statusbar.h>
 #include <ewl_shadow.h>

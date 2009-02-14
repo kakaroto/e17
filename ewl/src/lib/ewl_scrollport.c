@@ -1,13 +1,12 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_scrollport.h"
+#include "ewl_scrollport_kinetic.h"
 #include "ewl_scrollbar.h"
 #include "ewl_range.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
-#include <math.h>
-
 
 /**
  * @return Returns a new scrollport on success, NULL on failure
@@ -42,6 +41,8 @@ int
 ewl_scrollport_init(Ewl_Scrollport *s)
 {
 	Ewl_Widget *w;
+        const char *kst;
+        Ewl_Kinetic_Scroll type;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(s, FALSE);
@@ -107,6 +108,21 @@ ewl_scrollport_init(Ewl_Scrollport *s)
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_WHEEL,
                                 ewl_scrollport_cb_wheel_scroll, NULL);
 
+        /*
+         * Setup kinetic scrolling info here
+         */
+        /* XXX I think, this should be configurable and not theme defined */
+        kst = ewl_theme_data_str_get(w, "kscroll_type");
+
+        if (kst && !strcmp(kst, "embedded"))
+                type = EWL_KINETIC_SCROLL_EMBEDDED;
+        else if (kst && !strcmp(kst, "normal"))
+                type = EWL_KINETIC_SCROLL_NORMAL;
+        else
+                type = EWL_KINETIC_SCROLL_NONE;
+                
+        ewl_scrollport_kinetic_scrolling_set(s, type);
+        
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

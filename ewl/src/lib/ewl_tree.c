@@ -8,7 +8,8 @@
 #include "ewl_label.h"
 #include "ewl_paned.h"
 #include "ewl_tree_view_scrolled.h"
-#include "ewl_scrollpane.h"
+#include "ewl_scrollport.h"
+#include "ewl_scrollport_kinetic.h"
 #include "ewl_private.h"
 #include "ewl_macros.h"
 #include "ewl_debug.h"
@@ -52,7 +53,7 @@ static void ewl_tree_expansions_hash_create(Ewl_Tree *tree);
 
 static Ewl_Tree_Expansions_List *ewl_tree_expansions_list_new(void);
 static void ewl_tree_expansions_list_destroy(Ewl_Tree_Expansions_List *el);
-Ewl_Scrollpane *ewl_tree_kinetic_scrollpane_get(Ewl_Tree *tree);
+static Ewl_Scrollport *ewl_tree_kinetic_scrollport_get(Ewl_Tree *tree);
 
 /**
  * @return Returns NULL on failure, a new tree widget on success.
@@ -651,7 +652,7 @@ ewl_tree_row_visible_ensure(Ewl_Tree *tree, void *data, unsigned int row)
 {
         Ewl_Widget *w;
         Ewl_Container *c;
-        Ewl_Scrollpane *scrollpane;
+        Ewl_Scrollport *scrollport;
         double scroll_value;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -672,11 +673,11 @@ ewl_tree_row_visible_ensure(Ewl_Tree *tree, void *data, unsigned int row)
                 DRETURN(DLEVEL_UNSTABLE);
         }
 
-        scrollpane = ewl_tree_kinetic_scrollpane_get(tree);
-        if (!scrollpane)
+        scrollport = ewl_tree_kinetic_scrollport_get(tree);
+        if (!scrollport)
         {
                 DWARNING("Ensure visible doesn't work on tree having no "
-                                "scrollpane");
+                                "scrollport");
                 DRETURN(DLEVEL_UNSTABLE);
         }
 
@@ -695,7 +696,7 @@ ewl_tree_row_visible_ensure(Ewl_Tree *tree, void *data, unsigned int row)
         scroll_value = (double)(CURRENT_Y(w) - CURRENT_Y(c)) 
                                 / (CURRENT_H(c) - CURRENT_H(w));
 
-        ewl_scrollport_vscrollbar_value_set(EWL_SCROLLPORT(scrollpane),
+        ewl_scrollport_vscrollbar_value_set(EWL_SCROLLPORT(scrollport),
                                                                 scroll_value);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1814,7 +1815,7 @@ ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 void
 ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree, Ewl_Kinetic_Scroll type)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
@@ -1823,9 +1824,9 @@ ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree, Ewl_Kinetic_Scroll type)
         if (!type)
                 DRETURN(DLEVEL_STABLE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ewl_scrollpane_kinetic_scrolling_set(EWL_SCROLLPANE(scroll), type);
+                ewl_scrollport_kinetic_scrolling_set(EWL_SCROLLPORT(scroll), type);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1838,16 +1839,16 @@ ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree, Ewl_Kinetic_Scroll type)
 Ewl_Kinetic_Scroll
 ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
         Ewl_Kinetic_Scroll type = EWL_KINETIC_SCROLL_NONE;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(tree, EWL_KINETIC_SCROLL_NONE);
         DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, EWL_KINETIC_SCROLL_NONE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                type = ewl_scrollpane_kinetic_scrolling_get(scroll);
+                type = ewl_scrollport_kinetic_scrolling_get(scroll);
 
         DRETURN_INT(type, DLEVEL_STABLE);
 }
@@ -1861,15 +1862,15 @@ ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree)
 void
 ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ewl_scrollpane_kinetic_max_velocity_set(scroll, v);
+                ewl_scrollport_kinetic_max_velocity_set(scroll, v);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1882,16 +1883,16 @@ ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v)
 double
 ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
         double ret = -1.0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(tree, -1);
         DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ret = ewl_scrollpane_kinetic_max_velocity_get(scroll);
+                ret = ewl_scrollport_kinetic_max_velocity_get(scroll);
 
         DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -1905,15 +1906,15 @@ ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree)
 void
 ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ewl_scrollpane_kinetic_min_velocity_set(scroll, v);
+                ewl_scrollport_kinetic_min_velocity_set(scroll, v);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1926,16 +1927,16 @@ ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v)
 double
 ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
         double ret = -1.0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(tree, -1);
         DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ret = ewl_scrollpane_kinetic_min_velocity_get(scroll);
+                ret = ewl_scrollport_kinetic_min_velocity_get(scroll);
 
         DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -1949,15 +1950,15 @@ ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree)
 void
 ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ewl_scrollpane_kinetic_dampen_set(scroll, d);
+                ewl_scrollport_kinetic_dampen_set(scroll, d);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1970,16 +1971,16 @@ ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d)
 double
 ewl_tree_kinetic_dampen_get(Ewl_Tree *tree)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
         double ret = -1.0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(tree, -1);
         DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ret = ewl_scrollpane_kinetic_dampen_get(scroll);
+                ret = ewl_scrollport_kinetic_dampen_get(scroll);
 
         DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -1993,15 +1994,15 @@ ewl_tree_kinetic_dampen_get(Ewl_Tree *tree)
 void
 ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ewl_scrollpane_kinetic_fps_set(scroll, fps);
+                ewl_scrollport_kinetic_fps_set(scroll, fps);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2014,16 +2015,16 @@ ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps)
 int
 ewl_tree_kinetic_fps_get(Ewl_Tree *tree)
 {
-        Ewl_Scrollpane *scroll;
+        Ewl_Scrollport *scroll;
         int ret = -1;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(tree, -1);
         DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
 
-        scroll = ewl_tree_kinetic_scrollpane_get(tree);
+        scroll = ewl_tree_kinetic_scrollport_get(tree);
         if (scroll)
-                ret = ewl_scrollpane_kinetic_fps_get(scroll);
+                ret = ewl_scrollport_kinetic_fps_get(scroll);
 
         DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -2031,11 +2032,11 @@ ewl_tree_kinetic_fps_get(Ewl_Tree *tree)
 /**
  * @internal
  * @param tree: The tree to work with
- * @return Returns the scrollpane used in the view
+ * @return Returns the scrollport used in the view
  * @brief A helper function for setting kinetic scrolling variables
  */
-Ewl_Scrollpane *
-ewl_tree_kinetic_scrollpane_get(Ewl_Tree *tree)
+static Ewl_Scrollport *
+ewl_tree_kinetic_scrollport_get(Ewl_Tree *tree)
 {
         Ewl_Widget *s;
         Ewl_Container *scroll, *temp;
@@ -2047,19 +2048,19 @@ ewl_tree_kinetic_scrollpane_get(Ewl_Tree *tree)
         s = ewl_tree_content_widget_get(tree);
         scroll = ewl_container_redirect_get(EWL_CONTAINER(s));
 
-        while (!ewl_widget_type_is(EWL_WIDGET(scroll), EWL_SCROLLPANE_TYPE))
+        while (!ewl_widget_type_is(EWL_WIDGET(scroll), EWL_SCROLLPORT_TYPE))
         {
                 temp = scroll;
                 scroll = ewl_container_redirect_get(temp);
 
                 if (!scroll)
                 {
-                        DWARNING("No scrollpane to use for kinetic scrolling");
+                        DWARNING("No scrollport to use for kinetic scrolling");
                         DRETURN_PTR(NULL, DLEVEL_STABLE);
                 }
         }
 
-        DRETURN_PTR(EWL_SCROLLPANE(scroll), DLEVEL_STABLE);
+        DRETURN_PTR(EWL_SCROLLPORT(scroll), DLEVEL_STABLE);
 }
 
         

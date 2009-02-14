@@ -80,6 +80,7 @@ EWLHEADERS = \
 	ewl_row.h \
 	ewl_scrollbar.h \
 	ewl_scrollport.h \
+	ewl_scrollport_kinetic.h \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
 	ewl_separator.h \
@@ -166,6 +167,7 @@ EWLSOURCES= \
 	ewl_row.c \
 	ewl_scrollbar.c \
 	ewl_scrollport.c \
+	ewl_scrollport_kinetic.c \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
 	ewl_separator.c \

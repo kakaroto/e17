@@ -21,6 +21,12 @@
  */
 
 /**
+ * This is a forward declaration, the actual structure is defined in
+ * ewl_scrollport_kinetic.c
+ */
+typedef struct Ewl_Scrollport_Kinetic_Info Ewl_Scrollport_Kinetic_Info;
+
+/**
  * @def EWL_SCROLLPORT_TYPE
  * The type name for the Ewl_Scrollport widget
  */
@@ -58,6 +64,11 @@ struct Ewl_Scrollport
         Ewl_Widget *vscrollbar;         /**< Vertical scrollbar */
         Ewl_Scrollport_Flags hflag;     /**< Flags for horizontal scrollbar */
         Ewl_Scrollport_Flags vflag;     /**< Flags for vertical scrollbar */
+
+        Ewl_Scrollport_Kinetic_Info *kinfo;     /**< Kinetic scrolling 
+                                                             info */
+        Ewl_Kinetic_Scroll type;        /**< If the scrollport is to use 
+                                                kinetic scrolling */
 
 	int area_w, area_h;
         int area_x_offset, area_y_offset;
