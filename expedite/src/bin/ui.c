@@ -51,6 +51,16 @@ static int list_test = 0;
 static void
 _ui_exit(void)
 {
+   while (menu)
+     {
+        Menu_Item *mi;
+
+        mi = (Menu_Item *)menu->data;
+        free(mi->icon);
+        free(mi->text);
+        free(mi);
+        menu = eina_list_remove_list(menu, menu);
+     }
    engine_abort();
 }
 
