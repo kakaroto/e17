@@ -39,6 +39,7 @@ struct _Conf
    const char *id;
 
    const char *dir;
+   const char *fm;
 
    Sort_Type sort_type;
 
@@ -61,6 +62,7 @@ struct _E_Config_Dialog_Data
    Instance *inst;
 
    char *dir;
+   char *fm;
 
    int sort_dir;
    int sort_type;
@@ -104,6 +106,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    #define D inst->edd.conf
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
+   E_CONFIG_VAL(D, T, fm, STR);
    E_CONFIG_VAL(D, T, sort_type, INT);
    E_CONFIG_VAL(D, T, sort_dir, INT);
 
@@ -118,6 +121,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
 	inst->conf = E_NEW(Conf, 1);
 	inst->conf->sort_dir = EINA_TRUE;
 	inst->conf->dir = eina_stringshare_add(buf2);
+	inst->conf->fm = eina_stringshare_add("");
 	inst->conf->id = eina_stringshare_add(id);
 
 	e_config_save_queue();
@@ -143,6 +147,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    eina_stringshare_del(inst->description);
    eina_stringshare_del(inst->conf->id);
    eina_stringshare_del(inst->conf->dir);
+   eina_stringshare_del(inst->conf->fm);
 
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_FREE(inst->conf);
@@ -189,20 +194,30 @@ EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
    Dirwatcher_Priv *p = NULL;
+   char exec[PATH_MAX];
 
    p = si->priv;
    if (p->dir)
      {
-	E_Action *act = NULL;
-
-	act = e_action_find("fileman");
-	if (act)
+	if (p->inst->conf->fm && (p->inst->conf->fm[0] != '\0'))
 	  {
-	     if (act && act->func.go)
-	       act->func.go(E_OBJECT(e_manager_current_get()),
-			    si->file_path);
+	     snprintf(exec, PATH_MAX, "%s \"%s\"", p->inst->conf->fm, si->file_path);
+	     e_exec(NULL, NULL, exec, NULL, NULL);
+	     return;
 	  }
-	return;
+	else
+	  {
+	     E_Action *act = NULL;
+
+	     act = e_action_find("fileman");
+	     if (act)
+	       {
+	          if (act && act->func.go)
+	          act->func.go(E_OBJECT(e_manager_current_get()),
+			       si->file_path);
+	       }
+	       return;
+	  }
      }
    if (si->file_path)
      {
@@ -424,6 +439,7 @@ static void
 _dirwatcher_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (cfdata->dir) E_FREE(cfdata->dir);
+   if (cfdata->fm) E_FREE(cfdata->fm);
 
    _cfd = NULL;
    E_FREE(cfdata);
@@ -433,6 +449,7 @@ static void
 _dirwatcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->dir = strdup(cfdata->inst->conf->dir);
+   cfdata->fm = strdup(cfdata->inst->conf->fm);
    cfdata->sort_dir = cfdata->inst->conf->sort_dir;
 }
 
@@ -448,7 +465,13 @@ _dirwatcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Da
    ob = e_widget_entry_add(evas, &cfdata->dir, NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);  
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_widget_list_object_append(o, of, 1, 0, 0.5);
+
+   of = e_widget_framelist_add(evas, D_("Custom file manager"), 1);
+   ob = e_widget_entry_add(evas, &cfdata->fm, NULL, NULL, NULL);
+   e_widget_framelist_object_append(of, ob);
+
+   e_widget_list_object_append(o, of, 1, 0, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Sort Options"), 0);
    ob = e_widget_check_add(evas, D_("Sort directories first"), &cfdata->sort_dir);
@@ -480,11 +503,13 @@ _dirwatcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    inst = cfdata->inst;
    eina_stringshare_del(cfdata->inst->conf->dir);
+   eina_stringshare_del(cfdata->inst->conf->fm);
    cfdata->inst->conf->sort_dir = cfdata->sort_dir;
    cfdata->inst->conf->sort_type = cfdata->sort_type;
 
    path = ecore_file_realpath(cfdata->dir);
    cfdata->inst->conf->dir = eina_stringshare_add(path);
+   cfdata->inst->conf->fm = eina_stringshare_add(cfdata->fm);
    E_FREE(path);
 
    if (inst->monitor)
