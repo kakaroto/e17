@@ -1,0 +1,12 @@
+Makefile
+Makefile.in
+ephoto.pot
+Makevars.template
+Rules-quot
+boldquot.sed
+*.mo
+en@boldquot.header
+en@quot.header
+insert-header.sin
+quot.sed
+remove-potcdate.sin

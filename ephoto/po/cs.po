@@ -1,0 +1,114 @@
+# Czech translation.
+# This file is put in the public domain.
+# quaker66@gmail.com
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Ephoto\n"
+"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
+"POT-Creation-Date: 2007-05-21 18:47+0200\n"
+"PO-Revision-Date: 2008-08-11 12:42+0100\n"
+"Last-Translator: quaker <quaker66@gmail.com>\n"
+"Language-Team: easylinux <easylinux@sachiel.eu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/ephoto_edit_view.c:36
+msgid "Standard Tools"
+msgstr "Standartní nástroje"
+
+#: src/bin/ephoto_edit_view.c:44
+msgid "Advanced Tools"
+msgstr "Pokročilé nástroje"
+
+#: src/bin/ephoto_edit_view.c:66
+#: src/bin/ephoto_single_view.c:33
+msgid "Previous Image"
+msgstr "Předchozí obrázek"
+
+#: src/bin/ephoto_edit_view.c:70
+#: src/bin/ephoto_single_view.c:39
+msgid "Next Image"
+msgstr "Další obrázek"
+
+#: src/bin/ephoto_exif.c:103
+msgid "No Exif Data Exists"
+msgstr "Neexistují exif data"
+
+#: src/bin/ephoto_list_view.c:97
+msgid "Name"
+msgstr "Jméno"
+
+#: src/bin/ephoto_list_view.c:99
+msgid "Pixels"
+msgstr "Pixely"
+
+#: src/bin/ephoto_list_view.c:101
+msgid "Size"
+msgstr "Velikost"
+
+#: src/bin/ephoto_main.c:216
+msgid "Albums"
+msgstr "Albumy"
+
+#: src/bin/ephoto_main.c:222
+msgid "File System"
+msgstr "Systém souborů"
+
+#: src/bin/ephoto_main.c:247
+msgid "Normal View"
+msgstr "Normální pohled"
+
+#: src/bin/ephoto_main.c:255
+msgid "List View"
+msgstr "Seznam"
+
+#: src/bin/ephoto_main.c:263
+msgid "Single View"
+msgstr "Samostatný pohled"
+
+#: src/bin/ephoto_main.c:275
+msgid "You do not have libexif 0.6.13"
+msgstr "Nemáte libexif 0.6.13"
+
+#: src/bin/ephoto_main.c:281
+msgid "View Exif Data"
+msgstr "Zobrazit exif data"
+
+#: src/bin/ephoto_main.c:288
+msgid "Toggle Fullscreen"
+msgstr "Přepnout fullscreen"
+
+#: src/bin/ephoto_main.c:296
+msgid "Start a Slideshow"
+msgstr "Spustit slideshow"
+
+#: src/bin/ephoto_main.c:308
+msgid "Move to edit view"
+msgstr "Přesunout k editaci pohledu"
+
+#: src/bin/ephoto_main.c:314
+msgid "Complete Library"
+msgstr "Kompletní knihovna"
+
+#: src/bin/ephoto_utils.c:9
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f bajtů"
+
+#: src/bin/ephoto_utils.c:14
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
+
+#: src/bin/ephoto_utils.c:20
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
+
+#: src/bin/ephoto_utils.c:25
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
+

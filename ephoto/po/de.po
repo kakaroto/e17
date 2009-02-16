@@ -1,0 +1,289 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
+"PO-Revision-Date: 2007-06-10 20:17+0100\n"
+"Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr "Es sind keine Exif Daten vorhanden"
+
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Bytes"
+
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
+
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
+
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
+
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr "Erweiterte Werkzeuge"
+
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr "vorheriges Bild"
+
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr "nächstes Bild"
+
+#~ msgid ""
+#~ "Name: %s\n"
+#~ "Pixels: %s\n"
+#~ "Size: %s\n"
+#~ msgstr ""
+#~ "Name: %s\n"
+#~ "Auflösung: %s\n"
+#~ "Größe: %s\n"
+
+#~ msgid "Name"
+#~ msgstr "Name"
+
+#~ msgid "Pixels"
+#~ msgstr "Pixel"
+
+#~ msgid "Size"
+#~ msgstr "Größe"
+
+#~ msgid "Albums"
+#~ msgstr "Alben"
+
+#~ msgid "File System"
+#~ msgstr "Dateisystem"
+
+#~ msgid "Normal View"
+#~ msgstr "normale Ansicht"
+
+#~ msgid "List View"
+#~ msgstr "Listenansicht"
+
+#~ msgid "Single View"
+#~ msgstr "einfache Ansicht"
+
+#~ msgid "You do not have libexif 0.6.13"
+#~ msgstr "Sie haben nicht libexif 0.6.13"
+
+#~ msgid "View Exif Data"
+#~ msgstr "Zeige Exif Daten"
+
+#~ msgid "Toggle Fullscreen"
+#~ msgstr "Vollbild"
+
+#~ msgid "Start a Slideshow"
+#~ msgstr "Starte Diavorführung"
+
+#~ msgid "Move to edit view"
+#~ msgstr "Gehe zu der bearbeitenden Ansicht"
+
+#~ msgid "Complete Library"
+#~ msgstr "Komplete Sammlung"
+
+#~ msgid "Normal"
+#~ msgstr "Normal"
+
+#~ msgid "Ephoto Slideshow!"
+#~ msgstr "Ephoto Diavorführung"
+
+#~ msgid "Single"
+#~ msgstr "Einseln"
+
+#~ msgid "Ewl is not usable, please check your installation!\n"
+#~ msgstr ""
+#~ "Ewl ist nicht gebrauchbar, bitte überprüfen Sie Ihre installation!\n"
+
+#~ msgid "Ephoto Version %s Help Page\n"
+#~ msgstr "Ephoto Version %s Hilfseite\n"
+
+#~ msgid ""
+#~ "Long Commands: \n"
+#~ " --help\t\t\t-\tThis Screen\n"
+#~ " --add-album %%s %%s\t-\tAdds Album\n"
+#~ "\t\t\t \targ1 = name of album\n"
+#~ "\t\t\t\targ2 = description of album\n"
+#~ " --add-image %%s %%s %%s\t-\tAdds Image\n"
+#~ "\t\t\t\targ1 = name of album to add image to\n"
+#~ "\t\t\t\targ2 = descriptive name for image\n"
+#~ "\t\t\t\targ3 = path to the image\n"
+#~ " --add-image-dir %%s %%s\t-\tAdds All Images From Directory\n"
+#~ "\t\t\t\targ1 = name of album to add images to\n"
+#~ "\t\t\t\targ2 = directory to get images from\n"
+#~ " --list-albums\t\t-\tList Albums\n"
+#~ " --list-images %%s\t-\tList Images in Album\n"
+#~ "\t\t\t\targ1 = name of album to list images from\n"
+#~ " --remove-album\t%%s\t-\tRemoves Album\n"
+#~ "\t\t\t\targ1 = name of album\n"
+#~ " --remove-image\t%%s %%s\t-\tRemoves Image\n"
+#~ "\t\t\t\targ1 = name of album to remove image from\n"
+#~ "\t\t\t\targ2 = path of the image to be removed\n"
+#~ msgstr ""
+#~ "Lange Befehle: \n"
+#~ " --help\t\t\t-\tDiese Seite\n"
+#~ " --add-album %%s %%s\t-\tFüge ein Album hinzu\n"
+#~ "\t\t\t \targ1 = Name des Albums\n"
+#~ "\t\t\t\targ2 = Beschreibung des Albums\n"
+#~ " --add-image %%s %%s %%s\t-\tFüge ein Bild hinzu\n"
+#~ "\t\t\t\targ1 = Name des Albums zu dem das Bild hinzugefügt werden soll\n"
+#~ "\t\t\t\targ2 = beschreibender Name für das Bild\n"
+#~ "\t\t\t\targ3 = Pfad zum Bild\n"
+#~ " --add-image-dir %%s %%s\t-\tFügt ein Bild aus einem Verzeichnis hinzu\n"
+#~ "\t\t\t\targ1 = Name des Albums zu dem das Bild hinzugefügt werden soll\n"
+#~ "\t\t\t\targ2 = das Verzeichnis in dem sich das Bild befindet\n"
+#~ " --list-albums\t\t-\tzeige eine List der Alben\n"
+#~ " --list-images %%s\t-\tzeige eine List der Bilder\n"
+#~ "\t\t\t\targ1 = name of album to list images from\n"
+#~ " --remove-album\t%%s\t-\tRemoves Album\n"
+#~ "\t\t\t\targ1 = name of album\n"
+#~ " --remove-image\t%%s %%s\t-\tRemoves Image\n"
+#~ "\t\t\t\targ1 = name of album to remove image from\n"
+#~ "\t\t\t\targ2 = path of the image to be removed\n"
+
+#~ msgid ""
+#~ "Short Commands: \n"
+#~ " -h\t\t\t-\tThis Screen\n"
+#~ " -a %%s %%s\t\t-\tAdds Album\n"
+#~ " -i %%s %%s %%s\t\t-\tAdds Image\n"
+#~ " -id %%s %%s\t\t-\tAdds all Images From Directory\n"
+#~ " -la\t\t\t-\tList Albums\n"
+#~ " -li %%s\t\t\t-\tList Images in Album\n"
+#~ " -ra %%s\t\t\t-\tRemoves Album\n"
+#~ " -ri %%s %%s\t\t-\tRemoves Image\n"
+#~ msgstr ""
+#~ "Kurzbefehle: \n"
+#~ " -h\t\t\t-\tDiese Seite\n"
+#~ " -a %%s %%s\t\t-\tfüge Album hinzu\n"
+#~ " -i %%s %%s %%s\t\t-\tfüge Bild hinzu\n"
+#~ " -id %%s %%s\t\t-\tFüge alle Bilder des Verzeichnisses hinzu\n"
+#~ " -la\t\t\t-\tList Albums\n"
+#~ " -li %%s\t\t\t-\tList Images in Album\n"
+#~ " -ra %%s\t\t\t-\tRemoves Album\n"
+#~ " -ri %%s %%s\t\t-\tRemoves Image\n"
+
+#~ msgid "Please specify a name for the album\n"
+#~ msgstr "Bitte geben Sie einen Namen für das Album an\n"
+
+#~ msgid "Please specify a description for the album\n"
+#~ msgstr "Bitte geben Sie eine Bezeichnung für das Album an\n"
+
+#~ msgid ""
+#~ "Are you sure you want to create an album with the name %s and the "
+#~ "description %s? "
+#~ msgstr ""
+#~ "Sind Sie sicher, dass Sie ein Album mit dem Namen %s und der Beschreibung "
+#~ "%s erstellen wollen?"
+
+#~ msgid "Please specify the album you wish to add to\n"
+#~ msgstr "Bitte geben Sie das Album an, dass Sie hinzufügen wollen\n"
+
+#~ msgid "Please specify a descriptive name for the image\n"
+#~ msgstr "Bitte geben Sie einen beschreibenden Namen für das Bild an\n"
+
+#~ msgid "Please specify a valid path to the image\n"
+#~ msgstr "Bitte geben Sie den Pfad zu dem Bild an\n"
+
+#~ msgid ""
+#~ "Are you sure you want to add an image to album %s with a name %s and path "
+#~ "%s? "
+#~ msgstr ""
+#~ "Sind Sie sicher, dass sie ein Bild zum dem Album %s mit dem Namen %s und "
+#~ "dem Pfad %s hinzufügen wollen?"
+
+#~ msgid "Image was added\n"
+#~ msgstr "Bild wurde hinzugefügt\n"
+
+#~ msgid "Image was not added\n"
+#~ msgstr "Bild wurde nicht hinzugefügt\n"
+
+#~ msgid "Please specify a valid path to the image directory\n"
+#~ msgstr "Bitte geben Sie den Pfad zu dem Verzeichnis des Bildes an\n"
+
+#~ msgid ""
+#~ "Are you sure you want to add images from the directory %s to the album %"
+#~ "s? "
+#~ msgstr ""
+#~ "Sind Sie sicher, dass Sie Bilder aus dem Verzeichnis %s in das Album %s "
+#~ "hinzufügen wollen?"
+
+#~ msgid "Images were added\n"
+#~ msgstr "Bilder wurden hinzugefügt\n"
+
+#~ msgid "Images were not added\n"
+#~ msgstr "Bilder wurden nicht hinzugefügt\n"
+
+#~ msgid "Please specify the album to list images from\n"
+#~ msgstr "Bitte geben Sie ein Album an, um die Bild aufzulisten\n"
+
+#~ msgid "Please specify the name of the album\n"
+#~ msgstr "Bitte geben Sie den Namen des Albums an\n"
+
+#~ msgid "Are you sure you want to remove the album %s? "
+#~ msgstr "Sind Sie sicher, dass das Album %s entfernt werden soll?"
+
+#~ msgid "Album was removed\n"
+#~ msgstr "Album wurde entfernt\n"
+
+#~ msgid "Please specify the name of the album the image belongs to.\n"
+#~ msgstr "Bitte geben Sie den Namen des zum Bild gehörigen Albums an.\n"
+
+#~ msgid "Please specify the path of the image\n"
+#~ msgstr "Bitte geben Sie den Pfad zu dem Bild an\n"
+
+#~ msgid "Are you sure you want to remove the image %s from the album %s? "
+#~ msgstr ""
+#~ "Sind Sie sicher, dass sie Bild %s aus dem Album %s entfernen wollen?"
+
+#~ msgid "Image was removed\n"
+#~ msgstr "Bild wurde entfernt\n"
+
+#~ msgid "Image was not removed\n"
+#~ msgstr "Bild wurde nicht entfernt\n"
+
+#~ msgid "Standard Tools"
+#~ msgstr "Standardwerkzeuge"

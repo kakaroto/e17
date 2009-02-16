@@ -1,0 +1,76 @@
+# Spanish translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
+"PO-Revision-Date: 2009-01-22 19:41+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr "No hay datos EXIF"
+
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Bytes"
+
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
+
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
+
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
+
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr "Aumentar"
+
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr "Alejar"
+
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr "Rotar a la izquierda"
+
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr "Rotar a la derecha"
+
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr "Voltear Horizontalmente"
+
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr "Alinear Verticalmente"
+
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr "Herramientas avanzadas"
+
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr "Imagen anterior"
+
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr "Siguiente imagen"

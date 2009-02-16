@@ -1,0 +1,166 @@
+# This file is put in the public domain.
+# This file is distributed under the same license as the ephoto package.
+# DUNNEWIND Maxence <maxenced@ubuntu.com>, 2006
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Ephoto 3.15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
+"PO-Revision-Date: 2008-11-27 12:10+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr "Aucune donnée exif"
+
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f octets"
+
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f Ko"
+
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f Mo"
+
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f Go"
+
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr "Zoomer"
+
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr "Pivoter sur la gauche"
+
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr "Pivoter sur la droite"
+
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr "Renverser horizontalement"
+
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr "Renverser verticalement"
+
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr "Outils avancés"
+
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr "Image précédente"
+
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr "Image suivante"
+
+#~ msgid "Menu|File"
+#~ msgstr "Men|Fichier"
+#~ msgid "Menu|File|Exit"
+#~ msgstr "Menu|Fichier|Quitter"
+#~ msgid "Menu|Albums"
+#~ msgstr "Menu|Albums"
+#~ msgid "Menu|Albums|Add Album"
+#~ msgstr "Menu|Albums|Ajouter un album"
+#~ msgid "Menu|Albums|Remove Album"
+#~ msgstr "Menu|Albums|Supprimer un album"
+#~ msgid "Menu|Viewer"
+#~ msgstr "Menu|Visionner"
+#~ msgid "Menu|Viewer|Image Viewer"
+#~ msgstr "Menu|Visionner|Visionneuse"
+#~ msgid "Menu|Slideshow"
+#~ msgstr "Men|Diaporama"
+#~ msgid "Menu|Slideshow|Configure Slideshow"
+#~ msgstr "Menu|Diaporama|Configurer le diaporama"
+#~ msgid "Menu|Slideshow|Start Slideshow"
+#~ msgstr "Menu|Diaporama|Démarrer le diaporama"
+#~ msgid "  Location:"
+#~ msgstr "  Emplacement:"
+#~ msgid "Albums"
+#~ msgstr "Albums"
+#~ msgid "Add an Album"
+#~ msgstr "Ajouter un album"
+#~ msgid "Enter the new album name:"
+#~ msgstr "Entrer le nom du nouvel album:"
+#~ msgid "Enter the new album description:"
+#~ msgstr "Entrer la description du nouvel album:"
+#~ msgid "save"
+#~ msgstr "enregistrer"
+#~ msgid "cancel"
+#~ msgstr "annuler"
+#~ msgid "Ephoto Slideshow"
+#~ msgstr "Diaporama Ephoto"
+#~ msgid "Slideshow Configuration"
+#~ msgstr "Configuration du diaporama"
+#~ msgid "Window Size"
+#~ msgstr "Taille de la fenêtre"
+#~ msgid "Fullscreen"
+#~ msgstr "Plein écran"
+#~ msgid "Custom"
+#~ msgstr "Personnalisé"
+#~ msgid "Width"
+#~ msgstr "Largeur"
+#~ msgid "Height"
+#~ msgstr "Hauteur"
+#~ msgid "Order"
+#~ msgstr "Ordre"
+#~ msgid "Loop Slideshow"
+#~ msgstr "Diaporama en boucle"
+#~ msgid "Random Order"
+#~ msgstr "Ordre aléatoire  "
+#~ msgid "Image Size"
+#~ msgstr "Taille de l'image"
+#~ msgid "Zoom Images to Fill Window"
+#~ msgstr "Redimensionner les images à la taille de la fenêtre"
+#~ msgid "Keep Aspect"
+#~ msgstr "Conserver l'aspect"
+#~ msgid "Transitions"
+#~ msgstr "Transitions"
+#~ msgid "Show File Name On Change"
+#~ msgstr "Afficher le nom du fichier lors du changement"
+#~ msgid "Ephoto Image Viewer"
+#~ msgstr "Visionneuse Ephoto"
+#~ msgid "Menu|File|Save Image"
+#~ msgstr "Menu|Fichier|Enregistrer l'image"
+#~ msgid "Menu|Actions"
+#~ msgstr "Menu|Actions"
+#~ msgid "Menu|Actions|Zoom In"
+#~ msgstr "Menu|Actions|Zoomer"
+#~ msgid "Menu|Actions|Zoom Out"
+#~ msgstr "Menu|Actions|Dézoomer"
+#~ msgid "Menu|Actions|Zoom To Fit"
+#~ msgstr "Menu|Actions|Remplir la fenêtre"
+#~ msgid "Menu|Actions|Zoom 1:1"
+#~ msgstr "Taille normale"
+#~ msgid "In"
+#~ msgstr "Zoom +"
+#~ msgid "Out"
+#~ msgstr "Zoom -"
+#~ msgid "Left"
+#~ msgstr "Gauche"
+#~ msgid "Right"
+#~ msgstr "Droite"
+

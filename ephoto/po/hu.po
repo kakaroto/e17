@@ -1,0 +1,113 @@
+# translation of ephoto.po to hungarian
+# This file is put in the public domain.
+#
+# Lisovszki  <lisovszki@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: ephoto\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 20:28+0800\n"
+"PO-Revision-Date: 2008-02-02 18:45+0100\n"
+"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"Language-Team: hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: src/bin/ephoto_exif.c:95
+msgid "No Exif Data Exists"
+msgstr "Nem létezik exif adat"
+
+#: src/bin/ephoto_utils.c:10
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Bájt"
+
+#: src/bin/ephoto_utils.c:15
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
+
+#: src/bin/ephoto_utils.c:21
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
+
+#: src/bin/ephoto_utils.c:26
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
+
+#: src/bin/ephoto_single_view.c:92
+msgid "Zoom In"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:100
+msgid "Zoom Out"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:108
+msgid "Rotate Left"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:116
+msgid "Rotate Right"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:124
+msgid "Flip Horizontally"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:132
+msgid "Flip Vertically"
+msgstr ""
+
+#: src/bin/ephoto_single_view.c:140
+msgid "Advanced Tools"
+msgstr "Speciális eszközök"
+
+#: src/bin/ephoto_single_view.c:148
+msgid "Previous Image"
+msgstr "Előző kép"
+
+#: src/bin/ephoto_single_view.c:156
+msgid "Next Image"
+msgstr "Következő kép"
+
+#~ msgid "Name"
+#~ msgstr "Név"
+
+#~ msgid "Pixels"
+#~ msgstr "Képpontok"
+
+#~ msgid "Size"
+#~ msgstr "Méret"
+
+#~ msgid "Normal View"
+#~ msgstr "Normál nézet"
+
+#~ msgid "List View"
+#~ msgstr "Lista nézet"
+
+#~ msgid "Single View"
+#~ msgstr "Egyablakos nézet"
+
+#~ msgid "Move to edit view"
+#~ msgstr "Szerkesztői nézet"
+
+#~ msgid "You do not have libexif 0.6.13"
+#~ msgstr "Nincs libexif 0.6.13-ad"
+
+#~ msgid "View Exif Data"
+#~ msgstr "Exif adat megtekintése"
+
+#~ msgid "Toggle Fullscreen"
+#~ msgstr "Váltás teljes képernyőre"
+
+#~ msgid "Start a Slideshow"
+#~ msgstr "Diavetítés indítása"
+
+#~ msgid "Standard Tools"
+#~ msgstr "Szabványos eszközök"
