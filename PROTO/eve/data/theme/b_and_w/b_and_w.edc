@@ -1,9 +1,9 @@
 collections {
-//#include "webkit/widget/button/button.edc"
-//#include "webkit/widget/entry/entry.edc"
-//#include "webkit/widget/radio/radio.edc"
-//#include "webkit/widget/check/check.edc"
-#include "webkit/widget/scrollbar/scrollbar.edc"
+//#include "button.edc"
+//#include "entry.edc"
+//#include "radio.edc"
+//#include "check.edc"
+#include "scrollbar.edc"
 
    group {
       name: "eve.entry.selection.default";
