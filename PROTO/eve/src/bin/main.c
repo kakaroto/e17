@@ -98,6 +98,21 @@ main_signal_exit(void *data, int ev_type, void *ev)
    return 1;
 }
 
+struct first_url_load_data
+{
+   Evas_Object *navigator;
+   const char *url;
+};
+
+static int
+_eve_first_url_load(void *data)
+{
+   struct first_url_load_data *d = data;
+   eve_navigator_load_url(d->navigator, d->url);
+   return 0;
+}
+
+
 int
 main(int argc, char *argv[])
 {
@@ -186,8 +201,10 @@ main(int argc, char *argv[])
 
    if (url && (url[0] != '\0') && (strcmp(url, "about:blank") != 0))
      {
-        // will load url as soon as the mainloop is running
-        eve_navigator_load_url(app.navigator, url);
+	static struct first_url_load_data d;
+	d.navigator = app.navigator;
+	d.url = url;
+	ecore_timer_add(0.2, _eve_first_url_load, &d);
      }
 
    if (is_fullscreen)
