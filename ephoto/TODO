@@ -1,0 +1,27 @@
+    ________   ________  ___  ___  ________  ________  ________
+   /  _____/  /  __   / /  / /  / /  __   / /__  ___/ /  __   /
+  /  /____   /  /_/  / /  /_/  / /  / /  /    / /    /  / /  /
+ /  _____/  /  _____/ /  __   / /  / /  /    / /    /  / /  /
+/  /_____  /  /      /  / /  / /  /_/  /    / /    /  /_/  /
+________/ /__/      /__/ /__/ /_______/    /_/    /_______/
+
+
+TODO-
+===Command Line===
+Get some command line options going!
+===General===
+Tagging
+DRAG AND DROP IS A MUST!
+Keybindings
+===Layout===
+Ideas and Changes are welcome!
+===Normal View===
+-
+===Single View===
+Add Editing Controls(Zooms/Color Enhancement/Histogram/Cropping/etc..).
+Saving Ability(This will include looking into editing and saving exif data).
+Should we list navigation for images here?
+===Slideshow===
+Need Slideshow
+Need to Add Configuration to Slideshows..
+

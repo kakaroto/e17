@@ -1,0 +1,1 @@
+ephoto-ephoto_exif.o: ephoto_exif.c
