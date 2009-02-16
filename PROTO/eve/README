@@ -1,3 +1,17 @@
 Eve - a web browser using the EFL and Webkit
 
 For a list of planning features, see http://trac.enlightenment.org/e/wiki
+
+
+Webkit-EFL port:
+
+Download git tree from George Staikos (warning, it's huge!):
+
+    git clone git://code.staikos.net/webkit
+
+Build and install:
+
+    cd webkit
+    git checkout origin/kenneth/efl-port
+    ./autogen.sh –with-port=efl --enable-web-workers=no
+    make all install
