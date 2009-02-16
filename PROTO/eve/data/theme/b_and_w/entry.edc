@@ -5,40 +5,20 @@
       max: 9999 40;
 
       images {
-         image: "widget/entry/img_normal.png" COMP;
-         image: "widget/entry/img_focused.png" COMP;
+         image: "inset_sunk.png" COMP;
       }
 
       parts {
          part {
             name: "entry";
             type: IMAGE;
+            mouse_events: 1;
             description {
                state: "default" 0.0;
-               min: 89 25;
-               rel1 {
-                  relative: 0.0 0.0;
-                  offset: 0 0;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -1;
-               }
+               min: 80 26;
                image {
-                  normal: "widget/entry/img_normal.png";
-                  border: 10 10 10 10;
-               }
-            }
-            description {
-               state: "disabled" 0.0;
-               inherit: "default" 0.0;
-            }
-            description {
-               state: "focused" 0.0;
-               inherit: "default" 0.0;
-               image {
-                  normal: "widget/entry/img_focused.png";
-                  border: 10 10 10 10;
+                  normal: "inset_sunk.png";
+		  border: 7 7 7 7;
                }
             }
          }

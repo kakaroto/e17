@@ -1,6 +1,6 @@
 collections {
-//#include "button.edc"
-//#include "entry.edc"
+#include "button.edc"
+#include "entry.edc"
 //#include "radio.edc"
 //#include "check.edc"
 #include "scrollbar.edc"
