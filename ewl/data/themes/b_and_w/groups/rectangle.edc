@@ -1,0 +1,14 @@
+group {
+	name: "ewl/rectangle";
+	parts {
+		part {
+			name: "rectangle";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+	}
+}
+

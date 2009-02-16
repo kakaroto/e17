@@ -1,0 +1,42 @@
+group {
+	name: "ewl/image";
+	parts {
+		part {
+			name: "clip";
+			type: RECT;
+			mouse_events: 0;
+			description {
+			        state: "default" 0.0;
+                                color: 255 255 255 255;
+                        }
+                        description {
+                                state: "disabled" 0.0;
+                                color:  16 16 16 64;
+                        }
+		}
+                part {
+                        name: "swallow";
+                        type: SWALLOW;
+                        clip_to: "clip";
+                        description {
+                                state: "default" 0.0;
+                        }
+                }
+        }
+        programs {
+                program {
+                        name: "disable";
+                        signal: "disabled";
+                        source: "EWL";
+                        action: STATE_SET "disabled" 0.0;
+                        target: "clip";
+                }
+                program {
+                        name: "enable";
+                        signal: "enabled";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "clip";
+                }
+        }
+}

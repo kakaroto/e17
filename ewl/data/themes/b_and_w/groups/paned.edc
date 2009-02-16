@@ -1,0 +1,49 @@
+images {
+	image: "paned_thumb_h.png" COMP;
+	image: "paned_thumb_v.png" COMP;
+}
+
+group {
+	name: "ewl/paned/thumb/h";
+	min: 12 6;
+	data {
+		item: "pad" 0;
+	}
+	parts {
+		part {
+			name: "thumb_h";
+			mouse_events: 1;
+			description {
+				state: "default" 0.0;
+				min: 12 6;
+				max: 12 6;
+				align: 0.5 0.5;
+				fixed: 1 1;
+				image.normal: "paned_thumb_h.png";
+			}
+		}
+	}
+}
+
+group {
+        name: "ewl/paned/thumb/v";
+	min: 6 12;
+	data {
+                item: "pad" 0;
+        }
+        parts {
+                part {
+                        name: "thumb_v";
+                        mouse_events: 1;
+                        description {
+                                state: "default" 0.0;
+				min: 6 12;
+				max: 6 12;
+                                align: 0.5 0.5;
+                                fixed: 1 1;
+                                image.normal: "paned_thumb_v.png";
+                        }
+                }
+        }
+}
+	

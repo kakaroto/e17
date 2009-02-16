@@ -1,0 +1,192 @@
+fonts {
+	font: "fonts/Vera.ttf" "ewl/default";
+	font: "fonts/VeraBd.ttf" "ewl/default/bold";
+}
+
+collections {
+	#include "groups/blank.edc"
+	#include "groups/border.edc"
+	#include "groups/button.edc"
+	#include "groups/combo.edc"
+	#include "groups/cursor.edc"
+	#include "groups/entry.edc"
+	#include "groups/image.edc"
+	#include "groups/label.edc"
+	#include "groups/menu.edc"
+	#include "groups/notebook.edc"
+	#include "groups/paned.edc"
+	#include "groups/progressbar.edc"
+	#include "groups/rectangle.edc"
+	#include "groups/scrollpane.edc"
+	#include "groups/scroll.edc"
+	#include "groups/shadow.edc"
+	#include "groups/spacer.edc"
+	#include "groups/tree.edc"
+	#include "groups/window.edc"
+}
+
+data {
+	/*Blank Group*/
+	item: "/blank/group" "ewl/blank";
+
+	/*Border Group*/
+	item: "/border/group" "ewl/border";
+	item: "/border/label/group" "ewl/border/label";
+
+	/*Button Groups*/
+	item: "/button/group" "ewl/button";
+	item: "/button/body/label/group" "ewl/button/label";
+	item: "/button/body/label/textpart" "ewl/button/label/text";
+	item: "/checkbutton/group" "ewl/button/other";
+	item: "/check/group" "ewl/button/check/item";
+	item: "/radiobutton/group" "ewl/button/other";
+	item: "/radio/group" "ewl/button/radio/item";
+
+	/*Combo Groups*/
+	item: "/combo/group" "ewl/combo";
+	item: "/combo/button/group" "ewl/combo/button";
+	item: "/combo/cell/label/group" "ewl/button/label";
+	item: "/combo/cell/label/textpart" "ewl/button/label/text";
+	item: "/combo/cell/group" "ewl/combo/contents";
+	item: "/combo/popup/group" "ewl/menu";
+	item: "/combo_cell/group" "ewl/combo/popup/contents";
+	item: "/combo_menu/body/group" "ewl/combo/popup/submenu";
+
+	/*DnD Groups*/
+	item: "/dndcursor/group" "ewl/dnd";
+
+	/*Entry Groups*/
+	item: "/entry/group" "ewl/entry";
+	item: "/entry/cursor/group" "ewl/entry/cursor";
+	item: "/selection_area/group" "ewl/entry/selection";
+
+	/*Image Group*/
+	item: "/image/group" "ewl/image";
+
+	/*Label Groups*/
+	item: "/label/group" "ewl/label";
+	item: "/label/textpart" "ewl/label/text";
+
+	/*Menu Groups*/
+	item: "/menu/group" "ewl/menu";
+	item: "/menu_item/body/group" "ewl/menu/item";
+	item: "/menu_item/body/label/group" "ewl/menu/item/label";	
+	item: "/menu/vbox/menu_container/body/group" "ewl/menu/subitem";
+	item: "/menu/vbox/menu_container/body/label/group" "ewl/menu/item/label";
+	item: "/menubar/group" "ewl/menu";
+	item: "/statusbar/group" "ewl/menu";
+
+	/*Notebook Groups*/
+	item: "/notebook/pages/group" "ewl/notebook/pages";
+	item: "/notebook/top/tabbar/first/tab/group" "ewl/notebook/tab/top/first";
+	item: "/notebook/top/tabbar/tab/group" "ewl/notebook/tab/top";
+	item: "/notebook/top/tabbar/last/tab/group" "ewl/notebook/tab/top";
+        item: "/notebook/bottom/tabbar/first/tab/group" "ewl/notebook/tab/bottom/first";
+        item: "/notebook/bottom/tabbar/tab/group" "ewl/notebook/tab/bottom";
+        item: "/notebook/bottom/tabbar/last/tab/group" "ewl/notebook/tab/bottom";
+	item: "/notebook/left/tabbar/first/tab/group" "ewl/notebook/tab/left/first";
+        item: "/notebook/left/tabbar/tab/group" "ewl/notebook/tab/left";
+        item: "/notebook/left/tabbar/last/tab/group" "ewl/notebook/tab/left";
+	item: "/notebook/right/tabbar/first/tab/group" "ewl/notebook/tab/right/first";
+        item: "/notebook/right/tabbar/tab/group" "ewl/notebook/tab/right";
+        item: "/notebook/right/tabbar/last/tab/group" "ewl/notebook/tab/right";
+
+	/*Paned Groups*/
+	item: "/grabber/horizontal/group" "ewl/paned/thumb/h";
+	item: "/grabber/vertical/group" "ewl/paned/thumb/v";
+
+	/*Progressbar Groups*/
+	item: "/progressbar/group" "ewl/progressbar";
+	item: "/progressbar_bar/group" "ewl/progressbar/bar";
+
+	/*Rectangle Group*/
+	item: "/rectangle/group" "ewl/rectangle";
+
+	/*Scrollpane Groups*/
+	item: "/scrollpane/group" "ewl/scrollpane";
+	item: "/scrollport/group" "ewl/scrollpane";
+
+	/*Seeker/Scrollbar Groups*/
+	item: "/vseeker/group" "ewl/seeker/vertical";
+	item: "/vseeker/vbutton/group" "ewl/seeker/button";
+	item: "/vscrollbar/vseeker/vbutton/group" "ewl/scrollbar/vertical/button";
+	item: "/vscrollbar/decrement/group" "ewl/scrollbar/vertical/decrement";
+	item: "/vscrollbar/increment/group" "ewl/scrollbar/vertical/increment";
+	item: "/hseeker/group" "ewl/seeker/horizontal";
+	item: "/hseeker/hbutton/group" "ewl/seeker/button";
+	item: "/hscrollbar/hseeker/hbutton/group" "ewl/scrollbar/horizontal/button";
+        item: "/hscrollbar/decrement/group" "ewl/scrollbar/horizontal/decrement";
+        item: "/hscrollbar/increment/group" "ewl/scrollbar/horizontal/increment";
+
+	/*Separator Groups*/
+	item: "/hseparator/group" "ewl/seeker/horizontal";
+	item: "/vseparator/group" "ewl/seeker/vertical";
+
+	/*Shadow Groups*/
+	item: "/shadow/group" "ewl/shadow";
+
+	/*Spacer Groups*/
+	item: "/spacer/group" "ewl/spacer";
+
+	/*Toolbar Groups*/
+	item: "/htoolbar/group" "ewl/menu";
+	item: "/vtoolbar/group" "ewl/menu";
+
+	/*Tree Groups*/
+	item: "/cell/group" "ewl/tree/cell";
+	item: "/expansion/group" "ewl/tree/expansion";
+	item: "/row/group" "ewl/row";
+	item: "/tree/group" "ewl/tree";
+	item: "/tree_header/group" "ewl/tree/header";
+	item: "/tree_header/button/group" "ewl/tree/header/button";
+	item: "/tree_header/header/button/group" "ewl/tree/header/button";
+	item: "/tree/vbox/group" "ewl/tree/vbox";
+	item: "/tree/vbox/scrollpane/group" "ewl/tree/scrollpane/background";
+	
+	/*Window Groups*/
+	item: "/tooltip/group" "ewl/window";
+	item: "/popup/group" "ewl/window";
+	item: "/window/group" "ewl/window";
+	item: "/dialog/group" "ewl/window";
+	item: "/dialog/vbox/hseparator/group" "ewl/spacer";
+        item: "/icondialog/group" "ewl/window";
+	item: "/icondialog/vbox/hseparator/group" "ewl/spacer";
+
+	/*Misc*/
+	item: "/entry/color/a" 255;
+	item: "/entry/font" "ewl/default";
+	item: "/entry/font_size" 10;
+	
+	item: "/freebox/auto/padding" 5;
+	item: "/filepicker/hbox/hbo/tree/vbox/scollpane/overlay/auto/padding" 0;
+
+	item: "/combo/popup/height" 130;
+
+	item: "/tooltip/voffset" 10;
+	item: "/tooltip/hoffset" 10;
+	item: "/tooltip/delay" "1.0";
+	item: "/tooltip/tolerance" "5";
+	
+	item: "/context_menu/voffset" 1;
+	item: "/context_menu/hoffset" 1;
+	
+	item: "/spinner/acceleration" 5;
+	item: "/spinner/velocity" 5;
+
+	item: "/text/color/a" 255;
+	item: "/text/font" "ewl/default";
+	item: "/text/font_size" 10;
+	item: "/text/style" "none";
+
+	item: "/small/pad" "2";
+        item: "/medium/pad" "5";
+        item: "/large/pad" "10";
+        item: "/huge/pad" "20";
+
+	/*Theme Information*/
+	item: "/theme/author" "Stephen Houston (http://stephen.3sixty8.com)";
+	item: "/theme/font_path" "fonts";
+	item: "/theme/license" "CC License: http://creativecommons.org/licenses/by-sa/2.5";
+	item: "/theme/name" "b_and_w";
+}
+

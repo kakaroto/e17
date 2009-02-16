@@ -1,0 +1,424 @@
+images {
+	image: "bt_sm_base1.png" COMP;
+	image: "bt_sm_base2.png" COMP;
+	image: "bt_sm_shine.png" COMP;
+	image: "bt_sm_hilight.png" COMP;
+	image: "sb_runnerh.png" COMP;
+	image: "sb_runnerv.png" COMP;
+	image: "arrow_up.png" COMP;
+	image: "arrow_down.png" COMP;
+	image: "arrow_left.png" COMP;
+	image: "arrow_right.png" COMP;
+	image: "slider.png" COMP;
+	image: "slider_clicked.png" COMP;
+}
+
+group {
+	name: "ewl/seeker/button";
+	min: 22 22;
+	max: 22 22;
+	parts {
+		part {
+			name: "button";
+			mouse_events: 0;
+			description {
+				min: 22 22;
+				fixed: 1 1;
+				image.normal: "slider.png";
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "slider_clicked.png";
+			}
+		}
+	}
+	programs {
+		program {
+			name: "clicked";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program {
+			name: "un-clicked";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+
+group {
+	name: "ewl/seeker/vertical";
+	min: 3 20;
+	parts {
+		part {
+			name: "runner";
+			description {
+				max: 3 99999;
+				state: "default" 0.0;
+				image {
+					normal: "sb_runnerv.png";
+					border: 0 0 4 4;
+				}
+				fill.smooth: 0;
+			}
+		}
+	}
+}
+
+group {
+	name: "ewl/scrollbar/vertical/button";
+	min: 17 17;
+	parts {
+		part {
+			name: "drag";
+			description {
+				state: "default" 0.0;
+				min: 17 17;
+				max: 17 99999;
+				image {
+					normal: "bt_sm_base2.png";
+					border: 6 6 6 6;
+				}
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "bt_sm_base1.png";
+			}
+		}
+		part {
+			name: "sb_vbar_over1";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1.to: "drag";
+				rel2.relative: 1.0 0.5;
+				rel2.to: "drag";
+				image {
+					normal: "bt_sm_hilight.png";
+					border: 6 6 6 0;
+				}
+			}
+		}
+		part {
+			name: "sb_vbar_over2";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1.to: "drag";
+				rel2.to: "drag";
+				image {
+					normal: "bt_sm_shine.png";
+					border: 6 6 6 0;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "clicked";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "drag";
+		}
+		program {
+			name: "unclicked";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "drag";
+		}
+	}
+}
+
+group {
+	name: "ewl/scrollbar/vertical/decrement";
+	min: 9 9;
+	max: 9 9;
+	parts {
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 0;
+				}
+				image.normal: "arrow_down.png";
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				rel1.offset: 0 1;
+				rel2.offset: -1 0;
+			}
+		}
+	}
+	programs {
+                program {
+                        name: "clicked";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "button";
+                }
+                program {
+                        name: "unclicked";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "button";
+                }
+        }
+}
+
+group {
+        name: "ewl/scrollbar/vertical/increment";
+	min: 9 9;
+        max: 9 9;
+        parts {
+                part {
+                        name: "button";
+                        type: IMAGE;
+                        mouse_events: 1;
+                        description {
+                                state: "default" 0.0;
+                                align: 0.5 0.0;
+                                aspect: 1.0 1.0;
+                                aspect_preference: HORIZONTAL;
+                                rel1 {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2 {
+                                        relative: 1.0 1.0;
+                                        offset: -1 0;
+                                }
+                                image.normal: "arrow_up.png";
+                        }
+                        description {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                rel1.offset: 0 -1;
+                                rel2.offset: -1 -2;
+                        }
+                }
+        }
+        programs {
+                program {
+                        name: "clicked";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "button";
+                }
+                program {
+                        name: "unclicked";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "button";
+                }
+        }
+}
+
+group {
+	name: "ewl/seeker/horizontal";
+	min: 20 3;
+	parts {
+		part {
+			name: "runner";
+			description {
+				max: 99999 3;
+				state: "default" 0.0;
+				image {
+					normal: "sb_runnerh.png";
+					border: 4 4 0 0;
+				}
+				fill.smooth: 0;
+			}
+		}
+	}
+}
+
+group {
+	name: "ewl/scrollbar/horizontal/button";
+	min: 17 17;
+	parts {
+		part {
+			name: "drag";
+			description {
+				state: "default" 0.0;
+				min: 17 17;
+				max: 99999 17;
+				image {
+					normal: "bt_sm_base2.png";
+					border: 6 6 6 6;
+				}
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "bt_sm_base1.png";
+			}
+		}
+		part {
+			name: "sb_hbar_over1";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1.to: "drag";
+				rel2.relative: 1.0 0.5;
+				rel2.to: "drag";
+				image {
+					normal: "bt_sm_hilight.png";
+					border: 6 6 6 0;
+				}
+			}
+		}
+		part {
+			name: "sb_hbar_over2";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1.to: "drag";
+				rel2.to: "drag";
+				image {
+					normal: "bt_sm_shine.png";
+					border: 6 6 6 0;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "clicked";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "drag";
+		}
+		program {
+			name: "unclicked";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "drag";
+		}
+	}
+}
+
+group {
+	name: "ewl/scrollbar/horizontal/decrement";
+	min: 9 9;
+	max: 9 9;
+	parts {
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				aspect: 1.0 1.0;
+				aspect_preference: VERTICAL;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 0 -1;
+				}
+				image.normal: "arrow_left.png";
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				rel1.offset: -1 0;
+				rel2.offset: -2 -1;
+			}
+		}
+	}
+	programs {
+                program {
+                        name: "clicked";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "button";
+                }
+                program {
+                        name: "unclicked";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "button";
+                }
+        }
+}
+
+group {
+        name: "ewl/scrollbar/horizontal/increment";
+	min: 9 9;
+        max: 9 9;
+        parts {
+                part {
+                        name: "button";
+                        type: IMAGE;
+                        mouse_events: 1;
+                        description {
+                                state: "default" 0.0;
+                                align: 0.0 0.5;
+                                aspect: 1.0 1.0;
+                                aspect_preference: VERTICAL;
+                                rel1 {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2 {
+                                        relative: 1.0 1.0;
+                                        offset: 0 -1;
+                                }
+                                image.normal: "arrow_right.png";
+                        }
+                        description {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                rel1.offset: 1 0;
+                                rel2.offset: 0 -1;
+                        }
+                }
+        }
+        programs {
+                program {
+                        name: "clicked";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "button";
+                }
+                program {
+                        name: "unclicked";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "button";
+                }
+        }
+}

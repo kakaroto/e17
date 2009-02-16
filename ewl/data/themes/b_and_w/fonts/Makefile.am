@@ -1,0 +1,6 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+EXTRA_DIST = \
+Vera.ttf \
+VeraBd.ttf
+

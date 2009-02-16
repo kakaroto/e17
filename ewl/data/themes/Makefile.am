@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = e17 ewl_embed_test
+SUBDIRS = b_and_w e17 ewl_embed_test

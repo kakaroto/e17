@@ -1,0 +1,145 @@
+images {
+	image: "inset_sunk.png" COMP;
+}
+
+group {
+	name: "ewl/entry";
+	min: 18 15;
+	data {
+		item: "inset" 2;
+		item: "inset/top" 5;
+		item: "inset/left" 6;
+		item: "pad" 1;
+	}
+	parts {
+		part {
+			name: "base";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1.offset: 1 1;
+				rel2.offset: -2 -2;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 42 42 42 100;
+			}
+		}
+		part {
+			name: "overlay";
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "inset_sunk.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+				fill.smooth: 0;
+			}
+		}
+	}
+	programs {
+		program
+                {
+                        name: "disable";
+                        signal: "disabled";
+                        source: "*";
+                        action: STATE_SET "disabled" 0.0;
+                        transition: DECELERATE 0.2;
+                        target: "base";
+                }
+                program
+                {
+                        name: "enable";
+                        signal: "enabled";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        transition: ACCELERATE 0.5;
+                        target: "base";
+                }
+	}
+}
+
+group {
+	name: "ewl/entry/cursor";
+	min: 1 0;
+	parts {
+		part {
+			name: "cursor";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1.offset: 1 0;
+				rel2.offset: 0 -1;
+				color: 0 0 0 0;
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 255;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "on_cursor_show";
+			signal: "show";
+			source: "";
+			action: ACTION_STOP;
+			target: "cursor_show";
+			target: "cursor_hide";
+			target: "cursor_show_timer";
+			target: "cursor_hide_timer";
+			after: "cursor_show";
+		}
+		program {
+			name: "cursor_show";
+			action: STATE_SET "visible" 0.0;
+			target: "cursor";
+			after: "cursor_show_timer";
+		}
+		program {
+			name: "cursor_hide";
+			action: STATE_SET "default" 0.0;
+			target: "cursor";
+			transition: SINUSOIDAL 0.0;
+			after: "cursor_hide_timer";
+		}
+		program {
+			name: "cursor_show_timer";
+			in: 0.55 0.0;
+			after: "cursor_hide";
+		}
+		program {
+			name: "cursor_hide_timer";
+			in: 0.2 0.0;
+			after: "cursor_show";
+		}
+		program {
+			name: "off_cursor";
+			signal: "noblink";
+			source: "EWL";
+			action: ACTION_STOP;
+			target: "cursor_show";
+			target: "cursor_hide";
+			target: "cursor_show_timer";
+			target: "cursor_hide_timer";
+		}
+	}
+}
+
+group {
+	name: "ewl/entry/selection";
+	parts {
+		part {
+			name: "selection";
+			type: RECT;
+			description {
+				state: default 0.0;
+				color: 164 164 164 100;
+			}
+		}
+	}
+}

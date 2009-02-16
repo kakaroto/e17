@@ -1,0 +1,14 @@
+group {
+	name: "ewl/spacer";
+	parts {
+		part {
+			name: "base";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+	}
+}
+

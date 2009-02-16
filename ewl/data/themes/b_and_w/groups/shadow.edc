@@ -1,0 +1,24 @@
+images {
+	image: "shadow.png" COMP;
+}
+
+group {
+	name: "ewl/shadow";
+	data {
+		item: "inset" 4;
+		item: "pad/top" 4;
+		item: "pad/left" 4;
+	}
+	parts {
+		part {
+			name: "shadow";
+			type: IMAGE;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				image.normal: "shadow.png";
+				image.border: 0 1 1 0;
+			}
+		}
+	}
+}

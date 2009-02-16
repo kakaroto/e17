@@ -1,0 +1,150 @@
+images {
+	image: "pointer.png" COMP;
+	image: "sphere1.png" COMP;
+	image: "sphere2.png" COMP;
+	image: "sphere3.png" COMP;
+	image: "sphere4.png" COMP;
+	image: "sphere5.png" COMP;
+	image: "sphere6.png" COMP;
+	image: "sphere7.png" COMP;
+}
+
+group {
+	name: "ewl/dnd";
+	min: 16 16;
+	max: 16 16;
+	data {
+		item: "inset/top" "12";
+		item: "inset/left" "12";
+		item: "inset/bottom" "6";
+		item: "inset/right" "6";
+	}
+	parts {
+		part {
+			name: "pointer";
+			type: IMAGE;
+			mouse_events: 1;
+			description {
+				state:    "default" 0.0;
+				min:      16 16;
+				max:      16 16;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 0.0 0.0;
+					offset: 16 16;
+				}
+				image {
+					normal: "pointer.png";
+				}
+			}
+		}
+		part {
+			name: "sphere";
+			type: IMAGE;
+			mouse_events:  1;
+			description {
+				state: "default" 0.0;
+				min: 16 16;
+				color: 255 255 255 255;
+				rel1 {
+					relative: -0.1 -0.1;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "sphere7.png";
+					tween: "sphere1.png";
+					tween: "sphere2.png";
+					tween: "sphere3.png";
+					tween: "sphere4.png";
+					tween: "sphere5.png";
+					tween: "sphere6.png";
+				}
+			}
+			description {
+				state: "default" 1.0;
+				min: 16 16;
+				color: 255 255 255 255;
+				rel1 {
+					relative: -0.1 -0.1;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "sphere1.png";
+					tween: "sphere6.png";
+					tween: "sphere5.png";
+					tween: "sphere4.png";
+					tween: "sphere3.png";
+					tween: "sphere2.png";
+				}
+			}
+		}
+		part {
+			name: "horizontal";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 220 220 220 200;
+				rel1 {
+					relative: 0.33 0.48;
+					offset: 0 0;
+					to: "sphere";
+				}
+				rel2 {
+					relative: 0.66 0.52;
+					offset: -1 -1;
+					to: "sphere";
+				}
+			}
+		}
+		part {
+			name: "vertical";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 220 220 220 200;
+				rel1 {
+					relative: 0.48 0.33;
+					offset: 0 0;
+					to: "sphere";
+				}
+				rel2 {
+					relative: 0.52 0.66;
+					offset: -1 -1;
+					to: "sphere";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "sphere_forward";
+			signal: "show";
+			source: "";
+			action: STATE_SET "default" 1.0;
+			transition: LINEAR 1.0;
+			target: "sphere";
+			after: "sphere_backward";
+		}
+		program {
+			name: "sphere_backward";
+			source: "";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 1.0;
+			target: "sphere";
+			after: "sphere_forward";
+		}
+
+	}
+}

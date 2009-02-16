@@ -411,6 +411,10 @@ data/config/Makefile
 data/config/ewl.cfg
 data/images/Makefile
 data/themes/Makefile
+data/themes/b_and_w/Makefile
+data/themes/b_and_w/fonts/Makefile
+data/themes/b_and_w/images/Makefile
+data/themes/b_and_w/groups/Makefile
 data/themes/e17/Makefile
 data/themes/e17/fonts/Makefile
 data/themes/e17/images/Makefile
