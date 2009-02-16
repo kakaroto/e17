@@ -117,8 +117,9 @@ ephoto-ephoto_fsystem.o: ephoto_fsystem.c ephoto_fsystem.h ephoto_utils.h \
   /usr/local/include/ewl/ewl_paned.h \
   /usr/local/include/ewl/ewl_separator.h \
   /usr/local/include/ewl/ewl_scrollport.h \
-  /usr/local/include/ewl/ewl_scrollpane.h \
+  /usr/local/include/ewl/ewl_scrollport_kinetic.h \
   /usr/local/include/ewl/ewl_scrollport.h \
+  /usr/local/include/ewl/ewl_scrollpane.h \
   /usr/local/include/ewl/ewl_statusbar.h \
   /usr/local/include/ewl/ewl_shadow.h /usr/local/include/ewl/ewl_mvc.h \
   /usr/local/include/ewl/ewl_model.h /usr/local/include/ewl/ewl_combo.h \
@@ -485,9 +486,11 @@ config.h:
 
 /usr/local/include/ewl/ewl_scrollport.h:
 
-/usr/local/include/ewl/ewl_scrollpane.h:
+/usr/local/include/ewl/ewl_scrollport_kinetic.h:
 
 /usr/local/include/ewl/ewl_scrollport.h:
+
+/usr/local/include/ewl/ewl_scrollpane.h:
 
 /usr/local/include/ewl/ewl_statusbar.h:
 
