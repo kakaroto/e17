@@ -27,7 +27,6 @@ exalt_vpnc.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \
-iw/iwlib.c \
 wpa_supplicant/wpa_ctrl.c \
 libexalt.c \
 exalt_dns.c \
@@ -40,10 +39,7 @@ exalt_vpnc.c \
 libexalt_private.c \
 libexalt_private.h \
 exalt_connection.c \
-nettools/proc.h \
-iw/iwlib.h \
-wpa_supplicant/wpa_ctrl.h \
-exalt_regexp.h \
+iw/iwlib_custom.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt

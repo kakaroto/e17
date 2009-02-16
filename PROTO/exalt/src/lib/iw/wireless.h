@@ -1,10 +1,10 @@
 /*
  * This file define a set of standard wireless extensions
  *
- * Version :	22	16.3.07
+ * Version :	21	14.3.06
  *
  * Authors :	Jean Tourrilhes - HPL - <jt@hpl.hp.com>
- * Copyright (c) 1997-2007 Jean Tourrilhes, All Rights Reserved.
+ * Copyright (c) 1997-2005 Jean Tourrilhes, All Rights Reserved.
  */
 
 #ifndef _LINUX_WIRELESS_H
@@ -85,7 +85,7 @@
  * (there is some stuff that will be added in the future...)
  * I just plan to increment with each new version.
  */
-#define WIRELESS_EXT	22
+#define WIRELESS_EXT	21
 
 /*
  * Changes :
@@ -210,21 +210,15 @@
  *	- Add explicit flag to tell stats are in dBm : IW_QUAL_DBM
  *	- Add IW_IOCTL_IDX() and IW_EVENT_IDX() macros
  *
- * V19 to V20
- * ----------
- *	- RtNetlink requests support (SET/GET)
- *
  * V20 to V21
  * ----------
  *	- Remove (struct net_device *)->get_wireless_stats()
  *	- Change length in ESSID and NICK to strlen() instead of strlen()+1
+ *	- Add SIOCSIWMODUL/SIOCGIWMODUL for modulation setting
  *	- Add IW_RETRY_SHORT/IW_RETRY_LONG retry modifiers
+ *	- Add IW_POWER_SAVING power type
  *	- Power/Retry relative values no longer * 100000
- *	- Add explicit flag to tell stats are in 802.11k RCPI : IW_QUAL_RCPI
- *
- * V21 to V22
- * ----------
- *	- Prevent leaking of kernel space in stream on 64 bits.
+ *	- Add bitrate flags for unicast/broadcast
  */
 
 /**************************** CONSTANTS ****************************/
@@ -341,7 +335,7 @@
  * separate range because of collisions with other tools such as
  * 'mii-tool'.
  * We now have 32 commands, so a bit more space ;-).
- * Also, all 'even' commands are only usable by root and don't return the
+ * Also, all 'odd' commands are only usable by root and don't return the
  * content of ifr/iwr to user (but you are not obliged to use the set/get
  * convention, just use every other two command). More details in iwpriv.c.
  * And I repeat : you are not forced to use them with iwpriv, but you
@@ -355,7 +349,7 @@
 #define SIOCIWLAST	SIOCIWLASTPRIV		/* 0x8BFF */
 #define IW_IOCTL_IDX(cmd)	((cmd) - SIOCIWFIRST)
 
-/* Odd : get (world access), even : set (root access) */
+/* Even : get (world access), odd : set (root access) */
 #define IW_IS_SET(cmd)	(!((cmd) & 0x1))
 #define IW_IS_GET(cmd)	((cmd) & 0x1)
 
@@ -554,8 +548,6 @@
 /* MLME requests (SIOCSIWMLME / struct iw_mlme) */
 #define IW_MLME_DEAUTH		0
 #define IW_MLME_DISASSOC	1
-#define IW_MLME_AUTH		2
-#define IW_MLME_ASSOC		3
 
 /* SIOCSIWAUTH/SIOCGIWAUTH struct iw_param flags */
 #define IW_AUTH_INDEX		0x0FFF
@@ -1124,16 +1116,5 @@ struct iw_event
 			  (char *) NULL)
 #define IW_EV_POINT_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_point) - \
 			 IW_EV_POINT_OFF)
-
-/* Size of the Event prefix when packed in stream */
-#define IW_EV_LCP_PK_LEN	(4)
-/* Size of the various events when packed in stream */
-#define IW_EV_CHAR_PK_LEN	(IW_EV_LCP_PK_LEN + IFNAMSIZ)
-#define IW_EV_UINT_PK_LEN	(IW_EV_LCP_PK_LEN + sizeof(__u32))
-#define IW_EV_FREQ_PK_LEN	(IW_EV_LCP_PK_LEN + sizeof(struct iw_freq))
-#define IW_EV_PARAM_PK_LEN	(IW_EV_LCP_PK_LEN + sizeof(struct iw_param))
-#define IW_EV_ADDR_PK_LEN	(IW_EV_LCP_PK_LEN + sizeof(struct sockaddr))
-#define IW_EV_QUAL_PK_LEN	(IW_EV_LCP_PK_LEN + sizeof(struct iw_quality))
-#define IW_EV_POINT_PK_LEN	(IW_EV_LCP_LEN + 4)
 
 #endif	/* _LINUX_WIRELESS_H */
