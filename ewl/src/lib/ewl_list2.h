@@ -16,6 +16,13 @@
  * @{
  */
 
+typedef struct Ewl_List2_Cell_Info Ewl_List2_Cell_Info;
+struct Ewl_List2_Cell_Info
+{
+        void *cell;
+        int size;
+};
+
 /**
  * @def EWL_LIST_TYPE
  * The type name for the Ewl_List widget
@@ -45,13 +52,10 @@ typedef struct Ewl_List2 Ewl_List2;
 struct Ewl_List2
 {
         Ewl_MVC mvc;                    /**< The mvc parent */
-        Ewl_Widget *scrollport;         /**< Scrollport used in optimization */
-        Ewl_Widget *box;                /**< Box used to hold the items */
+        Ewl_Widget *port;               /**< Scrollport used in optimization */
+        Ewl_List2_Cell_Info *cinfo;     /**< Preferred width */
+        int info_count;
         unsigned char fixed:1;          /**< Widgets fixed height/width */
-        int *pref_w;                    /**< Preferred width */
-        int *pref_h;                    /**< Preferred height */
-        unsigned int set_n;             /**< Previous box offset */
-        unsigned int val_n;             /**< Previous size */
 };
 
 Ewl_Widget      *ewl_list2_new(void);
@@ -63,12 +67,9 @@ unsigned char    ewl_list2_fixed_size_get(Ewl_List2 *list);
  * Internal stuff.
  */
 void ewl_list2_cb_configure(Ewl_Widget *w, void *ev, void *data);
+void ewl_list2_cb_area_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_list2_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
-void ewl_list2_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_list2_cb_selected_change(Ewl_MVC *mvc);
-void ewl_list2_cb_child_show(Ewl_Container *p, Ewl_Widget *c);
-void ewl_list2_cb_child_resize(Ewl_Container *p, Ewl_Widget *c, int size,
-                                                Ewl_Orientation o);
 
 /**
  * @}

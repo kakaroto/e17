@@ -6,14 +6,13 @@
 #include "ewl_debug.h"
 #include "ewl_scrollport.h"
 
-static void ewl_list2_preferred_size_calc(Ewl_List2 *list);
 static Ewl_Widget *ewl_list2_widget_at(Ewl_MVC *mvc, void *data,
                                         unsigned int row,
                                         unsigned int column);
-static void ewl_list_draw(Ewl_List2 *list);
-static void ewl_list2_cb_scroll_configure(Ewl_Widget *w, void *ev_data,
-                                                        void *user_data);
-static int ewl_list2_redraw_needed(Ewl_List2 *list);
+
+static Ecore_List *ewl_list2_cells_info_generate(Ewl_List2 *list,
+                                        const Ewl_Model *model,
+                                        const Ewl_View *view, void *mvc_data);
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -53,34 +52,16 @@ ewl_list2_init(Ewl_List2 *list)
         if (!ewl_mvc_init(EWL_MVC(list)))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-        list->scrollport = ewl_scrollport_new();
-        ewl_container_child_append(EWL_CONTAINER(list), list->scrollport);
-        //ewl_callback_append(list->scrollport, EWL_CALLBACK_CONFIGURE,
-        //                                ewl_list2_cb_scroll_configure, list);
-        ewl_widget_show(list->scrollport);
-
-        list->box = ewl_vbox_new();
-        ewl_container_child_append(EWL_CONTAINER(list->scrollport), list->box);
-        ewl_object_fill_policy_set(EWL_OBJECT(list->box), EWL_FLAG_FILL_FILL);
-        ewl_widget_internal_set(list->box, TRUE);
-        ewl_widget_show(list->box);
-
-        ewl_container_redirect_set(EWL_CONTAINER(list),
-                                                EWL_CONTAINER(list->box));
-        ewl_container_show_notify_set(EWL_CONTAINER(list),
-                                                ewl_list2_cb_child_show);
-        ewl_container_resize_notify_set(EWL_CONTAINER(list),
-                                                ewl_list2_cb_child_resize);
-
         ewl_widget_appearance_set(EWL_WIDGET(list), EWL_LIST2_TYPE);
         ewl_widget_inherit(EWL_WIDGET(list), EWL_LIST2_TYPE);
 
+        list->port = ewl_scrollport_new();
+        ewl_container_child_append(EWL_CONTAINER(list), list->port);
+        ewl_widget_show(list->port);
         ewl_mvc_selected_change_cb_set(EWL_MVC(list),
                                                 ewl_list2_cb_selected_change);
-
-        ewl_callback_append(EWL_WIDGET(list),
-                                        EWL_CALLBACK_CONFIGURE,
-                                        ewl_list2_cb_configure, NULL);
+        ewl_callback_append(list->port, EWL_CALLBACK_CONFIGURE,
+                                        ewl_list2_cb_configure, list);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -122,59 +103,6 @@ ewl_list2_fixed_size_get(Ewl_List2 *list)
 
 /**
  * @internal
- * @param list: The list to create widget from
- * @param idx: The index in the data to be used
- * @param w: The width of the widget
- * @param h: The height of the widget
- */
-void
-ewl_list2_generate_widget_size(Ewl_List2 *list, unsigned int idx, int *w,
-                                                                        int *h)
-{
-        const Ewl_Model *model;
-        const Ewl_View *view;
-        void *mvc_data;
-        void *pr_data;
-        Ewl_Widget *o, *cell;
-
-        DCHECK_PARAM_PTR(list);
-        DCHECK_TYPE(list, EWL_LIST2_TYPE);
-
-        model = ewl_mvc_model_get(EWL_MVC(list));
-        view = ewl_mvc_view_get(EWL_MVC(list));
-        mvc_data = ewl_mvc_data_get(EWL_MVC(list));
-        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
-
-        if ((!model) || (!view) || (!mvc_data))
-        {
-                DWARNING("Internal list function called without valid "
-                                                                "list data");
-                DRETURN(DLEVEL_STABLE);
-        }
-
-        if (idx > model->count(mvc_data))
-        {
-                DWARNING("Internal list function with invalid index");
-                DRETURN(DLEVEL_STABLE);
-        }
-
-        cell = ewl_cell_new();
-        ewl_container_child_append(EWL_CONTAINER(list->box), cell);
-        o = view->constructor(0, pr_data);
-        view->assign(o, model->fetch(mvc_data, idx, 0), idx, 0, pr_data);
-        ewl_container_child_append(EWL_CONTAINER(cell), o);
-        ewl_widget_realize_force(cell);
-        ewl_widget_realize_force(o);
-        if (w) *w = PREFERRED_W(cell);
-        if (h) *h = PREFERRED_H(cell);
-        ewl_widget_destroy(cell);
-        ewl_widget_destroy(o);
-
-        DRETURN(DLEVEL_STABLE);
-}
-
-/**
- * @internal
  * @param w: The list to be configured
  * @param ev: UNUSED
  * @param data: UNUSED
@@ -182,25 +110,34 @@ ewl_list2_generate_widget_size(Ewl_List2 *list, unsigned int idx, int *w,
  * @brief Configures the given list
  */
 void
-ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-                                        void *data __UNUSED__)
+ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                                        void *data)
 {
         Ewl_List2 *list;
         const Ewl_Model *model;
         const Ewl_View *view;
         void *mvc_data;
-        unsigned int i, count, old_fill, box_fill = EWL_FLAG_FILL_FILL;
-        int ws, hs, xa, ya;
+        void *pr_data;
+        unsigned int count, i;
+        int px, py, pw, ph;
+        int vx, vy, vw, vh;
+        Ecore_List *cache;
+        int pos;
+        int new_start, new_end;
+        int new_start_idx, new_end_idx;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_LIST2_TYPE);
+        DCHECK_PARAM_PTR(data);
+        DCHECK_TYPE(data, EWL_LIST2_TYPE);
 
-        list = EWL_LIST2(w);
+        list = EWL_LIST2(data);
+
+        printf("configure\n");
 
         model = ewl_mvc_model_get(EWL_MVC(list));
         view = ewl_mvc_view_get(EWL_MVC(list));
         mvc_data = ewl_mvc_data_get(EWL_MVC(list));
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
 
         /* if either the list isn't dirty or some of the MVC controls have
          * not been set on the list just leave this up to the box to handle */
@@ -217,85 +154,212 @@ ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
         if (ewl_mvc_dirty_get(EWL_MVC(list)))
         {
-                if (list->pref_w)
-                        FREE(list->pref_w);
-                if (list->pref_h)
-                        FREE(list->pref_h);
-
-                if (list->fixed)
-                {
-                        ewl_list2_generate_widget_size(list, 0, &ws, &hs);
-                        list->pref_h = NEW(int, 1);
-                        list->pref_w = NEW(int, 1);
-                        list->pref_w[0] = ws;
-                        list->pref_h[0] = hs;
-                }
-                else
-                {
-                        list->pref_w = NEW(int, count);
-                        list->pref_h = NEW(int, count);
-
-                        for (i = 0; i < count; i++)
-                        {
-                                ewl_list2_generate_widget_size(list, i, &ws,
-                                                                        &hs);
-                                list->pref_w[i] = ws;
-                                list->pref_h[i] = hs;
-                        }
-                }
+                /* XXX cache the existing widgets */
+                cache = ewl_list2_cells_info_generate(list, model, view,
+                                mvc_data);
+        }
+        else
+        {
+                cache = ecore_list_new();
+                ecore_list_free_cb_set(cache,
+                                ECORE_FREE_CB(ewl_widget_destroy));
+        }
         
-                xa = PADDING_HORIZONTAL(list->box) +
-                                                INSET_HORIZONTAL(list->box);
-                ya = PADDING_VERTICAL(list->box) + INSET_VERTICAL(list->box);
-                if (ewl_box_orientation_get(EWL_BOX(list->box)) ==
-                                        EWL_ORIENTATION_HORIZONTAL)
+        /* get the area geometries */
+        ewl_scrollport_visible_area_geometry_get(EWL_SCROLLPORT(list->port),
+                                                        &vx, &vy, &vw, &vh);
+        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(list->port),
+                                                        &px, &py, &pw, &ph);
+
+        new_start = vy - py;
+        new_end = new_start + vh;
+        /*
+         * cache the which aren't visible widgets
+         */
+        for (pos = 0, i = 0; i < count
+                        && pos + list->cinfo[i].size < new_start; i++)
+        {
+                if (list->cinfo[i].cell)
                 {
-                        ewl_scrollport_area_size_set(EWL_SCROLLPORT
-                                        (list->scrollport),
-                                        (list->pref_w[0] * count) + xa,
-                                         list->pref_h[0] + ya);
+                        ecore_list_append(cache, list->cinfo[i].cell);
+                        list->cinfo[i].cell = NULL;
+                }
+                pos += list->cinfo[i].size;
+        }
+        new_start_idx = i;
+        new_start = pos;
+
+        /* skip the visible widgets */
+        while (i < count && (pos += list->cinfo[i++].size) < new_end)
+                ;
+        new_end_idx = i;
+        /* now cache the rest of the widgets */
+        while (i < count)
+        {
+                if (list->cinfo[i].cell)
+                        ecore_list_append(cache, list->cinfo[i].cell);
+                list->cinfo[i].cell = NULL;
+                i++;
+        }
+            
+        /*
+         * Create the missing widgets
+         */
+        for (i = new_start_idx; i < new_end_idx; i++)
+        {
+                Ewl_Widget *cell;
+                Ewl_Widget *o;
+
+                if (list->cinfo[i].cell)
+                        continue;
+
+                /* first try to get the list from the cache */
+                cell = ecore_list_first_remove(cache);
+                if (cell)
+                {
+
+                        o = ecore_list_first(EWL_CONTAINER(cell)->children);
+                        /* assign the new value */
+                        view->assign(o, model->fetch(mvc_data, i, 0), i, 0,
+                                        pr_data);
                 }
                 else
                 {
-                        ewl_scrollport_area_size_set(EWL_SCROLLPORT
-                                        (list->scrollport),
-                                         list->pref_w[0] + xa,
-                                        (list->pref_h[0] * count) + ya);
+                        cell = ewl_cell_new();
+                        ewl_container_child_append(EWL_CONTAINER(list->port),
+                                        cell);
+                        ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+                                        ewl_list2_cb_item_clicked, list);
+                        ewl_widget_show(cell);
+
+                        o = view->constructor(0, pr_data);
+                        view->assign(o, model->fetch(mvc_data, i, 0), i, 0,
+                                        pr_data);
+                        ewl_container_child_append(EWL_CONTAINER(cell), o);
+                        ewl_widget_show(o);
                 }
-                
+
+                list->cinfo[i].cell = cell;
         }
 
-        /*
-         * Calcuate the offset for the box position
-         */
-        if (ewl_scrollport_hscrollbar_flag_get(EWL_SCROLLPORT(list->scrollport))
-                                        == EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
-                box_fill |= EWL_FLAG_FILL_HSHRINKABLE;
+        new_start += py;
+        pw = MAX(pw, vw);
+        for (i = new_start_idx; i < new_end_idx; i++)
+        {
+                ewl_object_place(EWL_OBJECT(list->cinfo[i].cell),
+                                px, new_start, pw, list->cinfo[i].size);
+                new_start += list->cinfo[i].size;
+        }
 
-        if (ewl_scrollport_vscrollbar_flag_get(EWL_SCROLLPORT(list->scrollport))
-                                        == EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
-                box_fill |= EWL_FLAG_FILL_VSHRINKABLE;
-        
-        /*
-         * Set the fill policy on the box based on scrollbars visible.
-         */
-        old_fill = ewl_object_fill_policy_get(EWL_OBJECT(list->box));
-        ewl_object_fill_policy_set(EWL_OBJECT(list->box), box_fill);
+        ecore_list_destroy(cache);
 
-        ewl_list_draw(list);
-
-        /*
-         * Reset the default fill policy on the box to get updated sizes..
-         */
-        ewl_object_fill_policy_set(EWL_OBJECT(list->box), old_fill);
-        
         /* 
-         * Stick this at the end here to force a list redraw
+         * And finally mark the mvc as clean
          */
         if (ewl_mvc_dirty_get(EWL_MVC(list)))
                 ewl_mvc_dirty_set(EWL_MVC(list), FALSE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_list2_cell_realize(Ewl_Container *cell)
+{
+        Ewl_Widget *child;
+
+        ewl_widget_realize_force(EWL_WIDGET(cell));
+        ecore_list_first_goto(cell->children);
+        while ((child = ecore_dlist_next(cell->children)))
+        {
+                if (EWL_CONTAINER_IS(child))
+                        ewl_list2_cell_realize(EWL_CONTAINER(child));
+                else
+                        ewl_widget_realize_force(child);
+        }
+}
+
+
+static Ecore_List *
+ewl_list2_cells_info_generate(Ewl_List2 *list, const Ewl_Model *model,
+                const Ewl_View *view, void *mvc_data)
+{
+        Ewl_Widget *cell, *o;
+        Ecore_List *cache;
+        void *pr_data;
+        unsigned int count;
+        unsigned int i;
+        int pref_h = 0;
+        int pref_w = 0;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(list, NULL);
+        DCHECK_TYPE_RET(list, EWL_LIST2_TYPE, NULL);
+
+        /* cache the previous cells */
+        cache = ecore_list_new();
+        ecore_list_free_cb_set(cache, ECORE_FREE_CB(ewl_widget_destroy));
+        if (list->cinfo)
+        {
+                for (i = 0; i < count; i++)
+                {
+                        if (list->cinfo[i].cell)
+                                ecore_list_prepend(cache, list->cinfo[i].cell);
+                }
+                FREE(list->cinfo);
+        }
+
+        count = model->count(mvc_data);
+        list->cinfo = NEW(Ewl_List2_Cell_Info, count);
+        list->info_count = count;
+
+        /* 
+         * create the widget to retrieve the size from
+         */
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
+
+        cell = ewl_cell_new();
+        ewl_container_child_append(EWL_CONTAINER(list->port), cell);
+        ewl_widget_show(cell);
+
+        o = view->constructor(0, pr_data);
+        ewl_container_child_append(EWL_CONTAINER(cell), o);
+        ewl_widget_show(o);
+
+        if (list->fixed)
+        {
+                view->assign(o, model->fetch(mvc_data, 0, 0), 0, 0,
+                                        pr_data);
+                ewl_list2_cell_realize(EWL_CONTAINER(cell));
+                pref_h = PREFERRED_H(cell);
+                pref_w = PREFERRED_W(cell);
+                for (i = 0; i < count; i++)
+                        list->cinfo[i].size = pref_h;
+                pref_h = pref_h * count;
+                //printf("pref_h %d pref_w %d\n", pref_h, pref_w);
+        }
+        else
+        {
+                /* XXX we should put that into a idle callback so it doesn't
+                 * block the complete gui */
+                for (i = 0; i < count; i++)
+                {
+                        view->assign(o, model->fetch(mvc_data, i, 0), i, 0,
+                                        pr_data);
+                        ewl_list2_cell_realize(EWL_CONTAINER(cell));
+                        list->cinfo[i].size = PREFERRED_H(cell);
+                        pref_h += list->cinfo[i].size;
+                        pref_w = MAX(pref_w, PREFERRED_W(cell));
+                        //printf("pref_h %d pref_w %d\n", pref_h, pref_w);
+                        ewl_widget_unrealize(cell);
+                }
+        }
+        ewl_widget_destroy(cell);
+
+        /* update the preferred size */
+        ewl_scrollport_area_size_set(EWL_SCROLLPORT(list->port), pref_w,
+                        pref_h);
+        
+        DRETURN_PTR(cache, DLEVEL_STABLE);
 }
 
 /**
@@ -309,6 +373,7 @@ ewl_list2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 void
 ewl_list2_cb_item_clicked(Ewl_Widget *w, void *ev, void *data)
 {
+        Ewl_List2 *list;
         Ewl_Event_Mouse_Down *event;
         const Ewl_Model *model;
         void *mvc_data;
@@ -321,21 +386,20 @@ ewl_list2_cb_item_clicked(Ewl_Widget *w, void *ev, void *data)
         DCHECK_TYPE(data, EWL_LIST2_TYPE);
 
         event = ev;
+        list = data;
 
-        if (ewl_mvc_selection_mode_get(EWL_MVC(data)) ==
+        if (ewl_mvc_selection_mode_get(EWL_MVC(list)) ==
                                         EWL_SELECTION_MODE_NONE)
                 DRETURN(DLEVEL_STABLE);
 
-        model = ewl_mvc_model_get(EWL_MVC(data));
-        mvc_data = ewl_mvc_data_get(EWL_MVC(data));
-        row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
-        if (row < 0) DRETURN(DLEVEL_STABLE);
+        model = ewl_mvc_model_get(EWL_MVC(list));
+        mvc_data = ewl_mvc_data_get(EWL_MVC(list));
 
-        if ((unsigned int) row > model->count(mvc_data))
-        {
-                DWARNING("Don't use container function on MVC widget!");
-                DRETURN(DLEVEL_STABLE);
-        }
+        /* find the row */
+        row = 0;
+        for (row = 0; row < list->info_count && w != list->cinfo[row].cell;
+                        row++)
+                ;
 
         /* set up the event structure */
         {
@@ -373,259 +437,16 @@ static Ewl_Widget *
 ewl_list2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
                                         unsigned int column __UNUSED__)
 {
-        Ewl_Widget *w;
+        Ewl_List2 *l;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(mvc, NULL);
         DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
-        w = ewl_container_child_get(EWL_CONTAINER(mvc), row);
+        l = EWL_LIST2(mvc);
+        if (l->cinfo && row < l->info_count)
+                DRETURN_PTR(l->cinfo[row].cell, DLEVEL_STABLE);
 
-        DRETURN_PTR(w, DLEVEL_STABLE);
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
-static void
-ewl_list_draw(Ewl_List2 *list)
-{
-        int vx, vy, vw, vh;
-        int bx, by, bw, bh;
-        int off_x, off_y, set_n;
-        int sval, val = 0;
-        int idx = 0, off_n, n;
-        int *pref;
-        Ewl_Orientation o;
-        const Ewl_Model *model;
-        const Ewl_View *view;
-        void *mvc_data;
-        void *pr_data;
-        Ewl_Widget *obj, *cell;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(list);
-        DCHECK_TYPE(list, EWL_LIST2_TYPE);
-
-        /*
-         * Check to make sure we actually need a redraw
-         */
-        if ((!ewl_mvc_dirty_get(EWL_MVC(list))) &&
-                                        (!ewl_list2_redraw_needed(list)))
-        {
-                printf("no redraw needed!\n");
-                return;
-        }
-
-        model = ewl_mvc_model_get(EWL_MVC(list));
-        view = ewl_mvc_view_get(EWL_MVC(list));
-        mvc_data = ewl_mvc_data_get(EWL_MVC(list));
-        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
-
-        ewl_scrollport_visible_area_geometry_get(EWL_SCROLLPORT
-                                                        (list->scrollport),
-                                                        &vx, &vy, &vw, &vh);
-        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(list->scrollport),
-                                                        &off_x, &off_y,
-                                                        NULL, NULL);
-        ewl_object_current_geometry_get(EWL_OBJECT(list->box), &bx, &by,
-                                                                &bw, &bh);
-        ewl_container_reset(EWL_CONTAINER(list));
-        off_x *= -1;
-        off_y *= -1;
-        o = ewl_box_orientation_get(EWL_BOX(list->box));
-
-        if (o == EWL_ORIENTATION_VERTICAL)
-        {
-                off_n = off_y;
-                pref = list->pref_h;
-                n = vh;
-        }
-        else
-        {
-                off_n = off_x;
-                pref = list->pref_w;
-                n = vw;
-        }
-
-        if (list->fixed)
-        {
-                idx = off_n / pref[0];
-                val = pref[0] * idx;
-        }
-        else
-        {
-
-                while (val < off_n)
-                {
-                        val += pref[idx];
-                        idx++;
-                }
-
-                if (idx > 0)
-                {
-                        idx--;
-                        val -= pref[idx];
-                }
-        }
-        set_n = off_n - val;
-
-        sval = val;
-        while (val < (off_n + n))
-        {
-                cell = ewl_cell_new();
-                ewl_cell_state_change_cb_add(EWL_CELL(cell));
-                ewl_container_child_append(EWL_CONTAINER(list), cell);
-                //ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
-                //                ewl_list_cb_item_clicked, list);
-                ewl_widget_show(cell);
-
-                obj = view->constructor(0, pr_data);
-                view->assign(obj, model->fetch(mvc_data, idx, 0), idx, 0,
-                                                                pr_data);
-                ewl_container_child_append(EWL_CONTAINER(cell), obj);
-                ewl_widget_show(obj);
-                
-                if (list->fixed)
-                        val += pref[0];
-                else
-                        val += pref[idx];
-                idx++;
-        }
-
-        printf("Box geometry: %d %d %d %d\n", CURRENT_X(list->box),
-                        CURRENT_Y(list->box), CURRENT_W(list->box),
-                        CURRENT_H(list->box));
-        list->set_n = set_n;
-        if (o == EWL_ORIENTATION_VERTICAL)
-        {
-                ewl_object_geometry_request(EWL_OBJECT(list->box), vx, set_n,
-                                                        vw, val - sval);
-                printf("Setting box geometry: %d %d %d %d\n", vx, set_n,
-                                                        vw, val - sval);
-        }
-        else
-        {
-                ewl_object_geometry_request(EWL_OBJECT(list->box), set_n, vy,
-                                                        val - sval, vh);
-                printf("Setting box geometry: %d %d %d %d\n", set_n, vy,
-                                                        val - sval, vh);
-        }
-
-        list->val_n = val - sval;
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_list2_cb_scroll_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                                        void *user_data)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_PARAM_PTR(user_data);
-        DCHECK_TYPE(user_data, EWL_LIST2_TYPE);
-
-        ewl_widget_configure(user_data);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param p: The list to work with
- * @param w: The now visible child
- * @return Returns no value
- */
-void
-ewl_list2_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_LIST2_TYPE);
-
-        ewl_list2_preferred_size_calc(EWL_LIST2(p));
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param p: The list to work with
- * @param w: The resized child (unused)
- * @param size: unused
- * @param o: unused
- * @return Returns no value
- */
-void
-ewl_list2_cb_child_resize(Ewl_Container *p, Ewl_Widget *c __UNUSED__, 
-                                int size __UNUSED__, 
-                                Ewl_Orientation o __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(p);
-        DCHECK_TYPE(p, EWL_LIST2_TYPE);
-
-        ewl_list2_preferred_size_calc(EWL_LIST2(p));
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_list2_preferred_size_calc(Ewl_List2 *list)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(list);
-        DCHECK_TYPE(list, EWL_LIST2_TYPE);
-
-        ewl_object_preferred_inner_h_set(EWL_OBJECT(list),
-                        ewl_object_preferred_h_get(EWL_OBJECT(list->box)));
-        ewl_object_preferred_inner_w_set(EWL_OBJECT(list),
-                        ewl_object_preferred_w_get(EWL_OBJECT(list->box)));
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static int
-ewl_list2_redraw_needed(Ewl_List2 *list)
-{
-        int off_x, off_y;
-        int x, y, w, h;
-        int res;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(list, TRUE);
-        DCHECK_TYPE_RET(list, EWL_LIST2_TYPE, TRUE);
-
-        ewl_scrollport_visible_area_geometry_get(EWL_SCROLLPORT
-                                                        (list->scrollport),
-                                                        &x, &y, &w, &h);
-        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(list->scrollport),
-                                                        &off_x, &off_y,
-                                                        NULL, NULL);
-
-        res = 1;
-        if (ewl_box_orientation_get(EWL_BOX(list->box)) ==
-                                                EWL_ORIENTATION_VERTICAL)
-        {
-                if (list->fixed)
-                {
-                        res *= ((abs(off_y - list->set_n)) >= list->pref_h[0]);
-                        printf("off_y: %d, list->set_n: %d\n", off_y, list->set_n);
-                }
-                else
-                {
-                        res *= 1;
-                }
-        }
-        else
-        {
-                if (list->fixed)
-                {
-                        res *= ((abs(off_x - list->set_n)) >= list->pref_w[0]);
-                }
-                else
-                {
-                        res *= 1;
-                }
-        }
-
-        DRETURN_INT(res, DLEVEL_STABLE);
-}
