@@ -54,6 +54,7 @@ group {
             type: RECT;
             description {
                min: 13 13;
+               max: 13 999999;
                state: "default" 0.0;
                color: 255 255 255 0;
             }
@@ -83,17 +84,6 @@ group {
             }
             description {
                state: "default" 0.0;
-               min: 13 13;
-               max: 13 99999;
-               rel1 {
-                  relative: 1.0 0.0;
-                  offset: -17 7;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -5 -1;
-                  to_y: "rect.base";
-               }
                image {
                   normal: "sb_knob.png";
                   border: 6 6 6 6;
@@ -215,6 +205,7 @@ group {
             description {
                state: "default" 0.0;
                min: 13 13;
+               max: 999999 13;
                color: 255 255 255 0;
             }
          }
@@ -243,17 +234,6 @@ group {
             }
             description {
                state: "default" 0.0;
-               min: 13 13;
-               max: 99999 13;
-               rel1 {
-                  relative: 1.0 0.0;
-                  offset: 7 -17;
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  offset: -1 -5;
-                  to_y: "rect.base";
-               }
                image {
                   normal: "sb_knob.png";
                   border: 6 6 6 6;
