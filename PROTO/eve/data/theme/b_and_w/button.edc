@@ -2,7 +2,7 @@
       name: "webkit/widget/button";
 
       images {
-         image: "widget/button/img_button_normal.png" COMP;
+         image: "/img_button_normal.png" COMP;
          image: "widget/button/img_button_on_click.png" COMP;
          image: "widget/button/img_button_on_hover.png" COMP;
       }
