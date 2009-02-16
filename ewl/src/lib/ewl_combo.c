@@ -115,9 +115,11 @@ ewl_combo_editable_set(Ewl_Combo *combo, unsigned int editable)
 
         combo->editable = !!editable;
 
-        /* force the selected display to change */
-        if (combo->mvc.model && combo->mvc.view)
-		ewl_combo_cb_selected_change(EWL_MVC(combo));
+        if (combo->editable)
+                ewl_widget_appearance_set(EWL_WIDGET(combo), 
+                                "editable/"EWL_COMBO_TYPE);
+        else
+                ewl_widget_appearance_set(EWL_WIDGET(combo), EWL_COMBO_TYPE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
