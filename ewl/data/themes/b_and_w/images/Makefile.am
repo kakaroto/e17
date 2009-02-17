@@ -33,6 +33,7 @@ ilist_2.png \
 ilist_item_shadow.png \
 inset_raised.png \
 inset_sunk.png \
+inset_sunk_combo.png \
 menu_arrow_normal.png \
 menu_arrow_sel.png \
 menu_sel_bg.png \

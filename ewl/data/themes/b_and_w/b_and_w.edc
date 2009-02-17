@@ -45,6 +45,7 @@ data {
 	/*Combo Groups*/
 	item: "/combo/group" "ewl/combo";
 	item: "/combo/button/group" "ewl/combo/button";
+	item: "/combo/cell/hbox/entry/group" "ewl/combo/entry";
 	item: "/combo/cell/label/group" "ewl/button/label";
 	item: "/combo/cell/label/textpart" "ewl/button/label/text";
 	item: "/combo/cell/group" "ewl/combo/contents";

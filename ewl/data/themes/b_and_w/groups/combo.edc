@@ -8,6 +8,7 @@ images {
         image: "bt_dis_hilight.png" COMP;
 	image: "updown.png" COMP;
 	image: "arrow_right.png" COMP;
+	image: "inset_sunk_combo.png" COMP;
 }
 
 group {
@@ -151,6 +152,67 @@ group {
                         target: "button_image";
                         target: "over1";
                         target: "disabler";
+                }
+        }
+}
+
+group {
+	name: "ewl/combo/entry";
+	        min: 18 15;
+        data {
+                item: "inset" 2;
+                item: "inset/top" 5;
+                item: "inset/left" 6;
+                item: "pad" 1;
+        }
+        parts {
+                part {
+                        name: "base";
+                        type: RECT;
+			mouse_events: 1;
+                        description {
+                                state: "default" 0.0;
+                                rel1.offset: 1 1;
+                                rel2.offset: -2 -2;
+                                color: 255 255 255 255;
+                        }
+                        description {
+                                state: "disabled" 0.0;
+                                inherit: "default" 0.0;
+                                color: 42 42 42 100;
+                        }
+                }
+                part {
+                        name: "overlay";
+                        description {
+                                state: "default" 0.0;
+                                image {
+                                        normal: "inset_sunk_combo.png";
+                                        border: 7 7 7 7;
+                                        middle: 0;
+                                }
+                                fill.smooth: 0;
+                        }
+                }
+        }
+	programs {
+                program
+                {
+                        name: "disable";
+                        signal: "disabled";
+                        source: "*";
+                        action: STATE_SET "disabled" 0.0;
+                        transition: DECELERATE 0.2;
+                        target: "base";
+                }
+                program
+                {
+                        name: "enable";
+                        signal: "enabled";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        transition: ACCELERATE 0.5;
+                        target: "base";
                 }
         }
 }
