@@ -263,10 +263,6 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
         conn->scan_notify->cb(eth,networks,conn->scan_notify->user_data);
 
     EXALT_FREE(eth);
-    Eina_List *l;
-    Exalt_DBus_Wireless_Network *w;
-    EINA_LIST_FOREACH(networks,l,w)
-        exalt_dbus_wireless_network_free(&w);
     eina_list_free(networks);
 }
 
