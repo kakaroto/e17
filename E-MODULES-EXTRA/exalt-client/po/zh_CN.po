@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: exalt e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-19 11:43+0000\n"
+"POT-Creation-Date: 2009-02-15 19:10+0100\n"
 "PO-Revision-Date: 2009-01-09 18:18+0000\n"
 "Last-Translator: Aron Xu <Unknown>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -31,26 +31,85 @@ msgstr "常规"
 msgid "Use Switch 1"
 msgstr ""
 
-#: src/e_mod_main.c:299 src/e_mod_main.c:450
+#: src/e_mod_main.c:297
 msgid "exalt"
 msgstr "exalt"
 
-#: src/e_mod_main.c:382
+#: src/e_mod_main.c:380
 msgid "exalt Configuration Updated"
 msgstr "exalt 配置已更新"
 
-#: src/e_mod_main.c:460
-msgid "submenu"
-msgstr "子菜单"
-
-#: src/e_mod_main.c:465
-msgid "exalt sub 1"
-msgstr ""
-
-#: src/e_mod_main.c:473 src/e_mod_main.c:482
-msgid "radio button 1"
-msgstr ""
-
-#: src/e_mod_main.c:512
+#: src/e_mod_main.c:446
 msgid "Configuration"
 msgstr "配置"
+
+#: src/popup.c:59
+msgid "Settings"
+msgstr ""
+
+#: src/popup.c:122
+msgid "No IP Address"
+msgstr ""
+
+#: src/popup.c:126
+msgid "Wired interface"
+msgstr ""
+
+#: src/popup.c:129
+msgid "Wireless interface"
+msgstr ""
+
+#: src/wired_dialog.c:36
+msgid "Wired Connection Settings"
+msgstr ""
+
+#: src/wired_dialog.c:42
+msgid "Network Device"
+msgstr ""
+
+#: src/wired_dialog.c:50
+msgid "Activate"
+msgstr ""
+
+#: src/wired_dialog.c:53
+msgid "Deactivate"
+msgstr ""
+
+#: src/wired_dialog.c:57
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr ""
+
+#: src/wired_dialog.c:62
+msgid "Static"
+msgstr ""
+
+#: src/wired_dialog.c:67
+msgid "IP address: "
+msgstr ""
+
+#: src/wired_dialog.c:72
+msgid "Netmask address: "
+msgstr ""
+
+#: src/wired_dialog.c:77
+msgid "Gateway address: "
+msgstr ""
+
+#: src/wired_dialog.c:82
+msgid "Command: "
+msgstr ""
+
+#: src/wired_dialog.c:95
+msgid "OK"
+msgstr ""
+
+#: src/wired_dialog.c:96
+msgid "Apply"
+msgstr ""
+
+#: src/wired_dialog.c:97
+msgid "Cancel"
+msgstr ""
+
+#~ msgid "submenu"
+#~ msgstr "子菜单"

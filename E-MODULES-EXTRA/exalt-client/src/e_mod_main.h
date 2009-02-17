@@ -96,6 +96,8 @@ struct _Instance
     /* evas_object used to display */
     Evas_Object *o_exalt;
 
+    Eina_List* l;
+
     E_Gadcon_Popup  *popup;
     Evas_Object     *popup_ilist_obj;
 
@@ -119,8 +121,8 @@ enum _Iface_Type
 
 enum _Popup_Enum
 {
-    POPUP_IP,
-    POPUP_MANAGE
+    POPUP_IFACE,
+    POPUP_NETWORK
 };
 
 struct _Popup_Elt
@@ -133,7 +135,12 @@ struct _Popup_Elt
     int is_link;
     int is_up;
 
-    Evas_Object* header_icon;
+    Evas_Object* icon;
+
+    char* essid;
+    int is_find;
+    Exalt_DBus_Wireless_Network* w;
+    Ecore_Timer* scan_timer;
 };
 
 
@@ -154,20 +161,32 @@ extern Config *exalt_conf;
 
 void response_cb(Exalt_DBus_Response* response, void* data );
 void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data);
+void notify_scan_cb(char* iface, Eina_List* networks, void* user_data );
 
+void popup_init(Instance* inst);
 void popup_show(Instance* inst);
 void popup_hide(Instance *inst);
 void popup_create(Instance* inst);
 void popup_update(Instance* inst, Exalt_DBus_Response* response);
 void popup_ip_update(Instance* inst, char* iface, char* ip);
-void popup_iface_add(Instance* inst, char* iface, Iface_Type iface_type);
+void popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type);
 void popup_cb_setup(void *data, void *data2);
 void popup_cb_ifnet_sel(void *data);
 void popup_up_update(Instance* inst, char* iface, int is_up);
 void popup_link_update(Instance* inst, char* iface, int is_link);
-void popup_icon_update(Instance* inst, char* iface);
+void popup_icon_update(Instance* inst, const char* iface);
+void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip);
+void popup_notify_scan(char* iface, Eina_List* networks, void* user_data );
+void popup_network_interval_get(Instance* inst, char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last);
+void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quality);
+int popup_scan_timer_cb(void *data);
+void popup_elt_free(Popup_Elt* elt);
 
-void if_wired_dialog_show(Instance* inst, char* iface);
+
+
+void if_wired_dialog_init(Instance* inst);
+void if_wired_dialog_show(Instance* inst);
+void if_wired_dialog_set(Instance *inst, char* iface);
 void if_wired_dialog_hide(Instance *inst);
 void if_wired_dialog_create(Instance* inst);
 void if_wired_dialog_cb_del(E_Win *win);

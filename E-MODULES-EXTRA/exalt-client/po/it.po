@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-11 11:53+0100\n"
+"POT-Creation-Date: 2009-02-15 19:10+0100\n"
 "PO-Revision-Date: 2009-01-11 12:02+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -26,91 +26,89 @@ msgstr "Impostazioni generali"
 msgid "Use Switch 1"
 msgstr "Usa switch 1"
 
-#: src/e_mod_main.c:293
+#: src/e_mod_main.c:297
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:376
+#: src/e_mod_main.c:380
 msgid "exalt Configuration Updated"
 msgstr "Configurazione di Exalt aggiornata"
 
-#: src/e_mod_main.c:442
+#: src/e_mod_main.c:446
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/popup.c:55
+#: src/popup.c:59
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: src/popup.c:89
+#: src/popup.c:122
+#, fuzzy
+msgid "No IP Address"
+msgstr "Nessun indirizzo IP"
+
+#: src/popup.c:126
 msgid "Wired interface"
 msgstr "Interfaccia cablata"
 
-#: src/popup.c:92
+#: src/popup.c:129
 msgid "Wireless interface"
 msgstr "Interfaccia wireless"
 
-#: src/popup.c:108 src/popup.c:152
-msgid "No IP address"
-msgstr "Nessun indirizzo IP"
-
-#: src/popup.c:118
-msgid "Manage this interface"
-msgstr "Gestisci questa interfaccia"
-
-#: src/popup.c:154
-#, c-format
-msgid "IP address: %s"
-msgstr "Indirizzo IP: %s"
-
-#: src/wired_dialog.c:30
+#: src/wired_dialog.c:36
 msgid "Wired Connection Settings"
 msgstr "Impostazioni connessione cablata"
 
-#: src/wired_dialog.c:36
+#: src/wired_dialog.c:42
 msgid "Network Device"
 msgstr "Dispositivo di rete"
 
-#: src/wired_dialog.c:44
+#: src/wired_dialog.c:50
 msgid "Activate"
 msgstr "Attiva"
 
-#: src/wired_dialog.c:47
+#: src/wired_dialog.c:53
 msgid "Deactivate"
 msgstr "Disattiva"
 
-#: src/wired_dialog.c:51
+#: src/wired_dialog.c:57
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr "DHCP (Dynamic host configuration protocol)"
 
-#: src/wired_dialog.c:56
+#: src/wired_dialog.c:62
 msgid "Static"
 msgstr "Statica"
 
-#: src/wired_dialog.c:61
+#: src/wired_dialog.c:67
 msgid "IP address: "
 msgstr "Indirizzo IP: "
 
-#: src/wired_dialog.c:66
+#: src/wired_dialog.c:72
 msgid "Netmask address: "
 msgstr "Maschera di rete: "
 
-#: src/wired_dialog.c:71
+#: src/wired_dialog.c:77
 msgid "Gateway address: "
 msgstr "Indirizzo gateway: "
 
-#: src/wired_dialog.c:76
+#: src/wired_dialog.c:82
 msgid "Command: "
 msgstr "Comando: "
 
-#: src/wired_dialog.c:89
+#: src/wired_dialog.c:95
 msgid "OK"
 msgstr "OK"
 
-#: src/wired_dialog.c:90
+#: src/wired_dialog.c:96
 msgid "Apply"
 msgstr "Applica"
 
-#: src/wired_dialog.c:91
+#: src/wired_dialog.c:97
 msgid "Cancel"
 msgstr "Annulla"
+
+#~ msgid "Manage this interface"
+#~ msgstr "Gestisci questa interfaccia"
+
+#~ msgid "IP address: %s"
+#~ msgstr "Indirizzo IP: %s"

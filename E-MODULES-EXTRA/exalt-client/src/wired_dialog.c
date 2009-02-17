@@ -18,6 +18,12 @@
 
 #include "e_mod_main.h"
 
+void if_wired_dialog_init(Instance* inst)
+{
+    inst->wired.iface = NULL;
+    if_wired_dialog_create(inst);
+}
+
 void if_wired_dialog_create(Instance* inst)
 {
     Evas* evas;
@@ -35,11 +41,14 @@ void if_wired_dialog_create(Instance* inst)
 
     flist = e_widget_frametable_add(evas, D_("Network Device"), 0);
 
-    inst->wired.icon = e_widget_image_add_from_file(evas,buf,40,40);
-    snprintf(buf,4096,"%s/e-module-exalt.edj",exalt_conf->module->dir);
-    e_widget_image_edje_set(inst->wired.icon,buf,"modules/exalt/icon/ethernet");
+    inst->wired.icon = edje_object_add(evas);
+    snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
+    edje_object_file_set(inst->wired.icon, buf,"modules/exalt/icons/wired");
+    evas_object_show(inst->wired.icon);
+    o = e_widget_image_add_from_object(evas,inst->wired.icon,40,40);
 
-    e_widget_frametable_object_append(flist, inst->wired.icon, 0, 0, 1, 1, 1, 0, 1, 0);
+
+    e_widget_frametable_object_append(flist, o, 0, 0, 1, 1, 1, 0, 1, 0);
 
     inst->wired.btn_activate = e_widget_button_add(evas,D_("Activate"),NULL,if_wired_dialog_cb_activate,inst,NULL);
     e_widget_frametable_object_append(flist, inst->wired.btn_activate, 1, 0, 1, 1, 1, 0, 1, 0);
@@ -50,7 +59,7 @@ void if_wired_dialog_create(Instance* inst)
     rg = e_widget_radio_group_new(&(inst->wired.dhcp));
     o = e_widget_radio_add(evas, D_("DHCP (Dynamic host configuration protocol)"), 0, rg);
     evas_object_smart_callback_add(o, "changed", if_wired_dialog_cb_dhcp, inst);
-    e_widget_frametable_object_append(flist, o,0, 1, 3, 1, 1, 0, 1, 0);
+    e_widget_frametable_object_append(flist, o, 0, 1, 3, 1, 1, 0, 1, 0);
     inst->wired.radio_dhcp = o;
 
     o = e_widget_radio_add(evas, D_("Static"), 1, rg);
@@ -93,13 +102,17 @@ void if_wired_dialog_create(Instance* inst)
     e_win_centered_set(inst->wired.dialog->win, 1);
 }
 
-void if_wired_dialog_show(Instance* inst, char* iface)
+void if_wired_dialog_show(Instance* inst)
 {
-    EXALT_FREE(inst->wired.iface);
-    inst->wired.iface = strdup(iface);
     if(!inst->wired.dialog)
         if_wired_dialog_create(inst);
     e_dialog_show(inst->wired.dialog);
+}
+
+void if_wired_dialog_set(Instance *inst, char* iface)
+{
+    EXALT_FREE(inst->wired.iface);
+    inst->wired.iface = strdup(iface);
 
     exalt_dbus_eth_ip_get(inst->conn,iface);
     exalt_dbus_eth_netmask_get(inst->conn,iface);
@@ -114,8 +127,8 @@ void if_wired_dialog_hide(Instance *inst)
 {
     if(inst->wired.dialog)
     {
-        e_object_del(E_OBJECT(inst->wired.dialog));
-        inst->wired.dialog = NULL;
+        e_object_del(inst->wired.dialog);
+        inst->wired.dialog=NULL;
     }
 }
 
@@ -182,13 +195,13 @@ void if_wired_dialog_icon_update(Instance *inst)
     if(!inst->wired.dialog)
         return ;
 
-    if(inst->wired.is_link && inst->wired.is_up)
-        group = "modules/exalt/icons/ethernet";
+    if(!inst->wired.is_link)
+        edje_object_signal_emit(inst->wired.icon,"notLink","exalt");
+    else if(!inst->wired.is_up)
+        edje_object_signal_emit(inst->wired.icon,"notActivate","exalt");
     else
-        group = "modules/exalt/icons/ethernet_not_activate_link";
+        edje_object_signal_emit(inst->wired.icon,"default","exalt");
 
-    snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
-    e_widget_image_edje_set(inst->wired.icon,buf,group);
 }
 
 void if_wired_disabled_update(Instance *inst)

@@ -229,13 +229,18 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     /* add to list of running instances so we can cleanup later */
     instances = eina_list_append(instances, inst);
 
+    inst-> l = NULL;
     exalt_dbus_init();
     inst->conn = exalt_dbus_connect();
     if(inst->conn)
     {
         exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
         exalt_dbus_notify_set(inst->conn,notify_cb,inst);
+        exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
     }
+
+    if_wired_dialog_init(inst);
+    popup_init(inst);
 
     /* return the Gadget_Container Client */
     return inst->gcc;
@@ -485,7 +490,7 @@ _exalt_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 void response_cb(Exalt_DBus_Response* response, void* data )
 {
     Instance* inst = data;
-    printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
+    //printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
@@ -606,5 +611,10 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             break;
         default: ;
     }
+}
+
+void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )
+{
+	popup_notify_scan(iface,networks,user_data );
 }
 

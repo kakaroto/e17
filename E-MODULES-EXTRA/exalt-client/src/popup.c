@@ -18,8 +18,12 @@
 
 #include "e_mod_main.h"
 
- void
-popup_create(Instance* inst)
+void popup_init(Instance* inst)
+{
+	inst->popup = NULL;
+}
+
+void popup_create(Instance* inst)
 {
     Evas_Object *base, *ilist, *button, *o;
     Evas *evas;
@@ -60,6 +64,9 @@ popup_create(Instance* inst)
     edje_thaw();
 
     e_gadcon_popup_content_set(inst->popup, base);
+
+    exalt_dbus_eth_list_get(inst->conn);
+    exalt_dbus_wireless_list_get(inst->conn);
 }
 
 void
@@ -73,55 +80,66 @@ popup_cb_setup(void *data, void *data2)
 
 
  void
-popup_iface_add(Instance* inst, char* iface, Iface_Type iface_type)
+popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
 {
     Evas_Object *icon;
-    Evas_Object *header_icon;
     Popup_Elt* elt;
     char buf[1024];
 
     if(!inst->popup_ilist_obj)
         return;
 
+    icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
+    snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
     switch(iface_type)
     {
         case IFACE_WIRED:
-            snprintf(buf,1024,"%s (%s)",D_("Wired interface"),iface);
+            edje_object_file_set(icon, buf,"modules/exalt/icons/wired");
             break;
         case IFACE_WIRELESS:
-            snprintf(buf,1024,"%s (%s)",D_("Wireless interface"),iface);
-        break;
+            edje_object_file_set(icon, buf,"modules/exalt/icons/wireless");
+            break;
     }
-
-    header_icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
-    e_theme_edje_object_set(icon, "base/theme/modules/exalt",
-            "e/modules/exalt/network");
-    e_widget_ilist_header_append(inst->popup_ilist_obj, header_icon, buf);
+    evas_object_show(icon);
 
     elt = calloc(1,sizeof(Popup_Elt));
     elt->inst = inst;
-    elt->iface = iface;
-    elt->type = POPUP_IP;
+    elt->iface = strdup(iface);
+    elt->type = POPUP_IFACE;
     elt->iface_type = iface_type;
-    elt->header_icon = header_icon;
-    icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
-    e_widget_ilist_append(inst->popup_ilist_obj, icon, D_("No IP address"),
+    elt->icon = icon;
+
+    inst->l = eina_list_append(inst->l,elt);
+    popup_iface_label_create(elt,buf,1024,NULL);
+    e_widget_ilist_append(inst->popup_ilist_obj, icon, buf,
             popup_cb_ifnet_sel , elt, NULL);
 
-    elt = calloc(1,sizeof(Popup_Elt));
-    elt->inst = inst;
-    elt->iface = iface;
-    elt->type = POPUP_MANAGE;
-    elt->iface_type = iface_type;
-    elt->header_icon = header_icon;
-    icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
-    e_widget_ilist_append(inst->popup_ilist_obj, icon, D_("Manage this interface"),
-            popup_cb_ifnet_sel, elt, NULL);
-    evas_object_show(icon);
+    e_widget_ilist_go(inst->popup_ilist_obj);
+    e_widget_ilist_thaw(inst->popup_ilist_obj);
+
+    popup_icon_update(inst,iface);
 
     exalt_dbus_eth_ip_get(inst->conn,iface);
     exalt_dbus_eth_up_is(inst->conn,iface);
     exalt_dbus_eth_link_is(inst->conn,iface);
+
+    if(iface_type == IFACE_WIRELESS)
+       exalt_dbus_wireless_scan(inst->conn,elt->iface);
+}
+
+void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
+{
+    if(!ip)
+         ip = D_("No IP Address");
+    switch(elt->iface_type)
+    {
+        case IFACE_WIRED:
+            snprintf(buf,buf_size,"%s (%s)",D_("Wired interface"),ip);
+            break;
+        case IFACE_WIRELESS:
+            snprintf(buf,buf_size,"%s (%s)",D_("Wireless interface"),ip);
+        break;
+    }
 }
 
 void
@@ -133,49 +151,47 @@ popup_cb_ifnet_sel(void *data)
     switch(elt->iface_type)
     {
         case IFACE_WIRED:
-            if_wired_dialog_show(inst,elt->iface);
+            if_wired_dialog_show(inst);
+            if_wired_dialog_set(inst,elt->iface);
             break;
         case IFACE_WIRELESS:
-                break;
+            break;
     }
 }
 
  void
 popup_ip_update(Instance* inst, char* iface, char* ip)
 {
-    int i;
+    int i = 0;
     char buf[1024];
+    Popup_Elt* elt;
+    Eina_List *l;
+
     if(!inst->popup_ilist_obj || !iface)
         return;
 
-    if(!ip)
-        snprintf(buf,1024, D_("No IP address"));
-    else
-        snprintf(buf,1024,D_("IP address: %s"),ip);
 
-    for(i=0;i<e_widget_ilist_count(inst->popup_ilist_obj);i++)
+    EINA_LIST_FOREACH(inst->l,l,elt)
     {
-        Popup_Elt* elt = e_widget_ilist_nth_data_get(inst->popup_ilist_obj,i);
-        if(elt && elt->type == POPUP_IP && elt->iface
+        if(elt && elt->type == POPUP_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
         {
+            popup_iface_label_create(elt,buf,1024,ip);
             e_widget_ilist_nth_label_set(inst->popup_ilist_obj,i,buf);
             break;
         }
+        i++;
     }
-
-
-    e_widget_ilist_go(inst->popup_ilist_obj);
-    e_widget_ilist_thaw(inst->popup_ilist_obj);
 }
 
 void popup_up_update(Instance* inst, char* iface, int is_up)
 {
     int i;
-    for(i=0;i<e_widget_ilist_count(inst->popup_ilist_obj);i++)
+    Popup_Elt* elt;
+    Eina_List *l;
+    EINA_LIST_FOREACH(inst->l,l,elt)
     {
-        Popup_Elt* elt = e_widget_ilist_nth_data_get(inst->popup_ilist_obj,i);
-        if(elt && elt->type == POPUP_MANAGE && elt->iface
+        if(elt && elt->type == POPUP_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
         {
             elt->is_up = is_up;
@@ -187,11 +203,11 @@ void popup_up_update(Instance* inst, char* iface, int is_up)
 
 void popup_link_update(Instance* inst, char* iface, int is_link)
 {
-    int i;
-    for(i=0;i<e_widget_ilist_count(inst->popup_ilist_obj);i++)
+    Popup_Elt* elt;
+    Eina_List *l;
+    EINA_LIST_FOREACH(inst->l,l,elt)
     {
-        Popup_Elt* elt = e_widget_ilist_nth_data_get(inst->popup_ilist_obj,i);
-        if(elt && elt->type == POPUP_MANAGE && elt->iface
+        if(elt && elt->type == POPUP_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
         {
             elt->is_link = is_link;
@@ -201,36 +217,24 @@ void popup_link_update(Instance* inst, char* iface, int is_link)
     popup_icon_update(inst,iface);
 }
 
-void popup_icon_update(Instance* inst, char* iface)
+void popup_icon_update(Instance* inst, const char* iface)
 {
-    int i;
     char* group;
     char buf[1024];
-
-    for(i=0;i<e_widget_ilist_count(inst->popup_ilist_obj);i++)
+    Popup_Elt* elt;
+    Eina_List *l;
+    EINA_LIST_FOREACH(inst->l,l,elt)
     {
-        Popup_Elt* elt = e_widget_ilist_nth_data_get(inst->popup_ilist_obj,i);
-        if(elt && elt->type == POPUP_MANAGE && elt->iface
+        if(elt && elt->type == POPUP_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
         {
-            switch(elt->iface_type)
-            {
-                case IFACE_WIRED:
-                    if(elt->is_link && elt->is_up)
-                        group ="modules/exalt/icons/ethernet";
-                    else
-                        group ="modules/exalt/icons/ethernet_not_activate_link";
-                    break;
-                case IFACE_WIRELESS:
-                    if(elt->is_link && elt->is_up)
-                        group ="modules/exalt/icons/wireless";
-                    else
-                        group ="modules/exalt/icons/wireless_not_activate_link";
-                    break;
-            }
+            if(!elt->is_link)
+                edje_object_signal_emit(elt->icon,"notLink","exalt");
+            else if(!elt->is_up)
+                edje_object_signal_emit(elt->icon,"notActivate","exalt");
+            else
+                edje_object_signal_emit(elt->icon,"default","exalt");
 
-            snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
-            edje_object_file_set(elt->header_icon,buf,group);
             break;
         }
     }
@@ -250,7 +254,7 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
                 Ecore_List* l = exalt_dbus_response_list_get(response);
                 ecore_list_first_goto(l);
                 while( (iface=ecore_list_next(l)) )
-                    popup_iface_add(inst,strdup(iface),IFACE_WIRED);
+                    popup_iface_add(inst,iface,IFACE_WIRED);
             }
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
@@ -258,7 +262,7 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
                 Ecore_List* l = exalt_dbus_response_list_get(response);
                 ecore_list_first_goto(l);
                 while( (iface=ecore_list_next(l)) )
-                    popup_iface_add(inst,strdup(iface),IFACE_WIRELESS);
+                    popup_iface_add(inst,iface,IFACE_WIRELESS);
             }
             break;
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
@@ -281,23 +285,240 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
 }
 
 
+void popup_network_interval_get(Instance* inst, char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last)
+{
+    int i=0;
+    char buf[1024];
+
+    *id_first = -1;
+    *id_last = -1;
+
+    *first = NULL;
+    *last = NULL;
+
+    Popup_Elt* elt;
+    Eina_List *l;
+    EINA_LIST_FOREACH(inst->l,l,elt)
+    {
+        if(elt && elt->type == POPUP_IFACE && elt->iface
+                && strcmp(elt->iface,iface)==0)
+        {
+            *id_first = i;
+            *first = l;
+            break;
+        }
+        i++;
+    }
+
+    i=*id_first+1;
+    *id_last = *id_first;
+    *last = *first;
+
+    EINA_LIST_FOREACH(eina_list_next(l),l,elt)
+    {
+        if(elt && elt->type == POPUP_IFACE)
+        {
+           break;
+        }
+        else
+        {
+            *id_last = i;
+            *last = l;
+        }
+        i++;
+    }
+}
+
+void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quality)
+{
+    snprintf(buf,buf_size,"(%d %%)    %s",quality,elt->essid);
+}
+
+
+
+void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
+{
+    Instance* inst = user_data;
+    Exalt_DBus_Wireless_Network* w;
+    Eina_List *l;
+    int i;
+    int id_first, id_last;
+    Eina_List* first, *last;
+    Popup_Elt* elt;
+
+    if(!inst->popup_ilist_obj)
+        return;
+
+    popup_network_interval_get(inst,iface,&id_first,&id_last,&first,&last);
+    l=first;
+    do
+    {
+        elt = eina_list_data_get(l);
+        elt->is_find = 0;
+    }while(l!=last && (l = eina_list_next(l)) );
+
+    EINA_LIST_FOREACH(networks,l,w)
+    {
+        Eina_List* l2;
+        int find = -1;
+        Popup_Elt* elt_find=NULL;
+        int i =0;
+
+        const char* essid = exalt_dbus_wireless_network_essid_get(w);
+        l2=first;
+        i=0;
+        do
+        {
+            Popup_Elt* elt;
+            elt = eina_list_data_get(l2);
+            if(elt && elt->essid && essid && strcmp(elt->essid,essid)==0)
+            {
+                find = i;
+                elt_find = elt;
+            }
+            i++;
+        }while(l2!=last && !elt_find && (l2 = eina_list_next(l2)) );
+
+        if(!elt_find)
+        {
+            //add a new network in the list
+            Popup_Elt* elt;
+            Evas_Object* icon;
+            char buf[1024];
+
+
+            icon = edje_object_add(evas_object_evas_get(inst->popup_ilist_obj));
+            snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
+            edje_object_file_set(icon, buf,"modules/exalt/icons/encryption");
+
+            if(exalt_dbus_wireless_network_encryption_is(w))
+                edje_object_signal_emit(icon,"visible,essid,new","exalt");
+            else
+                edje_object_signal_emit(icon,"invisible","exalt");
+
+            evas_object_show(icon);
+
+            elt = calloc(1,sizeof(Popup_Elt));
+            elt->inst = inst;
+            elt->iface = strdup(iface);
+            elt->type = POPUP_NETWORK;
+            elt->essid = strdup(essid);
+            elt->icon = icon;
+            elt->w = w;
+            elt->is_find = 1;
+
+            popup_iface_essid_create(elt,buf,1024,exalt_dbus_wireless_network_quality_get(w));
+
+            inst->l = eina_list_append_relative(inst->l,elt,eina_list_data_get(last));
+            last = eina_list_next(last);
+
+            /*Eina_List* l2;
+            EINA_LIST_FOREACH(inst->l,l2,elt)
+                printf("%d\n",elt->type);
+            */
+
+            e_widget_ilist_append_relative(inst->popup_ilist_obj,
+                    icon, buf,NULL , elt, NULL,id_last);
+
+            id_last++;
+        }
+        else
+        {
+            //update the network
+            Popup_Elt* elt = elt_find;
+            exalt_dbus_wireless_network_free(&(elt->w));
+            elt->w = w;
+            char buf[1024];
+
+            if(exalt_dbus_wireless_network_encryption_is(w))
+                edje_object_signal_emit(elt->icon,"visible","exalt");
+            else
+                edje_object_signal_emit(elt->icon,"invisible","exalt");
+
+
+            elt->is_find = 1;
+            popup_iface_essid_create(elt,buf,1024,exalt_dbus_wireless_network_quality_get(w));
+            e_widget_ilist_nth_label_set(inst->popup_ilist_obj,find+id_first,buf);
+        }
+    }
+
+    //remove old networks
+    l=first;
+    int jump = 0;
+    i=0;
+    do
+    {
+        if(jump)
+            jump = 0;
+
+        Popup_Elt* elt;
+        elt = eina_list_data_get(l);
+        if(elt && elt->type == POPUP_NETWORK && !elt->is_find)
+        {
+            e_widget_ilist_remove_num(inst->popup_ilist_obj,i+id_first);
+            l=eina_list_next(l);
+            jump = 1;
+            inst->l = eina_list_remove(inst->l,elt);
+            popup_elt_free(elt);
+        }
+        i++;
+    }while(l!=last && (jump || (l = eina_list_next(l))) );
+
+
+
+    elt = eina_list_data_get(first);
+    elt->scan_timer  = ecore_timer_add(3,popup_scan_timer_cb,elt);
+}
+
+int popup_scan_timer_cb(void *data)
+{
+    Popup_Elt* elt = data;
+
+    ecore_timer_del(elt->scan_timer);
+    elt->scan_timer = NULL;
+
+    exalt_dbus_wireless_scan(elt->inst->conn,elt->iface);
+}
+
 void popup_show(Instance* inst)
 {
+    int i;
+
     if(!inst->popup)
         popup_create(inst);
+
     e_gadcon_popup_show(inst->popup);
-    exalt_dbus_eth_list_get(inst->conn);
-    exalt_dbus_wireless_list_get(inst->conn);
 }
 
 void popup_hide(Instance *inst)
 {
     if (inst->popup)
     {
+        Eina_List* l;
+        Popup_Elt* elt;
+
         e_object_del(E_OBJECT(inst->popup));
         inst->popup = NULL;
         inst->popup_ilist_obj = NULL;
+
+        EINA_LIST_FOREACH(inst->l,l,elt)
+            popup_elt_free(elt);
+        eina_list_free(inst->l);
+        inst->l = NULL;
     }
+
+    if_wired_dialog_hide(inst);
 }
 
-
+void popup_elt_free(Popup_Elt* elt)
+{
+    EXALT_FREE(elt->iface);
+    EXALT_FREE(elt->essid);
+    if(elt->icon)
+        evas_object_del(elt->icon);
+    if(elt->w)
+        exalt_dbus_wireless_network_free(&(elt->w));
+    if(elt->scan_timer)
+        ecore_timer_del(elt->scan_timer);
+    EXALT_FREE(elt);
+}
