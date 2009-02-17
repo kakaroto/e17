@@ -22,6 +22,7 @@ ui.c ui.h \
 about.c about.h \
 tests.h \
 image_blend_unscaled.c \
+image_blend_solid_middle_unscaled.c \
 image_blend_fade_unscaled.c \
 image_blend_fade_pow2_unscaled.c \
 image_blend_solid_unscaled.c \
