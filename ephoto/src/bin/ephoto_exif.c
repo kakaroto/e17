@@ -1,6 +1,27 @@
 #ifdef BUILD_EXIF_SUPPORT
 #include "ephoto_exif.h"
 
+int image_has_exif_data(const char *file) {
+	const char **args;
+	ExifData *data;
+        ExifLoader *loader;
+
+	args = calloc(1, sizeof(const char *));
+        args[0] = file;
+
+	loader = exif_loader_new();
+        exif_loader_write_file(loader, *args);
+
+        data = exif_loader_get_data(loader);
+        if (!data) {
+		return 0;
+	}
+	exif_loader_unref(loader);
+	exif_data_unref(data);
+	
+	return 1;
+}
+
 Ecore_Hash *get_exif_data(const char *file) {
 	const char **args, *title;
 	char value[1024];
