@@ -40,6 +40,7 @@ menu_sel_bg.png \
 menu_sel_fg.png \
 notebook_bottom_tab_first.png \
 notebook_bottom_tab_normal.png \
+notebook_bottom_tab_first_selected.png \
 notebook_bottom_tab_selected.png \
 notebook_left_tab_first.png \
 notebook_left_tab_normal.png \
@@ -53,6 +54,7 @@ notebook_tab_normal.png \
 notebook_tab_selected.png \
 notebook_top_tab_first.png \
 notebook_top_tab_normal.png \
+notebook_top_tab_first_selected.png \
 notebook_top_tab_selected.png \
 paned_thumb_h.png \
 paned_thumb_v.png \

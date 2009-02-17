@@ -1,9 +1,11 @@
 images {
 	image: "notebook_top_tab_first.png" COMP;
 	image: "notebook_top_tab_normal.png" COMP;
+	image: "notebook_top_tab_first_selected.png" COMP;
 	image: "notebook_top_tab_selected.png" COMP;
 	image: "notebook_bottom_tab_first.png" COMP;
         image: "notebook_bottom_tab_normal.png" COMP;
+	image: "notebook_bottom_tab_first_selected.png" COMP;
         image: "notebook_bottom_tab_selected.png" COMP;
         image: "notebook_left_tab_first.png" COMP;
         image: "notebook_left_tab_normal.png" COMP;
@@ -81,7 +83,7 @@ group {
                                 min: 36 26;
                                 max: 99999 26;
                                 rel1.offset: 0 4;
-                                image.normal: "notebook_top_tab_selected.png";
+                                image.normal: "notebook_top_tab_first_selected.png";
 				image.border: 2 2 2 2;
                         }
                 }
@@ -175,7 +177,7 @@ group {
                                 min: 36 26;
                                 max: 99999 26;
                                 rel1.offset: 0 -4;
-                                image.normal: "notebook_bottom_tab_selected.png";
+                                image.normal: "notebook_bottom_tab_first_selected.png";
                         	image.border: 2 2 2 2;
 			}
                 }
