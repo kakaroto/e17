@@ -37,6 +37,7 @@ image_blend_nearest_solid_same_scaled.c \
 image_blend_smooth_same_scaled.c \
 image_blend_smooth_solid_same_scaled.c \
 image_blend_border.c \
+image_blend_solid_middle_border.c \
 image_blend_solid_border.c \
 image_blend_border_recolor.c \
 image_quality_scale.c \

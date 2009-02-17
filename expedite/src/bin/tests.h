@@ -14,6 +14,7 @@
 #include "image_blend_smooth_same_scaled.c"
 #include "image_blend_smooth_solid_same_scaled.c"
 #include "image_blend_border.c"
+#include "image_blend_solid_middle_border.c"
 #include "image_blend_solid_border.c"
 #include "image_blend_border_recolor.c"
 #include "image_quality_scale.c"
