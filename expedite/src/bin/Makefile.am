@@ -151,3 +151,5 @@ if BUILD_SOFTWARE_16_WINCE
 expedite_SOURCES += \
 engine_software_16_wince.c engine_software_16_wince.h
 endif
+
+EXTRA_DIST = $(bin_SCRIPTS)
