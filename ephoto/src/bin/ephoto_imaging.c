@@ -299,10 +299,10 @@ unsigned int *sepia_image(Ewl_Widget *image) {
 			r = r * (255 / a);
 		}
 		
-		rr = (int)(((r + g + b)/3)+40);
+		rr = (int)(((r + g + b)/3)+30);
 		if (rr < 0) rr = 0;
 		if (rr > 255) rr = 255;
-		gg = (int)(((r + g + b)/3)+2);
+		gg = (int)(((r + g + b)/3)+10);
 		if (gg < 0) gg = 0;
 		if (gg > 255) gg = 255;
 		bb = (int)(((r + g + b)/3)+2);              
