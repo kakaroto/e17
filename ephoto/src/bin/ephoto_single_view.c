@@ -230,6 +230,7 @@ static void return_to_normal(Ewl_Widget *w, void *event, void *data) {
 					NULL, NULL);
 	if (image_data)
 		free(image_data);
+	image_data = NULL;
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(ephoto_get_view_box()),
 				ephoto_get_normal_vbox());
 }
