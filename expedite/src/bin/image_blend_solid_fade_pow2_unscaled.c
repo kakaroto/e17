@@ -4,7 +4,7 @@
 
 /* metadata */
 #define FNAME image_blend_solid_fade_pow2_unscaled_start
-#define NAME "Image Blend Solid Fade Power 2Unscaled"
+#define NAME "Image Blend Solid Fade Power 2 Unscaled"
 #define ICON "flower.png"
 
 #ifndef PROTO
