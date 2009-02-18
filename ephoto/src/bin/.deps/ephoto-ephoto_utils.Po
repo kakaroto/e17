@@ -2,7 +2,6 @@ ephoto-ephoto_utils.o: ephoto_utils.c ephoto_utils.h \
   /usr/local/include/Ecore_Data.h /usr/local/include/eina-0/Eina.h \
   /usr/local/include/eina-0/eina_config.h \
   /usr/local/include/eina-0/eina/eina_types.h \
-  /usr/local/include/eina-0/eina/eina_main.h \
   /usr/local/include/eina-0/eina/eina_f16p16.h /usr/include/stdint.h \
   /usr/include/features.h /usr/include/sys/cdefs.h \
   /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
@@ -65,8 +64,6 @@ ephoto_utils.h:
 /usr/local/include/eina-0/eina_config.h:
 
 /usr/local/include/eina-0/eina/eina_types.h:
-
-/usr/local/include/eina-0/eina/eina_main.h:
 
 /usr/local/include/eina-0/eina/eina_f16p16.h:
 

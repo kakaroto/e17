@@ -8,6 +8,14 @@ Ewl_Widget *ephoto_get_main_window(void) {
 	return em->win;
 }
 
+void ephoto_set_effects_window(Ewl_Widget *w) {
+	        em->ewin = w;
+}
+
+Ewl_Widget *ephoto_get_effects_window(void) {
+	        return em->ewin;
+}
+
 void ephoto_set_view_box(Ewl_Widget *w) {
 	em->view_box = w;
 }

@@ -16,6 +16,7 @@
 typedef struct _Ephoto Ephoto;
 struct _Ephoto {
 	Ewl_Widget *win;
+	Ewl_Widget *ewin;
 	Ewl_Widget *view_box;
 	Ewl_Widget *normal_vbox;
 	Ewl_Widget *fbox;
@@ -29,6 +30,7 @@ struct _Ephoto {
 };
 
 void ephoto_set_main_window(Ewl_Widget *w);
+void ephoto_set_effects_window(Ewl_Widget *w);
 void ephoto_set_view_box(Ewl_Widget *w);
 void ephoto_set_normal_vbox(Ewl_Widget *w);
 void ephoto_set_fbox(Ewl_Widget *w);
@@ -40,6 +42,7 @@ void ephoto_set_images(Ecore_List *l);
 void ephoto_set_current_directory(char *dir);
 void ephoto_set_thumb_size(int i);
 Ewl_Widget *ephoto_get_main_window(void);
+Ewl_Widget *ephoto_get_effects_window(void);
 Ewl_Widget *ephoto_get_view_box(void);
 Ewl_Widget *ephoto_get_normal_vbox(void);
 Ewl_Widget *ephoto_get_fbox(void);

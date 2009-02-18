@@ -1,6 +1,8 @@
 #include "ephoto.h"
 #include "ephoto_imaging.h"
 
+static void show_effects(Ewl_Widget *w, void *event, void *data);
+static void destroy_window(Ewl_Widget *w, void *event, void *data);
 static void return_to_normal(Ewl_Widget *w, void *event, void *data);
 static void zoom_in(Ewl_Widget *w, void *event, void *data);
 static void zoom_out(Ewl_Widget *w, void *event, void *data);
@@ -8,6 +10,8 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 static void flip_horiz(Ewl_Widget *w, void *event, void *data);
 static void flip_vert(Ewl_Widget *w, void *event, void *data);
+static void image_grayscale(Ewl_Widget *w, void *event, void *data);
+static void image_sepia(Ewl_Widget *w, void *event, void *data);
 
 void add_single_view(Ewl_Widget *c) {
 	Ewl_Widget *sbox, *box, *hbox, *ibox, *image, *button;
@@ -52,59 +56,146 @@ void add_single_view(Ewl_Widget *c) {
 	ewl_widget_show(hbox);
 
 	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Back");
 	ewl_button_image_set(EWL_BUTTON(button), 
 				PACKAGE_DATA_DIR "/images/media-seek-backward.png",
 				NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
-	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, return_to_normal,
 				NULL);
 	ewl_widget_show(button);
 
+        button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Zoom In");
+	ewl_button_image_set(EWL_BUTTON(button),
+			PACKAGE_DATA_DIR "/images/add.png",
+			NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_in,
+			NULL);
+	ewl_widget_show(button);
+
 	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Zoom Out");
+	ewl_button_image_set(EWL_BUTTON(button),
+			PACKAGE_DATA_DIR "/images/remove.png",
+			NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_out,
+			NULL);
+	ewl_widget_show(button);
+
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Effects");
+	ewl_button_image_set(EWL_BUTTON(button),
+			PACKAGE_DATA_DIR "/images/image.png",
+			NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, show_effects,
+			NULL);
+	ewl_widget_show(button);
+}
+
+static void destroy_window(Ewl_Widget *w, void *event, void *data) {
+	ewl_widget_destroy(ephoto_get_effects_window());
+	ephoto_set_effects_window(NULL);
+}
+
+static void show_effects(Ewl_Widget *w, void *event, void *data) {
+	Ewl_Widget *window, *freebox, *button;
+
+	if (ephoto_get_effects_window())
+		return;
+
+	window = ewl_window_new();
+	ewl_window_dialog_set(EWL_WINDOW(window), TRUE);
+	ewl_window_title_set(EWL_WINDOW(window), "Ephoto Effects");
+	ewl_object_size_request(EWL_OBJECT(window), 370, 100);
+	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW,
+				destroy_window, NULL);
+	ewl_widget_show(window);
+	ephoto_set_effects_window(window);
+
+	freebox = ewl_hfreebox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(freebox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(window), freebox);
+	ewl_widget_show(freebox);
+
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Rotate Left");
         ewl_button_image_set(EWL_BUTTON(button),
 				PACKAGE_DATA_DIR "/images/undo.png",
 				NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-        ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_container_child_append(EWL_CONTAINER(freebox), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, rotate_image_left,
                                 NULL);
         ewl_widget_show(button);
 
 	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Rotate Right");
         ewl_button_image_set(EWL_BUTTON(button),
 				PACKAGE_DATA_DIR "/images/redo.png",
 				NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-        ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+        ewl_container_child_append(EWL_CONTAINER(freebox), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, rotate_image_right,
                                 NULL);
 	ewl_widget_show(button);
 
         button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Flip Horizontal");
         ewl_button_image_set(EWL_BUTTON(button),
 				PACKAGE_DATA_DIR "/images/go-next.png",
 				NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-        ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_container_child_append(EWL_CONTAINER(freebox), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, flip_horiz,
                                 NULL);
         ewl_widget_show(button);
 
         button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Flip Vertical");
         ewl_button_image_set(EWL_BUTTON(button),
 				PACKAGE_DATA_DIR "/images/go-down.png",
 				NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-        ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_container_child_append(EWL_CONTAINER(freebox), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, flip_vert,
                                 NULL);
         ewl_widget_show(button);
+
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Grayscale");
+	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_container_child_append(EWL_CONTAINER(freebox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, image_grayscale,
+			NULL);
+	ewl_widget_show(button);
+
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Sepia");
+	ewl_button_image_size_set(EWL_BUTTON(button), 18, 18);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(button), 85, 20);
+	ewl_container_child_append(EWL_CONTAINER(freebox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, image_sepia,
+			NULL);
+	ewl_widget_show(button);
 }
 
 void show_single_view(Ewl_Widget *w, void *event, void *data) {
@@ -117,16 +208,29 @@ void show_single_view(Ewl_Widget *w, void *event, void *data) {
 }
 
 static void return_to_normal(Ewl_Widget *w, void *event, void *data) {
+	destroy_window(NULL, NULL, NULL);
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(ephoto_get_view_box()),
 				ephoto_get_normal_vbox());
 }
 
 static void zoom_in(Ewl_Widget *w, void *event, void *data) {
+	Ewl_Widget *simage;
+	int wid, h;
 
+	simage = ephoto_get_single_image();
+	wid = ewl_object_current_w_get(EWL_OBJECT(simage));
+	h = ewl_object_current_h_get(EWL_OBJECT(simage));
+	ewl_image_size_set(EWL_IMAGE(simage), wid*1.5, h*1.5);
 }
 
 static void zoom_out(Ewl_Widget *w, void *event, void *data) {
+	Ewl_Widget *simage;
+	int wid, h;
 
+	simage = ephoto_get_single_image();
+	wid = ewl_object_current_w_get(EWL_OBJECT(simage));
+	h = ewl_object_current_h_get(EWL_OBJECT(simage));
+	ewl_image_size_set(EWL_IMAGE(simage), wid/1.5, h/1.5);
 }
 
 static void rotate_image_left(Ewl_Widget *w, void *event, void *data) {
@@ -199,5 +303,37 @@ static void flip_vert(Ewl_Widget *w, void *event, void *data) {
         ewl_widget_configure(simage->parent);
 
         return;
+}
+
+static void image_grayscale(Ewl_Widget *w, void *event, void *data) {
+	unsigned int *image_data;
+	int nw, nh;
+
+	Ewl_Widget *simage;
+
+	simage = ephoto_get_single_image();
+
+	image_data = grayscale_image(simage);
+	evas_object_image_size_get(EWL_IMAGE(simage)->image, &nw, &nh);
+	update_image(simage, nw, nh, image_data);
+	ewl_widget_configure(simage->parent);
+
+	return;
+}
+
+static void image_sepia(Ewl_Widget *w, void *event, void *data) {
+	unsigned int *image_data;
+	int nw, nh;
+
+	Ewl_Widget *simage;
+
+	simage = ephoto_get_single_image();
+
+	image_data = sepia_image(simage);
+	evas_object_image_size_get(EWL_IMAGE(simage)->image, &nw, &nh);
+	update_image(simage, nw, nh, image_data);
+	ewl_widget_configure(simage->parent);
+	
+	return;
 }
 
