@@ -126,7 +126,7 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 static void
 create_main_win(void)
 {
-   Evas_Object *win, *bg, *frame, *box, *subbox, *toggle, *cloc, *button;
+   Evas_Object *win, *bg, *box, *subbox, *toggle, *cloc, *button;
    
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Set Alarm");
@@ -141,21 +141,13 @@ create_main_win(void)
    evas_object_size_hint_weight_set(box, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
    elm_win_resize_object_add(win, box);
    
-   frame = elm_frame_add(win);
-   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
-   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
-   elm_frame_label_set(frame, "Alarm");
-   
-   subbox = elm_box_add(win);
-   elm_frame_content_set(frame, subbox);
-
    toggle = elm_toggle_add(win);
    elm_toggle_label_set(toggle, "Enabled");
    elm_toggle_states_labels_set(toggle, "ON", "OFF");
    elm_toggle_state_pointer_set(toggle, &(alm.on));   
    evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
-   elm_box_pack_end(subbox, toggle);
+   elm_box_pack_end(box, toggle);
    evas_object_show(toggle);
    
    cloc = elm_clock_add(win);
@@ -163,7 +155,7 @@ create_main_win(void)
    elm_clock_edit_set(cloc, 1);
    elm_clock_time_set(cloc, alm.hours, alm.minutes, 0);
    evas_object_smart_callback_add(cloc, "changed", on_clock_changed, NULL);
-   elm_box_pack_end(subbox, cloc);
+   elm_box_pack_end(box, cloc);
    evas_object_show(cloc);
    
    toggle = elm_toggle_add(win);
@@ -172,17 +164,12 @@ create_main_win(void)
    elm_toggle_state_pointer_set(toggle, &(alm.repeat));   
    evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
-   elm_box_pack_end(subbox, toggle);
+   elm_box_pack_end(box, toggle);
    evas_object_show(toggle);
-   
-   evas_object_show(subbox);
-   
-   elm_box_pack_end(box, frame);
-   evas_object_show(frame);
 
    cloc = elm_clock_add(win);
    elm_clock_show_am_pm_set(cloc, 1);
-   elm_clock_show_seconds_set(cloc, 1);
+   elm_clock_show_seconds_set(cloc, 0);
    elm_box_pack_end(box, cloc);
    evas_object_show(cloc);
    
