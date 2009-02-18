@@ -82,6 +82,7 @@ unsigned int *flip_horizontal(Ewl_Widget *image) {
 			index++;
 		}
 	}
+	
 	return im_data_new;
 }
 
@@ -108,6 +109,7 @@ unsigned int *flip_vertical(Ewl_Widget *image) {
 			index++;
 		}
 	}
+	
 	return im_data_new;
 }
 
@@ -245,6 +247,7 @@ unsigned int *sharpen_image(Ewl_Widget *image) {
 			p1++;
 		}
 	}
+	
 	return im_data_new;
 }
 
@@ -275,6 +278,7 @@ unsigned int *grayscale_image(Ewl_Widget *image) {
 	
 		im_data_new[i] = (a << 24) | (gray << 16) | (gray << 8) | gray;
         }
+	
         return im_data_new;
 }
 
@@ -317,6 +321,7 @@ unsigned int *sepia_image(Ewl_Widget *image) {
 
                 im_data_new[i] = (a << 24) | (rr << 16) | (gg << 8) | bb;
         }
+	
 	return im_data_new;
 }
 
