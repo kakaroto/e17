@@ -21,7 +21,6 @@
 void if_wired_dialog_init(Instance* inst)
 {
     inst->wired.iface = NULL;
-    if_wired_dialog_create(inst);
 }
 
 void if_wired_dialog_create(Instance* inst)
@@ -35,6 +34,7 @@ void if_wired_dialog_create(Instance* inst)
     inst->wired.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_wired_dialog");
     e_dialog_title_set(inst->wired.dialog, D_("Wired Connection Settings"));
     inst->wired.dialog->data = inst;
+    inst->wired.dialog->win->data = inst;
 
     evas = e_win_evas_get(inst->wired.dialog->win);
     list = e_widget_list_add(evas, 0, 0);
@@ -109,26 +109,42 @@ void if_wired_dialog_show(Instance* inst)
     e_dialog_show(inst->wired.dialog);
 }
 
-void if_wired_dialog_set(Instance *inst, char* iface)
+void if_wired_dialog_set(Instance *inst, Popup_Elt* iface)
 {
-    EXALT_FREE(inst->wired.iface);
-    inst->wired.iface = strdup(iface);
+    if(inst->wired.iface)
+    {
+        inst->wired.iface->nb_use--;
+        if(inst->wired.iface->nb_use<=0)
+            popup_elt_free(inst->wired.iface);
+    }
 
-    exalt_dbus_eth_ip_get(inst->conn,iface);
-    exalt_dbus_eth_netmask_get(inst->conn,iface);
-    exalt_dbus_eth_gateway_get(inst->conn,iface);
-    exalt_dbus_eth_command_get(inst->conn,iface);
-    exalt_dbus_eth_dhcp_is(inst->conn,iface);
-    exalt_dbus_eth_up_is(inst->conn,iface);
-    exalt_dbus_eth_link_is(inst->conn,iface);
+    inst->wired.iface = iface;
+    iface->nb_use++;
+
+    exalt_dbus_eth_ip_get(inst->conn,iface->iface);
+    exalt_dbus_eth_netmask_get(inst->conn,iface->iface);
+    exalt_dbus_eth_gateway_get(inst->conn,iface->iface);
+    exalt_dbus_eth_command_get(inst->conn,iface->iface);
+    exalt_dbus_eth_dhcp_is(inst->conn,iface->iface);
+    exalt_dbus_eth_up_is(inst->conn,iface->iface);
+    exalt_dbus_eth_link_is(inst->conn,iface->iface);
 }
 
 void if_wired_dialog_hide(Instance *inst)
 {
     if(inst->wired.dialog)
     {
-        e_object_del(inst->wired.dialog);
+        e_object_del(E_OBJECT(inst->wired.dialog));
         inst->wired.dialog=NULL;
+        if(inst->wired.iface)
+        {
+            inst->wired.iface->nb_use--;
+            if(inst->wired.iface->nb_use<=0)
+            {
+                popup_elt_free(inst->wired.iface);
+            }
+            inst->wired.iface = NULL;
+        }
     }
 }
 
@@ -140,7 +156,7 @@ void if_wired_dialog_update(Instance* inst,Exalt_DBus_Response *response)
         return ;
 
     string = exalt_dbus_response_iface_get(response);
-    if(!inst->wired.iface || !string && !strcmp(inst->wired.iface,string)==0)
+    if(!inst->wired.iface->iface || !string && !strcmp(inst->wired.iface->iface,string)==0)
         return;
 
     switch(exalt_dbus_response_type_get(response))
@@ -173,12 +189,12 @@ void if_wired_dialog_update(Instance* inst,Exalt_DBus_Response *response)
             boolean = exalt_dbus_response_is_get(response);
             e_widget_disabled_set(inst->wired.btn_activate,boolean);
             e_widget_disabled_set(inst->wired.btn_deactivate,!boolean);
-            inst->wired.is_up = boolean;
+            inst->wired.iface->is_up = boolean;
             if_wired_dialog_icon_update(inst);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             boolean = exalt_dbus_response_is_get(response);
-            inst->wired.is_link = boolean;
+            inst->wired.iface->is_link = boolean;
             if_wired_dialog_icon_update(inst);
             break;
 
@@ -195,9 +211,9 @@ void if_wired_dialog_icon_update(Instance *inst)
     if(!inst->wired.dialog)
         return ;
 
-    if(!inst->wired.is_link)
+    if(!inst->wired.iface->is_link)
         edje_object_signal_emit(inst->wired.icon,"notLink","exalt");
-    else if(!inst->wired.is_up)
+    else if(!inst->wired.iface->is_up)
         edje_object_signal_emit(inst->wired.icon,"notActivate","exalt");
     else
         edje_object_signal_emit(inst->wired.icon,"default","exalt");
@@ -276,11 +292,9 @@ void if_wired_dialog_cb_dhcp(void *data, Evas_Object *obj, void *event_info)
 
 void if_wired_dialog_cb_del(E_Win *win)
 {
-    E_Dialog *dialog;
     Instance *inst;
 
-    dialog = win->data;
-    inst = dialog->data;
+    inst = win->data;
     if_wired_dialog_hide(inst);
 }
 
@@ -315,7 +329,7 @@ void if_wired_dialog_cb_apply(void *data, E_Dialog *dialog)
         exalt_conn_mode_set(conn,EXALT_DHCP);
     exalt_conn_cmd_after_apply_set(conn,e_widget_entry_text_get(inst->wired.entry_cmd));
 
-    exalt_dbus_eth_conn_apply(inst->conn,inst->wired.iface,conn);
+    exalt_dbus_eth_conn_apply(inst->conn,inst->wired.iface->iface,conn);
     exalt_conn_free(&conn);
 }
 
@@ -328,11 +342,11 @@ void if_wired_dialog_cb_entry(void *data, void* data2)
 void if_wired_dialog_cb_activate(void *data, void*data2)
 {
     Instance *inst = data;
-    exalt_dbus_eth_up(inst->conn, inst->wired.iface);
+    exalt_dbus_eth_up(inst->conn, inst->wired.iface->iface);
 }
 
 void if_wired_dialog_cb_deactivate(void *data, void*data2)
 {
     Instance *inst = data;
-    exalt_dbus_eth_down(inst->conn, inst->wired.iface);
+    exalt_dbus_eth_down(inst->conn, inst->wired.iface->iface);
 }

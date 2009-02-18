@@ -24,6 +24,7 @@ typedef enum _Popup_Enum Popup_Enum;
 typedef enum _Iface_Type Iface_Type;
 typedef struct _Popup_Elt Popup_Elt;
 typedef struct _Wired_Dialog Wired_Dialog;
+typedef struct _Network_Dialog Network_Dialog;
 
 
 /* Base config struct. Store Item Count, etc
@@ -63,7 +64,7 @@ struct _Config_Item
 struct _Wired_Dialog
 {
     E_Dialog *dialog;
-    char* iface;
+    Popup_Elt* iface;
     int dhcp;
 
     Evas_Object *icon;
@@ -83,10 +84,17 @@ struct _Wired_Dialog
 
     Evas_Object* entry_cmd;
     char* cmd;
-
-    int is_link;
-    int is_up;
 };
+
+struct _Network_Dialog
+{
+    E_Dialog *dialog;
+    Popup_Elt* network;
+
+    Evas_Object* lbl_essid;
+};
+
+
 
 struct _Instance
 {
@@ -102,6 +110,7 @@ struct _Instance
     Evas_Object     *popup_ilist_obj;
 
     Wired_Dialog wired;
+    Network_Dialog network;
 
     exalt_dbus_conn *conn;
 
@@ -128,6 +137,8 @@ enum _Popup_Enum
 struct _Popup_Elt
 {
     Instance* inst;
+    int nb_use;
+
     Popup_Enum type;
     char* iface;
     Iface_Type iface_type;
@@ -138,6 +149,12 @@ struct _Popup_Elt
     Evas_Object* icon;
 
     char* essid;
+    //when a wireless network is new we set is_find=2
+    //each scan result we decrement is_find
+    //when we detect a wireless network we set is_find=2
+    //if is_find=0 we remove the network
+    //With this way, a network is removed if we didn't detected it 2 times
+    //It avoid to see the network flashing in the list because the scan does'nt detect the network correctly
     int is_find;
     Exalt_DBus_Wireless_Network* w;
     Ecore_Timer* scan_timer;
@@ -186,7 +203,7 @@ void popup_elt_free(Popup_Elt* elt);
 
 void if_wired_dialog_init(Instance* inst);
 void if_wired_dialog_show(Instance* inst);
-void if_wired_dialog_set(Instance *inst, char* iface);
+void if_wired_dialog_set(Instance *inst, Popup_Elt* iface);
 void if_wired_dialog_hide(Instance *inst);
 void if_wired_dialog_create(Instance* inst);
 void if_wired_dialog_cb_del(E_Win *win);
@@ -199,5 +216,13 @@ void if_wired_disabled_update(Instance *inst);
 void if_wired_dialog_cb_activate(void *data, void*data2);
 void if_wired_dialog_cb_deactivate(void *data, void*data2);
 void if_wired_dialog_icon_update(Instance *inst);
+
+
+void if_network_dialog_init(Instance* inst);
+void if_network_dialog_create(Instance* inst);
+void if_network_dialog_show(Instance* inst);
+void if_network_dialog_set(Instance *inst, Popup_Elt* network);
+void if_network_dialog_hide(Instance *inst);
+void if_network_dialog_cb_del(E_Win *win);
 
 #endif

@@ -20,7 +20,7 @@
 
 void popup_init(Instance* inst)
 {
-	inst->popup = NULL;
+    inst->popup = NULL;
 }
 
 void popup_create(Instance* inst)
@@ -69,7 +69,7 @@ void popup_create(Instance* inst)
     exalt_dbus_wireless_list_get(inst->conn);
 }
 
-void
+    void
 popup_cb_setup(void *data, void *data2)
 {
     Instance *inst;
@@ -79,7 +79,7 @@ popup_cb_setup(void *data, void *data2)
 }
 
 
- void
+    void
 popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
 {
     Evas_Object *icon;
@@ -108,6 +108,7 @@ popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
     elt->type = POPUP_IFACE;
     elt->iface_type = iface_type;
     elt->icon = icon;
+    elt->nb_use++;
 
     inst->l = eina_list_append(inst->l,elt);
     popup_iface_label_create(elt,buf,1024,NULL);
@@ -124,13 +125,13 @@ popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
     exalt_dbus_eth_link_is(inst->conn,iface);
 
     if(iface_type == IFACE_WIRELESS)
-       exalt_dbus_wireless_scan(inst->conn,elt->iface);
+        exalt_dbus_wireless_scan(inst->conn,elt->iface);
 }
 
 void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
 {
     if(!ip)
-         ip = D_("No IP Address");
+        ip = D_("No IP Address");
     switch(elt->iface_type)
     {
         case IFACE_WIRED:
@@ -138,28 +139,39 @@ void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
             break;
         case IFACE_WIRELESS:
             snprintf(buf,buf_size,"%s (%s)",D_("Wireless interface"),ip);
-        break;
+            break;
     }
 }
 
-void
+    void
 popup_cb_ifnet_sel(void *data)
 {
     Popup_Elt *elt = data;
     Instance* inst = elt->inst;
 
-    switch(elt->iface_type)
+    switch(elt->type)
     {
-        case IFACE_WIRED:
-            if_wired_dialog_show(inst);
-            if_wired_dialog_set(inst,elt->iface);
+        case POPUP_IFACE:
+            switch(elt->iface_type)
+            {
+                case IFACE_WIRED:
+                    if_wired_dialog_show(inst);
+                    if_wired_dialog_set(inst,elt);
+                    if_network_dialog_hide(inst);
+                    break;
+                case IFACE_WIRELESS:
+                    break;
+            }
             break;
-        case IFACE_WIRELESS:
+        case POPUP_NETWORK:
+            if_network_dialog_show(inst);
+            if_network_dialog_set(inst,elt);
+            if_wired_dialog_hide(inst);
             break;
     }
 }
 
- void
+    void
 popup_ip_update(Instance* inst, char* iface, char* ip)
 {
     int i = 0;
@@ -318,7 +330,7 @@ void popup_network_interval_get(Instance* inst, char* iface, int *id_first, int*
     {
         if(elt && elt->type == POPUP_IFACE)
         {
-           break;
+            break;
         }
         else
         {
@@ -354,7 +366,7 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
     do
     {
         elt = eina_list_data_get(l);
-        elt->is_find = 0;
+        elt->is_find--;
     }while(l!=last && (l = eina_list_next(l)) );
 
     EINA_LIST_FOREACH(networks,l,w)
@@ -405,20 +417,17 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
             elt->essid = strdup(essid);
             elt->icon = icon;
             elt->w = w;
-            elt->is_find = 1;
+            elt->is_find = 2;
+            elt->nb_use++;
 
             popup_iface_essid_create(elt,buf,1024,exalt_dbus_wireless_network_quality_get(w));
 
             inst->l = eina_list_append_relative(inst->l,elt,eina_list_data_get(last));
             last = eina_list_next(last);
 
-            /*Eina_List* l2;
-            EINA_LIST_FOREACH(inst->l,l2,elt)
-                printf("%d\n",elt->type);
-            */
 
             e_widget_ilist_append_relative(inst->popup_ilist_obj,
-                    icon, buf,NULL , elt, NULL,id_last);
+                    icon, buf,popup_cb_ifnet_sel , elt, NULL,id_last);
 
             id_last++;
         }
@@ -436,7 +445,7 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
                 edje_object_signal_emit(elt->icon,"invisible","exalt");
 
 
-            elt->is_find = 1;
+            elt->is_find = 2;
             popup_iface_essid_create(elt,buf,1024,exalt_dbus_wireless_network_quality_get(w));
             e_widget_ilist_nth_label_set(inst->popup_ilist_obj,find+id_first,buf);
         }
@@ -444,6 +453,7 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
 
     //remove old networks
     l=first;
+    Eina_List* l_prev=NULL;
     int jump = 0;
     i=0;
     do
@@ -456,13 +466,22 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
         if(elt && elt->type == POPUP_NETWORK && !elt->is_find)
         {
             e_widget_ilist_remove_num(inst->popup_ilist_obj,i+id_first);
-            l=eina_list_next(l);
-            jump = 1;
+            l = l_prev;
             inst->l = eina_list_remove(inst->l,elt);
+            elt->nb_use--;
             popup_elt_free(elt);
         }
-        i++;
-    }while(l!=last && (jump || (l = eina_list_next(l))) );
+        else
+            i++;
+        l_prev = l;
+    }while(l!=last && (l = eina_list_next(l)) );
+
+    /*Eina_List* l2;
+    EINA_LIST_FOREACH(inst->l,l2,elt)
+    {
+        if(elt->essid)
+            printf("%s\n",elt->essid);
+    }*/
 
 
 
@@ -474,7 +493,8 @@ int popup_scan_timer_cb(void *data)
 {
     Popup_Elt* elt = data;
 
-    ecore_timer_del(elt->scan_timer);
+    if(elt->scan_timer)
+        ecore_timer_del(elt->scan_timer);
     elt->scan_timer = NULL;
 
     exalt_dbus_wireless_scan(elt->inst->conn,elt->iface);
@@ -502,16 +522,22 @@ void popup_hide(Instance *inst)
         inst->popup_ilist_obj = NULL;
 
         EINA_LIST_FOREACH(inst->l,l,elt)
+        {
+            elt->nb_use--;
             popup_elt_free(elt);
+        }
         eina_list_free(inst->l);
         inst->l = NULL;
     }
 
     if_wired_dialog_hide(inst);
+    if_network_dialog_hide(inst);
 }
 
 void popup_elt_free(Popup_Elt* elt)
 {
+    if(elt->nb_use>0)
+        return ;
     EXALT_FREE(elt->iface);
     EXALT_FREE(elt->essid);
     if(elt->icon)
@@ -519,6 +545,9 @@ void popup_elt_free(Popup_Elt* elt)
     if(elt->w)
         exalt_dbus_wireless_network_free(&(elt->w));
     if(elt->scan_timer)
+    {
         ecore_timer_del(elt->scan_timer);
+        elt->scan_timer = NULL;
+    }
     EXALT_FREE(elt);
 }
