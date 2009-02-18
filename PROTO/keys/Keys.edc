@@ -303,7 +303,7 @@ collections {
 	    }
 	 }
 
-#define KEYPROG(CHAR, CODE, SHIFTCODE, CODE2)			\
+#define KEYPROG(CHAR, CODE, SHIFTCODE)				\
 	 program {						\
 	    name:   CODE"click";				\
 	    signal: "mouse,down,1";				\
