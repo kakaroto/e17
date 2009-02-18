@@ -53,13 +53,6 @@ static int check_for_too_big_windows(int width, int height, E_Border *bd);
 static void rearrange_windows(E_Border *bd, int remove_bd);
 static void _desk_show(E_Desk *desk);
 
-#define EINA_LIST_FOREACH(list)	for (l = list; l; l = l->next) \
-				  { \
-				     E_Border *lbd = l->data; \
-				     if (!lbd) continue;
-
-#define TILE_LOOP_EBORDER_STACK	EINA_LIST_FOREACH(e_border_client_list())
-
 #define TILE_LOOP_DESKCHECK	if ((lbd->desk != bd->desk) || (lbd->zone != bd->zone)) continue;
 
 #define TILE_LOOP_CHECKS(lbd)	((tinfo && eina_list_data_find(tinfo->floating_windows, lbd) == lbd) || \
@@ -67,23 +60,6 @@ static void _desk_show(E_Desk *desk);
 				 (!tiling_config->tile_dialogs && \
                                   ((lbd->client.icccm.transient_for != 0) || \
                                   (lbd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG))))
-
-#define TILE_STDLOOP		EINA_LIST_FOREACH(e_border_focus_stack_get()) \
-				TILE_LOOP_DESKCHECK \
-				if (TILE_LOOP_CHECKS(lbd)) continue;
-
-#define TILE_STDBLOOP		EINA_LIST_FOREACH(tinfo->client_list) \
-				TILE_LOOP_DESKCHECK \
-				if (TILE_LOOP_CHECKS(lbd)) continue;
-
-#define TILE_STDSLOOP		for (s = e_shelf_list(); s; s = s->next) \
-                                  { \
-                                    E_Shelf *sh = s->data; \
-                                    if (!sh || \
-					(sh->zone != bd->zone) || \
-					!shelf_show_on_desk(sh, bd->desk) || \
-					sh->cfg->overlap) continue; \
-
 
 #define ORIENT_BOTTOM(x)	((x == E_GADCON_ORIENT_CORNER_BL) || \
 				 (x == E_GADCON_ORIENT_CORNER_BR) || \
@@ -100,12 +76,6 @@ static void _desk_show(E_Desk *desk);
 #define ORIENT_RIGHT(x)		((x == E_GADCON_ORIENT_CORNER_RB) || \
 				 (x == E_GADCON_ORIENT_CORNER_RT) || \
 				 (x == E_GADCON_ORIENT_RIGHT))
-
-#define LOOP_END	}
-/* The following is only there to fix vim's broken syntax highlighting which parses
- * angle brackets in multi-line #define statements as if they'd be real code...
- * Remove this as soon as they've fixed their bug */
-#define LOOP_END_VIM_SUCKS }
 
 #define ACTION_ADD(act, cb, title, value) if ((act = e_action_add(value))) \
                                             { \
@@ -227,15 +197,16 @@ static E_Border *
 get_first_window(E_Border *exclude, E_Desk *desk)
 {
    Eina_List *l;
+   E_Border *lbd;
 
-   EINA_LIST_FOREACH(e_border_focus_stack_get())
+   EINA_LIST_FOREACH(e_border_focus_stack_get(), l, lbd)
      {
 	if (exclude &&
 	      ((lbd == exclude) || (lbd->desk != exclude->desk))) continue;
 	if (!exclude && desk && (lbd->desk != desk)) continue;
 	if (TILE_LOOP_CHECKS(lbd)) continue;
 	return lbd;
-     } LOOP_END
+     }
 
    return NULL;
 }
@@ -278,8 +249,13 @@ static int
 check_for_too_big_windows(int width, int height, E_Border *bd)
 {
    Eina_List *l;
-   TILE_STDLOOP
+   E_Border *lbd;
+
+   EINA_LIST_FOREACH(e_border_focus_stack_get(), l, lbd)
      {
+	TILE_LOOP_DESKCHECK;
+	if (TILE_LOOP_CHECKS(lbd)) continue;
+
 	if (lbd->client.icccm.min_w > width || lbd->client.icccm.min_h > height)
 	  {
 	     toggle_floating(lbd);
@@ -287,7 +263,7 @@ check_for_too_big_windows(int width, int height, E_Border *bd)
 	     if (bd && (lbd == bd))
 	       return 1;
 	  }
-     } LOOP_END
+     }
    return 0;
 }
 
@@ -295,6 +271,10 @@ check_for_too_big_windows(int width, int height, E_Border *bd)
 static void
 rearrange_windows(E_Border *bd, int remove_bd)
 {
+   Eina_List *l;
+   E_Border *lbd;
+   E_Shelf *sh;
+
    if (!bd || !tinfo || !tiling_config->tiling_enabled) return;
    if (tinfo->desk && (bd->desk != tinfo->desk))
      {
@@ -337,7 +317,6 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	(bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)))
      return;
 
-   Eina_List *l, *s;
    int window_count = (remove_bd ? 0 : 1);
    int layout = layout_for_desk(bd->desk);
    if (layout == TILE_NONE)
@@ -353,8 +332,11 @@ rearrange_windows(E_Border *bd, int remove_bd)
      }
 
    /* Loop through all windows to count them */
-   TILE_STDLOOP
+   EINA_LIST_FOREACH(e_border_focus_stack_get(), l, lbd)
      {
+	TILE_LOOP_DESKCHECK;
+	if (TILE_LOOP_CHECKS(lbd)) continue;
+
 	if (!tiling_config->dont_touch_borders &&
 	    tiling_config->tiling_border &&
 	    !remove_bd &&
@@ -364,23 +346,29 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	if (lbd == bd) continue;
 	if (lbd->visible == 0) continue;
 	window_count++;
-     } LOOP_END
+     }
 
    /* If there are no other windows, it's easy: just maximize */
    if (window_count == 1)
      {
-	E_Border *lbd = (remove_bd ? get_first_window(bd, NULL) : bd);
+	lbd = (remove_bd ? get_first_window(bd, NULL) : bd);
 	if (lbd)
 	  {
 	     int offset_top = 0, offset_left = 0;
 	     /* However, we still need to check if any of the shelves produces an offset */
-	     TILE_STDSLOOP
+
+	     EINA_LIST_FOREACH(e_shelf_list(), l, sh)
 	       {
+		  if (!sh ||
+		      (sh->zone != bd->zone) ||
+		      !shelf_show_on_desk(sh, bd->desk) ||
+		      sh->cfg->overlap) continue;
+
 		  if (ORIENT_TOP(sh->gadcon->orient))
 		    offset_top += sh->h;
 		  else if (ORIENT_LEFT(sh->gadcon->orient))
 		    offset_left += sh->w;
-	       } LOOP_END
+	       }
 	     DBG("maximizing the window\n");
 	     e_border_move(lbd, lbd->zone->x + offset_left, lbd->zone->y + offset_top);
 	     e_border_unmaximize(lbd, E_MAXIMIZE_BOTH);
@@ -438,8 +426,13 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	       * If you have found a good way to deal with this problem in a simple manner,
 	       * please send a patch :-).
 	       */
-	      TILE_STDSLOOP
+	      EINA_LIST_FOREACH(e_shelf_list(), l, sh)
 		{
+		   if (!sh ||
+		       (sh->zone != bd->zone) ||
+		       !shelf_show_on_desk(sh, bd->desk) ||
+		       sh->cfg->overlap) continue;
+
 		   E_Gadcon_Orient orient = sh->gadcon->orient;
 		   /* Every row between sh_min and sh_max needs to be flagged */
 		   if (ORIENT_BOTTOM(orient) || ORIENT_TOP(orient)) {
@@ -479,7 +472,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 			       }
 			  }
 		   }
-		} LOOP_END
+		}
 
 	      for (c = 0; c < gridrows; c++)
 		shelf_collision_vert[c] = bd->zone->h - (sub_space_y * (windows_per_row-1)) - shelf_collision_vert[c];
@@ -495,8 +488,11 @@ rearrange_windows(E_Border *bd, int remove_bd)
 					    bd))
 		return;
 
-	      TILE_STDBLOOP
+	      EINA_LIST_FOREACH(tinfo->client_list, l, lbd)
 		{
+		   TILE_LOOP_DESKCHECK;
+		   if (TILE_LOOP_CHECKS(lbd)) continue;
+
 		   if (remove_bd && lbd == bd) continue;
 		   int row_horiz = (wc % gridrows),
 		       row_vert = (wc / gridrows);
@@ -508,7 +504,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 			 wf,
 			 hf);
 		   wc++;
-		} LOOP_END
+		}
 	      break;
 	   }
       case TILE_BIGMAIN:
@@ -522,8 +518,13 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	      int sub_space_y = (tiling_config->space_between ? tiling_config->between_y : 0);
 
 	      /* Loop through all the shelves on this screen (=zone) to get their space */
-	      TILE_STDSLOOP
+	      EINA_LIST_FOREACH(e_shelf_list(), l, sh)
 		{
+		   if (!sh ||
+		       (sh->zone != bd->zone) ||
+		       !shelf_show_on_desk(sh, bd->desk) ||
+		       sh->cfg->overlap) continue;
+
 		   /* Decide what to do based on the orientation of the shelf */
 		   E_Gadcon_Orient orient = sh->gadcon->orient;
 		   if (ORIENT_BOTTOM(orient) || ORIENT_TOP(orient))
@@ -539,7 +540,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 		     bigw -= sh->w;
 		   if (ORIENT_LEFT(orient))
 		     offset_left = sh->w;
-		} LOOP_END
+		}
 
 	      int smallw = bigw;
 	      bigw *= tinfo->big_perc;
@@ -551,12 +552,15 @@ rearrange_windows(E_Border *bd, int remove_bd)
 		return;
 
 	      /* Handle Small windows */
-	      TILE_STDBLOOP
+	      EINA_LIST_FOREACH(tinfo->client_list, l, lbd)
 		{
+		   TILE_LOOP_DESKCHECK;
+		   if (TILE_LOOP_CHECKS(lbd)) continue;
+
 		   if (lbd == tinfo->mainbd) continue;
 		   move_resize(lbd, sub_space_x + offset_left + bigw, (wc * hf) + offset_top + (wc * sub_space_y), smallw, hf);
 		   wc++;
-		} LOOP_END
+		}
 
 	      if (tinfo->mainbd)
 		{
@@ -574,6 +578,7 @@ _initialize_tinfo(E_Desk *desk)
 {
    Eina_List *l;
    Tiling_Info *res;
+   E_Border *lbd;
 
    res = E_NEW(Tiling_Info, 1);
    res->mainbd_width = -1;
@@ -582,11 +587,11 @@ _initialize_tinfo(E_Desk *desk)
    res->need_rearrange = 0;
    info_hash = evas_hash_add(info_hash, desk_hash_key(desk), res);
 
-   EINA_LIST_FOREACH(e_border_client_list())
+   EINA_LIST_FOREACH(e_border_client_list(), l, lbd)
      {
 	if (lbd->desk == desk)
 	  res->client_list = eina_list_append(res->client_list, lbd);
-     } LOOP_END
+     }
 
    return res;
 }
