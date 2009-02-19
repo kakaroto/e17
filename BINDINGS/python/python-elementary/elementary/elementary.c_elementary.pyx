@@ -246,6 +246,30 @@ cdef class Window(Object):
         return Null
     """
     
+cdef class InnerWindow(Window):
+    """
+    An inner window 
+    """
+    def __init__(self, c_evas.Object parent):
+        self._set_obj(elm_win_inwin_add(parent.obj))
+        
+    def activate(self):
+        """
+        Activate the window
+        """
+        elm_win_inwin_activate(self.obj)
+        
+    def style_set(self, style):
+        """
+        Set the style for the inner window. Available styles are
+        - default
+        - minimal
+        - minimal_vertical
+        
+        @parm: B{style} style for the inner window
+        """
+        elm_win_inwin_style_set(self.obj, style)
+    
 cdef class Background(Object):
     """
     Background widget object
@@ -805,5 +829,151 @@ cdef class Toolbar(Object):
             """
             self._callback_add("clicked", value)
 
+cdef object _list_callback_mapping
+_list_callback_mapping = dict()
+
+cdef void _list_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+    try:
+        mapping = _list_callback_mapping.get(<long>event_info)
+        if mapping is not None:
+            callback = mapping["callback"] 
+            if callback is not None and callable(callback):
+                callback(mapping["class"], "clicked", mapping["data"])
+        else:
+            print "ERROR: no callback available for the item"
+    except Exception, e:
+        traceback.print_exc()
+            
+cdef class ListItem:
+    """ 
+    An item for the list widget
+    """
+    cdef Elm_List_Item *item
+    cdef c_evas.Evas_Object *list
+
+    def __new__(self):
+        self.item = NULL
+
+    def __init__(self):
+        pass
+
+    def _create_mapping(self, callback, data):
+        mapping = dict()
+        mapping["class"] = self
+        mapping["callback"] = callback
+        mapping["data"] = data
+        _list_callback_mapping[<long>self.itme] = mapping
+
+    def append(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        if not self.item == NULL:
+            raise Exception("Item was already created!")
+        
+        self.item = elm_list_item_append(list.obj, label, icon.obj, end.obj, _list_callback, NULL)
+        self._create_mapping(callback, data)
+
+    def prepend(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        if not self.item == NULL:
+            raise Exception("Item was already created!")
+        
+        self.item = elm_list_item_prepend(list.obj, label, icon.obj, end.obj, _list_callback, NULL)
+        self._create_mapping(callback, data)
+
+    def insert_before(self, c_evas.Object list, ListItem before, label, c_evas.Object icon,
+            c_evas.Object end, callback, data = None):
+        if not self.item == NULL:
+            raise Exception("Item was already created!")
+
+        self.item = elm_list_item_insert_before(list.obj, before.item, label, icon.obj, end.obj, _list_callback, NULL)
+        self._create_mapping(callback, data)
+
+    def insert_after(self, c_evas.Object list, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        if not self.item == NULL:
+            raise Exception("Item was already created!")
+
+        self.item = elm_list_item_insert_after(list.obj, after.item, label, icon.obj, end.obj,
+            _list_callback, NULL)
+        self._create_mapping(callback, data)
+   
+    def selected_set(self, selected):
+        if selected:
+            elm_list_item_selected_set(self.item, 1)
+        else:
+            elm_list_item_selected_set(self.item, 0)
+    
+    def show(self):
+        elm_list_item_show(self.item)
+        
+    def delete(self):
+        elm_list_item_del(self.item)
+        
+    def data_get(self):
+        cdef void* data
+        data = elm_list_item_data_get(self.item)
+        return None
+        
+    def icon_get(self):
+        return None
+    
+    def end_get(self):
+        return None
+
 cdef class List(Object):
-    pass
+    def __init__(self, c_evas.Object parent):
+        self._set_obj(elm_list_add(parent.obj))
+    
+    def item_append(self, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        item = ListItem()
+        item.append(self, label, icon, end, callback, data)
+        return item
+    
+    def item_prepend(self, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        item = ListItem()
+        item.prepend(self, label, icon, end, data)
+        return item
+    
+    def item_insert_before(self, ListItem before, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        item = ListItem()
+        item.insert_before(self, before, label, icon, end, callback, data)
+        return item
+    
+    def item_insert_after(self, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
+        item = ListItem()
+        item.insert_after(self, after, label, icon, end, callback, data)
+        return item
+        
+cdef class Slider(Object):
+    def __init__(self, c_evas.Object parent):
+        self._set_obj(elm_slider_add(parent.obj))
+    
+    def label_set(self, label):
+        elm_slider_label_set(self.obj, label)
+        
+    def icon_set(self, c_evas.Object icon):
+        elm_slider_icon_set(self.obj, icon.obj)
+    
+    def span_size_set(self, size):
+        elm_slider_span_size_set(self.obj, size)
+        
+    def unit_format_set(self, format):
+        elm_slider_unit_format_set(self.obj, format)
+    
+    def indicator_format_set(self, format):
+        elm_slider_indicator_format_set(self.obj, format)
+        
+    def horizontal_set(self, horizontal):
+        if horizontal:
+            elm_slider_horizontal_set(self.obj, 1)
+        else:
+            elm_slider_horizontal_set(self.obj, 0)
+    
+    def min_max_set(self, min, max):
+        elm_slider_min_max_set(self.obj, min, max)
+    
+    def value_set(self, value):
+        elm_slider_value_set(self.obj, value)
+        
+    def inverted_set(self, inverted):
+        if inverted:
+            elm_slider_inverted_set(self.obj, 1)
+        else:
+            elm_slider_inverted_set(self.obj, 0)

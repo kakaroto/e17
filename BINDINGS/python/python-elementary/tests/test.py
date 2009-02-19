@@ -2,12 +2,12 @@ import elementary
 import edje
 import evas
 
-def destroy(obj, event, *args, **kargs):
+def destroy(obj, event, data):
     print "DEBUG: window destroy callback called!"
     raise Exception()
     elementary.exit()
     
-def bg_plain_clicked(obj, event, *args, **kargs):
+def bg_plain_clicked(obj, event, data):
     win = elementary.Window("bg plain", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Plain")
     win.autodel_set(True)
@@ -20,7 +20,7 @@ def bg_plain_clicked(obj, event, *args, **kargs):
     win.resize(320, 320)
     win.show()
 
-def bg_image_clicked(obj, event, *args, **kargs):
+def bg_image_clicked(obj, event, data):
     win = elementary.Window("bg-image", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Image")
     win.autodel_set(True)
@@ -36,7 +36,7 @@ def bg_image_clicked(obj, event, *args, **kargs):
     win.resize(320, 320)
     win.show()
 
-def icon_transparent_clicked(obj, event, *args, **kargs):
+def icon_transparent_clicked(obj, event, data):
     win = elementary.Window("icon-transparent", elementary.ELM_WIN_BASIC)
     win.title_set("Icon Transparent")
     win.autodel_set(True)

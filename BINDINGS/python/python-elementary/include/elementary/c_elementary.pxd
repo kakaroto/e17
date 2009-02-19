@@ -98,6 +98,7 @@ cdef extern from "Elementary.h":
     cdef struct Elm_Hoversel_Item
     cdef struct Elm_Toolbar_Item
     cdef struct Elm_List_Item
+    cdef struct Elm_Carousel_Item
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)
@@ -120,6 +121,10 @@ cdef extern from "Elementary.h":
     void elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool is_keyboard)
     # X specific call - wont't work on non-x engines (return 0)
     Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
+    void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
+    void elm_win_inwin_style_set(evas.c_evas.Evas_Object *obj, char *style)
+
     
     # Background object
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
@@ -265,10 +270,10 @@ cdef extern from "Elementary.h":
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
-    Elm_List_Item *elm_list_item_append(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *indicator, evas.c_evas.Evas_Object *end, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    Elm_List_Item *elm_list_item_prepend(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
-    Elm_List_Item *elm_list_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_List_Item *before, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
-    Elm_List_Item *elm_list_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_List_Item *after, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data) 
+    Elm_List_Item *elm_list_item_append(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    Elm_List_Item *elm_list_item_prepend(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    Elm_List_Item *elm_list_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_List_Item *before, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    Elm_List_Item *elm_list_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_List_Item *after, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     void         elm_list_go(evas.c_evas.Evas_Object *obj) 
     void      elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool multi) 
     void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode) 
@@ -282,6 +287,24 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_list_item_icon_get(Elm_List_Item *item) 
     evas.c_evas.Evas_Object *elm_list_item_end_get(Elm_List_Item *item) 
 
+    # Carousel object
+    evas.c_evas.Evas_Object *elm_carousel_add(evas.c_evas.Evas_Object *parent)
+    Elm_Carousel_Item *elm_carousel_item_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    void         elm_carousel_item_del(Elm_Carousel_Item *item)
+    void         elm_carousel_item_select(Elm_Carousel_Item *item)
+
+    # Slider object
+    evas.c_evas.Evas_Object *elm_slider_add(evas.c_evas.Evas_Object *parent)
+    void elm_slider_label_set(evas.c_evas.Evas_Object *obj, char *label)
+    void elm_slider_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    void elm_slider_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
+    void elm_slider_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
+    void elm_slider_indicator_format_set(evas.c_evas.Evas_Object *obj, char *indicator)
+    void elm_slider_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool horizontal)
+    void elm_slider_min_max_set(evas.c_evas.Evas_Object *obj, double min, double max)
+    void elm_slider_value_set(evas.c_evas.Evas_Object *obj, double val)
+    double elm_slider_value_get(evas.c_evas.Evas_Object *obj)
+    void elm_slider_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool inverted)
 
 # Forward declaration of some classes
 cdef class Object(evas.c_evas.Object)
