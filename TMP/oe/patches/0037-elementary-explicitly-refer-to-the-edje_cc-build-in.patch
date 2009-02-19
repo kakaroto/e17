@@ -1,0 +1,24 @@
+From 096e13d4001a3a09c7ea14c9d2a63f5cdca3ba17 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Thu, 19 Feb 2009 21:56:54 +1100
+Subject: [PATCH] elementary: explicitly refer to the edje_cc build in staging
+
+---
+ packages/efl1/elementary_svn.bb |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/packages/efl1/elementary_svn.bb b/packages/efl1/elementary_svn.bb
+index eb880ae..0597ffc 100644
+--- a/packages/efl1/elementary_svn.bb
++++ b/packages/efl1/elementary_svn.bb
+@@ -30,3 +30,7 @@ FILES_${PN}-tests = "\
+   ${datadir}/applications/* \
+   ${datadir}/icons/* \
+ "
++
++EXTRA_OECONF = "\
++  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
++"
+-- 
+1.5.4.3
+

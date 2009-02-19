@@ -1,0 +1,59 @@
+From 536fc60eb8db457f31d5b2e8874528eea6dc4611 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 2 Feb 2009 10:53:59 +1100
+Subject: [PATCH] illume-image: update efl and add version for sms app, disable exquisite.
+
+---
+ conf/distro/include/sane-srcrevs.inc |    3 ++-
+ packages/images/illume-image.bb      |    7 +++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index 257e146..00127fd 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -244,7 +244,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "38824"
++EFL_SRCREV ?= "38853"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+@@ -296,6 +296,7 @@ SRCREV_pn-edje-editor ?= "${EFL_SRCREV}"
+ SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
+ SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
+ SRCREV_pn-elementary-alarm ?= "${EFL_SRCREV}"
++SRCREV_pn-elementary-sms ?= "${EFL_SRCREV}"
+ SRCREV_pn-emphasis ?= "${EFL_SRCREV}"
+ SRCREV_pn-ephoto ?= "${EFL_SRCREV}"
+ SRCREV_pn-examine ?= "${EFL_SRCREV}"
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index 89d73cb..7b4828a 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -14,9 +14,9 @@ BASE_INSTALL = "\
+   modutils-initscripts \
+   module-init-tools-depmod \
+ #  prelink \
+-  exquisite \
+-  exquisite-themes \
+-  exquisite-theme-illume \
++#  exquisite \
++#  exquisite-themes \
++#  exquisite-theme-illume \
+   pointercal \
+   tslib-conf \
+ "
+@@ -50,7 +50,6 @@ X_INSTALL = "\
+   \
+   ttf-dejavu-common \
+   ttf-dejavu-sans \
+-#  ttf-dejavu-serif \
+   ttf-dejavu-sans-mono \
+   ttf-arphic-uming \
+ "
+-- 
+1.5.4.3
+

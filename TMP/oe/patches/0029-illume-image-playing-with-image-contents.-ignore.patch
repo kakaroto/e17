@@ -1,4 +1,4 @@
-From 3510e5d40c2d020a9296b470aa6b414b58b1622d Mon Sep 17 00:00:00 2001
+From c9875341b7d0f24d34632014417522f2cfd28d4e Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 26 Jan 2009 10:13:34 +1100
 Subject: [PATCH] illume-image: playing with image contents. ignore.

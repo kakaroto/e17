@@ -1,4 +1,4 @@
-From 92e87aa138bdd0e746c2de861f0215bbfa16c690 Mon Sep 17 00:00:00 2001
+From 3fda15d16d366d2a99ab69f7daa6a7db92ea2942 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 19:19:51 +1100
 Subject: [PATCH] qemu: fix qemu to build again. otherwise qemu fails with assembler errors

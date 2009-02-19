@@ -1,4 +1,4 @@
-From 04845c45a427feda8ebd7ba475aae4eefdf47f15 Mon Sep 17 00:00:00 2001
+From 1782f575624e1ca34fa012a53ad8678fb213c614 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Wed, 29 Oct 2008 21:03:52 +1100
 Subject: [PATCH] Linux (Palm): Fix Linux kernel build so it actually works for palmt650

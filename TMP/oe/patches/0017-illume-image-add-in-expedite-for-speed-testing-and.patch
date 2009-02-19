@@ -1,4 +1,4 @@
-From 67342f29c9508b9fce73063e595e4db4b3d65d37 Mon Sep 17 00:00:00 2001
+From 2ae949c121a737876bfd9a9d0c2bf946d5cae9a7 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 9 Jan 2009 17:38:49 +1100
 Subject: [PATCH] illume-image: add in expedite for speed testing and disable exquisite, for now.

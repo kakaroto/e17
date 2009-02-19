@@ -1,4 +1,4 @@
-From 981c5be4ca52e43f7657ca7310762cfd8613bb8e Mon Sep 17 00:00:00 2001
+From 5ca2e408e82cb858607f77849a9a12dcb4cf5cb8 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 10:56:23 +1100
 Subject: [PATCH] evas: fix package version to match src

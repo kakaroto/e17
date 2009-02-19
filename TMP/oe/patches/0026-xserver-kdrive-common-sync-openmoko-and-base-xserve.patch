@@ -1,4 +1,4 @@
-From ac85165adbef08ccdd300fa5a19fd92ff5a8d42a Mon Sep 17 00:00:00 2001
+From 2128cd89c9d5e47f9fd3f1ad9eaa93e1e5bb5a87 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 16 Jan 2009 12:32:54 +1100
 Subject: [PATCH] xserver-kdrive-common: sync openmoko and base xserver. allow for ppms and
@@ -89,7 +89,7 @@ index d98d71e..404bf8b 100644
  #                 ARGS="$ARGS -fbbpp32"
                   XSERVER=/usr/bin/Xorg ;;
 diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
-index fd04361..9e9fa47 100644
+index 9fd49b9..3ad9747 100644
 --- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 +++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 @@ -155,7 +155,11 @@ case `module_id` in

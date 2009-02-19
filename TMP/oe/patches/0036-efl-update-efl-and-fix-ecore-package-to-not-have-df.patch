@@ -1,0 +1,39 @@
+From 536ed3057edd23d022944cbd2152ea27cf6ead62 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 16 Feb 2009 17:55:19 +1100
+Subject: [PATCH] efl: update efl and fix ecore package to not have dfb patch anymore - obsolete.
+
+---
+ conf/distro/include/sane-srcrevs.inc |    2 +-
+ packages/efl1/ecore.inc              |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index 00127fd..0eea83f 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -244,7 +244,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "38853"
++EFL_SRCREV ?= "38920"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+diff --git a/packages/efl1/ecore.inc b/packages/efl1/ecore.inc
+index 653fb18..27dd10d 100644
+--- a/packages/efl1/ecore.inc
++++ b/packages/efl1/ecore.inc
+@@ -8,7 +8,7 @@ PR = "r1"
+ 
+ inherit efl
+ 
+-SRC_URI += "file://fix-directfb-include.patch;patch=1"
++#SRC_URI += "file://fix-directfb-include.patch;patch=1"
+ 
+ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
+ 
+-- 
+1.5.4.3
+

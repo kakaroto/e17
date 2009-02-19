@@ -1,0 +1,39 @@
+From 8871ccb778c98e09d458d52fe3ee89f104aca51a Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 2 Feb 2009 10:54:47 +1100
+Subject: [PATCH] xserver-kdrive-common: fix mouse for palmt650 for angstom and other distros
+
+---
+ .../xserver-kdrive-common/Xserver                  |    2 +-
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
+index 404bf8b..f6f5943 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
+@@ -141,7 +141,7 @@ case `module_id` in
+                 if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
+                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
+                 fi
+-                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor ${PPM}" ;;
++                ARGS="$ARGS -dpi 181 -screen 320x320 -mouse tslib -hide-cursor ${PPM}" ;;
+         "Motorola Ezx Platform")
+                 if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
+                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm ${PPM}"
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index e79e3a0..6b585c4 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -1,7 +1,7 @@
+ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+-PR = "r35"
++PR = "r36"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+-- 
+1.5.4.3
+

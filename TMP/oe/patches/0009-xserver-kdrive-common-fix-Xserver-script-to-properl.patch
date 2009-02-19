@@ -1,4 +1,4 @@
-From 72fe3ad6ae1a4312fa2322f1726739a5d1c988f6 Mon Sep 17 00:00:00 2001
+From 859115dc3a25346d12a2e673e3c08ceb5673580f Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 11:05:28 +1100
 Subject: [PATCH] xserver-kdrive-common: fix Xserver script to properly check splash ppm
@@ -10,7 +10,7 @@ use it
  1 files changed, 31 insertions(+), 10 deletions(-)
 
 diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
-index 95f5751..a57b4ff 100644
+index 7c70b2f..9d5bd77 100644
 --- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 +++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 @@ -40,7 +40,7 @@ module_id() {
@@ -68,11 +68,11 @@ index 95f5751..a57b4ff 100644
 +                fi
 +                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor ${PPM}" ;;
          "Motorola Ezx Platform")
--                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
+-                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor -mouse tslib -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
 +                if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
 +                     PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
 +                fi
-+                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor ${PPM} vt1" ;;
++                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor -mouse tslib ${PPM} vt1" ;;
          "Glofiish M800")
 -                ARGS="$ARGS -dpi 285 -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
 +                if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then

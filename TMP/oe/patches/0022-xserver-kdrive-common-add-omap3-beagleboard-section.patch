@@ -1,4 +1,4 @@
-From db390a113aa6e5749dff92b7a0820a01e572e22b Mon Sep 17 00:00:00 2001
+From fd521f5352ec595f5d69dd8cc47d0c8cd244434d Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 12 Jan 2009 00:41:04 +1100
 Subject: [PATCH] xserver-kdrive-common: add omap3 beagleboard section to run xorg ro Xserver

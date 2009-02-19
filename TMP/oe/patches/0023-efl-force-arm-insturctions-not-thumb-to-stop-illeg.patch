@@ -1,4 +1,4 @@
-From 9a042fae89fe5501bf42e7563db4f0e1dd642680 Mon Sep 17 00:00:00 2001
+From 2fac0d1176c305d4e2d91268b9a79a524cd33456 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 16 Jan 2009 11:36:44 +1100
 Subject: [PATCH] efl: force arm insturctions, not thumb to stop illegal instruction bugs.

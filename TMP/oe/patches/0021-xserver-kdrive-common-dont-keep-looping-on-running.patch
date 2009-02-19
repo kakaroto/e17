@@ -1,4 +1,4 @@
-From 790b44805beb5636a70fa8bc8ea50b01716a4805 Mon Sep 17 00:00:00 2001
+From 107896566e909f60c730a03b2df6d724bd7cca35 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 12 Jan 2009 00:25:48 +1100
 Subject: [PATCH] xserver-kdrive-common: dont keep looping on running the calibrate tool if no

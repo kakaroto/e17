@@ -1,4 +1,4 @@
-From e00f389b32952e9530a8918e5a30ba9506ee25f8 Mon Sep 17 00:00:00 2001
+From 1d5c1f4e689dd4dbdb8e1eac5e7fa31f175d014b Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Mon, 1 Dec 2008 19:36:59 +1100
 Subject: [PATCH] xserver-kdrive-common: fix to launch EITHEr with -br or -ppm, but not both
@@ -11,7 +11,7 @@ using both is broken and it is no guarantee which will be used (and as i saw
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
-index a57b4ff..fd04361 100644
+index 9d5bd77..9fd49b9 100644
 --- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 +++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
 @@ -40,8 +40,8 @@ module_id() {

@@ -1,4 +1,4 @@
-From d332475d7235c59fae02fe0d0c5851a91877370b Mon Sep 17 00:00:00 2001
+From f36b88db6197361db6fd8f45325a859ebc80194a Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Fri, 9 Jan 2009 17:39:30 +1100
 Subject: [PATCH] e-wm: adapt to upstream e changes with utils dir for bins and install the e
@@ -9,7 +9,7 @@ Subject: [PATCH] e-wm: adapt to upstream e changes with utils dir for bins and i
  1 files changed, 4 insertions(+), 1 deletions(-)
 
 diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
-index f942c96..4cdc422 100644
+index fa6d042..adc636f 100644
 --- a/packages/e17/e-wm_svn.bb
 +++ b/packages/e17/e-wm_svn.bb
 @@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
@@ -29,7 +29,7 @@ index f942c96..4cdc422 100644
  SRC_URI = "\
    svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
    file://enlightenment_start.oe \
-@@ -103,6 +104,7 @@ do_install_append() {
+@@ -106,6 +107,7 @@ do_install_append() {
  
  FILES_${PN} = "\
    ${bindir}/* \
@@ -37,7 +37,7 @@ index f942c96..4cdc422 100644
    ${libdir}/enlightenment/modules/*/*.* \
    ${libdir}/enlightenment/modules/*/*/* \
    ${datadir}/locale \
-@@ -111,6 +113,7 @@ FILES_${PN} = "\
+@@ -114,6 +116,7 @@ FILES_${PN} = "\
    ${datadir}/enlightenment/data/config/profile.cfg \
    ${datadir}/enlightenment/AUTHORS \
    ${datadir}/enlightenment/COPYING \

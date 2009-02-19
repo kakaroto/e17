@@ -1,0 +1,43 @@
+From 7c3d2f0bfd583b34a533f8a7fded8ea1988efc19 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Wed, 28 Jan 2009 16:31:03 +1100
+Subject: [PATCH] efl: up efl rev + efl related efso+essential-dialler
+
+---
+ conf/distro/include/sane-srcrevs.inc |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index 3c3aea7..257e146 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -41,7 +41,7 @@ SRCREV_pn-eds-dbus ?= "659"
+ SRCREV_pn-eglibc ?= "7467"
+ SRCREV_pn-eglibc-initial ?= "7467"
+ SRCREV_pn-enlazar ?= "37"
+-SRCREV_pn-essential-dialer ?= "60"
++SRCREV_pn-essential-dialer ?= "111"
+ SRCREV_pn-exalt ?= "79"
+ SRCREV_pn-exalt-daemon ?= "78"
+ SRCREV_pn-exalt-module ?= "78"
+@@ -78,7 +78,7 @@ SRCREV_pn-illume-theme-freesmartphone ?= "b1b0f6adc59e6f72a3929771058e3750bf181b
+ SRCREV_pn-kismet ?= "2285"
+ SRCREV_pn-kismet-newcore ?= "2285"
+ SRCREV_pn-libcalenabler2 ?= "1410"
+-SRCREV_pn-libefso ?= "60"
++SRCREV_pn-libefso ?= "111"
+ SRCREV_pn-libexalt ?= "78"
+ SRCREV_pn-libexalt-dbus ?= "76"
+ SRCREV_pn-libfakekey ?= "1455"
+@@ -244,7 +244,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "38605"
++EFL_SRCREV ?= "38824"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+-- 
+1.5.4.3
+

@@ -1,4 +1,4 @@
-From 26fdd7858b8c8f8bf81e8f1864dc383eed2a628e Mon Sep 17 00:00:00 2001
+From 13506e36fb4de5599b4f8d141dca9438a11a116d Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler (Raster <raster@rasterman.com>
 Date: Thu, 4 Dec 2008 12:58:19 +1100
 Subject: [PATCH] sane-srcrevs: update efl to latest.
@@ -8,10 +8,10 @@ Subject: [PATCH] sane-srcrevs: update efl to latest.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
-index a4c02b0..d3e7680 100644
+index dd300c2..d3b91e8 100644
 --- a/conf/distro/include/sane-srcrevs.inc
 +++ b/conf/distro/include/sane-srcrevs.inc
-@@ -234,7 +234,7 @@ SRCREV_pn-zhone ?= "cedaa8a6dd70fc3e13bd8bcda7fe84019cf9ef54"
+@@ -244,7 +244,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
  # Enlightenment Foundation Libraries
  # Caution: This is not alphabetically, but (roughly) dependency-sorted.
  # Please leave it like that.
