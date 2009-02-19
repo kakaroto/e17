@@ -406,7 +406,7 @@ EcoreEvasWindowSoftwareX11::EcoreEvasWindowSoftwareX11( int width, int height, c
     
     ecore_evas_title_set( _ee, eApp->name().c_str() );
     ecore_evas_borderless_set( _ee, 0 );
-    ecore_evas_show( _ee );
+
     _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
 
     /* Set up magic object back link */
@@ -445,7 +445,7 @@ EcoreEvasWindowGLX11::EcoreEvasWindowGLX11( int width, int height, const char* d
     
     ecore_evas_title_set( _ee, eApp->name().c_str() );
     ecore_evas_borderless_set( _ee, 0 );
-    ecore_evas_show( _ee );
+
     _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
 
     /* Set up magic object back link */
@@ -485,7 +485,7 @@ EcoreEvasWindowXRenderX11::EcoreEvasWindowXRenderX11( int width, int height, con
     
     ecore_evas_title_set( _ee, eApp->name().c_str() );
     ecore_evas_borderless_set( _ee, 0 );
-    ecore_evas_show( _ee );
+
     _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
 
     /* Set up magic object back link */
@@ -567,7 +567,7 @@ EcoreEvasWindowFB::EcoreEvasWindowFB( int width, int height, const char* display
     
     ecore_evas_title_set( _ee, eApp->name().c_str() );
     ecore_evas_borderless_set( _ee, 0 );
-    ecore_evas_show( _ee );
+
     _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
 
     /* Set up magic object back link */
