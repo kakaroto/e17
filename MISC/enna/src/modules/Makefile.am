@@ -1,10 +1,8 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = \
-amazon\
-music\
-video\
-photo\
-browser\
+activity\
 backend\
+browser\
 input\
-volumes
+metadata\
+volume

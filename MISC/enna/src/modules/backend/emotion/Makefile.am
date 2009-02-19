@@ -12,21 +12,21 @@ INCLUDES = \
 @ENNA_CFLAGS@ \
 @EMOTION_CFLAGS@
 
-if BUILD_EMOTION_BACKEND
+if BUILD_BACKEND_EMOTION
 
 pkgdir =$(libdir)/enna/modules
 
-pkg_LTLIBRARIES = enna_module_emotion.la
+pkg_LTLIBRARIES = backend_emotion.la
 
-enna_module_emotion_la_SOURCES = \
+backend_emotion_la_SOURCES = \
 enna_module_emotion.c
 
-enna_module_emotion_la_LIBADD = @ENNA_LIBS@ @EMOTION_LIBS@
-enna_module_emotion_la_LDFLAGS = -module -avoid-version
-enna_module_emotion_la_DEPENDENCIES = $(top_builddir)/config.h
+backend_emotion_la_LIBADD = @ENNA_LIBS@ @EMOTION_LIBS@
+backend_emotion_la_LDFLAGS = -module -avoid-version
+backend_emotion_la_DEPENDENCIES = $(top_builddir)/config.h
 
 uninstall:
-	rm -rf $(DESTDIR)$(libdir)/enna/modules/enna_module_$(MODULE).*
+	rm -rf $(DESTDIR)$(libdir)/enna/modules/backend_$(MODULE).*
 
 endif
 

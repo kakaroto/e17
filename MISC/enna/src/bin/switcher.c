@@ -128,10 +128,12 @@ static void _default_transition(Smart_Data * sd)
     {
         edje_object_signal_callback_del(sd->o_transition, "*", "*", _edje_cb);
         evas_object_del(sd->o_transition);
+	evas_object_smart_member_add(sd->o_transition, sd->obj);
     }
     sd->o_transition = edje_object_add(evas_object_evas_get(sd->obj));
     edje_object_file_set(sd->o_transition, enna_config_theme_get(),  "transitions/crossfade");
     edje_object_signal_callback_add(sd->o_transition, "*", "*", _edje_cb, sd);
+    evas_object_smart_member_add(sd->o_transition, sd->obj);
 }
 
 

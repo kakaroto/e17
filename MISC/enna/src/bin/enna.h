@@ -3,6 +3,7 @@
 #ifndef ENNA_H_
 #define ENNA_H_
 
+#include <Eina.h>
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
@@ -12,6 +13,7 @@
 #include <Ecore_X.h>
 #include <Edje.h>
 #include <Ecore_Evas.h>
+#include <Eet.h>
 
 #include <fcntl.h>
 #include <stdlib.h>
@@ -109,6 +111,7 @@ struct _Enna
     Evas_Object *o_mainmenu; /**< Top menu. */
     Evas_Object *o_content; /** Edje Object to swallow content */
     enna_msg_level_t lvl; /**< Error message level */
+    int use_network;
     int use_covers;
     int use_snapshots;
 };

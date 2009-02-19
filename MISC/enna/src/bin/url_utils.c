@@ -1,6 +1,8 @@
 #include "enna.h"
 #include "url_utils.h"
 
+#define ENNA_MODULE_NAME        "enna"
+
 static size_t url_buffer_get(void *ptr, size_t size, size_t nmemb, void *data)
 {
     size_t realsize = size * nmemb;
@@ -23,7 +25,11 @@ url_data_t url_get_data(CURL *curl, char *url)
 
     chunk.buffer = NULL; /* we expect realloc(NULL, size) to work */
     chunk.size = 0; /* no data at this point */
-
+    chunk.status = CURLE_FAILED_INIT;
+    
+    if (!curl || !url)
+      return chunk;
+    
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_buffer_get);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
@@ -85,4 +91,41 @@ void url_escape_string(char *outbuf, const char *inbuf)
         }
     }
     *outbuf++='\0';
+}
+
+void
+url_save_to_disk (CURL *curl, char *src, char *dst)
+{
+    url_data_t data;
+    int n, fd;
+    
+    if (!curl || !src || !dst)
+        return;
+
+    /* no need to download again an already existing file */
+    if (ecore_file_exists (dst))
+        return;
+    
+    enna_log (ENNA_MSG_EVENT, ENNA_MODULE_NAME, "Saving %s to %s", src, dst);
+
+    data = url_get_data (curl, src);
+    if (data.status != CURLE_OK)
+    {
+        enna_log (ENNA_MSG_WARNING, ENNA_MODULE_NAME,
+                  "Unable to download requested cover file");
+        return;
+    }
+
+    fd = open (dst, O_WRONLY | O_CREAT, 0666);
+    if (fd < 0)
+    {
+        enna_log (ENNA_MSG_WARNING, ENNA_MODULE_NAME,
+                  "Unable to open stream to save cover file");
+
+        free (data.buffer);
+        return;
+    }
+
+    n = write (fd, data.buffer, data.size);
+    free (data.buffer);
 }

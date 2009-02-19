@@ -49,7 +49,7 @@ static Eina_List * browse_list(void)
         uri = malloc(strlen(SHOUTCAST_GENRE) + strlen((char *) genre) + 1);
         sprintf(uri, "%s%s", SHOUTCAST_GENRE, genre);
 
-        file = enna_vfs_create_directory(uri, (char *) genre, "icon/webradio",
+        file = enna_vfs_create_directory(uri, (const char *) genre, "icon/webradio",
                 NULL);
         free(uri);
         files = eina_list_append(files, file);
@@ -109,7 +109,7 @@ static Eina_List * browse_by_genre(const char *path)
             memset(uri, '\0', MAX_URL);
             snprintf(uri, MAX_URL, "%s%s?id=%s", SHOUTCAST_URL, tunein, id);
 
-            file = enna_vfs_create_file(uri, (char *) name, "icon/music", NULL);
+            file = enna_vfs_create_file(uri, (const char *) name, "icon/music", NULL);
             files = eina_list_append(files, file);
         }
     }
@@ -120,7 +120,7 @@ static Eina_List * browse_by_genre(const char *path)
     return files;
 }
 
-static Eina_List * _class_browse_up(const char *path)
+static Eina_List * _class_browse_up(const char *path, void *cookie)
 {
     if (!path)
         return browse_list();
@@ -131,21 +131,21 @@ static Eina_List * _class_browse_up(const char *path)
     return NULL;
 }
 
-static Eina_List * _class_browse_down(void)
+static Eina_List * _class_browse_down(void *cookie)
 {
     return browse_list();
 }
 
-static Enna_Vfs_File * _class_vfs_get(void)
+static Enna_Vfs_File * _class_vfs_get(void *cookie)
 {
     return enna_vfs_create_directory(NULL, NULL,
-            (char *) evas_stringshare_add("icon/music"), NULL);
+            evas_stringshare_add("icon/music"), NULL);
 }
 
 static Enna_Class_Vfs class_shoutcast =
 { "shoutcast", 1, "SHOUTcast Streaming", NULL, "icon/shoutcast",
 { NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get,
-},
+}, NULL
 };
 
 /* Module interface */
@@ -153,7 +153,8 @@ static Enna_Class_Vfs class_shoutcast =
 Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
-    "shoutcast"
+    ENNA_MODULE_BROWSER,
+    "browser_shoutcast"
 };
 
 void module_init(Enna_Module *em)

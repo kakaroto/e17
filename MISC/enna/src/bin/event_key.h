@@ -22,6 +22,7 @@ typedef enum
     ENNA_KEY_OK,
     ENNA_KEY_CANCEL,
     ENNA_KEY_SPACE,
+    ENNA_KEY_FULLSCREEN,
 
     ENNA_KEY_0,
     ENNA_KEY_1,

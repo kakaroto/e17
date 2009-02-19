@@ -40,6 +40,8 @@ Enna *enna;
 
 static char *conffile = NULL;
 static char *theme_name = NULL;
+static unsigned int app_w = 1280;
+static unsigned int app_h = 720;
 static int run_fullscreen = 0;
 static int run_gl = 0;
 
@@ -66,6 +68,12 @@ static void _event_bg_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *e
     if (key == ENNA_KEY_QUIT)
         ecore_main_loop_quit();
 
+    if (key == ENNA_KEY_FULLSCREEN)
+    {
+	run_fullscreen = ~run_fullscreen;
+	ecore_evas_fullscreen_set(enna->ee, run_fullscreen);
+    }
+
     if (enna_mainmenu_visible(enna->o_mainmenu))
     {
         switch (key)
@@ -78,20 +86,16 @@ static void _event_bg_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *e
                 break;
             }
             case ENNA_KEY_RIGHT:
-            {
-                enna_mainmenu_select_next(enna->o_mainmenu);
-                break;
-            }
             case ENNA_KEY_LEFT:
             {
-                enna_mainmenu_select_prev(enna->o_mainmenu);
+                enna_mainmenu_event_feed(enna->o_mainmenu, event);
                 break;
             }
             case ENNA_KEY_OK:
             case ENNA_KEY_SPACE:
             {
                 enna_mainmenu_activate_nth(enna->o_mainmenu,
-                        enna_mainmenu_selected_get(enna->o_mainmenu));
+		    enna_mainmenu_selected_get(enna->o_mainmenu));
                 break;
             }
             default:
@@ -132,6 +136,30 @@ static void _resize_viewport_cb(Ecore_Evas * ee)
     ecore_evas_resize(enna->ee, w, h);
 }
 
+static void _cb_delete(void *data, Evas *e, Evas_Object *obj, void *einfo)
+{
+    ecore_main_loop_quit();
+}
+
+static void _list_engines()
+{
+    Eina_List  *lst;
+    Eina_List  *n;
+    const char *engine;
+
+    enna_log(ENNA_MSG_CRITICAL, NULL, "supported engines:");
+
+    lst = ecore_evas_engines_get();
+
+    EINA_LIST_FOREACH(lst, n, engine)
+    {
+        if (strcmp(engine, "buffer") != 0)
+            enna_log(ENNA_MSG_CRITICAL, NULL, "\t*%s", engine);
+    }
+
+    ecore_evas_engines_free(lst);
+}
+
 /* Functions */
 
 static int _enna_init(int run_gl)
@@ -169,81 +197,23 @@ static int _enna_init(int run_gl)
             enna->lvl = ENNA_MSG_CRITICAL;
     }
 
-    if (!strcmp(enna_config->engine, "gl")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load GL engine");
-        enna->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 64, 64);
-        if (enna->ee)
-            enna->ee_winid = ecore_evas_gl_x11_window_get(enna->ee);
-    }
-    else if (!strcmp(enna_config->engine, "xrender")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_XRENDER_X11))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load XRENDER engine");
-        enna->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 64, 64);
-        if (enna->ee)
-            enna->ee_winid = ecore_evas_xrender_x11_window_get(enna->ee);
-    }
-    else if (!strcmp(enna_config->engine, "x11_16")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_16_X11))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load X11_16 engine");
-        enna->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 64, 64);
-        if (enna->ee)
-            enna->ee_winid = ecore_evas_software_x11_16_window_get(enna->ee);
-    }
-    else if (!strcmp(enna_config->engine, "x11")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load X11 engine");
-        enna->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 64, 64);
-        if (enna->ee)
-            enna->ee_winid = ecore_evas_software_x11_window_get(enna->ee);
-    }
-    else if (!strcmp(enna_config->engine, "fb")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_FB))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load Framebuffer engine");
-        enna->ee = ecore_evas_fb_new(NULL, 0,64, 64);
-    }
-   else if (!strcmp(enna_config->engine, "directfb")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_DIRECTFB))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load DirectFB engine");
-        enna->ee = ecore_evas_directfb_new(NULL, 0, 0, 0, 64, 64);
-    }
-   else if (!strcmp(enna_config->engine, "sdl")
-            && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SDL))
-    {
-        enna_log(ENNA_MSG_INFO, NULL, "Load SDL engine");
-        enna->ee = ecore_evas_sdl_new(NULL, 64, 64, 1, 0, 0, 1);
-    }
-    else if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
-    {
-        enna_log(
-                ENNA_MSG_WARNING,
-                NULL,
-                "Specified \'%s\' engine not found, use X11 software default engine",
-                enna_config->engine);
-        enna->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 64, 64);
-        if (enna->ee)
-            enna->ee_winid = ecore_evas_software_x11_window_get(enna->ee);
-    }
-    else
-    {
-        enna_log(ENNA_MSG_CRITICAL, NULL,
-                "Can not create Ecore Evas with %s engine!",
-                enna_config->engine);
-        return 0;
-    }
+    enna->ee = ecore_evas_new(enna_config->engine, 0, 0, 1, 1, NULL);
 
     if (!enna->ee)
     {
-        enna_log(ENNA_MSG_CRITICAL, NULL, "Can not Initialize Ecore Evas !");
+        enna_log(ENNA_MSG_CRITICAL, NULL,
+	    "Can not create Ecore Evas with %s engine!",
+	    enna_config->engine);
+	_list_engines();
         return 0;
     }
 
+    if (ecore_str_has_extension(enna_config->engine, "_x11"))
+    {
+	enna->ee_winid = (Ecore_X_Window) ecore_evas_window_get(enna->ee);
+    }
+
+    enna->use_network = enna_config->use_network;
     enna->use_covers = enna_config->use_covers;
     enna->use_snapshots = enna_config->use_snapshots;
 
@@ -267,16 +237,17 @@ static int _enna_init(int run_gl)
 static void _create_gui()
 {
     Evas_Object *o;
-    Evas_Coord w, h;
+//    Evas_Coord w, h;
     Enna_Module *em;
 
     o = edje_object_add(enna->evas);
     edje_object_file_set(o, enna_config_theme_get(), "enna");
-    edje_object_size_min_get(o, &w, &h);
-    evas_object_resize(o, w, h);
+    evas_object_resize(o, app_w, app_h);
     evas_object_move(o, 0, 0);
     evas_object_show(o);
-    ecore_evas_resize(enna->ee, w, h);
+    ecore_evas_resize(enna->ee, app_w, app_h);
+    ecore_evas_object_associate(enna->ee, o, 0);
+    evas_object_event_callback_add(o, EVAS_CALLBACK_FREE, _cb_delete, NULL);
     enna->o_edje = o;
 
     /* Create Background Object */
@@ -301,27 +272,77 @@ static void _create_gui()
     edje_object_part_swallow(enna->o_edje, "enna.swallow.module", o);
     enna->o_content = o;
 
+    enna_volumes_init();
+
     /* Create Modules */
-    em = enna_module_open("polling", enna->evas);
-    enna_module_enable(em);
-    em = enna_module_open("music", enna->evas);
-    enna_module_enable(em);
-    em = enna_module_open("video", enna->evas);
-    enna_module_enable(em);
-    em = enna_module_open("photo", enna->evas);
-    enna_module_enable(em);
-    em = enna_module_open("localfiles", enna->evas);
-    enna_module_enable(em);
-#ifdef BUILD_LMS_MODULE
-    em = enna_module_open("lms", enna->evas);
+#ifdef BUILD_ACTIVITY_MUSIC
+    em = enna_module_open("music", ENNA_MODULE_ACTIVITY, enna->evas);
     enna_module_enable(em);
 #endif
-    em = enna_module_open("shoutcast", enna->evas);
+#ifdef BUILD_ACTIVITY_PHOTO
+    em = enna_module_open("photo", ENNA_MODULE_ACTIVITY, enna->evas);
     enna_module_enable(em);
-    em = enna_module_open("netstreams", enna->evas);
+#endif
+#ifdef BUILD_ACTIVITY_VIDEO
+    em = enna_module_open("video", ENNA_MODULE_ACTIVITY, enna->evas);
     enna_module_enable(em);
-    /* Load mainmenu items */
+#endif
 
+#ifdef BUILD_BROWSER_LMS
+    em = enna_module_open("lms", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_BROWSER_LOCALFILES
+    em = enna_module_open("localfiles", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_BROWSER_NETSTREAMS
+    em = enna_module_open("netstreams", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_BROWSER_SHOUTCAST
+    em = enna_module_open("shoutcast", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_BROWSER_UPNP
+    em = enna_module_open("upnp", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_BROWSER_DVD
+    em = enna_module_open("dvd", ENNA_MODULE_BROWSER, enna->evas);
+    enna_module_enable(em);
+#endif
+
+#ifdef BUILD_METADATA_AMAZON
+    em = enna_module_open("amazon", ENNA_MODULE_METADATA, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_METADATA_LIBPLAYER
+    em = enna_module_open("libplayer", ENNA_MODULE_METADATA, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_METADATA_LOCALFILES
+    em = enna_module_open("localfiles", ENNA_MODULE_METADATA, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_METADATA_TMDB
+    em = enna_module_open("tmdb", ENNA_MODULE_METADATA, enna->evas);
+    enna_module_enable(em);
+#endif
+
+#ifdef BUILD_VOLUME_HAL
+    em = enna_module_open("hal", ENNA_MODULE_VOLUME, enna->evas);
+    enna_module_enable(em);
+#endif
+#ifdef BUILD_VOLUME_MTAB
+    em = enna_module_open("mtab", ENNA_MODULE_VOLUME, enna->evas);
+    enna_module_enable(em);
+#endif
+
+    /* Init Metadatas */
+    enna_metadata_init ();
+
+    /* Load mainmenu items */
     enna_activity_init("music");
     enna_activity_init("video");
     enna_activity_init("photo");
@@ -361,6 +382,22 @@ static void _enna_shutdown()
     ENNA_FREE(enna);
 }
 
+static unsigned char _opt_geometry_parse(const char *optarg, unsigned int *pw, unsigned int *ph)
+{
+    int w = 0, h = 0;
+
+    if (sscanf(optarg, "%dx%d", &w, &h) != 2)
+    {
+	return 0;
+    }
+    else
+    {
+	if (pw) *pw = w;
+	if (ph) *ph = h;
+	return 1;
+    }
+}
+
 static void usage(char *binname)
 {
     printf("Enna MediaCenter\n");
@@ -370,6 +407,7 @@ static void usage(char *binname)
     printf("  -f, (--fs):      Force Fullscreen mode.\n");
     printf("  -h, (--help):    Display this help.\n");
     printf("  -t, (--theme):   Specify theme name to be used.\n");
+    printf("  -g, (--geometry):Specify window geometry. (geometry=1280x720)\n");
     printf("  -V, (--version): Display Enna version number.\n");
     exit(0);
 }
@@ -377,7 +415,7 @@ static void usage(char *binname)
 static int parse_command_line(int argc, char **argv)
 {
     int c, index;
-    char short_options[] = "Vhfgc:t:b:";
+    char short_options[] = "Vhfc:t:b:g:";
     struct option long_options [] =
     {
     { "help", no_argument, 0, 'h' },
@@ -385,6 +423,7 @@ static int parse_command_line(int argc, char **argv)
     { "fs", no_argument, 0, 'f' },
     { "config", required_argument, 0, 'c' },
     { "theme", required_argument, 0, 't' },
+    { "geometry", required_argument, 0, 'g'},
     { 0, 0, 0, 0 } };
 
     /* command line argument processing */
@@ -397,33 +436,35 @@ static int parse_command_line(int argc, char **argv)
 
         switch (c)
         {
-            case 0:
-                /* opt = long_options[index].name; */
-                break;
+	case 0:
+	    /* opt = long_options[index].name; */
+	    break;
 
-            case '?':
-            case 'h':
-                usage(argv[0]);
-                return -1;
+	case '?':
+	case 'h':
+	    usage(argv[0]);
+	    return -1;
 
-            case 'V':
-                break;
+	case 'V':
+	    break;
 
-            case 'f':
-                run_fullscreen = 1;
-                break;
+	case 'f':
+	    run_fullscreen = 1;
+	    break;
 
-            case 'c':
-                conffile = strdup(optarg);
-                break;
+	case 'c':
+	    conffile = strdup(optarg);
+	    break;
 
-            case 't':
-                theme_name = strdup(optarg);
-                break;
-
-            default:
-                usage(argv[0]);
-                return -1;
+	case 't':
+	    theme_name = strdup(optarg);
+	    break;
+	case 'g':
+	    _opt_geometry_parse(optarg, &app_w, &app_h);
+	    break;
+	default:
+	    usage(argv[0]);
+	    return -1;
         }
     }
 

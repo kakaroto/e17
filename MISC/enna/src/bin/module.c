@@ -20,10 +20,10 @@ int enna_module_init(void)
 
         ecore_path_group_add(path_group, PACKAGE_LIB_DIR"/enna/modules/");
         enna_log (ENNA_MSG_INFO, NULL,
-                  "Plugin Directory : %s", PACKAGE_LIB_DIR"/enna/modules/");
+                  "Plugin Directory: %s", PACKAGE_LIB_DIR"/enna/modules/");
         l = ecore_plugin_available_get(path_group);
         ecore_list_first_goto(l);
-        enna_log(ENNA_MSG_INFO, NULL, "Plugin available :");
+        enna_log(ENNA_MSG_INFO, NULL, "Available Plugins:");
         while ((p = ecore_list_next(l)))
         {
             enna_log(ENNA_MSG_INFO, NULL, "\t * %s", p);
@@ -95,15 +95,17 @@ int enna_module_disable(Enna_Module *m)
  * @brief Open a module
  * @param name the module name
  * @return E_Module loaded
- * @note Module music can be loaded like this : enna_module_open("music") this
- *       module in loaded from file /usr/lib/enna/modules/music.so
+ * @note Module music can be loaded like this :
+ *  enna_module_open("activity_music") this
+ *       module in loaded from file /usr/lib/enna/modules/activity_music.so
  */
 Enna_Module *
-enna_module_open(const char *name, Evas *evas)
+enna_module_open(const char *name, _Enna_Module_Type type, Evas *evas)
 {
-    char module_name[4096];
     Ecore_Plugin *plugin;
     Enna_Module *m;
+    char module_name[4096];
+    char *module_class;
 
     if (!name || !evas) return NULL;
 
@@ -116,7 +118,36 @@ enna_module_open(const char *name, Evas *evas)
         return NULL;
     }
 
-    snprintf(module_name, sizeof(module_name), "enna_module_%s", name);
+    switch (type)
+    {
+    case ENNA_MODULE_ACTIVITY:
+      module_class = "activity";
+      break;
+      
+    case ENNA_MODULE_BACKEND:
+      module_class = "backend";
+      break;
+
+    case ENNA_MODULE_BROWSER:
+      module_class = "browser";
+      break;
+
+    case ENNA_MODULE_METADATA:
+      module_class = "metadata";
+      break;
+
+    case ENNA_MODULE_VOLUME:
+      module_class = "volume";
+      break;
+
+    case ENNA_MODULE_INPUT:
+      module_class = "input";
+      break;
+
+    default:
+      return NULL;
+    }
+    snprintf(module_name, sizeof(module_name), "%s_%s", module_class, name);
     enna_log (ENNA_MSG_INFO, NULL, "Try to load %s", module_name);
     plugin = ecore_plugin_load(path_group, module_name, NULL);
     if (plugin)

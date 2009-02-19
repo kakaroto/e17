@@ -29,9 +29,9 @@ static Eina_List *_audio_albums_of_artist_list_get(const char *artist);
 static Eina_List *_audio_tracks_of_album_list_get(const char *artist,
         const char *album);
 
-static Eina_List *_class_browse_up(const char *path);
-static Eina_List *_class_browse_down();
-static Enna_Vfs_File *_class_vfs_get(void);
+static Eina_List *_class_browse_up(const char *path, void *cookie);
+static Eina_List *_class_browse_down(void *cookie);
+static Enna_Vfs_File *_class_vfs_get(void *cookie);
 static void _vfs_free(Enna_Vfs_File *vfs);
 static Enna_Vfs_File *_vfs_set(char *uri, char *label, char *icon_file,
         unsigned char is_directory, char *icon);
@@ -84,13 +84,14 @@ static Enna_Module_Lms *mod;
 Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
-    "lms"
+    ENNA_MODULE_BROWSER,
+    "browser_lms"
 };
 
 static Enna_Class_Vfs class =
 { "lms", 1, "Browse Library", NULL, "icon/library",
 { NULL, NULL, _class_browse_up, _class_browse_down, _class_vfs_get,
-},
+}, NULL
 };
 
 #if 0
@@ -579,10 +580,10 @@ static Eina_List * _audio_tracks_of_album_list_get(const char *artist,
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        Enna_Metadata *m = enna_metadata_new();
+        Enna_Metadata *m =
+            enna_metadata_new((char*)sqlite3_column_text(stmt, 1));
 
         m->title = strdup((char*)sqlite3_column_text(stmt, 0));
-        m->uri = strdup((char*)sqlite3_column_text(stmt, 1));
         m->music->track = sqlite3_column_int(stmt, 2);
         if (m)
             tracks = eina_list_append(tracks, m);
@@ -661,7 +662,7 @@ static Eina_List * _browse_artists_root()
     return eina_list_sort(entries, eina_list_count(entries), _sort_cb);
 }
 
-static Eina_List *_class_browse_up(const char *path)
+static Eina_List *_class_browse_up(const char *path, void *cookie)
 {
 
     /* Display LMS ROOT menu*/
@@ -802,7 +803,7 @@ static Eina_List *_class_browse_up(const char *path)
     return NULL;
 }
 
-static Eina_List *_class_browse_down()
+static Eina_List *_class_browse_down(void *cookie)
 {
     switch (mod->state)
     {
@@ -822,7 +823,7 @@ static Eina_List *_class_browse_down()
             enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "mod->vfs->uri : %s",
                     ecore_file_dir_get(mod->vfs->uri));
             uri = strdup(ecore_file_dir_get(mod->vfs->uri));
-            files = _class_browse_up(uri);
+            files = _class_browse_up(uri, NULL);
             free(uri);
             return files;
         }
@@ -833,7 +834,7 @@ static Eina_List *_class_browse_down()
     return NULL;
 }
 
-static Enna_Vfs_File *_class_vfs_get()
+static Enna_Vfs_File *_class_vfs_get(void *cookie)
 {
     return mod->vfs;
 }

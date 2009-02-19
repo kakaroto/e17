@@ -4,7 +4,7 @@ INCLUDES = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
-AM_CFLAGS = @ENNA_CFLAGS@ @LIBXML2_CFLAGS@ @LIBCURL_CFLAGS@
+AM_CFLAGS = @ENNA_CFLAGS@ @LIBXML2_CFLAGS@ @LIBCURL_CFLAGS@ @LIBCDDB_CFLAGS@
 
 bin_PROGRAMS = enna
 
@@ -19,8 +19,10 @@ background.c\
 module.c\
 activity.c\
 vfs.c\
+volumes.c\
 image.c\
 list.c\
+browser.c\
 content.c\
 pan.c\
 scrollframe.c\
@@ -34,12 +36,14 @@ list_item.c\
 xml_utils.c\
 url_utils.c\
 md5.c\
-covers.c\
 logs.c\
-snapshots.c\
-slideshow.c
+parser_cdda.c\
+slideshow.c\
+mediacontrol.c\
+carousel.c\
+reflection.c
 
-enna_LDADD = @ENNA_LIBS@ @LIBXML2_LIBS@ @LIBCURL_LIBS@
+enna_LDADD = @ENNA_LIBS@ @LIBXML2_LIBS@ @LIBCURL_LIBS@ @LIBCDDB_LIBS@
 enna_LDFLAGS = -rdynamic
 
 EXTRA_DIST= \
@@ -53,9 +57,11 @@ mainmenu.h\
 background.h\
 module.h\
 vfs.h\
+volumes.h\
 activity.h\
 image.h\
 list.h\
+browser.h\
 content.h\
 pan.h\
 scrollframe.h\
@@ -69,10 +75,11 @@ list_item.h\
 xml_utils.h\
 url_utils.h\
 md5.h\
-covers.h\
 logs.h\
-snapshots.h\
-slideshow.h
-
+parser_cdda.h\
+slideshow.h\
+mediacontrol.h\
+carousel.h\
+reflection.h
 
 

@@ -10,7 +10,6 @@
       -> Preload previous and next pictures
       -> hide photo after transition : add program in edje to send signal
    when transition is finished.
-      -> Add a way to view photos without slideshow
       -> Add start/stop slideshow key/button
       -> Define slideshow effect/timeout in config file.
 
@@ -19,20 +18,25 @@
          (play/pause, prev/next, volume up/down)
       -> Do not display empty metadata in audio player if none is found
          in current stream: display filename instead.
-      -> Display a picture when no cover has been found.
       -> Finish shoutcast support so that non-local streams can be played back.
+      -> Support Volume
+      -> Playing now edje
+      -> Cancel timer of mediaplayer when browsing directory with mouse
+
 
  * Video module (based on music one)
       -> Add video support to emotion backend
-      -> Polish video_info UI
-      -> Add prev/next buttons (left/right arrows?) to browse between
-         videos from current directory without coming back to selection menu.
+      -> Support Volume
+
+ * Show QUIT menu on exit
 
  * Add Simple Widgets
       -> Checkbox
       -> Slider
       -> TextBox
-      -> Buttons
+
+ * Add Module system
+
 
  * Bugs
      -> libcurl and libxml2 are not checked in configure.in
@@ -56,7 +60,6 @@
       -> Virtual Keyboard (See Calaos or Illume for virtual keyboard
    integration)
       -> Grid View
-      -> WallView see Piclens effect (www.piclens.com) and Hisham work (http://hisham.cc/pages/frisk/)
 
  * Configuration
       -> Save config to file
@@ -68,7 +71,7 @@
       -> Create GUI for config from registred modules
       -> Add an option to enable/disable Internet usage
 
- * Add framebuffer video out support
+ * Theme : More colors
 
 [Priority 8]
 

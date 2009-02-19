@@ -1,0 +1,89 @@
+group
+{
+   name: "enna/browser";
+   parts
+   {
+      part {
+         name: "clip";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+         description {
+            state: "left" 0.0;
+            color: 255 255 255 255;
+            visible: 0;
+            rel1 {relative: -1 0;}
+            rel2 {relative:  0  1;};
+         }
+         description {
+            state: "right" 0.0;
+            color: 255 255 255 255;
+            visible: 0;
+            rel1{relative: 1 0;}
+            rel2 {relative: 2 1;};
+         }
+      }
+      part {
+         name: "enna.swallow.content";
+         type: SWALLOW ;
+         clip_to: "clip";
+         description {
+            state: "default" 0.0;
+            rel1.to: "clip";
+            rel2.to: "clip";
+         }
+      }
+   }
+   programs
+   {
+     program {
+         name: "list,left,now";
+         signal: "list,left,now";
+         source:  "enna";
+         action:  STATE_SET "left" 0.0;
+         target: "clip";
+      }
+      program {
+         name: "list,right,now";
+         signal: "list,right,now";
+         source:  "enna";
+         action:  STATE_SET "right" 0.0;
+         target: "clip";
+      }
+      program {
+         name: "list,right";
+         signal: "list,right";
+         source:  "enna";
+         action:  STATE_SET "right" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "clip";
+         after: "transition,end";
+      }
+      program {
+         name: "list,left";
+         signal: "list,left";
+         source:  "enna";
+         action:  STATE_SET "left" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "clip";
+         after: "transition,end";
+      }
+      program {
+         name: "list,default";
+         signal: "list,default";
+         source:  "enna";
+         action:  STATE_SET "default" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "clip";
+      }
+      program {
+         name: "transition,end";
+         action: SIGNAL_EMIT "list,transition,end" "edje";
+      }
+
+   }
+}

@@ -21,6 +21,7 @@ struct _Enna_Config
     const char *theme;
     const char *theme_file;
     int fullscreen;
+    int use_network;
     int use_covers;
     int use_snapshots;
     const char *engine;

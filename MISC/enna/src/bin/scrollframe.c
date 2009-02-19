@@ -141,7 +141,7 @@ void enna_scrollframe_child_set(Evas_Object *obj, Evas_Object *child)
         evas_object_smart_callback_add(o, "pan_changed",
                 _smart_pan_pan_changed_hook, sd);
         evas_object_show(o);
-        edje_object_part_swallow(sd->edje_obj, "e.swallow.content", o);
+        edje_object_part_swallow(sd->edje_obj, "enna.swallow.content", o);
     }
 
     sd->pan_func.set = enna_pan_set;
@@ -197,7 +197,7 @@ void enna_scrollframe_extern_pan_set(Evas_Object *obj, Evas_Object *pan, void (*
             _smart_pan_changed_hook, sd);
     evas_object_smart_callback_add(sd->pan_obj, "pan_changed",
             _smart_pan_pan_changed_hook, sd);
-    edje_object_part_swallow(sd->edje_obj, "e.swallow.content", sd->pan_obj);
+    edje_object_part_swallow(sd->edje_obj, "enna.swallow.content", sd->pan_obj);
     evas_object_show(sd->pan_obj);
 }
 
@@ -209,7 +209,7 @@ void enna_scrollframe_custom_edje_file_set(Evas_Object *obj, char *file,
 
     edje_object_file_set(sd->edje_obj, file, group);
     if (sd->pan_obj)
-        edje_object_part_swallow(sd->edje_obj, "e.swallow.content", sd->pan_obj);
+        edje_object_part_swallow(sd->edje_obj, "enna.swallow.content", sd->pan_obj);
     sd->vbar_visible = !sd->vbar_visible;
     sd->hbar_visible = !sd->hbar_visible;
     _smart_scrollbar_bar_visibility_adjust(sd);
@@ -239,8 +239,8 @@ void enna_scrollframe_child_pos_set(Evas_Object *obj, Evas_Coord x, Evas_Coord y
         vy = 0.0;
     else if (vy> 1.0)
         vy = 1.0;
-    edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.vbar", 0.0, vy);
-    edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.hbar", vx, 0.0);
+    edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.vbar", 0.0, vy);
+    edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.hbar", vx, 0.0);
     sd->pan_func.get(sd->pan_obj, &px, &py);
     sd->pan_func.set(sd->pan_obj, x, y);
     if ((px != x) || (py != y))
@@ -708,28 +708,28 @@ static void _smart_scrollbar_read(Smart_Data *sd)
     Evas_Coord x, y, mx = 0, my = 0, px, py;
     double vx, vy;
 
-    edje_object_part_drag_value_get(sd->edje_obj, "e.dragable.vbar", NULL, &vy);
-    edje_object_part_drag_value_get(sd->edje_obj, "e.dragable.hbar", &vx, NULL);
+    edje_object_part_drag_value_get(sd->edje_obj, "enna.dragable.vbar", NULL, &vy);
+    edje_object_part_drag_value_get(sd->edje_obj, "enna.dragable.hbar", &vx, NULL);
     sd->pan_func.max_get(sd->pan_obj, &mx, &my);
     x = vx * (double)mx;
     y = vy * (double)my;
     sd->pan_func.get(sd->pan_obj, &px, &py);
     sd->pan_func.set(sd->pan_obj, x, y);
     if ((px != x) || (py != y))
-        edje_object_signal_emit(sd->edje_obj, "e,action,scroll", "enna");
+        edje_object_signal_emit(sd->edje_obj, "enna,action,scroll", "enna");
 }
 
 static void _smart_scrollbar_reset(Smart_Data *sd)
 {
     Evas_Coord px = 0, py = 0;
 
-    edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.vbar", 0.0, 0.0);
-    edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.hbar", 0.0, 0.0);
+    edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.vbar", 0.0, 0.0);
+    edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.hbar", 0.0, 0.0);
     if ((!sd->child_obj) && (!sd->extern_pan))
     {
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.vbar", 1.0,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.vbar", 1.0,
                 1.0);
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.hbar", 1.0,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.hbar", 1.0,
                 1.0);
     }
     sd->pan_func.get(sd->pan_obj, &px, &py);
@@ -884,7 +884,7 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
         Evas_Coord x, y, w, h, mx = 0, my = 0, vw = 0, vh = 0, px = 0, py = 0;
         double vx, vy, size;
 
-        edje_object_part_geometry_get(sd->edje_obj, "e.swallow.content", NULL,
+        edje_object_part_geometry_get(sd->edje_obj, "enna.swallow.content", NULL,
                 NULL, &vw, &vh);
         w = sd->child.w;
         if (w < 1)
@@ -893,10 +893,10 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
         if (size> 1.0)
         {
             size = 1.0;
-            edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.hbar",
+            edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.hbar",
                     0.0, 0.0);
         }
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.hbar", size,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.hbar", size,
                 1.0);
 
         h = sd->child.h;
@@ -906,36 +906,36 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
         if (size> 1.0)
         {
             size = 1.0;
-            edje_object_part_drag_value_set(sd->edje_obj, "e.dragable.vbar",
+            edje_object_part_drag_value_set(sd->edje_obj, "enna.dragable.vbar",
                     0.0, 0.0);
         }
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.vbar", 1.0,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.vbar", 1.0,
                 size);
 
-        edje_object_part_drag_value_get(sd->edje_obj, "e.dragable.hbar", &vx,
+        edje_object_part_drag_value_get(sd->edje_obj, "enna.dragable.hbar", &vx,
                 NULL);
-        edje_object_part_drag_value_get(sd->edje_obj, "e.dragable.vbar", NULL,
+        edje_object_part_drag_value_get(sd->edje_obj, "enna.dragable.vbar", NULL,
                 &vy);
         sd->pan_func.max_get(sd->pan_obj, &mx, &my);
         x = vx * mx;
         y = vy * my;
 
-        edje_object_part_drag_step_set(sd->edje_obj, "e.dragable.hbar",
+        edje_object_part_drag_step_set(sd->edje_obj, "enna.dragable.hbar",
                 (double)sd->step.x / (double)w, 0.0);
-        edje_object_part_drag_step_set(sd->edje_obj, "e.dragable.vbar", 0.0,
+        edje_object_part_drag_step_set(sd->edje_obj, "enna.dragable.vbar", 0.0,
                 (double)sd->step.y / (double)h);
         if (sd->page.x> 0)
             edje_object_part_drag_page_set(sd->edje_obj, "e.dragable.hbar",
                     (double)sd->page.x / (double)w, 0.0);
         else
-            edje_object_part_drag_page_set(sd->edje_obj, "e.dragable.hbar",
+            edje_object_part_drag_page_set(sd->edje_obj, "enna.dragable.hbar",
                     -((double)sd->page.x * ((double)vw / (double)w) ) / 100.0,
                     0.0);
         if (sd->page.y> 0)
-            edje_object_part_drag_page_set(sd->edje_obj, "e.dragable.vbar",
+            edje_object_part_drag_page_set(sd->edje_obj, "enna.dragable.vbar",
                     0.0, (double)sd->page.y / (double)h);
         else
-            edje_object_part_drag_page_set(sd->edje_obj, "e.dragable.vbar",
+            edje_object_part_drag_page_set(sd->edje_obj, "enna.dragable.vbar",
                     0.0, -((double)sd->page.y * ((double)vh / (double)h))
                             /100.0);
 
@@ -948,9 +948,9 @@ static void _smart_scrollbar_size_adjust(Smart_Data *sd)
     {
         Evas_Coord px = 0, py = 0;
 
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.vbar", 1.0,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.vbar", 1.0,
                 1.0);
-        edje_object_part_drag_size_set(sd->edje_obj, "e.dragable.hbar", 1.0,
+        edje_object_part_drag_size_set(sd->edje_obj, "enna.dragable.hbar", 1.0,
                 1.0);
         sd->pan_func.get(sd->pan_obj, &px, &py);
         sd->pan_func.set(sd->pan_obj, 0, 0);
@@ -999,10 +999,10 @@ static void _smart_add(Evas_Object *obj)
 
     o = edje_object_add(evas_object_evas_get(obj));
     sd->edje_obj = o;
-    edje_object_file_set(o, enna_config_theme_get(), "e/widgets/scrollframe");
-    edje_object_signal_callback_add(o, "drag*", "e.dragable.vbar",
+    edje_object_file_set(o, enna_config_theme_get(), "enna/scrollframe");
+    edje_object_signal_callback_add(o, "drag*", "enna.dragable.vbar",
             _smart_edje_drag_v, sd);
-    edje_object_signal_callback_add(o, "drag*", "e.dragable.hbar",
+    edje_object_signal_callback_add(o, "drag*", "enna.dragable.hbar",
             _smart_edje_drag_h, sd);
     evas_object_smart_member_add(o, obj);
 

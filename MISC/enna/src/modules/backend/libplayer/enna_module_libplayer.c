@@ -1,20 +1,22 @@
 /* Interface */
 
 #include "enna.h"
-#include "codecs.h"
 #include <player.h>
 
 #define ENNA_MODULE_NAME "libplayer"
 
-#define URI_TYPE_FTP  "ftp://"
-#define URI_TYPE_HTTP "http://"
-#define URI_TYPE_MMS  "mms://"
-#define URI_TYPE_RTP  "rtp://"
-#define URI_TYPE_RTSP "rtsp://"
-#define URI_TYPE_SMB  "smb://"
-#define URI_TYPE_TCP  "tcp://"
-#define URI_TYPE_UDP  "udp://"
-#define URI_TYPE_UNSV "unsv://"
+#define URI_TYPE_FTP      "ftp://"
+#define URI_TYPE_HTTP     "http://"
+#define URI_TYPE_MMS      "mms://"
+#define URI_TYPE_RTP      "rtp://"
+#define URI_TYPE_RTSP     "rtsp://"
+#define URI_TYPE_SMB      "smb://"
+#define URI_TYPE_TCP      "tcp://"
+#define URI_TYPE_UDP      "udp://"
+#define URI_TYPE_UNSV     "unsv://"
+#define URI_TYPE_DVD      "dvd://"
+#define URI_TYPE_DVDNAV   "dvdnav://"
+
 typedef struct _Enna_Module_libplayer
 {
     Evas *evas;
@@ -25,6 +27,7 @@ typedef struct _Enna_Module_libplayer
     char *uri;
     char *label;
     Ecore_Event_Handler *key_down_event_handler;
+    Ecore_Pipe *pipe;
 } Enna_Module_libplayer;
 
 static Enna_Module_libplayer *mod;
@@ -45,6 +48,7 @@ static void _class_shutdown(int dummy)
     if (mod->label)
         free(mod->label);
     ecore_event_handler_del(mod->key_down_event_handler);
+    ecore_pipe_del(mod->pipe);
     player_playback_stop(mod->player);
     player_uninit(mod->player);
 }
@@ -57,6 +61,57 @@ static mrl_t * set_network_stream(const char *uri, mrl_resource_t type)
     args = calloc(1, sizeof(mrl_resource_network_args_t));
     args->url = strdup(uri);
     mrl = mrl_new(mod->player, type, args);
+
+    return mrl;
+
+}
+
+static mrl_t * set_dvd_stream(const char *uri, mrl_resource_t type)
+{
+    mrl_t *mrl;
+    mrl_resource_videodisc_args_t *args;
+    char *meta;
+    uint32_t prop = 0;
+    int tmp = 0;
+    int title = 0;
+
+    args = calloc(1, sizeof(mrl_resource_videodisc_args_t));
+    mrl = mrl_new(mod->player, type, args);
+
+    meta = mrl_get_metadata_dvd (mod->player, mrl, (uint8_t *) &prop);
+    if (meta)
+    {
+	enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Meta DVD VolumeID: %s", meta);
+	free (meta);
+    }
+
+    if (prop)
+    {
+	int i;
+
+	enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME, "Meta DVD Titles: %i", prop);
+
+	for (i = 1; i <= prop; i++)
+	{
+	    uint32_t chapters, angles, length;
+
+	    chapters = mrl_get_metadata_dvd_title (mod->player, mrl, i,
+		MRL_METADATA_DVD_TITLE_CHAPTERS);
+	    angles = mrl_get_metadata_dvd_title (mod->player, mrl, i,
+		MRL_METADATA_DVD_TITLE_ANGLES);
+	    length = mrl_get_metadata_dvd_title (mod->player, mrl, i,
+		MRL_METADATA_DVD_TITLE_LENGTH);
+
+	    enna_log (ENNA_MSG_INFO, ENNA_MODULE_NAME,"Meta DVD Title %i (%.2f sec), Chapters: %i, Angles: %i",
+		i, length / 1000.0, chapters, angles);
+	    if (length > tmp)
+	    {
+		tmp = length;
+		title = i;
+	    }
+	}
+    }
+    args->title_start = title;
 
     return mrl;
 }
@@ -97,6 +152,12 @@ static int _class_file_set(const char *uri, const char *label)
     else if (!strncmp(uri, URI_TYPE_UNSV, strlen(URI_TYPE_UNSV)))
         mrl = set_network_stream(uri, MRL_RESOURCE_UNSV);
 
+    /* Try Dvd video */
+    else if (!strncmp(uri, URI_TYPE_DVD, strlen(URI_TYPE_DVD)))
+        mrl = set_dvd_stream(uri, MRL_RESOURCE_DVD);
+    else if (!strncmp(uri, URI_TYPE_DVDNAV, strlen(URI_TYPE_DVDNAV)))
+        mrl = set_dvd_stream(uri, MRL_RESOURCE_DVDNAV);
+
     /* default is local files */
     if (!mrl)
         mrl = set_local_stream(uri);
@@ -129,8 +190,8 @@ static int _class_play(void)
 
 static int _class_seek(double percent)
 {
-    player_playback_seek(mod->player, (int) (100 * percent),
-            PLAYER_PB_SEEK_PERCENT);
+    player_playback_seek(mod->player,
+                         (int) (100 * percent), PLAYER_PB_SEEK_PERCENT);
     return 0;
 }
 
@@ -152,101 +213,14 @@ static double _class_position_get()
 {
     double time_pos = 0.0;
 
-    /*
-     * NOTE: it needs a fix in libplayer because get_time_pos changes the state
-     *       of MPlayer and the pause is lost
-     */
-    if (player_playback_get_state(mod->player) == PLAYER_PB_STATE_PLAY)
-        time_pos = (double) player_get_time_pos(mod->player) / 1000.0;
+    time_pos = (double) player_get_time_pos(mod->player) / 1000.0;
     return time_pos < 0.0 ? 0.0 : time_pos;
 }
 
 static double _class_length_get()
 {
-    return (double) mrl_get_property(mod->player, NULL, MRL_PROPERTY_LENGTH)
-            / 1000.0;
-}
-
-static void _class_snapshot(const char *uri, const char *file)
-{
-    int sec;
-
-    if (!uri || !file)
-        return;
-
-    /* take snapshot at 15% of stream */
-    sec = (int) (_class_length_get() * 15 / 100);
-
-    mrl_video_snapshot(mod->player, NULL, sec, MRL_SNAPSHOT_PNG, file);
-}
-
-static Enna_Metadata *_class_metadata_get(void)
-{
-    Enna_Metadata *meta;
-    char *track_nb;
-    int frameduration = 0;
-    char *codec_id;
-
-    meta = enna_metadata_new();
-
-    meta->uri = strdup(mod->uri+7);
-    meta->size = mrl_get_size(mod->player, NULL);
-    meta->length = mrl_get_property(mod->player, NULL, MRL_PROPERTY_LENGTH);
-
-    meta->title = mod->label ? strdup(mod->label) : mrl_get_metadata(
-            mod->player, NULL, MRL_METADATA_TITLE);
-    meta->music->artist = mrl_get_metadata(mod->player, NULL,
-            MRL_METADATA_ARTIST);
-    meta->music->album
-            = mrl_get_metadata(mod->player, NULL, MRL_METADATA_ALBUM);
-    meta->music->year = mrl_get_metadata(mod->player, NULL, MRL_METADATA_YEAR);
-    meta->music->genre
-            = mrl_get_metadata(mod->player, NULL, MRL_METADATA_GENRE);
-    meta->music->comment = mrl_get_metadata(mod->player, NULL,
-            MRL_METADATA_COMMENT);
-    meta->music->discid = NULL;
-
-    track_nb = mrl_get_metadata(mod->player, NULL, MRL_METADATA_TRACK);
-    if (track_nb)
-    {
-        meta->music->track = atoi(track_nb);
-        free(track_nb);
-    }
-    else
-        meta->music->track = 0;
-
-    codec_id = mrl_get_audio_codec(mod->player, NULL);
-    meta->music->codec = get_codec_name (codec_id);
-    free (codec_id);
-
-    meta->music->bitrate = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_AUDIO_BITRATE);
-    meta->music->channels = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_AUDIO_CHANNELS);
-    meta->music->samplerate = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_AUDIO_SAMPLERATE);
-
-    codec_id = mrl_get_video_codec(mod->player, NULL);
-    meta->video->codec = get_codec_name (codec_id);
-    free (codec_id);
-
-    meta->video->width = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_WIDTH);
-    meta->video->height = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_HEIGHT);
-    meta->video->channels = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_CHANNELS);
-    meta->video->streams = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_STREAMS);
-    frameduration = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_FRAMEDURATION);
-    if (frameduration)
-        meta->video->framerate = PLAYER_VIDEO_FRAMEDURATION_RATIO_DIV
-                / frameduration;
-    meta->video->bitrate = mrl_get_property(mod->player, NULL,
-            MRL_PROPERTY_VIDEO_BITRATE);
-
-    return meta;
+    return (double) mrl_get_property(mod->player,
+                                     NULL, MRL_PROPERTY_LENGTH) / 1000.0;
 }
 
 static void _class_video_resize(int x, int y, int w, int h)
@@ -258,7 +232,9 @@ static void _class_video_resize(int x, int y, int w, int h)
     player_x_window_set_properties(mod->player, x, y, w, h, flags);
 }
 
-static void _class_event_cb_set(void (*event_cb)(void *data, enna_mediaplayer_event_t event), void *data)
+static void _class_event_cb_set(void (*event_cb)(void *data,
+                                                 enna_mediaplayer_event_t event),
+                                void *data)
 {
     /* FIXME: function to call when end of stream is send by libplayer */
 
@@ -266,57 +242,66 @@ static void _class_event_cb_set(void (*event_cb)(void *data, enna_mediaplayer_ev
     mod->event_cb = event_cb;
 }
 
+static void _pipe_read(void *data, void *buf, unsigned int nbyte)
+{
+    enna_mediaplayer_event_t *event = buf;
+
+    if (!mod->event_cb || !buf)
+        return;
+
+    mod->event_cb(mod->event_cb_data, *event);
+}
+
 static int _event_cb(player_event_t e, void *data)
 {
+    enna_mediaplayer_event_t event;
+
     if (e == PLAYER_EVENT_PLAYBACK_FINISHED)
     {
-        enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME, "PLAYBACK FINISHED");
-        if (mod->event_cb)
-        {
-            mod->event_cb(mod->event_cb_data, ENNA_MP_EVENT_EOF);
-        }
+        event = ENNA_MP_EVENT_EOF;
+        ecore_pipe_write(mod->pipe, &event, sizeof(event));
     }
     return 0;
 }
 
-static int
-_x_event_key_down(void *data __UNUSED__, int type __UNUSED__, void *event)
+static int _x_event_key_down(void *data, int type, void *event)
 {
-   Ecore_X_Event_Key_Down *e;
-   e = event;
-   /*
-      HACK !
-      If e->win is the same than enna winid, don't manage this event
-      ecore_evas_x will do this for us.
-      But if e->win is different than enna winid event are sent to
-      libplayer subwindow and we must broadcast this event to Evas
-   */
-   if (e->win != enna->ee_winid)
-   {
-       enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME, "Ecore_X_Event_Key_Down %s", e->keyname);
-       evas_event_feed_key_down(enna->evas, e->keyname, e->keysymbol, e->key_compose, NULL, e->time, NULL);
-   }
+    Ecore_X_Event_Key_Down *e;
+    e = event;
+    /*
+       HACK !
+       If e->win is the same than enna winid, don't manage this event
+       ecore_evas_x will do this for us.
+       But if e->win is different than enna winid event are sent to
+       libplayer subwindow and we must broadcast this event to Evas
+    */
+    if (e->win != enna->ee_winid)
+    {
+        enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME,
+                 "Ecore_X_Event_Key_Down %s", e->keyname);
+        evas_event_feed_key_down(enna->evas, e->keyname, e->keysymbol,
+                                 e->key_compose, NULL, e->time, NULL);
+    }
    return 1;
 }
 
 static Enna_Class_MediaplayerBackend class = {
-  "libplayer",
-  1,
-  { _class_init,
-    _class_shutdown,
-    _class_file_set,
-    _class_play,
-    _class_seek,
-    _class_stop,
-    _class_pause,
-    _class_position_get,
-    _class_length_get,
-    _class_snapshot,
-    _class_metadata_get,
-    _class_video_resize,
-    _class_event_cb_set,
-    NULL
-  }
+    "libplayer",
+    1,
+    {
+        _class_init,
+        _class_shutdown,
+        _class_file_set,
+        _class_play,
+        _class_seek,
+        _class_stop,
+        _class_pause,
+        _class_position_get,
+        _class_length_get,
+        _class_video_resize,
+        _class_event_cb_set,
+        NULL
+    }
 };
 
 /*****************************************************************************/
@@ -326,7 +311,8 @@ static Enna_Class_MediaplayerBackend class = {
 Enna_Module_Api module_api =
 {
     ENNA_MODULE_VERSION,
-    "libplayer"
+    ENNA_MODULE_BACKEND,
+    "backend_libplayer"
 };
 
 void module_init(Enna_Module *em)
@@ -357,8 +343,8 @@ void module_init(Enna_Module *em)
 
             if (!strcmp("type", pair->key))
             {
-                enna_config_value_store(&value, "type", ENNA_CONFIG_STRING,
-                        pair);
+                enna_config_value_store(&value, "type",
+                                        ENNA_CONFIG_STRING, pair);
                 enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, " * type: %s", value);
 
                 if (!strcmp("gstreamer", value))
@@ -371,14 +357,14 @@ void module_init(Enna_Module *em)
                     type = PLAYER_TYPE_XINE;
                 else
                     enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                            "   - unknown type, 'mplayer' used instead");
+                             "   - unknown type, 'mplayer' used instead");
             }
             else if (!strcmp("video_out", pair->key))
             {
                 enna_config_value_store(&value, "video_out",
-                        ENNA_CONFIG_STRING, pair);
-                enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, " * video out: %s",
-                        value);
+                                        ENNA_CONFIG_STRING, pair);
+                enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME,
+                         " * video out: %s", value);
 
                 if (!strcmp("auto", value))
                     vo = PLAYER_VO_AUTO;
@@ -392,14 +378,14 @@ void module_init(Enna_Module *em)
                     vo = PLAYER_VO_FB;
                 else
                     enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                            "   - unknown video_out, 'auto' used instead");
+                             "   - unknown video_out, 'auto' used instead");
             }
             else if (!strcmp("audio_out", pair->key))
             {
                 enna_config_value_store(&value, "audio_out",
-                        ENNA_CONFIG_STRING, pair);
-                enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, " * audio out: %s",
-                        value);
+                                        ENNA_CONFIG_STRING, pair);
+                enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME,
+                         " * audio out: %s", value);
 
                 if (!strcmp("auto", value))
                     ao = PLAYER_AO_AUTO;
@@ -409,14 +395,14 @@ void module_init(Enna_Module *em)
                     ao = PLAYER_AO_OSS;
                 else
                     enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                            "   - unknown audio_out, 'auto' used instead");
+                             "   - unknown audio_out, 'auto' used instead");
             }
             else if (!strcmp("verbosity", pair->key))
             {
                 enna_config_value_store(&value, "verbosity",
-                        ENNA_CONFIG_STRING, pair);
+                                        ENNA_CONFIG_STRING, pair);
                 enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME,
-                        " * verbosity level: %s", value);
+                         " * verbosity level: %s", value);
 
                 if (!strcmp("verbose", value))
                     verbosity = PLAYER_MSG_VERBOSE;
@@ -432,23 +418,25 @@ void module_init(Enna_Module *em)
                     verbosity = PLAYER_MSG_NONE;
                 else
                     enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                            "   - unknown verbosity, 'warning' used instead");
+                             "   - unknown verbosity, 'warning' used instead");
             }
         }
     }
 
     if (!value)
         enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME,
-                " * use all parameters by default");
+                 " * use all parameters by default");
 
     mod = calloc(1, sizeof(Enna_Module_libplayer));
     mod->em = em;
     mod->evas = em->evas;
 
-    mod->key_down_event_handler  = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _x_event_key_down, NULL);
+    mod->key_down_event_handler =
+        ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _x_event_key_down, NULL);
+    mod->pipe = ecore_pipe_add(_pipe_read, NULL);
 
-    mod->player = player_init(type, ao, vo, verbosity,enna->ee_winid,
-            _event_cb);
+    mod->player =
+        player_init(type, ao, vo, verbosity, enna->ee_winid, _event_cb);
 
     if (!mod->player)
     {

@@ -36,10 +36,11 @@
 
 #define SMART_NAME "enna_image"
 
-typedef struct _smart_Data E_Smart_Data;
+typedef struct _Smart_Data E_Smart_Data;
 
-struct _smart_Data
+struct _Smart_Data
 {
+    Evas_Object *o_smart;
     Evas_Coord x, y, w, h;
     Evas_Object *obj;
     char fill_inside :1;
@@ -260,6 +261,17 @@ static void _enna_image_smart_reconfigure(E_Smart_Data * sd)
 
 }
 
+static void _enna_image_preload_cb(void *data, Evas *evas, Evas_Object *obj,
+    void *event_info)
+{
+    E_Smart_Data *sd = data;
+
+    if (!sd) return;
+
+    evas_object_smart_callback_call(sd->o_smart, "preload", NULL);
+
+}
+
 static void _enna_image_smart_init(void)
 {
     if (_e_smart)
@@ -285,8 +297,12 @@ static void _smart_add(Evas_Object * obj)
     sd->w = 0;
     sd->h = 0;
     sd->fill_inside = 1;
+    sd->o_smart = obj;
     evas_object_smart_member_add(sd->obj, obj);
     evas_object_smart_data_set(obj, sd);
+    evas_object_event_callback_add(sd->obj, EVAS_CALLBACK_IMAGE_PRELOADED,
+	_enna_image_preload_cb, sd);
+
 }
 
 static void _smart_del(Evas_Object * obj)

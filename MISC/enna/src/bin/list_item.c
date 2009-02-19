@@ -131,7 +131,6 @@ void enna_listitem_min_size_get(Evas_Object *obj, Evas_Coord *w,
 {
     API_ENTRY
     return;
-    Evas_Coord oh;
 
     evas_object_size_hint_min_get(sd->o_edje, w, h);
 }

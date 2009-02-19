@@ -100,12 +100,10 @@ void enna_location_append(Evas_Object *obj, const char *label,
     si->sd = sd;
     si->o_base = edje_object_add(evas_object_evas_get(sd->o_scroll));
 
-    if (eina_list_count(sd->items) & 0x1)
-        edje_object_file_set(si->o_base, enna_config_theme_get(),
-                "enna/location/item");
-    else
-        edje_object_file_set(si->o_base, enna_config_theme_get(),
-                "enna/location/item");
+
+    edje_object_file_set(si->o_base, enna_config_theme_get(),
+	"enna/location/item");
+
     if (label)
         edje_object_part_text_set(si->o_base, "enna.text.label", label);
 
@@ -125,12 +123,14 @@ void enna_location_append(Evas_Object *obj, const char *label,
 
     edje_object_size_min_calc(si->o_base, &mw, &mh);
 
+    mh = sd->h ? sd->h : 64;
+
     enna_box_pack_end(sd->o_box, si->o_base);
-    evas_object_size_hint_min_set(si->o_base, mw, sd->h);
+    evas_object_size_hint_min_set(si->o_base, mw, mh);
     evas_object_size_hint_align_set(si->o_base, 0, 0.5);
     evas_object_size_hint_weight_set(si->o_base, 1.0, 1.0);
 
-    mh = sd->h ? sd->h : 64;
+
 
     evas_object_size_hint_min_get(sd->o_box, &mw, NULL);
     evas_object_resize(sd->o_box, mw, sd->h);
@@ -210,7 +210,7 @@ int enna_location_count(Evas_Object *obj)
 static void _enna_location_smart_reconfigure(Smart_Data * sd)
 {
     Evas_Coord mw, w = 0;
-    Evas_List *l;
+    Eina_List *l;
 
 
     for (l = sd->items; l; l = l->next)
@@ -258,9 +258,9 @@ static void _smart_add(Evas_Object * obj)
     sd->h = 0;
     sd->items = NULL;
     sd->o_scroll = enna_scrollframe_add(evas_object_evas_get(obj));
-    enna_scrollframe_policy_set(sd->o_scroll, ENNA_SCROLLFRAME_POLICY_OFF,
-            ENNA_SCROLLFRAME_POLICY_OFF);
     enna_scrollframe_child_set(sd->o_scroll, sd->o_box);
+    enna_scrollframe_policy_set(sd->o_scroll, ENNA_SCROLLFRAME_POLICY_OFF,
+	ENNA_SCROLLFRAME_POLICY_OFF);
     sd->smart_obj = obj;
     evas_object_smart_member_add(sd->o_scroll, obj);
     evas_object_smart_data_set(obj, sd);

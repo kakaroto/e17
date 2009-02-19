@@ -70,8 +70,8 @@ int enna_util_has_suffix(char *str, Eina_List * patterns)
 unsigned char enna_util_uri_has_extension(const char *uri, int type)
 {
 
-    Evas_List *l;
-    Evas_List *filters = NULL;
+    Eina_List *l;
+    Eina_List *filters = NULL;
 
     if (type == ENNA_CAPS_MUSIC)
         filters = enna_config->music_filters;

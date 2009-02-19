@@ -16,8 +16,8 @@ spectra {
   }
   spectrum {
     name: "grey_gradient";
-    color: 109 109 109 70 1;
-    color: 85 85 85 80 1;
+    color: 34 34 34 255 1;
+    color: 01 01 01 255 1;
   }
 }
 
@@ -26,11 +26,11 @@ collections
 #include "background.edc"
 #include "mainmenu.edc"
 #include "content.edc"
-#include "music.edc"
-#include "video.edc"
+#include "music_video.edc"
 #include "photo.edc"
 #include "icons.edc"
 #include "list.edc"
+#include "browser.edc"
 #include "scrollframe.edc"
 #include "button.edc"
 #include "location.edc"
@@ -38,6 +38,7 @@ collections
 #include "video_info.edc"
 #include "slideshow.edc"
 #include "picture.edc"
+#include "mediacontrol.edc"
 
    group {
       name: "enna";

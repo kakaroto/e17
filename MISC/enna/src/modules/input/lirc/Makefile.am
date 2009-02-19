@@ -14,20 +14,20 @@ INCLUDES = \
 -I$(top_srcdir)/src/modules \
 @ENNA_CFLAGS@
 
-if BUILD_LIRC_MODULE
+if BUILD_INPUT_LIRC
 
 pkgdir = $(libdir)/enna/modules
 
-pkg_LTLIBRARIES = enna_module_lirc.la
+pkg_LTLIBRARIES = input_lirc.la
 
-enna_module_lirc_la_SOURCES= \
+input_lirc_la_SOURCES= \
 enna_module_lirc.c
 
-enna_module_lirc_la_LIBADD = @ENNA_LIBS@ @LIRC_LIBS@
-enna_module_lirc_la_LDFLAGS = -module -avoid-version
-enna_module_lirc_la_DEPENDENCIES = $(top_builddir)/config.h
+input_lirc_la_LIBADD = @ENNA_LIBS@ @LIRC_LIBS@
+input_lirc_la_LDFLAGS = -module -avoid-version
+input_lirc_la_DEPENDENCIES = $(top_builddir)/config.h
 
 uninstall:
-	rm -rf $(DESTDIR)$(libdir)/enna/modules/enna_module_$(MODULE).*
+	rm -rf $(DESTDIR)$(libdir)/enna/modules/input_$(MODULE).*
 
 endif

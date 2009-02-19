@@ -14,16 +14,20 @@ INCLUDES = \
 -I$(top_srcdir)/src/modules \
 @ENNA_CFLAGS@
 
+if BUILD_BROWSER_LOCALFILES
+
 pkgdir = $(libdir)/enna/modules
 
-pkg_LTLIBRARIES = enna_module_localfiles.la
+pkg_LTLIBRARIES = browser_localfiles.la
 
-enna_module_localfiles_la_SOURCES= \
+browser_localfiles_la_SOURCES= \
 enna_module_localfiles.c
 
-enna_module_localfiles_la_LIBADD = @ENNA_LIBS@
-enna_module_localfiles_la_LDFLAGS = -module -avoid-version
-enna_module_localfiles_la_DEPENDENCIES = $(top_builddir)/config.h
+browser_localfiles_la_LIBADD = @ENNA_LIBS@
+browser_localfiles_la_LDFLAGS = -module -avoid-version
+browser_localfiles_la_DEPENDENCIES = $(top_builddir)/config.h
 
 uninstall:
-	rm -rf $(DESTDIR)$(libdir)/enna/modules/enna_module_$(MODULE).*
+	rm -rf $(DESTDIR)$(libdir)/enna/modules/browser_$(MODULE).*
+
+endif

@@ -1,434 +1,438 @@
 group
 {
-    name: "enna/picture/item";
+   name: "enna/picture/item";
 
-    parts
-    {
-        part
-        {   name: "fg";
-            mouse_events: 0;
-            description
-            {   state: "default" 0.0;
-                visible: 0;
-                color: 255 255 255 0;
-                rel1.to: "bg";
-                rel2.to: "bg";
-                rel1.offset: -15 -15;
-                rel2.offset: 31 31;
-                image
-                {
-                    normal: "menu_sel_fg.png";
-                    border: 15 31 15 31;
-                }
-            }
-            description
-            {   state: "select" 0.0;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
-
-            }
-            description
-            {   state: "select" 0.1;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
-
-            }
-            description
-            {   state: "select" 0.2;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
-
-            }
-
-
-        }
-        part
-        {
-            name: "bg";
-            type: RECT;
-            mouse_events: 0;
-            description
+   parts
+   {
+      part
+      {   name: "fg";
+         mouse_events: 0;
+         description
+         {   state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: -15 -15;
+            rel2.offset: 31 31;
+            image
             {
-                state: "default" 0.0;
-                color: 255 255 255 0;
-                rel1
-                {
-                    relative: 0.0 0.0;
-                    offset: 10 10;
-                }
-                rel2
-                {
-                    relative: 1.0 1.0;
-                    offset: -9 -9;
+               normal: "menu_sel_fg.png";
+               border: 15 31 15 31;
+            }
+         }
+         description
+         {   state: "select" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
 
-                }
-            }
-            description
-            {
-                state: "select" 0.1;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 -0.2;
-                }
-                rel2
-                {
-                    relative: 1.2 1.2;
-                }
-            }
-            description
-            {
-                state: "select" 0.0;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 0;
-                }
-                rel2
-                {
-                    relative: 1.2 1.4;
-                }
-            }
-            description
-            {
-                state: "select" 0.2;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 -0.4;
-                }
-                rel2
-                {
-                    relative: 1.2 1;
-                }
-            }
-        }
-        part {
-           name: "shadow_picture";
-           type: IMAGE;
-           mouse_events: 0;
-           description
-           {
-              state: "default" 0.0;
-              visible: 1;
-              color: 255 255 255 255;
-              rel1 { relative: 0.0 0.0; to: "enna.swallow.icon"; }
-              rel2 { relative: 1.0 1.0; to: "enna.swallow.icon"; offset: 13 13; }
-              image.normal: "shadow.png";
-              image.border: 14 14 14 14;
-           }
-          description
-           {
-              state: "select" 0.0;
-              inherit: "default" 0.0;
-              visible: 0;
-              color: 255 255 255 0;
-           }
-        }
-        part
-        {
-            name: "enna.swallow.icon";
-            type: SWALLOW;
-            mouse_events: 0;
-            description
-            {
-                state: "default" 0.0;
-                rel1
-                {
-                    relative: 0.0 0.0;
-                    to: "bg";
-                    offset: 3 3;
-                }
-                rel2
-                {
-                    relative: 1.0 1.0;
-                    to: "bg";
-                    offset: -3 -3;
+         }
+         description
+         {   state: "select" 0.1;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
 
-                }
-            }
-        }
+         }
+         description
+         {   state: "select" 0.2;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
 
-        part
-        {
-            name: "event";
-            type: RECT;
-            mouse_events: 1;
-            repeat_events : 1;
-            description
+         }
+
+
+      }
+      part
+      {
+         name: "bg";
+         type: RECT;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1
             {
-                state: "default" 0.0;
-                color: 0 0 0 0;
-                rel1.to: "bg";
-                rel2.to: "bg";
+               relative: 0.0 0.0;
+               offset: 10 10;
             }
-        }
-    }
-    programs
-    {
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: -9 -9;
 
-        program
-        {   name: "sel0";
-            signal: "select0";
-            source: "enna";
-            action: STATE_SET "select" 0.0;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-        program
-        {   name: "sel1";
-            signal: "select1";
-            source: "enna";
-            action: STATE_SET "select" 0.1;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-        program
-        {   name: "sel2";
-            signal: "select2";
-            source: "enna";
-            action: STATE_SET "select" 0.2;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-        program
-        {   name: "unsel";
-            signal: "unselect";
-            source: "enna";
-            action: STATE_SET "default" 0.0;
-            transition: LINEAR 0.1;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-    }
+            }
+         }
+         description
+         {
+            state: "select" 0.1;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: -0.4 -0.4;
+            }
+            rel2
+            {
+               relative: 1.4 1.4;
+            }
+         }
+         description
+         {
+            state: "select" 0.0;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: -0.4 0;
+            }
+            rel2
+            {
+               relative: 1.4 1.8;
+            }
+         }
+         description
+         {
+            state: "select" 0.2;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: -0.4 -0.8;
+            }
+            rel2
+            {
+               relative: 1.4 1;
+            }
+         }
+      }
+      part {
+         name: "shadow_picture";
+         type: IMAGE;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1 { relative: 0.0 0.0; to: "enna.swallow.icon"; }
+            rel2 { relative: 1.0 1.0; to: "enna.swallow.icon"; offset: 13 13; }
+            image.normal: "shadow.png";
+            image.border: 14 14 14 14;
+         }
+         description
+         {
+            state: "select" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part
+      {
+         name: "enna.swallow.icon";
+         type: SWALLOW;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+               to: "bg";
+               offset: 3 3;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               to: "bg";
+               offset: -3 -3;
+
+            }
+         }
+      }
+
+      part
+      {
+         name: "event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events : 1;
+         description
+         {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+   }
+   programs
+   {
+
+      program
+      {   name: "sel0";
+         signal: "select0";
+         source: "enna";
+         action: STATE_SET "select" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+         target: "shadow_picture";
+      }
+      program
+      {   name: "sel1";
+         signal: "select1";
+         source: "enna";
+         action: STATE_SET "select" 0.1;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+         target: "shadow_picture";
+      }
+      program
+      {   name: "sel2";
+         signal: "select2";
+         source: "enna";
+         action: STATE_SET "select" 0.2;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+         target: "shadow_picture";
+      }
+      program
+      {   name: "unsel";
+         signal: "unselect";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "bg";
+         target: "fg";
+         target: "shadow_picture";
+      }
+   }
 }
 
 group
 {
-    name: "enna/picture/directory";
+   name: "enna/picture/info";
+   script {
+      public message(Msg_Type:type, id, ...) {
+         if ((type == MSG_INT_SET) && (id == 1)) {
+            /* Min Message (id == 1);*/
+            new x;
+            new y;
+            new w;
+            new h;
 
-    parts
-    {
-        part
-        {   name: "fg";
-            mouse_events: 0;
-            description
-            {   state: "default" 0.0;
-                visible: 0;
-                color: 255 255 255 0;
-                rel1.to: "bg";
-                rel2.to: "bg";
-                rel1.offset: -15 -15;
-                rel2.offset: 31 31;
-                image
-                {
-                    normal: "menu_sel_fg.png";
-                    border: 15 31 15 31;
-                }
-            }
-            description
-            {   state: "select" 0.0;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
+            x = getarg(2);
+            y = getarg(3);
+            w = getarg(4);
+            h = getarg(5);
+            custom_state(PART:"min", "default", 0.0);
+            set_state_val(PART:"min", STATE_REL1_OFFSET, x, y);
+            set_state_val(PART:"min", STATE_REL2_OFFSET, x + w, y + h);
+            set_state(PART:"min", "custom", 0.0);
+         }
+         if ((type == MSG_INT_SET) && (id == 2)) {
 
-            }
-            description
-            {   state: "select" 0.1;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
-
-            }
-            description
-            {   state: "select" 0.2;
-                inherit: "default" 0.0;
-                visible: 1;
-                color: 255 255 255 255;
-
-            }
+            new x;
+            new y;
+            new w;
+            new h;
 
 
-        }
-        part
-        {
-            name: "bg";
-            type: RECT;
-            mouse_events: 0;
-            description
+            x = getarg(2);
+            y = getarg(3);
+            w = getarg(4);
+            h = getarg(5);
+            custom_state(PART:"max", "default", 0.0);
+            set_state_val(PART:"max", STATE_REL1_OFFSET, x, y);
+            set_state_val(PART:"max", STATE_REL2_OFFSET, x + w, y + h);
+            set_state(PART:"max", "custom", 0.0);
+         }
+
+      }
+   }
+
+   parts
+   {
+
+      part { name: "clip";
+         mouse_events: 0;
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+      }
+
+
+      part { name: "min";
+         clip_to: "clip";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            rel1.to: "clip";
+            rel2.to: "clip";
+            rel2.relative: 0 0;
+         }
+      }
+      part { name: "max";
+         type: RECT;
+         clip_to: "clip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "clip";
+            visible: 0;
+            rel2.to: "clip";
+            rel2.relative: 0 0;
+         }
+      }
+
+      part { name: "enna.swallow.content";
+         type: SWALLOW;
+         clip_to: "clip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "min";
+            rel2.to: "min";
+         }
+         description { state: "show" 0.0;
+            color: 255 255 255 255;
+            rel1.to: "max";
+            rel2.to: "max";
+         }
+      }
+
+      part { name: "clip_exif";
+         type: "RECT";
+         clip_to: "clip";
+         description{ state: "default" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+         description{ state: "show" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "exif_bg";
+         type: RECT;
+         clip_to: "clip_exif";
+         description {
+            color: 0 0 0 200;
+            rel1.to: "enna.swallow.content";
+            rel2.to: "enna.swallow.content";
+         }
+
+      }
+      part { name: "enna.swallow.exif";
+         type: SWALLOW;
+         mouse_events: 1;
+         repeat_events: 1;
+         clip_to: "clip_exif";
+         description { state: "default" 0.0;
+            rel1.to: "enna.swallow.content";
+            rel2.to: "enna.swallow.content";
+         }
+      }
+      /*
+      part
+      {
+         name: "icon_bar";
+         clip_to: "clip";
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 180;
+            rel1.relative: 0 1;
+            rel1.offset: 0 -64;
+            rel2.relative: 1 1;
+            image
             {
-                state: "default" 0.0;
-                color: 255 255 255 0;
-                rel1
-                {
-                    relative: 0.0 0.0;
-                    offset: 10 10;
-                }
-                rel2
-                {
-                    relative: 1.0 1.0;
-                    offset: -9 -9;
-
-                }
+               normal: "title_bar.png";
+               border: 0 0 0 0;
             }
-            description
-            {
-                state: "select" 0.1;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 -0.2;
-                }
-                rel2
-                {
-                    relative: 1.2 1.2;
-                }
+            fill {
+               smooth: 0;
+               size
+               {
+                  relative: 0 0;
+                  offset: 97 97;
+               }
             }
-            description
-            {
-                state: "select" 0.0;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 0;
-                }
-                rel2
-                {
-                    relative: 1.2 1.4;
-                }
+         }
+         }*/
+   }
+   programs
+   {
+      program { name: "show";
+         signal: "show";
+         source: "enna";
+         action: STATE_SET "show" 0.0;
+         transition: DECELERATE 0.4;
+         target: "enna.swallow.content";
+      }
+      program { name: "hide";
+         signal: "hide";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.4;
+         target: "enna.swallow.content";
+         after:  "done";
+      }
+      program {name: "hide,exif";
+         signal: "hide,exif";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 0.4;
+         target: "clip_exif";
+      }
+      program {name: "show,exif";
+         signal: "show,exif";
+         source: "enna";
+         action: STATE_SET "show" 0.0;
+         transition: SINUSOIDAL 0.4;
+         target: "clip_exif";
+      }
+      program { name: "done";
+         action:  SIGNAL_EMIT "done" "";
+      }
+   }
+}
+
+group { name: "exif/data";
+   styles
+   {
+      style { name: "textblock_style";
+         base: "font=content font_size=14 align=left color=#FFF wrap=word";
+
+         tag:  "br" "\n";
+         tag:  "hilight" "+ font_size=16 + font=content_bd + color=#999";
+         tag:  "b" "+ font=Sans:style=Bold";
+      }
+   }
+   parts {
+
+      part { name: "enna.text.exif";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 0 0;
+            rel1.offset: 10 10;
+            rel2.relative: 1 1;
+            rel2.offset: -11 -11;
+            text {
+               style: "textblock_style";
+               min: 1 1;
+
             }
-            description
-            {
-                state: "select" 0.2;
-                inherit: "default" 0.0;
-                rel1
-                {
-                    relative: -0.2 -0.4;
-                }
-                rel2
-                {
-                    relative: 1.2 1;
-                }
-            }
-        }
-        part {
-           name: "shadow_picture";
-           type: RECT;
-           mouse_events: 0;
-           description
-           {
-              state: "default" 0.0;
-              visible: 1;
-              color: 255 255 255 255;
-               rel1 { relative: 0.0 0.0; to: "enna.swallow.icon"; offset: -3 -3;}
-               rel2 { relative: 1.0 1.0; to: "enna.swallow.icon"; offset: -3 -3; }
+         }
+      }
 
-           }
-        }
-        part {
-           name: "shadow_picture2";
-           type: RECT;
-           mouse_events: 0;
-           description
-           {
-              state: "default" 0.0;
-              visible: 1;
-              color: 255 255 255 255;
-              rel1 { relative: 0.0 0.0; to: "shadow_picture"; offset: -3 -3;}
-              rel2 { relative: 1.0 1.0; to: "shadow_picture"; offset: -3 -3;}
-
-           }
-        }
-        part
-        {
-            name: "enna.swallow.icon";
-            type: SWALLOW;
-            mouse_events: 0;
-            description
-            {
-                state: "default" 0.0;
-                rel1
-                {
-                    relative: 0.0 0.0;
-                    to: "bg";
-                    offset: 3 3;
-                }
-                rel2
-                {
-                    relative: 1.0 1.0;
-                    to: "bg";
-                    offset: -3 -3;
-
-                }
-            }
-        }
-
-        part
-        {
-            name: "event";
-            type: RECT;
-            mouse_events: 1;
-            repeat_events : 1;
-            description
-            {
-                state: "default" 0.0;
-                color: 0 0 0 0;
-                rel1.to: "bg";
-                rel2.to: "bg";
-            }
-        }
-    }
-    programs
-    {
-
-        program
-        {   name: "sel0";
-            signal: "select0";
-            source: "enna";
-            action: STATE_SET "select" 0.0;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-        }
-        program
-        {   name: "sel1";
-            signal: "select1";
-            source: "enna";
-            action: STATE_SET "select" 0.1;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-        program
-        {   name: "sel2";
-            signal: "select2";
-            source: "enna";
-            action: STATE_SET "select" 0.2;
-            transition: LINEAR 0.2;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-        program
-        {   name: "unsel";
-            signal: "unselect";
-            source: "enna";
-            action: STATE_SET "default" 0.0;
-            transition: LINEAR 0.1;
-            target: "bg";
-            target: "fg";
-            target: "shadow_picture";
-        }
-    }
+   }
 }

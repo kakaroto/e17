@@ -1,10 +1,9 @@
-#define STOCK_ICON(icon_file, icon_name, size) \
+#define STOCK_ICON(icon_file, icon_name) \
 images { \
    image: icon_file COMP; \
 } \
 group { \
    name: icon_name; \
-   min: size size;                           \
    parts { \
       part { \
          name: "icon"; \
@@ -25,38 +24,55 @@ group { \
 }
 
 
+STOCK_ICON("icon_music.png", "icon/music")
+STOCK_ICON("icon_video.png", "icon/video")
+STOCK_ICON("icon_photo.png", "icon/photo")
+STOCK_ICON("icon_music_mini.png", "icon/music_mini");
+STOCK_ICON("icon_home_mini.png", "icon/home_mini");
+STOCK_ICON("icon_library.png", "icon/library")
+STOCK_ICON("icon_album.png",  "icon/album")
+STOCK_ICON("icon_artist.png",  "icon/artist")
+STOCK_ICON("icon_genre.png",  "icon/genre")
+STOCK_ICON("icon_song.png",  "icon/song")
 
-/* STOCK_ICON("icon_tv.png", "icon_tv", 128) */
-/* STOCK_ICON("icon_pl.png", "icon_pl", 128) */
-STOCK_ICON("icon_music.png", "icon/music", 128)
-STOCK_ICON("icon_video.png", "icon/video", 128)
-STOCK_ICON("icon_photo.png", "icon/photo", 128)
-STOCK_ICON("icon_music_mini.png", "icon/music_mini", 32);
-STOCK_ICON("icon_home_mini.png", "icon/home_mini", 32);
-STOCK_ICON("icon_library.png", "icon/library", 200)
-STOCK_ICON("icon_album.png",  "icon/album", 200)
-STOCK_ICON("icon_artist.png",  "icon/artist", 200)
-STOCK_ICON("icon_genre.png",  "icon/genre", 200)
-STOCK_ICON("icon_song.png",  "icon/song", 200)
-/* STOCK_ICON("icon_cdrom.png",  "icon_cdrom", 128) */
-/* STOCK_ICON("icon_dvdrom.png",  "icon_dvdrom", 128) */
-/* STOCK_ICON("icon_dvdvideo.png",  "icon_dvdvideo", 128) */
-/* STOCK_ICON("icon_usbdisk.png",  "icon_usbdisk", 128) */
-STOCK_ICON("icon_hd.png",  "icon/hd", 128)
-STOCK_ICON("icon_directory.png",  "icon/directory", 128)
-/* STOCK_ICON("icon_ipod.png",  "icon_ipod", 128) */
-/* STOCK_ICON("icon_radio.png",  "icon_radio", 128) */
-/* STOCK_ICON("icon_new.png",  "icon_new", 128) */
-/* STOCK_ICON("icon_save.png",  "icon_save", 128) */
-/* STOCK_ICON("icon_open.png",  "icon_open", 128) */
-/* STOCK_ICON("icon_play.png",  "icon_play", 128) */
-/* STOCK_ICON("icon_stop.png",  "icon_stop", 128) */
-/* STOCK_ICON("icon_pause.png",  "icon_pause", 128) */
-/* STOCK_ICON("icon_artist.png",  "icon_artist", 128) */
-/* STOCK_ICON("icon_album.png",  "icon_album", 128) */
-//STOCK_ICON("icon_unknown.png",  "icon_unknown", 128)
-STOCK_ICON("unknown_cover.png",  "icon/unknown_cover", 600)
-STOCK_ICON("icon_shoutcast.png", "icon/shoutcast", 256)
-STOCK_ICON("icon_freeboxtv.png", "icon/freeboxtv", 256)
-STOCK_ICON("icon_nofile.png", "icon_nofile", 256)
-STOCK_ICON("arrow_left.png", "icon/arrow_left", 256)
+STOCK_ICON("icon_hd.png",  "icon/hd")
+STOCK_ICON("icon_directory.png",  "icon/directory")
+
+STOCK_ICON("unknown_cover.png",  "icon/unknown_cover")
+STOCK_ICON("icon_shoutcast.png", "icon/shoutcast")
+STOCK_ICON("icon_freeboxtv.png", "icon/freeboxtv")
+STOCK_ICON("icon_upnp.png",      "icon/upnp")
+STOCK_ICON("icon_nofile.png", "icon_nofile")
+STOCK_ICON("arrow_left.png", "icon/arrow_left")
+
+STOCK_ICON("dev_bluetooth.png",     "icon/dev/bluetooth")
+STOCK_ICON("dev_camera.png",        "icon/dev/camera")
+STOCK_ICON("dev_cdda2.png",         "icon/dev/cdda2")
+STOCK_ICON("dev_cdda.png",          "icon/dev/cdda")
+STOCK_ICON("dev_cdrom.png",         "icon/dev/cdrom")
+STOCK_ICON("dev_cdrw.png",          "icon/dev/cdrw")
+STOCK_ICON("dev_dvd.png",           "icon/dev/dvd")
+STOCK_ICON("dev_hdd.png",           "icon/dev/hdd")
+STOCK_ICON("dev_ipod.png",          "icon/dev/ipod" )
+STOCK_ICON("dev_mem_card.png",      "icon/dev/memorycard")
+STOCK_ICON("dev_tv.png",            "icon/dev/tv")
+STOCK_ICON("dev_nfs.png",           "icon/dev/nfs")
+STOCK_ICON("dev_photo.png",         "icon/dev/photo")
+STOCK_ICON("dev_samba.png",         "icon/dev/samba")
+STOCK_ICON("dev_usb_stick.png",     "icon/dev/usbstick")
+
+STOCK_ICON("folder_favorites.png",  "icon/favorite")
+
+/* File type icons */
+STOCK_ICON("icon_music.png", "icon/file/music")
+STOCK_ICON("icon_video.png", "icon/file/video")
+STOCK_ICON("icon_photo.png", "icon/file/photo")
+
+/*Mediacontrol*/
+STOCK_ICON("mp_play.png",     "icon/mp_play")
+STOCK_ICON("mp_pause.png",     "icon/mp_pause")
+STOCK_ICON("mp_next.png",     "icon/mp_next")
+STOCK_ICON("mp_prev.png",     "icon/mp_prev")
+STOCK_ICON("mp_rewind.png",     "icon/mp_rewind")
+STOCK_ICON("mp_forward.png",     "icon/mp_forward")
+STOCK_ICON("mp_stop.png",     "icon/mp_stop")

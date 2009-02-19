@@ -4,6 +4,15 @@
 typedef struct _Enna_Metadata Enna_Metadata;
 typedef struct _Enna_Metadata_Video Enna_Metadata_Video;
 typedef struct _Enna_Metadata_Music Enna_Metadata_Music;
+typedef struct _Enna_Metadata_Grabber Enna_Metadata_Grabber;
+
+typedef enum
+{
+    ENNA_METADATA_UNKNOWN,
+    ENNA_METADATA_AUDIO,
+    ENNA_METADATA_VIDEO,
+    ENNA_METADATA_PHOTO,
+} Enna_Metadata_Type;
 
 struct _Enna_Metadata_Music
 {
@@ -37,17 +46,50 @@ struct _Enna_Metadata_Video
 
 struct _Enna_Metadata
 {
+    Enna_Metadata_Type type;
     char *uri;
+    char *md5;
+    char *keywords;
     char *title;
     int size; /* in Bytes */
-    int type;
     int length; /* in seconds */
+    char *overview;
+    int runtime;
+    int year;
+    char *categories;
+    char *cover;
+    char *snapshot;
+    char *backdrop;
+    int parsed;
     Enna_Metadata_Video *video;
     Enna_Metadata_Music *music;
 
 };
 
-Enna_Metadata *enna_metadata_new();
+#define ENNA_GRABBER_CAP_AUDIO       0x0001  /* audio metadata: id3tags ... */
+#define ENNA_GRABBER_CAP_VIDEO       0x0002  /* video metadata: fourccs ... */
+#define ENNA_GRABBER_CAP_PICTURE     0x0004  /* photo metadata: exif ... */
+#define ENNA_GRABBER_CAP_COVER       0x0008  /* covers, thumbs, snapshots */
+
+#define ENNA_GRABBER_PRIORITY_MAX 1
+#define ENNA_GRABBER_PRIORITY_MIN 10
+
+struct _Enna_Metadata_Grabber
+{
+    char *name;
+    int priority;
+    int require_network;
+    int caps;
+    void (* grab) (Enna_Metadata *meta, int caps);
+};
+
+void enna_metadata_init (void);
+Enna_Metadata *enna_metadata_new(char *uri);
 void enna_metadata_free(Enna_Metadata *m);
+void enna_metadata_add_keywords (Enna_Metadata *meta, char *keywords);
+void enna_metadata_add_category (Enna_Metadata *meta, char *category);
+void enna_metadata_add_grabber (Enna_Metadata_Grabber *grabber);
+void enna_metadata_remove_grabber (char *name);
+void enna_metadata_grab (Enna_Metadata *meta, int caps);
 
 #endif

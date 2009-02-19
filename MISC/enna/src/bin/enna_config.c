@@ -42,6 +42,8 @@
     "fullscreen=0\n"							\
     "\n"								\
     "#0,1\n"								\
+    "use_network=1\n"							\
+    "\n"								\
     "use_covers=1\n"							\
     "\n"								\
     "#0,1\n"								\
@@ -51,14 +53,14 @@
     "#located at /usr/share/enna/theme/default.edj\n"			\
     "theme=default\n"							\
     "\n"								\
-    "#x11,xrender,gl,x11_16\n"						\
-    "engine=x11\n"							\
+    "#software_x11,xrender_x11,opengl_x11,software_x11_16\n"						\
+    "engine=software_x11\n"							\
     "\n"								\
     "#libplayer,emotion\n"						\
     "backend=libplayer\n"						\
     "\n"								\
     "music_ext=3gp,aac,ape,apl,flac,m4a,mac,mka,mp2,mp3,mp4,mpc,ogg,ra,wav,wma\n" \
-    "video_ext=asf,avi,divx,dvr-ms,evo,flv,m1v,m2v,m4p,m4v,mkv,mov,mp4,mp4v,mpe,mpeg,mpg,ogm,qt,rm,rmvb,swf,ts,vdr,vob,vro,wmv,y4m\n" \
+    "video_ext=asf,avi,divx,dvr-ms,evo,flc,fli,flv,m1v,m2v,m4p,m4v,mkv,mov,mp4,mp4v,mpe,mpeg,mpg,ogm,qt,rm,rmvb,swf,ts,vdr,vob,vro,wmv,y4m\n" \
     "photo_ext=jpg,jpeg,png,gif,tif,tiff,xpm\n"				\
     "\n"								\
     "[emotion]\n"							\
@@ -82,16 +84,19 @@
     "#verbose,info,warning,error,critical,none\n"			\
     "#verbosity=\n"							\
     "\n"								\
+    "# Metadata module (video)\n"					\
+    "blacklist_keywords=1080p,720p,ctu,divx,dvdrip,dvdscr,fqm,hdtv,lol,notv,pdtv,screencam,screener,vtv,x264,xvid\n" \
+    "\n"								\
     "[localfiles]\n"							\
-    "path_music=file:///path/to/Music,Music,icon_hd\n"			\
-    "path_music=file:///path/to/server/Medias/Music,Server,icon_network\n" \
-    "path_video=file:///path/to/Videos,Videos,icon_hd\n"		\
-    "path_video=file:///path/to/server/Medias/Videos,Server,icon_network\n" \
-    "path_photo=file:///path/to/Photos,Photos,icon_hd\n"		\
-    "path_photo=file:///path/to/server/Medias/Photos,Server,icon_network\n" \
+    "path_music=file:///path/to/Music,Music,icon/favorite\n"			\
+    "path_music=file:///path/to/server/Medias/Music,Server,icon/dev/nfs\n" \
+    "path_video=file:///path/to/Videos,Videos,icon/favorite\n"		\
+    "path_video=file:///path/to/server/Medias/Videos,Server,icon/dev/nfs\n" \
+    "path_photo=file:///path/to/Photos,Photos,icon/favorite\n"		\
+    "path_photo=file:///path/to/server/Medias/Photos,Server,icon/dev/nfs\n" \
     "\n"								\
     "[netstreams]\n"							\
-    "stream_video=http://mafreebox.freebox.fr/freeboxtv/playlist.m3u,FreeboxTV,icon_freeboxtv\n" \
+    "stream_video=http://mafreebox.freebox.fr/freeboxtv/playlist.m3u,FreeboxTV,icon/freeboxtv\n" \
     "\n"								\
     "[lms]\n"								\
     "path=file:///path/to/Music\n"					\
@@ -108,7 +113,7 @@
 
 static Evas_Hash *hash_config;
 
-static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
+static Eina_Bool _hash_foreach(const Eina_Hash *hash, const char *key,
         void *data, void *fdata);
 static Evas_Hash *_config_load_conf_file(char *filename);
 static Evas_Hash *_config_load_conf(char *conffile, int size);
@@ -207,7 +212,7 @@ void enna_config_shutdown()
 
 }
 
-static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
+static Eina_Bool _hash_foreach(const Eina_Hash *hash, const char *key,
         void *data, void *fdata)
 {
     Enna_Config_Data *config_data;
@@ -223,6 +228,9 @@ static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
             enna_config->theme_file
                     = enna_config_theme_file_get(enna_config->theme);
             enna_config_value_store(&enna_config->fullscreen, "fullscreen",
+                    ENNA_CONFIG_INT, pair);
+            enna_config->use_network = 1;
+            enna_config_value_store(&enna_config->use_network, "use_network",
                     ENNA_CONFIG_INT, pair);
             enna_config->use_covers = 1;
             enna_config_value_store(&enna_config->use_covers, "use_covers",

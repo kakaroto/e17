@@ -15,73 +15,75 @@ static Eina_List *_input_modules;
 static const struct
 {
     const char *keyname;
+    const char *modifier;
     enna_key_t keycode;
 } enna_keymap[] = {
-    { "Left",                       ENNA_KEY_LEFT          },
-    { "Right",                      ENNA_KEY_RIGHT         },
-    { "Up",                         ENNA_KEY_UP            },
-    { "KP_Up",                      ENNA_KEY_UP            },
-    { "Down",                       ENNA_KEY_DOWN          },
-    { "KP_Down",                    ENNA_KEY_DOWN          },
-    { "Home",                       ENNA_KEY_HOME          },
-    { "KP_Home",                    ENNA_KEY_HOME          },
-    { "End",                        ENNA_KEY_END           },
-    { "KP_End",                     ENNA_KEY_END           },
-    { "Prior",                      ENNA_KEY_PAGE_UP       },
-    { "Next",                       ENNA_KEY_PAGE_DOWN     },
-    { "Return",                     ENNA_KEY_OK            },
-    { "KP_Enter",                   ENNA_KEY_OK            },
-    { "BackSpace",                  ENNA_KEY_CANCEL        },
-    { "space",                      ENNA_KEY_SPACE         },
-    { "Escape",                     ENNA_KEY_QUIT          },
-    { "Super_L",                    ENNA_KEY_MENU          },
-    { "0",                          ENNA_KEY_0             },
-    { "KP_0",                       ENNA_KEY_0             },
-    { "1",                          ENNA_KEY_1             },
-    { "KP_1",                       ENNA_KEY_1             },
-    { "2",                          ENNA_KEY_2             },
-    { "KP_2",                       ENNA_KEY_2             },
-    { "3",                          ENNA_KEY_3             },
-    { "KP_3",                       ENNA_KEY_3             },
-    { "4",                          ENNA_KEY_4             },
-    { "KP_4",                       ENNA_KEY_4             },
-    { "5",                          ENNA_KEY_5             },
-    { "KP_5",                       ENNA_KEY_5             },
-    { "6",                          ENNA_KEY_6             },
-    { "KP_6",                       ENNA_KEY_6             },
-    { "7",                          ENNA_KEY_7             },
-    { "KP_7",                       ENNA_KEY_7             },
-    { "8",                          ENNA_KEY_8             },
-    { "KP_8",                       ENNA_KEY_8             },
-    { "9",                          ENNA_KEY_9             },
-    { "KP_9",                       ENNA_KEY_9             },
-    { "a",                          ENNA_KEY_A             },
-    { "b",                          ENNA_KEY_B             },
-    { "c",                          ENNA_KEY_C             },
-    { "d",                          ENNA_KEY_D             },
-    { "e",                          ENNA_KEY_E             },
-    { "f",                          ENNA_KEY_F             },
-    { "g",                          ENNA_KEY_G             },
-    { "h",                          ENNA_KEY_H             },
-    { "i",                          ENNA_KEY_I             },
-    { "j",                          ENNA_KEY_J             },
-    { "k",                          ENNA_KEY_K             },
-    { "l",                          ENNA_KEY_L             },
-    { "m",                          ENNA_KEY_M             },
-    { "n",                          ENNA_KEY_N             },
-    { "o",                          ENNA_KEY_O             },
-    { "p",                          ENNA_KEY_P             },
-    { "q",                          ENNA_KEY_Q             },
-    { "r",                          ENNA_KEY_R             },
-    { "s",                          ENNA_KEY_S             },
-    { "t",                          ENNA_KEY_T             },
-    { "u",                          ENNA_KEY_U             },
-    { "v",                          ENNA_KEY_V             },
-    { "w",                          ENNA_KEY_W             },
-    { "x",                          ENNA_KEY_X             },
-    { "y",                          ENNA_KEY_Y             },
-    { "z",                          ENNA_KEY_Z             },
-    { NULL,                         ENNA_KEY_UNKNOWN       }
+    { "Left",         0,              ENNA_KEY_LEFT          },
+    { "Right",        0,              ENNA_KEY_RIGHT         },
+    { "Up",           0,              ENNA_KEY_UP            },
+    { "KP_Up",        0,              ENNA_KEY_UP            },
+    { "Down",         0,              ENNA_KEY_DOWN          },
+    { "KP_Down",      0,              ENNA_KEY_DOWN          },
+    { "Home",         0,              ENNA_KEY_HOME          },
+    { "KP_Home",      0,              ENNA_KEY_HOME          },
+    { "End",          0,              ENNA_KEY_END           },
+    { "KP_End",       0,              ENNA_KEY_END           },
+    { "Prior",        0,              ENNA_KEY_PAGE_UP       },
+    { "Next",         0,              ENNA_KEY_PAGE_DOWN     },
+    { "Return",       0,              ENNA_KEY_OK            },
+    { "KP_Enter",     0,              ENNA_KEY_OK            },
+    { "BackSpace",    0,              ENNA_KEY_CANCEL        },
+    { "space",        0,              ENNA_KEY_SPACE         },
+    { "Escape",       0,              ENNA_KEY_QUIT          },
+    { "Super_L",      0,              ENNA_KEY_MENU          },
+    { "0",            0,              ENNA_KEY_0             },
+    { "KP_0",         0,              ENNA_KEY_0             },
+    { "1",            0,              ENNA_KEY_1             },
+    { "KP_1",         0,              ENNA_KEY_1             },
+    { "2",            0,              ENNA_KEY_2             },
+    { "KP_2",         0,              ENNA_KEY_2             },
+    { "3",            0,              ENNA_KEY_3             },
+    { "KP_3",         0,              ENNA_KEY_3             },
+    { "4",            0,              ENNA_KEY_4             },
+    { "KP_4",         0,              ENNA_KEY_4             },
+    { "5",            0,              ENNA_KEY_5             },
+    { "KP_5",         0,              ENNA_KEY_5             },
+    { "6",            0,              ENNA_KEY_6             },
+    { "KP_6",         0,              ENNA_KEY_6             },
+    { "7",            0,              ENNA_KEY_7             },
+    { "KP_7",         0,              ENNA_KEY_7             },
+    { "8",            0,              ENNA_KEY_8             },
+    { "KP_8",         0,              ENNA_KEY_8             },
+    { "9",            0,              ENNA_KEY_9             },
+    { "KP_9",         0,              ENNA_KEY_9             },
+    { "a",            0,              ENNA_KEY_A             },
+    { "b",            0,              ENNA_KEY_B             },
+    { "c",            0,              ENNA_KEY_C             },
+    { "d",            0,              ENNA_KEY_D             },
+    { "e",            0,              ENNA_KEY_E             },
+    { "f",            "Control",      ENNA_KEY_FULLSCREEN    },
+    { "f",            0,              ENNA_KEY_F             },
+    { "g",            0,              ENNA_KEY_G             },
+    { "h",            0,              ENNA_KEY_H             },
+    { "i",            0,              ENNA_KEY_I             },
+    { "j",            0,              ENNA_KEY_J             },
+    { "k",            0,              ENNA_KEY_K             },
+    { "l",            0,              ENNA_KEY_L             },
+    { "m",            0,              ENNA_KEY_M             },
+    { "n",            0,              ENNA_KEY_N             },
+    { "o",            0,              ENNA_KEY_O             },
+    { "p",            0,              ENNA_KEY_P             },
+    { "q",            0,              ENNA_KEY_Q             },
+    { "r",            0,              ENNA_KEY_R             },
+    { "s",            0,              ENNA_KEY_S             },
+    { "t",            0,              ENNA_KEY_T             },
+    { "u",            0,              ENNA_KEY_U             },
+    { "v",            0,              ENNA_KEY_V             },
+    { "w",            0,              ENNA_KEY_W             },
+    { "x",            0,              ENNA_KEY_X             },
+    { "y",            0,              ENNA_KEY_Y             },
+    { "z",            0,              ENNA_KEY_Z             },
+    { NULL,           0,             ENNA_KEY_UNKNOWN       }
 };
 
 /* Static functions */
@@ -111,11 +113,27 @@ enna_get_key (void *event)
     if (!ev)
     return ENNA_KEY_UNKNOWN;
 
-    enna_log (ENNA_MSG_EVENT, NULL, "Key pressed : %s", ev->key);
-
     for (i = 0; enna_keymap[i].keyname; i++)
-    if (!strcmp (enna_keymap[i].keyname, ev->key))
-    return enna_keymap[i].keycode;
+
+    {
+	/* Test First if modifer is set and is different than "None"*/
+	if (enna_keymap[i].modifier
+	    && evas_key_modifier_is_set (ev->modifiers, enna_keymap[i].modifier)
+	    && !strcmp (enna_keymap[i].keyname, ev->key) )
+	{
+	    enna_log (ENNA_MSG_EVENT, NULL, "Key pressed : [%s] + %s",
+		enna_keymap[i].modifier,
+		enna_keymap[i] );
+	    return enna_keymap[i].keycode;
+	}
+	/* Else just test if keyname match */
+	else if (!enna_keymap[i].modifier && !strcmp (enna_keymap[i].keyname, ev->key))
+	{
+	    enna_log (ENNA_MSG_EVENT, NULL, "Key pressed : %s",
+		enna_keymap[i] );
+	    return enna_keymap[i].keycode;
+	}
+    }
 
     return ENNA_KEY_UNKNOWN;
 }
@@ -138,7 +156,7 @@ char enna_key_get_alpha(enna_key_t key)
 
 void enna_input_init()
 {
-#ifdef BUILD_LIRC_MODULE
+#ifdef BUILD_INPUT_LIRC
     Enna_Module *em;
     Input_Module_Item *item;
 #endif
@@ -148,8 +166,8 @@ void enna_input_init()
 
     _input_modules = NULL;
 
-#ifdef BUILD_LIRC_MODULE
-    em = enna_module_open("lirc", enna->evas);
+#ifdef BUILD_INPUT_LIRC
+    em = enna_module_open("lirc", ENNA_MODULE_INPUT, enna->evas);
     item = calloc(1, sizeof(Input_Module_Item));
     item->module = em;
     _input_modules = eina_list_append(_input_modules, item);
