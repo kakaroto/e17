@@ -3,3 +3,4 @@ src/e_mod_main.c
 src/e_mod_main.h
 src/popup.c
 src/wired_dialog.c
+src/network_dialog.c
