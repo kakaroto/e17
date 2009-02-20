@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Drawer\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-23 18:23+0100\n"
-"PO-Revision-Date: 2008-12-23 20:57+0100\n"
+"POT-Creation-Date: 2009-02-20 17:51+0100\n"
+"PO-Revision-Date: 2009-02-20 17:56+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Impostazioni plugin sorgenti"
 msgid "View settings"
 msgstr "Impostazioni plugin viste"
 
-#: src/e_mod_main.c:153
+#: src/e_mod_main.c:156
 msgid ""
 "Drawer Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -56,17 +56,17 @@ msgid ""
 "set of defaults will fix<br>that by adding it in. You can re-configure "
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
-"I dati di configurazione del modulo Drawer avevano bisogno di essere<br>"
-"aggiornati. La vostra vecchia configurazione è stata cancellata ed è<br>"
-"stato inizializzato un nuovo set di impostazioni predefinite. Questo<br>"
-"avverrà regolarmente durante lo sviluppo, quindi non riportate bug.<br>"
-"Questo significa semplicemente che il modulo ha bisogno di nuovi<br>"
-"dati predefiniti di configurazione per funzionalità mancanti nella<br>"
-"vecchia configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>"
-"quei dati. Potete riconfigurare le cose a vostro piacimento. Ci<br>"
-"scusiamo per l'inconveniente."
+"I dati di configurazione del modulo Drawer avevano bisogno di "
+"essere<br>aggiornati. La vostra vecchia configurazione è stata cancellata ed "
+"è<br>stato inizializzato un nuovo set di impostazioni predefinite. "
+"Questo<br>avverrà regolarmente durante lo sviluppo, quindi non riportate bug."
+"<br>Questo significa semplicemente che il modulo ha bisogno di nuovi<br>dati "
+"predefiniti di configurazione per funzionalità mancanti nella<br>vecchia "
+"configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>quei dati. "
+"Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
+"l'inconveniente."
 
-#: src/e_mod_main.c:173
+#: src/e_mod_main.c:176
 msgid ""
 "Your Drawer Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -74,75 +74,106 @@ msgid ""
 "module was running. This is bad and<br>as a precaution your configuration "
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
-"La vostra configurazione del modulo Drawer è più NUOVA della<br>"
-"versione del modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>"
-"che siate passati ad una vecchia versione del modulo Drawer o avete<br>"
-"copiato la configurazione di un sistema su cui gira una versione<br>"
-"più nuova del modulo. A scopo precauzionale la vostra<br>"
-"configurazione è stata adesso ripristinata ai valori predefiniti.<br>"
-"Ci scusiamo per l'inconveniente."
+"La vostra configurazione del modulo Drawer è più NUOVA della<br>versione del "
+"modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>che siate "
+"passati ad una vecchia versione del modulo Drawer o avete<br>copiato la "
+"configurazione di un sistema su cui gira una versione<br>più nuova del "
+"modulo. A scopo precauzionale la vostra<br>configurazione è stata adesso "
+"ripristinata ai valori predefiniti.<br>Ci scusiamo per l'inconveniente."
 
-#: src/e_mod_main.c:395
+#: src/e_mod_main.c:398
 msgid "The plugin is not configurable"
 msgstr "Il plugin non è configurabile"
 
-#: src/e_mod_main.c:722 src/e_mod_main.c:730 src/e_mod_main.c:744
-#: src/e_mod_main.c:756 src/e_mod_main.c:822 src/e_mod_main.c:865
+#: src/e_mod_main.c:725 src/e_mod_main.c:733 src/e_mod_main.c:747
+#: src/e_mod_main.c:759 src/e_mod_main.c:825 src/e_mod_main.c:868
 msgid "Drawer Plugins"
 msgstr "Plugin di Drawer"
 
-#: src/e_mod_main.c:723
+#: src/e_mod_main.c:726
 #, c-format
 msgid "The plugin '%s' was not found."
 msgstr "Il plugin '%s' non è stato trovato."
 
-#: src/e_mod_main.c:731
+#: src/e_mod_main.c:734
 #, c-format
 msgid "The plugin '%s' could not be opened."
 msgstr "Non è stato possibile aprire il plugin '%s'."
 
-#: src/e_mod_main.c:745 src/e_mod_main.c:823 src/e_mod_main.c:866
+#: src/e_mod_main.c:748 src/e_mod_main.c:826 src/e_mod_main.c:869
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
 msgstr "Il plugin '%s' non contiene tutte le funzioni richieste."
 
-#: src/e_mod_main.c:757
+#: src/e_mod_main.c:760
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
 msgstr "Il plugin '%s' non ha la versione di API richiesta."
 
-#: src/e_mod_main.c:1005
+#: src/e_mod_main.c:1008
 msgid "Drawer"
 msgstr "Drawer"
 
-#: src/e_mod_main.c:1090
+#: src/e_mod_main.c:1093
 msgid "Drawer Configuration Updated"
 msgstr "Configurazione di Drawer aggiornata"
 
-#: src/e_mod_main.c:1320
+#: src/e_mod_main.c:1322
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: src/plugins/sources/directory_watcher.c:209
+#: src/plugins/sources/directory_watcher.c:250
 msgid "Directory Watcher settings"
 msgstr "Impostazioni controllore directory"
 
-#: src/plugins/sources/directory_watcher.c:245
+#: src/plugins/sources/directory_watcher.c:286
 msgid "Home"
 msgstr "Home"
 
-#: src/plugins/sources/directory_watcher.c:312
+#: src/plugins/sources/directory_watcher.c:353
 #, c-format
 msgid "Directory (%s)"
 msgstr "Directory (%s)"
 
-#: src/plugins/sources/directory_watcher.c:378
+#: src/plugins/sources/directory_watcher.c:421
 msgid "Drawer Plugin : Directory Watcher"
 msgstr "Plugin di Drawer: controllore directory"
 
-#: src/plugins/sources/directory_watcher.c:417
+#: src/plugins/sources/directory_watcher.c:464
 msgid "Watch path"
 msgstr "Controlla percorso"
+
+#: src/plugins/sources/directory_watcher.c:470
+msgid "Custom file manager"
+msgstr "File manager personalizzato"
+
+#: src/plugins/sources/directory_watcher.c:476
+msgid "Sort Options"
+msgstr "Opzioni per ordinamento"
+
+#: src/plugins/sources/directory_watcher.c:477
+msgid "Sort directories first"
+msgstr "Metti directory in testa"
+
+#: src/plugins/sources/directory_watcher.c:481
+msgid "Sort by name"
+msgstr "Ordina per nome"
+
+#: src/plugins/sources/directory_watcher.c:483
+msgid "Sort by access time"
+msgstr "Ordina per ultimo accesso"
+
+#: src/plugins/sources/directory_watcher.c:485
+msgid "Sort by modification time"
+msgstr "Ordina per ultima modifica"
+
+#: src/plugins/sources/directory_watcher.c:487
+msgid "Sort by change time"
+msgstr "Ordina per ultimo cambiamento"
+
+#: src/plugins/sources/directory_watcher.c:489
+msgid "Sort by size"
+msgstr "Ordina per dimensione"
 
 #: src/plugins/sources/launcher.c:172
 msgid "Launcher settings"
@@ -195,8 +226,8 @@ msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
 "bar source?"
 msgstr ""
-"Avete chiesto di eliminare \"%s\".<br><br>"
-"Siete sicuri di voler eliminare questa sorgente per la barra?"
+"Avete chiesto di eliminare \"%s\".<br><br>Siete sicuri di voler eliminare "
+"questa sorgente per la barra?"
 
 #: src/plugins/sources/launcher.c:533
 msgid "Are you sure you want to delete this bar source?"
