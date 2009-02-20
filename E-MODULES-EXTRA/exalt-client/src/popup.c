@@ -416,7 +416,7 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
             elt->type = POPUP_NETWORK;
             elt->essid = strdup(essid);
             elt->icon = icon;
-            elt->w = w;
+            elt->n = w;
             elt->is_find = 2;
             elt->nb_use++;
 
@@ -435,8 +435,8 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
         {
             //update the network
             Popup_Elt* elt = elt_find;
-            exalt_dbus_wireless_network_free(&(elt->w));
-            elt->w = w;
+            exalt_dbus_wireless_network_free(&(elt->n));
+            elt->n = w;
             char buf[1024];
 
             if(exalt_dbus_wireless_network_encryption_is(w))
@@ -542,8 +542,8 @@ void popup_elt_free(Popup_Elt* elt)
     EXALT_FREE(elt->essid);
     if(elt->icon)
         evas_object_del(elt->icon);
-    if(elt->w)
-        exalt_dbus_wireless_network_free(&(elt->w));
+    if(elt->n)
+        exalt_dbus_wireless_network_free(&(elt->n));
     if(elt->scan_timer)
     {
         ecore_timer_del(elt->scan_timer);

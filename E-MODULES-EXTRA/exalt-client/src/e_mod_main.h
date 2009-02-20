@@ -91,7 +91,13 @@ struct _Network_Dialog
     E_Dialog *dialog;
     Popup_Elt* network;
 
+    Evas_Object* list;
+
     Evas_Object* lbl_essid;
+    Evas_Object* lbl_address;
+    Evas_Object* lbl_quality;
+    Evas_Object* lbl_auth;
+
 };
 
 
@@ -156,7 +162,7 @@ struct _Popup_Elt
     //With this way, a network is removed if we didn't detected it 2 times
     //It avoid to see the network flashing in the list because the scan does'nt detect the network correctly
     int is_find;
-    Exalt_DBus_Wireless_Network* w;
+    Exalt_DBus_Wireless_Network* n;
     Ecore_Timer* scan_timer;
 };
 
@@ -224,5 +230,7 @@ void if_network_dialog_show(Instance* inst);
 void if_network_dialog_set(Instance *inst, Popup_Elt* network);
 void if_network_dialog_hide(Instance *inst);
 void if_network_dialog_cb_del(E_Win *win);
+Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_DBus_Wireless_Network* n);
+Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network_IE* ie, const char* title);
 
 #endif
