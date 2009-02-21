@@ -15,21 +15,21 @@
 Ewl_Widget *
 ewl_scrollport_new(void)
 {
-	Ewl_Scrollport *s;
+        Ewl_Scrollport *s;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	s = NEW(Ewl_Scrollport, 1);
-	if (!s)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        s = NEW(Ewl_Scrollport, 1);
+        if (!s)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_scrollport_init(s))
-	{
-		ewl_widget_destroy(EWL_WIDGET(s));
-		s = NULL;
-	}
+        if (!ewl_scrollport_init(s))
+        {
+                ewl_widget_destroy(EWL_WIDGET(s));
+                s = NULL;
+        }
 
-	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
@@ -40,32 +40,32 @@ ewl_scrollport_new(void)
 int
 ewl_scrollport_init(Ewl_Scrollport *s)
 {
-	Ewl_Widget *w;
+        Ewl_Widget *w;
         const char *kst;
         Ewl_Kinetic_Scroll type;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(s, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, FALSE);
 
-	w = EWL_WIDGET(s);
+        w = EWL_WIDGET(s);
 
-	if (!ewl_container_init(EWL_CONTAINER(s)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!ewl_container_init(EWL_CONTAINER(s)))
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, EWL_SCROLLPORT_TYPE);
-	ewl_widget_inherit(w, EWL_SCROLLPORT_TYPE);
-	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
-						EWL_FLAG_FILL_SHRINK);
+        ewl_widget_appearance_set(w, EWL_SCROLLPORT_TYPE);
+        ewl_widget_inherit(w, EWL_SCROLLPORT_TYPE);
+        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
+                                        EWL_FLAG_FILL_SHRINK);
 
-	s->hflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
-	s->vflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
+        s->hflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
+        s->vflag = EWL_SCROLLPORT_FLAG_AUTO_VISIBLE;
 
-	s->visible_area = ewl_container_new();
-	ewl_container_child_append(EWL_CONTAINER(s), s->visible_area);
-	ewl_widget_internal_set(s->visible_area, TRUE);
+        s->visible_area = ewl_container_new();
+        ewl_container_child_append(EWL_CONTAINER(s), s->visible_area);
+        ewl_widget_internal_set(s->visible_area, TRUE);
         ewl_callback_append(s->visible_area, EWL_CALLBACK_CONFIGURE,
                         ewl_scrollport_cb_visible_area_configure, NULL);
-	ewl_widget_show(s->visible_area);
+        ewl_widget_show(s->visible_area);
 
         /*
          * Notify callbacks for size changes
@@ -75,7 +75,7 @@ ewl_scrollport_init(Ewl_Scrollport *s)
         ewl_container_resize_notify_set(EWL_CONTAINER(s),
                                         ewl_scrollport_cb_child_resize);
 
-	/*
+        /*
          * Create the scrollbars for the scrollpane.
          */
         s->hscrollbar = ewl_hscrollbar_new();
@@ -87,17 +87,17 @@ ewl_scrollport_init(Ewl_Scrollport *s)
         ewl_widget_internal_set(s->vscrollbar, TRUE);
         ewl_container_child_append(EWL_CONTAINER(s), s->vscrollbar);
         ewl_widget_show(s->vscrollbar);
-	
-	ewl_container_redirect_set(EWL_CONTAINER(s),
+
+        ewl_container_redirect_set(EWL_CONTAINER(s),
                         EWL_CONTAINER(s->visible_area));
 
-	/*
+        /*
          * Append necessary callbacks for the scrollpane.
          */
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
                         ewl_scrollport_cb_configure, NULL);
 
-	/*
+        /*
          * We need to know when the scrollbars have value changes in order to
          * know when to scroll.
          */
@@ -123,7 +123,7 @@ ewl_scrollport_init(Ewl_Scrollport *s)
                 
         ewl_scrollport_kinetic_scrolling_set(s, type);
         
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -308,11 +308,11 @@ ewl_scrollport_vscrollbar_step_get(Ewl_Scrollport *s)
 Ewl_Widget *
 ewl_scrollport_vscrollbar_get(Ewl_Scrollport *s)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(s, NULL);
-	DCHECK_TYPE_RET(s, EWL_SCROLLPORT_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, NULL);
+        DCHECK_TYPE_RET(s, EWL_SCROLLPORT_TYPE, NULL);
 
-	DRETURN_PTR(s->vscrollbar, DLEVEL_STABLE);
+        DRETURN_PTR(s->vscrollbar, DLEVEL_STABLE);
 }
 
 /**
@@ -323,11 +323,11 @@ ewl_scrollport_vscrollbar_get(Ewl_Scrollport *s)
 Ewl_Widget *
 ewl_scrollport_hscrollbar_get(Ewl_Scrollport *s)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(s, NULL);
-	DCHECK_TYPE_RET(s, EWL_SCROLLPORT_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, NULL);
+        DCHECK_TYPE_RET(s, EWL_SCROLLPORT_TYPE, NULL);
 
-	DRETURN_PTR(s->hscrollbar, DLEVEL_STABLE);
+        DRETURN_PTR(s->hscrollbar, DLEVEL_STABLE);
 }
 
 /**
@@ -340,32 +340,32 @@ ewl_scrollport_hscrollbar_get(Ewl_Scrollport *s)
  */
 void
 ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
-	Ewl_Scrollport *s;
-	int vs_width = 0, hs_height = 0, wadd = 0, hadd = 0;
-	int content_w, content_h, b_width, b_height;
-	double hstep = 1.0, vstep = 1.0;
+        Ewl_Scrollport *s;
+        int vs_width = 0, hs_height = 0, wadd = 0, hadd = 0;
+        int content_w, content_h, b_width, b_height;
+        double hstep = 1.0, vstep = 1.0;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	s = EWL_SCROLLPORT(w);
+        s = EWL_SCROLLPORT(w);
 
-	/*
-	 * Size of the scrollport
-	 */
-	content_w = CURRENT_W(w);
-	content_h = CURRENT_H(w);
+        /*
+         * Size of the scrollport
+         */
+        content_w = CURRENT_W(w);
+        content_h = CURRENT_H(w);
         b_width = s->area_w;
         b_height= s->area_h;
 
-	/*
-	 * Get the space needed by the scrollbars
-	 */
-	vs_width = ewl_object_preferred_w_get(EWL_OBJECT(s->vscrollbar));
-	hs_height = ewl_object_preferred_h_get(EWL_OBJECT(s->hscrollbar));
+        /*
+         * Get the space needed by the scrollbars
+         */
+        vs_width = ewl_object_preferred_w_get(EWL_OBJECT(s->vscrollbar));
+        hs_height = ewl_object_preferred_h_get(EWL_OBJECT(s->hscrollbar));
 
         if (VISIBLE(s->hscrollbar))
         {
@@ -378,12 +378,12 @@ ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                 wadd = vs_width;
         }
 
-	if (content_w < b_width)
-		hstep = (double)content_w / (double)b_width;
-	if (content_h < b_height)
-		vstep = (double)content_h / (double)b_height;
+        if (content_w < b_width)
+                hstep = (double)content_w / (double)b_width;
+        if (content_h < b_height)
+                vstep = (double)content_h / (double)b_height;
 
-	/*
+        /*
          * Determine visibility of scrollbars based on the flags.
          */
         if (s->hflag == EWL_SCROLLPORT_FLAG_NONE ||
@@ -440,20 +440,20 @@ ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         s->area_x_offset = CURRENT_X(s) - b_width;
         s->area_y_offset = CURRENT_Y(s) - b_height;
 
-	/*
+        /*
          * Assign the step values to the scrollbars to adjust scale.
          */
         ewl_scrollbar_step_set(EWL_SCROLLBAR(s->hscrollbar), hstep);
         ewl_scrollbar_step_set(EWL_SCROLLBAR(s->vscrollbar), vstep);
 
-	/*
+        /*
          * Position the horizontal scrollbar.
          */
         ewl_object_geometry_request(EWL_OBJECT(s->hscrollbar),
                                         CURRENT_X(w), CURRENT_Y(w) + content_h,
                                         content_w, hs_height);
         
-	/*
+        /*
          * Position the vertical scrollbar.
          */
         ewl_object_geometry_request(EWL_OBJECT(s->vscrollbar),
@@ -468,7 +468,7 @@ ewl_scrollport_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         CURRENT_X(w), CURRENT_Y(w),
                                         content_w, content_h);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -485,9 +485,9 @@ ewl_scrollport_cb_visible_area_configure(Ewl_Widget *w,
         Ewl_Container *c;
         Ewl_Widget *child;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         c = EWL_CONTAINER(w);
 
@@ -495,7 +495,7 @@ ewl_scrollport_cb_visible_area_configure(Ewl_Widget *w,
         while ((child = ecore_dlist_next(c->children)))
                 ewl_widget_configure(child);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -510,16 +510,16 @@ ewl_scrollport_cb_visible_area_configure(Ewl_Widget *w,
 void
 ewl_scrollport_area_geometry_get(Ewl_Scrollport *s, int *x, int *y, int *w, int *h)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
 
         if (x) *x = s->area_x_offset;
         if (y) *y = s->area_y_offset;
-	if (w) *w = s->area_w;
-	if (h) *h = s->area_h;
+        if (w) *w = s->area_w;
+        if (h) *h = s->area_h;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -533,18 +533,18 @@ ewl_scrollport_area_geometry_get(Ewl_Scrollport *s, int *x, int *y, int *w, int 
  */
 void
 ewl_scrollport_visible_area_geometry_get(Ewl_Scrollport *s, int *x, int *y,
-								int *w, int *h)
+                                                                int *w, int *h)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
 
-	if (x) *x = CURRENT_X(s->visible_area); 
-	if (y) *y = CURRENT_Y(s->visible_area);
-	if (w) *w = CURRENT_W(s->visible_area);
-	if (h) *h = CURRENT_H(s->visible_area);
+        if (x) *x = CURRENT_X(s->visible_area); 
+        if (y) *y = CURRENT_Y(s->visible_area);
+        if (w) *w = CURRENT_W(s->visible_area);
+        if (h) *h = CURRENT_H(s->visible_area);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -557,27 +557,27 @@ ewl_scrollport_visible_area_geometry_get(Ewl_Scrollport *s, int *x, int *y,
 void
 ewl_scrollport_area_size_set(Ewl_Scrollport *s, int w, int h)
 {
-	int hs_w = 0, hs_h = 0, vs_w = 0, vs_h = 0;
+        int hs_w = 0, hs_h = 0, vs_w = 0, vs_h = 0;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
 
         if (s->hflag != EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
                 ewl_object_preferred_size_get(EWL_OBJECT(s->hscrollbar), 
-                                                &hs_w, &hs_h);
+                                &hs_w, &hs_h);
 
         if (s->vflag != EWL_SCROLLPORT_FLAG_ALWAYS_HIDDEN)
                 ewl_object_preferred_size_get(EWL_OBJECT(s->vscrollbar), 
-                                                &vs_w, &vs_h);
-	s->area_w = w;
-	s->area_h = h;
-	ewl_object_minimum_h_set(EWL_OBJECT(s), hs_h + vs_h);
-	ewl_object_preferred_inner_h_set(EWL_OBJECT(s), vs_h + h);
+                                &vs_w, &vs_h);
+        s->area_w = w;
+        s->area_h = h;
+        ewl_object_minimum_h_set(EWL_OBJECT(s), hs_h + vs_h);
+        ewl_object_preferred_inner_h_set(EWL_OBJECT(s), vs_h + h);
         ewl_object_minimum_w_set(EWL_OBJECT(s), hs_w + vs_w);
         ewl_object_preferred_inner_w_set(EWL_OBJECT(s), vs_w + w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -595,9 +595,9 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
         double value = 0.0;
         Ewl_Widget *bar = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_SCROLLPORT_TYPE);
 
         /*
          * Adjust horizontally to show the focused widget
@@ -647,9 +647,9 @@ ewl_scrollport_visible_area_geometry_set(Ewl_Scrollport *s, int x, int y,
                 ewl_scrollbar_value_set(EWL_SCROLLBAR(bar), value);
         }
 
-	ewl_widget_configure(EWL_WIDGET(s));
+        ewl_widget_configure(EWL_WIDGET(s));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -776,7 +776,7 @@ void ewl_scrollport_cb_child_resize(Ewl_Container *p, Ewl_Widget *c,
         DCHECK_PARAM_PTR(c);
         DCHECK_TYPE(c, EWL_WIDGET_TYPE);
         DCHECK_TYPE(p, EWL_SCROLLPORT_TYPE);
-	
+
         s = EWL_SCROLLPORT(p);
 
         if (o == EWL_ORIENTATION_VERTICAL)
