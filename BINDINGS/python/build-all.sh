@@ -10,7 +10,7 @@ die() {
 
 echo "Install to $PREFIX"
 CWD=$PWD
-for m in evas ecore edje emotion e_dbus epsilon etk elementary; do
+for m in evas ecore edje emotion e_dbus epsilon etk elementary efl_utils; do
     cd $CWD/python-$m || die "cd python-$m"
     ./build.sh --force $PREFIX || die "failed to build python-$m"
 done

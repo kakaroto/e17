@@ -32,6 +32,8 @@ echo - A module to replace the broken 'mixer' module for E17.
 
 emu - Experimental generic scriptable module for E17.
 
+exalt-client - A frontend module for exalt network manager.
+
 flame - A module to display flames on the desktop.
 
 forecasts - A module to display the current condition and forecasts.

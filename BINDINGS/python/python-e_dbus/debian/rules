@@ -9,6 +9,6 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-edbus::
 	mkdir -p debian/python-edbus/usr/share/python-edbus
 	cp -r tests debian/python-edbus/usr/share/python-edbus
-	rm -rf debian/python-edbus/usr/share/python-edbus/tests/.svn
+	find debian/python-edbus/usr/share/python-edbus -name '.svn' | xargs rm -rf
 	chmod -R 755 debian/python-edbus/usr/share/python-edbus
 

@@ -20,6 +20,8 @@ diskio - Brian 'morlenxus' Miculcy <morlenxus@gmx.net>
 
 emu - David 'onefang' Seikel <onefang@gmail.com>
 
+exalt-client - Atton Jonathan <watchwolf@watchwolf.fr>
+
 engage - e_module maintainers.
 
 flame - e_module maintainers.
@@ -70,10 +72,10 @@ wlan - e_module maintainers.
 
 These are not modules, but part of it all anyway.
 
-debian packager - quaker? kaethorn?
+debian packager - quaker, kaethorn
 
 RPM packager - mej?
 
 top level autofoo - vapier?
 
-translations - quaker? e-taro? maiurana? maxerba? troback?
+translations - quaker, e-taro? maiurana? maxerba? troback?

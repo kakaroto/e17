@@ -9,6 +9,6 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-elementary::
 	mkdir -p debian/python-elementary/usr/share/python-elementary
 	cp -r tests debian/python-elementary/usr/share/python-elementary
-	rm -rf debian/python-elementary/usr/share/python-elementary/tests/.svn
+	find debian/python-elementary/usr/share/python-elementary -name '.svn' | xargs rm -rf
 	chmod -R 755 debian/python-elementary/usr/share/python-elementary
 

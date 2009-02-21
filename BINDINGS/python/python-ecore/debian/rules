@@ -10,7 +10,6 @@ install/python-ecore::
 	mkdir -p debian/python-ecore/usr/share/python-ecore
 	cp -r tests debian/python-ecore/usr/share/python-ecore
 	cp -r examples debian/python-ecore/usr/share/python-ecore
-	rm -rf debian/python-ecore/usr/share/python-ecore/tests/.svn
-	rm -rf debian/python-ecore/usr/share/python-ecore/examples/.svn
+	find debian/python-ecore/usr/share/python-ecore -name '.svn' | xargs rm -rf
 	chmod -R 755 debian/python-ecore/usr/share/python-ecore
 

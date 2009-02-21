@@ -9,7 +9,7 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-epsilon::
 	mkdir -p debian/python-epsilon/usr/share/python-epsilon
 	cp -r examples debian/python-epsilon/usr/share/python-epsilon
-	rm -rf debian/python-epsilon/usr/share/python-epsilon/examples/.svn
+	find debian/python-epsilon/usr/share/python-epsilon -name '.svn' | xargs rm -rf
 	chmod -R 755 debian/python-epsilon/usr/share/python-epsilon
 
 

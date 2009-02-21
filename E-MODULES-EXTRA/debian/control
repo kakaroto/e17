@@ -83,6 +83,13 @@ Description: An E17 module front end
  ends written in any language.  Emu provides a high level interface
  to some of the things that modules typically do.  The backends can
  be written by anybody in any language.
+
+Package: emodule-exalt-client
+Architecture: any
+Depends: ${shlibs:Depends}, e17 (>= 0.16.999), exalt
+Provides: emodule0-exalt-client
+Description: E17 network manager module
+ The exalt-client provides a module frontend for exalt network manager.
  
 Package: emodule-execwatch
 Architecture: any
@@ -305,7 +312,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
+Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-exalt-client, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.

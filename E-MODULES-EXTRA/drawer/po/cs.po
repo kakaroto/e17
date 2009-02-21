@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Drawer\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-23 18:23+0100\n"
-"PO-Revision-Date: 2009-01-02 10:36+0100\n"
+"POT-Creation-Date: 2009-02-16 18:04+0100\n"
+"PO-Revision-Date: 2009-02-21 11:19+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: none>\n"
 "MIME-Version: 1.0\n"
@@ -46,81 +46,113 @@ msgstr "Nastavení zdroje"
 msgid "View settings"
 msgstr "Nastavení zobrazení"
 
-#: src/e_mod_main.c:153
+#: src/e_mod_main.c:156
 msgid "Drawer Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr "Nastavení drawer modulu potřebuje aktualizaci. Vaše staré nastavení<br> bylo nahrazeno novým výchozím. Toto<br>se bude stávat často během vývoje, takže nereportujte<br>bug. Prostě to znamená, že modul potřebuje nová data<br>nastavení pro funkce, které vaše staré<br>nastavení neobsahuje. Nové nastavení<br>to spraví. Nyní si můžete modul nastavit, jak<br>chcete. Omlouváme se za vzniklé potíže.<br>"
 
-#: src/e_mod_main.c:173
+#: src/e_mod_main.c:176
 msgid "Your Drawer Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr "Vaše nastavení je NOVĚJŠÍ než verze modulu. Je to velmi<br>divné. Toto by se nemělo stát, pokud jste ovšem nedowngradovali<br>modul nebo nezkopírovali nastavení odněkud,<br>kde běžela novější verze modulu. Jako protiopatření<br>bylo vaše nastavení obnoveno na<br>výchozí. Omlouváme se za vzniklé potíže.<br>"
 
-#: src/e_mod_main.c:395
+#: src/e_mod_main.c:398
 msgid "The plugin is not configurable"
 msgstr "Plugin není nastavitelný"
 
-#: src/e_mod_main.c:722
-#: src/e_mod_main.c:730
-#: src/e_mod_main.c:744
-#: src/e_mod_main.c:756
-#: src/e_mod_main.c:822
-#: src/e_mod_main.c:865
+#: src/e_mod_main.c:725
+#: src/e_mod_main.c:733
+#: src/e_mod_main.c:747
+#: src/e_mod_main.c:759
+#: src/e_mod_main.c:825
+#: src/e_mod_main.c:868
 msgid "Drawer Plugins"
 msgstr "Pluginy pro Drawer"
 
-#: src/e_mod_main.c:723
+#: src/e_mod_main.c:726
 #, c-format
 msgid "The plugin '%s' was not found."
 msgstr "Plugin '%s' nebyl nalezen."
 
-#: src/e_mod_main.c:731
+#: src/e_mod_main.c:734
 #, c-format
 msgid "The plugin '%s' could not be opened."
 msgstr "Plugin '%s' nemůže být otevřen."
 
-#: src/e_mod_main.c:745
-#: src/e_mod_main.c:823
-#: src/e_mod_main.c:866
+#: src/e_mod_main.c:748
+#: src/e_mod_main.c:826
+#: src/e_mod_main.c:869
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
 msgstr "Plugin '%s' neobsahuje všechny důležité funkce."
 
-#: src/e_mod_main.c:757
+#: src/e_mod_main.c:760
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
 msgstr "Plugin '%s' nemá vyžadovanou verzi API."
 
-#: src/e_mod_main.c:1005
+#: src/e_mod_main.c:1008
 msgid "Drawer"
 msgstr "Drawer"
 
-#: src/e_mod_main.c:1090
+#: src/e_mod_main.c:1093
 msgid "Drawer Configuration Updated"
 msgstr "Drawer konfigurace aktualizována"
 
-#: src/e_mod_main.c:1320
+#: src/e_mod_main.c:1322
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/plugins/sources/directory_watcher.c:209
+#: src/plugins/sources/directory_watcher.c:250
 msgid "Directory Watcher settings"
 msgstr "Nastavení hlídače složek"
 
-#: src/plugins/sources/directory_watcher.c:245
+#: src/plugins/sources/directory_watcher.c:286
 msgid "Home"
 msgstr "Domov"
 
-#: src/plugins/sources/directory_watcher.c:312
+#: src/plugins/sources/directory_watcher.c:353
 #, c-format
 msgid "Directory (%s)"
 msgstr "Adresář (%s)"
 
-#: src/plugins/sources/directory_watcher.c:378
+#: src/plugins/sources/directory_watcher.c:421
 msgid "Drawer Plugin : Directory Watcher"
 msgstr "Drawer plugin: hlídač složek"
 
-#: src/plugins/sources/directory_watcher.c:417
+#: src/plugins/sources/directory_watcher.c:464
 msgid "Watch path"
 msgstr "Cesta"
+
+#: src/plugins/sources/directory_watcher.c:470
+msgid "Custom file manager"
+msgstr "Vlastní správce souborů"
+
+#: src/plugins/sources/directory_watcher.c:476
+msgid "Sort Options"
+msgstr "Nastavení řazení"
+
+#: src/plugins/sources/directory_watcher.c:477
+msgid "Sort directories first"
+msgstr "Seřadit první adresáře"
+
+#: src/plugins/sources/directory_watcher.c:481
+msgid "Sort by name"
+msgstr "Seřadit podle jména"
+
+#: src/plugins/sources/directory_watcher.c:483
+msgid "Sort by access time"
+msgstr "Seřadit podle času přístupu"
+
+#: src/plugins/sources/directory_watcher.c:485
+msgid "Sort by modification time"
+msgstr "Seřadit podle času úpravy"
+
+#: src/plugins/sources/directory_watcher.c:487
+msgid "Sort by change time"
+msgstr "Seřadit podle času změny"
+
+#: src/plugins/sources/directory_watcher.c:489
+msgid "Sort by size"
+msgstr "Seřadit podle velikosti"
 
 #: src/plugins/sources/launcher.c:172
 msgid "Launcher settings"

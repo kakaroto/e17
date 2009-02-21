@@ -1,0 +1,3 @@
+debian/tmp/etc/*
+debian/tmp/usr/lib/libexalt*.so
+debian/tmp/usr/lib/libexalt*.so.*

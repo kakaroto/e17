@@ -1,0 +1,49 @@
+Source: exalt
+Section: network
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: debhelper (>= 6), cdbs, libeet-dev, libevas-dev, wpasupplicant, libelm-dev, dhcp3-client, doxygen
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: exalt
+Architecture: any
+Depends: ${shlibs:Depends}, exalt-bin, exalt-data
+Section: libs
+Description: EFL-based network manager
+ This package contains the libs.
+
+Package: exalt-data
+Architecture: any
+Depends: ${shlibs:Depends}, exalt
+Section: x11
+Description: EFL-based network manager
+ This package contains data files.
+ 
+Package: exalt-bin
+Architecture: any
+Section: x11
+Depends: ${shlibs:Depends}, exalt
+Description: EFL-based network manager
+ This package contains binary files.
+
+Package: exalt-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, exalt
+Description: EFL-based network manager
+ This package cointains developenment files.
+
+Package: exalt-doc
+Architecture: any
+Section: doc
+Depends: ${shlibs:Depends}, exalt
+Description: EFL-based network manager
+ This package cointains docs.
+
+Package: exalt-dbg
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, exalt
+Description: EFL-based network manager
+ This package debug symbols.
