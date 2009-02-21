@@ -653,17 +653,34 @@ $ eesh set theme.use_alt_font_cfg 0
 
 Using e16 with GNOME
 --------------------
-(Using Fedora Core 4, may be pertinent to other distributions as well).
+Setting up e16 as WM in a GNOME session unfortunately depends on the version
+of gnome-session.
+
+Recent versions of gnome-session seem to require that a gconf key is set
+and that an e16.desktop file can be found:
+
+$ gconftool-2 --set /desktop/gnome/session/required_components/windowmanager --type string e16
+$ gnome-sesssion
+
+/usr/share/applications/e16.desktop (or ~/.local/share/applications/e16.desktop):
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=E16
+Comment=The Enlightenment (e16) window manager
+Exec=e16
+Icon=/usr/share/e16/misc/e16.png
+
+
+The section below seems to be obsolete as of gnome-session-2.2x(?)
 
 The GNOME desktop can be started using e16 as WM with:
 
 $ export WINDOW_MANAGER=e16
 $ gnome-sesssion
 
-Alternatively, add a GNOME/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e16-gnome.desktop /usr/share/xsessions/
 
-Note! The section below is obsolete as of gnome-session-2.16
+The section below is obsolete as of gnome-session-2.16
 
 However, somewhere along the way the script /usr/bin/gnome-wm is called.
 This is supposed to handle differences in all the different WM's out there,
@@ -688,15 +705,11 @@ Another is to apply this patch to /usr/bin/gnome-wm:
 
 Using e16 with KDE
 ------------------
-(Using Fedora Core 4, may work with other distributions as well).
 
 The KDE desktop can be started using e16 as WM with:
 
 $ export KDEWM=e16
 $ startkde
-
-Alternatively, add a KDE/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e16-kde.desktop /usr/share/xsessions/
 
 
 Migrating from Enlightenment 0.16.7 to 0.16.8 

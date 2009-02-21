@@ -55,6 +55,7 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/e16/*.so
 %{_datadir}/%{name}/*
 %{_datadir}/locale/*
+%{_datadir}/applications/*
 %{_datadir}/xsessions/*
 %{_sysconfdir}/X11/xinit/Xclients.d/*
 #%{_mandir}/*

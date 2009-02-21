@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=E16
+Comment=The Enlightenment (e16) window manager
+Exec=e16
+Icon=@pkgdatadir@/misc/e16.png
