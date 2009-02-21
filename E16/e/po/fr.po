@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.15\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-31 15:34+0100\n"
+"POT-Creation-Date: 2009-02-13 23:11+0100\n"
 "PO-Revision-Date: 2009-01-06 18:33+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -1111,28 +1111,28 @@ msgstr "Options de la Boîte à icônes"
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
-#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:1456 src/ipc.c:1463
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "Enlightenment a été compilé sans prise en charge de : %s"
 
-#: src/ipc.c:1449
+#: src/ipc.c:1457
 msgid "composite"
 msgstr "Extension Composite"
 
-#: src/ipc.c:1456
+#: src/ipc.c:1464
 msgid "sound"
 msgstr "Système Son"
 
-#: src/ipc.c:1799
+#: src/ipc.c:1807
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1803
+#: src/ipc.c:1811
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1142,19 +1142,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
+#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1831
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1824
+#: src/ipc.c:1832
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1826 src/ipc.c:1838
+#: src/ipc.c:1834 src/ipc.c:1846
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 

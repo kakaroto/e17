@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-31 15:34+0100\n"
+"POT-Creation-Date: 2009-02-13 23:11+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1138,30 +1138,30 @@ msgstr "Opciones del Portaíconos"
 msgid "Iconbox Settings"
 msgstr "Configurar Portaíconos"
 
-#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:1456 src/ipc.c:1463
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1449
+#: src/ipc.c:1457
 #, fuzzy
 msgid "composite"
 msgstr "Habilitar Composite"
 
-#: src/ipc.c:1456
+#: src/ipc.c:1464
 #, fuzzy
 msgid "sound"
 msgstr "Sonido"
 
-#: src/ipc.c:1799
+#: src/ipc.c:1807
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ayuda de los Comandos IPC de Enlightenment\n"
 
-#: src/ipc.c:1803
+#: src/ipc.c:1811
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1171,19 +1171,19 @@ msgstr ""
 "Use \"Ayuda <comando>\" para obtener descripciones individuales\n"
 "\n"
 
-#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
+#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
 msgid "Commands currently available:\n"
 msgstr "Comandos disponibles:\n"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1831
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
-#: src/ipc.c:1824
+#: src/ipc.c:1832
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 
-#: src/ipc.c:1826 src/ipc.c:1838
+#: src/ipc.c:1834 src/ipc.c:1846
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 

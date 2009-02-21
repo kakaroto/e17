@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-31 15:34+0100\n"
+"POT-Creation-Date: 2009-02-13 23:11+0100\n"
 "PO-Revision-Date: 2009-02-13 20:13+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1120,30 +1120,30 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:1456 src/ipc.c:1463
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "このe16は %s に対応していません"
 
-#: src/ipc.c:1449
+#: src/ipc.c:1457
 msgid "composite"
 msgstr "コンポジット"
 
-#: src/ipc.c:1456
+#: src/ipc.c:1464
 msgid "sound"
 msgstr "サウンド"
 
 #
-#: src/ipc.c:1799
+#: src/ipc.c:1807
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1803
+#: src/ipc.c:1811
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1154,22 +1154,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
+#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1831
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1824
+#: src/ipc.c:1832
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1826 src/ipc.c:1838
+#: src/ipc.c:1834 src/ipc.c:1846
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 

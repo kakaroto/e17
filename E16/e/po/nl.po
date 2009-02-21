@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-31 15:34+0100\n"
+"POT-Creation-Date: 2009-02-13 23:11+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -1036,52 +1036,52 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:194 src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1448 src/ipc.c:1455
+#: src/ipc.c:1456 src/ipc.c:1463
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1449
+#: src/ipc.c:1457
 #, fuzzy
 msgid "composite"
 msgstr "Zet geluiden aan"
 
-#: src/ipc.c:1456
+#: src/ipc.c:1464
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1799
+#: src/ipc.c:1807
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:1803
+#: src/ipc.c:1811
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1805 src/ipc.c:1825 src/ipc.c:1837
+#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1831
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1824
+#: src/ipc.c:1832
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1826 src/ipc.c:1838
+#: src/ipc.c:1834 src/ipc.c:1846
 msgid "         <command>     : <description>\n"
 msgstr ""
 

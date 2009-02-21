@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-31 15:34+0100\n"
+"POT-Creation-Date: 2009-02-13 23:11+0100\n"
 "PO-Revision-Date: 2009-02-14 14:02+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -47,14 +47,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209
-#: src/backgrounds.c:236
-#: src/borders.c:640
-#: src/buttons.c:181
-#: src/cursors.c:170
-#: src/iclass.c:337
-#: src/tclass.c:113
-#: src/tooltips.c:135
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
@@ -191,8 +185,7 @@ msgstr "Enlightenment neu starten"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:570
-#: src/setup.c:168
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -207,12 +200,8 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:583
-#: src/dialog.c:844
-#: src/dialog.c:2034
-#: src/events.c:87
-#: src/setup.c:157
-#: src/sound.c:302
+#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2034 src/events.c:87
+#: src/setup.c:157 src/sound.c:302
 msgid "OK"
 msgstr "OK"
 
@@ -236,8 +225,7 @@ msgid "-NONE-"
 msgstr "-/-"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:1692
-#: src/backgrounds.c:1694
+#: src/backgrounds.c:1692 src/backgrounds.c:1694
 msgid ""
 "No\n"
 "Background"
@@ -246,8 +234,7 @@ msgstr ""
 "Hintergrund"
 
 # src/settings.c:2713 src/settings.c:3281
-#: src/backgrounds.c:1784
-#: src/backgrounds.c:2214
+#: src/backgrounds.c:1784 src/backgrounds.c:2214
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Unbenutze Hintergründe freigeben nach %2i:%02i:%02i"
@@ -356,8 +343,7 @@ msgid "Enable background transparency compatibility mode"
 msgstr ""
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:2231
-#: src/mod-trans.c:204
+#: src/backgrounds.c:2231 src/mod-trans.c:204
 msgid "Background"
 msgstr "Hintergrund"
 
@@ -403,8 +389,7 @@ msgstr ""
 # src/config.c:1649 src/config.c:1896 src/config.c:1965 src/config.c:2060
 # src/config.c:2316 src/config.c:2532 src/config.c:2795 src/config.c:2887
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
-#: src/config.c:197
-#: src/config.c:297
+#: src/config.c:197 src/config.c:297
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
@@ -414,8 +399,7 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 # src/config.c:1657 src/config.c:1902 src/config.c:1971 src/config.c:2068
 # src/config.c:2322 src/config.c:2540 src/config.c:2801 src/config.c:3071
 # src/config.c:3395
-#: src/config.c:205
-#: src/config.c:304
+#: src/config.c:205 src/config.c:304
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: vermisse benötigte Daten in \"%s\"\n"
@@ -515,23 +499,18 @@ msgstr "Einstellungen ..."
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1211
-#: src/dialog.c:856
-#: src/pager.c:1013
-#: config/strings.c:30
+#: src/container.c:1211 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Schließen"
 
 # src/iconify.c:2432
-#: src/container.c:1216
-#: config/strings.c:83
+#: src/container.c:1216 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/settings.c:3643
-#: src/container.c:1513
-#: src/container.c:1586
+#: src/container.c:1513 src/container.c:1586
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icongröße: %2d"
@@ -618,8 +597,7 @@ msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/container.c:1660
-#: src/focus.c:832
+#: src/container.c:1660 src/focus.c:832
 msgid "None"
 msgstr "-/-"
 
@@ -757,25 +735,18 @@ msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2364
-#: src/pager.c:1924
-#: src/pager.c:1949
-#: src/pager.c:1974
+#: src/desktops.c:2364 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2370
-#: src/pager.c:1936
-#: src/pager.c:1961
-#: src/pager.c:1986
+#: src/desktops.c:2370 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2378
-#: src/menus-misc.c:586
+#: src/desktops.c:2378 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Desktops"
 
@@ -1058,10 +1029,7 @@ msgstr ""
 "Auswahldialog\n"
 
 # src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3872
-#: src/groups.c:733
-#: src/groups.c:742
-#: src/groups.c:750
-#: src/groups.c:936
+#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
 msgid "Window Group Error"
 msgstr "Fenstergruppen-Fehler"
 
@@ -1123,50 +1091,42 @@ msgstr ""
 " alle Gruppenmitglieder:"
 
 # src/settings.c:3968 src/settings.c:4120
-#: src/groups.c:878
-#: src/groups.c:980
+#: src/groups.c:878 src/groups.c:980
 msgid "Changing Border Style"
 msgstr "Änderung des Rahmenstils"
 
 # src/settings.c:3978 src/settings.c:4128
-#: src/groups.c:883
-#: src/groups.c:985
+#: src/groups.c:883 src/groups.c:985
 msgid "Iconifying"
 msgstr "Minimierung"
 
 # src/settings.c:3988 src/settings.c:4136
-#: src/groups.c:888
-#: src/groups.c:990
+#: src/groups.c:888 src/groups.c:990
 msgid "Killing"
 msgstr "Mord"
 
 # src/settings.c:3998 src/settings.c:4144
-#: src/groups.c:893
-#: src/groups.c:995
+#: src/groups.c:893 src/groups.c:995
 msgid "Moving"
 msgstr "Verschieben"
 
 # src/settings.c:4008 src/settings.c:4152
-#: src/groups.c:898
-#: src/groups.c:1000
+#: src/groups.c:898 src/groups.c:1000
 msgid "Raising/Lowering"
 msgstr "Anheben/Absenken"
 
 # src/settings.c:4018 src/settings.c:4160
-#: src/groups.c:903
-#: src/groups.c:1005
+#: src/groups.c:903 src/groups.c:1005
 msgid "Sticking"
 msgstr "Ankleben"
 
 # src/settings.c:4028 src/settings.c:4168
-#: src/groups.c:908
-#: src/groups.c:1010
+#: src/groups.c:908 src/groups.c:1010
 msgid "Shading"
 msgstr "Aufrollen"
 
 # src/settings.c:4038 src/settings.c:4176
-#: src/groups.c:913
-#: src/groups.c:1015
+#: src/groups.c:913 src/groups.c:1015
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Aufrollen/Minimieren/Kleben"
 
@@ -1210,9 +1170,7 @@ msgid "Swap Window Locations"
 msgstr "Fensterpositionen vertauschen"
 
 # src/menus.c:2044
-#: src/groups.c:1034
-#: src/menus-misc.c:646
-#: config/strings.c:148
+#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -1358,34 +1316,31 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:194
-#: src/ipc.c:1448
-#: src/ipc.c:1455
+#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
 msgid "Message"
 msgstr "Mitteilung"
 
-#: src/ipc.c:1448
-#: src/ipc.c:1455
+#: src/ipc.c:1456 src/ipc.c:1463
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 wurde ohne %s Unterstützung gebaut"
 
 # src/settings.c:1591
-#: src/ipc.c:1449
+#: src/ipc.c:1457
 msgid "composite"
 msgstr "Composite"
 
-#: src/ipc.c:1456
+#: src/ipc.c:1464
 msgid "sound"
 msgstr "Klänge"
 
 # src/ipc.c:4737
-#: src/ipc.c:1799
+#: src/ipc.c:1807
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen\n"
 
 # src/ipc.c:4743
-#: src/ipc.c:1803
+#: src/ipc.c:1811
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1397,25 +1352,22 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1805
-#: src/ipc.c:1825
-#: src/ipc.c:1837
+#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
 msgid "Commands currently available:\n"
 msgstr "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1823
+#: src/ipc.c:1831
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1824
+#: src/ipc.c:1832
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1826
-#: src/ipc.c:1838
+#: src/ipc.c:1834 src/ipc.c:1846
 msgid "         <command>     : <description>\n"
 msgstr ""
 "         <command>     : <description>\n"
@@ -1487,8 +1439,7 @@ msgid "Magnifier"
 msgstr "Lupe"
 
 # src/theme.c:354
-#: src/menus-misc.c:458
-#: config/strings.c:91
+#: src/menus-misc.c:458 config/strings.c:91
 msgid "Themes"
 msgstr "Themen"
 
@@ -1508,8 +1459,7 @@ msgid "Go to this Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1964
-#: src/menus-misc.c:572
-#: src/menus-misc.c:668
+#: src/menus-misc.c:572 src/menus-misc.c:668
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
@@ -1564,8 +1514,7 @@ msgstr ""
 "Enlightenment Menü\n"
 "Einstellungsdialog\n"
 
-#: src/mod-trans.c:114
-#: src/mod-trans.c:264
+#: src/mod-trans.c:114 src/mod-trans.c:264
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "Themedurchsichtigkeit: %2d"
@@ -1602,10 +1551,7 @@ msgid "Tooltips:"
 msgstr "Minihilfen:"
 
 # src/settings.c:656 src/settings.c:663 src/settings.c:1757
-#: src/mod-trans.c:176
-#: src/settings.c:82
-#: src/settings.c:87
-#: src/settings.c:354
+#: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
 msgstr "Opak"
 
@@ -1637,22 +1583,17 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/pager.c:1268
-#: src/pager.c:1006
-#: config/strings.c:49
-#: config/strings.c:131
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:1009
-#: config/strings.c:51
-#: config/strings.c:134
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:1017
-#: config/strings.c:133
+#: src/pager.c:1017 config/strings.c:133
 msgid "Annihilate"
 msgstr "Zerstören"
 
@@ -1700,14 +1641,12 @@ msgid "Zoom On"
 msgstr ""
 
 # src/settings.c:87 src/settings.c:192
-#: src/pager.c:1813
-#: src/pager.c:1904
+#: src/pager.c:1813 src/pager.c:1904
 msgid "Pager scanning speed:"
 msgstr "Pager-Abtastgeschwindigkeit:"
 
 # src/settings.c:88 src/settings.c:193
-#: src/pager.c:1814
-#: src/pager.c:1905
+#: src/pager.c:1814 src/pager.c:1905
 msgid "lines per second"
 msgstr "Zeilen pro Sekunde"
 
@@ -1759,9 +1698,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Mausknopf zum Auswählen und Ziehen von Fenstern:"
 
 # src/settings.c:226 src/settings.c:258 src/settings.c:290
-#: src/pager.c:1930
-#: src/pager.c:1955
-#: src/pager.c:1980
+#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Middle"
 msgstr "Mitte"
 
@@ -1900,30 +1837,22 @@ msgid "Resize Methods:"
 msgstr "Größenänderungsmethoden:"
 
 # src/settings.c:670 src/settings.c:677 src/settings.c:1772
-#: src/settings.c:92
-#: src/settings.c:97
-#: src/settings.c:359
+#: src/settings.c:92 src/settings.c:97 src/settings.c:359
 msgid "Technical"
 msgstr "Bemaßung"
 
 # src/settings.c:684 src/settings.c:691 src/settings.c:1787
-#: src/settings.c:102
-#: src/settings.c:107
-#: src/settings.c:364
+#: src/settings.c:102 src/settings.c:107 src/settings.c:364
 msgid "Box"
 msgstr "Kasten"
 
 # src/settings.c:698 src/settings.c:705 src/settings.c:1802
-#: src/settings.c:112
-#: src/settings.c:117
-#: src/settings.c:369
+#: src/settings.c:112 src/settings.c:117 src/settings.c:369
 msgid "Shaded"
 msgstr "Schattiert"
 
 # src/settings.c:712 src/settings.c:719 src/settings.c:1817
-#: src/settings.c:122
-#: src/settings.c:127
-#: src/settings.c:374
+#: src/settings.c:122 src/settings.c:127 src/settings.c:374
 msgid "Semi-Solid"
 msgstr "Halbfest"
 
@@ -2143,9 +2072,7 @@ msgid "Use saveunders to reduce window exposures"
 msgstr "SaveUnders benutzen, um Fensterexposures zu reduzieren"
 
 # src/settings.c:393
-#: src/settings.c:570
-#: config/strings.c:146
-#: config/strings.c:162
+#: src/settings.c:570 config/strings.c:146 config/strings.c:162
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
@@ -2338,14 +2265,12 @@ msgid "Border style"
 msgstr "Rahmenstil"
 
 # src/snaps.c:445
-#: src/snaps.c:833
-#: config/strings.c:184
+#: src/snaps.c:833 config/strings.c:184
 msgid "Size"
 msgstr "Größe"
 
 # src/snaps.c:453
-#: src/snaps.c:838
-#: config/strings.c:89
+#: src/snaps.c:838 config/strings.c:89
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -2369,9 +2294,7 @@ msgstr "Stapelschicht"
 msgid "Window List Skip"
 msgstr "In Fensterliste überspringen"
 
-#: src/snaps.c:864
-#: config/strings.c:145
-#: config/strings.c:172
+#: src/snaps.c:864 config/strings.c:145 config/strings.c:172
 msgid "Opacity"
 msgstr "Deckkraft"
 
@@ -2513,9 +2436,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/comms.c:2214
-#: src/systray.c:331
-#: src/systray.c:434
-#: src/systray.c:442
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 msgid "Systray Error!"
 msgstr "Systray-Fehler!"
 
@@ -2593,8 +2514,7 @@ msgid ""
 msgstr ""
 
 # src/settings.c:830 src/settings.c:889
-#: config/strings.c:6
-#: config/strings.c:8
+#: config/strings.c:6 config/strings.c:8
 msgid "Switch Desktops"
 msgstr "Desktop wechseln"
 
@@ -2613,23 +2533,17 @@ msgstr "Zum vorherigen Desktop gehen"
 msgid "Move"
 msgstr "Verschieben"
 
-#: config/strings.c:11
-#: config/strings.c:23
-#: config/strings.c:26
+#: config/strings.c:11 config/strings.c:23 config/strings.c:26
 #: config/strings.c:29
 msgid "Move this window."
 msgstr "Verschiebe dieses Fenster."
 
-#: config/strings.c:12
-#: config/strings.c:14
-#: config/strings.c:48
+#: config/strings.c:12 config/strings.c:14 config/strings.c:48
 msgid "Shade/Unshade this window."
 msgstr "Dieses Fenster ein-/ausrollen."
 
 # src/pager.c:1268
-#: config/strings.c:13
-#: config/strings.c:50
-#: config/strings.c:53
+#: config/strings.c:13 config/strings.c:50 config/strings.c:53
 msgid "Show the Window Options menu."
 msgstr "Fensteroptionen zeigen."
 
@@ -2702,8 +2616,7 @@ msgstr "Dieses Fenster zerstören."
 msgid "Maximize Height"
 msgstr "Vertikal maximieren"
 
-#: config/strings.c:34
-#: config/strings.c:40
+#: config/strings.c:34 config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
 msgstr "Vertikal maximieren/Normale Fensterhöhe"
 
@@ -2711,8 +2624,7 @@ msgstr "Vertikal maximieren/Normale Fensterhöhe"
 msgid "Maximize Width"
 msgstr "Horizontal maximieren"
 
-#: config/strings.c:36
-#: config/strings.c:39
+#: config/strings.c:36 config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
 msgstr "Horizontal maximieren/Normale Fensterbreite"
 
@@ -2725,8 +2637,7 @@ msgid "Toggle between maximum screen size and normal size."
 msgstr "Maximieren/Normale Fenstergröße"
 
 # src/menus.c:1947
-#: config/strings.c:41
-#: config/strings.c:43
+#: config/strings.c:41 config/strings.c:43
 msgid "Send To Another Desktop"
 msgstr "Zu einem anderen Desktop schicken"
 
@@ -2748,8 +2659,7 @@ msgid "This button does nothing interesting."
 msgstr "Dieser Button macht nichts besonderes."
 
 # src/snaps.c:461
-#: config/strings.c:47
-#: config/strings.c:138
+#: config/strings.c:47 config/strings.c:138
 msgid "Shade/Unshade"
 msgstr "Ein-/Ausrollen"
 
@@ -2766,8 +2676,7 @@ msgstr ""
 msgid "Show more buttons."
 msgstr "Zeige weitere Buttons."
 
-#: config/strings.c:56
-#: config/strings.c:136
+#: config/strings.c:56 config/strings.c:136
 msgid "Raise"
 msgstr "Anheben"
 
@@ -2776,8 +2685,7 @@ msgstr "Anheben"
 msgid "Raise this window to the top."
 msgstr "Dieses Fenster in den Vordergrund heben."
 
-#: config/strings.c:58
-#: config/strings.c:137
+#: config/strings.c:58 config/strings.c:137
 msgid "Lower"
 msgstr "Senken"
 
@@ -2786,8 +2694,7 @@ msgid "Lower this window."
 msgstr "Dieses Fenster senken"
 
 # src/pager.c:1283
-#: config/strings.c:60
-#: config/strings.c:139
+#: config/strings.c:60 config/strings.c:139
 msgid "Stick/Unstick"
 msgstr "Ankleben/Ablösen"
 
@@ -2810,14 +2717,12 @@ msgstr "Benutzer-Menü anzeigen"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: config/strings.c:65
-#: config/strings.c:67
+#: config/strings.c:65 config/strings.c:67
 msgid "Display Enlightenment Menu"
 msgstr "Enlightenment-Menü anzeigen"
 
 # src/settings.c:1503
-#: config/strings.c:66
-#: config/strings.c:71
+#: config/strings.c:66 config/strings.c:71
 msgid "Display Settings Menu"
 msgstr "Einstellungsmenü anzeigen"
 
@@ -2845,8 +2750,7 @@ msgid "Go Forward a Desktop"
 msgstr "Eine Desktop vorwärts gehen"
 
 # src/settings.c:2526 src/settings.c:2528
-#: config/strings.c:76
-#: config/strings.c:79
+#: config/strings.c:76 config/strings.c:79
 msgid "Backgrounds"
 msgstr "Hintergründe"
 
@@ -2886,19 +2790,16 @@ msgid "Enlightenment"
 msgstr "Enlightenment"
 
 # src/snaps.c:437
-#: config/strings.c:88
-#: config/strings.c:198
+#: config/strings.c:88 config/strings.c:198
 msgid "User Menus"
 msgstr "Benutzer-Menüs"
 
 # src/settings.c:393
-#: config/strings.c:90
-#: config/strings.c:110
+#: config/strings.c:90 config/strings.c:110
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: config/strings.c:92
-#: config/strings.c:99
+#: config/strings.c:92 config/strings.c:99
 msgid "Maintenance"
 msgstr ""
 
@@ -2916,14 +2817,12 @@ msgid "About this theme"
 msgstr "Über dieses Theme"
 
 # src/alert.c:182
-#: config/strings.c:96
-#: config/strings.c:202
+#: config/strings.c:96 config/strings.c:202
 msgid "Restart"
 msgstr "Neu starten"
 
 # src/session.c:1184
-#: config/strings.c:97
-#: config/strings.c:203
+#: config/strings.c:97 config/strings.c:203
 msgid "Log Out"
 msgstr "Abmelden  "
 
@@ -3285,4 +3184,3 @@ msgstr ""
 #: config/strings.c:201
 msgid "Epplets"
 msgstr ""
-
