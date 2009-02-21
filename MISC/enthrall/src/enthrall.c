@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include <limits.h>
 #include <signal.h>
@@ -36,6 +37,7 @@
 #include <getopt.h>
 
 #include "theora.h"
+#include "ffmpeg.h"
 
 #define VERSION "0.0.2"
 
@@ -67,9 +69,15 @@ struct Enthrall {
 
 	unsigned long frame_count;
 
-	EnthrallTheora theora;
-
 	int (*render)(Enthrall *e);
+
+	void *engine;
+
+	bool (*init)(void *engine, const char *filename, int quality,
+		     int *width, int *height,
+		     int *offset_x, int *offset_y);
+	void (*encode_frame)(void *engine, uint32_t *data);
+	void (*finish)(void *engine);
 };
 
 static int
@@ -166,7 +174,7 @@ on_timer (void *udata)
 	if (result < 0) {
 		fprintf(stderr, "Failed to render frame... exiting.\n");
 
-		enthrall_theora_encode_frame (&e->theora, NULL);
+		e->encode_frame (e->engine, NULL);
 		exit (result);
 	}
 
@@ -184,7 +192,7 @@ on_timer (void *udata)
 	}
 
 	data = imlib_image_get_data_for_reading_only ();
-	enthrall_theora_encode_frame (&e->theora, data);
+	e->encode_frame (e->engine, data);
 	imlib_image_put_back_data (data);
 
 	return 1; /* keep going */
@@ -370,9 +378,23 @@ main (int argc, char **argv)
 	w16 = e.window.w;
 	h16 = e.window.h;
 
-	s = enthrall_theora_init (&e.theora, output_file,
-	                          quality, &w16, &h16,
-	                          &e.window.offset_x, &e.window.offset_y);
+	if (ecore_str_has_suffix (output_file, ".ogg")) {
+		e.engine = enthrall_theora_new();
+		e.init = enthrall_theora_init;
+		e.encode_frame = enthrall_theora_encode_frame;
+		e.finish = enthrall_theora_finish;
+	}
+	else {
+		e.engine = enthrall_ffmpeg_new();
+		e.init = enthrall_ffmpeg_init;
+		e.encode_frame = enthrall_ffmpeg_encode_frame;
+		e.finish = enthrall_ffmpeg_finish;
+		quality = 150;
+	}
+
+	s = e.init (e.engine, output_file, quality,
+		    &w16, &h16,
+		    &e.window.offset_x, &e.window.offset_y);
 	if (!s) {
 		fprintf (stderr, "Error: Cannot initialize theora encoder.\n");
 
@@ -406,8 +428,8 @@ main (int argc, char **argv)
 	printf ("Starting recording...\n");
 	ecore_main_loop_begin ();
 
-	enthrall_theora_encode_frame (&e.theora, NULL);
-	enthrall_theora_finish (&e.theora);
+	e.encode_frame (e.engine, NULL);
+	e.finish (e.engine);
 
 	ecore_x_shutdown ();
 	ecore_shutdown ();

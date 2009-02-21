@@ -36,21 +36,47 @@
 #define _FILE_OFFSET_BITS 64
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
 #include <assert.h>
 
-#include "theora.h"
+#include <theora/theora.h>
+
 #include "rgb2yuv420.h"
 
-void
-enthrall_theora_encode_frame (EnthrallTheora *et, uint32_t *data)
+
+typedef struct {
+	FILE *file;
+	ogg_stream_state to;
+	theora_state td;
+	yuv_buffer yuv;
+} EnthrallTheora;
+
+
+void *
+enthrall_theora_new ()
 {
+	EnthrallTheora *et;
+
+	et = (EnthrallTheora *)malloc (sizeof (EnthrallTheora));
+	if (!et)
+		return NULL;
+	return et;
+}
+
+void
+enthrall_theora_encode_frame (void *engine, uint32_t *data)
+{
+	EnthrallTheora *et;
 	ogg_page page;
 	ogg_packet op;
+
+	et = (EnthrallTheora *)engine;
 
 	/* If data is NULL, we assume that it's the last frame.
 	 *
@@ -80,16 +106,19 @@ enthrall_theora_encode_frame (EnthrallTheora *et, uint32_t *data)
 }
 
 bool
-enthrall_theora_init (EnthrallTheora *et, const char *filename,
+enthrall_theora_init (void *engine, const char *filename,
                       int quality, int *width, int *height,
                       int *offset_x, int *offset_y)
 {
+	EnthrallTheora *et;
 	ogg_stream_state vo;
 	ogg_page og; /* one Ogg bitstream page. Vorbis packets are inside */
 	ogg_packet op; /* one raw packet of data for decode */
 	theora_info ti;
 	theora_comment tc;
 	int serial1, serial2;
+
+	et = (EnthrallTheora *)engine;
 
 	et->file = fopen (filename, "wb");
 	if (!et->file)
@@ -216,8 +245,12 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 }
 
 void
-enthrall_theora_finish (EnthrallTheora *et)
+enthrall_theora_finish (void *engine)
 {
+	EnthrallTheora *et;
+
+	et = (EnthrallTheora *)engine;
+
 	ogg_stream_clear (&et->to);
 	theora_clear (&et->td);
 
@@ -226,4 +259,5 @@ enthrall_theora_finish (EnthrallTheora *et)
 	free (et->yuv.y);
 	free (et->yuv.u);
 	free (et->yuv.v);
+	free (engine);
 }
