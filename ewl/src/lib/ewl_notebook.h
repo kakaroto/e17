@@ -53,15 +53,15 @@ typedef struct Ewl_Notebook Ewl_Notebook;
  */
 struct Ewl_Notebook
 {
-        Ewl_Box box;                        /**< Inherit from Ewl_Box */
+        Ewl_Box box;                    /**< Inherit from Ewl_Box */
 
         struct {
-                Ewl_Widget *tabbar;        /**< Holds the tabs */
-                Ewl_Widget *pages;        /**< Holds the notebook pages */
-        } body;                                /**< The body of the notebook */
+                Ewl_Widget *tabbar;     /**< Holds the tabs */
+                Ewl_Widget *pages;      /**< Holds the notebook pages */
+        } body;                         /**< The body of the notebook */
 
-        Ewl_Widget *cur_page;                /**< The currently active page */
-        Ewl_Position tabbar_position;        /**< The position of the tabbar in the notebook */
+        Ewl_Widget *cur_page;           /**< The currently active page */
+        Ewl_Position tabbar_position;   /**< The position of the tabbar in the notebook */
 };
 
 Ewl_Widget      *ewl_notebook_new(void);
