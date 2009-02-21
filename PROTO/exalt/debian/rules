@@ -3,17 +3,10 @@
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 
-DEB_DH_STRIP_ARGS := --dbg-package=libexalt-dbg
+DEB_DH_STRIP_ARGS := --dbg-package=exalt-dbg
 DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath
 DEB_MAKE_CLEAN_TARGET := clean
-
-build/exalt-doc::
-	cd $(DEB_SRCDIR) && doxygen
-
-install/exalt-doc::
-	mkdir -p debian/exalt-doc/usr/share/doc/exalt-doc/
-	cp -R $(DEB_SRCDIR)/doc/html debian/exalt-doc/usr/share/doc/exalt-doc/
-	cd $(DEB_SRCDIR)/doc/man/man3 && ls -1 | grep -vi etk | xargs rm
+DEB_DH_INSTALLINIT_ARGS := -- start 26 2 3 4 5 . stop 14 0 1 6 .
 
 clean::
 	./autogen.sh --prefix=/usr $(DEB_CONFIGURE_EXTRA_FLAGS) 
