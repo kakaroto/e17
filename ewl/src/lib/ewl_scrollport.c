@@ -576,6 +576,8 @@ ewl_scrollport_area_size_set(Ewl_Scrollport *s, int w, int h)
         ewl_object_preferred_inner_h_set(EWL_OBJECT(s), vs_h + h);
         ewl_object_minimum_w_set(EWL_OBJECT(s), hs_w + vs_w);
         ewl_object_preferred_inner_w_set(EWL_OBJECT(s), vs_w + w);
+        /* configure to adjust the scrollbars */
+        ewl_widget_configure(EWL_WIDGET(s));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
