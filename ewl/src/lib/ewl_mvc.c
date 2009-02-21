@@ -576,6 +576,7 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 
         sel = ewl_mvc_selection_index_new(model, data, row, column);
         ewl_mvc_selected_clear_private(mvc, sel);
+        FREE(sel);
         ewl_mvc_selected_add(mvc, model, data, row, column);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
