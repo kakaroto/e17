@@ -3,11 +3,10 @@
 MAINTAINERCLEANFILES = *.o ephoto config.h.in config.h Makefile.in Makefile \
 		       stamp-h1
 
-AM_CFLAGS    = -Wall -g
-
 bin_PROGRAMS = ephoto
 
-ephoto_SOURCES = ephoto.c \
+ephoto_SOURCES = \
+		 ephoto.c \
 		 ephoto_exif.c \
 		 ephoto_fsystem.c \
 		 ephoto_global.c \
@@ -22,5 +21,5 @@ ephoto_SOURCES = ephoto.c \
 		 ephoto_imaging.h \
 		 ephoto_utils.h
 
-ephoto_CFLAGS= @EWL_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ @EPSILON_CFLAGS@ 
-ephoto_LDFLAGS =  @EWL_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@ @EPSILON_LIBS@
+ephoto_CFLAGS= @EWL_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ @EPSILON_CFLAGS@ -Wall -g
+ephoto_LDADD =  @EWL_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@ @EPSILON_LIBS@
