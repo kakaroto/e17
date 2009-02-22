@@ -21,7 +21,6 @@ w, h = 400, 140
 v = virtkey.virtkey()
 sh = 0
 ee = ecore.evas.SoftwareX11(w=w, h=h)
-ee.callback_delete_request_set(v.unlock_mod(1))
 ex = ecore.x.Window_from_xid(ee.window_get())
 ex.icccm_hints_set(0, 1, 0, 0, 0, 0, 0)
 ee.title = "Keys"
