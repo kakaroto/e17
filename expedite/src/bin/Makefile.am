@@ -97,6 +97,11 @@ expedite_SOURCES += \
 engine_software_xcb.c engine_software_xcb.h
 endif
 
+if BUILD_XRENDER_XCB
+expedite_SOURCES += \
+engine_xrender_xcb.c engine_xrender_xcb.h
+endif
+
 if BUILD_SOFTWARE_DDRAW
 expedite_SOURCES += \
 engine_software_ddraw.cpp engine_software_ddraw.h
