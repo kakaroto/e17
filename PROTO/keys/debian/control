@@ -1,0 +1,12 @@
+Source: keys
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: debhelper (>= 6), python-virtkey, python-ecore, python-evas, python-edje, libedje-bin
+Standards-Version: 3.7.3
+
+Package: efl-keys
+Architecture: any
+Depends: python-virtkey, python-ecore, python-evas, python-edje, libedje-bin
+Description: An EFL-based onscreen keyboard
+ An efl-based on-screen keyboard written with Python-EFL.
