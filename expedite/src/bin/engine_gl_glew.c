@@ -171,7 +171,7 @@ engine_gl_glew_args(int argc, char **argv)
 {
    WNDCLASS                  wc;
    RECT                      rect;
-   HINSTANCE                 hinstance;
+   HINSTANCE                 instance;
    HDC                       dc;
    Evas_Engine_Info_GL_Glew *einfo;
    int                       depth;
@@ -188,14 +188,14 @@ engine_gl_glew_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(NULL);
+   instance = GetModuleHandle(NULL);
    if (!instance) return 0;
 
    wc.style = 0;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
-   wc.hInstance = hinstance;
+   wc.hInstance = instance;
    wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
    wc.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
@@ -217,7 +217,7 @@ engine_gl_glew_args(int argc, char **argv)
                            WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
-                           NULL, NULL, hinstance, NULL);
+                           NULL, NULL, instance, NULL);
    if (!window)
      goto unregister_class;
 
