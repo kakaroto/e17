@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Keys
+Comment=Python-EFL-based on-screen keyboard
+Comment[cs]=Klávesnice na obrazovce založená na EFL
+Exec=efl-keys
+Terminal=false
+Type=Application
+Icon=keys
+Categories=Application;Utility;

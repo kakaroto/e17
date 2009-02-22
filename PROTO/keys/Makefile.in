@@ -1,0 +1,31 @@
+LAUNCHER=keys.desktop
+ICON_PNG=keys.png
+ICON_SVG=keys_svg.svg
+EDJEFILE=Keys.edj
+BINSCRIPT=keys
+RUNSCRIPT=efl-keys
+PREFIX=@prefix@
+
+Keys.edj:
+	sh build.sh
+
+install:
+	mkdir -p $(DESTDIR)$(PREFIX)/share/$(RUNSCRIPT)
+	install -c -m 755 $(BINSCRIPT) $(DESTDIR)$(PREFIX)/share/$(RUNSCRIPT)
+	install -c -m 644 $(EDJEFILE) $(DESTDIR)$(PREFIX)/share/$(RUNSCRIPT)
+	install -c -m 755 $(RUNSCRIPT) $(DESTDIR)$(PREFIX)/bin
+	install -c -m 644 $(LAUNCHER) $(DESTDIR)$(PREFIX)/share/applications
+	install -c -m 644 $(ICON_PNG) $(DESTDIR)$(PREFIX)/share/pixmaps
+	install -c -m 644 $(ICON_SVG) $(DESTDIR)$(PREFIX)/share/pixmaps
+	
+
+uninstall:
+	rm -rf $(PREFIX)/share/$(RUNSCRIPT)
+	rm -rf $(PREFIX)/bin/$(RUNSCRIPT)
+	
+clean:
+	rm -f $(EDJEFILE)
+	rm -f $(RUNSCRIPT)
+
+distclean: clean
+	rm -f Makefile

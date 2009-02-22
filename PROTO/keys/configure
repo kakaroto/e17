@@ -1,0 +1,54 @@
+#!/bin/sh
+# generate Makefile
+
+print_help()
+{
+cat << EOF
+USAGE:
+
+$0 --prefix=PREFIX
+
+Replace PREFIX with for example /usr, /usr/local or /opt.
+When you don't specify any prefix, it'll use /usr.
+EOF
+}
+
+case $1 in
+	--help|-h) 
+		print_help
+		exit 0
+	;;
+esac
+
+for mod in virtkey ecore.evas ecore.x edje sys os; do
+	echo "Checking for python module $mod.."
+if $(python -c "import virtkey"); then
+	echo -e "\033[1;32m[ OK ]\033[m"
+else
+	echo -e "\033[1;31m[ not found ]\033[m"
+	exit 1
+fi
+done
+
+echo "Checking for edje_cc.."
+edjecctest=$(which edje_cc)
+if [ -z $edjecctest ]; then
+	echo -e "\033[1;31m[ not found ]\033[m"
+else
+	echo -e "\033[1;32m[ OK ]\033[m"
+fi
+
+if [ -z "$1" ]; then
+	prefix="usr"
+else
+	prefix=$(echo $1 | sed 's/--prefix=\///' | sed 's/\//\\\//g')
+fi
+
+cp Makefile.in Makefile
+cp efl-keys.in efl-keys
+sed -i "s/@prefix@/\/$prefix/g" Makefile
+sed -i "s/@prefix@/\/$prefix/g" efl-keys
+
+exit 0
+
+
