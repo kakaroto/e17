@@ -16,6 +16,7 @@
  */
 
 #include <Ecore.h>
+#include <Ecore_Str.h>
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 
@@ -378,7 +379,7 @@ main (int argc, char **argv)
 	w16 = e.window.w;
 	h16 = e.window.h;
 
-	if (ecore_str_has_suffix (output_file, ".ogg")) {
+	if (ecore_str_has_extension (output_file, ".ogg")) {
 		e.engine = enthrall_theora_new();
 		e.init = enthrall_theora_init;
 		e.encode_frame = enthrall_theora_encode_frame;
