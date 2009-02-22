@@ -4,28 +4,13 @@
 <article id="index">
   <articleinfo>
     <title>About Enlightenment e16 version 0.16.8</title>
-<!--
-    <author>
-      <firstname>Kim</firstname><surname>Woelders</surname>
-      <affiliation><address><email>kim@woelders.dk</email></address></affiliation>
-    </author>
-    <author>
-      <firstname>Peter</firstname><surname>Hyman</surname>
-      <affiliation><address><email>pete4abw@comcast.net</email></address></affiliation>
-    </author>
-    <author>
-      <firstname>Yasufumi</firstname><surname>Haga</surname>
-      <affiliation><address><email>yasufumi.haga@nifty.com</email></address></affiliation>
-    </author>
--->
-    <pubdate>Jan 25, 2009</pubdate>
+    <pubdate>Feb 22, 2009</pubdate>
     <abstract>
       <para>
 	Coming soon. (maybe)
       </para>
     </abstract>
   </articleinfo>
-
   <sect1 id="credits">
     <title>Credits</title>
     <para>
@@ -57,7 +42,7 @@
       <itemizedlist>
 	<listitem>
 	  <para>
-	    "enlightenment" has been renamed to "e16".
+	    "<application>enlightenment</application>" has been renamed to "<application>e16</application>".
 	  </para>
 	</listitem>
 	<listitem>
@@ -67,12 +52,14 @@
 	</listitem>
 	<listitem>
 	  <para>
-	    The data install path is "<filename class="directory">&lt;somepath&gt;/e16</filename>", e.g. "<filename class="directory">/usr/share/e16</filename>". Thus, an e16.8 installation should not clash with any other versions.
+	    The data install path is "<filename class="directory">&lt;somepath&gt;/e16</filename>", e.g. "<filename class="directory">/usr/share/e16</filename>".
+	    Thus, an e16.8 installation should not clash with any other versions.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    Various configuration file formats have changed and should be easier to read and modify, if needed.
+	    Various configuration file formats have changed and should be easier
+	    to read and modify, if needed.
 	  </para>
 	</listitem>
 	<listitem>
@@ -84,7 +71,7 @@
 	<listitem>
 	  <para>
 	    Actions(used by menus, keybindings, etc.) and IPC functions(<application>eesh</application>) have
-	    been merged.
+  been merged.
 	  </para>
 	</listitem>
 	<listitem>
@@ -109,8 +96,9 @@
 	  </para>
 	</listitem>
 	<listitem>
-	  <para>An iconbox can be configured to act as System Tray
-	    (<menuchoice><interface>middle mouse</interface><guimenu>Desktop</guimenu><guimenuitem>Create Systray</guimenuitem></menuchoice>).
+	  <para>
+	    An iconbox can be configured to act as System Tray
+  (<menuchoice><interface>middle mouse</interface><guimenu>Desktop</guimenu><guimenuitem>Create Systray</guimenuitem></menuchoice>).
 	  </para>
 	</listitem>
 	<listitem>
@@ -233,8 +221,8 @@
       Window matches (border and icon associations) are defined in <filename>windowmatches.cfg</filename>
       and <filename>matches.cfg</filename>.
       <filename>windowmatches.cfg</filename> (deprecated, border associations only) is loaded first,
-      and should be found only in theme directories.
-      <filename>matches.cfg</filename> is loaded next, and searched in
+and should be found only in theme directories.
+<filename>matches.cfg</filename> is loaded next, and searched in
       <orderedlist>
 	<listitem>
 	  <para>
@@ -265,22 +253,22 @@
     </para>
     <para>
       Enlightenment accomplishes this with the addition of two new keys in
-      the <filename>$ECONFDIR/e_config--#.#.cfg</filename> (#.# may vary depending on your X setup --
+      the <filename>$ECONFDIR/e_config--#.#.cfg</filename> (#.# may vary depending on your X setup -- 
       for most people, it will be 0.0). These are:
     </para>
     <programlisting>
-      misc.session.enable_script
-      misc.session.script
+      misc.session.enable_script 
+      misc.session.script 
     </programlisting>
     <para>
-      <varname>misc.session.enable_script</varname> is a boolean. When set to 1, Enlightenment will
-      execute the script in the <varname>misc.session.script</varname> key. By default, this feature
+      <varname>misc.session.enable_script</varname> is a boolean. When set to 1, Enlightenment will 
+      execute the script in the <varname>misc.session.script</varname> key. By default, this feature 
       is disabled. When enabled, it will do nothing until the user configures
       his/her home directory ($ECONFDIR -- normally <filename class="directory">~/.e16</filename>).
     </para>
     <para>
       The default session.script is located in <filename>$EROOT/scripts/session.sh</filename> ($EROOT
-      is normally <filename class="directory">/usr/share/e16</filename> or <filename class="directory">/usr/local/share/e16</filename>). It will look for
+      is normally <filename class="directory">/usr/share/e16</filename> or <filename class="directory">/usr/local/share/e16</filename>). It will look for 
       directories in the user's <filename class="directory">$ECONFDIR/</filename> (<filename class="directory">~/.e16/</filename>) called:
     </para>
     <programlisting>
@@ -290,7 +278,7 @@
       Stop/
     </programlisting>
     <para>
-      and run any and/or all scripts or executables in each when E starts,
+      and run any and/or all scripts or executables in each when E starts, 
       restarts, and shuts down. If no scripts or executables are present, or
       if any of the directories Init, Start, and Stop do not exist, NOTHING
       will happen and E will start up as usual. So, in order to use session
@@ -306,29 +294,29 @@
       misc.session.script = $EROOT/scripts/session.sh
     </programlisting>
     <para>
-      The user may write a custom script and place it anywhere. Simply modify
+      The user may write a custom script and place it anywhere. Simply modify 
       the config file by using:
     </para>
     <programlisting>
       $ eesh set misc.session.script myscript
     </programlisting>
     <para>
-      and modify it (be sure to <command>chmod +x</command> the file otherwise it won't run).
-      The session script is called with one of three command parameters;
-      <parameter class="command">init</parameter>, <parameter class="command">start</parameter>, and <parameter class="command">stop</parameter>. Any custom script should have a code block
+      and modify it (be sure to <command>chmod +x</command> the file otherwise it won't run). 
+      The session script is called with one of three command parameters; 
+      <parameter class="command">init</parameter>, <parameter class="command">start</parameter>, and <parameter class="command">stop</parameter>. Any custom script should have a code block 
       similar to this in order to function properly in Enlightenment.
     </para>
     <programlisting>
       case "$1" in
       init)
-      # do blah
-      # or do function init
+              # do blah
+              # or do function init
       start)
-      # do blah
-      # of do function start
+              # do blah
+              # of do function start
       stop)
-      # do blah
-      # or do function stop
+              # do blah
+              # or do function stop
       esac
     </programlisting>
     <para>
@@ -362,7 +350,7 @@
       rendered properly at all and should be started with the environment variable
       <varname>XLIB_SKIP_ARGB_VISUALS</varname> set.
       To fix border rendering on "real" ARGB windows it is required to use <filename>imlib2</filename>
-      with version >= 1.3.0.
+      with version &gt;= 1.3.0.
     </para>
     <para>
       Tweaks:
@@ -423,14 +411,14 @@
 	<member>Alt-Ctrl</member><member>s</member><member>Toggle active window sticky state</member>
 	<member>Alt-Ctrl</member><member>i</member><member>Iconify active window</member>
 	<member>Alt-Ctrl</member><member>r</member><member>Toggle active window shaded state</member>
-	<member>Alt-Ctrl</member><member>f</member><member>Toggle active window fullscreen state</member>
+	<member>Alt-Ctrl</member><member>f</member><member>Toggle active window fullscreen staet</member>
 	<member>Alt-Ctrl</member><member>m</member><member>Toggle active window maximized state</member>
 	<member>Alt-Ctrl</member><member>w</member><member>Show window-ops menu for active window</member>
 	<member>Alt</member><member>Return</member><member>Toggle active window zoomed state</member>
-	<member>Ctrl-Shift</member><member>F1</member><member>Show User menu (default left mouse button)</member>
+	<member>Ctrl-Shift</member><member>F1</member><member>Show User menu          (default left mouse button)</member>
 	<member>Ctrl-Shift</member><member>F2</member><member>Show Enlightenment menu (default middle mouse button)</member>
 	<member>Ctrl-Shift</member><member>F3</member><member>Show Configuration menu (default right mouse button)</member>
-	<member>Ctrl-Shift</member><member>F4</member><member>Show Window List menu (default Alt-middle mouse button)</member>
+	<member>Ctrl-Shift</member><member>F4</member><member>Show Window List menu   (default Alt-middle mouse button)</member>
 
 	<member>Alt-Ctrl</member><member>a</member><member>Toggle visibility of all buttons</member>
 	<member>Alt-Ctrl</member><member>b</member><member>Toggle visibility of theme buttons</member>
@@ -559,10 +547,10 @@
 
       # [string] Language used by e16 (dialogs, tooltips, etc.)
       # Inherit from environment if not set
-      locale.internal =
+      locale.internal = 
       # [string] Language exported when starting applications
       # Inherit from environment if not set
-      locale.exported =
+      locale.exported = 
 
       # [bool] Animate menus
       menus.animate = 0
@@ -731,12 +719,12 @@
       # [bool] Enable sound
       sound.enable = 0
       # [string] Use sounds from theme (not implemented)
-      sound.theme =
+      sound.theme = 
 
       # [string] Theme
       theme.name = winter
       # [string] Colon separated list of directories containing e16 themes
-      theme.extra_path =
+      theme.extra_path = 
       # [bool] Use alternative font configuration file (specified by theme.font_cfg)
       theme.use_alt_font_cfg = 1
       # [string] Alternative font configuration file
@@ -804,14 +792,12 @@
 	  <filename class="directory">/usr/share/e16/fonts</filename>.
 	</para>
       </listitem>
-
       <listitem>
 	<para>
 	  XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
 	  <application>xfontsel</application>, <application>xlsfonts</application>, and <application>xfd</application> can be used to select and show these fonts.
 	</para>
       </listitem>
-
       <listitem>
 	<para>
 	  Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
@@ -819,7 +805,6 @@
 	  This possibility (Xft support) is available as of version 0.16.8.5.
 	</para>
       </listitem>
-
       <listitem>
 	<para>
 	  <application>Pango</application> font names, prefixed by "pango:", e.g. "pango:sans bold 10".
@@ -852,23 +837,41 @@
   <sect1 id="usinge16withgnoem">
     <title>Using e16 with GNOME</title>
     <para>
-      (Using <application>Fedora Core 4</application>, may be pertinent to other distributions as well).
+      Setting up <application>e16</application> as WM in a <application>GNOME</application> session unfortunately depends on the version
+      of <application>gnome-session</application>.
     </para>
     <para>
-      The <application>GNOME</application> desktop can be started using e16 as WM with:
+      Recent versions of <application>gnome-session</application> seem to require that a <application>gconf</application> key is set
+      and that an <filename>e16.desktop</filename> file can be found:
+    </para>
+    <programlisting>
+      $ gconftool-2 --set /desktop/gnome/session/required_components/windowmanager --type string e16
+      $ gnome-sesssion
+    </programlisting>
+    <para>
+      <filename>/usr/share/applications/e16.desktop</filename> (or <filename>~/.local/share/applications/e16.desktop</filename>):
+    </para>
+    <programlisting>
+      [Desktop Entry]
+      Encoding=UTF-8
+      Type=Application
+      Name=E16
+      Comment=The Enlightenment (e16) window manager
+      Exec=e16
+      Icon=/usr/share/e16/misc/e16.png
+    </programlisting>
+    <para>
+      The section below seems to be obsolete as of <application>gnome-session-2.2x</application>(?)
+    </para>
+    <para>
+      The <application>GNOME</application> desktop can be started using <application>e16</application> as WM with:
     </para>
     <programlisting>
       $ export WINDOW_MANAGER=e16
       $ gnome-sesssion
     </programlisting>
     <para>
-      Alternatively, add a GNOME/e16 session entry to the display manager login:
-    </para>
-    <programlisting>
-      # cp /usr/share/e16/misc/e16-gnome.desktop /usr/share/xsessions/
-    </programlisting>
-    <para>
-      Note! The section below is obsolete as of <application>gnome-session-2.16</application>
+      The section below is obsolete as of <application>gnome-session-2.16</application>
     </para>
     <para>
       However, somewhere along the way the script <filename>/usr/bin/gnome-wm</filename> is called.
@@ -880,38 +883,29 @@
       Another is to apply this patch to <filename>/usr/bin/gnome-wm</filename>:
     </para>
     <programlisting>
-      --- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
-      +++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
-      @@ -69,7 +69,7 @@
-      OPT2=
-      if [ ! -z "$SMID" ] ; then
-      case `basename $WINDOW_MANAGER` in
-      -    sawfish|sawmill|metacity)
-      +    sawfish|sawmill|metacity|e16)
-      OPT1=--sm-client-id=$SMID
-      ;;
-      openbox)
+--- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
++++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
+@@ -69,7 +69,7 @@
+ OPT2=
+ if [ ! -z "$SMID" ] ; then
+   case `basename $WINDOW_MANAGER` in
+-    sawfish|sawmill|metacity)
++    sawfish|sawmill|metacity|e16)
+       OPT1=--sm-client-id=$SMID
+       ;;
+     openbox)
     </programlisting>
   </sect1>
   <sect1 id="usinge16withkde">
     <title>Using e16 with KDE</title>
     <para>
-      (Using <application>Fedora Core 4</application>, may work with other distributions as well).
-    </para>
-    <para>
-      The <application>KDE</application> desktop can be started using e16 as WM with:
+      The <application>KDE</application> desktop can be started using <application>e16</application> as WM with:
     </para>
     <programlisting>
       $ export KDEWM=e16
       $ startkde
     </programlisting>
-    <para>
-      Alternatively, add a KDE/e16 session entry to the display manager login:
-    </para>
-    <programlisting>
-      # cp /usr/share/e16/misc/e16-kde.desktop /usr/share/xsessions/
-    </programlisting>
-  </sect1>
+   </sect1>
   <sect1 id="migratingfromEnlightenment0167to0168">
     <title>Migrating from Enlightenment 0.16.7 to 0.16.8</title>
     <para>
@@ -919,7 +913,7 @@
     </para>
     <para>
       Several organizational changes have occurred that will require
-      some manual adjustments. Mainly these deal with changes to
+      some manual adjustments. Mainly these deal with changes to 
       configuration and shared directory names. This was done to avoid
       collisions with the new enlightenment DR17.
     </para>
@@ -932,12 +926,13 @@
       <listitem>
 	<para>
 	  menu files have been moved to a subdirectory called menus
-	  you will need to move customized menus and subdirectories to
-	  <filename class="directory">~/.e16/menus</filename>.
+   you will need to move customized menus and subdirectories to
+   <filename class="directory">~/.e16/menus</filename>.
 	</para>
       </listitem>
       <listitem>
-	<para>you will need to move <filename class="directory">~/.enlightenment/backgrounds</filename> files to <filename class="directory">~/.e16</filename>
+	<para>
+	  you will need to move <filename class="directory">~/.enlightenment/backgrounds</filename> files to <filename class="directory">~/.e16</filename>
 	  and any themes as well.
 	</para>
       </listitem>
@@ -948,7 +943,7 @@
       </listitem>
       <listitem>
 	<para>
-	  if installed E-docs and Epplet directories will have to be moved
+	  if installed E-docs and Epplet directories will have to be moved 
 	  to <filename class="directory">$prefix/share/e16</filename>
 	</para>
       </listitem>
@@ -1283,4 +1278,3 @@ __E_CFG_VERSION 0
     </para>
   </sect1>
 </article>
-
