@@ -17,7 +17,7 @@ import sys
 import os
 
 #Setup Window
-w, h = 400, 140
+w, h = 500, 150
 v = virtkey.virtkey()
 sh = 0
 ee = ecore.evas.SoftwareX11(w=w, h=h)
