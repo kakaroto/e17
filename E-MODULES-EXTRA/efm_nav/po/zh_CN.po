@@ -17,4 +17,4 @@ msgstr ""
 
 #: ../src/e_mod_main.c:193
 msgid "EFM Navigation"
-msgstr "EFM 浏览"
+msgstr "EFM 导航"

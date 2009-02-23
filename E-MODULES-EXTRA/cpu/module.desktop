@@ -3,6 +3,7 @@ Type=Link
 Name=Cpu
 Name[eo]=Ĉeforgano
 Name[hu]=Processzor
+Name[zh_CN]=CPU 工具
 Icon=e-module-cpu
 Comment=<title>CPU Gadget</title><br>Used to monitor CPU utilization.
 Comment[cs]=<title>CPU gadget</title><br>Použitý k měření vytížení CPU.

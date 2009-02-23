@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2009-01-23 00:55+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <>\n"
@@ -49,10 +49,10 @@ msgid ""
 "configuration of news module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Módulo de News : Actualización de "
-"configuración</hilight><br><br>Laconfiguración del módulo News<br>fue "
-"actualizada<br>Sus preferencias fueron  eliminadas.<br>Lamentamos las "
-"incoveniencias<br><br>(%d -> %d)"
+"<hilight>Módulo de News : Actualización de configuración</"
+"hilight><br><br>Laconfiguración del módulo News<br>fue actualizada<br>Sus "
+"preferencias fueron  eliminadas.<br>Lamentamos las incoveniencias<br><br>(%d "
+"-> %d)"
 
 #: ../src/module/news_config.c:112
 #, c-format
@@ -271,8 +271,7 @@ msgstr "Información del servidor"
 
 #: ../src/module/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr ""
-"¿Permitir al servidor sobrescribir la información que has introducido?"
+msgstr "¿Permitir al servidor sobrescribir la información que has introducido?"
 
 #: ../src/module/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
@@ -426,13 +425,13 @@ msgstr "Se necesita <hilight>seleccionar una categoría</hilight>."
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already "
-"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
-"with the same name<br>in one category."
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
 msgstr ""
-"Un canal de noticias con el <hilight>nombre</hilight> %s <hilight>ya "
-"existe</hilighit><br> en la categoría %s<br><br>No es posible tener "
-"alimentadores con el mismo nombre<br>en una categoría."
+"Un canal de noticias con el <hilight>nombre</hilight> %s <hilight>ya existe</"
+"hilighit><br> en la categoría %s<br><br>No es posible tener alimentadores "
+"con el mismo nombre<br>en una categoría."
 
 #: ../src/module/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -448,8 +447,8 @@ msgstr "¡Es necesario introducir un <hilight>nombre</hilight> !"
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already "
-"used</hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
 msgstr ""
 "El <hilight>nombre</hilight> introducido <hilight>ya existe</hilight><br>en "
 "otra categoría"

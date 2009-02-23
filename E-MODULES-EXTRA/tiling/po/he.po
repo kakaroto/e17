@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-11-30 00:12+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -14,12 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
 msgid "Tiling"
 msgstr "ריצוף"
 
-#: ../e_mod_main.c:999
+#: ../e_mod_main.c:1004
 msgid "Windows"
 msgstr "חלונות"
 

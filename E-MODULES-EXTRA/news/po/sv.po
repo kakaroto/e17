@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2009-01-10 12:44+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
@@ -413,9 +412,9 @@ msgstr ""
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already "
-"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
-"with the same name<br>in one category."
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
 msgstr ""
 
 #: ../src/module/news_feed.c:311
@@ -432,8 +431,8 @@ msgstr ""
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already "
-"used</hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
 msgstr ""
 
 #: ../src/module/news_menu.c:56

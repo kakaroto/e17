@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-11-29 23:35+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #. create new config dialog
 #: ../src/e_mod_config.c:39
@@ -42,8 +41,8 @@ msgstr ""
 "הגדרות ברירת המחדל.<br>פעולה זו עלולה לקרות באופן סדיר במהלך פיתוח, לכן אין "
 "סיבה לדווח על תקלה.<br>משמעות התופעה היא שהמודול זקוק לנתוני תצורה<br>חדשים "
 "כברירת מחדל כדי לאפשר תכונות החסרות<br>בתצורה הישנה שלך. ערכת ברירות מחדל זו "
-"תתקן<br>זאת על ידי הוספתן. תוכל לשנות את ההגדרות בחזרה לצורה המועדפת "
-"עליך.<br>סליחה על אי הנעימות.<br>"
+"תתקן<br>זאת על ידי הוספתן. תוכל לשנות את ההגדרות בחזרה לצורה המועדפת עליך."
+"<br>סליחה על אי הנעימות.<br>"
 
 #: ../src/e_mod_main.c:127
 msgid ""

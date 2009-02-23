@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiling e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-10-22 22:14+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
 msgid "Tiling"
 msgstr ""
 
-#: ../e_mod_main.c:999
+#: ../e_mod_main.c:1004
 msgid "Windows"
 msgstr ""
 

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-12-21 18:40+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-12-05 19:05+0000\n"
 "Last-Translator: Paco Molinero <paco@byasl.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -29,10 +29,10 @@ msgstr "Lunes"
 msgid "First Day of Week"
 msgstr "Primer día de la semana"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../e_mod_main.c:554 ../e_mod_main.c:570
+#: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Vista del mes en ventana emergente (mostrar/ocultar)"

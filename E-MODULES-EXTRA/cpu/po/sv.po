@@ -1,48 +1,48 @@
 # Swedish translation of CPU module for E17.
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
-# , fuzzy
-#
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: CPU module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2006-03-09 15:00+0100\n"
-"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-10 12:04+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../e_mod_main.c:129
 msgid "Cpu"
-msgstr ""
+msgstr "Processor"
 
 #: ../e_mod_main.c:363
 msgid "Fast (0.5 sec)"
-msgstr ""
+msgstr "Snabb (0,5 s)"
 
 #: ../e_mod_main.c:370
 msgid "Medium (1 sec)"
-msgstr ""
+msgstr "Medel (1 s)"
 
 #: ../e_mod_main.c:377
 msgid "Normal (2 sec)"
-msgstr ""
+msgstr "Normal (2 s)"
 
 #: ../e_mod_main.c:384
 msgid "Slow (5 sec)"
-msgstr ""
+msgstr "Långsam (5 s)"
 
 #: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
-msgstr ""
+msgstr "Mycket långsam (30 s)"
 
 #: ../e_mod_main.c:402
 msgid "Time Between Updates"
-msgstr ""
+msgstr "Tid mellan uppdateringar"
 
 #~ msgid "Cpu Configuration"
 #~ msgstr "Cpu konfiguration"

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-11-29 08:19+0000\n"
 "Last-Translator: chilicuil <Unknown>\n"
 "Language-Team: Spanish <>\n"
@@ -26,20 +26,20 @@ msgstr "IIirk"
 msgid "Configuration"
 msgstr "Configuración"
 
-#: ../src/e_mod_main.c:1553
+#: ../src/e_mod_main.c:1558
 msgid "Applications"
 msgstr "Aplicaciones"
 
-#: ../src/e_mod_main.c:1555 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Aplicaciones IIirk"
 
-#: ../src/e_mod_main.c:1557
+#: ../src/e_mod_main.c:1562
 msgid "Internal"
 msgstr "Interna"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1563
 msgid "IIirk Other"
 msgstr "IIirk Otros"
 

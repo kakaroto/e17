@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire 0.0.4\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2009-01-01 14:03+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -16,14 +16,14 @@ msgstr ""
 "X-Poedit-Language: Czech\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
-#: ../src/edje_frontend_gui.cpp:755
+#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:703
+#: ../src/edje_frontend_gui.cpp:757
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
 msgstr "Chyba v %s: chybí element_value součást!\n"
 
-#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
-#: ../src/edje_frontend_gui.cpp:762
+#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:710
+#: ../src/edje_frontend_gui.cpp:764
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
 msgstr "Chyba v %s: chybí skupina prvků!\n"
@@ -56,15 +56,15 @@ msgid "Elitaire Error: unable to find %s theme!\n"
 msgstr "Chyba: nemůžu najít %s téma!\n"
 
 #. set the label text
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Games"
 msgstr "Hry"
 
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Themes"
 msgstr "Témata"
 
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Cards"
 msgstr "Karty"
 
@@ -213,19 +213,19 @@ msgstr "OpenGL (testuje se)"
 msgid "Elitaire Error: Could not save configuration.\n"
 msgstr "Chyba: Nemůžu uložit konfiguraci.\n"
 
-#: ../src/ewl_dialog_hiscore.cpp:50
+#: ../src/ewl_dialog_hiscore.cpp:52
 msgid "Highscore"
 msgstr "Nejvyšší skóre"
 
-#: ../src/ewl_dialog_hiscore.cpp:119
+#: ../src/ewl_dialog_hiscore.cpp:121
 msgid "Name"
 msgstr "Jméno"
 
-#: ../src/ewl_dialog_hiscore.cpp:145
+#: ../src/ewl_dialog_hiscore.cpp:147
 msgid "Please insert your name"
 msgstr "Prosím zadejte vaše jméno"
 
-#: ../src/ewl_dialog_hiscore.cpp:218
+#: ../src/ewl_dialog_hiscore.cpp:220
 msgid "Won Games:"
 msgstr "Vyhrané hry:"
 
@@ -233,7 +233,7 @@ msgstr "Vyhrané hry:"
 msgid "Lost Games:"
 msgstr "Prohrané hry:"
 
-#: ../src/ewl_dialog_hiscore.cpp:248
+#: ../src/ewl_dialog_hiscore.cpp:246
 msgid "relative Quote:"
 msgstr "relative Quote:"
 

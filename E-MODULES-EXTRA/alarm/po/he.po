@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-11-29 21:05+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -47,7 +47,7 @@ msgstr "שכפל"
 msgid "Alarm Options"
 msgstr "אפשרויות התזכורת"
 
-#. 
+#.
 #. ob = e_widget_label_add(evas, D_("Time format"));
 #. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 #. rg = e_widget_radio_group_new(&(cfdata->time_format));
@@ -55,7 +55,7 @@ msgstr "אפשרויות התזכורת"
 #. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 #. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
 #. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-#. 
+#.
 #: ../e_mod_config.c:238
 msgid "Show next alarm"
 msgstr "הצגת התזכורת הבאה"

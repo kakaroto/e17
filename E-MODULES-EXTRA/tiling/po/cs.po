@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiling\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2009-01-01 14:24+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
 msgid "Tiling"
 msgstr "Dlaždicce"
 
-#: ../e_mod_main.c:999
+#: ../e_mod_main.c:1004
 msgid "Windows"
 msgstr "Okna"
 

@@ -3,27 +3,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-29 21:59+0800\n"
-"PO-Revision-Date: 2008-11-25 11:52+0200\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-02-08 18:52+0000\n"
+"Last-Translator: Galatsanos Panagiotis <Unknown>\n"
 "Language-Team: Greek <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: KBabel 1.11.4\n"
+
 
 #: ../e_mod_config.c:55
-#, fuzzy
 msgid "Alarm Configuration"
-msgstr "Ρύθμιση Ειδοποίησης"
+msgstr ""
 
 #: ../e_mod_config.c:155 ../e_mod_main.c:187
-#, fuzzy
 msgid "Alarm"
-msgstr "Ειδοποίηση"
+msgstr ""
 
 #: ../e_mod_config.c:157 ../e_mod_config_alarm.c:190
 msgid "Active"
@@ -46,11 +41,10 @@ msgid "Duplicate"
 msgstr "Αντιγραφή"
 
 #: ../e_mod_config.c:226
-#, fuzzy
 msgid "Alarm Options"
-msgstr "Επιλογές Ειδοποίησης"
+msgstr "Επιλογές ειδοποίησης"
 
-#.
+#. 
 #. ob = e_widget_label_add(evas, D_("Time format"));
 #. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 #. rg = e_widget_radio_group_new(&(cfdata->time_format));
@@ -58,7 +52,7 @@ msgstr "Επιλογές Ειδοποίησης"
 #. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 #. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
 #. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-#.
+#. 
 #: ../e_mod_config.c:238
 msgid "Show next alarm"
 msgstr "Εμφάνιση επόμενης ειδοποίησης"
@@ -146,7 +140,6 @@ msgid "One day"
 msgstr "Μια μέρα"
 
 #: ../e_mod_config_alarm.c:243
-#, fuzzy
 msgid "Date (YYYY/MM/DD)"
 msgstr "Ημερομηνία (YYYY/MM/DD)"
 
@@ -236,15 +229,11 @@ msgid "Run this program"
 msgstr "Εκτέλεση αυτού του προγράμματος"
 
 #: ../e_mod_config_alarm.c:478
-#, fuzzy
 msgid ""
 "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
-"<hilight>Δοκιμή Ειδοποίησης Πέτυχε !</hilight><br><br>Αλλά ΜΗΝ ΞΕΧΝΑΤΕ να "
-"ΕΝΕΡΓΟΠΟΙΕΙΤΕ τις ειδοποιήσεις<br>από το κουμπί ενεργοποίησης \"Ενεργό\" "
-"στο<br>κεντρικό παράθυρο ρυθμίσεων των Ειδοποιήσεων."
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -264,15 +253,16 @@ msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Ειδοποίηση: %s</hilight><br><br>%s"
 
 #: ../e_mod_main.c:401
-#, fuzzy
 msgid "Alarm Module Popup"
-msgstr "Γρήγορη Ειδοποίηση Αρθρώματος Ειδοποιήσεων"
+msgstr ""
 
 #: ../e_mod_main.c:424
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
+"<hilight>Απέτυχε !</hilight><br><br>Η εφαρμογή ειδοποίησης δεν μπόρεσε να "
+"εκκινήσει το πρόγραμμα που ζητήσατε"
 
 #: ../e_mod_main.c:658 ../e_mod_main.c:837
 #, c-format
@@ -324,7 +314,7 @@ msgstr ""
 
 #: ../e_mod_main.c:1060 ../e_mod_main.c:1074
 msgid "Alarm Module version "
-msgstr "Έκδοση Αρθρώματος Ειδοποίησης"
+msgstr "Έκδοση Αρθρώματος Ειδοποίησης "
 
 #: ../e_mod_main.c:1068
 #, c-format

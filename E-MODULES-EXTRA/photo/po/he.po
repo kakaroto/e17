@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-11-30 08:42+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
 #: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
@@ -310,8 +309,8 @@ msgstr "שגיאת מודול התמונות"
 #: ../src/module/photo_item.c:413
 #, c-format
 msgid ""
-"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file "
-"!<br>Photo module needs e17setroot util from e_utils package to set you're "
+"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
+"<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
 "<hilight>נדרש e17setroot</hilight><br><br>%s אינו קובץ  edje !<br>מודול "
@@ -381,8 +380,8 @@ msgid ""
 msgstr ""
 "<hilight>התיקייה %s אינה קיימת.</hilight><br><br>תוכל לשנות את תיקיות "
 "התמונות בלוח התצורה הראשי<br>התמונות יכולות להיות מסוג jpeg או "
-"png<br><br>לאחר הייבוא, תוכל להסיר קבצים אלו ועדיין ניתן יהיה לצפות "
-"בתמונות,<br>אך לא תוכל להגדיר אותן עוד כרקע<br><br>"
+"png<br><br>לאחר הייבוא, תוכל להסיר קבצים אלו ועדיין ניתן יהיה לצפות בתמונות,"
+"<br>אך לא תוכל להגדיר אותן עוד כרקע<br><br>"
 
 #: ../src/module/photo_picture_local.c:593
 msgid "Photo Module Information"

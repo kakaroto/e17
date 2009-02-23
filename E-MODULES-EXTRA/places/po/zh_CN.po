@@ -1,0 +1,102 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# This file is put in the public domain.
+# Aron Xu <aronmalache@163.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:56+0800\n"
+"PO-Revision-Date: 2009-02-23 16:56+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:50
+msgid "Places Configuration"
+msgstr ""
+
+#. General frame
+#: ../src/e_mod_config.c:116
+msgid "General"
+msgstr ""
+
+#: ../src/e_mod_config.c:119
+msgid "Mount volumes on insert"
+msgstr ""
+
+#: ../src/e_mod_config.c:123
+msgid "Open filemanager on insert"
+msgstr ""
+
+#: ../src/e_mod_config.c:127
+msgid "Use a custom file manager"
+msgstr ""
+
+#. Display frame
+#: ../src/e_mod_config.c:140
+msgid "Show"
+msgstr ""
+
+#: ../src/e_mod_config.c:143 ../src/e_mod_places.c:399
+msgid "Home"
+msgstr ""
+
+#: ../src/e_mod_config.c:146 ../src/e_mod_places.c:408
+msgid "Desktop"
+msgstr ""
+
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:418
+msgid "Trash"
+msgstr ""
+
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:233
+#: ../src/e_mod_places.c:427
+msgid "Filesystem"
+msgstr ""
+
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:436
+msgid "Temp"
+msgstr ""
+
+#: ../src/e_mod_config.c:158
+msgid "Favorites"
+msgstr ""
+
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:75
+msgid "Files"
+msgstr ""
+
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:494
+msgid "Places"
+msgstr ""
+
+#: ../src/e_mod_main.c:439
+msgid "Configuration"
+msgstr ""
+
+#: ../src/e_mod_places.c:238
+msgid "No Name"
+msgstr ""
+
+#: ../src/e_mod_places.c:688
+msgid "free of"
+msgstr ""
+
+#: ../src/e_mod_places.c:694
+#, c-format
+msgid "%s Not Mounted"
+msgstr ""
+
+#: ../src/e_mod_places.c:711
+msgid "unmount"
+msgstr ""
+
+#: ../src/e_mod_places.c:717
+msgid "eject"
+msgstr ""

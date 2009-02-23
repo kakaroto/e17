@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2009-01-23 01:00+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
 #: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
@@ -312,8 +311,8 @@ msgstr "Error del módulo de fotos"
 #: ../src/module/photo_item.c:413
 #, c-format
 msgid ""
-"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file "
-"!<br>Photo module needs e17setroot util from e_utils package to set you're "
+"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
+"<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
 

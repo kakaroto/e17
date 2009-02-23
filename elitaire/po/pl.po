@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-11-11 21:45+0800\n"
+"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-12-01 09:11+0000\n"
 "Last-Translator: Andrzej MoST (Marcin Ostajewski) <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -14,15 +14,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
-#: ../src/edje_frontend_gui.cpp:755
+#: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:703
+#: ../src/edje_frontend_gui.cpp:757
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
 msgstr "Błąd Elitaire w %s: brak części element_value!\n"
 
-#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
-#: ../src/edje_frontend_gui.cpp:762
+#: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:710
+#: ../src/edje_frontend_gui.cpp:764
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
 msgstr "Błąd Elitaire w %s: brak grupy elementów!\n"
@@ -55,15 +54,15 @@ msgid "Elitaire Error: unable to find %s theme!\n"
 msgstr "Błąd Elitaire: znalezienie tematu %s niemożliwe!\n"
 
 #. set the label text
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Games"
 msgstr "Gry"
 
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Themes"
 msgstr "Motywy"
 
-#: ../src/edje_frontend_gui.cpp:404
+#: ../src/edje_frontend_gui.cpp:406
 msgid "Cards"
 msgstr "Karty"
 
@@ -212,19 +211,19 @@ msgstr "OpenGL (testowanie)"
 msgid "Elitaire Error: Could not save configuration.\n"
 msgstr "Błąd Elitaire: Nie można zapisać konfiguracji.\n"
 
-#: ../src/ewl_dialog_hiscore.cpp:50
+#: ../src/ewl_dialog_hiscore.cpp:52
 msgid "Highscore"
 msgstr "Rekordy"
 
-#: ../src/ewl_dialog_hiscore.cpp:119
+#: ../src/ewl_dialog_hiscore.cpp:121
 msgid "Name"
 msgstr "Imię"
 
-#: ../src/ewl_dialog_hiscore.cpp:145
+#: ../src/ewl_dialog_hiscore.cpp:147
 msgid "Please insert your name"
 msgstr "Podaj swoje imię"
 
-#: ../src/ewl_dialog_hiscore.cpp:218
+#: ../src/ewl_dialog_hiscore.cpp:220
 msgid "Won Games:"
 msgstr "Gry wygrane:"
 
@@ -232,7 +231,7 @@ msgstr "Gry wygrane:"
 msgid "Lost Games:"
 msgstr "Gry przegrane"
 
-#: ../src/ewl_dialog_hiscore.cpp:248
+#: ../src/ewl_dialog_hiscore.cpp:246
 msgid "relative Quote:"
 msgstr "Stosunek:"
 

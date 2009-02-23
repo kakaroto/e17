@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-02-23 16:11+0800\n"
 "PO-Revision-Date: 2008-12-30 22:39+0100\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: Hungarian <pclinuxos-i18n@googlegroups.com>\n"
@@ -20,11 +20,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
 msgid "Tiling"
 msgstr "Tiling"
 
-#: ../e_mod_main.c:999
+#: ../e_mod_main.c:1004
 msgid "Windows"
 msgstr "Ablakok"
 
@@ -86,4 +86,3 @@ msgstr "Keret csempézése"
 #: ../e_mod_config.c:310
 msgid "Floating border"
 msgstr "Keret úsztatása"
-
