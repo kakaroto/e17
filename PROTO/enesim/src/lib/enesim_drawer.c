@@ -17,9 +17,9 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-/* 
+/*
  * TODO
- * rop functions 
+ * rop functions
  * pixel
  * color in ARGB format
  * pixel_color
@@ -27,14 +27,14 @@
  * pixel_mask
  * TODO
  * color *done*
- * mask_color 
+ * mask_color
  * pixel *done*
  * pixel_color
  * pixel_mask
- * 
+ *
  */
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 /* this is the main surface format drawer */
 extern Enesim_Drawer argb8888_drawer;
@@ -44,7 +44,7 @@ Enesim_Drawer *drawer[ENESIM_SURFACE_FORMATS] = {
 		[ENESIM_SURFACE_ARGB8888] = &argb8888_drawer,
 };
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
@@ -65,12 +65,48 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_get(Enesim_Rop rop,
 	}
 	else
 	{
-		if (color)
+		if (mask)
 			return enesim_drawer_point_mask_color_get(rop, dfmt, color, mask);
 		else
 			return enesim_drawer_point_color_get(rop, dfmt, color);
 	}
 }
+
+EAPI Enesim_Drawer_Span enesim_drawer_span_get(Enesim_Rop rop,
+		Enesim_Surface_Format dfmt, Enesim_Surface *src,
+		Enesim_Surface_Pixel *color, Enesim_Surface *mask)
+{
+	if (src)
+	{
+		Enesim_Surface_Format sfmt;
+
+		sfmt = enesim_surface_format_get(src);
+		if (mask)
+		{
+			Enesim_Surface_Format mfmt;
+
+			mfmt = enesim_surface_format_get(mask);
+			return enesim_drawer_span_pixel_mask_get(rop, dfmt, sfmt, mfmt);
+		}
+		else if (color)
+			return enesim_drawer_span_pixel_color_get(rop, dfmt, sfmt, color);
+		else
+			return enesim_drawer_span_pixel_get(rop, dfmt, sfmt);
+	}
+	else
+	{
+		if (mask)
+		{
+			Enesim_Surface_Format mfmt;
+
+			mfmt = enesim_surface_format_get(mask);
+			return enesim_drawer_span_mask_color_get(rop, dfmt, mfmt, color);
+		}
+		else
+			return enesim_drawer_span_color_get(rop, dfmt, color);
+	}
+}
+
 /**
  * To be documented
  * FIXME: To be fixed
@@ -88,10 +124,10 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop,
 #endif
 	if (drawer[dfmt])
 	{
-		pt = drawer[dfmt]->pt_color[rop]; 
+		pt = drawer[dfmt]->pt_color[rop];
 	}
 	if (!pt)
-		pt = generic_drawer.pt_color[rop]; 
+		pt = generic_drawer.pt_color[rop];
 	return pt;
 }
 /**
@@ -107,7 +143,7 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_color_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		pt = drawer[dfmt]->pt_pixel_color[rop][src->format];
 	if (!pt)
-		pt = generic_drawer.pt_pixel_color[rop]; 
+		pt = generic_drawer.pt_pixel_color[rop];
 	return pt;
 }
 /**
@@ -123,7 +159,7 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_mask_color_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		pt = drawer[dfmt]->pt_mask_color[rop][mask->format];
 	if (!pt)
-		pt = generic_drawer.pt_mask_color[rop]; 
+		pt = generic_drawer.pt_mask_color[rop];
 	return pt;
 }
 /**
@@ -139,7 +175,7 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		pt = drawer[dfmt]->pt_pixel[rop][src->format];
 	if (!pt)
-		pt = generic_drawer.pt_pixel[rop]; 
+		pt = generic_drawer.pt_pixel[rop];
 	return pt;
 }
 /**
@@ -151,11 +187,11 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop,
 		Enesim_Surface_Pixel *mask)
 {
 	Enesim_Drawer_Point pt = NULL;
-	
+
 	if (drawer[dfmt])
 		pt = drawer[dfmt]->pt_pixel_mask[rop][src->format][mask->format];
 	if (!pt)
-		pt = generic_drawer.pt_pixel_mask[rop]; 
+		pt = generic_drawer.pt_pixel_mask[rop];
 	return pt;
 }
 
@@ -173,7 +209,7 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		sp = drawer[dfmt]->sp_color[rop];
 	if (!sp)
-		sp = generic_drawer.sp_color[rop]; 
+		sp = generic_drawer.sp_color[rop];
 	return sp;
 }
 /**
@@ -190,7 +226,7 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		sp = drawer[dfmt]->sp_mask_color[rop][mfmt];
 	if (!sp)
-		sp = generic_drawer.sp_mask_color[rop]; 
+		sp = generic_drawer.sp_mask_color[rop];
 	return sp;
 }
 /**
@@ -205,7 +241,7 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		sp = drawer[dfmt]->sp_pixel[rop][sfmt];
 	if (!sp)
-		sp = generic_drawer.sp_pixel[rop]; 
+		sp = generic_drawer.sp_pixel[rop];
 	return sp;
 }
 /**
@@ -223,7 +259,7 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		sp = drawer[dfmt]->sp_pixel_color[rop][sfmt];
 	if (!sp)
-		sp = generic_drawer.sp_pixel_color[rop]; 
+		sp = generic_drawer.sp_pixel_color[rop];
 	return sp;
 }
 /**
@@ -241,6 +277,6 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop,
 	if (drawer[dfmt])
 		sp = drawer[dfmt]->sp_pixel_mask[rop][sfmt][mfmt];
 	if (!sp)
-		sp = generic_drawer.sp_pixel_mask[rop]; 
+		sp = generic_drawer.sp_pixel_mask[rop];
 	return sp;
 }

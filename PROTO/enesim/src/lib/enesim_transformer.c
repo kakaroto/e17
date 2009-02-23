@@ -26,13 +26,13 @@
 static Enesim_Transformation_Type _transformation_get(Enesim_Matrix *m)
 {
 	if ((MATRIX_ZX(m) != 0) || (MATRIX_ZY(m) != 0) || (MATRIX_ZZ(m) != 1))
-	            return ENESIM_TRANSFORMATION_PROJECTIVE;
+		return ENESIM_TRANSFORMATION_PROJECTIVE;
 	else
 	{
 		/* FIXME, once the identity handles the origin use the AFFINE;
 		if ((MATRIX_XX(m) == 1) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
 				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 1) && (MATRIX_YZ(m) == 0))
-			
+
 			return ENESIM_TRANSFORMATION_IDENTITY;
 		else
 		*/
@@ -70,20 +70,20 @@ Enesim_Transformer_Func _transformer_get(Enesim_Transformation *t,
 	if (t->mask)
 	{
 		if (transformer[d->sdata.format])
-			tfunc = transformer[d->sdata.format]->mask[s->sdata.format][t->mask->sdata.format][_transformation_get(t->matrix)][t->quality];
+			tfunc = transformer[d->sdata.format]->mask[s->sdata.format][t->mask->sdata.format][_transformation_get(&t->matrix)][t->quality];
 	}
 	else
 	{
 		if (transformer[d->sdata.format])
-			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][_transformation_get(t->matrix)][t->quality];
+			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][_transformation_get(&t->matrix)][t->quality];
 	}
 	/* handle here the generic transformer */
 	if (!tfunc)
 	{
 		if (t->mask)
-			tfunc = generic_tx.mask[_transformation_get(t->matrix)][t->quality];
+			tfunc = generic_tx.mask[_transformation_get(&t->matrix)][t->quality];
 		else
-			tfunc = generic_tx.normal[_transformation_get(t->matrix)][t->quality];
+			tfunc = generic_tx.normal[_transformation_get(&t->matrix)][t->quality];
 	}
 	return tfunc;
 }
@@ -96,7 +96,7 @@ Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation
 {
 	Enesim_Drawer_Point pfunc;
 	Enesim_Surface_Pixel src;
-	
+
 	/* TODO convert the color to the destination format */
 	/* get a transparent pixel source */
 	enesim_surface_pixel_components_from(&src, s->sdata.format, 0xaa, 0xff, 0xff, 0xff);
@@ -112,61 +112,60 @@ Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation
 		return enesim_drawer_point_get(t->rop, d->sdata.format, &src, t->color, NULL);
 }
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
- * 
+ *
  */
 EAPI Enesim_Transformation * enesim_transformation_new(void)
 {
 	Enesim_Transformation *t;
-	
+
 	t = calloc(1, sizeof(Enesim_Transformation));
-	t->matrix = enesim_matrix_new();
+	enesim_matrix_identity(&t->matrix);
 	ENESIM_MAGIC_SET(t, ENESIM_TRANSFORMATION_MAGIC);
-	
+
 	return t;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_delete(Enesim_Transformation *t)
 {
-	enesim_matrix_delete(t->matrix);
 	free(t);
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_matrix_set(Enesim_Transformation *t, Enesim_Matrix *m)
 {
 	float a, b, c, d, e, f, g, h, i;
-	
+
 	ENESIM_ASSERT(t, ENESIM_ERROR_HANDLE_INVALID);
 	ENESIM_MAGIC_CHECK(t, ENESIM_TRANSFORMATION_MAGIC);
-	
+
 	enesim_matrix_values_get(m, &a, &b, &c, &d, &e, &f, &g, &h, &i);
-	enesim_matrix_values_set(t->matrix, a, b, c, d, e, f, g, h, i);
+	enesim_matrix_values_set(&t->matrix, a, b, c, d, e, f, g, h, i);
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_matrix_get(Enesim_Transformation *t, Enesim_Matrix *m)
 {
 	float a, b, c, d, e, f, g, h, i;
 
-	enesim_matrix_values_get(t->matrix, &a, &b, &c, &d, &e, &f, &g, &h, &i);
+	enesim_matrix_values_get(&t->matrix, &a, &b, &c, &d, &e, &f, &g, &h, &i);
 	enesim_matrix_values_set(m, a, b, c, d, e, f, g, h, i);
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_rop_set(Enesim_Transformation *t, Enesim_Rop rop)
 {
 	t->rop = rop;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surface *mask)
 {
@@ -174,7 +173,7 @@ EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surfac
 	if (t->color) t->color = NULL;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surface_Pixel *color)
 {
@@ -183,7 +182,7 @@ EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surfa
 }
 
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_border_set(Enesim_Transformation *tx, int l, int t, int r, int b)
 {
@@ -194,28 +193,28 @@ EAPI void enesim_transformation_border_set(Enesim_Transformation *tx, int l, int
 	tx->border.used = EINA_TRUE;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_quality_set(Enesim_Transformation *tx, Enesim_Quality q)
 {
 	tx->quality = q;
 }
 /**
- * 
+ *
  */
 EAPI Enesim_Quality enesim_transformation_quality_get(Enesim_Transformation *tx)
 {
 	return tx->quality;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_border_unset(Enesim_Transformation *t)
 {
 	t->border.used = EINA_FALSE;
 }
 /**
- * 
+ *
  */
 EAPI Eina_Bool enesim_transformation_border_get(Enesim_Transformation *tx, int *l, int *t, int *r, int *b)
 {
@@ -226,7 +225,7 @@ EAPI Eina_Bool enesim_transformation_border_get(Enesim_Transformation *tx, int *
 	return tx->border.used;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_origin_set(Enesim_Transformation *t, float ox, float oy)
 {
@@ -234,7 +233,7 @@ EAPI void enesim_transformation_origin_set(Enesim_Transformation *t, float ox, f
 	t->oy = oy;
 }
 /**
- * 
+ *
  */
 EAPI void enesim_transformation_origin_get(Enesim_Transformation *t, float *ox, float *oy)
 {
@@ -244,7 +243,7 @@ EAPI void enesim_transformation_origin_get(Enesim_Transformation *t, float *ox, 
 
 
 /**
- * 
+ *
  */
 EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		Enesim_Surface *s, Eina_Rectangle *sr, Enesim_Surface *d,
@@ -253,18 +252,18 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	Eina_Rectangle csr, cdr;
 	Enesim_Transformer_Func tfunc = NULL;
 	Enesim_Scale xscale, yscale;
-	
+
 	ENESIM_ASSERT(t, ENESIM_ERROR_HANDLE_INVALID);
 	ENESIM_ASSERT(s, ENESIM_ERROR_HANDLE_INVALID);
 	ENESIM_ASSERT(d, ENESIM_ERROR_HANDLE_INVALID);
-	
+
 	ENESIM_MAGIC_CHECK(t, ENESIM_TRANSFORMATION_MAGIC);
 	ENESIM_MAGIC_CHECK(s, ENESIM_SURFACE_MAGIC);
 	ENESIM_MAGIC_CHECK(d, ENESIM_SURFACE_MAGIC);
-	
+
 	xscale = ENESIM_SCALE_NO;
 	yscale = ENESIM_SCALE_NO;
-	
+
 	/* TODO check if we are out of bounds */
 	/* TODO check that the mask should be of the same size of the src */
 	/* setup the destination clipping */
@@ -302,7 +301,7 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	/* check if we are going to scale */
 	/* x scaling */
 	if (cdr.w > csr.w)
-		xscale = ENESIM_SCALE_UP; 
+		xscale = ENESIM_SCALE_UP;
 	else if (cdr.w < csr.w)
 		xscale = ENESIM_SCALE_DOWN;
 	/* y scaling */

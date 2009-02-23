@@ -28,6 +28,7 @@ struct _Enesim_Surface
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
+	void *user; /* user provided data */
 };
 
 

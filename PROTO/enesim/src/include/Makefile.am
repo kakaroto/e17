@@ -12,7 +12,9 @@ enesim_matrix.h \
 enesim_rasterizer.h \
 enesim_surface.h \
 enesim_transformer.h \
-enesim_renderer.h
+enesim_renderer.h \
+enesim_context.h \
+enesim_primitives.h
 
 installed_headersdir = $(prefix)/include/enesim
 installed_headers_DATA = $(ENESIM_UTILHEADERS)

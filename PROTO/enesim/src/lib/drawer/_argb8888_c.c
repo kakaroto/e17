@@ -22,15 +22,15 @@ static void argb8888_pt_mask_color_blend_argb8888_c(Enesim_Surface_Data *d,
 	{
 		case 0:
 		break;
-	
+
 		case 255:
 		argb8888_blend(d->data.argb8888.plane0, ca, color->pixel.argb8888.plane0);
 		break;
-		
+
 		default:
 		{
 			uint32_t mc;
-			
+
 			mc = argb8888_mul_sym(ma, color->pixel.argb8888.plane0);
 			ma = 256 - argb8888_alpha_get(mc);
 			argb8888_blend(d->data.argb8888.plane0, ma, mc);
@@ -43,7 +43,7 @@ static void argb8888_pt_mask_color_blend_a8_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
 		Enesim_Surface_Pixel *m)
 {
-	
+
 }
 
 static void argb8888_pt_pixel_blend_argb8888_c(Enesim_Surface_Data *d,
@@ -126,7 +126,7 @@ static void argb8888_sp_mask_color_blend_argb8888_c(Enesim_Surface_Data *d, unsi
 			case 255:
 			argb8888_blend(dtmp.data.argb8888.plane0, ca, color->pixel.argb8888.plane0);
 			break;
-			
+
 			default:
 			{
 				uint32_t mc;
@@ -164,12 +164,12 @@ static void argb8888_sp_pixel_mask_blend_argb8888_argb8888_c(Enesim_Surface_Data
 			case 255:
 			{
 				uint16_t sa;
-				
+
 				sa = 256 - argb8888_alpha_get(*stmp.data.argb8888.plane0);
 				argb8888_blend(dtmp.data.argb8888.plane0, sa, *stmp.data.argb8888.plane0);
 			}
 			break;
-			
+
 			default:
 			{
 				uint32_t mc;
@@ -208,7 +208,7 @@ static void argb8888_sp_pixel_blend_generic_c(Enesim_Surface_Data *d,
 	}
 }
 /*============================================================================*
- *                                  Fill                                      * 
+ *                                  Fill                                      *
  *============================================================================*/
 static void argb8888_pt_color_fill_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
@@ -226,7 +226,7 @@ static void argb8888_pt_mask_color_fill_argb8888_c(Enesim_Surface_Data *d,
 	{
 		case 0:
 		break;
-		
+
 		case 255:
 		argb8888_fill(d->data.argb8888.plane0, color->pixel.argb8888.plane0);
 		break;
@@ -237,7 +237,7 @@ static void argb8888_pt_mask_color_fill_argb8888_c(Enesim_Surface_Data *d,
 				color->pixel.argb8888.plane0,
 				*d->data.argb8888.plane0));
 		break;
-	}	
+	}
 }
 
 static void argb8888_pt_pixel_mask_fill_argb8888_argb8888_c(Enesim_Surface_Data *d,
@@ -250,7 +250,7 @@ static void argb8888_pt_pixel_mask_fill_argb8888_argb8888_c(Enesim_Surface_Data 
 	{
 		case 0:
 		break;
-		
+
 		case 255:
 		argb8888_fill(d->data.argb8888.plane0, s->pixel.argb8888.plane0);
 		break;
@@ -277,7 +277,7 @@ static void argb8888_pt_pixel_color_fill_argb8888_c(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *color,
 		Enesim_Surface_Pixel *m)
 {
-	argb8888_fill(d->data.argb8888.plane0, argb8888_mul4_sym(color->pixel.argb8888.plane0, s->pixel.argb8888.plane0));	
+	argb8888_fill(d->data.argb8888.plane0, argb8888_mul4_sym(color->pixel.argb8888.plane0, s->pixel.argb8888.plane0));
 }
 
 
@@ -340,7 +340,7 @@ static void argb8888_sp_mask_color_fill_argb8888_c(Enesim_Surface_Data *d, unsig
 		{
 			case 0:
 			break;
-				
+
 			case 255:
 			argb8888_fill(dtmp.data.argb8888.plane0, color->pixel.argb8888.plane0);
 			break;
@@ -373,7 +373,7 @@ static void argb8888_sp_pixel_mask_fill_argb8888_argb8888_c(Enesim_Surface_Data 
 		{
 			case 0:
 			break;
-				
+
 			case 255:
 			argb8888_fill(dtmp.data.argb8888.plane0, *stmp.data.argb8888.plane0);
 			break;

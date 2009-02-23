@@ -21,14 +21,17 @@
 /**
  * @defgroup Enesim_Surface_Group Surface
  * @{
- * 
+ *
  * TODO
  * Add a pitch, this is good for different planes, still the width and height
  * are good things to have so the pitch
+ * Add a data provider: as a parameter to the new, so the destruction is
+ * handled by the library itself, same for data get, etc.
+ * Add a surface iterator
  */
 typedef struct _Enesim_Surface 	Enesim_Surface; /**< Surface Handler */
 /**
- * 
+ *
  */
 typedef enum
 {
@@ -43,7 +46,7 @@ typedef enum
 } Enesim_Surface_Format;
 /* TODO add the concept of colorspace? Buffer format (texture, linear?)? */
 /**
- * 
+ *
  */
 typedef struct _Argb8888_Data
 {
@@ -56,7 +59,7 @@ typedef struct _Argb8888_Pixel
 } Argb8888_Unpre_Pixel, Argb8888_Pixel;
 
 /**
- * 
+ *
  */
 typedef struct _Rgb565_Xa5_Data
 {
@@ -64,8 +67,8 @@ typedef struct _Rgb565_Xa5_Data
 	uint8_t *plane1; /* a5 plane */
 } Rgb565_Xa5_Data;
 /**
- * 
- * 
+ *
+ *
  */
 typedef struct _Rgb565_B1a3_Data
 {
@@ -74,7 +77,7 @@ typedef struct _Rgb565_B1a3_Data
 	uint8_t pixel_plane1; /* which of the pixel of plane1 to access */
 } Rgb565_B1a3_Data;
 /**
- * 
+ *
  */
 typedef struct _Rgb888_Data
 {
@@ -106,7 +109,7 @@ typedef struct _B1a3_Data
 	uint8_t *plane0; /* b1A3 plane */
 } B1a3_Data;
 /**
- * 
+ *
  */
 typedef struct _Enesim_Surface_Data
 {
@@ -122,7 +125,7 @@ typedef struct _Enesim_Surface_Data
 } Enesim_Surface_Data;
 
 /**
- * 
+ *
  */
 typedef struct _Enesim_Surface_Pixel
 {
@@ -153,6 +156,9 @@ EAPI void enesim_surface_pixel_components_from(Enesim_Surface_Pixel *color,
 		Enesim_Surface_Format f, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
 EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
 		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b);
+EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data);
+EAPI void * enesim_surface_private_get(Enesim_Surface *s);
+
 /** @} */ //End of Enesim_Surface_Group
 
 

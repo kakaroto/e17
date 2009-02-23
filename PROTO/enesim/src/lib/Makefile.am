@@ -1,4 +1,4 @@
-SUBDIRS = drawer rasterizer renderer util transformer
+SUBDIRS = drawer rasterizer renderer util transformer primitives
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -27,6 +27,7 @@ rasterizer/libenesim_rasterizer.la \
 renderer/libenesim_renderer.la \
 drawer/libenesim_drawer.la \
 transformer/libenesim_transformer.la \
+primitives/libenesim_primitives.la \
 @ENESIM_LIBS@
 
 libenesim_la_DEPENDENCIES = \
@@ -34,6 +35,7 @@ util/libenesim_util.la \
 rasterizer/libenesim_rasterizer.la \
 drawer/libenesim_drawer.la \
 renderer/libenesim_renderer.la \
-transformer/libenesim_transformer.la
+transformer/libenesim_transformer.la \
+primitives/libenesim_primitives.la
 
 libenesim_la_LDFLAGS = @create_shared_lib@ -version-info @version_info@

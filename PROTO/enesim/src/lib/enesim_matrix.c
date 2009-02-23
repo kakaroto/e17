@@ -19,7 +19,7 @@
 #include "enesim_private.h"
 /* TODO add a fixed point matrix too, to speed up the matrix_rotate sin/cos */
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 /* FIXME make this function on API */
 static void _matrix_debug(Enesim_Matrix *m)
@@ -34,7 +34,7 @@ static inline _quad_dump(Enesim_Quad *q)
 	printf("Q = %f %f, %f %f, %f %f, %f %f\n", QUAD_X0(q), QUAD_Y0(q), QUAD_X1(q), QUAD_Y1(q), QUAD_X2(q), QUAD_Y2(q), QUAD_X3(q), QUAD_Y3(q), q[8]);
 }
 
-/* 
+/*
  * In the range [-pi pi]
  * (4/pi)*x - ((4/(pi*pi))*x*abs(x))
  * http://www.devmaster.net/forums/showthread.php?t=5784
@@ -69,28 +69,8 @@ static float _cos(float x)
 }
 
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Matrix * enesim_matrix_new(void)
-{
-	Enesim_Matrix *m;
-	
-	m = malloc(sizeof(Enesim_Matrix));
-	enesim_matrix_identity(m);
-	return m;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI void enesim_matrix_delete(Enesim_Matrix *m)
-{
-	free(m);
-}
 /**
  * To be documented
  * FIXME: To be fixed
@@ -106,7 +86,7 @@ EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,
 	MATRIX_YZ(m) = f;
 	MATRIX_ZX(m) = g;
 	MATRIX_ZY(m) = h;
-	MATRIX_ZZ(m) = i;	
+	MATRIX_ZZ(m) = i;
 }
 /**
  * To be documented
@@ -123,7 +103,7 @@ EAPI void enesim_matrix_values_get(Enesim_Matrix *m, float *a, float *b, float *
 	if (f) *f = MATRIX_YZ(m);
 	if (g) *g = MATRIX_ZX(m);
 	if (h) *h = MATRIX_ZY(m);
-	if (i) *i = MATRIX_ZZ(m);	
+	if (i) *i = MATRIX_ZZ(m);
 }
 /**
  * convert the transformation values to fixed point
@@ -173,16 +153,16 @@ EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, floa
 EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a)
 {
 	float a11, a12, a13, a21, a22, a23, a31, a32, a33;
-	
+
 	/* cofactor */
 	a11 = (MATRIX_YY(m) * MATRIX_ZZ(m)) - (MATRIX_YZ(m) * MATRIX_ZY(m));
 	a12 = -1 * ((MATRIX_YX(m) * MATRIX_ZZ(m)) - (MATRIX_YZ(m) * MATRIX_ZX(m)));
 	a13 = (MATRIX_YX(m) * MATRIX_ZY(m)) - (MATRIX_YY(m) * MATRIX_ZX(m));
-	
+
 	a21 = -1 * ((MATRIX_XY(m) * MATRIX_ZZ(m)) - (MATRIX_XZ(m) * MATRIX_ZY(m)));
 	a22 = (MATRIX_XX(m) * MATRIX_ZZ(m)) - (MATRIX_XZ(m) * MATRIX_ZX(m));
 	a23 = -1 * ((MATRIX_XX(m) * MATRIX_ZY(m)) - (MATRIX_XY(m) * MATRIX_ZX(m)));
-	
+
 	a31 = (MATRIX_XY(m) * MATRIX_YZ(m)) - (MATRIX_XZ(m) * MATRIX_YY(m));
 	a32 = -1 * ((MATRIX_XX(m) * MATRIX_YZ(m)) - (MATRIX_XZ(m) * MATRIX_YX(m)));
 	a33 = (MATRIX_XX(m) * MATRIX_YY(m)) - (MATRIX_XY(m) * MATRIX_YX(m));
@@ -190,15 +170,15 @@ EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a)
 	MATRIX_XX(a) = a11;
 	MATRIX_XY(a) = a21;
 	MATRIX_XZ(a) = a31;
-	
+
 	MATRIX_YX(a) = a12;
 	MATRIX_YY(a) = a22;
 	MATRIX_YZ(a) = a32;
-	
+
 	MATRIX_ZX(a) = a13;
 	MATRIX_ZY(a) = a23;
 	MATRIX_ZZ(a) = a33;
-	
+
 }
 /**
  * To be documented
@@ -207,11 +187,11 @@ EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a)
 EAPI float enesim_matrix_determinant(Enesim_Matrix *m)
 {
 	float det;
-	
+
 	det = MATRIX_XX(m) * ((MATRIX_YY(m) * MATRIX_ZZ(m)) - (MATRIX_YZ(m) * MATRIX_ZY(m)));
 	det -= MATRIX_XY(m) * ((MATRIX_YX(m) * MATRIX_ZZ(m)) - (MATRIX_YZ(m) * MATRIX_ZX(m)));
 	det += MATRIX_XZ(m) * ((MATRIX_YX(m) * MATRIX_ZY(m)) - (MATRIX_YY(m) * MATRIX_ZX(m)));
-	
+
 	return det;
 }
 /**
@@ -223,11 +203,11 @@ EAPI void enesim_matrix_divide(Enesim_Matrix *m, float scalar)
 	MATRIX_XX(m) /= scalar;
 	MATRIX_XY(m) /= scalar;
 	MATRIX_XZ(m) /= scalar;
-	
+
 	MATRIX_YX(m) /= scalar;
 	MATRIX_YY(m) /= scalar;
 	MATRIX_YZ(m) /= scalar;
-	
+
 	MATRIX_ZX(m) /= scalar;
 	MATRIX_ZY(m) /= scalar;
 	MATRIX_ZZ(m) /= scalar;
@@ -239,7 +219,7 @@ EAPI void enesim_matrix_divide(Enesim_Matrix *m, float scalar)
 EAPI void enesim_matrix_inverse(Enesim_Matrix *m, Enesim_Matrix *m2)
 {
 	float scalar;
-	
+
 	/* determinant */
 	scalar = enesim_matrix_determinant(m);
 	/* do its adjoint */
@@ -258,7 +238,7 @@ EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Mat
 	a11 = (MATRIX_XX(m1) * MATRIX_XX(m2)) + (MATRIX_XY(m1) * MATRIX_YX(m2)) + (MATRIX_XZ(m1) * MATRIX_ZX(m2));
 	a12 = (MATRIX_XX(m1) * MATRIX_XY(m2)) + (MATRIX_XY(m1) * MATRIX_YY(m2)) + (MATRIX_XZ(m1) * MATRIX_ZY(m2));
 	a13 = (MATRIX_XX(m1) * MATRIX_XZ(m2)) + (MATRIX_XY(m1) * MATRIX_YZ(m2)) + (MATRIX_XZ(m1) * MATRIX_ZZ(m2));
-	
+
 	a21 = (MATRIX_YX(m1) * MATRIX_XX(m2)) + (MATRIX_YY(m1) * MATRIX_YX(m2)) + (MATRIX_YZ(m1) * MATRIX_ZX(m2));
 	a22 = (MATRIX_YX(m1) * MATRIX_XY(m2)) + (MATRIX_YY(m1) * MATRIX_YY(m2)) + (MATRIX_YZ(m1) * MATRIX_ZY(m2));
 	a23 = (MATRIX_YX(m1) * MATRIX_XZ(m2)) + (MATRIX_YY(m1) * MATRIX_YZ(m2)) + (MATRIX_YZ(m1) * MATRIX_ZZ(m2));
@@ -266,7 +246,7 @@ EAPI void enesim_matrix_compose(Enesim_Matrix *m1, Enesim_Matrix *m2, Enesim_Mat
 	a31 = (MATRIX_ZX(m1) * MATRIX_XX(m2)) + (MATRIX_ZY(m1) * MATRIX_YX(m2)) + (MATRIX_ZZ(m1) * MATRIX_ZX(m2));
 	a32 = (MATRIX_ZX(m1) * MATRIX_XY(m2)) + (MATRIX_ZY(m1) * MATRIX_YY(m2)) + (MATRIX_ZZ(m1) * MATRIX_ZY(m2));
 	a33 = (MATRIX_ZX(m1) * MATRIX_XZ(m2)) + (MATRIX_ZY(m1) * MATRIX_YZ(m2)) + (MATRIX_ZZ(m1) * MATRIX_ZZ(m2));
-	
+
 	MATRIX_XX(dst) = a11;
 	MATRIX_XY(dst) = a12;
 	MATRIX_XZ(dst) = a13;
@@ -291,7 +271,7 @@ EAPI void enesim_matrix_translate(Enesim_Matrix *m, float tx, float ty)
 	MATRIX_YZ(m) = ty;
 	MATRIX_ZX(m) = 0;
 	MATRIX_ZY(m) = 0;
-	MATRIX_ZZ(m) = 1;	
+	MATRIX_ZZ(m) = 1;
 }
 /**
  * To be documented
@@ -324,7 +304,7 @@ EAPI void enesim_matrix_rotate(Enesim_Matrix *m, float rad)
 	c = _cos(rad);
 	s = _sin(rad);
 #endif
-	
+
 	MATRIX_XX(m) = c;
 	MATRIX_XY(m) = -s;
 	MATRIX_XZ(m) = 0;
@@ -333,7 +313,7 @@ EAPI void enesim_matrix_rotate(Enesim_Matrix *m, float rad)
 	MATRIX_YZ(m) = 0;
 	MATRIX_ZX(m) = 0;
 	MATRIX_ZY(m) = 0;
-	MATRIX_ZZ(m) = 1;	
+	MATRIX_ZZ(m) = 1;
 }
 /**
  * To be documented
@@ -358,7 +338,7 @@ EAPI void enesim_matrix_identity(Enesim_Matrix *m)
 EAPI Enesim_Quad * enesim_quad_new(void)
 {
 	Enesim_Quad *q;
-	
+
 	q = malloc(sizeof(Enesim_Quad));
 	return q;
 }
@@ -428,8 +408,8 @@ EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m,
 		Enesim_Quad *q)
 {
 	float ex = QUAD_X0(q) - QUAD_X1(q) + QUAD_X2(q) - QUAD_X3(q); // x0 - x1 + x2 - x3
-	float ey = QUAD_Y0(q) - QUAD_Y1(q) + QUAD_Y2(q) - QUAD_Y3(q); // y0 - y1 + y2 - y3 
-	
+	float ey = QUAD_Y0(q) - QUAD_Y1(q) + QUAD_Y2(q) - QUAD_Y3(q); // y0 - y1 + y2 - y3
+
 	/* paralellogram */
 	if (!ex && !ey)
 	{
@@ -437,15 +417,15 @@ EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m,
 		MATRIX_XX(m) = QUAD_X1(q) - QUAD_X0(q);
 		MATRIX_XY(m) = QUAD_X2(q) - QUAD_X1(q);
 		MATRIX_XZ(m) = QUAD_X0(q);
-		
+
 		MATRIX_YX(m) = QUAD_Y1(q) - QUAD_Y0(q);
 		MATRIX_YY(m) = QUAD_Y2(q) - QUAD_Y1(q);
 		MATRIX_YZ(m) = QUAD_Y0(q);
-		
+
 		MATRIX_ZX(m) = 0;
 		MATRIX_ZY(m) = 0;
 		MATRIX_ZZ(m) = 1;
-		
+
 		return EINA_TRUE;
 	}
 	else
@@ -455,10 +435,10 @@ EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m,
 		float dy1 = QUAD_Y1(q) - QUAD_Y2(q); // y1 - y2
 		float dy2 = QUAD_Y3(q) - QUAD_Y2(q); // y3 - y2
 		float den = (dx1 * dy2) - (dx2 * dy1);
-		
+
 		if (!den)
 			return EINA_FALSE;
-		
+
 		MATRIX_ZX(m) = ((ex * dy2) - (dx2 * ey)) / den;
 		MATRIX_ZY(m) = ((dx1 * ey) - (ex * dy1)) / den;
 		MATRIX_ZZ(m) = 1;
@@ -480,7 +460,7 @@ EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m,
 		Enesim_Quad *q)
 {
 	Enesim_Matrix tmp;
-	
+
 	/* compute square to quad */
 	if (!enesim_matrix_square_quad_to(&tmp, q))
 		return EINA_FALSE;
@@ -491,7 +471,7 @@ EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m,
 	{
 		enesim_matrix_divide(m, MATRIX_ZZ(m));
 	}
-	
+
 	return EINA_TRUE;
 }
 /**
@@ -508,6 +488,6 @@ EAPI Eina_Bool enesim_matrix_quad_quad_to(Enesim_Matrix *m,
 	if (!enesim_matrix_square_quad_to(&tmp, dst))
 		return EINA_FALSE;
 	enesim_matrix_compose(&tmp, m, m);
-	
+
 	return EINA_TRUE;
 }

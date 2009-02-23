@@ -17,12 +17,12 @@
  */
 #ifndef _ENESIM_PRIVATE_H
 #define _ENESIM_PRIVATE_H
- 
+
 /*
  * TODO replace all DATA32, DATA16, DATA8 with their standard definitions (inttypes.h)
- * TODO change fixed types from ints to int32_t (inttypes.h) 
+ * TODO change fixed types from ints to int32_t (inttypes.h)
  */
-/** 
+/**
  * @defgroup Enesim_Internal_Group Internal Implementation
  * @{
  */
@@ -109,7 +109,7 @@ typedef enum
 static inline int enesim_hline_cut(int x, int *w, int *rx, int *rw, int cx)
 {
 
-	if ((x <= cx) && (x + *w > cx))	
+	if ((x <= cx) && (x + *w > cx))
 	{
 		int x2;
 
@@ -158,6 +158,7 @@ typedef __m128i sse2_t;
 #include "private/renderer.h"
 #include "private/surface.h"
 #include "private/transformer.h"
+#include "private/context.h"
 /* now the surface format backends */
 #include "private/surface_argb8888_rop.h"
 /* common rgb565 code in case some other uses it */

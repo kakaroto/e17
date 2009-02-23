@@ -50,7 +50,7 @@ static inline void convolution2x2(Enesim_Surface_Data *data, Eina_F16p16 x, Eina
 	if ((sy > -1) && ((sx + 1) < w))
 	{
 		tmp = *data;
-		
+
 		enesim_surface_data_increment(&tmp, 1);
 		p1 = enesim_surface_data_argb_to(&tmp);
 	}
@@ -75,7 +75,7 @@ static inline void convolution2x2(Enesim_Surface_Data *data, Eina_F16p16 x, Eina
 		p2 = interp_256(ax, p3, p2);
 	if (p0 != p2)
 		p0 = interp_256(ay, p2, p0);
-	
+
 	ret->pixel.argb8888.plane0 = p0;
 	ret->format = ENESIM_SURFACE_ARGB8888;
 }
@@ -95,19 +95,19 @@ static void transformer_identity_no_no(Enesim_Transformation *t, Enesim_Surface 
 	spfnc = enesim_drawer_span_pixel_get(t->rop, ds->sdata.format, ss->sdata.format);
 	if (!spfnc)
 		return;
-	
+
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_get(ds, &ddata);
 	enesim_surface_data_increment(&sdata, (srect->y * ss->w) + srect->x);
 	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);
 	h = drect->h;
-	
+
 	while (h--)
 	{
 		spfnc(&ddata, drect->w, &sdata, /* mul_color */NULL, NULL);
 		enesim_surface_data_increment(&sdata, ss->w);
 		enesim_surface_data_increment(&ddata, ds->w);
-	}	
+	}
 }
 
 #define normal_generic_generic_projective_no_no(body)				\
@@ -123,7 +123,7 @@ static void transformer_identity_no_no(Enesim_Transformation *t, Enesim_Surface 
 	if (!ptfnc)								\
 		return;								\
 										\
-	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d,		\
+	enesim_matrix_fixed_values_get(&t->matrix, &a, &b, &c, &d,		\
 		&e, &f, &g, &h, &i);						\
 	sx = eina_f16p16_mul(a, drect->x) + eina_f16p16_mul(b, drect->y) + c;	\
 	sy = eina_f16p16_mul(d, drect->x) + eina_f16p16_mul(e, drect->y) + f;	\
@@ -201,7 +201,7 @@ iterate:									\
 	if (!ptfnc)								\
 		return;								\
 										\
-	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d,		\
+	enesim_matrix_fixed_values_get(&t->matrix, &a, &b, &c, &d,		\
 			&e, &f, &g, &h, &i);					\
 	c += eina_f16p16_float_from(t->ox);					\
 	f += eina_f16p16_float_from(t->oy);					\
@@ -267,7 +267,7 @@ iterate:									\
 	if (!ptfnc)								\
 		return;								\
 										\
-	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d,		\
+	enesim_matrix_fixed_values_get(&t->matrix, &a, &b, &c, &d,		\
 			&e, &f, &g, &h, &i);					\
 	c += eina_f16p16_float_from(t->ox);					\
 	f += eina_f16p16_float_from(t->oy);					\

@@ -23,7 +23,7 @@ typedef enum
 	ENESIM_TRANSFORMATION_IDENTITY,
 	ENESIM_TRANSFORMATION_AFFINE,
 	ENESIM_TRANSFORMATION_PROJECTIVE,
-	ENESIM_TRANSFORMATIONS 
+	ENESIM_TRANSFORMATIONS
 } Enesim_Transformation_Type;
 
 typedef enum
@@ -41,12 +41,12 @@ struct _Enesim_Transformation
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
-	Enesim_Matrix *matrix;
+	Enesim_Matrix matrix;
 	float ox;
 	float oy;
 	struct {
 		int l, t, r, b;
-		Eina_Bool used;	
+		Eina_Bool used;
 	} border;
 	Enesim_Rop rop;
 	Enesim_Surface *mask;
@@ -59,7 +59,7 @@ typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t,
 		Enesim_Surface *ss, Eina_Rectangle *srect, Enesim_Surface *ds,
 		Eina_Rectangle *drect);
 
-/* 
+/*
  * TODO Later we can add [border][xscale][yscale]
  */
 typedef struct _Enesim_Transformer

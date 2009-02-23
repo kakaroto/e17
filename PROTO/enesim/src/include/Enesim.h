@@ -35,23 +35,23 @@
  *  - Multiple raster operations.
  *  - Multiple Surface formats, even multiple plane surface formats.
  *  - Projective and affine Transformers.
- * 
+ *
  * @file
  * @brief Enesim API
  * @defgroup Enesim_Group API
  * @{
- * 
+ *
  * In Enesim every intermediate surface format is argb8888_pre, so all surface
  * modes should know how to convert to/from argb8888_pre
- * 
+ *
  * To add a new surface format you should follow the next steps:
  * 1. Add a new entry to Enesim_Surface_Format enumaration in enesim_surface.h
  *    the format is TODO
  * 2. Create a new ENESIM_SURFACE_FORMAT(name, [yes | no]) entry into
- *    configure.in 
- * 3. Create a data struct for that format in enesim_surface.h, every plane 
- *    should be named as planeX, in case the pixel length is smaller than the 
- *    data type and contiguous you should also create a planeX_pixel variable. 
+ *    configure.in
+ * 3. Create a data struct for that format in enesim_surface.h, every plane
+ *    should be named as planeX, in case the pixel length is smaller than the
+ *    data type and contiguous you should also create a planeX_pixel variable.
  * 4. Add your new data type to the Enesim_Surface_Data union, it should be of
  *    the same name as the format type
  * 5. Go to enesim_generator.c and follow the instructions on the beginning of
@@ -61,7 +61,7 @@
  * 8. Add the drawer to the array of drawers in enesim_drawer.c, with the
  *    conditional building of course
  * 9. Add your includes in enesim_private.h in a similar way
- * 
+ *
  */
 
 #include "Eina.h"
@@ -80,10 +80,12 @@ extern "C" {
 #include "enesim_converter.h"
 #include "enesim_rasterizer.h"
 #include "enesim_transformer.h"
+#include "enesim_context.h"
+#include "enesim_primitives.h"
 
 #ifdef __cplusplus
 }
 #endif
-	
+
 /** @} */
 #endif

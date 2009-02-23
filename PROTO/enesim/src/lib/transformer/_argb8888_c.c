@@ -12,7 +12,7 @@
 	if (!ptfnc)								\
 		return;								\
 										\
-	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d, &e,		\
+	enesim_matrix_fixed_values_get(&t->matrix, &a, &b, &c, &d, &e,		\
 			&f, &g, &h, &i);					\
 	c += eina_f16p16_float_from(t->ox);					\
 	f += eina_f16p16_float_from(t->oy);					\
@@ -106,7 +106,7 @@ static inline argb8888_convolution2x2(uint32_t *data, Eina_F16p16 x, Eina_F16p16
 		p2 = interp_256(ax, p3, p2);
 	if (p0 != p2)
 		p0 = interp_256(ay, p2, p0);
-	
+
 	ret->pixel.argb8888.plane0 = p0;
 	ret->format = ENESIM_SURFACE_ARGB8888;
 }
@@ -116,7 +116,7 @@ static void normal_argb8888_argb8888_affine_good_no_no(Enesim_Transformation *t,
 {
 	normal_argb8888_argb8888_affine_no_no(
 		/* use 2x2 convolution kernel to interpolate */
-		argb8888_convolution2x2(sdata2, sxx, syy, ss->w, ss->h, &argb);		
+		argb8888_convolution2x2(sdata2, sxx, syy, ss->w, ss->h, &argb);
 	)
 }
 
@@ -124,6 +124,6 @@ static void normal_argb8888_argb8888_affine_fast_no_no(Enesim_Transformation *t,
 		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
 {
 	normal_argb8888_argb8888_affine_no_no(
-		argb.pixel.argb8888.plane0 = *sdata2;	
+		argb.pixel.argb8888.plane0 = *sdata2;
 	)
 }
