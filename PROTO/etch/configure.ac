@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(etch, 0.0.1, me@mail.com)
+AC_INIT(etch, 0.0.2, jorgeluis.zapata@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD

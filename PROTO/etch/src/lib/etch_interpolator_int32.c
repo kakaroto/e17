@@ -17,58 +17,59 @@
  */
 #include "Etch.h"
 #include "etch_private.h"
+/* this file was copied from uint32, does it make sense to have both ?
+ */
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
 static void _discrete(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
-	res->data.u32 = da->data.u32;
+	res->data.i32 = da->data.i32;
 }
 static void _linear(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
 	double r;
-	uint32_t a, b;
-	
-	a = da->data.u32;
-	b = db->data.u32;
-	
+	int32_t a, b;
+
+	a = da->data.i32;
+	b = db->data.i32;
 	/* handle specific case where a and b are equal (constant) */
 	if (a == b)
 	{
-		res->data.u32 = a;
+		res->data.i32 = a;
 		return;
 	}
 	r = ((1 - m) * a) + (m * b);
-	res->data.u32 = ceil(r);
+	res->data.i32 = ceil(r);
 }
 
 static void _cosin(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
 	double m2;
-	uint32_t a, b;
+	int32_t a, b;
 		
-	a = da->data.u32;
-	b = db->data.u32;
+	a = da->data.i32;
+	b = db->data.i32;
 	
 	m2 = (1 - cos(m * M_PI))/2;
 	
-	res->data.u32 = ceil((double)(a * (1 - m2) + b * m2));
+	res->data.i32 = ceil((double)(a * (1 - m2) + b * m2));
 }
 
 static void _bquad(Etch_Data *da, Etch_Data *db, double m, Etch_Data *res, void *data)
 {
 	Etch_Animation_Quadratic *q = data;
-	uint32_t a, b;
-		
-	a = da->data.u32;
-	b = db->data.u32;
+	int32_t a, b;
+
+	a = da->data.i32;
+	b = db->data.i32;
 	
-	res->data.u32 =  (1 - m) * (1 - m) * a + 2 * m * (1 - m) * (q->cp.data.u32) + m * m * b;
+	res->data.i32 =  (1 - m) * (1 - m) * a + 2 * m * (1 - m) * (q->cp.data.i32) + m * m * b;
 }
 /*============================================================================*
  *                                 Global                                     * 
  *============================================================================*/
-Etch_Interpolator etch_interpolator_uint32 = {
+Etch_Interpolator etch_interpolator_int32 = {
 	.funcs[ETCH_ANIMATION_DISCRETE] = _discrete,
 	.funcs[ETCH_ANIMATION_LINEAR] = _linear,
 	.funcs[ETCH_ANIMATION_COSIN] = _cosin,

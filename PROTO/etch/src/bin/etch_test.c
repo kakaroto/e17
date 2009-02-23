@@ -134,8 +134,8 @@ int main(void)
 	
 	e = etch_new();
 	etch_timer_fps_set(e, 30);
-	//animation_setup(e);
-	//animation_argb_setup(e);
+	animation_uint32_setup(e);
+	animation_argb_setup(e);
 	animation_string_setup(e);
 	timer_setup();
 	/* to exit the main loop we should check that the etch animation has finished */

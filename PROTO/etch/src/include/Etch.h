@@ -23,13 +23,13 @@
 /**
  * @mainpage Etch
  * @section intro Introduction
- * Etch is a library that ... 
- * 
+ * Etch is a library that ...
+ *
  * @file
  * @brief Etch API
  * @defgroup Etch_Group API
  * @{
- * 
+ *
  * @todo add the ability to make an object's property relative to other
  * TODO remove the object's concept, just animations, the data should not be stored
  * TODO on the object but on the animation itself
@@ -84,7 +84,7 @@ typedef struct _Etch_Data
 	} data;
 } Etch_Data;
 
-/** 
+/**
  * @}
  * @defgroup Etch_Animations_Group Animations
  * @{
@@ -94,7 +94,7 @@ typedef struct _Etch_Animation_Keyframe Etch_Animation_Keyframe; /**< Animation 
 
 typedef enum _Etch_Animation_Type
 {
-	ETCH_ANIMATION_DISCRETE, 
+	ETCH_ANIMATION_DISCRETE,
 	ETCH_ANIMATION_LINEAR,
 	ETCH_ANIMATION_COSIN,
 	ETCH_ANIMATION_QUADRATIC,
@@ -104,12 +104,17 @@ typedef enum _Etch_Animation_Type
 
 /** Callback function used when a property value changes */
 typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *prev, void *data);
-
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
 		Etch_Animation_Callback cb, void *data);
 EAPI void etch_animation_delete(Etch_Animation *a);
+EAPI void etch_animation_disable(Etch_Animation *a);
+EAPI void etch_animation_enable(Etch_Animation *a);
+EAPI Eina_Bool etch_animation_enabled(Etch_Animation *a);
+EAPI Etch * etch_animation_etch_get(Etch_Animation *a);
+EAPI Eina_Iterator * etch_animation_iterator_get(Etch_Animation *a);
 EAPI void etch_animation_data_get(Etch_Animation *a, Etch_Data *v);
 EAPI void etch_animation_repeat_set(Etch_Animation *a, unsigned int times);
+EAPI int etch_animation_keyframe_count(Etch_Animation *a);
 EAPI Etch_Animation_Keyframe * etch_animation_keyframe_add(Etch_Animation *a);
 EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe *m);
 EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *m, Etch_Animation_Type t);
@@ -117,7 +122,7 @@ EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyfram
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *m, unsigned long secs, unsigned long usecs);
 EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *m, ...);
 EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *m, ...);
-/** 
+/**
  * @}
  * @}
  */

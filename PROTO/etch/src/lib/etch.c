@@ -26,13 +26,13 @@
  * TODO remove every double and use Etch_Time
  */
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 #define DEFAULT_FPS 30
 
 static void _fps_to_time(unsigned long frame, unsigned long *time)
 {
-	/* giving a frame transform it to secs|usec representation */ 
+	/* giving a frame transform it to secs|usec representation */
 }
 
 static void _process(Etch *e)
@@ -49,6 +49,8 @@ static void _process(Etch *e)
 				etch_time_double_to(&a->start),
 				etch_time_double_to(&a->end),
 				a->repeat);*/
+		if (!a->enabled)
+			continue;
 		if (etch_time_ge(&e->curr, &a->start) == EINA_FALSE)
 			continue;
 		/* only once */
@@ -69,7 +71,7 @@ static void _process(Etch *e)
 			{
 				Etch_Time tmp2;
 				Etch_Time rend;
-				
+
 				/* FIXME the length can be precalculated when repeat is set */
 				tmp2 = a->end;
 				etch_time_multiply(&tmp2, a->repeat);
@@ -91,11 +93,11 @@ static void _process(Etch *e)
 	}
 }
 /*============================================================================*
- *                                 Global                                     * 
+ *                                 Global                                     *
  *============================================================================*/
 
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * Create a new Etch instance
@@ -103,7 +105,7 @@ static void _process(Etch *e)
 EAPI Etch * etch_new(void)
 {
 	Etch *e;
-	
+
 	e = calloc(1, sizeof(Etch));
 	e->fps = DEFAULT_FPS;
 	return e;
@@ -162,7 +164,7 @@ EAPI int etch_timer_has_end(Etch *e)
 	/* we need a function to get the last frame/marker to know when the
 	 * animations have finished, on the application we can make it run again,
 	 * stop, whatever */
-	
+
 	return 0;
 }
 /**
@@ -196,7 +198,7 @@ EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
 {
 	Etch_Animation *a;
 
-	a = etch_animation_new(dtype, cb, data);
+	a = etch_animation_new(e, dtype, cb, data);
 	e->animations = eina_inlist_append(e->animations, EINA_INLIST_GET(a));
 
 	return a;
