@@ -1,0 +1,153 @@
+# Chinese translations for e package
+# e 软件包的简体中文翻译.
+# Copyright (C) 2009 THE e'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the e package.
+# Aron Xu <aronmalache@163.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: e 16menuedit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-23 16:22+0800\n"
+"PO-Revision-Date: 2009-02-23 16:22+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/callbacks.c:53
+msgid "Save"
+msgstr "保存"
+
+#: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "新路径"
+
+#: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
+msgid "Choose Icon"
+msgstr "选择图标"
+
+#: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "删除路径"
+
+#: ../src/callbacks.c:81
+msgid "Quit"
+msgstr "退出"
+
+#: ../src/callbacks.c:310
+msgid "No help file found!"
+msgstr "未找到帮助文件！"
+
+#: ../src/callbacks.c:314
+msgid "No help application found"
+msgstr "为找到帮助程序"
+
+#: ../src/e16menuedit2.c:118
+msgid "Menu successfully loaded!"
+msgstr "菜单加载成功！"
+
+#: ../src/icon_chooser.c:66
+msgid "Select Icon..."
+msgstr "选择图标..."
+
+#: ../src/icon_chooser.c:102
+msgid "Icon size:"
+msgstr "图标大小："
+
+#: ../src/treeview.c:57
+msgid "Description"
+msgstr "描述"
+
+#: ../src/treeview.c:64
+msgid "Icon"
+msgstr "图标"
+
+#: ../src/treeview.c:86
+msgid "Parameters"
+msgstr "参数"
+
+#: ../src/treeview.c:203
+msgid "Menu saved!"
+msgstr "菜单已保存！"
+
+#: ../src/treeview.c:222
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "子菜单必须有名称！ -> 菜单未保存！"
+
+#: ../src/treeview.c:226
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr "检查菜单时发生未知错误 -> 菜单未保存！"
+
+#: ../e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>属性：</b>"
+
+#: ../e16menuedit2.glade.h:2
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+msgstr ""
+"<span font_desc=\"Sans 22\">E16 菜单编辑器 II</span>\n"
+"e16menuedit2 v0.0.3"
+
+#: ../e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "选择图标(_I)"
+
+#: ../e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "E16 菜单编辑器"
+
+#: ../e16menuedit2.glade.h:8
+msgid "Fallback Help-Browser:"
+msgstr "回滚帮助浏览器："
+
+#: ../e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "信息"
+
+#: ../e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "关于 E16 菜单编辑器"
+
+#: ../e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "属性"
+
+#: ../e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "目录(_C)"
+
+#: ../e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "删除路径(_D)"
+
+#: ../e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "编辑(_E)"
+
+#: ../e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "文件(_F)"
+
+#: ../e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "帮助(_H)"
+
+#: ../e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "新路径(_N)"
+
+#: ../e16menuedit2.glade.h:19
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"

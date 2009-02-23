@@ -1,0 +1,2482 @@
+# Chinese translations for E package
+# E16 软件包的简体中文翻译.
+# Copyright (C) 2009 THE E'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the E package.
+# Aron Xu <aronmalache@163.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: E 16\n"
+"Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-02-23 16:16+0800\n"
+"PO-Revision-Date: 2009-02-23 16:16+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/about.c:35
+#, c-format
+msgid "About Enlightenment %s"
+msgstr "关于 Enlightenment %s"
+
+#: ../src/about.c:45
+#, c-format
+msgid ""
+"Welcome to the %s version\n"
+"of the Enlightenment window manager.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+"Kim Woelders - kim@woelders.dk\n"
+msgstr ""
+
+#: ../src/aclass.c:209 ../src/backgrounds.c:236 ../src/borders.c:640
+#: ../src/buttons.c:181 ../src/cursors.c:170 ../src/iclass.c:337
+#: ../src/tclass.c:113 ../src/tooltips.c:135
+#, c-format
+msgid "%u references remain\n"
+msgstr ""
+
+#: ../src/actions.c:109
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
+
+#: ../src/actions.c:115
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is most probably because this program is not in the\n"
+"path for your shell which is %s. I suggest you read the manual\n"
+"page for that shell and read up how to change or add to your\n"
+"execution path.\n"
+msgstr ""
+
+#: ../src/actions.c:134
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"I am unsure as to why you could not do this. The file exists,\n"
+"is a file, and you are allowed to execute it. I suggest you look\n"
+"into this.\n"
+msgstr ""
+
+#: ../src/actions.c:144
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file exists, is a file, but you are unable\n"
+"to execute it because you do not have execute access to this file.\n"
+msgstr ""
+
+#: ../src/actions.c:157
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is in fact a directory.\n"
+msgstr ""
+
+#: ../src/actions.c:164
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is not a regular file.\n"
+msgstr ""
+
+#: ../src/actions.c:189
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+msgstr ""
+"执行以下程序出错："
+"%s\n"
+
+#: ../src/alert.c:210
+msgid "Enlightenment Error"
+msgstr "Enlightenment 错误"
+
+#: ../src/alert.c:569
+msgid "Enlightenment Message Dialog"
+msgstr "Enlightenment 信息对话"
+
+#: ../src/alert.c:569
+msgid "Ignore this"
+msgstr "忽略此项"
+
+#: ../src/alert.c:570
+msgid "Restart Enlightenment"
+msgstr "重启 Enlightenment"
+
+#: ../src/alert.c:570 ../src/setup.c:168
+msgid "Quit Enlightenment"
+msgstr "退出 Enlightenment"
+
+#: ../src/alert.c:583
+msgid "Attention !!!"
+msgstr "请注意！！！"
+
+#: ../src/alert.c:583 ../src/dialog.c:844 ../src/dialog.c:2034
+#: ../src/events.c:87 ../src/setup.c:157 ../src/sound.c:302
+msgid "OK"
+msgstr "确定"
+
+#: ../src/backgrounds.c:1518
+#, c-format
+msgid ""
+"Background definition information:\n"
+"Name: %s\n"
+"File: %s\n"
+msgstr ""
+
+#: ../src/backgrounds.c:1519
+msgid "-NONE-"
+msgstr ""
+
+#: ../src/backgrounds.c:1692 ../src/backgrounds.c:1694
+msgid ""
+"No\n"
+"Background"
+msgstr ""
+
+#: ../src/backgrounds.c:1784 ../src/backgrounds.c:2214
+#, c-format
+msgid "Unused backgrounds freed after %2i:%02i:%02i"
+msgstr ""
+
+#: ../src/backgrounds.c:2000
+msgid "Use background image"
+msgstr "使用背景图像"
+
+#: ../src/backgrounds.c:2004
+msgid "Keep aspect on scale"
+msgstr ""
+
+#: ../src/backgrounds.c:2008
+msgid "Tile image across background"
+msgstr ""
+
+#: ../src/backgrounds.c:2017
+msgid "Move to Front\n"
+msgstr ""
+
+#: ../src/backgrounds.c:2022
+msgid "Duplicate\n"
+msgstr ""
+
+#: ../src/backgrounds.c:2026
+msgid "Unlist\n"
+msgstr ""
+
+#: ../src/backgrounds.c:2031
+msgid "Delete File\n"
+msgstr "删除文件"
+
+#: ../src/backgrounds.c:2042
+msgid ""
+"Background\n"
+"Image\n"
+"Scaling\n"
+"and\n"
+"Alignment\n"
+msgstr ""
+
+#: ../src/backgrounds.c:2099
+msgid "BG Colour\n"
+msgstr "背景色"
+
+#: ../src/backgrounds.c:2104
+msgid "Red:\n"
+msgstr "红："
+
+#: ../src/backgrounds.c:2115
+msgid "Green:\n"
+msgstr "绿："
+
+#: ../src/backgrounds.c:2126
+msgid "Blue:\n"
+msgstr "蓝："
+
+#: ../src/backgrounds.c:2159
+msgid "Pre-scan BG's"
+msgstr ""
+
+#: ../src/backgrounds.c:2167
+msgid "Sort by File"
+msgstr "按文件排序"
+
+#: ../src/backgrounds.c:2172
+msgid "Sort by Attr."
+msgstr "按属性排序"
+
+#: ../src/backgrounds.c:2178
+msgid "Sort by Image"
+msgstr "按图像排序"
+
+#: ../src/backgrounds.c:2198
+msgid "Use dithering in Hi-Colour"
+msgstr ""
+
+#: ../src/backgrounds.c:2202
+msgid "Background overrides theme"
+msgstr ""
+
+#: ../src/backgrounds.c:2207
+msgid "Enable background transparency compatibility mode"
+msgstr ""
+
+#: ../src/backgrounds.c:2231 ../src/mod-trans.c:204
+msgid "Background"
+msgstr "背景"
+
+#: ../src/backgrounds.c:2232
+msgid "Desktop Background Settings"
+msgstr ""
+
+#: ../src/backgrounds.c:2235
+msgid ""
+"Enlightenment Desktop\n"
+"Background Settings Dialog\n"
+msgstr ""
+
+#: ../src/comms.c:240
+msgid "E IPC Error"
+msgstr ""
+
+#: ../src/comms.c:241
+#, c-format
+msgid ""
+"Received Unknown Client Message.\n"
+"Client Name:    %s\n"
+"Client Version: %s\n"
+"Message Contents:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: ../src/config.c:197 ../src/config.c:297
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr ""
+
+#: ../src/config.c:205 ../src/config.c:304
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr ""
+
+#: ../src/config.c:215
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current %s definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: ../src/config.c:223
+#, c-format
+msgid ""
+"Warning:  Configuration error in %s block.\n"
+"Outcome is likely not good.\n"
+msgstr ""
+
+#: ../src/config.c:313
+msgid "Theme versioning ERROR"
+msgstr ""
+
+#: ../src/config.c:314
+msgid "Restart with Defaults"
+msgstr ""
+
+#: ../src/config.c:315
+msgid "Abort and Exit"
+msgstr ""
+
+#: ../src/config.c:316
+#, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The configuration for the theme you are running is\n"
+"incompatible. It's config revision is %i.\n"
+"It needs to be marked as being revision <= %i\n"
+"\n"
+"Please contact the theme author or maintainer and\n"
+"inform them that in order for their theme to function\n"
+"with this version of Enlightenment, they have to\n"
+"update it to the current settings, and then match\n"
+"the revision number.\n"
+"\n"
+"If the theme revision is higher than Enlightenment's\n"
+"it may be that you haven't upgraded Enlightenment for\n"
+"a while and this theme takes advantages of new\n"
+"features in Enlightenment in new versions.\n"
+msgstr ""
+
+#: ../src/config.c:578
+msgid "Enlightenment Starting..."
+msgstr "Enlightenment 正在启动..."
+
+#: ../src/container.c:1207
+msgid "Settings..."
+msgstr "设置..."
+
+#: ../src/container.c:1211 ../src/dialog.c:856 ../src/pager.c:1013
+#: ../config/strings.c:30 ../config/strings.c:132
+msgid "Close"
+msgstr "关闭"
+
+#: ../src/container.c:1216 ../config/strings.c:83
+msgid "Create New Iconbox"
+msgstr ""
+
+#: ../src/container.c:1513 ../src/container.c:1586
+#, c-format
+msgid "Icon size: %2d"
+msgstr "图标大小： %2d"
+
+#: ../src/container.c:1550
+msgid "Transparent background"
+msgstr ""
+
+#: ../src/container.c:1554
+msgid "Hide inner border"
+msgstr ""
+
+#: ../src/container.c:1558
+msgid "Draw base image behind Icons"
+msgstr ""
+
+#: ../src/container.c:1562
+msgid "Hide scrollbar when not needed"
+msgstr ""
+
+#: ../src/container.c:1566
+msgid "Automatically resize to fit Icons"
+msgstr ""
+
+#: ../src/container.c:1573
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr ""
+
+#: ../src/container.c:1604
+msgid "Orientation:"
+msgstr ""
+
+#: ../src/container.c:1609
+msgid "Scrollbar side:"
+msgstr ""
+
+#: ../src/container.c:1614
+msgid "Scrollbar arrows:"
+msgstr ""
+
+#: ../src/container.c:1617
+msgid "Horizontal"
+msgstr ""
+
+#: ../src/container.c:1622
+msgid "Left / Top"
+msgstr ""
+
+#: ../src/container.c:1627
+msgid "Start"
+msgstr ""
+
+#: ../src/container.c:1632
+msgid "Vertical"
+msgstr ""
+
+#: ../src/container.c:1638
+msgid "Right / Bottom"
+msgstr ""
+
+#: ../src/container.c:1644
+msgid "Both ends"
+msgstr ""
+
+#: ../src/container.c:1652
+msgid "End"
+msgstr ""
+
+#: ../src/container.c:1660 ../src/focus.c:832
+msgid "None"
+msgstr "无"
+
+#: ../src/container.c:1670
+msgid "Show icon names"
+msgstr ""
+
+#: ../src/container.c:1674
+msgid "Animate when iconifying to this Iconbox"
+msgstr ""
+
+#: ../src/container.c:1684
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr ""
+
+#: ../src/container.c:1689
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr ""
+
+#: ../src/container.c:1696
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr ""
+
+#: ../src/container.c:1701
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr ""
+
+#: ../src/container.c:1714
+msgid ""
+"Enlightenment Iconbox\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/desktops.c:124
+msgid ""
+"Hold down the mouse button and drag\n"
+"the mouse to be able to drag the desktop\n"
+"back and forth.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+
+#: ../src/desktops.c:135
+msgid ""
+"This is the Root desktop.\n"
+"You cannot drag the root desktop around.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+
+#: ../src/desktops.c:153
+msgid ""
+"Click here to raise this desktop\n"
+"to the top.\n"
+msgstr ""
+
+#: ../src/desktops.c:165
+msgid ""
+"Click here to lower this desktop\n"
+"to the bottom.\n"
+msgstr ""
+
+#: ../src/desktops.c:2289
+msgid "Number of virtual desktops:\n"
+msgstr ""
+
+#: ../src/desktops.c:2314
+msgid "Slide desktops around when changing"
+msgstr ""
+
+#: ../src/desktops.c:2320
+msgid "Desktop Slide speed:\n"
+msgstr ""
+
+#: ../src/desktops.c:2334
+msgid "Wrap desktops around"
+msgstr ""
+
+#: ../src/desktops.c:2342
+msgid "Display desktop dragbar"
+msgstr ""
+
+#: ../src/desktops.c:2348
+msgid "Drag bar position:"
+msgstr ""
+
+#: ../src/desktops.c:2352
+msgid "Top"
+msgstr ""
+
+#: ../src/desktops.c:2358
+msgid "Bottom"
+msgstr ""
+
+#: ../src/desktops.c:2364 ../src/pager.c:1924 ../src/pager.c:1949
+#: ../src/pager.c:1974
+msgid "Left"
+msgstr ""
+
+#: ../src/desktops.c:2370 ../src/pager.c:1936 ../src/pager.c:1961
+#: ../src/pager.c:1986
+msgid "Right"
+msgstr ""
+
+#: ../src/desktops.c:2378 ../src/menus-misc.c:586
+msgid "Desks"
+msgstr ""
+
+#: ../src/desktops.c:2379
+msgid "Multiple Desktop Settings"
+msgstr ""
+
+#: ../src/desktops.c:2382
+msgid ""
+"Enlightenment Multiple Desktop\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/desktops.c:2474
+msgid "Virtual Desktop size:\n"
+msgstr ""
+
+#: ../src/desktops.c:2510
+msgid "Wrap virtual desktops around"
+msgstr ""
+
+#: ../src/desktops.c:2517
+msgid "Edge Flip Mode:"
+msgstr ""
+
+#: ../src/desktops.c:2520
+msgid "Off"
+msgstr ""
+
+#: ../src/desktops.c:2525
+msgid "On"
+msgstr ""
+
+#: ../src/desktops.c:2530
+msgid "Only when moving window"
+msgstr ""
+
+#: ../src/desktops.c:2536
+msgid "Resistance at edge of screen:\n"
+msgstr ""
+
+#: ../src/desktops.c:2548
+msgid "Areas"
+msgstr ""
+
+#: ../src/desktops.c:2549
+msgid "Virtual Desktop Settings"
+msgstr ""
+
+#: ../src/desktops.c:2552
+msgid ""
+"Enlightenment Virtual Desktop\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/dialog.c:849
+msgid "Apply"
+msgstr ""
+
+#: ../src/ecompmgr.c:2625
+msgid ""
+"Cannot enable Composite Manager.\n"
+"Use xdpyinfo to check that\n"
+"Composite, Damage, Fixes, and Render\n"
+"extensions are loaded."
+msgstr ""
+
+#: ../src/events.c:87
+msgid "X server setup error"
+msgstr ""
+
+#: ../src/events.c:88
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"This Xserver does not support the Shape extension.\n"
+"This is required for Enlightenment to run.\n"
+"\n"
+"Your Xserver probably is too old or mis-configured.\n"
+"\n"
+"Exiting.\n"
+msgstr ""
+
+#: ../src/focus.c:704
+msgid "Focus follows pointer"
+msgstr ""
+
+#: ../src/focus.c:710
+msgid "Focus follows pointer sloppily"
+msgstr ""
+
+#: ../src/focus.c:716
+msgid "Focus follows mouse clicks"
+msgstr ""
+
+#: ../src/focus.c:726
+msgid "Clicking in a window always raises it"
+msgstr ""
+
+#: ../src/focus.c:734
+msgid "All new windows first get the focus"
+msgstr ""
+
+#: ../src/focus.c:739
+msgid "Only new dialog windows get the focus"
+msgstr ""
+
+#: ../src/focus.c:746
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr ""
+
+#: ../src/focus.c:751
+msgid "Raise windows while switching focus"
+msgstr ""
+
+#: ../src/focus.c:757
+msgid "Send mouse pointer to window while switching focus"
+msgstr ""
+
+#: ../src/focus.c:763
+msgid "Always send mouse pointer to window on focus switch"
+msgstr ""
+
+#: ../src/focus.c:771
+msgid "Display and use focus list"
+msgstr ""
+
+#: ../src/focus.c:776
+msgid "Include sticky windows in focus list"
+msgstr ""
+
+#: ../src/focus.c:781
+msgid "Include shaded windows in focus list"
+msgstr ""
+
+#: ../src/focus.c:786
+msgid "Include iconified windows in focus list"
+msgstr ""
+
+#: ../src/focus.c:791
+msgid "Include windows on other desks in focus list"
+msgstr ""
+
+#: ../src/focus.c:796
+msgid "Focus windows while switching"
+msgstr ""
+
+#: ../src/focus.c:801
+msgid "Raise windows after focus switch"
+msgstr ""
+
+#: ../src/focus.c:806
+msgid "Send mouse pointer to window after focus switch"
+msgstr ""
+
+#: ../src/focus.c:816
+msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgstr ""
+
+#: ../src/focus.c:820
+msgid "First E Icon, then App Icon"
+msgstr ""
+
+#: ../src/focus.c:826
+msgid "First App Icon, then E Icon"
+msgstr ""
+
+#: ../src/focus.c:840
+msgid "Focus"
+msgstr ""
+
+#: ../src/focus.c:841
+msgid "Focus Settings"
+msgstr ""
+
+#: ../src/focus.c:844
+msgid ""
+"Enlightenment Focus\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/fx.c:934
+msgid "Effects"
+msgstr ""
+
+#: ../src/fx.c:937
+msgid "Enable Effect: Raindrops"
+msgstr ""
+
+#: ../src/fx.c:941
+msgid "Ripples"
+msgstr ""
+
+#: ../src/fx.c:945
+msgid "Waves"
+msgstr ""
+
+#: ../src/fx.c:951
+msgid "FX"
+msgstr ""
+
+#: ../src/fx.c:952
+msgid "Special FX Settings"
+msgstr ""
+
+#: ../src/fx.c:955
+msgid ""
+"Enlightenment Special Effects\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/groups.c:707
+msgid "Window Group Selection"
+msgstr ""
+
+#: ../src/groups.c:710
+msgid ""
+"Enlightenment Window Group\n"
+"Selection Dialog\n"
+msgstr ""
+
+#: ../src/groups.c:733 ../src/groups.c:742 ../src/groups.c:750
+#: ../src/groups.c:936
+msgid "Window Group Error"
+msgstr ""
+
+#: ../src/groups.c:735
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"  You can only destroy groups or remove windows from groups  \n"
+"  through a window that actually belongs to at least one group.\n"
+"\n"
+msgstr ""
+
+#: ../src/groups.c:743
+msgid ""
+"\n"
+"  Currently, no groups exist or this window  \n"
+"  already belongs to all existing groups.  \n"
+"  You have to start other groups first.  \n"
+"\n"
+msgstr ""
+
+#: ../src/groups.c:752
+msgid ""
+"\n"
+"  Currently, no groups exist. You have to start a group first.\n"
+"\n"
+msgstr ""
+
+#: ../src/groups.c:842
+msgid "   Pick the group to configure:   "
+msgstr ""
+
+#: ../src/groups.c:873
+msgid ""
+"  The following actions are  \n"
+"  applied to all group members:  "
+msgstr ""
+
+#: ../src/groups.c:878 ../src/groups.c:980
+msgid "Changing Border Style"
+msgstr ""
+
+#: ../src/groups.c:883 ../src/groups.c:985
+msgid "Iconifying"
+msgstr ""
+
+#: ../src/groups.c:888 ../src/groups.c:990
+msgid "Killing"
+msgstr ""
+
+#: ../src/groups.c:893 ../src/groups.c:995
+msgid "Moving"
+msgstr ""
+
+#: ../src/groups.c:898 ../src/groups.c:1000
+msgid "Raising/Lowering"
+msgstr ""
+
+#: ../src/groups.c:903 ../src/groups.c:1005
+msgid "Sticking"
+msgstr ""
+
+#: ../src/groups.c:908 ../src/groups.c:1010
+msgid "Shading"
+msgstr ""
+
+#: ../src/groups.c:913 ../src/groups.c:1015
+msgid "Mirror Shade/Iconify/Stick"
+msgstr ""
+
+#: ../src/groups.c:920
+msgid "Window Group Settings"
+msgstr ""
+
+#: ../src/groups.c:923
+msgid ""
+"Enlightenment Window Group\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/groups.c:938
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"\n"
+msgstr ""
+
+#: ../src/groups.c:973
+msgid " Per-group settings: "
+msgstr ""
+
+#: ../src/groups.c:1024
+msgid " Global settings: "
+msgstr ""
+
+#: ../src/groups.c:1028
+msgid "Swap Window Locations"
+msgstr ""
+
+#. winops_groups.menu
+#: ../src/groups.c:1034 ../src/menus-misc.c:646 ../config/strings.c:148
+msgid "Groups"
+msgstr ""
+
+#: ../src/groups.c:1035
+msgid "Default Group Control Settings"
+msgstr ""
+
+#: ../src/groups.c:1038
+msgid ""
+"Enlightenment Default\n"
+"Group Control Settings Dialog\n"
+msgstr ""
+
+#: ../src/groups.c:1066
+msgid "Pick the group the window will belong to:"
+msgstr ""
+
+#: ../src/groups.c:1072
+msgid "Select the group to remove the window from:"
+msgstr ""
+
+#: ../src/groups.c:1077
+msgid "Select the group to break:"
+msgstr ""
+
+#: ../src/handlers.c:61
+#, c-format
+msgid ""
+"Enlightenment performed an Illegal Instruction.\n"
+"\n"
+"This most likely is due to you having installed an run a\n"
+"binary of Enlightenment that was compiled for a make or model\n"
+"of CPU not 100%% identical or compatible with yours. Please\n"
+"either obtain the correct package for your system, or\n"
+"re-compile Enlightenment and possibly any support libraries\n"
+"that you got in binary format to run Enlightenment.\n"
+msgstr ""
+
+#: ../src/handlers.c:71
+msgid ""
+"Enlightenment caused a Floating Point Exception.\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have performed an illegal mathematical operation (most likely\n"
+"dividing a number by zero). This is most likely a bug. It is\n"
+"recommended to restart now. If you wish to help fix this please\n"
+"compile Enlightenment with debugging symbols in and run\n"
+"Enlightenment under gdb so you can backtrace for where it died and\n"
+"send in a useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+
+#: ../src/handlers.c:83
+msgid ""
+"Enlightenment caused Segment Violation (Segfault)\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have accessed areas of your system's memory that they are not\n"
+"allowed access to. This is most likely a bug. It is recommended to\n"
+"restart now. If you wish to help fix this please compile\n"
+"Enlightenment with debugging symbols in and run Enlightenment\n"
+"under gdb so you can backtrace for where it died and send in a\n"
+"useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+
+#: ../src/handlers.c:95
+msgid ""
+"Enlightenment caused Bus Error.\n"
+"\n"
+"It is suggested you check your hardware and OS installation.\n"
+"It is highly unusual to cause Bus Errors on operational\n"
+"hardware.\n"
+msgstr ""
+
+#: ../src/hints.c:600
+msgid "Selection Error!"
+msgstr ""
+
+#: ../src/hints.c:600
+#, c-format
+msgid "Could not acquire selection: %s"
+msgstr ""
+
+#: ../src/iconify.c:469
+msgid "Iconbox Options"
+msgstr ""
+
+#: ../src/iconify.c:470
+msgid "Iconbox Settings"
+msgstr ""
+
+#: ../src/ipc.c:194 ../src/ipc.c:1456 ../src/ipc.c:1463
+msgid "Message"
+msgstr ""
+
+#: ../src/ipc.c:1456 ../src/ipc.c:1463
+#, c-format
+msgid "e16 was built without %s support"
+msgstr ""
+
+#: ../src/ipc.c:1457
+msgid "composite"
+msgstr ""
+
+#: ../src/ipc.c:1464
+msgid "sound"
+msgstr ""
+
+#: ../src/ipc.c:1807
+msgid "Enlightenment IPC Commands Help\n"
+msgstr ""
+
+#: ../src/ipc.c:1811
+msgid ""
+"Use \"help all\" for descriptions of each command\n"
+"Use \"help <command>\" for an individual description\n"
+"\n"
+msgstr ""
+
+#: ../src/ipc.c:1813 ../src/ipc.c:1833 ../src/ipc.c:1845
+msgid "Commands currently available:\n"
+msgstr ""
+
+#: ../src/ipc.c:1831
+msgid "Use \"help full\" for full descriptions of each command\n"
+msgstr ""
+
+#: ../src/ipc.c:1832
+msgid "Use \"help <command>\" for an individual description\n"
+msgstr ""
+
+#: ../src/ipc.c:1834 ../src/ipc.c:1846
+msgid "         <command>     : <description>\n"
+msgstr ""
+
+#: ../src/main.c:584
+#, c-format
+msgid ""
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
+msgstr ""
+
+#: ../src/main.c:679
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable cannot be found at:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting that program or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+
+#: ../src/main.c:693
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable is not able to be executed:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+msgstr ""
+
+#: ../src/magwin.c:462
+msgid "Magnifier"
+msgstr ""
+
+#: ../src/menus-misc.c:458 ../config/strings.c:91
+msgid "Themes"
+msgstr ""
+
+#: ../src/menus-misc.c:484
+msgid "Border"
+msgstr ""
+
+#: ../src/menus-misc.c:546
+msgid "Window List"
+msgstr ""
+
+#: ../src/menus-misc.c:568
+msgid "Go to this Desktop"
+msgstr ""
+
+#: ../src/menus-misc.c:572 ../src/menus-misc.c:668
+#, c-format
+msgid "Desktop %i"
+msgstr ""
+
+#: ../src/menus-misc.c:615
+msgid "Show/Hide this group"
+msgstr ""
+
+#: ../src/menus-misc.c:620
+msgid "Iconify this group"
+msgstr ""
+
+#: ../src/menus-misc.c:631
+#, c-format
+msgid "Group %i"
+msgstr ""
+
+#: ../src/menus.c:2081
+msgid "Animated display of menus"
+msgstr ""
+
+#: ../src/menus.c:2086
+msgid "Always pop up menus on screen"
+msgstr ""
+
+#: ../src/menus.c:2091
+msgid "Warp pointer after moving menus"
+msgstr ""
+
+#: ../src/menus.c:2097
+msgid "Menus"
+msgstr ""
+
+#: ../src/menus.c:2098
+msgid "Menu Settings"
+msgstr ""
+
+#: ../src/menus.c:2101
+msgid ""
+"Enlightenment Menu\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/mod-trans.c:114 ../src/mod-trans.c:264
+#, c-format
+msgid "Theme transparency: %2d"
+msgstr ""
+
+#: ../src/mod-trans.c:143
+msgid "Changes Might Require Restart:"
+msgstr ""
+
+#: ../src/mod-trans.c:152
+msgid "Borders:"
+msgstr ""
+
+#: ../src/mod-trans.c:156
+msgid "Menus:"
+msgstr ""
+
+#: ../src/mod-trans.c:160
+msgid "Hilights:"
+msgstr ""
+
+#: ../src/mod-trans.c:164
+msgid "E Widgets:"
+msgstr ""
+
+#: ../src/mod-trans.c:168
+msgid "E Dialogs:"
+msgstr ""
+
+#: ../src/mod-trans.c:172
+msgid "Tooltips:"
+msgstr ""
+
+#: ../src/mod-trans.c:176 ../src/settings.c:82 ../src/settings.c:87
+#: ../src/settings.c:354
+msgid "Opaque"
+msgstr ""
+
+#: ../src/mod-trans.c:235
+msgid "Glass"
+msgstr ""
+
+#: ../src/mod-trans.c:280
+msgid "Transparency"
+msgstr ""
+
+#: ../src/mod-trans.c:281
+msgid "Selective Transparency Settings"
+msgstr ""
+
+#: ../src/mod-trans.c:284
+msgid ""
+"Enlightenment Selective Transparency\n"
+"Settings Dialog\n"
+msgstr ""
+
+#. winops.menu
+#: ../src/pager.c:1006 ../config/strings.c:49 ../config/strings.c:131
+msgid "Window Options"
+msgstr ""
+
+#: ../src/pager.c:1009 ../config/strings.c:51 ../config/strings.c:134
+msgid "Iconify"
+msgstr ""
+
+#: ../src/pager.c:1017 ../config/strings.c:133
+msgid "Annihilate"
+msgstr ""
+
+#: ../src/pager.c:1021
+msgid "Stick / Unstick"
+msgstr ""
+
+#: ../src/pager.c:1030
+msgid "Desktop Options"
+msgstr ""
+
+#: ../src/pager.c:1032
+msgid "Pager Settings..."
+msgstr ""
+
+#: ../src/pager.c:1037
+msgid "Snapshotting Off"
+msgstr ""
+
+#: ../src/pager.c:1041
+msgid "High Quality Off"
+msgstr ""
+
+#: ../src/pager.c:1043
+msgid "High Quality On"
+msgstr ""
+
+#: ../src/pager.c:1048
+msgid "Snapshotting On"
+msgstr ""
+
+#: ../src/pager.c:1052
+msgid "Zoom Off"
+msgstr ""
+
+#: ../src/pager.c:1054
+msgid "Zoom On"
+msgstr ""
+
+#: ../src/pager.c:1813 ../src/pager.c:1904
+msgid "Pager scanning speed:"
+msgstr ""
+
+#: ../src/pager.c:1814 ../src/pager.c:1905
+msgid "lines per second"
+msgstr ""
+
+#: ../src/pager.c:1843
+msgid "Enable pager display"
+msgstr ""
+
+#: ../src/pager.c:1853
+msgid "Pager Mode:"
+msgstr ""
+
+#: ../src/pager.c:1857
+msgid "Simple"
+msgstr ""
+
+#: ../src/pager.c:1863
+msgid "Make miniature snapshots of the screen"
+msgstr ""
+
+#: ../src/pager.c:1870
+msgid "Live Update"
+msgstr ""
+
+#: ../src/pager.c:1881
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr ""
+
+#: ../src/pager.c:1886
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr ""
+
+#: ../src/pager.c:1892
+msgid "Pop up window title when mouse is over the window"
+msgstr ""
+
+#: ../src/pager.c:1897
+msgid "Continuously scan screen to update pager"
+msgstr ""
+
+#: ../src/pager.c:1920
+msgid "Mouse button to select and drag windows:"
+msgstr ""
+
+#: ../src/pager.c:1930 ../src/pager.c:1955 ../src/pager.c:1980
+msgid "Middle"
+msgstr ""
+
+#: ../src/pager.c:1945
+msgid "Mouse button to select desktops:"
+msgstr ""
+
+#: ../src/pager.c:1970
+msgid "Mouse button to display pager menu:"
+msgstr ""
+
+#: ../src/pager.c:1994
+msgid "Pagers"
+msgstr ""
+
+#: ../src/pager.c:1995
+msgid "Pager Settings"
+msgstr ""
+
+#: ../src/pager.c:1998
+msgid ""
+"Enlightenment Desktop & Area\n"
+"Pager Settings Dialog\n"
+msgstr ""
+
+#. Less of the hope.... E survives
+#: ../src/session.c:344
+msgid ""
+"ERROR!\n"
+"\n"
+"Lost the Session Manager that was there?\n"
+"Here here session manager... come here... want a bone?\n"
+"Oh come now! Stop sulking! Bugger. Oh well. Will continue without\n"
+"a session manager.\n"
+"\n"
+"I'll survive somehow.\n"
+"\n"
+"\n"
+"... I hope.\n"
+msgstr ""
+
+#: ../src/session.c:644
+msgid "Are you sure?"
+msgstr ""
+
+#: ../src/session.c:646
+msgid ""
+"\n"
+"\n"
+"    Are you sure you wish to log out ?    \n"
+"\n"
+"\n"
+msgstr ""
+
+#: ../src/session.c:656
+msgid "  Yes, Shut Down  "
+msgstr ""
+
+#: ../src/session.c:658
+msgid "  Yes, Reboot  "
+msgstr ""
+
+#: ../src/session.c:661
+msgid "  Yes, Log Out  "
+msgstr ""
+
+#: ../src/session.c:663
+msgid "  No  "
+msgstr ""
+
+#: ../src/session.c:798
+msgid "Enable Session Script"
+msgstr ""
+
+#: ../src/session.c:803
+msgid "Enable Logout Dialog"
+msgstr ""
+
+#: ../src/session.c:808
+msgid "Enable Reboot/Halt on Logout"
+msgstr ""
+
+#: ../src/session.c:814
+msgid "Session"
+msgstr ""
+
+#: ../src/session.c:815
+msgid "Session Settings"
+msgstr ""
+
+#: ../src/session.c:818
+msgid ""
+"Enlightenment Session\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:74
+msgid "Move Methods:"
+msgstr ""
+
+#: ../src/settings.c:79
+msgid "Resize Methods:"
+msgstr ""
+
+#: ../src/settings.c:92 ../src/settings.c:97 ../src/settings.c:359
+msgid "Technical"
+msgstr ""
+
+#: ../src/settings.c:102 ../src/settings.c:107 ../src/settings.c:364
+msgid "Box"
+msgstr ""
+
+#: ../src/settings.c:112 ../src/settings.c:117 ../src/settings.c:369
+msgid "Shaded"
+msgstr ""
+
+#: ../src/settings.c:122 ../src/settings.c:127 ../src/settings.c:374
+msgid "Semi-Solid"
+msgstr ""
+
+#: ../src/settings.c:133
+msgid "Translucent"
+msgstr ""
+
+#: ../src/settings.c:142
+msgid "Avoid server grab"
+msgstr ""
+
+#: ../src/settings.c:152
+msgid "Move/Resize Geometry Info Postion:"
+msgstr ""
+
+#: ../src/settings.c:156
+msgid "Window Center (O/T/B Methods)"
+msgstr ""
+
+#: ../src/settings.c:162
+msgid "Always Screen corner"
+msgstr ""
+
+#: ../src/settings.c:168
+msgid "Don't show"
+msgstr ""
+
+#: ../src/settings.c:180
+msgid "Default Resize Policy:"
+msgstr ""
+
+#: ../src/settings.c:184
+msgid "Conservative"
+msgstr ""
+
+#: ../src/settings.c:190
+msgid "Available"
+msgstr ""
+
+#: ../src/settings.c:196
+msgid "Absolute"
+msgstr ""
+
+#: ../src/settings.c:206
+msgid "Update window while moving"
+msgstr ""
+
+#: ../src/settings.c:211
+msgid "Synchronize move/resize with application"
+msgstr ""
+
+#: ../src/settings.c:216
+msgid "Do not cover dragbar"
+msgstr ""
+
+#: ../src/settings.c:222
+msgid "Move/Resize"
+msgstr ""
+
+#: ../src/settings.c:223
+msgid "Move & Resize Settings"
+msgstr ""
+
+#: ../src/settings.c:226
+msgid ""
+"Enlightenment Move & Resize\n"
+"Method Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:313
+msgid "Dialog windows appear together with their owner"
+msgstr ""
+
+#: ../src/settings.c:318
+msgid "Switch to desktop where dialog appears"
+msgstr ""
+
+#: ../src/settings.c:326
+msgid "Place windows manually"
+msgstr ""
+
+#: ../src/settings.c:331
+msgid "Place windows under mouse"
+msgstr ""
+
+#: ../src/settings.c:336
+msgid "Center windows when desk is full"
+msgstr ""
+
+#: ../src/settings.c:341
+msgid "Slide windows in when they appear"
+msgstr ""
+
+#: ../src/settings.c:346
+msgid "Slide windows around when cleaning up"
+msgstr ""
+
+#: ../src/settings.c:351
+msgid "Slide Method:"
+msgstr ""
+
+#: ../src/settings.c:384
+msgid "Appear Slide speed:"
+msgstr ""
+
+#: ../src/settings.c:395
+msgid "Cleanup Slide speed:"
+msgstr ""
+
+#: ../src/settings.c:408
+msgid "Animate shading and unshading of windows"
+msgstr ""
+
+#: ../src/settings.c:414
+msgid "Window Shading speed:"
+msgstr ""
+
+#: ../src/settings.c:427
+msgid "Ignore struts"
+msgstr ""
+
+#: ../src/settings.c:432
+msgid "Raise fullscreen windows"
+msgstr ""
+
+#: ../src/settings.c:440
+msgid "Place windows on another head when full"
+msgstr ""
+
+#: ../src/settings.c:448
+msgid "Placement"
+msgstr ""
+
+#: ../src/settings.c:449
+msgid "Window Placement Settings"
+msgstr ""
+
+#: ../src/settings.c:452
+msgid ""
+"Enlightenment Window Placement\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:483
+msgid "Raise Windows Automatically"
+msgstr ""
+
+#: ../src/settings.c:489
+msgid "Autoraise delay:"
+msgstr ""
+
+#: ../src/settings.c:500
+msgid "Autoraise"
+msgstr ""
+
+#: ../src/settings.c:501
+msgid "Autoraise Settings"
+msgstr ""
+
+#: ../src/settings.c:504
+msgid ""
+"Enlightenment Automatic Raising\n"
+"of Windows Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:541
+msgid "Enable Dialog Headers"
+msgstr ""
+
+#: ../src/settings.c:547
+msgid "Enable Button Images"
+msgstr ""
+
+#: ../src/settings.c:556
+msgid "Enable sliding startup windows"
+msgstr ""
+
+#: ../src/settings.c:564
+msgid "Use saveunders to reduce window exposures"
+msgstr ""
+
+#. winops_misc.menu
+#: ../src/settings.c:570 ../config/strings.c:146 ../config/strings.c:162
+msgid "Miscellaneous"
+msgstr ""
+
+#: ../src/settings.c:571
+msgid "Miscellaneous Settings"
+msgstr ""
+
+#: ../src/settings.c:574
+msgid ""
+"Enlightenment Miscellaneous\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:615
+msgid "Enable Composite"
+msgstr ""
+
+#: ../src/settings.c:623
+msgid "Enable Fading"
+msgstr ""
+
+#: ../src/settings.c:629
+msgid "Fading Speed:"
+msgstr ""
+
+#: ../src/settings.c:642
+msgid "Shadows Off"
+msgstr ""
+
+#: ../src/settings.c:648
+msgid "Shadows Sharp"
+msgstr ""
+
+#: ../src/settings.c:654
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: ../src/settings.c:660
+msgid "Shadows Blurred"
+msgstr ""
+
+#: ../src/settings.c:671
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: ../src/settings.c:682
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: ../src/settings.c:693
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: ../src/settings.c:704
+msgid "Composite"
+msgstr ""
+
+#: ../src/settings.c:705
+msgid "Composite Settings"
+msgstr ""
+
+#: ../src/settings.c:708
+msgid ""
+"Enlightenment Composite\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/settings.c:793
+msgid "Enlightenment Settings"
+msgstr ""
+
+#: ../src/setup.c:58
+msgid ""
+"Enlightenment cannot connect to the display nominated by\n"
+"your shell's DISPLAY environment variable. You may set this\n"
+"variable to indicate which display name Enlightenment is to\n"
+"connect to. It may be that you do not have an Xserver already\n"
+"running to serve that Display connection, or that you do not\n"
+"have permission to connect to that display. Please make sure\n"
+"all is correct before trying again. Run an Xserver by running\n"
+"xdm or startx first, or contact your local system\n"
+"administrator, or Xserver vendor, or read the X, xdm and\n"
+"startx manual pages before proceeding.\n"
+msgstr ""
+
+#: ../src/setup.c:156
+msgid "Another Window Manager is already running"
+msgstr ""
+
+#: ../src/setup.c:158
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+
+#: ../src/setup.c:167
+msgid "X server version error"
+msgstr ""
+
+#: ../src/setup.c:167
+msgid "Ignore this error"
+msgstr ""
+
+#: ../src/setup.c:169
+#, c-format
+msgid ""
+"WARNING:\n"
+"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
+"This may mean Enlightenment will either not function, or\n"
+"function incorrectly. If it is later than X11, then your\n"
+"server is one the author of Enlightenment neither have\n"
+"access to, nor have heard of.\n"
+msgstr ""
+
+#: ../src/snaps.c:727
+msgid "Title:"
+msgstr ""
+
+#: ../src/snaps.c:739
+msgid "Name:"
+msgstr ""
+
+#: ../src/snaps.c:752
+msgid "Class:"
+msgstr ""
+
+#: ../src/snaps.c:765
+msgid "Role:"
+msgstr ""
+
+#: ../src/snaps.c:778
+msgid "Command:"
+msgstr ""
+
+#: ../src/snaps.c:818
+msgid "Track Changes"
+msgstr ""
+
+#: ../src/snaps.c:823
+msgid "Location"
+msgstr ""
+
+#: ../src/snaps.c:828
+msgid "Border style"
+msgstr ""
+
+#. winops_size.menu
+#: ../src/snaps.c:833 ../config/strings.c:184
+msgid "Size"
+msgstr ""
+
+#: ../src/snaps.c:838 ../config/strings.c:89
+msgid "Desktop"
+msgstr ""
+
+#: ../src/snaps.c:843
+msgid "Shaded state"
+msgstr ""
+
+#: ../src/snaps.c:848
+msgid "Sticky state"
+msgstr ""
+
+#: ../src/snaps.c:853
+msgid "Stacking layer"
+msgstr ""
+
+#: ../src/snaps.c:858
+msgid "Window List Skip"
+msgstr ""
+
+#. winops_opacity.menu
+#: ../src/snaps.c:864 ../config/strings.c:145 ../config/strings.c:172
+msgid "Opacity"
+msgstr ""
+
+#: ../src/snaps.c:869
+msgid "Shadowing"
+msgstr ""
+
+#: ../src/snaps.c:875
+msgid "Flags"
+msgstr ""
+
+#: ../src/snaps.c:894
+msgid "Restart application on login"
+msgstr ""
+
+#: ../src/snaps.c:913
+msgid "Remember this window's group(s)"
+msgstr ""
+
+#: ../src/snaps.c:921
+msgid "Remembered Application Attributes"
+msgstr ""
+
+#: ../src/snaps.c:924
+msgid ""
+"Select the attributes of this\n"
+"window you wish to Remember\n"
+"from now on\n"
+msgstr ""
+
+#: ../src/snaps.c:1014
+msgid "Delete"
+msgstr ""
+
+#: ../src/snaps.c:1042
+msgid "Remembered Settings..."
+msgstr ""
+
+#: ../src/snaps.c:1049
+msgid "Unused"
+msgstr ""
+
+#: ../src/snaps.c:1062
+msgid "There are no active windows with remembered attributes."
+msgstr ""
+
+#: ../src/snaps.c:1068
+msgid "Remember"
+msgstr ""
+
+#: ../src/snaps.c:1069
+msgid "Remembered Windows Settings"
+msgstr ""
+
+#: ../src/snaps.c:1072
+msgid ""
+"Enlightenment Remembered\n"
+"Windows Settings Dialog\n"
+msgstr ""
+
+#: ../src/snaps.c:1166
+msgid "Error saving snaps file\n"
+msgstr ""
+
+#: ../src/sound.c:205
+msgid "Error finding sound file"
+msgstr ""
+
+#: ../src/sound.c:206
+#, c-format
+msgid ""
+"Warning!  Enlightenment was unable to load the\n"
+"following sound file:\n"
+"%s\n"
+"Enlightenment will continue to operate, but you\n"
+"may wish to check your configuration settings.\n"
+msgstr ""
+
+#: ../src/sound.c:302
+msgid "Error initialising sound"
+msgstr ""
+
+#: ../src/sound.c:303
+msgid ""
+"Audio was enabled for Enlightenment but there was an error\n"
+"communicating with the audio server (Esound). Audio will\n"
+"now be disabled.\n"
+msgstr ""
+
+#: ../src/sound.c:452
+msgid "Enable sounds"
+msgstr ""
+
+#: ../src/sound.c:458
+msgid "Sound"
+msgstr ""
+
+#: ../src/sound.c:459
+msgid "Audio Settings"
+msgstr ""
+
+#: ../src/sound.c:462
+msgid ""
+"Enlightenment Audio\n"
+"Settings Dialog\n"
+msgstr ""
+
+#: ../src/systray.c:331 ../src/systray.c:434 ../src/systray.c:442
+msgid "Systray Error!"
+msgstr ""
+
+#: ../src/systray.c:331
+msgid "Systray went elsewhere?!?"
+msgstr ""
+
+#: ../src/systray.c:434
+msgid "Only one systray is allowed"
+msgstr ""
+
+#: ../src/systray.c:442
+msgid "Could not activate systray"
+msgstr ""
+
+#: ../src/systray.c:452
+msgid "Systray Options"
+msgstr ""
+
+#: ../src/systray.c:453
+msgid "Systray Settings"
+msgstr ""
+
+#: ../src/theme.c:339
+#, c-format
+msgid ""
+"No themes were found in the default directories:\n"
+" %s\n"
+"Proceeding from here is mostly pointless.\n"
+msgstr ""
+
+#: ../src/tooltips.c:867
+msgid "Display Tooltips"
+msgstr ""
+
+#: ../src/tooltips.c:872
+msgid "Display Root Window Tips"
+msgstr ""
+
+#: ../src/tooltips.c:877
+msgid "Tooltip Delay:\n"
+msgstr ""
+
+#: ../src/tooltips.c:888
+msgid "Tooltips"
+msgstr ""
+
+#: ../src/tooltips.c:889
+msgid "Tooltip Settings"
+msgstr ""
+
+#: ../src/tooltips.c:892
+msgid ""
+"Enlightenment Tooltip\n"
+"Settings Dialog\n"
+msgstr ""
+
+#. actionclasses.cfg
+#: ../config/strings.c:5
+msgid ""
+"Click and drag to move desktop\n"
+"(on any desktop but desktop 0)"
+msgstr ""
+
+#: ../config/strings.c:6 ../config/strings.c:8
+msgid "Switch Desktops"
+msgstr ""
+
+#: ../config/strings.c:7
+msgid "Go to the next desktop."
+msgstr ""
+
+#: ../config/strings.c:9
+msgid "Go to the previous desktop."
+msgstr ""
+
+#: ../config/strings.c:10
+msgid "Move"
+msgstr ""
+
+#: ../config/strings.c:11 ../config/strings.c:23 ../config/strings.c:26
+#: ../config/strings.c:29
+msgid "Move this window."
+msgstr ""
+
+#: ../config/strings.c:12 ../config/strings.c:14 ../config/strings.c:48
+msgid "Shade/Unshade this window."
+msgstr ""
+
+#: ../config/strings.c:13 ../config/strings.c:50 ../config/strings.c:53
+msgid "Show the Window Options menu."
+msgstr ""
+
+#: ../config/strings.c:15
+msgid "Show/Hide group borders."
+msgstr ""
+
+#: ../config/strings.c:16
+msgid "Start a group."
+msgstr ""
+
+#: ../config/strings.c:17
+msgid "Add to current group."
+msgstr ""
+
+#: ../config/strings.c:18
+msgid "Break this window's group."
+msgstr ""
+
+#: ../config/strings.c:19
+msgid "Shade."
+msgstr ""
+
+#: ../config/strings.c:20
+msgid "Unshade."
+msgstr ""
+
+#: ../config/strings.c:21
+msgid "Resize"
+msgstr ""
+
+#: ../config/strings.c:22
+msgid "Resize this window."
+msgstr ""
+
+#: ../config/strings.c:24
+msgid "Resize Horizontally"
+msgstr ""
+
+#: ../config/strings.c:25
+msgid "Resize this window horizontally."
+msgstr ""
+
+#: ../config/strings.c:27
+msgid "Resize Vertically"
+msgstr ""
+
+#: ../config/strings.c:28
+msgid "Resize this window vertically."
+msgstr ""
+
+#: ../config/strings.c:31
+msgid "Close this window."
+msgstr ""
+
+#: ../config/strings.c:32
+msgid "Forcibly destroy this window."
+msgstr ""
+
+#: ../config/strings.c:33
+msgid "Maximize Height"
+msgstr ""
+
+#: ../config/strings.c:34 ../config/strings.c:40
+msgid "Toggle between maximum screen height and normal height."
+msgstr ""
+
+#: ../config/strings.c:35
+msgid "Maximize Width"
+msgstr ""
+
+#: ../config/strings.c:36 ../config/strings.c:39
+msgid "Toggle between maximum screen width and normal width."
+msgstr ""
+
+#: ../config/strings.c:37
+msgid "Maximize"
+msgstr ""
+
+#: ../config/strings.c:38
+msgid "Toggle between maximum screen size and normal size."
+msgstr ""
+
+#: ../config/strings.c:41 ../config/strings.c:43
+msgid "Send To Another Desktop"
+msgstr ""
+
+#: ../config/strings.c:42
+msgid "Send this Window to the next desktop."
+msgstr ""
+
+#: ../config/strings.c:44
+msgid "Send this Window to the previous desktop."
+msgstr ""
+
+#: ../config/strings.c:45
+msgid "Snapshot"
+msgstr ""
+
+#: ../config/strings.c:46
+msgid "This button does nothing interesting."
+msgstr ""
+
+#: ../config/strings.c:47 ../config/strings.c:138
+msgid "Shade/Unshade"
+msgstr ""
+
+#: ../config/strings.c:52
+msgid "Iconify (Minimize) this window."
+msgstr ""
+
+#: ../config/strings.c:54
+msgid "More Buttons"
+msgstr ""
+
+#: ../config/strings.c:55
+msgid "Show more buttons."
+msgstr ""
+
+#: ../config/strings.c:56 ../config/strings.c:136
+msgid "Raise"
+msgstr ""
+
+#: ../config/strings.c:57
+msgid "Raise this window to the top."
+msgstr ""
+
+#: ../config/strings.c:58 ../config/strings.c:137
+msgid "Lower"
+msgstr ""
+
+#: ../config/strings.c:59
+msgid "Lower this window."
+msgstr ""
+
+#: ../config/strings.c:60 ../config/strings.c:139
+msgid "Stick/Unstick"
+msgstr ""
+
+#: ../config/strings.c:61
+msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
+msgstr ""
+
+#. bindings.cfg
+#: ../config/strings.c:63
+msgid ""
+"Clicking your mouse on the desktop will perform\n"
+"the following actions"
+msgstr ""
+
+#: ../config/strings.c:64
+msgid "Display User Menus"
+msgstr ""
+
+#: ../config/strings.c:65 ../config/strings.c:67
+msgid "Display Enlightenment Menu"
+msgstr ""
+
+#: ../config/strings.c:66 ../config/strings.c:71
+msgid "Display Settings Menu"
+msgstr ""
+
+#: ../config/strings.c:68
+msgid "Display Task List Menu"
+msgstr ""
+
+#: ../config/strings.c:69
+msgid "Display Desktop Menu"
+msgstr ""
+
+#: ../config/strings.c:70
+msgid "Display Group Menu"
+msgstr ""
+
+#: ../config/strings.c:72
+msgid "Go Back a Desktop"
+msgstr ""
+
+#: ../config/strings.c:73
+msgid "Go Forward a Desktop"
+msgstr ""
+
+#. matches.cfg
+#. menus.cfg
+#: ../config/strings.c:76 ../config/strings.c:79
+msgid "Backgrounds"
+msgstr ""
+
+#. desktop.menu
+#: ../config/strings.c:78
+msgid "Desktop Operations"
+msgstr ""
+
+#: ../config/strings.c:80
+msgid "Cleanup Desktop"
+msgstr ""
+
+#: ../config/strings.c:81
+msgid "Goto Next Desktop"
+msgstr ""
+
+#: ../config/strings.c:82
+msgid "Goto Previous Desktop"
+msgstr ""
+
+#: ../config/strings.c:84
+msgid "Create Systray"
+msgstr ""
+
+#: ../config/strings.c:85
+msgid "Show Magnifier"
+msgstr ""
+
+#. enlightenment.menu
+#: ../config/strings.c:87
+msgid "Enlightenment"
+msgstr ""
+
+#: ../config/strings.c:88 ../config/strings.c:198
+msgid "User Menus"
+msgstr ""
+
+#. settings.menu
+#: ../config/strings.c:90 ../config/strings.c:110
+msgid "Settings"
+msgstr ""
+
+#. maintenance.menu
+#: ../config/strings.c:92 ../config/strings.c:99
+msgid "Maintenance"
+msgstr ""
+
+#: ../config/strings.c:93
+msgid "Help"
+msgstr ""
+
+#: ../config/strings.c:94
+msgid "About Enlightenment"
+msgstr ""
+
+#: ../config/strings.c:95
+msgid "About this theme"
+msgstr ""
+
+#: ../config/strings.c:96 ../config/strings.c:202
+msgid "Restart"
+msgstr ""
+
+#: ../config/strings.c:97 ../config/strings.c:203
+msgid "Log Out"
+msgstr ""
+
+#: ../config/strings.c:100
+msgid "Purge config file cache"
+msgstr ""
+
+#: ../config/strings.c:101
+msgid "Purge pager background cache"
+msgstr ""
+
+#: ../config/strings.c:102
+msgid "Purge background selector cache"
+msgstr ""
+
+#: ../config/strings.c:103
+msgid "Purge all caches"
+msgstr ""
+
+#: ../config/strings.c:104
+msgid "Query config file cache usage"
+msgstr ""
+
+#: ../config/strings.c:105
+msgid "Query pager background cache usage"
+msgstr ""
+
+#: ../config/strings.c:106
+msgid "Query background selector cache usage"
+msgstr ""
+
+#: ../config/strings.c:107
+msgid "Query all cache usage"
+msgstr ""
+
+#: ../config/strings.c:108
+msgid "Regenerate Menus"
+msgstr ""
+
+#: ../config/strings.c:111
+msgid "Enlightenment Settings ..."
+msgstr ""
+
+#: ../config/strings.c:112
+msgid "Focus Settings ..."
+msgstr ""
+
+#: ../config/strings.c:113
+msgid "Move & Resize Settings ..."
+msgstr ""
+
+#: ../config/strings.c:114
+msgid "Window Placement Settings ..."
+msgstr ""
+
+#: ../config/strings.c:115
+msgid "Multiple Desktop Settings ..."
+msgstr ""
+
+#: ../config/strings.c:116
+msgid "Virtual Desktop Settings ..."
+msgstr ""
+
+#: ../config/strings.c:117
+msgid "Pager Settings ..."
+msgstr ""
+
+#: ../config/strings.c:118
+msgid "Menu Settings ..."
+msgstr ""
+
+#: ../config/strings.c:119
+msgid "Autoraise Settings ..."
+msgstr ""
+
+#: ../config/strings.c:120
+msgid "Tooltip Settings ..."
+msgstr ""
+
+#: ../config/strings.c:121
+msgid "Audio Settings ..."
+msgstr ""
+
+#: ../config/strings.c:122
+msgid "Group Settings ..."
+msgstr ""
+
+#: ../config/strings.c:123
+msgid "Remember Settings ..."
+msgstr ""
+
+#: ../config/strings.c:124
+msgid "Special FX Settings ..."
+msgstr ""
+
+#: ../config/strings.c:125
+msgid "Desktop Background Settings ..."
+msgstr ""
+
+#: ../config/strings.c:126
+msgid "Theme Transparency Settings ..."
+msgstr ""
+
+#: ../config/strings.c:127
+msgid "Composite Settings ..."
+msgstr ""
+
+#: ../config/strings.c:128
+msgid "Session Settings ..."
+msgstr ""
+
+#: ../config/strings.c:129
+msgid "Miscellaneous Settings ..."
+msgstr ""
+
+#: ../config/strings.c:135
+msgid "Leave Alone"
+msgstr ""
+
+#: ../config/strings.c:140
+msgid "Remember..."
+msgstr ""
+
+#: ../config/strings.c:141
+msgid "Window Size"
+msgstr ""
+
+#: ../config/strings.c:142
+msgid "Set Stacking"
+msgstr ""
+
+#: ../config/strings.c:143
+msgid "Set Border Style"
+msgstr ""
+
+#: ../config/strings.c:144
+msgid "Window Groups"
+msgstr ""
+
+#: ../config/strings.c:149
+msgid "Configure this window's group(s)"
+msgstr ""
+
+#: ../config/strings.c:150
+msgid "Start a new group"
+msgstr ""
+
+#: ../config/strings.c:151
+msgid "Add this window to the current group"
+msgstr ""
+
+#: ../config/strings.c:152
+msgid "Select group to add this window to"
+msgstr ""
+
+#: ../config/strings.c:153
+msgid "Remove this window from a group"
+msgstr ""
+
+#: ../config/strings.c:154
+msgid "Destroy a group this window belongs to"
+msgstr ""
+
+#. winops_layer.menu
+#: ../config/strings.c:156
+msgid "Stacking"
+msgstr ""
+
+#: ../config/strings.c:157
+msgid "Below"
+msgstr ""
+
+#: ../config/strings.c:158
+msgid "Normal"
+msgstr ""
+
+#: ../config/strings.c:159
+msgid "Above"
+msgstr ""
+
+#: ../config/strings.c:160
+msgid "On Top"
+msgstr ""
+
+#: ../config/strings.c:163
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: ../config/strings.c:164
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: ../config/strings.c:165
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: ../config/strings.c:166
+msgid "Toggle Never Focus"
+msgstr ""
+
+#: ../config/strings.c:167
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: ../config/strings.c:168
+msgid "Toggle Never Use Area"
+msgstr ""
+
+#: ../config/strings.c:169
+msgid "Toggle Button Grabs"
+msgstr ""
+
+#: ../config/strings.c:170
+msgid "Toggle Autoshade"
+msgstr ""
+
+#: ../config/strings.c:173
+msgid "Default"
+msgstr ""
+
+#: ../config/strings.c:174
+msgid "20%"
+msgstr ""
+
+#: ../config/strings.c:175
+msgid "40%"
+msgstr ""
+
+#: ../config/strings.c:176
+msgid "60%"
+msgstr ""
+
+#: ../config/strings.c:177
+msgid "80%"
+msgstr ""
+
+#: ../config/strings.c:178
+msgid "100%"
+msgstr ""
+
+#: ../config/strings.c:179
+msgid "Focused opacity 100%"
+msgstr ""
+
+#: ../config/strings.c:180
+msgid "Focused opacity follows unfocused"
+msgstr ""
+
+#: ../config/strings.c:181
+msgid "Toggle Fading"
+msgstr ""
+
+#: ../config/strings.c:182
+msgid "Toggle Shadows"
+msgstr ""
+
+#: ../config/strings.c:185
+msgid "Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:186
+msgid "Available Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:187
+msgid "Absolute Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:188
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: ../config/strings.c:189
+msgid "Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:190
+msgid "Available Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:191
+msgid "Absolute Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:192
+msgid "Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:193
+msgid "Available Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:194
+msgid "Absolute Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:195
+msgid "Fullscreen/Normal"
+msgstr ""
+
+#: ../config/strings.c:196
+msgid "Zoom/Unzoom"
+msgstr ""
+
+#: ../config/strings.c:199
+msgid "User Application List"
+msgstr ""
+
+#: ../config/strings.c:200
+msgid "Other"
+msgstr ""
+
+#: ../config/strings.c:201
+msgid "Epplets"
+msgstr ""
