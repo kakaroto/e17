@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-20 17:51+0100\n"
-"PO-Revision-Date: 2009-02-20 17:59+0100\n"
+"POT-Creation-Date: 2009-02-24 13:11+0100\n"
+"PO-Revision-Date: 2009-02-24 13:38+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -42,13 +42,73 @@ msgstr "Configurazione"
 msgid "Wireless Connection Settings"
 msgstr "Impostazioni connessione wireless"
 
-#: src/network_dialog.c:41
+#: src/network_dialog.c:42
 msgid "Wireless network information"
 msgstr "Informazioni rete wireless"
 
-#: src/network_dialog.c:43
+#: src/network_dialog.c:44
 msgid "Essid: "
 msgstr "Essid: "
+
+#: src/network_dialog.c:49
+msgid "Address: "
+msgstr "Indirizzo: "
+
+#: src/network_dialog.c:54
+msgid "Quality: "
+msgstr "Qualità: "
+
+#: src/network_dialog.c:59
+msgid "Authentification: "
+msgstr "Autenticazione: "
+
+#: src/network_dialog.c:125
+msgid "WPA information"
+msgstr "Informazioni WPA"
+
+#: src/network_dialog.c:128
+msgid "WPA2 information"
+msgstr "Informazioni WPA2"
+
+#: src/network_dialog.c:150
+msgid "WEP information"
+msgstr "Informazioni WEP"
+
+#: src/network_dialog.c:152
+msgid "Authentication: "
+msgstr "Autenticazione: "
+
+#: src/network_dialog.c:180
+msgid "Type: "
+msgstr "Tipo: "
+
+#: src/network_dialog.c:184
+msgid "Version: "
+msgstr "Versione: "
+
+#: src/network_dialog.c:188
+msgid "Group Cypher: "
+msgstr "Cifrario di gruppo: "
+
+#: src/network_dialog.c:199
+msgid "Pairwise Cyphers: "
+msgstr "Cifrario di coppia: "
+
+#: src/network_dialog.c:210
+msgid "Authentifications Suites: "
+msgstr "Suite di autenticazione: "
+
+#: src/network_dialog.c:213
+msgid "Yes"
+msgstr "Sì"
+
+#: src/network_dialog.c:214
+msgid "No"
+msgstr "No"
+
+#: src/network_dialog.c:215
+msgid "Pre-authentification: "
+msgstr "Pre-autenticazione: "
 
 #: src/popup.c:59
 msgid "Settings"
@@ -117,9 +177,3 @@ msgstr "Applica"
 #: src/wired_dialog.c:100
 msgid "Cancel"
 msgstr "Annulla"
-
-#~ msgid "Manage this interface"
-#~ msgstr "Gestisci questa interfaccia"
-
-#~ msgid "IP address: %s"
-#~ msgstr "Indirizzo IP: %s"
