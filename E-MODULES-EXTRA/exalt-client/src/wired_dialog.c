@@ -39,15 +39,13 @@ void if_wired_dialog_create(Instance* inst)
     evas = e_win_evas_get(inst->wired.dialog->win);
     list = e_widget_list_add(evas, 0, 0);
 
-    flist = e_widget_frametable_add(evas, D_("Network Device"), 0);
+    flist = e_widget_frametable_add(evas, D_("Wired interface"), 0);
 
     inst->wired.icon = edje_object_add(evas);
     snprintf(buf,1024,"%s/e-module-exalt.edj",exalt_conf->module->dir);
     edje_object_file_set(inst->wired.icon, buf,"modules/exalt/icons/wired");
     evas_object_show(inst->wired.icon);
     o = e_widget_image_add_from_object(evas,inst->wired.icon,40,40);
-
-
     e_widget_frametable_object_append(flist, o, 0, 0, 1, 1, 1, 0, 1, 0);
 
     inst->wired.btn_activate = e_widget_button_add(evas,D_("Activate"),NULL,if_wired_dialog_cb_activate,inst,NULL);
@@ -122,7 +120,6 @@ void if_wired_dialog_set(Instance *inst, Popup_Elt* iface)
     iface->nb_use++;
 
     exalt_dbus_eth_ip_get(inst->conn,iface->iface);
-    exalt_dbus_eth_netmask_get(inst->conn,iface->iface);
     exalt_dbus_eth_gateway_get(inst->conn,iface->iface);
     exalt_dbus_eth_command_get(inst->conn,iface->iface);
     exalt_dbus_eth_dhcp_is(inst->conn,iface->iface);
@@ -202,6 +199,7 @@ void if_wired_dialog_update(Instance* inst,Exalt_DBus_Response *response)
     }
     if_wired_disabled_update(inst);
 }
+
 
 void if_wired_dialog_icon_update(Instance *inst)
 {

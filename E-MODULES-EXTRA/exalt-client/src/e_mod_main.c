@@ -522,12 +522,18 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
             popup_update(inst,response);
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             break;
         case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             break;
         case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
             printf("%s is a wireless interface:\n",exalt_dbus_response_iface_get(response));
@@ -536,17 +542,25 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             break;
         case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
             if_wired_dialog_update(inst,response);
+            if_network_dialog_update(inst,response);
+
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
             printf("%s command:\n",exalt_dbus_response_iface_get(response));
@@ -615,6 +629,6 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 
 void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )
 {
-	popup_notify_scan(iface,networks,user_data );
+    popup_notify_scan(iface,networks,user_data );
 }
 

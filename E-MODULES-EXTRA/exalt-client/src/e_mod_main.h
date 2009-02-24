@@ -65,14 +65,16 @@ struct _Wired_Dialog
 {
     E_Dialog *dialog;
     Popup_Elt* iface;
+
     int dhcp;
 
-    Evas_Object *icon;
-
     Evas_Object *btn_activate;
+    Evas_Object* nothinhg;
     Evas_Object *btn_deactivate;
 
     Evas_Object *radio_dhcp;
+    Evas_Object *icon;
+
     Evas_Object *radio_static;
 
     Evas_Object* entry_ip;
@@ -83,6 +85,7 @@ struct _Wired_Dialog
     char* gateway;
 
     Evas_Object* entry_cmd;
+
     char* cmd;
 };
 
@@ -91,13 +94,44 @@ struct _Network_Dialog
     E_Dialog *dialog;
     Popup_Elt* network;
 
-    Evas_Object* list;
+    Evas_Object* table;
 
     Evas_Object* lbl_essid;
     Evas_Object* lbl_address;
     Evas_Object* lbl_quality;
     Evas_Object* lbl_auth;
 
+
+    int dhcp;
+    Evas_Object *btn_activate;
+    Evas_Object* nothinhg;
+    Evas_Object *btn_deactivate;
+
+    Evas_Object *radio_dhcp;
+    Evas_Object *icon;
+
+    Evas_Object *radio_static;
+
+    Evas_Object* entry_ip;
+    char* ip;
+    Evas_Object* entry_netmask;
+    char* netmask;
+    Evas_Object* entry_gateway;
+    char* gateway;
+
+    Evas_Object* lbl_login;
+    Evas_Object* entry_login;
+    char* login;
+    Evas_Object* lbl_pwd;
+    Evas_Object* entry_pwd;
+    char* pwd;
+
+
+
+
+    Evas_Object* entry_cmd;
+
+    char* cmd;
 };
 
 
@@ -233,4 +267,14 @@ void if_network_dialog_cb_del(E_Win *win);
 Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_DBus_Wireless_Network* n);
 Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network_IE* ie, const char* title);
 
+void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response);
+void if_network_dialog_icon_update(Instance *inst);
+void if_network_dialog_cb_activate(void *data, void*data2);
+void if_network_dialog_cb_deactivate(void *data, void*data2);
+void if_network_disabled_update(Instance *inst);
+void if_network_dialog_cb_dhcp(void *data, Evas_Object *obj, void *event_info);
+void if_network_dialog_cb_entry(void *data, void* data2);
+void if_network_dialog_cb_cancel(void *data, E_Dialog *dialog);
+void if_network_dialog_cb_ok(void *data, E_Dialog *dialog);
+void if_network_dialog_cb_apply(void *data, E_Dialog *dialog);
 #endif
