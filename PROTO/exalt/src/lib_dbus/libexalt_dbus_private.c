@@ -160,7 +160,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
     //jump the interface name
     dbus_message_iter_next(&iter);
 
-    if (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRUCT)
+    if (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_ARRAY)
     {
         DBusMessageIter iter_array;
         dbus_message_iter_recurse (&iter, &iter_array);
@@ -171,6 +171,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             int integer;
             Exalt_DBus_Wireless_Network* w;
             DBusMessageIter iter_w;
+            DBusMessageIter iter_ie_array;
             DBusMessageIter iter_ie;
             DBusMessageIter iter_integer;
             int i;
@@ -203,7 +204,10 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             exalt_dbus_wireless_network_mode_set(w,integer);
 
             //the list of WPA IE
-            while(dbus_message_iter_next(&iter_w))
+            dbus_message_iter_next(&iter_w);
+            dbus_message_iter_recurse (&iter_w, &iter_ie_array);
+
+            while (dbus_message_iter_get_arg_type (&iter_ie_array) == DBUS_TYPE_STRUCT)
             {
                 Exalt_Wireless_Network_IE* ie =
                     exalt_wireless_network_ie_new();
@@ -211,7 +215,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
                 l = eina_list_append(l,ie);
                 exalt_dbus_wireless_network_ie_set(w,l);
 
-                dbus_message_iter_recurse (&iter_w, &iter_ie);
+                dbus_message_iter_recurse (&iter_ie_array, &iter_ie);
 
                 dbus_message_iter_get_basic(&iter_ie, &integer);
                 exalt_wireless_network_ie_wpa_type_set(ie,integer);
@@ -253,6 +257,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
                     exalt_wireless_network_ie_auth_suites_set(ie,integer,i);
                     dbus_message_iter_next(&iter_integer);
                 }
+                dbus_message_iter_next(&iter_ie_array);
             }
 
             dbus_message_iter_next(&iter_array);

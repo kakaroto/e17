@@ -384,8 +384,8 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     if(networks!=NULL)
     {
         EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&args,
-                    DBUS_TYPE_STRUCT,
-                    NULL,
+                    DBUS_TYPE_ARRAY,
+                    "(ssiiiia(iiiiiaiiai))",
                     &iter_array));
 
         EINA_LIST_FOREACH(networks, l, wi)
@@ -394,6 +394,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
             const char* string;
             DBusMessageIter iter_w;
             DBusMessageIter iter_integer;
+            DBusMessageIter iter_array_ie;
             DBusMessageIter iter_ie;
             int i;
             Eina_List* l_ie,*l_ie1;
@@ -458,12 +459,16 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
                         &m),
                     dbus_message_unref(msg);return );
 
+            EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&iter_w,
+                    DBUS_TYPE_ARRAY,
+                    "(iiiiiaiiai)",
+                    &iter_array_ie));
 
             l_ie = exalt_wireless_network_ie_get(wi);
             EINA_LIST_FOREACH(l_ie,l_ie1,ie)
             {
                 EXALT_ASSERT_RETURN_VOID(
-                        dbus_message_iter_open_container(&iter_w,
+                        dbus_message_iter_open_container(&iter_array_ie,
                             DBUS_TYPE_STRUCT,
                             NULL,
                             &iter_ie));
@@ -553,9 +558,9 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
                 }
                 dbus_message_iter_close_container (&iter_ie,&iter_integer);
 
-                dbus_message_iter_close_container (&iter_w,&iter_ie);
-
+                dbus_message_iter_close_container (&iter_array_ie,&iter_ie);
             }
+            dbus_message_iter_close_container (&iter_w,&iter_array_ie);
             dbus_message_iter_close_container (&iter_array,&iter_w);
         }
         dbus_message_iter_close_container (&args,&iter_array);
