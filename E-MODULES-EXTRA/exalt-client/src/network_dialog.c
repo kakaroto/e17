@@ -197,7 +197,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
             int i = 1;
             EINA_LIST_FOREACH(l_ie,l,ie)
             {
-                Evas_Object *fr;
+                Evas_Object *fr = NULL;
                 switch(exalt_wireless_network_ie_wpa_type_get(ie))
                 {
                     case WPA_TYPE_WPA:
@@ -208,7 +208,8 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
                     default: //unknow ....
                         break;
                 }
-                e_widget_table_object_append(inst->network.table,fr,0,i,1,1,1,0,1,0);
+                if(fr)
+                    e_widget_table_object_append(inst->network.table,fr,0,i,1,1,1,0,1,0);
                 i++;
             }
         }
