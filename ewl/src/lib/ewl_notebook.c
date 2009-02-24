@@ -66,6 +66,7 @@ ewl_notebook_init(Ewl_Notebook *n)
                                    EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(n), n->body.pages);
         ewl_widget_internal_set(n->body.pages, TRUE);
+        ewl_widget_layer_priority_set(n->body.pages, -1);
         ewl_widget_appearance_set(n->body.pages, "pages");
         ewl_widget_show(n->body.pages);
 
