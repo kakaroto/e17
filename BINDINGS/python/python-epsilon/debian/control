@@ -9,7 +9,7 @@ Homepage: http://enlightenment.org
 Package: python-epsilon
 Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 Description: Python bindings for epsilon
  This package contains python epsilon module.

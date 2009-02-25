@@ -9,7 +9,7 @@ Homepage: http://enlightenment.org
 Package: python-etk
 Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 Description: Python bindings for Etk
  This package contains python Etk module.

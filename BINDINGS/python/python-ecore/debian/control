@@ -9,7 +9,7 @@ Homepage: http://enlightenment.org
 Package: python-ecore
 Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas
 Provides: ${python:Provides}
 Description: Python bindings for ecore
  This package contains python ecore module.

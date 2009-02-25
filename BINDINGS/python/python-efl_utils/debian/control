@@ -9,7 +9,7 @@ Homepage: http://enlightenment.org
 Package: python-efl-utils
 Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 Description: Utilities to work with EFL
  Contains some additional things for python-efl.

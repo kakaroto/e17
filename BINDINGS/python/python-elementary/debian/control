@@ -2,14 +2,14 @@ Source: python-elementary
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, libelm-dev
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, libelm-dev, python-evas, python-ecore
 Standards-Version: 3.7.3
 Homepage: http://enlightenment.org
 
 Package: python-elementary
 Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 Description: Python bindings for elementary
  This package contains python elementary module.
