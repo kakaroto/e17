@@ -3,15 +3,7 @@
  */
 #include "exhibit.h"
 
-#define NEWD(str, typ) \
-     eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))eina_list_next, \
-				(void *(*) (void *, void *))eina_list_append, \
-				(void *(*) (void *))eina_list_data_get, \
-				(void *(*) (void *))eina_list_free, \
-				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
-				(void *(*) (void *, const char *, void *))evas_hash_add, \
-				(void  (*) (void *))evas_hash_free)
+#define NEWD(str, typ) _exhibit_data_descriptor_new(str, sizeof(typ))
 
 #define FREED(eed) \
 	 if (eed) \
@@ -36,6 +28,8 @@
 static Eet_Data_Descriptor *_ex_config_options_edd = NULL;
 static Eet_Data_Descriptor *_ex_config_version_edd = NULL;
 
+static Eina_Hash *exhibit_eina_hash_add(Eina_Hash *hash, const char *key, void *data);
+
 static Ex_Config_Version *_ex_options_version_parse(char *version);
 static int _ex_options_version_compare(Ex_Config_Version *v1, Ex_Config_Version *v2);
 static void _ex_options_set_cancel_cb(Etk_Object *object, void *data);
@@ -48,6 +42,30 @@ static Etk_Widget *_ex_options_page_2_create(void);
 static void _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data);
 static Etk_Widget *_ex_options_page_3_create(void);
 static Etk_Widget *_ex_options_page_4_create(void);
+
+static Eet_Data_Descriptor *
+_exhibit_data_descriptor_new(const char *name, int size)
+{
+   Eet_Data_Descriptor_Class eddc;
+
+   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   eddc.name = name;
+   eddc.size = size;
+   eddc.func.mem_alloc = NULL;
+   eddc.func.mem_free = NULL;
+   eddc.func.str_alloc = eina_stringshare_add;
+   eddc.func.str_free = eina_stringshare_del;
+   eddc.func.list_next = eina_list_next;
+   eddc.func.list_append = eina_list_append;
+   eddc.func.list_data = eina_list_data_get;
+   eddc.func.hash_foreach = eina_hash_foreach;
+   eddc.func.hash_add = exhibit_eina_hash_add;
+   eddc.func.hash_free = eina_hash_free;
+   eddc.func.str_direct_alloc = NULL;
+   eddc.func.str_direct_free = NULL;
+
+   return eet_data_descriptor2_new(&eddc);
+}
 
 int
 _ex_options_init(void)
@@ -900,5 +918,15 @@ _ex_options_window_show(void)
 			      ETK_CALLBACK(_ex_options_set_cancel_cb), win);
 
    etk_widget_show_all(ETK_WIDGET(win));
+}
+
+static Eina_Hash *
+exhibit_eina_hash_add(Eina_Hash *hash, const char *key, void *data)
+{
+   if (!hash) hash = eina_hash_string_superfast_new(NULL);
+   if (!hash) return NULL;
+
+   eina_hash_add(hash, key, data);
+   return hash;
 }
 
