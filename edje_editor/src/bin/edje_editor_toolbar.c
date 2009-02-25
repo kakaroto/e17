@@ -656,7 +656,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          //Add state to tree
          row = tree_state_add(Cur.part->string, name2);
          etk_tree_row_select(row);
-         etk_tree_row_unfold(evas_hash_find(Parts_Hash,Cur.part->string));
+         etk_tree_row_unfold(eina_hash_find(Parts_Hash,Cur.part->string));
          break;
 
       case NEW_PROG:
@@ -746,8 +746,8 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
             break;
          }
 
-         row = evas_hash_find(Parts_Hash, Cur.part->string);
-         Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
+         row = eina_hash_find(Parts_Hash, Cur.part->string);
+         eina_hash_del(Parts_Hash, Cur.part->string, NULL);
 
          next = etk_tree_row_next_get(row);
          if (!next) 

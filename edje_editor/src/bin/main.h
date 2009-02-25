@@ -185,7 +185,7 @@ int            FileChooserOperation;   //The current file chooser operation (FIL
 int            ImageBroserUpdate;      //When set to true the image browser will update the current state with the selected image
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
 Evas_Object    *edje_o;                //The edje object we are editing
-Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
+Eina_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
 
 
 /* FUNCTION PROTOTYPES*/

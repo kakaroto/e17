@@ -432,12 +432,12 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       if (!edje_edit_part_restack_below(edje_o, Cur.part->string))
          break;
 
-      row = evas_hash_find(Parts_Hash, Cur.part->string);
+      row = eina_hash_find(Parts_Hash, Cur.part->string);
       prev = etk_tree_row_prev_get(row);
       if (!prev) break;
       prev = etk_tree_row_prev_get(prev);
 
-      Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
+      eina_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
 
       if (prev)
@@ -459,11 +459,11 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       if (!edje_edit_part_restack_above(edje_o, Cur.part->string))
          break;
 
-      row = evas_hash_find(Parts_Hash, Cur.part->string);
+      row = eina_hash_find(Parts_Hash, Cur.part->string);
       next = etk_tree_row_next_get(row);
       if (!next) break;
 
-      Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
+      eina_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
       row = tree_part_add(Cur.part->string, next);
       etk_tree_row_select(row);

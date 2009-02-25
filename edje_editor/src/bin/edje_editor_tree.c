@@ -205,7 +205,8 @@ tree_part_add(const char *part_name, Etk_Tree_Row *after)
                                 COL_TYPE, ROW_PART,
                                 NULL);
 
-   Parts_Hash = evas_hash_add(Parts_Hash, part_name, row);
+   if (!Parts_Hash) Parts_Hash = eina_hash_string_superfast_new(NULL);
+   eina_hash_add(Parts_Hash, part_name, row);
 
    /* also add all state to the tree */
    Eina_List *states, *sp;
@@ -230,7 +231,7 @@ tree_state_add(const char *part_name, const char *state_name)
 
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
-            evas_hash_find(Parts_Hash,part_name),
+            eina_hash_find(Parts_Hash,part_name),
             COL_NAME, EdjeFile, "DESC.PNG", state_name,
             COL_VIS, TRUE,
             COL_TYPE, ROW_DESC,

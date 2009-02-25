@@ -540,8 +540,9 @@ _part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
       etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
 
    /* Update Parts_Hash */
-   Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
-   Parts_Hash = evas_hash_add(Parts_Hash, name, row);
+   eina_hash_del(Parts_Hash, Cur.part->string, NULL);
+   if (!Parts_Hash) Parts_Hash = eina_hash_string_superfast_new(NULL);
+   eina_hash_add(Parts_Hash, name, row);
 
    /* Recreate rel combobox */
    position_comboboxes_populate();

@@ -87,8 +87,8 @@ test_edje_group(char *File,char *Group)
 }
 
 /***   Debug Info   ***/
-Evas_Bool
-_debug_info_helper(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+Eina_Bool
+_debug_info_helper(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    printf("Key: '%s' [%d]\n", key, (int)(long)data);
    return TRUE;
@@ -122,7 +122,7 @@ print_debug_info(int full)
    else
       printf(" ** Cur tween: (NULL)\n");
    printf(" *********************** Parts_Hash *****************************\n");
-   evas_hash_foreach(Parts_Hash, _debug_info_helper, NULL);
+   eina_hash_foreach(Parts_Hash, _debug_info_helper, NULL);
    printf(" *********************** E N D *****************************\n\n");
 }
 
