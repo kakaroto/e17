@@ -7,6 +7,7 @@
 #include <Ecore_File.h>
 #include <Ecore_Str.h>
 #include <Edje.h>
+#include <Eina.h>
 
 static int _eli_app_config_listen_cb(const char * key, 
                const Ecore_Config_Type type,
@@ -369,7 +370,8 @@ Ecore_List * eli_theme_names_get()
 {
     char ** dir_list;
     int i = 0;
-    Ecore_List * file_l, * out_l;
+    Eina_List *file_l;
+    Ecore_List * out_l;
 
     dir_list = eli_theme_dir_get();
 
@@ -382,19 +384,17 @@ Ecore_List * eli_theme_names_get()
     out_l = ecore_list_new();
 
     while (dir_list[i]) {
+	void *tmp;
         char *dir;
 
         dir = dir_list[i];
         file_l = ecore_file_ls(dir);
-
-        if (file_l) {
-            char * file;
-
-            while ((file = (char *) ecore_list_next(file_l))) {
+	EINA_LIST_FREE(file_l, tmp)
+	  {
+	     char *file = (char*) tmp;
                 if (ecore_str_has_suffix(file, ".edj"))
                     ecore_list_append(out_l, theme_cut_off_suffix(file));
-            }
-            ecore_list_destroy(file_l);
+	     free(file);
         }
         i++;
     }

@@ -889,6 +889,7 @@ void
 _places_volume_all_cb(void *user_data, void *reply_data, DBusError *error)
 {
    E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+   Eina_List *l;
    char *udi;
   
    if (!ret || !ret->strings) return;
@@ -900,8 +901,7 @@ _places_volume_all_cb(void *user_data, void *reply_data, DBusError *error)
       return;
    }
 
-   ecore_list_first_goto(ret->strings);
-   while ((udi = ecore_list_next(ret->strings)))
+   EINA_LIST_FOREACH(ret->strings, l, udi)
       _places_volume_add(udi);
    
    //TODO free ret??

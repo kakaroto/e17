@@ -455,7 +455,7 @@ _slide_cb_check(void *data)
 static void
 _slide_get_bg_subdirs(void *data, char *local_path)
 {
-   Ecore_List *dir_list;
+   Eina_List *dir_list;
    char full_path[4096];
    char item_full_path[4096];
    char item_local_path[4096];
@@ -469,7 +469,7 @@ _slide_get_bg_subdirs(void *data, char *local_path)
    snprintf(full_path, sizeof(full_path), "%s/%s", inst->ci->dir, local_path);
    dir_list = ecore_file_ls(full_path);
 
-   while((item = ecore_list_next(dir_list)) != NULL)
+   EINA_LIST_FREE(dir_list, item)
      {
 	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", full_path, item);
 	snprintf(item_local_path, sizeof(item_local_path), "%s/%s", local_path, item);
@@ -478,9 +478,9 @@ _slide_get_bg_subdirs(void *data, char *local_path)
 	  _slide_get_bg_subdirs(inst, item_local_path);
 	else
 	  ecore_list_append(inst->bg_list, strdup(item_local_path));
-     }
 
-   ecore_list_destroy(dir_list);
+	free(item);
+     }
 }
 
 static void
@@ -488,7 +488,7 @@ _slide_get_bg_count(void *data)
 {
    Instance *inst;
    char *item;
-   Ecore_List *dir_list;
+   Eina_List *dir_list;
    char item_full_path[4096];
 
    inst = data;
@@ -501,8 +501,7 @@ _slide_get_bg_count(void *data)
    ecore_list_free_cb_set(inst->bg_list, free);
 
    dir_list = ecore_file_ls(inst->ci->dir);
-
-   while((item = ecore_list_next(dir_list)) != NULL)
+   EINA_LIST_FREE(dir_list, item)
      {
 	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", inst->ci->dir, item);
 
@@ -510,9 +509,8 @@ _slide_get_bg_count(void *data)
 	  _slide_get_bg_subdirs(inst, item);
 	else
 	  ecore_list_append(inst->bg_list, strdup(item));
+	free(item);
      }
-
-   ecore_list_destroy(dir_list);
 
    ecore_list_first_goto(inst->bg_list);
    while ((item = (char *)ecore_list_next(inst->bg_list)) != NULL)

@@ -10,7 +10,8 @@ EAPI void
 e_hal_property_free(E_Hal_Property *prop)
 {
   if (prop->type == E_HAL_PROPERTY_TYPE_STRLIST)
-    ecore_list_destroy(prop->val.strlist);
+    while (prop->val.strlist)
+       prop->val.strlist = eina_list_remove_list(prop->val.strlist, prop->val.strlist);
   free(prop);
 }
 
@@ -85,7 +86,7 @@ e_hal_property_double_get(E_Hal_Properties *properties, const char *key, int *er
   return 0;
 }
 
-EAPI Ecore_List *
+EAPI Eina_List *
 e_hal_property_strlist_get(E_Hal_Properties *properties, const char *key, int *err)
 {
   E_Hal_Property *prop;

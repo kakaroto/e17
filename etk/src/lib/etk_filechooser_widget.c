@@ -174,7 +174,8 @@ Etk_Widget *etk_filechooser_widget_new(void)
  */
 void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechooser_widget, const char *folder)
 {
-   Ecore_List *files;
+   Eina_List *files;
+   Eina_List *l;
    char *filename;
    char file_path[PATH_MAX];
    time_t mod_time;
@@ -196,8 +197,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       etk_entry_clear(ETK_ENTRY(filechooser_widget->name_entry));
 
    /* TODO: Do not walk through the list twice!! */
-   ecore_list_first_goto(files);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FOREACH(files, l, filename)
    {
       if (!filechooser_widget->show_hidden)
       {
@@ -219,8 +219,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
 
-   ecore_list_first_goto(files);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FOREACH(files, l, filename)
    {
       const char *ext;
       char *icon = NULL;
@@ -257,7 +256,8 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
 
-   ecore_list_destroy(files);
+   EINA_LIST_FREE(files, filename)
+     free(filename);
 }
 
 /**

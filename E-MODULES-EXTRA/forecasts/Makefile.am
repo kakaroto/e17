@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in forecasts.edj
 
-SUBDIRS = images po
+SUBDIRS = images
 
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \

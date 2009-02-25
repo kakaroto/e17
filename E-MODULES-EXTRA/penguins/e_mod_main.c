@@ -170,14 +170,14 @@ _population_init(E_Module *m)
    evas_output_viewport_get(pop->canvas, NULL, NULL, &pop->width, &pop->height);
 
    //printf("PENGUINS: Get themes list\n");
-   Ecore_List *files;
+   Eina_List *files;
    char *filename;
    char *name;
    char buf[4096];
      
    snprintf(buf, sizeof(buf), "%s/themes", e_module_dir_get(m));
    files = ecore_file_ls(buf);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FREE(files, filename)
    {
          if (ecore_str_has_suffix(filename, ".edj"))
          {
@@ -189,8 +189,8 @@ _population_init(E_Module *m)
                pop->themes = eina_list_append(pop->themes, strdup(buf));
             }
          }
+	 free(filename);
    }   
-   ecore_list_destroy(files);
      
    _theme_load(pop);
    _population_load(pop);

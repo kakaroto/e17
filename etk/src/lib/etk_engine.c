@@ -66,17 +66,15 @@ static Eina_List *_etk_engines = NULL;
 Etk_Bool etk_engine_init(void)
 {
    char *file;
-   Ecore_List *files;
+   Eina_List *files;
 
    if (!ecore_file_exists(PACKAGE_LIB_DIR "/etk/engines"))
       return ETK_FALSE;
 
    files = ecore_file_ls(PACKAGE_LIB_DIR "/etk/engines");
-   if (!files || (ecore_list_count(files) == 0))
-      return ETK_FALSE;
+   if (!files) return ETK_FALSE;
 
-   ecore_list_first_goto(files);
-   while ((file = ecore_list_next(files)))
+   EINA_LIST_FREE(files, file)
    {
       int len;
 
@@ -86,8 +84,8 @@ Etk_Bool etk_engine_init(void)
 	 file[len - 3] = '\0';
 	 _etk_engines = eina_list_append(_etk_engines, strdup(file));
       }
+      free(file);
    }
-   ecore_list_destroy(files);
 
    return ETK_TRUE;
 }

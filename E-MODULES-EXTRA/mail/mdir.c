@@ -95,18 +95,16 @@ _mail_mdir_check_mail (void *data, Ecore_File_Monitor * monitor,
 static int
 _mail_mdir_get_files (const char *path)
 {
-  Ecore_List *l;
+  Eina_List *l;
   char *item;
   int i = 0;
 
   l = ecore_file_ls (path);
-  ecore_list_first_goto (l);
-  while ((item = (char *) ecore_list_next (l)) != NULL)
+  EINA_LIST_FREE(l, item)
     {
-      if ((!strcmp (item, ".")) || (!strcmp (item, "..")))
-	continue;
+       if (!((!strcmp (item, ".")) || (!strcmp (item, ".."))))
       i++;
+       free(item);
     }
-  ecore_list_destroy (l);
   return i;
 }

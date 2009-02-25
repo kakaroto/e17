@@ -69,8 +69,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
     DEBUG(1, "ERROR: %s %s\n", err->name, err->message);
 /* FIXME: this is bad. the handler gets silently freed and the caller has no
  * idea that it was freed - or if, or when.
-  if (ecore_list_goto(conn->signal_handlers, sh))
-    ecore_list_remove(conn->signal_handlers);
+  conn->signal_handlers = eina_list_remove(conn->signal_handlers, sh);
   e_dbus_signal_handler_free(sh);
  */
   dbus_error_free(err);
@@ -183,9 +182,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
 
   if (!conn->signal_handlers)
     {
-       conn->signal_handlers = ecore_list_new();
-       ecore_list_free_cb_set
-	 (conn->signal_handlers, ECORE_FREE_CB(e_dbus_signal_handler_free));
+       conn->signal_handlers = NULL;
        conn->signal_dispatcher = cb_signal_dispatcher;
     }
 
@@ -204,7 +201,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
        e_dbus_get_name_owner(conn, sender, cb_name_owner, data);
     }
 
-  ecore_list_append(conn->signal_handlers, sh);
+  conn->signal_handlers = eina_list_append(conn->signal_handlers, sh);
   return sh;
 }
 
@@ -248,8 +245,7 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
   dbus_bus_remove_match(conn->conn, match, NULL);
 
   if (!conn->signal_handlers) return;
-  if (!ecore_list_goto(conn->signal_handlers, sh)) return;
-  ecore_list_remove(conn->signal_handlers);
+  conn->signal_handlers = eina_list_remove(conn->signal_handlers, sh);
   e_dbus_signal_handler_free(sh);
 }
 
@@ -257,9 +253,9 @@ static void
 cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg)
 {
   E_DBus_Signal_Handler *sh;
+  Eina_List *l;
 
-  ecore_list_first_goto(conn->signal_handlers);
-  while ((sh = ecore_list_next(conn->signal_handlers)))
+  EINA_LIST_FOREACH(conn->signal_handlers, l, sh)
   {
     if ((!sh->cb_signal) || (sh->delete_me)) continue;
 
@@ -276,11 +272,11 @@ void
 e_dbus_signal_handlers_clean(E_DBus_Connection *conn)
 {
   E_DBus_Signal_Handler *sh;
+  Eina_List *l;
 
   if (!e_dbus_handler_deletions) return;
   if (!conn->signal_handlers) return;
-  ecore_list_first_goto(conn->signal_handlers);
-  while ((sh = ecore_list_next(conn->signal_handlers)))
+  EINA_LIST_FOREACH(conn->signal_handlers, l, sh)
   {
     if (sh->delete_me)
       e_dbus_signal_handler_del(conn, sh);

@@ -23,13 +23,7 @@ unmarshal_string_list(DBusMessage *msg, DBusError *err)
     return NULL;
   }
 
-  ret->strings = ecore_list_new();
-  if (!ret->strings)
-  {
-    dbus_set_error(err, DBUS_ERROR_NO_MEMORY, "");
-    free(ret);
-    return NULL;
-  }
+  ret->strings = NULL;
 
   dbus_message_iter_init(msg, &iter);
   dbus_message_iter_recurse(&iter, &sub);
@@ -38,7 +32,7 @@ unmarshal_string_list(DBusMessage *msg, DBusError *err)
     char *dev = NULL;
 
     dbus_message_iter_get_basic(&sub, &dev);
-    if (dev) ecore_list_append(ret->strings, dev);
+    if (dev) ret->strings = eina_list_append(ret->strings, dev);
     dbus_message_iter_next(&sub);
   }
 
@@ -51,7 +45,9 @@ free_string_list(void *data)
   E_Hal_String_List_Return *ret = data;
 
   if (!ret) return;
-  ecore_list_destroy(ret->strings);
+  while (ret->strings)
+    ret->strings = eina_list_remove_list(ret->strings, ret->strings);
+
   free(ret);
 }
 

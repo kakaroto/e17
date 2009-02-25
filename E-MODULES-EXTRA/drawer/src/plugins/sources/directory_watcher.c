@@ -159,7 +159,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 EAPI Eina_List *
 drawer_source_list(Drawer_Source *s)
 {
-   Ecore_List *files;
+   Eina_List *files;
    Instance *inst = NULL;
    char *file;
 
@@ -169,19 +169,17 @@ drawer_source_list(Drawer_Source *s)
    _dirwatcher_source_items_free(inst);
 
    files = ecore_file_ls(inst->conf->dir);
-
-   if (files)
-     {
-	while ((file = ecore_list_next(files)))
+   EINA_LIST_FREE(files, file)
 	  {
 	     Drawer_Source_Item *si;
 
-	     if (file[0] == '.') continue;
+	if (file[0] == '.') goto end;
 	     si = _dirwatcher_source_item_fill(inst, file);
 	     if (si)
 	       inst->items = eina_list_append(inst->items, si);
-	  }
-	ecore_list_destroy(files);
+
+     end:
+	free(file);
      }
 
    inst->items = eina_list_sort(inst->items,
@@ -612,5 +610,7 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	 size2 = ecore_file_size(si2->file_path);
 	 return size1 - size2;
      }
+
+   return 0;
 }
 

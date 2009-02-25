@@ -26,7 +26,7 @@ static void _e_theme_apply_now(E_Sticky *s);
 void
 _e_theme_chooser_show(E_Sticky *s)
 {
-   Ecore_List *themes;
+   Eina_List *themes;
    char *theme;
    char theme_file[PATH_MAX];
    
@@ -75,10 +75,7 @@ _e_theme_chooser_show(E_Sticky *s)
    
    /* scan for themes and add them to the list */
    themes = ecore_file_ls(PACKAGE_DATA_DIR"/themes");
-   if(!themes || ecore_list_empty_is(themes))
-     return;
-   ecore_list_first_goto(themes);
-   while((theme = ecore_list_next(themes)))
+   EINA_LIST_FREE(themes, theme)
      {
 	char *theme_no_ext;
 	static int i = 0;
@@ -90,8 +87,8 @@ _e_theme_chooser_show(E_Sticky *s)
 	  etk_tree_row_select(row);
 	++i;
 	free(theme_no_ext);
+	free(theme);
      }
-   ecore_list_destroy(themes);
    
    /* pack tree + preview widget */
    etk_box_append(ETK_BOX(preview_hbox), thumbs, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

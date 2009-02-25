@@ -1205,6 +1205,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error)
 {
     E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+    Eina_List *l;
     char *device;
     int *action = malloc(sizeof(int));
     *action = EXALT_ETH_CB_ACTION_NEW;
@@ -1213,11 +1214,8 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
     EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
 
-    ecore_list_first_goto(ret->strings);
-    while ((device = ecore_list_next(ret->strings)))
-    {
+    EINA_LIST_FOREACH(ret->strings, l, device)
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
-    }
 
     //EXALT_FREE(action);
 }

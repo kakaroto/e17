@@ -41,7 +41,8 @@ ewl_filelist_model_directory_new(const char *path,
         struct stat st;
         char filename[PATH_MAX], *file_temp;
         int nf = 0, nd = 0;
-        Ecore_List *files, *dirs, *all_files;
+        Eina_List *all_files;
+	Ecore_List *dirs, *files;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(path, NULL);
@@ -57,9 +58,9 @@ ewl_filelist_model_directory_new(const char *path,
 
         /* Add in the ".." entry for now */
         if ((show_dot_dot) && (strcmp(path, "/")))
-                ecore_list_prepend(all_files, strdup(path));
+                all_files = eina_list_prepend(all_files, strdup(path));
 
-        while ((file_temp = ecore_list_first_remove(all_files)))
+	EINA_LIST_FREE(all_files, file_temp)
         {
                 /* allocate the memory for the file structure */
                 file = NEW(Ewl_Filelist_File, 1);
@@ -119,7 +120,6 @@ ewl_filelist_model_directory_new(const char *path,
         /* Filter the directory */
         ewl_filelist_model_filter(dir);
 
-        IF_FREE_LIST(all_files);
         DRETURN_PTR(dir, DLEVEL_STABLE);
 }
 

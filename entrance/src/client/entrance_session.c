@@ -288,9 +288,12 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
          {
             if ((exs = eina_hash_find(e->config->sessions.hash, eu->session)))
             {
+	       if (e->session != eu->session)
+		 {
                if (e->session)
                   free(e->session);
                e->session = strdup(eu->session);
+		 }
                entrance_session_x_session_set(e, exs);
             }
          }

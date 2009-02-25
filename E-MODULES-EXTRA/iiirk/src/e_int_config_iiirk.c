@@ -212,13 +212,13 @@ _load_menu(const char *path)
 {
    Efreet_Menu *menu, *entry;
    Ecore_List *apps = NULL;
+   Eina_List *l;
 
    apps = ecore_list_new();
    ecore_list_free_cb_set(apps, ECORE_FREE_CB(efreet_desktop_free));
    menu = efreet_menu_parse(path);
    if ((!menu) || (!menu->entries)) return apps;
-   ecore_list_first_goto(menu->entries);
-   while ((entry = ecore_list_next(menu->entries))) 
+   EINA_LIST_FOREACH(menu->entries, l, entry)
      {
 	if (entry->type != EFREET_MENU_ENTRY_DESKTOP) continue;
 	efreet_desktop_ref(entry->desktop);
@@ -232,20 +232,16 @@ static Ecore_List *
 _load_order(const char *path) 
 {
    E_Order *order = NULL;
-   Eina_List *l = NULL;
    Ecore_List *apps = NULL;
+   Efreet_Desktop *desk;
 
    apps = ecore_list_new();
    ecore_list_free_cb_set(apps, ECORE_FREE_CB(efreet_desktop_free));
    if (!path) return apps;
    order = e_order_new(path);
    if (!order) return apps;
-   for (l = order->desktops; l; l = l->next) 
-     {
-	efreet_desktop_ref(l->data);
-	ecore_list_append(apps, l->data);
-     }
-   if (l) eina_list_free(l);
+   EINA_LIST_FREE(order->desktops, desk)
+     ecore_list_append(apps, desk);
    e_object_del(E_OBJECT(order));
    return apps;
 }
@@ -253,48 +249,38 @@ _load_order(const char *path)
 static void 
 _fill_apps(E_Config_Dialog_Data *cfdata) 
 {
-   Ecore_List *desks = NULL, *l = NULL;
+   Eina_List *desks = NULL, *l = NULL;
    Efreet_Desktop *desk = NULL;
    Evas *evas;
    int w;
 
-   l = ecore_list_new();
-   ecore_list_free_cb_set(l, ECORE_FREE_CB(efreet_desktop_free));
-
    evas = evas_object_evas_get(cfdata->o_all);
    desks = efreet_util_desktop_name_glob_list("*");
-   if (desks) 
-     {
-	ecore_list_sort(desks, ECORE_COMPARE_CB(_cb_sort_desks), ECORE_SORT_MIN);
-	ecore_list_first_goto(desks);
-	while ((desk = ecore_list_next(desks))) 
+   desks = eina_list_sort(desks, 0, _cb_sort_desks);
+   EINA_LIST_FREE(desks, desk)
 	  {
-	     if (!ecore_list_find(l, ECORE_COMPARE_CB(_cb_sort_desks), desk)) 
+	if (!eina_list_search_unsorted(l, _cb_sort_desks, desk))
 	       {
 		  efreet_desktop_ref(desk);
-		  ecore_list_append(l, desk);
+	     l = eina_list_append(l, desk);
 	       }
+	efreet_desktop_free(desk);
 	  }
-	ecore_list_destroy(desks);
-     }
-   if (l) ecore_list_sort(l, ECORE_COMPARE_CB(_cb_sort_desks), ECORE_SORT_MIN);
+   l = eina_list_sort(l, 0, _cb_sort_desks);
 
    evas_event_freeze(evas);
    edje_freeze();
    e_widget_ilist_freeze(cfdata->o_all);
    e_widget_ilist_clear(cfdata->o_all);
-   if (l) 
-     {
-	ecore_list_first_goto(l);
-	while ((desk = ecore_list_next(l))) 
+
+   EINA_LIST_FREE(l, desk)
 	  {
 	     Evas_Object *icon = NULL;
 
-	     icon = e_util_desktop_icon_add(desk, "24x24", evas);
+	icon = e_util_desktop_icon_add(desk, 24, evas);
 	     e_widget_ilist_append(cfdata->o_all, icon, desk->name, 
 				   _all_list_cb_selected, cfdata, desk->orig_path);
-	  }
-	ecore_list_destroy(l);
+	efreet_desktop_free(desk);
      }
 
    e_widget_ilist_go(cfdata->o_all);
@@ -325,7 +311,7 @@ _fill_list(E_Config_Dialog_Data *cfdata)
 	  {
 	     Evas_Object *icon = NULL;
 
-	     icon = e_util_desktop_icon_add(desk, "24x24", evas);
+	     icon = e_util_desktop_icon_add(desk, 24, evas);
 	     e_widget_ilist_append(cfdata->o_sel, icon, desk->name, 
 				   _sel_list_cb_selected, cfdata, desk->orig_path);
 	  }
@@ -437,7 +423,7 @@ _cb_add(void *data, void *data2)
 	if (!lbl) continue;
 	desk = efreet_util_desktop_name_find(lbl);
 	if (!desk) continue;
-	icon = e_util_desktop_icon_add(desk, "24x24", evas);
+	icon = e_util_desktop_icon_add(desk, 24, evas);
 	e_widget_ilist_append(cfdata->o_sel, icon, desk->name, 
 			      _sel_list_cb_selected, cfdata, desk->orig_path);
      }
@@ -506,7 +492,7 @@ _cb_up(void *data, void *data2)
 	  {
 	     e_widget_ilist_remove_num(cfdata->o_sel, sel);
 	     e_widget_ilist_go(cfdata->o_sel);
-	     icon = e_util_desktop_icon_add(desk, "24x24", evas);
+	     icon = e_util_desktop_icon_add(desk, 24, evas);
 	     e_widget_ilist_prepend_relative(cfdata->o_sel, icon, desk->name, 
 					     _sel_list_cb_selected, cfdata, 
 					     desk->orig_path, (sel - 1));
@@ -546,7 +532,7 @@ _cb_down(void *data, void *data2)
 	  {
 	     e_widget_ilist_remove_num(cfdata->o_sel, sel);
 	     e_widget_ilist_go(cfdata->o_sel);
-	     icon = e_util_desktop_icon_add(desk, "24x24", evas);
+	     icon = e_util_desktop_icon_add(desk, 24, evas);
 	     e_widget_ilist_append_relative(cfdata->o_sel, icon, desk->name, 
 					     _sel_list_cb_selected, cfdata, 
 					     desk->orig_path, sel);

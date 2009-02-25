@@ -211,7 +211,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    /* New visual instance, any config ? */
    inst = E_NEW(Instance, 1);
    inst->conf_item = _diskio_conf_item_get(id);
-   if (inst->conf_item->disk) eina_stringshare_add(inst->conf_item->disk);
+   if (inst->conf_item->disk) inst->conf_item->disk = eina_stringshare_add(inst->conf_item->disk);
 
    /* create on-screen object */
    inst->o_diskio = edje_object_add(gc->evas);

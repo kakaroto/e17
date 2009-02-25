@@ -47,7 +47,7 @@ struct Storage {
     char *volume;
   } icon;
 
-  Ecore_List *volumes;
+  Eina_List *volumes;
 };
 
 
@@ -67,8 +67,10 @@ struct Volume {
   Storage *storage;
 };
 
-static Ecore_List *storage_devices;
-static Ecore_List *volumes;
+void volume_free(Volume *volume);
+
+static Eina_List *storage_devices;
+static Eina_List *volumes;
 
 void
 devices_dirty(void)
@@ -88,7 +90,7 @@ storage_new(void)
   Storage *s;
   s = calloc(1, sizeof(Storage));
   s->type = DEVICE_TYPE_STORAGE;
-  s->volumes = ecore_list_new();
+  s->volumes = NULL;
   return s;
 }
 
@@ -96,13 +98,18 @@ void
 storage_free(Storage *storage)
 {
   Volume *v;
+  Eina_List *l;
   printf("storage_free: %s\n", storage->udi);
 
   /* disconnect storage from volume */
-  ecore_list_first_goto(storage->volumes);
-  while ((v = ecore_list_next(storage->volumes)))
+  EINA_LIST_FOREACH(storage->volumes, l, v)
     v->storage = NULL;
-  ecore_list_destroy(storage->volumes);
+  while (storage->volumes)
+    {
+       v = eina_list_data_get(storage->volumes);
+       volume_free(v);
+       storage->volumes = eina_list_remove_list(storage->volumes, storage->volumes);
+    }
     
   if (storage->udi) free(storage->udi);
   if (storage->bus) free(storage->bus);
@@ -129,16 +136,19 @@ storage_find(const char *udi)
 {
   Storage *s = NULL;
   if (!udi) return NULL;
-  s = ecore_list_find(storage_devices, ECORE_COMPARE_CB(storage_find_helper), udi);
+  s = eina_list_search_unsorted(storage_devices, (Eina_Compare_Cb)storage_find_helper, udi);
   return s;
 }
 
 void
 storage_remove(const char *udi)
 {
-  if (storage_find(udi))
+  Storage *sto;
+
+  if ((sto = storage_find(udi)))
   {
-    ecore_list_remove_destroy(storage_devices);
+    storage_devices = eina_list_remove(storage_devices, sto);
+    storage_free(sto);
     devices_dirty();
   }
 }
@@ -200,7 +210,7 @@ storage_append(const char *udi)
   if (!udi) return NULL;
   s = storage_new();
   s->udi = strdup(udi);
-  ecore_list_append(storage_devices, s);
+  storage_devices = eina_list_append(storage_devices, s);
   e_hal_device_get_all_properties(conn, s->udi, cb_storage_properties, s);
   devices_dirty();
   return s;
@@ -223,8 +233,8 @@ volume_free(Volume *volume)
   /* disconnect volume from storage */
   if (volume->storage)
   {
-    if (ecore_list_goto(volume->storage->volumes, volume))
-      ecore_list_remove(volume->storage->volumes);
+    volume->storage->volumes = eina_list_remove(volume->storage->volumes, volume);
+    volume_free(volume);
   }
 
   if (volume->udi) free(volume->udi);
@@ -248,15 +258,18 @@ Volume *
 volume_find(const char *udi)
 {
   if (!udi) return NULL;
-  return ecore_list_find(volumes, ECORE_COMPARE_CB(volume_find_helper), udi);
+  return eina_list_search_unsorted(volumes, (Eina_Compare_Cb)volume_find_helper, udi);
 }
 
 void
 volume_remove(const char *udi)
 {
-  if (volume_find(udi))
+  Volume *vol;
+
+  if ((vol = volume_find(udi)))
   {
-    ecore_list_remove_destroy(volumes);
+    volumes = eina_list_remove(volumes, vol);
+    volume_free(vol);
     devices_dirty();
   }
 }
@@ -319,7 +332,7 @@ cb_volume_properties(void *data, void *reply_data, DBusError *error)
     if (s)
     {
       v->storage = s;
-      ecore_list_append(s->volumes, v);
+      s->volumes = eina_list_append(s->volumes, v);
     }
     free(str);
     str = NULL;
@@ -353,7 +366,7 @@ volume_append(const char *udi)
   printf("ADDING %s\n", udi);
   v = volume_new();
   v->udi = strdup(udi);
-  ecore_list_append(volumes, v);
+  volumes = eina_list_append(volumes, v);
   volume_setup(v);
 
   //this will get called when volume_setup() returns, which is more important
@@ -366,6 +379,7 @@ static void
 cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Get_All_Devices_Return *ret = reply_data;
+  Eina_List *l;
   char *device;
   
   if (!ret || !ret->strings) return;
@@ -377,8 +391,7 @@ cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
     return;
   }
 
-  ecore_list_first_goto(ret->strings);
-  while ((device = ecore_list_next(ret->strings)))
+  EINA_LIST_FOREACH(ret->strings, l, device)
   {
     printf("device: %s\n", device);
   }
@@ -388,6 +401,7 @@ static void
 cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+  Eina_List *l;
   char *device;
   
   if (!ret || !ret->strings) return;
@@ -399,8 +413,7 @@ cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBu
     return;
   }
 
-  ecore_list_first_goto(ret->strings);
-  while ((device = ecore_list_next(ret->strings)))
+  EINA_LIST_FOREACH(ret->strings, l, device)
     storage_append(device);
 }
 
@@ -408,6 +421,7 @@ static void
 cb_test_find_device_by_capability_volume(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+  Eina_List *l;
   char *device;
   
   if (!ret || !ret->strings) return;
@@ -419,8 +433,7 @@ cb_test_find_device_by_capability_volume(void *user_data, void *reply_data, DBus
     return;
   }
 
-  ecore_list_first_goto(ret->strings);
-  while ((device = ecore_list_next(ret->strings)))
+  EINA_LIST_FOREACH(ret->strings, l, device)
     volume_append(device);
 }
 
@@ -653,19 +666,19 @@ cb_device_view_header_fetch(void *data, int column)
 static int
 cb_device_tree_expandable_get(void *data, unsigned int row)
 {
-  Ecore_List *devices;
+  Eina_List *devices;
   Device *dev;
 
   devices = data;
   if (!devices) return FALSE;
 
-  dev = ecore_list_index_goto(devices, row);
+  dev = eina_list_nth(devices, row);
   if (!dev) return FALSE;
 
   if (dev->type == DEVICE_TYPE_STORAGE)
   {
     Storage *s = (Storage *)dev;
-    if (ecore_list_count(s->volumes) > 0)
+    if (eina_list_count(s->volumes) > 0)
       return TRUE;
   }
 
@@ -675,7 +688,7 @@ cb_device_tree_expandable_get(void *data, unsigned int row)
 static void *
 cb_device_tree_expansion_data_fetch(void *data, unsigned int parent)
 {
-  Ecore_List *devices;
+  Eina_List *devices;
   Device *dev;
   Storage *s;
   dev = data;
@@ -683,7 +696,7 @@ cb_device_tree_expansion_data_fetch(void *data, unsigned int parent)
   devices = data;
   if (!devices) return NULL;
 
-  dev = ecore_list_index_goto(devices, parent);
+  dev = eina_list_nth(devices, parent);
   
   if (!dev) return NULL;
   if (dev->type != DEVICE_TYPE_STORAGE) return NULL;
@@ -774,6 +787,8 @@ main(int argc, char **argv)
 #if EWL_GUI
   Ewl_Widget *win;
 #endif
+  Storage *sto;
+  Volume *vol;
 
   ecore_init();
   eina_stringshare_init();
@@ -795,10 +810,8 @@ main(int argc, char **argv)
     return 1;
   }
 
-  storage_devices = ecore_list_new();
-  ecore_list_free_cb_set(storage_devices, ECORE_FREE_CB(storage_free));
-  volumes = ecore_list_new();
-  ecore_list_free_cb_set(volumes, ECORE_FREE_CB(volume_free));
+  storage_devices = NULL;
+  volumes = NULL;
 
 #if EWL_GUI
   win = mountbox_mainwin_new();
@@ -820,8 +833,18 @@ main(int argc, char **argv)
 #else
   ecore_main_loop_begin();
 #endif
-  ecore_list_destroy(storage_devices);
-  ecore_list_destroy(volumes);
+  while (storage_devices)
+    {
+       sto = eina_list_data_get(storage_devices);
+       storage_free(sto);
+       storage_devices = eina_list_remove_list(storage_devices, storage_devices);
+    }
+  while (volumes)
+    {
+       vol = eina_list_data_get(volumes);
+       volume_free(vol);
+       volumes = eina_list_remove_list(volumes, volumes);
+    }
   e_dbus_connection_close(conn);
   e_dbus_shutdown();
   eina_stringshare_shutdown();

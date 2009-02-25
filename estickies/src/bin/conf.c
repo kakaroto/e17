@@ -2,15 +2,7 @@
 
 #define DEFAULT_THEME "default.edj"
 
-#define NEWD(str, typ) \
-     eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))eina_list_next, \
-				(void *(*) (void *, void *))eina_list_append, \
-				(void *(*) (void *))eina_list_data_get, \
-				(void *(*) (void *))eina_list_free, \
-				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
-				(void *(*) (void *, const char *, void *))evas_hash_add, \
-				(void  (*) (void *))evas_hash_free)
+#define NEWD(str, typ) _estickies_data_descriptor(str, sizeof (typ));
 
 #define FREED(eed) \
 	 if (eed) \
@@ -34,6 +26,53 @@
 static Eet_Data_Descriptor *_e_config_sticky_edd = NULL;
 static Eet_Data_Descriptor *_e_config_stickies_edd = NULL;
 static Eet_Data_Descriptor *_e_config_version_edd = NULL;
+
+static char *
+_str_alloc(const char *str)
+{
+   return (char*) str;
+}
+
+static void
+_str_free(char *str)
+{
+   (void) str;
+}
+
+static Eina_Hash *
+_estickies_hash_add(Eina_Hash *hash, const char *key, void *data)
+{
+   if (!hash) hash = eina_hash_string_superfast_new(NULL);
+   if (!hash) return NULL;
+
+   eina_hash_add(hash, key, data);
+   return hash;
+}
+
+static Eet_Data_Descriptor *
+_estickies_data_descriptor(const char *name, int size)
+{
+   Eet_Data_Descriptor_Class eddc;
+
+   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   eddc.name = name;
+   eddc.size = size;
+   eddc.func.mem_alloc = NULL;
+   eddc.func.mem_free = NULL;
+   eddc.func.str_alloc = eina_stringshare_add;
+   eddc.func.str_free = eina_stringshare_del;
+   eddc.func.list_next = eina_list_next;
+   eddc.func.list_append = eina_list_append;
+   eddc.func.list_data = eina_list_data_get;
+   eddc.func.list_free = eina_list_free;
+   eddc.func.hash_foreach = eina_hash_foreach;
+   eddc.func.hash_add = _estickies_hash_add;
+   eddc.func.hash_free = eina_hash_free;
+   eddc.func.str_direct_alloc = _str_alloc;
+   eddc.func.str_direct_free = _str_free;
+
+   return eet_data_descriptor2_new(&eddc);
+}
 
 int
 _e_config_init()

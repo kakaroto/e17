@@ -304,7 +304,7 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 {
    char buf[4096];
    const char *moddir;
-   Ecore_List *files = NULL;
+   Eina_List *files = NULL;
    Eina_List *ret = NULL;
    char *mod = NULL;
 
@@ -317,8 +317,7 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
    if (!moddir) return NULL;
    if (!(files = ecore_file_ls(moddir))) return NULL;
 
-   ecore_list_first_goto(files);
-   while ((mod = ecore_list_next(files))) 
+   EINA_LIST_FREE(files, mod)
      {
 	Efreet_Desktop *desk = NULL;
 	Drawer_Plugin_Type *pi = NULL;
@@ -327,12 +326,12 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 
 	ri = rindex(mod, '.');
 	if (strncmp(ri, ".desktop", 8))
-	  continue;
+	  goto end;
 
 	pi = E_NEW(Drawer_Plugin_Type, 1);
 
 	snprintf(buf2, sizeof(buf2), "%s%s", moddir, mod);
-	if (!(desk = efreet_desktop_get(buf2))) continue;
+	if (!(desk = efreet_desktop_get(buf2))) goto end;
 	if (desk->x) 
 	  pi->title = eina_stringshare_add(eina_hash_find(desk->x, "X-Drawer-Title"));
 	if (!pi->title) pi->title = eina_stringshare_add(desk->name);
@@ -342,6 +341,9 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 
 	ret = eina_list_append(ret, pi);
 	efreet_desktop_free(desk);
+
+     end:
+	free(mod);
      }
    free(mod);
    if (files) ecore_list_destroy(files);
@@ -378,6 +380,8 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
 
    if (inst->source && inst->view && inst->is_floating)
      _drawer_container_update(inst);
+
+   return NULL;
 }
 
 EAPI Evas_Object *
@@ -471,6 +475,8 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
 	return o;
      }
+
+   return NULL;
 }
 
 /* Local Functions */
@@ -1139,10 +1145,10 @@ _drawer_instance_get(Config_Item *ci)
    Instance *inst = NULL;
 
    EINA_LIST_FOREACH(instances, l, inst)
-     {
 	if (inst->conf_item == ci)
 	  return inst;
-     }
+
+   return NULL;
 }
 
 static int
@@ -1172,7 +1178,6 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Drawer_View *v = NULL;
    Drawer_Event_View_Activate *ev = NULL;
-   Eina_List *l = NULL;
    Instance *inst = NULL;
 
    ev = event;

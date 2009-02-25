@@ -204,7 +204,7 @@ static Etk_Bool _active_item_changed_cb(Etk_Object *object, void *data)
 
 static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, char *dir)
 {
-   Ecore_List *files;
+   Eina_List *files;
    char *file;
    char *parent;
    char dir_stripped[PATH_MAX];
@@ -222,8 +222,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
    cur_dir = strdup(dir_stripped);
 
    files = ecore_file_ls(dir_stripped);
-   ecore_list_sort(files, (Ecore_Compare_Cb)strcasecmp, ECORE_SORT_MIN);
-   ecore_list_first_goto(files);
+   files = eina_list_sort(files, 0, strcasecmp);
    etk_combobox_entry_clear(combobox_entry);
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(combobox_entry)),
 		      dir_stripped);
@@ -237,7 +236,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
 				     "..", NULL);
    free(parent);
 
-   for (file = ecore_list_next(files); file; file = ecore_list_next(files))
+   EINA_LIST_FREE(files, file)
      {
 	char path[PATH_MAX];
 
@@ -256,6 +255,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
 								     ETK_STOCK_SMALL),
 					    file, NULL);
 	  }
+	free(file);
      }
 }
 

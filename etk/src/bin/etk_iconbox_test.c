@@ -120,7 +120,8 @@ static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mo
 /* Sets the folder displayed in the iconbox */
 static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folder)
 {
-   Ecore_List *files;
+   Eina_List *files;
+   Eina_List *l;
    char *filename;
    char file_path[PATH_MAX];
    Etk_Iconbox_Icon *iicon;
@@ -136,8 +137,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "actions/go-up_48", "..");
 
    /* First, add the folders */
-   ecore_list_first_goto(files);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FOREACH(files, l, filename)
    {
       if (filename[0] == '.')
          continue;
@@ -155,8 +155,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    }
 
    /* Then the files */
-   ecore_list_first_goto(files);
-   while ((filename = ecore_list_next(files)))
+   EINA_LIST_FOREACH(files, l, filename)
    {
       const char *ext;
       char *icon = NULL;
@@ -190,7 +189,8 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
          etk_iconbox_icon_emblem_set_from_stock(iicon, "system");
    }
 
-   ecore_list_destroy(files);
+   EINA_LIST_FREE(files, filename)
+     free(filename);
 
    if (!_etk_test_iconbox_current_folder)
       _etk_test_iconbox_current_folder = etk_string_new(NULL);

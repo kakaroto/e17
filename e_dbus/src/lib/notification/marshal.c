@@ -74,24 +74,24 @@ e_notify_marshal_string_array(DBusMessageIter *iter, const char **strings)
 }
 
 void
-e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings)
+e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Eina_List *strings)
 {
   const char *str;
   DBusMessageIter arr;
+  Eina_List *l;
 
   dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr);
 
-  ecore_list_first_goto(strings);
-  while((str = ecore_list_next(strings)))
+  EINA_LIST_FOREACH(strings, l, str)
     dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &str);
 
   dbus_message_iter_close_container(iter, &arr);
 }
 
-Ecore_List *
+Eina_List *
 e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err)
 {
-  Ecore_List *strings;
+  Eina_List *strings;
   char *sig;
   int ret;
   DBusMessageIter arr;
@@ -101,15 +101,14 @@ e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err)
   dbus_free(sig);
   if (!ret) return NULL;
 
-  strings = ecore_list_new();
-  ecore_list_free_cb_set(strings, ECORE_FREE_CB(free)); //XXX use eina_stringshare_release?
+  strings = NULL;
 
   dbus_message_iter_recurse(iter, &arr);
   while(dbus_message_iter_has_next(&arr))
   {
     const char *str;
     dbus_message_iter_get_basic(&arr, &str);
-    ecore_list_append(strings, strdup(str)); //XXX use eina_stringshare_instance?
+    strings = eina_list_append(strings, strdup(str)); //XXX use eina_stringshare_instance?
     dbus_message_iter_next(&arr);
   }
   return strings;
@@ -160,7 +159,8 @@ e_notify_free_get_capabilities_return(void *data)
   E_Notification_Return_Get_Capabilities *ret = data;
 
   if (!ret) return;
-  ecore_list_destroy(ret->capabilities);
+  while (ret->capabilities)
+    ret->capabilities = eina_list_remove_list(ret->capabilities, ret->capabilities);
   free(ret);
 }
 
@@ -298,6 +298,7 @@ e_notify_marshal_notify(E_Notification *n)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;
+  Eina_List *l;
 
   if (!n->app_name) n->app_name = strdup("");
   if (!n->app_icon) n->app_icon = strdup("");
@@ -319,8 +320,7 @@ e_notify_marshal_notify(E_Notification *n)
   if (n->actions)
   {
     E_Notification_Action *action;
-    ecore_list_first_goto(n->actions);
-    while ((action = ecore_list_next(n->actions)))
+    EINA_LIST_FOREACH(n->actions, l, action)
     {
       dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->id));
       dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->name));

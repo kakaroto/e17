@@ -56,9 +56,9 @@ void eli_highscore_init(const char * app)
                                         (list_append) eina_list_append,
                                         (list_data) eina_list_data_get,
                                         (list_free) eina_list_free,
-                                        (hash_foreach) evas_hash_foreach,
-                                        (hash_add) evas_hash_add,
-                                        (hash_free) evas_hash_free);
+                                        (hash_foreach) eina_hash_foreach,
+                                        (hash_add) eina_hash_add /* FIXME: YOU SHOULD NOT USE EINA_HASH_ADD DIRECTLY */,
+                                        (hash_free) eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd_entry, Eli_Highscore_Entry,
                                   "username", username, EET_T_STRING);
@@ -73,9 +73,9 @@ void eli_highscore_init(const char * app)
                                           (list_append) eina_list_append,
                                           (list_data) eina_list_data_get,
                                           (list_free) eina_list_free,
-                                          (hash_foreach) evas_hash_foreach,
-                                          (hash_add) evas_hash_add,
-                                          (hash_free) evas_hash_free);
+                                          (hash_foreach) eina_hash_foreach,
+                                          (hash_add) eina_hash_add /* FIXME: YOU SHOULD NOT USE EINA_HASH_ADD DIRECTLY */,
+                                          (hash_free) eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_LIST(edd_hiscore, Eli_Highscore,
                                  "entries", entries, edd_entry);

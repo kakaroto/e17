@@ -127,13 +127,13 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
         prop->type = E_HAL_PROPERTY_TYPE_STRLIST;
         {
           DBusMessageIter list_iter;
-          prop->val.strlist = ecore_list_new();
+          prop->val.strlist = NULL;
           dbus_message_iter_recurse(&v_iter, &list_iter);
           while (dbus_message_iter_get_arg_type(&list_iter) != DBUS_TYPE_INVALID)
           {
             char *str;
             dbus_message_iter_get_basic(&list_iter, &str);
-            ecore_list_append(prop->val.strlist, str);
+            prop->val.strlist = eina_list_append(prop->val.strlist, str);
             dbus_message_iter_next(&list_iter);
           }
         }
@@ -240,10 +240,11 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
  * @param data custom data pointer for the callback function
  */
 EAPI int
-e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
+  Eina_List *l;
   int ret;
 
   msg = e_hal_device_volume_call_new(udi, "Mount");
@@ -256,8 +257,8 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   if (options)
   {
     const char *opt;
-    ecore_list_first_goto(options);
-    while ((opt = ecore_list_next(options)))
+
+    EINA_LIST_FOREACH(options, l, opt)
     {
       dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
     }
@@ -281,10 +282,11 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
  * @param data cuatom data pointer for the callback function
  */
 EAPI int
-e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
+  Eina_List *l;
   int ret;
 
   msg = e_hal_device_volume_call_new(udi, "Unmount");
@@ -294,8 +296,8 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   if (options)
   {
     const char *opt;
-    ecore_list_first_goto(options);
-    while ((opt = ecore_list_next(options)))
+
+    EINA_LIST_FOREACH(options, l, opt)
     {
       dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
     }
@@ -317,10 +319,11 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
  * @param data cuatom data pointer for the callback function
  */
 EAPI int
-e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
+  Eina_List *l;
   int ret;
 
   msg = e_hal_device_volume_call_new(udi, "Eject");
@@ -330,8 +333,8 @@ e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Ecore_List *
   if (options)
   {
     const char *opt;
-    ecore_list_first_goto(options);
-    while ((opt = ecore_list_next(options)))
+
+    EINA_LIST_FOREACH(options, l, opt)
     {
       dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
     }

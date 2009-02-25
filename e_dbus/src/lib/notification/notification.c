@@ -7,7 +7,7 @@
 #include "e_notify_private.h"
 
 /* private functions */
-static Ecore_List * e_notification_action_list_new();
+static Eina_List * e_notification_action_list_new();
 static E_Notification_Action *e_notification_action_new(const char *id, const char *name);
 static void e_notification_action_free(E_Notification_Action *act);
 
@@ -65,7 +65,8 @@ e_notification_free(E_Notification *n)
   if (n->summary) free(n->summary);
   if (n->body) free(n->body);
 
-  if (n->actions) ecore_list_destroy(n->actions);
+  while (n->actions) 
+    n->actions = eina_list_remove_list(n->actions, n->actions);
 
   if (n->hints.category) free(n->hints.category);
   if (n->hints.desktop) free(n->hints.desktop);
@@ -119,7 +120,7 @@ e_notification_action_add(E_Notification *n, const char *action_id, const char *
     n->actions = e_notification_action_list_new();
 
   a = e_notification_action_new(action_id, action_name);
-  ecore_list_append(n->actions, a);
+  n->actions = eina_list_append(n->actions, a);
 }
 
 
@@ -173,7 +174,7 @@ e_notification_body_get(E_Notification *note)
   return note->body;
 }
 
-EAPI Ecore_List *
+EAPI Eina_List *
 e_notification_actions_get(E_Notification *note)
 {
   return note->actions;
@@ -199,12 +200,12 @@ e_notification_closed_get(E_Notification *note)
 
 /***** actions *****/
 
-static Ecore_List *
+static Eina_List *
 e_notification_action_list_new()
 {
-  Ecore_List *alist;
-  alist = ecore_list_new();
-  ecore_list_free_cb_set(alist, (Ecore_Free_Cb)e_notification_action_free);
+  Eina_List *alist;
+
+  alist = NULL;
   return alist;
 }
 

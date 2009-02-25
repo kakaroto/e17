@@ -18,7 +18,6 @@ struct _Entrance_Config_And_Path
 
 
 static void _cb_xsessions_foreach(void *list_data, void *data);
-static void _cb_desktop_xsessions_foreach(void *list_data, void *data);
 static void _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e);
 static Eina_Bool _cb_users_free(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 static Eina_Bool _cb_x_sessions_free(const Eina_Hash *hash, const void *key, void *data, void *fdata);
@@ -91,9 +90,12 @@ static void
 entrance_config_populate(Entrance_Config * e)
 {
    Entrance_User *eu = NULL;
+   Eina_List *dirs;
+   Eina_List *l;
    char *user = NULL;
    char *icon = NULL;
    char *session = NULL;
+   char *path;
 
    int i, num_user;
    char buf[PATH_MAX];
@@ -163,7 +165,13 @@ entrance_config_populate(Entrance_Config * e)
    /* now the user and system XDG dirs (XXX does anything actually store xsession files here?) */
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _entrance_xsessions_dir_scan(buf, e);
-   ecore_list_for_each(efreet_data_dirs_get(), _cb_desktop_xsessions_foreach, e);
+
+   dirs = efreet_data_dirs_get();
+   EINA_LIST_FOREACH(dirs, l, path)
+     {
+	snprintf(buf, sizeof(buf), "%s/xsessions", path);
+	_entrance_xsessions_dir_scan(buf, e);
+     }
 
    /* check the system session dir */
    _entrance_xsessions_dir_scan("/etc/X11/sessions", e);
@@ -489,7 +497,7 @@ _cb_xsessions_foreach(void *list_data, void *data)
    struct _Entrance_Config_And_Path *ep = data;
    Entrance_Config *e;
    Entrance_X_Session *exs = NULL;
-   Ecore_List *commands;
+   Eina_List *commands;
    char *command = NULL;
    char path[PATH_MAX];
 
@@ -514,13 +522,10 @@ _cb_xsessions_foreach(void *list_data, void *data)
    {
       char *temp;
       
-      temp = ecore_list_first(commands);
-      if (temp)
-      {
-         command = strdup(temp);
-         free(temp);
-      }
-      ecore_list_destroy(commands);
+      command = eina_list_data_get(commands);
+
+      EINA_LIST_FREE(commands, temp)
+	if (command != temp) free(temp);
    }
    if (!command)
      return;
@@ -549,7 +554,8 @@ static void
 _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e)
 {
    struct _Entrance_Config_And_Path ep;
-   Ecore_List *xsessions;
+   Eina_List *xsessions;
+   char *filename;
 
    if (!dir) return;
 
@@ -557,22 +563,11 @@ _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e)
    ep.path = dir; 
 
    xsessions = ecore_file_ls(dir);
-   if (xsessions)
+   EINA_LIST_FREE(xsessions, filename)
    {
-      ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
-      ecore_list_destroy(xsessions);
+	_cb_xsessions_foreach(filename, &ep);
+	free(filename);
    }
-}
-
-static void
-_cb_desktop_xsessions_foreach(void *list_data, void *data)
-{
-   const char *path = list_data;
-   char buf[PATH_MAX];
-   Entrance_Config *e = data;
-
-   snprintf(buf, sizeof(buf), "%s/xsessions", path);
-   _entrance_xsessions_dir_scan(buf, e);
 }
 
 static Eina_Bool

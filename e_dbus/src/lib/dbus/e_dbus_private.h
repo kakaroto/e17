@@ -13,9 +13,9 @@ struct E_DBus_Connection
   DBusConnection *conn;
   char *conn_name;
 
-  Ecore_List *fd_handlers;
-  Ecore_List *timeouts;
-  Ecore_List *signal_handlers;
+  Eina_List *fd_handlers;
+  Eina_List *timeouts;
+  Eina_List *signal_handlers;
   void (*signal_dispatcher)(E_DBus_Connection *conn, DBusMessage *msg);
 
   Ecore_Idler *idler;

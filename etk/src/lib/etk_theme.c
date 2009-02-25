@@ -203,7 +203,7 @@ char *etk_theme_widget_name_get(void)
  */
 Eina_List *etk_theme_widget_available_themes_get(void)
 {
-   Ecore_List *files;
+   Eina_List *files;
    Eina_List *themes = NULL;
    char path[2][PATH_MAX];
    char *home;
@@ -219,12 +219,10 @@ Eina_List *etk_theme_widget_available_themes_get(void)
    for (i = 0; i < 2; i++)
    {
       files = ecore_file_ls(path[i]);
-      if (files)
+      EINA_LIST_FREE(files, file)
       {
-         ecore_list_first_goto(files);
-         while ((file = ecore_list_next(files)))
             themes = eina_list_append(themes, ecore_file_strip_ext(file));
-         ecore_list_destroy(files);
+	   free(file);
       }
    }
 
@@ -326,7 +324,7 @@ char *etk_theme_icon_name_get(void)
  */
 Eina_List *etk_theme_icon_available_themes_get(void)
 {
-   Ecore_List *files;
+   Eina_List *files;
    Eina_List *themes = NULL;
    char path[2][PATH_MAX];
    char *home;
@@ -342,12 +340,10 @@ Eina_List *etk_theme_icon_available_themes_get(void)
    for (i = 0; i < 2; i++)
    {
       files = ecore_file_ls(path[i]);
-      if (files)
+      EINA_LIST_FREE(files, file)
       {
-         ecore_list_first_goto(files);
-         while ((file = ecore_list_next(files)))
             themes = eina_list_append(themes, ecore_file_strip_ext(file));
-         ecore_list_destroy(files);
+	   free(file);
       }
    }
 

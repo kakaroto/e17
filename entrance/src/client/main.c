@@ -710,6 +710,8 @@ main(int argc, char *argv[])
    pid_t server_pid = 0;
    int testing = 0;
 
+   eina_init();
+
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
@@ -903,6 +905,7 @@ main(int argc, char *argv[])
       efreet_shutdown();
       ecore_config_shutdown();
       ecore_shutdown();
+      eina_shutdown();
    }
    else
    {

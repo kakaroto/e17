@@ -75,7 +75,8 @@ Ecore_List *
 ewl_engine_names_get(void)
 {
         char dir[PATH_MAX], *file;
-        Ecore_List *files, *names;
+        Eina_List *files;
+	Ecore_List *names;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -85,7 +86,7 @@ ewl_engine_names_get(void)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         files = ecore_file_ls(dir);
-        if (!files || (ecore_list_count(files) == 0))
+        if (!files)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         names = ecore_list_new();
@@ -93,8 +94,7 @@ ewl_engine_names_get(void)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         ecore_list_free_cb_set(names, ECORE_FREE_CB(free));
 
-        ecore_list_first_goto(files);
-        while ((file = ecore_list_next(files)))
+	EINA_LIST_FREE(files, file)
         {
                 char *ext;
 
@@ -108,8 +108,8 @@ ewl_engine_names_get(void)
                                 ecore_list_append(names, strdup(file));
                         }
                 }
+		free(file);
         }
-        IF_FREE_LIST(files);
 
         DRETURN_PTR(names, DLEVEL_STABLE);
 }

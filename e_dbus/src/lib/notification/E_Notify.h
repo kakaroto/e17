@@ -83,7 +83,7 @@ struct E_Notification_Return_Notify
 
 struct E_Notification_Return_Get_Capabilities
 {
-  Ecore_List *capabilities;
+  Eina_List *capabilities;
 };
 
 struct E_Notification_Return_Get_Server_Information
@@ -155,7 +155,7 @@ extern "C" {
 
 /* actions */
    EAPI void e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name);
-   EAPI Ecore_List *e_notification_actions_get(E_Notification *n);
+   EAPI Eina_List *e_notification_actions_get(E_Notification *n);
 
 /* hint mutators */
    EAPI void e_notification_hint_urgency_set(E_Notification *n, char urgency);

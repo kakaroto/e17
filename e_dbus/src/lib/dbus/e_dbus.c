@@ -100,7 +100,7 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
                                              NULL,
                                              NULL);
 
-  ecore_list_append(hd->cd->fd_handlers, hd->fd_handler);
+  hd->cd->fd_handlers = eina_list_append(hd->cd->fd_handlers, hd->fd_handler);
 }
 
 
@@ -112,8 +112,7 @@ e_dbus_handler_data_free(void *data)
   DEBUG(5, "e_dbus_handler_data_free\n");
   if (hd->fd_handler)
   {
-    if (ecore_list_goto(hd->cd->fd_handlers, hd->fd_handler))
-      ecore_list_remove(hd->cd->fd_handlers);
+    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->cd->fd_handlers);
     ecore_main_fd_handler_del(hd->fd_handler);
   }
   free(hd);
@@ -130,11 +129,7 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
   hd->watch = watch;
 
   hd->enabled = dbus_watch_get_enabled(watch);
-#if (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MINOR == 1 && DBUS_VERSION_MICRO >= 1) || (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MAJOR > 1) || (DBUS_VERSION_MAJOR > 1)
   hd->fd = dbus_watch_get_unix_fd(hd->watch);
-#else
-  hd->fd = dbus_watch_get_fd(hd->watch);
-#endif
   DEBUG(5, "watch add (enabled: %d)\n", hd->enabled);
   if (hd->enabled) e_dbus_fd_handler_add(hd);
 }
@@ -159,8 +154,8 @@ e_dbus_connection_new(DBusConnection *conn)
     DEBUG(1, "Not connected\n");
 
   cd->shared_type = -1;
-  cd->fd_handlers = ecore_list_new();
-  cd->timeouts = ecore_list_new();
+  cd->fd_handlers = NULL;
+  cd->timeouts = NULL;
 
   return cd;
 }
@@ -171,23 +166,24 @@ e_dbus_connection_free(void *data)
   E_DBus_Connection *cd = data;
   Ecore_Fd_Handler *fd_handler;
   Ecore_Timer *timer;
+  Eina_List *l;
   DEBUG(5, "e_dbus_connection free!\n");
 
-  ecore_list_first_goto(cd->fd_handlers);
-  while ((fd_handler = ecore_list_next(cd->fd_handlers)))
+  EINA_LIST_FOREACH(cd->fd_handlers, l, fd_handler)
     ecore_main_fd_handler_del(fd_handler);
-  ecore_list_destroy(cd->fd_handlers);
+  while (cd->fd_handlers)
+     cd->fd_handlers = eina_list_remove_list(cd->fd_handlers, cd->fd_handlers);
 
-  ecore_list_first_goto(cd->timeouts);
-  while ((timer = ecore_list_next(cd->timeouts)))
+  EINA_LIST_FOREACH(cd->timeouts, l, timer)
     ecore_timer_del(timer);
-  ecore_list_destroy(cd->timeouts);
+  while (cd->timeouts)
+     cd->timeouts = eina_list_remove_list(cd->timeouts, cd->timeouts);
 
   if (cd->shared_type != -1)
     shared_connections[cd->shared_type] = NULL;
 
-  if (cd->signal_handlers)
-    ecore_list_destroy(cd->signal_handlers);
+  while (cd->signal_handlers)
+     cd->signal_handlers = eina_list_remove_list(cd->signal_handlers, cd->signal_handlers);
 
   if (cd->conn_name) free(cd->conn_name);
 
@@ -279,7 +275,7 @@ cb_timeout_add(DBusTimeout *timeout, void *data)
   td->timeout = timeout;
 
   if (dbus_timeout_get_enabled(timeout)) td->handler = ecore_timer_add(td->interval, e_dbus_timeout_handler, td);
-  ecore_list_append(td->cd->timeouts, td->handler);
+  td->cd->timeouts = eina_list_append(td->cd->timeouts, td->handler);
 
   return true;
 }
@@ -294,8 +290,7 @@ cb_timeout_del(DBusTimeout *timeout, void *data)
 
   if (td->handler) 
   {
-    if (ecore_list_goto(td->cd->timeouts, td->handler))
-      ecore_list_remove(td->cd->timeouts);
+    td->cd->timeouts = eina_list_remove(td->cd->timeouts, td->handler);
     ecore_timer_del(td->handler);
     td->handler = NULL;
   }
@@ -347,8 +342,7 @@ cb_watch_del(DBusWatch *watch, void *data)
 
   if (hd->fd_handler) 
   {
-    if (ecore_list_goto(hd->cd->fd_handlers, hd->fd_handler))
-      ecore_list_remove(hd->cd->fd_handlers);
+    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->cd->fd_handlers);
     ecore_main_fd_handler_del(hd->fd_handler);
     hd->fd_handler = NULL;
   }

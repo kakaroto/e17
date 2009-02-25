@@ -508,7 +508,7 @@ run_test_boxed(Ewl_Test *t)
 static int
 ewl_test_setup_tests(void)
 {
-        Ecore_List *list = NULL;
+        Eina_List *list = NULL;
         char *name = NULL;
 
         if (tests) return 1;
@@ -524,14 +524,14 @@ ewl_test_setup_tests(void)
         /* no tests found ... */
         if (!list) return 0;
 
-        while ((name = ecore_list_first_goto(list)))
+	EINA_LIST_FREE(list, name)
         {
                 Ecore_Plugin *plugin;
                 void (*func_info)(Ewl_Test *test);
 
                 plugin = ecore_plugin_load(tests_path_group, name, NULL);
                 if (!plugin)
-                        continue;
+		        goto end;
 
 
                 /* the UI test info */
@@ -546,9 +546,9 @@ ewl_test_setup_tests(void)
                         ecore_list_append(tests, t);
                 }
 
-                ecore_list_remove_destroy(list);
+	end:
+		free(name);
         }
-        ecore_list_destroy(list);
 
         /* no tests found ... */
         if (ecore_list_count(tests) == 0) return 0;
