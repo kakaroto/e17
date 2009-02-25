@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-21 11:07+0100\n"
-"PO-Revision-Date: 2009-02-21 11:15+0100\n"
+"POT-Creation-Date: 2009-02-25 10:21+0100\n"
+"PO-Revision-Date: 2009-02-25 10:25+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <quaker66@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -45,6 +45,7 @@ msgid "No IP Address"
 msgstr "Bez IP adresy"
 
 #: src/popup.c:138
+#: src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Drátová síť"
 
@@ -56,51 +57,58 @@ msgstr "Bezdrátová síť"
 msgid "Wired Connection Settings"
 msgstr "Nastavení drátového spojení"
 
-#: src/wired_dialog.c:42
-msgid "Network Device"
-msgstr "Síťové zařízení"
-
-#: src/wired_dialog.c:53
+#: src/wired_dialog.c:51
+#: src/network_dialog.c:77
 msgid "Activate"
 msgstr "Aktivovat"
 
-#: src/wired_dialog.c:56
+#: src/wired_dialog.c:54
+#: src/network_dialog.c:80
 msgid "Deactivate"
 msgstr "Deaktivovat"
 
-#: src/wired_dialog.c:60
+#: src/wired_dialog.c:58
+#: src/network_dialog.c:84
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr "DHCP (Dynamic host configuration protocol)"
 
-#: src/wired_dialog.c:65
+#: src/wired_dialog.c:63
+#: src/network_dialog.c:89
 msgid "Static"
 msgstr "Statická"
 
-#: src/wired_dialog.c:70
+#: src/wired_dialog.c:68
+#: src/network_dialog.c:94
 msgid "IP address: "
-msgstr "IP adresa:"
+msgstr "IP adresa: "
 
-#: src/wired_dialog.c:75
+#: src/wired_dialog.c:73
+#: src/network_dialog.c:99
 msgid "Netmask address: "
-msgstr "Maska:"
+msgstr "Maska: "
 
-#: src/wired_dialog.c:80
+#: src/wired_dialog.c:78
+#: src/network_dialog.c:104
 msgid "Gateway address: "
-msgstr "Brána:"
+msgstr "Brána: "
 
-#: src/wired_dialog.c:85
+#: src/wired_dialog.c:83
+#: src/network_dialog.c:109
 msgid "Command: "
-msgstr "Příkaz:"
+msgstr "Příkaz: "
 
-#: src/wired_dialog.c:98
+#: src/wired_dialog.c:96
+#: src/network_dialog.c:132
 msgid "OK"
 msgstr "OK"
 
-#: src/wired_dialog.c:99
+#: src/wired_dialog.c:97
+#: src/network_dialog.c:133
 msgid "Apply"
 msgstr "Použít"
 
-#: src/wired_dialog.c:100
+#: src/wired_dialog.c:98
+#: src/network_dialog.c:134
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -114,65 +122,80 @@ msgstr "Informace o bezdrátovém spojení"
 
 #: src/network_dialog.c:44
 msgid "Essid: "
-msgstr "Essid:"
+msgstr "Essid: "
 
 #: src/network_dialog.c:49
 msgid "Address: "
-msgstr "Adresa:"
+msgstr "Adresa: "
 
 #: src/network_dialog.c:54
 msgid "Quality: "
-msgstr "Kvalita:"
+msgstr "Kvalita: "
 
 #: src/network_dialog.c:59
 msgid "Authentification: "
-msgstr "Ověření:"
+msgstr "Ověření: "
 
-#: src/network_dialog.c:125
+#: src/network_dialog.c:68
+msgid "Wireless interface configuration"
+msgstr "Nastavení bezdrátového připojení"
+
+#: src/network_dialog.c:118
+msgid "Login: "
+msgstr "Přihlášení: "
+
+#: src/network_dialog.c:124
+msgid "Password: "
+msgstr "Password: "
+
+#: src/network_dialog.c:204
 msgid "WPA information"
 msgstr "WPA informace"
 
-#: src/network_dialog.c:128
+#: src/network_dialog.c:207
 msgid "WPA2 information"
 msgstr "WPA2 informace"
 
-#: src/network_dialog.c:150
+#: src/network_dialog.c:239
 msgid "WEP information"
 msgstr "WEP informace"
 
-#: src/network_dialog.c:152
+#: src/network_dialog.c:241
 msgid "Authentication: "
-msgstr "Oveření:"
+msgstr "Oveření: "
 
-#: src/network_dialog.c:180
+#: src/network_dialog.c:269
 msgid "Type: "
-msgstr "Typ:"
+msgstr "Typ: "
 
-#: src/network_dialog.c:184
+#: src/network_dialog.c:273
 msgid "Version: "
-msgstr "Verze:"
+msgstr "Verze: "
 
-#: src/network_dialog.c:188
+#: src/network_dialog.c:277
 msgid "Group Cypher: "
-msgstr ""
+msgstr "Skupinový kód: "
 
-#: src/network_dialog.c:199
+#: src/network_dialog.c:288
 msgid "Pairwise Cyphers: "
-msgstr "Pairwise kód:"
+msgstr "Pairwise kódy: "
 
-#: src/network_dialog.c:210
+#: src/network_dialog.c:302
 msgid "Authentifications Suites: "
-msgstr "Ověřovací sada:"
+msgstr "Ověřovací sada: "
 
-#: src/network_dialog.c:213
+#: src/network_dialog.c:312
 msgid "Yes"
 msgstr "Ano"
 
-#: src/network_dialog.c:214
+#: src/network_dialog.c:313
 msgid "No"
 msgstr "Ne"
 
-#: src/network_dialog.c:215
+#: src/network_dialog.c:314
 msgid "Pre-authentification: "
-msgstr "Před-ověření:"
+msgstr "Před-ověření: "
+
+#~ msgid "Network Device"
+#~ msgstr "Síťové zařízení"
 
