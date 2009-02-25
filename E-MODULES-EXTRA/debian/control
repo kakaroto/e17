@@ -84,10 +84,11 @@ Description: An E17 module front end
  to some of the things that modules typically do.  The backends can
  be written by anybody in any language.
 
-Package: emodule-exalt-client
+Package: emodule-exalt
 Architecture: any
 Depends: ${shlibs:Depends}, e17 (>= 0.16.999), exalt
-Provides: emodule0-exalt-client
+Provides: emodule0-exalt, emodule0-exalt-client, emodule-exalt-client
+Replaces: emodule-exalt-client
 Description: E17 network manager module
  The exalt-client provides a module frontend for exalt network manager.
  
