@@ -331,7 +331,7 @@ static const En_Stock_Item en_stock_items[] =
 
 
 #ifdef ENHANCE_MEM_DEBUG
-Evas_Hash *mem_objects = NULL;
+Eina_Hash *mem_objects = NULL;
 long int   mem_size = 0;
 long int   mem_total = 0;
 long int   mem_calloc = 0;
@@ -346,7 +346,9 @@ mem_alloc(size_t count, size_t size, char *file, int line)
    ptr = calloc(count, size);
    ptrstr = calloc(64, sizeof(char));
    snprintf(ptrstr, 64 * sizeof(char), "%p", ptr);   
-   mem_objects = evas_hash_add(mem_objects, ptrstr, ((void*)(size * count)));
+   if (!mem_objects)
+     mem_objects = eina_hash_string_superfast_new(NULL);
+   eina_hash_add(mem_objects, ptrstr, ((void*)(size * count)));
    mem_size += (size * count);
    mem_total += (size * count);
    mem_calloc += (size * count);   
@@ -366,7 +368,9 @@ strdup2(const char *str, char *file, int line)
    length = strlen(str) + 1;
    ptr = calloc(length, sizeof(char));
    snprintf(ptrstr, 64 * sizeof(char), "%p", ptr);
-   mem_objects = evas_hash_add(mem_objects, ptrstr, ((void*)(length * sizeof(char))));
+   if (!mem_objects)
+     mem_objects = eina_hash_string_superfast_new(NULL);
+   eina_hash_add(mem_objects, ptrstr, ((void*)(length * sizeof(char))));
    mem_size += (length * sizeof(char));
    mem_total += (length * sizeof(char));
    mem_strdup += (length * sizeof(char));   
@@ -407,7 +411,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	parent_class = ecore_hash_get(node->parent->attributes, "class");
 	parent_id = ecore_hash_get(node->parent->attributes, "id");
-	wid = evas_hash_find(en->widgets, parent_id);
+	wid = eina_hash_find(en->widgets, parent_id);
 	if(!wid) return;
      }
    
@@ -885,10 +889,10 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
       return;
         }
    
-      wid = evas_hash_find(en->widgets, parent_id);
+      wid = eina_hash_find(en->widgets, parent_id);
       if(!wid) return;
       
-      data = evas_hash_find(en->callback_data, handler);
+      data = eina_hash_find(en->callback_data, handler);
       
       etk_signal_connect(name, ETK_OBJECT(wid->wid), 
                ETK_CALLBACK(func), data);
@@ -900,9 +904,9 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
       sig_hndl[0] = name;
       sig_hndl[1] = handler;
 
-      signals = evas_hash_find(en->signals, parent_id);
+      signals = eina_hash_find(en->signals, parent_id);
       signals = eina_list_append(signals, sig_hndl);
-      en->signals = evas_hash_add(en->signals, parent_id, signals);  
+      eina_hash_add(en->signals, parent_id, signals);
    }
 }   
 
@@ -1087,7 +1091,7 @@ _e_traverse_child_xml(Enhance *en)
                 parent_id = ecore_hash_get(area_node->parent->parent->parent->attributes, "id");
                 if (parent_id)
                   {
-                    parent = evas_hash_find(en->widgets, parent_id);
+                    parent = eina_hash_find(en->widgets, parent_id);
                     if (parent)
                       _e_widget_parent_add(parent, widget);
                   }
@@ -1097,7 +1101,7 @@ _e_traverse_child_xml(Enhance *en)
                 parent_id = ecore_hash_get(widget->node->parent->parent->attributes, "id");
                 if(parent_id)
                   {
-                    parent = evas_hash_find(en->widgets, parent_id);
+                    parent = eina_hash_find(en->widgets, parent_id);
                     if(parent)
                       _e_widget_parent_add(parent, widget);
                   }
@@ -1216,7 +1220,7 @@ enhance_var_get(Enhance *en, const char *string)
    
    if(!string) return NULL;
    
-   if((widget = evas_hash_find(en->widgets, string)) != NULL)
+   if((widget = eina_hash_find(en->widgets, string)) != NULL)
      {
 	return widget->wid;
      }
@@ -1229,7 +1233,7 @@ enhance_signals_count(Enhance *en, const char *widget)
 {
    Eina_List *signals;
    
-   signals = evas_hash_find(en->signals, widget);
+   signals = eina_hash_find(en->signals, widget);
    return eina_list_count(signals);
 }
 
@@ -1248,7 +1252,7 @@ enhance_signals_first(Enhance *en, const char* widget, char **signal, char **han
 {
    Eina_List *signals;
    
-   signals = evas_hash_find(en->signals, widget);
+   signals = eina_hash_find(en->signals, widget);
    if (signals != NULL) _enhance_enum_copy(signals, signal, handler);
    return (Enhance_Signals_Enumerator) signals;
 }
@@ -1266,17 +1270,17 @@ enhance_signals_next(Enhance *en, Enhance_Signals_Enumerator current, char **sig
 void
 enhance_callback_data_set(Enhance *en, const char *cb_name, void *data)
 {
-   en->callback_data = evas_hash_add(en->callback_data, cb_name, data);
+   eina_hash_add(en->callback_data, cb_name, data);
 }
 
 void *
 enhance_callback_data_get(Enhance *en, const char *cb_name)
 {
-   return evas_hash_find(en->callback_data, cb_name);
+   return eina_hash_find(en->callback_data, cb_name);
 }
 
-static Evas_Bool
-_e_wigets_enum_create(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_e_wigets_enum_create(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Eina_List **plist;
    
@@ -1292,7 +1296,7 @@ enhance_widgets_start(Enhance *en)
    Eina_List* list;
 
    list = NULL;
-   evas_hash_foreach(en->widgets, _e_wigets_enum_create, &list);
+   eina_hash_foreach(en->widgets, _e_wigets_enum_create, &list);
    return eina_list_last(list);
 }
 
@@ -1332,11 +1336,15 @@ enhance_new()
    
    en = E_NEW(1, Enhance);
    en->signal_handling = ENHANCE_SIGNAL_CONNECT;
+   en->signals = eina_hash_string_superfast_new(NULL);
+   en->widgets = eina_hash_string_superfast_new(NULL);
+   en->callback_data = eina_hash_string_superfast_new(NULL);
+   en->radio_groups = eina_hash_string_superfast_new(NULL);
    return en;
 }
 
-static Evas_Bool
-_e_widget_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_e_widget_hash_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    E_Widget *widget;
    
@@ -1353,8 +1361,8 @@ _e_widget_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
    return 1;
 }
 
-static Evas_Bool
-_e_signal_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_e_signal_hash_free(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {  
    Eina_List  *signals;
    void       *item;
@@ -1376,14 +1384,14 @@ enhance_free(Enhance *en)
    if(!en) return;
    exml_destroy(en->xml);
    
-   evas_hash_foreach(en->widgets, _e_widget_hash_free, en);
-   evas_hash_free(en->widgets);
+   eina_hash_foreach(en->widgets, _e_widget_hash_free, en);
+   eina_hash_free(en->widgets);
    
-   evas_hash_foreach(en->signals, _e_signal_hash_free, en);
-   evas_hash_free(en->signals);
+   eina_hash_foreach(en->signals, _e_signal_hash_free, en);
+   eina_hash_free(en->signals);
    
-   if (en->callback_data) evas_hash_free(en->callback_data);
-   if (en->radio_groups)  evas_hash_free(en->radio_groups);
+   if (en->callback_data) eina_hash_free(en->callback_data);
+   if (en->radio_groups)  eina_hash_free(en->radio_groups);
 
    E_FREE(en->main_window);
    E_FREE(en);   

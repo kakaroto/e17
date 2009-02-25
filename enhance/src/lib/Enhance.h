@@ -40,7 +40,7 @@ extern long int mem_size;
 extern long int mem_total;
 extern long int mem_strdup;
 extern long int mem_calloc;   
-extern Evas_Hash *mem_objects;
+extern Eina_Hash *mem_objects;
 extern void *mem_alloc(size_t count, size_t size, char *file, int line);
 extern char *strdup2(const char *str, char *file, int line);
    
@@ -57,11 +57,11 @@ extern char *strdup2(const char *str, char *file, int line);
 	    \
 	    ptrstr = calloc(64, sizeof(char)); \
 	    snprintf(ptrstr, 64 * sizeof(char), "%p", ptr); \
-	    size = (long int)evas_hash_find(mem_objects, ptrstr); \
+	    size = (long int)eina_hash_find(mem_objects, ptrstr); \
 	    if(size > 0) \
 	      { \
 		 mem_size -= size; \
-		 mem_objects = evas_hash_del(mem_objects, ptrstr, (void*) size); \
+		 eina_hash_del(mem_objects, ptrstr, (void*) size); \
 		 printf(__FILE__ " %d  : (free) %ld bytes, total = %ld\n", __LINE__, (long int)size, mem_size); \
 	      } \
 	    free(ptr); \
@@ -94,10 +94,10 @@ typedef struct _Enhance Enhance;
 struct _Enhance
 {
    EXML      *xml;            /* xml document */
-   Evas_Hash *widgets;        /* all the allocated widgets */
-   Evas_Hash *callback_data;  /* void *data variables for callbacks */
-   Evas_Hash *signals;        /* signal name + callback name association for each widget */
-   Evas_Hash *radio_groups;   /* radio groups used */
+   Eina_Hash *widgets;        /* all the allocated widgets */
+   Eina_Hash *callback_data;  /* void *data variables for callbacks */
+   Eina_Hash *signals;        /* signal name + callback name association for each widget */
+   Eina_Hash *radio_groups;   /* radio groups used */
    char      *main_window;    /* main window to show */
    Enhance_Signal_Handling   signal_handling; /* how the signals should be handled */
 };

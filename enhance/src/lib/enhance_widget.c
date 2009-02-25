@@ -95,7 +95,7 @@ _e_widget_new(Enhance *en, EXML_Node *node, Etk_Widget *etk_widget, char *id)
    widget->wid = etk_widget;
    widget->node = node;
    widget->packing = NULL;
-   en->widgets = evas_hash_add(en->widgets, id, widget);
+   eina_hash_add(en->widgets, id, widget);
 
    return widget;
 }
@@ -397,7 +397,7 @@ _e_widget_radio_button_handle(Enhance *en, EXML_Node *node)
    ecore_list_first_goto(props);   
       
    if(group)     	
-     w = evas_hash_find(en->radio_groups, group);   
+     w = eina_hash_find(en->radio_groups, group);
    
    if(label)
      {
@@ -422,7 +422,7 @@ _e_widget_radio_button_handle(Enhance *en, EXML_Node *node)
      }
    
    if(!group)
-     en->radio_groups = evas_hash_add(en->radio_groups, id, button->wid);   
+     eina_hash_add(en->radio_groups, id, button->wid);
 
    E_FREE(label);
    E_FREE(group);
