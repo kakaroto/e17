@@ -5,7 +5,7 @@
 
 #define EN_ARGUMENT_FLAG_PRIV_SET (1 << 4)
 
-static Evas_Hash *_en_argument_extra = NULL;
+static Eina_Hash *_en_argument_extra = NULL;
 static int _en_argument_status = 0;
 
 /**
@@ -222,22 +222,24 @@ int en_arguments_parse(En_Argument *args, int argc, char **argv)
 		  }
 		  
 		  if(arg->long_name != NULL)
-		    value = evas_hash_find(_en_argument_extra, arg->long_name);
+		    value = eina_hash_find(_en_argument_extra, arg->long_name);
 		  else if(arg->short_name != ' ' && arg->short_name != -1)
-		    value = evas_hash_find(_en_argument_extra, &arg->short_name);
+		    value = eina_hash_find(_en_argument_extra, &arg->short_name);
 		  else
 		    break;
 		  
+		  if (!_en_argument_extra)
+		    _en_argument_extra = eina_hash_string_superfast_new(NULL);
 		  if(!value)
 		  {
 		     value = eina_list_append(value, extra);
-		     _en_argument_extra = evas_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		     eina_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
 		  }
 		  else
 		  {
-		     _en_argument_extra = evas_hash_del(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		     eina_hash_del(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
 		     value = eina_list_append(value, extra);
-		     _en_argument_extra = evas_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
+		     eina_hash_add(_en_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
 		  }
 		  
 		  ++j;
@@ -304,7 +306,7 @@ Eina_List *en_argument_extra_find(const char *key)
    if(!_en_argument_extra)
      return NULL;
    
-   return evas_hash_find(_en_argument_extra, "column");
+   return eina_hash_find(_en_argument_extra, "column");
 }
 
 int en_argument_is_set(En_Argument *args, const char *long_name, char short_name)
