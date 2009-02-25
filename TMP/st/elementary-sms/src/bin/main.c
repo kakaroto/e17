@@ -1,5 +1,6 @@
 #include "common.h"
 
+#ifndef ELM_LIB_QUICKLAUNCH
 EAPI int
 elm_main(int argc, char **argv)
 {
@@ -25,4 +26,5 @@ elm_main(int argc, char **argv)
    elm_shutdown();
    return 0;
 }
+#endif
 ELM_MAIN()
