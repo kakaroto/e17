@@ -112,7 +112,7 @@ void evolve_parse_packing_property_number(char *prop, char *value)
    pstruct = calloc(1, sizeof(Evolve_Widget_Property));
    pstruct->value = strdup(value);
    pstruct->type = EVOLVE_WIDGET_PROP_INT;
-   last_widget->packing_props = evas_hash_add(last_widget->packing_props, prop, pstruct);
+   eina_hash_add(last_widget->packing_props, prop, pstruct);
 }
 
 /* parse a packing property who's value is a string */
@@ -126,7 +126,7 @@ void evolve_parse_packing_property_string(char *prop, char *value)
    pstruct = calloc(1, sizeof(Evolve_Widget_Property));
    pstruct->value = strdup(value);
    pstruct->type = EVOLVE_WIDGET_PROP_STR;
-   last_widget->packing_props = evas_hash_add(last_widget->packing_props, prop, pstruct);   
+   eina_hash_add(last_widget->packing_props, prop, pstruct);
 }
 
 /* parse a signal declaration */

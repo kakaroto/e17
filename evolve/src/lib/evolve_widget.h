@@ -31,12 +31,12 @@ struct _Evolve_Widget_Packing_Option_Value
 
 struct _Evolve_Widget_Packing_Option
 {
-   Evas_Hash *values;
+   Eina_Hash *values;
 };
 
 struct _Evolve_Widget_Packing_Info
 {
-   Evas_Hash *info;
+   Eina_Hash *info;
 };
 
 struct _Evolve_Widget_Type
@@ -44,8 +44,8 @@ struct _Evolve_Widget_Type
       char *evolve_str;
       char *etk_str;
       Etk_Type *etk_type;
-      Evas_Hash *packing_options;
-      Evas_Hash *internal_props;
+      Eina_Hash *packing_options;
+      Eina_Hash *internal_props;
 };
 
 void evolve_widget_packing_info_populate();

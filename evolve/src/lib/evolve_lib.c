@@ -26,15 +26,7 @@
 
 #include <Evas_Engine_Buffer.h>  
 
-#define NEWD(str, typ) \
-     eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))eina_list_next, \
-				(void *(*) (void *, void *))eina_list_append, \
-				(void *(*) (void *))eina_list_data_get, \
-				(void *(*) (void *))eina_list_free, \
-				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
-				(void *(*) (void *, const char *, void *))evas_hash_add, \
-				(void  (*) (void *))evas_hash_free)
+#define NEWD(str, typ) _evolve_data_descriptor(str, sizeof(typ));
 
 #define FREED(eed) \
 	 if (eed) \
@@ -92,8 +84,42 @@ static Eet_Data_Descriptor *_evolve_widget_signal_edd = NULL;
 static Eet_Data_Descriptor *_evolve_widget_edd = NULL;
 static Eet_Data_Descriptor *_evolve_widgets_edd = NULL;
 
-static Evas_Bool _evolve_print_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _evolve_print_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 
+static Eina_Hash *
+_evolve_eina_hash_add(Eina_Hash *hash, const char *key, void *data)
+{
+   if (!hash) hash = eina_hash_string_superfast_new(NULL);
+   if (!hash) return NULL;
+
+   eina_hash_add(hash, key, data);
+   return hash;
+}
+
+static Eet_Data_Descriptor *
+_evolve_data_descriptor(const char *name, int size)
+{
+   Eet_Data_Descriptor_Class eddc;
+
+   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   eddc.name = name;
+   eddc.size = size;
+   eddc.func.mem_alloc = NULL;
+   eddc.func.mem_free = NULL;
+   eddc.func.str_alloc = eina_stringshare_add;
+   eddc.func.str_free = eina_stringshare_del;
+   eddc.func.list_next = eina_list_next;
+   eddc.func.list_append = eina_list_append;
+   eddc.func.list_data = eina_list_data_get;
+   eddc.func.list_free = eina_list_free;
+   eddc.func.hash_foreach = eina_hash_foreach;
+   eddc.func.hash_add = _evolve_eina_hash_add;
+   eddc.func.hash_free = eina_hash_free;
+   eddc.func.str_direct_alloc = NULL;
+   eddc.func.str_direct_free = NULL;
+
+   return eet_data_descriptor2_new(&eddc);
+}
 
 /* initialize evolve and return 1 on success, 0 otherwise */
 int evolve_init()
@@ -101,6 +127,7 @@ int evolve_init()
    eet_init();   
    evas_init();
    ecore_file_init();
+   etk_init(0, NULL);
    
    _prop_def_val_edd = NEWD("Evolve_Property_Value", Evolve_Property_Value);
 	 PROP_DEF_VAL_NEWI("iv", int_value, EET_T_INT);
@@ -158,6 +185,7 @@ int evolve_shutdown()
    FREED(_evolve_widget_signal_edd);   
    FREED(_evolve_widget_edd);
    FREED(_evolve_widgets_edd);
+   etk_shutdown();
    evas_shutdown();
    eet_shutdown();
    return 1;
@@ -174,7 +202,7 @@ void evolve_print(Evolve *evolve)
    
    printf("Found %d widgets:\n", eina_list_count(evolve->widgets));
    
-   EINA_LIST_FOREACH(evole->widgets, l, widget)
+   EINA_LIST_FOREACH(evolve->widgets, l, widget)
      {
         printf("widget:\n"
 	       "type: %s\n"
@@ -185,13 +213,13 @@ void evolve_print(Evolve *evolve)
 	if (widget->props)
 	  {
 	     printf("properties:\n");
-	     evas_hash_foreach(widget->props, _evolve_print_props_foreach, NULL);
+	     eina_hash_foreach(widget->props, _evolve_print_props_foreach, NULL);
 	  }
 
 	if (widget->packing_props)
 	  {
 	     printf("packing properties:\n");
-	     evas_hash_foreach(widget->packing_props, _evolve_print_props_foreach, NULL);
+	     eina_hash_foreach(widget->packing_props, _evolve_print_props_foreach, NULL);
 	  }	
 	
 	if (widget->signals)
@@ -223,11 +251,11 @@ void evolve_render(Evolve *evolve)
    /* render widgets and pack them into their parents */
    EINA_LIST_FOREACH(evolve->widgets, l, widget)
      {
-	evolve->parents = evas_hash_add(evolve->parents, widget->name, widget);
+        eina_hash_add(evolve->parents, widget->name, widget);
 	evolve_widget_render(widget);
 	evolve_widget_properties_apply(widget);
 	if (widget->parent)
-	  evolve_widget_reparent(widget, evas_hash_find(evolve->parents, widget->parent));
+	  evolve_widget_reparent(widget, eina_hash_find(evolve->parents, widget->parent));
      }
    
    /* connect signals and do post render operations */
@@ -238,7 +266,7 @@ void evolve_render(Evolve *evolve)
      }
    
    /* show top level widgets that want to be shown */
-   EINA_LIST_FOREACH(_evolve_widget_show_all, l, widget)
+   EINA_LIST_FOREACH(_evolve_widgets_show_all, l, widget)
      etk_widget_show_all(widget->widget);
    
    _evolve_ev = NULL;
@@ -334,13 +362,13 @@ int evolve_eet_save(Evolve *evolve, char *file)
 	
 	if (!strcmp(widget->type, "image"))
 	  {
-	     if ( !(prop = evas_hash_find(widget->props, "file")) ||
+	     if ( !(prop = eina_hash_find(widget->props, "file")) ||
 		  !prop->default_value || !ecore_file_exists(evolve_property_value_string_get(prop->default_value)))
 	       continue;
 	  }
 	else if (!strcmp(widget->type, "button"))
 	  {
-	     if ( !(prop = evas_hash_find(widget->props, "image")) ||
+	     if ( !(prop = eina_hash_find(widget->props, "image")) ||
 		  !prop->default_value || !ecore_file_exists(evolve_property_value_string_get(prop->default_value)))
 	       continue;	     
 	  }
@@ -494,6 +522,9 @@ Evolve *evolve_etk_load(char *file)
    
    evolve = calloc(1, sizeof(Evolve));
    evolve->widgets = evolve_widget_list_sort(widgets);
+   evolve->emissions = eina_hash_string_superfast_new(NULL);
+   evolve->callbacks = eina_hash_string_superfast_new(NULL);
+   evolve->parents = eina_hash_string_superfast_new(NULL);
    return evolve;
 }
 
@@ -524,7 +555,7 @@ void evolve_defines_set(Eina_List *defines)
    _evolve_defines = defines;
 }
 
-static Evas_Bool _evolve_print_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool _evolve_print_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Evolve_Widget_Property *prop;
    

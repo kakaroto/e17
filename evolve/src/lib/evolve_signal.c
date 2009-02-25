@@ -32,7 +32,7 @@ Evolve_Signal *evolve_signal_new(char *name, char *emission, Evolve *evolve)
    esig->name = strdup(name);
    esig->emit = strdup(emission);
    esig->evolve = evolve;
-   evolve->emissions = evas_hash_add(evolve->emissions, emission, esig);
+   eina_hash_add(evolve->emissions, emission, esig);
    return esig;
 }
 
@@ -45,7 +45,7 @@ void evolve_signal_emit_cb(void *data, Etk_Object *obj)
    
    esig = data;
    
-   if (!(cbs = evas_hash_find(esig->evolve->callbacks, esig->emit)))
+   if (!(cbs = eina_hash_find(esig->evolve->callbacks, esig->emit)))
      return;
    
    for (l = cbs; l; l = l->next)
@@ -71,11 +71,11 @@ void evolve_signal_connect(Evolve *evolve, char *emission, void (*callback)(char
    sig_cb->func = callback;
    sig_cb->data = data;   
    
-   if ((l = evas_hash_find(evolve->callbacks, emission)))
+   if ((l = eina_hash_find(evolve->callbacks, emission)))
      l = eina_list_append(l, sig_cb);     
    else
      {
 	l = eina_list_append(l, sig_cb);
-	evolve->callbacks = evas_hash_add(evolve->callbacks, emission, l);
+	eina_hash_add(evolve->callbacks, emission, l);
      }
 }

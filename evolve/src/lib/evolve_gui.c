@@ -43,6 +43,10 @@ static void evolve_gui_property_spinner_value_changed_cb(Etk_Range *range, doubl
 int evolve_gui_init()
 {
    evolve = calloc(1, sizeof(Evolve));
+   evolve->emissions = eina_hash_string_superfast_new(NULL);
+   evolve->callbacks = eina_hash_string_superfast_new(NULL);
+   evolve->parents = eina_hash_string_superfast_new(NULL);
+
    return 1;
 }
 
@@ -72,14 +76,14 @@ void evolve_gui_placeholder_replace(Evolve_Widget *parent, Evolve_Widget *child,
 	prop->name = strdup("group");
 	prop->value = group_str;
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "group", prop);
+	eina_hash_add(child->packing_props, "group", prop);
 	
 	prop = calloc(1, sizeof(Evolve_Widget_Property));
 	snprintf(pos_str, sizeof(pos_str), "%d", pos);
 	prop->name = strdup("position");
 	prop->value = strdup(pos_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "position", prop);
+	eina_hash_add(child->packing_props, "position", prop);
      }
    else if (!strcmp(parent->type, "toolbar"))
      {
@@ -97,7 +101,7 @@ void evolve_gui_placeholder_replace(Evolve_Widget *parent, Evolve_Widget *child,
 	prop->name = strdup("position");
 	prop->value = strdup(pos_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "position", prop);
+	eina_hash_add(child->packing_props, "position", prop);
      }
    else if (!strcmp(parent->type, "table"))
      {
@@ -114,28 +118,28 @@ void evolve_gui_placeholder_replace(Evolve_Widget *parent, Evolve_Widget *child,
 	prop->name = strdup("left_attach");
 	prop->value = strdup(la_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "left_attach", prop);
+	eina_hash_add(child->packing_props, "left_attach", prop);
 	
 	prop = calloc(1, sizeof(Evolve_Widget_Property));
 	snprintf(ra_str, sizeof(ra_str), "%d", ra);
 	prop->name = strdup("right_attach");	
 	prop->value = strdup(ra_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "right_attach", prop);
+	eina_hash_add(child->packing_props, "right_attach", prop);
 	
 	prop = calloc(1, sizeof(Evolve_Widget_Property));
 	snprintf(ta_str, sizeof(ta_str), "%d", ta);
 	prop->name = strdup("top_attach");	
 	prop->value = strdup(ta_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "top_attach", prop);
+	eina_hash_add(child->packing_props, "top_attach", prop);
 	
 	prop = calloc(1, sizeof(Evolve_Widget_Property));
 	snprintf(ba_str, sizeof(ba_str), "%d", ba);
 	prop->name = strdup("bottom_attach");	
 	prop->value = strdup(ba_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "bottom_attach", prop);
+	eina_hash_add(child->packing_props, "bottom_attach", prop);
      }
    else if (!strcmp(parent->type, "notebook"))
      {
@@ -152,7 +156,7 @@ void evolve_gui_placeholder_replace(Evolve_Widget *parent, Evolve_Widget *child,
 	prop->name = strdup("position");
 	prop->value = strdup(pos_str);
 	prop->type = EVOLVE_WIDGET_PROP_INT;
-	child->packing_props = evas_hash_add(child->packing_props, "position", prop);
+	eina_hash_add(child->packing_props, "position", prop);
 		
 	if (label)
 	  {
@@ -160,7 +164,7 @@ void evolve_gui_placeholder_replace(Evolve_Widget *parent, Evolve_Widget *child,
 	     prop->name = strdup("tab_label");
 	     prop->value = strdup(label);
 	     prop->type = EVOLVE_WIDGET_PROP_STR;
-	     child->packing_props = evas_hash_add(child->packing_props, "tab_label", prop);
+	     eina_hash_add(child->packing_props, "tab_label", prop);
 	  }
      }
    etk_container_remove(placeholder);

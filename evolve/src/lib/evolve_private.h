@@ -49,9 +49,9 @@ struct _Evolve
    
    /* fields we dont want to save */
    char *eet_filename;
-   Evas_Hash *emissions;
-   Evas_Hash *callbacks;
-   Evas_Hash *parents;
+   Eina_Hash *emissions;
+   Eina_Hash *callbacks;
+   Eina_Hash *parents;
 };
 
 typedef enum Evolve_Widget_Property_Type {
@@ -73,8 +73,8 @@ struct _Evolve_Widget
    char *type;   
    char *name;   
    char *parent;
-   Evas_Hash *props;
-   Evas_Hash *packing_props;   
+   Eina_Hash *props;
+   Eina_Hash *packing_props;
    Eina_List *signals;
    
    /* fields we dont want to save */

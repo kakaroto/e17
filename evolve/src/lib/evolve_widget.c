@@ -23,40 +23,46 @@
 
 #include "evolve_private.h"
 
-#define OPTION_NEW o = calloc(1, sizeof(Evolve_Widget_Packing_Option))
+#define OPTION_NEW \
+   o = calloc(1, sizeof(Evolve_Widget_Packing_Option));	\
+   o->values = eina_hash_string_superfast_new(NULL)
 
 #define VALUE_ADD(name, val) \
      v = calloc(1, sizeof(Evolve_Widget_Packing_Option_Value)); \
    v->value = val; \
-   o->values = evas_hash_add(o->values, #name, v)
+   eina_hash_add(o->values, #name, v)
 
-#define INFO_NEW i = calloc(1, sizeof(Evolve_Widget_Packing_Info))
+#define INFO_NEW \
+   i = calloc(1, sizeof(Evolve_Widget_Packing_Info)); \
+   i->info = eina_hash_string_superfast_new(NULL)
 
-#define INFO_ADD(name) i->info = evas_hash_add(i->info, #name, o)
+#define INFO_ADD(name) eina_hash_add(i->info, #name, o)
 
-#define INFOS_ADD(name) _evolve_widget_packing_infos = evas_hash_add(_evolve_widget_packing_infos, #name, i)
+#define INFOS_ADD(name) eina_hash_add(_evolve_widget_packing_infos, #name, i)
 
 #define WIDGET_TYPE_ADD(ev_str, e_str, e_type) \
    type = calloc(1, sizeof(Evolve_Widget_Type)); \
    type->evolve_str = strdup(#ev_str); \
    type->etk_str = strdup(#e_str); \
    type->etk_type = e_type; \
-   _evolve_widget_types = evas_hash_add(_evolve_widget_types, #ev_str, type)
+   type->packing_options = eina_hash_string_small_new(NULL);	\
+   type->internal_props = eina_hash_string_small_new(NULL);	\
+   eina_hash_add(_evolve_widget_types, #ev_str, type)
 
 extern Eina_List *widgets;
 extern Eina_List *_evolve_widgets_show_all;
 extern Evolve *_evolve_ev;
 
-static Evas_Hash *_evolve_widget_packing_infos = NULL;
-static Evas_Hash *_evolve_widget_types = NULL;
+static Eina_Hash *_evolve_widget_packing_infos = NULL;
+static Eina_Hash *_evolve_widget_types = NULL;
 void *handle = NULL;
 
-static Evas_Bool evolve_widget_properties_apply_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool evolve_widget_container_interal_props_set_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool evolve_widget_all_internal_props_set_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool evolve_widget_packing_property_to_str_convert_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool evolve_widget_code_get_packing_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool evolve_widget_code_get_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_properties_apply_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_container_interal_props_set_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_all_internal_props_set_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_packing_property_to_str_convert_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_code_get_packing_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
+static Eina_Bool evolve_widget_code_get_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata);
 
 /* populate widget packing info hashes (used at init time) */
 void evolve_widget_packing_info_populate()
@@ -64,6 +70,9 @@ void evolve_widget_packing_info_populate()
    Evolve_Widget_Packing_Info *i;
    Evolve_Widget_Packing_Option *o;
    Evolve_Widget_Packing_Option_Value *v;
+
+   if (!_evolve_widget_packing_infos)
+     _evolve_widget_packing_infos = eina_hash_string_superfast_new(NULL);
 
    /* box packing info */
    INFO_NEW;
@@ -108,6 +117,9 @@ void evolve_widget_types_populate()
 {
    Evolve_Widget_Type *type;
    
+   if (!_evolve_widget_types)
+     _evolve_widget_types = eina_hash_string_superfast_new(NULL);
+
    WIDGET_TYPE_ADD(alignment, Etk_Alignment, ETK_ALIGNMENT_TYPE);
    WIDGET_TYPE_ADD(bin, Etk_Bin, ETK_BIN_TYPE);
    WIDGET_TYPE_ADD(box, Etk_Box, ETK_BOX_TYPE);
@@ -178,8 +190,8 @@ void evolve_widget_types_populate()
    WIDGET_TYPE_ADD(window, Etk_Window, ETK_WINDOW_TYPE);
 
    /* add internal properties */
-   evas_hash_foreach(_evolve_widget_types, evolve_widget_container_interal_props_set_foreach, NULL);
-   evas_hash_foreach(_evolve_widget_types, evolve_widget_all_internal_props_set_foreach, NULL);
+   eina_hash_foreach(_evolve_widget_types, evolve_widget_container_interal_props_set_foreach, NULL);
+   eina_hash_foreach(_evolve_widget_types, evolve_widget_all_internal_props_set_foreach, NULL);
 }
 
 /* create a new Evolve widget object based on the passed type */
@@ -189,6 +201,8 @@ Evolve_Widget *evolve_widget_new(char *type)
    
    widget = calloc(1, sizeof(Evolve_Widget));
    widget->type = strdup(type);
+   widget->props = eina_hash_string_superfast_new(NULL);
+   widget->packing_props = eina_hash_string_superfast_new(NULL);
    return widget;
 }
 
@@ -245,9 +259,9 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Evolve_Property
 	return 1;
      }
    else if ((!strcmp(prop->name, "file") && !strcmp(widget->type, "image") &&
-	    !evas_hash_find(widget->props, "key")) ||
+	    !eina_hash_find(widget->props, "key")) ||
 	    (!strcmp(prop->name, "image") && !strcmp(widget->type, "button") &&
-	     !evas_hash_find(widget->props, "key")))
+	     !eina_hash_find(widget->props, "key")))
      {
 	char key[PATH_MAX];
 		
@@ -297,7 +311,7 @@ prop_set:
 	Evolve_Widget *swallow_parent;
 	
 	if (!widget->parent ||
-	    !(swallow_parent = evas_hash_find(_evolve_ev->parents, widget->parent)))
+	    !(swallow_parent = eina_hash_find(_evolve_ev->parents, widget->parent)))
 	  return 1;
 	
 	if (!swallow_parent->widget)
@@ -320,7 +334,7 @@ void evolve_widget_properties_apply(Evolve_Widget *widget)
    if (!widget || !widget->props)
      return;
    
-   evas_hash_foreach(widget->props, evolve_widget_properties_apply_foreach,
+   eina_hash_foreach(widget->props, evolve_widget_properties_apply_foreach,
 		     widget);   
 }
 
@@ -362,7 +376,7 @@ int evolve_widget_internal_render(Evolve_Widget *widget)
 	Evolve_Widget *parent;
 	
 	if (!widget->parent ||
-	    !(parent = evas_hash_find(_evolve_ev->parents, widget->parent)))
+	    !(parent = eina_hash_find(_evolve_ev->parents, widget->parent)))
 	  return 1;
 				
 	widget->widget = (Etk_Widget*)etk_tree_col_new(ETK_TREE(parent->widget), "col",
@@ -374,7 +388,7 @@ int evolve_widget_internal_render(Evolve_Widget *widget)
 	Evolve_Widget *parent;
 	
 	if (!widget->parent ||
-	    !(parent = evas_hash_find(_evolve_ev->parents, widget->parent)))
+	    !(parent = eina_hash_find(_evolve_ev->parents, widget->parent)))
 	  return 1;
 	
 	etk_tree_col_model_add(ETK_TREE_COL(parent->widget), 
@@ -455,7 +469,7 @@ void evolve_widget_signals_connect(Evolve_Widget *widget, Evolve *evolve)
 	     return;
 	  }
 	
-	if (sig->emit && !evas_hash_find(evolve->emissions, sig->emit))
+	if (sig->emit && !eina_hash_find(evolve->emissions, sig->emit))
 	  {
 	     Evolve_Signal *esig;
 	     
@@ -512,7 +526,7 @@ void evolve_widget_reparent(Evolve_Widget *child, Evolve_Widget *parent)
    if (!child || !child->widget || !parent || !parent->widget)
      return;
    
-   if (evas_hash_find(child->props, "swallow_part"))
+   if (eina_hash_find(child->props, "swallow_part"))
      return;
    
    /* window packing */
@@ -644,7 +658,7 @@ char *evolve_widget_packing_property_str_find(Evolve_Widget *widget, char *name,
 {
    Evolve_Widget_Property *prop;
       
-   prop = evas_hash_find(widget->packing_props, name);
+   prop = eina_hash_find(widget->packing_props, name);
    if (!prop || !prop->value)
      {
 	return def;
@@ -659,7 +673,7 @@ char *evolve_widget_packing_property_str_find(Evolve_Widget *widget, char *name,
 int evolve_widget_packing_property_int_find(Evolve_Widget *widget, char *name, int def)
 {
    Evolve_Widget_Property *prop;
-   prop = evas_hash_find(widget->packing_props, name);
+   prop = eina_hash_find(widget->packing_props, name);
    if (!prop || !prop->value) 
      return def;
    else return atoi(prop->value);
@@ -669,7 +683,7 @@ int evolve_widget_packing_property_int_find(Evolve_Widget *widget, char *name, i
 double evolve_widget_packing_property_double_find(Evolve_Widget *widget, char *name, double def)
 {
    Evolve_Widget_Property *prop;
-   prop = evas_hash_find(widget->packing_props, name);
+   prop = eina_hash_find(widget->packing_props, name);
    if (!prop || !prop->value) 
      return def;
    else return atof(prop->value);
@@ -683,16 +697,16 @@ char *evolve_widget_packing_property_to_str_convert(char *widget_type, char *pro
    Evolve_Widget_Property *prop;
    char *ret;
    
-   if (!(i = evas_hash_find(_evolve_widget_packing_infos, widget_type)))
+   if (!(i = eina_hash_find(_evolve_widget_packing_infos, widget_type)))
      return 0;
-   if (!(o = evas_hash_find(i->info, prop_name)))
+   if (!(o = eina_hash_find(i->info, prop_name)))
      return 0;
    
    /* We are using this structure out of place here for our special needs */
    prop = calloc(1, sizeof(Evolve_Widget_Property));
    prop->type = prop_value;
    
-   evas_hash_foreach(o->values, evolve_widget_packing_property_to_str_convert_foreach, prop);
+   eina_hash_foreach(o->values, evolve_widget_packing_property_to_str_convert_foreach, prop);
 
    if (!prop->value)
      ret = NULL;
@@ -712,11 +726,11 @@ int evolve_widget_packing_property_to_int_convert(char *widget_type, char *prop_
    Evolve_Widget_Packing_Option *o;
    Evolve_Widget_Packing_Info *i;
    
-   if (!(i = evas_hash_find(_evolve_widget_packing_infos, widget_type)))
+   if (!(i = eina_hash_find(_evolve_widget_packing_infos, widget_type)))
      return 0;
-   if (!(o = evas_hash_find(i->info, prop_name)))
+   if (!(o = eina_hash_find(i->info, prop_name)))
      return 0;
-   if (!(v = evas_hash_find(o->values, prop_value)))
+   if (!(v = eina_hash_find(o->values, prop_value)))
      return 0;
    return v->value;
 }
@@ -744,7 +758,7 @@ char *evolve_widget_code_get(Evolve_Widget *widget)
    
    if (widget->props)
      {
-	evas_hash_foreach(widget->props, evolve_widget_code_get_props_foreach,
+	eina_hash_foreach(widget->props, evolve_widget_code_get_props_foreach,
 			  &code);
      }
    
@@ -753,7 +767,7 @@ char *evolve_widget_code_get(Evolve_Widget *widget)
 	code = etk_string_append_printf(code,
 					"   packing\n"
 					"   {\n");
-	evas_hash_foreach(widget->packing_props, evolve_widget_code_get_packing_props_foreach,
+	eina_hash_foreach(widget->packing_props, evolve_widget_code_get_packing_props_foreach,
 			  &code);	
 	code = etk_string_append_printf(code,
 					"   }\n");	
@@ -891,7 +905,7 @@ void evolve_widget_property_set(Evolve_Widget *widget, char *name, char *value, 
    if (!widget)
      return;
    
-   if (widget->props && (prop = evas_hash_find(widget->props, name)))     
+   if (widget->props && (prop = eina_hash_find(widget->props, name)))
      evolve_property_value_delete(prop->default_value);
    else
      {
@@ -899,7 +913,7 @@ void evolve_widget_property_set(Evolve_Widget *widget, char *name, char *value, 
 	prop->name = strdup(name);
 	prop->type = type;
 	prop->default_value = NULL;
-	widget->props = evas_hash_add(widget->props, name, prop);
+	eina_hash_add(widget->props, name, prop);
      }
    
    switch(prop->type)
@@ -926,7 +940,7 @@ Evolve_Property *evolve_widget_property_get(Evolve_Widget *widget, char *prop_na
    if (!widget || !widget->props)
      return NULL;
    
-   return evas_hash_find(widget->props, prop_name);
+   return eina_hash_find(widget->props, prop_name);
 }
 
 /* get an etk type given the evolve type */
@@ -934,7 +948,7 @@ Etk_Type *evolve_widget_type_to_etk(char *type)
 {
    Evolve_Widget_Type *wtype;
    
-   if (!type || !(wtype = evas_hash_find(_evolve_widget_types, type)))
+   if (!type || !(wtype = eina_hash_find(_evolve_widget_types, type)))
      return NULL;
    
    return wtype->etk_type;
@@ -959,37 +973,37 @@ int evolve_widget_type_internal_property_exists(char *type, char *prop_name)
 {
    Evolve_Widget_Type *wtype;
    
-   if (!type || !prop_name || !(wtype = evas_hash_find(_evolve_widget_types, type)))
+   if (!type || !prop_name || !(wtype = eina_hash_find(_evolve_widget_types, type)))
      return 0;
    
-   if(evas_hash_find(wtype->internal_props, prop_name))
+   if(eina_hash_find(wtype->internal_props, prop_name))
      return 1;
    return 0;
 }
        
-static Evas_Bool evolve_widget_container_interal_props_set_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_container_interal_props_set_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Evolve_Widget_Type *type;
    
    type = data;
    
    if (etk_type_inherits_from(type->etk_type, ETK_CONTAINER_TYPE))
-     type->internal_props = evas_hash_add(type->internal_props, "show_all", strdup("show_all"));
+     eina_hash_add(type->internal_props, "show_all", strdup("show_all"));
    
    return 1;
 }
 
-static Evas_Bool evolve_widget_all_internal_props_set_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_all_internal_props_set_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Evolve_Widget_Type *type;
    
    type = data;     
-   type->internal_props = evas_hash_add(type->internal_props, "swallow_part", strdup("swallow_part"));
+   eina_hash_add(type->internal_props, "swallow_part", strdup("swallow_part"));
    
    return 1;
 }
 
-static Evas_Bool evolve_widget_properties_apply_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_properties_apply_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Evolve_Widget *widget;
    Evolve_Property *prop;
@@ -1001,7 +1015,7 @@ static Evas_Bool evolve_widget_properties_apply_foreach(Evas_Hash *hash, const c
    return 1;      
 }
 
-static Evas_Bool evolve_widget_packing_property_to_str_convert_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_packing_property_to_str_convert_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Evolve_Widget_Packing_Option_Value *v;
    Evolve_Widget_Property *prop;
@@ -1016,7 +1030,7 @@ static Evas_Bool evolve_widget_packing_property_to_str_convert_foreach(Evas_Hash
    return 1;
 }
 
-static Evas_Bool evolve_widget_code_get_packing_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_code_get_packing_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
    Etk_String **code;
    Evolve_Widget_Property *prop;
@@ -1035,7 +1049,7 @@ static Evas_Bool evolve_widget_code_get_packing_props_foreach(Evas_Hash *hash, c
    return 1;
 }
 
-static Evas_Bool evolve_widget_code_get_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool evolve_widget_code_get_props_foreach(const Eina_Hash *hash, const void *key, void *data, void *fdata)
 {
 #if 0   
    Etk_String **code;

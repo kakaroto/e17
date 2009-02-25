@@ -66,6 +66,8 @@ main(int argc, char **argv)
    
    setlocale(LC_NUMERIC, "C");
    
+   eina_init();
+
    progname = argv[0];
    for (i = 1; i < argc; i++)
      {
