@@ -318,8 +318,12 @@ iw_process_scanning_token(struct iw_event *	    event,
             break;
         case SIOCGIWESSID:
             if((event->u.essid.pointer) && (event->u.essid.length))
-                exalt_wireless_network_essid_set(wscan,
-                        event->u.essid.pointer);
+            {
+                char essid[IW_ESSID_MAX_SIZE+1];
+                memset(essid,'\0', sizeof(essid));
+                memcpy(essid,event->u.essid.pointer, event->u.essid.length);
+                exalt_wireless_network_essid_set(wscan,essid);
+            }
             break;
         case SIOCGIWENCODE:
             if(!event->u.data.pointer)
