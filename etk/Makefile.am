@@ -22,7 +22,14 @@ README \
 ABOUT-NLS \
 etk.pc.in \
 etk.spec.in \
-etk.spec
+etk.spec \
+doc/img/nav/*.jpg \
+doc/img/nav/*.png \
+doc/img/widgets/*.png \
+doc/pages/object_hierarchy.h \
+doc/etk.css \
+doc/head.html \
+doc/foot.html
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = etk.pc
