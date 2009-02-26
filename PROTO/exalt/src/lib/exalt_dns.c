@@ -8,18 +8,16 @@
  */
 
 
-Ecore_List* exalt_dns_get_list()
+Eina_List* exalt_dns_get_list()
 {
     FILE* f;
     char buf[1024];
     char *addr;
-    Ecore_List* l;
+    Eina_List* l = NULL;
 
     f = fopen(EXALT_RESOLVCONF_FILE, "ro");
     EXALT_ASSERT_RETURN(f!=NULL);
 
-    l = ecore_list_new();
-    l->free_func = free;
     while(fgets(buf,1024,f))
     {
         buf[strlen(buf)-1] = '\0';
@@ -28,7 +26,7 @@ Ecore_List* exalt_dns_get_list()
         {
             addr = buf + 11;
             if(exalt_is_address(addr))
-                ecore_list_append(l, strdup(addr));
+                l = eina_list_append(l, strdup(addr));
         }
     }
     EXALT_FCLOSE(f);
@@ -123,14 +121,14 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
 
 void exalt_dns_printf()
 {
-    Ecore_List* l = exalt_dns_get_list();
+    Eina_List* l = exalt_dns_get_list();
+    Eina_List *l2;
     char *dns;
 
     printf("## DNS LIST ##\n");
-    ecore_list_first_goto(l);
-    while (( dns=ecore_list_next(l)))
+    EINA_LIST_FOREACH(l,l2,dns)
         printf("%s\n",dns);
-    ecore_list_destroy(l);
+    eina_list_free(l);
 }
 
 

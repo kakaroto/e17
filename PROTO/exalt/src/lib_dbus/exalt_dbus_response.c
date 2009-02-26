@@ -54,7 +54,7 @@ Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* respo
     return response->type;
 }
 
-Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
+Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
     {

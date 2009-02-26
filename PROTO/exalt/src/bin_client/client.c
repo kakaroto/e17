@@ -93,11 +93,12 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             printf("DNS list:\n");
 
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
+                /*Ecore_List* l = exalt_dbus_response_list_get(response);
                 char* dns;
                 ecore_list_first_goto(l);
                 while( (dns=ecore_list_next(l)) )
                     printf("%s\n",dns);
+                    */
             }
             break;
         case EXALT_DBUS_RESPONSE_DNS_ADD:

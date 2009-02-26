@@ -120,17 +120,17 @@ void iface_list_response(Exalt_DBus_Response* response)
     {
         case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
-                ecore_list_first_goto(l);
-                while( (iface=ecore_list_next(l)) )
+                Eina_List* l = exalt_dbus_response_list_get(response);
+                Eina_List *l2;
+                EINA_LIST_FOREACH(l,l2,iface)
                     iface_list_add(strdup(iface),IFACE_WIRED);
             }
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
-                ecore_list_first_goto(l);
-                while( (iface=ecore_list_next(l)) )
+                Eina_List* l = exalt_dbus_response_list_get(response);
+                Eina_List *l2;
+                EINA_LIST_FOREACH(l,l2,iface)
                     iface_list_add(strdup(iface),IFACE_WIRELESS);
             }
             break;

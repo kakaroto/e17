@@ -17,7 +17,7 @@
  * @brief get the dns list
  * @return Return the dns list
  */
-Ecore_List* exalt_dns_get_list();
+Eina_List* exalt_dns_get_list();
 
 /**
  * @brief add a dns

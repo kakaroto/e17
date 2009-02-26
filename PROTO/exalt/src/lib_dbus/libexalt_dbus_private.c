@@ -302,16 +302,15 @@ const char* exalt_dbus_response_string(DBusMessage *msg, int pos)
     }
 }
 
-Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
+Eina_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
 {
     DBusMessageIter iter;
     DBusMessageIter iter_array;
-    Ecore_List* res;
+    Eina_List* res;
     char* val;
     int i;
 
-    res = ecore_list_new();
-    res ->free_func = ECORE_FREE_CB(exalt_dbus_string_free);
+    res = NULL;
 
     if(!dbus_message_iter_init(msg, &iter))
     {
@@ -328,7 +327,7 @@ Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
         while (dbus_message_iter_get_arg_type (&iter_array) == DBUS_TYPE_STRING)
         {
             dbus_message_iter_get_basic(&iter_array, &val);
-            ecore_list_append(res,strdup(val));
+            res = eina_list_append(res,strdup(val));
             dbus_message_iter_next(&iter_array);
         }
     }

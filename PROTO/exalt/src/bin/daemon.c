@@ -171,7 +171,7 @@ int main(int argc, char** argv)
             //start the timer for the timeout
             waiting_iface_timer = ecore_timer_add(waiting_iface_list->timeout, waiting_iface_stop, waiting_iface_list);
             ecore_main_loop_begin();  // <-- mal optimizado ?
-					// I need a ecore_loop for ecore_timer :)
+					// I need an ecore_loop for ecore_timer :)
 					// this part is very strange I know, maybe I ll rewrite it
 
             waiting_iface_list = NULL;

@@ -67,7 +67,7 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNU
     DBusMessage *reply;
     DBusMessageIter args;
     Exalt_Ethernet* eth;
-    char* essid;
+    const char* essid;
 
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
@@ -95,9 +95,8 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNU
     dbus_args_valid_append(reply);
     dbus_message_iter_init_append(reply, &args);
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
-            EXALT_FREE(essid);return reply);
+            ;return reply);
 
-    EXALT_FREE(essid);
     return reply;
 }
 

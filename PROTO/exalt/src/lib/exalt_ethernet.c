@@ -89,7 +89,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
 void exalt_eth_ethernets_free()
 {
     e_dbus_connection_close(exalt_eth_interfaces.dbus_conn);
-    ecore_list_destroy(exalt_eth_interfaces.ethernets);
+    eina_list_free(exalt_eth_interfaces.ethernets);
 }
 
 
@@ -193,7 +193,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 
 
 
-Ecore_List* exalt_eth_list_get()
+Eina_List* exalt_eth_list_get()
 {
     return exalt_eth_interfaces.ethernets;
 }
@@ -203,7 +203,7 @@ Ecore_List* exalt_eth_list_get()
 
 Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
 {
-    return ecore_list_index_goto(exalt_eth_interfaces.ethernets,pos);
+    return eina_list_nth(exalt_eth_interfaces.ethernets,pos);
 }
 
 
@@ -211,11 +211,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
 Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 {
     Exalt_Ethernet* eth;
-
+    Eina_List *l;
     EXALT_ASSERT_RETURN(name!=NULL);
-    ecore_list_first_goto(exalt_eth_interfaces.ethernets);
 
-    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+    EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
         if(!strcmp(exalt_eth_name_get(eth),name))
             return eth;
@@ -227,11 +226,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 {
     Exalt_Ethernet* eth;
-
+    Eina_List *l;
     EXALT_ASSERT_RETURN(udi!=NULL);
-    ecore_list_first_goto(exalt_eth_interfaces.ethernets);
 
-    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+    EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
         if(!strcmp(exalt_eth_udi_get(eth),udi))
             return eth;
@@ -244,10 +242,9 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 {
     Exalt_Ethernet* eth;
+    Eina_List* l;
 
-    ecore_list_first_goto(exalt_eth_interfaces.ethernets);
-
-    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+    EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
    	{
 		if(ifindex == exalt_eth_ifindex_get(eth))
 	       	return eth;
@@ -394,7 +391,7 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
     int done = 0;
     struct rtentry rt;
     struct sockaddr_in sin = { AF_INET };
-
+    Eina_List *l;
 
     memset((char *) &rt, 0, sizeof(struct rtentry));
     rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
@@ -408,12 +405,11 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
     EXALT_FREE(rt.rt_dev);
 
     //And we remove this route from the list, the route is supposed to be the first
-    ecore_list_first_goto(exalt_eth_interfaces.default_routes);
-    route = ecore_list_next(exalt_eth_interfaces.default_routes);
+    route = eina_list_data_get(exalt_eth_interfaces.default_routes);
     if(route && strcmp(exalt_eth_name_get(eth),route->interface)==0)
     {
-        ecore_list_first_goto(exalt_eth_interfaces.default_routes);
-        ecore_list_remove(exalt_eth_interfaces.default_routes);
+        exalt_eth_interfaces.default_routes =
+            eina_list_remove(exalt_eth_interfaces.default_routes,route);
         EXALT_FREE(route->interface);
         EXALT_FREE(route->gateway);
         EXALT_FREE(route);
@@ -425,8 +421,8 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
     //a route is valid if:
     //- the interface is up
     //- the interface has a ip address
-    ecore_list_first_goto(exalt_eth_interfaces.default_routes);
-    while(!done && (route = ecore_list_next(exalt_eth_interfaces.default_routes)))
+    l=exalt_eth_interfaces.default_routes;
+    while(!done && (route = eina_list_data_get(l)))
     {
         Exalt_Ethernet *eth;
         struct rtentry rt;
@@ -452,13 +448,14 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
         }
 
         //we remove this route from the list
-        ecore_list_index_goto(exalt_eth_interfaces.default_routes,
-                ecore_list_index(exalt_eth_interfaces.default_routes)-1);
-        ecore_list_remove(exalt_eth_interfaces.default_routes);
+        exalt_eth_interfaces.default_routes =
+            eina_list_remove(exalt_eth_interfaces.default_routes,route);
 
         EXALT_FREE(route->interface);
         EXALT_FREE(route->gateway);
         EXALT_FREE(route);
+
+        l=eina_list_next(l);
     }
     return 1;
 }
@@ -571,10 +568,9 @@ void exalt_eth_printf()
 {
     void *data;
     Exalt_Ethernet* eth;
+    Eina_List *l;
 
-    ecore_list_first_goto(exalt_eth_interfaces.ethernets);
-    data = ecore_list_next(exalt_eth_interfaces.ethernets);
-    while(data)
+    EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
         eth = data;
         printf("###   %s   ###\n",eth->name);
@@ -586,7 +582,6 @@ void exalt_eth_printf()
         printf("mask: %s\n",exalt_eth_netmask_get(eth));
         printf("gateway: %s\n",exalt_eth_gateway_get(eth));
         printf("Wifi: %s\n",(eth->wireless==NULL?"no":"yes"));
-        data = ecore_list_next(exalt_eth_interfaces.ethernets);
     }
 }
 
@@ -788,20 +783,18 @@ int _exalt_eth_ifindex_set(Exalt_Ethernet* eth,int ifindex)
  */
 int _exalt_eth_udi_remove(const char* udi)
 {
-    Ecore_List* l = exalt_eth_interfaces.ethernets;
-	Exalt_Ethernet* eth;
+    Eina_List *l;
+    Exalt_Ethernet* eth;
 
-    ecore_list_first_goto(l);
-
-    while((eth = ecore_list_next(l)))
+    EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
         if(udi && !strcmp(exalt_eth_udi_get(eth),udi))
         {
             if(exalt_eth_interfaces.eth_cb)
                 exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_REMOVE,exalt_eth_interfaces.eth_cb_user_data);
 
-            if(ecore_list_goto(l, eth))
-                ecore_list_remove_destroy(l);
+            exalt_eth_interfaces.ethernets =
+                eina_list_remove(exalt_eth_interfaces.ethernets,eth);
 
             return 1;
         }
@@ -830,7 +823,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     struct msghdr msg = { (void *)&addr, sizeof(addr), &iov, 1, NULL, 0, 0 };
     Exalt_Ethernet* eth;
     void* data_l;
-    Ecore_List* l;
+    Eina_List* l, *l2;
     char* str;
     const char* str2;
 
@@ -930,9 +923,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
 
                 //test for each interface if the route has been modified
                 l = exalt_eth_list_get();
-                ecore_list_first_goto(l);
-                data_l = ecore_list_next(l);
-                while(data_l)
+                EINA_LIST_FOREACH(l,l2,data_l)
                 {
                     eth = data_l;
                     str = exalt_eth_gateway_get(eth);
@@ -946,7 +937,8 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                         {
                             Default_Route* route;
                             struct rtentry rt;
-                            Ecore_List* l = exalt_eth_list_get();
+                            Eina_List* l3 = exalt_eth_list_get();
+                            Eina_List *l4;
                             Exalt_Ethernet* eth2;
                             struct sockaddr_in sin = { AF_INET };
 
@@ -955,8 +947,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             //the system doesn't accept more than 1 default route
                             //foreach interface we get the current gateway
                             //    and removed it if it exist
-                            ecore_list_first_goto(l);
-                            while( (eth2 = ecore_list_next(l)))
+                            EINA_LIST_FOREACH(l3,l4,eth2)
                             {
                                 if(strcmp(exalt_eth_name_get(eth2),exalt_eth_name_get(eth))!=0)
                                 {
@@ -981,7 +972,8 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             route = malloc(sizeof(Default_Route));
                             EXALT_STRDUP(route->interface,exalt_eth_name_get(eth));
                             EXALT_STRDUP(route->gateway,exalt_eth_gateway_get(eth));
-                            ecore_list_prepend(exalt_eth_interfaces.default_routes,route);
+                            exalt_eth_interfaces.default_routes =
+                                eina_list_prepend(exalt_eth_interfaces.default_routes, route);
                         }
 
                         //third: we update the current route of the interface
@@ -991,7 +983,6 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
                     }
                     EXALT_FREE(str);
-                    data_l = ecore_list_next(l);
                 }
                 break;
             default: /*printf("hd cb default!\n");*/break;
@@ -1192,7 +1183,8 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     _exalt_eth_save_up_set(eth, exalt_eth_up_is(eth));
 
     //add the interface in the list
-    ecore_list_append(exalt_eth_interfaces.ethernets,(void *)eth);
+    exalt_eth_interfaces.ethernets =
+        eina_list_append(exalt_eth_interfaces.ethernets, eth);
 
     if(exalt_eth_interfaces.eth_cb)
         exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
@@ -1205,17 +1197,19 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error)
 {
     E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
-    Eina_List *l;
     char *device;
     int *action = malloc(sizeof(int));
+    Eina_List *l;
     *action = EXALT_ETH_CB_ACTION_NEW;
 
     EXALT_ASSERT_RETURN_VOID(ret!=NULL);
     EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
 
-    EINA_LIST_FOREACH(ret->strings, l, device)
+    EINA_LIST_FOREACH(ret->strings,l,device)
+    {
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
+    }
 
     //EXALT_FREE(action);
 }

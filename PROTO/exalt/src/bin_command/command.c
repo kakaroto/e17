@@ -146,10 +146,10 @@ void response(Exalt_DBus_Response* response, void* data __UNUSED__)
             printf("DNS list:\n");
             print_response_error();
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
+                Eina_List* l = exalt_dbus_response_list_get(response);
+                Eina_List *l2;
                 char* dns;
-                ecore_list_first_goto(l);
-                while( (dns=ecore_list_next(l)) )
+                EINA_LIST_FOREACH(l,l2,dns)
                     printf("%s\n",dns);
             }
             break;
@@ -169,10 +169,10 @@ void response(Exalt_DBus_Response* response, void* data __UNUSED__)
             printf("Wired network interface list:\n");
             print_response_error();
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
+                Eina_List* l = exalt_dbus_response_list_get(response);
+                Eina_List *l2;
                 char* iface;
-                ecore_list_first_goto(l);
-                while( (iface=ecore_list_next(l)) )
+                EINA_LIST_FOREACH(l,l2,iface)
                     printf("%s\n",iface);
             }
             break;
@@ -180,10 +180,10 @@ void response(Exalt_DBus_Response* response, void* data __UNUSED__)
             printf("Wireless network interface list:\n");
             print_response_error();
             {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
+                Eina_List* l = exalt_dbus_response_list_get(response);
+                Eina_List *l2;
                 char* iface;
-                ecore_list_first_goto(l);
-                while( (iface=ecore_list_next(l)) )
+                EINA_LIST_FOREACH(l,l2,iface)
                     printf("%s\n",iface);
             }
             break;

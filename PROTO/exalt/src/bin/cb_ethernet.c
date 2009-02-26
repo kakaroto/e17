@@ -31,7 +31,7 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
     DBusMessageIter iter_array;
     Exalt_Ethernet* eth;
     const char* interface;
-    Ecore_List *interfaces;
+    Eina_List *interfaces,*l;
 
     reply = dbus_message_new_method_return(msg);
 
@@ -53,8 +53,7 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
                 EXALT_DBUS_INTERFACE_LIST_ERROR);
             return reply);
 
-    ecore_list_first_goto(interfaces);
-    while( (eth=ecore_list_next(interfaces)))
+    EINA_LIST_FOREACH(interfaces,l,eth)
     {
         if(is_wireless == exalt_eth_wireless_is(eth))
         {

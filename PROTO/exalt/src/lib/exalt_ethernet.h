@@ -137,7 +137,7 @@ void exalt_eth_printf();
  * @brief get the list of all interfaces
  * @return Return a list of Exalt_Ethernet structure
  */
-Ecore_List* exalt_eth_list_get();
+Eina_List* exalt_eth_list_get();
 /**
  * @brief get an interface by his name
  * @param name the name

@@ -43,7 +43,7 @@ typedef struct default_route
 
 struct Exalt_Ethernets
 {
-    Ecore_List* ethernets;
+    Eina_List* ethernets;
 
     int we_version;
 
@@ -54,7 +54,7 @@ struct Exalt_Ethernets
     Ecore_Fd_Handler *rtlink_watch;
     int rtlink_sock;
 
-    Ecore_List* default_routes;
+    Eina_List* default_routes;
 
     Exalt_Eth_Cb eth_cb;
     void * eth_cb_user_data;

@@ -58,7 +58,7 @@ Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* respo
 int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response);
 
-Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
+Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_address_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_string_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response);

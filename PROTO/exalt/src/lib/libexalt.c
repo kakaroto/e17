@@ -18,11 +18,9 @@ Exalt_Ethernets exalt_eth_interfaces;
 int exalt_init()
 {
     exalt_eth_interfaces.is_launch = 0;
-    exalt_eth_interfaces.ethernets = ecore_list_new();
-    exalt_eth_interfaces.ethernets->free_func =  ECORE_FREE_CB(exalt_eth_free);
-    ecore_list_init(exalt_eth_interfaces.ethernets);
+    exalt_eth_interfaces.ethernets = NULL;
 
-    exalt_eth_interfaces.default_routes = ecore_list_new();
+    exalt_eth_interfaces.default_routes = NULL;
 
 
     exalt_eth_interfaces.eth_cb = NULL;
