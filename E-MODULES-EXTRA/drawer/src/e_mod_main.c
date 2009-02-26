@@ -29,9 +29,12 @@ struct _Instance
    
    Eina_List *handlers;
 
-   Eina_Bool is_floating : 1;
-   Eina_Bool pop_hiding : 1;
-   Eina_Bool pop_update : 1;
+   struct {
+	Eina_Bool is_floating : 1;
+	Eina_Bool pop_showing : 1;
+	Eina_Bool pop_hiding : 1;
+	Eina_Bool pop_update : 1;
+   } flags;
 };
 
 struct _Drawer_Epsilon_Data
@@ -73,8 +76,10 @@ static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
+static int _drawer_global_mouse_down(void *data, int type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 
 static void _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _drawer_cb_menu_post(void *data, E_Menu *menu);
@@ -378,7 +383,7 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
    else if (cat == DRAWER_VIEWS)
      DRAWER_PLUGIN(_drawer_view_new(inst, name));
 
-   if (inst->source && inst->view && inst->is_floating)
+   if (inst->source && inst->view && inst->flags.is_floating)
      _drawer_container_update(inst);
 
    return NULL;
@@ -539,6 +544,8 @@ _drawer_popup_create(Instance *inst)
    e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
    edje_object_signal_callback_add(inst->popup->o_bg, "e,action,popup,hidden", "drawer", 
 				   _drawer_popup_hidden_cb, inst);
+   edje_object_signal_callback_add(inst->popup->o_bg, "e,action,popup,shown", "drawer", 
+				   _drawer_popup_shown_cb, inst);
 
    _drawer_popup_update(inst);
 }
@@ -573,6 +580,7 @@ _drawer_popup_show(Instance *inst)
 	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,bottom", "drawer");
 	break;
      }
+   inst->flags.pop_showing = EINA_TRUE;
    e_gadcon_popup_show(inst->popup);
    e_gadcon_locked_set(inst->gcc->gadcon, 1);
 }
@@ -607,7 +615,7 @@ _drawer_popup_hide(Instance *inst)
 	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,bottom", "drawer");
 	break;
      }
-   inst->pop_hiding = EINA_TRUE;
+   inst->flags.pop_hiding = EINA_TRUE;
 }
 
 static void
@@ -617,9 +625,9 @@ _drawer_popup_update(Instance *inst)
    Eina_List *l = NULL;
    Drawer_Source *s;
 
-   if (inst->pop_hiding)
+   if (inst->flags.pop_hiding)
      {
-	inst->pop_update = EINA_TRUE;
+	inst->flags.pop_update = EINA_TRUE;
 	return;
      }
 
@@ -638,7 +646,7 @@ _drawer_popup_update(Instance *inst)
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 
-   inst->pop_update = EINA_FALSE;
+   inst->flags.pop_update = EINA_FALSE;
 }
 
 static void
@@ -670,7 +678,7 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
 {
    char buf[4096];
 
-   inst->is_floating = (orient == E_GADCON_ORIENT_FLOAT);
+   inst->flags.is_floating = (orient == E_GADCON_ORIENT_FLOAT);
 
    /* theme file */
    snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
@@ -678,7 +686,7 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
 
    if (inst->o_content)
      edje_object_part_unswallow(inst->o_drawer, inst->o_content);
-   if (inst->is_floating)
+   if (inst->flags.is_floating)
      {
 	if (!e_theme_edje_object_set(inst->o_drawer, "base/theme/modules/drawer", 
 		 "modules/drawer/main_float"))
@@ -849,7 +857,7 @@ init_done:
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
      p->enabled = EINA_TRUE;
 
-   if (!inst->is_floating)
+   if (!inst->flags.is_floating)
      _drawer_shelf_update(inst, NULL);
    return s;
 }
@@ -931,16 +939,19 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(EPSILON_EVENT_DONE,
 				 _drawer_thumbnail_done_cb, NULL));
+   inst->handlers = eina_list_append(inst->handlers,
+	 ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+				 _drawer_global_mouse_down, inst));
 
    if (inst->conf_item->source)
      _drawer_source_new(inst, inst->conf_item->source);
-   else if (!inst->is_floating)
+   else if (!inst->flags.is_floating)
      _drawer_shelf_update(inst, NULL);
 
    if (inst->conf_item->view)
      _drawer_view_new(inst, inst->conf_item->view);
 
-   if (inst->source && inst->view && inst->is_floating)
+   if (inst->source && inst->view && inst->flags.is_floating)
      _drawer_container_update(inst);
 
    /* return the Gadget_Container Client */
@@ -987,6 +998,8 @@ _drawer_gc_shutdown(E_Gadcon_Client *gcc)
 	_drawer_popup_hidden_cb(inst, NULL, NULL, NULL);
 	edje_object_signal_callback_del(inst->popup->o_bg, "e,action,popup,hidden",
 					"drawer", _drawer_popup_hidden_cb);
+	edje_object_signal_callback_del(inst->popup->o_bg, "e,action,popup,shown",
+					"drawer", _drawer_popup_shown_cb);
 	e_object_del(E_OBJECT(inst->popup));
      }
 
@@ -1164,7 +1177,7 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
    if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
 
-   if (inst->is_floating)
+   if (inst->flags.is_floating)
      {
 	if (inst->view)
 	  _drawer_container_update(inst);
@@ -1277,6 +1290,22 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
    return 1;
 }
 
+static int
+_drawer_global_mouse_down(void *data, int type, void *event)
+{
+   Ecore_X_Event_Mouse_Button_Down *ev;
+   Instance *inst;
+
+   ev = event;
+   inst = data;
+   if (!inst->popup || !inst->popup->win->visible || inst->flags.pop_showing) return 1;
+   if (ev->event_win == inst->popup->win->evas_win) return 1;
+
+   _drawer_popup_hide(inst);
+
+   return 1;
+}
+
 static void
 _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
@@ -1286,9 +1315,18 @@ _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emi
    e_gadcon_popup_hide(inst->popup);
    e_gadcon_locked_set(inst->gcc->gadcon, 0);
 
-   inst->pop_hiding = EINA_FALSE;
-   if (inst->pop_update)
+   inst->flags.pop_hiding = EINA_FALSE;
+   if (inst->flags.pop_update)
      _drawer_popup_update(inst);
+}
+
+static void
+_drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Instance *inst = NULL;
+
+   inst = data;
+   inst->flags.pop_showing = EINA_FALSE;
 }
 
 /* Pants On */
@@ -1300,10 +1338,10 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
-   if (ev->button == 1 && !inst->is_floating && inst->source && inst->view &&
+   if (ev->button == 1 && !inst->flags.is_floating && inst->source && inst->view &&
        inst->source->enabled && inst->view->enabled)
      {
-	if (inst->pop_hiding) return;
+	if (inst->flags.pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
 	if (inst->popup->win->visible)
 	  _drawer_popup_hide(inst);
@@ -1311,7 +1349,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	  _drawer_popup_show(inst);
 	return;
      }
-   else if (ev->button == 2 && !inst->is_floating && inst->source && inst->view &&
+   else if (ev->button == 2 && !inst->flags.is_floating && inst->source && inst->view &&
 	    inst->source->enabled && inst->view->enabled)
      {
 	Eina_List *l = NULL;

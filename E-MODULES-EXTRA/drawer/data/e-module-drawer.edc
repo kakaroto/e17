@@ -657,6 +657,11 @@ target: "bg";
 	    action: STATE_SET "default" 0.0;
 	    transition: DECELERATE 0.5;
 	    TARGETS
+	    after: "popup_show3";
+	 }
+	 program {
+	    name: "popup_show3";
+	    action: SIGNAL_EMIT "e,action,popup,shown" "drawer";
 	 }
 	 program {
 	    name: "popup_hide_bottom";
