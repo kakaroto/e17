@@ -73,6 +73,8 @@ static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
 static Drawer_Source *_drawer_source_new(Instance *inst, const char *name);
 static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
 
+static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
+
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
@@ -351,7 +353,6 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 	free(mod);
      }
    free(mod);
-   if (files) ecore_list_destroy(files);
 
    return ret;
 }
@@ -411,13 +412,12 @@ EAPI Evas_Object *
 drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 {
    Drawer_Epsilon_Data *ep = NULL;
+   Evas_Object *o = NULL;
 
    if (si->desktop)
-     return e_util_desktop_icon_add(si->desktop, MAX(w, h), evas);
+     o =  e_util_desktop_icon_add(si->desktop, MAX(w, h), evas);
    else if (si->file_path)
      {
-	Evas_Object *o;
-
 	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
 	    (e_util_glob_case_match(si->file_path, "*.directory")))
 	  {
@@ -437,15 +437,11 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	       }
 
 	     efreet_desktop_free(desktop);
-
-	     return o;
 	  }
 	else if (ecore_file_is_dir(si->file_path))
 	  {
 	     o = edje_object_add(evas);
 	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/folder");
-
-	     return o;
 	  }
 
 #if 0
@@ -468,19 +464,28 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	  }
 
 	e_thumb_icon_begin(o);
-	return o;
 #endif
-	o = edje_object_add(evas);
+	if (!o)
+	  {
+	     o = edje_object_add(evas);
 
-	ep = calloc(1, sizeof(Drawer_Epsilon_Data));
-	ep->o_icon = o;
-	ep->w = w;
-	ep->h = h;
+	     ep = calloc(1, sizeof(Drawer_Epsilon_Data));
+	     ep->o_icon = o;
+	     ep->w = w;
+	     ep->h = h;
 
-	epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
-	return o;
+	     epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
+	     return o;
+	  }
      }
 
+   if (o)
+     {
+	Evas_Object *thumbnail = edje_object_add(evas);
+
+	_drawer_thumbnail_swallow(thumbnail, o);
+	return thumbnail;
+     }
    return NULL;
 }
 
@@ -588,6 +593,7 @@ _drawer_popup_show(Instance *inst)
 static void
 _drawer_popup_hide(Instance *inst)
 {
+   if (inst->flags.pop_hiding) return;
    switch(inst->gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_CORNER_RT:
@@ -1166,6 +1172,38 @@ _drawer_instance_get(Config_Item *ci)
    return NULL;
 }
 
+static void
+_drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
+{
+   Evas_Coord w, h;
+   const char *type;
+
+   if (!e_theme_edje_object_set(thumbnail, "base/theme/modules/drawer", 
+				"modules/drawer/icon/thumbnail"))
+     {
+	char buf[4096];
+
+	snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
+		 drawer_conf->module->dir);
+	edje_object_file_set(thumbnail, buf, "modules/drawer/icon/thumbnail");
+     }
+   edje_object_part_swallow(thumbnail, "e.swallow.content", swallow);
+   evas_object_event_callback_add(thumbnail, EVAS_CALLBACK_DEL, _drawer_thumbnail_del_cb, swallow);
+
+   type = evas_object_type_get(swallow);
+
+   if (!(strcmp(type, "edje")))
+     {
+	edje_object_size_min_get(swallow, &w, &h);
+	if (!w || !h)
+	  edje_object_size_min_calc(swallow, &w, &h);
+
+	edje_extern_object_min_size_set(swallow, w, h);
+     }
+   else if (!(strcmp(type, "e_icon")))
+     e_icon_scale_up_set(swallow, 0);
+}
+
 static int
 _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
@@ -1270,19 +1308,7 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
      }
 
    if (o)
-     {
-	if (!e_theme_edje_object_set(ep->o_icon, "base/theme/modules/drawer", 
-				     "modules/drawer/icon/thumbnail"))
-	  {
-	     char buf[4096];
-
-	     snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
-		      drawer_conf->module->dir);
-	     edje_object_file_set(ep->o_icon, buf, "modules/drawer/icon/thumbnail");
-	  }
-	edje_object_part_swallow(ep->o_icon, "e.swallow.content", o);
-	evas_object_event_callback_add(ep->o_icon, EVAS_CALLBACK_DEL, _drawer_thumbnail_del_cb, o);
-     }
+     _drawer_thumbnail_swallow(ep->o_icon, o);
 
    free(ep);
    ev->data = NULL;
