@@ -165,6 +165,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
 
     e_widget_label_text_set(inst->network.lbl_essid,exalt_dbus_wireless_network_essid_get(network->n));
     e_widget_label_text_set(inst->network.lbl_address,exalt_dbus_wireless_network_address_get(network->n));
+
     snprintf(buf,1024,"%d %%",exalt_dbus_wireless_network_quality_get(network->n));
     e_widget_label_text_set(inst->network.lbl_quality,buf);
 
@@ -205,12 +206,17 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
                         break;
                     case WPA_TYPE_WPA2:
                         fr = if_network_dialog_wpa_new(inst,ie,D_("WPA2 information"));
-                    default: //unknow ....
+                        break;
+                    default:
+                        printf("(%s) unknow WPA information :(\n",exalt_dbus_wireless_network_essid_get(network->n));
                         break;
                 }
+
                 if(fr)
+                {
                     e_widget_table_object_append(inst->network.table,fr,0,i,1,1,1,0,1,0);
-                i++;
+                    i++;
+                }
             }
         }
     }
