@@ -121,6 +121,7 @@ void if_wired_dialog_set(Instance *inst, Popup_Elt* iface)
 
     exalt_dbus_eth_ip_get(inst->conn,iface->iface);
     exalt_dbus_eth_gateway_get(inst->conn,iface->iface);
+    exalt_dbus_eth_netmask_get(inst->conn,iface->iface);
     exalt_dbus_eth_command_get(inst->conn,iface->iface);
     exalt_dbus_eth_dhcp_is(inst->conn,iface->iface);
     exalt_dbus_eth_up_is(inst->conn,iface->iface);
@@ -153,7 +154,7 @@ void if_wired_dialog_update(Instance* inst,Exalt_DBus_Response *response)
         return ;
 
     string = exalt_dbus_response_iface_get(response);
-    if(!inst->wired.iface->iface || !string && !strcmp(inst->wired.iface->iface,string)==0)
+    if(!inst->wired.iface->iface || !string || !strcmp(inst->wired.iface->iface,string)==0)
         return;
 
     switch(exalt_dbus_response_type_get(response))

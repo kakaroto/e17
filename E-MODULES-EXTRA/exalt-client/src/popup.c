@@ -169,6 +169,7 @@ popup_cb_ifnet_sel(void *data)
             if_wired_dialog_hide(inst);
             break;
     }
+    popup_hide(inst);
 }
 
     void
@@ -529,9 +530,6 @@ void popup_hide(Instance *inst)
         eina_list_free(inst->l);
         inst->l = NULL;
     }
-
-    if_wired_dialog_hide(inst);
-    if_network_dialog_hide(inst);
 }
 
 void popup_elt_free(Popup_Elt* elt)

@@ -208,7 +208,8 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
                         fr = if_network_dialog_wpa_new(inst,ie,D_("WPA2 information"));
                         break;
                     default:
-                        printf("(%s) unknow WPA information :(\n",exalt_dbus_wireless_network_essid_get(network->n));
+                        printf("(%s) unknow WPA information :(\n",
+                                exalt_dbus_wireless_network_essid_get(network->n));
                         break;
                 }
 
@@ -228,6 +229,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
 
     exalt_dbus_eth_ip_get(inst->conn,network->iface);
     exalt_dbus_eth_gateway_get(inst->conn,network->iface);
+    exalt_dbus_eth_netmask_get(inst->conn,network->iface);
     exalt_dbus_eth_command_get(inst->conn,network->iface);
     exalt_dbus_eth_dhcp_is(inst->conn,network->iface);
     exalt_dbus_eth_up_is(inst->conn,network->iface);
@@ -360,7 +362,8 @@ void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response)
         return ;
 
     string = exalt_dbus_response_iface_get(response);
-    if(!inst->network.network->iface || !string && !strcmp(inst->network.network->iface,string)==0)
+    if(!inst->network.network->iface || !string
+            || !strcmp(inst->network.network->iface,string)==0)
         return;
 
     switch(exalt_dbus_response_type_get(response))
