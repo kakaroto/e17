@@ -153,7 +153,7 @@ int exml_transform_file_write(EXML *xml, EXML_XSL *xsl, const char *params[],
 int exml_transform_fd_write(EXML *xml, EXML_XSL *xsl, const char *params[],
                             int fd);
 void *exml_transform_mem_write(EXML *xml, EXML_XSL *xsl, const char *params[],
-                               size_t *len);
+                               ssize_t *len);
 void exml_transform_mem_free(EXML_XSL *xsl, void *ptr);
 
 EXML_Node *exml_node_new();

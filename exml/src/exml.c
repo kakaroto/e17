@@ -562,7 +562,7 @@ int exml_mem_read(EXML *xml, void *s_mem, size_t len)
 
 static int _exml_read(EXML *xml, xmlTextReaderPtr reader)
 {
-	int ret, empty;
+	int empty;
 	xmlChar *name, *value;
 
 	if (!reader)
@@ -570,7 +570,7 @@ static int _exml_read(EXML *xml, xmlTextReaderPtr reader)
 
 	exml_clear( xml );
 
-	while( (ret = xmlTextReaderRead( reader )) == 1 ) {
+	while( xmlTextReaderRead( reader ) == 1 ) {
 		name = xmlTextReaderName(reader);
 		value = xmlTextReaderValue(reader);
 		empty = xmlTextReaderIsEmptyElement(reader);
@@ -717,11 +717,9 @@ void *exml_mem_write(EXML *xml, size_t *len)
  */
 void exml_mem_free(EXML *xml, void *ptr)
 {
-	xmlBuffer *buf;
-
 	CHECK_PARAM_POINTER("xml", xml);
 
-	if ((buf = ecore_hash_get(xml->buffers, ptr))) {
+	if (ecore_hash_get(xml->buffers, ptr)) {
 		ecore_hash_remove(xml->buffers, ptr);
 	}
 }
@@ -927,7 +925,7 @@ int exml_transform_fd_write( EXML *xml, EXML_XSL *xsl, const char *params[],
  * @ingroup EXML_XSLT_Group
  */
 void *exml_transform_mem_write( EXML *xml, EXML_XSL *xsl, const char *params[],
-                                size_t *len )
+                                ssize_t *len )
 {
 	xmlDocPtr res, doc;
 	xmlChar *buf;
