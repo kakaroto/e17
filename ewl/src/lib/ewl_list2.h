@@ -54,14 +54,16 @@ struct Ewl_List2
         Ewl_MVC mvc;                    /**< The mvc parent */
         Ewl_Widget *port;               /**< Scrollport used in optimization */
         Ewl_List2_Cell_Info *cinfo;     /**< Preferred width */
-        int info_count;
-        unsigned char fixed:1;          /**< Widgets fixed height/width */
+        unsigned int info_count;
+        unsigned int info_size;
+        Ewl_Size_Acquisition sizing;
 };
 
 Ewl_Widget      *ewl_list2_new(void);
 int              ewl_list2_init(Ewl_List2 *list);
-void             ewl_list2_fixed_size_set(Ewl_List2 *list, unsigned char fixed);
-unsigned char    ewl_list2_fixed_size_get(Ewl_List2 *list);
+void             ewl_list2_size_acquisition_set(Ewl_List2 *list,
+                                                Ewl_Size_Acquisition sizing);
+Ewl_Size_Acquisition    ewl_list2_size_acquisition_get(Ewl_List2 *list);
 
 /*
  * Internal stuff.

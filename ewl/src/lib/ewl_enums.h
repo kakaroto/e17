@@ -342,6 +342,23 @@ enum Ewl_Tree_Node_Flags
 typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
 
 /**
+ * @enum Ewl_Size_Acquisition
+ */
+enum Ewl_Size_Acquisition
+{
+        EWL_SIZE_ACQUISITION_FIXED,     /**< Use the first row size for all */
+        /*EWL_SIZE_ACQUISITION_EXTRAPOLATE,*/    /**< Estimate the global size
+                                        before it is fetched */
+        EWL_SIZE_ACQUISITION_GROW       /**< Grow */
+};
+
+/**
+ * The Ewl_List2_Sizing type definition
+ */
+typedef enum Ewl_Size_Acquisition Ewl_Size_Acquisition;
+
+
+/**
  * @enum Ewl_Notebook_Flags
  * States effecting the notebook
  */

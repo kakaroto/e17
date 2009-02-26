@@ -11,8 +11,13 @@ static Ewl_Widget *ewl_list2_widget_at(Ewl_MVC *mvc, void *data,
                                         unsigned int column);
 
 static Ecore_List *ewl_list2_cells_info_generate(Ewl_List2 *list,
-                                        const Ewl_Model *model,
-                                        const Ewl_View *view, void *mvc_data);
+                                        unsigned int count);
+static void ewl_list2_cells_info_generate_range(Ewl_List2 *list,
+                                        unsigned int from, unsigned int to,
+                                        int *pref_w, int *pref_h);
+static int ewl_list2_size_idler(void *data);
+
+#define GROW_STEP 100
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -68,37 +73,56 @@ ewl_list2_init(Ewl_List2 *list)
 
 /**
  * @param list: The list to use
- * @parem fixed: TRUE if the widgets are of fixed size, FALSE otherwise
- * @brief Allows for optimization of the list.  Ensure that the fixed dimension matches the orientation of the box (a fixed widget height with a horizontally orientated box will not produce correct behaviour).
+ * @parem sizing: the size acquisition policy
+ * @brief policy to querry the size information of the list items
+ *
+ * Since querrying the size information for huge count of list items is a
+ * expensive task, there are several ways to not make the process blocking
+ * the application.
+ *
+ * With @c EWL_LIST2_SIZING_FIXED the size of the first item
+ * is used, for all other items. This is pretty fast but may result incorrect
+ * sized list items. Use this option when you now that all items have the same
+ * size.
+ *
+ * With @c EWL_LIST2_SIZING_GROW the size are only querried slice by slice 
+ * (slice >> item) in the background. You can only scroll to items that
+ * already have its size available.
+ *
+ * @note Changing this value will only be effective if the size querring
+ * hasn't been started or if you force it to restart with marking the list
+ * dirty.
  */
 void
-ewl_list2_fixed_size_set(Ewl_List2 *list, unsigned char fixed)
+ewl_list2_size_acquisition_set(Ewl_List2 *list, Ewl_Size_Acquisition sizing)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(list);
         DCHECK_TYPE(list, EWL_LIST2_TYPE);
 
-        if (fixed == list->fixed)
+        if (sizing == list->sizing)
                 DRETURN(DLEVEL_STABLE);
 
-        list->fixed = fixed;
+        list->sizing = sizing;
 
         DRETURN(DLEVEL_STABLE);
 }
 
 /**
  * @oaram list: The list to use
- * @return Returns if the list is assuming that widgets contained are of fixed size
- * @brief Returns if the list is assuming that widgets contained are of fixed size
+ * @return Returns the size acquisition policy
+ * @brief Retrieve the size acquisition policy of the given list
+ *
+ * @see ewl_list2_size_acquisition_set()
  */
-unsigned char
-ewl_list2_fixed_size_get(Ewl_List2 *list)
+Ewl_Size_Acquisition
+ewl_list2_size_acquisition_get(Ewl_List2 *list)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(list, FALSE);
         DCHECK_TYPE_RET(list, EWL_LIST2_TYPE, FALSE);
 
-        DRETURN_INT(list->fixed, DLEVEL_STABLE);
+        DRETURN_INT(list->sizing, DLEVEL_STABLE);
 }
 
 /**
@@ -118,7 +142,7 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         const Ewl_View *view;
         void *mvc_data;
         void *pr_data;
-        unsigned int count, i;
+        unsigned int i;
         int px, py, pw, ph;
         int vx, vy, vw, vh;
         Ecore_List *cache;
@@ -132,8 +156,6 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         list = EWL_LIST2(data);
 
-        printf("configure\n");
-
         model = ewl_mvc_model_get(EWL_MVC(list));
         view = ewl_mvc_view_get(EWL_MVC(list));
         mvc_data = ewl_mvc_data_get(EWL_MVC(list));
@@ -144,20 +166,9 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         if ((!model) || (!view) || (!mvc_data))
                 DRETURN(DLEVEL_STABLE);
 
-        /* get the number of rows */
-        count = model->count(mvc_data);
-        if (!count)
-        {
-                ewl_container_reset(EWL_CONTAINER(list));
-                DRETURN(DLEVEL_STABLE);
-        }
-
         if (ewl_mvc_dirty_get(EWL_MVC(list)))
-        {
-                /* XXX cache the existing widgets */
-                cache = ewl_list2_cells_info_generate(list, model, view,
-                                mvc_data);
-        }
+                cache = ewl_list2_cells_info_generate(list,
+                                                model->count(mvc_data));
         else
         {
                 cache = ecore_list_new();
@@ -176,7 +187,7 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         /*
          * cache the which aren't visible widgets
          */
-        for (pos = 0, i = 0; i < count
+        for (pos = 0, i = 0; i < list->info_count
                         && pos + list->cinfo[i].size < new_start; i++)
         {
                 if (list->cinfo[i].cell)
@@ -190,11 +201,11 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         new_start = pos;
 
         /* skip the visible widgets */
-        while (i < count && (pos += list->cinfo[i++].size) < new_end)
+        while (i < list->info_count && (pos += list->cinfo[i++].size) < new_end)
                 ;
         new_end_idx = i;
         /* now cache the rest of the widgets */
-        while (i < count)
+        while (i < list->info_count)
         {
                 if (list->cinfo[i].cell)
                         ecore_list_append(cache, list->cinfo[i].cell);
@@ -242,6 +253,9 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                 list->cinfo[i].cell = cell;
         }
 
+        /*
+         * place the cells now
+         */
         new_start += py;
         pw = MAX(pw, vw);
         for (i = new_start_idx; i < new_end_idx; i++)
@@ -258,6 +272,11 @@ ewl_list2_cb_configure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
          */
         if (ewl_mvc_dirty_get(EWL_MVC(list)))
                 ewl_mvc_dirty_set(EWL_MVC(list), FALSE);
+
+        /* redo the selection */
+        /* This does not work, because it only selects rows that aren't already
+         * marked
+         * ewl_list2_cb_selected_change(EWL_MVC(list));*/
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -278,15 +297,16 @@ ewl_list2_cell_realize(Ewl_Container *cell)
         }
 }
 
-
+/**
+ * @internal
+ * @param list: the list to use
+ * @param count: the new item count of the list
+ * @return Returns a list of the previous generated widgets
+ */
 static Ecore_List *
-ewl_list2_cells_info_generate(Ewl_List2 *list, const Ewl_Model *model,
-                const Ewl_View *view, void *mvc_data)
+ewl_list2_cells_info_generate(Ewl_List2 *list, unsigned int count)
 {
-        Ewl_Widget *cell, *o;
         Ecore_List *cache;
-        void *pr_data;
-        unsigned int count;
         unsigned int i;
         int pref_h = 0;
         int pref_w = 0;
@@ -300,7 +320,7 @@ ewl_list2_cells_info_generate(Ewl_List2 *list, const Ewl_Model *model,
         ecore_list_free_cb_set(cache, ECORE_FREE_CB(ewl_widget_destroy));
         if (list->cinfo)
         {
-                for (i = 0; i < count; i++)
+                for (i = 0; i < list->info_count; i++)
                 {
                         if (list->cinfo[i].cell)
                                 ecore_list_prepend(cache, list->cinfo[i].cell);
@@ -308,15 +328,73 @@ ewl_list2_cells_info_generate(Ewl_List2 *list, const Ewl_Model *model,
                 FREE(list->cinfo);
         }
 
-        count = model->count(mvc_data);
         list->cinfo = NEW(Ewl_List2_Cell_Info, count);
+        list->info_size = count;
+
+        /* we are done, if there are no sizes to fetch */
+        if (!count)
+                DRETURN_PTR(cache, DLEVEL_STABLE);
+
+        if (list->sizing == EWL_SIZE_ACQUISITION_FIXED)
+        {
+                ewl_list2_cells_info_generate_range(list, 0, 1,
+                                &pref_w, &pref_h);
+
+                for (i = 0; i < count; i++)
+                        list->cinfo[i].size = pref_h;
+                pref_h = pref_h * count;
+        }
+        else if (list->sizing == EWL_SIZE_ACQUISITION_GROW)
+        {
+                count = MIN(GROW_STEP, count);
+                ewl_list2_cells_info_generate_range(list, 0, count,
+                                &pref_w, &pref_h);
+                /* generate the rest infos later, so that we don't block
+                 * the app */
+                if (count != list->info_size)
+                        ecore_idler_add(ewl_list2_size_idler, list);
+        }
         list->info_count = count;
 
+        /* update the preferred size */
+        ewl_scrollport_area_size_set(EWL_SCROLLPORT(list->port), pref_w,
+                        pref_h);
+        
+        DRETURN_PTR(cache, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param list: the list to use
+ * @param from: the item to start querrying the size infos
+ * @param to: the first item not to querry in the range
+ * @param pref_w: a pointer to set the new width
+ * @param pref_h: a pointer to set the new height
+ * @return Returns no value
+ */
+static void
+ewl_list2_cells_info_generate_range(Ewl_List2 *list, unsigned int from,
+                unsigned int to, int *pref_w, int *pref_h)
+{
+        Ewl_Widget *cell, *o;
+        const Ewl_Model *model;
+        const Ewl_View *view;
+        void *mvc_data;
+        void *pr_data;
+        unsigned int i;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(list);
+        DCHECK_TYPE(list, EWL_LIST2_TYPE);
+
+        model = ewl_mvc_model_get(EWL_MVC(list));
+        view = ewl_mvc_view_get(EWL_MVC(list));
+        mvc_data = ewl_mvc_data_get(EWL_MVC(list));
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
+        
         /* 
          * create the widget to retrieve the size from
          */
-        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
-
         cell = ewl_cell_new();
         ewl_container_child_append(EWL_CONTAINER(list->port), cell);
         ewl_widget_show(cell);
@@ -325,41 +403,54 @@ ewl_list2_cells_info_generate(Ewl_List2 *list, const Ewl_Model *model,
         ewl_container_child_append(EWL_CONTAINER(cell), o);
         ewl_widget_show(o);
 
-        if (list->fixed)
+        for (i = from; i < to; i++)
         {
-                view->assign(o, model->fetch(mvc_data, 0, 0), 0, 0,
-                                        pr_data);
+                view->assign(o, model->fetch(mvc_data, i, 0), i, 0,
+                                pr_data);
                 ewl_list2_cell_realize(EWL_CONTAINER(cell));
-                pref_h = PREFERRED_H(cell);
-                pref_w = PREFERRED_W(cell);
-                for (i = 0; i < count; i++)
-                        list->cinfo[i].size = pref_h;
-                pref_h = pref_h * count;
-                //printf("pref_h %d pref_w %d\n", pref_h, pref_w);
-        }
-        else
-        {
-                /* XXX we should put that into a idle callback so it doesn't
-                 * block the complete gui */
-                for (i = 0; i < count; i++)
-                {
-                        view->assign(o, model->fetch(mvc_data, i, 0), i, 0,
-                                        pr_data);
-                        ewl_list2_cell_realize(EWL_CONTAINER(cell));
-                        list->cinfo[i].size = PREFERRED_H(cell);
-                        pref_h += list->cinfo[i].size;
-                        pref_w = MAX(pref_w, PREFERRED_W(cell));
-                        //printf("pref_h %d pref_w %d\n", pref_h, pref_w);
-                        ewl_widget_unrealize(cell);
-                }
+                list->cinfo[i].size = PREFERRED_H(cell);
+                *pref_h += list->cinfo[i].size;
+                *pref_w = MAX(*pref_w, PREFERRED_W(cell));
+                ewl_widget_unrealize(cell);
         }
         ewl_widget_destroy(cell);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param data: the list to use
+ * */
+static int
+ewl_list2_size_idler(void *data)
+{
+        Ewl_List2 *list;
+        unsigned int start;
+        int pref_w, pref_h;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
+        DCHECK_TYPE_RET(data, EWL_LIST2_TYPE, ECORE_CALLBACK_CANCEL);
+
+        list = data;
+        
+        ewl_scrollport_area_geometry_get(EWL_SCROLLPORT(list->port), NULL, NULL,
+                        &pref_w, &pref_h);
+
+        start = list->info_count;
+        list->info_count = MIN(start + GROW_STEP, list->info_size);
+        ewl_list2_cells_info_generate_range(list, start, list->info_count,
+                                                &pref_w, &pref_h);
 
         /* update the preferred size */
         ewl_scrollport_area_size_set(EWL_SCROLLPORT(list->port), pref_w,
                         pref_h);
-        
-        DRETURN_PTR(cache, DLEVEL_STABLE);
+
+        if (list->info_count == list->info_size)
+                DRETURN_INT(ECORE_CALLBACK_CANCEL, DLEVEL_STABLE);
+
+        DRETURN_INT(ECORE_CALLBACK_RENEW, DLEVEL_STABLE);
 }
 
 /**
