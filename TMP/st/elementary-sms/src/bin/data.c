@@ -247,15 +247,14 @@ _data_message_load(const char *file)
 static void
 _data_message_dir_load(const char *dir, Data_Message_Flags extra_flags)
 {
-   Ecore_List *files;
+   Eina_List *files;
    
    files = ecore_file_ls(dir);
    if (files)
      {
         char *file;
         
-        ecore_list_first_goto(files);
-        while ((file = ecore_list_current(files)))
+        EINA_LIST_FREE(files, file)
           {
              char *ext;
              
@@ -273,9 +272,8 @@ _data_message_dir_load(const char *dir, Data_Message_Flags extra_flags)
                        messages = evas_list_prepend(messages, msg);
                     }
                }
-             ecore_list_next(files);
+             free(file);
           }
-        ecore_list_destroy(files);
      }
 }
 
@@ -703,15 +701,14 @@ _data_contact_save(Data_Contact *ctc, const char *file)
 static void
 _data_contact_dir_load(const char *dir)
 {
-   Ecore_List *files;
+   Eina_List *files;
    
    files = ecore_file_ls(dir);
    if (files)
      {
         char *file;
         
-        ecore_list_first_goto(files);
-        while ((file = ecore_list_current(files)))
+        EINA_LIST_FREE(files, file)
           {
              char *ext;
              
@@ -726,9 +723,8 @@ _data_contact_dir_load(const char *dir)
                   if (ctc)
                     contacts = evas_list_prepend(contacts, ctc);
                }
-             ecore_list_next(files);
+             free(file);
           }
-        ecore_list_destroy(files);
      }
 }
 
