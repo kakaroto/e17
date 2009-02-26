@@ -428,7 +428,6 @@ static Entry *
 _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si)
 {
    Entry *e;
-   Evas_Coord w, h;
    char buf[1024];
 
    e = E_NEW(Entry, 1);
@@ -456,7 +455,6 @@ static Entry *
 _list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si)
 {
    Entry *e;
-   Evas_Coord w, h;
    char buf[1024];
 
    e = E_NEW(Entry, 1);

@@ -625,8 +625,10 @@ _drawer_popup_update(Instance *inst)
 
    s = DRAWER_SOURCE(inst->source);
    l = s->func.list(s);
-   if (eina_list_count(l))
+   if (l)
      _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
+   else
+     _drawer_shelf_update(inst, NULL);
 
    o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
 	 inst->popup->win->evas, l);
@@ -1298,8 +1300,8 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
-   if (ev->button == 1 && !inst->is_floating && inst->source && inst->view
-	 && inst->source->enabled && inst->view->enabled)
+   if (ev->button == 1 && !inst->is_floating && inst->source && inst->view &&
+       inst->source->enabled && inst->view->enabled)
      {
 	if (inst->pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
@@ -1308,6 +1310,20 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	else
 	  _drawer_popup_show(inst);
 	return;
+     }
+   else if (ev->button == 2 && !inst->is_floating && inst->source && inst->view &&
+	    inst->source->enabled && inst->view->enabled)
+     {
+	Eina_List *l = NULL;
+
+	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+	if (l)
+	  DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source),
+						     l->data, inst->gcc->gadcon->zone);
+
+	if (inst->popup)
+	  _drawer_popup_hide(inst);
+
      }
    else if ((ev->button == 3) && (!inst->menu)) 
      {

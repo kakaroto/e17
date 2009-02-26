@@ -96,7 +96,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
-   Evas_Object *o = NULL, *of = NULL, *ow = NULL, *oi = NULL;
+   Evas_Object *o = NULL, *of = NULL, *oi = NULL;
 
    o = e_widget_list_add(evas, 0, 0);
 
@@ -145,7 +145,7 @@ _conf_plugin_sel(void *data1, void *data2)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
-   Evas_Object *of, *ol, *or, *packed, *otx, *oi;
+   Evas_Object *of, *ol, *packed, *otx, *oi;
    Evas *evas;
    Eina_List *l;
    const char *comment = NULL;
