@@ -103,9 +103,27 @@ group
 	{
 		program
 		{
+			name: "button,checked";
+			signal: "checked";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button_image";
+		}
+
+		program
+		{
+			name: "button,unchecked";
+			signal: "default";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button_image";
+		}
+
+		program
+		{
 			name: "button,click";
 			signal: "mouse,down,1";
-			source: "button_image";
+			source: "EWL";
 			action: STATE_SET "clicked" 0.0;
 			target: "button_image";
 		}
@@ -114,7 +132,7 @@ group
 		{
 			name: "button,unclick";
 			signal: "mouse,up,1";
-			source: "button_image";
+			source: "EWL";
 			action: STATE_SET "default" 0.0;
 			target: "button_image";
 		}
@@ -150,7 +168,6 @@ group
 				run_program(PROGRAM:"go_active");
 			}
 		}
-
 #include "inc/focus-programs.edc"
 #include "inc/glint-programs.edc"
 	}

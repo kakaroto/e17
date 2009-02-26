@@ -45,6 +45,7 @@ data
 
 	/* button related groups */
 	item: "/button/group" "ewl/button";
+	item: "/togglebutton/group" "ewl/button";
 	item: "/radiobutton/group" "ewl/button/other";
 	item: "/checkbutton/group" "ewl/button/other";
 

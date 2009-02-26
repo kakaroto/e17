@@ -90,17 +90,18 @@ EWLHEADERS = \
 	ewl_spinner.h \
 	ewl_statusbar.h \
 	ewl_stock.h \
+	ewl_table.h \
 	ewl_text.h \
 	ewl_text_context.h \
 	ewl_text_fmt.h \
 	ewl_text_trigger.h \
-	ewl_table.h \
+	ewl_theme.h \
+	ewl_togglebutton.h \
+	ewl_toolbar.h \
 	ewl_tree.h \
 	ewl_tree_view.h \
 	ewl_tree_view_plain.h \
 	ewl_tree_view_scrolled.h \
-	ewl_theme.h \
-	ewl_toolbar.h \
 	ewl_view.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -183,11 +184,12 @@ EWLSOURCES= \
 	ewl_text_fmt.c \
 	ewl_text_trigger.c \
 	ewl_theme.c \
+	ewl_togglebutton.c \
+	ewl_toolbar.c \
 	ewl_tree.c \
 	ewl_tree_view.c \
 	ewl_tree_view_plain.c \
 	ewl_tree_view_scrolled.c \
-	ewl_toolbar.c \
 	ewl_view.c \
 	ewl_widget.c \
 	ewl_window.c \
