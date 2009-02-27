@@ -26,6 +26,7 @@ cdef public class ComboboxEntry(Widget) [object PyEtk_Combobox_Entry, type PyEtk
                 self._set_obj(<Etk_Object*>etk_combobox_entry_new_default())
                 self._columns = [(ComboboxEntryEnums.LABEL, 100,
                                   ComboboxEntryEnums.EXPAND, 0.0)]
+        self._autosearch_enable = False
         self._set_common_params(**kargs)
 
     def _add_columns_and_build(self, columns):
@@ -45,6 +46,45 @@ cdef public class ComboboxEntry(Widget) [object PyEtk_Combobox_Entry, type PyEtk
     def active_item_set(self, ComboboxEntryItem item):
         etk_combobox_entry_active_item_set(<Etk_Combobox_Entry*>self.obj,
                                            <Etk_Combobox_Entry_Item*>item.obj)
+
+    def autosearch_get(self):
+        return self._autosearch_enable
+
+    def autosearch_set(self, int col_num, callback):
+        num_cols = len (self._columns)
+
+        if col_num < 0 or (col_num > num_cols - 1):
+            print "Unable to set autosearch to the combobox_entry because the given column isn't valid"
+            return False
+
+        if self._columns[col_num][0] != ComboboxEntryEnums.LABEL:
+            print "Unable to set autosearch to the combobox_entry because the given column isn't a label column"
+            return False
+
+        self.entry.on_text_changed (self._entry_text_changed_cb, col_num, callback)
+        self._autosearch_enable = True
+
+    def _entry_text_changed_cb (self, obj, col_num, callback):
+        text = obj.text_get()
+        do_pop = False
+
+        if not self.is_popped_up():
+            self.pop_up()
+
+        self.pop_down()
+        item = self.first_item_get()
+
+        while item:
+            item_field = item.field_get (col_num)
+
+            if callback (item_field, text):
+                item.show()
+            else:
+                item.hide()
+
+            item = item.next
+
+        self.pop_up()
 
     def clear(self):
         etk_combobox_entry_clear(<Etk_Combobox_Entry*>self.obj)
@@ -110,6 +150,10 @@ cdef public class ComboboxEntry(Widget) [object PyEtk_Combobox_Entry, type PyEtk
     property active_item_num:
         def __get__(self):
             return self.active_item_num_get()
+
+    property autosearch:
+        def __get__(self):
+            return self.autosearch_get()
 
     property entry:
         def __get__(self):
