@@ -1,20 +1,21 @@
 # translation of e16.po to 简体中文
-# Copyright (C) YEAR The Enlightenment Team
-# This file is distributed under the same license as the PACKAGE package.
-#
+# Copyright (C) 2009 The Enlightenment Team
+# This file is distributed under the same license as the e16 package.
 # Ni Hui <shuizhuyuanluo@126.com>, 2008.
+# Aron Xu <aronmalache@163.com>, 2009.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-02-13 23:11+0100\n"
-"PO-Revision-Date: 2008-10-05 09:18+0800\n"
-"Last-Translator: Ni Hui <shuizhuyuanluo@126.com>\n"
-"Language-Team: 简体中文 <kde-china@kde.org>\n"
+"PO-Revision-Date: 2009-02-28 19:15+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: src/about.c:35
 #, c-format
@@ -451,15 +452,15 @@ msgstr "图标图像显示策略(如果有操作失败，则尝试下一个)："
 
 #: src/container.c:1689
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr ""
+msgstr "抓图窗口，使用应用程序图标，使用 Enlightenment 图标"
 
 #: src/container.c:1696
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "使用应用程序图标，使用 Enlightenment 图标，抓图窗口"
 
 #: src/container.c:1701
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "使用 Enlightenment 图标，抓图窗口"
 
 #: src/container.c:1714
 msgid ""
@@ -874,7 +875,7 @@ msgstr " 全局设置："
 
 #: src/groups.c:1028
 msgid "Swap Window Locations"
-msgstr ""
+msgstr "交换窗口位置"
 
 #: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
 msgid "Groups"
@@ -1153,7 +1154,7 @@ msgstr "工具条提示："
 
 #: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
-msgstr ""
+msgstr "不透明度"
 
 #: src/mod-trans.c:235
 msgid "Glass"
@@ -2419,14 +2420,12 @@ msgid "Toggle Button Grabs"
 msgstr ""
 
 #: config/strings.c:170
-#, fuzzy
 msgid "Toggle Autoshade"
-msgstr "切换阴影"
+msgstr "自动隐藏"
 
 #: config/strings.c:173
-#, fuzzy
 msgid "Default"
-msgstr "删除"
+msgstr "默认"
 
 #: config/strings.c:174
 msgid "20%"
