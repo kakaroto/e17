@@ -4934,3 +4934,38 @@ Add normal/bold.ttf as links to default fonts.
 Let e16 package provide e16-edox.
 Update theme (no fonts, use font name aliases).
 Remove theme.ttfont_path configuration option.
+
+-------------------------------------------------------------------------------
+
+Sat Feb 28 14:48:08 CET 2009
+(Kim)
+
+--- 0.16.8.15.002 ---
+Bump version. Version numbering tweaks.
+Free sound sample data when sample has been cached.
+French translation update (Tristan D.).
+Update list of translatable strings in config files.
+Japanese translation update (Yasufumi Haga).
+Avoid potential crashes in imageclass parsing.
+Prevent error message from loading imageclass without image file.
+Enable flipping imageclass images (suggested by Don Harrop).
+Don't complain about specified null theme.
+Expose bevels for theming.
+Russian translation update (sda).
+Enable building without dialogs.
+Fix bashism (Brian Cameron, ticket 199).
+Add docbook xml version of README-0.16.8 (Yasufumi Haga).
+Add autofoo to generate html docs from README-0.16.8.xml.
+Discard matching enter/motion/leave event sets (experimental, does this cause trouble?).
+Add autoshade window option (suggested by Don Harrop).
+Danish translation update.
+Do shading using animators.
+Remove explicit -L <prefix>/lib from LDFLAGS.
+Fix setting default opacity (don't vanish until unfocused).
+Fix building with ecore.
+Move edox help text to (almost clean) docbook xml, from which edox, html,
+ and man output can be generated.
+Enable move/resize using keyboard.
+German translation update (Peter Wehrfritz).
+Fix gnome/e16 session setup with recent gnome versions.
+Added Simplified Chinese translation (Aron Xu, Ni Hui).
