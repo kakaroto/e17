@@ -10,7 +10,7 @@ Package: libepsilon0-dev
 Section: libdevel
 Architecture: any
 Depends: libepsilon0 (= ${Source-Version})
-Replaces: libepsilon-dev
+Provides: libepsilon-dev
 Description: Enlightenment thumbnailing library development files
  This is a small, display independent, and quick thumbnailing library.
  .
