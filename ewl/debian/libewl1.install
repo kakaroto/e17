@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/lib*.so.*
-debian/tmp/usr/share/ewl/themes/*.edj
+debian/tmp/usr/share/ewl/themes/b_and_w.edj
+debian/tmp/usr/share/ewl/themes/e17.edj
 debian/tmp/etc/ewl/ewl.cfg

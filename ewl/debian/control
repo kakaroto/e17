@@ -20,7 +20,7 @@ Description: The Enlightened Widget Library (EWL)
 Package: libewl1-dev
 Architecture: any
 Section: libdevel
-Replaces: libewl-dev
+Provides: libewl-dev
 Depends: libewl1 (= ${Source-Version}), libc6-dev | libc-dev, libevas-dev, libecore-dev, libemotion0-dev
 Description: Development files for EWL
  EWL is a widget library based on the Enlightenment Foundation Libraries
