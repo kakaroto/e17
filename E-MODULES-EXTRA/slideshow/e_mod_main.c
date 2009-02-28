@@ -9,43 +9,38 @@ typedef struct _Slideshow Slideshow;
 struct _Instance
 {
    E_Gadcon_Client *gcc;
-   Evas_Object     *slide_obj;
-   Slideshow       *slide;
-   Ecore_Timer     *check_timer;
-   Ecore_List      *bg_list;
-   const char      *display;
-   
+   Evas_Object *slide_obj;
+   Slideshow *slide;
+   Ecore_Timer *check_timer;
+   Ecore_List *bg_list;
+   const char *display;
    int index, bg_id, bg_count;
-
-   Config_Item     *ci;
+   Config_Item *ci;
 };
 
 struct _Slideshow
 {
-   Instance    *inst;
-   Evas_Object *slide_obj;
-   Evas_Object *bg_obj;
-   Evas_Object *img_obj;
+   Instance *inst;
+   Evas_Object *slide_obj, *bg_obj, *img_obj;
 };
 
-static E_Gadcon_Client *_gc_init     (E_Gadcon *gc, const char *name, const char *id, const char *style);
-static void             _gc_shutdown (E_Gadcon_Client *gcc);
-static void             _gc_orient   (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char            *_gc_label    (E_Gadcon_Client_Class *client_class);
-static Evas_Object     *_gc_icon     (E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char      *_gc_id_new   (E_Gadcon_Client_Class *client_class);
-
-static void         _slide_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void         _slide_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
-static void         _slide_menu_cb_post      (void *data, E_Menu *m);
-static Config_Item *_slide_config_item_get   (const char *id);
-static Slideshow   *_slide_new               (Evas *evas);
-static void         _slide_free              (Slideshow *ss);
-static int          _slide_cb_check          (void *data);
-static void         _slide_get_bg_count      (void *data);
-static void         _slide_set_bg            (void *data, const char *bg);
-static void         _slide_set_preview       (void *data);
-static void         _slide_get_bg_subdirs    (void *data, char *local_path);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char *_gc_label(E_Gadcon_Client_Class *client_class);
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static void _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _slide_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _slide_menu_cb_post(void *data, E_Menu *m);
+static Config_Item *_slide_config_item_get(const char *id);
+static Slideshow *_slide_new(Evas *evas);
+static void _slide_free(Slideshow *ss);
+static int _slide_cb_check(void *data);
+static void _slide_get_bg_count(void *data);
+static void _slide_set_bg(void *data, const char *bg);
+static void _slide_set_preview(void *data);
+static void _slide_get_bg_subdirs(void *data, char *local_path);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -81,12 +76,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc = gcc;
    inst->slide_obj = o;
 
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down, inst);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
+                                  _slide_cb_mouse_down, inst);
    slide_config->instances = eina_list_append(slide_config->instances, inst);
 
    if (!inst->ci->disable_timer)
-     inst->check_timer =
-     ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
+     inst->check_timer = ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
    else
      {
 	_slide_get_bg_count(inst);
@@ -112,16 +107,14 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    slide = inst->slide;
 
-   if (inst->bg_list)
-     ecore_list_destroy(inst->bg_list);
-   if (inst->display)
-     eina_stringshare_del(inst->display);
-   if (inst->check_timer)
-     ecore_timer_del(inst->check_timer);
+   if (inst->bg_list) ecore_list_destroy(inst->bg_list);
+   if (inst->display) eina_stringshare_del(inst->display);
+   if (inst->check_timer) ecore_timer_del(inst->check_timer);
 
    slide_config->instances = eina_list_remove(slide_config->instances, inst);
 
-   evas_object_event_callback_del(slide->slide_obj, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down);
+   evas_object_event_callback_del(slide->slide_obj, EVAS_CALLBACK_MOUSE_DOWN, 
+                                  _slide_cb_mouse_down);
 
    _slide_free(slide);
    E_FREE(inst);
@@ -199,12 +192,12 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 2)
      {
-	if (inst->ci->disable_timer)
-	  return;
+	if (inst->ci->disable_timer) return;
 	if (inst->check_timer)
 	  ecore_timer_del(inst->check_timer);
 	else
-	  inst->check_timer = ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
+	  inst->check_timer = ecore_timer_add(inst->ci->poll_time, 
+                                              _slide_cb_check, inst);
      }
    else if (ev->button == 1)
      _slide_cb_check(inst);
@@ -213,8 +206,7 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _slide_menu_cb_post(void *data, E_Menu *m)
 {
-   if (!slide_config->menu)
-     return;
+   if (!slide_config->menu) return;
    e_object_del(E_OBJECT(slide_config->menu));
    slide_config->menu = NULL;
 }
@@ -233,19 +225,18 @@ _slide_config_updated(Config_Item *ci)
 {
    Eina_List *l;
 
-   if (!slide_config)
-     return;
+   if (!slide_config) return;
    for (l = slide_config->instances; l; l = l->next)
      {
 	Instance *inst;
 
 	inst = l->data;
 	if (inst->ci != ci) continue;
-	if (inst->check_timer)
-	  ecore_timer_del(inst->check_timer);
+	if (inst->check_timer) ecore_timer_del(inst->check_timer);
 	if ((inst->ci->disable_timer) || (inst->ci->poll_time == 0))
 	  break;
-	inst->check_timer = ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
+	inst->check_timer = ecore_timer_add(inst->ci->poll_time, 
+                                            _slide_cb_check, inst);
      }
 }
 
@@ -264,6 +255,7 @@ _slide_config_item_get(const char *id)
 	if (slide_config->items)
 	  {
 	     const char *p;
+
 	     ci = eina_list_last(slide_config->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
@@ -318,7 +310,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, disable_timer, INT);
    E_CONFIG_VAL(D, T, random_order, INT);
    E_CONFIG_VAL(D, T, all_desks, INT);
-   
+
    conf_edd = E_CONFIG_DD_NEW("Slideshow_Config", Config);
 #undef T
 #undef D
@@ -424,7 +416,6 @@ _slide_cb_check(void *data)
    char *bg;
 
    inst = data;
-
    _slide_get_bg_count(inst);
 
    if (inst->index > inst->bg_count) inst->index = 0;
@@ -463,8 +454,7 @@ _slide_get_bg_subdirs(void *data, char *local_path)
    Instance *inst;
 
    inst = data;
-   if(!inst->ci->dir)
-     return;
+   if (!inst->ci->dir) return;
 
    snprintf(full_path, sizeof(full_path), "%s/%s", inst->ci->dir, local_path);
    dir_list = ecore_file_ls(full_path);
@@ -529,8 +519,7 @@ _slide_set_bg(void *data, const char *bg)
    char buf[4096];
 
    inst = data;
-   g = inst->gcc->gadcon;
-   if(!g){return;}
+   if (!(g = inst->gcc->gadcon)) return;
    snprintf (buf, sizeof (buf), "%s/%s", inst->ci->dir, bg);
 
    if (inst->ci->all_desks == 0) 
@@ -546,7 +535,7 @@ _slide_set_bg(void *data, const char *bg)
 	while (e_config->desktop_backgrounds) 
 	  {
 	     E_Config_Desktop_Background *cfbg;
-	     
+
 	     cfbg = e_config->desktop_backgrounds->data;
 	     e_bg_del(cfbg->container, cfbg->zone, cfbg->desk_x, cfbg->desk_y);
 	  }
@@ -559,7 +548,7 @@ _slide_set_bg(void *data, const char *bg)
           {
             e_bg_del(z->container->num, z->num, z->desks[i]->x, z->desks[i]->y);
             e_bg_add(z->container->num, z->num, z->desks[i]->x, z->desks[i]->y, buf);
-	  }	
+	  }
      }   
 
    e_bg_update();
