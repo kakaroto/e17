@@ -3,8 +3,8 @@
 # This file is distributed under the same license as the e16 package.
 # Ni Hui <shuizhuyuanluo@126.com>, 2008.
 # Aron Xu <aronmalache@163.com>, 2009.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
 #, c-format
