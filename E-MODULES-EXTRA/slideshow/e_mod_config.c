@@ -11,13 +11,13 @@ struct _E_Config_Dialog_Data
 };
 
 /* Protos */
-static void        *_create_data          (E_Config_Dialog * cfd);
-static void         _free_data            (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata);
-static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data * cfdata);
-static int          _basic_apply_data     (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
-_config_slideshow_module(Config_Item * ci)
+_config_slideshow_module(Config_Item *ci)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -28,8 +28,8 @@ _config_slideshow_module(Config_Item * ci)
 
    v->create_cfdata = _create_data;
    v->free_cfdata = _free_data;
-   v->basic.apply_cfdata = _basic_apply_data;
-   v->basic.create_widgets = _basic_create_widgets;
+   v->basic.apply_cfdata = _basic_apply;
+   v->basic.create_widgets = _basic_create;
 
    snprintf (buf, sizeof (buf), "%s/e-module-slideshow.edj", 
 	     e_module_dir_get(slide_config->module));
@@ -42,7 +42,7 @@ _config_slideshow_module(Config_Item * ci)
 }
 
 static void
-_fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
+_fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    char buf[PATH_MAX];
 
@@ -60,7 +60,7 @@ _fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
 }
 
 static void *
-_create_data(E_Config_Dialog * cfd)
+_create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata;
    Config_Item *ci;
@@ -73,7 +73,7 @@ _create_data(E_Config_Dialog * cfd)
 }
 
 static void
-_free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!slide_config) return;
    slide_config->config_dialog = NULL;
@@ -81,11 +81,11 @@ _free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data * cfdata)
+_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *ob, *of, *ot;
    E_Radio_Group *rg;
-   
+
    o = e_widget_list_add (evas, 0, 0);
    of = e_widget_framelist_add (evas, D_ ("Cycle Time"), 0);
    ob =
@@ -127,7 +127,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
 }
 
 static int
-_basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
+_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Config_Item *ci;
    char buf[4096];
@@ -137,10 +137,8 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    ci->disable_timer = cfdata->disable_timer;
    ci->random_order = cfdata->random_order;
    ci->all_desks = cfdata->all_desks;
-   
-   if (ci->dir)
-     eina_stringshare_del (ci->dir);
 
+   if (ci->dir) eina_stringshare_del (ci->dir);
    if (cfdata->dir != NULL)
      ci->dir = eina_stringshare_add (cfdata->dir);
    else
@@ -150,7 +148,6 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      }
 
    e_config_save_queue ();
-
    _slide_config_updated (ci);
    return 1;
 }
