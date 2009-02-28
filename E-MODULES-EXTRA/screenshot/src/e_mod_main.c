@@ -691,8 +691,7 @@ _cb_timer(void *data)
    if (!(inst = data)) return 0;
 
    // a count down timer should never be less zero, reset timer in that case
-   if ((ss_cfg->delay - inst->counter) < 0)
-      inst->counter = 0;
+   if ((ss_cfg->delay - inst->counter) < 0) inst->counter = 0;
 
    snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
    edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
