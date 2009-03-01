@@ -448,10 +448,11 @@ places_generate_menu(void *data, E_Menu *em)
    }
 
    /* Volumes */
-   Eina_List *l;
-   for (l = volumes; l; l = l->next)
+   Eina_Bool volumes_visible = 0;
+   const Eina_List *l;
+   Volume *vol;
+   EINA_LIST_FOREACH(volumes, l, vol)
    {
-      Volume *vol = l->data;
       if (!vol->valid) continue;
       if (vol->mount_point && !strcmp(vol->mount_point, "/")) continue;
 
@@ -471,13 +472,17 @@ places_generate_menu(void *data, E_Menu *em)
                                                             vol->icon), vol->icon);
       }
       e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
+      volumes_visible = 1;
    }
 
    /* Favorites */
    if (places_conf->show_bookm)
    {
-      mi = e_menu_item_new(em);
-      e_menu_item_separator_set(mi, 1);
+      if (volumes_visible)
+	{
+	   mi = e_menu_item_new(em);
+	   e_menu_item_separator_set(mi, 1);
+	}
       places_parse_bookmarks(em);
    }
 
