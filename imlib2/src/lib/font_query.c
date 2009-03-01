@@ -61,7 +61,7 @@ imlib_font_query_size(ImlibFont * fn, const char *text, int *w, int *h)
         chr_y = (pen_y >> 8) + fg->glyph_out->top;
         chr_w = fg->glyph_out->bitmap.width;
 
-        if (!prev_index)
+        if (pen_x == 0)
            start_x = chr_x;
         if ((chr_x + chr_w) > end_x)
            end_x = chr_x + chr_w;
