@@ -3,8 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = po
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+-id $(top_srcdir)
 
 files_DATA = \
 module.desktop \
@@ -13,8 +12,6 @@ calendar.edj
 
 EXTRA_DIST = $(files_DATA) \
 calendar.edc \
-VeraMono.ttf \
-VeraBd.ttf \
 calendar.png \
 e_modules-calendar.spec
 

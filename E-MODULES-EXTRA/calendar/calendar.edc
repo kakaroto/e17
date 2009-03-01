@@ -1,101 +1,104 @@
-images
-{
-	image: "calendar.png" COMP;
+images {
+   image: "calendar.png" COMP;
 }
 
-fonts
-{
-	font: "VeraMono.ttf" "VeraMono";
-	font: "VeraBd.ttf"   "VeraBold";
-}
+collections {
+   group {
+      name: "modules/calendar/main";
+      parts {
+         part {
+            name: "calendar";
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 1.0 1.0; }
+               image { normal: "calendar.png"; }
+            }
+         }
+         part {
+            name: "monthday";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.1 0.2;
+                  offset: 0 0;
+                  to: "calendar";
+               }
+               rel2 {
+                  relative: 1.0 0.7;
+                  offset: -1 -1;
+                  to: "calendar";
+               }
+               color: 46 52 54 255;
+               color_class: "module_label";
+               text {
+                  text: "??";
+                  font: "Sans:style=Bold";
+                  size: 13;
+                  min: 1 1;
+                  fit: 1 1;
+                  text_class: "module_large";
+               }
+            }
+         }
+         part {
+            name: "weekday";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.4 0.7;
+                  offset: 0 0;
+                  to: "calendar";
+               }
+               rel2 {
+                  relative: 0.7 0.9;
+                  offset: -1 -1;
+                  to: "calendar";
+               }
+               color: 46 52 54 255;
+               color_class: "module_label";
+               text {
+                  text: "??";
+                  font: "Sans";
+                  size: 9;
+                  min: 1 1;
+                  fit: 1 1;
+                  text_class: "module_large";
+               }
+            }
+         }
 
-collections
-{
-	group
-	{
-		name: "modules/calendar/main";
-		parts
-		{
-			part
-			{
-				name: "calendar";
-				description
-				{
-					state: "default" 0.0;
-					aspect: 1.0 1.0;
-					aspect_preference: BOTH;
-					rel1 { relative: 0.0 0.0; }
-					rel2 { relative: 1.0 1.0; }
-					image { normal: "calendar.png"; }
-				}
-			}
-			part
-			{
-				name: "monthday";
-				type: TEXT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					rel1
-					{
-						relative: 0.1 0.2;
-						offset: 0 0;
-						to: "calendar";
-					}
-					rel2
-					{
-						relative: 1.0 0.7;
-						offset: -1 -1;
-						to: "calendar";
-					}
-					color: 46 52 54 255;
-					color_class: "module_label";
-					text
-					{
-						text: "??";
-						font: "VeraBold";
-						size: 13;
-						min: 1 1;
-						fit: 1 1;
-						text_class: "module_large";
-					}
-				}
-			}
-			part
-			{
-				name: "weekday";
-				type: TEXT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					rel1
-					{
-						relative: 0.4 0.7;
-						offset: 0 0;
-						to: "calendar";
-					}
-					rel2
-					{
-						relative: 0.7 0.9;
-						offset: -1 -1;
-						to: "calendar";
-					}
-					color: 46 52 54 255;
-					color_class: "module_label";
-					text
-					{
-						text: "??";
-						font: "VeraMono";
-						size: 9;
-						min: 1 1;
-						fit: 1 1;
-						text_class: "module_large";
-					}
-				}
-			}
-
-		}
-	}
+      }
+   }
+   group {
+      name: "modules/calendar/today";
+      parts {
+         part {
+            name: "e.text.label";
+            type: TEXT;
+            mouse_events:   0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               rel1.offset: 2 2;
+               rel2.offset: -3 -3;
+               color: 25 50 25 255;
+               color_class: "label_text";
+               text {
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.0 0.5;
+                  text_class: "label";
+               }
+            }
+         }
+      }
+   }
 }

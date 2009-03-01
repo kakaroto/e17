@@ -21,7 +21,7 @@ struct _Instance
 struct _Calendar 
 {
    Instance *inst;
-   Evas_Object *o_icon;
+   Evas_Object *o_icon, *o_today;
 };
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
@@ -334,14 +334,32 @@ _calendar_popup_content_create(Instance *inst)
      {
 	for (col = 0; col <= 6; col++)
 	  {
+	     int cday = 0;
+
 	     if (!day) if (col == startwd) day = 1;
 
+	     cday = day;
 	     if (day && (day <= maxdays))
 	       snprintf(buf, sizeof(buf), "%02d", day++);
 	     else
 	       buf[0] = 0;
-	     ob = e_widget_label_add(evas, buf);
-	     // if (day == today) // FIXME: highlight needed
+	     
+	     if (cday == today)
+	       {
+		  char buf2[4096];
+
+		  ob = inst->calendar->o_today = edje_object_add(evas);
+		  snprintf(buf2, sizeof(buf2), "%s/calendar.edj", 
+			   e_module_dir_get(calendar_conf->module));
+		  
+		  if (!e_theme_edje_object_set(ob, 
+			   "base/theme/modules/calendar", "modules/calendar/today"))
+		    edje_object_file_set(ob, buf2, "modules/calendar/today");
+		  edje_object_part_text_set(ob, "e.text.label", buf);
+		  evas_object_show(ob);
+	       }
+	     else
+	       ob = e_widget_label_add(evas, buf);
 	     e_widget_frametable_object_append(of, ob, col, row, 1, 1, 1, 0, 0, 0);
 	}
 	if (day > maxdays) break;
