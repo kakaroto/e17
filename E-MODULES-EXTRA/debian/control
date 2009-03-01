@@ -86,7 +86,7 @@ Description: An E17 module front end
 
 Package: emodule-exalt
 Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999), exalt
+Depends: ${shlibs:Depends}, e17 (>= 0.16.999), exalt-daemon
 Provides: emodule0-exalt, emodule0-exalt-client, emodule-exalt-client
 Replaces: emodule-exalt-client
 Description: E17 network manager module
