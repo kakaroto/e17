@@ -1,0 +1,47 @@
+Source: exalt
+Section: net
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: debhelper (>= 6), cdbs, libeet-dev, libevas-dev, wpasupplicant, libelm-dev, dhcp3-client, doxygen, iproute-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: libexalt0
+Architecture: any
+Depends: ${shlibs:Depends}, iproute
+Section: libs
+Provides: libexalt
+Description: EFL-based network manager
+ This package contains the libraries.
+
+Package: libexalt-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, libexalt0 (= ${Source-Version})
+Description: EFL-based network manager
+ This package cointains developenment files.
+
+Package: libexalt-dbg
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, libexalt0 (= ${binary:Version})
+Description: EFL-based network manager
+ This package debug symbols.
+
+Package: exalt-daemon
+Architecture: any
+Depends: ${shlibs:Depends}, iproute, libexalt0 (= ${Source-Version})
+Section: net
+Suggests: wpasupplicant
+Conflicts: network-manager
+Description: EFL-based network manager
+ This package contains the daemon and an init script.
+
+Package: exalt-gui
+Architecture: any
+Depends: ${shlibs:Depends}, iproute, libexalt0 (= ${Source-Version}), exalt-daemon (= ${binary:Version})
+Section: net
+Suggests: wpasupplicant
+Conflicts: network-manager
+Description: EFL-based network manager
+ This package contains the daemon and an init script.
