@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-24 13:11+0100\n"
-"PO-Revision-Date: 2009-02-24 13:38+0100\n"
+"POT-Creation-Date: 2009-02-28 18:52+0100\n"
+"PO-Revision-Date: 2009-02-28 18:55+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -62,51 +62,107 @@ msgstr "Qualità: "
 msgid "Authentification: "
 msgstr "Autenticazione: "
 
-#: src/network_dialog.c:125
+#: src/network_dialog.c:68
+msgid "Wireless interface configuration"
+msgstr "Configurazione interfaccia wireless"
+
+#: src/network_dialog.c:77 src/wired_dialog.c:51
+msgid "Activate"
+msgstr "Attiva"
+
+#: src/network_dialog.c:80 src/wired_dialog.c:54
+msgid "Deactivate"
+msgstr "Disattiva"
+
+#: src/network_dialog.c:84 src/wired_dialog.c:58
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (Dynamic host configuration protocol)"
+
+#: src/network_dialog.c:89 src/wired_dialog.c:63
+msgid "Static"
+msgstr "Statica"
+
+#: src/network_dialog.c:94 src/wired_dialog.c:68
+msgid "IP address: "
+msgstr "Indirizzo IP: "
+
+#: src/network_dialog.c:99 src/wired_dialog.c:73
+msgid "Netmask address: "
+msgstr "Maschera di rete: "
+
+#: src/network_dialog.c:104 src/wired_dialog.c:78
+msgid "Gateway address: "
+msgstr "Indirizzo gateway: "
+
+#: src/network_dialog.c:109 src/wired_dialog.c:83
+msgid "Command: "
+msgstr "Comando: "
+
+#: src/network_dialog.c:118
+msgid "Login: "
+msgstr "Login: "
+
+#: src/network_dialog.c:124
+msgid "Password: "
+msgstr "Password: "
+
+#: src/network_dialog.c:132 src/wired_dialog.c:96
+msgid "OK"
+msgstr "OK"
+
+#: src/network_dialog.c:133 src/wired_dialog.c:97
+msgid "Apply"
+msgstr "Applica"
+
+#: src/network_dialog.c:134 src/wired_dialog.c:98
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/network_dialog.c:205
 msgid "WPA information"
 msgstr "Informazioni WPA"
 
-#: src/network_dialog.c:128
+#: src/network_dialog.c:208
 msgid "WPA2 information"
 msgstr "Informazioni WPA2"
 
-#: src/network_dialog.c:150
+#: src/network_dialog.c:247
 msgid "WEP information"
 msgstr "Informazioni WEP"
 
-#: src/network_dialog.c:152
+#: src/network_dialog.c:249
 msgid "Authentication: "
 msgstr "Autenticazione: "
 
-#: src/network_dialog.c:180
+#: src/network_dialog.c:277
 msgid "Type: "
 msgstr "Tipo: "
 
-#: src/network_dialog.c:184
+#: src/network_dialog.c:281
 msgid "Version: "
 msgstr "Versione: "
 
-#: src/network_dialog.c:188
+#: src/network_dialog.c:285
 msgid "Group Cypher: "
 msgstr "Cifrario di gruppo: "
 
-#: src/network_dialog.c:199
+#: src/network_dialog.c:296
 msgid "Pairwise Cyphers: "
 msgstr "Cifrario di coppia: "
 
-#: src/network_dialog.c:210
+#: src/network_dialog.c:310
 msgid "Authentifications Suites: "
 msgstr "Suite di autenticazione: "
 
-#: src/network_dialog.c:213
+#: src/network_dialog.c:320
 msgid "Yes"
 msgstr "Sì"
 
-#: src/network_dialog.c:214
+#: src/network_dialog.c:321
 msgid "No"
 msgstr "No"
 
-#: src/network_dialog.c:215
+#: src/network_dialog.c:322
 msgid "Pre-authentification: "
 msgstr "Pre-autenticazione: "
 
@@ -118,7 +174,7 @@ msgstr "Impostazioni"
 msgid "No IP Address"
 msgstr "Nessun indirizzo IP"
 
-#: src/popup.c:138
+#: src/popup.c:138 src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interfaccia cablata"
 
@@ -129,51 +185,3 @@ msgstr "Interfaccia wireless"
 #: src/wired_dialog.c:35
 msgid "Wired Connection Settings"
 msgstr "Impostazioni connessione cablata"
-
-#: src/wired_dialog.c:42
-msgid "Network Device"
-msgstr "Dispositivo di rete"
-
-#: src/wired_dialog.c:53
-msgid "Activate"
-msgstr "Attiva"
-
-#: src/wired_dialog.c:56
-msgid "Deactivate"
-msgstr "Disattiva"
-
-#: src/wired_dialog.c:60
-msgid "DHCP (Dynamic host configuration protocol)"
-msgstr "DHCP (Dynamic host configuration protocol)"
-
-#: src/wired_dialog.c:65
-msgid "Static"
-msgstr "Statica"
-
-#: src/wired_dialog.c:70
-msgid "IP address: "
-msgstr "Indirizzo IP: "
-
-#: src/wired_dialog.c:75
-msgid "Netmask address: "
-msgstr "Maschera di rete: "
-
-#: src/wired_dialog.c:80
-msgid "Gateway address: "
-msgstr "Indirizzo gateway: "
-
-#: src/wired_dialog.c:85
-msgid "Command: "
-msgstr "Comando: "
-
-#: src/wired_dialog.c:98
-msgid "OK"
-msgstr "OK"
-
-#: src/wired_dialog.c:99
-msgid "Apply"
-msgstr "Applica"
-
-#: src/wired_dialog.c:100
-msgid "Cancel"
-msgstr "Annulla"
