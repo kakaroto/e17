@@ -2,6 +2,7 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
 #include "grid.h"
+#include "math.h"
 
 /* Local Structures */
 typedef struct _Instance Instance;
@@ -39,6 +40,8 @@ struct _Item
    Evas_Object *o_holder, *o_icon;
 
    Drawer_Source_Item *si;
+
+   Eina_Bool isa_category;
 };
 
 static void _grid_containers_create(Instance *inst);
@@ -166,15 +169,44 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 {
    Instance *inst = NULL;
    Evas_Coord gx, gy, gw, gh, zw, zh, zx, zy;
+   Evas_Coord ew = 0, eh = 0, cw = 0, ch = 0, ww = 0, hh = 0;
+   Eina_List *l;
+   Item *e;
+   int item_count = 0;
 
    inst = DRAWER_PLUGIN(v)->data;
-   edje_object_size_min_calc(inst->o_con, w, h);
-
    e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
    zx = gcc->gadcon->zone->x;
    zy = gcc->gadcon->zone->y;
    zw = gcc->gadcon->zone->w;
    zh = gcc->gadcon->zone->h;
+
+   EINA_LIST_FOREACH(inst->items, l, e)
+     {
+	if (!ew && !eh)
+	  evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
+
+	if (!e->isa_category)
+	  item_count++;
+     }
+
+   ch = eh * sqrtf(item_count);
+   cw = ch * ((float) ew / (float) eh);
+
+   /* Rough approximation, since we don't know the box's
+    * padding settings, and we don't care */
+   evas_object_resize(inst->o_con, cw + ew / 2, ch + eh / 2);
+   /* XXX: switch to size_min_calc when it starts working
+    *
+    * edje_object_size_min_calc(inst->o_box, &ww, &hh);
+    *
+    */
+   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
+   printf(" #### Calc: %dx%d \n", ww, hh);
+   edje_extern_object_min_size_set(inst->o_box, ww, hh);
+   edje_object_size_min_calc(inst->o_con, w, h);
+   edje_extern_object_min_size_set(inst->o_box, 0, 0);
+
    switch (gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_CORNER_RT:
@@ -291,10 +323,12 @@ _grid_item_create(Instance *inst, Drawer_Source_Item *si)
 
    /* XXX: remove this once evas_box is fixed */
    edje_object_size_min_calc(e->o_holder, &w, &h);
+   evas_object_size_hint_min_set(e->o_holder, w, h);
    evas_object_resize(e->o_holder, w, h);
 
    e->inst = inst;
    e->si = si;
+   e->isa_category = EINA_FALSE;
 
    edje_object_signal_callback_add(e->o_holder, "e,action,select", "drawer", 
 				   _grid_entry_select_cb, e);
@@ -330,6 +364,7 @@ _grid_category_create(Instance *inst, Drawer_Source_Item *si)
 
    e->inst = inst;
    e->si = si;
+   e->isa_category = EINA_TRUE;
 
    return e;
 }
