@@ -8,4 +8,6 @@ Horizontal list needs a way to show the category name
 
 Needs a scrollable grid view (using edje_box's 'horizontal_flow' layout)
 
+A gadman-like view/source plugin might be a good idea (for gadgets in a popup)
+
 Python plugins? (3 vs 2.x?)
