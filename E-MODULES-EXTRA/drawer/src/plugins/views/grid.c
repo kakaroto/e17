@@ -190,7 +190,7 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	  item_count++;
      }
 
-   ch = eh * sqrtf(item_count);
+   ch = eh * (ceil(sqrt((double) item_count)));
    cw = ch * ((float) ew / (float) eh);
 
    /* Rough approximation, since we don't know the box's
@@ -202,7 +202,6 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
     *
     */
    evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
-   printf(" #### Calc: %dx%d \n", ww, hh);
    edje_extern_object_min_size_set(inst->o_box, ww, hh);
    edje_object_size_min_calc(inst->o_con, w, h);
    edje_extern_object_min_size_set(inst->o_box, 0, 0);
@@ -290,8 +289,13 @@ _grid_containers_create(Instance *inst)
      edje_object_file_set(inst->o_box, inst->theme_file, "modules/drawer/grid/box");
 
 
-/*   inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);*/
-/*   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);*/
+   /* XXX: need to make this work somehow
+    *
+    * inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);
+    * edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);
+    * evas_object_show(inst->o_scroll);
+    *
+    */
    edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
    evas_object_show(inst->o_box);
 }
