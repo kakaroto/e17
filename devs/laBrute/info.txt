@@ -1,10 +1,10 @@
 Login:        laBrute
-IRC Nick:     laBrute
+IRC Nick:     laBrute974
 Cloak:
 Name:         Karel Malbroukou
 Location:     Saint-Paul, Reunion
 E-Mail:       wax.kenryu@gmail.com
-WWW:          -
+WWW:          http://skymoz.wordpress.org/
 Contributing: python-etk
 Group:        Libraries
 Platform:     Ubuntu (Linux), Gentoo
