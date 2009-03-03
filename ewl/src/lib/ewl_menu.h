@@ -77,6 +77,7 @@ int              ewl_menu_init(Ewl_Menu *menu);
 void             ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 
 void             ewl_menu_collapse(Ewl_Menu *menu);
+void             ewl_menu_expand(Ewl_Menu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.

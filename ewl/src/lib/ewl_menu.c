@@ -56,6 +56,8 @@ ewl_menu_init(Ewl_Menu *menu)
                             ewl_menu_cb_mouse_move, NULL);
         ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
                             ewl_menu_cb_expand, NULL);
+        ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CLICKED,
+                            ewl_menu_cb_expand, NULL);
         ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
                             ewl_menu_cb_configure, NULL);
         ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
@@ -127,6 +129,41 @@ ewl_menu_collapse(Ewl_Menu *menu)
         DCHECK_TYPE(menu, EWL_MENU_TYPE);
 
         ewl_widget_hide(menu->popup);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param menu: the menu to work with
+ * @return Returns no value
+ * @brief Expand the popup portion of the menu
+ */
+void
+ewl_menu_expand(Ewl_Menu *menu)
+{
+        Ewl_Menu_Item *item;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(menu);
+        DCHECK_TYPE(menu, EWL_MENU_TYPE);
+
+        item = EWL_MENU_ITEM(menu);
+
+        /* nothing to do if the popup is already visible */
+        if (VISIBLE(menu->popup))
+                DRETURN(DLEVEL_STABLE);
+
+        ewl_widget_show(menu->popup);
+        ewl_window_raise(EWL_WINDOW(menu->popup));
+
+        if (item->inmenu) {
+                Ewl_Context_Menu *cm;
+
+                cm = EWL_CONTEXT_MENU(item->inmenu);
+                cm->open_menu = EWL_WIDGET(menu);
+        }
+        else
+                ewl_widget_focus_send(menu->popup);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -221,27 +258,11 @@ void
 ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         void *user_data __UNUSED__)
 {
-        Ewl_Menu *menu;
-        Ewl_Menu_Item *item;
-
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_MENU_TYPE);
 
-        menu = EWL_MENU(w);
-        item = EWL_MENU_ITEM(w);
-
-        ewl_widget_show(menu->popup);
-        ewl_window_raise(EWL_WINDOW(menu->popup));
-
-        if (item->inmenu) {
-                Ewl_Context_Menu *cm;
-
-                cm = EWL_CONTEXT_MENU(item->inmenu);
-                cm->open_menu = EWL_WIDGET(menu);
-        }
-        else
-                ewl_widget_focus_send(menu->popup);
+        ewl_menu_expand(EWL_MENU(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
