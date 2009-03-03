@@ -137,28 +137,28 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    //Display frame
-   of = e_widget_framelist_add(evas, D_("Show"), 0);
-   e_widget_framelist_content_align_set(of, 0.0, 0.0);
+   //~ of = e_widget_framelist_add(evas, D_("Show"), 0);
+   //~ e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
-   ow = e_widget_check_add(evas, D_("Home"), &(cfdata->show_home));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Home"), &(cfdata->show_home));
+   //~ e_widget_framelist_object_append(of, ow);
 
-   ow = e_widget_check_add(evas, D_("Desktop"), &(cfdata->show_desk));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Desktop"), &(cfdata->show_desk));
+   //~ e_widget_framelist_object_append(of, ow);
 
-   ow = e_widget_check_add(evas, D_("Trash"), &(cfdata->show_trash));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Trash"), &(cfdata->show_trash));
+   //~ e_widget_framelist_object_append(of, ow);
 
-   ow = e_widget_check_add(evas, D_("Filesystem"), &(cfdata->show_root));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Filesystem"), &(cfdata->show_root));
+   //~ e_widget_framelist_object_append(of, ow);
    
-   ow = e_widget_check_add(evas, D_("Temp"), &(cfdata->show_temp));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Temp"), &(cfdata->show_temp));
+   //~ e_widget_framelist_object_append(of, ow);
 
-   ow = e_widget_check_add(evas, D_("Favorites"), &(cfdata->show_bookm));
-   e_widget_framelist_object_append(of, ow);
+   //~ ow = e_widget_check_add(evas, D_("Favorites"), &(cfdata->show_bookm));
+   //~ e_widget_framelist_object_append(of, ow);
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   //~ e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    return o;
 }

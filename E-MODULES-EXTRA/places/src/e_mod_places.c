@@ -644,7 +644,6 @@ _places_error_show(const char *title, const char *text1, const char *text2, cons
    e_dialog_button_add(dia, "OK", NULL, NULL, NULL);
    e_dialog_text_set(dia, str);
    e_dialog_show(dia);
-
 }
 
 static void

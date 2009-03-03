@@ -152,10 +152,10 @@ e_modapi_init(E_Module *m)
    e_gadcon_provider_register(&_gc_class);
    places_init();
    
-   E_Int_Menu_Augmentation *maug;
-   maug = e_int_menus_menu_augmentation_add("main/1",
-                                            places_augmentation,
-                                            NULL, NULL, NULL);
+   //~ E_Int_Menu_Augmentation *maug;
+   //~ maug = e_int_menus_menu_augmentation_add("main/1",
+                                            //~ places_augmentation,
+                                            //~ NULL, NULL, NULL);
 
    return m;
 }
