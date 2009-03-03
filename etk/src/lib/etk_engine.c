@@ -756,6 +756,30 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
 }
 
 /**
+ * @brief Calls the engine's method to set whether or not the window should be focusable
+ * @param window a window
+ * @param focusable ETK_TRUE to prevent the window from getting focus
+ */
+void etk_engine_window_focusable_set(Etk_Window *window, Etk_Bool focusable)
+{
+   if (!_engine || !_engine->window_focusable_set || !window)
+      return;
+   _engine->window_focusable_set(window, focusable);
+}
+
+/**
+ * @brief Calls the engine's method to get whether or not the window get input focus
+ * @param window a window
+ * @return ETK_TRUE if the window is focusable, ETK_FALSE otherwise
+ */
+Etk_Bool etk_engine_window_focusable_get(Etk_Window *window)
+{
+   if (!_engine || !_engine->window_focusable_get || !window)
+      return ETK_TRUE;
+   return _engine->window_focusable_get(window);
+}
+
+/**
  * @brief Calls the engine's method to set the mouse pointer to use when the pointer is inside the window
  * @param window a window
  * @param pointer_type the type of mouse pointer to use
@@ -952,6 +976,8 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_skip_taskbar_hint_get);
    INHERIT(window_skip_pager_hint_set);
    INHERIT(window_skip_pager_hint_get);
+   INHERIT(window_focusable_set);
+   INHERIT(window_focusable_get);
    INHERIT(window_pointer_set);
 
    INHERIT(popup_window_constructor);

@@ -174,6 +174,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_taskbar_hint_get */
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
+   NULL, /* window_focusable_set */
+   NULL, /* window_focusable_get */
    _window_pointer_set,
 
    NULL, /* popup_window_constructor */

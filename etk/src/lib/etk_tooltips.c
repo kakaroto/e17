@@ -75,7 +75,7 @@ void etk_tooltips_init()
      return;
 
 
-   _etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, NULL);
+   _etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, "window-focusable", ETK_FALSE, NULL);
 
    _etk_tooltips_label = etk_label_new(NULL);
    etk_container_add(ETK_CONTAINER(_etk_tooltips_window), _etk_tooltips_label);
@@ -237,7 +237,7 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
      {
 	/* We are doing this because if the label / window grow, then are not shrinking anymore */
 	etk_object_destroy(ETK_OBJECT(_etk_tooltips_window));
-	_etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, NULL);
+	_etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, "window-focusable", ETK_FALSE,  NULL);
 
 	_etk_tooltips_label = etk_label_new(NULL);
 	etk_container_add(ETK_CONTAINER(_etk_tooltips_window), _etk_tooltips_label);

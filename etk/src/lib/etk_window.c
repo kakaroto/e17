@@ -54,7 +54,8 @@ enum Etk_Window_Property_Id
    ETK_WINDOW_SHAPED_PROPERTY,
    ETK_WINDOW_HAS_ALPHA_PROPERTY,
    ETK_WINDOW_SKIP_TASKBAR_PROPERTY,
-   ETK_WINDOW_SKIP_PAGER_PROPERTY
+   ETK_WINDOW_SKIP_PAGER_PROPERTY,
+   ETK_WINDOW_FOCUSABLE_PROPERTY
 };
 
 static void _etk_window_constructor(Etk_Window *window);
@@ -118,6 +119,7 @@ Etk_Type *etk_window_type_get(void)
       etk_type_property_add(window_type, "has-alpha", ETK_WINDOW_HAS_ALPHA_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "skip-taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "skip-pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "window-focusable", ETK_WINDOW_FOCUSABLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
 
       window_type->property_set = _etk_window_property_set;
       window_type->property_get = _etk_window_property_get;
@@ -598,6 +600,26 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 }
 
 /**
+ * @brief Sets whether the window should not get input focus
+ * @param window a window
+ * @param focusable if @a focusable == ETK_TRUE, the window should not get input focus.
+ */
+void etk_window_focusable_set(Etk_Window *window, Etk_Bool focusable)
+{
+   etk_engine_window_focusable_set(window, focusable);
+}
+
+/**
+ * @brief Gets whether the window should not be shown in the pager
+ * @param window a window
+ * @return Returns ETK_TRUE if the window should not be shown in the pager
+ */
+Etk_Bool etk_window_focusable_get(Etk_Window *window)
+{
+   return etk_engine_window_focusable_get(window);
+}
+
+/**
  * @brief A utility function to use as a callback for the "delete-event" signal.
  * It will hide the window and return ETK_FALSE to prevent the program from quitting
  * @param window the window to hide
@@ -698,6 +720,9 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WINDOW_SKIP_PAGER_PROPERTY:
          etk_window_skip_pager_hint_set(window, etk_property_value_bool_get(value));
          break;
+      case ETK_WINDOW_FOCUSABLE_PROPERTY:
+         etk_window_focusable_set(window, etk_property_value_bool_get(value));
+         break;
       default:
          break;
    }
@@ -745,6 +770,9 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WINDOW_SKIP_PAGER_PROPERTY:
          etk_property_value_bool_set(value, etk_window_skip_pager_hint_get(window));
+         break;
+    case ETK_WINDOW_FOCUSABLE_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_focusable_get(window));
          break;
       default:
          break;

@@ -52,6 +52,8 @@ static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_task
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window);
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window);
+static void _window_focusable_set(Etk_Window *window, Etk_Bool focusable);
+static Etk_Bool _window_focusable_get(Etk_Window *window);
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
 /* Etk_Popup_Window functions  */
@@ -141,6 +143,8 @@ static Etk_Engine engine_info = {
    _window_skip_taskbar_hint_get,
    _window_skip_pager_hint_set,
    _window_skip_pager_hint_get,
+   _window_focusable_set,
+   _window_focusable_get,
    _window_pointer_set,
 
    _popup_window_constructor,
@@ -368,6 +372,70 @@ static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_
 
 /* Gets whether the window appears in the pager */
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
+{
+   Etk_Engine_Window_Data *win_data;
+   int accepts_focus, is_urgent;
+   Ecore_X_Window_State_Hint initial_state;
+   Ecore_X_Pixmap icon_pixmap, icon_mask;
+   Ecore_X_Window icon_window, window_group;
+
+   if (!window)
+     return ETK_FALSE;
+
+   win_data = window->engine_data;
+   ecore_x_icccm_hints_get(win_data->x_window,
+			   &accepts_focus,
+			   &initial_state,
+			   &icon_pixmap,
+			   &icon_mask,
+			   &icon_window,
+			   &window_group,
+			   &is_urgent);
+
+   return accepts_focus;
+}
+
+/* Sets whether or not the window should appear in the pager */
+static void _window_focusable_set(Etk_Window *window, Etk_Bool focusable)
+{
+   Etk_Engine_Window_Data *win_data;
+   int accepts_focus, is_urgent;
+   Ecore_X_Window_State_Hint initial_state;
+   Ecore_X_Pixmap icon_pixmap, icon_mask;
+   Ecore_X_Window icon_window, window_group;
+
+   if (!window)
+     return;
+
+   win_data = window->engine_data;
+   ecore_x_icccm_hints_get(win_data->x_window,
+			   &accepts_focus,
+			   &initial_state,
+			   &icon_pixmap,
+			   &icon_mask,
+			   &icon_window,
+			   &window_group,
+			   &is_urgent);
+
+   if (accepts_focus == focusable)
+     return;
+
+   accepts_focus = focusable;
+
+   ecore_x_icccm_hints_set(win_data->x_window,
+			   accepts_focus,
+			   initial_state,
+			   icon_pixmap,
+			   icon_mask,
+			   icon_window,
+			   window_group,
+			   is_urgent);
+
+   etk_object_notify(ETK_OBJECT(window), "window-focusable");
+}
+
+/* Gets whether the window appears in the pager */
+static Etk_Bool _window_focusable_get(Etk_Window *window)
 {
    return _window_netwm_state_active_get(window, ECORE_X_WINDOW_STATE_SKIP_PAGER);
 }

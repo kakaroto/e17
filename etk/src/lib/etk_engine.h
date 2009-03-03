@@ -93,6 +93,8 @@ struct Etk_Engine
    Etk_Bool (*window_skip_taskbar_hint_get)(Etk_Window *window);
    void (*window_skip_pager_hint_set)(Etk_Window *window, Etk_Bool skip_pager_hint);
    Etk_Bool (*window_skip_pager_hint_get)(Etk_Window *window);
+   void (*window_focusable_set)(Etk_Window *window, Etk_Bool focusable);
+   Etk_Bool (*window_focusable_get)(Etk_Window *window);
    void (*window_pointer_set)(Etk_Window *window, Etk_Pointer_Type pointer_type);
 
    void (*popup_window_constructor)(Etk_Popup_Window *popup_window);
@@ -165,6 +167,8 @@ void         etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Boo
 Etk_Bool     etk_engine_window_skip_taskbar_hint_get(Etk_Window *window);
 void         etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 Etk_Bool     etk_engine_window_skip_pager_hint_get(Etk_Window *window);
+void         etk_engine_window_focusable_set(Etk_Window *window, Etk_Bool focusable);
+Etk_Bool     etk_engine_window_focusable_get(Etk_Window *window);
 void         etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
 
 void         etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window);
