@@ -1531,7 +1531,7 @@ target: "e.text.label";
 	    clip_to: "swallow_clipper";
 	    description {
 	       state: "default" 0.0;
-	       rel2.offset: -1 -25;
+	       rel2.offset: -1 -33;
 	    }
 	 }
 	 part {
@@ -1548,13 +1548,11 @@ target: "e.text.label";
 	       visible: 1;
 	       rel1 {
 		  relative: 0 1;
-		  offset: 1 -15;
-		  to_y: "e.swallow.content";
+		  offset: 1 -32;
 	       }
 	       rel2 {
 		  relative: 1 1;
-		  offset: -1 5;
-		  to_y: "e.swallow.content";
+		  offset: -1 -14;
 	       }
 	       text {
 		  text: "";
@@ -1593,12 +1591,11 @@ target: "e.text.label";
 	       visible: 1;
 	       rel1 {
 		  relative: 0 1;
-		  offset: 1 1;
-		  to_y: "e.text.label";
+		  offset: 1 -13;
 	       }
 	       rel2 {
 		  relative: 1 1;
-		  offset: -1 -3;
+		  offset: -1 -1;
 	       }
 	       text {
 		  text: "";
