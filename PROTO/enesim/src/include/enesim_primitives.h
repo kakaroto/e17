@@ -20,6 +20,6 @@
 
 EAPI void enesim_rect_draw(Enesim_Surface *s, Enesim_Context *c,
 		uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-EAPI void enesim_image_draw(Enesim_Surface *d, Enesim_Context *c, Eina_Rectangle *drect,
+EAPI void enesim_image_draw(Enesim_Surface *d, Enesim_Context *c,
 		Enesim_Surface *s, Eina_Rectangle *srect);
 #endif /* ENESIM_PRIMITIVES_H_ */

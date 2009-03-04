@@ -52,3 +52,9 @@ EAPI void enesim_context_matrix_set(Enesim_Context *c, Enesim_Matrix *m)
 {
 	enesim_transformation_matrix_set(c->tx, m);
 }
+
+EAPI void enesim_context_clip_set(Enesim_Context *c, Eina_Rectangle *r)
+{
+	c->clip.used = EINA_TRUE;
+	c->clip.r = *r;
+}

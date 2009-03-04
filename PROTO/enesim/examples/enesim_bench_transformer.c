@@ -151,7 +151,7 @@ static void transformer_go(Enesim_Transformation *tx)
 void transformer_bench(void)
 {
 	Enesim_Matrix matrix, tmp;
-	Enesim_Quad *q1, *q2;
+	Enesim_Quad q1, q2;
 	Enesim_Transformation *tx;
 	float angle, ca, sa;
 	Enesim_Surface *dst = NULL, *src = NULL, *msk = NULL;
@@ -186,35 +186,28 @@ void transformer_bench(void)
 	printf("Affine\n");
 	transformer_go(tx);
 	/* projective */
-	q1 = enesim_quad_new();
-	q2 = enesim_quad_new();
-	enesim_quad_coords_set(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_set(q2, 0, 100, 180, 0, 250, 180, 190, 240);
-	//enesim_quad_coords_set(q2, 50, 50, 190, 10, 195, 140, 50, 240);
-	enesim_matrix_quad_quad_to(&matrix, q2, q1);
+	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	//enesim_quad_coords_set(&q2, 50, 50, 190, 10, 195, 140, 50, 240);
+	enesim_matrix_quad_quad_to(&matrix, &q2, &q1);
 	enesim_transformation_matrix_set(tx, &matrix);
 	printf("Projective\n");
 	transformer_go(tx);
 
-	enesim_quad_delete(q1);
-	enesim_quad_delete(q2);
 }
 void matrix_bench(void)
 {
-	Enesim_Quad *q1, *q2;
+	Enesim_Quad q1, q2;
 	Enesim_Matrix m, m2;
 	float x, y, xr, yr;
 
-	q1 = enesim_quad_new();
-	q2 = enesim_quad_new();
-
-	enesim_quad_coords_set(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_set(q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
 
 	/* transforming from a square to a quad */
 	printf("square to quad\n");
 	enesim_matrix_identity(&m);
-	enesim_matrix_square_quad_to(&m, q2);
+	enesim_matrix_square_quad_to(&m, &q2);
 	x = 0;
 	y = 1;
 	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
@@ -229,20 +222,18 @@ void matrix_bench(void)
 	/* quad to square */
 	printf("quad to square\n");
 #if 0
-	enesim_matrix_quad_square_to(&m, q2);
+	enesim_matrix_quad_square_to(&m, &q2);
 	x = q2[2];
 	y = q2[3];
 	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
 	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
 	/* quad to square */
 	printf("quad to quad\n");
-	enesim_matrix_quad_quad_to(&m, q1, q2);
+	enesim_matrix_quad_quad_to(&m, &q1, &q2);
 	x = q1[4];
 	y = q1[5];
 	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
 	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
 
-	enesim_quad_delete(q1);
-	enesim_quad_delete(q2);
 #endif
 }

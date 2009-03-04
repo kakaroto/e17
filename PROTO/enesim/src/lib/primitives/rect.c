@@ -35,6 +35,12 @@ EAPI void enesim_rect_draw(Enesim_Surface *s, Enesim_Context *c,
 	/* get the span function */
 	eina_rectangle_coords_from(&r, x, y, w, h);
 	/* TODO handle the clipping */
+	if (c->clip.used)
+	{
+		eina_rectangle_intersection(&r, &c->clip.r);
+	}
+	if (eina_rectangle_is_empty(&r))
+		return;
 	enesim_surface_data_get(s, &dtmp);
 	enesim_surface_data_increment(&dtmp, (y * sw) + x);
 	for (i = 0; i < h; i++)

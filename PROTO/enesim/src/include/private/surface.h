@@ -24,7 +24,9 @@ struct _Enesim_Surface
 	int h;
 	int flags;
 	Enesim_Surface_Data sdata;
-	int stride; /* TODO make all code use this */
+	/* TODO make all code use this */
+	int stride; /* number of bytes per line */
+
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif

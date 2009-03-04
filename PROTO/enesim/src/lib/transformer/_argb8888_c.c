@@ -1,3 +1,6 @@
+/* TODO
+ * + move the changes here to generic
+ */
 #define normal_argb8888_argb8888_affine_no_no(body)				\
 	uint32_t *sdata, *ddata;						\
 	Eina_F16p16 sx, sy;							\
@@ -6,22 +9,25 @@
 	Enesim_Surface_Pixel color;						\
 										\
 	int hlen;								\
+	Eina_F16p16 x, y;							\
 										\
 	/* force an alpha color, return if we dont have a point function */	\
 	ptfnc = enesim_transformation_drawer_point_get(t, ds, ss);		\
 	if (!ptfnc)								\
 		return;								\
 										\
+	ddata = ds->sdata.data.argb8888.plane0;					\
+	sdata = ss->sdata.data.argb8888.plane0;					\
+	ddata += (drect->y * ds->w) + drect->x;					\
+	x = eina_f16p16_int_from(drect->x - t->ox);				\
+	y = eina_f16p16_int_from(drect->y - t->oy);				\
+										\
 	enesim_matrix_fixed_values_get(&t->matrix, &a, &b, &c, &d, &e,		\
 			&f, &g, &h, &i);					\
 	c += eina_f16p16_float_from(t->ox);					\
 	f += eina_f16p16_float_from(t->oy);					\
-	sx = eina_f16p16_mul(a, drect->x) + eina_f16p16_mul(b, drect->y) + c;	\
-	sy = eina_f16p16_mul(d, drect->x) + eina_f16p16_mul(e, drect->y) + f;	\
-										\
-	ddata = ds->sdata.data.argb8888.plane0;					\
-	sdata = ss->sdata.data.argb8888.plane0;					\
-	ddata += (drect->y * ds->w) + drect->x;					\
+	sx = eina_f16p16_mul(a, x) + eina_f16p16_mul(b, y) + c;			\
+	sy = eina_f16p16_mul(d, x) + eina_f16p16_mul(e, y) + f;			\
 										\
 	hlen = drect->h;							\
 	while (hlen--)								\

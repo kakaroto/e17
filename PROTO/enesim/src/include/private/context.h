@@ -7,7 +7,11 @@ struct _Enesim_Context
 	uint32_t color; /* ARGB representation of the color FIXME unpre or pre? */
 	Enesim_Surface *src; /* Source Surface */
 	Enesim_Surface *mask; /* Mask Surface */
-	Eina_Rectangle clip;
+	struct
+	{
+		Eina_Bool used;
+		Eina_Rectangle r;
+	} clip;
 	Enesim_Transformation *tx;
 };
 

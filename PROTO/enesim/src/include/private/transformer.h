@@ -20,14 +20,6 @@
 
 typedef enum
 {
-	ENESIM_TRANSFORMATION_IDENTITY,
-	ENESIM_TRANSFORMATION_AFFINE,
-	ENESIM_TRANSFORMATION_PROJECTIVE,
-	ENESIM_TRANSFORMATIONS
-} Enesim_Transformation_Type;
-
-typedef enum
-{
 	ENESIM_SCALE_NO,
 	ENESIM_SCALE_UP,
 	ENESIM_SCALE_DOWN
@@ -64,17 +56,20 @@ typedef void (*Enesim_Transformer_Func)(Enesim_Transformation *t,
  */
 typedef struct _Enesim_Transformer
 {
-	Enesim_Transformer_Func mask[ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS][ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
-	Enesim_Transformer_Func normal[ENESIM_SURFACE_FORMATS][ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
+	Enesim_Transformer_Func mask[ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS][ENESIM_MATRIX_TYPES][ENESIM_QUALITIES];
+	Enesim_Transformer_Func normal[ENESIM_SURFACE_FORMATS][ENESIM_MATRIX_TYPES][ENESIM_QUALITIES];
 } Enesim_Transformer;
 
 typedef struct _Enesim_Transformer_Generic
 {
-	Enesim_Transformer_Func mask[ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
-	Enesim_Transformer_Func normal[ENESIM_TRANSFORMATIONS][ENESIM_QUALITIES];
+	Enesim_Transformer_Func mask[ENESIM_MATRIX_TYPES][ENESIM_QUALITIES];
+	Enesim_Transformer_Func normal[ENESIM_MATRIX_TYPES][ENESIM_QUALITIES];
 } Enesim_Transformer_Generic;
 
 Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation *t,
+		Enesim_Surface *d,
+		Enesim_Surface *s);
+Enesim_Drawer_Span enesim_transformation_drawer_span_get(Enesim_Transformation *t,
 		Enesim_Surface *d,
 		Enesim_Surface *s);
 

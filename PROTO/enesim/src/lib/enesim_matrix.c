@@ -71,6 +71,20 @@ static float _cos(float x)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+EAPI Enesim_Matrix_Type enesim_matrix_type_get(Enesim_Matrix *m)
+{
+	if ((MATRIX_ZX(m) != 0) || (MATRIX_ZY(m) != 0) || (MATRIX_ZZ(m) != 1))
+		return ENESIM_MATRIX_PROJECTIVE;
+	else
+	{
+		if ((MATRIX_XX(m) == 1) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
+				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 1) && (MATRIX_YZ(m) == 0))
+			return ENESIM_MATRIX_IDENTITY;
+		else
+			return ENESIM_MATRIX_AFFINE;
+	}
+}
+
 /**
  * To be documented
  * FIXME: To be fixed
@@ -128,7 +142,6 @@ EAPI void enesim_matrix_fixed_values_get(Enesim_Matrix *m, Eina_F16p16 *a,
  */
 EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, float *xr, float *yr)
 {
-	_matrix_debug(m);
 	if (!MATRIX_ZX(m) && !MATRIX_ZY(m))
 	{
 		if (xr)
@@ -145,6 +158,17 @@ EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, floa
 			*yr = (x * MATRIX_YX(m) + y * MATRIX_YY(m) + MATRIX_YZ(m)) /
 				(x * MATRIX_ZX(m) + y * MATRIX_ZY(m) + 1);
 	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void enesim_matrix_rect_transform(Enesim_Matrix *m, Eina_Rectangle *r, Enesim_Quad *q)
+{
+	enesim_matrix_point_transform(m, r->x, r->y, &q->x0, &q->y0);
+	enesim_matrix_point_transform(m, r->x + r->w, r->y, &q->x1, &q->y1);
+	enesim_matrix_point_transform(m, r->x + r->w, r->y + r->h, &q->x2, &q->y2);
+	enesim_matrix_point_transform(m, r->x, r->y + r->h, &q->x3, &q->y3);
 }
 /**
  * To be documented
@@ -335,20 +359,32 @@ EAPI void enesim_matrix_identity(Enesim_Matrix *m)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Quad * enesim_quad_new(void)
+EAPI void enesim_quad_rectangle_to(Enesim_Quad *q,
+		Eina_Rectangle *r)
 {
-	Enesim_Quad *q;
+	float xmin, ymin, xmax, ymax;
+	/* FIXME this code is very ugly, for sure there must be a better
+	 * implementation */
+	xmin = QUAD_X0(q) < QUAD_X1(q) ? QUAD_X0(q) : QUAD_X1(q);
+	xmin = xmin < QUAD_X2(q) ? xmin : QUAD_X2(q);
+	xmin = xmin < QUAD_X3(q) ? xmin : QUAD_X3(q);
 
-	q = malloc(sizeof(Enesim_Quad));
-	return q;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI void enesim_quad_delete(Enesim_Quad *q)
-{
-	free(q);
+	ymin = QUAD_Y0(q) < QUAD_Y1(q) ? QUAD_Y0(q) : QUAD_Y1(q);
+	ymin = ymin < QUAD_Y2(q) ? ymin : QUAD_Y2(q);
+	ymin = ymin < QUAD_Y3(q) ? ymin : QUAD_Y3(q);
+
+	xmax = QUAD_X0(q) > QUAD_X1(q) ? QUAD_X0(q) : QUAD_X1(q);
+	xmax = xmax > QUAD_X2(q) ? xmax : QUAD_X2(q);
+	xmax = xmax > QUAD_X3(q) ? xmax : QUAD_X3(q);
+
+	ymax = QUAD_Y0(q) > QUAD_Y1(q) ? QUAD_Y0(q) : QUAD_Y1(q);
+	ymax = ymax > QUAD_Y2(q) ? ymax : QUAD_Y2(q);
+	ymax = ymax > QUAD_Y3(q) ? ymax : QUAD_Y3(q);
+
+	r->x = trunc(xmin);
+	r->w = trunc(xmax) - r->x;
+	r->y = trunc(ymin);
+	r->h = trunc(ymax) - r->y;
 }
 /**
  * To be documented

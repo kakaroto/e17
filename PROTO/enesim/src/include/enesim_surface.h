@@ -23,11 +23,13 @@
  * @{
  *
  * TODO
- * Add a pitch, this is good for different planes, still the width and height
+ * + Add a pitch, this is good for different planes, still the width and height
  * are good things to have so the pitch
- * Add a data provider: as a parameter to the new, so the destruction is
+ * + Add a data provider: as a parameter to the new, so the destruction is
  * handled by the library itself, same for data get, etc.
- * Add a surface iterator
+ * + Add a surface iterator
+ * + Normalize the occurences of argb, colors, etc. Always premul or flat
+ * argb8888?
  */
 typedef struct _Enesim_Surface 	Enesim_Surface; /**< Surface Handler */
 /**
@@ -158,6 +160,7 @@ EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
 		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b);
 EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data);
 EAPI void * enesim_surface_private_get(Enesim_Surface *s);
+EAPI void enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr);
 
 /** @} */ //End of Enesim_Surface_Group
 

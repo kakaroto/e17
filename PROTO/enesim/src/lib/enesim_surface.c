@@ -137,11 +137,11 @@ enesim_surface_format_get(const Enesim_Surface *s)
  * functions
  */
 EAPI void
-enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
+enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr)
 {
 	Enesim_Transformation *tx;
 	Enesim_Matrix matrix;
-	Eina_Rectangle sr, dr;
+	Eina_Rectangle sr;
 
 
 	ENESIM_ASSERT(s, ENESIM_ERROR_HANDLE_INVALID);
@@ -151,7 +151,7 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 
 
 	tx = enesim_transformation_new();
-
+#if 0
 	if ((s->w != d->w) || (s->h != d->h))
 	{
 		//printf("scaling %d %d (%f) %d %d (%f)\n", d->w, s->w, (float)d->w/s->w, d->h, s->h, (float)d->h/s->h);
@@ -159,17 +159,22 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	}
 	else
 	{
-		enesim_matrix_identity(&matrix);
+
 	}
+#endif
+	enesim_matrix_identity(&matrix);
 	/* TODO call the correct convert function based on the src
 	 * and dst format, the src and dst flags, etc
 	 */
 
 	enesim_transformation_matrix_set(tx, &matrix);
 	enesim_transformation_rop_set(tx, ENESIM_FILL);
+#if 0
 	eina_rectangle_coords_from(&sr, 0, 0, s->w, s->h);
 	eina_rectangle_coords_from(&dr, 0, 0, d->w, d->h);
 	enesim_transformation_apply(tx, s, &sr, d, &dr);
+#endif
+	enesim_transformation_apply(tx, s, NULL, d, dr);
 
 }
 /**

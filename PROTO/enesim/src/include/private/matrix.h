@@ -38,12 +38,4 @@
 #define QUAD_X3(q) q->x3
 #define QUAD_Y3(q) q->y3
 
-struct _Enesim_Quad
-{
-	float x0, y0;
-	float x1, y1;
-	float x2, y2;
-	float x3, y3;
-};
-
 #endif /*MATRIX_H_*/

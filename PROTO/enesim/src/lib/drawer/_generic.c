@@ -2,16 +2,16 @@
  * TODO
  * + Use mmx if possible, that means that we need to refactor several
  * parts of the header and the _argb8888_mmx source file
- * 
+ *
  * + all the above generic functions should convert the src, dst and mask
  * to argb8888 (internal format) and handle the real operation in that
  * format. This will incredible slow, but works as a generic way
  * to handle this, any surface format implementor should just
  * create the converters from/to argb8888. In case he wants an accelerated
- * drawer he must implement a specifc drawer
+ * drawer he must implement a specific drawer
  */
 /*============================================================================*
- *                                 Global                                     * 
+ *                                 Global                                     *
  *============================================================================*/
 /*============================================================================*
  *                                 Blend                                      *
@@ -66,21 +66,21 @@ static void generic_sp_mask_color_blend(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 static void generic_sp_pixel_color_blend(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 static void generic_sp_pixel_mask_blend(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 static void generic_sp_pixel_blend(Enesim_Surface_Data *d,
@@ -90,7 +90,7 @@ static void generic_sp_pixel_blend(Enesim_Surface_Data *d,
 
 }
 /*============================================================================*
- *                                  Fill                                      * 
+ *                                  Fill                                      *
  *============================================================================*/
 static void generic_pt_color_fill(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *s, Enesim_Surface_Pixel *color,
@@ -148,27 +148,38 @@ static void generic_sp_pixel_fill(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
+	Enesim_Surface_Data dtmp = *d;
+	Enesim_Surface_Data stmp = *s;
+	while (len--)
+	{
+		Enesim_Surface_Pixel sp;
+
+		enesim_surface_data_pixel_get(&stmp, &sp);
+		generic_pt_pixel_fill(&dtmp, &sp, color, m);
+		enesim_surface_data_increment(&dtmp, 1);
+		enesim_surface_data_increment(&stmp, 1);
+	}
 }
 
 static void generic_sp_mask_color_fill(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 static void generic_sp_pixel_color_fill(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 static void generic_sp_pixel_mask_fill(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
-	
+
 }
 
 Enesim_Drawer_Generic generic_drawer = {
@@ -177,19 +188,19 @@ Enesim_Drawer_Generic generic_drawer = {
 	.pt_pixel[ENESIM_BLEND] = generic_pt_pixel_blend,
 	.pt_pixel_color[ENESIM_BLEND] = generic_pt_pixel_color_blend,
 	.pt_pixel_mask[ENESIM_BLEND] = generic_pt_pixel_mask_blend,
-	
+
 	.sp_color[ENESIM_BLEND] = generic_sp_color_blend,
 	.sp_mask_color[ENESIM_BLEND] = generic_sp_mask_color_blend,
 	.sp_pixel[ENESIM_BLEND] = generic_sp_pixel_blend,
 	.sp_pixel_color[ENESIM_BLEND] = generic_sp_pixel_color_blend,
 	.sp_pixel_mask[ENESIM_BLEND] = generic_sp_pixel_mask_blend,
-	
+
 	.pt_color[ENESIM_FILL] = generic_pt_color_fill,
 	.pt_mask_color[ENESIM_FILL] = generic_pt_mask_color_fill,
 	.pt_pixel[ENESIM_FILL] = generic_pt_pixel_fill,
 	.pt_pixel_color[ENESIM_FILL] = generic_pt_pixel_color_fill,
 	.pt_pixel_mask[ENESIM_FILL] = generic_pt_pixel_mask_fill,
-		
+
 	.sp_color[ENESIM_FILL] = generic_sp_color_fill,
 	.sp_mask_color[ENESIM_FILL] = generic_sp_mask_color_fill,
 	.sp_pixel[ENESIM_FILL] = generic_sp_pixel_fill,

@@ -40,7 +40,7 @@ const char * rop_name(Enesim_Rop rop)
 int rop_get(const char *name, int *rop)
 {
 	int ret = 1;
-	
+
 	if (!strcmp(name, "blend"))
 		*rop = ENESIM_BLEND;
 	else if (!strcmp(name, "fill"))
@@ -111,11 +111,11 @@ void surface_save(Enesim_Surface *s, const char *name)
 {
 	Enesim_Surface *img;
 	int w, h;
-	
+
 	enesim_surface_size_get(s, &w, &h);
 	img = enesim_surface_new(ENESIM_SURFACE_ARGB8888_UNPRE, w, h);
 	//printf("Saving image %s\n", name);
-	enesim_surface_convert(s, img);
+	enesim_surface_convert(s, img, NULL);
 	image_save(img, name, 0);
 	enesim_surface_delete(img);
 }
@@ -258,13 +258,13 @@ Enesim_Surface * test_pattern(int w)
 	Enesim_Surface_Data sdata;
 	int i;
 	int spaces = w / 2;
-	
+
 	enesim_surface_pixel_components_from(&color, opt_fmt, 0xff, 0xff, 0xff, 0);
 	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, &color);
 	if (!spfnc)
 		return NULL;
 	s = enesim_surface_new(opt_fmt, w, w);
-	
+
 	/* draw the pattern */
 	enesim_surface_data_get(s, &sdata);
 	enesim_surface_data_increment(&sdata, spaces);
@@ -272,7 +272,7 @@ Enesim_Surface * test_pattern(int w)
 	{
 		int len = i * 2 +1;
 		int nspaces = spaces - 1;
-		
+
 		spfnc(&sdata, len, NULL, &color, NULL);
 		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
 		spaces--;
@@ -284,7 +284,7 @@ Enesim_Surface * test_pattern(int w)
 	{
 		int len = (w - 1) - (i * 2 +1);
 		int nspaces = spaces + 1;
-		
+
 		spfnc(&sdata, len, NULL, &color, NULL);
 		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
 		spaces++;
@@ -302,7 +302,7 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 
 	if (!opt_debug)
 		return;
-	
+
 	sfmt = enesim_surface_format_get(dst);
 	snprintf(tmp, 256, "%s_%s_%s", name, rop_name(rop), enesim_surface_format_name_get(sfmt));
 	if (src)
@@ -325,7 +325,7 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 	if (color)
 	{
 		char tmp2[256];
-	
+
 		snprintf(tmp2, 256, "_%s", opacity_get(color));
 		strncat(tmp, tmp2, 256);
 	}
@@ -352,7 +352,7 @@ void help(void)
 void rop_help(void)
 {
 	int rop;
-	
+
 	for (rop = 0; rop < ENESIM_ROPS; rop++)
 	{
 		printf("%s\n", rop_name(rop));
@@ -371,7 +371,7 @@ void bench_help(void)
 void fmt_help(void)
 {
 	int fmt;
-	
+
 	for (fmt = 0; fmt < ENESIM_SURFACE_FORMATS; fmt++)
 	{
 		printf("%s\n", enesim_surface_format_name_get(fmt));
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
 				}
 				break;
 			case 'm':
-				
+
 				if (!fmt_get(optarg, &opt_fmt))
 				{
 					fmt_help();
@@ -470,7 +470,7 @@ ok:
 	else if (!strcmp(opt_bench, "rasterizer"))
 		rasterizer_bench();
 	else if (!strcmp(opt_bench, "drawer"))
-		drawer_bench();	
+		drawer_bench();
 	else if (!strcmp(opt_bench, "transformer"))
 		transformer_bench();
 	else if (!strcmp(opt_bench, "all"))

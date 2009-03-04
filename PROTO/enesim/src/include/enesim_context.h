@@ -26,5 +26,7 @@ EAPI void enesim_context_delete(Enesim_Context *c);
 EAPI void enesim_context_color_set(Enesim_Context *c, uint32_t argb);
 EAPI uint32_t enesim_context_color_get(Enesim_Context *c);
 EAPI void enesim_context_rop_set(Enesim_Context *c, Enesim_Rop rop);
+EAPI void enesim_context_matrix_set(Enesim_Context *c, Enesim_Matrix *m);
+EAPI void enesim_context_clip_set(Enesim_Context *c, Eina_Rectangle *r);
 
 #endif /* ENESIM_CONTEXT_H_ */

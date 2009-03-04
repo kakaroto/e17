@@ -20,26 +20,6 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-/* TODO
- * decide if this should be on global or API
- */
-static Enesim_Transformation_Type _transformation_get(Enesim_Matrix *m)
-{
-	if ((MATRIX_ZX(m) != 0) || (MATRIX_ZY(m) != 0) || (MATRIX_ZZ(m) != 1))
-		return ENESIM_TRANSFORMATION_PROJECTIVE;
-	else
-	{
-		/* FIXME, once the identity handles the origin use the AFFINE;
-		if ((MATRIX_XX(m) == 1) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
-				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 1) && (MATRIX_YZ(m) == 0))
-
-			return ENESIM_TRANSFORMATION_IDENTITY;
-		else
-		*/
-			return ENESIM_TRANSFORMATION_AFFINE;
-	}
-}
-
 static void _transformation_debug(Enesim_Transformation *t)
 {
 #if 0
@@ -70,20 +50,20 @@ Enesim_Transformer_Func _transformer_get(Enesim_Transformation *t,
 	if (t->mask)
 	{
 		if (transformer[d->sdata.format])
-			tfunc = transformer[d->sdata.format]->mask[s->sdata.format][t->mask->sdata.format][_transformation_get(&t->matrix)][t->quality];
+			tfunc = transformer[d->sdata.format]->mask[s->sdata.format][t->mask->sdata.format][enesim_matrix_type_get(&t->matrix)][t->quality];
 	}
 	else
 	{
 		if (transformer[d->sdata.format])
-			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][_transformation_get(&t->matrix)][t->quality];
+			tfunc = transformer[d->sdata.format]->normal[s->sdata.format][enesim_matrix_type_get(&t->matrix)][t->quality];
 	}
 	/* handle here the generic transformer */
 	if (!tfunc)
 	{
 		if (t->mask)
-			tfunc = generic_tx.mask[_transformation_get(&t->matrix)][t->quality];
+			tfunc = generic_tx.mask[enesim_matrix_type_get(&t->matrix)][t->quality];
 		else
-			tfunc = generic_tx.normal[_transformation_get(&t->matrix)][t->quality];
+			tfunc = generic_tx.normal[enesim_matrix_type_get(&t->matrix)][t->quality];
 	}
 	return tfunc;
 }
@@ -110,6 +90,19 @@ Enesim_Drawer_Point enesim_transformation_drawer_point_get(Enesim_Transformation
 	}
 	else
 		return enesim_drawer_point_get(t->rop, d->sdata.format, &src, t->color, NULL);
+}
+
+Enesim_Drawer_Span enesim_transformation_drawer_span_get(Enesim_Transformation *t,
+		Enesim_Surface *d,
+		Enesim_Surface *s)
+{
+	Enesim_Drawer_Span sfunc;
+
+	/* TODO convert the color to the destination format */
+	if (t->mask)
+		return enesim_drawer_span_get(t->rop, d->sdata.format, s, NULL, t->mask);
+	else
+		return enesim_drawer_span_get(t->rop, d->sdata.format, s, t->color, NULL);
 }
 /*============================================================================*
  *                                   API                                      *
@@ -271,14 +264,14 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	cdr.y = 0;
 	cdr.w = d->w;
 	cdr.h = d->h;
-	if (sr)
+	if (dr)
 	{
 		/* TODO check the return value of the intersection */
 		if (eina_rectangle_intersection(&cdr, dr) == EINA_FALSE)
 			return EINA_FALSE;
 		if (eina_rectangle_is_empty(&cdr))
 		{
-			//ENESIM_ERROR(ENESIM_ERROR_DSTRECT_INVALID);
+			//ENESIM_ERROR(ENESIM_ERROR_SRCRECT_INVALID);
 			return EINA_FALSE;
 		}
 	}
@@ -287,14 +280,14 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	csr.y = 0;
 	csr.w = s->w;
 	csr.h = s->h;
-	if (dr)
+	if (sr)
 	{
 		/* TODO check the return value of the intersection */
 		if (eina_rectangle_intersection(&csr, sr) == EINA_FALSE)
 			return EINA_FALSE;
 		if (eina_rectangle_is_empty(&csr))
 		{
-			//ENESIM_ERROR(ENESIM_ERROR_SRCRECT_INVALID);
+			//ENESIM_ERROR(ENESIM_ERROR_DSTRECT_INVALID);
 			return EINA_FALSE;
 		}
 	}
@@ -315,6 +308,6 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	tfunc = _transformer_get(t, s, d);
 	if (!tfunc)
 		return EINA_FALSE;
-	tfunc(t, s, sr, d, dr);
+	tfunc(t, s, &csr, d, &cdr);
 	return EINA_TRUE;
 }
