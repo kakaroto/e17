@@ -2,8 +2,7 @@
 #ifndef EWL_CHECKBUTTON_H
 #define EWL_CHECKBUTTON_H
 
-#include "ewl_button.h"
-#include "ewl_view.h"
+#include "ewl_togglebutton.h"
 
 /**
  * @addtogroup Ewl_Checkbutton Ewl_Checkbutton: An Ewl_Checkbutton with Label
@@ -52,24 +51,12 @@ typedef struct Ewl_Checkbutton Ewl_Checkbutton;
  */
 struct Ewl_Checkbutton
 {
-        Ewl_Button button;              /**< Inherit the basic button properties */
-        Ewl_Position label_position;    /**< Order of label and check */
-        Ewl_Widget *check;              /**< Check widget represented */
+        Ewl_Togglebutton button;        /**< Inherit the basic button properties */
 };
 
 Ewl_Widget       *ewl_checkbutton_new(void);
 int               ewl_checkbutton_init(Ewl_Checkbutton *cb);
 
-void              ewl_checkbutton_checked_set(Ewl_Checkbutton *cb, int checked);
-int               ewl_checkbutton_is_checked(Ewl_Checkbutton *cb);
-
-void              ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb,
-                                                           Ewl_Position p);
-
-/*
- * Internally used callbacks, override at your own risk
- */
-void ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

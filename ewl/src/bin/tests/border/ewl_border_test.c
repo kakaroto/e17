@@ -70,7 +70,7 @@ create_test(Ewl_Container *box)
 
         button_aleft = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_aleft), "Left");
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_aleft), TRUE);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(button_aleft), TRUE);
         ewl_container_child_append(EWL_CONTAINER(avbox), button_aleft);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aleft),
                                   EWL_RADIOBUTTON(button_atop));
@@ -137,7 +137,7 @@ create_test(Ewl_Container *box)
 
         button_ptop = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_ptop), "Top");
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_ptop), TRUE);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(button_ptop), TRUE);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_ptop),
                                   EWL_RADIOBUTTON(button_pright));
         ewl_container_child_append(EWL_CONTAINER(pvbox), button_ptop);
@@ -178,7 +178,7 @@ static void
 border_change_alignment(Ewl_Widget *w, void *ev __UNUSED__,
                                         void *data __UNUSED__)
 {
-        if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        if (!ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)))
                 return;
 
         if (w == button_aleft)
@@ -203,7 +203,7 @@ static void
 border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
                                         void *data __UNUSED__)
 {
-        if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        if (!ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)))
                 return;
 
         if (w == button_pleft)
@@ -222,12 +222,12 @@ border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
 static void
 checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-        if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        if (ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)))
         {
                 ewl_widget_disable(EWL_WIDGET(data));
                 ewl_button_label_set(EWL_BUTTON(w), "Enable");
         }
-        else if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        else if (!ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)))
         {
                 ewl_widget_enable(EWL_WIDGET(data));
                 ewl_button_label_set(EWL_BUTTON(w), "Disable");

@@ -67,21 +67,6 @@ void             ewl_radiobutton_chain_set(Ewl_Radiobutton *rb,
                                         Ewl_Radiobutton *crb);
 Ewl_Radiobutton *ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
 
-/**
- * @def ewl_radiobutton_checked_set(r, c)
- * Shortcut for setting the checked status on the inherited Ewl_Checkbutton
- * fields.
- */
-#define ewl_radiobutton_checked_set(r, c) \
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(r), c)
-
-/**
- * @def ewl_radiobutton_is_checked(r)
- * Shortcut for checking the checked status on the inherited Ewl_Checkbutton
- * fields.
- */
-#define ewl_radiobutton_is_checked(r) \
-        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(r))
 
 /*
  * Internally used callbacks, override at your own risk.

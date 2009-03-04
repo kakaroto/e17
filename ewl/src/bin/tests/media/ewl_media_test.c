@@ -81,7 +81,7 @@ create_test(Ewl_Container *box)
         o2 = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(o2), "Xine");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o2), EWL_RADIOBUTTON(o));
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o2), TRUE);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o2), TRUE);
         ewl_container_child_append(box, o2);
         ewl_callback_append(o2, EWL_CALLBACK_VALUE_CHANGED,
                                         cb_xine_change, NULL);

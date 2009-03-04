@@ -53,11 +53,10 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 
         ewl_widget_appearance_set(w, EWL_RADIOBUTTON_TYPE);
         ewl_widget_inherit(w, EWL_RADIOBUTTON_TYPE);
-        ewl_widget_appearance_set(cb->check, "radio");
         ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_cb_clicked,
                             NULL);
-        ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_cb_destroy,
-                            NULL);
+        ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+                                ewl_radiobutton_cb_destroy, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -148,18 +147,18 @@ ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
 
         /* if there is no chain or the chain is empty we have to
          * treat it special */
-        if (!rb->chain || ecore_list_empty_is(rb->chain)) {
-                if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(rb))) {
+        if (!rb->chain || ecore_list_empty_is(rb->chain))
+        {
+                if (ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(rb)))
                         DRETURN_PTR(rb, DLEVEL_STABLE);
-                }
-                else {
+                else
                         DRETURN_PTR(NULL, DLEVEL_STABLE);
-                }
         }
 
         ecore_list_first_goto(rb->chain);
-        while ((c = ecore_list_next(rb->chain))) {
-                if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(c)))
+        while ((c = ecore_list_next(rb->chain)))
+        {
+                if (ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(c)))
                         DRETURN_PTR(c, DLEVEL_STABLE);
         }
 
@@ -178,30 +177,23 @@ void
 ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
                                         void *user_data __UNUSED__)
 {
-        Ewl_Checkbutton *cb;
         Ewl_Radiobutton *rb;
-        int oc;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
 
-        cb = EWL_CHECKBUTTON(w);
         rb = EWL_RADIOBUTTON(w);
-        oc = ewl_checkbutton_is_checked(cb);
 
         if (rb->chain && !ecore_list_empty_is(rb->chain)) {
-                Ewl_Checkbutton *c;
+                Ewl_Togglebutton *c;
 
                 ecore_list_first_goto(rb->chain);
                 while ((c = ecore_list_next(rb->chain))) {
-                        ewl_checkbutton_checked_set(c, 0);
+                        ewl_togglebutton_checked_set(c, FALSE);
                 }
         }
-        ewl_checkbutton_checked_set(cb, 1);
-
-        if (oc != ewl_checkbutton_is_checked(cb))
-                ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(rb), TRUE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

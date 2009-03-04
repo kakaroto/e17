@@ -15,11 +15,13 @@ part
 		{
 			relative: 0.0 0.0;
 			offset: 2 2;
+			to: "image_base";
 		}
 		rel2
 		{
 			relative: 1.0 1.0;
 			offset: 2 -3;
+			to: "image_base";
 		}
 		image
 		{

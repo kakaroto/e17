@@ -265,7 +265,7 @@ create_main_page(void)
                                                         EWL_RADIOBUTTON(o2));
 
                 if (!strcmp(alignment[i], "Center"))
-                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+                        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), TRUE);
 
                 ewl_widget_show(o);
 
@@ -292,7 +292,7 @@ create_main_page(void)
                                                         EWL_RADIOBUTTON(o2));
 
                 if (!strcmp(alignment[i], "Top"))
-                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+                        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), TRUE);
 
                 ewl_widget_show(o);
 
@@ -300,7 +300,7 @@ create_main_page(void)
         }
 
         o = ewl_checkbutton_new();
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), TRUE);
         ewl_button_label_set(EWL_BUTTON(o), "Show tabbar");
         ewl_container_child_append(EWL_CONTAINER(body), o);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);

@@ -244,16 +244,15 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
                 o = ewl_colorpicker_radiobutton_new();
                 ewl_widget_internal_set(o, TRUE);
                 ewl_button_label_set(EWL_BUTTON(o), modes[i].name);
-                if (!prev)
-                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
-                else
-                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), FALSE);
+                ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), !prev);
 
                 ewl_container_child_append(EWL_CONTAINER(grid), o);
                 ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
                                                                         modes[i].mode);
                 if (prev)
-                        ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+                        ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
+                                                        EWL_RADIOBUTTON(prev));
+
                 ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_colorpicker_cb_radio_change, cp);
                 prev = o;

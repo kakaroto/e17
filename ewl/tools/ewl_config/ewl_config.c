@@ -233,8 +233,7 @@ ec_main_win(int save_system)
 
         o = ewl_checkbutton_new();
         ewl_container_child_append(EWL_CONTAINER(o2), o);
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), save_system);
-        ewl_checkbutton_label_position_set(EWL_CHECKBUTTON(o), EWL_POSITION_RIGHT);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), save_system);
         ewl_button_label_set(EWL_BUTTON(o), "Save as system configuration");
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
         ewl_widget_name_set(o, EC_SAVE_SYSTEM);
@@ -531,7 +530,7 @@ ec_debug_page_setup(Ewl_Notebook *n)
                         ewl_object_alignment_set(EWL_OBJECT(o),
                                         EWL_FLAG_ALIGN_LEFT);
                         ewl_button_label_set(EWL_BUTTON(o), buttons[i].label);
-                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+                        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o),
                                 ewl_config_int_get(ewl_config, buttons[i].key));
                         ewl_widget_show(o);
                 }
@@ -668,7 +667,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         for (sel = 0; checks[sel].name != NULL; sel++)
         {
                 o = ewl_widget_name_find(checks[sel].name);
-                ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+                ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o),
                         ewl_config_int_get(ewl_config, checks[sel].key));
         }
 }
@@ -713,10 +712,10 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         for (i = 0; checks[i].name != NULL; i++)
         {
                 o = ewl_widget_name_find(checks[i].name);
-                if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) !=
+                if ((int)ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(o)) !=
                                 ewl_config_int_get(ewl_config, checks[i].key))
                         ewl_config_int_set(ewl_config, checks[i].key,
-                                        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)),
+                                        ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(o)),
                                         EWL_STATE_PERSISTENT);
         }
 
@@ -771,7 +770,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         }
 
         o = ewl_widget_name_find(EC_SAVE_SYSTEM);
-        if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)))
+        if (ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(o)))
         {
                 if (!ewl_config_can_save_system(ewl_config))
                         fprintf(stderr, "Cannot save system config.\n");

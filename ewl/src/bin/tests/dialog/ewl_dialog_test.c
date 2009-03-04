@@ -76,7 +76,7 @@ create_test(Ewl_Container *box)
         ewl_radiobutton_value_set(EWL_RADIOBUTTON(o), 
                                                 (void *)EWL_POSITION_BOTTOM);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(chain));
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), TRUE);
         ewl_container_child_append(EWL_CONTAINER(border), o);
         ewl_widget_show(o);
 
