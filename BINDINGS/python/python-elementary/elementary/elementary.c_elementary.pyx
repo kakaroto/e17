@@ -504,9 +504,10 @@ cdef class Layout(Object):
         
     def content_set(self, swallow, c_evas.Object content):
         elm_layout_content_set(self.obj, swallow, content.obj)
-    
-    # TODO: need?
-    #def edje_get(self):
+   
+    def edje_get(self):
+        cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
     
 cdef class Hover(Object):
     def __init__(self, c_evas.Object parent):
