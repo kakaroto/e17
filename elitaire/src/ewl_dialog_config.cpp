@@ -95,7 +95,7 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
     ewl_widget_show(o);
     config.animations = ecore_config_boolean_get("/graphic/animations");
-    ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), config.animations);
+    ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), config.animations);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, _check_selected, NULL);
 
     o = ewl_checkbutton_new();
@@ -104,7 +104,7 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
     ewl_widget_show(o);
     config.shadows = ecore_config_boolean_get("/graphic/shadows");
-    ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), config.shadows);
+    ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(o), config.shadows);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, _check_selected, NULL);
 
     /* Setup and show the velocity label and seeker */
@@ -201,9 +201,9 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
                         NULL);
     ewl_widget_show(radio_b[1]);
     if (config.lazy)
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_b[1]), 1);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(radio_b[1]), 1);
     else
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_b[0]), 1);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(radio_b[0]), 1);
 
     /* *** Render Box *** */
     /* Setup and show the border box */
@@ -240,9 +240,9 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
                         NULL);
     ewl_widget_show(radio_b[1]);
     if (config.gl)
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_b[1]), 1);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(radio_b[1]), 1);
     else
-        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_b[0]), 1);
+        ewl_togglebutton_checked_set(EWL_TOGGLEBUTTON(radio_b[0]), 1);
 
 }
 
@@ -284,22 +284,22 @@ static void _check_selected(Ewl_Widget * w, void * event, void * data)
     label = ewl_button_label_get(EWL_BUTTON(w));
 
     if (!strcmp(label, _("animated movements"))) {
-        config.animations = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w));
+        config.animations = ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
     else if (!strcmp(label, _("shadows"))) {
-        config.shadows = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w));
+        config.shadows = ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
     else if (!strcmp(label, _("Software"))) {
-        config.gl = !ewl_radiobutton_is_checked(w);
+        config.gl = !ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
     else if (!strcmp(label, _("OpenGL (testing)"))) {
-        config.gl = ewl_radiobutton_is_checked(w);
+        config.gl = ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
     else if (!strcmp(label, _("lazy mode"))) {
-        config.lazy = ewl_radiobutton_is_checked(w);
+        config.lazy = ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
     else if (!strcmp(label, _("normal mode"))) {
-        config.lazy = !ewl_radiobutton_is_checked(w);
+        config.lazy = !ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w));
     }
 }
 
