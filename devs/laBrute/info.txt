@@ -4,7 +4,7 @@ Cloak:
 Name:         Karel Malbroukou
 Location:     Saint-Paul, Reunion
 E-Mail:       wax.kenryu@gmail.com
-WWW:          http://skymoz.wordpress.org/
+WWW:          http://skymoz.wordpress.com/
 Contributing: python-etk
 Group:        Libraries
 Platform:     Ubuntu (Linux), Gentoo
