@@ -67,6 +67,7 @@ static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
 static void _drawer_container_update(Instance *inst);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
+static void _drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
 static Drawer_Plugin *_drawer_plugin_new(Instance *inst, const char *name, const char *category, size_t size);
 static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
@@ -665,6 +666,8 @@ _drawer_container_update(Instance *inst)
      {
 	edje_object_part_unswallow(inst->o_drawer, inst->o_content);
 	evas_object_del(inst->o_content);
+	evas_object_event_callback_del(inst->o_content, EVAS_CALLBACK_RESIZE,
+				       _drawer_container_resize);
      }
    s = DRAWER_SOURCE(inst->source);
    l = s->func.list(s);
@@ -677,6 +680,9 @@ _drawer_container_update(Instance *inst)
 	   s->func.description_get(s));
    edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
    evas_object_show(inst->o_content);
+
+   evas_object_event_callback_add(inst->o_content, EVAS_CALLBACK_RESIZE,
+				  _drawer_container_resize, inst);
 }
 
 static void
@@ -729,7 +735,16 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
      }
    if (inst->o_content)
      edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
+}
 
+static void
+_drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+
+   inst = data;
+   if (DRAWER_VIEW(inst->view)->func.container_resized)
+     DRAWER_VIEW(inst->view)->func.container_resized(DRAWER_VIEW(inst->view));
 }
 
 static Drawer_Plugin *
@@ -895,6 +910,7 @@ _drawer_view_new(Instance *inst, const char *name)
 	goto init_done;
      }
 
+   v->func.container_resized = dlsym(p->handle, "drawer_view_container_resized");
    v->func.content_size_get = dlsym(p->handle, "drawer_view_content_size_get");
    v->func.orient_set = dlsym(p->handle, "drawer_view_orient_set");
 

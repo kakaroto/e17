@@ -137,8 +137,9 @@ struct _Drawer_View
       Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
-      void	    (*content_size_get)	(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h);
-      void	    (*orient_set)	(Drawer_View *v, E_Gadcon_Orient orient);
+      void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h);
+      void	    (*container_resized)	(Drawer_View *v);
+      void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
    } func;
 };
 

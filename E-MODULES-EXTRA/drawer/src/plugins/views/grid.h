@@ -13,6 +13,7 @@ EAPI int   drawer_plugin_shutdown(Drawer_Plugin *p);
 EAPI Evas_Object * drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items);
 
 EAPI void  drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h);
-EAPI void drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient);
+EAPI void  drawer_view_container_resized(Drawer_View *v);
+EAPI void  drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient);
 
 #endif

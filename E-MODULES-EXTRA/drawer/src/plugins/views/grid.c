@@ -100,6 +100,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    Drawer_Source_Item *si;
    const char *cat = NULL;
    Eina_Bool change = EINA_FALSE;
+   Evas_Coord w, h;
 
    inst = DRAWER_PLUGIN(v)->data;
 
@@ -161,6 +162,24 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
      }
    eina_stringshare_del(cat);
 
+   /* XXX: switch to size_min_calc when it starts working
+    *
+    * edje_object_size_min_calc(inst->o_box, &w, &h);
+    *
+    */
+   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &w, &h);
+   edje_extern_object_min_size_set(inst->o_box, w, h);
+   evas_object_resize(inst->o_box, w, h);
+
+   inst->o_scroll = e_scrollframe_add(evas);
+   e_scrollframe_child_set(inst->o_scroll, inst->o_box);
+   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);
+   if (!e_scrollframe_custom_theme_set(
+	   inst->o_scroll, "base/theme/modules/drawer",
+	   "modules/drawer/grid/scrollframe"))
+     e_scrollframe_custom_edje_file_set(inst->o_scroll, inst->theme_file, "modules/drawer/grid/scrollframe");
+   evas_object_show(inst->o_scroll);
+
    return inst->o_con;
 }
 
@@ -195,16 +214,16 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 
    /* Rough approximation, since we don't know the box's
     * padding settings, and we don't care */
-   evas_object_resize(inst->o_con, cw + ew / 2, ch + eh / 2);
+   evas_object_resize(inst->o_box, cw + ew / 2, ch + eh / 2);
    /* XXX: switch to size_min_calc when it starts working
     *
     * edje_object_size_min_calc(inst->o_box, &ww, &hh);
     *
     */
    evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
-   edje_extern_object_min_size_set(inst->o_box, ww, hh);
+   evas_object_resize(inst->o_box, ww, hh);
+   edje_extern_object_min_size_set(inst->o_scroll, ww, hh);
    edje_object_size_min_calc(inst->o_con, w, h);
-   edje_extern_object_min_size_set(inst->o_box, 0, 0);
 
    switch (gcc->gadcon->orient)
      {
@@ -237,6 +256,56 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	  *w = zw - margin->left - margin->right;
 	break;
      }
+}
+
+EAPI void
+drawer_view_container_resized(Drawer_View *v)
+{
+   Instance *inst;
+   Evas_Coord vw, vh, mw, mh, w, h, nw, nh;
+   Eina_Bool resize = EINA_FALSE;
+
+   inst = DRAWER_PLUGIN(v)->data;
+   
+   e_scrollframe_child_viewport_size_get(inst->o_scroll, &vw, &vh);
+   evas_object_resize(inst->o_box, vw, vh);
+   /* XXX: switch to size_min_calc when it starts working
+    *
+    * edje_object_size_min_calc(inst->o_box, &ww, &hh);
+    *
+    */
+   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &mw, &mh);
+   evas_object_geometry_get(inst->o_box, NULL, NULL, &w, &h);
+
+   if (vw >= mw)
+     {
+	if (w != vw)
+	  {
+	     w = vw;
+	     resize = EINA_TRUE;
+	  }
+     }
+   else if (w != mw)
+     {
+	w = mw;
+	resize = EINA_TRUE;
+     }
+
+   if (vh >= mh)
+     {
+	if (h != vh)
+	  {
+	     h = vh;
+	     resize = EINA_TRUE;
+	  }
+     }
+   else if (h != mh)
+     {
+	h = mh;
+	resize = EINA_TRUE;
+     }
+
+   if (resize) evas_object_resize(inst->o_box, w, h);
 }
 
 EAPI void
@@ -288,15 +357,6 @@ _grid_containers_create(Instance *inst)
    if (!e_theme_edje_object_set(inst->o_box, "base/theme/modules/drawer", "modules/drawer/grid/box"))
      edje_object_file_set(inst->o_box, inst->theme_file, "modules/drawer/grid/box");
 
-
-   /* XXX: need to make this work somehow
-    *
-    * inst->o_scroll = e_widget_scrollframe_simple_add(evas, inst->o_box);
-    * edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_scroll);
-    * evas_object_show(inst->o_scroll);
-    *
-    */
-   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
    evas_object_show(inst->o_box);
 }
 
