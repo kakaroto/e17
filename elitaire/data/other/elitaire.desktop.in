@@ -2,7 +2,8 @@
 Name=Elitaire
 Comment=Nice looking card solitaire games for the E17 Desktop Shell
 Comment[cs]=Solitaire hry pro E17
-Comment[it]=Raccolta di solitari per il Desktop Shell di E17
+Comment[it]=Raccolta di solitari per E17
+Comment[el]=Όμορφα παιχνίδια με κάρτες για το E17
 Version=1.0
 Encoding=UTF-8
 Exec=elitaire
@@ -13,4 +14,5 @@ StartupNotify=true
 Icon=elitaire
 GenericName=Elitaire Card Games
 GenericName[cs]=Karetní hry Elitaire
-
+GenericName[it]=Gioco di carte Elitaire
+GenericName[el]=Παιχνίδια με κάρτες Elitaire

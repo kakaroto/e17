@@ -2,9 +2,11 @@
 Type=Link
 Name=Drawer
 Name[fr]=Tiroir
+Name[el]=Συρτάρι
 Icon=e-module-drawer
 Comment=<title>Drawer Module:</title><br>A Gadget that acts as a container for data.
 Comment[cs]=<title>Drawer Modul:</title><br>Gadget sloužící jako kontejner pro data.
 Comment[it]=<title>Modulo Drawer</title><br>Un modulo che fa da contenitore per dati.
 Comment[fr]=<title>Module Tiroir:</title><br>Un gadget faisant office de réceptacle.
+Comment[el]=<title>Άρθρωμα Συρταριού:</title><br>Ένα συστατικό που λειτουργεί ως χώρος αποθήκευσης δεδομένων.
 X-Enlightenment-ModuleType=shelf
