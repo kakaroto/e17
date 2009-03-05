@@ -868,15 +868,35 @@ cdef class ListItem:
     def append(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
             raise Exception("Item was already created!")
+
+        cdef c_evas.Evas_Object* icon_obj
+        cdef c_evas.Evas_Object* end_obj
+        icon_obj = NULL
+        end_obj = NULL
+
+        if not icon == None:
+            icon_obj = icon.obj
+        if not end == None:
+            end_obj = end.obj
         
-        self.item = elm_list_item_append(list.obj, label, icon.obj, end.obj, _list_callback, NULL)
+        self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
         self._create_mapping(callback, data)
 
     def prepend(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
             raise Exception("Item was already created!")
+
+        cdef c_evas.Evas_Object* icon_obj
+        cdef c_evas.Evas_Object* end_obj
+        icon_obj = NULL
+        end_obj = NULL
+
+        if not icon == None:
+            icon_obj = icon.obj
+        if not end == None:
+            end_obj = end.obj
         
-        self.item = elm_list_item_prepend(list.obj, label, icon.obj, end.obj, _list_callback, NULL)
+        self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj, _list_callback, NULL)
         self._create_mapping(callback, data)
 
     def insert_before(self, c_evas.Object list, ListItem before, label, c_evas.Object icon,
@@ -884,14 +904,40 @@ cdef class ListItem:
         if not self.item == NULL:
             raise Exception("Item was already created!")
 
-        self.item = elm_list_item_insert_before(list.obj, before.item, label, icon.obj, end.obj, _list_callback, NULL)
+        if before == None:
+            raise ValueError("need a valid before object to add an item before another item")
+
+        cdef c_evas.Evas_Object* icon_obj
+        cdef c_evas.Evas_Object* end_obj
+        icon_obj = NULL
+        end_obj = NULL
+
+        if not icon == None:
+            icon_obj = icon.obj
+        if not end ==  None:
+            end_obj = end.obj
+
+        self.item = elm_list_item_insert_before(list.obj, before.item, label, icon_obj, end_obj, _list_callback, NULL)
         self._create_mapping(callback, data)
 
     def insert_after(self, c_evas.Object list, ListItem after, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
             raise Exception("Item was already created!")
+        
+        if after == None:
+            raise ValueError("need a valid after object to add an item after another item")
 
-        self.item = elm_list_item_insert_after(list.obj, after.item, label, icon.obj, end.obj,
+        cdef c_evas.Evas_Object* icon_obj
+        cdef c_evas.Evas_Object* end_obj
+        icon_obj = NULL
+        end_obj = NULL
+
+        if not icon == None:
+            icon_obj = icon.obj
+        if not end ==  None:
+            end_obj = end.obj
+
+        self.item = elm_list_item_insert_after(list.obj, after.item, label, icon_obj, end_obj,
             _list_callback, NULL)
         self._create_mapping(callback, data)
    
