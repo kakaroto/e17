@@ -129,6 +129,13 @@ main(int argc, char **argv)
         /* init the randomizer */
         srand(1);
 
+        /* init ecore */
+        if (!ecore_init())
+        {
+                printf("Unable to init Ecore.\n");
+                return 1;
+        }
+
         /* check for any flags before ewl_init to avoid opening the display */
         for (i = 0; i < argc; i++)
         {
@@ -204,7 +211,7 @@ main(int argc, char **argv)
                                 if (unit_test)
                                         ret = run_unit_tests(t);
                                 else
-                                        run_window_test(t, MAIN_WIDTH, MAIN_HEIGHT);
+                                        run_window_test(t, -1, -1);
 
                                 ran_test ++;
                                 if (!all_tests) break;
@@ -243,6 +250,8 @@ main(int argc, char **argv)
 
         if (tests) ecore_list_destroy(tests);
         if (tests_path_group) ecore_path_group_del(tests_path_group);
+
+        ecore_shutdown();
 
         return ret;
 }
