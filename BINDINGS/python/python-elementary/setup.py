@@ -45,15 +45,22 @@ def pkgconfig(*packages, **kw):
             kw.setdefault("extra_compile_args", []).append(token)
     return kw
 
+depends = ['include/elementary/c_elementary.pxd']
+
+for root, dirs, files in os.walk('elementary'):
+    for file in files:
+        if file.endswith('.pxi'):
+            depends.append('elementary/' + file)
+            
 if not debug:
     elementary_mod = Extension('elementary.c_elementary',
                        sources=['elementary/elementary.c_elementary.pyx'],
-                       depends=['include/elementary/c_elementary.pxd'],
+                       depends=depends,
                        **pkgconfig('"elementary"'))
 else:
     elementary_mod = Extension('elementary.c_elementary',
                        sources=['elementary/elementary.c_elementary.pyx'],
-                       depends=['include/elementary/c_elementary.pxd'],
+                       depends=depends,
                        extra_compile_args=["-g"],
                        extra_link_args=["-g"],
                        **pkgconfig('"elementary"'))
