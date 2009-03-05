@@ -21,7 +21,7 @@ import c_elementary
 from c_elementary import Object, Window, Background, Icon, \
     Box, Button, Scroller, Label, Toggle, Frame, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
-    Photo, Hoversel, Toolbar, init, shutdown, run, exit
+    Photo, Hoversel, Toolbar, List, Slider, init, shutdown, run, exit
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG = 1
