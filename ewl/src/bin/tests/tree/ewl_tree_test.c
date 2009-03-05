@@ -474,7 +474,7 @@ ewl_tree_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         if (EWL_TREE_VIEW_SCROLLED_IS(view))
                 ewl_tree_view_scrolled_scroll_headers_set(EWL_TREE_VIEW(view),
-                        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+                        ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)));
 }
 
 static void
@@ -498,7 +498,7 @@ ewl_tree_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         const Ewl_View *view;
 
         tree = data;
-        if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        if (ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(w)))
                 view = ewl_tree_view_plain_get();
         else
                 view = ewl_tree_view_scrolled_get();
