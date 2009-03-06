@@ -495,31 +495,34 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 static void
 _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 {
+   Evas *evas;
+
    if (inst->o_content)
      {
 	edje_object_part_unswallow(inst->o_drawer, inst->o_content);
 	evas_object_del(inst->o_content);
      }
 
+   evas = evas_object_evas_get(inst->o_drawer);
    if (!si && inst->source && inst->source->enabled)
      {
 	Eina_List *l = NULL;
 
 	/* XXX: better to have a function that retuns the first list instead */
-	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
+	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source), evas);
 	if (l)
 	  si = l->data;
      }
 
    if (si)
-     inst->o_content = drawer_util_icon_create(si, evas_object_evas_get(inst->o_drawer), 120, 120);
+     inst->o_content = drawer_util_icon_create(si, evas, 120, 120);
    else
      {
 	char buf[4096];
 
 	snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
 	      drawer_conf->module->dir);
-	inst->o_content = edje_object_add(evas_object_evas_get(inst->o_drawer));
+	inst->o_content = edje_object_add(evas);
 	if (!e_theme_edje_object_set(inst->o_content, "base/theme/modules/drawer", 
 				     "modules/drawer/main/content"))
 	  edje_object_file_set(inst->o_content, buf, "modules/drawer/main/content");
@@ -639,7 +642,7 @@ _drawer_popup_update(Instance *inst)
      }
 
    s = DRAWER_SOURCE(inst->source);
-   l = s->func.list(s);
+   l = s->func.list(s, inst->popup->win->evas);
    if (l)
      _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
    else
@@ -660,6 +663,7 @@ static void
 _drawer_container_update(Instance *inst)
 {
    Eina_List *l = NULL;
+   Evas *evas;
    Drawer_Source *s;
 
    if (inst->o_content)
@@ -669,11 +673,11 @@ _drawer_container_update(Instance *inst)
 	evas_object_event_callback_del(inst->o_content, EVAS_CALLBACK_RESIZE,
 				       _drawer_container_resize);
      }
+   evas = evas_object_evas_get(inst->o_drawer);
    s = DRAWER_SOURCE(inst->source);
-   l = s->func.list(s);
+   l = s->func.list(s, evas);
    inst->o_content = DRAWER_VIEW(inst->view)->func.render
-      (DRAWER_VIEW(inst->view),
-       evas_object_evas_get(inst->o_drawer), l);
+      (DRAWER_VIEW(inst->view), evas, l);
 
    if (s->func.description_get)
      edje_object_part_text_set(inst->o_drawer, "e.text.description",
@@ -868,6 +872,7 @@ _drawer_source_new(Instance *inst, const char *name)
      }
 
    s->func.activate = dlsym(p->handle, "drawer_source_activate");
+   s->func.trigger = dlsym(p->handle, "drawer_source_trigger");
    s->func.description_get = dlsym(p->handle, "drawer_source_description_get");
 
 init_done:
@@ -1394,12 +1399,18 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    else if (ev->button == 2 && !inst->flags.is_floating && inst->source && inst->view &&
 	    inst->source->enabled && inst->view->enabled)
      {
-	Eina_List *l = NULL;
+	Drawer_Source *s = DRAWER_SOURCE(inst->source);
 
-	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
-	if (l)
-	  DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source),
-						     l->data, inst->gcc->gadcon->zone);
+	if (s->func.trigger)
+	  s->func.trigger(s, inst->gcc->gadcon->zone);
+	else
+	  {
+	     Eina_List *l = NULL;
+
+	     l = s->func.list(s, evas_object_evas_get(inst->o_drawer));
+	     if (l)
+	       s->func.activate(s, l->data, inst->gcc->gadcon->zone);
+	  }
 
 	if (inst->popup)
 	  _drawer_popup_hide(inst);

@@ -120,10 +120,14 @@ struct _Drawer_Source
    Drawer_Plugin	plugin;
 
    struct {
-      Eina_List * (*list)        (Drawer_Source *s);
+      Eina_List * (*list)        (Drawer_Source *s, Evas *evas);
 
       /* optional */
+
+      /* Activates the given item */
       void	   (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+      /* Triggers a plugin-specific action on gadget middle-click */
+      void	   (*trigger)         (Drawer_Source *s, E_Zone *zone);
       const char * (*description_get) (Drawer_Source *s);
    } func;
 };
@@ -150,12 +154,17 @@ struct _Drawer_Source_Item
    Efreet_Desktop *desktop;
    /* file for thumbnailing */
    const char	  *file_path;
+   /* if all else fails, provide an evas object */
+   Evas_Object    *object;
+
+   /* for specialized items */
+   void		  *data;
 
    const char     *label;
    const char     *description;
    const char	  *category;
 
-   void *priv;
+   void		  *priv;
 };
 
 struct _Drawer_Event_Source_Update

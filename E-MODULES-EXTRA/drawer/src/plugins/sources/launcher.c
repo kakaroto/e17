@@ -186,7 +186,7 @@ drawer_plugin_config_save(Drawer_Plugin *p)
 }
 
 EAPI Eina_List *
-drawer_source_list(Drawer_Source *s)
+drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 {
    Instance *inst = NULL;
    char buf[4096];

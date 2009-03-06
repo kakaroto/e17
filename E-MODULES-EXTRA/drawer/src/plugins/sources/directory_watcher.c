@@ -70,6 +70,7 @@ struct _E_Config_Dialog_Data
 
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Directory Watcher"};
 
+static void _dirwatcher_directory_activate(Instance *inst, E_Zone *zone, const char *path);
 static void _dirwatcher_description_create(Instance *inst);
 static void _dirwatcher_source_items_free(Instance *inst);
 static Drawer_Source_Item * _dirwatcher_source_item_fill(Instance *inst, const char *file);
@@ -157,7 +158,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 }
 
 EAPI Eina_List *
-drawer_source_list(Drawer_Source *s)
+drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 {
    Eina_List *files;
    Instance *inst = NULL;
@@ -192,31 +193,10 @@ EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
    Dirwatcher_Priv *p = NULL;
-   char exec[PATH_MAX];
 
    p = si->priv;
    if (p->dir)
-     {
-	if (p->inst->conf->fm && (p->inst->conf->fm[0] != '\0'))
-	  {
-	     snprintf(exec, PATH_MAX, "%s \"%s\"", p->inst->conf->fm, si->file_path);
-	     e_exec(NULL, NULL, exec, NULL, NULL);
-	     return;
-	  }
-	else
-	  {
-	     E_Action *act = NULL;
-
-	     act = e_action_find("fileman");
-	     if (act)
-	       {
-	          if (act && act->func.go)
-	          act->func.go(E_OBJECT(e_manager_current_get()),
-			       si->file_path);
-	       }
-	       return;
-	  }
-     }
+     return _dirwatcher_directory_activate(p->inst, zone, si->file_path);
    if (si->file_path)
      {
 	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
@@ -238,6 +218,14 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 	/* XXX: open the file with the default application */
 	return;
      }
+}
+
+EAPI void
+drawer_source_trigger(Drawer_Source *s, E_Zone *zone)
+{
+   Instance *inst = DRAWER_PLUGIN(s)->data;
+
+   _dirwatcher_directory_activate(inst, zone, inst->conf->dir);
 }
 
 EAPI Evas_Object *
@@ -269,6 +257,29 @@ drawer_source_description_get(Drawer_Source *s)
    inst = DRAWER_PLUGIN(s)->data;
 
    return inst->description;
+}
+
+static void
+_dirwatcher_directory_activate(Instance *inst, E_Zone *zone, const char *path)
+{
+   char exec[PATH_MAX];
+
+   if (inst->conf->fm && (inst->conf->fm[0] != '\0'))
+     {
+	snprintf(exec, PATH_MAX, "%s \"%s\"", inst->conf->fm, path);
+	e_exec(zone, NULL, exec, NULL, NULL);
+     }
+   else
+     {
+	E_Action *act = NULL;
+
+	act = e_action_find("fileman");
+	if (act)
+	  {
+	     if (act && act->func.go)
+	       act->func.go(E_OBJECT(e_manager_current_get()), path);
+	  }
+     }
 }
 
 static void
