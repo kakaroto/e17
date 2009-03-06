@@ -7,6 +7,7 @@
 typedef struct _Instance Instance;
 typedef struct _Conf Conf;
 typedef struct _Conf_Rating Conf_Rating;
+typedef struct _Launcher_Menu_Data Launcher_Menu_Data;
 
 struct _Instance 
 {
@@ -14,6 +15,9 @@ struct _Instance
 
    E_Order *apps;
    Eina_List *items;
+
+   E_Menu *menu;
+   Launcher_Menu_Data *m_data;
 
    Conf *conf;
 
@@ -54,6 +58,13 @@ struct _E_Config_Dialog_Data
    int sort_rel;
 };
 
+struct _Launcher_Menu_Data
+{
+   Instance *inst;
+
+   Drawer_Source_Item *si;
+};
+
 #define CONF_RATING(obj) ((Conf_Rating *) obj)
 
 static void _launcher_description_create(Instance *inst);
@@ -62,9 +73,13 @@ static void _launcher_sources_rating_discount(Instance *inst, int min);
 static int _launcher_cb_sort_rating(const void *data1, const void *data2);
 static void _launcher_cb_app_change(void *data, E_Order *eo __UNUSED__);
 static Drawer_Source_Item *_launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop);
-static void _launcher_source_item_free(Instance *inst);
+static void _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si);
+static void _launcher_source_items_free(Instance *inst);
 static void _launcher_event_update_free(void *data __UNUSED__, void *event);
 static void _launcher_conf_activation_cb(void *data1, void *data2 __UNUSED__);
+static void _launcher_cb_menu_post(void *data, E_Menu *menu);
+static void _launcher_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _launcher_cb_menu_item_remove(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void *_launcher_cf_create_data(E_Config_Dialog *cfd);
 static void _launcher_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
@@ -136,7 +151,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    
    inst = p->data;
 
-   _launcher_source_item_free(inst);
+   _launcher_source_items_free(inst);
 
    eina_stringshare_del(inst->description);
    eina_stringshare_del(inst->conf->id);
@@ -155,6 +170,16 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 
 	E_FREE(r);
      }
+
+   if (inst->menu) 
+     {
+        e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
+        e_object_del(E_OBJECT(inst->menu));
+        inst->menu = NULL;
+     }
+
+   if (inst->m_data)
+     E_FREE(inst->m_data);
 
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_CONFIG_DD_FREE(inst->edd.conf_rel);
@@ -195,7 +220,7 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 
    if (!(inst = DRAWER_PLUGIN(s)->data)) return NULL;
 
-   _launcher_source_item_free(inst);
+   _launcher_source_items_free(inst);
 
    homedir = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s/.order", homedir, inst->conf->dir);
@@ -250,6 +275,34 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
    CONF_RATING(si->priv)->rating++;
    if (inst->conf->sort_rel)
      _launcher_cb_app_change(inst, NULL);
+}
+
+EAPI void
+drawer_source_context(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev)
+{
+   Instance *inst = NULL;
+   E_Menu_Item *mi = NULL;
+   Launcher_Menu_Data *m_data = E_NEW(Launcher_Menu_Data, 1);
+
+   inst = DRAWER_PLUGIN(s)->data;
+   inst->m_data = m_data;
+   m_data->inst = inst;
+   m_data->si = si;
+
+   inst->menu = e_menu_new();
+   e_menu_post_deactivate_callback_set(inst->menu, _launcher_cb_menu_post, inst);
+
+   mi = e_menu_item_new(inst->menu);
+   e_menu_item_label_set(mi, D_("Change Item Properties"));
+   e_util_menu_item_theme_icon_set(mi, "widget/config");
+   e_menu_item_callback_set(mi, _launcher_cb_menu_item_properties, si);
+
+   mi = e_menu_item_new(inst->menu);
+   e_menu_item_label_set(mi, D_("Remove Item"));
+   e_util_menu_item_theme_icon_set(mi, "widget/del");
+   e_menu_item_callback_set(mi, _launcher_cb_menu_item_remove, m_data);
+
+   e_menu_activate(inst->menu, zone, ev->x, ev->y, 1, 1, E_MENU_POP_DIRECTION_AUTO);
 }
 
 EAPI const char *
@@ -350,7 +403,19 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 }
 
 static void
-_launcher_source_item_free(Instance *inst)
+_launcher_source_item_free(Instance *inst, Drawer_Source_Item *si)
+{
+   e_order_remove(inst->apps, si->desktop);
+
+   inst->items = eina_list_remove(inst->items, si);
+   eina_stringshare_del(si->label);
+   eina_stringshare_del(si->description);
+   eina_stringshare_del(si->category);
+   free(si);
+}
+
+static void
+_launcher_source_items_free(Instance *inst)
 {
    while (inst->items)
      {
@@ -413,6 +478,35 @@ _launcher_conf_activation_cb(void *data1, void *data2 __UNUSED__)
 	 "_e_module_drawer_cfg_dlg", buf, 0, v, inst);
 
    e_dialog_resizable_set(_cfd->dia, 1);
+}
+
+static void 
+_launcher_cb_menu_post(void *data, E_Menu *menu)
+{
+   Instance *inst = NULL;
+
+   if (!(inst = data)) return;
+   if (inst->m_data)
+     E_FREE(inst->m_data);
+   if (!inst->menu) return;
+   e_object_del(E_OBJECT(inst->menu));
+   inst->menu = NULL;
+}
+
+static void
+_launcher_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Drawer_Source_Item *si = data;
+
+   e_desktop_edit(e_container_current_get(e_manager_current_get()), si->desktop);
+}
+
+static void
+_launcher_cb_menu_item_remove(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Launcher_Menu_Data *m_data = data;
+   
+   _launcher_source_item_free(m_data->inst, m_data->si);
 }
 
 /* Local Functions */
@@ -635,4 +729,3 @@ _launcher_cf_load_ilist(E_Config_Dialog_Data *cfdata)
    if (selnum >= 0)
      e_widget_ilist_selected_set(cfdata->ilist, selnum);   
 }
-

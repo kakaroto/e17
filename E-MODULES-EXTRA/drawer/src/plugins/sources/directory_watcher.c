@@ -25,6 +25,8 @@ struct _Instance
 
    Eina_List *items;
 
+   E_Menu *menu;
+
    struct {
 	E_Config_DD *conf;
    } edd;
@@ -77,6 +79,8 @@ static Drawer_Source_Item * _dirwatcher_source_item_fill(Instance *inst, const c
 static void _dirwatcher_event_update_free(void *data __UNUSED__, void *event);
 
 static void _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path);
+static void _dirwatcher_cb_menu_post(void *data, E_Menu *menu);
+static void _dirwatcher_cb_menu_open_dir(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _dirwatcher_conf_activation_cb(void *data1, void *data2 __UNUSED__);
 
 static void * _dirwatcher_cf_create_data(E_Config_Dialog *cfd);
@@ -149,6 +153,13 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
    eina_stringshare_del(inst->conf->id);
    eina_stringshare_del(inst->conf->dir);
    eina_stringshare_del(inst->conf->fm);
+
+   if (inst->menu) 
+     {
+        e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
+        e_object_del(E_OBJECT(inst->menu));
+        inst->menu = NULL;
+     }
 
    E_CONFIG_DD_FREE(inst->edd.conf);
    E_FREE(inst->conf);
@@ -226,6 +237,25 @@ drawer_source_trigger(Drawer_Source *s, E_Zone *zone)
    Instance *inst = DRAWER_PLUGIN(s)->data;
 
    _dirwatcher_directory_activate(inst, zone, inst->conf->dir);
+}
+
+EAPI void
+drawer_source_context(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev)
+{
+   Instance *inst = NULL;
+   E_Menu_Item *mi = NULL;
+
+   inst = DRAWER_PLUGIN(s)->data;
+
+   inst->menu = e_menu_new();
+   e_menu_post_deactivate_callback_set(inst->menu, _dirwatcher_cb_menu_post, inst);
+
+   mi = e_menu_item_new(inst->menu);
+   e_menu_item_label_set(mi, D_("Open Containing Directory"));
+   e_util_menu_item_theme_icon_set(mi, "folder");
+   e_menu_item_callback_set(mi, _dirwatcher_cb_menu_open_dir, inst);
+
+   e_menu_activate(inst->menu, zone, ev->x, ev->y, 1, 1, E_MENU_POP_DIRECTION_AUTO);
 }
 
 EAPI Evas_Object *
@@ -398,6 +428,27 @@ _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File
    ev->source = inst->source;
    ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _dirwatcher_event_update_free, NULL);
+}
+
+static void 
+_dirwatcher_cb_menu_post(void *data, E_Menu *menu)
+{
+   Instance *inst = NULL;
+
+   if (!(inst = data)) return;
+   if (!inst->menu) return;
+   e_object_del(E_OBJECT(inst->menu));
+   inst->menu = NULL;
+}
+
+static void
+_dirwatcher_cb_menu_open_dir(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst = NULL;
+
+   if (!(inst = data)) return;
+   _dirwatcher_directory_activate(inst, e_util_zone_current_get(e_manager_current_get()),
+				  inst->conf->dir);
 }
 
 static void

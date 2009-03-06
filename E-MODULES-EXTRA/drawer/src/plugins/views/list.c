@@ -61,7 +61,10 @@ static int  _list_sort_by_category_cb(const void *d1, const void *d2);
 static void _list_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_entry_deselect_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void _list_entry_context_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+
 static void _list_event_activate_free(void *data __UNUSED__, void *event);
+static void _list_event_context_free(void *data __UNUSED__, void *event);
 
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "List"};
 
@@ -350,6 +353,9 @@ _list_containers_create(Instance *inst)
    eina_stringshare_del(group);
    edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
 
+   /* Stops the parent context menu from appearing */
+   evas_object_propagate_events_set(inst->o_con, 0);
+
    evas_object_event_callback_add(inst->o_con, EVAS_CALLBACK_MOUSE_MOVE,
 				  _list_cb_list_mouse_move, inst);
 }
@@ -384,6 +390,8 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 				   _list_entry_deselect_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
 				   _list_entry_activate_cb, e);
+   edje_object_signal_callback_add(e->o_holder, "e,action,context", "drawer", 
+				   _list_entry_context_cb, e);
 
    return e;
 }
@@ -420,6 +428,8 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 				   _list_entry_deselect_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
 				   _list_entry_activate_cb, e);
+   edje_object_signal_callback_add(e->o_holder, "e,action,context", "drawer", 
+				   _list_entry_context_cb, e);
 
    return e;
 }
@@ -638,9 +648,38 @@ _list_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNU
 }
 
 static void
+_list_entry_context_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Entry *e = NULL;
+   Drawer_Event_View_Context *ev;
+   Evas_Coord ox, oy;
+
+   evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
+
+   e = data;
+   ev = E_NEW(Drawer_Event_View_Context, 1);
+   ev->data = e->si;
+   ev->view = e->inst->view;
+   ev->x = ox;
+   ev->y = oy;
+   ev->id = eina_stringshare_add(e->inst->parent_id);
+   ecore_event_add(DRAWER_EVENT_VIEW_ITEM_CONTEXT, ev, _list_event_context_free, NULL);
+}
+
+static void
 _list_event_activate_free(void *data __UNUSED__, void *event)
 {
    Drawer_Event_View_Activate *ev;
+
+   ev = event;
+   eina_stringshare_del(ev->id);
+   free(ev);
+}
+
+static void
+_list_event_context_free(void *data __UNUSED__, void *event)
+{
+   Drawer_Event_View_Context *ev;
 
    ev = event;
    eina_stringshare_del(ev->id);

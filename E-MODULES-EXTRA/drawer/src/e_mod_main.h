@@ -39,6 +39,7 @@ typedef struct _Drawer_Source_Item Drawer_Source_Item;
 
 typedef struct _Drawer_Event_Source_Update Drawer_Event_Source_Update;
 typedef struct _Drawer_Event_View_Activate Drawer_Event_View_Activate;
+typedef struct _Drawer_Event_View_Context Drawer_Event_View_Context;
 
 typedef struct _Drawer_Content_Margin Drawer_Content_Margin;
 
@@ -128,6 +129,9 @@ struct _Drawer_Source
       void	   (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
       /* Triggers a plugin-specific action on gadget middle-click */
       void	   (*trigger)         (Drawer_Source *s, E_Zone *zone);
+      /* Creates a context menu for the given item */
+      void	   (*context)         (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
+      /* Returns a description of the source */
       const char * (*description_get) (Drawer_Source *s);
    } func;
 };
@@ -180,6 +184,14 @@ struct _Drawer_Event_View_Activate
    void *data;
 };
 
+struct _Drawer_Event_View_Context
+{
+   Drawer_View *view;
+   const char *id;
+   void *data;
+   Evas_Coord x, y;
+};
+
 struct _Drawer_Content_Margin
 {
    Evas_Coord top, right, bottom, left;
@@ -208,5 +220,6 @@ EAPI E_Config_Dialog *e_int_config_drawer_module(E_Container *con, Config_Item *
 extern Config *drawer_conf;
 extern EAPI int DRAWER_EVENT_SOURCE_UPDATE;
 extern EAPI int DRAWER_EVENT_VIEW_ITEM_ACTIVATE;
+extern EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT;
 
 #endif

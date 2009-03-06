@@ -53,7 +53,10 @@ static int  _grid_sort_by_category_cb(const void *d1, const void *d2);
 static void _grid_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _grid_entry_deselect_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _grid_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void _grid_entry_context_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+
 static void _grid_event_activate_free(void *data __UNUSED__, void *event);
+static void _grid_event_context_free(void *data __UNUSED__, void *event);
 
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "Grid"};
 
@@ -400,6 +403,8 @@ _grid_item_create(Instance *inst, Drawer_Source_Item *si)
 				   _grid_entry_deselect_cb, e);
    edje_object_signal_callback_add(e->o_holder, "e,action,activate", "drawer", 
 				   _grid_entry_activate_cb, e);
+   edje_object_signal_callback_add(e->o_holder, "e,action,context", "drawer", 
+				   _grid_entry_context_cb, e);
 
    return e;
 }
@@ -512,9 +517,38 @@ _grid_entry_activate_cb(void *data, Evas_Object *obj, const char *emission __UNU
 }
 
 static void
+_grid_entry_context_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Item *e = NULL;
+   Drawer_Event_View_Context *ev;
+   Evas_Coord ox, oy;
+
+   evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
+
+   e = data;
+   ev = E_NEW(Drawer_Event_View_Context, 1);
+   ev->data = e->si;
+   ev->view = e->inst->view;
+   ev->x = ox;
+   ev->y = oy;
+   ev->id = eina_stringshare_add(e->inst->parent_id);
+   ecore_event_add(DRAWER_EVENT_VIEW_ITEM_CONTEXT, ev, _grid_event_context_free, NULL);
+}
+
+static void
 _grid_event_activate_free(void *data __UNUSED__, void *event)
 {
    Drawer_Event_View_Activate *ev;
+
+   ev = event;
+   eina_stringshare_del(ev->id);
+   free(ev);
+}
+
+static void
+_grid_event_context_free(void *data __UNUSED__, void *event)
+{
+   Drawer_Event_View_Context *ev;
 
    ev = event;
    eina_stringshare_del(ev->id);

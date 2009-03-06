@@ -1219,6 +1219,12 @@ target: "glow";
 	    transition: SINUSOIDAL 0.5;
 	    MOUSE_CLICK_TARGETS
 	 }
+	 program {
+	    name: "item_context_up";
+	    signal: "mouse,up,3";
+	    source: "event";
+	    action: SIGNAL_EMIT "e,action,context" "drawer";
+	 }
       }
    }
    group {
@@ -1504,6 +1510,12 @@ target: "e.text.label";
 	    action: STATE_SET "default" 0.0;
 	    transition: SINUSOIDAL 0.5;
 	    MOUSE_CLICK_TARGETS
+	 }
+	 program {
+	    name: "item_context_up";
+	    signal: "mouse,up,3";
+	    source: "event";
+	    action: SIGNAL_EMIT "e,action,context" "drawer";
 	 }
       }
    }
@@ -2579,6 +2591,12 @@ target: "glow";
 	    action: STATE_SET "default" 0.0;
 	    transition: SINUSOIDAL 0.5;
 	    MOUSE_CLICK_TARGETS
+	 }
+	 program {
+	    name: "item_context_up";
+	    signal: "mouse,up,3";
+	    source: "event";
+	    action: SIGNAL_EMIT "e,action,context" "drawer";
 	 }
       }
    }

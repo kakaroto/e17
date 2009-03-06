@@ -78,6 +78,7 @@ static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swall
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
+static int _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_global_mouse_down(void *data, int type, void *event);
 
@@ -100,6 +101,7 @@ Config *drawer_conf = NULL;
 
 EAPI int DRAWER_EVENT_SOURCE_UPDATE = 0;
 EAPI int DRAWER_EVENT_VIEW_ITEM_ACTIVATE = 0;
+EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT = 0;
 
 static const E_Gadcon_Client_Class _drawer_gc_class = 
 {
@@ -232,6 +234,8 @@ e_modapi_init(E_Module *m)
      DRAWER_EVENT_SOURCE_UPDATE = ecore_event_type_new();
    if (!DRAWER_EVENT_VIEW_ITEM_ACTIVATE)
      DRAWER_EVENT_VIEW_ITEM_ACTIVATE = ecore_event_type_new();
+   if (!DRAWER_EVENT_VIEW_ITEM_CONTEXT)
+     DRAWER_EVENT_VIEW_ITEM_CONTEXT = ecore_event_type_new();
 
    /* Give E the module */
    return m;
@@ -873,6 +877,7 @@ _drawer_source_new(Instance *inst, const char *name)
 
    s->func.activate = dlsym(p->handle, "drawer_source_activate");
    s->func.trigger = dlsym(p->handle, "drawer_source_trigger");
+   s->func.context = dlsym(p->handle, "drawer_source_context");
    s->func.description_get = dlsym(p->handle, "drawer_source_description_get");
 
 init_done:
@@ -963,6 +968,9 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_ACTIVATE,
 				 _drawer_view_activate_cb, NULL));
+   inst->handlers = eina_list_append(inst->handlers,
+	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_CONTEXT,
+				 _drawer_view_context_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(EPSILON_EVENT_DONE,
 				 _drawer_thumbnail_done_cb, NULL));
@@ -1251,6 +1259,7 @@ static int
 _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Drawer_View *v = NULL;
+   Drawer_Source *s = NULL;
    Drawer_Event_View_Activate *ev = NULL;
    Instance *inst = NULL;
 
@@ -1258,11 +1267,39 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
    if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return 1;
    if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
    v = ev->view;
+   s = DRAWER_SOURCE(inst->source);
 
-   DRAWER_SOURCE(inst->source)->func.activate(DRAWER_SOURCE(inst->source), ev->data, inst->gcc->gadcon->zone);
+   if (s->func.activate)
+     s->func.activate(s, ev->data, inst->gcc->gadcon->zone);
 
    if (inst->popup)
      _drawer_popup_hide(inst);
+
+   return 0;
+}
+
+static int
+_drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
+{
+   Drawer_View *v = NULL;
+   Drawer_Source *s = NULL;
+   Drawer_Event_View_Context *ev = NULL;
+   Instance *inst = NULL;
+
+   ev = event;
+   if (ev_type != DRAWER_EVENT_VIEW_ITEM_CONTEXT) return 1;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+   v = ev->view;
+   s = DRAWER_SOURCE(inst->source);
+
+   if (inst->popup)
+     {
+	ev->x += inst->popup->win->x;
+	ev->y += inst->popup->win->y;
+     }
+
+   if (s->func.context)
+     s->func.context(s, ev->data, inst->gcc->gadcon->zone, ev);
 
    return 0;
 }
