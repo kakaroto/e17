@@ -14,18 +14,13 @@ struct _E_Config_Dialog_Data
    char *location, *filename, *app;
 };
 
-static void        *_create_data  (E_Config_Dialog *cfd);
-static void         _free_data    (E_Config_Dialog *cfd, 
-				   E_Config_Dialog_Data *cfdata);
-static void         _fill_data    (E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create (E_Config_Dialog *cfd, Evas *evas, 
-				   E_Config_Dialog_Data *cfdata);
-static int          _basic_apply  (E_Config_Dialog *cfd, 
-				   E_Config_Dialog_Data *cfdata);
-static Evas_Object *_adv_create   (E_Config_Dialog *cfd, Evas *evas, 
-				   E_Config_Dialog_Data *cfdata);
-static int          _adv_apply    (E_Config_Dialog *cfd, 
-				   E_Config_Dialog_Data *cfdata);
+static void *_create_data(E_Config_Dialog *cfd);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _fill_data(E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 EAPI E_Config_Dialog *
 e_int_config_screenshot_module(E_Container *con, const char *params)
