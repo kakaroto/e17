@@ -25,7 +25,7 @@ from c_elementary import Object, Window, Background, Icon, \
     init, shutdown, run, exit
 
 ELM_WIN_BASIC = 0
-ELM_WIN_DIALOG = 1
+ELM_WIN_DIALOG_BASIC = 1
 
 ELM_HOVER_AXIS_NONE = 0
 ELM_HOVER_AXIS_HORIZONTAL = 1
