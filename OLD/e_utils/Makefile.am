@@ -2,6 +2,7 @@
 
 SUBDIRS = src data
 
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess e_utils.spec \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
