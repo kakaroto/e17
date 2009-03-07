@@ -49,7 +49,7 @@ cdef class ListItem:
         mapping["class"] = self
         mapping["callback"] = callback
         mapping["data"] = data
-        _list_callback_mapping[<long>self.itme] = mapping
+        _list_callback_mapping[<long>self.item] = mapping
 
     def append(self, c_evas.Object list, label, c_evas.Object icon, c_evas.Object end, callback, data = None):
         if not self.item == NULL:
@@ -149,6 +149,9 @@ cdef class ListItem:
     
     def end_get(self):
         return None
+
+    def go(self):
+        elm_list_go(self.obj)
 
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
