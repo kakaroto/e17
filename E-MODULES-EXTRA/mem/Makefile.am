@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in e_modules-mem.spec
 
 SUBDIRS = po

@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = po themes
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 ABOUT-NLS config.h.in \

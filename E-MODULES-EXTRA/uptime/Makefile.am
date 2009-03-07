@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in e_modules-uptime.spec
 
 SUBDIRS = po
