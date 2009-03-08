@@ -131,7 +131,6 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
         Evas *evas;
         Evas_Engine_Info *info = NULL;
         Evas_Engine_Info_Buffer *bufinfo;
-        Ewl_Object *o;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(emb);
@@ -150,7 +149,6 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
                 exit(-1);
         }
 
-        o = EWL_OBJECT(emb);
         bufinfo = (Evas_Engine_Info_Buffer *)info;
         bufinfo->info.dest_buffer_row_bytes = sizeof(int) * width;
         bufinfo->info.dest_buffer = realloc(bufinfo->info.dest_buffer,

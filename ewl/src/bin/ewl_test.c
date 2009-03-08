@@ -891,10 +891,9 @@ read_file(const char *filename)
 static void
 setup_unit_tests(Ewl_Test *test)
 {
-        Ewl_Widget *button, *tree, *progress;
+        Ewl_Widget *tree, *progress;
         int i;
 
-        button = ewl_widget_name_find("unit_test_button");
         tree = ewl_widget_name_find("unit_test_tree");
 
         current_test = test;
@@ -926,10 +925,8 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
         int i;
         Ewl_Test *test;
-        Ewl_Widget *tree;
         Ewl_Widget *progress;
 
-        tree = ewl_widget_name_find("unit_test_tree");
         test = current_test;
         if ((!test) || (!test->unit_tests)) return;
 

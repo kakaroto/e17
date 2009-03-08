@@ -2494,15 +2494,12 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                            void *user_data __UNUSED__)
 {
         Ewl_Embed *emb;
-        Ewl_Container *pc;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
 
         emb = ewl_embed_widget_find(w);
         if (!emb) DRETURN(DLEVEL_STABLE);
-
-        pc = EWL_CONTAINER(w->parent);
 
         /*
          * Decrement the dnd awareness counter on the embed.

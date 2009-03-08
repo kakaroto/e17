@@ -650,7 +650,7 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 
                 if (!node)
                 {
-                        node = ecore_dlist_first_goto(fmt->nodes);
+                        ecore_dlist_first_goto(fmt->nodes);
                         fmt->current_node.char_idx = 0;
                         fmt->current_node.byte_idx = 0;
                 }

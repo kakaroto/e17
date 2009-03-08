@@ -487,7 +487,6 @@ ewl_list2_cb_item_clicked(Ewl_Widget *w, void *ev, void *data)
         mvc_data = ewl_mvc_data_get(EWL_MVC(list));
 
         /* find the row */
-        row = 0;
         for (row = 0; row < list->info_count && w != list->cinfo[row].cell;
                         row++)
                 ;

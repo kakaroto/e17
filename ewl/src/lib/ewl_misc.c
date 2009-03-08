@@ -1,5 +1,6 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include <locale.h>
+#include <signal.h>
 #include "ewl_base.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
@@ -108,8 +109,7 @@ void
 ewl_segv(void)
 {
         if (ewl_config_cache.segv) {
-                char *null = NULL;
-                *null = '\0';
+                raise(SIGSEGV);
         }
 }
 
