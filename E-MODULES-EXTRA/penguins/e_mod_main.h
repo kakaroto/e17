@@ -48,7 +48,6 @@ struct _Population
    Config *conf;
    Evas_Coord width, height;
    E_Config_Dialog *config_dialog;
-   
 };
 
 struct _Action
@@ -58,6 +57,7 @@ struct _Action
    Evas_Coord w,h;
    int speed;
 };
+
 struct _Custom_Action
 {
    char *name;
@@ -69,6 +69,7 @@ struct _Custom_Action
    char *left_program_name;
    char *right_program_name;
 };
+
 struct _Penguin
 {
    Evas_Object *obj;
