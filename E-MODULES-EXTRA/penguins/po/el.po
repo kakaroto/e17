@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-23 20:16+0800\n"
+"POT-Creation-Date: 2009-02-27 23:25+0100\n"
 "PO-Revision-Date: 2008-11-11 09:51+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -17,41 +17,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../e_mod_config.c:41
+#: e_mod_config.c:41
 msgid "Population Settings"
 msgstr "Ρυθμίσεις Πληθυσμού"
 
-#: ../e_mod_config.c:91
+#: e_mod_config.c:91
 msgid "Number of penguins:"
 msgstr "Αριθμός πιγκουίνων"
 
-#: ../e_mod_config.c:93 ../e_mod_config.c:103
+#: e_mod_config.c:93 e_mod_config.c:103
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../e_mod_config.c:96
+#: e_mod_config.c:96
 msgid "Zoom factor:"
 msgstr "Παράγοντας εστίασης:"
 
-#: ../e_mod_config.c:98
+#: e_mod_config.c:98
 #, c-format
 msgid "%1.1f X"
 msgstr "%1.1f X"
 
-#: ../e_mod_config.c:101
+#: e_mod_config.c:101
 msgid "Transparency:"
 msgstr "Διαφάνεια:"
 
-#. Lista
-#: ../e_mod_config.c:107
+#: e_mod_config.c:107
 msgid "Select population:"
 msgstr "Επιλογή Πληθυσμού"
 
-#: ../e_mod_main.c:60
+#: e_mod_main.c:60
 msgid "Appearance"
 msgstr "Εμφάνιση"
 
-#: ../e_mod_main.c:61
+#: e_mod_main.c:61
 msgid "Penguins"
 msgstr "Πιγκουίνοι"

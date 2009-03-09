@@ -91,7 +91,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    ob = e_widget_label_add(evas, D_("Number of penguins:"));
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 1, 50, 1, 0, NULL, &(cfdata->penguins_count), 200);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 1, 200, 1, 0, NULL, &(cfdata->penguins_count), 200);
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
 
    ob = e_widget_label_add(evas, D_("Zoom factor:"));
