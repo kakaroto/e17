@@ -209,7 +209,6 @@ ewl_filelist_model_data_sort(void *data, unsigned int column,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(data);
-        DCHECK_PARAM_PTR(sort);
 
         if (sort == EWL_SORT_DIRECTION_NONE)
                 DRETURN(DLEVEL_STABLE);
