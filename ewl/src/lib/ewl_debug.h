@@ -124,7 +124,7 @@ do { \
 
 #define DCHECK_PARAM_PTR(ptr) \
 do { \
-        if (!(ptr)) \
+        if ((ptr) == NULL) \
           { \
                 ewl_print_warning(); \
                 fprintf(stderr, "\tThis program is calling:\n\n" \
@@ -141,7 +141,7 @@ do { \
 
 #define DCHECK_PARAM_PTR_RET(ptr, ret) \
 do { \
-        if (!(ptr)) \
+        if ((ptr) == NULL) \
           { \
                 ewl_print_warning(); \
                 fprintf(stderr, "\tThis program is calling:\n\n" \
