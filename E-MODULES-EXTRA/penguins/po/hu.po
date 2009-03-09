@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: penguins\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-27 23:25+0100\n"
+"POT-Creation-Date: 2008-11-11 21:39+0800\n"
 "PO-Revision-Date: 2008-02-02 22:32+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,40 +17,41 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: e_mod_config.c:41
+#: ../e_mod_config.c:41
 msgid "Population Settings"
 msgstr "Népesség beállítása"
 
-#: e_mod_config.c:91
+#: ../e_mod_config.c:91
 msgid "Number of penguins:"
 msgstr "Pingvinek száma"
 
-#: e_mod_config.c:93 e_mod_config.c:103
+#: ../e_mod_config.c:93 ../e_mod_config.c:103
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: e_mod_config.c:96
+#: ../e_mod_config.c:96
 msgid "Zoom factor:"
 msgstr "Nagyítás faktor:"
 
-#: e_mod_config.c:98
+#: ../e_mod_config.c:98
 #, c-format
 msgid "%1.1f X"
 msgstr "%1.1f X"
 
-#: e_mod_config.c:101
+#: ../e_mod_config.c:101
 msgid "Transparency:"
 msgstr "Átlátszóság:"
 
-#: e_mod_config.c:107
+#. Lista
+#: ../e_mod_config.c:107
 msgid "Select population:"
 msgstr "Népesség kijelölése:"
 
-#: e_mod_main.c:60
+#: ../e_mod_main.c:60
 msgid "Appearance"
 msgstr "Megjelenés"
 
-#: e_mod_main.c:61
+#: ../e_mod_main.c:61
 msgid "Penguins"
 msgstr "Pingvinek"
