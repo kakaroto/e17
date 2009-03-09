@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <Ecore_File.h>
+#include <stdlib.h>
 #include "Exchange.h"
 
 
@@ -179,7 +180,7 @@ _chars_async_list_cb(Async_List_Parser *state, const xmlChar *chars, int len)
          buf[0] = '\0';
          strncat((char *)buf, (char *)chars, len);
          printf("name: %s\n", buf);
-         state->current->name = strdup(buf);  //TODO Better to use stringshare here
+         state->current->name = eina_stringshare_add(buf);
          break;
       case PARSER_ID:
          buf[0] = '\0';
@@ -260,6 +261,7 @@ exchange_remote_list(const char *group_title,
    char url[4096];
    char buf[1024];
    int ret;
+   char f_templ[] = "/tmp/exchXXXXXX";
 
    printf("GET THEMES LIST\n");
    
@@ -327,7 +329,7 @@ exchange_remote_list(const char *group_title,
    }
 
    state->url = strdup(url);
-   state->tmp = strdup("/tmp/exchg.tmp");//FIXME
+   state->tmp = strdup(mktemp(f_templ));
    state->complete_cb = complete_cb;
    state->cb_data = data;
    state->state = PARSER_LIST_START;

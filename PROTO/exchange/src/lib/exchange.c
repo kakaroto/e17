@@ -86,7 +86,7 @@ exchange_object_free(Exchange_Object *obj)
 {
    if (!obj) return 0;
 
-   if (obj->name) free(obj->name);
+   if (obj->name) eina_stringshare_del(obj->name);
    if (obj->author) free(obj->author);
    if (obj->license) free(obj->license);
    if (obj->version) free(obj->version);
