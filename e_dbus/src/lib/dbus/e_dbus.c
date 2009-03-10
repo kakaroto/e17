@@ -129,7 +129,11 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
   hd->watch = watch;
 
   hd->enabled = dbus_watch_get_enabled(watch);
+#if (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MINOR == 1 && DBUS_VERSION_MICRO>= 1) || (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MAJOR > 1) || (DBUS_VERSION_MAJOR > 1)
   hd->fd = dbus_watch_get_unix_fd(hd->watch);
+#else
+  hd->fd = dbus_watch_get_fd(hd->watch);
+#endif
   DEBUG(5, "watch add (enabled: %d)\n", hd->enabled);
   if (hd->enabled) e_dbus_fd_handler_add(hd);
 }
