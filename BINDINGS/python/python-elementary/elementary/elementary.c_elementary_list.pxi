@@ -150,9 +150,6 @@ cdef class ListItem:
     def end_get(self):
         return None
 
-    def go(self):
-        elm_list_go(self.obj)
-
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_list_add(parent.obj))
@@ -176,3 +173,6 @@ cdef class List(Object):
         item = ListItem()
         item.insert_after(self, after, label, icon, end, callback, data)
         return item
+    
+    def go(self):
+        elm_list_go(self.obj)
