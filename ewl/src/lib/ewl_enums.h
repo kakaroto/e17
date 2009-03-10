@@ -955,6 +955,37 @@ enum Ewl_Image_Type
 typedef enum Ewl_Image_Type Ewl_Image_Type;
 
 /**
+ * @enum Ewl_Image_Data_Mode
+ * The mode to use the data of the image
+ */
+enum Ewl_Image_Data_Mode
+{
+        EWL_IMAGE_DATA_SIZE,    /**< only get the size an no data */
+        EWL_IMAGE_DATA_WRITE,   /**< get the image data to write */
+        EWL_IMAGE_DATA_READ     /**< get the image data to read */
+};
+
+/**
+ * The Ewl_Image_Data_Mode
+ */
+typedef enum Ewl_Image_Data_Mode Ewl_Image_Data_Mode;
+
+/**
+ * @enum Ewl_Colorspace
+ * the color format of the image data
+ */
+enum Ewl_Colorspace
+{
+        EWL_COLORSPACE_ARGB,    /**< rgb with alpha channel */
+        EWL_COLORSPACE_RGB      /**< rgb without alpha channel */
+};
+
+/**
+ * The Ewl_Image_Type
+ */
+typedef enum Ewl_Colorspace Ewl_Colorspace;
+
+/**
  * @enum Ewl_Thumbnail_Size
  * The size of thumbnails
  */

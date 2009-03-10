@@ -7,8 +7,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-
 static void ewl_spectrum_hsv_from_rgb(Ewl_Spectrum *sp);
 static void ewl_spectrum_rgb_from_hsv(Ewl_Spectrum *sp);
 static void ewl_spectrum_draw(Ewl_Spectrum *sp);
@@ -451,7 +449,7 @@ ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 static void
 ewl_spectrum_mouse_process(Ewl_Spectrum *sp, int x, int y)
 {
-        Evas_Coord img_w, img_h;
+        int img_w, img_h;
         unsigned int r, g, b;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -470,7 +468,8 @@ ewl_spectrum_mouse_process(Ewl_Spectrum *sp, int x, int y)
         if (y > CURRENT_H(sp->canvas))
                 y = CURRENT_H(sp->canvas);
 
-        evas_object_image_size_get(EWL_IMAGE(sp->canvas)->image, &img_w, &img_h);
+        ewl_image_data_get(EWL_IMAGE(sp->canvas), &img_w, &img_h,
+                                                        EWL_IMAGE_DATA_SIZE);
         ewl_spectrum_color_coord_map(sp, x, y, img_w, img_h, &r, &g, &b);
         ewl_spectrum_rgb_set(sp, r, g, b);
 
@@ -630,8 +629,8 @@ ewl_spectrum_rgb_to_hsv(unsigned int r, unsigned int g, unsigned int b,
 static void
 ewl_spectrum_draw(Ewl_Spectrum *sp)
 {
-        Evas_Object *img;
-        Evas_Coord img_w, img_h;
+        Ewl_Image *img;
+        int img_w, img_h;
         int *data;
         int i, k;
         unsigned int r, g, b, a;
@@ -643,15 +642,13 @@ ewl_spectrum_draw(Ewl_Spectrum *sp)
         if (!sp->dirty)
                 DRETURN(DLEVEL_STABLE);
 
-        img = EWL_IMAGE(sp->canvas)->image;
-        evas_object_image_size_set(img, CURRENT_W(sp), CURRENT_H(sp));
-        evas_object_image_size_get(img, &img_w, &img_h);
+        img = EWL_IMAGE(sp->canvas);
+        ewl_image_data_set(img, NULL, CURRENT_W(sp), CURRENT_H(sp),
+                                                        EWL_COLORSPACE_RGB);
+        data = ewl_image_data_get(img, &img_w, &img_h, EWL_IMAGE_DATA_WRITE);
 
-        data = evas_object_image_data_get(img, 1);
         if (!data)
-        {
                 DRETURN(DLEVEL_STABLE);
-        }
 
         a = 255 << 24;
         for (i = 0; i < img_h; i++)
@@ -663,8 +660,7 @@ ewl_spectrum_draw(Ewl_Spectrum *sp)
                 }
         }
 
-        evas_object_image_data_set(img, data);
-        evas_object_image_data_update_add(img, 0, 0, img_w, img_h);
+        ewl_image_data_update_add(img, 0, 0, img_w, img_h);
         ewl_widget_configure(sp->canvas);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -674,13 +670,14 @@ static void
 ewl_spectrum_cross_hairs_draw(Ewl_Spectrum *sp)
 {
         int x, y;
-        Evas_Coord img_w, img_h;
+        int img_w, img_h;
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(sp);
         DCHECK_TYPE(sp, EWL_SPECTRUM_TYPE);
 
         /* get the coords */
-        evas_object_image_size_get(EWL_IMAGE(sp->canvas)->image, &img_w, &img_h);
+        ewl_image_data_get(EWL_IMAGE(sp->canvas), &img_w, &img_h,
+                                        EWL_IMAGE_DATA_SIZE);
         ewl_spectrum_color_coord_xy_get(sp, &x, &y, img_w, img_h,
                                         sp->rgb.r, sp->rgb.g, sp->rgb.b);
         x += CURRENT_X(sp->canvas);

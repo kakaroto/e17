@@ -5,8 +5,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-
 static void ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev, void *h);
 static void ewl_histogram_draw(Ewl_Histogram *hist);
 
@@ -226,7 +224,7 @@ ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *
         int x, y;
         int maxv = 0;
         unsigned int *data;
-        Evas_Coord width, height;
+        int width, height;
         Ewl_Histogram *hist = EWL_HISTOGRAM(h);
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -236,8 +234,8 @@ ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *
         if (!hist->source || !REALIZED(hist->source))
                 DRETURN(DLEVEL_STABLE);
 
-        data = evas_object_image_data_get(hist->source->image, 0);
-        evas_object_image_size_get(hist->source->image, &width, &height);
+        data = ewl_image_data_get(hist->source, &width, &height,
+                                                EWL_IMAGE_DATA_READ);
 
         for (y = 0; y < height; y++) {
                 for (x = 0; x < width; x++) {
@@ -287,20 +285,19 @@ ewl_histogram_draw(Ewl_Histogram *hist)
         int x, y;
         unsigned int color;
         unsigned int *data, *dst;
-        Evas_Coord img_w = 0, img_h = 0;
-        Evas_Object *img;
+        int img_w = 0, img_h = 0;
+        Ewl_Image *img;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(hist);
         DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
-        img = EWL_IMAGE(hist)->image;
+        img = EWL_IMAGE(hist);
 
-        evas_object_image_size_set(img, CURRENT_W(hist), CURRENT_H(hist));
-        evas_object_image_alpha_set(img, 1);
-        evas_object_image_size_get(img, &img_w, &img_h);
-
-        dst = data = evas_object_image_data_get(img, 1);
+        ewl_image_data_set(img, NULL, CURRENT_W(hist), CURRENT_H(hist),
+                                                        EWL_COLORSPACE_ARGB);
+        dst = data = ewl_image_data_get(img, &img_w, &img_h,
+                                                        EWL_IMAGE_DATA_WRITE);
         if (!data)
                 DRETURN(DLEVEL_STABLE);
 
@@ -367,8 +364,7 @@ ewl_histogram_draw(Ewl_Histogram *hist)
                 }
         }
 
-        evas_object_image_data_set(img, data);
-        evas_object_image_data_update_add(img, 0, 0, img_w, img_h);
+        ewl_image_data_update_add(img, 0, 0, img_w, img_h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

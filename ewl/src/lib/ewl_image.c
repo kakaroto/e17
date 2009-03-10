@@ -635,6 +635,122 @@ ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate)
 }
 
 /**
+ * @param i: The image to get the data
+ * @param w: pointer to store the width
+ * @param h: pointer to store the height
+ * @param access: the access mode
+ * @return Returns the image data of the image widget
+ * @brief Retrieve the data of the image widget
+ *
+ * This function will return the image data of the image widget. The size
+ * of the image data is stored by the pointers @p w and @p h. Since
+ * operating on the image data with out knowing its actually size is dangerous,
+ * it is not allowed to pass @c NULL pointer for @p w and @p h.
+ *
+ * The @p access parameter defines the purpose to get the data. There are
+ * three different modes:
+ *      - @c EWL_IMAGE_DATA_SIZE: no data is returned, use this to only
+ *        retrieve the size
+ *      - @c EWL_IMAGE_DATA_READ: the data is meant to be read only
+ *      - @c EWL_IMAGE_DATA_WRITE: the data is meant to be read and written
+ *
+ * If the image isn't already realized or if an error occurs, @c NULL will be
+ * returned.
+ */
+void *
+ewl_image_data_get(Ewl_Image *i, int *w, int *h, Ewl_Image_Data_Mode access)
+{
+        char writing;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(i, NULL);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(h, NULL);
+        DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, NULL);
+
+        if (!REALIZED(i) || i->type == EWL_IMAGE_TYPE_EDJE || !i->image)
+        {
+                *w = *h = 0;
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
+
+        evas_object_image_size_get(i->image, w, h);
+
+        if (access == EWL_IMAGE_DATA_SIZE)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+        if (access == EWL_IMAGE_DATA_WRITE)
+                writing = TRUE;
+        else
+                writing = FALSE;
+
+        DRETURN_PTR(evas_object_image_data_get(i->image, writing),
+                        DLEVEL_STABLE);
+}
+
+/**
+ * @param i: The image to set the data
+ * @param w: the width of the data
+ * @param h: the height of the data
+ * @param cs: the colorspaced of the data
+ * @return Returns @c TRUE on success, else @c FALSE
+ * @brief Set the data of the image
+ *
+ * This function will set the image data of the image widget. The colorspace
+ * of the data can either be @c EWL_COLORSPACE_ARGB or @c EWL_COLORSPACE_RGB.
+ * In the latter case the alpha channel will be ignored. The data is after that
+ * owned and freed by ewl.
+ */
+unsigned int
+ewl_image_data_set(Ewl_Image *i, void *data, int w, int h, Ewl_Colorspace cs)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(i, FALSE);
+        DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, FALSE);
+
+        if (!REALIZED(i) || i->type == EWL_IMAGE_TYPE_EDJE || !i->image)
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+        if (cs == EWL_COLORSPACE_ARGB)
+                evas_object_image_alpha_set(i->image, TRUE);
+        else
+                evas_object_image_alpha_set(i->image, FALSE);
+
+        evas_object_image_size_set(i->image, w, h);
+        if (data)
+                evas_object_image_data_set(i->image, data);
+
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param i: the image to work with
+ * @param x: the x offset of the region to be updated
+ * @param y: the y offset of the region to be updated
+ * @param w: the width of the region to be updated
+ * @param h: the height of the region to be updated
+ *
+ * After changing a region of an image it's neccessary to call this function,
+ * so this area will be marked to updated later. The coordinates and the size
+ * of the region is in units of the image data and not of the actual screen
+ * position.
+ */
+void
+ewl_image_data_update_add(Ewl_Image *i, int x, int y, int w, int h)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(i);
+        DCHECK_TYPE(i, EWL_IMAGE_TYPE);
+
+        if (!REALIZED(i) || i->type == EWL_IMAGE_TYPE_EDJE || !i->image)
+                DRETURN(DLEVEL_STABLE);
+
+        evas_object_image_data_update_add(i->image, x, y, w, h);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param i: the image to thumbnail
  * @return Returns a thumbnailed image widget on success, NULL on failure.
  * @brief Create a widget representing a thumbnailed version of the image.
