@@ -51,7 +51,7 @@ cdef class Object(evas.c_evas.Object):
     def focus(self):
         elm_object_focus(self.obj)
     
-    def _callback_add(self, event, args, data = None):
+    def _callback_add(self, event, args):
         """Add a callback for this object
 
         Add a function as new callback-function for a specified event. The
