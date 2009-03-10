@@ -3,7 +3,7 @@ import elementary
 import edje
 import evas
 
-def destroy(obj, event, data):
+def destroy(obj, event, *args, **kargs):
     print "DEBUG: window destroy callback called!"
     raise Exception()
     elementary.exit()
@@ -460,9 +460,12 @@ def hover_clicked(obj, event, *args, **kargs):
     win.resize(320, 320)
     win.show()
 
+def hover2_bt_clicked(obj, event, *args, **kargs):
+    pass
+
 def hover2_clicked(obj, event, *args, **kargs):
     win = elementary.Window("hover2", elementary.ELM_WIN_BASIC)
-    win.title_set("Hover")
+    win.title_set("Hover 2")
     win.autodel_set(True)
     
     bg = elementary.Background(win)
@@ -474,6 +477,69 @@ def hover2_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
+    
+    hv = elementary.Hover(win)
+    hv.style_set("popout")
+    
+    bt = elementary.Button(win)
+    bt.label_set("Button")
+    bt.clicked = hover2_bt_clicked
+    bx.pack_end(bt)
+    bt.show()
+    hv.parent_set(win)
+    hv.target_set(bt)
+    
+    bt = elementary.Button(win)
+    bt.label_set("Popup")
+    hv.content_set("middle", bt)
+    bt.show()
+    
+    bx = elementary.Box(win)
+    
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.scale_set(0, 0)
+    bx.pack_end(ic)
+    ic.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Top 1")
+    bx.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Top 2")
+    bx.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Top 3")
+    bx.pack_end(bt)
+    bt.show()
+    
+    bx.show()
+    hv.content_set("top", bx)
+    
+    bt = elementary.Button(win)
+    bt.label_set("Bot")
+    hv.content_set("bottom", bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Left")
+    hv.content_set("left", bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Right")
+    hv.content_set("right", bt)
+    bt.show()
+    
+    bg.size_hint_min_set(160, 160)
+    bg.size_hint_max_set(640, 640)
+    win.resize(320, 320)
+    win.show()
+    
 
 def entry_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
@@ -489,6 +555,19 @@ def entry_clicked(obj, event, *args, **kargs):
     win.resize_object_add(bx)
     bx.size_hint_weight_set(1.0, 1.0)
     bx.show()
+    
+    en = elementary.Entry(win)
+    en.line_wrap_set(False)
+    en.entry_set("This is an entry widget in this window that<br>"
+		       "uses markup <b>like this</> for styling and<br>"
+		       "formatting <em>like this</>, as well as<br>"
+		       "<a href=X><link>links in the text</></a>, so enter text<br>"
+		       "in here to edit it. By the way, links are<br>"
+		       "called <a href=anc-02>Anchors</a> so you will need<br>"
+		       "to refer to them this way.")
+    en.size_hint_weight(1.0, 1.0)
+    
+    
 
 def notepad_clicked(obj, event, *args, **kargs):
     win = elementary.Window("notepad", elementary.ELM_WIN_BASIC)
