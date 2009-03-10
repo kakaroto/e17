@@ -22,7 +22,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Box, Button, Scroller, Label, Toggle, Frame, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
-    init, shutdown, run, exit
+    Radio, Check, Pager, init, shutdown, run, exit
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1

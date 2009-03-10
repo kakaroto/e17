@@ -47,21 +47,7 @@ def exit():
 
 flag = False    
 
-cdef object _callback_mappings
-_callback_mappings = dict()
 
-cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
-    try:
-        mapping = _callback_mappings.get(<long>obj,None)
-        if mapping is not None:
-            func = mapping.get(<char*>data,None)
-        
-            if not callable(func):
-                raise TypeError("func is not callable")
-        
-            func(mapping["__class__"],<char*>data)
-    except Exception, e:
-        traceback.print_exc()
 
 
 include "elementary.c_elementary_object.pxi"
@@ -88,3 +74,6 @@ include "elementary.c_elementary_hoversel.pxi"
 include "elementary.c_elementary_toolbar.pxi"
 include "elementary.c_elementary_list.pxi"
 include "elementary.c_elementary_slider.pxi"
+include "elementary.c_elementary_pager.pxi"
+include "elementary.c_elementary_radio.pxi"
+include "elementary.c_elementary_check.pxi"
