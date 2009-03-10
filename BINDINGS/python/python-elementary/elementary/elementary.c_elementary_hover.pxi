@@ -36,5 +36,3 @@ cdef class Hover(Object):
     def style_set(self, style):
         elm_hover_style_set(self.obj, style)
 
-    # TODO: best_content_location_get(...)
-        
