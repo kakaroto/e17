@@ -44,6 +44,8 @@ struct _Epsilon
   int tw, th;
   int tsize;
   int format;
+  int aspect;
+  float crop_x, crop_y;
 };
 typedef struct _Epsilon Epsilon;
 
@@ -73,6 +75,15 @@ enum _Epsilon_Thumb_Format
 
 typedef enum _Epsilon_Thumb_Format Epsilon_Thumb_Format;
 
+enum _Epsilon_Thumb_Aspect
+{
+   EPSILON_THUMB_KEEP_ASPECT,
+   EPSILON_THUMB_IGNORE_ASPECT,
+   EPSILON_THUMB_CROP
+};
+
+typedef enum _Epsilon_Thumb_Aspect Epsilon_Thumb_Aspect;
+
 EAPI int epsilon_init (void);
 
 /* construct destruct */
@@ -85,6 +96,10 @@ EAPI void epsilon_key_set (Epsilon * e, const char *key);
 EAPI void epsilon_resolution_set (Epsilon * e, int w, int h);
 /* Set the thumbnail format */
 EAPI void epsilon_format_set (Epsilon * e, Epsilon_Thumb_Format f);
+/* Set the thumbnail aspect ratio */
+EAPI void epsilon_aspect_set (Epsilon * e, Epsilon_Thumb_Aspect a);
+/* Set the crop alignment */
+EAPI void epsilon_crop_align_set (Epsilon * e, float x, float y);
 
 /*
  * the source filename

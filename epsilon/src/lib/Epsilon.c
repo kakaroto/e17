@@ -84,6 +84,8 @@ epsilon_new (const char *file)
 	  result->tw = THUMB_SIZE_LARGE;
 	  result->th = THUMB_SIZE_LARGE;
 	  result->format = EPSILON_THUMB_FDO;
+	  result->crop_x = 0.5;
+	  result->crop_y = 0.5;
 	}
       else
 	{
@@ -226,6 +228,25 @@ epsilon_format_set (Epsilon * e, Epsilon_Thumb_Format f)
 {
   if (e && (f == EPSILON_THUMB_FDO || f == EPSILON_THUMB_JPEG))
     e->format = f;
+}
+
+void
+epsilon_aspect_set (Epsilon * e, Epsilon_Thumb_Aspect a)
+{
+   if (e && (a == EPSILON_THUMB_KEEP_ASPECT ||
+	     a == EPSILON_THUMB_IGNORE_ASPECT ||
+	     a == EPSILON_THUMB_CROP))
+	e->aspect = a;
+}
+
+void
+epsilon_crop_align_set (Epsilon * e, float x, float y)
+{
+   if (e && (x >= 0 && x <= 1 && y >= 0 && y <= 1))
+     {
+	e->crop_x = x;
+	e->crop_y = y;
+     }
 }
 
 const char *
@@ -577,6 +598,53 @@ epsilon_exists (Epsilon * e)
   return (EPSILON_FAIL);
 }
 
+
+static void
+_epsilon_calculate_aspect(Epsilon * e, int iw, int ih, int * w, int * h, int * fx, int * fy, int * fw, int * fh)
+{
+   *w = e->tw;
+   *h = e->th;
+   *fw = e->tw;
+   *fh = e->th;
+   if ((iw > ih && e->tw > 0) || e->th <= 0)
+     {
+	if (e->aspect == EPSILON_THUMB_KEEP_ASPECT)
+	  {
+	     *fh = (e->tw * ih) / iw;
+	     *h = *fh;
+	  }
+	else if (e->aspect == EPSILON_THUMB_CROP)
+	  {
+	     *fw = (e->th * iw) / ih;
+	     *w = e->tw;
+	  }
+     }
+   else
+     {
+	if (e->aspect == EPSILON_THUMB_KEEP_ASPECT)
+	  {
+	     *fw = (e->th * iw) / ih;
+	     *w = *fw;
+	  }
+	else if (e->aspect == EPSILON_THUMB_CROP)
+	  {
+	     *fh = (e->tw * ih) / iw;
+	     *h = e->th;
+	  }
+     }
+
+   if (e->aspect == EPSILON_THUMB_CROP)
+     {
+	*fx = - e->crop_x * (*fw - *w);
+	*fy = - e->crop_y * (*fh - *h);
+     }
+   else
+     {
+	*fx = 0;
+	*fy = 0;
+     }
+}
+
 int
 epsilon_generate (Epsilon * e)
 {
@@ -585,7 +653,7 @@ epsilon_generate (Epsilon * e)
    Ecore_Evas *ee = NULL, *ee_im = NULL;
    Evas_Object *im = NULL, *edje = NULL;
    int ret = EPSILON_FAIL;
-   int iw, ih, alpha, ww, hh;
+   int iw, ih, alpha, ww, hh, fx, fy, fw, fh;
    unsigned int *data = NULL;
    struct stat filestatus;
    time_t mtime = 0;
@@ -610,6 +678,10 @@ epsilon_generate (Epsilon * e)
    evas_font_cache_set(evas, 0);
    ww = 0;
    hh = 0;
+   fx = 0;
+   fy = 0;
+   fw = 0;
+   fh = 0;
    alpha = 1;
    
    ext = strrchr(e->src, '.');
@@ -632,17 +704,8 @@ epsilon_generate (Epsilon * e)
 	evas_object_image_data_update_add(im, 0, 0, iw, ih);
 	if ((iw > 0) && (ih > 0))
 	  {
-	     if ((iw > ih && e->tw > 0) || e->th <= 0)
-	       {
-		  ww = e->tw;
-		  hh = (e->tw * ih) / iw;
-	       }
-	     else
-	       {
-		  hh = e->th;
-		  ww = (e->th * iw) / ih;
-	       }
-	     evas_object_image_fill_set(im, 0, 0, ww, hh);
+	     _epsilon_calculate_aspect(e, iw, ih, &ww, &hh, &fx, &fy, &fw, &fh);
+	     evas_object_image_fill_set(im, fx, fy, fw, fh);
 	  }
 	ret = EPSILON_OK;
      }
@@ -681,19 +744,11 @@ epsilon_generate (Epsilon * e)
 	alpha = evas_object_image_alpha_get(im);
 	if ((iw > 0) && (ih > 0))
 	  {
-	     if ((iw > ih && e->tw > 0) || e->th <= 0)
-	       {
-		  ww = e->tw;
-		  hh = (e->tw * ih) / iw;
-	       }
-	     else
-	       {
-		  hh = e->th;
-		  ww = (e->th * iw) / ih;
-	       }
-	     evas_object_image_fill_set(im, 0, 0, ww, hh);
+	     _epsilon_calculate_aspect(e, iw, ih, &ww, &hh, &fx, &fy, &fw, &fh);
+	     evas_object_image_fill_set(im, fx, fy, fw, fh);
 	  }
      }
+
    evas_object_move(im, 0, 0);
    evas_object_resize(im, ww, hh);
    ecore_evas_resize(ee, ww, hh);
