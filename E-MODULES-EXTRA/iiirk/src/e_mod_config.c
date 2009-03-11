@@ -6,7 +6,7 @@
 
 struct _E_Config_Dialog_Data
 {
-   char *dir;
+   const char *dir;
    int   hide_window;
    int   show_label;
    int	 zone_policy;
@@ -65,9 +65,9 @@ static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    if (ci->dir)
-     cfdata->dir = strdup(ci->dir);
+     cfdata->dir = eina_stringshare_ref(ci->dir);
    else
-     cfdata->dir = strdup("");
+     cfdata->dir = eina_stringshare_add("");
    cfdata->hide_window = ci->hide_window;
    cfdata->show_label = ci->show_label;
    cfdata->zone_policy = ci->show_zone;
@@ -90,7 +90,7 @@ _create_data(E_Config_Dialog *cfd)
 static void 
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   if (cfdata->dir) free(cfdata->dir);
+   eina_stringshare_del(cfdata->dir);
    if (cfdata->gui.dialog_delete) e_object_del(E_OBJECT(cfdata->gui.dialog_delete));
    iiirk_config->config_dialog = eina_list_remove(iiirk_config->config_dialog, cfd);
    E_FREE(cfdata);
@@ -202,9 +202,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
    
    ci = cfd->data;
-   if (ci->dir) evas_stringshare_del(ci->dir);
+   evas_stringshare_del(ci->dir);
    ci->dir = NULL;
-   if (cfdata->dir) ci->dir = evas_stringshare_add(cfdata->dir);
+   if (cfdata->dir) ci->dir = evas_stringshare_ref(cfdata->dir);
    ci->hide_window = cfdata->hide_window;
    ci->show_label = cfdata->show_label;
    ci->icon_label = cfdata->icon_label;

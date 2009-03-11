@@ -23,10 +23,10 @@ struct _E_Config_Dialog_Data
 
    Eina_List *s_langs;
 
-   char *plang;
-   char *slang;
-   char *kb_model;
-   char *kb_variant;
+   const char *plang;
+   const char *slang;
+   const char *kb_model;
+   const char *kb_variant;
    /*************************/
 
    struct 
@@ -109,16 +109,17 @@ _lang_configure_language_module(Config *conf)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
+   const Language *src;
    Eina_List *l;
 
    cfdata->lang_policy		 = cfdata->conf->lang_policy;
    cfdata->lang_show_indicator	 = cfdata->conf->lang_show_indicator;
 
-   for (l = cfdata->conf->languages; l; l = l->next)
+   EINA_LIST_FOREACH(cfdata->conf->languages, l, src)
      {
 	Language *lang;
-	
-	lang = lang_language_copy(l->data);
+
+	lang = lang_language_copy(src);
 	if (lang)
 	  cfdata->s_langs = eina_list_append(cfdata->s_langs, lang);
      }
@@ -146,16 +147,15 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   while (cfdata->s_langs)
-     {
-	lang_language_free(cfdata->s_langs->data);
-	cfdata->s_langs = eina_list_remove_list(cfdata->s_langs, cfdata->s_langs);
-     }
+   Language *l;
 
-   if (cfdata->plang) E_FREE(cfdata->plang);
-   if (cfdata->slang) E_FREE(cfdata->slang);
-   if (cfdata->kb_model) E_FREE(cfdata->kb_model);
-   if (cfdata->kb_variant) E_FREE(cfdata->kb_variant);
+   EINA_LIST_FREE(cfdata->s_langs, l)
+     lang_language_free(l);
+
+   eina_stringshare_del(cfdata->plang);
+   eina_stringshare_del(cfdata->slang);
+   eina_stringshare_del(cfdata->kb_model);
+   eina_stringshare_del(cfdata->kb_variant);
 
    cfdata->conf->config_dialog = NULL;
    free(cfdata);
@@ -369,29 +369,28 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _conf_fill_planguages(E_Config_Dialog_Data *cfdata)
 {
+   Language_Predef *lp;
    Eina_List *l;
    char	     buf[128];
    char	     lflag[2048];
 
    e_widget_ilist_clear(cfdata->gui.o_plang);
-   for (l = cfdata->conf->language_predef_list; l; l = l->next)
+   EINA_LIST_FOREACH(cfdata->conf->language_predef_list, l, lp)
      {
-	Evas_Object	*ic = NULL;
-	Language_Predef *lp;
-	Eina_List	*l2;
-	int		found = 0;
+	Evas_Object *ic = NULL;
+	Language *lang;
+	Eina_List *l2;
+	int found = 0;
 
-	lp = l->data;
-
-	for (l2 = cfdata->s_langs; l2; l2 = l2->next)
-	  {
-	     Language *lang = l2->data;
-	     if (!strcmp(lang->lang_name, lp->lang_name))
+	EINA_LIST_FOREACH(cfdata->s_langs, l2, lang)
+	  if (!strcmp(lang->lang_name, lp->lang_name))
+	    {
 	       found = 1;
-	  }
+	       break;
+	    }
 
 	if (found) continue;
-	
+
 	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT, lp->lang_name, lp->lang_shortcut);
 
 	ic = e_icon_add(cfdata->evas);
@@ -408,16 +407,14 @@ static void
 _conf_fill_slanguages(E_Config_Dialog_Data *cfdata)
 {
    Eina_List *l;
+   Language  *lang;
    char	     buf[128];
    char	     lflag[2048];
 
    e_widget_ilist_clear(cfdata->gui.o_slang);
-   for (l = cfdata->s_langs; l; l = l->next)
+   EINA_LIST_FOREACH(cfdata->s_langs, l, lang)
      {
 	Evas_Object *ic = NULL;
-	Language    *lang;
-
-	lang = l->data;
 
 	snprintf(buf, sizeof(buf), ILIST_LANGUAGE_LABEL_FORMAT,
 	         lang->lang_name, lang->lang_shortcut);
@@ -614,8 +611,8 @@ _conf_cb_kbd_model_select(void *data)
    l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
-   if (l->rdefs.model) evas_stringshare_del(l->rdefs.model);
-   l->rdefs.model = (char *)evas_stringshare_add(cfdata->kb_model);
+   evas_stringshare_del(l->rdefs.model);
+   l->rdefs.model = (char *)evas_stringshare_ref(cfdata->kb_model);
 }
 static void
 _conf_cb_kbd_variant_select(void *data)
@@ -628,8 +625,8 @@ _conf_cb_kbd_variant_select(void *data)
    l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
-   if (l->rdefs.variant) evas_stringshare_del(l->rdefs.variant);
-   l->rdefs.variant = (char *)evas_stringshare_add(cfdata->kb_variant);
+   evas_stringshare_del(l->rdefs.variant);
+   l->rdefs.variant = (char *)evas_stringshare_ref(cfdata->kb_variant);
 }
 /****************** button callbacks *********************************/
 static void 
@@ -642,9 +639,8 @@ _conf_cb_language_add(void *data, void *data2)
 
    cfdata = data;
 
-   for (l = cfdata->conf->language_predef_list; l; l = l->next)
+   EINA_LIST_FOREACH(cfdata->conf->language_predef_list, l, lp)
      {
-	lp = l->data;
 	if (!strcmp(lp->lang_name, cfdata->plang))
 	  break;
 	lp = NULL;
@@ -668,7 +664,7 @@ _conf_cb_language_add(void *data, void *data2)
    _conf_fill_planguages(cfdata);
    _conf_fill_slanguages(cfdata);
 
-   E_FREE(cfdata->plang);
+   eina_stringshare_del(cfdata->plang);
 
    e_widget_ilist_selected_set(cfdata->gui.o_slang, eina_list_count(cfdata->s_langs) - 1);
    _conf_add_button_availability_set(cfdata);
@@ -692,7 +688,7 @@ _conf_cb_language_del(void *data, void *data2)
    _conf_fill_planguages(cfdata);
    _conf_fill_slanguages(cfdata);
 
-   E_FREE(cfdata->slang);
+   eina_stringshare_del(cfdata->slang);
 
    if (n >= eina_list_count(cfdata->s_langs)) 
      n = eina_list_count(cfdata->s_langs) - 1;
@@ -701,8 +697,8 @@ _conf_cb_language_del(void *data, void *data2)
      e_widget_ilist_selected_set(cfdata->gui.o_slang, n);
    else
      {
-	E_FREE(cfdata->kb_model);
-	E_FREE(cfdata->kb_variant);
+	eina_stringshare_del(cfdata->kb_model);
+	eina_stringshare_del(cfdata->kb_variant);
 
 	_conf_fill_kbd_model(cfdata);
 	_conf_fill_kbd_variant(cfdata);

@@ -8,7 +8,7 @@ struct _E_Config_Dialog_Data
 {
    double zoom;
    int penguins_count;
-   char *theme;
+   const char *theme;
    int alpha;
 };
 
@@ -52,7 +52,7 @@ _fill_data(Population *pop, E_Config_Dialog_Data *cfdata)
    cfdata->penguins_count = pop->conf->penguins_count;
    cfdata->zoom = pop->conf->zoom;
    cfdata->alpha = pop->conf->alpha;
-   cfdata->theme = strdup(pop->conf->theme);
+   cfdata->theme = eina_stringshare_add(pop->conf->theme);
 }
 
 static void *
@@ -75,7 +75,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    pop = cfd->data;
    pop->config_dialog = NULL;
-   E_FREE(cfdata->theme);
+   eina_stringshare_del(cfdata->theme);
    free(cfdata);
    cfdata = NULL;
 }
@@ -155,8 +155,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    pop->conf->zoom = cfdata->zoom;
    pop->conf->alpha = cfdata->alpha;
    
-   if (pop->conf->theme) eina_stringshare_del(pop->conf->theme);
-   pop->conf->theme = eina_stringshare_add(cfdata->theme);
+   eina_stringshare_del(pop->conf->theme);
+   pop->conf->theme = eina_stringshare_ref(cfdata->theme);
 
    e_config_save_queue();
    e_border_button_bindings_grab_all();

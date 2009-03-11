@@ -54,7 +54,7 @@ struct _E_Config_Dialog_Data
    Evas_Object *ilist;
    E_Confirm_Dialog *dialog_delete;
 
-   char *dir;
+   const char *dir;
    int sort_rel;
 };
 
@@ -524,7 +524,7 @@ _launcher_cf_create_data(E_Config_Dialog *cfd)
 static void 
 _launcher_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   if (cfdata->dir) E_FREE(cfdata->dir);
+   eina_stringshare_del(cfdata->dir);
 
    _cfd = NULL;
    E_FREE(cfdata);
@@ -533,7 +533,7 @@ _launcher_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void 
 _launcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->dir = strdup(cfdata->inst->conf->dir);
+   cfdata->dir = eina_stringshare_ref(cfdata->inst->conf->dir);
    cfdata->sort_rel = cfdata->inst->conf->sort_rel;
 }
 

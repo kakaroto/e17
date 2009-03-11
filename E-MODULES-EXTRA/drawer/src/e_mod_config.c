@@ -11,7 +11,7 @@ struct _E_Config_Dialog_Data
    Eina_List *packed_widgets;
 
    Eina_List *sources, *views;
-   char *source, *view;
+   const char *source, *view;
 
    Config_Item *ci;
    void *data;
@@ -77,10 +77,8 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    drawer_plugins_list_free(cfdata->views);
    drawer_plugins_list_free(cfdata->sources);
 
-   if (cfdata->view)
-     E_FREE(cfdata->view);
-   if (cfdata->source)
-     E_FREE(cfdata->source);
+   eina_stringshare_del(cfdata->view);
+   eina_stringshare_del(cfdata->source);
 
    drawer_conf->cfd = NULL;
    E_FREE(cfdata);
@@ -89,8 +87,8 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void 
 _fill_data(E_Config_Dialog_Data *cfdata) 
 {
-   cfdata->view = strdup(cfdata->ci->view);
-   cfdata->source = strdup(cfdata->ci->source);
+   cfdata->view = eina_stringshare_add(cfdata->ci->view);
+   cfdata->source = eina_stringshare_add(cfdata->ci->source);
 }
 
 static Evas_Object *
@@ -146,6 +144,7 @@ _conf_plugin_sel(void *data1, void *data2)
    E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
    Evas_Object *of, *ol, *packed, *otx, *oi;
+   Drawer_Plugin_Type *pi;
    Evas *evas;
    Eina_List *l;
    const char *comment = NULL;
@@ -175,10 +174,8 @@ _conf_plugin_sel(void *data1, void *data2)
    e_widget_list_object_append(of, otx, 1, 1, 0.5);
    cfdata->sources = drawer_plugins_list(DRAWER_SOURCES);
    e_widget_ilist_freeze(oi);
-   for (l = cfdata->sources; l; l = l->next)
+   EINA_LIST_FOREACH(cfdata->sources, l, pi)
      {
-	Drawer_Plugin_Type *pi = l->data;
-
 	i++;
 	if (!(strcmp(cfdata->source, pi->name)))
 	  {
