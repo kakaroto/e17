@@ -34,6 +34,9 @@ cdef extern from "Epsilon.h":
         int tw
         int th
         int format
+        int aspect
+        float crop_x
+        float crop_y
 
     ctypedef void Epsilon_Exif_Info
 
@@ -52,6 +55,8 @@ cdef extern from "Epsilon.h":
     void epsilon_free(_Epsilon *e)
     void epsilon_key_set(_Epsilon *e, char *key)
     void epsilon_resolution_set(_Epsilon *e, int w, int h)
+    void epsilon_aspect_set (_Epsilon *e, int a)
+    void epsilon_crop_align_set (_Epsilon * e, float x, float y)
 
     char *epsilon_file_get(_Epsilon *e)
     char *epsilon_thumb_file_get(_Epsilon *e)

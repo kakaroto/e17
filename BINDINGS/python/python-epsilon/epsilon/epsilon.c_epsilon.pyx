@@ -27,6 +27,9 @@ EPSILON_THUMB_NORMAL = 0
 EPSILON_THUMB_LARGE = 1
 EPSILON_THUMB_FDO = 0
 EPSILON_THUMB_JPEG = 1
+EPSILON_THUMB_KEEP_ASPECT = 0
+EPSILON_THUMB_IGNORE_ASPECT = 1
+EPSILON_THUMB_CROP = 2
 
 cdef class Epsilon:
     """Epsilon thumbnail generator.
@@ -184,6 +187,42 @@ cdef class Epsilon:
 
         def __get__(self):
             return self.format_get()
+
+    def aspect_set(self, int a):
+        """Specify thumbnail aspect, either EPSILON_THUMB_KEEP_ASPECT,
+           EPSILON_THUMB_IGNORE_ASPECT or EPSILON_THUMB_CROP.
+        """
+        if a != EPSILON_THUMB_KEEP_ASPECT and \
+           a != EPSILON_THUMB_IGNORE_ASPECT and \
+           a != EPSILON_THUMB_CROP:
+            raise ValueError("value must be either EPSILON_THUMB_KEEP_ASPECT, "
+                             "EPSILON_THUMB_IGNORE_ASPECT or "
+                             "EPSILON_THUMB_CROP")
+        epsilon_aspect_set(self.obj, a)
+
+    def aspect_get(self):
+        "@rtype: int"
+        if self.obj:
+            if self.obj.aspect == EPSILON_THUMB_KEEP_ASPECT:
+                return EPSILON_THUMB_KEEP_ASPECT
+            elif self.obj.aspect == EPSILON_THUMB_IGNORE_ASPECT:
+                return EPSILON_THUMB_IGNORE_ASPECT
+            else:
+                return EPSILON_THUMB_CROP
+
+    property aspect:
+        def __set__(self, int a):
+            self.aspect_set(a)
+
+        def __get__(self):
+            return self.aspect_get()
+
+    def crop_align_set(self, float x, float y):
+        """Specify thumbnail crop alignment.
+        """
+        if x < 0 or x > 1 or y < 0 or y > 1:
+            raise ValueError("values must be between 0 and 1")
+        epsilon_crop_align_set(self.obj, x, y)
 
     def thumb_custom_size_set(self, int w, int h, char *directory):
         """Specify a custom thumbnail size.

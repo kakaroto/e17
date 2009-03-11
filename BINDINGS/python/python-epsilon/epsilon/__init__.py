@@ -18,4 +18,6 @@
 #!/usr/bin/env python
 
 from c_epsilon import init, EPSILON_THUMB_NORMAL, EPSILON_THUMB_LARGE, \
-                      EPSILON_THUMB_FDO, EPSILON_THUMB_JPEG, Epsilon
+                      EPSILON_THUMB_FDO, EPSILON_THUMB_JPEG, \
+                      EPSILON_THUMB_KEEP_ASPECT, EPSILON_THUMB_IGNORE_ASPECT, \
+                      EPSILON_THUMB_CROP, Epsilon
