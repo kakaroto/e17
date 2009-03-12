@@ -3,9 +3,10 @@ import elementary
 import edje
 import evas
 
-def destroy(obj, event, *args, **kargs):
+def destroy(obj, event, data):
     print "DEBUG: window destroy callback called!"
-    raise Exception()
+    print "DEBUG: data:"
+    print data
     elementary.exit()
     
 def bg_plain_clicked(obj, event, data):
@@ -698,13 +699,168 @@ def toolbar_clicked(obj, event, *args, **kargs):
     win.resize(320, 320)
     win.show()
 
+def my_pager_1(obj, event, data):
+    data["pager"].content_promote(data["pg2"])
+
+def my_pager_2(obj, event, data):
+    data["pager"].content_promote(data["pg3"])
+
+def my_pager_3(obj, event, data):
+    data["pager"].content_promote(data["pg1"])
+
+def my_pager_pop(obj, event, data):
+    data["pager"].content_pop()
+
+def pager_clicked(obj, event, data):
+    win = elementary.Window("pager", elementary.ELM_WIN_BASIC)
+    win.autodel_set(True)
+    win.title_set("Pager")
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    print win
+    pg = elementary.Pager(win)
+    win.resize_object_add(pg)
+    pg.show()
+
+    info = dict()
+    info["pager"] = pg
+
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(1.0, 1.0)
+    bx.show()
+
+    lb = elementary.Label(win)
+    lb.label_set("This is page 1 in a pager stack.<br>"
+                       "<br>"
+                       "So what is a pager stack? It is a stack<br>"
+                       "of pages that hold widgets in it. The<br>"
+                       "pages can be pushed and popped on and<br>"
+                       "off the stack, activated and otherwise<br>"
+                       "activated if already in the stack<br>"
+                       "(activated means promoted to the top of<br>"
+                       "the stack).<br>"
+                       "<br>"
+                       "The theme may define the animation how<br>"
+                       "show and hide of pages.")
+
+    bx.pack_end(lb)
+    lb.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Flip to 2")
+    bt.clicked = (my_pager_1, info)
+    bx.pack_end(bt)
+    bt.show()
+
+    bt = elementary.Button(win)
+    bt.label_set("Popme")
+    bt.clicked = (my_pager_pop, info)
+    bx.pack_end(bt)
+    bt.show()
+
+    pg.content_push(bx)
+
+    info["pg1"] = bx;
+    
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(1.0, 1.0)
+    bx.show()
+    
+    lb = elementary.Label(win)
+    lb.label_set("This is page 2 in a pager stack.<br>"
+                       "<br>"
+                       "This is just like the previous page in<br>"
+                       "the pager stack.")
+    
+    bx.pack_end(lb)
+    lb.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Flip to 3")
+    bt.clicked = (my_pager_2, info)
+    bx.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Popme")
+    bt.clicked = (my_pager_pop, info)
+    bx.pack_end(bt)
+    bt.show()
+
+    pg.content_push(bx)
+    
+    info["pg2"] = bx
+    
+    bx = elementary.Box(win)
+    bx.size_hint_weight_set(1.0, 1.0)
+    bx.show()
+    
+    lb = elementary.Label(win)
+    lb.label_set("This is page 3 in a pager stack.<br>"
+                       "<br>"
+                       "This is just like the previous page in<br>"
+                       "the pager stack.")
+    
+    bx.pack_end(lb)
+    lb.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Flip to 1")
+    bt.clicked = (my_pager_3, info)
+    bx.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Popme")
+    bt.clicked = (my_pager_pop, info)
+    bx.pack_end(bt)
+    bt.show()
+    
+    pg.content_push(bx)
+     
+    info["pg3"] = bx
+
+    win.resize(320, 320)
+    win.show()
+    
+    """
+
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+   evas_object_show(bx);
+   lb = elm_label_add(win);
+   elm_label_label_set(lb,
+                       "This is page 3 in a pager stack.<br>"
+                       "<br>"
+                       "This is just like the previous page in<br>"
+                       "the pager stack."
+                       );
+   elm_box_pack_end(bx, lb);
+   evas_object_show(lb);
+   bt = elm_button_add(win);
+   elm_button_label_set(bt, "Flip to 1");
+   evas_object_smart_callback_add(bt, "clicked", my_pager_3, &info);
+   elm_box_pack_end(bx, bt);
+   evas_object_show(bt);
+   bt = elm_button_add(win);
+   elm_button_label_set(bt, "Popme");
+   evas_object_smart_callback_add(bt, "clicked", my_pager_pop, &info);
+   elm_box_pack_end(bx, bt);
+   evas_object_show(bt);
+   elm_pager_content_push(pg, bx);
+   info.pg3 = bx;
+    """
 
 
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
     win.title_set("python-elementary test application")
-    win.destroy = destroy
+    win.destroy = (destroy, ("test", "test1"))
     
     bg = elementary.Background(win)
     win.resize_object_add(bg)
@@ -756,7 +912,8 @@ if __name__ == "__main__":
                ("Notepad", notepad_clicked),
                ("Anchorview", anchorview_clicked),
                ("Anchorblock", anchorblock_clicked),
-               ("Toolbar", toolbar_clicked)]
+               ("Toolbar", toolbar_clicked),
+               ("Pager", pager_clicked)]
     
     
     for btn in buttons:

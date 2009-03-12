@@ -21,11 +21,10 @@ _pager_mapping = dict()
 
 cdef class Pager(Object):
     def __init__(self, c_evas.Object parent):
-        assert parent == None
+    #    assert parent == None
         self._set_obj(elm_pager_add(parent.obj))
         
     def content_push(self, c_evas.Object content):
-        assert content == None
         elm_pager_content_push(self.obj, content.obj)
         
         # register in our object dict
@@ -44,7 +43,6 @@ cdef class Pager(Object):
             _pager_mapping.pop(obj._get_obj_addr())
         
     def content_promote(self, c_evas.Object content):
-        assert content == None
         elm_pager_content_promote(self.obj, content.obj)
         
     def bottom_get(self):
