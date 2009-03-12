@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = img
 
-NAME = blingbling
+NAME = default
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
