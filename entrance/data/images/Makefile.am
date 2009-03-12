@@ -3,5 +3,6 @@ SUBDIRS = sessions
 
 imagesdir = $(pkgdatadir)/images
 images_DATA = \
-pointer.png
+pointer.png \
+pointer-blingbling.png
 

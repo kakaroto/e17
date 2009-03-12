@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = default darkrock
+SUBDIRS = default darkrock blingbling
