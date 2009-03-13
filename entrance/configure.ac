@@ -309,6 +309,8 @@ data/themes/default/Makefile
 data/themes/default/img/Makefile
 data/themes/darkrock/Makefile
 data/themes/darkrock/img/Makefile
+data/themes/blingbling/Makefile
+data/themes/blingbling/img/Makefile
 entrance.spec
 ],
 [
