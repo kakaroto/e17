@@ -47,6 +47,7 @@ static void (*loop_func) (double t, int f) = NULL;
 static int run_all = 0;
 static int run_test = 0;
 static int list_test = 0;
+static int exit_after_test = 0;
 
 static void
 _ui_exit(void)
@@ -423,7 +424,6 @@ _ui_setup(void)
    if (run_all)
      {
 	_ui_all();
-	_ui_exit();
      }
    else if (run_test > 0)
      {
@@ -433,11 +433,11 @@ _ui_setup(void)
      {
         Eina_List *l;
         int i;
-          
+
         for (l = menu, i = -1; l; l = l->next, i++)
           {
              Menu_Item *mi;
-             
+
              mi = l->data;
              if (i > 0)
                printf("%3i - %s\n", i, mi->text);
@@ -447,6 +447,10 @@ _ui_setup(void)
      {
 	menu_active = 1;
      }
+
+   if (exit_after_test)
+    _ui_exit();
+
 }
 
 void
@@ -459,10 +463,12 @@ ui_args(int argc, char **argv)
 	if (!strcmp(argv[i], "-a"))
 	  {
 	     run_all = 1;
+         exit_after_test = 1;
 	  }
 	else if ((!strcmp(argv[i], "-t")) && (i < (argc - 1)))
 	  {
              run_test = atoi(argv[i + 1]) + 1;
+             exit_after_test = 1;
              if (run_test < 2) run_test = 2;
 	  }
 	else if (!strcmp(argv[i], "-l"))
