@@ -542,6 +542,20 @@ def hover2_clicked(obj, event, *args, **kargs):
     win.show()
     
 
+def my_entry_bt_1(obj, event, data):
+    data.entry_set("")
+
+def my_entry_bt_2(obj, event, data):
+    str = data.entry_get()
+    print "ENTRY: %s" % str
+    
+def my_entry_bt_3(obj, event, data):
+    str = data.selection_get()
+    print "SELECTION: %s" % str
+
+def my_entry_bt_4(obj, event, data):
+    data.entry_insert("Insert some <b>BOLD</> text")
+    
 def entry_clicked(obj, event, *args, **kargs):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry")
@@ -566,8 +580,132 @@ def entry_clicked(obj, event, *args, **kargs):
 		       "in here to edit it. By the way, links are<br>"
 		       "called <a href=anc-02>Anchors</a> so you will need<br>"
 		       "to refer to them this way.")
-    en.size_hint_weight(1.0, 1.0)
+    en.size_hint_weight_set(1.0, 1.0)
+    en.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(en)
+    en.show()
     
+    bx2 = elementary.Box(win)
+    bx.horizontal_set(True)
+    bx2.size_hint_weight_set(1.0, 0.0)
+    bx2.size_hint_align_set(-1.0, -1.0)
+    
+    bt = elementary.Button(win)
+    bt.label_set("Clear")
+    bt.clicked = (my_entry_bt_1, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Print")
+    bt.clicked = (my_entry_bt_2, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Selection")
+    bt.clicked = (my_entry_bt_3, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Insert")
+    bt.clicked = (my_entry_bt_4, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bx.pack_end(bx2)
+    bx2.show()
+    
+    en.focus()
+    win.show()
+    
+def entry_scrolled_clicked(obj, event, *args, **kargs):
+    win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
+    win.title_set("Entry")
+    win.autodel_set(True)
+    
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    bx = elementary.Box(win)
+    win.resize_object_add(bx)
+    bx.size_hint_weight_set(1.0, 1.0)
+    bx.show()
+    
+    sc = elementary.Scroller(win)
+    sc.size_hint_weight_set(1.0, 1.0)
+    sc.size_hint_align_set(-1.0, -1.0)
+    bx.pack_end(sc)
+    
+    en = elementary.Entry(win)
+    en.line_wrap_set(False)
+    en.entry_set("This is an entry widget in this window that<br>"
+		       "uses markup <b>like this</> for styling and<br>"
+		       "formatting <em>like this</>, as well as<br>"
+		       "<a href=X><link>links in the text</></a>, so enter text<br>"
+		       "in here to edit it. By the way, links are<br>"
+		       "called <a href=anc-02>Anchors</a> so you will need<br>"
+		       "to refer to them this way.")
+    en.size_hint_weight_set(1.0, 1.0)
+    en.size_hint_align_set(-1.0, -1.0)
+    sc.content_set(en)
+    en.show()
+
+    sc.show()
+    
+    bx2 = elementary.Box(win)
+    bx.horizontal_set(True)
+    bx2.size_hint_weight_set(1.0, 0.0)
+    bx2.size_hint_align_set(-1.0, -1.0)
+    
+    bt = elementary.Button(win)
+    bt.label_set("Clear")
+    bt.clicked = (my_entry_bt_1, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Print")
+    bt.clicked = (my_entry_bt_2, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Selection")
+    bt.clicked = (my_entry_bt_3, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bt = elementary.Button(win)
+    bt.label_set("Insert")
+    bt.clicked = (my_entry_bt_4, en)
+    bt.size_hint_align_set(-1.0, -1.0)
+    bt.size_hint_weight_set(1.0, 0.0)
+    bx2.pack_end(bt)
+    bt.show()
+    
+    bx.pack_end(bx2)
+    bx2.show()
+    
+    en.focus()
+    win.show()
     
 
 def notepad_clicked(obj, event, *args, **kargs):
@@ -603,21 +741,6 @@ def anchorview_clicked(obj, event, *args, **kargs):
 def anchorblock_clicked(obj, event, *args, **kargs):
     win = elementary.Window("anchorblock", elementary.ELM_WIN_BASIC)
     win.title_set("Anchorblock")
-    win.autodel_set(True)
-    
-    bg = elementary.Background(win)
-    win.resize_object_add(bg)
-    bg.size_hint_weight_set(1.0, 1.0)
-    bg.show()
-
-    bx = elementary.Box(win)
-    win.resize_object_add(bx)
-    bx.size_hint_weight_set(1.0, 1.0)
-    bx.show()
-
-def entry_scrolled_clicked(obj, event, *args, **kargs):
-    win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
-    win.title_set("Entry Scrolled")
     win.autodel_set(True)
     
     bg = elementary.Background(win)
@@ -721,7 +844,6 @@ def pager_clicked(obj, event, data):
     bg.size_hint_weight_set(1.0, 1.0)
     bg.show()
 
-    print win
     pg = elementary.Pager(win)
     win.resize_object_add(pg)
     pg.show()
@@ -827,35 +949,6 @@ def pager_clicked(obj, event, data):
     win.resize(320, 320)
     win.show()
     
-    """
-
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_show(bx);
-   lb = elm_label_add(win);
-   elm_label_label_set(lb,
-                       "This is page 3 in a pager stack.<br>"
-                       "<br>"
-                       "This is just like the previous page in<br>"
-                       "the pager stack."
-                       );
-   elm_box_pack_end(bx, lb);
-   evas_object_show(lb);
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Flip to 1");
-   evas_object_smart_callback_add(bt, "clicked", my_pager_3, &info);
-   elm_box_pack_end(bx, bt);
-   evas_object_show(bt);
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "Popme");
-   evas_object_smart_callback_add(bt, "clicked", my_pager_pop, &info);
-   elm_box_pack_end(bx, bt);
-   evas_object_show(bt);
-   elm_pager_content_push(pg, bx);
-   info.pg3 = bx;
-    """
-
-
 if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
@@ -883,7 +976,43 @@ if __name__ == "__main__":
                  "test window.")
     fr.content_set(lb)
     lb.show()
+    
+    items = [("Bg Plain", bg_plain_clicked), 
+               ("Bg Image", bg_image_clicked),
+               ("Icon Transparent", icon_transparent_clicked),
+               ("Box Vert", box_vert_clicked),
+               ("Box Horiz", box_horiz_clicked),
+               ("Buttons", buttons_clicked),
+               ("Toggles", toggles_clicked),
+               ("Table", table_clicked),
+               ("Clock", clock_clicked),
+               ("Layout", layout_clicked), 
+               ("Hover", hover_clicked),
+               ("Hover 2", hover2_clicked),
+               ("Entry", entry_clicked),
+               ("Entry Scrolled", entry_scrolled_clicked),
+               ("Notepad", notepad_clicked),
+               ("Anchorview", anchorview_clicked),
+               ("Anchorblock", anchorblock_clicked),
+               ("Toolbar", toolbar_clicked),
+               ("Pager", pager_clicked)]
+    
+    li = elementary.List(win)
+    li.size_hint_weight_set(1.0, 1.0)
+    li.size_hint_align_set(-1.0, -1.0)
+    box0.pack_end(li)
+    li.show()
+    
+    for item in items:
+        """
+        it = elementary.ListItem()
+        it.append(li, item[0], None, None, item[1])
+        """
+        li.item_append(item[0], None, None, item[1])
+        
+    li.go()
 
+    """
     sc = elementary.Scroller(win)
     sc.size_hint_weight_set(1.0, 1.0)
     sc.size_hint_align_set(-1.0, -1.0)
@@ -923,6 +1052,7 @@ if __name__ == "__main__":
         bt.size_hint_align_set(-1.0, 0.0)
         box1.pack_end(bt)
         bt.show()
+    """
     
     win.resize(320,520)
     win.show()
