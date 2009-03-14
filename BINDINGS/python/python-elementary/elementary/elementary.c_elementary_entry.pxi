@@ -73,7 +73,11 @@ cdef class Entry(Object):
         return elm_entry_entry_get(self.obj)
         
     def selection_get(self):
-        return elm_entry_selection_get(self.obj)
+        cdef char* str
+        str = elm_entry_selection_get(self.obj)
+        if str == NULL:
+            return ""
+        return str
         
     def entry_insert(self, entry):
         elm_entry_entry_insert(self.obj, entry)
