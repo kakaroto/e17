@@ -94,14 +94,12 @@ cdef class Entry(Object):
     def select_all(self):
         elm_entry_select_all(self.obj)
     
-    @staticmethod
     def markup_to_utf8(str):
         cdef char* string
         string = elm_entry_markup_to_utf8(str)
         return string
-    
-    @staticmethod
-    def markup_to_utf8(str):
+
+    def utf8_to_markup(str):
         cdef char* string
         string = elm_entry_utf8_to_markup(str)
         return string
