@@ -35,4 +35,9 @@ cdef class Hover(Object):
         
     def style_set(self, style):
         elm_hover_style_set(self.obj, style)
+    
+    def best_content_location_get(self, axis):
+        cdef char* str
+        str = elm_hover_best_content_location_get(self.obj, axis)
+        return str
 
