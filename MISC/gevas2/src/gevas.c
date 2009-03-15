@@ -1051,6 +1051,7 @@ static void gevas_realize(GtkWidget * widget)
         
         /* the following is specific to the engine */
         einfo->info.connection = GDK_WINDOW_XDISPLAY(widget->window);
+        einfo->info.backend  = 0;
         einfo->info.visual   = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(widget));
         einfo->info.colormap = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget));
         einfo->info.drawable = GDK_WINDOW_XWINDOW(widget->window);
