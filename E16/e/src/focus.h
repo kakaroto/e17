@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -48,6 +49,7 @@ void                FocusHandleChange(EWin * ewin, XEvent * ev);
 void                FocusHandleClick(EWin * ewin, Win win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
+void                FocusCheckScreen(void);
 
 void                ClickGrabsUpdate(void);
 
