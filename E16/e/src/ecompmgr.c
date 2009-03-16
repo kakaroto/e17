@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -726,16 +726,6 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage)
       ECompMgrDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
 			     &Mode_compmgr.eo_last, DeskGet(0), None);
 
-#if 0				/* FIXME - Remove? */
-   if (cw->clip == None)
-     {
-	/* Clip may be None if window is not in paint list */
-	if (destroy)
-	   ERegionDestroy(damage);
-	return;
-     }
-#endif
-
    damage = ERegionCopy(rgn_tmp, damage);
 
 #if USE_CLIP_RELATIVE_TO_DESK
@@ -1133,18 +1123,6 @@ ECompMgrWinSetExtents(EObj * eo)
 
    if (EDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("extents", cw->extents);
-
-#if 0				/* FIXME - Set picture clip region */
-   if (cw->shadow_pict)
-     {
-	XserverRegion       clip;
-
-	clip = ERegionClone(cw->extents);
-	ERegionSubtractOffset(clip, 0, 0, cw->shape);
-	XFixesSetPictureClipRegion(disp, cw->shadow_pict, 0, 0, clip);
-	ERegionDestroy(clip);
-     }
-#endif
 }
 
 /* Region of shaped window in screen coordinates */
@@ -1858,17 +1836,6 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	XDamageSubtract(dpy, cw->damage, None, parts);
 	ERegionTranslate(parts, EobjGetX(eo) + EobjGetBW(eo),
 			 EobjGetY(eo) + EobjGetBW(eo));
-#if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
-	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
-	  {
-	     XserverRegion       o;
-
-	     o = ERegionClone(parts);
-	     ERegionTranslate(o, cw->shadow_dx, cw->shadow_dy);
-	     ERegionUnion(parts, o);
-	     ERegionDestroy(o);
-	  }
-#endif
      }
    eo->serial = ev->xany.serial;
    ECompMgrDamageMergeObject(eo, parts);
