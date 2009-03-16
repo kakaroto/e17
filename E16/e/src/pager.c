@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1393,7 +1393,7 @@ PagerEwinMove(Pager * p __UNUSED__, Pager * pd, EWin * ewin)
    dx = Mode.events.mx - Mode.events.px;
    dy = Mode.events.my - Mode.events.py;
 
-   if (dx == 0 && dy == 0)
+   if (dx == 0 && dy == 0 && p == pd)
       return;
 
    /* Move mini window */
