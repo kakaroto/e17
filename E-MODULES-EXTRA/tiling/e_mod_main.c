@@ -905,7 +905,7 @@ _e_module_tiling_desk_set(void *data, int type, void *event)
 static int
 _e_module_tiling_mouse_move(void *data, int type, void *event)
 {
-   Ecore_X_Event_Mouse_Move *ev = event;
+   Ecore_Event_Mouse_Move *ev = event;
 
    if (!current_zone || !E_INSIDE(ev->root.x, ev->root.y,
 	current_zone->x, current_zone->y, current_zone->w, current_zone->h))
@@ -986,7 +986,7 @@ e_modapi_init(E_Module *m)
    /* Callback before virtual desktop changes */
    handler_desk_before_show = ecore_event_handler_add(E_EVENT_DESK_BEFORE_SHOW, _e_module_tiling_desk_before_show, NULL);
    /* Callback when the mouse moves */
-   handler_mouse_move = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _e_module_tiling_mouse_move, NULL);
+   handler_mouse_move = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _e_module_tiling_mouse_move, NULL);
    /* Callback when a border is set to another desk */
    handler_desk_set = ecore_event_handler_add(E_EVENT_BORDER_DESK_SET, _e_module_tiling_desk_set, NULL);
 

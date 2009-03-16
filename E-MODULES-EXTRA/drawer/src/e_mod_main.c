@@ -975,7 +975,7 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 	 ecore_event_handler_add(EPSILON_EVENT_DONE,
 				 _drawer_thumbnail_done_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
-	 ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+	 ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 				 _drawer_global_mouse_down, inst));
 
    if (inst->conf_item->source)
@@ -1377,13 +1377,13 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 static int
 _drawer_global_mouse_down(void *data, int type, void *event)
 {
-   Ecore_X_Event_Mouse_Button_Down *ev;
+   Ecore_Event_Mouse_Button *ev;
    Instance *inst;
 
    ev = event;
    inst = data;
    if (!inst->popup || !inst->popup->win->visible || inst->flags.pop_showing) return 1;
-   if (ev->event_win == inst->popup->win->evas_win) return 1;
+   if (ev->event_window == inst->popup->win->evas_win) return 1;
 
    _drawer_popup_hide(inst);
 

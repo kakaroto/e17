@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <Evas.h>
 #include <Ecore_Evas.h>
+#include <Ecore_Input.h>
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 #include <Ecore_X_Atoms.h>
@@ -195,12 +196,12 @@ static Etk_Bool _engine_init(void)
       return ETK_FALSE;
    }
    
-   _event_input_handlers[0] = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _event_input_handler_cb, NULL);
-   _event_input_handlers[1] = ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, _event_input_handler_cb, NULL);
-   _event_input_handlers[2] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, _event_input_handler_cb, NULL);
-   _event_input_handlers[3] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _event_input_handler_cb, NULL);
-   _event_input_handlers[4] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _event_input_handler_cb, NULL);
-   _event_input_handlers[5] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL, _event_input_handler_cb, NULL);
+   _event_input_handlers[0] = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, _event_input_handler_cb, NULL);
+   _event_input_handlers[1] = ecore_event_handler_add(ECORE_EVENT_KEY_UP, _event_input_handler_cb, NULL);
+   _event_input_handlers[2] = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, _event_input_handler_cb, NULL);
+   _event_input_handlers[3] = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, _event_input_handler_cb, NULL);
+   _event_input_handlers[4] = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _event_input_handler_cb, NULL);
+   _event_input_handlers[5] = ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, _event_input_handler_cb, NULL);
    
    _selection_notify_handler = ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _selection_notify_handler_cb, NULL);
    
@@ -725,84 +726,84 @@ static int _event_input_handler_cb(void *data, int type, void *event)
    if (!_event_callback)
       return 1;
    
-   if (type == ECORE_X_EVENT_MOUSE_MOVE)
+   if (type == ECORE_EVENT_MOUSE_MOVE)
    {
-      Ecore_X_Event_Mouse_Move *xev = event;
+      Ecore_Event_Mouse_Move *xev = event;
       
-      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      ecore_x_window_geometry_get(xev->window, &x, &y, NULL, NULL);
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_move.modifiers, &ev.mouse_move.locks);
       ev.mouse_move.pos.x = xev->x + x;
       ev.mouse_move.pos.y = xev->y + y;
-      ev.mouse_move.timestamp = xev->time;
+      ev.mouse_move.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_MOUSE_MOVE, ev);
    }
-   else if (type == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
+   else if (type == ECORE_EVENT_MOUSE_BUTTON_DOWN)
    {
-      Ecore_X_Event_Mouse_Button_Down *xev = event;
+      Ecore_Event_Mouse_Button *xev = event;
       
-      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      ecore_x_window_geometry_get(xev->window, &x, &y, NULL, NULL);
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_down.modifiers, &ev.mouse_down.locks);
       ev.mouse_down.flags = ETK_MOUSE_NONE;
       if (xev->double_click)
          ev.mouse_down.flags |= ETK_MOUSE_DOUBLE_CLICK;
       if (xev->triple_click)
          ev.mouse_down.flags |= ETK_MOUSE_TRIPLE_CLICK;
-      ev.mouse_down.button = xev->button;
+      ev.mouse_down.button = xev->buttons;
       ev.mouse_down.pos.x = xev->x + x;
       ev.mouse_down.pos.y = xev->y + y;
-      ev.mouse_down.timestamp = xev->time;
+      ev.mouse_down.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_MOUSE_DOWN, ev);
    }
-   else if (type == ECORE_X_EVENT_MOUSE_BUTTON_UP)
+   else if (type == ECORE_EVENT_MOUSE_BUTTON_UP)
    {
-      Ecore_X_Event_Mouse_Button_Up *xev = event;
+      Ecore_Event_Mouse_Button *xev = event;
       
-      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      ecore_x_window_geometry_get(xev->window, &x, &y, NULL, NULL);
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_up.modifiers, &ev.mouse_up.locks);
       ev.mouse_up.flags = ETK_MOUSE_NONE;
       if (xev->double_click)
          ev.mouse_up.flags |= ETK_MOUSE_DOUBLE_CLICK;
       if (xev->triple_click)
          ev.mouse_up.flags |= ETK_MOUSE_TRIPLE_CLICK;
-      ev.mouse_up.button = xev->button;
+      ev.mouse_up.button = xev->buttons;
       ev.mouse_up.pos.x = xev->x + x;
       ev.mouse_up.pos.y = xev->y + y;
-      ev.mouse_up.timestamp = xev->time;
+      ev.mouse_up.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_MOUSE_UP, ev);
    }
-   else if (type == ECORE_X_EVENT_MOUSE_WHEEL)
+   else if (type == ECORE_EVENT_MOUSE_WHEEL)
    {
-      Ecore_X_Event_Mouse_Wheel *xev = event;
+      Ecore_Event_Mouse_Wheel *xev = event;
       
-      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      ecore_x_window_geometry_get(xev->window, &x, &y, NULL, NULL);
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_wheel.modifiers, &ev.mouse_wheel.locks);
       ev.mouse_wheel.direction = (xev->direction == 0) ? ETK_WHEEL_VERTICAL : ETK_WHEEL_HORIZONTAL;
       ev.mouse_wheel.z = xev->z;
       ev.mouse_wheel.pos.x = xev->x + x;
       ev.mouse_wheel.pos.y = xev->y + y;
-      ev.mouse_wheel.timestamp = xev->time;
+      ev.mouse_wheel.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_MOUSE_WHEEL, ev);
    }
-   else if (type == ECORE_X_EVENT_KEY_DOWN)
+   else if (type == ECORE_EVENT_KEY_DOWN)
    {
-      Ecore_X_Event_Key_Down *xev = event;
+      Ecore_Event_Key *xev = event;
       
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.key_down.modifiers, &ev.key_down.locks);
-      ev.key_down.keyname = xev->keyname;
-      ev.key_down.key = xev->keysymbol;
-      ev.key_down.string = xev->key_compose;
-      ev.key_down.timestamp = xev->time;
+      ev.key_down.keyname = xev->keyname; /* FIXME: const gone ? */
+      ev.key_down.key = xev->key;
+      ev.key_down.string = xev->string;
+      ev.key_down.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_KEY_DOWN, ev);
    }
-   else if (type == ECORE_X_EVENT_KEY_UP)
+   else if (type == ECORE_EVENT_KEY_UP)
    {
-      Ecore_X_Event_Key_Up *xev = event;
+      Ecore_Event_Key *xev = event;
       
       _event_global_modifiers_locks_wrap(xev->modifiers, &ev.key_up.modifiers, &ev.key_up.locks);
-      ev.key_up.keyname = xev->keyname;
-      ev.key_up.key = xev->keysymbol;
-      ev.key_up.string = xev->key_compose;
-      ev.key_up.timestamp = xev->time;
+      ev.key_up.keyname = xev->keyname; /* FIXME: const gone ? */
+      ev.key_up.key = xev->key;
+      ev.key_up.string = xev->string;
+      ev.key_up.timestamp = xev->timestamp;
       _event_callback(ETK_EVENT_KEY_UP, ev);
    }
 
@@ -961,24 +962,24 @@ static void _event_global_modifiers_locks_wrap(int xmodifiers, Etk_Modifiers *mo
    if (modifiers)
    {
       *modifiers = ETK_MODIFIER_NONE;
-      if (xmodifiers & ECORE_X_MODIFIER_SHIFT)
+      if (xmodifiers & ECORE_EVENT_MODIFIER_SHIFT)
          *modifiers |= ETK_MODIFIER_SHIFT;
-      if (xmodifiers & ECORE_X_MODIFIER_CTRL)
+      if (xmodifiers & ECORE_EVENT_MODIFIER_CTRL)
          *modifiers |= ETK_MODIFIER_CTRL;
-      if (xmodifiers & ECORE_X_MODIFIER_ALT)
+      if (xmodifiers & ECORE_EVENT_MODIFIER_ALT)
          *modifiers |= ETK_MODIFIER_ALT;
-      if (xmodifiers & ECORE_X_MODIFIER_WIN)
+      if (xmodifiers & ECORE_EVENT_MODIFIER_WIN)
          *modifiers |= ETK_MODIFIER_WIN;
    }
    
    if (modifiers)
    {
       *locks = ETK_LOCK_NONE;
-      if (xmodifiers & ECORE_X_LOCK_SCROLL)
+      if (xmodifiers & ECORE_EVENT_LOCK_SCROLL)
          *locks |= ETK_LOCK_SCROLL;
-      if (xmodifiers & ECORE_X_LOCK_NUM)
+      if (xmodifiers & ECORE_EVENT_LOCK_NUM)
          *locks |= ETK_LOCK_NUM;
-      if (xmodifiers & ECORE_X_LOCK_CAPS)
+      if (xmodifiers & ECORE_EVENT_LOCK_CAPS)
          *locks |= ETK_LOCK_CAPS;
    }
 }

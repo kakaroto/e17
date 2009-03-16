@@ -279,7 +279,7 @@ _em_free_options(void)
 static void 
 _em_get_filename(void) 
 {
-   Ecore_List *fl = NULL;
+   Eina_List *fl = NULL;
    char *dir = NULL, *ext = NULL, *file = NULL;
    const char *f;
    char buf[256];
@@ -331,16 +331,13 @@ _em_get_filename(void)
 
 		       /* list files in this directory & count them */
 		       fl = ecore_file_ls(dir);
-		       ecore_list_first_goto(fl);
-		       while ((file = ecore_list_next(fl)) != NULL) 
+		       EINA_LIST_FREE(fl, file)
 			 {
 			    /* skip "thumb" files in the count */
 			    if (strstr(file, "thumb")) continue;
 			    if (strstr(file, ext)) c++;
+			    free(file);
 			 }
-
-		       /* destroy the file list */
-		       if (fl) ecore_list_destroy(fl);
 
                        /* strip the extension from filename */
                        file = ecore_file_strip_ext(opts->filename);
@@ -476,11 +473,11 @@ _em_do_window(void)
      ecore_x_window_cursor_set(input_window, cursor);
 
    /* setup handler to recieve key event */
-   key_hdl = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, 
+   key_hdl = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, 
                                      _em_cb_key_down, NULL);
 
    /* setup handler to recieve click event */
-   mouse_up_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, 
+   mouse_up_hdl = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, 
 					  _em_cb_mouse_up, NULL);
 }
 
@@ -513,15 +510,15 @@ _em_do_region(void)
    ecore_x_keyboard_grab(input_window);
 
    /* setup handler to recieve key event */
-   key_hdl = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, 
+   key_hdl = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, 
                                      _em_cb_key_down, NULL);
 
    /* setup handlers to recieve mouse events */
-   mouse_move_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, 
+   mouse_move_hdl = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, 
 					    _em_cb_mouse_move, NULL);
-   mouse_up_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+   mouse_up_hdl = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP,
 					  _em_cb_mouse_up, NULL);
-   mouse_down_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+   mouse_down_hdl = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 					    _em_cb_mouse_down, NULL);
 
    /* set the mouse pointer */
@@ -647,15 +644,15 @@ _em_take_shot(int x, int y, int w, int h)
 static int 
 _em_cb_key_down(void *data, int type, void *event) 
 {
-   Ecore_X_Event_Key_Down *ev;
+   Ecore_Event_Key *ev;
 
    ev = event;
 
    /* check for correct window */
-   if (ev->win != input_window) return 1;
+   if (ev->window != input_window) return 1;
 
    /* check for correct key */
-   if (!strcmp(ev->keysymbol, "Escape")) 
+   if (!strcmp(ev->key, "Escape")) 
      {
         /* delete the event handlers */
         ecore_event_handler_del(key_hdl);
@@ -679,7 +676,7 @@ _em_cb_key_down(void *data, int type, void *event)
 static int 
 _em_cb_mouse_move(void *data, int type, void *event) 
 {
-   Ecore_X_Event_Mouse_Move *ev;
+   Ecore_Event_Mouse_Move *ev;
    int x, y, w, h;
 
    ev = event;
@@ -715,7 +712,7 @@ _em_cb_mouse_move(void *data, int type, void *event)
 static int 
 _em_cb_mouse_up(void *data, int type, void *event) 
 {
-   Ecore_X_Event_Mouse_Button_Up *ev;
+   Ecore_Event_Mouse_Button *ev;
    Ecore_X_Display *disp;
    Ecore_X_Window win, root;
    int x, y, w, h;
@@ -728,10 +725,10 @@ _em_cb_mouse_up(void *data, int type, void *event)
    ev = event;
 
    /* check for correct mouse button */
-   if (ev->button != 1) return 1;
+   if (ev->buttons != 1) return 1;
 
    /* check for correct window */
-   if (ev->win != input_window) return 1;
+   if (ev->window != input_window) return 1;
 
    /* get last known pointer position */
    ecore_x_pointer_last_xy_get(&x, &y);
@@ -778,11 +775,11 @@ _em_cb_mouse_up(void *data, int type, void *event)
 static int 
 _em_cb_mouse_down(void *data, int type, void *event) 
 {
-   Ecore_X_Event_Mouse_Button_Down *ev;
+   Ecore_Event_Mouse_Button *ev;
 
    ev = event;
-   if (ev->win != input_window) return 1;
-   if (ev->button != 1) return 1;
+   if (ev->window != input_window) return 1;
+   if (ev->buttons != 1) return 1;
 
    /* get current mouse coordinates */
    ecore_x_pointer_xy_get(input_window, &gx, &gy);

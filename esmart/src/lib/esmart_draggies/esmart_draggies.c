@@ -10,7 +10,7 @@
 #include <string.h>
 #include <Evas.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
+#include <Ecore_Input.h>
 #include "Esmart_Draggies.h"
 
 
@@ -56,11 +56,11 @@ _mouse_down_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
   Esmart_Draggies *drag = NULL;
   Evas_Event_Mouse_Down *e = NULL;
-  Ecore_X_Event_Mouse_Button_Down *evx = NULL;
+  Ecore_Event_Mouse_Button *evx = NULL;
 
   if ((drag = (Esmart_Draggies *) data))
     {
-      if (ecore_event_current_type_get () == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
+      if (ecore_event_current_type_get () == ECORE_EVENT_MOUSE_BUTTON_DOWN)
 	{
 	  if ((evx = ecore_event_current_event_get ()))
 	    {
@@ -81,11 +81,11 @@ static void
 _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
   Esmart_Draggies *drag = NULL;
-  Ecore_X_Event_Mouse_Move *evx = NULL;
+  Ecore_Event_Mouse_Move *evx = NULL;
 
   if ((drag = (Esmart_Draggies *) data))
     {
-      if (ecore_event_current_type_get () == ECORE_X_EVENT_MOUSE_MOVE)
+      if (ecore_event_current_type_get () == ECORE_EVENT_MOUSE_MOVE)
 	{
 	  if ((evx = ecore_event_current_event_get ()))
 	    {

@@ -27,6 +27,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
 #include <Ecore_File.h>
+#include <Ecore_Input.h>
 #if ENGINE_E_FB_X11_SUPPORT
 #include <Ecore_X.h>
 #endif
@@ -283,7 +284,7 @@ static Etk_Bool _engine_init(void)
          return ETK_FALSE;
       }
 
-      ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _mouse_move_X_handler_cb, NULL);
+      ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _mouse_move_X_handler_cb, NULL);
 
       /* Create the evas where all the windows will be drawn */
 
@@ -322,7 +323,7 @@ static Etk_Bool _engine_init(void)
          return ETK_FALSE;
       }
 
-      ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, _mouse_move_handler_cb, NULL);
+      ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _mouse_move_handler_cb, NULL);
       ecore_fb_size_get(&_fb_width, &_fb_height);
 
       /* Create the evas where all the windows will be drawn */
@@ -987,7 +988,7 @@ static void _window_close_mouse_up_cb(void *data, Evas_Object *obj, const char *
 /* Called when the mouse is moved */
 static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
 {
-   Ecore_Fb_Event_Mouse_Move *event = ev;
+   Ecore_Event_Mouse_Move *event = ev;
    
    _mouse_x = event->x;
    _mouse_y = event->y;
@@ -1008,7 +1009,7 @@ static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
 /* Called when the mouse is moved (X11 debug version) */
 static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
 {
-   Ecore_X_Event_Mouse_Move *event = ev;
+   Ecore_Event_Mouse_Move *event = ev;
    
    _mouse_x = event->x;
    _mouse_y = event->y;

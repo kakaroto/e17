@@ -6,7 +6,7 @@
 #include <string.h>
 #include <Evas.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
+#include <Ecore_Input.h>
 #include "Esmart_Resize.h"
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -51,11 +51,11 @@ _mouse_down_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
    Esmart_Resize *drag = NULL;
    Evas_Event_Mouse_Down *e = NULL;
-   Ecore_X_Event_Mouse_Button_Down *evx = NULL;
+   Ecore_Event_Mouse_Button *evx = NULL;
 
    if ((drag = (Esmart_Resize *) data)
-	 && ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_BUTTON_DOWN
-	 && (evx = (Ecore_X_Event_Mouse_Button_Down *) 
+	 && ecore_event_current_type_get() == ECORE_EVENT_MOUSE_BUTTON_DOWN
+	 && (evx = (Ecore_Event_Mouse_Button *) 
 		ecore_event_current_event_get())
 	 && (e = (Evas_Event_Mouse_Down *) ev)
 	 && e->button == drag->button) 
@@ -73,13 +73,13 @@ static void
 _mouse_move_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
    Esmart_Resize *drag = NULL;
-   Ecore_X_Event_Mouse_Move *evx = NULL;
+   Ecore_Event_Mouse_Move *evx = NULL;
 
    if ((drag = (Esmart_Resize *) data)
-	 && ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_MOVE
-	 && (evx = (Ecore_X_Event_Mouse_Move *) 
+	 && ecore_event_current_type_get() == ECORE_EVENT_MOUSE_MOVE
+	 && (evx = (Ecore_Event_Mouse_Move *)
 	       ecore_event_current_event_get())
-	 && drag->clicked) 
+	 && drag->clicked)
      {
 	int h, w, x, y;
 	int minw, minh, maxw, maxh;

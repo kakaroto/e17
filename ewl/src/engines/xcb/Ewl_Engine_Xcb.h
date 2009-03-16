@@ -5,6 +5,7 @@
 #include "ewl_base.h"
 #include <Ecore_X.h>
 #include <Ecore_X_Atoms.h>
+#include <Ecore_Input.h>
 
 #define EWL_ENGINE_XCB(engine) ((Ewl_Engine_Xcb *)engine)
 typedef struct Ewl_Engine_Xcb Ewl_Engine_Xcb;

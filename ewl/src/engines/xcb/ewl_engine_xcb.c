@@ -211,10 +211,10 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
          * Register dispatching functions for keyboard events.
          */
         ee_key_down_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_KEY_DOWN,
+                                                ECORE_EVENT_KEY_DOWN,
                                                 ewl_ev_x_key_down, NULL);
         ee_key_up_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_KEY_UP,
+                                                ECORE_EVENT_KEY_UP,
                                                 ewl_ev_x_key_up, NULL);
 
         /*
@@ -251,16 +251,16 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
          * Finally, register dispatching functions for mouse events.
          */
         ee_mouse_down_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+                                                ECORE_EVENT_MOUSE_BUTTON_DOWN,
                                                 ewl_ev_x_mouse_down, NULL);
         ee_mouse_up_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_BUTTON_UP,
+                                                ECORE_EVENT_MOUSE_BUTTON_UP,
                                                 ewl_ev_x_mouse_up, NULL);
         ee_mouse_move_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_MOVE,
+                                                ECORE_EVENT_MOUSE_MOVE,
                                                 ewl_ev_x_mouse_move, NULL);
         ee_mouse_wheel_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_WHEEL,
+                                                ECORE_EVENT_MOUSE_WHEEL,
                                                 ewl_ev_x_mouse_wheel, NULL);
         ee_mouse_out_handler = ecore_event_handler_add(
                                                 ECORE_X_EVENT_MOUSE_OUT,
@@ -1134,13 +1134,13 @@ static int
 ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
-        Ecore_X_Event_Key_Down *ev;
+        Ecore_Event_Key *ev;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ev = e;
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
 
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1159,11 +1159,11 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
                 key_modifiers |= EWL_KEY_MODIFIER_WIN;
         else if (strstr(ev->keyname, "Hyper_"))
                 key_modifiers |= EWL_KEY_MODIFIER_WIN;
-        else if (!ev->key_compose || iscntrl(*ev->key_compose))
+        else if (!ev->compose || iscntrl(*ev->compose))
                 ewl_embed_key_down_feed(EWL_EMBED(window), ev->keyname,
                                                         key_modifiers);
         else
-                ewl_embed_key_down_feed(EWL_EMBED(window), ev->key_compose,
+                ewl_embed_key_down_feed(EWL_EMBED(window), ev->compose,
                                                         key_modifiers);
 
         ewl_ev_modifiers_set(key_modifiers);
@@ -1175,7 +1175,7 @@ static int
 ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
-        Ecore_X_Event_Key_Up *ev;
+        Ecore_Event_Key *ev;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1200,11 +1200,11 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
                 key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
         else if (strstr(ev->keyname, "Hyper_"))
                 key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
-        else if (!ev->key_compose || iscntrl(*ev->key_compose))
+        else if (!ev->compose || iscntrl(*ev->compose))
                 ewl_embed_key_up_feed(EWL_EMBED(window), ev->keyname,
                                                         key_modifiers);
         else
-                ewl_embed_key_up_feed(EWL_EMBED(window), ev->key_compose,
+                ewl_embed_key_up_feed(EWL_EMBED(window), ev->compose,
                                                         key_modifiers);
 
         ewl_ev_modifiers_set(key_modifiers);
@@ -1217,14 +1217,14 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         int clicks = 1;
         Ewl_Window *window;
-        Ecore_X_Event_Mouse_Button_Down *ev;
+        Ecore_Event_Mouse_Button *ev;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1234,7 +1234,7 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
                 clicks = 3;
 
         key_modifiers = ewl_ev_modifiers_get();
-        ewl_embed_mouse_down_feed(EWL_EMBED(window), ev->button, clicks,
+        ewl_embed_mouse_down_feed(EWL_EMBED(window), ev->buttons, clicks,
                                                 ev->x, ev->y, key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1245,14 +1245,14 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         int clicks = 1;
         Ewl_Window *window;
-        Ecore_X_Event_Mouse_Button_Up *ev;
+        Ecore_Event_Mouse_Button *ev;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1262,7 +1262,7 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
                 clicks = 3;
 
         key_modifiers = ewl_ev_modifiers_get();
-        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->button, ev->x,
+        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->buttons, ev->x,
                                                 ev->y, key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1272,14 +1272,14 @@ static int
 ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
-        Ecore_X_Event_Mouse_Move *ev;
+        Ecore_Event_Mouse_Move *ev;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1314,12 +1314,12 @@ static int
 ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
-        Ecore_X_Event_Mouse_Wheel *ev = e;
+        Ecore_Event_Mouse_Wheel *ev = e;
         unsigned int key_modifiers;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
