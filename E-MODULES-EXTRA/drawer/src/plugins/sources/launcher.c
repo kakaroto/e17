@@ -4,6 +4,13 @@
 #include "launcher.h"
 
 /* Local Structures */
+typedef enum _Launcher_Sort_Type
+{
+   LAUNCHER_SORT_NONE,
+   LAUNCHER_SORT_RATING,
+   LAUNCHER_SORT_POPULARITY
+} Launcher_Sort_Type;
+
 typedef struct _Instance Instance;
 typedef struct _Conf Conf;
 typedef struct _Conf_Rating Conf_Rating;
@@ -35,7 +42,8 @@ struct _Conf
 
    const char *dir;
 
-   int sort_rel;
+   Launcher_Sort_Type sort_type;
+   Eina_Bool show_info;
 
    Eina_List *ratings;
 };
@@ -45,6 +53,7 @@ struct _Conf_Rating
    const char *label;
 
    int rating;
+   int popularity;
 };
 
 struct _E_Config_Dialog_Data 
@@ -55,7 +64,8 @@ struct _E_Config_Dialog_Data
    E_Confirm_Dialog *dialog_delete;
 
    const char *dir;
-   int sort_rel;
+   int sort_type;
+   int show_info;
 };
 
 struct _Launcher_Menu_Data
@@ -71,6 +81,7 @@ static void _launcher_description_create(Instance *inst);
 static void _launcher_sources_rating_discount(Instance *inst, int min);
 
 static int _launcher_cb_sort_rating(const void *data1, const void *data2);
+static int _launcher_cb_sort_popularity(const void *data1, const void *data2);
 static void _launcher_cb_app_change(void *data, E_Order *eo __UNUSED__);
 static Drawer_Source_Item *_launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop);
 static void _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si);
@@ -110,7 +121,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    inst->source = DRAWER_SOURCE(p);
 
    /* Define EET Data Storage */
-   inst->edd.conf_rel = E_CONFIG_DD_NEW("Conf_Rating", Conf_Rating);
+   inst->edd.conf_rel = e_config_descriptor_new("Conf_Rating", sizeof(Conf_Rating) - sizeof(int));
    #undef T
    #undef D
    #define T Conf_Rating 
@@ -125,7 +136,8 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    #define D inst->edd.conf
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
-   E_CONFIG_VAL(D, T, sort_rel, INT);
+   E_CONFIG_VAL(D, T, sort_type, INT);
+   E_CONFIG_VAL(D, T, show_info, INT);
    E_CONFIG_LIST(D, T, ratings, inst->edd.conf_rel); /* the list */
 
    snprintf(buf, sizeof(buf), "module.drawer/%s.launcher", id);
@@ -247,9 +259,17 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 
    if (min > 20000)
      _launcher_sources_rating_discount(inst, min);
-   if (inst->conf->sort_rel)
-	inst->items = eina_list_sort(inst->items,
-	      eina_list_count(inst->items), _launcher_cb_sort_rating);
+   switch(inst->conf->sort_type)
+     {
+      case LAUNCHER_SORT_RATING:
+	 inst->items = eina_list_sort(inst->items,
+				      eina_list_count(inst->items), _launcher_cb_sort_rating);
+	 break;
+      case LAUNCHER_SORT_POPULARITY:
+	 inst->items = eina_list_sort(inst->items,
+				      eina_list_count(inst->items), _launcher_cb_sort_popularity);
+	 break;
+     }
    return inst->items;
 }
 
@@ -273,7 +293,7 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 
    inst = DRAWER_PLUGIN(s)->data;
    CONF_RATING(si->priv)->rating++;
-   if (inst->conf->sort_rel)
+   if (inst->conf->sort_type)
      _launcher_cb_app_change(inst, NULL);
 }
 
@@ -351,6 +371,22 @@ _launcher_cb_sort_rating(const void *data1, const void *data2)
    return CONF_RATING(si2->priv)->rating - CONF_RATING(si1->priv)->rating;
 }
 
+static int
+_launcher_cb_sort_popularity(const void *data1, const void *data2)
+{
+   const Drawer_Source_Item *si1 = NULL, *si2 = NULL;
+
+   si1 = data1;
+   si2 = data2;
+   if(!si1) return(1);
+   if(!si2) return(-1);
+
+   /* reverse the list if equal */
+   if (CONF_RATING(si2->priv)->popularity == CONF_RATING(si1->priv)->popularity)
+     return -1;
+   return CONF_RATING(si2->priv)->popularity - CONF_RATING(si1->priv)->popularity;
+}
+
 static void
 _launcher_cb_app_change(void *data, E_Order *eo __UNUSED__)
 {
@@ -372,6 +408,7 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
    Conf_Rating *r;
    Eina_List *l;
    int found = 0;
+   char buf[5];
 
    si = E_NEW(Drawer_Source_Item, 1);
 
@@ -399,6 +436,22 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 	inst->conf->ratings = eina_list_append(inst->conf->ratings, r);
      }
 
+   if (inst->conf->show_info)
+     {
+	switch(inst->conf->sort_type)
+	  {
+	   case LAUNCHER_SORT_RATING:
+	      snprintf(buf, sizeof(buf), "%d", CONF_RATING(si->priv)->rating);
+	      si->info = eina_stringshare_add(buf);
+	      break;
+	   case LAUNCHER_SORT_POPULARITY:
+	      CONF_RATING(si->priv)->popularity = e_exehist_popularity_get(desktop->exec);
+	      snprintf(buf, sizeof(buf), "%d", CONF_RATING(si->priv)->popularity);
+	      si->info = eina_stringshare_add(buf);
+	      break;
+	  }
+     }
+
    return si;
 }
 
@@ -411,6 +464,7 @@ _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si)
    eina_stringshare_del(si->label);
    eina_stringshare_del(si->description);
    eina_stringshare_del(si->category);
+   eina_stringshare_del(si->info);
    free(si);
 }
 
@@ -426,6 +480,7 @@ _launcher_source_items_free(Instance *inst)
 	eina_stringshare_del(si->label);
 	eina_stringshare_del(si->description);
 	eina_stringshare_del(si->category);
+	eina_stringshare_del(si->info);
 
 	free(si);
      }
@@ -534,13 +589,15 @@ static void
 _launcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->dir = eina_stringshare_ref(cfdata->inst->conf->dir);
-   cfdata->sort_rel = cfdata->inst->conf->sort_rel;
+   cfdata->sort_type = cfdata->inst->conf->sort_type;
+   cfdata->show_info = cfdata->inst->conf->show_info;
 }
 
 static Evas_Object *
 _launcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ol, *ob, *ot;
+   E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
 
@@ -565,9 +622,17 @@ _launcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
    e_widget_frametable_object_append(of, ot, 1, 0, 1, 1, 1, 1, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+   rg = e_widget_radio_group_new(&(cfdata->sort_type));
    of = e_widget_framelist_add(evas, D_("Sorting options"), 0);
-   ob = e_widget_check_add(evas, D_("Sort applications by usage"), &(cfdata->sort_rel));
-   e_widget_framelist_object_append(of, ob);  
+   ob = e_widget_radio_add(evas, D_("Unsorted"), LAUNCHER_SORT_NONE, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort applications by local rating"), LAUNCHER_SORT_RATING, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Sort applications by overall popularity"), LAUNCHER_SORT_POPULARITY, rg);
+   e_widget_framelist_object_append(of, ob);
+
+   ob = e_widget_check_add(evas, D_("Show rating/popularity"), &(cfdata->show_info));
+   e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -584,7 +649,8 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    eina_stringshare_del(cfdata->inst->conf->dir);
 
    cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
-   cfdata->inst->conf->sort_rel = cfdata->sort_rel;
+   cfdata->inst->conf->sort_type = cfdata->sort_type;
+   cfdata->inst->conf->show_info = cfdata->show_info;
 
    _launcher_description_create(inst);
 

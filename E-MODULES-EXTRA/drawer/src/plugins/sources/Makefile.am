@@ -6,7 +6,7 @@ INCLUDES = -I. \
 	 @E_CFLAGS@
 
 pkgdir = $(datadir)/$(MODULE_ARCH)/plugins/sources
-pkg_LTLIBRARIES = launcher.la directory_watcher.la
+pkg_LTLIBRARIES = launcher.la directory_watcher.la history.la
 
 launcher_la_SOURCES = launcher.h launcher.c
 launcher_ladir = $(pkgdir)
@@ -24,7 +24,15 @@ directory_watcher_la_LIBADD = @E_LIBS@
 directory_watcher_la_LDFLAGS = -module -avoid-version
 directory_watcher_la_DEPENDENCIES = $(top_builddir)/config.h
 
-EXTRA_DIST = launcher_la_DATA directory_watcher_la_DATA
+history_la_SOURCES = history.h history.c
+history_ladir = $(pkgdir)
+history_la_DATA = history.desktop
+
+history_la_LIBADD = @E_LIBS@
+history_la_LDFLAGS = -module -avoid-version
+history_la_DEPENDENCIES = $(top_builddir)/config.h
+
+EXTRA_DIST = launcher_la_DATA directory_watcher_la_DATA history_la_DATA
 
 clean-local:
 	rm -rf *~

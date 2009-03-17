@@ -74,6 +74,7 @@ static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
 static Drawer_Source *_drawer_source_new(Instance *inst, const char *name);
 static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
 
+static void _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si);
 static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
@@ -479,6 +480,7 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	     ep->w = w;
 	     ep->h = h;
 
+	     _drawer_thumbnail_theme(o, si);
 	     epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
 	     return o;
 	  }
@@ -488,6 +490,7 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
      {
 	Evas_Object *thumbnail = edje_object_add(evas);
 
+	_drawer_thumbnail_theme(thumbnail, si);
 	_drawer_thumbnail_swallow(thumbnail, o);
 	return thumbnail;
      }
@@ -519,7 +522,10 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
      }
 
    if (si)
-     inst->o_content = drawer_util_icon_create(si, evas, 120, 120);
+     {
+	inst->o_content = drawer_util_icon_create(si, evas, 120, 120);
+	edje_object_signal_emit(inst->o_content, "e,state,hide_info", "e");
+     }
    else
      {
 	char buf[4096];
@@ -1202,11 +1208,8 @@ _drawer_instance_get(Config_Item *ci)
 }
 
 static void
-_drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
+_drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si)
 {
-   Evas_Coord w, h;
-   const char *type;
-
    if (!e_theme_edje_object_set(thumbnail, "base/theme/modules/drawer", 
 				"modules/drawer/icon/thumbnail"))
      {
@@ -1216,6 +1219,20 @@ _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
 		 drawer_conf->module->dir);
 	edje_object_file_set(thumbnail, buf, "modules/drawer/icon/thumbnail");
      }
+
+   if (si->info)
+     {
+	edje_object_part_text_set(thumbnail, "e.text.info", si->info);
+	edje_object_signal_emit(thumbnail, "e,state,show_info", "e");
+     }
+}
+
+static void
+_drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
+{
+   Evas_Coord w, h;
+   const char *type;
+
    edje_object_part_swallow(thumbnail, "e.swallow.content", swallow);
    evas_object_event_callback_add(thumbnail, EVAS_CALLBACK_DEL, _drawer_thumbnail_del_cb, swallow);
 

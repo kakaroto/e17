@@ -21,6 +21,7 @@ images {
    image: "bt_sm_base1.png" COMP;
    image: "bt_sm_shine.png" COMP;
    image: "bt_sm_hilight.png" COMP;
+   image: "star.png" COMP;
 }
 
 collections {
@@ -510,6 +511,75 @@ target: "fg";
 	       state: "default" 0.0;
 	       align: 0.5 0.5;
 	    }
+	 }
+	 part {
+	    name: "star";
+	    description {
+	       state: "default" 0.0;
+	       max: 24 24;
+	       visible: 0;
+	       image.normal: "star.png";
+	       rel1 {
+		  relative: 0.625 0;
+	       }
+	       rel2 {
+		  relative: 1 0.375;
+	       }
+	    }
+	    description {
+	       state: "enabled" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+	 part {
+	    name: "e.text.info";
+	    type: TEXT;
+	    scale: 1;
+	    description {
+	       state: "default" 0.0;
+	       color: 255 255 255 255;
+	       visible: 0;
+	       rel1 {
+		  relative: 0.1 0.2;
+		  to: "star";
+	       }
+	       rel2 {
+		  relative: 0.9 0.8;
+		  to: "star";
+	       }
+	       text {
+		  text: "11";
+		  font: "Sans:style=Bold";
+		  align: 0.5 0.5;
+		  elipsis: 0;
+		  fit: 1 1;
+		  size: 10;
+	       }
+	    }
+	    description {
+	       state: "enabled" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "enabled";
+	    signal: "e,state,show_info";
+	    source: "e";
+	    action: STATE_SET "enabled" 0.0;
+	    target: "star";
+	    target: "e.text.info";
+	 }
+	 program {
+	    name: "disabled";
+	    signal: "e,state,hide_info";
+	    source: "e";
+	    action: STATE_SET "default" 0.0;
+	    target: "star";
+	    target: "e.text.info";
 	 }
       }
    }

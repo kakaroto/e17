@@ -158,8 +158,6 @@ struct _Drawer_Source_Item
    Efreet_Desktop *desktop;
    /* file for thumbnailing */
    const char	  *file_path;
-   /* if all else fails, provide an evas object */
-   Evas_Object    *object;
 
    /* for specialized items */
    void		  *data;
@@ -167,6 +165,8 @@ struct _Drawer_Source_Item
    const char     *label;
    const char     *description;
    const char	  *category;
+   /* For short couple of characters info */
+   const char	  *info;
 
    void		  *priv;
 };
