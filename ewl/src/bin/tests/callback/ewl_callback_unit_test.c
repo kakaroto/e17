@@ -40,11 +40,13 @@ static int test_custom_callback_del_multiple(char *buf, int len);
 static int test_custom_callback_del_type_single(char *buf, int len);
 static int test_custom_callback_del_type_multiple(char *buf, int len);
 static int test_custom_callback_clear(char *buf, int len);
+static int test_custom_callback_call_custom(char *buf, int len);
 
 /*
  * Callbacks for manipulating the tests.
  */
 static void base_callback(Ewl_Widget *w, void *event, void *data);
+static void custom_callback(Ewl_Widget *w, void *event, void *data);
 static void differing_callback(Ewl_Widget *w, void *event, void *data);
 static void append_callback(Ewl_Widget *w, void *event, void *data);
 static void prepend_callback(Ewl_Widget *w, void *event, void *data);
@@ -85,6 +87,7 @@ Ewl_Unit_Test callback_unit_tests[] = {
                 {"delete custom callback type", test_custom_callback_del_type_single, NULL, -1, 0},
                 {"delete custom callback type of multiple", test_custom_callback_del_type_multiple, NULL, -1, 0},
                 {"clear with custom callback", test_custom_callback_clear, NULL, -1, 0},
+                {"call custom from within custom", test_custom_callback_call_custom, NULL, -1, 0},
                 {NULL, NULL, NULL, -1, 0}
         };
 
@@ -963,6 +966,37 @@ test_custom_callback_clear(char *buf, int len)
         ewl_widget_destroy(w);
 
         return ret;
+}
+
+/*
+ * Test calling a custom callback from within a custom callback.  Will create valgrind errors.
+ */
+static int
+test_custom_callback_call_custom(char *buf, int len)
+{
+        Ewl_Widget *w;
+        int ret = 0;
+
+        w = ewl_widget_new();
+        ewl_callback_append(w, CALLBACK_CUSTOM_TYPE, custom_callback, NULL);
+        ewl_callback_append(w, CALLBACK_CUSTOM_TYPE2, base_callback, NULL);
+        ewl_callback_call(w, CALLBACK_CUSTOM_TYPE);
+
+        if ((long)ewl_widget_data_get(w, w) == 1)
+                ret = 1;
+        else
+                LOG_FAILURE(buf, len, "second custom callback not called");
+
+        ewl_widget_destroy(w);
+
+        return ret;
+}
+
+static void
+custom_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
+{
+        ewl_callback_call(w, CALLBACK_CUSTOM_TYPE2);
+        return;
 }
 
 static void
