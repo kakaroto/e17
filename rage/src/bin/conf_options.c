@@ -60,7 +60,7 @@ config_option_modes(void *data)
       menu_item_add("icon/dfb", "DirectFB",
 	    	    NULL, NULL, config_option_modes_switch,
 		    (void*)4, NULL, NULL, NULL);
-   if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SDL))
+   if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_SDL))
       menu_item_add("icon/sdl", "SDL Engine",
 	    	    NULL, NULL, config_option_modes_switch,
 		    (void*)5, NULL, NULL, NULL);
