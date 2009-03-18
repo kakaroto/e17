@@ -1043,7 +1043,16 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    v->valid = 1;
    
    if (v->to_mount && !v->mounted)
-      _places_mount_volume(v);
+     {
+	Eina_Bool enabled;
+
+	enabled = e_hal_property_bool_get(ret, "storage.automount_enabled_hint", &err);
+	if (err)
+	  enabled = 1; /* assume no property it is enabled */
+
+	if (enabled)
+	  _places_mount_volume(v);
+     }
    v->to_mount = 0;
    
    places_update_all_gadgets(); //TODO Update only this volume, not all
