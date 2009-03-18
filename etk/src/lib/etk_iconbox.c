@@ -235,7 +235,7 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model)
  */
 void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *model)
 {
-   if (!iconbox || (model && model->iconbox != iconbox))
+   if (!iconbox && (model && model->iconbox != iconbox))
       return;
 
    iconbox->current_model = model;
