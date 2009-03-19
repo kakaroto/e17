@@ -43,9 +43,15 @@ cdef class Slider(Object):
     
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
-    
-    def value_set(self, value):
-        elm_slider_value_set(self.obj, value)
+
+    property value:
+        def __get__(self):
+            cdef double value
+            value = elm_slider_value_get(self.obj)
+            return value
+
+        def __set__(self, value):
+            elm_slider_value_set(self.obj, value)
         
     def inverted_set(self, inverted):
         if inverted:
