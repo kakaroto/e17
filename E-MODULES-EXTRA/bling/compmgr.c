@@ -1576,8 +1576,8 @@ composite_expose_root(Ecore_X_Window root, Ecore_X_Rectangle * rects, int nrects
 }
 
 
-void
-composite_shadow_color_set(char *value)
+static void
+composite_shadow_color_set(const char *value)
 { 
    unsigned int tmp;
    char **res = NULL;
@@ -2028,9 +2028,7 @@ composite_init(Bling *b)
    bling = b;
    config = b->config;
 
-   shadowColor.red = 0;
-   shadowColor.green = 0;
-   shadowColor.blue = 0;
+   composite_shadow_color_set(config->shadow_color);
 
    compMode = CompClientShadows;	/* Not 
 	   making 

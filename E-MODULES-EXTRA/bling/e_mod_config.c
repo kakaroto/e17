@@ -10,6 +10,7 @@ struct _E_Config_Dialog_Data
    double shadow_opacity;
    int shadow_vert_offset;
    int shadow_horz_offset;
+   char *shadow_color;
 
    int fade_enable;
    int fade_opacity;
@@ -79,6 +80,7 @@ _fill_data(Bling *b, E_Config_Dialog_Data *cfdata)
    cfdata->shadow_opacity = b->config->shadow_opacity;
    cfdata->shadow_horz_offset = b->config->shadow_horz_offset;
    cfdata->shadow_vert_offset = b->config->shadow_vert_offset;
+   cfdata->shadow_color = strdup(b->config->shadow_color);
 
    cfdata->fade_enable = b->config->fx_fade_enable;
    cfdata->fade_opacity = b->config->fx_fade_opacity_enable;
@@ -96,6 +98,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    b = cfd->data;
    b->config_dialog = NULL;
+   free(cfdata->shadow_color);
    free(cfdata);
 }
 
@@ -173,6 +176,13 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, "%.0f pixels", 1, 40, 1, 0, NULL, &(cfdata->shadow_vert_offset), 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
+   i++;
+
+   ob = e_widget_label_add(evas, "Shadow Color (hex XXXXXX notation)");
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
+   ob = e_widget_entry_add(evas, &(cfdata->shadow_color), NULL, NULL, NULL);
+   e_widget_min_size_set(ob, 100, 1);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -218,6 +228,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->shadow_opacity = cfdata->shadow_opacity;
    b->config->shadow_horz_offset = cfdata->shadow_horz_offset;
    b->config->shadow_vert_offset = cfdata->shadow_vert_offset;
+   eina_stringshare_del(b->config->shadow_color);
+   b->config->shadow_color = eina_stringshare_add(cfdata->shadow_color);
 
    b->config->fx_fade_enable = cfdata->fade_enable;
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;

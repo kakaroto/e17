@@ -26,6 +26,7 @@ struct _Config
    int shadow_horz_offset;
    unsigned char shadow_hide_on_move;
    unsigned char shadow_hide_on_resize;
+   const char *shadow_color;
 
    /* FX */
    unsigned char fx_fade_enable;     /* Fade windows */

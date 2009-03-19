@@ -158,6 +158,7 @@ _bling_init(E_Module *m)
    E_CONFIG_VAL(D, T, shadow_horz_offset, INT);
    E_CONFIG_VAL(D, T, shadow_hide_on_move, UCHAR);
    E_CONFIG_VAL(D, T, shadow_hide_on_resize, UCHAR);
+   E_CONFIG_VAL(D, T, shadow_color, STR);
 
    E_CONFIG_VAL(D, T, fx_fade_enable, UCHAR);
    E_CONFIG_VAL(D, T, fx_fade_opacity_enable, UCHAR);
@@ -193,6 +194,8 @@ _bling_init(E_Module *m)
       b->config->fx_fade_in_step = 0.075;
       b->config->fx_fade_out_step = 0.100;
    }
+   if (!b->config->shadow_color)
+       b->config->shadow_color = eina_stringshare_add("000000");
 
 #if 0
    E_CONFIG_LIMIT(b->config->trans_border_only, 0, 1);
