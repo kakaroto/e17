@@ -20,18 +20,17 @@
 
 struct _Enesim_Surface
 {
-	int w;
-	int h;
-	int flags;
-	Enesim_Surface_Data sdata;
-	/* TODO make all code use this */
-	int stride; /* number of bytes per line */
-
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
+	int w;
+	int h;
+	int flags;
+	/* TODO make all code use this */
+	int stride; /* number of bytes per line */
+	Enesim_Surface_Data sdata;;
+	Eina_Bool external; /* in case the user created this surface externally */
 	void *user; /* user provided data */
 };
-
 
 #endif

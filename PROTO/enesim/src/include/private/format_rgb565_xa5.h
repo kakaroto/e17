@@ -15,8 +15,8 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SURFACE_RGB565_XA5_ROP_H_
-#define SURFACE_RGB565_XA5_ROP_H_
+#ifndef FORMAT_RGB565_XA5_H_
+#define FORMAT_RGB565_XA5_H_
 
 /*============================================================================*
  *                                   Core                                     *
@@ -54,18 +54,18 @@ static inline void rgb565_xa5_to_components(uint16_t plane0, uint8_t plane1, uns
 
 }
 
-static inline void rgb565_xa5_to_argb(unsigned int *argb, uint16_t plane0, 
+static inline void rgb565_xa5_to_argb(unsigned int *argb, uint16_t plane0,
 uint8_t plane1)
-{	
+{
 	uint8_t alpha = (plane1 & 0x1f) << 3;
-	
+
 	rgb565_to_argb(argb, plane0, alpha);
 }
-static inline void rgb565_xa5_from_argb(unsigned int argb, uint16_t *plane0, 
+static inline void rgb565_xa5_from_argb(unsigned int argb, uint16_t *plane0,
 uint8_t *plane1)
 {
 	uint8_t alpha = argb8888_alpha_get(argb) >> 3;
-	
+
 	rgb565_from_argb(argb, plane0, alpha);
 	*plane1 = alpha;
 }
@@ -74,7 +74,7 @@ static inline void rgb565_xa5_blend(uint16_t *dplane0, uint8_t *dplane1, uint16_
 {
 	uint8_t alpha;
 	alpha = 32 - splane1;
-	
+
 	rgb565_blend(dplane0, splane0, alpha);
 	*dplane1 = splane1 + ((alpha * (*dplane1)) >> 5);
 }
@@ -85,4 +85,4 @@ static inline void rgb565_xa5_fill(uint16_t *dplane0, uint8_t *dplane1, uint16_t
 	*dplane1 = splane1;
 }
 
-#endif /*SURFACE_RGB565_XA5_ROP_H_*/
+#endif /*FORMAT_RGB565_XA5_H_*/

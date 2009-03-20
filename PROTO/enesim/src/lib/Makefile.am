@@ -1,4 +1,4 @@
-SUBDIRS = drawer rasterizer renderer util transformer primitives
+SUBDIRS = drawer rasterizer renderer util primitives format
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -6,36 +6,38 @@ Makefile.in
 AM_CPPFLAGS = \
 -I. \
 -I$(top_srcdir)/src/include \
--I$(top_srcdir)/src/lib/surface \
 @ENESIM_CFLAGS@
 
 lib_LTLIBRARIES = libenesim.la
 
 libenesim_la_SOURCES = \
 enesim_main.c \
+enesim_format.c \
 enesim_converter.c \
 enesim_drawer.c \
 enesim_matrix.c \
 enesim_rasterizer.c \
 enesim_renderer.c \
-enesim_surface.c \
-enesim_transformer.c
+enesim_surface.c
 
 libenesim_la_LIBADD = \
+format/libenesim_format.la \
 util/libenesim_util.la \
 rasterizer/libenesim_rasterizer.la \
 renderer/libenesim_renderer.la \
 drawer/libenesim_drawer.la \
-transformer/libenesim_transformer.la \
 primitives/libenesim_primitives.la \
+spanner/libenesim_spanner.la \
 @ENESIM_LIBS@
 
 libenesim_la_DEPENDENCIES = \
+format/libenesim_format.la \
 util/libenesim_util.la \
 rasterizer/libenesim_rasterizer.la \
 drawer/libenesim_drawer.la \
+format/libenesim_format.la \
 renderer/libenesim_renderer.la \
-transformer/libenesim_transformer.la \
-primitives/libenesim_primitives.la
+primitives/libenesim_primitives.la \
+spanner/libenesim_spanner.la
 
 libenesim_la_LDFLAGS = @create_shared_lib@ -version-info @version_info@

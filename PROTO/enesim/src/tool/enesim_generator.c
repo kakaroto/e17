@@ -81,7 +81,7 @@ void strupr(char *dst, const char *src)
 	*dst = '\0';
 }
 
-Format * format_from_format(Enesim_Surface_Format fmt)
+Format * format_from_format(Enesim_Format fmt)
 {
 	int i = 0;
 	Format *f = formats[i];

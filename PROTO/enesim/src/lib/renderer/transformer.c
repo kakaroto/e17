@@ -15,6 +15,10 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+/* FIXME this code is the old enesim_transformer.c, we need to make it span
+ * wise so i will be refactored, isnt deleted yet as we might use some of this
+ * interfaces for the newer renderer
+ */
 #include "Enesim.h"
 #include "enesim_private.h"
 /*============================================================================*
@@ -38,7 +42,7 @@ extern Enesim_Transformer argb8888_tx;
 extern Enesim_Transformer_Generic generic_tx;
 
 static Enesim_Transformer *transformer[ENESIM_SURFACE_FORMATS] = {
-		[ENESIM_SURFACE_ARGB8888] = &argb8888_tx,
+		[ENESIM_FORMAT_ARGB8888] = &argb8888_tx,
 };
 
 

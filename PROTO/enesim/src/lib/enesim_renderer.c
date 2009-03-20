@@ -18,7 +18,7 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 /*============================================================================*
- *                                 Global                                     * 
+ *                                 Global                                     *
  *============================================================================*/
 Enesim_Renderer * enesim_renderer_new(void)
 {
@@ -29,18 +29,8 @@ Enesim_Renderer * enesim_renderer_new(void)
 	return r;
 }
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI void enesim_renderer_rop_set(Enesim_Renderer *r, int rop)
-{
-	ENESIM_ASSERT(r, ENESIM_ERROR_HANDLE_INVALID);
-	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
-	r->rop = rop;
-}
 /**
  * To be documented
  * FIXME: To be fixed
@@ -56,11 +46,8 @@ EAPI void enesim_renderer_delete(Enesim_Renderer *r)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Eina_Bool enesim_renderer_draw(Enesim_Renderer *r, int type, void *sl, Enesim_Surface *dst)
+EAPI Enesim_Renderer_Span enesim_renderer_func_get(Enesim_Renderer *r, Enesim_Format *f)
 {
-	ENESIM_ASSERT(r, ENESIM_ERROR_HANDLE_INVALID);
-	ENESIM_ASSERT(sl, ENESIM_ERROR_HANDLE_INVALID);
-	ENESIM_ASSERT(dst, ENESIM_ERROR_HANDLE_INVALID);
 	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
-	return r->funcs->draw(r, type, sl, dst);
+	return r->funcs->get(r, f);
 }

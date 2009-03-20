@@ -17,9 +17,7 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-/*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -45,54 +43,22 @@ enesim_surface_new_data_from(int w, int h, Enesim_Surface_Data *sdata)
  *
  */
 EAPI Enesim_Surface *
-enesim_surface_new(Enesim_Surface_Format f, int w, int h)
+enesim_surface_new(Enesim_Format *f, int w, int h)
 {
 	Enesim_Surface *s;
 
+	if (!f)
+	{
+		printf("surface new unknown format\n");
+		return NULL;
+	}
 	s = calloc(1, sizeof(Enesim_Surface));
 	s->w = w;
 	s->h = h;
 	s->sdata.format = f;
-
+	f->create(&s->sdata, w, h);
 	ENESIM_MAGIC_SET(s, ENESIM_SURFACE_MAGIC);
-	switch (f)
-	{
-		case ENESIM_SURFACE_ARGB8888:
-		s->sdata.data.argb8888.plane0 = calloc(w * h, sizeof(unsigned int));
-		break;
-
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
-		s->sdata.data.argb8888_unpre.plane0 = calloc(w * h, sizeof(unsigned int));
-		break;
-
-		case ENESIM_SURFACE_RGB565_XA5:
-		s->sdata.data.rgb565_xa5.plane0 = calloc(w * h, sizeof(unsigned short int));
-		s->sdata.data.rgb565_xa5.plane1 = calloc(w * h, sizeof(unsigned char));
-		break;
-
-		case ENESIM_SURFACE_RGB565_B1A3:
-		s->sdata.data.rgb565_b1a3.plane0 = calloc(w * h, sizeof(unsigned short int));
-		/* TODO FIX THIS */
-		s->sdata.data.rgb565_b1a3.plane1 = calloc(w * h, sizeof(unsigned char));
-		break;
-
-		case ENESIM_SURFACE_RGB888_A8:
-		break;
-
-		case ENESIM_SURFACE_A8:
-		break;
-
-		case ENESIM_SURFACE_b1A3:
-		break;
-
-		default:
-		goto err;
-	}
 	return s;
-err:
-	free(s);
-	return NULL;
-
 }
 /**
  * To be documented
@@ -123,7 +89,7 @@ EAPI void enesim_surface_size_set(Enesim_Surface *s, int w, int h)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Surface_Format
+EAPI Enesim_Format *
 enesim_surface_format_get(const Enesim_Surface *s)
 {
 	ENESIM_ASSERT(s, ENESIM_ERROR_HANDLE_INVALID);
@@ -139,6 +105,24 @@ enesim_surface_format_get(const Enesim_Surface *s)
 EAPI void
 enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr)
 {
+	Enesim_Drawer_Span sp;
+	Enesim_Surface_Data sdata;
+	Enesim_Surface_Data ddata;
+	int h = d->h;
+
+	sdata = s->sdata;
+	ddata = d->sdata;
+	sp = enesim_drawer_span_pixel_get(ENESIM_FILL, ddata.format, sdata.format);
+	if (!sp)
+		return;
+	while (h--)
+	{
+		sp(&ddata, d->w, &sdata, NULL, NULL);
+		sdata.format->increment(&sdata, s->w);
+		ddata.format->increment(&ddata, d->w);
+	}
+
+#if 0
 	Enesim_Transformation *tx;
 	Enesim_Matrix matrix;
 	Eina_Rectangle sr;
@@ -175,7 +159,7 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr)
 	enesim_transformation_apply(tx, s, &sr, d, &dr);
 #endif
 	enesim_transformation_apply(tx, s, NULL, d, dr);
-
+#endif
 }
 /**
  * To be documented
@@ -187,7 +171,10 @@ enesim_surface_delete(Enesim_Surface *s)
 	assert(s);
 	/* FIXME delete correctly, when a user provides the data
 	 * we should NOT delete it */
-	free(s->sdata.data.argb8888.plane0);
+	if (!s->external)
+	{
+		s->sdata.format->delete(&s->sdata);
+	}
 	free(s);
 }
 /**
@@ -222,30 +209,7 @@ enesim_surface_data_set(Enesim_Surface *s, const Enesim_Surface_Data *sdata)
 EAPI void
 enesim_surface_data_increment(Enesim_Surface_Data *sdata, unsigned int len)
 {
-	ENESIM_ASSERT(sdata, ENESIM_ERROR_HANDLE_INVALID);
-	switch (sdata->format)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		argb8888_data_increment(sdata, len);
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_data_increment(sdata, len);
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		rgb565_xa5_data_increment(sdata, len);
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		rgb565_b1a3_data_increment(sdata, len);
-		break;
-#endif
-	default:
-		break;
-	}
+	sdata->format->increment(sdata, len);
 }
 /**
  * To be documented
@@ -254,35 +218,7 @@ enesim_surface_data_increment(Enesim_Surface_Data *sdata, unsigned int len)
 EAPI uint32_t
 enesim_surface_data_argb_to(Enesim_Surface_Data *sdata)
 {
-	uint32_t argb;
-
-	ENESIM_ASSERT(sdata, ENESIM_ERROR_HANDLE_INVALID);
-
-	switch (sdata->format)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		argb8888_to_argb(&argb, *(sdata->data.argb8888.plane0));
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_to_argb(&argb, *(sdata->data.argb8888_unpre.plane0));
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		rgb565_xa5_to_argb(&argb, *(sdata->data.rgb565_xa5.plane0), *(sdata->data.rgb565_xa5.plane1));
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		rgb565_b1a3_to_argb(&argb, *(sdata->data.rgb565_b1a3.plane0), *(sdata->data.rgb565_b1a3.plane1), sdata->data.rgb565_b1a3.pixel_plane1);
-		break;
-#endif
-	default:
-		argb = 0;
-		break;
-	}
-	return argb;
+	return sdata->format->argb_to(sdata);
 }
 /**
  * To be documented
@@ -291,12 +227,7 @@ enesim_surface_data_argb_to(Enesim_Surface_Data *sdata)
 EAPI void
 enesim_surface_data_argb_from(Enesim_Surface_Data *sdata, uint32_t argb)
 {
-	/* FILL THIS */
-	switch (sdata->format)
-	{
-	default:
-		break;
-	}
+	sdata->format->argb_from(sdata, argb);
 }
 /**
  * To be documented
@@ -305,31 +236,7 @@ enesim_surface_data_argb_from(Enesim_Surface_Data *sdata, uint32_t argb)
 EAPI void
 enesim_surface_data_pixel_set(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
 {
-	switch (d->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
-		*d->data.argb8888.plane0 = p->pixel.argb8888.plane0;
-		break;
-
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
-		*d->data.argb8888_unpre.plane0 = p->pixel.argb8888_unpre.plane0;
-		break;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_XA5
-		case ENESIM_SURFACE_RGB565_XA5:
-		break;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_B1A3
-		case ENESIM_SURFACE_RGB565_B1A3:
-		break;
-#endif
-
-		default:
-		break;
-	}
+	d->format->pixel_set(d, p);
 }
 
 /**
@@ -339,31 +246,7 @@ enesim_surface_data_pixel_set(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
 EAPI void
 enesim_surface_data_pixel_get(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
 {
-	switch (d->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
-		p->pixel.argb8888.plane0 = *d->data.argb8888.plane0;
-		break;
-
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
-		p->pixel.argb8888_unpre.plane0 = *d->data.argb8888_unpre.plane0;
-		break;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_XA5
-		case ENESIM_SURFACE_RGB565_XA5:
-		break;
-#endif
-
-#ifdef BUILD_SURFACE_RGB565_B1A3
-		case ENESIM_SURFACE_RGB565_B1A3:
-		break;
-#endif
-
-		default:
-		break;
-	}
+	d->format->pixel_get(d, p);
 	p->format = d->format;
 }
 /**
@@ -373,35 +256,7 @@ enesim_surface_data_pixel_get(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
 EAPI uint32_t
 enesim_surface_pixel_argb_to(Enesim_Surface_Pixel *sp)
 {
-	uint32_t argb;
-
-	switch (sp->format)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		argb = sp->pixel.argb8888.plane0;
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_to_argb(&argb, sp->pixel.argb8888_unpre.plane0);
-		break;
-#endif
-#if 0
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		rgb565_xa5_to_argb(&argb, *(sdata->rgb565_xa5.plane0), *(sdata->rgb565_xa5.plane1));
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		rgb565_b1a3_to_argb(&argb, *(sdata->rgb565_b1a3.plane0), *(sdata->rgb565_b1a3.plane1), sdata->rgb565_b1a3.pixel_plane1);
-		break;
-#endif
-#endif
-	default:
-		argb = 0;
-		break;
-	}
-	return argb;
+	return sp->format->pixel_argb_to(sp);
 }
 
 /**
@@ -409,33 +264,9 @@ enesim_surface_pixel_argb_to(Enesim_Surface_Pixel *sp)
  * FIXME: To be fixed
  */
 EAPI void
-enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Surface_Format df, uint32_t argb)
+enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Format *df, uint32_t argb)
 {
-	switch (df)
-	{
-	case ENESIM_SURFACE_ARGB8888:
-		dp->pixel.argb8888.plane0 = argb;
-		break;
-#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-	case ENESIM_SURFACE_ARGB8888_UNPRE:
-		argb8888_unpre_from_argb(argb, &dp->pixel.argb8888_unpre.plane0);
-		break;
-#endif
-#if 0
-#ifdef BUILD_SURFACE_RGB565_XA5
-	case ENESIM_SURFACE_RGB565_XA5:
-		rgb565_xa5_from_argb(argb, &(dp->pixel.rgb565_xa5.plane0), &(dp->pixel.rgb565_xa5.plane1));
-		break;
-#endif
-#ifdef BUILD_SURFACE_RGB565_B1A3
-	case ENESIM_SURFACE_RGB565_B1A3:
-		rgb565_b1a3_from_argb(argb, &(dp->pixel.rgb565_b1a3.plane0), &(dp->pixel.rgb565_b1a3.plane1), dp->rgb565_b1a3.pixel_plane1);
-		break;
-#endif
-#endif
-	default:
-		break;
-	}
+	df->pixel_argb_from(dp, argb);
 	dp->format = df;
 }
 
@@ -445,7 +276,7 @@ enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Surface_Format d
  * FIXME: To be fixed
  */
 EAPI void
-enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp, Enesim_Surface_Format df)
+enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp, Enesim_Format *df)
 {
 	uint32_t argb;
 
@@ -455,23 +286,23 @@ enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp,
 		return;
 	}
 	/* convert to intermediate format */
-	if (sp->format != ENESIM_SURFACE_ARGB8888)
+	if (sp->format != enesim_format_argb8888_get())
 	{
 		argb = enesim_surface_pixel_argb_to(sp);
 	}
 	else
 	{
-		argb = sp->pixel.argb8888.plane0;
+		argb = sp->plane0;
 	}
 	/* convert from intermediate format */
-	if (df != ENESIM_SURFACE_ARGB8888)
+	if (df != enesim_format_argb8888_get())
 	{
 		enesim_surface_pixel_argb_from(dp, df, argb);
 	}
 	else
 	{
-		dp->pixel.argb8888.plane0 = argb;
-		dp->format = ENESIM_SURFACE_ARGB8888;
+		dp->plane0 = argb;
+		dp->format = enesim_format_argb8888_get();
 	}
 }
 
@@ -479,32 +310,20 @@ enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp,
  * Create a pixel from the given unpremultiplied components
  */
 EAPI void enesim_surface_pixel_components_from(Enesim_Surface_Pixel *color,
-		Enesim_Surface_Format f, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
+		Enesim_Format *f, uint8_t a, uint8_t r, uint8_t g, uint8_t b)
 {
-	switch (f)
-	{
-		case ENESIM_SURFACE_ARGB8888:
-			argb8888_pixel_components_from(color, a, r, g, b);
-			break;
-	#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
+	uint32_t argb;
+	uint16_t alpha = a + 1;
 
-			break;
-	#endif
-	#if 0
-	#ifdef BUILD_SURFACE_RGB565_XA5
-		case ENESIM_SURFACE_RGB565_XA5:
-			//rgb565_xa5_from_argb(argb, &(dp->pixel.rgb565_xa5.plane0), &(dp->pixel.rgb565_xa5.plane1));
-			break;
-	#endif
-	#ifdef BUILD_SURFACE_RGB565_B1A3
-		case ENESIM_SURFACE_RGB565_B1A3:
-			//rgb565_b1a3_from_argb(argb, &(dp->pixel.rgb565_b1a3.plane0), &(dp->pixel.rgb565_b1a3.plane1), dp->rgb565_b1a3.pixel_plane1);
-			break;
-	#endif
-	#endif
-		default:
-			break;
+	argb = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
+			| ((b * alpha) >> 8);
+	if (f != enesim_format_argb8888_get())
+	{
+		f->pixel_argb_from(color, argb);
+	}
+	else
+	{
+		color->plane0 = argb;
 	}
 	color->format = f;
 }
@@ -514,76 +333,36 @@ EAPI void enesim_surface_pixel_components_from(Enesim_Surface_Pixel *color,
 EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
 		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)
 {
-	switch (color->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
-			argb8888_pixel_components_to(color, a, r, g, b);
-			break;
-	#ifdef BUILD_SURFACE_ARGB8888_UNPRE
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
+	uint32_t argb;
+	uint8_t pa;
 
-			break;
-	#endif
-	#if 0
-	#ifdef BUILD_SURFACE_RGB565_XA5
-		case ENESIM_SURFACE_RGB565_XA5:
-			//rgb565_xa5_from_argb(argb, &(dp->pixel.rgb565_xa5.plane0), &(dp->pixel.rgb565_xa5.plane1));
-			break;
-	#endif
-	#ifdef BUILD_SURFACE_RGB565_B1A3
-		case ENESIM_SURFACE_RGB565_B1A3:
-			//rgb565_b1a3_from_argb(argb, &(dp->pixel.rgb565_b1a3.plane0), &(dp->pixel.rgb565_b1a3.plane1), dp->rgb565_b1a3.pixel_plane1);
-			break;
-	#endif
-	#endif
-		default:
-			break;
+	if (color->format != enesim_format_argb8888_get())
+	{
+		argb = color->format->pixel_argb_to(color);
 	}
-}
-/**
- * Debug routine that returns the format of a surface
- * as a string
- */
-EAPI const char * enesim_surface_format_name_get(Enesim_Surface_Format f)
-{
-	switch (f)
+	else
 	{
-		case ENESIM_SURFACE_ARGB8888:
-		return "argb8888";
-		break;
-
-		case ENESIM_SURFACE_ARGB8888_UNPRE:
-		return "argb8888_unpre";
-		break;
-
-		case ENESIM_SURFACE_RGB565_XA5:
-		return "rgb565_xa5";
-		break;
-
-		case ENESIM_SURFACE_RGB565_B1A3:
-		return "rgb565_b1a3";
-		break;
-
-		case ENESIM_SURFACE_RGB888_A8:
-		return "rgb888_a8";
-		break;
-
-		case ENESIM_SURFACE_A8:
-		return "a8";
-		break;
-
-		case ENESIM_SURFACE_b1A3:
-		return "b1a3";
-		break;
-
-		default:
-		return NULL;
-		break;
+		argb = color->plane0;
+	}
+	pa = (argb >> 24);
+	if ((pa > 0) && (pa < 255))
+	{
+		if (a) *a = pa;
+		if (r) *r = (argb8888_red_get(argb) * 255) / pa;
+		if (g) *g = (argb8888_green_get(argb) * 255) / pa;
+		if (b) *b = (argb8888_blue_get(argb) * 255) / pa;
+	}
+	else
+	{
+		if (a) *a = pa;
+		if (r) *r = argb8888_red_get(argb);
+		if (g) *g = argb8888_green_get(argb);
+		if (b) *b = argb8888_blue_get(argb);
 	}
 }
 
 /**
- *
+ * Store a private data pointer into the surface
  */
 EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data)
 {
@@ -591,7 +370,7 @@ EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data)
 }
 
 /**
- *
+ * Retrieve the private data pointer from the surface
  */
 EAPI void * enesim_surface_private_get(Enesim_Surface *s)
 {

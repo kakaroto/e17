@@ -19,40 +19,43 @@
 #include "enesim_private.h"
 
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 typedef struct _Renderer_Color
 {
 #ifdef DEBUG
 	unsigned int magic;
 #endif
-	Enesim_Surface_Pixel color;
+	uint32_t color;
 } Renderer_Color;
 
-static Eina_Bool _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, Enesim_Surface *dst)
+static void _generic_color(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst)
 {
 	Renderer_Color *f;
 	Enesim_Drawer_Span cfnc;
 	Enesim_Surface_Data ddata;
-	Enesim_Surface_Format sfmt;
+	Enesim_Surface_Pixel pixel;
 	int nsl;
 	int offset;
 	int i;
 
 	f = r->data;
-	
-	sfmt = enesim_surface_format_get(dst);
-	//cfnc = enesim_drawer_span_color_get(r->rop, sfmt, f->color);
+
+	enesim_surface_pixel_argb_from(&pixel, dst->format, f->color);
+	cfnc = enesim_drawer_span_color_get(r->rop, dst->format, &pixel);
 	assert(cfnc);
+#if 0
 	offset = (dst->w * sl->y) + sl->x;
 	enesim_surface_data_get(dst, &ddata);
 	enesim_surface_data_increment(&ddata, offset);
-	cfnc(&ddata, sl->w, NULL, &(f->color), NULL);
-	
-	return EINA_TRUE;
+#endif
+	ddata = *dst;
+
+	cfnc(&ddata, len, NULL, &pixel, NULL);
+
 }
 
-static Eina_Bool _draw_mask(Enesim_Renderer *r, Enesim_Scanline_Mask *sl, Enesim_Surface *dst)
+static void _generic_color_mask(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst)
 {
 #if 0
 	Renderer_Color *f;
@@ -62,28 +65,18 @@ static Eina_Bool _draw_mask(Enesim_Renderer *r, Enesim_Scanline_Mask *sl, Enesim
 	int i;
 
 	f = r->data;
-		
+
 	cfnc = enesim_surface_span_color_mask_func_get(dst, r->rop);
 	offset = (dst->w * sl->y) + sl->x;
 	cfnc(&dst->data, offset, f->color, sl->w, sl->coverages);
 #endif
-	return EINA_TRUE;
 }
 
-static Eina_Bool _draw(Enesim_Renderer *r, int type, void *sl, Enesim_Surface *dst)
+static Enesim_Renderer_Span _get(Enesim_Renderer *r, Enesim_Format *f)
 {
-	Eina_Bool ret;
-	
+
 	ENESIM_MAGIC_CHECK(((Renderer_Color *)(r->data)), ENESIM_RENDERER_FILLCOLOR_MAGIC);
-	if (type == ENESIM_SCANLINE_ALIAS)
-		ret = _draw_alias(r, sl, dst);
-	else if (type == ENESIM_SCANLINE_MASK)
-		ret = _draw_mask(r, sl, dst);
-	else
-	{
-//		ENESIM_ERROR(ENESIM_ERROR_HANDLE_INVALID);
-	}
-	return ret;
+	return _generic_color;
 }
 
 static void _free(Enesim_Renderer *r)
@@ -92,11 +85,11 @@ static void _free(Enesim_Renderer *r)
 }
 
 static Enesim_Renderer_Func f_func = {
-	.draw 	= _draw,
-	.free 	= _free,
+	.get = _get,
+	.free = _free,
 };
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
@@ -108,7 +101,7 @@ EAPI Enesim_Renderer * enesim_renderer_color_new(void)
 	Enesim_Renderer *r;
 
 	f = calloc(1, sizeof(Renderer_Color));
-	
+
 	r = enesim_renderer_new();
 	r->data = f;
 	r->funcs = &f_func;
@@ -124,13 +117,13 @@ EAPI void enesim_renderer_color_color_set(Enesim_Renderer *r, uint32_t color)
 {
 	Renderer_Color *f;
 	int i;
-	
+
 	i = ENESIM_RENDERER_MAGIC;
 
 	ENESIM_ASSERT(r, ENESIM_ERROR_HANDLE_INVALID);
-	
+
 	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
 	f = r->data;
 	ENESIM_MAGIC_CHECK(f, ENESIM_RENDERER_FILLCOLOR_MAGIC);
-	//f->color = color;
+	f->color = color;
 }

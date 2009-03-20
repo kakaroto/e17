@@ -30,22 +30,13 @@
  * + Add a surface iterator
  * + Normalize the occurences of argb, colors, etc. Always premul or flat
  * argb8888?
+ * + Be able to pass an Eina_Allocator to surface_new
  */
 typedef struct _Enesim_Surface 	Enesim_Surface; /**< Surface Handler */
 /**
  *
  */
-typedef enum
-{
-	ENESIM_SURFACE_ARGB8888, /**< */
-	ENESIM_SURFACE_ARGB8888_UNPRE, /**< */
-	ENESIM_SURFACE_RGB565_XA5, /**< */
-	ENESIM_SURFACE_RGB565_B1A3, /**< */
-	ENESIM_SURFACE_RGB888_A8, /**< */
-	ENESIM_SURFACE_A8, /**< */
-	ENESIM_SURFACE_b1A3, /**< */
-	ENESIM_SURFACE_FORMATS,
-} Enesim_Surface_Format;
+
 /* TODO add the concept of colorspace? Buffer format (texture, linear?)? */
 /**
  *
@@ -110,58 +101,33 @@ typedef struct _B1a3_Data
 	uint8_t pixel_plane0; /* which of the pixel to access */
 	uint8_t *plane0; /* b1A3 plane */
 } B1a3_Data;
-/**
- *
- */
-typedef struct _Enesim_Surface_Data
-{
-	union {
-		Argb8888_Data argb8888;
-		Argb8888_Unpre_Data argb8888_unpre;
-		A8_Data a8;
-		Rgb565_Xa5_Data rgb565_xa5;
-		Rgb565_B1a3_Data rgb565_b1a3;
-		Rgb888_Data rgb888;
-	} data;
-	Enesim_Surface_Format format;
-} Enesim_Surface_Data;
-
-/**
- *
- */
-typedef struct _Enesim_Surface_Pixel
-{
-	union {
-		Argb8888_Unpre_Pixel argb8888_unpre;
-		Argb8888_Pixel argb8888;
-	} pixel;
-	Enesim_Surface_Format format;
-} Enesim_Surface_Pixel;
-
 
 EAPI Enesim_Surface * enesim_surface_new_data_from(int w, int h, Enesim_Surface_Data *sdata);
-EAPI Enesim_Surface * enesim_surface_new(Enesim_Surface_Format f, int w, int h);
+EAPI Enesim_Surface * enesim_surface_new(Enesim_Format *f, int w, int h);
 EAPI void enesim_surface_size_get(const Enesim_Surface *s, int *w, int *h);
 EAPI void enesim_surface_size_set(Enesim_Surface *s, int w, int h);
-EAPI Enesim_Surface_Format enesim_surface_format_get(const Enesim_Surface *s);
+EAPI Enesim_Format * enesim_surface_format_get(const Enesim_Surface *s);
+EAPI void enesim_surface_delete(Enesim_Surface *s);
+
+
+EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data);
+EAPI void * enesim_surface_private_get(Enesim_Surface *s);
+
 EAPI void enesim_surface_data_get(const Enesim_Surface *s, Enesim_Surface_Data *sdata);
 EAPI void enesim_surface_data_set(Enesim_Surface *s, const Enesim_Surface_Data *sdata);
 EAPI uint32_t enesim_surface_data_argb_to(Enesim_Surface_Data *sdata);
 EAPI void enesim_surface_data_argb_from(Enesim_Surface_Data *sdata, uint32_t);
 EAPI void enesim_surface_data_increment(Enesim_Surface_Data *sdata, unsigned int len);
-EAPI void enesim_surface_delete(Enesim_Surface *s);
-EAPI const char * enesim_surface_format_name_get(Enesim_Surface_Format f);
+
 EAPI uint32_t enesim_surface_pixel_argb_to(Enesim_Surface_Pixel *sp);
-EAPI void enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Surface_Format df, uint32_t argb);
-EAPI void enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp, Enesim_Surface_Format df);
+EAPI void enesim_surface_pixel_argb_from(Enesim_Surface_Pixel *dp, Enesim_Format *df, uint32_t argb);
+EAPI void enesim_surface_pixel_convert(Enesim_Surface_Pixel *sp, Enesim_Surface_Pixel *dp, Enesim_Format *df);
 EAPI void enesim_surface_pixel_components_from(Enesim_Surface_Pixel *color,
-		Enesim_Surface_Format f, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
+		Enesim_Format *f, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
 EAPI void enesim_surface_pixel_components_to(Enesim_Surface_Pixel *color,
 		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b);
-EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data);
-EAPI void * enesim_surface_private_get(Enesim_Surface *s);
-EAPI void enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr);
 
+EAPI void enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d, Eina_Rectangle *dr);
 /** @} */ //End of Enesim_Surface_Group
 
 

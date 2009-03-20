@@ -20,7 +20,7 @@
 #define SCREEN_WIDTH 512
 #define SCREEN_HEIGHT 512
 #define PI 3.1415
-Enesim_Surface * surface_new(int w, int h, Enesim_Surface_Format fmt);
+Enesim_Surface * surface_new(int w, int h, Enesim_Format fmt);
 //void surface_free(Enesim_Surface *s);
 //void surface_blt(Enesim_Surface *s, SDL_Surface *sdl);
 

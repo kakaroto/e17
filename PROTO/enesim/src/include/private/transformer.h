@@ -42,7 +42,7 @@ struct _Enesim_Transformation
 	} border;
 	Enesim_Rop rop;
 	Enesim_Surface *mask;
-	Enesim_Surface_Pixel *color;
+	Enesim_Surface_Pixel *color; /* TODO replace this with argb */
 	Enesim_Quality quality;
 };
 

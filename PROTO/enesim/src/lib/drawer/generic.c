@@ -1,3 +1,5 @@
+#include "Enesim.h"
+#include "enesim_private.h"
 /*
  * TODO
  * + Use mmx if possible, that means that we need to refactor several
@@ -11,9 +13,6 @@
  * drawer he must implement a specific drawer
  */
 /*============================================================================*
- *                                 Global                                     *
- *============================================================================*/
-/*============================================================================*
  *                                 Blend                                      *
  *============================================================================*/
 static void generic_pt_color_blend(Enesim_Surface_Data *d,
@@ -21,11 +20,12 @@ static void generic_pt_color_blend(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel *m)
 {
 	Enesim_Surface_Pixel c_argb8888, d_argb8888, tmp;
+	Enesim_Format *f = enesim_format_argb8888_get();
 
-	enesim_surface_pixel_convert(color, &c_argb8888, ENESIM_SURFACE_ARGB8888);
+	enesim_surface_pixel_convert(color, &c_argb8888, f);
 	enesim_surface_data_pixel_get(d, &tmp);
-	enesim_surface_pixel_convert(&tmp, &d_argb8888, ENESIM_SURFACE_ARGB8888);
-	argb8888_blend(&d_argb8888.pixel.argb8888.plane0, c_argb8888.pixel.argb8888.plane0 >> 24, c_argb8888.pixel.argb8888.plane0);
+	enesim_surface_pixel_convert(&tmp, &d_argb8888, f);
+	argb8888_blend(&d_argb8888.plane0, c_argb8888.plane0 >> 24, c_argb8888.plane0);
 	enesim_surface_pixel_convert(&d_argb8888, &tmp, d->format);
 	enesim_surface_data_pixel_set(d, &tmp);
 }
@@ -59,7 +59,15 @@ static void generic_sp_color_blend(Enesim_Surface_Data *d,
 		unsigned int len, Enesim_Surface_Data *s,
 		Enesim_Surface_Pixel *color, Enesim_Surface_Data *m)
 {
+	Enesim_Surface_Data dtmp = *d;
 
+	while (len--)
+	{
+		Enesim_Surface_Pixel sp;
+
+		generic_pt_color_blend(&dtmp, NULL, color, NULL);
+		enesim_surface_data_increment(&dtmp, 1);
+	}
 }
 
 static void generic_sp_mask_color_blend(Enesim_Surface_Data *d,
@@ -98,10 +106,10 @@ static void generic_pt_color_fill(Enesim_Surface_Data *d,
 {
 	Enesim_Surface_Pixel c_argb8888, d_argb8888, tmp;
 
-	enesim_surface_pixel_convert(color, &c_argb8888, ENESIM_SURFACE_ARGB8888);
+	enesim_surface_pixel_convert(color, &c_argb8888, enesim_format_argb8888_get());
 	enesim_surface_data_pixel_get(d, &tmp);
-	enesim_surface_pixel_convert(&tmp, &d_argb8888, ENESIM_SURFACE_ARGB8888);
-	argb8888_fill(&d_argb8888.pixel.argb8888.plane0, c_argb8888.pixel.argb8888.plane0);
+	enesim_surface_pixel_convert(&tmp, &d_argb8888, enesim_format_argb8888_get());
+	argb8888_fill(&d_argb8888.plane0, c_argb8888.plane0);
 	enesim_surface_pixel_convert(&d_argb8888, &tmp, d->format);
 	enesim_surface_data_pixel_set(d, &tmp);
 }
@@ -111,10 +119,10 @@ static void generic_pt_pixel_fill(Enesim_Surface_Data *d,
 {
 	Enesim_Surface_Pixel s_argb8888, d_argb8888, tmp;
 
-	enesim_surface_pixel_convert(s, &s_argb8888, ENESIM_SURFACE_ARGB8888);
+	enesim_surface_pixel_convert(s, &s_argb8888, enesim_format_argb8888_get());
 	enesim_surface_data_pixel_get(d, &tmp);
-	enesim_surface_pixel_convert(&tmp, &d_argb8888, ENESIM_SURFACE_ARGB8888);
-	argb8888_fill(&d_argb8888.pixel.argb8888.plane0, s_argb8888.pixel.argb8888.plane0);
+	enesim_surface_pixel_convert(&tmp, &d_argb8888, enesim_format_argb8888_get());
+	argb8888_fill(&d_argb8888.plane0, s_argb8888.plane0);
 	enesim_surface_pixel_convert(&d_argb8888, &tmp, d->format);
 	enesim_surface_data_pixel_set(d, &tmp);
 }
@@ -155,7 +163,7 @@ static void generic_sp_pixel_fill(Enesim_Surface_Data *d,
 		Enesim_Surface_Pixel sp;
 
 		enesim_surface_data_pixel_get(&stmp, &sp);
-		generic_pt_pixel_fill(&dtmp, &sp, color, m);
+		generic_pt_pixel_fill(&dtmp, &sp, NULL, NULL);
 		enesim_surface_data_increment(&dtmp, 1);
 		enesim_surface_data_increment(&stmp, 1);
 	}
@@ -181,29 +189,64 @@ static void generic_sp_pixel_mask_fill(Enesim_Surface_Data *d,
 {
 
 }
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+Eina_Bool enesim_drawer_generic_init(void)
+{
+	Eina_Iterator *it;
+	Enesim_Format *df;
 
-Enesim_Drawer_Generic generic_drawer = {
-	.pt_color[ENESIM_BLEND] = generic_pt_color_blend,
-	.pt_mask_color[ENESIM_BLEND] = generic_pt_mask_color_blend,
-	.pt_pixel[ENESIM_BLEND] = generic_pt_pixel_blend,
-	.pt_pixel_color[ENESIM_BLEND] = generic_pt_pixel_color_blend,
-	.pt_pixel_mask[ENESIM_BLEND] = generic_pt_pixel_mask_blend,
+	/* iterate over all the available formats */
+	it = enesim_format_iterator_new();
+	while (eina_iterator_next(it, (void **)&df))
+	{
+		Eina_Iterator *sit;
+		Enesim_Format *sf;
+		/* register every generic drawer */
+		/* color */
+		enesim_drawer_point_register(ENESIM_FILL, generic_pt_color_fill, df, NULL, EINA_TRUE, NULL);
+		enesim_drawer_span_register(ENESIM_FILL, generic_sp_color_blend, df, NULL, EINA_TRUE, NULL);
+		enesim_drawer_point_register(ENESIM_BLEND, generic_pt_color_blend, df, NULL, EINA_TRUE, NULL);
+		enesim_drawer_span_register(ENESIM_BLEND, generic_sp_color_blend, df, NULL, EINA_TRUE, NULL);
 
-	.sp_color[ENESIM_BLEND] = generic_sp_color_blend,
-	.sp_mask_color[ENESIM_BLEND] = generic_sp_mask_color_blend,
-	.sp_pixel[ENESIM_BLEND] = generic_sp_pixel_blend,
-	.sp_pixel_color[ENESIM_BLEND] = generic_sp_pixel_color_blend,
-	.sp_pixel_mask[ENESIM_BLEND] = generic_sp_pixel_mask_blend,
+		sit = enesim_format_iterator_new();
+		while (eina_iterator_next(sit, (void **)&sf))
+		{
+			Eina_Iterator *mit;
+			Enesim_Format *mf;
+			/* pixel */
+			enesim_drawer_point_register(ENESIM_FILL, generic_pt_pixel_fill, df, sf, EINA_FALSE, NULL);
+			enesim_drawer_span_register(ENESIM_FILL, generic_sp_pixel_fill, df, sf, EINA_FALSE, NULL);
+			enesim_drawer_point_register(ENESIM_BLEND, generic_pt_pixel_blend, df, sf, EINA_FALSE, NULL);
+			enesim_drawer_span_register(ENESIM_BLEND, generic_sp_pixel_blend, df, sf, EINA_FALSE, NULL);
+			/* mask color */
+			enesim_drawer_point_register(ENESIM_FILL, generic_pt_mask_color_fill, df, NULL, EINA_TRUE, sf);
+			enesim_drawer_span_register(ENESIM_FILL, generic_sp_mask_color_fill, df, NULL, EINA_TRUE, sf);
+			enesim_drawer_point_register(ENESIM_BLEND, generic_pt_mask_color_blend, df, NULL, EINA_TRUE, sf);
+			enesim_drawer_span_register(ENESIM_BLEND, generic_sp_mask_color_blend, df, NULL, EINA_TRUE, sf);
+			/* pixel color */
+			enesim_drawer_point_register(ENESIM_FILL, generic_pt_pixel_color_fill, df, sf, EINA_TRUE, NULL);
+			enesim_drawer_span_register(ENESIM_FILL, generic_sp_pixel_color_fill, df, sf, EINA_TRUE, NULL);
+			enesim_drawer_point_register(ENESIM_BLEND, generic_pt_pixel_color_blend, df, sf, EINA_TRUE, NULL);
+			enesim_drawer_span_register(ENESIM_BLEND, generic_sp_pixel_color_blend, df, sf, EINA_TRUE, NULL);
+			/* pixel mask */
+			mit = enesim_format_iterator_new();
+			while (eina_iterator_next(mit, (void **)&mf))
+			{
+				enesim_drawer_point_register(ENESIM_FILL, generic_pt_pixel_mask_fill, df, sf, EINA_FALSE, mf);
+				enesim_drawer_span_register(ENESIM_FILL, generic_sp_pixel_mask_fill, df, sf, EINA_FALSE, mf);
+				enesim_drawer_point_register(ENESIM_BLEND, generic_pt_pixel_mask_blend, df, sf, EINA_FALSE, mf);
+				enesim_drawer_span_register(ENESIM_BLEND, generic_sp_pixel_mask_blend, df, sf, EINA_FALSE, mf);
+			}
+			eina_iterator_free(mit);
+		}
+		eina_iterator_free(sit);
+	}
+	eina_iterator_free(it);
+}
 
-	.pt_color[ENESIM_FILL] = generic_pt_color_fill,
-	.pt_mask_color[ENESIM_FILL] = generic_pt_mask_color_fill,
-	.pt_pixel[ENESIM_FILL] = generic_pt_pixel_fill,
-	.pt_pixel_color[ENESIM_FILL] = generic_pt_pixel_color_fill,
-	.pt_pixel_mask[ENESIM_FILL] = generic_pt_pixel_mask_fill,
+void enesim_drawer_generic_shutdown(void)
+{
 
-	.sp_color[ENESIM_FILL] = generic_sp_color_fill,
-	.sp_mask_color[ENESIM_FILL] = generic_sp_mask_color_fill,
-	.sp_pixel[ENESIM_FILL] = generic_sp_pixel_fill,
-	.sp_pixel_color[ENESIM_FILL] = generic_sp_pixel_color_fill,
-	.sp_pixel_mask[ENESIM_FILL] = generic_sp_pixel_mask_fill,
-};
+}

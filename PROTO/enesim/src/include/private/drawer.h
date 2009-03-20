@@ -18,6 +18,7 @@
 #ifndef DRAWER_H_
 #define DRAWER_H_
 
+#if 0
 /**
  * An ARGB color can be opaque or transparent, depending on the alpha value.
  * To optimize the functions we should define one for each case
@@ -38,16 +39,16 @@ typedef struct _Enesim_Drawer
 {
 	/* Scanlines */
 	Enesim_Drawer_Span sp_color[ENESIM_ROPS];
-	Enesim_Drawer_Span sp_mask_color[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Span sp_pixel[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Span sp_pixel_color[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Span sp_pixel_mask[ENESIM_ROPS][ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS];
+	Enesim_Drawer_Span sp_mask_color[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_pixel[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_pixel_color[ENESIM_ROPS];
+	Enesim_Drawer_Span sp_pixel_mask[ENESIM_ROPS];
 	/* Points */
 	Enesim_Drawer_Point pt_color[ENESIM_ROPS];
-	Enesim_Drawer_Point pt_mask_color[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Point pt_pixel[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS][ENESIM_SURFACE_FORMATS];
-	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS][ENESIM_SURFACE_FORMATS][ENESIM_SURFACE_FORMATS];
+	Enesim_Drawer_Point pt_mask_color[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS];
+	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS];
 } Enesim_Drawer;
 
 /*
@@ -69,5 +70,14 @@ typedef struct _Enesim_Drawer_Generic
 	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS];
 	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS];
 } Enesim_Drawer_Generic;
+#endif
+void enesim_drawer_init(void);
+void enesim_drawer_shutdown(void);
+
+/* specific drawers */
+Eina_Bool enesim_drawer_generic_init(void);
+void enesim_drawer_generic_shutdown(void);
+Eina_Bool enesim_drawer_argb8888_init(void);
+void enesim_drawer_argb8888_shutdown(void);
 
 #endif /*DRAWER_H_*/

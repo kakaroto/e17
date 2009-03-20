@@ -12,7 +12,7 @@ struct _Enesim_Context
 		Eina_Bool used;
 		Eina_Rectangle r;
 	} clip;
-	Enesim_Transformation *tx;
+	//Enesim_Transformation *tx;
 };
 
 

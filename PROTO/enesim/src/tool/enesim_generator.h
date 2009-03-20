@@ -14,7 +14,7 @@ extern const char *pixel_types[PIXELS];
 
 extern FILE *fout;
 
-Format * format_from_format(Enesim_Surface_Format fmt);
+Format * format_from_format(Enesim_Format fmt);
 void rop_functions(Format *sf, Format *df);
 void core_functions(Format *f);
 void drawer_functions(Format *f);

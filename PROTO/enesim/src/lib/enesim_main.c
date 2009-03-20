@@ -18,11 +18,11 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 static int _init = 0;
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
@@ -36,6 +36,10 @@ EAPI int enesim_init(void)
 		 * get the cpuid for this
 		 */
 		eina_init();
+		enesim_format_init();
+		enesim_drawer_init();
+		/* TODO initialize all the transformers */
+		/* TODO initialize all the converters */
 #ifdef __MMX__
 		EINA_ERROR_PINFO("MMX Drawer available\n");
 #endif
@@ -51,6 +55,8 @@ EAPI int enesim_init(void)
  */
 EAPI void enesim_shutdown(void)
 {
+	enesim_drawer_shutdown();
+	enesim_format_shutdown();
 	eina_shutdown();
 }
 

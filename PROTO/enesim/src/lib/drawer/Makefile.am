@@ -27,7 +27,8 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libenesim_drawer.la
 
 libenesim_drawer_la_SOURCES = \
-argb8888.c \
-$(ARGB8888_UNPRE_REQ) \
-$(RGB565_XA5_REQ) \
-$(RGB565_B1A3_REQ)
+generic.c \
+argb8888.c
+#$(ARGB8888_UNPRE_REQ) \
+#$(RGB565_XA5_REQ) \
+#$(RGB565_B1A3_REQ)

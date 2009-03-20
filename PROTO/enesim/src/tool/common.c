@@ -8,7 +8,7 @@
  */
 
 const char * surface_format_name[ENESIM_SURFACE_FORMATS] = {
-	[ENESIM_SURFACE_ARGB8888]       = "ENESIM_SURFACE_ARGB8888",
+	[ENESIM_FORMAT_ARGB8888]       = "ENESIM_SURFACE_ARGB8888",
 	[ENESIM_SURFACE_ARGB8888_UNPRE] = "ENESIM_SURFACE_ARGB8888_UNPRE",
 	[ENESIM_SURFACE_RGB565_XA5]     = "ENESIM_SURFACE_RGB565_XA5",
 	[ENESIM_SURFACE_RGB565_B1A3]    = "ENESIM_SURFACE_RGB565_B1A3",
@@ -18,7 +18,7 @@ const char * surface_format_name[ENESIM_SURFACE_FORMATS] = {
  *                                  argb8888                                  * 
  *============================================================================*/
 Format argb8888_pre = {
-	.sformat = ENESIM_SURFACE_ARGB8888,
+	.sformat = ENESIM_FORMAT_ARGB8888,
 	.name = "argb8888",
 	.planes[0] = {
 		.colors = {

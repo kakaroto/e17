@@ -14,7 +14,7 @@ int opt_times = 1;
 FILE *opt_file;
 int opt_debug = 0;
 int opt_rop = ENESIM_FILL;
-Enesim_Surface_Format opt_fmt = ENESIM_SURFACE_ARGB8888;
+Enesim_Format *opt_fmt;
 char *opt_bench = "drawer";
 
 /* Place to store the result timmings for every operation */
@@ -88,14 +88,22 @@ char * opacity_get(Enesim_Surface_Pixel *p)
 		return "transparent";
 }
 
-int fmt_get(const char *name, Enesim_Surface_Format *fmt)
+int fmt_get(const char *name, Enesim_Format **fmt)
 {
-	int ret = 1;
-	if (!strcmp(name, "argb8888"))
-		*fmt = ENESIM_SURFACE_ARGB8888;
-	else
-		ret = 0;
-	return ret;
+	Eina_Iterator *it;
+	Enesim_Format *f;
+
+	it = enesim_format_iterator_new();
+	while (eina_iterator_next(it, (void **)&f))
+	{
+		if (!strcmp(name, enesim_format_name_get(f)))
+		{
+			*fmt = f;
+			return 1;
+		}
+	}
+	eina_iterator_free(it);
+	return 0;
 }
 
 double get_time(void)
@@ -113,16 +121,15 @@ void surface_save(Enesim_Surface *s, const char *name)
 	int w, h;
 
 	enesim_surface_size_get(s, &w, &h);
-	img = enesim_surface_new(ENESIM_SURFACE_ARGB8888_UNPRE, w, h);
-	//printf("Saving image %s\n", name);
+	img = enesim_surface_new(enesim_format_argb8888_unpre_get(), w, h);
 	enesim_surface_convert(s, img, NULL);
 	image_save(img, name, 0);
 	enesim_surface_delete(img);
 }
 
-void surfaces_create(Enesim_Surface **src, Enesim_Surface_Format sfmt,
-		Enesim_Surface **dst, Enesim_Surface_Format dfmt,
-		Enesim_Surface **msk, Enesim_Surface_Format mfmt)
+void surfaces_create(Enesim_Surface **src, Enesim_Format *sfmt,
+		Enesim_Surface **dst, Enesim_Format *dfmt,
+		Enesim_Surface **msk, Enesim_Format *mfmt)
 {
 	if (src)
 	{
@@ -149,7 +156,7 @@ void test_gradient(Enesim_Surface *s)
 {
 	Enesim_Drawer_Span dspan;
 	Enesim_Surface_Data sdata;
-	Enesim_Surface_Format sfmt;
+	Enesim_Format *sfmt;
 	Enesim_Surface_Pixel color;
 	int i;
 	int skip = 0;
@@ -192,7 +199,7 @@ void test_gradient2(Enesim_Surface *s)
 {
 	Enesim_Drawer_Span dspan;
 	Enesim_Surface_Data sdata;
-	Enesim_Surface_Format sfmt;
+	Enesim_Format *sfmt;
 	Enesim_Surface_Pixel color;
 	int i;
 
@@ -219,7 +226,7 @@ void test_gradient3(Enesim_Surface *s)
 {
 	Enesim_Drawer_Span dspan;
 	Enesim_Surface_Data sdata;
-	Enesim_Surface_Format sfmt;
+	Enesim_Format *sfmt;
 	Enesim_Surface_Pixel color;
 	int i;
 
@@ -259,7 +266,7 @@ Enesim_Surface * test_pattern(int w)
 	int i;
 	int spaces = w / 2;
 
-	enesim_surface_pixel_components_from(&color, opt_fmt, 0xff, 0xff, 0xff, 0);
+	enesim_surface_pixel_components_from(&color, opt_fmt, 0xaa, 0xaa, 0xff, 0);
 	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, &color);
 	if (!spfnc)
 		return NULL;
@@ -293,10 +300,56 @@ Enesim_Surface * test_pattern(int w)
 	return s;
 }
 
+Enesim_Surface * test_pattern2(int w)
+{
+	Enesim_Surface *s;
+	Enesim_Drawer_Span spfnc;
+	Enesim_Surface_Pixel color;
+	Enesim_Surface_Data sdata;
+	int i;
+	int spaces = w / 2;
+
+	enesim_surface_pixel_components_from(&color, opt_fmt, 0xaa, 0xaa, 0xff, 0);
+	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, &color);
+	if (!spfnc)
+		return NULL;
+	s = enesim_surface_new(opt_fmt, w, w);
+
+	/* draw the pattern */
+	enesim_surface_data_get(s, &sdata);
+	enesim_surface_data_increment(&sdata, spaces);
+	for (i = 0; i < w / 2; i++)
+	{
+		int len = i * 2 +1;
+		int nspaces = spaces - 1;
+
+		enesim_surface_pixel_components_from(&color, opt_fmt, i * (255 / w), 0xff, 0, 0xff);
+		spfnc(&sdata, len, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
+		spaces--;
+	}
+	spfnc(&sdata, w, NULL, &color, NULL);
+	enesim_surface_data_increment(&sdata,  w + 1);
+	spaces = 1;
+	for (i = 0; i < w / 2; i++)
+	{
+		int len = (w - 1) - (i * 2 +1);
+		int nspaces = spaces + 1;
+
+		enesim_surface_pixel_components_from(&color, opt_fmt, (w / 2 - i) * (255 / w), 0xff, 0, 0xff);
+		spfnc(&sdata, len, NULL, &color, NULL);
+		enesim_surface_data_increment(&sdata, len + spaces + nspaces);
+		spaces++;
+	}
+	surface_save(s, "pattern2.png");
+	return s;
+}
+
+
 void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		Enesim_Surface *src, Enesim_Surface_Pixel *color, Enesim_Surface *mask)
 {
-	Enesim_Surface_Format sfmt;
+	Enesim_Format *sfmt;
 	char file[256];
 	char tmp[256];
 
@@ -304,13 +357,13 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		return;
 
 	sfmt = enesim_surface_format_get(dst);
-	snprintf(tmp, 256, "%s_%s_%s", name, rop_name(rop), enesim_surface_format_name_get(sfmt));
+	snprintf(tmp, 256, "%s_%s_%s", name, rop_name(rop), enesim_format_name_get(sfmt));
 	if (src)
 	{
 		char tmp2[256];
 
 		sfmt = enesim_surface_format_get(src);
-		snprintf(tmp2, 256, "_%s", enesim_surface_format_name_get(sfmt));
+		snprintf(tmp2, 256, "_%s", enesim_format_name_get(sfmt));
 		strncat(tmp, tmp2, 256);
 	}
 	if (mask)
@@ -318,7 +371,7 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		char tmp2[256];
 
 		sfmt = enesim_surface_format_get(mask);
-		snprintf(tmp2, 256, "_%s", enesim_surface_format_name_get(sfmt));
+		snprintf(tmp2, 256, "_%s", enesim_format_name_get(sfmt));
 		strncat(tmp, tmp2, 256);
 	}
 	/* append the color (transparent/opaque) */
@@ -365,17 +418,22 @@ void bench_help(void)
 	printf("transformer\n");
 	printf("rasterizer\n");
 	printf("renderer\n");
+	printf("spanner\n");
 	printf("all\n");
 }
 
 void fmt_help(void)
 {
-	int fmt;
+	Eina_Iterator *it;
+	Enesim_Format *f;
 
-	for (fmt = 0; fmt < ENESIM_SURFACE_FORMATS; fmt++)
+	it = enesim_format_iterator_new();
+	while (eina_iterator_next(it, (void **)&f))
+
 	{
-		printf("%s\n", enesim_surface_format_name_get(fmt));
+		printf("%s\n", enesim_format_name_get(f));
 	}
+	eina_iterator_free(it);
 }
 
 
@@ -398,9 +456,11 @@ int main(int argc, char **argv)
 	char c;
 	char *file = "benchmark.txt";
 
+	enesim_init();
+	fmt_get("argb8888", &opt_fmt);
 	/* handle the parameters */
 	while ((c = getopt_long(argc, argv, short_options, long_options,
-	                                &option)) != -1)
+			&option)) != -1)
 	{
 		/* arm bug ? */
 		if (c == 255)
@@ -462,9 +522,8 @@ ok:
 	printf("* BENCH = %s\n", opt_bench);
 	printf("* SIZE = %dx%d\n", opt_width, opt_height);
 	printf("* ROP = %s\n", rop_name(opt_rop));
-	printf("* FMT = %s\n", enesim_surface_format_name_get(opt_fmt));
+	printf("* FMT = %s\n", enesim_format_name_get(opt_fmt));
 	printf("* TIMES = %d\n", opt_times);
-	enesim_init();
 	if (!strcmp(opt_bench, "renderer"))
 		renderer_bench();
 	else if (!strcmp(opt_bench, "rasterizer"))
@@ -472,11 +531,13 @@ ok:
 	else if (!strcmp(opt_bench, "drawer"))
 		drawer_bench();
 	else if (!strcmp(opt_bench, "transformer"))
-		transformer_bench();
+	{
+		//transformer_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		drawer_bench();
-		transformer_bench();
+		//transformer_bench();
 		rasterizer_bench();
 		renderer_bench();
 	}

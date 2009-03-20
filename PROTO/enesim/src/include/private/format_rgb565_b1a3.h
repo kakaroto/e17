@@ -15,12 +15,13 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SURFACE_RGB565_B1A3_ROP_H_
-#define SURFACE_RGB565_B1A3_ROP_H_
+#ifndef FORMAT_RGB565_B1A3_H_
+#define FORMAT_RGB565_B1A3_H_
 
 /*============================================================================*
  *                                   Core                                     *
  *============================================================================*/
+#if 0
 static inline void rgb565_b1a3_data_copy(Enesim_Surface_Data *s, Enesim_Surface_Data *d)
 {
 	d->data.rgb565_b1a3.plane0 = s->data.rgb565_b1a3.plane0;
@@ -43,7 +44,7 @@ static inline unsigned char rgb565_b1a3_data_alpha_get(Enesim_Surface_Data *d)
 {
 	return (*d->data.rgb565_b1a3.plane1 >> 0) & 0x7;
 }
-
+#endif
 
 static inline unsigned char rgb565_b1a3_alpha_get(uint16_t plane0, uint8_t plane1)
 {
@@ -77,18 +78,18 @@ static inline void rgb565_b1a3_to_components(uint16_t plane0, uint8_t plane1, un
 
 }
 
-static inline void rgb565_b1a3_to_argb(unsigned int *argb, uint16_t plane0, 
+static inline void rgb565_b1a3_to_argb(unsigned int *argb, uint16_t plane0,
 uint8_t plane1, int pixel_plane1)
-{	
+{
 	uint8_t alpha = rgb565_b1a3_alpha_get(plane0, plane1);
-	
+
 	rgb565_to_argb(argb, plane0, alpha);
 }
-static inline void rgb565_b1a3_from_argb(unsigned int argb, uint16_t *plane0, 
+static inline void rgb565_b1a3_from_argb(unsigned int argb, uint16_t *plane0,
 uint8_t *plane1)
 {
 	uint8_t alpha = argb8888_alpha_get(argb) >> 5;
-	
+
 	rgb565_from_argb(argb, plane0, alpha);
 	*plane1 = alpha;
 }
@@ -98,12 +99,12 @@ static inline void rgb565_b1a3_blend(uint16_t *dplane0, uint8_t *dplane1, int dp
 {
 	uint8_t alpha;
 	uint8_t dalpha;
-	
+
 	if (dpixel_plane1)
 		dalpha = (*dplane1 >> 4) & 0x3;
 	else
 		dalpha = *dplane1 & 0x3;
-	
+
 	alpha = 32 - splane1;
 	rgb565_blend(dplane0, splane0, alpha);
 	/* TODO handle the pixel_plane var */
@@ -118,4 +119,4 @@ static inline void rgb565_b1a3_fill(uint16_t *dplane0, uint8_t *dplane1, int dpi
 	*dplane1 = splane1;
 }
 
-#endif /*SURFACE_RGB565_B1A3_ROP_H_*/
+#endif /*FORMAT_RGB565_B1A3_H_*/

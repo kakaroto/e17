@@ -53,7 +53,7 @@ static void transformer_normal_run(Enesim_Transformation *tx, Enesim_Surface *sr
 		Enesim_Surface *dst)
 {
 	Eina_Rectangle sr, dr;
-	Enesim_Surface_Format sfmt;
+	Enesim_Format sfmt;
 	double start, end;
 	int t;
 	char name[256];
@@ -67,7 +67,7 @@ static void transformer_normal_run(Enesim_Transformation *tx, Enesim_Surface *sr
 		enesim_transformation_apply(tx, src, &sr, dst, &dr);
 	}
 	end = get_time();
-	printf("            %s %s [%3.3f sec]\n", enesim_surface_format_name_get(sfmt),
+	printf("            %s %s [%3.3f sec]\n", enesim_format_name_get(sfmt),
 			_quality_get(tx), end - start);
 
 	snprintf(name, 256, "normal_%s_%s", transformer_get(tx), _quality_get(tx));
@@ -78,8 +78,8 @@ static void transformer_mask_run(Enesim_Transformation *tx, Enesim_Surface *src,
 		Enesim_Surface *dst, Enesim_Surface *msk)
 {
 	Eina_Rectangle sr, dr;
-	Enesim_Surface_Format sfmt;
-	Enesim_Surface_Format mfmt;
+	Enesim_Format sfmt;
+	Enesim_Format mfmt;
 	double start, end;
 	int t;
 	char name[256];
@@ -95,8 +95,8 @@ static void transformer_mask_run(Enesim_Transformation *tx, Enesim_Surface *src,
 		enesim_transformation_apply(tx, src, &sr, dst, &dr);
 	}
 	end = get_time();
-	printf("            %s %s %s [%3.3f sec]\n", enesim_surface_format_name_get(sfmt),
-			enesim_surface_format_name_get(sfmt),
+	printf("            %s %s %s [%3.3f sec]\n", enesim_format_name_get(sfmt),
+			enesim_format_name_get(sfmt),
 			_quality_get(tx), end - start);
 
 	snprintf(name, 256, "mask_%s_%s", transformer_get(tx), _quality_get(tx));
@@ -107,15 +107,15 @@ static void transformer_mask_run(Enesim_Transformation *tx, Enesim_Surface *src,
 
 static void transformer_go(Enesim_Transformation *tx)
 {
-	Enesim_Surface_Format ssf;
-	Enesim_Surface_Format msf;
+	Enesim_Format ssf;
+	Enesim_Format msf;
 	Enesim_Surface *dst = NULL, *src = NULL, *msk = NULL;
 	Enesim_Surface_Pixel color;
 
 	enesim_surface_pixel_components_from(&color, opt_fmt, 0xff, 0x00, 0x00, 0xff);
 	enesim_transformation_color_set(tx, &color);
 	printf("    Transformer normal\n");
-	for (ssf = ENESIM_SURFACE_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)
+	for (ssf = ENESIM_FORMAT_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)
 	{
 
 		surfaces_create(&src, ssf, &dst, opt_fmt, NULL, 0);
@@ -127,11 +127,11 @@ static void transformer_go(Enesim_Transformation *tx)
 		transformer_normal_run(tx, src, dst);
 	}
 	printf("    Transformer mask\n");
-	//for (ssf = ENESIM_SURFACE_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)
-	for (ssf = ENESIM_SURFACE_ARGB8888; ssf <= ENESIM_SURFACE_ARGB8888; ssf++)
+	//for (ssf = ENESIM_FORMAT_ARGB8888; ssf < ENESIM_SURFACE_FORMATS; ssf++)
+	for (ssf = ENESIM_FORMAT_ARGB8888; ssf <= ENESIM_FORMAT_ARGB8888; ssf++)
 	{
-		//for (msf = ENESIM_SURFACE_ARGB8888; msf < ENESIM_SURFACE_FORMATS; msf++)
-		for (msf = ENESIM_SURFACE_ARGB8888; msf <= ENESIM_SURFACE_ARGB8888; msf++)
+		//for (msf = ENESIM_FORMAT_ARGB8888; msf < ENESIM_SURFACE_FORMATS; msf++)
+		for (msf = ENESIM_FORMAT_ARGB8888; msf <= ENESIM_FORMAT_ARGB8888; msf++)
 		{
 			surfaces_create(&src, ssf, &dst, opt_fmt, &msk, msf);
 			enesim_transformation_mask_set(tx, msk);

@@ -15,12 +15,13 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SURFACE_ARGB8888_UNPRE_ROP_H_
-#define SURFACE_ARGB8888_UNPRE_ROP_H_
+#ifndef FORMAT_ARGB8888_UNPRE_H_
+#define FORMAT_ARGB8888_UNPRE_H_
 
 /*============================================================================*
  *                                   Core                                     *
  *============================================================================*/
+#if 0
 static inline void argb8888_unpre_data_copy(Enesim_Surface_Data *s, Enesim_Surface_Data *d)
 {
 	d->data.argb8888_unpre.plane0 = s->data.argb8888_unpre.plane0;
@@ -37,7 +38,7 @@ static inline unsigned char argb8888_unpre_data_alpha_get(Enesim_Surface_Data *d
 {
 	return (*d->data.argb8888_unpre.plane0 >> 24) & 0xff;
 }
-
+#endif
 
 
 #define BLEND_ARGB_256(a, aa, c0, c1) \
@@ -48,34 +49,34 @@ static inline unsigned char argb8888_unpre_data_alpha_get(Enesim_Surface_Data *d
    (((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (aa)) >> 8) \
    + ((c1) & 0xff00ff)) & 0xff00ff) )
 
-static inline unsigned char argb8888_unpre_alpha_get(unsigned int plane0)
+static inline uint8_t argb8888_unpre_alpha_get(uint32_t plane0)
 {
 	return (plane0 >> 24);
 }
 
-static inline unsigned char argb8888_unpre_red_get(unsigned int plane0)
+static inline uint8_t argb8888_unpre_red_get(uint32_t plane0)
 {
 	return ((plane0 >> 16) & 0xff);
 }
 
-static inline unsigned char argb8888_unpre_green_get(unsigned int plane0)
+static inline uint8_t argb8888_unpre_green_get(uint32_t plane0)
 {
 	return ((plane0 >> 8) & 0xff);
 }
 
-static inline unsigned char argb8888_unpre_blue_get(unsigned int plane0)
+static inline uint8_t argb8888_unpre_blue_get(uint32_t plane0)
 {
 	return (plane0 & 0xff);
 }
 
-static inline void argb8888_unpre_from_components(unsigned int *plane0, unsigned char a, unsigned char r,
-		unsigned char g, unsigned char b)
+static inline void argb8888_unpre_from_components(uint32_t *plane0, uint8_t a, uint8_t r,
+		uint8_t g, uint8_t b)
 {
 	*plane0 = (a << 24) | (r << 16) | (g << 8) | b;
 }
 
-static inline void argb8888_unpre_to_components(unsigned int plane0, unsigned char *a, unsigned char *r,
-		unsigned char *g, unsigned char *b)
+static inline void argb8888_unpre_to_components(uint32_t plane0, uint8_t *a, uint8_t *r,
+		uint8_t *g, uint8_t *b)
 {
 	if (a) *a = argb8888_unpre_alpha_get(plane0);
 	if (r) *r = argb8888_unpre_red_get(plane0);
@@ -83,10 +84,27 @@ static inline void argb8888_unpre_to_components(unsigned int plane0, unsigned ch
 	if (b) *b = argb8888_unpre_blue_get(plane0);
 }
 
-static inline void argb8888_unpre_to_argb(unsigned int *argb, unsigned int plane0)
+static inline void argb8888_unpre_argb_from(uint32_t *plane0, uint32_t argb)
 {
-	unsigned int a = argb8888_unpre_alpha_get(plane0) + 1;
-		
+	uint8_t a = argb8888_alpha_get(argb);
+
+	if ((a > 0) && (a < 255))
+	{
+		uint8_t r, g, b;
+
+		r = argb8888_red_get(argb);
+		g = argb8888_green_get(argb);
+		b = argb8888_blue_get(argb);
+
+		argb8888_from_components(plane0, a, (r * 255) / a,  (g * 255) / a, (b * 255) / a);
+	}
+	else
+		*plane0 = argb;
+}
+static inline void argb8888_unpre_argb_to(uint32_t plane0, uint32_t *argb)
+{
+	uint16_t a = argb8888_unpre_alpha_get(plane0) + 1;
+
 	if (a != 256)
 	{
 		*argb = (plane0 & 0xff000000) + (((((plane0) >> 8) & 0xff) * a) & 0xff00) +
@@ -95,24 +113,7 @@ static inline void argb8888_unpre_to_argb(unsigned int *argb, unsigned int plane
 	else
 		*argb = plane0;
 }
-static inline void argb8888_unpre_from_argb(unsigned int argb, unsigned int *plane0)
-{
-	unsigned int a = argb8888_alpha_get(argb);
-	
-	if ((a > 0) && (a < 255))
-	{
-		unsigned char r, g, b;
-			
-		r = argb8888_red_get(argb);
-		g = argb8888_green_get(argb);
-		b = argb8888_blue_get(argb);
-			
-		argb8888_from_components(plane0, a, (r * 255) / a,  (g * 255) / a, (b * 255) / a);
-	}
-	else
-		*plane0 = argb;
-}
-
+#if 0
 static inline void argb8888_unpre_blend(unsigned int *dplane0, unsigned int splane0)
 {
 	/* TODO this is really wrong! */
@@ -137,5 +138,5 @@ static inline void argb8888_unpre_pixel_fill(Enesim_Surface_Data *d, Enesim_Surf
 {
 	argb8888_unpre_fill(d->data.argb8888_unpre.plane0, p->pixel.argb8888_unpre.plane0);
 }
-
-#endif /*SURFACE_ARGB8888_H_*/
+#endif
+#endif /* FORMAT_ARGB8888_UNPRE_H_*/

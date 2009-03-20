@@ -114,7 +114,7 @@ static inline argb8888_convolution2x2(uint32_t *data, Eina_F16p16 x, Eina_F16p16
 		p0 = interp_256(ay, p2, p0);
 
 	ret->pixel.argb8888.plane0 = p0;
-	ret->format = ENESIM_SURFACE_ARGB8888;
+	ret->format = ENESIM_FORMAT_ARGB8888;
 }
 
 static void normal_argb8888_argb8888_affine_good_no_no(Enesim_Transformation *t, Enesim_Surface *ss,

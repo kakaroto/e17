@@ -60,7 +60,7 @@ typedef struct _Plane
 
 typedef struct _Format
 {
-	Enesim_Surface_Format sformat;
+	Enesim_Format sformat;
 	Plane planes[MAX_PLANES]; /* an array of planes a format has */
 	unsigned int num_planes; /* number of planes */
 	const char *name; /* name of the format */ /* FIXME remove this we can use the sformat instead */

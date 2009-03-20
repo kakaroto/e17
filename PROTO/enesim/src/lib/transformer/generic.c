@@ -77,7 +77,7 @@ static inline void convolution2x2(Enesim_Surface_Data *data, Eina_F16p16 x, Eina
 		p0 = interp_256(ay, p2, p0);
 
 	ret->pixel.argb8888.plane0 = p0;
-	ret->format = ENESIM_SURFACE_ARGB8888;
+	ret->format = ENESIM_FORMAT_ARGB8888;
 }
 
 
@@ -93,7 +93,7 @@ static inline void convolution2x2(Enesim_Surface_Data *data, Eina_F16p16 x, Eina
 										\
 	enesim_surface_data_get(ss, &sdata);					\
 	enesim_surface_data_get(ds, &ddata);					\
-	enesim_surface_data_increment(&sdata, (drect->y * ss->w) + drect->x);	\
+	/*enesim_surface_data_increment(&sdata, (drect->y * ss->w) + drect->x);*/	\
 	enesim_surface_data_increment(&ddata, (drect->y * ds->w) + drect->x);	\
 	h = drect->h;								\
 										\

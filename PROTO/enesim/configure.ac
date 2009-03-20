@@ -121,8 +121,8 @@ src/lib/Makefile
 src/lib/primitives/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
+src/lib/format/Makefile
 src/lib/drawer/Makefile
-src/lib/transformer/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile

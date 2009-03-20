@@ -20,9 +20,9 @@ void rasterizer_bench(void)
 		{ 170, 42.85 },
 	};
 	Eina_Rectangle rect;
-        Enesim_Rasterizer *rs;
-        int i;
-        int t;
+	Enesim_Rasterizer *rs;
+	int i;
+	int t;
 	double start, end;
 
 #define POINTS_NUM 6

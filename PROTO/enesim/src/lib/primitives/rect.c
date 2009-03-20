@@ -25,7 +25,7 @@ EAPI void enesim_rect_draw(Enesim_Surface *s, Enesim_Context *c,
 	Enesim_Surface_Data dtmp;
 	Enesim_Drawer_Span span;
 	Enesim_Surface_Pixel pixel;
-	Enesim_Surface_Format sfmt;
+	Enesim_Format *sfmt;
 
 	sfmt = enesim_surface_format_get(s);
 	enesim_surface_size_get(s, &sw, NULL);
