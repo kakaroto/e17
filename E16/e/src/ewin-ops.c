@@ -690,9 +690,10 @@ EwinDeIconify(EWin * ewin)
 static void
 EwinUnStick(EWin * ewin)
 {
-
-   if (!ewin)
+   if (!EoIsSticky(ewin))
       return;
+
+   SoundPlay(SOUND_WINDOW_UNSTICK);
 
    EoSetSticky(ewin, 0);
    EwinMoveToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
@@ -708,8 +709,10 @@ EwinStick(EWin * ewin)
 {
    int                 x, y, dx, dy;
 
-   if (!ewin)
+   if (EoIsSticky(ewin))
       return;
+
+   SoundPlay(SOUND_WINDOW_STICK);
 
    /* Avoid "losing" windows made sticky while not in the current viewport */
    dx = EoGetW(ewin) / 2;
@@ -1040,6 +1043,8 @@ EwinShade(EWin * ewin)
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
 
+   SoundPlay(SOUND_SHADE);
+
    DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
    esd = EMALLOC(_ewin_shade_data, 1);
@@ -1257,6 +1262,8 @@ EwinUnShade(EWin * ewin)
       return;
    if (!ewin->state.shaded || ewin->state.shading || ewin->state.iconified)
       return;
+
+   SoundPlay(SOUND_UNSHADE);
 
    DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
@@ -1490,16 +1497,10 @@ EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	if (EoIsSticky(gwins[i]) && !on)
-	  {
-	     SoundPlay(SOUND_WINDOW_UNSTICK);
-	     EwinUnStick(gwins[i]);
-	  }
-	else if (!EoIsSticky(gwins[i]) && on)
-	  {
-	     SoundPlay(SOUND_WINDOW_STICK);
-	     EwinStick(gwins[i]);
-	  }
+	if (on)
+	   EwinStick(gwins[i]);
+	else
+	   EwinUnStick(gwins[i]);
      }
    Efree(gwins);
 }
@@ -1564,19 +1565,14 @@ EwinOpIconify(EWin * ewin, int source __UNUSED__, int on)
    EWin              **gwins = NULL;
    int                 i, num;
 
-   gwins =
-      ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ICONIFY, Mode.nogroup,
-				 &num);
+   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ICONIFY,
+				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->state.iconified && !on)
-	  {
-	     EwinDeIconify(gwins[i]);
-	  }
-	else if (!gwins[i]->state.iconified && on)
-	  {
-	     EwinIconify(gwins[i]);
-	  }
+	if (on)
+	   EwinIconify(gwins[i]);
+	else
+	   EwinDeIconify(gwins[i]);
      }
    Efree(gwins);
 }
@@ -1591,16 +1587,10 @@ EwinOpShade(EWin * ewin, int source __UNUSED__, int on)
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->state.shaded && !on)
-	  {
-	     SoundPlay(SOUND_UNSHADE);
-	     EwinUnShade(gwins[i]);
-	  }
-	else if (!gwins[i]->state.shaded && on)
-	  {
-	     SoundPlay(SOUND_SHADE);
-	     EwinShade(gwins[i]);
-	  }
+	if (on)
+	   EwinShade(gwins[i]);
+	else
+	   EwinUnShade(gwins[i]);
      }
    Efree(gwins);
 }
