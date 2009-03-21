@@ -203,6 +203,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, gap, INT);
    E_CONFIG_VAL(D, T, placement.x, INT);
    E_CONFIG_VAL(D, T, placement.y, INT);
+   E_CONFIG_VAL(D, T, timeout, FLOAT);
    E_CONFIG_LIST(D, T, items, conf_item_edd);
 
    notification_cfg = e_config_domain_load("module.notification", conf_edd);
@@ -276,7 +277,6 @@ e_modapi_init(E_Module *m)
 	return NULL;
      }
    notification_cfg->daemon = d;
-   notification_cfg->default_timeout = 5.0;
    e_notification_daemon_data_set(d, notification_cfg);
    e_notification_daemon_callback_notify_set(d, _notification_cb_notify);
    e_notification_daemon_callback_close_notification_set(d, _notification_cb_close_notification);
@@ -387,6 +387,7 @@ _notification_cfg_new(void)
   cfg->show_low      = 0;
   cfg->show_normal   = 1;
   cfg->show_critical = 1;
+  cfg->timeout       = 5.0;
   cfg->direction     = DIRECTION_DOWN;
   cfg->gap           = 10;
   cfg->placement.x   = 10;

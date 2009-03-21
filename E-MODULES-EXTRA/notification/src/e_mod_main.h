@@ -29,6 +29,7 @@ struct _Config
    int show_low;
    int show_normal;
    int show_critical;
+   float timeout;
    Popup_Direction direction;
    int gap;
    struct 
@@ -46,7 +47,6 @@ struct _Config
    Eina_List  *handlers;
    Eina_List  *items;
    Eina_List  *popups;
-   float       default_timeout;
    int         next_id;
 };
 

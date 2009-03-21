@@ -6,6 +6,7 @@ struct _E_Config_Dialog_Data
    int show_low;
    int show_normal;
    int show_critical;
+   double timeout;
    int gap;
    struct 
      {
@@ -69,6 +70,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->show_low      = notification_cfg->show_low;
    cfdata->show_normal   = notification_cfg->show_normal;
    cfdata->show_critical = notification_cfg->show_critical;
+   cfdata->timeout       = notification_cfg->timeout;
    cfdata->direction     = notification_cfg->direction;
    cfdata->gap           = notification_cfg->gap;
    cfdata->placement.x   = notification_cfg->placement.x;
@@ -91,6 +93,12 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    ow = e_widget_check_add(evas, D_("normal"), &(cfdata->show_normal));
    e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("critical"), &(cfdata->show_critical));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   of = e_widget_framelist_add(evas, D_("Default Timeout"), 0);
+   ow = e_widget_slider_add(evas, 1, 0, D_("%.1f seconds"), 0.0, 6.0, 0.1, 0, 
+                            &(cfdata->timeout), NULL, 200);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -135,6 +143,7 @@ _basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
    notification_cfg->show_low      = cfdata->show_low;
    notification_cfg->show_normal   = cfdata->show_normal;
    notification_cfg->show_critical = cfdata->show_critical;
+   notification_cfg->timeout       = cfdata->timeout;
    notification_cfg->direction     = cfdata->direction;
    notification_cfg->gap           = cfdata->gap;
    notification_cfg->placement.x   = cfdata->placement.x;

@@ -19,8 +19,12 @@
 images {
    image: "module_icon.png" COMP;
    image: "e17_menu_bg_border.png" COMP;
-   image: "e17_dialog_watermark.png" COMP;
-   image: "close_btn.png" COMP;
+   image: "base_bg.png" COMP;
+   image: "bd_top_hilight.png" COMP;
+   image: "bd_button_close_shadow.png" COMP;
+   image: "bd_button_close_focused.png" COMP;
+   image: "bd_title_bg.png" COMP;
+   image: "bd_title_over.png" COMP;
 }
 
 styles {
@@ -78,88 +82,131 @@ collections {
         item: "app_icon_max" "80 80";
       }
       parts {
-         /* Background */
-         part {
-            name: "base";
-            type: RECT;
-            mouse_events: 1;
-            description {
-               state: "default" 0.0;
-               min: 200 90;
-               rel1 {
-                  relative: 0.0  0.0;
-                  offset:   1    1;
+         part { name: "base";
+            mouse_events:  0;
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               color_class: "menu_base";
+               image {
+                  normal: "base_bg.png";
+                  border: 2 2 2 2;
                }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -2   -2;
-               }
-               color: 221 221 221 255;
+               fill.smooth: 0;
             }
          }
-         part {
-            name: "base2";
+         part { name: "top_hilight";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 15;
+               }
+               image.normal: "bd_top_hilight.png";
+               fill.smooth: 0;
+            }
+         }
+         part { name: "title_back";
             mouse_events:  0;
-            description {
-               state: "default" 0.0;
-               align: 1.0 1.0;
+            description { state: "default" 0.0;
+               visible: 1;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 0;
+               }
+               rel2 {
+                  to: "notification.text.title";
+                  relative: 1.0 1.0;
+                  offset: -2 -4;
+               }
+               image {
+                  normal: "bd_title_bg.png";
+                  border: 7 7 2 7;
+               }
+               fill.smooth: 0;
+            }
+         }
+         part { name: "notification.text.title"; /* e sets the text of this to the title
+                                       * if there is any */
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
                fixed: 1 1;
-               min: 200 90;
-               max: 200 90;
+               visible: 1;
+               align: 0.5 0.0;
                rel1 {
-                  relative: 1.0  1.0;
-                  offset:   -1   -1;
+                  relative: 0.0 0.0;
+                  offset: 5 0;
                }
                rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1   -1;
+                  relative: 0.0 0.0;
+                  offset: -7 0;
+                  to_x: "bt_close_shadow";
                }
-               image {
-                  normal: "e17_dialog_watermark.png";
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+               color_class: "menu_title_active";
+               text {
+                  text_source: "notification.text.title";
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  align: 0.5 0.0;
+                  min: 1 1;
+                  text_class: "menu_title";
                }
             }
          }
-         part {
-            name: "base3";
+         part { name: "title_over";
             mouse_events:  0;
-            description {
-               state:    "default" 0.0;
-               rel1 {
-                  relative: 0.0  0.0;
-                  offset:   0    0;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1   -1;
-               }
+            description { state: "default" 0.0;
+               visible: 1;
+               rel1.to: "title_back";
+               rel2.to: "title_back";
                image {
-                  normal: "e17_menu_bg_border.png";
-                  border: 1 1 1 1;
-                  middle: 0;
+                  normal: "bd_title_over.png";
+                  border: 7 7 2 7;
                }
-               fill {
-                  smooth: 0;
-               }
+               fill.smooth: 0;
             }
          }
 
          /* Close Button */
          part {
-            name: "notification.close_btn";
-            description {
-               state: "default" 0.0;
-
+            name: "bt_close_shadow";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               min: 22 22;
+               max: 22 22;
+               fixed: 1 1;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
                rel1 {
                   relative: 1 0;
                   offset: -15 5;
                }
                rel2 {
                   relative: 1 0;
-                  offset:  -5 15;
+                  offset:  -2 15;
                }
-               image {
-                  normal: "close_btn.png";
-               }
+               image.normal: "bd_button_close_shadow.png";
+            }
+         }
+         part { name: "notification.close_btn";
+            description { state: "default" 0.0;
+               rel1.to: "bt_close_shadow";
+               rel2.to: "bt_close_shadow";
+               image.normal: "bd_button_close_focused.png";
+            }
+            description { state: "active" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 0 1;
+               rel2.offset: -1 0;
             }
          }
 
@@ -176,6 +223,7 @@ collections {
                aspect: 1 1;
                aspect_preference: BOTH;
 
+               color: 255 0 150 255;
                rel1 {
                   relative: 0.0 0.0;
                   offset: 5 -127;
@@ -201,7 +249,10 @@ collections {
             description {
                state: "low" 0.0;
                inherit: "default" 0.0;
-               rel1.offset: 5   5;
+               rel1 {
+                   to_y: "title_back";
+                   offset: 5 1;
+               }
                rel2.offset: 85 -5;
             }
             description {
@@ -231,13 +282,14 @@ collections {
 
                rel1 { 
                   to_x: "notification.swallow.app_icon";
-                  relative: 1.0 0.5;
-                  offset: 10 0; 
+                  to_y: "bt_close_shadow";
+                  relative: 1.0 1;
+                  offset: 10 1; 
                }
 
                rel2 { 
                   relative: 1.0 0.5;
-                  offset: -5 0; 
+                  offset: -10 0; 
                }
 
                text {
@@ -310,6 +362,18 @@ collections {
             signal: "mouse,down,1";
             source: "notification.close_btn";
             action: SIGNAL_EMIT "notification,close" "theme";
+            after: "close_aft";
+         }
+         program {
+            name: "close_aft";
+            action: STATE_SET "active" 0.0;
+            target: "notification.close_btn";
+         }
+         program { name: "bt_close_up";
+            signal: "mouse,up,*";
+            source: "notification.close_btn";
+            action: STATE_SET "default" 0.0;
+            target: "notification.close_btn";
          }
 
          program {

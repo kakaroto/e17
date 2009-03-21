@@ -11,7 +11,7 @@ static void        _notification_popdown        (Popup_Data *popup,
                                                  E_Notification_Closed_Reason reason);
 
 /* Util function protos */
-static char *_notification_format_message   (E_Notification *n);
+static void _notification_format_message    (Popup_Data *popup);
 
 /* Callbacks */
 static void _notification_theme_cb_deleted  (void *data, 
@@ -60,12 +60,16 @@ notification_popup_notify(E_Notification *n,
       edje_object_signal_emit(popup->theme, "notification,new", "notification");
     }
 
-  if (popup->timer) ecore_timer_del(popup->timer);
+  if (popup->timer)
+    {
+       ecore_timer_del(popup->timer);
+       popup->timer = NULL;
+    }
   timeout = e_notification_timeout_get(popup->notif);
-  if (timeout == 0)
-    popup->timer = NULL;
+  if ((timeout == 0 || timeout == -1) && notification_cfg->timeout == 0.0)
+    return 1;
   else
-    popup->timer = ecore_timer_add(timeout == -1 ? notification_cfg->default_timeout : (float)timeout / 1000, 
+    popup->timer = ecore_timer_add(timeout == -1 ? notification_cfg->timeout : (float)timeout / 1000, 
                                    _notification_timer_cb, 
                                    popup);
   return 1;
@@ -242,6 +246,13 @@ _notification_popup_refresh(Popup_Data *popup)
   if ((icon_path = e_notification_app_icon_get(popup->notif)) && *icon_path)
     {
       if (!strncmp(icon_path, "file://", 7)) icon_path += 7;
+      if (!ecore_file_exists(icon_path))
+        {
+           unsigned int size;
+
+           size = e_util_icon_size_normalize(width * e_scale);
+           icon_path = efreet_icon_path_find(e_config->icon_theme, icon_path, size);
+        }
       popup->app_icon = evas_object_image_add(popup->e);
       evas_object_image_file_set(popup->app_icon, icon_path, NULL);
       evas_object_image_size_get(popup->app_icon, &w, &h);
@@ -287,9 +298,7 @@ _notification_popup_refresh(Popup_Data *popup)
   edje_object_signal_emit(popup->theme, "notification,icon", "notification");
 
   /* Fill up the event message */
-  msg = _notification_format_message(popup->notif);
-  edje_object_part_text_set(popup->theme, "notification.textblock.message", msg);
-  free(msg);
+  _notification_format_message(popup);
 
   /* Compute the new size of the popup */
   edje_object_calc_force(popup->theme);
@@ -349,19 +358,20 @@ _notification_popdown(Popup_Data *popup, E_Notification_Closed_Reason reason)
   free(popup);
 }
 
-static char *
-_notification_format_message(E_Notification *n)
+static void
+_notification_format_message(Popup_Data *popup)
 {
+  E_Notification *n = popup->notif;
   char *msg;
   const char *orig;
   char *dest;
-  int len;
+  int len = 6;
   int size = 512;
 
+  edje_object_part_text_set(popup->theme, "notification.text.title",
+          e_notification_summary_get(n));
   msg = calloc(1, 512);
-  snprintf(msg, 511, "<subject>%s</subject><br><body>",
-           e_notification_summary_get(n));
-  len = strlen(msg);
+  snprintf(msg, 511, "<body>");
 
   for (orig = e_notification_body_get(n), dest = msg + strlen(msg); orig && *orig; orig++)
     {
@@ -390,7 +400,8 @@ _notification_format_message(E_Notification *n)
         }
     }
 
-  return msg;
+  edje_object_part_text_set(popup->theme, "notification.textblock.message", msg);
+  free(msg);
 }
 
 static void
