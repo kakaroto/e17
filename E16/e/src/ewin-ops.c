@@ -1260,6 +1260,7 @@ EwinUnShade(EWin * ewin)
 
    if (GetZoomEWin() == ewin)
       return;
+   TIMER_DEL(ewin->timer);
    if (!ewin->state.shaded || ewin->state.shading || ewin->state.iconified)
       return;
 

@@ -33,6 +33,7 @@
 #include "iclass.h"
 #include "snaps.h"
 #include "tclass.h"
+#include "timers.h"
 #include "tooltips.h"
 #include "windowmatch.h"
 #include "xwin.h"
@@ -939,6 +940,20 @@ BorderCheckState(EWin * ewin, XEvent * ev)
      }
 }
 
+static int
+_BorderAutoshadeTimeout(void *data)
+{
+   EWin               *ewin = (EWin *) data;
+
+   if (!EwinFindByPtr(ewin))	/* Check, window may be gone */
+      return 0;
+
+   ewin->timer = NULL;
+   EwinOpShade(ewin, OPSRC_USER, 1);
+
+   return 0;
+}
+
 static void
 BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
@@ -948,7 +963,7 @@ BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
    switch (ev->type)
      {
      case EnterNotify:
-	if (ewin->props.autoshade && ewin->state.shaded)
+	if (ewin->props.autoshade)
 	  {
 	     EwinOpShade(ewin, OPSRC_USER, 0);
 	  }
@@ -962,7 +977,8 @@ BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	     if (x >= 4 && x < EoGetW(ewin) - 4 &&
 		 y >= 4 && y < EoGetH(ewin) - 4)
 		break;
-	     EwinOpShade(ewin, OPSRC_USER, 1);
+	     TIMER_DEL(ewin->timer);
+	     TIMER_ADD(ewin->timer, .5, _BorderAutoshadeTimeout, ewin);
 	  }
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);

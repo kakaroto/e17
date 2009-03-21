@@ -263,6 +263,8 @@ struct _ewin {
 
    void               *data;	/* Data hook for internal windows */
    const EWinOps      *ops;
+
+   Timer              *timer;	/* Autoshade timer */
 };
 
 #define EWIN_STATE_NEW          0	/* New */
