@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2008 Kim Woelders
+ * Copyright (C) 2008-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -271,9 +271,7 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
 	     if (!grp->cfg.move)
 		continue;
 	     break;
-	  case GROUP_ACTION_RAISE:
-	  case GROUP_ACTION_LOWER:
-	  case GROUP_ACTION_RAISE_LOWER:
+	  case GROUP_ACTION_STACKING:
 	     if (!grp->cfg.raise)
 		continue;
 	     break;

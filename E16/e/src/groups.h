@@ -31,14 +31,12 @@
 /* For window group listing */
 #define GROUP_ACTION_ANY                     0
 #define GROUP_ACTION_MOVE                    1
-#define GROUP_ACTION_RAISE                   2
-#define GROUP_ACTION_LOWER                   3
-#define GROUP_ACTION_KILL                    4
-#define GROUP_ACTION_STICK                   5
-#define GROUP_ACTION_ICONIFY                 6
-#define GROUP_ACTION_SHADE                   7
-#define GROUP_ACTION_SET_WINDOW_BORDER       8
-#define GROUP_ACTION_RAISE_LOWER             9
+#define GROUP_ACTION_STACKING                2
+#define GROUP_ACTION_KILL                    3
+#define GROUP_ACTION_STICK                   4
+#define GROUP_ACTION_ICONIFY                 5
+#define GROUP_ACTION_SHADE                   6
+#define GROUP_ACTION_SET_WINDOW_BORDER       7
 
 typedef struct _groupconfig {
    char                iconify;

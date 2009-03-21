@@ -1459,7 +1459,7 @@ EwinOpRaise(EWin * ewin, int source __UNUSED__)
    int                 i, num;
 
    SoundPlay(SOUND_RAISE);
-   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_RAISE,
+   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_STACKING,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
       EwinRaise(gwins[i]);
@@ -1473,73 +1473,12 @@ EwinOpLower(EWin * ewin, int source __UNUSED__)
    int                 i, num;
 
    SoundPlay(SOUND_LOWER);
-   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_LOWER,
+   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_STACKING,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
       EwinLower(gwins[i]);
    Efree(gwins);
 }
-
-#if 0				/* Unused */
-static int
-FindEwinInList(EWin * ewin, EWin ** gwins, int num)
-{
-   int                 i;
-
-   if (ewin && gwins)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if (ewin == gwins[i])
-		return 1;
-	  }
-     }
-   return 0;
-}
-
-void
-EwinOpRaiseLower(EWin * ewin)
-{
-   EWin              **gwins, *const *lst;
-   int                 gnum, j, raise = 0;
-   int                 i, num;
-
-   lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
-   gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_RAISE_LOWER,
-				      Mode.nogroup, &gnum);
-   for (j = 0; j < gnum; j++)
-     {
-	ewin = gwins[j];
-	for (i = 0; i < num - 1; i++)
-	  {
-	     if (EoGetLayer(lst[i]) == EoGetLayer(ewin) &&
-		 (lst[i] == ewin || !FindEwinInList(lst[i], gwins, gnum)))
-	       {
-		  if (lst[i] != ewin)
-		     raise = 1;
-
-		  j = gnum;
-		  break;
-	       }
-	  }
-     }
-
-   if (!raise)
-     {
-	SoundPlay(SOUND_LOWER);
-	for (j = 0; j < gnum; j++)
-	   EwinLower(gwins[j]);
-     }
-   else
-     {
-	SoundPlay(SOUND_RAISE);
-	for (j = 0; j < gnum; j++)
-	   EwinRaise(gwins[j]);
-     }
-
-   Efree(gwins);
-}
-#endif
 
 void
 EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
