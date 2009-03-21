@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -52,5 +52,9 @@ typedef struct _textclass TextClass;
 typedef struct _textstate TextState;
 
 typedef struct _snapshot Snapshot;
+
+typedef struct _timer Timer;
+typedef struct _idler Idler;
+typedef struct _animator Animator;
 
 #endif /* _ETYPES_H_ */

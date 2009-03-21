@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,10 +24,11 @@
 #ifndef _TIMERS_H_
 #define _TIMERS_H_
 
+#include "etypes.h"
+
 /* timers.c */
 double              GetTime(void);
 
-typedef struct _timer Timer;
 Timer              *TimerAdd(double in_time,
 			     int (*func) (void *data), void *data);
 int                 TimerDel(Timer * timer);
@@ -39,12 +40,10 @@ double              TimersRun(double t);
 #define TIMER_DEL(timer) \
    if (timer) { TimerDel(timer); timer = NULL; }
 
-typedef struct _idler Idler;
 Idler              *IdlerAdd(void (*func) (void *data), void *data);
 void                IdlerDel(Idler * id);
 void                IdlersRun(void);
 
-typedef struct _animator Animator;
 Animator           *AnimatorAdd(int (*func) (void *data), void *data);
 void                AnimatorDel(Animator * an);
 
