@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -99,7 +99,6 @@ GroupCreate(int gid)
    g->cfg.set_border = Conf_groups.dflt.set_border;
    g->cfg.stick = Conf_groups.dflt.stick;
    g->cfg.shade = Conf_groups.dflt.shade;
-   g->cfg.mirror = Conf_groups.dflt.mirror;
 
    Dprintf("grp=%p gid=%d\n", g, g->index);
    return g;
@@ -533,7 +532,6 @@ GroupsSave(void)
       fprintf(f, "SET_BORDER: %i\n", g->cfg.set_border);
       fprintf(f, "STICK: %i\n", g->cfg.stick);
       fprintf(f, "SHADE: %i\n", g->cfg.shade);
-      fprintf(f, "MIRROR: %i\n", g->cfg.mirror);
    }
 
    fclose(f);
@@ -596,10 +594,6 @@ GroupsLoad(void)
 	else if (!strcmp(ss, "SHADE:"))
 	  {
 	     g->cfg.shade = ii;
-	  }
-	else if (!strcmp(ss, "MIRROR:"))
-	  {
-	     g->cfg.mirror = ii;
 	  }
      }
    fclose(f);
@@ -907,11 +901,6 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Shading"));
    DialogItemCheckButtonSetPtr(di, &(dd->cfg.shade));
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
-   DialogItemCheckButtonSetPtr(di, &(dd->cfg.mirror));
 }
 
 static const DialogDef DlgGroups = {
@@ -1010,11 +999,6 @@ _DlgFillGroupDefaults(Dialog * d __UNUSED__, DItem * table,
    DialogItemSetText(di, _("Shading"));
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.shade));
 
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
-   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.mirror));
-
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
 
@@ -1096,11 +1080,11 @@ GroupShow(Group * g)
 	     "      iconify: %d\n" "         kill: %d\n"
 	     "         move: %d\n" "        raise: %d\n"
 	     "   set_border: %d\n" "        stick: %d\n"
-	     "        shade: %d\n" "       mirror: %d\n",
+	     "        shade: %d\n",
 	     g->index, g->num_members,
 	     g->cfg.iconify, g->cfg.kill,
 	     g->cfg.move, g->cfg.raise,
-	     g->cfg.set_border, g->cfg.stick, g->cfg.shade, g->cfg.mirror);
+	     g->cfg.set_border, g->cfg.stick, g->cfg.shade);
 }
 
 static void
@@ -1294,13 +1278,6 @@ IPC_Group(const char *params)
 	else
 	   onoff = group->cfg.shade;
      }
-   else if (!strcmp(operation, "mirror"))
-     {
-	if (onoff >= 0)
-	   group->cfg.mirror = onoff;
-	else
-	   onoff = group->cfg.mirror;
-     }
    else
      {
 	IpcPrintf("Error: no such operation: %s", operation);
@@ -1380,8 +1357,7 @@ static const IpcItem GroupsIpcArray[] = {
     "  group <groupid> raise <on/off/?>\n"
     "  group <groupid> set_border <on/off/?>\n"
     "  group <groupid> stick <on/off/?>\n"
-    "  group <groupid> shade <on/off/?>\n"
-    "  group <groupid> mirror <on/off/?>\n"}
+    "  group <groupid> shade <on/off/?>\n"}
    ,
 };
 #define N_IPC_FUNCS (sizeof(GroupsIpcArray)/sizeof(IpcItem))
@@ -1392,7 +1368,6 @@ static const IpcItem GroupsIpcArray[] = {
 static const CfgItem GroupsCfgItems[] = {
    CFG_ITEM_BOOL(Conf_groups, dflt.iconify, 1),
    CFG_ITEM_BOOL(Conf_groups, dflt.kill, 0),
-   CFG_ITEM_BOOL(Conf_groups, dflt.mirror, 1),
    CFG_ITEM_BOOL(Conf_groups, dflt.move, 1),
    CFG_ITEM_BOOL(Conf_groups, dflt.raise, 0),
    CFG_ITEM_BOOL(Conf_groups, dflt.set_border, 1),

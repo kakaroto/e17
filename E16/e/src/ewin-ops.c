@@ -1545,22 +1545,18 @@ void
 EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
 {
    EWin              **gwins = NULL;
-   Group              *curr_group = NULL;
    int                 i, num;
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_STICK,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (EoIsSticky(gwins[i])
-	    && ((curr_group && !curr_group->cfg.mirror) || !on))
+	if (EoIsSticky(gwins[i]) && !on)
 	  {
 	     SoundPlay(SOUND_WINDOW_UNSTICK);
 	     EwinUnStick(gwins[i]);
 	  }
-	else if (!EoIsSticky(gwins[i])
-		 && ((curr_group && !curr_group->cfg.mirror) || on))
+	else if (!EoIsSticky(gwins[i]) && on)
 	  {
 	     SoundPlay(SOUND_WINDOW_STICK);
 	     EwinStick(gwins[i]);
@@ -1626,7 +1622,6 @@ EwinOpNeverFocus(EWin * ewin, int on)
 void
 EwinOpIconify(EWin * ewin, int source __UNUSED__, int on)
 {
-   Group              *curr_group = NULL;
    EWin              **gwins = NULL;
    int                 i, num;
 
@@ -1635,14 +1630,11 @@ EwinOpIconify(EWin * ewin, int source __UNUSED__, int on)
 				 &num);
    for (i = 0; i < num; i++)
      {
-	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (gwins[i]->state.iconified
-	    && ((curr_group && !curr_group->cfg.mirror) || !on))
+	if (gwins[i]->state.iconified && !on)
 	  {
 	     EwinDeIconify(gwins[i]);
 	  }
-	else if (!gwins[i]->state.iconified
-		 && ((curr_group && !curr_group->cfg.mirror) || on))
+	else if (!gwins[i]->state.iconified && on)
 	  {
 	     EwinIconify(gwins[i]);
 	  }
@@ -1654,22 +1646,18 @@ void
 EwinOpShade(EWin * ewin, int source __UNUSED__, int on)
 {
    EWin              **gwins = NULL;
-   Group              *curr_group = NULL;
    int                 i, num;
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_SHADE,
 				      Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (gwins[i]->state.shaded
-	    && ((curr_group && !curr_group->cfg.mirror) || !on))
+	if (gwins[i]->state.shaded && !on)
 	  {
 	     SoundPlay(SOUND_UNSHADE);
 	     EwinUnShade(gwins[i]);
 	  }
-	else if (!gwins[i]->state.shaded
-		 && ((curr_group && !curr_group->cfg.mirror) || on))
+	else if (!gwins[i]->state.shaded && on)
 	  {
 	     SoundPlay(SOUND_SHADE);
 	     EwinShade(gwins[i]);
