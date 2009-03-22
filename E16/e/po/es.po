@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-13 23:11+0100\n"
+"POT-Creation-Date: 2009-03-22 19:57+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -47,7 +47,7 @@ msgstr ""
 "Buena suerte. Esperamos que disfrute de la aplicación.\n"
 "\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -505,7 +505,7 @@ msgstr "Ambos extremos"
 msgid "End"
 msgstr "Extremo"
 
-#: src/container.c:1660 src/focus.c:832
+#: src/container.c:1660 src/focus.c:841
 msgid "None"
 msgstr "Ninguna"
 
@@ -698,7 +698,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ecompmgr.c:2625
+#: src/ecompmgr.c:2592
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -730,107 +730,107 @@ msgstr ""
 "\n"
 "Saliendo...\n"
 
-#: src/focus.c:704
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "El enfoque sigue al puntero del ratón"
 
-#: src/focus.c:710
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "El enfoque sigue al puntero del ratón lentamente"
 
-#: src/focus.c:716
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "El enfoque sigue los clicks del ratón"
 
-#: src/focus.c:726
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Pulsar en una ventana siempre la eleva"
 
-#: src/focus.c:734
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Todas las ventanas nuevas reciben el enfoque primero"
 
-#: src/focus.c:739
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Solo nuevas ventanas de diálogo reciben enfoque"
 
-#: src/focus.c:746
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Solo nuevas ventanas de diálogo cuyo padre tiene el enfoque reciben enfoque"
 
-#: src/focus.c:751
+#: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:757
+#: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Enviar el puntero del ratón a la ventana en el cambio de enfoque"
 
-#: src/focus.c:763
+#: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Enviar el puntero del ratón a la ventana en el cambio de enfoque"
 
-#: src/focus.c:771
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Mostrar y usar Lista de Enfoque"
 
-#: src/focus.c:776
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "Incluir ventanas pegajosas en la lista de enfoques"
 
-#: src/focus.c:781
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "Incluir ventanas sombreadas en la lista de enfoque"
 
-#: src/focus.c:786
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "Incluir ventanas iconificadas en la lista de enfoque"
 
-#: src/focus.c:791
+#: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Incluir ventanas sombreadas en la lista de enfoque"
 
-#: src/focus.c:796
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:801
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Elevar ventana DESPUÉS de cambio de enfoque"
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Enviar el puntero del ratón a la ventana DESPUÉS del cambio de enfoque"
 
-#: src/focus.c:816
+#: src/focus.c:825
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Política al mostrar la Focuslist de la imagen (si una operación falla "
 "intentar siguiente):"
 
-#: src/focus.c:820
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr "Primero Icono E, luego Icono App"
 
-#: src/focus.c:826
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr "Primero Icono App, luego Icono E"
 
-#: src/focus.c:840
+#: src/focus.c:849
 #, fuzzy
 msgid "Focus"
 msgstr "No enfocar Nunca"
 
-#: src/focus.c:841
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Configurar enfoque"
 
-#: src/focus.c:844
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -870,11 +870,11 @@ msgstr ""
 "Enlightenment Efectos especiales\n"
 "Dialogo de Configuracion\n"
 
-#: src/groups.c:707
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Selección de Grupo de Ventanas"
 
-#: src/groups.c:710
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -882,11 +882,11 @@ msgstr ""
 "Grupo de Ventanas de Enlightenment\n"
 "Diálogo de Selección\n"
 
-#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "Error de Grupo de Ventanas"
 
-#: src/groups.c:735
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -900,7 +900,7 @@ msgstr ""
 "  a través de una ventana que pertenezca al menos a un grupo.\n"
 "\n"
 
-#: src/groups.c:743
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -914,7 +914,7 @@ msgstr ""
 "  Primero tiene que crear otros grupos.  \n"
 "\n"
 
-#: src/groups.c:752
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -924,11 +924,11 @@ msgstr ""
 "  En este momento no existe ningún grupo. Primero tiene que crear un grupo.\n"
 "\n"
 
-#: src/groups.c:842
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "   Escoja el Grupo a Configurar:   "
 
-#: src/groups.c:873
+#: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -936,43 +936,39 @@ msgstr ""
 "  Las siguientes acciones son aplicadas  \n"
 "  a todos los miembros del grupo:  "
 
-#: src/groups.c:878 src/groups.c:980
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "Cambiando Estilo de Borde"
 
-#: src/groups.c:883 src/groups.c:985
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "Iconizando"
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "Matando"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "Moviendo"
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "Elevando / ocultando"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "Pegando"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "Enrollando"
 
-#: src/groups.c:913 src/groups.c:1015
-msgid "Mirror Shade/Iconify/Stick"
-msgstr "Espejo Enrollar/Iconizar/Pegar"
-
-#: src/groups.c:920
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "Configurar Grupos de Ventanas"
 
-#: src/groups.c:923
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -980,7 +976,7 @@ msgstr ""
 "Grupos de Ventanas de Enlightenment\n"
 "Dialogo de Configuracion\n"
 
-#: src/groups.c:938
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -990,28 +986,28 @@ msgstr ""
 "  Esta ventana no pertenece a ningún grupo.  \n"
 "\n"
 
-#: src/groups.c:973
+#: src/groups.c:962
 msgid " Per-group settings: "
 msgstr "   Configuracion por Grupos:"
 
-#: src/groups.c:1024
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr "Configuraciones Globales: "
 
-#: src/groups.c:1028
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "Solapar posiciones de Ventanas"
 
-#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
 
-#: src/groups.c:1035
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Control de Grupo por Omisión"
 
-#: src/groups.c:1038
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1019,17 +1015,17 @@ msgstr ""
 "Dialogo de configuracion principal de\n"
 "Grupos de Enlightenment\n"
 
-#: src/groups.c:1066
+#: src/groups.c:1050
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Seleccione el grupo al que la ventana pertenecerá:  \n"
 
-#: src/groups.c:1072
+#: src/groups.c:1056
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Seleccione el grupo del que la ventana será retirada."
 
-#: src/groups.c:1077
+#: src/groups.c:1061
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Seleccione el grupo que desea dividir"
@@ -1138,30 +1134,30 @@ msgstr "Opciones del Portaíconos"
 msgid "Iconbox Settings"
 msgstr "Configurar Portaíconos"
 
-#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1457
+#: src/ipc.c:1465
 #, fuzzy
 msgid "composite"
 msgstr "Habilitar Composite"
 
-#: src/ipc.c:1464
+#: src/ipc.c:1472
 #, fuzzy
 msgid "sound"
 msgstr "Sonido"
 
-#: src/ipc.c:1807
+#: src/ipc.c:1815
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ayuda de los Comandos IPC de Enlightenment\n"
 
-#: src/ipc.c:1811
+#: src/ipc.c:1819
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1171,19 +1167,19 @@ msgstr ""
 "Use \"Ayuda <comando>\" para obtener descripciones individuales\n"
 "\n"
 
-#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 msgid "Commands currently available:\n"
 msgstr "Comandos disponibles:\n"
 
-#: src/ipc.c:1831
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
-#: src/ipc.c:1832
+#: src/ipc.c:1840
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 
-#: src/ipc.c:1834 src/ipc.c:1846
+#: src/ipc.c:1842 src/ipc.c:1854
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 
@@ -2845,6 +2841,9 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Ondas"
+
+#~ msgid "Mirror Shade/Iconify/Stick"
+#~ msgstr "Espejo Enrollar/Iconizar/Pegar"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i Escritorios"

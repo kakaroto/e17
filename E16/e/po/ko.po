@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-13 23:11+0100\n"
+"POT-Creation-Date: 2009-03-22 19:57+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -501,7 +501,7 @@ msgstr "양쪽 끝"
 msgid "End"
 msgstr "끝"
 
-#: src/container.c:1660 src/focus.c:832
+#: src/container.c:1660 src/focus.c:841
 msgid "None"
 msgstr "없음"
 
@@ -693,7 +693,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2625
+#: src/ecompmgr.c:2592
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -725,105 +725,105 @@ msgstr ""
 "\n"
 "종료.\n"
 
-#: src/focus.c:704
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "포커스가 포인터 따라감"
 
-#: src/focus.c:710
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "포커스가 포인터를 적당히 따라감"
 
-#: src/focus.c:716
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "포커스가 마우스 클릭을 따라감"
 
-#: src/focus.c:726
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "창안에서 클릭하면 항상 창을 위로 올림"
 
-#: src/focus.c:734
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "모든 새로운 창이 먼저 포커스를 가짐"
 
-#: src/focus.c:739
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "오직 새로운 대화상자 창만 포커스 가짐"
 
-#: src/focus.c:746
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "오직 포커스를 가진 창의 새로운 대화상자만 포커스 가짐"
 
-#: src/focus.c:751
+#: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/focus.c:757
+#: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:763
+#: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:771
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "포커스 목록을 표시하고 사용"
 
-#: src/focus.c:776
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "포커스 목록에 스틱키 창 포함"
 
-#: src/focus.c:781
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "포커스 목록에 음영 창 포함"
 
-#: src/focus.c:786
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "포커스 목록에 아이콘 창 포함"
 
-#: src/focus.c:791
+#: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "포커스 목록에 음영 창 포함"
 
-#: src/focus.c:796
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/focus.c:801
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "포커스가 바뀐 후에 창 올리기"
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "포커스가 바뀐 후 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:816
+#: src/focus.c:825
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
 
-#: src/focus.c:820
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:826
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:840
+#: src/focus.c:849
 #, fuzzy
 msgid "Focus"
 msgstr "포커스 갖지않음"
 
-#: src/focus.c:841
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "포커스 설정"
 
-#: src/focus.c:844
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -863,11 +863,11 @@ msgstr ""
 "인라이튼먼트 특수 효과\n"
 "설정 대화상자\n"
 
-#: src/groups.c:707
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "창 그룹 선택"
 
-#: src/groups.c:710
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -875,11 +875,11 @@ msgstr ""
 "인라이튼먼트 창 그룹\n"
 "선택 대화상자\n"
 
-#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "창 그룹 오류"
 
-#: src/groups.c:735
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -893,7 +893,7 @@ msgstr ""
 "  창을 삭제하거나 그룹을 제거할 수 있습니다.\n"
 "\n"
 
-#: src/groups.c:743
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -907,7 +907,7 @@ msgstr ""
 "  먼저 다른 그룹을 시작하셔야 합니다.  \n"
 "\n"
 
-#: src/groups.c:752
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -917,11 +917,11 @@ msgstr ""
 "  현재 어떤 그룹도 없습니다. 먼저 그룹을 시작하셔야 합니다.\n"
 "\n"
 
-#: src/groups.c:842
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "   설정할 그룹 선택:   "
 
-#: src/groups.c:873
+#: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -929,43 +929,39 @@ msgstr ""
 "  다음 동작은 모든 그룹  \n"
 "  멤버에게 적용됩니다:  "
 
-#: src/groups.c:878 src/groups.c:980
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "가장자리 형식 바꿈"
 
-#: src/groups.c:883 src/groups.c:985
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "아이콘화"
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "죽이기"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "이동"
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "올리기/내리기"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "고착"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "접기"
 
-#: src/groups.c:913 src/groups.c:1015
-msgid "Mirror Shade/Iconify/Stick"
-msgstr "접기/아이콘화/고착 거울"
-
-#: src/groups.c:920
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "창 그룹 설정"
 
-#: src/groups.c:923
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -973,7 +969,7 @@ msgstr ""
 "인라이튼먼트 창 그룹\n"
 "설정 대화상자\n"
 
-#: src/groups.c:938
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -983,28 +979,28 @@ msgstr ""
 "  이 창은 현재 어떤 그룹에도 속해있지 않습니다.  \n"
 "\n"
 
-#: src/groups.c:973
+#: src/groups.c:962
 msgid " Per-group settings: "
 msgstr "그룹 설정: "
 
-#: src/groups.c:1024
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr " 공통 설정: "
 
-#: src/groups.c:1028
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "그룹 %i"
 
-#: src/groups.c:1035
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "기본 그룹 조정 설정"
 
-#: src/groups.c:1038
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1012,17 +1008,17 @@ msgstr ""
 "인라이튼먼트 기본 그룹\n"
 "조정 설정 대화상자\n"
 
-#: src/groups.c:1066
+#: src/groups.c:1050
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: src/groups.c:1072
+#: src/groups.c:1056
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: src/groups.c:1077
+#: src/groups.c:1061
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  없앨 그룹을 선택하십시오  "
@@ -1126,30 +1122,30 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1457
+#: src/ipc.c:1465
 #, fuzzy
 msgid "composite"
 msgstr "사운드 사용"
 
-#: src/ipc.c:1464
+#: src/ipc.c:1472
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1807
+#: src/ipc.c:1815
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1811
+#: src/ipc.c:1819
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1160,23 +1156,23 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1831
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1832
+#: src/ipc.c:1840
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1834 src/ipc.c:1846
+#: src/ipc.c:1842 src/ipc.c:1854
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
@@ -2854,6 +2850,9 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "잔물결"
+
+#~ msgid "Mirror Shade/Iconify/Stick"
+#~ msgstr "접기/아이콘화/고착 거울"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i 데스크탑"

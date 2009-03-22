@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-13 23:11+0100\n"
+"POT-Creation-Date: 2009-03-22 19:57+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: sda <sda00@himki.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -497,7 +497,7 @@ msgstr "С обеих сторон"
 msgid "End"
 msgstr "В конце"
 
-#: src/container.c:1660 src/focus.c:832
+#: src/container.c:1660 src/focus.c:841
 msgid "None"
 msgstr "Не использовать"
 
@@ -692,7 +692,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Применить"
 
-#: src/ecompmgr.c:2625
+#: src/ecompmgr.c:2592
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -729,100 +729,100 @@ msgstr ""
 "\n"
 "Выходим.\n"
 
-#: src/focus.c:704
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "Фокус следует за мышью"
 
-#: src/focus.c:710
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "Фокус следует за мышью свободно"
 
-#: src/focus.c:716
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "Фокус по нажатию кнопки мыши"
 
-#: src/focus.c:726
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Нажатие кнопки мыши всегда поднимает окно наверх"
 
-#: src/focus.c:734
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Все новые окна получают фокус"
 
-#: src/focus.c:739
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Только новые диалоги получают фокус"
 
-#: src/focus.c:746
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Только новые диалоги окон в фокусе получают фокус"
 
-#: src/focus.c:751
+#: src/focus.c:760
 msgid "Raise windows while switching focus"
 msgstr "Поднимать окна наверх после переключения фокуса"
 
-#: src/focus.c:757
+#: src/focus.c:766
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Посылать курсор в окно при получении фокуса"
 
-#: src/focus.c:763
+#: src/focus.c:772
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Посылать курсор в окно при получении фокуса"
 
-#: src/focus.c:771
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Отображать и использовать список окон для передачи фокуса"
 
-#: src/focus.c:776
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "Включать зафиксированные окна в список передачи фокуса"
 
-#: src/focus.c:781
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "Включать скрытые окна в список передачи фокуса"
 
-#: src/focus.c:786
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "Включать свёрнутые окна в список передачи фокуса"
 
-#: src/focus.c:791
+#: src/focus.c:800
 msgid "Include windows on other desks in focus list"
 msgstr "Располагать окна вручную"
 
-#: src/focus.c:796
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "При переключении в другое окно передавать ему фокус"
 
-#: src/focus.c:801
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Поднимать окна наверх после переключения фокуса"
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Посылать курсор в окно после получении фокуса"
 
-#: src/focus.c:816
+#: src/focus.c:825
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
-#: src/focus.c:820
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr "Сперва - иконку E, потом - иконку приложения"
 
-#: src/focus.c:826
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr "Сперва - иконку приложения, потоиииииконку E"
 
-#: src/focus.c:840
+#: src/focus.c:849
 msgid "Focus"
 msgstr "Фокус"
 
-#: src/focus.c:841
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Настройки фокуса"
 
-#: src/focus.c:844
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -862,11 +862,11 @@ msgstr ""
 "Диалог настройки\n"
 "спецэффектов Enlightenment\n"
 
-#: src/groups.c:707
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Выбор Группы Окон"
 
-#: src/groups.c:710
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -874,11 +874,11 @@ msgstr ""
 "Диалог настройки\n"
 "групп окон Enlightenment\n"
 
-#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "Ошибка Группы Окон"
 
-#: src/groups.c:735
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -892,7 +892,7 @@ msgstr ""
 "  только из окна, которое входит по крайней мере в одну группу.\n"
 "\n"
 
-#: src/groups.c:743
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -906,7 +906,7 @@ msgstr ""
 "  Вам надо сперва начать другие группы.  \n"
 "\n"
 
-#: src/groups.c:752
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -917,11 +917,11 @@ msgstr ""
 "  Вам надо сперва начать группу.  \n"
 "\n"
 
-#: src/groups.c:842
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "  Выберите группу для настройки:  "
 
-#: src/groups.c:873
+#: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -929,43 +929,39 @@ msgstr ""
 "  Эти действия применяются  \n"
 "  ко всем членам группы окон:  "
 
-#: src/groups.c:878 src/groups.c:980
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "Изменить стиль бордюра окна"
 
-#: src/groups.c:883 src/groups.c:985
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "Свернуть"
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "Уничтожить"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "Переместить"
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "Поднять/Опустить"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "Зафиксировать"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "Скрыть"
 
-#: src/groups.c:913 src/groups.c:1015
-msgid "Mirror Shade/Iconify/Stick"
-msgstr "Скрыть/Свернуть/Зафиксировать"
-
-#: src/groups.c:920
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "Установки группы окон"
 
-#: src/groups.c:923
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -973,7 +969,7 @@ msgstr ""
 "Диалог настройки\n"
 "групп окон Enlightenment\n"
 
-#: src/groups.c:938
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -983,27 +979,27 @@ msgstr ""
 "  В настоящий момент это окно не входит ни в одну группу.  \n"
 "\n"
 
-#: src/groups.c:973
+#: src/groups.c:962
 msgid " Per-group settings: "
 msgstr "Настройки каждой группы окон:"
 
-#: src/groups.c:1024
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr "Глобальные настройки:"
 
-#: src/groups.c:1028
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "Изменить расположение окна"
 
-#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
 msgid "Groups"
 msgstr "Группы окон"
 
-#: src/groups.c:1035
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Установки группы по умолчанию"
 
-#: src/groups.c:1038
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1011,15 +1007,15 @@ msgstr ""
 "Диалог настройки контроля\n"
 "групп окон Enlightenment\n"
 
-#: src/groups.c:1066
+#: src/groups.c:1050
 msgid "Pick the group the window will belong to:"
 msgstr "Выберите группу, к которой будет принадлежать окно:"
 
-#: src/groups.c:1072
+#: src/groups.c:1056
 msgid "Select the group to remove the window from:"
 msgstr "Выберите группу, из которой нужно убрать это окно:"
 
-#: src/groups.c:1077
+#: src/groups.c:1061
 msgid "Select the group to break:"
 msgstr "Выберите группу, которую хотите разорвать:"
 
@@ -1125,28 +1121,28 @@ msgstr "Iconbox"
 msgid "Iconbox Settings"
 msgstr "Установки Iconbox"
 
-#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
 msgid "Message"
 msgstr "Сообщение"
 
-#: src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "Меня собрали без поддержки %s !"
 
-#: src/ipc.c:1457
+#: src/ipc.c:1465
 msgid "composite"
 msgstr "Композит"
 
-#: src/ipc.c:1464
+#: src/ipc.c:1472
 msgid "sound"
 msgstr "Звук"
 
-#: src/ipc.c:1807
+#: src/ipc.c:1815
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Справка по командам Enlightenment IPC\n"
 
-#: src/ipc.c:1811
+#: src/ipc.c:1819
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1156,19 +1152,19 @@ msgstr ""
 "\"help <команда>\": описание команды\n"
 "\n"
 
-#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 msgid "Commands currently available:\n"
 msgstr "Доступные команды:\n"
 
-#: src/ipc.c:1831
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Набери \"help full\" для получения полного справочника\n"
 
-#: src/ipc.c:1832
+#: src/ipc.c:1840
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
-#: src/ipc.c:1834 src/ipc.c:1846
+#: src/ipc.c:1842 src/ipc.c:1854
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
@@ -2751,6 +2747,9 @@ msgstr "Прочее"
 #: config/strings.c:201
 msgid "Epplets"
 msgstr "Модули (эпплеты)"
+
+#~ msgid "Mirror Shade/Iconify/Stick"
+#~ msgstr "Скрыть/Свернуть/Зафиксировать"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i рабочих столов"

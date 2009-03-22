@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-13 23:11+0100\n"
+"POT-Creation-Date: 2009-03-22 19:57+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -33,7 +33,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -461,7 +461,7 @@ msgstr "Beide zijden"
 msgid "End"
 msgstr "Einde"
 
-#: src/container.c:1660 src/focus.c:832
+#: src/container.c:1660 src/focus.c:841
 msgid "None"
 msgstr "Geen"
 
@@ -648,7 +648,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Pas toe"
 
-#: src/ecompmgr.c:2625
+#: src/ecompmgr.c:2592
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -672,106 +672,106 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/focus.c:704
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "Invoer volgt de muis"
 
-#: src/focus.c:710
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "Invoer volgt de muis slordig"
 
-#: src/focus.c:716
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "Invoer volgt muis klikken"
 
-#: src/focus.c:726
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Klikken in een venster brengt het altijd naar boven"
 
-#: src/focus.c:734
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Alle niewe vensters krijgen de invoer"
 
-#: src/focus.c:739
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
-#: src/focus.c:746
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen "
 "de invoer"
 
-#: src/focus.c:751
+#: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:757
+#: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:763
+#: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:771
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Toon en gebruik een venster lijst"
 
-#: src/focus.c:776
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr ""
 
-#: src/focus.c:781
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr ""
 
-#: src/focus.c:786
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr ""
 
-#: src/focus.c:791
+#: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Plaats vensters met de hand"
 
-#: src/focus.c:796
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr ""
 
-#: src/focus.c:801
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Stuur de muis naar het vester na een invoer wisseling"
 
-#: src/focus.c:816
+#: src/focus.c:825
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
-#: src/focus.c:820
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:826
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:840
+#: src/focus.c:849
 msgid "Focus"
 msgstr ""
 
-#: src/focus.c:841
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Invoer instellingen"
 
-#: src/focus.c:844
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -808,21 +808,21 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:707
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Venster Groep Selectie"
 
-#: src/groups.c:710
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "Venster groep fout"
 
-#: src/groups.c:735
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -836,7 +836,7 @@ msgstr ""
 " verwijderen via vensters die daadwerkelijk bij minstens een groep behoren\n"
 "\n"
 
-#: src/groups.c:743
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -850,7 +850,7 @@ msgstr ""
 " Je zult eerst andere groepen moeten starten\n"
 "\n"
 
-#: src/groups.c:752
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -860,11 +860,11 @@ msgstr ""
 " Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n"
 "\n"
 
-#: src/groups.c:842
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "  Kies de groep om in te stellen:  "
 
-#: src/groups.c:873
+#: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -872,49 +872,45 @@ msgstr ""
 " De volgende acties worden\n"
 " toegepast op alle groepsleden"
 
-#: src/groups.c:878 src/groups.c:980
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "Verander van rand stijl"
 
-#: src/groups.c:883 src/groups.c:985
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "Minimaliseren"
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "Afsluiten"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "Verplaatsen"
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "Omhoog/Omlaag brengen"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "Sticken"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "Shaden"
 
-#: src/groups.c:913 src/groups.c:1015
-msgid "Mirror Shade/Iconify/Stick"
-msgstr ""
-
-#: src/groups.c:920
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "Venster Groep Instellingen"
 
-#: src/groups.c:923
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:938
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -924,46 +920,46 @@ msgstr ""
 " Dit venster behoort momenteel niet bij een groep.  \n"
 "\n"
 
-#: src/groups.c:973
+#: src/groups.c:962
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Pager instellingen"
 
-#: src/groups.c:1024
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1028
+#: src/groups.c:1012
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Venster Opties"
 
-#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "Groep %i"
 
-#: src/groups.c:1035
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Standaard Groep Controle Instellingen"
 
-#: src/groups.c:1038
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1066
+#: src/groups.c:1050
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "Kies de groep waar het venster bij moet behoren : \n"
 
-#: src/groups.c:1072
+#: src/groups.c:1056
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Kies de groep waar het venster van verwijderd moet worden"
 
-#: src/groups.c:1077
+#: src/groups.c:1061
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " Kies de groep om te breken"
@@ -1036,52 +1032,52 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1457
+#: src/ipc.c:1465
 #, fuzzy
 msgid "composite"
 msgstr "Zet geluiden aan"
 
-#: src/ipc.c:1464
+#: src/ipc.c:1472
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1807
+#: src/ipc.c:1815
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:1811
+#: src/ipc.c:1819
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:1831
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1832
+#: src/ipc.c:1840
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1834 src/ipc.c:1846
+#: src/ipc.c:1842 src/ipc.c:1854
 msgid "         <command>     : <description>\n"
 msgstr ""
 

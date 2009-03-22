@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-13 23:11+0100\n"
+"POT-Creation-Date: 2009-03-22 19:57+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:640 src/buttons.c:181
+#: src/aclass.c:209 src/backgrounds.c:236 src/borders.c:641 src/buttons.c:181
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -495,7 +495,7 @@ msgstr "Mindkét végén"
 msgid "End"
 msgstr "Végén"
 
-#: src/container.c:1660 src/focus.c:832
+#: src/container.c:1660 src/focus.c:841
 msgid "None"
 msgstr "Nincs"
 
@@ -686,7 +686,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/ecompmgr.c:2625
+#: src/ecompmgr.c:2592
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -718,106 +718,106 @@ msgstr ""
 "\n"
 "Kilépek.\n"
 
-#: src/focus.c:704
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "A fókusz követi az egérmutatót"
 
-#: src/focus.c:710
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "A fókusz lazán követi az egérmutatót"
 
-#: src/focus.c:716
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "A fókusz követi az egérkattintást"
 
-#: src/focus.c:726
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Az ablakok mindig felülre kerülnek egérkattintásnál"
 
-#: src/focus.c:734
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Az új ablakok fókuszt kapnak"
 
-#: src/focus.c:739
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Csak az új ablakok kapnak fókuszt"
 
-#: src/focus.c:746
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:751
+#: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:757
+#: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:763
+#: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:771
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Fókuszlista megjelenítése és használata"
 
-#: src/focus.c:776
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "Ragadós ablakok bevétele a fókusz listába"
 
-#: src/focus.c:781
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:786
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "Ikonizált ablakok bevétele a fókusz listába"
 
-#: src/focus.c:791
+#: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:796
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:801
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Az ablak felülre kerül fókuszváltás után"
 
-#: src/focus.c:806
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltás után"
 
-#: src/focus.c:816
+#: src/focus.c:825
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/focus.c:820
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:826
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:840
+#: src/focus.c:849
 #, fuzzy
 msgid "Focus"
 msgstr "Nem kap fókuszt"
 
-#: src/focus.c:841
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Fókusz beállításai"
 
-#: src/focus.c:844
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -857,11 +857,11 @@ msgstr ""
 "Enlightenment speciális effektek\n"
 "beállításai\n"
 
-#: src/groups.c:707
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Ablakcsoport kiválasztása"
 
-#: src/groups.c:710
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -869,11 +869,11 @@ msgstr ""
 "Enlightenment Ablakcsoport\n"
 "kiválasztása\n"
 
-#: src/groups.c:733 src/groups.c:742 src/groups.c:750 src/groups.c:936
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
 msgstr "Ablakcsoport hiba"
 
-#: src/groups.c:735
+#: src/groups.c:729
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -887,7 +887,7 @@ msgstr ""
 "  ablakot egy csoportból kivenni, ami maga is egy csoport tagja.\n"
 "\n"
 
-#: src/groups.c:743
+#: src/groups.c:737
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -901,7 +901,7 @@ msgstr ""
 "  Hozzon létre egy új csoportot elõször.\n"
 "\n"
 
-#: src/groups.c:752
+#: src/groups.c:746
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -911,11 +911,11 @@ msgstr ""
 "  Jelenleg nincsenek csoportok. Elõször létre kell hoznia egy csoportot.\n"
 "\n"
 
-#: src/groups.c:842
+#: src/groups.c:836
 msgid "   Pick the group to configure:   "
 msgstr "   Válasszon ki egy csoportot a beállításhoz:   "
 
-#: src/groups.c:873
+#: src/groups.c:867
 #, fuzzy
 msgid ""
 "  The following actions are  \n"
@@ -924,43 +924,39 @@ msgstr ""
 "  Az alábbi tevékenység a csoport \n"
 "  minden tagján végrehajtódik:  "
 
-#: src/groups.c:878 src/groups.c:980
+#: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
 msgstr "Kerettípus váltás"
 
-#: src/groups.c:883 src/groups.c:985
+#: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
 msgstr "Kicsinyítés"
 
-#: src/groups.c:888 src/groups.c:990
+#: src/groups.c:882 src/groups.c:979
 msgid "Killing"
 msgstr "Megsemmisítés"
 
-#: src/groups.c:893 src/groups.c:995
+#: src/groups.c:887 src/groups.c:984
 msgid "Moving"
 msgstr "Mozgatás"
 
-#: src/groups.c:898 src/groups.c:1000
+#: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
 msgstr "Följebb/Lejjebb"
 
-#: src/groups.c:903 src/groups.c:1005
+#: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
 msgstr "Rögzítés"
 
-#: src/groups.c:908 src/groups.c:1010
+#: src/groups.c:902 src/groups.c:999
 msgid "Shading"
 msgstr "Árnyékolás"
 
-#: src/groups.c:913 src/groups.c:1015
-msgid "Mirror Shade/Iconify/Stick"
-msgstr "Fordított Árnyék/Kicsi/Rögzít"
-
-#: src/groups.c:920
+#: src/groups.c:909
 msgid "Window Group Settings"
 msgstr "Ablakcsoportok beállításai"
 
-#: src/groups.c:923
+#: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -968,7 +964,7 @@ msgstr ""
 "Enlightenment Ablakcsoportok\n"
 "beállításai\n"
 
-#: src/groups.c:938
+#: src/groups.c:927
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -978,30 +974,30 @@ msgstr ""
 "  Ez az ablak nem tartozik egy csoporthoz sem.  \n"
 "\n"
 
-#: src/groups.c:973
+#: src/groups.c:962
 #, fuzzy
 msgid " Per-group settings: "
 msgstr " Lapozó beállításai: "
 
-#: src/groups.c:1024
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr " Globális beállítások: "
 
-#: src/groups.c:1028
+#: src/groups.c:1012
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Ablak helyének cseréje"
 
-#: src/groups.c:1034 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
 #, fuzzy
 msgid "Groups"
 msgstr "%i. csoport"
 
-#: src/groups.c:1035
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Csoportok alapbeállításai"
 
-#: src/groups.c:1038
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1009,17 +1005,17 @@ msgstr ""
 "Enlightenment Csoportok\n"
 "alapbeállításai\n"
 
-#: src/groups.c:1066
+#: src/groups.c:1050
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 
-#: src/groups.c:1072
+#: src/groups.c:1056
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Válassza ki a csoportot ahonnan az ablak el lesz távolítva.  "
 
-#: src/groups.c:1077
+#: src/groups.c:1061
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Válassza ki a csoportot a megszakításhoz  "
@@ -1092,31 +1088,31 @@ msgstr "Ikondoboz beállításai"
 msgid "Iconbox Settings"
 msgstr "Ikondoboz beállításai"
 
-#: src/ipc.c:194 src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
 msgid "Message"
 msgstr "Üzenet"
 
-#: src/ipc.c:1456 src/ipc.c:1463
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1457
+#: src/ipc.c:1465
 #, fuzzy
 msgid "composite"
 msgstr "Composite engedélyezése"
 
-#: src/ipc.c:1464
+#: src/ipc.c:1472
 #, fuzzy
 msgid "sound"
 msgstr "Hang"
 
-#: src/ipc.c:1807
+#: src/ipc.c:1815
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:1811
+#: src/ipc.c:1819
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1126,24 +1122,24 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1813 src/ipc.c:1833 src/ipc.c:1845
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:1831
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1832
+#: src/ipc.c:1840
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 "Írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1834 src/ipc.c:1846
+#: src/ipc.c:1842 src/ipc.c:1854
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "         <parancs> : <leírás>\n"
@@ -2797,6 +2793,9 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Körhullámok"
+
+#~ msgid "Mirror Shade/Iconify/Stick"
+#~ msgstr "Fordított Árnyék/Kicsi/Rögzít"
 
 #~ msgid "%i Desktops"
 #~ msgstr "%i asztal"
