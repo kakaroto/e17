@@ -3,13 +3,15 @@
  *
  * @see: http://standards.freedesktop.org/systemtray-spec/latest/
  *
- * @todo: fix SelectionClear events, not getting them :-(
- *
  * @todo: implement xembed.
  *        http://standards.freedesktop.org/xembed-spec/latest/
  *
  * @todo: implement messages/popup part of the spec (anyone using this at all?)
  */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <e.h>
 #include <X11/Xlib.h>
@@ -77,6 +79,8 @@ static Ecore_X_Atom _atom_st_op_code = 0;
 static Ecore_X_Atom _atom_st_msg_data = 0;
 static Ecore_X_Atom _atom_xembed = 0;
 static Ecore_X_Atom _atom_xembed_info = 0;
+static Ecore_X_Atom _atom_st_num = 0;
+static int _last_st_num = -1;
 
 static E_Module *systray_mod = NULL;
 static Instance *instance = NULL; /* only one systray ever possible */
@@ -86,7 +90,7 @@ static const char *
 _systray_theme_path(void)
 {
 #define TF "/e-module-systray.edj"
-   int dirlen;
+   unsigned int dirlen;
    const char *moddir = e_module_dir_get(systray_mod);
 
    dirlen = strlen(moddir);
@@ -101,7 +105,7 @@ _systray_theme_path(void)
 }
 
 static void
-_systray_menu_cb_post(void *data, E_Menu *menu)
+_systray_menu_cb_post(void *data, E_Menu *menu __UNUSED__)
 {
    Instance *inst = data;
    if (!inst->menu) return;
@@ -131,7 +135,7 @@ _systray_menu_new(Instance *inst, Evas_Event_Mouse_Down *ev)
 }
 
 static void
-_systray_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
+_systray_cb_mouse_down(void *data, Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    Instance *inst = data;
    Evas_Event_Mouse_Down *ev = event;
@@ -151,7 +155,7 @@ _systray_size_apply(Instance *inst)
 }
 
 static void
-_systray_icon_cb_move(void *data, Evas *evas, Evas_Object *o, void *event)
+_systray_icon_cb_move(void *data, Evas *evas __UNUSED__, Evas_Object *o, void *event __UNUSED__)
 {
    Icon *icon = data;
    Evas_Coord x, y;
@@ -160,7 +164,7 @@ _systray_icon_cb_move(void *data, Evas *evas, Evas_Object *o, void *event)
 }
 
 static void
-_systray_icon_cb_resize(void *data, Evas *evas, Evas_Object *o, void *event)
+_systray_icon_cb_resize(void *data, Evas *evas __UNUSED__, Evas_Object *o, void *event __UNUSED__)
 {
    Icon *icon = data;
    Evas_Coord w, h;
@@ -172,8 +176,10 @@ static Icon *
 _systray_icon_add(Instance *inst, const Ecore_X_Window win)
 {
    Evas_Object *o;
-   Evas_Coord x, y, w, h;
+   Evas_Coord w, h;
    Icon *icon;
+
+   fprintf(stderr, "XXX: add %#x\n", win);
 
    edje_object_part_geometry_get(inst->ui.gadget, _part_size,
 				 NULL, NULL, &w, &h);
@@ -232,38 +238,31 @@ _systray_icon_del_list(Instance *inst, Eina_List *l, Icon *icon)
    _systray_size_apply(inst);
 }
 
-static void
-_systray_icon_del(Icon *icon)
+static Ecore_X_Atom
+_systray_atom_st_get(int screen_num)
 {
-   Eina_List *l;
+   if ((_last_st_num == -1) || (_last_st_num != screen_num))
+     {
+	char buf[32];
+	snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", screen_num);
+	_atom_st_num = ecore_x_atom_get(buf);
+	_last_st_num = screen_num;
+     }
 
-   if (!icon)
-     return;
-
-   l = eina_list_data_find_list(icon->inst->icons, icon);
-   if (l)
-     _systray_icon_del_list(icon->inst, l, icon);
+   return _atom_st_num;
 }
 
 /* XXX TODO: should be in ecore_x */
 static Eina_Bool
 _systray_selection_owner_set(int screen_num, Ecore_X_Window win, Ecore_X_Window root)
 {
-   static Ecore_X_Atom atom;
-   static int last_num = -1;
+   Ecore_X_Atom atom;
    Ecore_X_Display *disp = ecore_x_display_get();
    Ecore_X_Window cur_selection;
    Ecore_X_Time time;
    Eina_Bool ret;
 
-   if ((last_num == -1) || (screen_num != last_num))
-     {
-	char buf[32];
-	snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", screen_num);
-	atom = ecore_x_atom_get(buf);
-	last_num = screen_num;
-     }
-
+   atom = _systray_atom_st_get(screen_num);
    time = ecore_x_current_time_get();
    XSetSelectionOwner(disp, atom, win, time);
    cur_selection = XGetSelectionOwner(disp, atom);
@@ -294,7 +293,7 @@ static void
 _systray_deactivate(Instance *inst)
 {
    Ecore_X_Window old;
-   printf("XXX SYSTRAY: deactivate win.selection: %#x\n", inst->win.selection);
+
    if (inst->win.selection == None) return;
 
    edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
@@ -306,19 +305,23 @@ _systray_deactivate(Instance *inst)
    inst->win.selection = None;
    _systray_selection_owner_set_current(inst);
    ecore_x_window_del(old);
-   fprintf(stderr, "XXX SYSTRAY: deactivated!\n");
 }
 
 static Eina_Bool
 _systray_activate(Instance *inst)
 {
-   Ecore_X_Time time;
    unsigned int visual;
+   Ecore_X_Atom atom;
+   Ecore_X_Window old_win;
 
-   printf("XXX SYSTRAY: activate win.selection: %#x\n", inst->win.selection);
-   if (inst->win.selection != None) return;
+   if (inst->win.selection != None) return 1;
+
+   atom = _systray_atom_st_get(inst->con->manager->num);
+   old_win = XGetSelectionOwner(ecore_x_display_get(), atom);
+   if (old_win != None) return 0;
+
    inst->win.selection = ecore_x_window_input_new(inst->win.parent, 0, 0, 1, 1);
-   if (inst->win.selection == None) return;
+   if (inst->win.selection == None) return 0;
 
    if (!_systray_selection_owner_set_current(inst))
      {
@@ -400,26 +403,27 @@ _systray_handle_op_code(Instance *inst, Ecore_X_Event_Client_Message *ev)
 		 "XXX SYSTRAY TODO: handle messages (anyone uses this?)\n");
 	 break;
       default:
-	 fprintf(stderr, "SYSTRAY: error, unknown message op code: %ld\n",
-		 message);
+	 fprintf(stderr,
+		 "SYSTRAY: error, unknown message op code: %ld, win: %#lx\n",
+		 message, ev->data.l[2]);
      }
 }
 
 static void
-_systray_handle_message(Instance *inst, Ecore_X_Event_Client_Message *ev)
+_systray_handle_message(Instance *inst __UNUSED__, Ecore_X_Event_Client_Message *ev)
 {
    fprintf(stderr, "XXX SYSTRAY TODO: op: %ld, data: %ld, %ld, %ld\n",
 	   ev->data.l[1], ev->data.l[2], ev->data.l[3], ev->data.l[4]);
 }
 
 static void
-_systray_handle_xembed(Instance *inst, Ecore_X_Event_Client_Message *ev)
+_systray_handle_xembed(Instance *inst __UNUSED__, Ecore_X_Event_Client_Message *ev __UNUSED__)
 {
    fprintf(stderr, "XXX SYSTRAY TODO: xembed\n");
 }
 
 static int
-_systray_cb_client_message(void *data, int type, void *event)
+_systray_cb_client_message(void *data, int type __UNUSED__, void *event)
 {
    Ecore_X_Event_Client_Message *ev = event;
    Instance *inst = data;
@@ -435,7 +439,7 @@ _systray_cb_client_message(void *data, int type, void *event)
 }
 
 static int
-_systray_cb_window_destroy(void *data, int type, void *event)
+_systray_cb_window_destroy(void *data, int type __UNUSED__, void *event)
 {
    Ecore_X_Event_Window_Destroy *ev = event;
    Instance *inst = data;
@@ -446,19 +450,28 @@ _systray_cb_window_destroy(void *data, int type, void *event)
      if (icon->win == ev->win)
        {
 	  _systray_icon_del_list(inst, l, icon);
-	  return;
+	  break;
        }
+
+   return 1;
 }
 
 static int
-_systray_cb_selection_clear(void *data, int type, void *event)
+_systray_cb_selection_clear(void *data, int type __UNUSED__, void *event)
 {
    Ecore_X_Event_Selection_Clear *ev = event;
    Instance *inst = data;
-   fprintf(stderr, "XXX SYSTRAY clear %#x\n", ev->win);
-   if (ev->win == inst->win.selection)
+
+   if ((ev->win == inst->win.selection) && (inst->win.selection != None) &&
+       (ev->atom == _systray_atom_st_get(inst->con->manager->num)))
      {
-	_systray_deactivate(inst);
+	edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
+
+	while (inst->icons)
+	  _systray_icon_del_list(inst, inst->icons, inst->icons->data);
+
+	ecore_x_window_del(inst->win.selection);
+	inst->win.selection = None;
 	_systray_retry(inst);
      }
    return 1;
@@ -569,7 +582,6 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    Instance *inst = gcc->data;
    const char *signal;
-   Evas_Coord w, h;
    unsigned int systray_orient;
 
    if (!inst)
@@ -651,13 +663,13 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
 
 static char *
-_gc_label(E_Gadcon_Client_Class *client_class)
+_gc_label(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    return D_(_Name);
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
+_gc_icon(E_Gadcon_Client_Class *client_class __UNUSED__, Evas *evas)
 {
    Evas_Object *o;
 
@@ -667,7 +679,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    if (!instance)
      return _name;
@@ -689,7 +701,7 @@ e_modapi_init(E_Module *m)
 {
    systray_mod = m;
 
-   if (snprintf(tmpbuf, sizeof(tmpbuf), "%s/locale", e_module_dir_get(m)) >= sizeof(tmpbuf))
+   if (snprintf(tmpbuf, sizeof(tmpbuf), "%s/locale", e_module_dir_get(m)) >= (int)sizeof(tmpbuf))
      return NULL;
    bindtextdomain(PACKAGE, tmpbuf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
@@ -715,7 +727,7 @@ e_modapi_init(E_Module *m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module *m)
+e_modapi_shutdown(E_Module *m __UNUSED__)
 {
    e_gadcon_provider_unregister(&_gc_class);
    systray_mod = NULL;
@@ -723,7 +735,7 @@ e_modapi_shutdown(E_Module *m)
 }
 
 EAPI int
-e_modapi_save(E_Module *m)
+e_modapi_save(E_Module *m __UNUSED__)
 {
    return 1;
 }
