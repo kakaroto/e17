@@ -1103,18 +1103,19 @@ ActionclassesGlobalEvent(XEvent * ev)
    return match;
 }
 
+static Timer       *ac_reload_timer = NULL;
+
 static int
 _ac_reload(void *data __UNUSED__)
 {
    AclassConfigLoadConfig("bindings.cfg");
+   ac_reload_timer = NULL;
    return 0;
 }
 
 void
 ActionclassesReload(void)
 {
-   static Timer       *ac_reload_timer = NULL;
-
    TIMER_DEL(ac_reload_timer);
    TIMER_ADD(ac_reload_timer, 0.2, _ac_reload, NULL);
 }
