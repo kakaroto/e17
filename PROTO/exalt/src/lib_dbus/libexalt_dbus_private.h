@@ -39,7 +39,7 @@ typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
 typedef struct _exalt_dbus_response_data exalt_dbus_response_data;
 typedef struct _exalt_dbus_msg_id Exalt_DBus_Msg_Id;
 
-struct _exalt_dbus_conn
+struct _Exalt_DBus_Conn
 {
     E_DBus_Connection *e_conn;
     DBusConnection* conn;
@@ -72,7 +72,7 @@ struct _exalt_dbus_response_data
 struct _exalt_dbus_msg_id
 {
     int id;
-    exalt_dbus_conn* conn;
+    Exalt_DBus_Conn* conn;
 };
 
 
@@ -94,9 +94,9 @@ struct _exalt_dbus_response
 };
 
 
-int exalt_dbus_msg_id_next(exalt_dbus_conn* conn);
+int exalt_dbus_msg_id_next(Exalt_DBus_Conn* conn);
 
-int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg);
+int Exalt_DBus_Connection_encaps(Exalt_Connection* c, DBusMessage *msg);
 
 const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
 Eina_List* exalt_dbus_response_strings(DBusMessage *msg, int pos);

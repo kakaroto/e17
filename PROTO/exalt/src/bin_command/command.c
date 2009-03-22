@@ -28,7 +28,7 @@
 
 #include "command.h"
 
-exalt_dbus_conn* conn;
+Exalt_DBus_Conn* conn;
 
 #define NOTIF_PRINT(a) printf("\n## (%s) "a"\n\n",eth)
 
@@ -86,33 +86,27 @@ void notify(char* eth, Exalt_Enum_Action action, void* user_data)
 
 void notify_scan(char* eth, Eina_List* networks, void* user_data __UNUSED__)
 {
-    Exalt_DBus_Wireless_Network* w;
+    Exalt_Wireless_Network* w;
     Eina_List *l;
     int i;
 
     printf("scan network on %s\n",eth);
     EINA_LIST_FOREACH(networks,l,w)
     {
-        Eina_List* l = exalt_dbus_wireless_network_ie_get(w);
+        Eina_List* l = exalt_wireless_network_ie_get(w);
         Eina_List* l1;
         Exalt_Wireless_Network_IE *ie;
 
-        printf("# %s\n",exalt_dbus_wireless_network_essid_get(w));
-        printf("\tAdress: %s\n",exalt_dbus_wireless_network_address_get(w));
-        printf("\tquality: %d\n",exalt_dbus_wireless_network_quality_get(w));
-        printf("\tencryption ?: %d\n",exalt_dbus_wireless_network_encryption_is(w));
-        Exalt_Wireless_Network_Security security = exalt_dbus_wireless_network_security_mode_get(w);
-        printf("\tsecurity mode: %s\n",exalt_wireless_network_name_from_security(security));
-        Exalt_Wireless_Network_Mode m = exalt_dbus_wireless_network_mode_get(w);
-        printf("\tmode: %s\n",exalt_wireless_network_name_from_mode_id(m));
-        l = exalt_dbus_wireless_network_ie_get(w);
+        printf("# %s\n",exalt_wireless_network_essid_get(w));
+        printf("\tAdress: %s\n",exalt_wireless_network_address_get(w));
+        printf("\tquality: %d\n",exalt_wireless_network_quality_get(w));
+        printf("\tencryption ?: %d\n",exalt_wireless_network_encryption_is(w));
+        l = exalt_wireless_network_ie_get(w);
         EINA_LIST_FOREACH(l,l1,ie)
         {
             printf("\t\tIE\n");
             Exalt_Wireless_Network_Wpa_Type wpa_type = exalt_wireless_network_ie_wpa_type_get(ie);
             printf("\t\t\twpa type: %s\n",exalt_wireless_network_name_from_wpa_type(wpa_type));
-            printf("\t\t\twpa version: %d\n",exalt_wireless_network_ie_wpa_version_get(ie));
-            printf("\t\t\tpre auth supported: %d\n",exalt_wireless_network_ie_preauth_supported_is(ie));
             Exalt_Wireless_Network_Cypher_Name name = exalt_wireless_network_ie_group_cypher_get(ie);
             printf("\t\t\tgroup cypher: %s\n",exalt_wireless_network_name_from_cypher_name(name));
             printf("\t\t\tpairwise cypher: ");

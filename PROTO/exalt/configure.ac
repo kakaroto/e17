@@ -71,19 +71,6 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-
-
-if test "z$wpa_supplicant" = "z"; then
-    AC_PATH_PROG(wpa_supplicant, wpa_supplicant, none)
-fi
-if test "$wpa_supplicant" = "none"; then
-    have_wpa_supplicant="no"
-else
-    AC_DEFINE_UNQUOTED(WPA_SUPPLICANT_COMMAND_PATH, "${wpa_supplicant}", [Path of wpa_supplicant])
-    have_wpa_supplicant="yes"
-    AC_DEFINE_UNQUOTED(HAVE_WPA_SUPPLICANT, "${have_wpa_supplicant}", [have wpa_supplicant support])
-fi
-
 if test "z$vpnc" = "z"; then
     AC_PATH_PROG(vpnc, vpnc, none)
 fi
@@ -92,6 +79,18 @@ if test "$vpnc" = "none"; then
 else
     AC_DEFINE_UNQUOTED(VPNC_COMMAND_PATH, "${vpnc}", [Path of vpnc])
     have_vpnc="yes"
+fi
+
+
+if test "z$wpa_supplicant" = "z"; then
+AC_PATH_PROG(wpa_supplicant, wpa_supplicant, none)
+fi
+if test "$wpa_supplicant" = "none"; then
+    have_wpa_supplicant="no"
+else
+    AC_DEFINE_UNQUOTED(WPA_SUPPLICANT_COMMAND_PATH, "${wpa_supplicant}", [Path of wpa_supplicant])
+    have_wpa_supplicant="yes"
+    AC_DEFINE_UNQUOTED(HAVE_WPA_SUPPLICANT, "${have_wpa_supplicant}", [have wpa_supplicant support])
 fi
 
 if test "z$vpnc_disconnect" = "z"; then
@@ -180,9 +179,9 @@ echo
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  wpa_supplicant support.........: $have_wpa_supplicant ($wpa_supplicant)"
 echo "  dhcp support...................: $have_dhcp ($dhcp)"
-echo "  vpnc support...................: not yet implemented"
+echo "  wpa_supplicant support.........: $have_wpa_supplicant ($wpa_supplicant)"
+#echo "  vpnc support...................: not yet implemented"
 echo
 echo "  Installation Path..............: $prefix"
 echo

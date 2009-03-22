@@ -37,7 +37,7 @@
  * Contains a DBus connection and the callback functions.
  * @structinfo
  */
-typedef struct _exalt_dbus_conn exalt_dbus_conn;
+typedef struct _Exalt_DBus_Conn Exalt_DBus_Conn;
 
 
 /** type of the callback function used when an ip address change, a new interface is add ... */
@@ -51,7 +51,6 @@ typedef void (exalt_scan_notify_cb) (char* eth, Eina_List* networks, void* user_
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
 #include "exalt_dbus_wireless.h"
-#include "exalt_dbus_wireless_network.h"
 #include "exalt_dbus_dns.h"
 #include "exalt_dbus_response.h"
 
@@ -61,14 +60,14 @@ typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* us
 
 
 void exalt_dbus_init();
-exalt_dbus_conn*  exalt_dbus_connect();
+Exalt_DBus_Conn*  exalt_dbus_connect();
 
-void exalt_dbus_free(exalt_dbus_conn** conn);
+void exalt_dbus_free(Exalt_DBus_Conn** conn);
 void exalt_dbus_shutdown();
 
-void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
-void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb* cb, void* user_data);
-void exalt_dbus_response_notify_set(exalt_dbus_conn* conn, exalt_response_notify_cb* cb, void* user_data);
+void exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb* cb, void* user_data);
+void exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb* cb, void* user_data);
+void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb* cb, void* user_data);
 
 
 /** @} */

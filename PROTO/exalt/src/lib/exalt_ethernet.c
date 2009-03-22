@@ -179,7 +179,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
     EXALT_ASSERT_RETURN_VOID(eth!=NULL);
 
     if(exalt_eth_wireless_is(eth))
-        _exalt_wpa_stop(exalt_eth_wireless_get(eth));
+        exalt_wpa_stop(exalt_eth_wireless_get(eth));
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
@@ -245,10 +245,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     Eina_List* l;
 
     EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
-   	{
-		if(ifindex == exalt_eth_ifindex_get(eth))
-	       	return eth;
-	}
+    {
+        if(ifindex == exalt_eth_ifindex_get(eth))
+            return eth;
+    }
 
     return NULL;
 }
@@ -257,10 +257,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 #define EXALT_FCT_NAME exalt_eth
 #define EXALT_STRUCT_TYPE Exalt_Ethernet
 
-EXALT_GET(name,const char*)
-EXALT_GET(udi,const char*)
-EXALT_GET(ifindex,int)
-EXALT_GET(connection,Exalt_Connection*)
+    EXALT_GET(name,const char*)
+    EXALT_GET(udi,const char*)
+    EXALT_GET(ifindex,int)
+    EXALT_GET(connection,Exalt_Connection*)
 EXALT_GET(wireless,Exalt_Wireless*)
 
 #undef EXALT_FCT_NAME
@@ -933,7 +933,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             || (str && str2 &&strcmp(str2,str ) != 0))
                     {
                         //if we have a new gateway, the gateway exist
-                        if(exalt_is_address(exalt_eth_gateway_get(eth)))
+                        if(exalt_is_address(str))
                         {
                             Default_Route* route;
                             struct rtentry rt;
@@ -971,11 +971,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             //second: we add the new route in the route list
                             route = malloc(sizeof(Default_Route));
                             EXALT_STRDUP(route->interface,exalt_eth_name_get(eth));
-                            EXALT_STRDUP(route->gateway,exalt_eth_gateway_get(eth));
+                            EXALT_STRDUP(route->gateway,str);
                             exalt_eth_interfaces.default_routes =
                                 eina_list_prepend(exalt_eth_interfaces.default_routes, route);
                         }
-
                         //third: we update the current route of the interface
                         //and send a broadcast message
                         _exalt_eth_save_gateway_set(eth, str);
@@ -1050,6 +1049,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
     //apply the ip
+    printf("APPLY IP: %s\n",exalt_conn_ip_get(c));
     sin.sin_addr.s_addr = inet_addr (exalt_conn_ip_get(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
     if( !exalt_ioctl(&ifr, SIOCSIFADDR) )
@@ -1114,7 +1114,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     ret = fgets(buf,1024,f);
     pid = atoi(buf);
     if(pid!=getpid());
-        kill(pid,SIGKILL);
+    kill(pid,SIGKILL);
     fclose(f);
     remove(DHCLIENT_PID_FILE);
     return 1;
@@ -1188,6 +1188,8 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 
     if(exalt_eth_interfaces.eth_cb)
         exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
+
+    //EXALT_FREE(data);
 }
 
 

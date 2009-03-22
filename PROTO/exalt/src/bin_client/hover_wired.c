@@ -22,7 +22,7 @@
 
 void hover_wired_create()
 {
-    Evas_Object* fr,*bx,*table,*lbl, * bt;
+    Evas_Object* fr,*table,*lbl, * bt;
 
     hover_wired.iface = NULL;
 
@@ -96,7 +96,7 @@ void hover_wired_create()
 
 }
 
-void hover_wired_icon_update(char* iface, Exalt_DBus_Response* response)
+void hover_wired_icon_update(char* iface __UNUSED__, Exalt_DBus_Response* response)
 {
     char* icon_path;
 
@@ -132,7 +132,7 @@ void hover_wired_response(Exalt_DBus_Response* response)
     if(iface_list_iface_type_get(iface)!=IFACE_WIRED)
         return ;
     if(!iface || !hover_wired.iface || strcmp(iface,hover_wired.iface)!=0)
-        return 0;
+        return ;
 
     switch(exalt_dbus_response_type_get(response))
     {

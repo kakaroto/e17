@@ -7,14 +7,10 @@
  * Private functions headers
  */
 
-void _exalt_wireless_scan_free(wireless_scan **w);
 char* _exalt_wireless_save_essid_get(Exalt_Wireless* w);
 int _exalt_wireless_save_essid_set(Exalt_Wireless* w,const char* essid);
 
-int _exalt_wireless_scan(void* data);
-
-struct wpa_ctrl * _exalt_wpa_open_connection(const char *ifname);
-int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl, char *cmd);
+int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler);
 
 /**
  * @addtogroup Exalt_Wireless
@@ -34,7 +30,7 @@ struct Exalt_Wireless
     //use for scanning
     int scan_fd;
     int scanning;
-    int retry;
+    struct wpa_ctrl* monitor;
 };
 
 Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
@@ -44,25 +40,17 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
 
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    w = (Exalt_Wireless*)malloc((unsigned int)sizeof(Exalt_Wireless));
+    w = calloc(1,sizeof(Exalt_Wireless));
     EXALT_ASSERT_RETURN(w!=NULL);
 
     w -> eth = eth;
-
-    w->wpasupplicant_driver = NULL;
-    w -> _save_essid = NULL;
 
     str = exalt_wireless_essid_get(w);
     _exalt_wireless_save_essid_set(w,str);
     EXALT_FREE(str);
 
-    w -> networks = NULL;
+    exalt_wireless_wpasupplicant_driver_set(w,"wext");
 
-    w->scan_fd = iw_sockets_open();
-    w->scanning = 0;
-    w->retry = 0;
-    //default driver
-    EXALT_STRDUP(w->wpasupplicant_driver,"wext");
     return w;
 }
 
@@ -103,6 +91,7 @@ char* exalt_wireless_essid_get(Exalt_Wireless* w)
     struct iwreq wrq;
     Exalt_Ethernet *eth;
 
+    memcpy(essid,"\0",strlen("\0"));
     EXALT_ASSERT_RETURN(w!=NULL);
 
     eth = exalt_wireless_eth_get(w);
@@ -151,6 +140,8 @@ Exalt_Wireless_Network* exalt_wireless_get_network_by_essid(Exalt_Wireless* w,co
 void exalt_wireless_scan_start(Exalt_Ethernet* eth)
 {
     Exalt_Wireless* w;
+    char buf[2048];
+    size_t buf_len=sizeof(buf)-1;
 
     EXALT_ASSERT_RETURN_VOID(eth!=NULL);
     EXALT_ASSERT_RETURN_VOID(exalt_eth_wireless_is(eth));
@@ -158,8 +149,16 @@ void exalt_wireless_scan_start(Exalt_Ethernet* eth)
     if(w->scanning)
         return ;
 
+    w->monitor = exalt_wpa_open_connection(exalt_eth_wireless_get(eth));
+    wpa_ctrl_attach(w->monitor);
+    buf_len=sizeof(buf)-1;
+    exalt_wpa_ctrl_command(w->monitor,"AP_SCAN 1",buf,buf_len);
+    buf_len=sizeof(buf)-1;
+    exalt_wpa_ctrl_command(w->monitor,"SCAN",buf,buf_len);
+    buf_len=sizeof(buf)-1;
+
     w->scanning = 1;
-    ecore_timer_add(0, _exalt_wireless_scan, eth);
+    ecore_main_fd_handler_add(wpa_ctrl_get_fd(w->monitor), ECORE_FD_READ,_exalt_wireless_scan,eth,NULL,NULL);
 }
 
 
@@ -185,12 +184,11 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     struct wpa_ctrl *ctrl_conn;
     Exalt_Ethernet* eth;
     Exalt_Connection* c;
-    Exalt_Enum_Encryption_Mode encryption_mode;
-    char essid[IW_ESSID_MAX_SIZE+1];
-    struct iwreq wrq;
-    unsigned char key[IW_ENCODING_TOKEN_MAX];
-    char buf[1024];
-    int keylen = 0;
+    char buf_res[1024];
+    char buf_cmd[1024];
+    size_t buf_len;
+    Exalt_Wireless_Network *n;
+    Eina_List *l_ie;
 
     EXALT_ASSERT_RETURN(w!=NULL);
     eth = exalt_wireless_eth_get(w);
@@ -199,119 +197,155 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     EXALT_ASSERT_RETURN(exalt_conn_valid_is(c));
     EXALT_ASSERT_RETURN(exalt_conn_wireless_is(c));
 
-    encryption_mode = exalt_conn_encryption_mode_get(c);
-    switch(encryption_mode)
+    n = exalt_conn_network_get(c);
+    l_ie = exalt_wireless_network_ie_get(n);
+
+    //open a connection with wpa_supplicant
+    //create a new network configuration
+    //set the essid
+    ctrl_conn = exalt_wpa_open_connection(exalt_eth_wireless_get(eth));
+    EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
+
+    buf_len=sizeof(buf_res)-1;
+    exalt_wpa_ctrl_command(ctrl_conn,"ADD_NETWORK",buf_res,buf_len);
+    EXALT_ASSERT_RETURN(strcmp(buf_res,"FAIL")!=0);
+    int network_id = atoi(buf_res);
+
+    buf_len=sizeof(buf_res)-1;
+    snprintf(buf_cmd,1024,"SET_NETWORK %d ssid \"%s\"",
+            network_id,
+            exalt_wireless_network_essid_get(n));
+    exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+
+
+    if(!exalt_wireless_network_encryption_is(n))
     {
-        case EXALT_ENCRYPTION_NONE:
-        case EXALT_ENCRYPTION_WEP_ASCII:
-        case EXALT_ENCRYPTION_WEP_HEXA:
-#ifdef  HAVE_WPA_SUPPLICANT
-            _exalt_wpa_stop(w);
-#endif
-            strncpy(wrq.ifr_name, exalt_eth_name_get(eth), sizeof(wrq.ifr_name));
-            wrq.u.essid.flags = 0;
-            wrq.u.data.length = 0;
-            wrq.u.data.pointer = (caddr_t) NULL;
+        //printf("APPLY NO ENCRYPTION \n");
 
-            //set the key and the security mode
-            switch(encryption_mode)
-            {
-                case EXALT_ENCRYPTION_NONE:
-                    keylen = 0;
-                    wrq.u.data.flags |= IW_ENCODE_DISABLED;
-                    break;
-                case EXALT_ENCRYPTION_WEP_ASCII:
-                    keylen = sprintf(buf,"s:%s", exalt_conn_key_get(c));
-                    iw_in_key(buf,key);
-                    break;
-                case EXALT_ENCRYPTION_WEP_HEXA:
-                    keylen = iw_in_key(exalt_conn_key_get(c),key);
-                    break;
-                default:
-                    break;
-            }
-
-            if(keylen > 0)
-            {
-                wrq.u.data.length = keylen;
-                wrq.u.data.pointer = (caddr_t) key;
-            }
-            else
-                wrq.u.data.flags |= IW_ENCODE_NOKEY;
-
-            switch(exalt_conn_security_mode_get(c))
-            {
-                case EXALT_SECURITY_OPEN:
-                    wrq.u.data.flags |= IW_ENCODE_OPEN;
-                    break;
-                default:
-                    wrq.u.data.flags |= IW_ENCODE_RESTRICTED;
-                    break;
-            }
-
-            if(!exalt_ioctl(&wrq, SIOCSIWENCODE))
-                return -1;
-
-            //set the mode (Ad-hoc, Managed)
-            switch(exalt_conn_connection_mode_get(c))
-            {
-                case EXALT_CONNECTION_ADHOC:
-                    wrq.u.mode = 1;
-                    break;
-                case EXALT_CONNECTION_MANAGED:
-                    wrq.u.mode = 2;
-                    break;
-            }
-            if(!exalt_ioctl(&wrq, SIOCSIWMODE))
-                return -1;
-
-
-            //set the essid
-            strncpy(essid, exalt_conn_essid_get(c), IW_ESSID_MAX_SIZE+1);
-            wrq.u.essid.pointer = (caddr_t) essid;
-            wrq.u.essid.length = strlen(essid)+1;
-            if(!exalt_ioctl(&wrq, SIOCSIWESSID))
-                return -1;
-
-            break;
-        default:
-#ifdef  HAVE_WPA_SUPPLICANT
-            exalt_conf_save_wpasupplicant(w);
-            //reload wpa_supplicant configuration
-            //we stop the current instance, because maybe we want use a different driver
-            _exalt_wpa_stop(w);
-
-            ctrl_conn = _exalt_wpa_open_connection(exalt_eth_name_get(eth));
-            if(!ctrl_conn)
-            {
-                int status;
-                Ecore_Exe *exe;
-                print_error(__FILE__,__func__,__LINE__,"Could not connect to wpa_supplicant, try to launch it");
-                sprintf(buf,COMMAND_WPA,
-                        exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth)),
-                        exalt_eth_name_get(eth),
-                        EXALT_WPA_CONF_FILE,
-                        EXALT_WPA_INTERFACE_DIR);
-                //printf("%s\n",buf);
-                exe = ecore_exe_run(buf, NULL);
-                waitpid(ecore_exe_pid_get(exe), &status, 0);
-                ecore_exe_free(exe);
-                print_error(__FILE__,__func__,__LINE__,"Re-try to connect to wpa_supplicant");
-                ctrl_conn = _exalt_wpa_open_connection(exalt_eth_name_get(eth));
-                EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
-                print_error(__FILE__,__func__,__LINE__,"Connection succesfull");
-            }
-
-            EXALT_ASSERT_RETURN(_exalt_wpa_ctrl_command(ctrl_conn, "RECONFIGURE"));
-
-            //close the connection
-            wpa_ctrl_close(ctrl_conn);
-            ctrl_conn=NULL;
-#else
-            EXALT_ASSERT_ADV(0,,"Your build of libexalt doesn't support wpa_supplicant");
-#endif
-            break;
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt NONE",
+                network_id);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
     }
+    else if(!l_ie)
+    {
+        //printf("APPLY WEP encryption\n");
+
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt NONE",
+                network_id);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+        buf_len=sizeof(buf_res)-1;
+        if(exalt_conn_wep_key_hexa_is(c))
+            snprintf(buf_cmd,1024,"SET_NETWORK %d wep_key0 %s",
+                    network_id,
+                    exalt_conn_key_get(c));
+        else
+            snprintf(buf_cmd,1024,"SET_NETWORK %d wep_key0 \"%s\"",
+                    network_id,
+                    exalt_conn_key_get(c));
+
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d wep_tx_keyidx 0",
+                network_id);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+    }
+    else
+    {
+        Exalt_Wireless_Network_IE* ie;
+
+        int ie_choice = exalt_wireless_network_ie_choice_get(n);
+        ie = eina_list_nth(l_ie,ie_choice);
+        int auth_choice = exalt_wireless_network_ie_auth_choice_get(ie);
+        int pairwise_choice = exalt_wireless_network_ie_pairwise_choice_get(ie);
+
+        //
+        char * s;
+        switch(exalt_wireless_network_ie_wpa_type_get(ie))
+        {
+            case WPA_TYPE_WPA: s = "WPA"; break;
+            case WPA_TYPE_WPA2: s = "WPA2"; break;
+        }
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d proto %s",
+                network_id,
+                s);
+
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+        //
+
+        //
+        switch(exalt_wireless_network_ie_auth_suites_get(ie,auth_choice))
+        {
+            case AUTH_SUITES_PSK: s = "WPA-PSK"; break;
+            case AUTH_SUITES_EAP: s = "WPA-EAP"; break;
+        }
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt %s",
+                network_id,
+                s);
+        //printf("# %s\n",buf_cmd);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+        //
+
+        //
+        switch(exalt_wireless_network_ie_pairwise_cypher_get(ie,pairwise_choice))
+        {
+            case CYPHER_NAME_TKIP: s = "TKIP"; break;
+            case CYPHER_NAME_CCMP: s = "CCMP"; break;
+        }
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d pairwise %s",
+                network_id,
+                s);
+        //printf("# %s\n",buf_cmd);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+        //
+
+        //
+        switch(exalt_wireless_network_ie_group_cypher_get(ie))
+        {
+            case CYPHER_NAME_TKIP: s = "TKIP"; break;
+            case CYPHER_NAME_CCMP: s = "CCMP"; break;
+        }
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d group %s",
+                network_id,
+                s);
+        //printf("# %s\n",buf_cmd);
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+        //
+
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"SET_NETWORK %d psk \"%s\"",
+                network_id,
+                exalt_conn_key_get(c));
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+    }
+
+    //tell to wpa_supplicant to use this new network
+    //select the network
+    buf_len=sizeof(buf_res)-1;
+    snprintf(buf_cmd,1024,"SELECT_NETWORK %d",network_id);
+    exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+    buf_len=sizeof(buf_res)-1;
+    snprintf(buf_cmd,1024,"REASSOCIATE");
+    exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+    buf_len=sizeof(buf_res)-1;
+    snprintf(buf_cmd,1024,"RECONNECT");
+    exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+
+
+    //close the connection
+    wpa_ctrl_close(ctrl_conn);
+    ctrl_conn=NULL;
 
     return 1;
 }
@@ -333,77 +367,6 @@ void exalt_wireless_printf(Exalt_Wireless *w)
 /*
  * Private functions bodies
  */
-
-/**
- * @brief open a connection with the wpa daemon
- * @param ifname the interface name (eth1 ...)
- * @return Return the connection else NULL
- */
-struct wpa_ctrl * _exalt_wpa_open_connection(const char *ifname)
-{
-    char *cfile;
-    int flen;
-    struct wpa_ctrl* ctrl_conn;
-    EXALT_ASSERT_RETURN(ifname!=NULL);
-
-    flen = strlen(EXALT_WPA_IFACE_DIR) + strlen(ifname) + 2;
-    cfile = malloc(flen);
-    if (cfile == NULL)
-        return NULL;
-    snprintf(cfile, flen, "%s/%s", EXALT_WPA_IFACE_DIR, ifname);
-    ctrl_conn = wpa_ctrl_open(cfile);
-    free(cfile);
-    return ctrl_conn;
-}
-
-/**
- * @brief kill a wpa_supplicant daemon if it exists
- * @param w the wireless interface
- */
-void _exalt_wpa_stop(Exalt_Wireless* w)
-{
-#ifdef  HAVE_WPA_SUPPLICANT
-    struct wpa_ctrl *ctrl_conn;
-    Exalt_Ethernet* eth;
-    EXALT_ASSERT_RETURN_VOID(w!=NULL);
-    eth = exalt_wireless_eth_get(w);
-
-    ctrl_conn = _exalt_wpa_open_connection(exalt_eth_name_get(eth));
-    if(ctrl_conn)
-    {
-        _exalt_wpa_ctrl_command(ctrl_conn, "TERMINATE");
-        wpa_ctrl_close(ctrl_conn);
-        ctrl_conn=NULL;
-        //the wpa_supplicant daemon deactivate the interface ...
-        while(exalt_eth_up_is(eth))
-            ;
-        exalt_eth_up_without_apply(eth);
-    }
-#endif
-}
-
-
-/**
- * @brief send a command to the wpa_supplicant daemon
- * @param ctrl_conn the connection to the wpa_supplicant daemon
- * @param cmd the command (RECONFIGURE for example)
- * @return Return 1 if success, else 0
- */
-int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd)
-{
-    char buf[2048];
-    size_t len;
-    int ret;
-
-    EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
-    len = sizeof(buf) - 1;
-    ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &len,
-            /*wpa_cli_msg_cb*/ NULL);
-
-    EXALT_ASSERT_RETURN(ret>=0);
-
-    return 1;
-}
 
 /**
  * @brief called by _exalt_rtlink_watch_cb when the kernel send an information
@@ -460,63 +423,58 @@ char* _exalt_wireless_save_essid_get(Exalt_Wireless* w)
 }
 
 /**
- * @brief free a scan result of iwlib
- * @param ws the first result of the list result
- */
-void _exalt_wireless_scan_free(wireless_scan **ws)
-{
-    wireless_scan* result,*r_save;
-    EXALT_ASSERT_RETURN_VOID(ws!=NULL);
-
-    result = *ws;
-
-    while(result)
-    {
-        r_save = result;
-        result = result->next;
-        free(r_save);
-    }
-    *ws=NULL;
-}
-
-/**
  * @brief scan networks
  * @param data the interface (Exalt_Wireless)
  * @return Returns 1 if success, else 0
  */
-int _exalt_wireless_scan(void *data)
+int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler)
 {
-    int fd;
-    int delay; //in ms
-    Eina_List* networks = NULL;
     Exalt_Wireless* w;
-    char* cpy;
+
+    char buf[100000];
+    size_t buf_len;
+    Exalt_Wireless_Network *n;
+    Eina_List *l, *l_next;
+
+    memcpy(buf,"\0",sizeof("\0"));
 
     EXALT_ASSERT_RETURN(data!=NULL);
     Exalt_Ethernet* eth = data;
     w = exalt_eth_wireless_get(eth);
     EXALT_ASSERT_RETURN(w!=NULL);
 
-    fd = w->scan_fd;
-    EXALT_ASSERT_RETURN(fd>=0);
-    cpy = strdup(exalt_eth_name_get(eth));
-    delay = iw_process_scan(fd, cpy, exalt_eth_interfaces.we_version, &networks, w, &(w->retry));
-    EXALT_FREE(cpy);
-    if(delay<=0)
+    EINA_LIST_FOREACH_SAFE(w->networks,l,l_next,n);
     {
-        printf("scan done!! %d\n",eina_list_count(networks));
-        w->networks = networks;
-        w->scanning=0;
-        w->retry = 0;
-
-        //send a broadcast
-        if(exalt_eth_interfaces.wireless_scan_cb)
-            exalt_eth_interfaces.wireless_scan_cb(eth,
-                    networks,
-                    exalt_eth_interfaces.wireless_scan_cb_user_data);
-        return 0;
+        if(n)
+            exalt_wireless_network_free(&n);
+        w->networks = eina_list_remove_list(w->networks, l);
     }
-    return delay;
+
+
+    buf_len=sizeof(buf)-1;
+    exalt_wpa_ctrl_command(w->monitor,"SCAN_RESULTS",buf,buf_len);
+
+    w->networks = exalt_wpa_parse_scan_results(w->monitor,buf,w);
+
+    //printf("# SCAN RESULT %d\n",eina_list_count(w->networks));
+
+    buf_len=sizeof(buf)-1;
+    exalt_wpa_ctrl_command(w->monitor,"AP_SCAN 1",buf,buf_len);
+
+
+    wpa_ctrl_close(w->monitor);
+
+    ecore_main_fd_handler_del(fd_handler);
+
+
+    w->scanning = 0;
+    //send a broadcast
+    if(exalt_eth_interfaces.wireless_scan_cb)
+        exalt_eth_interfaces.wireless_scan_cb(eth,
+                w->networks,
+                exalt_eth_interfaces.wireless_scan_cb_user_data);
+
+    return 0;
 }
 
 

@@ -380,7 +380,7 @@ DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
                 EXALT_DBUS_INTERFACE_ERROR);
             return reply);
 
-     if( connection_from_dbusmessage(c,msg,reply) )
+     if( connection_from_dbusmessage(c,eth,msg,reply) )
          return reply;
 
     if(!exalt_conn_valid_is(c))
@@ -392,11 +392,6 @@ DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
     }
     else
         exalt_eth_conn_apply(eth, c);
-
-    //if it's a wireless connection
-    //we save the configuration for the essid
-    if(exalt_conn_wireless_is(c))
-        exalt_wireless_conn_save(CONF_FILE, c);
 
     dbus_args_valid_append(reply);
 

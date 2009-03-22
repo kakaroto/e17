@@ -29,10 +29,10 @@
  * @{
  */
 
-int exalt_dbus_dns_get_list(exalt_dbus_conn* conn);
-int exalt_dbus_dns_add(exalt_dbus_conn* conn, const char* dns);
-int exalt_dbus_dns_delete(exalt_dbus_conn* conn, const char* dns);
-int exalt_dbus_dns_replace(exalt_dbus_conn* conn, const char* old_dns, const char* new_dns);
+int exalt_dbus_dns_get_list(Exalt_DBus_Conn* conn);
+int exalt_dbus_dns_add(Exalt_DBus_Conn* conn, const char* dns);
+int exalt_dbus_dns_delete(Exalt_DBus_Conn* conn, const char* dns);
+int exalt_dbus_dns_replace(Exalt_DBus_Conn* conn, const char* old_dns, const char* new_dns);
 
 #endif   /* ----- #ifndef EXALT_DBUS_DNS_INC  ----- */
 

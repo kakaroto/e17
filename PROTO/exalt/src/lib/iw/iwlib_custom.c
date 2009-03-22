@@ -257,7 +257,7 @@ iw_process_ie_wpa(unsigned char* iebuf,
     static inline void
 iw_process_gen_ie(unsigned char* buffer,
         int buflen,
-        Exalt_Wireless_Network_IE* ie)
+        Exalt_Wireless_Network* wscan)
 {
     int offset =  0;
 
@@ -269,8 +269,16 @@ iw_process_gen_ie(unsigned char* buffer,
         {
             case 0xdd: /* WPA1 (and other) */
             case 0x30: /* WPA2 */
+            {
+                Exalt_Wireless_Network_IE* ie =
+                    exalt_wireless_network_ie_new();
+                Eina_List* l = exalt_wireless_network_ie_get(wscan);
+                l = eina_list_append(l,ie);
+                exalt_wireless_network_ie_set(wscan,l);
+
                 iw_process_ie_wpa(buffer+offset, buflen, ie);
                 break;
+            }
             default:
                 //iw_process_ie_unknown(buffer+offset , bufflen);
                 ;
@@ -345,13 +353,7 @@ iw_process_scanning_token(struct iw_event *	    event,
         case SIOCGIWRATE:
             break;
         case IWEVGENIE:
-            {
-                Exalt_Wireless_Network_IE* ie = exalt_wireless_network_ie_new();
-                Eina_List* l = exalt_wireless_network_ie_get(wscan);
-                l = eina_list_append(l,ie);
-                exalt_wireless_network_ie_set(wscan,l);
-                iw_process_gen_ie(event->u.data.pointer, event->u.data.length, ie);
-            }
+                iw_process_gen_ie(event->u.data.pointer, event->u.data.length, wscan);
             break;
         case IWEVCUSTOM:
         default:

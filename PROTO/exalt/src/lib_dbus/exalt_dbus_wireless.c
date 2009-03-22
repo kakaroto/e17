@@ -39,7 +39,7 @@ void _exalt_dbus_wireless_scan_cb(void *data, DBusMessage *msg, DBusError *error
  * @param conn a connection
  * @return Returns the list of interface name (char *)
  */
-int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn)
+int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn)
 {
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
@@ -66,7 +66,7 @@ int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn)
  * @param eth a wireless interface name
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_wireless_scan(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path [PATH_MAX];
@@ -98,7 +98,7 @@ int exalt_dbus_wireless_scan(exalt_dbus_conn* conn, const char* eth)
  * @param eth a wireless interface name
  * @return Returns the essid
  */
-int exalt_dbus_wireless_essid_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -128,7 +128,7 @@ int exalt_dbus_wireless_essid_get(exalt_dbus_conn* conn, const char* eth)
  * @param eth a wireless interface name
  * @return Returns a wpa_supplicant driver (wext, hostap ...)
  */
-int exalt_dbus_wireless_wpasupplicant_driver_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -160,7 +160,7 @@ int exalt_dbus_wireless_wpasupplicant_driver_get(exalt_dbus_conn* conn, const ch
  * @param driver a driver (wext, hostap ...)
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_wireless_wpasupplicant_driver_set(exalt_dbus_conn* conn, const char* eth, const char* driver)
+int exalt_dbus_wireless_wpasupplicant_driver_set(Exalt_DBus_Conn* conn, const char* eth, const char* driver)
 {
     DBusMessage *msg;
     DBusMessageIter iter;

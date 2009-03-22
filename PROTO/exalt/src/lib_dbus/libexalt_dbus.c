@@ -29,7 +29,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
 
 /**
  * @brief Initialise the library
- * Don't forget to create a connection with exalt_dbus_connect() after
+ * Don't forget to create a connection with Exalt_DBus_Connect() after
  */
 void exalt_dbus_init()
 {
@@ -41,11 +41,11 @@ void exalt_dbus_init()
  * @brief Create a connection
  * @return Returns a new DBus connection
  */
-exalt_dbus_conn* exalt_dbus_connect()
+Exalt_DBus_Conn* exalt_dbus_connect()
 {
-    exalt_dbus_conn* conn;
+    Exalt_DBus_Conn* conn;
     DBusError err;
-    conn = calloc(1,sizeof(exalt_dbus_conn));
+    conn = calloc(1,sizeof(Exalt_DBus_Conn));
     //initialise the errors
     dbus_error_init(&err);
     // connect to the bus
@@ -59,7 +59,7 @@ exalt_dbus_conn* exalt_dbus_connect()
  * @brief Free a exalt DBus connection
  * @param conn a connection
  */
-void exalt_dbus_free(exalt_dbus_conn** conn)
+void exalt_dbus_free(Exalt_DBus_Conn** conn)
 {
     e_dbus_connection_close((*conn)->e_conn);
     EXALT_FREE((*conn)->notify);
@@ -83,7 +83,7 @@ void exalt_dbus_shutdown()
  * @param cb the callback function
  * @param user_data the user data
  */
-void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* user_data)
+void exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user_data)
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
     //better to delete the handler
@@ -112,7 +112,7 @@ void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* use
  * @param cb the callback function
  * @param user_data the user data
  */
-void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb, void* user_data)
+void exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, void* user_data)
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
 
@@ -142,7 +142,7 @@ void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb,
  * @param cb the callback function
  * @param user_data the user data
  */
-void exalt_dbus_response_notify_set(exalt_dbus_conn* conn, exalt_response_notify_cb *cb, void* user_data)
+void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb *cb, void* user_data)
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
 

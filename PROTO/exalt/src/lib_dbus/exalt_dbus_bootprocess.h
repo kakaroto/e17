@@ -29,11 +29,11 @@
  * @{
  */
 
-int exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface);
-int exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface);
-int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* interface);
-int exalt_dbus_bootprocess_timeout_set(const exalt_dbus_conn* conn, int timeout);
-int exalt_dbus_bootprocess_timeout_get(const exalt_dbus_conn* conn);
+int exalt_dbus_bootprocess_iface_add(const Exalt_DBus_Conn* conn, const char* interface);
+int exalt_dbus_bootprocess_iface_remove(const Exalt_DBus_Conn* conn, const char* interface);
+int exalt_dbus_bootprocess_iface_is(const Exalt_DBus_Conn* conn, const char* interface);
+int exalt_dbus_bootprocess_timeout_set(const Exalt_DBus_Conn* conn, int timeout);
+int exalt_dbus_bootprocess_timeout_get(const Exalt_DBus_Conn* conn);
 
 #endif   /* ----- #ifndef EXALT_DBUS_BOOTPROCESS_INC  ----- */
 /** @} */

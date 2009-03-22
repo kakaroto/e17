@@ -39,7 +39,7 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
  * @param conn a connection
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_dns_get_list(exalt_dbus_conn* conn)
+int exalt_dbus_dns_get_list(Exalt_DBus_Conn* conn)
 {
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
@@ -66,7 +66,7 @@ int exalt_dbus_dns_get_list(exalt_dbus_conn* conn)
  * @param dns the new DNS ( a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_add(exalt_dbus_conn* conn, const char* dns)
+int exalt_dbus_dns_add(Exalt_DBus_Conn* conn, const char* dns)
 {
     DBusMessage *msg;
     DBusMessageIter args;
@@ -96,7 +96,7 @@ int exalt_dbus_dns_add(exalt_dbus_conn* conn, const char* dns)
  * @param dns a DNS ( a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_delete(exalt_dbus_conn* conn, const char* dns)
+int exalt_dbus_dns_delete(Exalt_DBus_Conn* conn, const char* dns)
 {
     DBusMessage *msg;
     DBusMessageIter args;
@@ -127,7 +127,7 @@ int exalt_dbus_dns_delete(exalt_dbus_conn* conn, const char* dns)
  * @param new_dns the new DNS (a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_replace(exalt_dbus_conn* conn, const char* old_dns, const char* new_dns)
+int exalt_dbus_dns_replace(Exalt_DBus_Conn* conn, const char* old_dns, const char* new_dns)
 {
     DBusMessage *msg;
     DBusMessageIter args;

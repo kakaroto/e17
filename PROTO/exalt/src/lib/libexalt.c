@@ -29,8 +29,6 @@ int exalt_init()
     exalt_eth_interfaces.wireless_scan_cb = NULL;
     exalt_eth_interfaces.wireless_scan_cb_user_data = NULL;
 
-    exalt_eth_interfaces.we_version = iw_get_kernel_we_version();
-
     //test if we have the administrator right
     if(getuid()==0)
         exalt_eth_interfaces.admin = 1;
@@ -170,20 +168,6 @@ short exalt_is_admin()
 {
     return exalt_eth_interfaces.admin;
 }
-
-/**
- * @brief return if libexalt is built with the support of wpa_supplicant
- * @return Return 1 if yes, else 0
- */
-short exalt_wpasupplicant_is_support()
-{
-#ifdef HAVE_WPA_SUPPLICANT
-    return 1;
-#else
-    return 0;
-#endif
-}
-
 
 /**
  * @brief return if libexalt is built with the support of dhcp

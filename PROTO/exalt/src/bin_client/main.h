@@ -37,6 +37,10 @@
 
 #define ICONS_LOGO PACKAGE_DATA_DIR"/icons/logo.png"
 
+#ifndef __UNUSED__
+    #define __UNUSED__ __attribute__((unused))
+#endif
+
 typedef struct _hover_wired Hover_Wired;
 typedef struct _pnl_right Pnl_Right;
 typedef enum _iface_type Iface_Type;
@@ -72,6 +76,7 @@ Hover_Wired hover_wired;
 
 #include "iface_list.h"
 #include "pnl_right.h"
+#include "hover_wired.h"
 
 #define D_(str) gettext(str)
 
@@ -79,7 +84,7 @@ Hover_Wired hover_wired;
 /*
  * The exalt dbus connection is use to communicate with the daemon
  */
-exalt_dbus_conn* conn;
+Exalt_DBus_Conn* conn;
 
 
 /*

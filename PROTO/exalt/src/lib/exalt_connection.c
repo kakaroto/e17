@@ -31,11 +31,11 @@ struct Exalt_Connection
 
     int wireless;
 
-    char* essid;
-    Exalt_Enum_Encryption_Mode encryption_mode;
+    Exalt_Wireless_Network* network;
     char* key;
-    Exalt_Enum_Connection_Mode connection_mode;
-    Exalt_Enum_Security_Mode security_mode;
+    char* login;
+
+    int wep_key_hexa;
 
     char* cmd_after_apply; //a command call after exalt_conn_apply()
 };
@@ -49,21 +49,10 @@ Exalt_Connection* exalt_conn_new()
 {
     Exalt_Connection* c;
 
-    c = malloc(sizeof(Exalt_Connection));
+    c = calloc(1,sizeof(Exalt_Connection));
     EXALT_ASSERT_RETURN(c!=NULL);
 
     c->mode = EXALT_DHCP;
-
-    c->ip = NULL;
-    c->netmask = NULL;
-    c->gateway = NULL;
-
-    c->wireless= 0;
-    c->essid = NULL;
-    c->key=NULL;
-    c->encryption_mode = EXALT_ENCRYPTION_NONE;
-    c->connection_mode = EXALT_CONNECTION_ADHOC;
-    c->security_mode = EXALT_SECURITY_OPEN;
 
     c->cmd_after_apply = NULL;
     return c;
@@ -80,8 +69,9 @@ void exalt_conn_free(Exalt_Connection** conn)
     EXALT_FREE(c->ip);
     EXALT_FREE(c->gateway);
     EXALT_FREE(c->netmask);
-    EXALT_FREE(c->essid);
     EXALT_FREE(c->key);
+    EXALT_FREE(c->login);
+
     EXALT_FREE(c->cmd_after_apply);
 
     EXALT_FREE(c);
@@ -100,12 +90,13 @@ short exalt_conn_valid_is(Exalt_Connection* c)
             valid = 0;
     }
 
-    if(valid && exalt_conn_wireless_is(c))
+    /*if(valid && exalt_conn_wireless_is(c))
     {
         if(!exalt_is_essid(exalt_conn_essid_get(c))
                 || !exalt_is_key(exalt_conn_key_get(c),exalt_conn_encryption_mode_get(c)))
             valid = 0;
     }
+    */
 
     return valid;
 }
@@ -118,37 +109,37 @@ short exalt_conn_valid_is(Exalt_Connection* c)
 #define EXALT_STRUCT_TYPE Exalt_Connection
 
 EXALT_SET(mode,Exalt_Enum_Mode)
+EXALT_SET(wep_key_hexa,int);
 EXALT_STRING_SET(ip)
 EXALT_STRING_SET(netmask)
 EXALT_STRING_SET(gateway)
 EXALT_STRING_SET(cmd_after_apply)
 
 EXALT_SET(wireless,int)
-EXALT_STRING_SET(essid)
-EXALT_STRING_SET(key);
-EXALT_SET(encryption_mode,Exalt_Enum_Encryption_Mode)
-EXALT_SET(connection_mode,Exalt_Enum_Connection_Mode)
-EXALT_SET(security_mode,Exalt_Enum_Security_Mode)
+EXALT_STRING_SET(key)
+EXALT_STRING_SET(login)
+EXALT_SET(network,Exalt_Wireless_Network*)
 
 EXALT_GET(mode,Exalt_Enum_Mode)
+EXALT_IS(wep_key_hexa,int)
 EXALT_GET(ip,const char*)
 EXALT_GET(gateway,const char*)
 EXALT_GET(netmask,const char*)
 EXALT_GET(cmd_after_apply,const char*)
 
 EXALT_IS(wireless,int)
-EXALT_GET(essid,const char*)
 EXALT_GET(key,const char*)
-EXALT_GET(encryption_mode,Exalt_Enum_Encryption_Mode)
-EXALT_GET(security_mode,Exalt_Enum_Security_Mode)
-EXALT_GET(connection_mode,Exalt_Enum_Connection_Mode)
+EXALT_GET(login,const char*)
+EXALT_GET(network,Exalt_Wireless_Network*)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
 
-Eet_Data_Descriptor * exalt_conn_edd_new()
+Eet_Data_Descriptor * exalt_conn_edd_new(Eet_Data_Descriptor* edd_network)
 {
     Eet_Data_Descriptor *edd;
+
+    EXALT_ASSERT_RETURN(edd_network!=NULL);
 
     edd = eet_data_descriptor_new("Connection", sizeof(Exalt_Connection),
             (void*(*)(void*))eina_list_next,
@@ -166,14 +157,12 @@ Eet_Data_Descriptor * exalt_conn_edd_new()
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "wireless", wireless, EET_T_SHORT);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "essid", essid, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "encryption_mode", encryption_mode, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "key", key, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "connection_mode", connection_mode, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "security_mode", security_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "login", key, EET_T_STRING);
+
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "cmd_after_apply", cmd_after_apply, EET_T_STRING);
 
-
+    EET_DATA_DESCRIPTOR_ADD_SUB(edd, Exalt_Connection, "network", network, edd_network);
     return edd;
 }
 

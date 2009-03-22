@@ -20,7 +20,7 @@
 #include "config.h"
 
     EAPI int
-elm_main(int argc, char **argv)
+elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
     Evas_Object*bg;
 
@@ -83,9 +83,8 @@ ELM_MAIN()
 
 
 
-void response_cb(Exalt_DBus_Response* response, void* data )
+void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
 {
-    char* iface;
     printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
@@ -184,7 +183,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
 }
 
 
-void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
+void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data __UNUSED__)
 {
     switch(action)
     {

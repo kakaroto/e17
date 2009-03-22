@@ -47,7 +47,7 @@ void _exalt_dbus_eth_cmd_set_cb(void *data, DBusMessage *msg, DBusError *error);
  * @param eth the interface name (eth0, ath32 ...)
  * @return Returns the ip address
  */
-int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_ip_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -79,7 +79,7 @@ int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name (eth0, ath32 ...)
  * @return Returns the netmask address
  */
-int exalt_dbus_eth_netmask_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_netmask_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -109,7 +109,7 @@ int exalt_dbus_eth_netmask_get(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name (eth0, ath32 ...)
  * @return Returns the gateway address
  */
-int exalt_dbus_eth_gateway_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_gateway_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -139,7 +139,7 @@ int exalt_dbus_eth_gateway_get(exalt_dbus_conn* conn, const char* eth)
  * @param conn a connection
  * @return Returns the list of interface name (char *)
  */
-int exalt_dbus_eth_list_get(exalt_dbus_conn* conn)
+int exalt_dbus_eth_list_get(Exalt_DBus_Conn* conn)
 {
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
@@ -165,7 +165,7 @@ int exalt_dbus_eth_list_get(exalt_dbus_conn* conn)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0
  */
-int exalt_dbus_eth_wireless_is(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -198,7 +198,7 @@ int exalt_dbus_eth_wireless_is(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0 the interface is down
  */
-int exalt_dbus_eth_up_is(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -230,7 +230,7 @@ int exalt_dbus_eth_up_is(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0 the interface use the static mode
  */
-int exalt_dbus_eth_dhcp_is(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -263,7 +263,7 @@ int exalt_dbus_eth_dhcp_is(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if the interface is link or if the interface is wireless, 0 if the interface is unlink
  */
-int exalt_dbus_eth_link_is(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -297,7 +297,7 @@ int exalt_dbus_eth_link_is(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_eth_up(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -329,7 +329,7 @@ int exalt_dbus_eth_up(exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_eth_down(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -362,7 +362,7 @@ int exalt_dbus_eth_down(exalt_dbus_conn* conn, const char* eth)
  * @param c the connection
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_eth_conn_apply(exalt_dbus_conn* conn, const char* eth, Exalt_Connection* c)
+int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Connection* c)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -399,7 +399,7 @@ int exalt_dbus_eth_conn_apply(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
  * @param eth a eth interface name
  * @return Returns the command
  */
-int exalt_dbus_eth_command_get(exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -428,7 +428,7 @@ int exalt_dbus_eth_command_get(exalt_dbus_conn* conn, const char* eth)
 /*
  * update docs!
  */
-int exalt_dbus_eth_command_set(exalt_dbus_conn* conn, const char* eth, const char* cmd)
+int exalt_dbus_eth_command_set(Exalt_DBus_Conn* conn, const char* eth, const char* cmd)
 {
     DBusMessage *msg;
     DBusMessageIter iter;

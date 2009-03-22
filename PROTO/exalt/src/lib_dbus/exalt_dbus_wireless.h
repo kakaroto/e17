@@ -29,13 +29,13 @@
  * @{
  */
 
-int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn);
+int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn);
 
-int exalt_dbus_wireless_essid_get(exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_wireless_wpasupplicant_driver_get(exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_wireless_wpasupplicant_driver_set(exalt_dbus_conn* conn, const char* eth, const char* driver);
+int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth);
+int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const char* eth);
+int exalt_dbus_wireless_wpasupplicant_driver_set(Exalt_DBus_Conn* conn, const char* eth, const char* driver);
 
-int exalt_dbus_wireless_scan(exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INC  ----- */
 

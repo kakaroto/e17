@@ -104,6 +104,7 @@ Exalt_Connection* exalt_conn_new();
 
 /**
  * @brief free a connection
+ * Warning: This method doesn't free the network inside the connection.
  * @param c the connection
  */
 void exalt_conn_free(Exalt_Connection** c);
@@ -121,6 +122,14 @@ short exalt_conn_valid_is(Exalt_Connection* c);
 void exalt_conn_mode_set(
         Exalt_Connection* conn,
         Exalt_Enum_Mode mode);
+
+/**
+ * @brief set if the wep key is a hexa key
+ */
+void exalt_conn_wep_key_hexa_set(
+        Exalt_Connection* conn,
+        int is_hexa);
+
 
 /**
  * @brief set the IP address
@@ -160,9 +169,9 @@ void exalt_conn_wireless_set(
 /**
  * @brief set the essid
  */
-void exalt_conn_essid_set(
+void exalt_conn_network_set(
         Exalt_Connection* conn,
-        const char* essid);
+        Exalt_Wireless_Network* n);
 
 /**
  * @brief set the key
@@ -172,30 +181,25 @@ void exalt_conn_key_set(
         const char* key);
 
 /**
- * @brief set the encryption mode
+ * @brief set the login
  */
-void exalt_conn_encryption_mode_set(
+void exalt_conn_login_set(
         Exalt_Connection* conn,
-        Exalt_Enum_Encryption_Mode encryption_mode);
-
-/**
- * @brief set the connection mode
- */
-void exalt_conn_connection_mode_set(
-        Exalt_Connection* conn,
-        Exalt_Enum_Connection_Mode connection_mode);
-/**
- * @brief set the security mode
- */
-void exalt_conn_security_mode_set(
-        Exalt_Connection* conn,
-        Exalt_Enum_Security_Mode security_mode);
+        const char* login);
 
 
 /**
  * @brief return the mode of the connection
  */
 Exalt_Enum_Mode exalt_conn_mode_get(Exalt_Connection* conn);
+
+/**
+ * @brief return if the wep key is a hexa key
+ * (else it is a plain text)
+ */
+int exalt_conn_wireless_is(Exalt_Connection* conn);
+
+
 
 /**
  * @brief return the IP address of the connection
@@ -223,9 +227,9 @@ const char* exalt_conn_cmd_after_apply_get(Exalt_Connection* conn);
 int exalt_conn_wireless_is(Exalt_Connection* conn);
 
 /**
- * @brief return the essid of the connection
+ * @brief return the network information (essid, encyption ...)
  */
-const char* exalt_conn_essid_get(Exalt_Connection* conn);
+Exalt_Wireless_Network* exalt_conn_network_get(Exalt_Connection* conn);
 
 /**
  * @brief return the key of the connection
@@ -233,14 +237,10 @@ const char* exalt_conn_essid_get(Exalt_Connection* conn);
 const char* exalt_conn_key_get(Exalt_Connection* conn);
 
 /**
- * @brief return the encryption mode of the connection
+ * @brief return the login of the connection
  */
-Exalt_Enum_Encryption_Mode exalt_conn_encryption_mode_get(Exalt_Connection* conn);
+const char* exalt_conn_login_get(Exalt_Connection* conn);
 
-/**
- * @brief return the security mode of the connection
- */
-Exalt_Enum_Security_Mode exalt_conn_security_mode_get(Exalt_Connection* conn);
 
 /**
  * @brief return the connection mode of the connection
@@ -252,7 +252,7 @@ Exalt_Enum_Connection_Mode exalt_conn_connection_mode_get(Exalt_Connection* conn
  * @brief create an eet descriptor of the structure Exalt_Connection
  * @return Returns the descriptor
  */
-Eet_Data_Descriptor * exalt_conn_edd_new();
+Eet_Data_Descriptor * exalt_conn_edd_new(Eet_Data_Descriptor* eed_network);
 
 
 /** @} */

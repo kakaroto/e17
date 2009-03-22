@@ -25,19 +25,21 @@ struct Exalt_Wireless_Network
     char* address;
     char* essid;
     int encryption;
-    Exalt_Wireless_Network_Security security_mode;
+    char* description;
     int quality;
-    Exalt_Wireless_Network_Mode mode;
 
+    int ie_choice;
     Eina_List* ie;
-
-    Exalt_Connection* default_conn;
 };
 
 struct Exalt_Wireless_Network_IE
 {
+    char* description;
+
+    int auth_choice;
+    int pairwise_choice;
+
     Exalt_Wireless_Network_Wpa_Type wpa_type;
-    int wpa_version;
 
     Exalt_Wireless_Network_Cypher_Name group_cypher;
 
@@ -49,8 +51,69 @@ struct Exalt_Wireless_Network_IE
         auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
     int auth_suites_number;
 
-    int preauth_supported;
 };
+
+Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
+{
+    Eet_Data_Descriptor *edd;
+    Exalt_Wireless_Network_IE ie;
+    edd = eet_data_descriptor_new("ie", sizeof(Exalt_Wireless_Network_IE),
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
+            (void*(*)(void*,const char*,void*))evas_hash_add,
+            (void(*)(void*))evas_hash_free);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_choice", auth_choice, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "pairwise_choice", pairwise_choice, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "wpa_type", wpa_type, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "group_cypher", group_cypher, EET_T_INT);
+
+    eet_data_descriptor_element_add(edd,"pairwise_cypher",EET_T_INT,
+            EET_G_ARRAY, (char *)(&(ie.pairwise_cypher)) - (char *)(&(ie)),
+            sizeof(ie.pairwise_cypher)/sizeof(ie.pairwise_cypher[0]),
+            NULL, NULL);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "pairwise_cypher_number", pairwise_cypher_number, EET_T_INT);
+
+    eet_data_descriptor_element_add(edd,"auth_suites",EET_T_INT,
+            EET_G_ARRAY, (char *)(&(ie.auth_suites)) - (char *)(&(ie)),
+            sizeof(ie.auth_suites)/sizeof(ie.auth_suites[0]),
+            NULL, NULL);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_suites_number", auth_suites_number, EET_T_INT);
+
+    return edd;
+}
+
+Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie)
+{
+    Eet_Data_Descriptor *edd;
+
+    EXALT_ASSERT_RETURN(edd_ie!=NULL);
+
+    edd = eet_data_descriptor_new("Network", sizeof(Exalt_Wireless_Network),
+            (void*(*)(void*))eina_list_next,
+            (void*(*)(void*,void*))eina_list_append,
+            (void*(*)(void*))eina_list_data_get,
+            (void*(*)(void*))eina_list_free,
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
+            (void*(*)(void*,const char*,void*))evas_hash_add,
+            (void(*)(void*))evas_hash_free);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "encryption", encryption, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "description", description, EET_T_STRING);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "quality", quality, EET_T_INT);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "ie_choice", ie_choice, EET_T_INT);
+
+    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Exalt_Wireless_Network, "ies", ie, edd_ie);
+    return edd;
+}
 
 struct Exalt_Wireless_Network_Mode_List
 {
@@ -105,7 +168,7 @@ Exalt_Wireless_Network_Security_List exalt_wireless_network_security_tab[]=
 Exalt_Wireless_Network_Auth_Suites_List exalt_wireless_network_auth_suites_tab[]=
 {
     {AUTH_SUITES_NONE,"none"},
-    {AUTH_SUITES_8021X,"8021.x"},
+    {AUTH_SUITES_EAP,"EAP"},
     {AUTH_SUITES_PSK,"PSK"},
     {AUTH_SUITES_PROPRIETARY,"proprietary"},
     {AUTH_SUITES_UNKNOWN,"unknown"}
@@ -143,7 +206,6 @@ Exalt_Wireless_Network* exalt_wireless_network_new(
     Exalt_Wireless_Network* wn = calloc(1,sizeof(Exalt_Wireless_Network));
     EXALT_ASSERT_RETURN(wn!=NULL);
     wn->iface = w;
-    wn->security_mode = SECURITY_NONE;
     wn->ie = NULL;
     return wn;
 }
@@ -156,12 +218,24 @@ void exalt_wireless_network_free(
         Exalt_Wireless_Network** wn)
 {
     Exalt_Wireless_Network* wn2;
+    Exalt_Wireless_Network_IE *ie;
+    Eina_List *l,*l_next;
+
     EXALT_ASSERT_RETURN_VOID(wn!=NULL);
     wn2 = *wn;
     EXALT_ASSERT_RETURN_VOID(wn2!=NULL);
     EXALT_FREE(wn2->address);
     EXALT_FREE(wn2->essid);
-    //eina_list_destroy(wi->ie);
+    EXALT_FREE(wn2->description);
+
+    EINA_LIST_FOREACH_SAFE(wn2->ie,l,l_next,ie);
+    {
+        if(ie)
+            exalt_wireless_network_ie_free(&ie);
+        wn2->ie = eina_list_remove_list(wn2->ie, l);
+    }
+
+    EXALT_FREE(wn2);
 }
 
 /**
@@ -183,6 +257,7 @@ void exalt_wireless_network_ie_free(
         Exalt_Wireless_Network_IE** ie)
 {
     EXALT_ASSERT_RETURN_VOID(ie!=NULL);
+    EXALT_FREE((*ie)->description);
     EXALT_FREE(*ie);
 }
 
@@ -190,24 +265,22 @@ void exalt_wireless_network_ie_free(
 #define EXALT_STRUCT_TYPE Exalt_Wireless_Network
 
 EXALT_STRING_SET(essid)
+EXALT_SET(ie_choice,int);
 EXALT_STRING_SET(address);
 EXALT_SET(iface,Exalt_Wireless*)
 EXALT_SET(encryption,int)
+EXALT_STRING_SET(description)
 EXALT_SET(quality,int)
-EXALT_SET(mode,Exalt_Wireless_Network_Mode)
-EXALT_SET(security_mode,Exalt_Wireless_Network_Security)
 EXALT_SET(ie,Eina_List*)
-EXALT_SET(default_conn,Exalt_Connection*)
 
 EXALT_GET(iface,Exalt_Wireless*)
+EXALT_GET(ie_choice,int);
 EXALT_GET(address,const char*)
 EXALT_GET(essid,const char*)
 EXALT_IS(encryption,int)
+EXALT_GET(description,const char*)
 EXALT_GET(quality,int)
-EXALT_GET(mode,Exalt_Wireless_Network_Mode)
-EXALT_GET(security_mode,Exalt_Wireless_Network_Security)
 EXALT_GET(ie,Eina_List*)
-EXALT_GET(default_conn,Exalt_Connection*)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
@@ -215,23 +288,25 @@ EXALT_GET(default_conn,Exalt_Connection*)
 #define EXALT_FCT_NAME exalt_wireless_network_ie
 #define EXALT_STRUCT_TYPE Exalt_Wireless_Network_IE
 
+EXALT_STRING_SET(description)
+EXALT_SET(auth_choice,int)
+EXALT_SET(pairwise_choice,int)
 EXALT_SET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
-EXALT_SET(wpa_version,int)
 EXALT_SET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_TAB_SET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_SET(pairwise_cypher_number,int)
 EXALT_TAB_SET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
 EXALT_SET(auth_suites_number,int)
-EXALT_SET(preauth_supported,int)
 
+EXALT_GET(description,const char*)
+EXALT_GET(auth_choice,int)
+EXALT_GET(pairwise_choice,int)
 EXALT_GET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
-EXALT_GET(wpa_version,int)
 EXALT_GET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_TAB_GET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_GET(pairwise_cypher_number,int)
 EXALT_TAB_GET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
 EXALT_GET(auth_suites_number,int)
-EXALT_IS(preauth_supported,int)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE

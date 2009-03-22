@@ -43,6 +43,7 @@ void iface_list_add(char* iface, Iface_Type iface_type)
         case IFACE_WIRELESS:
             snprintf(buf,sizeof(buf),"%s (%s)",D_("Wireless interface"),iface);
             break;
+        default: ;
     }
 
     icon = elm_icon_add(win);
@@ -65,7 +66,7 @@ void iface_list_add(char* iface, Iface_Type iface_type)
 }
 
 
-void iface_list_sel(void *data, Evas_Object* o, void* event_info)
+void iface_list_sel(void *data, Evas_Object* o __UNUSED__, void* event_info __UNUSED__)
 {
     Iface_Elt *elt = data;
 

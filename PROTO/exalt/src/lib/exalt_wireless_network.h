@@ -53,7 +53,7 @@ enum Exalt_Wireless_Network_Cypher_Name
 enum Exalt_Wireless_Network_Auth_Suites
 {
     AUTH_SUITES_NONE,
-    AUTH_SUITES_8021X,
+    AUTH_SUITES_EAP,
     AUTH_SUITES_PSK,
     AUTH_SUITES_PROPRIETARY,
     AUTH_SUITES_UNKNOWN
@@ -124,25 +124,26 @@ void exalt_wireless_network_encryption_set(
         int encryption_is);
 
 /**
+ * @brief set the description (WPA/TKip ...))
+ */
+void exalt_wireless_network_description_set(
+        Exalt_Wireless_Network *wn,
+        const char* desc);
+
+/**
+ * @brief set the ie choice
+ */
+void exalt_wireless_network_ie_choice_set(
+        Exalt_Wireless_Network *wn,
+        int choice);
+
+
+/**
  * @brief set the quality
  */
 void exalt_wireless_network_quality_set(
         Exalt_Wireless_Network *wn,
         int quality);
-
-/**
- * @brief set the mode
- */
-void exalt_wireless_network_mode_set(
-        Exalt_Wireless_Network *wn,
-        Exalt_Wireless_Network_Mode mode);
-
-/**
- * @brief set the security mode
- */
-void exalt_wireless_network_security_mode_set(
-        Exalt_Wireless_Network *wn,
-        Exalt_Wireless_Network_Security security_mode);
 
 /**
  * @brief set the list of ie
@@ -177,21 +178,23 @@ int exalt_wireless_network_encryption_is(
         Exalt_Wireless_Network *wn);
 
 /**
+ * @brief get the description
+ */
+const char* exalt_wireless_network_description_get(
+        Exalt_Wireless_Network *wn);
+
+/**
+ * @brief get the ie choice
+ */
+int exalt_wireless_network_ie_choice_get(
+        Exalt_Wireless_Network *wn);
+
+
+
+/**
  * @brief get the quality
  */
 int exalt_wireless_network_quality_get(
-        Exalt_Wireless_Network *wn);
-
-/**
- * @brief get the mode
- */
-Exalt_Wireless_Network_Mode exalt_wireless_network_mode_get(
-        Exalt_Wireless_Network *wn);
-
-/**
- * @brief get the security mode
- */
-Exalt_Wireless_Network_Security exalt_wireless_network_security_mode_get(
         Exalt_Wireless_Network *wn);
 
 /**
@@ -202,19 +205,35 @@ Eina_List* exalt_wireless_network_ie_get(
         Exalt_Wireless_Network *wn);
 
 
+
+/**
+ * @brief set the description
+ */
+void exalt_wireless_network_ie_description_set(
+        Exalt_Wireless_Network_IE *ie,
+        const char* desc);
+
+/**
+ * @brief set the auth choice
+ */
+void exalt_wireless_network_ie_auth_choice_set(
+        Exalt_Wireless_Network_IE *ie,
+        int choice);
+
+/**
+ * @brief set the pairwise choice
+ */
+void exalt_wireless_network_ie_pairwise_choice_set(
+        Exalt_Wireless_Network_IE *ie,
+        int choice);
+
+
 /**
  * @brief set the wpa type
  */
 void exalt_wireless_network_ie_wpa_type_set(
         Exalt_Wireless_Network_IE *ie,
         Exalt_Wireless_Network_Wpa_Type wpa_type);
-
-/**
- * @brief set the wpa version
- */
-void exalt_wireless_network_ie_wpa_version_set(
-        Exalt_Wireless_Network_IE *ie,
-        int wpa_version);
 
 /**
  * @brief set the group cypher
@@ -254,29 +273,29 @@ void exalt_wireless_network_ie_auth_suites_number_set(
         int number);
 
 /**
- * @brief set if the preauthentification is supported
+ * @brief retrieve the ie description
  */
-void exalt_wireless_network_ie_preauth_supported_set(
-        Exalt_Wireless_Network_IE *ie,
-        int is_supported);
+const char* exalt_wireless_network_ie_description_get(
+        Exalt_Wireless_Network_IE *ie);
 
 /**
- * @brief set the default connection for this wireless network
+ * @brief retrieve the auth choice
  */
-void exalt_wireless_network_ie_default_conn_set(
-        Exalt_Wireless_Network_IE *ie,
-        Exalt_Connection* conn);
+int exalt_wireless_network_ie_auth_choice_get(
+        Exalt_Wireless_Network_IE *ie);
+
+/**
+ * @brief retrieve the pairwise choice
+ */
+int exalt_wireless_network_ie_pairwise_choice_get(
+        Exalt_Wireless_Network_IE *ie);
+
+
 
 /**
  * @brief retrieve the wpa type
  */
 Exalt_Wireless_Network_Wpa_Type exalt_wireless_network_ie_wpa_type_get(
-        Exalt_Wireless_Network_IE *ie);
-
-/**
- * @brief retrieve the wpa version
- */
-int exalt_wireless_network_ie_wpa_version_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
@@ -309,18 +328,6 @@ Exalt_Wireless_Network_Auth_Suites exalt_wireless_network_ie_auth_suites_get(
  * @brief retrieve the number of auth suites
  */
 int exalt_wireless_network_ie_auth_suites_number_get(
-        Exalt_Wireless_Network_IE *ie);
-
-/**
- * @brief test if the preauthentification is supported
- */
-int exalt_wireless_network_ie_preauth_supported_is(
-        Exalt_Wireless_Network_IE *ie);
-
-/**
- * @brief retrieve the default connection
- */
-Exalt_Connection* exalt_wireless_network_ie_default_conn_get(
         Exalt_Wireless_Network_IE *ie);
 
 /**
@@ -365,6 +372,10 @@ const char* exalt_wireless_network_name_from_auth_suites(
 const char* exalt_wireless_network_name_from_security(
         Exalt_Wireless_Network_Security security);
 
+
+Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new();
+
+Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie);
 
 /** @} */
 

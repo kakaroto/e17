@@ -16,14 +16,14 @@ EXTRA_DIST =
 
 EXALTHEADERS = \
 libexalt.h \
-iw/wireless.h \
 exalt_dns.h \
 exalt_ethernet.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
 exalt_wireless_network.h \
 exalt_connection.h \
-exalt_vpnc.h
+exalt_vpnc.h \
+iw/iwlib.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \
@@ -39,7 +39,8 @@ exalt_vpnc.c \
 libexalt_private.c \
 libexalt_private.h \
 exalt_connection.c \
-iw/iwlib_custom.c \
+exalt_wpa_supplicant.c \
+iw/iwlib.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt
