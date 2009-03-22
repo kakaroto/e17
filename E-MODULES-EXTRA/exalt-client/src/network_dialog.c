@@ -39,7 +39,7 @@ void if_network_dialog_create(Instance* inst)
 
     inst->network.table = e_widget_table_add(evas,0);
 
-    flist = e_widget_frametable_add(evas, D_("Wireless network information"), 0);
+    flist = e_widget_frametable_add(evas, D_("Network information"), 0);
 
     lbl = e_widget_label_add(evas,D_("Essid: "));
     e_widget_frametable_object_append(flist, lbl, 0, 0, 1, 1, 1, 0, 1, 0);
@@ -55,11 +55,6 @@ void if_network_dialog_create(Instance* inst)
     e_widget_frametable_object_append(flist, lbl, 0, 2, 1, 1, 1, 0, 1, 0);
     inst->network.lbl_quality = e_widget_label_add(evas,"hehe");
     e_widget_frametable_object_append(flist, inst->network.lbl_quality, 1, 2, 1, 1, 1, 0, 1, 0);
-
-    lbl = e_widget_label_add(evas,D_("Authentification: "));
-    e_widget_frametable_object_append(flist, lbl, 0, 3, 1, 1, 1, 0, 1, 0);
-    inst->network.lbl_auth = e_widget_label_add(evas,"hehe");
-    e_widget_frametable_object_append(flist, inst->network.lbl_auth, 1, 3, 1, 1, 1, 0, 1, 0);
 
     e_widget_table_object_append(inst->network.table,flist,0,0,1,1,1,1,1,0);
 
@@ -111,23 +106,8 @@ void if_network_dialog_create(Instance* inst)
     inst->network.entry_cmd = e_widget_entry_add(evas,&(inst->network.cmd),if_network_dialog_cb_entry,inst,NULL);
     e_widget_frametable_object_append(flist, inst->network.entry_cmd, 2, 6, 1, 1, 1, 0, 1, 0);
 
-    //an empty as separator
-    lbl = e_widget_label_add(evas,"");
-    e_widget_frametable_object_append(flist, lbl, 0, 7, 2, 1, 1, 0, 1, 0);
 
-    lbl = e_widget_label_add(evas,D_("Login: "));
-    e_widget_frametable_object_append(flist, lbl, 0, 8, 2, 1, 1, 0, 1, 0);
-    inst->network.lbl_login = lbl;
-    inst->network.entry_login = e_widget_entry_add(evas,&(inst->network.login),if_network_dialog_cb_entry,inst,NULL);
-    e_widget_frametable_object_append(flist, inst->network.entry_login, 2, 8, 1, 1, 1, 0, 1, 0);
-
-    lbl = e_widget_label_add(evas,D_("Password: "));
-    e_widget_frametable_object_append(flist, lbl, 0, 9, 2, 1, 1, 0, 1, 0);
-    inst->network.lbl_pwd = lbl;
-    inst->network.entry_pwd = e_widget_entry_add(evas,&(inst->network.pwd),if_network_dialog_cb_entry,inst,NULL);
-    e_widget_frametable_object_append(flist, inst->network.entry_pwd, 2, 9, 1, 1, 1, 0, 1, 0);
-
-    e_widget_table_object_append(inst->network.table,flist,1,0,1,2,1,1,1,0);
+    inst->network.f_iface = flist;
 
     e_dialog_button_add(inst->network.dialog, D_("OK"), NULL,if_network_dialog_cb_ok, inst);
     e_dialog_button_add(inst->network.dialog, D_("Apply"), NULL, if_network_dialog_cb_apply, inst);
@@ -152,6 +132,7 @@ void if_network_dialog_show(Instance* inst)
 void if_network_dialog_set(Instance *inst, Popup_Elt* network)
 {
     char buf[1024];
+    int nb_fr = 1;
 
     if(inst->network.network)
     {
@@ -163,14 +144,11 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
     inst->network.network = network;
     network->nb_use++;
 
-    e_widget_label_text_set(inst->network.lbl_essid,exalt_dbus_wireless_network_essid_get(network->n));
-    e_widget_label_text_set(inst->network.lbl_address,exalt_dbus_wireless_network_address_get(network->n));
+    e_widget_label_text_set(inst->network.lbl_essid,exalt_wireless_network_essid_get(network->n));
+    e_widget_label_text_set(inst->network.lbl_address,exalt_wireless_network_address_get(network->n));
 
-    snprintf(buf,1024,"%d %%",exalt_dbus_wireless_network_quality_get(network->n));
+    snprintf(buf,1024,"%d %%",exalt_wireless_network_quality_get(network->n));
     e_widget_label_text_set(inst->network.lbl_quality,buf);
-
-    const char* auth = exalt_wireless_network_name_from_mode(exalt_dbus_wireless_network_mode_get(network->n));
-    e_widget_label_text_set(inst->network.lbl_auth,auth);
 
     //by default the login and password entry are disabled
     evas_object_hide(inst->network.lbl_login);
@@ -178,49 +156,35 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
     evas_object_hide(inst->network.lbl_pwd);
     evas_object_hide(inst->network.entry_pwd);
 
-    if(exalt_dbus_wireless_network_encryption_is(network->n))
+    if(exalt_wireless_network_encryption_is(network->n))
     {
         Eina_List* l_ie;
 
         evas_object_show(inst->network.lbl_pwd);
         evas_object_show(inst->network.entry_pwd);
 
-        if( (l_ie=exalt_dbus_wireless_network_ie_get(network->n))==NULL)
+        if( (l_ie=exalt_wireless_network_ie_get(network->n))==NULL)
         {
             //WEP encryption
             Evas_Object* fr = if_network_dialog_wep_new(inst,network->n);
-            e_widget_table_object_append(inst->network.table,fr,0,1,1,1,1,0,1,0);
+            e_widget_table_object_append(inst->network.table,fr,0,1,1,1,1,1,1,0);
+            nb_fr++;
         }
         else
         {
-            Eina_List* l;
-            Exalt_Wireless_Network_IE *ie;
-            int i = 1;
-            EINA_LIST_FOREACH(l_ie,l,ie)
-            {
-                Evas_Object *fr = NULL;
-                switch(exalt_wireless_network_ie_wpa_type_get(ie))
-                {
-                    case WPA_TYPE_WPA:
-                        fr = if_network_dialog_wpa_new(inst,ie,D_("WPA information"));
-                        break;
-                    case WPA_TYPE_WPA2:
-                        fr = if_network_dialog_wpa_new(inst,ie,D_("WPA2 information"));
-                        break;
-                    default:
-                        printf("(%s) unknow WPA information :(\n",
-                                exalt_dbus_wireless_network_essid_get(network->n));
-                        break;
-                }
+            Evas_Object* fr = if_network_dialog_wpa_new(inst,network->n);
 
-                if(fr)
-                {
-                    e_widget_table_object_append(inst->network.table,fr,0,i,1,1,1,0,1,0);
-                    i++;
-                }
+            if(fr)
+            {
+                e_widget_table_object_append(inst->network.table,
+                        fr,0,nb_fr,1,1,1,1,1,0);
+                nb_fr++;
             }
         }
     }
+
+
+    e_widget_table_object_append(inst->network.table,inst->network.f_iface,1,0,1,2,1,1,1,0);
 
     int mw,mh;
     e_widget_min_size_get(inst->network.table, &mw, &mh);
@@ -238,90 +202,131 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
     e_dialog_show(inst->network.dialog);
 }
 
-Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_DBus_Wireless_Network* n)
+Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_Wireless_Network* n)
 {
-    Evas_Object* lbl;
+    Evas_Object* lbl, *o;
 
     Evas*evas = e_win_evas_get(inst->network.dialog->win);
 
     Evas_Object* flist = e_widget_frametable_add(evas, D_("WEP information"), 0);
 
-    lbl = e_widget_label_add(evas,D_("Authentication: "));
+    lbl = e_widget_label_add(evas,D_("Description: "));
     e_widget_frametable_object_append(flist, lbl, 0, 0, 1, 1, 1, 0, 1, 0);
-    const char* security = exalt_wireless_network_name_from_security(exalt_dbus_wireless_network_security_mode_get(n));
-    lbl = e_widget_label_add(evas,security);
+    lbl = e_widget_label_add(evas,D_("WEP"));
     e_widget_frametable_object_append(flist, lbl, 1, 0, 1, 1, 1, 0, 1, 0);
+
+
+
+    int i = 7;
+    inst->network.entry_login = NULL;
+
+    //empty block
+    lbl = e_widget_label_add(evas,D_(""));
+    e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+
+    i++;
+
+    inst->network.wep_key_hexa = 1;
+    E_Radio_Group* rg = e_widget_radio_group_new(&(inst->network.wep_key_hexa));
+    o = e_widget_radio_add(evas, D_("Hexadecimal Key"), 1, rg);
+    e_widget_frametable_object_append(inst->network.f_iface, o, 0, i, 2, 1, 1, 0, 1, 0);
+
+    o = e_widget_radio_add(evas, D_("ASCII Key"), 0, rg);
+    e_widget_frametable_object_append(inst->network.f_iface, o, 2, i, 2, 1, 1, 0, 1, 0);
+
+
+    i++;
+
+    lbl = e_widget_label_add(evas,D_("Password: "));
+    e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 1, 1, 1, 0, 0, 0);
+    inst->network.lbl_pwd = lbl;
+    inst->network.entry_pwd = e_widget_entry_add(evas,&(inst->network.pwd),if_network_dialog_cb_entry,inst,NULL);
+    e_widget_frametable_object_append(inst->network.f_iface, inst->network.entry_pwd, 2, i, 1, 1, 1, 0, 1, 0);
 
     return flist;
 }
 
-Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network_IE* ie,const char* title)
+Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network* n)
 {
     Evas_Object* lbl;
     const char* s;
     char buf[1024];
+    E_Radio_Group* rg;
+    Evas_Object* radio;
     int i;
+    Eina_List *l_ie,*l;
+    Exalt_Wireless_Network_IE *ie;
+
+
     Evas*evas = e_win_evas_get(inst->network.dialog->win);
 
-    Evas_Object* flist = e_widget_frametable_add(evas, title, 0);
+    Evas_Object* flist = e_widget_frametable_add(evas, D_("WPA information"), 0);
 
-#define INFO_ADD(title,value,pos) \
-    lbl = e_widget_label_add(evas,title); \
-    e_widget_frametable_object_append(flist, lbl, 0, pos, 1, 1, 1, 0, 1, 0); \
-    lbl = e_widget_label_add(evas,value); \
-    e_widget_frametable_object_append(flist, lbl, 1, pos, 1, 1, 1, 0, 1, 0)
 
-    Exalt_Wireless_Network_Wpa_Type wpa_type =
-        exalt_wireless_network_ie_wpa_type_get(ie);
-    s=exalt_wireless_network_name_from_wpa_type(wpa_type);
-    INFO_ADD(D_("Type: "),s,0);
+    rg = e_widget_radio_group_new(&(inst->network.ie_choice));
 
-    i=exalt_wireless_network_ie_wpa_version_get(ie);
-    snprintf(buf,1024,"%d",i);
-    INFO_ADD(D_("Version: "),buf,1);
-
-    Exalt_Wireless_Network_Cypher_Name name = exalt_wireless_network_ie_group_cypher_get(ie);
-    s=exalt_wireless_network_name_from_cypher_name(name);
-    INFO_ADD(D_("Group Cypher: "),s,2);
-
-    buf[0]='\0';
-    for(i=0;i<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);i++)
+    l_ie=exalt_wireless_network_ie_get(n);
+    int ie_number = 0;
+    int radio_number = 0;
+    int is_eap =  0;
+    EINA_LIST_FOREACH(l_ie,l,ie)
     {
-        if(i!=0)
-            strcat(buf,", ");
-        Exalt_Wireless_Network_Cypher_Name name;
-        name = exalt_wireless_network_ie_pairwise_cypher_get(ie,i);
-        strcat(buf,exalt_wireless_network_name_from_cypher_name(name));
-    }
-    INFO_ADD(D_("Pairwise Cyphers: "),buf,3);
+        int i,j;
+        const char* wpa = exalt_wireless_network_name_from_wpa_type(
+                exalt_wireless_network_ie_wpa_type_get(ie));
 
-    buf[0]='\0';
-    int use_8021X = 0;
-    for(i=0;i<exalt_wireless_network_ie_auth_suites_number_get(ie);i++)
-    {
-        if(i!=0)
-            strcat(buf,", ");
-        Exalt_Wireless_Network_Auth_Suites name;
-        name = exalt_wireless_network_ie_auth_suites_get(ie,i);
-        strcat(buf,exalt_wireless_network_name_from_auth_suites(name));
-        if(name == AUTH_SUITES_8021X)
-            use_8021X=1;
-    }
-    INFO_ADD(D_("Authentifications Suites: "),buf,4);
+        for(i=0;i<exalt_wireless_network_ie_auth_suites_number_get(ie);i++)
+        {
+            const char* auth = exalt_wireless_network_name_from_auth_suites(
+                    exalt_wireless_network_ie_auth_suites_get(ie,i));
 
-    if(use_8021X)
-    {
-        evas_object_show(inst->network.lbl_login);
-        evas_object_show(inst->network.entry_login);
+            if(exalt_wireless_network_ie_auth_suites_get(ie,i)
+                    == AUTH_SUITES_EAP)
+                is_eap = 1;
+            for(j=0;j<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);j++)
+            {
+                char buf[1024];
+                char* pairwise = exalt_wireless_network_name_from_cypher_name(
+                        exalt_wireless_network_ie_pairwise_cypher_get(ie,j));
+
+                snprintf(buf,1024,"%s-%s-%s",wpa,auth,pairwise);
+                radio = e_widget_radio_add(evas, buf,
+                        ie_number*100+i*10+j, rg);
+                e_widget_frametable_object_append(flist,
+                        radio, 0, radio_number, 1, 1, 1, 0, 1, 0);
+
+                radio_number++;
+            }
+        }
+        ie_number++;
     }
 
+    i = 7;
+    inst->network.entry_login = NULL;
 
-    i = exalt_wireless_network_ie_preauth_supported_is(ie);
-    if(i) s=D_("Yes");
-    else s= D_("No");
-    INFO_ADD(D_("Pre-authentification: "),s,5);
+    //empty block
+    lbl = e_widget_label_add(evas,D_(""));
+    e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 2, 1, 1, 0, 1, 0);
 
-#undef INFO_ADD
+    i++;
+
+    if(is_eap)
+    {
+        lbl = e_widget_label_add(evas,D_("Login: "));
+        e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+        inst->network.lbl_login = lbl;
+        inst->network.entry_login = e_widget_entry_add(evas,&(inst->network.login),if_network_dialog_cb_entry,inst,NULL);
+        e_widget_frametable_object_append(inst->network.f_iface, inst->network.entry_login, 2, i, 1, 1, 1, 0, 1, 0);
+
+        i++;
+    }
+
+    lbl = e_widget_label_add(evas,D_("Password: "));
+    e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 1, 1, 1, 0, 0, 0);
+    inst->network.lbl_pwd = lbl;
+    inst->network.entry_pwd = e_widget_entry_add(evas,&(inst->network.pwd),if_network_dialog_cb_entry,inst,NULL);
+    e_widget_frametable_object_append(inst->network.f_iface, inst->network.entry_pwd, 2, i, 1, 1, 1, 0, 1, 0);
+
     return flist;
 }
 
@@ -539,24 +544,47 @@ void if_network_dialog_cb_apply(void *data, E_Dialog *dialog)
 {
     Instance* inst = data;
 
-    /*Exalt_Connection* conn = exalt_conn_new();
+    Exalt_Connection* conn = exalt_conn_new();
 
-    exalt_conn_wireless_set(conn,0);
-    if(inst->wired.dhcp != 0)
+    exalt_conn_wireless_set(conn,1);
+    if(inst->network.dhcp != 0)
     {
         exalt_conn_mode_set(conn,EXALT_STATIC);
-        exalt_conn_ip_set(conn,e_widget_entry_text_get(inst->wired.entry_ip));
-        exalt_conn_netmask_set(conn,e_widget_entry_text_get(inst->wired.entry_netmask));
-        exalt_conn_gateway_set(conn,e_widget_entry_text_get(inst->wired.entry_gateway));
+        exalt_conn_ip_set(conn,e_widget_entry_text_get(inst->network.entry_ip));
+        exalt_conn_netmask_set(conn,e_widget_entry_text_get(inst->network.entry_netmask));
+        exalt_conn_gateway_set(conn,e_widget_entry_text_get(inst->network.entry_gateway));
     }
     else
         exalt_conn_mode_set(conn,EXALT_DHCP);
-    exalt_conn_cmd_after_apply_set(conn,e_widget_entry_text_get(inst->wired.entry_cmd));
+    exalt_conn_cmd_after_apply_set(conn,e_widget_entry_text_get(inst->network.entry_cmd));
 
-    exalt_dbus_eth_conn_apply(inst->conn,inst->wired.iface->iface,conn);
+
+    Exalt_Wireless_Network *n = inst->network.network->n;
+    exalt_conn_network_set(conn,n);
+
+    exalt_conn_key_set(conn,
+            e_widget_entry_text_get(inst->network.entry_pwd));
+    exalt_conn_login_set(conn,
+            e_widget_entry_text_get(inst->network.entry_login));
+
+    exalt_conn_wep_key_hexa_set(conn,inst->network.wep_key_hexa);
+
+    if(exalt_wireless_network_ie_get(n))
+    {
+        int choice = inst->network.ie_choice;
+        int ie_choice = choice/100;
+        int auth_choice = (choice-ie_choice*100)/10;
+        int pairwise_choice = choice-ie_choice*100-auth_choice*10;
+        //printf("%d %d %d %d\n",choice,ie_choice,auth_choice,pairwise_choice);
+        exalt_wireless_network_ie_choice_set(n,ie_choice);
+        Exalt_Wireless_Network_IE *ie = eina_list_nth(
+                exalt_wireless_network_ie_get(n),ie_choice);
+        exalt_wireless_network_ie_auth_choice_set(ie,auth_choice);
+        exalt_wireless_network_ie_pairwise_choice_set(ie,pairwise_choice);
+    }
+    exalt_dbus_eth_conn_apply(inst->conn,inst->network.network->iface,conn);
+
     exalt_conn_free(&conn);
-    */
-    printf("APPLY\n");
 }
 
 

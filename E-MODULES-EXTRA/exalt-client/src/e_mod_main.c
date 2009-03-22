@@ -494,7 +494,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
     switch(exalt_dbus_response_type_get(response))
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
-            printf("DNS list:\n");
+        /*    printf("DNS list:\n");
 
             {
                 Ecore_List* l = exalt_dbus_response_list_get(response);
@@ -503,6 +503,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
                 while( (dns=ecore_list_next(l)) )
                     printf("%s\n",dns);
             }
+            */
             break;
         case EXALT_DBUS_RESPONSE_DNS_ADD:
             printf("DNS added\n");
@@ -536,9 +537,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
 
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
-            printf("%s is a wireless interface:\n",exalt_dbus_response_iface_get(response));
-
-            printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
+            popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             if_wired_dialog_update(inst,response);
@@ -597,8 +596,11 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
     {
         case EXALT_ETH_CB_ACTION_NEW:
         case EXALT_ETH_CB_ACTION_ADD:
+            popup_iface_add(inst,eth,IFACE_WIRED);
+            exalt_dbus_eth_wireless_is(inst->conn,eth);
             break;
         case EXALT_ETH_CB_ACTION_REMOVE:
+            popup_iface_remove(inst,eth);
             break;
         case EXALT_ETH_CB_ACTION_UP:
         case EXALT_ETH_CB_ACTION_DOWN:

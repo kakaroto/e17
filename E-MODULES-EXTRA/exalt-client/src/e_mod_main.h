@@ -95,12 +95,11 @@ struct _Network_Dialog
     Popup_Elt* network;
 
     Evas_Object* table;
+    Evas_Object* f_iface;
 
     Evas_Object* lbl_essid;
     Evas_Object* lbl_address;
     Evas_Object* lbl_quality;
-    Evas_Object* lbl_auth;
-
 
     int dhcp;
     Evas_Object *btn_activate;
@@ -126,8 +125,11 @@ struct _Network_Dialog
     Evas_Object* entry_pwd;
     char* pwd;
 
+    //wep
+    int wep_key_hexa;
 
-
+    //wpa
+    int ie_choice;
 
     Evas_Object* entry_cmd;
 
@@ -152,7 +154,7 @@ struct _Instance
     Wired_Dialog wired;
     Network_Dialog network;
 
-    exalt_dbus_conn *conn;
+    Exalt_DBus_Conn *conn;
 
     /* popup anyone ? */
     E_Menu *menu;
@@ -196,7 +198,7 @@ struct _Popup_Elt
     //With this way, a network is removed if we didn't detected it 2 times
     //It avoid to see the network flashing in the list because the scan does'nt detect the network correctly
     int is_find;
-    Exalt_DBus_Wireless_Network* n;
+    Exalt_Wireless_Network* n;
     Ecore_Timer* scan_timer;
 };
 
@@ -227,6 +229,7 @@ void popup_create(Instance* inst);
 void popup_update(Instance* inst, Exalt_DBus_Response* response);
 void popup_ip_update(Instance* inst, char* iface, char* ip);
 void popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type);
+void popup_iface_remove(Instance *inst, const char*  iface);
 void popup_cb_setup(void *data, void *data2);
 void popup_cb_ifnet_sel(void *data);
 void popup_up_update(Instance* inst, char* iface, int is_up);
@@ -234,7 +237,7 @@ void popup_link_update(Instance* inst, char* iface, int is_link);
 void popup_icon_update(Instance* inst, const char* iface);
 void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip);
 void popup_notify_scan(char* iface, Eina_List* networks, void* user_data );
-void popup_network_interval_get(Instance* inst, char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last);
+void popup_network_interval_get(Instance* inst, const char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last);
 void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quality);
 int popup_scan_timer_cb(void *data);
 void popup_elt_free(Popup_Elt* elt);
@@ -264,8 +267,8 @@ void if_network_dialog_show(Instance* inst);
 void if_network_dialog_set(Instance *inst, Popup_Elt* network);
 void if_network_dialog_hide(Instance *inst);
 void if_network_dialog_cb_del(E_Win *win);
-Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_DBus_Wireless_Network* n);
-Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network_IE* ie, const char* title);
+Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_Wireless_Network* n);
+Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network*n);
 
 void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response);
 void if_network_dialog_icon_update(Instance *inst);
