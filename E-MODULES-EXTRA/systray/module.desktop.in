@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Systray
+Icon=e-module-systray
+Comment=<title>System Tray:</title><br>system tray that hold applications icons like Skype, Pidgin, Kopete and others.
+X-Enlightenment-ModuleType=shelf
