@@ -473,8 +473,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      return NULL;
    if ((!id) || (instance))
      {
-	e_alert_show
-	  (D_("There can be only one systray gadget and "
+	e_util_dialog_internal
+	  (D_("Another systray exists"),
+	   D_("There can be only one systray gadget and "
 	      "another one already exists."));
 	return NULL;
      }
