@@ -104,14 +104,14 @@ TimerAdd(double in_time, int (*func) (void *data), void *data)
    if (in_time < 0.)		/* No negative in-times */
       in_time = 0.;
 
-   if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("TimerAdd %p: func=%p data=%p: %8.3f\n", timer,
-	      timer->func, timer->data, in_time);
-
    timer->func = func;
    timer->in_time = in_time;
    timer->at_time = GetTime() + in_time;
    timer->data = data;
+
+   if (EDebug(EDBUG_TYPE_TIMERS))
+      Eprintf("TimerAdd %p: func=%p data=%p: %8.3f\n", timer,
+	      timer->func, timer->data, in_time);
 
    _TimerSet(timer);		/* Add to timer queue */
 
@@ -180,8 +180,8 @@ TimersRun(double tt)
 	Timer              *qp;
 
 	for (qp = timer; qp; qp = qp->next)
-	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8.3lf\n", timer,
-		   timer->func, timer->data, timer->at_time - t);
+	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8.3lf\n", qp,
+		   qp->func, qp->data, qp->at_time - t);
      }
 
    if (timer)
