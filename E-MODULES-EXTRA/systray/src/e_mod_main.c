@@ -223,9 +223,14 @@ _systray_cb_resize(void *data, Evas *evas __UNUSED__, Evas_Object *o __UNUSED__,
 static void
 _systray_icon_geometry_apply(Icon *icon)
 {
+   const Evas_Object *o;
    Evas_Coord x, y, w, h, wx, wy;
+
+   o = edje_object_part_object_get(icon->inst->ui.gadget, _part_size);
+   if (!o) return;
+
    evas_object_geometry_get(icon->o, &x, &y, &w, &h);
-   ecore_x_window_geometry_get(icon->inst->win.base, &wx, &wy, NULL, NULL);
+   evas_object_geometry_get(o, &wx, &wy, NULL, NULL);
    ecore_x_window_move_resize(icon->win, x - wx, y - wy, w, h);
 }
 
