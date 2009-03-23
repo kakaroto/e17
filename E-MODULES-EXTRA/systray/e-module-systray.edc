@@ -21,6 +21,13 @@ collections {
 
    group {
       name: "e/modules/systray/main";
+
+      data {
+         item: "inset" "255 255 255";
+         item: "plain" "230 230 230";
+         item: "default" "255 255 255";
+      }
+
       parts {
          part {
             name: "base";
@@ -53,11 +60,11 @@ collections {
                color: 0 0 0 0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 2 2;
+                  offset: 4 4;
                }
                rel2 {
                   relative: 1.0 1.0;
-                  offset: -3 -3;
+                  offset: -5 -5;
                }
             }
          }
@@ -87,11 +94,12 @@ collections {
                state: "vertical" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 2 2;
+                  to: "e.size";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  offset: -3 -3;
+                  offset: -1 -1;
+                  to: "e.size";
                }
                box {
                   layout: "vertical";
