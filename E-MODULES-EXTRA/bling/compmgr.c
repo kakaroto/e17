@@ -599,7 +599,7 @@ shadow_picture(double opacity, Picture alpha_pict, int width, int height,
       return None;
    }
 
-   gc = ecore_x_gc_new(shadowPixmap);
+   gc = ecore_x_gc_new(shadowPixmap, 0, NULL);
    if (!gc)
    {
       XDestroyImage(shadowImage);
