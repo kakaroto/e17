@@ -24,31 +24,20 @@ cdef object _charp_to_str(char *p):
         return None
 
 
-cdef class EventKeyDown(ecore.c_ecore.Event):
+cdef class EventKey(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Key_Down *obj
-        obj = <Ecore_X_Event_Key_Down*>o
+        cdef Ecore_Event_Key *obj
+        obj = <Ecore_Event_Key*>o
         self.keyname = _charp_to_str(obj.keyname)
-        self.keysymbol = _charp_to_str(obj.keysymbol)
-        self.key_compose = _charp_to_str(obj.key_compose)
+        self.key = _charp_to_str(obj.key)
+        self.string = _charp_to_str(obj.string)
+        self.compose = _charp_to_str(obj.compose)
+        self.window = Window_from_xid(<unsigned long><void*>obj.window)
+        self.root_window = Window_from_xid(<unsigned long><void*>obj.root_window)
+        self.event_window = Window_from_xid(<unsigned long><void*>obj.event_window)
+        self.timestamp = obj.timestamp
         self.modifiers = obj.modifiers
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
-        return 1
-
-
-cdef class EventKeyUp(ecore.c_ecore.Event):
-    cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Key_Up *obj
-        obj = <Ecore_X_Event_Key_Up*>o
-        self.keyname = _charp_to_str(obj.keyname)
-        self.keysymbol = _charp_to_str(obj.keysymbol)
-        self.key_compose = _charp_to_str(obj.key_compose)
-        self.modifiers = obj.modifiers
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
+        self.same_screen = obj.same_screen
         return 1
 
 
@@ -58,99 +47,69 @@ cdef class EventPoint:
         self.y = y
 
 
-cdef class EventMouseButtonDown(ecore.c_ecore.Event):
+cdef class EventMouseButton(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_Button_Down *obj
-        obj = <Ecore_X_Event_Mouse_Button_Down*>o
-        self.button = obj.button
+        cdef Ecore_Event_Mouse_Button *obj
+        obj = <Ecore_Event_Mouse_Button*>o
+        self.window = Window_from_xid(<unsigned long><void*>obj.window)
+        self.root_window = Window_from_xid(<unsigned long><void*>obj.root_window)
+        self.event_window = Window_from_xid(<unsigned long><void*>obj.event_window)
+        self.timestamp = obj.timestamp
         self.modifiers = obj.modifiers
+        self.buttons = obj.buttons
+        self.double_click = obj.double_click
+        self.triple_click = obj.triple_click
+        self.same_screen = obj.same_screen
         self.x = obj.x
         self.y = obj.y
         self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
-        self.double_click = obj.double_click
-        self.triple_click = obj.triple_click
-        return 1
-
-
-cdef class EventMouseButtonUp(ecore.c_ecore.Event):
-    cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_Button_Up *obj
-        obj = <Ecore_X_Event_Mouse_Button_Up*>o
-        self.button = obj.button
-        self.modifiers = obj.modifiers
-        self.x = obj.x
-        self.y = obj.y
-        self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
-        self.double_click = obj.double_click
-        self.triple_click = obj.triple_click
         return 1
 
 
 cdef class EventMouseMove(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_Move *obj
-        obj = <Ecore_X_Event_Mouse_Move *>o
+        cdef Ecore_Event_Mouse_Move *obj
+        obj = <Ecore_Event_Mouse_Move *>o
+        self.window = Window_from_xid(<unsigned long><void*>obj.window)
+        self.root_window = Window_from_xid(<unsigned long><void*>obj.root_window)
+        self.event_window = Window_from_xid(<unsigned long><void*>obj.event_window)
+        self.timestamp = obj.timestamp
         self.modifiers = obj.modifiers
+        self.same_screen = obj.same_screen
         self.x = obj.x
         self.y = obj.y
         self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
         return 1
 
 
-cdef class EventMouseIn(ecore.c_ecore.Event):
+cdef class EventMouseIO(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_In *obj
-        obj = <Ecore_X_Event_Mouse_In *>o
+        cdef Ecore_Event_Mouse_IO *obj
+        obj = <Ecore_Event_Mouse_IO *>o
+        self.window = Window_from_xid(<unsigned long><void*>obj.window)
+        self.event_window = Window_from_xid(<unsigned long><void*>obj.event_window)
+        self.timestamp = obj.timestamp
         self.modifiers = obj.modifiers
         self.x = obj.x
         self.y = obj.y
-        self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.mode = obj.mode
-        self.detail = obj.detail
-        self.time = obj.time
-        return 1
-
-
-cdef class EventMouseOut(ecore.c_ecore.Event):
-    cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_Out *obj
-        obj = <Ecore_X_Event_Mouse_Out *>o
-        self.modifiers = obj.modifiers
-        self.x = obj.x
-        self.y = obj.y
-        self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.mode = obj.mode
-        self.detail = obj.detail
-        self.time = obj.time
         return 1
 
 
 cdef class EventMouseWheel(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Mouse_Wheel *obj
-        obj = <Ecore_X_Event_Mouse_Wheel *>o
+        cdef Ecore_Event_Mouse_Wheel *obj
+        obj = <Ecore_Event_Mouse_Wheel *>o
+        self.window = Window_from_xid(<unsigned long><void*>obj.window)
+        self.root_window = Window_from_xid(<unsigned long><void*>obj.root_window)
+        self.event_window = Window_from_xid(<unsigned long><void*>obj.event_window)
+        self.timestamp = obj.timestamp
+        self.modifiers = obj.modifiers
+        self.same_screen = obj.same_screen
         self.direction = obj.direction
         self.z = obj.z
-        self.modifiers = obj.modifiers
         self.x = obj.x
         self.y = obj.y
         self.root = EventPoint(obj.root.x, obj.root.y)
-        self.win = Window_from_xid(obj.win)
-        self.event_win = Window_from_xid(obj.event_win)
-        self.time = obj.time
         return 1
 
 
@@ -452,35 +411,35 @@ cdef class EventWindowMoveResizeRequest(ecore.c_ecore.Event):
 cdef class _Events:
     property KEY_DOWN:
         def __get__(self):
-            return ECORE_X_EVENT_KEY_DOWN
+            return ECORE_EVENT_KEY_DOWN
 
     property KEY_UP:
         def __get__(self):
-            return ECORE_X_EVENT_KEY_UP
+            return ECORE_EVENT_KEY_UP
 
     property MOUSE_BUTTON_DOWN:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_BUTTON_DOWN
+            return ECORE_EVENT_MOUSE_BUTTON_DOWN
 
     property MOUSE_BUTTON_UP:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_BUTTON_UP
+            return ECORE_EVENT_MOUSE_BUTTON_UP
 
     property MOUSE_MOVE:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_MOVE
+            return ECORE_EVENT_MOUSE_MOVE
 
     property MOUSE_IN:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_IN
+            return ECORE_EVENT_MOUSE_IN
 
     property MOUSE_OUT:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_OUT
+            return ECORE_EVENT_MOUSE_OUT
 
     property MOUSE_WHEEL:
         def __get__(self):
-            return ECORE_X_EVENT_MOUSE_WHEEL
+            return ECORE_EVENT_MOUSE_WHEEL
 
     property WINDOW_FOCUS_IN:
         def __get__(self):
@@ -653,14 +612,14 @@ cdef int x_events_register() except 0:
 
     reg = ecore.c_ecore._event_mapping_register
 
-    reg(ECORE_X_EVENT_KEY_DOWN, EventKeyDown)
-    reg(ECORE_X_EVENT_KEY_UP, EventKeyUp)
-    reg(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, EventMouseButtonDown)
-    reg(ECORE_X_EVENT_MOUSE_BUTTON_UP, EventMouseButtonUp)
-    reg(ECORE_X_EVENT_MOUSE_MOVE, EventMouseMove)
-    reg(ECORE_X_EVENT_MOUSE_IN, EventMouseIn)
-    reg(ECORE_X_EVENT_MOUSE_OUT, EventMouseOut)
-    reg(ECORE_X_EVENT_MOUSE_WHEEL, EventMouseWheel)
+    reg(ECORE_EVENT_KEY_DOWN, EventKey)
+    reg(ECORE_EVENT_KEY_UP, EventKey)
+    reg(ECORE_EVENT_MOUSE_BUTTON_DOWN, EventMouseButton)
+    reg(ECORE_EVENT_MOUSE_BUTTON_UP, EventMouseButton)
+    reg(ECORE_EVENT_MOUSE_MOVE, EventMouseMove)
+    reg(ECORE_EVENT_MOUSE_IN, EventMouseIO)
+    reg(ECORE_EVENT_MOUSE_OUT, EventMouseIO)
+    reg(ECORE_EVENT_MOUSE_WHEEL, EventMouseWheel)
     reg(ECORE_X_EVENT_WINDOW_FOCUS_IN, EventWindowFocusIn)
     reg(ECORE_X_EVENT_WINDOW_FOCUS_OUT, EventWindowFocusOut)
     reg(ECORE_X_EVENT_WINDOW_KEYMAP, EventWindowKeymap)
@@ -705,68 +664,68 @@ cdef int x_events_register() except 0:
 
 
 def on_key_down_add(func, *args, **kargs):
-    """Creates an ecore event handler for ECORE_X_EVENT_KEY_DOWN.
+    """Creates an ecore event handler for ECORE_EVENT_KEY_DOWN.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_KEY_DOWN,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_KEY_DOWN,
                                       func, *args, **kargs)
 
 def on_key_up_add(func, *args, **kargs):
-    """Creates an ecore event handler for ECORE_X_EVENT_KEY_UP.
+    """Creates an ecore event handler for ECORE_EVENT_KEY_UP.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_KEY_UP,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_KEY_UP,
                                       func, *args, **kargs)
 
 
 def on_mouse_button_down_add(func, *args, **kargs):
-    """Creates an ecore event handler for ECORE_X_EVENT_MOUSE_BUTTON_DOWN.
+    """Creates an ecore event handler for ECORE_EVENT_MOUSE_BUTTON_DOWN.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_BUTTON_DOWN,
                                       func, *args, **kargs)
 
 def on_mouse_button_up_add(func, *args, **kargs):
-    """Create an ecore event handler for ECORE_X_EVENT_MOUSE_BUTTON_UP.
+    """Create an ecore event handler for ECORE_EVENT_MOUSE_BUTTON_UP.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_BUTTON_UP,
                                       func, *args, **kargs)
 
 def on_mouse_move_add(func, *args, **kargs):
-    """Create an ecore event handler for ECORE_X_EVENT_MOUSE_MOVE.
+    """Create an ecore event handler for ECORE_EVENT_MOUSE_MOVE.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_MOVE,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_MOVE,
                                       func, *args, **kargs)
 
 def on_mouse_in_add(func, *args, **kargs):
-    """Create an ecore event handler for ECORE_X_EVENT_MOUSE_IN.
+    """Create an ecore event handler for ECORE_EVENT_MOUSE_IN.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_IN,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_IN,
                                       func, *args, **kargs)
 
 def on_mouse_out_add(func, *args, **kargs):
-    """Create an ecore event handler for ECORE_X_EVENT_MOUSE_OUT.
+    """Create an ecore event handler for ECORE_EVENT_MOUSE_OUT.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_OUT,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_OUT,
                                       func, *args, **kargs)
 
 def on_mouse_wheel_add(func, *args, **kargs):
-    """Create an ecore event handler for ECORE_X_EVENT_MOUSE_WHEEL.
+    """Create an ecore event handler for ECORE_EVENT_MOUSE_WHEEL.
 
        @see: L{ecore.EventHandler}
     """
-    return ecore.c_ecore.EventHandler(ECORE_X_EVENT_MOUSE_WHEEL,
+    return ecore.c_ecore.EventHandler(ECORE_EVENT_MOUSE_WHEEL,
                                       func, *args, **kargs)
 
 def on_window_focus_in_add(func, *args, **kargs):

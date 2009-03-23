@@ -18,6 +18,85 @@
 cdef extern from "sys/types.h":
     ctypedef long pid_t
 
+cdef extern from "Ecore_Input.h":
+    int ECORE_EVENT_KEY_DOWN
+    int ECORE_EVENT_KEY_UP
+    int ECORE_EVENT_MOUSE_BUTTON_DOWN
+    int ECORE_EVENT_MOUSE_BUTTON_UP
+    int ECORE_EVENT_MOUSE_MOVE
+    int ECORE_EVENT_MOUSE_IN
+    int ECORE_EVENT_MOUSE_OUT
+    int ECORE_EVENT_MOUSE_WHEEL
+
+    ctypedef void *Ecore_Window
+
+    ctypedef struct _Ecore_Point:
+        int x
+        int y
+
+    ctypedef struct Ecore_Event_Key:
+        char *keyname
+        char *key
+        char *string
+        char *compose
+        Ecore_Window window
+        Ecore_Window root_window
+        Ecore_Window event_window
+        unsigned int timestamp
+        unsigned int modifiers
+        int same_screen
+
+
+    ctypedef struct Ecore_Event_Mouse_Button:
+        Ecore_Window window
+        Ecore_Window root_window
+        Ecore_Window event_window
+        unsigned int timestamp
+        unsigned int modifiers
+        unsigned int buttons
+        unsigned int double_click
+        unsigned int triple_click
+        int same_screen
+        int x
+        int y
+        _Ecore_Point root
+
+
+    ctypedef struct Ecore_Event_Mouse_Move:
+        Ecore_Window window
+        Ecore_Window root_window
+        Ecore_Window event_window
+        unsigned int timestamp
+        unsigned int modifiers
+        int same_screen
+        int x
+        int y
+        _Ecore_Point root
+
+
+    ctypedef struct Ecore_Event_Mouse_IO:
+        Ecore_Window window
+        Ecore_Window event_window
+        unsigned int timestamp
+        unsigned int modifiers
+        int x
+        int y
+
+
+    ctypedef struct Ecore_Event_Mouse_Wheel:
+        Ecore_Window window
+        Ecore_Window root_window
+        Ecore_Window event_window
+        unsigned int timestamp
+        unsigned int modifiers
+        int same_screen
+        int direction
+        int z
+        int x
+        int y
+        _Ecore_Point root
+
+
 cdef extern from "Ecore_X.h":
     ####################################################################
     # Data Types
@@ -162,101 +241,6 @@ cdef extern from "Ecore_X.h":
     ctypedef enum Ecore_X_Shape_Type:
         ECORE_X_SHAPE_BOUNDING
         ECORE_X_SHAPE_CLIP
-
-    ctypedef struct _Ecore_Point:
-        int x
-        int y
-
-    ctypedef struct Ecore_X_Event_Key_Down:
-        char *keyname
-        char *keysymbol
-        char *key_compose
-        int modifiers
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Key_Up:
-        char *keyname
-        char *keysymbol
-        char *key_compose
-        int modifiers
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-
-    ctypedef struct Ecore_X_Event_Mouse_Button_Down:
-        int button
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-        unsigned int double_click
-        unsigned int triple_click
-
-
-    ctypedef struct Ecore_X_Event_Mouse_Button_Up:
-        int button
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-        unsigned int double_click
-        unsigned int triple_click
-
-
-    ctypedef struct Ecore_X_Event_Mouse_Move:
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Mouse_In:
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Event_Mode mode
-        Ecore_X_Event_Detail detail
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Mouse_Out:
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Event_Mode mode
-        Ecore_X_Event_Detail detail
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Mouse_Wheel:
-        int direction
-        int z
-        int modifiers
-        int x
-        int y
-        _Ecore_Point root
-        Ecore_X_Window win
-        Ecore_X_Window event_win
-        Ecore_X_Time time
-
 
     ctypedef struct Ecore_X_Event_Window_Focus_In:
         Ecore_X_Window win
@@ -652,14 +636,6 @@ cdef extern from "Ecore_X.h":
        unsigned int desk
        int source
 
-    int ECORE_X_EVENT_KEY_DOWN
-    int ECORE_X_EVENT_KEY_UP
-    int ECORE_X_EVENT_MOUSE_BUTTON_DOWN
-    int ECORE_X_EVENT_MOUSE_BUTTON_UP
-    int ECORE_X_EVENT_MOUSE_MOVE
-    int ECORE_X_EVENT_MOUSE_IN
-    int ECORE_X_EVENT_MOUSE_OUT
-    int ECORE_X_EVENT_MOUSE_WHEEL
     int ECORE_X_EVENT_WINDOW_FOCUS_IN
     int ECORE_X_EVENT_WINDOW_FOCUS_OUT
     int ECORE_X_EVENT_WINDOW_KEYMAP
@@ -1350,24 +1326,17 @@ cdef class Window:
     cdef int _set_xid(self, Ecore_X_Window xid)
 
 
-cdef class EventKeyDown(ecore.c_ecore.Event):
+cdef class EventKey(ecore.c_ecore.Event):
     cdef readonly object keyname
-    cdef readonly object keysymbol
-    cdef readonly object key_compose
-    cdef readonly int modifiers
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
-
-
-cdef class EventKeyUp(ecore.c_ecore.Event):
-    cdef readonly object keyname
-    cdef readonly object keysymbol
-    cdef readonly object key_compose
-    cdef readonly int modifiers
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
+    cdef readonly object key
+    cdef readonly object string
+    cdef readonly object compose
+    cdef readonly Window window
+    cdef readonly Window root_window
+    cdef readonly Window event_window
+    cdef readonly unsigned int modifiers
+    cdef readonly unsigned int timestamp
+    cdef readonly int same_screen
 
 
 cdef class EventPoint:
@@ -1375,76 +1344,54 @@ cdef class EventPoint:
     cdef readonly int y
 
 
-cdef class EventMouseButtonDown(ecore.c_ecore.Event):
-    cdef readonly int button
-    cdef readonly int modifiers
+cdef class EventMouseButton(ecore.c_ecore.Event):
+    cdef readonly Window window
+    cdef readonly Window root_window
+    cdef readonly Window event_window
+    cdef readonly unsigned int modifiers
+    cdef readonly unsigned int timestamp
+    cdef readonly unsigned int buttons
+    cdef readonly unsigned int double_click
+    cdef readonly unsigned int triple_click
+    cdef readonly int same_screen
     cdef readonly int x
     cdef readonly int y
     cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
-    cdef readonly int double_click
-    cdef readonly int triple_click
-
-
-cdef class EventMouseButtonUp(ecore.c_ecore.Event):
-    cdef readonly int button
-    cdef readonly int modifiers
-    cdef readonly int x
-    cdef readonly int y
-    cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
-    cdef readonly int double_click
-    cdef readonly int triple_click
 
 
 cdef class EventMouseMove(ecore.c_ecore.Event):
-    cdef readonly int modifiers
+    cdef readonly Window window
+    cdef readonly Window root_window
+    cdef readonly Window event_window
+    cdef readonly unsigned int modifiers
+    cdef readonly unsigned int timestamp
+    cdef readonly int same_screen
     cdef readonly int x
     cdef readonly int y
     cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
 
 
-cdef class EventMouseIn(ecore.c_ecore.Event):
-    cdef readonly int modifiers
+cdef class EventMouseIO(ecore.c_ecore.Event):
+    cdef readonly Window window
+    cdef readonly Window event_window
+    cdef readonly unsigned int modifiers
+    cdef readonly unsigned int timestamp
     cdef readonly int x
     cdef readonly int y
-    cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly int mode
-    cdef readonly int detail
-    cdef readonly unsigned int time
-
-
-cdef class EventMouseOut(ecore.c_ecore.Event):
-    cdef readonly int modifiers
-    cdef readonly int x
-    cdef readonly int y
-    cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly int mode
-    cdef readonly int detail
-    cdef readonly unsigned int time
 
 
 cdef class EventMouseWheel(ecore.c_ecore.Event):
+    cdef readonly Window window
+    cdef readonly Window root_window
+    cdef readonly Window event_window
+    cdef readonly unsigned int modifiers
+    cdef readonly unsigned int timestamp
+    cdef readonly int same_screen
     cdef readonly int direction
     cdef readonly int z
-    cdef readonly int modifiers
     cdef readonly int x
     cdef readonly int y
     cdef readonly EventPoint root
-    cdef readonly Window win
-    cdef readonly Window event_win
-    cdef readonly unsigned int time
 
 
 cdef class EventWindowFocusIn(ecore.c_ecore.Event):
