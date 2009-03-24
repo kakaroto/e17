@@ -32,7 +32,11 @@ engine_fb_args(int argc, char **argv)
    einfo->info.device_number = 0;
    einfo->info.refresh = 0;
    einfo->info.rotation = 0;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the FB Engine\n");
+	return 0;
+     }
 
    return 1;
 }

@@ -100,7 +100,11 @@ engine_quartz_args(int argc, char **argv)
    evas_output_viewport_set(evas, 0, 0, win_w, win_h);
 
    einfo->info.context = [evas_view context];
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the Quartz Engine\n");
+        goto destroy_window;
+     }
 
    return 1;
 }

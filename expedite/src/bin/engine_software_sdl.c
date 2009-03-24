@@ -33,7 +33,12 @@ engine_software_sdl_args(int argc, char **argv)
    einfo->info.fullscreen = 0;
    einfo->info.noframe = 0;
 
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the Software SDL Engine\n");
+        return 0;
+     }
+
    return 1;
 }
 

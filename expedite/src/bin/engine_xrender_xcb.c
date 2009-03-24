@@ -144,9 +144,13 @@ engine_xrender_xcb_args(int argc, char **argv)
                      value_list);
    einfo->info.drawable = win;
 
-   xcb_map_window(conn, win);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the XRender XCB Engine\n");
+        return 0;
+     }
 
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   xcb_map_window(conn, win);
 
 /*    XStoreName(disp, win, "Expedite - Evas Test Suite"); */
 

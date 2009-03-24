@@ -60,7 +60,11 @@ engine_gl_x11_args(int argc, char **argv)
 		       CWBitGravity | CWEventMask,
 		       &attr);
    einfo->info.drawable = win;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the OpenGL X11 Engine\n");
+        goto destroy_window;
+     }
 
    XStoreName(disp, win, "Expedite - Evas Test Suite");
    chint.res_name = "expedite";

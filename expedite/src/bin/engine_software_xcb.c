@@ -131,7 +131,11 @@ engine_software_xcb_args(int argc, char **argv)
 
    xcb_map_window(conn, win);
 
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the Software XCB Engine\n");
+        return 0;
+     }
 
 /*    XStoreName(disp, win, "Expedite - Evas Test Suite"); */
 

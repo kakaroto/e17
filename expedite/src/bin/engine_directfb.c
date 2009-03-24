@@ -71,7 +71,11 @@ engine_directfb_args(int argc, char **argv)
 
    einfo->info.dfb = _dfb;
    einfo->info.surface = _dfb_surface;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the DirectFB Engine\n");
+	return 0;
+     }
 
    return 1;
 }

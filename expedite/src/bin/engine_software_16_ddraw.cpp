@@ -350,7 +350,11 @@ engine_software_16_ddraw_args(int argc, char **argv)
    einfo->info.surface_source = surface_source;
    einfo->info.depth = depth;
    einfo->info.rotation = 0;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the 16 bits Software DirectDraw Engine\n");
+        goto destroy_window;
+     }
 
    /* the second parameter is ignored, as it's the first call of ShowWindow */
    ShowWindow(window, SW_SHOWDEFAULT);

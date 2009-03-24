@@ -135,6 +135,32 @@ MainWndProc(HWND   hwnd,
        if (_resume)
          _resume (backend);
        return 0;
+     case WM_SIZE:
+       {
+          Evas_Engine_Info_Software_16_WinCE *einfo;
+
+          printf ("WM_SIZE %dx%d\n", LOWORD(lParam), HIWORD(lParam));
+          einfo = (Evas_Engine_Info_Software_16_WinCE *)evas_engine_info_get(evas);
+          if (!einfo)
+            return 0;
+
+          if (einfo->info.rotation != 0)
+            {
+               einfo->info.width = win_h;
+               einfo->info.height = win_w;
+               einfo->info.rotation = 90;
+            }
+          else
+            {
+               einfo->info.width = win_w;
+               einfo->info.height = win_h;
+               einfo->info.rotation = 0;
+            }
+
+          evas_engine_info_set(evas, (Evas_Engine_Info *)einfo);
+
+          return 0;
+       }
      default:
        return DefWindowProc(hwnd, uMsg, wParam, lParam);
      }
@@ -146,6 +172,9 @@ engine_software_16_wince_args(int argc, char **argv)
    WNDCLASS                            wc;
    RECT                                rect;
    Evas_Engine_Info_Software_16_WinCE *einfo;
+   HWND                                task_bar;
+   HWND                                sip_window;
+   HWND                                sip_icon;
    int                                 width;
    int                                 height;
    int                                 stride_x;
@@ -210,8 +239,16 @@ engine_software_16_wince_args(int argc, char **argv)
         return 0;
      }
 
-   SHFullScreen(window,
-                SHFS_HIDETASKBAR | SHFS_HIDESTARTICON | SHFS_HIDESIPBUTTON);
+   /* hide top level windows (Task bar, SIP and SIP button */
+   task_bar = FindWindow(L"HHTaskBar", NULL);
+   ShowWindow(task_bar, SW_HIDE);
+   EnableWindow(task_bar, FALSE);
+   sip_window = FindWindow(L"SipWndClass", NULL);
+   ShowWindow(sip_icon, SW_HIDE);
+   EnableWindow(sip_icon, FALSE);
+   sip_icon = FindWindow(L"MS_SIPBUTTON", NULL);
+   ShowWindow(sip_icon, SW_HIDE);
+   EnableWindow(sip_icon, FALSE);
 
    if (!_wince_hardware_keys_register(window))
      {
@@ -238,7 +275,14 @@ engine_software_16_wince_args(int argc, char **argv)
    einfo->info.height = win_h;
    einfo->info.backend = backend;
    einfo->info.rotation = 0;
-   evas_engine_info_set(evas, (Evas_Engine_Info *)einfo);
+   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+     {
+	printf("Evas can not setup the informations of the 16 bits Software WinCE Engine\n");
+        DestroyWindow(window);
+        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+        FreeLibrary(instance);
+	return 0;
+     }
 
    _suspend = einfo->func.suspend;
    _resume = einfo->func.resume;
