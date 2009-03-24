@@ -63,7 +63,7 @@ engine_gl_x11_args(int argc, char **argv)
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the OpenGL X11 Engine\n");
-        goto destroy_window;
+        return 0;
      }
 
    XStoreName(disp, win, "Expedite - Evas Test Suite");
