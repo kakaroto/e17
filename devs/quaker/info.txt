@@ -6,5 +6,6 @@ Name:         Daniel Kolesa
 Location:     Kyjov, Czech Republic
 E-Mail:       quaker66@gmail.com
 Managing:     Debian packaging, Czech translations
+Contributing: Entrance, Etk - theming, PROTO/keys - makefile stuff
 Platform:     Debian(Linux), Ubuntu(Linux)
 GeoData:      49.00596302341608 17.122246026992798
