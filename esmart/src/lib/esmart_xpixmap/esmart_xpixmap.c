@@ -104,8 +104,7 @@ _damage_cb(void *data, int type, void *event)
 
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
-   /* XXX: this should be drawable, ecore_x bug? */
-   if (sd->win != ev->level) return 1;
+   if (sd->win != ev->drawable) return 1;
    evas_object_image_pixels_dirty_set(sd->obj, 1);
    return 1;
 }
@@ -185,7 +184,7 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
         sd->win = win;
         sd->pixmap = ecore_x_composite_name_window_pixmap_get(win);
         sd->handlers = eina_list_append(sd->handlers,
-              ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, _damage_cb, sd));
+              ecore_event_handler_add(ECORE_X_EVENT_DAMAGE_NOTIFY, _damage_cb, sd));
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _destroy_cb, sd));
         sd->handlers = eina_list_append(sd->handlers,
