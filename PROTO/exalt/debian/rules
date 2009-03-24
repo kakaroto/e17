@@ -5,7 +5,7 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 
 DEB_DH_STRIP_ARGS := --dbg-package=libexalt-dbg
 DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath
-DEB_CONFIGURE_SCRIPT := ./autogen.sh
+DEB_CONFIGURE_SCRIPT := ./autogen.sh --prefix=/usr
 DEB_MAKE_CLEAN_TARGET := distclean
 DEB_DH_INSTALLINIT_ARGS := -- start 26 2 3 4 5 . stop 14 0 1 6 .
 
