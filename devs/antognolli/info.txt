@@ -1,0 +1,9 @@
+Login:        antognolli
+IRC Nick:     antognolli
+Name:         Rafael Antognolli
+Location:     Campinas, Brazil
+E-Mail:       -antognolli@profusion.mobi
+Contributing: Evas, Ecore, Edje, Epsilon
+Group:        Libraries
+Platform:     Ubuntu (Linux)
+
