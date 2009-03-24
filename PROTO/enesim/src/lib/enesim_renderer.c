@@ -37,10 +37,11 @@ Enesim_Renderer * enesim_renderer_new(void)
  */
 EAPI void enesim_renderer_delete(Enesim_Renderer *r)
 {
-	ENESIM_ASSERT(r, ENESIM_ERROR_HANDLE_INVALID);
-	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
-	r->funcs->free(r);
-	free(r);
+
+	if (r->free)
+		r->free(r);
+	else
+		free(r);
 }
 /**
  * To be documented
@@ -48,6 +49,5 @@ EAPI void enesim_renderer_delete(Enesim_Renderer *r)
  */
 EAPI Enesim_Renderer_Span enesim_renderer_func_get(Enesim_Renderer *r, Enesim_Format *f)
 {
-	ENESIM_MAGIC_CHECK(r, ENESIM_RENDERER_MAGIC);
-	return r->funcs->get(r, f);
+	return r->get(r, f);
 }

@@ -18,27 +18,21 @@
 #ifndef RENDERER_H_
 #define RENDERER_H_
 
-/**
- *
- * @todo
- * - move this interface to a new one, remove the scanline ptr and use
- *   the type instead
- */
-
-typedef struct _Enesim_Renderer_Func
-{
-	Enesim_Renderer_Span (*get)(Enesim_Renderer *r, Enesim_Format *f);
-	void (*free)(Enesim_Renderer *r);
-} Enesim_Renderer_Func;
+typedef Enesim_Renderer_Span (*Enesim_Renderer_Get)(Enesim_Renderer *r, Enesim_Format *f);
+typedef void (*Enesim_Renderer_Free)(Enesim_Renderer *r);
 
 struct _Enesim_Renderer
 {
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
-	void *data;
-	Enesim_Renderer_Func *funcs;
+	Enesim_Renderer_Get get;
+	Enesim_Renderer_Free free;
 };
+
+#define ENESIM_RENDERER_GET(f) ((Enesim_Renderer_Get)(f))
+#define ENESIM_RENDERER_FREE(f) ((Enesim_Renderer_Free)(f))
+#define ENESIM_RENDERER_SPAN(f) ((Enesim_Renderer_Span)(f))
 
 Enesim_Renderer * enesim_renderer_new(void);
 

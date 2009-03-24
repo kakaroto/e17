@@ -25,13 +25,11 @@
  */
 typedef struct _Enesim_Renderer Enesim_Renderer; /**< Renderer Handler */
 /* TODO this needs to change:
- * return an eina_bool in case the renderer didnt do anything
  * pass x and len as pointers as maybe the renderer just drew on a subset of it
  * so the real x and len can be retrieved
  */
-typedef void (*Enesim_Renderer_Span)(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst);
+typedef Eina_Bool (*Enesim_Renderer_Span)(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst);
 
-EAPI void enesim_renderer_rop_set(Enesim_Renderer *r, int rop);
 EAPI void enesim_renderer_delete(Enesim_Renderer *r);
 EAPI Enesim_Renderer_Span enesim_renderer_func_get(Enesim_Renderer *r, Enesim_Format *f);
 /**
@@ -54,16 +52,23 @@ enum
 EAPI Enesim_Renderer * enesim_renderer_repeater_new(void);
 EAPI void enesim_renderer_repeater_mode_set(Enesim_Renderer *r, int mode);
 EAPI void enesim_renderer_repeater_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
+
 EAPI void enesim_renderer_repeater_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
-EAPI void enesim_renderer_repeater_mask_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
 EAPI void enesim_renderer_repeater_src_set(Enesim_Renderer *r, Enesim_Surface_Data *sdata);
-EAPI void enesim_renderer_repeater_src_size_set(Enesim_Renderer *r, int sw, int sh);
-EAPI void enesim_renderer_repeater_mask_size_set(Enesim_Renderer *r, int sw, int sh);
 EAPI void enesim_renderer_repeater_src_unset(Enesim_Renderer *r);
+EAPI Eina_Bool enesim_renderer_repeater_src_y(Enesim_Renderer *r, int ydst, int *ysrc);
+
+EAPI void enesim_renderer_repeater_mask_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
 EAPI void enesim_renderer_repeater_mask_set(Enesim_Renderer *r, Enesim_Surface_Data *mdata);
 EAPI void enesim_renderer_repeater_mask_unset(Enesim_Renderer *r);
-EAPI void enesim_renderer_repeater_src_offset(Enesim_Renderer *r, int y, int *offset);
-EAPI void enesim_renderer_repeater_mask_offset(Enesim_Renderer *r, int y, int *offset);
+EAPI Eina_Bool enesim_renderer_repeater_mask_y(Enesim_Renderer *r, int ydst, int *ysrc);
+
+
+EAPI Enesim_Renderer * enesim_renderer_transformer_new(void);
+EAPI void enesim_renderer_transformer_matrix_set(Enesim_Renderer *r, Enesim_Matrix *m);
+EAPI void enesim_renderer_transformer_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+EAPI void enesim_renderer_transformer_quality_set(Enesim_Renderer *r, Enesim_Quality q);
+EAPI Enesim_Quality enesim_renderer_transformer_quality_get(Enesim_Renderer *r);
 
 /**
  * @}

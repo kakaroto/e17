@@ -109,7 +109,6 @@ EAPI void enesim_surface_size_set(Enesim_Surface *s, int w, int h);
 EAPI Enesim_Format * enesim_surface_format_get(const Enesim_Surface *s);
 EAPI void enesim_surface_delete(Enesim_Surface *s);
 
-
 EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data);
 EAPI void * enesim_surface_private_get(Enesim_Surface *s);
 

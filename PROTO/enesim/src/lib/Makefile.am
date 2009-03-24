@@ -27,7 +27,6 @@ rasterizer/libenesim_rasterizer.la \
 renderer/libenesim_renderer.la \
 drawer/libenesim_drawer.la \
 primitives/libenesim_primitives.la \
-spanner/libenesim_spanner.la \
 @ENESIM_LIBS@
 
 libenesim_la_DEPENDENCIES = \
@@ -37,7 +36,6 @@ rasterizer/libenesim_rasterizer.la \
 drawer/libenesim_drawer.la \
 format/libenesim_format.la \
 renderer/libenesim_renderer.la \
-primitives/libenesim_primitives.la \
-spanner/libenesim_spanner.la
+primitives/libenesim_primitives.la
 
 libenesim_la_LDFLAGS = @create_shared_lib@ -version-info @version_info@

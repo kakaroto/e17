@@ -22,38 +22,55 @@
  *============================================================================*/
 typedef struct _Renderer_Repeater
 {
+	Enesim_Renderer r;
 	int mode;
 	/* FIXME we dont support different area.w,h for mask and src */
 	struct
 	{
 		Enesim_Surface_Data *data;
 		Eina_Rectangle area;
-		int w;
-		int h;
 	} mask, src;
 	struct
 	{
 		Eina_Rectangle area;
-		int w;
-		int h;
 	} dst;
 } Renderer_Repeater;
 
-/* TODO replace sw with the pitch */
-static inline void _offset(Renderer_Repeater *f, int y, int *offset, int ax, int ah, int sw)
+/* check that the ydst is actually inside the destination area */
+static inline Eina_Bool _check_ydst(Renderer_Repeater *f, int ydst)
 {
-	/* Avoid the floating point exception in case the width is 0 */
-	if (ah == 0)
-		*offset = 0;
+	if ((ydst < f->dst.area.y) || (ydst > (f->dst.area.y + f->dst.area.h)))
+		return EINA_FALSE;
 	else
-		*offset = (((y - f->dst.area.y) % ah) * sw) + ax;
+		return EINA_TRUE;
+}
+/* given a destination y retrieve the origin y based on origin area y and
+ * origin area h
+ */
+static inline Eina_Bool _get_y(Renderer_Repeater *f, int ydst, int *ysrc, int say, int sah)
+{
+	if (f->mode & ENESIM_SURFACE_REPEAT_Y)
+	{
+		*ysrc = (ydst - f->dst.area.y) % sah;
+		return EINA_TRUE;
+	}
+	else
+	{
+		if (ydst > (f->dst.area.y + sah))
+			return EINA_FALSE;
+		else
+		{
+			*ysrc = say + (ydst - f->dst.area.y);
+			return EINA_TRUE;
+		}
+	}
 }
 
 #define repeater_generic(setup, left_setup)					\
 	Enesim_Drawer_Span spfnc;						\
 	Eina_Rectangle slrect, dr;						\
 	Enesim_Surface_Data sdata, mdata, ddata;				\
-	Renderer_Repeater *f = r->data;						\
+	Renderer_Repeater *f = (Renderer_Repeater *)r;				\
 	int ssw, ssh; /* source surface width and height */			\
 	int dsw, dsh; /* destination surface width and height */		\
 	int paw, pah; /* pattern area width and height */			\
@@ -70,7 +87,7 @@ static inline void _offset(Renderer_Repeater *f, int y, int *offset, int ax, int
 	}									\
 	if (!(f->mode & ENESIM_SURFACE_REPEAT_Y))				\
 	{									\
-		pah = MIN(f->src.area.w, f->dst.area.h);			\
+		pah = MIN(f->src.area.h, f->dst.area.h);			\
 	}									\
 	else									\
 	{									\
@@ -81,7 +98,7 @@ static inline void _offset(Renderer_Repeater *f, int y, int *offset, int ax, int
 	eina_rectangle_coords_from(&dr, f->dst.area.x, f->dst.area.y, paw, pah);\
 	if (!eina_rectangle_intersection(&slrect, &dr))				\
 	{									\
-		return;								\
+		return EINA_FALSE;						\
 	}									\
 	/* common setup */							\
 	/* the source data should be at offset SRECT.x and sl->y already */	\
@@ -111,7 +128,7 @@ static inline void _offset(Renderer_Repeater *f, int y, int *offset, int ax, int
 	}									\
 	/* we dont have anything left to draw */				\
 	if (!slrect.w)								\
-		return;								\
+		return EINA_TRUE;						\
 										\
 	/*printf("2 %d %d %d %d\n", slrect.x, slrect.y, slrect.w, slrect.h);*/	\
 	/* middle */								\
@@ -135,10 +152,11 @@ static inline void _offset(Renderer_Repeater *f, int y, int *offset, int ax, int
 	{									\
 		/*printf("right %d\n", slrect.w);*/				\
 		spfnc(&ddata, slrect.w, &sdata, /* mul_color */0, &mdata);	\
-	}
+	}									\
+	return EINA_TRUE;
 
 /* repeater span functions in the form repeater_DSTFORMAT_SRCFORMAT_MASKFORMAT */
-static void repeater_argb88888_argb88888_argb88888(Enesim_Renderer *r, int x,
+static Eina_Bool repeater_argb88888_argb88888_argb88888(Enesim_Renderer *r, int x,
 		int y, int len, Enesim_Surface_Data *dst)
 {
 	repeater_generic(
@@ -153,7 +171,7 @@ static void repeater_argb88888_argb88888_argb88888(Enesim_Renderer *r, int x,
 	);
 }
 
-static void repeater_argb88888_argb8888_none(Enesim_Renderer *r, int x, int y,
+static Eina_Bool repeater_argb88888_argb8888_none(Enesim_Renderer *r, int x, int y,
 		int len, Enesim_Surface_Data *dst)
 {
 	repeater_generic(
@@ -164,11 +182,8 @@ static void repeater_argb88888_argb8888_none(Enesim_Renderer *r, int x, int y,
 	);
 }
 
-static Enesim_Renderer_Span _get(Enesim_Renderer *r, Enesim_Format *f)
+static Enesim_Renderer_Span _get(Renderer_Repeater *s, Enesim_Format *f)
 {
-	Renderer_Repeater *s;
-
-	s = r->data;
 	/* check that the mask and src areas are of the same size */
 #if 0
 	if (!s->src.data)
@@ -186,15 +201,11 @@ static Enesim_Renderer_Span _get(Enesim_Renderer *r, Enesim_Format *f)
 		return repeater_argb88888_argb8888_none;
 }
 
-static void _free(Enesim_Renderer *r)
+static void _free(Renderer_Repeater *r)
 {
-	free(r->data);
+	free(r);
 }
 
-static Enesim_Renderer_Func f_func = {
-	.get = _get,
-	.free = _free,
-};
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -205,15 +216,12 @@ static Enesim_Renderer_Func f_func = {
 EAPI Enesim_Renderer * enesim_renderer_repeater_new(void)
 {
 	Renderer_Repeater *f;
-	Enesim_Renderer *r;
 
 	f = calloc(1, sizeof(Renderer_Repeater));
+	f->r.free = ENESIM_RENDERER_FREE(_free);
+	f->r.get = ENESIM_RENDERER_GET(_get);
 
-	r = enesim_renderer_new();
-	r->data = f;
-	r->funcs = &f_func;
-
-	return r;
+	return &f->r;
 }
 /**
  * To be documented
@@ -221,10 +229,8 @@ EAPI Enesim_Renderer * enesim_renderer_repeater_new(void)
  */
 EAPI void enesim_renderer_repeater_mode_set(Enesim_Renderer *r, int mode)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	assert(r);
-	f = r->data;
 	f->mode = mode;
 }
 /**
@@ -233,11 +239,7 @@ EAPI void enesim_renderer_repeater_mode_set(Enesim_Renderer *r, int mode)
  */
 EAPI void enesim_renderer_repeater_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Repeater *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
@@ -252,11 +254,7 @@ EAPI void enesim_renderer_repeater_dst_area_set(Enesim_Renderer *r, int x, int y
  */
 EAPI void enesim_renderer_repeater_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Repeater *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
@@ -271,11 +269,7 @@ EAPI void enesim_renderer_repeater_src_area_set(Enesim_Renderer *r, int x, int y
  */
 EAPI void enesim_renderer_repeater_mask_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Repeater *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
@@ -286,91 +280,48 @@ EAPI void enesim_renderer_repeater_mask_area_set(Enesim_Renderer *r, int x, int 
 
 EAPI void enesim_renderer_repeater_src_set(Enesim_Renderer *r, Enesim_Surface_Data *sdata)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	f = r->data;
 	f->src.data = sdata;
-}
-
-EAPI void enesim_renderer_repeater_src_size_set(Enesim_Renderer *r, int sw, int sh)
-{
-	Renderer_Repeater *f;
-
-	f = r->data;
-	f->src.w = sw;
-	f->src.h = sh;
-}
-
-EAPI void enesim_renderer_repeater_mask_size_set(Enesim_Renderer *r, int sw, int sh)
-{
-	Renderer_Repeater *f;
-
-	f = r->data;
-	f->mask.w = sw;
-	f->mask.h = sh;
 }
 
 EAPI void enesim_renderer_repeater_src_unset(Enesim_Renderer *r)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	f = r->data;
 	f->src.data = NULL;
 }
 
 
 EAPI void enesim_renderer_repeater_mask_set(Enesim_Renderer *r, Enesim_Surface_Data *mdata)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	f = r->data;
 	f->mask.data = mdata;
 }
 
 EAPI void enesim_renderer_repeater_mask_unset(Enesim_Renderer *r)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	f = r->data;
 	f->mask.data = NULL;
-}
-
-EAPI void enesim_renderer_repeater_src_offset(Enesim_Renderer *r, int y, int *offset)
-{
-	Renderer_Repeater *f;
-
-	f = r->data;
-	_offset(f, y, offset, f->src.area.x, f->src.area.h, f->src.w);
-}
-
-EAPI void enesim_renderer_repeater_mask_offset(Enesim_Renderer *r, int y, int *offset)
-{
-	Renderer_Repeater *f;
-
-	f = r->data;
-	_offset(f, y, offset, f->mask.area.x, f->mask.area.h, f->mask.w);
 }
 
 EAPI Eina_Bool enesim_renderer_repeater_src_y(Enesim_Renderer *r, int ydst, int *ysrc)
 {
-	Renderer_Repeater *f;
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
 
-	f = r->data;
-	if ((ydst < f->dst.area.y) || (ydst > (f->dst.area.y + f->dst.area.h)))
+	if (!_check_ydst(f, ydst))
 		return EINA_FALSE;
-	if (f->mode & ENESIM_SURFACE_REPEAT_Y)
-	{
-		*ysrc = (ydst - f->dst.area.y) % f->src.area.h;
-		return EINA_TRUE;
-	}
-	else
-	{
-		if (ydst > (f->dst.area.y + f->src.area.h))
-			return EINA_FALSE;
-		else
-		{
-			*ysrc = f->src.area.y + (ydst - f->dst.area.y);
-			return EINA_TRUE;
-		}
-	}
+	return _get_y(f, ydst, ysrc, f->src.area.y, f->src.area.h);
+
+}
+
+EAPI Eina_Bool enesim_renderer_repeater_mask_y(Enesim_Renderer *r, int ydst, int *ysrc)
+{
+	Renderer_Repeater *f = (Renderer_Repeater *)r;
+
+	if (!_check_ydst(f, ydst))
+		return EINA_FALSE;
+	return _get_y(f, ydst, ysrc, f->mask.area.y, f->mask.area.h);
 }

@@ -10,4 +10,5 @@ noinst_LTLIBRARIES = libenesim_renderer.la
 
 libenesim_renderer_la_SOURCES = \
 repeater.c \
-scaler.c
+scaler.c \
+transformer.c

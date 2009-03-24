@@ -17,165 +17,111 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
 typedef struct _Renderer_Scaler
 {
+	Enesim_Renderer r;
 	Enesim_Quality quality;
 	struct
 	{
 		Enesim_Surface_Data *data;
 		Eina_Rectangle area;
-		int w;
-		int h;
 	} src, mask;
 	struct
 	{
 		Eina_Rectangle area;
-		int w;
-		int h;
 	} dst;
-	int *length;
-	int *row;
-	Enesim_Drawer_Point pt;
+	/* TODO move the row and offset to src and mask */
+	struct {
+		int *values;
+		int len;
+	} offset, row;
 } Renderer_Scaler;
 
-static void _generate(Renderer_Scaler *s)
+/* FIXME use the area.x and area.y for the offsets and rows */
+static void _generate_offsets(Renderer_Scaler *s)
 {
-	int xinc;
-	int xres;
-	int yinc;
-	int yres;
-	int x, y;
-	int res;
+	int x;
 
-	//printf("%d %d %d %d\n", s->src.area.w, s->dst.area.w);
 	if (!s->src.area.w || !s->dst.area.w)
 		return;
-	if (!s->length)
-		s->length = malloc(sizeof(int) * s->dst.area.w);
-	if (!s->row)
-		s->row = malloc(sizeof(int) * s->dst.area.h);
-
-#if 0
-	xinc = s->dst.area.w / s->src.area.w;
-	xres = res = s->dst.area.w % s->src.area.w;
-	for (x = 0; x < s->src.area.w; x++)
+	if (!s->offset.values || s->offset.len < s->dst.area.w)
 	{
-		int tmp;
-		tmp = res / s->src.area.w;
-		res = res % s->src.area.w;
-		s->length[x] = xinc + tmp;
-		res += xres;
+		s->offset.values = realloc(s->offset.values, sizeof(int) * s->dst.area.w);
+		s->offset.len = s->dst.area.w;
 	}
-#endif
-	//printf("%d %d\n", s->src.area.w, s->dst.area.w);
 	for (x = 0; x < s->dst.area.w; x++)
 	{
-		s->length[x] = (x * s->src.area.w) / s->dst.area.w;
-	}
-	for (y = 0; y < s->dst.area.h; y++)
-	{
-		s->row[y] = (y * s->src.area.h) / s->dst.area.h;
+		s->offset.values[x] = (x * s->src.area.w) / s->dst.area.w;
 	}
 }
 
-#define DIRECT 1
+static void _generate_rows(Renderer_Scaler *s)
+{
+	int y;
+
+	if (!s->src.area.h || !s->dst.area.h)
+		return;
+	if (!s->row.values || s->row.len < s->dst.area.w)
+	{
+		s->row.values = realloc(s->row.values, sizeof(int) * s->dst.area.h);
+		s->row.len = s->dst.area.w;
+	}
+	for (y = 0; y < s->dst.area.h; y++)
+	{
+		s->row.values[y] = (y * s->src.area.h) / s->dst.area.h;
+	}
+}
 
 /* the destination surface data should be at offset x,y already */
-static void _generic(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst)
+static Eina_Bool _generic(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst)
 {
-	Renderer_Scaler *s = r->data;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
+	Eina_Rectangle slrect;
 	Enesim_Drawer_Point pt;
 	Enesim_Drawer_Span sp;
 	Enesim_Surface_Data sdata, ddata;
 	Enesim_Surface_Pixel p;
 	int dx = 0;
-#if 0
-	int dx = x;
-	int end = x + len;
-	int sx = x * s->dst.area.w / s->src.area.w;
 
-	/* Fake an alpha color */
-	enesim_surface_pixel_components_from(&p, dst->format, 0xaa, 0xff, 0xaa, 0xff);
-	sp = enesim_drawer_span_color_get(ENESIM_FILL, dst->format, &p);
-	/* TODO handle the clipping, etc */
-	/* TODO create the tables that store the number of pixels per src pixel and the y offsets */
-	/* draw a span of this length from y row */
-	sdata = *s->src.data;
-	printf("entering for line at %d,%d:%d and should be the line %d from src\n", x, y, len, s->row[y]);
-	printf("dx %d end %d sx %d\n", dx, end, sx);
-
-	while (dx < end)
+	/* check that the span actually intersects the destination area */
+	eina_rectangle_coords_from(&slrect, x, y, len, 1);
+	if (!eina_rectangle_intersection(&slrect, &s->dst.area))
 	{
-		enesim_surface_data_pixel_get(&sdata, &p);
-		enesim_surface_data_increment(dst, 1);
-		sp(dst, s->length[sx], NULL, &p, NULL);
-		dx += s->length[sx];
-		sx++;
+		return EINA_FALSE;
 	}
-#endif
-
-	//printf("going to draw\n");
-
 	sdata = *s->src.data;
 	ddata = *dst;
-#if !DIRECT
-	enesim_surface_pixel_components_from(&p, dst->format, 0xaa, 0xff, 0xaa, 0xff);
-	pt = enesim_drawer_point_color_get(ENESIM_FILL, dst->format, &p);
-#endif
 	enesim_surface_data_increment(&sdata, s->src.area.x);
-	while (dx < len)
+	while (dx < slrect.w)
 	{
 		Enesim_Surface_Data tmp;
 
 		tmp = sdata;
-		//printf("position %d %d\n", dx, s->length[dx]);
-		tmp.plane0 += s->length[dx];
-		//enesim_surface_data_increment(&tmp, s->length[dx]);
-
-		//enesim_surface_data_pixel_get(&tmp, &p);
-#if DIRECT
+		tmp.plane0 += s->offset.values[dx];
 		*ddata.plane0 = *tmp.plane0;
-#else
-		p.plane0 = *tmp.plane0;
-		pt(&ddata, NULL, &p, NULL);
-#endif
 		ddata.plane0++;
-		//enesim_surface_data_increment(&ddata, 1);
 		dx++;
 	}
-#if 0
-	{
-		int i;
-		for (i = 0; i < s->src.area.w; i++)
-		{
-			printf("LEN = %d\n", s->length[i]);
-		}
-	}
-#endif
+	return EINA_TRUE;
 }
 
-static Enesim_Renderer_Span _get(Enesim_Renderer *r, Enesim_Format *f)
+static Enesim_Renderer_Span _get(Renderer_Scaler *s, Enesim_Format *f)
 {
-	Renderer_Scaler *s;
-
-	s = r->data;
 	/* check that the mask and src areas are of the same size */
 	return _generic;
 }
 
-static void _free(Enesim_Renderer *r)
+static void _free(Renderer_Scaler *s)
 {
-	free(r->data);
+	if (s->offset.values)
+		free(s->offset.values);
+	if (s->row.values)
+		free(s->row.values);
+	free(s);
 }
-
-static Enesim_Renderer_Func f_func = {
-	.get = _get,
-	.free = _free,
-};
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -186,15 +132,12 @@ static Enesim_Renderer_Func f_func = {
 EAPI Enesim_Renderer * enesim_renderer_scaler_new(void)
 {
 	Renderer_Scaler *s;
-	Enesim_Renderer *r;
 
 	s = calloc(1, sizeof(Renderer_Scaler));
+	s->r.free = ENESIM_RENDERER_FREE(_free);
+	s->r.get = ENESIM_RENDERER_GET(_get);
 
-	r = enesim_renderer_new();
-	r->data = s;
-	r->funcs = &f_func;
-
-	return r;
+	return &s->r;
 }
 
 /**
@@ -203,19 +146,15 @@ EAPI Enesim_Renderer * enesim_renderer_scaler_new(void)
  */
 EAPI void enesim_renderer_scaler_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Scaler *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
 	w = (w < 0) ? 0 : w;
 	h = (h < 0) ? 0 : h;
-	eina_rectangle_coords_from(&f->dst.area, x, y, w, h);
-	/* TODO check the dst surface boundings and pick the min */
-	/* TODO update the malloced buffer span */
+	eina_rectangle_coords_from(&s->dst.area, x, y, w, h);
+	_generate_rows(s);
+	_generate_offsets(s);
 }
 /**
  * To be documented
@@ -223,18 +162,15 @@ EAPI void enesim_renderer_scaler_dst_area_set(Enesim_Renderer *r, int x, int y, 
  */
 EAPI void enesim_renderer_scaler_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Scaler *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
 	w = (w < 0) ? 0 : w;
 	h = (h < 0) ? 0 : h;
-	eina_rectangle_coords_from(&f->src.area, x, y, w, h);
-	/* TODO update the malloced buffer span */
+	eina_rectangle_coords_from(&s->src.area, x, y, w, h);
+	_generate_rows(s);
+	_generate_offsets(s);
 }
 
 /**
@@ -243,99 +179,69 @@ EAPI void enesim_renderer_scaler_src_area_set(Enesim_Renderer *r, int x, int y, 
  */
 EAPI void enesim_renderer_scaler_mask_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
-	Renderer_Scaler *f;
-
-	assert(r);
-	f = r->data;
-	assert(f);
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
 	w = (w < 0) ? 0 : w;
 	h = (h < 0) ? 0 : h;
-	eina_rectangle_coords_from(&f->mask.area, x, y, w, h);
+	eina_rectangle_coords_from(&s->mask.area, x, y, w, h);
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_scaler_src_set(Enesim_Renderer *r, Enesim_Surface_Data *sdata)
 {
-	Renderer_Scaler *f;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
-	f = r->data;
-	f->src.data = sdata;
+	s->src.data = sdata;
 }
-
-EAPI void enesim_renderer_scaler_src_size_set(Enesim_Renderer *r, int sw, int sh)
-{
-	Renderer_Scaler *f;
-
-	f = r->data;
-	f->src.w = sw;
-	f->src.h = sh;
-	_generate(f);
-}
-
-EAPI void enesim_renderer_scaler_mask_size_set(Enesim_Renderer *r, int sw, int sh)
-{
-	Renderer_Scaler *f;
-
-	f = r->data;
-	f->mask.w = sw;
-	f->mask.h = sh;
-}
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_scaler_src_unset(Enesim_Renderer *r)
 {
-	Renderer_Scaler *f;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
-	f = r->data;
-	f->src.data = NULL;
+	s->src.data = NULL;
 }
-
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_scaler_mask_set(Enesim_Renderer *r, Enesim_Surface_Data *mdata)
 {
-	Renderer_Scaler *f;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
-	f = r->data;
-	f->mask.data = mdata;
+	s->mask.data = mdata;
 }
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI void enesim_renderer_scaler_mask_unset(Enesim_Renderer *r)
 {
-	Renderer_Scaler *f;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
-	f = r->data;
-	f->mask.data = NULL;
+	s->mask.data = NULL;
 }
-
-EAPI void enesim_renderer_scaler_src_offset(Enesim_Renderer *r, int y, int *offset)
-{
-	Renderer_Scaler *f;
-
-	f = r->data;
-	*offset = f->src.w * f->row[y];
-}
-
-EAPI void enesim_renderer_scaler_mask_offset(Enesim_Renderer *r, int y, int *offset)
-{
-	Renderer_Scaler *f;
-
-	f = r->data;
-	*offset = f->src.w * f->row[y];
-}
-
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Eina_Bool enesim_renderer_scaler_src_y(Enesim_Renderer *r, int ydst, int *ysrc)
 {
-	Renderer_Scaler *s;
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
 
-	s = r->data;
 	if (ydst > (s->dst.area.y + s->dst.area.w))
 	{
-		return EINA_TRUE;
+		return EINA_FALSE;
 	}
 	else
 	{
-		*ysrc = s->row[ydst];
+		*ysrc = s->row.values[ydst];
 		return EINA_TRUE;
 	}
 }
