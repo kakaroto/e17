@@ -104,7 +104,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         sinfo = (Evas_Engine_Info_Software_X11 *)info;
 
-        sinfo->info.backend = 0;
+        sinfo->info.backend = EVAS_ENGINE_INFO_SOFTWARE_X11_BACKEND_XCB;
         sinfo->info.connection = ecore_x_display_get();
         sinfo->info.screen = NULL;
         sinfo->info.visual = DefaultVisual(sinfo->info.connection,

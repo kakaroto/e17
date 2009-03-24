@@ -115,7 +115,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         evas = evas_new();
         evas_output_method_set(evas,
-                        evas_render_method_lookup("software_xcb"));
+                        evas_render_method_lookup("software_x11"));
 
         info = evas_engine_info_get(evas);
         if (!info)
@@ -127,7 +127,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         sinfo = (Evas_Engine_Info_Software_X11 *)info;
 
-        sinfo->info.backend = 1;
+        sinfo->info.backend = EVAS_ENGINE_INFO_SOFTWARE_X11_BACKEND_XCB;
         sinfo->info.connection = ecore_x_connection_get();
         sinfo->info.screen = ecore_x_default_screen_get();
         sinfo->info.visual = visualtype_get(sinfo->info.conn,
