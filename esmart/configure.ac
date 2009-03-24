@@ -136,6 +136,18 @@ PKG_CHECK_MODULES(CAIRO, [
   ]
 )
 
+PKG_CHECK_MODULES(XPIXMAP, [
+    evas >= 0.9.9
+    ecore-x >= 0.9.9
+    eina-0
+  ], [
+    have_esmart_xpixmap=yes
+    requirements="$requirements ecore-x"
+  ], [
+    have_esmart_xpixmap=no
+  ]
+)
+
 dnl Check for edce_cc
 EDJE_DEF=""
 AC_SUBST(EDJE_DEF)
@@ -163,6 +175,7 @@ AM_CONDITIONAL(BUILD_ESMART_TEXTAREA, test $have_esmart_textarea = yes)
 AM_CONDITIONAL(BUILD_ESMART_THUMB, test $have_esmart_thumb = yes)
 AM_CONDITIONAL(BUILD_ESMART_TRANS_X11, test $have_esmart_trans_x11 = yes)
 AM_CONDITIONAL(BUILD_ESMART_CAIRO, test $have_esmart_cairo = yes)
+AM_CONDITIONAL(BUILD_ESMART_XPIXMAP, test $have_esmart_xpixmap = yes)
 
 AM_CONDITIONAL(BUILD_TEST_APP, test $have_esmart_container = yes -a $have_esmart_thumb = yes)
 
@@ -181,6 +194,7 @@ esmart_textarea.pc
 esmart_text_entry.pc
 esmart_thumb.pc
 esmart_trans_x11.pc
+esmart_xpixmap.pc
 esmart.spec
 src/Makefile
 src/lib/Makefile
@@ -196,6 +210,7 @@ src/lib/esmart_trans_x11/Makefile
 src/lib/esmart_draggies/Makefile
 src/lib/esmart_resize/Makefile
 src/lib/esmart_cairo/Makefile
+src/lib/esmart_xpixmap/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
@@ -220,6 +235,7 @@ echo "  Text Area...............: $have_esmart_textarea"
 echo "  Thumb...................: $have_esmart_thumb"
 echo "  Trans X11...............: $have_esmart_trans_x11"
 echo "  Cairo...................: $have_esmart_cairo"
+echo "  X Pixmap................: $have_esmart_xpixmap"
 echo
 echo "------------------------------------------------------------------------"
 echo

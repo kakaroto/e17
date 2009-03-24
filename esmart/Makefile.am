@@ -17,7 +17,8 @@ EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 	     esmart_textarea.pc.in \
 	     esmart_text_entry.pc.in \
 	     esmart_thumb.pc.in \
-	     esmart_trans_x11.pc.in
+	     esmart_trans_x11.pc.in \
+	     esmart_xpixmap.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 
@@ -53,4 +54,8 @@ endif
 
 if BUILD_ESMART_TRANS_X11
   pkgconfig_DATA += esmart_trans_x11.pc
+endif
+
+if BUILD_ESMART_XPIXMAP
+  pkgconfig_DATA += esmart_xpixmap.pc
 endif

@@ -34,10 +34,14 @@ if BUILD_ESMART_CAIRO
 cairo_subdir = esmart_cairo
 endif
 
+if BUILD_ESMART_XPIXMAP
+xpixmap_subdir = esmart_xpixmap
+endif
+
 SUBDIRS = \
   $(container_subdir) $(draggies_subdir) $(text_entry_subdir) \
   $(file_dialog_subdir) $(thumb_subdir) $(trans_subdir) $(resize_subdir) \
-  $(cairo_subdir)
+  $(cairo_subdir) $(xpixmap_subdir)
 
 # adding textarea_subdir breaks distcheck
 # $(textarea_subdir)

@@ -10,6 +10,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_text_entry \
 -I$(top_srcdir)/src/lib/esmart_file_dialog \
 -I$(top_srcdir)/src/lib/esmart_cairo \
+-I$(top_srcdir)/src/lib/esmart_xpixmap \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @CONTAINER_CFLAGS@ \
 @THUMB_CFLAGS@
@@ -24,6 +25,7 @@ $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
 $(top_builddir)/src/lib/esmart_draggies/libesmart_draggies.la \
 $(top_builddir)/src/lib/esmart_thumb/libesmart_thumb.la \
 $(top_builddir)/src/lib/esmart_trans_x11/libesmart_trans_x11.la \
+$(top_builddir)/src/lib/esmart_xpixmap/libesmart_xpixmap.la \
 @CONTAINER_LIBS@ \
 @THUMB_LIBS@
 
