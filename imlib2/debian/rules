@@ -3,11 +3,12 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
-DEB_MAKE_CLEAN_TARGET := clean
+DEB_CONFIGURE_SCRIPT := ./autogen.sh
+DEB_MAKE_CLEAN_TARGET := distclean
 DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath
+
+clean::
+	[ ! -f Makefile ] || make distclean
 
 debian/stamp-autotools-files:
 	touch debian/stamp-autotools-files
-
-clean::
-	./autogen.sh --prefix=/usr $(DEB_CONFIGURE_EXTRA_FLAGS)

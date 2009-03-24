@@ -8,7 +8,6 @@ Homepage: http://enlightenment.org
 
 Package: python-evas
 Architecture: any
-XB-Python-Version: ${python:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
 Description: Python bindings for evas

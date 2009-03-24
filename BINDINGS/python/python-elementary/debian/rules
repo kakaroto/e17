@@ -1,14 +1,14 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-DEB_PYTHON_SYSTEM=pysupport
+DEB_PYTHON_SYSTEM := pysupport
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-elementary::
-	mkdir -p debian/python-elementary/usr/share/python-elementary
-	cp -r tests debian/python-elementary/usr/share/python-elementary
-	find debian/python-elementary/usr/share/python-elementary -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-elementary/usr/share/python-elementary
+	mkdir -p debian/python-elementary/usr/share/doc/python-elementary
+	cp -r tests debian/python-elementary/usr/share/doc/python-elementary
+	find debian/python-elementary/usr/share/doc/python-elementary -name '.svn' | xargs rm -rf
+	chmod -R 755 debian/python-elementary/usr/share/doc/python-elementary
 

@@ -1,14 +1,14 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-DEB_PYTHON_SYSTEM=pysupport
+DEB_PYTHON_SYSTEM := pysupport
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-edje::
-	mkdir -p debian/python-edje/usr/share/python-edje
-	cp -r tests debian/python-edje/usr/share/python-edje
-	cp -r examples debian/python-edje/usr/share/python-edje
-	find debian/python-edje/usr/share/python-edje -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-edje/usr/share/python-edje
+	mkdir -p debian/python-edje/usr/share/doc/python-edje
+	cp -r tests debian/python-edje/usr/share/doc/python-edje
+	cp -r examples debian/python-edje/usr/share/doc/python-edje
+	find debian/python-edje/usr/share/doc/python-edje -name '.svn' | xargs rm -rf
+	chmod -R 755 debian/python-edje/usr/share/doc/python-edje

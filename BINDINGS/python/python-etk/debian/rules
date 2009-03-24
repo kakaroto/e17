@@ -1,14 +1,14 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-DEB_PYTHON_SYSTEM=pysupport
+DEB_PYTHON_SYSTEM := pysupport
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-etk::
-	mkdir -p debian/python-etk/usr/share/python-etk
-	cp -r examples debian/python-etk/usr/share/python-etk
-	find debian/python-etk/usr/share/python-etk -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-etk/usr/share/python-etk
+	mkdir -p debian/python-etk/usr/share/doc/python-etk
+	cp -r examples debian/python-etk/usr/share/doc/python-etk
+	find debian/python-etk/usr/share/doc/python-etk -name '.svn' | xargs rm -rf
+	chmod -R 755 debian/python-etk/usr/share/doc/python-etk
 

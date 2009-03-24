@@ -1,14 +1,14 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-DEB_PYTHON_SYSTEM=pysupport
+DEB_PYTHON_SYSTEM := pysupport
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-efl-utils::
-	mkdir -p debian/python-efl-utils/usr/share/python-efl-utils
-	cp -r examples debian/python-efl-utils/usr/share/python-efl-utils
-	find debian/python-efl-utils/usr/share/python-efl-utils -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-efl-utils/usr/share/python-efl-utils
+	mkdir -p debian/python-efl-utils/usr/share/doc/python-efl-utils
+	cp -r examples debian/python-efl-utils/usr/share/doc/python-efl-utils
+	find debian/python-efl-utils/usr/share/doc/python-efl-utils -name '.svn' | xargs rm -rf
+	chmod -R 755 debian/python-efl-utils/usr/share/doc/python-efl-utils
 

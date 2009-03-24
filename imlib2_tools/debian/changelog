@@ -1,3 +1,9 @@
+imlib2-tools (0.0.0alpha3-svn20092403) unstable; urgency=low
+
+  * updated debian stuff
+
+ -- quaker <quaker66@gmail.com>  Tue, 24 Mar 2009 20:37:11 +0100
+
 imlib2-tools (0.0.0alpha3-0cvs2006010700) unstable; urgency=low
 
   * Now with quality and compression options :)
@@ -15,3 +21,4 @@ imlib2-tools (0.0.0alpha2-0cvs2001112001) unstable; urgency=low
   * a CVS release
   
  -- Laurence J. Lane <ljlane@debian.org>  Mon, 12 Nov 2001 08:23:51 -0500
+

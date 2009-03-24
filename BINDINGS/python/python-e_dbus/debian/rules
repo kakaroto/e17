@@ -1,14 +1,14 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-DEB_PYTHON_SYSTEM=pysupport
+DEB_PYTHON_SYSTEM := pysupport
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/python-edbus::
-	mkdir -p debian/python-edbus/usr/share/python-edbus
-	cp -r tests debian/python-edbus/usr/share/python-edbus
-	find debian/python-edbus/usr/share/python-edbus -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-edbus/usr/share/python-edbus
+	mkdir -p debian/python-edbus/usr/share/doc/python-edbus
+	cp -r tests debian/python-edbus/usr/share/doc/python-edbus
+	find debian/python-edbus/usr/share/doc/python-edbus -name '.svn' | xargs rm -rf
+	chmod -R 755 debian/python-edbus/usr/share/doc/python-edbus
 
