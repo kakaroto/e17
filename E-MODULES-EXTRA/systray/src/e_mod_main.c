@@ -15,6 +15,7 @@
 
 #include <e.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 #include "e_mod_main.h"
 
 #define RETRY_TIMEOUT 2.0
@@ -399,31 +400,19 @@ _systray_atom_st_get(int screen_num)
 
 /* XXX TODO: should be in ecore_x */
 static Eina_Bool
-_systray_selection_owner_set(int screen_num, Ecore_X_Window win, Ecore_X_Window root)
+_systray_selection_owner_set(int screen_num, Ecore_X_Window win)
 {
    Ecore_X_Atom atom;
    Ecore_X_Display *disp = ecore_x_display_get();
    Ecore_X_Window cur_selection;
-   Ecore_X_Time time;
    Eina_Bool ret;
 
    atom = _systray_atom_st_get(screen_num);
-   time = ecore_x_current_time_get();
-   XSetSelectionOwner(disp, atom, win, time);
+   XSetSelectionOwner(disp, atom, win, ecore_x_current_time_get());
    cur_selection = XGetSelectionOwner(disp, atom);
 
    ret = (cur_selection == win);
-   if (win == None)
-     return ret;
-
-   if (ret)
-     {
-	time = ecore_x_current_time_get();
-	ecore_x_client_message32_send(root, _atom_manager,
-				      ECORE_X_EVENT_MASK_WINDOW_CONFIGURE,
-				      time, atom, win, 0, 0);
-     }
-   else
+   if (!ret)
      fprintf(stderr, "SYSTRAY: tried to set selection to %#x, but got %#x\n",
 	     win, cur_selection);
 
@@ -434,7 +423,7 @@ static Eina_Bool
 _systray_selection_owner_set_current(Instance *inst)
 {
    return _systray_selection_owner_set
-     (inst->con->manager->num, inst->win.selection, inst->con->manager->root);
+     (inst->con->manager->num, inst->win.selection);
 }
 
 static void
@@ -496,11 +485,14 @@ _systray_activate(Instance *inst)
    unsigned int visual;
    Ecore_X_Atom atom;
    Ecore_X_Window old_win;
+   Ecore_X_Window_Attributes attr;
+   Ecore_X_Display *dpy;
 
    if (inst->win.selection != None) return 1;
 
    atom = _systray_atom_st_get(inst->con->manager->num);
-   old_win = XGetSelectionOwner(ecore_x_display_get(), atom);
+   dpy = ecore_x_display_get();
+   old_win = XGetSelectionOwner(dpy, atom);
    if (old_win != None) return 0;
 
    if (inst->win.base == None)
@@ -527,11 +519,16 @@ _systray_activate(Instance *inst)
 	return 0;
      }
 
-   visual = 32; // XXX TODO: detect based on ecore_evas engine
-   ecore_x_window_prop_card32_set
-     (inst->win.selection, _atom_st_visual, &visual, 1);
-   ecore_x_window_prop_card32_set
-     (inst->win.base, _atom_st_visual, &visual, 1);
+   ecore_x_window_attributes_get(inst->win.base, &attr);
+
+   visual = XVisualIDFromVisual(attr.visual);
+   XChangeProperty(dpy, inst->win.selection, _atom_st_visual, XA_VISUALID,
+		   32, PropModeReplace, (void *)&visual, 1);
+
+   ecore_x_client_message32_send(inst->con->manager->root, _atom_manager,
+				 ECORE_X_EVENT_MASK_WINDOW_CONFIGURE,
+				 ecore_x_current_time_get(), atom,
+				 inst->win.selection, 0, 0);
 
    edje_object_signal_emit(inst->ui.gadget, _sig_enable, _sig_source);
 
