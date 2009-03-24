@@ -420,70 +420,75 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
    Drawer_Epsilon_Data *ep = NULL;
    Evas_Object *o = NULL;
 
-   if (si->desktop)
-     o =  e_util_desktop_icon_add(si->desktop, MAX(w, h), evas);
-   else if (si->file_path)
+   switch(si->data_type)
      {
-	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
-	    (e_util_glob_case_match(si->file_path, "*.directory")))
-	  {
-	     Efreet_Desktop *desktop;
+      case SOURCE_DATA_TYPE_DESKTOP:
+	 o = e_util_desktop_icon_add(si->data, MAX(w, h), evas);
+	 break;
+      case SOURCE_DATA_TYPE_FILE_PATH:
+	 if ((e_util_glob_case_match(si->data, "*.desktop")) ||
+	     (e_util_glob_case_match(si->data, "*.directory")))
+	   {
+	      Efreet_Desktop *desktop;
 
-	     desktop = efreet_desktop_new(si->file_path);
-	     if (!desktop) return NULL;
-	     o = e_util_desktop_icon_add(desktop, MAX(w, h), evas);
-	     if (!o)
-	       {
-		  o = edje_object_add(evas);
-		  if (!e_util_edje_icon_set(o, desktop->icon))
-		    {
-		       evas_object_del(o);
-		       o = NULL;
-		    }
-	       }
+	      desktop = efreet_desktop_new(si->data);
+	      if (!desktop) return NULL;
+	      o = e_util_desktop_icon_add(desktop, MAX(w, h), evas);
+	      if (!o)
+		{
+		   o = edje_object_add(evas);
+		   if (!e_util_edje_icon_set(o, desktop->icon))
+		     {
+			evas_object_del(o);
+			o = NULL;
+		     }
+		}
 
-	     efreet_desktop_free(desktop);
-	  }
-	else if (ecore_file_is_dir(si->file_path))
-	  {
-	     o = edje_object_add(evas);
-	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/folder");
-	  }
+	      efreet_desktop_free(desktop);
+	   }
+	 else if (ecore_file_is_dir(si->data))
+	   {
+	      o = edje_object_add(evas);
+	      e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/folder");
+	   }
 
 #if 0
-	o = e_thumb_icon_add(evas);
-	if ((e_util_glob_case_match(si->file_path, "*.edj")))
-	  {
-	     /* FIXME: There is probably a quicker way of doing this. */
-	     if (edje_file_group_exists(si->file_path, "icon"))
-	       e_thumb_icon_file_set(o, si->file_path, "icon");
-	     else if (edje_file_group_exists(si->file_path, "e/desktop/background"))
-	       e_thumb_icon_file_set(o, si->file_path, "e/desktop/background");
-	     else if (edje_file_group_exists(si->file_path, "e/init/splash"))
-	       e_thumb_icon_file_set(o, si->file_path, "e/init/splash");
-	     e_thumb_icon_size_set(o, w, w/4*3);
-	  }
-	else
-	  {
-	     e_thumb_icon_file_set(o, si->file_path, NULL);
-	     e_thumb_icon_size_set(o, w, h);
-	  }
+	 o = e_thumb_icon_add(evas);
+	 if ((e_util_glob_case_match(si->data, "*.edj")))
+	   {
+	      /* FIXME: There is probably a quicker way of doing this. */
+	      if (edje_file_group_exists(si->data, "icon"))
+		e_thumb_icon_file_set(o, si->data, "icon");
+	      else if (edje_file_group_exists(si->data, "e/desktop/background"))
+		e_thumb_icon_file_set(o, si->data, "e/desktop/background");
+	      else if (edje_file_group_exists(si->data, "e/init/splash"))
+		e_thumb_icon_file_set(o, si->data, "e/init/splash");
+	      e_thumb_icon_size_set(o, w, w/4*3);
+	   }
+	 else
+	   {
+	      e_thumb_icon_file_set(o, si->data, NULL);
+	      e_thumb_icon_size_set(o, w, h);
+	   }
 
-	e_thumb_icon_begin(o);
+	 e_thumb_icon_begin(o);
 #endif
-	if (!o)
-	  {
-	     o = edje_object_add(evas);
+	 if (!o)
+	   {
+	      o = edje_object_add(evas);
 
-	     ep = calloc(1, sizeof(Drawer_Epsilon_Data));
-	     ep->o_icon = o;
-	     ep->w = w;
-	     ep->h = h;
+	      ep = calloc(1, sizeof(Drawer_Epsilon_Data));
+	      ep->o_icon = o;
+	      ep->w = w;
+	      ep->h = h;
 
-	     _drawer_thumbnail_theme(o, si);
-	     epsilon_request_add(si->file_path, EPSILON_THUMB_NORMAL, ep);
-	     return o;
-	  }
+	      _drawer_thumbnail_theme(o, si);
+	      epsilon_request_add(si->data, EPSILON_THUMB_NORMAL, ep);
+	      return o;
+	   }
+	 break;
+      case SOURCE_DATA_TYPE_OTHER:
+	 break;
      }
 
    if (o)

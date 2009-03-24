@@ -205,17 +205,20 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
    Dirwatcher_Priv *p = NULL;
 
+   if (si->data_type != SOURCE_DATA_TYPE_FILE_PATH)
+     return;
+
    p = si->priv;
    if (p->dir)
-     return _dirwatcher_directory_activate(p->inst, zone, si->file_path);
-   if (si->file_path)
+     return _dirwatcher_directory_activate(p->inst, zone, si->data);
+   if (si->data)
      {
-	if ((e_util_glob_case_match(si->file_path, "*.desktop")) ||
-	    (e_util_glob_case_match(si->file_path, "*.directory")))
+	if ((e_util_glob_case_match(si->data, "*.desktop")) ||
+	    (e_util_glob_case_match(si->data, "*.directory")))
 	  {
 	     Efreet_Desktop *desktop;
 
-	     desktop = efreet_desktop_new(si->file_path);
+	     desktop = efreet_desktop_new(si->data);
 	     if (!desktop) return;
 
 	     e_exec(e_util_zone_current_get(e_manager_current_get()),
@@ -357,7 +360,7 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
    Drawer_Source_Item *si = NULL;
    Dirwatcher_Priv *p = NULL;
    char buf[4096];
-   const char *mime;
+   const char *mime, *file_path;
 
    si = E_NEW(Drawer_Source_Item, 1);
    p = E_NEW(Dirwatcher_Priv, 1);
@@ -378,27 +381,29 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
    else
      si->label = eina_stringshare_add(file);
 
-   si->file_path = eina_stringshare_add(buf);
+   file_path = eina_stringshare_add(buf);
 
-   mime = e_fm_mime_filename_get(si->file_path);
+   mime = e_fm_mime_filename_get(file_path);
    if (mime)
      {
 	snprintf(buf, sizeof(buf), "%s (%s)", mime,
-		 e_util_size_string_get(ecore_file_size(si->file_path)));
+		 e_util_size_string_get(ecore_file_size(file_path)));
 	p->mime = mime;
      }
-   else if (ecore_file_is_dir(si->file_path))
+   else if (ecore_file_is_dir(file_path))
      {
 	snprintf(buf, sizeof(buf), D_("Directory (%s)"),
-		 e_util_size_string_get(ecore_file_size(si->file_path)));
+		 e_util_size_string_get(ecore_file_size(file_path)));
 	p->dir = EINA_TRUE;
      }
    else
-     snprintf(buf, sizeof(buf), "%s (%s)", basename((char *) si->file_path),
-	      e_util_size_string_get(ecore_file_size(si->file_path)));
+     snprintf(buf, sizeof(buf), "%s (%s)", basename((char *) file_path),
+	      e_util_size_string_get(ecore_file_size(file_path)));
    si->description = eina_stringshare_add(buf);
 
    p->inst = inst;
+   si->data = (char *) file_path;
+   si->data_type = SOURCE_DATA_TYPE_FILE_PATH;
 
    return si;
 }
@@ -593,11 +598,11 @@ _dirwatcher_cb_sort_dir(const Drawer_Source_Item *si1, const Drawer_Source_Item 
 {
    int d1, d2;
 
-   d1 = ecore_file_is_dir(si1->file_path);
-   d2 = ecore_file_is_dir(si2->file_path);
+   d1 = ecore_file_is_dir(si1->data);
+   d2 = ecore_file_is_dir(si2->data);
 
    if (d1 && d2)
-     return strcmp(si1->file_path, si2->file_path);
+     return strcmp(si1->data, si2->data);
 
    if (d1)
      return -1;
@@ -628,8 +633,8 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	      if (ret) return ret;
 	   }
 
-	 name1 = ecore_file_file_get(si1->file_path);
-	 name2 = ecore_file_file_get(si2->file_path);
+	 name1 = ecore_file_file_get(si1->data);
+	 name2 = ecore_file_file_get(si2->data);
 	 return strcmp(name1, name2);
       case SORT_MTIME:
 	 if (inst->conf->sort_dir)
@@ -638,8 +643,8 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	      if (ret) return ret;
 	   }
 
-	 if (stat(si1->file_path, &st1) < 0) return 0;
-	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 if (stat(si1->data, &st1) < 0) return 0;
+	 if (stat(si2->data, &st2) < 0) return 0;
 	 return st1.st_mtime - st2.st_mtime;
       case SORT_CTIME:
 	 if (inst->conf->sort_dir)
@@ -648,8 +653,8 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	      if (ret) return ret;
 	   }
 
-	 if (stat(si1->file_path, &st1) < 0) return 0;
-	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 if (stat(si1->data, &st1) < 0) return 0;
+	 if (stat(si2->data, &st2) < 0) return 0;
 	 return st1.st_ctime - st2.st_ctime;
       case SORT_ATIME:
 	 if (inst->conf->sort_dir)
@@ -658,8 +663,8 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	      if (ret) return ret;
 	   }
 
-	 if (stat(si1->file_path, &st1) < 0) return 0;
-	 if (stat(si2->file_path, &st2) < 0) return 0;
+	 if (stat(si1->data, &st1) < 0) return 0;
+	 if (stat(si2->data, &st2) < 0) return 0;
 	 return st1.st_atime - st2.st_atime;
       case SORT_SIZE:
 	 if (inst->conf->sort_dir)
@@ -668,8 +673,8 @@ _dirwatcher_cb_sort(const void *data1, const void *data2)
 	      if (ret) return ret;
 	   }
 
-	 size1 = ecore_file_size(si1->file_path);
-	 size2 = ecore_file_size(si2->file_path);
+	 size1 = ecore_file_size(si1->data);
+	 size2 = ecore_file_size(si2->data);
 	 return size1 - size2;
      }
 

@@ -197,24 +197,30 @@ EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
    Instance *inst = NULL;
+   Efreet_Desktop *desktop;
 
-   if (si->desktop)
+   switch(si->data_type)
      {
-	if (si->desktop->type == EFREET_DESKTOP_TYPE_APPLICATION)
-	  e_exec(zone, si->desktop, NULL, NULL, "drawer");
-	else if (si->desktop->type == EFREET_DESKTOP_TYPE_LINK)
-	  {
-	     if (!strncasecmp(si->desktop->url, "file:", 5))
-	       {
-		  E_Action *act;
+      case SOURCE_DATA_TYPE_DESKTOP:
+	 desktop = si->data;
 
-		  act = e_action_find("fileman");
-		  if (act) act->func.go(NULL, si->desktop->url + 5);
-	       }
-	  }
+	 if (desktop->type == EFREET_DESKTOP_TYPE_APPLICATION)
+	   e_exec(zone, desktop, NULL, NULL, "drawer");
+	 else if (desktop->type == EFREET_DESKTOP_TYPE_LINK)
+	   {
+	      if (!strncasecmp(desktop->url, "file:", 5))
+		{
+		   E_Action *act;
+
+		   act = e_action_find("fileman");
+		   if (act) act->func.go(NULL, desktop->url + 5);
+		}
+	   }
+	 break;
+      case SOURCE_DATA_TYPE_FILE_PATH:
+	 e_exec(zone, NULL, si->data, NULL, "drawer");
+	 break;
      }
-   else if (si->file_path)
-     e_exec(zone, NULL, si->file_path, NULL, "drawer");
 
    inst = DRAWER_PLUGIN(s)->data;
 }
@@ -285,7 +291,8 @@ _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *f
 
    if (desktop)
      {
-	si->desktop = desktop;
+	si->data = desktop;
+	si->data_type = SOURCE_DATA_TYPE_DESKTOP;
 	si->label = eina_stringshare_add(desktop->name);
 	si->description = eina_stringshare_add(desktop->comment);
 	if (inst->conf->show_info && inst->conf->sort_type == HISTORY_SORT_POPULARITY)
@@ -296,11 +303,12 @@ _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *f
      }
    else
      {
-	si->file_path = eina_stringshare_add(file);
+	si->data = (char *) eina_stringshare_add(file);
+	si->data_type = SOURCE_DATA_TYPE_FILE_PATH;
 	si->label = eina_stringshare_add(file);
      }
 
-   si->priv = eina_stringshare_add(file);
+   si->priv = (char *) eina_stringshare_add(file);
 
    return si;
 }
@@ -314,8 +322,15 @@ _history_source_items_free(Instance *inst)
 	
 	si = inst->items->data;
 	inst->items = eina_list_remove_list(inst->items, inst->items);
-	efreet_desktop_free(si->desktop);
-	eina_stringshare_del(si->file_path);
+	switch(si->data_type)
+	  {
+	   case SOURCE_DATA_TYPE_DESKTOP:
+	      efreet_desktop_free(si->data);
+	      break;
+	   case SOURCE_DATA_TYPE_FILE_PATH:
+	      eina_stringshare_del(si->data);
+	      break;
+	  }
 	eina_stringshare_del(si->label);
 	eina_stringshare_del(si->description);
 	eina_stringshare_del(si->category);
@@ -367,7 +382,9 @@ _history_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Drawer_Source_Item *si = data;
 
-   e_desktop_edit(e_container_current_get(e_manager_current_get()), si->desktop);
+   if (si->data_type != SOURCE_DATA_TYPE_DESKTOP)
+     return;
+   e_desktop_edit(e_container_current_get(e_manager_current_get()), si->data);
 }
 
 static void

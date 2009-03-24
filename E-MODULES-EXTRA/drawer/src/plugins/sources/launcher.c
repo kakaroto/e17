@@ -277,17 +277,18 @@ EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
    Instance *inst = NULL;
+   Efreet_Desktop *desktop = si->data;
 
-   if (si->desktop->type == EFREET_DESKTOP_TYPE_APPLICATION)
-     e_exec(zone, si->desktop, NULL, NULL, "drawer");
-   else if (si->desktop->type == EFREET_DESKTOP_TYPE_LINK)
+   if (desktop->type == EFREET_DESKTOP_TYPE_APPLICATION)
+     e_exec(zone, desktop, NULL, NULL, "drawer");
+   else if (desktop->type == EFREET_DESKTOP_TYPE_LINK)
      {
-	if (!strncasecmp(si->desktop->url, "file:", 5))
+	if (!strncasecmp(desktop->url, "file:", 5))
 	  {
 	     E_Action *act;
 
 	     act = e_action_find("fileman");
-	     if (act) act->func.go(NULL, si->desktop->url + 5);
+	     if (act) act->func.go(NULL, desktop->url + 5);
 	  }
      }
 
@@ -412,7 +413,8 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 
    si = E_NEW(Drawer_Source_Item, 1);
 
-   si->desktop = desktop;
+   si->data = desktop;
+   si->data_type = SOURCE_DATA_TYPE_DESKTOP;
    si->label = eina_stringshare_add(desktop->name);
    si->description = eina_stringshare_add(desktop->comment);
 
@@ -458,7 +460,7 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 static void
 _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si)
 {
-   e_order_remove(inst->apps, si->desktop);
+   e_order_remove(inst->apps, si->data);
 
    inst->items = eina_list_remove(inst->items, si);
    eina_stringshare_del(si->label);
@@ -553,7 +555,7 @@ _launcher_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Drawer_Source_Item *si = data;
 
-   e_desktop_edit(e_container_current_get(e_manager_current_get()), si->desktop);
+   e_desktop_edit(e_container_current_get(e_manager_current_get()), si->data);
 }
 
 static void

@@ -25,6 +25,12 @@ typedef enum {
      DRAWER_VIEWS
 } Drawer_Plugin_Category;
 
+typedef enum {
+     SOURCE_DATA_TYPE_OTHER = 1,
+     SOURCE_DATA_TYPE_DESKTOP,
+     SOURCE_DATA_TYPE_FILE_PATH
+} Drawer_Source_Data_Type;
+
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
@@ -154,13 +160,8 @@ struct _Drawer_View
 /* Struct for each list item from the source */
 struct _Drawer_Source_Item
 {
-   /* image from desktop file */
-   Efreet_Desktop *desktop;
-   /* file for thumbnailing */
-   const char	  *file_path;
-
-   /* for specialized items */
-   void		  *data;
+   void				*data;
+   Drawer_Source_Data_Type	 data_type;
 
    const char     *label;
    const char     *description;
