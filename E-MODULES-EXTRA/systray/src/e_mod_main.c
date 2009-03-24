@@ -291,7 +291,9 @@ _systray_gravity(const Instance *inst)
 static Evas_Coord
 _systray_icon_size_normalize(Evas_Coord size)
 {
-   const Evas_Coord *itr, sizes[] = {16, 24, 32, 48, 96, 128, 256, -1};
+   const Evas_Coord *itr, sizes[] = {
+     16, 22, 24, 32, 36, 48, 64, 72, 96, 128, 192, 256, -1
+   };
    for (itr = sizes; *itr > 0; itr++)
      if (*itr == size)
        return size;
