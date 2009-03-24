@@ -1,6 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=Systray
+Name[fr]=Zone de notification
 Icon=e-module-systray
 Comment=<title>System Tray:</title><br>system tray that hold applications icons like Skype, Pidgin, Kopete and others.
+Comment[fr]=<title>Zone de notification:</title><br>Une zone qui reçoit les icones des applications comme Skype, Pidgin, Kopete et autres.
+Comment[it]=<title>Vassoio di sistema:</title><br>Un'area che contiene le icone di notifica di applicazioni come Skype, Pidgin, Kopete e altre.
 X-Enlightenment-ModuleType=shelf
