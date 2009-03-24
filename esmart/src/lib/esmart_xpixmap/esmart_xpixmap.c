@@ -84,7 +84,7 @@ _pixels_get(void *data, Evas_Object *obj)
 
    if ((pw != iw) || (ph != ih))
      {
-        evas_object_image_alpha_set(obj, 0);
+        evas_object_image_alpha_set(obj, 1);
 	evas_object_image_size_set(obj, pw, ph);
      }
    if ((iw < 1) || (ih < 1))
@@ -198,14 +198,8 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
 
    /* XXX: handle shaped windows */
    evas_object_image_alpha_set(sd->obj, 1);
-   pixel = evas_object_image_data_get(sd->obj, 1);
-   if (pixel)
-     {
-	*pixel = 0xff000000;
-	evas_object_image_data_set(obj, pixel);
-     }
    evas_object_smart_data_set(obj, sd);
-   evas_object_image_pixels_dirty_set(sd->obj, 1);
+   _pixels_get(sd, sd->obj);
 }
 
 static void
