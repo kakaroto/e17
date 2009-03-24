@@ -94,7 +94,7 @@ engine_software_xcb_args(int argc, char **argv)
 	return 0;
      }
 
-   einfo->info.backend = 1;
+   einfo->info.backend = EVAS_ENGINE_INFO_SOFTWARE_X11_BACKEND_XCB;
    einfo->info.connection = conn;
    einfo->info.screen = screen;
    einfo->info.visual = einfo->func.best_visual_get(1, conn, s);

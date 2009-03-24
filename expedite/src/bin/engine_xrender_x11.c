@@ -38,7 +38,9 @@ engine_xrender_x11_args(int argc, char **argv)
 	return 0;
      }
 
-   einfo->info.display = disp;
+   einfo->info.backend = EVAS_ENGINE_INFO_XRENDER_BACKEND_XLIB;
+   einfo->info.connection = disp;
+   einfo->info.screen = NULL;
    einfo->info.visual = DefaultVisual(disp, DefaultScreen(disp));
    attr.backing_store = NotUseful;
    attr.border_pixel = 0;

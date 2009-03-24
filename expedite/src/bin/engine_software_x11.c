@@ -38,7 +38,7 @@ engine_software_x11_args(int argc, char **argv)
 	return 0;
      }
 
-   einfo->info.backend = 0;
+   einfo->info.backend = EVAS_ENGINE_INFO_SOFTWARE_X11_BACKEND_XLIB;
    einfo->info.connection = disp;
    einfo->info.screen = NULL;
    einfo->info.visual = einfo->func.best_visual_get(0, disp, DefaultScreen(disp));

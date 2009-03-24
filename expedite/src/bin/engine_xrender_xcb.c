@@ -2,7 +2,7 @@
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_keysyms.h>
-#include <Evas_Engine_XRender_Xcb.h>
+#include <Evas_Engine_XRender_X11.h>
 
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
@@ -62,7 +62,7 @@ engine_xrender_xcb_args(int argc, char **argv)
    struct xcb_size_hints_t        hints;
    uint32_t                       value_list[6];
    xcb_screen_iterator_t          iter;
-   Evas_Engine_Info_XRender_Xcb  *einfo;
+   Evas_Engine_Info_XRender_X11  *einfo;
    xcb_intern_atom_reply_t       *reply;
    char                          *str;
    xcb_intern_atom_cookie_t       cookie1;
@@ -105,15 +105,16 @@ engine_xrender_xcb_args(int argc, char **argv)
           break;
        }
 
-   evas_output_method_set(evas, evas_render_method_lookup("xrender_xcb"));
-   einfo = (Evas_Engine_Info_XRender_Xcb *)evas_engine_info_get(evas);
+   evas_output_method_set(evas, evas_render_method_lookup("xrender_x11"));
+   einfo = (Evas_Engine_Info_XRender_X11 *)evas_engine_info_get(evas);
    if (!einfo)
      {
 	printf("Evas does not support the XRender XCB Engine\n");
 	return 0;
      }
 
-   einfo->info.conn = conn;
+   einfo->info.backend = EVAS_ENGINE_INFO_XRENDER_BACKEND_XCB;
+   einfo->info.connection = conn;
    einfo->info.screen = screen;
    einfo->info.visual = _engine_xrender_visual_get(conn, screen);
 
