@@ -32,6 +32,8 @@ static void _pixels_get(void *data, Evas_Object *obj);
 static int  _damage_cb(void *data, int type, void *event);
 static int  _destroy_cb(void *data, int type, void *event);
 static int  _configure_cb(void *data, int type, void *event);
+static int  _hide_cb(void *data, int type, void *event);
+static int  _show_cb(void *data, int type, void *event);
 
 static void _smart_init(void);
 static void _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win);
@@ -72,6 +74,7 @@ _pixels_get(void *data, Evas_Object *obj)
    Smart_Data *sd;
    unsigned char *bgra_data;
 
+   printf("XPixmap DEBUG: getting pixels\n");
    sd = data;
    if (sd->xim)
      {
@@ -150,6 +153,38 @@ _configure_cb(void *data, int type, void *event)
    return 1;
 }
 
+static int
+_hide_cb(void *data, int type, void *event)
+{
+   Smart_Data *sd;
+   Ecore_X_Event_Window_Hide *ev;
+
+   if (!(sd = data)) return 1;
+   if (!(ev = event)) return 1;
+   if (sd->win != ev->win) return 1;
+   printf("XPixmap DEBUG: hide event\n");
+   ecore_x_pixmap_del(sd->pixmap);
+   sd->pixmap = None;
+   return 1;
+}
+
+static int
+_show_cb(void *data, int type, void *event)
+{
+   Smart_Data *sd;
+   Ecore_X_Event_Window_Show *ev;
+
+   if (!(sd = data)) return 1;
+   if (!(ev = event)) return 1;
+   if (sd->win != ev->win) return 1;
+   printf("XPixmap DEBUG: show event\n");
+   if (sd->pixmap)
+     ecore_x_pixmap_del(sd->pixmap);
+   sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
+   evas_object_image_pixels_dirty_set(sd->obj, 1);
+   return 1;
+}
+
 /*******************************************/
 /* Internal smart object required routines */
 /*******************************************/
@@ -195,14 +230,22 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
      {
 	printf("XPixmap DEBUG: we have a window\n");
         sd->win = win;
-	sd->damage = ecore_x_damage_new(win, ECORE_X_DAMAGE_REPORT_NON_EMPTY);
-        sd->pixmap = ecore_x_composite_name_window_pixmap_get(win);
+	sd->damage = ecore_x_damage_new(win, ECORE_X_DAMAGE_REPORT_RAW_RECTANGLES);
+	if (ecore_x_window_visible_get(win))
+	  sd->pixmap = ecore_x_composite_name_window_pixmap_get(win);
+	else
+	  sd->pixmap = None;
+
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_DAMAGE_NOTIFY, _damage_cb, sd));
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _destroy_cb, sd));
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE, _configure_cb, sd));
+        sd->handlers = eina_list_append(sd->handlers,
+              ecore_event_handler_add(ECORE_X_EVENT_WINDOW_HIDE, _hide_cb, sd));
+        sd->handlers = eina_list_append(sd->handlers,
+              ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW, _show_cb, sd));
      }
 
    evas_object_image_pixels_get_callback_set(sd->obj, _pixels_get, sd);
@@ -211,7 +254,8 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
    /* XXX: handle shaped windows */
    evas_object_image_alpha_set(sd->obj, 1);
    evas_object_smart_data_set(obj, sd);
-   _pixels_get(sd, sd->obj);
+   if (sd->pixmap)
+     _pixels_get(sd, sd->obj);
 }
 
 static void
