@@ -2,6 +2,7 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
+#include <stdio.h>
 #include "config.h"
 #include <X11/Xlib.h>
 #include <Ecore.h>
@@ -21,6 +22,7 @@ struct _Smart_Data
 
    Ecore_X_Window       win;
    Ecore_X_Pixmap       pixmap;
+   Ecore_X_Damage       damage;
 
    XImage              *xim;
 };
@@ -66,7 +68,7 @@ static void
 _pixels_get(void *data, Evas_Object *obj)
 {
    int iw, ih;
-   int px, py, pw, ph;
+   int pw, ph;
    Smart_Data *sd;
    unsigned char *bgra_data;
 
@@ -78,9 +80,15 @@ _pixels_get(void *data, Evas_Object *obj)
      }
 
    evas_object_image_size_get(obj, &iw, &ih);
-   ecore_x_drawable_geometry_get(sd->pixmap, &px, &py, &pw, &ph);
-   sd->xim = XGetImage(sd->dpy, sd->pixmap, px, py, pw, ph, AllPlanes, ZPixmap);
+   ecore_x_drawable_geometry_get(sd->pixmap, NULL, NULL, &pw, &ph);
+   printf("XPixmap DEBUG: pixmap size: %dx%d\n", pw, ph);
+   sd->xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
 
+   if (!sd->xim)
+     {
+	printf("XPixmap DEBUG: no XImage\n");
+	return;
+     }
 
    if ((pw != iw) || (ph != ih))
      {
@@ -92,6 +100,7 @@ _pixels_get(void *data, Evas_Object *obj)
    else
      {
         evas_object_image_data_set(obj, sd->xim->data);
+	/* XXX: can we free the XImage now? */
         evas_object_image_pixels_dirty_set(obj, 0);
      }
 }
@@ -105,6 +114,7 @@ _damage_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->drawable) return 1;
+   printf("XPixmap DEBUG: damage event\n");
    evas_object_image_pixels_dirty_set(sd->obj, 1);
    return 1;
 }
@@ -118,6 +128,7 @@ _destroy_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
+   printf("XPixmap DEBUG: destroy event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = None;
    return 1;
@@ -132,6 +143,7 @@ _configure_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
+   printf("XPixmap DEBUG: configure event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
    evas_object_image_pixels_dirty_set(sd->obj, 1);
@@ -172,16 +184,18 @@ static void
 _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
 {
    Smart_Data *sd;
-   unsigned int *pixel;
 
    sd = calloc(1, sizeof(Smart_Data));
    if (!sd) return;
    sd->obj = evas_object_image_add(evas_object_evas_get(obj));
+   sd->dpy = ecore_x_display_get();
    if (pixmap)
      sd->pixmap = pixmap;
    else if (win)
      {
+	printf("XPixmap DEBUG: we have a window\n");
         sd->win = win;
+	sd->damage = ecore_x_damage_new(win, ECORE_X_DAMAGE_REPORT_NON_EMPTY);
         sd->pixmap = ecore_x_composite_name_window_pixmap_get(win);
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_DAMAGE_NOTIFY, _damage_cb, sd));
@@ -191,7 +205,6 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE, _configure_cb, sd));
      }
 
-   sd->dpy = ecore_x_display_get();
    evas_object_image_pixels_get_callback_set(sd->obj, _pixels_get, sd);
    evas_object_smart_member_add(sd->obj, obj);
 
@@ -213,6 +226,7 @@ _smart_del(Evas_Object *obj)
      XDestroyImage(sd->xim);
    EINA_LIST_FREE(sd->handlers, h)
       ecore_event_handler_del(h);
+   ecore_x_damage_del(sd->damage);
    evas_object_del(sd->obj);
    free(sd);
 }
