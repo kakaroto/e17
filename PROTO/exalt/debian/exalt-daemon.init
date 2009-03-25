@@ -30,9 +30,7 @@ USER=root
 test -x $DAEMON || exit 0
 
 # We need /sbin/ip
-if [ -x /sbin/ip ]; then
-	echo "OK, /sbin/ip exists."
-else
+if ! [ -x /sbin/ip ]; then
 	echo "ERROR. You don't have /sbin/ip, please install it."
 	exit 1
 fi
@@ -50,17 +48,28 @@ d_start() {
 		chown $USER:$USER $PIDDIR
 	fi
 
-	start-stop-daemon --start --quiet --pidfile $PIDFILE \
-		--user $USER --exec $DAEMON -- $DAEMON_OPTS
-
+   if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"
+   then
+	   start-stop-daemon --start --quiet --pidfile $PIDFILE \
+		   --user $USER --exec $DAEMON -- $DAEMON_OPTS
+   else
+	   log_warning_msg "This appears to be a chrooted enviornment... exiting"
+	   log_end_msg 0
+   fi
 }
 
 #
 #	Function that stops the daemon/service.
 #
 d_stop() {
-	start-stop-daemon --stop --retry 60 --quiet --pidfile $PIDFILE \
-		 --oknodo --user $USER --exec $DAEMON
+   if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"
+   then
+	   start-stop-daemon --stop --retry 60 --quiet --pidfile $PIDFILE \
+		   --oknodo --user $USER --exec $DAEMON
+   else
+	   log_warning_msg "This appears to be a chrooted enviornment... exiting"
+	   log_end_msg 0
+   fi
 
 }
 
