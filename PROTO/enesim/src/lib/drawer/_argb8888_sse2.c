@@ -13,12 +13,12 @@ typedef union
 static inline sse2_t a2v_sse2(uint16_t a)
 {
 	sse2_t s;
-	
+
 	s = _mm_cvtsi32_si128(a);
 	s = _mm_unpacklo_epi16(s, s);
 	s = _mm_unpacklo_epi32(s, s);
 	s = _mm_unpacklo_epi64(s, s);
-	
+
 	return s;
 }
 
@@ -29,7 +29,7 @@ static inline sse2_t aa2v_sse2(uint64_t c)
 {
 	mmx_t m, r;
 	sse2_t s;
-	
+
 	r = (mmx_t)c;
 	m = (mmx_t)UINT64_C(0xff000000ff000000);
 	r = _mm_and_si64(r, m);
@@ -40,7 +40,7 @@ static inline sse2_t aa2v_sse2(uint64_t c)
 	s = _mm_movpi64_epi64(r);
 	s = _mm_unpacklo_epi16(s, s);
 	s = _mm_unpacklo_epi32(s, s);
-	
+
 	return s;
 }
 
@@ -50,7 +50,7 @@ static inline sse2_t aa2v_sse2(uint64_t c)
 static inline sse2_t c2v_sse2(uint32_t c)
 {
 	sse2_t z, r;
-		
+
 	r = _mm_cvtsi32_si128(c);
 	z = _mm_cvtsi32_si128(0);
 	r = _mm_unpacklo_epi8(r, z);
@@ -92,16 +92,16 @@ static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d,
 	int r = (len % 2);
 	int l = len - r;
 
-	uint32_t *dtmp = d->data.argb8888.plane0;
-	uint32_t *end = d->data.argb8888.plane0 + l;
+	uint32_t *dtmp = d->plane0;
+	uint32_t *end = d->plane0 + l;
 	uint8_t a;
 
 #if 1
 	sse2_t r0, r1;
-			
-	a = color->pixel.argb8888.plane0 >> 24;
+
+	a = color->plane0 >> 24;
 	r0 = a2v_sse2(256 - a);
-	r1 = c2v_sse2(color->pixel.argb8888.plane0);
+	r1 = c2v_sse2(color->plane0);
 
 	while (dtmp < end)
 	{
@@ -115,7 +115,7 @@ static void argb8888_sp_color_blend_sse2(Enesim_Surface_Data *d,
 	if (r)
 	{
 		mmx_t m0, m1;
-		
+
 		m0 = _mm_movepi64_pi64(r0);
 		m1 = _mm_movepi64_pi64(r1);
 		blend_mmx(++dtmp, m0, m1);
@@ -131,15 +131,15 @@ static void argb8888_sp_pixel_blend_argb8888_sse2(Enesim_Surface_Data *d,
 	int r = (len % 2);
 	int l = len - r;
 	sse2_t r0, r1;
-	uint32_t *stmp = s->data.argb8888.plane0;
-	uint32_t *dtmp = d->data.argb8888.plane0;
-	uint32_t *end = d->data.argb8888.plane0 + l;
+	uint32_t *stmp = s->plane0;
+	uint32_t *dtmp = d->plane0;
+	uint32_t *end = d->plane0 + l;
 
 	while (dtmp < end)
 	{
-		r0 = aa2v_sse2(*(uint64_t *)stmp); 
+		r0 = aa2v_sse2(*(uint64_t *)stmp);
 		r1 = cc2v_sse2(*(uint64_t *)stmp);
-		
+
 		blend_sse2((uint64_t *)dtmp, r0, r1);
 		dtmp += 2;
 		stmp += 2;
@@ -149,7 +149,7 @@ static void argb8888_sp_pixel_blend_argb8888_sse2(Enesim_Surface_Data *d,
 	{
 		mmx_t m0, m1;
 		uint8_t a;
-	
+
 		stmp++;
 		dtmp++;
 
