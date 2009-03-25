@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Language\n"
-"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
-"POT-Creation-Date: 2007-11-14 22:26+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-03-25 17:12+0100\n"
 "PO-Revision-Date: 2008-08-11 15:37+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -14,80 +14,70 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/module/e_mod_config.c:104
+#: ../src/module/e_mod_config.c:104
 msgid "Language Module Settings"
 msgstr "Nastavení jazykového modulu"
 
-#: src/module/e_mod_config.c:174
-#: src/module/e_mod_config.c:249
+#: ../src/module/e_mod_config.c:174 ../src/module/e_mod_config.c:249
 msgid "Available Languages"
 msgstr "Dostupné jazyky"
 
-#: src/module/e_mod_config.c:182
-#: src/module/e_mod_config.c:257
+#: ../src/module/e_mod_config.c:182 ../src/module/e_mod_config.c:257
 msgid "Selected Languages"
 msgstr "Vybrané jazyky"
 
-#: src/module/e_mod_config.c:198
-#: src/module/e_mod_config.c:273
+#: ../src/module/e_mod_config.c:198 ../src/module/e_mod_config.c:273
 msgid "Up"
 msgstr "Nahoru"
 
-#: src/module/e_mod_config.c:203
-#: src/module/e_mod_config.c:278
+#: ../src/module/e_mod_config.c:203 ../src/module/e_mod_config.c:278
 msgid "Down"
 msgstr "Dolů"
 
-#: src/module/e_mod_config.c:211
-#: src/module/e_mod_config.c:304
+#: ../src/module/e_mod_config.c:211 ../src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
 msgstr "Pravidla přepínání jazyka"
 
-#: src/module/e_mod_config.c:214
-#: src/module/e_mod_config.c:307
+#: ../src/module/e_mod_config.c:214 ../src/module/e_mod_config.c:307
 msgid "Global"
 msgstr "Globální"
 
-#: src/module/e_mod_config.c:217
-#: src/module/e_mod_config.c:310
+#: ../src/module/e_mod_config.c:217 ../src/module/e_mod_config.c:310
 msgid "Window"
 msgstr "Okno"
 
-#: src/module/e_mod_config.c:220
-#: src/module/e_mod_config.c:313
+#: ../src/module/e_mod_config.c:220 ../src/module/e_mod_config.c:313
 msgid "Application"
 msgstr "Aplikace"
 
-#: src/module/e_mod_config.c:287
+#: ../src/module/e_mod_config.c:287
 msgid "Keyboard Model"
 msgstr "Model klávesnice"
 
-#: src/module/e_mod_config.c:295
+#: ../src/module/e_mod_config.c:295
 msgid "Layout Variant"
 msgstr "Varianta rozložení"
 
-#: src/module/e_mod_keybindings.c:6
-#: src/module/e_mod_main.c:113
+#: ../src/module/e_mod_keybindings.c:6 ../src/module/e_mod_main.c:113
 msgid "Language"
 msgstr "Jazyk"
 
-#: src/module/e_mod_keybindings.c:7
+#: ../src/module/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
 msgstr "Přepnout na další jazyk"
 
-#: src/module/e_mod_keybindings.c:8
+#: ../src/module/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
 msgstr "Přepnout na předchozí jazyk"
 
-#: src/module/e_mod_main.c:399
+#: ../src/module/e_mod_main.c:399
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: src/module/e_mod_main.c:404
+#: ../src/module/e_mod_main.c:404
 msgid "Configure Key Bindings"
 msgstr "Konfigurovat klávesové zkratky"
 
-#: src/module/e_mod_main.c:421
+#: ../src/module/e_mod_main.c:421
 msgid "Module Configuration"
 msgstr "Nastavení modulu"
-

@@ -6,16 +6,18 @@ msgstr ""
 "Project-Id-Version: Tiling\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-01 14:24+0100\n"
+"PO-Revision-Date: 2009-03-25 17:30+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
+#: ../e_mod_main.c:83
+#: ../e_mod_main.c:88
+#: ../e_mod_main.c:1005
 msgid "Tiling"
-msgstr "Dlaždicce"
+msgstr "Dlaždice"
 
 #: ../e_mod_main.c:1004
 msgid "Windows"
@@ -28,13 +30,14 @@ msgstr "Nastavení modulu"
 #. General settings
 #: ../e_mod_config.c:217
 msgid "General"
-msgstr "IHlavní"
+msgstr "Hlavní"
 
 #: ../e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Horizontální:"
 
-#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#: ../e_mod_config.c:228
+#: ../e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
@@ -79,3 +82,4 @@ msgstr "Okraj"
 #: ../e_mod_config.c:310
 msgid "Floating border"
 msgstr "Plovoucí okraj"
+

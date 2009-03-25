@@ -1,0 +1,49 @@
+# Czech translation for the skel module
+# This file is put in the public domain.
+# quaker <quaker66@gmail.com>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-03-25 17:22+0100\n"
+"PO-Revision-Date: 2009-03-25 17:28+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: easylinux <quaker66@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:39
+msgid "Skeleton Module"
+msgstr "Modul Kostra"
+
+#: ../src/e_mod_config.c:79
+msgid "General"
+msgstr "Hlavní"
+
+#: ../src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "Použít přepínač 1"
+
+#: ../src/e_mod_main.c:107
+msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "Nastavení modulu potřebuje aktualizovat. Staré nastavení<br> bylo odstraněno a bylo nahráno nové. Toto<br>nastane občas během vývoje, takže nehlašte<br>bug. Prostě to znamená, že modul potřebuje novou konfiguraci,<br>protože byly přidány funkce, které stará<br>neobsahovala. Nové nastavení<br>to spraví. Nyní si můžete modul nastavit tak, jak<br>chcete. Omlouváme se za vzniklé potíže.<br>"
+
+#: ../src/e_mod_main.c:127
+msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "Nastavení je NOVĚJŠÍ než modul. To je<br>zvláštní. Nemělo by se to stát, pokud jste ovšem nedegradovali<br>modul, nebo nezkopírovali nastavení z místa, kde<br>běžela novější verze modulu. Je to špatně a<br>jako protiopatření bylo nastavení změněno na<br>výchozí. Omlouváme se za vzniklé potíže.<br>"
+
+#: ../src/e_mod_main.c:294
+msgid "Skeleton"
+msgstr "Kostra"
+
+#: ../src/e_mod_main.c:377
+msgid "Skeleton Configuration Updated"
+msgstr "Nastavení modulu aktualizováno"
+
+#: ../src/e_mod_main.c:434
+msgid "Configuration"
+msgstr "Nastavení"
+

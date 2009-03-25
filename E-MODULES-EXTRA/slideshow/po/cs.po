@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-03-25 17:12+0100\n"
 "PO-Revision-Date: 2008-08-12 17:53+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -63,10 +63,10 @@ msgstr "Použít wallpaper na aktivní obrazovce"
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Nastavit pozadí na aktuálním monitoru (Podpora Xineramy)"
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:133
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:177
 msgid "Configuration"
 msgstr "Konfigurace"

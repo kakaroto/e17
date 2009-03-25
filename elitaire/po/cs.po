@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire 0.0.4\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-03-25 17:11+0100\n"
 "PO-Revision-Date: 2009-01-01 14:03+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -92,12 +92,12 @@ msgstr "Pomoc"
 msgid "CONTEXT|New"
 msgstr "Nový"
 
-#: ../src/eli_app.cpp:290
+#: ../src/eli_app.cpp:291
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "Chyba: Žádný soubor tématu v %s!\n"
 
-#: ../src/eli_app.cpp:306
+#: ../src/eli_app.cpp:307
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Chyba: Nenalezen soubor karet %s!\n"
