@@ -1,4 +1,4 @@
-#ifdef __MMX__
+#ifdef EFL_HAVE_MMX
 
 
 /*

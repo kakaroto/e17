@@ -1,4 +1,4 @@
-#ifdef __SSE2__
+#ifdef EFL_HAVE_SSE2
 
 // for debug purpose
 typedef union

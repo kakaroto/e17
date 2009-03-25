@@ -133,16 +133,16 @@ static inline int enesim_hline_cut(int x, int *w, int *rx, int *rw, int cx)
 
 #include <math.h>
 /* SIMD intrinsics */
-#ifdef __MMX__
+#ifdef EFL_HAVE_MMX
 #include <mmintrin.h>
 typedef __m64 mmx_t;
 #endif
 
-#ifdef  __SSE__
+#ifdef  EFL_HAVE_SSE
 #include <xmmintrin.h>
 #endif
 
-#ifdef __SSE2__
+#ifdef EFL_HAVE_SSE2
 #include <emmintrin.h>
 typedef __m128i sse2_t;
 #endif

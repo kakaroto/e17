@@ -32,9 +32,11 @@ ACLOCAL_AMFLAGS = -I m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = enesim.pc
 
+.PHONY: coverage benchmark
+
 # Unit tests
 
-if BUILD_EXAMPLE
+if EFL_ENABLE_BENCHMARK
 
 check-local:
 	@./examples/enesim_bench
@@ -46,7 +48,7 @@ check-local:
 
 endif
 
-if ENESIM_ENABLE_COVERAGE
+if EFL_ENABLE_COVERAGE
 lcov-reset:
 	@rm -rf coverage
 	@find . -name "*.gcda" -exec rm {} \;

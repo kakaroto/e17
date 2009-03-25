@@ -38,4 +38,4 @@ format/libenesim_format.la \
 renderer/libenesim_renderer.la \
 primitives/libenesim_primitives.la
 
-libenesim_la_LDFLAGS = @create_shared_lib@ -version-info @version_info@
+libenesim_la_LDFLAGS = -no-undefined -version-info @version_info@

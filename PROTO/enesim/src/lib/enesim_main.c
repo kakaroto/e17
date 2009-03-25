@@ -40,10 +40,10 @@ EAPI int enesim_init(void)
 		enesim_drawer_init();
 		/* TODO initialize all the transformers */
 		/* TODO initialize all the converters */
-#ifdef __MMX__
+#ifdef EFL_HAVE_MMX
 		EINA_ERROR_PINFO("MMX Drawer available\n");
 #endif
-#ifdef __SSE2__
+#ifdef EFL_HAVE_SSE2
 		EINA_ERROR_PINFO("SSE2 Drawer available\n");
 #endif
 	}
