@@ -86,6 +86,7 @@ _pixels_get(void *data, Evas_Object *obj)
    ecore_x_drawable_geometry_get(sd->pixmap, NULL, NULL, &pw, &ph);
    printf("XPixmap DEBUG: pixmap size: %dx%d\n", pw, ph);
    sd->xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
+   evas_object_image_data_update_add(obj, 0, 0, iw, ih);
 
    if (!sd->xim)
      {
@@ -99,12 +100,13 @@ _pixels_get(void *data, Evas_Object *obj)
 	evas_object_image_size_set(obj, pw, ph);
      }
    if ((iw < 1) || (ih < 1))
-     evas_object_image_pixels_dirty_set(obj, 0);
+     return;
    else
      {
+	/* XXX: memcpy and then free the Ximage */
+	/* XXX: check the image format and convert if necessary */
         evas_object_image_data_set(obj, sd->xim->data);
 	/* XXX: can we free the XImage now? */
-        evas_object_image_pixels_dirty_set(obj, 0);
      }
 }
 
@@ -118,7 +120,8 @@ _damage_cb(void *data, int type, void *event)
    if (!(ev = event)) return 1;
    if (sd->win != ev->drawable) return 1;
    printf("XPixmap DEBUG: damage event\n");
-   evas_object_image_pixels_dirty_set(sd->obj, 1);
+
+   _pixels_get(sd, sd->obj);
    return 1;
 }
 
@@ -149,7 +152,7 @@ _configure_cb(void *data, int type, void *event)
    printf("XPixmap DEBUG: configure event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
-   evas_object_image_pixels_dirty_set(sd->obj, 1);
+   _pixels_get(sd, sd->obj);
    return 1;
 }
 
@@ -181,7 +184,7 @@ _show_cb(void *data, int type, void *event)
    if (sd->pixmap)
      ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
-   evas_object_image_pixels_dirty_set(sd->obj, 1);
+   _pixels_get(sd, sd->obj);
    return 1;
 }
 
@@ -248,7 +251,6 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW, _show_cb, sd));
      }
 
-   evas_object_image_pixels_get_callback_set(sd->obj, _pixels_get, sd);
    evas_object_smart_member_add(sd->obj, obj);
 
    /* XXX: handle shaped windows */
