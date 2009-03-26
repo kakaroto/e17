@@ -10,6 +10,7 @@ Package: libexalt0
 Architecture: any
 Depends: ${shlibs:Depends}, iproute
 Section: libs
+Replaces: libexalt1, libexalt-dbus1
 Provides: libexalt
 Description: EFL-based network manager
  This package contains the libraries.
@@ -18,6 +19,7 @@ Package: libexalt-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, libexalt0 (= ${Source-Version})
+Replaces: libexalt-dbus-dev
 Description: EFL-based network manager
  This package cointains developenment files.
 
