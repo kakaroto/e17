@@ -29,7 +29,7 @@ def init():
 def shutdown():
     return ecore_evas_shutdown()
 
-cdef char *engines[15]
+cdef char *engines[16]
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "buffer"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
@@ -39,6 +39,7 @@ engines[<int>ECORE_EVAS_ENGINE_XRENDER_XCB] = "xrender_xcb"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_DDRAW] = "software_ddraw"
 engines[<int>ECORE_EVAS_ENGINE_DIRECT3D] = "direct3d"
 engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "opengl_glew"
+engines[<int>ECORE_EVAS_ENGINE_QUARTZ] = "quartz"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_SDL] = "sdl"
 engines[<int>ECORE_EVAS_ENGINE_DIRECTFB] = "directfb"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "fb"
@@ -67,6 +68,7 @@ engine_mapping = {
 #  "software_16_wince_gapi": ,
 #  "sdl": ,
 #  "software_16_sdl": ,
+#  "quartz": ,
   "buffer": Buffer,
   }
 
@@ -80,6 +82,9 @@ def engine_type_from_name(char *method):
     cdef int i
 
     for i from 0 <= i < engines_len:
+        if engines[i] == NULL:
+            raise ValueError(("Ecore_Evas_Engine_Type changed and bindings are "
+                              "now invalid, position %d is now NULL!") % i)
         if python.strcmp(method, engines[i]) == 0:
             return i
     return -1
