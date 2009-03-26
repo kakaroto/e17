@@ -131,7 +131,10 @@ cdef class Window(Object):
 
         @parm: B{is_keyboard} Keyboard is visible?
         """
-        elm_win_keyboard_win_set(self.obj, is_keyboard)
+        if is_keyboard:
+            elm_win_keyboard_win_set(self.obj, 1)
+        else:
+            elm_win_keyboard_win_set(self.obj, 0)
 
     # TODO
     """
