@@ -1,3 +1,7 @@
+#include "widgets_file_icons.c"
+#include "widgets_file_icons_2.c"
+#include "widgets_file_icons_3.c"
+#include "widgets_file_icons_4.c"
 #include "image_blend_unscaled.c"
 #include "image_blend_solid_middle_unscaled.c"
 #include "image_blend_fade_unscaled.c"

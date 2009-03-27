@@ -21,6 +21,10 @@ main.c main.h \
 ui.c ui.h \
 about.c about.h \
 tests.h \
+widgets_file_icons.c \
+widgets_file_icons_2.c \
+widgets_file_icons_3.c \
+widgets_file_icons_4.c \
 image_blend_unscaled.c \
 image_blend_solid_middle_unscaled.c \
 image_blend_fade_unscaled.c \
