@@ -91,8 +91,8 @@ _ui_all(void)
 	if (mi->func) mi->func();
 	while (p_fps == 0.0)
 	  {
-	     ui_loop();
 	     engine_loop();
+	     ui_loop();
 	     evas_render(evas);
 	  }
 	/* This give time to delete the objects of the previous test and make
@@ -463,7 +463,7 @@ ui_args(int argc, char **argv)
 	if (!strcmp(argv[i], "-a"))
 	  {
 	     run_all = 1;
-         exit_after_test = 1;
+             exit_after_test = 1;
 	  }
 	else if ((!strcmp(argv[i], "-t")) && (i < (argc - 1)))
 	  {
@@ -559,7 +559,6 @@ ui_loop(void)
 	     evas_object_color_set(o, a, a, a, a);
 	     evas_object_show(o);
 
-
 	     if (i == menu_sel)
 	       {
 		  a = menu_anim - (double)i;
@@ -619,7 +618,8 @@ ui_loop(void)
 void
 ui_menu(void)
 {
-   evas_object_text_text_set(o_byline, "LEFT/RIGHT - select, ENTER - select, ESCAPE - exit.");
+   evas_object_text_text_set
+     (o_byline, "LEFT/RIGHT - select, ENTER - select, ESCAPE - exit.");
    menu_active = 1;
    key_func = NULL;
    loop_func = NULL;

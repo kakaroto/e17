@@ -34,8 +34,9 @@ struct xcb_size_hints_t {
 
 
 static xcb_connection_t *conn = NULL;
-static xcb_screen_t     *screen = NULL;
-static xcb_window_t      win = 0;
+static xcb_screen_t *screen = NULL;
+static xcb_window_t win = 0;
+static int first_expose = 0;
 
 int
 engine_software_xcb_args(int argc, char **argv)
@@ -130,7 +131,7 @@ engine_software_xcb_args(int argc, char **argv)
    einfo->info.drawable = win;
 
    xcb_map_window(conn, win);
-
+   
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Software XCB Engine\n");
@@ -202,6 +203,8 @@ engine_software_xcb_args(int argc, char **argv)
 
    free(xcb_get_input_focus_reply(conn, xcb_get_input_focus_unchecked(conn), NULL));
 
+   while (!first_expose)
+     engine_software_xcb_loop();
    return 1;
 }
 
@@ -252,6 +255,7 @@ engine_software_xcb_loop(void)
 
            e = (xcb_expose_event_t *)ev;
 
+           first_expose = 1;
            evas_damage_rectangle_add(evas,
                                      e->x,
                                      e->y,

@@ -6,6 +6,7 @@
 
 static Display *disp = NULL;
 static Window win = 0;
+static int first_expose = 0;
 
 int
 engine_software_x11_args(int argc, char **argv)
@@ -80,6 +81,8 @@ engine_software_x11_args(int argc, char **argv)
    XSetWMNormalHints(disp, win, &szhints);
    XMapWindow(disp, win);
    XSync(disp, False);
+   while (!first_expose)
+     engine_software_x11_loop();
    return 1;
 }
 
@@ -116,6 +119,7 @@ engine_software_x11_loop(void)
 	evas_event_feed_mouse_move(evas, ev.xmotion.x, ev.xmotion.y, 0, NULL);
 	break;
       case Expose:
+        first_expose = 1;
 	evas_damage_rectangle_add(evas,
 				  ev.xexpose.x,
 				  ev.xexpose.y,
