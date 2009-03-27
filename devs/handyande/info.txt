@@ -5,4 +5,4 @@ Location: Edinburgh, UK
 E-Mail:   andy@handyande.co.uk
 WWW:      http://www.handyande.co.uk
 Managing: engage, equate, examine, enotes, ecore_config, some e_modules,
-          e_utils, ?E/get-e web CMS?
+          e_utils, get-e CMS
