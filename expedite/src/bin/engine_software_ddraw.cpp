@@ -39,9 +39,14 @@ MainWndProc(HWND   hwnd,
        {
           PRECT rect = (PRECT)lParam;
 
+          evas_output_viewport_set(evas, 0, 0,
+                                   rect->right - rect->left,
+                                   rect->bottom - rect->top);
           evas_output_size_set(evas,
                                rect->right - rect->left,
                                rect->bottom - rect->top);
+          win_w = rect->right - rect->left;
+          win_h = rect->bottom - rect->top;
           return 0;
        }
      case WM_RBUTTONDOWN:

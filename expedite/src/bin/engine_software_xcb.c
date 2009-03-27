@@ -262,12 +262,17 @@ engine_software_xcb_loop(void)
       case XCB_CONFIGURE_NOTIFY:
         {
            xcb_configure_notify_event_t *e;
-
+           
            e = (xcb_configure_notify_event_t *)ev;
 
+           evas_output_viewport_set(evas, 0, 0,
+                                   e->width,
+                                   e->height);
            evas_output_size_set(evas,
                                 e->width,
                                 e->height);
+           win_w = e->width;
+           win_h = e->height;
            break;
         }
       case XCB_ENTER_NOTIFY:

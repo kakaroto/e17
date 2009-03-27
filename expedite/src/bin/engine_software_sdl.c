@@ -63,6 +63,8 @@ engine_software_sdl_loop(void)
              evas_event_feed_mouse_up(evas, event.button.state, EVAS_BUTTON_NONE, 0, NULL);
              break;
           case SDL_VIDEORESIZE:
+             evas_output_viewport_set(evas, 0, 0,
+                                      event.resize.w, event.resize.w);
              evas_output_size_set(evas, event.resize.w, event.resize.w);
              evas_output_size_get(evas, &win_w, &win_h);
              break;

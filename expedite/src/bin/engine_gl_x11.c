@@ -119,9 +119,14 @@ engine_gl_x11_loop(void)
 				  ev.xexpose.height);
 	break;
       case ConfigureNotify:
+        evas_output_viewport_set(evas, 0, 0,
+                                 ev.xconfigure.width,
+                                 ev.xconfigure.height);
 	evas_output_size_set(evas,
 			     ev.xconfigure.width,
 			     ev.xconfigure.height);
+        win_w = ev.xconfigure.width;
+        win_h = ev.xconfigure.height;
 	break;
       case EnterNotify:
 	evas_event_feed_mouse_in(evas, 0, NULL);

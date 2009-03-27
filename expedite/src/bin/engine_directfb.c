@@ -144,7 +144,11 @@ engine_directfb_event_window(const DFBWindowEvent *ev)
    if (ev->type & DWET_SIZE)
      {
 	DBG("\tDWET_SIZE %dx%d\n", ev->w, ev->h);
-	evas_output_size_set(evas, ev->w, ev->h);
+        evas_output_viewport_set(evas, 0, 0,
+                                 ev->w, ev->h);
+        evas_output_size_set(evas, ev->w, ev->h);
+        win_w = ev->w;
+        win_h = ev->h;
      }
 
    if (ev->type & DWET_CLOSE)
