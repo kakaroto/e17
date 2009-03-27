@@ -41,10 +41,7 @@
     #define __UNUSED__ __attribute__((unused))
 #endif
 
-typedef struct _hover_wired Hover_Wired;
-typedef struct _pnl_right Pnl_Right;
 typedef enum _iface_type Iface_Type;
-
 
 enum _iface_type
 {
@@ -53,31 +50,8 @@ enum _iface_type
     IFACE_UNKNOWN
 } ;
 
-struct _hover_wired
-{
-    char* iface;
-    Evas_Object* hover;
-
-    Evas_Object *btn_title;
-    Evas_Object *lbl_ip;
-    Evas_Object *lbl_netmask;
-    Evas_Object *lbl_gateway;
-
-    Evas_Object *icon;
-};
-
 Evas_Object *win;
-Evas_Object *table;
-
-
-Hover_Wired hover_wired;
-
-
-
-#include "iface_list.h"
-#include "pnl_right.h"
-#include "hover_wired.h"
-
+Evas_Object *iface_list; 
 #define D_(str) gettext(str)
 
 

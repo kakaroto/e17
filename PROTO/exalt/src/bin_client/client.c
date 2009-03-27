@@ -22,7 +22,7 @@
     EAPI int
 elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
-    Evas_Object*bg;
+    Evas_Object*bg, *bx;
 
     /*
      * INITIALISATION
@@ -51,17 +51,14 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     elm_win_resize_object_add(win, bg);
     evas_object_show(bg);
 
-    table = elm_table_add(win);
-    elm_win_resize_object_add(win, table);
-    evas_object_size_hint_weight_set(table, 1.0, 1.0);
-    evas_object_show(table);
+    bx = elm_box_add(win);
+    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+    elm_win_resize_object_add(win, bx);
+    evas_object_show(bx);
 
 
-    iface_list_create();
-
-    pnl_right_create();
-
-    hover_wired_create();
+    iface_list = iface_list_new();
+    elm_box_pack_end(bx, iface_list);
 
     exalt_dbus_response_notify_set(conn,response_cb,NULL);
     exalt_dbus_notify_set(conn,notify_cb,NULL);
@@ -70,7 +67,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     exalt_dbus_wireless_list_get(conn);
 
 
-    evas_object_resize(win, 600, 300);
+    evas_object_resize(win, 260, 300);
     evas_object_show(win);
 
 
@@ -85,20 +82,10 @@ ELM_MAIN()
 
 void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
 {
-    printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
             printf("DNS list:\n");
-
-            {
-                /*Ecore_List* l = exalt_dbus_response_list_get(response);
-                char* dns;
-                ecore_list_first_goto(l);
-                while( (dns=ecore_list_next(l)) )
-                    printf("%s\n",dns);
-                    */
-            }
             break;
         case EXALT_DBUS_RESPONSE_DNS_ADD:
             printf("DNS added\n");
@@ -112,22 +99,23 @@ void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
 
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
-            iface_list_response(response);
+            iface_list_response(iface_list,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
-            iface_list_response(response);
+            iface_list_response(iface_list,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
-            hover_wired_response(response);
+            iface_list_response(iface_list,response);
+            //hover_wired_response(response);
             //popup_update(inst,response);
             //if_wired_dialog_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
-            hover_wired_response(response);
+            //hover_wired_response(response);
             //if_wired_dialog_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
-            hover_wired_response(response);
+            //hover_wired_response(response);
             //if_wired_dialog_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
@@ -136,8 +124,8 @@ void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
             printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
-            iface_list_response(response);
-            hover_wired_response(response);
+            iface_list_response(iface_list,response);
+            //hover_wired_response(response);
             //if_wired_dialog_update(inst,response);
             //popup_update(inst,response);
             break;
@@ -145,8 +133,8 @@ void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
             //if_wired_dialog_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
-            iface_list_response(response);
-            hover_wired_response(response);
+            iface_list_response(iface_list,response);
+            //hover_wired_response(response);
             //if_wired_dialog_update(inst,response);
             //popup_update(inst,response);
             break;

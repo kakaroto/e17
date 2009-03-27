@@ -6,7 +6,7 @@
  *    Description:
  *
  *        Version:  1.0
- *        Created:  11/02/09 22:48:10 UTC
+ *        Created:  24/03/09 21:38:24 CET
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -21,29 +21,39 @@
 
 #include "main.h"
 
-typedef struct _iface_list
-{
-    Evas_Object* list;
-} Iface_List;
+typedef enum _Iface_List_Enum Iface_List_Enum;
+typedef struct _Iface_List_Elt Iface_List_Elt;
 
-Iface_List iface_list;
-
-typedef struct _iface_elt
+enum _Iface_List_Enum
 {
+    ITEM_IFACE,
+    ITEM_NETWORK
+};
+
+struct _Iface_List_Elt
+{
+    Iface_List_Enum type;
+
     char* iface;
-    Iface_Type type;
+    Iface_Type iface_type;
+
+    Elm_Genlist_Item * item;
+
+    char *ip;
+    int is_link;
+    int is_up;
+
+    Evas_Object *box;
     Evas_Object *icon;
-    Elm_List_Item *item;
-} Iface_Elt;
+    Evas_Object *lbl_name;
+    Evas_Object *lbl_ip;
+};
 
-void iface_list_create();
-void iface_list_add(char* iface, Iface_Type iface_type);
-void iface_list_sel(void *data, Evas_Object* o, void* event_info);
-void iface_list_icon_update(char* iface, Exalt_DBus_Response* response);
-void iface_list_response(Exalt_DBus_Response* response);
-Iface_Type iface_list_iface_type_get(char* iface);
-
-
+Evas_Object* iface_list_new();
+void iface_list_add(Evas_Object *l, const char* iface, Iface_Type type);
+void iface_list_response(Evas_Object *l, Exalt_DBus_Response* response);
+Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,char* iface);
+void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *id_first, int* id_last, Elm_Genlist_Item** first, Elm_Genlist_Item** last);
 
 #endif   /* ----- #ifndef IFACE_LIST_INC  ----- */
 

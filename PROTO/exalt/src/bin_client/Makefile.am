@@ -11,9 +11,7 @@ exalt_command_INCLUDES =
 
 exalt_client_SOURCES = \
 client.c \
-iface_list.c \
-pnl_right.c \
-hover_wired.c
+iface_list.c
 
 exalt_client_LDFLAGS = @DLLDFLAGS@
 exalt_client_LDADD = $(top_builddir)/src/lib_dbus/libexalt_dbus.la $(top_builddir)/src/lib/libexalt.la @EXALT_LIBS@

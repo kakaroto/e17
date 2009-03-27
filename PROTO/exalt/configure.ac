@@ -12,11 +12,14 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE(exalt, 0.6)
+AM_INIT_AUTOMAKE(exalt, 0.8)
 
 AC_PREREQ(2.52)
 
+
 AM_CONFIG_HEADER(src/config.h)
+
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -146,6 +149,23 @@ AC_SUBST(requirements)
 
 AC_SUBST(packagesrcdir)
 
+AC_ARG_ENABLE([shave],
+              [  --disable-shave                  Use shave output cleaner when building.],
+              [ case "${enableval}" in
+               yes)    enable_shave=yes;;
+               no)    enable_shave=no;;
+               *)    AC_MSG_ERROR([bad value ${enableval} for --disable-shave]);;
+               esac],
+               [enable_shave=yes])
+
+if test x$enable_shave = xyes; then
+    SHAVE_INIT([./])
+fi
+
+AC_CONFIG_FILES([
+    shave
+    shave-libtool
+])
 
 AC_OUTPUT([
 Makefile
@@ -163,7 +183,6 @@ exalt.pc
 exalt_dbus.pc
 ]
 )
-
 
 ###############################################################
 #### Informations
