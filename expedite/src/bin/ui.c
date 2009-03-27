@@ -600,6 +600,7 @@ ui_loop(void)
 		  evas_object_color_set(o, a / 2, a / 2, a / 2, a / 2);
 	       }
 	  }
+        evas_object_move(o_menu_logo, (win_w - 120) / 2, ((win_h - 160) / 2));
 	evas_object_show(o_menu_logo);
 	evas_object_show(o_menu_title);
 	evas_object_show(o_menu_title2);
