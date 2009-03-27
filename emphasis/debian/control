@@ -2,13 +2,13 @@ Source: emphasis
 Section: x11
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
-Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libetk1-dev, libmpd-dev (>= 0.12.0), libenhance0-dev
+Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libetk1-dev, libmpd-dev (>= 0.18.0), libenhance0-dev
 Standards-Version: 3.7.3
 Homepage: http://www.enlightenment.org
 
 Package: emphasis
 Architecture: any
-Depends: ${shlibs:Depends}, libmpd0 (>= 0.12.0), mpd
+Depends: ${shlibs:Depends}, libmpd1 (>= 0.18.0), mpd
 Suggests: enlightenment
 Description: An Etk based MPD client
  Emphasis is an MPD client based on Etk.
