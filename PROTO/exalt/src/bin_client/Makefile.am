@@ -2,7 +2,9 @@
 
 AM_CFLAGS = \
 -Wall -W -g -D_GNU_SOURCE @EXALT_CFLAGS@ \
--I$(top_srcdir)/src/lib_dbus  -I$(top_srcdir)/src/lib
+-I$(top_srcdir)/src/lib_dbus  -I$(top_srcdir)/src/lib \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+-DPACKAGE_LOCALE_DIR=\"$(localedir)\"
 
 
 sbin_PROGRAMS = exalt-client
