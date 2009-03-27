@@ -487,6 +487,8 @@ ui_loop(void)
    static double pt = 0.0;
    double t, t2;
 
+   evas_object_resize(o_bg, win_w, win_h);
+   evas_object_resize(o_wallpaper, win_w, win_h);
    if (loop_func)
      {
 	t = get_time();
@@ -612,8 +614,6 @@ ui_loop(void)
    else
      {
      }
-   evas_object_resize(o_bg, win_w, win_h);
-   evas_object_resize(o_wallpaper, win_w, win_h);
 }
 
 void
