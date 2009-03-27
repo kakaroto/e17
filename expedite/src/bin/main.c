@@ -1378,8 +1378,8 @@ main(int argc, char **argv)
 
    while (_engine_go())
      {
-	ui_loop();
 	engine_loop();
+	ui_loop();
 	evas_render(evas);
      }
 

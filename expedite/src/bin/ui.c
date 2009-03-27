@@ -611,6 +611,8 @@ ui_loop(void)
    else
      {
      }
+   evas_object_resize(o_bg, win_w, win_h);
+   evas_object_resize(o_wallpaper, win_w, win_h);
 }
 
 void
