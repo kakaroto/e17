@@ -6,7 +6,7 @@ Build-Depends: cdbs, debhelper (>= 6), libewl1-dev
 Standards-Version: 3.7.3
 Homepage: http://www.enlightenment.org
 
-Package: enity
+Package: ephoto
 Architecture: any
 Depends: ${shlibs:Depends}, libewl1-engines-all
 Description: Ewl based photo manager and viewer
