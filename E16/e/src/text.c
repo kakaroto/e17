@@ -545,7 +545,7 @@ _xfont_Load(TextState * ts, const char *name)
    ts->fdc = fdc;
    ts->type = FONT_TYPE_XFONT;
    ts->ops = &FontOpsXfont;
-   return -1;
+   return 0;
 }
 
 static void
