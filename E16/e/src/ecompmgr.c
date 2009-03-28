@@ -1386,7 +1386,6 @@ ECompMgrWinFadeOut(EObj * eo)
 #endif
    cw->fadeout = 1;
    ECompMgrWinInvalidate(eo, INV_PICTURE);
-   ECompMgrWinSetPicts(eo);
    ECompMgrWinFade(eo, cw->opacity, 0x10000000);
 }
 
