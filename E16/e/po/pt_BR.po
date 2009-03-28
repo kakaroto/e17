@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-22 19:57+0100\n"
+"POT-Creation-Date: 2009-03-28 11:10+0100\n"
 "PO-Revision-Date: 2000-02-24 16:22+0100\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -680,7 +680,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ecompmgr.c:2592
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -2107,7 +2107,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/systray.c:331 src/systray.c:434 src/systray.c:442
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 #, fuzzy
 msgid "Systray Error!"
 msgstr "Opções da Área de Trabalho"
@@ -2116,20 +2116,20 @@ msgstr "Opções da Área de Trabalho"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:434
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:442
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:452
+#: src/systray.c:449
 #, fuzzy
 msgid "Systray Options"
 msgstr "Opções da Área de Trabalho"
 
-#: src/systray.c:453
+#: src/systray.c:450
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Configurações do Autolevantar"

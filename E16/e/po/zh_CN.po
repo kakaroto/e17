@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-22 19:57+0100\n"
+"POT-Creation-Date: 2009-03-28 11:10+0100\n"
 "PO-Revision-Date: 2009-02-28 19:15+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -607,7 +607,7 @@ msgstr ""
 msgid "Apply"
 msgstr "应用"
 
-#: src/ecompmgr.c:2592
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1870,7 +1870,7 @@ msgstr ""
 "Enlightenment 音频\n"
 "设置对话框\n"
 
-#: src/systray.c:331 src/systray.c:434 src/systray.c:442
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 msgid "Systray Error!"
 msgstr "系统托盘出错！"
 
@@ -1878,19 +1878,19 @@ msgstr "系统托盘出错！"
 msgid "Systray went elsewhere?!?"
 msgstr "系统托盘到哪里去了？！？"
 
-#: src/systray.c:434
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr "仅允许一个系统托盘存在"
 
-#: src/systray.c:442
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr "无法激活系统托盘"
 
-#: src/systray.c:452
+#: src/systray.c:449
 msgid "Systray Options"
 msgstr "系统托盘选项"
 
-#: src/systray.c:453
+#: src/systray.c:450
 msgid "Systray Settings"
 msgstr "系统托盘设置"
 

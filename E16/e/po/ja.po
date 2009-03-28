@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-22 19:57+0100\n"
+"POT-Creation-Date: 2009-03-28 11:10+0100\n"
 "PO-Revision-Date: 2009-02-13 20:13+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -686,7 +686,7 @@ msgstr ""
 msgid "Apply"
 msgstr "適用"
 
-#: src/ecompmgr.c:2592
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -2120,7 +2120,7 @@ msgstr ""
 "設定ダイアログ\n"
 
 #
-#: src/systray.c:331 src/systray.c:434 src/systray.c:442
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 msgid "Systray Error!"
 msgstr "システムトレイエラー"
 
@@ -2128,21 +2128,21 @@ msgstr "システムトレイエラー"
 msgid "Systray went elsewhere?!?"
 msgstr "systray がどこかに行っちまった？！"
 
-#: src/systray.c:434
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr "システムトレイは一つのみ可"
 
-#: src/systray.c:442
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr "システムトレイが準備できません"
 
 #
-#: src/systray.c:452
+#: src/systray.c:449
 msgid "Systray Options"
 msgstr "システムトレイオプション"
 
 #
-#: src/systray.c:453
+#: src/systray.c:450
 msgid "Systray Settings"
 msgstr "システムトレイの設定"
 

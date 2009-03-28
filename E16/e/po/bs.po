@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-22 19:57+0100\n"
+"POT-Creation-Date: 2009-03-28 11:10+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -695,7 +695,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/ecompmgr.c:2592
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -2136,7 +2136,7 @@ msgstr ""
 "Enlightenment Audio\n"
 "dijalog osobina\n"
 
-#: src/systray.c:331 src/systray.c:434 src/systray.c:442
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor greŷka!"
@@ -2145,20 +2145,20 @@ msgstr "ECursor greŷka!"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:434
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:442
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:452
+#: src/systray.c:449
 #, fuzzy
 msgid "Systray Options"
 msgstr "Opcije Desktopa"
 
-#: src/systray.c:453
+#: src/systray.c:450
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Osobine automatskog pove�avanja"

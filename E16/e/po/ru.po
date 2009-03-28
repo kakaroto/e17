@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-22 19:57+0100\n"
+"POT-Creation-Date: 2009-03-28 11:10+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: sda <sda00@himki.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -692,7 +692,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Применить"
 
-#: src/ecompmgr.c:2592
+#: src/ecompmgr.c:2602
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -2091,7 +2091,7 @@ msgstr ""
 "Диалог настройки Аудио\n"
 "для Enlightenment\n"
 
-#: src/systray.c:331 src/systray.c:434 src/systray.c:442
+#: src/systray.c:331 src/systray.c:431 src/systray.c:439
 msgid "Systray Error!"
 msgstr "Рабочий стол"
 
@@ -2099,19 +2099,19 @@ msgstr "Рабочий стол"
 msgid "Systray went elsewhere?!?"
 msgstr "Куда-то запропастился систрей... Вот же пьянь!"
 
-#: src/systray.c:434
+#: src/systray.c:431
 msgid "Only one systray is allowed"
 msgstr "Запускать только один систрей"
 
-#: src/systray.c:442
+#: src/systray.c:439
 msgid "Could not activate systray"
 msgstr "Не могу запустить систрей (оно нам не нужно, Хозяин!)"
 
-#: src/systray.c:452
+#: src/systray.c:449
 msgid "Systray Options"
 msgstr "Рабочий стол"
 
-#: src/systray.c:453
+#: src/systray.c:450
 msgid "Systray Settings"
 msgstr "Установки автоматического поднятия окон"
 
