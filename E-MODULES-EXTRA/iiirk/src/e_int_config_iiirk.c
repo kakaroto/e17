@@ -154,7 +154,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    cfdata->o_all = ow;
    _fill_apps(cfdata);
    e_widget_frametable_object_append(ot, ow, 0, 0, 1, 1, 1, 1, 1, 1);
-   ow = e_widget_button_add(evas, D_("Add"), "widget/add", _cb_add, 
+   ow = e_widget_button_add(evas, D_("Add"), "list-add", _cb_add, 
 			    cfdata, NULL);
    cfdata->o_add = ow;
    e_widget_disabled_set(ow, 1);
@@ -169,18 +169,18 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    _fill_list(cfdata);
    e_widget_frametable_object_append(ot, ow, 0, 0, 1, 1, 1, 1, 1, 1);
    bt = e_widget_table_add(evas, 0);
-   ow = e_widget_button_add(evas, D_("Up"), "widget/up_arrow", _cb_up, 
+   ow = e_widget_button_add(evas, D_("Up"), "go-up", _cb_up, 
 			    cfdata, NULL);
    cfdata->o_up = ow;
    e_widget_disabled_set(ow, 1);
    e_widget_table_object_append(bt, ow, 0, 0, 1, 1, 1, 0, 1, 0);
-   ow = e_widget_button_add(evas, D_("Down"), "widget/down_arrow", _cb_down, 
+   ow = e_widget_button_add(evas, D_("Down"), "go-down", _cb_down, 
 			    cfdata, NULL);
    cfdata->o_down = ow;
    e_widget_disabled_set(ow, 1);
    e_widget_table_object_append(bt, ow, 1, 0, 1, 1, 1, 0, 1, 0);
    e_widget_frametable_object_append(ot, bt, 0, 1, 1, 1, 1, 0, 1, 0);
-   ow = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_del, 
+   ow = e_widget_button_add(evas, D_("Delete"), "list-remove", _cb_del, 
 			    cfdata, NULL);
    cfdata->o_del = ow;
    e_widget_disabled_set(ow, 1);

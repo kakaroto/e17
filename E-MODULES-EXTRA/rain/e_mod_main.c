@@ -31,7 +31,7 @@ e_modapi_init(E_Module *m)
 
    snprintf(buf, sizeof(buf), "%s/e-module-rain.edj", e_module_dir_get(m));
    e_configure_registry_category_add("appearance", 10, D_("Appearance"), NULL, 
-				     "enlightenment/appearance");
+				     "preferences-appearance");
    e_configure_registry_item_add("appearance/rain", 150, D_("Rain"), NULL, 
 				 buf, e_int_config_rain_module);
 

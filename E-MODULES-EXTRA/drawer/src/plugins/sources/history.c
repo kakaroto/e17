@@ -238,12 +238,12 @@ drawer_source_context(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Dr
 
    mi = e_menu_item_new(inst->menu);
    e_menu_item_label_set(mi, D_("Change Item Properties"));
-   e_util_menu_item_theme_icon_set(mi, "widget/config");
+   e_util_menu_item_theme_icon_set(mi, "configure");
    e_menu_item_callback_set(mi, _history_cb_menu_item_properties, si);
 
    mi = e_menu_item_new(inst->menu);
    e_menu_item_label_set(mi, D_("Remove Item"));
-   e_util_menu_item_theme_icon_set(mi, "widget/del");
+   e_util_menu_item_theme_icon_set(mi, "list-remove");
    e_menu_item_callback_set(mi, _history_cb_menu_item_remove, si);
 
    e_menu_activate(inst->menu, zone, ev->x, ev->y, 1, 1, E_MENU_POP_DIRECTION_AUTO);

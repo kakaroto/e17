@@ -195,12 +195,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_del = ob;
 
-	    ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow", 
+	    ob = e_widget_button_add(evas, D_("Up"), "go-up", 
 				     _conf_cb_language_up, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_up = ob;
 
-	    ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow", 
+	    ob = e_widget_button_add(evas, D_("Down"), "go-down", 
 				     _conf_cb_language_down, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_down = ob;
@@ -270,12 +270,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_del = ob;
 
-	    ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow",
+	    ob = e_widget_button_add(evas, D_("Up"), "go-up",
 				     _conf_cb_language_up, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_up = ob;
 
-	    ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow",
+	    ob = e_widget_button_add(evas, D_("Down"), "go-down",
 				     _conf_cb_language_down, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_down = ob;

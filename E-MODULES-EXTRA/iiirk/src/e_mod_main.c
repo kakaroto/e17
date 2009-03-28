@@ -366,7 +366,7 @@ _iiirk_cb_empty_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _iiirk_cb_menu_configuration, b);
 
 	mi = e_menu_item_new(mn);
@@ -783,7 +783,7 @@ _iiirk_cb_icon_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	/* FIXME: other icon options go here too */
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _iiirk_cb_menu_configuration, ic->iiirk);
 
 	mi = e_menu_item_new(mn);
@@ -1556,12 +1556,12 @@ e_modapi_init(E_Module *m)
       (E_EVENT_DESK_SHOW, _iiirk_cb_event_desk_show, NULL));
 
    e_configure_registry_category_add("applications", 20, D_("Applications"), 
-				     NULL, "enlightenment/applications");
+				     NULL, "preferences-applications");
    e_configure_registry_item_add("applications/iiirk_applications", 20, D_("IIirk Applications"), 
 				 NULL, "enlightenment/iiirk_applications", e_int_config_apps_iiirk);
    e_configure_registry_category_add("internal", -1, D_("Internal"), NULL, "enlightenment/internal");
    e_configure_registry_item_add("internal/iiirk_other", -1, D_("IIirk Other"), 
-				 NULL, "enlightenment/windows", e_int_config_apps_iiirk_other);
+				 NULL, "preferences-system-windows", e_int_config_apps_iiirk_other);
    
    e_gadcon_provider_register(&_gadcon_class);
    return m;

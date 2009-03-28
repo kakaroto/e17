@@ -1001,7 +1001,7 @@ e_modapi_init(E_Module *m)
 
    /* Configuration entries */
    snprintf(buf, sizeof(buf), "%s/e-module-tiling.edj", e_module_dir_get(m));
-   e_configure_registry_category_add("windows", 50, D_("Windows"), NULL, "enlightenment/windows");
+   e_configure_registry_category_add("windows", 50, D_("Windows"), NULL, "preferences-system-windows");
    e_configure_registry_item_add("windows/tiling", 150, D_("Tiling"), NULL, buf, e_int_config_tiling_module);
 
    /* Configuration itself */

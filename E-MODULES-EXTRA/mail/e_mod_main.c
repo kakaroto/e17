@@ -264,7 +264,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_("Configuration"));
-      e_util_menu_item_edje_icon_set (mi, "enlightenment/configuration");
+      e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set (mi, _mail_menu_cb_configure, inst);
 
       mi = e_menu_item_new (mn);

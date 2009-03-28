@@ -370,7 +370,7 @@ places_parse_bookmarks(E_Menu *em)
                mi = e_menu_item_new(em);
                e_menu_item_label_set(mi, alias ? alias :
                                         ecore_file_file_get(uri->path));
-               e_util_menu_item_edje_icon_set(mi, "fileman/folder");
+               e_util_menu_item_icon_theme_set(mi, "folder");
                e_menu_item_callback_set(mi, _places_run_fm, strdup(uri->path)); //TODO free somewhere
             }
          }
@@ -397,7 +397,7 @@ places_generate_menu(void *data, E_Menu *em)
    {
       mi = e_menu_item_new(em);
       e_menu_item_label_set(mi, D_("Home"));
-      e_util_menu_item_edje_icon_set(mi, "fileman/home");
+      e_util_menu_item_icon_theme_set(mi, "user-home");
       e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
    }
 
@@ -406,7 +406,7 @@ places_generate_menu(void *data, E_Menu *em)
    {
       mi = e_menu_item_new(em);
       e_menu_item_label_set(mi, D_("Desktop"));
-      e_util_menu_item_edje_icon_set(mi, "fileman/desktop");
+      e_util_menu_item_icon_theme_set(mi, "user-desktop");
       snprintf(buf, sizeof(buf), "%s/Desktop", (char*)e_user_homedir_get());
       e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
    }
@@ -416,7 +416,7 @@ places_generate_menu(void *data, E_Menu *em)
    {
       mi = e_menu_item_new(em);
       e_menu_item_label_set(mi, D_("Trash"));
-      e_util_menu_item_edje_icon_set(mi, "fileman/folder");
+      e_util_menu_item_icon_theme_set(mi, "folder");
       e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
    }
 
@@ -425,7 +425,7 @@ places_generate_menu(void *data, E_Menu *em)
    {
       mi = e_menu_item_new(em);
       e_menu_item_label_set(mi, D_("Filesystem"));
-      e_util_menu_item_edje_icon_set(mi, "fileman/hdd");
+      e_util_menu_item_icon_theme_set(mi, "drive-harddisk");
       e_menu_item_callback_set(mi, _places_run_fm, "/");
    }
 
@@ -434,7 +434,7 @@ places_generate_menu(void *data, E_Menu *em)
    {
       mi = e_menu_item_new(em);
       e_menu_item_label_set(mi, D_("Temp"));
-      e_util_menu_item_edje_icon_set(mi, "fileman/tmp");
+      e_util_menu_item_icon_theme_set(mi, "user-temp");
       e_menu_item_callback_set(mi, _places_run_fm, "/tmp");
    }
 
@@ -497,7 +497,7 @@ places_augmentation(void *data, E_Menu *em)
 
    mi = e_menu_item_new(em);
    e_menu_item_label_set(mi, D_("Places"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/fileman");
+   e_util_menu_item_icon_theme_set(mi, "system-file-manager");
 
    m = e_menu_new();
    e_menu_item_submenu_set(mi, m);
@@ -640,7 +640,7 @@ _places_error_show(const char *title, const char *text1, const char *text2, cons
    
    dia = e_dialog_new(NULL, "E", "_places_error");
    e_dialog_title_set(dia, title);
-   e_dialog_icon_set(dia, "fileman/hdd", 64);
+   e_dialog_icon_set(dia, "drive-harddisk", 64);
    e_dialog_button_add(dia, "OK", NULL, NULL, NULL);
    e_dialog_text_set(dia, str);
    e_dialog_show(dia);

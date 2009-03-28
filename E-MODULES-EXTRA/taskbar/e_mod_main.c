@@ -666,7 +666,7 @@ _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, item->taskbar);
 
 
@@ -675,7 +675,7 @@ _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
         mi = e_menu_item_new(item->border->border_menu);
         e_menu_item_label_set(mi, D_("Taskbar"));
         e_menu_item_submenu_set(mi, mn);
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 			     
 	e_menu_activate_mouse(item->border->border_menu,
                                    e_util_zone_current_get(e_manager_current_get()),

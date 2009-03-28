@@ -102,11 +102,11 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    evas_event_freeze(evas);
    edje_freeze();
 
-   oi = edje_object_add(evas);
-   e_util_edje_icon_set(oi, "enlightenment/extensions");
+   oi = e_icon_add(evas);
+   e_util_icon_theme_set(oi, "preferences-extensions");
    e_widget_toolbar_item_append(of, oi, D_("Plugins selection"), _conf_plugin_sel, cfd, cfdata);
-   oi = edje_object_add(evas);
-   e_util_edje_icon_set(oi, "enlightenment/configuration");
+   oi = e_icon_add(evas);
+   e_util_icon_theme_set(oi, "preferences-system");
    e_widget_toolbar_item_append(of, oi, D_("Plugins settings"), _conf_plugin_set, cfd, cfdata);
 
    edje_thaw();

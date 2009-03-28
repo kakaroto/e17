@@ -173,7 +173,7 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", m->dir);
    /* register config panel entry */
    e_configure_registry_category_add("extensions", 90, D_("Extensions"), NULL, 
-                                     "enlightenment/extensions");
+                                     "preferences-extensions");
    e_configure_registry_item_add("extensions/notification", 30, D_("Notification"), NULL, 
                                  buf, e_int_config_notification_module);
 

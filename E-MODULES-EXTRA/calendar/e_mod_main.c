@@ -474,7 +474,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("First Day of Week"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_submenu_set(mi, calendar_conf->menu_firstweekday);
 
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);

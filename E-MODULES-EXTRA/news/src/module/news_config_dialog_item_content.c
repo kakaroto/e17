@@ -280,11 +280,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_on_change_hook_set(ob, _cb_selected_feed_change, cfdata);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 4, 1, 1, 1, 1);
 
-   ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+   ob = e_widget_button_add(evas, "Move", "go-up", _cb_feed_up, cfdata, NULL);
    e_widget_disabled_set(ob, 1);
    cfdata->button_up = ob;
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+   ob = e_widget_button_add(evas, "Move", "go-down", _cb_feed_down, cfdata, NULL);
    e_widget_disabled_set(ob, 1);
    cfdata->button_down = ob;
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 0, 0, 0, 0);

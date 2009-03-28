@@ -75,7 +75,7 @@ e_modapi_init(E_Module *m)
 
    /* register config dialog for panel */
    e_configure_registry_category_add("extensions", 90, "Screenshot", 
-				     NULL, "enlightenment/extensions");
+				     NULL, "preferences-extensions");
    e_configure_registry_item_add("extensions/screenshot", 20, "Screenshot", 
 				 NULL, buf, 
 				 e_int_config_screenshot_module);
@@ -379,7 +379,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, "Configuration");
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _cb_menu_cfg, inst);
 
 	mi = e_menu_item_new(mn);
@@ -454,7 +454,7 @@ _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *s
    if (!(inst = data)) return;
    if (ss_cfg->prompt)
      {
-	e_entry_dialog_show("Screenshot Module", "enlightenment/e", 
+	e_entry_dialog_show("Screenshot Module", "enlightenment", 
 			    "Enter a new filename for this screenshot",
 			    NULL, NULL, NULL, _cb_dialog_ok, NULL, inst);
      }

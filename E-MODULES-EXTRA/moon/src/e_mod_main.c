@@ -245,7 +245,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	moon_config->menu = mn;
 	
 	mi = e_menu_item_new(mn); e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _moon_inst_cb_menu_configure, obj); 
 	
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);

@@ -119,17 +119,17 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   ot = e_widget_table_add (evas, 0);
   ob =
-    e_widget_button_add (evas, D_("Add"), "widget/add", _cb_add_box, cfd,
+    e_widget_button_add (evas, D_("Add"), "list-add", _cb_add_box, cfd,
 			 NULL);
   e_widget_table_object_append (ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
   ob =
-    e_widget_button_add (evas, D_("Delete"), "widget/del", _cb_del_box, cfd,
+    e_widget_button_add (evas, D_("Delete"), "list-remove", _cb_del_box, cfd,
 			 NULL);
   e_widget_disabled_set (ob, 1);
   cfdata->del = ob;
   e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
   ob =
-    e_widget_button_add (evas, D_("Configure..."), "widget/config",
+    e_widget_button_add (evas, D_("Configure..."), "list-remove",
 			 _cb_edit_box, cfd, NULL);
   e_widget_disabled_set (ob, 1);
   cfdata->configure = ob;

@@ -115,11 +115,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_frametable_object_append(of, ol, 0, 0, 1, 2, 1, 1, 1, 0);
    
    ot = e_widget_table_add(evas, 0);
-   ob = e_widget_button_add(evas, D_("Add"), "widget/add", _cb_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), "list-add", _cb_add, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), "list-remove", _cb_del, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), "configure", _cb_config, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);   
 
    if (!e_configure_registry_exists("applications/iiirk_applications")) 
@@ -225,7 +225,7 @@ _cb_add(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    
    cfdata = data;
-   e_entry_dialog_show(D_("Create new IIirk source"), "enlightenment/e",
+   e_entry_dialog_show(D_("Create new IIirk source"), "enlightenment",
 		       D_("Enter a name for this new source:"), "", NULL, NULL,
 		       _cb_entry_ok, NULL, cfdata);
 }
@@ -246,7 +246,7 @@ _cb_del(void *data, void *data2)
 	    cfdata->dir);
    
    dialog = e_confirm_dialog_show(D_("Are you sure you want to delete this iiirk source?"),
-                                  "enlightenment/exit", buf, NULL, NULL, 
+                                  "application-exit", buf, NULL, NULL, 
                                   _cb_confirm_dialog_yes, NULL, cfdata, NULL, _cb_confirm_dialog_destroy, cfdata);
    cfdata->gui.dialog_delete = dialog;
 }

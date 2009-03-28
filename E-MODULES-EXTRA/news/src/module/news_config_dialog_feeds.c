@@ -298,10 +298,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    if (!news->config->feed.sort_name)
      {
-        ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_category_up, cfdata, NULL);
+        ob = e_widget_button_add(evas, "Move", "go-up", _cb_category_up, cfdata, NULL);
         cfdata->button_cat_up = ob;
         e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 0, 1, 0);
-        ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_category_down, cfdata, NULL);
+        ob = e_widget_button_add(evas, "Move", "go-down", _cb_category_down, cfdata, NULL);
         cfdata->button_cat_down = ob;
         e_widget_frametable_object_append(of, ob, 3, 1, 3, 1, 1, 0, 1, 0);
      }
@@ -343,10 +343,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o4 = e_widget_list_add(evas, 0, 0);
 
-   ob = e_widget_button_add(evas, D_("Empty the lists"), "enlightenment/e", _cb_empty, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Empty the lists"), "enlightenment", _cb_empty, cfdata, NULL);
    e_widget_list_object_append(o4, ob, 1, 0, 0.5);
 
-   ob = e_widget_button_add(evas, D_("Restore default lists"), "enlightenment/e", _cb_reset, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Restore default lists"), "enlightenment", _cb_reset, cfdata, NULL);
    e_widget_list_object_append(o4, ob, 1, 0, 0.5);
 
    e_widget_list_object_append(o3, o4, 1, 1, 0.5);
@@ -372,10 +372,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    if (!news->config->feed.sort_name)
      {
-        ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+        ob = e_widget_button_add(evas, "Move", "go-up", _cb_feed_up, cfdata, NULL);
         cfdata->button_feed_up = ob;
         e_widget_frametable_object_append(of, ob, 0, 2, 3, 1, 1, 0, 1, 0);
-        ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+        ob = e_widget_button_add(evas, "Move", "go-down", _cb_feed_down, cfdata, NULL);
         cfdata->button_feed_down = ob;
         e_widget_frametable_object_append(of, ob, 3, 2, 3, 1, 1, 0, 1, 0);
      }
@@ -751,7 +751,7 @@ _cb_empty(void *data, void *data2)
 
    cfdata = data;
    if (cfdata->cd) return;
-   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment/e",
+   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment",
                                  "<hilight>Empty  the lists</hilight><br>"
                                  "It will delete all the categories and feeds<br><br>"
                                  "<hilight>Confirm ?</hilight>",
@@ -776,7 +776,7 @@ _cb_reset(void *data, void *data2)
 
    cfdata = data;
    if (cfdata->cd) return;
-   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment/e",
+   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment",
                                  "<hilight>Restore default lists</hilight><br>"
                                  "It will delete all the categories and feeds,<br>"
                                  "and restore the default ones<br><br>"

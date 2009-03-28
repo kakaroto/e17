@@ -397,12 +397,12 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 
 	mi = e_menu_item_new(mn2);
 	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
 
 	mi = e_menu_item_new(mn2);
 	e_menu_item_label_set(mi, D_("Configure Key Bindings"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
 	
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn2, 0);
@@ -420,7 +420,7 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	     mi = e_menu_item_new(mn); 
 	     e_menu_item_label_set(mi, D_("Module Configuration")); 
 	     e_menu_item_submenu_set(mi, mn2); 
-	     e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration"); 
+	     e_util_menu_item_theme_icon_set(mi, "preferences-system");
 
 	     mi = e_menu_item_new(mn);
 	     e_menu_item_separator_set(mi, 1);

@@ -145,7 +145,7 @@ _menu_append(E_Menu *mn, News_Item *ni)
 
    mi = e_menu_item_new(mn_conf);
    e_menu_item_label_set(mi, D_("Configure gadget"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_item, ni);
    mi = e_menu_item_new(mn_conf);
    e_menu_item_label_set(mi, D_("Configure gadget content"));
@@ -153,7 +153,7 @@ _menu_append(E_Menu *mn, News_Item *ni)
    e_menu_item_callback_set(mi, _cb_configure_item_content, ni);
    mi = e_menu_item_new(mn_conf);
    e_menu_item_label_set(mi, D_("Main Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_main, NULL);
    mi = e_menu_item_new(mn_conf);
    e_menu_item_label_set(mi, D_("Feeds Configuration"));
@@ -161,7 +161,7 @@ _menu_append(E_Menu *mn, News_Item *ni)
    e_menu_item_callback_set(mi, _cb_configure_feeds, NULL);
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, D_("Configuration"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+  e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_submenu_set(mi, mn_conf);
 
    e_gadcon_client_util_menu_items_append(ni->gcc, mn, 0);

@@ -53,7 +53,7 @@ e_modapi_init(E_Module *m)
 
     /* starts with a category */
     e_configure_registry_category_add("advanced", 80, "Advanced",
-            NULL, "enlightenment/advanced");
+            NULL, "preferences-advanced");
     /* add right-side item */
     e_configure_registry_item_add("advanced/exalt", 110, "exalt",
             NULL, buf, e_int_config_exalt_module);
@@ -445,7 +445,7 @@ _exalt_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         mi = e_menu_item_new(inst->menu);
         e_menu_item_label_set(mi, D_("Configuration"));
-        e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+        e_util_menu_item_theme_icon_set(mi, "preferences-system");
         e_menu_item_callback_set(mi, _exalt_cb_menu_configure, NULL);
 
         mi = e_menu_item_new(inst->menu);

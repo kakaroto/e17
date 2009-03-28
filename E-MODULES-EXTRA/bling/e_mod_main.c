@@ -34,7 +34,7 @@ e_modapi_init(E_Module *m)
    if (!b) return NULL;
 
    snprintf(buf, sizeof(buf), "%s/e-module-bling.edj", e_module_dir_get(m));
-   e_configure_registry_category_add("appearance", 10, "Appearance", NULL, "enlightenment/appearance");
+   e_configure_registry_category_add("appearance", 10, "Appearance", NULL, "preferences-appearance");
    e_configure_registry_item_add("appearance/bling", 150, "Bling", NULL, buf, e_int_config_bling_module);
 
    b->module = m;
@@ -99,7 +99,7 @@ _bling_config_menu_new(Bling *b)
    menu = e_menu_new();
    mi = e_menu_item_new(menu);
    e_menu_item_label_set(mi, "Configuration");
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _bling_menu_cb_configure, b);
    b->config_menu = menu;
 }

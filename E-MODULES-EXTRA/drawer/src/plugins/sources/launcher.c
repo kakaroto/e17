@@ -315,12 +315,12 @@ drawer_source_context(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Dr
 
    mi = e_menu_item_new(inst->menu);
    e_menu_item_label_set(mi, D_("Change Item Properties"));
-   e_util_menu_item_theme_icon_set(mi, "widget/config");
+   e_util_menu_item_theme_icon_set(mi, "configure");
    e_menu_item_callback_set(mi, _launcher_cb_menu_item_properties, si);
 
    mi = e_menu_item_new(inst->menu);
    e_menu_item_label_set(mi, D_("Remove Item"));
-   e_util_menu_item_theme_icon_set(mi, "widget/del");
+   e_util_menu_item_theme_icon_set(mi, "list-remove");
    e_menu_item_callback_set(mi, _launcher_cb_menu_item_remove, m_data);
 
    e_menu_activate(inst->menu, zone, ev->x, ev->y, 1, 1, E_MENU_POP_DIRECTION_AUTO);
@@ -611,11 +611,11 @@ _launcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
    e_widget_frametable_object_append(of, ol, 0, 0, 1, 2, 1, 1, 1, 0);
    
    ot = e_widget_table_add(evas, 0);
-   ob = e_widget_button_add(evas, D_("Add"), "widget/add", _cb_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), "list-add", _cb_add, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), "list-remove", _cb_del, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), "configure", _cb_config, cfdata, NULL);
    e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);   
 
    if (!e_configure_registry_exists("applications/ibar_applications")) 
@@ -671,7 +671,7 @@ _cb_add(void *data, void *data2)
    E_Config_Dialog_Data *cfdata;
    
    cfdata = data;
-   e_entry_dialog_show(D_("Create new Launcher source"), "enlightenment/e",
+   e_entry_dialog_show(D_("Create new Launcher source"), "enlightenment",
 		       D_("Enter a name for this new source:"), "", NULL, NULL,
 		       _cb_entry_ok, NULL, cfdata);
 }
@@ -692,7 +692,7 @@ _cb_del(void *data, void *data2)
 	    cfdata->dir);
    
    dialog = e_confirm_dialog_show(D_("Are you sure you want to delete this bar source?"),
-                                  "enlightenment/exit", buf, NULL, NULL, 
+                                  "application-exit", buf, NULL, NULL, 
                                   _cb_confirm_dialog_yes, NULL, cfdata, NULL, _cb_confirm_dialog_destroy, cfdata);
    cfdata->dialog_delete = dialog;
 }

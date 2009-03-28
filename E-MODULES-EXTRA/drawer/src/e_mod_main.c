@@ -448,8 +448,8 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	   }
 	 else if (ecore_file_is_dir(si->data))
 	   {
-	      o = edje_object_add(evas);
-	      e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/folder");
+	      o = e_icon_add(evas);
+	      e_util_icon_theme_set(o, "folder");
 	   }
 
 #if 0
@@ -1491,7 +1491,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         mi = e_menu_item_new(inst->menu);
         e_menu_item_label_set(mi, D_("Settings"));
-        e_util_menu_item_edje_icon_set(mi, "widget/config");
+        e_util_menu_item_theme_icon_set(mi, "configure");
         e_menu_item_callback_set(mi, _drawer_cb_menu_configure, inst);
 
         mi = e_menu_item_new(inst->menu);

@@ -673,7 +673,7 @@ _notification_box_cb_empty_mouse_down(void *data,
 
       mi = e_menu_item_new(mn);
       e_menu_item_label_set(mi, D_("Configuration"));
-      e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+      e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, b);
 
       mi = e_menu_item_new(mn);
@@ -821,7 +821,7 @@ _notification_box_cb_icon_mouse_down(void *data,
 
       mi = e_menu_item_new(mn);
       e_menu_item_label_set(mi, D_("Configuration"));
-      e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+      e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, ic->n_box);
 
       mi = e_menu_item_new(mn);

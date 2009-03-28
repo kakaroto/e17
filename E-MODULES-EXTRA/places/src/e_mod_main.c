@@ -73,7 +73,7 @@ e_modapi_init(E_Module *m)
 
    /* Display this Modules config info in the main Config Panel */
    e_configure_registry_category_add("fileman", 80, D_("Files"), 
-                                     NULL, "enlightenment/fileman");
+                                     NULL, "system-file-manager");
    e_configure_registry_item_add("fileman/places", 80, D_("Places"), 
                                  NULL, buf, e_int_config_places_module);
 
@@ -437,7 +437,7 @@ _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         mi = e_menu_item_new(inst->menu);
         e_menu_item_label_set(mi, D_("Configuration"));
-        e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+        e_util_menu_item_theme_icon_set(mi, "preferences-system");
         e_menu_item_callback_set(mi, _places_cb_menu_configure, NULL);
 
         /* Each Gadget Client has a utility menu from the Container */

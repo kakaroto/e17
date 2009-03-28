@@ -636,7 +636,7 @@ static void _win_menu_add_by_class(Eina_List *borders, E_Menu *m)
 		    e_menu_item_submenu_set(mi, subm); 
 		  mi = e_menu_item_new(m); 
 		  e_menu_item_label_set(mi, bd->client.icccm.class); 
-		  e_util_menu_item_edje_icon_set(mi, "enlightenment/windows"); 
+		  e_util_menu_item_icon_theme_set(mi, "preferences-system-windows"); 
 		  subm = e_menu_new(); 
 	       } 
 	     else 
@@ -784,7 +784,7 @@ static int _win_menu_fill_alt(Eina_List *alt, E_Menu *m)
 			 e_menu_item_submenu_set(mi, subm); 
 		       mi = e_menu_item_new(m); 
 		       e_menu_item_label_set(mi, bd->desk->name); 
-		       e_util_menu_item_edje_icon_set(mi, "enlightenment/desktops"); 
+		       e_util_menu_item_icon_theme_set(mi, "preferences-desktop"); 
 		       subm = e_menu_new(); 
 		    }
 		  else

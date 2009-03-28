@@ -59,7 +59,7 @@ e_modapi_init(E_Module *m)
    pop = _population_init(m);
 
    snprintf(buf, sizeof(buf), "%s/e-module-penguins.edj", e_module_dir_get(m));
-   e_configure_registry_category_add("appearance", 10, D_("Appearance"), NULL, "enlightenment/appearance");
+   e_configure_registry_category_add("appearance", 10, D_("Appearance"), NULL, "preferences-appearance");
    e_configure_registry_item_add("appearance/penguins", 150, D_("Penguins"), NULL, buf, e_int_config_penguins_module);
 
    penguins_mod = m;
