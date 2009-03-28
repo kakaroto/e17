@@ -78,6 +78,9 @@ _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
    if (!tclock_config) return;
    tclock_config->config_dialog = NULL;
+   free(cfdata->time_format);
+   free(cfdata->date_format);
+   free(cfdata->tip_format);
    E_FREE(cfdata);
 }
 
