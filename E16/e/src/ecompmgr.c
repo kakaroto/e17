@@ -160,6 +160,7 @@ static struct {
       struct {
 	 int                 opacity;
       } sharp;
+      unsigned int        color;
    } shadows;
    struct {
       char                enable;
@@ -197,8 +198,8 @@ static struct {
    XserverRegion       rgn_screen;
    XserverRegion       rgn_clip;
    int                 shadow_mode;
-   double              opac_blur;	/* 0. -> 1. */
-   double              opac_sharp;	/* 0. -> 1. */
+   float               opac_blur;	/* 0. -> 1. */
+   float               opac_sharp;	/* 0. -> 1. */
 } Mode_compmgr;
 
 /* FIXME - Optimize according to what actually changed */
@@ -215,7 +216,7 @@ static XserverRegion rgn_tmp2;	/* Region for temporary use */
 static ESelection  *wm_cm_sel = NULL;
 
 #define OPAQUE          0xffffffff
-#define OP32(op) ((double)(op)/OPAQUE)
+#define OP32To8(op) (((unsigned int)(op)) >> 24)
 
 #define WINDOW_UNREDIR  0
 #define WINDOW_SOLID    1
@@ -481,8 +482,12 @@ ECompMgrWinClipToGC(EObj * eo, GC gc)
  * Pictures
  */
 
+#define _R(x) (((x) >> 16) & 0xff)
+#define _G(x) (((x) >>  8) & 0xff)
+#define _B(x) (((x)      ) & 0xff)
+
 static              Picture
-EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
+EPictureCreateSolid(Bool argb, unsigned int a, unsigned int rgb)
 {
    Display            *dpy = disp;
    Pixmap              pmap;
@@ -498,10 +503,10 @@ EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
    pa.repeat = True;
    pict = XRenderCreatePicture(dpy, pmap, pictfmt, CPRepeat, &pa);
 
-   c.alpha = (unsigned short)(a * 0xffff);
-   c.red = (unsigned short)(r * 0xffff);
-   c.green = (unsigned short)(g * 0xffff);
-   c.blue = (unsigned short)(b * 0xffff);
+   c.alpha = (unsigned short)(a * 0x101);
+   c.red = (unsigned short)(_R(rgb) * 0x101);
+   c.green = (unsigned short)(_G(rgb) * 0x101);
+   c.blue = (unsigned short)(_B(rgb) * 0x101);
    XRenderFillRectangle(dpy, PictOpSrc, pict, &c, 0, 0, 1, 1);
 
    XFreePixmap(dpy, pmap);
@@ -2119,7 +2124,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
-		   EPictureCreateSolid(True, OP32(cw->opacity), 0., 0., 0.);
+		   EPictureCreateSolid(True, OP32To8(cw->opacity),
+				       Conf_compmgr.shadows.color);
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->pict_alpha,
 			      pbuf, 0, 0, 0, 0, x + cw->rcx, y + cw->rcy,
 			      cw->rcw, cw->rch);
@@ -2142,8 +2148,9 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     if (cw->opacity != OPAQUE && !cw->shadow_alpha)
 		cw->shadow_alpha =
 		   EPictureCreateSolid(True,
-				       OP32(cw->opacity) *
-				       Mode_compmgr.opac_sharp, 0., 0., 0.);
+				       OP32To8(cw->opacity *
+					       Mode_compmgr.opac_sharp),
+				       Conf_compmgr.shadows.color);
 	     alpha = cw->shadow_alpha ? cw->shadow_alpha : transBlackPicture;
 	     if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 		XRenderComposite(dpy, PictOpOver, alpha, cw->picture, pbuf,
@@ -2165,7 +2172,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
-		   EPictureCreateSolid(True, OP32(cw->opacity), 0., 0., 0.);
+		   EPictureCreateSolid(True, OP32To8(cw->opacity),
+				       Conf_compmgr.shadows.color);
 	     alpha = (cw->pict_alpha) ? cw->pict_alpha : transBlackPicture;
 	     XRenderComposite(dpy, PictOpOver, alpha, cw->shadow_pict, pbuf,
 			      0, 0, 0, 0,
@@ -2376,10 +2384,13 @@ ECompMgrShadowsInit(int mode, int cleanup)
    if (mode != ECM_SHADOWS_OFF)
      {
 	if (mode == ECM_SHADOWS_BLURRED)
-	   transBlackPicture = EPictureCreateSolid(True, 1., 0., 0., 0.);
+	   transBlackPicture =
+	      EPictureCreateSolid(True, 255, Conf_compmgr.shadows.color);
 	else
 	   transBlackPicture =
-	      EPictureCreateSolid(True, Mode_compmgr.opac_sharp, 0., 0., 0.);
+	      EPictureCreateSolid(True,
+				  OP32To8(Mode_compmgr.opac_sharp * OPAQUE),
+				  Conf_compmgr.shadows.color);
      }
    else
      {
@@ -2896,6 +2907,7 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadows.blur.radius, 5),
    CFG_ITEM_INT(Conf_compmgr, shadows.blur.opacity, 75),
    CFG_ITEM_INT(Conf_compmgr, shadows.sharp.opacity, 30),
+   CFG_ITEM_HEX(Conf_compmgr, shadows.color, 0),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
 #if USE_COMPOSITE_OVERLAY_WINDOW
