@@ -1,5 +1,28 @@
 2009-03-28  Vincent Torri  <doursse at users dot sf dot net>
 
+	* src/bin/epdf_evas_test.c:
+	* src/lib/Epdf.h:
+	* src/lib/epdf_document.cpp:
+	* src/lib/epdf_document.h:
+	* src/lib/epdf_fontinfo.cpp:
+	* src/lib/epdf_index.cpp:
+	* src/lib/epdf_index.h:
+	* src/lib/epdf_page.cpp:
+	* src/lib/epdf_page.h:
+	* src/lib/epdf_page_transition.cpp:
+	* src/lib/epdf_postscript.cpp:
+	* src/lib/epdf_private.h:
+	* src/lib/esmart_pdf.c:
+	* src/lib/esmart_pdf.h:
+	move to eina data types and formatting
+
+	* src/lib/epdf_main.cpp:
+	* src/lib/epdf_main.h:
+	add function to initialize and shut down
+	epdf as eina_list must be initialize / shut down
+
+2009-03-28  Vincent Torri  <doursse at users dot sf dot net>
+
 	* Doxyfile:
 	remove Doxyfile from the top level directory
 

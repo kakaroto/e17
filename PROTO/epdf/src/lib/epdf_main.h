@@ -14,6 +14,10 @@
  * @ingroup Epdf
  */
 
+int epdf_init (void);
+
+int epdf_shutdown();
+
 /**
  * @brief Return the version of Poppler.
  *

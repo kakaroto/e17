@@ -172,7 +172,7 @@ double epdf_document_pdf_version_get (const Epdf_Document *document);
  *
  * Return a list of the fonts used in the document @p document
  */
-Ecore_List *epdf_document_fonts_get (const Epdf_Document *document);
+Eina_List *epdf_document_fonts_get (const Epdf_Document *document);
 
 /**
  * @brief Return a list of the fonts used in a page of the document
@@ -184,8 +184,8 @@ Ecore_List *epdf_document_fonts_get (const Epdf_Document *document);
  * Return a list of the fonts used in the document @p document in the
  * page number @p page_count
  */
-Ecore_List * epdf_document_scan_for_fonts (const Epdf_Document *document,
-                                           int                  page_count);
+Eina_List * epdf_document_scan_for_fonts (const Epdf_Document *document,
+                                          int                  page_count);
 
 
 /* Metadata information functions. Used for display */

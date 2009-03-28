@@ -8,9 +8,8 @@
 #include <Object.h>
 #include <Dict.h>
 
-#include "epdf_enum.h"
-#include "epdf_private.h"
 #include "Epdf.h"
+#include "epdf_private.h"
 
 
 Epdf_Page_Transition *

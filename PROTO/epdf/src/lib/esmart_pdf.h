@@ -66,7 +66,7 @@ struct _Smart_Pdf
 
   Epdf_Document        *pdf_document;   /**< The Epdf document */
   Epdf_Page            *pdf_page;       /**< The Epdf current page */
-  Ecore_List           *pdf_index;      /**< The Epdf index */
+  Eina_List            *pdf_index;      /**< The Epdf index */
 };
 
 Evas_Object          *esmart_pdf_add (Evas *evas);
@@ -93,7 +93,7 @@ void                  esmart_pdf_render (Evas_Object *obj);
 
 Epdf_Document        *esmart_pdf_pdf_document_get (Evas_Object *obj);
 Epdf_Page            *esmart_pdf_pdf_page_get (Evas_Object *obj);
-Ecore_List           *esmart_pdf_pdf_index_get (Evas_Object *obj);
+Eina_List            *esmart_pdf_pdf_index_get (Evas_Object *obj);
 
 /**
  * @}

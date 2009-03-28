@@ -2,9 +2,6 @@
 #define __EPDF_PRIVATE_H__
 
 
-#include <Ecore_Data.h>
-
-
 class PDFDoc;
 class Dict;
 class FontInfoScanner;
@@ -65,7 +62,7 @@ struct _Epdf_Index_Item
 {
   char       *title;
   LinkAction *action;
-  Ecore_List *children;
+  Eina_List  *children;
 };
 
 struct _Epdf_Postscript

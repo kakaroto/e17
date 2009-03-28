@@ -2,9 +2,6 @@
 #define __EPDF_PAGE_H__
 
 
-#include <Evas.h>
-#include <Ecore_Data.h>
-
 #include "epdf_forward.h"
 
 
@@ -137,9 +134,9 @@ char *epdf_page_text_get (Epdf_Page     *page,
  * into account. The list must be destroyed with a call to
  * ecore_list_destroy()
  */
-Ecore_List *epdf_page_text_find (const Epdf_Page *page,
-                                 const char      *text,
-                                 unsigned char    is_case_sensitive);
+Eina_List *epdf_page_text_find (const Epdf_Page *page,
+                                const char      *text,
+                                unsigned char    is_case_sensitive);
 
 /**
  * Return the transition of a page

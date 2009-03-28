@@ -5,9 +5,6 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include <Evas.h>
-#include <Ecore_Data.h>
-
 #include <PDFDoc.h>
 #include <Page.h>
 #include <Gfx.h>
@@ -16,9 +13,8 @@
 #include <SplashOutputDev.h>
 #include <splash/SplashBitmap.h>
 
-#include "epdf_enum.h"
-#include "epdf_private.h"
 #include "Epdf.h"
+#include "epdf_private.h"
 
 
 Epdf_Page *
@@ -280,14 +276,14 @@ epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
   return result;
 }
 
-Ecore_List *
+Eina_List *
 epdf_page_text_find (const Epdf_Page *page,
                      const char      *text,
                      unsigned char    is_case_sensitive)
 {
   Epdf_Rectangle *match;
   TextOutputDev  *output_dev;
-  Ecore_List     *matches = NULL;
+  Eina_List      *matches;
   double          xMin, yMin, xMax, yMax;
   int             length;
   int             height;
@@ -332,15 +328,12 @@ epdf_page_text_find (const Epdf_Page *page,
 			       1, 0, // startAtLast, stopAtLast
 			       is_case_sensitive, 0, // caseSensitive, backwards
 			       &xMin, &yMin, &xMax, &yMax)) {
-    if (!matches)
-      matches = ecore_list_new ();
-    ecore_list_free_cb_set (matches, ECORE_FREE_CB (free));
     match = (Epdf_Rectangle *)malloc (sizeof (Epdf_Rectangle));
     match->x1 = xMin;
     match->y1 = yMin;//height - yMax;
     match->x2 = xMax;
     match->y2 = yMax;//height - yMin;
-    ecore_list_append (matches, match);
+    matches = eina_list_append (matches, match);
   }
 
   delete output_dev;

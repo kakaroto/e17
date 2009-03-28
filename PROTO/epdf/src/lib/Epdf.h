@@ -82,6 +82,10 @@
  */
 
 
+#include <Eina.h>
+#include <Evas.h>
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif

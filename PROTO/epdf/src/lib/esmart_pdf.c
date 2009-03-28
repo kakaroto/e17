@@ -436,7 +436,7 @@ esmart_pdf_pdf_page_get (Evas_Object *obj)
  * Return the index of the smart pdf object @p obj
  *
  */
-Ecore_List *
+Eina_List *
 esmart_pdf_pdf_index_get (Evas_Object *obj)
 {
   Smart_Pdf *sp;

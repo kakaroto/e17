@@ -9,16 +9,15 @@
 #include <goo/GooList.h>
 #include <Link.h>
 
-#include "epdf_enum.h"
-#include "epdf_private.h"
 #include "Epdf.h"
+#include "epdf_private.h"
 
 
-static char *unicode_to_char   (Unicode    *unicode,
-                                int         len);
-static void  epdf_index_fill   (Ecore_List *items,
-                                GooList    *gitems);
-static void  epdf_index_unfill (Ecore_List *items);
+static char *unicode_to_char   (Unicode   *unicode,
+                                int        len);
+static void  epdf_index_fill   (Eina_List *items,
+                                GooList   *gitems);
+static void  epdf_index_unfill (Eina_List *items);
 
 /* Index item */
 Epdf_Index_Item *
@@ -48,10 +47,14 @@ epdf_index_item_delete (Epdf_Index_Item *item)
   if (item->children) {
     Epdf_Index_Item *i;
 
-    ecore_list_first_goto (item->children);
-    while ((i = (Epdf_Index_Item *)ecore_list_next (item->children))) {
-      epdf_index_item_delete (i);
-    }
+    while (item->children)
+      {
+        Epdf_Index_Item *item;
+
+        item = (Epdf_Index_Item *)eina_list_data_get(item->children);
+        epdf_index_item_delete (item);
+	item->children = eina_list_remove_list(item->children, item->children);
+      }
   }
   free (item);
 }
@@ -65,7 +68,7 @@ epdf_index_item_title_get (const Epdf_Index_Item *item)
   return item->title;
 }
 
-Ecore_List *
+Eina_List *
 epdf_index_item_children_get (const Epdf_Index_Item *item)
 {
   if (!item)
@@ -129,12 +132,12 @@ epdf_index_item_page_get (const Epdf_Document *document, const Epdf_Index_Item *
 
 /* Index */
 
-Ecore_List *
+Eina_List *
 epdf_index_new (const Epdf_Document *document)
 {
-  Outline    *outline;
-  GooList    *gitems;
-  Ecore_List *index = NULL;
+  Outline   *outline;
+  GooList   *gitems;
+  Eina_List *index = NULL;
 
   if (!document)
     return index;
@@ -147,16 +150,15 @@ epdf_index_new (const Epdf_Document *document)
   if (gitems == NULL)
     return index;
 
-  index = ecore_list_new ();
   epdf_index_fill (index, gitems);
 
   return index;
 }
 
 void
-epdf_index_delete (Ecore_List *index)
+epdf_index_delete (Eina_List *index)
 {
-  Ecore_List      *items = index;
+  Eina_List       *items = index;
   Epdf_Index_Item *item;
 
   if (!index)
@@ -191,8 +193,8 @@ unicode_to_char (Unicode *unicode,
 }
 
 static void
-epdf_index_fill (Ecore_List *items,
-                 GooList    *gitems)
+epdf_index_fill (Eina_List *items,
+                 GooList   *gitems)
 {
   if (!items || !gitems)
     return;
@@ -206,31 +208,34 @@ epdf_index_fill (Ecore_List *items,
     item->title = unicode_to_char (utitle, oitem->getTitleLength ());
     item->action = oitem->getAction ();
     oitem->open ();
-    if (oitem->hasKids () && oitem->getKids ()) {
-      item->children = ecore_list_new ();
+    if (oitem->hasKids () && oitem->getKids ())
       epdf_index_fill (item->children, oitem->getKids ());
-    }
-    ecore_list_append (items, item);
+    items = eina_list_append (items, item);
   }
 }
 
 static void
-epdf_index_unfill (Ecore_List *items)
+epdf_index_unfill (Eina_List *items)
 {
   Epdf_Index_Item *item;
 
   if (!items)
     return;
 
-  ecore_list_first_goto (items);
-  while ((item = (Epdf_Index_Item *)ecore_list_next (items))) {
-    if (item->title)
-      free (item->title);
+  while (items)
+    {
+      Epdf_Index_Item *item;
 
-    if (item->children) {
-      epdf_index_unfill (item->children);
+      item = (Epdf_Index_Item *)eina_list_data_get(items);
+
+      if (item->title)
+        free (item->title);
+
+      if (item->children)
+        epdf_index_unfill (item->children);
+
+      free (item);
+
+      items = eina_list_remove_list(items, items);
     }
-    free (item);
-  }
-  ecore_list_destroy (items);
 }

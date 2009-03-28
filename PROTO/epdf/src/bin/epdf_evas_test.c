@@ -32,10 +32,15 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
+  if (!epdf_init ()) {
+    printf ("Epdf can't be initialized\n");
+    return EXIT_FAILURE;
+  }
+
   document = epdf_document_new (argv[1]);
   if (!document) {
     printf ("Bad pdf file\n");
-    return EXIT_FAILURE;
+    goto epdf_shutdown;
   }
 
   sscanf (argv[2], "%d", &page_number);
@@ -88,7 +93,7 @@ main (int argc, char *argv[])
   epdf_document_delete (document);
 
   ecore_evas_shutdown ();
-  ecore_shutdown ();
+  epdf_shutdown ();
 
   return EXIT_SUCCESS;
 
@@ -98,23 +103,25 @@ main (int argc, char *argv[])
   epdf_page_delete (page);
  document_delete:
   epdf_document_delete (document);
+ epdf_shutdown:
+  epdf_shutdown ();
 
   return EXIT_FAILURE;
 }
 
-static void display_index (Epdf_Document *document, Ecore_List *children, int n)
+static void display_index (Epdf_Document *document, Eina_List *children, int n)
 {
   Epdf_Index_Item *item;
+  Eina_List       *l;
 
   if (!children)
     return;
 
-  ecore_list_first_goto (children);
-  while ((item = ecore_list_next (children))) {
+  EINA_LIST_FOREACH(children, l, item) {
     char *buf;
     char  buf2[64];
     int page;
-    Ecore_List *c;
+    Eina_List *c;
 
     buf = (char *)malloc (sizeof (char) * 2 * n + 1);
     memset (buf, ' ', 2 * n);
@@ -135,8 +142,9 @@ static void display_index (Epdf_Document *document, Ecore_List *children, int n)
 static void
 document_info_print (Epdf_Document *document, Epdf_Page *page)
 {
-  Ecore_List     *fonts;
-  Ecore_List     *index;
+  Eina_List      *fonts;
+  Eina_List      *l;
+  Eina_List      *index;
   Epdf_Font_Info *font;
   char           *title;
   char           *author;
@@ -215,8 +223,7 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   printf ("\n");
 
   fonts = epdf_document_fonts_get (document);
-  ecore_list_first_goto (fonts);
-  while ((font = ecore_list_next (fonts))) {
+  EINA_LIST_FOREACH(fonts, l, font) {
     printf ("    %s (", epdf_font_info_font_name_get (font));
     printf ("%s, ", epdf_font_info_font_path_get (font));
     printf ("%s, ", epdf_font_info_type_name_get (font));
@@ -227,7 +234,13 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
       printf ("not ");
     printf ("subset)\n");
   }
-  ecore_list_destroy (fonts);
+  while (fonts) {
+    Epdf_Font_Info *font;
+
+    font = eina_list_data_get (fonts);
+    epdf_font_info_delete (font);
+    fonts = eina_list_remove_list(fonts, fonts);
+  }
   printf ("\n");
 
   printf ("  Page Properties:\n");

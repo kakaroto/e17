@@ -14,9 +14,8 @@
 #include <PDFDocEncoding.h>
 #include <UnicodeMap.h>
 
-#include "epdf_enum.h"
-#include "epdf_private.h"
 #include "Epdf.h"
+#include "epdf_private.h"
 
 
 #if HAVE___ATTRIBUTE__
@@ -240,7 +239,7 @@ epdf_document_pdf_version_get (const Epdf_Document *document)
   return document->pdfdoc->getPDFVersion();
 }
 
-Ecore_List *
+Eina_List *
 epdf_document_fonts_get (const Epdf_Document *document)
 {
   if (!document)
@@ -250,11 +249,11 @@ epdf_document_fonts_get (const Epdf_Document *document)
                                        epdf_document_page_count_get (document));
 }
 
-Ecore_List *
+Eina_List *
 epdf_document_scan_for_fonts (const Epdf_Document *document, int page_count)
 {
-  Ecore_List *fonts;
-  int         length;
+  Eina_List *fonts = NULL;
+  int        length;
 
   if (!document)
     return NULL;
@@ -264,8 +263,6 @@ epdf_document_scan_for_fonts (const Epdf_Document *document, int page_count)
     return NULL;
 
   length = items->getLength();
-  fonts = ecore_list_new ();
-  ecore_list_free_cb_set (fonts, ECORE_FREE_CB (epdf_font_info_delete));
 
   for ( int i = 0; i < length; ++i ) {
     Epdf_Font_Info     *font;
@@ -303,7 +300,7 @@ epdf_document_scan_for_fonts (const Epdf_Document *document, int page_count)
 //                                 font->is_subset,
 //                                 font->type);
 //     ecore_list_append (fonts, font2);
-    ecore_list_append (fonts, font);
+    fonts = eina_list_append (fonts, font);
 //     free (font_name);
 //     epdf_font_info_delete (font);
   }

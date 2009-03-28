@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "epdf_enum.h"
-#include "epdf_private.h"
 #include "Epdf.h"
+#include "epdf_private.h"
 
 
 Epdf_Font_Info *
