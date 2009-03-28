@@ -418,10 +418,7 @@ SystrayItemEvent(Win win, XEvent * ev, void *prm)
 static void
 SystrayInit(Container * ct)
 {
-   char                buf[32];
    Win                 win;
-
-   Esnprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", Dpy.screen);
 
    E_XA__XEMBED = EInternAtom("_XEMBED");
    E_XA__XEMBED_INFO = EInternAtom("_XEMBED_INFO");
