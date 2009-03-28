@@ -483,6 +483,10 @@ SystrayObjPlace(Container * ct __UNUSED__, ContainerObject * cto,
      {
 	EMoveResizeWindow(StObjGetWin(cto->obj), cto->xi, cto->yi, cto->wi,
 			  cto->hi);
+	/* This seems to fix rendering for ceratin apps which seem to expect
+	 * expose events after resize (e.g. opera) */
+	ESync(0);
+	XClearArea(disp, WinGetXwin(StObjGetWin(cto->obj)), 0, 0, 0, 0, True);
      }
 }
 
