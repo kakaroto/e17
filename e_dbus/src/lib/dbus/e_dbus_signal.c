@@ -272,14 +272,14 @@ void
 e_dbus_signal_handlers_clean(E_DBus_Connection *conn)
 {
   E_DBus_Signal_Handler *sh;
-  Eina_List *l;
+  Eina_List *l, *l_next;
 
   if (!e_dbus_handler_deletions) return;
+  e_dbus_handler_deletions = 0;
   if (!conn->signal_handlers) return;
-  EINA_LIST_FOREACH(conn->signal_handlers, l, sh)
+  EINA_LIST_FOREACH_SAFE(conn->signal_handlers, l, l_next, sh)
   {
     if (sh->delete_me)
       e_dbus_signal_handler_del(conn, sh);
   }
-  e_dbus_handler_deletions = 0;
 }

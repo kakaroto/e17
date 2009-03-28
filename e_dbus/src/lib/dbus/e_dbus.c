@@ -433,8 +433,8 @@ e_dbus_idler(void *data)
   DEBUG(5, "dispatch!\n");
   dbus_connection_dispatch(cd->conn);
   dbus_connection_unref(cd->conn);
-  e_dbus_signal_handlers_clean(cd);
   e_dbus_idler_active--;
+  e_dbus_signal_handlers_clean(cd);
   if (!e_dbus_idler_active && close_connection)
   {
     do
