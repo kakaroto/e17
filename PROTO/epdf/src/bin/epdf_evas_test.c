@@ -41,47 +41,31 @@ main (int argc, char *argv[])
   sscanf (argv[2], "%d", &page_number);
   if (page_number >= epdf_document_page_count_get (document)) {
     printf ("Page number exceeds the page count of the PDF document\n");
-    epdf_document_delete (document);
-    return EXIT_FAILURE;
+    goto document_delete;
   }
 
   page = epdf_page_new (document);
   if (!page) {
     printf ("Bad page\n");
-    epdf_document_delete (document);
-    return EXIT_FAILURE;
+    goto document_delete;
   }
   epdf_page_page_set (page, page_number);
   epdf_page_size_get (page, &width, &height);
 
   document_info_print (document, page);
 
-  if (!ecore_init()) {
-    epdf_page_delete (page);
-    epdf_document_delete (document);
-    return EXIT_FAILURE;
-  }
+  if (!ecore_evas_init())
+    goto page_delete;
 
-  if (!ecore_evas_init()) {
-    ecore_shutdown ();
-    epdf_page_delete (page);
-    epdf_document_delete (document);
-    return EXIT_FAILURE;
-  }
-
-  ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, width, height);
+  ee = ecore_evas_new ("software_x11",  0, 0, width, height, NULL);
   /* these tests can be improved... */
   if (!ee) {
     printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
     ee = ecore_evas_software_ddraw_new (NULL,  0, 0, width, height);
     if (!ee) {
-      printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
+      printf ("Can not find DirectDraw engine...\n");
       printf ("Exiting...\n");
-      ecore_evas_shutdown ();
-      ecore_shutdown ();
-      epdf_page_delete (page);
-      epdf_document_delete (document);
-      return EXIT_FAILURE;
+      goto ecore_evas_shutdown;
     }
   }
   ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
@@ -107,6 +91,15 @@ main (int argc, char *argv[])
   ecore_shutdown ();
 
   return EXIT_SUCCESS;
+
+ ecore_evas_shutdown:
+  ecore_evas_shutdown ();
+ page_delete:
+  epdf_page_delete (page);
+ document_delete:
+  epdf_document_delete (document);
+
+  return EXIT_FAILURE;
 }
 
 static void display_index (Epdf_Document *document, Ecore_List *children, int n)

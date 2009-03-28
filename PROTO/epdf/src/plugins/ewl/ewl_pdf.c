@@ -89,7 +89,7 @@ create_test (Ewl_Container *box)
 
   str_data = ecore_list_new();
   view = ewl_label_view_get();
-  model = ewl_model_ecore_list_get();
+  model = ewl_model_ecore_list_instance();
   list = ewl_list_new ();
 
   ewl_object_fill_policy_set (EWL_OBJECT (list),
@@ -110,10 +110,10 @@ create_test (Ewl_Container *box)
 /*   ewl_widget_show (list); */
 
   scrollpane = ewl_scrollpane_new ();
-  ewl_scrollpane_hscrollbar_flag_set (EWL_SCROLLPANE (scrollpane),
-                                      EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
-  ewl_scrollpane_vscrollbar_flag_set (EWL_SCROLLPANE (scrollpane),
-                                      EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
+  ewl_scrollport_hscrollbar_flag_set (EWL_SCROLLPORT (scrollpane),
+                                      EWL_SCROLLPORT_FLAG_AUTO_VISIBLE);
+  ewl_scrollport_vscrollbar_flag_set (EWL_SCROLLPORT (scrollpane),
+                                      EWL_SCROLLPORT_FLAG_AUTO_VISIBLE);
   ewl_container_child_append (EWL_CONTAINER (hbox), scrollpane);
   ewl_widget_show (scrollpane);
 

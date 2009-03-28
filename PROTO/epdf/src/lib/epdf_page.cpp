@@ -123,12 +123,12 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
 
   evas_object_image_size_set(o, width, height);
   evas_object_image_fill_set(o, 0, 0, width, height);
-//   evas_object_image_data_set(o, color_ptr);
   m = (unsigned int *)evas_object_image_data_get(o, 1);
   if (!m)
     goto sortie;
 
   memcpy (m, color_ptr, height * width * 4);
+  evas_object_image_data_set(o, m);
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
   //  evas_object_image_alpha_set (o, 0);

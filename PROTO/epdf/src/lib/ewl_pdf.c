@@ -739,11 +739,6 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
           DRETURN(DLEVEL_STABLE);
 
         evas_object_smart_member_add(pdf->image, w->smart_object);
-        if (w->fx_clip_box)
-                evas_object_stack_below(pdf->image, w->fx_clip_box);
-
-        if (w->fx_clip_box)
-                evas_object_clip_set(pdf->image, w->fx_clip_box);
 
         evas_object_pass_events_set(pdf->image, TRUE);
         evas_object_show(pdf->image);
