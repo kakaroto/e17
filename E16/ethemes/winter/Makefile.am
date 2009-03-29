@@ -1,5 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
+DISTCLEANFILES = install-sh missing
+MAINTAINERCLEANFILES = aclocal.m4 configure Makefile.in
+
 THEME = winter
 THEME_FILES = $(THEME).etheme
 
