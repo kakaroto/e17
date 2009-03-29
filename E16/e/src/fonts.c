@@ -112,21 +112,45 @@ _FontConfigLoad(FILE * fs)
    return err;
 }
 
+static int
+_FontConfigLoad1(const char *cfg, int look_in_theme_too)
+{
+   const char         *path;
+
+   path = (look_in_theme_too) ? Mode.theme.path : NULL;
+
+   return ConfigFileLoad(cfg, path, _FontConfigLoad, 0);
+}
+
 void
 FontConfigLoad(void)
 {
-   int                 err;
-
-   if (Conf.theme.use_alt_font_cfg)
+   /* First check explicitly specified configuration (not in theme dir) */
+   if (Conf.theme.use_alt_font_cfg && Conf.theme.font_cfg)
      {
-	if (!Conf.theme.font_cfg)
-	   Conf.theme.font_cfg = Estrdup("fonts.cfg.xft");
-	err = ConfigFileLoad(Conf.theme.font_cfg, Mode.theme.path,
-			     _FontConfigLoad, 0);
-	if (!err)
+	if (!_FontConfigLoad1(Conf.theme.font_cfg, 0))
 	   return;
      }
-   ConfigFileLoad("fonts.cfg", Mode.theme.path, _FontConfigLoad, 0);
+
+   /* If using theme font is specified look for that */
+   if (Conf.theme.use_theme_font_cfg)
+     {
+	if (!_FontConfigLoad1("fonts.theme.cfg", 1))
+	   return;
+     }
+
+   /* Look in user config dir (not in theme dir) */
+   _FontConfigLoad1("fonts.cfg", 0);
+
+#if USE_PANGO
+   if (!_FontConfigLoad1("fonts.pango.cfg", 1))
+      return;
+#endif
+#if USE_XFT
+   if (!_FontConfigLoad1("fonts.xft.cfg", 1))
+      return;
+#endif
+   _FontConfigLoad1("fonts.cfg", 1);
 }
 
 void

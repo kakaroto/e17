@@ -261,6 +261,7 @@ typedef struct {
       char                animate;
    } startup;
    struct {
+      char                use_theme_font_cfg;
       char                use_alt_font_cfg;
       char               *name;
       char               *extra_path;
