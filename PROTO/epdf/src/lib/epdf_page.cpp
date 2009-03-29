@@ -283,7 +283,7 @@ epdf_page_text_find (const Epdf_Page *page,
 {
   Epdf_Rectangle *match;
   TextOutputDev  *output_dev;
-  Eina_List      *matches;
+  Eina_List      *matches = NULL;
   double          xMin, yMin, xMax, yMax;
   int             length;
   int             height;

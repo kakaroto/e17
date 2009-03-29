@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <GlobalParams.h>
 #include <PDFDoc.h>
 #include <Outline.h>
 #include <GfxFont.h>
@@ -36,9 +35,6 @@ epdf_document_new (const char *filename)
   doc = (Epdf_Document *)malloc (sizeof (Epdf_Document));
   if (!doc)
     return NULL;
-
-  if (!globalParams)
-    globalParams = new GlobalParams();
 
   doc->pdfdoc = new PDFDoc (new GooString (filename), NULL);
   if (doc->pdfdoc->isOk() || doc->pdfdoc->getErrorCode() == errEncrypted) {

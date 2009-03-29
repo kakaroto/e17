@@ -2,6 +2,9 @@
 # include <config.h>
 #endif
 
+
+#include <GlobalParams.h>
+
 #include "Epdf.h"
 
 static int _epdf_main_count = 0;
@@ -12,7 +15,14 @@ epdf_init (void)
   if (_epdf_main_count)
     goto beach;
 
-  eina_list_init();
+  if (!(globalParams = new GlobalParams(NULL)))
+    return 0;
+
+  if (!eina_list_init())
+    {
+      delete (globalParams);
+      return 0;
+    }
 
  beach:
   return ++_epdf_main_count;
@@ -24,6 +34,7 @@ epdf_shutdown()
   if (_epdf_main_count != 1)
     goto beach;
 
+  delete globalParams;
   eina_list_shutdown();
 
  beach:
