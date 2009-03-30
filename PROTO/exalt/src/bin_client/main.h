@@ -51,7 +51,7 @@ enum _iface_type
 } ;
 
 Evas_Object *win;
-Evas_Object *iface_list; 
+Evas_Object *iface_list;
 #define D_(str) gettext(str)
 
 

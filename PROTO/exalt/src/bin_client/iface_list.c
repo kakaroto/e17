@@ -22,7 +22,7 @@
 static Elm_Genlist_Item_Class itc1;
 
 /* Genlist callback functions */
-char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
     Iface_List_Elt * elt = (Iface_List_Elt*)data;
     if(elt->type==ITEM_IFACE)
@@ -41,7 +41,7 @@ Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
     if (strcmp(part, "elm.swallow.icon")==0)
     {
         Evas_Object *icon;
-        char *icon_file;
+        char *icon_file = NULL;
 
         icon = elm_icon_add(obj);
         switch(elt->iface_type)
@@ -70,12 +70,12 @@ Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
         return NULL;
 }
 
-Evas_Bool gl_state_get(const void *data, Evas_Object *obj, const char *part)
+Evas_Bool gl_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
     return 0;
 }
 
-void gl_del(const void *data, Evas_Object *obj)
+void gl_del(const void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 }
 
@@ -102,6 +102,7 @@ void iface_list_add(Evas_Object *list, const char* iface, Iface_Type type)
     elt->type = ITEM_IFACE;
     elt->iface = strdup(iface);
     elt->iface_type = type;
+    elt->nb_use++;
 
     itc1.item_style     = "default";
     itc1.func.label_get = gl_label_get;
@@ -119,9 +120,12 @@ void iface_list_add(Evas_Object *list, const char* iface, Iface_Type type)
     exalt_dbus_eth_link_is(conn,iface);
     exalt_dbus_eth_up_is(conn,iface);
     exalt_dbus_eth_ip_get(conn,iface);
+
+    if(type == IFACE_WIRELESS)
+        exalt_dbus_wireless_scan(conn,elt->iface);
 }
 
-Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,char* iface)
+Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,const char* iface)
 {
     Elm_Genlist_Item *item;
 
@@ -129,7 +133,7 @@ Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,char* iface)
             item != NULL;
             item = elm_genlist_item_next_get(item))
     {
-        Iface_List_Elt* elt = elm_genlist_item_data_get(item);
+        const Iface_List_Elt* elt = elm_genlist_item_data_get(item);
         if(elt->type == ITEM_IFACE && strcmp(elt->iface, iface)==0)
             return item;
     }
@@ -167,7 +171,7 @@ void iface_list_response(Evas_Object *list, Exalt_DBus_Response* response)
                     exalt_dbus_response_iface_get(response));
             if(!item)
                 return ;
-            elt =  elm_genlist_item_data_get(item);
+            elt =  (Iface_List_Elt*)elm_genlist_item_data_get(item);
 
             EXALT_FREE(elt->ip);
             elt->ip = strdup(exalt_dbus_response_address_get(response));
@@ -178,7 +182,7 @@ void iface_list_response(Evas_Object *list, Exalt_DBus_Response* response)
                     exalt_dbus_response_iface_get(response));
             if(!item)
                 return ;
-            elt =  elm_genlist_item_data_get(item);
+            elt =  (Iface_List_Elt*)elm_genlist_item_data_get(item);
 
             elt->is_up = exalt_dbus_response_is_get(response);
             elm_genlist_item_update(item);
@@ -189,7 +193,7 @@ void iface_list_response(Evas_Object *list, Exalt_DBus_Response* response)
             if(!item)
                 return ;
 
-            elt =  elm_genlist_item_data_get(item);
+            elt =  (Iface_List_Elt*)elm_genlist_item_data_get(item);
 
             elt->is_link = exalt_dbus_response_is_get(response);
             elm_genlist_item_update(item);
@@ -198,10 +202,11 @@ void iface_list_response(Evas_Object *list, Exalt_DBus_Response* response)
     }
 }
 
-void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *id_first, int* id_last, Elm_Genlist_Item** first, Elm_Genlist_Item** last)
+void network_list_interval_get(Evas_Object* list, const char* iface,
+        int *id_first, int* id_last,
+        Elm_Genlist_Item** first, Elm_Genlist_Item** last)
 {
     int i=0;
-    char buf[1024];
 
     *id_first = -1;
     *id_last = -1;
@@ -215,7 +220,7 @@ void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *i
             item != NULL;
             item = elm_genlist_item_next_get(item))
     {
-        Iface_List_Elt* elt = elm_genlist_item_data_get(item);
+        Iface_List_Elt* elt = (Iface_List_Elt*) elm_genlist_item_data_get(item);
 
         if(elt && elt->type == ITEM_IFACE && elt->iface
                 && strcmp(elt->iface,iface)==0)
@@ -235,7 +240,7 @@ void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *i
             item != NULL;
             item = elm_genlist_item_next_get(item))
     {
-        Iface_List_Elt* elt = elm_genlist_item_data_get(item);
+        Iface_List_Elt* elt = (Iface_List_Elt*) elm_genlist_item_data_get(item);
 
         if(elt && elt->type == ITEM_IFACE)
         {
@@ -250,3 +255,130 @@ void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *i
     }
 }
 
+void network_list_notify_scan(char* iface, Eina_List* networks, void* user_data )
+{
+    Evas_Object* list = user_data;
+    Exalt_Wireless_Network* w;
+    Eina_List *l;
+    Elm_Genlist_Item *l_item;
+    int id_first, id_last;
+    Elm_Genlist_Item* first, *last;
+    Iface_List_Elt* elt;
+
+    network_list_interval_get(list,iface,&id_first,&id_last,&first,&last);
+
+    //init all networks as not found
+    for(l_item = elm_genlist_first_item_get(list);
+                l_item != NULL;
+                l_item = elm_genlist_item_next_get(l_item))
+    {
+        elt = (Iface_List_Elt*)elm_genlist_item_data_get(l_item);
+        elt->find = 0;
+    }
+
+
+    EINA_LIST_FOREACH(networks,l,w)
+    {
+        Elm_Genlist_Item* l2;
+        int find = -1;
+        Iface_List_Elt* elt_find=NULL;
+        int i =0;
+
+        //search the network in the list
+        const char* essid = exalt_wireless_network_essid_get(w);
+        l2=first;
+        i=0;
+        do
+        {
+            Iface_List_Elt* elt;
+            elt = (Iface_List_Elt*)elm_genlist_item_data_get(l2);
+            const char* essid_item = exalt_wireless_network_essid_get(elt->wn);
+            if(elt && essid_item && essid && strcmp(essid_item,essid)==0)
+            {
+                find = i;
+                elt_find = elt;
+            }
+            i++;
+        }while(l2!=last && !elt_find && (l2 = elm_genlist_item_next_get(l2)) );
+
+        if(!elt_find)
+        {
+            //add a new network in the list
+            Iface_List_Elt* elt;
+
+            elt = calloc(1,sizeof(Iface_List_Elt));
+            elt->iface = strdup(iface);
+            elt->type = ITEM_NETWORK;
+            elt->wn = w;
+            elt->nb_use++;
+            elt->find = 1;
+
+            elt->item = elm_genlist_item_insert_after(list, &itc1, NULL, last,
+                    ELM_GENLIST_ITEM_NONE,
+                    gl_sel, elt);
+
+            last = elt->item;
+        }
+        else
+        {
+            //update the network
+            exalt_wireless_network_free(&(elt_find->wn));
+            elt_find->wn = w;
+            elt_find->find = 1;
+
+            elm_genlist_item_update(l2);
+        }
+    }
+
+    //remove old networks
+    l_item=first;
+    Elm_Genlist_Item* l_prev=NULL;
+    int jump = 0;
+    do
+    {
+        if(jump)
+            jump = 0;
+
+        Iface_List_Elt* elt;
+        elt = (Iface_List_Elt*)elm_genlist_item_data_get(l_item);
+        if(elt && elt->type == ITEM_NETWORK && !elt->find)
+        {
+            elm_genlist_item_del(l_item);
+            l_item = l_prev;
+            elt->nb_use--;
+            if(elt->nb_use==0)
+                iface_list_elt_free(elt);
+        }
+        l_prev = l_item;
+    }while(l_item!=last && (l_item = elm_genlist_item_next_get(l_item)) );
+
+    elt = (Iface_List_Elt*)elm_genlist_item_data_get(first);
+    elt->scan_timer  = ecore_timer_add(2,network_scan_timer_cb,elt);
+}
+
+int network_scan_timer_cb(void *data)
+{
+    Iface_List_Elt* elt = data;
+
+    if(elt->scan_timer)
+        ecore_timer_del(elt->scan_timer);
+    elt->scan_timer = NULL;
+
+    exalt_dbus_wireless_scan(conn,elt->iface);
+
+    return 0;
+}
+
+void iface_list_elt_free(Iface_List_Elt *elt)
+{
+    if(!elt)
+        return;
+
+    EXALT_FREE(elt->iface);
+    EXALT_FREE(elt->ip);
+
+    exalt_wireless_network_free(&(elt->wn));
+    ecore_timer_del(elt->scan_timer);
+
+    EXALT_FREE(elt);
+}

@@ -20,6 +20,8 @@
 #define  IFACE_LIST_INC
 
 #include "main.h"
+#include <Elementary.h>
+#include <Ecore.h>
 
 typedef enum _Iface_List_Enum Iface_List_Enum;
 typedef struct _Iface_List_Elt Iface_List_Elt;
@@ -37,6 +39,8 @@ struct _Iface_List_Elt
     char* iface;
     Iface_Type iface_type;
 
+    int nb_use;
+
     Elm_Genlist_Item * item;
 
     char *ip;
@@ -47,13 +51,30 @@ struct _Iface_List_Elt
     Evas_Object *icon;
     Evas_Object *lbl_name;
     Evas_Object *lbl_ip;
+
+
+    //wireless network
+    Exalt_Wireless_Network *wn;
+    int find;
+
+    Ecore_Timer* scan_timer;
 };
 
+void iface_list_elt_free(Iface_List_Elt *elt);
+
 Evas_Object* iface_list_new();
+
 void iface_list_add(Evas_Object *l, const char* iface, Iface_Type type);
 void iface_list_response(Evas_Object *l, Exalt_DBus_Response* response);
-Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,char* iface);
-void network_list_interval_get(Elm_Genlist_Item* list, const char* iface, int *id_first, int* id_last, Elm_Genlist_Item** first, Elm_Genlist_Item** last);
+Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,const char* iface);
+
+
+void network_list_interval_get(
+        Evas_Object* list, const char* iface,
+        int *id_first, int* id_last,
+        Elm_Genlist_Item** first, Elm_Genlist_Item** last);
+void network_list_notify_scan(char* iface, Eina_List* networks, void* user_data );
+int network_scan_timer_cb(void *data);
 
 #endif   /* ----- #ifndef IFACE_LIST_INC  ----- */
 

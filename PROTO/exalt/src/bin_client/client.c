@@ -19,6 +19,8 @@
 #include "main.h"
 #include "config.h"
 
+#include "iface_list.h"
+
     EAPI int
 elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
@@ -62,6 +64,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 
     exalt_dbus_response_notify_set(conn,response_cb,NULL);
     exalt_dbus_notify_set(conn,notify_cb,NULL);
+    exalt_dbus_scan_notify_set(conn,network_scan_timer_cb,iface_list);
 
     exalt_dbus_eth_list_get(conn);
     exalt_dbus_wireless_list_get(conn);
@@ -147,10 +150,10 @@ void response_cb(Exalt_DBus_Response* response, void* data __UNUSED__)
             printf("The new command is supposed to be set\n");
             break;
         case EXALT_DBUS_RESPONSE_IFACE_UP:
-            iface_list_response(response);
+            iface_list_response(iface_list,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_DOWN:
-            iface_list_response(response);
+            iface_list_response(iface_list,response);
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
             printf("%s essid:\n",exalt_dbus_response_iface_get(response));
