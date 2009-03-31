@@ -101,7 +101,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-     
+
    evas_object_event_callback_del(inst->tclock, EVAS_CALLBACK_MOUSE_DOWN,
                                   _tclock_cb_mouse_down);
    evas_object_event_callback_del(inst->tclock, EVAS_CALLBACK_MOUSE_IN,
@@ -366,7 +366,7 @@ _tclock_cb_check(void *data)
 	edje_object_message_signal_process(inst->tclock);
 
 	memset (buf, 0, sizeof(buf));
-	
+
 	if (inst->ci->time_format)
 	  {
              strftime(buf, 1024, inst->ci->time_format, local_time);
@@ -385,7 +385,7 @@ _tclock_cb_check(void *data)
              edje_object_part_text_set(inst->o_tip, "e.text.tip", buf);
 	  }
      }
-   
+
    return 1;
 }
 
