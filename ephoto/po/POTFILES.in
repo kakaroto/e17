@@ -1,0 +1,15 @@
+src/bin/config.h.in
+src/bin/ephoto_fsystem.c
+src/bin/ephoto_imaging.c
+src/bin/ephoto_single_view.c
+src/bin/ephoto.c
+src/bin/ephoto_fsystem.h
+src/bin/ephoto_imaging.h
+src/bin/ephoto_utils.c
+src/bin/ephoto_exif.c
+src/bin/ephoto_global.c
+src/bin/ephoto_main.c
+src/bin/ephoto_utils.h
+src/bin/ephoto_exif.h
+src/bin/ephoto.h
+src/bin/ephoto_normal_view.c
