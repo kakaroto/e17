@@ -32,15 +32,20 @@ AC_ARG_ENABLE(ehal,
 				  [enable_ehal=$enableval],
 				  [enable_ehal="yes"])
 AC_ARG_ENABLE(enm,
-				  AC_HELP_STRING([--disable-enm], 
+				  AC_HELP_STRING([--disable-enm],
 									  [Disable enm build]),
 				  [enable_enm=$enableval],
 				  [enable_enm="yes"])
 AC_ARG_ENABLE(enotify,
-				  AC_HELP_STRING([--disable-enotify], 
+				  AC_HELP_STRING([--disable-enotify],
 									  [Disable enotify build]),
 				  [enable_enotify=$enableval],
 				  [enable_enotify="yes"])
+AC_ARG_ENABLE(econnman,
+				  AC_HELP_STRING([--disable-econnman],
+									  [Disable econnman build]),
+				  [enable_econnman=$enableval],
+				  [enable_econnman="yes"])
 
 
 PKG_CHECK_MODULES([EINA], [eina-0])
@@ -73,6 +78,7 @@ AC_ARG_ENABLE(build-test-gui,
 AM_CONDITIONAL([BUILD_EHAL],    [test "x${enable_ehal}"    = "xyes"])
 AM_CONDITIONAL([BUILD_ENM],     [test "x${enable_enm}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY], [test "x${enable_enotify}" = "xyes"])
+AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
 
 AC_OUTPUT([
 e_dbus.spec
@@ -83,11 +89,13 @@ src/lib/dbus/Makefile
 src/lib/hal/Makefile
 src/lib/nm/Makefile
 src/lib/notification/Makefile
+src/lib/connman/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc
 enotify.pc
 enm.pc
+econnman.pc
 ])
 
 
@@ -106,6 +114,7 @@ echo
 echo "  EHal.................: $enable_ehal"
 echo "  ENM..................: $enable_enm"
 echo "  ENotify..............: $enable_enotify"
+echo "  EConnman.............: $enable_econnman"
 echo
 echo "Configuration Options Summary:"
 echo
