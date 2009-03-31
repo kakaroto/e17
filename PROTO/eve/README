@@ -13,5 +13,5 @@ Build and install:
 
     cd webkit
     git checkout origin/kenneth/efl-port
-    ./autogen.sh –with-port=efl --enable-web-workers=no
+    ./autogen.sh --with-port=efl --enable-web-workers=no
     make all install
