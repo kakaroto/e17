@@ -18,14 +18,12 @@
 
 cdef class Check(Object):
     def __init__(self, c_evas.Object parent):
-        assert parent == None
         self._set_obj(elm_check_add(parent.obj))
     
     def label_set(self, label):
         elm_check_label_set(self.obj, label)
         
     def icon_set(self, c_evas.Object icon):
-        assert icon == None
         elm_check_icon_set(self.obj, icon.obj)
         
     def state_set(self, value):

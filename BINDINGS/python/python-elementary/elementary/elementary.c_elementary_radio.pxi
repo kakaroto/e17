@@ -18,18 +18,15 @@
     
 cdef class Radio(Object):    
     def __init__(self, c_evas.Object parent):
-        assert parent == None
         self._set_obj(elm_radio_add(parent.obj))
         
     def label_set(self, label):
         elm_radio_label_set(self.obj, label)
         
     def icon_set(self, c_evas.Object icon):
-        assert icon == None
         elm_radio_icon_set(self.obj, icon.obj)
         
     def group_add(self, c_evas.Object group):
-        assert group == None
         elm_radio_group_add(self.obj, group.obj)
         
     def state_value_set(self, value):
