@@ -34,6 +34,9 @@ cdef class Radio(Object):
         
     def value_set(self, value):
         elm_radio_value_set(self.obj, value)
+
+    def value_get(self):
+        return elm_radio_value_get(self.obj)
     
     
         
