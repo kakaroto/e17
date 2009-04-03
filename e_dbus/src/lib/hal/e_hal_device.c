@@ -54,15 +54,15 @@ free_device_get_property(void *data)
   free(ret);
 }
 
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_call_new(udi, "GetProperty");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_property, cb_func, free_device_get_property, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_property, cb_func, free_device_get_property, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
@@ -160,14 +160,14 @@ free_device_get_all_properties(void *data)
   free(ret);
 }
 
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_call_new(udi, "GetAllProperties");
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_all_properties, cb_func, free_device_get_all_properties, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_all_properties, cb_func, free_device_get_all_properties, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
@@ -211,15 +211,15 @@ free_device_query_capability(void *data)
   free(ret);
 }
 
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_call_new(udi, "QueryCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_query_capability, cb_func, free_device_query_capability, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_query_capability, cb_func, free_device_query_capability, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
@@ -239,13 +239,13 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
  * @param cb_func an optional callback to call when the mount is done
  * @param data custom data pointer for the callback function
  */
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
   Eina_List *l;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_volume_call_new(udi, "Mount");
 
@@ -265,7 +265,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
@@ -281,13 +281,13 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
  * @param cb_func an optional callback to call when the unmount is done
  * @param data cuatom data pointer for the callback function
  */
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
   Eina_List *l;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_volume_call_new(udi, "Unmount");
 
@@ -304,7 +304,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List 
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
@@ -318,13 +318,13 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List 
  * @param cb_func an optional callback to call when the eject is done
  * @param data cuatom data pointer for the callback function
  */
-EAPI int
+EAPI DBusPendingCall *
 e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
   Eina_List *l;
-  int ret;
+  DBusPendingCall *ret;
 
   msg = e_hal_device_volume_call_new(udi, "Eject");
 
@@ -341,7 +341,7 @@ e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *o
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data);
   dbus_message_unref(msg);
   return ret;
 }
