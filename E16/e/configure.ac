@@ -1,5 +1,5 @@
-m4_define([pkg_version],  [0.16.8.15])
-m4_define([pkg_revision], [002])
+m4_define([pkg_version],  [0.99.99])
+m4_define([pkg_revision], [001])
 m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version.pkg_revision], [pkg_version]))
 m4_define([rpm_revision], m4_ifdef([pkg_revision], [0.`date '+%y%m%d'`], [1]))
 
@@ -432,8 +432,3 @@ echo
 echo "Compilation .................... make"
 echo "Installation ................... make install"
 echo
-
-echo "***************************************************************"
-echo "*** NOTE: If this is your first trip with version 0.16.8    ***"
-echo "*** NOTE: you may want to take a look in docs/README-0.16.8 ***"
-echo "***************************************************************"
