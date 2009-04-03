@@ -251,10 +251,10 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 	     "-D ECACHEDIR=%s " "-D SCREEN_RESOLUTION_%ix%i=1 "
 	     "-D SCREEN_WIDTH_%i=1 " "-D SCREEN_HEIGHT_%i=1 "
 	     "-D SCREEN_DEPTH_%i=1 " "-D USER_NAME=%s " "-D HOME_DIR=%s "
-	     "-D USER_SHELL=%s " "-D ENLIGHTENMENT_VERSION_015=1 "
+	     "-D USER_SHELL=%s "
 	     "%s %s",
 	     epp_path, EDirRoot(), themepath, EDirRoot(),
-	     "0.16.8", EDirRoot(), EDirBin(),
+	     e_wm_version, EDirRoot(), EDirBin(),
 	     themepath, EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
 	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);
