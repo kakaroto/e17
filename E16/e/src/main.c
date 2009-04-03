@@ -42,7 +42,7 @@
 #include <signal.h>
 #include <time.h>
 
-const char          e_wm_name[] = "Enlightenment";
+const char          e_wm_name[] = "e16";
 const char          e_wm_version[] = VERSION;
 
 EConf               Conf;

@@ -32,7 +32,8 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
    DItem              *di;
    char                buf[1024];
 
-   Esnprintf(buf, sizeof(buf), _("About Enlightenment %s"), e_wm_version);
+   Esnprintf(buf, sizeof(buf), _("About Enlightenment e16 version %s"),
+	     e_wm_version);
    DialogSetTitle(d, buf);
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -42,8 +43,7 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_TEXT);
    Esnprintf(buf, sizeof(buf),
-	     _("Welcome to the %s version\n"
-	       "of the Enlightenment window manager.\n"
+	     _("Welcome to Enlightenment e16\n" "version %s.\n"
 	       "If you find a bug, please do not\n"
 	       "hesitate to send in a bug report.\n"
 	       "We hope you enjoy the software.\n" "\n"
