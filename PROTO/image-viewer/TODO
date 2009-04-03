@@ -1,0 +1,1 @@
+wrap the evas_object_image in elm_scroller, so that pan can work correctly
