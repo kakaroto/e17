@@ -201,12 +201,12 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 
    if (iv->flags.fullscreen)
      {
-	if (!strcmp(ev->keyname, "F11") || !strcmp(ev->keyname, "Escape"))
+	if (!strcmp(ev->keyname, "F11") || !strcmp(ev->keyname, "Escape") || !strcmp(ev->keyname, "f"))
 	  unfullscreen(iv);
      }
    else
      {
-	if (!strcmp(ev->keyname, "F11"))
+	if (!strcmp(ev->keyname, "F11") || !strcmp(ev->keyname, "f"))
 	  fullscreen(iv);
      }
 }
@@ -614,6 +614,8 @@ elm_main(int argc, char **argv)
 
    for (i = 1; i < argc; i++)
      {
+	if (!strncmp(argv[i], "file://", 7))
+	  argv[i] = argv[i] + 7;
 	if (!ecore_file_exists(argv[i]))
 	  continue;
 	if (ecore_file_is_dir(argv[i]))
