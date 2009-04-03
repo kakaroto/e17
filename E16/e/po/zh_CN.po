@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-28 11:10+0100\n"
+"POT-Creation-Date: 2009-04-03 21:11+0200\n"
 "PO-Revision-Date: 2009-02-28 19:15+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
-#, c-format
-msgid "About Enlightenment %s"
+#, fuzzy, c-format
+msgid "About Enlightenment e16 version %s"
 msgstr "关于 Enlightenment %s"
 
-#: src/about.c:45
+#: src/about.c:46
 #, c-format
 msgid ""
-"Welcome to the %s version\n"
-"of the Enlightenment window manager.\n"
+"Welcome to Enlightenment e16\n"
+"version %s.\n"
 "If you find a bug, please do not\n"
 "hesitate to send in a bug report.\n"
 "We hope you enjoy the software.\n"

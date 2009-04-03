@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-28 11:10+0100\n"
+"POT-Creation-Date: 2009-04-03 21:11+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -16,15 +16,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
-#, c-format
-msgid "About Enlightenment %s"
+#, fuzzy, c-format
+msgid "About Enlightenment e16 version %s"
 msgstr "Az Enlightenment %s névjegye"
 
-#: src/about.c:45
+#: src/about.c:46
 #, fuzzy, c-format
 msgid ""
-"Welcome to the %s version\n"
-"of the Enlightenment window manager.\n"
+"Welcome to Enlightenment e16\n"
+"version %s.\n"
 "If you find a bug, please do not\n"
 "hesitate to send in a bug report.\n"
 "We hope you enjoy the software.\n"
