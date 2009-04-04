@@ -37,6 +37,11 @@ PKG_CHECK_MODULES([ELEMENTARY], [
                    elementary
 ])
 
+PKG_CHECK_MODULES(ENLIGHTENMENT, enlightenment, [
+    have_enlightenment="yes"
+    AC_DEFINE(HAVE_ENLIGHTENMENT, 1, [have enlightenment support])
+])
+
 AC_OUTPUT([
 Makefile
 src/Makefile

@@ -101,6 +101,7 @@ image_configure(IV *iv)
 	     evas_object_move(iv->gui.img, x, y);
 	     evas_object_image_fill_set(iv->gui.img, 0, 0, w, h);
 	     evas_object_resize(iv->gui.img, w, h);
+	     /* evas_object_size_hint_min_set(iv->gui.img, w, h); */
 	  }
 	iv->cache.iw = iw;
 	iv->cache.ih = ih;
@@ -198,6 +199,21 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
      iv->flags.prev = EINA_TRUE;
    else if (!strcmp(ev->keyname, "q") || (!strcmp(ev->keyname, "Escape") && !iv->flags.fullscreen))
      elm_exit();
+   else if (!strcmp(ev->keyname, "1"))
+     {
+	iv->config.fit = PAN;
+	iv->flags.fit_changed = EINA_TRUE;
+     }
+   else if (!strcmp(ev->keyname, "2"))
+     {
+	iv->config.fit = FIT;
+	iv->flags.fit_changed = EINA_TRUE;
+     }
+   else if (!strcmp(ev->keyname, "3"))
+     {
+	iv->config.fit = FIT_SCALE;
+	iv->flags.fit_changed = EINA_TRUE;
+     }
 
    if (iv->flags.fullscreen)
      {
@@ -270,6 +286,7 @@ on_idle_enterer(void *data)
 		  image_configure(iv);
 		  elm_label_label_set(iv->gui.file_label,
 				      (char *) ecore_file_file_get(iv->files->data));
+		  /* elm_scroller_content_set(iv->gui.scroller, img); */
 		  elm_layout_content_set(iv->gui.ly, "iv.swallow.image", img);
 		  evas_object_show(img);
 		  evas_object_event_callback_add(img, EVAS_CALLBACK_RESIZE, on_image_resize, iv);
@@ -380,6 +397,7 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
+	     /* elm_scroller_content_set(iv->gui.scroller, iv->gui.img); */
 	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
@@ -405,6 +423,7 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
+	     /* elm_scroller_content_set(iv->gui.scroller, iv->gui.img); */
 	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
@@ -510,12 +529,12 @@ create_main_win(IV *iv)
    iv->gui.ly = o;
 
    /*
-    * XXX: this segfaults for now
    o = elm_scroller_add(iv->gui.ly);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_win_resize_object_add(iv->gui.win, o);
    elm_layout_content_set(iv->gui.ly, "iv.swallow.image", o);
-    */
+   iv->gui.scroller = o;
+   */
 
    o = elm_layout_add(iv->gui.ly);
    elm_layout_file_set(o, buf, "iv/controls");
@@ -532,11 +551,14 @@ create_main_win(IV *iv)
    elm_layout_content_set(iv->gui.controls, "iv.swallow.box", bx);
    evas_object_show(bx);
 
-   /*
-    * XXX: use efreet for the icons
-    * */
    ic = elm_icon_add(bx);
+#ifdef HAVE_ENLIGHTENMENT
+   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
+					       "media-seek-backward", 32),
+		     NULL);
+#else
    elm_icon_file_set(ic, buf, "iv/controls/prev");
+#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.0, 1.0);
    evas_object_show(ic);
@@ -550,7 +572,13 @@ create_main_win(IV *iv)
    iv->gui.prev_bt = o;
 
    ic = elm_icon_add(bx);
+#ifdef HAVE_ENLIGHTENMENT
+   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
+					       "media-seek-forward", 32),
+		     NULL);
+#else
    elm_icon_file_set(ic, buf, "iv/controls/next");
+#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.0, 1.0);
    evas_object_show(ic);
