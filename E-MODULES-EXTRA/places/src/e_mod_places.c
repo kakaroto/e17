@@ -725,18 +725,17 @@ _places_update_size(Evas_Object *obj, Volume *vol)
 static void
 _places_mount_volume(Volume *vol)
 {
-   Ecore_List *opt = NULL;
+   Eina_List *opt = NULL;
    char buf[256];
 
    if ((!strcmp(vol->fstype, "vfat")) || (!strcmp(vol->fstype, "ntfs")))
    {
-      opt = ecore_list_new();
       snprintf(buf, sizeof(buf), "uid=%i", (int)getuid());
-      ecore_list_append(opt, buf);
+      opt = eina_list_append(opt, buf);
    }
    e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype, opt, _places_mount_cb, vol);
    vol->to_mount = 0;
-   if (opt) ecore_list_destroy(opt);
+   eina_list_free(opt);
 }
 
 /**********************/
