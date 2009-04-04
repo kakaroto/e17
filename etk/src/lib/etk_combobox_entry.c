@@ -1043,7 +1043,7 @@ static void _etk_combobox_entry_constructor(Etk_Combobox_Entry *combobox_entry)
    etk_box_append(ETK_BOX(combobox_entry->hbox), combobox_entry->button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    combobox_entry->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE,
-         "theme-group", "window", "theme-parent", combobox_entry, NULL));
+         "theme-group", "combobox_entry/window", "theme-parent", combobox_entry, NULL));
    etk_object_data_set(ETK_OBJECT(combobox_entry->window), "_Etk_Combobox_Entry_Window::Combobox_Entry", combobox_entry);
    ETK_WIDGET(combobox_entry->window)->size_request = _etk_combobox_entry_window_size_request;
    ETK_WIDGET(combobox_entry->window)->size_allocate = _etk_combobox_entry_window_size_allocate;
