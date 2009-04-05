@@ -240,6 +240,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     }
 
     if_wired_dialog_init(inst);
+    if_network_dialog_init(inst);
     popup_init(inst);
 
     /* return the Gadget_Container Client */

@@ -21,6 +21,7 @@
 void if_wired_dialog_init(Instance* inst)
 {
     inst->wired.iface = NULL;
+    inst->wired.dialog = NULL;
 }
 
 void if_wired_dialog_create(Instance* inst)
@@ -34,7 +35,6 @@ void if_wired_dialog_create(Instance* inst)
     inst->wired.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_wired_dialog");
     e_dialog_title_set(inst->wired.dialog, D_("Wired Connection Settings"));
     inst->wired.dialog->data = inst;
-    inst->wired.dialog->win->data = inst;
 
     evas = e_win_evas_get(inst->wired.dialog->win);
     list = e_widget_list_add(evas, 0, 0);
