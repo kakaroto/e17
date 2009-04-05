@@ -19,12 +19,13 @@
 #ifndef  IFACE_LIST_INC
 #define  IFACE_LIST_INC
 
-#include "main.h"
-#include <Elementary.h>
-#include <Ecore.h>
 
 typedef enum _Iface_List_Enum Iface_List_Enum;
 typedef struct _Iface_List_Elt Iface_List_Elt;
+
+#include "main.h"
+#include <Elementary.h>
+#include <Ecore.h>
 
 enum _Iface_List_Enum
 {
@@ -71,10 +72,10 @@ Elm_Genlist_Item* iface_list_get_elt_from_name(Evas_Object *list,const char* ifa
 
 void network_list_interval_get(
         Evas_Object* list, const char* iface,
-        int *id_first, int* id_last,
         Elm_Genlist_Item** first, Elm_Genlist_Item** last);
 void network_list_notify_scan(char* iface, Eina_List* networks, void* user_data );
 int network_scan_timer_cb(void *data);
+void iface_list_promote(Evas_Object *list);
 
 #endif   /* ----- #ifndef IFACE_LIST_INC  ----- */
 

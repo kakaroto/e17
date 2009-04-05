@@ -16,32 +16,22 @@
  * =====================================================================================
  */
 
+
+/*
+ * TODO FIXME
+ * disabled widgets when the conf is invalid (wait the possibility in elementary)
+ * add wireless panels
+ *      - an easy panel (show network conf, ask password)
+ *      - advanced panel (can choose dhcp, change command, activate ...)
+ *      - a panel to create a new network
+ * add a dns configuration panel
+ */
+
 #ifndef  MAIN_INC
 #define  MAIN_INC
 
-#include <libexalt_dbus.h>
-#include <Elementary.h>
-
-#define ICONS_ETHERNET_ACTIVATE PACKAGE_DATA_DIR"/icons/ethernet.png"
-#define ICONS_ETHERNET_ACTIVATE_SMALL PACKAGE_DATA_DIR"/icons/ethernet_small.png"
-
-#define ICONS_WIRELESS_ACTIVATE PACKAGE_DATA_DIR"/icons/wireless.png"
-#define ICONS_WIRELESS_ACTIVATE_SMALL PACKAGE_DATA_DIR"/icons/wireless_small.png"
-
-#define ICONS_ETHERNET_NOT_ACTIVATE PACKAGE_DATA_DIR"/icons/ethernet_not_activate_link.png"
-#define ICONS_ETHERNET_NOT_ACTIVATE_SMALL PACKAGE_DATA_DIR"/icons/ethernet_not_activate_link_small.png"
-
-#define ICONS_WIRELESS_NOT_ACTIVATE PACKAGE_DATA_DIR"/icons/wireless_not_activate_link.png"
-#define ICONS_WIRELESS_NOT_ACTIVATE_SMALL PACKAGE_DATA_DIR"/icons/wireless_not_activate_link_small.png"
-
-
-#define ICONS_LOGO PACKAGE_DATA_DIR"/icons/logo.png"
-
-#ifndef __UNUSED__
-    #define __UNUSED__ __attribute__((unused))
-#endif
-
 typedef enum _iface_type Iface_Type;
+typedef struct _pager Pager;
 
 enum _iface_type
 {
@@ -50,13 +40,40 @@ enum _iface_type
     IFACE_UNKNOWN
 } ;
 
+#ifndef __UNUSED__
+    #define __UNUSED__ __attribute__((unused))
+#endif
+
+
+
+#include <libexalt_dbus.h>
+#include <Elementary.h>
+#include "wired.h"
+#include "wireless.h"
+#include "iface_list.h"
+
+#define DEFAULT_THEME PACKAGE_DATA_DIR"/icons/theme.edj"
+
+struct _pager
+{
+    Evas_Object *pager;
+    Evas_Object *p_list;
+    Evas_Object *p_wired;
+    Evas_Object *p_wireless;
+
+    Evas_Object *iface_list;
+    Wired* wired;
+    Wireless *wireless;
+};
+
+
+Pager pager;
 Evas_Object *win;
-Evas_Object *iface_list;
 #define D_(str) gettext(str)
 
 
 /*
- * The exalt dbus connection is use to communicate with the daemon
+ * The exalt dbus connection is used to communicate with the daemon
  */
 Exalt_DBus_Conn* conn;
 

@@ -29,6 +29,21 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
+# Find edje_cc
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+AC_ARG_WITH(edje-cc,
+  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
+  [
+    v=$withval;
+    EDJE_CC=$v
+  ],[
+    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
+  ]
+)
+AC_SUBST(EDJE_CC)
+AC_MSG_CHECKING([Which edje_cc to use])
+AC_MSG_RESULT(${EDJE_CC})
+
 if test "z$vpnc" = "z"; then
     AC_PATH_PROG(vpnc, vpnc, none)
 fi
