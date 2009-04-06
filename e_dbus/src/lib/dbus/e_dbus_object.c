@@ -9,6 +9,7 @@ static E_DBus_Interface *introspectable_interface = NULL;
 static E_DBus_Interface *properties_interface = NULL;
 
 typedef struct E_DBus_Method E_DBus_Method;
+typedef struct E_DBus_Signal E_DBus_Signal;
 
 Ecore_Strbuf * e_dbus_object_introspect(E_DBus_Object *obj);
 
@@ -20,9 +21,13 @@ static void e_dbus_interface_free(E_DBus_Interface *iface);
 static E_DBus_Method *e_dbus_method_new(const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
 static void e_dbus_object_method_free(E_DBus_Method *m);
 
+static E_DBus_Signal *e_dbus_signal_new(const char *name, const char *signature);
+static void e_dbus_object_signal_free(E_DBus_Signal *s);
+
 static void _introspect_indent_append(Ecore_Strbuf *buf, int level);
 static void _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level);
 static void _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level);
+static void _introspect_signal_append(Ecore_Strbuf *buf, E_DBus_Signal *signal, int level);
 static void _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *direction, int level);
 
 
@@ -56,6 +61,7 @@ struct E_DBus_Interface
 {
   char *name;
   Eina_List *methods;
+  Eina_List *signals;
   int refcount;
 };
 
@@ -65,6 +71,12 @@ struct E_DBus_Method
   char *signature;
   char *reply_signature;
   E_DBus_Method_Cb func;
+};
+
+struct E_DBus_Signal
+{
+  char *name;
+  char *signature;
 };
 
 static DBusMessage *
@@ -328,6 +340,7 @@ static void
 e_dbus_interface_free(E_DBus_Interface *iface)
 {
   E_DBus_Method *m;
+  E_DBus_Signal *s;
 
   if (iface->name) free(iface->name);
   while (iface->methods)
@@ -335,6 +348,12 @@ e_dbus_interface_free(E_DBus_Interface *iface)
        m = eina_list_data_get(iface->methods);
        e_dbus_object_method_free(m);
        iface->methods = eina_list_remove_list(iface->methods, iface->methods);
+    }
+  while (iface->signals)
+    {
+       s = eina_list_data_get(iface->signals);
+       e_dbus_object_signal_free(s);
+       iface->signals = eina_list_remove_list(iface->signals, iface->signals);
     }
   free(iface);
 }
@@ -365,6 +384,28 @@ e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const c
   return 1;
 }
 
+/**
+ * Add a signal to an object
+ *
+ * @param iface the E_DBus_Interface to which this signal belongs
+ * @param name  the name of the signal
+ * @param signature  an optional message signature.
+ *
+ * @return 1 if successful, 0 if failed (e.g. no memory)
+ */
+EAPI int
+e_dbus_interface_signal_add(E_DBus_Interface *iface, const char *name, const char *signature)
+{
+  E_DBus_Signal *s;
+
+  s = e_dbus_signal_new(name, signature);
+  DEBUG(4, "Add signal %s: %p\n", name, s);
+  if (!s) return 0;
+
+  iface->signals = eina_list_append(iface->signals, s);
+  return 1;
+}
+
 EAPI E_DBus_Interface *
 e_dbus_interface_new(const char *interface)
 {
@@ -378,6 +419,7 @@ e_dbus_interface_new(const char *interface)
   iface->refcount = 1;
   iface->name = strdup(interface);
   iface->methods = NULL;
+  iface->signals = NULL;
 
   return iface;
 }
@@ -413,6 +455,33 @@ e_dbus_object_method_free(E_DBus_Method *m)
   if (m->reply_signature) free(m->reply_signature);
 
   free(m);
+}
+
+static E_DBus_Signal *
+e_dbus_signal_new(const char *name, const char *signature)
+{
+  E_DBus_Signal *s;
+
+  if (!name) return NULL;
+
+  if (signature && !dbus_signature_validate(signature, NULL)) return NULL;
+  s = calloc(1, sizeof(E_DBus_Signal));
+  if (!s) return NULL;
+
+  s->name = strdup(name);
+  if (signature)
+    s->signature = strdup(signature);
+
+  return s;
+}
+
+static void
+e_dbus_object_signal_free(E_DBus_Signal *s)
+{
+  if (!s) return;
+  if (s->name) free(s->name);
+  if (s->signature) free(s->signature);
+  free(s);
 }
 
 static E_DBus_Method *
@@ -508,6 +577,7 @@ static void
 _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level)
 {
   E_DBus_Method *method;
+  E_DBus_Signal *signal;
   Eina_List *l;
 
   _introspect_indent_append(buf, level);
@@ -519,6 +589,8 @@ _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int lev
   DEBUG(4, "introspect iface: %s\n", iface->name);
   EINA_LIST_FOREACH(iface->methods, l, method)
     _introspect_method_append(buf, method, level);
+  EINA_LIST_FOREACH(iface->signals, l, signal)
+    _introspect_signal_append(buf, signal, level);
 
   level--;
   _introspect_indent_append(buf, level);
@@ -573,13 +645,49 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
 }
 
 static void
+_introspect_signal_append(Ecore_Strbuf *buf, E_DBus_Signal *signal, int level)
+{
+  DBusSignatureIter iter;
+  char *type;
+
+  _introspect_indent_append(buf, level);
+  DEBUG(4, "introspect signal: %s\n", signal->name);
+  ecore_strbuf_append(buf, "<signal name=\"");
+  ecore_strbuf_append(buf, signal->name);
+  ecore_strbuf_append(buf, "\">\n");
+  level++;
+
+  /* append args */
+  if (signal->signature &&
+      signal->signature[0] &&
+      dbus_signature_validate(signal->signature, NULL))
+  {
+    dbus_signature_iter_init(&iter, signal->signature);
+    while ((type = dbus_signature_iter_get_signature(&iter)))
+    {
+      _introspect_arg_append(buf, type, NULL, level);
+
+      dbus_free(type);
+      if (!dbus_signature_iter_next(&iter)) break;
+    }
+  }
+
+  level--;
+  _introspect_indent_append(buf, level);
+  ecore_strbuf_append(buf, "</signal>\n");
+}
+
+static void
 _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *direction, int level)
 {
   _introspect_indent_append(buf, level);
   ecore_strbuf_append(buf, "<arg type=\"");
   ecore_strbuf_append(buf, type);
-  ecore_strbuf_append(buf, "\" direction=\"");
-  ecore_strbuf_append(buf, direction);
+  if (direction)
+  {
+    ecore_strbuf_append(buf, "\" direction=\"");
+    ecore_strbuf_append(buf, direction);
+  }
   ecore_strbuf_append(buf, "\"/>\n");
 }
 

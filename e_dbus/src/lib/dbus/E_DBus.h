@@ -81,6 +81,8 @@ extern "C" {
    EAPI void e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface);
    EAPI int e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
 
+   EAPI int e_dbus_interface_signal_add(E_DBus_Interface *iface, const char *name, const char *signature);
+
    EAPI E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
    EAPI void e_dbus_object_free(E_DBus_Object *obj);
    EAPI void *e_dbus_object_data_get(E_DBus_Object *obj);
