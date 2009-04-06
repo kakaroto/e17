@@ -170,24 +170,18 @@ e_dbus_connection_free(void *data)
   E_DBus_Connection *cd = data;
   Ecore_Fd_Handler *fd_handler;
   Ecore_Timer *timer;
-  Eina_List *l;
   DEBUG(5, "e_dbus_connection free!\n");
 
-  EINA_LIST_FOREACH(cd->fd_handlers, l, fd_handler)
+  EINA_LIST_FREE(cd->fd_handlers, fd_handler)
     ecore_main_fd_handler_del(fd_handler);
-  while (cd->fd_handlers)
-     cd->fd_handlers = eina_list_remove_list(cd->fd_handlers, cd->fd_handlers);
 
-  EINA_LIST_FOREACH(cd->timeouts, l, timer)
+  EINA_LIST_FREE(cd->timeouts, timer)
     ecore_timer_del(timer);
-  while (cd->timeouts)
-     cd->timeouts = eina_list_remove_list(cd->timeouts, cd->timeouts);
 
   if (cd->shared_type != -1)
     shared_connections[cd->shared_type] = NULL;
 
-  while (cd->signal_handlers)
-     cd->signal_handlers = eina_list_remove_list(cd->signal_handlers, cd->signal_handlers);
+  e_dbus_signal_handlers_free_all(cd);
 
   if (cd->conn_name) free(cd->conn_name);
 

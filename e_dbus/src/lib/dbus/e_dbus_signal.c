@@ -283,3 +283,11 @@ e_dbus_signal_handlers_clean(E_DBus_Connection *conn)
       e_dbus_signal_handler_del(conn, sh);
   }
 }
+
+void
+e_dbus_signal_handlers_free_all(E_DBus_Connection *conn)
+{
+   E_DBus_Signal_Handler *sh;
+   EINA_LIST_FREE(conn->signal_handlers, sh)
+     e_dbus_signal_handler_free(sh);
+}

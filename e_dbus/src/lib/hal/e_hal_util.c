@@ -10,8 +10,7 @@ EAPI void
 e_hal_property_free(E_Hal_Property *prop)
 {
   if (prop->type == E_HAL_PROPERTY_TYPE_STRLIST)
-    while (prop->val.strlist)
-       prop->val.strlist = eina_list_remove_list(prop->val.strlist, prop->val.strlist);
+    eina_list_free(prop->val.strlist);
   free(prop);
 }
 

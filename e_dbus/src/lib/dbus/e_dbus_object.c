@@ -255,12 +255,9 @@ e_dbus_object_free(E_DBus_Object *obj)
   e_dbus_connection_close(obj->conn);
 
   if (obj->path) free(obj->path);
-  while (obj->interfaces)
-    {
-       iface = eina_list_data_get(obj->interfaces);
-       e_dbus_interface_unref(iface);
-       obj->interfaces = eina_list_remove_list(obj->interfaces, obj->interfaces);
-    }
+  EINA_LIST_FREE(obj->interfaces, iface)
+    e_dbus_interface_unref(iface);
+
   if (obj->introspection_data) free(obj->introspection_data);
 
   free(obj);
@@ -343,18 +340,10 @@ e_dbus_interface_free(E_DBus_Interface *iface)
   E_DBus_Signal *s;
 
   if (iface->name) free(iface->name);
-  while (iface->methods)
-    {
-       m = eina_list_data_get(iface->methods);
-       e_dbus_object_method_free(m);
-       iface->methods = eina_list_remove_list(iface->methods, iface->methods);
-    }
-  while (iface->signals)
-    {
-       s = eina_list_data_get(iface->signals);
-       e_dbus_object_signal_free(s);
-       iface->signals = eina_list_remove_list(iface->signals, iface->signals);
-    }
+  EINA_LIST_FREE(iface->methods, m)
+    e_dbus_object_method_free(m);
+  EINA_LIST_FREE(iface->signals, s)
+    e_dbus_object_signal_free(s);
   free(iface);
 }
 

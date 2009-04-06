@@ -36,6 +36,8 @@ void e_dbus_object_shutdown(void);
 
 extern int e_dbus_idler_active;
 void e_dbus_signal_handlers_clean(E_DBus_Connection *conn);
+void e_dbus_signal_handlers_free_all(E_DBus_Connection *conn);
+
 
 const char *e_dbus_basic_type_as_string(int type);
 

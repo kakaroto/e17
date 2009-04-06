@@ -159,8 +159,7 @@ e_notify_free_get_capabilities_return(void *data)
   E_Notification_Return_Get_Capabilities *ret = data;
 
   if (!ret) return;
-  while (ret->capabilities)
-    ret->capabilities = eina_list_remove_list(ret->capabilities, ret->capabilities);
+  eina_list_free(ret->capabilities);
   free(ret);
 }
 

@@ -45,9 +45,7 @@ free_string_list(void *data)
   E_Hal_String_List_Return *ret = data;
 
   if (!ret) return;
-  while (ret->strings)
-    ret->strings = eina_list_remove_list(ret->strings, ret->strings);
-
+  eina_list_free(ret->strings);
   free(ret);
 }
 

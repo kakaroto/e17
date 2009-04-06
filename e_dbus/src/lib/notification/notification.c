@@ -65,8 +65,7 @@ e_notification_free(E_Notification *n)
   if (n->summary) free(n->summary);
   if (n->body) free(n->body);
 
-  while (n->actions) 
-    n->actions = eina_list_remove_list(n->actions, n->actions);
+  eina_list_free(n->actions);
 
   if (n->hints.category) free(n->hints.category);
   if (n->hints.desktop) free(n->hints.desktop);
