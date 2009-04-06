@@ -29,7 +29,7 @@ class EcoreEvasWindow : public Trackable
       XRenderX11 = ECORE_EVAS_ENGINE_XRENDER_X11,
       DirectFB = ECORE_EVAS_ENGINE_DIRECTFB,
       SoftwareX11_16 = ECORE_EVAS_ENGINE_SOFTWARE_16_X11,
-      SDL = ECORE_EVAS_ENGINE_SDL
+      SDL = ECORE_EVAS_ENGINE_SOFTWARE_SDL
     };
   
   public:
