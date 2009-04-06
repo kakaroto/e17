@@ -29,6 +29,16 @@ typedef enum _IV_Image_Dest {
      IMAGE_PREV
 } IV_Image_Dest;
 
+typedef enum _IV_Transform_Direction {
+     FLIP_NONE,
+     FLIP_TL_BR,
+     FLIP_HORIZONTAL,
+     FLIP_VERTICAL,
+     FLIP_BL_TR,
+     FLIP_ROTATE_CL,
+     FLIP_ROTATE_CCL
+} IV_Transform_Direction;
+
 typedef struct _IV IV;
 
 struct _IV
@@ -205,6 +215,94 @@ unfullscreen(IV *iv)
 }
 
 static void
+image_flip_transform(Evas_Object *img, IV_Transform_Direction direction)
+{
+   unsigned int   *data, *data2, *to, *from;
+   unsigned int   *p1, *p2, tmp;
+   int             x, y, w, hw, iw, ih;
+
+   evas_object_image_size_get(img, &iw, &ih);
+   data2 = evas_object_image_data_get(img, 0);
+
+   data = malloc(iw * ih * sizeof(unsigned int));
+   from = data2;
+   w = ih;
+   ih = iw;
+   iw = w;
+   hw = w * ih;
+   switch (direction)
+     {
+      case FLIP_HORIZONTAL:
+	 for (y = 0; y < iw; y++)
+	   {
+	      p1 = data2 + (y * ih);
+	      p2 = data2 + ((y + 1) * ih) - 1;
+	      for (x = 0; x < (ih >> 1); x++)
+		{
+		   tmp = *p1;
+		   *p1 = *p2;
+		   *p2 = tmp;
+		   p1++;
+		   p2--;
+		}
+	   }
+	 evas_object_image_data_set(img, data2);
+	 evas_object_image_data_update_add(img, 0, 0, ih, iw);
+	 return;
+      case FLIP_VERTICAL:
+	 for (y = 0; y < (iw >> 1); y++)
+	   {
+	      p1 = data2 + (y * ih);
+	      p2 = data2 + ((iw - 1 - y) * ih);
+	      for (x = 0; x < ih; x++)
+		{
+		   tmp = *p1;
+		   *p1 = *p2;
+		   *p2 = tmp;
+		   p1++;
+		   p2++;
+		}
+	   }
+	 evas_object_image_data_set(img, data2);
+	 evas_object_image_data_update_add(img, 0, 0, ih, iw);
+	 return;
+      case FLIP_TL_BR:
+	 to = data;
+	 hw = -hw + 1;
+	 break;
+      case FLIP_ROTATE_CL:
+	 to = data + w - 1;
+	 hw = -hw - 1;
+	 break;
+      case FLIP_ROTATE_CCL:
+	 to = data + hw - w;
+	 w = -w;
+	 hw = hw + 1;
+	 break;
+      case FLIP_BL_TR:
+	 to = data + hw - 1;
+	 w = -w;
+	 hw = hw - 1;
+	 break;
+     }
+   from = data2;
+   for (x = iw; --x >= 0;)
+     {
+	for (y = ih; --y >= 0;)
+	  {
+	     *to = *from;
+	     from++;
+	     to += w;
+	  }
+	to += hw;
+     }
+
+   evas_object_image_size_set(img, iw, ih);   
+   evas_object_image_data_set(img, data);
+   evas_object_image_data_update_add(img, 0, 0, iw, ih);
+}
+
+static void
 read_image(IV *iv, IV_Image_Dest dest)
 {
    Evas_Object *img;
@@ -244,7 +342,6 @@ read_image(IV *iv, IV_Image_Dest dest)
 	if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
 	  {
 	     int orientation = 0;
-	     Evas_Transform *t;
 #ifdef HAVE_LIBEXIF
 	     int value = 0;
 	     ExifData  *exif = exif_data_new_from_file(l->data);
@@ -265,35 +362,35 @@ read_image(IV *iv, IV_Image_Dest dest)
 #endif
 	     if (orientation > 1 && orientation < 9)
 	       {
-		  double angle = 0;
+		  IV_Transform_Direction t1 = FLIP_NONE, t2 = FLIP_NONE;
 
 		  switch (orientation)
 		    {
 		     case 2:		/* Horizontal flip */
+			t1 = FLIP_HORIZONTAL;
 			break;
 		     case 3:
-			angle = 180;
+			t1 = FLIP_ROTATE_CL;
+			t2 = FLIP_ROTATE_CL;
 			break;
 		     case 4:		/* Vertical flip */
+			t1 = FLIP_HORIZONTAL;
 			break;
 		     case 5:		/* Transpose */
 			break;
 		     case 6:
-			angle = 90;
+			t1 = FLIP_ROTATE_CL;
 			break;
 		     case 7:		/* Transverse */
 			break;
 		     case 8:
-			angle = 270;
+			t1 = FLIP_ROTATE_CCL;
 			break;
 		    }
-		  if (angle)
-		    {
-		       t = calloc(1, sizeof(Evas_Transform));
-		       evas_transform_rotate(angle, t);
-		       evas_object_image_fill_transform_set(img, t);
-		       free(t);
-		    }
+		  if (t1)
+		    image_flip_transform(img, t1);
+		  if (t2)
+		    image_flip_transform(img, t2);
 	       }
 
 	     switch (dest)
@@ -327,6 +424,9 @@ read_image(IV *iv, IV_Image_Dest dest)
 	     evas_object_del(img);
 	     switch (dest)
 	       {
+		case IMAGE_CURRENT:
+		   l = iv->files;
+		   break;
 		case IMAGE_NEXT:
 		   l = iv->files->next;
 		   break;
