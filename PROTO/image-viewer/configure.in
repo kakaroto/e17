@@ -37,10 +37,23 @@ PKG_CHECK_MODULES([ELEMENTARY], [
                    elementary
 ])
 
-PKG_CHECK_MODULES(ENLIGHTENMENT, enlightenment, [
+PKG_CHECK_MODULES(E, enlightenment, [
     have_enlightenment="yes"
     AC_DEFINE(HAVE_ENLIGHTENMENT, 1, [have enlightenment support])
+], [
+    have_enlightenment="no"
 ])
+
+AM_CONDITIONAL(BUILD_E, test $have_enlightenment = yes)
+
+PKG_CHECK_MODULES(EXIF, libexif, [
+    have_libexif="yes"
+    AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
+], [
+    have_libexif="no"
+])
+
+AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = yes)
 
 AC_OUTPUT([
 Makefile

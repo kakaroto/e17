@@ -5,11 +5,29 @@
 #include <Ecore_File.h>
 #include <Elementary.h>
 
+#include "config.h"
+
+/* Undef until icon_theme is exposed */
+#undef HAVE_ENLIGHTENMENT
+#ifdef HAVE_ENLIGHTENMENT
+  #include <e.h>
+#endif
+
+#ifdef HAVE_LIBEXIF
+  #include <exif-data.h>
+#endif
+
 typedef enum _IV_Image_Fit {
      PAN,
      FIT,
      FIT_SCALE
 } IV_Image_Fit;
+
+typedef enum _IV_Image_Dest {
+     IMAGE_CURRENT,
+     IMAGE_NEXT,
+     IMAGE_PREV
+} IV_Image_Dest;
 
 typedef struct _IV IV;
 
@@ -146,7 +164,7 @@ on_image_resize(void *data, Evas *a, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
 
-   if (obj != iv->gui.img)
+   if (obj != iv->gui.img || !evas_object_visible_get(obj))
      return;
    if (iv->gui.img)
      {
@@ -184,6 +202,141 @@ unfullscreen(IV *iv)
 {
    iv->flags.fullscreen = EINA_FALSE;
    elm_win_fullscreen_set(iv->gui.win, 0);
+}
+
+static void
+read_image(IV *iv, IV_Image_Dest dest)
+{
+   Evas_Object *img;
+   Eina_List *l;
+
+   switch (dest)
+     {
+      case IMAGE_CURRENT:
+	 l = iv->files;
+	 break;
+      case IMAGE_NEXT:
+	 l = iv->files->next;
+
+	 if (!l)
+	   {
+	      l = rewind_list(iv->files);
+	      if (l == iv->files)
+		l = NULL;
+	   }
+	 break;
+      case IMAGE_PREV:
+	 l = iv->files->prev;
+
+	 if (!l)
+	   {
+	      l = eina_list_last(iv->files);
+	      if (l == iv->files)
+		l = NULL;
+	   }
+	 break;
+     }
+
+   while (l)
+     {
+	img = evas_object_image_add(evas_object_evas_get(iv->gui.ly));
+	evas_object_image_file_set(img, l->data, NULL);
+	if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
+	  {
+	     int orientation = 0;
+	     Evas_Transform *t;
+#ifdef HAVE_LIBEXIF
+	     int value = 0;
+	     ExifData  *exif = exif_data_new_from_file(l->data);
+	     ExifEntry *entry = NULL;
+	     ExifByteOrder bo;
+	    
+	     if (exif)
+	       {
+		  entry = exif_data_get_entry(exif, EXIF_TAG_ORIENTATION);
+		  if (entry)
+		    {
+		       bo = exif_data_get_byte_order(exif);
+		       orientation = exif_get_short(entry->data, bo);
+		       exif_entry_free(entry);
+		    }
+		  free(exif);
+	       }
+#endif
+	     if (orientation > 1 && orientation < 9)
+	       {
+		  double angle = 0;
+
+		  switch (orientation)
+		    {
+		     case 2:		/* Horizontal flip */
+			break;
+		     case 3:
+			angle = 180;
+			break;
+		     case 4:		/* Vertical flip */
+			break;
+		     case 5:		/* Transpose */
+			break;
+		     case 6:
+			angle = 90;
+			break;
+		     case 7:		/* Transverse */
+			break;
+		     case 8:
+			angle = 270;
+			break;
+		    }
+		  if (angle)
+		    {
+		       t = calloc(1, sizeof(Evas_Transform));
+		       evas_transform_rotate(angle, t);
+		       evas_object_image_fill_transform_set(img, t);
+		       free(t);
+		    }
+	       }
+
+	     switch (dest)
+	       {
+		case IMAGE_CURRENT:
+		   iv->gui.img = img;
+		   image_configure(iv);
+		   elm_label_label_set(iv->gui.file_label,
+				       (char *) ecore_file_file_get(iv->files->data));
+		   //elm_scroller_content_set(iv->gui.scroller, img);
+		   elm_layout_content_set(iv->gui.ly, "iv.swallow.image", img);
+		   evas_object_show(img);
+		   break;
+		case IMAGE_NEXT:
+		   iv->gui.next_img = img;
+		   break;
+		case IMAGE_PREV:
+		   iv->gui.prev_img = img;
+		   break;
+	       }
+	     evas_object_event_callback_add(img,
+					    EVAS_CALLBACK_RESIZE,
+					    on_image_resize, iv);
+#ifdef HAVE_LIBEXIF
+#endif
+	     break;
+	  }
+	else
+	  {
+	     iv->files = eina_list_remove_list(iv->files, l);
+	     evas_object_del(img);
+	     switch (dest)
+	       {
+		case IMAGE_NEXT:
+		   l = iv->files->next;
+		   break;
+		case IMAGE_PREV:
+		   l = iv->files->prev;
+		   break;
+	       }
+	     continue;
+	  }
+     }
 }
 
 static void
@@ -259,7 +412,10 @@ on_idle_enterer(void *data)
 	  {
 	     snprintf(buf, sizeof(buf), "%s/%s", dir, file);
 	     free(file);
-	     iv->files = eina_list_append(iv->files, eina_stringshare_add(buf));
+	     /* XXX: recursive scanning with an option */
+	     if (!ecore_file_is_dir(buf))
+	       iv->files = eina_list_append(iv->files,
+					    eina_stringshare_add(buf));
 	  }
 
 	eina_stringshare_del(dir);
@@ -273,106 +429,28 @@ on_idle_enterer(void *data)
 
    /* Display the first image */
    if (!iv->gui.img)
-     {
-	Evas_Object *img;
-
-	while (iv->files)
-	  {
-	     img = evas_object_image_add(evas_object_evas_get(iv->gui.ly));
-	     evas_object_image_file_set(img, iv->files->data, NULL);
-	     if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
-	       {
-		  iv->gui.img = img;
-		  image_configure(iv);
-		  elm_label_label_set(iv->gui.file_label,
-				      (char *) ecore_file_file_get(iv->files->data));
-		  /* elm_scroller_content_set(iv->gui.scroller, img); */
-		  elm_layout_content_set(iv->gui.ly, "iv.swallow.image", img);
-		  evas_object_show(img);
-		  evas_object_event_callback_add(img, EVAS_CALLBACK_RESIZE, on_image_resize, iv);
-		  break;
-	       }
-	     else
-	       {
-		  iv->files = eina_list_remove_list(iv->files, iv->files);
-		  evas_object_del(img);
-		  continue;
-	       }
-	  }
-     }
+     read_image(iv, IMAGE_CURRENT);
    else
      {
 	Evas_Object *img;
 
 	if (!iv->gui.prev_img)
 	  {
-	     Eina_List *l = iv->files->prev;
+	     read_image(iv, IMAGE_PREV);
 
-	     if (!l)
-	       {
-		  l = eina_list_last(iv->files);
-		  if (l == iv->files)
-		    l = NULL;
-	       }
-
-	     if (l)
+	     if (iv->gui.prev_img)
 	       evas_object_show(iv->gui.prev_bt);
 	     else
 	       evas_object_hide(iv->gui.prev_bt);
-
-	     while (l)
-	       {
-		  img = evas_object_image_add(evas_object_evas_get(iv->gui.ly));
-		  evas_object_image_file_set(img, l->data, NULL);
-		  if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
-		    {
-		       iv->gui.prev_img = img;
-		       evas_object_event_callback_add(img, EVAS_CALLBACK_RESIZE, on_image_resize, iv);
-		       break;
-		    }
-		  else
-		    {
-		       iv->files = eina_list_remove_list(iv->files, l);
-		       l = iv->files->prev;
-		       evas_object_del(img);
-		       continue;
-		    }
-	       }
 	  }
 	if (!iv->gui.next_img)
 	  {
-	     Eina_List *l = iv->files->next;
+	     read_image(iv, IMAGE_NEXT);
 
-	     if (!l)
-	       {
-		  l = rewind_list(iv->files);
-		  if (l == iv->files)
-		    l = NULL;
-	       }
-
-	     if (l)
+	     if (iv->gui.next_img)
 	       evas_object_show(iv->gui.next_bt);
 	     else
 	       evas_object_hide(iv->gui.next_bt);
-
-	     while (l)
-	       {
-		  img = evas_object_image_add(evas_object_evas_get(iv->gui.ly));
-		  evas_object_image_file_set(img, l->data, NULL);
-		  if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
-		    {
-		       evas_object_event_callback_add(img, EVAS_CALLBACK_RESIZE, on_image_resize, iv);
-		       iv->gui.next_img = img;
-		       break;
-		    }
-		  else
-		    {
-		       iv->files = eina_list_remove_list(iv->files, l);
-		       l = iv->files->next;
-		       evas_object_del(img);
-		       continue;
-		    }
-	       }
 	  }
      }
 
@@ -397,7 +475,7 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
-	     /* elm_scroller_content_set(iv->gui.scroller, iv->gui.img); */
+	     //elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
@@ -423,7 +501,7 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
-	     /* elm_scroller_content_set(iv->gui.scroller, iv->gui.img); */
+	     //elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
