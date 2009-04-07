@@ -1,3 +1,9 @@
+python-evas (0.1.0-2) unstable; urgency=low
+
+  * Added libeina-dev as build-dep
+
+ -- Rodrigo Belem <rclbelem@gmail.com>  Tue, 07 Apr 2009 08:30:40 -0400
+
 python-evas (0.1.0-1) unstable; urgency=low
 
   * Initial release

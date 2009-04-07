@@ -135,14 +135,31 @@ class evas_build_ext(build_ext):
 
 
 class evas_install_headers(install_headers):
+
+    def initialize_options(self):
+        install_headers.initialize_options(self)
+
+        self.root = None
+        self.prefix = None
+        self.install_dir = None
+
     def finalize_options(self):
+
+        self.set_undefined_options('install',
+                                   ('root', 'root'),
+                                   ('prefix', 'prefix'),
+                                   ('install_headers', 'install_dir'),
+                                   ('force', 'force'),
+                                  )
+
         if self.install_dir is None:
             instd = get_python_inc()
         else:
             instd = self.install_dir
 
-        self.install_dir = os.path.join(instd, 'evas')
-        install_headers.finalize_options(self)
+        self.install_dir = os.path.join(self.prefix, instd, 'evas')
+        if self.root:
+            self.install_dir = os.path.join(self.root, self.install_dir)
 
 
 setup(name='python-evas',
