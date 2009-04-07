@@ -1,0 +1,24 @@
+From d41e233e6d0107c19fbaa9db48b853dcb2a2f539 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 10:39:14 +1100
+Subject: [PATCH] sercrevs: add revs for swisstelecom packages back in
+
+---
+ conf/distro/include/sane-srcrevs.inc |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index bd1a76b..a8965e0 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -315,3 +315,7 @@ SRCREV_pn-rage ?= "${EFL_SRCREV}"
+ SRCREV_pn-illume ?= "${EFL_SRCREV}"
+ SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
+ SRCREV_pn-waker ?= "${EFL_SRCREV}"
++
++# Swisstelecom E stuff
++SRCREV_pn-libefso ?= "60"
++SRCREV_pn-essential-dialer ?= "60"
+-- 
+1.5.6.3
+

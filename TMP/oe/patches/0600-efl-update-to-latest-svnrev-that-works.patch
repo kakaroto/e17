@@ -1,0 +1,25 @@
+From 8d84f307ba76730f2badda5f827afa0f80f52967 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Sun, 15 Mar 2009 15:53:05 +1100
+Subject: [PATCH] efl: update to latest svnrev that works
+
+---
+ conf/distro/include/sane-srcrevs.inc |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index ce7443f..1108682 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -246,7 +246,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "39096"
++EFL_SRCREV ?= "39487"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+-- 
+1.5.6.3
+

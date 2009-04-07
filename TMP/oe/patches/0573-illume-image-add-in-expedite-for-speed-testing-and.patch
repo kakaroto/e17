@@ -1,0 +1,38 @@
+From c9116c6d3c2c94a9e6aa4cd7f3176cbfe3bda3e8 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Fri, 9 Jan 2009 17:38:49 +1100
+Subject: [PATCH] illume-image: add in expedite for speed testing and disable exquisite, for now.
+
+---
+ packages/images/illume-image.bb |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index 549fb78..310893d 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -14,9 +14,9 @@ BASE_INSTALL = "\
+   modutils-initscripts \
+   module-init-tools-depmod \
+ #  prelink \
+-  exquisite \
+-  exquisite-themes \
+-  exquisite-theme-illume \
++#  exquisite \
++#  exquisite-themes \
++#  exquisite-theme-illume \
+ "
+ 
+ # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
+@@ -118,6 +118,8 @@ ZHONE_INSTALL = "\
+ APPS_INSTALL = "\
+    elementary-alarm \
+    gpe-scap \
++   expedite \
++   expedite-themes \
+ #   libefso \
+ #   essential-dialer \
+ "
+-- 
+1.5.6.3
+

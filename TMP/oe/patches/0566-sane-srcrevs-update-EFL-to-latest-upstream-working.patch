@@ -1,0 +1,26 @@
+From f96ebdcf60e8289821a2ce01f725e3ea4dec49c5 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 1 Dec 2008 12:40:54 +1100
+Subject: [PATCH] sane-srcrevs: update EFL to latest upstream working rev
+
+i don't recommend using this rev unless you like bleeding-edge
+---
+ conf/distro/include/sane-srcrevs.inc |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index a8965e0..a102580 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -246,7 +246,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "38853"
++EFL_SRCREV ?= "37872"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+-- 
+1.5.6.3
+

@@ -1,0 +1,31 @@
+From f838db30b5c13a588105644d1c68f9f45e1520a4 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Sun, 15 Mar 2009 04:06:40 +1100
+Subject: [PATCH] illume-image: disable gles for overo as.. well overo is officially 3503 only
+ and add devmem2 for bb
+
+---
+ packages/images/illume-image.bb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index fd8c4d8..f67e356 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -101,11 +101,11 @@ AUDIO_INSTALL_append_om-gta02 = "openmoko-alsa-scenarios"
+ 
+ # GLES libs - put them on if the platform has them
+ GLES_INSTALL = ""
+-GLES_INSTALL_append_beagleboard  = "libgles-omap3"
++GLES_INSTALL_append_beagleboard  = "libgles-omap3 devmem2"
+ GLES_INSTALL_append_omap-3430sdp = "libgles-omap3"
+ GLES_INSTALL_append_omap-3430ldp = "libgles-omap3"
+ GLES_INSTALL_append_omap3evm     = "libgles-omap3"
+-GLES_INSTALL_append_overo        = "libgles-omap3"
++#GLES_INSTALL_append_overo        = "libgles-omap3"
+ GLES_INSTALL_append_mx31ads      = "libgles-mx31"
+ GLES_INSTALL_append_mx31litekit  = "libgles-mx31"
+ GLES_INSTALL_append_zylonite     = "libgles-zylonite"
+-- 
+1.5.6.3
+

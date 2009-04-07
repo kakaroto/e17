@@ -1,0 +1,29 @@
+From 8a262d55312750845af8c795466720fb4085105b Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 12 Jan 2009 00:41:04 +1100
+Subject: [PATCH] xserver-kdrive-common: add omap3 beagleboard section to run xorg ro Xserver
+ script
+
+---
+ .../xserver-kdrive-common/Xserver                  |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
+index 76a09b5..d98d71e 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/Xserver
+@@ -133,6 +133,11 @@ case `module_id` in
+         "Freescale MX21ADS")
+ 	# That's what /proc/cpuinfo shows as hardware on the chumby
+                  ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib" ;;
++        "OMAP3 Beagle Board")
++                 ARGS="$ARGS -br"
++# 32bpp - we'll enable it once newer kernels are.. working.                 
++#                 ARGS="$ARGS -fbbpp32"
++                 XSERVER=/usr/bin/Xorg ;;
+         *)
+                 # It is a device we do not know about, in which case we force
+                 # kdrive to use the current framebuffer geometry -- otherwise
+-- 
+1.5.6.3
+

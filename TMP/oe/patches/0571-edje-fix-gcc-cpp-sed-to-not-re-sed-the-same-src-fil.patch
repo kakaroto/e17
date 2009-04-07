@@ -1,0 +1,67 @@
+From fe012f09a1be4336b4821700dcfeee0d1476a7a7 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 4 Dec 2008 12:57:10 +1100
+Subject: [PATCH] edje: fix gcc+cpp sed to not re-sed the same src file on rebuild
+
+---
+ packages/efl1/edje-native_svn.bb |    6 +++---
+ packages/efl1/edje-sdk_svn.bb    |    2 +-
+ packages/efl1/edje_svn.bb        |    3 +--
+ 3 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/packages/efl1/edje-native_svn.bb b/packages/efl1/edje-native_svn.bb
+index 238bfd0..e7650cd 100644
+--- a/packages/efl1/edje-native_svn.bb
++++ b/packages/efl1/edje-native_svn.bb
+@@ -1,11 +1,11 @@
+ require edje_${PV}.bb
+ inherit native
+-PR = "r1"
++PR = "r3"
+ 
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+ 
+ do_configure_prepend() {
+ 	sed -i 's:EMBRYO_PREFIX"/bin:"${STAGING_BINDIR}:' ${S}/src/bin/edje_cc_out.c
+-	sed -i 's:cpp -I:/usr/bin/cpp -I:' ${S}/src/bin/edje_cc_parse.c
+-	sed -i 's:gcc -I:/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
++	sed -i 's: cpp -I: /usr/bin/cpp -I:' ${S}/src/bin/edje_cc_parse.c
++	sed -i 's:\"gcc -I:\"/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
+ }
+diff --git a/packages/efl1/edje-sdk_svn.bb b/packages/efl1/edje-sdk_svn.bb
+index 2bd75a0..1733380 100644
+--- a/packages/efl1/edje-sdk_svn.bb
++++ b/packages/efl1/edje-sdk_svn.bb
+@@ -1,7 +1,7 @@
+ require edje_svn.bb
+ 
+ inherit sdk
+-PR = "r1"
++PR = "r3"
+ 
+ SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-sdk', '')}"
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+diff --git a/packages/efl1/edje_svn.bb b/packages/efl1/edje_svn.bb
+index 7cf257f..31d47e6 100644
+--- a/packages/efl1/edje_svn.bb
++++ b/packages/efl1/edje_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
+ DEPENDS = "eet evas ecore embryo edje-native"
+ LICENSE = "MIT BSD"
+ PV = "0.5.0.050+svnr${SRCREV}"
+-PR = "r1"
++PR = "r3"
+ 
+ inherit efl
+ 
+@@ -17,7 +17,6 @@ RRECOMMENDS_${PN}-utils = "\
+   libevas-saver-png \
+   libevas-saver-jpeg \
+   libevas-saver-eet \
+-  libevas-saver-tiff \
+ "
+ 
+ DEBIAN_NOAUTONAME_${PN}-utils = "1"
+-- 
+1.5.6.3
+

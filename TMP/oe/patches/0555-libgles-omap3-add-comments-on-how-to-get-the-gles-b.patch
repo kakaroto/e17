@@ -1,0 +1,108 @@
+From 63726f04c4507cb7bb2d1274de84f0312d30e3d6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 19 Feb 2009 21:58:20 +1100
+Subject: [PATCH] libgles-omap3: add comments on how to get the gles binary files to help
+ people get started faster
+
+Signed-off-by: Koen Kooi <koen@openembedded.org>
+---
+ conf/distro/include/sane-srcrevs.inc       |    2 +-
+ packages/efl1/ecore.inc                    |    2 +-
+ packages/mtd/mtd-utils-native_1.2.0+git.bb |    2 +-
+ packages/qte/qte-mt-static_2.3.10.bb       |   22 ----------------------
+ packages/qte/qte-mt_2.3.10.bb              |    6 ------
+ packages/qte/qte_2.3.10.bb                 |    3 ---
+ 6 files changed, 3 insertions(+), 34 deletions(-)
+ delete mode 100644 packages/qte/qte-mt-static_2.3.10.bb
+ delete mode 100644 packages/qte/qte-mt_2.3.10.bb
+ delete mode 100644 packages/qte/qte_2.3.10.bb
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index f241d7c..bd1a76b 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -246,7 +246,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "38544"
++EFL_SRCREV ?= "38853"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
+diff --git a/packages/efl1/ecore.inc b/packages/efl1/ecore.inc
+index 653fb18..27dd10d 100644
+--- a/packages/efl1/ecore.inc
++++ b/packages/efl1/ecore.inc
+@@ -8,7 +8,7 @@ PR = "r1"
+ 
+ inherit efl
+ 
+-SRC_URI += "file://fix-directfb-include.patch;patch=1"
++#SRC_URI += "file://fix-directfb-include.patch;patch=1"
+ 
+ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
+ 
+diff --git a/packages/mtd/mtd-utils-native_1.2.0+git.bb b/packages/mtd/mtd-utils-native_1.2.0+git.bb
+index 6135d7f..5fa3bbb 100644
+--- a/packages/mtd/mtd-utils-native_1.2.0+git.bb
++++ b/packages/mtd/mtd-utils-native_1.2.0+git.bb
+@@ -1,5 +1,5 @@
+ # Doesn't build for everyone, errors range from missing includes to linking errors
+-DEFAULT_PREFERENCE = "-1"
++DEFAULT_PREFERENCE = "1"
+ 
+ require mtd-utils_${PV}.bb
+ require mtd-utils-native.inc
+diff --git a/packages/qte/qte-mt-static_2.3.10.bb b/packages/qte/qte-mt-static_2.3.10.bb
+deleted file mode 100644
+index 68ab2ac..0000000
+--- a/packages/qte/qte-mt-static_2.3.10.bb
++++ /dev/null
+@@ -1,22 +0,0 @@
+-require qte-common_${PV}.inc
+-PR = "r8"
+-
+-DEFAULT_PREFERENCE = "-1"
+-
+-EXTRA_OECONF += "-static -thread"
+-
+-do_stage() {
+-	rm -rf ${STAGING_DIR_HOST}/qt2
+-	install -d ${STAGING_DIR_HOST}/qt2/lib
+-	oe_libinstall -a -C lib libqte-mt ${STAGING_DIR_HOST}/qt2/lib
+-	rm -f include/qxt.h
+-	install -d ${STAGING_DIR_HOST}/qt2/include
+-	cp -pfLR include/* ${STAGING_DIR_HOST}/qt2/include
+-	cp -pPR lib/fonts ${STAGING_DIR_HOST}/qt2/lib/
+-}
+-
+-do_install() {
+-	:
+-}
+-
+-PACKAGE_ARCH = "${MACHINE_ARCH}"
+diff --git a/packages/qte/qte-mt_2.3.10.bb b/packages/qte/qte-mt_2.3.10.bb
+deleted file mode 100644
+index 32afeda..0000000
+--- a/packages/qte/qte-mt_2.3.10.bb
++++ /dev/null
+@@ -1,6 +0,0 @@
+-require qte-common_${PV}.inc
+-PR = "r27"
+-
+-EXTRA_OECONF += "-thread"
+-
+-DEFAULT_PREFERENCE = "1"
+diff --git a/packages/qte/qte_2.3.10.bb b/packages/qte/qte_2.3.10.bb
+deleted file mode 100644
+index 68825b6..0000000
+--- a/packages/qte/qte_2.3.10.bb
++++ /dev/null
+@@ -1,3 +0,0 @@
+-require qte-common_${PV}.inc
+-PR = "r52"
+-
+-- 
+1.5.6.3
+

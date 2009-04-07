@@ -1,0 +1,32 @@
+From 8ea2704951665afb5a545ccdc5a3a56fe5d0259d Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 2 Feb 2009 12:22:19 +1100
+Subject: [PATCH] pointercal: update treo650 calibration - better.
+
+---
+ packages/pointercal/files/palmt650/pointercal |    2 +-
+ packages/pointercal/pointercal_0.0.bb         |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/pointercal/files/palmt650/pointercal b/packages/pointercal/files/palmt650/pointercal
+index 2422cdb..76070ae 100644
+--- a/packages/pointercal/files/palmt650/pointercal
++++ b/packages/pointercal/files/palmt650/pointercal
+@@ -1 +1 @@
+-6537 -44 -2624676 13 -6953 25456420 65536
++6542 -110 -2499320 6 -6625 24172268 65536
+diff --git a/packages/pointercal/pointercal_0.0.bb b/packages/pointercal/pointercal_0.0.bb
+index 8ff9267..dbb14c4 100644
+--- a/packages/pointercal/pointercal_0.0.bb
++++ b/packages/pointercal/pointercal_0.0.bb
+@@ -1,6 +1,6 @@
+ DESCRIPTION = "Touchscreen calibration data"
+ SECTION = "base"
+-PR = "r11"
++PR = "r12"
+ 
+ SRC_URI = "file://pointercal"
+ S = "${WORKDIR}"
+-- 
+1.5.6.3
+

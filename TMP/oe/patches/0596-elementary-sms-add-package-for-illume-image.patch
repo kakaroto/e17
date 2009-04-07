@@ -1,0 +1,35 @@
+From 948137d01045e80737d19f3b5dc8b3cee94fbfea Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Thu, 19 Feb 2009 22:32:24 +1100
+Subject: [PATCH] elementary-sms: add package for illume image
+
+---
+ packages/e17/elementary-sms_svn.bb |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+ create mode 100644 packages/e17/elementary-sms_svn.bb
+
+diff --git a/packages/e17/elementary-sms_svn.bb b/packages/e17/elementary-sms_svn.bb
+new file mode 100644
+index 0000000..2f0eec3
+--- /dev/null
++++ b/packages/e17/elementary-sms_svn.bb
+@@ -0,0 +1,16 @@
++DESCRIPTION = "An Elementary based SMS app"
++LICENSE = "GPL"
++DEPENDS = "ecore edbus elementary libefso"
++SECTION = "x11"
++PV = "0.0.0+svnr${SRCREV}"
++PR = "r1"
++
++inherit e
++
++SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary-sms;proto=http"
++S = "${WORKDIR}/elementary-sms"
++
++FILES_${PN} += "${bindir}/*"
++FILES_${PN} += "${datadir}/${PN}"
++FILES_${PN} += "${datadir}/icons/*"
++FILES_${PN} += "${datadir}/applications/*"
+-- 
+1.5.6.3
+

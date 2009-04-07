@@ -1,0 +1,33 @@
+From e07d5b2441afdef60f183361f7626cc84d353b01 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Tue, 7 Apr 2009 19:31:37 +1000
+Subject: [PATCH] illume-image: add wireless toosl for systems with wifi, and x11 locales
+
+---
+ packages/images/illume-image.bb |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/packages/images/illume-image.bb b/packages/images/illume-image.bb
+index f67e356..87a55a8 100644
+--- a/packages/images/illume-image.bb
++++ b/packages/images/illume-image.bb
+@@ -11,6 +11,7 @@ BASE_INSTALL = "\
+   task-base \
+   netbase \
+   sysfsutils \
++  wireless-tools \
+   modutils-initscripts \
+   module-init-tools-depmod \
+ #  prelink \
+@@ -27,6 +28,8 @@ XSERVER ?= "xserver-kdrive-fbdev"
+ 
+ # getting an X window system up
+ X_INSTALL = "\
++  libx11-locale \
++  localedef \
+   glibc-charmap-utf-8 \
+   shared-mime-info \
+   mime-support \
+-- 
+1.5.6.3
+

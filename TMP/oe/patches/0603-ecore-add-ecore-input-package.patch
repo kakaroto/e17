@@ -1,0 +1,32 @@
+From bb8745e86523df891007016dd504cff158816d4a Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Tue, 7 Apr 2009 19:31:12 +1000
+Subject: [PATCH] ecore: add ecore-input package.
+
+---
+ packages/efl1/ecore.inc |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/packages/efl1/ecore.inc b/packages/efl1/ecore.inc
+index 27dd10d..03e1c01 100644
+--- a/packages/efl1/ecore.inc
++++ b/packages/efl1/ecore.inc
+@@ -23,6 +23,7 @@ PACKAGES += "\
+     ${PN}-file \
+     ${PN}-imf \
+     ${PN}-imf-evas \
++    ${PN}-input \
+     ${PN}-ipc \
+     ${PN}-job \
+     ${PN}-txt \
+@@ -39,6 +40,7 @@ FILES_${PN}-fb = "${libdir}/libecore_fb.so.*"
+ FILES_${PN}-file = "${libdir}/libecore_file.so.*"
+ FILES_${PN}-imf = "${libdir}/libecore_imf.so.*"
+ FILES_${PN}-imf-evas = "${libdir}/libecore_imf_evas.so.*"
++FILES_${PN}-input = "${libdir}/libecore_input.so.*"
+ FILES_${PN}-ipc = "${libdir}/libecore_ipc.so.*"
+ FILES_${PN}-job = "${libdir}/libecore_job.so.*"
+ FILES_${PN}-txt = "${libdir}/libecore_txt.so.*"
+-- 
+1.5.6.3
+

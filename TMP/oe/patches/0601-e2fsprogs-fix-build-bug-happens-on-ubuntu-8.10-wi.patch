@@ -1,0 +1,67 @@
+From f66c6950ae8e32aa40066fac0d381fe84e9cab5b Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster) <raster@rasterman.com>
+Date: Tue, 7 Apr 2009 19:22:24 +1000
+Subject: [PATCH] e2fsprogs: fix build bug (happens on ubuntu 8.10) with wrong # of open params
+
+---
+ .../e2fsprogs/e2fsprogs-1.38/file-open-mode.patch  |   11 +++++++++++
+ packages/e2fsprogs/e2fsprogs-native_1.38.bb        |    5 +++--
+ packages/e2fsprogs/e2fsprogs_1.38.bb               |    3 ++-
+ 3 files changed, 16 insertions(+), 3 deletions(-)
+ create mode 100644 packages/e2fsprogs/e2fsprogs-1.38/file-open-mode.patch
+
+diff --git a/packages/e2fsprogs/e2fsprogs-1.38/file-open-mode.patch b/packages/e2fsprogs/e2fsprogs-1.38/file-open-mode.patch
+new file mode 100644
+index 0000000..97679d6
+--- /dev/null
++++ b/packages/e2fsprogs/e2fsprogs-1.38/file-open-mode.patch
+@@ -0,0 +1,11 @@
++--- e2fsprogs-1.38/lib/ext2fs/ismounted.c~	2005-06-06 06:05:22.000000000 +1000
+++++ e2fsprogs-1.38/lib/ext2fs/ismounted.c	2009-04-03 15:07:35.000000000 +1100
++@@ -147,7 +147,7 @@
++ is_root:
++ #define TEST_FILE "/.ismount-test-file"		
++ 		*mount_flags |= EXT2_MF_ISROOT;
++-		fd = open(TEST_FILE, O_RDWR|O_CREAT);
+++		fd = open(TEST_FILE, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
++ 		if (fd < 0) {
++ 			if (errno == EROFS)
++ 				*mount_flags |= EXT2_MF_READONLY;
+diff --git a/packages/e2fsprogs/e2fsprogs-native_1.38.bb b/packages/e2fsprogs/e2fsprogs-native_1.38.bb
+index 388c519..af49b0d 100644
+--- a/packages/e2fsprogs/e2fsprogs-native_1.38.bb
++++ b/packages/e2fsprogs/e2fsprogs-native_1.38.bb
+@@ -2,11 +2,12 @@ SECTION = "base"
+ require e2fsprogs.inc
+ inherit native
+ 
+-PR = "r2"
++PR = "r3"
+ 
+ SRC_URI += "file://no-hardlinks.patch;patch=1 \
+ 	    file://mkinstalldirs.patch;patch=1 \
+-	   "
++            file://file-open-mode.patch;patch=1 \
++            "
+ 
+ EXTRA_OECONF = ""
+ 
+diff --git a/packages/e2fsprogs/e2fsprogs_1.38.bb b/packages/e2fsprogs/e2fsprogs_1.38.bb
+index 4957ba7..edef102 100644
+--- a/packages/e2fsprogs/e2fsprogs_1.38.bb
++++ b/packages/e2fsprogs/e2fsprogs_1.38.bb
+@@ -1,9 +1,10 @@
+ require e2fsprogs.inc
+ 
+-PR = "r18"
++PR = "r19"
+ 
+ SRC_URI += "file://no-hardlinks.patch;patch=1 \
+ 	    file://mkinstalldirs.patch;patch=1 \
++	    file://file-open-mode.patch;patch=1 \
+ 	   "
+ 
+ do_compile_prepend () {
+-- 
+1.5.6.3
+

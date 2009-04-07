@@ -1,0 +1,20 @@
+From d2c97989d865bd869d03747883aed775f8c0e6db Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler (Raster <raster@rasterman.com>
+Date: Mon, 26 Jan 2009 10:11:02 +1100
+Subject: [PATCH] add pointercal for palmt650
+
+---
+ packages/pointercal/files/palmt650/pointercal |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+ create mode 100644 packages/pointercal/files/palmt650/pointercal
+
+diff --git a/packages/pointercal/files/palmt650/pointercal b/packages/pointercal/files/palmt650/pointercal
+new file mode 100644
+index 0000000..2422cdb
+--- /dev/null
++++ b/packages/pointercal/files/palmt650/pointercal
+@@ -0,0 +1 @@
++6537 -44 -2624676 13 -6953 25456420 65536
+-- 
+1.5.6.3
+
