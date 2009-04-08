@@ -64,17 +64,6 @@ struct _Eve_Scrolled_Webview_Data
 static Evas_Smart_Class _parent_sc = {NULL};
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 
-static bool
-_eina_stringshare_replace(const char **p, const char *new)
-{
-   new = eina_stringshare_add(new);
-   eina_stringshare_del(*p);
-   if (*p == new)
-     return 0;
-   *p = new;
-   return 1;
-}
-
 static void
 _eve_scrolled_webview_scroll_by(Eve_Scrolled_Webview_Data *priv, int dx, int dy)
 {
@@ -394,7 +383,7 @@ bool
 eve_scrolled_webview_theme_file_set(Evas_Object *o, const char *file)
 {
    EVE_SCROLLED_WEBVIEW_DATA_GET_OR_RETURN_VAL(o, priv, 0);
-   _eina_stringshare_replace(&priv->file, file);
+   eina_stringshare_replace(&priv->file, file);
    return _eve_scrolled_webview_edje_reset(priv);
 }
 
@@ -409,7 +398,7 @@ bool
 eve_scrolled_webview_theme_group_set(Evas_Object *o, const char *group)
 {
    EVE_SCROLLED_WEBVIEW_DATA_GET_OR_RETURN_VAL(o, priv, 0);
-   _eina_stringshare_replace(&priv->group, group);
+   eina_stringshare_replace(&priv->group, group);
    return _eve_scrolled_webview_edje_reset(priv);
 }
 

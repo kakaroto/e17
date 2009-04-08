@@ -58,17 +58,6 @@ static Evas_Smart_Class _parent_sc = {NULL};
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 static const char EDJE_PART_LOCATION[] = "eve.text.location";
 
-static bool
-_eina_stringshare_replace(const char **p, const char *new)
-{
-   new = eina_stringshare_add(new);
-   eina_stringshare_del(*p);
-   if (*p == new)
-     return 0;
-   *p = new;
-   return 1;
-}
-
 static void
 _eve_navigator_load_url(Eve_Navigator_Data *priv, const char *url)
 {
@@ -86,7 +75,7 @@ _eve_navigator_load_url(Eve_Navigator_Data *priv, const char *url)
         url = buf;
      }
 
-   if (!_eina_stringshare_replace(&priv->url, url))
+   if (!eina_stringshare_replace(&priv->url, url))
      return;
 
    ewk_webview_object_load_url(priv->webview, priv->url);
@@ -154,7 +143,7 @@ _eve_navigator_on_title_changed(void *data, Evas_Object *obj, void *event_info)
 {
    Eve_Navigator_Data *priv = data;
    EWebKit_Event_Title_Changed *ev = event_info;
-   if (!_eina_stringshare_replace(&priv->title, ev->title))
+   if (!eina_stringshare_replace(&priv->title, ev->title))
      return;
    edje_object_part_text_set(priv->edje, "eve.text.title", priv->title);
 }
@@ -164,7 +153,7 @@ _eve_navigator_on_url_changed(void *data, Evas_Object *obj, void *event_info)
 {
    Eve_Navigator_Data *priv = data;
    EWebKit_Event_Url_Changed *ev = event_info;
-   if (!_eina_stringshare_replace(&priv->url, ev->url))
+   if (!eina_stringshare_replace(&priv->url, ev->url))
      return;
    edje_object_part_text_set(priv->edje, "eve.text.location", priv->url);
 }
@@ -403,7 +392,7 @@ eve_navigator_theme_file_set(Evas_Object *o, const char *file)
    EVE_NAVIGATOR_DATA_GET_OR_RETURN_VAL(o, priv, 0);
    if (!eve_scrolled_webview_theme_file_set(priv->scrolled, file))
      return 0;
-   _eina_stringshare_replace(&priv->file, file);
+   eina_stringshare_replace(&priv->file, file);
    return _eve_navigator_edje_reset(priv);
 }
 
@@ -418,7 +407,7 @@ bool
 eve_navigator_theme_group_set(Evas_Object *o, const char *group)
 {
    EVE_NAVIGATOR_DATA_GET_OR_RETURN_VAL(o, priv, 0);
-   _eina_stringshare_replace(&priv->group, group);
+   eina_stringshare_replace(&priv->group, group);
    return _eve_navigator_edje_reset(priv);
 }
 

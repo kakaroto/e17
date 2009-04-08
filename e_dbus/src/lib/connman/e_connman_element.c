@@ -662,17 +662,6 @@ e_connman_element_new(const char *path, const char *interface)
    return element;
 }
 
-static inline int
-_stringshare_replace(const char **str, const char *new)
-{
-   new = eina_stringshare_add(new);
-   eina_stringshare_del(*str);
-   if (*str == new)
-     return 0;
-   *str = new;
-   return 1;
-}
-
 static void
 e_connman_element_extra_properties_free(E_Connman_Element *element)
 {
