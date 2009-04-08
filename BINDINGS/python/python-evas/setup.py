@@ -157,12 +157,12 @@ class evas_install_headers(install_headers):
         else:
             instd = self.install_dir
 
-        self.install_dir = os.path.join(self.prefix, instd, 'evas')
+        self.install_dir = os.path.join(self.prefix, instd)
         if self.root:
             self.install_dir = os.path.join(self.root, self.install_dir)
 
 
-setup(name='python-evas',
+setup(name='evas',
       version='0.3.1',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
