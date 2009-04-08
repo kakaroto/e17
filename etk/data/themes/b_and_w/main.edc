@@ -1,0 +1,7246 @@
+/* 
+ * Etk B_and_W theme version 0.1
+ * partially based on detour-etk 0.4.1 - a bit of code :)
+ * Most code taken from E17 b_and_w and the other made from scratch.
+ */
+
+/* ETK - The Enlightened ToolKit
+ * Copyright (C) 2006-2008 Simon Treny, Hisham Mardam-Bey, Vincent Torri, Viktor Kojouharov
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. 
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* MACROS */
+
+/* STYLE 
+ * Used as a base for label styles.
+ */
+
+#define STYLE(style_class, fn, fb, fi, fbi, fm, size, normal_style, title, subtitle, glow, description) \
+style { \
+	name: style_class; \
+	base: "font="fn" font_size="size" align=left wrap=word "normal_style; \
+	tag: "br" "\n"; \
+	tag: "tab" "\t"; \
+	tag: "left" "+ align=left"; \
+	tag: "/left" "-\n"; \
+	tag: "center" "+ align=center"; \
+	tag: "/center" "- \n"; \
+	tag: "right" "+ align=right"; \
+	tag: "/right" "- \n"; \
+	tag: "b" "+ font="fb; \
+	tag: "i" "+ font="fi; \
+	tag: "bi" "+ font="fbi; \
+	tag: "mono" "+ font="fm; \
+	tag: "title" "+ "title; \
+	tag: "subtitle" "+ "subtitle; \
+	tag: "glow" "+ "glow; \
+	tag: "description" "+ "description; \
+}
+
+/* TREE HEADER
+ * Used to display tree header background.
+ */
+
+#define TREE_HEADER(group_name) \
+group { \
+	name: group_name; \
+	data { \
+		item: "inset" "1 5 5 4"; \
+	} \
+	images { \
+		image: "bt_base1.png" COMP; \
+		image: "bt_base2.png" COMP; \
+		image: "bt_hilight.png" COMP; \
+		image: "bt_shine.png" COMP; \
+		image: "bt_glow.png" COMP; \
+	} \
+	parts { \
+		part { \
+			name: "button_image"; /* Base image */ \
+			description { \
+				state: "default" 0.0; \
+				min: 0 26; \
+				image { \
+					normal: "bt_base2.png"; \
+					border: 7 7 7 7; \
+				} \
+			} \
+			description { \
+				state: "clicked" 0.0; \
+				inherit: "default" 0.0; \
+				image { \
+					normal: "bt_base1.png"; \
+				} \
+			} \
+		} \
+		part { \
+			name: "over1"; /* Overlay 1 - hilight */ \
+			mouse_events: 0; \
+			description { \
+				state: "default" 0.0; \
+				rel1 { \
+					to: "button_image"; \
+				} \
+				rel2 { \
+					relative: 1.0 0.5; \
+					to: "button_image"; \
+				} \
+				image { \
+					normal: "bt_hilight.png"; \
+					border: 7 7 7 0; \
+				} \
+			} \
+		} \
+		part { \
+			name: "over2"; /* Overlay 2 - shine */ \
+			mouse_events: 0; \
+			description { \
+				state: "default" 0.0; \
+				image { \
+					normal: "bt_shine.png"; \
+					border: 7 7 7 7; \
+				} \
+				rel1 { \
+					to: "button_image"; \
+				} \
+				rel2 { \
+					to: "button_image"; \
+				} \
+			} \
+		} \
+		part { \
+			name: "over3"; /* Overlay 3 - glow */ \
+			mouse_events: 0; \
+			description { \
+				state: "default" 0.0; \
+				visible: 0; \
+				color: 255 255 255 0; \
+				image { \
+					normal: "bt_glow.png"; \
+					border: 12 12 12 12; \
+				} \
+				rel1 { \
+					to: "button_image"; \
+				} \
+				rel2 { \
+					to: "button_image"; \
+				} \
+			} \
+			description { \
+				state: "clicked" 0.0; \
+				inherit:  "default" 0.0; \
+				color: 255 255 255 255; \
+				visible: 1; \
+			} \
+		} \
+	} \
+	programs { \
+		program { \
+			name: "header_pressed"; \
+			signal: "etk,state,pressed"; \
+			source: "etk"; \
+			action: STATE_SET "clicked" 0.0; \
+			target: "button_image"; \
+			target: "over1"; \
+			target: "over2"; \
+			target: "over3"; \
+		} \
+		program { \
+			name: "header_released"; \
+			signal: "etk,state,released"; \
+			source: "etk"; \
+			action: STATE_SET "default" 0.0; \
+			target: "button_image"; \
+			target: "over1"; \
+			target: "over2"; \
+			target: "over3"; \
+		} \
+	} \
+}
+
+/* TOOLBAR 
+ * Toolbar buttons macro
+ */
+
+#define TOOL_BUTTON_GROUP(ox1, oy1, ox2, oy2) \
+images { \
+	image: "bt_base1.png" COMP; \
+	image: "bt_base2.png" COMP; \
+	image: "bt_hilight.png" COMP; \
+	image: "bt_shine.png" COMP; \
+	image: "bt_glow.png" COMP; \
+	image: "bt_dis_base.png" COMP; \
+	image: "bt_dis_hilight.png" COMP; \
+} \
+parts { \
+	part { \
+		name: "button_rect"; /* button rectangle */ \
+		type: RECT; \
+		description { \
+			state: "default" 0.0; \
+			color: 255 255 255 0; \
+			rel1 { \
+				relative: 0.0 0.0; \
+				offset: ox1 oy1; \
+			} \
+			rel2 { \
+				relative: 1.0 1.0; \
+				offset: ox2 oy2; \
+			} \
+		} \
+	} \
+	part { \
+		name: "button_image"; /* Base image */ \
+		mouse_events: 0; \
+		description { \
+			state: "default" 0.0; \
+			visible: 0; \
+			min: 0 26; \
+			color: 255 255 255 0; \
+			image { \
+				normal: "bt_base2.png"; \
+				border: 7 7 7 7; \
+			} \
+			rel1 { \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				to: "button_rect"; \
+			} \
+		} \
+		description { \
+			state: "visible" 0.0; \
+			inherit: "default" 0.0; \
+			visible: 1; \
+			color: 255 255 255 255; \
+		} \
+		description { \
+			state: "clicked" 0.0; \
+			inherit: "default" 0.0; \
+			visible: 1; \
+			color: 255 255 255 255; \
+			image { \
+				normal: "bt_base1.png"; \
+			} \
+		} \
+		description { \
+			state: "disabled" 0.0; \
+			inherit: "default" 0.0; \
+			visible: 1; \
+			image { \
+				normal: "bt_dis_base.png"; \
+				border: 4 4 4 4; \
+			} \
+		} \
+	} \
+	part { \
+		name: "over1"; /* Overlay 1 - hilight */ \
+		mouse_events: 0; \
+		description { \
+			state: "default" 0.0; \
+			rel1 { \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				relative: 1.0 0.5; \
+				to: "button_rect"; \
+			} \
+			visible: 0; \
+			color: 255 255 255 0; \
+			image { \
+				normal: "bt_hilight.png"; \
+				border: 7 7 7 0; \
+			} \
+		} \
+		description { \
+			state: "clicked" 0.0; \
+			inherit:  "default" 0.0; \
+			color: 255 255 255 255; \
+			visible: 1; \
+		} \
+		description { \
+			state: "disabled" 0.0; \
+			inherit:  "default" 0.0; \
+			visible: 1; \
+			image { \
+				normal: "bt_dis_hilight.png"; \
+				border: 4 4 4 0; \
+			} \
+		} \
+		description { \
+			state: "visible" 0.0; \
+			inherit: "default" 0.0; \
+			visible: 1; \
+			color: 255 255 255 255; \
+		} \
+	} \
+	part { \
+		name: "over2"; /* Overlay 2 - shine */ \
+		mouse_events: 0; \
+		description { \
+			state: "default" 0.0; \
+			visible: 0; \
+			color: 255 255 255 0; \
+			image { \
+				normal: "bt_shine.png"; \
+				border: 7 7 7 7; \
+			} \
+			rel1 { \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				to: "button_rect"; \
+			} \
+		} \
+		description { \
+			state: "disabled" 0.0; \
+			inherit:  "default" 0.0; \
+			visible: 0; \
+		} \
+		description { \
+			state: "visible" 0.0; \
+			inherit: "default" 0.0; \
+			visible: 1; \
+			color: 255 255 255 255; \
+		} \
+		description { \
+			state: "clicked" 0.0; \
+			inherit:  "default" 0.0; \
+			color: 255 255 255 255; \
+			visible: 1; \
+		} \
+	} \
+	part { \
+		name: "over3"; /* Overlay 3 - glow */ \
+		mouse_events: 0; \
+		description { \
+			state: "default" 0.0; \
+			visible: 0; \
+			color: 255 255 255 0; \
+			image { \
+				normal: "bt_glow.png"; \
+				border: 12 12 12 12; \
+			} \
+			rel1 { \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				to: "button_rect"; \
+			} \
+		} \
+		description { \
+			state: "clicked" 0.0; \
+			inherit:  "default" 0.0; \
+			color: 255 255 255 255; \
+			visible: 1; \
+		} \
+	} \
+	part { \
+		name: "etk.swallow.content"; /* content swallow */ \
+		type: SWALLOW; \
+		description { \
+			state: "active" 0.0; \
+			rel1 { \
+				relative: 0.0 0.0; \
+				offset: 10 10; \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				relative: 1.0 1.0; \
+				offset: -10 -10; \
+				to: "button_rect"; \
+			} \
+		} \
+		description { \
+			state: "down" 0.0; \
+			rel1 { \
+				relative: 0.0 0.0; \
+				offset: 11 11; \
+				to: "button_rect"; \
+			} \
+			rel2 { \
+				relative: 1.0 1.0; \
+				offset: -9 -9; \
+				to: "button_rect"; \
+			} \
+		} \
+	} \
+} \
+programs { \
+	program { \
+		name: "button_pressed"; \
+		signal: "etk,state,pressed"; \
+		source: "etk"; \
+		action: STATE_SET "down" 0.0; \
+		target: "etk.swallow.content"; \
+	} \
+	program { \
+		name: "button_released"; \
+		signal: "etk,state,released"; \
+		source: "etk"; \
+		action: STATE_SET "active" 0.0; \
+		target: "etk.swallow.content"; \
+	} \
+	program { \
+		name: "button_enter"; \
+		signal: "etk,state,enter"; \
+		source: "etk"; \
+		action: STATE_SET "visible" 0.0; \
+		transition: LINEAR 0.3; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+	} \
+	program { \
+		name: "button_leave"; \
+		signal: "etk,state,leave"; \
+		source: "etk"; \
+		action: STATE_SET "default" 0.0; \
+		transition: LINEAR 0.3; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+	} \
+	program { \
+		name: "button_press"; \
+		signal: "etk,state,pressed"; \
+		source: "etk"; \
+		action: STATE_SET "clicked" 0.0; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+		target: "over3"; \
+	} \
+	program { \
+		name: "button_release"; \
+		signal: "etk,state,released"; \
+		source: "etk"; \
+		action: STATE_SET "default" 0.0; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+		target: "over3"; \
+	} \
+	program { \
+		name: "button_enable"; \
+		signal: "etk,state,enabled"; \
+		source: "etk"; \
+		action: STATE_SET "default" 0.0; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+		target: "over3"; \
+	} \
+	program { \
+		name: "button_disable"; \
+		signal: "etk,state,disabled"; \
+		source: "etk"; \
+		action: STATE_SET "disabled" 0.0; \
+		target: "button_image"; \
+		target: "over1"; \
+		target: "over2"; \
+		target: "over3"; \
+	} \
+}
+
+/* SCROLLBAR
+ * Scrollbar macro.
+ */
+
+/* size of arrow on scrollbar */
+
+#define SCROLLBAR_BUTTON_SIZE 9
+
+#define SCROLLBAR_DRAG(part_name, minw, minh, xdir, ydir, clip) \
+images { \
+	image: "bt_sm_base2.png" COMP; \
+	image: "bt_sm_base1.png" COMP; \
+	image: "bt_sm_hilight.png" COMP; \
+	image: "bt_sm_shine.png" COMP; \
+} \
+part { \
+	name: part_name; /* base part of scrollbutton */ \
+	clip_to: clip; \
+	dragable { \
+		x: xdir xdir xdir; \
+		y: ydir ydir ydir; \
+		confine: "confine"; \
+	} \
+	description { \
+		state: "default" 0.0; \
+		min: minw minh; \
+		fixed: 1 1; \
+		rel1 { \
+			relative: 0.5 0.5; \
+			offset:   0 0; \
+			to: "confine"; \
+		} \
+		rel2 { \
+			relative: 0.5 0.5; \
+			offset:   0 0; \
+			to: "confine"; \
+		} \
+		image { \
+			normal: "bt_sm_base2.png"; \
+			border: 6 6 6 6; \
+		} \
+	} \
+	description { \
+		state: "clicked" 0.0; \
+		inherit: "default" 0.0; \
+		image { \
+			normal: "bt_sm_base1.png"; \
+		} \
+	} \
+} \
+part { \
+	name: part_name"_over1"; /* overlay - hilight */ \
+	clip_to: clip; \
+	mouse_events: 0; \
+	description { \
+		state: "default" 0.0; \
+		rel1 { \
+			to: part_name; \
+		} \
+		rel2 { \
+			relative: 1.0 0.5; \
+			to: part_name; \
+		} \
+		image { \
+			normal: "bt_sm_hilight.png"; \
+			border: 6 6 6 0; \
+		} \
+	} \
+} \
+part { \
+	name: part_name"_over2"; /* overlay - shine */ \
+	clip_to: clip; \
+	mouse_events: 0; \
+	description { \
+	state: "default" 0.0; \
+		rel1 { \
+			to: part_name; \
+		} \
+		rel2 { \
+			to: part_name; \
+		} \
+		image { \
+			normal: "bt_sm_shine.png"; \
+			border: 6 6 6 0; \
+		} \
+	} \
+} \
+
+/* scrollbar button programs */
+
+#define SCROLLBAR_DRAG_PROG(part_name) \
+program { \
+	name: part_name"_up"; \
+	signal: "mouse,up,1"; \
+	source: part_name; \
+	action: STATE_SET "default" 0.0; \
+	target: part_name; \
+} \
+program { \
+	name: part_name"_down"; \
+	signal: "mouse,down,1*"; \
+	source: part_name; \
+	action: STATE_SET "clicked" 0.0; \
+	target: part_name; \
+}
+
+/* scrollbar arrow */
+
+#define SCROLLBAR_BUTTON(button_name, rx1, ry1, ox1, oy1, image_up, image_down, clip) \
+images { \
+	image: "arrow_right.png" COMP; \
+	image: "arrow_left.png" COMP; \
+	image: "arrow_up.png" COMP; \
+	image: "arrow_down.png" COMP; \
+} \
+part { \
+	name: button_name; /* arrow part */ \
+	clip_to: clip; \
+	description { \
+		state: "default" 0.0; \
+		rel1 { \
+			relative: rx1 ry1; \
+			offset: ox1 oy1; \
+		} \
+		rel2 { \
+			relative: rx1 ry1; \
+			offset: (ox1 + SCROLLBAR_BUTTON_SIZE) (oy1 + SCROLLBAR_BUTTON_SIZE); \
+		} \
+		image { \
+			normal: image_up; \
+		} \
+		fill { \
+			smooth: 0; \
+		} \
+	} \
+	description { \
+		state: "down" 0.0; \
+		inherit: "default" 0.0; \
+		image { \
+			normal: image_down; \
+		} \
+	} \
+}
+
+/* scrollbar arrow programs */
+
+#define SCROLLBAR_BUTTON_PROG(button_name, dir) \
+program { \
+	name: button_name"_up"; \
+	signal: "mouse,up,1"; \
+	source: button_name; \
+	action: STATE_SET "default" 0.0; \
+	target: button_name; \
+} \
+program { \
+	name: button_name"_down"; \
+	signal: "mouse,down,1*"; \
+	source: button_name; \
+	action: STATE_SET "down" 0.0; \
+	target: button_name; \
+} \
+program { \
+	name: button_name"_pressed"; \
+	signal: "mouse,down,1*"; \
+	source: button_name; \
+	action: SIGNAL_EMIT "scroll_"dir"_start" ""; \
+} \
+program { \
+	name: button_name"_released"; \
+	signal: "mouse,up,1"; \
+	source: button_name; \
+	action: SIGNAL_EMIT "scroll_stop" ""; \
+}
+
+/* MDI WINDOW MACRO */
+
+/* Macro for titlebar button */
+
+#define WIN_BUTTON(part_name, rx, ry, ox, oy, detail_image, shadow_image, event_part) \
+	part { \
+		name: part_name"_shadow"; /* Shadow of titlebar button */ \
+		description { \
+			state: "default" 0.0; \
+			rel1 { \
+				relative: rx ry; \
+				offset: ox oy; \
+			} \
+			rel2 { \
+				relative: rx ry; \
+				offset: (ox + 22) (oy + 21); \
+			} \
+			image { \
+				normal: shadow_image; \
+			} \
+			fill { \
+				smooth: 0; \
+			} \
+		} \
+	} \
+	part { \
+		name: part_name"_button"; /* titlebar button */ \
+		description { \
+			state: "default" 0.0; \
+			rel1 { \
+				relative: rx ry; \
+				offset: ox oy; \
+			} \
+			rel2 { \
+				relative: rx ry; \
+				offset: (ox + 22) (oy + 21); \
+			} \
+			image { \
+				normal: detail_image; \
+			} \
+			fill { \
+				smooth: 0; \
+			} \
+		} \
+		description { \
+			state: "down" 0.0; \
+			inherit: "default" 0.0; \
+			rel1 { \
+				offset: ox (oy + 2); \
+			} \
+		} \
+	} \
+	part { \
+		name: event_part; /* event rect for titlebar button */ \
+		type: RECT; \
+		description { \
+			state: "default" 0.0; \
+			color: 255 255 255 0; \
+			rel1 { \
+				relative: rx ry; \
+				offset: ox oy; \
+			} \
+			rel2 { \
+				relative: rx ry; \
+				offset: (ox + 23) (oy + 23); \
+			} \
+		} \
+	}
+
+/* Titlebar button programs */
+
+#define WIN_BUTTON_PROGRAM(part_name, event_part) \
+	program { \
+		name: part_name"_down"; \
+		signal: "mouse,down,1"; \
+		source: event_part; \
+		action: STATE_SET "down" 0.0; \
+		target: part_name"_button"; \
+	} \
+	program { \
+		name: part_name"_up"; \
+		signal: "mouse,up,1"; \
+		source: event_part; \
+		action: STATE_SET "default" 0.0; \
+		target: part_name"_button"; \
+	} \
+
+/* COLORS */
+
+data {
+	item: "etk/color/foreground"   "0 0 0 255";		/* Black */
+	item: "etk/color/background"   "255 255 255 255";	/* White */
+	item: "etk/color/important/fg" "158 158 0 255";		/* Yellow */
+	item: "etk/color/important/bg" "255 255 255 255";
+	item: "etk/color/warning/fg"   "205 0 0 255";		/* Red */
+	item: "etk/color/warning/bg"   "255 255 255 255";
+	item: "etk/color/info/fg"      "0 0 205 255";		/* Blue */
+	item: "etk/color/info/bg"      "255 255 255 255";
+	item: "etk/color/default1/fg"  "0 140 0 255";		/* Green */
+	item: "etk/color/default1/bg"  "255 255 255 255";
+	item: "etk/color/default2/fg"  "111 79 143 255";	/* Purple */
+	item: "etk/color/default2/bg"  "255 255 255 255";
+	item: "etk/color/default3/fg"  "205 0 205 255";		/* Pink */
+	item: "etk/color/default3/bg"  "255 255 255 255";
+	item: "etk/color/default4/fg"  "145 87 26 255";		/* Brown */
+	item: "etk/color/default4/bg"  "255 255 255 255";
+	item: "etk/color/default5/fg"  "136 136 136 255";	/* Gray */
+	item: "etk/color/default5/bg"  "255 255 255 255";
+}
+
+/*
+ * STYLES FOR LABELS
+ * for example for buttons or notebook tabs.
+ * You can add more and use them in .edcs. Based on STYLE macro on the top.
+ */
+
+styles {
+	/* Style for normal labels */
+	STYLE("Default",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#000000FF", /* Normal style */
+		"color=#000000 style=shadow shadow_color=#07070720 font=Sans font_size=16", /* Title */
+		"color=#000000 style=shadow shadow_color=#07070720 font=Sans font_size=12", /* Subtitle */
+		"color=#ffffff style=glow glow2_color=#fe87 glow_color=#fa14", /* Glow */
+		"color=#111111 font=Sans:style=Italic") /* Description */
+
+	/* Default style for the label of a toolbutton */
+	STYLE("Toolbutton",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#000000FF style=soft_shadow shadow_color=#ffffff20", /* Normal style */
+		"", "", "", "") /* Other styles */
+   
+	/** Default style for the label of a button (and for active tab) */
+	STYLE("Button Default",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#ffffffFF style=soft_shadow shadow_color=#00000064", /* Normal style */
+		"", "", "", "") /* Other styles */
+   
+	/** Style for the label of a disabled button (and for inactive tab) */
+	STYLE("Button Disabled",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#00000080", /* Normal style */
+		"", "", "", "") /* Other styles */
+      
+	/** Style for the label of a disabled toggled button */
+	STYLE("Button Disabled Toggled",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#00000080", /* Normal style */
+		"", "", "", "") /* Other styles */
+   
+	/** Default style for the label of a check/radio button */
+	STYLE("Check Default",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#000000FF", /* Normal style */
+		"", "", "", "") /* Other styles */
+   
+	/** Style for the label of a disabled check/radio button */
+	STYLE("Check Disabled",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#00000080", /* Normal style */
+		"", "", "", "") /* Other styles */
+
+	/** Default style for the label of listheaders and notebook tabs */
+	STYLE("Other Default",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#000000FF", /* Normal style */
+		"", "", "", "") /* Other styles */
+
+	/** Disabled style for the label of listheaders and notebook tabs */
+	STYLE("Other Disabled",
+		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
+		"color=#00000080", /* Normal style */
+		"", "", "", "") /* Other styles */
+}
+
+/* Set the current version */
+
+#define VERSION_STRING 0.1
+
+/*
+ * WIDGETS
+ * Groups for all widgets in the theme.
+ */
+
+collections {
+
+/**
+ * group "etk/window"
+ * ----------------
+ * This group corresponds to the background of a window.
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group { 
+	name: "etk/window";
+	images {
+		image: "dia_grad.png" COMP;
+		image: "dia_topshad.png" COMP;
+		image: "dia_botshad.png" COMP;
+	}
+	data {
+		item: "inset" "1 1 1 1"; // inset border.
+	}
+	parts {
+		part { 
+			name: "base"; // base part - basic background pixmap
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "dia_grad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+		part { 
+			name: "shadow"; // shadow part - shadow on the top of the window
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -1 31;
+				}
+				image {
+					normal: "dia_topshad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+		part { 
+			name: "shadow2"; // shadow on the bottom
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 0 -4;
+				}
+				image {
+					normal: "dia_botshad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/dialog"
+ * ----------------
+ * This group corresponds to the background of a dialog.
+ * A dialog is a window separated in two areas, the upper area where the main widgets
+ * are packed and the lower area (also called "action area") where the buttons
+ * (Ok, Cancel, Apply, ...) are packed. These two areas may be separated by an
+ * horizontal separator (see group "etk/dialog/separator")
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group { 
+	name: "etk/dialog";
+	images {
+		image: "dia_grad.png" COMP;
+		image: "dia_topshad.png" COMP;
+		image: "dia_botshad.png" COMP;
+	}
+	data {
+		item: "inset" "5 5 5 5"; // inset border. Made to have space between border and content
+	}
+	parts {
+		part { 
+			name: "base"; // base part - basic background pixmap
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "dia_grad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+		part { 
+			name: "shadow"; // shadow part - shadow on the top of the window
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -1 31;
+				}
+				image {
+					normal: "dia_topshad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+		part { 
+			name: "shadow2"; // shadow on the bottom
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 0 -4;
+				}
+				image {
+					normal: "dia_botshad.png";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/dialog/hseparator"
+ * ----------------
+ * This group corresponds to the horizontal separator that may be packed between
+ * the upper area and the action area. The separator is always stacked below the
+ * two areas of the dialog.
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/dialog/hseparator";
+	images {
+		image: "separator_h.png" COMP;
+	}
+	min: 0 12;
+	parts {
+		part {
+			name: "separator"; // part which provides a separator
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0 0.5;
+					offset: 4 -1;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -5 0;
+				}
+				image {
+					normal: "separator_h.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/hseparator"
+ * ----------------
+ * This group corresponds to the horizontal separator that may be packed between
+ * the upper area and the action area. The separator is always stacked below the
+ * two areas of the dialog.
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/hseparator";
+	min: 2 2;
+	images {
+		image: "separator_h.png" COMP;
+	}
+	parts {
+		part {
+			name: "separator"; // separator group
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0 0.5;
+					offset: 4 -1;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -4 0;
+				}
+				image {
+					normal: "separator_h.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/vseparator"
+ * ----------------
+ * This group corresponds to the vertical separator.
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/vseparator";
+	min: 2 2;
+	images {
+		image: "separator_v.png" COMP;
+	}
+	parts {
+		part {
+			name: "separator"; // separator group
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.5 0;
+					offset: -1 4;
+				}
+				rel2 {
+					relative: 0.5 1.0;
+					offset: 0 -4;
+				}
+				image {
+					normal: "separator_v.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/hpaned/separator"
+ * ----------------
+ * This group corresponds to the horizontal paned separator.
+ */
+
+group {
+	name: "etk/hpaned/separator";
+	min: 7 60;
+	images {
+		image: "paned_h_handle.png" COMP;
+	}
+	parts {
+		part {
+			name: "handle_clip"; // clip for handle
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+ 				rel2 {
+					relative: 1 1;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "handle"; // handle image
+			mouse_events: 0;
+			clip_to: "handle_clip";
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.5 0.5;
+					offset: -2 -20;
+					to: "separator";
+				}
+				rel2 {
+					relative: 0.5 0.5;
+					offset: 2 21;
+					to: "separator";
+				}
+				image {
+					normal: "paned_h_handle.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "separator"; // separator rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.5 0.0;
+					offset: -3 0;
+				}
+				rel2 {
+					relative: 0.5 1.0;
+					offset: 3 -1;
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 120;
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/hpaned/separator"
+ * ----------------
+ * This group corresponds to the horizontal paned separator.
+ */
+
+group {
+	name: "etk/vpaned/separator";
+	min: 60 7;
+	images {
+		image: "paned_v_handle.png" COMP;
+	}
+	parts {
+		part {
+			name: "handle_clip"; // clip for handle
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1 1;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "handle"; // handle image
+			mouse_events: 0;
+			clip_to: "handle_clip";
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.5 0.5;
+					offset: -20 -2;
+					to: "separator";
+				}
+				rel2 {
+					relative: 0.5 0.5;
+					offset: 21 2;
+					to: "separator";
+				}
+				image {
+					normal: "paned_v_handle.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "separator"; // separator rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 0 -3;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -1 3;
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 120;
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/button"
+ * -----------------------
+ * This group is used for the simple buttons.
+ *
+ * Signals:
+ * --------
+ * - "etk,state,pressed": emitted when the button is pressed
+ * - "etk,state,released": emitted when the button is released
+ * - "etk,state,clicked": emitted when the button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/button";
+	min: 72 28; // 72 - hack for emphasis, to have buttons with big width
+	// and 28 - it makes that button without label has the same height as normal button
+	images {
+		image: "bt_base1.png" COMP;
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "bt_glow.png" COMP;
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base part
+			mouse_events: 1;
+			description { 
+				state: "default" 0.0;
+				min: 32 16;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "bt_base1.png";
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight - not visible on disabled, pressed
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - not visible on disabled
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				visible: 0;
+			}
+		}
+		part { 
+			name: "over3"; // overlay - glow - visible on pressed
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				image {
+					normal: "bt_glow.png";
+					border: 12 12 12 12;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit:  "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // swallow part, it makes that label does not overlap button bg
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 8 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -9 0;
+				}
+			}
+		}
+	}
+	programs { // programs - used for actions on groups. Like button press.
+		program {
+			name:   "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "button_image";
+			target: "over3";
+		}
+		program {
+			name:   "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "button_image";
+			target: "over3";
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "button_image";
+			target: "over1";
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "button_image";
+			target: "over1";
+		}
+	}
+}
+
+/**
+ * group "etk/button/label"
+ * -----------------------
+ * This group corresponds to the label of a button. It receives the same signals as "etk/button"
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.label": the text part used to display the button's text
+ *
+ * Signals:
+ * --------
+ * - "etk,state,pressed": emitted when the button is pressed
+ * - "etk,state,released": emitted when the button is released
+ * - "etk,state,clicked": emitted when the button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/button/label";
+	parts {
+		part {
+			name: "etk.text.label"; // label of a button, style defined on the beginning of this .edc
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				text {
+					style: "Button Default";
+					min: 1 1;
+				}
+				rel2 {
+					offset: 0 -2;
+				}
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Disabled";
+				}
+			}
+		}
+	}
+	programs { // programs are the same as on button, but they are for etk.text.label part
+		program {
+			name: "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/htoolbar"
+ * -----------------------
+ * This group corresponds to the horizontal toolbar.
+ *
+ */
+
+group {
+	name: "etk/htoolbar";
+	data {   
+		item: "inset" "1 1 2 2";
+	}   
+	images {
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+		image: "bt_dis_shine.png" COMP;
+	}
+	parts {
+		part { 
+			name: "base"; // toolbar base bg
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+			}
+	 	}
+		part { 
+			name: "over1"; // overlay 1 - hilight
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "base";
+				}
+				rel2 {
+					to: "base";
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay 2 - shine
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "base";
+				}
+				rel2 {
+					to: "base";
+				}
+				image {
+					normal: "bt_dis_shine.png";
+					border: 4 4 4 4;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/htoolbar/tool_button"
+ * group "etk/vtoolbar/tool_button"
+ * -----------------------
+ * This group corresponds to the toolbar button.
+ *
+ */
+
+group {
+	name: "etk/htoolbar/tool_button";
+	alias: "etk/tool_button";
+	TOOL_BUTTON_GROUP(0, 0, -1, -3)
+}
+
+group {
+	name: "etk/vtoolbar/tool_button";
+	TOOL_BUTTON_GROUP(-4, 0, 1, -3)
+}
+
+/**
+ * group "etk/htoolbar/tool_button/label"
+ * group "etk/vtoolbar/tool_button/label"
+ * -----------------------
+ * This group corresponds to a label of toolbutton.
+ *
+ */
+
+group {
+	name: "etk/htoolbar/tool_button/label";
+	alias: "etk/vtoolbar/tool_button/label"; // aliases are used when one group provides the same data as other group needs.
+	// aliases make the code shorter. Please use them often!
+	parts {
+		part {
+			name: "etk.text.label"; // label of a toolbutton, style defined on the beginning of this .edc
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				text {
+					style: "Toolbutton";
+					min: 1 1;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/toggle_button"
+ * -----------------------
+ * This group is used for the toggle buttons.
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the toggle button is activated
+ * - "etk,action,off": emitted when the toggle button is deactivated
+ * - "etk,state,pressed": emitted when the toggle button is pressed
+ * - "etk,state,released": emitted when the toggle button is released
+ * - "etk,state,clicked": emitted when the toggle button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/toggle_button";
+	min: 0 28;
+	images {
+		image: "bt_base1.png" COMP;
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "bt_glow.png" COMP;
+		image: "bt_glow_dis.png" COMP;
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base image
+			mouse_events: 1;
+			description { 
+				state: "default" 0.0;
+				min: 32 16;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "bt_base1.png";
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight - not visible on disabled
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - not visible on disabled
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				visible: 0;
+			}
+		}
+		part { 
+			name: "over3"; // overlay - glow - visible on pressed
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit:  "default" 0.0;
+				visible: 1;
+				image {
+					normal: "bt_glow.png";
+					border: 12 12 12 12;
+				}
+				color: 255 255 255 255;
+			}
+			description { 
+				state: "disabled-clicked" 0.0;
+				inherit:  "default" 0.0;
+				visible: 1;
+				image {
+					normal: "bt_glow_dis.png";
+					border: 12 12 12 12;
+				}
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // swallow part, it makes that label does not overlap button bg
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 8 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -9 0;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "button_image";
+			target: "over2";
+			target: "over3";
+		}
+		program {
+			name: "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			script {
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_on";
+			signal: "etk,state,on";
+			source: "etk";
+			script {
+				set_int(toggled, 1);
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_off";
+			signal: "etk,state,off";
+			source: "etk";
+			script {
+				set_int(toggled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			script {
+				set_int(disabled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			script {
+				set_int(disabled, 1);
+				update_state();
+			}
+		}
+	}
+	script { // togglebutton embryo script.
+		public toggled = 0;
+		public disabled = 0;
+		public update_state() {
+			if (get_int(toggled) == 0) {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"button_image", "default", 0.0);
+					set_state(PART:"over1", "default", 0.0);
+					set_state(PART:"over2", "default", 0.0);
+					set_state(PART:"over3", "default", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over1", "disabled", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+					set_state(PART:"over3", "default", 0.0);
+				}
+			} else {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"over3", "clicked", 0.0);
+					set_state(PART:"over2", "clicked", 0.0);
+					set_state(PART:"button_image", "clicked", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over3", "disabled-clicked", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/toggle_button/label"
+ * -----------------------
+ * This group corresponds to the label of a toggle button. It receives the same signals as "etk/toggle_button"
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.label": the text part used to display the button's text
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the toggle button is activated
+ * - "etk,action,off": emitted when the toggle button is deactivated
+ * - "etk,state,pressed": emitted when the toggle button is pressed
+ * - "etk,state,released": emitted when the toggle button is released
+ * - "etk,state,clicked": emitted when the toggle button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/toggle_button/label";
+	alias: "etk/combobox/button/label";
+	parts {
+		part {
+			name: "etk.text.label";
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				text {
+					style: "Button Default";
+					min: 1 1;
+				}
+				rel2 {
+					offset: 0 -2;
+				}
+			}
+			description {
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+				}
+			}
+			description {
+				state: "toggled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Disabled";
+				}
+			}
+			description {
+				state: "disabled-toggled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Disabled Toggled";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			script {
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_on";
+			signal: "etk,state,on";
+			source: "etk";
+			script {
+				set_int(toggled, 1);
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_off";
+			signal: "etk,state,off";
+			source: "etk";
+			script {
+				set_int(toggled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			script {
+				set_int(disabled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			script {
+				set_int(disabled, 1);
+				update_state();
+			}
+		}
+	}
+	script { // togglebutton label embryo script to have label working with togglebutton together.
+		public toggled = 0;
+		public disabled = 0;
+		public update_state() {
+		if (get_int(toggled) == 0) {
+			if (get_int(disabled) == 0)
+				set_state(PART:"etk.text.label", "default", 0.0);
+			else
+				set_state(PART:"etk.text.label", "disabled", 0.0);
+			}
+		else {
+			if (get_int(disabled) == 0)
+				set_state(PART:"etk.text.label", "toggled", 0.0);
+			else
+				set_state(PART:"etk.text.label", "disabled-toggled", 0.0);
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/combobox"
+ * -----------------------
+ * This group corresponds to a combobox
+ *
+ */
+
+group {
+	name: "etk/combobox";
+	alias: "etk/combobox_entry";
+	data {
+		item: "item_height" "24";
+		// The following items have no effect since they have their default value
+		item: "popup_offset_x" "0";
+		item: "popup_offset_y" "0";
+		item: "popup_extra_width" "0";
+	}
+}
+
+/**
+ * group "etk/combobox/button"
+ * -----------------------
+ * This group corresponds to a combobox button
+ *
+ */
+
+group {
+	name: "etk/combobox/button";
+	min: 0 28;
+	images {
+		image: "bt_base1.png" COMP;
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "bt_glow.png" COMP;
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+		image: "combo_arrow.png" COMP;
+		image: "combo_arrow2.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base image
+			mouse_events: 1;
+			description { 
+				state: "default" 0.0;
+				min: 32 16;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "bt_base1.png";
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight - visible on disabled
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - visible on default and clicked
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				visible: 0;
+			}
+		}
+		part { 
+			name: "over3"; // overlay - glow - visible on clicked
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				image {
+					normal: "bt_glow.png";
+					border: 12 12 12 12;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "combo_arrow"; // arrow part
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				min: 12 18;
+				max: 12 18; 
+				fixed: 1 1;
+				rel1 {
+					relative: 1 0.5;
+					offset: -22 -9;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -9 9;
+				}
+				image {
+					normal: "combo_arrow.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "combo_arrow2.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // swallow part
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 11 7;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -28 -8;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "button_image";
+			target: "over2";
+			target: "over3";
+		}
+		program {
+			name: "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			script {
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_on";
+			signal: "etk,state,on";
+			source: "etk";
+			script {
+				set_int(toggled, 1);
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_off";
+			signal: "etk,state,off";
+			source: "etk";
+			script {
+				set_int(toggled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			script {
+				set_int(disabled, 0);
+				update_state();
+				/* at the same time lets set the arrow state */
+				set_state(PART:"combo_arrow", "default", 0.0);
+			}
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			script {
+				set_int(disabled, 1);
+				update_state();
+				set_state(PART:"combo_arrow", "disabled", 0.0);
+			}
+		}
+	}
+	script { // combobox script
+		public toggled = 0;
+		public disabled = 0;
+		public update_state() {
+			if (get_int(toggled) == 0) {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"button_image", "default", 0.0);
+					set_state(PART:"over1", "default", 0.0);
+					set_state(PART:"over2", "default", 0.0);
+					set_state(PART:"over3", "default", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over1", "disabled", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+					set_state(PART:"over3", "default", 0.0);
+				}
+			} else {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"over3", "clicked", 0.0);
+					set_state(PART:"over2", "clicked", 0.0);
+					set_state(PART:"button_image", "clicked", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over3", "clicked", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/combobox/item"
+ * -----------------------
+ * Combobox menu item made with grey transparent rectangle with nice transition effect. :)
+ *
+ */
+
+group {
+	name: "etk/combobox/item";
+	alias: "etk/combobox_entry/item";
+	min: 150 25;
+	max: 9999 25; // not sure this is such a good idea
+	data {
+		item: "inset" "4 4 4 4";
+	}
+	parts {
+		part {
+			name: "item_sel"; // selection
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 30;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "item_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			transition: LINEAR 0.2;
+			target: "item_sel";
+		}
+		program {
+			name: "item_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.1;
+			target: "item_sel";
+		}
+	}
+}
+
+/**
+ * group "etk/combobox_entry/button"
+ * -----------------------
+ * Combobox entry arrow group.
+ *
+ */
+
+group {
+	name: "etk/combobox_entry/button";
+	min: 25 29;
+	images {
+		image: "combo_arrow.png" COMP;
+		image: "combo_arrow2.png" COMP;
+	}
+	parts {
+		part {
+			name: "combo_arrow"; // arrow part
+			mouse_events: 1;
+			description {
+				state: "default" 0.0;
+				min: 12 18;
+				max: 12 18; 
+				fixed: 1 1;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 1 0.5;
+					offset: -20 -10;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -14 10;
+				}
+				image {
+					normal: "combo_arrow.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "combo_arrow2.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/combobox_entry/hbox"
+ * -----------------------
+ * Combobox entry button group.
+ *
+ */
+
+group {
+	name: "etk/combobox_entry/hbox";
+	data {
+		item: "inset" "7 0 2 2"; // made to have space between entry and button
+	}
+	min: 0 28;
+	images {
+		image: "bt_base1.png" COMP;
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "bt_glow.png" COMP;
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base image
+			mouse_events: 1;
+			description { 
+				state: "default" 0.0;
+				min: 32 16;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "bt_base1.png";
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay 1 - hilight. Not visible in disabled state.
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay 2 - shine. Not visible in disabled state.
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "disabled" 0.0;
+				inherit:  "default" 0.0;
+				visible: 0;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "button_press";
+			signal: "etk,state,pressed";
+			source: "etk";
+			action: STATE_SET "clicked" 0.0;
+			target: "button_image";
+			target: "over2";
+		}
+		program {
+			name: "button_release";
+			signal: "etk,state,released";
+			source: "etk";
+			script {
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_on";
+			signal: "etk,state,on";
+			source: "etk";
+			script {
+				set_int(toggled, 1);
+				update_state();
+			}
+		}
+		program {
+			name: "button_turn_off";
+			signal: "etk,state,off";
+			source: "etk";
+			script {
+				set_int(toggled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			script {
+				set_int(disabled, 0);
+				update_state();
+			}
+		}
+		program {
+			name: "button_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			script {
+				set_int(disabled, 1);
+				update_state();
+			}
+		}
+	}
+	script { // combobox entry script
+		public toggled = 0;
+		public disabled = 0;
+		public update_state() {
+			if (get_int(toggled) == 0) {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"button_image", "default", 0.0);
+					set_state(PART:"over1", "default", 0.0);
+					set_state(PART:"over2", "default", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over1", "disabled", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+				}
+			} else {
+				if (get_int(disabled) == 0) {
+					set_state(PART:"over2", "clicked", 0.0);
+					set_state(PART:"button_image", "clicked", 0.0);
+				} else {
+					set_state(PART:"button_image", "disabled", 0.0);
+					set_state(PART:"over2", "disabled", 0.0);
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/check_button"
+ * -----------------------
+ * This group is used for the simple check buttons.
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the check button is checked
+ * - "etk,action,off": emitted when the check button is unchecked
+ * - "etk,state,pressed": emitted when the check button is pressed
+ * - "etk,state,released": emitted when the check button is released
+ * - "etk,state,clicked": emitted when the check button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/check_button";
+	alias: "etk/tree/checkbox";
+	min: 26 26; // without this two checkbuttons overlap each other
+	data {
+		item: "inset" "28 3 0 0"; // inset for checkbutton. Without it the checkbutton overlaps the label
+	}
+	images {
+		image: "check_base.png" COMP;
+		image: "check_on.png" COMP;
+		image: "check_sel.png" COMP;
+	}
+	parts {
+		part { 
+			name: "base"; // base part
+			description { 
+				state: "default" 0.0;
+				min: 16 16;
+				max: 16 16;
+				align: 0.0 0.5;
+				fixed: 1 1;
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 2 2; 
+				}
+				rel2 { 
+					relative: 0.0 1.0; 
+					offset: 2 -3; 
+				}
+				image {
+					normal: "check_base.png";
+				}
+			}
+		}
+		part { 
+			name: "mark"; // activated - when selected or not
+			clip_to: "mark_hold";
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "mark_hold";
+				}
+				rel2 {
+					to: "mark_hold";
+				}
+				image {
+					normal: "check_on.png";
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "check_sel.png";
+				}
+			}
+		}
+		part { 
+			name: "mark_hold"; // rectangle on which mark part clips
+			type: RECT;
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "base";
+					offset: -5 -5;
+				}
+				rel2 {
+					to: "base";
+					offset: 4 4;
+				}
+			}
+			description { 
+				state: "on" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					offset: 0 0;
+				}
+				rel2 {
+					offset: -1 -1;
+				}
+			}
+		}
+	}
+	programs {
+		program { 
+			name: "on";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "on" 0.0;
+			transition: LINEAR 0.15;
+			target: "mark_hold";
+		}
+		program { 
+			name: "off";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "mark_hold";
+		}
+	}
+}
+
+/**
+ * group "etk/check_button/label"
+ * -----------------------
+ * This group corresponds to the label of a check button. It receives the same signals as "etk/check_button"
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.label": the text part used to display the button's text
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the check button is checked
+ * - "etk,action,off": emitted when the check button is unchecked
+ * - "etk,state,pressed": emitted when the check button is pressed
+ * - "etk,state,released": emitted when the check button is released
+ * - "etk,state,clicked": emitted when the check button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/check_button/label";
+	alias: "etk/radio_button/label";
+	parts {
+		part {
+			name: "etk.text.label"; // text label
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				rel1 {
+					offset: 0 2;
+				}
+				rel2 {
+					offset: -1 -1;
+				}
+				text {
+					style: "Check Default";
+					min: 1 1;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Check Disabled";
+				}
+			}
+		}
+	}
+	programs { // programs for disabled and enabled checkbuttons, to disable/enable text too.
+		program {
+			name: "check_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "check_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/radio_button"
+ * -----------------------
+ * This group is used for the simple radio buttons.
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the radio button is checked
+ * - "etk,action,off": emitted when the radio button is unchecked
+ * - "etk,state,pressed": emitted when the radio button is pressed
+ * - "etk,state,released": emitted when the radio button is released
+ * - "etk,state,clicked": emitted when the radio button is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/radio_button";
+	min: 26 26;
+	data {
+		item: "inset" "28 3 0 0";
+	}
+	images {
+		image: "radio_base.png" COMP;
+		image: "radio_on.png" COMP;
+		image: "radio_sel.png" COMP;
+	}
+	parts {
+		part { 
+			name: "base"; // base part
+			description { 
+				state: "default" 0.0;
+				min: 16 16;
+				max: 16 16;
+				align: 0.0 0.5;
+				fixed: 1 1;
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 2 2; 
+				}
+				rel2 { 
+					relative: 0.0 1.0; 
+					offset: 2 -3; 
+				}
+				image {
+					normal: "radio_base.png";
+				}
+			}
+		}
+		part { 
+			name: "mark"; // activated - when selected or not
+			clip_to: "mark_hold";
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "mark_hold";
+				}
+				rel2 {
+					to: "mark_hold";
+				}
+				image {
+					normal: "radio_on.png";
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "radio_sel.png";
+				}
+			}
+		}
+		part { 
+			name: "mark_hold"; // rectangle on which mark part clips
+			type: RECT;
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "base";
+					offset: -5 -5;
+				}
+				rel2 {
+					to: "base";
+					offset: 4 4;
+				}
+			}
+			description { 
+				state: "on" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					offset: 0 0;
+				}
+				rel2 {
+					offset: -1 -1;
+				}
+			}
+		}
+	}
+	programs {
+		program { 
+			name: "on";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "on" 0.0;
+			transition: LINEAR 0.15;
+			target: "mark_hold";
+		}
+		program { 
+			name: "off";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "mark_hold";
+		}
+	}
+}
+
+/**
+ * group "etk/entry"
+ * -----------------------
+ * This group is used for the entry widget. It uses several other groups:
+ * - "etk/entry/text": for the text inside the entry
+ * - "etk/entry/cursor": for the cursor of the entry
+ * - "etk/entry/selection" for the selection of the entry
+ *
+ * Different settings:
+ * -------------------
+ * - "icon_highlight_color": the rgba color of the entry's icons the mouse pointer is above them.
+ *      The most common icon is the "Clear" icon on the right of the text. Default value is "128 128 128 255"
+ * - "icon_interspace": the amount of space between an icon of the entry and the text. Default value is 5
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/entry";
+	alias: "etk/combobox_entry/entry";
+	min: 120 22;
+	data {
+		item: "inset" "5 5 3 4";
+		item: "icon_highlight_color" "176 176 176 210";
+	}
+	images {
+		image: "entry.png" COMP;
+	}
+	parts {
+		part {
+			name: "entry"; // entry background
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "entry.png";
+					border: 5 5 8 6;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // content swallow part
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 4 2;
+					to: "entry";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -5 -2;
+					to: "entry";
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/entry/text"
+ * -----------------------
+ * This group corresponds to the text of the entry
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.text": the text part used to display the text of the entry
+ */
+
+group {
+	name: "etk/entry/text";
+	alias: "etk/spinner/text";
+	alias: "etk/combobox_entry/entry/text";
+	parts {
+		part {
+			name: "etk.text.text"; // text part
+			type: TEXT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				text {
+					text: "Entry";
+					font: "Sans";
+					size: 10;
+					min: 1 1;
+					text_class: "entry";
+				}
+				rel2 {
+					offset: 0 -3;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 128;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "text_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.text";
+		}
+		program {
+			name: "text_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.text";
+		}
+	}
+}
+
+/**
+ * group "etk/entry/selection"
+ * -----------------------
+ * This group corresponds to the selection rectangle used by an entry
+ *
+ * Different settings:
+ * -------------------
+ * - "on_foreground": a boolean indicating whether the selection should be stacked above or below the text of the entry.
+ *      If "on_foreground" is "1", the selection will be stacked above the text, otherwise it will be stacked below.
+ *      Default value is "0"
+ */
+
+group {
+	name: "etk/entry/selection";
+	alias: "etk/spinner/selection";
+	alias: "etk/text_view3/selection";
+	alias: "etk/combobox_entry/entry/selection";
+	data {
+		item: "on_foreground" "1";
+	}
+	parts {
+		part {
+			name: "selection"; // selection rectangle, grey and transparent
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 30;
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/entry/cursor"
+ * -----------------------
+ * This group corresponds to the text-cursor of the entry
+ *
+ * Signals:
+ * --------
+ * - "etk,action,show,cursor": this signal is emitted each time the cursor should become visible (when the entry is
+ *      focused or when the cursor is moved). Note that the blinking of the cursor should still be done by the theme
+ */
+
+group {
+	name: "etk/entry/cursor";
+	alias: "etk/spinner/cursor";
+	alias: "etk/text_view3/cursor";
+	min: 1 0;
+	parts {
+		part { 
+			name: "cursor"; // cursor rectangle
+			type: RECT;
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					offset: 1 1;
+				}
+				rel2 {
+					offset: 0 -1;
+				}
+				color: 0 0 0 0;
+			}
+			description { 
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 255;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "on_cursor_show";
+			signal:  "etk,action,show,cursor";
+			source:  "etk";
+			action: ACTION_STOP;
+			target: "cursor_show";
+			target: "cursor_hide";
+			target: "cursor_show_timer";
+			target: "cursor_hide_timer";
+			after: "cursor_show";
+		}
+		program { 
+			name: "cursor_show";
+			action: STATE_SET "visible" 0.0;
+			target: "cursor";
+			after: "cursor_show_timer";
+		}
+		program { 
+			name: "cursor_hide";
+			action: STATE_SET "default" 0.0;
+			target: "cursor";
+			transition: SINUSOIDAL 0.2;
+			after: "cursor_hide_timer";
+		}
+		program { 
+			name: "cursor_show_timer";
+			in: 0.55 0.0;
+			after: "cursor_hide";
+		}
+		program { 
+			name: "cursor_hide_timer";
+			in: 0.2 0.0;
+			after: "cursor_show";
+		}
+	}
+}
+
+/**
+ * group "etk/text_view"
+ * group "etk/text_view3"
+ * -----------------------
+ * This groups correspond to text views
+ *
+ */
+
+group {
+	name: "etk/text_view";
+	min: 120 18;
+	data {
+		item: "inset" "6 6 6 6";
+	}
+	images {
+		image: "entry.png" COMP;
+	}
+	parts {
+		part {
+			name: "text_view_bg"; // background part
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "entry.png";
+					border: 10 10 16 12;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group {
+	name: "etk/text_view3";
+	min: 120 18;
+	data {
+		item: "inset" "6 6 6 6";
+	}
+	images {
+		image: "entry.png" COMP;
+	}
+	parts {
+		part {
+			name: "text_view_bg"; // background part
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "entry.png";
+					border: 10 10 16 12;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "etk.text.textblock";
+			type: TEXTBLOCK;
+			entry_mode: EDITABLE;
+			multiline: 1;
+			source: "etk/text_view3/selection"; // selection under
+			source4: "etk/text_view3/cursor";   // cursor over
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 10 5;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -10 -10;
+				}
+				text {
+					style: "Default";
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/tooltip"
+ * -----------------------
+ * This group corresponds to a tooltip
+ *
+ */
+
+group {
+	name: "etk/tooltip";
+	data {   
+		item: "inset" "5 5 5 5";
+	}
+	images {
+		image: "base_bg.png" COMP;
+	}
+	parts {
+		part {
+			name: "bg"; // tooltip background
+			mouse_events:  0;
+			description {
+				state: "default" 0.0;
+				max: 99999 48;
+				image {
+					normal: "base_bg.png";
+					border: 1 1 1 1;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.text"; // text swallow
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				rel1 {
+					to: "bg";
+				}
+				rel2 {
+					to: "bg";
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/hslider"
+ * -----------------------
+ * This group corresponds to the horizontal-slider widget
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.slider": the dragable part used to change the value of the slider
+ * - "etk.text.label": the text part that displays the label of the slider. Should be hidden by default
+ *
+ * Signals:
+ * --------
+ * - "etk,action,show,label": emitted when the label of the slider should be visible
+ * - "etk,action,hide,label": emitted when the label of the slider should be hidden
+ * - "etk,state,inverted": emitted when the slider gets inverted. The left end now corresponds
+ *      to the maximum value of the slider
+ * - "etk,state,normal": emitted when the slider goes from being inverted to being normal. The right
+ *      end of the slider then corresponds to the max value
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/hslider";
+	min: 64 32;
+	images {
+		image: "sb_runnerh.png" COMP;
+		image: "slider.png" COMP;
+		image: "slider_clicked.png" COMP;
+	}
+	parts {
+		part {
+			name: "event_rect"; // event rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -4 -13;
+					to: "slider_bar";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 11;
+					to: "slider_bar";
+				}
+			}
+		}
+		part {
+			name: "slider_bar"; // slider runner
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 4 -1;
+				}
+				rel2 {
+					relative: 0.0 0.5;
+					offset: -4 0;
+					to_x: "label_clip";
+				}
+				image {
+					normal: "sb_runnerh.png";
+					border: 5 5 0 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "slider_bar_confine"; // confine
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 3 6;
+					to: "slider_bar";
+				}
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -5 7;
+					to: "slider_bar";
+				}
+			}
+		}
+		part {
+			name: "etk.dragable.slider"; // dragable part
+			type: RECT;
+			dragable {
+				confine: "slider_bar_confine";
+				x: 1 1 1;
+				y: 0 0 0;
+			}
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				min: 16 16;
+				max: 16 16;
+			}
+		}
+		part {
+			name: "slider_button"; // button part
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				min: 22 22;
+				max: 22 22;
+				fixed: 1 1;
+				color: 255 255 255 255;
+				rel1 {
+					to: "etk.dragable.slider";
+				}
+				rel2 {
+					to: "etk.dragable.slider";
+					offset: -1 1;
+				}
+				image {
+					normal: "slider.png";
+				}
+			}
+			description {
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "slider_clicked.png";
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 150 150 150 150;
+			}
+		}
+		part {
+			name: "label_clip"; // label clip
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: -1 0;
+					to_y: "label_under";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -2 -1;
+					to_y: "label_under";
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+					to: "label_under";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+					to: "label_under";
+				}
+			}
+		}
+		part {
+			name: "label_under"; // label background
+			clip_to: "label_clip";
+			description {
+				state: "default" 0.0;
+				align: 1.0 0.5;
+				fixed: 1 1;
+				min: 30 0;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -6 -5;
+					to: "etk.text.label";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 2;
+					to: "etk.text.label";
+				}
+				image {
+					normal: "entry.png";
+					border: 7 7 7 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 200 200 200 200;
+			}
+		}
+		part {
+			name: "etk.text.label"; // text label
+			type: TEXT;
+			clip_to: "label_clip";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				align: 1.0 0.5;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: -6 0;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -6 0;
+				}
+				text {
+					text: "0.0";
+					font: "Sans";
+  					size: 10;
+					min: 1 1;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 100 100 100 200;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "hslider_show_label";
+			signal: "etk,action,show,label";
+			source: "etk";
+			action: STATE_SET "visible" 0.0;
+			target: "label_clip";
+		}
+		program {
+			name: "hslider_hide_label";
+			signal: "etk,action,hide,label";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "label_clip";
+		}
+		program {
+			name: "hslider_drag_down";
+			signal: "mouse,down,1*";
+			source: "etk.dragable.slider";
+			action: STATE_SET "down" 0.0;
+			target: "slider_button";
+		}
+		program {
+			name: "hslider_drag_up";
+			signal: "mouse,up,1";
+			source: "etk.dragable.slider";
+			action: STATE_SET "default" 0.0;
+			target: "slider_button";
+		}
+		program {
+			name: "enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "slider_button";
+			target: "label_under";
+			target: "etk.text.label";
+		}
+		program {
+			name: "disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "slider_button";
+			target: "label_under";
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/vslider"
+ * -----------------------
+ * This group corresponds to the vertical-slider widget
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.slider": the dragable part used to change the value of the slider
+ * - "etk.text.label": the text part that displays the label of the slider. Should be hidden by default
+ *
+ * Signals:
+ * --------
+ * - "etk,action,show,label": emitted when the label of the slider should be visible
+ * - "etk,action,hide,label": emitted when the label of the slider should be hidden
+ * - "etk,state,inverted": emitted when the slider gets inverted. The bottom end now corresponds
+ *      to the maximum value of the slider
+ * - "etk,state,normal": emitted when the slider goes from being inverted to being normal. The top
+ *      end of the slider then corresponds to the maximum value
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ */
+
+group {
+	name: "etk/vslider";
+	min: 32 64;
+	images {
+		image: "sb_runnerv.png" COMP;
+		image: "slider.png" COMP;
+		image: "slider_clicked.png" COMP;
+	}
+	parts {
+		part {
+			name: "event_rect"; // event rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -13 -4;
+					to: "slider_bar";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 11 -1;
+					to: "slider_bar";
+				}
+			}
+		}
+		part {
+			name: "slider_bar"; // slider runner
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.5 0.0;
+					offset: -1 4;
+				}
+				rel2 {
+					relative: 0.5 0.0;
+					offset: 0 -4;
+					to_y: "label_clip";
+				}
+				image {
+					normal: "sb_runnerv.png";
+					border: 0 0 5 5;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "slider_bar_confine"; // confine
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 6 3;
+					to: "slider_bar";
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: 7 -5;
+					to: "slider_bar";
+				}
+			}
+		}
+		part {
+			name: "etk.dragable.slider"; // dragable part
+			type: RECT;
+			dragable {
+				confine: "slider_bar_confine";
+				x: 0 0 0;
+				y: 1 1 1;
+			}
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				min: 16 16;
+				max: 16 16;
+			}
+		}
+		part {
+			name: "slider_button"; // button part
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				min: 22 22;
+				max: 22 22;
+				fixed: 1 1;
+				color: 255 255 255 255;
+				rel1 {
+					to: "etk.dragable.slider";
+				}
+				rel2 {
+					to: "etk.dragable.slider";
+					offset: 1 -1;
+				}
+				image {
+					normal: "slider.png";
+				}
+			}
+			description {
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				image {
+				normal: "slider_clicked.png";
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 150 150 150 150;
+			}
+		}
+		part {
+			name: "label_clip"; // label clip
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 0 -1;
+					to_x: "label_under";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -2;
+					to_x: "label_under";
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+					to: "label_under";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+					to: "label_under";
+				}
+			}
+		}
+		part {
+			name: "label_under"; // label background
+			clip_to: "label_clip";
+			description {
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				fixed: 1 1;
+				min: 30 0;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -6 -5;
+					to: "etk.text.label";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 2;
+					to: "etk.text.label";
+				}
+				image {
+					normal: "entry.png";
+					border: 7 7 7 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 200 200 200 200;
+			}
+		}
+		part {
+			name: "etk.text.label"; // label
+			type: TEXT;
+			clip_to: "label_clip";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				align: 0.5 1.0;
+				fixed: 1 1;
+				rel1 {
+					relative: 0.5 1.0;
+					offset: 0 -3;
+				}
+				rel2 {
+					relative: 0.5 1.0;
+					offset: 0 -3;
+				}
+				text {
+					text: "0.0";
+					font: "Sans";
+					size: 10;
+					min: 1 1;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 100 100 100 200;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "vslider_show_label";
+			signal: "etk,action,show,label";
+			source: "etk";
+			action: STATE_SET "visible" 0.0;
+			target: "label_clip";
+		}
+		program {
+			name: "vslider_hide_label";
+			signal: "etk,action,hide,label";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "label_clip";
+		}
+		program {
+			name: "vslider_drag_down";
+			signal: "mouse,down,1*";
+			source: "etk.dragable.slider";
+			action: STATE_SET "down" 0.0;
+			target: "slider_button";
+		}
+		program {
+			name: "vslider_drag_up";
+			signal: "mouse,up,1";
+			source: "etk.dragable.slider";
+			action: STATE_SET "default" 0.0;
+			target: "slider_button";
+		}
+		program {
+			name: "enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "slider_button";
+			target: "label_under";
+			target: "etk.text.label";
+		}
+		program {
+			name: "disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "slider_button";
+			target: "label_under";
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/entry"
+ * -----------------------
+ * This group is used for the spinner widget. It uses several other groups:
+ * - "etk/spinner/text": for the text inside the spinner
+ * - "etk/spinner/cursor": for the cursor of the spinner
+ * - "etk/spinner/selection" for the selection of the spinner
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,enabled", "etk,state,disabled"
+ *
+ * Signals to emit:
+ * ----------------
+ * - "etk,action,increment,start": should be emitted when the value of spinner should start being incremented
+ *      (usually when the up-arrow is pressed)
+ * - "etk,action,increment,stop": should be emitted when the value of spinner should stop being incremented
+ *      (usually when the up-arrow is released)
+ * - "etk,action,decrement,start": should be emitted when the value of spinner should start being decremented
+ *      (usually when the down-arrow is pressed)
+ * - "etk,action,decrement,stop": should be emitted when the value of spinner should stop being decremented
+ *      (usually when the down-arrow is released)
+ */
+
+group {
+	name: "etk/spinner";
+	min: 50 28;
+	images {
+		image: "spinner_base.png" COMP;
+		image: "entry.png" COMP;
+		image: "spinner_up.png" COMP;
+		image: "spinner_down.png" COMP;
+	}
+	parts {
+		part {
+			name: "button_base"; // base button part
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 229;
+				min: 19 28;
+				max: 19 28;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: 0 4;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 0;
+				}
+				image {
+					normal: "spinner_base.png";
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+		part {
+			name: "spinner"; // entry
+			description {
+				state: "default" 0.0;
+				min: 25 22;
+				fixed: 1 1;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 0 -10;
+				}
+				rel2 {
+					relative: 0.0 0.5;
+					offset: -1 12;
+					to_x: "up_arrow";
+				}
+				image {
+					normal: "entry.png";
+					border: 5 5 8 6;
+				}
+			}
+		}
+		part {
+			name: "up_arrow"; // up arrow
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				min: 17 14;
+				max: 17 14;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: -1 -10;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -1 -1;
+				}
+				image {
+					normal: "spinner_up.png";
+				}
+			}
+			description {
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				color: 215 215 215 255;
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+		part {
+			name: "down_arrow"; // down arrow
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				min: 17 14;
+				max: 17 14;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: -1 0;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -1 15;
+				}
+				image {
+					normal: "spinner_down.png";
+				}
+			}
+			description {
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				color: 215 215 215 255;
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // swallow
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+					to: "spinner";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -6 -1;
+					to: "spinner";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "spinner_arrow_up_pressed";
+			signal: "mouse,down,1*";
+			source: "up_arrow";
+			action: STATE_SET "down" 0.0;
+			target: "up_arrow";
+			after: "spinner_increment_start";
+		}
+		program {
+			name: "spinner_arrow_up_released";
+			signal: "mouse,up,1";
+			source: "up_arrow";
+			action: STATE_SET "default" 0.0;
+			target: "up_arrow";
+			after: "spinner_increment_stop";
+		}
+		program {
+			name: "spinner_arrow_down_pressed";
+			signal: "mouse,down,1*";
+			source: "down_arrow";
+			action: STATE_SET "down" 0.0;
+			target: "down_arrow";
+			after: "spinner_decrement_start";
+		}
+		program {
+			name: "spinner_arrow_down_released";
+			signal: "mouse,up,1";
+			source: "down_arrow";
+			action: STATE_SET "default" 0.0;
+			target: "down_arrow";
+			after: "spinner_decrement_stop";
+		}
+		program {
+			name: "spinner_increment_start";
+			action: SIGNAL_EMIT "etk,action,increment,start" "";
+		}
+		program {
+			name: "spinner_increment_stop";
+			action: SIGNAL_EMIT "etk,action,increment,stop" "";
+		}
+		program {
+			name: "spinner_decrement_start";
+			action: SIGNAL_EMIT "etk,action,decrement,start" "";
+		}
+		program {
+			name: "spinner_decrement_stop";
+			action: SIGNAL_EMIT "etk,action,decrement,stop" "";
+		}
+		program {
+			name: "enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "button_base";
+			target: "up_arrow";
+			target: "down_arrow";
+		}
+		program {
+			name: "disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "button_base";
+			target: "up_arrow";
+			target: "down_arrow";
+		}
+	}
+}
+
+/**
+ * group "etk/frame"
+ * -----------------------
+ * This group is used by the frame widget. A frame is a container with a title label
+ * used to group widgets that are logically related
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.label": the text part used for the title of the frame
+ *
+ * Signals:
+ * --------
+ * - "etk,action,show,label": emitted when the label is set
+ * - "etk,action,hide,label": emitted when the label is unset
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/frame";
+	min: 60 30;
+	data {
+		item: "inset" "8 8 28 8";
+	}
+	images {
+		image: "frame_1.png" COMP;
+		image: "frame_2.png" COMP;
+ 		image: "dia_grad.png" COMP;
+	}
+	parts {
+		part { 
+			name: "frame"; // frame part, its bg
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "dia_grad.png";
+				}
+				rel1 {
+					to: "over";
+				}
+				rel2 {
+					to: "over";
+				}
+				fill {
+					smooth: 0;
+					size {
+						relative: 0.0 1.0;
+						offset: 64 0;
+					}
+				}
+			}
+		}
+		part { 
+			name: "base"; // frame shadow
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "frame_2.png";
+					border: 5 5 32 26;
+					middle: 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part { 
+			name: "over"; // overlay part - shine
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					offset: 4 4;
+				}
+				rel2 {
+					offset: -5 -5;
+				}
+				image {
+					normal: "frame_1.png";
+					border: 2 2 28 22;
+					middle: 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part { 
+			name: "etk.text.label"; // label part
+			type: TEXT;
+			mouse_events:   0;
+			description { 
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				fixed: 0 1;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 6 6;
+				}
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -7 6;
+				}
+				color: 0 0 0 64;
+				text {
+					font: "Sans:style=Bold";
+					size: 10;
+					min: 1 1;
+					max: 1 1;
+					align: 0.0 0.0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/menu"
+ * -----------------------
+ * This group corresponds to a menu background.
+ */
+
+group {
+	name: "etk/menu";
+	alias: "etk/combobox/window";
+	alias: "etk/combobox_entry/window";
+	data {
+		item: "inset" "3 3 3 3";
+	}
+	images {
+		image: "base_bg.png" COMP;
+	}
+	parts {
+		part {
+			name: "background"; // menu background
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "base_bg.png";
+					border: 2 2 2 2;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/menu/separator"
+ * -----------------------
+ * This group corresponds to a menu separator.
+ */
+
+group { 
+	name: "etk/menu/separator";
+	images {
+		image: "menu_sep.png" COMP;
+	}
+	parts {
+		part { 
+			name: "separator"; // menu separator
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				min: 0 2;
+				rel1 {
+					offset: 2 2;
+				}
+				rel2 {
+					offset: -3 -3;
+				}
+				image {
+					normal: "menu_sep.png";
+					border: 2 2 0 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/menu_bar/menu_item"
+ * -----------------------
+ * This group corresponds to a menuitem of menubar.
+ */
+
+group {
+	name: "etk/menu_bar/menu_item";
+	min: 45 22;
+	max: 9999 22; // not sure this is such a good idea
+	images {
+		image: "menu_bar_select.png" COMP;
+		image: "menu_bar_select_over.png" COMP;
+	}
+	parts {
+		part {
+			name: "item_rect"; // item rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "highlight"; // selected menubar item
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				image {
+					normal: "menu_bar_select.png";
+					border: 8 8 5 9;
+				}
+				rel1 {
+					relative: 1.0 0.0;
+					offset: 0 0;
+					to_x: "etk.swallow.left_widget";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part {
+			name: "etk.swallow.left_widget"; // swallow
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "invisible" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: 0 -1;
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 3 -8;
+				}
+				rel2 {
+					relative: 0.0 0.5;
+					offset: 18 7;
+				}
+			}
+		}
+		part { 
+			name: "highlight_over"; // hilight of menubar item base
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "highlight";
+				}
+				rel2 {
+					to: "highlight";
+				}
+				image {
+					normal: "menu_bar_select_over.png";
+					border: 8 8 5 9;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "etk.text.label"; // label
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				color3: 0 0 0 0;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: 13 0;
+					to_x: "etk.swallow.left_widget";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -8 0;
+				}
+				text {
+					text: "Label";
+					font: "Sans";
+					size:  10;
+					min: 1 1;
+					align: 0.0 0.5;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				color3: 0 0 0 64;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "item_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			transition: LINEAR 0.2;
+			target: "highlight";
+			target: "highlight_over";
+		}
+		program {
+			name: "item_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.15;
+			target: "highlight";
+			target: "highlight_over";
+		}
+		program {
+			name: "label_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			transition: LINEAR 0.2;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "etk.text.label";
+		}
+		program {
+			name: "item_left_widget_show";
+			signal: "etk,action,show,left_widget";
+			source: "etk";
+			action: STATE_SET "visible" 0.0;
+			target: "etk.swallow.left_widget";
+		}
+		program {
+			name: "item_left_widget_hide";
+			signal: "etk,action,hide,left_widget";
+			source: "etk";
+			action: STATE_SET "invisible" 0.0;
+			target: "etk.swallow.left_widget";
+		}
+	}
+}
+
+/**
+ * group "etk/menu/menu_item"
+ * -----------------------
+ * This group corresponds to a menuitem.
+ */
+
+group {
+	name: "etk/menu/menu_item";
+	min: 150 25;
+	max: 9999 25; // not sure this is such a good idea
+	images {
+		image: "menu_item_select.png" COMP;
+		image: "menu_item_select_over.png" COMP;
+		image: "menu_arrow_normal.png" COMP;
+		image: "menu_arrow_sel.png" COMP;
+	}
+	parts {
+		part {
+			name: "item_rect"; // menu item rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+			}
+		}
+		part {
+			name: "highlight"; // menu item base
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+				image {
+					normal: "menu_item_select.png";
+					border: 8 8 5 9;
+				}
+				fill {
+					smooth: 0;
+				}
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -5 -3;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 5;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -2 0;
+				}
+				rel2 {
+					relative: 1.0 0.9;
+					offset: 1 2;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.left_widget";
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				fixed: 1 1;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: 0 -1;
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				rel1 {
+					relative: 0.04 0.5;
+					offset: 3 -8;
+				}
+				rel2 {
+					relative: 0.04 0.5;
+					offset: 18 7;
+				}
+			}
+		}
+		part { 
+			name: "highlight_over"; // hilight of menu item base
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "highlight";
+				}
+				rel2 {
+					to: "highlight";
+				}
+				image {
+					normal: "menu_item_select_over.png";
+					border: 8 8 5 9;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "arrow_clip"; // arrow clip rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: -3 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -3 -1;
+				}
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: -12 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -3 -1;
+				}
+			}
+			description {
+				state: "spacer" 0.0;
+				inherit: "visible" 0.0;
+				visible: 0;
+			}
+		}
+		part { 
+			name: "arrow"; // menu arrow
+			mouse_events: 0;
+			clip_to: "arrow_clip";
+			description { 
+				state: "default" 0.0;
+				min: 9 12;
+				max: 9 12;
+				align: 1.0 0.5;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: -6 0;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -6 0;
+				}
+				image {
+					normal: "menu_arrow_normal.png";
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "menu_arrow_sel.png";
+				}
+			}
+		}
+		part {
+			name: "etk.text.label"; // label
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				color3: 0 0 0 0;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: 10 -2;
+					to_x: "etk.swallow.left_widget";
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: -14 0;
+					to_x: "arrow";
+				}
+				text {
+					text: "Label";
+					font: "Sans";
+					size:  10;
+					min: 1 1;
+					align: 0.0 0.5;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				color3: 0 0 0 64;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "item_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			transition: LINEAR 0.2;
+			target: "highlight";
+			target: "highlight_over";
+			target: "arrow";
+		}
+		program {
+			name: "item_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.1;
+			target: "highlight";
+			target: "highlight_over";
+			target: "arrow";
+		}
+		program {
+			name: "label_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			transition: LINEAR 0.2;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "etk.text.label";
+		}
+		program {
+			name: "item_left_widget_show";
+			signal: "etk,action,show,left_widget";
+			source: "etk";
+			action: STATE_SET "visible" 0.0;
+			target: "etk.swallow.left_widget";
+		}
+		program {
+			name: "item_left_widget_hide";
+			signal: "etk,action,hide,left_widget";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.swallow.left_widget";
+		}
+		program {
+			name: "item_arrow_show";
+			signal: "etk,action,show,arrow";
+			source: "etk";
+			action: STATE_SET "visible" 0.0;
+			target: "arrow_clip";
+		}
+		program {
+			name: "item_arrow_space_show";
+			signal: "etk,action,show,arrow_space";
+			source: "etk";
+			action: STATE_SET "spacer" 0.0;
+			target: "arrow_clip";
+		}
+		program {
+			name: "item_arrow_hide";
+			signal: "etk,action,hide,arrow";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "arrow_clip";
+		}
+	}
+}
+
+/**
+ * group "etk/menu{_bar}/menu_item/checkbox"
+ * -----------------------
+ * This group corresponds to a checkbox of menuitem or menubar item.
+ *
+ * Signals:
+ * --------
+ * the same as normal checkbox
+ */
+
+group { 
+	name: "etk/menu/menu_item/checkbox";
+	alias: "etk/menu_bar/menu_item/checkbox";
+	images {
+		image: "check_base.png" COMP;
+		image: "check_on.png" COMP;
+		image: "check_sel.png" COMP;
+	}
+	parts {
+		part { 
+			name: "base"; // base part
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				min: 16 16;
+				max: 16 16;
+				image {
+					normal: "check_base.png";
+				}
+			}
+		}
+		part { 
+			name: "mark"; // on state - selected or not
+			mouse_events: 0;
+			clip_to: "mark_hold";
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "mark_hold";
+				}
+				rel2 {
+					to: "mark_hold";
+				}
+				image {
+					normal: "check_on.png";
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "check_sel.png";
+				}
+			}
+		}
+		part { 
+			name: "mark_hold"; // rectangle on which mark part clips
+			type: RECT;
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "base";
+					offset: -5 -5;
+				}
+				rel2 {
+					to: "base";
+					offset: 4 4;
+				}
+			}
+			description { 
+				state: "on" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					offset: 0 0;
+				}
+				rel2 {
+					offset: -1 -1;
+				}
+			}
+		}
+	}
+	programs {
+		program { 
+			name: "sel";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			target: "mark";
+		}
+		program { 
+			name: "unsel";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "mark";
+		}
+		program { 
+			name: "on";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "on" 0.0;
+			target: "mark_hold";
+		}
+		program { 
+			name: "off";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "mark_hold";
+		}
+	}
+}
+
+/**
+ * group "etk/menu{_bar}/menu_item/radiobox"
+ * -----------------------
+ * This group corresponds to a radiobox of menuitem or menubar item.
+ *
+ * Signals:
+ * --------
+ * the same as normal radiobox
+ */
+
+group { 
+	name: "etk/menu/menu_item/radiobox";
+	alias: "etk/menu_bar/menu_item/radiobox";
+	images {
+		image: "radio_base.png" COMP;
+		image: "radio_on.png" COMP;
+		image: "radio_sel.png" COMP;
+	}
+	parts {
+		part { 
+			name: "base"; // base part
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				min: 16 16;
+				max: 16 16;
+				image {
+					normal: "radio_base.png";
+				}
+			}
+		}
+		part { 
+			name: "mark"; // on state - selected or not
+			mouse_events: 0;
+			clip_to: "mark_hold";
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "mark_hold";
+				}
+				rel2 {
+					to: "mark_hold";
+				}
+				image {
+					normal: "radio_on.png";
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "radio_sel.png";
+				}
+			}
+		}
+		part { 
+			name: "mark_hold"; // rectangle on which mark part clips
+			type: RECT;
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "base";
+					offset: -5 -5;
+				}
+				rel2 {
+					to: "base";
+					offset: 4 4;
+				}
+			}
+			description { 
+				state: "on" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					offset: 0 0;
+				}
+				rel2 {
+					offset: -1 -1;
+				}
+			}
+		}
+	}
+	programs {
+		program { 
+			name: "sel";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			target: "mark";
+		}
+		program { 
+			name: "unsel";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "mark";
+		}
+		program { 
+			name: "on";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "on" 0.0;
+			target: "mark_hold";
+		}
+		program { 
+			name: "off";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "mark_hold";
+		}
+	}
+}
+
+/**
+ * group "etk/menu_bar"
+ * -----------------------
+ * This group corresponds to a menubar background
+ */
+
+group {
+	name: "etk/menu_bar";
+	min: 0 18;
+	images {
+		image: "status_bar.png" COMP; // uses statusbar pixmap
+	}
+	parts {
+		part {
+			name: "menu_bar"; // menu bar bg
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "status_bar.png";
+					border: 0 0 3 3;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/statusbar"
+ * -----------------------
+ * This group corresponds to a statusbar
+ */
+
+group {
+	name: "etk/statusbar";
+	min: 0 21;
+	images {
+		image: "status_bar.png" COMP;
+	}
+	parts {
+		part {
+			name: "bar"; // status bar bg
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 0 -21;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "status_bar.png";
+					border: 0 0 3 3;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "etk.event.resize"; // resize corner - invisible
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 1.0 1.0;
+					offset: -18 -17;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -2 -1;
+				}
+			}
+			description {
+				state: "hidden" 0.0;
+				inherit: "default" 0.0;
+				rel1 {
+					relative: 1.0 1.0;
+					offset: -2 -18;
+				}
+			}
+		}
+		part {
+			name: "etk.text.message"; // message on a statusbar
+			type: TEXT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				fixed: 1 1;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 5 5;
+					to: "bar";
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: -1 -1;
+					to_x: "etk.event.resize";
+					to_y: "bar";
+				}
+				text {
+					text: "Message";
+					font: "Sans";
+					size: 10;
+					min: 1 1;
+					align: 0.0 0.5;
+				}
+			}
+		}
+	}
+	programs { // programs to make invisible resize corner working
+		program {
+			name: "status_show_resize_grip";
+			signal: "etk,action,show,resize_grip";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.event.resize";
+		}
+		program {
+			name: "status_hide_resize_grip";
+			signal: "etk,action,hide,resize_grip";
+			source: "etk";
+			action: STATE_SET "hidden" 0.0;
+			target: "etk.event.resize";
+		}
+	}
+}
+
+/**
+ * group "etk/notebook/tab"
+ * -----------------------
+ * This group corresponds to a notebook tab
+ * Hilight overlay and base bg are splitted to two parts - active and normal - because of transition between them.
+ *
+ * unused signals:
+ * etk,state,pressed
+ * etk,state,released
+ */
+
+group {
+	name: "etk/notebook/tab";
+	min: 20 26;
+	images {
+		image: "bt_base3.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "bt_dis_base.png" COMP;
+		image: "bt_dis_hilight.png" COMP;
+	}
+	parts {
+		part {
+			name: "tab_default"; // base - default
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+				rel2 {
+					relative: 1.0 1.0;
+				}
+				image {
+					normal: "bt_dis_base.png";
+					border: 4 4 4 4;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+		}
+		part {
+			name: "tab_active"; // base - active
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+				rel2 {
+					relative: 1.0 1.0;
+				}
+				image {
+					normal: "bt_base3.png";
+					border: 7 7 7 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part { 
+			name: "over1_default"; // overlay - hilight - default
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_dis_hilight.png";
+					border: 4 4 4 0;
+				}
+			}
+			description { 
+				state: "active" 0.0;
+				inherit:  "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+		}
+		part { 
+			name: "over1_active"; // overlay - hilight - active
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+				rel2 {
+					relative: 1.0 0.5;
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "active" 0.0;
+				inherit:  "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - on default and active too
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "active" 0.0;
+				inherit:  "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part {
+			name: "label_rect"; // label rectangle
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 5 3;
+					to: "tab_default";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -11 -7;
+					to: "tab_default";
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // swallow
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 15 3;
+					to: "label_rect";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -13 -2;
+					to: "label_rect";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "tab_activate";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "active" 0.0;
+			transition: LINEAR 0.2;
+			target: "label_rect";
+			target: "tab_default";
+			target: "tab_active";
+			target: "over1_default";
+			target: "over1_active";
+			target: "over2";
+		}
+		program {
+			name: "tab_deactivate";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "label_rect";
+			target: "tab_default";
+			target: "tab_active";
+			target: "over1_default";
+			target: "over1_active";
+			target: "over2";
+		}
+	}
+}
+
+/**
+ * group "etk/notebook/tab/label"
+ * -----------------------
+ * This group corresponds to a label of notebook
+ */
+
+group {
+	name: "etk/notebook/tab/label";
+	parts {
+		part {
+			name: "etk.text.label";
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				rel1 {
+					offset: 0 0;
+				}
+				text {
+					style: "Button Disabled";
+					min: 1 1;
+				}
+			}
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+					min: 1 1;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "label_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_activate";
+			signal: "etk,state,on";
+			source: "etk";
+			action: STATE_SET "active" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "tab_deactivate";
+			signal: "etk,state,off";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/notebook/frame"
+ * -----------------------
+ * This group corresponds to a notebook frame
+ *
+ */
+
+group {
+	name: "etk/notebook/frame";
+	images {
+		image: "entry.png" COMP;
+	}
+	data {
+		item: "inset" "8 8 8 8";
+	}	
+	parts {
+		part { 
+			name: "frame";
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "entry.png";
+					border: 10 10 10 10;
+				}
+				rel1 {
+					offset: -2 -2;
+				}
+				rel2 {
+					offset: 2 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/progress_bar"
+ * -----------------------
+ * This group corresponds to the progress-bar widget
+ *
+ * Different settings:
+ * -------------------
+ * - "filler_pulse_width": a float indicating the width of the filler part when the progress-bar is in pulse-mode
+ *      (in this mode, the filler is bounding inside the progress-bar. It is used when we can't know how long the
+ *      operation will take). Value from 0.1 to 0.9. Default value: 0.3
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.filler": the dragable part used to display the progress of the progress-bar.
+ *      This part should be insensitive to mouse-events (you don't want to be able to drag the filler of a
+ *      progress-bar...)
+ * - "etk.text.text": the text part used to display a text about the progress of the progress-bar
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/progress_bar";
+	alias: "etk/tree/progress_bar";
+	min: 120 20;
+	data {
+		item: "filler_pulse_width" "0.3";
+	}
+	images {
+		image: "progress_trough.png" COMP;
+		image: "progress_bar_right.png" COMP;
+		image: "progress_bar_left.png" COMP;
+		image: "progress_bar_fill_0.png" COMP;
+	}	
+	parts {
+		part {
+			name: "trough"; // progressbar bg
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 0 -10;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -1 9;
+				}
+				image {
+					normal: "progress_trough.png";
+					border: 14 14 14 14;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "confine"; // progressbar confine - for dragable
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 1 1;
+					to: "trough";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -2 -3;
+					to: "trough";
+				}
+			}
+		}
+		part {
+			name: "etk.dragable.filler"; // dragable part. Used in Emphasis for example.
+			type: RECT;
+			mouse_events: 0;
+			dragable {
+				confine: "confine";
+				x: 1 1 1;
+				y: 0 0 0;
+			}
+			description {
+				state: "default" 0.0;
+				min: 0 17;
+				max: 9999 17;
+				/* this seems to fix an issue with emphasis */
+				fixed: 1 1;
+				rel1 {
+					relative: 0.5 0.5;
+					to: "trough";
+				}
+				rel2 {
+					relative: 0.5 0.5;
+					to: "trough";
+				}
+			}
+		}
+		part {
+			name: "filler_left"; // Left part of progress
+			clip_to: "etk.dragable.filler";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				fixed: 1 1;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+					to: "etk.dragable.filler";
+ 				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: 1 -1;
+					to: "etk.dragable.filler";
+				}
+				image {
+					normal: "progress_bar_left.png";
+					border: 12 12 12 12;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "filler_right"; // Right part of progress
+			clip_to: "etk.dragable.filler";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: -2 0;
+					to: "etk.dragable.filler";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+  					to: "etk.dragable.filler";
+				}
+				image {
+					normal: "progress_bar_right.png";
+					border: 12 12 12 12;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "filler_middle"; // Progress middle part
+			clip_to: "etk.dragable.filler";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: 0 0;
+					to: "filler_left";
+				}
+				rel2 {
+					relative: 0.0 1.0;
+					offset: -1 -1;
+					to: "filler_right";
+				}
+				image {
+					normal: "progress_bar_fill_0.png";
+					border: 12 12 12 12;
+				}
+				fill {
+					smooth: 1;
+  					size {
+						relative: 0.0 0.0;
+						offset: 28 17;
+					}
+				}
+			}
+		}
+		part {
+			name: "text_clip"; // Text clip
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 2 2;
+					to: "trough";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -3 -3;
+					to: "trough";
+				}
+			}
+		}
+		part {
+			name: "etk.text.text"; // Progressbar label. Clipped to text_clip.
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			clip_to: "text_clip";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				color3:  255 255 255 50;
+				rel1 {
+					to: "text_clip";
+				}
+				rel2 {
+					offset: -1 1;
+					to: "text_clip";
+				}
+				text {
+					text: "Text";
+					font: "Sans";
+					size:  10;
+					align: 0.5 0.5;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/iconbox"
+ * -----------------------
+ * This group corresponds to an iconbox
+ */
+
+
+group {
+	name: "etk/iconbox";
+	data {
+		item: "selected_icon_color" "138 138 138 225";
+	}
+}
+
+/**
+ * group "etk/iconbox/scrolled_view"
+ * -----------------------
+ * This group corresponds to a bg of iconbox
+ */
+
+
+group {
+	name: "etk/iconbox/scrolled_view";
+	min: 120 18;
+	data {
+		item: "inset" "2 2 2 2";
+	}
+	images {
+		image: "entry.png" COMP;
+	}
+	parts {
+		part {
+			name: "text_view_bg";
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "entry.png";
+					border: 10 10 10 10;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/iconbox/label"
+ * -----------------------
+ * This group corresponds to an icon label(with selection etc)
+ */
+
+
+group {
+	name: "etk/iconbox/label";
+	images {
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base part
+			mouse_events: 1;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					offset: -10 -2;
+				}
+				rel2 {
+					offset: 7 2;
+				}
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+					to: "button_image";
+				}
+				rel1 {
+					to: "button_image";
+				}
+				visible: 0;
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					to: "button_image";
+				}
+				rel2 {
+					to: "button_image";
+				}
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+		part {
+			name: "etk.text.label";
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				text {
+					style: "Default";
+					min: 1 1;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "icon_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			target: "button_image";
+			target: "over1";
+			target: "over2";
+			target: "etk.text.label";
+		}
+		program {
+			name: "icon_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "button_image";
+			target: "over1";
+			target: "over2";
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/selection"
+ * -----------------------
+ * This group corresponds to a frame when selecting more icons with a mouse
+ */
+
+
+group {
+	name: "etk/iconbox/selection";
+	images {
+		image: "iconbox_frame.png" COMP;
+		image: "iconbox_border.png" COMP;
+	}
+	parts {
+		part { 
+			name: "overlay"; // selection stripes
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				rel1 { to: "border"; offset: 4 4; }
+				rel2 { to: "border"; offset: -5 -5; }
+				image {
+					normal: "iconbox_frame.png";
+				}
+				fill {
+					size.relative: 0 0;
+					size.offset: 24 24;
+				}
+			}
+		}
+		part { 
+			name: "border"; // selection border
+			mouse_events:  0;
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					offset: -5 -5;
+				}
+				rel2 {
+					offset: 4 4;
+				}
+				image {
+					normal: "iconbox_border.png";
+					border: 10 10 10 10;
+					middle: 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/colorpicker/picker"
+ * -----------------------
+ * This group corresponds to the pickers-zone of the colorpicker. A colorpicker is made of two pickers, one is square
+ * and represents the orthogonal axes of the current color-mode, and one is vertical and is used to control the
+ * component of the current color-mode.
+ *
+ * Special parts:
+ * --------------
+ * - "etk.swallow.square_picker": the part where the square picker of the slider is embedded
+ * - "etk.swallow.vertical_picker": the part where the vertical picker of the slider is embedded
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/colorpicker/picker";
+	min: 210 180;
+	images {
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base part
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+				rel1 {
+					relative: 0 0;
+					offset: 2 1;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -5 -3;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight - not visible on disabled, pressed
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+					to: "button_image";
+				}
+				rel1 {
+					to: "button_image";
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - not visible on disabled
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "button_image";
+				}
+				rel2 {
+					to: "button_image";
+				}
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+		}
+		part {
+			name: "square_picker_border"; // border of big picker - to have some of bg visible
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 10 10;
+					to: "button_image";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -25 -10;
+					to: "button_image";
+				}
+			}
+		}
+	      part {
+			name: "vertical_picker_border"; // border of small vertical picker - to have some of bg visible
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				max: 12 9999;
+				rel1 {
+					relative: 1.0 0.0;
+					offset: -21 10;
+					to: "button_image";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -10 -10;
+					to: "button_image";
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.square_picker"; // swallow for big picker
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 1 1;
+					to: "square_picker_border";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -2 -3;
+					to: "square_picker_border";
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.vertical_picker"; // swallow for small vertical picker
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				max: 10 9999;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 1 1;
+					to: "vertical_picker_border";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -2 -2;
+					to: "vertical_picker_border";
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/colorpicker/hslider"
+ * -----------------------
+ * This group corresponds to the horizontal-slider used for each component (H, S, V, R, G, B) in the colorpicker.
+ * Note that the alpha slider use the "etk/hslider" group
+ *
+ * Special parts:
+ * --------------
+ * - "etk.swallow.image": the part where the colormap of the slider is embedded
+ * - "etk.dragable.slider": the dragable part used to change the value of the slider
+ * - "etk.text.label": the text part that displays the value of the component
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown",
+ *      "etk,state,focused", "etk,state,unfocused"
+ */
+
+group {
+	name: "etk/colorpicker/hslider";
+	min: 140 24;
+	images {
+		image: "bt_base2.png" COMP;
+		image: "bt_hilight.png" COMP;
+		image: "bt_shine.png" COMP;
+		image: "color_slider.png" COMP;
+		image: "entry.png" COMP;
+	}
+	parts {
+		part { 
+			name: "button_image"; // base part
+			description { 
+				state: "default" 0.0;
+				image {
+					normal: "bt_base2.png";
+					border: 7 7 7 7;
+				}
+				rel1 {
+					relative: 0 0;
+					offset: -2 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -30 0;
+				}
+			}
+		}
+		part { 
+			name: "over1"; // overlay - hilight - not visible on disabled, pressed
+			description { 
+				state: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.5;
+					to: "button_image";
+				}
+				rel1 {
+					to: "button_image";
+				}
+				image {
+					normal: "bt_hilight.png";
+					border: 7 7 7 0;
+				}
+			}
+		}
+		part { 
+			name: "over2"; // overlay - shine - not visible on disabled
+			description { 
+				state: "default" 0.0;
+				rel1 {
+					to: "button_image";
+				}
+				rel2 {
+					to: "button_image";
+				}
+				image {
+					normal: "bt_shine.png";
+					border: 7 7 7 7;
+				}
+			}
+		}
+		part { // slider trough
+			name: "trough";
+			type: RECT;
+			description {
+				color: 255 255 255 0;
+				state: "default" 0.0;
+				rel1 {
+					offset: 8 3;
+				}
+				rel2 {
+					offset: -40 -3;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.image"; // color swallow
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 5;
+					to: "trough";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -6;
+					to: "trough";
+				}
+			}
+		}
+		part {
+			name: "confine"; // slider confine
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -5 1;
+					to: "trough";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 -2;
+					to: "trough";
+				}
+			}
+		}
+		part { // dragable part
+			name: "etk.dragable.slider";
+			dragable {
+				confine: "confine";
+				x: 1 1 1;
+				y: 0 0 0;
+			}
+			description {
+				state: "default" 0.0;
+				min: 11 19;
+				max: 11 19;
+				image {
+					normal: "color_slider.png";
+				}
+			}
+		}
+		part {
+			name: "label_under"; // label bg - entry
+			description {
+				state: "default" 0.0;
+				align: 1.0 0.5;
+				fixed: 1 1;
+				min: 30 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -6 -5;
+					to: "etk.text.label";
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 2;
+					to: "etk.text.label";
+				}
+				image {
+					normal: "entry.png";
+					border: 7 7 7 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "etk.text.label";
+			type: TEXT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				align: 1.0 0.5;
+				fixed: 1 1;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: -5 1;
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -5 1;
+				}
+				text {
+					text: "0";
+					font: "Sans";
+					size: 10;
+					min: 1 1;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/colorpicker/color_preview"
+ * -----------------------
+ * This group corresponds to the preview rectangle used to display the current and the previous colors.
+ *
+ * Special parts:
+ * --------------
+ * - "etk.swallow.preview": the part where the preview object is embedded
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/colorpicker/color_preview";
+	min: 40 22;
+	images {
+		image: "color_preview.png" COMP;
+	}
+	parts {
+		part {
+			name: "background"; // bg part - base white rectangle
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1 {
+					to: "etk.swallow.preview";
+				}
+				rel2 {
+					to: "etk.swallow.preview";
+				}
+			}
+		}
+		part {
+         		name: "etk.swallow.preview"; // preview swallow part
+         		type: SWALLOW;
+         		description {
+         			state: "default" 0.0;
+         			rel1 {
+         				relative: 0.0 0.0;
+         				offset: 2 1;
+         				to: "border";
+         			}
+         			rel2 {
+         				relative: 1.0 1.0;
+         				offset: -2 -2;
+         				to: "border";
+				}
+			}
+		}
+		part {
+			name: "border"; // border part - overlay. To look not as simple rectangle :)
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 8 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -5 -1;
+				}
+				image {
+					normal: "color_preview.png";
+					border: 7 7 7 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/label"
+ * -----------------------
+ * This group corresponds to the default look of a label widget
+ *
+ * Special parts:
+ * --------------
+ * - "etk.text.label": the text part used to display the button's text
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+group {
+	name: "etk/label";
+	parts {
+		part {
+			name: "etk.text.label";
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				rel1 {
+					offset: 5 0;
+				}
+				text {
+					style: "Default";
+					min: 1 1;
+				}
+			}
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Disabled";
+					min: 1 1;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "label_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+group {
+	name: "etk/tree/header/label";
+	alias: "etk/tree/header_unique/label";
+	alias: "etk/tree/header_first/label";
+	alias: "etk/tree/header_last/label";
+	parts {
+		part {
+			name: "etk.text.label";
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				rel1 {
+					offset: 5 -2;
+				}
+				text {
+					style: "Button Default";
+					min: 1 1;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "label_enable";
+			signal: "etk,state,enabled";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "label_disable";
+			signal: "etk,state,disabled";
+			source: "etk";
+			action: STATE_SET "disabled" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+
+/**
+ * group "etk/tree"
+ * ----------------
+ * This group corresponds to the background object of the tree, which is below
+ * the headers-bar and the scrolled-view. Most of the time, it is only used to
+ * defined the values of the different settings
+ *
+ * Different settings:
+ * -------------------
+ * - "tree_contains_headers": a boolean setting whether the headers-bar should
+ *      be contained by the tree itself (the headers-bar is then above the
+ *      scrolled-view) or contained by the scrolled-view (the headers-bar is then
+ *      inside the scrolled-view). The default value is "1": the headers-bar is
+ *      contained directly by the tree. Set it to "0" otherwise
+ * - "separator_color": the rgba color of the vertical lines separating the
+ *      columns of the tree. Default value is "255 255 255 0"
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ */
+
+group {
+   name: "etk/tree";
+   data {
+      item: "tree_contains_headers" "1";
+      item: "separator_color" "204 204 204 140";
+   }
+}
+
+/**
+ * group "etk/tree/header"
+ *       "etk/tree/header_unique"
+ *       "etk/tree/header_first"
+ *       "etk/tree/header_last"
+ * -----------------------
+ * These groups correspond to the header-objects of the tree's columns.
+ * - Only "etk/tree/header" has to be necessarily implemented. It is the generic
+ *      group for the column headers.
+ * - "etk/tree/header_first" is used for the header of the first visible column,
+ *      when several columns can be seen. If this group doesn't exist,
+ *      "etk/tree/header" is used
+ * - "etk/tree/header_last" is used for the header of the last visible column,
+ *      when several columns can be seen. If this group doesn't exist,
+ *      "etk/tree/header" is used
+ * - "etk/tree/header_last" is used for the header of the column when only one
+ *      column is visible seen. If this group doesn't exist, "etk/tree/header"
+ *      is used
+ *
+ * Signals:
+ * --------
+ * - "etk,state,pressed": emitted when the header is pressed
+ * - "etk,state,released": emitted when the header is released
+ * - "etk,state,clicked": emitted when the header is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+
+TREE_HEADER("etk/tree/header");
+TREE_HEADER("etk/tree/header_unique");
+TREE_HEADER("etk/tree/header_first");
+TREE_HEADER("etk/tree/header_last");
+
+/**
+ * group "etk/tree/scrolled_view"
+ * -----------------------
+ * This group corresponds to the scrolled-view of the tree. The scrolled-view
+ * contains the tree-grid (see group "etk/tree/grid") which contains the rows
+ * of the tree. It may also contain the headers if the setting
+ * "tree_contains_headers" of the "etk,tree" group is set to "0"
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave",
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ */
+group {
+	name: "etk/tree/scrolled_view";
+	images {
+		image: "tree_shadow.png" COMP;
+	}
+	parts {
+		part {
+			name: "background"; // bg rectangle, white color
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1 { // rel1 and rel2 makes it will be automatically scrolled back when you go away from the list
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "etk.swallow.content"; // content swallow
+			type: SWALLOW;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 1 2;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -3 -5;
+				}
+			}
+		}
+		part {
+			name: "shadow"; // shadow overlay, to not look that simple
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 120;
+				image {
+					normal: "tree_shadow.png";
+					border: 12 12 12 12;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * group "etk/tree/scrolled_view/hscrollbar"
+ * -----------------------
+ * This group corresponds to the horizontal scrollbar of the tree's
+ * scrolled-view
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.bar": the dragable part used to scroll the content of the
+ *      scrolled-view
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ *
+ * Signals to emit:
+ * ----------------
+ * - "scroll_left_start": should be emitted when the content should be
+ *      scrolled to the left (i.e. when the left arrow is pressed)
+ * - "scroll_right_start": should be emitted when the content should be
+ *      scrolled to the right (i.e. when the right arrow is pressed)
+ * - "scroll_stop": should be emitted when the content should stop being
+ *      scrolled (i.e. when the pressed arrow is released)
+ */
+
+group {
+	name: "etk/tree/scrolled_view/hscrollbar";
+	alias: "etk/hscrollbar";
+	alias: "etk/scrolled_view/hscrollbar";
+	alias: "etk/iconbox/scrolled_view/hscrollbar";
+	min: 68 17;
+	images {
+		image: "sb_runnerh.png" COMP;
+	}
+	parts {
+		part {
+			name: "clip"; // clip part
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "trough_bar"; // scrollbar trough
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 1.0 0.5;
+					offset: 1 -1;
+					to_x: "left_arrow";
+				}
+				rel2 {
+					relative: 0.0 0.5;
+					offset: -2 0;
+					to_x: "right_arrow";
+				}
+				image {
+					normal: "sb_runnerh.png";
+					border: 4 4 0 0;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part { // confine for scrollbar
+			name: "confine";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: -1 7;
+					to_x: "trough_bar";
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					offset: 0 7;
+					to_x: "trough_bar";
+				}
+			}
+		}
+		SCROLLBAR_DRAG("etk.dragable.bar", 20, 17, 1, 0, "clip")
+		SCROLLBAR_BUTTON("left_arrow", 0.0, 0.5, 3, -6, "arrow_left.png", "arrow_left.png", "clip")
+		SCROLLBAR_BUTTON("right_arrow", 1.0, 0.5, -17, -6, "arrow_right.png", "arrow_right.png", "clip")
+	}
+	programs {
+		SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+		SCROLLBAR_BUTTON_PROG("left_arrow", "left")
+		SCROLLBAR_BUTTON_PROG("right_arrow", "right")
+	}
+}
+
+/**
+ * group "etk/tree/scrolled_view/vscrollbar"
+ * -----------------------
+ * This group corresponds to the vertical scrollbar of the tree's
+ * scrolled-view
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.bar": the dragable part used to scroll the content of the
+ *      scrolled-view
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ *
+ * Signals to emit:
+ * ----------------
+ * - "scroll_up_start": should be emitted when the content should be
+ *      scrolled up (i.e. when the up arrow is pressed)
+ * - "scroll_down_start": should be emitted when the content should be
+ *      scrolled down (i.e. when the down arrow is pressed)
+ * - "scroll_stop": should be emitted when the content should stop being
+ *      scrolled (i.e. when the pressed arrow is released)
+ */
+
+group {
+	name: "etk/tree/scrolled_view/vscrollbar";
+	alias: "etk/vscrollbar";
+	alias: "etk/scrolled_view/vscrollbar";
+	alias: "etk/iconbox/scrolled_view/vscrollbar";
+	min: 17 68;
+	images {
+		image: "sb_runnerv.png" COMP;
+	}
+	parts {
+		part {
+			name: "clip"; // clip part
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "trough_bar"; // scrollbar trough
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.5 1.0;
+					offset: -1 1;
+					to_y: "up_arrow";
+				}
+				rel2 {
+					relative: 0.5 0.0;
+					offset: 0 -2;
+					to_y: "down_arrow";
+				}
+				image {
+					normal: "sb_runnerv.png";
+					border: 0 0 4 4;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part {
+			name: "confine"; // confine for scrollbar
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.5 0.0;
+					offset: 8 -1;
+					to_y: "trough_bar";
+				}
+				rel2 {
+					relative: 0.5 1.0;
+					offset: 8 0;
+					to_y: "trough_bar";
+				}
+			}
+		}
+		SCROLLBAR_DRAG("etk.dragable.bar", 17, 20, 0, 1, "clip")
+		SCROLLBAR_BUTTON("up_arrow", 0.5, 0.0, -5, 4, "arrow_up.png", "arrow_up.png", "clip")
+		SCROLLBAR_BUTTON("down_arrow", 0.5, 1.0, -5, -12, "arrow_down.png", "arrow_down.png", "clip")
+	}
+	programs {
+		SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+		SCROLLBAR_BUTTON_PROG("up_arrow", "up")
+		SCROLLBAR_BUTTON_PROG("down_arrow", "down")
+	}
+}
+
+/**
+ * group "etk/tree/row"
+ * -----------------------
+ * This group is used by all the visible rows of the tree
+ *
+ * Signals:
+ * --------
+ * - "etk,state,odd": emitted when the group corresponds to a row whose number
+ *      is odd
+ * - "etk,state,even": emitted when the group corresponds to a row whose number
+ *      is even
+ * - "etk,state,selected": emitted when the row is selected
+ * - "etk,state,unselected":  emitted when the row is unselected
+ *
+ * Note that this group doesn't have the common signals of a widget
+ * ("etk,state,enter", "etk,state,leave", ...) since a row is not a widget.
+ * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
+ * emitted automatically by Edje
+ */
+
+group {
+	name: "etk/tree/row";
+	images {
+		image: "bt_sm_base1.png" COMP;
+		image: "bt_sm_shine.png" COMP;
+		image: "bt_sm_hilight.png" COMP;
+		image: "ilist_2.png" COMP;
+		image: "ilist_1.png" COMP;
+		image: "ilist_item_shadow.png" COMP;
+	}
+	parts {
+		part {
+			name: "base_sh"; // base shadow of item
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				min: 0 10;
+				rel1 {
+					to: "row";
+					relative: 0.0 1.0;
+					offset: 0 0;
+				}
+				rel2 {
+					to: "row";
+					relative: 1.0 1.0;
+					offset: -1 0;
+				}
+				image {
+					normal: "ilist_item_shadow.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+		part { // row - normal or odd
+			name: "row";
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "ilist_1.png";
+					border: 2 2 2 2;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "even" 0.0;
+				inherit: "default" 0.0;
+				image {
+					normal: "ilist_2.png";
+					border: 2 2 2 2;
+				}
+			}
+		}
+		part { 
+			name: "bg"; // selected row - base
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -5 -5;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 4 4;
+				}
+				image {
+					normal: "bt_sm_base1.png";
+					border: 6 6 6 6;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: -2 -2;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 1 1;
+				}
+			}
+		}
+		part { 
+			name: "fg1"; // overlay for selected - hilight
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "bg";
+				}
+				rel2 {
+					relative: 1.0 0.5;
+					to: "bg";
+				}
+				image {
+					normal: "bt_sm_hilight.png";
+					border: 6 6 6 0;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part { 
+			name: "fg2"; // overlay for selected - shine
+			mouse_events: 0;
+			description { 
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "bg";
+				}
+				rel2 {
+					to: "bg";
+				}
+				image {
+					normal: "bt_sm_shine.png";
+					border: 6 6 6 0;
+				}
+			}
+			description { 
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+	}
+	programs {
+		program {
+			name: "row_even";
+			signal: "etk,state,even";
+			source: "etk";
+			action: STATE_SET "even" 0.0;
+			target: "row";
+		}
+		program {
+			name: "row_odd";
+			signal: "etk,state,odd";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "row";
+		}
+		program {
+			name: "row_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			target: "bg";
+			target: "fg1";
+			target: "fg2";
+		}
+		program {
+			name: "row_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "bg";
+			target: "fg1";
+			target: "fg2";
+		}
+	}
+}
+
+/**
+ * group "etk/tree/expander"
+ * -----------------------
+ * This group corresponds to the expander object used to fold/unfold rows.
+ *
+ * Signals:
+ * --------
+ * - "etk,action,fold": emitted when the corresponding row is folded
+ * - "etk,action,unfold": emitted when the corresponding row is unfolded
+ *
+ * The min size of the group is used to determine the size of the expander in the tree
+ *
+ * Note that this group doesn't have the common signals of a widget
+ * ("etk,state,enter", "etk,state,leave", ...) since a tree's expander is not a widget.
+ * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
+ * emitted automatically by Edje
+ */
+
+group {
+	min: 16 16;
+	name: "etk/tree/expander";
+	images {
+		image: "tree_arrow_right.png" COMP;
+		image: "tree_arrow_down.png" COMP;
+	}
+	parts {
+		part {
+			name: "expander_arrow"; // arrow part
+			description {
+				state: "default" 0.0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image {
+					normal: "tree_arrow_right.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "expanded" 0.0; // down state
+				inherit: "default" 0.0;
+				image {
+					normal: "tree_arrow_down.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "expander_fold";
+			signal: "etk,action,fold";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "expander_arrow";
+		}
+		program {
+			name: "expander_unfold";
+			signal: "etk,action,unfold";
+			source: "etk";
+			action: STATE_SET "expanded" 0.0;
+			target: "expander_arrow";
+		}
+	}
+}
+
+/**
+ * group "etk/tree/text"
+ * -----------------------
+ * This group corresponds to the text of the rows of the tree
+ *
+ */
+
+group {
+	name: "etk/tree/text";
+	parts {
+		part {
+			name: "etk.text.label"; // label part, using button normal on selected
+			type: TEXTBLOCK;
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				text {
+					style: "Other Default";
+					min: 1 1;
+				}
+			}
+			description {
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				text {
+					style: "Button Default";
+					min: 1 1;
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "row_select";
+			signal: "etk,state,selected";
+			source: "etk";
+			action: STATE_SET "selected" 0.0;
+			target: "etk.text.label";
+		}
+		program {
+			name: "row_unselect";
+			signal: "etk,state,unselected";
+			source: "etk";
+			action: STATE_SET "default" 0.0;
+			target: "etk.text.label";
+		}
+	}
+}
+
+/**
+ * group "etk/mdi_window"
+ * -----------------------
+ * This group corresponds to an mdi window of Etk.
+ *
+ */
+
+group {
+	name: "etk/mdi_window";
+	min: 32 32;
+	data {
+		item: "inset" "0 0 24 5";
+	}
+	images {
+		image: "bd_border.png" COMP;
+		image: "bd_button_close_focused.png" COMP;
+		image: "bd_button_close_shadow.png" COMP;
+		image: "bd_button_max_focused.png" COMP;
+		image: "bd_button_max_shadow.png" COMP;
+		image: "bd_shadow.png" COMP;
+		image: "bd_title_bg.png" COMP;
+		image: "bd_title_over.png" COMP;
+	}
+	parts {
+		part {
+			name: "shadow"; // provides a dropshadow of the window
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					offset: -6 -6;
+				}
+				rel2 {
+					offset: 13 13;
+				}
+				image {
+					normal: "bd_shadow.png";
+					border: 20 20 20 20;
+				}
+			}
+		}
+		part {
+			name: "border"; // a whole border
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "bd_border.png";
+					border: 33 53 26 5;
+				}
+			}
+		}
+		part {
+			name: "etk.event.resize"; // resize event rect
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 1.0 1.0;
+					offset: -16 -16;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+			}
+		}
+		part {
+			name: "title_active"; // active titlebar pixmap
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 24 0;
+				}
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -50 23;
+				}
+				image {
+					normal: "bd_title_bg.png";
+					border: 7 7 2 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "title_active_over"; // overlay to make glossy effect
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					to: "title_active";
+				}
+				rel2 {
+					to: "title_active";
+				}
+				image {
+					normal: "bd_title_over.png";
+					border: 7 7 2 7;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "etk.text.title"; // title label
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			description {
+				state: "default" 0.0;
+				color: 224 224 224 255;
+				color3: 0 0 0 8;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 35 3;
+				}
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -53 16;
+				}
+				text {
+					text: "Title";
+					font: "Sans:style=Bold";
+					size: 10;
+					align: 0.0 0.5;
+				}
+			}
+		}
+		part {
+			name: "etk.event.titlebar"; // titlebar event rect
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 24 0;
+				}
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -45 23;
+				}
+			}
+		}
+		WIN_BUTTON("maximize", 1.0, 0.0, -47, 0, "bd_button_max_focused.png", "bd_button_max_shadow.png", "etk.event.maximize")
+		WIN_BUTTON("close", 1.0, 0.0, -25, 0, "bd_button_close_focused.png", "bd_button_close_shadow.png", "etk.event.close")
+	}
+	programs {
+		program {
+			name: "border_focused";
+			signal: "show";
+			source: "";
+			after: "go_active_pre";
+		}
+		program {
+			name: "go_active_pre";
+			action: STATE_SET "default" 0.0;
+			target: "title_active";
+			target: "title_active_over";
+			after: "go_active";
+		}
+		program {
+			name: "go_active";
+			action: STATE_SET "active" 0.0;
+			target: "title_active";
+			target: "title_active_over";
+			transition: LINEAR 0.05;
+		}
+		program {
+			name: "go_passive_pre";
+			action: STATE_SET "active" 0.0;
+			target: "title_active";
+			target: "title_active_over";
+			after: "go_passive";
+		}
+		program {
+			name: "go_passive";
+			action: STATE_SET "default" 0.0;
+			target: "title_active";
+			target: "title_active_over";
+			transition: LINEAR 0.1;
+		}
+		WIN_BUTTON_PROGRAM("maximize", "etk.event.maximize")
+		WIN_BUTTON_PROGRAM("close", "etk.event.close")
+	}
+}
+
+
+
+}
