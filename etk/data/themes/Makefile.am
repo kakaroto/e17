@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = default
+SUBDIRS = default b_and_w

@@ -187,6 +187,8 @@ data/themes/default/widgets/Makefile
 data/themes/default/fonts/Makefile
 data/themes/default/images/Makefile
 data/themes/default/macros/Makefile
+data/themes/b_and_w/Makefile
+data/themes/b_and_w/img/Makefile
 data/wm/Makefile
 data/wm/default/Makefile
 data/wm/default/fonts/Makefile
