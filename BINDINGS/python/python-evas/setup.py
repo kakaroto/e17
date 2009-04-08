@@ -144,25 +144,30 @@ class evas_install_headers(install_headers):
         self.install_dir = None
 
     def finalize_options(self):
+        if self.prefix is None:
+            develop = self.distribution.get_command_obj('develop', False)
+            if develop:
+                develop.ensure_finalized()
+                self.prefix = develop.prefix
 
         self.set_undefined_options('install',
                                    ('root', 'root'),
                                    ('prefix', 'prefix'),
-                                   ('install_headers', 'install_dir'),
                                    ('force', 'force'),
                                   )
 
         if self.install_dir is None:
-            instd = get_python_inc()
+            instd = get_python_inc(prefix=self.prefix)
         else:
             instd = self.install_dir
 
-        self.install_dir = os.path.join(self.prefix, instd)
-        if self.root:
-            self.install_dir = os.path.join(self.root, self.install_dir)
+        self.install_dir = os.path.join(instd, 'evas')
+        if self.root is not None:
+            self.install_dir = "%s%s%s" % \
+                (self.root, os.path.sep, self.install_dir)
 
 
-setup(name='evas',
+setup(name='python-evas',
       version='0.3.1',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
