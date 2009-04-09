@@ -53,4 +53,4 @@ raged_main.c \
 sha1.c \
 sha1.h
 
-raged_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EMOTION_LIBS@
+raged_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EMOTION_LIBS@ @EET_LIBS@
