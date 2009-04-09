@@ -13,7 +13,9 @@ prev.png \
 bg.png \
 shadow.png \
 gadman_border.png \
-gadman_frame.png
+gadman_frame.png \
+play.png \
+pause.png
 
 default.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \

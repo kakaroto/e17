@@ -20,7 +20,8 @@
 typedef enum _IV_Image_Fit {
      PAN,
      FIT,
-     FIT_SCALE
+     FIT_SCALE,
+     ZOOM
 } IV_Image_Fit;
 
 typedef enum _IV_Image_Dest {
@@ -28,16 +29,6 @@ typedef enum _IV_Image_Dest {
      IMAGE_NEXT,
      IMAGE_PREV
 } IV_Image_Dest;
-
-typedef enum _IV_Transform_Direction {
-     FLIP_NONE,
-     FLIP_TL_BR,
-     FLIP_HORIZONTAL,
-     FLIP_VERTICAL,
-     FLIP_BL_TR,
-     FLIP_ROTATE_CL,
-     FLIP_ROTATE_CCL
-} IV_Transform_Direction;
 
 typedef struct _IV IV;
 
@@ -48,11 +39,13 @@ struct _IV
 
    Ecore_Idle_Enterer *idle_enterer;
 
+   Ecore_Timer *slideshow_timer;
+
    struct {
 	Evas_Object *win, *ly, *img, *scroller;
 	Evas_Object *prev_img, *next_img;
 	Evas_Object *controls, *box;
-        Evas_Object *next_bt, *prev_bt;
+        Evas_Object *next_bt, *prev_bt, *slideshow_bt;
         Evas_Object *hoversel, *file_label;
    } gui;
 
@@ -62,82 +55,45 @@ struct _IV
 	Eina_Bool hide_controls : 1;
 	Eina_Bool fullscreen : 1;
 	Eina_Bool fit_changed : 1;
+	Eina_Bool slideshow : 1;
    } flags;
 
    struct {
+	double       img_scale;
+	double	     timeout;
 	IV_Image_Fit fit;
    } config;
-
-   struct {
-	Evas_Coord x, y, w, h, iw, ih;
-   } cache;
 };
 
 static void
 image_configure(IV *iv)
 {
-   Evas_Coord x, y, w, h, iw, ih;
-   Evas_Object *o;
-
-   o = elm_layout_edje_get(iv->gui.ly);
-   edje_object_part_geometry_get(o, "iv.swallow.image", &x, &y, &w, &h);
-   if (!w || !h) return;
-
-   evas_event_freeze(evas_object_evas_get(iv->gui.img));
-   if (!strcmp(evas_object_type_get(iv->gui.img), "edje"))
+   int w, h, ww, hh;
+   if (iv->config.fit == ZOOM)
      {
-	if (iv->cache.x != x || iv->cache.y != y ||
-	    iv->cache.w != w || iv->cache.h != h)
-	  {
-	     evas_object_move(iv->gui.img, x, y);
-	     evas_object_resize(iv->gui.img, w, h);
-	  }
+	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
+	elm_image_smooth_set(iv->gui.img, EINA_FALSE);
+	elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
+	elm_widget_scale_set(iv->gui.img, iv->config.img_scale);
      }
    else
      {
-	Evas_Coord ox = x, oy = y, ow = w, oh = h, iw = 0, ih = 0;
-	evas_object_image_size_get(iv->gui.img, &iw, &ih);
-	
-	if (iv->cache.x != x || iv->cache.y != y ||
-	    iv->cache.w != w || iv->cache.h != h ||
-	    iv->cache.iw != iw || iv->cache.ih != ih)
-	  {
-	     if (iv->config.fit == PAN)
-	       {
-		  w = iw;
-		  h = ih;
-	       }
-	     else
-	       {
-		  h = ((double)ih * w) / (double)iw;
-		  if (h > oh)
-		    {
-		       h = oh;
-		       w = ((double)iw * h) / (double)ih;
-		    }
-		  if (iv->config.fit != FIT_SCALE)
-		    {
-		       if ((w > iw) || (h > ih))
-			 {
-			    w = iw;
-			    h = ih;
-			 }
-		    }
-	       }
-	     x = ox + ((ow - w) / 2);
-	     y = oy + ((oh - h) / 2);
-	     evas_object_move(iv->gui.img, x, y);
-	     evas_object_image_fill_set(iv->gui.img, 0, 0, w, h);
-	     evas_object_resize(iv->gui.img, w, h);
-	     /* evas_object_size_hint_min_set(iv->gui.img, w, h); */
-	  }
-	iv->cache.iw = iw;
-	iv->cache.ih = ih;
+	elm_image_no_scale_set(iv->gui.img, EINA_TRUE);
+	elm_image_smooth_set(iv->gui.img, EINA_TRUE);
+	elm_widget_scale_set(iv->gui.img, 1.0);
 
+	if (iv->config.fit == PAN)
+	  elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
+	else if (iv->config.fit == FIT)
+	  elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_TRUE);
+	else
+	  elm_image_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
+
+	iv->config.img_scale = 1.0;
      }
-   iv->cache.x = x; iv->cache.y = y;
-   iv->cache.w = w; iv->cache.h = h;
-   evas_event_thaw(evas_object_evas_get(iv->gui.img));
+
+   evas_object_geometry_get(iv->gui.scroller, NULL, NULL, &w, &h);
+   evas_object_geometry_get(iv->gui.img, NULL, NULL, &ww, &hh);
 }
 
 Eina_List *
@@ -161,29 +117,6 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-on_layout_resize(void *data, Evas *a, Evas_Object *obj, void *event_info)
-{
-   IV *iv = data;
-
-   if (iv->gui.img)
-     image_configure(iv);
-}
-
-static void
-on_image_resize(void *data, Evas *a, Evas_Object *obj, void *event_info)
-{
-   IV *iv = data;
-
-   if (obj != iv->gui.img || !evas_object_visible_get(obj))
-     return;
-   if (iv->gui.img)
-     {
-	image_configure(iv);
-	iv->flags.fit_changed = EINA_TRUE;
-     }
-}
-
-static void
 on_controls_click(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    IV *iv = data;
@@ -192,12 +125,45 @@ on_controls_click(void *data, Evas_Object *obj, const char *emission, const char
 }
 
 static void
-on_image_click(void *data, Evas_Object *obj, const char *emission, const char *source)
+on_image_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
 
+   if (iv->config.fit == PAN || iv->config.fit == ZOOM)
+     return;
+
    iv->flags.next = EINA_TRUE;
    iv->flags.hide_controls = EINA_TRUE;
+}
+
+static void
+zoom_increase(IV *iv)
+{
+   if (iv->config.img_scale >= 1)
+     iv->config.img_scale += 1.0;
+   else
+     iv->config.img_scale += 0.05;
+
+   if (iv->config.img_scale > 0.96 && iv->config.img_scale < 2.0)
+     iv->config.img_scale = 1.0;
+
+   iv->config.fit = ZOOM;
+   iv->flags.fit_changed = EINA_TRUE;
+}
+
+static void
+zoom_decrease(IV *iv)
+{
+   if (iv->config.img_scale > 1)
+     iv->config.img_scale -= 1.0;
+   else
+     iv->config.img_scale -= 0.2;
+
+   if (iv->config.img_scale > 0.9 && iv->config.img_scale < 2.0)
+     iv->config.img_scale = 1.0;
+
+   iv->config.fit = ZOOM;
+   iv->flags.fit_changed = EINA_TRUE;
 }
 
 static void
@@ -212,94 +178,6 @@ unfullscreen(IV *iv)
 {
    iv->flags.fullscreen = EINA_FALSE;
    elm_win_fullscreen_set(iv->gui.win, 0);
-}
-
-static void
-image_flip_transform(Evas_Object *img, IV_Transform_Direction direction)
-{
-   unsigned int   *data, *data2, *to, *from;
-   unsigned int   *p1, *p2, tmp;
-   int             x, y, w, hw, iw, ih;
-
-   evas_object_image_size_get(img, &iw, &ih);
-   data2 = evas_object_image_data_get(img, 0);
-
-   data = malloc(iw * ih * sizeof(unsigned int));
-   from = data2;
-   w = ih;
-   ih = iw;
-   iw = w;
-   hw = w * ih;
-   switch (direction)
-     {
-      case FLIP_HORIZONTAL:
-	 for (y = 0; y < iw; y++)
-	   {
-	      p1 = data2 + (y * ih);
-	      p2 = data2 + ((y + 1) * ih) - 1;
-	      for (x = 0; x < (ih >> 1); x++)
-		{
-		   tmp = *p1;
-		   *p1 = *p2;
-		   *p2 = tmp;
-		   p1++;
-		   p2--;
-		}
-	   }
-	 evas_object_image_data_set(img, data2);
-	 evas_object_image_data_update_add(img, 0, 0, ih, iw);
-	 return;
-      case FLIP_VERTICAL:
-	 for (y = 0; y < (iw >> 1); y++)
-	   {
-	      p1 = data2 + (y * ih);
-	      p2 = data2 + ((iw - 1 - y) * ih);
-	      for (x = 0; x < ih; x++)
-		{
-		   tmp = *p1;
-		   *p1 = *p2;
-		   *p2 = tmp;
-		   p1++;
-		   p2++;
-		}
-	   }
-	 evas_object_image_data_set(img, data2);
-	 evas_object_image_data_update_add(img, 0, 0, ih, iw);
-	 return;
-      case FLIP_TL_BR:
-	 to = data;
-	 hw = -hw + 1;
-	 break;
-      case FLIP_ROTATE_CL:
-	 to = data + w - 1;
-	 hw = -hw - 1;
-	 break;
-      case FLIP_ROTATE_CCL:
-	 to = data + hw - w;
-	 w = -w;
-	 hw = hw + 1;
-	 break;
-      case FLIP_BL_TR:
-	 to = data + hw - 1;
-	 w = -w;
-	 hw = hw - 1;
-	 break;
-     }
-   from = data2;
-   for (x = iw; --x >= 0;)
-     {
-	for (y = ih; --y >= 0;)
-	  {
-	     *to = *from;
-	     from++;
-	     to += w;
-	  }
-	to += hw;
-     }
-
-   evas_object_image_size_set(img, iw, ih);   
-   evas_object_image_data_set(img, data);
-   evas_object_image_data_update_add(img, 0, 0, iw, ih);
 }
 
 static void
@@ -337,9 +215,11 @@ read_image(IV *iv, IV_Image_Dest dest)
 
    while (l)
      {
-	img = evas_object_image_add(evas_object_evas_get(iv->gui.ly));
-	evas_object_image_file_set(img, l->data, NULL);
-	if (EVAS_LOAD_ERROR_NONE == evas_object_image_load_error_get(img))
+	Eina_Bool succ = EINA_FALSE;
+
+	img = elm_image_add(iv->gui.ly);
+	succ = elm_image_file_set(img, l->data, NULL);
+	if (succ)
 	  {
 	     int orientation = 0;
 #ifdef HAVE_LIBEXIF
@@ -362,35 +242,34 @@ read_image(IV *iv, IV_Image_Dest dest)
 #endif
 	     if (orientation > 1 && orientation < 9)
 	       {
-		  IV_Transform_Direction t1 = FLIP_NONE, t2 = FLIP_NONE;
+		  Elm_Image_Orient t1 = ELM_IMAGE_ORIENT_NONE;
 
 		  switch (orientation)
 		    {
 		     case 2:		/* Horizontal flip */
-			t1 = FLIP_HORIZONTAL;
+			t1 = ELM_IMAGE_FLIP_HORIZONTAL;
 			break;
-		     case 3:
-			t1 = FLIP_ROTATE_CL;
-			t2 = FLIP_ROTATE_CL;
+		     case 3:		/* Rotate 180 clockwise */
+			t1 = ELM_IMAGE_ROTATE_180_CW;
 			break;
 		     case 4:		/* Vertical flip */
-			t1 = FLIP_HORIZONTAL;
+			t1 = ELM_IMAGE_FLIP_VERTICAL;
 			break;
 		     case 5:		/* Transpose */
+			t1 = ELM_IMAGE_FLIP_TRANSPOSE;
 			break;
-		     case 6:
-			t1 = FLIP_ROTATE_CL;
+		     case 6:		/* Rotate 90 clockwise */
+			t1 = ELM_IMAGE_ROTATE_90_CW;
 			break;
 		     case 7:		/* Transverse */
+			t1 = ELM_IMAGE_FLIP_TRANSVERSE;
 			break;
-		     case 8:
-			t1 = FLIP_ROTATE_CCL;
+		     case 8:		/* Rotate 90 counter-clockwise */
+			t1 = ELM_IMAGE_ROTATE_90_CCW;
 			break;
 		    }
 		  if (t1)
-		    image_flip_transform(img, t1);
-		  if (t2)
-		    image_flip_transform(img, t2);
+		    elm_image_orient_set(img, t1);
 	       }
 
 	     switch (dest)
@@ -400,8 +279,8 @@ read_image(IV *iv, IV_Image_Dest dest)
 		   image_configure(iv);
 		   elm_label_label_set(iv->gui.file_label,
 				       (char *) ecore_file_file_get(iv->files->data));
-		   //elm_scroller_content_set(iv->gui.scroller, img);
-		   elm_layout_content_set(iv->gui.ly, "iv.swallow.image", img);
+		   elm_scroller_content_set(iv->gui.scroller, img);
+		   //elm_layout_content_set(iv->gui.ly, "iv.swallow.image", img);
 		   evas_object_show(img);
 		   break;
 		case IMAGE_NEXT:
@@ -411,11 +290,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 		   iv->gui.prev_img = img;
 		   break;
 	       }
-	     evas_object_event_callback_add(img,
-					    EVAS_CALLBACK_RESIZE,
-					    on_image_resize, iv);
-#ifdef HAVE_LIBEXIF
-#endif
+	     evas_object_smart_callback_add(img, "clicked", on_image_click, iv);
 	     break;
 	  }
 	else
@@ -452,6 +327,10 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
      iv->flags.prev = EINA_TRUE;
    else if (!strcmp(ev->keyname, "q") || (!strcmp(ev->keyname, "Escape") && !iv->flags.fullscreen))
      elm_exit();
+   else if (!strcmp(ev->keyname, "equal"))
+     zoom_increase(iv);
+   else if (!strcmp(ev->keyname, "minus"))
+     zoom_decrease(iv);
    else if (!strcmp(ev->keyname, "1"))
      {
 	iv->config.fit = PAN;
@@ -566,8 +445,14 @@ on_idle_enterer(void *data)
 	     else
 	       iv->files = rewind_list(iv->files);
 
+	     /* XXX: this is necessary for some reason, bug in elm? */
+	     elm_scroller_content_set(iv->gui.scroller, NULL);
+
 	     if (iv->gui.prev_img)
-	       evas_object_del(iv->gui.prev_img);
+	       {
+		  evas_object_smart_callback_del(iv->gui.prev_img, "clicked", on_image_click);
+		  evas_object_del(iv->gui.prev_img);
+	       }
 	     iv->gui.prev_img = iv->gui.img;
 	     evas_object_hide(iv->gui.img);
 
@@ -575,8 +460,8 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
-	     //elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
-	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
+	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
+	     //elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
 	  }
@@ -592,8 +477,14 @@ on_idle_enterer(void *data)
 	     else
 	       iv->files = eina_list_last(iv->files);
 
+	     /* XXX: this is necessary for some reason, bug in elm? */
+	     elm_scroller_content_set(iv->gui.scroller, NULL);
+
 	     if (iv->gui.next_img)
-	       evas_object_del(iv->gui.next_img);
+	       {
+		  evas_object_smart_callback_del(iv->gui.next_img, "clicked", on_image_click);
+		  evas_object_del(iv->gui.next_img);
+	       }
 	     iv->gui.next_img = iv->gui.img;
 	     evas_object_hide(iv->gui.img);
 
@@ -601,8 +492,8 @@ on_idle_enterer(void *data)
 	     image_configure(iv);
 	     elm_label_label_set(iv->gui.file_label,
 				 (char *) ecore_file_file_get(iv->files->data));
-	     //elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
-	     elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
+	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
+	     //elm_layout_content_set(iv->gui.ly, "iv.swallow.image", iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
 	  }
@@ -630,6 +521,8 @@ on_idle_enterer(void *data)
 	      break;
 	   case FIT_SCALE:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit & Scale");
+	   default:
+	      elm_hoversel_label_set(iv->gui.hoversel, "Fitting");
 	      break;
 	  }
 	if (iv->gui.img)
@@ -637,6 +530,47 @@ on_idle_enterer(void *data)
      }
 
    return 1;
+}
+
+static int
+on_slideshow_tick(void *data)
+{
+   IV *iv = data;
+
+   iv->flags.next = EINA_TRUE;
+   iv->flags.hide_controls = EINA_TRUE;
+   on_idle_enterer(data);
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+static void
+on_slideshow_click(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   if (!iv->flags.slideshow)
+     {
+#ifdef HAVE_ENLIGHTENMENT
+#else
+	edje_object_signal_emit(elm_layout_edje_get(iv->gui.controls),
+				"iv,state,slideshow_off", "iv");
+#endif
+	iv->slideshow_timer = ecore_timer_add(iv->config.timeout, on_slideshow_tick, iv);
+	iv->flags.slideshow = EINA_FALSE;
+     }
+   else
+     {
+#ifdef HAVE_ENLIGHTENMENT
+#else
+	edje_object_signal_emit(elm_layout_edje_get(iv->gui.controls),
+				"iv,state,slideshow_on", "iv");
+#endif
+
+	if (iv->slideshow_timer)
+	  ecore_timer_del(iv->slideshow_timer);
+	iv->slideshow_timer = NULL;
+	iv->flags.slideshow = EINA_TRUE;
+     }
 }
 
 static void
@@ -699,20 +633,15 @@ create_main_win(IV *iv)
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_win_resize_object_add(iv->gui.win, o);
    evas_object_focus_set(o, 1);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_RESIZE, on_layout_resize, iv);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, on_key_down, iv);
-   edje_object_signal_callback_add(elm_layout_edje_get(o),
-				   "iv,action,click", "", on_image_click, iv);
    evas_object_show(o);
    iv->gui.ly = o;
 
-   /*
    o = elm_scroller_add(iv->gui.ly);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_win_resize_object_add(iv->gui.win, o);
    elm_layout_content_set(iv->gui.ly, "iv.swallow.image", o);
    iv->gui.scroller = o;
-   */
 
    o = elm_layout_add(iv->gui.ly);
    elm_layout_file_set(o, buf, "iv/controls");
@@ -723,13 +652,7 @@ create_main_win(IV *iv)
    evas_object_show(o);
    iv->gui.controls = o;
 
-   bx = elm_box_add(iv->gui.controls);
-   elm_box_horizontal_set(bx, 1);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   elm_layout_content_set(iv->gui.controls, "iv.swallow.box", bx);
-   evas_object_show(bx);
-
-   ic = elm_icon_add(bx);
+   ic = elm_icon_add(iv->gui.controls);
 #ifdef HAVE_ENLIGHTENMENT
    elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
 					       "media-seek-backward", 32),
@@ -741,15 +664,15 @@ create_main_win(IV *iv)
    evas_object_size_hint_align_set(ic, 0.0, 1.0);
    evas_object_show(ic);
    
-   o = elm_button_add(bx);
+   o = elm_button_add(iv->gui.controls);
    elm_button_icon_set(o, ic);
    evas_object_size_hint_align_set(o, 0.5, 0.5);
-   elm_box_pack_end(bx, o);
+   elm_layout_content_set(iv->gui.controls, "iv.swallow.prev", o);
    evas_object_smart_callback_add(o, "clicked", on_prev_click, iv);
    evas_object_show(o);
    iv->gui.prev_bt = o;
 
-   ic = elm_icon_add(bx);
+   ic = elm_icon_add(iv->gui.controls);
 #ifdef HAVE_ENLIGHTENMENT
    elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
 					       "media-seek-forward", 32),
@@ -761,21 +684,41 @@ create_main_win(IV *iv)
    evas_object_size_hint_align_set(ic, 0.0, 1.0);
    evas_object_show(ic);
    
-   o = elm_button_add(bx);
+   o = elm_button_add(iv->gui.controls);
    elm_button_icon_set(o, ic);
    evas_object_size_hint_align_set(o, 0.5, 0.5);
-   elm_box_pack_end(bx, o);
+   elm_layout_content_set(iv->gui.controls, "iv.swallow.next", o);
    evas_object_smart_callback_add(o, "clicked", on_next_click, iv);
    evas_object_show(o);
    iv->gui.next_bt = o;
 
-   o = elm_label_add(bx);
-   elm_box_pack_end(bx, o);
+   ic = elm_icon_add(iv->gui.controls);
+#ifdef HAVE_ENLIGHTENMENT
+   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
+					       "media-playback-start", 32),
+		     NULL);
+#else
+   elm_icon_file_set(ic, buf, "iv/controls/slideshow");
+#endif
+   elm_icon_scale_set(ic, 0, 0);
+   evas_object_size_hint_align_set(ic, 0.0, 1.0);
+   evas_object_show(ic);
+   
+   o = elm_button_add(iv->gui.controls);
+   elm_button_icon_set(o, ic);
+   evas_object_size_hint_align_set(o, 0.5, 0.5);
+   elm_layout_content_set(iv->gui.controls, "iv.swallow.slideshow", o);
+   evas_object_smart_callback_add(o, "clicked", on_slideshow_click, iv);
+   evas_object_show(o);
+   iv->gui.slideshow_bt = o;
+
+   o = elm_label_add(iv->gui.controls);
+   elm_layout_content_set(iv->gui.controls, "iv.swallow.label", o);
    evas_object_show(o);
    iv->gui.file_label = o;
 
-   o = elm_hoversel_add(bx);
-   elm_box_pack_end(bx, o);
+   o = elm_hoversel_add(iv->gui.controls);
+   elm_layout_content_set(iv->gui.controls, "iv.swallow.hoversel", o);
    elm_hoversel_label_set(o, "Fitting");
    elm_hoversel_item_add(o, "Fit & Scale", NULL, ELM_ICON_NONE, on_hoversel_fs, iv);
    elm_hoversel_item_add(o, "Fit", NULL, ELM_ICON_NONE, on_hoversel_f, iv);
@@ -807,6 +750,8 @@ static void
 init_config(IV *iv)
 {
    iv->config.fit = FIT;
+   iv->config.img_scale = 1.0;
+   iv->config.timeout = 4.0;
 }
 
 EAPI int
