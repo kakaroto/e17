@@ -18,48 +18,111 @@
 #ifndef ENESIM_DRAWER_H_
 #define ENESIM_DRAWER_H_
 
+/** @defgroup Enesim_Drawer_Group Enesim_Drawer */
 
 /**
  * Function to draw a point
  * d = Destination surface data
  * s = In case of using the surface as pixel source
  * color = To draw with a color or as a multiplier color in case of using s
- * mask = in case of using a mask
+ * m = in case of using a mask
  */
-typedef void (*Enesim_Drawer_Point)(Enesim_Surface_Data *d, Enesim_Surface_Pixel *s,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Pixel *m);
+typedef void (*Enesim_Drawer_Point)(uint32_t *d, uint32_t s,
+		uint32_t color, uint32_t m);
+#define ENESIM_DRAWER_POINT(f) ((Enesim_Drawer_Point)(f))
 /**
  *
  */
-typedef void (*Enesim_Drawer_Span)(Enesim_Surface_Data *d, unsigned int len,
-		Enesim_Surface_Data *s, Enesim_Surface_Pixel *color, Enesim_Surface_Data *m);
+EAPI Eina_Bool enesim_drawer_point_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		uint32_t color);
+EAPI Eina_Bool enesim_drawer_point_pixel_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
+EAPI Eina_Bool enesim_drawer_point_mask_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		uint32_t color, Enesim_Format mfmt);
+EAPI Eina_Bool enesim_drawer_point_pixel_mask_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, Enesim_Format mfmt);
+EAPI Eina_Bool enesim_drawer_point_pixel_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, uint32_t color);
+/**
+ *
+ */
+EAPI void enesim_drawer_point_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Point pt, Enesim_Rop rop, Enesim_Format dfmt);
+EAPI void enesim_drawer_point_pixel_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Point pt, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
+EAPI void enesim_drawer_point_mask_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Point pt, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format mfmt);
+EAPI void enesim_drawer_point_pixel_mask_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Point pt, Enesim_Rop rop,
+		Enesim_Format dfmt, Enesim_Format sfmt, Enesim_Format mfmt);
+EAPI void enesim_drawer_point_pixel_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Point pt, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
+/**
+ * Function to draw a span
+ * d = Destination surface data
+ * len = The length of the span
+ * s = In case of using the surface as pixel source
+ * color = To draw with a color or as a multiplier color in case of using s
+ * m = in case of using a mask
+ */
+typedef void (*Enesim_Drawer_Span)(uint32_t *d, uint32_t len, uint32_t *s,
+		uint32_t color, uint32_t *m);
+#define ENESIM_DRAWER_SPAN(f) ((Enesim_Drawer_Span)(f))
+/**
+ *
+ */
+EAPI Eina_Bool enesim_drawer_span_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		uint32_t color);
+EAPI Eina_Bool enesim_drawer_span_pixel_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
+EAPI Eina_Bool enesim_drawer_span_mask_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format mfmt, uint32_t color);
+EAPI Eina_Bool enesim_drawer_span_pixel_mask_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, Enesim_Format mfmt);
+EAPI Eina_Bool enesim_drawer_span_pixel_color_op_get(Enesim_Cpu *cpu,
+		Enesim_Operator *op, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, uint32_t color);
+/**
+ *
+ */
+EAPI void enesim_drawer_span_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt);
+EAPI void enesim_drawer_span_pixel_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
+EAPI void enesim_drawer_span_mask_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format mfmt);
+EAPI void enesim_drawer_span_pixel_mask_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, Enesim_Format mfmt);
+EAPI void enesim_drawer_span_pixel_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt);
 
-EAPI Eina_Bool enesim_drawer_point_register(Enesim_Rop rop, Enesim_Drawer_Point pt,
-		Enesim_Format *dfmt, Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt);
+#define PT_C(f, op) enesim_drawer_##f##_pt_color_##op
+#define PT_P(f, sf, op) enesim_drawer_##f##_pt_pixel_##sf##_##op
+#define PT_MC(f, mf, op) enesim_drawer_##f##_pt_mask_color_##mf##_##op
+#define PT_PC(f, sf, op) enesim_drawer_##f##_pt_pixel_color_##sf##_##op
+#define PT_PM(f, sf, mf, op) enesim_drawer_##f##_pt_pixel_mask_##sf##_##mf##_##op
 
-EAPI Enesim_Drawer_Point enesim_drawer_point_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *src,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Pixel *mask);
+#define SP_C(f, op) enesim_drawer_##f##_sp_color_##op
+#define SP_P(f, sf, op) enesim_drawer_##f##_sp_pixel_##sf##_##op
+#define SP_MC(f, mf, op) enesim_drawer_##f##_sp_mask_color_##mf##_##op
+#define SP_PC(f, sf, op) enesim_drawer_##f##_sp_pixel_color_##sf##_##op
+#define SP_PM(f, sf, mf, op) enesim_drawer_##f##_sp_pixel_mask_##sf##_##mf##_##op
 
-EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *color);
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *src);
-EAPI Enesim_Drawer_Point enesim_drawer_point_mask_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *color, Enesim_Surface_Pixel *mask);
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *src, Enesim_Surface_Pixel *mask);
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *src,
-		Enesim_Surface_Pixel *color);
-
-
-EAPI Eina_Bool enesim_drawer_span_register(Enesim_Rop rop, Enesim_Drawer_Span sp,
-		Enesim_Format *dfmt, Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt);
-
-EAPI Enesim_Drawer_Span enesim_drawer_span_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface *src,
-		Enesim_Surface_Pixel *color, Enesim_Surface *mask);
-
-EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Surface_Pixel *color);
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Format *sfmt);
-EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Format *mfmt, Enesim_Surface_Pixel *color);
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Format *sfmt, Enesim_Format *mfmt);
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop, Enesim_Format *dfmt, Enesim_Format *sfmt, Enesim_Surface_Pixel *color);
-
+/** @} */
 #endif /*ENESIM_DRAWER_H_*/

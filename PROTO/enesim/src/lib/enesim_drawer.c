@@ -36,74 +36,53 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-typedef struct _Enesim_Drawer_Span_Container
+/*
+ * A drawer should implement functions for every format in case of using
+ * pixel source. For color source it should implement the function with
+ * opaque value and no opaque.
+ */
+typedef struct _Enesim_Drawer
 {
-	EINA_INLIST;
-	Enesim_Drawer_Span func;
-	Enesim_Format *dfmt;
-	Enesim_Format *sfmt;
-	Enesim_Format *mfmt;
-	Eina_Bool color;
-} Enesim_Drawer_Span_Container;
+	/* Scanlines */
+	Enesim_Drawer_Span sp_color[ENESIM_ROPS][ENESIM_FORMATS];
+	Enesim_Drawer_Span sp_mask_color[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Span sp_pixel[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Span sp_pixel_color[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Span sp_pixel_mask[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS][ENESIM_FORMATS];
+	/* Points */
+	Enesim_Drawer_Point pt_color[ENESIM_ROPS][ENESIM_FORMATS];
+	Enesim_Drawer_Point pt_mask_color[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Point pt_pixel[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Point pt_pixel_color[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS];
+	Enesim_Drawer_Point pt_pixel_mask[ENESIM_ROPS][ENESIM_FORMATS][ENESIM_FORMATS][ENESIM_FORMATS];
+} Enesim_Drawer;
 
-typedef struct _Enesim_Drawer_Point_Container
-{
-	EINA_INLIST;
-	Enesim_Drawer_Point func;
-	Enesim_Format *dfmt;
-	Enesim_Format *sfmt;
-	Enesim_Format *mfmt;
-	Eina_Bool color;
-} Enesim_Drawer_Point_Container;
-
-static Eina_Inlist *_pt[ENESIM_ROPS] = { NULL };
-static Eina_Inlist *_sp[ENESIM_ROPS] = { NULL };
-
-static Enesim_Drawer_Point_Container *_drawer_point_get(Enesim_Rop rop, Enesim_Format *dfmt,
-		Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt)
-{
-	Enesim_Drawer_Point_Container *ctn;
-
-	EINA_INLIST_FOREACH(_pt[rop], ctn)
-	{
-		if ((ctn->dfmt == dfmt) && (ctn->sfmt == sfmt) &&
-				(ctn->mfmt == mfmt) && (ctn->color == color))
-		{
-			return ctn;
-		}
-	}
-	return NULL;
-}
-static Enesim_Drawer_Span_Container *_drawer_span_get(Enesim_Rop rop, Enesim_Format *dfmt,
-		Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt)
-{
-	Enesim_Drawer_Span_Container *ctn;
-
-	EINA_INLIST_FOREACH(_sp[rop], ctn)
-	{
-		if ((ctn->dfmt == dfmt) && (ctn->sfmt == sfmt) &&
-				(ctn->mfmt == mfmt) && (ctn->color == color))
-		{
-			return ctn;
-		}
-	}
-	return NULL;
-}
+static Enesim_Drawer *_drawers;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 void enesim_drawer_init(void)
 {
-	/* first the generic drawer */
-	enesim_drawer_generic_init();
-	enesim_drawer_argb8888_init();
+	unsigned int numcpu;
+	Enesim_Cpu **cpus;
+	int i;
 
+	cpus = enesim_cpu_get(&numcpu);
+	/* allocate the possible drawers */
+	_drawers = calloc(numcpu, sizeof(Enesim_Drawer));
+	for (i = 0; i < numcpu; i++)
+	{
+		enesim_drawer_argb8888_init(cpus[i]);
+	}
 }
 void enesim_drawer_shutdown(void)
 {
+#if 0
 	/* last the generic drawer */
 	enesim_drawer_generic_shutdown();
 	enesim_drawer_argb8888_shutdown();
+#endif
+	free(_drawers);
 }
 /*============================================================================*
  *                                   API                                      *
@@ -112,75 +91,12 @@ void enesim_drawer_shutdown(void)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Drawer_Point enesim_drawer_point_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *src,
-		Enesim_Surface_Pixel *color, Enesim_Surface_Pixel *mask)
+EAPI Eina_Bool enesim_drawer_point_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, uint32_t color)
 {
+	Enesim_Drawer_Point p;
+	unsigned int cpuid;
 
-	if (src)
-	{
-		if (mask)
-			return enesim_drawer_point_pixel_mask_get(rop, dfmt, src, mask);
-		else if (color)
-			return enesim_drawer_point_pixel_color_get(rop, dfmt, src, color);
-		else
-			return enesim_drawer_point_pixel_get(rop, dfmt, src);
-	}
-	else
-	{
-		if (mask)
-			return enesim_drawer_point_mask_color_get(rop, dfmt, color, mask);
-		else
-			return enesim_drawer_point_color_get(rop, dfmt, color);
-	}
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Drawer_Span enesim_drawer_span_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface *src,
-		Enesim_Surface_Pixel *color, Enesim_Surface *mask)
-{
-	if (src)
-	{
-		Enesim_Format *sfmt;
-
-		sfmt = enesim_surface_format_get(src);
-		if (mask)
-		{
-			Enesim_Format *mfmt;
-
-			mfmt = enesim_surface_format_get(mask);
-			return enesim_drawer_span_pixel_mask_get(rop, dfmt, sfmt, mfmt);
-		}
-		else if (color)
-			return enesim_drawer_span_pixel_color_get(rop, dfmt, sfmt, color);
-		else
-			return enesim_drawer_span_pixel_get(rop, dfmt, sfmt);
-	}
-	else
-	{
-		if (mask)
-		{
-			Enesim_Format *mfmt;
-
-			mfmt = enesim_surface_format_get(mask);
-			return enesim_drawer_span_mask_color_get(rop, dfmt, mfmt, color);
-		}
-		else
-			return enesim_drawer_span_color_get(rop, dfmt, color);
-	}
-}
-
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *color)
-{
-	Enesim_Drawer_Point_Container *cnt;
 	/* TODO check if the color is opaque */
 #if 0
 	if ((rop == ENESIM_BLEND) && (alpha(color) == 0xff))
@@ -188,71 +104,123 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_color_get(Enesim_Rop rop,
 		rop = RENESIM_FILL;
 	}
 #endif
-	cnt = _drawer_point_get(rop, dfmt, NULL, EINA_TRUE, NULL);
-	if (cnt)
-		return cnt->func;
+	cpuid = enesim_cpu_id_get(cpu);
+	p = _drawers[cpuid].pt_color[rop][dfmt];
+	if (p)
+	{
+		op->cb = p;
+		op->id = ENESIM_OPERATOR_DRAWER_POINT;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 /**
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *src,
-		Enesim_Surface_Pixel *color)
+EAPI Eina_Bool enesim_drawer_point_mask_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, uint32_t color,
+		Enesim_Format mfmt)
 {
-	Enesim_Drawer_Point_Container *cnt;
-	cnt = _drawer_point_get(rop, dfmt, src->format, EINA_TRUE, NULL);
-	if (cnt)
-		return cnt->func;
-	else
-		return NULL;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Drawer_Point enesim_drawer_point_mask_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *color,
-		Enesim_Surface_Pixel *mask)
-{
-	Enesim_Drawer_Point_Container *cnt;
-	cnt = _drawer_point_get(rop, dfmt, NULL, EINA_TRUE, mask->format);
-	if (cnt)
-		return cnt->func;
-	else
-		return NULL;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *src)
-{
-	Enesim_Drawer_Point_Container *cnt;
-	cnt = _drawer_point_get(rop, dfmt, src->format, EINA_FALSE, NULL);
-	if (cnt)
-		return cnt->func;
-	else
-		return NULL;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *src,
-		Enesim_Surface_Pixel *mask)
-{
-	Enesim_Drawer_Point_Container *cnt;
+	Enesim_Drawer_Point p;
+	unsigned int cpuid;
 
-	cnt = _drawer_point_get(rop, dfmt, src->format, EINA_FALSE, mask->format);
-	if (cnt)
-		return cnt->func;
+	cpuid = enesim_cpu_id_get(cpu);
+	p = _drawers[cpuid].pt_mask_color[rop][dfmt][mfmt];
+	if (p)
+	{
+		op->cb = p;
+		op->id = ENESIM_OPERATOR_DRAWER_POINT;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI Eina_Bool enesim_drawer_point_pixel_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt)
+{
+	Enesim_Drawer_Point p;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	p = _drawers[cpuid].pt_pixel[rop][dfmt][sfmt];
+	if (p)
+	{
+		op->cb = p;
+		op->id = ENESIM_OPERATOR_DRAWER_POINT;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI Eina_Bool enesim_drawer_point_pixel_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt,
+		uint32_t color)
+{
+	Enesim_Drawer_Point p;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	p = _drawers[cpuid].pt_pixel_color[rop][dfmt][sfmt];
+	if (p)
+	{
+		op->cb = p;
+		op->id = ENESIM_OPERATOR_DRAWER_POINT;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI Eina_Bool enesim_drawer_point_pixel_mask_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt,
+		Enesim_Format mfmt)
+{
+	Enesim_Drawer_Point p;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	p = _drawers[cpuid].pt_pixel_mask[rop][dfmt][sfmt][mfmt];
+	if (p)
+	{
+		op->cb = p;
+		op->id = ENESIM_OPERATOR_DRAWER_POINT;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 
 /* Span functions */
@@ -261,65 +229,111 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_mask_get(Enesim_Rop rop,
  * Returns a function that will draw a span of pixels using the raster
  * operation rop for a surface format dfmt with color color
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Surface_Pixel *color)
+EAPI Eina_Bool enesim_drawer_span_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, uint32_t color)
 {
-	Enesim_Drawer_Span_Container *cnt;
+	Enesim_Drawer_Span s;
+	unsigned int cpuid;
 	/* TODO check if the color is opaque */
-	cnt = _drawer_span_get(rop, dfmt, NULL, EINA_TRUE, NULL);
-	if (cnt)
-		return cnt->func;
+#if 0
+	if ((rop == ENESIM_BLEND) && (alpha(color) == 0xff))
+	{
+		rop = RENESIM_FILL;
+	}
+#endif
+	cpuid = enesim_cpu_id_get(cpu);
+	s = _drawers[cpuid].sp_color[rop][dfmt];
+	if (s)
+	{
+		op->cb = s;
+		op->id = ENESIM_OPERATOR_DRAWER_SPAN;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
  * operation rop for a surface format dfmt with alpha values from the mask
  * and multiplying with color color
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Format *mfmt,
-		Enesim_Surface_Pixel *color)
+EAPI Eina_Bool enesim_drawer_span_mask_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format mfmt,
+		uint32_t color)
 {
-	Enesim_Drawer_Span_Container *cnt;
-	/* TODO check if the color is opaque */
-	cnt = _drawer_span_get(rop, dfmt, NULL, EINA_TRUE, mfmt);
-	if (cnt)
-		return cnt->func;
+	Enesim_Drawer_Span s;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	s = _drawers[cpuid].sp_mask_color[rop][dfmt][mfmt];
+	if (s)
+	{
+		op->cb = s;
+		op->id = ENESIM_OPERATOR_DRAWER_SPAN;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
  * operation rop for a surface format dfmt with pixels of format sfmt
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Format *sfmt)
+EAPI Eina_Bool enesim_drawer_span_pixel_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt)
 {
-	Enesim_Drawer_Span_Container *cnt;
-	cnt = _drawer_span_get(rop, dfmt, sfmt, EINA_FALSE, NULL);
-	if (cnt)
-		return cnt->func;
+	Enesim_Drawer_Span s;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	s = _drawers[cpuid].sp_pixel[rop][dfmt][sfmt];
+	if (s)
+	{
+		op->cb = s;
+		op->id = ENESIM_OPERATOR_DRAWER_SPAN;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
  * operation rop for a surface format dfmt with pixels of format sfmt
  * multypling with color color
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Format *sfmt,
-		Enesim_Surface_Pixel *color)
+EAPI Eina_Bool enesim_drawer_span_pixel_color_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt,
+		uint32_t color)
 {
-	Enesim_Drawer_Span_Container *cnt;
-	/* FIXME if the surface is alpha only, use the mask_color */
-	/* TODO check if the color is opaque */
-	cnt = _drawer_span_get(rop, dfmt, sfmt, EINA_TRUE, NULL);
-	if (cnt)
-		return cnt->func;
+	Enesim_Drawer_Span s;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	s = _drawers[cpuid].sp_pixel_color[rop][dfmt][sfmt];
+	if (s)
+	{
+		op->cb = s;
+		op->id = ENESIM_OPERATOR_DRAWER_SPAN;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 /**
  * Returns a function that will draw a span of pixels using the raster
@@ -328,73 +342,70 @@ EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop,
  * @param
  * @param
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop,
-		Enesim_Format *dfmt, Enesim_Format *sfmt,
-		Enesim_Format *mfmt)
+EAPI Eina_Bool enesim_drawer_span_pixel_mask_op_get(Enesim_Cpu *cpu, Enesim_Operator *op,
+		Enesim_Rop rop, Enesim_Format dfmt, Enesim_Format sfmt,
+		Enesim_Format mfmt)
 {
-	Enesim_Drawer_Span_Container *cnt;
-	cnt = _drawer_span_get(rop, dfmt, sfmt, EINA_FALSE, mfmt);
-	if (cnt)
-		return cnt->func;
+	Enesim_Drawer_Span s;
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	s = _drawers[cpuid].sp_pixel_mask[rop][dfmt][sfmt][mfmt];
+	if (s)
+	{
+		op->cb = s;
+		op->id = ENESIM_OPERATOR_DRAWER_SPAN;
+		op->cpu = cpu;
+		return EINA_TRUE;
+	}
 	else
-		return NULL;
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
 }
 
-
-EAPI Eina_Bool enesim_drawer_point_register(Enesim_Rop rop, Enesim_Drawer_Point pt,
-		Enesim_Format *dfmt, Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt)
+EAPI void enesim_drawer_span_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt)
 {
-	Enesim_Drawer_Point_Container *cnt;
+	unsigned int cpuid;
 
-	if (!pt || !dfmt)
-		return EINA_FALSE;
-
-	/* Replace the drawer if it already exists */
-	cnt = _drawer_point_get(rop, dfmt, sfmt, color, mfmt);
-	if (cnt)
-	{
-		cnt->func = pt;
-	}
-	else
-	{
-		cnt = calloc(1, sizeof(Enesim_Drawer_Point_Container));
-		cnt->color = color;
-		cnt->dfmt = dfmt;
-		cnt->sfmt = sfmt;
-		cnt->mfmt = mfmt;
-		cnt->func = pt;
-
-		_pt[rop] = eina_inlist_append(_pt[rop], EINA_INLIST_GET(cnt));
-	}
-	return EINA_TRUE;
+	cpuid = enesim_cpu_id_get(cpu);
+	_drawers[cpuid].sp_color[rop][dfmt] = sp;
 }
-EAPI Eina_Bool enesim_drawer_span_register(Enesim_Rop rop, Enesim_Drawer_Span sp,
-		Enesim_Format *dfmt, Enesim_Format *sfmt, Eina_Bool color, Enesim_Format *mfmt)
+EAPI void enesim_drawer_span_pixel_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt)
 {
-	Enesim_Drawer_Span_Container *cnt;
-	if (!sp || !dfmt)
-		return EINA_FALSE;
-	/* Replace the drawer if it already exists */
-	cnt = _drawer_span_get(rop, dfmt, sfmt, color, mfmt);
-	if (cnt)
-	{
-		cnt->func = sp;
-	}
-	else
-	{
-		cnt = calloc(1, sizeof(Enesim_Drawer_Point_Container));
-		cnt->color = color;
-		cnt->dfmt = dfmt;
-		cnt->sfmt = sfmt;
-		cnt->mfmt = mfmt;
-		cnt->func = sp;
+	unsigned int cpuid;
 
-		EINA_ERROR_PINFO("Span drawer registered %s %s %s %s\n",
-				enesim_format_name_get(dfmt),
-				sfmt ? enesim_format_name_get(sfmt) : "none",
-				color ? "true" : "false",
-				mfmt ? enesim_format_name_get(mfmt) : "none");
-		_sp[rop] = eina_inlist_append(_sp[rop], EINA_INLIST_GET(cnt));
-	}
-	return EINA_TRUE;
+	cpuid = enesim_cpu_id_get(cpu);
+	_drawers[cpuid].sp_pixel[rop][dfmt][sfmt] = sp;
+}
+EAPI void enesim_drawer_span_mask_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format mfmt)
+{
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	_drawers[cpuid].sp_mask_color[rop][dfmt][mfmt] = sp;
+}
+EAPI void enesim_drawer_span_pixel_mask_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt, Enesim_Format mfmt)
+{
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	_drawers[cpuid].sp_pixel_mask[rop][dfmt][sfmt][mfmt] = sp;
+}
+EAPI void enesim_drawer_span_pixel_color_register(Enesim_Cpu *cpu,
+		Enesim_Drawer_Span sp, Enesim_Rop rop, Enesim_Format dfmt,
+		Enesim_Format sfmt)
+{
+	unsigned int cpuid;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	_drawers[cpuid].sp_pixel_color[rop][dfmt][sfmt] = sp;
 }

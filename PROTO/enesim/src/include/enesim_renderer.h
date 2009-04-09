@@ -40,15 +40,8 @@ EAPI Enesim_Renderer * enesim_renderer_color_new(void);
 EAPI void enesim_renderer_color_color_set(Enesim_Renderer *r, uint32_t color);
 /**
  * @}
- * @defgroup Enesim_Renderer_Fill_Surface_Group Fill Surface
- * @{
  */
-enum
-{
-	ENESIM_SURFACE_REPEAT_NONE  = 0, /**< Don't repeat on any axis */
-	ENESIM_SURFACE_REPEAT_X     = (1 << 0), /**< Repeat on X axis */
-	ENESIM_SURFACE_REPEAT_Y     = (1 << 1), /**< Repeat on Y axis */
-};
+
 EAPI Enesim_Renderer * enesim_renderer_repeater_new(void);
 EAPI void enesim_renderer_repeater_mode_set(Enesim_Renderer *r, int mode);
 EAPI void enesim_renderer_repeater_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h);

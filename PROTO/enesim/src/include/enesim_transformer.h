@@ -18,6 +18,13 @@
 #ifndef ENESIM_TRANSFORMER_H_
 #define ENESIM_TRANSFORMER_H_
 
+typedef void (*Enesim_Transformer)(uint32_t *src, Eina_F16p16 ox, Eina_F16p16 oy,
+		Eina_F16p16 xx, Eina_F16p16 xy, Eina_F16p16 xz,
+		Eina_F16p16 yx, Eina_F16p16 yy, Eina_F16p16 yz,
+		Eina_F16p16 zx, Eina_F16p16 zy, Eina_F16p16 zz,
+		uint32_t *dst);
+
+#if 0
 typedef struct _Enesim_Transformation Enesim_Transformation;
 
 EAPI Enesim_Transformation * enesim_transformation_new(void);
@@ -32,5 +39,6 @@ EAPI void enesim_transformation_mask_set(Enesim_Transformation *t, Enesim_Surfac
 EAPI void enesim_transformation_color_set(Enesim_Transformation *t, Enesim_Surface_Pixel *color);
 EAPI void enesim_transformation_quality_set(Enesim_Transformation *tx, Enesim_Quality q);
 EAPI Enesim_Quality enesim_transformation_quality_get(Enesim_Transformation *tx);
+#endif
 
 #endif /*ENESIM_TRANSFORMER_H_*/

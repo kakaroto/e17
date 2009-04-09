@@ -19,13 +19,57 @@
 #define ENESIM_CONVERTER_H_
 
 /**
- * @defgroup Enesim_Surface_Group Surface
+ * @defgroup Enesim_Converter_Group Converter
  * @{
+ *
+ *
+ * ENESIM_CONVERTER_FORMAT_A8
+ * +---------------+----------------+
+ * |     Alpha     |      Alpha     |
+ * +---------------+----------------+
+ *         8                8
+ * <------P0------>.<------P1------>.
+ *
+ * ENESIM_CONVERTER_FORMAT_b1A3
+ * +-------+-------+--------+-------+
+ * | Blink | Alpha |  Blink | Alpha |
+ * +-------+-------+--------+-------+
+ *     1       3        1        3
+ * <------P0------>.<------P1------>.
  */
-typedef void (*Enesim_Converter_Fnc)(Enesim_Surface *s, Enesim_Surface *d);
+/* TODO
+ * define a surface_data similar to what enesim had before
+ * but for the destination surfaces, there are different multi plane
+ * formats for different display controllers, like the a1_rgb565 found
+ * on davinci processors.
+ */
+typedef enum _Enesim_Converter_Format
+{
+	ENESIM_CONVERTER_RGB565,
+	ENESIM_CONVERTER_ARGB888,
+	ENESIM_CONVERTER_FORMATS
+} Enesim_Converter_Format;
 
-EAPI Enesim_Converter_Fnc enesim_converter_fnc_get(Enesim_Format stype,
-		Enesim_Format dtype);
+typedef void (*Enesim_Converter_2D)(uint32_t *src, uint32_t sw, uint32_t sh,
+		uint32_t spitch, uint16_t *dst, uint32_t dw, uint32_t dh,
+		uint32_t dpitch);
+
+typedef void (*Enesim_Converter_1D)(uint32_t *src, uint32_t len, uint32_t *d);
+
+#define ENESIM_CONVERTER_1D(f) ((Enesim_Converter_1D)(f))
+#define ENESIM_CONVERTER_2D(f) ((Enesim_Converter_2D)(f))
+
+EAPI Eina_Bool enesim_converter_1d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
+		Enesim_Converter_Format dfmt);
+EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
+		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
+EAPI void enesim_converter_1d_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
+		Enesim_Format sfmt, Enesim_Converter_Format dfmt);
+EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
+		Enesim_Format sfmt, Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
+EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
+		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
+		uint8_t boffset, uint8_t blen);
 
 /** @} */
 #endif /*ENESIM_CONVERTER_H_*/

@@ -19,9 +19,10 @@ $(top_builddir)/src/lib/libenesim.la \
 
 enesim_bench_SOURCES = \
 enesim_bench.c \
+enesim_bench_samples.c \
 enesim_bench_drawer.c \
 enesim_bench_rasterizer.c \
-enesim_bench_renderer.c \
 image.c
+#enesim_bench_drawer.c
 
 endif

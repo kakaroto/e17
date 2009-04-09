@@ -104,7 +104,7 @@ static void _repeater_bench()
 	double start, end;
 
 	/* setup the src */
-	src = test_pattern(25); // solid pattern
+	src = test_pattern1(25); // solid pattern
 	msk = test_pattern2(25); // transparent pattern
 	/* setup the renderer with common parameters */
 	r = enesim_renderer_repeater_new();
@@ -160,7 +160,7 @@ static void _scaler_bench(void)
 	sp = enesim_drawer_span_pixel_get(opt_rop, opt_fmt, opt_fmt);
 	r = enesim_renderer_scaler_new();
 	/* setup the dest */
-	src = test_pattern(81); // solid pattern
+	src = test_pattern1(81); // solid pattern
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	enesim_renderer_scaler_dst_area_set(r, 0, 0, opt_width, opt_height);
 	enesim_renderer_scaler_src_area_set(r, 0, 0, 81, 81);
@@ -214,7 +214,7 @@ static void _scaler_repeater_bench(void)
 	sp = enesim_drawer_span_pixel_get(opt_rop, opt_fmt, opt_fmt);
 	scaler = enesim_renderer_scaler_new();
 	/* setup the dest */
-	src = test_pattern(81); // solid pattern
+	src = test_pattern1(81); // solid pattern
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	enesim_renderer_scaler_dst_area_set(scaler, 0, 0, 128, 128);
 	enesim_renderer_scaler_src_area_set(scaler, 0, 0, 81, 81);
@@ -283,7 +283,7 @@ static void _transformer_bench(void)
 	sp = enesim_drawer_span_pixel_get(opt_rop, opt_fmt, opt_fmt);
 	transformer = enesim_renderer_transformer_new();
 	/* setup the dest */
-	src = test_pattern(121); // solid pattern
+	src = test_pattern1(121); // solid pattern
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	/* setup the transformer */
 	enesim_matrix_translate(&m2, opt_width / 2, opt_height / 2);

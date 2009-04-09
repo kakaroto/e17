@@ -18,12 +18,23 @@
 #ifndef ENESIM_CORE_H_
 #define ENESIM_CORE_H_
 
-/**
- * TODO every function that expects a color must be cnahed to this
- * type
- * The color is premultiplied!!!!!!
+/*
+ *
  */
-//typedef uint32_t Enesim_Color;
+typedef enum _Enesim_Operator_Id
+{
+	ENESIM_OPERATOR_DRAWER_SPAN,
+	ENESIM_OPERATOR_DRAWER_POINT,
+	ENESIM_OPERATOR_CONVERTER1D,
+	ENESIM_OPERATOR_CONVERTER2D,
+	ENESIM_OPERATOR_REFLECTOR,
+	ENESIM_OPERATOR_REPEATER,
+	ENESIM_OPERATOR_ROTATOR,
+	ENESIM_OPERATOR_SCALER1D,
+	ENESIM_OPERATOR_SCALER2D,
+	ENESIM_OPERATOR_TRANSFORMER,
+} Enesim_Operator_Id;
+
 
 /*
  *
@@ -42,59 +53,33 @@ typedef enum
 	ENESIM_QUALITIES
 } Enesim_Quality;
 
+typedef enum _Enesim_Format
+{
+	ENESIM_FORMAT_ARGB8888,
+	ENESIM_FORMAT_A8,
+	ENESIM_FORMATS,
+} Enesim_Format;
+
+typedef enum _Enesim_Direction
+{
+	ENESIM_DIRECTION_NONE,
+	ENESIM_DIRECTION_X,
+	ENESIM_DIRECTION_Y,
+	ENESIM_DIRECTION_XY,
+	ENESIM_DIRECTIONS
+} Enesim_Direction;
 /** Basic data type handlers */
 
-typedef struct _Enesim_Format Enesim_Format;
-/**
- * Representation of a span in a specific surface format
- */
-typedef struct _Enesim_Surface_Data
+typedef enum _Enesim_Alpha_Flags
 {
-	uint32_t *plane0;
-	uint32_t *plane1;
-	uint32_t *plane2;
-	uint32_t *plane3;
-	Enesim_Format *format;
-} Enesim_Surface_Data;
-
-/**
- * Representation of a pixel in a specific surface format
- */
-typedef struct _Enesim_Surface_Pixel
-{
-	uint32_t plane0;
-	uint32_t plane1;
-	uint32_t plane2;
-	uint32_t plane3;
-	Enesim_Format *format;
-} Enesim_Surface_Pixel;
-
-//EAPI void enesim_color_get(Enesim_Color *color, uint8_t a, uint8_t r, uint8_t g, uint8_t b);
+	ENESIM_ALPHA_ALL, /* 0 - 255 */
+	ENESIM_ALPHA_NONE, /* 255 */
+	ENESIM_ALPHA_SPARSE, /* 0 | 255 */
+	ENESIM_ALPHA_FLAGS,
+} Enesim_Alpha_Flags;
 
 EAPI int enesim_init(void);
 EAPI void enesim_shutdown(void);
 
 
-/* TODO
- * remove this error handling and use eina's approach
- * extern Eina_Error ENESIM_ERROR_FORMAT;
- */
-typedef enum
-{
-	ENESIM_ERROR_HANDLE_INVALID 	= 1,
-	ENESIM_ERROR_SCANLINE_NOT_SUPPORTED,
-	ENESIM_ERROR_GEOMETRY_INVALID,
-	ENESIM_ERROR_FROMAT_NOT_SUPPORTED,
-	ENESIM_ERROR_SRCRECT_INVALID,
-	ENESIM_ERROR_DSTRECT_INVALID,
-	ENESIM_ERROR_TRANSFORMATION_NOT_SUPPORTED,
-} Enesim_Error;
-
-/**
- *
- */
-extern unsigned int enesim_err;
-
-EAPI char * enesim_error_to_str(unsigned int err);
-
-#endif /*ENESIM_CORE_H_*/
+#endif /*ENESIM_MAIN_H_*/

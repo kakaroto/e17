@@ -2,38 +2,38 @@
 /******************************************************************************
  *                         Drawer benchmark functions                         *
  ******************************************************************************/
-static void point_color_draw(Enesim_Drawer_Point point, Enesim_Surface *dst, Enesim_Surface_Pixel *color)
+static void point_color_draw(Enesim_Operator *op, Enesim_Surface *dst, uint32_t color)
 {
 	int t;
-	Enesim_Surface_Data dtmp;
-	enesim_surface_data_get(dst, &dtmp);
+	uint32_t *dtmp;
 
+	dtmp = enesim_surface_data_get(dst);
 	for (t = 0; t < opt_times; t++)
 	{
-		point(&dtmp, NULL, color, NULL);
+		enesim_operator_drawer_point(op, dtmp, 0, color, 0);
 	}
 }
 
-static void span_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
-		Enesim_Surface_Pixel *color)
+static void span_color_draw(Enesim_Operator *op, Enesim_Surface *dst, unsigned int len,
+		uint32_t color)
 {
 	int i;
 	int t;
 
 	for (t = 0; t < opt_times; t++)
 	{
-		Enesim_Surface_Data dtmp;
+		uint32_t *dtmp;
 
-		enesim_surface_data_get(dst, &dtmp);
+		dtmp = enesim_surface_data_get(dst);
 		for (i = 0; i < opt_height; i++)
 		{
-			span(&dtmp, len, NULL, color, NULL);
-			enesim_surface_data_increment(&dtmp, len);
+			enesim_operator_drawer_span(op, dtmp, len, NULL, color, NULL);
+			dtmp += len;
 		}
 	}
 }
 
-void span_pixel_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
+void span_pixel_draw(Enesim_Operator *op, Enesim_Surface *dst, unsigned int len,
 		Enesim_Surface *src)
 {
 	int i;
@@ -41,22 +41,22 @@ void span_pixel_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int 
 
 	for (t = 0; t < opt_times; t++)
 	{
-		Enesim_Surface_Data dtmp;
-		Enesim_Surface_Data stmp;
+		uint32_t *dtmp;
+		uint32_t *stmp;
 
-		enesim_surface_data_get(dst, &dtmp);
-		enesim_surface_data_get(src, &stmp);
+		dtmp = enesim_surface_data_get(dst);
+		stmp = enesim_surface_data_get(src);
 		for (i = 0; i < opt_height; i++)
 		{
-			span(&dtmp, len, &stmp, 0, NULL);
-			enesim_surface_data_increment(&dtmp, len);
-			enesim_surface_data_increment(&stmp, len);
+			enesim_operator_drawer_span(op, dtmp, len, stmp, 0, NULL);
+			dtmp += len;
+			stmp += len;
 		}
 	}
 }
 
 
-void span_pixel_mask_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
+void span_pixel_mask_draw(Enesim_Operator *op, Enesim_Surface *dst, unsigned int len,
 		Enesim_Surface *src, Enesim_Surface *msk)
 {
 	int i;
@@ -64,80 +64,79 @@ void span_pixel_mask_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned
 
 	for (t = 0; t < opt_times; t++)
 	{
-		Enesim_Surface_Data dtmp;
-		Enesim_Surface_Data stmp;
-		Enesim_Surface_Data mtmp;
+		uint32_t *dtmp;
+		uint32_t *stmp;
+		uint32_t *mtmp;
 
-		enesim_surface_data_get(dst, &dtmp);
-		enesim_surface_data_get(src, &stmp);
-		enesim_surface_data_get(msk, &mtmp);
+		dtmp = enesim_surface_data_get(dst);
+		stmp = enesim_surface_data_get(src);
+		mtmp = enesim_surface_data_get(msk);
 		for (i = 0; i < opt_height; i++)
 		{
-			span(&dtmp, len, &stmp, 0, &mtmp);
-			enesim_surface_data_increment(&dtmp, len);
-			enesim_surface_data_increment(&stmp, len);
-			enesim_surface_data_increment(&mtmp, len);
+			enesim_operator_drawer_span(op, dtmp, len, stmp, 0, mtmp);
+			dtmp += len;
+			stmp += len;
+			mtmp += len;
 		}
 	}
 }
-void span_mask_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
-		Enesim_Surface *m, Enesim_Surface_Pixel *color)
+void span_mask_color_draw(Enesim_Operator *op, Enesim_Surface *dst, unsigned int len,
+		Enesim_Surface *m, uint32_t color)
 {
 	int i;
 	int t;
 
 	for (t = 0; t < opt_times; t++)
 	{
-		Enesim_Surface_Data dtmp;
-		Enesim_Surface_Data mtmp;
+		uint32_t *dtmp;
+		uint32_t *mtmp;
 
-		enesim_surface_data_get(dst, &dtmp);
-		enesim_surface_data_get(m, &mtmp);
+		dtmp = enesim_surface_data_get(dst);
+		mtmp = enesim_surface_data_get(m);
 		for (i = 0; i < opt_height; i++)
 		{
-			span(&dtmp, len, NULL, color, &mtmp);
-			enesim_surface_data_increment(&dtmp, len);
-			enesim_surface_data_increment(&mtmp, len);
+			enesim_operator_drawer_span(op, dtmp, len, NULL, color, mtmp);
+			dtmp += len;
+			mtmp += len;
 		}
 	}
 }
 
-void span_pixel_color_draw(Enesim_Drawer_Span span, Enesim_Surface *dst, unsigned int len,
-		Enesim_Surface *s, Enesim_Surface_Pixel *color)
+void span_pixel_color_draw(Enesim_Operator *op, Enesim_Surface *dst, unsigned int len,
+		Enesim_Surface *s, uint32_t color)
 {
 	int i;
 	int t;
 
 	for (t = 0; t < opt_times; t++)
 	{
-		Enesim_Surface_Data dtmp;
-		Enesim_Surface_Data stmp;
+		uint32_t *dtmp;
+		uint32_t *stmp;
 
-		enesim_surface_data_get(dst, &dtmp);
-		enesim_surface_data_get(s, &stmp);
+		dtmp = enesim_surface_data_get(dst);
+		stmp = enesim_surface_data_get(s);
 		for (i = 0; i < opt_height; i++)
 		{
-			span(&dtmp, len, &stmp, color, NULL);
-			enesim_surface_data_increment(&dtmp, len);
-			enesim_surface_data_increment(&stmp, len);
+			enesim_operator_drawer_span(op, dtmp, len, stmp, color, NULL);
+			dtmp += len;
+			stmp += len;
 		}
 	}
 }
 
-static void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Format *dsf)
+static void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Format dsf)
 {
 	double start, end;
 	Enesim_Surface *dst;
-	Enesim_Drawer_Point dpoint;
-	Enesim_Surface_Pixel color;
+	uint32_t color;
+	Enesim_Operator op;
 
 	dst = enesim_surface_new(dsf, 1, 1);
 	enesim_surface_pixel_components_from(&color, dsf, 0x11, 0x22, 0x33, 0x44);
-	dpoint = enesim_drawer_point_color_get(rop, dsf, &color);
-	if (dpoint)
+	if (enesim_drawer_point_color_op_get(opt_cpu, &op, rop, dsf, color))
 	{
 		start = get_time();
-		point_color_draw(dpoint, dst, &color);
+		point_color_draw(&op, dst, color);
 		end = get_time();
 		printf("    Point transparent color [%3.3f sec]\n", end - start);
 	}
@@ -150,27 +149,26 @@ static void drawer_point_color_transparent_bench(Enesim_Rop rop, Enesim_Format *
 	enesim_surface_delete(dst);
 }
 
-static void drawer_span_color_bench(Enesim_Rop rop, Enesim_Surface *dst, Enesim_Surface_Pixel *color)
+static void drawer_span_color_bench(Enesim_Rop rop, Enesim_Surface *dst, uint32_t color)
 {
 	double start, end;
-	Enesim_Format *dfmt;
-	Enesim_Drawer_Span dspan;
+	Enesim_Format dfmt;
+	Enesim_Operator op;
 
 	dfmt = enesim_surface_format_get(dst);
-	dspan = enesim_drawer_span_color_get(rop, dfmt, color);
-	if (dspan)
+	if (enesim_drawer_span_color_op_get(opt_cpu, &op, rop, dfmt, color))
 	{
 		start = get_time();
-		span_color_draw(dspan, dst, opt_width, color);
+		span_color_draw(&op, dst, opt_width, color);
 		end = get_time();
-		printf("        %s [%3.3f sec]\n", opacity_get(color), end - start);
+		printf("        %s [%3.3f sec]\n", opacity_get(color, dfmt), end - start);
 	}
 	else
 	{
-		printf("        %s [NOT BUILT]\n", opacity_get(color));
+		printf("        %s [NOT BUILT]\n", opacity_get(color, dfmt));
 		return;
 	}
-	test_finish("span_color", rop, dst, NULL, color, NULL);
+	test_finish("span_color", rop, dst, NULL, &color, NULL);
 }
 
 /* drawer span pixel bench */
@@ -178,17 +176,16 @@ static void drawer_span_pixel_bench(Enesim_Rop rop, Enesim_Surface *dst,
 		Enesim_Surface *src)
 {
 	double start, end;
-	Enesim_Format *dfmt;
-	Enesim_Format *sfmt;
-	Enesim_Drawer_Span dspan;
+	Enesim_Format dfmt;
+	Enesim_Format sfmt;
+	Enesim_Operator op;
 
 	dfmt = enesim_surface_format_get(dst);
 	sfmt = enesim_surface_format_get(src);
-	dspan = enesim_drawer_span_pixel_get(rop, dfmt, sfmt);
-	if (dspan)
+	if (enesim_drawer_span_pixel_op_get(opt_cpu, &op, rop, dfmt, sfmt))
 	{
 		start = get_time();
-		span_pixel_draw(dspan, dst, opt_width, src);
+		span_pixel_draw(&op, dst, opt_width, src);
 		end = get_time();
 		printf("        %s [%3.3f sec]\n", enesim_format_name_get(sfmt), end - start);
 	}
@@ -201,72 +198,69 @@ static void drawer_span_pixel_bench(Enesim_Rop rop, Enesim_Surface *dst,
 }
 
 static void drawer_span_mask_color_bench(Enesim_Rop rop, Enesim_Surface *dst,
-		Enesim_Surface *msk, Enesim_Surface_Pixel *color)
+		Enesim_Surface *msk, uint32_t color)
 {
 	double start, end;
-	Enesim_Format *dfmt, *mfmt;
-	Enesim_Drawer_Span dspan;
+	Enesim_Format dfmt, mfmt;
+	Enesim_Operator op;
 
 	dfmt = enesim_surface_format_get(dst);
 	mfmt = enesim_surface_format_get(msk);
-	dspan = enesim_drawer_span_mask_color_get(rop, dfmt, mfmt, color);
-	if (dspan)
+	if (enesim_drawer_span_mask_color_op_get(opt_cpu, &op, rop, dfmt, mfmt, color))
 	{
 		start = get_time();
-		span_mask_color_draw(dspan, dst, opt_width, msk, color);
+		span_mask_color_draw(&op, dst, opt_width, msk, color);
 		end = get_time();
-		printf("        %s %s [%3.3f sec]\n", enesim_format_name_get(mfmt), opacity_get(color), end - start);
+		printf("        %s %s [%3.3f sec]\n", enesim_format_name_get(mfmt), opacity_get(color, dfmt), end - start);
 	}
 	else
 	{
-		printf("        %s %s [NOT BUILT]\n", enesim_format_name_get(mfmt), opacity_get(color));
+		printf("        %s %s [NOT BUILT]\n", enesim_format_name_get(mfmt), opacity_get(color, dfmt));
 		return;
 	}
-	test_finish("span_mask_color", rop, dst, NULL, color, msk);
+	test_finish("span_mask_color", rop, dst, NULL, &color, msk);
 }
 
 static void drawer_span_pixel_color_bench(Enesim_Rop rop, Enesim_Surface *dst,
-		Enesim_Surface *src, Enesim_Surface_Pixel *color)
+		Enesim_Surface *src, uint32_t color)
 {
 	double start, end;
-	Enesim_Format *dfmt, *sfmt;
-	Enesim_Drawer_Span dspan;
+	Enesim_Format dfmt, sfmt;
+	Enesim_Operator op;
 
 	dfmt = enesim_surface_format_get(dst);
 	sfmt = enesim_surface_format_get(src);
-	dspan = enesim_drawer_span_pixel_color_get(rop, dfmt, sfmt, color);
-	if (dspan)
+	if (enesim_drawer_span_pixel_color_op_get(opt_cpu, &op, rop, dfmt, sfmt, color))
 	{
 		start = get_time();
-		span_pixel_color_draw(dspan, dst, opt_width, src, color);
+		span_pixel_color_draw(&op, dst, opt_width, src, color);
 		end = get_time();
-		printf("        %s %s [%3.3f sec]\n", enesim_format_name_get(sfmt), opacity_get(color), end - start);
+		printf("        %s %s [%3.3f sec]\n", enesim_format_name_get(sfmt), opacity_get(color, dfmt), end - start);
 	}
 	else
 	{
-		printf("        %s %s [NOT BUILT]\n", enesim_format_name_get(sfmt), opacity_get(color));
+		printf("        %s %s [NOT BUILT]\n", enesim_format_name_get(sfmt), opacity_get(color, dfmt));
 		return;
 	}
-	test_finish("span_pixel_color", rop, dst, NULL, color, src);
+	test_finish("span_pixel_color", rop, dst, NULL, &color, src);
 }
 
 static void drawer_span_pixel_mask_bench(Enesim_Rop rop,
 		Enesim_Surface *dst, Enesim_Surface *src, Enesim_Surface *msk)
 {
 	double start, end;
-	Enesim_Format *dfmt;
-	Enesim_Format *sfmt;
-	Enesim_Format *mfmt;
-	Enesim_Drawer_Span dspan;
+	Enesim_Format dfmt;
+	Enesim_Format sfmt;
+	Enesim_Format mfmt;
+	Enesim_Operator op;
 
 	dfmt = enesim_surface_format_get(dst);
 	sfmt = enesim_surface_format_get(src);
 	mfmt = enesim_surface_format_get(msk);
-	dspan = enesim_drawer_span_pixel_mask_get(rop, dfmt, sfmt, mfmt);
-	if (dspan)
+	if (enesim_drawer_span_pixel_mask_op_get(opt_cpu, &op, rop, dfmt, sfmt, mfmt))
 	{
 		start = get_time();
-		span_pixel_mask_draw(dspan, dst, opt_width, src, msk);
+		span_pixel_mask_draw(&op, dst, opt_width, src, msk);
 		end = get_time();
 		printf("        %s %s [%3.3f sec]\n", enesim_format_name_get(sfmt), enesim_format_name_get(mfmt), end - start);
 	}
@@ -280,10 +274,9 @@ static void drawer_span_pixel_mask_bench(Enesim_Rop rop,
 
 void drawer_bench(void)
 {
-	Enesim_Format *ssf, *msf;
+	Enesim_Format ssf, msf;
 	Enesim_Surface *src = NULL, *dst = NULL, *msk = NULL;
-	Enesim_Surface_Pixel opaque, transparent;
-	Eina_Iterator *it;
+	uint32_t opaque, transparent;
 
 	printf("****************\n");
 	printf("* Drawer Bench *\n");
@@ -302,47 +295,37 @@ void drawer_bench(void)
 	/* span functions */
 	printf("    Span color\n");
 	surfaces_create(NULL, 0, &dst, opt_fmt, NULL, 0);
-	drawer_span_color_bench(opt_rop, dst, &opaque);
+	drawer_span_color_bench(opt_rop, dst, opaque);
 	surfaces_create(NULL, 0, &dst, opt_fmt, NULL, 0);
-	drawer_span_color_bench(opt_rop, dst, &transparent);
-
+	drawer_span_color_bench(opt_rop, dst, transparent);
+#if 0
 	printf("    Span mask color\n");
-	it = enesim_format_iterator_new();
-	while (eina_iterator_next(it, (void **)&msf))
+	for (msf = 0; msf < ENESIM_FORMATS; msf++)
 	{
 		surfaces_create(NULL, 0, &dst, opt_fmt, &msk, msf);
-		drawer_span_mask_color_bench(opt_rop, dst, msk, &opaque);
-		drawer_span_mask_color_bench(opt_rop, dst, msk, &transparent);
+		drawer_span_mask_color_bench(opt_rop, dst, msk, opaque);
+		drawer_span_mask_color_bench(opt_rop, dst, msk, transparent);
 	}
-	eina_iterator_free(it);
+#endif
 	printf("    Span pixel\n");
-	it = enesim_format_iterator_new();
-	while (eina_iterator_next(it, (void **)&ssf))
+	for (ssf = 0; ssf < ENESIM_FORMATS; ssf++)
 	{
 		surfaces_create(&src, ssf, &dst, opt_fmt, NULL, 0);
 		drawer_span_pixel_bench(opt_rop, dst, src);
 	}
-	eina_iterator_free(it);
 	printf("    Span pixel color\n");
-	it = enesim_format_iterator_new();
-	while (eina_iterator_next(it, (void **)&ssf))
+	for (ssf = 0; ssf < ENESIM_FORMATS; ssf++)
 	{
 		surfaces_create(&src, ssf, &dst, opt_fmt, NULL, 0);
-		drawer_span_pixel_color_bench(opt_rop, dst, src, &opaque);
+		drawer_span_pixel_color_bench(opt_rop, dst, src, opaque);
 	}
-	eina_iterator_free(it);
 	printf("    Span pixel mask\n");
-	it = enesim_format_iterator_new();
-	while (eina_iterator_next(it, (void **)&ssf))
+	for (ssf = 0; ssf < ENESIM_FORMATS; ssf++)
 	{
-		Eina_Iterator *mit;
-		mit = enesim_format_iterator_new();
-		while (eina_iterator_next(mit, (void **)&msf))
+		for (msf = 0; msf < ENESIM_FORMATS; msf++)
 		{
 			surfaces_create(&src, ssf, &dst, opt_fmt, &msk, msf);
 			drawer_span_pixel_mask_bench(opt_rop, dst, src, msk);
 		}
-		eina_iterator_free(mit);
 	}
-	eina_iterator_free(it);
 }

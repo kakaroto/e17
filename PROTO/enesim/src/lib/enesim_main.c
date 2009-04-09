@@ -36,8 +36,9 @@ EAPI int enesim_init(void)
 		 * get the cpuid for this
 		 */
 		eina_init();
-		enesim_format_init();
+		enesim_cpu_init();
 		enesim_drawer_init();
+		enesim_converter_init();
 		/* TODO initialize all the transformers */
 		/* TODO initialize all the converters */
 #ifdef EFL_HAVE_MMX
@@ -56,7 +57,7 @@ EAPI int enesim_init(void)
 EAPI void enesim_shutdown(void)
 {
 	enesim_drawer_shutdown();
-	enesim_format_shutdown();
+	enesim_converter_shutdown();
 	eina_shutdown();
 }
 

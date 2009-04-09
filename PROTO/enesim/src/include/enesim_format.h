@@ -1,6 +1,9 @@
 #ifndef ENESIM_FORMAT_H_
 #define ENESIM_FORMAT_H_
 
+EAPI const char * enesim_format_name_get(Enesim_Format f);
+
+#if 0
 typedef struct Enesim_Format_Component
 {
 	uint8_t offset;
@@ -45,5 +48,5 @@ EAPI Enesim_Format * enesim_format_argb8888_get(void);
 EAPI Enesim_Format * enesim_format_argb8888_unpre_get(void);
 EAPI Enesim_Format * enesim_format_a8_get(void);
 
-
+#endif
 #endif /* ENESIM_FORMAT_H_ */

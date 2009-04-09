@@ -50,17 +50,28 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/* core headers */
 #include "enesim_main.h"
 #include "enesim_format.h"
 #include "enesim_surface.h"
-#include "enesim_drawer.h"
+/* util headers */
 #include "enesim_matrix.h"
-#include "enesim_renderer.h"
-#include "enesim_converter.h"
+#include "enesim_curve.h"
+/* old raster operations */
 #include "enesim_rasterizer.h"
 #include "enesim_context.h"
 #include "enesim_primitives.h"
+
+#include "enesim_cpu.h"
+/* new raster operations */
+#include "enesim_operator.h"
+#include "enesim_drawer.h"
+#include "enesim_reflector.h"
+#include "enesim_repeater.h"
+#include "enesim_rotator.h"
+#include "enesim_scaler.h"
+#include "enesim_transformer.h"
+#include "enesim_converter.h"
 
 #ifdef __cplusplus
 }

@@ -17,18 +17,114 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+
 /*============================================================================*
- *                                   API                                      * 
+ *                                  Local                                     *
  *============================================================================*/
-/**
- * To be documented
- * FIXME: To be fixed
- * How to handle rotations, a converter can also receive a render op? or a
- * transformation matrix?
- */
-EAPI Enesim_Converter_Fnc enesim_converter_fnc_get(Enesim_Format stype,
-		Enesim_Format dtype)
+typedef Enesim_Converter_1D Enesim_Converter_1D_Lut[ENESIM_FORMATS][ENESIM_CONVERTER_FORMATS];
+typedef Enesim_Converter_2D Enesim_Converter_2D_Lut[ENESIM_FORMATS][ENESIM_ROTATOR_ANGLES][ENESIM_CONVERTER_FORMATS];
+
+Enesim_Converter_1D_Lut *_converters1d;
+Enesim_Converter_2D_Lut *_converters2d;
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+void enesim_converter_init(void)
 {
-	
+	Enesim_Cpu **cpus;
+	int numcpu;
+	int i;
+
+	cpus = enesim_cpu_get(&numcpu);
+	_converters1d = calloc(numcpu, sizeof(Enesim_Converter_1D_Lut));
+	_converters2d = calloc(numcpu, sizeof(Enesim_Converter_2D_Lut));
+	for (i = 0; i < numcpu; i++)
+	{
+		enesim_converter_argb8888_init(cpus[i]);
+		enesim_converter_rgb565_init(cpus[i]);
+	}
+}
+void enesim_converter_shutdown(void)
+{
+	free(_converters1d);
+	free(_converters2d);
+}
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI void enesim_converter_1d_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
+		Enesim_Format sfmt, Enesim_Converter_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_1D_Lut *t;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters1d[cpuid];
+	*t[sfmt][dfmt] = cnv;
 }
 
+EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
+		Enesim_Format sfmt, Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_2D_Lut *t;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters2d[cpuid];
+	*t[sfmt][angle][dfmt] = cnv;
+}
+
+EAPI Eina_Bool enesim_converter_1d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
+		Enesim_Converter_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_1D_Lut *t;
+	Enesim_Converter_1D c;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters1d[cpuid];
+	c = *t[sfmt][dfmt];
+	if (c)
+	{
+		op->cpu = cpu;
+		op->id = ENESIM_OPERATOR_CONVERTER1D;
+		op->cb = c;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+
+EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
+		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_2D_Lut *t;
+	Enesim_Converter_2D c;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters2d[cpuid];
+	c = *t[sfmt][angle][dfmt];
+	if (c)
+	{
+		op->cpu = cpu;
+		op->id = ENESIM_OPERATOR_CONVERTER2D;
+		op->cb = c;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+
+EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
+		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
+		uint8_t boffset, uint8_t blen)
+{
+
+}

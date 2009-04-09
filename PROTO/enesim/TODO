@@ -1,5 +1,5 @@
-+ Right now the drawer functions are defined for every case (from/to format)
-we should benchmark the speed decrease in case we use function pointers for that
++ Split the 'host cpu' implementatino into another library, mainly to add support
+  there for different cpus.
++ Remove the primitives
 + What to do with the extender "classes", place them into eina?
-+ Port every type to stdint.h types
 + Move every error to eina's error

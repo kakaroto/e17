@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([enesim], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([enesim], [0.0.2], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -64,6 +64,85 @@ AC_C_BIGENDIAN
 
 ### Checks for library functions
 
+#######################################
+## PTHREADS
+pthread_cflags=""
+pthread_libs=""
+build_pthreads="no"
+has_pthreads="no"
+need_pthreads="no"
+# basic pthread support
+AC_CHECK_HEADER(pthread.h,
+  [
+   has_pthreads="yes"
+  ],
+  [
+   has_pthreads="no"
+  ]
+)
+
+# sched_getaffinity pthread_attr_setaffinity_np
+AC_CHECK_HEADERS(pthread.h sched.h,
+      [
+        AC_CHECK_LIB(pthread, pthread_attr_setaffinity_np,
+          [
+            AC_CHECK_LIB(pthread, pthread_barrier_wait,
+              [ build_pthreads="yes" ],
+              [ build_pthreads="no" ]
+            )
+          ],
+          [ build_pthreads="no" ]
+        )
+      ],
+      [ build_pthreads="no" ]
+)
+
+AC_MSG_CHECKING(whether to build pthread code)
+AC_ARG_ENABLE(pthreads,
+  AC_HELP_STRING([--enable-pthreads], [enable threaded rendering]),
+  [
+      if test "x$enableval" = "xyes" ; then
+        if test "x$build_pthreads" = "xyes"; then
+          AC_MSG_RESULT(yes)
+          AC_DEFINE(BUILD_PTHREAD, 1, [Build Threaded Rendering])
+          build_pthreads="yes"
+	  need_pthreads="yes"
+        else
+          if "x$use_strict" = "xyes"; then
+            AC_MSG_ERROR(pthreads headers or functions not found (strict dependencies checking))
+          else
+            AC_MSG_RESULT(no: pthread headers or functions not found)
+          fi
+        fi
+      else
+        AC_MSG_RESULT(no)
+        build_pthreads="no"
+      fi
+  ],
+  [
+    AC_MSG_RESULT($build_pthreads)
+    if test "x$build_pthreads" = "xyes" ; then
+      AC_DEFINE(BUILD_PTHREAD, 1, [Build Threaded Rendering])
+      need_pthreads="yes"
+    fi
+  ]
+)
+
+#######################################
+## Link with pthread if needed
+AC_MSG_CHECKING(whether we should link with pthread)
+if test "x$need_pthreads" = "xyes"; then
+  AC_MSG_RESULT(yes)
+  pthread_cflags=""
+  pthread_libs="-lpthread"
+else
+  AC_MSG_RESULT(no)
+fi
+
+
+AC_SUBST(pthread_cflags)
+AC_SUBST(pthread_libs)
+
 
 ### Needed information
 
@@ -95,8 +174,8 @@ EXAMPLE_LIBS="$SDL_LIBS $PNG_LIBS"
 AC_SUBST(EXAMPLE_CFLAGS)
 AC_SUBST(EXAMPLE_LIBS)
 
-ENESIM_CFLAGS="$EINA_CFLAGS $EFL_SIMD_FLAGS $EFL_COVERAGE_CFLAGS"
-ENESIM_LIBS="$EINA_LIBS $EFL_COVERAGE_LIBS"
+ENESIM_CFLAGS="$EINA_CFLAGS $EFL_SIMD_FLAGS $EFL_COVERAGE_CFLAGS $pthread_cflags -D_GNU_SOURCE"
+ENESIM_LIBS="$EINA_LIBS $EFL_COVERAGE_LIBS $pthread_libs"
 AC_SUBST(ENESIM_CFLAGS)
 AC_SUBST(ENESIM_LIBS)
 
@@ -110,11 +189,12 @@ src/Makefile
 src/include/Makefile
 src/tool/Makefile
 src/lib/Makefile
+src/lib/cpu/Makefile
 src/lib/primitives/Makefile
 src/lib/rasterizer/Makefile
-src/lib/renderer/Makefile
 src/lib/format/Makefile
 src/lib/drawer/Makefile
+src/lib/converter/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile
@@ -145,6 +225,7 @@ echo "  Build RGB565_b1A3 format support..........: ${format_rgb565_b1a3}"
 echo
 echo "CPU Specific Extensions:"
 echo
+echo "  Multi Core ...............................: ${build_pthreads}"
 echo "  MMX.......................................: ${have_mmx}"
 echo "  SSE.......................................: ${have_sse}"
 echo "  SSE2......................................: ${have_sse2}"

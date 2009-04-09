@@ -1,61 +1,53 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 
-#include "_argb8888_c.c"
-#include "_argb8888_mmx.c"
-#include "_argb8888_sse2.c"
+#include "argb8888_blend.c"
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-Eina_Bool enesim_drawer_argb8888_init(void)
+void enesim_drawer_argb8888_init(Enesim_Cpu *cpu)
 {
-	Eina_Iterator *it;
-	Enesim_Format *df;
-	Enesim_Format *sf;
-
-	df = enesim_format_argb8888_get();
-	if (!df)
-		return EINA_FALSE;
-
-	/* native format first */
+	printf("registering drawers\n");
+	/* TODO check that the cpu is host */
 	/* color */
-	enesim_drawer_point_register(ENESIM_FILL, argb8888_pt_color_fill, df, NULL, EINA_TRUE, NULL);
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_color_blend, df, NULL, EINA_TRUE, NULL);
-	enesim_drawer_point_register(ENESIM_BLEND, argb8888_pt_color_blend, df, NULL, EINA_TRUE, NULL);
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_color_blend, df, NULL, EINA_TRUE, NULL);
+	enesim_drawer_span_color_register(cpu,
+			SP_C(argb8888, fill), ENESIM_FILL,
+			ENESIM_FORMAT_ARGB8888);
+	enesim_drawer_span_color_register(cpu,
+			SP_C(argb8888, blend), ENESIM_BLEND,
+			ENESIM_FORMAT_ARGB8888);
+	/* pixel */
+	enesim_drawer_span_pixel_register(cpu,
+			SP_P(argb8888, argb8888, fill),
+			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
+	enesim_drawer_span_pixel_register(cpu,
+			SP_P(argb8888, argb8888, blend),
+			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
 	/* mask color */
-	enesim_drawer_point_register(ENESIM_FILL, argb8888_pt_mask_color_fill_argb8888, df, NULL, EINA_TRUE, df);
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_mask_color_fill_argb8888, df, NULL, EINA_TRUE, df);
-	enesim_drawer_point_register(ENESIM_BLEND, argb8888_pt_mask_color_blend_argb8888, df, NULL, EINA_TRUE, df);
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_mask_color_blend_argb8888, df, NULL, EINA_TRUE, df);
-	/* pixel */
-	enesim_drawer_point_register(ENESIM_FILL, argb8888_pt_pixel_fill_argb8888, df, df, EINA_FALSE, NULL);
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_pixel_fill_argb8888, df, df, EINA_FALSE, NULL);
-	enesim_drawer_point_register(ENESIM_BLEND, argb8888_pt_pixel_blend_argb8888, df, df, EINA_FALSE, NULL);
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_pixel_blend_argb8888, df, df, EINA_FALSE, NULL);
-	/* pixel color */
-	enesim_drawer_point_register(ENESIM_FILL, argb8888_pt_pixel_color_fill_argb8888, df, df, EINA_TRUE, NULL);
+	enesim_drawer_span_mask_color_register(cpu,
+			SP_MC(argb8888, argb8888, fill),
+			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
+	enesim_drawer_span_mask_color_register(cpu,
+			SP_MC(argb8888, argb8888, blend),
+			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
 	/* pixel mask */
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_pixel_mask_blend_argb8888_argb8888_c, df, df, EINA_FALSE, df);
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_pixel_mask_fill_argb8888_argb8888_c, df, df, EINA_FALSE, df);
-
-	/* TODO
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_pixel_color_fill_argb8888, df, df, EINA_TRUE, NULL);
-	enesim_drawer_point_register(ENESIM_BLEND, argb8888_pt_pixel_color_blend_argb8888, df, df, EINA_TRUE, NULL);
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_pixel_color_blend_argb8888, df, df, EINA_TRUE, NULL);
-	*/
-	/* other formats */
-	/* argb8888_unpre */
-	sf = enesim_format_argb8888_unpre_get();
-	if (!sf)
-		goto end;
-	/* pixel */
-	enesim_drawer_point_register(ENESIM_FILL, argb8888_pt_pixel_fill_argb8888_unpre, df, sf, EINA_FALSE, NULL);
-	enesim_drawer_span_register(ENESIM_FILL, argb8888_sp_pixel_fill_argb8888_unpre, df, sf, EINA_FALSE, NULL);
-	enesim_drawer_point_register(ENESIM_BLEND, argb8888_pt_pixel_blend_argb8888_unpre, df, sf, EINA_FALSE, NULL);
-	enesim_drawer_span_register(ENESIM_BLEND, argb8888_sp_pixel_blend_argb8888_unpre, df, sf, EINA_FALSE, NULL);
-end:
-	return EINA_TRUE;
+	enesim_drawer_span_pixel_mask_register(cpu,
+			SP_PM(argb8888, argb8888, argb8888, fill),
+			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888);
+	enesim_drawer_span_pixel_mask_register(cpu,
+			SP_PM(argb8888, argb8888, argb8888, blend),
+			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888, ENESIM_FORMAT_ARGB8888);
+	/* pixel color */
+	enesim_drawer_span_pixel_color_register(cpu,
+			SP_PC(argb8888, argb8888, fill),
+			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
 }
 
 void enesim_drawer_argb8888_shutdown(void)
