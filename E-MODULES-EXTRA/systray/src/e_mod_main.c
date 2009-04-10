@@ -442,8 +442,8 @@ _systray_deactivate(Instance *inst)
    inst->win.selection = None;
    _systray_selection_owner_set_current(inst);
    ecore_x_sync();
-   ecore_x_window_del(old);
-   ecore_x_window_del(inst->win.base);
+   ecore_x_window_free(old);
+   ecore_x_window_free(inst->win.base);
    inst->win.base = None;
 }
 
@@ -504,16 +504,16 @@ _systray_activate(Instance *inst)
    inst->win.selection = ecore_x_window_input_new(inst->win.base, 0, 0, 1, 1);
    if (inst->win.selection == None)
      {
-	ecore_x_window_del(inst->win.base);
+	ecore_x_window_free(inst->win.base);
 	inst->win.base = None;
 	return 0;
      }
 
    if (!_systray_selection_owner_set_current(inst))
      {
-	ecore_x_window_del(inst->win.selection);
+	ecore_x_window_free(inst->win.selection);
 	inst->win.selection = None;
-	ecore_x_window_del(inst->win.base);
+	ecore_x_window_free(inst->win.base);
 	inst->win.base = None;
 	edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
 	return 0;
@@ -743,9 +743,9 @@ _systray_cb_selection_clear(void *data, int type __UNUSED__, void *event)
 	while (inst->icons)
 	  _systray_icon_del_list(inst, inst->icons, inst->icons->data);
 
-	ecore_x_window_del(inst->win.selection);
+	ecore_x_window_free(inst->win.selection);
 	inst->win.selection = None;
-	ecore_x_window_del(inst->win.base);
+	ecore_x_window_free(inst->win.base);
 	inst->win.base = None;
 	_systray_retry(inst);
      }

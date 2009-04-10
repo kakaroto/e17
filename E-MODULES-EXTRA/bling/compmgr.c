@@ -2165,7 +2165,7 @@ composite_shutdown(void)
    ecore_event_handler_del(_window_property_hnd);
    ecore_event_handler_del(_damage_notify_hnd);
 
-   ecore_x_window_del(reg);
+   ecore_x_window_free(reg);
 
    XCompositeUnredirectSubwindows(dpy, root, CompositeRedirectManual);
    XRenderFreePicture(dpy, rootPicture);
