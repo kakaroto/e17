@@ -21,7 +21,7 @@ static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dia
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void _cb_launch_check (void *data, Evas_Object *obj);
+static void _cb_launch_check(void *data, Evas_Object *obj);
 
 EAPI E_Config_Dialog *
 e_int_config_screenshot_module(E_Container *con, const char *params)
@@ -171,7 +171,8 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
-   Evas_Object *o = NULL, *of = NULL, *ow = NULL, *launch_check = NULL, *app_entry;
+   Evas_Object *o = NULL, *of = NULL, *ow = NULL, *launch_check = NULL;
+   Evas_Object *app_entry = NULL;
    E_Radio_Group *rg;
 
    o = e_widget_table_add(evas, 0);
@@ -218,7 +219,7 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    of = e_widget_frametable_add(evas, "Application Settings", 0);
    ow = e_widget_check_add(evas, "Launch application after taking screenshot", 
 			   &(cfdata->use_app));
-   launch_check = ow; // save pointer for later...
+   launch_check = ow;
    e_widget_frametable_object_append(of, ow, 0, 0, 4, 1, 1, 0, 1, 0);
    ow = e_widget_label_add(evas, "Application:");
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
@@ -227,10 +228,10 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 0);
 
    // set app entry state from saved config
-   e_widget_disabled_set (app_entry, !cfdata->use_app);
+   e_widget_disabled_set(app_entry, !cfdata->use_app);
 
    // handler for enable/disable app entry at checkbox state change
-   e_widget_on_change_hook_set (launch_check, _cb_launch_check, app_entry);
+   e_widget_on_change_hook_set(launch_check, _cb_launch_check, app_entry);
 
    of = e_widget_frametable_add(evas, "Thumbnail Settings", 0);
    ow = e_widget_check_add(evas, "Generate thumbnail from screenshot", 
@@ -275,11 +276,10 @@ _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static void
-_cb_launch_check (void *data, Evas_Object *obj)
+_cb_launch_check(void *data, Evas_Object *obj)
 {
-  int checked;
-   
-   checked = e_widget_check_checked_get (obj);
-   e_widget_disabled_set (data, !checked);
-}
+  int checked = 0;
 
+   checked = e_widget_check_checked_get(obj);
+   e_widget_disabled_set(data, !checked);
+}
