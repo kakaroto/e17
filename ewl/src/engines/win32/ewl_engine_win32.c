@@ -394,8 +394,8 @@ ee_window_destroy(Ewl_Window *win)
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
         ee_window_hide(win);
-        ecore_win32_window_del((EWL_EMBED(win)->canvas_window));
-        ecore_win32_window_del((win->window));
+        ecore_win32_window_free((EWL_EMBED(win)->canvas_window));
+        ecore_win32_window_free((win->window));
 
         EWL_EMBED(win)->canvas_window = NULL;
         win->window = NULL;

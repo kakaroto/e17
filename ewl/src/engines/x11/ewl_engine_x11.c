@@ -309,8 +309,8 @@ ee_window_destroy(Ewl_Window *win)
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
         ee_window_hide(win);
-        ecore_x_window_del(UINTPTR_TO_UINT(EWL_EMBED(win)->canvas_window));
-        ecore_x_window_del(UINTPTR_TO_UINT(win->window));
+        ecore_x_window_free(UINTPTR_TO_UINT(EWL_EMBED(win)->canvas_window));
+        ecore_x_window_free(UINTPTR_TO_UINT(win->window));
 
         EWL_EMBED(win)->canvas_window = NULL;
         win->window = NULL;
