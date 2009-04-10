@@ -2,7 +2,7 @@ Source: engage
 Section: x11
 Priority: optional
 Maintainer: Blake Barnett <shadoi@soulmachine.net>
-Build-Depends: cdbs, libeet-dev, libevas-dev, libimlib2-dev, libedje-dev, libesmart0-dev, debhelper (>= 6), libetk1-dev, libecore-dev, e17-dev
+Build-Depends: cdbs, libeet-dev, libevas-dev, libimlib2-dev, libedje-dev, libesmart0-dev, debhelper (>= 6), libetk1-dev, libecore-dev, e17-dev | ecomorph-e17-dev
 Standards-Version: 3.6.1.0
 
 Package: engage

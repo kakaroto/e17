@@ -9,7 +9,7 @@ Homepage: http://www.enlightenment.org
 Package: edje-viewer
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: e17 (>= 0.16.999)
+Recommends: e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
 Description: A simple viewer for edj files
  Edje-viewer should provide more ease of use than the
  edje viewer that comes with edje itself.

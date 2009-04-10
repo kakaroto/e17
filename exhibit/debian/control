@@ -10,7 +10,7 @@ Package: exhibit
 Architecture: any
 Depends: ${shlibs:Depends}, libetk1, libepsilon0
 Replaces: exhibit-data
-Suggests: e17
+Suggests: e17 | ecomorph-e17
 Description: the Etk-based image viewer
  Exhibit is an image viewer that uses Etk as its toolkit.
  Exhibit supports  image previews for image types supported

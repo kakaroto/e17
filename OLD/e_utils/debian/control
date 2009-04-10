@@ -2,13 +2,13 @@ Source: eutils
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: libeet-dev, libengrave0-dev, libevas-dev, libecore-dev, e17-dev, libewl1-dev, libimlib2-dev, libedje-dev, libepsilon0-dev, libesmart0-dev, debhelper (>= 6), cdbs
+Build-Depends: libeet-dev, libengrave0-dev, libevas-dev, libecore-dev, e17-dev | ecomorph-e17-dev, libewl1-dev, libimlib2-dev, libedje-dev, libepsilon0-dev, libesmart0-dev, debhelper (>= 6), cdbs
 Standards-Version: 3.6.1.0
 
 Package: eutils
 Section: x11
 Architecture: any
-Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet1, libewl1, libengrave0, libimlib2, e17, libepsilon0 
+Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet1, libewl1, libengrave0, libimlib2, e17 | ecomorph-e17, libepsilon0 
 Description: A collection of utilities for use with E17 and EFL apps.
  This package contains the following E17 tools:
  eapp_editor - An application icon editor for E17 and engage.
