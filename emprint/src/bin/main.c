@@ -457,7 +457,7 @@ _em_do_window(void)
    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
 
    /* check if our input window already exists & delete it */
-   if (input_window) ecore_x_window_del(input_window);
+   if (input_window) ecore_x_window_free(input_window);
 
    /* create a new input window to recieve click event */
    input_window = ecore_x_window_input_new(root, x, y, w, h);
@@ -498,7 +498,7 @@ _em_do_region(void)
    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
 
    /* check if our input window already exists & delete it */
-   if (input_window) ecore_x_window_del(input_window);
+   if (input_window) ecore_x_window_free(input_window);
 
    /* create a new input window to recieve click event */
    input_window = ecore_x_window_input_new(root, x, y, w, h);
@@ -664,7 +664,7 @@ _em_cb_key_down(void *data, int type, void *event)
         ecore_x_keyboard_ungrab();
 
         /* delete the input window */
-        ecore_x_window_del(input_window);
+        ecore_x_window_free(input_window);
         input_window = 0;
 
         ecore_main_loop_quit();
@@ -743,7 +743,7 @@ _em_cb_mouse_up(void *data, int type, void *event)
    ecore_x_keyboard_ungrab();
 
    /* delete the input window */
-   ecore_x_window_del(input_window);
+   ecore_x_window_free(input_window);
    input_window = 0;
 
    /* get the window which was clicked */
@@ -893,7 +893,7 @@ _em_grab_region_end(void)
    ecore_event_handler_del(mouse_down_hdl);
 
    /* delete the input window */
-   ecore_x_window_del(input_window);
+   ecore_x_window_free(input_window);
 
    /* get the size of the band */
    ecore_evas_geometry_get(band->ee, &x, &y, &w, &h);
