@@ -102,6 +102,65 @@ collections {
 	 }
       }
    }
+
+   group { name: "iv/main/bg/checkers";
+      images {
+	 image: "bg.png" COMP;
+	 image: "shadow.png" COMP;
+      }
+      parts {
+	 part {
+	    name: "checkered_bg";
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "bg.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 128 128;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name: "shadow";
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "shadow.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "swallow";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	    }
+	 }
+      }
+   }
+   group { name: "iv/main/bg/black";
+      parts {
+	 part {
+	    name: "checkered_bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	    }
+	 }
+      }
+   }
+
    group { name: "iv/controls";
       parts {
          part { name: "bg";
@@ -160,18 +219,35 @@ collections {
 	       }
 	    }
 	 }
-	 part { name: "iv.swallow.hoversel";
+	 part { name: "iv.swallow.settings";
 	    type: SWALLOW;
 	    description {
 	       state: "default" 0.0;
 	       fixed: 1 1;
 	       rel1 {
 		  relative: 1 0;
-		  offset: -70 2;
+		  offset: -38 2;
 	       }
 	       rel2 {
 		  relative: 1 1;
 		  offset: -2 -2;
+	       }
+	    }
+	 }
+	 part { name: "iv.swallow.hoversel";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       fixed: 1 1;
+	       rel1 {
+		  relative: 0 0;
+		  offset: -80 2;
+		  to: "iv.swallow.settings";
+	       }
+	       rel2 {
+		  relative: 0 1;
+		  offset: -2 -2;
+		  to: "iv.swallow.settings";
 	       }
 	    }
 	 }
@@ -290,8 +366,23 @@ collections {
       }
    }
 
-   // Label overlay
-   group { name: "elm/label/base/default";
+   group { name: "iv/controls/settings";
+      max: 32 32;
+      images {
+	 image: "settings.png" COMP;
+      }
+      parts {
+         part { name: "img";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       image.normal: "settings.png";
+	    }
+	 }
+      }
+   }
+
+   group { name: "iv/controls/label";
       styles {
 	 style { name: "textblock_style";
 	    base: "font=Sans:style=Bold font_size=12 align=left color=#000 wrap=word";
@@ -326,7 +417,7 @@ collections {
 	       fill.smooth: 0;
 	    }
 	 }
-	 part { name: "elm.text";
+	 part { name: "iv.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
 	    effect: SOFT_OUTLINE;
@@ -346,50 +437,6 @@ collections {
 		  align: 0.5 0.5;
 		  elipsis: 0.0;
 	       }
-	    }
-	 }
-      }
-   }
-
-   group { name: "elm/bg/base/default";
-      images {
-	 image: "bg.png" COMP;
-	 image: "shadow.png" COMP;
-      }
-      parts {
-	 part {
-	    name: "checkered_bg";
-	    mouse_events: 0;
-	    repeat_events: 1;
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "bg.png";
-	       }
-	       fill {
-		  size {
-		     relative: 0 0;
-		     offset: 128 128;
-		  }
-	       }
-	    }
-	 }
-	 part {
-	    name: "shadow";
-	    mouse_events: 0;
-	    repeat_events: 1;
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "shadow.png";
-	       }
-	    }
-	 }
-	 part {
-	    name: "swallow";
-	    type: SWALLOW;
-	    description {
-	       state: "default" 0.0;
 	    }
 	 }
       }
