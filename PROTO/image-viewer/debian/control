@@ -1,0 +1,14 @@
+Source: image-viewer
+Section: graphics
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libelm-dev, libexif-dev, libeina-dev, libecore-dev, e17-dev | ecomorph-e17-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
+
+Package: image-viewer
+Architecture: any
+Depends: ${shlibs:Depends}, libelm0, e17 | ecomorph-e17
+Description: Elementary-based image viewer
+ Simple image viewer based on Elementary. With Enlightenment support.
+
