@@ -352,18 +352,19 @@ _notification_cb_notify(E_Notification_Daemon *daemon __UNUSED__, E_Notification
    unsigned int replaces_id;
    unsigned int new_id;
    int stacked, popuped;
+   char *appname = e_notification_app_name_get(n);
 
    replaces_id = e_notification_replaces_id_get(n);
    new_id = notification_cfg->next_id++;
    e_notification_id_set(n, new_id);
 
-   popuped = notification_popup_notify(n, replaces_id, new_id);
+   popuped = notification_popup_notify(n, replaces_id, new_id, appname);
    stacked = notification_box_notify(n, replaces_id, new_id);
    
    if (!popuped && !stacked)
      {
        e_notification_hint_urgency_set(n, 4);
-       notification_popup_notify(n, replaces_id, new_id);
+       notification_popup_notify(n, replaces_id, new_id, appname);
      }
    
    return new_id;

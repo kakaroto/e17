@@ -5,6 +5,8 @@
 #include <E_Notification_Daemon.h>
 #include <e.h>
 #include <Evas.h>
+#include <string.h>
+#include <E_Notify.h>
 
 #include "e_mod_macro.h"
 #include "e_mod_types.h"

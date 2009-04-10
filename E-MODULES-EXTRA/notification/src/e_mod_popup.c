@@ -31,7 +31,8 @@ static int  _notification_timer_cb          (void *data);
 int
 notification_popup_notify(E_Notification *n, 
                           unsigned int replaces_id, 
-                          unsigned int id __UNUSED__)
+                          unsigned int id __UNUSED__,
+                          char *appname)
 {
   int timeout;
   Popup_Data *popup = NULL;
@@ -47,8 +48,16 @@ notification_popup_notify(E_Notification *n,
 
   if (replaces_id && (popup = _notification_popup_find(replaces_id))) 
     {
-      if (popup->notif) e_notification_unref(popup->notif);
+      char nl[] = "\n";
       e_notification_ref(n);
+      if (popup->notif)
+      {
+        char *body_old = e_notification_body_get(popup->notif);
+        char *body_new= e_notification_body_get(n);
+        body_new = strcat(strcat(body_old, nl), body_new);
+        e_notification_body_set(n, body_new);
+        e_notification_unref(popup->notif);
+      }
       popup->notif = n;
       edje_object_signal_emit(popup->theme, "notification,del", "notification");
     }
