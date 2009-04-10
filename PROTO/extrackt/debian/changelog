@@ -1,12 +1,6 @@
-extrackt (0.0.2-2) unstable; urgency=low
+extrackt (1:0.0.2-1) unstable; urgency=low
 
   * a SVN release.
 
  -- quaker <quaker66@gmail.com>  Sat, 27 Dec 2008 14:36:46 +0100
-
-extrackt (0.0.2-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- Falko Schmidt <falko@alphagemini.org>  Tue, 21 Oct 2008 13:51:44 +0000
 

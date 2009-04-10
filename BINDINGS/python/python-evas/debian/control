@@ -2,7 +2,7 @@ Source: python-evas
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, libeina-dev, libevas-dev
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, libeina-dev, libevas-dev
 Standards-Version: 3.7.3
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org

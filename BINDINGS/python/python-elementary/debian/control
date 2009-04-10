@@ -2,7 +2,7 @@ Source: python-elementary
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-support (>= 0.7), cython, python-pyrex, python-setuptools, libelm-dev, python-evas, python-ecore
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, libelm-dev, python-evas, python-ecore
 Standards-Version: 3.7.3
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
