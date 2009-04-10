@@ -21,7 +21,7 @@ static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dia
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void _cb_launch_check(void *data, Evas_Object *obj);
+static void _cb_disable_check(void *data, Evas_Object *obj);
 
 EAPI E_Config_Dialog *
 e_int_config_screenshot_module(E_Container *con, const char *params)
@@ -231,7 +231,7 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_disabled_set(app_entry, !cfdata->use_app);
 
    // handler for enable/disable app entry at checkbox state change
-   e_widget_on_change_hook_set(launch_check, _cb_launch_check, app_entry);
+   e_widget_on_change_hook_set(launch_check, _cb_disable_check, app_entry);
 
    of = e_widget_frametable_add(evas, "Thumbnail Settings", 0);
    ow = e_widget_check_add(evas, "Generate thumbnail from screenshot", 
@@ -275,11 +275,12 @@ _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    return 1;
 }
 
+/*!
+ * @param data A Evas_Object to chain together with the checkbox
+ * @param obj A Evas_Object checkbox created with e_widget_check_add()
+ */
 static void
-_cb_launch_check(void *data, Evas_Object *obj)
+_cb_disable_check(void *data, Evas_Object *obj)
 {
-  int checked = 0;
-
-   checked = e_widget_check_checked_get(obj);
-   e_widget_disabled_set(data, !checked);
+   e_widget_disabled_set((Evas_Object*) data, !e_widget_check_checked_get(obj));
 }
