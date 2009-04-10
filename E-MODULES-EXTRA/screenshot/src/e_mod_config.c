@@ -282,5 +282,6 @@ _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _cb_disable_check(void *data, Evas_Object *obj)
 {
-   e_widget_disabled_set((Evas_Object*) data, !e_widget_check_checked_get(obj));
+   e_widget_disabled_set((Evas_Object *) data, 
+                         !e_widget_check_checked_get(obj));
 }
