@@ -21,7 +21,6 @@ cdef class SoftwareX11_16(BaseX11):
     """X11 window using software render optimized for 16 bits-per-pixel.
 
     @ivar window: X11 window id.
-    @ivar subwindow: X11 sub-window id.
     @ivar direct_resize: if direct resize is enabled or not.
     """
     def __init__(self, char *display=NULL, long parent_xid=0, int x=0, int y=0,
@@ -43,14 +42,6 @@ cdef class SoftwareX11_16(BaseX11):
     property window:
         def __get__(self):
             return self.window_get()
-
-    def subwindow_get(self):
-        "@rtype: int"
-        return ecore_evas_software_x11_16_subwindow_get(self.obj)
-
-    property subwindow:
-        def __get__(self):
-            return self.subwindow_get()
 
     def direct_resize_set(self, int on):
         ecore_evas_software_x11_16_direct_resize_set(self.obj, on)
