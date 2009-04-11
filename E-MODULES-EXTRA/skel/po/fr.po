@@ -1,0 +1,50 @@
+# Spanish translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Paco Molinero <paco@byasl.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Skeleton module (e17)\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-04-11 17:57+0400\n"
+"PO-Revision-Date: 2009-04-11 19:01+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: src/e_mod_config.c:39
+msgid "Skeleton Module"
+msgstr "Module Squelette"
+
+#: src/e_mod_config.c:79
+msgid "General"
+msgstr "Général"
+
+#: src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "Utiliser Switch 1"
+
+#: src/e_mod_main.c:107
+msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "La configuration du module Squelette a dû être mise à jour. Votre ancienne<br>configuration a été supprimée et de nouveaux paramètres par<br>défaut sont en place. Ceci risque d'arriver en phase de<br>développement, aussi est-il inutile de faire un rapport de bogue.<br>Cela signifie simplement que le module a besoin<br>de cette mise à niveau pour être à nouveau fonctionnel.<br>Vous pouvez maintenant tout reconfigurer selon votre goût.<br>Désolé pour la gêne occasionnée.<br>"
+
+#: src/e_mod_main.c:127
+msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "La configuration du module Squelette est PLUS RÉCENTE que la version du module.<br>C'est vraiment étonnant. Cela ne devrait pas se produire à<br>moins que vous n'ayez installé une version antérieure ou copié<br>la configuration depuis une machine sur laquelle une version<br>plus récente était en cours. Ce n'est pas bon et, par<br>mesure de précaution, votre configuration a été<br>remise à zéro. Désolé pour le désagrément.<br>"
+
+#: src/e_mod_main.c:294
+msgid "Skeleton"
+msgstr "Squelette"
+
+#: src/e_mod_main.c:377
+msgid "Skeleton Configuration Updated"
+msgstr "Configuration de Squelette à jour"
+
+#: src/e_mod_main.c:434
+msgid "Configuration"
+msgstr "Configuration"
+

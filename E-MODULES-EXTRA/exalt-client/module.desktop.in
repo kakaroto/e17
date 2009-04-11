@@ -6,6 +6,7 @@ Icon=e-module-exalt
 Comment=<hilight>exalt Module</hilight>
 Comment[it]=<hilight>Modulo exalt</hilight>
 Comment[el]=<hilight>Άρθρωμα exalt</hilight>
+Comment[fr]=<hilight>Module exalt</hilight>
 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system
