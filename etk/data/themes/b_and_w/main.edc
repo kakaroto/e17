@@ -319,42 +319,18 @@ parts { \
 		description { state: "active" 0.0; \
 			rel1 { \
 				relative: 0.0 0.0; \
-				offset: 10 10; \
+				offset: 5 5; \
 				to: "button_rect"; \
 			} \
 			rel2 { \
 				relative: 1.0 1.0; \
-				offset: -10 -10; \
-				to: "button_rect"; \
-			} \
-		} \
-		description { state: "down" 0.0; \
-			rel1 { \
-				relative: 0.0 0.0; \
-				offset: 11 11; \
-				to: "button_rect"; \
-			} \
-			rel2 { \
-				relative: 1.0 1.0; \
-				offset: -9 -9; \
+				offset: -5 -5; \
 				to: "button_rect"; \
 			} \
 		} \
 	} \
 } \
 programs { \
-	program { name: "button_pressed"; \
-		signal: "etk,state,pressed"; \
-		source: "etk"; \
-		action: STATE_SET "down" 0.0; \
-		target: "etk.swallow.content"; \
-	} \
-	program { name: "button_released"; \
-		signal: "etk,state,released"; \
-		source: "etk"; \
-		action: STATE_SET "active" 0.0; \
-		target: "etk.swallow.content"; \
-	} \
 	program { name: "button_enter"; \
 		signal: "etk,state,enter"; \
 		source: "etk"; \
@@ -1458,6 +1434,12 @@ group { name: "etk/htoolbar/tool_button/label";
 			type: TEXTBLOCK;
 			description { state: "default" 0.0;
 				align: 0.0 0.5;
+				rel1 {
+					offset: -2 0;
+				}
+				rel1 {
+					offset: 1 2;
+				}
 				text {
 					style: "Toolbutton";
 					min: 1 1;
