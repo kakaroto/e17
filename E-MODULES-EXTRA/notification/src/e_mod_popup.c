@@ -48,15 +48,21 @@ notification_popup_notify(E_Notification *n,
 
   if (replaces_id && (popup = _notification_popup_find(replaces_id))) 
     {
-      char nl[] = "\n";
       e_notification_ref(n);
       if (popup->notif)
       {
-        char *body_old = e_notification_body_get(popup->notif);
-        char *body_new= e_notification_body_get(n);
-        body_new = strcat(strcat(body_old, nl), body_new);
-        e_notification_body_set(n, body_new);
-        e_notification_unref(popup->notif);
+        const char *body_old = e_notification_body_get(popup->notif);
+        const char *body_new = e_notification_body_get(n);
+	char *body_final;
+	int body_old_len, body_new_len;
+
+	body_old_len = strlen(body_old);
+	body_new_len = strlen(body_new);
+        body_final = alloca(body_old_len + body_new_len + 2);
+	sprintf(body_final, "%s\n%s", body_old, body_new);
+        e_notification_body_set(n, body_final);
+
+	e_notification_unref(popup->notif);
       }
       popup->notif = n;
       edje_object_signal_emit(popup->theme, "notification,del", "notification");
