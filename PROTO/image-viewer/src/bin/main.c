@@ -1,11 +1,14 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
  */
+#include <Eet.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Elementary.h>
 
 #include "config.h"
+
+#define CONFIG_VERSION 1
 
 /* Undef until icon_theme is exposed */
 #undef HAVE_ENLIGHTENMENT
@@ -30,7 +33,13 @@ typedef enum _IV_Image_Dest {
      IMAGE_PREV
 } IV_Image_Dest;
 
+typedef enum _IV_Image_Bg {
+     IMAGE_BG_BLACK,
+     IMAGE_BG_CHECKERS
+} IV_Image_Bg;
+
 typedef struct _IV IV;
+typedef struct _IV_Config IV_Config;
 
 struct _IV
 {
@@ -61,23 +70,30 @@ struct _IV
 	Eina_Bool slideshow : 1;
    } flags;
 
-   struct {
-	double       img_scale;
-	double	     timeout;
-	IV_Image_Fit fit;
-   } config;
+
+   IV_Config            *config;
+   Eet_Data_Descriptor  *config_edd;
+   Ecore_Timer          *config_save;
+};
+
+struct _IV_Config {
+     int          config_version;
+
+     double       img_scale;
+     double	  slideshow_delay;
+     IV_Image_Fit fit;
+     IV_Image_Bg  image_bg;
 };
 
 static void
 image_configure(IV *iv)
 {
-   int w, h, ww, hh;
-   if (iv->config.fit == ZOOM)
+   if (iv->config->fit == ZOOM)
      {
 	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
 	elm_image_smooth_set(iv->gui.img, EINA_FALSE);
 	elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
-	elm_widget_scale_set(iv->gui.img, iv->config.img_scale);
+	elm_widget_scale_set(iv->gui.img, iv->config->img_scale);
      }
    else
      {
@@ -85,16 +101,13 @@ image_configure(IV *iv)
 	elm_image_smooth_set(iv->gui.img, EINA_TRUE);
 	elm_widget_scale_set(iv->gui.img, 1.0);
 
-	if (iv->config.fit == PAN)
+	if (iv->config->fit == PAN)
 	  elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
-	else if (iv->config.fit == FIT)
+	else if (iv->config->fit == FIT)
 	  elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_TRUE);
 	else
 	  elm_image_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
      }
-
-   evas_object_geometry_get(iv->gui.scroller, NULL, NULL, &w, &h);
-   evas_object_geometry_get(iv->gui.img, NULL, NULL, &ww, &hh);
 }
 
 Eina_List *
@@ -109,12 +122,115 @@ rewind_list(Eina_List *list)
    return l;
 }
 
+static void
+set_image_bg_style(IV *iv)
+{
+   switch(iv->config->image_bg)
+     {
+      case IMAGE_BG_BLACK:
+	 elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/black");
+	 break;
+      case IMAGE_BG_CHECKERS:
+	 elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/checkers");
+	 break;
+     }
+}
+
+static int
+on_config_save_tick(void *data)
+{
+   IV *iv = data;
+   Eet_File *ef;
+   char buf[4096], buf2[4096];
+   int ret;
+
+   snprintf(buf, sizeof(buf), "%s/.config/image-viewer/image-viewer.cfg", getenv("HOME"));
+   snprintf(buf2, sizeof(buf2), "%s.tmp", buf);
+
+   ef = eet_open(buf2, EET_FILE_MODE_WRITE);
+   if (ef)
+     {
+        eet_data_write(ef, iv->config_edd, "config", iv->config, 1);
+
+        if (eet_close(ef))
+          goto save_end;
+
+        ret = ecore_file_mv(buf2, buf);
+        if (!ret)
+          goto save_end;
+
+        ecore_file_unlink(buf2);
+     }
+
+save_end:
+   if (iv->config_save)
+     ecore_timer_del(iv->config_save);
+   iv->config_save = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+config_save(IV *iv)
+{
+   if (iv->config_save)
+     ecore_timer_del(iv->config_save);
+   iv->config_save = ecore_timer_add(30, on_config_save_tick, iv);
+}
+
+static void
+config_free(IV *iv)
+{
+   free(iv->config);
+   iv->config = NULL;
+}
+
+static int
+config_load(IV *iv)
+{
+   Eet_File *ef;
+   char buf[4096], buf2[4096];
+
+   snprintf(buf2, sizeof(buf2), "%s/.config/image-viewer", getenv("HOME"));
+   ecore_file_mkpath(buf2);
+   snprintf(buf, sizeof(buf), "%s/image-viewer.cfg", buf2);
+
+   ef = eet_open(buf, EET_FILE_MODE_READ);
+   if (!ef)
+     {
+        config_free(iv);
+        iv->config = calloc(1, sizeof(IV_Config));
+        return 0;
+     }
+
+   iv->config = eet_data_read(ef, iv->config_edd, "config");
+   eet_close(ef);
+
+   if (iv->config->config_version > CONFIG_VERSION)
+     {
+        config_free(iv);
+        iv->config = calloc(1, sizeof(IV_Config));
+        return 0;
+     }
+
+   if (iv->config->config_version < CONFIG_VERSION)
+     return -1;
+
+   return 1;
+}
+
+static void
+iv_exit(IV *iv)
+{
+   on_config_save_tick(iv);
+   elm_exit();
+}
+
 // generic callback - delete any window (close button/remove) and it just exits
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
 {
    /* called when my_win_main is requested to be deleted */
-   elm_exit(); /* exit the program's main loop that runs in elm_run() */
+   iv_exit(data); /* exit the program's main loop that runs in elm_run() */
 }
 
 static void
@@ -130,7 +246,7 @@ on_image_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
 
-   if (iv->config.fit == PAN || iv->config.fit == ZOOM)
+   if (iv->config->fit == PAN || iv->config->fit == ZOOM)
      return;
 
    iv->flags.next = EINA_TRUE;
@@ -142,7 +258,8 @@ on_settings_slideshow_delay_change(void *data, Evas_Object *obj, void *event_inf
 {
    IV *iv = data;
 
-   iv->config.timeout = elm_slider_value_get(obj);
+   iv->config->slideshow_delay = elm_slider_value_get(obj);
+   config_save(iv);
 }
 
 static void
@@ -151,9 +268,12 @@ on_settings_bg_toggle_change(void *data, Evas_Object *obj, void *event_info)
    IV *iv = data;
 
    if (elm_toggle_state_get(obj))
-     elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/checkers");
+     iv->config->image_bg = IMAGE_BG_CHECKERS;
    else
-     elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/black");
+     iv->config->image_bg = IMAGE_BG_BLACK;
+
+   set_image_bg_style(iv);
+   config_save(iv);
 }
 
 static void
@@ -165,33 +285,40 @@ on_settings_close_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-zoom_increase(IV *iv)
+zoom_set(IV *iv, Eina_Bool increase)
 {
-   if (iv->config.img_scale >= 1)
-     iv->config.img_scale += 1.0;
+   if (iv->config->fit != ZOOM)
+     {
+	int iw, w;
+	evas_object_size_hint_max_get(iv->gui.img, &iw, NULL);
+	evas_object_geometry_get(iv->gui.img, NULL, NULL, &w, NULL);
+
+	iv->config->img_scale = (double) w / (double) iw;
+     }
+
+   if (iv->config->img_scale >= 1)
+     {
+	if (increase)
+	  iv->config->img_scale += 0.5;
+	else
+	  iv->config->img_scale -= 0.5;
+     }
    else
-     iv->config.img_scale += 0.05;
+     {
+	if (increase)
+	  iv->config->img_scale += 0.05;
+	else
+	  iv->config->img_scale -= 0.05;
+     }
 
-   if (iv->config.img_scale > 0.96 && iv->config.img_scale < 2.0)
-     iv->config.img_scale = 1.0;
+   if (iv->config->img_scale > 0.96 && iv->config->img_scale < 1.5)
+     iv->config->img_scale = 1.0;
+   else if (iv->config->img_scale < 0.05)
+     iv->config->img_scale = 0.05;
 
-   iv->config.fit = ZOOM;
+   iv->config->fit = ZOOM;
    iv->flags.fit_changed = EINA_TRUE;
-}
-
-static void
-zoom_decrease(IV *iv)
-{
-   if (iv->config.img_scale > 1)
-     iv->config.img_scale -= 1.0;
-   else
-     iv->config.img_scale -= 0.2;
-
-   if (iv->config.img_scale > 0.9 && iv->config.img_scale < 2.0)
-     iv->config.img_scale = 1.0;
-
-   iv->config.fit = ZOOM;
-   iv->flags.fit_changed = EINA_TRUE;
+   config_save(iv);
 }
 
 static void
@@ -494,7 +621,7 @@ on_idle_enterer(void *data)
    if (iv->flags.fit_changed)
      {
 	iv->flags.fit_changed = EINA_FALSE;
-	switch (iv->config.fit)
+	switch (iv->config->fit)
 	  {
 	   case PAN:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Pan");
@@ -536,7 +663,7 @@ slideshow_on(IV *iv)
    edje_object_signal_emit(elm_layout_edje_get(iv->gui.controls),
 			   "iv,state,slideshow_off", "iv");
 #endif
-   iv->slideshow_timer = ecore_timer_add(iv->config.timeout, on_slideshow_tick, iv);
+   iv->slideshow_timer = ecore_timer_add(iv->config->slideshow_delay, on_slideshow_tick, iv);
    iv->flags.slideshow = EINA_TRUE;
 }
 
@@ -588,7 +715,7 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	elm_slider_indicator_format_set(o, "%.2f");
 	elm_slider_min_max_set(o, 1.0, 10.0);
 	elm_slider_unit_format_set(o, "%1.1f seconds");
-	elm_slider_value_set(o, iv->config.timeout);
+	elm_slider_value_set(o, iv->config->slideshow_delay);
 	evas_object_smart_callback_add(o, "delay,changed",
 				       on_settings_slideshow_delay_change, iv);
 	evas_object_show(o);
@@ -596,8 +723,11 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 
 	o = elm_toggle_add(bx);
 	elm_toggle_label_set(o, "Image background");
-	elm_toggle_states_labels_set(o, "chechers", "black");
-	elm_toggle_state_set(o, 1);
+	elm_toggle_states_labels_set(o, "checkers", "black");
+        if (iv->config->image_bg == IMAGE_BG_BLACK)
+          elm_toggle_state_set(o, 0);
+        else
+          elm_toggle_state_set(o, 1);
 	elm_box_pack_end(bx, o);
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_bg_toggle_change, iv);
@@ -635,7 +765,8 @@ on_hoversel_fs(void *data, Evas_Object *obj, void *event_info)
 
    if (!iv) return;
    iv->flags.fit_changed = EINA_TRUE;
-   iv->config.fit = FIT_SCALE;
+   iv->config->fit = FIT_SCALE;
+   config_save(iv);
 }
 
 static void
@@ -645,7 +776,8 @@ on_hoversel_f(void *data, Evas_Object *obj, void *event_info)
 
    if (!iv) return;
    iv->flags.fit_changed = EINA_TRUE;
-   iv->config.fit = FIT;
+   iv->config->fit = FIT;
+   config_save(iv);
 }
 
 static void
@@ -655,7 +787,8 @@ on_hoversel_p(void *data, Evas_Object *obj, void *event_info)
 
    if (!iv) return;
    iv->flags.fit_changed = EINA_TRUE;
-   iv->config.fit = PAN;
+   iv->config->fit = PAN;
+   config_save(iv);
 }
 
 static void
@@ -670,25 +803,28 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
    else if (!strcmp(ev->keyname, "Left"))
      iv->flags.prev = EINA_TRUE;
    else if (!strcmp(ev->keyname, "q") || ((!strcmp(ev->keyname, "Escape") && !iv->flags.fullscreen && !iv->flags.slideshow)))
-     elm_exit();
+     iv_exit(iv);
    else if (!strcmp(ev->keyname, "equal"))
-     zoom_increase(iv);
+     zoom_set(iv, EINA_TRUE);
    else if (!strcmp(ev->keyname, "minus"))
-     zoom_decrease(iv);
+     zoom_set(iv, EINA_FALSE);
    else if (!strcmp(ev->keyname, "1"))
      {
-	iv->config.fit = PAN;
+	iv->config->fit = PAN;
 	iv->flags.fit_changed = EINA_TRUE;
+	config_save(iv);
      }
    else if (!strcmp(ev->keyname, "2"))
      {
-	iv->config.fit = FIT;
+	iv->config->fit = FIT;
 	iv->flags.fit_changed = EINA_TRUE;
+	config_save(iv);
      }
    else if (!strcmp(ev->keyname, "3"))
      {
-	iv->config.fit = FIT_SCALE;
+	iv->config->fit = FIT_SCALE;
 	iv->flags.fit_changed = EINA_TRUE;
+	config_save(iv);
      }
 
    if (iv->flags.fullscreen)
@@ -726,16 +862,16 @@ create_main_win(IV *iv)
 
    o = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(o, "Image Viewer");
-   evas_object_smart_callback_add(o, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(o, "delete-request", on_win_del_req, iv);
    evas_object_resize(o, 200, 180);
    iv->gui.win = o;
 
    o = elm_bg_add(iv->gui.win);
-   elm_bg_file_set(o, buf, "iv/main/bg/checkers");
    elm_win_resize_object_add(iv->gui.win, o);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_show(o);
    iv->gui.bg = o;
+   set_image_bg_style(iv);
    
    /*
     * XXX: configurable themes
@@ -878,15 +1014,71 @@ iv_free(IV *iv)
 
    eina_stringshare_del(iv->theme_file);
 
+   config_free(iv);
+
    free(iv);
 }
 
-static void
-init_config(IV *iv)
+static Eina_Hash *
+eet_eina_hash_add_alloc(void *h, const void *key, void *data)
 {
-   iv->config.fit = FIT;
-   iv->config.img_scale = 1.0;
-   iv->config.timeout = 4.0;
+   Eina_Hash *hash = h;
+   if (!hash) hash = eina_hash_string_superfast_new(NULL);
+   if (!hash) return NULL;
+   eina_hash_add(hash, key, data);
+   return hash;
+}
+
+static void
+config_init(IV *iv)
+{
+   Eet_Data_Descriptor_Class eddc;
+   
+   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   eddc.func.mem_alloc = NULL;
+   eddc.func.mem_free = NULL;
+   eddc.func.str_alloc = (char *(*)(const char *)) eina_stringshare_add;
+   eddc.func.str_free = (void (*)(const char *)) eina_stringshare_del;
+   eddc.func.list_next = (void *(*)(void *)) eina_list_next;
+   eddc.func.list_append = (void *(*)(void *l, void *d)) eina_list_append;
+   eddc.func.list_data = (void *(*)(void *)) eina_list_data_get;
+   eddc.func.list_free = (void *(*)(void *)) eina_list_free;
+   eddc.func.hash_foreach =
+      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))
+      eina_hash_foreach;
+   eddc.func.hash_add = (void* (*) (void *, const char *, void *)) eet_eina_hash_add_alloc;
+   eddc.func.hash_free = (void  (*) (void *)) eina_hash_free;
+   eddc.name = "IV_Config";
+   eddc.size = sizeof(IV_Config);
+
+   iv->config_edd = eet_data_descriptor2_new(&eddc);
+#undef T
+#undef D
+#define T IV_Config 
+#define D iv->config_edd
+#define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
+   C_VAL(D, T, config_version, EET_T_INT);
+   C_VAL(D, T, img_scale, EET_T_DOUBLE);
+   C_VAL(D, T, slideshow_delay, EET_T_DOUBLE);
+   C_VAL(D, T, fit, EET_T_INT);
+   C_VAL(D, T, image_bg, EET_T_INT);
+
+   switch (config_load(iv))
+     {
+      case 0:
+         iv->config->fit = FIT;
+         iv->config->img_scale = 1.0;
+         iv->config->slideshow_delay = 4.0;
+         iv->config->image_bg = IMAGE_BG_BLACK;
+         break;
+      case -1:
+         /* Incremental additions */
+         iv->config->config_version = CONFIG_VERSION;
+         break;
+      default:
+         return;
+     }
+   config_save(iv);
 }
 
 EAPI int
@@ -896,7 +1088,7 @@ elm_main(int argc, char **argv)
    IV *iv;
    
    iv = calloc(1, sizeof(IV));
-   init_config(iv);
+   config_init(iv);
 
    for (i = 1; i < argc; i++)
      {
