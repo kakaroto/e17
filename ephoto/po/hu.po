@@ -2,19 +2,18 @@
 # This file is put in the public domain.
 #
 # Lisovszki  <lisovszki@gmail.com>, 2008.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: ephoto\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:28+0800\n"
-"PO-Revision-Date: 2008-02-02 18:45+0100\n"
-"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"PO-Revision-Date: 2009-03-22 15:28+0000\n"
+"Last-Translator: lisovszki <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: src/bin/ephoto_exif.c:95
 msgid "No Exif Data Exists"
@@ -42,27 +41,27 @@ msgstr "%'.1f GB"
 
 #: src/bin/ephoto_single_view.c:92
 msgid "Zoom In"
-msgstr ""
+msgstr "Nagyítás"
 
 #: src/bin/ephoto_single_view.c:100
 msgid "Zoom Out"
-msgstr ""
+msgstr "Kicsinyítés"
 
 #: src/bin/ephoto_single_view.c:108
 msgid "Rotate Left"
-msgstr ""
+msgstr "Balra forgatás"
 
 #: src/bin/ephoto_single_view.c:116
 msgid "Rotate Right"
-msgstr ""
+msgstr "Jobbra forgatás"
 
 #: src/bin/ephoto_single_view.c:124
 msgid "Flip Horizontally"
-msgstr ""
+msgstr "Vízszintes elforgatás"
 
 #: src/bin/ephoto_single_view.c:132
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Függőleges elforgatás"
 
 #: src/bin/ephoto_single_view.c:140
 msgid "Advanced Tools"
@@ -75,6 +74,9 @@ msgstr "Előző kép"
 #: src/bin/ephoto_single_view.c:156
 msgid "Next Image"
 msgstr "Következő kép"
+
+#~ msgid "Standard Tools"
+#~ msgstr "Szabványos eszközök"
 
 #~ msgid "Name"
 #~ msgstr "Név"
@@ -94,9 +96,6 @@ msgstr "Következő kép"
 #~ msgid "Single View"
 #~ msgstr "Egyablakos nézet"
 
-#~ msgid "Move to edit view"
-#~ msgstr "Szerkesztői nézet"
-
 #~ msgid "You do not have libexif 0.6.13"
 #~ msgstr "Nincs libexif 0.6.13-ad"
 
@@ -109,5 +108,5 @@ msgstr "Következő kép"
 #~ msgid "Start a Slideshow"
 #~ msgstr "Diavetítés indítása"
 
-#~ msgid "Standard Tools"
-#~ msgstr "Szabványos eszközök"
+#~ msgid "Move to edit view"
+#~ msgstr "Szerkesztői nézet"

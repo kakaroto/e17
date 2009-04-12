@@ -3,14 +3,12 @@ msgstr ""
 "Project-Id-Version: ePhoto\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:28+0800\n"
-"PO-Revision-Date: 2008-03-15 20:59+0200\n"
-"Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
+"PO-Revision-Date: 2009-01-19 08:45+0000\n"
+"Last-Translator: Danny Moshnakov <Unknown>\n"
 "Language-Team: russian <ru@li.org> <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Russian\n"
-"X-Poedit-Country: RUSSIAN FEDERATION\n"
 
 #: src/bin/ephoto_exif.c:95
 msgid "No Exif Data Exists"
@@ -72,6 +70,18 @@ msgstr "Предыдущее Изображение"
 msgid "Next Image"
 msgstr "Следующее Изображение"
 
+#~ msgid "Standard Tools"
+#~ msgstr "Стандартные Инструменты"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Pixels"
+#~ msgstr "Точки растра"
+
+#~ msgid "Size"
+#~ msgstr "Размер"
+
 #~ msgid "Normal View"
 #~ msgstr "Обычный Вид"
 
@@ -80,9 +90,6 @@ msgstr "Следующее Изображение"
 
 #~ msgid "Single View"
 #~ msgstr "Одиночный Вид"
-
-#~ msgid "Move to edit view"
-#~ msgstr "Двигать для редактирования вида"
 
 #~ msgid "You do not have libexif 0.6.13"
 #~ msgstr "У вас нет libexif 0.6.13"
@@ -96,14 +103,5 @@ msgstr "Следующее Изображение"
 #~ msgid "Start a Slideshow"
 #~ msgstr "Начать Показ Слайдов"
 
-#~ msgid "Name"
-#~ msgstr "Имя"
-
-#~ msgid "Pixels"
-#~ msgstr "Точки растра"
-
-#~ msgid "Size"
-#~ msgstr "Размер"
-
-#~ msgid "Standard Tools"
-#~ msgstr "Стандартные Инструменты"
+#~ msgid "Move to edit view"
+#~ msgstr "Двигать для редактирования вида"
