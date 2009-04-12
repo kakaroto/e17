@@ -1,14 +1,15 @@
 # Spanish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 # chilicuil <Unknown>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-11-29 05:16+0000\n"
-"Last-Translator: chilicuil <Unknown>\n"
+"POT-Creation-Date: 2009-02-23 18:44+0800\n"
+"PO-Revision-Date: 2009-04-11 13:57+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,28 +17,28 @@ msgstr ""
 
 #: ../e_mod_main.c:129
 msgid "Cpu"
-msgstr "Cpu"
+msgstr "Procesador"
 
 #: ../e_mod_main.c:363
 msgid "Fast (0.5 sec)"
-msgstr "Rápido (0.5 seg)"
+msgstr "Rápido (0.5 s)"
 
 #: ../e_mod_main.c:370
 msgid "Medium (1 sec)"
-msgstr "Medio (1 seg)"
+msgstr "Medio (1 s)"
 
 #: ../e_mod_main.c:377
 msgid "Normal (2 sec)"
-msgstr "Normal (2 seg)"
+msgstr "Normal (2 s)"
 
 #: ../e_mod_main.c:384
 msgid "Slow (5 sec)"
-msgstr "Lento (5 seg)"
+msgstr "Lento (5 s)"
 
 #: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
-msgstr "Muy lento (30 seg)"
+msgstr "Muy lento (30 s)"
 
 #: ../e_mod_main.c:402
 msgid "Time Between Updates"
-msgstr "Tiempo entre refrescos"
+msgstr "Tasa de actualización"

@@ -1,0 +1,23 @@
+# Brazilian Portuguese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-02-23 18:46+0800\n"
+"PO-Revision-Date: 2009-03-29 04:54+0000\n"
+"Last-Translator: Kemel <Unknown>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_main.c:68
+msgid "Location:"
+msgstr "Local:"
+
+#: ../src/e_mod_main.c:137
+msgid "EFM Path"
+msgstr "Caminho EFM"

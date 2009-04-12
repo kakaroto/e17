@@ -1,15 +1,15 @@
-# Slovak translation for enlightenment
+# Brazilian Portuguese translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# kayle.sk <webmaster@kayle.sk>, 2009.
+# Ricardo Ichizo <n1ghtcr4wler@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-02-23 18:41+0800\n"
-"PO-Revision-Date: 2009-03-24 13:11+0000\n"
-"Last-Translator: helix84 <Unknown>\n"
-"Language-Team: Slovak <sk@li.org>\n"
+"PO-Revision-Date: 2009-02-26 23:43+0000\n"
+"Last-Translator: Ricardo Ichizo <n1ghtcr4wler@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,35 +17,35 @@ msgstr ""
 
 #: ../e_mod_config.c:55
 msgid "Alarm Configuration"
-msgstr "Konfigurácia budíka"
+msgstr "Configuração do Alarme"
 
 #: ../e_mod_config.c:155 ../e_mod_main.c:187
 msgid "Alarm"
-msgstr "Budík"
+msgstr "Alarme"
 
 #: ../e_mod_config.c:157 ../e_mod_config_alarm.c:190
 msgid "Active"
-msgstr "Aktívny"
+msgstr "Ativar"
 
 #: ../e_mod_config.c:166
 msgid "Add"
-msgstr "Pridať"
+msgstr "Adicionar"
 
 #: ../e_mod_config.c:168
 msgid "Delete"
-msgstr "Odstrániť"
+msgstr "Remover"
 
 #: ../e_mod_config.c:170
 msgid "Configure"
-msgstr "Nastaviť"
+msgstr "Configurar"
 
 #: ../e_mod_config.c:172
 msgid "Duplicate"
-msgstr "Duplikovať"
+msgstr "Duplicar"
 
 #: ../e_mod_config.c:226
 msgid "Alarm Options"
-msgstr "Možnosti Budíka"
+msgstr "Opções de Alarme"
 
 #. 
 #. ob = e_widget_label_add(evas, D_("Time format"));
@@ -58,125 +58,125 @@ msgstr "Možnosti Budíka"
 #. 
 #: ../e_mod_config.c:238
 msgid "Show next alarm"
-msgstr "Zobraziť ďalší budík"
+msgstr "Mostrar próximo alarme"
 
 #: ../e_mod_config.c:244
 msgid "Alarms Defaults"
-msgstr "Predvolené hodnoty Budíka"
+msgstr "Padrões de Alarme"
 
 #: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
 msgid "Open popup"
-msgstr "Otvoriť vyskakovacie okno"
+msgstr "Abrir popup"
 
 #: ../e_mod_config.c:249
 msgid "Run program"
-msgstr "Spustiť program"
+msgstr "Executar programa"
 
 #: ../e_mod_config.c:256
 msgid "Auto-Remove alarms"
-msgstr "Automaticky odstrániť budíky"
+msgstr "Remover alarmes automaticamente"
 
 #: ../e_mod_config_alarm.c:71
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "Konfigurácia Budíka"
+msgstr "Configuração de Alarme: Configure um alarme"
 
 #: ../e_mod_config_alarm.c:188
 msgid "Informations"
-msgstr "Informácie"
+msgstr "Informações"
 
 #: ../e_mod_config_alarm.c:192
 msgid "Name"
-msgstr "Názov"
+msgstr "Nome"
 
 #: ../e_mod_config_alarm.c:197
 msgid "Description"
-msgstr "Popis"
+msgstr "Descrição"
 
 #: ../e_mod_config_alarm.c:207
 msgid "Schedule"
-msgstr "Plán"
+msgstr "Agendar"
 
 #: ../e_mod_config_alarm.c:209
 #, c-format
 msgid "%1.0f hour"
-msgstr "%1.0f hodín"
+msgstr "%1.0f hora"
 
 #: ../e_mod_config_alarm.c:212
 #, c-format
 msgid "%1.0f minute"
-msgstr "%1.0f minút"
+msgstr "%1.0f minuto"
 
 #: ../e_mod_config_alarm.c:218
 msgid "Days of the week"
-msgstr "Dni v týždni"
+msgstr "Dias da semana"
 
 #: ../e_mod_config_alarm.c:222
 msgid "Monday"
-msgstr "Pondelok"
+msgstr "Segunda-feira"
 
 #: ../e_mod_config_alarm.c:224
 msgid "Tuesday"
-msgstr "Utorok"
+msgstr "Terça-feira"
 
 #: ../e_mod_config_alarm.c:226
 msgid "Wenesday"
-msgstr "Streda"
+msgstr "Quarta-feira"
 
 #: ../e_mod_config_alarm.c:228
 msgid "Thursday"
-msgstr "Štvrtok"
+msgstr "Quinta-feira"
 
 #: ../e_mod_config_alarm.c:230
 msgid "Friday"
-msgstr "Piatok"
+msgstr "Sexta-feira"
 
 #: ../e_mod_config_alarm.c:232
 msgid "Saturday"
-msgstr "Sobota"
+msgstr "Sábado"
 
 #: ../e_mod_config_alarm.c:234
 msgid "Sunday"
-msgstr "Nedeľa"
+msgstr "Domingo"
 
 #: ../e_mod_config_alarm.c:239
 msgid "One day"
-msgstr "Jeden deň"
+msgstr "Um dia"
 
 #: ../e_mod_config_alarm.c:243
 msgid "Date (YYYY/MM/DD)"
-msgstr "Dátum (RRRR/MM/DD)"
+msgstr "Data (AAAA/MM/DD)"
 
 #: ../e_mod_config_alarm.c:248
 msgid "Today"
-msgstr "Dnes"
+msgstr "Hoje"
 
 #: ../e_mod_config_alarm.c:250
 msgid "Tomorrow"
-msgstr "Zajtra"
+msgstr "Amanhã"
 
 #: ../e_mod_config_alarm.c:288
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
 "in the informations / schedule of your alarm"
 msgstr ""
-"<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Vyskytla sa chyba v "
-"informáciách / pláne vášho budíka"
+"<hilight>Erro, o alarme não foi adicionado !</hilight><br><br>Há um erro nas "
+"informações / programa do seu alarme"
 
 #: ../e_mod_config_alarm.c:293
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
 "a name for the alarm"
 msgstr ""
-"<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Musíte zadať názov "
-"budíka"
+"<hilight>Erro, o alarme não foi adicionado !<hilight><br><br>Você deve "
+"preencher um nome para o alarme"
 
 #: ../e_mod_config_alarm.c:298
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
 "select at least one day in the week"
 msgstr ""
-"<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Musíte vybrať aspoň "
-"jeden deň v týždni"
+"<hilight>Erro, o alarme não foi adicionado !<hilight><br><br>Você deve "
+"selecionar pelo menos um dia na semana"
 
 #: ../e_mod_config_alarm.c:303
 msgid ""
@@ -185,63 +185,63 @@ msgid ""
 "format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
 msgstr ""
-"<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Dátum, ktorý ste "
-"zadali pre budík má nesprávnu syntax<br><br>Musíte dodržať nasledovný formát "
-":<br> RRRR/MM/DD<br>RRRR je rok v tvare 4 číslic<br>MM je mesiac v tvare 2 "
-"číslic<br>DD je deň v tvare 2 číslic<br>"
+"<hilight>Erro, o alarme não foi adicionado !<hilight><br><br>A data que você "
+"inseriu para o alarme está com a sintaxe incorreta<br><br>Você deve "
+"respeitar este formato :<br> AAAA/MM/DD<br>AAAA é o ano em 4 dígitos<br>MM é "
+"o mês em 2 dígitos<br>DD é o dia em 2 dígitos<br>"
 
 #: ../e_mod_config_alarm.c:313
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered is before now"
 msgstr ""
-"<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Dátum, ktorý ste "
-"vybrali je pred dneškom"
+"<hilight>Erro, o alarme não foi adicionado !<hilight><br><br>A data que você "
+"inseriu é anterior à data atual"
 
 #: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
 msgid "Alarm Module Error"
-msgstr "Chyba modulu Budík"
+msgstr "Erro no Módulo Alarme"
 
 #: ../e_mod_config_alarm.c:354 ../e_mod_config_alarm.c:442
 msgid "Test this alarm"
-msgstr "Otestovať tento budík"
+msgstr "Testar este alarme"
 
 #: ../e_mod_config_alarm.c:382
 msgid "Ring Options"
-msgstr "Možnosti zvonenia"
+msgstr "Opções de Toque"
 
 #: ../e_mod_config_alarm.c:384
 msgid "Remove alarm"
-msgstr "Odstrániť budík"
+msgstr "Remover alarme"
 
 #: ../e_mod_config_alarm.c:391 ../e_mod_config_alarm.c:411
 msgid "No [default]"
-msgstr "No [predvolené]"
+msgstr "Não [padrão]"
 
 #: ../e_mod_config_alarm.c:393 ../e_mod_config_alarm.c:413
 msgid "Yes"
-msgstr "Áno"
+msgstr "Sim"
 
 #: ../e_mod_config_alarm.c:398 ../e_mod_config_alarm.c:418
 #: ../e_mod_config_alarm.c:429
 msgid "No"
-msgstr "Nie"
+msgstr "Não"
 
 #: ../e_mod_config_alarm.c:400 ../e_mod_config_alarm.c:420
 msgid "Yes [default]"
-msgstr "Áno [predvolené]"
+msgstr "Sim [padrão]"
 
 #: ../e_mod_config_alarm.c:424
 msgid "Run a program"
-msgstr "Spustiť program"
+msgstr "Executar um programa"
 
 #: ../e_mod_config_alarm.c:431
 msgid "Run default one"
-msgstr "Spustiť predvolené"
+msgstr "Executar como padrão"
 
 #: ../e_mod_config_alarm.c:433
 msgid "Run this program"
-msgstr "Spustiť tento program"
+msgstr "Executar este programa"
 
 #: ../e_mod_config_alarm.c:478
 msgid ""
@@ -249,53 +249,53 @@ msgid ""
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
-"<hilight>Test budíka prebehol ÚSPEŠNE!</hilight><br><br>Ale NEZABUDNITE "
-"AKTIVOVAŤ budíky<br>zaškrtávacím tlačidlom „Aktívny“<br>v hlavnom "
-"konfiguračnom paneli Budíka."
+"<hilight>SUCESSO no teste do alarme!</hilight><br><br>Não se esqueça de "
+"ATIVAR os alarmes<br>através do botão 'Ativar'<br> no painel principal de "
+"configuração do Alarme"
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr "<hilight>Test budíka prebehol ÚSPEŠNE!</hilight>"
+msgstr "<hilight>SUCESSO no teste do alarme!</hilight>"
 
 #: ../e_mod_config_alarm.c:489
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>Test budíka ZLYHAL!</hilight>"
+msgstr "<hilight>FALHA no teste do alarme!</hilight>"
 
 #: ../e_mod_config_alarm.c:491
 msgid "Alarm Module Test Report"
-msgstr "Správa z testu budíka"
+msgstr "Relatório de Teste do Módulo Alarme"
 
 #: ../e_mod_main.c:398
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
-msgstr "<hilight>Budík : %s</hilight><br><br>%s"
+msgstr "<hilight>Alarme: %s</hilight><br><br>%s"
 
 #: ../e_mod_main.c:401
 msgid "Alarm Module Popup"
-msgstr "Vyskakovací dialóg modulu Budíka"
+msgstr "Popup do Módulo Alarme"
 
 #: ../e_mod_main.c:424
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
-"<hilight>Operácia zlyhala!</hilight><br><br>Budík nedokázal spustiť určený "
-"program"
+"<hilight>Falhou !</hilight><br><br>O alarme não pode disparar o programa que "
+"você especificou"
 
 #: ../e_mod_main.c:658 ../e_mod_main.c:837
 #, c-format
 msgid "Snooze %s"
-msgstr "Odložiť %s"
+msgstr "Adiar em %s"
 
 #: ../e_mod_main.c:662
 #, c-format
 msgid "%1.0f hours"
-msgstr "%1.0f hodín"
+msgstr "%1.0f horas"
 
 #: ../e_mod_main.c:665
 #, c-format
 msgid "%1.0f minutes"
-msgstr "%1.0f minút"
+msgstr "%1.0f minutos"
 
 #: ../e_mod_main.c:672
 msgid "Ok"
@@ -303,24 +303,24 @@ msgstr "Ok"
 
 #: ../e_mod_main.c:673
 msgid "Close"
-msgstr "Zavrieť"
+msgstr "Fechar"
 
 #: ../e_mod_main.c:845
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
-msgstr "Odložiť %.14s of %.2d:%.2d"
+msgstr "Adiar em %.14s de %.2d:%.2d"
 
 #: ../e_mod_main.c:859
 msgid "Snooze (No alarm to delay)"
-msgstr "Odložiť (neexistuje budík, ktorý možno odložiť)"
+msgstr "Adiar (sem alarme para atrasar)"
 
 #: ../e_mod_main.c:866
 msgid "Add an alarm"
-msgstr "Pridať budík"
+msgstr "Adicionar um alarme"
 
 #: ../e_mod_main.c:873
 msgid "Configuration"
-msgstr "Konfigurácia"
+msgstr "Configuração"
 
 #: ../e_mod_main.c:1054
 #, c-format
@@ -329,13 +329,13 @@ msgid ""
 "configuration of alarm module<br>has been upgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Modul Budík : Konfigurácia aktualizovaná</hilight><br><br>Vaša "
-"konfigurácia modulu Budík<br>bola aktualizovaná<br>Vaše nastavenia a budíky "
-"boli odstránené<br>Ospravedlňujeme sa za nepríjemnosti<br><br>(%d -> %d)"
+"<hilight>Módulo Alarme: Configuração Atualizada</hilight><br><br>Sua "
+"configuração do módulo Alarme<br>foi atualizada<br>Suas configurações e "
+"alarmes foram removidos<br>Desculpe pela inconveniência<br><br>(%d->%d)"
 
 #: ../e_mod_main.c:1060 ../e_mod_main.c:1074
 msgid "Alarm Module version "
-msgstr "Verzia modulu Budík "
+msgstr "Versão do módulo Alarme "
 
 #: ../e_mod_main.c:1068
 #, c-format
@@ -344,7 +344,7 @@ msgid ""
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>Modul Budík : Konfigurácia bola prevedená na nižšiu "
-"verziu</hilight><br><br>Vaša konfigurácia modulu Budík<br>bola prevedená na "
-"nižšiu verziu<br>Vaše nastavenia a budíky boli odstránené<br>Ospravedlňujeme "
-"sa za nepríjemnosti<br><br>(%d -> %d)"
+"<hilight>Módulo Alarme: Configuração Desatualizada</hilight><br><br>Sua "
+"configuração para o módulo Alarme<br>está desatualizada<br>Suas "
+"configurações e alarmes foram removidos<br>Desculpe pela "
+"inconveniência<br><br>(%d->%d)"
