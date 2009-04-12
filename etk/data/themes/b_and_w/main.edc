@@ -673,30 +673,6 @@ styles {
 		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
 		"color=#ffffffFF style=soft_shadow shadow_color=#00000064", /* Normal style */
 		"", "", "", "") /* Other styles */
-   
-	/** Style for the label of a disabled button (and for inactive tab) */
-	STYLE("Button Disabled",
-		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
-		"color=#00000080", /* Normal style */
-		"", "", "", "") /* Other styles */
-      
-	/** Style for the label of a disabled toggled button */
-	STYLE("Button Disabled Toggled",
-		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
-		"color=#00000080", /* Normal style */
-		"", "", "", "") /* Other styles */
-   
-	/** Default style for the label of a check/radio button */
-	STYLE("Check Default",
-		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
-		"color=#000000FF", /* Normal style */
-		"", "", "", "") /* Other styles */
-   
-	/** Style for the label of a disabled check/radio button */
-	STYLE("Check Disabled",
-		"Sans", "Sans", "Sans:style=Italic", "Sans:style=Italic", "Sans:style=Mono", "10",
-		"color=#00000080", /* Normal style */
-		"", "", "", "") /* Other styles */
 
 	/** Default style for the label of listheaders and notebook tabs */
 	STYLE("Other Default",
@@ -1311,7 +1287,7 @@ group { name: "etk/button/label";
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				text {
-					style: "Button Disabled";
+					style: "Other Disabled";
 				}
 			}
 		}
@@ -1703,13 +1679,13 @@ group { name: "etk/toggle_button/label";
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				text {
-					style: "Button Disabled";
+					style: "Other Disabled";
 				}
 			}
 			description { state: "disabled-toggled" 0.0;
 				inherit: "default" 0.0;
 				text {
-					style: "Button Disabled Toggled";
+					style: "Other Disabled";
 				}
 			}
 		}
@@ -2413,14 +2389,14 @@ group { name: "etk/check_button/label";
 					offset: -1 -1;
 				}
 				text {
-					style: "Check Default";
+					style: "Other Default";
 					min: 1 1;
 				}
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				text {
-					style: "Check Disabled";
+					style: "Other Disabled";
 				}
 			}
 		}
@@ -4760,7 +4736,7 @@ group { name: "etk/notebook/tab/label";
 					offset: 0 0;
 				}
 				text {
-					style: "Button Disabled";
+					style: "Other Disabled";
 					min: 1 1;
 				}
 			}
@@ -5667,8 +5643,15 @@ group { name: "etk/colorpicker/color_preview";
 
 group { name: "etk/label";
 	parts {
+		part { name: "clip";
+			type: RECT;
+			mouse_events: 0;
+			description {
+			}
+		}
 		part { name: "etk.text.label";
 			type: TEXTBLOCK;
+			clip_to: "clip";
 			description { state: "default" 0.0;
 				align: 0.0 0.5;
 				rel1 {
@@ -5682,7 +5665,7 @@ group { name: "etk/label";
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				text {
-					style: "Button Disabled";
+					style: "Other Disabled";
 					min: 1 1;
 				}
 			}
