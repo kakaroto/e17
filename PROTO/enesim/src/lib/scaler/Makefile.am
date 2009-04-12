@@ -9,3 +9,4 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libenesim_scaler.la
 
 libenesim_scaler_la_SOURCES = \
+scaler.c

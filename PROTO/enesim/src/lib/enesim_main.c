@@ -39,6 +39,7 @@ EAPI int enesim_init(void)
 		enesim_cpu_init();
 		enesim_drawer_init();
 		enesim_converter_init();
+		enesim_scaler_init();
 		/* TODO initialize all the transformers */
 		/* TODO initialize all the converters */
 #ifdef EFL_HAVE_MMX

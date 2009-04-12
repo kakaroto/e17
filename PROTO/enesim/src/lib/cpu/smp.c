@@ -68,6 +68,14 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 		}
 		break;
 
+		case ENESIM_OPERATOR_SCALER1D:
+		{
+			Enesim_Scaler_1D sc = q->cb;
+
+			sc(q->scaler.src, q->scaler.type.dim1.sw, q->scaler.type.dim1.x, q->scaler.type.dim1.len, q->scaler.type.dim1.dw, q->scaler.dst);
+		}
+		break;
+
 		default:
 		//printf("Operation not defined %d\n", q->id);
 		break;

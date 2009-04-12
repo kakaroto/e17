@@ -139,6 +139,11 @@ int bench_get(const char *name)
 		opt_bench = "cpu";
 		return 1;
 	}
+	else if (!strcmp(name, "scaler"))
+	{
+		opt_bench = "scaler";
+		return 1;
+	}
 	return 0;
 }
 
@@ -209,6 +214,7 @@ void bench_help(void)
 	printf("renderer\n");
 	printf("spanner\n");
 	printf("cpu\n");
+	printf("scaler\n");
 	printf("all\n");
 }
 
@@ -223,6 +229,9 @@ void fmt_help(void)
 	}
 }
 
+/*
+ * TODO remove the rop as it is only part of the drawer benchmark
+ */
 void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 		Enesim_Surface *src, uint32_t *color, Enesim_Surface *mask)
 {
@@ -399,6 +408,10 @@ ok:
 		//transformer_bench();
 		//rasterizer_bench();
 		//renderer_bench();
+	}
+	else if (!strcmp(opt_bench, "scaler"))
+	{
+		scaler_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

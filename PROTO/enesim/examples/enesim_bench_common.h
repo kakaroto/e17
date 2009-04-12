@@ -36,6 +36,7 @@ void drawer_bench(void);
 void cpu_bench(void);
 void transformer_bench(void);
 void spanner_bench(void);
+void scaler_bench(void);
 char * opacity_get(uint32_t color, Enesim_Format f);
 void surfaces_create(Enesim_Surface **src, Enesim_Format sfmt,
 		Enesim_Surface **dst, Enesim_Format dfmt,

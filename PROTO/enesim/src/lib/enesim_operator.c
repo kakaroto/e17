@@ -65,3 +65,23 @@ EAPI Eina_Bool enesim_operator_converter_1d(Enesim_Operator *op, uint32_t *s,
 
 	return EINA_TRUE;
 }
+
+EAPI Eina_Bool enesim_operator_scaler_1d(Enesim_Operator *op, uint32_t *s,
+		uint32_t sw, uint32_t x, uint32_t len, uint32_t dw,
+		uint32_t *d)
+{
+	Enesim_Cpu_Queue q;
+
+	if (!_queue_create(&q, op, ENESIM_OPERATOR_SCALER1D))
+		return EINA_FALSE;
+
+	q.scaler.src = s;
+	q.scaler.dst = d;
+	q.scaler.type.dim1.len = len;
+	q.scaler.type.dim1.x = x;
+	q.scaler.type.dim1.sw = sw;
+	q.scaler.type.dim1.dw = dw;
+	op->cpu->run(op->cpu, &q);
+
+	return EINA_TRUE;
+}

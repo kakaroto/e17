@@ -195,6 +195,7 @@ src/lib/rasterizer/Makefile
 src/lib/format/Makefile
 src/lib/drawer/Makefile
 src/lib/converter/Makefile
+src/lib/scaler/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile

@@ -41,6 +41,21 @@ typedef struct _Enesim_Cpu_Queue
 			} dim2;
 		} type;
 	} converter;
+	struct {
+		uint32_t *src;
+		uint32_t *dst;
+		union {
+			struct {
+				uint32_t len;
+				uint32_t x;
+				uint32_t sw;
+				uint32_t dw;
+			} dim1;
+			struct {
+
+			} dim2;
+		} type;
+	} scaler;
 } Enesim_Cpu_Queue;
 
 

@@ -21,12 +21,8 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-
-/*============================================================================*
- *                                   API                                      *
- *============================================================================*/
-typedef Enesim_Scaler Enesim_Scaler_1D_Lut[ENESIM_FORMATS][ENESIM_FORMATS];
-typedef Enesim_Scaler Enesim_Scaler_2D_Lut[ENESIM_FORMATS][ENESIM_QUALITIES][ENESIM_FORMATS];
+typedef Enesim_Scaler_1D Enesim_Scaler_1D_Lut[ENESIM_FORMATS][ENESIM_FORMATS];
+typedef Enesim_Scaler_1D Enesim_Scaler_2D_Lut[ENESIM_FORMATS][ENESIM_QUALITIES][ENESIM_FORMATS];
 
 Enesim_Scaler_1D_Lut *_scalers1d;
 Enesim_Scaler_2D_Lut *_scalers2d;
@@ -35,11 +31,17 @@ Enesim_Scaler_2D_Lut *_scalers2d;
  *============================================================================*/
 void enesim_scaler_init(void)
 {
+	Enesim_Cpu **cpus;
 	int numcpu;
+	int i;
 
-	enesim_cpu_get(&numcpu);
+	cpus = enesim_cpu_get(&numcpu);
 	_scalers1d = malloc(sizeof(Enesim_Scaler_1D_Lut) * numcpu);
 	_scalers2d = malloc(sizeof(Enesim_Scaler_2D_Lut) * numcpu);
+	for (i = 0; i < numcpu; i++)
+	{
+		enesim_scaler_argb8888_init(cpus[i]);
+	}
 }
 void enesim_scaler_shutdown(void)
 {
@@ -53,7 +55,7 @@ void enesim_scaler_shutdown(void)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void enesim_scaler_1d_register(Enesim_Cpu *cpu, Enesim_Scaler scl,
+EAPI void enesim_scaler_1d_register(Enesim_Cpu *cpu, Enesim_Scaler_1D scl,
 		Enesim_Format sfmt, Enesim_Format dfmt)
 {
 	unsigned int cpuid;
@@ -67,7 +69,7 @@ EAPI void enesim_scaler_1d_register(Enesim_Cpu *cpu, Enesim_Scaler scl,
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void enesim_scaler_2d_register(Enesim_Cpu *cpu, Enesim_Scaler scl,
+EAPI void enesim_scaler_2d_register(Enesim_Cpu *cpu, Enesim_Scaler_1D scl,
 		Enesim_Format sfmt, Enesim_Quality qty,
 		Enesim_Format dfmt)
 {
@@ -83,15 +85,15 @@ EAPI void enesim_scaler_2d_register(Enesim_Cpu *cpu, Enesim_Scaler scl,
  * FIXME: To be fixed
  */
 EAPI Eina_Bool enesim_scaler_1d_op_get(Enesim_Operator *op, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Direction dir, Enesim_Format dfmt)
+		Enesim_Format sfmt, Enesim_Format dfmt)
 {
 	unsigned int cpuid;
 	Enesim_Scaler_1D_Lut *t;
-	Enesim_Scaler s;
+	Enesim_Scaler_1D s;
 
 	cpuid = enesim_cpu_id_get(cpu);
 	t = &_scalers1d[cpuid];
-	s = *t[sfmt][dir][dfmt];
+	s = *t[sfmt][dfmt];
 	if (s)
 	{
 		op->id = ENESIM_OPERATOR_SCALER1D;
@@ -107,15 +109,15 @@ EAPI Eina_Bool enesim_scaler_1d_op_get(Enesim_Operator *op, Enesim_Cpu *cpu,
  * FIXME: To be fixed
  */
 EAPI Eina_Bool enesim_scaler_2d_op_get(Enesim_Operator *op, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Direction dir, Enesim_Format dfmt)
+		Enesim_Format sfmt, Enesim_Quality q, Enesim_Format dfmt)
 {
 	unsigned int cpuid;
 	Enesim_Scaler_2D_Lut *t;
-	Enesim_Scaler s;
+	Enesim_Scaler_1D s;
 
 	cpuid = enesim_cpu_id_get(cpu);
 	t = &_scalers2d[cpuid];
-	s = *t[sfmt][dir][dfmt];
+	s = *t[sfmt][q][dfmt];
 	if (s)
 	{
 		op->id = ENESIM_OPERATOR_SCALER2D;
@@ -126,3 +128,20 @@ EAPI Eina_Bool enesim_scaler_2d_op_get(Enesim_Operator *op, Enesim_Cpu *cpu,
 	else
 		return EINA_FALSE;
 }
+
+#if 0
+EAPI Eina_Bool enesim_renderer_scaler_src_y(Enesim_Renderer *r, int ydst, int *ysrc)
+{
+	Renderer_Scaler *s = (Renderer_Scaler *)r;
+
+	if (ydst > (s->dst.area.y + s->dst.area.w))
+	{
+		return EINA_FALSE;
+	}
+	else
+	{
+		*ysrc = s->row.values[ydst];
+		return EINA_TRUE;
+	}
+}
+#endif
