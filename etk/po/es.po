@@ -14,7 +14,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: src/tools/etk_prefs/etk_prefs.c:60
 msgid "Etk Preferences"
 msgstr "Preferencias de Etk"

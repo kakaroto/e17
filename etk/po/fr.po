@@ -7,14 +7,12 @@ msgstr ""
 "Project-Id-Version: Etk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:29+0800\n"
-"PO-Revision-Date: 2008-11-27 13:34+0400\n"
-"Last-Translator: batden <batden@orange.fr>\n"
+"PO-Revision-Date: 2009-01-19 08:19+0000\n"
+"Last-Translator: batden <Unknown>\n"
 "Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
 
 #: src/tools/etk_prefs/etk_prefs.c:60
 msgid "Etk Preferences"
@@ -56,8 +54,7 @@ msgstr "Question"
 msgid "Error"
 msgstr "Erreur"
 
-#: src/lib/etk_message_dialog.c:122
-#: src/lib/etk_message_dialog.c:264
+#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
 msgid "Information"
 msgstr "Informations"
 
@@ -119,90 +116,132 @@ msgstr "Actuel"
 
 #~ msgid "Etk Button test"
 #~ msgstr "Test bouton ETK"
+
 #~ msgid "Normal button"
 #~ msgstr "Bouton normal"
+
 #~ msgid "Button with an image"
 #~ msgstr "Bouton avec une image"
+
 #~ msgid "Check button"
 #~ msgstr "Bouton à cocher"
+
 #~ msgid "Radio button"
 #~ msgstr "Bouton radio"
+
 #~ msgid "Toggle button"
 #~ msgstr "Bouton-poussoir"
+
 #~ msgid "Etk Canvas Test"
 #~ msgstr "Test canevas Etk"
+
 #~ msgid "Add object"
 #~ msgstr "Ajouter un objet"
+
 #~ msgid "Etk Color Picker"
 #~ msgstr "Selectionneur de couleur Etk"
+
 #~ msgid "Etk Entry test"
 #~ msgstr "Test saisie de texte Etk"
+
 #~ msgid "Print the text!!!"
 #~ msgstr "Imprimer le texte !!"
+
 #~ msgid "Etk Image Test"
 #~ msgstr "Test Image Etk"
+
 #~ msgid "Keep aspect"
 #~ msgstr "Conserver l'aspect"
+
 #~ msgid "Don't keep aspect"
 #~ msgstr "Ne pas conserver l'aspect"
+
 #~ msgid "Etk Scale test"
 #~ msgstr "Test d'échelle Etk"
+
 #~ msgid "Etk Table Test"
 #~ msgstr "Test table Etk"
+
 #~ msgid "Set Icon"
 #~ msgstr "Sélectionner un icone"
+
 #~ msgid "App name"
 #~ msgstr "Nom de l'application"
+
 #~ msgid "Generic Info"
 #~ msgstr "Info générique"
+
 #~ msgid "Executable"
 #~ msgstr "Exécutable"
+
 #~ msgid "Window name"
 #~ msgstr "Nom de la fenêtre"
+
 #~ msgid "Window class"
 #~ msgstr "Classe de la fenêtre"
+
 #~ msgid "Startup notify"
 #~ msgstr "Notification de démarrage"
+
 #~ msgid "Wait exit"
 #~ msgstr "Attendre la sortie"
+
 #~ msgid "Cancel"
 #~ msgstr "Annuler"
+
 #~ msgid "Save"
 #~ msgstr "Enregistrer"
+
 #~ msgid "Etk Test Application"
 #~ msgstr "Test application Etk"
+
 #~ msgid "<h1>Tree:</h1>"
 #~ msgstr "<h1>Arbre:</h1>"
+
 #~ msgid "<h1>List:</h1>"
 #~ msgstr "<h1>Liste:</h1>"
+
 #~ msgid "Column 1"
 #~ msgstr "Colonne 1"
+
 #~ msgid "Column 2"
 #~ msgstr "Colonne 2"
+
 #~ msgid "Column 3"
 #~ msgstr "Colonne 3"
+
 #~ msgid "Row1"
 #~ msgstr "Rangée1"
+
 #~ msgid "Row2"
 #~ msgstr "Rangée2"
+
 #~ msgid "Row3"
 #~ msgstr "Rangée3"
+
 #~ msgid "Row4"
 #~ msgstr "Rangée4"
+
 #~ msgid "Row5"
 #~ msgstr "Rangée5"
+
 #~ msgid "Row6"
 #~ msgstr "Rangée6"
+
 #~ msgid "Row7"
 #~ msgstr "Rangée7"
+
 #~ msgid "Row8"
 #~ msgstr "Rangée8"
+
 #~ msgid "Row9"
 #~ msgstr "Rangée9"
+
 #~ msgid "Row10"
 #~ msgstr "Rangée10"
+
 #~ msgid "Row11"
 #~ msgstr "Rangée11"
+
 #~ msgid "Row12"
 #~ msgstr "Rangée12"
-
