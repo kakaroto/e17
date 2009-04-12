@@ -1,0 +1,52 @@
+# Slovak translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-12-19 11:43+0000\n"
+"PO-Revision-Date: 2009-03-24 15:05+0000\n"
+"Last-Translator: helix84 <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: src/e_mod_config.c:39
+msgid "exalt Module"
+msgstr "Modul exalt"
+
+#: src/e_mod_config.c:79
+msgid "General"
+msgstr "Všeobecné"
+
+#: src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "Použiť prepínač 1"
+
+#: src/e_mod_main.c:299 src/e_mod_main.c:450
+msgid "exalt"
+msgstr "exalt"
+
+#: src/e_mod_main.c:382
+msgid "exalt Configuration Updated"
+msgstr "Konfigurácia exalt aktualizovaná"
+
+#: src/e_mod_main.c:460
+msgid "submenu"
+msgstr "submenu"
+
+#: src/e_mod_main.c:465
+msgid "exalt sub 1"
+msgstr "exalt sub 1"
+
+#: src/e_mod_main.c:473 src/e_mod_main.c:482
+msgid "radio button 1"
+msgstr "výberové tlačidlo 1"
+
+#: src/e_mod_main.c:512
+msgid "Configuration"
+msgstr "Konfigurácia"

@@ -1,24 +1,26 @@
 # Spanish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 # Paco Molinero <paco@byasl.com>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-12-05 19:20+0000\n"
-"Last-Translator: Paco Molinero <paco@byasl.com>\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:52+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
+
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
 msgid "Tiling"
 msgstr "Enlosado"
 
-#: ../e_mod_main.c:1004
+#: ../e_mod_main.c:999
 msgid "Windows"
 msgstr "Ventanas"
 
@@ -52,7 +54,7 @@ msgstr "Escritorios virtuales"
 #. Grid mode settings
 #: ../e_mod_config.c:279
 msgid "Grid mode settings"
-msgstr ""
+msgstr "Preferencias del modo de malla"
 
 #: ../e_mod_config.c:283
 #, c-format
@@ -62,11 +64,11 @@ msgstr "%1.0f"
 #. Bigmain settings
 #: ../e_mod_config.c:288
 msgid "Bigmain settings"
-msgstr ""
+msgstr "Preferencias del Bigmain"
 
 #: ../e_mod_config.c:289
 msgid "Big win takes percent of screen:"
-msgstr ""
+msgstr "Gran ganancia por porcentaje de pantalla"
 
 #: ../e_mod_config.c:290
 #, c-format
@@ -75,8 +77,8 @@ msgstr "%.2f"
 
 #: ../e_mod_config.c:296
 msgid "Tiling border"
-msgstr ""
+msgstr "Bordes de teselas"
 
 #: ../e_mod_config.c:310
 msgid "Floating border"
-msgstr ""
+msgstr "Borde flotante"

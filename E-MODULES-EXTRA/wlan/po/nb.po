@@ -1,0 +1,57 @@
+# Norwegian Bokmal translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-03-21 15:04+0000\n"
+"Last-Translator: Kenneth Langdalen <Unknown>\n"
+"Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_config.c:44
+msgid "Wlan Configuration"
+msgstr "Wlan-konfigurering"
+
+#: ../e_mod_config.c:117
+msgid "General Settings"
+msgstr "Generelle innstillinger"
+
+#: ../e_mod_config.c:119
+msgid "Always Show Text"
+msgstr "Vis alltid tekst"
+
+#: ../e_mod_config.c:121
+msgid "Show Text On Mouse Over"
+msgstr "Vis tekst når musen er over"
+
+#: ../e_mod_config.c:124
+msgid "Show Text As Percent"
+msgstr "Vis tekst som prosent"
+
+#: ../e_mod_config.c:128
+msgid "Check Interval:"
+msgstr "Kontrollintervall"
+
+#: ../e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f sekunder"
+
+#: ../e_mod_config.c:138
+msgid "Device Settings"
+msgstr "Enhetsinnstillinger"
+
+#: ../e_mod_main.c:107
+msgid "Wlan"
+msgstr "Wlan"
+
+#: ../e_mod_main.c:165
+msgid "Configuration"
+msgstr "Konfigurasjon"

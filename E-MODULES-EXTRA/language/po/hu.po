@@ -1,55 +1,63 @@
 # translation of language.po to hungarian
-# Copyright (C) YEAR Enlightenment development team
+# Copyright (C) 2008-2009 Enlightenment development team
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Lisovszki  <lisovszki@gmail.com>, 2008.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: language\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:20+0100\n"
-"PO-Revision-Date: 2008-02-02 20:43+0100\n"
-"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"POT-Creation-Date: 2009-01-09 18:00+0000\n"
+"PO-Revision-Date: 2009-02-09 18:09+0000\n"
+"Last-Translator: lisovszki <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
 
 #: src/module/e_mod_config.c:104
 msgid "Language Module Settings"
 msgstr "Nyelvi modul beállítások"
 
-#: src/module/e_mod_config.c:174 src/module/e_mod_config.c:249
+#: src/module/e_mod_config.c:174
+#: src/module/e_mod_config.c:249
 msgid "Available Languages"
 msgstr "A rendelkezésre álló nyelvek"
 
-#: src/module/e_mod_config.c:182 src/module/e_mod_config.c:257
+#: src/module/e_mod_config.c:182
+#: src/module/e_mod_config.c:257
 msgid "Selected Languages"
 msgstr "Kijelölt nyelvek"
 
-#: src/module/e_mod_config.c:198 src/module/e_mod_config.c:273
+#: src/module/e_mod_config.c:198
+#: src/module/e_mod_config.c:273
 msgid "Up"
 msgstr "Fel"
 
-#: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
+#: src/module/e_mod_config.c:203
+#: src/module/e_mod_config.c:278
 msgid "Down"
 msgstr "Le"
 
-#: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
+#: src/module/e_mod_config.c:211
+#: src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
 msgstr "Nyelv kapcsoló házirend"
 
-#: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
+#: src/module/e_mod_config.c:214
+#: src/module/e_mod_config.c:307
 msgid "Global"
 msgstr "Globális"
 
-#: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
+#: src/module/e_mod_config.c:217
+#: src/module/e_mod_config.c:310
 msgid "Window"
 msgstr "Ablak"
 
-#: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
+#: src/module/e_mod_config.c:220
+#: src/module/e_mod_config.c:313
 msgid "Application"
 msgstr "Alkalmazás"
 
@@ -61,7 +69,8 @@ msgstr "Billentyűzet típus"
 msgid "Layout Variant"
 msgstr "Kimeneti variáns"
 
-#: src/module/e_mod_keybindings.c:6 src/module/e_mod_main.c:113
+#: src/module/e_mod_keybindings.c:6
+#: src/module/e_mod_main.c:113
 msgid "Language"
 msgstr "Nyelv"
 
@@ -84,4 +93,3 @@ msgstr "Billentyűkombinációk beállítása"
 #: src/module/e_mod_main.c:421
 msgid "Module Configuration"
 msgstr "Modul beállítás"
-

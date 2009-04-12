@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Moon\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-03-20 15:54+0900\n"
-"Last-Translator: David <david35472@gmail.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-03-15 09:25+0000\n"
+"Last-Translator: Yuki Kodama <Unknown>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,7 +36,7 @@ msgstr "常に表示する"
 
 #: ../src/e_mod_config.c:166
 msgid "Show on mouse over"
-msgstr "マウスが乗れば表示する"
+msgstr "マウスオーバーで表示する"
 
 #: ../src/e_mod_config.c:168
 msgid "Never show"
@@ -52,7 +52,7 @@ msgstr "月の満ち欠けを数値で表示"
 
 #: ../src/e_mod_main.c:207
 msgid "Moon"
-msgstr ""
+msgstr "moon"
 
 #: ../src/e_mod_main.c:247
 msgid "Configuration"
@@ -72,7 +72,7 @@ msgstr "上弦"
 
 #: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
-msgstr "凸月"
+msgstr "盛月"
 
 #: ../src/e_mod_main.c:499
 msgid "Full Moon"
@@ -88,16 +88,16 @@ msgstr "下弦"
 
 #: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
-msgstr "衰月"
+msgstr "三日月"
+
+#~ msgid "Show Border"
+#~ msgstr "ボーダーを表示する"
 
 #~ msgid "Moon Clock Module"
 #~ msgstr "月の相モジュール"
 
 #~ msgid "Display current phase of the moon ala e16 E-MoonClock"
 #~ msgstr "月の満ち欠けを表示するモジュール"
-
-#~ msgid "Show Border"
-#~ msgstr "ボーダーを表示する"
 
 #~ msgid "Moon Phase Calculation Interval"
 #~ msgstr "月の満ち欠け状態の計算間隔"

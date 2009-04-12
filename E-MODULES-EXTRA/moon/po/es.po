@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-23 00:47+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:32+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Nubes animadas"
 
 #: ../src/e_mod_config.c:162
 msgid "Moon Phase Value"
-msgstr "Fase lunar"
+msgstr "Valor de fase lunar"
 
 #: ../src/e_mod_config.c:164
 msgid "Show always"
@@ -43,7 +43,7 @@ msgstr "Mostrar cuando el raton pase sobre el elemento"
 
 #: ../src/e_mod_config.c:168
 msgid "Never show"
-msgstr "Nunca mostrar"
+msgstr "No mostrar nunca"
 
 #: ../src/e_mod_config.c:172
 msgid "Description"
@@ -55,7 +55,7 @@ msgstr "Numérico"
 
 #: ../src/e_mod_main.c:207
 msgid "Moon"
-msgstr "Moon"
+msgstr "Luna"
 
 #: ../src/e_mod_main.c:247
 msgid "Configuration"
@@ -63,11 +63,11 @@ msgstr "Configuración"
 
 #: ../src/e_mod_main.c:491
 msgid "New Moon"
-msgstr "Nuevo Moon"
+msgstr "Luna nueva"
 
 #: ../src/e_mod_main.c:493
 msgid "Waxing Crescent"
-msgstr "Cuarto creciente (La Luna nueva fue ayer)"
+msgstr "Cuarto creciente (la Luna nueva fue ayer)"
 
 #: ../src/e_mod_main.c:495
 msgid "First Quarter"
@@ -83,7 +83,7 @@ msgstr "Luna llena"
 
 #: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
-msgstr "Cuarto Menguante (La Luna llena fue ayer)"
+msgstr "Cuarto Menguante (la Luna llena fue ayer)"
 
 #: ../src/e_mod_main.c:503
 msgid "Last Quarter"

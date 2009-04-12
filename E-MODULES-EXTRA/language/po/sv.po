@@ -1,7 +1,8 @@
 # Swedish translation of Language module for E17.
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
-# Daniel Nylander <yeager@ubuntu.com>， 2009.
+# Daniel Nylander <yeager@ubuntu.com>, 2009.
+#
 #
 msgid ""
 msgstr ""

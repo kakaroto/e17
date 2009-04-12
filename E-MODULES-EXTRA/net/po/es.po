@@ -1,16 +1,18 @@
 # Spanish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 #
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# chilicuil <Unknown>, 2008.
 # Francisco Perez Lopez, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-11-29 10:04+0000\n"
-"Last-Translator: chilicuil <Unknown>\n"
-"Language-Team: Spanish <>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:34+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +35,7 @@ msgstr "Mostrar ventanas emergentes cuando el raton paso sobre el elemento"
 
 #: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
-msgstr "Correr aplicación con doble click"
+msgstr "Ejecutar aplicación al pulsar dos veces"
 
 #: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
@@ -53,7 +55,7 @@ msgstr "Bajo (B)"
 
 #: ../src/e_mod_configure.c:137
 msgid "Device Settings"
-msgstr "Configuración de dispositivos"
+msgstr "Preferencias de dispositivos"
 
 #: ../src/e_mod_gadcon.c:91
 msgid "Net"

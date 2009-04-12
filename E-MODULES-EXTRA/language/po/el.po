@@ -1,19 +1,17 @@
 # translation of el.po to Greek
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:26+0100\n"
-"PO-Revision-Date: 2008-11-25 11:48+0200\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2009-01-09 18:00+0000\n"
+"PO-Revision-Date: 2009-01-09 18:09+0000\n"
+"Last-Translator: Aron <Unknown>\n"
 "Language-Team: Greek <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: KBabel 1.11.4\n"
+
 
 #: src/module/e_mod_config.c:104
 msgid "Language Module Settings"
@@ -91,4 +89,3 @@ msgstr "Ρύθμιση Συνδυασμών Πλήκτρων"
 #: src/module/e_mod_main.c:421
 msgid "Module Configuration"
 msgstr "Ρύθμιση Αρθρώματος"
-

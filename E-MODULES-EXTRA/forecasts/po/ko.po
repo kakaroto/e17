@@ -2,17 +2,16 @@
 # Copyright (C) 2008 Enlightenment development team
 # This file is distributed under the same license as the forecast package.
 # Dongsik Lee. <zecksmaster@gmail.com>, 2008.
-# Dongsik Lee. <zecksmaster@gmail.com>, 2008.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: forecast e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-10-22 21:27+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
-"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-01-18 19:18+0000\n"
+"Last-Translator: Aron <Unknown>\n"
+"Language-Team: Korea <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -64,7 +63,7 @@ msgstr "야후 일기예보 코드/US Zip Code"
 
 #: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
-msgstr "해당 지역의 코드를 찾을려면 "
+msgstr "해당 지역의 코드를 찾을려면"
 
 #: ../e_mod_config.c:119
 #, c-format

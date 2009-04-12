@@ -1,15 +1,14 @@
 # Bulgarian translation of forecasts.
 # This file is put in the public domain.
-# Viktor Kojouharov <vkojouharov@abv.bg>, 2007.
-# , fuzzy
+# Viktor Kojouharov <vkojouharov@abv.bg>, 2007-2009.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: forecasts 0.1.5\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2007-03-03 14:20+0200\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2008-11-22 04:19+0000\n"
 "Last-Translator: Viktor Kojouharov <vkojouharov@abv.bg>\n"
 "Language-Team: Bulgarian\n"
 "MIME-Version: 1.0\n"
@@ -34,9 +33,8 @@ msgid "%2.0f minutes"
 msgstr "%2.0f·минути"
 
 #: ../e_mod_config.c:97
-#, fuzzy
 msgid "Show Description"
-msgstr "Няма описание"
+msgstr ""
 
 #: ../e_mod_config.c:99
 msgid "Popup on mouse over"
@@ -123,11 +121,11 @@ msgstr "Максимална"
 msgid "Low"
 msgstr "Минимална"
 
-#~ msgid "Enlightenment Forecasts Module"
-#~ msgstr "Модул 'Прогнози' на Enlightenment"
-
 #~ msgid "A weather forecast module for Enlightenment"
 #~ msgstr "Модул за време и прогнози на Enlightenment"
+
+#~ msgid "Enlightenment Forecasts Module"
+#~ msgstr "Модул 'Прогнози' на Enlightenment"
 
 #~ msgid "Get your Yahoo Forecasts Code code at:"
 #~ msgstr "Намерете вашият Yahoo Forecasts код на:"

@@ -1,18 +1,19 @@
 # Spanish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-23 01:00+0000\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 15:07+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 #: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
 #: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
@@ -26,19 +27,19 @@ msgstr "¡Y falló la inicialización del lienzo!"
 
 #: ../src/module/e_mod_main.c:59
 msgid "Theme init failed !"
-msgstr "¡Fallo inicialización de tema!"
+msgstr "¡Falló la inicialización del tema!"
 
 #: ../src/module/e_mod_main.c:66
 msgid "Config init failed"
-msgstr "¡Fallo inicialización de configuració!"
+msgstr "¡Falló la inicialización de configuración!"
 
 #: ../src/module/e_mod_main.c:73
 msgid "Picture subsystem init failed"
-msgstr "¡Fallo inicialización del subsistema de imagen!"
+msgstr "¡Falló la inicialización del subsistema de imagen!"
 
 #: ../src/module/e_mod_main.c:80
 msgid "Popup warn subsystem init failed"
-msgstr "¡Fallo inicialización del subsistema de avisos emergentes!"
+msgstr "¡Falló la inicialización del subsistema de avisos emergentes!"
 
 #: ../src/module/e_mod_main.c:87
 msgid "Popup info subsystem init failed"
@@ -55,13 +56,13 @@ msgid ""
 "configuration of photo module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Módulo Foto : Configuración Actualizada</hilight><br><br>Tu "
-"Configuración del módulo de foto<br>fue actualizada<br>Tus preferencias "
-"fueron eliminadas<br>Sepa disculpar los inconvenientes<br><br>(%d -> %d)"
+"<hilight>Módulo Photo: configuración actualizada</hilight><br><br>Su "
+"Configuración del módulo de fotos<br>fue actualizada<br>Sus preferencias "
+"fueron eliminadas<br>Disculpe las molestias<br><br>(%d -> %d)"
 
 #: ../src/module/photo_config.c:71 ../src/module/photo_config.c:85
 msgid "Photo Module version "
-msgstr "Módulo Foto versión "
+msgstr "Módulo Photo versión "
 
 #: ../src/module/photo_config.c:79
 #, c-format
@@ -88,7 +89,7 @@ msgstr "Añadir"
 
 #: ../src/module/photo_config_dialog.c:237
 msgid "Delete"
-msgstr "Borrar"
+msgstr "Eliminar"
 
 #: ../src/module/photo_config_dialog.c:239
 msgid "Configure"
@@ -230,7 +231,7 @@ msgstr "Mostrar menú"
 
 #: ../src/module/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
-msgstr "Configuración del directorio foto"
+msgstr "Configuración del directorio de fotos"
 
 #: ../src/module/photo_config_dialog_dir.c:118
 msgid "Directory"
@@ -238,7 +239,7 @@ msgstr "Directorio"
 
 #: ../src/module/photo_config_dialog_dir.c:127
 msgid "Loading options"
-msgstr "Cargar opciones"
+msgstr "Cargando opciones"
 
 #: ../src/module/photo_config_dialog_dir.c:129
 msgid "Recursive"
@@ -298,9 +299,9 @@ msgid ""
 "module picture list, but it seems you removed it from the disk<br>It cant be "
 "set as background, sorry."
 msgstr ""
-"<hilight>El archivo %s no existe.</hilight><br><br>Este archivo esta en la "
-"lista del módulo de foto, pero al parecer fue quitado del disco<br>No puede "
-"utilizarse como fondo, disculpe."
+"<hilight>El archivo %s no existe.</hilight><br><br>Este archivo está en la "
+"lista del módulo de fotos, pero al parecer fue eliminado del disco<br>No "
+"puede utilizarse como fondo."
 
 #: ../src/module/photo_item.c:392 ../src/module/photo_item.c:417
 #: ../src/module/photo_item.c:455 ../src/module/photo_item.c:475
@@ -311,10 +312,14 @@ msgstr "Error del módulo de fotos"
 #: ../src/module/photo_item.c:413
 #, c-format
 msgid ""
-"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
-"<br>Photo module needs e17setroot util from e_utils package to set you're "
+"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file "
+"!<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
+"<hilight>Se necesita e17setroot</hilight><br><br>¡%s no es un archivo "
+"edje!<br>El módulo de fotos necesita las utilidades de e17setroot del "
+"paquete e_utils para asignar la imagen como fondo. Por favor, instálelo y "
+"pruebe otra vez"
 
 #: ../src/module/photo_item.c:452
 #, c-format
@@ -325,7 +330,7 @@ msgid ""
 msgstr ""
 "<hilight>¡El archivo %s no existe!</hilight><br><br>Este archivo está en la "
 "lista de fotos del módulo pero parece haber sido eliminado del disco.<br>No "
-"se puede abrir con el visor, lo siento."
+"se puede abrir con el visor."
 
 #: ../src/module/photo_item.c:472
 #, c-format
@@ -333,8 +338,8 @@ msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
 "for images in Photo module configuration panel (Advanced view)"
 msgstr ""
-"<hilight>¡No se ha encontrado el visor %s!</hilight><br><br>Puedes cambiar "
-"el visor de imágenes en el panel de configuración del módulo de fotos (Vista "
+"<hilight>¡No se ha encontrado el visor %s!</hilight><br><br>Puede cambiar el "
+"visor de imágenes en el panel de configuración del módulo de fotos (Vista "
 "avanzada)."
 
 #: ../src/module/photo_menu.c:30
@@ -363,7 +368,7 @@ msgstr "Configurar este gadget de fotos"
 
 #: ../src/module/photo_menu.c:82
 msgid "Configure Gadget and Shelf"
-msgstr "Configurar gadget y a sí mismo"
+msgstr "Configurar gadget y Shelf"
 
 #: ../src/module/photo_picture_histo.c:121
 msgid "Historic"
@@ -378,6 +383,11 @@ msgid ""
 "still can<br>be viewed, but you wont be able to set them as wallpaper "
 "anymore<br><br>"
 msgstr ""
+"<hilight>El directorio %s no existe.</hilight><br><br>Puede cambiar la "
+"carpeta de imágenes en el panel principal de configuración.<br>Éstas pueden "
+"ser jpeg o png<br><br>Después de importarlas, puede eliminar estas imágenes "
+"y se seguirán viendo<br> pero ya no podrá ponerlas como fondo de "
+"pantallas.<br><br>"
 
 #: ../src/module/photo_picture_local.c:593
 msgid "Photo Module Information"
@@ -392,3 +402,9 @@ msgid ""
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
 msgstr ""
+"<hilight>Crear miniaturas</hilight><br><br>Algunas imágenes se "
+"miniaturizarán en una <hilight>tarea en el fondo</hilight>.<br>Puede tardar "
+"un rato, pero después, cargarán más rápidas y ligeras :)<br><br>Cada vez que "
+"carge imágenes que no se hayan cargado por el módulo de fotos antes,<br>se "
+"les crearán miniaturas.<br><br>Mientras se les crean emergentes, no podrá "
+"ver ninguna imagen en Photo.<br>Espero poder cambiar esto :)"

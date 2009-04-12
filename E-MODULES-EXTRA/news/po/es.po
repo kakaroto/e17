@@ -3,20 +3,19 @@
 #
 # Francisco Perez Lopez, 2008.
 # Paco Molinero <paco@byasl.com>, 2009.
+# DiegoJ <diegojromerolopez@gmail.com>,2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-23 00:55+0000\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 15:18+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
@@ -28,7 +27,7 @@ msgstr "Falló la inicialización del analizador"
 
 #: ../src/module/e_mod_main.c:54
 msgid "Feeds init failed"
-msgstr "Falló la inicialización de los canales de noticias"
+msgstr "Falló la inicialización de los canales"
 
 #: ../src/module/e_mod_main.c:55
 msgid "Viewer init failed"
@@ -36,7 +35,7 @@ msgstr "Fallón la inicialización del visor"
 
 #: ../src/module/e_mod_main.c:56
 msgid "Popup subsystem init failed"
-msgstr "Fallón la inicializaciónd el subsistema de emergentes"
+msgstr "Falló la inicialización del subsistema de emergentes"
 
 #: ../src/module/e_mod_main.c:219
 msgid "News"
@@ -49,10 +48,10 @@ msgid ""
 "configuration of news module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Módulo de News : Actualización de configuración</"
-"hilight><br><br>Laconfiguración del módulo News<br>fue actualizada<br>Sus "
-"preferencias fueron  eliminadas.<br>Lamentamos las incoveniencias<br><br>(%d "
-"-> %d)"
+"<hilight>Módulo de noticias: actualización de "
+"configuración</hilight><br><br>La configuración del módulo News<br>fue "
+"actualizada<br>Sus preferencias fueron eliminadas.<br>Disculpe las "
+"molestias<br><br>(%d -> %d)"
 
 #: ../src/module/news_config.c:112
 #, c-format
@@ -61,9 +60,9 @@ msgid ""
 "configuration of News module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>Módulo de noticias: configuración revertida</hilight><br><br>Tu "
-"configuración del módulo de noticias<br>ha sido revertida<br>Tus "
-"preferencias se han eliminado<br>Lamentamos el problema<br><br>(%d ->%d)"
+"<hilight>Módulo de noticias: configuración revertida</hilight><br><br>Su "
+"configuración del módulo de noticias<br>ha sido revertida<br>Sus "
+"preferencias se han eliminado<br>Disculpe las molestias<br><br>(%d ->%d)"
 
 #: ../src/module/news_config_dialog.c:90
 msgid "News Main Configuration"
@@ -132,7 +131,7 @@ msgstr "Sólo en canales urgentes"
 
 #: ../src/module/news_config_dialog.c:263
 msgid "On all feeds"
-msgstr "Sobre todos los suministros"
+msgstr "Sobre todos los canales"
 
 #: ../src/module/news_config_dialog.c:272
 #: ../src/module/news_config_dialog.c:292
@@ -150,23 +149,23 @@ msgstr "¿Mostrar al vencer tiempo?"
 
 #: ../src/module/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr "Primero canales sin leer"
+msgstr "Primero los canales sin leer"
 
 #: ../src/module/news_config_dialog.c:309
 msgid "Unread articles first"
-msgstr "Primero artículos no leídos"
+msgstr "Primero los artículos no leídos"
 
 #: ../src/module/news_config_dialog.c:311
 msgid "Sort articles by date"
-msgstr "Organizar artículos por fecha"
+msgstr "Ordenar artículos por fecha"
 
 #: ../src/module/news_config_dialog.c:314
 msgid "Font"
-msgstr "Tipo de letra"
+msgstr "Tipografía"
 
 #: ../src/module/news_config_dialog.c:324
 msgid "Font Shadow"
-msgstr "Sombra de fuente"
+msgstr "Sombra del texto"
 
 #: ../src/module/news_config_dialog.c:336
 msgid "Proxy"
@@ -186,7 +185,7 @@ msgstr "Puerto"
 
 #: ../src/module/news_config_dialog_category.c:50
 msgid "News Category Configuration"
-msgstr "Configuración de categoría de noticias"
+msgstr "Configuración de categorías de noticias"
 
 #: ../src/module/news_config_dialog_category.c:135
 msgid "Icon"
@@ -215,7 +214,7 @@ msgstr "Cancelar"
 
 #: ../src/module/news_config_dialog_feed.c:63
 msgid "You need to <hilight>create a category</hilight> first"
-msgstr "Primero necesitas <hilight>crear una categoría</hilight>"
+msgstr "Primero necesita <hilight>crear una categoría</hilight>"
 
 #: ../src/module/news_config_dialog_feed.c:77
 msgid "News Feed Configuration"
@@ -232,7 +231,7 @@ msgstr "Información básica"
 #. e_widget_list_object_append(o2, of, 1, 1, 0.5);
 #: ../src/module/news_config_dialog_feed.c:345
 msgid "Name :"
-msgstr "Nombre :"
+msgstr "Nombre:"
 
 #: ../src/module/news_config_dialog_feed.c:349
 msgid "Feed url :"
@@ -271,7 +270,8 @@ msgstr "Información del servidor"
 
 #: ../src/module/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr "¿Permitir al servidor sobrescribir la información que has introducido?"
+msgstr ""
+"¿Permitir al servidor sobrescribir la información que ha introducido?"
 
 #: ../src/module/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
@@ -328,7 +328,7 @@ msgstr ""
 #: ../src/module/news_config_dialog_feeds.c:754
 #: ../src/module/news_config_dialog_feeds.c:779
 msgid "News Module - Are you sure ?"
-msgstr "Módulo de noticias - ¿Éstas seguro?"
+msgstr "Módulo de noticias - ¿Ésta seguro?"
 
 #: ../src/module/news_config_dialog_item.c:40
 msgid "News Gadget Configuration"
@@ -416,26 +416,26 @@ msgstr "Selecciona los idiomas que sabe leer"
 
 #: ../src/module/news_feed.c:291
 msgid "The <hilight>name</hilight> you entered is not correct"
-msgstr "El <hilight>nombre</hilight> que has introducido no es correcto"
+msgstr "El <hilight>nombre</hilight> que ha introducido no es correcto"
 
 #: ../src/module/news_feed.c:296
 msgid "The need to <hilight>select a category</hilight>."
-msgstr "Se necesita <hilight>seleccionar una categoría</hilight>."
+msgstr "Debe <hilight>seleccionar una categoría</hilight>."
 
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
-"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
-"the same name<br>in one category."
+"A feed with the <hilight>name</hilight> %s <hilight>already "
+"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
+"with the same name<br>in one category."
 msgstr ""
-"Un canal de noticias con el <hilight>nombre</hilight> %s <hilight>ya existe</"
-"hilighit><br> en la categoría %s<br><br>No es posible tener alimentadores "
+"Un canal de noticias con el <hilight>nombre</hilight> %s <hilight>ya "
+"existe</hilighit><br> en la categoría %s<br><br>No es posible tener canales "
 "con el mismo nombre<br>en una categoría."
 
 #: ../src/module/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
-msgstr "Es necesario seleccionar un <hilight>idioma</hilight>."
+msgstr "Tiene que seleccionar un <hilight>idioma</hilight>."
 
 #: ../src/module/news_feed.c:318
 msgid "The <hilight>url</hilight> you specified is not correct"
@@ -443,12 +443,12 @@ msgstr "La <hilight>dirección</hilight> especificada es incorrecta"
 
 #: ../src/module/news_feed.c:880
 msgid "You need to enter a <hilight>name</hilight> !"
-msgstr "¡Es necesario introducir un <hilight>nombre</hilight> !"
+msgstr "¡Es necesario introducir un <hilight>nombre</hilight>!"
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already used</"
-"hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already "
+"used</hilight><br>by another category"
 msgstr ""
 "El <hilight>nombre</hilight> introducido <hilight>ya existe</hilight><br>en "
 "otra categoría"

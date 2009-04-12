@@ -1,6 +1,6 @@
 # Weather module (e17), Simplifed Chinese translation
 # This file is put in the public domain.
-# Aron Xu <aronmalache@163.com>, 2008. <aronmalache@163.com>, 2008.
+# Aron Xu <aronmalache@163.com>, 2008.
 #
 #
 msgid ""
@@ -8,18 +8,17 @@ msgstr ""
 "Project-Id-Version: Weather module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2009-01-22 18:05+0000\n"
-"Last-Translator: Aron Xu <Unknown>\n"
+"PO-Revision-Date: 2009-04-12 18:05+0000\n"
+"Last-Translator: Aron <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+
 
 #: ../e_mod_config.c:40
 msgid "Weather Configuration"
-msgstr ""
+msgstr "Weather 配置"
 
 #: ../e_mod_config.c:86
 msgid "Display Settings"
@@ -35,7 +34,7 @@ msgstr "详细信息"
 
 #: ../e_mod_config.c:92
 msgid "Poll Time"
-msgstr ""
+msgstr "更新时间"
 
 #: ../e_mod_config.c:95
 #, c-format
@@ -44,7 +43,7 @@ msgstr "%2.0f 分钟"
 
 #: ../e_mod_config.c:100
 msgid "Degree Settings"
-msgstr ""
+msgstr "单位设置"
 
 #: ../e_mod_config.c:102
 msgid "Celsius"
@@ -52,15 +51,15 @@ msgstr "摄氏"
 
 #: ../e_mod_config.c:104
 msgid "Farenheit"
-msgstr ""
+msgstr "华氏"
 
 #: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
-msgstr ""
+msgstr "ICAO 代码"
 
 #: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
-msgstr ""
+msgstr "请在以下地址获得您的 ICAO 代码："
 
 #: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"

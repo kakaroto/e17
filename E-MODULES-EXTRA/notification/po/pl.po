@@ -1,22 +1,23 @@
 # Polish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Stanislaw Gackowski <launchpad@soeb.eu>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-11-26 13:33+0000\n"
-"Last-Translator: Andrzej MoST (Marcin Ostajewski) <Unknown>\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-02-27 08:44+0000\n"
+"Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
-msgstr ""
+msgstr "Konfiguracja"
 
 #: ../src/e_mod_main.c:118
 msgid "Notification Box"
@@ -33,7 +34,7 @@ msgstr "Powiadomienie"
 
 #: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
 msgid "Notification Configuration Updated"
-msgstr "Uaktualniono konfigurację Powiadomienia"
+msgstr "Uaktualniono konfigurację powiadomień"
 
 #: ../src/e_mod_main.c:221
 msgid ""
@@ -45,6 +46,14 @@ msgid ""
 "lacks. This new set of defaults will fix<br>that by adding it in. You can re-"
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
+"Dane konfiguracji modułu notyfikacji potrzebowały aktualizację. Twoja stara "
+"konfiguracja<br> była usunięta i zastąpiona nowym zestaw standardów. "
+"To<br>się zdarza regularnie podczas rozwoju, także proszę nie "
+"raportować<br>błąd. To po prostu oznacza ze moduł potrzebuje nowe domyślne "
+"dane<br>konfiguracji dla użytkowej funkcjonalności, którą twoja "
+"stara<br>konfiguracja nie ma. Nowy zestaw domyślnych poprawi<br>to poprzez "
+"dodanie. Teraz możesz re-konfigurować rzeczy według własnego<br>uznania. "
+"Przepraszamy za niedogodności.<br>"
 
 #: ../src/e_mod_main.c:239
 msgid ""
@@ -55,6 +64,12 @@ msgid ""
 "is bad and<br>as a precaution your configuration has been now restored "
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
+"Twoja konfiguracja modułu notyfikacji jest NOWSZA niż wersja modułu. To jest "
+"bardzo<br>dziwne. Nie powinno się to stawać, jeżeli nie "
+"dezaktualizowałeś<br> moduł, lub kopiowałeś konfiguracje z miejsca "
+"gdzie<br>nowsza wersja modułu działała. To jest źle i<br>jako ostrożność "
+"twoja konfiguracja została przywrócona do ustawień<br>domyślnych. "
+"Przepraszamy za niedogodności.<br>"
 
 #: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
@@ -70,7 +85,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:42
 msgid "Notification Configuration"
-msgstr "Konfiguracja Powaidomienia"
+msgstr "Konfiguracja powaidomień"
 
 #: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
@@ -78,11 +93,11 @@ msgstr "Ważność"
 
 #: ../src/e_mod_config.c:87
 msgid "Levels of urgency to popup : "
-msgstr "Poziomy ważności wyświetlania: "
+msgstr "Poziomy ważności do wyświetlenia: "
 
 #: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
-msgstr "niski"
+msgstr "niska"
 
 #: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
@@ -112,7 +127,7 @@ msgstr "Kierunek"
 
 #: ../src/e_mod_config.c:108
 msgid "Direction in which popups will stack themselves : "
-msgstr "Kierunek składowania okienek "
+msgstr "Kierunek składowania okienek : "
 
 #: ../src/e_mod_config.c:121
 msgid "Gap"
@@ -129,19 +144,19 @@ msgstr "%2.0f pikseli"
 
 #: ../src/e_mod_config_item.c:37
 msgid "Notification Box Configuration"
-msgstr ""
+msgstr "Konfiguracja okna notyfikacji"
 
 #: ../src/e_mod_config_item.c:82
 msgid "General Settings"
-msgstr ""
+msgstr "Ustawienia ogólne"
 
 #: ../src/e_mod_config_item.c:83
 msgid "Show Icon Label"
-msgstr ""
+msgstr "Pokaż etykietę ikony"
 
 #: ../src/e_mod_config_item.c:85
 msgid "Show the popup on mouse over"
-msgstr ""
+msgstr "Pokaż okno przy najechaniu myszką"
 
 #: ../src/e_mod_config_item.c:87
 msgid "Focus the source window when clicking"
@@ -149,4 +164,4 @@ msgstr ""
 
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
-msgstr ""
+msgstr "Poziomy pilności do przechowania : "

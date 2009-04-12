@@ -1,27 +1,28 @@
 # Simplified Chinese translation for E17 tiling module.
 # This file is put in the public domain.
-# Aron Xu <aronmalache@163.com>, 2008. 
+# Aron Xu <aronmalache@163.com>, 2008.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiling e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-10-22 22:14+0800\n"
-"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-03-22 18:04+0000\n"
+"Last-Translator: Aron <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
-msgid "Tiling"
-msgstr ""
 
-#: ../e_mod_main.c:1004
+#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+msgid "Tiling"
+msgstr "Tiling"
+
+#: ../e_mod_main.c:999
 msgid "Windows"
-msgstr ""
+msgstr "窗口"
 
 #: ../e_mod_config.c:70
 msgid "Tiling Configuration"
@@ -30,25 +31,25 @@ msgstr ""
 #. General settings
 #: ../e_mod_config.c:217
 msgid "General"
-msgstr ""
+msgstr "常规"
 
 #: ../e_mod_config.c:227
 msgid "Horizontal:"
-msgstr ""
+msgstr "水平："
 
 #: ../e_mod_config.c:228 ../e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
-msgstr ""
+msgstr "%1.0f 像素"
 
 #: ../e_mod_config.c:231
 msgid "Vertical:"
-msgstr ""
+msgstr "垂直："
 
 #. Virtual desktop settings
 #: ../e_mod_config.c:241
 msgid "Virtual Desktops"
-msgstr ""
+msgstr "虚拟桌面"
 
 #. Grid mode settings
 #: ../e_mod_config.c:279

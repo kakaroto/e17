@@ -1,18 +1,20 @@
 # Polish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Andrzej MoST (Marcin Ostajewski) <Unknown>, 2008.
+# Stanislaw Gackowski <launchpad@soeb.eu>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-11-26 13:35+0000\n"
-"Last-Translator: Andrzej MoST (Marcin Ostajewski) <Unknown>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-02-19 15:14+0000\n"
+"Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 #: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
@@ -20,7 +22,7 @@ msgstr "Konfiguracja modułu sieci"
 
 #: ../src/e_mod_configure.c:114
 msgid "General Settings"
-msgstr "Ustawienia Ogólne"
+msgstr "Ustawienia ogólne"
 
 #: ../src/e_mod_configure.c:115
 msgid "Show Text"

@@ -1,13 +1,13 @@
 # Italian translation for E17 forecasts module.
 # This file is put in the public domain.
-# Massimo Maiurana <maiurana@inwind.it>, 2007.
+# Massimo Maiurana <maiurana@inwind.it>, 2007-2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Weather\n"
+"Project-Id-Version: forecasts\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-01-23 22:45+0100\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2008-11-22 04:21+0000\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"

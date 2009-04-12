@@ -1,6 +1,6 @@
 # Simplified Chinese translation of net in e17
 # Copyright 2008 GNU project.
-# Aron Xu <aronmalache@163.com>, 2008.batden <batden@orange.fr>, 2008.
+# Aron Xu <aronmalache@163.com>, 2008.
 #
 #
 msgid ""
@@ -8,13 +8,12 @@ msgstr ""
 "Project-Id-Version: Net e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2009-01-22 17:53+0000\n"
-"Last-Translator: Aron Xu <Unknown>\n"
+"PO-Revision-Date: 2009-03-22 17:53+0000\n"
+"Last-Translator: Aron <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"

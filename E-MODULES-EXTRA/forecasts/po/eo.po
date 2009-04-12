@@ -1,24 +1,19 @@
 # Esperanto translation of forecast
-# Copyright (C) 2008 Enlightenment development team
+# Copyright (C) 2008-2009 Enlightenment development team
 # This file is distributed under the same license as the forecast package.
-# Olivier M. <olivierweb@ifrance.com>, 2008.
+# Olivier M. <olivierweb@ifrance.com>, 2008-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-02-11 20:16+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2008-11-22 04:19+0000\n"
+"Last-Translator: OlivierWeb <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"X-Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"X-Poedit-Language: Esperanto\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e17/apps/ephoto/src\n"
 
 #: ../e_mod_config.c:42
 msgid "Forecasts Configuration"

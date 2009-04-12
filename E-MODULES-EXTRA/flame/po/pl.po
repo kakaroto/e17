@@ -1,12 +1,12 @@
 # Polish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# Andrzej MoST (Marcin Ostajewski) <Unknown>, 2008.
+# Andrzej MoST (Marcin Ostajewski) <Unknown>, 2008-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
 "PO-Revision-Date: 2008-11-26 12:53+0000\n"
 "Last-Translator: Andrzej MoST (Marcin Ostajewski) <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"

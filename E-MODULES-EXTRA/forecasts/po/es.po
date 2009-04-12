@@ -3,13 +3,14 @@
 #
 # Francisco Perez Lopez, 2008.
 # Enrico Nicoletto <liverig@gmail.com>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-22 19:46+0000\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:23+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +19,7 @@ msgstr ""
 
 #: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
-msgstr "Configuración de Forecasts"
+msgstr "Configuración de predicciones meteorológicas"
 
 #: ../e_mod_config.c:90
 msgid "Display Settings"
@@ -26,7 +27,7 @@ msgstr "Opciones de pantalla"
 
 #: ../e_mod_config.c:91
 msgid "Poll Time"
-msgstr "Tiempo de la encuesta"
+msgstr "Tasa de actualización"
 
 #: ../e_mod_config.c:94
 #, c-format
@@ -39,7 +40,7 @@ msgstr "Mostrar descripción"
 
 #: ../e_mod_config.c:99
 msgid "Popup on mouse over"
-msgstr "Mostrar ventana emergente, cuando el mouse pase por arriba"
+msgstr "Mostrar ventana emergente si el ratón está encima"
 
 #: ../e_mod_config.c:103
 msgid "Unit Settings"
@@ -51,11 +52,11 @@ msgstr "Métrico"
 
 #: ../e_mod_config.c:107
 msgid "English"
-msgstr "Ingles"
+msgstr "Inglés"
 
 #: ../e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
-msgstr "Código Forecasts de Yahoo"
+msgstr "Código de predicciones de Yahoo"
 
 #: ../e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
@@ -63,16 +64,16 @@ msgstr "Código de previsión del tiempo de Yahoo/Código Zip de EE. UU."
 
 #: ../e_mod_config.c:117
 msgid "To find the code for your area, go to:"
-msgstr "Para encontra el código de tu área ve a:"
+msgstr "Para encontrar el código de su área vaya a:"
 
 #: ../e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
-msgstr "%s, encuentre su código de área, y mirela en la URL"
+msgstr "%s, encuentre su código de área, y miréla en la URL"
 
 #: ../e_mod_main.c:256
 msgid "Forecasts"
-msgstr "Forecasts"
+msgstr "Predicciones meteorológicas"
 
 #: ../e_mod_main.c:301
 msgid "Configuration"
@@ -112,7 +113,7 @@ msgstr "Constante"
 
 #: ../e_mod_main.c:1064
 msgid "Sunrise / Sunset"
-msgstr "Salida de sol/ Puesta de sol"
+msgstr "Salida de sol/Puesta de sol"
 
 #: ../e_mod_main.c:1088
 msgid "High"

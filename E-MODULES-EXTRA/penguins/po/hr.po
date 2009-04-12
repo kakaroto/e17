@@ -1,0 +1,55 @@
+# Croatian translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Miro Glavic <glavicmiro@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-02-14 05:10+0000\n"
+"Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: ../e_mod_config.c:41
+msgid "Population Settings"
+msgstr "Postavke Populacije"
+
+#: ../e_mod_config.c:91
+msgid "Number of penguins:"
+msgstr "Broj Pingvina"
+
+#: ../e_mod_config.c:93 ../e_mod_config.c:103
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: ../e_mod_config.c:96
+msgid "Zoom factor:"
+msgstr "Faktor zumiranja"
+
+#: ../e_mod_config.c:98
+#, c-format
+msgid "%1.1f X"
+msgstr "%1.1f X"
+
+#: ../e_mod_config.c:101
+msgid "Transparency:"
+msgstr "Prozirnost:"
+
+#. Lista
+#: ../e_mod_config.c:107
+msgid "Select population:"
+msgstr "Odaberi populaciju:"
+
+#: ../e_mod_main.c:60
+msgid "Appearance"
+msgstr "Izgled"
+
+#: ../e_mod_main.c:61
+msgid "Penguins"
+msgstr "Pingvini"

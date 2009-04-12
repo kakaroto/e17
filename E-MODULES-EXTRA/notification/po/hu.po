@@ -4,29 +4,27 @@
 #
 # Jani väyrynen <janivayrynen@gmail.com>, 2008.
 # Lisovszki  <lisovszki@gmail.com>, 2008.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-02-02 22:29+0100\n"
-"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"PO-Revision-Date: 2009-01-05 22:00+0000\n"
+"Last-Translator: lisovszki <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
-#, fuzzy
 msgid "Configuration"
-msgstr "Értesítés beállítása"
+msgstr "Beállítások"
 
 #: ../src/e_mod_main.c:118
-#, fuzzy
 msgid "Notification Box"
-msgstr "Értesítés"
+msgstr "Figyelmeztető doboz"
 
 #. register config panel entry
 #: ../src/e_mod_main.c:175
@@ -55,8 +53,9 @@ msgstr ""
 "készíteni. Minden eddigi beállítás törlõdött,<br>de ez a fejlesztés folyamán "
 "gyakran megesik majd. KÉRJÜK,<br>HOGY NE JELENTS HIBÁT! Annyi történt, hogy "
 "a használhatóság<br>érdekében az értesítés modulnak új adatokra van "
-"szüksége, és<br>ezek az elõzõ fájlokból hiányoztak. Mindent visszaállíthatsz,"
-"<br>ahogy neked tetszik. Az esetleges galibákért elnézést kérünk!<br>"
+"szüksége, és<br>ezek az elõzõ fájlokból hiányoztak. Mindent "
+"visszaállíthatsz,<br>ahogy neked tetszik. Az esetleges galibákért elnézést "
+"kérünk!<br>"
 
 #: ../src/e_mod_main.c:239
 msgid ""
@@ -75,13 +74,15 @@ msgstr ""
 
 #: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
-msgstr ""
+msgstr "Hiba a DBus folyamat közben!"
 
 #: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr ""
+"Hiba a DBus folyamat közben! Kérlek ellenőrizd, hogy a dbus helyesen fel van-"
+"e telepítve, és hogy működik-e rendesen."
 
 #: ../src/e_mod_config.c:42
 msgid "Notification Configuration"
@@ -89,23 +90,23 @@ msgstr "Értesítés beállítása"
 
 #: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
 msgid "Urgency"
-msgstr ""
+msgstr "Sűrgősség"
 
 #: ../src/e_mod_config.c:87
 msgid "Levels of urgency to popup : "
-msgstr ""
+msgstr "Sürgösségi felugró szintek "
 
 #: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
 msgid "low"
-msgstr ""
+msgstr "alacsony"
 
 #: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
 msgid "normal"
-msgstr ""
+msgstr "normál"
 
 #: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
 msgid "critical"
-msgstr ""
+msgstr "kritikus"
 
 #: ../src/e_mod_config.c:98
 msgid "Placement"
@@ -127,15 +128,15 @@ msgstr "Irány"
 
 #: ../src/e_mod_config.c:108
 msgid "Direction in which popups will stack themselves : "
-msgstr ""
+msgstr "Utasítás a felugrónak, hogy melyik tegye a téma polcokat halomba: "
 
 #: ../src/e_mod_config.c:121
 msgid "Gap"
-msgstr ""
+msgstr "Hézag"
 
 #: ../src/e_mod_config.c:122
 msgid "Size of the gap between two popups : "
-msgstr ""
+msgstr "Két felugró közti hézag mérete: "
 
 #: ../src/e_mod_config.c:124
 #, c-format
@@ -143,29 +144,28 @@ msgid "%2.0f pixels"
 msgstr "%2.0f pixel"
 
 #: ../src/e_mod_config_item.c:37
-#, fuzzy
 msgid "Notification Box Configuration"
-msgstr "Értesítés beállítása"
+msgstr "Figyelmeztető doboz beállításai"
 
 #: ../src/e_mod_config_item.c:82
 msgid "General Settings"
-msgstr ""
+msgstr "Általános beállítások"
 
 #: ../src/e_mod_config_item.c:83
 msgid "Show Icon Label"
-msgstr ""
+msgstr "Ikon címke megjelenítése"
 
 #: ../src/e_mod_config_item.c:85
 msgid "Show the popup on mouse over"
-msgstr ""
+msgstr "Felugró megjelenítése ha az egér felette van"
 
 #: ../src/e_mod_config_item.c:87
 msgid "Focus the source window when clicking"
-msgstr ""
+msgstr "A forrás ablakra fókuszál rákattintáskor"
 
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
-msgstr ""
+msgstr "Sürgösségi tárolási szintek "
 
 #~ msgid "Gap size"
 #~ msgstr "Méret"

@@ -1,26 +1,28 @@
 # Spanish translation for E17 weather module.
 # This file is put in the public domain.
 # TeB <pasaeljabon@gmail.com>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-05-15 08:57-0300\n"
-"Last-Translator: TeB <pasaeljabon@gmail.com>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:55+0000\n"
+"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../e_mod_config.c:40
 msgid "Weather Configuration"
-msgstr "Configuracion de Weather"
+msgstr "Configuración de Weather"
 
 #: ../e_mod_config.c:86
 msgid "Display Settings"
-msgstr "Visualización"
+msgstr "Preferencias de visualización"
 
 #: ../e_mod_config.c:88
 msgid "Simple"
@@ -32,7 +34,7 @@ msgstr "Detallado"
 
 #: ../e_mod_config.c:92
 msgid "Poll Time"
-msgstr "Tiempo de Muestreo"
+msgstr "Tasa de actualización"
 
 #: ../e_mod_config.c:95
 #, c-format
@@ -41,11 +43,11 @@ msgstr "%2.0f minutos"
 
 #: ../e_mod_config.c:100
 msgid "Degree Settings"
-msgstr "Opciones de Escala"
+msgstr "Preferencias de grados"
 
 #: ../e_mod_config.c:102
 msgid "Celsius"
-msgstr "Centigrados"
+msgstr "Centígrados"
 
 #: ../e_mod_config.c:104
 msgid "Farenheit"
@@ -53,11 +55,11 @@ msgstr "Farenheit"
 
 #: ../e_mod_config.c:108 ../e_mod_config.c:109
 msgid "ICAO Code"
-msgstr "Codigo ICAO"
+msgstr "Código ICAO"
 
 #: ../e_mod_config.c:114
 msgid "Get your ICAO code at:"
-msgstr "Obten tu codigo ICAO en:"
+msgstr "Obtenga su código ICAO en:"
 
 #: ../e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"

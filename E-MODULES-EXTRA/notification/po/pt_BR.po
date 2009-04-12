@@ -1,18 +1,20 @@
 # Brazilian Portuguese translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 # Enrico Nicoletto <liverig@gmail.com>, 2009.
+# Ricardo Ichizo <n1ghtcr4wler@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-10 19:42+0000\n"
-"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-02-28 22:20+0000\n"
+"Last-Translator: Ricardo Ichizo <n1ghtcr4wler@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
@@ -58,13 +60,15 @@ msgstr ""
 
 #: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
-msgstr ""
+msgstr "Erro durante a inicialização do DBus!"
 
 #: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr ""
+"Erro durante a inicialização do DBus! Por favor, cheque se o dbus está "
+"corretamente instalado e executando."
 
 #: ../src/e_mod_config.c:42
 msgid "Notification Configuration"

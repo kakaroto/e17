@@ -1,32 +1,32 @@
 # Spanish translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 # Paco Molinero <paco@byasl.com>, 2008.
+# DiegoJ <diegojromerolopez@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-18 04:59+0000\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-04-11 14:53+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-01-23 08:21+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+
 
 #: ../e_mod_config.c:52
 msgid "Uptime Configuration"
-msgstr "Configuración del tiempo activo"
+msgstr "Configuración de Uptime"
 
 #: ../e_mod_config.c:105
 msgid "Uptime Settings"
-msgstr "Preferencias del tiempo activo"
+msgstr "Preferencias de Uptime"
 
 #: ../e_mod_config.c:107
 msgid "Update Interval:"
-msgstr "Actualizar intervalo:"
+msgstr "Intervalo de actualización:"
 
 #: ../e_mod_config.c:110 ../e_mod_config.c:117
 #, c-format

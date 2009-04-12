@@ -5,18 +5,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2009-01-10 12:41+0000\n"
-"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"PO-Revision-Date: 2009-03-08 02:35+0000\n"
+"Last-Translator: ersi <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
 #: ../src/e_mod_configure.c:44
 msgid "Net Module Configuration"
-msgstr ""
+msgstr "Nätmodulskonfiguration"
 
 #: ../src/e_mod_configure.c:114
 msgid "General Settings"
@@ -28,15 +29,15 @@ msgstr "Visa text"
 
 #: ../src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
-msgstr ""
+msgstr "Visa popup vid mus-över"
 
 #: ../src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
-msgstr ""
+msgstr "Starta applikation vid dubbelklick"
 
 #: ../src/e_mod_configure.c:125
 msgid "Activity Notification Level"
-msgstr ""
+msgstr "Aktivitetsnotifieringsnivå"
 
 #: ../src/e_mod_configure.c:127
 msgid "High (MB)"
