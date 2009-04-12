@@ -5655,7 +5655,7 @@ group { name: "etk/label";
 			description { state: "default" 0.0;
 				align: 0.0 0.5;
 				rel1 {
-					offset: 5 0;
+					offset: 5 -3;
 				}
 				text {
 					style: "Default";
