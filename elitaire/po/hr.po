@@ -1,137 +1,133 @@
-# translation of elitaire to
-# Simplified Chinese translation for Enlightenment17.
-# This file is put in the public domain.
-#
-# Aron Xu <aronmalache@163.com>, 2008.
-#
+# Croatian translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# Miro Glavic <glavicmiro@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: elitaire e17\n"
-"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-11-11 21:45+0800\n"
-"PO-Revision-Date: 2009-02-12 17:45+0000\n"
-"Last-Translator: Aron <aronmalache@163.com>\n"
-"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"PO-Revision-Date: 2009-02-12 05:05+0000\n"
+"Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
+"Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
 #: ../src/edje_frontend_gui.cpp:755
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
-msgstr ""
+msgstr "Eliaire Greška u %s: nedostaje dio vrijednost_elementa!\n"
 
 #: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
 #: ../src/edje_frontend_gui.cpp:762
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
-msgstr ""
+msgstr "Elitaire Greška u %s: nedostaje grupa elemenata!\n"
 
 #: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
-msgstr "您赢了！"
+msgstr "Vi ste pobjedili!"
 
 #: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
-msgstr "您输了！"
+msgstr "Vi ste izgubili!"
 
 #: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
-msgstr "游戏结束"
+msgstr "Završetak igre"
 
 #: ../src/edje_frontend_game.cpp:223
 #, c-format
 msgid "Elitaire Error: cards file %s not found!\n"
-msgstr ""
+msgstr "Elitaire Greška: datoteka sa kartama %s nije pronađena!\n"
 
 #: ../src/edje_frontend_game.cpp:234
 #, c-format
 msgid "Elitaire Error in %s: elitaire_card_field does not exist!\n"
-msgstr ""
+msgstr "Elitaire Greška u %s: elitaire_karta_polje ne postoji!\n"
 
 #: ../src/edje_frontend_gui.cpp:208
 #, c-format
 msgid "Elitaire Error: unable to find %s theme!\n"
-msgstr ""
+msgstr "Elitaire Greška: nije moguće pronaći %s temu!\n"
 
 #. set the label text
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
-msgstr "游戏"
+msgstr "Igre"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
-msgstr "主题"
+msgstr "Teme"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
-msgstr ""
+msgstr "Karte"
 
 #: ../src/edje_frontend_menu.cpp:24 ../src/edje_frontend_menu.cpp:57
 msgid "CONTEXT|Undo"
-msgstr ""
+msgstr "KONTEKST|Poništi"
 
 #: ../src/edje_frontend_menu.cpp:25 ../src/edje_frontend_menu.cpp:61
 msgid "CONTEXT|Highscore"
-msgstr ""
+msgstr "KONTEKST|Visoki rezultat"
 
 #: ../src/edje_frontend_menu.cpp:26 ../src/edje_frontend_menu.cpp:63
 msgid "CONTEXT|Preferences"
-msgstr ""
+msgstr "KONTEKST|Postavke"
 
 #: ../src/edje_frontend_menu.cpp:27 ../src/edje_frontend_menu.cpp:65
 msgid "CONTEXT|About"
-msgstr ""
+msgstr "KONTEKST|O"
 
 #: ../src/edje_frontend_menu.cpp:28 ../src/edje_frontend_menu.cpp:67
 msgid "CONTEXT|Help"
-msgstr ""
+msgstr "KONTEKST|Pomoć"
 
 #: ../src/edje_frontend_menu.cpp:79
 msgid "CONTEXT|New"
-msgstr ""
+msgstr "KONTEKST|Nova"
 
 #: ../src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
-msgstr ""
+msgstr "Elitaire Greška: Nema datoteke tema u %s!\n"
 
 #: ../src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
-msgstr ""
+msgstr "Elitaire Greška: Nema datoteke karti u %s!\n"
 
 #: ../src/elitaire_card.cpp:49 ../src/elitaire_card.cpp:221
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
-msgstr ""
+msgstr "Elitaire Greška: Karta %s nedostaje!\n"
 
 #: ../src/elitaire_card.cpp:55 ../src/elitaire_card.cpp:227
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
-msgstr ""
+msgstr "Elitaire Greška: Bg pic je propuštena!\n"
 
 #: ../src/elitaire_card_jobs.cpp:394
 #, c-format
 msgid "Elitaire Error: The shadow pic is missed!\n"
-msgstr ""
+msgstr "Elitaire Greška: Sjena pic je propuštena!\n"
 
 #: ../src/elitaire.cpp:134
 #, c-format
 msgid "Elitaire Error: unknown game %s\n"
-msgstr ""
+msgstr "Elitaire Greška: nepoznata igra %s!\n"
 
 #: ../src/elitaire.cpp:221
 #, c-format
 msgid "Elitaire Error: Callback registering failed!\n"
-msgstr ""
+msgstr "Elitaire Greška: Povratno registriranje neuspješno!\n"
 
 #: ../src/ewl_dialog_about.cpp:19
 msgid "About"
-msgstr "关于"
+msgstr "O"
 
 #: ../src/ewl_dialog_about.cpp:38
 #, c-format
@@ -147,119 +143,119 @@ msgid ""
 "  %s\n"
 "  %s"
 msgstr ""
-"%s·版本·%s\n"
+"%s verzija %s\n"
 "\n"
-"作者：\n"
-"··%s\n"
-"··%s\n"
-"··%s\n"
+"Autor:\n"
+"  %s\n"
+"  %s\n"
+"  %s\n"
 "\n"
-"鸣谢：\n"
-"··%s\n"
-"··%s"
+"Zahvaljujemo:\n"
+"  %s\n"
+"  %s"
 
 #: ../src/ewl_dialog_config.cpp:41
 msgid "Configuration"
-msgstr "配置"
+msgstr "Konfiguracija"
 
 #: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
-msgstr "图形"
+msgstr "Grafički"
 
 #: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
-msgstr ""
+msgstr "animirani pokreti"
 
 #: ../src/ewl_dialog_config.cpp:102 ../src/ewl_dialog_config.cpp:289
 msgid "shadows"
-msgstr ""
+msgstr "sjenke"
 
 #: ../src/ewl_dialog_config.cpp:118
 msgid "velocity:"
-msgstr ""
+msgstr "brzina:"
 
 #: ../src/ewl_dialog_config.cpp:150
 msgid "frame rate:"
-msgstr ""
+msgstr "brzina okvira:"
 
 #: ../src/ewl_dialog_config.cpp:182
 msgid "Laziness"
-msgstr ""
+msgstr "Lijenost"
 
 #: ../src/ewl_dialog_config.cpp:187 ../src/ewl_dialog_config.cpp:301
 msgid "normal mode"
-msgstr ""
+msgstr "normalni mod"
 
 #: ../src/ewl_dialog_config.cpp:195 ../src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
-msgstr ""
+msgstr "lijeni mod"
 
 #: ../src/ewl_dialog_config.cpp:211
 msgid "Render Engine"
-msgstr ""
+msgstr "Prikazivački Stroj"
 
 #: ../src/ewl_dialog_config.cpp:219
 msgid "Changes only affect after new start"
-msgstr ""
+msgstr "Promjene utječu samo nakon novog starta"
 
 #: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
-msgstr "软件"
+msgstr "Softver"
 
 #: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
-msgstr "OpenGL·(测试阶段)"
+msgstr "OtvoreniGL (test)"
 
 #: ../src/ewl_dialog_config.cpp:271
 #, c-format
 msgid "Elitaire Error: Could not save configuration.\n"
-msgstr ""
+msgstr "Elitaire Greška: Nije moguće spremiti konfiguraciju.\n"
 
 #: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
-msgstr "最高分"
+msgstr "Visoki rezultat"
 
 #: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
-msgstr "姓名"
+msgstr "Ime"
 
 #: ../src/ewl_dialog_hiscore.cpp:145
 msgid "Please insert your name"
-msgstr "请输入您的姓名"
+msgstr "Molimo unesite svoje ime"
 
 #: ../src/ewl_dialog_hiscore.cpp:218
 msgid "Won Games:"
-msgstr ""
+msgstr "Broj Pobjeda:"
 
 #: ../src/ewl_dialog_hiscore.cpp:233
 msgid "Lost Games:"
-msgstr ""
+msgstr "Broj Poraza:"
 
 #: ../src/ewl_dialog_hiscore.cpp:248
 msgid "relative Quote:"
-msgstr ""
+msgstr "relativni Navod:"
 
 #: ../src/main.cpp:33
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore\n"
-msgstr "Elitaire·错误：无法初始化·Ecore\n"
+msgstr "Elitaire Greška: Nemoguće init Ecore.\n"
 
 #: ../src/main.cpp:37
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore File\n"
-msgstr "Elitaire·错误：无法初始化 Ecore·文件\n"
+msgstr "Elitaire Greška: Nemoguće init Ecore Datoteku.\n"
 
 #: ../src/main.cpp:42
 #, c-format
 msgid "Elitaire Error: Cannot init Edje\n"
-msgstr "Elitaire·错误：无法初始化·Edje\n"
+msgstr "Elitaire Greška: Nemoguće init Edje.\n"
 
 #: ../src/main.cpp:47
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore Config\n"
-msgstr "Elitaire 错误：无法初始化 Ecore 配置\n"
+msgstr "Elitaire Greška: Nemoguće init Ecore Config.\n"
 
 #: ../src/main.cpp:52
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
-msgstr "Elitaire 错误：无法初始化 Ewl\n"
+msgstr "Elitaire Greška: Nemoguće init Ewl.\n"

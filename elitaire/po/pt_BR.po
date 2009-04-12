@@ -1,22 +1,18 @@
-# translation of elitaire to
-# Simplified Chinese translation for Enlightenment17.
-# This file is put in the public domain.
-#
-# Aron Xu <aronmalache@163.com>, 2008.
-#
+# Brazilian Portuguese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# ruysabino <ruysabino@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: elitaire e17\n"
-"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-11-11 21:45+0800\n"
-"PO-Revision-Date: 2009-02-12 17:45+0000\n"
-"Last-Translator: Aron <aronmalache@163.com>\n"
-"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"PO-Revision-Date: 2009-02-12 15:14+0000\n"
+"Last-Translator: ruysabino <ruysabino@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
 #: ../src/edje_frontend_gui.cpp:755
@@ -32,15 +28,15 @@ msgstr ""
 
 #: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
-msgstr "您赢了！"
+msgstr "Você venceu!"
 
 #: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
-msgstr "您输了！"
+msgstr "Você perdeu!"
 
 #: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
-msgstr "游戏结束"
+msgstr "Fim de jogo"
 
 #: ../src/edje_frontend_game.cpp:223
 #, c-format
@@ -60,11 +56,11 @@ msgstr ""
 #. set the label text
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
-msgstr "游戏"
+msgstr "Jogos"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
-msgstr "主题"
+msgstr "Temas"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
@@ -131,7 +127,7 @@ msgstr ""
 
 #: ../src/ewl_dialog_about.cpp:19
 msgid "About"
-msgstr "关于"
+msgstr ""
 
 #: ../src/ewl_dialog_about.cpp:38
 #, c-format
@@ -147,24 +143,14 @@ msgid ""
 "  %s\n"
 "  %s"
 msgstr ""
-"%s·版本·%s\n"
-"\n"
-"作者：\n"
-"··%s\n"
-"··%s\n"
-"··%s\n"
-"\n"
-"鸣谢：\n"
-"··%s\n"
-"··%s"
 
 #: ../src/ewl_dialog_config.cpp:41
 msgid "Configuration"
-msgstr "配置"
+msgstr ""
 
 #: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
-msgstr "图形"
+msgstr ""
 
 #: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
@@ -204,11 +190,11 @@ msgstr ""
 
 #: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
-msgstr "软件"
+msgstr ""
 
 #: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
-msgstr "OpenGL·(测试阶段)"
+msgstr ""
 
 #: ../src/ewl_dialog_config.cpp:271
 #, c-format
@@ -217,15 +203,15 @@ msgstr ""
 
 #: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
-msgstr "最高分"
+msgstr ""
 
 #: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
-msgstr "姓名"
+msgstr ""
 
 #: ../src/ewl_dialog_hiscore.cpp:145
 msgid "Please insert your name"
-msgstr "请输入您的姓名"
+msgstr ""
 
 #: ../src/ewl_dialog_hiscore.cpp:218
 msgid "Won Games:"
@@ -242,24 +228,24 @@ msgstr ""
 #: ../src/main.cpp:33
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore\n"
-msgstr "Elitaire·错误：无法初始化·Ecore\n"
+msgstr ""
 
 #: ../src/main.cpp:37
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore File\n"
-msgstr "Elitaire·错误：无法初始化 Ecore·文件\n"
+msgstr ""
 
 #: ../src/main.cpp:42
 #, c-format
 msgid "Elitaire Error: Cannot init Edje\n"
-msgstr "Elitaire·错误：无法初始化·Edje\n"
+msgstr ""
 
 #: ../src/main.cpp:47
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore Config\n"
-msgstr "Elitaire 错误：无法初始化 Ecore 配置\n"
+msgstr ""
 
 #: ../src/main.cpp:52
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
-msgstr "Elitaire 错误：无法初始化 Ewl\n"
+msgstr ""

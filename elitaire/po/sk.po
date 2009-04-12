@@ -1,137 +1,133 @@
-# translation of elitaire to
-# Simplified Chinese translation for Enlightenment17.
-# This file is put in the public domain.
-#
-# Aron Xu <aronmalache@163.com>, 2008.
-#
+# Slovak translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: elitaire e17\n"
-"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-11-11 21:45+0800\n"
-"PO-Revision-Date: 2009-02-12 17:45+0000\n"
-"Last-Translator: Aron <aronmalache@163.com>\n"
-"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"PO-Revision-Date: 2009-03-24 13:21+0000\n"
+"Last-Translator: helix84 <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:701
 #: ../src/edje_frontend_gui.cpp:755
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
-msgstr ""
+msgstr "Chyba Elitaire v %s: chýba časť element_value!\n"
 
 #: ../src/edje_frontend_game.cpp:68 ../src/edje_frontend_gui.cpp:708
 #: ../src/edje_frontend_gui.cpp:762
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
-msgstr ""
+msgstr "Chyba Elitaire v %s: chýba skupina element!\n"
 
 #: ../src/edje_frontend_game.cpp:101
 msgid "You win!"
-msgstr "您赢了！"
+msgstr "Vyhrali ste!"
 
 #: ../src/edje_frontend_game.cpp:108
 msgid "You lose!"
-msgstr "您输了！"
+msgstr "Prehrali ste!"
 
 #: ../src/edje_frontend_game.cpp:118
 msgid "Game Over"
-msgstr "游戏结束"
+msgstr "Koniec hry"
 
 #: ../src/edje_frontend_game.cpp:223
 #, c-format
 msgid "Elitaire Error: cards file %s not found!\n"
-msgstr ""
+msgstr "Chyba Elitaire: súbor s kartami %s nebol nájdený!\n"
 
 #: ../src/edje_frontend_game.cpp:234
 #, c-format
 msgid "Elitaire Error in %s: elitaire_card_field does not exist!\n"
-msgstr ""
+msgstr "Chyba Elitaire v %s: pole elitaire_card_field neexistuje!\n"
 
 #: ../src/edje_frontend_gui.cpp:208
 #, c-format
 msgid "Elitaire Error: unable to find %s theme!\n"
-msgstr ""
+msgstr "Chyba Elitaire: nepodarilo sa nájsť tému vzhľadu %s!\n"
 
 #. set the label text
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Games"
-msgstr "游戏"
+msgstr "Hry"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Themes"
-msgstr "主题"
+msgstr "Témy vzhľadu"
 
 #: ../src/edje_frontend_gui.cpp:404
 msgid "Cards"
-msgstr ""
+msgstr "Karty"
 
 #: ../src/edje_frontend_menu.cpp:24 ../src/edje_frontend_menu.cpp:57
 msgid "CONTEXT|Undo"
-msgstr ""
+msgstr "CONTEXT|Vrátiť"
 
 #: ../src/edje_frontend_menu.cpp:25 ../src/edje_frontend_menu.cpp:61
 msgid "CONTEXT|Highscore"
-msgstr ""
+msgstr "CONTEXT|Najlepšie skóre"
 
 #: ../src/edje_frontend_menu.cpp:26 ../src/edje_frontend_menu.cpp:63
 msgid "CONTEXT|Preferences"
-msgstr ""
+msgstr "CONTEXT|Nastavenia"
 
 #: ../src/edje_frontend_menu.cpp:27 ../src/edje_frontend_menu.cpp:65
 msgid "CONTEXT|About"
-msgstr ""
+msgstr "CONTEXT|O aplikácii"
 
 #: ../src/edje_frontend_menu.cpp:28 ../src/edje_frontend_menu.cpp:67
 msgid "CONTEXT|Help"
-msgstr ""
+msgstr "CONTEXT|Pomocník"
 
 #: ../src/edje_frontend_menu.cpp:79
 msgid "CONTEXT|New"
-msgstr ""
+msgstr "CONTEXT|Nová"
 
 #: ../src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
-msgstr ""
+msgstr "Chyba Elitaire: V %s nie je žiadny súbor témy vzhľadu!\n"
 
 #: ../src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
-msgstr ""
+msgstr "Chyba Elitaire: V %s nie je žiadny súbor s kartami!\n"
 
 #: ../src/elitaire_card.cpp:49 ../src/elitaire_card.cpp:221
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
-msgstr ""
+msgstr "Chyba Elitaire: Chýba karta %s!\n"
 
 #: ../src/elitaire_card.cpp:55 ../src/elitaire_card.cpp:227
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
-msgstr ""
+msgstr "Chyba Elitaire: Chýba obrázok pozadia!\n"
 
 #: ../src/elitaire_card_jobs.cpp:394
 #, c-format
 msgid "Elitaire Error: The shadow pic is missed!\n"
-msgstr ""
+msgstr "Chyba Elitaire: Chýba obrázok tieňa!\n"
 
 #: ../src/elitaire.cpp:134
 #, c-format
 msgid "Elitaire Error: unknown game %s\n"
-msgstr ""
+msgstr "Chyba Elitaire: neznáma hra %s!\n"
 
 #: ../src/elitaire.cpp:221
 #, c-format
 msgid "Elitaire Error: Callback registering failed!\n"
-msgstr ""
+msgstr "Chyba Elitaire: Chyba pri registrácii spätného volania!\n"
 
 #: ../src/ewl_dialog_about.cpp:19
 msgid "About"
-msgstr "关于"
+msgstr "O aplikácii"
 
 #: ../src/ewl_dialog_about.cpp:38
 #, c-format
@@ -147,119 +143,119 @@ msgid ""
 "  %s\n"
 "  %s"
 msgstr ""
-"%s·版本·%s\n"
+"%s verzia %s\n"
 "\n"
-"作者：\n"
-"··%s\n"
-"··%s\n"
-"··%s\n"
+"Autor:\n"
+"  %s\n"
+"  %s\n"
+"  %s\n"
 "\n"
-"鸣谢：\n"
-"··%s\n"
-"··%s"
+"Poďakovanie:\n"
+"  %s\n"
+"  %s"
 
 #: ../src/ewl_dialog_config.cpp:41
 msgid "Configuration"
-msgstr "配置"
+msgstr "Konfigurácia"
 
 #: ../src/ewl_dialog_config.cpp:86
 msgid "Graphic"
-msgstr "图形"
+msgstr "Grafika"
 
 #: ../src/ewl_dialog_config.cpp:93 ../src/ewl_dialog_config.cpp:286
 msgid "animated movements"
-msgstr ""
+msgstr "animované pohyby"
 
 #: ../src/ewl_dialog_config.cpp:102 ../src/ewl_dialog_config.cpp:289
 msgid "shadows"
-msgstr ""
+msgstr "tiene"
 
 #: ../src/ewl_dialog_config.cpp:118
 msgid "velocity:"
-msgstr ""
+msgstr "rýchlosť:"
 
 #: ../src/ewl_dialog_config.cpp:150
 msgid "frame rate:"
-msgstr ""
+msgstr "rýchlosť v rámcoch:"
 
 #: ../src/ewl_dialog_config.cpp:182
 msgid "Laziness"
-msgstr ""
+msgstr "Lenivosť"
 
 #: ../src/ewl_dialog_config.cpp:187 ../src/ewl_dialog_config.cpp:301
 msgid "normal mode"
-msgstr ""
+msgstr "normálny režim"
 
 #: ../src/ewl_dialog_config.cpp:195 ../src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
-msgstr ""
+msgstr "lenivý režim"
 
 #: ../src/ewl_dialog_config.cpp:211
 msgid "Render Engine"
-msgstr ""
+msgstr "Vykresľovacie jadro"
 
 #: ../src/ewl_dialog_config.cpp:219
 msgid "Changes only affect after new start"
-msgstr ""
+msgstr "Zmeny sa prejavia iba po opätovnom spustení"
 
 #: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
-msgstr "软件"
+msgstr "Softvér"
 
 #: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
-msgstr "OpenGL·(测试阶段)"
+msgstr "OpenGL (experimentálne)"
 
 #: ../src/ewl_dialog_config.cpp:271
 #, c-format
 msgid "Elitaire Error: Could not save configuration.\n"
-msgstr ""
+msgstr "Chyba Elitaire: nepodarilo sa uložiť konfiguráciu!\n"
 
 #: ../src/ewl_dialog_hiscore.cpp:50
 msgid "Highscore"
-msgstr "最高分"
+msgstr "Najlepšie skóre"
 
 #: ../src/ewl_dialog_hiscore.cpp:119
 msgid "Name"
-msgstr "姓名"
+msgstr "Meno"
 
 #: ../src/ewl_dialog_hiscore.cpp:145
 msgid "Please insert your name"
-msgstr "请输入您的姓名"
+msgstr "Prosím, zadajte svoje meno"
 
 #: ../src/ewl_dialog_hiscore.cpp:218
 msgid "Won Games:"
-msgstr ""
+msgstr "Vyhraných hier:"
 
 #: ../src/ewl_dialog_hiscore.cpp:233
 msgid "Lost Games:"
-msgstr ""
+msgstr "Prehraných hier:"
 
 #: ../src/ewl_dialog_hiscore.cpp:248
 msgid "relative Quote:"
-msgstr ""
+msgstr "relatívne:"
 
 #: ../src/main.cpp:33
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore\n"
-msgstr "Elitaire·错误：无法初始化·Ecore\n"
+msgstr "Chyba Elitaire: Nemožno inicializovať Ecore\n"
 
 #: ../src/main.cpp:37
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore File\n"
-msgstr "Elitaire·错误：无法初始化 Ecore·文件\n"
+msgstr "Chyba Elitaire: Nemožno inicializovať Ecore File\n"
 
 #: ../src/main.cpp:42
 #, c-format
 msgid "Elitaire Error: Cannot init Edje\n"
-msgstr "Elitaire·错误：无法初始化·Edje\n"
+msgstr "Chyba Elitaire: Nemožno inicializovať Edje\n"
 
 #: ../src/main.cpp:47
 #, c-format
 msgid "Elitaire Error: Cannot init Ecore Config\n"
-msgstr "Elitaire 错误：无法初始化 Ecore 配置\n"
+msgstr "Chyba Elitaire: Nemožno inicializovať Ecore Config\n"
 
 #: ../src/main.cpp:52
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
-msgstr "Elitaire 错误：无法初始化 Ewl\n"
+msgstr "Chyba Elitaire: Nemožno inicializovať Ewl\n"
