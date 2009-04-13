@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -536,6 +536,11 @@ msgid ""
 msgstr ""
 "인라이튼먼트 아이콘상자\n"
 "설정 대화상자\n"
+
+#: src/coords.c:74
+#, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr ""
 
 #: src/desktops.c:124
 msgid ""
@@ -1122,30 +1127,30 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 #, fuzzy
 msgid "composite"
 msgstr "사운드 사용"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1156,23 +1161,23 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -538,6 +538,11 @@ msgid ""
 msgstr ""
 "Enlightenment Iconbox\n"
 "dijalog osobina\n"
+
+#: src/coords.c:74
+#, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr ""
 
 #: src/desktops.c:124
 msgid ""
@@ -1126,30 +1131,30 @@ msgstr "Iconbox opcije"
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 #, fuzzy
 msgid "composite"
 msgstr "Omogu�i zvukove"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1160,23 +1165,23 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"

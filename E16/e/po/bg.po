@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -534,6 +534,11 @@ msgid ""
 msgstr ""
 "E: Iconbox\n"
 "Диалог за настройки\n"
+
+#: src/coords.c:74
+#, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr ""
 
 #: src/desktops.c:124
 msgid ""
@@ -1126,30 +1131,30 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 #, fuzzy
 msgid "composite"
 msgstr "Включи Композитора"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 #, fuzzy
 msgid "sound"
 msgstr "Звук"
 
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1159,19 +1164,19 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 

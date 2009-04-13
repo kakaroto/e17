@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2008-10-09 10:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -516,6 +516,11 @@ msgid ""
 msgstr ""
 "Dialog for innstilling av egenskapene\n"
 "til ikonboksen i Enlightenment\n"
+
+#: src/coords.c:74
+#, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr ""
 
 #: src/desktops.c:124
 msgid ""
@@ -1100,28 +1105,28 @@ msgstr "Meny for ikonboksen"
 msgid "Iconbox Settings"
 msgstr "Ikonboks"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "Beskjed"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 msgid "composite"
 msgstr ""
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 msgid "sound"
 msgstr "lyd"
 
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Kommando Hjelp\n"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1131,23 +1136,23 @@ msgstr ""
 "bruk \"help all\" for beskrivelse av ha alle kommandoene\n"
 "bruk \"help <kommando>\" for beskrivelse av hver enkelt kommando\n"
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "kommandoer som er tilgjengelig for øyeblikket:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "bruk \"help <kommando>\" for individuell beskrivelse\n"
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivelse>\n"

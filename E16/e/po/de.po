@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2009-03-28 16:16+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -638,6 +638,11 @@ msgid ""
 msgstr ""
 "Enlightenment Iconbox-\n"
 "Einstellungsdialog\n"
+
+#: src/coords.c:74
+#, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr ""
 
 # src/desktops.c:1110
 #: src/desktops.c:124
@@ -1313,31 +1318,31 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "Mitteilung"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 wurde ohne %s Unterstützung gebaut"
 
 # src/settings.c:1591
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 msgid "composite"
 msgstr "Composite"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 msgid "sound"
 msgstr "Klänge"
 
 # src/ipc.c:4737
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen\n"
 
 # src/ipc.c:4743
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1349,23 +1354,23 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
 msgstr "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "Verwenden Sie \"help full\" für die ausführliche Beschreibung der Befehl\n"
 
 # src/ipc.c:4781
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 msgid "         <command>     : <description>\n"
 msgstr ""
 "         <command>     : <description>\n"

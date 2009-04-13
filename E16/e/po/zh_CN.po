@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-03 21:11+0200\n"
+"POT-Creation-Date: 2009-04-13 14:57+0200\n"
 "PO-Revision-Date: 2009-02-28 19:15+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -469,6 +469,11 @@ msgid ""
 msgstr ""
 "Enlightenment 图标架\n"
 "设置对话框\n"
+
+#: src/coords.c:74
+#, fuzzy, c-format
+msgid "Focused/unfocused opacity: %d/%d %%"
+msgstr "聚焦透明度 100%"
 
 #: src/desktops.c:124
 msgid ""
@@ -968,47 +973,47 @@ msgstr "图标架选项"
 msgid "Iconbox Settings"
 msgstr "图标架设置"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
 msgid "Message"
 msgstr "消息"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 构建带有 %s 支持"
 
-#: src/ipc.c:1465
+#: src/ipc.c:1473
 msgid "composite"
 msgstr "混成"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1480
 msgid "sound"
 msgstr "声音"
 
-#: src/ipc.c:1815
+#: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC 命令帮助\n"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1827
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
 msgstr "当前可用命令：\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1840
+#: src/ipc.c:1848
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1850 src/ipc.c:1862
 msgid "         <command>     : <description>\n"
 msgstr "         <command>     ：<description>\n"
 
