@@ -85,3 +85,42 @@ EAPI Eina_Bool enesim_operator_scaler_1d(Enesim_Operator *op, uint32_t *s,
 
 	return EINA_TRUE;
 }
+
+
+EAPI Eina_Bool enesim_operator_transformer_1d(Enesim_Operator *op, uint32_t *src,
+		uint32_t spitch,  uint32_t sw, uint32_t sh,
+		float ox, float oy,
+		float xx, float xy, float xz,
+		float yx, float yy, float yz,
+		float zx, float zy, float zz,
+		uint32_t dx, uint32_t dy, uint32_t dlen,
+		uint32_t *dst)
+{
+	Enesim_Cpu_Queue q;
+
+	if (!_queue_create(&q, op, ENESIM_OPERATOR_TRANSFORMER1D))
+		return EINA_FALSE;
+
+	q.transformer.src = src;
+	q.transformer.spitch = spitch;
+	q.transformer.sw = sw;
+	q.transformer.sh = sh;
+	q.transformer.ox = ox;
+	q.transformer.oy = oy;
+	q.transformer.xx = xx;
+	q.transformer.xy = xy;
+	q.transformer.xz = xz;
+	q.transformer.yx = yx;
+	q.transformer.yy = yy;
+	q.transformer.yz = yz;
+	q.transformer.zx = zx;
+	q.transformer.zy = zy;
+	q.transformer.zz = zz;
+	q.transformer.type.dim1.x = dx;
+	q.transformer.type.dim1.y = dy;
+	q.transformer.type.dim1.len = dlen;
+	q.transformer.dst = dst;
+	op->cpu->run(op->cpu, &q);
+
+	return EINA_TRUE;
+}

@@ -1,4 +1,4 @@
-SUBDIRS = cpu util drawer rasterizer converter scaler
+SUBDIRS = cpu util drawer rasterizer converter scaler transformer
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -32,6 +32,7 @@ rasterizer/libenesim_rasterizer.la \
 drawer/libenesim_drawer.la \
 converter/libenesim_converter.la \
 scaler/libenesim_scaler.la \
+transformer/libenesim_transformer.la \
 @ENESIM_LIBS@
 
 libenesim_la_DEPENDENCIES = \
@@ -41,6 +42,7 @@ rasterizer/libenesim_rasterizer.la \
 drawer/libenesim_drawer.la \
 format/libenesim_format.la \
 converter/libenesim_converter.la \
-scaler/libenesim_scaler.la
+scaler/libenesim_scaler.la \
+transformer/libenesim_transformer.la
 
 libenesim_la_LDFLAGS = -no-undefined -version-info @version_info@

@@ -76,8 +76,33 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 		}
 		break;
 
+		case ENESIM_OPERATOR_TRANSFORMER1D:
+		{
+			Enesim_Transformer_1D tx = q->cb;
+
+			tx(q->transformer.src, q->transformer.spitch,
+					q->transformer.sw,
+					q->transformer.sh,
+					q->transformer.ox,
+					q->transformer.oy,
+					q->transformer.xx,
+					q->transformer.xy,
+					q->transformer.xz,
+					q->transformer.yx,
+					q->transformer.yy,
+					q->transformer.yz,
+					q->transformer.zx,
+					q->transformer.zy,
+					q->transformer.zz,
+					q->transformer.type.dim1.x,
+					q->transformer.type.dim1.y,
+					q->transformer.type.dim1.len,
+					q->transformer.dst);
+		}
+		break;
+
 		default:
-		//printf("Operation not defined %d\n", q->id);
+		printf("Operation not defined %d\n", q->id);
 		break;
 	}
 

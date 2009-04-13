@@ -17,16 +17,69 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-#include "_argb8888_c.c"
+
+/* FIXME this code should be xported somehow */
+#if 0
+#define SAMPLE_FAST
+#define SAMPLE_GOOD
+
+static inline void argb8888_surface_sample(uint32_t *src,
+		uint32_t sw, uint32_t sh, uint32_t spitch,
+		uint32_t sx, uint32_t sy, uint32_t *dst)
+{
+	uint32_t *ssrc = src + (sy * spitch) + sx;
+#ifdef SAMPLE_GOOD
+	uint32_t p3 = 0, p2 = 0, p1 = 0;
+#endif
+
+#ifdef SAMPLE_FAST
+	*dst = *ssrc;
+#elif SAMPLE_GOOD
+	*p0 = *ssrc;
+	if ((sy > -1) && ((sx + 1) < sw))
+	{
+		p1 = *(ssrc + 1);
+	}
+	if ((sy + 1) < sh)
+	{
+		if (sx > -1)
+		{
+			p2 = *(ssrc + spitch);
+		}
+		if ((sx + 1) < w)
+		{
+			p3 = *(ssrc + spitch + 1);
+		}
+	}
+	if (p0 | p1 | p2 | p3)
+	{
+		uint16 ax, ay;
+
+		ax = 1 + ((sxx >> 8) & 0xff);
+		ay = 1 + ((syy >> 8) & 0xff);
+
+		p0 = argb8888_interp_256(ax, p1, p0);
+		p2 = argb8888_interp_256(ax, p3, p2);
+		p0 = argb8888_interp_256(ay, p2, p0);
+	}
+	*dst = p0;
+#endif
+}
+#endif
+#include "_affine.c"
+#include "_projective.c"
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-Enesim_Transformer argb8888_tx = {
-	//.mask[ENESIM_FORMAT_ARGB8888][ENESIM_FORMAT_ARGB8888][ENESIM_TRANSFORMATION_AFFINE][ENESIM_GOOD] = 
-	//	mask_argb8888_argb8888_affine_good_no_no,
-	.normal[ENESIM_FORMAT_ARGB8888][ENESIM_MATRIX_AFFINE][ENESIM_GOOD] =
-		normal_argb8888_argb8888_affine_good_no_no,
-	.normal[ENESIM_FORMAT_ARGB8888][ENESIM_MATRIX_AFFINE][ENESIM_FAST] =
-		normal_argb8888_argb8888_affine_fast_no_no,
-};
-
+void enesim_transformer_argb8888_init(Enesim_Cpu *cpu)
+{
+	/* TODO check if the cpu is the host */
+	enesim_transformer_1d_register(cpu,
+			_tx_argb8888_affine_fast_argb8888,
+			ENESIM_FORMAT_ARGB8888, ENESIM_MATRIX_AFFINE,
+			ENESIM_FAST, ENESIM_FORMAT_ARGB8888);
+	enesim_transformer_1d_register(cpu,
+			_tx_argb8888_projective_fast_argb8888,
+			ENESIM_FORMAT_ARGB8888, ENESIM_MATRIX_PROJECTIVE,
+			ENESIM_FAST, ENESIM_FORMAT_ARGB8888);
+}

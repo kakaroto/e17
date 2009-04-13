@@ -396,22 +396,23 @@ ok:
 	}
 	else if (!strcmp(opt_bench, "transformer"))
 	{
-		//transformer_bench();
+		transformer_bench();
 	}
 	else if (!strcmp(opt_bench, "cpu"))
 	{
 		//cpu_bench();
 	}
-	else if (!strcmp(opt_bench, "all"))
-	{
-		drawer_bench();
-		//transformer_bench();
-		//rasterizer_bench();
-		//renderer_bench();
-	}
 	else if (!strcmp(opt_bench, "scaler"))
 	{
 		scaler_bench();
+	}
+	else if (!strcmp(opt_bench, "all"))
+	{
+		drawer_bench();
+		transformer_bench();
+		scaler_bench();
+		//rasterizer_bench();
+
 	}
 	enesim_shutdown();
 	/* this bench should be on test

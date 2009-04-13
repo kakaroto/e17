@@ -2,6 +2,198 @@
 /******************************************************************************
  *                      Transfomer benchmark functions                        *
  ******************************************************************************/
+static void _project_matrix_get(Enesim_Matrix *m)
+{
+	Enesim_Quad q1, q2;
+
+	enesim_matrix_identity(m);
+	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	//enesim_quad_coords_set(&q2, 50, 50, 190, 10, 195, 140, 50, 240);
+	enesim_matrix_quad_quad_to(m, &q2, &q1);
+}
+static void _affine_matrix_get(Enesim_Matrix *m)
+{
+	Enesim_Matrix tmp;
+
+	enesim_matrix_identity(m);
+	enesim_matrix_translate(m, opt_width/2, opt_height/2);
+	enesim_matrix_scale(&tmp, 2, 2);
+	enesim_matrix_compose(m, &tmp, m);
+	enesim_matrix_rotate(&tmp, M_PI/4);
+	enesim_matrix_compose(m, &tmp, m);
+	enesim_matrix_translate(&tmp, -opt_width/2, -opt_height/2);
+	enesim_matrix_compose(m, &tmp, m);
+}
+static void transformer_matrix_get(Enesim_Matrix_Type type, Enesim_Matrix *m)
+{
+	switch (type)
+	{
+		case ENESIM_MATRIX_AFFINE:
+		_affine_matrix_get(m);
+		break;
+
+		case ENESIM_MATRIX_IDENTITY:
+		enesim_matrix_identity(m);
+		break;
+
+		case ENESIM_MATRIX_PROJECTIVE:
+		_project_matrix_get(m);
+		break;
+
+		default:
+		break;
+	}
+}
+
+/* TODO given the transformer parameters get the name of the destination image */
+void transformer_name_get(void)
+{
+
+}
+
+static void transformer_1d_run(void)
+{
+	Enesim_Surface *src = NULL;
+	Enesim_Surface *dst= NULL;
+	Enesim_Operator op;
+	uint32_t *s;
+	uint32_t *d;
+	int t;
+	double start, end;
+	Enesim_Matrix m;
+
+	if (!enesim_transformer_1d_op_get(&op, opt_cpu, opt_fmt, ENESIM_MATRIX_PROJECTIVE, ENESIM_FAST, opt_fmt))
+	{
+		printf("Transformer 1D         [NOT BUILT]\n");
+		return;
+	}
+	transformer_matrix_get(ENESIM_MATRIX_PROJECTIVE, &m);
+	surfaces_create(&src, opt_fmt, &dst, opt_fmt, NULL, 0);
+
+	s = enesim_surface_data_get(src);
+	start = get_time();
+	for (t = 0; t < opt_times; t++)
+	{
+		int y = opt_height;
+
+		d = enesim_surface_data_get(dst);
+		while (y--)
+		{
+			enesim_operator_transformer_1d(&op,
+					s, opt_width, opt_width, opt_height,
+					0, 0,
+					m.xx, m.xy, m.xz,
+					m.yx, m.yy, m.yz,
+					m.zx, m.zy, m.zz,
+					0, y, opt_width, d);
+			d += opt_width;
+		}
+	}
+	end = get_time();
+	printf("Transformer 1D         [%3.3f sec]\n", end - start);
+	test_finish("transformer", ENESIM_FILL, dst, src, NULL, NULL);
+}
+/*
+ * TODO transform with a mask/color and without
+ */
+void transformer_bench(void)
+{
+	Enesim_Quality q = 0;
+	Enesim_Matrix_Type mt = 0;
+
+	printf("*********************\n");
+	printf("* Transformer Bench *\n");
+	printf("*********************\n");
+
+	transformer_1d_run();
+#if 0
+	Enesim_Matrix matrix, tmp;
+	Enesim_Quad q1, q2;
+	Enesim_Transformation *tx;
+	float angle, ca, sa;
+	Enesim_Surface *dst = NULL, *src = NULL, *msk = NULL;
+
+	/* Dump the default surfaces for the different operations */
+	surfaces_create(&src, opt_fmt, &dst, opt_fmt, &msk, opt_fmt);
+	surface_save(dst, "destination.png");
+	surface_save(src, "source.png");
+	surface_save(msk, "mask.png");
+
+	tx = enesim_transformation_new();
+	enesim_transformation_rop_set(tx, opt_rop);
+
+	/* identity matrix */
+	enesim_matrix_identity(&matrix);
+	enesim_transformation_matrix_set(tx, &matrix);
+	printf("Identity\n");
+	transformer_go(tx);
+	/* affine matrix */
+	/* do a scale, rotate and translate */
+	enesim_matrix_translate(&matrix, opt_width/2, opt_height/2);
+	enesim_matrix_scale(&tmp, 2, 2);
+	enesim_matrix_compose(&matrix, &tmp, &matrix);
+	enesim_matrix_rotate(&tmp, M_PI/4);
+	enesim_matrix_compose(&matrix, &tmp, &matrix);
+	enesim_matrix_translate(&tmp, -opt_width/2, -opt_height/2);
+	enesim_matrix_compose(&matrix, &tmp, &matrix);
+	enesim_transformation_matrix_set(tx, &matrix);
+	printf("Affine\n");
+	transformer_go(tx);
+	/* projective */
+	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	//enesim_quad_coords_set(&q2, 50, 50, 190, 10, 195, 140, 50, 240);
+	enesim_matrix_quad_quad_to(&matrix, &q2, &q1);
+	enesim_transformation_matrix_set(tx, &matrix);
+	printf("Projective\n");
+	transformer_go(tx);
+#endif
+}
+#if 0
+void matrix_bench(void)
+{
+	Enesim_Quad q1, q2;
+	Enesim_Matrix m, m2;
+	float x, y, xr, yr;
+
+	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
+
+	/* transforming from a square to a quad */
+	printf("square to quad\n");
+	enesim_matrix_identity(&m);
+	enesim_matrix_square_quad_to(&m, &q2);
+	x = 0;
+	y = 1;
+	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* scale */
+	printf("scale\n");
+	enesim_matrix_scale(&m2, opt_width, opt_height);
+	x = 0;
+	y = 1;
+	enesim_matrix_point_transform(&m2, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* quad to square */
+	printf("quad to square\n");
+#if 0
+	enesim_matrix_quad_square_to(&m, &q2);
+	x = q2[2];
+	y = q2[3];
+	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* quad to square */
+	printf("quad to quad\n");
+	enesim_matrix_quad_quad_to(&m, &q1, &q2);
+	x = q1[4];
+	y = q1[5];
+	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+
+#endif
+}
+
 /* FIXME, this code is repeated, shall we export this function from the lib? */
 static const char * transformer_get(Enesim_Transformation *tx)
 {
@@ -145,95 +337,4 @@ static void transformer_go(Enesim_Transformation *tx)
 		}
 	}
 }
-/*
- * TODO transform with a mask/color and without
- */
-void transformer_bench(void)
-{
-	Enesim_Matrix matrix, tmp;
-	Enesim_Quad q1, q2;
-	Enesim_Transformation *tx;
-	float angle, ca, sa;
-	Enesim_Surface *dst = NULL, *src = NULL, *msk = NULL;
-
-	printf("*********************\n");
-	printf("* Transformer Bench *\n");
-	printf("*********************\n");
-	/* Dump the default surfaces for the different operations */
-	surfaces_create(&src, opt_fmt, &dst, opt_fmt, &msk, opt_fmt);
-	surface_save(dst, "destination.png");
-	surface_save(src, "source.png");
-	surface_save(msk, "mask.png");
-
-	tx = enesim_transformation_new();
-	enesim_transformation_rop_set(tx, opt_rop);
-
-	/* identity matrix */
-	enesim_matrix_identity(&matrix);
-	enesim_transformation_matrix_set(tx, &matrix);
-	printf("Identity\n");
-	transformer_go(tx);
-	/* affine matrix */
-	/* do a scale, rotate and translate */
-	enesim_matrix_translate(&matrix, opt_width/2, opt_height/2);
-	enesim_matrix_scale(&tmp, 2, 2);
-	enesim_matrix_compose(&matrix, &tmp, &matrix);
-	enesim_matrix_rotate(&tmp, M_PI/4);
-	enesim_matrix_compose(&matrix, &tmp, &matrix);
-	enesim_matrix_translate(&tmp, -opt_width/2, -opt_height/2);
-	enesim_matrix_compose(&matrix, &tmp, &matrix);
-	enesim_transformation_matrix_set(tx, &matrix);
-	printf("Affine\n");
-	transformer_go(tx);
-	/* projective */
-	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
-	//enesim_quad_coords_set(&q2, 50, 50, 190, 10, 195, 140, 50, 240);
-	enesim_matrix_quad_quad_to(&matrix, &q2, &q1);
-	enesim_transformation_matrix_set(tx, &matrix);
-	printf("Projective\n");
-	transformer_go(tx);
-
-}
-void matrix_bench(void)
-{
-	Enesim_Quad q1, q2;
-	Enesim_Matrix m, m2;
-	float x, y, xr, yr;
-
-	enesim_quad_coords_set(&q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_set(&q2, 0, 100, 180, 0, 250, 180, 190, 240);
-
-	/* transforming from a square to a quad */
-	printf("square to quad\n");
-	enesim_matrix_identity(&m);
-	enesim_matrix_square_quad_to(&m, &q2);
-	x = 0;
-	y = 1;
-	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
-	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
-	/* scale */
-	printf("scale\n");
-	enesim_matrix_scale(&m2, opt_width, opt_height);
-	x = 0;
-	y = 1;
-	enesim_matrix_point_transform(&m2, x, y, &xr, &yr);
-	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
-	/* quad to square */
-	printf("quad to square\n");
-#if 0
-	enesim_matrix_quad_square_to(&m, &q2);
-	x = q2[2];
-	y = q2[3];
-	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
-	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
-	/* quad to square */
-	printf("quad to quad\n");
-	enesim_matrix_quad_quad_to(&m, &q1, &q2);
-	x = q1[4];
-	y = q1[5];
-	enesim_matrix_point_transform(&m, x, y, &xr, &yr);
-	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
-
 #endif
-}

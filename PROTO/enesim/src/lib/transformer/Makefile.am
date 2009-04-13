@@ -9,5 +9,4 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES = libenesim_transformer.la
 
 libenesim_transformer_la_SOURCES = \
-generic.c \
 argb8888.c
