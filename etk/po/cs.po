@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Etk\n"
 "Report-Msgid-Bugs-To: quaker66@gmail.com\n"
 "POT-Creation-Date: 2009-04-13 17:27+0200\n"
-"PO-Revision-Date: 2009-04-13 17:31+0100\n"
+"PO-Revision-Date: 2009-04-13 17:38+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: ../src/lib/etk_colorpicker.c:306
 msgid "H"
-msgstr "H"
+msgstr "O"
 
 #: ../src/lib/etk_colorpicker.c:306
 msgid "S"
@@ -23,7 +23,7 @@ msgstr "S"
 
 #: ../src/lib/etk_colorpicker.c:306
 msgid "V"
-msgstr "V"
+msgstr "H"
 
 #: ../src/lib/etk_colorpicker.c:306
 msgid "R"
