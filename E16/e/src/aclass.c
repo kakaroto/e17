@@ -933,7 +933,11 @@ ActionGetModifiers(Action * aa)
 static void
 handleAction(EWin * ewin, ActionType * action)
 {
+   if (ewin)
+      ewin->state.in_action = 1;
    EFunc(ewin, action->params);
+   if (ewin)
+      ewin->state.in_action = 0;
 
    /* Did we just hose ourselves? if so, we'd best not stick around here */
    if (mode_action_destroy)

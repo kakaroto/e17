@@ -404,17 +404,22 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 }
 #endif
 
+static Timer       *op_timer = NULL;
+
 static int
 OpacityTimeout(void *data)
 {
    EWin               *ewin = (EWin *) data;
 
    if (!EwinFindByPtr(ewin))	/* May be gone */
-      return 0;
+      goto done;
 
    if (ewin->state.active)
       EoChangeOpacity(ewin, ewin->props.focused_opacity);
 
+ done:
+   ewin->state.show_coords = 0;
+   op_timer = NULL;
    return 0;
 }
 
@@ -703,12 +708,13 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	EwinOpSetOpacity(ewin, OPSRC_USER, a);
 	if (a && ewin->state.active)
 	  {
-	     Timer              *op_timer;
-
 	     EoChangeOpacity(ewin, OpacityFromPercent(a));
+	     TIMER_DEL(op_timer);
 	     if (ewin->props.focused_opacity)
 		TIMER_ADD(op_timer, 0.001 * 700, OpacityTimeout, ewin);
 	  }
+	if (ewin->state.in_action)
+	   CoordsShowOpacity(ewin);
 	break;
 
      case EWIN_OP_FOCUSED_OPACITY:
@@ -724,6 +730,8 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	   b += a;
 	a = (b < 0) ? 0 : (b > 100) ? 100 : b;
 	EwinOpSetFocusedOpacity(ewin, OPSRC_USER, a);
+	if (ewin->state.in_action)
+	   CoordsShowOpacity(ewin);
 	break;
 
      case EWIN_OP_SNAP:

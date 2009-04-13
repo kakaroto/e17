@@ -27,12 +27,13 @@
 #include "hints.h"
 #include "iclass.h"
 #include "tclass.h"
+#include "timers.h"
 #include "xwin.h"
 
 static EObj        *coord_eo = NULL;
 
-void
-CoordsShow(EWin * ewin)
+static void
+_CoordsShow(EWin * ewin, int mode)
 {
    TextClass          *tc;
    ImageClass         *ic;
@@ -63,7 +64,18 @@ CoordsShow(EWin * ewin)
    h = (ewin->state.shaded) ? ewin->client.h : ewin->shape_h;
    ICCCM_GetIncrementalSize(ewin, w, h, &w, &h);
 
-   Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
+   switch (mode)
+     {
+     default:
+     case 0:
+	Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
+	break;
+     case 1:
+	Esnprintf(s, sizeof(s), _("Focused/unfocused opacity: %d/%d %%"),
+		  OpacityToPercent(ewin->props.focused_opacity),
+		  OpacityToPercent(ewin->ewmh.opacity));
+	break;
+     }
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
    pad = ImageclassGetPadding(ic);
    cw += pad->left + pad->right;
@@ -147,4 +159,31 @@ CoordsHide(void)
 	EobjReparent(eo, EoObj(DeskGet(0)), 0, 0);
 #endif
      }
+}
+
+void
+CoordsShow(EWin * ewin)
+{
+   _CoordsShow(ewin, 0);
+}
+
+static Timer       *timer_show_op = NULL;
+
+static int
+_CoordsHideTimeout(void *data __UNUSED__)
+{
+   CoordsHide();
+
+   timer_show_op = NULL;
+   return 0;
+}
+
+void
+CoordsShowOpacity(EWin * ewin)
+{
+   EwinShapeSet(ewin);
+   ewin->state.show_coords = 1;
+   _CoordsShow(ewin, 1);
+   TIMER_DEL(timer_show_op);
+   TIMER_ADD(timer_show_op, 1., _CoordsHideTimeout, NULL);
 }

@@ -105,6 +105,7 @@ struct _ewin {
       unsigned            show_coords:1;
       unsigned            maximizing:1;
       unsigned            shading:1;
+      unsigned            in_action:1;
 
       /* Derived state flags. Change only in EwinStateUpdate() */
       unsigned            no_border:1;
@@ -319,6 +320,7 @@ void                ArrangeEwins(const char *params);
 
 /* coords.c */
 void                CoordsShow(EWin * ewin);
+void                CoordsShowOpacity(EWin * ewin);
 void                CoordsHide(void);
 
 /* dock.c */
