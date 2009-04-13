@@ -96,6 +96,8 @@ compmgr.shadows.blur.radius = 5
 compmgr.shadows.blur.opacity = 75
 # [int] Sharp dropshadow opacity(%)
 compmgr.shadows.sharp.opacity = 30
+# [int] Shadow color (0xRRGGBB)
+compmgr.shadows.color = 0
 # [bool] Hack to fix problems with resize on old xorg servers
 compmgr.resize_fix_enable = 0
 # [bool] Experimental - leave at 0
@@ -172,7 +174,6 @@ focus.autoraise.delay = 500
 # [bool] Default group settings
 groups.dflt.iconify = 1
 groups.dflt.kill = 0
-groups.dflt.mirror = 1
 groups.dflt.move = 1
 groups.dflt.raise = 0
 groups.dflt.set_border = 1
@@ -326,6 +327,7 @@ misc.testing.image_cache_size = -1
 misc.testing.mask_alpha_threshold = 8
 misc.testing.enable_startup_id = 1
 misc.testing.use_render_for_scaling = 0
+misc.testing.bindings_reload = 1
 misc.testing.no_sync_mask = 0
 
 # [bool] Save configuration changes
@@ -356,17 +358,22 @@ pagers.menu_button = 3
 
 # [bool] Enable sound
 sound.enable = 0
-# [string] Use sounds from theme (not implemented)
+# [string] Use sounds from theme
 sound.theme = 
+# [int] Bits masks for disabling particular sounds
+sound.mask1 = 0
+sound.mask2 = 0
 
 # [string] Theme
 theme.name = winter
 # [string] Colon separated list of directories containing e16 themes
 theme.extra_path = 
+# [bool] Use font specified by theme
+theme.use_theme_font_cfg = 0
 # [bool] Use alternative font configuration file (specified by theme.font_cfg)
-theme.use_alt_font_cfg = 1
+theme.use_alt_font_cfg = 0
 # [string] Alternative font configuration file
-theme.font_cfg = fonts.cfg.xft
+theme.font_cfg = 
 
 # [bool] Enable tooltips
 tooltips.enable = 1
