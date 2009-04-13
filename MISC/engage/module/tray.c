@@ -118,7 +118,7 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
 	if (eb->tray->dst_handler)
 	  ecore_event_handler_del(eb->tray->dst_handler);
 	if (eb->tray->win)
-	  ecore_x_window_del(eb->tray->win);
+	  ecore_x_window_free(eb->tray->win);
      }
 }
 

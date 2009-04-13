@@ -187,7 +187,7 @@ void erss_tooltip_free(Erss_Article *item) {
 
     /* then lose the ecore_evas */
     ecore_evas_free(tt->ee);
-    ecore_x_window_del(tt->win);
+    ecore_x_window_free(tt->win);
     /* finally free the damn thing */
     memset(tt,0,sizeof(Erss_Tooltip));
     free(tt);

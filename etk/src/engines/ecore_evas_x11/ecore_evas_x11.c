@@ -575,7 +575,7 @@ static void _popup_window_popdown(Etk_Popup_Window *popup_window)
    {
       ecore_x_pointer_ungrab();
       ecore_x_keyboard_ungrab();
-      ecore_x_window_del(_popup_window_input_window);
+      ecore_x_window_free(_popup_window_input_window);
       _popup_window_input_window = 0;
    }
 }
