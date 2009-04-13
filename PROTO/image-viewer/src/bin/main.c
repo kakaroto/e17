@@ -93,13 +93,14 @@ image_configure(IV *iv)
 	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
 	elm_image_smooth_set(iv->gui.img, EINA_FALSE);
 	elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
-	elm_widget_scale_set(iv->gui.img, iv->config->img_scale);
+	elm_object_scale_set(iv->gui.img, iv->config->img_scale);
+	//evas_object_size_hint_min_set(iv->gui.img, -1, -1);
      }
    else
      {
 	elm_image_no_scale_set(iv->gui.img, EINA_TRUE);
 	elm_image_smooth_set(iv->gui.img, EINA_TRUE);
-	elm_widget_scale_set(iv->gui.img, 1.0);
+	elm_object_scale_set(iv->gui.img, 1.0);
 
 	if (iv->config->fit == PAN)
 	  elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
@@ -288,13 +289,7 @@ static void
 zoom_set(IV *iv, Eina_Bool increase)
 {
    if (iv->config->fit != ZOOM)
-     {
-	int iw, w;
-	evas_object_size_hint_max_get(iv->gui.img, &iw, NULL);
-	evas_object_geometry_get(iv->gui.img, NULL, NULL, &w, NULL);
-
-	iv->config->img_scale = (double) w / (double) iw;
-     }
+     iv->config->img_scale = elm_object_scale_get(iv->gui.img);
 
    if (iv->config->img_scale >= 1)
      {
@@ -702,7 +697,7 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	Evas_Object *o, *bx, *bx2, *ic;
 
 	iv->gui.settings_win = o = elm_win_inwin_add(iv->gui.win);
-	elm_win_inwin_style_set(o, "minimal");
+	elm_win_inwin_style_set(o, "shadow");
 	o = elm_bg_add(iv->gui.settings_win);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
 
@@ -858,6 +853,7 @@ create_main_win(IV *iv)
    char buf[4096];
    
    snprintf(buf, sizeof(buf), "%s/themes/default.edj", PACKAGE_DATA_DIR);
+   elm_theme_extension_add(buf);
    iv->theme_file = eina_stringshare_add(buf);
 
    o = elm_win_add(NULL, "main", ELM_WIN_BASIC);
