@@ -1,6 +1,6 @@
 
-About 0.16.8
-============
+About Enlightenment e16
+=======================
 
 Credits
 -------
@@ -12,55 +12,57 @@ This note contains contributions by
 
 Contents
 --------
-
-- Major changes and new features
+- Versions
+- Requirements
+- Configuration
 - Configuration files
+- Default keybindings
 - Session Scripts
 - Composite manager notes
-- Default keybindings
-- Configuration options
 - Fonts
 - Using e16 with GNOME
 - Using e16 with KDE
-- Migrating from Enlightenment 0.16.7 to 0.16.8 
+- Migrating from versions older than 0.16.8
 
 
-Major changes and new features
-------------------------------
+Versions
+--------
 
-Changes:
-- "enlightenment" has been renamed to "e16".
-- The default user configuration directory is "~/.e16".
-- The data install path is "<somepath>/e16", e.g. "/usr/share/e16".
-Thus, an e16.8 installation should not clash with any other versions.
-- Various configuration file formats have changed and should be easier
-  to read and modify, if needed.
-- The configuration is stored per display and per screen.  E.g. for
-  DISPLAY=:1.0 the main configuration file is "~/.e16/e_config--1.0.cfg".
-- Actions(used by menus, keybindings, etc.) and IPC functions(eesh) have
-  been merged.
-- Many IPC(eesh) commands have been changed, possibly breaking compatibility
-  with a few epplets.
-- Window matches and icondefs have been merged (into matches.cfg), see below.
+e16-1.0.0:
+            No major changes, might as well have been 0.16.8.16.
 
-New features:
-- Built-in composite manager.
-- An iconbox can be configured to act as System Tray
-  (middle mouse->Desktop->Create Systray).
-- Possibility to run programs on startup, restart, and shutdown, see
-  "Session Scripts" below.
-- Possibility to track changes in remembered settings.
-- Window operations by window matches (class, name, transient, ...),
-  e.g. for making all windows of a certain type sticky, put it on a certain
-  layer, etc. (see matches.cfg).
+e16-0.16.8: Released Feb 2006
+            enlightenment -> e16
+            Major internal rewrite
+            Changed configuration system
+            Added compositing manager
 
-Notes:
+enlightenment-0.16.7: Released Jul 2004
+                      Migrated to imlib2
 
-NB!!! imlib2 >= 1.2.0 is required.
+enlightenment-0.16.6: Released Nov 2003
+                      Added extended window manager hint support
+
+enlightenment-0.16.5: Released Oct 2000
+
+enlightenment-0.16.0: Released Oct 1999
+
+
+Requirements
+------------
+
+imlib2 >= 1.2.0 is required, >= 1.4.2 is recommended.
+imlib2 must be built with png support.
+
+
+Configuration
+-------------
 
 All settings can be shown and set using eesh.
+
 To get a full list of settings:
 $ eesh show
+
 To set some parameter:
 $ eesh set <parameter> <value>
 Some settings will not be effective until E is restarted.
@@ -68,213 +70,6 @@ Some settings will not be effective until E is restarted.
 To get a list of all eesh commands:
 $ eesh help full
 
-0.16.8 should be compatible with most e16 themes. However, user installed
-themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
-A few themes will have to be tweaked to work with e16.8. The most likely
-problem is that configuration settings are included in .cfg files where they
-are no longer accepted.
-See the "Migrating ..." section below for additional information.
-
-e16keyedit >= 0.3 works with e16.8.
-If used to change the keybindings, the modified settings will be stored in
-~/.e16/bindings.cfg.
-It should also be fairly straightforward to modify the key- and buttonbindings
-by hand. Copy /usr/share/e16/config/bindings.cfg to ~/.e16/bindings.cfg and
-modify as desired.
-NB! e16keyedit only modifies keybindings.
-
-NB!!! Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
-
-
-Configuration files
--------------------
-Skip this section unless you *really* want to know...
-
-It is here assumed that --prefix is /usr, and that the default user
-configuration directory (~/.e16) is used.
-
-In general, the configuration search order for theme related configuration
-files, say xyz.cfg, is:
-1) User configuration directory, i.e. ~/.e16/xyz.cfg.
-2) Theme directory, i.e. /usr/share/e16/themes/<theme>/xyz.cfg, or
-   ~/.e16/themes/<theme>/xyz.cfg.
-3) Default configuration directory, i.e. /usr/share/e16/config/xyz.cfg.
-
-Mouse and keybindings are defined in bindings.cfg. bindings.cfg is searched in
-1) User configuration directory, i.e. ~/.e16/bindings.cfg.
-2) Default configuration directory, i.e. /usr/share/e16/config/bindings.cfg.
-
-Window matches (border and icon associations) are defined in windowmatches.cfg
-and matches.cfg.
-windowmatches.cfg (deprecated, border associations only) is loaded first,
-and should be found only in theme directories.
-matches.cfg is loaded next, and searched in
-1) User configuration directory, i.e. ~/.e16/matches.cfg.
-2) Default configuration directory, i.e. /usr/share/e16/config/matches.cfg.
-Window match items are appended to the window match list, in the order
-in which they are read from the configuration files.
-When doing border/icon matches, the window match list is searched from the
-start, and the first matching item will be used.
-
-
-Session Scripts
----------------
-Enlightenment can now automatically run user scripts or applications during
-Startup, Restart, and Shutdown. This facilitates the loading of system
-tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
-and allows for cleanup of programs that don't terminate properly when E
-quits (this is especially common with KDE applications in E and the arts
-daemon or dcop server keeps running).
-
-Enlightenment accomplishes this with the addition of two new keys in
-the $ECONFDIR/e_config--#.#.cfg (#.# may vary depending on your X setup -- 
-for most people, it will be 0.0). These are:
-
-misc.session.enable_script 
-misc.session.script 
-
-misc.session.enable_script is a boolean. When set to 1, Enlightenment will 
-execute the script in the misc.session.script key. By default, this feature 
-is disabled. When enabled, it will do nothing until the user configures
-his/her home directory ($ECONFDIR -- normally ~/.e16).
-
-The default session.script is located in $EROOT/scripts/session.sh ($EROOT
-is normally /usr/share/e16 or /usr/local/share/e16). It will look for 
-directories in the user's $ECONFDIR/ (~/.e16/) called:
-
-~/.e16/ ($ECONFDIR)
-	Init/
-	Start/
-	Stop/
-
-and run any and/or all scripts or executables in each when E starts, 
-restarts, and shuts down. If no scripts or executables are present, or
-if any of the directories Init, Start, and Stop do not exist, NOTHING
-will happen and E will start up as usual. So, in order to use session
-scripts, all the user has to do is to populate the Init, Start, and Stop
-directories with scripts, applications, or links to applications that
-should run during Startup, Restart, or when E is stopped.
-
-The default values for the new keys are:
-
-misc.session.enable_script = 0
-misc.session.script = $EROOT/scripts/session.sh
-
-The user may write a custom script and place it anywhere. Simply modify 
-the config file by using:
-
-$ eesh set misc.session.script myscript
-
-and modify it (be sure to chmod +x the file otherwise it won't run). 
-The session script is called with one of three command parameters; 
-init, start, and stop. Any custom script should have a code block 
-similar to this in order to function properly in Enlightenment.
-
-case "$1" in
-init)
-        # do blah
-        # or do function init
-start)
-        # do blah
-        # of do function start
-stop)
-        # do blah
-        # or do function stop
-esac
-
-Automatic script running can be enabled/disabled via the Session Settings
-dialog in Enlightenment and checking/unchecking the option Enable Session
-Script, by editing the user cfg file and setting the
-misc.session.enable_script key to 1/0, or with
-
-$ eesh set misc.session.enable_script 1/0
-
-This process is very flexible since when used, the user can turn off
-individual scripts and applications by chmod -x or simply leave the
-startup directories empty or remove them.
-
-
-Composite manager notes
------------------------
-
-To use the composite manager it is required that the X-server has support
-enabled for the COMPOSITE, DAMAGE, FIXES, and RENDER extensions.
-For reasonable performance it is also required that hardware acceleration
-of the RENDER extension is enabled.
-
-As of version 0.16.8.2 it may happen that the borders on application windows
-using ARGB visuals (for transparency) are "ugly". Applications may use ARGB
-visuals intentionally (e.g. fdclock) or not (e.g. xv on 16 bit root depth).
-Applications unintentionally using an ARGB visual will normally not be
-rendered properly at all and should be started with the environment variable
-XLIB_SKIP_ARGB_VISUALS set.
-To fix border rendering on "real" ARGB windows it is required to use imlib2
-with version >= 1.3.0.
-
-Tweaks:
-
-As of e16 >= 0.16.8.9: If there is any kind of trouble with the composite
-manager, first check compmgr.mode (eesh show compmgr), and set it to 1 if
-it isn't (eesh set compmgr.mode 1, restart).
-
-If pop-up windows disappear immediately after having appeared (may happen
-e.g. with certain pop-up windows when using gnome > 2.12), try:
-$ eesh set compmgr.override_redirect.mode 0
-This should make the pop-up windows usable, but not always rendered properly.
-This problem should not occur with recent X-servers.
-
-If window resize/shading with composite enabled is ugly, try:
-$ eesh set compmgr.resize_fix_enable 1
-This problem should not occur with recent X-servers.
-
-
-Default keybindings
--------------------
-
-Alt-Ctrl   Home		Auto-arrange windows
-Alt-Ctrl   Insert	Launch Eterm
-Alt-Ctrl   Delete	Log out
-Alt-Ctrl   End		Exit
-Alt-Ctrl   Right	Goto next desk
-Alt-Ctrl   Left		Goto previous desk
-Alt-Shift  Down		Move desk area down
-Alt-Shift  Up		 -    -    -   up
-Alt-Shift  Left		 -    -    -   left
-Alt-Shift  Right	 -    -    -   right
-Alt        F1		Goto desk 0
-Alt        F2		 -    -   1
-Alt        F3		 -    -   2
-Alt        F4		 -    -   3
-Alt        F5		 -    -   4
-Alt        F6		 -    -   5
-Alt        F7		 -    -   6
-Alt        F8		 -    -   7
-Alt        Tab		Switch focus (using focus list, if enabled)
-Alt-Ctrl   Up		Raise active window
-Alt-Ctrl   Down		Lower active window
-Alt-Ctrl   x		Close active window
-Alt-Ctrl   k		Destroy active window
-Alt-Ctrl   s		Toggle active window sticky state
-Alt-Ctrl   i		Iconify active window
-Alt-Ctrl   r		Toggle active window shaded state
-Alt-Ctrl   f		Toggle active window fullscreen state
-Alt-Ctrl   m		Toggle active window maximized state
-Alt-Ctrl   w		Show window-ops menu for active window
-Alt        Return	Toggle active window zoomed state
-Ctrl-Shift F1		Show User menu          (default left mouse button)
-Ctrl-Shift F2		Show Enlightenment menu (default middle mouse button)
-Ctrl-Shift F3		Show Configuration menu (default right mouse button)
-Ctrl-Shift F4		Show Window List menu   (default Alt-middle mouse button)
-
-Alt-Ctrl   a		Toggle visibility of all buttons
-Alt-Ctrl   b		Toggle visibility of theme buttons
-Alt-Ctrl   c		Toggle visibility of configuration buttons
-Alt-Ctrl   d		Switch dragbar position
-Alt-Ctrl   o		Switch dragbar button ordering
-
-
-Configuration options
----------------------
 The available configuration options are shown below. Values are the defaults.
 
 # [bool] High quality background rendering
@@ -614,6 +409,193 @@ warplist.warp_on_select = 0
 warplist.icon_mode = 3
 
 
+Configuration files
+-------------------
+Skip this section unless you *really* want to know...
+
+It is here assumed that --prefix is /usr, and that the default user
+configuration directory (~/.e16) is used.
+
+In general, the configuration search order for theme related configuration
+files, say xyz.cfg, is:
+1) User configuration directory, i.e. ~/.e16/xyz.cfg.
+2) Theme directory, i.e. /usr/share/e16/themes/<theme>/xyz.cfg, or
+   ~/.e16/themes/<theme>/xyz.cfg.
+3) Default configuration directory, i.e. /usr/share/e16/config/xyz.cfg.
+
+Mouse and keybindings are defined in bindings.cfg. bindings.cfg is searched in
+1) User configuration directory, i.e. ~/.e16/bindings.cfg.
+2) Default configuration directory, i.e. /usr/share/e16/config/bindings.cfg.
+
+Window matches (border and icon associations) are defined in windowmatches.cfg
+and matches.cfg.
+windowmatches.cfg (deprecated, border associations only) is loaded first,
+and should be found only in theme directories.
+matches.cfg is loaded next, and searched in
+1) User configuration directory, i.e. ~/.e16/matches.cfg.
+2) Default configuration directory, i.e. /usr/share/e16/config/matches.cfg.
+Window match items are appended to the window match list, in the order
+in which they are read from the configuration files.
+When doing border/icon matches, the window match list is searched from the
+start, and the first matching item will be used.
+
+
+Default keybindings
+-------------------
+
+Alt-Ctrl   Home		Auto-arrange windows
+Alt-Ctrl   Insert	Launch Eterm
+Alt-Ctrl   Delete	Log out
+Alt-Ctrl   End		Exit
+Alt-Ctrl   Right	Goto next desk
+Alt-Ctrl   Left		Goto previous desk
+Alt-Shift  Down		Move desk area down
+Alt-Shift  Up		 -    -    -   up
+Alt-Shift  Left		 -    -    -   left
+Alt-Shift  Right	 -    -    -   right
+Alt        F1		Goto desk 0
+Alt        F2		 -    -   1
+Alt        F3		 -    -   2
+Alt        F4		 -    -   3
+Alt        F5		 -    -   4
+Alt        F6		 -    -   5
+Alt        F7		 -    -   6
+Alt        F8		 -    -   7
+Alt        Tab		Switch focus (using focus list, if enabled)
+Alt-Ctrl   Up		Raise active window
+Alt-Ctrl   Down		Lower active window
+Alt-Ctrl   x		Close active window
+Alt-Ctrl   k		Destroy active window
+Alt-Ctrl   s		Toggle active window sticky state
+Alt-Ctrl   i		Iconify active window
+Alt-Ctrl   r		Toggle active window shaded state
+Alt-Ctrl   f		Toggle active window fullscreen state
+Alt-Ctrl   m		Toggle active window maximized state
+Alt-Ctrl   w		Show window-ops menu for active window
+Alt        Return	Toggle active window zoomed state
+Ctrl-Shift F1		Show User menu          (default left mouse button)
+Ctrl-Shift F2		Show Enlightenment menu (default middle mouse button)
+Ctrl-Shift F3		Show Configuration menu (default right mouse button)
+Ctrl-Shift F4		Show Window List menu   (default Alt-middle mouse button)
+
+Alt-Ctrl   a		Toggle visibility of all buttons
+Alt-Ctrl   b		Toggle visibility of theme buttons
+Alt-Ctrl   c		Toggle visibility of configuration buttons
+Alt-Ctrl   d		Switch dragbar position
+Alt-Ctrl   o		Switch dragbar button ordering
+
+
+Session Scripts
+---------------
+Enlightenment can now automatically run user scripts or applications during
+Startup, Restart, and Shutdown. This facilitates the loading of system
+tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
+and allows for cleanup of programs that don't terminate properly when E
+quits (this is especially common with KDE applications in E and the arts
+daemon or dcop server keeps running).
+
+Enlightenment accomplishes this with the addition of two new keys in
+the $ECONFDIR/e_config--#.#.cfg (#.# may vary depending on your X setup -- 
+for most people, it will be 0.0). These are:
+
+misc.session.enable_script 
+misc.session.script 
+
+misc.session.enable_script is a boolean. When set to 1, Enlightenment will 
+execute the script in the misc.session.script key. By default, this feature 
+is disabled. When enabled, it will do nothing until the user configures
+his/her home directory ($ECONFDIR -- normally ~/.e16).
+
+The default session.script is located in $EROOT/scripts/session.sh ($EROOT
+is normally /usr/share/e16 or /usr/local/share/e16). It will look for 
+directories in the user's $ECONFDIR/ (~/.e16/) called:
+
+~/.e16/ ($ECONFDIR)
+	Init/
+	Start/
+	Stop/
+
+and run any and/or all scripts or executables in each when E starts, 
+restarts, and shuts down. If no scripts or executables are present, or
+if any of the directories Init, Start, and Stop do not exist, NOTHING
+will happen and E will start up as usual. So, in order to use session
+scripts, all the user has to do is to populate the Init, Start, and Stop
+directories with scripts, applications, or links to applications that
+should run during Startup, Restart, or when E is stopped.
+
+The default values for the new keys are:
+
+misc.session.enable_script = 0
+misc.session.script = $EROOT/scripts/session.sh
+
+The user may write a custom script and place it anywhere. Simply modify 
+the config file by using:
+
+$ eesh set misc.session.script myscript
+
+and modify it (be sure to chmod +x the file otherwise it won't run). 
+The session script is called with one of three command parameters; 
+init, start, and stop. Any custom script should have a code block 
+similar to this in order to function properly in Enlightenment.
+
+case "$1" in
+init)
+        # do blah
+        # or do function init
+start)
+        # do blah
+        # of do function start
+stop)
+        # do blah
+        # or do function stop
+esac
+
+Automatic script running can be enabled/disabled via the Session Settings
+dialog in Enlightenment and checking/unchecking the option Enable Session
+Script, by editing the user cfg file and setting the
+misc.session.enable_script key to 1/0, or with
+
+$ eesh set misc.session.enable_script 1/0
+
+This process is very flexible since when used, the user can turn off
+individual scripts and applications by chmod -x or simply leave the
+startup directories empty or remove them.
+
+
+Composite manager notes
+-----------------------
+
+To use the composite manager it is required that the X-server has support
+enabled for the COMPOSITE, DAMAGE, FIXES, and RENDER extensions.
+For reasonable performance it is also required that hardware acceleration
+of the RENDER extension is enabled.
+
+As of version 0.16.8.2 it may happen that the borders on application windows
+using ARGB visuals (for transparency) are "ugly". Applications may use ARGB
+visuals intentionally (e.g. fdclock) or not (e.g. xv on 16 bit root depth).
+Applications unintentionally using an ARGB visual will normally not be
+rendered properly at all and should be started with the environment variable
+XLIB_SKIP_ARGB_VISUALS set.
+To fix border rendering on "real" ARGB windows it is required to use imlib2
+with version >= 1.3.0.
+
+Tweaks:
+
+As of e16 >= 0.16.8.9: If there is any kind of trouble with the composite
+manager, first check compmgr.mode (eesh show compmgr), and set it to 1 if
+it isn't (eesh set compmgr.mode 1, restart).
+
+If pop-up windows disappear immediately after having appeared (may happen
+e.g. with certain pop-up windows when using gnome > 2.12), try:
+$ eesh set compmgr.override_redirect.mode 0
+This should make the pop-up windows usable, but not always rendered properly.
+This problem should not occur with recent X-servers.
+
+If window resize/shading with composite enabled is ugly, try:
+$ eesh set compmgr.resize_fix_enable 1
+This problem should not occur with recent X-servers.
+
+
 Fonts
 -----
 The fonts in the default theme (winter) and core themes (BlueSteel,
@@ -712,8 +694,57 @@ $ export KDEWM=e16
 $ startkde
 
 
-Migrating from Enlightenment 0.16.7 to 0.16.8 
----------------------------------------------
+Major changes and new features in 0.16.8
+----------------------------------------
+
+The following sections are only relevant for users upgrading from version 0.16.7
+or older.
+
+Changes:
+- "enlightenment" has been renamed to "e16".
+- The default user configuration directory is "~/.e16".
+- The data install path is "<somepath>/e16", e.g. "/usr/share/e16".
+Thus, an e16.8 installation should not clash with any other versions.
+- Various configuration file formats have changed and should be easier
+  to read and modify, if needed.
+- The configuration is stored per display and per screen.  E.g. for
+  DISPLAY=:1.0 the main configuration file is "~/.e16/e_config--1.0.cfg".
+- Actions(used by menus, keybindings, etc.) and IPC functions(eesh) have
+  been merged.
+- Many IPC(eesh) commands have been changed, possibly breaking compatibility
+  with a few epplets.
+- Window matches and icondefs have been merged (into matches.cfg), see below.
+
+New features:
+- Built-in composite manager.
+- An iconbox can be configured to act as System Tray
+  (middle mouse->Desktop->Create Systray).
+- Possibility to run programs on startup, restart, and shutdown, see
+  "Session Scripts" below.
+- Possibility to track changes in remembered settings.
+- Window operations by window matches (class, name, transient, ...),
+  e.g. for making all windows of a certain type sticky, put it on a certain
+  layer, etc. (see matches.cfg).
+
+0.16.8 should be compatible with most e16 themes. However, user installed
+themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
+A few themes will have to be tweaked to work with e16.8. The most likely
+problem is that configuration settings are included in .cfg files where they
+are no longer accepted.
+See the "Migrating ..." section below for additional information.
+
+e16keyedit >= 0.3 works with e16.8.
+If used to change the keybindings, the modified settings will be stored in
+~/.e16/bindings.cfg.
+It should also be fairly straightforward to modify the key- and buttonbindings
+by hand. Copy /usr/share/e16/config/bindings.cfg to ~/.e16/bindings.cfg and
+modify as desired.
+NB! e16keyedit only modifies keybindings, not buttonbindings.
+
+NB!!! Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
+
+Migrating from versions older than 0.16.8
+-----------------------------------------
 
 Users upgrading from enlightenment 0.16.7 need to read the following.
 
