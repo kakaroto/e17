@@ -176,7 +176,7 @@ void image_save(Enesim_Surface *s, const char *file, int compress)
 	png_set_shift(png_ptr, &sig_bit);
 	png_set_packing(png_ptr);
 	/* setup the operator */
-	if (!enesim_converter_1d_get(&op, opt_cpu, ENESIM_FORMAT_ARGB8888, ENESIM_CONVERTER_ARGB888))
+	if (!enesim_converter_1d_from_get(&op, opt_cpu, ENESIM_FORMAT_ARGB8888, ENESIM_CONVERTER_ARGB8888))
 	{
 		printf("Error calling the converter\n");
 		return;

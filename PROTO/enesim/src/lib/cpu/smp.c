@@ -39,7 +39,7 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 {
 	switch (q->id)
 	{
-		case ENESIM_OPERATOR_DRAWER_SPAN:
+		case ENESIM_OPERATOR_DRAWER_POINT:
 		{
 			Enesim_Drawer_Point pt = q->cb;
 
@@ -49,7 +49,7 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 		}
 		break;
 
-		case ENESIM_OPERATOR_DRAWER_POINT:
+		case ENESIM_OPERATOR_DRAWER_SPAN:
 		{
 			Enesim_Drawer_Span sp = q->cb;
 

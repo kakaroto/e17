@@ -7,7 +7,6 @@
  *============================================================================*/
 void enesim_drawer_argb8888_init(Enesim_Cpu *cpu)
 {
-	printf("registering drawers\n");
 	/* TODO check that the cpu is host */
 	/* color */
 	enesim_drawer_span_color_register(cpu,

@@ -73,7 +73,7 @@ enesim_surface_new(Enesim_Format f, int w, int h)
 	s = calloc(1, sizeof(Enesim_Surface));
 	s->w = w;
 	s->h = h;
-	s->stride = h;
+	s->stride = w;
 	s->format = f;
 	s->flags = ENESIM_ALPHA_ALL;
 	switch (f)
@@ -257,10 +257,19 @@ EAPI Enesim_Surface * enesim_surface_sub_get(Enesim_Surface *s, Eina_Rectangle *
 	return ss;
 }
 /**
+ *
+ */
+EAPI uint32_t enesim_surface_stride_get(Enesim_Surface *s)
+{
+	ENESIM_MAGIC_CHECK_SURFACE(s);
+	return s->stride;
+}
+/**
  * Store a private data pointer into the surface
  */
 EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data)
 {
+	ENESIM_MAGIC_CHECK_SURFACE(s);
 	s->user = data;
 }
 
@@ -269,5 +278,6 @@ EAPI void enesim_surface_private_set(Enesim_Surface *s, void *data)
  */
 EAPI void * enesim_surface_private_get(Enesim_Surface *s)
 {
+	ENESIM_MAGIC_CHECK_SURFACE(s);
 	return s->user;
 }

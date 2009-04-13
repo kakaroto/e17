@@ -21,10 +21,13 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-typedef Enesim_Converter_1D Enesim_Converter_1D_Lut[ENESIM_FORMATS][ENESIM_CONVERTER_FORMATS];
+typedef Enesim_Converter_1D Enesim_Converter_1D_From_Lut[ENESIM_FORMATS][ENESIM_CONVERTER_FORMATS];
+typedef Enesim_Converter_1D Enesim_Converter_1D_To_Lut[ENESIM_CONVERTER_FORMATS][ENESIM_FORMATS];
+
 typedef Enesim_Converter_2D Enesim_Converter_2D_Lut[ENESIM_FORMATS][ENESIM_ROTATOR_ANGLES][ENESIM_CONVERTER_FORMATS];
 
-Enesim_Converter_1D_Lut *_converters1d;
+Enesim_Converter_1D_From_Lut *_converters_from1d;
+Enesim_Converter_1D_To_Lut *_converters_to1d;
 Enesim_Converter_2D_Lut *_converters2d;
 /*============================================================================*
  *                                 Global                                     *
@@ -36,7 +39,8 @@ void enesim_converter_init(void)
 	int i;
 
 	cpus = enesim_cpu_get(&numcpu);
-	_converters1d = calloc(numcpu, sizeof(Enesim_Converter_1D_Lut));
+	_converters_from1d = calloc(numcpu, sizeof(Enesim_Converter_1D_From_Lut));
+	_converters_to1d = calloc(numcpu, sizeof(Enesim_Converter_1D_From_Lut));
 	_converters2d = calloc(numcpu, sizeof(Enesim_Converter_2D_Lut));
 	for (i = 0; i < numcpu; i++)
 	{
@@ -46,20 +50,32 @@ void enesim_converter_init(void)
 }
 void enesim_converter_shutdown(void)
 {
-	free(_converters1d);
+	free(_converters_from1d);
+	free(_converters_to1d);
 	free(_converters2d);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI void enesim_converter_1d_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
+EAPI void enesim_converter_1d_from_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
 		Enesim_Format sfmt, Enesim_Converter_Format dfmt)
 {
 	unsigned int cpuid;
-	Enesim_Converter_1D_Lut *t;
+	Enesim_Converter_1D_From_Lut *t;
 
 	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters1d[cpuid];
+	t = &_converters_from1d[cpuid];
+	*t[sfmt][dfmt] = cnv;
+}
+
+EAPI void enesim_converter_1d_to_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
+		Enesim_Converter_Format sfmt, Enesim_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_1D_To_Lut *t;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters_to1d[cpuid];
 	*t[sfmt][dfmt] = cnv;
 }
 
@@ -74,15 +90,15 @@ EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
 	*t[sfmt][angle][dfmt] = cnv;
 }
 
-EAPI Eina_Bool enesim_converter_1d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
+EAPI Eina_Bool enesim_converter_1d_from_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
 		Enesim_Converter_Format dfmt)
 {
 	unsigned int cpuid;
-	Enesim_Converter_1D_Lut *t;
+	Enesim_Converter_1D_From_Lut *t;
 	Enesim_Converter_1D c;
 
 	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters1d[cpuid];
+	t = &_converters_from1d[cpuid];
 	c = *t[sfmt][dfmt];
 	if (c)
 	{
@@ -97,6 +113,31 @@ EAPI Eina_Bool enesim_converter_1d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Ene
 		return EINA_FALSE;
 	}
 }
+
+EAPI Eina_Bool enesim_converter_1d_to_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Converter_Format sfmt,
+		Enesim_Format dfmt)
+{
+	unsigned int cpuid;
+	Enesim_Converter_1D_To_Lut *t;
+	Enesim_Converter_1D c;
+
+	cpuid = enesim_cpu_id_get(cpu);
+	t = &_converters_to1d[cpuid];
+	c = *t[sfmt][dfmt];
+	if (c)
+	{
+		op->cpu = cpu;
+		op->id = ENESIM_OPERATOR_CONVERTER1D;
+		op->cb = c;
+		return EINA_TRUE;
+	}
+	else
+	{
+		op->cb = NULL;
+		return EINA_FALSE;
+	}
+}
+
 
 EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
 		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt)
@@ -121,10 +162,22 @@ EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Ene
 		return EINA_FALSE;
 	}
 }
-
+/**
+ *
+ */
 EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
 		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
 		uint8_t boffset, uint8_t blen)
 {
 
+}
+/**
+ *
+ */
+EAPI Eina_Bool enesim_converter_format_cmp(Enesim_Format fmt, Enesim_Converter_Format cfmt)
+{
+	if (fmt == ENESIM_FORMAT_ARGB8888 && cfmt == ENESIM_CONVERTER_ARGB8888_PRE)
+		return EINA_TRUE;
+	else
+		return EINA_FALSE;
 }

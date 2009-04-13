@@ -50,16 +50,16 @@ EAPI Eina_Bool enesim_operator_drawer_span(Enesim_Operator *op, uint32_t *d,
 	return EINA_TRUE;
 }
 
-EAPI Eina_Bool enesim_operator_converter_1d(Enesim_Operator *op, uint32_t *s,
-		uint32_t len, void *dst)
+EAPI Eina_Bool enesim_operator_converter_1d(Enesim_Operator *op, uint32_t *native,
+		uint32_t len, void *conv)
 {
 	Enesim_Cpu_Queue q;
 
 	if (!_queue_create(&q, op, ENESIM_OPERATOR_CONVERTER1D))
 		return EINA_FALSE;
 
-	q.converter.src = s;
-	q.converter.dst = dst;
+	q.converter.src = native;
+	q.converter.dst = conv;
 	q.converter.type.dim1.len = len;
 	op->cpu->run(op->cpu, &q);
 

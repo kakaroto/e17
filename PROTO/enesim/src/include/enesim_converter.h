@@ -46,7 +46,8 @@
 typedef enum _Enesim_Converter_Format
 {
 	ENESIM_CONVERTER_RGB565,
-	ENESIM_CONVERTER_ARGB888,
+	ENESIM_CONVERTER_ARGB8888,
+	ENESIM_CONVERTER_ARGB8888_PRE,
 	ENESIM_CONVERTER_FORMATS
 } Enesim_Converter_Format;
 
@@ -59,11 +60,13 @@ typedef void (*Enesim_Converter_1D)(uint32_t *src, uint32_t len, uint32_t *d);
 #define ENESIM_CONVERTER_1D(f) ((Enesim_Converter_1D)(f))
 #define ENESIM_CONVERTER_2D(f) ((Enesim_Converter_2D)(f))
 
-EAPI Eina_Bool enesim_converter_1d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
-		Enesim_Converter_Format dfmt);
+EAPI Eina_Bool enesim_converter_1d_from_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format nfmt,
+		Enesim_Converter_Format cfmt);
+EAPI Eina_Bool enesim_converter_1d_to_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Converter_Format cfmt,
+		Enesim_Format nfmt);
 EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
 		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
-EAPI void enesim_converter_1d_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
+EAPI void enesim_converter_1d_from_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
 		Enesim_Format sfmt, Enesim_Converter_Format dfmt);
 EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
 		Enesim_Format sfmt, Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
