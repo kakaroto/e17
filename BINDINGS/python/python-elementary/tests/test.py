@@ -380,8 +380,8 @@ def layout_clicked(obj, event, *args, **kargs):
     
     win.show()
     
-def hover_bt1_clicked(obj, event, *args, **kargs):
-    obj.show()
+def hover_bt1_clicked(obj, event, data):
+    data.show()
 
 def hover_clicked(obj, event, *args, **kargs):
     win = elementary.Window("hover", elementary.ELM_WIN_BASIC)
@@ -402,7 +402,7 @@ def hover_clicked(obj, event, *args, **kargs):
     
     bt = elementary.Button(win)
     bt.label_set("Button")
-    bt.clicked = hover_bt1_clicked
+    bt.clicked = (hover_bt1_clicked, hv)
     bx.pack_end(bt)
     bt.show()
     hv.parent_set(win)
@@ -484,7 +484,7 @@ def hover2_clicked(obj, event, *args, **kargs):
     
     bt = elementary.Button(win)
     bt.label_set("Button")
-    bt.clicked = hover2_bt_clicked
+    bt.clicked = (hover_bt1_clicked, hv)
     bx.pack_end(bt)
     bt.show()
     hv.parent_set(win)
@@ -798,6 +798,7 @@ def toolbar_clicked(obj, event, *args, **kargs):
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
     item = tb.item_add(ic, "Hello", tb_1)
+    ic.show()
     
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
@@ -948,6 +949,9 @@ def pager_clicked(obj, event, data):
 
     win.resize(320, 320)
     win.show()
+
+def check_clicked(obj, event, data):
+    win = element.Window("check", elementary.ELM_WIN_BASIC)
     
 if __name__ == "__main__":
     elementary.init()
@@ -995,7 +999,10 @@ if __name__ == "__main__":
                ("Anchorview", anchorview_clicked),
                ("Anchorblock", anchorblock_clicked),
                ("Toolbar", toolbar_clicked),
-               ("Pager", pager_clicked)]
+               ("Pager", pager_clicked),
+               ("Radio", radio_clicked),
+               ("Check", check_clicked)]
+    
     
     li = elementary.List(win)
     li.size_hint_weight_set(1.0, 1.0)
