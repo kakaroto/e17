@@ -382,7 +382,6 @@ _em_init_imlib(void)
 {
    Ecore_X_Display *disp;
    Ecore_X_Window root;
-//   Ecore_X_Screen *screen;
 
    /* get the display */
    disp = ecore_x_display_get();
@@ -390,14 +389,10 @@ _em_init_imlib(void)
    /* get the root window */
    root = RootWindow(disp, 0);
 
-   /* get default screen */
-//   screen = ecore_x_default_screen_get();
-
    /* setup imlib in preparation for shot */
    imlib_context_set_display(disp);
    imlib_context_set_drawable(root);
-   imlib_context_set_visual(DefaultVisual(disp, 
-					  DefaultScreen(ecore_x_display_get())));
+   imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
 }
 
 static void 
