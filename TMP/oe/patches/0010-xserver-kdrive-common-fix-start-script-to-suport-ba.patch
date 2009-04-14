@@ -1,0 +1,54 @@
+From e6b09a68cf26324a911b53b05ade22fe0f53e0dd Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 14 Apr 2009 20:33:12 +1000
+Subject: [PATCH] xserver-kdrive-common: fix start script to suport background opt and up pkgrev
+
+---
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ .../xserver-nodm-init/xserver-nodm                 |   17 ++++++++++-------
+ 2 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/recipes/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/recipes/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index 9667c47..6b585c4 100644
+--- a/recipes/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/recipes/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -1,7 +1,7 @@
+ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+-PR = "r34"
++PR = "r36"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+diff --git a/recipes/xserver-kdrive-common/xserver-nodm-init/xserver-nodm b/recipes/xserver-kdrive-common/xserver-nodm-init/xserver-nodm
+index 28ba65c..1f0fa47 100755
+--- a/recipes/xserver-kdrive-common/xserver-nodm-init/xserver-nodm
++++ b/recipes/xserver-kdrive-common/xserver-nodm-init/xserver-nodm
+@@ -19,13 +19,16 @@ done
+ 
+ case "$1" in
+   start)
+-        . /etc/profile
+-        [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+-        [ -z $HOME ] && export HOME=/home/$LOGNAME
+-
+-
+-        echo "Starting Xserver"
+-        /etc/X11/Xserver &
++    # We don't want this script to block the rest of the boot process
++    if [ "$2" != "background" ]; then
++      $0 $1 background &
++    else
++       . /etc/profile
++       [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
++       [ -z $HOME ] && export HOME=/home/$LOGNAME
++       echo "Starting Xserver"
++       /etc/X11/Xserver &
++    fi 
+   ;;
+ 
+   stop)
+-- 
+1.5.6.3
+

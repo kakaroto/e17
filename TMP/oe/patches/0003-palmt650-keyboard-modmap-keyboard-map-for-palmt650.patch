@@ -1,30 +1,27 @@
-From 152826f5925bd24ae0f0755518e27c882e1ba19d Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster <raster@rasterman.com>
-Date: Thu, 30 Oct 2008 16:47:23 +1100
-Subject: [PATCH] palmt650.conf: add palmt650-keyboard-modmap package to make keyboard work in x
+From 39b73cb35662733522f77e5ff4962c4b516b40f4 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 14 Apr 2009 20:20:44 +1000
+Subject: [PATCH] palmt650-keyboard-modmap: keyboard map for palmt650 so it works right
 
-the x keymap for the palmt650 is mostly wrong missing almost all the useful
-keys. this provides a package that sets a modifier map when starting x to
-set all the keys up properly for the palmt650.
 ---
- packages/palmt650/palmt650-keyboard-modmap.bb      |   23 ++++
+ recipes/palmt650/palmt650-keyboard-modmap.bb       |   23 ++++
  .../palmt650/palmt650-keyboard-modmap/60xXmodmap   |    8 ++
- packages/palmt650/palmt650-keyboard-modmap/Xmodmap |  118 ++++++++++++++++++++
+ recipes/palmt650/palmt650-keyboard-modmap/Xmodmap  |  118 ++++++++++++++++++++
  3 files changed, 149 insertions(+), 0 deletions(-)
- create mode 100644 packages/palmt650/palmt650-keyboard-modmap.bb
- create mode 100755 packages/palmt650/palmt650-keyboard-modmap/60xXmodmap
- create mode 100644 packages/palmt650/palmt650-keyboard-modmap/Xmodmap
+ create mode 100644 recipes/palmt650/palmt650-keyboard-modmap.bb
+ create mode 100644 recipes/palmt650/palmt650-keyboard-modmap/60xXmodmap
+ create mode 100644 recipes/palmt650/palmt650-keyboard-modmap/Xmodmap
 
-diff --git a/packages/palmt650/palmt650-keyboard-modmap.bb b/packages/palmt650/palmt650-keyboard-modmap.bb
+diff --git a/recipes/palmt650/palmt650-keyboard-modmap.bb b/recipes/palmt650/palmt650-keyboard-modmap.bb
 new file mode 100644
-index 0000000..dde7fb4
+index 0000000..c005136
 --- /dev/null
-+++ b/packages/palmt650/palmt650-keyboard-modmap.bb
++++ b/recipes/palmt650/palmt650-keyboard-modmap.bb
 @@ -0,0 +1,23 @@
 +DESCRIPTION = "A X keyboard modifier mapping for the Treo650"
 +LICENSE = "GPL"
 +PV = "0.0.3"
-+PR = "r0.01"
++PR = "r0.02"
 +
 +SRC_URI = "\
 +  file://60xXmodmap \
@@ -42,13 +39,13 @@ index 0000000..dde7fb4
 +
 +PACKAGE_ARCH = "all"
 +
-+FILES_${PN} += "${bindir}/* ${libdir}/lib*.so.*"
-+FILES_${PN} += "/etc/X11/Xsession.d/80x-enlightenment-wakerd"
-diff --git a/packages/palmt650/palmt650-keyboard-modmap/60xXmodmap b/packages/palmt650/palmt650-keyboard-modmap/60xXmodmap
-new file mode 100755
++FILES_${PN} += "/etc/X11/Xmodmap"
++FILES_${PN} += "/etc/X11/Xsession.d/60xXmodmap"
+diff --git a/recipes/palmt650/palmt650-keyboard-modmap/60xXmodmap b/recipes/palmt650/palmt650-keyboard-modmap/60xXmodmap
+new file mode 100644
 index 0000000..db814a0
 --- /dev/null
-+++ b/packages/palmt650/palmt650-keyboard-modmap/60xXmodmap
++++ b/recipes/palmt650/palmt650-keyboard-modmap/60xXmodmap
 @@ -0,0 +1,8 @@
 +# -*- sh -*-
 +# Xsession.d script for Xmodmap
@@ -58,11 +55,11 @@ index 0000000..db814a0
 +
 +xmodmap /etc/X11/Xmodmap
 +xmodmap -e 'remove Control = Mode_switch'
-diff --git a/packages/palmt650/palmt650-keyboard-modmap/Xmodmap b/packages/palmt650/palmt650-keyboard-modmap/Xmodmap
+diff --git a/recipes/palmt650/palmt650-keyboard-modmap/Xmodmap b/recipes/palmt650/palmt650-keyboard-modmap/Xmodmap
 new file mode 100644
 index 0000000..9086cd1
 --- /dev/null
-+++ b/packages/palmt650/palmt650-keyboard-modmap/Xmodmap
++++ b/recipes/palmt650/palmt650-keyboard-modmap/Xmodmap
 @@ -0,0 +1,118 @@
 +!!!!! get modifiers right
 +remove Control = Mode_switch

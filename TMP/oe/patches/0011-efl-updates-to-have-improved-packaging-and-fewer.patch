@@ -1,0 +1,136 @@
+From 7ad11b7a08f9a0ed7e3aeed93207be23b292e1d0 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 14 Apr 2009 20:34:35 +1000
+Subject: [PATCH] efl: updates to have improved packaging and fewer... bugs!
+
+---
+ recipes/e17/e-wm_svn.bb         |    3 +++
+ recipes/efl1/edje-native_svn.bb |    6 +++---
+ recipes/efl1/edje-sdk_svn.bb    |    2 +-
+ recipes/efl1/edje_svn.bb        |    3 +--
+ recipes/efl1/elementary_svn.bb  |    4 ++++
+ recipes/efl1/evas-native_svn.bb |    2 +-
+ recipes/efl1/evas.inc           |    1 +
+ 7 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/recipes/e17/e-wm_svn.bb b/recipes/e17/e-wm_svn.bb
+index e61bce8..7eba8e2 100644
+--- a/recipes/e17/e-wm_svn.bb
++++ b/recipes/e17/e-wm_svn.bb
+@@ -64,6 +64,7 @@ PACKAGE_ARCH_${PN}-other = "all"
+ PACKAGE_ARCH_${PN}-input-methods = "all"
+ PACKAGE_ARCH_${PN}-sysactions = "all"
+ 
++#  file://${HOME}/C/svn/ssh+svn/e/trunk/e \
+ SRC_URI = "\
+   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
+   file://enlightenment_start.oe \
+@@ -107,6 +108,7 @@ do_install_append() {
+ 
+ FILES_${PN} = "\
+   ${bindir}/* \
++  ${libdir}/enlightenment/utils/* \
+   ${libdir}/enlightenment/modules/*/*.* \
+   ${libdir}/enlightenment/modules/*/*/* \
+   ${libdir}/enlightenment/preload/e_precache.so \
+@@ -116,6 +118,7 @@ FILES_${PN} = "\
+   ${datadir}/enlightenment/data/config/profile.cfg \
+   ${datadir}/enlightenment/AUTHORS \
+   ${datadir}/enlightenment/COPYING \
++  ${datadir}/xsessions/enlightenment.desktop \
+   ${sysconfdir}/xdg \
+ "
+ FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
+diff --git a/recipes/efl1/edje-native_svn.bb b/recipes/efl1/edje-native_svn.bb
+index 238bfd0..e7650cd 100644
+--- a/recipes/efl1/edje-native_svn.bb
++++ b/recipes/efl1/edje-native_svn.bb
+@@ -1,11 +1,11 @@
+ require edje_${PV}.bb
+ inherit native
+-PR = "r1"
++PR = "r3"
+ 
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+ 
+ do_configure_prepend() {
+ 	sed -i 's:EMBRYO_PREFIX"/bin:"${STAGING_BINDIR}:' ${S}/src/bin/edje_cc_out.c
+-	sed -i 's:cpp -I:/usr/bin/cpp -I:' ${S}/src/bin/edje_cc_parse.c
+-	sed -i 's:gcc -I:/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
++	sed -i 's: cpp -I: /usr/bin/cpp -I:' ${S}/src/bin/edje_cc_parse.c
++	sed -i 's:\"gcc -I:\"/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
+ }
+diff --git a/recipes/efl1/edje-sdk_svn.bb b/recipes/efl1/edje-sdk_svn.bb
+index 2bd75a0..1733380 100644
+--- a/recipes/efl1/edje-sdk_svn.bb
++++ b/recipes/efl1/edje-sdk_svn.bb
+@@ -1,7 +1,7 @@
+ require edje_svn.bb
+ 
+ inherit sdk
+-PR = "r1"
++PR = "r3"
+ 
+ SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-sdk', '')}"
+ DEPENDS = "evas-native ecore-native eet-native embryo-native"
+diff --git a/recipes/efl1/edje_svn.bb b/recipes/efl1/edje_svn.bb
+index 7cf257f..31d47e6 100644
+--- a/recipes/efl1/edje_svn.bb
++++ b/recipes/efl1/edje_svn.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
+ DEPENDS = "eet evas ecore embryo edje-native"
+ LICENSE = "MIT BSD"
+ PV = "0.5.0.050+svnr${SRCREV}"
+-PR = "r1"
++PR = "r3"
+ 
+ inherit efl
+ 
+@@ -17,7 +17,6 @@ RRECOMMENDS_${PN}-utils = "\
+   libevas-saver-png \
+   libevas-saver-jpeg \
+   libevas-saver-eet \
+-  libevas-saver-tiff \
+ "
+ 
+ DEBIAN_NOAUTONAME_${PN}-utils = "1"
+diff --git a/recipes/efl1/elementary_svn.bb b/recipes/efl1/elementary_svn.bb
+index 82a099f..13ca295 100644
+--- a/recipes/efl1/elementary_svn.bb
++++ b/recipes/efl1/elementary_svn.bb
+@@ -31,3 +31,7 @@ FILES_${PN}-tests = "\
+   ${datadir}/applications/* \
+   ${datadir}/icons/* \
+ "
++
++EXTRA_OECONF = "\
++  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
++"
+diff --git a/recipes/efl1/evas-native_svn.bb b/recipes/efl1/evas-native_svn.bb
+index dbd03f5..56723ca 100644
+--- a/recipes/efl1/evas-native_svn.bb
++++ b/recipes/efl1/evas-native_svn.bb
+@@ -1,7 +1,7 @@
+ require evas.inc
+ inherit native
+ DEPENDS = "freetype-native libpng-native jpeg-native eet-native eina-native"
+-PR = "r0"
++PR = "r1"
+ 
+ EXTRA_OECONF = "\
+ 		--x-includes=${STAGING_INCDIR}/X11  \
+diff --git a/recipes/efl1/evas.inc b/recipes/efl1/evas.inc
+index ff7a184..0fb01f3 100644
+--- a/recipes/efl1/evas.inc
++++ b/recipes/efl1/evas.inc
+@@ -3,6 +3,7 @@ LICENSE = "MIT BSD"
+ # can also depend on valgrind, libsdl-x11, directfb
+ DEPENDS = "eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
+ PV = "0.9.9.050+svnr${SRCREV}"
++PR = "r1"
+ 
+ 
+ # disable thumb mode for arm
+-- 
+1.5.6.3
+

@@ -1,19 +1,17 @@
-From c987daeda41edffc816b87eda04ee3d854391f43 Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster <raster@rasterman.com>
-Date: Sun, 2 Nov 2008 11:47:42 +1100
-Subject: [PATCH] glibc: disable patch that moves ld.so.cache to /var/run to not run ldconfig
+From 708b032f7880309b9e6746ce76c1309005943eb6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 14 Apr 2009 20:27:11 +1000
+Subject: [PATCH] glibc: write ld.so.cache to usual /etc location so it can be cached and speed
+ up boot (so it doesnt need to re-generate every boot!)
 
-ldconfig is run at boot as a work around for ld.so.cache being in volatile
-ramdisk. this means it is not persistent and its caching won't help on boot.
-disable this.
 ---
- packages/glibc/glibc_2.6.1.bb |    3 ++-
+ recipes/glibc/glibc_2.6.1.bb |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/packages/glibc/glibc_2.6.1.bb b/packages/glibc/glibc_2.6.1.bb
+diff --git a/recipes/glibc/glibc_2.6.1.bb b/recipes/glibc/glibc_2.6.1.bb
 index ab343ea..c1a9598 100644
---- a/packages/glibc/glibc_2.6.1.bb
-+++ b/packages/glibc/glibc_2.6.1.bb
+--- a/recipes/glibc/glibc_2.6.1.bb
++++ b/recipes/glibc/glibc_2.6.1.bb
 @@ -41,7 +41,6 @@ SRC_URI = "\
    file://arm-longlong.patch;patch=1 \
    file://fhs-linux-paths.patch;patch=1 \

@@ -1,18 +1,18 @@
-From 948137d01045e80737d19f3b5dc8b3cee94fbfea Mon Sep 17 00:00:00 2001
-From: Carsten Haitzler (Raster <raster@rasterman.com>
-Date: Thu, 19 Feb 2009 22:32:24 +1100
-Subject: [PATCH] elementary-sms: add package for illume image
+From 035c3b8fe9ac049d6382b30a01ea31917cc1259c Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 14 Apr 2009 20:19:36 +1000
+Subject: [PATCH] elementary-sms: add recipe
 
 ---
- packages/e17/elementary-sms_svn.bb |   16 ++++++++++++++++
+ recipes/e17/elementary-sms_svn.bb |   16 ++++++++++++++++
  1 files changed, 16 insertions(+), 0 deletions(-)
- create mode 100644 packages/e17/elementary-sms_svn.bb
+ create mode 100644 recipes/e17/elementary-sms_svn.bb
 
-diff --git a/packages/e17/elementary-sms_svn.bb b/packages/e17/elementary-sms_svn.bb
+diff --git a/recipes/e17/elementary-sms_svn.bb b/recipes/e17/elementary-sms_svn.bb
 new file mode 100644
 index 0000000..2f0eec3
 --- /dev/null
-+++ b/packages/e17/elementary-sms_svn.bb
++++ b/recipes/e17/elementary-sms_svn.bb
 @@ -0,0 +1,16 @@
 +DESCRIPTION = "An Elementary based SMS app"
 +LICENSE = "GPL"
