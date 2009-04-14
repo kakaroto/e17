@@ -3,7 +3,7 @@ Section: graphics
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
 Build-Depends: cdbs, debhelper (>= 6), libewl1-dev
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 Homepage: http://www.enlightenment.org
 
 Package: ephoto

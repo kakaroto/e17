@@ -3,7 +3,7 @@ Section: games
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
 Build-Depends: cdbs, debhelper (>= 6), libewl1-dev, libedje-dev, libesmart0-dev
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 Homepage: http://www.enlightenment.org
 
 Package: elitaire

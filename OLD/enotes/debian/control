@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
 Build-Depends: libxml2-dev, libevas-dev, libecore-dev, libedb1-dev, libedje-dev, libewl1-dev, libesmart0-dev, debhelper (>= 6), cdbs, examine
-Standards-Version: 3.6.0
+Standards-Version: 3.8.0
 
 Package: enotes
 Architecture: any
