@@ -1,0 +1,8 @@
+Login:        lfelipe
+IRC Nick:     lfelipe
+Name:         Luis Felipe Strano Moraes
+Location:     Campinas, Brazil
+E-Mail:       -lfelipe@profusion.mobi
+Contributing: Evas, Ecore, Edje, Epsilon, Efreet
+Group:        Libraries
+Platform:     Ubuntu (Linux)
