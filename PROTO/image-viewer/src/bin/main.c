@@ -289,7 +289,23 @@ static void
 zoom_set(IV *iv, Eina_Bool increase)
 {
    if (iv->config->fit != ZOOM)
-     iv->config->img_scale = elm_object_scale_get(iv->gui.img);
+     {
+	int iw, w;
+	double scale = elm_object_scale_get(iv->gui.img);
+
+	evas_object_size_hint_max_get(iv->gui.img, &iw, NULL);
+	evas_object_geometry_get(iv->gui.img, NULL, NULL, &w, NULL);
+
+	if (w > iw)
+	  iv->config->img_scale = scale;
+	else
+	  {
+	     if (scale == 1.0)
+	       iv->config->img_scale = (double) w / (double) iw;
+	     else
+	       iv->config->img_scale = scale;
+	  }
+     }
 
    if (iv->config->img_scale >= 1)
      {
@@ -385,9 +401,8 @@ read_image(IV *iv, IV_Image_Dest dest)
 		    {
 		       bo = exif_data_get_byte_order(exif);
 		       orientation = exif_get_short(entry->data, bo);
-		       exif_entry_free(entry);
 		    }
-		  free(exif);
+		  exif_data_free(exif);
 	       }
 #endif
 	     if (orientation > 1 && orientation < 9)
@@ -1009,6 +1024,9 @@ iv_free(IV *iv)
       eina_stringshare_del(file);
 
    eina_stringshare_del(iv->theme_file);
+
+   if (iv->config_edd)
+     eet_data_descriptor_free(iv->config_edd);
 
    config_free(iv);
 
