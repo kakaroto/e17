@@ -20,7 +20,7 @@
 import c_evas
 
 from c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
-     Image, FilledImage, Gradient, Polygon, Text, Rect, EvasLoadError, \
+     Image, FilledImage, Gradient, Polygon, Text, Textblock, Rect, EvasLoadError, \
      shutdown, render_method_lookup, render_method_list, \
      async_events_fd_get, async_events_process, \
      color_argb_premul, color_argb_unpremul, color_parse, \

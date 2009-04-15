@@ -129,6 +129,7 @@ cdef object object_mapping
 object_mapping = {
     "image": Image,
     "text": Text,
+    "textblock": Textblock,
     "rectangle": Rectangle,
     "line": Line,
     "gradient": Gradient,
@@ -363,3 +364,4 @@ include "evas.c_evas_object_image.pxi"
 include "evas.c_evas_object_gradient.pxi"
 include "evas.c_evas_object_polygon.pxi"
 include "evas.c_evas_object_text.pxi"
+include "evas.c_evas_object_textblock.pxi"
