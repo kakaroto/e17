@@ -9,14 +9,15 @@
 
 struct E_DBus_Signal_Handler
 {
-  char *sender;
-  char *path;
-  char *interface;
-  char *member;
-
-  E_DBus_Signal_Cb cb_signal;
-  void *data;
-  unsigned char delete_me : 1;
+   char *sender;
+   char *path;
+   char *interface;
+   char *member;
+   
+   E_DBus_Signal_Cb cb_signal;
+   DBusPendingCall *get_name_owner_pending;
+   void *data;
+   unsigned char delete_me : 1;
 };
 
 static void cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg);
@@ -46,6 +47,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
   E_DBus_Signal_Handler *sh;
 
   sh = d->sh;
+  sh->get_name_owner_pending = NULL;
   free(d);
 
   if (dbus_error_is_set(err))
@@ -198,7 +200,8 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
 	 }
        data->conn = conn;
        data->sh = sh;
-       e_dbus_get_name_owner(conn, sender, cb_name_owner, data);
+       sh->get_name_owner_pending = 
+         e_dbus_get_name_owner(conn, sender, cb_name_owner, data);
     }
 
   conn->signal_handlers = eina_list_append(conn->signal_handlers, sh);
@@ -219,6 +222,11 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
   int len, sender_len, path_len, interface_len, member_len;
 
+   if (sh->get_name_owner_pending)
+     {
+        dbus_pending_call_cancel(sh->get_name_owner_pending);
+        sh->get_name_owner_pending = NULL;
+     }
   sh->delete_me = 1;
   if (e_dbus_idler_active)
   {
