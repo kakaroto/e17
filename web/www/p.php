@@ -8,12 +8,39 @@
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon"/>
 <link rel="icon" href="favicon.png" type="image/ico"/>
 <link rel="shortcut icon" href="favicon.png" type="image/ico"/>
-<style type="text/css"><!--img {behavior: url("png.htc");}--></style>
-<script src="bgsleight.js" type="text/javascript"></script>
 </head>
 
 <body>
-<table class='h'>
+
+  <div id="wrapper">
+    <div id="layout">
+
+
+
+      <!-- Custom Header -->
+      <table cellspacing="0" cellpadding="0" width="100%"><tr>
+        <td id="header_logo">
+          <a href="http://www.enlightenment.org"></a>
+        </td>
+        <td id="header_menu">
+          <ul>
+	    <?php echo(nav_button("main8", ""));?>
+	    <?php echo(nav_button("main7", ""));?>
+	    <?php echo(nav_button("main6", ""));?>
+	    <?php echo(nav_button("main5", ""));?>
+	    <?php echo(nav_button("main4", ""));?>
+	    <?php echo(nav_button("main3", ""));?>
+	    <?php echo(nav_button("main2", ""));?>
+	    <?php echo(nav_button("main1", ""));?>
+          </ul>
+        </td>
+        <td id="header_last"></td>
+      </tr></table>
+
+     <div id="submenu">
+       <?php nav_subs(); ?>
+     </div>
+<!--<table class='h' border=1>
   <tr>
     <td class="t">
      <table class='n nl' cellpadding='0' cellspacing='0'>
@@ -42,16 +69,26 @@
      <div class='l lr'><?php show_langs("p/lang2"); ?></div>  
     </td>
   </tr>
-</table>
-<div class="content">
-<div class="main">	
-<?php include "p/$page/$lang-body" ?>
-</div>
-</div>
-<div class="footer">
-<hr/>
-<p class="tiny">Copyright &copy; Enlightenment.org</p>
-</div>
+</table>-->
+
+      <!-- CM contents -->
+      <div id="content">
+        <?php include "p/$page/$lang-body" ?>
+      </div>
+      
+      <div id="push"></div>
+    </div><!-- /layout -->
+  </div><!-- /wrapper -->
+
+
+  <!-- Custom Footer -->
+  <div id="sitefooter">
+    <table width="100%"><tr>
+      <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
+    </tr></table>
+  </div><!-- /sitefooter -->
+
+
 </body>
 </html>
 	

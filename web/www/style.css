@@ -1,50 +1,205 @@
+/*****************************/
+/*  Body                     */
+/*****************************/
 body {
-   background             : url("i/b.png");
-   background-repeat      : repeat-x;
-   background-position    : top left;
-   background-color       : #f4f4f4;
-   text-align             : center;
-   padding:               : 0;
-   margin                 : 0;
+  background              : url(ti/header_background.png) repeat-x top left;
+  background-color        : #ffffff;
+  padding                 : 0;
+  margin                  : 0;
+  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
 }
 
-/*td.t { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/t.png'); }*/
-td.t { 
-   background-image       : url("i/t.gif"); 
-   width                  : 50%; 
-   vertical-align         : top; 
-   padding                : 0px; 
-   margin                 : 0px;
-}
-td.t[class] { background-image:url("i/t.png"); }
-/*td.tl { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/tl.png'); }*/
-td.tl { 
-   background-image       : url("i/tl.gif"); 
-   width                  : 600px; 
-   height                 : 250px;
-   padding                : 0;
-   margin                 : 0;
-}
-td.tl[class] { background-image:url("i/tl.png"); }
-td.tl {
-   text-align             : center;
-   vertical-align         : bottom;
-   width                  : 600px;
-   height                 : 250px;
+html, body {
+  height: 100%;
 }
 
-div.content {
-   margin                 : 0 auto 0 auto;
-   width                  : 80%;
-   text-align             : justify;
+
+
+/******************************************************/
+/* Centered Layout + 'stay on bottom' footer          */
+/******************************************************/
+#layout {
+  margin                  : 0 auto 0 auto;
+  min-width               : 700px;
+  width                   : 90%;
+/*  background              : url(ti/main_background.png) no-repeat center 150px; */
+      }
+
+#wrapper {
+  min-height              : 100%;
+  height                  : auto !important;
+  height                  : 100%;
+  margin                  : 0 auto -53px;
 }
 
-div.footer {
+#footer, #push {
+ height                   : 53px;
+}
+
+#content {
+  margin-top              : 40px;
+}
+
+
+
+/****************************/
+/* Top main menu            */
+/****************************/
+#header_logo {
+  background-image        : url(ti/logo.png);
+  width                   : 61px;
+}
+
+#header_logo a {
+  position                : absolute;
+  border                  : 0px;
+  background-color        : transparent;
+  top                     : 0px;
+  width                   : 60px;
+  height                  : 60px;
+}
+
+#header_menu {
+  background-image        : url(ti/header_menu_background.png);
+}
+
+#header_last {
+  background-image        : url(ti/header_menu_background_last.png);
+  width                   : 15px;
+}
+
+#header_menu ul {
+  height                  : 63px;
+  margin                  : 0px;
+  padding                 : 0px;
+  list-style              : none;
+}
+
+#header_menu li {
+  margin                  : 0px;
+  padding                 : 0px;
+  float                   : right;
+  background              : url(ti/header_menu_unselected_background.png) 0 0 no-repeat;
+}
+
+#header_menu a {
+  display                 : block;
+  border                  : 0px;
+  padding                 : 20px 10px 0px 10px;
+  height                  : 42px;
+  color                   : #cdcdcd;
+  text-decoration         : none;
+  cursor                  : pointer;
+}
+
+
+#header_menu li:hover a {
+  color                   : #ffffff;
+  background              : url(ti/header_menu_hover_background.png) top center;
+}
+
+#header_menu li.active a  {
+  color                   : #646464;
+  height                  : 43px;
+  background              : url(ti/header_menu_current_background.png) 0 0 no-repeat;
+}
+
+
+
+/****************************/
+/* Footer                   */
+/****************************/
+#sitefooter {
+  background              : url(ti/footer_background.png) repeat-x;
+  height                  : 53px;
+}
+
+#sitefooter td {
+  color                   : #888888;
+  font-size               : 0.8em;
+  white-space             : nowrap;
+  padding-top             : 10px;
+  border                  : 0px;
+}
+
+#sitefooter a {
+  border                  : 0px;
+  background-color        : transparent;
+}
+
+
+
+/*****************/
+/*  SubMenu      */
+/*****************/
+
+#submenu {
+  text-align: right;
+  padding-top: 9px;
+}
+a.nav:link {
+   color                  : #888888;
+   text-decoration        : none;
    display                : block;
-   width                  : 100%;
-   clear                  : both;
 }
 
+a.nav:visited {
+   color                  : #888888;
+   text-decoration        : none;
+   display                : block;
+}
+
+a.nav:active {
+   color                  : #000000;
+   text-decoration        : none;
+   display                : block;
+}
+
+a.nav:hover {
+   color                  : #444444;
+   text-decoration        : none;
+   display                : block;
+}
+
+li.navul, ul.navul {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #222222;
+   font-size              : 9px;
+   font-weight            : bold;
+   list-style             : none;
+   display                : inline;
+   text-align             : right;
+}
+
+li.selected {
+   text-decoration        : underline;
+}
+
+a.navul:link {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.navul:visited {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.navul:active {
+   color                  : #000000;
+   text-decoration        : none;
+}
+
+a.navul:hover {
+   color                  : #444444;
+   text-decoration        : none;
+}
+
+
+
+
+
+/*////////////////////////////////////////////////////////*/
 div.main {
    text-align             : justify;
    vertical-align         : top;
@@ -53,16 +208,17 @@ div.main {
    font-size              : 0.9em;
 }
 
+
 table.main {
    width                  : 100%;
-   border                 : 0px; 
-   margin                 : 0px; 
-   padding                : 4px; 
+   border                 : 0px;
+   margin                 : 0px;
+   padding                : 4px;
 }
 
 td.main {
    width                  : 33%;
-   margin                 : 4px; 
+   margin                 : 4px;
    text-align             : left;
    vertical-align         : top;
 }
@@ -83,6 +239,7 @@ div.bod {
    text-align             : left;
    vertical-align         : top;
 }
+
 
 div.fragment, div.code {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
@@ -185,96 +342,6 @@ blockquote {
    color                  : #000000;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    font-size              : 0.9em;
-}
-
-td.lnav {
-   text-align             : center;
-   vertical-align         : middle;
-   width                  : 100px;
-   height                 : 25px;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000000;
-   font-size              : 9px;
-   font-weight            : bold;
-   white-space            : no-wrap;
-}
-/*td.lnav { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/n.png'); }*/
-td.lnav { background-image:url("i/n.gif"); }
-td.lnav[class] { background-image:url("i/n.png"); }
-
-td.rnav {
-   text-align             : center;
-   vertical-align         : middle;
-   width                  : 100px;
-   height                 : 25px;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000000;
-   font-size              : 9px;
-   font-weight            : bold;
-   white-space            : no-wrap;
-}
-/*td.rnav { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/n.png'); }*/
-td.rnav { background-image:url("i/n.gif"); }
-td.rnav[class] { background-image:url("i/n.png"); }
-
-a.nav:link {
-   color                  : #888888;
-   text-decoration        : none;
-   display                : block;
-}
-
-a.nav:visited {
-   color                  : #888888;
-   text-decoration        : none;
-   display                : block;
-}
-
-a.nav:active {
-   color                  : #000000;
-   text-decoration        : none;
-   display                : block;
-}
-
-a.nav:hover {
-   color                  : #444444;
-   text-decoration        : none;
-   display                : block;
-}
-
-li.navul, ul.navul {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #222222;
-   font-size              : 9px;
-   font-weight            : bold;
-/*   white-space            : no-wrap;
-   text-transform         : none;
-   list-style-type        : none;*/
-   list-style             : none;
-   display                : inline;
-}
-
-li.selected {
-   text-decoration: underline;
-}
-
-a.navul:link {
-   color                  : #888888;
-   text-decoration        : none;
-}
-
-a.navul:visited {
-   color                  : #888888;
-   text-decoration        : none;
-}
-
-a.navul:active {
-   color                  : #000000;
-   text-decoration        : none;
-}
-
-a.navul:hover {
-   color                  : #444444;
-   text-decoration        : none;
 }
 
 table.n {

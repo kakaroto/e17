@@ -126,9 +126,10 @@
       }
   }
 
-  function nav_button($b, $c) {
+  function nav_button($b) {
       global $page;
       global $lang;
+      $c = "";
 
       if (file_exists("p/$b/$lang-label"))
 	$l = read_var("p/$b/$lang-label");
@@ -141,7 +142,12 @@
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
       }
-      return "<tr><td class='$c'><a class='nav' href='$h'>$l</a></td></tr>\n";
+      //return "<tr><td class='$c'><a class='nav' href='$h'>$l</a></td></tr>\n";
+      if ((strncasecmp($page,$l,strlen($l)) == 0) OR 
+          (($page == "index") AND ($l == "Home") ))
+      	$c = "active";
+
+      return "<li class='$c'><a href='$h'>$l</a></li>\n";	
   }
 
   function nav_subs() {
@@ -192,7 +198,7 @@
 		      }
 		  }
 	      }
-	      echo("</ul><hr>");
+	      echo("</ul>");
 	  }
       }
       }
