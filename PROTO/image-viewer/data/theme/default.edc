@@ -129,7 +129,20 @@ collections {
 		}
 	    }
 	 }
+	 program { name: "toggle_previews";
+	    signal: "iv,state,toggle_previews";
+	    source: "iv";
+	    script {
+		if (get_int(previews_visible) == 0) {
+		    run_program(PROGRAM:"show_previews");
+		} else {
+		    run_program(PROGRAM:"hide_previews");
+		}
+	    }
+	 }
 	 program { name: "show_previews";
+	    signal: "iv,state,show_previews";
+	    source: "iv";
 	    transition: ACCELERATE 0.2;
 	    action: STATE_SET "active" 0.0;
 	    target: "iv.swallow.previews";

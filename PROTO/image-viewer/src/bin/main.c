@@ -47,7 +47,7 @@ typedef struct _IV_Config IV_Config;
 
 struct _IV
 {
-   Eina_List *files, *dirs, *files_head;
+   Eina_List *files, *dirs;
    const char *single_file;
    const char *theme_file;
 
@@ -81,6 +81,7 @@ struct _IV
 	Eina_Bool add_previews : 1;
 	Eina_Bool ignore_preview_change : 1;
 	Eina_Bool hide_previews : 1;
+	Eina_Bool previews_visible : 1;
 #endif
    } flags;
 
@@ -91,7 +92,7 @@ struct _IV
 
 #ifdef HAVE_ETHUMB
    Eina_List		*preview_files;
-   Eina_List		*preview_items, *preview_items_head;
+   Eina_List		*preview_items;
    Ethumb		*ethumb;
 
    int			 preview_startup_count;
@@ -106,6 +107,16 @@ struct _IV_Config {
      IV_Image_Fit fit;
      IV_Image_Bg  image_bg;
 };
+
+static Eina_List *
+rewind_list(Eina_List *list)
+{
+   if (!list) return NULL;
+   while (list->prev)
+     list = list->prev;
+
+   return list;
+}
 
 static void
 image_configure(IV *iv)
@@ -375,7 +386,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 
 	 if (!l)
 	   {
-	      l = iv->files_head;
+	      l = rewind_list(l);
 	      if (l == iv->files)
 		l = NULL;
 	   }
@@ -521,7 +532,7 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
 	return;
      }
 
-   iv->files = eina_list_data_find_list(iv->files_head, file);
+   iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
    iv->preview_items = l;
    iv->flags.current = EINA_TRUE;
    iv->flags.hide_previews = EINA_TRUE;
@@ -553,8 +564,6 @@ on_idler(void *data)
 
 	eina_stringshare_del(dir);
 
-	if (!iv->files_head)
-	  iv->files_head = iv->files;
 	if (iv->single_file)
 	  {
 	     iv->files = eina_list_data_find_list(iv->files, iv->single_file);
@@ -603,7 +612,7 @@ on_idler(void *data)
 
 	     if (!iv->preview_files)
 	       {
-		  iv->preview_files = iv->files_head;
+		  iv->preview_files = rewind_list(iv->files);
 		  new = EINA_TRUE;
 	       }
 
@@ -629,7 +638,6 @@ on_idler(void *data)
 
 			    if (new)
 			      {
-				 iv->preview_items_head = iv->preview_items;
 				 iv->flags.ignore_preview_change = EINA_TRUE;
 				 elm_toolbar_item_select(iv->preview_items->data);
 				 new = EINA_FALSE;
@@ -670,9 +678,9 @@ on_idler(void *data)
 	       }
 	     else
 	       {
-		  iv->files = iv->files_head;
+		  iv->files = rewind_list(iv->files);
 #ifdef HAVE_ETHUMB
-		  iv->preview_items = iv->preview_items_head;
+		  iv->preview_items = rewind_list(iv->preview_items);
 #endif 
 	       }
 
@@ -785,13 +793,12 @@ on_idler(void *data)
 	elm_hoversel_hover_end(iv->gui.hoversel);
      }
 #ifdef HAVE_ETHUMB
-   if (iv->flags.hide_previews)
+   else if (iv->flags.hide_previews)
      {
 	iv->flags.hide_previews = EINA_FALSE;
 
 	edje_object_signal_emit(elm_layout_edje_get(iv->gui.ly),
 			       	"iv,state,hide_previews", "iv");
-	elm_hoversel_hover_end(iv->gui.hoversel);
      }
 #endif
    if (iv->flags.fit_changed)
@@ -1014,6 +1021,12 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 	  fullscreen(iv);
      }
 
+#ifdef HAVE_ETHUMB
+   if (!strcmp(ev->keyname, "F9"))
+     edje_object_signal_emit(elm_layout_edje_get(iv->gui.ly),
+			     "iv,state,toggle_previews", "iv");
+#endif
+
    if (iv->flags.slideshow)
      {
 	if (!strcmp(ev->keyname, "F5") || !strcmp(ev->keyname, "Escape"))
@@ -1192,7 +1205,7 @@ iv_free(IV *iv)
 {
    const char *file;
 
-   iv->files = iv->files_head;
+   iv->files = rewind_list(iv->files);
    EINA_LIST_FREE(iv->files, file)
       eina_stringshare_del(file);
    EINA_LIST_FREE(iv->dirs, file)
