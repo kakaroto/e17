@@ -305,6 +305,7 @@ HandleEvent(XEvent * ev)
      {
      case KeyPress:
 	Mode.events.last_keycode = ev->xkey.keycode;
+	Mode.events.last_keystate = ev->xkey.state;
      case KeyRelease:
 	Mode.events.time = ev->xkey.time;
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);

@@ -64,6 +64,7 @@ static WarpFocusWin *warpFocusWindow = NULL;
 
 static int          warpFocusIndex = 0;
 static unsigned int warpFocusKey = 0;
+static unsigned int warpFocusState = 0;
 static int          warplist_num = 0;
 static WarplistItem *warplist;
 
@@ -297,7 +298,10 @@ WarpFocus(int delta)
 
    /* Remember invoking keycode (ugly hack) */
    if (!fw || !EoIsShown(fw))
-      warpFocusKey = Mode.events.last_keycode;
+     {
+	warpFocusKey = Mode.events.last_keycode;
+	warpFocusState = Mode.events.last_keystate;
+     }
 
    if (!warplist)
      {
@@ -414,7 +418,12 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
      {
      case KeyPress:
 	if (ev->xkey.keycode == warpFocusKey)
-	   key = 0x80000000;
+	  {
+	     if ((ev->xkey.state & Mode.masks.mod_key_mask) == warpFocusState)
+		key = 0x80000000;
+	     else
+		key = 0x80000001;
+	  }
 	else
 	   key = XLookupKeysym(&ev->xkey, 0);
 	switch (key)
@@ -426,6 +435,7 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	     WarpFocus(1);
 	     break;
 	  case XK_Up:
+	  case 0x80000001:
 	     WarpFocus(-1);
 	     break;
 	  }

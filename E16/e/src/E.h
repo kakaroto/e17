@@ -341,6 +341,7 @@ typedef struct {
       Window              last_bpress2;
       unsigned int        last_button;
       unsigned int        last_keycode;
+      unsigned int        last_keystate;
       char                double_click;
       char                on_screen;
 #if USE_COMPOSITE
