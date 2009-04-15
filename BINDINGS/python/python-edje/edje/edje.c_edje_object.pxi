@@ -420,6 +420,36 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         else:
             return s
 
+    def part_text_unescaped_set(self, char *part, char *text_to_escape):
+        """Automatically escapes text if using TEXTBLOCK.
+
+        Similar to part_text_set(), but if it is a textblock contents
+        will be escaped automatically so it is displayed without any
+        formatting.
+
+        @see: part_text_set()
+        @see: part_text_unescaped_get()
+        """
+        edje_object_part_text_unescaped_set(self.obj, part, text_to_escape)
+
+    def part_text_unescaped_get(self, char *part):
+        """Automatically removes escape from text if using TEXTBLOCK.
+
+        Similar to part_text_get(), but if it is a textblock contents
+        will be unescaped automatically.
+
+        @see: part_text_get()
+        @see: part_text_unescaped_set()
+        """
+        cdef char *s
+        s = edje_object_part_text_unescaped_get(self.obj, part)
+        if s == NULL:
+            return None
+        else:
+            str = s
+            python.free(s)
+            return str
+
     def part_swallow(self, char *part, c_evas.Object obj):
         """Swallows an object into the edje
 
