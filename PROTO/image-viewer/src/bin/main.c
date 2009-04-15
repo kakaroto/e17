@@ -24,6 +24,8 @@
   #include <exif-data.h>
 #endif
 
+#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
+
 typedef enum _IV_Image_Fit {
      PAN,
      FIT,
@@ -102,6 +104,7 @@ struct _IV
 struct _IV_Config {
      int          config_version;
 
+     int	  auto_hide_previews;
      double       img_scale;
      double	  slideshow_delay;
      IV_Image_Fit fit;
@@ -273,9 +276,6 @@ on_image_click(void *data, Evas_Object *obj, void *event_info)
 
    iv->flags.next = EINA_TRUE;
    iv->flags.hide_controls = EINA_TRUE;
-#ifdef HAVE_ETHUMB
-   iv->flags.hide_previews = EINA_TRUE;
-#endif
 }
 
 static void
@@ -298,6 +298,16 @@ on_settings_bg_toggle_change(void *data, Evas_Object *obj, void *event_info)
      iv->config->image_bg = IMAGE_BG_BLACK;
 
    set_image_bg_style(iv);
+   config_save(iv);
+}
+
+static void
+on_settings_auto_hide_previews_toggle_change(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+
+   iv->config->auto_hide_previews = elm_toggle_state_get(obj);
+
    config_save(iv);
 }
 
@@ -535,7 +545,8 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
    iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
    iv->preview_items = l;
    iv->flags.current = EINA_TRUE;
-   iv->flags.hide_previews = EINA_TRUE;
+   if (iv->config->auto_hide_previews)
+     iv->flags.hide_previews = EINA_TRUE;
 }
 
 static int
@@ -665,10 +676,10 @@ on_idler(void *data)
    evas_event_freeze(evas_object_evas_get(iv->gui.img));
    if (iv->flags.next)
      {
-	iv->flags.next = EINA_FALSE;
-
 	if (iv->gui.next_img)
 	  {
+	     iv->flags.next = EINA_FALSE;
+
 	     if (iv->files->next)
 	       {
 		  iv->files = iv->files->next;
@@ -711,10 +722,10 @@ on_idler(void *data)
      }
    else if (iv->flags.prev)
      {
-	iv->flags.prev = EINA_FALSE;
-
 	if (iv->gui.prev_img)
 	  {
+	     iv->flags.prev = EINA_FALSE;
+
 	     if (iv->files->prev)
 	       {
 		  iv->files = iv->files->prev;
@@ -915,6 +926,16 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_bg_toggle_change, iv);
 	evas_object_show(o);
+
+#ifdef HAVE_ETHUMB
+	o = elm_toggle_add(bx);
+	elm_toggle_label_set(o, "Auto-hide the preview pane");
+	elm_toggle_state_set(o, iv->config->auto_hide_previews);
+	elm_box_pack_end(bx, o);
+	evas_object_smart_callback_add(o, "changed",
+				       on_settings_auto_hide_previews_toggle_change, iv);
+	evas_object_show(o);
+#endif
 
 	bx2 = elm_box_add(bx);
 	elm_box_horizontal_set(bx2, EINA_TRUE);
