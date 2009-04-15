@@ -47,6 +47,15 @@ PKG_CHECK_MODULES(E, enlightenment, [
 
 AM_CONDITIONAL(BUILD_E, test $have_enlightenment = yes)
 
+PKG_CHECK_MODULES(ETHUMB, ethumb, [
+    have_ethumb="yes"
+    AC_DEFINE(HAVE_ETHUMB, 1, [have ethumb support])
+], [
+    have_ethumb="no"
+])
+
+AM_CONDITIONAL(BUILD_ETHUMB, test $have_ethumb = yes)
+
 PKG_CHECK_MODULES(EXIF, libexif, [
     have_libexif="yes"
     AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
