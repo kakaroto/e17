@@ -19,11 +19,12 @@ static void _tx_argb8888_affine_fast_argb8888(uint32_t *src,
 	c = eina_f16p16_float_from(xz);
 
 	d = eina_f16p16_float_from(yx);
-	e = eina_f16p16_float_from(yx);
+	e = eina_f16p16_float_from(yy);
 	f = eina_f16p16_float_from(yz);
 
 	sx = eina_f16p16_mul(a, xfp) + eina_f16p16_mul(b, yfp) + c;
 	sy = eina_f16p16_mul(d, xfp) + eina_f16p16_mul(e, yfp) + f;
+
 	while (dlen--)
 	{
 		uint32_t ssrc;

@@ -53,7 +53,7 @@ void enesim_transformer_shutdown(void)
  *============================================================================*/
 EAPI void enesim_transformer_1d_register(Enesim_Cpu *cpu, Enesim_Transformer_1D tx,
 		Enesim_Format sfmt, Enesim_Matrix_Type type, Enesim_Quality q,
-		Enesim_Converter_Format dfmt)
+		Enesim_Format dfmt)
 {
 	unsigned int cpuid;
 	Enesim_Transformer_1D_Lut *t;
@@ -65,7 +65,7 @@ EAPI void enesim_transformer_1d_register(Enesim_Cpu *cpu, Enesim_Transformer_1D 
 
 EAPI Eina_Bool enesim_transformer_1d_op_get(Enesim_Operator *op,
 		Enesim_Cpu *cpu, Enesim_Format sfmt, Enesim_Matrix_Type type,
-		Enesim_Quality q, Enesim_Converter_Format dfmt)
+		Enesim_Quality q, Enesim_Format dfmt)
 {
 	unsigned int cpuid;
 	Enesim_Transformer_1D_Lut *t;

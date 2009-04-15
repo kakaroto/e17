@@ -25,6 +25,7 @@ static void _affine_matrix_get(Enesim_Matrix *m)
 	enesim_matrix_translate(&tmp, -opt_width/2, -opt_height/2);
 	enesim_matrix_compose(m, &tmp, m);
 }
+
 static void transformer_matrix_get(Enesim_Matrix_Type type, Enesim_Matrix *m)
 {
 	switch (type)
@@ -46,13 +47,30 @@ static void transformer_matrix_get(Enesim_Matrix_Type type, Enesim_Matrix *m)
 	}
 }
 
-/* TODO given the transformer parameters get the name of the destination image */
-void transformer_name_get(void)
+/* given the transformer parameters get the name of the destination image */
+const char * transformer_name_get(Enesim_Matrix_Type mt)
 {
+	switch (mt)
+	{
+		case ENESIM_MATRIX_AFFINE:
+		return "affine";
+		break;
+
+		case ENESIM_MATRIX_IDENTITY:
+		return "identity";
+		break;
+
+		case ENESIM_MATRIX_PROJECTIVE:
+		return "projective";
+		break;
+
+		default:
+		break;
+	}
 
 }
 
-static void transformer_1d_run(void)
+static void transformer_1d_run(Enesim_Matrix_Type mt)
 {
 	Enesim_Surface *src = NULL;
 	Enesim_Surface *dst= NULL;
@@ -62,13 +80,15 @@ static void transformer_1d_run(void)
 	int t;
 	double start, end;
 	Enesim_Matrix m;
+	char name[256];
 
-	if (!enesim_transformer_1d_op_get(&op, opt_cpu, opt_fmt, ENESIM_MATRIX_PROJECTIVE, ENESIM_FAST, opt_fmt))
+	snprintf(name, 256, "transformer_%s", transformer_name_get(mt));
+	if (!enesim_transformer_1d_op_get(&op, opt_cpu, opt_fmt, mt, ENESIM_FAST, opt_fmt))
 	{
-		printf("Transformer 1D         [NOT BUILT]\n");
+		printf("%s         [NOT BUILT]\n", name);
 		return;
 	}
-	transformer_matrix_get(ENESIM_MATRIX_PROJECTIVE, &m);
+	transformer_matrix_get(mt, &m);
 	surfaces_create(&src, opt_fmt, &dst, opt_fmt, NULL, 0);
 
 	s = enesim_surface_data_get(src);
@@ -91,8 +111,8 @@ static void transformer_1d_run(void)
 		}
 	}
 	end = get_time();
-	printf("Transformer 1D         [%3.3f sec]\n", end - start);
-	test_finish("transformer", ENESIM_FILL, dst, src, NULL, NULL);
+	printf("%s         [%3.3f sec]\n", name, end - start);
+	test_finish(name, ENESIM_FILL, dst, src, NULL, NULL);
 }
 /*
  * TODO transform with a mask/color and without
@@ -106,7 +126,10 @@ void transformer_bench(void)
 	printf("* Transformer Bench *\n");
 	printf("*********************\n");
 
-	transformer_1d_run();
+	for (mt = 0; mt < ENESIM_MATRIX_TYPES; mt++)
+	{
+		transformer_1d_run(mt);
+	}
 #if 0
 	Enesim_Matrix matrix, tmp;
 	Enesim_Quad q1, q2;

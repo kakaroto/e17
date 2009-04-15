@@ -35,4 +35,12 @@ typedef void (*Enesim_Transformer_2D)(uint32_t *src,
 		uint32_t dpitch,  uint32_t dw, uint32_t dh,
 		uint32_t *dst);
 
+EAPI void enesim_transformer_1d_register(Enesim_Cpu *cpu, Enesim_Transformer_1D tx,
+		Enesim_Format sfmt, Enesim_Matrix_Type type, Enesim_Quality q,
+		Enesim_Format dfmt);
+EAPI Eina_Bool enesim_transformer_1d_op_get(Enesim_Operator *op,
+		Enesim_Cpu *cpu, Enesim_Format sfmt, Enesim_Matrix_Type type,
+		Enesim_Quality q, Enesim_Format dfmt);
+
+
 #endif /*ENESIM_TRANSFORMER_H_*/

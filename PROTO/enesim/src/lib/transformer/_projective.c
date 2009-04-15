@@ -19,11 +19,11 @@ static void _tx_argb8888_projective_fast_argb8888(uint32_t *src,
 	c = eina_f16p16_float_from(xz);
 
 	d = eina_f16p16_float_from(yx);
-	e = eina_f16p16_float_from(yx);
+	e = eina_f16p16_float_from(yy);
 	f = eina_f16p16_float_from(yz);
 
 	g = eina_f16p16_float_from(zx);
-	h = eina_f16p16_float_from(zx);
+	h = eina_f16p16_float_from(zy);
 	i = eina_f16p16_float_from(zz);
 
 	sx = eina_f16p16_mul(a, xfp) + eina_f16p16_mul(b, yfp) + c;
