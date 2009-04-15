@@ -99,7 +99,7 @@ cdef class Window:
     def delete(self):
         "Deletes the current window."
         if self.xid != 0:
-            ecore_x_window_del(self.xid)
+            ecore_x_window_free(self.xid)
             self.xid = 0
 
     def delete_request_send(self):
