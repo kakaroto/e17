@@ -150,7 +150,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    ci = _iiirk_config_item_get(id);
    inst->ci = ci;
-   if (!ci->dir) ci->dir = evas_stringshare_add("default");
+   if (!ci->dir) ci->dir = eina_stringshare_add("default");
 
    b = _iiirk_new(gc->evas, gc->zone, inst);
    b->inst = inst;
@@ -266,7 +266,7 @@ _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id)
    ci = _iiirk_config_item_get(id);
    if (ci)
      {
-	if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->id) eina_stringshare_del(ci->id);
 	iiirk_config->items = eina_list_remove(iiirk_config->items, ci);
      }
 }
@@ -1402,7 +1402,7 @@ _iiirk_config_item_get(const char *id)
 	  }
      }
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->hide_window = 1;
    ci->show_label = 0;
    ci->show_zone = 1;
@@ -1508,7 +1508,7 @@ e_modapi_init(E_Module *m)
 	iiirk_config = E_NEW(Config, 1);
 	
 	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
+	ci->id = eina_stringshare_add("0");
 	ci->hide_window = 1;
 	ci->show_label = 0;
 	ci->show_zone = 1;
@@ -1597,7 +1597,7 @@ e_modapi_shutdown(E_Module *m)
 	ci = iiirk_config->items->data;
 	iiirk_config->items = eina_list_remove_list(iiirk_config->items, iiirk_config->items);
 	if (ci->id)
-	  evas_stringshare_del(ci->id);
+	  eina_stringshare_del(ci->id);
 	free(ci);
      }
 

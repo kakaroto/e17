@@ -202,9 +202,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
    
    ci = cfd->data;
-   evas_stringshare_del(ci->dir);
+   eina_stringshare_del(ci->dir);
    ci->dir = NULL;
-   if (cfdata->dir) ci->dir = evas_stringshare_ref(cfdata->dir);
+   if (cfdata->dir) ci->dir = eina_stringshare_ref(cfdata->dir);
    ci->hide_window = cfdata->hide_window;
    ci->show_label = cfdata->show_label;
    ci->icon_label = cfdata->icon_label;
