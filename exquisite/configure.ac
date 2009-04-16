@@ -105,6 +105,10 @@ PKG_CHECK_MODULES([ECORE], [
    ecore-evas
    ecore-con])
 
+PKG_CHECK_MODULES([ECORE_FB], [ecore-fb], [
+  AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
+], [have_ecore_fb=xno])
+
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],
 [

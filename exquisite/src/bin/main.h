@@ -17,6 +17,9 @@
 #include <Eet.h>
 #include <Edje.h>
 #include <Ecore_Con.h>
+#ifdef HAVE_ECORE_FB
+#include <Ecore_Fb.h>
+#endif
 
 #include "ipc.h"
 

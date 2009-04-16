@@ -75,6 +75,12 @@ _cb_idle_enterer(void *data)
    return 0;
 }
 
+static void
+_cb_fb_lose(void *data)
+{
+   ecore_main_loop_quit();
+}
+    
 static int
 _args(void)
 {
@@ -195,7 +201,13 @@ _args(void)
    else if (engine == GL_X)
      ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, w, h);
    else if (engine == FB)
-     ee = ecore_evas_fb_new(NULL, rot, w, h);
+     {
+        ee = ecore_evas_fb_new(NULL, rot, w, h);
+#ifdef HAVE_ECORE_FB
+        /* exit on first vt switch away */
+        ecore_fb_callback_lose_set(_cb_fb_lose, NULL);
+#endif        
+     }
    else if (engine == XRENDER_X)
      ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, w, h);
    if (!ee)
