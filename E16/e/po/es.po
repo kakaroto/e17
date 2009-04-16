@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1139,7 +1139,7 @@ msgstr "Opciones del Portaíconos"
 msgid "Iconbox Settings"
 msgstr "Configurar Portaíconos"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "Mensaje"
 
@@ -1883,7 +1883,7 @@ msgstr ""
 "Enlightenment Composite\n"
 "Dialogo de configuracion\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Iniciando Enlightenment... "
@@ -2171,6 +2171,42 @@ msgstr ""
 "o en el directorio themes dentro del directorio de usuario:\n"
 " %s/themes/\n"
 "Procediendo desde donde es más puntual.\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Tema defectuoso"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Miscelanea Configuraciones"
+
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Enfoque Enlightenment\n"
+"Diálogo de Secciones\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2008-10-09 10:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1105,7 +1105,7 @@ msgstr "Meny for ikonboksen"
 msgid "Iconbox Settings"
 msgstr "Ikonboks"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "Beskjed"
 
@@ -1845,7 +1845,7 @@ msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 msgid "Enlightenment Settings"
 msgstr "Innstillinger for Enlightenment"
 
@@ -2122,6 +2122,42 @@ msgid ""
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Tema"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Innstillinger for menyer"
+
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling \n"
+"av fokus i Enlightenment\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2000-02-24 16:22+0100\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -1117,7 +1117,7 @@ msgstr "Opções do Porta-ícone"
 msgid "Iconbox Settings"
 msgstr "Configurações do Porta-Ícone"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr ""
 
@@ -1869,7 +1869,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Mensagem de Diálogo do Enlightenment"
 
-#: src/settings.c:793
+#: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Inicializando o Enlightenment..."
@@ -2146,6 +2146,41 @@ msgid ""
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Tema Ruim"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Configuração de Som"
+
+# melhor assim, né, Rainer? :)
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr "Mensagem de Diálogo do Enlightenment"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

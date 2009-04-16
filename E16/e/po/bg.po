@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -1131,7 +1131,7 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "Съобщение"
 
@@ -1875,7 +1875,7 @@ msgstr ""
 "Е: Композитор\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."
@@ -2159,6 +2159,42 @@ msgstr ""
 "или в директорията на потребителя:\n"
 "%s/themes/\n"
 "Безсмислено е да се продължава.\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Некоректна тема"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Други настройки"
+
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Е: Фокус\n"
+"Диалог за настройкию\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

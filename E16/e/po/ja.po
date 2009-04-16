@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2009-04-04 20:13+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1121,7 +1121,7 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "メッセージ"
 
@@ -1873,7 +1873,7 @@ msgstr ""
 "Enlightenment コンポジットの\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 msgid "Enlightenment Settings"
 msgstr "Enlightenment の設定"
 
@@ -2161,6 +2161,45 @@ msgstr ""
 "デフォルトのディレクトリ\n"
 "%s\n"
 "にテーマがありません。このまま進めてもほとんど無意味です。\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "テーマ"
+
+#
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "メニューの設定"
+
+#
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment メニュー\n"
+"設定ダイアログ\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

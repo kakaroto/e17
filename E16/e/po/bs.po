@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -1131,7 +1131,7 @@ msgstr "Iconbox opcije"
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "Poruka"
 
@@ -1891,7 +1891,7 @@ msgstr ""
 "Enlightenment Savjeti\n"
 "dijalog osobina\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment se pokre�e..."
@@ -2180,6 +2180,42 @@ msgstr ""
 "ili u korisniīkom direktoriju tema:\n"
 " %s/themes/\n"
 "Nastavljanje ovuda je najīeŷ�i pogodak.\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Loŷa tema"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Razne osobine"
+
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment usmjeravanje\n"
+"Dijalog osobina\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"

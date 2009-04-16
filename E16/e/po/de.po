@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2009-03-28 16:16+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1318,7 +1318,7 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "Mitteilung"
 
@@ -2154,7 +2154,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/config.c:3743
-#: src/settings.c:793
+#: src/settings.c:794
 msgid "Enlightenment Settings"
 msgstr "Enlightenment Einstellungen"
 
@@ -2473,6 +2473,45 @@ msgstr ""
 "Es wurde kein Thema in den Standardverzeichnissen gefunden:\n"
 " %s\n"
 "Weiter fortzufahren ist zwecklos.\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+# src/theme.c:354
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "Themen"
+
+# src/settings.c:393
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "Menü-Einstellungen"
+
+# src/main.c:89
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment Menü\n"
+"Einstellungsdialog\n"
 
 # src/settings.c:1427
 #: src/tooltips.c:867

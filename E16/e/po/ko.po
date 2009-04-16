@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-13 14:57+0200\n"
+"POT-Creation-Date: 2009-04-17 00:34+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -1127,7 +1127,7 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
 msgid "Message"
 msgstr "메시지"
 
@@ -1887,7 +1887,7 @@ msgstr ""
 "인라이튼먼트 툴팁\n"
 "설정 대화상자\n"
 
-#: src/settings.c:793
+#: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "인라이튼먼트 시작중..."
@@ -2176,6 +2176,42 @@ msgstr ""
 "혹은 사용자 테마 디렉토리:\n"
 " %s/themes/\n"
 "현재 동작 이상 진행 할 수 없습니다.\n"
+
+#: src/theme.c:369
+msgid "Changes will take effect after restart"
+msgstr ""
+
+#: src/theme.c:389
+msgid "Use theme font configuration"
+msgstr ""
+
+#: src/theme.c:394
+#, c-format
+msgid "Use alternate font configuration (%s)"
+msgstr ""
+
+#: src/theme.c:395
+msgid "Not set"
+msgstr ""
+
+#: src/theme.c:402
+#, fuzzy
+msgid "Theme"
+msgstr "잘못된 테마"
+
+#: src/theme.c:403
+#, fuzzy
+msgid "Theme Settings"
+msgstr "기타 설정"
+
+#: src/theme.c:406
+#, fuzzy
+msgid ""
+"Enlightenment Theme\n"
+"Settings Dialog\n"
+msgstr ""
+"인라이튼먼트 포커스\n"
+"설정 대화상자\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"
