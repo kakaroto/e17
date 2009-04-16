@@ -18,6 +18,7 @@
 
 #ifdef HAVE_ETHUMB
   #include <Ethumb.h>
+  #include <pthread.h>
 #endif
 
 #ifdef HAVE_LIBEXIF
@@ -25,6 +26,7 @@
 #endif
 
 #define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
+#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
 
 typedef enum _IV_Image_Fit {
      PAN,
@@ -46,6 +48,7 @@ typedef enum _IV_Image_Bg {
 
 typedef struct _IV IV;
 typedef struct _IV_Config IV_Config;
+typedef struct _IV_Thumb_Info IV_Thumb_Info;
 
 struct _IV
 {
@@ -84,6 +87,7 @@ struct _IV
 	Eina_Bool ignore_preview_change : 1;
 	Eina_Bool hide_previews : 1;
 	Eina_Bool previews_visible : 1;
+	Eina_Bool first_preview : 1;
 #endif
    } flags;
 
@@ -93,11 +97,12 @@ struct _IV
    Ecore_Timer          *config_save;
 
 #ifdef HAVE_ETHUMB
+   Eina_List		*thumb_path;
    Eina_List		*preview_files;
-   Eina_List		*preview_items;
+   Eina_Hash		*preview_items;
    Ethumb		*ethumb;
 
-   int			 preview_startup_count;
+   pthread_t		 thumb_thread;
 #endif
 };
 
@@ -109,6 +114,12 @@ struct _IV_Config {
      double	  slideshow_delay;
      IV_Image_Fit fit;
      IV_Image_Bg  image_bg;
+};
+
+struct _IV_Thumb_Info
+{
+   const char *thumb_path;
+   const char *file;
 };
 
 static Eina_List *
@@ -533,7 +544,6 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *thumb = data;
    IV *iv = evas_object_data_get(thumb, "iv");
-   Eina_List *l = evas_object_data_get(thumb, "iv_preview_list");
    const char *file = evas_object_data_get(thumb, "iv_file");
 
    if (iv->flags.ignore_preview_change)
@@ -543,16 +553,50 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
      }
 
    iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
-   iv->preview_items = l;
    iv->flags.current = EINA_TRUE;
    if (iv->config->auto_hide_previews)
      iv->flags.hide_previews = EINA_TRUE;
+}
+
+static void *
+on_thumb_thread_create(void *data)
+{
+   IV *iv = data;
+   Eina_List *l;
+   const char *file;
+
+   EINA_LIST_FOREACH(iv->preview_files, l, file)
+     {
+	Ethumb_File *ef = ethumb_file_new(iv->ethumb, file);
+
+	if (ef)
+	  {
+	     if (ethumb_file_generate(ef))
+	       {
+		  IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
+
+		  info->thumb_path = eina_stringshare_add(ef->thumb_path);
+		  info->file = file;
+
+		  iv->thumb_path = eina_list_append(iv->thumb_path, info);
+	       }
+	     ethumb_file_free(ef);
+	  }
+
+	iv->preview_files = l;
+     }
+
+   iv->thumb_thread = 0;
+   return NULL;
 }
 
 static int
 on_idler(void *data)
 {
    IV *iv = data;
+#ifdef HAVE_ETHUMB
+   Elm_Toolbar_Item *item;
+#endif
 
    if (iv->dirs)
      {
@@ -614,66 +658,55 @@ on_idler(void *data)
 	  }
 
 #ifdef HAVE_ETHUMB
-	if (iv->flags.add_previews && !iv->preview_startup_count)
+	if (!iv->thumb_thread && iv->thumb_path)
 	  {
-	     Eina_List *l;
-	     const char *file;
-	     int count = 0;
-	     Eina_Bool new = EINA_FALSE;
+	     Evas_Object *thumb;
+	     IV_Thumb_Info *info;
+
+	     EINA_LIST_FREE(iv->thumb_path, info)
+	       {
+		  Elm_Toolbar_Item *item;
+
+		  thumb = elm_icon_add(iv->gui.toolbar);
+		  elm_icon_file_set(thumb, info->thumb_path, NULL);
+		  evas_object_data_set(thumb, "iv", iv);
+		  evas_object_data_set(thumb, "iv_file", info->file);
+		  evas_object_show(thumb);
+		  item = elm_toolbar_item_add(iv->gui.toolbar, thumb, NULL, on_toolbar_change, thumb);
+		  eina_hash_add(iv->preview_items, info->file, item);
+
+		  if (iv->flags.first_preview)
+		    {
+		       iv->flags.ignore_preview_change = EINA_TRUE;
+		       elm_toolbar_item_select(item);
+		       iv->flags.first_preview = EINA_FALSE;
+		    }
+
+		  eina_stringshare_del(info->thumb_path);
+		  free(info);
+	       }
+
+	  }
+
+	if (iv->flags.add_previews)
+	  {
+	     int rc;
 
 	     if (!iv->preview_files)
 	       {
 		  iv->preview_files = rewind_list(iv->files);
-		  new = EINA_TRUE;
+		  iv->flags.first_preview = EINA_TRUE;
 	       }
 
-	     EINA_LIST_FOREACH(iv->preview_files, l, file)
+	     if (!iv->thumb_thread)
 	       {
-		  Ethumb_File *ef = ethumb_file_new(iv->ethumb, file);
+		  rc = pthread_create(&(iv->thumb_thread), NULL, on_thumb_thread_create, iv);
+		  if (rc)
+		    ERR("Error starting the thumbnail thread: %d\n", rc);
 
-		  if (ef)
-		    {
-		       Evas_Object *thumb;
-
-		       if (ethumb_file_generate(ef))
-			 {
-			    thumb = elm_icon_add(iv->gui.toolbar);
-			    elm_icon_file_set(thumb, ef->thumb_path, NULL);
-			    evas_object_data_set(thumb, "iv", iv);
-			    evas_object_data_set(thumb, "iv_file", file);
-			    evas_object_show(thumb);
-			    iv->preview_items = eina_list_append(
-				iv->preview_items,
-				elm_toolbar_item_add(iv->gui.toolbar, thumb, NULL, on_toolbar_change, thumb));
-			    evas_object_data_set(thumb, "iv_preview_list", eina_list_last(iv->preview_items));
-
-			    if (new)
-			      {
-				 iv->flags.ignore_preview_change = EINA_TRUE;
-				 elm_toolbar_item_select(iv->preview_items->data);
-				 new = EINA_FALSE;
-			      }
-			 }
-		       ethumb_file_free(ef);
-		    }
-
-		  iv->preview_files = l;
-		  if (++count > 10)
-		    {
-		       if (l->next)
-			 iv->preview_files = l->next;
-		       break;
-		    }
+		  iv->flags.add_previews = EINA_FALSE;
 	       }
-
-	     if (iv->preview_files->next)
-	       iv->flags.add_previews = EINA_TRUE;
-	     else
-	       iv->flags.add_previews = EINA_FALSE;
 	  }
-
-	if (iv->preview_startup_count)
-	  iv->preview_startup_count--;
 #endif
      }
 
@@ -684,19 +717,9 @@ on_idler(void *data)
 	     iv->flags.next = EINA_FALSE;
 
 	     if (iv->files->next)
-	       {
-		  iv->files = iv->files->next;
-#ifdef HAVE_ETHUMB
-		  iv->preview_items = iv->preview_items->next;
-#endif 
-	       }
+	       iv->files = iv->files->next;
 	     else
-	       {
-		  iv->files = rewind_list(iv->files);
-#ifdef HAVE_ETHUMB
-		  iv->preview_items = rewind_list(iv->preview_items);
-#endif 
-	       }
+	       iv->files = rewind_list(iv->files);
 
 	     /* XXX: this is necessary for some reason, bug in elm? */
 	     elm_scroller_content_set(iv->gui.scroller, NULL);
@@ -720,7 +743,9 @@ on_idler(void *data)
 
 #ifdef HAVE_ETHUMB
 	     iv->flags.ignore_preview_change = EINA_TRUE;
-	     elm_toolbar_item_select(iv->preview_items->data);
+	     item = eina_hash_find(iv->preview_items, iv->files->data);
+	     if (item)
+	       elm_toolbar_item_select(item);
 #endif
 	  }
      }
@@ -731,19 +756,9 @@ on_idler(void *data)
 	     iv->flags.prev = EINA_FALSE;
 
 	     if (iv->files->prev)
-	       {
-		  iv->files = iv->files->prev;
-#ifdef HAVE_ETHUMB
-		  iv->preview_items = iv->preview_items->prev;
-#endif
-	       }
+	       iv->files = iv->files->prev;
 	     else
-	       {
-		  iv->files = eina_list_last(iv->files);
-#ifdef HAVE_ETHUMB
-		  iv->preview_items = eina_list_last(iv->preview_items);
-#endif
-	       }
+	       iv->files = eina_list_last(iv->files);
 
 	     /* XXX: this is necessary for some reason, bug in elm? */
 	     elm_scroller_content_set(iv->gui.scroller, NULL);
@@ -767,7 +782,9 @@ on_idler(void *data)
 
 #ifdef HAVE_ETHUMB
 	     iv->flags.ignore_preview_change = EINA_TRUE;
-	     elm_toolbar_item_select(iv->preview_items->data);
+	     item = eina_hash_find(iv->preview_items, iv->files->data);
+	     if (item)
+	       elm_toolbar_item_select(item);
 #endif
 	  }
      }
@@ -1351,10 +1368,9 @@ elm_main(int argc, char **argv)
 #ifdef HAVE_ETHUMB
    ethumb_init();
    iv->ethumb = ethumb_new();
+   iv->preview_items = eina_hash_string_superfast_new(NULL);
    if (iv->files)
      iv->flags.add_previews = EINA_TRUE;
-
-   iv->preview_startup_count = 3;
 #endif
 
    iv->flags.fit_changed = EINA_TRUE;
@@ -1364,6 +1380,7 @@ elm_main(int argc, char **argv)
 
 #ifdef HAVE_ETHUMB
    ethumb_free(iv->ethumb);
+   eina_hash_free(iv->preview_items);
    ethumb_shutdown();
 #endif
    iv_free(iv);
