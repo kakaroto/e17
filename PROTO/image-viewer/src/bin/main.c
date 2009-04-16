@@ -659,7 +659,11 @@ on_idler(void *data)
 
 		  iv->preview_files = l;
 		  if (++count > 10)
-		    break;
+		    {
+		       if (l->next)
+			 iv->preview_files = l->next;
+		       break;
+		    }
 	       }
 
 	     if (iv->preview_files->next)
@@ -673,7 +677,6 @@ on_idler(void *data)
 #endif
      }
 
-   evas_event_freeze(evas_object_evas_get(iv->gui.img));
    if (iv->flags.next)
      {
 	if (iv->gui.next_img)
@@ -716,6 +719,7 @@ on_idler(void *data)
 	     iv->gui.next_img = NULL;
 
 #ifdef HAVE_ETHUMB
+	     iv->flags.ignore_preview_change = EINA_TRUE;
 	     elm_toolbar_item_select(iv->preview_items->data);
 #endif
 	  }
@@ -762,6 +766,7 @@ on_idler(void *data)
 	     iv->gui.prev_img = NULL;
 
 #ifdef HAVE_ETHUMB
+	     iv->flags.ignore_preview_change = EINA_TRUE;
 	     elm_toolbar_item_select(iv->preview_items->data);
 #endif
 	  }
@@ -793,7 +798,6 @@ on_idler(void *data)
 	elm_scroller_content_set(iv->gui.scroller, NULL);
 	read_image(iv, IMAGE_CURRENT);
      }
-   evas_event_thaw(evas_object_evas_get(iv->gui.img));
 
    if (iv->flags.hide_controls)
      {
