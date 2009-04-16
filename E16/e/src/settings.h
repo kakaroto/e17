@@ -45,6 +45,7 @@ extern const DialogDef DlgPlacement;
 extern const DialogDef DlgRemember;
 extern const DialogDef DlgSession;
 extern const DialogDef DlgSound;
+extern const DialogDef DlgTheme;
 extern const DialogDef DlgThemeTrans;
 extern const DialogDef DlgTooltips;
 #endif

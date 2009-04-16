@@ -349,6 +349,66 @@ ThemePathFind(void)
    Mode.theme.path = (path) ? path : Estrdup("-");
 }
 
+#if ENABLE_DIALOGS
+#include "dialog.h"
+/*
+ * Configuration dialog
+ */
+static char         tmp_use_theme_font;
+static char         tmp_use_alt_font;
+
+static void
+_DlgThemeConfigure(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val >= 2)
+      return;
+   if (Conf.theme.use_theme_font_cfg == tmp_use_theme_font &&
+       Conf.theme.use_alt_font_cfg == tmp_use_alt_font)
+      return;
+
+   DialogOK(_("Message"), _("Changes will take effect after restart"));
+
+   Conf.theme.use_theme_font_cfg = tmp_use_theme_font;
+   Conf.theme.use_alt_font_cfg = tmp_use_alt_font;
+   autosave();
+}
+
+static void
+_DlgThemeFill(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
+{
+   DItem              *di;
+   char                buf[1024];
+
+   tmp_use_theme_font = Conf.theme.use_theme_font_cfg;
+   tmp_use_alt_font = Conf.theme.use_alt_font_cfg;
+
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Use theme font configuration"));
+   DialogItemCheckButtonSetPtr(di, &tmp_use_theme_font);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   Esnprintf(buf, sizeof(buf), _("Use alternate font configuration (%s)"),
+	     Conf.theme.font_cfg ? Conf.theme.font_cfg : _("Not set"));
+   DialogItemSetText(di, buf);
+   DialogItemCheckButtonSetPtr(di, &tmp_use_alt_font);
+}
+
+const DialogDef     DlgTheme = {
+   "CONFIGURE_AUDIO",
+   N_("Theme"),
+   N_("Theme Settings"),
+   SOUND_SETTINGS_MISCELLANEOUS,
+   "pix/miscellaneous.png",
+   N_("Enlightenment Theme\n" "Settings Dialog\n"),
+   _DlgThemeFill,
+   DLG_OAC, _DlgThemeConfigure,
+};
+#endif /* ENABLE_DIALOGS */
+
 /*
  * Theme module
  */
