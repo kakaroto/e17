@@ -42,20 +42,20 @@ AC_ARG_ENABLE(ehal,
 				  [enable_ehal=$enableval],
 				  [enable_ehal="yes"])
 AC_ARG_ENABLE(enm,
-				  AC_HELP_STRING([--disable-enm],
-									  [Disable enm build]),
+				  AC_HELP_STRING([--enable-enm],
+									  [Enable enm (network manager) build]),
 				  [enable_enm=$enableval],
-				  [enable_enm="yes"])
+				  [enable_enm="no"])
+AC_ARG_ENABLE(econnman,
+				  AC_HELP_STRING([--enable-econnman],
+									  [Enable econnman build]),
+				  [enable_econnman=$enableval],
+				  [enable_econnman="no"])
 AC_ARG_ENABLE(enotify,
 				  AC_HELP_STRING([--disable-enotify],
 									  [Disable enotify build]),
 				  [enable_enotify=$enableval],
 				  [enable_enotify="yes"])
-AC_ARG_ENABLE(econnman,
-				  AC_HELP_STRING([--disable-econnman],
-									  [Disable econnman build]),
-				  [enable_econnman=$enableval],
-				  [enable_econnman="yes"])
 
 
 PKG_CHECK_MODULES([EINA], [eina-0])
@@ -123,8 +123,8 @@ echo "Modules:"
 echo
 echo "  EHal.................: $enable_ehal"
 echo "  ENM..................: $enable_enm"
-echo "  ENotify..............: $enable_enotify"
 echo "  EConnman.............: $enable_econnman"
+echo "  ENotify..............: $enable_enotify"
 echo
 echo "Configuration Options Summary:"
 echo
