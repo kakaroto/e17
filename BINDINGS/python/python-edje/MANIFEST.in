@@ -4,3 +4,5 @@ recursive-include include *.pxd
 include ez_setup.py gen-doc-api.sh
 include AUTHORS COPYING-PLAIN COPYING README
 include edje/edje.c_edje.[ch]
+global-exclude .cvsignore
+prune debian

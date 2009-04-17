@@ -6,3 +6,5 @@ include evas/evas.c_evas.[ch]
 include evas/evas/evas_object_image_rotate.c
 include evas/evas/evas_object_image_mask.c
 include AUTHORS COPYING-PLAIN COPYING README
+global-exclude .cvsignore
+prune debian

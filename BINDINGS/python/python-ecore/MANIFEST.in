@@ -9,3 +9,5 @@ include ecore/imf/ecore.imf.c_ecore_imf.c
 include ecore/x/ecore.x.screensaver.c
 include ecore/x/ecore.x.c_ecore_x.c
 include ecore/evas/ecore.evas.c_ecore_evas.c
+global-exclude .cvsignore
+prune debian
