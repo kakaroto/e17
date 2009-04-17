@@ -3,4 +3,6 @@ recursive-include tests *.py *.png
 recursive-include include *.pxd *.h
 include ez_setup.py gen-doc-api.sh
 include evas/evas.c_evas.[ch]
+include evas/evas/evas_object_image_rotate.c
+include evas/evas/evas_object_image_mask.c
 include AUTHORS COPYING-PLAIN COPYING README
