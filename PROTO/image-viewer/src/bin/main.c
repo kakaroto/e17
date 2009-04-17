@@ -18,7 +18,6 @@
 
 #ifdef HAVE_ETHUMB
   #include <Ethumb.h>
-  #include <pthread.h>
 #endif
 
 #ifdef HAVE_LIBEXIF
@@ -102,7 +101,7 @@ struct _IV
    Eina_Hash		*preview_items;
    Ethumb		*ethumb;
 
-   pthread_t		 thumb_thread;
+   Eina_Bool		 thumb_generator;
 #endif
 };
 
@@ -564,6 +563,7 @@ on_thumb_thread_create(void *data)
    IV *iv = data;
    Eina_List *l;
    const char *file;
+   int count = 0;
 
    EINA_LIST_FOREACH(iv->preview_files, l, file)
      {
@@ -584,9 +584,21 @@ on_thumb_thread_create(void *data)
 	  }
 
 	iv->preview_files = l;
+
+	if (++count > 10)
+	  {
+	     if (l->next)
+	       iv->preview_files = l->next;
+	     break;
+	  }
      }
 
-   iv->thumb_thread = 0;
+   if (iv->preview_files->next)
+     iv->flags.add_previews = EINA_TRUE;
+   else
+     iv->flags.add_previews = EINA_FALSE;
+
+   iv->thumb_generator = EINA_FALSE;
    return NULL;
 }
 
@@ -658,7 +670,7 @@ on_idler(void *data)
 	  }
 
 #ifdef HAVE_ETHUMB
-	if (!iv->thumb_thread && iv->thumb_path)
+	if (!iv->thumb_generator && iv->thumb_path)
 	  {
 	     Evas_Object *thumb;
 	     IV_Thumb_Info *info;
@@ -698,13 +710,10 @@ on_idler(void *data)
 		  iv->flags.first_preview = EINA_TRUE;
 	       }
 
-	     if (!iv->thumb_thread)
+	     if (!iv->thumb_generator)
 	       {
-		  rc = pthread_create(&(iv->thumb_thread), NULL, on_thumb_thread_create, iv);
-		  if (rc)
-		    ERR("Error starting the thumbnail thread: %d\n", rc);
-
-		  iv->flags.add_previews = EINA_FALSE;
+		  iv->thumb_generator = EINA_TRUE;
+		  on_thumb_thread_create(iv);
 	       }
 	  }
 #endif
