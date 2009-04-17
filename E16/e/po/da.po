@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-17 00:34+0200\n"
+"POT-Creation-Date: 2009-04-17 18:52+0200\n"
 "PO-Revision-Date: 2009-01-31 16:27+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -398,11 +398,11 @@ msgid "Settings..."
 msgstr "Indstillinger..."
 
 #: src/container.c:1211 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
-#: config/strings.c:132
+#: config/strings.c:116
 msgid "Close"
 msgstr "Luk"
 
-#: src/container.c:1216 config/strings.c:83
+#: src/container.c:1216 config/strings.c:85
 msgid "Create New Iconbox"
 msgstr "Opret ny ikonboks"
 
@@ -953,7 +953,7 @@ msgstr "Globale indstillinger:"
 msgid "Swap Window Locations"
 msgstr "Ombyt vinduesplacering"
 
-#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:148
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:132
 msgid "Groups"
 msgstr "Grupper"
 
@@ -1138,7 +1138,7 @@ msgstr ""
 msgid "Magnifier"
 msgstr "Forstørrelsesglas"
 
-#: src/menus-misc.c:458 config/strings.c:91
+#: src/menus-misc.c:458 config/strings.c:93
 msgid "Themes"
 msgstr "Tema"
 
@@ -1257,15 +1257,15 @@ msgstr ""
 "Indstillinger for\n"
 "temagennemsigtighed\n"
 
-#: src/pager.c:1006 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:115
 msgid "Window Options"
 msgstr "Vinduesindstillinger"
 
-#: src/pager.c:1009 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:118
 msgid "Iconify"
 msgstr "Ikonificér"
 
-#: src/pager.c:1017 config/strings.c:133
+#: src/pager.c:1017 config/strings.c:117
 msgid "Annihilate"
 msgstr "Dræb"
 
@@ -1665,7 +1665,7 @@ msgstr "Aktivér glidende vinduer under start"
 msgid "Use saveunders to reduce window exposures"
 msgstr "Brug saveunders til at reducere vindueseksponeringer"
 
-#: src/settings.c:570 config/strings.c:146 config/strings.c:162
+#: src/settings.c:570 config/strings.c:130 config/strings.c:146
 msgid "Miscellaneous"
 msgstr "Diverse"
 
@@ -1821,11 +1821,11 @@ msgstr "Placering"
 msgid "Border style"
 msgstr "Rammestil"
 
-#: src/snaps.c:833 config/strings.c:184
+#: src/snaps.c:833 config/strings.c:168
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/snaps.c:838 config/strings.c:89
+#: src/snaps.c:838 config/strings.c:91
 msgid "Desktop"
 msgstr "Skrivebord"
 
@@ -1845,7 +1845,7 @@ msgstr "Stablingslag"
 msgid "Window List Skip"
 msgstr "Vindues 'skiplister'"
 
-#: src/snaps.c:864 config/strings.c:145 config/strings.c:172
+#: src/snaps.c:864 config/strings.c:129 config/strings.c:156
 msgid "Opacity"
 msgstr "Gennemsigtighed"
 
@@ -2194,7 +2194,7 @@ msgstr "Husk tilstand"
 msgid "This button does nothing interesting."
 msgstr "Denne knap gør ikke noget interessant."
 
-#: config/strings.c:47 config/strings.c:138
+#: config/strings.c:47 config/strings.c:122
 msgid "Shade/Unshade"
 msgstr "Rul op/ned"
 
@@ -2210,7 +2210,7 @@ msgstr "Flere knapper"
 msgid "Show more buttons."
 msgstr "Vis flere knapper"
 
-#: config/strings.c:56 config/strings.c:136
+#: config/strings.c:56 config/strings.c:120
 msgid "Raise"
 msgstr "Løft"
 
@@ -2218,7 +2218,7 @@ msgstr "Løft"
 msgid "Raise this window to the top."
 msgstr "Bring dette vindue i front"
 
-#: config/strings.c:58 config/strings.c:137
+#: config/strings.c:58 config/strings.c:121
 msgid "Lower"
 msgstr "Sænk"
 
@@ -2226,7 +2226,7 @@ msgstr "Sænk"
 msgid "Lower this window."
 msgstr "Sænk dette vindue"
 
-#: config/strings.c:60 config/strings.c:139
+#: config/strings.c:60 config/strings.c:123
 msgid "Stick/Unstick"
 msgstr "Klæb/klæb ikke"
 
@@ -2272,381 +2272,363 @@ msgstr "Gå til forrige skrivebord"
 msgid "Go Forward a Desktop"
 msgstr "Gå til næste skrivebord"
 
-#: config/strings.c:76 config/strings.c:79
+#: config/strings.c:78 config/strings.c:81
 msgid "Backgrounds"
 msgstr "Baggrunde"
 
-#: config/strings.c:78
+#: config/strings.c:80
 msgid "Desktop Operations"
 msgstr "Skrivebordsopsætning"
 
-#: config/strings.c:80
+#: config/strings.c:82
 msgid "Cleanup Desktop"
 msgstr "Ryd op på skrivebordet"
 
-#: config/strings.c:81
+#: config/strings.c:83
 msgid "Goto Next Desktop"
 msgstr "Gå til næste skrivebord"
 
-#: config/strings.c:82
+#: config/strings.c:84
 msgid "Goto Previous Desktop"
 msgstr "Gå til foregående skrivebord"
 
-#: config/strings.c:84
+#: config/strings.c:86
 msgid "Create Systray"
 msgstr "Opret 'systray'"
 
-#: config/strings.c:85
+#: config/strings.c:87
 msgid "Show Magnifier"
 msgstr "Vis Forstørrelsesglas"
 
-#: config/strings.c:87
+#: config/strings.c:89
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:198
+#: config/strings.c:90 config/strings.c:182
 msgid "User Menus"
 msgstr "Brugermenu"
 
-#: config/strings.c:90 config/strings.c:110
+#: config/strings.c:92 config/strings.c:112
 msgid "Settings"
 msgstr "Indstillinger"
 
-#: config/strings.c:92 config/strings.c:99
+#: config/strings.c:94 config/strings.c:101
 msgid "Maintenance"
 msgstr "Vedligeholdelse"
 
-#: config/strings.c:93
+#: config/strings.c:95
 msgid "Help"
 msgstr "Hjælp"
 
-#: config/strings.c:94
+#: config/strings.c:96
 msgid "About Enlightenment"
 msgstr "Om Enlightenment"
 
-#: config/strings.c:95
+#: config/strings.c:97
 msgid "About this theme"
 msgstr "Om dette tema"
 
-#: config/strings.c:96 config/strings.c:202
+#: config/strings.c:98 config/strings.c:186
 msgid "Restart"
 msgstr "Genstart"
 
-#: config/strings.c:97 config/strings.c:203
+#: config/strings.c:99 config/strings.c:187
 msgid "Log Out"
 msgstr "Log ud"
 
-#: config/strings.c:100
+#: config/strings.c:102
 msgid "Purge config file cache"
 msgstr "Slet konfigurationscache"
 
-#: config/strings.c:101
+#: config/strings.c:103
 msgid "Purge pager background cache"
 msgstr "Slet pager'ens baggrundscache"
 
-#: config/strings.c:102
+#: config/strings.c:104
 msgid "Purge background selector cache"
 msgstr "Slet baggrundsvælgercache"
 
-#: config/strings.c:103
+#: config/strings.c:105
 msgid "Purge all caches"
 msgstr "Slet alle caches"
 
-#: config/strings.c:104
+#: config/strings.c:106
 msgid "Query config file cache usage"
 msgstr "Vis configurationcacheforbrug"
 
-#: config/strings.c:105
+#: config/strings.c:107
 msgid "Query pager background cache usage"
 msgstr "Vis baggrundscacheforbrug"
 
-#: config/strings.c:106
+#: config/strings.c:108
 msgid "Query background selector cache usage"
 msgstr "Vis baggrundsvælgercacheforbrug"
 
-#: config/strings.c:107
+#: config/strings.c:109
 msgid "Query all cache usage"
 msgstr "Vis cacheforbrug"
 
-#: config/strings.c:108
+#: config/strings.c:110
 msgid "Regenerate Menus"
 msgstr "Regenerer menu'er"
 
-#: config/strings.c:111
+#: config/strings.c:113
 msgid "Enlightenment Settings ..."
 msgstr "Enlightenment indstillinger ..."
 
-#: config/strings.c:112
-msgid "Focus Settings ..."
-msgstr "Fokusindstillinger ..."
-
-#: config/strings.c:113
-msgid "Move & Resize Settings ..."
-msgstr "Flyt og ændr størrelse-indstillinger ..."
-
-#: config/strings.c:114
-msgid "Window Placement Settings ..."
-msgstr "Vinduesplaceringsindstillinger ..."
-
-#: config/strings.c:115
-msgid "Multiple Desktop Settings ..."
-msgstr "Flerskrivebordsindstillinger ..."
-
-#: config/strings.c:116
-msgid "Virtual Desktop Settings ..."
-msgstr "Virtuel skrivebordsindstillinger ..."
-
-#: config/strings.c:117
-msgid "Pager Settings ..."
-msgstr "Skærmoversigtsindstillinger ..."
-
-#: config/strings.c:118
-msgid "Menu Settings ..."
-msgstr "Lydindstillinger ..."
-
 #: config/strings.c:119
-msgid "Autoraise Settings ..."
-msgstr "Autoløftindstillinger ..."
-
-#: config/strings.c:120
-msgid "Tooltip Settings ..."
-msgstr "Værktøjstipsindstilinger ..."
-
-#: config/strings.c:121
-msgid "Audio Settings ..."
-msgstr "Lydindstillinger ..."
-
-#: config/strings.c:122
-msgid "Group Settings ..."
-msgstr "Gruppeindstillinger ..."
-
-#: config/strings.c:123
-msgid "Remember Settings ..."
-msgstr "Huskeindstillinger ..."
-
-#: config/strings.c:124
-msgid "Special FX Settings ..."
-msgstr "Specialeffektindstillinger ..."
-
-#: config/strings.c:125
-msgid "Desktop Background Settings ..."
-msgstr "Skrivebordsbaggrundsindstillinger ..."
-
-#: config/strings.c:126
-msgid "Theme Transparency Settings ..."
-msgstr "Temagennemsigtighedsindstillinger ..."
-
-#: config/strings.c:127
-msgid "Composite Settings ..."
-msgstr "Compositeindstillinger ..."
-
-#: config/strings.c:128
-msgid "Session Settings ..."
-msgstr "Sessionsindstillinger ..."
-
-#: config/strings.c:129
-msgid "Miscellaneous Settings ..."
-msgstr "Diverse indstillinger ..."
-
-#: config/strings.c:135
 msgid "Leave Alone"
 msgstr "Ikonificer de andre vinduer"
 
-#: config/strings.c:140
+#: config/strings.c:124
 msgid "Remember..."
 msgstr "Husk..."
 
-#: config/strings.c:141
+#: config/strings.c:125
 msgid "Window Size"
 msgstr "Vinduesstørrelse"
 
-#: config/strings.c:142
+#: config/strings.c:126
 msgid "Set Stacking"
 msgstr "Sæt stabling"
 
-#: config/strings.c:143
+#: config/strings.c:127
 msgid "Set Border Style"
 msgstr "Sæt rammestil"
 
-#: config/strings.c:144
+#: config/strings.c:128
 msgid "Window Groups"
 msgstr "Vinduesgrupper"
 
-#: config/strings.c:149
+#: config/strings.c:133
 msgid "Configure this window's group(s)"
 msgstr "Konfigurer dette vindues gruppe(r)"
 
-#: config/strings.c:150
+#: config/strings.c:134
 msgid "Start a new group"
 msgstr "Start en ny gruppe"
 
-#: config/strings.c:151
+#: config/strings.c:135
 msgid "Add this window to the current group"
 msgstr "Tilføj dette vindue til den aktive gruppe"
 
-#: config/strings.c:152
+#: config/strings.c:136
 msgid "Select group to add this window to"
 msgstr "Vælg gruppen som vinduet skal tilføjes til"
 
-#: config/strings.c:153
+#: config/strings.c:137
 msgid "Remove this window from a group"
 msgstr "Fjern dette vindue fra en gruppe"
 
-#: config/strings.c:154
+#: config/strings.c:138
 msgid "Destroy a group this window belongs to"
 msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
-#: config/strings.c:156
+#: config/strings.c:140
 msgid "Stacking"
 msgstr "Stabling"
 
-#: config/strings.c:157
+#: config/strings.c:141
 msgid "Below"
 msgstr "Under"
 
-#: config/strings.c:158
+#: config/strings.c:142
 msgid "Normal"
 msgstr "Normal"
 
-#: config/strings.c:159
+#: config/strings.c:143
 msgid "Above"
 msgstr "Over"
 
-#: config/strings.c:160
+#: config/strings.c:144
 msgid "On Top"
 msgstr "Øverst"
 
-#: config/strings.c:163
+#: config/strings.c:147
 msgid "Toggle Skip Window Lists"
 msgstr "Aktivér/deaktivér skip vindueslister"
 
-#: config/strings.c:164
+#: config/strings.c:148
 msgid "Toggle Fixed Position"
 msgstr "Aktivér/deaktivér låst position"
 
-#: config/strings.c:165
+#: config/strings.c:149
 msgid "Toggle Fixed Size"
 msgstr "Aktivér/deaktivér låst størrelse"
 
-#: config/strings.c:166
+#: config/strings.c:150
 msgid "Toggle Never Focus"
 msgstr "Aktivér/deaktivér fokuser aldrig"
 
-#: config/strings.c:167
+#: config/strings.c:151
 msgid "Toggle Click to Focus"
 msgstr "Aktivér/deaktivér klik for at fokusere"
 
-#: config/strings.c:168
+#: config/strings.c:152
 msgid "Toggle Never Use Area"
 msgstr "Aktivér/deaktivér brug aldrig område"
 
-#: config/strings.c:169
+#: config/strings.c:153
 msgid "Toggle Button Grabs"
 msgstr "Aktivér/deaktivér museknap 'grabs'"
 
-#: config/strings.c:170
+#: config/strings.c:154
 msgid "Toggle Autoshade"
 msgstr "Aktivér/deaktivér automatisk oprulning"
 
-#: config/strings.c:173
+#: config/strings.c:157
 msgid "Default"
 msgstr "Standard"
 
-#: config/strings.c:174
+#: config/strings.c:158
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:175
+#: config/strings.c:159
 msgid "40%"
 msgstr "30%"
 
-#: config/strings.c:176
+#: config/strings.c:160
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:177
+#: config/strings.c:161
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:178
+#: config/strings.c:162
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:179
+#: config/strings.c:163
 msgid "Focused opacity 100%"
 msgstr "Fokuseret uigennemsigtighed 100%"
 
-#: config/strings.c:180
+#: config/strings.c:164
 msgid "Focused opacity follows unfocused"
 msgstr "Fokuseret uigennemsigtighed følger ufokuseret"
 
-#: config/strings.c:181
+#: config/strings.c:165
 msgid "Toggle Fading"
 msgstr "Aktivér/deaktivér fading"
 
-#: config/strings.c:182
+#: config/strings.c:166
 msgid "Toggle Shadows"
 msgstr "Aktivér/deaktivér skygger"
 
-#: config/strings.c:185
+#: config/strings.c:169
 msgid "Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:186
+#: config/strings.c:170
 msgid "Available Max Size Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende størrelse"
 
-#: config/strings.c:187
+#: config/strings.c:171
 msgid "Absolute Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:188
+#: config/strings.c:172
 msgid "Span Xinerama Screens"
 msgstr "Spænd over Xinerama skærmene"
 
-#: config/strings.c:189
+#: config/strings.c:173
 msgid "Max Height Toggle"
 msgstr "Aktivér/deaktivér max højde"
 
-#: config/strings.c:190
+#: config/strings.c:174
 msgid "Available Max Height Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende højde"
 
-#: config/strings.c:191
+#: config/strings.c:175
 msgid "Absolute Max Height Toggle"
 msgstr "Aktivér/deaktivér maksimal højde"
 
-#: config/strings.c:192
+#: config/strings.c:176
 msgid "Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:193
+#: config/strings.c:177
 msgid "Available Max Width Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende bredde"
 
-#: config/strings.c:194
+#: config/strings.c:178
 msgid "Absolute Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:195
+#: config/strings.c:179
 msgid "Fullscreen/Normal"
 msgstr "Fuldskærm/Normal"
 
-#: config/strings.c:196
+#: config/strings.c:180
 msgid "Zoom/Unzoom"
 msgstr "Zoom ind/ud"
 
-#: config/strings.c:199
+#: config/strings.c:183
 msgid "User Application List"
 msgstr "Brugerapplikationsliste"
 
-#: config/strings.c:200
+#: config/strings.c:184
 msgid "Other"
 msgstr "Andet"
 
-#: config/strings.c:201
+#: config/strings.c:185
 msgid "Epplets"
 msgstr "Epplets"
+
+#~ msgid "Focus Settings ..."
+#~ msgstr "Fokusindstillinger ..."
+
+#~ msgid "Move & Resize Settings ..."
+#~ msgstr "Flyt og ændr størrelse-indstillinger ..."
+
+#~ msgid "Window Placement Settings ..."
+#~ msgstr "Vinduesplaceringsindstillinger ..."
+
+#~ msgid "Multiple Desktop Settings ..."
+#~ msgstr "Flerskrivebordsindstillinger ..."
+
+#~ msgid "Virtual Desktop Settings ..."
+#~ msgstr "Virtuel skrivebordsindstillinger ..."
+
+#~ msgid "Pager Settings ..."
+#~ msgstr "Skærmoversigtsindstillinger ..."
+
+#~ msgid "Menu Settings ..."
+#~ msgstr "Lydindstillinger ..."
+
+#~ msgid "Autoraise Settings ..."
+#~ msgstr "Autoløftindstillinger ..."
+
+#~ msgid "Tooltip Settings ..."
+#~ msgstr "Værktøjstipsindstilinger ..."
+
+#~ msgid "Audio Settings ..."
+#~ msgstr "Lydindstillinger ..."
+
+#~ msgid "Group Settings ..."
+#~ msgstr "Gruppeindstillinger ..."
+
+#~ msgid "Remember Settings ..."
+#~ msgstr "Huskeindstillinger ..."
+
+#~ msgid "Special FX Settings ..."
+#~ msgstr "Specialeffektindstillinger ..."
+
+#~ msgid "Desktop Background Settings ..."
+#~ msgstr "Skrivebordsbaggrundsindstillinger ..."
+
+#~ msgid "Theme Transparency Settings ..."
+#~ msgstr "Temagennemsigtighedsindstillinger ..."
+
+#~ msgid "Composite Settings ..."
+#~ msgstr "Compositeindstillinger ..."
+
+#~ msgid "Session Settings ..."
+#~ msgstr "Sessionsindstillinger ..."
+
+#~ msgid "Miscellaneous Settings ..."
+#~ msgstr "Diverse indstillinger ..."
 
 #~ msgid "Mirror Shade/Iconify/Stick"
 #~ msgstr "Spejl oprulning/minimering/klæbning"
