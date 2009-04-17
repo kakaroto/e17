@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-04-17 18:52+0200\n"
-"PO-Revision-Date: 2009-01-31 16:27+0100\n"
+"PO-Revision-Date: 2009-04-17 19:07+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
-#, fuzzy, c-format
+#, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "Om Enlightenment %s"
+msgstr "Om Enlightenment e16 version %s"
 
 #: src/about.c:46
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
 "version %s.\n"
@@ -33,8 +33,8 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
-"Velkommen til version %s af Enlightenment.\n"
-"\n"
+"Velkommen til Enlightenment e16\n"
+"version %s.\n"
 "God fornøjelse. Vi håber du får glæde af programmet.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
@@ -510,9 +510,9 @@ msgid ""
 msgstr "Indstillinger for ikonbox\n"
 
 #: src/coords.c:74
-#, fuzzy, c-format
+#, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
-msgstr "Fokuseret uigennemsigtighed 100%"
+msgstr "Fokuseret/ufokuseret uigennemsigtighed %d/%d %%"
 
 #: src/desktops.c:124
 msgid ""
@@ -1995,39 +1995,36 @@ msgstr ""
 
 #: src/theme.c:369
 msgid "Changes will take effect after restart"
-msgstr ""
+msgstr "Ændringer træder i kraft efter genstart"
 
 #: src/theme.c:389
 msgid "Use theme font configuration"
-msgstr ""
+msgstr "Brug tema fontkonfiguration"
 
 #: src/theme.c:394
 #, c-format
 msgid "Use alternate font configuration (%s)"
-msgstr ""
+msgstr "Brug alternativ fontkonfiguration (%s)"
 
 #: src/theme.c:395
 msgid "Not set"
-msgstr ""
+msgstr "Ikke sat"
 
 #: src/theme.c:402
-#, fuzzy
 msgid "Theme"
 msgstr "Tema"
 
 #: src/theme.c:403
-#, fuzzy
 msgid "Theme Settings"
-msgstr "Menuindstillinger"
+msgstr "Temaindstillinger"
 
 #: src/theme.c:406
-#, fuzzy
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
 "Indstillinger for\n"
-"menuer\n"
+"tema\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"
