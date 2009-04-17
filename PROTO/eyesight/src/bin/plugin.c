@@ -17,8 +17,8 @@
 #define PLUGIN_VERSION  2
 #define PLUGIN_EMAIL    3
 
-static void 
-plugin_id_for_each(void *val, void *_data)
+static Eina_Bool
+_plugin_id_for_each(const Eina_List *list, void *val, void *_data)
 {
    Plist_Data *data = _data;
    Plugin *plugin = malloc(sizeof(Plugin));
@@ -54,6 +54,7 @@ plugin_id_for_each(void *val, void *_data)
       free(val);
       free(plugin);
    }
+   return EINA_TRUE;
 }
 
 static void
@@ -88,7 +89,8 @@ plugin_init(Eina_List **startup_errors)
 {
    char *tmp;
    Ecore_Path_Group *pg;
-   Ecore_List *plugins;
+   Eina_List *plugins;
+   Eina_Iterator *it;
    Plist_Data *plist_data;
  
    /* Find plugins */  
@@ -114,9 +116,13 @@ plugin_init(Eina_List **startup_errors)
    plist_data->plugin_list = ecore_list_new();
    plist_data->startup_errors = startup_errors;
       
-   ecore_list_for_each(plugins, plugin_id_for_each, plist_data);
-   ecore_list_free_cb_set(plugins, NULL);
-   ecore_list_destroy(plugins);
+   it = eina_list_iterator_new(plugins);
+   if (it)
+     {
+	eina_iterator_foreach(it, EINA_EACH(_plugin_id_for_each), plist_data);
+	eina_iterator_free(it);
+     }
+   eina_list_free(plugins);
    
    /* Init plugins */
    
