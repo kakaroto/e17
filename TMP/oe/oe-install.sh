@@ -64,3 +64,12 @@ echo "Input packages .bb files from OE will be in packages/"
 echo "Any of your own packages put in my_packages"
 
 exit 0
+
+## NO not this
+## git-push origin origin/raster
+## to rebase
+# git-pull --rebase
+# git-push
+
+## NO
+# git push origin raster --force

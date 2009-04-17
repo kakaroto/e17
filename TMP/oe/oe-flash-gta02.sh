@@ -1,15 +1,16 @@
 #!/bin/sh
 DISTRO="openmoko"
 MACHINE="om-gta02"
-KERNEL="./tmp.$DISTRO.$MACHINE/deploy/glibc/images/neo1973/uImage-om-gta02-latest.bin"
-ROOTFS=`find ./tmp.$DISTRO.$MACHINE/deploy/glibc/images -name "*.jffs2*" | sort | tail -1`
+# 2.6.28 - bug bug bugs! panic!
+KERNEL="./t-$MACHINE.$DISTRO/deploy/glibc/images/om-gta02/uImage-om-gta02-latest.bin"
+ROOTFS=`find ./t-$MACHINE.$DISTRO/deploy/glibc/images -name "*.jffs2" | sort | tail -1`
 
 echo "KERNEL: $KERNEL"
 echo "ROOTFS: $ROOTFS"
 
 sleep 5
 
-DFU="./tmp.openmoko.om-gta02/deploy/glibc/tools/dfu-util"
+DFU="./t-$MACHINE.$DISTRO/deploy/glibc/tools/dfu-util"
 
-sudo $DFU -a kernel -D $KERNEL
-sudo $DFU -a rootfs -D $ROOTFS
+sudo $DFU -d 1d50:5119 -a kernel -D $KERNEL
+sudo $DFU -d 1d50:5119 -a rootfs -D $ROOTFS

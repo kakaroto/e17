@@ -35,6 +35,16 @@ Fiddle_Event *fiddle_event_get(Fiddle_Context *c)
 {
 }
 
+EAPI int
+fiddle_future_event_have(Fiddle_Context *c)
+{
+}
+
+EAPI Fiddle_Timestamp
+fiddle_future_event_time_get(Fiddle_Context *c)
+{
+}
+
 EAPI void
 fiddle_history_flush(Fiddle_Context *c)
 {

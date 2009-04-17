@@ -1,4 +1,7 @@
 #!/bin/sh
+sudo ifconfig usb1 down
+sudo ifconfig usb2 down
+sudo ifconfig usb0 up
 sudo ifconfig usb0 192.168.0.200 netmask 255.255.255.0
 sudo route add 192.168.0.202 dev usb0
 sudo ./scripts/enable-ip-forward.sh

@@ -27,7 +27,7 @@ libenm_la_LIBADD = \
 @EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la \
 @EINA_LIBS@
-libenm_la_LDFLAGS      = -version-info @version_info@
+libenm_la_LDFLAGS      = -version-info @version_info@ @enm_release_info@
 
 
 libenm_la_DEPENDENCIES = \

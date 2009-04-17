@@ -19,6 +19,6 @@ libehal_la_LIBADD = \
 @EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la \
 @EINA_LIBS@
-libehal_la_LDFLAGS      = -version-info @version_info@
+libehal_la_LDFLAGS      = -version-info @version_info@ @ehal_release_info@
 
 endif

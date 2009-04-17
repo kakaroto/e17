@@ -5,7 +5,8 @@ MAIN="../src/bin/exquisite -verbose"
 WRITE="../src/bin/exquisite-write"
 
 # start up gui - some examples here for different resolutions and the fb
-$MAIN -t ../data/themes/default.edj -x 480 -y 640 &
+$MAIN -t ~/C/SVN/THEMES/b_and_w/exquisite-ang.edj -x 480 -y 640 &
+#$MAIN -t ../data/themes/default.edj -x 480 -y 640 &
 #$MAIN -t ../data/themes/default.edj -x 640 -y 480 &
 #$MAIN -t ../data/themes/default.edj -x 240 -y 320 &
 #$MAIN -t ../data/themes/default.edj -x 1280 -y 1024 &
@@ -15,7 +16,7 @@ echo "I: waiting up to 30 secs for exquisite..."
 $WRITE -wait 30
 echo "OK. 1 second, then go"
 sleep 1
-$WRITE "TIMEOUT 5"
+$WRITE "TIMEOUT 20"
 $WRITE "TITLE Welcome to Exquisite"
 sleep 1
 $WRITE "TICK"
@@ -24,7 +25,7 @@ $WRITE "TICK"
 sleep 1
 $WRITE "MSG Starting Up"
 $WRITE "PULSATE"
-sleep 4
+sleep 10
 $WRITE "MSG Services Starting"
 $WRITE "PROGRESS 5"
 sleep 4

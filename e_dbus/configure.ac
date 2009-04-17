@@ -23,7 +23,17 @@ VMIN=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $2);}'`
 VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
+econnman_release_info="-release ver-pre-svn-00"
+edbus_release_info="-release ver-pre-svn-00"
+ehal_release_info="-release ver-pre-svn-00"
+enm_release_info="-release ver-pre-svn-00"
+enotify_release_info="-release ver-pre-svn-00"
 AC_SUBST(version_info)
+AC_SUBST(econnman_release_info)
+AC_SUBST(edbus_release_info)
+AC_SUBST(ehal_release_info)
+AC_SUBST(enm_release_info)
+AC_SUBST(enotify_release_info)
 
 dnl Check enabled modules to build
 AC_ARG_ENABLE(ehal,

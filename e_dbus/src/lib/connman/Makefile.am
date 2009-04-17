@@ -25,6 +25,6 @@ libeconnman_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
 @EINA_LIBS@
 
-libeconnman_la_LDFLAGS = -version-info @version_info@
+libeconnman_la_LDFLAGS = -version-info @version_info@ @econnman_release_info@
 
 endif
