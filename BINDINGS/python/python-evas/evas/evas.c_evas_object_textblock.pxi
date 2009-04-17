@@ -22,7 +22,6 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
-        self.style = None
         if self.obj == NULL:
             self._set_obj(evas_object_textblock_add(self.evas.obj))
         self._set_common_params(**kargs)

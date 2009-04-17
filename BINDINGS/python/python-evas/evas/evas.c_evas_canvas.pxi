@@ -37,7 +37,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     @group Most used: size_get, size_set, size, rect
     @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
-       Polygon, Text
+       Polygon, Text, Textblock
     @group Children manipulation: top_at_xy_get, top_at_pointer_get,
            top_in_rectangle_get, objects_at_xy_get, objects_in_rectangle_get,
            top_get, top, bottom_get, bottom, focus_get, focus, object_name_find
@@ -584,3 +584,9 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @rtype: L{Text<evas.Text>}
         """
         return Text(self, **kargs)
+
+    def Textblock(self, **kargs):
+        """Factory of L{evas.Textblock} associated with this canvas.
+        @rtype: L{Textblock<evas.Textblock>}
+        """
+        return Textblock(self, **kargs)
