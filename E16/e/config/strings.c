@@ -71,6 +71,8 @@ _("Display Group Menu"),
 _("Display Settings Menu"),
 _("Go Back a Desktop"),
 _("Go Forward a Desktop"),
+/* fonts.pango.cfg */
+/* fonts.xft.cfg */
 /* matches.cfg */
 /* menus.cfg */
 _("Backgrounds"),
@@ -109,24 +111,6 @@ _("Regenerate Menus"),
 /* settings.menu */
 _("Settings"),
 _("Enlightenment Settings ..."),
-_("Focus Settings ..."),
-_("Move & Resize Settings ..."),
-_("Window Placement Settings ..."),
-_("Multiple Desktop Settings ..."),
-_("Virtual Desktop Settings ..."),
-_("Pager Settings ..."),
-_("Menu Settings ..."),
-_("Autoraise Settings ..."),
-_("Tooltip Settings ..."),
-_("Audio Settings ..."),
-_("Group Settings ..."),
-_("Remember Settings ..."),
-_("Special FX Settings ..."),
-_("Desktop Background Settings ..."),
-_("Theme Transparency Settings ..."),
-_("Composite Settings ..."),
-_("Session Settings ..."),
-_("Miscellaneous Settings ..."),
 /* winops.menu */
 _("Window Options"),
 _("Close"),
