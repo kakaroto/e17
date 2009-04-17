@@ -5,8 +5,8 @@ MAIN="../src/bin/exquisite -verbose"
 WRITE="../src/bin/exquisite-write"
 
 # start up gui - some examples here for different resolutions and the fb
-$MAIN -t ~/C/SVN/THEMES/b_and_w/exquisite-ang.edj -x 480 -y 640 &
-#$MAIN -t ../data/themes/default.edj -x 480 -y 640 &
+#$MAIN -t ~/C/SVN/THEMES/b_and_w/exquisite-ang.edj -x 480 -y 640 &
+$MAIN -t ../data/themes/default.edj -x 480 -y 640 &
 #$MAIN -t ../data/themes/default.edj -x 640 -y 480 &
 #$MAIN -t ../data/themes/default.edj -x 240 -y 320 &
 #$MAIN -t ../data/themes/default.edj -x 1280 -y 1024 &
