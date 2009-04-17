@@ -1,0 +1,9 @@
+Login:        etrunko
+IRC Nick:     etrunko
+Name:         Eduardo de Barros Lima
+Location:     Recife, Brazil
+E-Mail:       -eblima@gmail.com
+WWW:          http://etrunko.blogspot.com
+Contributing: Python-EFL, Packaging
+Group:        Core, Libraries, Bindings
+Platform:     Ubuntu (Linux), Maemo (Linux)
