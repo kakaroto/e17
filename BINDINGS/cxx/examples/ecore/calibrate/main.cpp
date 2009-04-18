@@ -19,6 +19,8 @@ int main( int argc, const char **argv )
     CalibrationRectangle* r = new CalibrationRectangle( 0, 0, s.width(), s.height(), evas );
     r->show(); // starts calibration
 
+    mw->show();
+
     app.exec();
     return 0;
 }
