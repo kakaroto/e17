@@ -1,15 +1,18 @@
+e16docdir = ${datadir}/doc/${PACKAGE}
+
+EXTRA_DIST = README $(DOCS_DIST)
+
 if HAVE_XMLTO
 
-e16docdir = ${datadir}/doc/${PACKAGE}
-e16doc_DATA = README-0.16.8.html
+e16doc_DATA = README.html
 
-EXTRA_DIST = README-0.16.8.xml e16-docs.xml xml2dox.xsl # e16.1
+DOCS_DIST = README.xml e16-docs.xml xml2dox.xsl # e16.1
 
 CLEANFILES = *.html MAIN e16-docs.1.xml e16.1
 
-README-0.16.8.html: README-0.16.8.xml
+README.html: README.xml
 	$(XMLTO) html $<
-	sed -i -e 's/index.html/README-0.16.8.html/' index.html ar*.html
+	sed -i -e 's/index.html/README.html/' index.html ar*.html
 	mv index.html $@
 
 man_MANS = # e16.1
