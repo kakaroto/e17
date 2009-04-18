@@ -105,6 +105,8 @@ int main( int argc, const char **argv )
 
     ( new EcoreTimer( 0.05 ) )->timeout.connect( sigc::ptr_fun( advance ) );
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 
