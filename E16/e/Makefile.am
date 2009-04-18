@@ -16,5 +16,5 @@ sample-scripts/bouncingball.pl \
 sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \
 sample-scripts/shade-pagers.pl \
-AUTHORS COMPLIANCE COPYING ChangeLog README \
+AUTHORS COMPLIANCE COPYING ChangeLog \
 docs/README-0.16.8
