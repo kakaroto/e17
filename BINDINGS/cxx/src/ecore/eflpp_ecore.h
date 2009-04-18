@@ -71,9 +71,9 @@ class EcoreApplication : public Trackable
     EcoreEvasWindow* mainWindow() const;
 
     /* Main Loop */
-    void exec();
-    void processOneEvent();
-    void quit();
+    static void exec();
+    static void processOneEvent();
+    static void quit();
 
     /* Timer */
     void startTimer( double seconds );
