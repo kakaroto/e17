@@ -51,6 +51,8 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
     }
 
     startTimer( 1.0 / 25 );
+
+    mw->show();
 }
 
 efl::EcoreEvasWindowSoftwareX11* mw;
