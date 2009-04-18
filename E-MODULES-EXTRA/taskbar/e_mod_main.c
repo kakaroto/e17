@@ -48,7 +48,6 @@ struct _Taskbar_Item
    E_Border *border;            // The border this item points to
    Evas_Object *o_item;         // The edje theme object
    Evas_Object *o_icon;         // The icon
-   const char *label;           // label taken from the border
 };
 
 static Taskbar *_taskbar_new(Evas *evas, E_Zone *zone, const char *id);
@@ -166,6 +165,8 @@ e_modapi_init(E_Module *m)
       (taskbar_config->handlers, ecore_event_handler_add
        (E_EVENT_BORDER_URGENT_CHANGE, _taskbar_cb_event_border_urgent_change, NULL));
 
+   taskbar_config->borders = eina_list_clone(e_border_client_list());
+
    e_gadcon_provider_register(&_gadcon_class);
    return m;
 }
@@ -173,20 +174,22 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+   Ecore_Event_Handler *eh;
+   Taskbar *taskbar;
+
    e_gadcon_provider_unregister(&_gadcon_class);
 
-   while (taskbar_config->config_dialog)
+   EINA_LIST_FREE(taskbar_config->taskbars, taskbar)
+     _taskbar_free(taskbar);
+
+   if (taskbar_config->config_dialog)
       e_object_del(E_OBJECT(taskbar_config->config_dialog));
 
-   while (taskbar_config->handlers)
-     {
-        ecore_event_handler_del(taskbar_config->handlers->data);
-        taskbar_config->handlers = eina_list_remove_list(taskbar_config->handlers, taskbar_config->handlers);
-     }
-   while (taskbar_config->borders)
-     {
-        taskbar_config->borders = eina_list_remove_list(taskbar_config->borders, taskbar_config->borders);
-     }
+   EINA_LIST_FREE(taskbar_config->handlers, eh)
+        ecore_event_handler_del(eh);
+
+   eina_list_free(taskbar_config->borders);
+
    free(taskbar_config);
    taskbar_config = NULL;
    E_CONFIG_DD_FREE(conf_item_edd);
@@ -334,11 +337,9 @@ _taskbar_new(Evas *evas, E_Zone *zone, const char *id)
 static void
 _taskbar_free(Taskbar *taskbar)
 {
-   while (taskbar->items)
-     {
-        _taskbar_item_free(taskbar->items->data);
-        taskbar->items = eina_list_remove_list(taskbar->items, taskbar->items);
-     }
+   Taskbar_Item *item;
+   EINA_LIST_FREE(taskbar->items, item)
+     _taskbar_item_free(item);
    evas_object_del(taskbar->o_items);
    free(taskbar);
 }
@@ -356,12 +357,11 @@ _taskbar_refill(Taskbar *taskbar)
         item = taskbar->items->data;
         _taskbar_item_remove(item);
      }
-   for (l = taskbar_config->borders; l; l = l->next)
+   EINA_LIST_FOREACH(taskbar_config->borders, l, border)
      {
-        border = l->data;
         _taskbar_item_check_add(taskbar, border);
      }
-   if (taskbar->items) 
+   if (taskbar->items)
      {
         item = taskbar->items->data;
 	edje_object_size_min_calc(item->o_item, &w, &h);
@@ -375,34 +375,29 @@ _taskbar_refill(Taskbar *taskbar)
      }
 }
 
-static void 
-_taskbar_refill_all()
+static void
+_taskbar_refill_all(void)
 {
-   Eina_List *l;
+   const Eina_List *l;
    Taskbar *taskbar;
 
-   for (l = taskbar_config->taskbars; l; l = l->next)
-     {
-        taskbar = l->data;
-        _taskbar_refill(taskbar);
-     }
+   EINA_LIST_FOREACH(taskbar_config->taskbars, l, taskbar)
+     _taskbar_refill(taskbar);
 }
 
 
 static void
 _taskbar_refill_border(E_Border *border)
 {
-   Eina_List *l;
-   Eina_List *m;
+   const Eina_List *l;
    Taskbar *taskbar;
-   Taskbar_Item *item;
 
-   for (l = taskbar_config->taskbars; l; l = l->next)
+   EINA_LIST_FOREACH(taskbar_config->taskbars, l, taskbar)
      {
-        taskbar = l->data;
-	for (m = taskbar->items; m; m = m->next)
+	const Eina_List *m;
+	Taskbar_Item *item;
+	EINA_LIST_FOREACH(taskbar->items, m, item)
 	   {
-               item = m->data;
 	       if (item->border == border)
 	          _taskbar_item_refill(item);
 	   }
@@ -412,17 +407,15 @@ _taskbar_refill_border(E_Border *border)
 static void 
 _taskbar_signal_emit(E_Border *border, char *sig, char *src)
 {
-   Eina_List *l;
-   Eina_List *m;
+   const Eina_List *l;
    Taskbar *taskbar;
-   Taskbar_Item *item;
 
-   for (l = taskbar_config->taskbars; l; l = l->next)
+   EINA_LIST_FOREACH(taskbar_config->taskbars, l, taskbar)
      {
-        taskbar = l->data;
-	for (m = taskbar->items; m; m = m->next)
+	const Eina_List *m;
+	Taskbar_Item *item;
+	EINA_LIST_FOREACH(taskbar->items, m, item)
 	   {
-               item = m->data;
 	       if (item->border == border)
 	          _taskbar_item_signal_emit(item, sig, src);
 	   }
@@ -432,18 +425,13 @@ _taskbar_signal_emit(E_Border *border, char *sig, char *src)
 static Taskbar_Item *
 _taskbar_item_find(Taskbar *taskbar, E_Border *border)
 {
-   Eina_List *l;
+   const Eina_List *l;
    Taskbar_Item *item;
-   if (!taskbar->items)
-      return NULL;
 
-   for (l = taskbar->items; l; l = l->next)
-     {
-        item = l->data;
+   EINA_LIST_FOREACH(taskbar->items, l, item)
+     if (item->border == border)
+       return item;
 
-        if (item->border == border)
-           return item;
-     }
    return NULL;
 }
 
@@ -451,16 +439,18 @@ static Taskbar_Item *
 _taskbar_item_new(Taskbar *taskbar, E_Border *border)
 {
    Taskbar_Item *item;
-   char buf[4096];
 
    item = E_NEW(Taskbar_Item, 1);
    e_object_ref(E_OBJECT(border));
    item->taskbar = taskbar;
    item->border = border;
    item->o_item = edje_object_add(evas_object_evas_get(taskbar->o_items));
-   snprintf(buf, sizeof(buf), "%s/taskbar.edj", e_module_dir_get(taskbar_config->module));
    if (!e_theme_edje_object_set(item->o_item, "base/theme/modules/taskbar", "modules/taskbar/item"))
-      edje_object_file_set(item->o_item, buf, "modules/taskbar/item");
+     {
+	char buf[4096];
+	snprintf(buf, sizeof(buf), "%s/taskbar.edj", e_module_dir_get(taskbar_config->module));
+	edje_object_file_set(item->o_item, buf, "modules/taskbar/item");
+     }
    evas_object_event_callback_add(item->o_item, EVAS_CALLBACK_MOUSE_DOWN, _taskbar_cb_item_mouse_down, item);
    evas_object_event_callback_add(item->o_item, EVAS_CALLBACK_MOUSE_UP, _taskbar_cb_item_mouse_up, item);
    evas_object_show(item->o_item);
@@ -539,13 +529,15 @@ _taskbar_item_refill(Taskbar_Item *item)
 static void
 _taskbar_item_fill(Taskbar_Item *item)
 {
+   const char *label;
+
    item->o_icon = e_border_icon_add(item->border, evas_object_evas_get(item->taskbar->o_items));
    edje_object_part_swallow(item->o_item, "item", item->o_icon);
    evas_object_pass_events_set(item->o_icon, 1);
    evas_object_show(item->o_icon);
 
-   item->label = e_border_name_get(item->border);
-   edje_object_part_text_set(item->o_item, "label", item->label);
+   label = e_border_name_get(item->border);
+   edje_object_part_text_set(item->o_item, "label", label);
 
    if (item->border->iconic)
       _taskbar_item_signal_emit(item, "iconified", "");
@@ -596,9 +588,8 @@ _taskbar_config_item_get(const char *id)
      }
    else
      {
-        for (l = taskbar_config->items; l; l = l->next)
+	EINA_LIST_FOREACH(taskbar_config->items, l, config)
           {
-             config = l->data;
              if (!config->id)
                 continue;
              if (!strcmp(config->id, id))
@@ -618,18 +609,15 @@ _taskbar_config_item_get(const char *id)
 void
 _taskbar_config_updated(Config_Item *config)
 {
-   Eina_List *l;
+   const Eina_List *l;
+   Taskbar *taskbar;
 
    if (!taskbar_config)
       return;
-   for (l = taskbar_config->taskbars; l; l = l->next)
+   EINA_LIST_FOREACH(taskbar_config->taskbars, l, taskbar)
      {
-        Taskbar *taskbar;
-
-        taskbar = l->data;
-        if (taskbar->config != config)
-           continue;
-        _taskbar_refill(taskbar);
+        if (taskbar->config == config)
+	  _taskbar_refill(taskbar);
      }
 }
 
