@@ -124,3 +124,32 @@ EAPI Eina_Bool enesim_operator_transformer_1d(Enesim_Operator *op, uint32_t *src
 
 	return EINA_TRUE;
 }
+
+EAPI Eina_Bool enesim_operator_raddist_1d(Enesim_Operator *op,
+		uint32_t *src, uint32_t spitch, uint32_t sw, uint32_t sh,
+		float x0, float y0, float r0, float scale,
+		uint32_t dx, uint32_t dy, uint32_t dlen,
+		uint32_t *dst)
+{
+	Enesim_Cpu_Queue q;
+
+	if (!_queue_create(&q, op, ENESIM_OPERATOR_RADDIST1D))
+		return EINA_FALSE;
+
+	q.raddist.src = src;
+	q.raddist.spitch = spitch;
+	q.raddist.sw = sw;
+	q.raddist.sh = sh;
+	q.raddist.x0 = x0;
+	q.raddist.y0 = y0;
+	q.raddist.r0 = r0;
+	q.raddist.scale = scale;
+	q.raddist.dst = dst;
+	q.raddist.type.dim1.dx = dx;
+	q.raddist.type.dim1.dy = dy;
+	q.raddist.type.dim1.dlen = dlen;
+	op->cpu->run(op->cpu, &q);
+
+	return EINA_TRUE;
+}
+

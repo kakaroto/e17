@@ -22,7 +22,8 @@ enesim_reflector.h \
 enesim_repeater.h \
 enesim_rotator.h \
 enesim_scaler.h \
-enesim_transformer.h
+enesim_transformer.h \
+enesim_raddist.h
 
 installed_headersdir = $(prefix)/include/enesim
 installed_headers_DATA = $(ENESIM_UTILHEADERS)

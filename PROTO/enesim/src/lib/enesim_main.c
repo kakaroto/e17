@@ -41,8 +41,7 @@ EAPI int enesim_init(void)
 		enesim_converter_init();
 		enesim_scaler_init();
 		enesim_transformer_init();
-		/* TODO initialize all the transformers */
-		/* TODO initialize all the converters */
+		enesim_raddist_init();
 #ifdef EFL_HAVE_MMX
 		EINA_ERROR_PINFO("MMX Drawer available\n");
 #endif

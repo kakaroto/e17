@@ -72,6 +72,7 @@ extern "C" {
 #include "enesim_scaler.h"
 #include "enesim_transformer.h"
 #include "enesim_converter.h"
+#include "enesim_raddist.h"
 
 #ifdef __cplusplus
 }

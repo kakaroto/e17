@@ -144,6 +144,11 @@ int bench_get(const char *name)
 		opt_bench = "scaler";
 		return 1;
 	}
+	else if (!strcmp(name, "raddist"))
+	{
+		opt_bench = "raddist";
+		return 1;
+	}
 	return 0;
 }
 
@@ -210,6 +215,7 @@ void bench_help(void)
 {
 	printf("drawer\n");
 	printf("transformer\n");
+	printf("raddist\n");
 	printf("rasterizer\n");
 	printf("renderer\n");
 	printf("spanner\n");
@@ -406,13 +412,17 @@ ok:
 	{
 		scaler_bench();
 	}
+	else if (!strcmp(opt_bench, "raddist"))
+	{
+		raddist_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		drawer_bench();
 		transformer_bench();
 		scaler_bench();
 		//rasterizer_bench();
-
+		raddist_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

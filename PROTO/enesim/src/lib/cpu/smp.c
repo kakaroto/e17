@@ -100,6 +100,16 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 					q->transformer.dst);
 		}
 		break;
+		case ENESIM_OPERATOR_RADDIST1D:
+		{
+			Enesim_Raddist_1D rd = q->cb;
+
+			rd(q->raddist.src, q->raddist.spitch, q->raddist.sw, q->raddist.sh,
+					q->raddist.x0, q->raddist.y0, q->raddist.r0,
+					q->raddist.scale, q->raddist.type.dim1.dx, q->raddist.type.dim1.dy,
+					q->raddist.type.dim1.dlen, q->raddist.dst);
+		}
+		break;
 
 		default:
 		printf("Operation not defined %d\n", q->id);

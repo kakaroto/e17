@@ -24,6 +24,7 @@ enesim_bench_drawer.c \
 enesim_bench_scaler.c \
 enesim_bench_transformer.c \
 enesim_bench_rasterizer.c \
+enesim_bench_raddist.c \
 image.c
 #enesim_bench_drawer.c
 
