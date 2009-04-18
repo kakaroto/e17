@@ -221,7 +221,7 @@ Evas_Object* if_network_dialog_wep_new(Instance* inst,Exalt_Wireless_Network* n)
     inst->network.entry_login = NULL;
 
     //empty block
-    lbl = e_widget_label_add(evas,D_(""));
+    lbl = e_widget_label_add(evas,"");
     e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 2, 1, 1, 0, 1, 0);
 
     i++;
@@ -305,7 +305,7 @@ Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network* n)
     inst->network.entry_login = NULL;
 
     //empty block
-    lbl = e_widget_label_add(evas,D_(""));
+    lbl = e_widget_label_add(evas,"");
     e_widget_frametable_object_append(inst->network.f_iface, lbl, 0, i, 2, 1, 1, 0, 1, 0);
 
     i++;
