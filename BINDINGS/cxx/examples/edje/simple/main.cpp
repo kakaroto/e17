@@ -30,6 +30,8 @@ int main( int argc, const char **argv )
     edje->setLayer( 0 );
     edje->show();
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 
