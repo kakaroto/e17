@@ -659,7 +659,10 @@ _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
 
 
 	e_gadcon_client_util_menu_items_append(item->taskbar->gcc, mn, 0);
-	     
+
+	mi = e_menu_item_new(item->border->border_menu);
+	e_menu_item_separator_set(mi, 1);
+
         mi = e_menu_item_new(item->border->border_menu);
         e_menu_item_label_set(mi, D_("Taskbar"));
         e_menu_item_submenu_set(mi, mn);
