@@ -605,39 +605,55 @@ This problem should not occur with recent X-servers.
 
 Fonts
 -----
-The fonts in the default theme (winter) and core themes (BlueSteel,
-BrushedMetal-Tigert, Ganymede, and ShinyMetal) are configured (indirectly)
-in fonts.cfg. Directory search order is (typically):
-~/.e16, <theme-dir>, and /usr/share/e16/config/fonts.cfg).
-Other themes are likely to have font references more or less scattered around
-in TextClass definitions in the theme configuration files.
+Theme font selection depends on a number of settings and whether or not
+the theme has font alias support.
 
-There are several ways to specify a font:
+For themes with font alias support the fonts are determined by a font
+configuration file. This file is selected as follows, first hit applies:
 
-1) "<font name>/<size>", e.g. "Vera/8".
-In this case e16 must be able to find "Vera.ttf" in <theme dir>/ttfonts or
-/usr/share/e16/fonts.
+- If theme.use_alt_font_cfg is set (default off) and the the file specified
+  by theme.font_cfg is found the fonts are determined by this file.
 
-2) XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
-xfontsel, xlsfonts, and xfd can be used to select and show these fonts.
+- If theme.use_theme_font_cfg is set (default off) and the theme has a
+  fonts.theme.cfg the fonts are determined by the theme's fonts.theme.cfg.
 
-3) Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
-fc-list and xfd can be used to select and show these fonts.
-This possibility (Xft support) is available as of version 0.16.8.5.
+- If e16 was built with pango support, look for fonts.pango.cfg.
 
-4) Pango font names, prefixed by "pango:", e.g. "pango:sans bold 10".
-This possibility (Pango support) is available as of version 0.16.8.9.
-Pango support must be explicitly enabled at build time with --enable-pango.
+- If e16 was built with xft support, look for fonts.xft.cfg.
 
-When using a 0.16.8 core theme, font rendering using xft or pango can be
-activated with (restart after change is required):
-$ eesh set theme.use_alt_font_cfg 1
-$ eesh set theme.font_cfg fonts.cfg.xft
-or
-$ eesh set theme.font_cfg fonts.cfg.pango
+- Look for fonts.cfg.
 
-To select the theme font settings use:
-$ eesh set theme.use_alt_font_cfg 0
+The font configuration file search path is ~/.e16, <theme-dir>, and
+/usr/share/e16/config.
+Default fonts.pango.cfg and fonts.xft.cfg are provided in /usr/share/e16/config.
+
+The default theme (winter) and the core themes (BlueSteel, BrushedMetal-Tigert,
+Ganymede, and ShinyMetal) do have font alias support.
+
+Don Harrop has made available a major number of e16 themes which have been
+modified for font alias support (http://themes.effx.us).
+
+Other themes are likely to not have font alias support but in stead have font
+references more or less scattered around in TextClass definitions in the theme
+configuration files.
+
+There are several ways to specify a font (in the font configuration file or
+in TextClasses):
+
+- "<font name>/<size>", e.g. "Vera/8".
+  In this case e16 must be able to find "Vera.ttf" in <theme dir>/ttfonts or
+  /usr/share/e16/fonts.
+
+- XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
+  xfontsel, xlsfonts, and xfd can be used to select and show these fonts.
+
+- Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
+  fc-list and xfd can be used to select and show these fonts.
+  This possibility (Xft support) is available as of version 0.16.8.5.
+
+- Pango font names, prefixed by "pango:", e.g. "pango:sans bold 10".
+  This possibility (Pango support) is available as of version 0.16.8.9.
+  Pango support must be explicitly enabled at build time with --enable-pango.
 
 
 Using e16 with GNOME
