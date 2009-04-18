@@ -61,6 +61,8 @@ html, body {
 
 #header_menu {
   background-image        : url(ti/header_menu_background.png);
+  font                    : normal 10pt verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+
 }
 
 #header_last {
