@@ -40,6 +40,8 @@ int main( int argc, const char **argv )
     vbox->append( buttontext );
     vbox->show();
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 

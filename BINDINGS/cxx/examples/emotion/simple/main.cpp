@@ -33,6 +33,8 @@ int main( int argc, const char **argv )
     emotion->setPlay( true );
     emotion->show();
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 

@@ -49,6 +49,8 @@ int main( int argc, const char **argv )
     //vbox->startScrolling( 2 );
     //vbox->scroll( 10 );
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 

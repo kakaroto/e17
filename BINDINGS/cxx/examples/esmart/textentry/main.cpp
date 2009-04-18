@@ -39,6 +39,8 @@ int main( int argc, const char **argv )
     passwd->setFocus (true);
     passwd->show();
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 

@@ -62,6 +62,8 @@ int main( int argc, const char **argv )
 
     //ewl_callback_append(EWL_WIDGET( embed->obj() ), EWL_CALLBACK_CONFIGURE, move_embed_contents_cb, vbox->obj());
 
+    mw->show();
+
     /* Enter the application main loop */
     app->exec();
 
