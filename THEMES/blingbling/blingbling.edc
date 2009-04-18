@@ -77,4 +77,5 @@ collections {
 #include "default_slidesel.edc"
 #include "default_mixer.edc"
 #include "default_connman.edc"
+#include "default_taskbar.edc"
 }
