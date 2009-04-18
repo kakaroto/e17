@@ -142,7 +142,6 @@
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
       }
-      //return "<tr><td class='$c'><a class='nav' href='$h'>$l</a></td></tr>\n";
       if ((strncasecmp($page,$l,strlen($l)) == 0) OR 
           (($page == "index") AND ($l == "Home") ))
       	$c = "active";
@@ -177,13 +176,12 @@
 		      if ( "$p/$fl" == $page ) {
                           $class = " selected";
 		      }
-                          
+
 		      if (file_exists("p/$p/$fl/$lang-label")) {
 			  $l = read_var("p/$p/$fl/$lang-label");
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  if ($item > 0) echo("|\n");
 			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
@@ -192,7 +190,6 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  if ($item > 0) echo("|\n");
 			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }

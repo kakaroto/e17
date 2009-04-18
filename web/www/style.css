@@ -23,7 +23,7 @@ html, body {
   min-width               : 700px;
   width                   : 90%;
 /*  background              : url(ti/main_background.png) no-repeat center 150px; */
-      }
+}
 
 #wrapper {
   min-height              : 100%;
@@ -136,53 +136,40 @@ html, body {
 /*****************/
 
 #submenu {
-  text-align: right;
-  padding-top: 9px;
-}
-a.nav:link {
-   color                  : #888888;
-   text-decoration        : none;
-   display                : block;
+  text-align              : right;
+  padding-top             : 0px;
+  font                    : normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+  font-weight             : bold;
 }
 
-a.nav:visited {
+a.nav:link, a.nav:visited {
    color                  : #888888;
-   text-decoration        : none;
-   display                : block;
 }
 
 a.nav:active {
    color                  : #000000;
-   text-decoration        : none;
-   display                : block;
 }
 
 a.nav:hover {
    color                  : #444444;
-   text-decoration        : none;
-   display                : block;
 }
 
-li.navul, ul.navul {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #222222;
-   font-size              : 9px;
-   font-weight            : bold;
-   list-style             : none;
+li.navul {
+   border-right           : 1px solid #ddd;
+   padding-right          : 5px;
+   padding-left           : 3px;
    display                : inline;
-   text-align             : right;
 }
 
 li.selected {
    text-decoration        : underline;
 }
 
-a.navul:link {
-   color                  : #888888;
-   text-decoration        : none;
+li.navul:last-child {
+   border: 0px;
 }
 
-a.navul:visited {
+a.navul:link, a.navul:visited {
    color                  : #888888;
    text-decoration        : none;
 }
@@ -196,10 +183,6 @@ a.navul:hover {
    color                  : #444444;
    text-decoration        : none;
 }
-
-
-
-
 
 /*////////////////////////////////////////////////////////*/
 div.main {
