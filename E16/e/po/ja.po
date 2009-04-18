@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-04-17 18:52+0200\n"
-"PO-Revision-Date: 2009-04-04 20:13+0900\n"
+"PO-Revision-Date: 2009-04-18 19:40+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -531,9 +531,9 @@ msgstr ""
 "設定ダイアログ\n"
 
 #: src/coords.c:74
-#, fuzzy, c-format
+#, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
-msgstr "フォーカスがあれば100％不透明にする"
+msgstr "フォーカス有/フォーカス無 の不透明率: %d/%d %%"
 
 #: src/desktops.c:124
 msgid ""
@@ -2164,41 +2164,38 @@ msgstr ""
 
 #: src/theme.c:369
 msgid "Changes will take effect after restart"
-msgstr ""
+msgstr "変更は再起動後に有効になります."
 
 #: src/theme.c:389
 msgid "Use theme font configuration"
-msgstr ""
+msgstr "テーマのフォント設定を使う"
 
 #: src/theme.c:394
 #, c-format
 msgid "Use alternate font configuration (%s)"
-msgstr ""
+msgstr "別のフォント設定を使う (%s)"
 
 #: src/theme.c:395
 msgid "Not set"
-msgstr ""
+msgstr "設定しない"
 
 #
 #: src/theme.c:402
-#, fuzzy
 msgid "Theme"
 msgstr "テーマ"
 
 #
 #: src/theme.c:403
-#, fuzzy
 msgid "Theme Settings"
-msgstr "メニューの設定"
+msgstr "テーマの設定"
 
 #
 #: src/theme.c:406
-#, fuzzy
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment メニュー\n"
+"Enlightenment テーマ\n"
 "設定ダイアログ\n"
 
 #: src/tooltips.c:867
