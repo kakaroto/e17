@@ -425,6 +425,7 @@ HandleEvent(XEvent * ev)
 #endif
 
      case MappingNotify:
+	XRefreshKeyboardMapping(&ev->xmapping);
 	if (Conf.testing.bindings_reload)
 	   ActionclassesReload();
 	break;
