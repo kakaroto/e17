@@ -6,7 +6,7 @@
 using namespace std;
 
 const int WIDTH = 320;
-const int HEIGHT = 0;
+const int HEIGHT = 320;
 const double PI = 3.141;
 const unsigned int NUMBALLS = 15;
 const unsigned int BALLSIZE = 50;
@@ -51,6 +51,8 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
     }
 
     startTimer( 1.0 / 25 );
+
+    mw->show();
 }
 
 efl::EcoreEvasWindowSoftwareX11* mw;
