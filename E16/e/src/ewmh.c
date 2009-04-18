@@ -57,10 +57,6 @@
 
 #define OPSRC(src) (((src) == _NET_WM_SOURCE_USER) ? _NET_WM_SOURCE_USER : _NET_WM_SOURCE_APP)
 
-#ifndef ENABLE_HINTS_GNOME
-Atom                _G_WIN_LAUER;
-#endif
-
 /*
  * Set/clear Atom in list
  */
