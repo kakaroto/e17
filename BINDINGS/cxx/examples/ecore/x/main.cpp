@@ -44,6 +44,7 @@ int main( int argc, const char **argv )
     text->setLayer( 5 );
     text->show();
  
+    mw->show();
 
     /* Enter the application main loop */
     app->exec();
