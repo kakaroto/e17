@@ -12,8 +12,9 @@ This note contains contributions by
 
 Contents
 --------
-- Versions
 - Requirements
+- Installation
+- Versions
 - Configuration
 - Configuration files
 - Default keybindings
@@ -23,6 +24,25 @@ Contents
 - Using e16 with GNOME
 - Using e16 with KDE
 - Migrating from versions older than 0.16.8
+- Resources
+
+
+Requirements
+------------
+
+imlib2 >= 1.2.0 is required, >= 1.4.2 is recommended.
+imlib2 must be built with png support.
+
+
+Installation
+------------
+
+./configure
+make
+sudo make install
+
+For additional help on package configuration, see
+./configure --help
 
 
 Versions
@@ -46,13 +66,6 @@ enlightenment-0.16.6: Released Nov 2003
 enlightenment-0.16.5: Released Oct 2000
 
 enlightenment-0.16.0: Released Oct 1999
-
-
-Requirements
-------------
-
-imlib2 >= 1.2.0 is required, >= 1.4.2 is recommended.
-imlib2 must be built with png support.
 
 
 Configuration
@@ -804,3 +817,18 @@ The absolute path is obviously no longer valid.
 The most sensible fix for these themes is to remove the themes
 actionclasses.cfg. e16 will then fall back to the default one.
 
+
+Resources
+---------
+
+The e16-docs package is somewhat dated but still contains much relevant
+information about using e16.
+
+Enlightenment web site:
+http://www.enlightenment.org
+
+Mailing lists:
+http://sourceforge.net/mail/?group_id=2
+
+IRC:
+#e on freenode
