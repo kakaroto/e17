@@ -1,0 +1,3 @@
++ Remove the ecore types (list, hash, etc).
++ Refactor the evas object list (inlist now).
++ Add a simple memory allocator given a chunk of memory.
