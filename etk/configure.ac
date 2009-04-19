@@ -15,11 +15,13 @@ AC_C_BIGENDIAN
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+AC_CHECK_HEADERS(locale.h)
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-dnl Add the languages which your application supports here.
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14.1)
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
@@ -148,14 +150,6 @@ fi
 AM_CONDITIONAL(BUILD_ENGINE_E_FB, test "x$have_ecore_fb" = "xyes")
 
 #####################################################################
-## Gettext
-ALL_LINGUAS="cs el es fr hr it ku pl sk zh_CN"
-AC_SUBST(ALL_LINGUAS)
-
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.14.1)
-
-#####################################################################
 ## Fill in flags
 AC_SUBST(requirements)
 
@@ -187,8 +181,6 @@ data/themes/default/widgets/Makefile
 data/themes/default/fonts/Makefile
 data/themes/default/images/Makefile
 data/themes/default/macros/Makefile
-data/themes/b_and_w/Makefile
-data/themes/b_and_w/img/Makefile
 data/wm/Makefile
 data/wm/default/Makefile
 data/wm/default/fonts/Makefile
@@ -230,7 +222,7 @@ data/icons/default/icons/48x48/mimetypes/Makefile
 data/icons/default/icons/48x48/places/Makefile
 data/icons/default/icons/48x48/status/Makefile
 data/icons/default/Makefile
-po/Makefile
+po/Makefile.in
 ])
 
 #####################################################################
