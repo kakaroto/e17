@@ -6,9 +6,9 @@ DEB_PYTHON_SYSTEM := pycentral
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-install/python-evas::
-	mkdir -p debian/python-evas/usr/share/doc/python-evas
-	cp -r tests debian/python-evas/usr/share/doc/python-evas
-	cp -r examples debian/python-evas/usr/share/doc/python-evas
-	find debian/python-evas/usr/share/doc/python-evas -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-evas/usr/share/doc/python-evas
+install/python-efl-evas-doc::
+	./gen-doc-api.sh
+
+clean::
+	rm -rf python_evas.egg-info evas/evas.c_evas.? doc/api/html
+
