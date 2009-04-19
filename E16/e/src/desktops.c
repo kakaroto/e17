@@ -2671,13 +2671,6 @@ DesksIpcDesk(const char *params)
 	   desk = atoi(prm);
 	DeskOpDrag(desk);
      }
-   else if (!strcmp(cmd, "dragbar"))
-     {
-	if (!strncmp(prm, "dir", 3))
-	   DeskDragdirSet(p);
-	else if (!strncmp(prm, "ord", 3))
-	   DeskDragbarOrderSet(p);
-     }
    else if (!strcmp(cmd, "clear"))
      {
 	EwinsShowDesktop(!Mode.showing_desktop);
@@ -2755,8 +2748,6 @@ static const IpcItem DesksIpcArray[] = {
     "  desk this            Goto this desktop\n"
     "  desk lower <d>       Lower desktop\n"
     "  desk raise <d>       Raise desktop\n"
-    "  desk dragbar pos     Set dragbar position\n"
-    "  desk dragbar order   Set dragbar button order\n"
     "  desk arrange         Arrange windows on desktop\"\n"
     "  desk clear           \"Show Desktop\"\n"}
    ,
