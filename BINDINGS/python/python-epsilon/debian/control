@@ -10,7 +10,7 @@ Homepage: http://enlightenment.org
 Package: python-efl-epsilon
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-efl-evas, python-efl-ecore
-Provides: ${python:Provides}, python-epsilon
+Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for epsilon
  This package contains python epsilon module.

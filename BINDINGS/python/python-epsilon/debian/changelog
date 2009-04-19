@@ -1,3 +1,9 @@
+python-epsilon (0.3.1-1) unstable; urgency=low
+
+  * Updated debian stuff, thx to rbelem
+
+ -- quaker <quaker66@gmail.com>  Sun, 19 Apr 2009 20:15:52 +0100
+
 python-epsilon (0.1.0-1) unstable; urgency=low
 
   * Initial release
