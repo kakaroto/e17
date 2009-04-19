@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
 Build-Depends: cdbs, debhelper (>= 6), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev, libextractor-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
 Package: libevfs0

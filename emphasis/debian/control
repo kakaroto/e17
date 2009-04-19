@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
 Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libetk1-dev, libmpd-dev (>= 0.18.0), libenhance0-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
 Package: emphasis

@@ -3,7 +3,7 @@ Section: graphics
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
 Build-Depends: libimlib2-dev, libpopt-dev, debhelper (>= 6), cdbs
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 
 Package: imlib2-tools
 Architecture: any

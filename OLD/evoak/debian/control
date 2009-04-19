@@ -2,7 +2,7 @@ Source: evoak
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
 Build-Depends: cdbs, debhelper (>= 6), libeet-dev, libevas-dev, libecore-dev, libedje-dev, libembryo-dev, automake1.7 | automaken, libtool
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 
 Package: libevoak0
 Section: libs

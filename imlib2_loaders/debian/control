@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
 Build-Depends: cdbs, debhelper (>= 6), libimlib2-dev, libedb1-dev, libeet0-dev, libfreetype6-dev, automake1.7 | automaken, libtool
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 
 Package: imlib2-loaders
 Architecture: any

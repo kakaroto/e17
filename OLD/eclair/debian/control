@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: cdbs, debhelper (>= 6), automake1.7 | automaken, libecore-dev, libedje-dev, libevas-dev, libesmart0-dev, libemotion0-dev, libtagc0-dev, libxml2-dev, libsqlite3-dev, libglade2-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 
 Package: eclair
 Section: x11

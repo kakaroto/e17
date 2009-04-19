@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
 Build-Depends: cdbs, debhelper (>= 6), libtool, pkg-config, libecore-dev, libevas-dev, libepsilon0-dev, libimlib2-dev, libedje-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
 Package: libesmart0
