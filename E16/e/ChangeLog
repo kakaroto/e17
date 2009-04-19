@@ -4969,3 +4969,45 @@ Enable move/resize using keyboard.
 German translation update (Peter Wehrfritz).
 Fix gnome/e16 session setup with recent gnome versions.
 Added Simplified Chinese translation (Aron Xu, Ni Hui).
+
+-------------------------------------------------------------------------------
+
+Sat Apr 18 21:33:26 CEST 2009
+(Kim)
+
+--- 0.99.99.002 ---
+Fix pointer/screen warp on certain(?) xorg versions.
+Fix move to other desk by pager drag when final drag distance is 0.
+Remove (useless, afaict) group mirror option.
+Simplify code around iconfify/shade/stick operations.
+Delay autoshading when leaving.
+Fix bug in keybindings reload on MappingNotify.
+Remove unnecessary function call.
+Enable setting shadow color.
+Fix update after systray icon size change for certain apps.
+German translation update (Peter Wehrfritz).
+Change font configuration search scheme.
+Update font configuration in winter theme.
+French translation update (Tristan D.).
+Remove obsolete ENLIGHTENMENT_VERSION_015, set correct version when calling epp.
+Bump version to 0.99.99.001. Remove somewhat old note about 0.16.8.
+Adjust various places showing the e16 version.
+Doc updates, mostly cosmetic.
+Update notes about configuration settings.
+Show opacity when changing by bindings.
+Update README-0.16.8.xml (Yasufumi Haga).
+Hack to make shift-alt-tab (actually anyothermodifiers-key) cycle backwards
+ though window list (ticket 271).
+Add theme (font) configuration dialog.
+Change default bindings to show the configuration dialog in stead of the
+ settings menu. Trim down settings menu.
+Danish tranlation update.
+Japanese translation update (Yasufumi Haga).
+Update notes on font selection.
+Include some stuff from README in README-0.16.8.
+Remove README.
+Rename README-0.16.8* to README*.
+Call XRefreshKeyboardMapping on MappingNotify.
+Remove default bindings and special commands to configure dragbar.
+Update e16keyedit helper file.
+
