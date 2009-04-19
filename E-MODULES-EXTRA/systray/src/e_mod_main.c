@@ -409,6 +409,7 @@ _systray_selection_owner_set(int screen_num, Ecore_X_Window win)
 
    atom = _systray_atom_st_get(screen_num);
    XSetSelectionOwner(disp, atom, win, ecore_x_current_time_get());
+   ecore_x_sync();
    cur_selection = XGetSelectionOwner(disp, atom);
 
    ret = (cur_selection == win);
@@ -592,8 +593,10 @@ _systray_handle_request_dock(Instance *inst, Ecore_X_Event_Client_Message *ev)
    r  = ecore_x_window_prop_card32_get(win, _atom_xembed_info, val, 2);
    if (r < 2)
      {
+	/*
 	fprintf(stderr, "SYSTRAY: win %#x does not support _XEMBED_INFO (%d)\n",
 		win, r);
+	*/
 	return;
      }
 
@@ -752,6 +755,78 @@ _systray_cb_selection_clear(void *data, int type __UNUSED__, void *event)
    return 1;
 }
 
+static void
+_systray_theme(Evas_Object *o, const char *shelf_style, const char *gc_style)
+{
+   const char base_theme[] = "base/theme/modules/systray";
+   const char *path = _systray_theme_path();
+   char buf[128], *p;
+   size_t len, avail;
+
+   len = ecore_strlcpy(buf, _group_gadget, sizeof(buf));
+   if (len >= sizeof(buf))
+     goto fallback;
+   p = buf + len;
+   *p = '/';
+   p++;
+   avail = sizeof(buf) - len - 1;
+
+   if (shelf_style && gc_style)
+     {
+	size_t r;
+	r = snprintf(p, avail, "%s/%s", shelf_style, gc_style);
+	if (r < avail && e_theme_edje_object_set(o, base_theme, buf))
+	  return;
+     }
+
+   if (shelf_style)
+     {
+	size_t r;
+	r = ecore_strlcpy(p, shelf_style, avail);
+	if (r < avail && e_theme_edje_object_set(o, base_theme, buf))
+	  return;
+     }
+
+   if (gc_style)
+     {
+	size_t r;
+	r = ecore_strlcpy(p, gc_style, avail);
+	if (r < avail && e_theme_edje_object_set(o, base_theme, buf))
+	  return;
+     }
+
+   if (e_theme_edje_object_set(o, base_theme, _group_gadget))
+     return;
+
+   if (shelf_style && gc_style)
+     {
+	size_t r;
+	r = snprintf(p, avail, "%s/%s", shelf_style, gc_style);
+	if (r < avail && edje_object_file_set(o, path, buf))
+	  return;
+     }
+
+   if (shelf_style)
+     {
+	size_t r;
+	r = ecore_strlcpy(p, shelf_style, avail);
+	if (r < avail && edje_object_file_set(o, path, buf))
+	  return;
+     }
+
+   if (gc_style)
+     {
+	size_t r;
+	r = ecore_strlcpy(p, gc_style, avail);
+	if (r < avail && edje_object_file_set(o, path, buf))
+	  return;
+     }
+
+ fallback:
+   edje_object_file_set(o, path, _group_gadget);
+}
+
+
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
@@ -789,10 +864,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->win.selection = None;
 
    inst->ui.gadget = edje_object_add(inst->evas);
-   if (!e_theme_edje_object_set(inst->ui.gadget, "base/theme/modules/systray",
-				_group_gadget))
-     edje_object_file_set(inst->ui.gadget, _systray_theme_path(),
-			  _group_gadget);
+
+   _systray_theme(inst->ui.gadget, gc->shelf ? gc->shelf->style : NULL, style);
 
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->ui.gadget);
    if (!inst->gcc)

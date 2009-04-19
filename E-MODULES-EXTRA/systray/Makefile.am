@@ -16,6 +16,7 @@ files_DATA = module.desktop \
 
 EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
+	     images/rounded_corners.png \
 	     e-module-systray.edc
 
 e-module-systray.edj: $(EXTRA_DIST)
