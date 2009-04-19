@@ -2,15 +2,15 @@ Source: python-ecore
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, python-evas, libecore-dev, libevas-dev
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, python-efl-evas, libecore-dev, libevas-dev
 Standards-Version: 3.8.1
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
 
-Package: python-ecore
+Package: python-efl-ecore
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas
-Provides: ${python:Provides}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-efl-evas
+Provides: ${python:Provides}, python-ecore
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for ecore
  This package contains python ecore module.
@@ -21,4 +21,18 @@ Description: Python bindings for ecore
  can make use of the work put into Ecore to make this job easy for
  applications.
 
+Package: python-efl-ecore-doc
+Provides: python-ecore-doc
+Section: doc
+Depends: python-efl-ecore
+Architecture: all
+Suggests: python-ecore
+Description: Documentation for python ecore
+ Ecore is the core event abstraction layer and X abstraction layer that makes
+ doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
+ handlers fast, optimized, and convenient. It's a separate library so anyone
+ can make use of the work put into Ecore to make this job easy for
+ applications.
+ .
+ This package contains API documentation for python ecore.
 

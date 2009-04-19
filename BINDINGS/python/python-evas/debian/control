@@ -37,6 +37,7 @@ Package: python-efl-evas-doc
 Section: python
 Provides: python-evas-doc
 Architecture: all
+Depends: python-efl-evas
 Suggests: python-ecore
 Description: Python bindings for enlightenment advanced canvas library (development files)
  Evas is an advanced canvas library, providing six engines for rendering: X11,

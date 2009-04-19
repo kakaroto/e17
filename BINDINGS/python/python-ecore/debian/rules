@@ -13,3 +13,11 @@ install/python-ecore::
 	find debian/python-ecore/usr/share/doc/python-ecore -name '.svn' | xargs rm -rf
 	chmod -R 755 debian/python-ecore/usr/share/doc/python-ecore
 
+install/python-efl-ecore-doc::
+	./gen-doc-api.sh
+
+clean::
+	find ecore -name '*.c' | xargs rm -rf
+	find ecore -name '*.h' | xargs rm -rf
+	rm -rf python_ecore.egg-info doc/api/html
+
