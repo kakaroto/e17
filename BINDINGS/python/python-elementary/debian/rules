@@ -6,9 +6,6 @@ DEB_PYTHON_SYSTEM := pycentral
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-install/python-elementary::
-	mkdir -p debian/python-elementary/usr/share/doc/python-elementary
-	cp -r tests debian/python-elementary/usr/share/doc/python-elementary
-	find debian/python-elementary/usr/share/doc/python-elementary -name '.svn' | xargs rm -rf
-	chmod -R 755 debian/python-elementary/usr/share/doc/python-elementary
+clean::
+   rm -rf python_elementary.egg-info
 

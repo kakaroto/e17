@@ -22,7 +22,6 @@ Description: Python bindings for edje
 Package: python-efl-edje-doc
 Provides: python-edje-doc
 Section: doc
-Depends: python-efl-edje
 Architecture: all
 Suggests: python-efl-edje
 Description: Documentation for python ecore

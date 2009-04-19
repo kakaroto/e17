@@ -21,5 +21,20 @@ Description: Python bindings for edbus
  D-Bus and HAL with EFL-based applications
  - libenotify0 : provides an EFL-based notification support
 
+Package: python-efl-edbus-doc
+Architecture: all
+Section: doc
+Suggests: python-efl-edbus
+Provides: python-edbus-doc
+Description: Python bindings for edbus
+ This package contains python module for edbus.
+ .
+ Edbus are D-Bus and HAL wrapper libraries for use with the EFL.
+ Edbus contains:
+ - libedbus0 and libehal0 : D-Bus and HAL-related wrappers to ease integrating
+ D-Bus and HAL with EFL-based applications
+ - libenotify0 : provides an EFL-based notification support
+ .
+ This package contains docs for python edbus.
 
 

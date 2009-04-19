@@ -24,9 +24,8 @@ Description: Python bindings for ecore
 Package: python-efl-ecore-doc
 Provides: python-ecore-doc
 Section: doc
-Depends: python-efl-ecore
+Suggests: python-efl-ecore
 Architecture: all
-Suggests: python-ecore
 Description: Documentation for python ecore
  Ecore is the core event abstraction layer and X abstraction layer that makes
  doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
