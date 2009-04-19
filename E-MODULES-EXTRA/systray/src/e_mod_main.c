@@ -516,7 +516,6 @@ _systray_activate(Instance *inst)
 	inst->win.selection = None;
 	ecore_x_window_free(inst->win.base);
 	inst->win.base = None;
-	edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
 	return 0;
      }
 
@@ -563,6 +562,31 @@ _systray_retry(Instance *inst)
    if (inst->timer.retry) return;
    inst->timer.retry = ecore_timer_add
      (RETRY_TIMEOUT, _systray_activate_retry, inst);
+}
+
+static int
+_systray_activate_retry_first(void *data)
+{
+   Instance *inst = data;
+   Eina_Bool ret;
+
+   fputs("SYSTRAY: reactivate (first time)...\n", stderr);
+   ret = _systray_activate(inst);
+   if (ret)
+     {
+	fputs("SYSTRAY: activate success!\n", stderr);
+	inst->timer.retry = NULL;
+	return 0;
+     }
+
+   edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
+
+   fprintf(stderr, "SYSTRAY: activate failure! retrying in %0.1f seconds\n",
+	   RETRY_TIMEOUT);
+
+   inst->timer.retry = NULL;
+   _systray_retry(inst);
+   return 0;
 }
 
 static void
@@ -878,7 +902,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc->data = inst;
 
    if (!_systray_activate(inst))
-     _systray_retry(inst);
+     {
+	if (!inst->timer.retry)
+	  inst->timer.retry = ecore_timer_add
+	    (0.1, _systray_activate_retry_first, inst);
+	else
+	  edje_object_signal_emit(inst->ui.gadget, _sig_disable, _sig_source);
+     }
 
    evas_object_event_callback_add(inst->ui.gadget, EVAS_CALLBACK_MOUSE_DOWN,
 				  _systray_cb_mouse_down, inst);
