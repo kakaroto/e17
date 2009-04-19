@@ -74,6 +74,8 @@
 "Move Window to area below", 0, "wop * area move 0 1"
 "Move Window by area [X Y]", 1, "wop * area move "
 "Move Window to area [X Y]", 1, "wop * area "
+"Move Window using keyboard", 0, "wop * mo kbd"
+"Resize Window using keyboard", 0, "wop * sz kbd"
 
 "Set Window border style to the Default", 0, "wop * border DEFAULT"
 "Set Window border style to the Borderless", 0, "wop * border BORDERLESS"
@@ -93,6 +95,9 @@
 "Show Winops Menu", 0, "menus show winops.menu"
 "Show Named Menu", 1, "menus show "
 
+"Show configuration dialog", 0, "cfg"
+"Show configuration dialog", 1, "cfg "
+
 "Goto Linear Area", 0, NULL
 "Previous Linear Area", 0, NULL
 "Next Linear Area", 0, NULL
@@ -101,5 +106,3 @@
 "Toggle all Buttons on/off", 0, "button_show all"
 "Toggle selected Buttons on/off", 1, "button_show buttons "
 "Toggle theme/user Buttons on/off", 0, "button_show"
-"Switch Dragbar position", 0, "desk dragbar dir"
-"Switch Dragbar Button order", 0, "desk dragbar order"
