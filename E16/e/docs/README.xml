@@ -4,7 +4,7 @@
 <article id="index">
   <articleinfo>
     <title>About Enlightenment e16</title>
-    <pubdate>Apr 14, 2009</pubdate>
+    <pubdate>Apr 19, 2009</pubdate>
     <abstract>
       <para>
 	Coming soon. (maybe)
@@ -34,17 +34,50 @@
       </itemizedlist>
     </para>
   </sect1>
+  <sect1 id="requirements">
+    <title>Requirements</title>
+    <para>
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    <filename>imlib2</filename> &gt;= 1.2.0 is required, &gt;= 1.4.2 is recommended.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    <filename>imlib2</filename> must be built with png support.
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+  </sect1>
+  <sect1 id="installation">
+    <title>Installation</title>
+    <para>
+      <programlisting>
+	./configure
+	make
+	sudo make install
+      </programlisting>
+    </para>
+    <para>
+      For additional help on package configuration, see
+      <programlisting>
+	./configure --help
+      </programlisting>
+    </para>
+  </sect1>
   <sect1 id="versions">
     <title>Versions</title>
     <para>
       <variablelist>
 	<varlistentry>
 	  <term>
-	    e16-1.0.0
+	    e16-1.0.0:
 	  </term>
-          <listitem>
+	  <listitem>
 	    <para>
-	      No major changes, might as well have been 0.16.8.16.
+              No major changes, might as well have been 0.16.8.16.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -98,7 +131,7 @@
 		</listitem>
 		<listitem>
 		  <para>
-		    Migrated to imlib2
+                    Migrated to imlib2
 		  </para>
 		</listitem>
 	      </itemizedlist>
@@ -149,19 +182,10 @@
       </variablelist>
     </para>
   </sect1>
-  <sect1 id="requirements">
-    <title>Requirements</title>
-    <para>
-      imlib2 &gt;= 1.2.0 is required, &gt;= 1.4.2 is recommended.
-    </para>
-    <para>
-      imlib2 must be built with png support.
-    </para>
-  </sect1>
   <sect1 id="configuration">
     <title>Configuration</title>
     <para>
-      All settings can be shown and set using eesh.
+      All settings can be shown and set using <application>eesh</application>.
     </para>
     <para>
       To get a full list of settings:
@@ -179,7 +203,7 @@
       Some settings will not be effective until <application>E</application> is restarted.
     </para>
     <para>
-      To get a list of all eesh commands:
+      To get a list of all <application>eesh</application> commands:
       <programlisting>
 	$ eesh help full
       </programlisting>
@@ -533,9 +557,7 @@
     </para>
   </sect1>
   <sect1 id="configurationfiles">
-    <title>
-      Configuration files
-    </title>
+    <title>Configuration files</title>
     <para>
       Skip this section unless you *really* want to know...
     </para>
@@ -653,7 +675,7 @@
   <sect1 id="sessionscripts">
     <title>Session Scripts</title>
     <para>
-      Enlightenment can now automatically run user scripts or applications during
+      <application>Enlightenment</application> can now automatically run user scripts or applications during
       Startup, Restart, and Shutdown. This facilitates the loading of system
       tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
       and allows for cleanup of programs that don't terminate properly when <application>E</application>
@@ -661,7 +683,7 @@
       daemon or dcop server keeps running).
     </para>
     <para>
-      Enlightenment accomplishes this with the addition of two new keys in
+      <application>Enlightenment</application> accomplishes this with the addition of two new keys in
       the <filename>$ECONFDIR/e_config--#.#.cfg</filename> (#.# may vary depending on your X setup -- 
       for most people, it will be 0.0). These are:
       <programlisting>
@@ -670,7 +692,7 @@
       </programlisting>
     </para>
     <para>
-      <varname>misc.session.enable_script</varname> is a boolean. When set to 1, Enlightenment will 
+      <varname>misc.session.enable_script</varname> is a boolean. When set to 1, <application>Enlightenment</application> will 
       execute the script in the <varname>misc.session.script</varname> key. By default, this feature 
       is disabled. When enabled, it will do nothing until the user configures
       his/her home directory (<filename class="directory">$ECONFDIR</filename> -- normally <filename class="directory">~/.e16</filename>).
@@ -699,6 +721,8 @@
 	misc.session.enable_script = 0
 	misc.session.script = $EROOT/scripts/session.sh
       </programlisting>
+    </para>
+    <para>
       The user may write a custom script and place it anywhere. Simply modify 
       the config file by using:
       <programlisting>
@@ -707,7 +731,7 @@
       and modify it (be sure to <command>chmod +x</command> the file otherwise it won't run). 
       The session script is called with one of three command parameters; 
       <parameter class="command">init</parameter>, <parameter class="command">start</parameter>, and <parameter class="command">stop</parameter>. Any custom script should have a code block 
-      similar to this in order to function properly in Enlightenment.
+      similar to this in order to function properly in <application>Enlightenment</application>.
       <programlisting>
 	case "$1" in
 	init)
@@ -724,14 +748,12 @@
     </para>
     <para>
       Automatic script running can be enabled/disabled via the Session Settings
-      dialog in Enlightenment and checking/unchecking the option Enable Session
+      dialog in <application>Enlightenment</application> and checking/unchecking the option Enable Session
       Script, by editing the user cfg file and setting the
       <varname>misc.session.enable_script</varname> key to 1/0, or with
       <programlisting>
 	$ eesh set misc.session.enable_script 1/0
       </programlisting>
-    </para>
-    <para>
       This process is very flexible since when used, the user can turn off
       individual scripts and applications by <command>chmod -x</command> or simply leave the
       startup directories empty or remove them.
@@ -752,7 +774,7 @@
       Applications unintentionally using an ARGB visual will normally not be
       rendered properly at all and should be started with the environment variable
       <varname>XLIB_SKIP_ARGB_VISUALS</varname> set.
-      To fix border rendering on "real" ARGB windows it is required to use imlib2
+      To fix border rendering on "real" ARGB windows it is required to use <filename>imlib2</filename>
       with version &gt;= 1.3.0.
     </para>
     <para>
@@ -760,12 +782,12 @@
     </para>
     <para>
       As of e16 &gt;= 0.16.8.9: If there is any kind of trouble with the composite
-      manager, first check compmgr.mode (<command>eesh show compmgr</command>), and set it to 1 if
-      it isn't (<command>eesh set compmgr.mode 1, restart</command>).
+      manager, first check <varname>compmgr.mode</varname> (<command>eesh show compmgr</command>), and set it to 1 if
+      it isn't (<command>eesh set compmgr.mode 1</command>, restart).
     </para>
     <para>
       If pop-up windows disappear immediately after having appeared (may happen
-      e.g. with certain pop-up windows when using <application>gnome</application> &gt; 2.12), try:
+      e.g. with certain pop-up windows when using gnome &gt; 2.12), try:
       <programlisting>
 	$ eesh set compmgr.override_redirect.mode 0
       </programlisting>
@@ -783,75 +805,101 @@
   <sect1 id="fonts">
     <title>Fonts</title>
     <para>
-      The fonts in the default theme (winter) and core themes (BlueSteel,
-      BrushedMetal-Tigert, Ganymede, and ShinyMetal) are configured (indirectly)
-      in <filename>fonts.cfg</filename>. Directory search order is (typically):
-      <filename class="directory">~/.e16</filename>, &lt;theme-dir&gt;, and <filename>/usr/share/e16/config/fonts.cfg</filename>).
-      Other themes are likely to have font references more or less scattered around
-      in TextClass definitions in the theme configuration files.
+      Theme font selection depends on a number of settings and whether or not
+      the theme has font alias support.
     </para>
     <para>
-      There are several ways to specify a font:
-      <orderedlist>
+      For themes with font alias support the fonts are determined by a font
+      configuration file. This file is selected as follows, first hit applies:
+      <itemizedlist>
 	<listitem>
 	  <para>
-	    "&lt;font name&gt;/&lt;size&gt;", e.g. "Vera/8".
-	  </para>
-	  <para>
-	    In this case <application>e16</application> must be able to find "Vera.ttf" in <filename class="directory">&lt;theme dir&gt;/ttfonts</filename> or
-	    <filename class="directory">/usr/share/e16/fonts</filename>.
+	    If <varname>theme.use_alt_font_cfg</varname> is set (default off) and the the file specified
+	    by <varname>theme.font_cfg</varname> is found the fonts are determined by this file.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
+	    If <varname>theme.use_theme_font_cfg</varname> is set (default off) and the theme has a
+	    <filename>fonts.theme.cfg</filename> the fonts are determined by the theme's <filename>fonts.theme.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    If <application>e16</application> was built with <application>pango</application> support, look for <filename>fonts.pango.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    If <application>e16</application> was built with <application>xft</application> support, look for <filename>fonts.xft.cfg</filename>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Look for <filename>fonts.cfg</filename>.
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      The font configuration file search path is <filename class="directory">~/.e16, &lt;theme-dir&gt;</filename>, and
+      <filename class="directory">/usr/share/e16/config</filename>.
+      Default <filename>fonts.pango.cfg</filename> and <filename>fonts.xft.cfg</filename> are provided in <filename class="directory">/usr/share/e16/config</filename>.
+    </para>
+    <para>
+      The default theme (winter) and the core themes (BlueSteel, BrushedMetal-Tigert,
+      Ganymede, and ShinyMetal) do have font alias support.
+    </para>
+    <para>
+      Don Harrop has made available a major number of <application>e16</application> themes which have been
+      modified for font alias support (<ulink url="http://themes.effx.us"><citetitle>themes.effx.us</citetitle></ulink>).
+    </para>
+    <para>
+      Other themes are likely to not have font alias support but in stead have font
+      references more or less scattered around in TextClass definitions in the theme
+      configuration files.
+    </para>
+    <para>
+      There are several ways to specify a font (in the font configuration file or
+      in TextClasses):
+    </para>
+    <itemizedlist>
+      <listitem>
+	<para>
+	  "&lt;font name&gt;/&lt;size&gt;", e.g. "Vera/8".
+	</para>
+	<para>
+	  In this case <application>e16</application> must be able to find "Vera.ttf" in <filename class="directory">&lt;theme dir&gt;/ttfonts</filename> or
+	  <filename class="directory">/usr/share/e16/fonts</filename>.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
 	  XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
-	  </para>
-	  <para>
-	    <application>xfontsel</application>, <application>xlsfonts</application>, and <application>xfd</application> can be used to select and show these fonts.
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
-	  </para>
-	  <para>
-	    <application>fc-list</application> and <application>xfd</application> can be used to select and show these fonts.
-	  </para>
-	  <para>
-	    This possibility (Xft support) is available as of version 0.16.8.5.
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    Pango font names, prefixed by "pango:", e.g. "pango:sans bold 10".
-	  </para>
-	  <para>
-	    This possibility (Pango support) is available as of version 0.16.8.9.
-	  </para>
-	  <para>
-	    Pango support must be explicitly enabled at build time with <option>--enable-pango</option>.
-	  </para>
-	</listitem>
-      </orderedlist>
-    </para>
-    <para>
-      When using a 0.16.8 core theme, font rendering using xft or pango can be
-      activated with (restart after change is required):
-      <programlisting>
-	$ eesh set theme.use_alt_font_cfg 1
-	$ eesh set theme.font_cfg fonts.cfg.xft
-      </programlisting>
-      or
-      <programlisting>
-	$ eesh set theme.font_cfg fonts.cfg.pango
-      </programlisting>
-    </para>
-    <para>
-      To select the theme font settings use:
-      <programlisting>
-	$ eesh set theme.use_alt_font_cfg 0
-      </programlisting>
-    </para>
+	</para>
+	<para>
+	  <application>xfontsel</application>, <application>xlsfonts</application>, and <application>xfd</application> can be used to select and show these fonts.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
+	</para>
+	<para>
+	  <application>fc-list</application> and <application>xfd</application> can be used to select and show these fonts.
+	  This possibility (Xft support) is available as of version 0.16.8.5.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Pango font names, prefixed by "pango:", e.g. "pango:sans bold 10".
+	</para>
+	<para>
+	  This possibility (Pango support) is available as of version 0.16.8.9.
+	  Pango support must be explicitly enabled at build time with <option>--enable-pango</option>.
+	</para>
+      </listitem>
+    </itemizedlist>
   </sect1>
   <sect1 id="usinge16withgnome">
     <title>Using e16 with GNOME</title>
@@ -897,28 +945,30 @@
       This is supposed to handle differences in all the different WM's out there,
       but does not know of "<application>e16</application>". This will cause a major delay when starting up
       the <application>GNOME</application> desktop.
-      One way to fix this is to use gnome-session-properties to get rid of
+      One way to fix this is to use <property>gnome-session-properties</property> to get rid of
       the "gnome-wm" session entry.
+    </para>
+    <para>
       Another is to apply this patch to <filename>/usr/bin/gnome-wm</filename>:
       <programlisting>
---- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
-+++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
-@@ -69,7 +69,7 @@
- OPT2=
- if [ ! -z "$SMID" ] ; then
-   case `basename $WINDOW_MANAGER` in
--    sawfish|sawmill|metacity)
-+    sawfish|sawmill|metacity|e16)
-       OPT1=--sm-client-id=$SMID
-       ;;
-     openbox)
+	--- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
+	+++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
+	@@ -69,7 +69,7 @@
+	OPT2=
+	if [ ! -z "$SMID" ] ; then
+	case `basename $WINDOW_MANAGER` in
+	-    sawfish|sawmill|metacity)
+	+    sawfish|sawmill|metacity|e16)
+	OPT1=--sm-client-id=$SMID
+	;;
+	openbox)
       </programlisting>
     </para>
   </sect1>
   <sect1 id="usinge16withkde">
     <title>Using e16 with KDE</title>
     <para>
-      The KDE desktop can be started using e16 as WM with:
+      The <application>KDE</application> desktop can be started using <application>e16</application> as WM with:
       <programlisting>
 	$ export KDEWM=e16
 	$ startkde
@@ -936,49 +986,47 @@
       <itemizedlist>
 	<listitem>
 	  <para>
-	    - "enlightenment" has been renamed to "e16".
+	    "enlightenment" has been renamed to "e16".
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - The default user configuration directory is "<filename class="directory">~/.e16</filename>".
+	    The default user configuration directory is "<filename class="directory">~/.e16</filename>".
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - The data install path is "<filename class="directory">&lt;somepath&gt;/e16</filename>", e.g. "<filename class="directory">/usr/share/e16</filename>".
-	  </para>
-	  <para>
-	    Thus, an e16.8 installation should not clash with any other versions.
+	    The data install path is "<filename class="directory">&lt;somepath&gt;/e16</filename>", e.g. "<filename class="directory">/usr/share/e16</filename>".
+	    Thus, an <application>e16.8</application> installation should not clash with any other versions.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Various configuration file formats have changed and should be easier
+	    Various configuration file formats have changed and should be easier
 	    to read and modify, if needed.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - The configuration is stored per display and per screen.  E.g. for
+	    The configuration is stored per display and per screen.  E.g. for
 	    <varname>DISPLAY=:1.0</varname> the main configuration file is "<filename>~/.e16/e_config--1.0.cfg</filename>".
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Actions(used by menus, keybindings, etc.) and IPC functions(<application>eesh</application>) have
+	    Actions(used by menus, keybindings, etc.) and IPC functions(<application>eesh</application>) have
 	    been merged.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Many IPC(<application>eesh</application>) commands have been changed, possibly breaking compatibility
+	    Many IPC(<application>eesh</application>) commands have been changed, possibly breaking compatibility
 	    with a few epplets.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Window matches and icondefs have been merged (into <filename>matches.cfg</filename>), see below.
+	    Window matches and icondefs have been merged (into <filename>matches.cfg</filename>), see below.
 	  </para>
 	</listitem>
       </itemizedlist>
@@ -988,31 +1036,29 @@
       <itemizedlist>
 	<listitem>
 	  <para>
-	    - Built-in composite manager.
+	    Built-in composite manager.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - An iconbox can be configured to act as System Tray
-	  </para>
-	  <para>
+	    An iconbox can be configured to act as System Tray
 	    (<menuchoice><interface>middle mouse</interface><guimenu>Desktop</guimenu><guimenuitem>Create Systray</guimenuitem></menuchoice>).
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Possibility to run programs on startup, restart, and shutdown, see
+	    Possibility to run programs on startup, restart, and shutdown, see
 	    <link linkend="sessionscripts">"Session Scripts"</link> below.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Possibility to track changes in remembered settings.
+	    Possibility to track changes in remembered settings.
 	  </para>
 	</listitem>
 	<listitem>
 	  <para>
-	    - Window operations by window matches (class, name, transient, ...),
+	    Window operations by window matches (class, name, transient, ...),
 	    e.g. for making all windows of a certain type sticky, put it on a certain
 	    layer, etc. (see <filename>matches.cfg</filename>).
 	  </para>
@@ -1020,15 +1066,15 @@
       </itemizedlist>
     </para>
     <para>
-      0.16.8 should be compatible with most e16 themes. However, user installed
+      0.16.8 should be compatible with most <application>e16</application> themes. However, user installed
       themes will have to be moved/linked to <filename class="directory">~/.e16/themes/</filename> or <filename class="directory">&lt;datadir&gt;/e16/themes/</filename>.
-      A few themes will have to be tweaked to work with e16.8. The most likely
+      A few themes will have to be tweaked to work with <application>e16.8</application>. The most likely
       problem is that configuration settings are included in .cfg files where they
       are no longer accepted.
       See the <link linkend="migratingfromversionsolderthan0168">"Migrating ..."</link> section below for additional information.
     </para>
     <para>
-      e16keyedit &gt;= 0.3 works with e16.8.
+      <application>e16keyedit</application> &gt;= 0.3 works with e16.8.
     </para>
     <para>
       If used to change the keybindings, the modified settings will be stored in
@@ -1062,9 +1108,7 @@
 	</listitem>
 	<listitem>
 	  <para>
-	    menu files have been moved to a subdirectory called <filename class="directory">menus</filename>
-	  </para>
-	  <para>
+	    menu files have been moved to a subdirectory called menus
 	    you will need to move customized menus and subdirectories to
 	    <filename class="directory">~/.e16/menus</filename>.
 	  </para>
@@ -1095,7 +1139,7 @@
 	<listitem>
 	  <para>
 	    any startup scripts or Session scripts that reference the startup
-	    executable `enlightenment` must be edited to the new e16 program.
+	    executable `<command>enlightenment</command>` must be edited to the new <command>e16</command> program.
 	  </para>
 	</listitem>
       </orderedlist>
@@ -1118,12 +1162,59 @@ __E_CFG_VERSION 0
       <filename>actionclasses.cfg</filename>. <application>e16</application> will then fall back to the default one.
     </para>
   </sect1>
+  <sect1 id="resources">
+    <title>Resources</title>
+    <para>
+      The e16-docs package is somewhat dated but still contains much relevant
+      information about using e16.
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    Enlightenment web site:
+	  </term>
+	  <listitem>
+	    <para>
+	      <ulink url="http://www.enlightenment.org"><citetitle>www.enlightenment.org</citetitle></ulink>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    Mailing lists:
+	  </term>
+	  <listitem>
+	    <para>
+	      <ulink url="http://sourceforge.net/mail/?group_id=2"><citetitle>sourceforge.net/mail</citetitle></ulink>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    IRC:
+	  </term>
+	  <listitem>
+	    <para>
+	      #e on freenode
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+  </sect1>
   <sect1>
     <title>
       Revision History
     </title>
     <para>
       <revhistory>
+	<revision>
+          <revnumber>33</revnumber>
+          <date>Apr 19, 2009</date>
+          <authorinitials>Yasufumi Haga</authorinitials>
+          <revremark>
+            rename README-0.16.8.xml to README.xml
+          </revremark>
+	</revision>
 	<revision>
           <revnumber>32</revnumber>
           <date>Jan 25, 2009</date>
