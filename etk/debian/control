@@ -9,7 +9,7 @@ Homepage: http://www.enlightenment.org
 Package: libetk1
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libevas0, libecore0, libedje0, libetk1-engine-evas-software-x11 (= ${Source-Version})
+Depends: ${shlibs:Depends}, libevas-svn-00, libecore-svn-00, libedje-svn-00, libetk1-engine-evas-software-x11 (= ${Source-Version})
 Replaces: libetk0
 Description: A widget toolkit based on the EFL
  ETK is a widget toolkit based on the enlightenment foundation libraries.
@@ -17,7 +17,7 @@ Description: A widget toolkit based on the EFL
 Package: libetk1-engine-fb
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas0, libecore0, libedje0
+Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas-svn-00, libecore-svn-00, libedje-svn-00
 Replaces: libetk-engine-fb
 Description: Framebuffer engine for Etk
  ETK is a widget toolkit based on the enlightenment foundation libraries.
@@ -27,7 +27,7 @@ Description: Framebuffer engine for Etk
 Package: libetk1-engine-evas
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas0, libecore0, libedje0
+Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas-svn-00, libecore-svn-00, libedje-svn-00
 Replaces: libetk-engine-evas
 Description: Evas engine for Etk
  ETK is a widget toolkit based on the enlightenment foundation libraries.
@@ -37,7 +37,7 @@ Description: Evas engine for Etk
 Package: libetk1-engine-evas-x11
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas0, libecore0, libedje0, libetk1-engine-evas (= ${Source-Version})
+Depends: ${shlibs:Depends}, libetk1 (= ${Source-Version}), libevas-svn-00, libecore-svn-00, libedje-svn-00, libetk1-engine-evas (= ${Source-Version})
 Replaces: libetk-engine-evas-x11
 Description: X11 engine for Etk
  ETK is a widget toolkit based on the enlightenment foundation libraries.

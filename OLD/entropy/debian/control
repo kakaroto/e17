@@ -8,7 +8,7 @@ Homepage: http://www.enlightenment.org
 
 Package: entropy
 Architecture: any
-Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs-plugin-file-posix, libevfs-bin
+Depends: ${shlibs:Depends}, libevfs0, libetk1 | libewl1, libecore-svn-00, libimlib2, libpng12-0, libevfs-plugin-file-posix, libevfs-bin
 Suggests: libevfs0-plugins-all
 Description: Entropy is a file manager based on the EFL
  Entropy is a file manager based on the EFL and using evfs.

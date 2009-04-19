@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 Package: eutils
 Section: x11
 Architecture: any
-Depends: ${shlibs:Depends}, libevas0, libecore0, libesmart0, libedje0, libeet1, libewl1, libengrave0, libimlib2, e17 | ecomorph-e17, libepsilon0 
+Depends: ${shlibs:Depends}, libevas-svn-00, libecore-svn-00, libesmart0, libedje-svn-00, libeet1, libewl1, libengrave0, libimlib2, e17 | ecomorph-e17, libepsilon0 
 Description: A collection of utilities for use with E17 and EFL apps.
  This package contains the following E17 tools:
  eapp_editor - An application icon editor for E17 and engage.
