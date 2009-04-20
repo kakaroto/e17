@@ -121,6 +121,11 @@ struct _IV_Thumb_Info
    const char *file;
 };
 
+/* Prototypes */
+static int  on_idler(void *data);
+static void slideshow_on(IV *iv);
+static void slideshow_off(IV *iv);
+
 static Eina_List *
 rewind_list(Eina_List *list)
 {
@@ -274,6 +279,8 @@ on_controls_click(void *data, Evas_Object *obj, const char *emission, const char
    IV *iv = data;
 
    iv->flags.hide_controls = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -286,6 +293,8 @@ on_image_click(void *data, Evas_Object *obj, void *event_info)
 
    iv->flags.next = EINA_TRUE;
    iv->flags.hide_controls = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -295,6 +304,11 @@ on_settings_slideshow_delay_change(void *data, Evas_Object *obj, void *event_inf
 
    iv->config->slideshow_delay = elm_slider_value_get(obj);
    config_save(iv);
+   if (iv->flags.slideshow)
+     {
+	slideshow_off(iv);
+	slideshow_on(iv);
+     }
 }
 
 static void
@@ -374,6 +388,8 @@ zoom_set(IV *iv, Eina_Bool increase)
    iv->config->fit = ZOOM;
    iv->flags.fit_changed = EINA_TRUE;
    config_save(iv);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -529,6 +545,8 @@ on_prev_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
    iv->flags.prev = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -536,11 +554,14 @@ on_next_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
    iv->flags.next = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
 on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
 {
+#ifdef HAVE_ETHUMB
    Evas_Object *thumb = data;
    IV *iv = evas_object_data_get(thumb, "iv");
    const char *file = evas_object_data_get(thumb, "iv_file");
@@ -555,11 +576,15 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
    iv->flags.current = EINA_TRUE;
    if (iv->config->auto_hide_previews)
      iv->flags.hide_previews = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+#endif
 }
 
 static void *
 on_thumb_thread_create(void *data)
 {
+#ifdef HAVE_ETHUMB
    IV *iv = data;
    Eina_List *l;
    const char *file;
@@ -594,18 +619,24 @@ on_thumb_thread_create(void *data)
      }
 
    if (iv->preview_files->next)
-     iv->flags.add_previews = EINA_TRUE;
+     {
+	iv->flags.add_previews = EINA_TRUE;
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
    else
      iv->flags.add_previews = EINA_FALSE;
 
    iv->thumb_generator = EINA_FALSE;
    return NULL;
+#endif
 }
 
 static int
 on_idler(void *data)
 {
    IV *iv = data;
+   Eina_Bool renew = EINA_FALSE;
 #ifdef HAVE_ETHUMB
    Elm_Toolbar_Item *item;
 #endif
@@ -638,6 +669,8 @@ on_idler(void *data)
 	     iv->single_file = NULL;
 	  }
 
+	if (!renew && iv->dirs)
+	  renew = EINA_TRUE;
 #ifdef HAVE_ETHUMB
 	iv->flags.add_previews = EINA_TRUE;
 #endif
@@ -718,6 +751,10 @@ on_idler(void *data)
 	  }
 #endif
      }
+
+   if (!renew && iv->files && 
+       (!iv->gui.img || !iv->gui.prev_img || !iv->gui.next_img))
+     renew = EINA_TRUE;
 
    if (iv->flags.next)
      {
@@ -864,7 +901,13 @@ on_idler(void *data)
 	  image_configure(iv);
      }
 
-   return 1;
+   if (renew)
+     return ECORE_CALLBACK_RENEW;
+   else
+     {
+	iv->idler = NULL;
+	return ECORE_CALLBACK_CANCEL;
+     }
 }
 
 static int
@@ -1001,6 +1044,8 @@ on_hoversel_fs(void *data, Evas_Object *obj, void *event_info)
    iv->flags.fit_changed = EINA_TRUE;
    iv->config->fit = FIT_SCALE;
    config_save(iv);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -1012,6 +1057,8 @@ on_hoversel_f(void *data, Evas_Object *obj, void *event_info)
    iv->flags.fit_changed = EINA_TRUE;
    iv->config->fit = FIT;
    config_save(iv);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -1023,6 +1070,8 @@ on_hoversel_p(void *data, Evas_Object *obj, void *event_info)
    iv->flags.fit_changed = EINA_TRUE;
    iv->config->fit = PAN;
    config_save(iv);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -1088,6 +1137,9 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 	if (!strcmp(ev->keyname, "F5"))
 	  slideshow_on(iv);
      }
+
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 // main window - setup
