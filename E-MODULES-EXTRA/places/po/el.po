@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-06 23:32+0100\n"
+"POT-Creation-Date: 2008-12-31 18:32+0100\n"
 "PO-Revision-Date: 2008-12-07 16:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,31 +16,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/e_mod_config.c:43
+#: src/e_mod_config.c:42
 msgid "Places Configuration"
 msgstr "Ρύθμιση Τοποθεσιών"
 
-#: src/e_mod_config.c:90
+#: src/e_mod_config.c:88
 msgid "General"
 msgstr "Γενικά"
 
-#: src/e_mod_config.c:96
+#: src/e_mod_config.c:91
 msgid "Mount volumes on insert"
 msgstr "Προσάρτηση τόμων κατα την εισαγωγή"
 
-#: src/e_mod_config.c:100
+#: src/e_mod_config.c:95
 msgid "Open filemanager on insert"
 msgstr "Άνοιγμα διαχειριστή αρχείων κατά την εισαγωγή"
 
-#: src/e_mod_config.c:105
+#: src/e_mod_config.c:100
 msgid "File manager (if blank uses Enlightenment)"
 msgstr "Διαχειριστής Αρχείων (όταν κενό χρησιμοποιεί το Enlightenment)"
 
-#: src/e_mod_main.c:485
+#: src/e_mod_main.c:75
+#, fuzzy
+msgid "Files"
+msgstr "Σύστημα Αρχείων"
+
+#: src/e_mod_main.c:77 src/e_mod_places.c:367
+msgid "Places"
+msgstr "Τοποθεσίες"
+
+#: src/e_mod_main.c:427
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: src/e_mod_places.c:164 src/e_mod_places.c:317
+#: src/e_mod_places.c:164 src/e_mod_places.c:304
 msgid "Filesystem"
 msgstr "Σύστημα Αρχείων"
 
@@ -48,36 +57,31 @@ msgstr "Σύστημα Αρχείων"
 msgid "No Name"
 msgstr "Χωρίς Όνομα"
 
-#: src/e_mod_places.c:298
+#: src/e_mod_places.c:285
 msgid "Home"
 msgstr "Home"
 
-#: src/e_mod_places.c:304
+#: src/e_mod_places.c:291
 msgid "Desktop"
 msgstr "Επιφάνεια Εργασίας"
 
-#: src/e_mod_places.c:311
+#: src/e_mod_places.c:298
 msgid "Trash"
 msgstr "Απορρίμματα"
 
-#: src/e_mod_places.c:380
-msgid "Places"
-msgstr "Τοποθεσίες"
-
-#: src/e_mod_places.c:587
+#: src/e_mod_places.c:574
 msgid "free of"
 msgstr ""
 
-#: src/e_mod_places.c:593
+#: src/e_mod_places.c:580
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s δεν είναι Προσαρτημένο"
 
-#: src/e_mod_places.c:610
+#: src/e_mod_places.c:597
 msgid "unmount"
 msgstr "αποπροσάρτηση"
 
-#: src/e_mod_places.c:616
+#: src/e_mod_places.c:603
 msgid "eject"
 msgstr "εξαγωγή"
-
