@@ -19,7 +19,7 @@
 cdef object _callback_mappings
 _callback_mappings = dict()
 
-cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+cdef void _object_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     try:
         mapping = _callback_mappings.get(<long>obj,None)
         if mapping is not None:
