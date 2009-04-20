@@ -23,9 +23,9 @@ ABOUT-NLS \
 etk.pc.in \
 etk.spec.in \
 etk.spec \
-doc/img/nav/*.jpg \
-doc/img/nav/*.png \
-doc/img/widgets/*.png \
+$(wildcard doc/img/nav/*.jpg) \
+$(wildcard doc/img/nav/*.png) \
+$(wildcard doc/img/widgets/*.png) \
 doc/pages/object_hierarchy.h \
 doc/etk.css \
 doc/head.html \
