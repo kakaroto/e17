@@ -19,7 +19,7 @@
 cdef object _hoversel_callback_mapping
 _hoversel_callback_mapping = dict()
 
-cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     try:
         mapping = _hoversel_callback_mapping.get(<long>event_info)
         if mapping is not None:

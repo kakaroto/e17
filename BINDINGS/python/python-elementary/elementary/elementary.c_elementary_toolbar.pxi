@@ -19,7 +19,7 @@
 cdef object _toolbar_callback_mapping
 _toolbar_callback_mapping = dict()
 
-cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info):
+cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     try:
         mapping = _toolbar_callback_mapping.get(<long>event_info)
         if mapping is not None:
