@@ -1,13 +1,5 @@
-entrance (0.9.9.042-2) unstable; urgency=low
+entrance (0.9.9.042+svnYYYYMMDD-2) unstable; urgency=low
 
-  * a SVN release.
+  * Clean up changelog
 
- -- quaker <quaker66@gmail.com>  Sat, 27 Dec 2008 12:45:43 +0100
-
-
-entrance (0.9.9.042-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- E17 Debian Team <debian@edevelop.org>  Sun, 16 Apr 2006 12:58:12 +0900
-
+ -- quaker <quaker66@gmail.com>  Tue, 21 Apr 2009 19:25:09 +0100

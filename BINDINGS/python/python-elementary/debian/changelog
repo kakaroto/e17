@@ -1,4 +1,4 @@
-python-elementary (0.1.0-2) unstable; urgency=low
+python-elementary (0.1.0+svnYYYYMMDD-2) unstable; urgency=low
 
   * Updated debian stuff
 

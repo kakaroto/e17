@@ -1,13 +1,5 @@
-enhance (0.0.1-2) unstable; urgency=low
+enhance (0.0.1+svnYYYYMMDD-2) unstable; urgency=low
 
-  * a SVN release.
+  * Clean up changelog
 
- -- quaker <quaker66@gmail.com>  Sat, 27 Dec 2008 12:06:55 +0100
-
-
-enhance (0.0.1-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- Falko Schmidt <falko@alphagemini.org>  Sat, 3 May 2008 12:30:50 +0000
-
+ -- quaker <quaker66@gmail.com>  Tue, 21 Apr 2009 19:23:36 +0100

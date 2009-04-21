@@ -1,5 +1,5 @@
-ewl (0.5.2.042+clean-1) UNRELEASED; urgency=low
+ewl (0.5.2.042+svnYYYYMMDD-1) unstable; urgency=low
 
-  * Initial Release (Closes: #xxx)
+  * Clean up changelog
 
- -- Jan Lübbe <jluebbe@debian.org>  Sun, 13 Apr 2008 21:45:46 +0200
+ -- quaker <quaker66@gmail.com>  Tue, 21 Apr 2009 19:22:18 +0100

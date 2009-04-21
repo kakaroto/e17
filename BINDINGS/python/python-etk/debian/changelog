@@ -1,4 +1,4 @@
-python-etk (0.1.1-1) unstable; urgency=low
+python-etk (0.1.1+svnYYYYMMDD-1) unstable; urgency=low
 
   * Updated debian stuff
 

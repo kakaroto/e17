@@ -1,12 +1,5 @@
-exml (0.1.1-2) unstable; urgency=low
+exml (0.1.1+svnYYYYMMDD-2) unstable; urgency=low
 
-  * a SVN release.
+  * Clean up changelog
 
- -- quaker <quaker66@gmail.com>  Sat, 27 Dec 2008 14:30:48 +0100
-
-exml (0.1.1-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- Falko Schmidt <falko@alphagemini.org>  Thu, 01 Apr 2008 21:36:54 +0000
-
+ -- quaker <quaker66@gmail.com>  Tue, 21 Apr 2009 19:21:15 +0100

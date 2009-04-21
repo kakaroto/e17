@@ -1,12 +1,5 @@
-epsilon (0.3.0.012-2) unstable; urgency=low
+epsilon (0.3.0.012+svnYYYYMMDD-1) unstable; urgency=low
 
-  * a SVN release.
+  * Clean up changelog
 
- -- quaker <quaker66@gmail.com>  Sat, 27 Dec 2008 13:05:09 +0100
-
-epsilon (0.3.0.012-1) unstable; urgency=low
-
-  * a CVS snapshot release.
-
- -- Falko Schmidt <falko@alphagemini.org>  Thu, 01 May 2008 14:56:36 +0000
-
+ -- quaker <quaker66@gmail.com>  Tue, 21 Apr 2009 19:18:50 +0100
