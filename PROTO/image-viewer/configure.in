@@ -38,17 +38,30 @@ PKG_CHECK_MODULES([ELEMENTARY], [
                    elementary
 ])
 
-PKG_CHECK_MODULES(E, enlightenment, [
-    have_enlightenment="yes"
-    AC_DEFINE(HAVE_ENLIGHTENMENT, 1, [have enlightenment support])
-], [
-    have_enlightenment="no"
-])
+AC_ARG_ENABLE([experimental],
+   [AC_HELP_STRING([--enable-experimental], [enable experimental code @<:@default=no@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       _iv_enable_experimental="yes"
+    else
+       _iv_enable_experimental="no"
+    fi
+   ],
+   [_iv_enable_experimental="no"]
+)
 
-AM_CONDITIONAL(BUILD_E, test $have_enlightenment = yes)
+AC_MSG_CHECKING([whether experimental code is built])
+AC_MSG_RESULT([${_iv_enable_experimental}])
+
+have_experimental="no"
+
+if test "x${_iv_enable_experimental}" = "xyes" ; then
+    have_experimental="yes"
+    AC_DEFINE(HAVE_EXPERIMENTAL, 1, [have experimental code support])
+fi
 
 AC_ARG_ENABLE([ethumb],
-   [AC_HELP_STRING([--enable-ethumb], [enable ethumb @<:@default=yes@:>@])],
+   [AC_HELP_STRING([--enable-ethumb], [enable ethumb @<:@default=no@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        _iv_enable_ethumb="yes"
@@ -56,10 +69,10 @@ AC_ARG_ENABLE([ethumb],
        _iv_enable_ethumb="no"
     fi
    ],
-   [_iv_enable_ethumb="yes"]
+   [_iv_enable_ethumb="no"]
 )
 
-AC_MSG_CHECKING([whether ethumb are built])
+AC_MSG_CHECKING([whether ethumb is built])
 AC_MSG_RESULT([${_iv_enable_ethumb}])
 
 have_ethumb="no"
@@ -73,12 +86,14 @@ fi
 
 AM_CONDITIONAL(BUILD_ETHUMB, test $have_ethumb = yes)
 
-PKG_CHECK_MODULES(EXIF, libexif, [
-    have_libexif="yes"
-    AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
-], [
-    have_libexif="no"
-])
+have_libexif="no"
+
+if test "x${have_experimental}" = "xyes" ; then
+    PKG_CHECK_MODULES(EXIF, libexif, [
+        have_libexif="yes"
+        AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
+    ])
+fi
 
 AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = yes)
 
@@ -100,8 +115,9 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  Build with EThumb support.....: $have_ethumb"
-echo "  Build with EXIF support.......: $have_libexif"
+echo "  Build with experimental code support....: $have_experimental"
+echo "  Build with EThumb support...............: $have_ethumb"
+echo "  Build with EXIF support.................: $have_libexif"
 echo
 echo "------------------------------------------------------------------------"
 echo

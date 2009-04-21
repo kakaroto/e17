@@ -10,12 +10,6 @@
 
 #define CONFIG_VERSION 1
 
-/* Undef until icon_theme is exposed */
-#undef HAVE_ENLIGHTENMENT
-#ifdef HAVE_ENLIGHTENMENT
-  #include <e.h>
-#endif
-
 #ifdef HAVE_ETHUMB
   #include <Ethumb.h>
 #endif
@@ -139,6 +133,7 @@ rewind_list(Eina_List *list)
 static void
 image_configure(IV *iv)
 {
+#ifdef HAVE_EXPERIMENTAL
    if (iv->config->fit == ZOOM)
      {
 	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
@@ -160,6 +155,29 @@ image_configure(IV *iv)
 	else
 	  elm_image_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
      }
+#else
+   if (iv->config->fit == ZOOM)
+     {
+	elm_icon_no_scale_set(iv->gui.img, EINA_FALSE);
+	elm_icon_smooth_set(iv->gui.img, EINA_FALSE);
+	elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
+	elm_object_scale_set(iv->gui.img, iv->config->img_scale);
+	//evas_object_size_hint_min_set(iv->gui.img, -1, -1);
+     }
+   else
+     {
+	elm_icon_no_scale_set(iv->gui.img, EINA_TRUE);
+	elm_icon_smooth_set(iv->gui.img, EINA_TRUE);
+	elm_object_scale_set(iv->gui.img, 1.0);
+
+	if (iv->config->fit == PAN)
+	  elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
+	else if (iv->config->fit == FIT)
+	  elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_TRUE);
+	else
+	  elm_icon_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
+     }
+#endif
 }
 
 static void
@@ -443,8 +461,14 @@ read_image(IV *iv, IV_Image_Dest dest)
      {
 	Eina_Bool succ = EINA_FALSE;
 
+#ifdef HAVE_EXPERIMENTAL
 	img = elm_image_add(iv->gui.ly);
 	succ = elm_image_file_set(img, l->data, NULL);
+#else
+	img = elm_icon_add(iv->gui.ly);
+	succ = elm_icon_file_set(img, l->data, NULL);
+	elm_icon_prescale_set(img, 0);
+#endif
 	if (succ)
 	  {
 	     int orientation = 0;
@@ -465,6 +489,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 		  exif_data_free(exif);
 	       }
 #endif
+#ifdef HAVE_EXPERIMENTAL
 	     if (orientation > 1 && orientation < 9)
 	       {
 		  Elm_Image_Orient t1 = ELM_IMAGE_ORIENT_NONE;
@@ -496,6 +521,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 		  if (t1)
 		    elm_image_orient_set(img, t1);
 	       }
+#endif
 
 	     switch (dest)
 	       {
@@ -925,11 +951,8 @@ on_slideshow_tick(void *data)
 static void
 slideshow_on(IV *iv)
 {
-#ifdef HAVE_ENLIGHTENMENT
-#else
    edje_object_signal_emit(elm_layout_edje_get(iv->gui.controls),
 			   "iv,state,slideshow_off", "iv");
-#endif
    iv->slideshow_timer = ecore_timer_add(iv->config->slideshow_delay, on_slideshow_tick, iv);
    iv->flags.slideshow = EINA_TRUE;
 }
@@ -937,11 +960,8 @@ slideshow_on(IV *iv)
 static void
 slideshow_off(IV *iv)
 {
-#ifdef HAVE_ENLIGHTENMENT
-#else
    edje_object_signal_emit(elm_layout_edje_get(iv->gui.controls),
 			   "iv,state,slideshow_on", "iv");
-#endif
 
    if (iv->slideshow_timer)
      ecore_timer_del(iv->slideshow_timer);
@@ -1203,13 +1223,7 @@ create_main_win(IV *iv)
    iv->gui.controls = o;
 
    ic = elm_icon_add(iv->gui.controls);
-#ifdef HAVE_ENLIGHTENMENT
-   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
-					       "media-seek-backward", 32),
-		     NULL);
-#else
    elm_icon_file_set(ic, buf, "iv/controls/prev");
-#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.5, 0.5);
    evas_object_show(ic);
@@ -1223,13 +1237,7 @@ create_main_win(IV *iv)
    iv->gui.prev_bt = o;
 
    ic = elm_icon_add(iv->gui.controls);
-#ifdef HAVE_ENLIGHTENMENT
-   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
-					       "media-seek-forward", 32),
-		     NULL);
-#else
    elm_icon_file_set(ic, buf, "iv/controls/next");
-#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.5, 0.5);
    evas_object_show(ic);
@@ -1243,13 +1251,7 @@ create_main_win(IV *iv)
    iv->gui.next_bt = o;
 
    ic = elm_icon_add(iv->gui.controls);
-#ifdef HAVE_ENLIGHTENMENT
-   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
-					       "media-playback-start", 32),
-		     NULL);
-#else
    elm_icon_file_set(ic, buf, "iv/controls/slideshow");
-#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.5, 0.5);
    evas_object_show(ic);
@@ -1263,13 +1265,7 @@ create_main_win(IV *iv)
    iv->gui.slideshow_bt = o;
 
    ic = elm_icon_add(iv->gui.controls);
-#ifdef HAVE_ENLIGHTENMENT
-   elm_icon_file_set(ic, efreet_icon_path_find(e_config->icon_theme,
-					       "preferences-system", 32),
-		     NULL);
-#else
    elm_icon_file_set(ic, buf, "iv/controls/settings");
-#endif
    elm_icon_scale_set(ic, 0, 0);
    evas_object_size_hint_align_set(ic, 0.5, 0.5);
    evas_object_show(ic);

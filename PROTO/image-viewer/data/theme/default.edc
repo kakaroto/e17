@@ -45,7 +45,7 @@ collections {
 	       }
 	       rel2 {
 		  relative: 1 1;
-		  offset: 0 -40;
+		  offset: 0 40;
 	       }
 	    }
 	    description {

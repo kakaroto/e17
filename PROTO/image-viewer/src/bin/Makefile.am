@@ -8,10 +8,6 @@ INCLUDES = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @ELEMENTARY_CFLAGS@
 
-if BUILD_E
-INCLUDES += @E_CFLAGS@
-endif
-
 if BUILD_ETHUMB
 INCLUDES += @ETHUMB_CFLAGS@
 endif
@@ -24,10 +20,6 @@ bin_PROGRAMS = image-viewer
 
 image_viewer_SOURCES = main.c
 image_viewer_LDADD = @ELEMENTARY_LIBS@
-
-if BUILD_E
-image_viewer_LDADD += @E_LIBS@
-endif
 
 if BUILD_ETHUMB
 image_viewer_LDADD += @ETHUMB_LIBS@
