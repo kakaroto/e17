@@ -663,18 +663,19 @@ static void
 on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
 {
    IV *iv = data;
-   Eina_List *l, *l_next;
+   Eina_List *head, *l, *l_next;
    const char *p2, *cur_path;
    char *dir = NULL;
 
+   DBG("event: %d : %s\n", event, path);
    cur_path = iv->files->data;
    switch(event)
      {
       case ECORE_FILE_EVENT_CREATED_FILE:
-	 iv->files = rewind_list(iv->files);
+	 head = rewind_list(iv->files);
 	 dir = ecore_file_dir_get(path);
 
-	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
 	   {
 	      if (strncmp(dir, p2, strlen(dir)))
 		continue;
@@ -684,16 +685,13 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   iv->files = eina_list_prepend_relative_list(
 		       iv->files, eina_stringshare_add(path), l);
 		   iv->flags.current = EINA_TRUE;
+		   break;
 		}
 	      else if ((strcmp(path, p2) > 0) && (!l_next || (strcmp(path, l_next->data) < 0)))
 		{
 		   iv->files = eina_list_append_relative_list(
 		       iv->files, eina_stringshare_add(path), l);
 		   iv->flags.current = EINA_TRUE;
-		}
-	      if (iv->flags.current)
-		{
-		   iv->files = eina_list_data_find_list(iv->files, cur_path);
 		   break;
 		}
 	   }
@@ -701,18 +699,18 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	 free(dir);
 	 break;
       case ECORE_FILE_EVENT_DELETED_FILE:
-	 iv->files = rewind_list(iv->files);
-	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	 head = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
 	   {
 	      if (!strcmp(path, p2))
 		{
 		   iv->files = eina_list_remove_list(iv->files, l);
 		   if (p2 == cur_path)
 		     {
-			if (l_next->prev)
-			  iv->files = l_next->prev;
+			if (l->prev)
+			  iv->files = l->prev;
 			else
-			  iv->files = eina_list_last(l_next);
+			  iv->files = eina_list_last(l);
 		     }
 		   eina_stringshare_del(p2);
 		   iv->flags.current = EINA_TRUE;
@@ -721,8 +719,8 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	   }
 	 break;
       case ECORE_FILE_EVENT_DELETED_SELF:
-	 iv->files = rewind_list(iv->files);
-	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	 head = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
 	   {
 	      if (!strncmp(path, p2, strlen(path)))
 		{
