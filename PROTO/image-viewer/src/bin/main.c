@@ -46,6 +46,7 @@ typedef struct _IV_Thumb_Info IV_Thumb_Info;
 struct _IV
 {
    Eina_List *files, *dirs;
+   Eina_List *file_monitors;
    const char *single_file;
    const char *theme_file;
 
@@ -658,6 +659,92 @@ on_thumb_thread_create(void *data)
 #endif
 }
 
+static void
+on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
+{
+   IV *iv = data;
+   Eina_List *l, *l_next;
+   const char *p2, *cur_path;
+   char *dir = NULL;
+
+   cur_path = iv->files->data;
+   switch(event)
+     {
+      case ECORE_FILE_EVENT_CREATED_FILE:
+	 iv->files = rewind_list(iv->files);
+	 dir = ecore_file_dir_get(path);
+
+	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	   {
+	      if (strncmp(dir, p2, strlen(dir)))
+		continue;
+
+	      if (strcmp(path, p2) < 0)
+		{
+		   iv->files = eina_list_prepend_relative_list(
+		       iv->files, eina_stringshare_add(path), l);
+		   iv->flags.current = EINA_TRUE;
+		}
+	      else if ((strcmp(path, p2) > 0) && (!l_next || (strcmp(path, l_next->data) < 0)))
+		{
+		   iv->files = eina_list_append_relative_list(
+		       iv->files, eina_stringshare_add(path), l);
+		   iv->flags.current = EINA_TRUE;
+		}
+	      if (iv->flags.current)
+		{
+		   iv->files = eina_list_data_find_list(iv->files, cur_path);
+		   break;
+		}
+	   }
+
+	 free(dir);
+	 break;
+      case ECORE_FILE_EVENT_DELETED_FILE:
+	 iv->files = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	   {
+	      if (!strcmp(path, p2))
+		{
+		   iv->files = eina_list_remove_list(iv->files, l);
+		   if (p2 == cur_path)
+		     {
+			if (l_next->prev)
+			  iv->files = l_next->prev;
+			else
+			  iv->files = eina_list_last(l_next);
+		     }
+		   eina_stringshare_del(p2);
+		   iv->flags.current = EINA_TRUE;
+		   break;
+		}
+	   }
+	 break;
+      case ECORE_FILE_EVENT_DELETED_SELF:
+	 iv->files = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(iv->files, l, l_next, p2)
+	   {
+	      if (!strncmp(path, p2, strlen(path)))
+		{
+		   if (p2 == cur_path)
+		     cur_path = NULL;
+		   eina_stringshare_del(p2);
+		   iv->files = eina_list_remove_list(iv->files, l);
+		   iv->flags.current = EINA_TRUE;
+		}
+	   }
+	 if (iv->flags.current)
+	   {
+	      if (cur_path)
+		iv->files = eina_list_data_find_list(iv->files, cur_path);
+	   }
+	 break;
+     }
+
+   if (!iv->idler && iv->flags.current)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
 static int
 on_idler(void *data)
 {
@@ -670,15 +757,22 @@ on_idler(void *data)
    if (iv->dirs)
      {
 	Eina_List *files;
-	char *dir, *file, buf[4096];
+	char *dir, *file, buf[4096], buf2[4096];
 
 	dir = iv->dirs->data;
 
 	iv->dirs = eina_list_remove_list(iv->dirs, iv->dirs);
 	files = ecore_file_ls(dir);
+	if (ecore_str_has_suffix(dir, "/"))
+	  snprintf(buf2, sizeof(buf2), "%s", dir);
+	else
+	  snprintf(buf2, sizeof(buf2), "%s/", dir);
+
+	eina_stringshare_del(dir);
+
 	EINA_LIST_FREE(files, file)
 	  {
-	     snprintf(buf, sizeof(buf), "%s/%s", dir, file);
+	     snprintf(buf, sizeof(buf), "%s%s", buf2, file);
 	     free(file);
 	     /* XXX: recursive scanning with an option */
 	     if (!ecore_file_is_dir(buf))
@@ -686,7 +780,9 @@ on_idler(void *data)
 					    eina_stringshare_add(buf));
 	  }
 
-	eina_stringshare_del(dir);
+	iv->file_monitors = eina_list_append(
+	    iv->file_monitors,
+	    ecore_file_monitor_add(buf2, on_file_monitor_event, iv));
 
 	if (iv->single_file)
 	  {
@@ -886,6 +982,7 @@ on_idler(void *data)
 
 	elm_scroller_content_set(iv->gui.scroller, NULL);
 	read_image(iv, IMAGE_CURRENT);
+	renew = EINA_TRUE;
      }
 
    if (iv->flags.hide_controls)
@@ -1302,6 +1399,7 @@ create_main_win(IV *iv)
 static void
 iv_free(IV *iv)
 {
+   Ecore_File_Monitor *monitor;
    const char *file;
 
    iv->files = rewind_list(iv->files);
@@ -1309,6 +1407,8 @@ iv_free(IV *iv)
       eina_stringshare_del(file);
    EINA_LIST_FREE(iv->dirs, file)
       eina_stringshare_del(file);
+   EINA_LIST_FREE(iv->file_monitors, monitor)
+      ecore_file_monitor_del(monitor);
 
    eina_stringshare_del(iv->theme_file);
 
@@ -1316,6 +1416,11 @@ iv_free(IV *iv)
      eet_data_descriptor_free(iv->config_edd);
 
    config_free(iv);
+
+#ifdef HAVE_ETHUMB
+   ethumb_free(iv->ethumb);
+   eina_hash_free(iv->preview_items);
+#endif
 
    free(iv);
 }
@@ -1435,12 +1540,11 @@ elm_main(int argc, char **argv)
 
    elm_run();
 
+   iv_free(iv);
+
 #ifdef HAVE_ETHUMB
-   ethumb_free(iv->ethumb);
-   eina_hash_free(iv->preview_items);
    ethumb_shutdown();
 #endif
-   iv_free(iv);
 
    elm_shutdown();
    return 0; 
