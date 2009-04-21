@@ -23,11 +23,12 @@ VMIN=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $2);}'`
 VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
-econnman_release_info="-release ver-pre-svn-00"
-edbus_release_info="-release ver-pre-svn-00"
-ehal_release_info="-release ver-pre-svn-00"
-enm_release_info="-release ver-pre-svn-00"
-enotify_release_info="-release ver-pre-svn-00"
+release="ver-pre-svn-00"
+econnman_release_info="-release $release"
+edbus_release_info="-release $release"
+ehal_release_info="-release $release"
+enm_release_info="-release $release"
+enotify_release_info="-release $release"
 AC_SUBST(version_info)
 AC_SUBST(econnman_release_info)
 AC_SUBST(edbus_release_info)

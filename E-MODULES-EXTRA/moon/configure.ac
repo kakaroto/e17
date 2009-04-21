@@ -27,7 +27,9 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_CHECK_FUNCS([sqrt strdup])
 
-MODULE_ARCH="$host_os-$host_cpu"
+PKG_CHECK_MODULES(E, [enlightenment])
+release=$(pkg-config --variable=release enlightenment)
+MODULE_ARCH="$host_os-$host_cpu-$release"
 AC_SUBST(MODULE_ARCH)
 
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
@@ -51,8 +53,6 @@ AC_ARG_WITH(edje-cc,
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
-
-PKG_CHECK_MODULES(E, [enlightenment])
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,

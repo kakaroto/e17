@@ -21,7 +21,9 @@ define([AC_LIBTOOL_LANG_F77_CONFIG], [:])
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
-MODULE_ARCH="$host_os-$host_cpu"
+PKG_CHECK_MODULES(E, [enlightenment])
+release=$(pkg-config --variable=release enlightenment)
+MODULE_ARCH="$host_os-$host_cpu-$release"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
@@ -39,8 +41,6 @@ AC_ARG_WITH(edje-cc,
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
-
-PKG_CHECK_MODULES(E, [enlightenment])
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 
