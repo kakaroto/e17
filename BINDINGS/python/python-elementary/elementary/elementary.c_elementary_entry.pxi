@@ -16,6 +16,21 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+def Entry_markup_to_utf8(str):
+    cdef char* string
+    string = elm_entry_markup_to_utf8(str)
+    if string == NULL:
+        return None
+    return string
+
+def Entry_utf8_to_markup(str):
+    cdef char* string
+    string = elm_entry_utf8_to_markup(str)
+    if string == NULL:
+        return None
+    return string
+
+
 cdef class Entry(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_entry_add(parent.obj))
@@ -93,15 +108,8 @@ cdef class Entry(Object):
 
     def select_all(self):
         elm_entry_select_all(self.obj)
-    
-    def markup_to_utf8(str):
-        cdef char* string
-        string = elm_entry_markup_to_utf8(str)
-        return string
 
-    def utf8_to_markup(str):
-        cdef char* string
-        string = elm_entry_utf8_to_markup(str)
-        return string
-    
- 
+    markup_to_utf8 = staticmethod(Entry_markup_to_utf8)
+
+    utf8_to_markup = staticmethod(Entry_utf8_to_markup)
+
