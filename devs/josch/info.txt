@@ -1,0 +1,7 @@
+Login:        josch
+IRC Nick:     josch
+Name:         Johannes Schauer
+Location:     Karlsruhe, Germany
+E-Mail:       j.schauer@email.de
+Contributing: debian armel packaging
+Platform:     Debian (Linux)
