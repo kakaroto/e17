@@ -7,7 +7,7 @@ Standards-Version: 3.8.1
 
 Package: etk-server
 Architecture: any
-Depends: ${shlibs:Depends}, libetk1, libevas-svn-00, libecore-svn-00
+Depends: ${shlibs:Depends}, libetk1, libevas-svn-01, libecore-svn-01
 Description: program Etk using any language
  Etk_Server allows Etk applications to be programmed
  using almost any language. The user interacts with

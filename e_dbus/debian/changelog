@@ -1,3 +1,9 @@
+edbus (0.5.0.060+svnYYYYMMDD-1) unstable; urgency=low
+
+  * New version
+
+ -- quaker <quaker66@gmail.com>  Thu, 22 Apr 2009 18:13:37 +0100
+
 edbus (0.5.0.050+svnYYYYMMDD-1) unstable; urgency=low
 
   * Clean up changelog
