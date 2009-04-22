@@ -5,7 +5,28 @@ ningerso@gmail.com
 I'm pleased to announce the release of EWL version 0.5.3. This release has some
 extensive changes, including the following highlights:
 </p>
+<p>Thank you to the following contributors for making this release possible:</p>
+<p>
+<ul>
+	<li>Peter Wehrfritz</li>
+        <li>Jaime Thomas</li>
+        <li>Teodor Petrov</li>
+        <li>Dan Sinclair</li>
+        <li>Vincent Torri</li>
+        <li>Nick Hughart</li>
+        <li>Stephen Houston</li>
+</ul>
+</p>
+<p>
+This release can be checked out with:
+</p>
+<p>
+svn checkout http://svn.enlightenment.org/svn/e/tags/ewl/ewl-0.5.3/
+</p>
 
+<!-- cut -->
+
+<p>
 <ul>
 	<li>Fixed compile warnings on 64-bit systems</li>
 	<li>Improved entry selection and cursor handling</li>
@@ -54,25 +75,4 @@ extensive changes, including the following highlights:
 	<li>Fixed widget reparenting</li>
 
 </ul>
-
-<p>Thank you to the following contributors for making this release possible:</p>
-
-<ul>
-	<li>Peter Wehrfritz</li>
-        <li>Jaime Thomas</li>
-        <li>Teodor Petrov</li>
-        <li>Dan Sinclair</li>
-        <li>Vincent Torri</li>
-        <li>Nick Hughart</li>
-        <li>Stephen Houston</li>
-</ul>
-
-<p>
-This release can be checked out from:
-        http://svn.enlightenment.org/svn/e/tags/ewl/ewl-0.5.3/
-</p>
-
-<!-- cut -->
-
-<p>
 </p>
