@@ -26,6 +26,7 @@ AC_PROG_LIBTOOL
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
+PKG_CHECK_MODULES(EPSILON, [epsilon])
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
