@@ -36,6 +36,9 @@
 #if HAVE_EVAS_XRENDER_X11
 #include "engine_xrender_xcb.h"
 #endif
+#if HAVE_EVAS_SOFTWARE_GDI
+#include "engine_software_gdi.h"
+#endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
 #include "engine_software_ddraw.h"
 #endif

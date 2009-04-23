@@ -41,6 +41,10 @@ EXPEDITE_CHECK_ENGINE([software-xcb], [Software XCB], "yes")
 # XRender XCB
 EXPEDITE_CHECK_ENGINE([xrender-xcb], [XRender XCB], "yes")
 
+# GDI
+EXPEDITE_CHECK_ENGINE([software-gdi], [Software GDI], "yes", [gdi_libs="-lgdi32"])
+AC_SUBST(gdi_libs)
+
 # DirectDraw
 EXPEDITE_CHECK_ENGINE([software-ddraw], [Software DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid -lgdi32"])
 AC_SUBST(ddraw_libs)
@@ -209,6 +213,7 @@ echo "    X Render X11.................: ${have_xrender_x11}"
 echo "    Open GL X11..................: ${have_opengl_x11}"
 echo "    Software XCB.................: ${have_software_xcb}"
 echo "    X Render XCB.................: ${have_xrender_xcb}"
+echo "    Software GDI.................: ${have_software_gdi}"
 echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
 echo "    Open GL Glew.................: ${have_opengl_glew}"

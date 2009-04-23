@@ -1219,6 +1219,10 @@ _engine_args(int argc, char **argv)
    if (engine_xrender_xcb_args(argc, argv))
      loop_func = engine_xrender_xcb_loop;
 #endif
+#if HAVE_EVAS_SOFTWARE_GDI
+   if (engine_software_gdi_args(argc, argv))
+     loop_func = engine_software_gdi_loop;
+#endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
    if (engine_software_ddraw_args(argc, argv))
      loop_func = engine_software_ddraw_loop;
@@ -1288,6 +1292,9 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_XRENDER_XCB
 	       	" xrxcb"
+#endif
+#if HAVE_EVAS_SOFTWARE_GDI
+	       	" gdi"
 #endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
 	       	" ddraw"
