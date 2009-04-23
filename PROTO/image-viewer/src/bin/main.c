@@ -134,7 +134,6 @@ rewind_list(Eina_List *list)
 static void
 image_configure(IV *iv)
 {
-#ifdef HAVE_EXPERIMENTAL
    if (iv->config->fit == ZOOM)
      {
 	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
@@ -156,29 +155,6 @@ image_configure(IV *iv)
 	else
 	  elm_image_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
      }
-#else
-   if (iv->config->fit == ZOOM)
-     {
-	elm_icon_no_scale_set(iv->gui.img, EINA_FALSE);
-	elm_icon_smooth_set(iv->gui.img, EINA_FALSE);
-	elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
-	elm_object_scale_set(iv->gui.img, iv->config->img_scale);
-	//evas_object_size_hint_min_set(iv->gui.img, -1, -1);
-     }
-   else
-     {
-	elm_icon_no_scale_set(iv->gui.img, EINA_TRUE);
-	elm_icon_smooth_set(iv->gui.img, EINA_TRUE);
-	elm_object_scale_set(iv->gui.img, 1.0);
-
-	if (iv->config->fit == PAN)
-	  elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
-	else if (iv->config->fit == FIT)
-	  elm_icon_scale_set(iv->gui.img, EINA_FALSE, EINA_TRUE);
-	else
-	  elm_icon_scale_set(iv->gui.img, EINA_TRUE, EINA_TRUE);
-     }
-#endif
 }
 
 static void
@@ -187,10 +163,10 @@ set_image_bg_style(IV *iv)
    switch(iv->config->image_bg)
      {
       case IMAGE_BG_BLACK:
-	 elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/black");
+	 elm_object_style_set(iv->gui.bg, "black");
 	 break;
       case IMAGE_BG_CHECKERS:
-	 elm_bg_file_set(iv->gui.bg, iv->theme_file, "iv/main/bg/checkers");
+	 elm_object_style_set(iv->gui.bg, "checkers");
 	 break;
      }
 }
@@ -426,6 +402,17 @@ unfullscreen(IV *iv)
 }
 
 static void
+set_image_text(IV *iv, const char *text)
+{
+   char buf[1024];
+
+   edje_object_part_text_set(iv->gui.file_label, "iv.text.label", text);
+
+   snprintf(buf, sizeof(buf), "Image Viewer - %s", text);
+   elm_win_title_set(iv->gui.win, buf);
+}
+
+static void
 read_image(IV *iv, IV_Image_Dest dest)
 {
    Evas_Object *img;
@@ -462,14 +449,8 @@ read_image(IV *iv, IV_Image_Dest dest)
      {
 	Eina_Bool succ = EINA_FALSE;
 
-#ifdef HAVE_EXPERIMENTAL
 	img = elm_image_add(iv->gui.ly);
 	succ = elm_image_file_set(img, l->data, NULL);
-#else
-	img = elm_icon_add(iv->gui.ly);
-	succ = elm_icon_file_set(img, l->data, NULL);
-	elm_icon_prescale_set(img, 0);
-#endif
 	if (succ)
 	  {
 	     int orientation = 0;
@@ -490,7 +471,6 @@ read_image(IV *iv, IV_Image_Dest dest)
 		  exif_data_free(exif);
 	       }
 #endif
-#ifdef HAVE_EXPERIMENTAL
 	     if (orientation > 1 && orientation < 9)
 	       {
 		  Elm_Image_Orient t1 = ELM_IMAGE_ORIENT_NONE;
@@ -522,16 +502,13 @@ read_image(IV *iv, IV_Image_Dest dest)
 		  if (t1)
 		    elm_image_orient_set(img, t1);
 	       }
-#endif
 
 	     switch (dest)
 	       {
 		case IMAGE_CURRENT:
 		   iv->gui.img = img;
 		   image_configure(iv);
-		   edje_object_part_text_set(iv->gui.file_label,
-					     "iv.text.label",
-					     (char *) ecore_file_file_get(iv->files->data));
+		   set_image_text(iv, ecore_file_file_get(iv->files->data));
 		   elm_scroller_content_set(iv->gui.scroller, img);
 		   evas_object_show(img);
 		   break;
@@ -900,9 +877,7 @@ on_idler(void *data)
 
 	     iv->gui.img = iv->gui.next_img;
 	     image_configure(iv);
-	     edje_object_part_text_set(iv->gui.file_label,
-				       "iv.text.label",
-				       (char *) ecore_file_file_get(iv->files->data));
+	     set_image_text(iv, ecore_file_file_get(iv->files->data));
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
@@ -939,9 +914,7 @@ on_idler(void *data)
 
 	     iv->gui.img = iv->gui.prev_img;
 	     image_configure(iv);
-	     edje_object_part_text_set(iv->gui.file_label,
-				       "iv.text.label",
-				       (char *) ecore_file_file_get(iv->files->data));
+	     set_image_text(iv, ecore_file_file_get(iv->files->data));
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
@@ -1084,7 +1057,7 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	Evas_Object *o, *bx, *bx2, *ic;
 
 	iv->gui.settings_win = o = elm_win_inwin_add(iv->gui.win);
-	elm_win_inwin_style_set(o, "shadow");
+	elm_object_style_set(o, "shadow");
 	o = elm_bg_add(iv->gui.settings_win);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
 

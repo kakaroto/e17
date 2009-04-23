@@ -205,63 +205,6 @@ collections {
       }
    }
 
-   group { name: "iv/main/bg/checkers";
-      images {
-	 image: "bg.png" COMP;
-	 image: "shadow.png" COMP;
-      }
-      parts {
-	 part {
-	    name: "checkered_bg";
-	    mouse_events: 0;
-	    repeat_events: 1;
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "bg.png";
-	       }
-	       fill {
-		  size {
-		     relative: 0 0;
-		     offset: 128 128;
-		  }
-	       }
-	    }
-	 }
-	 part {
-	    name: "shadow";
-	    mouse_events: 0;
-	    repeat_events: 1;
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "shadow.png";
-	       }
-	    }
-	 }
-	 part {
-	    name: "swallow";
-	    type: SWALLOW;
-	    description {
-	       state: "default" 0.0;
-	    }
-	 }
-      }
-   }
-   group { name: "iv/main/bg/black";
-      parts {
-	 part {
-	    name: "checkered_bg";
-	    type: RECT;
-	    mouse_events: 0;
-	    repeat_events: 1;
-	    description {
-	       state: "default" 0.0;
-	       color: 0 0 0 255;
-	    }
-	 }
-      }
-   }
 
    group { name: "iv/controls";
       parts {
@@ -617,6 +560,63 @@ collections {
 	    action: STATE_SET "default" 0.0;
 //	    transition: DECELERATE 0.5;
 	    target: "base";
+	 }
+      }
+   }
+   group { name: "elm/bg/base/checkers";
+      images {
+	 image: "bg.png" COMP;
+	 image: "shadow.png" COMP;
+      }
+      parts {
+	 part {
+	    name: "checkered_bg";
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "bg.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 128 128;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name: "shadow";
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "shadow.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "swallow";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	    }
+	 }
+      }
+   }
+   group { name: "elm/bg/base/black";
+      parts {
+	 part {
+	    name: "checkered_bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    repeat_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	    }
 	 }
       }
    }
