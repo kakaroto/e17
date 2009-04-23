@@ -19,11 +19,11 @@
 #define CFG_KEYBIND(_context, _key, _modifiers, _anymod, _action, _params) \
    eb = E_NEW(E_Config_Binding_Key, 1); \
    eb->context = _context; \
-   eb->key = evas_stringshare_add(_key); \
+   eb->key = eina_stringshare_add(_key); \
    eb->modifiers = _modifiers; \
    eb->any_mod = _anymod; \
-   eb->action = _action == NULL ? NULL : evas_stringshare_add(_action); \
-   eb->params = _params == NULL ? NULL : evas_stringshare_add(_params)
+   eb->action = _action == NULL ? NULL : eina_stringshare_add(_action); \
+   eb->params = _params == NULL ? NULL : eina_stringshare_add(_params)
 
 
 /********* Private Declarations ***************/
@@ -120,22 +120,22 @@ _lang_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
 	       {
 		  if (save)
 		    { 
-		       if (key->key) evas_stringshare_del(key->key);
-		       if (key->params) evas_stringshare_del(key->params);
+		       if (key->key) eina_stringshare_del(key->key);
+		       if (key->params) eina_stringshare_del(key->params);
 
 		       key->context    = eb->context;
-		       key->key	       = evas_stringshare_add(eb->key);
+		       key->key	       = eina_stringshare_add(eb->key);
 		       key->modifiers  = eb->modifiers;
 		       key->any_mod    = eb->any_mod;
-		       key->params     = !eb->params ? NULL : evas_stringshare_add(eb->params);
+		       key->params     = !eb->params ? NULL : eina_stringshare_add(eb->params);
 		    }
 
 		  e_bindings_key_del(eb->context, eb->key, eb->modifiers, 
 				     eb->any_mod, eb->action, eb->params);
 
-		  if (eb->key) evas_stringshare_del(eb->key);
-		  if (eb->action) evas_stringshare_del(eb->action);
-		  if (eb->params) evas_stringshare_del(eb->params);
+		  if (eb->key) eina_stringshare_del(eb->key);
+		  if (eb->action) eina_stringshare_del(eb->action);
+		  if (eb->params) eina_stringshare_del(eb->params);
 		  E_FREE(eb);
 
 		  e_config->key_bindings = eina_list_remove_list(e_config->key_bindings, l);
@@ -149,8 +149,8 @@ _lang_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
    if (!found)
      {
 	//here we actually have to reset the key
-	if (key->key) evas_stringshare_del(key->key);
-	if (key->params) evas_stringshare_del(key->params);
+	if (key->key) eina_stringshare_del(key->key);
+	if (key->params) eina_stringshare_del(key->params);
 	key->key = NULL;
 	key->context = E_BINDING_CONTEXT_ANY;
 	key->modifiers = E_BINDING_MODIFIER_NONE;
@@ -188,9 +188,9 @@ _lang_register_module_keybinding(E_Config_Binding_Key *key, const char *action)
      }
    else
      {
-	if (eb->key) evas_stringshare_del(eb->key);
-	if (eb->action) evas_stringshare_del(eb->action);
-	if (eb->params) evas_stringshare_del(eb->params);
+	if (eb->key) eina_stringshare_del(eb->key);
+	if (eb->action) eina_stringshare_del(eb->action);
+	if (eb->params) eina_stringshare_del(eb->params);
 	E_FREE(eb);
      }
 }

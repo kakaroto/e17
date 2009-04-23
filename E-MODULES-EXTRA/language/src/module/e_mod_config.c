@@ -611,8 +611,8 @@ _conf_cb_kbd_model_select(void *data)
    l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
-   evas_stringshare_del(l->rdefs.model);
-   l->rdefs.model = (char *)evas_stringshare_ref(cfdata->kb_model);
+   eina_stringshare_del(l->rdefs.model);
+   l->rdefs.model = (char *)eina_stringshare_ref(cfdata->kb_model);
 }
 static void
 _conf_cb_kbd_variant_select(void *data)
@@ -625,8 +625,8 @@ _conf_cb_kbd_variant_select(void *data)
    l = eina_list_nth(cfdata->s_langs, e_widget_ilist_selected_get(cfdata->gui.o_slang));
    if (!l) return;
 
-   evas_stringshare_del(l->rdefs.variant);
-   l->rdefs.variant = (char *)evas_stringshare_ref(cfdata->kb_variant);
+   eina_stringshare_del(l->rdefs.variant);
+   l->rdefs.variant = (char *)eina_stringshare_ref(cfdata->kb_variant);
 }
 /****************** button callbacks *********************************/
 static void 
@@ -652,12 +652,12 @@ _conf_cb_language_add(void *data, void *data2)
    if (!lang) return;
 
    lang->id		= eina_list_count(cfdata->s_langs);
-   lang->lang_name	= evas_stringshare_add(lp->lang_name);
-   lang->lang_shortcut	= evas_stringshare_add(lp->lang_shortcut);
-   lang->lang_flag	= !(lp->lang_flag) ? NULL : evas_stringshare_add(lp->lang_flag);
+   lang->lang_name	= eina_stringshare_add(lp->lang_name);
+   lang->lang_shortcut	= eina_stringshare_add(lp->lang_shortcut);
+   lang->lang_flag	= !(lp->lang_flag) ? NULL : eina_stringshare_add(lp->lang_flag);
    lang->rdefs.model	= (char *) lang_language_current_kbd_model_get();
-   lang->rdefs.layout	= (char *) evas_stringshare_add(lp->kbd_layout);
-   lang->rdefs.variant	= (char *) evas_stringshare_add("basic");
+   lang->rdefs.layout	= (char *) eina_stringshare_add(lp->kbd_layout);
+   lang->rdefs.variant	= (char *) eina_stringshare_add("basic");
 
    cfdata->s_langs = eina_list_append(cfdata->s_langs, lang);
 

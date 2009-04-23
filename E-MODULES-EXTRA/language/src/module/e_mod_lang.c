@@ -90,7 +90,7 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 		    { 
 		       if (!n)
 			 {
-			    if (bls->language_name) evas_stringshare_del(bls->language_name);
+			    if (bls->language_name) eina_stringshare_del(bls->language_name);
 			    E_FREE(bls);
 			    cfg->l.border_lang_setup = eina_list_remove_list(
 								     cfg->l.border_lang_setup, l);
@@ -103,8 +103,8 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 	     if (bls)
 	       {
 	          bls->language_selector = n;
-	          if (bls->language_name) evas_stringshare_del(bls->language_name);
-	          bls->language_name = evas_stringshare_add(lang->lang_name);
+	          if (bls->language_name) eina_stringshare_del(bls->language_name);
+	          bls->language_name = eina_stringshare_add(lang->lang_name);
 		  cfg->l.current = bd;
 	       }
 	     else
@@ -115,7 +115,7 @@ lang_language_switch_to(Config *cfg, unsigned int n)
 		       bls = E_NEW(Border_Language_Settings, 1); 
 		       bls->bd = bd; 
 		       bls->language_selector = n; 
-		       bls->language_name = evas_stringshare_add(lang->lang_name); 
+		       bls->language_name = eina_stringshare_add(lang->lang_name); 
 		       
 		       cfg->l.border_lang_setup = eina_list_append(cfg->l.border_lang_setup, bls);
 	            }
@@ -178,13 +178,13 @@ lang_get_default_language(Config *cfg)
 	       break;
 
 	     lang->id		 = 0; 
-	     lang->lang_name	 = evas_stringshare_add(lp->lang_name); 
-	     lang->lang_shortcut = evas_stringshare_add(lp->lang_shortcut); 
-	     lang->lang_flag	 = evas_stringshare_add(lp->lang_flag); 
+	     lang->lang_name	 = eina_stringshare_add(lp->lang_name); 
+	     lang->lang_shortcut = eina_stringshare_add(lp->lang_shortcut); 
+	     lang->lang_flag	 = eina_stringshare_add(lp->lang_flag); 
 
 	     lang->rdefs.model	 = (char *) lang_language_current_kbd_model_get();
-	     lang->rdefs.layout	 = (char *) evas_stringshare_add(lp->kbd_layout); 
-	     lang->rdefs.variant = (char *) evas_stringshare_add("basic"); 
+	     lang->rdefs.layout	 = (char *) eina_stringshare_add(lp->kbd_layout); 
+	     lang->rdefs.variant = (char *) eina_stringshare_add("basic"); 
 	     lang_language_xorg_values_get(lang);
 	     break; 
 	  }
@@ -351,14 +351,14 @@ lang_load_xfree_kbd_models(Config *cfg)
 		       char *tag = exml_tag_get(exml); 
 		       
 		       if (!strcasecmp(tag, "name")) 
-			 lkm->kbd_model = evas_stringshare_add(exml_value_get(exml)); 
+			 lkm->kbd_model = eina_stringshare_add(exml_value_get(exml)); 
 		       
 		       if (!strcasecmp(tag, "description")) 
 			 { 
 			    char *attr = exml_attribute_get(exml, "xml:lang"); 
 			    if (!attr) 
 			      lkm->kbd_model_description = 
-						      evas_stringshare_add(exml_value_get(exml)); 
+						      eina_stringshare_add(exml_value_get(exml)); 
 			 } 
 		       
 		       if (lkm->kbd_model && lkm->kbd_model_description) 
@@ -373,9 +373,9 @@ lang_load_xfree_kbd_models(Config *cfg)
 								    lkm); 
 		  else 
 		    { 
-		       if (lkm->kbd_model) evas_stringshare_del(lkm->kbd_model); 
+		       if (lkm->kbd_model) eina_stringshare_del(lkm->kbd_model); 
 		       if (lkm->kbd_model_description) 
-			 evas_stringshare_del(lkm->kbd_model_description); 
+			 eina_stringshare_del(lkm->kbd_model_description); 
 		       E_FREE(lkm); 
 		    } 
 	       }
@@ -397,8 +397,8 @@ lang_free_xfree_kbd_models(Config *cfg)
      {
 	lkm = cfg->language_kbd_model_list->data;
 
-	if (lkm->kbd_model) evas_stringshare_del(lkm->kbd_model);
-	if (lkm->kbd_model_description) evas_stringshare_del(lkm->kbd_model_description);
+	if (lkm->kbd_model) eina_stringshare_del(lkm->kbd_model);
+	if (lkm->kbd_model_description) eina_stringshare_del(lkm->kbd_model_description);
 	E_FREE(lkm);
 	cfg->language_kbd_model_list = eina_list_remove_list(cfg->language_kbd_model_list,
 							     cfg->language_kbd_model_list);
@@ -417,26 +417,26 @@ lang_language_copy(const Language *l)
    if (!lang) return NULL;
 
    lang->id	       = l->id;
-   lang->lang_name     = l->lang_name ? evas_stringshare_add(l->lang_name) : NULL;
-   lang->lang_shortcut = l->lang_shortcut ? evas_stringshare_add(l->lang_shortcut) : NULL;
-   lang->lang_flag     = l->lang_flag ? evas_stringshare_add(l->lang_flag) : NULL;
+   lang->lang_name     = l->lang_name ? eina_stringshare_add(l->lang_name) : NULL;
+   lang->lang_shortcut = l->lang_shortcut ? eina_stringshare_add(l->lang_shortcut) : NULL;
+   lang->lang_flag     = l->lang_flag ? eina_stringshare_add(l->lang_flag) : NULL;
 
-   lang->rdefs.model   = !l->rdefs.model ? NULL : (char *) evas_stringshare_add(l->rdefs.model);
-   lang->rdefs.layout  = !l->rdefs.layout ? NULL : (char *) evas_stringshare_add(l->rdefs.layout);
-   lang->rdefs.variant = !l->rdefs.variant ? NULL : (char *) evas_stringshare_add(l->rdefs.variant);
+   lang->rdefs.model   = !l->rdefs.model ? NULL : (char *) eina_stringshare_add(l->rdefs.model);
+   lang->rdefs.layout  = !l->rdefs.layout ? NULL : (char *) eina_stringshare_add(l->rdefs.layout);
+   lang->rdefs.variant = !l->rdefs.variant ? NULL : (char *) eina_stringshare_add(l->rdefs.variant);
 
    lang->cNames.keycodes = !l->cNames.keycodes ? NULL :
-						(char *) evas_stringshare_add(l->cNames.keycodes);
+						(char *) eina_stringshare_add(l->cNames.keycodes);
    lang->cNames.symbols	 = !l->cNames.symbols ? NULL :
-						(char *) evas_stringshare_add(l->cNames.symbols);
+						(char *) eina_stringshare_add(l->cNames.symbols);
    lang->cNames.types	 = !l->cNames.types ? NULL :
-						(char *) evas_stringshare_add(l->cNames.types);
+						(char *) eina_stringshare_add(l->cNames.types);
    lang->cNames.compat	 = !l->cNames.compat ? NULL :
-						(char *) evas_stringshare_add(l->cNames.compat);
+						(char *) eina_stringshare_add(l->cNames.compat);
    lang->cNames.geometry = !l->cNames.geometry ? NULL :
-						(char *) evas_stringshare_add(l->cNames.geometry);
+						(char *) eina_stringshare_add(l->cNames.geometry);
    lang->cNames.keymap = !l->cNames.keymap ? NULL :
-						(char *) evas_stringshare_add(l->cNames.keymap);
+						(char *) eina_stringshare_add(l->cNames.keymap);
 
    return lang;
 }
@@ -446,20 +446,20 @@ lang_language_free(Language *l)
 {
    if (!l) return;
 
-   if (l->lang_name) evas_stringshare_del(l->lang_name);
-   if (l->lang_shortcut) evas_stringshare_del(l->lang_shortcut);
-   if (l->lang_flag) evas_stringshare_del(l->lang_flag);
+   if (l->lang_name) eina_stringshare_del(l->lang_name);
+   if (l->lang_shortcut) eina_stringshare_del(l->lang_shortcut);
+   if (l->lang_flag) eina_stringshare_del(l->lang_flag);
 
-   if (l->rdefs.model) evas_stringshare_del(l->rdefs.model);
-   if (l->rdefs.layout) evas_stringshare_del(l->rdefs.layout);
-   if (l->rdefs.variant) evas_stringshare_del(l->rdefs.variant);
+   if (l->rdefs.model) eina_stringshare_del(l->rdefs.model);
+   if (l->rdefs.layout) eina_stringshare_del(l->rdefs.layout);
+   if (l->rdefs.variant) eina_stringshare_del(l->rdefs.variant);
 
-   if (l->cNames.keycodes) evas_stringshare_del(l->cNames.keycodes);
-   if (l->cNames.symbols) evas_stringshare_del(l->cNames.symbols);
-   if (l->cNames.types) evas_stringshare_del(l->cNames.types);
-   if (l->cNames.compat) evas_stringshare_del(l->cNames.compat);
-   if (l->cNames.geometry) evas_stringshare_del(l->cNames.geometry);
-   if (l->cNames.keymap) evas_stringshare_del(l->cNames.keymap);
+   if (l->cNames.keycodes) eina_stringshare_del(l->cNames.keycodes);
+   if (l->cNames.symbols) eina_stringshare_del(l->cNames.symbols);
+   if (l->cNames.types) eina_stringshare_del(l->cNames.types);
+   if (l->cNames.compat) eina_stringshare_del(l->cNames.compat);
+   if (l->cNames.geometry) eina_stringshare_del(l->cNames.geometry);
+   if (l->cNames.keymap) eina_stringshare_del(l->cNames.keymap);
 
    E_FREE(l);
 }
@@ -470,8 +470,8 @@ lang_language_current_kbd_model_get()
    char *tmp;
 
    if (!XkbRF_GetNamesProp((Display *)ecore_x_display_get(), &tmp, &vd))
-     return evas_stringshare_add("pc101");
-   return evas_stringshare_add(vd.model);
+     return eina_stringshare_add("pc101");
+   return eina_stringshare_add(vd.model);
 } 
 
 /************** private ******************/
@@ -492,8 +492,8 @@ _lang_load_xfree_language_kbd_layouts_load_configItem(EXML *xml, Language_Predef
 
 	if (!strcasecmp(tag, "name"))
 	  { 
-	     if (lp->kbd_layout) evas_stringshare_del(lp->kbd_layout);
-	     lp->kbd_layout = evas_stringshare_add(exml_value_get(xml));
+	     if (lp->kbd_layout) eina_stringshare_del(lp->kbd_layout);
+	     lp->kbd_layout = eina_stringshare_add(exml_value_get(xml));
 	  }
 
 	if (!strcasecmp(tag, "shortDescription"))
@@ -505,18 +505,18 @@ _lang_load_xfree_language_kbd_layouts_load_configItem(EXML *xml, Language_Predef
 		  char buf[1024];
 		  char *ls = strdup(exml_value_get(xml));
 
-		  if (lp->lang_shortcut) evas_stringshare_del(lp->lang_shortcut);
+		  if (lp->lang_shortcut) eina_stringshare_del(lp->lang_shortcut);
 
 		  if (ls)
 		    {
 		       for (i = 0; ls[i]; i++)
 			 ls[i] = (char)toupper(ls[i]);
-		       lp->lang_shortcut = evas_stringshare_add(ls);
+		       lp->lang_shortcut = eina_stringshare_add(ls);
 		    }
 
-		  if (lp->lang_flag) evas_stringshare_del(lp->lang_flag);
+		  if (lp->lang_flag) eina_stringshare_del(lp->lang_flag);
 		  snprintf(buf, sizeof(buf), "%s_flag", ls ? ls : "language");
-		  lp->lang_flag = evas_stringshare_add(buf);
+		  lp->lang_flag = eina_stringshare_add(buf);
 		  if (ls) free(ls);
 	       }
 	  }
@@ -526,8 +526,8 @@ _lang_load_xfree_language_kbd_layouts_load_configItem(EXML *xml, Language_Predef
 	     char *attr = exml_attribute_get(xml, "xml:lang");
 	     if (!attr)
 	       {
-		  if (lp->lang_name) evas_stringshare_del(lp->lang_name);
-		  lp->lang_name = evas_stringshare_add(exml_value_get(xml));
+		  if (lp->lang_name) eina_stringshare_del(lp->lang_name);
+		  lp->lang_name = eina_stringshare_add(exml_value_get(xml));
 	       }
 	  }
 
@@ -567,7 +567,7 @@ _lang_load_xfree_language_kbd_layouts_load_variantList(EXML *xml, Language_Prede
 		       if (!strcasecmp(tag, "name"))
 			 {
 			    lp->kbd_variant = eina_list_append(lp->kbd_variant,
-						      evas_stringshare_add(exml_value_get(xml)));
+						      eina_stringshare_add(exml_value_get(xml)));
 			    break;
 			 }
 		       if (!exml_next_nomove(xml))
@@ -606,7 +606,7 @@ _lang_load_xfree_language_register_language(Config *cfg,
 	if (kbd_layout_variant)
 	  {
 	     for (l = kbd_layout_variant; l; l = l->next)
-	       lp->kbd_variant = eina_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
+	       lp->kbd_variant = eina_list_append(lp->kbd_variant, eina_stringshare_add(l->data));
 	  }
 	return;
      }
@@ -615,15 +615,15 @@ _lang_load_xfree_language_register_language(Config *cfg,
 	lp = E_NEW(Language_Predef, 1);
 	if (!lp) return;
 
-	lp->lang_name = evas_stringshare_add(lang_name);
-	lp->lang_shortcut = evas_stringshare_add(lang_shortcut);
-	lp->lang_flag = !lang_flag ? NULL : evas_stringshare_add(lang_flag);
-	lp->kbd_layout = evas_stringshare_add(kbd_layout);
+	lp->lang_name = eina_stringshare_add(lang_name);
+	lp->lang_shortcut = eina_stringshare_add(lang_shortcut);
+	lp->lang_flag = !lang_flag ? NULL : eina_stringshare_add(lang_flag);
+	lp->kbd_layout = eina_stringshare_add(kbd_layout);
 
 	if (kbd_layout_variant)
 	  {
 	     for (l = kbd_layout_variant; l; l = l->next)
-	       lp->kbd_variant = eina_list_append(lp->kbd_variant, evas_stringshare_add(l->data));
+	       lp->kbd_variant = eina_list_append(lp->kbd_variant, eina_stringshare_add(l->data));
 	  }
      }
 
@@ -638,14 +638,14 @@ _lang_free_predef_language(Language_Predef *lp)
 {
    if (!lp) return;
 
-   if (lp->lang_name) evas_stringshare_del(lp->lang_name);
-   if (lp->lang_shortcut) evas_stringshare_del(lp->lang_shortcut);
-   if (lp->lang_flag) evas_stringshare_del(lp->lang_flag);
-   if (lp->kbd_layout) evas_stringshare_del(lp->kbd_layout);
+   if (lp->lang_name) eina_stringshare_del(lp->lang_name);
+   if (lp->lang_shortcut) eina_stringshare_del(lp->lang_shortcut);
+   if (lp->lang_flag) eina_stringshare_del(lp->lang_flag);
+   if (lp->kbd_layout) eina_stringshare_del(lp->kbd_layout);
    while (lp->kbd_variant)
      {
 	if (lp->kbd_variant->data)
-	  evas_stringshare_del(lp->kbd_variant->data);
+	  eina_stringshare_del(lp->kbd_variant->data);
 	lp->kbd_variant = eina_list_remove_list(lp->kbd_variant, lp->kbd_variant);
      }
    E_FREE(lp);
@@ -709,33 +709,33 @@ lang_language_xorg_values_get(Language *l)
 
    if (rnames.keycodes)
      { 
-	if (l->cNames.keycodes) evas_stringshare_del(l->cNames.keycodes);
-	l->cNames.keycodes = (char *) evas_stringshare_add(rnames.keycodes);
+	if (l->cNames.keycodes) eina_stringshare_del(l->cNames.keycodes);
+	l->cNames.keycodes = (char *) eina_stringshare_add(rnames.keycodes);
      }
    if (rnames.symbols)
      { 
-	if (l->cNames.symbols) evas_stringshare_del(l->cNames.symbols);
-	l->cNames.symbols = (char *) evas_stringshare_add(rnames.symbols);
+	if (l->cNames.symbols) eina_stringshare_del(l->cNames.symbols);
+	l->cNames.symbols = (char *) eina_stringshare_add(rnames.symbols);
      }
    if (rnames.types)
      { 
-	if (l->cNames.types) evas_stringshare_del(l->cNames.types);
-	l->cNames.types = (char *) evas_stringshare_add(rnames.types);
+	if (l->cNames.types) eina_stringshare_del(l->cNames.types);
+	l->cNames.types = (char *) eina_stringshare_add(rnames.types);
      }
    if (rnames.compat)
      { 
-	if (l->cNames.compat) evas_stringshare_del(l->cNames.compat);
-	l->cNames.compat = (char *) evas_stringshare_add(rnames.compat);
+	if (l->cNames.compat) eina_stringshare_del(l->cNames.compat);
+	l->cNames.compat = (char *) eina_stringshare_add(rnames.compat);
      }
    if (rnames.geometry)
      { 
-	if (l->cNames.geometry) evas_stringshare_del(l->cNames.geometry);
-	l->cNames.geometry = (char *) evas_stringshare_add(rnames.geometry); 
+	if (l->cNames.geometry) eina_stringshare_del(l->cNames.geometry);
+	l->cNames.geometry = (char *) eina_stringshare_add(rnames.geometry); 
      }
    if (rnames.keymap)
      { 
-	if (l->cNames.keymap) evas_stringshare_del(l->cNames.keymap);
-	l->cNames.keymap = (char *) evas_stringshare_add(rnames.keymap); 
+	if (l->cNames.keymap) eina_stringshare_del(l->cNames.keymap);
+	l->cNames.keymap = (char *) eina_stringshare_add(rnames.keymap); 
      }
 
    return 1;
@@ -859,7 +859,7 @@ lang_cb_event_border_remove(void *data, int type, void *ev)
 	if (bls->bd == e->border)
 	  {
 	     conf->l.border_lang_setup = eina_list_remove(conf->l.border_lang_setup, bls);
-	     if (bls->language_name) evas_stringshare_del(bls->language_name);
+	     if (bls->language_name) eina_stringshare_del(bls->language_name);
 	     E_FREE(bls);
 	     break;
 	  }

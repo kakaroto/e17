@@ -204,20 +204,20 @@ e_modapi_init(E_Module *m)
 
 	/* switch to next language */
 	language_config->switch_next_lang_key.context	 = E_BINDING_CONTEXT_ANY;
-	language_config->switch_next_lang_key.key	 = evas_stringshare_add("period");
+	language_config->switch_next_lang_key.key	 = eina_stringshare_add("period");
 	language_config->switch_next_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
 							   E_BINDING_MODIFIER_ALT;
 	language_config->switch_next_lang_key.any_mod	 = 0;
-	language_config->switch_next_lang_key.action	 = evas_stringshare_add(LANG_NEXT_ACTION);
+	language_config->switch_next_lang_key.action	 = eina_stringshare_add(LANG_NEXT_ACTION);
 	language_config->switch_next_lang_key.params	 = NULL;
 
 	/* switch to prev language */
 	language_config->switch_prev_lang_key.context	 = E_BINDING_CONTEXT_ANY;
-	language_config->switch_prev_lang_key.key	 = evas_stringshare_add("comma");
+	language_config->switch_prev_lang_key.key	 = eina_stringshare_add("comma");
 	language_config->switch_prev_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
 							   E_BINDING_MODIFIER_ALT;
 	language_config->switch_prev_lang_key.any_mod	 = 0;
-	language_config->switch_prev_lang_key.action	 = evas_stringshare_add(LANG_PREV_ACTION);
+	language_config->switch_prev_lang_key.action	 = eina_stringshare_add(LANG_PREV_ACTION);
 	language_config->switch_prev_lang_key.params	 = NULL;
 
 	lang = lang_get_default_language(language_config);
@@ -369,7 +369,7 @@ void language_clear_border_language_setup_list()
      {
 	Border_Language_Settings *bls = language_config->l.border_lang_setup->data;
 
-	if (bls->language_name) evas_stringshare_del(bls->language_name);
+	if (bls->language_name) eina_stringshare_del(bls->language_name);
 	E_FREE(bls);
 
 	language_config->l.border_lang_setup = 
