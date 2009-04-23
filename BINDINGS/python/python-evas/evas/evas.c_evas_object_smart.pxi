@@ -693,6 +693,14 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         self.member_add(obj)
         return obj
 
+    def Textblock(self, **kargs):
+        """Factory of children L{evas.Textblock}.
+        @rtype: L{Textblock<evas.Textblock>}
+        """
+        obj = Textblock(self.evas, **kargs)
+        self.member_add(obj)
+        return obj
+
 
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
