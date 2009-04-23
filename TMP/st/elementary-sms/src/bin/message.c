@@ -97,7 +97,7 @@ create_message(Evas_Object *win,
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
 
    ab = elm_anchorblock_add(win);
-   elm_anchorblock_hover_style_set(ab, "popout");
+   elm_object_style_set(ab, "popout");
    elm_anchorblock_hover_parent_set(ab, win);
    elm_anchorblock_text_set(ab, text);
    evas_object_smart_callback_add(ab, "anchor,clicked", on_anchor, mui);
@@ -107,7 +107,7 @@ create_message(Evas_Object *win,
    evas_object_show(ab);
    
    fr = elm_frame_add(win);
-   elm_frame_style_set(fr, "outdent_bottom");
+   elm_object_style_set(fr, "outdent_bottom");
    evas_object_size_hint_weight_set(fr, 1.0, 0.0);
    evas_object_size_hint_align_set(fr, -1.0, -1.0);
    

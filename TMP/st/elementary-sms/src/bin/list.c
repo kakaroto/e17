@@ -134,7 +134,7 @@ on_contact_select(void *data, Evas_Object *obj, void *event_info)
 
         win = window;
         inwin2 = elm_win_inwin_add(win);
-        elm_win_inwin_style_set(inwin2, "minimal_vertical");
+        elm_object_style_set(inwin2, "minimal_vertical");
         
         bx = elm_box_add(win);
         evas_object_size_hint_weight_set(bx, 1.0, 0.0);
@@ -389,7 +389,7 @@ alert(const char *text)
    
    win = window;
    inwin3 = elm_win_inwin_add(win);
-   elm_win_inwin_style_set(inwin3, "minimal_vertical");
+   elm_object_style_set(inwin3, "minimal_vertical");
         
    bx = elm_box_add(win);
    evas_object_size_hint_weight_set(bx, 1.0, 0.0);
