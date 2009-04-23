@@ -44,6 +44,14 @@ cdef class Slider(Object):
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
 
+    property changed:
+        def __set__(self, value):
+            self._callback_add("changed", value)
+
+    property delay_changed:
+        def __set__(self, value):
+            self._callback_add("delay,changed", value)
+
     property value:
         def __get__(self):
             cdef double value
