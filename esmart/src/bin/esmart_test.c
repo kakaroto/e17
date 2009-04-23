@@ -213,7 +213,7 @@ main (int argc, char *argv[])
 
       if (ecore_x_composite_query())
         {
-           ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 150, 50);
+           ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 320, 120);
            ecore_evas_title_set (ee, "Enlightenment Pixmap Test");
            ecore_evas_callback_delete_request_set (ee, window_del_cb);
            ecore_evas_callback_resize_set (ee, window_resize_cb);
@@ -221,8 +221,8 @@ main (int argc, char *argv[])
 
            evas = ecore_evas_get (ee);
            o = esmart_xpixmap_new (evas, 0, win);
-           evas_object_move (o, 400, 400);
-           evas_object_resize (o, 150, 50);
+           evas_object_move (o, 0, 0);
+           evas_object_resize (o, 320, 120);
            evas_object_layer_set (o, -5);
            evas_object_name_set (o, "root_background");
            evas_object_show (o);

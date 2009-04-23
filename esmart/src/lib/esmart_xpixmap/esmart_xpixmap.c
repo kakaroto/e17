@@ -74,7 +74,6 @@ _pixels_get(void *data, Evas_Object *obj)
    Smart_Data *sd;
    unsigned char *bgra_data;
 
-   printf("XPixmap DEBUG: getting pixels\n");
    sd = data;
    if (sd->xim)
      {
@@ -84,15 +83,12 @@ _pixels_get(void *data, Evas_Object *obj)
 
    evas_object_image_size_get(obj, &iw, &ih);
    ecore_x_drawable_geometry_get(sd->pixmap, NULL, NULL, &pw, &ph);
-   printf("XPixmap DEBUG: pixmap size: %dx%d\n", pw, ph);
    sd->xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
+   
    evas_object_image_data_update_add(obj, 0, 0, iw, ih);
 
    if (!sd->xim)
-     {
-	printf("XPixmap DEBUG: no XImage\n");
-	return;
-     }
+     return;
 
    if ((pw != iw) || (ph != ih))
      {
@@ -119,7 +115,6 @@ _damage_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->drawable) return 1;
-   printf("XPixmap DEBUG: damage event\n");
 
    _pixels_get(sd, sd->obj);
    return 1;
@@ -134,7 +129,6 @@ _destroy_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   printf("XPixmap DEBUG: destroy event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = None;
    return 1;
@@ -149,7 +143,6 @@ _configure_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   printf("XPixmap DEBUG: configure event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
    _pixels_get(sd, sd->obj);
@@ -165,7 +158,6 @@ _hide_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   printf("XPixmap DEBUG: hide event\n");
    ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = None;
    return 1;
@@ -180,7 +172,6 @@ _show_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   printf("XPixmap DEBUG: show event\n");
    if (sd->pixmap)
      ecore_x_pixmap_del(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
@@ -231,8 +222,8 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
      sd->pixmap = pixmap;
    else if (win)
      {
-	printf("XPixmap DEBUG: we have a window\n");
         sd->win = win;
+	ecore_x_composite_redirect_window(win, ECORE_X_COMPOSITE_UPDATE_AUTOMATIC);
 	sd->damage = ecore_x_damage_new(win, ECORE_X_DAMAGE_REPORT_RAW_RECTANGLES);
 	if (ecore_x_window_visible_get(win))
 	  sd->pixmap = ecore_x_composite_name_window_pixmap_get(win);
@@ -249,6 +240,8 @@ _smart_add(Evas_Object *obj, Ecore_X_Pixmap pixmap, Ecore_X_Window win)
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_HIDE, _hide_cb, sd));
         sd->handlers = eina_list_append(sd->handlers,
               ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW, _show_cb, sd));
+
+
      }
 
    evas_object_smart_member_add(sd->obj, obj);
@@ -270,6 +263,8 @@ _smart_del(Evas_Object *obj)
    if (!sd) return;
    if (sd->xim)
      XDestroyImage(sd->xim);
+   if (sd->win)
+     ecore_x_composite_unredirect_window(sd->win, ECORE_X_COMPOSITE_UPDATE_AUTOMATIC);
    EINA_LIST_FREE(sd->handlers, h)
       ecore_event_handler_del(h);
    ecore_x_damage_del(sd->damage);
