@@ -17,6 +17,7 @@
 #include <Esmart_Thumb.h>
 #include <Esmart_Trans_X11.h>
 #include <Esmart_Draggies.h>
+#include <Esmart_XPixmap.h>
 
 #ifdef HAVE_CONFIG_H
   #include <config.h>
