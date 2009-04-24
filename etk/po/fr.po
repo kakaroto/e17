@@ -1,18 +1,17 @@
-# SOME DESCRIPTIVE TITLE.
+# French translation for Etk.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# batden <batden@orange.fr>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-23 20:29+0800\n"
-"PO-Revision-Date: 2009-01-19 08:19+0000\n"
-"Last-Translator: batden <Unknown>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-04-22 20:50+0400\n"
+"PO-Revision-Date: 2009-04-24 08:28+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: utf-8\n"
 
 #: src/tools/etk_prefs/etk_prefs.c:60
 msgid "Etk Preferences"
@@ -41,6 +40,38 @@ msgstr "Préférences de l'utilisateur"
 #: src/tools/etk_prefs/etk_prefs.c:85
 msgid "General"
 msgstr "Général"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
+msgstr "H"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
+msgstr "S"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
+msgstr "V"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
+msgstr "R"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
+msgstr "G"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
+msgstr "B"
+
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
+msgstr "Alpha"
+
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
+msgstr "Actuel"
 
 #: src/lib/etk_message_dialog.c:109
 msgid "Warning"
@@ -81,38 +112,6 @@ msgstr "Dossier personnel"
 #: src/lib/etk_filechooser_widget.c:735
 msgid "Root"
 msgstr "Root"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "H"
-msgstr "H"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "S"
-msgstr "S"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "V"
-msgstr "V"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "R"
-msgstr "R"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "G"
-msgstr "G"
-
-#: src/lib/etk_colorpicker.c:306
-msgid "B"
-msgstr "B"
-
-#: src/lib/etk_colorpicker.c:400
-msgid "Alpha"
-msgstr "Alpha"
-
-#: src/lib/etk_colorpicker.c:424
-msgid "Current"
-msgstr "Actuel"
 
 #~ msgid "Etk Button test"
 #~ msgstr "Test bouton ETK"

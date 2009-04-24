@@ -1,37 +1,34 @@
-# Calendar module (e17), French translation
+# Calendar module (e17), French translation.
 # This file is put in the public domain.
-# batden <batden@orange.fr>, 2008.
-#
-#
+# batden <batden@orange.fr>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Calendar module (e17)\n"
+"Project-Id-Version: Calendar module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-10-27 13:26+0400\n"
+"POT-Creation-Date: 2009-04-22 21:09+0400\n"
+"PO-Revision-Date: 2009-04-24 08:30+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: utf-8\n"
 
-
-#: ../e_mod_main.c:439
+#: e_mod_main.c:457
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: ../e_mod_main.c:446
+#: e_mod_main.c:464
 msgid "Monday"
 msgstr "Lundi"
 
-#: ../e_mod_main.c:458
+#: e_mod_main.c:476
 msgid "First Day of Week"
 msgstr "Début de la semaine"
 
-#: ../e_mod_main.c:559 ../e_mod_main.c:575
+#: e_mod_main.c:577 e_mod_main.c:593
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: ../e_mod_main.c:559 ../e_mod_main.c:575
+#: e_mod_main.c:577 e_mod_main.c:593
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Pop-up du mois complet (Afficher/Cacher)"
