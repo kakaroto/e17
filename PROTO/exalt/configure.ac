@@ -44,6 +44,12 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
+vpnc=""
+AC_ARG_WITH([vpnc],
+            AC_HELP_STRING([--with-vpnc=VPNC_PATH], [explicitly specify a vpnc path]),
+            [vpnc=$withval])
+
+
 if test "z$vpnc" = "z"; then
     AC_PATH_PROG(vpnc, vpnc, none)
 fi
@@ -54,17 +60,29 @@ else
     have_vpnc="yes"
 fi
 
+wpa_supplicant=""
+AC_ARG_WITH([wpa_supplicant],
+            AC_HELP_STRING([--with-wpa-supplicant=WPA_SUPPLICANT_PATH], [explicitly specify a wpa_supplicant path]),
+            [wpa_supplicant=$withval])
 
+#removed since wpa_supplicant is required and not optional
 if test "z$wpa_supplicant" = "z"; then
 AC_PATH_PROG(wpa_supplicant, wpa_supplicant, none)
 fi
+
+
 if test "$wpa_supplicant" = "none"; then
     have_wpa_supplicant="no"
+    AC_MSG_ERROR([No wpa_supplicant program found])
 else
     AC_DEFINE_UNQUOTED(WPA_SUPPLICANT_COMMAND_PATH, "${wpa_supplicant}", [Path of wpa_supplicant])
     have_wpa_supplicant="yes"
-    AC_DEFINE_UNQUOTED(HAVE_WPA_SUPPLICANT, "${have_wpa_supplicant}", [have wpa_supplicant support])
 fi
+
+vpnc_disconnect=""
+AC_ARG_WITH([vpnc_disconnect],
+            AC_HELP_STRING([--with-vpnc-disconnect=VPNC_DISCONNECT_PATH], [explicitly specify a vpnc disconnect path]),
+            [vpnc_disconnect=$withval])
 
 if test "z$vpnc_disconnect" = "z"; then
     AC_PATH_PROG(vpnc_disconnect, vpnc_disconnect, none)
@@ -80,6 +98,12 @@ else
         AC_DEFINE_UNQUOTED(HAVE_VPNC, "${have_vpnc}", [have vpnc support])
     fi
 fi
+
+
+dhcp=""
+AC_ARG_WITH([dhcp],
+            AC_HELP_STRING([--with-dhcp=DHCP_PATH], [explicitly specify a dhcp path, currently only dhclient is supported]),
+            [dhcp=$withval])
 
 
 if test "z$dhcp" = "z"; then
@@ -168,8 +192,8 @@ echo
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  dhcp support...................: $have_dhcp ($dhcp)"
-echo "  wpa_supplicant support.........: $have_wpa_supplicant ($wpa_supplicant)"
+echo "  dhcp support (only dhclient is supported)...: $have_dhcp ($dhcp)"
+echo "  wpa_supplicant support......................: $have_wpa_supplicant ($wpa_supplicant)"
 #echo "  vpnc support...................: not yet implemented"
 echo
 echo "  Installation Path..............: $prefix"
