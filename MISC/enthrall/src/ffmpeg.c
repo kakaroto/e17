@@ -5,6 +5,7 @@
 
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
 
 
 typedef struct {
@@ -64,7 +65,7 @@ enthrall_ffmpeg_init (void       *engine,
     return 0;
   }
 
-  oc = av_alloc_format_context ();
+  oc = avformat_alloc_context ();
   if (!oc) {
     fprintf (stderr, "Canot allocate memory for the output format\n");
     return 0;
@@ -255,6 +256,7 @@ enthrall_ffmpeg_encode_frame (void     *engine,
                               uint32_t *data)
 {
   EnthrallFFmpeg *ef;
+  static struct SwsContext *img_convert_ctx;
   AVCodecContext *c;
   int             out_size;
   int             ret;
@@ -267,10 +269,17 @@ enthrall_ffmpeg_encode_frame (void     *engine,
 
   avpicture_fill((AVPicture *)ef->picture_rgb, (uint8_t *)data,
 		 PIX_FMT_RGB32, c->width, c->height);
-  img_convert((AVPicture*)ef->picture_yuv, c->pix_fmt,
-	      (AVPicture *)ef->picture_rgb, PIX_FMT_RGB32,
-	      c->width, c->height);
 
+  if (img_convert_ctx == NULL) 
+    img_convert_ctx = sws_getContext(c->width, c->height, 
+                                     PIX_FMT_ARGB, 
+                                     c->width, c->height, 
+                                     c->pix_fmt, 
+                                     SWS_BICUBIC, 
+                                     NULL, NULL, NULL); 
+  sws_scale(img_convert_ctx, ef->picture_rgb->data, 
+            ef->picture_rgb->linesize, 0, c->height,  
+            ef->picture_yuv->data, ef->picture_yuv->linesize);
 
   if (ef->oc->oformat->flags & AVFMT_RAWPICTURE) {
     /* raw video case. The API will change slightly in the near
