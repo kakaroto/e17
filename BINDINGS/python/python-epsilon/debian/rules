@@ -10,5 +10,5 @@ install/python-efl-epsilon-doc::
 	./gen-doc-api.sh
 
 clean::
-   rm -rf python_epsilon.egg-info
+	rm -rf python_epsilon.egg-info
 
