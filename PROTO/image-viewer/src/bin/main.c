@@ -585,54 +585,24 @@ on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
 #endif
 }
 
-static void *
-on_thumb_thread_create(void *data)
+static void
+on_thumb_generate(Ethumb *e, void *data)
 {
 #ifdef HAVE_ETHUMB
    IV *iv = data;
-   Eina_List *l;
+   IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
    const char *file;
-   int count = 0;
 
-   EINA_LIST_FOREACH(iv->preview_files, l, file)
-     {
-	Ethumb_File *ef = ethumb_file_new(iv->ethumb, file);
+   info->thumb_path = eina_stringshare_add(ethumb_thumb_path_get(e));
+   ethumb_file_get(e, &file, NULL);
+   info->file = file;
 
-	if (ef)
-	  {
-	     if (ethumb_file_generate(ef))
-	       {
-		  IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
+   iv->thumb_path = eina_list_append(iv->thumb_path, info);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
 
-		  info->thumb_path = eina_stringshare_add(ef->thumb_path);
-		  info->file = file;
-
-		  iv->thumb_path = eina_list_append(iv->thumb_path, info);
-	       }
-	     ethumb_file_free(ef);
-	  }
-
-	iv->preview_files = l;
-
-	if (++count > 10)
-	  {
-	     if (l->next)
-	       iv->preview_files = l->next;
-	     break;
-	  }
-     }
-
-   if (iv->preview_files->next)
-     {
-	iv->flags.add_previews = EINA_TRUE;
-	if (!iv->idler)
-	  iv->idler = ecore_idler_add(on_idler, iv);
-     }
-   else
-     iv->flags.add_previews = EINA_FALSE;
-
+   iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
    iv->thumb_generator = EINA_FALSE;
-   return NULL;
 #endif
 }
 
@@ -842,8 +812,23 @@ on_idler(void *data)
 
 	     if (!iv->thumb_generator)
 	       {
+		  Eina_List *l;
+		  const char *file;
+
 		  iv->thumb_generator = EINA_TRUE;
-		  on_thumb_thread_create(iv);
+		  EINA_LIST_FOREACH(iv->preview_files, l, file)
+		    {
+		       iv->preview_files = l;
+
+		       if ((!ethumb_file_set(iv->ethumb, file, NULL)) ||
+			   (ethumb_exists(iv->ethumb)))
+			 continue;
+
+		       ethumb_generate(iv->ethumb, on_thumb_generate, iv);
+
+		       break;
+		    }
+
 	       }
 	  }
 #endif
