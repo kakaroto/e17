@@ -16,7 +16,7 @@ module_la_SOURCES = e_mod_main.h \
 		    wired_dialog.c \
 		    network_dialog.c
 
-module_la_LIBADD = @E_LIBS@ @EXALT_LIBS@ @EXALT_DBUS_LIBS@
+module_la_LIBADD = @EXALT_LIBS@ @EXALT_DBUS_LIBS@
 module_la_LDFLAGS = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
