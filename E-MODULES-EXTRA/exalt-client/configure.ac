@@ -43,6 +43,8 @@ AC_ARG_WITH(edje-cc,
     EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
   ]
 )
+PKG_CHECK_MODULES(EXALT, [exalt >= 0.0.1])
+PKG_CHECK_MODULES(EXALT_DBUS, [exalt_dbus >= 0.0.1])
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
