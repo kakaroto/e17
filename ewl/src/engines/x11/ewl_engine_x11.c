@@ -799,8 +799,8 @@ ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num)
 
         ecore_x_dnd_aware_set(UINTPTR_TO_UINT(embed->canvas_window),
                                 (num > 0 ? 1 : 0));
-        ecore_x_dnd_types_set(UINTPTR_TO_UINT(embed->canvas_window), 
-                                (char **)types, num);
+        ecore_x_dnd_types_set(UINTPTR_TO_UINT(embed->canvas_window), types,
+                                num);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
