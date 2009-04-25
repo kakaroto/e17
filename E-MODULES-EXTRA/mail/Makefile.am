@@ -4,8 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
 SUBDIRS = po
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+-id $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)

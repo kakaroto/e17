@@ -4,8 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = images po
 
 EDJE_FLAGS = -v \
--id $(top_srcdir)/images \
--fd $(top_srcdir)/fonts
+-id $(top_srcdir)/images
 
 # data files for the module
 filesdir = $(datadir)

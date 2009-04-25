@@ -7,8 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = po
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+-id $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = module.desktop \

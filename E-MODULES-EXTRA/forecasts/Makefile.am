@@ -4,8 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in forecasts.edj
 SUBDIRS = images
 
 EDJE_FLAGS = -v \
--id $(top_srcdir)/images \
--fd $(top_srcdir)
+-id $(top_srcdir)/images
 
 # data files for the module
 filesdir = $(datadir)

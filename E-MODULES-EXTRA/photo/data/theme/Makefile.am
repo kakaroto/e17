@@ -1,8 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_FLAGS = -v \
-	-id $(top_srcdir)/data/theme/images \
-	-fd $(top_srcdir)/data/theme
+	-id $(top_srcdir)/data/theme/images
 
 EXTRA_DIST = \
 photo.edc \

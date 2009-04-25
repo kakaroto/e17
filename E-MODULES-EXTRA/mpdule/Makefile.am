@@ -3,8 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS =
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+-id $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = e-module-mpdule.edj \

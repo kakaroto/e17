@@ -1,8 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_FLAGS = -v \
-             -id $(top_srcdir)/data/themes/images \
-             -fd $(top_srcdir)/data/themes
+             -id $(top_srcdir)/data/themes/images
 
 EXTRA_DIST = \
 taskbar.edc \

@@ -4,8 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = po
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+-id $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = e-module-alarm.edj module.desktop alarm.edj

@@ -2,8 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_FLAGS = -v \
-	-id $(top_srcdir)/data/theme/images \
-	-fd $(top_srcdir)/data/theme
+	-id $(top_srcdir)/data/theme/images
 
 filesdir = $(datadir)
 files_DATA = e-module-news.edj
