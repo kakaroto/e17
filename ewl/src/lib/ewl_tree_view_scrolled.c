@@ -8,7 +8,7 @@
 
 static Ewl_View *ewl_tree_view_scrolled_view = NULL;
 
-static Ewl_Widget * ewl_tree_view_cb_constructor(unsigned int col,
+static Ewl_Widget *ewl_tree_view_cb_constructor(unsigned int col,
                                                         void *pr_data);
 
 /**

@@ -58,7 +58,7 @@ struct Ewl_Border
 };
 
 Ewl_Widget      *ewl_border_new(void);
-int              ewl_border_init(Ewl_Border * b);
+int              ewl_border_init(Ewl_Border *b);
 
 void             ewl_border_label_set(Ewl_Border *b, const char *t);
 const char      *ewl_border_label_get(Ewl_Border *b);

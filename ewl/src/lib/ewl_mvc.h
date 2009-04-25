@@ -170,7 +170,7 @@ void                     ewl_mvc_selected_list_set(Ewl_MVC *mvc,
 Ecore_List              *ewl_mvc_selected_list_get(Ewl_MVC *mvc);
 
 void                     ewl_mvc_selected_range_add(Ewl_MVC *mvc, 
-                                        const Ewl_Model * model,
+                                        const Ewl_Model *model,
                                         void *data, unsigned int srow,
                                         unsigned int scolumn,
                                         unsigned int erow,

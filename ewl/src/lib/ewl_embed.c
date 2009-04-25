@@ -907,7 +907,8 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y)
  * @brief Sends the event for a DND position into an embed.
  */
 const char *
-ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, int* pw, int* ph)
+ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int *px, int *py,
+                                int *pw, int *ph)
 {
         const char *result = NULL;
         Ewl_Widget *widget = NULL, *parent = NULL;

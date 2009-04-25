@@ -85,7 +85,7 @@ void ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget * w);
+void ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget *w);
 
 /**
  * @}

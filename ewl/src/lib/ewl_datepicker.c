@@ -122,7 +122,7 @@ ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                                                         void *user_data)
 {
         char *date;
-        Ewl_Datepicker* dp;
+        Ewl_Datepicker *dp;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(user_data);

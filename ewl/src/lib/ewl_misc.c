@@ -772,7 +772,7 @@ ewl_print_help(void)
  * Ask for the widget @a w to be configured when the main idle loop is executed.
  */
 void
-ewl_configure_request(Ewl_Widget * w)
+ewl_configure_request(Ewl_Widget *w)
 {
         Ewl_Widget *search;
         Ewl_Configure_Queue *queue_buffer;

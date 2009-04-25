@@ -25,12 +25,12 @@ typedef struct
          * Function pointers for getting the dimension of the widget that we
          * care about.
          */
-        void (*pref_fill_set) (Ewl_Object * ob, int size);
-        int (*fill_ask) (Ewl_Object * ob);
-        void (*fill_set) (Ewl_Object * ob, int size);
+        void (*pref_fill_set) (Ewl_Object *ob, int size);
+        int (*fill_ask) (Ewl_Object *ob);
+        void (*fill_set) (Ewl_Object *ob, int size);
 
-        int (*align_ask) (Ewl_Object * ob);
-        void (*align_set) (Ewl_Object * ob, int size);
+        int (*align_ask) (Ewl_Object *ob);
+        void (*align_set) (Ewl_Object *ob, int size);
 } Ewl_Box_Orientation;
 
 /*
@@ -48,14 +48,14 @@ static Ewl_Box_Orientation *ewl_box_info = NULL;
 
 static void ewl_box_setup(void);
 
-static int ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread,
+static int ewl_box_configure_calc(Ewl_Box *b, Ewl_Object **spread,
                                          int *fill_size, int *align_size);
 static void ewl_box_configure_fill(Ewl_Object **spread, int fill_count,
                                            int *fill_size);
-static void ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
+static void ewl_box_configure_layout(Ewl_Box *b, int *x, int *y,
                                            int *fill, int *align,
                                            int *align_size);
-static void ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
+static void ewl_box_configure_child(Ewl_Box *b, Ewl_Object *c, int *x,
                                           int *y, int *align, int *align_size);
 
 /**
@@ -130,7 +130,7 @@ Ewl_Widget
  * within a box structure.
  */
 int
-ewl_box_init(Ewl_Box * b)
+ewl_box_init(Ewl_Box *b)
 {
         Ewl_Widget *w;
 
@@ -198,7 +198,7 @@ ewl_box_init(Ewl_Box * b)
  * reconfigures it in order for the appearance to be updated.
  */
 void
-ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
+ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o)
 {
         Ewl_Container *c;
         Ewl_Widget *child;
@@ -369,7 +369,7 @@ ewl_box_homogeneous_get(Ewl_Box *b)
  * it to change the appearance.
  */
 void
-ewl_box_spacing_set(Ewl_Box * b, int s)
+ewl_box_spacing_set(Ewl_Box *b, int s)
 {
         int nodes;
         Ewl_Widget *w;
@@ -570,7 +570,7 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
  * Split the children into three lists for layout.
  */
 static int
-ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *align_size)
+ewl_box_configure_calc(Ewl_Box *b, Ewl_Object **spread, int *fill_size, int *align_size)
 {
         int i;
         Ewl_Object *child;
@@ -760,7 +760,7 @@ ewl_box_configure_fill(Ewl_Object **spread, int fill_count, int *fill_size)
 }
 
 static void
-ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
+ewl_box_configure_layout(Ewl_Box *b, int *x, int *y, int *fill,
                            int *align, int *align_size)
 {
         Ewl_Object *child;
@@ -794,7 +794,7 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 }
 
 static void
-ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
+ewl_box_configure_child(Ewl_Box *b __UNUSED__, Ewl_Object *c,
                         int *x, int *y, int *align, int *align_size)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);

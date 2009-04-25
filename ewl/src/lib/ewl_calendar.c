@@ -40,7 +40,7 @@ static const int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 Ewl_Widget *
 ewl_calendar_new(void)
 {
-        Ewl_Calendar* ib;
+        Ewl_Calendar *ib;
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ib = NEW(Ewl_Calendar, 1);
@@ -61,7 +61,7 @@ ewl_calendar_new(void)
  * @brief Init a new Ewl_Calendar to default values and callbacks, and set date to today
  */
 int
-ewl_calendar_init(Ewl_Calendar* ib)
+ewl_calendar_init(Ewl_Calendar *ib)
 {
         Ewl_Widget *w, *vbox, *top_hbox, *o;
         struct tm *ptr;
@@ -155,7 +155,7 @@ char *
 ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 {
         time_t tm;
-        struct tm* month_start;
+        struct tm *month_start;
         char str[1024];
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -348,7 +348,7 @@ ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
         struct tm *now;
         time_t now_tm;
         int i;
-        Ewl_Widget* it;
+        Ewl_Widget *it;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -436,7 +436,7 @@ ewl_calendar_next_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 static void
 ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 {
-        Ewl_Widget* day_label;
+        Ewl_Widget *day_label;
         char *days[] = {"M", "T", "W", "T", "F", "S", "S", NULL};
         int i;
 

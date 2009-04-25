@@ -121,7 +121,7 @@ ewl_label_view_get(void)
 
 static Ewl_Widget *
 ewl_label_view_cb_constructor(unsigned int col __UNUSED__,
-                                        void * pr_data __UNUSED__)
+                                        void *pr_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -132,7 +132,7 @@ static void
 ewl_label_view_cb_assign(Ewl_Widget *w, void *data,
                                         unsigned int row __UNUSED__,
                                         unsigned int col __UNUSED__,
-                                        void * pr_data __UNUSED__)
+                                        void *pr_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -66,7 +66,7 @@ void             ewl_config_instance_keys_remove(Ewl_Config *cfg, const char *k)
 void             ewl_config_system_keys_remove(Ewl_Config *cfg, const char *k);
 void             ewl_config_user_keys_remove(Ewl_Config *cfg, const char *k);
 
-Ecore_List*      ewl_config_keys_get(Ewl_Config *cfg, const char *starts_with);
+Ecore_List      *ewl_config_keys_get(Ewl_Config *cfg, const char *starts_with);
 
 
 int              ewl_config_can_save_system(Ewl_Config *cfg);

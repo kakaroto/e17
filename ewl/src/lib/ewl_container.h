@@ -181,8 +181,8 @@ void             ewl_container_redirect_set(Ewl_Container *c,
  */
 void ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_cb_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_container_cb_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_container_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_enable(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_disable(Ewl_Widget *w, void *ev_data, void *user_data);

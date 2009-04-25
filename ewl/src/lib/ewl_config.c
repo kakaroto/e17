@@ -53,7 +53,7 @@ static void ewl_config_create_user_hash(Ewl_Config *cfg);
 static Ecore_Hash *ewl_config_set_hash_get(Ewl_Config *cfg,
                                         Ewl_State_Type state);
 static const char *ewl_config_get(Ewl_Config *cfg, const char *key);
-static const char * ewl_config_env_get(Ewl_Config *cfg, const char *key);
+static const char *ewl_config_env_get(Ewl_Config *cfg, const char *key);
 static char *ewl_config_trim(char *v);
 static char *ewl_config_file_name_user_get(Ewl_Config *cfg);
 static char *ewl_config_file_name_system_get(Ewl_Config *cfg);

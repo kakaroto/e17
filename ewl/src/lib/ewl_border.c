@@ -36,7 +36,7 @@ ewl_border_new(void)
  * @brief Initialize a border container to default values
  */
 int
-ewl_border_init(Ewl_Border * b)
+ewl_border_init(Ewl_Border *b)
 {
         Ewl_Widget *w;
 
