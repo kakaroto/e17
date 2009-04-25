@@ -555,10 +555,10 @@ on_next_click(void *data, Evas_Object *obj, void *event_info)
      iv->idler = ecore_idler_add(on_idler, iv);
 }
 
+#ifdef HAVE_ETHUMB
 static void
 on_thumb_click(void *data, Evas_Object *obj, void *event_info)
 {
-#ifdef HAVE_ETHUMB
    IV *iv = data;
    const char *file = evas_object_data_get(obj, "iv_file");
 
@@ -574,13 +574,11 @@ on_thumb_click(void *data, Evas_Object *obj, void *event_info)
      iv->flags.hide_previews = EINA_TRUE;
    if (!iv->idler)
      iv->idler = ecore_idler_add(on_idler, iv);
-#endif
 }
 
 static void
 on_thumb_generate(Ethumb *e, void *data)
 {
-#ifdef HAVE_ETHUMB
    IV *iv = data;
    IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
    const char *file;
@@ -594,8 +592,8 @@ on_thumb_generate(Ethumb *e, void *data)
      iv->idler = ecore_idler_add(on_idler, iv);
 
    iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
-#endif
 }
+#endif
 
 static void
 on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
@@ -681,10 +679,10 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
      iv->idler = ecore_idler_add(on_idler, iv);
 }
 
+#ifdef HAVE_ETHUMB
 static void
 preview_box_size(IV *iv)
 {
-#ifdef HAVE_ETHUMB
    Evas_Coord w, ww, hh;
 
    evas_object_size_hint_min_get(
@@ -692,8 +690,8 @@ preview_box_size(IV *iv)
        &ww, &hh);
    if (ww && hh)
      evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
-#endif
 }
+#endif
 
 static int
 on_idler(void *data)
@@ -1002,10 +1000,10 @@ on_idler(void *data)
      }
 }
 
+#ifdef HAVE_ETHUMB
 static void
 toggle_previews(IV *iv)
 {
-#ifdef HAVE_ETHUMB
    if (!iv->gui.preview_win)
      {
 	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
@@ -1033,8 +1031,8 @@ toggle_previews(IV *iv)
 	if (!iv->idler)
 	  iv->idler = ecore_idler_add(on_idler, iv);
      }
-#endif
 }
+#endif
 
 static int
 on_slideshow_tick(void *data)
