@@ -18,7 +18,7 @@ group {
 				}
                                 text {
                                         text: "Label";
-                                        font: "ewl/default";
+                                        font: "Sans";
                                         size: 10;
 					min: 0 1;
                                         max: 1 1;
@@ -44,7 +44,7 @@ group {
                                         offset: -1 -1;
                                 }
                                 text {
-                                        font: "ewl/default";
+                                        font: "Sans";
                                         text_source: "ewl/label/text";
                                         size: 10;
                                         min: 1 1;

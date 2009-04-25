@@ -178,7 +178,7 @@ part {\
 		}\
 		text {\
 			text: "Games";\
-			font: "Vera";\
+			font: "Sans";\
 			size: 16;\
 			min: 1 1;\
 		}\

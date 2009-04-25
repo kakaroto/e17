@@ -1,6 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = groups \
-	  fonts \
 	  images
 
 EDCS =  b_and_w.edc

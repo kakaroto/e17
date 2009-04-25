@@ -305,7 +305,7 @@ group {
 				}
                                 text {
                                         text: "Enabled";
-                                        font: "ewl/default";
+                                        font: "Sans";
                                         size: 10;
                                         min: 1 1;
                                         align: 0.0 0.5;
@@ -317,7 +317,7 @@ group {
                                 align: 0.5 0.5;
                                 text {
                                         text: "Disabled";
-                                        font: "ewl/default";
+                                        font: "Sans";
 					size: 10;
                                         min: 1 1;
                                         align: 0.0 0.5;
@@ -342,7 +342,7 @@ group {
                                         offset: -1 -1;
                                 }
                                 text {
-					font: "ewl/default";
+					font: "Sans";
 					text_source: "ewl/button/label/text";
 					size: 10;
 					min: 1 1;

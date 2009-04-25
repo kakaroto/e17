@@ -1,4 +1,4 @@
-SUBDIRS = images fonts
+SUBDIRS = images
 THEME = e17
 
 EDC = $(THEME).edc
@@ -14,5 +14,5 @@ theme_DATA = $(EDJ)
 all: $(EDC)
 
 .edc.edj:
-	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/images -fd $(top_srcdir)/data/themes/$(THEME)/fonts $< $@
+	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/images -fd $(top_srcdir)/data/themes/$(THEME) $< $@
 

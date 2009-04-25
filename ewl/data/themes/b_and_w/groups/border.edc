@@ -86,7 +86,7 @@ group {
 				}
 				color: 0 0 0 64;
 				text {
-					font: "ewl/default/bold";
+					font: "Sans:style=Bold";
 					size: 11;
 					min: 1 1;
 					align: 0.0 0.0;

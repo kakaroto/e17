@@ -442,9 +442,6 @@ part {\
 			transition: SINUSOIDAL 0.2;\
 		}
 		
-fonts{
-	font: "Vera.ttf" "Vera";
-}
 images {
 	#include"images/images.inc"
 }

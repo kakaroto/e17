@@ -12,8 +12,6 @@ default.edj
 
 EXTRA_DIST = \
 default.edc \
-Vera.ttf \
-VeraBd.ttf \
 bg.png \
 bg_over.png \
 busy-1.png \

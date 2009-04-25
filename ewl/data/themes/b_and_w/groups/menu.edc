@@ -251,7 +251,7 @@ group {
 				color3: 0 0 0 0;
 				text {
 					text: "text";
-					font: "ewl/default";
+					font: "Sans";
 					size: 10;
 					align: 0.0 0.5;
 					min: 1 1;

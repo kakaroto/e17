@@ -104,7 +104,6 @@ AC_CONFIG_FILES([Makefile
                  data/themes/default_cards/images/Makefile
                  data/themes/e17/Makefile
                  data/themes/e17/images/Makefile
-                 data/themes/e17/fonts/Makefile
                  src/Makefile])
 
 AC_OUTPUT
