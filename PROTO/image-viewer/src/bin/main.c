@@ -519,6 +519,8 @@ read_image(IV *iv, IV_Image_Dest dest)
 	  {
 	     eina_stringshare_del(l->data);
 	     iv->files = eina_list_remove_list(iv->files, l);
+	     if (iv->files == l)
+	       iv->files = (l->next) ? l->next : l->prev;
 	     evas_object_del(img);
 	     switch (dest)
 	       {
@@ -532,7 +534,6 @@ read_image(IV *iv, IV_Image_Dest dest)
 		   l = iv->files->prev;
 		   break;
 	       }
-	     continue;
 	  }
      }
 }
