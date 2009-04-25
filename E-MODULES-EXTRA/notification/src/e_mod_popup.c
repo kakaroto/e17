@@ -116,7 +116,6 @@ _notification_popup_new(E_Notification *n)
   E_Container *con;
   Popup_Data *popup;
   char buf[PATH_MAX];
-  const char *shape_option;
   int shaped;
 
   popup = calloc(1, sizeof(Popup_Data));
@@ -134,40 +133,64 @@ _notification_popup_new(E_Notification *n)
   /* Setup the theme */
   snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
   popup->theme = edje_object_add(popup->e);
-  if (!e_theme_edje_object_set(popup->theme, "base/theme/modules/notification",
-                               "modules/notification/main"))
-    edje_object_file_set(popup->theme, buf, "modules/notification/main");
-  evas_object_show(popup->theme);
-  edje_object_signal_callback_add(popup->theme, "notification,deleted", "theme", 
-                                  _notification_theme_cb_deleted, popup);
-  edje_object_signal_callback_add(popup->theme, "notification,close", "theme", 
-                                  _notification_theme_cb_close, popup);
-  edje_object_signal_callback_add(popup->theme, "notification,find", "theme", 
-                                  _notification_theme_cb_find, popup);
 
-  shape_option = edje_object_data_get(popup->theme, "shaped");
-  if (shape_option)
+  shaped = 0;
+  if (e_config->use_composite)
     {
-      if (!strcmp(shape_option, "1"))
-        shaped = 1;
-      else
-        shaped = 0;
-      if (e_config->use_composite)
-        {
-          ecore_evas_alpha_set(popup->win->ecore_evas, shaped);
-          e_container_window_raise(con,
-                                   ecore_evas_software_x11_window_get(popup->win->ecore_evas),
-                                   ecore_evas_layer_get(popup->win->ecore_evas));
-        }
-      else
-        {
-          ecore_evas_shaped_set(popup->win->ecore_evas, shaped);
-          ecore_evas_avoid_damage_set(popup->win->ecore_evas, shaped);
-        }
+       if (e_theme_edje_object_set(popup->theme,
+				   "base/theme/modules/notification",
+				   "modules/notification/main/alpha"))
+	 shaped = 1;
+       else if (edje_object_file_set(popup->theme, buf,
+				     "modules/notification/main/alpha"))
+	 shaped = 1;
     }
+
+  if ((!e_config->use_composite) ||
+      (edje_object_load_error_get(popup->theme) != EDJE_LOAD_ERROR_NONE))
+    {
+       const char *shape_option;
+
+       if (!e_theme_edje_object_set(popup->theme,
+				   "base/theme/modules/notification",
+				   "modules/notification/main"))
+	 edje_object_file_set(popup->theme, buf, "modules/notification/main");
+
+       shape_option = edje_object_data_get(popup->theme, "shaped");
+       if (shape_option)
+	 {
+	    if (!strcmp(shape_option, "1"))
+	      shaped = 1;
+	    else
+	      shaped = 0;
+	 }
+    }
+
+  if (e_config->use_composite)
+    {
+       ecore_evas_alpha_set(popup->win->ecore_evas, shaped);
+    }
+  else
+    {
+       ecore_evas_shaped_set(popup->win->ecore_evas, shaped);
+       ecore_evas_avoid_damage_set(popup->win->ecore_evas, shaped);
+    }
+
+  evas_object_show(popup->theme);
+  edje_object_signal_callback_add
+    (popup->theme, "notification,deleted", "theme",
+     _notification_theme_cb_deleted, popup);
+  edje_object_signal_callback_add
+    (popup->theme, "notification,close", "theme",
+     _notification_theme_cb_close, popup);
+  edje_object_signal_callback_add
+    (popup->theme, "notification,find", "theme",
+     _notification_theme_cb_find, popup);
+
   _notification_popup_refresh(popup);
   _notification_popup_place(popup, eina_list_count(notification_cfg->popups));
   e_popup_show(popup->win);
+  e_popup_layer_set(popup->win, 999);
 
   return popup;
 }
@@ -404,47 +427,12 @@ _notification_popdown(Popup_Data *popup, E_Notification_Closed_Reason reason)
 static void
 _notification_format_message(Popup_Data *popup)
 {
-  E_Notification *n = popup->notif;
-  char *msg;
-  const char *orig;
-  char *dest;
-  int len = 6;
-  int size = 512;
+  Evas_Object *o = popup->theme;
+  const char *title = e_notification_summary_get(popup->notif);
+  const char *message = e_notification_body_get(popup->notif);
 
-  edje_object_part_text_set(popup->theme, "notification.text.title",
-          e_notification_summary_get(n));
-  msg = calloc(1, 512);
-  snprintf(msg, 511, "<body>");
-
-  for (orig = e_notification_body_get(n), dest = msg + strlen(msg); orig && *orig; orig++)
-    {
-      if (len >= size - 4)
-        {
-          size = len + 512;
-          msg = realloc(msg, size);
-          msg = memset(msg + len, 0, size - len);
-          dest = msg + len;
-        }
-
-      if (*orig == '\n')
-        {
-          dest[0] = '<'; 
-          dest[1] = 'b'; 
-          dest[2] = 'r'; 
-          dest[3] = '>';
-          len += 4;
-          dest += 4;
-        }
-      else
-        {
-          *dest = *orig;
-          len++;
-          dest++;
-        }
-    }
-
-  edje_object_part_text_set(popup->theme, "notification.textblock.message", msg);
-  free(msg);
+  edje_object_part_text_set(o, "notification.text.title", title);
+  edje_object_part_text_set(o, "notification.textblock.message", message);
 }
 
 static void
