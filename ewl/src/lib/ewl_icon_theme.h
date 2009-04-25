@@ -20,14 +20,28 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_SIZE_MEDIUM 22        /**< 22x22 icons */
 #define EWL_ICON_SIZE_LARGE 24        /**< 24x24 icons */
 
+/**
+ * @}
+ */
+/**
+ * @addtogroup Ewl_Icon_Theme_List
+ * @brief List of the Standard Icon Names defined by fdo
+ * @ingroup Ewl_Icon_Theme
+ *
+ * The list is based on the version 0.8.90 of the "Icon Naming Specification".
+ * This can be found here:
+ *      http://www.freedesktop.org/wiki/Specifications/icon-naming-spec
+ *
+ * @{
+ */
+
+/* Standard Action Icons */
 #define EWL_ICON_ADDRESS_BOOK_NEW "address-book-new"        /**< address book icon */
 #define EWL_ICON_APPLICATION_EXIT "application-exit"        /**< application exit */
 #define EWL_ICON_APPOINTMENT_NEW "appointment-new"        /**< appointment new */
+#define EWL_ICON_CALL_START "call-start"        /**< call start */
+#define EWL_ICON_CALL_STOP "call-stop"        /**< call stop */
 #define EWL_ICON_CONTACT_NEW "contact-new"        /**< contact new */
-#define EWL_ICON_DIALOG_APPLY "dialog-apply"        /**< dialog apply */
-#define EWL_ICON_DIALOG_CANCEL "dialog-cancel"        /**< dialog cancel */
-#define EWL_ICON_DIALOG_CLOSE "dialog-close"        /**< dialog close */
-#define EWL_ICON_DIALOG_OK "dialog-ok"        /**< dialog ok */
 #define EWL_ICON_DOCUMENT_NEW "document-new"        /**< document new */
 #define EWL_ICON_DOCUMENT_OPEN "document-open"        /**< document open */
 #define EWL_ICON_DOCUMENT_OPEN_RECENT "document-open-recent"        /**< document open recent */
@@ -38,6 +52,8 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_DOCUMENT_REVERT "document-revert"        /**< document revent */
 #define EWL_ICON_DOCUMENT_SAVE "document-save"        /**< document save */
 #define EWL_ICON_DOCUMENT_SAVE_AS "document-save-as"        /**< document save as */
+#define EWL_ICON_DOCUMENT_SEND "document-send"  /**< document send */
+#define EWL_ICON_EDIT_CLEAR "edit-clear"        /**< edit clear */
 #define EWL_ICON_EDIT_COPY "edit-copy"        /**< edit copy */
 #define EWL_ICON_EDIT_CUT "edit-cut"        /**< edit cut */
 #define EWL_ICON_EDIT_DELETE "edit-delete"        /**< edit delete */
@@ -47,6 +63,7 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_EDIT_REDO "edit-redo"        /**< edit redo */
 #define EWL_ICON_EDIT_SELECT_ALL "edit-select-all"        /**< edit select all */
 #define EWL_ICON_EDIT_UNDO "edit-undo"        /**< edit undo */
+#define EWL_ICON_FOLDER_NEW "folder-new"        /**< new folder */
 #define EWL_ICON_FORMAT_INDENT_LESS "format-indent-less"        /**< format indent less */
 #define EWL_ICON_FORMAT_INDENT_MORE "format-indent-more"        /**< format indent more */
 #define EWL_ICON_FORMAT_JUSTIFY_CENTER "format-justify-center"        /**< format justify center */
@@ -87,6 +104,7 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_MAIL_MESSAGE_NEW "mail-message-new"        /**< mail message new */
 #define EWL_ICON_MAIL_REPLY_ALL "mail-reply-all"        /**< mail reply all */
 #define EWL_ICON_MAIL_REPLY_SENDER "mail-reply-sender"        /**< mail reply sender */
+#define EWL_ICON_MAIL_SEND "mail-send"                  /**< mail send */
 #define EWL_ICON_MAIL_SEND_RECEIVE "mail-send-receive"        /**< mail send receive */
 #define EWL_ICON_MEDIA_EJECT "media-eject"        /**< media eject */
 #define EWL_ICON_MEDIA_PLAYBACK_PAUSE "media-playback-pause"        /**< media playback pause */
@@ -97,6 +115,11 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_MEDIA_SEEK_FORWARD "media-seek-forward"        /**< media seek forward */
 #define EWL_ICON_MEDIA_SKIP_BACKWARD "media-skip-backward"        /**< media skip backward */
 #define EWL_ICON_MEDIA_SKIP_FORWARD "media-skip-forward"        /**< media skip forward */
+#define EWL_ICON_OBJECT_FLIP_HORIZONTAL "object-flip-horizontal" /**< object flip horizontal */
+#define EWL_ICON_OBJECT_FLIP_VERTICAL "object-flip-vertical" /**< object flip vertical */
+#define EWL_ICON_OBJECT_ROTATE_LEFT "object-rotate-left" /**< object rotate left */
+#define EWL_ICON_OBJECT_ROTATE_RIGHT "object-rotate-right" /**< object rotate right */
+#define EWL_ICON_PROCESS_STOP "process-stop" /**< process stop */
 #define EWL_ICON_SYSTEM_LOCK_SCREEN "system-lock-screen"        /**< system lock screen */
 #define EWL_ICON_SYSTEM_LOG_OUT "system-log-out"        /**< system log out */
 #define EWL_ICON_SYSTEM_RUN "system-run"        /**< system run */
@@ -104,17 +127,20 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_TOOLS_CHECK_SPELLING "tools-check-spelling"        /**< tools check spelling */
 #define EWL_ICON_VIEW_FULLSCREEN "view-fullscreen"        /**< view fullscreen */
 #define EWL_ICON_VIEW_REFRESH "view-refresh"        /**< view refresh */
+#define EWL_ICON_VIEW_RESTORE "view-restore"    /**< view restore */
 #define EWL_ICON_VIEW_SORT_ASCENDING "view-sort-ascending"        /**< view sort assending */
 #define EWL_ICON_VIEW_SORT_DESCENDING "view-sort-descending"        /**< view sort descending */
 #define EWL_ICON_WINDOW_CLOSE "window-close"        /**< window close */
 #define EWL_ICON_WINDOW_NEW "window-new"        /**< window new */
-#define EWL_ICON_ZOOM_BEST_FIT "zoom-best-fit"        /**< zoom best fit */
+#define EWL_ICON_ZOOM_FIT_BEST "zoom-fit-best"        /**< zoom best fit */
 #define EWL_ICON_ZOOM_IN "zoom-in"        /**< zoom in */
 #define EWL_ICON_ZOOM_ORIGINAL "zoom-original"        /**< zoom original */
 #define EWL_ICON_ZOOM_OUT "zoom-out"        /**< zoom out */
 
+/* Standard Animation Icons */
 #define EWL_ICON_PROCESS_WORKING "process-working"        /**< process working */
 
+/* Standard Application Icons */
 #define EWL_ICON_ACCESSORIES_CALCULATOR "accessories-calculator"        /**< accessories calculator */
 #define EWL_ICON_ACCESSORIES_CHARACTER_MAP "accessories-character-map"        /**< accessories character map */
 #define EWL_ICON_ACCESSORIES_DICTIONARY "accessories-dictionary"        /**< accessories dictionary */
@@ -131,11 +157,15 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_PREFERENCES_DESKTOP_THEME "preferences-desktop-theme"        /**< pref desktop theme */
 #define EWL_ICON_PREFERENCES_DESKTOP_WALLPAPER "preferences-desktop-wallpaper" /**< pref desktop wallpaper */
 #define EWL_ICON_SYSTEM_FILE_MANAGER "system-file-manager"        /**< system file manager */
+#define EWL_ICON_SYSTEM_SOFTWARE_INSTALL "system-software-install" /**< system software install */
 #define EWL_ICON_SYSTEM_SOFTWARE_UPDATE "system-software-update"        /**< system software update */
+#define EWL_ICON_UTILITIES_SYSTEM_MONITOR "utilities-system-monitor"        /**<utilities system monitor */
 #define EWL_ICON_UTILITIES_TERMINAL "utilities-terminal"        /**< utilities terminal */
 
+/* Standard Category Icons */
 #define EWL_ICON_APPLICATIONS_ACCESSORIES "applications-accessories"        /**< apps accessories */
 #define EWL_ICON_APPLICATIONS_DEVELOPMENT "applications-development"        /**< apps development */
+#define EWL_ICON_APPLICATIONS_ENGINEERING "applications-engineering"    /**< applications engineering */
 #define EWL_ICON_APPLICATIONS_GAMES "applications-games"        /**< apps games*/
 #define EWL_ICON_APPLICATIONS_GRAPHICS "applications-graphics"        /**< apps graphics */
 #define EWL_ICON_APPLICATIONS_INTERNET "applications-internet"        /**< apps internet */
@@ -145,35 +175,42 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_APPLICATIONS_SYSTEM "applications-system"        /**< apps system */
 #define EWL_ICON_APPLICATIONS_UTILITIES "applications-utilities"        /**< apps utilities */
 #define EWL_ICON_PREFERENCES_DESKTOP "preferences-desktop"        /**< prefs desktop */
-#define EWL_ICON_PREFERENCES_DESKTOP_ACCESSIBILITY "preferences-desktop-accessibility"        /**< prefs desktop
-                                                                                                accessibility */
-#define EWL_ICON_PREFERENCES_DESKTOP_PERIPHERALS "preferences-desktop-peripherals" /**< prefs desktop
-                                                                                                peripherals */
+#define EWL_ICON_PREFERENCES_DESKTOP_PERIPHERALS "preferences-desktop-peripherals" /**< prefs desktop peripherals */
 #define EWL_ICON_PREFERENCES_DESKTOP_PERSONAL "preferences-desktop-personal" /**< prefs desktop personal */
 #define EWL_ICON_PREFERENCES_OTHER "preferences-other"        /**< prefs other */
 #define EWL_ICON_PREFERENCES_SYSTEM "preferences-system"        /**< prefs system */
 #define EWL_ICON_PREFERENCES_SYSTEM_NETWORK "preferences-system-network" /**< prefs system network */
 #define EWL_ICON_SYSTEM_HELP "system-help"        /**< system help */
 
+/* Standard Device Icons */
 #define EWL_ICON_AUDIO_CARD "audio-card"        /**< audio card */
 #define EWL_ICON_AUDIO_INPUT_MICROPHONE "audio-input-microphone" /**< audio input microphone */
 #define EWL_ICON_BATTERY "battery"        /**< battery */
 #define EWL_ICON_CAMERA_PHOTO "camera-photo"        /**< camera photo */
 #define EWL_ICON_CAMERA_VIDEO "camera-video"        /**< camera video */
+#define EWL_ICON_CAMERA_WEB "camera-web"        /**< camera web */
 #define EWL_ICON_COMPUTER "computer"        /**< computer */
-#define EWL_ICON_DRIVE_CDROM "drive-cdrom"        /**< drive cdrom */
 #define EWL_ICON_DRIVE_HARDDISK "drive-harddisk"        /**< drive harddisk */
+#define EWL_ICON_DRIVE_OPTICAL "drive-optical"        /**< drive optical */
 #define EWL_ICON_DRIVE_REMOVABLE_MEDIA "drive-removable-media"        /**< drive removable media */
 #define EWL_ICON_INPUT_GAMING "input-gaming"        /**< input gaming */
 #define EWL_ICON_INPUT_KEYBOARD "input-keyboard"        /**< input keyboard */
 #define EWL_ICON_INPUT_MOUSE "input-mouse"        /**< input mouse */
-#define EWL_ICON_MEDIA_CDROM "media-cdrom"        /**< media cdrom */
+#define EWL_ICON_INPUT_TABLET "input-tablet"    /**< input tablet */
+#define EWL_ICON_MEDIA_FLASH "media-flash"        /**< media flash */
 #define EWL_ICON_MEDIA_FLOPPY "media-floppy"        /**< media floppy */
+#define EWL_ICON_MEDIA_OPTICAL "media-optical"        /**< media optical */
+#define EWL_ICON_MEDIA_TAPE "media-tape"        /**< media tape */
 #define EWL_ICON_MULTIMEDIA_PLAYER "multimedia-player"        /**< multimedia player */
 #define EWL_ICON_NETWORK_WIRED "network-wired"        /**< network wired */
 #define EWL_ICON_NETWORK_WIRELESS "network-wireless"        /**< network wireless */
+#define EWL_ICON_PDA "pda"      /**< pda */
+#define EWL_ICON_PHONE "phone"  /**< phone */
 #define EWL_ICON_PRINTER "printer"        /**< printer */
+#define EWL_ICON_SCANNER "scanner"      /**< scanner */
+#define EWL_ICON_VIDEO_DISPLAY "video-display" /**< video display */
 
+/* Standard Emblem Icons */
 #define EWL_ICON_EMBLEM_DEFAULT "emblem-default"        /**< emblem default */
 #define EWL_ICON_EMBLEM_DOCUMENTS "emblem-documents"        /**< emblem documents */
 #define EWL_ICON_EMBLEM_DOWNLOADS "emblem-downloads"        /**< emblem downloads */
@@ -188,21 +225,30 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_EMBLEM_SYSTEM "emblem-system"        /**< emblem system */
 #define EWL_ICON_EMBLEM_UNREADABLE "emblem-unreadable"        /**< emblem unreadable */
 
+/* Standard Emotion Icons */
 #define EWL_ICON_FACE_ANGEL "face-angel"        /**< face angel */
+#define EWL_ICON_FACE_ANGRY "face-angry"        /**< face angry */
+#define EWL_ICON_FACE_COOL "face-cool"  /**< face cool */
 #define EWL_ICON_FACE_CRYING "face-crying"        /**< face crying */
-#define EWL_ICON_FACE_DEVIL_GRIN "face-devil-grin"        /**< face devil grin */
-#define EWL_ICON_FACE_DEVIL_SAD "face-devil-sad"        /**< face devil sad */
-#define EWL_ICON_FACE_GLASSES "face-glasses"        /**< face glasses */
+#define EWL_ICON_FACE_DEVILISH "face-devilish"        /**< face devilish */
+#define EWL_ICON_FACE_EMBARRASSED "face-embarrassed" /**< face-embarrassed */
 #define EWL_ICON_FACE_KISS "face-kiss"        /**< face kiss */
+#define EWL_ICON_FACE_LAUGH "face-laugh"        /**< face laugh */
 #define EWL_ICON_FACE_MONKEY "face-monkey"        /**< face monkey */
 #define EWL_ICON_FACE_PLAIN "face-plain"        /**< face plain */
+#define EWL_ICON_FACE_RASPBERRY "face-raspberry" /**< face raspberry */
 #define EWL_ICON_FACE_SAD "face-sad"        /**< face sad */
+#define EWL_ICON_FACE_SICK "face-sick"  /**< face sick */
 #define EWL_ICON_FACE_SMILE "face-smile"        /**< face smile */
 #define EWL_ICON_FACE_SMILE_BIG "face-smile-big"        /**< face smile big */
 #define EWL_ICON_FACE_SMIRK "face-smirk"        /**< face smirk */
 #define EWL_ICON_FACE_SURPRISE "face-surprise"        /**< face surprise */
+#define EWL_ICON_FACE_TIRED "face-tired"        /**< face tired */
+#define EWL_ICON_FACE_UNCERTAIN "face-uncertain" /**< face uncertain */
 #define EWL_ICON_FACE_WINK "face-wink"        /**< face wink */
+#define EWL_ICON_FACE_WORRIED "face-worried" /**< face worried */
 
+/* Standard MIME Type Icons */
 #define EWL_ICON_APPLICATION_X_EXECUTABLE "application-x-executable"        /**< application/x-executable */
 #define EWL_ICON_AUDIO_X_GENERIC "audio-x-generic"        /**< audio/x-generic */
 #define EWL_ICON_FONT_X_GENERIC "font-x-generic"        /**< font/x-generic */
@@ -219,16 +265,18 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_X_OFFICE_PRESENTATION "x-office-presentation"        /**< x-office/presentation */
 #define EWL_ICON_X_OFFICE_SPREADSHEET "x-office-spreadsheet"        /**< x-office/spreadsheet */
 
+/* Standard Place Icons */
 #define EWL_ICON_FOLDER "folder"        /**< folder */
-#define EWL_ICON_FOLDER_NEW "folder-new"        /**< new folder */
 #define EWL_ICON_FOLDER_REMOTE "folder-remote"        /**< folder remote */
 #define EWL_ICON_NETWORK_SERVER "network-server"        /**< network server */
 #define EWL_ICON_NETWORK_WORKGROUP "network-workgroup"        /**< network workgroup */
 #define EWL_ICON_START_HERE "start-here"        /**< start here */
+#define EWL_ICON_USER_BOOKMARKS "user-bookmarks" /**< user bookmarks */
 #define EWL_ICON_USER_DESKTOP "user-desktop"        /**< user desktop */
 #define EWL_ICON_USER_HOME "user-home"        /**< user home */
 #define EWL_ICON_USER_TRASH "user-trash"        /**< user trash */
 
+/* Standard Status Icons */
 #define EWL_ICON_APPOINTMENT_MISSED "appointment-missed"        /**< appointment missed */
 #define EWL_ICON_APPOINTMENT_SOON "appointment-soon"        /**< appointment soon */
 #define EWL_ICON_AUDIO_VOLUME_HIGH "audio-volume-high"        /**< audio volume high */
@@ -264,12 +312,15 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_NETWORK_TRANSMIT_RECEIVE "network-transmit-receive"        /**< network transmit receive */
 #define EWL_ICON_PRINTER_ERROR "printer-error"        /**< printer error */
 #define EWL_ICON_PRINTER_PRINTING "printer-printing"        /**< printer printing */
+#define EWL_ICON_SECURITY_HIGH "security-high"  /**< security high */
+#define EWL_ICON_SECURITY_MEDIUM "security-medium"  /**< security medium */
+#define EWL_ICON_SECURITY_LOW "security-low"  /**< security low */
 #define EWL_ICON_SOFTWARE_UPDATE_AVAILABLE "software-update-available"        /**< software update*/
 #define EWL_ICON_SOFTWARE_UPDATE_URGENT "software-update-urgent" /**< software update urgent */
 #define EWL_ICON_SYNC_ERROR "sync-error"        /**< sync error */
 #define EWL_ICON_SYNC_SYNCHRONIZING "sync-synchronizing"        /**< sync synchronizing */
 #define EWL_ICON_TASK_DUE "task-due"        /**< task due */
-#define EWL_ICON_TASK_PASSED_DUE "task-passed-due"        /**< task passwd due */
+#define EWL_ICON_TASK_PAST_DUE "task-past-due"        /**< task past due */
 #define EWL_ICON_USER_AWAY "user-away"        /**< user away */
 #define EWL_ICON_USER_IDLE "user-idle"        /**< user idle */
 #define EWL_ICON_USER_OFFLINE "user-offline"        /**< user offline */
@@ -286,6 +337,32 @@ const char      *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_WEATHER_SHOWERS_SCATTERED "weather-showers-scattered"        /**< weather showers scattered */
 #define EWL_ICON_WEATHER_SNOW "weather-snow"        /**< weather snow */
 #define EWL_ICON_WEATHER_STORM "weather-storm"        /**< weather storm */
+
+/**
+ * @}
+ */
+/**
+ * @addtogroup Ewl_Icon_Theme_List_08
+ * @brief List of changed removed icons from 0.8
+ * @ingroup Ewl_Icon_Theme_List
+ *
+ * Since the current icon naming spec is not released, here can be the icons
+ * found that disappeared or changed their names. So also the version 0.8 is
+ * supported.
+ * @{
+ */
+#define EWL_ICON_DIALOG_APPLY "dialog-apply"        /**< dialog apply */
+#define EWL_ICON_DIALOG_CANCEL "dialog-cancel"        /**< dialog cancel */
+#define EWL_ICON_DIALOG_CLOSE "dialog-close"        /**< dialog close */
+#define EWL_ICON_DIALOG_OK "dialog-ok"        /**< dialog ok */
+#define EWL_ICON_ZOOM_BEST_FIT "zoom-best-fit"        /**< zoom best fit */
+#define EWL_ICON_PREFERENCES_DESKTOP_ACCESSIBILITY "preferences-desktop-accessibility"        /**< prefs desktop accessibility */
+#define EWL_ICON_DRIVE_CDROM "drive-cdrom"        /**< drive cdrom */
+#define EWL_ICON_MEDIA_CDROM "media-cdrom"        /**< media cdrom */
+#define EWL_ICON_FACE_DEVIL_GRIN "face-devil-grin"        /**< face devil grin */
+#define EWL_ICON_FACE_DEVIL_SAD "face-devil-sad"        /**< face devil sad */
+#define EWL_ICON_FACE_GLASSES "face-glasses"        /**< face glasses */
+#define EWL_ICON_TASK_PASSED_DUE "task-passed-due"        /**< task passwd due */
 
 /**
  * @}
