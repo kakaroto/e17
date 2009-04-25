@@ -1,8 +1,3 @@
-fonts
-{
-  font:"VeraBd.ttf" "Vera Bold";
-}
-
 images
 {
   image:"e17_button_sm.png" COMP;
@@ -208,7 +203,7 @@ collections
                     text
                     {
                       text:"Icon Name";
-                      font:"Edje-Vera-Bold";
+                      font:"Sans:style=Bold";
                       size:10;
                       align:0.0 0.5;
                       min:0 1;

@@ -5,7 +5,7 @@ SUBDIRS = images
 
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \
--fd $(top_srcdir)/fonts
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir = $(datadir)
@@ -16,9 +16,7 @@ forecasts.edj
 
 EXTRA_DIST = $(files_DATA) \
 				e_modules-forecasts.spec \
-				forecasts.edc \
-				fonts/VeraBd.ttf \
-				fonts/vera.ttf
+				forecasts.edc
 
 # the module .so file
 INCLUDES = -I. \

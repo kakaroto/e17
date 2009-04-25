@@ -5,14 +5,13 @@ SUBDIRS = po
 
 EDJE_FLAGS = -v \
 -id $(top_srcdir) \
--fd $(top_srcdir)/fonts
+-fd $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = e-module-alarm.edj module.desktop alarm.edj
 
 EXTRA_DIST = $(files_DATA) e_modules-alarm.spec \
 	     alarm.edc \
-	     fonts/vera.ttf \
 	     images/alarm_enabled.png \
 	     images/alarm_disabled.png \
 	     images/alarm_snooze.png

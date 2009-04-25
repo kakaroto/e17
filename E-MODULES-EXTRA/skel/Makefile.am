@@ -7,7 +7,7 @@ SUBDIRS = src po
 
 EDJE_FLAGS = -v \
 	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	   -fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -17,8 +17,7 @@ files_DATA = module.desktop \
 
 EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
-	     e-module-skel.edc \
-	     fonts/VeraBd.ttf
+	     e-module-skel.edc
 
 e-module-skel.edj: $(EXTRA_DIST)
 

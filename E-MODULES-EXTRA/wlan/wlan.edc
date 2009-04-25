@@ -25,11 +25,6 @@ images
    image: "level_10.png" COMP;
 }
 
-fonts
-{
-   font: "VeraMono.ttf" "VeraMono";
-}
-
 collections
 {
    group
@@ -252,7 +247,7 @@ collections
 		       text 
 			 {
 			    text: "Quality:";
-			    font: "VeraMono";
+			    font: "Sans:style=Mono";
 			    size: 9;
 			    min: 1 1;
 			    align: 0.5 1.0;
@@ -411,7 +406,7 @@ collections
 		       text 
 			 {
 			    text: "Level:";
-			    font: "VeraMono";
+			    font: "Sans:style=Mono";
 			    size: 9;
 			    min: 1 1;
 			    align: 0.5 1.0;

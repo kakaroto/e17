@@ -17,7 +17,6 @@ e-module-uptime.edj
 EXTRA_DIST = $(files_DATA) \
 	     uptime.png \
 	     uptime.edc \
-	     VeraMono.ttf \
 	     e_modules-uptime.spec
 
 

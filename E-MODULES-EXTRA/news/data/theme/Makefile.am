@@ -3,7 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_FLAGS = -v \
 	-id $(top_srcdir)/data/theme/images \
-	-fd $(top_srcdir)/data/theme/fonts
+	-fd $(top_srcdir)/data/theme
 
 filesdir = $(datadir)
 files_DATA = e-module-news.edj
@@ -23,8 +23,6 @@ module_item_programs.edc \
 module_popw.edc \
 module_popw_parts.edc \
 module_popw_programs.edc \
-fonts/VeraBd.ttf \
-fonts/Vera.ttf \
 images/feed_background_new.png \
 images/feed_border.png \
 images/icon_article_read.png \

@@ -1,9 +1,3 @@
-fonts
-{
-   font: "vera.ttf"   "Vera";
-   font: "VeraBd.ttf" "Vera Bold";
-}
-
 collections
 {
    group
@@ -79,7 +73,7 @@ collections
 		       text
 			 {
 			    text:  "";
-			    font:  "Vera Bold";
+			    font:  "Sans:style=Bold";
 			    size:  10;
 			    min:   1 1;
 			    align: 1.0 0.5;
@@ -115,7 +109,7 @@ collections
 		       text
 			 {
 			    text:  "Taunton";
-			    font:  "Vera Bold";
+			    font:  "Sans:style=Bold";
 			    size:  8;
 			    min:   1 1;
 			    align: 0.5 0.5;
@@ -187,7 +181,7 @@ collections
 		       text
 			 {
 			    text:  "";
-			    font:  "Vera Bold";
+			    font:  "Sans:style=Bold";
 			    size:  8;
 			    min:   1 1;
 			    align: 0.5 0.5;
@@ -216,7 +210,7 @@ collections
 		       text
 			 {
 			    text:  "";
-			    font:  "Vera Bold";
+			    font:  "Sans:style=Bold";
 			    size:  8;
 			    min:   1 1;
 			    align: 0.5 0.5;

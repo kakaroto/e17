@@ -7,7 +7,7 @@ SUBDIRS = src po
 
 EDJE_FLAGS = -v \
 	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	   -fd $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = \
@@ -27,8 +27,7 @@ EXTRA_DIST = $(files_DATA) \
 	     images/forward.png \
 	     images/up.png \
 	     images/favorites.png \
-	     images/refresh.png \
-	     fonts/Vera.ttf
+	     images/refresh.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

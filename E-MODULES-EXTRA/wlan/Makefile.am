@@ -16,7 +16,6 @@ wlan.edj
 
 EXTRA_DIST = $(files_DATA) \
 				wlan.edc \
-				VeraMono.ttf \
 				wlan.png \
 				e_modules-wlan.spec
 

@@ -1,8 +1,3 @@
-fonts 
-{
-   font: "VeraBd.ttf" "VeraBd";
-}
-
 images 
 {
    image: "module_icon.png" COMP;
@@ -89,7 +84,7 @@ collections
 		       text 
 			 {
 			    text: "";
-			    font: "VeraBd";
+			    font: "Sans:style=Bold";
 			    size: 16;
 			    min: 1 1;
 			    align: 0.5 0.5;

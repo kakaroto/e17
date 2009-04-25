@@ -19,7 +19,6 @@ EXTRA_DIST = $(files_DATA) \
 	     e17_titlebar_glint3.png \
 	     e17_titlebar_shadow1.png \
 	     e17_titlebar_shadow2.png \
-	     VeraBd.ttf \
 	     module_icon.png
 
 # the module .so file

@@ -16,8 +16,6 @@ files_DATA = module.desktop \
 
 EXTRA_DIST = $(files_DATA) \
 	     net.edc \
-	     fonts/Vera.ttf \
-	     fonts/VeraBd.ttf \
 	     images/module_icon.png \
 	     images/bd.png \
 	     images/device.png \

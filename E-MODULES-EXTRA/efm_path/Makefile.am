@@ -6,8 +6,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	   -id $(top_srcdir) \
+	   -fd $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = \
@@ -15,8 +15,7 @@ files_DATA = \
 	   e-module-efm_path.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/entry.png \
-	     fonts/Vera.ttf
+	     entry.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

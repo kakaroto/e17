@@ -24,12 +24,6 @@ images
         image: "icon_dir_loaded.png" COMP;
 }
 
-fonts
-{
-	font: "Vera.ttf"   "Vera";
-	font: "VeraBd.ttf" "VeraBd";
-}
-
 data
 {
         item: "name" "Default Photo Theme";

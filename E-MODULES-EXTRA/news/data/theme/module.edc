@@ -18,12 +18,6 @@ images
         image: "icon_setasread.png" COMP;
 }
 
-fonts
-{
-	font: "Vera.ttf"   "Vera";
-	font: "VeraBd.ttf" "VeraBd";
-}
-
 collections
 {
         /* Groups */

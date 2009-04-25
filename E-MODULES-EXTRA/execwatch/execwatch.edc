@@ -1,10 +1,6 @@
 /*
 * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 */
-fonts
-{
-   font: "VeraBd.ttf" "VeraBold";
-}
 
 #define EXECWATCH_ICON(icon_name) \
 images { image: icon_name".png" COMP; } \
@@ -99,7 +95,7 @@ collections
 		       text
 		         {
 			    text:  "";
-			    font:  "VeraBold";
+			    font:  "Sans:style=Bold";
 			    size:  8;
 			    min:   1 1;
 			    align: 0.5 0.5;

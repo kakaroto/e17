@@ -157,11 +157,6 @@
 	  } \
      }
 
-fonts 
-{
-   font: "Vera.ttf" "Vera";
-}
-
 images 
 {
    image: "home.png" COMP;

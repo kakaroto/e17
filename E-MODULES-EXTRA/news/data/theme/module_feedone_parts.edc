@@ -128,7 +128,7 @@ part
                 text
                 {
                         text: "o Ooo Ooo";
-                        font: "Vera";
+                        font: "Sans";
                         align: 0.0 0.5;
                         fit: 0 1;
                 }

@@ -7,12 +7,6 @@ images
    image: "bd.png" COMP;
 }
 
-fonts 
-{
-   font: "Vera.ttf" "Vera";
-   font: "VeraBd.ttf" "VeraBold";
-}
-
 collections 
 {
    group 
@@ -112,7 +106,7 @@ collections
 		       text 
 			 {
 			    text: "Rx:";
-			    font: "VeraBold";
+			    font: "Sans:style=Bold";
 			    size: 10;
 			    min: 1 1;
 			    align: 0.5 0.5;
@@ -157,7 +151,7 @@ collections
 		       text 
 			 {
 			    text: "Tx:";
-			    font: "VeraBold";
+			    font: "Sans:style=Bold";
 			    size: 10;
 			    min: 1 1;
 			    align: 0.5 0.5;
@@ -295,7 +289,7 @@ collections
 		       text 
 			 {
 			    text: "";
-			    font: "VeraBold";
+			    font: "Sans:style=Bold";
 			    size: 10;
 			    min: 1 1;
 			    align: 0.5 0.0;
@@ -358,7 +352,7 @@ collections
 		       text 
 			 {
 			    text: "Rx:";
-			    font: "VeraBold";
+			    font: "Sans:style=Bold";
 			    size: 10;
 			    min: 1 1;
 			    align: 0.0 0.5;
@@ -395,7 +389,7 @@ collections
 		       text 
 			 {
 			    text: "Tx:";
-			    font: "VeraBold";
+			    font: "Sans:style=Bold";
 			    size: 10;
 			    min: 1 1;
 			    align: 0.0 0.5;

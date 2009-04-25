@@ -6,8 +6,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	   -id $(top_srcdir) \
+	   -fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -16,9 +16,8 @@ files_DATA = module.desktop \
 	     e-module-exalt.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/module_icon.png \
-	     e-module-exalt.edc \
-	     fonts/VeraBd.ttf
+	     module_icon.png \
+	     e-module-exalt.edc
 
 e-module-exalt.edj: $(EXTRA_DIST)
 

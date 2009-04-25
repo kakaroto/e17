@@ -2,11 +2,10 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_FLAGS = -v \
              -id $(top_srcdir)/data/themes/images \
-             -fd $(top_srcdir)/data/themes/fonts
+             -fd $(top_srcdir)/data/themes
 
 EXTRA_DIST = \
 taskbar.edc \
-$(wildcard fonts/*.ttf) \
 $(wildcard images/*.png) 
 
 filesdir = $(datadir)

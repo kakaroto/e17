@@ -6,7 +6,7 @@ SUBDIRS = src
 
 EDJE_FLAGS = -v \
 	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	   -fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -15,8 +15,7 @@ files_DATA = module.desktop \
 	     e-module-diskio.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/module_icon.png \
-	     fonts/VeraBd.ttf
+	     images/module_icon.png
 
 ACLOCAL_AMFLAGS = -I m4
 

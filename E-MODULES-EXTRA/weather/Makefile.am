@@ -16,9 +16,7 @@ weather.edj
 
 EXTRA_DIST = $(files_DATA) \
 				e_modules-weather.spec \
-				weather.edc \
-				fonts/VeraBd.ttf \
-				fonts/vera.ttf
+				weather.edc
 
 # the module .so file
 INCLUDES = -I. \

@@ -1,8 +1,3 @@
-fonts
-{
-   font: "VeraBd.ttf" "VeraBd";
-}
-
 images
 {
     image: "module_icon.png" COMP;

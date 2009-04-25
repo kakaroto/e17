@@ -19,8 +19,7 @@ EXTRA_DIST = $(files_DATA) \
 			e_modules-tclock.spec \
 			tip_bd.png \
 			tip_bg.png \
-			tclock.edc \
-			VeraMono.ttf
+			tclock.edc
 
 CONFIG_CLEAN_FILES = e_modules-tclock.spec tclock.edj
 

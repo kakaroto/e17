@@ -147,7 +147,7 @@ collections
                 		text
                        		{
         			text: "-- --:--";
-        			font: "VeraBd";
+        			font: "Sans:style=Bold";
         			size: 12;
                                 fit: 1 1;
         			align: 0.0 0.5;

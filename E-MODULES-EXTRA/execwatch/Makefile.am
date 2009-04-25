@@ -14,8 +14,6 @@ execwatch.edj
 
 EXTRA_DIST = $(files_DATA) \
 execwatch.edc \
-VeraMono.ttf \
-VeraBd.ttf \
 execwatch.png \
 e_modules-execwatch.spec
 

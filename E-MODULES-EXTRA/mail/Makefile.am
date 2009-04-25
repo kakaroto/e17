@@ -18,7 +18,6 @@ EXTRA_DIST = $(files_DATA) \
 	     mail.edc \
 	     checking.png \
 	     newmail.png \
-	     VeraBd.ttf \
 	     module_icon.png
 
 # the module .so file
