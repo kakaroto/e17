@@ -5,7 +5,6 @@ collections {
    group { name: "iv/main";
       script {
 	 public controls_visible;
-	 public previews_visible;
       }
       parts {
          part { name: "iv.swallow.image";
@@ -111,58 +110,12 @@ collections {
 	    source: "";
 	    script {
 	       set_int(controls_visible, 0);
-	       set_int(previews_visible, 0);
-	    }
-	 }
-	 program { name: "set_previews_show";
-	    script {
-	       set_int(previews_visible, 1);
-	    }
-	 }
-	 program { name: "set_previews_hide";
-	    script {
-	       set_int(previews_visible, 0);
 	    }
 	 }
 	 program { name: "upper_edge_in";
 	    signal: "mouse,in";
 	    source: "upper_edge";
-	    action: SIGNAL_EMIT "upper_edge_in" "iv";
-	    after: "upper_edge_in_1";
-	 }
-	 program { name: "upper_edge_in_1";
-	    script {
-		if (get_int(previews_visible) == 0) {
-		    run_program(PROGRAM:"show_previews");
-		}
-	    }
-	 }
-	 program { name: "toggle_previews";
-	    signal: "iv,state,toggle_previews";
-	    source: "iv";
-	    script {
-		if (get_int(previews_visible) == 0) {
-		    run_program(PROGRAM:"show_previews");
-		} else {
-		    run_program(PROGRAM:"hide_previews");
-		}
-	    }
-	 }
-	 program { name: "show_previews";
-	    signal: "iv,state,show_previews";
-	    source: "iv";
-	    transition: ACCELERATE 0.2;
-	    action: STATE_SET "active" 0.0;
-	    target: "iv.swallow.previews";
-	    after: "set_previews_show";
-	 }
-	 program { name: "hide_previews";
-	    signal: "iv,state,hide_previews";
-	    source: "iv";
-	    action: STATE_SET "default" 0.0;
-	    transition: DECELERATE 0.1;
-	    target: "iv.swallow.previews";
-	    after: "set_previews_hide";
+	    action: SIGNAL_EMIT "iv,state,toggle_previews" "iv";
 	 }
 
 	 program { name: "set_controls_show";
@@ -178,10 +131,6 @@ collections {
 	 program { name: "lower_edge_in";
 	    signal: "mouse,in";
 	    source: "lower_edge";
-	    action: SIGNAL_EMIT "lower_edge_in" "iv";
-	    after: "lower_edge_in_1";
-	 }
-	 program { name: "lower_edge_in_1";
 	    script {
 		if (get_int(controls_visible) == 0) {
 		    run_program(PROGRAM:"show_controls");
@@ -487,6 +436,36 @@ collections {
       }
    }
 
+   group { name: "iv/preview/box";
+      parts {
+	 part { name: "iv.box.content";
+	    type: BOX;
+	    description { state: "default" 0.0;
+	       box {
+		  align: 0.0 0.0;
+		  layout: "horizontal_flow";
+		  min: 1 1;
+	       }
+	    }
+	 }
+      }
+   }
+
+   group { name: "iv/preview/thumb/border";
+      min: 90 60;
+      max: 90 60;
+      parts {
+	 part { name :"iv.swallow.icon";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       min: 80 53;
+	       max: 80 53;
+	       align: 0.5 0.5;
+	    }
+	 }
+      }
+   }
+
    group { name: "elm/win/inwin/shadow";
       images {
 	 image: "inwin_base.png" COMP;
@@ -543,6 +522,81 @@ collections {
                fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "show";
+            signal: "elm,action,show";
+	    source: "elm";
+	    action: STATE_SET "visible" 0.0;
+//	    transition: DECELERATE 0.5;
+	    target: "base";
+	 }
+	 program { name: "hide";
+            signal: "elm,action,hide";
+	    source: "elm";
+	    action: STATE_SET "default" 0.0;
+//	    transition: DECELERATE 0.5;
+	    target: "base";
+	 }
+      }
+   }
+   group { name: "elm/win/inwin/shadow_fill";
+      images {
+	 image: "inwin_base.png" COMP;
+	 image: "inwin_hilight.png" COMP;
+      }
+      parts {
+	 part { name: "base";
+	    type: RECT;
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 1.0;
+	       color: 0 0 0 128;
+	    }
+	 }
+	 part { name: "pop";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       rel1.to: "elm.swallow.content";
+               rel1.offset: -15 -15;
+	       rel2.to: "elm.swallow.content";
+               rel2.offset: 14 14;
+               image {
+		  normal: "inwin_base.png";
+		  border: 14 14 14 14;
+	       }
+	       color: 255 255 255 200;
+               image.middle: SOLID;
+	    }
+	 }
+         part { name: "popover";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  offset: 10 10;
+		  to: "pop";
+	       }
+	       rel2 {
+		  relative: 1.0 0.5;
+		  offset: -11 0;
+		  to: "pop";
+	       }
+	       image {
+		  normal: "inwin_hilight.png";
+		  border: 4 4 4 0;
+	       }
+	    }
+	 }
+	 part { name: "elm.swallow.content";
+            type: SWALLOW;
+	    description { state: "default" 0.0;
+               rel1.relative: 0.1 0.1;
+               rel2.relative: 0.9 0.9;
 	    }
 	 }
       }

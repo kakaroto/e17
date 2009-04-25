@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0,W4
  */
 #include <Eet.h>
 #include <Ecore.h>
@@ -55,16 +55,11 @@ struct _IV
    Ecore_Timer *slideshow_timer;
 
    struct {
-	Evas_Object *win, *ly, *img, *scroller;
-	Evas_Object *prev_img, *next_img, *bg;
-	Evas_Object *controls, *file_label;
-        Evas_Object *next_bt, *prev_bt;
-        Evas_Object *hoversel;
-        Evas_Object *settings_bt, *slideshow_bt;
-	Evas_Object *settings_win;
+	Evas_Object *win, *ly, *img, *scroller, *prev_img, *next_img, *bg;
+	Evas_Object *controls, *file_label, *next_bt, *prev_bt;
+        Evas_Object *hoversel, *settings_bt, *slideshow_bt, *settings_win;
 #ifdef HAVE_ETHUMB
-	/* XXX: Replace with carousel when ready */
-	Evas_Object *toolbar;
+	Evas_Object *preview_win, *preview_scroller, *preview_box;
 #endif
    } gui;
 
@@ -95,8 +90,6 @@ struct _IV
    Eina_List		*preview_files;
    Eina_Hash		*preview_items;
    Ethumb		*ethumb;
-
-   Eina_Bool		 thumb_generator;
 #endif
 };
 
@@ -563,12 +556,11 @@ on_next_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-on_toolbar_change(void *data, Evas_Object *obj, void *event_info)
+on_thumb_click(void *data, Evas_Object *obj, void *event_info)
 {
 #ifdef HAVE_ETHUMB
-   Evas_Object *thumb = data;
-   IV *iv = evas_object_data_get(thumb, "iv");
-   const char *file = evas_object_data_get(thumb, "iv_file");
+   IV *iv = data;
+   const char *file = evas_object_data_get(obj, "iv_file");
 
    if (iv->flags.ignore_preview_change)
      {
@@ -602,7 +594,6 @@ on_thumb_generate(Ethumb *e, void *data)
      iv->idler = ecore_idler_add(on_idler, iv);
 
    iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
-   iv->thumb_generator = EINA_FALSE;
 #endif
 }
 
@@ -690,14 +681,25 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
      iv->idler = ecore_idler_add(on_idler, iv);
 }
 
+static void
+preview_box_size(IV *iv)
+{
+#ifdef HAVE_ETHUMB
+   Evas_Coord w, ww, hh;
+
+   evas_object_size_hint_min_get(
+       edje_object_part_object_get(iv->gui.preview_box, "iv.box.content"),
+       &ww, &hh);
+   if (ww && hh)
+     evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
+#endif
+}
+
 static int
 on_idler(void *data)
 {
    IV *iv = data;
    Eina_Bool renew = EINA_FALSE;
-#ifdef HAVE_ETHUMB
-   Elm_Toolbar_Item *item;
-#endif
 
    if (iv->dirs)
      {
@@ -770,38 +772,49 @@ on_idler(void *data)
 	  }
 
 #ifdef HAVE_ETHUMB
-	if (!iv->thumb_generator && iv->thumb_path)
+	if (iv->thumb_path && iv->gui.preview_box)
 	  {
 	     Evas_Object *thumb;
 	     IV_Thumb_Info *info;
 
 	     EINA_LIST_FREE(iv->thumb_path, info)
 	       {
-		  Elm_Toolbar_Item *item;
+		  Evas_Object *o;
+		  Evas_Coord w, h;
 
-		  thumb = elm_icon_add(iv->gui.toolbar);
+		  thumb = elm_icon_add(iv->gui.preview_win);
 		  elm_icon_file_set(thumb, info->thumb_path, NULL);
-		  evas_object_data_set(thumb, "iv", iv);
 		  evas_object_data_set(thumb, "iv_file", info->file);
-		  evas_object_show(thumb);
-		  item = elm_toolbar_item_add(iv->gui.toolbar, thumb, NULL, on_toolbar_change, thumb);
-		  eina_hash_add(iv->preview_items, info->file, item);
+		  evas_object_smart_callback_add(thumb, "clicked",
+						 on_thumb_click, iv);
+
+		  o = edje_object_add(evas_object_evas_get(iv->gui.preview_win));
+		  edje_object_file_set(o, iv->theme_file, "iv/preview/thumb/border");
+		  edje_object_part_swallow(o, "iv.swallow.icon", thumb);
+		  evas_object_show(o);
+		  edje_object_size_min_get(o, &w, &h);
+		  evas_object_resize(o, w, h);
+
+		  edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", o);
+		  eina_hash_add(iv->preview_items, info->file, thumb);
 
 		  if (iv->flags.first_preview)
 		    {
 		       iv->flags.ignore_preview_change = EINA_TRUE;
-		       elm_toolbar_item_select(item);
+		       //elm_toolbar_item_select(item);
 		       iv->flags.first_preview = EINA_FALSE;
 		    }
 
 		  eina_stringshare_del(info->thumb_path);
 		  free(info);
 	       }
-
+	     preview_box_size(iv);
 	  }
 
 	if (iv->flags.add_previews)
 	  {
+	     Eina_List *l;
+	     const char *file;
 	     int rc;
 
 	     if (!iv->preview_files)
@@ -810,25 +823,21 @@ on_idler(void *data)
 		  iv->flags.first_preview = EINA_TRUE;
 	       }
 
-	     if (!iv->thumb_generator)
+	     EINA_LIST_FOREACH(iv->preview_files, l, file)
 	       {
-		  Eina_List *l;
-		  const char *file;
+		  if (l->next)
+		    iv->preview_files = l->next;
 
-		  iv->thumb_generator = EINA_TRUE;
-		  EINA_LIST_FOREACH(iv->preview_files, l, file)
-		    {
-		       iv->preview_files = l;
+		  if (!ethumb_file_set(iv->ethumb, file, NULL))
+		    continue;
 
-		       if ((!ethumb_file_set(iv->ethumb, file, NULL)) ||
-			   (ethumb_exists(iv->ethumb)))
-			 continue;
+		  if (ethumb_exists(iv->ethumb))
+		    on_thumb_generate(iv->ethumb, iv);
+		  else if (!ethumb_generate(iv->ethumb, on_thumb_generate, iv))
+		    continue;
 
-		       ethumb_generate(iv->ethumb, on_thumb_generate, iv);
-
-		       break;
-		    }
-
+		  renew = EINA_TRUE;
+		  break;
 	       }
 	  }
 #endif
@@ -869,9 +878,11 @@ on_idler(void *data)
 
 #ifdef HAVE_ETHUMB
 	     iv->flags.ignore_preview_change = EINA_TRUE;
+	     /*
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
 	       elm_toolbar_item_select(item);
+	       */
 #endif
 	  }
      }
@@ -906,9 +917,11 @@ on_idler(void *data)
 
 #ifdef HAVE_ETHUMB
 	     iv->flags.ignore_preview_change = EINA_TRUE;
+	     /*
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
 	       elm_toolbar_item_select(item);
+	       */
 #endif
 	  }
      }
@@ -987,6 +1000,40 @@ on_idler(void *data)
 	iv->idler = NULL;
 	return ECORE_CALLBACK_CANCEL;
      }
+}
+
+static void
+toggle_previews(IV *iv)
+{
+#ifdef HAVE_ETHUMB
+   if (!iv->gui.preview_win)
+     {
+	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
+	elm_object_style_set(iv->gui.preview_win, "shadow_fill");
+	evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
+
+	iv->gui.preview_scroller = elm_scroller_add(iv->gui.preview_win);
+	evas_object_size_hint_weight_set(iv->gui.preview_scroller, 1.0, 1.0);
+	evas_object_show(iv->gui.preview_scroller);
+
+	iv->gui.preview_box = edje_object_add(evas_object_evas_get(iv->gui.win));
+	edje_object_file_set(iv->gui.preview_box, iv->theme_file, "iv/preview/box");
+	elm_scroller_content_set(iv->gui.preview_scroller, iv->gui.preview_box);
+	evas_object_show(iv->gui.preview_box);
+
+	elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_scroller);
+     }
+
+   if (evas_object_visible_get(iv->gui.preview_win))
+     evas_object_hide(iv->gui.preview_win);
+   else
+     {
+	elm_win_inwin_activate(iv->gui.preview_win);
+	preview_box_size(iv);
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
+#endif
 }
 
 static int
@@ -1196,8 +1243,7 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 
 #ifdef HAVE_ETHUMB
    if (!strcmp(ev->keyname, "F9"))
-     edje_object_signal_emit(elm_layout_edje_get(iv->gui.ly),
-			     "iv,state,toggle_previews", "iv");
+     toggle_previews(iv);
 #endif
 
    if (iv->flags.slideshow)
@@ -1256,15 +1302,6 @@ create_main_win(IV *iv)
    elm_win_resize_object_add(iv->gui.win, o);
    elm_layout_content_set(iv->gui.ly, "iv.swallow.image", o);
    iv->gui.scroller = o;
-
-#ifdef HAVE_ETHUMB
-   o = elm_toolbar_add(iv->gui.ly);
-   evas_object_size_hint_weight_set(o, 0.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_layout_content_set(iv->gui.ly, "iv.swallow.previews", o);
-   evas_object_show(o);
-   iv->gui.toolbar = o;
-#endif
 
    o = elm_layout_add(iv->gui.ly);
    elm_layout_file_set(o, buf, "iv/controls");
