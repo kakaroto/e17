@@ -64,8 +64,8 @@ ewl_combo_init(Ewl_Combo *combo)
         combo->button = ewl_button_new();
         ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
         ewl_widget_internal_set(combo->button, TRUE);
-        ewl_object_alignment_set(EWL_OBJECT(combo->button),
-                                        EWL_FLAG_ALIGN_RIGHT);
+        ewl_object_fill_policy_set(EWL_OBJECT(combo->button),
+                                        EWL_FLAG_FILL_VFILL);
         ewl_callback_append(combo->button, EWL_CALLBACK_CLICKED,
                                 ewl_combo_cb_decrement_clicked, combo);
         ewl_widget_show(combo->button);

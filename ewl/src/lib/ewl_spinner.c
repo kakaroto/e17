@@ -107,7 +107,7 @@ ewl_spinner_init(Ewl_Spinner *s)
         ewl_container_child_append(EWL_CONTAINER(s), s->vbox);
         ewl_widget_appearance_set(s->vbox, "controls");
         ewl_widget_internal_set(s->vbox, TRUE);
-        ewl_object_fill_policy_set(EWL_OBJECT(s->vbox), EWL_FLAG_FILL_NONE);
+        ewl_object_fill_policy_set(EWL_OBJECT(s->vbox), EWL_FLAG_FILL_VFILL);
         ewl_widget_show(s->vbox);
 
         s->increment = ewl_button_new();
@@ -116,7 +116,7 @@ ewl_spinner_init(Ewl_Spinner *s)
                                         EWL_FLAG_ALIGN_CENTER);
         ewl_widget_appearance_set(s->increment, "increment");
         ewl_object_fill_policy_set(EWL_OBJECT(s->increment),
-                                   EWL_FLAG_FILL_NONE);
+                                   EWL_FLAG_FILL_VFILL);
         ewl_widget_internal_set(s->increment, TRUE);
         ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_spinner_cb_increase_value, w);
@@ -132,7 +132,7 @@ ewl_spinner_init(Ewl_Spinner *s)
                                         EWL_FLAG_ALIGN_CENTER);
         ewl_widget_appearance_set(s->decrement, "decrement");
         ewl_object_fill_policy_set(EWL_OBJECT(s->decrement),
-                                   EWL_FLAG_FILL_NONE);
+                                   EWL_FLAG_FILL_VFILL);
         ewl_widget_internal_set(s->decrement, TRUE);
         ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_spinner_cb_decrease_value, w);
