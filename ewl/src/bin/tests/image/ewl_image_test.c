@@ -5,6 +5,8 @@
 #include "ewl_entry.h"
 #include "ewl_filedialog.h"
 #include "ewl_image.h"
+#include "ewl_icon.h"
+#include "ewl_toolbar.h"
 #include "ewl_scrollpane.h"
 
 #include <stdio.h>
@@ -106,6 +108,39 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
         ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 }
 
+static void
+image_cb_rotate_left(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                void *data __UNUSED__)
+{
+        if (image)
+                ewl_image_rotate(EWL_IMAGE(image), EWL_ROTATE_CC_90);
+}
+
+static void
+image_cb_rotate_right(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                void *data __UNUSED__)
+{
+        if (image)
+                ewl_image_rotate(EWL_IMAGE(image), EWL_ROTATE_CW_90);
+}
+
+
+static void
+image_cb_flip_horizontal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                void *data __UNUSED__)
+{
+        if (image)
+                ewl_image_flip(EWL_IMAGE(image), EWL_ORIENTATION_HORIZONTAL);
+}
+
+static void
+image_cb_flip_vertical(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                void *data __UNUSED__)
+{
+        if (image)
+                ewl_image_flip(EWL_IMAGE(image), EWL_ORIENTATION_VERTICAL);
+}
+
 void
 entry_path_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__, 
                                                         void *data __UNUSED__)
@@ -129,6 +164,80 @@ create_test(Ewl_Container *image_box)
         images = ecore_dlist_new();
         ecore_dlist_free_cb_set(images, free);
 
+        box = ewl_htoolbar_new();
+        ewl_container_child_append(image_box, box);
+        ewl_toolbar_icon_part_hide(EWL_TOOLBAR(box), EWL_ICON_PART_LABEL);
+        ewl_widget_show(box);
+        
+        /* the previous icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_ARROW_LEFT);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                            image_goto_prev_cb, NULL);
+        ewl_widget_show(button);
+
+        /* the next icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_ARROW_RIGHT);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                            image_goto_next_cb, NULL);
+        ewl_widget_show(button);
+        
+        /* the remove icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_REMOVE);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                            image_remove_cb, NULL);
+        ewl_widget_show(button);
+
+        /* the rotate left icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_ROTATE_LEFT);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED, image_cb_rotate_left,
+                        NULL);
+        ewl_widget_show(button);
+
+        /* the rotate right icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_ROTATE_RIGHT);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED, image_cb_rotate_right,
+                        NULL);
+        ewl_widget_show(button);
+
+        /* the flip vertical icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_FLIP_VERTICAL);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                        image_cb_flip_vertical, NULL);
+        ewl_widget_show(button);
+        
+        /* the flip horizontal icon */
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_FLIP_HORIZONTAL);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                        image_cb_flip_horizontal, NULL);
+        ewl_widget_show(button);
+        
+        entry_path = ewl_entry_new();
+        ewl_container_child_append(EWL_CONTAINER(box), entry_path);
+        ewl_callback_append(entry_path, EWL_CALLBACK_VALUE_CHANGED,
+                        entry_path_cb_value_changed, NULL);
+        ewl_widget_show(entry_path);
+
+        button = ewl_icon_simple_new();
+        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OPEN);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+                            create_image_fd_cb, entry_path);
+        ewl_container_child_append(EWL_CONTAINER(box), button);
+        ewl_widget_show(button);
+
         scrollpane = ewl_scrollpane_new();
         ewl_callback_append(scrollpane, EWL_CALLBACK_DELETE_WINDOW,
                         destroy_image_test, NULL);
@@ -144,80 +253,28 @@ create_test(Ewl_Container *image_box)
         else if ((ecore_file_exists("../data/images/e-logo.png")))
                 image_file = strdup("../data/images/e-logo.png");
 
+        /* now that we have the fullpath we need to update the entry */
+        ewl_text_text_set(EWL_TEXT(entry_path), image_file);
+
+        box = ewl_cell_new();
+        ewl_container_child_append(EWL_CONTAINER(scrollpane), box);
+        ewl_widget_show(box);
+
         image = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(image), image_file, NULL);
         ewl_object_padding_type_top_set(EWL_OBJECT(image), EWL_PADDING_MEDIUM);
         ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-        ewl_container_child_append(EWL_CONTAINER(scrollpane), image);
+        ewl_container_child_append(EWL_CONTAINER(box), image);
         ewl_widget_show(image);
 
         if (image_file)
                 ecore_dlist_append(images, image_file);
 
-        box = ewl_hbox_new();
-        ewl_box_spacing_set(EWL_BOX(box), 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_HFILL);
-        ewl_container_child_append(image_box, box);
-        ewl_widget_show(box);
-
-        entry_path = ewl_entry_new();
-        ewl_text_text_set(EWL_TEXT(entry_path), image_file);
-        ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
-        ewl_container_child_append(EWL_CONTAINER(box), entry_path);
-        ewl_callback_append(entry_path, EWL_CALLBACK_VALUE_CHANGED,
-                        entry_path_cb_value_changed, NULL);
-        ewl_widget_show(entry_path);
-
-        button = ewl_button_new();
-        ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OPEN);
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-                            create_image_fd_cb, entry_path);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-        ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_widget_show(button);
-
-        box = ewl_hbox_new();
-        ewl_box_spacing_set(EWL_BOX(box), 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(box),
-                                   EWL_FLAG_FILL_NONE);
-        ewl_object_alignment_set(EWL_OBJECT(box),
-                                 EWL_FLAG_ALIGN_CENTER);
-        ewl_container_child_append(image_box, box);
-        ewl_widget_show(box);
-
-        /* the previous button */
-        button = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button), "Previous");
-        ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-                            image_goto_prev_cb, NULL);
-        ewl_widget_show(button);
-
-        /* the remove button */
-        button = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button), "Remove");
-        ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-                            image_remove_cb, NULL);
-        ewl_widget_show(button);
-
-        /* the next button */
-        button = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button), "Next");
-        ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-                            image_goto_next_cb, NULL);
-        ewl_widget_show(button);
-
-        box = ewl_hbox_new();
-        ewl_container_child_append(image_box, box);
-        ewl_object_alignment_set(EWL_OBJECT(box), EWL_FLAG_ALIGN_CENTER);
-        ewl_object_maximum_h_set(EWL_OBJECT(box), 20);
-        ewl_widget_show(box);
-
         note = ewl_text_new();
-        ewl_text_text_set(EWL_TEXT(note), "Simple image viewer, load up images and page through them.");
-        ewl_container_child_append(EWL_CONTAINER(box), note);
+        ewl_object_fill_policy_set(EWL_OBJECT(note), EWL_FLAG_FILL_HFILL);
+        ewl_text_text_set(EWL_TEXT(note), "Simple image viewer, load"
+                       " up images and page through them.");
+        ewl_container_child_append(EWL_CONTAINER(image_box), note);
         ewl_widget_show(note);
 
         ewl_widget_show(image);
