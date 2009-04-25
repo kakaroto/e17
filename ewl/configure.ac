@@ -72,8 +72,6 @@ requirements="evas ecore edje"
 PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 0.9.9], [have_ecore_x="yes"], [have_ecore_x="no"])
 
 PKG_CHECK_MODULES([ECORE_XCB], [xcb >= 1.0 ecore-x >= 0.9.9], [have_ecore_xcb="yes"], [have_ecore_xcb="no"])
-# Disable xcb support for now
-have_ecore_xcb="no"
 
 PKG_CHECK_MODULES([ECORE_WIN32], [ecore-win32 >= 0.9.9], [have_ecore_win32="yes"], [have_ecore_win32="no"])
 

@@ -518,12 +518,15 @@ ee_window_hide(Ewl_Window *win)
 static void
 ee_window_title_set(Ewl_Window *win)
 {
+        const char *title;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_icccm_title_set((Ecore_X_Window)win->window, win->title);
-        ecore_x_netwm_name_set((Ecore_X_Window)win->window, win->title);
+        title = win->title ? win->title : "";
+        ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
+        ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -531,12 +534,15 @@ ee_window_title_set(Ewl_Window *win)
 static void
 ee_window_name_class_set(Ewl_Window *win)
 {
+        const char *name;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_icccm_name_class_set((Ecore_X_Window)win->window, win->name,
-                                (win->classname ? win->classname : win->name));
+        name = win->name ? win->name : "";
+        ecore_x_icccm_name_class_set((Ecore_X_Window)win->window, name,
+                                (win->classname ? win->classname : name));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -909,7 +915,7 @@ ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num)
         ecore_x_dnd_aware_set((Ecore_X_Window)embed->canvas_window,
                               (num > 0 ? 1 : 0));
         ecore_x_dnd_type_get_fetch();
-        ecore_x_dnd_types_set((Ecore_X_Window)embed->canvas_window, (char **)types, num);
+        ecore_x_dnd_types_set((Ecore_X_Window)embed->canvas_window, types, num);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1182,7 +1188,7 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find((void *)ev->window);
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1262,7 +1268,7 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
                 clicks = 3;
 
         key_modifiers = ewl_ev_modifiers_get();
-        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->buttons, ev->x,
+        ewl_embed_mouse_up_feed(EWL_EMBED(window), ev->buttons, clicks, ev->x,
                                                 ev->y, key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1570,7 +1576,6 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
         Ecore_X_Event_Xdnd_Drop *ev;
-        int internal = 0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(e, FALSE);
@@ -1584,13 +1589,10 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
                 ewl_embed_window_position_get(embed, &wx, &wy);
 
-                if (ev->source == (Ecore_X_Window)embed->canvas_window)
-                        internal = 1;
-
                 x = ev->position.x - wx;
                 y = ev->position.y - wy;
 
-                type = ewl_embed_dnd_drop_feed(embed, x, y, internal);
+                type = ewl_embed_dnd_drop_feed(embed, x, y);
                 if (type)
                         ecore_x_selection_xdnd_request(ev->win, (char *)type);
         }

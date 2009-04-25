@@ -18,7 +18,7 @@ xcb_la_SOURCES = \
 Ewl_Engine_Xcb.h \
 ewl_engine_xcb.c
 
-xcb_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+xcb_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_XCB_LIBS@ @ECORE_LIBS@
 xcb_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
 xcb_la_DEPENDENCIES =
 
