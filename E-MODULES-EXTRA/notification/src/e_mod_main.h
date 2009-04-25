@@ -42,6 +42,14 @@ struct _Config
 
    E_Notification_Daemon *daemon;
 
+   struct
+     {
+	Eina_Bool presentation;
+	Eina_Bool offline;
+     } last_config_mode;
+
+   Ecore_Timer *initial_mode_timer;
+
    Eina_List  *instances;
    Eina_List  *n_box;
    Eina_List  *config_dialog;

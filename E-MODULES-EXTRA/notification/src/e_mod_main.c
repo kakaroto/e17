@@ -157,6 +157,122 @@ _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id)
      }
 }
 
+static unsigned int
+_notification_notify(E_Notification *n)
+{
+   const char *appname = e_notification_app_name_get(n);
+   unsigned int replaces_id = e_notification_replaces_id_get(n);
+   unsigned int new_id;
+   int stacked, popuped;
+
+   new_id = notification_cfg->next_id++;
+   e_notification_id_set(n, new_id);
+
+   popuped = notification_popup_notify(n, replaces_id, new_id, appname);
+   stacked = notification_box_notify(n, replaces_id, new_id);
+
+   if (!popuped && !stacked)
+     {
+       e_notification_hint_urgency_set(n, 4);
+       notification_popup_notify(n, replaces_id, new_id, appname);
+     }
+
+   return new_id;
+}
+
+static void
+_notification_show_common(const char *summary, const char *body, int replaces_id)
+{
+   E_Notification *n = e_notification_full_new
+     ("enlightenment", replaces_id, "enlightenment", summary, body, -1);
+
+   if (!n)
+     return;
+
+   _notification_notify(n);
+   e_notification_unref(n);
+}
+
+static void
+_notification_show_presentation(Eina_Bool enabled)
+{
+   const char *summary, *body;
+
+   if (enabled)
+     {
+	summary = D_("Enter Presentation Mode");
+	body = D_("Enlightenment is in <b>presentation</b> mode."
+		  "<br>During presentation mode, screen saver, lock and "
+		  "power saving will be disabled so you are not interrupted.");
+     }
+   else
+     {
+	summary = D_("Exited Presentation Mode");
+	body = D_("Presentation mode is over."
+		  "<br>Now screen saver, lock and "
+		  "power saving settings will be restored.");
+     }
+
+   _notification_show_common(summary, body, 0);
+}
+
+static void
+_notification_show_offline(Eina_Bool enabled)
+{
+   const char *summary, *body;
+
+   if (enabled)
+     {
+	summary = D_("Enter Offline Mode");
+	body = D_("Enlightenment is in <b>offline</b> mode.<br>"
+		  "During offline mode, modules that use network will stop "
+		  "polling remote services.");
+     }
+   else
+     {
+	summary = D_("Exited Offline Mode");
+	body = D_("Now in <b>online</b> mode.<br>"
+		  "Now modules that use network will "
+		  "resume regular tasks.");
+     }
+
+   _notification_show_common(summary, body, 0);
+}
+
+static int
+_notification_cb_config_mode_changed(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Config *m_cfg = data;
+
+   if (m_cfg->last_config_mode.presentation != e_config->mode.presentation)
+     {
+	m_cfg->last_config_mode.presentation = e_config->mode.presentation;
+	_notification_show_presentation(e_config->mode.presentation);
+     }
+
+   if (m_cfg->last_config_mode.offline != e_config->mode.offline)
+     {
+	m_cfg->last_config_mode.offline = e_config->mode.offline;
+	_notification_show_offline(e_config->mode.offline);
+     }
+
+   return 1;
+}
+
+static int
+_notification_cb_initial_mode_timer(void *data)
+{
+   Config *m_cfg = data;
+
+   if (e_config->mode.presentation)
+     _notification_show_presentation(1);
+   if (e_config->mode.offline)
+     _notification_show_offline(1);
+
+   m_cfg->initial_mode_timer = NULL;
+   return 0;
+}
+
 /* Module Api Functions */
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Notification"};
 
@@ -281,6 +397,15 @@ e_modapi_init(E_Module *m)
    e_notification_daemon_callback_notify_set(d, _notification_cb_notify);
    e_notification_daemon_callback_close_notification_set(d, _notification_cb_close_notification);
 
+   notification_cfg->last_config_mode.presentation = e_config->mode.presentation;
+   notification_cfg->last_config_mode.offline = e_config->mode.offline;
+   notification_cfg->handlers = eina_list_append
+     (notification_cfg->handlers, ecore_event_handler_add
+      (E_EVENT_CONFIG_MODE_CHANGED, _notification_cb_config_mode_changed,
+       notification_cfg));
+   notification_cfg->initial_mode_timer = ecore_timer_add
+     (0.1, _notification_cb_initial_mode_timer, notification_cfg);
+
    /* set up the borders events callbacks */
    notification_cfg->handlers = eina_list_append
      (notification_cfg->handlers, ecore_event_handler_add
@@ -295,6 +420,9 @@ EAPI int
 e_modapi_shutdown(E_Module *m __UNUSED__) 
 {
    e_gadcon_provider_unregister(&_gc_class);
+
+   if (notification_cfg->initial_mode_timer)
+     ecore_timer_del(notification_cfg->initial_mode_timer);
 
    while (notification_cfg->handlers)
      {
@@ -349,25 +477,7 @@ e_modapi_save(E_Module *m __UNUSED__)
 static int
 _notification_cb_notify(E_Notification_Daemon *daemon __UNUSED__, E_Notification *n)
 {
-   unsigned int replaces_id;
-   unsigned int new_id;
-   int stacked, popuped;
-   char *appname = e_notification_app_name_get(n);
-
-   replaces_id = e_notification_replaces_id_get(n);
-   new_id = notification_cfg->next_id++;
-   e_notification_id_set(n, new_id);
-
-   popuped = notification_popup_notify(n, replaces_id, new_id, appname);
-   stacked = notification_box_notify(n, replaces_id, new_id);
-   
-   if (!popuped && !stacked)
-     {
-       e_notification_hint_urgency_set(n, 4);
-       notification_popup_notify(n, replaces_id, new_id, appname);
-     }
-   
-   return new_id;
+   return _notification_notify(n);
 }
 
 static void

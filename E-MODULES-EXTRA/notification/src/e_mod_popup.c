@@ -263,22 +263,50 @@ _notification_popup_refresh(Popup_Data *popup)
       if (!strncmp(icon_path, "file://", 7)) icon_path += 7;
       if (!ecore_file_exists(icon_path))
         {
+	   const char *new_path;
            unsigned int size;
 
            size = e_util_icon_size_normalize(width * e_scale);
-           icon_path = efreet_icon_path_find(e_config->icon_theme, icon_path, size);
+           new_path = efreet_icon_path_find(e_config->icon_theme, icon_path, size);
+	   if (new_path)
+	     icon_path = new_path;
+	   else
+	     {
+		Evas_Object *o = e_icon_add(popup->e);
+		if (!e_util_icon_theme_set(o, icon_path))
+		  evas_object_del(o);
+		else
+		  {
+		     popup->app_icon = o;
+		     w = width;
+		     h = height;
+		  }
+	     }
         }
-      popup->app_icon = evas_object_image_add(popup->e);
-      evas_object_image_file_set(popup->app_icon, icon_path, NULL);
-      evas_object_image_size_get(popup->app_icon, &w, &h);
-      evas_object_image_fill_set(popup->app_icon, 0, 0, w, h);
+
+      if (!popup->app_icon)
+	{
+	   popup->app_icon = evas_object_image_add(popup->e);
+	   evas_object_image_file_set(popup->app_icon, icon_path, NULL);
+	   if (evas_object_image_load_error_get(popup->app_icon))
+	     {
+		evas_object_del(popup->app_icon);
+		popup->app_icon = NULL;
+	     }
+	   else
+	     {
+		evas_object_image_size_get(popup->app_icon, &w, &h);
+		evas_object_image_fill_set(popup->app_icon, 0, 0, w, h);
+	     }
+	}
     }
   else if ((img = e_notification_hint_icon_data_get(popup->notif)))
     {
       popup->app_icon = e_notification_image_evas_object_add(popup->e, img);
       evas_object_image_size_get(popup->app_icon, &w, &h);
     }
-  else
+
+  if (!popup->app_icon)
     {
       char buf[PATH_MAX];
 
