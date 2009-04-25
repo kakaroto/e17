@@ -67,7 +67,8 @@ typedef void (*Ewl_Stock_Label_Set)(Ewl_Stock *s, const char *txt);
 /**
  * The image set function definition
  */
-typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file, const char *key);
+typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file,
+                                        const char *key);
 
 /**
  * @def EWL_STOCK_TOOLTIP_SET(f)
@@ -86,9 +87,9 @@ typedef void (*Ewl_Stock_Tooltip_Set)(Ewl_Stock *s, const char *tip);
  */
 struct Ewl_Stock
 {
-        Ewl_Box box;                         /**< Inherit from the box for adding widgets */
-        Ewl_Stock_Type stock_type;        /**< The stock type of the stock */
-        const Ewl_Stock_Funcs *stock_funcs;        /**< The stock functions */
+        Ewl_Box box;    /**< Inherit from the box for adding widgets */
+        Ewl_Stock_Type stock_type;      /**< The stock type of the stock */
+        const Ewl_Stock_Funcs *stock_funcs;     /**< The stock functions */
 };
 
 /**
@@ -97,9 +98,9 @@ struct Ewl_Stock
  */
 struct Ewl_Stock_Funcs
 {
-        Ewl_Stock_Label_Set label_set;                /**< The label set function */
-        Ewl_Stock_Image_Set image_set;                 /**< The image set function */
-        Ewl_Stock_Tooltip_Set tooltip_set;        /**< The tooltip set function */
+        Ewl_Stock_Label_Set label_set;          /**< The label set function */
+        Ewl_Stock_Image_Set image_set;          /**< The image set function */
+        Ewl_Stock_Tooltip_Set tooltip_set;      /**< The tooltip set function */
 };
 
 
