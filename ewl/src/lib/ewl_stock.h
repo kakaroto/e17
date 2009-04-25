@@ -71,17 +71,6 @@ typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file,
                                         const char *key);
 
 /**
- * @def EWL_STOCK_TOOLTIP_SET(f)
- * Typecast to the tooltip set pointer
- */
-#define EWL_STOCK_TOOLTIP_SET(f) ((Ewl_Stock_Tooltip_set)f)
-
-/**
- * The tooltip set function definition
- */
-typedef void (*Ewl_Stock_Tooltip_Set)(Ewl_Stock *s, const char *tip);
-
-/**
  * @brief Inherits from Ewl_Box and provides the base for the other stock
  * icons
  */
@@ -100,7 +89,6 @@ struct Ewl_Stock_Funcs
 {
         Ewl_Stock_Label_Set label_set;          /**< The label set function */
         Ewl_Stock_Image_Set image_set;          /**< The image set function */
-        Ewl_Stock_Tooltip_Set tooltip_set;      /**< The tooltip set function */
 };
 
 

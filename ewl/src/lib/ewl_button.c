@@ -9,8 +9,7 @@
 
 static const Ewl_Stock_Funcs const stock_funcs = {
         EWL_STOCK_LABEL_SET(ewl_button_label_set),
-        EWL_STOCK_IMAGE_SET(ewl_button_image_set),
-        NULL
+        EWL_STOCK_IMAGE_SET(ewl_button_image_set)
 };
 
 /**
