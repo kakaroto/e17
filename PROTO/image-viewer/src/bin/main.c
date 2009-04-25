@@ -59,7 +59,7 @@ struct _IV
 	Evas_Object *controls, *file_label, *next_bt, *prev_bt;
         Evas_Object *hoversel, *settings_bt, *slideshow_bt, *settings_win;
 #ifdef HAVE_ETHUMB
-	Evas_Object *preview_win, *preview_scroller, *preview_box;
+	Evas_Object *preview_win, *preview_scroller, *preview_box, *prev_preview;
 #endif
    } gui;
 
@@ -73,7 +73,6 @@ struct _IV
 	Eina_Bool slideshow : 1;
 #ifdef HAVE_ETHUMB
 	Eina_Bool add_previews : 1;
-	Eina_Bool ignore_preview_change : 1;
 	Eina_Bool hide_previews : 1;
 	Eina_Bool previews_visible : 1;
 	Eina_Bool first_preview : 1;
@@ -558,17 +557,29 @@ on_next_click(void *data, Evas_Object *obj, void *event_info)
 
 #ifdef HAVE_ETHUMB
 static void
+preview_thumb_select(IV *iv, Evas_Object *thumb)
+{
+   Evas_Object *border = evas_object_data_get(thumb, "iv_thumb_border");
+   const char *file = evas_object_data_get(thumb, "iv_file");
+
+   if (iv->gui.prev_preview)
+     {
+	Evas_Object *border2 = evas_object_data_get(iv->gui.prev_preview,
+						    "iv_thumb_border");
+	edje_object_signal_emit(border2, "iv,state,thumb_deselect", "iv");
+     }
+
+   edje_object_signal_emit(border, "iv,state,thumb_select", "iv");
+   iv->gui.prev_preview = thumb;
+}
+
+static void
 on_thumb_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
    const char *file = evas_object_data_get(obj, "iv_file");
 
-   if (iv->flags.ignore_preview_change)
-     {
-	iv->flags.ignore_preview_change = EINA_FALSE;
-	return;
-     }
-
+   preview_thumb_select(iv, obj);
    iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
    iv->flags.current = EINA_TRUE;
    if (iv->config->auto_hide_previews)
@@ -593,6 +604,50 @@ on_thumb_generate(Ethumb *e, void *data)
      iv->idler = ecore_idler_add(on_idler, iv);
 
    iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
+}
+
+static void
+preview_box_size(IV *iv)
+{
+   Evas_Coord w, ww, hh;
+
+   evas_object_size_hint_min_get(
+       edje_object_part_object_get(iv->gui.preview_box, "iv.box.content"),
+       &ww, &hh);
+   if (ww && hh)
+     evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
+}
+
+static void
+toggle_previews(IV *iv)
+{
+   if (!iv->gui.preview_win)
+     {
+	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
+	elm_object_style_set(iv->gui.preview_win, "shadow_fill");
+	evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
+
+	iv->gui.preview_scroller = elm_scroller_add(iv->gui.preview_win);
+	evas_object_size_hint_weight_set(iv->gui.preview_scroller, 1.0, 1.0);
+	evas_object_show(iv->gui.preview_scroller);
+
+	iv->gui.preview_box = edje_object_add(evas_object_evas_get(iv->gui.win));
+	edje_object_file_set(iv->gui.preview_box, iv->theme_file, "iv/preview/box");
+	elm_scroller_content_set(iv->gui.preview_scroller, iv->gui.preview_box);
+	evas_object_show(iv->gui.preview_box);
+
+	elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_scroller);
+     }
+
+   if (evas_object_visible_get(iv->gui.preview_win))
+     evas_object_hide(iv->gui.preview_win);
+   else
+     {
+	elm_win_inwin_activate(iv->gui.preview_win);
+	preview_box_size(iv);
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
 }
 #endif
 
@@ -680,25 +735,14 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
      iv->idler = ecore_idler_add(on_idler, iv);
 }
 
-#ifdef HAVE_ETHUMB
-static void
-preview_box_size(IV *iv)
-{
-   Evas_Coord w, ww, hh;
-
-   evas_object_size_hint_min_get(
-       edje_object_part_object_get(iv->gui.preview_box, "iv.box.content"),
-       &ww, &hh);
-   if (ww && hh)
-     evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
-}
-#endif
-
 static int
 on_idler(void *data)
 {
    IV *iv = data;
    Eina_Bool renew = EINA_FALSE;
+#ifdef HAVE_ETHUMB
+   Evas_Object *item = NULL;
+#endif
 
    if (iv->dirs)
      {
@@ -793,14 +837,14 @@ on_idler(void *data)
 		  evas_object_show(o);
 		  edje_object_size_min_get(o, &w, &h);
 		  evas_object_resize(o, w, h);
+		  evas_object_data_set(thumb, "iv_thumb_border", o);
 
 		  edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", o);
 		  eina_hash_add(iv->preview_items, info->file, thumb);
 
 		  if (iv->flags.first_preview)
 		    {
-		       iv->flags.ignore_preview_change = EINA_TRUE;
-		       //elm_toolbar_item_select(item);
+		       preview_thumb_select(iv, thumb);
 		       iv->flags.first_preview = EINA_FALSE;
 		    }
 
@@ -876,12 +920,9 @@ on_idler(void *data)
 	     iv->gui.next_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     iv->flags.ignore_preview_change = EINA_TRUE;
-	     /*
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
-	       elm_toolbar_item_select(item);
-	       */
+	       preview_thumb_select(iv, item);
 #endif
 	  }
      }
@@ -915,12 +956,9 @@ on_idler(void *data)
 	     iv->gui.prev_img = NULL;
 
 #ifdef HAVE_ETHUMB
-	     iv->flags.ignore_preview_change = EINA_TRUE;
-	     /*
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
-	       elm_toolbar_item_select(item);
-	       */
+	       preview_thumb_select(iv, item);
 #endif
 	  }
      }
@@ -966,8 +1004,7 @@ on_idler(void *data)
      {
 	iv->flags.hide_previews = EINA_FALSE;
 
-	edje_object_signal_emit(elm_layout_edje_get(iv->gui.ly),
-			       	"iv,state,hide_previews", "iv");
+	toggle_previews(iv);
      }
 #endif
    if (iv->flags.fit_changed)
@@ -1000,40 +1037,6 @@ on_idler(void *data)
 	return ECORE_CALLBACK_CANCEL;
      }
 }
-
-#ifdef HAVE_ETHUMB
-static void
-toggle_previews(IV *iv)
-{
-   if (!iv->gui.preview_win)
-     {
-	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
-	elm_object_style_set(iv->gui.preview_win, "shadow_fill");
-	evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
-
-	iv->gui.preview_scroller = elm_scroller_add(iv->gui.preview_win);
-	evas_object_size_hint_weight_set(iv->gui.preview_scroller, 1.0, 1.0);
-	evas_object_show(iv->gui.preview_scroller);
-
-	iv->gui.preview_box = edje_object_add(evas_object_evas_get(iv->gui.win));
-	edje_object_file_set(iv->gui.preview_box, iv->theme_file, "iv/preview/box");
-	elm_scroller_content_set(iv->gui.preview_scroller, iv->gui.preview_box);
-	evas_object_show(iv->gui.preview_box);
-
-	elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_scroller);
-     }
-
-   if (evas_object_visible_get(iv->gui.preview_win))
-     evas_object_hide(iv->gui.preview_win);
-   else
-     {
-	elm_win_inwin_activate(iv->gui.preview_win);
-	preview_box_size(iv);
-	if (!iv->idler)
-	  iv->idler = ecore_idler_add(on_idler, iv);
-     }
-}
-#endif
 
 static int
 on_slideshow_tick(void *data)
