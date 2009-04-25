@@ -1,0 +1,9 @@
+
+[Desktop Entry]
+Type=Link
+Name=Config Menu
+Icon=e-module-config
+Comment=<title>Config menu</title><br>Enables configuration menu augmentation.
+
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=system
