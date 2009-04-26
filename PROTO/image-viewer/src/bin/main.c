@@ -405,6 +405,252 @@ set_image_text(IV *iv, const char *text)
 }
 
 static void
+on_prev_click(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   iv->flags.prev = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
+static void
+on_next_click(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   iv->flags.next = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
+#ifdef HAVE_ETHUMB
+static void
+thumb_select(IV *iv, Evas_Object *thumb)
+{
+   const char *file = evas_object_data_get(thumb, "iv_file");
+
+   if (iv->gui.prev_preview)
+     edje_object_signal_emit(iv->gui.prev_preview, "iv,state,thumb_deselect", "iv");
+
+   edje_object_signal_emit(thumb, "iv,state,thumb_select", "iv");
+   iv->gui.prev_preview = thumb;
+}
+
+static void
+on_thumb_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   const char *file = evas_object_data_get(obj, "iv_file");
+
+   thumb_select(iv, obj);
+   iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
+   iv->flags.current = EINA_TRUE;
+   if (iv->config->auto_hide_previews)
+     iv->flags.hide_previews = EINA_TRUE;
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
+static void
+preview_box_size(IV *iv)
+{
+   Evas_Coord w, ww, hh;
+
+   evas_object_geometry_get(iv->gui.preview_win, NULL, NULL, &w, NULL);
+   evas_object_resize(iv->gui.preview_box, w, 9999);
+   evas_object_size_hint_min_get(
+       edje_object_part_object_get(iv->gui.preview_box, "iv.box.content"),
+       &ww, &hh);
+   if (ww && hh)
+     evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
+}
+
+static Evas_Object *
+thumb_create(IV *iv, IV_Thumb_Info *info)
+{
+   Evas_Object *o, *thumb;
+   Evas_Coord w, h;
+
+   o = elm_icon_add(iv->gui.preview_win);
+   elm_icon_file_set(o, info->thumb_path, NULL);
+
+   thumb = edje_object_add(evas_object_evas_get(iv->gui.preview_win));
+   edje_object_file_set(thumb, iv->theme_file, "iv/preview/thumb/border");
+   edje_object_part_swallow(thumb, "iv.swallow.icon", o);
+   evas_object_show(thumb);
+   edje_object_size_min_get(thumb, &w, &h);
+   evas_object_resize(thumb, w, h);
+   evas_object_data_set(thumb, "iv_file", info->file);
+   evas_object_event_callback_add(thumb, EVAS_CALLBACK_MOUSE_UP, on_thumb_click, iv);
+
+   return thumb;
+}
+
+static void
+thumb_remove(IV *iv, const char *path, Eina_Bool single)
+{
+   Evas_Object *o, *sw;
+
+   if (!iv->preview_items) return;
+   o = eina_hash_find(iv->preview_items, path);
+   if (o)
+     {
+	sw = edje_object_part_swallow_get(o, "iv.swallow.icon");
+	evas_object_del(o);
+	evas_object_del(sw);
+	eina_hash_del_by_key(iv->preview_items, path);
+	if (single)
+	  preview_box_size(iv);
+     }
+}
+
+static void
+on_thumb_generate(Ethumb *e, void *data)
+{
+   IV *iv = data;
+   IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
+   const char *file;
+
+   info->thumb_path = eina_stringshare_add(ethumb_thumb_path_get(e));
+   ethumb_file_get(e, &file, NULL);
+   info->file = file;
+
+   iv->thumb_path = eina_list_append(iv->thumb_path, info);
+   if (!iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+
+   iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
+}
+
+static void
+toggle_previews(IV *iv)
+{
+   if (!iv->gui.preview_win)
+     {
+	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
+	elm_object_style_set(iv->gui.preview_win, "shadow_fill");
+	evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
+
+	iv->gui.preview_scroller = elm_scroller_add(iv->gui.preview_win);
+	evas_object_size_hint_weight_set(iv->gui.preview_scroller, 1.0, 1.0);
+	evas_object_show(iv->gui.preview_scroller);
+
+	iv->gui.preview_box = edje_object_add(evas_object_evas_get(iv->gui.win));
+	edje_object_file_set(iv->gui.preview_box, iv->theme_file, "iv/preview/box");
+	elm_scroller_content_set(iv->gui.preview_scroller, iv->gui.preview_box);
+	evas_object_show(iv->gui.preview_box);
+
+	elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_scroller);
+     }
+
+   if (evas_object_visible_get(iv->gui.preview_win))
+     evas_object_hide(iv->gui.preview_win);
+   else
+     {
+	elm_win_inwin_activate(iv->gui.preview_win);
+	preview_box_size(iv);
+	if (!iv->idler)
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
+}
+#endif
+
+static void
+on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
+{
+   IV *iv = data;
+   Eina_List *head, *l, *l_next;
+   const char *p2, *cur_path;
+   char *dir = NULL;
+#ifdef HAVE_ETHUMB
+   Evas_Object *o;
+#endif
+
+   DBG("event: %d : %s\n", event, path);
+   cur_path = iv->files->data;
+   switch(event)
+     {
+      case ECORE_FILE_EVENT_CREATED_FILE:
+	 head = rewind_list(iv->files);
+	 dir = ecore_file_dir_get(path);
+
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
+	   {
+	      if (strncmp(dir, p2, strlen(dir)))
+		continue;
+
+	      if (strcmp(path, p2) < 0)
+		{
+		   iv->files = eina_list_prepend_relative_list(
+		       iv->files, eina_stringshare_add(path), l);
+		   iv->flags.current = EINA_TRUE;
+		   break;
+		}
+	      else if ((strcmp(path, p2) > 0) && (!l_next || (strcmp(path, l_next->data) < 0)))
+		{
+		   iv->files = eina_list_append_relative_list(
+		       iv->files, eina_stringshare_add(path), l);
+		   iv->flags.current = EINA_TRUE;
+		   break;
+		}
+	   }
+
+	 free(dir);
+	 break;
+      case ECORE_FILE_EVENT_DELETED_FILE:
+	 head = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
+	   {
+	      if (!strcmp(path, p2))
+		{
+		   iv->files = eina_list_remove_list(iv->files, l);
+		   if (p2 == cur_path)
+		     {
+			if (l->prev)
+			  iv->files = l->prev;
+			else
+			  iv->files = eina_list_last(l);
+		     }
+#ifdef HAVE_ETHUMB
+		   thumb_remove(iv, p2, EINA_TRUE);
+#endif
+		   eina_stringshare_del(p2);
+		   iv->flags.current = EINA_TRUE;
+		   break;
+		}
+	   }
+	 break;
+      case ECORE_FILE_EVENT_DELETED_SELF:
+	 head = rewind_list(iv->files);
+	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
+	   {
+	      if (!strncmp(path, p2, strlen(path)))
+		{
+		   if (p2 == cur_path)
+		     cur_path = NULL;
+#ifdef HAVE_ETHUMB
+		   thumb_remove(iv, p2, EINA_FALSE);
+#endif
+		   eina_stringshare_del(p2);
+		   iv->files = eina_list_remove_list(iv->files, l);
+		   iv->flags.current = EINA_TRUE;
+		}
+	   }
+#ifdef HAVE_ETHUMB
+	 preview_box_size(iv);
+#endif
+	 if (iv->flags.current)
+	   {
+	      if (cur_path)
+		iv->files = eina_list_data_find_list(iv->files, cur_path);
+	   }
+	 break;
+     }
+
+   if (!iv->idler && iv->flags.current)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
+static void
 read_image(IV *iv, IV_Image_Dest dest)
 {
    Evas_Object *img;
@@ -516,6 +762,9 @@ read_image(IV *iv, IV_Image_Dest dest)
 	  }
 	else
 	  {
+#ifdef HAVE_ETHUMB
+	     thumb_remove(iv, l->data, EINA_TRUE);
+#endif
 	     eina_stringshare_del(l->data);
 	     iv->files = eina_list_remove_list(iv->files, l);
 	     if (iv->files == l)
@@ -535,204 +784,6 @@ read_image(IV *iv, IV_Image_Dest dest)
 	       }
 	  }
      }
-}
-
-static void
-on_prev_click(void *data, Evas_Object *obj, void *event_info)
-{
-   IV *iv = data;
-   iv->flags.prev = EINA_TRUE;
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
-}
-
-static void
-on_next_click(void *data, Evas_Object *obj, void *event_info)
-{
-   IV *iv = data;
-   iv->flags.next = EINA_TRUE;
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
-}
-
-#ifdef HAVE_ETHUMB
-static void
-preview_thumb_select(IV *iv, Evas_Object *thumb)
-{
-   Evas_Object *border = evas_object_data_get(thumb, "iv_thumb_border");
-   const char *file = evas_object_data_get(thumb, "iv_file");
-
-   if (iv->gui.prev_preview)
-     {
-	Evas_Object *border2 = evas_object_data_get(iv->gui.prev_preview,
-						    "iv_thumb_border");
-	edje_object_signal_emit(border2, "iv,state,thumb_deselect", "iv");
-     }
-
-   edje_object_signal_emit(border, "iv,state,thumb_select", "iv");
-   iv->gui.prev_preview = thumb;
-}
-
-static void
-on_thumb_click(void *data, Evas_Object *obj, void *event_info)
-{
-   IV *iv = data;
-   const char *file = evas_object_data_get(obj, "iv_file");
-
-   preview_thumb_select(iv, obj);
-   iv->files = eina_list_data_find_list(rewind_list(iv->files), file);
-   iv->flags.current = EINA_TRUE;
-   if (iv->config->auto_hide_previews)
-     iv->flags.hide_previews = EINA_TRUE;
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
-}
-
-static void
-on_thumb_generate(Ethumb *e, void *data)
-{
-   IV *iv = data;
-   IV_Thumb_Info *info = calloc(1, sizeof(IV_Thumb_Info));
-   const char *file;
-
-   info->thumb_path = eina_stringshare_add(ethumb_thumb_path_get(e));
-   ethumb_file_get(e, &file, NULL);
-   info->file = file;
-
-   iv->thumb_path = eina_list_append(iv->thumb_path, info);
-   if (!iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
-
-   iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
-}
-
-static void
-preview_box_size(IV *iv)
-{
-   Evas_Coord w, ww, hh;
-
-   evas_object_size_hint_min_get(
-       edje_object_part_object_get(iv->gui.preview_box, "iv.box.content"),
-       &ww, &hh);
-   if (ww && hh)
-     evas_object_size_hint_min_set(iv->gui.preview_box, ww, hh);
-}
-
-static void
-toggle_previews(IV *iv)
-{
-   if (!iv->gui.preview_win)
-     {
-	iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
-	elm_object_style_set(iv->gui.preview_win, "shadow_fill");
-	evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
-
-	iv->gui.preview_scroller = elm_scroller_add(iv->gui.preview_win);
-	evas_object_size_hint_weight_set(iv->gui.preview_scroller, 1.0, 1.0);
-	evas_object_show(iv->gui.preview_scroller);
-
-	iv->gui.preview_box = edje_object_add(evas_object_evas_get(iv->gui.win));
-	edje_object_file_set(iv->gui.preview_box, iv->theme_file, "iv/preview/box");
-	elm_scroller_content_set(iv->gui.preview_scroller, iv->gui.preview_box);
-	evas_object_show(iv->gui.preview_box);
-
-	elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_scroller);
-     }
-
-   if (evas_object_visible_get(iv->gui.preview_win))
-     evas_object_hide(iv->gui.preview_win);
-   else
-     {
-	elm_win_inwin_activate(iv->gui.preview_win);
-	preview_box_size(iv);
-	if (!iv->idler)
-	  iv->idler = ecore_idler_add(on_idler, iv);
-     }
-}
-#endif
-
-static void
-on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
-{
-   IV *iv = data;
-   Eina_List *head, *l, *l_next;
-   const char *p2, *cur_path;
-   char *dir = NULL;
-
-   DBG("event: %d : %s\n", event, path);
-   cur_path = iv->files->data;
-   switch(event)
-     {
-      case ECORE_FILE_EVENT_CREATED_FILE:
-	 head = rewind_list(iv->files);
-	 dir = ecore_file_dir_get(path);
-
-	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
-	   {
-	      if (strncmp(dir, p2, strlen(dir)))
-		continue;
-
-	      if (strcmp(path, p2) < 0)
-		{
-		   iv->files = eina_list_prepend_relative_list(
-		       iv->files, eina_stringshare_add(path), l);
-		   iv->flags.current = EINA_TRUE;
-		   break;
-		}
-	      else if ((strcmp(path, p2) > 0) && (!l_next || (strcmp(path, l_next->data) < 0)))
-		{
-		   iv->files = eina_list_append_relative_list(
-		       iv->files, eina_stringshare_add(path), l);
-		   iv->flags.current = EINA_TRUE;
-		   break;
-		}
-	   }
-
-	 free(dir);
-	 break;
-      case ECORE_FILE_EVENT_DELETED_FILE:
-	 head = rewind_list(iv->files);
-	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
-	   {
-	      if (!strcmp(path, p2))
-		{
-		   iv->files = eina_list_remove_list(iv->files, l);
-		   if (p2 == cur_path)
-		     {
-			if (l->prev)
-			  iv->files = l->prev;
-			else
-			  iv->files = eina_list_last(l);
-		     }
-		   eina_stringshare_del(p2);
-		   iv->flags.current = EINA_TRUE;
-		   break;
-		}
-	   }
-	 break;
-      case ECORE_FILE_EVENT_DELETED_SELF:
-	 head = rewind_list(iv->files);
-	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
-	   {
-	      if (!strncmp(path, p2, strlen(path)))
-		{
-		   if (p2 == cur_path)
-		     cur_path = NULL;
-		   eina_stringshare_del(p2);
-		   iv->files = eina_list_remove_list(iv->files, l);
-		   iv->flags.current = EINA_TRUE;
-		}
-	   }
-	 if (iv->flags.current)
-	   {
-	      if (cur_path)
-		iv->files = eina_list_data_find_list(iv->files, cur_path);
-	   }
-	 break;
-     }
-
-   if (!iv->idler && iv->flags.current)
-     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static int
@@ -822,34 +873,19 @@ on_idler(void *data)
 
 	     EINA_LIST_FREE(iv->thumb_path, info)
 	       {
-		  Evas_Object *o;
-		  Evas_Coord w, h;
+		  thumb = thumb_create(iv, info);
 
-		  thumb = elm_icon_add(iv->gui.preview_win);
-		  elm_icon_file_set(thumb, info->thumb_path, NULL);
-		  evas_object_data_set(thumb, "iv_file", info->file);
-		  evas_object_smart_callback_add(thumb, "clicked",
-						 on_thumb_click, iv);
-
-		  o = edje_object_add(evas_object_evas_get(iv->gui.preview_win));
-		  edje_object_file_set(o, iv->theme_file, "iv/preview/thumb/border");
-		  edje_object_part_swallow(o, "iv.swallow.icon", thumb);
-		  evas_object_show(o);
-		  edje_object_size_min_get(o, &w, &h);
-		  evas_object_resize(o, w, h);
-		  evas_object_data_set(thumb, "iv_thumb_border", o);
-
-		  edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", o);
+		  edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", thumb);
 		  eina_hash_add(iv->preview_items, info->file, thumb);
-
-		  if (iv->flags.first_preview)
-		    {
-		       preview_thumb_select(iv, thumb);
-		       iv->flags.first_preview = EINA_FALSE;
-		    }
 
 		  eina_stringshare_del(info->thumb_path);
 		  free(info);
+
+		  if (iv->flags.first_preview)
+		    {
+		       thumb_select(iv, thumb);
+		       iv->flags.first_preview = EINA_FALSE;
+		    }
 	       }
 	     preview_box_size(iv);
 	  }
@@ -922,7 +958,7 @@ on_idler(void *data)
 #ifdef HAVE_ETHUMB
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
-	       preview_thumb_select(iv, item);
+	       thumb_select(iv, item);
 #endif
 	  }
      }
@@ -958,7 +994,7 @@ on_idler(void *data)
 #ifdef HAVE_ETHUMB
 	     item = eina_hash_find(iv->preview_items, iv->files->data);
 	     if (item)
-	       preview_thumb_select(iv, item);
+	       thumb_select(iv, item);
 #endif
 	  }
      }
