@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-24 12:47+0100\n"
-"PO-Revision-Date: 2009-03-24 13:02+0100\n"
+"POT-Creation-Date: 2009-04-26 11:39+0200\n"
+"PO-Revision-Date: 2009-04-26 11:54+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -114,19 +114,70 @@ msgstr "Livelli di urgenza da salvare:"
 msgid "Notification Box"
 msgstr "Notification"
 
-#: src/e_mod_main.c:175
+#: src/e_mod_main.c:203
+msgid "Enter Presentation Mode"
+msgstr "Entra in modalità presentazione"
+
+#: src/e_mod_main.c:204
+msgid ""
+"Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, "
+"screen saver, lock and power saving will be disabled so you are not "
+"interrupted."
+msgstr ""
+"Enlightenment è in modalità <b>presentazione</b>.<br>Durante la modalità "
+"presentazione vengono disabilitati lo screen saver, i blocchi e la gestione "
+"energetica in modo da non essere interrotti."
+
+#: src/e_mod_main.c:210
+msgid "Exited Presentation Mode"
+msgstr "Uscita da modalità presentazione"
+
+#: src/e_mod_main.c:211
+msgid ""
+"Presentation mode is over.<br>Now screen saver, lock and power saving "
+"settings will be restored."
+msgstr ""
+"La modalità presentazione è terminata.<br>Adesso verranno riabilitati "
+"lo screen saver, i blocchi e la gestione energetica."
+
+#: src/e_mod_main.c:226
+msgid "Enter Offline Mode"
+msgstr "Entra in modalità non in linea"
+
+#: src/e_mod_main.c:227
+msgid ""
+"Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
+"that use network will stop polling remote services."
+msgstr ""
+"Enlightenment è in modalità <b>non in linea</b>.<br>Durante la modalità "
+"non in linea i moduli che usano la rete smettono di interrogare i servizi "
+"remoti."
+
+#: src/e_mod_main.c:233
+msgid "Exited Offline Mode"
+msgstr "Uscita da modalità non in linea"
+
+#: src/e_mod_main.c:234
+msgid ""
+"Now in <b>online</b> mode.<br>Now modules that use network will resume "
+"regular tasks."
+msgstr ""
+"Adesso si è in modalità <b>non in linea</b>.<br>Da ora in poi i moduli "
+"che usano la rete riprenderanno i loro compiti normali."
+
+#: src/e_mod_main.c:291
 msgid "Extensions"
 msgstr "Estensioni"
 
-#: src/e_mod_main.c:177
+#: src/e_mod_main.c:293
 msgid "Notification"
 msgstr "Notification"
 
-#: src/e_mod_main.c:221 src/e_mod_main.c:239
+#: src/e_mod_main.c:337 src/e_mod_main.c:355
 msgid "Notification Configuration Updated"
 msgstr "Configurazione modulo Notification aggiornata"
 
-#: src/e_mod_main.c:222
+#: src/e_mod_main.c:338
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -146,7 +197,7 @@ msgstr ""
 "Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
 "l'inconveniente."
 
-#: src/e_mod_main.c:240
+#: src/e_mod_main.c:356
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -163,11 +214,11 @@ msgstr ""
 "vostra<br>configurazione è stata adesso ripristinata ai valori predefiniti."
 "<br>Ci scusiamo per l'inconveniente."
 
-#: src/e_mod_main.c:274
+#: src/e_mod_main.c:390
 msgid "Error During DBus Init!"
 msgstr "Errore nell'inizializzazione di DBus!"
 
-#: src/e_mod_main.c:275
+#: src/e_mod_main.c:391
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
