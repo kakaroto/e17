@@ -561,8 +561,7 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
         DCHECK_PARAM_PTR(img);
         DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
-        evas_object_image_size_get(img->image, &w, &h);
-        in = evas_object_image_data_get(img->image, TRUE);
+        in = ewl_image_data_get(img, &w, &h, EWL_IMAGE_DATA_WRITE);
 
         if (orient == EWL_ORIENTATION_VERTICAL)
         {
@@ -601,8 +600,9 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
                 }
         }
 
-        evas_object_image_data_set(img->image, in);
-        evas_object_image_data_update_add(img->image, 0, 0, w, h);
+        /* XXX we should actually preserve the previous setting */
+        ewl_image_data_set(img, in, w, h, EWL_COLORSPACE_ARGB);
+        ewl_image_data_update_add(img, 0, 0, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1369,8 +1369,7 @@ ewl_image_rotate_90(Ewl_Image *img, int cc)
         DCHECK_PARAM_PTR(img);
         DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
-        evas_object_image_size_get(img->image, &w, &h);
-        in = evas_object_image_data_get(img->image, FALSE);
+        in = ewl_image_data_get(img, &w, &h, EWL_IMAGE_DATA_READ);
 
         out = malloc(w * h * sizeof(unsigned int));
 
@@ -1413,9 +1412,9 @@ ewl_image_rotate_90(Ewl_Image *img, int cc)
         img->ow = ow;
         img->oh = oh;
 
-        evas_object_image_size_set(img->image, ow, oh);
-        evas_object_image_data_set(img->image, out);
-        evas_object_image_data_update_add(img->image, 0, 0, ow, oh);
+        /* XXX we should actually preserve the previous setting */
+        ewl_image_data_set(img, out, ow, oh, EWL_COLORSPACE_ARGB);
+        ewl_image_data_update_add(img, 0, 0, ow, oh);
 
         ewl_object_preferred_inner_size_set(EWL_OBJECT(img), ow, oh);
 
@@ -1432,8 +1431,7 @@ ewl_image_rotate_180(Ewl_Image *img)
         DCHECK_PARAM_PTR(img);
         DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
-        evas_object_image_size_get(img->image, &w, &h);
-        in = evas_object_image_data_get(img->image, TRUE);
+        in = ewl_image_data_get(img, &w, &h, EWL_IMAGE_DATA_WRITE);
 
         size = w * h / 2;
         for (i = 0; i < size; i++)
@@ -1449,8 +1447,9 @@ ewl_image_rotate_180(Ewl_Image *img)
                 in[i] = tmp;
         }
 
-        evas_object_image_data_set(img->image, in);
-        evas_object_image_data_update_add(img->image, 0, 0, w, h);
+        /* XXX we should actually preserve the previous setting */
+        ewl_image_data_set(img, in, w, h, EWL_COLORSPACE_ARGB);
+        ewl_image_data_update_add(img, 0, 0, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
