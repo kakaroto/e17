@@ -316,10 +316,14 @@ fi
 
 AC_SUBST(requirements)
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.15])
+
 AC_OUTPUT([
 Makefile
 ewl.spec
 ewl.pc
+po/Makefile.in
 src/Makefile
 src/bin/Makefile
 src/bin/tests/Makefile

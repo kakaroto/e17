@@ -6,6 +6,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include "ewl_intl.h"
 
 static void ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response);
 
@@ -54,7 +55,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
         ewl_widget_inherit(EWL_WIDGET(cd), EWL_COLORDIALOG_TYPE);
 
         ewl_dialog_action_position_set(EWL_DIALOG(cd), EWL_POSITION_BOTTOM);
-        ewl_window_title_set(EWL_WINDOW(cd), "Ewl Colordialog");
+        ewl_window_title_set(EWL_WINDOW(cd), D_("Ewl Colordialog"));
         ewl_window_name_set(EWL_WINDOW(cd), "Ewl Colordialog");
         ewl_window_class_set(EWL_WINDOW(cd), "Ewl Colordialog");
 

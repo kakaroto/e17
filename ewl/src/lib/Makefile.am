@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_SYSCONF_DIR=\"$(sysconfdir)\" \
+-DPACKAGE_LOCALE_DIR=\"$(localedir)\" \
 $(GCOV_CFLAGS) \
 @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EFREET_CFLAGS@ @EVIL_CFLAGS@
 
@@ -194,6 +195,7 @@ EWLSOURCES= \
 	ewl_widget.c \
 	ewl_window.c \
 	ewl_private.h \
+	ewl_intl.h \
 	$(EWLHEADERS)
 
 libewl_la_SOURCES = \

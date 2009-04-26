@@ -9,6 +9,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include "ewl_intl.h"
 
 static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
                                 unsigned int g, unsigned int b, double h,
@@ -189,7 +190,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 
         o = ewl_label_new();
         ewl_widget_internal_set(o, TRUE);
-        ewl_label_text_set(EWL_LABEL(o), "Current:");
+        ewl_label_text_set(EWL_LABEL(o), SD_("COLOR|Current:"));
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_show(o);
 
@@ -207,7 +208,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 
         o = ewl_label_new();
         ewl_widget_internal_set(o, TRUE);
-        ewl_label_text_set(EWL_LABEL(o), "Previous:");
+        ewl_label_text_set(EWL_LABEL(o), SD_("COLOR|Previous:"));
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_widget_show(o);
 

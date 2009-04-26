@@ -13,6 +13,7 @@
 #include <Evas.h>
 
 #include <Edje.h>
+#include "ewl_intl.h"
 
 #ifdef BUILD_EFREET_SUPPORT
 # include <Efreet.h>
@@ -186,6 +187,11 @@ ewl_init(int *argc, char **argv)
         if (strcmp(locale, "C") || strcmp(locale, "POSIX")) {
                 setlocale(LC_COLLATE, "");
         }
+
+#ifdef ENABLE_NLS
+        bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+        bind_textdomain_codeset(PACKAGE, "UTF-8");
+#endif
 
         shutdown_queue = ecore_list_new();
         if (!shutdown_queue) {
