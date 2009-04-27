@@ -180,12 +180,15 @@ _systray_size_apply_do(Instance *inst)
    Evas_Coord x, y, w, h;
 
    edje_object_message_signal_process(inst->ui.gadget);
-   edje_object_size_min_calc(inst->ui.gadget, &w, &h);
+   o = edje_object_part_object_get(inst->ui.gadget, _part_box);
+   if (!o) return;
+   evas_object_size_hint_min_get(o, &w, &h);
+
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
+
    e_gadcon_client_aspect_set(inst->gcc, w, h);
    e_gadcon_client_min_size_set(inst->gcc, w, h);
-
-   o = edje_object_part_object_get(inst->ui.gadget, _part_size);
-   if (!o) return;
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
    ecore_x_window_move_resize(inst->win.base, x, y, w, h);
@@ -474,6 +477,8 @@ _systray_base_create(Instance *inst)
      return 0;
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
    inst->win.base = ecore_x_window_new(inst->win.parent, x, y, w, h);
    ecore_x_window_background_color_set(inst->win.base, r, g, b);
    ecore_x_window_show(inst->win.base);
