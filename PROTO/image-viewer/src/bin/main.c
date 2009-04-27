@@ -54,6 +54,8 @@ struct _IV
 
    Ecore_Timer *slideshow_timer, *cursor_timer;
 
+   Ecore_Event_Handler *on_win_move_handler;
+
    struct {
 	Evas_Object *win, *ly, *img, *scroller, *prev_img, *next_img, *bg;
 	Evas_Object *controls, *file_label, *next_bt, *prev_bt;
@@ -272,14 +274,18 @@ on_win_move_tick(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
-static void
-on_win_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static int 
+on_win_move(void *data, int event_type, void *event_info)
 {
    IV *iv = data;
+   Ecore_Event_Mouse_Move *ev = event_info;
+
+   if (ev->window != elm_win_xwindow_get(iv->gui.win)) return 1;
    if (iv->cursor_timer)
      ecore_timer_del(iv->cursor_timer);
    iv->cursor_timer = ecore_timer_add(1.0, on_win_move_tick, iv);
    ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 1);
+   return 1;
 }
 
 
@@ -409,8 +415,7 @@ fullscreen(IV *iv)
    elm_win_fullscreen_set(iv->gui.win, 1);
 
    ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 0);
-   evas_object_event_callback_add(iv->gui.img, EVAS_CALLBACK_MOUSE_MOVE, on_win_move, iv);
-   evas_object_event_callback_add(iv->gui.controls, EVAS_CALLBACK_MOUSE_MOVE, on_win_move, iv);
+   iv->on_win_move_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, on_win_move, iv);
 }
 
 static void
@@ -420,8 +425,7 @@ unfullscreen(IV *iv)
    elm_win_fullscreen_set(iv->gui.win, 0);
 
    ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 1);
-   evas_object_event_callback_del(iv->gui.img, EVAS_CALLBACK_MOUSE_MOVE, on_win_move);
-   evas_object_event_callback_del(iv->gui.controls, EVAS_CALLBACK_MOUSE_MOVE, on_win_move);
+   ecore_event_handler_del(iv->on_win_move_handler);
 }
 
 static void
