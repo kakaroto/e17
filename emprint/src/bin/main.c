@@ -301,8 +301,7 @@ _em_get_filename(void)
 	     strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
 	     /* set the new filename */
 	     snprintf(buf, sizeof(buf), "%s/%s", opts->filename, strdup(buf));
-	     if (opts->filename) eina_stringshare_del(opts->filename);
-	     opts->filename = eina_stringshare_add(buf);
+             eina_stringshare_replace(&opts->filename, buf);
 	     return;
 	  }
 	else 
@@ -373,8 +372,7 @@ _em_get_filename(void)
 	  }
      }
    /* set the new filename */
-   if (opts->filename) eina_stringshare_del(opts->filename);
-   opts->filename = eina_stringshare_add(buf);
+   eina_stringshare_replace(&opts->filename, buf);
 }
 
 static void 
@@ -464,8 +462,11 @@ _em_do_window(void)
    ecore_x_keyboard_grab(input_window);
 
    /* set the mouse pointer */
-   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS)))
-     ecore_x_window_cursor_set(input_window, cursor);
+   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))) 
+     {
+        ecore_x_window_cursor_set(input_window, cursor);
+        ecore_x_cursor_free(cursor);
+     }
 
    /* setup handler to recieve key event */
    key_hdl = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, 
@@ -517,8 +518,11 @@ _em_do_region(void)
 					    _em_cb_mouse_down, NULL);
 
    /* set the mouse pointer */
-   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS)))
-     ecore_x_window_cursor_set(input_window, cursor);
+   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))) 
+     {
+        ecore_x_window_cursor_set(input_window, cursor);
+        ecore_x_cursor_free(cursor);
+     }
 
    /* create the rubber band */
    _em_band_show();
