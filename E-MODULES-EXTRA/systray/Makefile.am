@@ -14,12 +14,14 @@ filesdir =  $(datadir)
 files_DATA = module.desktop \
 	     e-module-systray.edj
 
-EXTRA_DIST = $(files_DATA) \
-	     images/module_icon.png \
-	     images/rounded_corners.png \
-	     e-module-systray.edc
+EXTRA_DIST_SRCS = images/module_icon.png \
+		  images/rounded_corners.png \
+	  	  e-module-systray.edc
 
-e-module-systray.edj: $(EXTRA_DIST)
+
+EXTRA_DIST = $(files_DATA) $(EXTRA_DIST_SRCS)
+
+e-module-systray.edj: $(EXTRA_DIST_SRCS)
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
