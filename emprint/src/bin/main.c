@@ -463,10 +463,7 @@ _em_do_window(void)
 
    /* set the mouse pointer */
    if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))) 
-     {
-        ecore_x_window_cursor_set(input_window, cursor);
-        ecore_x_cursor_free(cursor);
-     }
+     ecore_x_window_cursor_set(input_window, cursor);
 
    /* setup handler to recieve key event */
    key_hdl = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, 
@@ -519,10 +516,7 @@ _em_do_region(void)
 
    /* set the mouse pointer */
    if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))) 
-     {
-        ecore_x_window_cursor_set(input_window, cursor);
-        ecore_x_cursor_free(cursor);
-     }
+     ecore_x_window_cursor_set(input_window, cursor);
 
    /* create the rubber band */
    _em_band_show();
