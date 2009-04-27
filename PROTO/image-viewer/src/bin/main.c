@@ -52,7 +52,7 @@ struct _IV
 
    Ecore_Idler *idler;
 
-   Ecore_Timer *slideshow_timer;
+   Ecore_Timer *slideshow_timer, *cursor_timer;
 
    struct {
 	Evas_Object *win, *ly, *img, *scroller, *prev_img, *next_img, *bg;
@@ -260,6 +260,29 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
    iv_exit(data); /* exit the program's main loop that runs in elm_run() */
 }
 
+static int
+on_win_move_tick(void *data)
+{
+   IV *iv = data;
+
+   iv->cursor_timer = NULL;
+   if (iv->flags.fullscreen)
+     ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 0);
+   
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+on_win_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   if (iv->cursor_timer)
+     ecore_timer_del(iv->cursor_timer);
+   iv->cursor_timer = ecore_timer_add(1.0, on_win_move_tick, iv);
+   ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 1);
+}
+
+
 static void
 on_controls_click(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
@@ -384,6 +407,10 @@ fullscreen(IV *iv)
 {
    iv->flags.fullscreen = EINA_TRUE;
    elm_win_fullscreen_set(iv->gui.win, 1);
+
+   ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 0);
+   evas_object_event_callback_add(iv->gui.img, EVAS_CALLBACK_MOUSE_MOVE, on_win_move, iv);
+   evas_object_event_callback_add(iv->gui.controls, EVAS_CALLBACK_MOUSE_MOVE, on_win_move, iv);
 }
 
 static void
@@ -391,6 +418,10 @@ unfullscreen(IV *iv)
 {
    iv->flags.fullscreen = EINA_FALSE;
    elm_win_fullscreen_set(iv->gui.win, 0);
+
+   ecore_x_window_cursor_show(elm_win_xwindow_get(iv->gui.win), 1);
+   evas_object_event_callback_del(iv->gui.img, EVAS_CALLBACK_MOUSE_MOVE, on_win_move);
+   evas_object_event_callback_del(iv->gui.controls, EVAS_CALLBACK_MOUSE_MOVE, on_win_move);
 }
 
 static void
@@ -565,7 +596,6 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
    Evas_Object *o;
 #endif
 
-   DBG("event: %d : %s\n", event, path);
    cur_path = iv->files->data;
    switch(event)
      {
