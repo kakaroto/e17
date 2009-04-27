@@ -1,2 +1,12 @@
 Taskbar Module
 It gives you a taskbar!
+
+Keys:
+-----
+Button 1 + ALT   = iconify/uniconify
+Button 1 + Ctrl  = maximize/unmaximize
+Button 1 + Shift = shade/unshade
+Button 1 + Super = close
+Button 2         = maximize/unmaximize
+Button 3         = show menu
+
