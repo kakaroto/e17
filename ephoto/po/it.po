@@ -1,13 +1,13 @@
 # Italian translation for Ephoto.
 # This file is put in the public domain.
-# Massimo Maiurana <maiurana@gmail.com>, 2006-2009.
+# Massimo Maiurana <maiurana@gmail.com>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Ephoto\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-23 20:28+0800\n"
-"PO-Revision-Date: 2009-01-19 08:45+0000\n"
+"PO-Revision-Date: 2007-05-21 18:54+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -40,11 +40,11 @@ msgstr "%'.1f GB"
 
 #: src/bin/ephoto_single_view.c:92
 msgid "Zoom In"
-msgstr "Zoom avanti"
+msgstr "Ingrandisci"
 
 #: src/bin/ephoto_single_view.c:100
 msgid "Zoom Out"
-msgstr "Zoom indietro"
+msgstr "Rimpicciolisci"
 
 #: src/bin/ephoto_single_view.c:108
 msgid "Rotate Left"

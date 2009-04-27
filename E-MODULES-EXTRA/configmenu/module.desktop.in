@@ -6,8 +6,8 @@ Name[fr]=Menu de configuration
 Name[it]=Configurazione menù
 Icon=e-module-config
 Comment=<title>Config menu</title><br>Enables configuration menu augmentation.
-Comment[fr]=<title>Menu de configuration</title>Activer l'extension du menu de configuration.
-Comment[it]=<title>Configurazione menù</title>Attiva l'estensione del menù impostazioni.
+Comment[fr]=<title>Menu de configuration</title><br>Active l'extension du menu de configuration.
+Comment[it]=<title>Configurazione menù</title><br>Attiva l'estensione del menù impostazioni.
 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system
