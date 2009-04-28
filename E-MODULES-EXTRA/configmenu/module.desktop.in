@@ -1,12 +1,13 @@
-
 [Desktop Entry]
 Type=Link
 Name=Config Menu
 Name[fr]=Menu de configuration
+Name[cs]=Konfigurační menu
 Name[it]=Configurazione menù
 Icon=e-module-config
 Comment=<title>Config menu</title><br>Enables configuration menu augmentation.
 Comment[fr]=<title>Menu de configuration</title><br>Active l'extension du menu de configuration.
+Comment[cs]=<title>Konfigurační menu</title><br>Rozšiřuje submenu Konfigurace v hlavním menu o položky a kategorie z ovládacího centra.
 Comment[it]=<title>Configurazione menù</title><br>Attiva l'estensione del menù impostazioni.
 
 #Several different types available here. NEED TO DOC THESE.
