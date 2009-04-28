@@ -75,12 +75,12 @@ window_resize_cb (Ecore_Evas * ee)
   refresh_timer = ecore_timer_add (RESIZE_REFRESH, fix_bg, ee);
 
   if ((o = evas_object_name_find (ecore_evas_get (ee), "background")))
-    {
-      evas_object_resize (o, w, h);
-    }
+    evas_object_resize (o, w, h);
   if ((o = evas_object_name_find (ecore_evas_get (ee), "container")))
     evas_object_resize (o, w, h);
   if ((o = evas_object_name_find (ecore_evas_get (ee), "dragger")))
+    evas_object_resize (o, w, h);
+  if ((o = evas_object_name_find (ecore_evas_get (ee), "xpixmap")))
     evas_object_resize (o, w, h);
 }
 
@@ -225,15 +225,15 @@ main (int argc, char *argv[])
            evas_object_move (o, 0, 0);
            evas_object_resize (o, 320, 120);
            evas_object_layer_set (o, -5);
-           evas_object_name_set (o, "root_background");
+           evas_object_name_set (o, "xpixmap");
            evas_object_show (o);
 
            o = evas_object_rectangle_add (evas);
            evas_object_move (o, 0, 0);
-           evas_object_resize (o, 150, 10);
+           evas_object_resize (o, 150, 30);
            evas_object_layer_set (o, -3);
            evas_object_color_set (o, 255, 255, 255, 50);
-           evas_object_name_set (o, "background");
+           evas_object_name_set (o, "white_transparent_rect");
            evas_object_show (o);
 
            ecore_evas_show (ee);
