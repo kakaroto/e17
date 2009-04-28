@@ -420,6 +420,12 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         else:
             return s
 
+    def part_text_select_all(self, char *part):
+        edje_object_part_text_select_all(self.obj, part)
+
+    def part_text_select_none(self, char *part):
+        edje_object_part_text_select_none(self.obj, part)
+
     def part_text_unescaped_set(self, char *part, char *text_to_escape):
         """Automatically escapes text if using TEXTBLOCK.
 

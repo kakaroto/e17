@@ -180,6 +180,9 @@ cdef extern from "Edje.h":
     void edje_object_part_text_set(evas.c_evas.Evas_Object *obj, char *part, char *text)
     char *edje_object_part_text_get(evas.c_evas.Evas_Object *obj, char *part)
 
+    void edje_object_part_text_select_all(evas.c_evas.Evas_Object *obj, char *part)
+    void edje_object_part_text_select_none(evas.c_evas.Evas_Object *obj, char *part)
+
     void edje_object_part_text_unescaped_set(evas.c_evas.Evas_Object *obj, char *part, char *text_to_escape)
     char *edje_object_part_text_unescaped_get(evas.c_evas.Evas_Object *obj, char *part)
 
