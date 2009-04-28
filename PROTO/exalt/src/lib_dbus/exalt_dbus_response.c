@@ -19,16 +19,31 @@
 #include "exalt_dbus_response.h"
 #include "libexalt_dbus_private.h"
 
+/**
+ * @addtogroup Response
+ * @{
+ */
+
+
+/**
+ * @brief Returns the id of the message.
+ */
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response)
 {
     return response->msg_id;
 }
 
+/**
+ * @brief Returns true if a errors occurs
+ */
 int exalt_dbus_response_error_is(Exalt_DBus_Response *response)
 {
     return response->is_error;
 }
 
+/**
+ * @brief Returns the id of the error
+ */
 int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
 {
     if(response->is_error)
@@ -39,6 +54,9 @@ int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
     return response->error_id;
 }
 
+/**
+ * @brief Returns the error as a string
+ */
 char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
 {
     if(response->is_error)
@@ -49,11 +67,17 @@ char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
     return response->error_msg;
 }
 
+/**
+ * @brief Returns the type of the response (IP_GET ....)
+ */
 Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* response)
 {
     return response->type;
 }
 
+/**
+ * @brief Returns an Eina_List if the response is a list (for example if the question is exalt_dbus_eth_list_get())
+ */
 Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
@@ -68,6 +92,9 @@ Eina_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
     }
 }
 
+/**
+ * @brief Returns an address if the response is an address (for example if the question is exalt_dbus_eth_ip_get())
+ */
 char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
@@ -82,6 +109,9 @@ char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
     }
 }
 
+/**
+ * @brief Returns a simple string if the response is a string ( for example if the question is exalt_dbus_eth_command_get())
+ */
 char* exalt_dbus_response_string_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
@@ -96,6 +126,9 @@ char* exalt_dbus_response_string_get(Exalt_DBus_Response* response)
     }
 }
 
+/**
+ * @brief Returns the interface about the question was (force example eth0 if you ask the ip of the interface eth0)
+ */
 char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
@@ -122,6 +155,9 @@ char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
     }
 }
 
+/**
+ * @brief Returns a boolean if the response is a boolean (for example if the question is exalt_dbus_eth_up_is())
+ */
 int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
@@ -136,4 +172,6 @@ int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
             return 0;
     }
 }
+
+/** @} */
 

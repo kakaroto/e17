@@ -25,10 +25,17 @@
 #include <string.h>
 #include <libexalt.h>
 
+/**
+ * @defgroup Exalt_DBus
+ * @brief Exalt_DBus library.
+ * This library allows to communicate with the exalt daemon by using DBus
+ * The source code of exalt_command can be use to understand how using Exalt_CBus.
+ */
 
 /**
  * @defgroup General
  * @brief Generals functions
+ * @ingroup Exalt_DBus
  * @{
  */
 

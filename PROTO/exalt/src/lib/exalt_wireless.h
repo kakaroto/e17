@@ -5,6 +5,7 @@
 /**
  * @defgroup Exalt_Wireless
  * @brief The Exalt_Wireless contains all informations about your wireless card as name, essid, list of scanning networks ...
+ * @ingroup Exalt
  * @{
  */
 

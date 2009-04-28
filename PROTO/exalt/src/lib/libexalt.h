@@ -193,8 +193,16 @@
 #include "exalt_vpnc.h"
 
 /**
+ * @defgroup Exalt
+ * @brief Exalt is a low level library used by the daemon exalt and some parts are using by apps.<br>
+ * This library allows to manages ethernet and wireless interface.
+ */
+
+
+/**
  * @defgroup Exalt_General
  * @brief Some functions
+ * @ingroup Exalt
  * @{
  */
 

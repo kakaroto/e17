@@ -27,6 +27,7 @@
 /**
  * @defgroup Ethernet_interface
  * @brief Functions about an ethernet interface (get ip address, apply a connection ...)
+ * @ingroup Exalt_DBus
  * @{
  */
 

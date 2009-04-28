@@ -24,6 +24,7 @@
 /**
  * @defgroup Exalt_Connection
  * @brief The Exalt_Connection struct contains all informations about a configuration (dhcp or static mode, ip, essid ...)
+ * @ingroup Exalt
  * @{
  */
 

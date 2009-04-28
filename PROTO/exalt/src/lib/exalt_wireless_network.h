@@ -9,6 +9,7 @@
 /**
  * @defgroup Exalt_Wireless_Network
  * @brief The Exalt_Wireless_Network contains all informations about a wireless network (essid, protocol ...)
+ * @ingroup Exalt
  * @{
  */
 

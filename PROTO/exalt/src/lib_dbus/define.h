@@ -22,8 +22,9 @@
 #define  DEFINE_INC
 
 /**
- * @defgroup Some defines
+ * @defgroup Defines
  * @brief Some defines used by the library
+ * @ingroup Exalt_DBus
  * @{
  */
 

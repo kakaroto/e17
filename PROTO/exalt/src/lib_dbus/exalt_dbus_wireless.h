@@ -26,6 +26,7 @@
 /**
  * @defgroup Wireless_interface
  * @brief Functions specific to a wireless interface.
+ * @ingroup Exalt_DBus
  * @{
  */
 

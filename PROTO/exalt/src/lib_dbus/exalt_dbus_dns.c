@@ -31,6 +31,7 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
 
 /**
  * @addtogroup DNS
+ * @ingroup Exalt_DBus
  * @{
  */
 
@@ -39,7 +40,7 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
  * @param conn a connection
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_dns_get_list(Exalt_DBus_Conn* conn)
+int exalt_dbus_dns_list_get(Exalt_DBus_Conn* conn)
 {
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));

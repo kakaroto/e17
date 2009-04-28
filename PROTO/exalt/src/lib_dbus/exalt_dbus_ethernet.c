@@ -291,7 +291,7 @@ int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* eth)
 
 
 
-/*
+/**
  * @brief Up/activate an interface
  * @param conn a connection
  * @param eth the interface name
@@ -425,8 +425,11 @@ int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth)
 }
 
 
-/*
- * update docs!
+/**
+ * @brief Set the command which will be run after a configuration is applied on eth.
+ * @param conn a connection
+ * @param eth a eth interface name
+ * @param cmd the new command
  */
 int exalt_dbus_eth_command_set(Exalt_DBus_Conn* conn, const char* eth, const char* cmd)
 {

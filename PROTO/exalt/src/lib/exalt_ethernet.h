@@ -11,6 +11,7 @@ typedef struct Exalt_Ethernet Exalt_Ethernet;
 /**
  * @defgroup Exalt_Ethernet
  * @brief the Exalt_Ethernet struct contains all informations about an ethernet interface.
+ * @ingroup Exalt
  * @{
  */
 

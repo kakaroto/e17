@@ -5,6 +5,7 @@
 /**
  * @defgroup Exalt_System_Configuration
  * @brief all functions to save or load a configuration
+ * @ingroup Exalt
  * @{
  */
 
