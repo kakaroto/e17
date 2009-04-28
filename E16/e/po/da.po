@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-17 18:52+0200\n"
+"POT-Creation-Date: 2009-04-28 21:14+0200\n"
 "PO-Revision-Date: 2009-04-17 19:07+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -398,7 +398,7 @@ msgid "Settings..."
 msgstr "Indstillinger..."
 
 #: src/container.c:1211 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
-#: config/strings.c:116
+#: config/strings.c:124
 msgid "Close"
 msgstr "Luk"
 
@@ -953,7 +953,7 @@ msgstr "Globale indstillinger:"
 msgid "Swap Window Locations"
 msgstr "Ombyt vinduesplacering"
 
-#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:132
+#: src/groups.c:1018 src/menus-misc.c:646 config/strings.c:140
 msgid "Groups"
 msgstr "Grupper"
 
@@ -1138,7 +1138,7 @@ msgstr ""
 msgid "Magnifier"
 msgstr "Forstørrelsesglas"
 
-#: src/menus-misc.c:458 config/strings.c:93
+#: src/menus-misc.c:458 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Tema"
 
@@ -1257,15 +1257,15 @@ msgstr ""
 "Indstillinger for\n"
 "temagennemsigtighed\n"
 
-#: src/pager.c:1006 config/strings.c:49 config/strings.c:115
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:123
 msgid "Window Options"
 msgstr "Vinduesindstillinger"
 
-#: src/pager.c:1009 config/strings.c:51 config/strings.c:118
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:126
 msgid "Iconify"
 msgstr "Ikonificér"
 
-#: src/pager.c:1017 config/strings.c:117
+#: src/pager.c:1017 config/strings.c:125
 msgid "Annihilate"
 msgstr "Dræb"
 
@@ -1665,7 +1665,7 @@ msgstr "Aktivér glidende vinduer under start"
 msgid "Use saveunders to reduce window exposures"
 msgstr "Brug saveunders til at reducere vindueseksponeringer"
 
-#: src/settings.c:570 config/strings.c:130 config/strings.c:146
+#: src/settings.c:570 config/strings.c:138 config/strings.c:154
 msgid "Miscellaneous"
 msgstr "Diverse"
 
@@ -1821,11 +1821,11 @@ msgstr "Placering"
 msgid "Border style"
 msgstr "Rammestil"
 
-#: src/snaps.c:833 config/strings.c:168
+#: src/snaps.c:833 config/strings.c:176
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/snaps.c:838 config/strings.c:91
+#: src/snaps.c:838 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
 msgstr "Skrivebord"
 
@@ -1845,7 +1845,7 @@ msgstr "Stablingslag"
 msgid "Window List Skip"
 msgstr "Vindues 'skiplister'"
 
-#: src/snaps.c:864 config/strings.c:129 config/strings.c:156
+#: src/snaps.c:864 config/strings.c:137 config/strings.c:164
 msgid "Opacity"
 msgstr "Gennemsigtighed"
 
@@ -2191,7 +2191,7 @@ msgstr "Husk tilstand"
 msgid "This button does nothing interesting."
 msgstr "Denne knap gør ikke noget interessant."
 
-#: config/strings.c:47 config/strings.c:122
+#: config/strings.c:47 config/strings.c:130
 msgid "Shade/Unshade"
 msgstr "Rul op/ned"
 
@@ -2207,7 +2207,7 @@ msgstr "Flere knapper"
 msgid "Show more buttons."
 msgstr "Vis flere knapper"
 
-#: config/strings.c:56 config/strings.c:120
+#: config/strings.c:56 config/strings.c:128
 msgid "Raise"
 msgstr "Løft"
 
@@ -2215,7 +2215,7 @@ msgstr "Løft"
 msgid "Raise this window to the top."
 msgstr "Bring dette vindue i front"
 
-#: config/strings.c:58 config/strings.c:121
+#: config/strings.c:58 config/strings.c:129
 msgid "Lower"
 msgstr "Sænk"
 
@@ -2223,7 +2223,7 @@ msgstr "Sænk"
 msgid "Lower this window."
 msgstr "Sænk dette vindue"
 
-#: config/strings.c:60 config/strings.c:123
+#: config/strings.c:60 config/strings.c:131
 msgid "Stick/Unstick"
 msgstr "Klæb/klæb ikke"
 
@@ -2301,35 +2301,35 @@ msgstr "Vis Forstørrelsesglas"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:90 config/strings.c:182
+#: config/strings.c:90 config/strings.c:190
 msgid "User Menus"
 msgstr "Brugermenu"
 
-#: config/strings.c:92 config/strings.c:112
+#: config/strings.c:91 config/strings.c:112 config/strings.c:113
 msgid "Settings"
 msgstr "Indstillinger"
 
-#: config/strings.c:94 config/strings.c:101
+#: config/strings.c:94 config/strings.c:101 config/strings.c:116
 msgid "Maintenance"
 msgstr "Vedligeholdelse"
 
-#: config/strings.c:95
+#: config/strings.c:95 config/strings.c:117
 msgid "Help"
 msgstr "Hjælp"
 
-#: config/strings.c:96
+#: config/strings.c:96 config/strings.c:118
 msgid "About Enlightenment"
 msgstr "Om Enlightenment"
 
-#: config/strings.c:97
+#: config/strings.c:97 config/strings.c:119
 msgid "About this theme"
 msgstr "Om dette tema"
 
-#: config/strings.c:98 config/strings.c:186
+#: config/strings.c:98 config/strings.c:120 config/strings.c:194
 msgid "Restart"
 msgstr "Genstart"
 
-#: config/strings.c:99 config/strings.c:187
+#: config/strings.c:99 config/strings.c:121 config/strings.c:195
 msgid "Log Out"
 msgstr "Log ud"
 
@@ -2369,209 +2369,208 @@ msgstr "Vis cacheforbrug"
 msgid "Regenerate Menus"
 msgstr "Regenerer menu'er"
 
-#: config/strings.c:113
-msgid "Enlightenment Settings ..."
-msgstr "Enlightenment indstillinger ..."
-
-#: config/strings.c:119
+#: config/strings.c:127
 msgid "Leave Alone"
 msgstr "Ikonificer de andre vinduer"
 
-#: config/strings.c:124
+#: config/strings.c:132
 msgid "Remember..."
 msgstr "Husk..."
 
-#: config/strings.c:125
+#: config/strings.c:133
 msgid "Window Size"
 msgstr "Vinduesstørrelse"
 
-#: config/strings.c:126
+#: config/strings.c:134
 msgid "Set Stacking"
 msgstr "Sæt stabling"
 
-#: config/strings.c:127
+#: config/strings.c:135
 msgid "Set Border Style"
 msgstr "Sæt rammestil"
 
-#: config/strings.c:128
+#: config/strings.c:136
 msgid "Window Groups"
 msgstr "Vinduesgrupper"
 
-#: config/strings.c:133
+#: config/strings.c:141
 msgid "Configure this window's group(s)"
 msgstr "Konfigurer dette vindues gruppe(r)"
 
-#: config/strings.c:134
+#: config/strings.c:142
 msgid "Start a new group"
 msgstr "Start en ny gruppe"
 
-#: config/strings.c:135
+#: config/strings.c:143
 msgid "Add this window to the current group"
 msgstr "Tilføj dette vindue til den aktive gruppe"
 
-#: config/strings.c:136
+#: config/strings.c:144
 msgid "Select group to add this window to"
 msgstr "Vælg gruppen som vinduet skal tilføjes til"
 
-#: config/strings.c:137
+#: config/strings.c:145
 msgid "Remove this window from a group"
 msgstr "Fjern dette vindue fra en gruppe"
 
-#: config/strings.c:138
+#: config/strings.c:146
 msgid "Destroy a group this window belongs to"
 msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
-#: config/strings.c:140
+#: config/strings.c:148
 msgid "Stacking"
 msgstr "Stabling"
 
-#: config/strings.c:141
+#: config/strings.c:149
 msgid "Below"
 msgstr "Under"
 
-#: config/strings.c:142
+#: config/strings.c:150
 msgid "Normal"
 msgstr "Normal"
 
-#: config/strings.c:143
+#: config/strings.c:151
 msgid "Above"
 msgstr "Over"
 
-#: config/strings.c:144
+#: config/strings.c:152
 msgid "On Top"
 msgstr "Øverst"
 
-#: config/strings.c:147
+#: config/strings.c:155
 msgid "Toggle Skip Window Lists"
 msgstr "Aktivér/deaktivér skip vindueslister"
 
-#: config/strings.c:148
+#: config/strings.c:156
 msgid "Toggle Fixed Position"
 msgstr "Aktivér/deaktivér låst position"
 
-#: config/strings.c:149
+#: config/strings.c:157
 msgid "Toggle Fixed Size"
 msgstr "Aktivér/deaktivér låst størrelse"
 
-#: config/strings.c:150
+#: config/strings.c:158
 msgid "Toggle Never Focus"
 msgstr "Aktivér/deaktivér fokuser aldrig"
 
-#: config/strings.c:151
+#: config/strings.c:159
 msgid "Toggle Click to Focus"
 msgstr "Aktivér/deaktivér klik for at fokusere"
 
-#: config/strings.c:152
+#: config/strings.c:160
 msgid "Toggle Never Use Area"
 msgstr "Aktivér/deaktivér brug aldrig område"
 
-#: config/strings.c:153
+#: config/strings.c:161
 msgid "Toggle Button Grabs"
 msgstr "Aktivér/deaktivér museknap 'grabs'"
 
-#: config/strings.c:154
+#: config/strings.c:162
 msgid "Toggle Autoshade"
 msgstr "Aktivér/deaktivér automatisk oprulning"
 
-#: config/strings.c:157
+#: config/strings.c:165
 msgid "Default"
 msgstr "Standard"
 
-#: config/strings.c:158
+#: config/strings.c:166
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:159
+#: config/strings.c:167
 msgid "40%"
 msgstr "30%"
 
-#: config/strings.c:160
+#: config/strings.c:168
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:161
+#: config/strings.c:169
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:162
+#: config/strings.c:170
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:163
+#: config/strings.c:171
 msgid "Focused opacity 100%"
 msgstr "Fokuseret uigennemsigtighed 100%"
 
-#: config/strings.c:164
+#: config/strings.c:172
 msgid "Focused opacity follows unfocused"
 msgstr "Fokuseret uigennemsigtighed følger ufokuseret"
 
-#: config/strings.c:165
+#: config/strings.c:173
 msgid "Toggle Fading"
 msgstr "Aktivér/deaktivér fading"
 
-#: config/strings.c:166
+#: config/strings.c:174
 msgid "Toggle Shadows"
 msgstr "Aktivér/deaktivér skygger"
 
-#: config/strings.c:169
+#: config/strings.c:177
 msgid "Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:170
+#: config/strings.c:178
 msgid "Available Max Size Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende størrelse"
 
-#: config/strings.c:171
+#: config/strings.c:179
 msgid "Absolute Max Size Toggle"
 msgstr "Aktivér/deaktivér max størrelse"
 
-#: config/strings.c:172
+#: config/strings.c:180
 msgid "Span Xinerama Screens"
 msgstr "Spænd over Xinerama skærmene"
 
-#: config/strings.c:173
+#: config/strings.c:181
 msgid "Max Height Toggle"
 msgstr "Aktivér/deaktivér max højde"
 
-#: config/strings.c:174
+#: config/strings.c:182
 msgid "Available Max Height Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende højde"
 
-#: config/strings.c:175
+#: config/strings.c:183
 msgid "Absolute Max Height Toggle"
 msgstr "Aktivér/deaktivér maksimal højde"
 
-#: config/strings.c:176
+#: config/strings.c:184
 msgid "Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:177
+#: config/strings.c:185
 msgid "Available Max Width Toggle"
 msgstr "Aktivér/deaktivér til rådighed værende bredde"
 
-#: config/strings.c:178
+#: config/strings.c:186
 msgid "Absolute Max Width Toggle"
 msgstr "Aktivér/deaktivér max bredde"
 
-#: config/strings.c:179
+#: config/strings.c:187
 msgid "Fullscreen/Normal"
 msgstr "Fuldskærm/Normal"
 
-#: config/strings.c:180
+#: config/strings.c:188
 msgid "Zoom/Unzoom"
 msgstr "Zoom ind/ud"
 
-#: config/strings.c:183
+#: config/strings.c:191
 msgid "User Application List"
 msgstr "Brugerapplikationsliste"
 
-#: config/strings.c:184
+#: config/strings.c:192
 msgid "Other"
 msgstr "Andet"
 
-#: config/strings.c:185
+#: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
+
+#~ msgid "Enlightenment Settings ..."
+#~ msgstr "Enlightenment indstillinger ..."
 
 #~ msgid "Focus Settings ..."
 #~ msgstr "Fokusindstillinger ..."
