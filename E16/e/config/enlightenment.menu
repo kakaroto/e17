@@ -1,7 +1,7 @@
 "Enlightenment" "ROOT"
 "User Menus"		NULL menu file.menu
+"Settings"		NULL cfg
 "Desktop"		NULL menu desktop.menu
-"Settings"		NULL menu settings.menu
 "Themes"		NULL menu themes
 "Maintenance"		NULL menu maintenance.menu
 "Help"			NULL exec "edox $EROOT/E-docs"
