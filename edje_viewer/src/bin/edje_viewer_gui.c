@@ -57,6 +57,7 @@ Gui *main_window_show(const char *file)
    Etk_Widget *hbox;
    Etk_Widget *signal_label, *signal_entry;
    Etk_Widget *source_label, *source_entry;
+   Etk_Widget *dnd_x_slider, *dnd_y_slider;
    Etk_Widget *send_button;
    Etk_Widget *separator;
    Etk_Widget *scrolled_view;
@@ -217,6 +218,24 @@ Gui *main_window_show(const char *file)
    etk_signal_connect_by_code(ETK_ENTRY_TEXT_ACTIVATED_SIGNAL,
 			      ETK_OBJECT(source_entry),
 			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
+
+   dnd_x_slider = etk_hslider_new(0.0, 1.0, 0.0, 0.01, 0.05);
+   etk_slider_label_set(ETK_SLIDER(dnd_x_slider), "dnd x: %.2f%%");
+   etk_box_append(ETK_BOX(hbox), dnd_x_slider, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL,
+	                      ETK_OBJECT(dnd_x_slider),
+			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
+   gui->dnd_x_slider = dnd_x_slider;
+   etk_widget_size_request_set(dnd_x_slider, 200, 50);
+
+   dnd_y_slider = etk_hslider_new(0.0, 1.0, 0.0, 0.01, 0.05);
+   etk_slider_label_set(ETK_SLIDER(dnd_y_slider), "dnd y: %.2f%%");
+   etk_box_append(ETK_BOX(hbox), dnd_y_slider, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL,
+	                      ETK_OBJECT(dnd_y_slider),
+			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
+   gui->dnd_y_slider = dnd_y_slider;
+   etk_widget_size_request_set(dnd_y_slider, 200, 50);
 
    send_button = etk_button_new_with_label("Send");
    etk_button_alignment_set(ETK_BUTTON(send_button), 1.0, 0.5);
@@ -801,21 +820,31 @@ static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj __UNUSED__, void *data)
   Gui * gui;
   Eina_List *l;
   const char *sig, *src;
+  double dx, dy;
 
   gui = data;
   if (!gui) return ETK_TRUE;
 
   sig = etk_entry_text_get(ETK_ENTRY(gui->signal_entry));
   src = etk_entry_text_get(ETK_ENTRY(gui->source_entry));
+  dx = etk_range_value_get(ETK_RANGE(gui->dnd_x_slider));
+  dy = etk_range_value_get(ETK_RANGE(gui->dnd_y_slider));
   if (!sig) sig = "";
   if (!src) src = "";
   for (l = visible_elements; l; l = l->next)
     {
        Collection *co;
+       Eina_List *ll;
+       const char *name;
 
        co = l->data;
        if (!co) continue;
-       edje_object_signal_emit(co->de->edje_object, sig, src);
+       if (*sig != '\0')
+	 edje_object_signal_emit(co->de->edje_object, sig, src);
+
+
+       EINA_LIST_FOREACH(edje_edit_parts_list_get(co->de->edje_object), ll, name)
+	  edje_object_part_drag_size_set(co->de->edje_object, name, dx, dy);
     }
 
    return ETK_TRUE;
