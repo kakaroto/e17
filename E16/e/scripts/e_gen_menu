@@ -335,7 +335,7 @@ sub FindIcon {
 		next unless (-d "$d");
 		foreach $t (split(':', $Themes)) {
 			next unless (-d "$d/$t");
-			foreach $s (split(':', "16:24:32:48")) {
+			foreach $s (split(':', "48:32:24:16")) {
 				$S = "$d/$t/$s$x$s";
 				next unless (-d "$S");
 				if ($f =~ /^stock/) {
