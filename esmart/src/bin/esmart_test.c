@@ -232,7 +232,7 @@ main (int argc, char *argv[])
            evas_object_move (o, 0, 0);
            evas_object_resize (o, 150, 30);
            evas_object_layer_set (o, -3);
-           evas_object_color_set (o, 255, 255, 255, 50);
+           evas_object_color_set (o, 50, 50, 50, 50);
            evas_object_name_set (o, "white_transparent_rect");
            evas_object_show (o);
 
