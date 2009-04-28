@@ -258,7 +258,7 @@ void dns(int argc, char** argv)
 
     if(strcmp(argv[1],"dns_get")==0)
     {
-        exalt_dbus_dns_get_list(conn);
+        exalt_dbus_dns_list_get(conn);
         return ;
     }
 
