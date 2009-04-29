@@ -17,4 +17,11 @@ Description: Python bindings for epsilon
  .
  Epsilon is a small, display independent, and quick thumbnailing library.
 
+Package: python-efl-epsilon-doc
+Provides: python-epsilon-doc
+Section: doc
+Suggests: python-efl-epsilon
+Architecture: all
+Description: Documentation for python epsilon
+ This package contains API documentation for python epsilon.
 
