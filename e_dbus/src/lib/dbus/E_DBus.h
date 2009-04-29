@@ -9,6 +9,7 @@
 
 #include <dbus/dbus.h>
 #include <Ecore.h>
+#include <Eina.h>
 
 #ifdef EAPI
 #undef EAPI
@@ -86,6 +87,9 @@ extern "C" {
    EAPI E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
    EAPI void e_dbus_object_free(E_DBus_Object *obj);
    EAPI void *e_dbus_object_data_get(E_DBus_Object *obj);
+   EAPI E_DBus_Connection *e_dbus_object_conn_get(E_DBus_Object *obj);
+   EAPI const char *e_dbus_object_path_get(E_DBus_Object *obj);
+   EAPI const Eina_List *e_dbus_object_interfaces_get(E_DBus_Object *obj);
 
    EAPI void e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get_Cb func);
    EAPI void e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set_Cb func);

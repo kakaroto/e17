@@ -1,6 +1,6 @@
 #include "E_DBus.h"
 #include "e_dbus_private.h"
-#include <Ecore_Data.h>
+#include <Eina.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -271,6 +271,36 @@ EAPI void *
 e_dbus_object_data_get(E_DBus_Object *obj)
 {
   return obj->data;
+}
+
+/**
+ * @brief Get the dbus connection of a dbus object
+ * @param obj the dbus object
+ */
+EAPI E_DBus_Connection *
+e_dbus_object_conn_get(E_DBus_Object *obj)
+{
+  return obj->conn;
+}
+
+/**
+ * @brief Get the path of a dbus object
+ * @param obj the dbus object
+ */
+EAPI const char *
+e_dbus_object_path_get(E_DBus_Object *obj)
+{
+  return obj->path;
+}
+
+/**
+ * @brief Get the interfaces of a dbus object
+ * @param obj the dbus object
+ */
+EAPI const Eina_List *
+e_dbus_object_interfaces_get(E_DBus_Object *obj)
+{
+  return obj->interfaces;
 }
 
 /**
