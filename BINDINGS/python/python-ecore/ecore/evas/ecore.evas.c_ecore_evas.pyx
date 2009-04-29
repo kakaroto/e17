@@ -36,6 +36,7 @@ engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
 engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "opengl_x11"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_XCB] = "software_xcb"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_XCB] = "xrender_xcb"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_GDI] = "software_gdi"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_DDRAW] = "software_ddraw"
 engines[<int>ECORE_EVAS_ENGINE_DIRECT3D] = "direct3d"
 engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "opengl_glew"
@@ -59,6 +60,7 @@ engine_mapping = {
   "software_16_x11": SoftwareX11_16,
 #  "directfb": DirectFB,
   "fb": FB,
+#  "software_gdi": ,
 #  "software_ddraw": ,
 #  "direct3d": ,
 #  "opengl_glew": ,
