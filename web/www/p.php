@@ -24,6 +24,7 @@
         </td>
         <td id="header_menu">
           <ul>
+	    <?php echo(nav_button("docs", ""));?>
 	    <?php echo(nav_button("main8", ""));?>
 	    <?php echo(nav_button("main7", ""));?>
 	    <?php echo(nav_button("main6", ""));?>
