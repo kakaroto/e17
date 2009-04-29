@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Notification module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-04-28 08:49+0400\n"
-"PO-Revision-Date: 2009-04-28 11:35+0400\n"
+"PO-Revision-Date: 2009-04-29 16:52+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Entrée en mode présentation"
 
 #: src/e_mod_main.c:204
 msgid "Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, screen saver, lock and power saving will be disabled so you are not interrupted."
-msgstr "Enlightenment est en <b> mode</b>présentation.<br>Dans ce mode, l'écran de veille, le verrouillage et la gestion de l'énergie sont désactivés pour ne pas vous interrompre."
+msgstr "Enlightenment est en mode <b>présentation</b>.<br>Dans ce mode, l'écran de veille, le verrouillage et la gestion de l'énergie sont désactivés pour ne pas vous interrompre."
 
 #: src/e_mod_main.c:210
 msgid "Exited Presentation Mode"
@@ -46,7 +46,7 @@ msgstr "Entrée en mode hors ligne"
 
 #: src/e_mod_main.c:227
 msgid "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules that use network will stop polling remote services."
-msgstr "Enlightenment est en <b> mode</b>hors ligne.<br>Dans ce mode, les modules qui utilisent le réseau n'interrogent plus les services distants."
+msgstr "Enlightenment est en mode <b>hors ligne</b>.<br>Dans ce mode, les modules qui utilisent le réseau n'interrogent plus les services distants."
 
 #: src/e_mod_main.c:233
 msgid "Exited Offline Mode"
@@ -54,7 +54,7 @@ msgstr "Sortie du mode hors ligne"
 
 #: src/e_mod_main.c:234
 msgid "Now in <b>online</b> mode.<br>Now modules that use network will resume regular tasks."
-msgstr "De nouveau <b> en ligne.</b><br>Les modules qui utilisent le réseau retrouvent leurs fonctions habituelles."
+msgstr "De nouveau <b>en ligne</b>.<br>Les modules qui utilisent le réseau retrouvent leurs fonctions habituelles."
 
 #: src/e_mod_main.c:291
 msgid "Extensions"
