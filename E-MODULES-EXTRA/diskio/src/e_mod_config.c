@@ -3,7 +3,7 @@
 
 struct _E_Config_Dialog_Data 
 {
-   Ecore_List *disks;
+   Eina_List *disks;
    
    int diskpos;
 };
@@ -78,6 +78,7 @@ static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Config_Item *ci;
+   Eina_List *l;
    Evas_Object *o = NULL, *of = NULL, *ob = NULL;
    E_Radio_Group *rg;
    char path[128], *disk;
@@ -93,8 +94,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    if (cfdata->disks)
      {
-		while ((disk = ecore_list_next(cfdata->disks)))
+		for (l = cfdata->disks; l; l = eina_list_next(l))
 		  {
+			 disk = eina_list_data_get(l);
 		     pos++;
 
 			 snprintf (path, sizeof (path), "/sys/block/%s/device", disk);
@@ -126,14 +128,15 @@ static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Config_Item *ci;
+   Eina_List *l;
    char *disk;
    int pos = -1;
 
    ci = cfd->data;
 
-   ecore_list_first_goto(cfdata->disks);
-   while ((disk = ecore_list_next(cfdata->disks)))
+   for (l = cfdata->disks; l; l = eina_list_next(l))
 	 {
+	    disk = eina_list_data_get(l);
         pos++;
 
 	    if (pos == cfdata->diskpos)
