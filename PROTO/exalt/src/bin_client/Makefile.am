@@ -7,7 +7,7 @@ AM_CFLAGS = \
 -DPACKAGE_LOCALE_DIR=\"$(localedir)\"
 
 
-sbin_PROGRAMS = exalt-client
+bin_PROGRAMS = exalt-client
 
 exalt_command_INCLUDES =
 
