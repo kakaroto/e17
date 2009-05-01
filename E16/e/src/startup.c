@@ -103,13 +103,19 @@ StartupWindowsCreate(void)
 
    BackgroundSet(bg, win1, WinGetW(VROOT), WinGetH(VROOT));
    BackgroundSet(bg, win2, WinGetW(VROOT), WinGetH(VROOT));
-   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
-   BackgroundDestroyByName("STARTUP_BACKGROUND");
+   StartupBackgroundsDestroy();
 
    EobjMap(init_win1, 0);
    EobjMap(init_win2, 0);
 
    EobjsRepaint();
+}
+
+void
+StartupBackgroundsDestroy(void)
+{
+   BackgroundDestroyByName("STARTUP_BACKGROUND");
+   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
 }
 
 static int

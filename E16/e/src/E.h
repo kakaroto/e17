@@ -520,6 +520,7 @@ int                 SlideoutsConfigLoad(FILE * fs);
 /* startup.c */
 void                StartupWindowsCreate(void);
 void                StartupWindowsOpen(void);
+void                StartupBackgroundsDestroy(void);
 
 /* theme.c */
 char               *ThemeFind(const char *theme);

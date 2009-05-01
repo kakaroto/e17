@@ -1372,6 +1372,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_CONFIGURE:
 	BackgroundsConfigLoadUser();
 	BackgroundsCheckDups();
+	StartupBackgroundsDestroy();
 	break;
 
      case ESIGNAL_START:
