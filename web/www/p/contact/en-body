@@ -328,6 +328,18 @@ ksort($developers);
 <td class='tab1'>minion2</td>
 <td class='tab1'>N</td>
 </tr>
+<tr>
+<td class='tab2'>Dan Sinclair</td>
+<td class='tab2'>Ewl, Efreet, EwlBook</td>
+<td class='tab2'>dj2</td>
+<td class='tab2'><a href="http://everburning.com/">everburning.com</a></td>
+</tr>
+<tr>
+<td class='tab1'>Sthithaprajna Garapaty</td>
+<td class='tab1'>taskbar module</td>
+<td class='tab1'>iamsthitha</td>
+<td class='tab1'>N</td>
+</tr>
 </table>
 </center>
 
