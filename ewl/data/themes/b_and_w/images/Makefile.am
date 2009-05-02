@@ -39,8 +39,8 @@ menu_arrow_sel.png \
 menu_sel_bg.png \
 menu_sel_fg.png \
 notebook_bottom_tab_first.png \
-notebook_bottom_tab_normal.png \
 notebook_bottom_tab_first_selected.png \
+notebook_bottom_tab_normal.png \
 notebook_bottom_tab_selected.png \
 notebook_left_tab_first.png \
 notebook_left_tab_normal.png \
@@ -53,23 +53,28 @@ notebook_tab_first.png \
 notebook_tab_normal.png \
 notebook_tab_selected.png \
 notebook_top_tab_first.png \
-notebook_top_tab_normal.png \
 notebook_top_tab_first_selected.png \
+notebook_top_tab_normal.png \
 notebook_top_tab_selected.png \
 paned_thumb_h.png \
 paned_thumb_v.png \
-pointer_glow.png \
 pointer.png \
+pointer_glow.png \
 radio_base.png \
 radio_on.png \
 radio_sel.png \
 sb_runnerh.png \
 sb_runnerv.png \
 shadow.png \
-slider_clicked.png \
 slider.png \
+slider_clicked.png \
 sphere1.png \
 sphere2.png \
 sphere3.png \
-sphere4.png
-
+sphere4.png \
+sphere5.png \
+sphere6.png \
+sphere7.png \
+tree_arrow_down.png \
+tree_arrow_right.png \
+updown.png 
