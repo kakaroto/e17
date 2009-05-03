@@ -2,7 +2,7 @@ Source: entrance
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 6), libtool, libpam0g-dev, libevas-dev, libecore-dev, libecore-bin, libedje-dev, libedje-bin, libesmart0-dev, libxp-dev
+Build-Depends: cdbs, debhelper (>= 6), libtool, libpam0g-dev, libevas-dev, libecore-dev, libecore-bin, libedje-dev, libedje-bin, libesmart0-dev, libxp-dev, libtool
 Standards-Version: 3.8.1
 
 Package: entrance

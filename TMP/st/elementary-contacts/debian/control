@@ -2,7 +2,7 @@ Source: elementary-contacts
 Section: x11
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: debhelper (>= 6), cdbs, libelm-dev
+Build-Depends: debhelper (>= 6), cdbs, libelm-dev, libtool
 Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 

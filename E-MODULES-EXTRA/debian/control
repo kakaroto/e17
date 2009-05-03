@@ -2,7 +2,7 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
-Build-Depends: cdbs, debhelper (>= 6), e17-dev | ecomorph-e17-dev, libexml1-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint, libedbus-dev
+Build-Depends: cdbs, debhelper (>= 6), e17-dev | ecomorph-e17-dev, libexml1-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint, libedbus-dev, libtool
 Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 

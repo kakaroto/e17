@@ -2,7 +2,7 @@ Source: emprint
 Section: x11
 Priority: extra
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libimlib2-dev, libedje-dev, libevas-dev
+Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libimlib2-dev, libedje-dev, libevas-dev, libtool
 Standards-Version: 3.8.1
 
 Package: emprint

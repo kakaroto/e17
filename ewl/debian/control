@@ -5,7 +5,7 @@ Maintainer:  Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <albin.tonnerre@gmail.com>,
  Xavier Oswald <x.oswald@free.fr>, Jan Lübbe <jluebbe@debian.org>
 Build-Depends: debhelper (>= 5), cdbs, libevas-dev, libedje-dev,
- libefreet-dev, libecore-dev, libedje-bin, libembryo-bin
+ libefreet-dev, libecore-dev, libedje-bin, libembryo-bin, libtool
 # libemotion-dev, libepsilon-dev
 Standards-Version: 3.8.1
 Vcs-Git: git://git.debian.org/pkg-e/libs/ewl.git

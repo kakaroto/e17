@@ -2,7 +2,7 @@ Source: elicit
 Section: x11
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), automake1.7 | automaken, libecore-dev, libedje-dev, libesmart0-dev, libimlib2-dev
+Build-Depends: cdbs, debhelper (>= 6), automake1.7 | automaken, libecore-dev, libedje-dev, libesmart0-dev, libimlib2-dev, libtool
 Standards-Version: 3.8.1
 
 Package: elicit

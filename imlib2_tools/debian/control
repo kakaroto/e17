@@ -2,7 +2,7 @@ Source: imlib2-tools
 Section: graphics
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: libimlib2-dev, libpopt-dev, debhelper (>= 6), cdbs
+Build-Depends: libimlib2-dev, libpopt-dev, debhelper (>= 6), cdbs, libtool
 Standards-Version: 3.8.1
 
 Package: imlib2-tools
@@ -11,5 +11,3 @@ Section: graphics
 Depends: ${shlibs:Depends}
 Description: utilities for imlib2
  utilities and other stuff for imlib2
-
- 
