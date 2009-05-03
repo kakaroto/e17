@@ -871,7 +871,7 @@ load_actions(void)
 
    s = getenv("EROOT");
    if (!s)
-      return;
+      s = DATADIR "/e16";	/* Default location */
 
    snprintf(kbdb, sizeof(kbdb), "%s/config/e16keyedit.db", s);
 
