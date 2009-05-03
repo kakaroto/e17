@@ -31,19 +31,10 @@ static GtkWidget   *act_params;
 static GtkWidget   *act_mod;
 static GtkWidget   *act_clist;
 
-#define VER_E16_OLD 0
-#define VER_E16_8   1
-static int          e16_ver = VER_E16_OLD;
-
 static gchar       *e_ipc_msg = NULL;
 static char         dont_update = 0;
 static int          last_row = 0;
 static int          real_rows = 0;
-
-/* Various UI text strings */
-#define TXT_SELECT(old, new) ((e16_ver==VER_E16_OLD) ? old : new)
-#define TXT_PARAMETERS_USED TXT_SELECT("Parameters Used", "Command")
-#define TXT_PARAMETERS      TXT_SELECT("Parameters:", "Command:")
 
 typedef struct
 {
@@ -189,35 +180,14 @@ match_action_by_binding(int opcode, const char *params)
 
    for (k = 0; actions[k].text; k++)
      {
-	if (e16_ver > VER_E16_OLD)
-	  {
-	     if (!actions[k].command)	/* Not avaliable in 16.8 */
-		continue;
+	if (!actions[k].command)	/* Not avaliable in 16.8 */
+	   continue;
 
-	     len = strlen(actions[k].command);
-	     if (strncmp(actions[k].command, params, len))
-		continue;
+	len = strlen(actions[k].command);
+	if (strncmp(actions[k].command, params, len))
+	   continue;
 
-	     return k;
-	  }
-	else
-	  {
-	     if (opcode != actions[k].id)
-		continue;
-
-	     if (*params == '\0' && !actions[k].params)
-		return k;	/* No parameters */
-
-	     if ((actions[k].param_tpe == 0) && (actions[k].params))
-	       {
-		  if (!strcmp(params, actions[k].params))
-		     return k;
-	       }
-	     else
-	       {
-		  return k;
-	       }
-	  }
+	return k;
      }
 
    return -1;
@@ -293,7 +263,7 @@ e_cb_modifier(GtkWidget * widget __UNUSED__, gpointer data)
 {
    gint                value;
 
-   value = (gint) data;
+   value = (gint) (glong) data;
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 0, mod_str[value]);
 }
 
@@ -327,18 +297,10 @@ change_action(GtkWidget * my_clist __UNUSED__, gint row, gint column __UNUSED__,
 	gtk_entry_set_text(GTK_ENTRY(act_params), "");
      }
 
-   if (e16_ver != VER_E16_OLD)
-     {
-	if (actions[k].command)
-	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[k].command);
-	else
-	   gtk_entry_set_text(GTK_ENTRY(act_params), "* Not available *");
-     }
+   if (actions[k].command)
+      gtk_entry_set_text(GTK_ENTRY(act_params), actions[k].command);
    else
-     {
-	if (actions[k].params)
-	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[k].params);
-     }
+      gtk_entry_set_text(GTK_ENTRY(act_params), "* Not available *");
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 2, actions[k].text);
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
 		      gtk_entry_get_text(GTK_ENTRY(act_params)));
@@ -395,31 +357,9 @@ on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 	action_id = (j >= 0) ? actions[j].id : -1;
 	gtk_clist_get_text(GTK_CLIST(clist), i, 3, &params);
 
-	if (e16_ver > VER_E16_OLD)
-	  {
-	     if (*params == '*')
-		continue;
-	     snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier, 0,
-		      params);
-	  }
-	else if (*params != '\0')
-	  {
-	     if (action_id < 0)
-		continue;
-
-	     if (action_id == 9)
-	       {
-		  snprintf(params_tmp, sizeof(params_tmp), "%s %s", "named",
-			   params);
-		  params = (char *)params_tmp;
-	       }
-	     snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier,
-		      action_id, params);
-	  }
-	else
-	  {
-	     snprintf(tmp, sizeof(tmp), "%s %i %i\n", key, modifier, action_id);
-	  }
+	if (*params == '*')
+	   continue;
+	snprintf(tmp, sizeof(tmp), "%s %i %i %s\n", key, modifier, 0, params);
 	buf = dupcat(buf, tmp);
      }
 
@@ -696,7 +636,7 @@ create_list_window(void)
    gtk_clist_set_column_title(GTK_CLIST(clist), 0, "Modifier");
    gtk_clist_set_column_title(GTK_CLIST(clist), 1, "Key");
    gtk_clist_set_column_title(GTK_CLIST(clist), 2, "Action to Perform");
-   gtk_clist_set_column_title(GTK_CLIST(clist), 3, TXT_PARAMETERS_USED);
+   gtk_clist_set_column_title(GTK_CLIST(clist), 3, "Command");
    gtk_clist_column_titles_show(GTK_CLIST(clist));
    gtk_signal_connect(GTK_OBJECT(clist), "select_row",
 		      GTK_SIGNAL_FUNC(selection_made), NULL);
@@ -802,7 +742,7 @@ create_list_window(void)
 		    GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
    alignment = gtk_alignment_new(1.0, 0.5, 0, 0);
-   label = gtk_label_new(TXT_PARAMETERS);
+   label = gtk_label_new("Command:");
    gtk_container_add(GTK_CONTAINER(alignment), label);
    gtk_widget_show(alignment);
    gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
@@ -840,7 +780,8 @@ create_list_window(void)
 	   mi = gtk_menu_item_new_with_label(mod_str[i]);
 	   gtk_widget_show(mi);
 	   gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			      GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) i);
+			      GTK_SIGNAL_FUNC(e_cb_modifier),
+			      (gpointer) (glong) i);
 	   gtk_menu_append(GTK_MENU(m), mi);
 	}
    }
@@ -883,8 +824,6 @@ create_list_window(void)
 
       for (k = row = 0; (actions[k].text); k++)
 	{
-	   if (e16_ver == VER_E16_OLD && actions[k].id < 0)
-	      continue;
 	   stuff[0] = actions[k].text;
 	   gtk_clist_append(GTK_CLIST(act_clist), (char **)stuff);
 	   action_index_to_row[k] = row;
@@ -934,34 +873,6 @@ receive_ipc_msg(gchar * msg)
    gtk_main_quit();
 }
 
-static int
-get_e16_version(void)
-{
-   char               *msg;
-   const char         *s;
-   int                 ver, minor;
-
-   ver = VER_E16_OLD;
-
-   CommsSend("ver");
-   msg = wait_for_ipc_msg();
-   if (!msg)
-      goto done;
-
-   s = strstr(msg, "0.16.");
-   if (!s)
-      goto done;
-
-   sscanf(s, "0.16.%d", &minor);
-   if (minor >= 8)
-      ver = VER_E16_8;
-
- done:
-   if (msg)
-      free(msg);
-   return ver;
-}
-
 static void
 load_actions(void)
 {
@@ -973,9 +884,6 @@ load_actions(void)
    ActionOpt          *pao;
 
    actions = actions_default;
-
-   if (e16_ver == VER_E16_OLD)
-      return;
 
    /* FIXME - Should be fetched via IPC. */
 
@@ -1102,8 +1010,6 @@ main(int argc, char *argv[])
 	     "that uses Enlightenment's IPC mechanism to configure\n"
 	     "it remotely.");
 #endif
-
-   e16_ver = get_e16_version();
 
    load_actions();
 
