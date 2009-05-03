@@ -39,7 +39,6 @@ static int          real_rows = 0;
 typedef struct
 {
    const char         *text;
-   gint                id;
    gchar               param_tpe;
    const char         *params;
    const char         *command;
@@ -72,99 +71,87 @@ static const char  *mod_str[] = {
 
 /* *INDENT-OFF* */
 static const ActionOpt actions_default[] = {
-    {"Run command", 1, 1, NULL, "exec "},
+    {"Run command", 1, NULL, "exec "},
 
-    {"Restart Enlightenment", 7, 0, "restart", "restart"},
-    {"Exit Enlightenment", 7, 0, NULL, "exit"},
+    {"Restart Enlightenment", 0, "restart", "restart"},
+    {"Exit Enlightenment", 0, NULL, "exit"},
 
-    {"Goto Next Desktop", 15, 0, NULL, "desk next"},
-    {"Goto Previous Deskop", 16, 0, NULL, "desk prev"},
-    {"Goto Desktop", 42, 2, NULL, "desk goto "},
-    {"Raise Desktop", 17, 0, NULL, "desk raise"},
-    {"Lower Desktop", 18, 0, NULL, "desk lower"},
-    {"Reset Desktop In Place", 21, 0, NULL, "desk this"},
+    {"Goto Next Desktop", 0, NULL, "desk next"},
+    {"Goto Previous Deskop", 0, NULL, "desk prev"},
+    {"Goto Desktop", 2, NULL, "desk goto "},
+    {"Raise Desktop", 0, NULL, "desk raise"},
+    {"Lower Desktop", 0, NULL, "desk lower"},
+    {"Reset Desktop In Place", 0, NULL, "desk this"},
 
-    {"Toggle Deskrays", 43, 0, NULL, NULL},
+    {"Cleanup Windows", 0, NULL, "misc arrange size"},
 
-    {"Cleanup Windows", 8, 0, NULL, "misc arrange size"},
+    {"Move mouse pointer to next screen", 0, NULL, "warp screen"},
 
-    {"Scroll Windows to left", 48, 0, "-16 0", NULL},
-    {"Scroll Windows to right", 48, 0, "16 0", NULL},
-    {"Scroll Windows up", 48, 0, "0 -16", NULL},
-    {"Scroll Windows down", 48, 0, "0 16", NULL},
-    {"Scroll Windows by [X Y] pixels", 48, 3, NULL, NULL},
+    {"Move mouse pointer to left", 0, "-1 0", "warp rel -1 0"},
+    {"Move mouse pointer to right", 0, "1 0", "warp rel 1 0"},
+    {"Move mouse pointer up", 0, "0 -1", "warp rel 0 -1"},
+    {"Move mouse pointer down", 0, "0 1", "warp rel 0 1"},
+    {"Move mouse pointer by [X Y]", 3, NULL, "warp rel "},
 
-    {"Move mouse pointer to next screen", -1, 0, NULL, "warp screen"},
+    {"Goto Desktop area [X Y]", 3, NULL, "area goto"},
+    {"Move to Desktop area on the left", 0, "-1 0", "area move -1 0"},
+    {"Move to Desktop area on the right", 0, "1 0", "area move 1 0"},
+    {"Move to Desktop area above", 0, "0 -1", "area move 0 -1"},
+    {"Move to Desktop area below", 0, "0 1", "area move 0 1"},
 
-    {"Move mouse pointer to left", 66, 0, "-1 0", "warp rel -1 0"},
-    {"Move mouse pointer to right", 66, 0, "1 0", "warp rel 1 0"},
-    {"Move mouse pointer up", 66, 0, "0 -1", "warp rel 0 -1"},
-    {"Move mouse pointer down", 66, 0, "0 1", "warp rel 0 1"},
-    {"Move mouse pointer by [X Y]", 66, 3, NULL, "warp rel "},
+    {"Raise Window", 0, NULL, "wop * raise"},
+    {"Lower Window", 0, NULL, "wop * lower"},
+    {"Close Window", 0, NULL, "wop * close"},
+    {"Annihilate Window", 0, NULL, "wop * kill"},
+    {"Stick / Unstick Window", 0, NULL, "wop * stick"},
+    {"Iconify Window", 0, NULL, "wop * iconify"},
+    {"Shade / Unshade Window", 0, NULL, "wop * shade"},
+    {"Maximise Height of Window", 0, "conservative", "wop * th conservative"},
+    {"Maximise Height of Window to available space", 0, "available", "wop * th available"},
+    {"Maximise Height of Window to whole screen", 0, NULL, "wop * th"},
+    {"Maximise Width of Window", 0, "conservative", "wop * tw conservative"},
+    {"Maximise Width of Window to available space", 0, "available", "wop * tw available"},
+    {"Maximise Width of Window to whole screen", 0, NULL, "wop * tw"},
+    {"Maximise Size of Window", 0, "conservative", "wop * ts conservative"},
+    {"Maximise Size of Window to available space", 0, "available", "wop * ts available"},
+    {"Maximise Size of Window to whole screen", 0, NULL, "wop * ts"},
+    {"Toggle Window fullscreen state", 0, NULL, "wop * fullscreen"},
+    {"Toggle Window zoom state", 0, NULL, "wop * zoom"},
+    {"Send window to next desktop", 0, NULL, "wop * desk next"},
+    {"Send window to previous desktop", 0, NULL, "wop * desk prev"},
+    {"Switch focus to next window", 0, NULL, "focus next"},
+    {"Switch focus to previous window", 0, NULL, "focus prev"},
+    {"Glue / Unglue Window to Desktop screen", 0, NULL, "wop * no_user_move"},
+    {"Set Window layer to On Top", 0, "20", "wop * layer 20"},
+    {"Set Window layer to Above", 0, "6", "wop * layer 6"},
+    {"Set Window layer to Normal", 0, "4", "wop * layer 4"},
+    {"Set Window layer to Below", 0, "2", "wop * layer 2"},
+    {"Set Window layer", 2, NULL, "wop * layer "},
+    {"Move Window to area on left", 0, "-1 0", "wop * area move -1 0"},
+    {"Move Window to area on right", 0, "1 0", "wop * area move 1 0"},
+    {"Move Window to area above", 0, "0 -1", "wop * area move 0 -1"},
+    {"Move Window to area below", 0, "0 1", "wop * area move 0 1"},
+    {"Move Window by area [X Y]", 3, NULL, "wop * area "},
 
-    {"Goto Desktop area [X Y]", 62, 3, NULL, "area goto"},
-    {"Move to Desktop area on the left", 63, 0, "-1 0", "area move -1 0"},
-    {"Move to Desktop area on the right", 63, 0, "1 0", "area move 1 0"},
-    {"Move to Desktop area above", 63, 0, "0 -1", "area move 0 -1"},
-    {"Move to Desktop area below", 63, 0, "0 1", "area move 0 1"},
+    {"Set Window border style to the Default", 0, "DEFAULT", "wop * border DEFAULT"},
+    {"Set Window border style to the Borderless", 0, "BORDERLESS", "wop * border BORDERLESS"},
 
-    {"Raise Window", 5, 0, NULL, "wop * raise"},
-    {"Lower Window", 6, 0, NULL, "wop * lower"},
-    {"Close Window", 13, 0, NULL, "wop * close"},
-    {"Annihilate Window", 14, 0, NULL, "wop * kill"},
-    {"Stick / Unstick Window", 20, 0, NULL, "wop * stick"},
-    {"Iconify Window", 46, 0, NULL, "wop * iconify"},
-    {"Shade / Unshade Window", 49, 0, NULL, "wop * shade"},
-    {"Maximise Height of Window", 50, 0, "conservative", "wop * th conservative"},
-    {"Maximise Height of Window to available space", 50, 0, "available", "wop * th available"},
-    {"Maximise Height of Window to whole screen", 50, 0, NULL, "wop * th"},
-    {"Maximise Width of Window", 51, 0, "conservative", "wop * tw conservative"},
-    {"Maximise Width of Window to available space", 51, 0, "available", "wop * tw available"},
-    {"Maximise Width of Window to whole screen", 51, 0, NULL, "wop * tw"},
-    {"Maximise Size of Window", 52, 0, "conservative", "wop * ts conservative"},
-    {"Maximise Size of Window to available space", 52, 0, "available", "wop * ts available"},
-    {"Maximise Size of Window to whole screen", 52, 0, NULL, "wop * ts"},
-    {"Toggle Window fullscreen state", -1, 0, NULL, "wop * fullscreen"},
-    {"Toggle Window zoom state", -1, 0, NULL, "wop * zoom"},
-    {"Send window to next desktop", 53, 0, NULL, "wop * desk next"},
-    {"Send window to previous desktop", 54, 0, NULL, "wop * desk prev"},
-    {"Switch focus to next window", 58, 0, NULL, "focus next"},
-    {"Switch focus to previous window", 59, 0, NULL, "focus prev"},
-    {"Glue / Unglue Window to Desktop screen", 64, 0, NULL, "wop * no_user_move"},
-    {"Set Window layer to On Top", 65, 0, "20", "wop * layer 20"},
-    {"Set Window layer to Above", 65, 0, "6", "wop * layer 6"},
-    {"Set Window layer to Normal", 65, 0, "4", "wop * layer 4"},
-    {"Set Window layer to Below", 65, 0, "2", "wop * layer 2"},
-    {"Set Window layer", 65, 2, NULL, "wop * layer "},
-    {"Move Window to area on left", 0, 0, "-1 0", "wop * area move -1 0"},
-    {"Move Window to area on right", 0, 0, "1 0", "wop * area move 1 0"},
-    {"Move Window to area above", 0, 0, "0 -1", "wop * area move 0 -1"},
-    {"Move Window to area below", 0, 0, "0 1", "wop * area move 0 1"},
-    {"Move Window by area [X Y]", 0, 3, NULL, "wop * area "},
+    {"Forget everything about Window", 0, "none", "wop * snap none"},
+    {"Remember all Window settings", 0, NULL, "wop * snap all"},
+    {"Remember Window Border", 0, "border", "wop * snap border"},
+    {"Remember Window Desktop", 0, "desktop", "wop * snap desktop"},
+    {"Remember Window Desktop Area", 0, "area", "wop * snap area"},
+    {"Remember Window Size", 0, "size", "wop * snap size"},
+    {"Remember Window Location", 0, "location", "wop * snap location"},
+    {"Remember Window Layer", 0, "layer", "wop * snap layer"},
+    {"Remember Window Stickyness", 0, "sticky", "wop * snap sticky"},
+    {"Remember Window Shadedness", 0, "shade", "wop * snap shade"},
 
-    {"Set Window border style to the Default", 69, 0, "DEFAULT", "wop * border DEFAULT"},
-    {"Set Window border style to the Borderless", 69, 0, "BORDERLESS", "wop * border BORDERLESS"},
+    {"Show Root Menu", 0, "ROOT_2", "menus show ROOT_2"},
+    {"Show Winops Menu", 0, "WINOPS_MENU", "menus show WINOPS_MENU"},
+    {"Show Named Menu", 1, NULL, "menus show "},
 
-    {"Forget everything about Window", 55, 0, "none", "wop * snap none"},
-    {"Remember all Window settings", 55, 0, NULL, "wop * snap all"},
-    {"Remember Window Border", 55, 0, "border", "wop * snap border"},
-    {"Remember Window Desktop", 55, 0, "desktop", "wop * snap desktop"},
-    {"Remember Window Desktop Area", 55, 0, "area", "wop * snap area"},
-    {"Remember Window Size", 55, 0, "size", "wop * snap size"},
-    {"Remember Window Location", 55, 0, "location", "wop * snap location"},
-    {"Remember Window Layer", 55, 0, "layer", "wop * snap layer"},
-    {"Remember Window Stickyness", 55, 0, "sticky", "wop * snap sticky"},
-    {"Remember Window Shadedness", 55, 0, "shade", "wop * snap shade"},
-
-    {"Show Root Menu", 9, 0, "ROOT_2", "menus show ROOT_2"},
-    {"Show Winops Menu", 9, 0, "WINOPS_MENU", "menus show WINOPS_MENU"},
-    {"Show Named Menu", 9, 1, NULL, "menus show "},
-
-    {"Goto Linear Area", 70, 2, NULL, NULL},
-    {"Previous Linear Area", 71, 0, "-1", NULL},
-    {"Next Linear Area", 71, 0, "1", NULL},
-
-    {NULL, 0, 0, NULL, NULL}
+    {NULL, 0, NULL, NULL}
 };
 /* *INDENT-ON* */
 
@@ -180,9 +167,6 @@ match_action_by_binding(int opcode, const char *params)
 
    for (k = 0; actions[k].text; k++)
      {
-	if (!actions[k].command)	/* Not avaliable in 16.8 */
-	   continue;
-
 	len = strlen(actions[k].command);
 	if (strncmp(actions[k].command, params, len))
 	   continue;
@@ -340,7 +324,6 @@ on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 	char               *key;
 	char               *mod;
 	int                 modifier = 0;
-	int                 action_id = 0;
 	int                 j;
 
 	gtk_clist_get_text(GTK_CLIST(clist), i, 0, &mod);
@@ -354,7 +337,6 @@ on_save_data(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 	gtk_clist_get_text(GTK_CLIST(clist), i, 1, &key);
 	gtk_clist_get_text(GTK_CLIST(clist), i, 2, &action);
 	j = match_action_by_selection(action);
-	action_id = (j >= 0) ? actions[j].id : -1;
 	gtk_clist_get_text(GTK_CLIST(clist), i, 3, &params);
 
 	if (*params == '*')
@@ -933,6 +915,8 @@ load_actions(void)
 	     fclose(f);
 	     return;
 	  }
+	if (!command[0])
+	   continue;
 #if DEBUG > 0
 	printf("n=%d t=%s o=%d c=%s\n", n, text, opt, command);
 #endif
@@ -941,8 +925,7 @@ load_actions(void)
 	memset(pao + nao, 0, sizeof(ActionOpt));
 	pao[nao].text = strdup(text);
 	pao[nao].param_tpe = opt;
-	if (command[0])
-	   pao[nao].command = strdup(command);
+	pao[nao].command = strdup(command);
 	nao++;
      }
    fclose(f);
