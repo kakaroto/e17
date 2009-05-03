@@ -33,8 +33,8 @@ static Ecore_Hash * hiscore_hash = NULL;
 /* internals declaration */
 static void _eli_highscore_list_free(Eina_List * list);
 static void _eli_highscore_write(const char * game);
-static int _eli_highscore_list_sort_bad  (void * ent1, void * ent2);
-static int _eli_highscore_list_sort_good (void * ent1, void * ent2);
+static int _eli_highscore_list_sort_bad  (const void * ent1, const void * ent2);
+static int _eli_highscore_list_sort_good (const void * ent1, const void * ent2);
 static Eli_Highscore_Entry * _eli_entry_new(const char * username, float points, pointsType type);
 static float _min(float v1, float v2);
 static float _max(float v1, float v2);
@@ -145,7 +145,7 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
     Eina_List * l = NULL;
     Eli_Highscore_Entry * entry;
     
-    int (*list_sort) (void *, void *);
+    int (*list_sort) (const void *, const void *);
     int count = 0;
 
     if (!game || !username || !eet_file_name) return 0;
@@ -280,7 +280,7 @@ static void _eli_highscore_write(const char * game)
     }
 }
 
-static int _eli_highscore_list_sort_bad(void * ent1, void * ent2)
+static int _eli_highscore_list_sort_bad(const void * ent1, const void * ent2)
 {
     Eli_Highscore_Entry * entry1, * entry2;
 
@@ -290,7 +290,7 @@ static int _eli_highscore_list_sort_bad(void * ent1, void * ent2)
     return (entry1->points - entry2->points) * 1000.0;
 }
 
-static int _eli_highscore_list_sort_good(void * ent1, void * ent2)
+static int _eli_highscore_list_sort_good(const void * ent1, const void * ent2)
 {
     Eli_Highscore_Entry * entry1, * entry2;
 
