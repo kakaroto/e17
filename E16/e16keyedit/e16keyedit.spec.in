@@ -1,7 +1,7 @@
-Summary: GUI Tool for Editing Enlightenment 0.16.x Keybindings
+Summary: GUI Tool for Editing Enlightenment e16 Keybindings
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 1%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: @E_RPM_REVISION@%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD-like
 Group: User Interface/Desktops
 Source: %{name}-%{version}.tar.gz
@@ -12,10 +12,11 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:any}
 #BuildSuggests: gtk-devel
 Prefix: %{_prefix}
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-root
+Obsoletes: e16-keyedit
 
 %description
 e16keyedit provides a graphical interface for managing keybindings in
-Enlightenment 0.16.x.
+Enlightenment e16.
 
 %prep
 %setup -q 
