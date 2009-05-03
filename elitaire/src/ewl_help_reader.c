@@ -229,8 +229,6 @@ help_reader_window_cb_destroy(Ewl_Widget * w, void * ev, void * data)
 {
     help_reader_win = NULL;
     ecore_dlist_destroy(HELP_READER_WINDOW(w)->history);
-    /* XXX remove that later */
-    ewl_main_quit();
 }
 
 static void
