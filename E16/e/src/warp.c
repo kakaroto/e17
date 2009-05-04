@@ -419,7 +419,8 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
      case KeyPress:
 	if (ev->xkey.keycode == warpFocusKey)
 	  {
-	     if ((ev->xkey.state & Mode.masks.mod_key_mask) == warpFocusState)
+	     if (((ev->xkey.state ^ warpFocusState) &
+		  Mode.masks.mod_key_mask) == 0)
 		key = 0x80000000;
 	     else
 		key = 0x80000001;
