@@ -5,7 +5,7 @@ Maintainer:  Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <albin.tonnerre@gmail.com>,
  Xavier Oswald <x.oswald@free.fr>, Jan Lübbe <jluebbe@debian.org>
 Build-Depends: debhelper (>= 5), cdbs, libevas-dev, libedje-dev,
- libefreet-dev, libecore-dev, libedje-bin, libembryo-bin, libtool
+ libefreet-dev, libecore-dev, libedje-bin, libembryo-bin, pkg-config, libtool
 # libemotion-dev, libepsilon-dev
 Standards-Version: 3.8.1
 Vcs-Git: git://git.debian.org/pkg-e/libs/ewl.git
@@ -14,7 +14,7 @@ Homepage: http://www.enlightenment.org
 
 Package: libewl1
 Architecture: any
-Depends: ${shlibs:Depends}, libewl1-engine-evas-software-x11, libevas-engines
+Depends: ${shlibs:Depends}, libewl1-engine-evas-software-x11, libevas-engines, ewl1-test
 Suggests: libewl1-engines-all
 Description: The Enlightened Widget Library (EWL)
  EWL is a widget library based on the Enlightenment Foundation Libraries

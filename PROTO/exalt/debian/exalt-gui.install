@@ -1,2 +1,2 @@
-debian/tmp/usr/sbin/exalt-client
+debian/tmp/usr/bin/exalt-client
 debian/tmp/usr/share/*

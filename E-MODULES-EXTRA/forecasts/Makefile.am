@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in forecasts.edj
 
-SUBDIRS = images
+SUBDIRS = images po
 
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images

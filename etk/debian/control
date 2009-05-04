@@ -2,14 +2,14 @@ Source: etk
 Section: libs
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
-Build-Depends: cdbs, debhelper (>= 6), libevas-dev, libecore-dev, libedje-dev, libtool
+Build-Depends: cdbs, debhelper (>= 6), libevas-dev, libecore-dev, libedje-dev, pkg-config, libtool
 Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
 Package: libetk1
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libevas-svn-01, libecore-svn-01, libedje-svn-01, libetk1-engine-evas-software-x11 (= ${Source-Version})
+Depends: ${shlibs:Depends}, libevas-svn-01, libecore-svn-01, libedje-svn-01, libetk1-engine-evas-software-x11 (= ${Source-Version}), libetk1-bin
 Replaces: libetk0
 Description: A widget toolkit based on the EFL
  ETK is a widget toolkit based on the enlightenment foundation libraries.

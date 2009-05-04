@@ -18,7 +18,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	$(MAKE) clean
+	if test -f Makefile; then $(MAKE) clean; fi
 	dh_clean 
 
 install: build
@@ -26,6 +26,9 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
+	mkdir -p $(CURDIR)/debian/efl-keys/usr/share/applications
+	mkdir -p $(CURDIR)/debian/efl-keys/usr/share/pixmaps
+	mkdir -p $(CURDIR)/debian/efl-keys/usr/bin
 	$(MAKE) DESTDIR=$(CURDIR)/debian/efl-keys install
 
 binary-arch: build install

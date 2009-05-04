@@ -2,7 +2,7 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
-Build-Depends: cdbs, debhelper (>= 6), e17-dev | ecomorph-e17-dev, libexml1-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint, libedbus-dev, libtool
+Build-Depends: cdbs, debhelper (>= 6), e17-dev | ecomorph-e17-dev, libexml1-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint, libedbus-dev, pkg-config, libtool, libepsilon0-dev, libexalt-dev, exalt-daemon, libmpd-dev, mpd, xkb-data
 Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
@@ -136,7 +136,7 @@ Description: An E17 taskbar module
 
 Package: emodule-language
 Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), libexml1
+Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), libexml1, xkb-data
 Provides: emodule0-language
 Description: An E17 module that manages keyboard layouts and more
  This is an E17 module which allows to control the keyboard layout,
@@ -170,7 +170,7 @@ Description: Moon Clock module for Enlightenment
  
 Package: emodule-mpdule
 Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
+Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), mpd
 Provides: emodule0-mpdule
 Description: MPD module for Enlightenment
  An E17 module to show the MPD status in the shelf.

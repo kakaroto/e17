@@ -14,4 +14,3 @@ clean::
 	find edje -name '*.h' | xargs rm -rf
 	rm -rf python_edje.egg-info build doc/api/html
 
-
