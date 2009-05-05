@@ -391,13 +391,32 @@ void wireless(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    exalt_dbus_init();
+    if(!exalt_dbus_init())
+    {
+        printf("Init failed\n");
+        return 0;
+    }
     conn = exalt_dbus_connect();
+
+    if(!exalt_dbus_exalt_service_exists(conn))
+    {
+        printf("exalt dbus service doesn't exists\n");
+        return 0;
+    }
 
     exalt_dbus_response_notify_set(conn,response,conn);
 
-    exalt_dbus_notify_set(conn,notify,conn);
-    exalt_dbus_scan_notify_set(conn,notify_scan,conn);
+    if(!exalt_dbus_notify_set(conn,notify,conn))
+    {
+        printf("Can't connect the notification callback\n");
+        return 0;
+    }
+
+    if(!exalt_dbus_scan_notify_set(conn,notify_scan,conn))
+    {
+        printf("Can't connect the scan notification callback\n");
+        return 0;
+    }
 
     if(argc>1 && (strcmp(argv[1],"dns_add")==0
             || strcmp(argv[1],"dns_del")==0

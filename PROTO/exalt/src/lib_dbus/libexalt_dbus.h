@@ -66,14 +66,18 @@ typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* us
 
 
 
-void exalt_dbus_init();
+int exalt_dbus_init();
 Exalt_DBus_Conn*  exalt_dbus_connect();
+
+int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn);
+int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name);
+
 
 void exalt_dbus_free(Exalt_DBus_Conn** conn);
 void exalt_dbus_shutdown();
 
-void exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb* cb, void* user_data);
-void exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb* cb, void* user_data);
+int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb* cb, void* user_data);
+int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb* cb, void* user_data);
 void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb* cb, void* user_data);
 
 

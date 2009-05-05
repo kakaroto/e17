@@ -43,8 +43,13 @@ struct _Exalt_DBus_Conn
 {
     E_DBus_Connection *e_conn;
     DBusConnection* conn;
+
     exalt_dbus_notify_data* notify;
+    E_DBus_Signal_Handler * notify_handler;
+
     exalt_dbus_scan_notify_data* scan_notify;
+    E_DBus_Signal_Handler * scan_notify_handler;
+
     exalt_dbus_response_data* response_notify;
     //define the next message id
     int msg_id;

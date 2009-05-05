@@ -30,11 +30,57 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
 /**
  * @brief Initialise the library
  * Don't forget to create a connection with Exalt_DBus_Connect() after
+ * @return Returns 0 if failed (if the exalt's service doesn't exist), else 1
  */
-void exalt_dbus_init()
+int exalt_dbus_init()
 {
     ecore_init();
     e_dbus_init();
+
+    return 1;
+}
+
+/**
+ * @brief test if the exalt dbus service exists
+ * @return Returns 1 if success, else 0
+ */
+int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn)
+{
+    return exalt_dbus_service_exists(conn,EXALTD_SERVICE);
+}
+
+/**
+ * @brief test if a dbus service exists
+ * @param service_name the name of the service
+ * @return Returns 1 if succes, else 0
+ */
+int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name)
+{
+    EXALT_ASSERT_RETURN(conn!=NULL);
+
+    DBusMessageIter args;
+    int bool;
+
+    DBusPendingCall *dbus_call = e_dbus_name_has_owner(conn->e_conn, service_name, NULL, NULL);
+    dbus_pending_call_block(dbus_call);
+    DBusMessage *reply = dbus_pending_call_steal_reply(dbus_call);
+    if (!reply) return 0;
+
+    dbus_message_iter_init(reply, &args);
+    if(DBUS_TYPE_BOOLEAN != dbus_message_iter_get_arg_type(&args))
+    {
+        dbus_pending_call_ref(dbus_call);
+        return 0;
+    }
+    dbus_message_iter_get_basic(&args, &bool);
+    if(!bool)
+    {
+        dbus_pending_call_ref(dbus_call);
+        return 0;
+    }
+    dbus_pending_call_ref(dbus_call);
+
+    return 1;
 }
 
 /**
@@ -52,6 +98,9 @@ Exalt_DBus_Conn* exalt_dbus_connect()
     conn->conn = dbus_bus_get(DBUS_BUS_SYSTEM, &err);
     conn->e_conn = e_dbus_connection_setup(conn->conn);
     conn->msg_id = 1;
+
+    conn -> response_notify = calloc(1,sizeof(exalt_dbus_response_data));
+
     return conn;
 }
 
@@ -82,28 +131,28 @@ void exalt_dbus_shutdown()
  * @param conn a connection
  * @param cb the callback function
  * @param user_data the user data
+ * @return Returns 1 if success, else 0
  */
-void exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user_data)
+int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user_data)
 {
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
-    //better to delete the handler
-    //but e_dbus doesn't have a function ...
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
-    if(!conn->notify)
-    {
-        conn -> notify = malloc(sizeof(exalt_dbus_notify_data));
-        conn -> notify -> cb = cb;
-        conn -> notify -> user_data = user_data;
+    if(conn->notify_handler)
+        e_dbus_signal_handler_del(conn->e_conn, conn->notify_handler);
 
-        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
-                EXALTD_INTERFACE_NOTIFY, "notify",
-                _exalt_dbus_notify, conn);
-    }
+    conn -> notify = malloc(sizeof(exalt_dbus_notify_data));
+    conn -> notify -> cb = cb;
+    conn -> notify -> user_data = user_data;
+
+    conn->notify_handler = e_dbus_signal_handler_add(conn->e_conn,
+            EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
+            EXALTD_INTERFACE_NOTIFY, "notify",
+            _exalt_dbus_notify, conn);
+
+    if(conn->notify_handler)
+        return 1;
     else
-    {
-        conn -> notify -> cb = cb;
-        conn -> notify -> user_data = user_data;
-    }
+        return 0;
 }
 
 /**
@@ -111,29 +160,28 @@ void exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* use
  * @param conn
  * @param cb the callback function
  * @param user_data the user data
+ * @return Returns 1 if success, else 0
  */
-void exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, void* user_data)
+int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, void* user_data)
 {
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
-    //better to delete the handler
-    //but e_dbus doesn't have a function ...
+    if(conn->scan_notify_handler)
+        e_dbus_signal_handler_del(conn->e_conn, conn->scan_notify_handler);
 
-    if(!conn->scan_notify)
-    {
-        conn -> scan_notify = malloc(sizeof(exalt_dbus_scan_notify_data));
-        conn -> scan_notify -> cb = cb;
-        conn -> scan_notify -> user_data = user_data;
+    conn -> scan_notify = malloc(sizeof(exalt_dbus_scan_notify_data));
+    conn -> scan_notify -> cb = cb;
+    conn -> scan_notify -> user_data = user_data;
 
-        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
-                EXALTD_INTERFACE_NOTIFY, "scan_notify",
-                _exalt_dbus_scan_notify, conn);
-    }
+    conn->scan_notify_handler = e_dbus_signal_handler_add(conn->e_conn,
+            EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
+            EXALTD_INTERFACE_NOTIFY, "scan_notify",
+            _exalt_dbus_scan_notify, conn);
+
+    if(conn->scan_notify_handler)
+        return 1;
     else
-    {
-        conn -> scan_notify -> cb = cb;
-        conn -> scan_notify -> user_data = user_data;
-    }
+        return 0;
 }
 
 /**
@@ -146,17 +194,8 @@ void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
 
-    if(!conn->response_notify)
-    {
-        conn -> response_notify = calloc(1,sizeof(exalt_dbus_response_data));
-        conn -> response_notify -> cb = cb;
-        conn -> response_notify -> user_data = user_data;
-    }
-    else
-    {
-        conn -> response_notify -> cb = cb;
-        conn -> response_notify -> user_data = user_data;
-    }
+    conn -> response_notify -> cb = cb;
+    conn -> response_notify -> user_data = user_data;
 }
 
 
