@@ -196,6 +196,19 @@ e_modapi_save(E_Module *m)
 
 /* Local Functions */
 
+int timer_test_service_cb(void *data)
+{
+    Instance *inst = data;
+    if(exalt_dbus_exalt_service_exists(inst->conn))
+    {
+        exalt_dbus_notify_set(inst->conn,notify_cb,inst);
+        exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
+        return 0;
+    }
+    else
+        return 1;
+}
+
 /* Called when Gadget_Container says go */
     static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
@@ -232,12 +245,20 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     inst-> l = NULL;
     exalt_dbus_init();
     inst->conn = exalt_dbus_connect();
-    if(inst->conn)
+
+    if(!exalt_dbus_exalt_service_exists(inst->conn))
     {
-        exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
+        //exalt service doesn't exists
+        //launch a timer to re-test
+        Ecore_Timer *timer = ecore_timer_add(5,timer_test_service_cb,inst);
+    }
+    else
+    {
         exalt_dbus_notify_set(inst->conn,notify_cb,inst);
         exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
     }
+
+    exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
 
     if_wired_dialog_init(inst);
     if_network_dialog_init(inst);
