@@ -283,7 +283,7 @@ MenuShow(Menu * m, char noshow)
    if (m->num <= 0)
       return;
 
-   if (!m->win)
+   if (!m->win || !m->items[0]->win)
       MenuRealize(m);
 
    if (!m->style)
