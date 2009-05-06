@@ -318,6 +318,9 @@ typedef struct {
       unsigned int        startup_id;
    } apps;
    struct {
+      char                force_scan;
+   } backgrounds;
+   struct {
       char               *name;
       char               *dir;
       char               *cache_dir;

@@ -62,6 +62,30 @@ MenuItemCreateFromBackground(const char *bgid, const char *file)
    return mi;
 }
 
+static const char  *
+_dircache_filename(char *buf, unsigned int len, struct stat *st)
+{
+   static const char   chmap[] =
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   int                 aa, bb, cc;
+
+   aa = (int)st->st_ino;
+   bb = filedev_map((int)st->st_dev);
+   cc = (st->st_mtime > st->st_ctime) ? st->st_mtime : st->st_ctime;
+   Esnprintf(buf, len, ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+	     chmap[(aa >> 0) & 0x3f], chmap[(aa >> 6) & 0x3f],
+	     chmap[(aa >> 12) & 0x3f], chmap[(aa >> 18) & 0x3f],
+	     chmap[(aa >> 24) & 0x3f], chmap[(aa >> 28) & 0x3f],
+	     chmap[(bb >> 0) & 0x3f], chmap[(bb >> 6) & 0x3f],
+	     chmap[(bb >> 12) & 0x3f], chmap[(bb >> 18) & 0x3f],
+	     chmap[(bb >> 24) & 0x3f], chmap[(bb >> 28) & 0x3f],
+	     chmap[(cc >> 0) & 0x3f], chmap[(cc >> 6) & 0x3f],
+	     chmap[(cc >> 12) & 0x3f], chmap[(cc >> 18) & 0x3f],
+	     chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+
+   return buf;
+}
+
 static int
 MenuLoadFromDirectory(Menu * m)
 {
@@ -73,84 +97,64 @@ MenuLoadFromDirectory(Menu * m)
    const char         *ext;
    MenuItem           *mi;
    struct stat         st;
-   const char         *chmap =
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
    FILE               *f;
    time_t              lastmod;
 
    dir = MenuGetData(m);
    lastmod = moddate(dir);
-   if (lastmod <= MenuGetTimestamp(m))
+   if (!menu_scan_recursive && lastmod <= MenuGetTimestamp(m))
       return 0;
    MenuSetTimestamp(m, lastmod);
 
    MenuEmpty(m, 0);
 
-   cs[0] = '\0';		/* FIXME - Check this */
+   if (stat(dir, &st) < 0)
+      return 1;
 
-   if (stat(dir, &st) >= 0)
+   if (Mode.backgrounds.force_scan)
+      goto skip_dir_cache;
+
+   Esnprintf(cs, sizeof(cs), "%s/cached/img/%s",
+	     EDirUserCache(), _dircache_filename(ss, sizeof(ss), &st));
+   if (exists(cs))
      {
-	int                 aa, bb, cc;
-
-	aa = (int)st.st_ino;
-	bb = filedev_map((int)st.st_dev);
-	cc = 0;
-	if (st.st_mtime > st.st_ctime)
-	   cc = st.st_mtime;
-	else
-	   cc = st.st_ctime;
-	Esnprintf(cs, sizeof(cs),
-		  "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-		  EDirUserCache(), chmap[(aa >> 0) & 0x3f],
-		  chmap[(aa >> 6) & 0x3f], chmap[(aa >> 12) & 0x3f],
-		  chmap[(aa >> 18) & 0x3f], chmap[(aa >> 24) & 0x3f],
-		  chmap[(aa >> 28) & 0x3f], chmap[(bb >> 0) & 0x3f],
-		  chmap[(bb >> 6) & 0x3f], chmap[(bb >> 12) & 0x3f],
-		  chmap[(bb >> 18) & 0x3f], chmap[(bb >> 24) & 0x3f],
-		  chmap[(bb >> 28) & 0x3f], chmap[(cc >> 0) & 0x3f],
-		  chmap[(cc >> 6) & 0x3f], chmap[(cc >> 12) & 0x3f],
-		  chmap[(cc >> 18) & 0x3f], chmap[(cc >> 24) & 0x3f],
-		  chmap[(cc >> 28) & 0x3f]);
 	/* cached dir listing - use it */
-	if (exists(cs))
-	  {
-	     f = fopen(cs, "r");
-	     if (!f)
-		return 1;
-	     while (fgets(s, sizeof(s), f))
-	       {
-		  char                s2[4096];
 
-		  s[strlen(s) - 1] = 0;
-		  len = 0;
-		  sscanf(s, "%1000s %1000s %n", ss, s2, &len);
-		  if (!strcmp(ss, "BG"))
-		    {
-		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
-		       mi = MenuItemCreateFromBackground(s + len, ss);
-		       MenuAddItem(m, mi);
-		    }
-		  else if (!strcmp(ss, "EXE"))
-		    {
-		       Esnprintf(ss, sizeof(ss), "exec %s/%s", dir, s2);
-		       mi = MenuItemCreate(NULL, NULL, ss, NULL);
-		       MenuAddItem(m, mi);
-		    }
-		  else if (!strcmp(ss, "DIR"))
-		    {
-		       Esnprintf(s, sizeof(s), "%s/%s:%s", dir, s2,
-				 MenuGetName(m));
-		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
-		       mm = MenuCreateFromDirectory(s, m, NULL, ss);
-		       mi = MenuItemCreate(s2, NULL, NULL, mm);
-		       MenuAddItem(m, mi);
-		    }
+	f = fopen(cs, "r");
+	if (!f)
+	   return 1;
+	while (fgets(s, sizeof(s), f))
+	  {
+	     char                s2[4096];
+
+	     s[strlen(s) - 1] = 0;
+	     len = 0;
+	     sscanf(s, "%1000s %1000s %n", ss, s2, &len);
+	     if (!strcmp(ss, "BG"))
+	       {
+		  Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
+		  mi = MenuItemCreateFromBackground(s + len, ss);
+		  MenuAddItem(m, mi);
 	       }
-	     fclose(f);
-	     return 1;
+	     else if (!strcmp(ss, "EXE"))
+	       {
+		  Esnprintf(ss, sizeof(ss), "exec %s/%s", dir, s2);
+		  mi = MenuItemCreate(NULL, NULL, ss, NULL);
+		  MenuAddItem(m, mi);
+	       }
+	     else if (!strcmp(ss, "DIR"))
+	       {
+		  Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
+		  mm = MenuCreateFromDirectory(ss, m, NULL, ss);
+		  mi = MenuItemCreate(s2, NULL, NULL, mm);
+		  MenuAddItem(m, mi);
+	       }
 	  }
+	fclose(f);
+	return 1;
      }
 
+ skip_dir_cache:
    Esnprintf(s, sizeof(s), "Scanning %s", dir);
 
    if (!Mode.wm.restart)
@@ -174,8 +178,7 @@ MenuLoadFromDirectory(Menu * m)
 	if (S_ISDIR(st.st_mode))
 	  {
 	     /* Submenu */
-	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], MenuGetName(m));
-	     mm = MenuCreateFromDirectory(s, m, NULL, ss);
+	     mm = MenuCreateFromDirectory(ss, m, NULL, ss);
 	     mi = MenuItemCreate(list[i], NULL, NULL, mm);
 	     MenuAddItem(m, mi);
 	     if (f)
@@ -198,26 +201,8 @@ MenuLoadFromDirectory(Menu * m)
 	  {
 	     /* Background */
 	     char                s3[512];
-	     int                 aa, bb, cc;
 
-	     aa = (int)st.st_ino;
-	     bb = filedev_map((int)st.st_dev);
-	     cc = 0;
-	     if (st.st_mtime > st.st_ctime)
-		cc = st.st_mtime;
-	     else
-		cc = st.st_ctime;
-	     Esnprintf(s3, sizeof(s3),
-		       ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-		       chmap[(aa >> 0) & 0x3f], chmap[(aa >> 6) & 0x3f],
-		       chmap[(aa >> 12) & 0x3f], chmap[(aa >> 18) & 0x3f],
-		       chmap[(aa >> 24) & 0x3f], chmap[(aa >> 28) & 0x3f],
-		       chmap[(bb >> 0) & 0x3f], chmap[(bb >> 6) & 0x3f],
-		       chmap[(bb >> 12) & 0x3f], chmap[(bb >> 18) & 0x3f],
-		       chmap[(bb >> 24) & 0x3f], chmap[(bb >> 28) & 0x3f],
-		       chmap[(cc >> 0) & 0x3f], chmap[(cc >> 6) & 0x3f],
-		       chmap[(cc >> 12) & 0x3f], chmap[(cc >> 18) & 0x3f],
-		       chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+	     _dircache_filename(s3, sizeof(s3), &st);
 
 	     mi = MenuItemCreateFromBackground(s3, ss);
 	     if (mi)
@@ -267,6 +252,7 @@ ScanBackgroundMenu(void)
 {
    menu_scan_recursive = 1;
    MenuLoad(MenuFind("BACKGROUNDS_MENU", NULL));
+   Mode.backgrounds.force_scan = 0;
    menu_scan_recursive = 0;
 }
 

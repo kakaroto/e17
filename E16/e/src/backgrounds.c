@@ -1206,6 +1206,8 @@ BackgroundsConfigLoadUser(void)
    char                s[4096];
 
    Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+   if (!exists(s))
+      Mode.backgrounds.force_scan = 1;
    ConfigFileLoad(s, NULL, ConfigFileRead, 0);
 }
 
@@ -1727,6 +1729,10 @@ CB_BGScan(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
    int                 num;
 
    SoundPlay(SOUND_WAIT);
+
+   /* Forcing re-scan should not be necessary but provides the progress bars
+    * so it actually looks like something is going on */
+   Mode.backgrounds.force_scan = 1;
    ScanBackgroundMenu();
 
    num = ecore_list_count(bg_list);
