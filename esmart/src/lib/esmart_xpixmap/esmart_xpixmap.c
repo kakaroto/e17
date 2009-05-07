@@ -129,7 +129,7 @@ _destroy_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   ecore_x_pixmap_del(sd->pixmap);
+   ecore_x_pixmap_free(sd->pixmap);
    sd->pixmap = None;
    return 1;
 }
@@ -143,7 +143,7 @@ _configure_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   ecore_x_pixmap_del(sd->pixmap);
+   ecore_x_pixmap_free(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
    _pixels_get(sd, sd->obj);
    return 1;
@@ -158,7 +158,7 @@ _hide_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
-   ecore_x_pixmap_del(sd->pixmap);
+   ecore_x_pixmap_free(sd->pixmap);
    sd->pixmap = None;
    return 1;
 }
@@ -173,7 +173,7 @@ _show_cb(void *data, int type, void *event)
    if (!(ev = event)) return 1;
    if (sd->win != ev->win) return 1;
    if (sd->pixmap)
-     ecore_x_pixmap_del(sd->pixmap);
+     ecore_x_pixmap_free(sd->pixmap);
    sd->pixmap = ecore_x_composite_name_window_pixmap_get(sd->win);
    _pixels_get(sd, sd->obj);
    return 1;
@@ -267,7 +267,7 @@ _smart_del(Evas_Object *obj)
      ecore_x_composite_unredirect_window(sd->win, ECORE_X_COMPOSITE_UPDATE_AUTOMATIC);
    EINA_LIST_FREE(sd->handlers, h)
       ecore_event_handler_del(h);
-   ecore_x_damage_del(sd->damage);
+   ecore_x_damage_free(sd->damage);
    evas_object_del(sd->obj);
    free(sd);
 }
