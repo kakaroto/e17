@@ -595,7 +595,7 @@ shadow_picture(double opacity, Picture alpha_pict, int width, int height,
    if (!shadowPicture)
    {
       XDestroyImage(shadowImage);
-      ecore_x_pixmap_del(shadowPixmap);
+      ecore_x_pixmap_free(shadowPixmap);
       return None;
    }
 
@@ -603,7 +603,7 @@ shadow_picture(double opacity, Picture alpha_pict, int width, int height,
    if (!gc)
    {
       XDestroyImage(shadowImage);
-      ecore_x_pixmap_del(shadowPixmap);
+      ecore_x_pixmap_free(shadowPixmap);
       XRenderFreePicture(dpy, shadowPicture);
       return None;
    }
@@ -612,9 +612,9 @@ shadow_picture(double opacity, Picture alpha_pict, int width, int height,
              shadowImage->width, shadowImage->height);
    *wp = shadowImage->width;
    *hp = shadowImage->height;
-   ecore_x_gc_del(gc);
+   ecore_x_gc_free(gc);
    XDestroyImage(shadowImage);
-   ecore_x_pixmap_del(shadowPixmap);
+   ecore_x_pixmap_free(shadowPixmap);
    return shadowPicture;
 }
 
@@ -639,7 +639,7 @@ solid_picture(Bool argb, double a, double r, double g, double b)
                            CPRepeat, &pa);
    if (!picture)
    {
-      ecore_x_pixmap_del(pixmap);
+      ecore_x_pixmap_free(pixmap);
       return None;
    }
 
@@ -648,7 +648,7 @@ solid_picture(Bool argb, double a, double r, double g, double b)
    c.green = g * 0xffff;
    c.blue = b * 0xffff;
    XRenderFillRectangle(dpy, PictOpSrc, picture, &c, 0, 0, 1, 1);
-   ecore_x_pixmap_del(pixmap);
+   ecore_x_pixmap_free(pixmap);
    return picture;
 }
 
@@ -850,7 +850,7 @@ composite_paint_all(Ecore_X_Region region)
                                                       DefaultVisual(dpy,
                                                                     scr)), 0,
                               0);
-      ecore_x_pixmap_del(rootPixmap);
+      ecore_x_pixmap_free(rootPixmap);
    }
 #endif
    ecore_x_region_picture_clip_set(region, rootPicture, 0, 0);
@@ -901,17 +901,17 @@ composite_paint_all(Ecore_X_Region region)
       {
          if (w->borderSize)
          {
-            ecore_x_region_del(w->borderSize);
+            ecore_x_region_free(w->borderSize);
             w->borderSize = None;
          }
          if (w->extents)
          {
-            ecore_x_region_del(w->extents);
+            ecore_x_region_free(w->extents);
             w->extents = None;
          }
          if (w->borderClip)
          {
-            ecore_x_region_del(w->borderClip);
+            ecore_x_region_free(w->borderClip);
             w->borderClip = None;
          }
       }
@@ -1041,10 +1041,10 @@ composite_paint_all(Ecore_X_Region region)
          XRenderComposite(dpy, PictOpOver, w->picture, w->alphaPict,
                           rootBuffer, 0, 0, 0, 0, x, y, wid, hei);
       }
-      ecore_x_region_del(w->borderClip);
+      ecore_x_region_free(w->borderClip);
       w->borderClip = None;
    }
-   ecore_x_region_del(region);
+   ecore_x_region_free(region);
    if (rootBuffer != rootPicture)
    {
       ecore_x_region_picture_clip_set(None, rootBuffer, 0, 0);
@@ -1059,7 +1059,7 @@ composite_damage_add(Ecore_X_Region damage)
    if (allDamage)
    {
       ecore_x_region_combine(allDamage, allDamage, damage);
-      ecore_x_region_del(damage);
+      ecore_x_region_free(damage);
    }
    else
       allDamage = damage;
@@ -1103,7 +1103,7 @@ composite_win_repair(Win * w)
          ecore_x_region_copy(o, parts);
          ecore_x_region_translate(o, w->shadow_dx, w->shadow_dy);
          ecore_x_region_combine(parts, parts, o);
-         ecore_x_region_del(o);
+         ecore_x_region_free(o);
       }
    }
    composite_damage_add(parts);
@@ -1175,7 +1175,7 @@ composite_win_finish_unmap(Win * w)
 
    if (w->borderSize)
    {
-      ecore_x_region_del(w->borderSize);
+      ecore_x_region_free(w->borderSize);
       w->borderSize = None;
    }
    if (w->shadow)
@@ -1185,7 +1185,7 @@ composite_win_finish_unmap(Win * w)
    }
    if (w->borderClip)
    {
-      ecore_x_region_del(w->borderClip);
+      ecore_x_region_free(w->borderClip);
       w->borderClip = None;
    }
 
@@ -1512,7 +1512,7 @@ composite_win_destroy_finish(Ecore_X_Window id, Bool gone)
          }
          if (w->damage != None)
          {
-            ecore_x_damage_del(w->damage);
+            ecore_x_damage_free(w->damage);
             w->damage = None;
          }
          composite_fade_dequeue_win(w);
@@ -1690,7 +1690,7 @@ _composite_event_window_configure_cb(void *data, int type, void *ev)
       Ecore_X_Region extents = composite_win_extents(w);
 
       ecore_x_region_combine(damage, damage, extents);
-      ecore_x_region_del(extents);
+      ecore_x_region_free(extents);
       composite_damage_add(damage);
    }
    clipChanged = True;
