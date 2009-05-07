@@ -402,6 +402,10 @@ rtc_set(dbus_uint64_t time_at)
    int res, fd;
    struct rtc_time rtct;
    time_t t, t2;
+   int is_dst;
+
+   is_dst = 0;
+
    
    // open rtc
    fd = open("/dev/rtc", O_RDWR);
@@ -415,6 +419,10 @@ rtc_set(dbus_uint64_t time_at)
 	close(fd);
 	return;
      }
+
+    tmp = localtime(&t);
+    is_dst = tmp->tm_isdst;
+
    // the new time to tick off as a delta of the current time
    t = time_at - t;
    if (t <= 0)
@@ -435,7 +443,9 @@ rtc_set(dbus_uint64_t time_at)
    tm.tm_mday = rtct.tm_mday;
    tm.tm_mon = rtct.tm_mon;
    tm.tm_year = rtct.tm_year;
+   tm.tm_isdst = is_dst;
    t2 = mktime(&tm);
+
    // add the delta to the current rtc
    t2 += t;
    tmp = localtime(&t2);
