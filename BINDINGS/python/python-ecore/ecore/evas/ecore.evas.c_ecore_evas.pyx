@@ -169,7 +169,7 @@ def new(engine_name=None, int x=0, int y=0, int w=320, int h=240, extra_options=
     if ee == NULL:
         raise SystemError(("could not create engine named %r with geometry "
                            "%d,%d %dx%d and extra options %s") %
-                          engine_name, x, y, w, h, extra_options)
+                          (engine_name, x, y, w, h, extra_options))
 
     en = ecore_evas_engine_name_get(ee)
     if en == NULL:
