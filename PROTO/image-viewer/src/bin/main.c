@@ -5,6 +5,8 @@
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Elementary.h>
+#include <Efreet.h>
+#include <Efreet_Trash.h>
 
 #include "config.h"
 
@@ -639,10 +641,13 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   iv->files = eina_list_remove_list(iv->files, l);
 		   if (p2 == cur_path)
 		     {
-			if (l->prev)
-			  iv->files = l->prev;
-			else
-			  iv->files = eina_list_last(l);
+			if (iv->files)
+			  {
+			     if (l->prev)
+			       iv->files = l->prev;
+			     else
+			       iv->files = eina_list_last(l);
+			  }
 		     }
 #ifdef HAVE_ETHUMB
 		   thumb_remove(iv, p2, EINA_TRUE);
@@ -820,6 +825,29 @@ read_image(IV *iv, IV_Image_Dest dest)
      }
 }
 
+static void
+trash_image(IV *iv)
+{
+   Efreet_Uri *uri;
+   char *realpath;
+   char buf[4096];
+
+   if (!iv->files)
+     return;
+
+   realpath = ecore_file_realpath(iv->files->data);
+   snprintf(buf, sizeof(buf), "file://%s", realpath);
+   uri = efreet_uri_decode(buf);
+
+   if (uri)
+     {
+	efreet_trash_delete_uri(uri, 0);
+	efreet_uri_free(uri);
+     }
+
+   free(realpath);
+}
+
 static int
 on_idler(void *data)
 {
@@ -874,90 +902,97 @@ on_idler(void *data)
      }
 
    /* Display the first image */
-   if (!iv->gui.img)
-     read_image(iv, IMAGE_CURRENT);
-   else
+   if (iv->files)
      {
-	Evas_Object *img;
-
-	if (!iv->gui.prev_img)
+	if (!iv->gui.img)
+	  read_image(iv, IMAGE_CURRENT);
+	else
 	  {
-	     read_image(iv, IMAGE_PREV);
+	     Evas_Object *img;
 
-	     if (iv->gui.prev_img)
-	       evas_object_show(iv->gui.prev_bt);
-	     else
-	       evas_object_hide(iv->gui.prev_bt);
-	  }
-	if (!iv->gui.next_img)
-	  {
-	     read_image(iv, IMAGE_NEXT);
-
-	     if (iv->gui.next_img)
-	       evas_object_show(iv->gui.next_bt);
-	     else
-	       evas_object_hide(iv->gui.next_bt);
-	  }
-
-#ifdef HAVE_ETHUMB
-	if (iv->thumb_path && iv->gui.preview_box)
-	  {
-	     Evas_Object *thumb;
-	     IV_Thumb_Info *info;
-
-	     EINA_LIST_FREE(iv->thumb_path, info)
+	     if (iv->files->next || iv->files->prev)
 	       {
-		  thumb = thumb_create(iv, info);
-
-		  edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", thumb);
-		  eina_hash_add(iv->preview_items, info->file, thumb);
-
-		  eina_stringshare_del(info->thumb_path);
-		  free(info);
-
-		  if (iv->flags.first_preview)
+		  if (!iv->gui.prev_img)
 		    {
-		       thumb_select(iv, thumb);
-		       iv->flags.first_preview = EINA_FALSE;
+		       read_image(iv, IMAGE_PREV);
+
+		       if (iv->gui.prev_img)
+			 evas_object_show(iv->gui.prev_bt);
+		       else
+			 evas_object_hide(iv->gui.prev_bt);
+		    }
+		  if (!iv->gui.next_img)
+		    {
+		       read_image(iv, IMAGE_NEXT);
+
+		       if (iv->gui.next_img)
+			 evas_object_show(iv->gui.next_bt);
+		       else
+			 evas_object_hide(iv->gui.next_bt);
 		    }
 	       }
-	     preview_box_size(iv);
-	  }
 
-	if (iv->flags.add_previews)
-	  {
-	     Eina_List *l;
-	     const char *file;
-	     int rc;
-
-	     if (!iv->preview_files)
+#ifdef HAVE_ETHUMB
+	     if (iv->thumb_path && iv->gui.preview_box)
 	       {
-		  iv->preview_files = rewind_list(iv->files);
-		  iv->flags.first_preview = EINA_TRUE;
+		  Evas_Object *thumb;
+		  IV_Thumb_Info *info;
+
+		  EINA_LIST_FREE(iv->thumb_path, info)
+		    {
+		       thumb = thumb_create(iv, info);
+
+		       edje_object_part_box_append(iv->gui.preview_box, "iv.box.content", thumb);
+		       eina_hash_add(iv->preview_items, info->file, thumb);
+
+		       eina_stringshare_del(info->thumb_path);
+		       free(info);
+
+		       if (iv->flags.first_preview)
+			 {
+			    thumb_select(iv, thumb);
+			    iv->flags.first_preview = EINA_FALSE;
+			 }
+		    }
+		  preview_box_size(iv);
 	       }
 
-	     EINA_LIST_FOREACH(iv->preview_files, l, file)
+	     if (iv->flags.add_previews)
 	       {
-		  if (l->next)
-		    iv->preview_files = l->next;
+		  Eina_List *l;
+		  const char *file;
+		  int rc;
 
-		  if (!ethumb_file_set(iv->ethumb, file, NULL))
-		    continue;
+		  if (!iv->preview_files)
+		    {
+		       iv->preview_files = rewind_list(iv->files);
+		       iv->flags.first_preview = EINA_TRUE;
+		    }
 
-		  if (ethumb_exists(iv->ethumb))
-		    on_thumb_generate(iv->ethumb, iv);
-		  else if (!ethumb_generate(iv->ethumb, on_thumb_generate, iv))
-		    continue;
+		  EINA_LIST_FOREACH(iv->preview_files, l, file)
+		    {
+		       if (l->next)
+			 iv->preview_files = l->next;
 
-		  renew = EINA_TRUE;
-		  break;
+		       if (!ethumb_file_set(iv->ethumb, file, NULL))
+			 continue;
+
+		       if (ethumb_exists(iv->ethumb))
+			 on_thumb_generate(iv->ethumb, iv);
+		       else if (!ethumb_generate(iv->ethumb, on_thumb_generate, iv))
+			 continue;
+
+		       renew = EINA_TRUE;
+		       break;
+		    }
 	       }
-	  }
 #endif
+	  }
      }
 
    if (!renew && iv->files && 
-       (!iv->gui.img || !iv->gui.prev_img || !iv->gui.next_img))
+       (!iv->gui.img || ((iv->files->prev || iv->files->next) &&
+			 (!iv->gui.prev_img || !iv->gui.next_img))))
      renew = EINA_TRUE;
 
    if (iv->flags.next)
@@ -1301,6 +1336,8 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 	iv->flags.fit_changed = EINA_TRUE;
 	config_save(iv);
      }
+   else if (!strcmp(ev->keyname, "Delete"))
+     trash_image(iv);
 
    if (iv->flags.fullscreen)
      {

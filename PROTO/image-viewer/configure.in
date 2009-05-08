@@ -35,6 +35,8 @@ PKG_CHECK_MODULES([ELEMENTARY], [
                    eet
                    ecore
                    ecore-file
+                   efreet
+                   efreet-trash
                    elementary
 ])
 
