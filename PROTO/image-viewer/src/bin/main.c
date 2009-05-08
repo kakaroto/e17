@@ -643,10 +643,10 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		     {
 			if (iv->files)
 			  {
-			     if (l->prev)
-			       iv->files = l->prev;
+			     if (l_next)
+			       iv->files = l_next;
 			     else
-			       iv->files = eina_list_last(l);
+			       iv->files = rewind_list(iv->files);
 			  }
 		     }
 #ifdef HAVE_ETHUMB
@@ -705,7 +705,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 
 	 if (!l)
 	   {
-	      l = rewind_list(l);
+	      l = rewind_list(iv->files);
 	      if (l == iv->files)
 		l = NULL;
 	   }
