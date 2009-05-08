@@ -92,6 +92,7 @@ m4_ifdef([AC_PROG_OBJC],
     AC_CHECK_TOOL([OBJC], [gcc])
     AC_SUBST([OBJC])
     AC_SUBST([OBJCFLAGS])
+    AM_CONDITIONAL([am__fastdepOBJC], false)
    ]
 )
 AC_PROG_CXX

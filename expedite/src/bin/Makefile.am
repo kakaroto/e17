@@ -144,11 +144,6 @@ endif
 if BUILD_QUARTZ
 expedite_SOURCES += \
 engine_quartz.m engine_quartz.h
-
-### add to SOURCES one we know how to fix:
-# /usr/share/automake-1.9/am/depend2.am: am__fastdepOBJC does not appear in
-# AM_CONDITIONAL
-# engine_quartz.m 
 endif
 
 if BUILD_SOFTWARE_16_X11
