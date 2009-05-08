@@ -29,7 +29,8 @@ static void cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg);
 static void
 e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
 {
-  free(sh->sender);
+  if(sh->sender)
+    free(sh->sender);
   free(sh);
 }
 
@@ -80,6 +81,9 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
 static int
 _match_append(char *buf, int size, int *used, const char *keyword, int keyword_size, const char *value, int value_size)
 {
+   if(value == NULL)
+	return 1;   
+
    if (*used + keyword_size + value_size + sizeof(",=''") >= size)
      {
 	DEBUG(1, "ERROR: cannot add match %s='%s': too long!\n", keyword, value);
@@ -173,7 +177,10 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   SET_STRING(member);
 #undef SET_STRING
 
-  sh->sender = strdup(sender);
+  if(sender)
+	  sh->sender = strdup(sender);
+  else
+	  sh->sender = NULL;	
 
   sh->cb_signal = cb_signal;
   sh->data = data;
