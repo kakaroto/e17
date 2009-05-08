@@ -1,0 +1,7 @@
+## E17 builder script for Debian, Ubuntu and its derivatives ##
+1. Copy .pbuilderrc to your home folder
+2. Copy the script wherever you want
+3. Run a terminal and cd to that dir
+4. Run the script with --help and you will see possible parameters and their order(download, makechroots, compile, upload)
+
+quaker66 (trunk/devs/quaker)
