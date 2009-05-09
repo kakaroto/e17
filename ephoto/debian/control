@@ -2,7 +2,7 @@ Source: ephoto
 Section: graphics
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), libewl1-dev, libtool
+Build-Depends: cdbs, debhelper (>= 6), libewl1-dev, libtool, pkg-config, cvs
 Standards-Version: 3.8.1
 Homepage: http://www.enlightenment.org
 
