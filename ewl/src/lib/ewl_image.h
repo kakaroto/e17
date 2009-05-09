@@ -160,9 +160,6 @@ void                     ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
 void ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data );
 
 /**

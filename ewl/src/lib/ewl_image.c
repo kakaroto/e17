@@ -152,12 +152,6 @@ ewl_image_init(Ewl_Image *i)
                             NULL);
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_cb_configure,
                             NULL);
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_image_cb_mouse_down,
-                            NULL);
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_image_cb_mouse_up,
-                            NULL);
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_image_cb_mouse_move,
-                            NULL);
 
         i->sw = 1.0;
         i->sh = 1.0;
@@ -1258,104 +1252,6 @@ ewl_image_type_get(const char *i)
                 DRETURN_INT(EWL_IMAGE_TYPE_EDJE, DLEVEL_STABLE);
 
         DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: The Ewl_Event_Mouse_Down data
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse down callback
- */
-void
-ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
-                                        void *user_data __UNUSED__)
-{
-        Ewl_Image *i;
-        Ewl_Embed *emb;
-        Ewl_Event_Mouse_Down *ev;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_IMAGE_TYPE);
-
-        i = EWL_IMAGE(w);
-        emb = ewl_embed_widget_find(w);
-        ev = ev_data;
-
-        if (i->type == EWL_IMAGE_TYPE_EDJE)
-                evas_event_feed_mouse_down(emb->canvas, ev->button,
-                                EVAS_BUTTON_NONE,
-                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-                                NULL);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: The Ewl_Event_Mouse_Up data
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse up callback
- */
-void
-ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
-                                        void *user_data __UNUSED__)
-{
-        Ewl_Image *i;
-        Ewl_Embed *emb;
-        Ewl_Event_Mouse_Up *ev;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_IMAGE_TYPE);
-
-        i = EWL_IMAGE(w);
-        emb = ewl_embed_widget_find(w);
-        ev = ev_data;
-
-        if (i->type == EWL_IMAGE_TYPE_EDJE && emb)
-                evas_event_feed_mouse_up(emb->canvas, ev->button,
-                                EVAS_BUTTON_NONE,
-                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-                                NULL);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: The Ewl_Event_Mouse_Move data
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse move callback
- */
-void
-ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
-                                        void *user_data __UNUSED__)
-{
-        Ewl_Image *i;
-        Ewl_Embed *emb;
-        Ewl_Event_Mouse *ev;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_IMAGE_TYPE);
-
-        i = EWL_IMAGE(w);
-        emb = ewl_embed_widget_find(w);
-        ev = ev_data;
-
-        if (i->type == EWL_IMAGE_TYPE_EDJE)
-                evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y,
-                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-                                NULL);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
