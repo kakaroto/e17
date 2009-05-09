@@ -196,8 +196,8 @@ if [ -z "$(dpkg -l | grep ii | grep ubuntu-keyring)" ]; then
 fi
 echo "CREATING LOCAL FOLDER..."
 if [ -d $localpath ]; then
-	echo "WARNING: local folder already exists, if it is created by script, it's OK but if not, it may cause problems."
-	read
+	echo "WARNING: local folder already exists, delete it or move it or something."
+	exit 1
 else
 	mkdir -p $localpath
 fi
