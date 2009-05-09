@@ -2,6 +2,7 @@
 
 pyver=`python -c 'import sys; print "%d.%d" % sys.version_info[0:2]'`
 regex=lib\.[a-z0-9]*-[a-z0-9]*-$pyver
+destdir="doc/api/html"
 
 for d in `ls build`; do
     if [[ $d == $regex ]]; then
@@ -11,6 +12,10 @@ done
 
 export PYTHONPATH="`pwd`/build/$d"
 
-epydoc --html -o doc/api/html \
+if [ -d $destdir ]; then
+    mkdir -p $destdir
+fi
+
+epydoc --html -o $destdir \
     -n "Python-E_Dbus API" \
     e_dbus
