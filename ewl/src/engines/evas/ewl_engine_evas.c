@@ -29,13 +29,19 @@ static void ee_theme_layer_stack_add(Ewl_Widget *w);
 static void ee_theme_layer_stack_del(Ewl_Widget *w);
 static void ee_theme_layer_update(Ewl_Widget *w);
 static void ee_theme_object_color_set(Evas_Object *obj, Ewl_Color_Set *color);
-static Evas_Object *ee_theme_object_group_add(Ewl_Embed *embed);
+static Evas_Object *ee_theme_group_add(Ewl_Embed *embed);
+static void ee_theme_group_object_add(void *group, void *obj);
 static Evas_Object *ee_theme_element_add(Ewl_Embed *embed);
 static Evas_Object *ee_theme_layer_neighbor_find_below(Ewl_Widget *w, Evas_Object *clip);
 static Evas_Object *ee_theme_layer_neighbor_find_above(Ewl_Widget *w, Evas_Object *clip);
 static unsigned int ee_theme_element_swallow(Evas_Object *obj1, Evas_Object *obj2);
 static void ee_theme_element_state_set(Evas_Object *obj, const char *signal);
 
+static void *ee_theme_image_add(Ewl_Embed *embed);
+static void  ee_theme_image_data_set(void *i, void *data, int w, int h, 
+                Ewl_Colorspace cs);
+static void *ee_theme_image_data_get(void *i, int *w, int *h,
+                Ewl_Image_Data_Mode access);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
@@ -66,7 +72,8 @@ static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
                 evas_object_move,
                 evas_object_resize,
                 /* group function */
-                ee_theme_object_group_add,
+                ee_theme_group_add,
+                ee_theme_group_object_add,
                 /* the theme functions */
                 ee_theme_element_add,
                 edje_object_file_set,
@@ -79,6 +86,13 @@ static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
                 edje_object_data_get,
                 ee_theme_element_swallow,
                 edje_object_part_unswallow,
+                /* image functions */
+                ee_theme_image_add,
+                evas_object_image_file_set,
+                evas_object_image_fill_set,
+                ee_theme_image_data_set,
+                ee_theme_image_data_get,
+                evas_object_image_data_update_add,
         };
 
 Ecore_DList *
@@ -198,7 +212,7 @@ ee_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h)
  * The theme functions
  */
 static Evas_Object *
-ee_theme_object_group_add(Ewl_Embed *embed)
+ee_theme_group_add(Ewl_Embed *embed)
 {
         Evas_Object *obj;
 
@@ -207,6 +221,16 @@ ee_theme_object_group_add(Ewl_Embed *embed)
         obj = ee_smart_new(embed->canvas);
 
         DRETURN_PTR(obj, DLEVEL_STABLE);
+}
+
+static void
+ee_theme_group_object_add(void *group, void *obj)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        evas_object_smart_member_add(obj, group);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static Evas_Object *
@@ -443,6 +467,56 @@ ee_theme_layer_neighbor_find_below(Ewl_Widget *w, Evas_Object *clip)
 
         DRETURN_PTR(ol, DLEVEL_STABLE);
 }
+
+static void *
+ee_theme_image_add(Ewl_Embed *embed)
+{
+        Evas_Object *obj;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        obj = evas_object_image_add(embed->canvas);
+
+        DRETURN_PTR(obj, DLEVEL_STABLE);
+}
+
+static void
+ee_theme_image_data_set(void *i, void *data, int w, int h, Ewl_Colorspace cs)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if (cs == EWL_COLORSPACE_ARGB)
+                evas_object_image_alpha_set(i, TRUE);
+        else
+                evas_object_image_alpha_set(i, FALSE);
+
+        evas_object_image_size_set(i, w, h);
+        if (data)
+                evas_object_image_data_set(i, data);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void *
+ee_theme_image_data_get(void *i, int *w, int *h, Ewl_Image_Data_Mode access)
+{
+        char writing;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        evas_object_image_size_get(i, w, h);
+
+        if (access == EWL_IMAGE_DATA_SIZE)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+        if (access == EWL_IMAGE_DATA_WRITE)
+                writing = TRUE;
+        else
+                writing = FALSE;
+
+        DRETURN_PTR(evas_object_image_data_get(i, writing), DLEVEL_STABLE);
+}
+
 
 /*
  * The widget smart object

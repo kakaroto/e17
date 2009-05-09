@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ewl\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-27 07:06+0400\n"
+"POT-Creation-Date: 2009-04-26 22:20+0200\n"
 "PO-Revision-Date: 2009-04-27 12:15+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -302,4 +302,3 @@ msgstr "Actuelle:"
 #: src/lib/ewl_colorpicker.c:211
 msgid "COLOR|Previous:"
 msgstr "Précédente:"
-

@@ -299,4 +299,3 @@ msgstr "Aktuelle:"
 #: src/lib/ewl_colorpicker.c:211
 msgid "COLOR|Previous:"
 msgstr "Vorherige:"
-

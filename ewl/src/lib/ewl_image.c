@@ -5,9 +5,6 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-#include <Edje.h>
-
 #ifdef BUILD_EPSILON_SUPPORT
 #include <Epsilon.h>
 #include <Epsilon_Request.h>
@@ -654,7 +651,7 @@ ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate)
 void *
 ewl_image_data_get(Ewl_Image *i, int *w, int *h, Ewl_Image_Data_Mode access)
 {
-        char writing;
+        Ewl_Embed *emb;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(i, NULL);
@@ -668,17 +665,9 @@ ewl_image_data_get(Ewl_Image *i, int *w, int *h, Ewl_Image_Data_Mode access)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
-        evas_object_image_size_get(i->image, w, h);
-
-        if (access == EWL_IMAGE_DATA_SIZE)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-        if (access == EWL_IMAGE_DATA_WRITE)
-                writing = TRUE;
-        else
-                writing = FALSE;
-
-        DRETURN_PTR(evas_object_image_data_get(i->image, writing),
+        emb = ewl_embed_widget_find(EWL_WIDGET(i));
+        DRETURN_PTR(ewl_engine_theme_image_data_get(emb, i->image, w, h, 
+                                                        access),
                         DLEVEL_STABLE);
 }
 
@@ -698,6 +687,8 @@ ewl_image_data_get(Ewl_Image *i, int *w, int *h, Ewl_Image_Data_Mode access)
 unsigned int
 ewl_image_data_set(Ewl_Image *i, void *data, int w, int h, Ewl_Colorspace cs)
 {
+        Ewl_Embed *emb;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(i, FALSE);
         DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, FALSE);
@@ -705,14 +696,8 @@ ewl_image_data_set(Ewl_Image *i, void *data, int w, int h, Ewl_Colorspace cs)
         if (!REALIZED(i) || i->type == EWL_IMAGE_TYPE_EDJE || !i->image)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-        if (cs == EWL_COLORSPACE_ARGB)
-                evas_object_image_alpha_set(i->image, TRUE);
-        else
-                evas_object_image_alpha_set(i->image, FALSE);
-
-        evas_object_image_size_set(i->image, w, h);
-        if (data)
-                evas_object_image_data_set(i->image, data);
+        emb = ewl_embed_widget_find(EWL_WIDGET(i));
+        ewl_engine_theme_image_data_set(emb, i->image, data, w, h, cs);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -732,6 +717,8 @@ ewl_image_data_set(Ewl_Image *i, void *data, int w, int h, Ewl_Colorspace cs)
 void
 ewl_image_data_update_add(Ewl_Image *i, int x, int y, int w, int h)
 {
+        Ewl_Embed *emb;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(i);
         DCHECK_TYPE(i, EWL_IMAGE_TYPE);
@@ -739,7 +726,8 @@ ewl_image_data_update_add(Ewl_Image *i, int x, int y, int w, int h)
         if (!REALIZED(i) || i->type == EWL_IMAGE_TYPE_EDJE || !i->image)
                 DRETURN(DLEVEL_STABLE);
 
-        evas_object_image_data_update_add(i->image, x, y, w, h);
+        emb = ewl_embed_widget_find(EWL_WIDGET(i));
+        ewl_engine_theme_image_data_update(emb, i->image, x, y, w, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -998,30 +986,33 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                 if (!i->image)
                         i->image = ewl_embed_object_request(emb, "edje");
                 if (!i->image)
-                        i->image = edje_object_add(emb->canvas);
+                        i->image = ewl_engine_theme_element_add(emb);
                 if (!i->image)
                         DRETURN(DLEVEL_STABLE);
 
                 if (i->path)
-                        edje_object_file_set(i->image, i->path, i->key);
-                edje_object_size_min_get(i->image, &i->ow, &i->oh);
+                        ewl_engine_theme_element_file_set(emb, i->image, 
+                                        i->path, i->key);
+                ewl_engine_theme_element_minimum_size_get(emb, i->image,
+                                        &i->ow, &i->oh);
         } else {
                 if (!i->image)
                         i->image = ewl_embed_object_request(emb, EWL_IMAGE_TYPE);
                 if (!i->image)
-                        i->image = evas_object_image_add(emb->canvas);
+                        i->image = ewl_engine_theme_image_add(emb);
                 if (!i->image)
                         DRETURN(DLEVEL_STABLE);
 
                 if (i->path)
-                        evas_object_image_file_set(i->image, i->path, i->key);
-                evas_object_image_size_get(i->image, &i->ow, &i->oh);
+                        ewl_engine_theme_image_file_set(emb, i->image, i->path,
+                                        i->key);
+
+                ewl_engine_theme_image_data_get(emb, i->image, &i->ow, &i->oh,
+                                EWL_IMAGE_DATA_SIZE);
         }
 
-        evas_object_smart_member_add(i->image, w->smart_object);
-
-        evas_object_pass_events_set(i->image, TRUE);
-        evas_object_show(i->image);
+        ewl_engine_theme_group_object_add(emb, w->smart_object, i->image);
+        ewl_engine_theme_object_show(emb, i->image);
 
         if (!i->ow)
                 i->ow = 1;
@@ -1088,7 +1079,9 @@ ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         i = EWL_IMAGE(w);
         if (emb && i->image) {
-                evas_object_image_file_set(i->image, NULL, NULL);
+                if (i->type != EWL_IMAGE_TYPE_EDJE)
+                        ewl_engine_theme_image_file_set(emb, i->image, NULL, 
+                                                        NULL);
                 ewl_embed_object_cache(emb, i->image);
                 i->image = NULL;
         }
@@ -1160,6 +1153,7 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                                                 void *user_data __UNUSED__)
 {
         Ewl_Image *i;
+        Ewl_Embed *emb;
         int ww, hh;
         int dx = 0, dy = 0;
 
@@ -1173,6 +1167,7 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         ww = CURRENT_W(w);
         hh = CURRENT_H(w);
+
         if (i->cs) {
                 /*
                  * Limit to the constraining size
@@ -1222,12 +1217,14 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Move the image into place based on type.
          */
+        emb = ewl_embed_widget_find(w);
         if (i->type != EWL_IMAGE_TYPE_EDJE)
-                evas_object_image_fill_set(i->image, i->tile.x, i->tile.y,
-                                        i->tile.w, i->tile.h);
+                ewl_engine_theme_image_fill_set(emb, i->image, i->tile.x,
+                                i->tile.y, i->tile.w, i->tile.h);
 
-        evas_object_move(i->image, CURRENT_X(w) + dx, CURRENT_Y(w) + dy);
-        evas_object_resize(i->image, ww, hh);
+        ewl_engine_theme_object_move(emb, i->image, CURRENT_X(w) + dx,
+                                                CURRENT_Y(w) + dy);
+        ewl_engine_theme_object_resize(emb, i->image, ww, hh);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

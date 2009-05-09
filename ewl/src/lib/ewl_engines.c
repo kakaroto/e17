@@ -1424,6 +1424,28 @@ ewl_engine_theme_group_add(Ewl_Embed *embed)
 }
 
 /**
+ * @brief Add an object to the object group
+ * @note You must not add the theme object
+ */
+void
+ewl_engine_theme_group_object_add(Ewl_Embed *embed, void *group, void *obj)
+{
+        Ewl_Engine_Cb_Theme_Group_Object_Add obj_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        obj_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_GROUP_OBJECT_ADD);
+        if (obj_add)
+                obj_add(group, obj);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @return Returns a new theme object on success, NULL on failure
  * @brief Add a theme object.
  */
@@ -1661,6 +1683,136 @@ ewl_engine_theme_element_unswallow(Ewl_Embed *embed, void *obj, void *swallow)
                 DRETURN_PTR(unswallow(obj, swallow), DLEVEL_STABLE);
 
         DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void *
+ewl_engine_theme_image_add(Ewl_Embed *embed)
+{
+        Ewl_Engine_Cb_Theme_Image_Add image_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        image_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_ADD);
+        if (image_add)
+                DRETURN_PTR(image_add(embed), DLEVEL_STABLE);
+
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_image_file_set(Ewl_Embed *embed, void *obj, const char *file,
+                const char *key)
+{
+        Ewl_Engine_Cb_Theme_Image_File_Set file_set;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        file_set = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_FILE_SET);
+        if (file_set)
+                file_set(obj, file, key);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_image_fill_set(Ewl_Embed *embed, void *obj, int x, int y,                                              int w, int h)
+{
+        Ewl_Engine_Cb_Theme_Image_Fill_Set fill_set;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        fill_set = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_FILL_SET);
+        if (fill_set)
+                fill_set(obj, x, y, w, h);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_image_data_set(Ewl_Embed *embed, void *obj, void *data, 
+                                        int w, int h, Ewl_Colorspace cs)
+{
+        Ewl_Engine_Cb_Theme_Image_Data_Set data_set;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        data_set = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_DATA_SET);
+        if (data_set)
+                data_set(obj, data, w, h, cs);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void *
+ewl_engine_theme_image_data_get(Ewl_Embed *embed, void *obj, int *w, int *h,
+                                Ewl_Image_Data_Mode access)
+{
+        Ewl_Engine_Cb_Theme_Image_Data_Get data_get;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, NULL);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
+
+        data_get = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_DATA_GET);
+        if (data_get)
+                DRETURN_PTR(data_get(obj, w, h, access), DLEVEL_STABLE);
+        
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_image_data_update(Ewl_Embed *embed, void *obj, int x, int y,
+                                int w, int h)
+{
+        Ewl_Engine_Cb_Theme_Image_Data_Update update;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        update = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_IMAGE_DATA_UPDATE);
+        if (update)
+                update(obj, x, y, w, h);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 

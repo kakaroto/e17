@@ -75,6 +75,7 @@ enum Ewl_Engine_Theme_Hooks
         EWL_ENGINE_THEME_OBJECT_RESIZE,
 
         EWL_ENGINE_THEME_GROUP_ADD,
+        EWL_ENGINE_THEME_GROUP_OBJECT_ADD,
 
         EWL_ENGINE_THEME_ELEMENT_ADD,
         EWL_ENGINE_THEME_ELEMENT_FILE_SET,
@@ -87,6 +88,13 @@ enum Ewl_Engine_Theme_Hooks
         EWL_ENGINE_THEME_ELEMENT_DATA_GET,
         EWL_ENGINE_THEME_ELEMENT_SWALLOW,
         EWL_ENGINE_THEME_ELEMENT_UNSWALLOW,
+
+        EWL_ENGINE_THEME_IMAGE_ADD,
+        EWL_ENGINE_THEME_IMAGE_FILE_SET,
+        EWL_ENGINE_THEME_IMAGE_FILL_SET,
+        EWL_ENGINE_THEME_IMAGE_DATA_SET,
+        EWL_ENGINE_THEME_IMAGE_DATA_GET,
+        EWL_ENGINE_THEME_IMAGE_DATA_UPDATE,
 
         EWL_ENGINE_THEME_MAX,
 };
@@ -230,6 +238,8 @@ void             ewl_engine_theme_object_resize(Ewl_Embed *emb, void *obj,
                                                 int w, int h);
 
 void            *ewl_engine_theme_group_add(Ewl_Embed *emb);
+void             ewl_engine_theme_group_object_add(Ewl_Embed *emb, void *group,
+                                                void *obj);
 
 void            *ewl_engine_theme_element_add(Ewl_Embed *emb);
 unsigned int     ewl_engine_theme_element_file_set(Ewl_Embed *emb, void *obj,
@@ -254,6 +264,22 @@ unsigned int     ewl_engine_theme_element_swallow(Ewl_Embed *emb, void *obj,
                                                 void *swallow);
 void            *ewl_engine_theme_element_unswallow(Ewl_Embed *emb, void *obj,
                                                 void *swallow);
+
+void            *ewl_engine_theme_image_add(Ewl_Embed *embed);
+void             ewl_engine_theme_image_file_set(Ewl_Embed *embed, void *obj,
+                                                const char *file,
+                                                const char *key);
+void             ewl_engine_theme_image_fill_set(Ewl_Embed *embed, void *obj,
+                                                int x, int y, int w, int h);
+void             ewl_engine_theme_image_data_set(Ewl_Embed *embed, void *obj,
+                                                void *data, int w, int h,
+                                                Ewl_Colorspace cs);
+void            *ewl_engine_theme_image_data_get(Ewl_Embed *embed, void *obj,
+                                                int *w, int *h,
+                                                Ewl_Image_Data_Mode access);
+void             ewl_engine_theme_image_data_update(Ewl_Embed *embed, void *obj,
+                                                int x, int y, int w, int h);
+
 
 int              ewl_engine_pointer_data_new(Ewl_Embed *embed,
                                                 unsigned int *data,
@@ -331,6 +357,7 @@ typedef void  (*Ewl_Engine_Cb_Theme_Object_Show)(void *obj);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Move)(void *obj, int x, int y);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Resize)(void *obj, int w, int h);
 typedef void *(*Ewl_Engine_Cb_Theme_Group_Add)(Ewl_Embed *emb);
+typedef void  (*Ewl_Engine_Cb_Theme_Group_Object_Add)(void *group, void *obj);
 typedef void *(*Ewl_Engine_Cb_Theme_Element_Add)(Ewl_Embed *emb);
 typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_File_Set)(void *obj,
                                                 const char *path,
@@ -354,6 +381,18 @@ typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_Swallow)(void *obj,
 typedef void *(*Ewl_Engine_Cb_Theme_Element_Unswallow)(void *obj,
                                                 void *swallow);
 
+typedef void *(*Ewl_Engine_Cb_Theme_Image_Add)(Ewl_Embed *w);
+typedef void (*Ewl_Engine_Cb_Theme_Image_File_Set)(void *obj, const char *file,
+                                                const char *key);
+typedef void (*Ewl_Engine_Cb_Theme_Image_Fill_Set)(void *obj, int x, int y,
+                                                int w, int h);
+typedef void (*Ewl_Engine_Cb_Theme_Image_Data_Set)(void *obj, void *data, 
+                                                int w, int h,
+                                                Ewl_Colorspace cs);
+typedef void *(*Ewl_Engine_Cb_Theme_Image_Data_Get)(void *obj, int *w, int *h,
+                                                Ewl_Image_Data_Mode access);
+typedef void (*Ewl_Engine_Cb_Theme_Image_Data_Update)(void *obj, int x, int y,
+                                                int w, int h);
 
 typedef int   (*Ewl_Engine_Cb_Pointer_Data_New)(Ewl_Embed *embed,
                                                 unsigned int *data,
