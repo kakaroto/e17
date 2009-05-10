@@ -344,6 +344,7 @@ parameters:
 --setup - configure host system for build
 --compile - compile stuff
 --prepare - make tree
+--database - make databases
 --upload - upload things
 --help - show this
 EOF
@@ -377,6 +378,8 @@ case $1 in
 	--compile) compile
 	;;
 	--prepare) prepare
+	;;
+	--database) database
 	;;
 	--upload) upload
 	;;
