@@ -363,6 +363,11 @@ for deps in sudo scp dpkg-scanpackages gzip /usr/sbin/pbuilder; do
 	fi
 done
 
+case $1 in
+	--setup) setup
+	;;
+esac
+
 cd $localpath
 if [ "$?" -ge "1" ]; then
 	echo "Failed to change directory to $localpath. It looks that folder does not exist, run script with --setup."
@@ -374,8 +379,6 @@ case $1 in
 	;;
 	--makechroots) makechroots
 	;;
-	--setup) setup
-	;;
 	--compile) compile
 	;;
 	--prepare) prepare
@@ -386,10 +389,10 @@ case $1 in
 	;;
 	--help) print_help
 	;;
+	--setup) ""
+	;;
 	*) 
 	echo "No or bad argument, run it with --help to see what it can do."
 	exit 1
 	;;
 esac
-
-exit 0
