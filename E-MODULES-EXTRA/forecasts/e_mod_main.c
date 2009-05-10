@@ -645,6 +645,7 @@ _forecasts_server_data(void *data, int type, void *event)
 {
    Instance *inst;
    Ecore_Con_Event_Server_Data *ev;
+   void *tmp;
 
    inst = data;
    ev = event;
@@ -652,9 +653,14 @@ _forecasts_server_data(void *data, int type, void *event)
    if ((!inst->server) || (inst->server != ev->server))
      return 1;
    while ((inst->cursize + ev->size) >= inst->bufsize)
-     {
 	inst->bufsize += 4096;
-	inst->buffer = realloc(inst->buffer, inst->bufsize);
+
+   if (tmp = realloc(inst->buffer, inst->bufsize))
+     inst->buffer = tmp;
+   else
+     {
+	DEBUG("realloc() error for size %d", inst->bufsize);
+	return 0;
      }
 
    memcpy(inst->buffer + inst->cursize, ev->data, ev->size);
