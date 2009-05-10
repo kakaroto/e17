@@ -140,11 +140,6 @@ compile_list=(
 # functions
 
 download() {
-echo "DOWNLOADING PACKAGES WITH SCP..."
-scp -r $username@$eserver:$path ./
-mv sources-$currentversion/main/* .
-mv sources-$currentversion/extras/* .
-rm -r sources-$currentversion
 echo "DOWNLOADING MD5SUMS..."
 wget $md5path
 echo "CHECKING MD5SUMS..."
@@ -389,10 +384,12 @@ case $1 in
 	;;
 	--help) print_help
 	;;
-	--setup) ""
+	--setup) exit 0
 	;;
 	*) 
 	echo "No or bad argument, run it with --help to see what it can do."
 	exit 1
 	;;
 esac
+
+exit 0
