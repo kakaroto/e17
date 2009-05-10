@@ -140,6 +140,15 @@ compile_list=(
 # functions
 
 download() {
+echo "DOWNLOADING PACKAGES WITH SCP..."
+for down in ${compile_list[@]}; do
+	case $down in
+		eina|eet|evas|ecore|embryo|edje|edbus|efreet|e17) scp -r $username@$eserver:$path/main/$down ./
+		;;
+		*) scp -r $username@$eserver:$path/extras/$down ./
+		;;
+	esac
+done
 echo "DOWNLOADING MD5SUMS..."
 wget $md5path
 echo "CHECKING MD5SUMS..."
@@ -176,7 +185,7 @@ sed -i 's/OTHERMIRROR=/#OTHERMIRROR=/g' $HOME/.pbuilderrc
 echo "CREATING CHROOTS..."
 for chroots in ${distros[@]}; do
 	echo "Creating chroot: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
-	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz
+	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
 	if [ "$?" -ge "1" ]; then
 		echo "ERROR, exitting."
 		exit 1
@@ -208,6 +217,10 @@ if [ -d $localpath ]; then
 	exit 1
 else
 	mkdir -p $localpath
+fi
+echo "CREATING $pbuilderplace IF NOT EXISTS..."
+if [ ! -d "$pbuilderplace" ]; then
+	sudo mkdir $pbuilderplace
 fi
 }
 
