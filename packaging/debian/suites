@@ -1,0 +1,60 @@
+Comment: $LastChangedBy: bastian $
+Comment: $LastChangedDate: 2008-06-24 12:25:30 +0200 (Di, 24 Jun 2008) $
+Comment: $LastChangedRevision: 1669 $
+
+Suite: etch
+Config: generic
+Keyring: debian-archive-keyring.gpg
+
+Suite: lenny
+Config: generic
+Keyring: debian-archive-keyring.gpg
+
+Suite: squeeze
+Config: generic
+Keyring: debian-archive-keyring.gpg
+
+Suite: sid
+Config: generic
+Keyring: debian-archive-keyring.gpg
+
+Suite: breezy
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: dapper
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: edgy
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: feisty
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: gutsy
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: hardy
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: intrepid
+Config: generic-ubuntu
+Keyring: ubuntu-archive-keyring.gpg
+
+Suite: oldstable
+Keyring: debian-archive-keyring.gpg
+
+Suite: stable
+Keyring: debian-archive-keyring.gpg
+
+Suite: testing
+Keyring: debian-archive-keyring.gpg
+
+Suite: unstable
+Keyring: debian-archive-keyring.gpg
+

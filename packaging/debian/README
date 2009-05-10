@@ -5,4 +5,6 @@
 4. Run a terminal and cd to that dir
 5. Run the script with --help and you will see possible parameters and their order(download, makechroots, setup, compile, upload)
 
+# if you compile for debian squeeze, replace /usr/share/cdbootstrap/suites with suites file here.
+
 quaker66 (trunk/devs/quaker)
