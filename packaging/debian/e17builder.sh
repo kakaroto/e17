@@ -340,9 +340,9 @@ print_help() {
 cat << EOF
 parameters:
 
+--setup - configure host system for build
 --download - download things
 --makechroots - make chroots
---setup - configure host system for build
 --compile - compile stuff
 --prepare - make tree
 --database - make databases
