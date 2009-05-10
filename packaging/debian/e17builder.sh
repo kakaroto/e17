@@ -320,6 +320,7 @@ for databases in ${dtb[@]}; do
 	mv {Packages,Packages.gz} dists/$(echo $preparelist | sed 's/#.*//')/extras/binary-$(echo $preparelist | sed 's/.*#//')
 	echo "Done."
 	cd ..
+done
 }
 
 upload() {
