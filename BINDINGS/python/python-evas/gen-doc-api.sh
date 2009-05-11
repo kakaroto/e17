@@ -12,9 +12,7 @@ done
 
 export PYTHONPATH="`pwd`/build/$d"
 
-if [ -d $destdir ]; then
-    mkdir -p $destdir
-fi
+mkdir -p $destdir
 
 epydoc --html -o $destdir \
     -n "Python-Evas API" \
