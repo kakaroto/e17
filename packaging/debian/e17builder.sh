@@ -192,8 +192,8 @@ for chroots in ${distros[@]}; do
 	fi
 done
 echo "REVERTING PBUILDERRC BACK..."
-sed -i 's/#BINDMOUNTS=/BINDMOUNTS=/g' $HOME/.pbuilderrc
-sed -i 's/#OTHERMIRROR=/OTHERMIRROR=/g' $HOME/.pbuilderrc
+sed -i 's/#*BINDMOUNTS=/BINDMOUNTS=/g' $HOME/.pbuilderrc
+sed -i 's/#*OTHERMIRROR=/OTHERMIRROR=/g' $HOME/.pbuilderrc
 }
 
 setup() {
