@@ -185,7 +185,7 @@ sed -i 's/OTHERMIRROR=/#OTHERMIRROR=/g' $HOME/.pbuilderrc
 echo "CREATING CHROOTS..."
 for chroots in ${distros[@]}; do
 	echo "Creating chroot: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
-	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
+	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
 	if [ "$?" -ge "1" ]; then
 		echo "ERROR, exitting."
 		exit 1
@@ -198,7 +198,7 @@ sed -i 's/#OTHERMIRROR=/OTHERMIRROR=/g' $HOME/.pbuilderrc
 
 setup() {
 echo "INSTALLING PBUILDER..."
-sudo apt-get --assume-yes --force-yes install pbuilder debootstrap devscripts
+sudo apt-get --assume-yes --force-yes install pbuilder debootstrap devscripts ccache
 echo "INSTALLING UBUNTU KEYRING..."
 if [ -z "$(dpkg -l | grep ii | grep ubuntu-keyring)" ]; then
 	wget http://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2008.03.04_all.deb
@@ -244,7 +244,7 @@ for distrocomp in ${distros[@]}; do
 		pbuildpath="$pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')"
 		cd $comp
 		echo "Compiling: $comp"
-		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" pbuilder build --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
+		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
 		if [ "$?" -ge "1" ]; then
 			echo "ERROR, exitting."
 			exit 1
@@ -258,14 +258,14 @@ for distrocomp in ${distros[@]}; do
 		cd $pbuildpath/result
 		sudo dpkg-scanpackages . /dev/null | sudo tee Packages
 		cd $basedir
-		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" pbuilder update --override-config --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz
+		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz
 		if [ "$?" -ge "1" ]; then
 			echo "ERROR, exitting."
 			exit 1
 		fi
 	done
 	echo "Updating base tarball for $(echo $distrocomp | sed 's/#.*//'):$(echo $distrocomp | sed 's/.*#//') again after compilation.."
-	sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" pbuilder update --override-config --basetgz $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')-base.tgz
+	sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --basetgz $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')-base.tgz
 	sudo rm -rf $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')
 	sudo rm -rf $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result/*.tar.gz
 	sudo rm -rf $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result/*.dsc
@@ -363,7 +363,7 @@ EOF
 
 # check for deps
 
-for deps in sudo scp dpkg-scanpackages gzip /usr/sbin/pbuilder; do
+for deps in sudo scp dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
 	which $deps
 	if [ "$?" -ge "1" ]; then
 		echo "Missing dep: $deps"

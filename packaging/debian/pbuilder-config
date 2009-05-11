@@ -22,6 +22,11 @@ UBUNTU_PORTS_MIRROR="http://ports.ubuntu.com"
 # that you can set your own default (i.e. ${ARCH:="i386"}).
 : ${ARCH:="$(dpkg --print-architecture)"}
 
+# Set the PBUILDERPLACE if none set.
+if [ -z "$PBUILDERPLACE" ]; then
+	PBUILDERPLACE="/var/cache/pbuilder"
+fi
+
 NAME="$DIST"
 if [ -n "${ARCH}" ]; then
     NAME="$DIST-$ARCH"
@@ -29,10 +34,10 @@ if [ -n "${ARCH}" ]; then
 fi
 
 DISTRIBUTION="$DIST"
-BASETGZ="/var/cache/pbuilder/$NAME-base.tgz"
-BUILDRESULT="/var/cache/pbuilder/$NAME/result/"
-APTCACHE="/var/cache/pbuilder/$NAME/aptcache/"
-BUILDPLACE="/var/cache/pbuilder/build/"
+BASETGZ="$PBUILDERPLACE/$NAME-base.tgz"
+BUILDRESULT="$PBUILDERPLACE/$NAME/result/"
+APTCACHE="$PBUILDERPLACE/$NAME/aptcache/"
+BUILDPLACE="$PBUILDERPLACE/build/"
 
 if $(echo ${DEBIAN_SUITES[@]} | grep -q "$DIST"); then
     # Debian configuration
@@ -56,14 +61,14 @@ case $ARCH in
 	;;
 esac
 
-OTHERMIRROR="deb file:///var/cache/pbuilder/$NAME/result/ /"
+OTHERMIRROR="deb file://$PBUILDERPLACE/$NAME/result/ /"
 			
 # ccache
-sudo mkdir -p /var/cache/pbuilder/ccache
-sudo chmod a+w /var/cache/pbuilder/ccache
-export CCACHE_DIR="/var/cache/pbuilder/ccache"
+sudo mkdir -p $PBUILDERPLACE/ccache
+sudo chmod a+w $PBUILDERPLACE/ccache
+export CCACHE_DIR="$PBUILDERPLACE/ccache"
 export PATH="/usr/lib/ccache:${PATH}"
-BINDMOUNTS="${CCACHE_DIR} /var/cache/pbuilder/$NAME/result"
+BINDMOUNTS="${CCACHE_DIR} $PBUILDERPLACE/$NAME/result"
 
 # build dependencies + ccache
 
