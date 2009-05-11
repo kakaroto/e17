@@ -1,0 +1,96 @@
+# Esperanto translations for places package.
+# Copyright (C) 2009 Enlightenment development team
+# This file is distributed under the same license as the places package.
+#
+# Olivier <eliovir@nospam.gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: places 0.1.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-05-10 22:45+0200\n"
+"PO-Revision-Date: 2009-05-11 00:10+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 0.3\n"
+
+#: src/e_mod_config.c:50
+msgid "Places Configuration"
+msgstr ""
+
+#: src/e_mod_config.c:116
+msgid "General"
+msgstr "Ĝenerala"
+
+#: src/e_mod_config.c:119
+msgid "Mount volumes on insert"
+msgstr ""
+
+#: src/e_mod_config.c:123
+msgid "Open filemanager on insert"
+msgstr ""
+
+#: src/e_mod_config.c:127
+msgid "Use a custom file manager"
+msgstr ""
+
+#: src/e_mod_main.c:75
+msgid "Files"
+msgstr "Dosieroj"
+
+#: src/e_mod_main.c:77 src/e_mod_places.c:499
+#, fuzzy
+msgid "Places"
+msgstr "Lokoj"
+
+#: src/e_mod_main.c:439
+msgid "Configuration"
+msgstr "Agordo"
+
+#: src/e_mod_places.c:233 src/e_mod_places.c:427
+msgid "Filesystem"
+msgstr ""
+
+#: src/e_mod_places.c:238
+msgid "No Name"
+msgstr "Neniu nomo"
+
+#: src/e_mod_places.c:399
+msgid "Home"
+msgstr "Hejmo"
+
+#: src/e_mod_places.c:408
+#, fuzzy
+msgid "Desktop"
+msgstr "Labortablo"
+
+#: src/e_mod_places.c:418
+msgid "Trash"
+msgstr "Rubujo"
+
+#: src/e_mod_places.c:436
+msgid "Temp"
+msgstr ""
+
+#: src/e_mod_places.c:692
+msgid "free of"
+msgstr ""
+
+#: src/e_mod_places.c:698
+#, c-format
+msgid "%s Not Mounted"
+msgstr ""
+
+#: src/e_mod_places.c:715
+#, fuzzy
+msgid "unmount"
+msgstr "Malkroĉu"
+
+#: src/e_mod_places.c:721
+#, fuzzy
+msgid "eject"
+msgstr "Eligu"
+

@@ -2,6 +2,7 @@
 Encoding=UTF-8
 Name=Image Viewer
 Comment=Image Viewer
+Comment[it]=Visualizzatore immagini
 Exec=image-viewer %U
 Icon=image-viewer
 Terminal=false

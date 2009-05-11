@@ -1,0 +1,82 @@
+# Esperanto translations for tiling package.
+# Copyright (C) 2009 Enlightenment development team
+# This file is distributed under the same license as the tiling package.
+#
+# Olivier <eliovir@nospam.gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: tiling 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-05-10 22:47+0200\n"
+"PO-Revision-Date: 2009-05-11 00:11+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 0.3\n"
+
+#: e_mod_main.c:83 e_mod_main.c:88 e_mod_main.c:1005
+msgid "Tiling"
+msgstr ""
+
+#: e_mod_main.c:1004
+msgid "Windows"
+msgstr "Fenestroj"
+
+#: e_mod_config.c:70
+msgid "Tiling Configuration"
+msgstr ""
+
+#: e_mod_config.c:217
+msgid "General"
+msgstr "Ĝenerala"
+
+#: e_mod_config.c:227
+msgid "Horizontal:"
+msgstr "Horizontala:"
+
+#: e_mod_config.c:228 e_mod_config.c:232
+#, c-format
+msgid "%1.0f px"
+msgstr "%1.0f rastrumeroj"
+
+#: e_mod_config.c:231
+msgid "Vertical:"
+msgstr "Vertikala:"
+
+#: e_mod_config.c:241
+msgid "Virtual Desktops"
+msgstr "Virtualaj Labortabloj"
+
+#: e_mod_config.c:279
+msgid "Grid mode settings"
+msgstr ""
+
+#: e_mod_config.c:283
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: e_mod_config.c:288
+msgid "Bigmain settings"
+msgstr ""
+
+#: e_mod_config.c:289
+msgid "Big win takes percent of screen:"
+msgstr ""
+
+#: e_mod_config.c:290
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: e_mod_config.c:296
+msgid "Tiling border"
+msgstr ""
+
+#: e_mod_config.c:310
+msgid "Floating border"
+msgstr ""
+

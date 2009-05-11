@@ -1,20 +1,22 @@
 # translation of eo.po to Esperanto
 # Esperanto tranlation of news.
 # This file is distributed under the same license as the news package.
-# Olivier M. <olivierweb@ifrance.com>, 2008.
 #
+# Olivier M. <olivierweb@ifrance.com>, 2008.
+# Olivier <eliovir@nospam.gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2008-04-17 22:22+0200\n"
-"Last-Translator:  <olivierweb@ifrance.com>\n"
+"PO-Revision-Date: 2009-05-10 23:58+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
@@ -47,6 +49,17 @@ msgid ""
 "lacks. This new set of defaults will fix<br>that by adding it in. You can re-"
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
+"La agordo de la modulo Notification bezonas ĝisdatigon. Via malnova agordo<"
+"br> "
+"estis viŝita kaj nova aro da defaŭltoj estis pravalorizitaj. Tio okazos ofte "
+"dum<br> "
+"la programado, do ne raportu cimon. Tio simple signifas ke la modulo<br> "
+"Notification bezonas novajn datumojn de agordo defaŭlte por uzebla "
+"funkcieco<br> "
+"kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj korektos tion "
+"aldoniĝante<br> "
+"Vi povas de nove agordi nun kiel vi volas. Bonvolu pardoni por la "
+"malagrablaĵoj.<br>"
 
 #: ../src/e_mod_main.c:239
 msgid ""
@@ -57,16 +70,26 @@ msgid ""
 "is bad and<br>as a precaution your configuration has been now restored "
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
+"Via agordo de la modulo Notification estas PLI NOVA ol la modulo mem. Tio "
+"estas ege<br> "
+"strange. Tio ne devus okazi krom se vi antaŭdatiĝis la modulon aŭ kopiis la "
+"agordon<br> "
+"el loko kie nova versio de la modulo funkciis. Tio estas malbone kaj "
+"antaŭzorge via<br> "
+"agordo estis restaŭrita al defaŭltoj. Bonvolu pardoni por la malagrablaĵoj.<"
+"br>"
 
 #: ../src/e_mod_main.c:273
 msgid "Error During DBus Init!"
-msgstr ""
+msgstr "Eraro dum pravalorizo de DBus!"
 
 #: ../src/e_mod_main.c:274
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr ""
+"Eraro dum pravalorizo de DBus! Bonvolu kontroli se ĝi estas instalata kaj "
+"funkcianta."
 
 #: ../src/e_mod_config.c:42
 msgid "Notification Configuration"
@@ -150,3 +173,4 @@ msgstr "Fokusigi la fontan fenestron dum alklako"
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
 msgstr "Niveloj de urgxo memorendaj:"
+

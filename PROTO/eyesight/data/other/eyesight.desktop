@@ -2,6 +2,7 @@
 Name=Eyesight
 Description=Document viewer
 Comment=Document viewer
+Comment[it]=Visualizzatore documenti
 Exec=eyesight %F
 Terminal=false
 Type=Application

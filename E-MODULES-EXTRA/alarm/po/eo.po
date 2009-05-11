@@ -2,24 +2,26 @@
 # Esperanto translation of alarm
 # Copyright (C) 2008 Enlightenment development team
 # This file is distributed under the same license as the alarm package.
-# Olivier M. <olivierweb@ifrance.com>, 2008.
 #
+# Olivier M. <olivierweb@ifrance.com>, 2008.
+# Olivier <eliovir@nospam.gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-04-17 22:22+0200\n"
-"Last-Translator:  <olivierweb@ifrance.com>\n"
+"PO-Revision-Date: 2009-05-10 23:58+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../e_mod_config.c:55
 msgid "Alarm Configuration"
-msgstr "Konfiguraĵo de Vekhorloĝo"
+msgstr "Agordo de Vekhorloĝo"
 
 #: ../e_mod_config.c:155 ../e_mod_main.c:187
 msgid "Alarm"
@@ -169,12 +171,16 @@ msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
 "a name for the alarm"
 msgstr ""
+"<hilight>Eraro, la alarmo ne estis aldonita!</hilight><br><br>Vi devas "
+"entajpi nomon por la alarmo"
 
 #: ../e_mod_config_alarm.c:298
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
 "select at least one day in the week"
 msgstr ""
+"<hilight>Eraro, la alarmo ne estis aldonita!</hilight><br><br>Vi devas "
+"elekti almenaŭ unu tagon en la semajno"
 
 #: ../e_mod_config_alarm.c:303
 msgid ""
@@ -183,12 +189,18 @@ msgid ""
 "format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
 msgstr ""
+"<hilight>Eraro, la alarmo ne estis aldonita!</hilight><br><br>La dato ke vi "
+"entajpis por la alarmo enhavas malkorektan sintakson<br><br>Vi devas "
+"respekti tiun formaton:<br>JJJJ/MM/TT<br>JJJJ estas la jaro en 4 ĉiferoj<br>"
+"MM estas la monato en 2 ĉiferoj<br>TT estas la tago en 2 ĉiferoj<br>"
 
 #: ../e_mod_config_alarm.c:313
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered is before now"
 msgstr ""
+"<hilight>Eraro, la alarmo ne estis aldonita!</hilight><br><br>La dato ke vi "
+"entajpis estas antaŭ nun"
 
 #: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
 msgid "Alarm Module Error"
@@ -200,7 +212,7 @@ msgstr "Provi tiun cxi alarmon"
 
 #: ../e_mod_config_alarm.c:382
 msgid "Ring Options"
-msgstr ""
+msgstr "Opcioj de sonorilo"
 
 #: ../e_mod_config_alarm.c:384
 msgid "Remove alarm"
@@ -208,7 +220,7 @@ msgstr "Forigi alarmon"
 
 #: ../e_mod_config_alarm.c:391 ../e_mod_config_alarm.c:411
 msgid "No [default]"
-msgstr ""
+msgstr "Ne [defaŭlte]"
 
 #: ../e_mod_config_alarm.c:393 ../e_mod_config_alarm.c:413
 msgid "Yes"
@@ -221,7 +233,7 @@ msgstr "Ne"
 
 #: ../e_mod_config_alarm.c:400 ../e_mod_config_alarm.c:420
 msgid "Yes [default]"
-msgstr ""
+msgstr "Jes [defaŭlte]"
 
 #: ../e_mod_config_alarm.c:424
 msgid "Run a program"
@@ -229,7 +241,7 @@ msgstr "Lancxi programon"
 
 #: ../e_mod_config_alarm.c:431
 msgid "Run default one"
-msgstr ""
+msgstr "Lanĉi defaŭltan"
 
 #: ../e_mod_config_alarm.c:433
 msgid "Run this program"
@@ -241,18 +253,21 @@ msgid ""
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
+"<hilight>Provo de alarmo SUKCESIS!</hilight><br><br>Sed NE FORGESU ebligi la "
+"vekhorloĝojn<br> pere de la butono \"Ebligi\" en la<br>ĉefa panelo de agordo "
+"de la modulo."
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr ""
+msgstr "<hilight>Provo de alarmo sukcesis!</hilight>"
 
 #: ../e_mod_config_alarm.c:489
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr ""
+msgstr "<hilight>Provo de alarmo MALSUKCESIS!</hilight>"
 
 #: ../e_mod_config_alarm.c:491
 msgid "Alarm Module Test Report"
-msgstr ""
+msgstr "Raporto de la provo de la modulo vekhorloĝo"
 
 #: ../e_mod_main.c:398
 #, c-format
@@ -261,18 +276,20 @@ msgstr "<hilight>Alarmo : %s</hilight><br><br>%s"
 
 #: ../e_mod_main.c:401
 msgid "Alarm Module Popup"
-msgstr ""
+msgstr "Ŝprucfenestro de modulo Vekhorloĝo"
 
 #: ../e_mod_main.c:424
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
+"<hilight>Malsukcesis!</hilight><br><br>Vekhorloĝo ne povas lanĉi la "
+"programon kiun vi difinis"
 
 #: ../e_mod_main.c:658 ../e_mod_main.c:837
 #, c-format
 msgid "Snooze %s"
-msgstr ""
+msgstr "Paŭzo %s"
 
 #: ../e_mod_main.c:662
 #, c-format
@@ -295,15 +312,15 @@ msgstr "Fermi"
 #: ../e_mod_main.c:845
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
-msgstr ""
+msgstr "Paŭzo %.14s de %.2d:%.2d"
 
 #: ../e_mod_main.c:859
 msgid "Snooze (No alarm to delay)"
-msgstr ""
+msgstr "Paŭzo (Neniu alarmo malfruenda)"
 
 #: ../e_mod_main.c:866
 msgid "Add an alarm"
-msgstr ""
+msgstr "Aldoni alarmon"
 
 #: ../e_mod_main.c:873
 msgid "Configuration"
@@ -316,10 +333,13 @@ msgid ""
 "configuration of alarm module<br>has been upgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
+"<hilight>Modulo Vekhorloĝo: Agordo ĝisdatigita</hilight><br><br>Via agordo "
+"de la modulo<br>estis ĝisdatigita<br>Viaj agordoj kaj alarmoj estis "
+"forigitaj<br>Bonvolu pardoni por la malagrablaĵoj<br><br>(%d -> %d)"
 
 #: ../e_mod_main.c:1060 ../e_mod_main.c:1074
 msgid "Alarm Module version "
-msgstr ""
+msgstr "Versio de la modulo Vekhorloĝo"
 
 #: ../e_mod_main.c:1068
 #, c-format
@@ -328,3 +348,7 @@ msgid ""
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
+"<hilight>Modulo vekhorloĝo: Agordo antaŭdatigita</hilight><br><br>Via agordo "
+"de la modulo vekhorloĝo<br>estis antaŭdatigita<br>Viaj agordoj kaj alarmoj "
+"estis forigitaj<br>Bonvolu pardoni por la malagrablaĵoj<br><br>(%d ->%d)"
+

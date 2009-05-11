@@ -2,20 +2,22 @@
 # Esperanto translation of uptime
 # Copyright (C) 2008 Enlightenment development team
 # This file is distributed under the same license as the uptime package.
-# Olivier M. <olivierweb@ifrance.com>, 2008.
 #
+# Olivier M. <olivierweb@ifrance.com>, 2008.
+# Olivier <eliovir@nospam.gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-04-17 22:17+0200\n"
-"Last-Translator:  <olivierweb@ifrance.com>\n"
-"Language-Team: <Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2009-05-11 00:11+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../e_mod_config.c:52
 msgid "Uptime Configuration"
@@ -54,9 +56,10 @@ msgstr "daŭro: %d tagoj, %d:%02d:%02ld"
 #: ../e_mod_main.c:575
 #, c-format
 msgid "la: %.2f %.2f %.2f"
-msgstr ""
+msgstr "la: %.2f %.2f %.2f"
 
 #: ../e_mod_main.c:580
 #, c-format
 msgid "users: %d"
 msgstr "Usantoj : %d"
+

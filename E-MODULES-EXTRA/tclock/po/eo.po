@@ -2,18 +2,20 @@
 # This file is put in the public domain.
 # Olivier M.<olivierweb@ifrance.com>
 #
+# Olivier <eliovir@nospam.gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-02-11 19:48+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"PO-Revision-Date: 2009-05-11 00:11+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../e_mod_config.c:45
 msgid "Tclock Configuration"
@@ -41,12 +43,11 @@ msgstr "Vidigi Malsupran Linion"
 
 #: ../e_mod_config.c:122
 msgid "Tool Tip"
-msgstr ""
+msgstr "Ŝpruchelpilo"
 
 #: ../e_mod_config.c:124
-#, fuzzy
 msgid "Show Tooltip"
-msgstr "Vidigi Supran Linion"
+msgstr "Vidigi ŝpruchelpilon"
 
 #: ../e_mod_main.c:141
 msgid "TClock"
@@ -55,3 +56,4 @@ msgstr "TClock THorloĝo"
 #: ../e_mod_main.c:186
 msgid "Configuration"
 msgstr "Konfiguraĵo"
+

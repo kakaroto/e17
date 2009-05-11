@@ -1,0 +1,163 @@
+# Esperanto translations for exalt package.
+# Copyright (C) 2009 Enlightenment development team
+# This file is distributed under the same license as the exalt package.
+#
+# Olivier <eliovir@nospam.gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: exalt 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-05-10 22:42+0200\n"
+"PO-Revision-Date: 2009-05-11 00:06+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 0.3\n"
+
+#: src/e_mod_config.c:39
+msgid "exalt Module"
+msgstr ""
+
+#: src/e_mod_config.c:79
+msgid "General"
+msgstr "Ĝenerala"
+
+#: src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "Uzi ŝalton 1"
+
+#: src/e_mod_main.c:320
+msgid "exalt"
+msgstr "Exalt"
+
+#: src/e_mod_main.c:403
+msgid "exalt Configuration Updated"
+msgstr "Agordo de Exalt ĝisdatigita"
+
+#: src/e_mod_main.c:469
+msgid "Configuration"
+msgstr "Agordo"
+
+#: src/popup.c:59
+msgid "Settings"
+msgstr "Agordoj"
+
+#: src/popup.c:201
+msgid "No IP Address"
+msgstr "Neniu IP-adreso"
+
+#: src/popup.c:205 src/wired_dialog.c:42
+msgid "Wired interface"
+msgstr ""
+
+#: src/popup.c:208
+msgid "Wireless interface"
+msgstr ""
+
+#: src/wired_dialog.c:36
+msgid "Wired Connection Settings"
+msgstr ""
+
+#: src/wired_dialog.c:51 src/network_dialog.c:72
+msgid "Activate"
+msgstr "Ebligi"
+
+#: src/wired_dialog.c:54 src/network_dialog.c:75
+msgid "Deactivate"
+msgstr ""
+
+#: src/wired_dialog.c:58 src/network_dialog.c:79
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr ""
+
+#: src/wired_dialog.c:63 src/network_dialog.c:84
+msgid "Static"
+msgstr ""
+
+#: src/wired_dialog.c:68 src/network_dialog.c:89
+msgid "IP address: "
+msgstr "IP-adreso:"
+
+#: src/wired_dialog.c:73 src/network_dialog.c:94
+msgid "Netmask address: "
+msgstr ""
+
+#: src/wired_dialog.c:78 src/network_dialog.c:99
+msgid "Gateway address: "
+msgstr ""
+
+#: src/wired_dialog.c:83 src/network_dialog.c:104
+msgid "Command: "
+msgstr "Komando:"
+
+#: src/wired_dialog.c:96 src/network_dialog.c:112
+msgid "OK"
+msgstr "Bone"
+
+#: src/wired_dialog.c:97 src/network_dialog.c:113
+msgid "Apply"
+msgstr "Apliki"
+
+#: src/wired_dialog.c:98 src/network_dialog.c:114
+msgid "Cancel"
+msgstr "Rezigni"
+
+#: src/network_dialog.c:35
+msgid "Wireless Connection Settings"
+msgstr ""
+
+#: src/network_dialog.c:42
+msgid "Network information"
+msgstr ""
+
+#: src/network_dialog.c:44
+msgid "Essid: "
+msgstr ""
+
+#: src/network_dialog.c:49
+msgid "Address: "
+msgstr "Adreso:"
+
+#: src/network_dialog.c:54
+msgid "Quality: "
+msgstr "Kvalito:"
+
+#: src/network_dialog.c:63
+msgid "Wireless interface configuration"
+msgstr ""
+
+#: src/network_dialog.c:211
+msgid "WEP information"
+msgstr ""
+
+#: src/network_dialog.c:213
+msgid "Description: "
+msgstr "Priskribo:"
+
+#: src/network_dialog.c:215
+msgid "WEP"
+msgstr ""
+
+#: src/network_dialog.c:231
+msgid "Hexadecimal Key"
+msgstr "Deksesume klavo"
+
+#: src/network_dialog.c:234
+msgid "UTF-8 Key"
+msgstr "UTF-8 Klavo"
+
+#: src/network_dialog.c:240 src/network_dialog.c:324
+msgid "Password: "
+msgstr "Pasvorto:"
+
+#: src/network_dialog.c:263
+msgid "WPA information"
+msgstr ""
+
+#: src/network_dialog.c:315
+msgid "Login: "
+msgstr "Salutnomo:"
+

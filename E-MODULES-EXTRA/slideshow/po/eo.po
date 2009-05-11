@@ -2,22 +2,24 @@
 # This file is put in the public domain.
 # Olivier M.<olivierweb@ifrance.com>
 #
+# Olivier <eliovir@nospam.gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-02-11 19:53+0100\n"
-"Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
+"PO-Revision-Date: 2009-05-11 00:14+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../e_mod_config.c:37
 msgid "Slideshow Configuration"
-msgstr "Konfiguraĵo de \"Foliprezento\""
+msgstr "Agordo de Bildoprezento"
 
 #: ../e_mod_config.c:90
 msgid "Cycle Time"
@@ -57,9 +59,8 @@ msgid "Set wallpaper on current desktop"
 msgstr "Difini tapeton sur nuna labortablo"
 
 #: ../e_mod_config.c:117
-#, fuzzy
 msgid "Set wallpaper on current screen"
-msgstr "Difini tapeton sur nuna labortablo"
+msgstr "Difini tapeton sur nuna ekrano"
 
 #: ../e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
@@ -72,3 +73,4 @@ msgstr "Foliprezento"
 #: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "Konfiguraĵo"
+
