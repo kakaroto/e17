@@ -75,6 +75,14 @@ dtb=(
 "sid"
 )
 
+# architectures to make database for
+archs=(
+"i386"
+"amd64"
+"armel"
+"lpia"
+)
+
 # list of things to compile, comment out things which you don't want to compile, or which are not made for your distro
 compile_list=(
 # going to release
@@ -314,34 +322,37 @@ for databases in ${dtb[@]}; do
 	esac
 	echo "Making databases."
 	# make database for main section
-	cd $disto
-	dpkg-scanpackages --arch $(echo $preparelist | sed 's/.*#//') pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/main /dev/null | tee Packages
-	cp Packages Pkgs
-	gzip -f Packages
-	mv Pkgs Packages
-	mv {Packages,Packages.gz} dists/$(echo $preparelist | sed 's/#.*//')/main/binary-$(echo $preparelist | sed 's/.*#//')
-	# make database for extras section
-	dpkg-scanpackages --arch $(echo $preparelist | sed 's/.*#//') pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras /dev/null | tee Packages
-	cp Packages Pkgs
-	gzip -f Packages
-	mv Pkgs Packages
-	mv {Packages,Packages.gz} dists/$(echo $preparelist | sed 's/#.*//')/extras/binary-$(echo $preparelist | sed 's/.*#//')
-	echo "Done."
+	cd $distr
+	for dtbarch in ${archs[@]}; do 
+		dpkg-scanpackages --arch $dtbarch pool/$databases/binaries-$currentversion/main /dev/null > Packages
+		cp Packages Pkgs
+		gzip -f Packages
+		mv Pkgs Packages
+		mv {Packages,Packages.gz} dists/$databases/main/binary-$dtbarch
+		# make database for extras section
+		dpkg-scanpackages --arch $dtbarch pool/$databases/binaries-$currentversion/extras /dev/null > Packages
+		cp Packages Pkgs
+		gzip -f Packages
+		mv Pkgs Packages
+		mv {Packages,Packages.gz} dists/$databases/extras/binary-$dtbarch
+	done
 	cd ..
+	echo "Done."
 done
 }
 
 upload() {
-for up in ${distros[@]}; do
-	case $(echo $up | sed 's/#.*//') in
-		hardy|intrepid|jaunty) distro=ubuntu
-		;;
-		*) distro=debian
-		;;
-	esac
-	echo "Uploading content."
-	scp -r $distro $username@$eserver:/var/www/packages
-done
+up_ubuntu=$(echo "${distros[@]}" | egrep "(hardy|intrepid|jaunty)")
+up_debian=$(echo "${distros[@]}" | egrep "(lenny|squeeze|sid)")
+if test "$up_ubuntu"; then
+	echo "Uploading ubuntu dir."
+	scp -r ubuntu $username@$eserver:/var/www/packages
+fi
+if test "$up_debian"; then
+	echo "Uploading debian dir."
+	scp -r debian $username@$eserver:/var/www/packages
+fi
+echo "Done uploading."
 }
 
 print_help() {
