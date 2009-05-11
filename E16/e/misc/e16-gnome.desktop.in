@@ -2,8 +2,6 @@
 Encoding=UTF-8
 Type=XSession
 Name=E16-GNOME
-Name[eo]=E16-GNOME
 Comment=This session starts GNOME using enlightenment (e16) as window manager
-Comment[eo]=Tio sesio komencas GNOME uzante Enlightenment (e16) kiel fenestradministrilo.
 Exec=@pkgdatadir@/misc/starte16-gnome
 Icon=@pkgdatadir@/misc/e16.png
