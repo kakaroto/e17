@@ -3,8 +3,9 @@
 2. Copy the script wherever you want
 3. Open the script in the text editor and modify variables in the beginning as you want(like compile list, distro list, svn username..)
 4. Run a terminal and cd to that dir
-5. Run the script with --help and you will see possible parameters and their order(setup, download, makechroots, compile, prepare, database, upload)
+5. Run the script with --help and you will see possible parameters and their order(setup, download, makechroots, compile, prepare, database, upload and finally clean if you don't need local repos anymore.)
 
 # if you compile for debian squeeze, replace /usr/share/cdbootstrap/suites with suites file here.
+# short versions of script arguments are also available( --compile or -c etc.. run the script with --help or -h).
 
 quaker66 (trunk/devs/quaker)

@@ -268,7 +268,12 @@ for distrocomp in ${distros[@]}; do
 		cd $basedir
 		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz
 		if [ "$?" -ge "1" ]; then
-			echo "ERROR, exitting."
+			echo "ERROR, deleting chroot and updating packed, then exitting."
+			echo "Deleting chroot."
+			sudo rm -rf $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')
+			echo "Updating tarball."
+			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --basetgz $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')-base.tgz
+			echo "Done, EXIT."
 			exit 1
 		fi
 	done
@@ -355,18 +360,30 @@ fi
 echo "Done uploading."
 }
 
+clean() {
+for clean in ${distros[@]}; do
+	echo "Cleaning local repo for: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
+	sudo rm -rf $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')/result/*
+	if [ "$?" -ge "1" ]; then
+		echo "ERROR, exitting."
+		exit 1
+	fi
+done
+}
+
 print_help() {
 cat << EOF
 parameters:
 
---setup - configure host system for build
---download - download things
---makechroots - make chroots
---compile - compile stuff
---prepare - make tree
---database - make databases
---upload - upload things
---help - show this
+--setup|-s - configure host system for build
+--download|-d - download things
+--makechroots|-m - make chroots
+--compile|-c - compile stuff
+--prepare|-p - make tree
+--database|-D - make databases
+--upload|-u - upload things
+--clean|-C - removes local repo - run it when you don't need it anymore
+--help|-h - show this
 EOF
 }
 
@@ -383,7 +400,7 @@ for deps in sudo scp dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
 done
 
 case $1 in
-	--setup) setup
+	--setup|-s) setup
 	;;
 esac
 
@@ -394,21 +411,23 @@ if [ "$?" -ge "1" ]; then
 fi
 
 case $1 in
-	--download) download
+	--download|-d) download
 	;;
-	--makechroots) makechroots
+	--makechroots|-m) makechroots
 	;;
-	--compile) compile
+	--compile|-c) compile
 	;;
-	--prepare) prepare
+	--prepare|-p) prepare
 	;;
-	--database) database
+	--database|-D) database
 	;;
-	--upload) upload
+	--upload|-u) upload
 	;;
-	--help) print_help
+	--clean|-C) clean
 	;;
-	--setup) exit 0
+	--help|-h) print_help
+	;;
+	--setup|-s) exit 0
 	;;
 	*) 
 	echo "No or bad argument, run it with --help to see what it can do."
