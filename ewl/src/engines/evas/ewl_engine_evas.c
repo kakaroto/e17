@@ -110,6 +110,18 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
+        if (!evas_init())
+        {
+                fprintf(stderr, "Could not initialize Evas.\n");
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
+        if (!edje_init()) 
+        {
+                fprintf(stderr, "Could not initialize Edje.\n");
+                evas_shutdown();
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
+
         engine = NEW(Ewl_Engine_Evas, 1);
         if (!engine)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -148,6 +160,9 @@ ee_shutdown(Ewl_Engine *engine)
         DCHECK_PARAM_PTR(engine);
 
         IF_FREE(engine->functions);
+
+        edje_shutdown();
+        evas_shutdown();
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

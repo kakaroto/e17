@@ -12,7 +12,6 @@
 
 #include <Evas.h>
 
-#include <Edje.h>
 #include "ewl_intl.h"
 
 #ifdef BUILD_EFREET_SUPPORT
@@ -199,12 +198,6 @@ ewl_init(int *argc, char **argv)
                 goto ERROR;
         }
 
-        if (!evas_init()) {
-                fprintf(stderr, "Could not initialize Evas.\n");
-                goto ERROR;
-        }
-        ecore_list_prepend(shutdown_queue, evas_shutdown);
-
         if (!ecore_init()) {
                 fprintf(stderr, "Could not initialize Ecore.\n");
                 goto ERROR;
@@ -230,12 +223,6 @@ ewl_init(int *argc, char **argv)
                 goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ecore_string_shutdown);
-
-        if (!edje_init()) {
-                fprintf(stderr, "Could not initialize Edje.\n");
-                goto ERROR;
-        }
-        ecore_list_prepend(shutdown_queue, edje_shutdown);
 
         reveal_list = ecore_list_new();
         obscure_list = ecore_list_new();

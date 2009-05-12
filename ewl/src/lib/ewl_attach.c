@@ -7,8 +7,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
-
 /**
  * Ewl_Attach_Tooltip
  */
@@ -27,8 +25,8 @@ struct Ewl_Attach_Tooltip
 
         Ewl_Attach *attach;
 
-        Evas_Coord x;
-        Evas_Coord y;
+        int x;
+        int y;
 
         Ecore_Timer *timer;
         Ewl_Widget *to;
