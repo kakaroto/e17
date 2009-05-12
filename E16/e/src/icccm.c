@@ -186,23 +186,33 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 	     if (Mode.mode == MODE_RESIZE_H)
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
-		     h = (int)((double)w / ewin->icccm.aspect_min);
-		  if (aspect > ewin->icccm.aspect_max)
-		     h = (int)((double)w / ewin->icccm.aspect_max);
+		     w = (int)((double)h * ewin->icccm.aspect_min);
+		  else if (aspect > ewin->icccm.aspect_max)
+		     w = (int)((double)h * ewin->icccm.aspect_max);
 	       }
 	     else if (Mode.mode == MODE_RESIZE_V)
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
-		     w = (int)((double)h * ewin->icccm.aspect_min);
-		  if (aspect > ewin->icccm.aspect_max)
-		     w = (int)((double)h * ewin->icccm.aspect_max);
+		     h = (int)((double)w / ewin->icccm.aspect_min);
+		  else if (aspect > ewin->icccm.aspect_max)
+		     h = (int)((double)w / ewin->icccm.aspect_max);
 	       }
 	     else
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
-		     w = (int)((double)h * ewin->icccm.aspect_min);
-		  if (aspect > ewin->icccm.aspect_max)
-		     h = (int)((double)w / ewin->icccm.aspect_max);
+		    {
+		       if (ewin->icccm.aspect_min >= 1.)
+			  h = (int)((double)w / ewin->icccm.aspect_min);
+		       else
+			  w = (int)((double)h * ewin->icccm.aspect_min);
+		    }
+		  else if (aspect > ewin->icccm.aspect_max)
+		    {
+		       if (ewin->icccm.aspect_max >= 1.)
+			  h = (int)((double)w / ewin->icccm.aspect_max);
+		       else
+			  w = (int)((double)h * ewin->icccm.aspect_max);
+		    }
 	       }
 	     i = w / ewin->icccm.w_inc;
 	     j = h / ewin->icccm.h_inc;
