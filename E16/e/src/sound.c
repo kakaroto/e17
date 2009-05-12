@@ -30,6 +30,14 @@
 #include "sound.h"
 #include "sounds.h"
 
+#if HAVE_SOUND_ESD
+#define SOUND_SERVER_NAME "esd"
+#elif HAVE_SOUND_PA
+#define SOUND_SERVER_NAME "pulseaudio"
+#else
+#error Invalid sound configuration
+#endif
+
 #define N_SOUNDS (SOUND_NOT_USED - 1)
 
 typedef struct {
@@ -301,8 +309,8 @@ SoundInit(void)
 	Conf_sound.enable = 0;
 	AlertX(_("Error initialising sound"), _("OK"), NULL, NULL,
 	       _("Audio was enabled for Enlightenment but there was an error\n"
-		 "communicating with the audio server (Esound). Audio will\n"
-		 "now be disabled.\n"));
+		 "communicating with the audio server (%s).\n"
+		 "Audio will now be disabled.\n"), SOUND_SERVER_NAME);
      }
 
    _SoundConfigLoad();
