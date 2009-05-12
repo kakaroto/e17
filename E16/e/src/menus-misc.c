@@ -157,8 +157,7 @@ MenuLoadFromDirectory(Menu * m)
  skip_dir_cache:
    Esnprintf(s, sizeof(s), "Scanning %s", dir);
 
-   if (!Mode.wm.restart)
-      p = ProgressbarCreate(s, 600, 16);
+   p = ProgressbarCreate(s, 600, 16);
    if (p)
       ProgressbarShow(p);
 
