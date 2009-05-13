@@ -62,6 +62,9 @@ ewl_pdf_init(Ewl_Pdf *pdf)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, FALSE);
 
+        if (!epdf_init()) 
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+
         w = EWL_WIDGET(pdf);
 
         if (!ewl_widget_init(w))
@@ -814,6 +817,8 @@ ewl_pdf_destroy_cb(Ewl_Widget *w,
         if (pdf->pdf_index)
           epdf_index_delete(pdf->pdf_index);
         if (pdf->search.text) free(pdf->search.text);
+
+        epdf_shutdown();
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

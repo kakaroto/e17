@@ -1,5 +1,18 @@
 2009-05-14  Vincent Torri  <doursse at users dot sf dot net>
 
+	reviewed by: Vincent Torri
+	patch by: Rawnar, modified by Vincent Torri
+
+	* src/lib/epdf_main.cpp:
+	do not pass NULL to GlobalParams()
+
+	* src/lib/esmart_pdf.c:
+	* src/lib/ewl_pdf.c:
+	add epdf_init() and epdf_shutdown() calls to init and
+	shutdown of the esmart and ewl objects
+
+2009-05-14  Vincent Torri  <doursse at users dot sf dot net>
+
 	* configure.ac:
 	requires poppler >= 0.10
 

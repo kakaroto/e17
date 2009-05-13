@@ -15,7 +15,7 @@ epdf_init (void)
   if (_epdf_main_count)
     goto beach;
 
-  if (!(globalParams = new GlobalParams(NULL)))
+  if (!(globalParams = new GlobalParams()))
     return 0;
 
   if (!eina_list_init())

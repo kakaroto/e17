@@ -99,6 +99,9 @@ esmart_pdf_init (Evas_Object *obj)
 
   E_SMART_OBJ_GET_RETURN (sp, obj, E_OBJ_NAME, 0);
 
+  if (!epdf_init())
+    return 0;
+
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
 
@@ -514,6 +517,8 @@ _smart_del (Evas_Object *obj)
     epdf_page_delete (sp->pdf_page);
   if (sp->pdf_index)
     epdf_index_delete (sp->pdf_index);
+
+  epdf_shutdown();
 
   free (sp);
 }
