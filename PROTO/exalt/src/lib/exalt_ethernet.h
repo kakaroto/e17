@@ -92,7 +92,7 @@ typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Eina_List* networks, vo
  * @param name the name of the interface (eth0, ath3 ...)
  * @return Return a new Exalt_Ethernet structure
  */
-Exalt_Ethernet* exalt_eth_new(const char* name);
+Exalt_Ethernet* exalt_eth_new(const char* name, const char* device);
 
 /**
  * @brief free exalt_eth_interfaces
@@ -177,6 +177,12 @@ short exalt_eth_link_is(Exalt_Ethernet *eth);
  */
 const char* exalt_eth_name_get(Exalt_Ethernet* eth);
 /**
+ * @brief get the device name of the interface "eth" (eth0, eth1 ...)
+ * @param eth the interface
+ * @return Returns the device name
+ */
+const char* exalt_eth_device_get(Exalt_Ethernet* eth);
+/**
  * @brief get the ip address of the interface "eth"
  * @param eth the interface
  * @return Returns the ip address (don't forget to free the IP address)
@@ -241,7 +247,7 @@ Exalt_Wireless* exalt_eth_wireless_get(Exalt_Ethernet* eth);
  * @param user_data user data
  * @return Returns 1 if success, else 0
  */
-int exalt_eth_cb_set(Exalt_Eth_Cb fct, void* user_data;);
+int exalt_eth_cb_set(Exalt_Eth_Cb fct, void* user_data);
 /**
  * @brief set the callback scan function
  * this callback is called when a scan is finish,
@@ -274,12 +280,7 @@ Exalt_Connection* exalt_eth_connection_get(Exalt_Ethernet* eth);
  */
 short exalt_eth_connection_set(Exalt_Ethernet* eth, Exalt_Connection* c);
 
-/**
- * @brief up the interface "eth" but tell to the daemon "don't apply a connection",
- * sometimes we need upping an interface when we want apply a connection, this method avoid an infinite loop
- * @param eth the interface
- */
-void exalt_eth_up_without_apply(Exalt_Ethernet* eth);
+
 /**
  * @brief set the time in seconds when you up the interface
  * then the daemon will use this value to know if it will apply or not the connection when it will get the notification from the kernel

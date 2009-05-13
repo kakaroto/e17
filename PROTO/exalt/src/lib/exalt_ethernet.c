@@ -7,10 +7,7 @@
  * Private functions headers
  */
 
-/*
- * TODO: remove up_without_apply if the new wpa_supplicant allows to do it
- * change exalt_eth_free to take a Exalt_Ethernet** and exalt_wireless_free to take a Exalt_Wireless**
- */
+
 
 const char* _exalt_eth_save_ip_get(Exalt_Ethernet* eth);
 const char* _exalt_eth_save_gateway_get(Exalt_Ethernet* eth);
@@ -27,6 +24,7 @@ int _exalt_eth_save_up_set(Exalt_Ethernet* eth,short up);
 int _exalt_eth_udi_set(Exalt_Ethernet* eth,const char* udi);
 int _exalt_eth_ifindex_set(Exalt_Ethernet* eth,int ifindex);
 int _exalt_eth_name_set(Exalt_Ethernet* eth,const char* name);
+int _exalt_eth_device_set(Exalt_Ethernet* eth,const char* device);
 
 void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error);
 
@@ -48,6 +46,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth);
 struct Exalt_Ethernet
 {
     char* name; //eth0, eth1...
+    char *device;
     char* udi;
     int ifindex;
 
@@ -66,8 +65,11 @@ struct Exalt_Ethernet
     time_t dont_apply_after_up;
 };
 
-
-Exalt_Ethernet* exalt_eth_new(const char* name)
+/**
+  * Create an ethernet interface struct with a wireless exntesion if the interface is a wireless
+  * Returns null if the interface is a wired interface and we have a wireless interface with the same device.
+  */
+Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
 {
     struct iwreq wrq;
     Exalt_Ethernet* eth;
@@ -76,12 +78,40 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     EXALT_ASSERT_RETURN(eth!=NULL);
 
     _exalt_eth_name_set(eth,name);
+    _exalt_eth_device_set(eth,device);
 
     //test if the interface has a wireless extension
     strncpy(wrq.ifr_name, exalt_eth_name_get(eth), sizeof(wrq.ifr_name));
     if(exalt_ioctl(&wrq, SIOCGIWNAME))
         eth->wireless = exalt_wireless_new(eth);
 
+    //test if we have a interface with the same device
+    //Some wifi driver as the generic linux driver create 2 itnerface for a wireless interface
+    //A wired and a wireless interface, only the wireless interface is interesting
+
+    Exalt_Ethernet *eth_res = NULL;
+    Eina_List *l = exalt_eth_list_get();
+    Eina_List *l_temp;
+    Exalt_Ethernet *eth_temp;
+    EINA_LIST_FOREACH(l,l_temp,eth_temp)
+    {
+        const char *device_temp = exalt_eth_device_get(eth_temp);
+        if(device_temp && device && strcmp(device_temp,device)==0)
+        {
+            //remove the wired interface
+            eth_res = eth_temp;
+        }
+    }
+
+    if(eth_res && exalt_eth_wireless_is(eth))
+    {
+        _exalt_eth_udi_remove(exalt_eth_udi_get(eth_temp));
+    }
+    else if(eth_res)
+    {
+        exalt_eth_free(eth);
+        eth = NULL;
+    }
     return eth;
 }
 
@@ -97,6 +127,7 @@ void exalt_eth_free(void *data)
 {
     Exalt_Ethernet* eth = data;
     EXALT_FREE(eth->name);
+    EXALT_FREE(eth->device);
     EXALT_FREE(eth->udi);
     EXALT_FREE(eth->_save_ip);
     EXALT_FREE(eth->_save_netmask);
@@ -139,25 +170,6 @@ void exalt_eth_up(Exalt_Ethernet* eth)
     if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
         return ;
 }
-
-void exalt_eth_up_without_apply(Exalt_Ethernet* eth)
-{
-    struct ifreq ifr;
-
-    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
-
-    strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
-
-    if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
-        return ;
-
-    ifr.ifr_flags |= IFF_UP;
-    if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
-        return ;
-
-    eth->dont_apply_after_up =  (int)time(NULL);
-}
-
 
 void exalt_eth_dontapplyafterup_set(Exalt_Ethernet * eth, time_t t)
 {
@@ -258,6 +270,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 #define EXALT_STRUCT_TYPE Exalt_Ethernet
 
     EXALT_GET(name,const char*)
+    EXALT_GET(device,const char*)
     EXALT_GET(udi,const char*)
     EXALT_GET(ifindex,int)
     EXALT_GET(connection,Exalt_Connection*)
@@ -526,7 +539,7 @@ int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
 
     EXALT_ASSERT_RETURN(eth!=NULL);
     //if the connection is not valid, we send the information as the configuration is done
-    //else a application will wait a very long time the end of the configuration
+    //else an application will wait a very long time the end of the configuration
     //(_exalt_apply_timer())
     EXALT_ASSERT_CUSTOM_RET(exalt_conn_valid_is(c),
             eth->apply_pid = -1; _exalt_apply_timer(eth));
@@ -566,13 +579,11 @@ int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
 
 void exalt_eth_printf()
 {
-    void *data;
     Exalt_Ethernet* eth;
     Eina_List *l;
 
     EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
-        eth = data;
         printf("###   %s   ###\n",eth->name);
         printf("Up: %d\n",exalt_eth_up_is(eth));
         if(exalt_eth_dhcp_is(eth))
@@ -745,6 +756,21 @@ int _exalt_eth_name_set(Exalt_Ethernet* eth, const char* name)
     return 1;
 }
 
+/**
+ * @brief set the device of the interface "eth"
+ * @param eth the interface
+ * @param name the new device
+ * @return Returns 1 if the new name is apply, else 0
+ */
+int _exalt_eth_device_set(Exalt_Ethernet* eth, const char* device)
+{
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(device!=NULL);
+
+    EXALT_FREE(eth->device);
+    eth->device=strdup(device);
+    return 1;
+}
 
 /**
  * @brief set the udi of the interface "eth"
@@ -793,6 +819,9 @@ int _exalt_eth_udi_remove(const char* udi)
             if(exalt_eth_interfaces.eth_cb)
                 exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_REMOVE,exalt_eth_interfaces.eth_cb_user_data);
 
+
+            if(exalt_eth_wireless_is(eth))
+                exalt_wpa_stop(exalt_eth_wireless_get(eth));
             exalt_eth_interfaces.ethernets =
                 eina_list_remove(exalt_eth_interfaces.ethernets,eth);
 
@@ -1154,12 +1183,15 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     E_Hal_Properties *ret = reply_data;
     int err = 0;
     Exalt_Ethernet* eth;
-    char* str;
+    char* str, *str2;
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
     str = e_hal_property_string_get(ret,"net.interface", &err);
-    eth = exalt_eth_new(str);
+    str2 = e_hal_property_string_get(ret,"net.originating_device", &err);
+    eth = exalt_eth_new(str,str2);
+    if(!eth) return ;
     EXALT_FREE(str);
+    EXALT_FREE(str2);
 
     str = e_hal_property_string_get(ret,"info.udi", &err);
     _exalt_eth_udi_set(eth,str);
@@ -1223,7 +1255,7 @@ void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
 {
     DBusError err;
     char *udi;
-    int ret;
+    DBusPendingCall *ret;
 
     dbus_error_init(&err);
     dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);

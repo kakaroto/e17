@@ -37,7 +37,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     s.state = exalt_eth_up_is(eth);
     s.connection = exalt_eth_connection_get(eth);
     if(exalt_eth_wireless_is(eth))
-        s.driver = exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
+        s.driver = (char*)exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
     else
         s.driver = "wext";
 

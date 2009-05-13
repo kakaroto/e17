@@ -274,7 +274,7 @@ int waiting_timeout_set(int timeout, const char* file)
    /*we can't send a broadcast without specify a interface
      * that's why we create a special ethernet struct without name :)
      */
-    eth = exalt_eth_new("No interface is specify with the signal EXALTD_ETH_CB_WAITINGBOOT_CHANGE");
+    eth = exalt_eth_new("No interface is specify with the signal EXALTD_ETH_CB_WAITINGBOOT_CHANGE","no device");
     if(eth)
         eth_cb(eth,EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE,exaltd_conn);
 

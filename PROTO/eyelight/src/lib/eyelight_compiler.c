@@ -489,6 +489,22 @@ void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyel
     eyelight_compile_prop_slide(compiler,output, current, &title, &subtitle);
 
     ecore_list_first_goto(current->l);
+
+    fprintf(output,"post_fct();\n");
+    fprintf(output,"}\n");
+
+    //add the data with the title and the subtitle
+    //these data will be used to create the table of contents
+    fprintf(output,"data\n{\n");
+    if(title)
+        fprintf(output,"item: title \"%s\";\n",title);
+    if(subtitle)
+        fprintf(output,"item: subtitle \"%s\";\n",subtitle);
+    fprintf(output,"}\n");
+
+    fprintf(output,"program_list();\n");
+    fprintf(output,"}\n");
+
     while( (node = ecore_list_next(current->l)) )
     {
         if(node->type == EYELIGHT_NODE_TYPE_BLOCK)
@@ -499,20 +515,6 @@ void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyel
             }
         }
     }
-    fprintf(output,"post_fct();\n");
-    fprintf(output,"}\n");
-    //add the data with the title and the subtitle
-    //these date will be used to create the table of contents
-
-    fprintf(output,"data\n{\n");
-    if(title)
-        fprintf(output,"item: title \"%s\";\n",title);
-    if(subtitle)
-        fprintf(output,"item: subtitle \"%s\";\n",subtitle);
-    fprintf(output,"}\n");
-
-    fprintf(output,"program_list();\n");
-    fprintf(output,"}\n");
 }
 
 /*
