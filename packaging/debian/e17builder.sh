@@ -151,7 +151,7 @@ download() {
 echo "DOWNLOADING PACKAGES WITH SCP..."
 for down in ${compile_list[@]}; do
 	case $down in
-		eina|eet|evas|ecore|embryo|edje|edbus|efreet|e17) scp -r $username@$eserver:$path/main/$down ./
+		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17) scp -r $username@$eserver:$path/main/$down ./
 		;;
 		*) scp -r $username@$eserver:$path/extras/$down ./
 		;;
