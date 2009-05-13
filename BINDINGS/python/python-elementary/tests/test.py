@@ -951,7 +951,30 @@ def pager_clicked(obj, event, data):
     win.show()
 
 def check_clicked(obj, event, data):
-    win = element.Window("check", elementary.ELM_WIN_BASIC)
+    win = elementary.Window("check", elementary.ELM_WIN_BASIC)
+    win.title_set("Check test")
+    win.autodel_set(True)
+    
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    win.resize(320, 320)
+    win.show()
+
+def radio_clicked(obj, event, data):
+    win = elementary.Window("check", elementary.ELM_WIN_BASIC)
+    win.title_set("Radio test")
+    win.autodel_set(True)
+    
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(1.0, 1.0)
+    bg.show()
+
+    win.resize(320, 320)
+    win.show()
     
 if __name__ == "__main__":
     elementary.init()
@@ -975,8 +998,8 @@ if __name__ == "__main__":
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list belox<CR>" \
-                 "by clicking the test button to show the<CR>" \
+    lb.label_set("Please select a test from the list below<br>"
+                 "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)
     lb.show()
