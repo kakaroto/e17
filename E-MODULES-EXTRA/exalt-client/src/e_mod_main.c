@@ -209,6 +209,11 @@ int timer_test_service_cb(void *data)
         return 1;
 }
 
+void warning_dialog_ok(void *data, E_Dialog *dialog)
+{
+     e_object_del(E_OBJECT(dialog));
+}
+
 /* Called when Gadget_Container says go */
     static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
@@ -256,6 +261,29 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     {
         exalt_dbus_notify_set(inst->conn,notify_cb,inst);
         exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
+    }
+
+    //print a warning if networkmanager is detected
+    if(exalt_dbus_service_exists(inst->conn,"org.freedesktop.NetworkManager"))
+    {
+        E_Dialog *dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_warning_dialog");
+        e_dialog_title_set(dialog, D_("Exalt Warning"));
+        e_win_centered_set(dialog->win, 1);
+        Evas *evas = e_win_evas_get(dialog->win);
+        Evas_Object *flist = e_widget_frametable_add(evas, D_("Warning"), 0);
+        Evas_Object *text = e_widget_label_add(evas,D_("NetworkManager has been detected on your computer."));
+        e_widget_frametable_object_append(flist, text, 1, 0, 1, 1, 1, 0, 1, 0);
+        text = e_widget_label_add(evas,D_("Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."));
+        e_widget_frametable_object_append(flist, text, 1, 1, 1, 1, 1, 0, 1, 0);
+
+        e_dialog_button_add(dialog, D_("Ok"), NULL, warning_dialog_ok, NULL);
+        e_dialog_button_focus_num(dialog, 0);
+
+        int mw,mh;
+        e_widget_min_size_get(flist, &mw, &mh);
+        e_dialog_content_set(dialog, flist, mw, mh);
+
+        e_dialog_show(dialog);
     }
 
     exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
