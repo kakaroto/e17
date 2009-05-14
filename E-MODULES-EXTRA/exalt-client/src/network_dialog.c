@@ -113,7 +113,7 @@ void if_network_dialog_create(Instance* inst)
     e_dialog_button_add(inst->network.dialog, D_("Apply"), NULL, if_network_dialog_cb_apply, inst);
     e_dialog_button_add(inst->network.dialog, D_("Cancel"), NULL, if_network_dialog_cb_cancel, inst);
 
-    e_win_delete_callback_set(inst->network.dialog->win, if_network_dialog_cb_del);
+    //e_win_delete_callback_set(inst->network.dialog->win, if_network_dialog_cb_del);
 
     e_dialog_button_focus_num(inst->network.dialog, 1);
     e_win_centered_set(inst->network.dialog->win, 1);

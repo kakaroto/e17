@@ -291,9 +291,11 @@ void if_wired_dialog_cb_dhcp(void *data, Evas_Object *obj, void *event_info)
 
 void if_wired_dialog_cb_del(E_Win *win)
 {
+    E_Dialog *dialog;
     Instance *inst;
 
-    inst = win->data;
+    dialog = win->data;
+    inst = dialog->data;
     if_wired_dialog_hide(inst);
 }
 

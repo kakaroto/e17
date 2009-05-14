@@ -14,6 +14,7 @@ module_la_SOURCES = e_mod_main.h \
                     e_mod_config.c \
 		    popup.c \
 		    wired_dialog.c \
+                    wireless_dialog.c \
 		    network_dialog.c
 
 module_la_LIBADD = @E_LIBS@ @EXALT_LIBS@ @EXALT_DBUS_LIBS@

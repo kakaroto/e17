@@ -592,6 +592,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
+            if_wireless_dialog_update(inst,response);
 
             popup_update(inst,response);
             break;
@@ -603,13 +604,13 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
+            if_wireless_dialog_update(inst,response);
 
             popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
-
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
             printf("%s command:\n",exalt_dbus_response_iface_get(response));

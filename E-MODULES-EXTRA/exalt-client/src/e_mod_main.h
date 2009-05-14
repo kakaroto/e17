@@ -24,6 +24,7 @@ typedef enum _Popup_Enum Popup_Enum;
 typedef enum _Iface_Type Iface_Type;
 typedef struct _Popup_Elt Popup_Elt;
 typedef struct _Wired_Dialog Wired_Dialog;
+typedef struct _Wireless_Dialog Wireless_Dialog;
 typedef struct _Network_Dialog Network_Dialog;
 
 
@@ -89,6 +90,17 @@ struct _Wired_Dialog
     char* cmd;
 };
 
+struct _Wireless_Dialog
+{
+    E_Dialog *dialog;
+    Popup_Elt* iface;
+
+    Evas_Object *btn_activate;
+    Evas_Object* nothinhg;
+    Evas_Object *btn_deactivate;
+    Evas_Object *icon;
+};
+
 struct _Network_Dialog
 {
     E_Dialog *dialog;
@@ -152,6 +164,7 @@ struct _Instance
     Evas_Object     *popup_ilist_obj;
 
     Wired_Dialog wired;
+    Wireless_Dialog wireless;
     Network_Dialog network;
 
     Exalt_DBus_Conn *conn;
@@ -259,6 +272,20 @@ void if_wired_disabled_update(Instance *inst);
 void if_wired_dialog_cb_activate(void *data, void*data2);
 void if_wired_dialog_cb_deactivate(void *data, void*data2);
 void if_wired_dialog_icon_update(Instance *inst);
+
+
+void if_wireless_dialog_init(Instance* inst);
+void if_wireless_dialog_create(Instance* inst);
+void if_wireless_dialog_show(Instance* inst);
+void if_wireless_dialog_set(Instance *inst, Popup_Elt* iface);
+void if_wireless_dialog_hide(Instance *inst);
+void if_wireless_dialog_update(Instance* inst,Exalt_DBus_Response *response);
+void if_wireless_dialog_icon_update(Instance *inst);
+void if_wireless_disabled_update(Instance *inst);
+void if_wireless_dialog_cb_ok(void *data, E_Dialog *dialog);
+void if_wireless_dialog_cb_del(E_Win *win);
+void if_wireless_dialog_cb_activate(void *data, void*data2);
+void if_wireless_dialog_cb_deactivate(void *data, void*data2);
 
 
 void if_network_dialog_init(Instance* inst);

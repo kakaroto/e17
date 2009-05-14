@@ -225,8 +225,13 @@ popup_cb_ifnet_sel(void *data)
                     if_wired_dialog_show(inst);
                     if_wired_dialog_set(inst,elt);
                     if_network_dialog_hide(inst);
+                    if_wireless_dialog_hide(inst);
                     break;
                 case IFACE_WIRELESS:
+                    if_wireless_dialog_show(inst);
+                    if_wireless_dialog_set(inst,elt);
+                    if_network_dialog_hide(inst);
+                    if_wired_dialog_hide(inst);
                     break;
             }
             break;
@@ -234,6 +239,7 @@ popup_cb_ifnet_sel(void *data)
             if_network_dialog_show(inst);
             if_network_dialog_set(inst,elt);
             if_wired_dialog_hide(inst);
+            if_wireless_dialog_hide(inst);
             break;
     }
     popup_hide(inst);
