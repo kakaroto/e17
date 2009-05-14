@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "e_mod_main.h"
 
 /* Popup function protos */
@@ -429,10 +432,34 @@ _notification_format_message(Popup_Data *popup)
 {
   Evas_Object *o = popup->theme;
   const char *title = e_notification_summary_get(popup->notif);
-  const char *message = e_notification_body_get(popup->notif);
+  const char *b = e_notification_body_get(popup->notif);
+  int size = strlen(b);
+  char *message = calloc(1, sizeof(char) * size), *tmp;
+  int i;
+
+  for (i = 0; *b != '\0' && i < size; i++, b++)
+    {
+       if (*b == '\n')
+         {
+            size += 3;
+            tmp = realloc(message, sizeof(char) * (size));
+            if (tmp)
+	      {
+		 message = tmp;
+		 message[i] = '<';
+		 message[++i] = 'b';
+		 message[++i] = 'r';
+		 message[++i] = '>';
+	      }
+	    else break;
+         }
+       else
+         message[i] = *b;
+    }
 
   edje_object_part_text_set(o, "notification.text.title", title);
   edje_object_part_text_set(o, "notification.textblock.message", message);
+  free(message);
 }
 
 static void
