@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2,t0,(0
  */
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
@@ -12,7 +12,7 @@
 
 /* Macros used for config file versioning */
 #define MOD_CONFIG_FILE_EPOCH 0x0001
-#define MOD_CONFIG_FILE_GENERATION 0x008d
+#define MOD_CONFIG_FILE_GENERATION 0x008e
 #define MOD_CONFIG_FILE_VERSION \
    ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
@@ -22,7 +22,8 @@
 
 typedef enum {
      DRAWER_SOURCES,
-     DRAWER_VIEWS
+     DRAWER_VIEWS,
+     DRAWER_COMPOSITES
 } Drawer_Plugin_Category;
 
 typedef enum {
@@ -40,6 +41,7 @@ typedef struct _Drawer_Plugin_Type Drawer_Plugin_Type;
 
 typedef struct _Drawer_Source Drawer_Source;
 typedef struct _Drawer_View Drawer_View;
+typedef struct _Drawer_Composite Drawer_Composite;
 
 typedef struct _Drawer_Source_Item Drawer_Source_Item;
 
@@ -49,9 +51,10 @@ typedef struct _Drawer_Event_View_Context Drawer_Event_View_Context;
 
 typedef struct _Drawer_Content_Margin Drawer_Content_Margin;
 
-#define DRAWER_PLUGIN(obj) ((Drawer_Plugin *) obj)
-#define DRAWER_SOURCE(obj) ((Drawer_Source *) obj)
-#define DRAWER_VIEW(obj)   ((Drawer_View *) obj)
+#define DRAWER_PLUGIN(obj)	((Drawer_Plugin *) obj)
+#define DRAWER_SOURCE(obj) 	((Drawer_Source *) obj)
+#define DRAWER_VIEW(obj)   	((Drawer_View *) obj)
+#define DRAWER_COMPOSITE(obj)   ((Drawer_Composite *) obj)
 #define DRAWER_PLUGIN_API_VERSION 1
 /* Base config struct. Store Item Count, etc
  * 
@@ -82,6 +85,7 @@ struct _Config_Item
    /* Source and view plugin names */
    const char *source;
    const char *view;
+   const char *composite;
 };
 
 /* Generic plugin API */
@@ -132,13 +136,13 @@ struct _Drawer_Source
       /* optional */
 
       /* Activates the given item */
-      void	   (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+      void	    (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
       /* Triggers a plugin-specific action on gadget middle-click */
-      void	   (*trigger)         (Drawer_Source *s, E_Zone *zone);
+      void	    (*trigger)         (Drawer_Source *s, E_Zone *zone);
       /* Creates a context menu for the given item */
-      void	   (*context)         (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
+      void	    (*context)         (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
       /* Returns a description of the source */
-      const char * (*description_get) (Drawer_Source *s);
+      const char  * (*description_get) (Drawer_Source *s);
    } func;
 };
 
@@ -151,9 +155,38 @@ struct _Drawer_View
       Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
-      void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h);
+      void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc,
+                                                 Drawer_Content_Margin *margin, int *w, int *h);
       void	    (*container_resized)	(Drawer_View *v);
       void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
+   } func;
+};
+
+/* Composite plugin struct */
+struct _Drawer_Composite
+{
+   Drawer_Plugin	plugin;
+
+   struct {
+      Evas_Object * (*render)          (Drawer_Composite *c, Evas *evas);
+
+      /* optional */
+      /* Activates the given item */
+      void	    (*activate)        (Drawer_Composite *c, E_Zone *zone);
+      /* Triggers a plugin-specific action on gadget middle-click */
+      void	    (*trigger)         (Drawer_Composite *c, E_Zone *zone);
+      /* Creates a context menu for the given item */
+      void	    (*context)         (Drawer_Composite *c, E_Zone *zone, Drawer_Event_View_Context *ev);
+      /* Returns a description of the source */
+      const char  * (*description_get) (Drawer_Composite *c);
+
+      void	    (*content_size_get)	 (Drawer_Composite *c, E_Gadcon_Client *gcc,
+                                          Drawer_Content_Margin *margin, int *w, int *h);
+      void	    (*container_resized) (Drawer_Composite *c);
+      void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
+
+      /* Creates a shelf icon */
+      Evas_Object * (*get_shelf_icon)    (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);
    } func;
 };
 

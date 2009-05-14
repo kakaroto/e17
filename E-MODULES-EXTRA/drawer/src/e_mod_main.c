@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2,t0,(0,W4
  */
 #include "e_mod_main.h"
 #include <strings.h>
@@ -26,6 +26,7 @@ struct _Instance
 
    Drawer_Plugin *source;
    Drawer_Plugin *view;
+   Drawer_Plugin *composite;
    
    Eina_List *handlers;
 
@@ -73,6 +74,7 @@ static Drawer_Plugin *_drawer_plugin_new(Instance *inst, const char *name, const
 static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
 static Drawer_Source *_drawer_source_new(Instance *inst, const char *name);
 static Drawer_View *_drawer_view_new(Instance *inst, const char *name);
+static Drawer_Composite *_drawer_composite_new(Instance *inst, const char *name);
 
 static void _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si);
 static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
@@ -145,6 +147,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, source, STR);
    E_CONFIG_VAL(D, T, view, STR);
+   E_CONFIG_VAL(D, T, composite, STR);
 
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
    #undef T
@@ -306,6 +309,8 @@ e_modapi_save(E_Module *m)
 	  inst->view->func.config_save(inst->view);
 	if (inst->source && inst->source->func.config_save)
 	  inst->source->func.config_save(inst->source);
+	if (inst->composite && inst->composite->func.config_save)
+	  inst->composite->func.config_save(inst->composite);
      }
 
    e_config_domain_save("module.drawer", conf_edd, drawer_conf);
@@ -325,6 +330,8 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
      snprintf(buf, sizeof(buf), "drawer/%s/plugins/sources/", MODULE_ARCH);
    else if (cat == DRAWER_VIEWS)
      snprintf(buf, sizeof(buf), "drawer/%s/plugins/views/", MODULE_ARCH);
+   else if (cat == DRAWER_COMPOSITES)
+     snprintf(buf, sizeof(buf), "drawer/%s/plugins/composites/", MODULE_ARCH);
 
    moddir = e_path_find(path_modules, buf);
    if (!moddir) return NULL;
@@ -386,11 +393,13 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
    inst = _drawer_instance_get(ci);
 
    if (cat == DRAWER_SOURCES)
-     DRAWER_PLUGIN(_drawer_source_new(inst, name));
+     _drawer_source_new(inst, name);
    else if (cat == DRAWER_VIEWS)
-     DRAWER_PLUGIN(_drawer_view_new(inst, name));
+     _drawer_view_new(inst, name);
+   else if (cat == DRAWER_COMPOSITES)
+     _drawer_composite_new(inst, name);
 
-   if (inst->source && inst->view && inst->flags.is_floating)
+   if ((inst->composite || (inst->source && inst->view)) && inst->flags.is_floating)
      _drawer_container_update(inst);
 
    return NULL;
@@ -407,6 +416,8 @@ drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Categ
      p = inst->source;
    else if (cat == DRAWER_VIEWS)
      p = inst->view;
+   else if (cat == DRAWER_COMPOSITES)
+     p = inst->composite;
 
    if (p->func.config_get)
      return p->func.config_get(p, evas);
@@ -504,6 +515,7 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 
 /* Local Functions */
 
+/* Updates the shelf icon */
 static void
 _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 {
@@ -529,6 +541,13 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
    if (si)
      {
 	inst->o_content = drawer_util_icon_create(si, evas, 120, 120);
+	edje_object_signal_emit(inst->o_content, "e,state,hide_info", "e");
+     }
+   else if (inst->composite && inst->composite->enabled &&
+	    DRAWER_COMPOSITE(inst->composite)->func.get_shelf_icon)
+     {
+	inst->o_content = DRAWER_COMPOSITE(inst->composite)->func.get_shelf_icon(
+	    DRAWER_COMPOSITE(inst->composite), evas, 120, 120);
 	edje_object_signal_emit(inst->o_content, "e,state,hide_info", "e");
      }
    else
@@ -643,12 +662,11 @@ _drawer_popup_hide(Instance *inst)
    inst->flags.pop_hiding = EINA_TRUE;
 }
 
+/* Updates the popup contents */
 static void
 _drawer_popup_update(Instance *inst)
 {
    Evas_Object *o = NULL;
-   Eina_List *l = NULL;
-   Drawer_Source *s;
 
    if (inst->flags.pop_hiding)
      {
@@ -656,30 +674,45 @@ _drawer_popup_update(Instance *inst)
 	return;
      }
 
-   s = DRAWER_SOURCE(inst->source);
-   l = s->func.list(s, inst->popup->win->evas);
-   if (l)
-     _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
-   else
-     _drawer_shelf_update(inst, NULL);
+   if (inst->composite && inst->composite->enabled)
+     {
+        Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
 
-   o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
-	 inst->popup->win->evas, l);
-   if (s->func.description_get)
-     edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
-	   s->func.description_get(s));
+	o = c->func.render(c, inst->popup->win->evas);
+        _drawer_shelf_update(inst, NULL);
+
+        if (c->func.description_get)
+          edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
+                                    c->func.description_get(c));
+     }
+   else
+     {
+	Eina_List *l = NULL;
+	Drawer_Source *s = DRAWER_SOURCE(inst->source);
+
+	l = s->func.list(s, inst->popup->win->evas);
+	if (l)
+	  _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
+	else
+	  _drawer_shelf_update(inst, NULL);
+
+	o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
+						 inst->popup->win->evas, l);
+	if (s->func.description_get)
+	  edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
+				    s->func.description_get(s));
+     }
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 
    inst->flags.pop_update = EINA_FALSE;
 }
 
+/* Updates the container (e.g. desktop gadman) contents */
 static void
 _drawer_container_update(Instance *inst)
 {
-   Eina_List *l = NULL;
    Evas *evas;
-   Drawer_Source *s;
 
    if (inst->o_content)
      {
@@ -689,14 +722,30 @@ _drawer_container_update(Instance *inst)
 				       _drawer_container_resize);
      }
    evas = evas_object_evas_get(inst->o_drawer);
-   s = DRAWER_SOURCE(inst->source);
-   l = s->func.list(s, evas);
-   inst->o_content = DRAWER_VIEW(inst->view)->func.render
-      (DRAWER_VIEW(inst->view), evas, l);
+   if (inst->composite && inst->composite->enabled)
+     {
+        Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
 
-   if (s->func.description_get)
-     edje_object_part_text_set(inst->o_drawer, "e.text.description",
-	   s->func.description_get(s));
+        inst->o_content = c->func.render(c, evas);
+
+        if (c->func.description_get)
+          edje_object_part_text_set(inst->o_drawer, "e.text.description",
+                                    c->func.description_get(c));
+     }
+   else
+     {
+        Drawer_Source *s = DRAWER_SOURCE(inst->source);
+        Eina_List *l = NULL;
+
+        l = s->func.list(s, evas);
+        inst->o_content = DRAWER_VIEW(inst->view)->func.render
+           (DRAWER_VIEW(inst->view), evas, l);
+
+        if (s->func.description_get)
+          edje_object_part_text_set(inst->o_drawer, "e.text.description",
+                s->func.description_get(s));
+
+     }
    edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
    evas_object_show(inst->o_content);
 
@@ -756,14 +805,23 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
      edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
 }
 
+/* Called when the floating container is resized */
 static void
 _drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
 
    inst = data;
-   if (DRAWER_VIEW(inst->view)->func.container_resized)
-     DRAWER_VIEW(inst->view)->func.container_resized(DRAWER_VIEW(inst->view));
+   if (inst->composite && inst->composite->enabled)
+     {
+        if (DRAWER_COMPOSITE(inst->composite)->func.container_resized)
+          DRAWER_COMPOSITE(inst->composite)->func.container_resized(DRAWER_COMPOSITE(inst->composite));
+     }
+   else
+     {
+        if (DRAWER_VIEW(inst->view)->func.container_resized)
+          DRAWER_VIEW(inst->view)->func.container_resized(DRAWER_VIEW(inst->view));
+     }
 }
 
 static Drawer_Plugin *
@@ -855,6 +913,8 @@ _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p)
      inst->source = NULL;
    else if (inst->view == p)
      inst->view = NULL;
+   else if (inst->composite == p)
+     inst->composite = NULL;
 
    free(p);
 }
@@ -948,6 +1008,57 @@ init_done:
    return v;
 }
 
+static Drawer_Composite *
+_drawer_composite_new(Instance *inst, const char *name)
+{
+   Drawer_Plugin *p = NULL;
+   Drawer_Composite *c = NULL;
+
+   if (!name) return NULL;
+   if (inst->composite)
+     _drawer_plugin_destroy(inst, inst->composite);
+
+   p = _drawer_plugin_new(inst, name, "composites", sizeof(Drawer_Composite));
+   c = DRAWER_COMPOSITE(p);
+   if (p->error)
+     goto init_done;
+
+   c->func.render = dlsym(p->handle, "drawer_composite_render");
+
+   if (!c->func.render)
+     {
+	e_util_dialog_show( D_("Drawer Plugins"),
+	      D_("The plugin '%s' does not contain all required functions."), name);
+	c->func.render = NULL;
+	dlclose(p->handle);
+	p->error = EINA_TRUE;
+	goto init_done;
+     }
+
+   c->func.activate = dlsym(p->handle, "drawer_composite_activate");
+   c->func.trigger = dlsym(p->handle, "drawer_composite_trigger");
+   c->func.context = dlsym(p->handle, "drawer_composite_context");
+   c->func.description_get = dlsym(p->handle, "drawer_composite_description_get");
+   c->func.container_resized = dlsym(p->handle, "drawer_composite_container_resized");
+   c->func.content_size_get = dlsym(p->handle, "drawer_composite_content_size_get");
+   c->func.orient_set = dlsym(p->handle, "drawer_composite_orient_set");
+
+init_done:
+
+   inst->conf_item->composite = eina_stringshare_add(name);
+   inst->composite = p;
+
+   if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
+     p->enabled = EINA_TRUE;
+
+   if (c->func.orient_set)
+     c->func.orient_set(c, inst->gcc->gadcon->orient);
+
+   if (!inst->flags.is_floating)
+     _drawer_shelf_update(inst, NULL);
+   return c;
+}
+
 /* Called when Gadget_Container says go */
 static E_Gadcon_Client *
 _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
@@ -989,15 +1100,20 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 	 ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 				 _drawer_global_mouse_down, inst));
 
-   if (inst->conf_item->source)
-     _drawer_source_new(inst, inst->conf_item->source);
-   else if (!inst->flags.is_floating)
-     _drawer_shelf_update(inst, NULL);
+   if (inst->conf_item->composite)
+     _drawer_composite_new(inst, inst->conf_item->composite);
+   else
+     {
+        if (inst->conf_item->source)
+          _drawer_source_new(inst, inst->conf_item->source);
+        else if (!inst->flags.is_floating)
+          _drawer_shelf_update(inst, NULL);
 
-   if (inst->conf_item->view)
-     _drawer_view_new(inst, inst->conf_item->view);
+        if (inst->conf_item->view)
+          _drawer_view_new(inst, inst->conf_item->view);
+     }
 
-   if (inst->source && inst->view && inst->flags.is_floating)
+   if ((inst->composite || (inst->source && inst->view)) && inst->flags.is_floating)
      _drawer_container_update(inst);
 
    /* return the Gadget_Container Client */
@@ -1017,6 +1133,8 @@ _drawer_gc_shutdown(E_Gadcon_Client *gcc)
      _drawer_plugin_destroy(inst, inst->source);
    if (inst->view)
      _drawer_plugin_destroy(inst, inst->view);
+   if (inst->composite)
+     _drawer_plugin_destroy(inst, inst->composite);
 
    if (inst->o_content)
      {
@@ -1061,8 +1179,16 @@ _drawer_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    
    inst = gcc->data;
    _drawer_container_setup(inst, orient);
-   if (inst->view && DRAWER_VIEW(inst->view)->func.orient_set)
-     DRAWER_VIEW(inst->view)->func.orient_set(DRAWER_VIEW(inst->view), orient);
+   if (inst->composite && inst->composite->enabled)
+     {
+        if (DRAWER_COMPOSITE(inst->composite)->func.orient_set)
+          DRAWER_COMPOSITE(inst->composite)->func.orient_set(DRAWER_COMPOSITE(inst->composite), orient);
+     }
+   else
+     {
+        if (inst->view && DRAWER_VIEW(inst->view)->func.orient_set)
+          DRAWER_VIEW(inst->view)->func.orient_set(DRAWER_VIEW(inst->view), orient);
+     }
 
    e_gadcon_client_aspect_set(gcc, 16, 16);
    e_gadcon_client_min_size_set(gcc, 16, 16);
@@ -1150,6 +1276,7 @@ _drawer_conf_item_free(Config_Item *ci)
    eina_stringshare_del(ci->id);
    eina_stringshare_del(ci->source);
    eina_stringshare_del(ci->view);
+   eina_stringshare_del(ci->composite);
    E_FREE(ci);
 }
 
@@ -1157,7 +1284,7 @@ _drawer_conf_item_free(Config_Item *ci)
 static int 
 _drawer_conf_timer(void *data) 
 {
-   e_util_dialog_internal(D_("Drawer Configuration Updated"), (char *) data); \
+   e_util_dialog_internal(D_("Drawer Configuration Updated"), (char *) data);
    return 0;
 }
 
@@ -1268,7 +1395,8 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 
    if (inst->flags.is_floating)
      {
-	if (inst->view)
+	if ((inst->composite && inst->composite->enabled) ||
+            (inst->view && inst->view->enabled))
 	  _drawer_container_update(inst);
      }
    else if (inst->popup)
@@ -1280,7 +1408,6 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 static int
 _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 {
-   Drawer_View *v = NULL;
    Drawer_Source *s = NULL;
    Drawer_Event_View_Activate *ev = NULL;
    Instance *inst = NULL;
@@ -1288,7 +1415,6 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
    ev = event;
    if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return 1;
    if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
-   v = ev->view;
    s = DRAWER_SOURCE(inst->source);
 
    if (s->func.activate)
@@ -1303,7 +1429,6 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 static int
 _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
 {
-   Drawer_View *v = NULL;
    Drawer_Source *s = NULL;
    Drawer_Event_View_Context *ev = NULL;
    Instance *inst = NULL;
@@ -1311,7 +1436,6 @@ _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
    ev = event;
    if (ev_type != DRAWER_EVENT_VIEW_ITEM_CONTEXT) return 1;
    if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
-   v = ev->view;
    s = DRAWER_SOURCE(inst->source);
 
    if (inst->popup)
@@ -1435,7 +1559,6 @@ _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emis
    inst->flags.pop_showing = EINA_FALSE;
 }
 
-/* Pants On */
 static void 
 _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
@@ -1444,8 +1567,9 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
-   if (ev->button == 1 && !inst->flags.is_floating && inst->source && inst->view &&
-       inst->source->enabled && inst->view->enabled)
+   if (ev->button == 1 && !inst->flags.is_floating &&
+       (inst->composite && inst->composite->enabled) ||
+       (inst->source && inst->view && inst->source->enabled && inst->view->enabled))
      {
 	if (inst->flags.pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
@@ -1455,21 +1579,30 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	  _drawer_popup_show(inst);
 	return;
      }
-   else if (ev->button == 2 && !inst->flags.is_floating && inst->source && inst->view &&
-	    inst->source->enabled && inst->view->enabled)
+   else if (ev->button == 2 && !inst->flags.is_floating)
      {
-	Drawer_Source *s = DRAWER_SOURCE(inst->source);
+        if (inst->composite && inst->composite->enabled)
+          {
+             Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
 
-	if (s->func.trigger)
-	  s->func.trigger(s, inst->gcc->gadcon->zone);
-	else
-	  {
-	     Eina_List *l = NULL;
+             if (c->func.trigger)
+               c->func.trigger(c, inst->gcc->gadcon->zone);
+          }
+        else if (inst->source && inst->view && inst->source->enabled && inst->view->enabled)
+          {
+             Drawer_Source *s = DRAWER_SOURCE(inst->source);
 
-	     l = s->func.list(s, evas_object_evas_get(inst->o_drawer));
-	     if (l)
-	       s->func.activate(s, l->data, inst->gcc->gadcon->zone);
-	  }
+             if (s->func.trigger)
+               s->func.trigger(s, inst->gcc->gadcon->zone);
+             else
+               {
+                  Eina_List *l = NULL;
+
+                  l = s->func.list(s, evas_object_evas_get(inst->o_drawer));
+                  if (l)
+                    s->func.activate(s, l->data, inst->gcc->gadcon->zone);
+               }
+          }
 
 	if (inst->popup)
 	  _drawer_popup_hide(inst);
@@ -1539,19 +1672,29 @@ static void
 _drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h)
 {
    Instance *inst = NULL;
-   Drawer_View *v = NULL;
    Drawer_Content_Margin margin = {0, 0, 0, 0};
    int cw, ch, px, py, pw, ph, ew, eh;
 
    inst = evas_object_data_get(obj, "drawer_popup_data");
-   v = DRAWER_VIEW(inst->view);
-   if (!v->func.content_size_get) return;
+   if (inst->composite && inst->composite->enabled)
+     {
+        if (!DRAWER_COMPOSITE(inst->composite)->func.content_size_get) return;
+     }
+   else
+     {
+        if (!DRAWER_VIEW(inst->view)->func.content_size_get) return;
+     }
 
    edje_object_part_geometry_get(inst->popup->o_bg, "e.swallow.content", &px, &py, &pw, &ph);
    evas_object_geometry_get(inst->popup->o_bg, NULL, NULL, &ew, &eh);
    margin.top = py + 10; margin.right = ew - px - pw + 10;
    margin.bottom = eh - py - ph + 10; margin.left = px + 10;
-   v->func.content_size_get(v, inst->popup->gcc, &margin, &cw, &ch);
+   if (inst->composite && inst->composite->enabled)
+     DRAWER_COMPOSITE(inst->composite)->func.content_size_get(
+         DRAWER_COMPOSITE(inst->composite), inst->popup->gcc, &margin, &cw, &ch);
+   else
+     DRAWER_VIEW(inst->view)->func.content_size_get(DRAWER_VIEW(inst->view),
+                                                    inst->popup->gcc, &margin, &cw, &ch);
 
    if (cw) *w = cw;
    if (ch) *h = ch;
