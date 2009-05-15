@@ -309,6 +309,7 @@ _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *f
      }
 
    si->priv = (char *) eina_stringshare_add(file);
+   si->source = inst->source;
 
    return si;
 }

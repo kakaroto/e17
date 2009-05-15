@@ -404,6 +404,7 @@ _dirwatcher_source_item_fill(Instance *inst, const char *file)
    p->inst = inst;
    si->data = (char *) file_path;
    si->data_type = SOURCE_DATA_TYPE_FILE_PATH;
+   si->source = inst->source;
 
    return si;
 }

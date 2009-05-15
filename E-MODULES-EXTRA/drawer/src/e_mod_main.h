@@ -143,6 +143,8 @@ struct _Drawer_Source
       void	    (*context)         (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
       /* Returns a description of the source */
       const char  * (*description_get) (Drawer_Source *s);
+      /* Returns an icon for the given source item */
+      Evas_Object * (*render_item)     (Drawer_Source *s, Drawer_Source_Item *si, Evas *evas);
    } func;
 };
 
@@ -202,6 +204,7 @@ struct _Drawer_Source_Item
    /* For short couple of characters info */
    const char	  *info;
 
+   Drawer_Source  *source;
    void		  *priv;
 };
 

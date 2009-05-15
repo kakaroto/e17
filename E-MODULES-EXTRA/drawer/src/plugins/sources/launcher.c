@@ -417,6 +417,7 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
    si->data_type = SOURCE_DATA_TYPE_DESKTOP;
    si->label = eina_stringshare_add(desktop->name);
    si->description = eina_stringshare_add(desktop->comment);
+   si->source = inst->source;
 
    EINA_LIST_FOREACH(inst->conf->ratings, l, r)
      {

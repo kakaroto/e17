@@ -55,6 +55,14 @@ AC_ARG_ENABLE(homedir-install,
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
 
+have_xpixmap="no"
+PKG_CHECK_MODULES(XPIXMAP, esmart_xpixmap, [
+    have_xpixmap="yes"
+    AC_DEFINE(HAVE_XPIXMAP, 1, [have esmaprt xpixmap support])
+])
+
+AM_CONDITIONAL(BUILD_XPIXMAP, test $have_xpixmap = yes)
+
 AC_OUTPUT([
 Makefile
 data/Makefile

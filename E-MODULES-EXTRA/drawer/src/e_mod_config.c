@@ -115,6 +115,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_list_object_append(o, of, 1, 0, 0.5);
 
    cfdata->main_list = of = e_widget_list_add(evas, 0, 0);
+   e_widget_min_size_set(of, 400, 260);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    e_widget_focus_set(cfdata->toolbar, 1);
@@ -164,6 +165,7 @@ _conf_plugin_sel(void *data1, void *data2)
 
    ol = e_widget_list_add(evas, 1, 1);
    e_widget_list_object_append(of, ol, 1, 1, 0.5);
+   e_widget_min_size_set(ol, 400, 220);
    cfdata->packed_widgets = eina_list_append(cfdata->packed_widgets, ol);
 
    of = e_widget_list_add(evas, 0, 0);
@@ -192,7 +194,6 @@ _conf_plugin_sel(void *data1, void *data2)
    if (selnum >= 0)
      e_widget_ilist_selected_set(oi, selnum);
    e_widget_ilist_thaw(oi);
-   e_widget_min_size_set(oi, 230, 150);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
@@ -224,7 +225,6 @@ _conf_plugin_sel(void *data1, void *data2)
    if (selnum >= 0)
      e_widget_ilist_selected_set(oi, selnum);
    e_widget_ilist_thaw(oi);
-   e_widget_min_size_set(oi, 230, 150);
 
    e_widget_list_object_append(ol, of, 1, 1, 0.5);
 

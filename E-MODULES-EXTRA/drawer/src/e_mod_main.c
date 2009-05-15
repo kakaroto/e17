@@ -499,6 +499,10 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	   }
 	 break;
       case SOURCE_DATA_TYPE_OTHER:
+         if (si->source->func.render_item)
+           o = si->source->func.render_item(si->source, si, evas);
+         evas_object_show(o);
+         evas_object_resize(o, w, h);
 	 break;
      }
 
@@ -950,6 +954,7 @@ _drawer_source_new(Instance *inst, const char *name)
    s->func.trigger = dlsym(p->handle, "drawer_source_trigger");
    s->func.context = dlsym(p->handle, "drawer_source_context");
    s->func.description_get = dlsym(p->handle, "drawer_source_description_get");
+   s->func.render_item = dlsym(p->handle, "drawer_source_render_item");
 
 init_done:
 
@@ -1568,8 +1573,8 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    if (!(inst = data)) return;
    ev = event;
    if (ev->button == 1 && !inst->flags.is_floating &&
-       (inst->composite && inst->composite->enabled) ||
-       (inst->source && inst->view && inst->source->enabled && inst->view->enabled))
+       ((inst->composite && inst->composite->enabled) ||
+        (inst->source && inst->view && inst->source->enabled && inst->view->enabled)))
      {
 	if (inst->flags.pop_hiding) return;
 	if (!inst->popup) _drawer_popup_create(inst);
