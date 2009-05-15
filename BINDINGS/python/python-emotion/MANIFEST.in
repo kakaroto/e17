@@ -1,6 +1,6 @@
 recursive-include emotion *.pyx *.py
 recursive-include examples *.py
-recursive-include include *.pxd
+recursive-include include *.pxd *.py
 include ez_setup.py
 include AUTHORS COPYING-PLAIN COPYING README
 include emotion/emotion.c_emotion.c
