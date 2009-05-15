@@ -20,10 +20,7 @@ NAME="exalt-daemon"
 
 DAEMON=/usr/sbin/$NAME
 
-PIDDIR=/var/run/Exalt
-PIDFILE=$PIDDIR/$NAME.pid
-
-SCRIPTNAME=/etc/init.d/exalt
+SCRIPTNAME=/etc/init.d/exalt-daemon
 USER=root
 
 # Gracefully exit if the package has been removed.
@@ -39,46 +36,39 @@ fi
 
 test -f /etc/default/rcS && . /etc/default/rcS
 
-#
-#	Function that starts the daemon/service.
-#
-d_start() {
-	if [ ! -d $PIDDIR ]; then
-		mkdir -p $PIDDIR
-		chown $USER:$USER $PIDDIR
+## STARTS THE DAEMON
+d_start()
+{
+if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"; then
+	if ps aux | grep -v grep | grep -q "/usr/sbin/exalt-daemon"; then
+		log_warning_msg "Exalt already running... exiting"
+		log_end_msg 0
+		exit 0
+	else
+		start-stop-daemon --start --quiet --user $USER --exec $DAEMON
 	fi
-
-   if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"
-   then
-      if ps aux | grep -v grep | grep -q "/usr/sbin/exalt-daemon"
-      then
-         log_warning_msg "Exalt already running... exiting"
-         log_end_msg 0
-         exit 0
-      else
-         start-stop-daemon --start --quiet --pidfile $PIDFILE \
-         --user $USER --exec $DAEMON -- $DAEMON_OPTS
-      fi
-   else
-      log_warning_msg "This appears to be a chrooted enviornment... exiting"
-      log_end_msg 0
-   fi
+else
+	log_warning_msg "This appears to be a chrooted enviornment... exiting"
+	log_end_msg 0
+fi
 }
 
-#
-#	Function that stops the daemon/service.
-#
-d_stop() {
-   if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"
-   then
-	   start-stop-daemon --stop --retry 60 --quiet --user $USER --exec $DAEMON
-   else
-	   log_warning_msg "This appears to be a chrooted enviornment... exiting"
-	   log_end_msg 0
-   fi
-
+## STOPS THE DAEMON
+d_stop()
+{
+if test "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root)"; then
+	if ps aux | grep -v grep | grep -q "/usr/sbin/exalt-daemon"; then
+		start-stop-daemon --oknodo --stop --retry 60 --quiet --user $USER --exec $DAEMON
+	else
+		log_warning_msg "Exalt is not running..."
+		log_end_msg 0
+		exit 0
+	fi
+else
+	log_warning_msg "This appears to be a chrooted enviornment... exiting"
+	log_end_msg 0
+fi
 }
-
 
 case "$1" in
   start)
