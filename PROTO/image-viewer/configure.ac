@@ -3,7 +3,9 @@ rm -f config.cache
 
 AC_INIT(image-viewer, 0.1.0.0, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
-AC_CONFIG_SRCDIR(configure.in)
+AC_CONFIG_SRCDIR(configure.ac)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
