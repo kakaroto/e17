@@ -374,10 +374,12 @@ up_debian=$(echo "${distros[@]}" | egrep "(lenny|squeeze|sid)")
 if test "$up_ubuntu"; then
 	echo "Uploading ubuntu dir."
 	scp -r ubuntu $username@$eserver:/var/www/packages
+	ssh $username@$eserver "chgrp -R www-data /var/www/packages/ubuntu"
 fi
 if test "$up_debian"; then
 	echo "Uploading debian dir."
 	scp -r debian $username@$eserver:/var/www/packages
+	ssh $username@$eserver "chgrp -R www-data /var/www/packages/debian"
 fi
 echo "Done uploading."
 }
