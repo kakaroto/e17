@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-07 17:38+0200\n"
+"POT-Creation-Date: 2009-05-16 09:58+0200\n"
 "PO-Revision-Date: 2009-02-28 18:55+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -26,15 +26,39 @@ msgstr "Impostazioni generali"
 msgid "Use Switch 1"
 msgstr "Usa switch 1"
 
-#: src/e_mod_main.c:299
+#: src/e_mod_main.c:270
+msgid "Exalt Warning"
+msgstr "Avvertimento di Exalt"
+
+#: src/e_mod_main.c:273
+msgid "Warning"
+msgstr "Avvertimento"
+
+#: src/e_mod_main.c:274
+msgid "NetworkManager has been detected on your computer."
+msgstr "NetworkManager è stato rilevato sul vostro computer."
+
+#: src/e_mod_main.c:276
+msgid ""
+"Exalt can't work properly if networkManager is running, please stop "
+"NetworkManager or Exalt."
+msgstr ""
+"Exalt non può funzionare correttamente se NetworkManager è in esecuzione,"
+"si prega di disattivare NetworkManager o Exalt."
+
+#: src/e_mod_main.c:279
+msgid "Ok"
+msgstr "Ok"
+
+#: src/e_mod_main.c:348
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:382
+#: src/e_mod_main.c:431
 msgid "exalt Configuration Updated"
 msgstr "Configurazione di Exalt aggiornata"
 
-#: src/e_mod_main.c:448
+#: src/e_mod_main.c:497
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -62,11 +86,11 @@ msgstr "Qualità: "
 msgid "Wireless interface configuration"
 msgstr "Configurazione interfaccia wireless"
 
-#: src/network_dialog.c:72 src/wired_dialog.c:51
+#: src/network_dialog.c:72 src/wired_dialog.c:51 src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Attiva"
 
-#: src/network_dialog.c:75 src/wired_dialog.c:54
+#: src/network_dialog.c:75 src/wired_dialog.c:54 src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Disattiva"
 
@@ -94,7 +118,7 @@ msgstr "Indirizzo gateway: "
 msgid "Command: "
 msgstr "Comando: "
 
-#: src/network_dialog.c:112 src/wired_dialog.c:96
+#: src/network_dialog.c:112 src/wired_dialog.c:96 src/wireless_dialog.c:49
 msgid "OK"
 msgstr "OK"
 
@@ -157,3 +181,11 @@ msgstr "Interfaccia wireless"
 #: src/wired_dialog.c:36
 msgid "Wired Connection Settings"
 msgstr "Impostazioni connessione cablata"
+
+#: src/wireless_dialog.c:21
+msgid "Wireless Interface Settings"
+msgstr "Impostazioni interfaccia wireless"
+
+#: src/wireless_dialog.c:27
+msgid "wireless interface"
+msgstr "Interfaccia wireless"
