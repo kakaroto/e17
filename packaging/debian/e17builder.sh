@@ -160,27 +160,49 @@ done
 echo "DOWNLOADING MD5SUMS..."
 wget $md5path
 echo "CHECKING MD5SUMS..."
-for md5 in $(find . -name '*.*[.dsc,.tar.gz]'); do 
-	if [ "$(md5sum $md5 | sed 's/  .*//')" = "$(cat SOURCES-MD5 | grep "$(echo $md5 | sed 's/.\///')" | sed 's/  .*//')" ]; then
-		echo "$md5: MD5 OK"
+for md5 in ${compile_list[@]}; do
+	case $md5 in
+		e_dbus) check="edbus"
+		;;
+		e) check="e17"
+		;;
+		edje_editor) check="edje-editor"
+		;;
+		E-MODULES-EXTRA) check="emodules"
+		;;
+		python-e_dbus) check="python-edbus"
+		;;
+		python-efl_utils) check="python-efl-utils"
+		;;
+		*) check="$md5"
+		;;
+	esac
+	check()
+	{
+	if [ "$(md5sum $md5/$check*.$1 | sed 's/  .*//')" = "$(cat SOURCES-MD5 | grep "$md5/$check.*.$1" | sed 's/  .*//')" ]; then
+		echo "$md5 $1 file: MD5 OK"
 	else
 		badchecksums="1"
-		echo "$md5: MD5 bad, downloading again."
 		while badchecksums="1"; do
-			rm $md5
-			if test $(echo $md5 | egrep "(eina|eet|evas|ecore|embryo|edje|edbus|efreet|e17)"); then
-				scp -r $username@$eserver:$path/main/$(echo $md5 | sed 's/.\///') $md5
+			filename=$(ls $md5 | grep "$check.*.$1")
+			rm $md5/$filename
+			if test $(echo $check | egrep "(^eina$|^eet$|^evas$|^ecore$|^embryo$|^edje$|^edbus$|^efreet$|^e17$)"); then
+				scp -r $username@$eserver:$path/main/$md5/$filename $md5/$filename
 			else
-				scp -r $username@$eserver:$path/extras/$(echo $md5 | sed 's/.\///') $md5
+				scp -r $username@$eserver:$path/extras/$md5/$filename $md5/$filename
 			fi
-			if [ "$(md5sum $md5 | sed 's/  .*//')" = "$(cat SOURCES-MD5 | grep "$(echo $md5 | sed 's/.\///')" | sed 's/  .*//')" ]; then
+			if [ "$(md5sum $md5/$check*.$1 | sed 's/  .*//')" = "$(cat SOURCES-MD5 | grep "$md5/$check.*.$1" | sed 's/  .*//')" ]; then
 				echo "MD5 OK now."
 				badchecksums="0"
+				break
 			else
 				echo "MD5 bad again. How this is possible?"
 			fi
 		done
 	fi
+	}
+	check dsc
+	check tar.gz
 done
 rm SOURCES-MD5
 echo "DONE DOWNLOADING..."
