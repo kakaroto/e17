@@ -1,0 +1,46 @@
+?      depcomp
+?      .git
+?      e16menuedit2.spec
+?      .gitignore
+?      missing
+?      install-sh
+M      autogen.sh
+?      po/stamp-it
+?      po/zh_CN.po
+
+.svn
+Makefile
+Makefile.in
+.deps
+aclocal.m4
+autom4te.cache
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+depcomp
+e16menuedit2.spec
+help/C/e16menuedit2-C.omf.out
+help/C/e16menuedit2.html
+help/C/omf_timestamp
+install-sh
+intltool-extract
+intltool-extract.in
+intltool-merge
+intltool-merge.in
+intltool-update
+intltool-update.in
+missing
+mkinstalldirs
+po/Makefile.in.in
+po/POTFILES
+po/stamp-it
+stamp-h1
+
+*.gmo
+*.o
+src/e16menuedit2
+e16menuedit2-*.tar.gz
