@@ -1,13 +1,3 @@
-?      depcomp
-?      .git
-?      e16menuedit2.spec
-?      .gitignore
-?      missing
-?      install-sh
-M      autogen.sh
-?      po/stamp-it
-?      po/zh_CN.po
-
 .svn
 Makefile
 Makefile.in
