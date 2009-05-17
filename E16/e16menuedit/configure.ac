@@ -52,8 +52,6 @@ GETTEXT_PACKAGE=e16menuedit2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
-dnl Add the languages which your application supports here.
-ALL_LINGUAS="de en ko tr fr"
 AM_GLIB_GNU_GETTEXT
 
 AC_PATH_PROG(SCROLLKEEPER,scrollkeeper-config,no)
