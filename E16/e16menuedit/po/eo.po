@@ -1,0 +1,102 @@
+# Copyright (C) 2009
+# This file is distributed under the same license as the e16menuedit package.
+#
+# Olivier <eliovir@nospam.gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: e16menuedit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-16 10:37+0200\n"
+"PO-Revision-Date: 2009-05-16 10:43+0000\n"
+"Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: e16menuedit2.glade:8
+msgid "E16 Menu Editor"
+msgstr "Menuredaktilo de E16"
+
+#: e16menuedit2.glade:41
+msgid "_File"
+msgstr "_Dosiero"
+
+#: e16menuedit2.glade:86
+msgid "_Edit"
+msgstr "R_edakti"
+
+#: e16menuedit2.glade:95
+msgid "_New Entry"
+msgstr "_Nova ero"
+
+#: e16menuedit2.glade:116
+msgid "_Delete Entry"
+msgstr "Forigi eron (_D)"
+
+#: e16menuedit2.glade:136
+msgid "Choose _Icon"
+msgstr "Elekti p_itktogramon"
+
+#: e16menuedit2.glade:161
+msgid "_Help"
+msgstr "_Helpo"
+
+#: e16menuedit2.glade:170
+msgid "_Contents"
+msgstr "Enhavo (_C)"
+
+#: e16menuedit2.glade:262 e16menuedit2.glade:547
+msgid "New Entry"
+msgstr "Nova ero"
+
+#: e16menuedit2.glade:280 e16menuedit2.glade:587
+msgid "Delete Entry"
+msgstr "Forigi eron"
+
+#: e16menuedit2.glade:296 e16menuedit2.glade:567
+msgid "Choose Icon"
+msgstr "Elekti piktogramon"
+
+#: e16menuedit2.glade:393
+msgid "Info about E16 Menu Editor"
+msgstr "Informoj pri la menuredaktilo de E16"
+
+#: e16menuedit2.glade:452
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+msgstr ""
+"<span font_desc=\"Sans 22\">Menuredaktilo de E16</span>\n"
+"e16menuedit2 v0.0.3"
+
+#: e16menuedit2.glade:479
+msgid "Info"
+msgstr "Informo"
+
+#: e16menuedit2.glade:607
+msgid "Properties"
+msgstr "Ecoj"
+
+#: e16menuedit2.glade:654
+msgid "Fallback Help-Browser:"
+msgstr "Retropaŝa helpo-foliumilo:"
+
+#: e16menuedit2.glade:675
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+
+#: e16menuedit2.glade:694
+msgid "<b>Properties:</b>"
+msgstr "<b>Ecoj:</b>"
+
