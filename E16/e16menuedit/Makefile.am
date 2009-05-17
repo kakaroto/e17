@@ -1,4 +1,12 @@
-## Process this file with automake to produce Makefile.in
+AUTOMAKE_OPTIONS = foreign
+
+ACLOCAL_AMFLAGS = -I m4
+
+MAINTAINERCLEANFILES = aclocal.m4 config.* compile configure depcomp \
+		       install-sh missing mkinstalldirs \
+		       Makefile.in */Makefile.in */*/Makefile.in */*/*/Makefile.in \
+		       intltool-* \
+		       help/C/e16menuedit2.html
 
 SUBDIRS = src po pixmaps help
 
@@ -8,9 +16,7 @@ e16menuedit2doc_DATA = \
 		COPYING\
 		AUTHORS\
 		ChangeLog\
-		INSTALL\
-		NEWS\
-                TODO
+		TODO
 
 GLADE_FILES = e16menuedit2.glade
 

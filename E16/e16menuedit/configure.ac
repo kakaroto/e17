@@ -10,6 +10,17 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
+dnl Warning
+AC_ARG_ENABLE(build,
+  [  --enable-build      Enable build      @<:@default=no@:>@],,[enable_build=no])
+if test "x$enable_build" != "xyes"; then
+  echo "****************************************************************************"
+  echo "*** WARNING: e16menuedit WILL TRASH menu entries other than menu or exec ***"
+  echo "*** WARNING: Use --enable-build to build anyway                          ***"
+  echo "****************************************************************************"
+  AC_MSG_ERROR([Build disabled])
+fi
+
 dnl Option to enable debug
 AC_MSG_CHECKING(whether to enable debugging)
 AC_ARG_ENABLE(debug,

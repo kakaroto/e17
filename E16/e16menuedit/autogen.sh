@@ -3,7 +3,7 @@
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
-CONFIGURE=configure.in
+CONFIGURE=configure.ac
 XMLTO_LANG="C"
 
 DIE=0
