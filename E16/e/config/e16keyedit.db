@@ -74,8 +74,8 @@
 "Move Window to area below", 0, "wop * area move 0 1"
 "Move Window by area [X Y]", 1, "wop * area move "
 "Move Window to area [X Y]", 1, "wop * area "
-"Move Window using keyboard", 0, "wop * mo kbd"
-"Resize Window using keyboard", 0, "wop * sz kbd"
+"Move Window using keyboard", 0, "wop * move kbd"
+"Resize Window using keyboard", 0, "wop * size kbd"
 
 "Set Window border style to the Default", 0, "wop * border DEFAULT"
 "Set Window border style to the Borderless", 0, "wop * border BORDERLESS"
