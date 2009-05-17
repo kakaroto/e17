@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-05-13 19:28+0200\n"
-"PO-Revision-Date: 2009-04-17 19:07+0100\n"
+"PO-Revision-Date: 2009-05-14 19:11+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
-"Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
+"Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1935,13 +1935,13 @@ msgid "Error initialising sound"
 msgstr "Fejl under opstart af lyd"
 
 #: src/sound.c:311
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
-"Der var et problem med at kommunikere med audioserveren (esound).\n"
+"Der var et problem med at kommunikere med lydserveren (%s).\n"
 "Lyd vil nu blive deaktiveret.\n"
 
 #: src/sound.c:460
@@ -1968,7 +1968,7 @@ msgstr "Systray fejl!"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr "'Systray'et forsvandt?!?"
+msgstr "Systray'en forsvandt?!?"
 
 #: src/systray.c:431
 msgid "Only one systray is allowed"
@@ -2569,63 +2569,3 @@ msgstr "Andet"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "Epplets"
-
-#~ msgid "Enlightenment Settings ..."
-#~ msgstr "Enlightenment indstillinger ..."
-
-#~ msgid "Focus Settings ..."
-#~ msgstr "Fokusindstillinger ..."
-
-#~ msgid "Move & Resize Settings ..."
-#~ msgstr "Flyt og ændr størrelse-indstillinger ..."
-
-#~ msgid "Window Placement Settings ..."
-#~ msgstr "Vinduesplaceringsindstillinger ..."
-
-#~ msgid "Multiple Desktop Settings ..."
-#~ msgstr "Flerskrivebordsindstillinger ..."
-
-#~ msgid "Virtual Desktop Settings ..."
-#~ msgstr "Virtuel skrivebordsindstillinger ..."
-
-#~ msgid "Pager Settings ..."
-#~ msgstr "Skærmoversigtsindstillinger ..."
-
-#~ msgid "Menu Settings ..."
-#~ msgstr "Lydindstillinger ..."
-
-#~ msgid "Autoraise Settings ..."
-#~ msgstr "Autoløftindstillinger ..."
-
-#~ msgid "Tooltip Settings ..."
-#~ msgstr "Værktøjstipsindstilinger ..."
-
-#~ msgid "Audio Settings ..."
-#~ msgstr "Lydindstillinger ..."
-
-#~ msgid "Group Settings ..."
-#~ msgstr "Gruppeindstillinger ..."
-
-#~ msgid "Remember Settings ..."
-#~ msgstr "Huskeindstillinger ..."
-
-#~ msgid "Special FX Settings ..."
-#~ msgstr "Specialeffektindstillinger ..."
-
-#~ msgid "Desktop Background Settings ..."
-#~ msgstr "Skrivebordsbaggrundsindstillinger ..."
-
-#~ msgid "Theme Transparency Settings ..."
-#~ msgstr "Temagennemsigtighedsindstillinger ..."
-
-#~ msgid "Composite Settings ..."
-#~ msgstr "Compositeindstillinger ..."
-
-#~ msgid "Session Settings ..."
-#~ msgstr "Sessionsindstillinger ..."
-
-#~ msgid "Miscellaneous Settings ..."
-#~ msgstr "Diverse indstillinger ..."
-
-#~ msgid "Mirror Shade/Iconify/Stick"
-#~ msgstr "Spejl oprulning/minimering/klæbning"
