@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=launcher
+Name[eo]=Lanĉilo
 Comment=An application launcher source plugin
-Comment[it]=Un plugin sorgenti per lanciare applicazioni
+Comment[it]=Un plugin per lanciare applicazioni
+Comment[eo]=Lanĉilo de aplikaĵoj
 
 X-Drawer-Title=Launcher

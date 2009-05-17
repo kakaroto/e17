@@ -24,4 +24,3 @@ msgstr "Loko:"
 #: src/e_mod_main.c:137
 msgid "EFM Path"
 msgstr "EFM Vojo"
-

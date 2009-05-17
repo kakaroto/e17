@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: places 0.1.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-05-10 22:45+0200\n"
-"PO-Revision-Date: 2009-05-11 00:10+0000\n"
+"PO-Revision-Date: 2009-05-16 19:02+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: src/e_mod_config.c:50
 msgid "Places Configuration"
-msgstr ""
+msgstr "Agordo de Portiloj"
 
 #: src/e_mod_config.c:116
 msgid "General"
@@ -27,24 +27,23 @@ msgstr "Ĝenerala"
 
 #: src/e_mod_config.c:119
 msgid "Mount volumes on insert"
-msgstr ""
+msgstr "Surmeti portilon post enigo"
 
 #: src/e_mod_config.c:123
 msgid "Open filemanager on insert"
-msgstr ""
+msgstr "Lanĉi dosieradministrilon post enigo"
 
 #: src/e_mod_config.c:127
 msgid "Use a custom file manager"
-msgstr ""
+msgstr "Uzi propran dosieradministrilon"
 
 #: src/e_mod_main.c:75
 msgid "Files"
 msgstr "Dosieroj"
 
 #: src/e_mod_main.c:77 src/e_mod_places.c:499
-#, fuzzy
 msgid "Places"
-msgstr "Lokoj"
+msgstr "Portiloj"
 
 #: src/e_mod_main.c:439
 msgid "Configuration"
@@ -52,7 +51,7 @@ msgstr "Agordo"
 
 #: src/e_mod_places.c:233 src/e_mod_places.c:427
 msgid "Filesystem"
-msgstr ""
+msgstr "Dosiersistemo"
 
 #: src/e_mod_places.c:238
 msgid "No Name"
@@ -63,7 +62,6 @@ msgid "Home"
 msgstr "Hejmo"
 
 #: src/e_mod_places.c:408
-#, fuzzy
 msgid "Desktop"
 msgstr "Labortablo"
 
@@ -73,24 +71,21 @@ msgstr "Rubujo"
 
 #: src/e_mod_places.c:436
 msgid "Temp"
-msgstr ""
+msgstr "provizora"
 
 #: src/e_mod_places.c:692
 msgid "free of"
-msgstr ""
+msgstr "libera je"
 
 #: src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
-msgstr ""
+msgstr "%s ne surmetita"
 
 #: src/e_mod_places.c:715
-#, fuzzy
 msgid "unmount"
-msgstr "Malkroĉu"
+msgstr "surmeti"
 
 #: src/e_mod_places.c:721
-#, fuzzy
 msgid "eject"
-msgstr "Eligu"
-
+msgstr "elĵeti"

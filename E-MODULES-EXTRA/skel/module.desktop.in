@@ -1,9 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=Skel
+Name[eo]=Skeleto
 Icon=e-module-skel
 Comment=<title>Skeleton Module Gadget:</title><br>Not meant for users. Basis for building new ones.
 Comment[cs]=<title>Skeleton modul:</title><br>Není pro uživatele. Jen jako základ pro vytváření nových modulů.
-Comment[fr]=<title>Gadget Module Squelette:</title><br>Pas orienté utilisateur. Fournit une base pour construire de nouveaux modules.
+Comment[eo]=<title>Modulo skeleto:</title><br>Ne celas uzantojn. Bazo pour krei novajn modulojn.
+Comment[fr]=<title>Gadget Module Squelette :</title><br>Pas orienté utilisateur. Fournit une base pour construire de nouveaux modules.
+Comment[it]=<title>Modulo Skel:</title><br>Non inteso per gli utenti. Fornisce la base per costruire nuovi moduli.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system

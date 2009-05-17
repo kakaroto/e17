@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: drawer 0.0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-10 22:31+0200\n"
-"PO-Revision-Date: 2009-05-11 00:09+0000\n"
+"POT-Creation-Date: 2009-05-16 12:04+0200\n"
+"PO-Revision-Date: 2009-05-16 20:53+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,23 +19,23 @@ msgstr ""
 
 #: src/e_mod_config.c:54
 msgid "Drawer Module"
-msgstr ""
+msgstr "Modulo Entenilo"
 
 #: src/e_mod_config.c:107
 msgid "Plugins selection"
-msgstr ""
+msgstr "Elekto de kromaĵoj"
 
 #: src/e_mod_config.c:110
 msgid "Plugins settings"
-msgstr ""
+msgstr "Agordoj de kromaĵoj"
 
-#: src/e_mod_config.c:171
+#: src/e_mod_config.c:173
 msgid "Source plugins"
-msgstr ""
+msgstr "Fonto-kromaĵoj"
 
-#: src/e_mod_config.c:201
+#: src/e_mod_config.c:202
 msgid "View plugins"
-msgstr ""
+msgstr "Vidigi kromaĵojn"
 
 #: src/e_mod_config.c:253 src/e_mod_config.c:274
 msgid "Description: Unavailable"
@@ -43,13 +43,13 @@ msgstr "Priskribo: Nedisponebla"
 
 #: src/e_mod_config.c:302
 msgid "Source settings"
-msgstr ""
+msgstr "Agordo de fonto"
 
 #: src/e_mod_config.c:307
 msgid "View settings"
-msgstr ""
+msgstr "Agordoj de vidigo"
 
-#: src/e_mod_main.c:167
+#: src/e_mod_main.c:170
 msgid ""
 "Drawer Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -59,8 +59,15 @@ msgid ""
 "set of defaults will fix<br>that by adding it in. You can re-configure "
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
+"La agordo de la modulo Desegnilo bezonas ĝisdatigon. Via malnova agordo<br> "
+"estis viŝita kaj nova aro da defaŭltoj estis pravalorizitaj. Tio okazos ofte "
+"dum<br> la programado, do ne raportu cimon. Tio simple signifas ke la "
+"modulo<br> Skeleto bezonas novajn datumojn de agordo defaŭlte por uzebla "
+"funkcieco<br> kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj korektos "
+"tion aldoniĝante<br> Vi povas de nove agordi nun kiel vi volas. Bonvolu "
+"pardoni por la malagrablaĵoj.<br>"
 
-#: src/e_mod_main.c:187
+#: src/e_mod_main.c:190
 msgid ""
 "Your Drawer Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -68,46 +75,53 @@ msgid ""
 "module was running. This is bad and<br>as a precaution your configuration "
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
+"Via agordo de la modulo Desegnilo estas PLI NOVA ol la modulo Skeleto. Tio "
+"estas<br> strangega. Tio ne devus okazi almenaŭ vi "
+"malĝisdatigis<br>Enlightenement aŭ kopiis la agordon el ejo kie pli "
+"nova<br>versio de la Modulo Skeleto estis funciinta. Tio estas malbona "
+"kaj<br>kiel antaŭzorgo via agordo estis restaŭrita per defaŭltaĵoj."
+"<br>Bonvolu pardoni por la ĝeno.<br>"
 
-#: src/e_mod_main.c:414
+#: src/e_mod_main.c:425
 msgid "The plugin is not configurable"
-msgstr ""
+msgstr "Ne eblas agordi tiun kromaĵon"
 
-#: src/e_mod_main.c:781 src/e_mod_main.c:789 src/e_mod_main.c:803
-#: src/e_mod_main.c:815 src/e_mod_main.c:881 src/e_mod_main.c:926
+#: src/e_mod_main.c:843 src/e_mod_main.c:851 src/e_mod_main.c:865
+#: src/e_mod_main.c:877 src/e_mod_main.c:945 src/e_mod_main.c:991
+#: src/e_mod_main.c:1035
 msgid "Drawer Plugins"
-msgstr ""
+msgstr "Kromajoj por Entenilo"
 
-#: src/e_mod_main.c:782
+#: src/e_mod_main.c:844
 #, c-format
 msgid "The plugin '%s' was not found."
-msgstr ""
+msgstr "La kromaĵo '%s'  ne estis trovita."
 
-#: src/e_mod_main.c:790
+#: src/e_mod_main.c:852
 #, c-format
 msgid "The plugin '%s' could not be opened."
-msgstr ""
+msgstr "La kromaĵo '%s' ne malfermeblas"
 
-#: src/e_mod_main.c:804 src/e_mod_main.c:882 src/e_mod_main.c:927
+#: src/e_mod_main.c:866 src/e_mod_main.c:946 src/e_mod_main.c:992
+#: src/e_mod_main.c:1036
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
-msgstr ""
+msgstr "La kromaĵo '%s' ne enhavas ĉiujn bezonatajn funkciojn"
 
-#: src/e_mod_main.c:816
+#: src/e_mod_main.c:878
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
-msgstr ""
+msgstr "La kromaĵo '%s' ne enhavas necesan versio de API."
 
-#: src/e_mod_main.c:1075
+#: src/e_mod_main.c:1206
 msgid "Drawer"
-msgstr ""
+msgstr "Entenilo"
 
-#: src/e_mod_main.c:1160
+#: src/e_mod_main.c:1292
 msgid "Drawer Configuration Updated"
-msgstr ""
+msgstr "Agordo de Entenilo aktualigita."
 
-#: src/e_mod_main.c:1493
-#, fuzzy
+#: src/e_mod_main.c:1631
 msgid "Settings"
 msgstr "Agordoj"
 
@@ -128,53 +142,53 @@ msgstr "Hejmo"
 msgid "Directory (%s)"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:486
+#: src/plugins/sources/directory_watcher.c:487
 msgid "Drawer Plugin : Directory Watcher"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:529
+#: src/plugins/sources/directory_watcher.c:530
 msgid "Watch path"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:535
+#: src/plugins/sources/directory_watcher.c:536
 msgid "Custom file manager"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:541
+#: src/plugins/sources/directory_watcher.c:542
 msgid "Sort Options"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:542
+#: src/plugins/sources/directory_watcher.c:543
 msgid "Sort directories first"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:546
+#: src/plugins/sources/directory_watcher.c:547
 msgid "Sort by name"
-msgstr ""
+msgstr "Ordigi laŭ nomo"
 
-#: src/plugins/sources/directory_watcher.c:548
+#: src/plugins/sources/directory_watcher.c:549
 msgid "Sort by access time"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:550
+#: src/plugins/sources/directory_watcher.c:551
 msgid "Sort by modification time"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:552
+#: src/plugins/sources/directory_watcher.c:553
 msgid "Sort by change time"
 msgstr ""
 
-#: src/plugins/sources/directory_watcher.c:554
+#: src/plugins/sources/directory_watcher.c:555
 msgid "Sort by size"
-msgstr ""
+msgstr "Ordigi laŭ grando"
 
 #: src/plugins/sources/launcher.c:209
 msgid "Launcher settings"
-msgstr ""
+msgstr "Agordoj de lanĉilo"
 
 #: src/plugins/sources/launcher.c:317
 msgid "Change Item Properties"
-msgstr ""
+msgstr "Ŝanĝi ecojn de eroj"
 
 #: src/plugins/sources/launcher.c:322
 msgid "Remove Item"
@@ -185,55 +199,55 @@ msgstr "Forigu eron"
 msgid "%s source"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:534
+#: src/plugins/sources/launcher.c:535
 msgid "Drawer Plugin : Launcher"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:606
+#: src/plugins/sources/launcher.c:607
 msgid "Selected Bar Source"
 msgstr "Fonto de Elektita Listelo"
 
-#: src/plugins/sources/launcher.c:614
+#: src/plugins/sources/launcher.c:615
 msgid "Add"
 msgstr "Aldoni"
 
-#: src/plugins/sources/launcher.c:616
+#: src/plugins/sources/launcher.c:617
 msgid "Delete"
 msgstr "Forigi"
 
-#: src/plugins/sources/launcher.c:618
+#: src/plugins/sources/launcher.c:619
 msgid "Configure"
 msgstr "Agordi"
 
-#: src/plugins/sources/launcher.c:628
+#: src/plugins/sources/launcher.c:629
 msgid "Sorting options"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:629
+#: src/plugins/sources/launcher.c:630
 msgid "Unsorted"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:631
+#: src/plugins/sources/launcher.c:632
 msgid "Sort applications by local rating"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:633
+#: src/plugins/sources/launcher.c:634
 msgid "Sort applications by overall popularity"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:636
+#: src/plugins/sources/launcher.c:637
 msgid "Show rating/popularity"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:674
+#: src/plugins/sources/launcher.c:675
 msgid "Create new Launcher source"
 msgstr ""
 
-#: src/plugins/sources/launcher.c:675
+#: src/plugins/sources/launcher.c:676
 msgid "Enter a name for this new source:"
 msgstr "Enigi nomon por tiu nova fonto:"
 
-#: src/plugins/sources/launcher.c:690
+#: src/plugins/sources/launcher.c:691
 #, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
@@ -242,7 +256,7 @@ msgstr ""
 "Vi petis forviŝi \"%s\".<br><br>Ĉu vi certas ke vi volas forviŝi tiun bar-"
 "fonton ?"
 
-#: src/plugins/sources/launcher.c:694
+#: src/plugins/sources/launcher.c:695
 msgid "Are you sure you want to delete this bar source?"
 msgstr "Ĉu vi certas, ke vi deziras forviŝi tiun bar-fonton ?"
 

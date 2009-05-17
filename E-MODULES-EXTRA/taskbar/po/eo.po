@@ -12,6 +12,7 @@ msgstr ""
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -34,9 +35,3 @@ msgstr "Taskolistelo"
 #: ../e_mod_main.c:668
 msgid "Configuration"
 msgstr "Konfiguraĵo"
-
-#~ msgid "Highlight Window on Mouse Over"
-#~ msgstr "Heligi Fenestron dum Movado de Muso"
-
-#~ msgid "Show Sliding Labels"
-#~ msgstr "Montri Lumbildajn Etikedojn"

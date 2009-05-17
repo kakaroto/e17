@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=directory_watcher
+Name[eo]=dosierujo_atentilo
 Comment=A directory watcher source plugin
-Comment[it]=Un plugin sorgenti per il controllo di directory
+Comment[eo]=Kromaĵo kiu atentas la enhavon de dosierujo
+Comment[it]=Un plugin per il controllo di directory
 
 X-Drawer-Title=Directory Watcher

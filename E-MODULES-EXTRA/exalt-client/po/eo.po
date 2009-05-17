@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: exalt 0.0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-10 22:42+0200\n"
-"PO-Revision-Date: 2009-05-11 00:06+0000\n"
+"POT-Creation-Date: 2009-05-16 12:04+0200\n"
+"PO-Revision-Date: 2009-05-16 19:23+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: src/e_mod_config.c:39
 msgid "exalt Module"
-msgstr ""
+msgstr "Modulo Exalt"
 
 #: src/e_mod_config.c:79
 msgid "General"
@@ -29,15 +29,39 @@ msgstr "Ĝenerala"
 msgid "Use Switch 1"
 msgstr "Uzi ŝalton 1"
 
-#: src/e_mod_main.c:320
+#: src/e_mod_main.c:270
+msgid "Exalt Warning"
+msgstr "Averto de Exalt"
+
+#: src/e_mod_main.c:273
+msgid "Warning"
+msgstr "AVERTO"
+
+#: src/e_mod_main.c:274
+msgid "NetworkManager has been detected on your computer."
+msgstr "NetworkManager estas detektita en via komputilo."
+
+#: src/e_mod_main.c:276
+msgid ""
+"Exalt can't work properly if networkManager is running, please stop "
+"NetworkManager or Exalt."
+msgstr ""
+"Exalt ne povas funkcii se networkManager funkcias, bonvolu ĉesigi "
+"NetworkManager aŭ Exalt."
+
+#: src/e_mod_main.c:279
+msgid "Ok"
+msgstr "Bone"
+
+#: src/e_mod_main.c:348
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:403
+#: src/e_mod_main.c:431
 msgid "exalt Configuration Updated"
 msgstr "Agordo de Exalt ĝisdatigita"
 
-#: src/e_mod_main.c:469
+#: src/e_mod_main.c:497
 msgid "Configuration"
 msgstr "Agordo"
 
@@ -51,15 +75,15 @@ msgstr "Neniu IP-adreso"
 
 #: src/popup.c:205 src/wired_dialog.c:42
 msgid "Wired interface"
-msgstr ""
+msgstr "Drata interfaco"
 
 #: src/popup.c:208
 msgid "Wireless interface"
-msgstr ""
+msgstr "Sendrata interfaco"
 
 #: src/wired_dialog.c:36
 msgid "Wired Connection Settings"
-msgstr ""
+msgstr "Agordoj de drata konekto"
 
 #: src/wired_dialog.c:51 src/network_dialog.c:72
 msgid "Activate"
@@ -67,15 +91,15 @@ msgstr "Ebligi"
 
 #: src/wired_dialog.c:54 src/network_dialog.c:75
 msgid "Deactivate"
-msgstr ""
+msgstr "Malebligi"
 
 #: src/wired_dialog.c:58 src/network_dialog.c:79
 msgid "DHCP (Dynamic host configuration protocol)"
-msgstr ""
+msgstr "DHCP (Dynamic host configuration protocol)"
 
 #: src/wired_dialog.c:63 src/network_dialog.c:84
 msgid "Static"
-msgstr ""
+msgstr "Fiksa"
 
 #: src/wired_dialog.c:68 src/network_dialog.c:89
 msgid "IP address: "
@@ -83,11 +107,11 @@ msgstr "IP-adreso:"
 
 #: src/wired_dialog.c:73 src/network_dialog.c:94
 msgid "Netmask address: "
-msgstr ""
+msgstr "Subreta masko:"
 
 #: src/wired_dialog.c:78 src/network_dialog.c:99
 msgid "Gateway address: "
-msgstr ""
+msgstr "Adreso de retportego"
 
 #: src/wired_dialog.c:83 src/network_dialog.c:104
 msgid "Command: "
@@ -107,15 +131,15 @@ msgstr "Rezigni"
 
 #: src/network_dialog.c:35
 msgid "Wireless Connection Settings"
-msgstr ""
+msgstr "Agordoj de sendrata konekto"
 
 #: src/network_dialog.c:42
 msgid "Network information"
-msgstr ""
+msgstr "Informoj pri reto"
 
 #: src/network_dialog.c:44
 msgid "Essid: "
-msgstr ""
+msgstr "Essid: "
 
 #: src/network_dialog.c:49
 msgid "Address: "
@@ -127,11 +151,11 @@ msgstr "Kvalito:"
 
 #: src/network_dialog.c:63
 msgid "Wireless interface configuration"
-msgstr ""
+msgstr "Agordo de sendrata interfaco"
 
 #: src/network_dialog.c:211
 msgid "WEP information"
-msgstr ""
+msgstr "Informoj pri WEP"
 
 #: src/network_dialog.c:213
 msgid "Description: "
@@ -139,15 +163,15 @@ msgstr "Priskribo:"
 
 #: src/network_dialog.c:215
 msgid "WEP"
-msgstr ""
+msgstr "WEP"
 
 #: src/network_dialog.c:231
 msgid "Hexadecimal Key"
 msgstr "Deksesume klavo"
 
 #: src/network_dialog.c:234
-msgid "UTF-8 Key"
-msgstr "UTF-8 Klavo"
+msgid "ASCII Key"
+msgstr "ASCII klavo"
 
 #: src/network_dialog.c:240 src/network_dialog.c:324
 msgid "Password: "
@@ -155,9 +179,11 @@ msgstr "Pasvorto:"
 
 #: src/network_dialog.c:263
 msgid "WPA information"
-msgstr ""
+msgstr "Informoj pri WPA"
 
 #: src/network_dialog.c:315
 msgid "Login: "
 msgstr "Salutnomo:"
 
+#~ msgid "UTF-8 Key"
+#~ msgstr "UTF-8 Klavo"

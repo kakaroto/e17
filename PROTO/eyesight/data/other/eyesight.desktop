@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Eyesight
+Name[eo]=Okulovido
 Description=Document viewer
 Comment=Document viewer
+Comment[eo]=Dokumento-rigardilo
 Comment[it]=Visualizzatore documenti
 Exec=eyesight %F
 Terminal=false

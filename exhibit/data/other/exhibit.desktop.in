@@ -1,9 +1,11 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Exhibit
+Name[eo]=Exhibit
 Comment=An Enlightened Photo Viewer
 Comment[cs]=Prohlížeč obrázků v ETK
 Comment[el]=Προβολέας εικόνων του Enlightenment
+Comment[eo]=Enlightenment-fotorigardilo
 Comment[it]=Visualizzatore di foto per Enlightenment
 Exec=exhibit
 Terminal=false

@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=list
+Name[eo]=Listo
 Comment=A list representation of elements
+Comment[eo]=Lista prezentado de elementoj
 Comment[it]=Rappresentazione ad elenco degli elementi
 
 X-Drawer-Title=List

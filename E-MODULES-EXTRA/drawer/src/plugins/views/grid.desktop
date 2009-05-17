@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=grid
+Name[eo]=Krado
 Comment=A grid representation of elements
+Comment[eo]=Krada prezentado de elementoj
 Comment[it]=Rappresentazione in griglia degli elementi
 
 X-Drawer-Title=Grid

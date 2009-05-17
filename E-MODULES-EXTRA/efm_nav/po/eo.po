@@ -20,4 +20,3 @@ msgstr ""
 #: src/e_mod_main.c:193
 msgid "EFM Navigation"
 msgstr "EFM Navigado"
-

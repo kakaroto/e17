@@ -1,8 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Image Viewer
+Name[eo]=Bildo-rigardilo
 Comment=Image Viewer
 Comment[it]=Visualizzatore immagini
+Comment[eo]=Rigardi bildojn
 Exec=image-viewer %U
 Icon=image-viewer
 Terminal=false

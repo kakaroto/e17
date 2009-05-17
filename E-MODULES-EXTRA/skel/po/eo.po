@@ -41,13 +41,11 @@ msgid ""
 msgstr ""
 "La agordo de la modulo Skeleto bezonas ĝisdatigon. Via malnova agordo<br> "
 "estis viŝita kaj nova aro da defaŭltoj estis pravalorizitaj. Tio okazos ofte "
-"dum<br> "
-"la programado, do ne raportu cimon. Tio simple signifas ke la modulo<br> "
-"Skeleto bezonas novajn datumojn de agordo defaŭlte por uzebla funkcieco<br> "
-"kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj korektos tion "
-"aldoniĝante<br> "
-"Vi povas de nove agordi nun kiel vi volas. Bonvolu pardoni por la "
-"malagrablaĵoj.<br>"
+"dum<br> la programado, do ne raportu cimon. Tio simple signifas ke la "
+"modulo<br> Skeleto bezonas novajn datumojn de agordo defaŭlte por uzebla "
+"funkcieco<br> kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj korektos "
+"tion aldoniĝante<br> Vi povas de nove agordi nun kiel vi volas. Bonvolu "
+"pardoni por la malagrablaĵoj.<br>"
 
 #: src/e_mod_main.c:127
 msgid ""
@@ -75,4 +73,3 @@ msgstr "Agordo de Skeleto ĝisdatigita"
 #: src/e_mod_main.c:434
 msgid "Configuration"
 msgstr "Agordo"
-

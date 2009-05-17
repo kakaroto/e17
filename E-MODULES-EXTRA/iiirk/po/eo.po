@@ -154,4 +154,3 @@ msgstr "Supren"
 #: src/e_int_config_iiirk.c:177
 msgid "Down"
 msgstr "Suben"
-

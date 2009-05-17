@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tiling 0.0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-05-10 22:47+0200\n"
-"PO-Revision-Date: 2009-05-11 00:11+0000\n"
+"PO-Revision-Date: 2009-05-16 12:43+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: e_mod_main.c:83 e_mod_main.c:88 e_mod_main.c:1005
 msgid "Tiling"
-msgstr ""
+msgstr "Kahela aranĝo"
 
 #: e_mod_main.c:1004
 msgid "Windows"
@@ -27,7 +27,7 @@ msgstr "Fenestroj"
 
 #: e_mod_config.c:70
 msgid "Tiling Configuration"
-msgstr ""
+msgstr "Agordo de kahela aranĝo"
 
 #: e_mod_config.c:217
 msgid "General"
@@ -52,7 +52,7 @@ msgstr "Virtualaj Labortabloj"
 
 #: e_mod_config.c:279
 msgid "Grid mode settings"
-msgstr ""
+msgstr "Agordo de la krada reĝimo"
 
 #: e_mod_config.c:283
 #, c-format
@@ -61,11 +61,11 @@ msgstr "%1.0f"
 
 #: e_mod_config.c:288
 msgid "Bigmain settings"
-msgstr ""
+msgstr "Agordoj por la grandaj fenestroj"
 
 #: e_mod_config.c:289
 msgid "Big win takes percent of screen:"
-msgstr ""
+msgstr "Grandaj fenestroj uzas elcentojn de la ekrano:"
 
 #: e_mod_config.c:290
 #, c-format
@@ -74,9 +74,8 @@ msgstr "%.2f"
 
 #: e_mod_config.c:296
 msgid "Tiling border"
-msgstr ""
+msgstr "Rando de kahela aranĝo"
 
 #: e_mod_config.c:310
 msgid "Floating border"
-msgstr ""
-
+msgstr "Glita rando"
