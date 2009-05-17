@@ -1,7 +1,3 @@
-fonts {
-   font: "VeraBd.ttf" "Sans";
-}
-
 images {
    image: "background.jpeg" LOSSY 95;
    image: "audio_player.png" COMP;

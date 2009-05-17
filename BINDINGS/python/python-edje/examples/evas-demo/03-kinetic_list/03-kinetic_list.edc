@@ -1,7 +1,3 @@
-fonts {
-  font: "VeraBd.ttf" "Font Item";
-}
-
 images {
   image: "listitem.png" COMP;
   image: "background.png" LOSSY 95;
@@ -103,7 +99,7 @@ collections {
                 color: 0 0 0 255;
                 color2: 225 225 225 128;
                 text {
-                    font: "Font Item";
+                    font: "Sans";
                     size: 40;
                     text: "Audio";
                     min: 1 1;
