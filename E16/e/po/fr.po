@@ -6,10 +6,10 @@
 # Tristan D. <trinine@free.fr>, 2007-2009
 msgid ""
 msgstr ""
-"Project-Id-Version: e16-0.16.8.15\n"
+"Project-Id-Version: e16-0.16-0.99.99.901\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-05-13 19:28+0200\n"
-"PO-Revision-Date: 2009-04-02 18:33+0100\n"
+"PO-Revision-Date: 2009-05-15 16:33+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
-#, fuzzy, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "À propos d'Enlightenment %s"
+msgstr "À propos d'Enlightenment e16 version %s"
 
 #: src/about.c:46
-#, fuzzy, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
 "version %s.\n"
@@ -34,8 +32,8 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
-"Bienvenue dans la version %s\n"
-"du gestionnaire de fenêtres Enlightenment.\n"
+"Bienvenue dans Enlightenment e16\n"
+"version %s.\n"
 "Si vous constatez un bogue,\n"
 "n'hésitez pas à nous en envoyer un rapport détaillé.\n"
 "Nous espérons que vous apprécierez ce logiciel.\n"
@@ -536,9 +534,8 @@ msgstr ""
 "Boîte à icônes\n"
 
 #: src/coords.c:74
-#, fuzzy, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
-msgstr "Opacité de 100% lors du focus"
+msgstr "Opacité avec/sans focus : %d/%d %%"
 
 #: src/desktops.c:124
 msgid ""
@@ -2055,14 +2052,14 @@ msgid "Error initialising sound"
 msgstr "Erreur lors de l'initialisation du son"
 
 #: src/sound.c:311
-#, fuzzy, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
-"Les sons sont activés, mais il y a eu une erreur de communication\n"
-"avec le serveur audio (Esound). Le son sera maintenant désactivé.\n"
+"Les sons sont activés dans Enlightenment, mais il y a eu\n"
+"une erreur de communication avec le serveur audio (%s).\n"
+"Les sons seront donc désormais désactivés.\n"
 
 #: src/sound.c:460
 msgid "Enable sounds"
@@ -2121,39 +2118,36 @@ msgstr ""
 
 #: src/theme.c:369
 msgid "Changes will take effect after restart"
-msgstr ""
+msgstr "Les modifications prendront effet au redémarrage d'e16"
 
 #: src/theme.c:389
 msgid "Use theme font configuration"
-msgstr ""
+msgstr "Utiliser les réglages de police du thème"
 
 #: src/theme.c:394
 #, c-format
 msgid "Use alternate font configuration (%s)"
-msgstr ""
+msgstr "Utiliser d'autres réglages de police (%s)"
 
 #: src/theme.c:395
 msgid "Not set"
-msgstr ""
+msgstr "Non défini"
 
 #: src/theme.c:402
-#, fuzzy
 msgid "Theme"
-msgstr "Thèmes"
+msgstr "Thème"
 
 #: src/theme.c:403
-#, fuzzy
 msgid "Theme Settings"
-msgstr "Paramètres des Menus"
+msgstr "Paramètres du theme"
 
 #: src/theme.c:406
-#, fuzzy
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
 "Dialogue de paramétrage\n"
-"des Menus\n"
+"du thème d'Enlightenment\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"
