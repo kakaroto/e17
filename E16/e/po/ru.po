@@ -16,12 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
-#, fuzzy, c-format
+#, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "Enlightenment %s"
+msgstr "Версия Enlightenment %s"
 
 #: src/about.c:46
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Welcome to Enlightenment e16\n"
 "version %s.\n"
@@ -47,7 +47,7 @@ msgstr ""
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
-msgstr ""
+msgstr "Осталось %u ссылок\n"
 
 #: src/actions.c:109
 #, c-format
@@ -341,7 +341,7 @@ msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
 
 #: src/config.c:215
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
 "the following text in the middle of current %s definition:\n"
@@ -349,18 +349,18 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Предупреждение: невозможно определить, что делать\n"
-"со следующим текстом в текущем определении Extras:\n"
+"со следующим текстом в текущем %s определении:\n"
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
 #: src/config.c:223
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Предупреждение:  Похоже, кофигурирование завершилось до\n"
-"окончания загрузки блока Menu.  Результат сомнителен...\n"
+"Предупреждение:  Ошибка кофигурирования в %s блоке\n"
+"Результат сомнителен...\n"
 
 #: src/config.c:313
 msgid "Theme versioning ERROR"
@@ -429,9 +429,9 @@ msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
 #: src/container.c:1513 src/container.c:1586
-#, fuzzy, c-format
+#, c-format
 msgid "Icon size: %2d"
-msgstr "Размер пиктограммы"
+msgstr "Размер пиктограммы: %2d"
 
 #: src/container.c:1550
 msgid "Transparent background"
@@ -511,8 +511,7 @@ msgstr "Анимировать сворачивание в этот Iconbox"
 
 #: src/container.c:1684
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr ""
-"Способ отображения пиктограмм (если один не работает, пробовать следующий):"
+msgstr "Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
 #: src/container.c:1689
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
@@ -535,9 +534,9 @@ msgstr ""
 "Iconbox-а Enlightenment\n"
 
 #: src/coords.c:74
-#, fuzzy, c-format
+#, c-format
 msgid "Focused/unfocused opacity: %d/%d %%"
-msgstr "Непрозрачность фокусированного активного окна 100%"
+msgstr "Непрозрачность фокусированного активного окна: %d/%d %%"
 
 #: src/desktops.c:124
 msgid ""
@@ -1234,7 +1233,7 @@ msgstr ""
 
 #: src/magwin.c:462
 msgid "Magnifier"
-msgstr ""
+msgstr "Экранная лупа"
 
 #: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
 msgid "Themes"
@@ -2067,14 +2066,14 @@ msgid "Error initialising sound"
 msgstr "Ошибка инициализации звука"
 
 #: src/sound.c:311
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
 "Была включена поддержка звука в Enlightenment, однако произошла\n"
-"ошибка при установлении соединения с Esound. Поддержка звука\n"
+"ошибка при установлении соединения с Esound (%s). Поддержка звука\n"
 "будет сейчас отключена.\n"
 
 #: src/sound.c:460
@@ -2103,7 +2102,7 @@ msgstr "Рабочий стол"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr "Куда-то запропастился систрей... Вот же пьянь!"
+msgstr "Куда-то запропастился систрей..."
 
 #: src/systray.c:431
 msgid "Only one systray is allowed"
@@ -2128,39 +2127,36 @@ msgid ""
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
-"В моём шкафу одежды нет:\n"
+"Нет доступных тем оформления:\n"
 " %s\n"
-"Голышом работать не буду!\n"
+"Прекращение работы.\n"
 
 #: src/theme.c:369
 msgid "Changes will take effect after restart"
-msgstr ""
+msgstr "Изменения вступят в силу после перезагрузки"
 
 #: src/theme.c:389
 msgid "Use theme font configuration"
-msgstr ""
+msgstr "Использовать шрифты, указанные в теме оформления"
 
 #: src/theme.c:394
 #, c-format
 msgid "Use alternate font configuration (%s)"
-msgstr ""
+msgstr "Использовать альтернативную конфигурацию шрифтов (%s)"
 
 #: src/theme.c:395
 msgid "Not set"
-msgstr ""
+msgstr "Не установлено"
 
 #: src/theme.c:402
-#, fuzzy
 msgid "Theme"
 msgstr "Темы оформления рабочего стола"
 
 #: src/theme.c:403
-#, fuzzy
 msgid "Theme Settings"
-msgstr "Настройки меню"
+msgstr "Настройки темы"
 
 #: src/theme.c:406
-#, fuzzy
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
@@ -2610,13 +2606,12 @@ msgid "Toggle Button Grabs"
 msgstr "Переключатель перехвата сигнала от кнопок"
 
 #: config/strings.c:162
-#, fuzzy
 msgid "Toggle Autoshade"
 msgstr "Включить тени"
 
 #: config/strings.c:165
 msgid "Default"
-msgstr "Дефолт"
+msgstr "Настройки по умолчанию"
 
 #: config/strings.c:166
 msgid "20%"
