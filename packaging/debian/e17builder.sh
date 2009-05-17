@@ -215,8 +215,8 @@ sed -i 's/OTHERMIRROR=/#OTHERMIRROR=/g' $HOME/.pbuilderrc
 echo "CREATING CHROOTS..."
 for chroots in ${distros[@]}; do
 	echo "Creating chroot: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
-	sudo mkdir $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
-	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build
+	[ ! -d "$pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')" ] && sudo mkdir $pbuilderplace/build/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')
+	sudo DIST=$(echo $chroots | sed 's/#.*//') ARCH=$(echo $chroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder create --basetgz $pbuilderplace/$(echo $chroots | sed 's/#.*//')-$(echo $chroots | sed 's/.*#//')-base.tgz --buildplace $pbuilderplace/build --debootstrapopts --include=sysv-rc
 	if [ "$?" -ge "1" ]; then
 		echo "ERROR, exitting."
 		exit 1
