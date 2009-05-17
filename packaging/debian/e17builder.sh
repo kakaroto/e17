@@ -373,11 +373,13 @@ up_ubuntu=$(echo "${distros[@]}" | egrep "(hardy|intrepid|jaunty)")
 up_debian=$(echo "${distros[@]}" | egrep "(lenny|squeeze|sid)")
 if test "$up_ubuntu"; then
 	echo "Uploading ubuntu dir."
+	chmod -r 775 ubuntu
 	scp -r ubuntu $username@$eserver:/var/www/packages
 	ssh $username@$eserver "chgrp -R www-data /var/www/packages/ubuntu"
 fi
 if test "$up_debian"; then
 	echo "Uploading debian dir."
+	chmod -r 775 debian
 	scp -r debian $username@$eserver:/var/www/packages
 	ssh $username@$eserver "chgrp -R www-data /var/www/packages/debian"
 fi
