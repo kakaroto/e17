@@ -81,7 +81,7 @@ AC_ARG_ENABLE(sound,
   enable_sound=yes)
 if test "x$enable_sound" = "xyes"; then
   AC_ARG_ENABLE(sound_pulse,
-    [  --enable-sound-pulse    compile with PulseAudio sound support (experimental) @<:@default=no@:>@],,
+    [  --enable-sound-pulse    compile with PulseAudio sound support @<:@default=no@:>@],,
     enable_sound_pulse=no)
   AC_ARG_ENABLE(sound_esound,
     [  --enable-sound-esound   compile with EsounD sound support @<:@default=yes@:>@],,
