@@ -1,8 +1,9 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2(0W4
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "config.h"
 #include <X11/Xlib.h>
 #include <Ecore.h>
@@ -24,7 +25,7 @@ struct _Smart_Data
    Ecore_X_Pixmap       pixmap;
    Ecore_X_Damage       damage;
 
-   XImage              *xim;
+   char		       *data;
 };
 
 static void _pixels_get(void *data, Evas_Object *obj);
@@ -73,21 +74,17 @@ _pixels_get(void *data, Evas_Object *obj)
    int pw, ph;
    Smart_Data *sd;
    unsigned char *bgra_data;
+   XImage *xim;
 
    sd = data;
-   if (sd->xim)
-     {
-        XDestroyImage(sd->xim);
-        sd->xim = NULL;
-     }
 
    evas_object_image_size_get(obj, &iw, &ih);
    ecore_x_drawable_geometry_get(sd->pixmap, NULL, NULL, &pw, &ph);
-   sd->xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
+   xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
    
    evas_object_image_data_update_add(obj, 0, 0, iw, ih);
 
-   if (!sd->xim)
+   if (!xim)
      return;
 
    if ((pw != iw) || (ph != ih))
@@ -96,13 +93,22 @@ _pixels_get(void *data, Evas_Object *obj)
 	evas_object_image_size_set(obj, pw, ph);
      }
    if ((iw < 1) || (ih < 1))
-     return;
+     {
+	XDestroyImage(xim);
+	return;
+     }
    else
      {
-	/* XXX: memcpy and then free the Ximage */
+	char *data;
+	int size = sizeof(char) * xim->bytes_per_line * xim->height;
+
+        free(sd->data);
+	data = malloc(size);
+	memcpy(data, xim->data, size);
 	/* XXX: check the image format and convert if necessary */
-        evas_object_image_data_set(obj, sd->xim->data);
-	/* XXX: can we free the XImage now? */
+        evas_object_image_data_set(obj, data);
+        sd->data = data;
+	XDestroyImage(xim);
      }
 }
 
@@ -115,7 +121,6 @@ _damage_cb(void *data, int type, void *event)
    if (!(sd = data)) return 1;
    if (!(ev = event)) return 1;
    if (sd->win != ev->drawable) return 1;
-
    _pixels_get(sd, sd->obj);
    return 1;
 }
@@ -261,14 +266,13 @@ _smart_del(Evas_Object *obj)
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
-   if (sd->xim)
-     XDestroyImage(sd->xim);
    if (sd->win)
      ecore_x_composite_unredirect_window(sd->win, ECORE_X_COMPOSITE_UPDATE_AUTOMATIC);
    EINA_LIST_FREE(sd->handlers, h)
       ecore_event_handler_del(h);
    ecore_x_damage_free(sd->damage);
    evas_object_del(sd->obj);
+   free(sd->data);
    free(sd);
 }
 
