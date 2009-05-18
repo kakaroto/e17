@@ -81,6 +81,7 @@ _pixels_get(void *data, Evas_Object *obj)
    evas_object_image_size_get(obj, &iw, &ih);
    ecore_x_drawable_geometry_get(sd->pixmap, NULL, NULL, &pw, &ph);
    xim = XGetImage(sd->dpy, sd->pixmap, 0, 0, pw, ph, AllPlanes, ZPixmap);
+   evas_object_size_hint_request_set(evas_object_smart_parent_get(obj), pw, ph);
    
    evas_object_image_data_update_add(obj, 0, 0, iw, ih);
 
