@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# Koptev Oleg <koptev.oleg@gmail.com>, 2009
+msgid ""
+msgstr ""
+"Project-Id-Version: Language\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-05-15 08:01-0700\n"
+"PO-Revision-Date: 2009-05-15 19:42+0400\n"
+"Last-Translator: Koptev Oleg <koptev.oleg@gmail.com>\n"
+"Language-Team: Russian Ubuntu Translators\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.3.1\n"
+
+#: ../src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Настройки языкового модуля"
+
+#: ../src/module/e_mod_config.c:174 ../src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Доступные языки"
+
+#: ../src/module/e_mod_config.c:182 ../src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Выбранные языки"
+
+#: ../src/module/e_mod_config.c:198 ../src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Верх"
+
+#: ../src/module/e_mod_config.c:203 ../src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Вниз"
+
+#: ../src/module/e_mod_config.c:211 ../src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Способ переключения языков"
+
+#: ../src/module/e_mod_config.c:214 ../src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Глобально"
+
+#: ../src/module/e_mod_config.c:217 ../src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Окно"
+
+#: ../src/module/e_mod_config.c:220 ../src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Приложение"
+
+#: ../src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Модель клавиатуры"
+
+#: ../src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Вариант раскладки"
+
+#: ../src/module/e_mod_keybindings.c:6 ../src/module/e_mod_main.c:113
+msgid "Language"
+msgstr "Язык"
+
+#: ../src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Переключиться на следующий язык"
+
+#: ../src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Переключиться на предыдущий язык"
+
+#: ../src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr "Параметры"
+
+#: ../src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr "Настроить сочетания клавиш"
+
+#: ../src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr "Настройка модуля"
