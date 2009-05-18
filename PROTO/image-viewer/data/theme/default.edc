@@ -438,6 +438,7 @@ collections {
       }
    }
 
+   /*
    group { name: "iv/preview/box";
       parts {
 	 part { name: "iv.box.content";
@@ -531,6 +532,7 @@ collections {
 	 }
       }
    }
+   */
 
    group { name: "elm/win/inwin/shadow";
       images {
