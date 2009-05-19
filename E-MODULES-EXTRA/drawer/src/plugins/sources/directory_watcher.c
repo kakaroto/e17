@@ -77,6 +77,7 @@ static void _dirwatcher_description_create(Instance *inst);
 static void _dirwatcher_source_items_free(Instance *inst);
 static Drawer_Source_Item * _dirwatcher_source_item_fill(Instance *inst, const char *file);
 static void _dirwatcher_event_update_free(void *data __UNUSED__, void *event);
+static void _dirwatcher_event_update_icon_free(void *data __UNUSED__, void *event);
 
 static void _dirwatcher_monitor_cb(void *data, Ecore_File_Monitor *em __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path);
 static void _dirwatcher_cb_menu_post(void *data, E_Menu *menu);
@@ -173,6 +174,7 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 {
    Eina_List *files;
    Instance *inst = NULL;
+   Drawer_Event_Source_Main_Icon_Update *ev;
    char *file;
 
    if (!(inst = DRAWER_PLUGIN(s)->data)) return NULL;
@@ -182,20 +184,28 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 
    files = ecore_file_ls(inst->conf->dir);
    EINA_LIST_FREE(files, file)
-	  {
-	     Drawer_Source_Item *si;
+     {
+	Drawer_Source_Item *si;
 
 	if (file[0] == '.') goto end;
-	     si = _dirwatcher_source_item_fill(inst, file);
-	     if (si)
-	       inst->items = eina_list_append(inst->items, si);
+	si = _dirwatcher_source_item_fill(inst, file);
+	if (si)
+	  inst->items = eina_list_append(inst->items, si);
 
-     end:
+end:
 	free(file);
      }
 
    inst->items = eina_list_sort(inst->items,
 	      eina_list_count(inst->items), _dirwatcher_cb_sort);
+
+   ev = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
+   ev->source = inst->source;
+   ev->id = eina_stringshare_add(inst->conf->id);
+   ev->si = inst->items->data;
+   ecore_event_add(
+       DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE, ev,
+       _dirwatcher_event_update_icon_free, NULL);
 
    return inst->items;
 }
@@ -413,6 +423,16 @@ static void
 _dirwatcher_event_update_free(void *data __UNUSED__, void *event)
 {
    Drawer_Event_Source_Update *ev;
+
+   ev = event;
+   eina_stringshare_del(ev->id);
+   free(ev);
+}
+
+static void
+_dirwatcher_event_update_icon_free(void *data __UNUSED__, void *event)
+{
+   Drawer_Event_Source_Main_Icon_Update *ev;
 
    ev = event;
    eina_stringshare_del(ev->id);

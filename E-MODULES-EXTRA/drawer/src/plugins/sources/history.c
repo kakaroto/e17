@@ -54,6 +54,7 @@ static void _history_description_create(Instance *inst);
 static Drawer_Source_Item *_history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *file);
 static void _history_source_items_free(Instance *inst);
 static void _history_event_update_free(void *data __UNUSED__, void *event);
+static void _history_event_update_icon_free(void *data __UNUSED__, void *event);
 static int  _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void *event __UNUSED__);
 static void _history_cb_menu_post(void *data, E_Menu *menu);
 static void _history_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -158,6 +159,7 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 {
    Instance *inst = NULL;
    Eina_List *hist = NULL, *l;
+   Drawer_Event_Source_Main_Icon_Update *ev;
    const char *file;
    char buf[4096];
 
@@ -189,6 +191,14 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 	si = _history_source_item_fill(inst, desktop, file);
 	inst->items = eina_list_append(inst->items, si);
      }
+
+   ev = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
+   ev->source = inst->source;
+   ev->id = eina_stringshare_add(inst->conf->id);
+   ev->si = inst->items->data;
+   ecore_event_add(
+       DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE, ev,
+       _history_event_update_icon_free, NULL);
 
    return inst->items;
 }
@@ -346,6 +356,16 @@ static void
 _history_event_update_free(void *data __UNUSED__, void *event)
 {
    Drawer_Event_Source_Update *ev;
+
+   ev = event;
+   eina_stringshare_del(ev->id);
+   free(ev);
+}
+
+static void
+_history_event_update_icon_free(void *data __UNUSED__, void *event)
+{
+   Drawer_Event_Source_Main_Icon_Update *ev;
 
    ev = event;
    eina_stringshare_del(ev->id);

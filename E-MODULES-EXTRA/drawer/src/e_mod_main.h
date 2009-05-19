@@ -46,6 +46,7 @@ typedef struct _Drawer_Composite Drawer_Composite;
 typedef struct _Drawer_Source_Item Drawer_Source_Item;
 
 typedef struct _Drawer_Event_Source_Update Drawer_Event_Source_Update;
+typedef struct _Drawer_Event_Source_Main_Icon_Update Drawer_Event_Source_Main_Icon_Update;
 typedef struct _Drawer_Event_View_Activate Drawer_Event_View_Activate;
 typedef struct _Drawer_Event_View_Context Drawer_Event_View_Context;
 
@@ -188,7 +189,7 @@ struct _Drawer_Composite
       void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
 
       /* Creates a shelf icon */
-      Evas_Object * (*get_shelf_icon)    (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);
+      Evas_Object * (*get_main_icon)    (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);
    } func;
 };
 
@@ -211,6 +212,13 @@ struct _Drawer_Source_Item
 struct _Drawer_Event_Source_Update
 {
    Drawer_Source *source;
+   const char *id;
+};
+
+struct _Drawer_Event_Source_Main_Icon_Update
+{
+   Drawer_Source *source;
+   Drawer_Source_Item *si;
    const char *id;
 };
 
@@ -256,6 +264,7 @@ EAPI E_Config_Dialog *e_int_config_drawer_module(E_Container *con, Config_Item *
 
 extern Config *drawer_conf;
 extern EAPI int DRAWER_EVENT_SOURCE_UPDATE;
+extern EAPI int DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE;
 extern EAPI int DRAWER_EVENT_VIEW_ITEM_ACTIVATE;
 extern EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT;
 

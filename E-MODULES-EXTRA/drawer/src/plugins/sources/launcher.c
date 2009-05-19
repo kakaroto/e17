@@ -87,6 +87,7 @@ static Drawer_Source_Item *_launcher_source_item_fill(Instance *inst, Efreet_Des
 static void _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si);
 static void _launcher_source_items_free(Instance *inst);
 static void _launcher_event_update_free(void *data __UNUSED__, void *event);
+static void _launcher_event_update_icon_free(void *data __UNUSED__, void *event);
 static void _launcher_conf_activation_cb(void *data1, void *data2 __UNUSED__);
 static void _launcher_cb_menu_post(void *data, E_Menu *menu);
 static void _launcher_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -226,6 +227,7 @@ EAPI Eina_List *
 drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 {
    Instance *inst = NULL;
+   Drawer_Event_Source_Main_Icon_Update *ev;
    char buf[4096];
    const char *homedir;
    int min = 0;
@@ -270,6 +272,14 @@ drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
 				      eina_list_count(inst->items), _launcher_cb_sort_popularity);
 	 break;
      }
+   ev = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
+   ev->source = inst->source;
+   ev->id = eina_stringshare_add(inst->conf->id);
+   ev->si = inst->items->data;
+   ecore_event_add(
+       DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE, ev,
+       _launcher_event_update_icon_free, NULL);
+
    return inst->items;
 }
 
@@ -499,6 +509,16 @@ static void
 _launcher_event_update_free(void *data __UNUSED__, void *event)
 {
    Drawer_Event_Source_Update *ev;
+
+   ev = event;
+   eina_stringshare_del(ev->id);
+   free(ev);
+}
+
+static void
+_launcher_event_update_icon_free(void *data __UNUSED__, void *event)
+{
+   Drawer_Event_Source_Main_Icon_Update *ev;
 
    ev = event;
    eina_stringshare_del(ev->id);

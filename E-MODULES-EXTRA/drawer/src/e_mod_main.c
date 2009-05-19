@@ -80,6 +80,7 @@ static void _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *
 static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
+static int _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
@@ -103,6 +104,7 @@ static E_Config_DD *conf_item_edd = NULL;
 Config *drawer_conf = NULL;
 
 EAPI int DRAWER_EVENT_SOURCE_UPDATE = 0;
+EAPI int DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE = 0;
 EAPI int DRAWER_EVENT_VIEW_ITEM_ACTIVATE = 0;
 EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT = 0;
 
@@ -236,6 +238,8 @@ e_modapi_init(E_Module *m)
 
    if (!DRAWER_EVENT_SOURCE_UPDATE)
      DRAWER_EVENT_SOURCE_UPDATE = ecore_event_type_new();
+   if (!DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE)
+     DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE = ecore_event_type_new();
    if (!DRAWER_EVENT_VIEW_ITEM_ACTIVATE)
      DRAWER_EVENT_VIEW_ITEM_ACTIVATE = ecore_event_type_new();
    if (!DRAWER_EVENT_VIEW_ITEM_CONTEXT)
@@ -500,9 +504,11 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 	 break;
       case SOURCE_DATA_TYPE_OTHER:
          if (si->source->func.render_item)
-           o = si->source->func.render_item(si->source, si, evas);
-         evas_object_show(o);
-         evas_object_resize(o, w, h);
+           {
+              o = si->source->func.render_item(si->source, si, evas);
+              evas_object_show(o);
+              evas_object_resize(o, w, h);
+           }
 	 break;
      }
 
@@ -536,7 +542,6 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
      {
 	Eina_List *l = NULL;
 
-	/* XXX: better to have a function that retuns the first list instead */
 	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source), evas);
 	if (l)
 	  si = l->data;
@@ -548,9 +553,9 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 	edje_object_signal_emit(inst->o_content, "e,state,hide_info", "e");
      }
    else if (inst->composite && inst->composite->enabled &&
-	    DRAWER_COMPOSITE(inst->composite)->func.get_shelf_icon)
+	    DRAWER_COMPOSITE(inst->composite)->func.get_main_icon)
      {
-	inst->o_content = DRAWER_COMPOSITE(inst->composite)->func.get_shelf_icon(
+	inst->o_content = DRAWER_COMPOSITE(inst->composite)->func.get_main_icon(
 	    DRAWER_COMPOSITE(inst->composite), evas, 120, 120);
 	edje_object_signal_emit(inst->o_content, "e,state,hide_info", "e");
      }
@@ -683,7 +688,6 @@ _drawer_popup_update(Instance *inst)
         Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
 
 	o = c->func.render(c, inst->popup->win->evas);
-        _drawer_shelf_update(inst, NULL);
 
         if (c->func.description_get)
           edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
@@ -695,11 +699,6 @@ _drawer_popup_update(Instance *inst)
 	Drawer_Source *s = DRAWER_SOURCE(inst->source);
 
 	l = s->func.list(s, inst->popup->win->evas);
-	if (l)
-	  _drawer_shelf_update(inst, (Drawer_Source_Item *) l->data);
-	else
-	  _drawer_shelf_update(inst, NULL);
-
 	o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
 						 inst->popup->win->evas, l);
 	if (s->func.description_get)
@@ -1093,6 +1092,9 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 	 ecore_event_handler_add(DRAWER_EVENT_SOURCE_UPDATE,
 				 _drawer_source_update_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
+	 ecore_event_handler_add(DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE,
+				 _drawer_source_main_icon_update_cb, NULL));
+   inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_ACTIVATE,
 				 _drawer_view_activate_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
@@ -1406,6 +1408,25 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
      }
    else if (inst->popup)
      _drawer_popup_update(inst);
+
+   return 1;
+}
+
+static int
+_drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event)
+{
+   Instance *inst = NULL;
+   Drawer_Event_Source_Main_Icon_Update *ev;
+   int visible = 0;
+
+   ev = event;
+   if (ev_type != DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE) return 1;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+
+   if (inst->flags.is_floating)
+     return 1;
+
+   _drawer_shelf_update(inst, ev->si);
 
    return 1;
 }
