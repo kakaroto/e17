@@ -1632,12 +1632,16 @@ SubmenuShowTimeout(void *dat)
 	ScreenGetGeometryByHead(Mode_menus.first->ewin->head,
 				&sx, &sy, &sw, &sh);
 
-	if (EoGetX(ewin) + xo + ww > sx + sw)
+	if (EoGetX(Mode_menus.first->ewin) < sx)
+	   xdist = sx - EoGetX(Mode_menus.first->ewin);
+	if (xdist + EoGetX(ewin) + xo + ww > sx + sw)
 	   xdist = sx + sw - (EoGetX(ewin) + xo + ww);
 	if (EoGetX(ewin) + xdist < sx)
 	   xdist = sx - EoGetX(ewin);
 
-	if (EoGetY(ewin) + yo + hh > sy + sh)
+	if (EoGetY(Mode_menus.first->ewin) < sy)
+	   ydist = sy - EoGetY(Mode_menus.first->ewin);
+	if (ydist + EoGetY(ewin) + yo + hh > sy + sh)
 	   ydist = sy + sh - (EoGetY(ewin) + yo + hh);
 	if (EoGetY(ewin) + ydist < sy)
 	   ydist = sy - EoGetY(ewin);
@@ -1658,9 +1662,10 @@ SubmenuShowTimeout(void *dat)
 		  i++;
 	       }
 
-	     /* Disable menu item events while sliding */
-	     MenusSetEvents(0);
+	     MenusSetEvents(0);	/* Disable menu item events while sliding */
+	     Mode.move.check = 0;	/* Bypass on-screen checks */
 	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
+	     Mode.move.check = 1;
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)
