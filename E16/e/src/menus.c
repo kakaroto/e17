@@ -1914,8 +1914,13 @@ MenuConfigLoad(FILE * fs)
 	     continue;
 
 	  case MENU_PREBUILT:
+	     m = MenuFind(s2, NULL);
+	     if (m)
+		continue;
 	     sscanf(p3, "%4000s %4000s %4000s", s3, s4, s5);
 	     m = MenusCreateInternal(s4, s2, s3, s5);
+	     if (m)
+		m->ref_count++;
 	     continue;
 
 	  case CONFIG_CLASSNAME:
