@@ -1565,10 +1565,66 @@ MenuSelectItemByChild(Menu * m, Menu * mc)
    MenuSelectItem(m, mi, 0);
 }
 
+static void
+_SubmenuCheckSlide(Menu * m, MenuItem * mi, EWin * ewin, EWin * ewin2,
+		   int xo, int yo, int ww, int hh)
+{
+   EWin               *menus[256], *etmp;
+   int                 fx[256], fy[256], tx[256], ty[256];
+   int                 i;
+   int                 sx, sy, sw, sh;
+   int                 xdist = 0, ydist = 0;
+
+   if (!Conf.menus.onscreen)
+      return;
+
+   ScreenGetGeometryByHead(Mode_menus.first->ewin->head, &sx, &sy, &sw, &sh);
+
+   if (EoGetX(Mode_menus.first->ewin) < sx)
+      xdist = sx - EoGetX(Mode_menus.first->ewin);
+   if (xdist + EoGetX(ewin) + xo + ww > sx + sw)
+      xdist = sx + sw - (EoGetX(ewin) + xo + ww);
+   if (EoGetX(ewin) + xdist < sx)
+      xdist = sx - EoGetX(ewin);
+
+   if (EoGetY(Mode_menus.first->ewin) < sy)
+      ydist = sy - EoGetY(Mode_menus.first->ewin);
+   if (ydist + EoGetY(ewin) + yo + hh > sy + sh)
+      ydist = sy + sh - (EoGetY(ewin) + yo + hh);
+   if (EoGetY(ewin) + ydist < sy)
+      ydist = sy - EoGetY(ewin);
+
+   if (xdist == 0 && ydist == 0)
+      return;
+
+   i = 0;
+   for (m = Mode_menus.first; m; m = m->child)
+     {
+	etmp = m->ewin;
+	if (!etmp || etmp == ewin2)
+	   break;
+	menus[i] = etmp;
+	fx[i] = EoGetX(etmp);
+	fy[i] = EoGetY(etmp);
+	tx[i] = EoGetX(etmp) + xdist;
+	ty[i] = EoGetY(etmp) + ydist;
+	i++;
+     }
+
+   MenusSetEvents(0);		/* Disable menu item events while sliding */
+   Mode.move.check = 0;		/* Bypass on-screen checks */
+   SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
+   Mode.move.check = 1;
+   MenusSetEvents(1);
+
+   if (Conf.menus.warp)
+      EXWarpPointer(WinGetXwin(mi->win), mi->text_w / 2, mi->text_h / 2);
+}
+
 static int
 SubmenuShowTimeout(void *dat)
 {
-   int                 mx, my, my2, xo, yo, mw;
+   int                 mx, my, my2, xo, yo, mw, ww, hh;
    Menu               *m;
    MenuItem           *mi;
    EWin               *ewin2, *ewin;
@@ -1597,7 +1653,10 @@ SubmenuShowTimeout(void *dat)
       MenuHide(m->child);
    m->child = mi->child;
    if (!mi->child)
-      goto done;
+     {
+	_SubmenuCheckSlide(m, mi, ewin, NULL, 0, 0, 0, 0);
+	goto done;
+     }
 
    mi->child->parent = m;
    MenuShow(mi->child, 1);
@@ -1617,62 +1676,11 @@ SubmenuShowTimeout(void *dat)
    xo = bl1 + mx + mw;
    yo = bt1 + my - (bt2 + my2);
 
-   if (Conf.menus.onscreen)
-     {
-	EWin               *menus[256], *etmp;
-	int                 fx[256], fy[256], tx[256], ty[256];
-	int                 i, ww, hh;
-	int                 sx, sy, sw, sh;
-	int                 xdist = 0, ydist = 0;
+   /* Size of new submenu (may be shaded atm.) */
+   ww = mi->child->w + bl2 + br2;
+   hh = mi->child->h + bt2 + bb2;
 
-	/* Size of new submenu (may be shaded atm.) */
-	ww = mi->child->w + bl2 + br2;
-	hh = mi->child->h + bt2 + bb2;
-
-	ScreenGetGeometryByHead(Mode_menus.first->ewin->head,
-				&sx, &sy, &sw, &sh);
-
-	if (EoGetX(Mode_menus.first->ewin) < sx)
-	   xdist = sx - EoGetX(Mode_menus.first->ewin);
-	if (xdist + EoGetX(ewin) + xo + ww > sx + sw)
-	   xdist = sx + sw - (EoGetX(ewin) + xo + ww);
-	if (EoGetX(ewin) + xdist < sx)
-	   xdist = sx - EoGetX(ewin);
-
-	if (EoGetY(Mode_menus.first->ewin) < sy)
-	   ydist = sy - EoGetY(Mode_menus.first->ewin);
-	if (ydist + EoGetY(ewin) + yo + hh > sy + sh)
-	   ydist = sy + sh - (EoGetY(ewin) + yo + hh);
-	if (EoGetY(ewin) + ydist < sy)
-	   ydist = sy - EoGetY(ewin);
-
-	if ((xdist != 0) || (ydist != 0))
-	  {
-	     i = 0;
-	     for (m = Mode_menus.first; m; m = m->child)
-	       {
-		  etmp = m->ewin;
-		  if (!etmp || etmp == ewin2)
-		     break;
-		  menus[i] = etmp;
-		  fx[i] = EoGetX(etmp);
-		  fy[i] = EoGetY(etmp);
-		  tx[i] = EoGetX(etmp) + xdist;
-		  ty[i] = EoGetY(etmp) + ydist;
-		  i++;
-	       }
-
-	     MenusSetEvents(0);	/* Disable menu item events while sliding */
-	     Mode.move.check = 0;	/* Bypass on-screen checks */
-	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
-	     Mode.move.check = 1;
-	     MenusSetEvents(1);
-
-	     if (Conf.menus.warp)
-		EXWarpPointer(WinGetXwin(mi->win), mi->text_w / 2,
-			      mi->text_h / 2);
-	  }
-     }
+   _SubmenuCheckSlide(m, mi, ewin, ewin2, xo, yo, ww, hh);
 
    Mode.move.check = 0;		/* Bypass on-screen checks */
    EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
