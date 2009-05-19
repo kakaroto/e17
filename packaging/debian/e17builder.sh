@@ -148,12 +148,12 @@ compile_list=(
 # functions
 
 download() {
-echo "DOWNLOADING PACKAGES WITH SCP..."
+echo "DOWNLOADING PACKAGES WITH RSYNC..."
 for down in ${compile_list[@]}; do
 	case $down in
-		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17) scp -r $username@$eserver:$path/main/$down ./
+		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$down ./
 		;;
-		*) scp -r $username@$eserver:$path/extras/$down ./
+		*) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/extras/$down ./
 		;;
 	esac
 done
@@ -187,9 +187,9 @@ for md5 in ${compile_list[@]}; do
 			filename=$(ls $md5 | grep "$check.*.$1")
 			rm $md5/$filename
 			if test $(echo $check | egrep "(^eina$|^eet$|^evas$|^ecore$|^embryo$|^edje$|^edbus$|^efreet$|^e17$)"); then
-				scp -r $username@$eserver:$path/main/$md5/$filename $md5/$filename
+				rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$md5/$filename $md5/$filename
 			else
-				scp -r $username@$eserver:$path/extras/$md5/$filename $md5/$filename
+				rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/extras/$md5/$filename $md5/$filename
 			fi
 			if [ "$(md5sum $md5/$check*.$1 | sed 's/  .*//')" = "$(cat SOURCES-MD5 | grep "$md5/$check.*.$1" | sed 's/  .*//')" ]; then
 				echo "MD5 OK now."
@@ -231,7 +231,7 @@ sed -i 's/#*OTHERMIRROR=/OTHERMIRROR=/g' $HOME/.pbuilderrc
 
 setup() {
 echo "INSTALLING PBUILDER..."
-sudo apt-get --assume-yes --force-yes install pbuilder debootstrap devscripts ccache
+sudo apt-get --assume-yes --force-yes install pbuilder debootstrap devscripts ccache rsync openssh-client
 echo "INSTALLING UBUNTU KEYRING..."
 if [ -z "$(dpkg -l | grep ii | grep ubuntu-keyring)" ]; then
 	wget http://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2008.03.04_all.deb
@@ -377,13 +377,13 @@ up_debian=$(echo "${distros[@]}" | egrep "(lenny|squeeze|sid)")
 if test "$up_ubuntu"; then
 	echo "Uploading ubuntu dir."
 	chmod -r 775 ubuntu
-	scp -r ubuntu $username@$eserver:/var/www/packages
+	rsync --partial --progress --recursive --rsh=ssh ubuntu $username@$eserver:/var/www/packages
 	ssh $username@$eserver "chgrp -R www-data /var/www/packages/ubuntu"
 fi
 if test "$up_debian"; then
 	echo "Uploading debian dir."
 	chmod -r 775 debian
-	scp -r debian $username@$eserver:/var/www/packages
+	rsync --partial --progress --recursive --rsh=ssh debian $username@$eserver:/var/www/packages
 	ssh $username@$eserver "chgrp -R www-data /var/www/packages/debian"
 fi
 echo "Done uploading."
@@ -420,7 +420,7 @@ EOF
 
 # check for deps
 
-for deps in sudo scp dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
+for deps in sudo rsync ssh dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
 	which $deps
 	if [ "$?" -ge "1" ]; then
 		echo "Missing dep: $deps"
