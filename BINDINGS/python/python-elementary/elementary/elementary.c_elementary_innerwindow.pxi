@@ -39,5 +39,8 @@ cdef class InnerWindow(Window):
         @parm: B{style} style for the inner window
         """
         elm_win_inwin_style_set(self.obj, style)
+
+    def content_set(self, c_evas.Object content):
+        elm_win_inwin_content_set(self.obj, content.obj)
     
 

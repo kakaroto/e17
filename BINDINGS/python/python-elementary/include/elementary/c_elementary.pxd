@@ -29,6 +29,12 @@ cdef extern from "Python.h":
 cdef enum Elm_Win_Type:
     ELM_WIN_BASIC
     ELM_WIN_DIALOG_BASIC
+    ELM_WIN_DESKTOP
+    ELM_WIN_DOCK
+    ELM_WIN_TOOLBAR
+    ELM_WIN_MENU
+    ELM_WIN_UTILITY
+    ELM_WIN_SPLASH
 
 cdef enum Elm_Win_Keyboard_Mode:
     ELM_WIN_KEYBOARD_OFF
@@ -64,6 +70,21 @@ cdef enum Elementary_List_Mode:
 cdef enum Elm_Genlist_Item_Flags:
     ELM_GENLIST_ITEM_NONE
     ELM_GENLIST_ITEM_SUBITEMS
+
+cdef enum Elm_Image_Orient:
+    ELM_IMAGE_ORIENT_NONE
+    ELM_IMAGE_ROTATE_90_CW
+    ELM_IMAGE_ROTATE_180_CW
+    ELM_IMAGE_ROTATE_90_CCW
+    ELM_IMAGE_FLIP_HORIZONTAL
+    ELM_IMAGE_FLIP_VERTICAL
+    ELM_IMAGE_FLIP_TRANSPOSE
+    ELM_IMAGE_FLIP_TRANSVERSE
+
+cdef enum Elm_Scroller_Policy:
+    ELM_SCROLLER_POLICY_AUTO
+    ELM_SCROLLER_POLICY_ON
+    ELM_SCROLLER_POLICY_OFF
     
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_ID
@@ -126,6 +147,14 @@ cdef extern from "Elementary.h":
     # Object handling
     void         elm_object_scale_set(evas.c_evas.Evas_Object *obj, double scale)
     double       elm_object_scale_get(evas.c_evas.Evas_Object *obj)
+    void         elm_object_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char*        elm_object_style_get(evas.c_evas.Evas_Object *obj)
+
+    double       elm_scale_get()
+    void         elm_scale_set(double scale)
+    evas.c_evas.Evas_Coord elm_finger_size_get()
+    void         elm_finger_size_set(evas.c_evas.Evas_Coord size)
+
     void         elm_object_focus(evas.c_evas.Evas_Object *obj)
     
     void         elm_coords_finger_size_adjust(int times_w, evas.c_evas.Evas_Coord *w, int times_h, evas.c_evas.Evas_Coord *h)
@@ -140,10 +169,19 @@ cdef extern from "Elementary.h":
     void elm_win_title_set(evas.c_evas.Evas_Object* obj,char *title)
     void elm_win_autodel_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool autodel)
     void elm_win_activate(evas.c_evas.Evas_Object *obj)
+    void elm_win_lower(evas.c_evas.Evas_Object *obj)
+    void elm_win_raise(evas.c_evas.Evas_Object *obj)
     void elm_win_borderless_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool borderless)
     void elm_win_shaped_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool shaped)
     void elm_win_alpha_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool alpha)
     void elm_win_override_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool override)
+    void elm_win_fullscreen_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool fullscreen)
+    void elm_win_maximized_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool maximized)
+    void elm_win_iconified_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool iconified)
+    void elm_win_layer_set(evas.c_evas.Evas_Object *obj, int layer)
+    void elm_win_rotation_set(evas.c_evas.Evas_Object *obj, int rotation)
+    void elm_win_sticky_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool sticky)
+
     void elm_win_keyboard_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Keyboard_Mode mode)
     void elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool is_keyboard)
     
@@ -167,6 +205,16 @@ cdef extern from "Elementary.h":
     void elm_icon_no_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool no_scale)
     void elm_icon_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool scale_up, evas.c_evas.Evas_Bool scale_down)
     void elm_icon_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool fill_outside)
+    void elm_icon_prescale_set(evas.c_evas.Evas_Object *obj, int size)
+
+    # Image object
+    evas.c_evas.Evas_Object* elm_image_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Bool    elm_image_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    void                     elm_image_smooth_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool smooth)
+    void                     elm_image_no_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool no_scale)
+    void                     elm_image_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool fill_outside)
+    void                     elm_image_prescale_set(evas.c_evas.Evas_Object *obj, int size)
+    void                     elm_image_orient_set(evas.c_evas.Evas_Object *obj, Elm_Image_Orient orient)
     
     # Box object
     evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
@@ -188,6 +236,10 @@ cdef extern from "Elementary.h":
     void elm_scroller_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child)
     void elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool w, evas.c_evas.Evas_Bool h)
     void         elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
+    void elm_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
+    void elm_scroller_region_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *x, evas.c_evas.Evas_Coord *y, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
+    void elm_scroller_child_size_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
+    void elm_scroller_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool h_bounce, evas.c_evas.Evas_Bool v_bounce)
     
     # Label object  
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
@@ -288,10 +340,12 @@ cdef extern from "Elementary.h":
             *parent)
     void elm_hoversel_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_hoversel_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    void elm_hoversel_hover_begin(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
     Elm_Hoversel_Item *elm_hoversel_item_add(evas.c_evas.Evas_Object *obj, char *label, char
             *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     void elm_hoversel_item_del(Elm_Hoversel_Item *item)
+    void* elm_hoversel_item_data_get(Elm_Hoversel_Item *it)
 
     # Toolbar object
     evas.c_evas.Evas_Object *elm_toolbar_add(evas.c_evas.Evas_Object *parent)
@@ -307,18 +361,26 @@ cdef extern from "Elementary.h":
     Elm_List_Item *elm_list_item_prepend(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     Elm_List_Item *elm_list_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_List_Item *before, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     Elm_List_Item *elm_list_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_List_Item *after, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    void        elm_list_clear(evas.c_evas.Evas_Object *obj)
     void         elm_list_go(evas.c_evas.Evas_Object *obj) 
     void      elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool multi) 
     void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode) 
+    void      elm_list_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool multi)
     evas.c_evas.Eina_List     *elm_list_items_get(evas.c_evas.Evas_Object *obj) 
     Elm_List_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj) 
     evas.c_evas.Eina_List     *elm_list_selected_items_get(evas.c_evas.Evas_Object *obj) 
     void         elm_list_item_selected_set(Elm_List_Item *item, evas.c_evas.Evas_Bool selected) 
     void         elm_list_item_show(Elm_List_Item *item) 
     void         elm_list_item_del(Elm_List_Item *item) 
+    void         elm_list_item_del_cb_set(Elm_List_Item *item, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
     void  *elm_list_item_data_get(Elm_List_Item *item) 
     evas.c_evas.Evas_Object *elm_list_item_icon_get(Elm_List_Item *item) 
     evas.c_evas.Evas_Object *elm_list_item_end_get(Elm_List_Item *item) 
+    evas.c_evas.Evas_Object *elm_list_item_base_get(Elm_List_Item *item)
+    char* elm_list_item_label_get(Elm_List_Item *item)
+    Elm_List_Item *elm_list_item_prev(Elm_List_Item *it)
+    Elm_List_Item *elm_list_item_next(Elm_List_Item *it)
+
 
     # Carousel object
     evas.c_evas.Evas_Object *elm_carousel_add(evas.c_evas.Evas_Object *parent)

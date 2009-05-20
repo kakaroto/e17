@@ -66,4 +66,7 @@ cdef class Icon(Object):
     def fill_outside_set(self,fill_outside):
         elm_icon_fill_outside_set(self.obj,fill_outside)
 
+    def prescale_set(self, size):
+        elm_icon_prescale_set(self.obj, size)
+
 

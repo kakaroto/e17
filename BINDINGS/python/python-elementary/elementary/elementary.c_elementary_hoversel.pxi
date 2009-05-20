@@ -19,6 +19,9 @@
 cdef object _hoversel_callback_mapping
 _hoversel_callback_mapping = dict()
 
+# TODO
+# - data handling for the hoversel item is currently missing
+
 cdef void _hoversel_callback(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     try:
         mapping = _hoversel_callback_mapping.get(<long>event_info)
@@ -72,11 +75,14 @@ cdef class Hoversel(Object):
         
     def icon_set(self, c_evas.Object icon):
         elm_hoversel_icon_set(self.obj, icon.obj)
+
+    def hover_begin(self):
+        elm_hoversel_hover_begin(self.obj)
     
     def hover_end(self):
         elm_hoversel_hover_end(self.obj)
     
-    def item_add(self, label, icon_file, icon_type, callback):
-        return HoverselItem(self, label, icon_file, icon_type, callback)
+    def item_add(self, label, icon_file, icon_type, callback, data = None):
+        return HoverselItem(self, label, icon_file, icon_type, callback, data)
 
 

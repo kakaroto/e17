@@ -143,12 +143,30 @@ cdef class ListItem:
         cdef void* data
         data = elm_list_item_data_get(self.item)
         return None
+
+    # TODO
+    # def 
         
+    # TODO
     def icon_get(self):
         return None
     
+    # TODO
     def end_get(self):
         return None
+
+    # TODO
+    def base_get(self):
+        return None
+
+    def label_get(self):
+        return elm_list_item_label_get(self.item)
+    
+    def prev(self):
+        self.item = elm_list_item_prev(self.item)
+
+    def next(self):
+        self.item = elm_list_item_next(self.item)
 
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
@@ -173,6 +191,21 @@ cdef class List(Object):
         item = ListItem()
         item.insert_after(self, after, label, icon, end, callback, data)
         return item
+
+    def clear(self):
+        elm_list_clear(self.obj)
     
     def go(self):
         elm_list_go(self.obj)
+
+    property clicked:
+        def __set__(self, value):
+            self._callback_add("clicked", value)
+    
+    property selected:
+        def __set__(self, value):
+            self._callback_add("selected", value)
+
+    property unselected:
+        def __set__(self, value):
+            self._callback_add("unselected", value)

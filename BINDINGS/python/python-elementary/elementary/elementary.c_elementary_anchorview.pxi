@@ -19,8 +19,13 @@
 cdef class AnchorView(Object):
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_anchorview_add(parent.obj))
+
+    # TODO
+    # property clicked needs some extra work:
+    # - event_info = Elm_Entry_Anchorview_Info
+    # -> conversion
         
-    property anchor_clicked:
+    property clicked:
         def __set__(self, value):
             self._callback_add("anchor,clicked",value)
 

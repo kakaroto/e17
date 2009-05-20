@@ -26,4 +26,37 @@ cdef class Scroller(Object):
     def content_min_limit(self, w, h):
         elm_scroller_content_min_limit(self.obj, w, h)
 
+    def region_show(self, x, y, w, h):
+        elm_scroller_region_show(self.obj, x, y, w, h)
+
+    def region_get(self):
+        cdef c_evas.Evas_Coord x
+        cdef c_evas.Evas_Coord y
+        cdef c_evas.Evas_Coord w
+        cdef c_evas.Evas_Coord h
+        elm_scroller_region_get(self.obj, &x, &y, &w, &h)
+        return (x, y, w, h)
+
+    def policy_set(self, policy_h, policy_v):
+        elm_scroller_policy_set(self.obj, policy_h, policy_v)
+
+    def child_size_get(self):
+        cdef c_evas.Evas_Coord w
+        cdef c_evas.Evas_Coord h
+        elm_scroller_child_size_get(self.obj, &w, &h)
+        return (w, h)
+
+    def bounce_set(self, h, v):
+        cdef int h_bounce
+        cdef int v_bounce
+        h_bounce = 0
+        v_bounce = 0
+        
+        if h:
+            h_bounce = 1
+        if v:
+            v_bounce = 1
+
+        elm_scroller_bounce_set(self.obj, h_bounce, v_bounce)
+
 

@@ -45,7 +45,30 @@ def run():
 def exit():
     elm_exit()
 
-flag = False    
+def scale_get():
+    return elm_scale_get()
+
+def scale_set(scale):
+    elm_scale_set(scale)
+
+def finger_size_get():
+    return elm_finger_size_get()
+
+def finger_size_set(size):
+    elm_finger_size_set(size)
+
+def coords_finger_size_adjust(times_w, w, times_h, h):
+    cdef c_evas.Evas_Coord width
+    cdef c_evas.Evas_Coord height
+    width = w
+    height = h
+    elm_coords_finger_size_adjust(times_w, &width, times_h, &height)
+
+def theme_overlay_add(item):
+    elm_theme_overlay_add(item)
+
+def theme_extension_add(item):
+    elm_theme_extension_add(item)
 
 
 

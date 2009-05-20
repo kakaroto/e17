@@ -47,6 +47,14 @@ cdef class Object(evas.c_evas.Object):
         cdef double scale
         scale = elm_object_scale_get(self.obj)
         return scale
+
+    def style_set(self, style):
+        elm_object_style_set(self.obj, style)
+
+    def style_get(self):
+        cdef char *style
+        style = elm_object_style_get(self.obj)
+        return style
     
     def focus(self):
         elm_object_focus(self.obj)
