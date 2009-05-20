@@ -132,7 +132,7 @@ struct _Drawer_Source
    Drawer_Plugin	plugin;
 
    struct {
-      Eina_List * (*list)        (Drawer_Source *s, Evas *evas);
+      Eina_List * (*list)        (Drawer_Source *s);
 
       /* optional */
 

@@ -67,6 +67,7 @@ static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
 static void _drawer_container_update(Instance *inst);
+static Evas_Object * _drawer_container_generate(Instance *inst, Evas *evas);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
 static void _drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
@@ -542,7 +543,7 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
      {
 	Eina_List *l = NULL;
 
-	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source), evas);
+	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
 	if (l)
 	  si = l->data;
      }
@@ -675,7 +676,7 @@ _drawer_popup_hide(Instance *inst)
 static void
 _drawer_popup_update(Instance *inst)
 {
-   Evas_Object *o = NULL;
+   Evas_Object *o;
 
    if (inst->flags.pop_hiding)
      {
@@ -683,28 +684,7 @@ _drawer_popup_update(Instance *inst)
 	return;
      }
 
-   if (inst->composite && inst->composite->enabled)
-     {
-        Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
-
-	o = c->func.render(c, inst->popup->win->evas);
-
-        if (c->func.description_get)
-          edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
-                                    c->func.description_get(c));
-     }
-   else
-     {
-	Eina_List *l = NULL;
-	Drawer_Source *s = DRAWER_SOURCE(inst->source);
-
-	l = s->func.list(s, inst->popup->win->evas);
-	o = DRAWER_VIEW(inst->view)->func.render(DRAWER_VIEW(inst->view),
-						 inst->popup->win->evas, l);
-	if (s->func.description_get)
-	  edje_object_part_text_set(inst->popup->o_bg, "e.text.description",
-				    s->func.description_get(s));
-     }
+   o = _drawer_container_generate(inst, inst->popup->win->evas);
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 
@@ -715,8 +695,6 @@ _drawer_popup_update(Instance *inst)
 static void
 _drawer_container_update(Instance *inst)
 {
-   Evas *evas;
-
    if (inst->o_content)
      {
 	edje_object_part_unswallow(inst->o_drawer, inst->o_content);
@@ -724,12 +702,25 @@ _drawer_container_update(Instance *inst)
 	evas_object_event_callback_del(inst->o_content, EVAS_CALLBACK_RESIZE,
 				       _drawer_container_resize);
      }
-   evas = evas_object_evas_get(inst->o_drawer);
+   inst->o_content = _drawer_container_generate
+      (inst, evas_object_evas_get(inst->o_drawer));
+   edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
+   evas_object_show(inst->o_content);
+
+   evas_object_event_callback_add(inst->o_content, EVAS_CALLBACK_RESIZE,
+				  _drawer_container_resize, inst);
+}
+
+static Evas_Object *
+_drawer_container_generate(Instance *inst, Evas *evas)
+{
+   Evas_Object *o = NULL;
+
    if (inst->composite && inst->composite->enabled)
      {
         Drawer_Composite *c = DRAWER_COMPOSITE(inst->composite);
 
-        inst->o_content = c->func.render(c, evas);
+        o = c->func.render(c, evas);
 
         if (c->func.description_get)
           edje_object_part_text_set(inst->o_drawer, "e.text.description",
@@ -740,8 +731,8 @@ _drawer_container_update(Instance *inst)
         Drawer_Source *s = DRAWER_SOURCE(inst->source);
         Eina_List *l = NULL;
 
-        l = s->func.list(s, evas);
-        inst->o_content = DRAWER_VIEW(inst->view)->func.render
+        l = s->func.list(s);
+        o = DRAWER_VIEW(inst->view)->func.render
            (DRAWER_VIEW(inst->view), evas, l);
 
         if (s->func.description_get)
@@ -749,11 +740,8 @@ _drawer_container_update(Instance *inst)
                 s->func.description_get(s));
 
      }
-   edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
-   evas_object_show(inst->o_content);
 
-   evas_object_event_callback_add(inst->o_content, EVAS_CALLBACK_RESIZE,
-				  _drawer_container_resize, inst);
+   return o;
 }
 
 static void
@@ -1624,7 +1612,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
                {
                   Eina_List *l = NULL;
 
-                  l = s->func.list(s, evas_object_evas_get(inst->o_drawer));
+                  l = s->func.list(s);
                   if (l)
                     s->func.activate(s, l->data, inst->gcc->gadcon->zone);
                }

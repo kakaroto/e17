@@ -170,7 +170,7 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
 }
 
 EAPI Eina_List *
-drawer_source_list(Drawer_Source *s, Evas *evas __UNUSED__)
+drawer_source_list(Drawer_Source *s)
 {
    Eina_List *files;
    Instance *inst = NULL;
