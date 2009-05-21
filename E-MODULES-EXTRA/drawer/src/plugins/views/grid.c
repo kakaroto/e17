@@ -104,6 +104,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    const char *cat = NULL;
    Eina_Bool change = EINA_FALSE;
    Evas_Coord w, h;
+   Item *e;
 
    inst = DRAWER_PLUGIN(v)->data;
 
@@ -129,8 +130,6 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 
    EINA_LIST_FOREACH(ll, l, si)
      {
-	Item *e;
-
 	if (!cat && si->category)
 	  {
 	     cat = eina_stringshare_add(si->category);
@@ -153,11 +152,9 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 
 	if (change)
 	  {
-	     Item *c;
-
-	     c = _grid_category_create(inst, si);
-	     inst->items = eina_list_append(inst->items, c);
-	     edje_object_part_box_append(inst->o_box, "e.box.content", c->o_holder);
+	     e = _grid_category_create(inst, si);
+	     inst->items = eina_list_append(inst->items, e);
+	     edje_object_part_box_append(inst->o_box, "e.box.content", e->o_holder);
 	  }
 	e = _grid_item_create(inst, si);
 	inst->items = eina_list_append(inst->items, e);
@@ -191,10 +188,10 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 {
    Instance *inst = NULL;
    Evas_Coord gx, gy, gw, gh, zw, zh, zx, zy;
-   Evas_Coord ew = 0, eh = 0, cw = 0, ch = 0, ww = 0, hh = 0;
+   Evas_Coord catw = 0, cath = 0, ew = 0, eh = 0, cw = 0, ch = 0, ww = 0, hh = 0;
    Eina_List *l;
    Item *e;
-   int item_count = 0;
+   int max_item_count = 0, item_count = 0, cat_count = 0;
 
    inst = DRAWER_PLUGIN(v)->data;
    e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
@@ -205,15 +202,41 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 
    EINA_LIST_FOREACH(inst->items, l, e)
      {
-	if (!ew && !eh)
-	  evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
+	if (e->isa_category)
+	  {
+	     if (!cath)
+	       edje_object_size_max_get(e->o_holder, NULL, &cath);
 
-	if (!e->isa_category)
-	  item_count++;
+	     cat_count++;
+
+	     if (max_item_count < item_count)
+	       max_item_count = item_count;
+	     item_count = 0;
+	  }
+	else
+	  {
+	     if (!ew && !eh)
+	       evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
+
+	     item_count++;
+	  }
      }
 
-   ch = eh * (ceil(sqrt((double) item_count)));
+   ch = eh * (ceil(sqrt((double) (max_item_count ? max_item_count : item_count)))) + cath;
    cw = ch * ((float) ew / (float) eh);
+
+   if (cat_count)
+     {
+	ch = ch * cat_count;
+
+	catw = floor((float) cw / (float) ew) * ew;
+     }
+
+   EINA_LIST_FOREACH(inst->items, l, e)
+     {
+	if (e->isa_category)
+	  evas_object_resize(e->o_holder, catw, cath);
+     }
 
    /* Rough approximation, since we don't know the box's
     * padding settings, and we don't care */
@@ -435,23 +458,22 @@ _grid_category_create(Instance *inst, Drawer_Source_Item *si)
    e->si = si;
    e->isa_category = EINA_TRUE;
 
+   evas_object_show(e->o_holder);
+
    return e;
 }
 
 static void _grid_items_free(Instance *inst)
 {
-   while (inst->items)
-     {
-	Item *e;
+   Item *e;
 
-	e = inst->items->data;
+   EINA_LIST_FREE(inst->items, e)
+     {
 	if (e->o_icon)
 	  evas_object_del(e->o_icon);
 	if (e->o_holder)
 	  evas_object_del(e->o_holder);
 	E_FREE(e);
-
-	inst->items = eina_list_remove_list(inst->items, inst->items);
      }
 }
 

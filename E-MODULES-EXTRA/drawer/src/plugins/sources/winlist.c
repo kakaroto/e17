@@ -113,9 +113,11 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    inst->handlers = eina_list_append(
        inst->handlers, ecore_event_handler_add(
 	   ECORE_X_EVENT_WINDOW_PROPERTY, _winlist_border_window_prop_cb, inst));
+   /*
    inst->handlers = eina_list_append(
        inst->handlers, ecore_event_handler_add(
 	   E_EVENT_DESK_SHOW, _winlist_desk_show_cb, inst));
+   */
 
    _winlist_description_create(inst);
    _winlist_items_update(inst);

@@ -89,21 +89,17 @@ EAPI int
 drawer_plugin_shutdown(Drawer_Plugin *p)
 {
    Instance *inst = NULL;
+   Entry *e;
 
    inst = p->data;
 
-   while (inst->entries)
+   EINA_LIST_FREE(inst->entries, e)
      {
-	Entry *e;
-
-	e = inst->entries->data;
 	if (e->o_icon)
 	  evas_object_del(e->o_icon);
 	if (e->o_holder)
 	  evas_object_del(e->o_holder);
 	E_FREE(e);
-
-	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
      }
 
    eina_stringshare_del(inst->parent_id);
@@ -123,6 +119,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    Drawer_Source_Item *si;
    const char *cat = NULL;
    Eina_Bool change = EINA_FALSE;
+   Entry *e;
 
    inst = DRAWER_PLUGIN(v)->data;
 
@@ -133,18 +130,13 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    _list_containers_create(inst);
 
    e_box_freeze(inst->o_box);
-   while (inst->entries)
+   EINA_LIST_FREE(inst->entries, e)
      {
-	Entry *e;
-
-	e = inst->entries->data;
 	if (e->o_icon)
 	  evas_object_del(e->o_icon);
 	if (e->o_holder)
 	  evas_object_del(e->o_holder);
 	E_FREE(e);
-
-	inst->entries = eina_list_remove_list(inst->entries, inst->entries);
      }
 
    EINA_LIST_FOREACH(items, l, si)

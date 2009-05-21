@@ -158,9 +158,12 @@ struct _Drawer_View
       Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
+      /* Calculates the size of the content */
       void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc,
                                                  Drawer_Content_Margin *margin, int *w, int *h);
+      /* Called when the container is resized based on the previously calculated size, for further tweaking of the content */
       void	    (*container_resized)	(Drawer_View *v);
+      /* Sets the orientation of the gadget container */
       void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
    } func;
 };
@@ -183,9 +186,12 @@ struct _Drawer_Composite
       /* Returns a description of the source */
       const char  * (*description_get) (Drawer_Composite *c);
 
+      /* Calculates the size of the content */
       void	    (*content_size_get)	 (Drawer_Composite *c, E_Gadcon_Client *gcc,
                                           Drawer_Content_Margin *margin, int *w, int *h);
+      /* Called when the container is resized based on the previously calculated size, for further tweaking of the content */
       void	    (*container_resized) (Drawer_Composite *c);
+      /* Sets the orientation of the gadget container */
       void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
 
       /* Creates a shelf icon */
