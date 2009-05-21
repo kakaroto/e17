@@ -9,10 +9,7 @@ INCLUDES += @XPIXMAP_CFLAGS@
 endif
 
 pkgdir = $(datadir)/$(MODULE_ARCH)/plugins/sources
-pkg_LTLIBRARIES = launcher.la directory_watcher.la history.la
-if BUILD_XPIXMAP
-pkg_LTLIBRARIES += winlist.la
-endif
+pkg_LTLIBRARIES = launcher.la directory_watcher.la history.la winlist.la
 
 launcher_la_SOURCES = launcher.h launcher.c
 launcher_ladir = $(pkgdir)
@@ -38,21 +35,19 @@ history_la_LIBADD = @E_LIBS@
 history_la_LDFLAGS = -module -avoid-version
 history_la_DEPENDENCIES = $(top_builddir)/config.h
 
-if BUILD_XPIXMAP
 winlist_la_SOURCES = winlist.h winlist.c
 winlist_ladir = $(pkgdir)
 winlist_la_DATA = winlist.desktop
 
-winlist_la_LIBADD = @E_LIBS@ @XPIXMAP_LIBS@
+winlist_la_LIBADD = @E_LIBS@
 winlist_la_LDFLAGS = -module -avoid-version
 winlist_la_DEPENDENCIES = $(top_builddir)/config.h
-endif
-
-EXTRA_DIST = launcher_la_DATA directory_watcher_la_DATA history_la_DATA
 
 if BUILD_XPIXMAP
-EXTRA_DIST += winlist_la_DATA
+winlist_la_LIBADD += @XPIXMAP_LIBS@
 endif
+
+EXTRA_DIST = launcher_la_DATA directory_watcher_la_DATA history_la_DATA winlist_la_DATA
 
 clean-local:
 	rm -rf *~

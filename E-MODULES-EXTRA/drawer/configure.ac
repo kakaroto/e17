@@ -55,11 +55,27 @@ AC_ARG_ENABLE(homedir-install,
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
 
+AC_ARG_ENABLE([xpixmap],
+   [AC_HELP_STRING([--enable-xpixmap], [enable esmart_xpixmap support @<:@default=no@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       _iv_enable_xpixmap="yes"
+    else
+       _iv_enable_xpixmap="no"
+    fi
+   ],
+   [_iv_enable_xpixmap="no"]
+)
+
+AC_MSG_CHECKING([whether esmart_xpixmap code is built])
+AC_MSG_RESULT([${_iv_enable_xpixmap}])
+
 have_xpixmap="no"
-PKG_CHECK_MODULES(XPIXMAP, esmart_xpixmap, [
+
+if test "x${_iv_enable_xpixmap}" = "xyes" ; then
     have_xpixmap="yes"
-    AC_DEFINE(HAVE_XPIXMAP, 1, [have esmaprt xpixmap support])
-])
+    AC_DEFINE(HAVE_XPIXMAP, 1, [have esmart_xpixmap code support])
+fi
 
 AM_CONDITIONAL(BUILD_XPIXMAP, test $have_xpixmap = yes)
 
@@ -74,3 +90,21 @@ po/Makefile.in
 module.desktop
 ], [
 ])
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Build with esmart_xpixmap support.......: $have_xpixmap"
+echo
+echo "------------------------------------------------------------------------"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
+echo "and then afterwards as root (or the user who will install this), type"
+echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo

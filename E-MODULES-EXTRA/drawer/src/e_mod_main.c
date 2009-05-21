@@ -539,14 +539,6 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
      }
 
    evas = evas_object_evas_get(inst->o_drawer);
-   if (!si && inst->source && inst->source->enabled)
-     {
-	Eina_List *l = NULL;
-
-	l = DRAWER_SOURCE(inst->source)->func.list(DRAWER_SOURCE(inst->source));
-	if (l)
-	  si = l->data;
-     }
 
    if (si)
      {
@@ -949,10 +941,15 @@ init_done:
    inst->source = p;
 
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
-     p->enabled = EINA_TRUE;
+     {
+        p->enabled = EINA_TRUE;
 
-   if (!inst->flags.is_floating)
-     _drawer_shelf_update(inst, NULL);
+        if (!inst->flags.is_floating)
+          {
+             Eina_List *l = s->func.list(s);
+             _drawer_shelf_update(inst, (l ? l->data : NULL));
+          }
+     }
    return s;
 }
 
@@ -993,10 +990,12 @@ init_done:
    inst->view = p;
 
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
-     p->enabled = EINA_TRUE;
+     {
+        p->enabled = EINA_TRUE;
 
-   if (v->func.orient_set)
-     v->func.orient_set(v, inst->gcc->gadcon->orient);
+        if (v->func.orient_set)
+          v->func.orient_set(v, inst->gcc->gadcon->orient);
+     }
    return v;
 }
 
@@ -1041,13 +1040,15 @@ init_done:
    inst->composite = p;
 
    if (!p->error && (p->data = p->func.init(p, inst->conf_item->id)))
-     p->enabled = EINA_TRUE;
+     {
+        p->enabled = EINA_TRUE;
 
-   if (c->func.orient_set)
-     c->func.orient_set(c, inst->gcc->gadcon->orient);
+        if (c->func.orient_set)
+          c->func.orient_set(c, inst->gcc->gadcon->orient);
 
-   if (!inst->flags.is_floating)
-     _drawer_shelf_update(inst, NULL);
+        if (!inst->flags.is_floating)
+          _drawer_shelf_update(inst, NULL);
+     }
    return c;
 }
 
