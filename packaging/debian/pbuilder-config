@@ -16,7 +16,7 @@ UBUNTU_SUITES=("jaunty" "intrepid" "hardy")
 # Mirrors to use. Update these to your preferred mirror.
 DEBIAN_MIRROR="ftp.debian.org"
 UBUNTU_MIRROR="archive.ubuntu.com"
-UBUNTU_PORTS_MIRROR="http://ports.ubuntu.com"
+UBUNTU_PORTS_MIRROR="ports.ubuntu.com"
 
 # Optionally set the architecture to the host architecture if none set. Note
 # that you can set your own default (i.e. ${ARCH:="i386"}).
