@@ -196,6 +196,7 @@ src/lib/format/Makefile
 src/lib/drawer/Makefile
 src/lib/converter/Makefile
 src/lib/raddist/Makefile
+src/lib/dispmap/Makefile
 src/lib/scaler/Makefile
 src/lib/transformer/Makefile
 src/lib/util/Makefile

@@ -111,6 +111,17 @@ static void _parse_queue(Enesim_Cpu_Queue *q)
 		}
 		break;
 
+		case ENESIM_OPERATOR_DISPMAP1D:
+		{
+			Enesim_Dispmap_1D dm = q->cb;
+
+			dm(q->dispmap.src, q->dispmap.spitch, q->dispmap.sw, q->dispmap.sh,
+					q->dispmap.scale, q->dispmap.type.dim1.map,
+					q->dispmap.type.dim1.dx, q->dispmap.type.dim1.dy,
+					q->dispmap.type.dim1.dlen, q->dispmap.dst);
+		}
+		break;
+
 		default:
 		printf("Operation not defined %d\n", q->id);
 		break;

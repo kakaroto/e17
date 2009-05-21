@@ -11,27 +11,55 @@
  * Use eina_f16p16 for the fixed point math
  * Define on eina an Eina_F16p16 eina_f16p16_one_get() function
  */
+#define FIXED 0
 
-static void _rd_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t sw, uint32_t sh,
-		float x0, float y0, float r0, float scale,
-		uint32_t x, uint32_t y, uint32_t dlen,
+/* P'(x,y) <- P( x + scale * (XC(x,y) - .5), y + scale * (YC(x,y) - .5)) */
+static void _dm_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t sw, uint32_t sh,
+		float scale, uint32_t *map,
+		uint32_t dx, uint32_t dy, uint32_t dlen,
 		uint32_t *dst)
 {
 	uint32_t *e = dst + dlen;
-	float r0_inv = 1.0f/r0;
-	int32_t dx = x - x0;
-	int32_t dy = y - y0;
 
 	while (dst < e)
 	{
+		uint32_t p0 = 0;
+		uint16_t a;
+		int32_t sx, sy;
+		int32_t sxx, syy;
+#if FIXED
+		int32_t vx, vy;
+#else
+		float vx, vy;
+#endif
 		/* first we transform input coords to src coords... */
-		unsigned int  p0 = 0;
-		int     sxx, syy, sx, sy;
-		float   r = hypot(dx, dy);
+		if (dx >= sw || dy >= sh)
+			goto next;
+		a = *(map) >> 24;
+		/*
+		{
+			uint32_t tmp = *map;
+			a = tmp >> 24;
+			if (a > 0 && a < 255)
+				a = ((tmp >> 16) & 0xff) * 255 / a;
+			else
+				a = a;
 
-		r = (((scale * (r0 - r)) + r) * r0_inv);
-		sxx = ((r * dx) + x0) * 65536;  sx = (sxx >> 16);
-		syy = ((r * dy) + y0) * 65536;  sy = (syy >> 16);
+		}*/
+#if FIXED
+		vx = ((a - 127) * 65536) / (255 * 65536);
+		vy = ((a - 127) * 65536) / (255 * 65536);
+		sxx = (dx * 65535) + (scale * 65536 * vx);
+		syy = (dy * 65535) + (scale * 65536 * vy);
+#else
+		vx = (a / 255.0) - 0.5;
+		vy = (a / 255.0) - 0.5;
+		sxx = (dx + (scale * vx)) * 65536;
+		syy = (dy + (scale * vy)) * 65536;
+
+#endif
+		sx = (sxx >> 16);
+		sy = (syy >> 16);
 		/* ... then we sample the src. */
 		if ( (((unsigned) (sx + 1)) < (sw + 1)) && (((unsigned) (sy + 1)) < (sh + 1)) )
 		{
@@ -63,8 +91,13 @@ static void _rd_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t
 			if ((sx > -1) && (sy > -1))
 				p0 = *p;
 #endif
+			//printf("moving %d %d (%d)\n", vx >> 16, vy >> 16, a);
+			//printf("moving %g %g (%d)\n", vx, vy, a);
+			//printf("from %d %d to %d %d\n", dx, dy, sx, sy);
 		}
+next:
 		*dst++ = p0;
+		map++;
 		dx++;
 	}
 }

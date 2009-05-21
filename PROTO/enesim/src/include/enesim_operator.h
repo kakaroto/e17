@@ -27,4 +27,11 @@ EAPI Eina_Bool enesim_operator_raddist_1d(Enesim_Operator *op,
 		float x0, float y0, float r0, float scale,
 		uint32_t dx, uint32_t dy, uint32_t dlen,
 		uint32_t *dst);
+
+EAPI Eina_Bool enesim_operator_dispmap_1d(Enesim_Operator *op,
+		uint32_t *src, uint32_t spitch, uint32_t sw, uint32_t sh,
+		float scale, uint32_t *map,
+		uint32_t dx, uint32_t dy, uint32_t dlen,
+		uint32_t *dst);
+
 #endif /* ENESIM_OPERATOR_H_ */

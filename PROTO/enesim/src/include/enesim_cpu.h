@@ -3,6 +3,24 @@
 
 typedef struct _Enesim_Cpu Enesim_Cpu;
 
+typedef struct _Enesim_Cpu_Dispmap
+{
+	uint32_t *src;
+	uint32_t spitch;
+	uint32_t sw;
+	uint32_t sh;
+	float scale;
+	uint32_t *dst;
+	union {
+		struct {
+			uint32_t *map;
+			uint32_t dx;
+			uint32_t dy;
+			uint32_t dlen;
+		} dim1;
+	} type;
+} Enesim_Cpu_Dispmap;
+
 typedef struct _Enesim_Cpu_Raddist
 {
 	uint32_t *src;
@@ -117,6 +135,7 @@ typedef struct _Enesim_Cpu_Queue
 	Enesim_Cpu_Scaler scaler;
 	Enesim_Cpu_Transformer transformer;
 	Enesim_Cpu_Raddist raddist;
+	Enesim_Cpu_Dispmap dispmap;
 } Enesim_Cpu_Queue;
 
 

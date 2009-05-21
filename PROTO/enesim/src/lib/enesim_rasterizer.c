@@ -19,7 +19,7 @@
 #include "enesim_private.h"
 
 /*============================================================================*
- *                                 Global                                     * 
+ *                                 Global                                     *
  *============================================================================*/
 /**
  * To be documented
@@ -38,7 +38,7 @@ Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func
 	return r;
 }
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
@@ -50,7 +50,7 @@ EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
 	assert(r);
 	assert(r->funcs);
 	assert(r->funcs->vertex_add);
-	
+
 	r->funcs->vertex_add(r->data, x, y);
 }
 
@@ -81,7 +81,7 @@ EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r)
 	assert(r);
 	assert(r->funcs);
 	assert(r->funcs->delete);
-	
+
 	r->funcs->delete(r->data);
 	free(r);
 }

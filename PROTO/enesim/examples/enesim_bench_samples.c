@@ -22,7 +22,8 @@ void test_gradient1(Enesim_Surface *s)
 		uint8_t col = ((opt_height - 1) - i) * 255 / opt_height;
 
 		sdata_tmp = sdata;
-		enesim_surface_pixel_components_from(&color, sfmt, col, col/2, 0, col);
+		//enesim_surface_pixel_components_from(&color, sfmt, col, col/2, 0, col);
+		enesim_surface_pixel_components_from(&color, sfmt, 0xff, col/2, 0, col);
 
 		if (!((i + 1) % 16))
 			skip = (skip + 1) % 2;

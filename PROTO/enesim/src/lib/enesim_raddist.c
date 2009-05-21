@@ -23,8 +23,8 @@
 typedef Enesim_Raddist_1D Enesim_Raddist_1D_Lut[ENESIM_FORMATS][ENESIM_QUALITIES][ENESIM_FORMATS];
 typedef Enesim_Raddist_2D Enesim_Raddist_2D_Lut[ENESIM_FORMATS][ENESIM_QUALITIES][ENESIM_FORMATS];
 
-Enesim_Raddist_1D_Lut *_raddists1d;
-Enesim_Raddist_2D_Lut *_raddists2d;
+static Enesim_Raddist_1D_Lut *_raddists1d;
+static Enesim_Raddist_2D_Lut *_raddists2d;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/

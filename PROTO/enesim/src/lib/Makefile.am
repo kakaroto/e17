@@ -1,4 +1,4 @@
-SUBDIRS = cpu util drawer rasterizer converter scaler transformer raddist
+SUBDIRS = cpu util drawer rasterizer converter scaler transformer raddist dispmap
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -24,7 +24,8 @@ enesim_repeater.c \
 enesim_rotator.c \
 enesim_scaler.c \
 enesim_transformer.c \
-enesim_raddist.c
+enesim_raddist.c \
+enesim_dispmap.c
 
 libenesim_la_LIBADD = \
 cpu/libenesim_cpu.la \
@@ -35,6 +36,7 @@ converter/libenesim_converter.la \
 scaler/libenesim_scaler.la \
 transformer/libenesim_transformer.la \
 raddist/libenesim_raddist.la \
+dispmap/libenesim_dispmap.la \
 @ENESIM_LIBS@
 
 libenesim_la_DEPENDENCIES = \
@@ -45,6 +47,7 @@ drawer/libenesim_drawer.la \
 converter/libenesim_converter.la \
 scaler/libenesim_scaler.la \
 transformer/libenesim_transformer.la \
-raddist/libenesim_raddist.la
+raddist/libenesim_raddist.la \
+dispmap/libenesim_dispmap.la
 
 libenesim_la_LDFLAGS = -no-undefined -version-info @version_info@

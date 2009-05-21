@@ -51,18 +51,21 @@ void surfaces_create(Enesim_Surface **src, Enesim_Format sfmt,
 		if (*src) enesim_surface_delete(*src);
 		*src = enesim_surface_new(sfmt, opt_width, opt_height);
 		test_gradient1(*src);
+		surface_save(*src, "source.png");
 	}
 	if (dst)
 	{
 		if (*dst) enesim_surface_delete(*dst);
 		*dst = enesim_surface_new(dfmt, opt_width, opt_height);
 		test_gradient2(*dst);
+		surface_save(*dst, "destination.png");
 	}
 	if (msk)
 	{
 		if (*msk) enesim_surface_delete(*msk);
 		*msk = enesim_surface_new(mfmt, opt_width, opt_height);
 		test_gradient3(*msk);
+		surface_save(*msk, "mask.png");
 	}
 }
 
@@ -149,6 +152,11 @@ int bench_get(const char *name)
 		opt_bench = "raddist";
 		return 1;
 	}
+	else if (!strcmp(name, "dispmap"))
+	{
+		opt_bench = "dispmap";
+		return 1;
+	}
 	return 0;
 }
 
@@ -213,6 +221,7 @@ void rop_help(void)
 
 void bench_help(void)
 {
+	printf("dispmap\n");
 	printf("drawer\n");
 	printf("transformer\n");
 	printf("raddist\n");
@@ -416,6 +425,10 @@ ok:
 	{
 		raddist_bench();
 	}
+	else if (!strcmp(opt_bench, "dispmap"))
+	{
+		dispmap_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		drawer_bench();
@@ -423,6 +436,7 @@ ok:
 		scaler_bench();
 		//rasterizer_bench();
 		raddist_bench();
+		dispmap_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

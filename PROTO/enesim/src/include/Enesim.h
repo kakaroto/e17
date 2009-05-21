@@ -73,6 +73,7 @@ extern "C" {
 #include "enesim_transformer.h"
 #include "enesim_converter.h"
 #include "enesim_raddist.h"
+#include "enesim_dispmap.h"
 
 #ifdef __cplusplus
 }

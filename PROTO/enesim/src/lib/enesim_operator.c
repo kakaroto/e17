@@ -153,3 +153,29 @@ EAPI Eina_Bool enesim_operator_raddist_1d(Enesim_Operator *op,
 	return EINA_TRUE;
 }
 
+EAPI Eina_Bool enesim_operator_dispmap_1d(Enesim_Operator *op,
+		uint32_t *src, uint32_t spitch, uint32_t sw, uint32_t sh,
+		float scale, uint32_t *map,
+		uint32_t dx, uint32_t dy, uint32_t dlen,
+		uint32_t *dst)
+{
+	Enesim_Cpu_Queue q;
+
+	if (!_queue_create(&q, op, ENESIM_OPERATOR_DISPMAP1D))
+		return EINA_FALSE;
+
+	q.dispmap.src = src;
+	q.dispmap.spitch = spitch;
+	q.dispmap.sw = sw;
+	q.dispmap.sh = sh;
+	q.dispmap.scale = scale;
+	q.dispmap.dst = dst;
+	q.dispmap.type.dim1.dx = dx;
+	q.dispmap.type.dim1.dy = dy;
+	q.dispmap.type.dim1.dlen = dlen;
+	q.dispmap.type.dim1.map = map;
+	op->cpu->run(op->cpu, &q);
+
+	return EINA_TRUE;
+}
+
