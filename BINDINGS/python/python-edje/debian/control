@@ -11,6 +11,7 @@ Package: python-edje
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas
 Provides: ${python:Provides}
+Replaces: python-efl-edje
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for edje
  This package contains python edje module.
@@ -23,6 +24,7 @@ Package: python-edje-doc
 Section: doc
 Architecture: all
 Suggests: python-edje
+Replaces: python-efl-edje-doc
 Description: Documentation for python ecore
  Edje is a graphical layout and animation library for animated resizable,
  compressed and scalable themes. It is the theming engine behind

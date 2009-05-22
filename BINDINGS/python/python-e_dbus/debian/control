@@ -11,6 +11,7 @@ Package: python-edbus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
+Replaces: python-efl-edbus
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for edbus
  This package contains python module for edbus.
@@ -25,6 +26,7 @@ Package: python-edbus-doc
 Architecture: all
 Section: doc
 Suggests: python-edbus
+Replaces: python-efl-edbus-doc
 Description: Python bindings for edbus
  This package contains python module for edbus.
  .

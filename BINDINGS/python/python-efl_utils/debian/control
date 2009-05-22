@@ -1,4 +1,4 @@
-Source: python-utils
+Source: python-efl-utils
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
@@ -7,7 +7,7 @@ Standards-Version: 3.8.1
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
 
-Package: python-utils
+Package: python-efl-utils
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
