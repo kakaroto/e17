@@ -90,7 +90,7 @@ int exalt_main()
  * @param ip the string ip
  * return Return 1 if sucess, else 0
  */
-short exalt_is_address(const char* ip)
+short exalt_address_is(const char* ip)
 {
     Exalt_Regex *r;
     short res;
@@ -108,7 +108,7 @@ short exalt_is_address(const char* ip)
  * @param essid the essid
  * @return Return 1 if success, else 0
  */
-short exalt_is_essid(const char* essid)
+short exalt_essid_is(const char* essid)
 {
     if(!essid) return 0;
     return strlen(essid);
@@ -120,7 +120,7 @@ short exalt_is_essid(const char* essid)
  * @param encryption_mode the password mode (WEP, WPA ...)
  * @return Return 1 if success, else 0
  */
-short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
+short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
 {
     Exalt_Regex *r;
     short res;
@@ -164,7 +164,7 @@ short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
  * @brief return if you have the administrator right
  * @return Return 1 if yes, else 0
  */
-short exalt_is_admin()
+short exalt_admin_is()
 {
     return exalt_eth_interfaces.admin;
 }
@@ -173,7 +173,7 @@ short exalt_is_admin()
  * @brief return if libexalt is built with the support of dhcp
  * @return Return 1 if yes, else 0
  */
-short exalt_dhcp_is_support()
+short exalt_dhcp_support_is()
 {
 #ifdef HAVE_DHCP
     return 1;
@@ -187,7 +187,7 @@ short exalt_dhcp_is_support()
  * @brief return if libexalt is built with the support of vpnc
  * @return Return 1 if yes, else 0
  */
-short exalt_vpnc_is_support()
+short exalt_vpnc_support_is()
 {
 #ifdef HAVE_VPNC
     return 1;

@@ -25,7 +25,7 @@ Eina_List* exalt_dns_get_list()
         if(strlen(buf) > 13)
         {
             addr = buf + 11;
-            if(exalt_is_address(addr))
+            if(exalt_address_is(addr))
                 l = eina_list_append(l, strdup(addr));
         }
     }
@@ -43,7 +43,7 @@ int exalt_dns_add(const char* dns)
     int ret;
 
     EXALT_ASSERT_RETURN(dns!=NULL);
-    EXALT_ASSERT_RETURN(exalt_is_address(dns));
+    EXALT_ASSERT_RETURN(exalt_address_is(dns));
 
     f = fopen(EXALT_RESOLVCONF_FILE, "a");
     EXALT_ASSERT_RETURN(f!=NULL);
@@ -95,7 +95,7 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
 
     EXALT_ASSERT_RETURN(old_dns!=NULL);
     EXALT_ASSERT_RETURN(new_dns!=NULL);
-    EXALT_ASSERT_RETURN(exalt_is_address(new_dns));
+    EXALT_ASSERT_RETURN(exalt_address_is(new_dns));
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
     fr = fopen(EXALT_TEMP_FILE, "ro");

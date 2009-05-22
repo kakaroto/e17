@@ -84,9 +84,9 @@ short exalt_conn_valid_is(Exalt_Connection* c)
 
     if(exalt_conn_mode_get(c) == EXALT_STATIC)
     {
-        if(!exalt_is_address(exalt_conn_ip_get(c))
-                || (exalt_conn_gateway_get(c)!=  NULL && !exalt_is_address(exalt_conn_gateway_get(c)))
-                || !exalt_is_address(exalt_conn_netmask_get(c)))
+        if(!exalt_address_is(exalt_conn_ip_get(c))
+                || (exalt_conn_gateway_get(c)!=  NULL && !exalt_address_is(exalt_conn_gateway_get(c)))
+                || !exalt_address_is(exalt_conn_netmask_get(c)))
             valid = 0;
     }
 

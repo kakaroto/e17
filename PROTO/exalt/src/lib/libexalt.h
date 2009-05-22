@@ -210,13 +210,12 @@ int exalt_init();
 int exalt_main();
 
 
-short exalt_is_address(const char* ip);
-short exalt_is_essid(const char* essid);
-short exalt_is_admin();
-short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
+short exalt_address_is(const char* ip);
+short exalt_essid_is(const char* essid);
+short exalt_admin_is();
+short exalt_key_is(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 
-short exalt_wpasupplicant_is_support();
-short exalt_dhcp_is_support();
+short exalt_dhcp_support_is();
 
 void print_error(const char* file,const char* fct, int line, const char* msg, ...);
 

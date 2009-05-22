@@ -97,7 +97,7 @@ DBusMessage * dbus_cb_eth_ip_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 
     ip = exalt_eth_ip_get(eth);
 
-    if(!exalt_is_address(ip))
+    if(!exalt_address_is(ip))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_IP_ERROR_ID,
@@ -136,7 +136,7 @@ DBusMessage * dbus_cb_eth_netmask_get(E_DBus_Object *obj __UNUSED__, DBusMessage
 
     netmask = exalt_eth_netmask_get(eth);
 
-    if(!exalt_is_address(netmask))
+    if(!exalt_address_is(netmask))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_NETMASK_ERROR_ID,
@@ -175,7 +175,7 @@ DBusMessage * dbus_cb_eth_gateway_get(E_DBus_Object *obj __UNUSED__, DBusMessage
 
     gateway = exalt_eth_gateway_get(eth);
 
-    if(!exalt_is_address(gateway))
+    if(!exalt_address_is(gateway))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_GATEWAY_ERROR_ID,

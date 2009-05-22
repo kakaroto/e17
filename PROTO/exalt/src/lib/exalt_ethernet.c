@@ -440,7 +440,7 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
         Exalt_Ethernet *eth;
         struct rtentry rt;
         eth = exalt_eth_get_ethernet_byname(route->interface);
-        if(eth && exalt_eth_up_is(eth) && exalt_is_address(exalt_eth_ip_get(eth)))
+        if(eth && exalt_eth_up_is(eth) && exalt_address_is(exalt_eth_ip_get(eth)))
         {
             //we will use this route
             done = 1;
@@ -672,7 +672,7 @@ int _exalt_eth_save_up_get(Exalt_Ethernet* eth)
 int _exalt_eth_save_ip_set(Exalt_Ethernet* eth,const char* ip)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_is_address(ip) || ip==NULL);
+    EXALT_ASSERT_RETURN(exalt_address_is(ip) || ip==NULL);
 
     EXALT_FREE(eth->_save_ip);
     if(ip)
@@ -689,7 +689,7 @@ int _exalt_eth_save_ip_set(Exalt_Ethernet* eth,const char* ip)
 int _exalt_eth_save_netmask_set(Exalt_Ethernet* eth,const char* netmask)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_is_address(netmask) || netmask==NULL);
+    EXALT_ASSERT_RETURN(exalt_address_is(netmask) || netmask==NULL);
 
     EXALT_FREE(eth->_save_netmask);
     if(netmask)
@@ -706,7 +706,7 @@ int _exalt_eth_save_netmask_set(Exalt_Ethernet* eth,const char* netmask)
 int _exalt_eth_save_gateway_set(Exalt_Ethernet* eth,const char* gateway)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_is_address(gateway) || gateway==NULL);
+    EXALT_ASSERT_RETURN(exalt_address_is(gateway) || gateway==NULL);
 
     EXALT_FREE(eth->_save_gateway);
     if(gateway)
@@ -962,7 +962,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             || (str && str2 &&strcmp(str2,str ) != 0))
                     {
                         //if we have a new gateway, the gateway exist
-                        if(exalt_is_address(str))
+                        if(exalt_address_is(str))
                         {
                             Default_Route* route;
                             struct rtentry rt;
@@ -980,7 +980,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             {
                                 if(strcmp(exalt_eth_name_get(eth2),exalt_eth_name_get(eth))!=0)
                                 {
-                                    if(exalt_is_address(exalt_eth_gateway_get(eth2)))
+                                    if(exalt_address_is(exalt_eth_gateway_get(eth2)))
                                     {
                                         memset((char *) &rt, 0, sizeof(struct rtentry));
                                         rt.rt_flags = ( RTF_UP | RTF_GATEWAY );

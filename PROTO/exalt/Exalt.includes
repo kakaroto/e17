@@ -1,0 +1,9 @@
+src/bin
+src/bin_client
+src/bin_command
+src/lib/iw
+src/lib/nettools
+src/lib/wpa_supplicant
+src/lib
+src/lib_dbus
+src

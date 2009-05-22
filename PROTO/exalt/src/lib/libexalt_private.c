@@ -67,7 +67,7 @@ int i;
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
     EXALT_ASSERT_RETURN(!
-            (!exalt_is_admin() &&
+            (!exalt_admin_is() &&
             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
               || request == SIOCDELRT || request == SIOCSIFADDR
               || request == SIOCSIFNETMASK || request == SIOCADDRT

@@ -160,7 +160,7 @@ int main(int argc, char** argv)
     ecore_init();
     exalt_init();
 
-    if(!exalt_is_admin())
+    if(!exalt_admin_is())
     {
         print_error(__FILE__,__func__, __LINE__,"Please run as root. \n");
         e_dbus_shutdown();

@@ -271,7 +271,7 @@ void dns(int argc, char** argv)
     if(strcmp(argv[1],"dns_add")==0)
     {
         dns = argv[2];
-        if(!exalt_is_address(dns))
+        if(!exalt_address_is(dns))
         {
             fprintf(stderr,"The value %s is not an valid address\n",dns);
             exit(EXIT_FAILURE);
@@ -281,7 +281,7 @@ void dns(int argc, char** argv)
     else if(strcmp(argv[1],"dns_del")==0)
     {
         dns = argv[2];
-        if(!exalt_is_address(dns))
+        if(!exalt_address_is(dns))
         {
             fprintf(stderr,"The value %s is not an valid address\n",dns);
             exit(EXIT_FAILURE);
@@ -296,13 +296,13 @@ void dns(int argc, char** argv)
             exit(EXIT_FAILURE);
         }
         dns = argv[2];
-        if(!exalt_is_address(dns))
+        if(!exalt_address_is(dns))
         {
             fprintf(stderr,"The value %s is not an valid address\n",dns);
             exit(EXIT_FAILURE);
         }
         dns2 = argv[3];
-        if(!exalt_is_address(dns2))
+        if(!exalt_address_is(dns2))
         {
             fprintf(stderr,"The value %s is not an valid address\n",dns);
             exit(EXIT_FAILURE);
