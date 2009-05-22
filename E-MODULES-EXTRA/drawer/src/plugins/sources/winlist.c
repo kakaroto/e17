@@ -203,6 +203,20 @@ drawer_source_description_get(Drawer_Source *s)
    return inst->description;
 }
 
+EAPI void
+drawer_source_trigger(Drawer_Source *s, E_Zone *zone)
+{
+   E_Border *bd = e_border_focused_get();
+   Drawer_Source_Item *si;
+
+   if (bd)
+     {
+	si = _winlist_item_from_border(DRAWER_PLUGIN(s)->data, bd);
+	if (si)
+	  s->func.activate(s, si, zone);
+     }
+}
+
 EAPI Evas_Object *
 drawer_source_render_item(Drawer_Source *s, Drawer_Source_Item *si, Evas *evas)
 {
