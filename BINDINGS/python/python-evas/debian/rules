@@ -6,7 +6,7 @@ DEB_PYTHON_SYSTEM := pycentral
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-install/python-efl-evas-doc::
+install/python-evas-doc::
 	./gen-doc-api.sh
 
 clean::

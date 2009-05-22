@@ -7,10 +7,10 @@ Standards-Version: 3.8.1
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
 
-Package: python-efl-evas
+Package: python-evas
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
-Provides: ${python:Provides}, python-evas
+Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for evas
  This package contains python evas module.
@@ -20,11 +20,11 @@ Description: Python bindings for evas
  and Qtopia.
  Due to its simple API, evas can be developed with rapidly, and cleanly.
 
-Package: python-efl-evas-dev
+Package: python-evas-dev
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-efl-evas, libeina-dev, libevas-dev
-Provides: ${python:Provides}, python-evas-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-evas, libeina-dev, libevas-dev
+Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for enlightenment advanced canvas library (development files)
  Evas is an advanced canvas library, providing six engines for rendering: X11,
@@ -33,11 +33,10 @@ Description: Python bindings for enlightenment advanced canvas library (developm
  .
  This package contains python evas development files.
 
-Package: python-efl-evas-doc
+Package: python-evas-doc
 Section: doc
-Provides: python-evas-doc
 Architecture: all
-Suggests: python-efl-evas
+Suggests: python-evas
 Description: Python bindings for enlightenment advanced canvas library (development files)
  Evas is an advanced canvas library, providing six engines for rendering: X11,
  OpenGL (hardware accelerated), DirectFB, the framebuffer, Microsoft Windows

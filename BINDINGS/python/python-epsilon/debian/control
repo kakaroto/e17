@@ -2,14 +2,14 @@ Source: python-epsilon
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, python-efl-evas-dev, python-efl-ecore, libepsilon0-dev, libecore-dev, python-epydoc
+Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), cython, python-pyrex, python-setuptools, python-evas-dev, python-ecore, libepsilon0-dev, libecore-dev, python-epydoc
 Standards-Version: 3.8.1
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
 
-Package: python-efl-epsilon
+Package: python-epsilon-efl
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-efl-evas, python-efl-ecore
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for epsilon
@@ -17,10 +17,9 @@ Description: Python bindings for epsilon
  .
  Epsilon is a small, display independent, and quick thumbnailing library.
 
-Package: python-efl-epsilon-doc
-Provides: python-epsilon-doc
+Package: python-epsilon-efl-doc
 Section: doc
-Suggests: python-efl-epsilon
+Suggests: python-epsilon-efl
 Architecture: all
 Description: Documentation for python epsilon
  This package contains API documentation for python epsilon.

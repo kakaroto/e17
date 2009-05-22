@@ -1,4 +1,4 @@
-Source: python-efl-utils
+Source: python-utils
 Section: python
 Priority: extra
 Maintainer: quaker <quaker66@gmail.com>
@@ -7,9 +7,9 @@ Standards-Version: 3.8.1
 XS-Python-Version: >= 2.4
 Homepage: http://enlightenment.org
 
-Package: python-efl-utils
+Package: python-utils
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-efl-evas, python-efl-ecore
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Utilities to work with EFL
