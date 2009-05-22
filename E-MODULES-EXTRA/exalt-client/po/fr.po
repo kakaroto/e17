@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-17 10:07+0400\n"
-"PO-Revision-Date: 2009-05-17 15:47+0400\n"
+"POT-Creation-Date: 2009-05-22 17:33+0400\n"
+"PO-Revision-Date: 2009-05-22 17:38+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -47,32 +47,32 @@ msgstr "Exalt ne peut fonctionner correctement si NetworkManager est en cours d'
 msgid "Ok"
 msgstr "Ok"
 
-#: src/e_mod_main.c:348
+#: src/e_mod_main.c:350
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:431
+#: src/e_mod_main.c:433
 msgid "exalt Configuration Updated"
 msgstr "Configuration de Exalt actualisée"
 
-#: src/e_mod_main.c:497
+#: src/e_mod_main.c:499
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/popup.c:59
-msgid "Settings"
-msgstr "Paramètres"
+#: src/popup.c:43
+msgid "DNS configuration"
+msgstr "Configuration DNS"
 
-#: src/popup.c:201
+#: src/popup.c:187
 msgid "No IP Address"
 msgstr "Aucune adresse IP"
 
-#: src/popup.c:205
+#: src/popup.c:191
 #: src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interface câblée"
 
-#: src/popup.c:208
+#: src/popup.c:194
 msgid "Wireless interface"
 msgstr "Interface sans fil"
 
@@ -191,4 +191,7 @@ msgstr "Information WPA"
 #: src/network_dialog.c:315
 msgid "Login: "
 msgstr "Login: "
+
+#~ msgid "Settings"
+#~ msgstr "Paramètres"
 
