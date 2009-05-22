@@ -233,20 +233,6 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
      } while (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6);
    catw = cw;
 
-   printf("##### %dx%d, %dx%d, %.0f -- %d\n", cw, ch, ew, eh, ceil(max_item_count / (row_item_count+1)), row_item_count + 1);
-
-   /*
-   ch = eh * (ceil(sqrt((double) (max_item_count ? max_item_count : item_count)))) + cath;
-   cw = ch * ((float) ew / (float) eh);
-
-   if (cat_count)
-     {
-	ch = ch * cat_count;
-
-	catw = floor((float) cw / (float) ew) * ew;
-     }
-   */
-
    EINA_LIST_FOREACH(inst->items, l, e)
      {
 	if (e->isa_category)
