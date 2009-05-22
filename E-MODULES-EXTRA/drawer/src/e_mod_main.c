@@ -678,7 +678,13 @@ _drawer_popup_update(Instance *inst)
 
    o = _drawer_container_generate(inst, inst->popup->win->evas);
    evas_object_data_set(o, "drawer_popup_data", inst);
+   /* XXX: fix e_gadcon_popup_content_set to recalculate its size */
    e_gadcon_popup_content_set(inst->popup, o);
+   if (inst->popup->win->visible)
+     {
+        e_gadcon_popup_hide(inst->popup);
+        e_gadcon_popup_show(inst->popup);
+     }
 
    inst->flags.pop_update = EINA_FALSE;
 }

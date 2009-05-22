@@ -118,6 +118,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    Eina_List *l = NULL, *ll = NULL;
    Drawer_Source_Item *si;
    const char *cat = NULL;
+   Evas_Coord w, h, bw, bh;
    Eina_Bool change = EINA_FALSE;
    Entry *e;
 

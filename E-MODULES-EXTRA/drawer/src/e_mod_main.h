@@ -132,6 +132,7 @@ struct _Drawer_Source
    Drawer_Plugin	plugin;
 
    struct {
+      /* Returns a list of Drawer_Source_Item objects */
       Eina_List * (*list)        (Drawer_Source *s);
 
       /* optional */
@@ -155,6 +156,7 @@ struct _Drawer_View
    Drawer_Plugin	plugin;
    
    struct {
+      /* Returns an Evas_Object from the given Drawer_Source_Items */
       Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
 
       /* optional */
@@ -174,6 +176,7 @@ struct _Drawer_Composite
    Drawer_Plugin	plugin;
 
    struct {
+      /* Returns an Evas_Object */
       Evas_Object * (*render)          (Drawer_Composite *c, Evas *evas);
 
       /* optional */
