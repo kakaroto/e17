@@ -2,6 +2,7 @@
 #define E_MOD_MAIN_H
 
 #include <libexalt_dbus.h>
+#include <libexalt.h>
 #include <e.h>
 
 /* Macros used for config file versioning */
@@ -26,7 +27,7 @@ typedef struct _Popup_Elt Popup_Elt;
 typedef struct _Wired_Dialog Wired_Dialog;
 typedef struct _Wireless_Dialog Wireless_Dialog;
 typedef struct _Network_Dialog Network_Dialog;
-
+typedef struct _DNS_Dialog DNS_Dialog;
 
 /* Base config struct. Store Item Count, etc
  *
@@ -148,7 +149,18 @@ struct _Network_Dialog
     char* cmd;
 };
 
+struct _DNS_Dialog
+{
+    E_Dialog *dialog;
 
+    Evas_Object *list;
+    Evas_Object *entry_ip;
+    char *ip;
+
+    Evas_Object *bt_add;
+    Evas_Object *bt_replace;
+    Evas_Object *bt_delete;
+};
 
 struct _Instance
 {
@@ -166,6 +178,7 @@ struct _Instance
     Wired_Dialog wired;
     Wireless_Dialog wireless;
     Network_Dialog network;
+    DNS_Dialog dns;
 
     Exalt_DBus_Conn *conn;
 
@@ -307,4 +320,21 @@ void if_network_dialog_cb_entry(void *data, void* data2);
 void if_network_dialog_cb_cancel(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_ok(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_apply(void *data, E_Dialog *dialog);
+
+
+void dns_dialog_init(Instance* inst);
+void dns_dialog_create(Instance* inst);
+void dns_dialog_show(Instance* inst);
+void dns_dialog_hide(Instance *inst);
+void dns_dialog_update(Instance* inst,Exalt_DBus_Response *response);
+void dns_disabled_update(Instance *inst);
+void dns_dialog_cb_close(void *data, E_Dialog *dialog);
+void dns_dialog_cb_del(E_Win *win);
+void dns_dialog_cb_list(void *data);
+void dns_dialog_cb_entry(void *data, void* data2);
+void dns_dialog_cb_add(void *data, void *data2);
+void dns_dialog_cb_replace(void *data, void *data2);
+void dns_dialog_cb_delete(void *data, void *data2);
+
+
 #endif

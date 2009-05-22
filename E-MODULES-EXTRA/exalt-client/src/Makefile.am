@@ -15,7 +15,8 @@ module_la_SOURCES = e_mod_main.h \
 		    popup.c \
 		    wired_dialog.c \
                     wireless_dialog.c \
-		    network_dialog.c
+                    network_dialog.c \
+                    dns_dialog.c
 
 module_la_LIBADD = @E_LIBS@ @EXALT_LIBS@ @EXALT_DBUS_LIBS@
 module_la_LDFLAGS = -module -avoid-version

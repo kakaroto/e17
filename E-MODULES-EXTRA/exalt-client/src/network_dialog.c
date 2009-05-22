@@ -490,18 +490,18 @@ void if_network_disabled_update(Instance *inst)
     {
         const char* string;
         string = e_widget_entry_text_get(inst->network.entry_ip);
-        is_ip = exalt_is_address(string);
+        is_ip = exalt_address_is(string);
 
         if(is_ip)
         {
             string = e_widget_entry_text_get(inst->network.entry_netmask);
-            is_ip = exalt_is_address(string);
+            is_ip = exalt_address_is(string);
         }
 
         if(is_ip)
         {
             string = e_widget_entry_text_get(inst->network.entry_gateway);
-            is_ip = exalt_is_address(string);
+            is_ip = exalt_address_is(string);
         }
         e_dialog_button_disable_num_set(inst->network.dialog,0,!is_ip);
         e_dialog_button_disable_num_set(inst->network.dialog,1,!is_ip);

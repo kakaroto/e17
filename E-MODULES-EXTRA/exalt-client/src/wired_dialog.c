@@ -262,18 +262,18 @@ void if_wired_disabled_update(Instance *inst)
     {
         const char* string;
         string = e_widget_entry_text_get(inst->wired.entry_ip);
-        is_ip = exalt_is_address(string);
+        is_ip = exalt_address_is(string);
 
         if(is_ip)
         {
             string = e_widget_entry_text_get(inst->wired.entry_netmask);
-            is_ip = exalt_is_address(string);
+            is_ip = exalt_address_is(string);
         }
 
         if(is_ip)
         {
             string = e_widget_entry_text_get(inst->wired.entry_gateway);
-            is_ip = exalt_is_address(string);
+            is_ip = exalt_address_is(string);
         }
         e_dialog_button_disable_num_set(inst->wired.dialog,0,!is_ip);
         e_dialog_button_disable_num_set(inst->wired.dialog,1,!is_ip);

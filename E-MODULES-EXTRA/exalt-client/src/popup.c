@@ -1,20 +1,4 @@
-/*
- * =====================================================================================
- *
- *       Filename:  popup.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  12/21/2008 05:39:07 PM UTC
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
+// Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
 
 #include "e_mod_main.h"
 
@@ -56,7 +40,7 @@ void popup_create(Instance* inst)
     e_widget_table_object_append(base, ilist,
             0, 0, 1, 1, 1, 1, 1, 1);
 
-    button = e_widget_button_add(evas, D_("Settings"), NULL, popup_cb_setup,
+    button = e_widget_button_add(evas, D_("DNS configuration"), NULL, popup_cb_setup,
             inst, NULL);
     e_widget_table_object_append(base, button,
             0, 1, 1, 1, 0, 0, 0, 0);
@@ -75,7 +59,9 @@ popup_cb_setup(void *data, void *data2)
     Instance *inst;
 
     inst = data;
+
     popup_hide(inst);
+    dns_dialog_show(inst);
 }
 
 void popup_iface_remove(Instance *inst, const char*  iface)
@@ -210,8 +196,7 @@ void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, char* ip)
     }
 }
 
-    void
-popup_cb_ifnet_sel(void *data)
+void popup_cb_ifnet_sel(void *data)
 {
     Popup_Elt *elt = data;
     Instance* inst = elt->inst;

@@ -290,6 +290,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
     if_wired_dialog_init(inst);
     if_network_dialog_init(inst);
+    if_wireless_dialog_init(inst);
+    dns_dialog_init(inst);
     popup_init(inst);
 
     /* return the Gadget_Container Client */
@@ -544,27 +546,16 @@ void response_cb(Exalt_DBus_Response* response, void* data )
     switch(exalt_dbus_response_type_get(response))
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
-        /*    printf("DNS list:\n");
-
-            {
-                Ecore_List* l = exalt_dbus_response_list_get(response);
-                char* dns;
-                ecore_list_first_goto(l);
-                while( (dns=ecore_list_next(l)) )
-                    printf("%s\n",dns);
-            }
-            */
+            dns_dialog_update(inst, response);
             break;
         case EXALT_DBUS_RESPONSE_DNS_ADD:
-            printf("DNS added\n");
+            exalt_dbus_dns_list_get(inst->conn);
             break;
         case EXALT_DBUS_RESPONSE_DNS_DEL:
-            printf("DNS deleted\n");
-
+            exalt_dbus_dns_list_get(inst->conn);
             break;
         case EXALT_DBUS_RESPONSE_DNS_REPLACE:
-            printf("DNS replaced\n");
-
+            exalt_dbus_dns_list_get(inst->conn);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
         case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
