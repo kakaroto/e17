@@ -247,6 +247,7 @@ extern Config *exalt_conf;
 void response_cb(Exalt_DBus_Response* response, void* data );
 void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data);
 void notify_scan_cb(char* iface, Eina_List* networks, void* user_data );
+E_Notification* notification_new();
 
 void popup_init(Instance* inst);
 void popup_show(Instance* inst);

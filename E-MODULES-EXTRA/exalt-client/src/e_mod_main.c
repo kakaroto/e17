@@ -571,9 +571,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
 
     if(send_notif)
     {
-        notify = e_notification_new();
-        e_notification_app_name_set(notify, "Exalt");
-        e_notification_timeout_set(notify, 10000);
+        notify = notification_new();
     }
 
     //printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
@@ -599,12 +597,6 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             popup_update(inst,response);
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
-            if(send_notif && exalt_dbus_response_address_get(response)
-                     && strcmp(exalt_dbus_response_address_get(response),"")!=0)
-            {
-                snprintf(buf,1024,"Connected to a wired network\n");
-                e_notification_body_set(notify,buf);
-            }
             break;
         case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
             if_wired_dialog_update(inst,response);
@@ -686,6 +678,43 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 
     switch(action)
     {
+        case EXALT_ETH_CB_ACTION_CONNECTED:
+            {
+                E_Notification *notify = notification_new();
+
+                e_notification_body_set(notify,
+                        "Connected to a wired network");
+
+                e_notification_send(notify,NULL,NULL);
+                e_notification_unref(notify);
+            }
+            break;
+        case EXALT_ETH_CB_ACTION_DISCONNECTED:
+            {
+                E_Notification *notify = notification_new();
+
+                e_notification_body_set(notify,
+                        "Disconnected from a wired network");
+
+                e_notification_send(notify,NULL,NULL);
+                e_notification_unref(notify);
+            }
+            break;
+        case EXALT_WIRELESS_CB_ACTION_CONNECTED:
+            id = calloc(1,sizeof(int));
+            *id = exalt_dbus_wireless_essid_get(inst->conn,eth);
+            notification = eina_list_append(notification,id);
+            break;
+        case EXALT_WIRELESS_CB_ACTION_DISCONNECTED:
+            {
+                E_Notification *notify = notification_new();
+
+                e_notification_body_set(notify,
+                        "Disconnected from a wireless network");
+
+                e_notification_send(notify,NULL,NULL);
+            }
+            break;
         case EXALT_ETH_CB_ACTION_NEW:
         case EXALT_ETH_CB_ACTION_ADD:
             popup_iface_add(inst,eth,IFACE_WIRED);
@@ -703,14 +732,9 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             exalt_dbus_eth_link_is(inst->conn,eth);
             break;
         case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
-            id = calloc(1,sizeof(int));
-            *id = exalt_dbus_wireless_essid_get(inst->conn,eth);
-            notification = eina_list_append(notification,id);
             break;
         case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
-            id = calloc(1,sizeof(int));
-            *id = exalt_dbus_eth_ip_get(inst->conn,eth);
-            notification = eina_list_append(notification,id);
+            exalt_dbus_eth_ip_get(inst->conn,eth);
             break;
         case EXALT_ETH_CB_ACTION_NETMASK_NEW:
             exalt_dbus_eth_netmask_get(inst->conn,eth);
@@ -724,7 +748,6 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             break;
         default: ;
     }
-
 }
 
 void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )
@@ -732,3 +755,10 @@ void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )
     popup_notify_scan(iface,networks,user_data );
 }
 
+E_Notification* notification_new()
+{
+    E_Notification *notify = e_notification_new();
+    e_notification_app_name_set(notify, "Exalt");
+    e_notification_timeout_set(notify, 3000);
+    return notify;
+}
