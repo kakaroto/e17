@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-22 17:33+0400\n"
-"PO-Revision-Date: 2009-05-22 17:38+0400\n"
+"POT-Creation-Date: 2009-05-22 22:30+0400\n"
+"PO-Revision-Date: 2009-05-23 06:42+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,7 @@ msgstr "Désactiver"
 #: src/wired_dialog.c:58
 #: src/network_dialog.c:79
 msgid "DHCP (Dynamic host configuration protocol)"
-msgstr "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (Dynamic Host Configuration Protocol)"
 
 #: src/wired_dialog.c:63
 #: src/network_dialog.c:84
@@ -191,6 +191,30 @@ msgstr "Information WPA"
 #: src/network_dialog.c:315
 msgid "Login: "
 msgstr "Login: "
+
+#: src/dns_dialog.c:20
+msgid "DNS (Domain Name Server) Settings"
+msgstr "Paramétrage DNS (Domain Name Server)"
+
+#: src/dns_dialog.c:25
+msgid "DNS (Domain Name Server) configuration"
+msgstr "Configuration DNS (Domain Name Server)"
+
+#: src/dns_dialog.c:45
+msgid "Add"
+msgstr "Ajouter"
+
+#: src/dns_dialog.c:47
+msgid "Replace"
+msgstr "Remplacer"
+
+#: src/dns_dialog.c:49
+msgid "Delete"
+msgstr "Supprimer"
+
+#: src/dns_dialog.c:59
+msgid "Close"
+msgstr "Fermer"
 
 #~ msgid "Settings"
 #~ msgstr "Paramètres"

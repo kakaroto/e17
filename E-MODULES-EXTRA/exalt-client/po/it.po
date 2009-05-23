@@ -15,11 +15,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/dns_dialog.c:20
-msgid "DNS (Dynamic Name Server) Settings"
+msgid "DNS (Domain Name Server) Settings"
 msgstr "Impostazioni DNS (Domain Name Server)"
 
 #: src/dns_dialog.c:25
-msgid "DNS (Dynamic Name Server) configuration"
+msgid "DNS (Domain Name Server) configuration"
 msgstr "Configurazione DNS (Domain Name Server)"
 
 #: src/dns_dialog.c:45
