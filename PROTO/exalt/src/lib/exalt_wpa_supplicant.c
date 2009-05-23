@@ -57,8 +57,11 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
             fclose(f);
         }
 
+        const char* driver = exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
+        if(!driver || strlen(driver)==1)
+            driver = "wext";
         sprintf(buf,COMMAND_WPA,
-                exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth)),
+                driver,
                 exalt_eth_name_get(eth),
                 EXALT_WPA_CONF_FILE,
                 EXALT_WPA_INTERFACE_DIR);
@@ -72,6 +75,7 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
         print_error(__FILE__,__func__,__LINE__,"Connection succesfull");
     }
 
+    wpa_ctrl_attach(ctrl_conn);
     free(cfile);
     return ctrl_conn;
 }

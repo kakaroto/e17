@@ -54,7 +54,7 @@ short exalt_ioctl(void* argp, int request)
     snprintf(ioctl_msg_buf,1024,"%d",request);
     ioctl_msg = ioctl_msg_buf;
 
-int i;
+    int i;
     for (i = 0; i < sizeof (exalt_ioctl_key) / sizeof (Exalt_Ioctl_Key); ++i)
         if (request == exalt_ioctl_key[i].key)
         {
@@ -68,10 +68,10 @@ int i;
 
     EXALT_ASSERT_RETURN(!
             (!exalt_admin_is() &&
-            ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
-              || request == SIOCDELRT || request == SIOCSIFADDR
-              || request == SIOCSIFNETMASK || request == SIOCADDRT
-              || request== SIOCETHTOOL )));
+             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
+               || request == SIOCDELRT || request == SIOCSIFADDR
+               || request == SIOCSIFNETMASK || request == SIOCADDRT
+               || request== SIOCETHTOOL )));
 
     EXALT_ASSERT_RETURN(argp);
 
@@ -92,7 +92,7 @@ int i;
             else
             {
                 close(fd);
-                EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d)",ioctl_msg,strerror(errno),errno);
+                //EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d)",ioctl_msg,strerror(errno),errno);
                 return 0;
             }
         }

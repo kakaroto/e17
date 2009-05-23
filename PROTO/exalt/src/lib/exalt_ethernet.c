@@ -86,7 +86,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
         eth->wireless = exalt_wireless_new(eth);
 
     //test if we have a interface with the same device
-    //Some wifi driver as the generic linux driver create 2 itnerface for a wireless interface
+    //Some wifi driver as the generic linux driver create 2 interface for a wireless interface
     //A wired and a wireless interface, only the wireless interface is interesting
 
     Exalt_Ethernet *eth_res = NULL;
@@ -98,17 +98,19 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
         const char *device_temp = exalt_eth_device_get(eth_temp);
         if(device_temp && device && strcmp(device_temp,device)==0)
         {
-            //remove the wired interface
             eth_res = eth_temp;
+            break;
         }
     }
 
     if(eth_res && exalt_eth_wireless_is(eth))
     {
-        _exalt_eth_udi_remove(exalt_eth_udi_get(eth_temp));
+        //eth_res is the wired interface
+        _exalt_eth_udi_remove(exalt_eth_udi_get(eth_res));
     }
     else if(eth_res)
     {
+        //eth_res is the wireless interface, we remove eth
         exalt_eth_free(eth);
         eth = NULL;
     }

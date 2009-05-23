@@ -10,7 +10,10 @@
 char* _exalt_wireless_save_essid_get(Exalt_Wireless* w);
 int _exalt_wireless_save_essid_set(Exalt_Wireless* w,const char* essid);
 
-int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler);
+int _exalt_wireless_scan(Exalt_Wireless *w);
+
+void _exalt_wireless_wpa_connect(Exalt_Wireless *w);
+int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 /**
  * @addtogroup Exalt_Wireless
@@ -30,6 +33,9 @@ struct Exalt_Wireless
     //use for scanning
     int scan_fd;
     int scanning;
+
+    Ecore_Fd_Handler* fd_handler;
+
     struct wpa_ctrl* monitor;
 };
 
@@ -50,6 +56,8 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
     EXALT_FREE(str);
 
     exalt_wireless_wpasupplicant_driver_set(w,"wext");
+
+    _exalt_wireless_wpa_connect(w);
 
     return w;
 }
@@ -149,16 +157,11 @@ void exalt_wireless_scan_start(Exalt_Ethernet* eth)
     if(w->scanning)
         return ;
 
-    w->monitor = exalt_wpa_open_connection(exalt_eth_wireless_get(eth));
-    wpa_ctrl_attach(w->monitor);
-    buf_len=sizeof(buf)-1;
-    exalt_wpa_ctrl_command(w->monitor,"AP_SCAN 1",buf,buf_len);
     buf_len=sizeof(buf)-1;
     exalt_wpa_ctrl_command(w->monitor,"SCAN",buf,buf_len);
     buf_len=sizeof(buf)-1;
 
     w->scanning = 1;
-    ecore_main_fd_handler_add(wpa_ctrl_get_fd(w->monitor), ECORE_FD_READ,_exalt_wireless_scan,eth,NULL,NULL);
 }
 
 
@@ -264,7 +267,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         int pairwise_choice = exalt_wireless_network_ie_pairwise_choice_get(ie);
 
         //
-        char * s;
+        char * s = NULL;
         switch(exalt_wireless_network_ie_wpa_type_get(ie))
         {
             case WPA_TYPE_WPA: s = "WPA"; break;
@@ -422,15 +425,53 @@ char* _exalt_wireless_save_essid_get(Exalt_Wireless* w)
     return w->_save_essid;
 }
 
+void _exalt_wireless_wpa_connect(Exalt_Wireless *w)
+{
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    if(!w->monitor)
+    {
+        w->monitor = exalt_wpa_open_connection(w);
+        if(w->monitor)
+            w->fd_handler =
+                ecore_main_fd_handler_add(wpa_ctrl_get_fd(w->monitor),
+                        ECORE_FD_READ,_exalt_wireless_wpa_cb,w,NULL,NULL);
+    }
+}
+
+/**
+ * Retrieve notification from the wpa_supplicant daemon
+ */
+int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
+{
+    Exalt_Wireless *w = data;
+    EXALT_ASSERT_RETURN(w!=NULL);
+    size_t buf_len = 1024;
+    char buf[1024];
+
+    memcpy(buf,"\0",sizeof("\0"));
+
+    _exalt_wireless_wpa_connect(w);
+    wpa_ctrl_recv(w->monitor, buf, &buf_len);
+
+    printf("## %s\n",buf);
+    char *s = "<2>CTRL-EVENT-SCAN-RESULTS";
+    int l = strlen(s);
+    if(strlen(buf)>=l && strncmp(buf,s,l)==0)
+    {
+        printf("SCAN RESULTS\n");
+        _exalt_wireless_scan(w);
+    }
+
+    return 1;
+}
+
 /**
  * @brief scan networks
  * @param data the interface (Exalt_Wireless)
  * @return Returns 1 if success, else 0
  */
-int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler)
+int _exalt_wireless_scan(Exalt_Wireless *w)
 {
-    Exalt_Wireless* w;
-
     char buf[100000];
     size_t buf_len;
     Exalt_Wireless_Network *n;
@@ -438,10 +479,9 @@ int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler)
 
     memcpy(buf,"\0",sizeof("\0"));
 
-    EXALT_ASSERT_RETURN(data!=NULL);
-    Exalt_Ethernet* eth = data;
-    w = exalt_eth_wireless_get(eth);
     EXALT_ASSERT_RETURN(w!=NULL);
+
+    _exalt_wireless_wpa_connect(w);
 
     EINA_LIST_FOREACH_SAFE(w->networks,l,l_next,n);
     {
@@ -459,18 +499,15 @@ int _exalt_wireless_scan(void *data, Ecore_Fd_Handler *fd_handler)
     //printf("# SCAN RESULT %d\n",eina_list_count(w->networks));
 
     buf_len=sizeof(buf)-1;
-    exalt_wpa_ctrl_command(w->monitor,"AP_SCAN 1",buf,buf_len);
-
-
-    wpa_ctrl_close(w->monitor);
-
-    ecore_main_fd_handler_del(fd_handler);
-
+    exalt_wpa_ctrl_command(w->monitor
+            ,"AP_SCAN 1"
+            ,buf
+            ,buf_len);
 
     w->scanning = 0;
     //send a broadcast
     if(exalt_eth_interfaces.wireless_scan_cb)
-        exalt_eth_interfaces.wireless_scan_cb(eth,
+        exalt_eth_interfaces.wireless_scan_cb(exalt_wireless_eth_get(w),
                 w->networks,
                 exalt_eth_interfaces.wireless_scan_cb_user_data);
 
