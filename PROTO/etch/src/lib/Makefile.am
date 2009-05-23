@@ -13,7 +13,8 @@ etch_animation.c \
 etch_interpolator_argb.c \
 etch_interpolator_string.c \
 etch_interpolator_uint32.c \
-etch_interpolator_int32.c
+etch_interpolator_int32.c \
+etch_interpolator_float.c
 
 libetch_la_LIBADD = -lm @ETCH_LIBS@
 

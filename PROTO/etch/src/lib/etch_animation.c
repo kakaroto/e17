@@ -35,6 +35,7 @@ extern Etch_Interpolator etch_interpolator_uint32;
 extern Etch_Interpolator etch_interpolator_int32;
 extern Etch_Interpolator etch_interpolator_argb;
 extern Etch_Interpolator etch_interpolator_string;
+extern Etch_Interpolator etch_interpolator_float;
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
@@ -87,6 +88,7 @@ Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
 	[ETCH_INT32] = &etch_interpolator_int32,
 	[ETCH_ARGB] = &etch_interpolator_argb,
 	[ETCH_STRING] = &etch_interpolator_string,
+	[ETCH_FLOAT] = &etch_interpolator_float,
 };
 
 static Eina_Bool _iterator_next(Etch_Animation_Iterator *it, void **data)
@@ -376,6 +378,10 @@ EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *k, ...)
 
 				case ETCH_ARGB:
 				k->value.data.argb = va_arg(va, unsigned int);
+				break;
+
+				case ETCH_FLOAT:
+				k->value.data.f = va_arg(va, double);
 				break;
 
 				case ETCH_STRING:
