@@ -114,6 +114,14 @@ ctypedef struct Elm_Win:
     Elm_Win_Type type
     Elm_Win_Keyboard_Mode kbdmode
     evas.c_evas.Evas_Bool autodel = 1
+
+ctypedef struct Elm_Genlist_Item_Class:
+    char *item_style
+    char *(*GenlistItemLabelGetFunc)(void *data, c_evas.Evas_Object *obj, char *part)
+    c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, c_evas.Evas_Object *obj, char *part)
+    c_evas.Evas_Bool (*GenlistItemStateGetFunc(void *data, c_evas.Evas_Object *obj, char *part)
+    void (*GenListItemDelFunc)(void *data, c_evas.Evas_Object *obj)
+
 """
 cdef extern from "Elementary.h":
     cdef struct Elm_Entry_Anchor_Info
@@ -212,6 +220,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Bool    elm_image_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void                     elm_image_smooth_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool smooth)
     void                     elm_image_no_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool no_scale)
+    void                     elm_image_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool scale_up,evas.c_evas.Evas_Bool scale_down)
     void                     elm_image_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool fill_outside)
     void                     elm_image_prescale_set(evas.c_evas.Evas_Object *obj, int size)
     void                     elm_image_orient_set(evas.c_evas.Evas_Object *obj, Elm_Image_Orient orient)
