@@ -60,6 +60,17 @@ typedef enum Exalt_Enum_Action
     /** when an essid change */
     EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE ,
 
+    /** when a wired interface is connected */
+    EXALT_ETH_CB_ACTION_CONNECTED,
+    /** when a wired interface is disconnected */
+    EXALT_ETH_CB_ACTION_DISCONNECTED,
+
+
+    /** when a wireless interface is connected */
+    EXALT_WIRELESS_CB_ACTION_CONNECTED,
+    /** when a wireless interface is disconnected */
+    EXALT_WIRELESS_CB_ACTION_DISCONNECTED,
+
     /** when we have a new address */
     EXALT_ETH_CB_ACTION_ADDRESS_NEW ,
     /** when we have a new netmask */
@@ -133,6 +144,21 @@ int exalt_eth_ethernet_is(char* name);
  * @brief print interface informations in the standard output
  */
 void exalt_eth_printf();
+
+/**
+ * @brief get if the interface is connected
+ * @param eth the interface
+ * @return Returns 1 if the interface is connected, else 0
+ */
+short exalt_eth_connected_is(Exalt_Ethernet * eth);
+
+/**
+ * @brief set if the interface is connected
+ * @param eth the interface
+ * @param connected 1 if connected, else 0
+ */
+void exalt_eth_connected_set(Exalt_Ethernet *eth, short connected);
+
 
 /**
  * @brief get the list of all interfaces

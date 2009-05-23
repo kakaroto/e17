@@ -37,6 +37,7 @@ int _exalt_apply_timer(void *data);
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth);
 int _exalt_eth_apply_static(Exalt_Ethernet *eth);
 
+void _exalt_eth_connected_status_update(Exalt_Ethernet *eth);
 
 
 /**
@@ -52,6 +53,8 @@ struct Exalt_Ethernet
 
     Exalt_Connection *connection;
     Exalt_Wireless* wireless; //if null, the interface is not wireless
+
+    short connected;
 
     char* _save_ip;
     char* _save_netmask;
@@ -276,7 +279,10 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     EXALT_GET(udi,const char*)
     EXALT_GET(ifindex,int)
     EXALT_GET(connection,Exalt_Connection*)
-EXALT_GET(wireless,Exalt_Wireless*)
+    EXALT_GET(wireless,Exalt_Wireless*)
+    EXALT_IS(connected,short)
+
+    EXALT_SET(connected,short)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
@@ -661,6 +667,7 @@ int _exalt_eth_save_link_get(Exalt_Ethernet* eth)
 int _exalt_eth_save_up_get(Exalt_Ethernet* eth)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
+
     return eth->_save_up;
 }
 
@@ -679,7 +686,55 @@ int _exalt_eth_save_ip_set(Exalt_Ethernet* eth,const char* ip)
     EXALT_FREE(eth->_save_ip);
     if(ip)
         eth->_save_ip=strdup(ip);
+
+    _exalt_eth_connected_status_update(eth);
+
     return 1;
+}
+
+/**
+ * @brief Update the status connected
+ * @param eth the interface
+*/
+void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
+{
+    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+
+    //the connected status of a wireless interface
+    //is managed by wpa_supplicant
+    if(exalt_eth_wireless_is(eth))
+        return ;
+
+    //If the new ip is valid
+    //And if the interface is link
+    //And if the interface is up
+    //And if the previous status was disconnected
+    //we suppose the interface is connected
+    if(exalt_address_is(eth->_save_ip)
+            && exalt_eth_link_is(eth)
+            && exalt_eth_up_is(eth)
+            )
+    {
+        if(!exalt_eth_connected_is(eth))
+        {
+            exalt_eth_connected_set(eth,1);
+
+            if(exalt_eth_interfaces.eth_cb)
+                exalt_eth_interfaces.eth_cb(eth,
+                        EXALT_ETH_CB_ACTION_CONNECTED,
+                        exalt_eth_interfaces.eth_cb_user_data);
+        }
+    }
+    else if(exalt_eth_connected_is(eth))
+    {
+        //we are disconnected
+        exalt_eth_connected_set(eth,0);
+        if(exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(eth,
+                    EXALT_ETH_CB_ACTION_DISCONNECTED,
+                    exalt_eth_interfaces.eth_cb_user_data);
+    }
+
 }
 
 /**
@@ -726,6 +781,8 @@ int _exalt_eth_save_link_set(Exalt_Ethernet* eth,short link)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
     eth->_save_link=link;
+    _exalt_eth_connected_status_update(eth);
+
     return 1;
 }
 /**
@@ -738,6 +795,8 @@ int _exalt_eth_save_up_set(Exalt_Ethernet* eth,short up)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
     eth->_save_up=up;
+    _exalt_eth_connected_status_update(eth);
+
     return 1;
 }
 
@@ -1127,27 +1186,37 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     Ecore_Exe * exe;
     int status;
     char command[1024];
-    FILE* f;
+    FILE* f = NULL;
     char buf[1024];
-    pid_t pid;
+    pid_t pid, pid_file;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
 
     sprintf(command,COMMAND_DHCLIENT,exalt_eth_name_get(eth));
     exe = ecore_exe_run(command, NULL);
-    waitpid(ecore_exe_pid_get(exe), &status, 0);
+    pid = ecore_exe_pid_get(exe);
+    waitpid(pid, &status, 0);
     ecore_exe_free(exe);
 
     //dhclient create a background process, we don't need it, we kill it.
     usleep(500);
-    f = fopen(DHCLIENT_PID_FILE,"r");
-    EXALT_ASSERT_RETURN(f!=NULL);
-    ret = fgets(buf,1024,f);
-    pid = atoi(buf);
-    if(pid!=getpid());
-    kill(pid,SIGKILL);
-    fclose(f);
-    remove(DHCLIENT_PID_FILE);
+
+    const char *file = NULL;
+    if(ecore_file_exists(DHCLIENT_PID_FILE))
+        file = DHCLIENT_PID_FILE;
+    else if(ecore_file_exists(DHCLIENT_PID_FILE2))
+        file = DHCLIENT_PID_FILE2;
+
+    if(file)
+        f = fopen(file,"r");
+    if(f)
+    {
+        ret = fgets(buf,1024,f);
+        pid_file = atoi(buf);
+        kill(pid,SIGKILL);
+        remove(file);
+        fclose(f);
+    }
     return 1;
 #else
     EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp");

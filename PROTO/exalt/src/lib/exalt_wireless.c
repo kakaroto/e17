@@ -444,6 +444,7 @@ void _exalt_wireless_wpa_connect(Exalt_Wireless *w)
 int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
 {
     Exalt_Wireless *w = data;
+    Exalt_Ethernet *eth = exalt_wireless_eth_get(w);
     EXALT_ASSERT_RETURN(w!=NULL);
     size_t buf_len = 1024;
     char buf[1024];
@@ -453,13 +454,33 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
     _exalt_wireless_wpa_connect(w);
     wpa_ctrl_recv(w->monitor, buf, &buf_len);
 
-    printf("## %s\n",buf);
-    char *s = "<2>CTRL-EVENT-SCAN-RESULTS";
-    int l = strlen(s);
-    if(strlen(buf)>=l && strncmp(buf,s,l)==0)
+    //printf("## %s\n",buf);
+    const char *scan_result = "<2>CTRL-EVENT-SCAN-RESULTS";
+    const char *connected = "<2>CTRL-EVENT-CONNECTED";
+    const char *disconnected = "<2>CTRL-EVENT-DISCONNECTED";
+
+    if(strlen(buf)>=strlen(scan_result)
+            && strncmp(buf,scan_result,strlen(scan_result))==0)
     {
-        printf("SCAN RESULTS\n");
         _exalt_wireless_scan(w);
+    }
+    else if(strlen(buf)>=strlen(connected)
+            && strncmp(buf,connected,strlen(connected))==0)
+    {
+        if(exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(eth,
+                    EXALT_WIRELESS_CB_ACTION_CONNECTED,
+                    exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_connected_set(eth,1);
+    }
+    else  if(strlen(buf)>=strlen(disconnected)
+            && strncmp(buf,disconnected,strlen(disconnected))==0)
+    {
+        if(exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(eth,
+                    EXALT_WIRELESS_CB_ACTION_DISCONNECTED,
+                    exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_connected_set(eth,0);
     }
 
     return 1;
