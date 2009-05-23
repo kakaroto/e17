@@ -290,11 +290,14 @@ EAPI void
 drawer_view_container_resized(Drawer_View *v)
 {
    Instance *inst;
-   Evas_Coord vw, vh, mw, mh, w, h, nw, nh;
+   Evas_Coord vw, vh, mw, mh, w, h, nw, nh, cath = 0;
    Eina_Bool resize = EINA_FALSE;
+   Eina_List *l;
+   Item *e;
 
    inst = DRAWER_PLUGIN(v)->data;
    
+calculate:
    e_scrollframe_child_viewport_size_get(inst->o_scroll, &vw, &vh);
    evas_object_resize(inst->o_box, vw, vh);
    /* XXX: switch to size_min_calc when it starts working
@@ -334,6 +337,22 @@ drawer_view_container_resized(Drawer_View *v)
      }
 
    if (resize) evas_object_resize(inst->o_box, w, h);
+   if (inst->items && !cath)
+     {
+	EINA_LIST_FOREACH(inst->items, l, e)
+	  {
+	     if (e->isa_category)
+	       {
+		  if (!cath)
+		    edje_object_size_max_get(e->o_holder, NULL, &cath);
+
+		  evas_object_resize(e->o_holder, w - 10, cath);
+	       }
+	  }
+	if (cath)
+	  goto calculate;
+     }
+
 }
 
 EAPI void
