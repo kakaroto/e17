@@ -624,6 +624,8 @@ _drawer_popup_show(Instance *inst)
 	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,show,bottom", "drawer");
 	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,show,bottom", "drawer");
 	break;
+      default:
+        break;
      }
    inst->flags.pop_showing = EINA_TRUE;
    e_gadcon_popup_show(inst->popup);
@@ -660,6 +662,8 @@ _drawer_popup_hide(Instance *inst)
 	 edje_object_signal_emit(inst->o_drawer, "e,action,popup,hide,bottom", "drawer");
 	 edje_object_signal_emit(inst->popup->o_bg, "e,action,popup,hide,bottom", "drawer");
 	break;
+      default:
+        break;
      }
    inst->flags.pop_hiding = EINA_TRUE;
 }
@@ -788,6 +792,8 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
 	   case E_GADCON_ORIENT_CORNER_BR:
 	      edje_object_signal_emit(inst->o_drawer, "e,state,orient,bottom", "drawer");
 	      break;
+           default:
+              break;
 	  }
      }
    if (inst->o_content)
@@ -1389,7 +1395,6 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Update *ev;
-   int visible = 0;
 
    ev = event;
    if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
@@ -1412,7 +1417,6 @@ _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *eve
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Main_Icon_Update *ev;
-   int visible = 0;
 
    ev = event;
    if (ev_type != DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE) return 1;

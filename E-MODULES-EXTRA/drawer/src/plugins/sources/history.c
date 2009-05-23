@@ -161,7 +161,6 @@ drawer_source_list(Drawer_Source *s)
    Eina_List *hist = NULL, *l;
    Drawer_Event_Source_Main_Icon_Update *ev;
    const char *file;
-   char buf[4096];
 
    if (!(inst = DRAWER_PLUGIN(s)->data)) return NULL;
 
@@ -230,6 +229,8 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
       case SOURCE_DATA_TYPE_FILE_PATH:
 	 e_exec(zone, NULL, si->data, NULL, "drawer");
 	 break;
+      default:
+        break;
      }
 
    inst = DRAWER_PLUGIN(s)->data;
@@ -272,8 +273,6 @@ drawer_source_description_get(Drawer_Source *s)
 static void
 _history_description_create(Instance *inst)
 {
-   char buf[1024];
-
    eina_stringshare_del(inst->description);
    switch(inst->conf->sort_type)
      {
@@ -286,6 +285,8 @@ _history_description_create(Instance *inst)
       case HISTORY_SORT_POPULARITY:
 	 inst->description = eina_stringshare_add("Most used programs");
 	 break;
+      default:
+        break;
      }
 }
 
@@ -293,8 +294,6 @@ static Drawer_Source_Item *
 _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *file)
 {
    Drawer_Source_Item *si = NULL;
-   Eina_List *l;
-   int found = 0;
    char buf[5];
 
    si = E_NEW(Drawer_Source_Item, 1);
@@ -340,6 +339,8 @@ _history_source_items_free(Instance *inst)
 	      break;
 	   case SOURCE_DATA_TYPE_FILE_PATH:
 	      eina_stringshare_del(si->data);
+	      break;
+	   default:
 	      break;
 	  }
 	eina_stringshare_del(si->label);

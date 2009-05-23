@@ -4,7 +4,7 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "../../e_mod_main.h"
+#include "../../Drawer.h"
 
 EAPI extern Drawer_Plugin_Api drawer_plugin_api;
 

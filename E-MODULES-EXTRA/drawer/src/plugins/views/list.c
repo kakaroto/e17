@@ -118,7 +118,6 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    Eina_List *l = NULL, *ll = NULL;
    Drawer_Source_Item *si;
    const char *cat = NULL;
-   Evas_Coord w, h, bw, bh;
    Eina_Bool change = EINA_FALSE;
    Entry *e;
 
@@ -148,6 +147,8 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
       case LIST_BOTTOM:
       case LIST_RIGHT:
 	 ll = eina_list_reverse(ll);
+	 break;
+      default:
 	 break;
      }
 
@@ -261,6 +262,8 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	if (*w > zw - margin->left - margin->right)
 	  *w = zw - margin->left - margin->right;
 	break;
+      default:
+	break;
      }
 }
 
@@ -300,6 +303,8 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_FLOAT:
 	e_box_orientation_set(inst->o_box, 1);
 	inst->orient = LIST_FLOAT;
+	break;
+      default:
 	break;
      }
 }

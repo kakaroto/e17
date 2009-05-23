@@ -57,7 +57,9 @@ static int  _winlist_border_remove_cb(void *data, int type, void *event);
 static int  _winlist_border_icon_change_cb(void *data, int type, void *event);
 static int  _winlist_border_desk_set_cb(void *data, int type, void *event);
 static int  _winlist_border_window_prop_cb(void *data, int type, void *event);
+/*
 static int  _winlist_desk_show_cb(void *data, int type, void *event);
+*/
 static void _winlist_event_update_free(void *data __UNUSED__, void *event);
 static void _winlist_event_update_icon_free(void *data __UNUSED__, void *event);
 
@@ -173,7 +175,6 @@ drawer_source_list(Drawer_Source *s)
 EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
-   Instance *inst = NULL;
    E_Border *bd = si->data;
 
    E_OBJECT_CHECK(bd);
@@ -220,7 +221,6 @@ drawer_source_trigger(Drawer_Source *s, E_Zone *zone)
 EAPI Evas_Object *
 drawer_source_render_item(Drawer_Source *s, Drawer_Source_Item *si, Evas *evas)
 {
-   Evas_Coord w, h;
    Evas_Object *o = NULL;
   
 #ifdef HAVE_XPIXMAP
@@ -241,8 +241,6 @@ drawer_source_render_item(Drawer_Source *s, Drawer_Source_Item *si, Evas *evas)
 static void
 _winlist_description_create(Instance *inst)
 {
-   char buf[1024];
-
    eina_stringshare_replace(&(inst->description), "Applications");
 }
 
@@ -250,8 +248,6 @@ static Drawer_Source_Item *
 _winlist_source_item_fill(Instance *inst, E_Border *bd)
 {
    Drawer_Source_Item *si = NULL;
-   Eina_List *l;
-   int found = 0;
    char buf[512];
 
    si = E_NEW(Drawer_Source_Item, 1);
@@ -689,6 +685,7 @@ _winlist_border_window_prop_cb(void *data, int type, void *event)
    return 1;
 }
 
+/*
 static int
 _winlist_desk_show_cb(void *data, int type, void *event)
 {
@@ -704,6 +701,7 @@ _winlist_desk_show_cb(void *data, int type, void *event)
 
    return 1;
 }
+*/
 
 static void
 _winlist_event_update_free(void *data __UNUSED__, void *event)

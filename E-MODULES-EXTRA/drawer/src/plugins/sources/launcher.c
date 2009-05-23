@@ -271,6 +271,8 @@ drawer_source_list(Drawer_Source *s)
 	 inst->items = eina_list_sort(inst->items,
 				      eina_list_count(inst->items), _launcher_cb_sort_popularity);
 	 break;
+      default:
+	 break;
      }
    ev = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
    ev->source = inst->source;
@@ -461,6 +463,8 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 	      CONF_RATING(si->priv)->popularity = e_exehist_popularity_get(desktop->exec);
 	      snprintf(buf, sizeof(buf), "%d", CONF_RATING(si->priv)->popularity);
 	      si->info = eina_stringshare_add(buf);
+	      break;
+	   default:
 	      break;
 	  }
      }

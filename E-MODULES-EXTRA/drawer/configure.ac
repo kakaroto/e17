@@ -79,8 +79,12 @@ fi
 
 AM_CONDITIONAL(BUILD_XPIXMAP, test $have_xpixmap = yes)
 
+requirements_drawer="edje epsilon enlightenment"
+AC_SUBST(requirements_drawer)
+
 AC_OUTPUT([
 Makefile
+drawer.pc
 data/Makefile
 src/Makefile
 src/plugins/Makefile

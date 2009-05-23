@@ -126,6 +126,8 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
       case GRID_RIGHT:
 	 ll = eina_list_reverse(ll);
 	 break;
+      default:
+	 break;
      }
 
    EINA_LIST_FOREACH(ll, l, si)
@@ -283,6 +285,8 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	if (*w > zw - margin->left - margin->right)
 	  *w = zw - margin->left - margin->right;
 	break;
+      default:
+	break;
      }
 }
 
@@ -290,7 +294,7 @@ EAPI void
 drawer_view_container_resized(Drawer_View *v)
 {
    Instance *inst;
-   Evas_Coord vw, vh, mw, mh, w, h, nw, nh, cath = 0;
+   Evas_Coord vw, vh, mw, mh, w, h, cath = 0;
    Eina_Bool resize = EINA_FALSE;
    Eina_List *l;
    Item *e;
@@ -346,7 +350,7 @@ calculate:
 		  if (!cath)
 		    edje_object_size_max_get(e->o_holder, NULL, &cath);
 
-		  evas_object_resize(e->o_holder, w - 10, cath);
+		  evas_object_resize(e->o_holder, w - 1, cath);
 	       }
 	  }
 	if (cath)
@@ -386,6 +390,8 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
 	break;
       case E_GADCON_ORIENT_FLOAT:
 	inst->orient = GRID_FLOAT;
+	break;
+      default:
 	break;
      }
 }
@@ -457,7 +463,6 @@ static Item *
 _grid_category_create(Instance *inst, Drawer_Source_Item *si)
 {
    Item *e;
-   Evas_Coord w, h;
    char buf[1024];
 
    e = E_NEW(Item, 1);
