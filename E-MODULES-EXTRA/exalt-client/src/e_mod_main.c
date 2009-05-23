@@ -33,6 +33,14 @@ static const E_Gadcon_Client_Class _gc_class =
 
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "exalt"};
 
+/**
+ * list of question id
+ * When we get response, if the id is in this list
+ * we send a notification
+ */
+Eina_List *notification = NULL;
+
+
 /*
  * Module Functions
  */
@@ -249,6 +257,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
     inst-> l = NULL;
     exalt_dbus_init();
+    e_notification_init();
     inst->conn = exalt_dbus_connect();
 
     if(!exalt_dbus_exalt_service_exists(inst->conn))
@@ -331,6 +340,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
     exalt_dbus_free(&(inst->conn));
     exalt_dbus_shutdown();
+    //e_notification_shutdown();
 
     E_FREE(inst);
 }
@@ -542,6 +552,30 @@ _exalt_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 void response_cb(Exalt_DBus_Response* response, void* data )
 {
     Instance* inst = data;
+    char buf[1024];
+    E_Notification* notify;
+
+    int id = exalt_dbus_response_msg_id_get(response);
+    int send_notif = 0;
+    int* id_l;
+    Eina_List *l, *l_next;
+    EINA_LIST_FOREACH_SAFE(notification,l,l_next,id_l)
+    {
+        if(*id_l == id)
+        {
+            EXALT_FREE(id_l);
+            send_notif = 1;
+            notification = eina_list_remove_list(notification,l);
+        }
+    }
+
+    if(send_notif)
+    {
+        notify = e_notification_new();
+        e_notification_app_name_set(notify, "Exalt");
+        e_notification_timeout_set(notify, 10000);
+    }
+
     //printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
@@ -565,7 +599,12 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             popup_update(inst,response);
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
-
+            if(send_notif && exalt_dbus_response_address_get(response)
+                     && strcmp(exalt_dbus_response_address_get(response),"")!=0)
+            {
+                snprintf(buf,1024,"Connected to a wired network\n");
+                e_notification_body_set(notify,buf);
+            }
             break;
         case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
             if_wired_dialog_update(inst,response);
@@ -613,9 +652,12 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_IFACE_DOWN:
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
-            printf("%s essid:\n",exalt_dbus_response_iface_get(response));
-
-            printf("%s\n",exalt_dbus_response_string_get(response));
+            if(send_notif)
+            {
+                snprintf(buf,1024,"Connected to %s\n",
+                        exalt_dbus_response_string_get(response));
+                e_notification_body_set(notify,buf);
+            }
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
             printf("%s wpa_supplicant driver:\n",exalt_dbus_response_iface_get(response));
@@ -628,12 +670,20 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             break;
         default: ;
     }
+
+    if(send_notif)
+    {
+        e_notification_send(notify,NULL,NULL);
+        e_notification_unref(notify);
+    }
 }
 
 
 void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 {
     Instance* inst = user_data;
+    int *id;
+
     switch(action)
     {
         case EXALT_ETH_CB_ACTION_NEW:
@@ -653,9 +703,14 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             exalt_dbus_eth_link_is(inst->conn,eth);
             break;
         case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+            id = calloc(1,sizeof(int));
+            *id = exalt_dbus_wireless_essid_get(inst->conn,eth);
+            notification = eina_list_append(notification,id);
             break;
         case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
-            exalt_dbus_eth_ip_get(inst->conn,eth);
+            id = calloc(1,sizeof(int));
+            *id = exalt_dbus_eth_ip_get(inst->conn,eth);
+            notification = eina_list_append(notification,id);
             break;
         case EXALT_ETH_CB_ACTION_NETMASK_NEW:
             exalt_dbus_eth_netmask_get(inst->conn,eth);
@@ -669,6 +724,7 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             break;
         default: ;
     }
+
 }
 
 void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )

@@ -4,6 +4,7 @@
 #include <libexalt_dbus.h>
 #include <libexalt.h>
 #include <e.h>
+#include <E_Notify.h>
 
 /* Macros used for config file versioning */
 #define MOD_CONFIG_FILE_EPOCH 0x0001
@@ -228,7 +229,6 @@ struct _Popup_Elt
     Ecore_Timer* scan_timer;
 };
 
-
 /* Setup the E Module Version, Needed to check if module can run. */
 EAPI extern E_Module_Api e_modapi;
 
@@ -268,7 +268,10 @@ void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quali
 int popup_scan_timer_cb(void *data);
 void popup_elt_free(Popup_Elt* elt);
 
-
+#ifdef ELIVE
+void popup_cb_elive_modem(void *data, void *data2);
+void popup_cb_elive_mobile_phone(void *data, void *data2);
+#endif
 
 void if_wired_dialog_init(Instance* inst);
 void if_wired_dialog_show(Instance* inst);

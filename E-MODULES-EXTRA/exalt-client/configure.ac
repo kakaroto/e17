@@ -45,6 +45,7 @@ AC_ARG_WITH(edje-cc,
 )
 PKG_CHECK_MODULES(EXALT, [exalt >= 0.0.1])
 PKG_CHECK_MODULES(EXALT_DBUS, [exalt_dbus >= 0.0.1])
+PKG_CHECK_MODULES(E_NOTIFY, [enotify >= 0.5])
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
@@ -55,6 +56,21 @@ AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
+
+AC_ARG_ENABLE([elive],
+              [  --enable-elive           add some extra buttons to launch some GTK apps.],
+              [ case "${enableval}" in
+               yes)    elive=yes ;;
+               no) elive=no ;;
+               esac],
+               [elive=no])
+
+
+if test "$elive" = "yes"; then
+    AC_DEFINE_UNQUOTED(ELIVE, "${elive}", [Use the special Elive extension])
+fi
+
+
 
 AC_OUTPUT([
 Makefile

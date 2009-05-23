@@ -36,14 +36,24 @@ void popup_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_min_size_set(ilist, 240, 320);
+    e_widget_min_size_set(ilist, 240, 250);
     e_widget_table_object_append(base, ilist,
             0, 0, 1, 1, 1, 1, 1, 1);
 
-    button = e_widget_button_add(evas, D_("DNS configuration"), NULL, popup_cb_setup,
-            inst, NULL);
+    button = e_widget_button_add(evas, D_("DNS configuration"), NULL, popup_cb_setup,inst, NULL);
     e_widget_table_object_append(base, button,
-            0, 1, 1, 1, 0, 0, 0, 0);
+            0, 1, 1, 1, 1, 1, 1, 1);
+
+    //Some elive extra buttons
+#ifdef ELIVE
+    button = e_widget_button_add(evas, D_("Modem dialer"), NULL, popup_cb_elive_modem,inst, NULL);
+    e_widget_table_object_append(base, button,
+            0, 2, 1, 1, 1, 1, 1, 1);
+
+    button = e_widget_button_add(evas, D_("Mobile Phone (3G)"), NULL, popup_cb_elive_mobile_phone,inst, NULL);
+    e_widget_table_object_append(base, button,
+            0, 3, 1, 1, 1, 1, 1, 1);
+#endif
 
     edje_thaw();
 
@@ -53,16 +63,32 @@ void popup_create(Instance* inst)
     exalt_dbus_wireless_list_get(inst->conn);
 }
 
-    void
-popup_cb_setup(void *data, void *data2)
+void popup_cb_setup(void *data, void *data2)
 {
-    Instance *inst;
-
-    inst = data;
+    Instance *inst = data;
 
     popup_hide(inst);
     dns_dialog_show(inst);
 }
+
+#ifdef ELIVE
+void popup_cb_elive_modem(void *data, void *data2)
+{
+    Instance *inst = data;
+
+    Ecore_Exe *exe = ecore_exe_run ("3g-dialer &", NULL);
+    popup_hide(inst);
+}
+
+
+void popup_cb_elive_mobile_phone(void *data, void *data2)
+{
+    Instance *inst = data;
+
+    Ecore_Exe *exe = ecore_exe_run ("gnome-ppp & ", NULL);
+    popup_hide(inst);
+}
+#endif
 
 void popup_iface_remove(Instance *inst, const char*  iface)
 {
