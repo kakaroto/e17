@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-24 10:09+0400\n"
-"PO-Revision-Date: 2009-05-24 11:43+0400\n"
+"POT-Creation-Date: 2009-05-24 13:30+0400\n"
+"PO-Revision-Date: 2009-05-24 13:42+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -90,11 +90,13 @@ msgstr "Paramétrage de la connexion câblée"
 
 #: src/wired_dialog.c:51
 #: src/network_dialog.c:72
+#: src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Activer"
 
 #: src/wired_dialog.c:54
 #: src/network_dialog.c:75
+#: src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Désactiver"
 
@@ -130,6 +132,7 @@ msgstr "Commande: "
 
 #: src/wired_dialog.c:96
 #: src/network_dialog.c:112
+#: src/wireless_dialog.c:49
 msgid "OK"
 msgstr "OK"
 
@@ -223,6 +226,14 @@ msgstr "Supprimer"
 #: src/dns_dialog.c:59
 msgid "Close"
 msgstr "Fermer"
+
+#: src/wireless_dialog.c:21
+msgid "Wireless Interface Settings"
+msgstr "Paramétrage de la connexion sans fil"
+
+#: src/wireless_dialog.c:27
+msgid "wireless interface"
+msgstr "interface sans fil"
 
 #~ msgid "Settings"
 #~ msgstr "Paramètres"
