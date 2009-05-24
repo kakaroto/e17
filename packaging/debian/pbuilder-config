@@ -17,7 +17,6 @@ UBUNTU_SUITES=("jaunty" "intrepid" "hardy")
 DEBIAN_MIRROR="ftp.debian.org"
 UBUNTU_MIRROR="archive.ubuntu.com"
 UBUNTU_PORTS_MIRROR="ports.ubuntu.com"
-UBUNTU_SECURITY_MIRROR="security.ubuntu.com"
 
 # Optionally set the architecture to the host architecture if none set. Note
 # that you can set your own default (i.e. ${ARCH:="i386"}).
@@ -66,17 +65,17 @@ OTHERMIRROR="deb file://$PBUILDERPLACE/$NAME/result/ /"
 if $(echo ${UBUNTU_SUITES[@]} | grep -q "$DIST"); then
 	case $ARCH in
 		armel|lpia)
-			if [ -z "$OTHERMIRROR" ]; then
-				OTHERMIRROR="deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS"
+			if [ -z "$OTHERMIRROR" ]; then
+				OTHERMIRROR="deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-updates $COMPONENTS"
 			else
-				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS"
+				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-updates $COMPONENTS"
 			fi
 		;;
 		*)
-			if [ -z "$OTHERMIRROR" ]; then
-				OTHERMIRROR="deb http://$UBUNTU_SECURITY_MIRROR/ubuntu/ $DIST-security $COMPONENTS"
+			if [ -z "$OTHERMIRROR" ]; then
+				OTHERMIRROR="deb http://$UBUNTU_MIRROR/ubuntu/ $DIST-security $COMPONENTS | deb http://$UBUNTU_MIRROR/ubuntu/ $DIST-updates $COMPONENTS"
 			else
-				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_SECURITY_MIRROR/ubuntu/ $DIST-security $COMPONENTS"
+				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_MIRROR/ubuntu/ $DIST-security $COMPONENTS | deb http://$UBUNTU_MIRROR/ubuntu/ $DIST-updates $COMPONENTS"
 			fi
 		;;
 	esac
