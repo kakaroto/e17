@@ -7,5 +7,6 @@
 
 # if you compile for debian squeeze or ubuntu jaunty, replace /usr/share/cdbootstrap/suites with suites file here.
 # short versions of script arguments are also available( --compile or -c etc.. run the script with --help or -h).
+# run --update or -U when you want to update base tarballs.
 
 quaker66 (trunk/devs/quaker)

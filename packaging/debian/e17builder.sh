@@ -211,7 +211,7 @@ echo "DONE DOWNLOADING..."
 makechroots() {
 echo "UPDATING PBUILDERRC..."
 sed -i 's/BINDMOUNTS=/#BINDMOUNTS=/g' $HOME/.pbuilderrc
-sed -i 's/OTHERMIRROR=/#OTHERMIRROR=/g' $HOME/.pbuilderrc
+sed -i 's/OTHERMIRROR=\"deb file/#OTHERMIRROR=\"deb file/g' $HOME/.pbuilderrc
 echo "CREATING CHROOTS..."
 for chroots in ${distros[@]}; do
 	echo "Creating chroot: $(echo $chroots | sed 's/#.*//'):$(echo $chroots | sed 's/.*#//')"
@@ -226,7 +226,20 @@ for chroots in ${distros[@]}; do
 done
 echo "REVERTING PBUILDERRC BACK..."
 sed -i 's/#*BINDMOUNTS=/BINDMOUNTS=/g' $HOME/.pbuilderrc
-sed -i 's/#*OTHERMIRROR=/OTHERMIRROR=/g' $HOME/.pbuilderrc
+sed -i 's/#*OTHERMIRROR=\"deb file/OTHERMIRROR=\"deb file/g' $HOME/.pbuilderrc
+}
+
+updatechroots() {
+echo "UPDATING CHROOTS..."
+for uchroots in ${distros[@]}; do
+	echo "Updating chroot: $(echo $uchroots | sed 's/#.*//'):$(echo $uchroots | sed 's/.*#//')"
+	sudo mkdir $pbuilderplace/build/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')
+	sudo DIST=$(echo $uchroots | sed 's/#.*//') ARCH=$(echo $uchroots | sed 's/.*#//') PBUILDERPLACE="$pbuilderplace" pbuilder update --override-config --basetgz $pbuilderplace/$(echo $uchroots | sed 's/#.*//')-$(echo $uchroots | sed 's/.*#//')-base.tgz
+	if [ "$?" -ge "1" ]; then
+		echo "ERROR, exitting."
+		exit 1
+	fi
+done
 }
 
 setup() {
@@ -407,6 +420,7 @@ parameters:
 --setup|-s - configure host system for build
 --download|-d - download things
 --makechroots|-m - make chroots
+--update|-U - update base tarballs
 --compile|-c - compile stuff
 --prepare|-p - make tree
 --database|-D - make databases
@@ -443,6 +457,8 @@ case $1 in
 	--download|-d) download
 	;;
 	--makechroots|-m) makechroots
+	;;
+	--update|-U) updatechroots
 	;;
 	--compile|-c) compile
 	;;

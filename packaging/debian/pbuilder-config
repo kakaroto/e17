@@ -65,13 +65,23 @@ OTHERMIRROR="deb file://$PBUILDERPLACE/$NAME/result/ /"
 
 if $(echo ${UBUNTU_SUITES[@]} | grep -q "$DIST"); then
 	case $ARCH in
-		armel|lpia) OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS"
+		armel|lpia)
+			if [ -z "$OTHERMIRROR" ]; then
+				OTHERMIRROR="deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS"
+			else
+				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_PORTS_MIRROR/ubuntu-ports/ $DIST-security $COMPONENTS"
+			fi
 		;;
-		*) OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_SECURITY_MIRROR/ubuntu/ $DIST-security $COMPONENTS"
+		*)
+			if [ -z "$OTHERMIRROR" ]; then
+				OTHERMIRROR="deb http://$UBUNTU_SECURITY_MIRROR/ubuntu/ $DIST-security $COMPONENTS"
+			else
+				OTHERMIRROR="$OTHERMIRROR | deb http://$UBUNTU_SECURITY_MIRROR/ubuntu/ $DIST-security $COMPONENTS"
+			fi
 		;;
 	esac
 fi
-			
+
 # ccache
 sudo mkdir -p $PBUILDERPLACE/ccache
 sudo chmod a+w $PBUILDERPLACE/ccache
