@@ -47,6 +47,10 @@ void enesim_drawer_argb8888_init(Enesim_Cpu *cpu)
 			SP_PC(argb8888, argb8888, fill),
 			ENESIM_FILL, ENESIM_FORMAT_ARGB8888,
 			ENESIM_FORMAT_ARGB8888);
+	enesim_drawer_span_pixel_color_register(cpu,
+			SP_PC(argb8888, argb8888, blend),
+			ENESIM_BLEND, ENESIM_FORMAT_ARGB8888,
+			ENESIM_FORMAT_ARGB8888);
 }
 
 void enesim_drawer_argb8888_shutdown(void)

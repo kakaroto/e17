@@ -182,7 +182,10 @@ EAPI Eina_Bool enesim_drawer_point_pixel_color_op_get(Enesim_Cpu *cpu, Enesim_Op
 	unsigned int cpuid;
 
 	cpuid = enesim_cpu_id_get(cpu);
-	p = _drawers[cpuid].pt_pixel_color[rop][dfmt][sfmt];
+	if (color == 0xffffffff)
+		p = _drawers[cpuid].pt_pixel[rop][dfmt][sfmt];
+	else
+		p = _drawers[cpuid].pt_pixel_color[rop][dfmt][sfmt];
 	if (p)
 	{
 		op->cb = p;
@@ -321,7 +324,10 @@ EAPI Eina_Bool enesim_drawer_span_pixel_color_op_get(Enesim_Cpu *cpu, Enesim_Ope
 	unsigned int cpuid;
 
 	cpuid = enesim_cpu_id_get(cpu);
-	s = _drawers[cpuid].sp_pixel_color[rop][dfmt][sfmt];
+	if (color == 0xffffffff)
+		s = _drawers[cpuid].sp_pixel[rop][dfmt][sfmt];
+	else
+		s = _drawers[cpuid].sp_pixel_color[rop][dfmt][sfmt];
 	if (s)
 	{
 		op->cb = s;

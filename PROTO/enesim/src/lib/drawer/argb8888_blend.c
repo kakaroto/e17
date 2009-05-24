@@ -241,6 +241,37 @@ static void SP_P(argb8888, argb8888, blend)(uint32_t *d,
 #endif
 }
 
+static void SP_PC(argb8888, argb8888, blend)(uint32_t *d,
+		unsigned int len, uint32_t *s,
+		uint32_t color, uint32_t *m)
+{
+	uint32_t *end = d + len;
+#ifdef EFL_HAVE_MMX
+	mmx_t r0, r1;
+#endif
+
+	while (d < end)
+	{
+		uint32_t cs = argb8888_mul4_sym(color, *s);
+		uint16_t a16 = 256 - ((cs) >> 24);
+
+#ifdef EFL_HAVE_MMX
+		r0 = a2v_mmx(a16);
+		r1 = c2v_mmx(cs);
+
+		blend_mmx(d, r0, r1);
+#else
+		argb8888_blend(d, a16, cs);
+#endif
+		d++;
+		s++;
+	}
+#ifdef EFL_HAVE_MMX
+	_mm_empty();
+#endif
+}
+
+
 static void SP_MC(argb8888, argb8888, blend)(uint32_t *d, unsigned int len,
 		uint32_t *s, uint32_t color,
 		uint32_t *m)
