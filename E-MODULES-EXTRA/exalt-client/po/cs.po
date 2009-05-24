@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-03-25 17:12+0100\n"
-"PO-Revision-Date: 2009-03-25 17:16+0100\n"
+"POT-Creation-Date: 2009-05-24 13:51+0200\n"
+"PO-Revision-Date: 2009-05-24 13:55+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <quaker66@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,36 +25,64 @@ msgstr "Hlavní"
 msgid "Use Switch 1"
 msgstr "Použít přepínač 1"
 
-#: ../src/e_mod_main.c:298
+#: ../src/e_mod_main.c:279
+msgid "Exalt Warning"
+msgstr "Varování Exaltu"
+
+#: ../src/e_mod_main.c:282
+msgid "Warning"
+msgstr "Varování"
+
+#: ../src/e_mod_main.c:283
+msgid "NetworkManager has been detected on your computer."
+msgstr "Na vašem počítači byl detekován NetworkManager."
+
+#: ../src/e_mod_main.c:285
+msgid "Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."
+msgstr "Exalt nemůže pracovat správně, pokud běží NetworkManager. Prosím ukončete NetworkManager nebo Exalt."
+
+#: ../src/e_mod_main.c:288
+msgid "Ok"
+msgstr "OK"
+
+#: ../src/e_mod_main.c:360
 msgid "exalt"
 msgstr "Exalt"
 
-#: ../src/e_mod_main.c:381
+#: ../src/e_mod_main.c:443
 msgid "exalt Configuration Updated"
 msgstr "Nastavení modulu aktualizováno"
 
-#: ../src/e_mod_main.c:447
+#: ../src/e_mod_main.c:509
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: ../src/popup.c:59
-msgid "Settings"
-msgstr "Volby"
+#: ../src/popup.c:43
+msgid "DNS configuration"
+msgstr "DNS nastavení"
 
-#: ../src/popup.c:201
+#: ../src/popup.c:49
+msgid "Modem dialer"
+msgstr "Dialer modemu"
+
+#: ../src/popup.c:53
+msgid "Mobile Phone (3G)"
+msgstr "Mobilní telefon (3G)"
+
+#: ../src/popup.c:213
 msgid "No IP Address"
 msgstr "Bez IP adresy"
 
-#: ../src/popup.c:205
+#: ../src/popup.c:217
 #: ../src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Drátová síť"
 
-#: ../src/popup.c:208
+#: ../src/popup.c:220
 msgid "Wireless interface"
 msgstr "Bezdrátová síť"
 
-#: ../src/wired_dialog.c:35
+#: ../src/wired_dialog.c:36
 msgid "Wired Connection Settings"
 msgstr "Nastavení drátového spojení"
 
@@ -171,6 +199,34 @@ msgstr "WPA informace"
 msgid "Login: "
 msgstr "Přihlášení: "
 
+#: ../src/dns_dialog.c:20
+msgid "DNS (Domain Name Server) Settings"
+msgstr "DNS (Domain Name Server) Volby"
+
+#: ../src/dns_dialog.c:25
+msgid "DNS (Domain Name Server) configuration"
+msgstr "DNS (Domain Name Server) nastavení"
+
+#.
+#. buttons
+#: ../src/dns_dialog.c:45
+msgid "Add"
+msgstr "Přidat"
+
+#: ../src/dns_dialog.c:47
+msgid "Replace"
+msgstr "Nahradit"
+
+#: ../src/dns_dialog.c:49
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../src/dns_dialog.c:59
+msgid "Close"
+msgstr "Zavřít"
+
+#~ msgid "Settings"
+#~ msgstr "Volby"
 #~ msgid "Authentification: "
 #~ msgstr "Ověření: "
 #~ msgid "WPA2 information"
