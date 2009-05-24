@@ -81,7 +81,7 @@ static void ee_pointer_free(Ewl_Embed *embed, int pointer);
 static void ee_pointer_set(Ewl_Embed *embed, int pointer);
 static int ee_pointer_get(Ewl_Embed *embed);
 
-static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
+static void *window_funcs[] =
         {
                 ee_window_new,
                 ee_window_destroy,
@@ -114,13 +114,17 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
                 ee_dnd_drag_data_send,
         };
 
-static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
+DSTATIC_ASSERT(EWL_ENGINE_WINDOW_MAX == ARRAY_COUNT(window_funcs));
+
+static void *pointer_funcs[] =
         {
                 ee_pointer_data_new,
                 ee_pointer_free,
                 ee_pointer_get,
                 ee_pointer_set,
         };
+
+DSTATIC_ASSERT(EWL_ENGINE_POINTER_MAX == ARRAY_COUNT(pointer_funcs));
 
 Ecore_DList *
 ewl_engine_dependancies(void)
