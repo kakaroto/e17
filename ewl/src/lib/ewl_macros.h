@@ -143,6 +143,12 @@ do { \
 #define UINT_TO_UINTPTR(x) ((void *)((unsigned long int)(x)))
 
 /**
+ * @def ARRAY_COUNT(x)
+ * The count of a static array
+ */
+#define ARRAY_COUNT(x) (sizeof(x) / sizeof(*(x)))
+
+/**
  * @}
  */
 

@@ -39,6 +39,18 @@ struct Ewl_Config_Cache
 
 extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 
+#ifdef __GNUC__
+#define DSTATIC_ASSERT_HELPER(expr) \
+    (!!sizeof \
+     (struct { unsigned int STATIC_ASSERTION: (expr) ? 1 : -1; }))
+#define DSTATIC_ASSERT(expr) \
+    extern int (*assert_function__(void)) [DSTATIC_ASSERT_HELPER(expr)]
+#else
+    #define DSTATIC_ASSERT(expr)   \
+    extern char STATIC_ASSERTION[1]; \
+    extern char STATIC_ASSERTION[(expr)?1:2]
+#endif
+
 #if EWL_ENABLE_DEBUG
 
 #define DEBUGGING(lvl) (ewl_config_cache.enable && (ewl_config_cache.level >= (lvl)))
