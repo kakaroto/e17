@@ -465,7 +465,8 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
         _exalt_wireless_scan(w);
     }
     else if(strlen(buf)>=strlen(connected)
-            && strncmp(buf,connected,strlen(connected))==0)
+            && strncmp(buf,connected,strlen(connected))==0
+            && !exalt_eth_connected_is(eth))
     {
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(eth,
@@ -474,7 +475,8 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
         exalt_eth_connected_set(eth,1);
     }
     else  if(strlen(buf)>=strlen(disconnected)
-            && strncmp(buf,disconnected,strlen(disconnected))==0)
+            && strncmp(buf,disconnected,strlen(disconnected))==0
+            && exalt_eth_connected_is(eth))
     {
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(eth,
