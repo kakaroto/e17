@@ -80,7 +80,7 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    inst->parent_id = eina_stringshare_add(id);
 
    snprintf(inst->theme_file, sizeof(inst->theme_file),
-	    "%s/e-module-drawer.edj", drawer_conf->module->dir);
+	    "%s/e-module-drawer.edj", drawer_module_dir_get());
 
    return inst;
 }

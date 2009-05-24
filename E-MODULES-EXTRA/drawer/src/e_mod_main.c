@@ -430,6 +430,12 @@ drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Categ
      return e_widget_label_add(evas, D_("The plugin is not configurable"));
 }
 
+EAPI const char *
+drawer_module_dir_get()
+{
+   return drawer_conf->module->dir;
+}
+
 EAPI Evas_Object *
 drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 {

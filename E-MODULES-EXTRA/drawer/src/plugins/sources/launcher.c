@@ -552,7 +552,7 @@ _launcher_conf_activation_cb(void *data1, void *data2 __UNUSED__)
    v->basic.apply_cfdata = _launcher_cf_basic_apply;
 
    /* Icon in the theme */
-   snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", drawer_conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", drawer_module_dir_get());
 
    /* create new config dialog */
    _cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),

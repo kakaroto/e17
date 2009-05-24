@@ -213,50 +213,15 @@ struct _Drawer_Content_Margin
    Evas_Coord top, right, bottom, left;
 };
 
-/* Base config struct. Store Item Count, etc
- * 
- * *module (not written to disk) (E Interaction)
- * *cfd (not written to disk) (config dialog)
- * 
- * Store list of your items that you want to keep. (sorting)
- * Can define per-module config properties here.
- * 
- * Version used to know when user config too old */
-struct _Config 
-{
-   E_Module *module;
-   E_Config_Dialog *cfd;
-
-   Eina_List *conf_items;
-
-   /* config file version */
-   int version;
-};
-
-/* This struct used to hold config for individual items from above list */
-struct _Config_Item 
-{
-   /* unique id */
-   const char *id;
-
-   /* Source and view plugin names */
-   const char *source;
-   const char *view;
-   const char *composite;
-};
-
-EAPI Eina_List * drawer_plugins_list(Drawer_Plugin_Category cat);
-EAPI void drawer_plugins_list_free(Eina_List *list);
-EAPI Drawer_Plugin * drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name);
-EAPI Evas_Object * drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Category cat);
-
+/* Returns an Evas_Object icon, based on the given Drawer_Source_Item */
 EAPI Evas_Object * drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h);
+
+/* Returns the module directory */
+EAPI const char  * drawer_module_dir_get();
 
 extern EAPI int DRAWER_EVENT_SOURCE_UPDATE;
 extern EAPI int DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE;
 extern EAPI int DRAWER_EVENT_VIEW_ITEM_ACTIVATE;
 extern EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT;
-
-extern Config *drawer_conf;
 #endif
 
