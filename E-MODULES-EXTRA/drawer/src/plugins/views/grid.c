@@ -232,7 +232,7 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	ch = eh * ceil(max_item_count / row_item_count--) + cath;
 	if (cat_count)
 	  ch *= cat_count;
-     } while (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6);
+     } while (row_item_count && (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6));
    catw = cw;
 
    EINA_LIST_FOREACH(inst->items, l, e)
