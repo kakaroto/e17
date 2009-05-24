@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt-client module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-22 22:30+0400\n"
-"PO-Revision-Date: 2009-05-23 06:42+0400\n"
+"POT-Creation-Date: 2009-05-24 10:09+0400\n"
+"PO-Revision-Date: 2009-05-24 11:43+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
@@ -27,35 +27,35 @@ msgstr "Paramètres généraux"
 msgid "Use Switch 1"
 msgstr "Utiliser Switch 1"
 
-#: src/e_mod_main.c:270
+#: src/e_mod_main.c:279
 msgid "Exalt Warning"
 msgstr "Avertissement de Exalt"
 
-#: src/e_mod_main.c:273
+#: src/e_mod_main.c:282
 msgid "Warning"
 msgstr "Avertissement"
 
-#: src/e_mod_main.c:274
+#: src/e_mod_main.c:283
 msgid "NetworkManager has been detected on your computer."
 msgstr "NetworkManager a été détecté sur votre système."
 
-#: src/e_mod_main.c:276
+#: src/e_mod_main.c:285
 msgid "Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."
 msgstr "Exalt ne peut fonctionner correctement si NetworkManager est en cours d'exécution, veuillez arrêter NetworkManager ou Exalt."
 
-#: src/e_mod_main.c:279
+#: src/e_mod_main.c:288
 msgid "Ok"
 msgstr "Ok"
 
-#: src/e_mod_main.c:350
+#: src/e_mod_main.c:360
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:433
+#: src/e_mod_main.c:443
 msgid "exalt Configuration Updated"
 msgstr "Configuration de Exalt actualisée"
 
-#: src/e_mod_main.c:499
+#: src/e_mod_main.c:509
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -63,16 +63,24 @@ msgstr "Configuration"
 msgid "DNS configuration"
 msgstr "Configuration DNS"
 
-#: src/popup.c:187
+#: src/popup.c:49
+msgid "Modem dialer"
+msgstr "Modem numéroteur"
+
+#: src/popup.c:53
+msgid "Mobile Phone (3G)"
+msgstr "Téléphone mobile (3G)"
+
+#: src/popup.c:213
 msgid "No IP Address"
 msgstr "Aucune adresse IP"
 
-#: src/popup.c:191
+#: src/popup.c:217
 #: src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interface câblée"
 
-#: src/popup.c:194
+#: src/popup.c:220
 msgid "Wireless interface"
 msgstr "Interface sans fil"
 

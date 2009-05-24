@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-22 18:03+0200\n"
-"PO-Revision-Date: 2009-05-22 18:08+0200\n"
+"POT-Creation-Date: 2009-05-24 10:42+0200\n"
+"PO-Revision-Date: 2009-05-24 10:47+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -50,19 +50,19 @@ msgstr "Impostazioni generali"
 msgid "Use Switch 1"
 msgstr "Usa switch 1"
 
-#: src/e_mod_main.c:270
+#: src/e_mod_main.c:279
 msgid "Exalt Warning"
 msgstr "Avvertimento di Exalt"
 
-#: src/e_mod_main.c:273
+#: src/e_mod_main.c:282
 msgid "Warning"
 msgstr "Avvertimento"
 
-#: src/e_mod_main.c:274
+#: src/e_mod_main.c:283
 msgid "NetworkManager has been detected on your computer."
 msgstr "NetworkManager è stato rilevato sul vostro computer."
 
-#: src/e_mod_main.c:276
+#: src/e_mod_main.c:285
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
@@ -70,19 +70,19 @@ msgstr ""
 "Exalt non può funzionare correttamente se NetworkManager è in esecuzione,si "
 "prega di disattivare NetworkManager o Exalt."
 
-#: src/e_mod_main.c:279
+#: src/e_mod_main.c:288
 msgid "Ok"
 msgstr "Ok"
 
-#: src/e_mod_main.c:350
+#: src/e_mod_main.c:360
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:433
+#: src/e_mod_main.c:443
 msgid "exalt Configuration Updated"
 msgstr "Configurazione di Exalt aggiornata"
 
-#: src/e_mod_main.c:499
+#: src/e_mod_main.c:509
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -190,15 +190,23 @@ msgstr "Login: "
 msgid "DNS configuration"
 msgstr "Configurazione DNS"
 
-#: src/popup.c:187
+#: src/popup.c:49
+msgid "Modem dialer"
+msgstr "Composizione con modem"
+
+#: src/popup.c:53
+msgid "Mobile Phone (3G)"
+msgstr "Cellulare (3G)"
+
+#: src/popup.c:213
 msgid "No IP Address"
 msgstr "Nessun indirizzo IP"
 
-#: src/popup.c:191 src/wired_dialog.c:42
+#: src/popup.c:217 src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interfaccia cablata"
 
-#: src/popup.c:194
+#: src/popup.c:220
 msgid "Wireless interface"
 msgstr "Interfaccia wireless"
 
@@ -213,6 +221,3 @@ msgstr "Impostazioni interfaccia wireless"
 #: src/wireless_dialog.c:27
 msgid "wireless interface"
 msgstr "Interfaccia wireless"
-
-#~ msgid "Settings"
-#~ msgstr "Impostazioni"

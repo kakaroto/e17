@@ -5,3 +5,4 @@ src/popup.c
 src/wired_dialog.c
 src/network_dialog.c
 src/dns_dialog.c
+src/wireless_dialog.c
