@@ -224,6 +224,7 @@ drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Conten
 	  }
      }
    row_item_count = max_item_count = (max_item_count ? max_item_count : item_count);
+   if (!row_item_count) return;
    zone = e_util_zone_current_get(e_manager_current_get());
 
    do

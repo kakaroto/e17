@@ -67,7 +67,7 @@ static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
 static void _drawer_container_update(Instance *inst);
-static Evas_Object * _drawer_container_generate(Instance *inst, Evas *evas);
+static Evas_Object * _drawer_content_generate(Instance *inst, Evas *evas);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
 static void _drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
@@ -680,7 +680,7 @@ _drawer_popup_update(Instance *inst)
 	return;
      }
 
-   o = _drawer_container_generate(inst, inst->popup->win->evas);
+   o = _drawer_content_generate(inst, inst->popup->win->evas);
    evas_object_data_set(o, "drawer_popup_data", inst);
    e_gadcon_popup_content_set(inst->popup, o);
 
@@ -698,7 +698,7 @@ _drawer_container_update(Instance *inst)
 	evas_object_event_callback_del(inst->o_content, EVAS_CALLBACK_RESIZE,
 				       _drawer_container_resize);
      }
-   inst->o_content = _drawer_container_generate
+   inst->o_content = _drawer_content_generate
       (inst, evas_object_evas_get(inst->o_drawer));
    edje_object_part_swallow(inst->o_drawer, "e.swallow.content", inst->o_content);
    evas_object_show(inst->o_content);
@@ -708,7 +708,7 @@ _drawer_container_update(Instance *inst)
 }
 
 static Evas_Object *
-_drawer_container_generate(Instance *inst, Evas *evas)
+_drawer_content_generate(Instance *inst, Evas *evas)
 {
    Evas_Object *o = NULL;
 
