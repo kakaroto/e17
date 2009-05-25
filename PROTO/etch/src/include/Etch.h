@@ -104,8 +104,13 @@ typedef enum _Etch_Animation_Type
 
 /** Callback function used when a property value changes */
 typedef void (*Etch_Animation_Callback)(const Etch_Data *curr, const Etch_Data *prev, void *data);
+typedef void (*Etch_Animation_State_Callback)(Etch_Animation *a, void *data);
+
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
-		Etch_Animation_Callback cb, void *data);
+		Etch_Animation_Callback cb, 
+		Etch_Animation_State_Callback start,
+		Etch_Animation_State_Callback stop,
+		void *data);
 EAPI void etch_animation_delete(Etch_Animation *a);
 EAPI void etch_animation_disable(Etch_Animation *a);
 EAPI void etch_animation_enable(Etch_Animation *a);

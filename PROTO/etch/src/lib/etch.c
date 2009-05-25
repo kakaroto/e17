@@ -57,7 +57,14 @@ static void _process(Etch *e)
 		if (a->repeat == 1)
 		{
 			if (etch_time_le(&e->curr, &a->end) == EINA_FALSE)
+			{
+				if (a->started)
+				{
+					a->started = EINA_FALSE;
+					if (a->stop_cb) a->stop_cb(a, a->data);
+				}
 				continue;
+			}
 			rcurr = e->curr;
 		}
 		/* in case the animation repeats check for it */
@@ -77,7 +84,14 @@ static void _process(Etch *e)
 				etch_time_multiply(&tmp2, a->repeat);
 				etch_time_sub(&tmp2, &a->start, &rend);
 				if (etch_time_le(&e->curr, &rend) == EINA_FALSE)
+				{
+					if (a->started)
+					{
+						a->started = EINA_FALSE;
+						if (a->stop_cb) a->stop_cb(a, a->data);
+					}
 					continue;
+				}
 			}
 			/* FIXME the length can be precalculated when a keyframe time is set */
 			etch_time_sub(&a->end, &a->start, &length);
@@ -88,6 +102,11 @@ static void _process(Etch *e)
 			//printf("mod %g\n", etch_time_double_to(&rcurr));
 			etch_time_increment(&rcurr, &a->start);
 			//printf("final %g (%g)\n", etch_time_double_to(&rcurr), etch_time_double_to(&e->curr));
+		}
+		if (!a->started)
+		{
+			if (a->start_cb) a->start_cb(a, a->data);
+			a->started = EINA_TRUE;
 		}
 		etch_animation_animate(a, &rcurr);
 	}
@@ -194,11 +213,14 @@ EAPI void etch_timer_goto(Etch *e, unsigned long frame)
  * @param dtype Data type the animation will animate
  */
 EAPI Etch_Animation * etch_animation_add(Etch *e, Etch_Data_Type dtype,
-		Etch_Animation_Callback cb, void *data)
+		Etch_Animation_Callback cb,
+		Etch_Animation_State_Callback start,
+		Etch_Animation_State_Callback stop,
+		void *data)
 {
 	Etch_Animation *a;
 
-	a = etch_animation_new(e, dtype, cb, data);
+	a = etch_animation_new(e, dtype, cb, start, stop, data);
 	e->animations = eina_inlist_append(e->animations, EINA_INLIST_GET(a));
 
 	return a;

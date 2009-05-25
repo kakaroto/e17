@@ -53,7 +53,7 @@ void animation_uint32_setup(Etch *e)
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
 	
-	ea = etch_animation_add(e, ETCH_UINT32, _uint32_cb, NULL);
+	ea = etch_animation_add(e, ETCH_UINT32, _uint32_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_COSIN);
@@ -92,7 +92,7 @@ void animation_argb_setup(Etch *e)
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
 		
-	ea = etch_animation_add(e, ETCH_ARGB, _color_cb, NULL);
+	ea = etch_animation_add(e, ETCH_ARGB, _color_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_LINEAR);
@@ -110,7 +110,7 @@ void animation_string_setup(Etch *e)
 	Etch_Animation *ea;
 	Etch_Animation_Keyframe *ek;
 			
-	ea = etch_animation_add(e, ETCH_STRING, _string_cb, NULL);
+	ea = etch_animation_add(e, ETCH_STRING, _string_cb, NULL, NULL, NULL);
 	/* first keyframe */
 	ek = etch_animation_keyframe_add(ea);
 	etch_animation_keyframe_type_set(ek, ETCH_ANIMATION_DISCRETE);

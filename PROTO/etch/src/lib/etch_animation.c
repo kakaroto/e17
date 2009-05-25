@@ -178,7 +178,11 @@ void etch_animation_animate(Etch_Animation *a, Etch_Time *curr)
 	}
 }
 
-Etch_Animation * etch_animation_new(Etch *e, Etch_Data_Type dtype, Etch_Animation_Callback cb, void *data)
+Etch_Animation * etch_animation_new(Etch *e, Etch_Data_Type dtype,
+		Etch_Animation_Callback cb,
+		Etch_Animation_State_Callback start,
+		Etch_Animation_State_Callback stop,
+		void *data)
 {
 	Etch_Animation *a;
 
@@ -191,6 +195,8 @@ Etch_Animation * etch_animation_new(Etch *e, Etch_Data_Type dtype, Etch_Animatio
 	a->data = data;
 	a->repeat = 1;
 	a->etch = e;
+	a->start_cb = start;
+	a->stop_cb = stop;
 
 	return a;
 }
