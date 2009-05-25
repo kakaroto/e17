@@ -76,7 +76,7 @@ void popup_cb_elive_modem(void *data, void *data2)
 {
     Instance *inst = data;
 
-    Ecore_Exe *exe = ecore_exe_run ("3g-dialer &", NULL);
+    Ecore_Exe *exe = ecore_exe_run ("gnome-ppp &", NULL);
     popup_hide(inst);
 }
 
@@ -85,7 +85,7 @@ void popup_cb_elive_mobile_phone(void *data, void *data2)
 {
     Instance *inst = data;
 
-    Ecore_Exe *exe = ecore_exe_run ("gnome-ppp & ", NULL);
+    Ecore_Exe *exe = ecore_exe_run ("3g-dialer & ", NULL);
     popup_hide(inst);
 }
 #endif
