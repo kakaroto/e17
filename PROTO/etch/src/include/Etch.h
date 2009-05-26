@@ -125,6 +125,7 @@ EAPI void etch_animation_keyframe_del(Etch_Animation *a, Etch_Animation_Keyframe
 EAPI void etch_animation_keyframe_type_set(Etch_Animation_Keyframe *m, Etch_Animation_Type t);
 EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyframe *m);
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *m, unsigned long secs, unsigned long usecs);
+EAPI void etch_animation_keyframe_time_get(Etch_Animation_Keyframe *k, unsigned long *secs, unsigned long *usecs);
 EAPI void etch_animation_keyframe_value_set(Etch_Animation_Keyframe *m, ...);
 EAPI void etch_animation_keyframe_value_get(Etch_Animation_Keyframe *m, ...);
 /**

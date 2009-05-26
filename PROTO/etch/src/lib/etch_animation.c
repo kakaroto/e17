@@ -111,6 +111,11 @@ static void _iterator_free(Etch_Animation_Iterator *it)
 	free(it);
 }
 
+static void _update_start_end(Etch_Animation *a)
+{
+	a->start = ((Etch_Animation_Keyframe *)a->keys)->time;
+	a->end = ((Etch_Animation_Keyframe *)((Eina_Inlist *)(a->keys))->last)->time;
+}
 
 /*============================================================================*
  *                                 Global                                     *
@@ -277,6 +282,13 @@ EAPI Etch_Animation_Type etch_animation_keyframe_type_get(Etch_Animation_Keyfram
 	return k->type;
 }
 /**
+ * Get the time for a mark
+ */
+EAPI void etch_animation_keyframe_time_get(Etch_Animation_Keyframe *k, unsigned long *secs, unsigned long *usecs)
+{
+	etch_time_secs_to(k, secs, usecs);
+}
+/**
  * Set the time for a mark
  */
 EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned long secs, unsigned long usecs)
@@ -322,8 +334,7 @@ EAPI void etch_animation_keyframe_time_set(Etch_Animation_Keyframe *k, unsigned 
 	/* update the start and end values */
 update:
 	k->time = t;
-	a->start = ((Etch_Animation_Keyframe *)a->keys)->time;
-	a->end = ((Etch_Animation_Keyframe *)((Eina_Inlist *)(a->keys))->last)->time;
+	_update_start_end(a);
 }
 /**
  * Get the value for a mark
@@ -348,11 +359,13 @@ EAPI void etch_animation_offset_add(Etch_Animation *a, unsigned long secs, unsig
 	/* increment every keyframe by secs.usecs */
 	while (l)
 	{
+		unsigned long secs, usecs;
 		Etch_Animation_Keyframe *k = (Etch_Animation_Keyframe *)l;
 
 		etch_time_increment(&k->time, &inc);
 		l = l->next;
 	}
+	_update_start_end(a);
 }
 /**
  * Set the value for a mark
