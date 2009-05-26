@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-02-23 18:44+0800\n"
 "PO-Revision-Date: 2009-03-21 15:03+0000\n"
 "Last-Translator: Kenneth Langdalen <Unknown>\n"
@@ -36,7 +36,7 @@ msgstr "Langsom (5 sek)"
 
 #: ../e_mod_main.c:391
 msgid "Very Slow (30 sec)"
-msgstr "Veldig langsom (30 ssek)"
+msgstr "Veldig langsom (30 sek)"
 
 #: ../e_mod_main.c:402
 msgid "Time Between Updates"

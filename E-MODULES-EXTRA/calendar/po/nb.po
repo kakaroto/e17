@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-02-23 18:42+0800\n"
 "PO-Revision-Date: 2009-03-21 15:19+0000\n"
 "Last-Translator: Kenneth Langdalen <Unknown>\n"
@@ -25,7 +25,7 @@ msgstr "Mandag"
 
 #: ../e_mod_main.c:458
 msgid "First Day of Week"
-msgstr ""
+msgstr "Første dagen i uka"
 
 #: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Calendar"
@@ -33,4 +33,4 @@ msgstr "Kalender"
 
 #: ../e_mod_main.c:559 ../e_mod_main.c:575
 msgid "Monthview Popup (Show/Hide)"
-msgstr ""
+msgstr "Månedsvisning (Vis/skjul)"
