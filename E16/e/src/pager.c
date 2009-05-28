@@ -516,9 +516,9 @@ PagerReconfigure(Pager * p, int apply)
 	   f = -f;
 	if (f < .1)
 	   break;
-	dx *= 2;
-	if (dx >= 16)
+	if (dx >= 8)
 	   break;
+	dx += 1;
      }
 
    ICCCM_SetSizeConstraints(p->ewin,
