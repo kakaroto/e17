@@ -743,8 +743,10 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
             exalt_dbus_eth_gateway_get(inst->conn,eth);
             break;
         case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
+            edje_object_signal_emit(inst->o_exalt,"apply,start","exalt");
             break;
         case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
+            edje_object_signal_emit(inst->o_exalt,"apply,stop","exalt");
             break;
         default: ;
     }
