@@ -1,4 +1,5 @@
 #include "main.h"
+#include <Ecore_Getopt.h>
 
 typedef struct _Mode Mode;
 
@@ -15,8 +16,6 @@ Ecore_Timer* mouse_timeout = NULL;
 
 static double       start_time = 0.0;
 static Ecore_Evas  *ecore_evas = NULL;
-static int          startw     = 1280;
-static int          starth     = 720;
 static Evas_Object *o_bg       = NULL;
 static Eina_List   *modes      = NULL;
 static int          cmode      = NONE;
@@ -38,12 +37,53 @@ static void main_menu_scan(void *data);
 static void main_menu_tv(void *data);
 static void main_get_config(void);
 
+static const Ecore_Getopt options = {
+  "rage",
+  "%prog [options]",
+  "0.2.0",
+  "(C) 2009 Enlightenment",
+  "BSD with advertisement clause",
+  "Simple yet fancy media center.",
+  1,
+  {
+    ECORE_GETOPT_STORE_STR('e', "engine", "ecore-evas engine to use"),
+    ECORE_GETOPT_CALLBACK_NOARGS
+    ('E', "list-engines", "list ecore-evas engines",
+     ecore_getopt_callback_ecore_evas_list_engines, NULL),
+    ECORE_GETOPT_STORE_DEF_BOOL('F', "fullscreen", "fullscreen mode", 0),
+    ECORE_GETOPT_CALLBACK_ARGS
+    ('g', "geometry", "geometry to use in x:y:w:h form.", "X:Y:W:H",
+     ecore_getopt_callback_geometry_parse, NULL),
+    ECORE_GETOPT_STORE_STR
+    ('t', "theme", "path to read the theme file from"),
+    ECORE_GETOPT_VERSION('V', "version"),
+    ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+    ECORE_GETOPT_LICENSE('L', "license"),
+    ECORE_GETOPT_HELP('h', "help"),
+    ECORE_GETOPT_SENTINEL
+  }
+};
+
 int
 main(int argc, char **argv)
 {
    Evas_Object *o;
-   int fullscreen, mode;
-   int i, size;
+   int args, size;
+   char *engine = NULL;
+   unsigned char quit_option = 0, fullscreen = 0;
+   Eina_Rectangle geometry = {0, 0, 0, 0};
+   Ecore_Getopt_Value values[] = {
+     ECORE_GETOPT_VALUE_STR(engine),
+     ECORE_GETOPT_VALUE_BOOL(quit_option),
+     ECORE_GETOPT_VALUE_BOOL(fullscreen),
+     ECORE_GETOPT_VALUE_PTR_CAST(geometry),
+     ECORE_GETOPT_VALUE_STR(theme),
+     ECORE_GETOPT_VALUE_BOOL(quit_option),
+     ECORE_GETOPT_VALUE_BOOL(quit_option),
+     ECORE_GETOPT_VALUE_BOOL(quit_option),
+     ECORE_GETOPT_VALUE_BOOL(quit_option),
+     ECORE_GETOPT_VALUE_NONE
+   };
 
    /* init ecore, eet, evas, edje etc. */
    start_time = ecore_time_get();
@@ -63,71 +103,37 @@ main(int argc, char **argv)
      }
 
    main_get_config();
-   mode = *(int*)eet_read(eet_config, "/config/mode", &size);
+   //mode = *(int*)eet_read(eet_config, "/config/mode", &size);
    fullscreen = *(int*)eet_read(eet_config, "/config/fullscreen", &size);
 
-   /* parse cmd-line options */
-   for (i = 1; i < argc; i++)
+   args = ecore_getopt_parse(&options, values, argc, argv);
+   if (args < 0)
      {
-	if (!strcmp(argv[i], "-g"))
-	  {
-	     int n, w, h;
-	     char buf[16], buf2[16];
-
-	     n = sscanf(argv[i +1], "%10[^x]x%10s", buf, buf2);
-	     if (n == 2)	       {
-		  w = atoi(buf);
-		  h = atoi(buf2);
-		  startw = w;
-		  starth = h;
-	       }
-	     i++;
-	  }
-	else if (!strcmp(argv[i], "-t"))
-	  {
-	     char buf[4096];
-
-	     snprintf(buf, sizeof(buf), "%s/%s.edj", PACKAGE_DATA_DIR, argv[i +1]);
-	     theme = strdup(buf);
-	     i++;
-	  }
-	else if (!strcmp(argv[i], "-x11"))
-	  mode = 0;
-	else if (!strcmp(argv[i], "-gl"))
-	  mode = 1;
-	else if (!strcmp(argv[i], "-fb"))
-	  mode = 2;
-	else if (!strcmp(argv[i], "-xr"))
-	  mode = 3;
-        else if (!strcmp(argv[1], "-dfb"))
-	  mode = 4;
-	else if (!strcmp(argv[1], "-sdl"))
-	  mode = 5;
-	else if (!strcmp(argv[i], "-fs"))
-	  fullscreen = 1;
-	else
-	  main_usage();
+        fputs("ERROR: could not parse command line options.\n", stderr);
+	return -1;
      }
+
+   if (quit_option)
+     return 0;
 
    /* set up default theme if no custom theme is selected */
    if (!theme)
      theme = eet_read(eet_config, "/config/theme", &size);
-   /* create the canvas based on engine mode */
-   if (mode == 0)
-     ecore_evas = ecore_evas_software_x11_new(NULL, 0,  0, 0, startw, starth);
-   if (mode == 1)
-     ecore_evas = ecore_evas_gl_x11_new(NULL, 0, 0, 0, startw, starth);
-   if (mode == 2)
-     ecore_evas = ecore_evas_fb_new(NULL, 0, startw, starth);
-   if (mode == 3)
-     ecore_evas = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, startw, starth);
-   if (mode == 4)
-     ecore_evas = ecore_evas_directfb_new(NULL, 0, 0, 0, startw, starth);
-   if (mode == 5)
-     ecore_evas = ecore_evas_sdl_new(NULL, startw, starth, 0, 1, 1, 0);
+
+   if (geometry.w <= 0)
+     geometry.w = 1280;
+   if (geometry.h <= 0)
+     geometry.h = 720;
+
+   ecore_evas = ecore_evas_new
+     (engine, geometry.x, geometry.y, geometry.w, geometry.h, NULL);
+
    if (!ecore_evas)
      {
-	printf("ERROR: Cannot create canvas\n");
+	fprintf(stderr, "ERROR: Cannot create canvas, engine: %s, "
+		"geometry: %d,%d+%dx%d\n",
+		engine ? engine : "<auto>",
+		geometry.x, geometry.y, geometry.w, geometry.h);
 	return -1;
      }
    ecore_evas_callback_delete_request_set(ecore_evas, main_delete_request);
@@ -145,7 +151,7 @@ main(int argc, char **argv)
    o = evas_object_rectangle_add(evas);
    evas_object_color_set(o, 0, 0, 0, 255);
    evas_object_move(o, 0, 0);
-   evas_object_resize(o, startw, starth);
+   evas_object_resize(o, geometry.w, geometry.h);
    evas_object_show(o);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, main_key_down, NULL);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, main_mouse_move, NULL);
@@ -160,7 +166,8 @@ main(int argc, char **argv)
      }
 
    /* init ui elements and volume scanner */
-   layout_init();
+   if (!layout_init())
+     return -1;
    background_init();
    volume_init();
    status_init();
@@ -247,17 +254,6 @@ main_mode_pop(void)
 }
 
 /***/
-
-static void
-main_usage(void)
-{
-   printf("Usage:\n");
-   printf("  rage "
-	  "[-x11] [-gl] [-fb] [-dfb] [-sdl] [-xr] [-g WxH] [-fs] "
-	  "[-t theme] \n"
-	  );
-   exit(-1);
-}
 
 void
 main_reset(void)
