@@ -821,9 +821,7 @@ main_get_config(void)
 {
    /* load config */
    char buf[4096];
-   char *eetfile;
-   int *i = malloc(sizeof(int));
-   i[0] = 0;
+   int i = 0;
 
    if (getenv("HOME"))
       snprintf(buf, sizeof(buf), "%s/.rage", getenv("HOME"));
@@ -834,22 +832,21 @@ main_get_config(void)
    config = strdup(buf);
 
    snprintf(buf, sizeof(buf), "%s/config.eet", config);
-   eetfile = strdup(buf);
 
-   if (!ecore_file_exists(eetfile))
+   if (!ecore_file_exists(buf))
    {
       if (!ecore_file_is_dir(config))
 	 ecore_file_mkpath(config);
 
-      eet_config = eet_open(eetfile, EET_FILE_MODE_WRITE);
+      eet_config = eet_open(buf, EET_FILE_MODE_WRITE);
 
       /* write default config */
-      eet_write(eet_config, "/config/fullscreen", i, sizeof(int), 0);
-      eet_write(eet_config, "/config/theme", strdup(PACKAGE_DATA_DIR"/default.edj"), 
-	    	strlen(strdup(PACKAGE_DATA_DIR"/default.edj")), 1);
-      eet_write(eet_config, "/config/mode", i, sizeof(int), 0);
+      eet_write(eet_config, "/config/fullscreen", &i, sizeof(int), 0);
+      eet_write(eet_config, "/config/theme", PACKAGE_DATA_DIR"/default.edj",
+	    	sizeof(PACKAGE_DATA_DIR"/default.edj"), 0);
+      eet_write(eet_config, "/config/mode", &i, sizeof(int), 0);
       eet_close(eet_config);
    }
 
-   eet_config = eet_open(eetfile, EET_FILE_MODE_READ_WRITE);
+   eet_config = eet_open(buf, EET_FILE_MODE_READ_WRITE);
 }
