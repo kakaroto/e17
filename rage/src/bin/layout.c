@@ -4,14 +4,24 @@ static Evas_Object *o_layout = NULL;
 
 /* create the screen layout - edje defines it with swallow regions and anything
  else the theme wants to do */
-void
+int
 layout_init(void)
 {
    o_layout = edje_object_add(evas);
    evas_object_move(o_layout, 0, 0);
-   edje_object_file_set(o_layout, theme, "layout");
+   if (!edje_object_file_set(o_layout, theme, "layout"))
+     {
+	int err = edje_object_load_error_get(o_layout);
+	const char *errmsg = edje_load_error_str(err);
+	fprintf(stderr,
+		"ERROR: could not load edje \"%s\", group \"layout\": %s\n",
+		theme, errmsg);
+	return 0;
+     }
+
    layout_resize();
    evas_object_show(o_layout);
+   return 1;
 }
 
 /* handle a window/screen resize */
