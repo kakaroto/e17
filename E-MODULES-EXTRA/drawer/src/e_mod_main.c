@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2,t0,(0,W4
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2t0(0W4
  */
 #include "e_mod_main.h"
 #include <strings.h>
@@ -27,15 +27,16 @@ struct _Instance
    Drawer_Plugin *source;
    Drawer_Plugin *view;
    Drawer_Plugin *composite;
-   
+
    Eina_List *handlers;
 
-   struct {
-	Eina_Bool is_floating : 1;
-	Eina_Bool pop_showing : 1;
-	Eina_Bool pop_hiding : 1;
-	Eina_Bool pop_update : 1;
-   } flags;
+   struct
+     {
+        Eina_Bool is_floating : 1;
+        Eina_Bool pop_showing : 1;
+        Eina_Bool pop_hiding : 1;
+        Eina_Bool pop_update : 1;
+     } flags;
 };
 
 struct _Drawer_Epsilon_Data
@@ -69,7 +70,7 @@ static void _drawer_popup_update(Instance *inst);
 static void _drawer_container_update(Instance *inst);
 static Evas_Object * _drawer_content_generate(Instance *inst, Evas *evas);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
-static void _drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _drawer_container_resize_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
 static Drawer_Plugin *_drawer_plugin_new(Instance *inst, const char *name, const char *category, size_t size);
 static void _drawer_plugin_destroy(Instance *inst, Drawer_Plugin *p);
@@ -702,7 +703,7 @@ _drawer_container_update(Instance *inst)
 	edje_object_part_unswallow(inst->o_drawer, inst->o_content);
 	evas_object_del(inst->o_content);
 	evas_object_event_callback_del(inst->o_content, EVAS_CALLBACK_RESIZE,
-				       _drawer_container_resize);
+				       _drawer_container_resize_cb);
      }
    inst->o_content = _drawer_content_generate
       (inst, evas_object_evas_get(inst->o_drawer));
@@ -710,7 +711,7 @@ _drawer_container_update(Instance *inst)
    evas_object_show(inst->o_content);
 
    evas_object_event_callback_add(inst->o_content, EVAS_CALLBACK_RESIZE,
-				  _drawer_container_resize, inst);
+				  _drawer_container_resize_cb, inst);
 }
 
 static Evas_Object *
@@ -802,7 +803,7 @@ _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient)
 
 /* Called when the floating container is resized */
 static void
-_drawer_container_resize(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+_drawer_container_resize_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
 

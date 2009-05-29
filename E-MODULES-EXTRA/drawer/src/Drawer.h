@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2t0(0W4
  */
 #ifndef DRAWER_H
 #define DRAWER_H
@@ -14,13 +14,15 @@
  * like  printf D_("Hello World\n");  so can be replaced by gettext */
 #define D_(str) dgettext(PACKAGE, str)
 
-typedef enum {
+typedef enum
+{
      DRAWER_SOURCES,
      DRAWER_VIEWS,
      DRAWER_COMPOSITES
 } Drawer_Plugin_Category;
 
-typedef enum {
+typedef enum
+{
      SOURCE_DATA_TYPE_OTHER = 1,
      SOURCE_DATA_TYPE_DESKTOP,
      SOURCE_DATA_TYPE_FILE_PATH
@@ -75,14 +77,15 @@ struct _Drawer_Plugin
    Eina_Bool            enabled : 1;
    Eina_Bool            error : 1;
 
-   struct {
-      void        * (*init)            (Drawer_Plugin *p, const char *id);
-      int           (*shutdown)        (Drawer_Plugin *p);
+   struct
+     {
+        void        * (*init)            (Drawer_Plugin *p, const char *id);
+        int           (*shutdown)        (Drawer_Plugin *p);
 
-      /* optional */
-      Evas_Object * (*config_get)  (Drawer_Plugin *p, Evas *evas);
-      void	    (*config_save) (Drawer_Plugin *p);
-   } func;
+        /* optional */
+        Evas_Object * (*config_get)  (Drawer_Plugin *p, Evas *evas);
+        void	    (*config_save) (Drawer_Plugin *p);
+     } func;
 
    /* the module is allowed to modify these */
    void                *data;
@@ -93,23 +96,24 @@ struct _Drawer_Source
 {
    Drawer_Plugin	plugin;
 
-   struct {
-      /* Returns a list of Drawer_Source_Item objects */
-      Eina_List * (*list)        (Drawer_Source *s);
+   struct
+     {
+        /* Returns a list of Drawer_Source_Item objects */
+        Eina_List * (*list)              (Drawer_Source *s);
 
-      /* optional */
+        /* optional */
 
-      /* Activates the given item */
-      void	    (*activate)        (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
-      /* Triggers a plugin-specific action on gadget middle-click */
-      void	    (*trigger)         (Drawer_Source *s, E_Zone *zone);
-      /* Creates a context menu for the given item */
-      void	    (*context)         (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
-      /* Returns a description of the source */
-      const char  * (*description_get) (Drawer_Source *s);
-      /* Returns an icon for the given source item */
-      Evas_Object * (*render_item)     (Drawer_Source *s, Drawer_Source_Item *si, Evas *evas);
-   } func;
+        /* Activates the given item */
+        void	    (*activate)          (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone);
+        /* Triggers a plugin-specific action on gadget middle-click */
+        void	    (*trigger)           (Drawer_Source *s, E_Zone *zone);
+        /* Creates a context menu for the given item */
+        void	    (*context)           (Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone, Drawer_Event_View_Context *ev);
+        /* Returns a description of the source */
+        const char  * (*description_get) (Drawer_Source *s);
+        /* Returns an icon for the given source item */
+        Evas_Object * (*render_item)     (Drawer_Source *s, Drawer_Source_Item *si, Evas *evas);
+     } func;
 };
 
 /* View plugin struct */
@@ -117,19 +121,23 @@ struct _Drawer_View
 {
    Drawer_Plugin	plugin;
    
-   struct {
-      /* Returns an Evas_Object from the given Drawer_Source_Items */
-      Evas_Object * (*render)      (Drawer_View *v, Evas *evas, Eina_List *items);
+   struct
+     {
+        /* Returns an Evas_Object from the given Drawer_Source_Items */
+        Evas_Object * (*render)                 (Drawer_View *v,
+                                                 Evas *evas, Eina_List *items);
 
-      /* optional */
-      /* Calculates the size of the content, used by the popup */
-      void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc,
+        /*
+         * optional
+         * */
+        /* Calculates the size of the content, used by the popup */
+        void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc,
                                                  Drawer_Content_Margin *margin, int *w, int *h);
-      /* Called when the container is resized by the user */
-      void	    (*container_resized)	(Drawer_View *v);
-      /* Sets the orientation of the gadget container */
-      void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
-   } func;
+        /* Called when the container is resized by the user */
+        void	    (*container_resized)	(Drawer_View *v);
+        /* Sets the orientation of the gadget container */
+        void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
+     } func;
 };
 
 /* Composite plugin struct */
@@ -137,31 +145,32 @@ struct _Drawer_Composite
 {
    Drawer_Plugin	plugin;
 
-   struct {
-      /* Returns an Evas_Object */
-      Evas_Object * (*render)          (Drawer_Composite *c, Evas *evas);
+   struct
+     {
+        /* Returns an Evas_Object */
+        Evas_Object * (*render)          (Drawer_Composite *c, Evas *evas);
 
-      /* optional */
-      /* Activates the given item */
-      void	    (*activate)        (Drawer_Composite *c, E_Zone *zone);
-      /* Triggers a plugin-specific action on gadget middle-click */
-      void	    (*trigger)         (Drawer_Composite *c, E_Zone *zone);
-      /* Creates a context menu for the given item */
-      void	    (*context)         (Drawer_Composite *c, E_Zone *zone, Drawer_Event_View_Context *ev);
-      /* Returns a description of the source */
-      const char  * (*description_get) (Drawer_Composite *c);
+        /* optional */
+        /* Activates the given item */
+        void	    (*activate)          (Drawer_Composite *c, E_Zone *zone);
+        /* Triggers a plugin-specific action on gadget middle-click */
+        void	    (*trigger)           (Drawer_Composite *c, E_Zone *zone);
+        /* Creates a context menu for the given item */
+        void	    (*context)           (Drawer_Composite *c, E_Zone *zone, Drawer_Event_View_Context *ev);
+        /* Returns a description of the source */
+        const char  * (*description_get) (Drawer_Composite *c);
 
-      /* Calculates the size of the content, used by the popup */
-      void	    (*content_size_get)	 (Drawer_Composite *c, E_Gadcon_Client *gcc,
+        /* Calculates the size of the content, used by the popup */
+        void	    (*content_size_get)	 (Drawer_Composite *c, E_Gadcon_Client *gcc,
                                           Drawer_Content_Margin *margin, int *w, int *h);
-      /* Called when the container is resized by the user */
-      void	    (*container_resized) (Drawer_Composite *c);
-      /* Sets the orientation of the gadget container */
-      void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
+        /* Called when the container is resized by the user */
+        void	    (*container_resized) (Drawer_Composite *c);
+        /* Sets the orientation of the gadget container */
+        void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
 
-      /* Creates a shelf icon */
-      Evas_Object * (*get_main_icon)    (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);
-   } func;
+        /* Creates a shelf icon */
+        Evas_Object * (*get_main_icon)   (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);
+     } func;
 };
 
 /* Struct for each list item from the source */

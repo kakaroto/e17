@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2,t0,(0
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2t0(0W4
  */
 #include "history.h"
 
@@ -24,9 +24,10 @@ struct _Instance
 
    E_Menu *menu;
 
-   struct {
+   struct
+     {
 	E_Config_DD *conf;
-   } edd;
+     } edd;
 
    const char *description;
 };
