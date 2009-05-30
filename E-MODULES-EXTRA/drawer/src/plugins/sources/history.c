@@ -36,7 +36,6 @@ struct _Conf
 {
    const char *id;
    History_Sort_Type sort_type;
-   Eina_Bool	show_info;
 };
 
 struct _E_Config_Dialog_Data 
@@ -47,7 +46,6 @@ struct _E_Config_Dialog_Data
    E_Confirm_Dialog *dialog_delete;
 
    int sort_type;
-   int show_info;
 };
 
 static void _history_description_create(Instance *inst);
@@ -90,7 +88,6 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    #define D inst->edd.conf
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, sort_type, INT);
-   E_CONFIG_VAL(D, T, show_info, INT);
 
    snprintf(buf, sizeof(buf), "module.drawer/%s.history", id);
    inst->conf = e_config_domain_load(buf, inst->edd.conf);
@@ -305,11 +302,6 @@ _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *f
 	si->data_type = SOURCE_DATA_TYPE_DESKTOP;
 	si->label = eina_stringshare_add(desktop->name);
 	si->description = eina_stringshare_add(desktop->comment);
-	if (inst->conf->show_info && inst->conf->sort_type == HISTORY_SORT_POPULARITY)
-	  {
-	     snprintf(buf, sizeof(buf), "%d", e_exehist_popularity_get(desktop->exec));
-	     si->info = eina_stringshare_add(buf);
-	  }
      }
    else
      {
@@ -348,7 +340,6 @@ _history_source_items_free(Instance *inst)
 	eina_stringshare_del(si->description);
 	eina_stringshare_del(si->category);
 	eina_stringshare_del(si->priv);
-	eina_stringshare_del(si->info);
 
 	free(si);
      }
@@ -474,7 +465,6 @@ static void
 _history_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->sort_type = cfdata->inst->conf->sort_type;
-   cfdata->show_info = cfdata->inst->conf->show_info;
 }
 
 static Evas_Object *
@@ -494,9 +484,6 @@ _history_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_radio_add(evas, D_("Sort applications by popularity"), HISTORY_SORT_POPULARITY, rg);
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_check_add(evas, D_("Show popularity"), &(cfdata->show_info));
-   e_widget_framelist_object_append(of, ob);
-
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    return o;
@@ -510,7 +497,6 @@ _history_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    inst = cfdata->inst;
    cfdata->inst->conf->sort_type = cfdata->sort_type;
-   cfdata->inst->conf->show_info = cfdata->show_info;
 
    _history_description_create(inst);
 

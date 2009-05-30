@@ -182,8 +182,6 @@ struct _Drawer_Source_Item
    const char     *label;
    const char     *description;
    const char	  *category;
-   /* For short couple of characters info */
-   const char	  *info;
 
    Drawer_Source  *source;
    void		  *priv;

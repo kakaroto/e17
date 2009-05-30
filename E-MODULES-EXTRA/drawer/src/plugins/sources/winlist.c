@@ -293,7 +293,6 @@ _winlist_source_item_free(Drawer_Source_Item *si)
    eina_stringshare_del(si->label);
    eina_stringshare_del(si->description);
    eina_stringshare_del(si->category);
-   eina_stringshare_del(si->info);
 
    free(si);
 }

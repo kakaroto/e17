@@ -44,7 +44,6 @@ struct _Conf
    const char *dir;
 
    Launcher_Sort_Type sort_type;
-   Eina_Bool show_info;
 
    Eina_List *ratings;
 };
@@ -66,7 +65,6 @@ struct _E_Config_Dialog_Data
 
    const char *dir;
    int sort_type;
-   int show_info;
 };
 
 struct _Launcher_Menu_Data
@@ -139,7 +137,6 @@ drawer_plugin_init(Drawer_Plugin *p, const char *id)
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, dir, STR);
    E_CONFIG_VAL(D, T, sort_type, INT);
-   E_CONFIG_VAL(D, T, show_info, INT);
    E_CONFIG_LIST(D, T, ratings, inst->edd.conf_rel); /* the list */
 
    snprintf(buf, sizeof(buf), "module.drawer/%s.launcher", id);
@@ -451,24 +448,8 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
 
 	inst->conf->ratings = eina_list_append(inst->conf->ratings, r);
      }
-
-   if (inst->conf->show_info)
-     {
-	switch(inst->conf->sort_type)
-	  {
-	   case LAUNCHER_SORT_RATING:
-	      snprintf(buf, sizeof(buf), "%d", CONF_RATING(si->priv)->rating);
-	      si->info = eina_stringshare_add(buf);
-	      break;
-	   case LAUNCHER_SORT_POPULARITY:
-	      CONF_RATING(si->priv)->popularity = e_exehist_popularity_get(desktop->exec);
-	      snprintf(buf, sizeof(buf), "%d", CONF_RATING(si->priv)->popularity);
-	      si->info = eina_stringshare_add(buf);
-	      break;
-	   default:
-	      break;
-	  }
-     }
+   if (inst->conf->sort_type == LAUNCHER_SORT_POPULARITY)
+     CONF_RATING(si->priv)->popularity = e_exehist_popularity_get(desktop->exec);
 
    return si;
 }
@@ -482,7 +463,6 @@ _launcher_source_item_free(Instance *inst, Drawer_Source_Item *si)
    eina_stringshare_del(si->label);
    eina_stringshare_del(si->description);
    eina_stringshare_del(si->category);
-   eina_stringshare_del(si->info);
    free(si);
 }
 
@@ -498,7 +478,6 @@ _launcher_source_items_free(Instance *inst)
 	eina_stringshare_del(si->label);
 	eina_stringshare_del(si->description);
 	eina_stringshare_del(si->category);
-	eina_stringshare_del(si->info);
 
 	free(si);
      }
@@ -618,7 +597,6 @@ _launcher_cf_fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->dir = eina_stringshare_ref(cfdata->inst->conf->dir);
    cfdata->sort_type = cfdata->inst->conf->sort_type;
-   cfdata->show_info = cfdata->inst->conf->show_info;
 }
 
 static Evas_Object *
@@ -659,9 +637,6 @@ _launcher_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
    ob = e_widget_radio_add(evas, D_("Sort applications by overall popularity"), LAUNCHER_SORT_POPULARITY, rg);
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_check_add(evas, D_("Show rating/popularity"), &(cfdata->show_info));
-   e_widget_framelist_object_append(of, ob);
-
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    return o;
@@ -678,7 +653,6 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
    cfdata->inst->conf->sort_type = cfdata->sort_type;
-   cfdata->inst->conf->show_info = cfdata->show_info;
 
    _launcher_description_create(inst);
 

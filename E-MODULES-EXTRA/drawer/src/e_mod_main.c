@@ -1360,12 +1360,6 @@ _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si)
 		 drawer_conf->module->dir);
 	edje_object_file_set(thumbnail, buf, "modules/drawer/icon/thumbnail");
      }
-
-   if (si->info)
-     {
-	edje_object_part_text_set(thumbnail, "e.text.info", si->info);
-	edje_object_signal_emit(thumbnail, "e,state,show_info", "e");
-     }
 }
 
 static void
