@@ -649,10 +649,10 @@ _launcher_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Drawer_Event_Source_Update *ev;
 
    inst = cfdata->inst;
-   eina_stringshare_del(cfdata->inst->conf->dir);
+   eina_stringshare_del(inst->conf->dir);
 
-   cfdata->inst->conf->dir = eina_stringshare_add(cfdata->dir);
-   cfdata->inst->conf->sort_type = cfdata->sort_type;
+   inst->conf->dir = eina_stringshare_add(cfdata->dir);
+   inst->conf->sort_type = cfdata->sort_type;
 
    _launcher_description_create(inst);
 

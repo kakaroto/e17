@@ -6,6 +6,7 @@
 /* Local Structures */
 typedef struct _Instance Instance;
 typedef struct _Entry Entry;
+typedef struct _Conf Conf;
 
 typedef enum
 {
@@ -15,6 +16,13 @@ typedef enum
    LIST_LEFT,
    LIST_FLOAT
 } List_Orient;
+
+typedef enum
+{
+   LIST_LARGE,
+   LIST_MEDIUM,
+   LIST_SMALL
+} List_View_Type;
 
 struct _Instance 
 {
@@ -32,10 +40,14 @@ struct _Instance
    double scroll_pos;
 
    char theme_file[4096];
+   char item_group[43];
 
    const char *parent_id;
 
    List_Orient orient;
+
+   Conf        *conf;
+   E_Config_DD *edd_conf;
 };
 
 struct _Entry
@@ -44,9 +56,26 @@ struct _Entry
    Evas_Object *o_holder, *o_icon;
 
    Drawer_Source_Item *si;
+
+   Eina_Bool isa_cat;
+};
+
+struct _Conf
+{
+   const char *id;
+
+   List_View_Type view_type;
+};
+
+struct _E_Config_Dialog_Data 
+{
+   Instance *inst;
+
+   int view_type;
 };
 
 static void _list_containers_create(Instance *inst);
+static void _list_item_group_change(Instance *inst);
 static Entry * _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si);
@@ -66,21 +95,50 @@ static void _list_entry_context_cb(void *data, Evas_Object *obj, const char *emi
 static void _list_event_activate_free(void *data __UNUSED__, void *event);
 static void _list_event_context_free(void *data __UNUSED__, void *event);
 
+static void _list_conf_activation_cb(void *data1, void *data2 __UNUSED__);
+static void * _list_cf_create_data(E_Config_Dialog *cfd);
+static void _list_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void _list_cf_fill_data(E_Config_Dialog_Data *cfdata);
+static Evas_Object * _list_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _list_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+
 EAPI Drawer_Plugin_Api drawer_plugin_api = {DRAWER_PLUGIN_API_VERSION, "List"};
+
+static E_Config_Dialog *_cfd = NULL;
 
 EAPI void *
 drawer_plugin_init(Drawer_Plugin *p, const char *id)
 {
    Instance *inst = NULL;
+   char buf[128];
 
    inst = E_NEW(Instance, 1);
 
    inst->view = DRAWER_VIEW(p);
 
+   inst->edd_conf = E_CONFIG_DD_NEW("Conf", Conf);
+   #undef T
+   #undef D
+   #define T Conf
+   #define D inst->edd_conf
+   E_CONFIG_VAL(D, T, id, STR);
+   E_CONFIG_VAL(D, T, view_type, INT);
+
    inst->parent_id = eina_stringshare_add(id);
 
    snprintf(inst->theme_file, sizeof(inst->theme_file),
 	    "%s/e-module-drawer.edj", drawer_module_dir_get());
+
+   snprintf(buf, sizeof(buf), "module.drawer/%s.list", id);
+   inst->conf = e_config_domain_load(buf, inst->edd_conf);
+   if (!inst->conf)
+     {
+	inst->conf = E_NEW(Conf, 1);
+        inst->conf->view_type = LIST_LARGE;
+	inst->conf->id = eina_stringshare_add(id);
+
+	e_config_save_queue();
+     }
 
    return inst;
 }
@@ -103,12 +161,36 @@ drawer_plugin_shutdown(Drawer_Plugin *p)
      }
 
    eina_stringshare_del(inst->parent_id);
+   eina_stringshare_del(inst->conf->id);
+
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
 
+   E_CONFIG_DD_FREE(inst->edd_conf);
    E_FREE(inst);
 
    return 1;
+}
+
+EAPI Evas_Object *
+drawer_plugin_config_get(Drawer_Plugin *p, Evas *evas)
+{
+   Evas_Object *button;
+
+   button = e_widget_button_add(evas, D_("List settings"), NULL, _list_conf_activation_cb, p, NULL);
+
+   return button;
+}
+
+EAPI void
+drawer_plugin_config_save(Drawer_Plugin *p)
+{
+   Instance *inst;
+   char buf[128];
+
+   inst = p->data;
+   snprintf(buf, sizeof(buf), "module.drawer/%s.list", inst->conf->id);
+   e_config_domain_save(buf, inst->edd_conf, inst->conf);
 }
 
 EAPI Evas_Object *
@@ -180,6 +262,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	  {
 	   case LIST_TOP:
 	   case LIST_BOTTOM:
+	   case LIST_FLOAT:
 	      if (change)
 		{
 		   Entry *c;
@@ -193,7 +276,6 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	      break;
 	   case LIST_RIGHT:
 	   case LIST_LEFT:
-	   case LIST_FLOAT:
 	      if (change)
 		{
 		   Entry *c;
@@ -307,6 +389,8 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
       default:
 	break;
      }
+
+   _list_item_group_change(inst);
 }
 
 static void
@@ -358,6 +442,86 @@ _list_containers_create(Instance *inst)
 				  _list_cb_list_mouse_move, inst);
 }
 
+static void
+_list_item_group_change(Instance *inst)
+{
+   switch(inst->orient)
+     {
+      case LIST_TOP:
+      case LIST_BOTTOM:
+      case LIST_FLOAT:
+         switch(inst->conf->view_type)
+           {
+            case LIST_LARGE:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/vertical_item/large");
+               break;
+            case LIST_MEDIUM:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/vertical_item/medium");
+               break;
+            case LIST_SMALL:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/vertical_item/small");
+               break;
+            default:
+               break;
+           }
+         break;
+      case LIST_RIGHT:
+      case LIST_LEFT:
+         switch(inst->conf->view_type)
+           {
+            case LIST_LARGE:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/horizontal_item/large");
+               break;
+            case LIST_MEDIUM:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/horizontal_item/medium");
+               break;
+            case LIST_SMALL:
+               snprintf(inst->item_group, sizeof(inst->item_group),
+                        "modules/drawer/list/horizontal_item/small");
+               break;
+            default:
+               break;
+           }
+         break;
+      default:
+         break;
+     }
+
+   if (inst->entries)
+     {
+        Eina_List *l;
+        Entry *e;
+
+        e_box_freeze(inst->o_box);
+        EINA_LIST_FOREACH(inst->entries, l, e)
+          {
+             Evas_Coord w, h;
+
+             if (e->isa_cat) continue;
+             if (e->o_icon) evas_object_del(e->o_icon);
+             if (!e_theme_edje_object_set
+                 (e->o_holder, "base/theme/modules/drawer", inst->item_group))
+               edje_object_file_set(e->o_holder, inst->theme_file, inst->item_group);
+
+             edje_object_part_text_set(e->o_holder, "e.text.label", e->si->label);
+             edje_object_part_text_set(e->o_holder, "e.text.description", e->si->description);
+
+             edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
+             e->o_icon = drawer_util_icon_create(e->si, inst->evas, w, h);
+             edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
+             evas_object_pass_events_set(e->o_icon, 1);
+             evas_object_show(e->o_icon);
+             _list_item_pack_options(inst, e);
+          }
+        e_box_thaw(inst->o_box);
+     }
+}
+
 static Entry *
 _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 {
@@ -367,10 +531,9 @@ _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
    e = E_NEW(Entry, 1);
 
    e->o_holder = edje_object_add(inst->evas);
-   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-				"modules/drawer/list/horizontal_item"))
-     edje_object_file_set(e->o_holder, inst->theme_file,
-			  "modules/drawer/list/horizontal_item");
+   if (!e_theme_edje_object_set
+       (e->o_holder, "base/theme/modules/drawer", inst->item_group))
+     edje_object_file_set(e->o_holder, inst->theme_file, inst->item_group);
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
    e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
@@ -403,9 +566,8 @@ _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
    e = E_NEW(Entry, 1);
 
    e->o_holder = edje_object_add(inst->evas);
-   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer",
-				"modules/drawer/list/vertical_item"))
-     edje_object_file_set(e->o_holder, inst->theme_file, "modules/drawer/list/vertical_item");
+   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer", inst->item_group))
+     edje_object_file_set(e->o_holder, inst->theme_file, inst->item_group);
 
    edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
    e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
@@ -455,6 +617,7 @@ _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si)
 
    e->inst = inst;
    e->si = si;
+   e->isa_cat = EINA_TRUE;
 
    return e;
 }
@@ -482,6 +645,7 @@ _list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si)
 
    e->inst = inst;
    e->si = si;
+   e->isa_cat = EINA_TRUE;
 
    return e;
 }
@@ -683,3 +847,90 @@ _list_event_context_free(void *data __UNUSED__, void *event)
    eina_stringshare_del(ev->id);
    free(ev);
 }
+
+static void
+_list_conf_activation_cb(void *data1, void *data2 __UNUSED__)
+{
+   Drawer_Plugin *p = NULL;
+   Instance *inst = NULL;
+   E_Config_Dialog_View *v = NULL;
+   char buf[4096];
+
+   p = data1;
+   inst = p->data;
+   /* is this config dialog already visible ? */
+   if (e_config_dialog_find("Drawer_List", "_e_module_drawer_cfg_dlg"))
+     return;
+
+   v = E_NEW(E_Config_Dialog_View, 1);
+   if (!v) return;
+
+   v->create_cfdata = _list_cf_create_data;
+   v->free_cfdata = _list_cf_free_data;
+   v->basic.create_widgets = _list_cf_basic_create;
+   v->basic.apply_cfdata = _list_cf_basic_apply;
+
+   /* Icon in the theme */
+   snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", drawer_module_dir_get());
+
+   /* create new config dialog */
+   _cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
+	 D_("Drawer Plugin : List"), "Drawer_List", 
+	 "_e_module_drawer_cfg_dlg", buf, 0, v, inst);
+
+   e_dialog_resizable_set(_cfd->dia, 1);
+}
+
+static void *
+_list_cf_create_data(E_Config_Dialog *cfd)
+{
+   E_Config_Dialog_Data *cfdata = NULL;
+
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
+   cfdata->inst = cfd->data;
+   _list_cf_fill_data(cfdata);
+   return cfdata;
+}
+
+static void 
+_list_cf_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{
+   _cfd = NULL;
+   E_FREE(cfdata);
+}
+
+static void 
+_list_cf_fill_data(E_Config_Dialog_Data *cfdata)
+{
+   cfdata->view_type = cfdata->inst->conf->view_type;
+}
+
+static Evas_Object *
+_list_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
+{
+   Evas_Object *of, *ol, *ob, *ot;
+   E_Radio_Group *rg;
+
+   rg = e_widget_radio_group_new(&(cfdata->view_type));
+   of = e_widget_framelist_add(evas, D_("Item size options"), 0);
+   ob = e_widget_radio_add(evas, D_("Large"), LIST_LARGE, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Medium"), LIST_MEDIUM, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Small"), LIST_SMALL, rg);
+   e_widget_framelist_object_append(of, ob);
+
+   return of;
+}
+
+static int 
+_list_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{
+   cfdata->inst->conf->view_type = cfdata->view_type;
+
+   _list_item_group_change(cfdata->inst);
+
+   e_config_save_queue();
+   return 1;
+}
+
