@@ -89,12 +89,15 @@ ScreenInit(void)
    screens = EXineramaQueryScreens(&num_screens);
 
    Mode.display.xinerama_active = (XineramaIsActive(disp)) ? 1 : 0;
-   if (!Mode.display.xinerama_active && num_screens > 0)
+   if (!Mode.display.xinerama_active && num_screens > 1)
       Mode.display.xinerama_active = 2;
 
-   for (i = 0; i < num_screens; i++)
-      ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
-		screens[i].y_org, screens[i].width, screens[i].height);
+   if (num_screens > 1)
+     {
+	for (i = 0; i < num_screens; i++)
+	   ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
+		     screens[i].y_org, screens[i].width, screens[i].height);
+     }
 
    if (screens)
       XFree(screens);
@@ -144,7 +147,7 @@ ScreenShowInfo(const char *prm __UNUSED__)
    scrns = EXineramaQueryScreens(&num);
 
    mode = (XineramaIsActive(disp)) ? 1 : 0;
-   if (!mode && num > 0)
+   if (!mode && num > 1)
       mode = 2;
 
    IpcPrintf("Xinerama mode: %s\n", mt[mode]);
