@@ -1557,6 +1557,8 @@ SetNewAreaSize(int ax, int ay)
      }
    if (b >= ay)
       DeskCurrentGotoArea(a, ay - 1);
+
+   autosave();
 }
 
 static void
@@ -2156,26 +2158,25 @@ static int          tmp_dragdir;
 static void
 CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	ChangeNumberOfDesktops(tmp_desktops);
-	Conf.desks.slidein = tmp_desktop_slide;
-	Conf.desks.slidespeed = tmp_desktop_slide_speed;
-	Conf.desks.desks_wraparound = tmp_desktop_wraparound;
+   if (val >= 2)
+      return;
 
-	if ((Conf.desks.dragdir != tmp_dragdir) ||
-	    ((tmp_dragbar) && (Conf.desks.dragbar_width < 1)) ||
-	    ((!tmp_dragbar) && (Conf.desks.dragbar_width > 0)))
-	  {
-	     if (tmp_dragbar)
-		Conf.desks.dragbar_width = 16;
-	     else
-		Conf.desks.dragbar_width = 0;
-	     Conf.desks.dragdir = tmp_dragdir;
-	     DesksControlsRefresh();
-	  }
+   ChangeNumberOfDesktops(tmp_desktops);
+   Conf.desks.slidein = tmp_desktop_slide;
+   Conf.desks.slidespeed = tmp_desktop_slide_speed;
+   Conf.desks.desks_wraparound = tmp_desktop_wraparound;
+
+   if ((Conf.desks.dragdir != tmp_dragdir) ||
+       ((tmp_dragbar) && (Conf.desks.dragbar_width < 1)) ||
+       ((!tmp_dragbar) && (Conf.desks.dragbar_width > 0)))
+     {
+	if (tmp_dragbar)
+	   Conf.desks.dragbar_width = 16;
+	else
+	   Conf.desks.dragbar_width = 0;
+	Conf.desks.dragdir = tmp_dragdir;
+	DesksControlsRefresh();
      }
-   autosave();
 }
 
 static void
@@ -2395,16 +2396,15 @@ static char         tmp_area_wraparound;
 static void
 CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 2)
-     {
-	SetNewAreaSize(tmp_area_x, tmp_area_y);
-	Conf.desks.areas_wraparound = tmp_area_wraparound;
-	Conf.desks.edge_flip_mode = tmp_edge_flip;
-	if (tmp_edge_resist < 1)
-	   tmp_edge_resist = 1;
-	Conf.desks.edge_flip_resistance = tmp_edge_resist;
-     }
-   autosave();
+   if (val >= 2)
+      return;
+
+   SetNewAreaSize(tmp_area_x, tmp_area_y);
+   Conf.desks.areas_wraparound = tmp_area_wraparound;
+   Conf.desks.edge_flip_mode = tmp_edge_flip;
+   if (tmp_edge_resist < 1)
+      tmp_edge_resist = 1;
+   Conf.desks.edge_flip_resistance = tmp_edge_resist;
 }
 
 static void
