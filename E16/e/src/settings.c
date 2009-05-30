@@ -243,7 +243,7 @@ static int          tmp_shade_speed;
 static char         tmp_place_ignore_struts;
 static char         tmp_raise_fullscreen;
 
-#ifdef USE_XINERAMA
+#ifdef USE_XINERAMA_no		/* Not implemented */
 static char         tmp_extra_head;
 #endif
 
@@ -270,7 +270,7 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 	Conf.place.ignore_struts = tmp_place_ignore_struts;
 	Conf.place.raise_fullscreen = tmp_raise_fullscreen;
-#ifdef USE_XINERAMA
+#ifdef USE_XINERAMA_no		/* Not implemented */
 	if (Mode.display.xinerama_active)
 	   Conf.place.extra_head = tmp_extra_head;
 #endif
@@ -302,7 +302,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_place_ignore_struts = Conf.place.ignore_struts;
    tmp_raise_fullscreen = Conf.place.raise_fullscreen;
 
-#ifdef USE_XINERAMA
+#ifdef USE_XINERAMA_no		/* Not implemented */
    tmp_extra_head = Conf.place.extra_head;
 #endif
 

@@ -235,7 +235,7 @@ typedef struct {
       int                 slidemode;
       int                 slidespeedmap;
       int                 slidespeedcleanup;
-#ifdef USE_XINERAMA
+#ifdef USE_XINERAMA_no		/* Not implemented */
       char                extra_head;	/* Not used */
 #endif
    } place;
