@@ -405,8 +405,13 @@ drawer_plugin_load(Config_Item *ci, Drawer_Plugin_Category cat, const char *name
    else if (cat == DRAWER_COMPOSITES)
      _drawer_composite_new(inst, name);
 
-   if ((inst->composite || (inst->source && inst->view)) && inst->flags.is_floating)
-     _drawer_container_update(inst);
+   if ((inst->composite || (inst->source && inst->view)))
+     {
+       if (inst->flags.is_floating)
+         _drawer_container_update(inst);
+       else
+         inst->flags.pop_update = EINA_TRUE;
+     }
 
    return NULL;
 }
@@ -634,6 +639,8 @@ _drawer_popup_show(Instance *inst)
       default:
         break;
      }
+   if (inst->flags.pop_update)
+     _drawer_popup_update(inst);
    inst->flags.pop_showing = EINA_TRUE;
    e_gadcon_popup_show(inst->popup);
    e_gadcon_locked_set(inst->gcc->gadcon, 1);
