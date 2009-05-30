@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-13 19:28+0200\n"
+"POT-Creation-Date: 2009-05-30 09:50+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -576,58 +576,58 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skribord underst.\n"
 
-#: src/desktops.c:2289
+#: src/desktops.c:2291
 msgid "Number of virtual desktops:\n"
 msgstr "Antal virtuella skrivbord:\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2316
 msgid "Slide desktops around when changing"
 msgstr "Låt skrivborden glida omkring vid växling"
 
-#: src/desktops.c:2320
+#: src/desktops.c:2322
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Skrivbordets glid fart: (sakta)\n"
 
-#: src/desktops.c:2334
+#: src/desktops.c:2336
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2342
+#: src/desktops.c:2344
 msgid "Display desktop dragbar"
 msgstr "Visa skrivbordens draglist"
 
-#: src/desktops.c:2348
+#: src/desktops.c:2350
 msgid "Drag bar position:"
 msgstr "Draglistens läge:"
 
-#: src/desktops.c:2352
+#: src/desktops.c:2354
 msgid "Top"
 msgstr "Upptill"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2360
 msgid "Bottom"
 msgstr "Nertill"
 
-#: src/desktops.c:2364 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Vänster"
 
-#: src/desktops.c:2370 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Höger"
 
-#: src/desktops.c:2378 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:571
 #, fuzzy
 msgid "Desks"
 msgstr "Skrivbord"
 
-#: src/desktops.c:2379
+#: src/desktops.c:2381
 msgid "Multiple Desktop Settings"
 msgstr "Multipla skrivbordsinställningar"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2384
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -635,43 +635,43 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "multipla skrivbordsinställningar\n"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2475
 msgid "Virtual Desktop size:\n"
 msgstr "Storlek för virtuella skribord:\n"
 
-#: src/desktops.c:2510
+#: src/desktops.c:2511
 msgid "Wrap virtual desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2517
+#: src/desktops.c:2518
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2520
+#: src/desktops.c:2521
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2525
+#: src/desktops.c:2526
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2530
+#: src/desktops.c:2531
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2536
+#: src/desktops.c:2537
 msgid "Resistance at edge of screen:\n"
 msgstr "Motstånd vid bildskärmskanten:\n"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2549
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2549
+#: src/desktops.c:2550
 msgid "Virtual Desktop Settings"
 msgstr "Virtuella skrivbordsinställningar"
 
-#: src/desktops.c:2552
+#: src/desktops.c:2553
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1271,29 +1271,29 @@ msgstr "Ikonifiera denna grupp"
 msgid "Group %i"
 msgstr "Grupp %i"
 
-#: src/menus.c:2081
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr "Animerad visning av menyer"
 
-#: src/menus.c:2086
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr "Låt alltid menyer poppa upp på skärm"
 
-#: src/menus.c:2091
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr "Flytta muspekaren efter att menyer flyttats"
 
-#: src/menus.c:2097
+#: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
 msgstr "Ramstil"
 
-#: src/menus.c:2098
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Diverse inställningar"
 
-#: src/menus.c:2101
+#: src/menus.c:2119
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

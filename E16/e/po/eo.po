@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16 0.99.99.003\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-10 22:16+0200\n"
+"POT-Creation-Date: 2009-05-30 09:50+0200\n"
 "PO-Revision-Date: 2009-05-16 20:50+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -147,7 +147,7 @@ msgid "Attention !!!"
 msgstr "Atentu!!!"
 
 #: src/alert.c:583 src/dialog.c:844 src/dialog.c:2034 src/events.c:87
-#: src/setup.c:157 src/sound.c:302
+#: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "Bone"
 
@@ -362,7 +362,8 @@ msgstr "Fermi"
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/container.c:1513 src/container.c:1586, c-format
+#: src/container.c:1513 src/container.c:1586
+#, c-format
 msgid "Icon size: %2d"
 msgstr "Piktograma grandeco: %2d"
 
@@ -502,55 +503,55 @@ msgid ""
 "to the bottom.\n"
 msgstr ""
 
-#: src/desktops.c:2289
+#: src/desktops.c:2291
 msgid "Number of virtual desktops:\n"
 msgstr ""
 
-#: src/desktops.c:2314
+#: src/desktops.c:2316
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2320
+#: src/desktops.c:2322
 msgid "Desktop Slide speed:\n"
 msgstr ""
 
-#: src/desktops.c:2334
+#: src/desktops.c:2336
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2342
+#: src/desktops.c:2344
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2348
+#: src/desktops.c:2350
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2352
+#: src/desktops.c:2354
 msgid "Top"
 msgstr "Supre"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2360
 msgid "Bottom"
 msgstr "Malsupre"
 
-#: src/desktops.c:2364 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Maldekstre"
 
-#: src/desktops.c:2370 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Dekstre"
 
-#: src/desktops.c:2378 src/menus-misc.c:572
+#: src/desktops.c:2380 src/menus-misc.c:571
 msgid "Desks"
 msgstr "Labortabloj"
 
-#: src/desktops.c:2379
+#: src/desktops.c:2381
 msgid "Multiple Desktop Settings"
 msgstr "Agordoj de pluropa labortablo"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2384
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -558,43 +559,43 @@ msgstr ""
 "Pluropa labortablo de Enlightenment\n"
 "Dialogo de agordoj\n"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2475
 msgid "Virtual Desktop size:\n"
 msgstr "Grando de virtuala labortablo:\n"
 
-#: src/desktops.c:2510
+#: src/desktops.c:2511
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2517
+#: src/desktops.c:2518
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2520
+#: src/desktops.c:2521
 msgid "Off"
 msgstr "Elŝaltita"
 
-#: src/desktops.c:2525
+#: src/desktops.c:2526
 msgid "On"
 msgstr "Ŝaltita"
 
-#: src/desktops.c:2530
+#: src/desktops.c:2531
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2536
+#: src/desktops.c:2537
 msgid "Resistance at edge of screen:\n"
 msgstr ""
 
-#: src/desktops.c:2548
+#: src/desktops.c:2549
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2549
+#: src/desktops.c:2550
 msgid "Virtual Desktop Settings"
 msgstr "Agordoj de virtuala labortablo"
 
-#: src/desktops.c:2552
+#: src/desktops.c:2553
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -864,7 +865,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:1018 src/menus-misc.c:632 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
 msgid "Groups"
 msgstr "Grupoj"
 
@@ -1042,61 +1043,61 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:444 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Etosoj"
 
-#: src/menus-misc.c:470
+#: src/menus-misc.c:469
 msgid "Border"
 msgstr "Rando"
 
-#: src/menus-misc.c:532
+#: src/menus-misc.c:531
 msgid "Window List"
 msgstr "Fenestrolisto"
 
-#: src/menus-misc.c:554
+#: src/menus-misc.c:553
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:558 src/menus-misc.c:654
+#: src/menus-misc.c:557 src/menus-misc.c:653
 #, c-format
 msgid "Desktop %i"
 msgstr ""
 
-#: src/menus-misc.c:601
+#: src/menus-misc.c:600
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus-misc.c:606
+#: src/menus-misc.c:605
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:617
+#: src/menus-misc.c:616
 #, c-format
 msgid "Group %i"
 msgstr ""
 
-#: src/menus.c:2081
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2086
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2091
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2097
+#: src/menus.c:2115
 msgid "Menus"
 msgstr "Menuoj"
 
-#: src/menus.c:2098
+#: src/menus.c:2116
 msgid "Menu Settings"
 msgstr "Agordoj de menuo"
 
-#: src/menus.c:2101
+#: src/menus.c:2119
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1796,11 +1797,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr ""
 
-#: src/sound.c:205
+#: src/sound.c:213
 msgid "Error finding sound file"
 msgstr ""
 
-#: src/sound.c:206
+#: src/sound.c:214
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -1810,30 +1811,31 @@ msgid ""
 "may wish to check your configuration settings.\n"
 msgstr ""
 
-#: src/sound.c:302
+#: src/sound.c:310
 msgid "Error initialising sound"
 msgstr ""
 
-#: src/sound.c:303
+#: src/sound.c:311
+#, c-format
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
-"communicating with the audio server (Esound). Audio will\n"
-"now be disabled.\n"
+"communicating with the audio server (%s).\n"
+"Audio will now be disabled.\n"
 msgstr ""
 
-#: src/sound.c:452
+#: src/sound.c:460
 msgid "Enable sounds"
 msgstr "Ebligi sonojn"
 
-#: src/sound.c:458
+#: src/sound.c:466
 msgid "Sound"
 msgstr "Sono"
 
-#: src/sound.c:459
+#: src/sound.c:467
 msgid "Audio Settings"
 msgstr ""
 
-#: src/sound.c:462
+#: src/sound.c:470
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2440,5 +2442,3 @@ msgstr "Alio"
 #: config/strings.c:193
 msgid "Epplets"
 msgstr "E-akcesoraĵoj"
-
-

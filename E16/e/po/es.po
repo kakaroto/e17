@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-13 19:28+0200\n"
+"POT-Creation-Date: 2009-05-30 09:50+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -597,57 +597,57 @@ msgstr ""
 "Pulse aquí para llevar este Escritorio\n"
 "hacia el fondo.\n"
 
-#: src/desktops.c:2289
+#: src/desktops.c:2291
 msgid "Number of virtual desktops:\n"
 msgstr "Número de Escritorios Virtuales:\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2316
 msgid "Slide desktops around when changing"
 msgstr "Desplazar escritorios al conmutar entre ellos"
 
-#: src/desktops.c:2320
+#: src/desktops.c:2322
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Velocidad de Desplazamiento de Escritorios: (lenta)\n"
 
-#: src/desktops.c:2334
+#: src/desktops.c:2336
 msgid "Wrap desktops around"
 msgstr "Enganchar los escritorios entre ellos"
 
-#: src/desktops.c:2342
+#: src/desktops.c:2344
 msgid "Display desktop dragbar"
 msgstr "Mostrar Barra de Arrastre de Escritorios"
 
-#: src/desktops.c:2348
+#: src/desktops.c:2350
 msgid "Drag bar position:"
 msgstr "Ubicación de la Barra de Arrastre:"
 
-#: src/desktops.c:2352
+#: src/desktops.c:2354
 msgid "Top"
 msgstr "Arriba"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2360
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2364 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2370 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2378 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:571
 #, fuzzy
 msgid "Desks"
 msgstr "Escritorio"
 
-#: src/desktops.c:2379
+#: src/desktops.c:2381
 msgid "Multiple Desktop Settings"
 msgstr "Configurar Escritorios Múltiples"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2384
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -655,43 +655,43 @@ msgstr ""
 "Multiples Escritorios Enlightenment\n"
 "Dálogo de Configuracion\n"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2475
 msgid "Virtual Desktop size:\n"
 msgstr "Tamaño de Escritorio Virtual:\n"
 
-#: src/desktops.c:2510
+#: src/desktops.c:2511
 msgid "Wrap virtual desktops around"
 msgstr "Enganchar escritorios virtuales entre ellos"
 
-#: src/desktops.c:2517
+#: src/desktops.c:2518
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2520
+#: src/desktops.c:2521
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2525
+#: src/desktops.c:2526
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2530
+#: src/desktops.c:2531
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2536
+#: src/desktops.c:2537
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistencia al borde de la pantalla:\n"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2549
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2549
+#: src/desktops.c:2550
 msgid "Virtual Desktop Settings"
 msgstr "Configurar Escritorios Virtuales"
 
-#: src/desktops.c:2552
+#: src/desktops.c:2553
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1286,29 +1286,29 @@ msgstr "Iconizar este grupo"
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2081
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr "Mostrar animación de menús"
 
-#: src/menus.c:2086
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr "Siempre hacer aparecer menús en la pantalla"
 
-#: src/menus.c:2091
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr "Torcer el puntero tras mover los Menus"
 
-#: src/menus.c:2097
+#: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
 msgstr "Menus:"
 
-#: src/menus.c:2098
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Miscelanea Configuraciones"
 
-#: src/menus.c:2101
+#: src/menus.c:2119
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
