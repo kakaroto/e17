@@ -183,8 +183,8 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 	if ((w > 0) && (h > 0))
 	  {
 	     aspect = ((double)w) / ((double)h);
-	     dw = ewin->icccm.w_inc / 2.;
-	     dh = ewin->icccm.h_inc / 2.;
+	     dw = ewin->icccm.w_inc / 4.;
+	     dh = ewin->icccm.h_inc / 4.;
 	     if (Mode.mode == MODE_RESIZE_H)
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
