@@ -1815,7 +1815,7 @@ _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUS
 static void
 _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *parent = evas_object_smart_parent_get(obj);
+   Evas_Object *parent = evas_object_data_get(obj, "con_parent");
    if (parent)
      _drawer_content_recalc((Instance *) data, parent);
 }
@@ -1869,6 +1869,7 @@ _smart_add(Evas_Object *obj, Evas_Object *child)
    sd->child = child;
    evas_object_clip_set(child, obj);
    evas_object_smart_data_set(obj, sd);
+   evas_object_data_set(child, "con_parent", obj);
 }
 
 static void

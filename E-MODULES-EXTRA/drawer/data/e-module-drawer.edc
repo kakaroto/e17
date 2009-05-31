@@ -976,7 +976,7 @@ target: "bg";
    }
    group {
       name: "modules/drawer/list/vertical_category";
-      min: 9999 24;
+      min: 24 24;
       max: 9999 24;
       parts {
 	 part {
