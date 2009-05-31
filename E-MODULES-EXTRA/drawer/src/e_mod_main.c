@@ -8,6 +8,7 @@
 /* Local Structures */
 typedef struct _Instance Instance;
 typedef struct _Drawer_Epsilon_Data Drawer_Epsilon_Data;
+typedef struct _Smart_Data Smart_Data;
 
 struct _Instance 
 {
@@ -36,6 +37,8 @@ struct _Instance
         Eina_Bool pop_showing : 1;
         Eina_Bool pop_hiding : 1;
         Eina_Bool pop_update : 1;
+        Eina_Bool pop_empty : 1;
+        Eina_Bool content_recalc : 1;
      } flags;
 };
 
@@ -44,6 +47,11 @@ struct _Drawer_Epsilon_Data
    Evas_Object *o_icon;
 
    int w, h;
+};
+
+struct _Smart_Data
+{
+   Evas_Object *child;
 };
 
 /* Local Function Prototypes */
@@ -80,13 +88,14 @@ static Drawer_Composite *_drawer_composite_new(Instance *inst, const char *name)
 
 static void _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si);
 static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
+static void _drawer_content_recalc(Instance *inst, Evas_Object *obj);
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_global_mouse_down(void *data, int type, void *event);
+static int _drawer_global_mouse_down_cb(void *data, int type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
@@ -94,14 +103,24 @@ static void _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, cons
 static void _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _drawer_cb_menu_post(void *data, E_Menu *menu);
 static void _drawer_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
-static void _drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h);
 static void _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
+static void _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+
+static Evas_Object * _drawer_content_new(Evas *e, Evas_Object *child);
+static void _smart_init(void);
+static void _smart_add(Evas_Object *obj, Evas_Object *child);
+static void _smart_del(Evas_Object *obj);
+static void _smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static void _smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
+static void _smart_show(Evas_Object *obj);
+static void _smart_hide(Evas_Object *obj);
 
 /* Local Variables */
 static int uuid = 0;
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
+static Evas_Smart *smart = NULL;
 
 Config *drawer_conf = NULL;
 
@@ -572,8 +591,8 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 	      drawer_conf->module->dir);
 	inst->o_content = edje_object_add(evas);
 	if (!e_theme_edje_object_set(inst->o_content, "base/theme/modules/drawer", 
-				     "modules/drawer/main/content"))
-	  edje_object_file_set(inst->o_content, buf, "modules/drawer/main/content");
+				     "modules/drawer/main/icon"))
+	  edje_object_file_set(inst->o_content, buf, "modules/drawer/main/icon");
      }
 
    if (inst->o_content)
@@ -586,7 +605,7 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 static void
 _drawer_popup_create(Instance *inst)
 {
-   inst->popup = e_gadcon_popup_new(inst->gcc, _drawer_popup_resize_cb);
+   inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
    if (!(e_theme_edje_object_set(inst->popup->o_bg,
 	       "base/theme/modules/drawer", "modules/drawer/container")))
      {
@@ -610,6 +629,7 @@ _drawer_popup_create(Instance *inst)
 static void
 _drawer_popup_show(Instance *inst)
 {
+   if (inst->flags.pop_empty) return;
    switch(inst->gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_CORNER_RT:
@@ -641,6 +661,13 @@ _drawer_popup_show(Instance *inst)
      }
    if (inst->flags.pop_update)
      _drawer_popup_update(inst);
+   else if (inst->flags.content_recalc)
+     {
+        _drawer_content_recalc(
+            inst, edje_object_part_swallow_get(
+                inst->popup->o_bg, "e.swallow.content"));
+        inst->flags.content_recalc = EINA_FALSE;
+     }
    inst->flags.pop_showing = EINA_TRUE;
    e_gadcon_popup_show(inst->popup);
    e_gadcon_locked_set(inst->gcc->gadcon, 1);
@@ -695,7 +722,13 @@ _drawer_popup_update(Instance *inst)
      }
 
    o = _drawer_content_generate(inst, inst->popup->win->evas);
-   evas_object_data_set(o, "drawer_popup_data", inst);
+   if (o)
+     {
+        evas_object_data_set(o, "drawer_popup_data", inst);
+        inst->flags.pop_empty = EINA_FALSE;
+     }
+   else
+     inst->flags.pop_empty = EINA_TRUE;
    e_gadcon_popup_content_set(inst->popup, o);
 
    inst->flags.pop_update = EINA_FALSE;
@@ -724,7 +757,7 @@ _drawer_container_update(Instance *inst)
 static Evas_Object *
 _drawer_content_generate(Instance *inst, Evas *evas)
 {
-   Evas_Object *o = NULL;
+   Evas_Object *o = NULL, *con = NULL;
 
    if (inst->composite && inst->composite->enabled)
      {
@@ -751,7 +784,24 @@ _drawer_content_generate(Instance *inst, Evas *evas)
 
      }
 
-   return o;
+   if (o)
+     {
+        char buf[4096];
+
+        snprintf(buf, sizeof(buf), "%s/e-module-drawer.edj", 
+                 drawer_conf->module->dir);
+        con = _drawer_content_new(evas, o);
+        evas_object_show(con);
+
+        evas_object_event_callback_add(o, EVAS_CALLBACK_CHANGED_SIZE_HINTS,
+                                       _drawer_changed_size_hints_cb, inst);
+        if (inst->popup)
+          _drawer_content_recalc(inst, con);
+        else
+          inst->flags.content_recalc = EINA_TRUE;
+     }
+
+   return con;
 }
 
 static void
@@ -1001,7 +1051,6 @@ _drawer_view_new(Instance *inst, const char *name)
      }
 
    v->func.container_resized = dlsym(p->handle, "drawer_view_container_resized");
-   v->func.content_size_get = dlsym(p->handle, "drawer_view_content_size_get");
    v->func.orient_set = dlsym(p->handle, "drawer_view_orient_set");
 
 init_done:
@@ -1051,7 +1100,6 @@ _drawer_composite_new(Instance *inst, const char *name)
    c->func.context = dlsym(p->handle, "drawer_composite_context");
    c->func.description_get = dlsym(p->handle, "drawer_composite_description_get");
    c->func.container_resized = dlsym(p->handle, "drawer_composite_container_resized");
-   c->func.content_size_get = dlsym(p->handle, "drawer_composite_content_size_get");
    c->func.orient_set = dlsym(p->handle, "drawer_composite_orient_set");
 
 init_done:
@@ -1114,7 +1162,7 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 				 _drawer_thumbnail_done_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
-				 _drawer_global_mouse_down, inst));
+				 _drawer_global_mouse_down_cb, inst));
 
    if (inst->conf_item->composite)
      _drawer_composite_new(inst, inst->conf_item->composite);
@@ -1392,6 +1440,65 @@ _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
      e_icon_scale_up_set(swallow, 0);
 }
 
+static void
+_drawer_content_recalc(Instance *inst, Evas_Object *obj)
+{
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   Evas_Object *child = sd->child;
+   Evas_Coord gx, gy, gw, gh, zw, zh, zx, zy, px, py,
+              pw, ph, ew, eh, mt, mb, ml, mr, w, h;
+   E_Gadcon_Client *gcc = inst->popup->gcc;
+
+   edje_object_part_geometry_get(inst->popup->o_bg, "e.swallow.content",
+                                 &px, &py, &pw, &ph);
+   evas_object_geometry_get(inst->popup->o_bg, NULL, NULL, &ew, &eh);
+   evas_object_size_hint_min_get(child, &w, &h);
+
+   mt = py + 10; mb = eh - py - ph + 10;
+   ml = px + 10; mr = ew - px - pw + 10;
+
+   e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
+   zx = gcc->gadcon->zone->x;
+   zy = gcc->gadcon->zone->y;
+   zw = gcc->gadcon->zone->w;
+   zh = gcc->gadcon->zone->h;
+   switch (gcc->gadcon->orient)
+     {
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+         if (gx - w < zx + ml)
+           w = gx - zx - ml;
+        break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+        if (gx + gw + w > zx + zw + mr)
+          w = zx + zw - gx - gw + mr;
+        break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+        if (gy + gh + h > zy + zh + mb)
+          h = zy + zh - gy - gh + mb;
+        break;
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_BL:
+      case E_GADCON_ORIENT_CORNER_BR:
+        if (gy - h < zy + mt)
+          h = gy - zy - mt;
+        break;
+      case E_GADCON_ORIENT_FLOAT:
+        if (w > zw - ml - mr)
+          w = zw - ml - mr;
+        break;
+      default:
+        break;
+     }
+
+   evas_object_size_hint_min_set(obj, w, h);
+}
+
 static int
 _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
@@ -1548,7 +1655,7 @@ _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
 }
 
 static int
-_drawer_global_mouse_down(void *data, int type, void *event)
+_drawer_global_mouse_down_cb(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
    Instance *inst;
@@ -1696,38 +1803,6 @@ _drawer_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 }
 
 static void
-_drawer_popup_resize_cb(Evas_Object *obj, int *w, int *h)
-{
-   Instance *inst = NULL;
-   Drawer_Content_Margin margin = {0, 0, 0, 0};
-   int cw, ch, px, py, pw, ph, ew, eh;
-
-   inst = evas_object_data_get(obj, "drawer_popup_data");
-   if (inst->composite && inst->composite->enabled)
-     {
-        if (!DRAWER_COMPOSITE(inst->composite)->func.content_size_get) return;
-     }
-   else
-     {
-        if (!DRAWER_VIEW(inst->view)->func.content_size_get) return;
-     }
-
-   edje_object_part_geometry_get(inst->popup->o_bg, "e.swallow.content", &px, &py, &pw, &ph);
-   evas_object_geometry_get(inst->popup->o_bg, NULL, NULL, &ew, &eh);
-   margin.top = py + 10; margin.right = ew - px - pw + 10;
-   margin.bottom = eh - py - ph + 10; margin.left = px + 10;
-   if (inst->composite && inst->composite->enabled)
-     DRAWER_COMPOSITE(inst->composite)->func.content_size_get(
-         DRAWER_COMPOSITE(inst->composite), inst->popup->gcc, &margin, &cw, &ch);
-   else
-     DRAWER_VIEW(inst->view)->func.content_size_get(DRAWER_VIEW(inst->view),
-                                                    inst->popup->gcc, &margin, &cw, &ch);
-
-   if (cw) *w = cw;
-   if (ch) *h = ch;
-}
-
-static void
 _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    Evas_Object *o = NULL;
@@ -1736,3 +1811,115 @@ _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUS
 
    evas_object_del(o);
 }
+
+static void
+_drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *parent = evas_object_smart_parent_get(obj);
+   if (parent)
+     _drawer_content_recalc((Instance *) data, parent);
+}
+
+static Evas_Object *
+_drawer_content_new(Evas *e, Evas_Object *child)
+{
+   Evas_Object *o;
+
+   _smart_init();
+   o = evas_object_smart_add(e, smart);
+
+   _smart_add(o, child);
+   return o;
+}
+
+static void
+_smart_init(void)
+{
+   if (smart) return;
+     {
+	static const Evas_Smart_Class sc =
+	  {
+	       "drawer_content_container",
+	       EVAS_SMART_CLASS_VERSION,
+	       NULL,
+	       _smart_del,
+	       _smart_move,
+	       _smart_resize,
+	       _smart_show,
+	       _smart_hide,
+	       NULL,
+	       NULL,
+	       NULL,
+	       NULL,            /* Calculate */
+	       NULL,            /* Member add */
+	       NULL,            /* Member del */
+	       NULL             /* Data */
+	  };
+        smart = evas_smart_class_new(&sc);
+     }
+}
+
+static void
+_smart_add(Evas_Object *obj, Evas_Object *child)
+{
+   Smart_Data *sd;
+
+   sd = E_NEW(Smart_Data, 1);
+   if (!sd) return;
+   sd->child = child;
+   evas_object_clip_set(child, obj);
+   evas_object_smart_data_set(obj, sd);
+}
+
+static void
+_smart_del(Evas_Object *obj)
+{
+   Smart_Data *sd;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   evas_object_del(sd->child);
+   E_FREE(sd);
+}
+
+static void
+_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+{
+   Smart_Data *sd;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   evas_object_move(sd->child, x, y);
+}
+
+static void
+_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+{
+   Smart_Data *sd;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   evas_object_resize(sd->child, w, h);
+}
+
+static void
+_smart_show(Evas_Object *obj)
+{
+   Smart_Data *sd;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   evas_object_show(sd->child);
+
+}
+
+static void
+_smart_hide(Evas_Object *obj)
+{
+   Smart_Data *sd;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   evas_object_hide(sd->child);
+}
+

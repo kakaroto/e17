@@ -419,7 +419,6 @@ _launcher_source_item_fill(Instance *inst, Efreet_Desktop *desktop)
    Conf_Rating *r;
    Eina_List *l;
    int found = 0;
-   char buf[5];
 
    si = E_NEW(Drawer_Source_Item, 1);
 

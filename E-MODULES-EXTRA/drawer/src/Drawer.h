@@ -43,8 +43,6 @@ typedef struct _Drawer_Event_Source_Main_Icon_Update Drawer_Event_Source_Main_Ic
 typedef struct _Drawer_Event_View_Activate Drawer_Event_View_Activate;
 typedef struct _Drawer_Event_View_Context Drawer_Event_View_Context;
 
-typedef struct _Drawer_Content_Margin Drawer_Content_Margin;
-
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 
@@ -130,9 +128,6 @@ struct _Drawer_View
         /*
          * optional
          * */
-        /* Calculates the size of the content, used by the popup */
-        void	    (*content_size_get)		(Drawer_View *v, E_Gadcon_Client *gcc,
-                                                 Drawer_Content_Margin *margin, int *w, int *h);
         /* Called when the container is resized by the user */
         void	    (*container_resized)	(Drawer_View *v);
         /* Sets the orientation of the gadget container */
@@ -160,9 +155,6 @@ struct _Drawer_Composite
         /* Returns a description of the source */
         const char  * (*description_get) (Drawer_Composite *c);
 
-        /* Calculates the size of the content, used by the popup */
-        void	    (*content_size_get)	 (Drawer_Composite *c, E_Gadcon_Client *gcc,
-                                          Drawer_Content_Margin *margin, int *w, int *h);
         /* Called when the container is resized by the user */
         void	    (*container_resized) (Drawer_Composite *c);
         /* Sets the orientation of the gadget container */
@@ -213,11 +205,6 @@ struct _Drawer_Event_View_Context
    const char *id;
    void *data;
    Evas_Coord x, y;
-};
-
-struct _Drawer_Content_Margin
-{
-   Evas_Coord top, right, bottom, left;
 };
 
 /* Returns an Evas_Object icon, based on the given Drawer_Source_Item */

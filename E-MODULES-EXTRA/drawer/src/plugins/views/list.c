@@ -74,8 +74,8 @@ struct _E_Config_Dialog_Data
    int view_type;
 };
 
+static void _list_reconfigure(Instance *inst);
 static void _list_containers_create(Instance *inst);
-static void _list_item_group_change(Instance *inst);
 static Entry * _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si);
 static Entry * _list_horizontal_cat_create(Instance *inst, Drawer_Source_Item *si);
@@ -209,9 +209,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
-   _list_containers_create(inst);
 
-   e_box_freeze(inst->o_box);
    EINA_LIST_FREE(inst->entries, e)
      {
 	if (e->o_icon)
@@ -220,6 +218,11 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	  evas_object_del(e->o_holder);
 	E_FREE(e);
      }
+
+   if (!items) return NULL;
+
+   _list_containers_create(inst);
+   e_box_freeze(inst->o_box);
 
    EINA_LIST_FOREACH(items, l, si)
       ll = eina_list_append(ll, si);
@@ -290,63 +293,12 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	  }
 	inst->entries = eina_list_append(inst->entries, e);
 	e_box_pack_end(inst->o_box, e->o_holder);
-	_list_item_pack_options(inst, e);
      }
    e_box_thaw(inst->o_box);
    eina_stringshare_del(cat);
+
+   _list_reconfigure(inst);
    return inst->o_con;
-}
-
-EAPI void
-drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h)
-{
-   Instance *inst = NULL;
-   Evas_Coord bw, bh, gx, gy, gw, gh, zw, zh, zx, zy;
-
-   inst = DRAWER_PLUGIN(v)->data;
-   e_box_min_size_get(inst->o_box, &bw, &bh);
-   edje_extern_object_min_size_set(inst->o_box, bw, bh);
-   edje_object_size_min_calc(inst->o_con, w, h);
-   edje_extern_object_min_size_set(inst->o_box, 0, 0);
-
-   e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
-   zx = gcc->gadcon->zone->x;
-   zy = gcc->gadcon->zone->y;
-   zw = gcc->gadcon->zone->w;
-   zh = gcc->gadcon->zone->h;
-   switch (gcc->gadcon->orient)
-     {
-      case E_GADCON_ORIENT_CORNER_RT:
-      case E_GADCON_ORIENT_CORNER_RB:
-      case E_GADCON_ORIENT_RIGHT:
-	 if (gx - *w < zx + margin->left)
-	   *w = gx - zx - margin->left;
-	break;
-      case E_GADCON_ORIENT_LEFT:
-      case E_GADCON_ORIENT_CORNER_LT:
-      case E_GADCON_ORIENT_CORNER_LB:
-	if (gx + gw + *w > zx + zw + margin->right)
-	  *w = zx + zw - gx - gw + margin->right;
-	break;
-      case E_GADCON_ORIENT_TOP:
-      case E_GADCON_ORIENT_CORNER_TL:
-      case E_GADCON_ORIENT_CORNER_TR:
-	if (gy + gh + *h > zy + zh + margin->bottom)
-	  *h = zy + zh - gy - gh + margin->bottom;
-	break;
-      case E_GADCON_ORIENT_BOTTOM:
-      case E_GADCON_ORIENT_CORNER_BL:
-      case E_GADCON_ORIENT_CORNER_BR:
-	if (gy - *h < zy + margin->top)
-	  *h = gy - zy - margin->top;
-	break;
-      case E_GADCON_ORIENT_FLOAT:
-	if (*w > zw - margin->left - margin->right)
-	  *w = zw - margin->left - margin->right;
-	break;
-      default:
-	break;
-     }
 }
 
 EAPI void
@@ -383,68 +335,20 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
 	inst->orient = LIST_BOTTOM;
 	break;
       case E_GADCON_ORIENT_FLOAT:
-	e_box_orientation_set(inst->o_box, 1);
+	e_box_orientation_set(inst->o_box, 0);
 	inst->orient = LIST_FLOAT;
 	break;
       default:
 	break;
      }
 
-   _list_item_group_change(inst);
+   _list_reconfigure(inst);
 }
 
 static void
-_list_containers_create(Instance *inst)
+_list_reconfigure(Instance *inst)
 {
-   Evas *evas;
-   const char *group;
-
-   evas = inst->evas;
-   inst->o_con = edje_object_add(evas);
-
-   inst->o_box = e_box_add(evas);
-   e_box_homogenous_set(inst->o_box, 0);
-   switch(inst->orient)
-     {
-      case LIST_TOP:
-	 e_box_orientation_set(inst->o_box, 0);
-	 e_box_align_set(inst->o_box, 0.5, 1);
-	 group = eina_stringshare_add("modules/drawer/list/vertical");
-	 break;
-      case LIST_BOTTOM:
-	 e_box_orientation_set(inst->o_box, 0);
-	 e_box_align_set(inst->o_box, 0.5, 0);
-	 group = eina_stringshare_add("modules/drawer/list/vertical");
-	 break;
-      case LIST_LEFT:
-      case LIST_FLOAT:
-	 e_box_orientation_set(inst->o_box, 1);
-	 e_box_align_set(inst->o_box, 1, 0.5);
-	 group = eina_stringshare_add("modules/drawer/list/horizontal");
-	 break;
-      case LIST_RIGHT:
-	 e_box_orientation_set(inst->o_box, 1);
-	 e_box_align_set(inst->o_box, 0, 0.5);
-	 group = eina_stringshare_add("modules/drawer/list/horizontal");
-	 break;
-     }
-
-   if (!e_theme_edje_object_set(inst->o_con, "base/theme/modules/drawer", group))
-     edje_object_file_set(inst->o_con, inst->theme_file, group);
-
-   eina_stringshare_del(group);
-   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
-
-   /* Stops the parent context menu from appearing */
-   evas_object_propagate_events_set(inst->o_con, 0);
-
-   evas_object_event_callback_add(inst->o_con, EVAS_CALLBACK_MOUSE_MOVE,
-				  _list_cb_list_mouse_move, inst);
-}
-
-static void
-_list_item_group_change(Instance *inst)
-{
+   Evas_Coord bw, bh, w, h;
    switch(inst->orient)
      {
       case LIST_TOP:
@@ -500,7 +404,7 @@ _list_item_group_change(Instance *inst)
         e_box_freeze(inst->o_box);
         EINA_LIST_FOREACH(inst->entries, l, e)
           {
-             Evas_Coord w, h;
+             Evas_Coord ew, eh;
 
              if (e->isa_cat) continue;
              if (e->o_icon) evas_object_del(e->o_icon);
@@ -511,8 +415,8 @@ _list_item_group_change(Instance *inst)
              edje_object_part_text_set(e->o_holder, "e.text.label", e->si->label);
              edje_object_part_text_set(e->o_holder, "e.text.description", e->si->description);
 
-             edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
-             e->o_icon = drawer_util_icon_create(e->si, inst->evas, w, h);
+             edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &ew, &eh);
+             e->o_icon = drawer_util_icon_create(e->si, inst->evas, ew, eh);
              edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
              evas_object_pass_events_set(e->o_icon, 1);
              evas_object_show(e->o_icon);
@@ -520,27 +424,71 @@ _list_item_group_change(Instance *inst)
           }
         e_box_thaw(inst->o_box);
      }
+
+   e_box_min_size_get(inst->o_box, &bw, &bh);
+   edje_extern_object_min_size_set(inst->o_box, bw, bh);
+   edje_object_size_min_calc(inst->o_con, &w, &h);
+   edje_extern_object_min_size_set(inst->o_box, 1, 1);
+   edje_extern_object_min_size_set(inst->o_con, w, h);
+}
+
+static void
+_list_containers_create(Instance *inst)
+{
+   Evas *evas;
+   const char *group;
+
+   evas = inst->evas;
+   inst->o_con = edje_object_add(evas);
+
+   inst->o_box = e_box_add(evas);
+   e_box_homogenous_set(inst->o_box, 0);
+   switch(inst->orient)
+     {
+      case LIST_TOP:
+      case LIST_FLOAT:
+	 e_box_orientation_set(inst->o_box, 0);
+	 e_box_align_set(inst->o_box, 0.5, 1);
+	 group = eina_stringshare_add("modules/drawer/list/vertical");
+	 break;
+      case LIST_BOTTOM:
+	 e_box_orientation_set(inst->o_box, 0);
+	 e_box_align_set(inst->o_box, 0.5, 0);
+	 group = eina_stringshare_add("modules/drawer/list/vertical");
+	 break;
+      case LIST_LEFT:
+	 e_box_orientation_set(inst->o_box, 1);
+	 e_box_align_set(inst->o_box, 1, 0.5);
+	 group = eina_stringshare_add("modules/drawer/list/horizontal");
+	 break;
+      case LIST_RIGHT:
+	 e_box_orientation_set(inst->o_box, 1);
+	 e_box_align_set(inst->o_box, 0, 0.5);
+	 group = eina_stringshare_add("modules/drawer/list/horizontal");
+	 break;
+     }
+
+   if (!e_theme_edje_object_set(inst->o_con, "base/theme/modules/drawer", group))
+     edje_object_file_set(inst->o_con, inst->theme_file, group);
+
+   eina_stringshare_del(group);
+   edje_object_part_swallow(inst->o_con, "e.swallow.content", inst->o_box);
+
+   /* Stops the parent context menu from appearing */
+   evas_object_propagate_events_set(inst->o_con, 0);
+
+   evas_object_event_callback_add(inst->o_con, EVAS_CALLBACK_MOUSE_MOVE,
+				  _list_cb_list_mouse_move, inst);
 }
 
 static Entry *
 _list_horizontal_entry_create(Instance *inst, Drawer_Source_Item *si)
 {
    Entry *e;
-   Evas_Coord w, h;
 
    e = E_NEW(Entry, 1);
 
    e->o_holder = edje_object_add(inst->evas);
-   if (!e_theme_edje_object_set
-       (e->o_holder, "base/theme/modules/drawer", inst->item_group))
-     edje_object_file_set(e->o_holder, inst->theme_file, inst->item_group);
-
-   edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
-   e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
-
-   edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
-   evas_object_pass_events_set(e->o_icon, 1);
-   evas_object_show(e->o_icon);
 
    e->inst = inst;
    e->si = si;
@@ -561,23 +509,10 @@ static Entry *
 _list_vertical_entry_create(Instance *inst, Drawer_Source_Item *si)
 {
    Entry *e;
-   Evas_Coord w, h;
 
    e = E_NEW(Entry, 1);
 
    e->o_holder = edje_object_add(inst->evas);
-   if (!e_theme_edje_object_set(e->o_holder, "base/theme/modules/drawer", inst->item_group))
-     edje_object_file_set(e->o_holder, inst->theme_file, inst->item_group);
-
-   edje_object_part_geometry_get(e->o_holder, "e.swallow.content", NULL, NULL, &w, &h);
-   e->o_icon = drawer_util_icon_create(si, inst->evas, w, h);
-
-   edje_object_part_swallow(e->o_holder, "e.swallow.content", e->o_icon);
-   evas_object_pass_events_set(e->o_icon, 1);
-   evas_object_show(e->o_icon);
-
-   edje_object_part_text_set(e->o_holder, "e.text.label", si->label);
-   edje_object_part_text_set(e->o_holder, "e.text.description", si->description);
 
    e->inst = inst;
    e->si = si;
@@ -908,7 +843,7 @@ _list_cf_fill_data(E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _list_cf_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *of, *ol, *ob, *ot;
+   Evas_Object *of, *ob;
    E_Radio_Group *rg;
 
    rg = e_widget_radio_group_new(&(cfdata->view_type));
@@ -928,7 +863,7 @@ _list_cf_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    cfdata->inst->conf->view_type = cfdata->view_type;
 
-   _list_item_group_change(cfdata->inst);
+   _list_reconfigure(cfdata->inst);
 
    e_config_save_queue();
    return 1;

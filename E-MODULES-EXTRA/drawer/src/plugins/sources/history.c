@@ -292,7 +292,6 @@ static Drawer_Source_Item *
 _history_source_item_fill(Instance *inst, Efreet_Desktop *desktop, const char *file)
 {
    Drawer_Source_Item *si = NULL;
-   char buf[5];
 
    si = E_NEW(Drawer_Source_Item, 1);
 

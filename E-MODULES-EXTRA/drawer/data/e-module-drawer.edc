@@ -428,7 +428,7 @@ target: "fg";
       }
    }
    group {
-      name: "modules/drawer/main/content";
+      name: "modules/drawer/main/icon";
       parts {
 	 part {
 	    name: "image";
@@ -761,6 +761,7 @@ target: "bg";
 	 }
       }
    }
+
    group {
       name: "modules/drawer/list/horizontal";
       parts {

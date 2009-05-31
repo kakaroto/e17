@@ -44,6 +44,7 @@ struct _Item
    Eina_Bool isa_category;
 };
 
+static void _grid_reconfigure(Instance *inst);
 static void _grid_containers_create(Instance *inst);
 static Item *_grid_item_create(Instance *inst, Drawer_Source_Item *si);
 static Item *_grid_category_create(Instance *inst, Drawer_Source_Item *si);
@@ -103,7 +104,6 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    Drawer_Source_Item *si;
    const char *cat = NULL;
    Eina_Bool change = EINA_FALSE;
-   Evas_Coord w, h;
    Item *e;
 
    inst = DRAWER_PLUGIN(v)->data;
@@ -115,6 +115,7 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_con) evas_object_del(inst->o_con);
    if (inst->o_scroll) evas_object_del(inst->o_scroll);
+   if (!items) return NULL;
    _grid_containers_create(inst);
 
    EINA_LIST_FOREACH(items, l, si)
@@ -163,14 +164,6 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
 	edje_object_part_box_append(inst->o_box, "e.box.content", e->o_holder);
      }
    eina_stringshare_del(cat);
-   /* XXX: switch to size_min_calc when it starts working
-    *
-    * edje_object_size_min_calc(inst->o_box, &w, &h);
-    *
-    */
-   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &w, &h);
-   edje_extern_object_min_size_set(inst->o_box, w, h);
-   evas_object_resize(inst->o_box, w, h);
 
    inst->o_scroll = e_scrollframe_add(evas);
    e_scrollframe_child_set(inst->o_scroll, inst->o_box);
@@ -181,114 +174,9 @@ drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *items)
      e_scrollframe_custom_edje_file_set(inst->o_scroll, inst->theme_file, "modules/drawer/grid/scrollframe");
    evas_object_show(inst->o_scroll);
 
+   _grid_reconfigure(inst);
+
    return inst->o_con;
-}
-
-EAPI void
-drawer_view_content_size_get(Drawer_View *v, E_Gadcon_Client *gcc, Drawer_Content_Margin *margin, int *w, int *h)
-{
-   Instance *inst = NULL;
-   Evas_Coord gx, gy, gw, gh, zw, zh, zx, zy;
-   Evas_Coord catw = 0, cath = 0, ew = 0, eh = 0, cw = 0, ch = 0, ww = 0, hh = 0;
-   E_Zone *zone;
-   Eina_List *l;
-   Item *e;
-   int max_item_count = 0, item_count = 0, cat_count = 0, row_item_count = 0;
-
-   inst = DRAWER_PLUGIN(v)->data;
-   e_gadcon_client_geometry_get(gcc, &gx, &gy, &gw, &gh);
-   zx = gcc->gadcon->zone->x;
-   zy = gcc->gadcon->zone->y;
-   zw = gcc->gadcon->zone->w;
-   zh = gcc->gadcon->zone->h;
-
-   EINA_LIST_FOREACH(inst->items, l, e)
-     {
-	if (e->isa_category)
-	  {
-	     if (!cath)
-	       edje_object_size_max_get(e->o_holder, NULL, &cath);
-
-	     cat_count++;
-
-	     if (max_item_count < item_count)
-	       max_item_count = item_count;
-	     item_count = 0;
-	  }
-	else
-	  {
-	     if (!ew && !eh)
-	       evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
-
-	     item_count++;
-	  }
-     }
-   row_item_count = max_item_count = (max_item_count ? max_item_count : item_count);
-   if (!row_item_count) return;
-   zone = e_util_zone_current_get(e_manager_current_get());
-
-   do
-     {
-	cw = ew * row_item_count;
-	ch = eh * ceil(max_item_count / row_item_count--) + cath;
-	if (cat_count)
-	  ch *= cat_count;
-     } while (row_item_count && (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6));
-   catw = cw;
-
-   EINA_LIST_FOREACH(inst->items, l, e)
-     {
-	if (e->isa_category)
-	  evas_object_resize(e->o_holder, catw, cath);
-     }
-
-   /* Rough approximation, since we don't know the box's
-    * padding settings, and we don't care */
-   evas_object_resize(inst->o_box, cw + ew / 2, ch + eh / 2);
-   /* XXX: switch to size_min_calc when it starts working
-    *
-    * edje_object_size_min_calc(inst->o_box, &ww, &hh);
-    *
-    */
-   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
-   evas_object_resize(inst->o_box, ww, hh);
-   edje_extern_object_min_size_set(inst->o_scroll, ww, hh);
-   edje_object_size_min_calc(inst->o_con, w, h);
-   edje_extern_object_min_size_set(inst->o_con, *w, *h);
-
-   switch (gcc->gadcon->orient)
-     {
-      case E_GADCON_ORIENT_CORNER_RT:
-      case E_GADCON_ORIENT_CORNER_RB:
-      case E_GADCON_ORIENT_RIGHT:
-	 if (gx - *w < zx + margin->left)
-	   *w = gx - zx - margin->left;
-	break;
-      case E_GADCON_ORIENT_LEFT:
-      case E_GADCON_ORIENT_CORNER_LT:
-      case E_GADCON_ORIENT_CORNER_LB:
-	if (gx + gw + *w > zx + zw + margin->right)
-	  *w = zx + zw - gx - gw + margin->right;
-	break;
-      case E_GADCON_ORIENT_TOP:
-      case E_GADCON_ORIENT_CORNER_TL:
-      case E_GADCON_ORIENT_CORNER_TR:
-	if (gy + gh + *h > zy + zh + margin->bottom)
-	  *h = zy + zh - gy - gh + margin->bottom;
-	break;
-      case E_GADCON_ORIENT_BOTTOM:
-      case E_GADCON_ORIENT_CORNER_BL:
-      case E_GADCON_ORIENT_CORNER_BR:
-	if (gy - *h < zy + margin->top)
-	  *h = gy - zy - margin->top;
-	break;
-      case E_GADCON_ORIENT_FLOAT:
-	if (*w > zw - margin->left - margin->right)
-	  *w = zw - margin->left - margin->right;
-	break;
-      default:
-	break;
-     }
 }
 
 EAPI void
@@ -395,6 +283,74 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
       default:
 	break;
      }
+}
+
+static void
+_grid_reconfigure(Instance *inst)
+{
+   Evas_Coord zw;
+   Evas_Coord catw = 0, cath = 0, ew = 0, eh = 0, cw = 0, ch = 0,
+              ww = 0, hh = 0, w = 0, h = 0;
+   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
+   Eina_List *l;
+   Item *e;
+   int max_item_count = 0, item_count = 0, cat_count = 0, row_item_count = 0;
+
+   zw = zone->w;
+
+   EINA_LIST_FOREACH(inst->items, l, e)
+     {
+	if (e->isa_category)
+	  {
+	     if (!cath)
+	       edje_object_size_max_get(e->o_holder, NULL, &cath);
+
+	     cat_count++;
+
+	     if (max_item_count < item_count)
+	       max_item_count = item_count;
+	     item_count = 0;
+	  }
+	else
+	  {
+	     if (!ew && !eh)
+	       evas_object_size_hint_min_get(e->o_holder, &ew, &eh);
+
+	     item_count++;
+	  }
+     }
+   row_item_count = max_item_count = (max_item_count ? max_item_count : item_count);
+   if (!row_item_count) return;
+
+   do
+     {
+	cw = ew * row_item_count;
+	ch = eh * ceil(max_item_count / row_item_count--) + cath;
+	if (cat_count)
+	  ch *= cat_count;
+     } while (row_item_count && (cw > (zw - ew / 2) || ((double) cw / (double) ch) > 1.6));
+   catw = cw;
+
+   EINA_LIST_FOREACH(inst->items, l, e)
+     {
+	if (e->isa_category)
+	  evas_object_resize(e->o_holder, catw, cath);
+     }
+
+   /* Rough approximation, since we don't know the box's
+    * padding settings, and we don't care */
+   evas_object_resize(inst->o_box, cw + ew / 2, ch + eh / 2);
+   /* XXX: switch to size_min_calc when it starts working
+    *
+    * edje_object_size_min_calc(inst->o_box, &ww, &hh);
+    *
+    */
+   evas_object_size_hint_min_get(edje_object_part_object_get(inst->o_box, "e.box.content"), &ww, &hh);
+   evas_object_resize(inst->o_box, ww, hh);
+   edje_extern_object_min_size_set(inst->o_scroll, ww, hh);
+   edje_object_size_min_calc(inst->o_con, &w, &h);
+   edje_extern_object_min_size_set(inst->o_con, w, h);
+   edje_extern_object_min_size_set(inst->o_scroll, 0, 0);
 }
 
 static void
