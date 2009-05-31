@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-05-30 09:50+0200\n"
-"PO-Revision-Date: 2009-05-30 15:16+0100\n"
+"PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,12 @@ msgstr ""
 "Herzlich Willkommen! Dies ist die\n"
 "Version %s des Fenstermanagers\n"
 "Enlightenment e16.\n"
+"\n"
 "Falls Sie einen Fehler finden sollten,\n"
 "zögern Sie nicht einen Fehlerbericht\n"
 "zu schicken.\n"
-" Wir hoffen Sie\n"
-"genießen unsere Arbeit.\n"
+"\n"
+"Wir hoffen Sie genießen unsere Arbeit.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -69,10 +70,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
-"auf. Es konnte nicht ausgeführt werden.\n"
-"Dies liegt daran, dass die Datei nicht existiert.\n"
+"auf. Es konnte nicht ausgeführt werden,\n"
+"da die Datei nicht existiert.\n"
 
 # src/actions.c:672
 #: src/actions.c:115
@@ -86,12 +87,12 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
-"auf. Es konnte nicht ausgeführt werden.\n"
-"Dies liegt wahrscheinlich daran, dass es nicht im Pfad Ihrer\n"
-"Shell liegt, der den Wert %s hat. Ich schlage vor, dass Sie\n"
-"die Handbuchseite für diese Shell lesen und feststellen, wie\n"
+"auf. Es konnte nicht ausgeführt werden,\n"
+"da es wahrscheinlich nicht im Pfad Ihrer\n"
+"Shell liegt, der den Wert %s hat. Bitte lesen Sie\n"
+"die Handbuchseite für Ihre Shell, um zu erfahren, wie\n"
 "Sie Ihren Ausführungspfad ändern oder was Sie hinzufügen\n"
 "müssen.\n"
 
@@ -106,10 +107,10 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
 "auf. Es konnte nicht ausgeführt werden.\n"
-"Ich bin mir nicht sicher, warum Sie dies nicht tun konnten.\n"
+"Es ist nicht klar, warum Sie dies nicht tun konnten.\n"
 "Die Datei existiert, ist eine normale Datei, und Sie dürfen\n"
 "Sie ausführen. Sie sollten sich die Angelegenheit näher ansehen.\n"
 
@@ -123,11 +124,11 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
 "auf. Es konnte nicht ausgeführt werden.\n"
-"Dies liegt daran, dass es zwar existiert und eine Datei ist, Sie es\n"
-"aber nicht ausführen können, da Sie keine Ausführungsberechtigung\n"
+"Die Datei existiert zwar und ist eine Datei, aber Sie dürfen\n"
+"sie nicht ausführen, da Sie keine Ausführungsberechtigung\n"
 "für diese Datei haben.\n"
 
 # src/actions.c:719
@@ -139,10 +140,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
-"auf. Es konnte nicht ausgeführt werden.\n"
-"Dies liegt daran, dass die Datei in Wirklichkeit ein Verzeichnis ist.\n"
+"auf. Es konnte nicht ausgeführt werden,\n"
+"da die Datei in Wirklichkeit ein Verzeichnis ist.\n"
 
 # src/actions.c:727
 #: src/actions.c:164
@@ -153,10 +154,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Ein Fehler trat beim Ausführen des Programmes\n"
+"Ein Fehler trat beim Ausführen des Programms\n"
 "%s\n"
-"auf. Es konnte nicht ausgeführt werden, da die Datei keine normale\n"
-"Datei ist.\n"
+"auf. Es konnte nicht ausgeführt werden,\n"
+"da die Datei keine normale Datei ist.\n"
 
 #: src/actions.c:189
 #, c-format
@@ -226,7 +227,7 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Information zur Hintergrunddefinition:\n"
+"Information zum Hintergrundbild:\n"
 "Name: %s\n"
 "Datei %s\n"
 
@@ -345,7 +346,7 @@ msgstr "Nach Bild sortieren"
 # src/settings.c:3264
 #: src/backgrounds.c:2205
 msgid "Use dithering in Hi-Colour"
-msgstr "In Hi-Colour rastern"
+msgstr "In High Color rastern"
 
 # src/settings.c:3271
 #: src/backgrounds.c:2209
@@ -708,7 +709,7 @@ msgid ""
 "to the top.\n"
 msgstr ""
 "Klicken Sie hier, um diesen Desktop\n"
-"ganz nach oben zu bringen.\n"
+"ganz nach oben zu heben.\n"
 
 # src/desktops.c:1160
 #: src/desktops.c:165
@@ -717,7 +718,7 @@ msgid ""
 "to the bottom.\n"
 msgstr ""
 "Klicken Sie hier, um diesen Desktop\n"
-"ganz nach unten zu bringen.\n"
+"ganz nach unten zu heben.\n"
 
 # src/settings.c:882
 #: src/desktops.c:2291
@@ -1039,7 +1040,7 @@ msgstr "Effekte"
 # src/settings.c:1710
 #: src/fx.c:952
 msgid "Special FX Settings"
-msgstr "Special-FX-Einstellungen"
+msgstr "Spezialeffekt-Einstellungen"
 
 # src/main.c:89
 #: src/fx.c:955
@@ -1145,7 +1146,7 @@ msgstr "Minimierung"
 #: src/groups.c:882
 #: src/groups.c:979
 msgid "Killing"
-msgstr "Mord"
+msgstr "Zerstören"
 
 # src/settings.c:3998 src/settings.c:4144
 #: src/groups.c:887
@@ -1229,7 +1230,7 @@ msgid ""
 "Group Control Settings Dialog\n"
 msgstr ""
 "Enlightenment Standard-\n"
-"Gruppenseinstellungs-Dialog\n"
+"Gruppeneinstellungs-Dialog\n"
 
 # src/actions.c:3474
 #: src/groups.c:1050
@@ -1263,9 +1264,9 @@ msgstr ""
 "\n"
 "Dies liegt wahrscheinlich daran, dass Sie eine Binärversion von\n"
 "Enlightenment installiert und ausgeführt haben, die für einen\n"
-"Prozessor compiliert wurde, der nicht völlig identisch oder\n"
+"Prozessor kompiliert wurde, der nicht völlig identisch oder\n"
 "kompatibel mit Ihrem ist. Bitte besorgen Sie sich entweder das\n"
-"korrekte Paket für Ihr System oder compilieren Sie Enlightenment\n"
+"korrekte Paket für Ihr System oder kompilieren Sie Enlightenment\n"
 "neu, sowie eventuell unterstützende Bibliotheken für Enlightenment,\n"
 "die Sie im Binärformat erhalten haben.\n"
 
@@ -1288,9 +1289,9 @@ msgstr ""
 "Dies bedeutet, dass Enlightenment oder eine unterstützende\n"
 "Bibliotheksroutine, die von ihm aufgerufen wurde, eine unerlaubte\n"
 "mathematische Operation durchgeführt hat (wahrscheinlich eine Zahl\n"
-"durch null dividiert). Dies ist höchstwahrscheinlich ein Fehler.\n"
-"Wir empfehlen Ihnen einen Neustart von Enlightenment. Wenn Sie\n"
-"möchten, dass dieser Programmfehler behoben wird, bitte compilieren\n"
+"durch Null dividiert). Dies ist höchstwahrscheinlich ein Fehler.\n"
+"Es empfiehlt sich, einen Neustart von Enlightenment. Wenn Sie\n"
+"möchten, dass dieser Programmfehler behoben wird, bitte kompilieren\n"
 "Sie Enlightenment mit Debugging-Symbolen und führen Sie ihn unter\n"
 "gdb aus, so dass Sie einen Backtrace dort ausführen können, wo der\n"
 "Prozess gestorben ist; senden Sie dann einen nützlichen Fehlerbericht\n"
@@ -1315,9 +1316,9 @@ msgstr ""
 "Dies bedeutet, dass Enlightenment oder eine unterstützende\n"
 "Bibliotheksroutine, auf einen Speicherbereich Ihres Systems\n"
 "zugegriffen hat, auf den ihm der Zugriff verwehrt ist. Dies ist\n"
-"höchstwahrscheinlich ein Fehler.  Wir empfehlen Ihnen einen Neustart\n"
+"höchstwahrscheinlich ein Fehler.  Es empfiehlt sich einen Neustart\n"
 "von Enlightenment. Wenn Sie möchten, dass dieser Programmfehler\n"
-"behoben wird, bitte compilieren Sie Enlightenment mit Debugging-\n"
+"behoben wird, bitte kompilieren Sie Enlightenment mit Debugging-\n"
 "Symbolen und führen Sie ihn unter gdb aus, so dass Sie einen\n"
 "Backtrace dort ausführen können, wo der Prozess gestorben ist; senden\n"
 "Sie dann einen nützlichen Fehlerbericht ein, der die Backtrace-\n"
@@ -1415,9 +1416,7 @@ msgstr "Verwende \"help <befehl>\" für eine detailliertere Beschreibung\n"
 #: src/ipc.c:1850
 #: src/ipc.c:1862
 msgid "         <command>     : <description>\n"
-msgstr ""
-"         <command>     : <description>\n"
-"         <Befehl>      : <Beschreibung>\n"
+msgstr "         <Befehl>      : <Beschreibung>\n"
 
 #: src/main.c:584
 #, c-format
@@ -1425,7 +1424,7 @@ msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
-"%s muss ein Verzeichnis sein, in welchen Sie\n"
+"%s muss ein Verzeichnis sein, in welchem Sie\n"
 "Lese-, Schreib-, und Ausführberechtigung haben.\n"
 
 # src/misc.c:61
@@ -1814,6 +1813,7 @@ msgstr ""
 "Irgendwie werde ich schon überleben.\n"
 "\n"
 "\n"
+"... hoffentlich.\n"
 
 # src/handlers.c:235 src/session.c:1178
 #: src/session.c:644
@@ -1838,12 +1838,12 @@ msgstr ""
 # src/session.c:1184
 #: src/session.c:656
 msgid "  Yes, Shut Down  "
-msgstr "  Ja, runterfahren"
+msgstr "  Ja, herunterfahren"
 
 # src/session.c:1184
 #: src/session.c:658
 msgid "  Yes, Reboot  "
-msgstr "  Ja, neustarten"
+msgstr "  Ja, neu starten"
 
 # src/session.c:1184
 #: src/session.c:661
@@ -2238,7 +2238,7 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 "Enlightenment kann keinen Kontakt zu dem in Ihrer\n"
-"DISPLAY-Umgebungsvariable erwöhnten Display aufnehmen. Sie können\n"
+"DISPLAY-Umgebungsvariable erwähnten Display aufnehmen. Sie können\n"
 "diese Variable setzen, um Enlightenment anzuzeigen, mit welchem\n"
 "Displaynamen er Verbindung aufnehmen soll. Es kann sein, dass kein\n"
 "X-Server läuft, der diese Display-Verbindung bedient, oder dass Sie\n"
@@ -2274,7 +2274,7 @@ msgstr "X-Server-Versionsfehler"
 # src/setup.c:403
 #: src/setup.c:167
 msgid "Ignore this error"
-msgstr "Ignorieren Sie diesen Fehler"
+msgstr "Ignoriere diesen Fehler"
 
 # src/setup.c:404
 #: src/setup.c:169
@@ -2413,7 +2413,7 @@ msgstr "Gespeicherte Einstellungen..."
 
 #: src/snaps.c:1049
 msgid "Unused"
-msgstr "Unbenützt"
+msgstr "Unbenutzt"
 
 #: src/snaps.c:1062
 msgid "There are no active windows with remembered attributes."
@@ -2583,7 +2583,7 @@ msgstr ""
 # src/settings.c:1427
 #: src/tooltips.c:867
 msgid "Display Tooltips"
-msgstr "Minihilfen Anzeigen"
+msgstr "Minihilfen anzeigen"
 
 # src/settings.c:1435
 #: src/tooltips.c:872
@@ -2619,7 +2619,7 @@ msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
 msgstr ""
-"Bewege den Desktop mit gedrückter Maustaste\n"
+"Bewege den Desktop durch gedrückte Maustaste\n"
 "(auf jedem Desktop außer Desktop 0)"
 
 # src/settings.c:830 src/settings.c:889
@@ -2631,12 +2631,12 @@ msgstr "Desktop wechseln"
 # src/menus.c:1947
 #: config/strings.c:7
 msgid "Go to the next desktop."
-msgstr "Zum nächsten Desktop gehen"
+msgstr "Zum nächsten Desktop gehen."
 
 # src/menus.c:1947
 #: config/strings.c:9
 msgid "Go to the previous desktop."
-msgstr "Zum vorherigen Desktop gehen"
+msgstr "Zum vorherigen Desktop gehen."
 
 # src/settings.c:3998 src/settings.c:4144
 #: config/strings.c:10
@@ -2788,7 +2788,7 @@ msgstr "Dieses Fenster minimieren."
 # src/settings.c:1885
 #: config/strings.c:54
 msgid "More Buttons"
-msgstr "Mehr Knöpfe"
+msgstr "Mehr Buttons"
 
 #: config/strings.c:55
 msgid "Show more buttons."
@@ -2881,7 +2881,7 @@ msgstr "Hintergründe"
 # src/pager.c:1295
 #: config/strings.c:80
 msgid "Desktop Operations"
-msgstr "Desktopoptionen"
+msgstr "Desktopfunktionen"
 
 # src/settings.c:832 src/settings.c:891
 #: config/strings.c:82
@@ -2900,7 +2900,7 @@ msgstr "Zum vorherigen Desktop gehen"
 
 #: config/strings.c:86
 msgid "Create Systray"
-msgstr "Symbolleiste erzeugen"
+msgstr "Systray erzeugen"
 
 #: config/strings.c:87
 msgid "Show Magnifier"
@@ -2946,7 +2946,7 @@ msgstr "Über Enlightenment"
 #: config/strings.c:97
 #: config/strings.c:119
 msgid "About this theme"
-msgstr "Über dieses Theme"
+msgstr "Über dieses Thema"
 
 # src/alert.c:182
 #: config/strings.c:98
