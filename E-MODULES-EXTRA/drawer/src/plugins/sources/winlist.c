@@ -628,12 +628,15 @@ _winlist_border_window_prop_cb(void *data, int type, void *event)
 	       {
 		  tmp = ecore_x_icccm_title_get(bd->client.win);
 
-		  if (strcmp(si->label, tmp))
-		    {
-		       eina_stringshare_replace(&(si->label), tmp);
-		       changed = EINA_TRUE;
-		    }
-		  free(tmp);
+                  if (tmp)
+                    {
+                       if (strcmp(si->label, tmp))
+                         {
+                            eina_stringshare_replace(&(si->label), tmp);
+                            changed = EINA_TRUE;
+                         }
+                       free(tmp);
+                    }
 	       }
 	  }
      }
@@ -643,12 +646,15 @@ _winlist_border_window_prop_cb(void *data, int type, void *event)
 	if (si)
 	  {
 	     ecore_x_netwm_name_get(bd->client.win, &tmp);
-	     if (strcmp(si->label, tmp))
-	       {
-		  eina_stringshare_replace(&(si->label), tmp);
-		  changed = EINA_TRUE;
-	       }
-	     free(tmp);
+             if (tmp)
+               {
+                  if (strcmp(si->label, tmp))
+                    {
+                       eina_stringshare_replace(&(si->label), tmp);
+                       changed = EINA_TRUE;
+                    }
+                  free(tmp);
+               }
 	  }
      }
    else if (ev->atom == ECORE_X_ATOM_WM_CLASS)
