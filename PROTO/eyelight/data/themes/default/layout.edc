@@ -21,7 +21,7 @@ part                            \
         state: "default" 0.0;   \
         visible: is_visible;    \
         align: 0.0 0.0;         \
-        color: 255 255 255 50;  \
+        color: 255 255 255 50; \
         rel1                    \
         {                       \
             relative: rel11 rel12;\
@@ -31,54 +31,6 @@ part                            \
         {                       \
             relative: rel21 rel22;\
             to: "slide";        \
-        }                       \
-    }                           \
-}                               \
-part                            \
-{                               \
-    name: "area_"area_name"_test";     \
-    type: BOX;                  \
-    mouse_events:0;             \
-    description                 \
-    {                           \
-        state: "default" 0.0;   \
-        visible: 1;    \
-        align: 0.0 0.0;         \
-        color: 255 255 255 50;  \
-        rel1                    \
-        {                       \
-            relative: rel11 rel12;\
-            to: "slide";        \
-        }                       \
-        rel2                    \
-        {                       \
-            relative: rel21 rel22;\
-            to: "slide";        \
-        }                       \
-        box                     \
-        {                       \
-            layout: "vertical"; \
-            padding: 0 2;       \
-            align: 0.5 0.5;     \
-        }                       \
-    }                           \
-    box                         \
-    {                           \
-        items                   \
-        {                       \
-            item                \
-            {                   \
-                type: GROUP;     \
-                source:"area_item_center_0" ;\
-                aspect: 1 1;\
-                aspect_mode: VERTICAL;\
-            }                   \
-            item                \
-            {                   \
-                type: GROUP;     \
-                min: 300 300;\
-                source:"area_item_center_1" ;\
-            }                   \
         }                       \
     }                           \
 }                               \

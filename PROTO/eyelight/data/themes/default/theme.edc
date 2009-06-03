@@ -223,15 +223,8 @@ part                                                \
     }                                               \
 }
 
-spectra
-{
-    spectrum
-    {
-        name: "shadow";
-        color: 0 0 0 255 1;
-        color: 0 0 0 0 1;
-    }
-}
+
+
 
 fonts
 {
@@ -256,7 +249,6 @@ images
     image: "vague_2.png" COMP;
     image: "vague_3.png" COMP;
     image: "vague_4.png" COMP;
-    image: "shadow.png" COMP;
 }
 
 styles
@@ -720,7 +712,7 @@ part                                            \
     name: "area_item_"area"_"id;                \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
-    clip_to: "slide";                           \
+    clip_to: "slide";                               \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -731,7 +723,7 @@ part                                            \
             relative: (0.0+(depth*0.04)) 1.0;   \
             to_y: "area_item_"area"_"id_prev;   \
             to_x: "area_"area;                  \
-            offset: 55 20;                      \
+            offset: 55 20;                       \
         }                                       \
         rel2                                    \
         {                                       \
@@ -902,7 +894,7 @@ part                                            \
     name: "area_item_"area"_"id;                \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
-    clip_to: "slide";                           \
+    clip_to: "slide";                               \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -937,7 +929,7 @@ part                                            \
     name: "area_item_"area"_"id;                \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
-    clip_to: "slide";                           \
+    clip_to: "slide";                               \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -972,29 +964,29 @@ part                                            \
 
 //add a text in a vertical area
 #define add_text_vbox(area,id_prev,id,id_str,nb_items,content_text)\
-group\
-{\
-name: "area_item_"area"_"id;\
-parts\
-{\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
+    clip_to: "slide";                               \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
         visible: 1;                             \
         align: 0.1 0.1;                         \
-        fixed: 1 1;                               \
         rel1                                    \
         {                                       \
-            relative: 0.0 0.0;                  \
+            relative: 0.0 1.0;                  \
+            to_x: "area_"area;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            offset: 0 20;                       \
         }                                       \
         rel2                                    \
         {                                       \
             relative: 1.0 1.0;                  \
+            to_x: "area_"area;                  \
+            to_y: "area_item_"area"_"id_prev;   \
         }                                       \
         text                                    \
         {                                       \
@@ -1004,9 +996,7 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-}\
-}\
-//program_resize("area_item_"area"_"id_str,0,20,0,0);
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 //add a text in a vertical area
 #define add_text_hbox(area,id_prev,id,id_str,nb_items,content_text)\
