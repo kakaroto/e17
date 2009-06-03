@@ -1,11 +1,11 @@
-# Chinese translations for PACKAGE package
-# PACKAGE 软件包的简体中文翻译.
+# Chinese translations for drawer package
+# drawer 软件包的简体中文翻译.
 # This file is put in the public domain.
 # Aron Xu <aronmalache@163.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: drawer HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-02-23 16:47+0800\n"
 "PO-Revision-Date: 2009-02-23 16:47+0800\n"
@@ -18,15 +18,15 @@ msgstr ""
 #. create new config dialog
 #: ../src/e_mod_config.c:54
 msgid "Drawer Module"
-msgstr ""
+msgstr "Drawer 模块"
 
 #: ../src/e_mod_config.c:109
 msgid "Plugins selection"
-msgstr ""
+msgstr "插件选择"
 
 #: ../src/e_mod_config.c:112
 msgid "Plugins settings"
-msgstr ""
+msgstr "插件设置"
 
 #: ../src/e_mod_config.c:172
 msgid "Source plugins"
@@ -34,11 +34,11 @@ msgstr ""
 
 #: ../src/e_mod_config.c:204
 msgid "View plugins"
-msgstr ""
+msgstr "查看插件"
 
 #: ../src/e_mod_config.c:256 ../src/e_mod_config.c:277
 msgid "Description: Unavailable"
-msgstr ""
+msgstr "描述：不可用"
 
 #: ../src/e_mod_config.c:305
 msgid "Source settings"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:310
 msgid "View settings"
-msgstr ""
+msgstr "查看设置"
 
 #: ../src/e_mod_main.c:156
 msgid ""
@@ -70,7 +70,7 @@ msgstr ""
 
 #: ../src/e_mod_main.c:398
 msgid "The plugin is not configurable"
-msgstr ""
+msgstr "此插件不可配置"
 
 #: ../src/e_mod_main.c:725 ../src/e_mod_main.c:733 ../src/e_mod_main.c:747
 #: ../src/e_mod_main.c:759 ../src/e_mod_main.c:825 ../src/e_mod_main.c:868
@@ -80,7 +80,7 @@ msgstr ""
 #: ../src/e_mod_main.c:726
 #, c-format
 msgid "The plugin '%s' was not found."
-msgstr ""
+msgstr "插件“%s”未找到。"
 
 #: ../src/e_mod_main.c:734
 #, c-format
@@ -107,7 +107,7 @@ msgstr ""
 
 #: ../src/e_mod_main.c:1322
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: ../src/plugins/sources/directory_watcher.c:250
 msgid "Directory Watcher settings"
@@ -115,7 +115,7 @@ msgstr ""
 
 #: ../src/plugins/sources/directory_watcher.c:286
 msgid "Home"
-msgstr ""
+msgstr "主目录"
 
 #: ../src/plugins/sources/directory_watcher.c:353
 #, c-format
@@ -144,15 +144,15 @@ msgstr ""
 
 #: ../src/plugins/sources/directory_watcher.c:481
 msgid "Sort by name"
-msgstr ""
+msgstr "按名称排序"
 
 #: ../src/plugins/sources/directory_watcher.c:483
 msgid "Sort by access time"
-msgstr ""
+msgstr "按访问时间排序"
 
 #: ../src/plugins/sources/directory_watcher.c:485
 msgid "Sort by modification time"
-msgstr ""
+msgstr "按修改时间排序"
 
 #: ../src/plugins/sources/directory_watcher.c:487
 msgid "Sort by change time"
@@ -160,7 +160,7 @@ msgstr ""
 
 #: ../src/plugins/sources/directory_watcher.c:489
 msgid "Sort by size"
-msgstr ""
+msgstr "按大小排序"
 
 #: ../src/plugins/sources/launcher.c:172
 msgid "Launcher settings"
