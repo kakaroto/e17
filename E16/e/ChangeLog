@@ -5014,3 +5014,25 @@ Fix breakage when size hints specify an aspect ratio (debian bug 527989).
 Don't disable background scan progress bars when restarted.
 Japanese translation update (Yasufumi Haga).
 
+-------------------------------------------------------------------------------
+
+Wed Jun  3 18:09:01 CEST 2009
+(Kim)
+
+--- 1.0.0 ---
+Add italian translation (Massimo Maiurana).
+Danish translation update.
+e16keyedit helper file corrections (match stuff in bindings.cfg).
+French translation update (Tristan D.).
+Add esperanto translation (Olivier).
+Russian translation update (sda).
+Slide off-screen menus back in when showing sub-menu.
+Slide off-screen menus back in when hiding sub-menu and not showing new.
+Fix backgrounds menu disappearing after being shown.
+German translation update (Peter Wehrfritz).
+Fix potential crash in 'desk drag' command (Pietro Cerutti, ticket 326).
+Better pager size increments (fix for ticket 327).
+Aspect ratio handling tweaks  (fix for ticket 327).
+Fix problem with incorrect xinerama screen info.
+Another attempt to improve aspect ratio handling (pager sizing).
+Add missing autosave when changing virtual desktop size.
