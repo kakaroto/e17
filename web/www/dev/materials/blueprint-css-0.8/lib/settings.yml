@@ -1,0 +1,7 @@
+# refer to http://www.yaml.org/spec/1.1/ for clarification on YAML collection
+e.org:
+  path: ../e.org
+  custom_layout:
+    column_count: 12
+    column_width: 63
+    gutter_width: 17

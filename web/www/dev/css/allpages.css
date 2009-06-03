@@ -1,0 +1,180 @@
+body
+{
+    background-color: #3f3f3f;
+}
+
+a         { color: #273F60; }                                /* Color Scheme */
+a:hover   { color: #768292; }                                /* Color Scheme */
+a:visited { color: #923e3a; }                                /* Color Scheme */
+
+#top
+{
+    width: 100%;
+    margin-top: 0;
+    background-color: #ffffff;
+    background-image: url('../images/top_bg.png');
+    background-repeat: repeat-x;
+}
+
+#bottom
+{
+    width: 100%;
+    margin-bottom: 0;
+    background-color: #eeeeee;
+    background-image: url('../images/bottom_bg.png');
+    background-repeat: repeat-x;
+    background-position: bottom left;
+}
+
+#bottom hr.line-top
+{
+    background-image: url('../images/bottom_line.png');
+    background-repeat: repeat-x;
+    height: 2px;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+
+/*  ******
+    Header
+    ******  */
+#header h1 span
+{
+    display: none;
+}
+
+#header h1
+{
+    position: absolute;
+    width: 80px;
+    height: 54px;
+    background-image: url('../images/menu_left.png');
+}
+
+#header h2
+{
+    display: none;
+}
+
+#header
+{
+    height: 90px;
+}
+
+#header .menu
+{
+    height: 54px;
+    background-image: url('../images/menu_bg.png');
+    background-repeat: repeat-x;
+}
+
+#header .menu ul
+{
+    margin: 0;
+    background-image: url("../images/menu_right.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+
+#header .menu ul li
+{
+    display: block;
+    float: right;
+    width: 160px;
+}
+
+#header .menu ul li.first
+{
+    background-image: url("../images/menu_middle.png");
+    background-repeat: no-repeat;
+    width: 161px;
+}
+
+#header .menu ul li a
+{
+    display: block;
+    width: 100%;
+    line-height: 54px;
+    text-align: center;
+    text-decoration: none;
+    color: #a8a8a8;
+    background-image: url("../images/option_normal.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    text-transform: capitalize;
+}
+
+#header .menu ul li a:hover
+{
+    color: white;
+    background-image: url("../images/option_hover.png");
+    background-repeat: no-repeat;
+}
+
+
+#header .menu ul li.current a
+{
+    color: #5e656e;                                          /* Color Scheme */
+    font-weight: bold;
+    background-image: url("../images/option_current.png");
+    background-repeat: no-repeat;
+}
+
+#header .menu ul li.current a:hover
+{
+    color: black;
+    background-image: url("../images/option_current.png"); /* IE6 */
+    background-repeat: no-repeat; /* IE6 */
+}
+
+/* This moves the last option away from the menu border when its appearance is
+   tab-like (current) */
+#header-menu-dev.current
+{
+    margin-right: 80px;
+}
+
+
+/*  ******
+    Footer
+    ******  */
+#footer
+{
+    height: 72px;
+}
+
+#footer #copyright
+{
+    color: #ccd8e8;                                          /* Color Scheme */
+    line-height: 36px;
+    margin-top: 18px;
+}
+
+#footer ul
+{
+    margin: 0;
+}
+
+#footer ul li
+{
+    display: inline;
+}
+
+#footer ul li a
+{
+    margin-top: 18px;
+    display: block;
+    float: right;
+    padding-left: 17px;
+    padding-right: 17px;
+    color: #dae0e8;                                          /* Color Scheme */
+    line-height: 36px;
+    text-decoration: none;
+}
+
+#footer ul li a:hover
+{
+    background-color: #5e656e;                               /* Color Scheme */
+    color: white;
+}
