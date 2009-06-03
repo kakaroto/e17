@@ -10,3 +10,7 @@ Add ChangeLog
 --- 0.16.8.0.3 ---
 configure.in -> configure.ac
 Remove duplicate fonts, put all fonts in ttfonts/.
+
+--- 1.0.0 ---
+Rename font configuration files to match e16 changes. Remove obsolete localised ones.
+BrushedMetal-Tigert: Remove reference to non-existing synclaves.wav.
