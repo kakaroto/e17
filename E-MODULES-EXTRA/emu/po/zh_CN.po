@@ -1,16 +1,16 @@
 # Emu module (e17), Simplified Chinese translation
-# This file is put in the public domain.
+# Copyright (C) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the Enlightenment Emu mudule.
 #
-#
-#
+# Aron Xu <aronmalache@163.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: Emu module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-11-11 21:39+0800\n"
-"PO-Revision-Date: 2008-10-22 21:22+0800\n"
-"Last-Translator:  <>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2009-06-04 10:30+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: ../src/modules/emu/border_props.c:222 ../src/modules/emu/border_props.c:289
 msgid "Title (%T)"
-msgstr ""
+msgstr "标题 (%T)"
 
 #: ../src/modules/emu/border_props.c:228 ../src/modules/emu/border_props.c:307
 msgid "Properties"
@@ -54,7 +54,7 @@ msgstr ""
 #: ../src/modules/emu/border_props.c:245 ../src/modules/emu/border_props.c:328
 #, c-format
 msgid "Virtual desktop (%d)"
-msgstr ""
+msgstr "虚拟桌面 (%d)"
 
 #: ../src/modules/emu/border_props.c:249 ../src/modules/emu/border_props.c:332
 msgid "Shaded state (%r)"
@@ -63,7 +63,7 @@ msgstr ""
 #: ../src/modules/emu/border_props.c:253 ../src/modules/emu/border_props.c:344
 #, c-format
 msgid "Fullscreen (%f)"
-msgstr ""
+msgstr "全屏 (%f)"
 
 #: ../src/modules/emu/border_props.c:257 ../src/modules/emu/border_props.c:348
 #, c-format
@@ -72,11 +72,11 @@ msgstr ""
 
 #: ../src/modules/emu/border_props.c:277
 msgid "Window ID (%I)"
-msgstr ""
+msgstr "窗口 ID (%I)"
 
 #: ../src/modules/emu/border_props.c:281
 msgid "Window name (%N)"
-msgstr ""
+msgstr "窗口名称 (%N)"
 
 #: ../src/modules/emu/border_props.c:285
 #, c-format
@@ -85,12 +85,12 @@ msgstr ""
 
 #: ../src/modules/emu/border_props.c:293
 msgid "Window role (%R)"
-msgstr ""
+msgstr "窗口角色 (%R)"
 
 #: ../src/modules/emu/border_props.c:297
 #, c-format
 msgid "Window type (%S)"
-msgstr ""
+msgstr "窗口类型 (%S)"
 
 #: ../src/modules/emu/border_props.c:301
 msgid "Transient (%H)"
@@ -98,7 +98,7 @@ msgstr ""
 
 #: ../src/modules/emu/border_props.c:316
 msgid "Layer (%l)"
-msgstr ""
+msgstr "层 (%I)"
 
 #: ../src/modules/emu/border_props.c:324
 msgid "Stickiness (%y)"
@@ -115,11 +115,11 @@ msgstr ""
 #. Create The Dialog
 #: ../src/modules/emu/e_mod_config.c:40
 msgid "Emu Configuration"
-msgstr ""
+msgstr "Emu 配置"
 
 #: ../src/modules/emu/e_mod_main.c:211
 msgid "Enlightenment Emu Module - error"
-msgstr ""
+msgstr "Enlightenment Emu 模块 - 错误"
 
 #: ../src/modules/emu/e_mod_main.c:211
 msgid "There is no emu."
@@ -127,4 +127,4 @@ msgstr ""
 
 #: ../src/modules/emu/e_mod_main.c:285
 msgid "Emu"
-msgstr ""
+msgstr "Emu"
