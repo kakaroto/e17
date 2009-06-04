@@ -71,7 +71,7 @@ char* eyelight_create_edj_from_edc(char* input_file, char* theme_file)
 
     exe = ecore_exe_run(command,NULL);
     waitpid(ecore_exe_pid_get(exe),&status,0);
-    //remove(new_edc_file);
+    remove(new_edc_file);
 
     EYELIGHT_FREE(path);
     return output_file;

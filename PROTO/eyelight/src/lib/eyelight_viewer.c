@@ -432,7 +432,6 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
 
     snprintf(buf,EYELIGHT_BUFLEN,"slide_%d",pos+1);
     slide = edje_object_add(pres->evas);
-    printf("%s %s\n",pres->edje_file,buf);
     if(edje_object_file_set(slide, pres->edje_file, buf) ==  0)
         printf("eyelight_viewer_slide_load(), edje_object_file_set() erreur! %d \n",
                         edje_object_load_error_get(slide));

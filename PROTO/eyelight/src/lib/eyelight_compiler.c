@@ -137,7 +137,7 @@ void eyelight_compile_prop_slide(Eyelight_Compiler* compiler,FILE* output, Eyeli
     }
     else
         str = eyelight_retrieve_value_of_prop(node,0);
-    if(str)
+    if(str && strlen(str)>0)
     {
         fprintf(output,"set_title(\"%s\");\n",str);
         *title = str;
@@ -153,7 +153,7 @@ void eyelight_compile_prop_slide(Eyelight_Compiler* compiler,FILE* output, Eyeli
     }
     else
         str = eyelight_retrieve_value_of_prop(node,0);
-    if(str)
+    if(str && strlen(str)>0)
     {
         fprintf(output,"set_subtitle(\"%s\");\n",str);
         *subtitle = str;
