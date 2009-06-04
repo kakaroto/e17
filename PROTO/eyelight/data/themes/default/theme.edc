@@ -680,6 +680,8 @@ part                                \
     {                               \
         state: "default" 0.0;       \
         visible: 1;                 \
+        aspect: 1 1;                \
+        aspect_preference: VERTICAL;\
         rel1                        \
         {                           \
             relative: 0.0 0.0;      \
