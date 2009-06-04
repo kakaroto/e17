@@ -1,2 +1,2 @@
 filesdir = $(pkgdatadir)
-SUBDIRS = default
+SUBDIRS = default old_default

@@ -52,5 +52,8 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/transition/Makefile
 data/themes/default/fonts/Makefile
+data/themes/old_default/Makefile
+data/themes/old_default/transition/Makefile
+data/themes/old_default/fonts/Makefile
 ])
 

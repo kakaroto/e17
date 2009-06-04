@@ -2,6 +2,6 @@ PNG = item_00.png item_01.png item_02.png item_03.png expose_next.png expose_pre
 FONT = DejaVu.COPYING
 EDC = theme.edc expose.edc gotoslide.edc slideshow.edc layout.edc tableofcontents.edc
 
-icondir = $(pkgdatadir)/themes/default
+icondir = $(pkgdatadir)/themes/old_default
 icon_DATA = $(PNG) $(FONT) $(EDC)
 SUBDIRS = transition fonts
