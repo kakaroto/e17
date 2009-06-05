@@ -37,6 +37,7 @@ PKG_CHECK_MODULES([ELEMENTARY], [
                    eet
                    ecore
                    ecore-file
+                   ecore-x
                    efreet
                    efreet-trash
                    elementary
@@ -65,7 +66,7 @@ if test "x${_iv_enable_experimental}" = "xyes" ; then
 fi
 
 AC_ARG_ENABLE([ethumb],
-   [AC_HELP_STRING([--enable-ethumb], [enable ethumb @<:@default=no@:>@])],
+   [AC_HELP_STRING([--enable-ethumb], [enable ethumb @<:@default=yes@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        _iv_enable_ethumb="yes"
@@ -73,7 +74,7 @@ AC_ARG_ENABLE([ethumb],
        _iv_enable_ethumb="no"
     fi
    ],
-   [_iv_enable_ethumb="no"]
+   [_iv_enable_ethumb="yes"]
 )
 
 AC_MSG_CHECKING([whether ethumb is built])
@@ -82,9 +83,11 @@ AC_MSG_RESULT([${_iv_enable_ethumb}])
 have_ethumb="no"
 
 if test "x${_iv_enable_ethumb}" = "xyes" ; then
-    PKG_CHECK_MODULES(ETHUMB, ethumb, [
+    PKG_CHECK_MODULES(ETHUMB, ethumb_client, [
         have_ethumb="yes"
         AC_DEFINE(HAVE_ETHUMB, 1, [have ethumb support])
+    ],[
+       have_ethumb="no"
     ])
 fi
 
