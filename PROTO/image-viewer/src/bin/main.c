@@ -125,6 +125,10 @@ struct _IV_Thumb_Info
 static int  on_idler(void *data);
 static void slideshow_on(IV *iv);
 static void slideshow_off(IV *iv);
+#ifdef HAVE_ETHUMB
+static void on_thumb_generate(long id, const char *file, const char *key, Eina_Bool success, void *data);
+static void on_thumb_die(Ethumb_Client *client, void *data);
+#endif
 
 static Eina_List *
 rewind_list(Eina_List *list)
@@ -544,6 +548,34 @@ thumb_remove(IV *iv, const char *path)
 }
 
 static void
+thumb_queue_process(IV *iv)
+{
+   Eina_List *l;
+   const char *file;
+   Eina_Bool renew = EINA_FALSE;
+
+   EINA_LIST_FOREACH(iv->preview_files, l, file)
+     {
+	if (l->next)
+	  iv->preview_files = l->next;
+
+	if (!ethumb_client_file_set(iv->ethumb_client, file, NULL))
+	  continue;
+
+	if (ethumb_client_thumb_exists(iv->ethumb_client))
+	  on_thumb_generate(0, file, NULL, EINA_TRUE, iv);
+	else if (!ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv))
+	  continue;
+
+	renew = EINA_TRUE;
+	break;
+     }
+
+   if (renew && !iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+}
+
+static void
 on_thumb_generate(long id, const char *file, const char *key, Eina_Bool success, void *data)
 {
    IV *iv = data;
@@ -569,32 +601,20 @@ static void
 on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
 {
    IV *iv = data;
-   Eina_List *l;
-   const char *file;
-   Eina_Bool renew = EINA_FALSE;
 
    if (!success)
      return ERR("Error connecting to ethumbd, thumbnails will not be available!");
 
-   EINA_LIST_FOREACH(iv->preview_files, l, file)
-     {
-	if (l->next)
-	  iv->preview_files = l->next;
+   thumb_queue_process(iv);
+   ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv);
+}
 
-	if (!ethumb_client_file_set(iv->ethumb_client, file, NULL))
-	  continue;
+static void
+on_thumb_die(Ethumb_Client *client, void *data)
+{
+   IV *iv;
 
-	if (ethumb_client_thumb_exists(iv->ethumb_client))
-	  on_thumb_generate(0, file, NULL, EINA_TRUE, iv);
-	else if (!ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv))
-	  continue;
-
-	renew = EINA_TRUE;
-	break;
-     }
-
-   if (renew && !iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
+   iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
 }
 
 static int
@@ -1021,7 +1041,10 @@ on_idler(void *data)
 		       iv->flags.first_preview = EINA_TRUE;
 		    }
 
-		  iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
+		  if (iv->ethumb_client)
+		    thumb_queue_process(iv);
+		  else
+		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
 	       }
 #endif
 	  }
