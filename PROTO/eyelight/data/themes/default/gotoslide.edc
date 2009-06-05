@@ -29,6 +29,7 @@ group                                   \
             name: "gotoslide/text";     \
             type: TEXT;                 \
             effect: SOFT_OUTLINE;       \
+            scale: 1; \
             description                 \
             {                           \
                 state: "default" 0.0;   \
@@ -58,6 +59,7 @@ group                                   \
             name: "gotoslide/error";    \
             type: TEXT;                 \
             effect: SOFT_OUTLINE;       \
+            scale: 1; \
             description                 \
             {                           \
                 state: "default" 0.0;   \

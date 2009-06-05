@@ -27,14 +27,6 @@ void eyelight_viewer_elt_file_set(Eyelight_Viewer* pres,char* elt_file);
 void eyelight_viewer_presentation_set(Eyelight_Viewer* pres,char* presentation);
 void eyelight_viewer_theme_set(Eyelight_Viewer* pres,char* theme);
 
-void eyelight_viewer_text_class_free(void* data)
-{
-    Eyelight_Text_Class *class = (Eyelight_Text_Class*)data;
-    EYELIGHT_FREE(class->name);
-    EYELIGHT_FREE(class->font);
-    EYELIGHT_FREE(class);
-}
-
 /*
  * @create a new viewer
  */
@@ -47,9 +39,6 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, char* presentation, char* theme
     pres->state= EYELIGHT_VIEWER_STATE_DEFAULT;
     pres->evas = evas;
     pres->with_border = with_border;
-
-    pres->text_class = ecore_list_new();
-    ecore_list_free_cb_set(pres->text_class,eyelight_viewer_text_class_free);
 
     str = ecore_file_realpath(presentation);
     eyelight_viewer_presentation_set(pres,str);
@@ -117,7 +106,6 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
     EYELIGHT_FREE((*pres)->slides);
     EYELIGHT_FREE((*pres)->transition_effect_next);
     EYELIGHT_FREE((*pres)->transition_effect_previous);
-    ecore_list_destroy((*pres)->text_class);
 
 
     switch((*pres)->state)
@@ -187,33 +175,6 @@ void eyelight_viewer_slides_init(Eyelight_Viewer*pres, int w, int h)
 
     eyelight_viewer_thumbnails_init(pres);
 
-    char* text_class;
-    i = 1;
-    while(1)
-    {
-        snprintf(buf,EYELIGHT_BUFLEN,"text_class_%d",i);
-        text_class = edje_file_data_get(pres->edje_file,buf);
-        if(!text_class)
-            break;
-
-        Eyelight_Text_Class* class = calloc(1,sizeof(Eyelight_Text_Class));
-        class->size = -1;
-        class->name = text_class;
-
-        snprintf(buf,EYELIGHT_BUFLEN,"%s_font",class->name);
-        class->font = edje_file_data_get(pres->edje_file,buf);
-        snprintf(buf,EYELIGHT_BUFLEN,"%s_size",class->name);
-        char* size = edje_file_data_get(pres->edje_file,buf);
-        if(size)
-            class->size = atoi(size);
-        EYELIGHT_FREE(size);
-
-        ecore_list_append(pres->text_class,class);
-
-        i++;
-    }
-
-    eyelight_viewer_font_size_update(pres);
     printf("\n\n## presentation: %s\n",pres->presentation);
     printf("## Elt file: %s\n",pres->elt_file);
     printf("## Edc file: %s\n",pres->edc_file);
@@ -310,8 +271,10 @@ void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coor
             break;
         default: break;
     }
-    eyelight_viewer_font_size_update(pres);
-
+    double ratio_w = w/1024.;
+    double ratio_h = h/768.;
+    double ratio = (ratio_w+ratio_h)/2;
+    edje_scale_set(ratio);
 }
 
 /*
@@ -569,39 +532,3 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 }
 
 
-
-void eyelight_viewer_font_size_update(Eyelight_Viewer* pres)
-{
-    int w,h,i;
-    double scale_w, scale_h,scale;
-    evas_output_viewport_get(pres->evas,NULL,NULL,&w,&h);
-
-    scale_w = w/(double)pres->default_size_w;
-    scale_h = h/(double)pres->default_size_h;
-    scale = (scale_w+scale_h)/2.0;
-
-    ecore_list_first_goto(pres->text_class);
-    Eyelight_Text_Class* class;
-    while( (class = ecore_list_next(pres->text_class)))
-    {
-        int new_size = class->size*scale;
-        edje_text_class_set(class->name,class->font,new_size);
-    }
-}
-
-void eyelight_viewer_object_font_size_update(Eyelight_Viewer* pres,Evas_Object* o, int w, int h)
-{
-    double scale_w, scale_h,scale;
-
-    scale_w = w/(double)pres->default_size_w;
-    scale_h = h/(double)pres->default_size_h;
-    scale = (scale_w+scale_h)/2.0;
-
-    ecore_list_first_goto(pres->text_class);
-    Eyelight_Text_Class* class;
-    while( (class = ecore_list_next(pres->text_class)))
-    {
-        int new_size = class->size*scale;
-        edje_object_text_class_set(o,class->name,class->font,new_size);
-    }
-}

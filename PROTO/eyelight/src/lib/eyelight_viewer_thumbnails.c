@@ -170,7 +170,7 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
 
     //create a thumbnail of the slide
     o = edje_object_add(e);
-    snprintf(buf,buffer_w,"slide_%d",pos+1);
+    snprintf(buf,EYELIGHT_BUFLEN,"slide_%d",pos+1);
     if(edje_object_file_set(o, pres->edje_file, buf) ==  0)
         printf("eyelight_viewer_expose_slides_load(), edje_object_file_set() erreur! 4 %d\n",edje_object_load_error_get(o));
     evas_object_move(o,-buffer_w,-buffer_h);

@@ -7,8 +7,8 @@
 
 //theme's macro
 #define tag_list() \
-tag: "big" "+ font_size=35 text_class=tag_big ";\
-tag: "small" "+ font_size=15 text_class=tag_small ";\
+tag: "big" "+ font_size=35 ";\
+tag: "small" "+ font_size=15 ";\
 tag: "u" "+ style=underline underline_color=#00ff00ff underline2_color=#00ff00ff";\
 tag: "b" "+ font=DejaVuSans_Bold ";\
 tag: "i" "+ font=DejaVuSans_Oblique ";\
@@ -206,65 +206,36 @@ styles
     style
     {
         name: "itemStyle";
-        base: "font=DejaVuSans font_size=22 text_class=item align=0.0 valign=center color=#000000  wrap=word style=glow glow_color=#ffffff ";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000  wrap=word style=glow glow_color=#ffffff ";
         tag: "numbering" "+ style=soft_outline outline_color=#7fa3ed color=#d8e0e3";
         tag_list();
     }
     style
     {
         name: "titleStyle";
-        base: "font=DejaVuSans_Oblique font_size=40 text_class=title align=center valign=0.0 wrap=word style=glow glow_color=#ffc516 color=#ffffff";
+        base: "font=DejaVuSans_Oblique font_size=40 align=center valign=0.0 wrap=word style=glow glow_color=#ffc516 color=#ffffff";
         tag_list();
     }
     style
     {
         name: "subtitleStyle";
-        base: "font=DejaVuSans font_size=20 text_class=subtitle align=center valign=bottom color=#ffffff  wrap=word style=soft_outline outline_color=#a1c2e8";
+        base: "font=DejaVuSans font_size=20 align=center valign=bottom color=#ffffff  wrap=word style=soft_outline outline_color=#a1c2e8";
         tag_list();
     }
     style
     {
         name: "footStyle";
-        base: "+ font=DejaVuSans font_size=18 text_class=foot aligncenter valign=bottom color=#ffffff  wrap=word ";
+        base: "+ font=DejaVuSans font_size=18 aligncenter valign=bottom color=#ffffff  wrap=word ";
         tag_list();
     }
     style
     {
         name: "nbPagesStyle";
-        base: "+ font=DejaVuSans font_size=18 text_class=foot align=right valign=bottom color=#ffffff  wrap=word ";
+        base: "+ font=DejaVuSans font_size=18 align=right valign=bottom color=#ffffff  wrap=word ";
         tag_list();
     }
 }
 
-
-data
-{
-    item: text_class_1 "tag_small";
-    item: tag_small_size "15";
-
-    item: text_class_2 "tag_big";
-    item: tag_big_size "35";
-
-    item: text_class_3 "title";
-    item: title_font "fonts/DejaVuSans_Oblique";
-    item: title_size 40;
-
-    item: text_class_4 "subtitle";
-    item: subtitle_font "fonts/DejaVuSans";
-    item: subtitle_size 20;
-
-    item: text_class_5 "foot";
-    item: foot_font "fonts/DejaVuSans_Bold";
-    item: foot_size 18;
-
-    item: text_class_6 "item";
-    item: item_size 22;
-    item: item_font "fonts/DejaVuSans";
-
-    item: text_class_7 "tableofcontents";
-    item: tableofcontents_font "DejaVuSans_Bold";
-    item: tableofcontents_size 18;
-}
 
 //first function called in a slide
 #define pre_fct()                                       \
@@ -477,6 +448,7 @@ part                                \
     type: TEXTBLOCK;                \
     mouse_events: 0;                \
     clip_to: "slide";               \
+    scale: 1; \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -532,6 +504,7 @@ part                                \
     type: TEXTBLOCK;                \
     mouse_events: 0;                \
     clip_to: "slide";               \
+    scale: 1; \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -585,6 +558,7 @@ part                                \
     type: TEXTBLOCK;                \
     mouse_events: 0;                \
     clip_to: "slide";               \
+    scale: 1; \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -610,7 +584,7 @@ part                                \
 
 
 //define an image for the header
-#define set_header_image(content_image)     \
+#define set_header_image(content_image)\
 part                                \
 {                                   \
     name: "header_image";           \
@@ -623,6 +597,7 @@ part                                \
         visible: 1;                 \
         color: 255 255 255 255;     \
         aspect: 1 1;                \
+        aspect_preference: HORIZONTAL;\
         rel1                        \
         {                           \
             to: "area_header_image";\
@@ -647,6 +622,7 @@ part                                \
     type: TEXTBLOCK;                \
     mouse_events:0;                 \
     clip_to: "slide";                               \
+    scale: 1; \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -709,6 +685,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                               \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -802,6 +779,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                           \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -891,6 +869,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                               \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -926,6 +905,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                               \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -966,6 +946,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                           \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \
@@ -1002,6 +983,7 @@ part                                            \
     type: TEXTBLOCK;                            \
     mouse_events: 0;                            \
     clip_to: "slide";                               \
+    scale: 1; \
     description                                 \
     {                                           \
         state: "default" 0.0;                   \

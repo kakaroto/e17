@@ -321,6 +321,8 @@ void help()
     printf("-e engine\t\t: an evas engine (x11, gl, fb, xr, ddraw)\n");
     printf("--display-areas\t\t: show the border of an area\n");
     printf("--no-thumbs-bg\t\t: deactivate the creation of the thumbnails list in the background, saves a lot of memory some mode (expose, slideshow) will be slow\n");
+    printf("--generate-pdf file\t\t: generate a pdf file with all slides\n");
+    printf("--size-pdf sizex sizey\t\t: the size of each slide generated in a pdf file (default: 2048 1536)\n");
     printf("\nExamples:\n");
     printf("eyelight -p presentation/eyelight.edc -t theme/default -e gl\n");
     printf("eyelight -p presentation/eyelight.edj\n");
@@ -339,6 +341,8 @@ int main(int argc, char*argv[])
     short with_border = 0;
     short no_thumbs_bg = 0;
     short generate_pdf = 0;
+    int pdf_size_w = 0;
+    int pdf_size_h = 0;
 
     if (!ecore_init()) {
         evas_shutdown ();
@@ -379,6 +383,12 @@ int main(int argc, char*argv[])
         }
         else if(strcmp(argv[i],"--generate-pdf")==0)
                 generate_pdf = i+1;
+        else if(strcmp(argv[i],"--size-pdf") == 0)
+        {
+                pdf_size_w = atoi(argv[i+1]);
+                pdf_size_h = atoi(argv[i+2]);
+                i++;
+        }
         else
         {
             fprintf(stderr,"Unknow argument %s\n",argv[i]);
@@ -486,7 +496,13 @@ int main(int argc, char*argv[])
     //display the presentation
 
 
-    eyelight_viewer_slides_init(pres,1024,768);
+    if(!generate_pdf)
+            eyelight_viewer_slides_init(pres,1024,768);
+    else if(generate_pdf && pdf_size_w>0 && pdf_size_h>0)
+        eyelight_viewer_slides_init(pres,pdf_size_w,pdf_size_h);
+    else
+        eyelight_viewer_slides_init(pres,1024*2,768*2);
+
     eyelight_viewer_resize_screen(pres,w_win,h_win);
     if(!no_thumbs_bg)
             eyelight_viewer_thumbnails_background_load_start(pres);

@@ -22,7 +22,6 @@
 
 typedef struct Eyelight_Viewer Eyelight_Viewer;
 typedef enum Eyelight_Viewer_State Eyelight_Viewer_State;
-typedef struct Eyelight_Text_Class Eyelight_Text_Class;
 #include "Eyelight.h"
 #include <Eet.h>
 #include "eyelight_viewer_thumbnails.h"
@@ -59,8 +58,6 @@ struct Eyelight_Viewer
     int current;
     Evas_Object* slide_with_transition[2];
 
-    Ecore_List* text_class;
-
     Eyelight_Thumbnails* thumbnails;
 
     //expose
@@ -91,13 +88,6 @@ struct Eyelight_Viewer
     Evas_Object* tableofcontents_background;
     int tableofcontents_is_next_program;
     int tableofcontents_is_previous_program;
-};
-
-struct Eyelight_Text_Class
-{
-    char* name;
-    char* font;
-    int size;
 };
 
 Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres);
@@ -159,8 +149,6 @@ void eyelight_viewer_tableofcontents_previous(Eyelight_Viewer* pres);
 void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres);
 void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, int h);
 
-void eyelight_viewer_object_font_size_update(Eyelight_Viewer* pres,Evas_Object* o, int w, int h);
-void eyelight_viewer_font_size_update(Eyelight_Viewer* pres);
 
 
 
