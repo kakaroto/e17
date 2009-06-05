@@ -95,9 +95,9 @@ struct _IV
    Eina_List		*preview_files;
    Eina_Hash		*preview_items;
    Ethumb_Client        *ethumb_client;
+   int			 connection_tries;
 
    Elm_Genlist_Item_Class *itc;
-   Ecore_Timer            *preview_window_timer;
 #endif
 };
 
@@ -505,6 +505,29 @@ Evas_Bool iv_gl_state_get(const void *data, Evas_Object *obj, const char *part)
 }
 
 static void
+preview_window_create(IV *iv)
+{
+   iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
+   elm_object_style_set(iv->gui.preview_win, "shadow_fill");
+   evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
+
+   iv->gui.preview_genlist = elm_genlist_add(iv->gui.preview_win);
+   elm_genlist_always_select_mode_set(iv->gui.preview_genlist, 1);
+   evas_object_size_hint_align_set(iv->gui.preview_genlist, -1.0, -1.0);
+   evas_object_size_hint_weight_set(iv->gui.preview_genlist, 1.0, 1.0);
+   evas_object_show(iv->gui.preview_genlist);
+
+   iv->itc = calloc(1, sizeof(Elm_Genlist_Item_Class));
+   iv->itc->item_style     = "double_label";
+   iv->itc->func.label_get = iv_gl_label_get;
+   iv->itc->func.icon_get  = iv_gl_icon_get;
+   iv->itc->func.state_get = iv_gl_state_get;
+   iv->itc->func.del       = NULL;
+
+   elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_genlist);
+}
+
+static void
 on_thumb_sel(void *data, Evas_Object *obj, void *event_info)
 {
    IV_Thumb_Info *info = data;
@@ -552,7 +575,6 @@ thumb_queue_process(IV *iv)
 {
    Eina_List *l;
    const char *file;
-   Eina_Bool renew = EINA_FALSE;
 
    EINA_LIST_FOREACH(iv->preview_files, l, file)
      {
@@ -566,13 +588,7 @@ thumb_queue_process(IV *iv)
 	  on_thumb_generate(0, file, NULL, EINA_TRUE, iv);
 	else if (!ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv))
 	  continue;
-
-	renew = EINA_TRUE;
-	break;
      }
-
-   if (renew && !iv->idler)
-     iv->idler = ecore_idler_add(on_idler, iv);
 }
 
 static void
@@ -603,10 +619,18 @@ on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
    IV *iv = data;
 
    if (!success)
-     return ERR("Error connecting to ethumbd, thumbnails will not be available!");
+     {
+	iv->connection_tries--;
+	iv->ethumb_client = NULL;
+	ERR("Error connecting to ethumbd, thumbnails will not be available!\n");
+	return;
+     }
 
-   thumb_queue_process(iv);
    ethumb_client_on_server_die_callback_set(iv->ethumb_client, on_thumb_die, iv);
+   thumb_queue_process(iv);
+
+   if (!iv->gui.preview_genlist)
+     preview_window_create(iv);
 }
 
 static void
@@ -615,45 +639,15 @@ on_thumb_die(Ethumb_Client *client, void *data)
    IV *iv;
 
    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
-}
-
-static int
-preview_window_create(void *data)
-{
-   IV *iv = data;
-
-   iv->gui.preview_win = elm_win_inwin_add(iv->gui.win);
-   elm_object_style_set(iv->gui.preview_win, "shadow_fill");
-   evas_object_size_hint_weight_set(elm_bg_add(iv->gui.preview_win), 1.0, 1.0);
-
-   iv->gui.preview_genlist = elm_genlist_add(iv->gui.preview_win);
-   elm_genlist_always_select_mode_set(iv->gui.preview_genlist, 1);
-   evas_object_size_hint_align_set(iv->gui.preview_genlist, -1.0, -1.0);
-   evas_object_size_hint_weight_set(iv->gui.preview_genlist, 1.0, 1.0);
-   evas_object_show(iv->gui.preview_genlist);
-
-   iv->itc = calloc(1, sizeof(Elm_Genlist_Item_Class));
-   iv->itc->item_style     = "double_label";
-   iv->itc->func.label_get = iv_gl_label_get;
-   iv->itc->func.icon_get  = iv_gl_icon_get;
-   iv->itc->func.state_get = iv_gl_state_get;
-   iv->itc->func.del       = NULL;
-
-   elm_win_inwin_content_set(iv->gui.preview_win, iv->gui.preview_genlist);
-
-   iv->preview_window_timer = NULL;
-
-   return ECORE_CALLBACK_CANCEL;
+   ERR("Connection to ethumbd lost!\n");
 }
 
 static void
 toggle_previews(IV *iv)
 {
-   if (iv->preview_window_timer)
-     {
-	ecore_timer_del(iv->preview_window_timer);
-	preview_window_create(iv);
-     }
+   if (!iv->ethumb_client) return;
+   if (!iv->gui.preview_genlist)
+     preview_window_create(iv);
 
    if (evas_object_visible_get(iv->gui.preview_win))
      evas_object_hide(iv->gui.preview_win);
@@ -1016,6 +1010,20 @@ on_idler(void *data)
 	       }
 
 #ifdef HAVE_ETHUMB
+	     if (iv->flags.add_previews && iv->connection_tries)
+	       {
+		  if (!iv->preview_files)
+		    {
+		       iv->preview_files = rewind_list(iv->files);
+		       iv->flags.first_preview = EINA_TRUE;
+		    }
+
+		  if (iv->ethumb_client)
+		    thumb_queue_process(iv);
+		  else
+		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
+	       }
+
 	     if (iv->thumb_path && iv->gui.preview_genlist)
 	       {
 		  EINA_LIST_FREE(iv->thumb_path, info)
@@ -1033,19 +1041,6 @@ on_idler(void *data)
 		    }
 	       }
 
-	     if (iv->flags.add_previews)
-	       {
-		  if (!iv->preview_files)
-		    {
-		       iv->preview_files = rewind_list(iv->files);
-		       iv->flags.first_preview = EINA_TRUE;
-		    }
-
-		  if (iv->ethumb_client)
-		    thumb_queue_process(iv);
-		  else
-		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
-	       }
 #endif
 	  }
      }
@@ -1556,10 +1551,6 @@ create_main_win(IV *iv)
    iv->gui.hoversel = o;
 
    evas_object_show(iv->gui.win);
-
-#ifdef HAVE_ETHUMB
-   iv->preview_window_timer = ecore_timer_add(2.0, preview_window_create, iv);
-#endif
 }
 
 static void
@@ -1700,6 +1691,7 @@ elm_main(int argc, char **argv)
 
 #ifdef HAVE_ETHUMB
    ethumb_client_init();
+   iv->connection_tries = 3;
    iv->preview_items = eina_hash_string_superfast_new(NULL);
    if (iv->files)
      iv->flags.add_previews = EINA_TRUE;
