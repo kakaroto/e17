@@ -60,6 +60,9 @@ struct Eyelight_Viewer
 
     Eyelight_Thumbnails* thumbnails;
 
+    //pdf generator
+    char* pdf_file;
+
     //expose
     Evas_Object** expose_slides;
     Evas_Object** expose_image_thumbnails;

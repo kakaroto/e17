@@ -106,7 +106,7 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
     EYELIGHT_FREE((*pres)->slides);
     EYELIGHT_FREE((*pres)->transition_effect_next);
     EYELIGHT_FREE((*pres)->transition_effect_previous);
-
+    EYELIGHT_FREE((*pres)->pdf_file);
 
     switch((*pres)->state)
     {
@@ -174,6 +174,7 @@ void eyelight_viewer_slides_init(Eyelight_Viewer*pres, int w, int h)
     pres->default_size_h = h;
 
     eyelight_viewer_thumbnails_init(pres);
+    eyelight_viewer_resize_screen(pres,w,h);
 
     printf("\n\n## presentation: %s\n",pres->presentation);
     printf("## Elt file: %s\n",pres->elt_file);

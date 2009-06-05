@@ -401,6 +401,12 @@ int main(int argc, char*argv[])
         i+=2;
     }
 
+    if(pdf_size_w==0 || pdf_size_h == 0)
+    {
+        pdf_size_w = 1024*2;
+        pdf_size_h = 768*2;
+    }
+
     if(!presentation)
     {
         fprintf(stderr,"A presentation is required !\n");
@@ -413,7 +419,11 @@ int main(int argc, char*argv[])
         exit(EXIT_FAILURE);
     }
 
-    if(!engine)
+    if(generate_pdf)
+    {
+        ee = ecore_evas_buffer_new(pdf_size_w , pdf_size_h);
+    }
+    else if(!engine)
     {
         ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
         if (!ee) {
@@ -494,14 +504,10 @@ int main(int argc, char*argv[])
 
 
     //display the presentation
-
-
     if(!generate_pdf)
             eyelight_viewer_slides_init(pres,1024,768);
-    else if(generate_pdf && pdf_size_w>0 && pdf_size_h>0)
+    else if(generate_pdf )
         eyelight_viewer_slides_init(pres,pdf_size_w,pdf_size_h);
-    else
-        eyelight_viewer_slides_init(pres,1024*2,768*2);
 
     eyelight_viewer_resize_screen(pres,w_win,h_win);
     if(!no_thumbs_bg)
@@ -516,11 +522,11 @@ int main(int argc, char*argv[])
 
     if(generate_pdf)
     {
-            printf("GENERATE\n");
-            eyelight_pdf_generate(pres, argv[generate_pdf]);
+            pres->pdf_file = strdup(argv[generate_pdf]);
+            ecore_timer_add(0.0, eyelight_pdf_generate_start_timer,pres);
     }
-    else
-            ecore_main_loop_begin ();
+
+    ecore_main_loop_begin ();
 
     eyelight_viewer_destroy(&pres);
 
