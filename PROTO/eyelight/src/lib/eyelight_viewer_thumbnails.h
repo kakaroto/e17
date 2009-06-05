@@ -45,6 +45,7 @@ struct Eyelight_Thumb
 
 void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres);
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos);
+const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h, int use_edj);
 void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres,int min, int max);
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres);
 

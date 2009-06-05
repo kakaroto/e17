@@ -19,10 +19,10 @@
 #include "eyelight_viewer.h"
 
 
-int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos);
+int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos, int w, int h);
 int _eyelight_viewer_thumbnails_load_idle(void *data);
 int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h);
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int free_if_in_edj);
+const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h, int free_if_in_edj, int use_edj);
 
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres)
 {
@@ -52,22 +52,39 @@ void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
 
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos)
 {
-    return _eyelight_viewer_thumbnails_get(pres,pos,0);
+        return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h,1);
+}
+
+/**
+ * @param pres the presentation
+ * @param pos the slide which we want a thumbnail
+ * @param w the thumbnail size
+ * @param h the thumbnail size
+ * @param use_edj 1 if we want try to load the thumbnail from the edj or save it into the edj
+ */
+const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h, int use_edj)
+{
+    return _eyelight_viewer_thumbnails_get(pres,pos,w,h,0,use_edj);
 }
 
 /*
  * @brief used to get a thumbnails
  * if we load all the thumbnails (eyelight_viewer_thumbnails_background_load_start)
- * and the thumbnail is (or is write) in the edj file, we can free the memory, the edj file is the buffer
+ * and the thumbnail is (or is write) in the edj file, we can free the memory, the edj file is in the buffer
  * else we keep the thumbnail in our buffer
  * @param pres a valid presentation
  * @param pos a valid slide position
+ * @param size_w the size of the thumbnail, use if we create a new thumb
+ * @param size_h the size of the thumbnail, use if we create a new thumb
  * @param free_if_in_edj, the slide will be free if it is in the edj file
+ * @param use_edj, 1 if we want use the edj file (try to load and/or save into the edj)
+ *              During the creation of a pdf we don't use the edj, we want create a new thumb
+ *              and we don't save it into the file
  * @return returns a slide if success,
  * NULL if an error is occurs
  * and NULL if we set free_if_in_edj and free is free
  */
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int free_if_in_edj)
+const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h, int free_if_in_edj, int use_edj)
 {
     Eet_File* file;
     unsigned int w,h;
@@ -82,7 +99,7 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     thumbnails = pres->thumbnails;
     snprintf(buf,EYELIGHT_BUFLEN,"thumb/slide/%d",pos);
 
-    if(!thumbnails->thumbnails[pos].thumb)
+    if(!thumbnails->thumbnails[pos].thumb && use_edj)
     {
         file = eet_open(pres->edje_file,EET_FILE_MODE_READ);
         if(file)
@@ -102,16 +119,16 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
 
     if(!thumbnails->thumbnails[pos].thumb)
     {
-        thumbnails->thumbnails[pos].thumb = _eyelight_viewer_thumbnails_create(pres,pos);
+        thumbnails->thumbnails[pos].thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
 
         if(!thumbnails->thumbnails[pos].thumb)
             return NULL;
 
         thumbnails->thumbnails[pos].is_in_edj = 0;
-        thumbnails->thumbnails[pos].w = thumbnails->default_size_w;
-        thumbnails->thumbnails[pos].h = thumbnails->default_size_h;
+        thumbnails->thumbnails[pos].w = size_w;
+        thumbnails->thumbnails[pos].h = size_h;
 
-        if(thumbnails->is_write_edj)
+        if(thumbnails->is_write_edj && use_edj)
         {
             file = eet_open(pres->edje_file,EET_FILE_MODE_READ_WRITE);
             if(file)
@@ -137,7 +154,7 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     return &(thumbnails->thumbnails[pos]);
 }
 
-int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos)
+int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)
 {
     Ecore_Evas    *ee;
     Evas *e;
@@ -163,8 +180,8 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos)
     pixel = ecore_evas_buffer_pixels_get(ee);
 
     pixel_resize = _eyelight_viewer_thumbnails_resize(pixel,buffer_w,buffer_h,
-            pres->thumbnails->default_size_w,
-            pres->thumbnails->default_size_h);
+            size_w,
+            size_h);
 
     ecore_evas_free(ee);
     return pixel_resize;
@@ -229,7 +246,7 @@ int _eyelight_viewer_thumbnails_load_idle(void *data)
         return 0;
     }
 
-    Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,1);
+    Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h,1, 1);
 
     thumbnails->idle_current_slide++;
     return 1;
@@ -238,14 +255,16 @@ int _eyelight_viewer_thumbnails_load_idle(void *data)
 
 void eyelight_viewer_thumbnails_destroy(Eyelight_Viewer* pres)
 {
-    if(pres->thumbnails->idle)
-        ecore_idler_del(pres->thumbnails->idle);
+        if(!pres->thumbnails)
+                return;
+        if(pres->thumbnails->idle)
+                ecore_idler_del(pres->thumbnails->idle);
 
-    if(pres->thumbnails->thumbnails)
-    {
-        int i;
-        for(i=0;i<pres->size;i++)
+        if(pres->thumbnails->thumbnails)
         {
+                int i;
+                for(i=0;i<pres->size;i++)
+                {
             EYELIGHT_FREE(pres->thumbnails->thumbnails[i].thumb);
         }
     }

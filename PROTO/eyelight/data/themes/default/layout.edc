@@ -132,7 +132,7 @@ custom_area("header_image",0.2,0.05,0.8,0.18,is_visible)\
 custom_area("foot_image",0.03,0.9,0.2,0.995,is_visible)\
 custom_area("foot_text",0.2,0.96,0.8,1.0,is_visible)\
 custom_area("bottom",0.09,0.65,0.98,0.9,is_visible) \
-custom_area("slide_number",0.84,0.96,1.0,1.0,is_visible) \
+custom_area("slide_number",0.84,0.96,0.9,1.0,is_visible) \
 program                                         \
 {                                               \
         name: "show_layout_title";              \

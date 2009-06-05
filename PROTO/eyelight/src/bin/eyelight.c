@@ -89,6 +89,7 @@ static const Eyelight_Key keys[] = {
     { "RC/Right", EYELIGHT_RIGHT },
     { "RCL/Right", EYELIGHT_RIGHT },
     { "GP/Right", EYELIGHT_RIGHT },
+    { "space", EYELIGHT_RIGHT },
     { "Left", EYELIGHT_LEFT },
     { "FP/Left", EYELIGHT_LEFT },
     { "RC/Left", EYELIGHT_LEFT },
@@ -323,6 +324,7 @@ void help()
     printf("\nExamples:\n");
     printf("eyelight -p presentation/eyelight.edc -t theme/default -e gl\n");
     printf("eyelight -p presentation/eyelight.edj\n");
+    printf("eyelight -p presentation/eyelight.edj --generate-pdf pdf_file");
 }
 
 int main(int argc, char*argv[])
@@ -336,6 +338,7 @@ int main(int argc, char*argv[])
     short presentation = 0;
     short with_border = 0;
     short no_thumbs_bg = 0;
+    short generate_pdf = 0;
 
     if (!ecore_init()) {
         evas_shutdown ();
@@ -374,6 +377,8 @@ int main(int argc, char*argv[])
             no_thumbs_bg = 1;
             i--;
         }
+        else if(strcmp(argv[i],"--generate-pdf")==0)
+                generate_pdf = i+1;
         else
         {
             fprintf(stderr,"Unknow argument %s\n",argv[i]);
@@ -478,20 +483,28 @@ int main(int argc, char*argv[])
     }
 
 
+    //display the presentation
+
+
     eyelight_viewer_slides_init(pres,1024,768);
     eyelight_viewer_resize_screen(pres,w_win,h_win);
     if(!no_thumbs_bg)
-        eyelight_viewer_thumbnails_background_load_start(pres);
+            eyelight_viewer_thumbnails_background_load_start(pres);
 
     if(eyelight_viewer_size_get(pres)>0)
     {
-        edje_object_signal_emit(eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)),"show","eyelight");
+            edje_object_signal_emit(eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)),"show","eyelight");
     }
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb,pres);
     evas_object_focus_set(container,1);
 
-
-    ecore_main_loop_begin ();
+    if(generate_pdf)
+    {
+            printf("GENERATE\n");
+            eyelight_pdf_generate(pres, argv[generate_pdf]);
+    }
+    else
+            ecore_main_loop_begin ();
 
     eyelight_viewer_destroy(&pres);
 
@@ -505,11 +518,11 @@ int main(int argc, char*argv[])
 
 static void app_resize(Ecore_Evas *ee)
 {
-    Evas_Coord w, h;
-    Evas *evas;
-    evas = ecore_evas_get(ee);
-    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-    eyelight_viewer_resize_screen(pres,w,h);
+        Evas_Coord w, h;
+        Evas *evas;
+        evas = ecore_evas_get(ee);
+        evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+        eyelight_viewer_resize_screen(pres,w,h);
 }
 
 static int app_signal_exit(void *data, int ev_type, void *ev)

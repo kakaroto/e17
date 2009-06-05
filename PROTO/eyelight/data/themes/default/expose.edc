@@ -35,19 +35,6 @@ group \
                     relative: 0.5 0.5; \
                 } \
             } \
-            description \
-            { \
-                state: "big" 0.0; \
-                inherit: "default" 0.0; \
-                rel1 \
-                { \
-                    relative: -0.02 -0.02;\
-                } \
-                rel2 \
-                { \
-                    relative: 1.02 1.02; \
-                } \
-            } \
         } \
         part \
         { \
@@ -194,19 +181,9 @@ group \
         name: "expose_slide_show_1"; \
         source: "eyelight"; \
         signal: "expose,slide,1"; \
-        action: STATE_SET "big" 0.0; \
+        action: STATE_SET "default" 0.0; \
         target: "expose/base"; \
-        transition: LINEAR 0.1; \
-        after: "expose_slide_show_2"; \
-    } \
-    program \
-    { \
-        name: "expose_slide_show_2"; \
-        source: "eyelight"; \
-        signal: "expose,slide,1"; \
-        action: STATE_SET "default" 0.0;\
-        target: "expose/base"; \
-        transition: LINEAR 0.1; \
+        transition: LINEAR 0.2; \
     } \
     program \
     { \
