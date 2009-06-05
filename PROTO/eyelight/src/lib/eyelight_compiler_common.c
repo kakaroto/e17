@@ -132,24 +132,19 @@ Eyelight_Node_Name eyelight_name_get(char* p)
 Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
 {
     Eyelight_Compiler* compiler;
-    compiler = malloc(sizeof(Eyelight_Compiler));
+    compiler = calloc(1,sizeof(Eyelight_Compiler));
     compiler->line = 1;
     compiler->image_list = ecore_list_new();
     compiler->edc_files = ecore_list_new();
     compiler->last_open_block = -1;
     compiler->root = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ROOT,NULL);
     compiler->input_file = strdup(input_file);
-    compiler->output_file = NULL;
-    compiler->default_foot_text = NULL;
-    compiler->default_foot_image = NULL;
-    compiler->default_layout = NULL;
-    compiler->default_header_image = NULL;
-    compiler->default_title = NULL;
-    compiler->default_subtitle = NULL;
-    compiler->default_transition_previous = NULL;
-    compiler->default_transition_next = NULL;
-    compiler->default_transition = NULL;
-    compiler -> display_areas = display_areas;
+    compiler-> display_areas = display_areas;
+    compiler-> default_header_image_aspect_x = -1;
+    compiler-> default_header_image_aspect_y = -1;
+    compiler-> default_foot_image_aspect_x = -1;
+    compiler-> default_foot_image_aspect_y = -1;
+
 
     return compiler;
 }

@@ -612,7 +612,7 @@ part                                \
 
 
 //define an image for the header
-#define set_header_image(content_image)     \
+#define set_header_image_aspect(content_image, aspect_x, aspect_y)     \
 part                                \
 {                                   \
     name: "header_image";           \
@@ -624,7 +624,7 @@ part                                \
         state: "default" 0.0;       \
         visible: 1;                 \
         aspect_preference: BOTH;    \
-        aspect: 1 1;                \
+        aspect: aspect_x aspect_y;  \
         rel1                        \
         {                           \
             relative: 0.0 0.0;     \
@@ -642,6 +642,8 @@ part                                \
     }                               \
 }
 
+#define set_header_image(content_image)     \
+        set_header_image_aspect(content_image, aspect_x, aspect_y)
 
 //define the text of the footer
 #define set_foot_text(content_text) \
@@ -650,7 +652,7 @@ part                                \
     name: "textFoot";               \
     type: TEXTBLOCK;                \
     mouse_events:0;                 \
-    clip_to: "slide";                               \
+    clip_to: "slide";                   \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -672,8 +674,10 @@ part                                \
     }                               \
 }
 
+
+
 //define an image for the footer
-#define set_foot_image(content_image) \
+#define set_foot_image_aspect(content_image,aspect_x,aspect_y) \
 part                                \
 {                                   \
     name: "foot_image";             \
@@ -685,7 +689,7 @@ part                                \
         state: "default" 0.0;       \
         visible: 1;                 \
         aspect_preference: BOTH;    \
-        aspect: 1 1;                \
+        aspect: aspect_x aspect_y;  \
         rel1                        \
         {                           \
             relative: 0.0 0.0;      \
@@ -703,7 +707,8 @@ part                                \
     }                               \
 }
 
-
+#define set_foot_image(content_image) \
+        set_foot_image_aspect(content_image, 1, 1)
 
 //add a text item in a vertical area
 #define add_item_text_vbox(area,id_prev,id,id_str,nb_items,depth,content_text)\

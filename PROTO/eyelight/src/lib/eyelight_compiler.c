@@ -110,8 +110,23 @@ void eyelight_compile_prop_slide(Eyelight_Compiler* compiler,FILE* output, Eyeli
         str = eyelight_retrieve_value_of_prop(node,0);
     if(str)
     {
-        fprintf(output,"set_foot_image(\"%s\");\n",str);
-        eyelight_image_add(compiler,str);
+            node = eyelight_retrieve_node_prop(current, EYELIGHT_NAME_FOOT_IMAGE_ASPECT);
+            if(!node)
+            {
+                    if(compiler->default_foot_image_aspect_x>=0)
+                            fprintf(output,"set_foot_image_aspect(\"%s\",%d,%d);\n",str,
+                                            compiler->default_foot_image_aspect_x,
+                                            compiler->default_foot_image_aspect_y);
+                    else
+                            fprintf(output,"set_foot_image(\"%s\");\n",str);
+            }
+            else
+            {
+                    fprintf(output,"set_foot_image_aspect(\"%s\",%s,%s);\n",str,
+                                    eyelight_retrieve_value_of_prop(node,0),
+                                    eyelight_retrieve_value_of_prop(node,1));
+            }
+            eyelight_image_add(compiler,str);
     }
 
     str = NULL;
@@ -122,9 +137,25 @@ void eyelight_compile_prop_slide(Eyelight_Compiler* compiler,FILE* output, Eyeli
     }
     else
         str = eyelight_retrieve_value_of_prop(node,0);
+
     if(str)
     {
-        fprintf(output,"set_header_image(\"%s\");\n",str);
+        node = eyelight_retrieve_node_prop(current, EYELIGHT_NAME_HEADER_IMAGE_ASPECT);
+        if(!node)
+        {
+                if(compiler->default_header_image_aspect_x>=0)
+                        fprintf(output,"set_header_image_aspect(\"%s\",%d,%d);\n",str,
+                                compiler->default_header_image_aspect_x,
+                                compiler->default_header_image_aspect_y);
+                else
+                        fprintf(output,"set_header_image(\"%s\");\n",str);
+        }
+        else
+        {
+                fprintf(output,"set_header_image_aspect(\"%s\",%s,%s);\n",str,
+                                eyelight_retrieve_value_of_prop(node,0),
+                                eyelight_retrieve_value_of_prop(node,1));
+        }
         eyelight_image_add(compiler,str);
     }
 
@@ -575,6 +606,12 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
                         compiler->default_foot_image =
                             strdup(eyelight_retrieve_value_of_prop(node,0));
                         break;
+                        case EYELIGHT_NAME_FOOT_IMAGE_ASPECT:
+                        compiler->default_foot_image_aspect_x =
+                                atoi(eyelight_retrieve_value_of_prop(node,0));
+                        compiler->default_foot_image_aspect_y =
+                                atoi(eyelight_retrieve_value_of_prop(node,1));
+                        break;
                     case EYELIGHT_NAME_LAYOUT:
                         EYELIGHT_FREE(compiler->default_layout);
                         compiler->default_layout =
@@ -584,6 +621,12 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
                         EYELIGHT_FREE(compiler->default_header_image);
                         compiler->default_header_image=
                             strdup(eyelight_retrieve_value_of_prop(node,0));
+                        break;
+                    case EYELIGHT_NAME_HEADER_IMAGE_ASPECT:
+                        compiler->default_header_image_aspect_x =
+                                atoi(eyelight_retrieve_value_of_prop(node,0));
+                        compiler->default_header_image_aspect_y =
+                                atoi(eyelight_retrieve_value_of_prop(node,1));
                         break;
                     case EYELIGHT_NAME_TITLE:
                         EYELIGHT_FREE(compiler->default_title);
