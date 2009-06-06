@@ -112,7 +112,7 @@ _eve_navigator_on_progress(void *data, Evas_Object *obj, void *event_info)
    Eve_Navigator_Data *priv = data;
    EWebKit_Event_Load_Progress *ev = event_info;
    Edje_Message_Float msg;
-   msg.val = ev->load_progress / 100.0;
+   msg.val = ev->progress / 100.0;
    edje_object_message_send(priv->edje, EDJE_MESSAGE_FLOAT, 0, &msg);
 }
 
@@ -120,11 +120,7 @@ static void
 _eve_navigator_on_load_started(void *data, Evas_Object *obj, void *event_info)
 {
    Eve_Navigator_Data *priv = data;
-   EWebKit_Event_Load_Started *ev = event_info;
-   if (ev->load_started)
-     edje_object_signal_emit(priv->edje, "eve,action,load", "");
-   else
-     fputs("DBG: load started, but flag is not set.\n", stderr);
+   edje_object_signal_emit(priv->edje, "eve,action,load", "");
 }
 
 static void
@@ -132,7 +128,7 @@ _eve_navigator_on_load_finished(void *data, Evas_Object *obj, void *event_info)
 {
    Eve_Navigator_Data *priv = data;
    EWebKit_Event_Load_Finished *ev = event_info;
-   if (ev->load_succeeded)
+   if (ev->success)
      edje_object_signal_emit(priv->edje, "eve,action,load,done", "");
    else
      fputs("DBG: load finished, but load succeeded flag is not set.\n", stderr);
