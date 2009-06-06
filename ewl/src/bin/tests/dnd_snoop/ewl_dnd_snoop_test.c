@@ -159,7 +159,7 @@ create_test(Ewl_Container *box)
 static void
 ewl_dnd_snoop_output(char *buf)
 {
-        printf(buf);
+        printf("%s\n", buf);
         ewl_text_text_append(EWL_TEXT(text), buf);
 }
 

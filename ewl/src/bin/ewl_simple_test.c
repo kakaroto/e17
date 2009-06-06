@@ -21,33 +21,26 @@ static void
 edje_text(void *data, Evas_Object *obj __UNUSED__,
                 const char *emission, const char *source)
 {
-        char *buf;
-        char *text;
-        int len;
+        const char *text;
         Ewl_Widget *label = data;
 
         if (strstr(emission, "Present") != emission)
                 return;
 
-        text = (char *)emission + strlen("Present");
-        len = strlen(text);
-        buf = NEW(char, len);
-        snprintf(buf, len, text);
+        text = emission + strlen("Present");
 
         ewl_text_clear(EWL_TEXT(label));
 
         ewl_text_font_set(EWL_TEXT(label), "ewl/default");
         ewl_text_font_size_set(EWL_TEXT(label), 12);
         ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
-        ewl_text_text_set(EWL_TEXT(label), (char *)source);
+        ewl_text_text_set(EWL_TEXT(label), source);
 
         ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
         ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
         ewl_text_font_set(EWL_TEXT(label), "ewl/default");
         ewl_text_font_size_set(EWL_TEXT(label), 9);
         ewl_text_text_append(EWL_TEXT(label), text);
-
-        FREE(buf);
 }
 
 static void
