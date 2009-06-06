@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-24 13:51+0200\n"
-"PO-Revision-Date: 2009-05-25 08:08+0100\n"
+"POT-Creation-Date: 2009-06-06 09:36+0200\n"
+"PO-Revision-Date: 2009-06-06 09:38+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <quaker66@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -88,11 +88,13 @@ msgstr "Nastavení drátového spojení"
 
 #: ../src/wired_dialog.c:51
 #: ../src/network_dialog.c:72
+#: ../src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Aktivovat"
 
 #: ../src/wired_dialog.c:54
 #: ../src/network_dialog.c:75
+#: ../src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Deaktivovat"
 
@@ -128,6 +130,7 @@ msgstr "Příkaz: "
 
 #: ../src/wired_dialog.c:96
 #: ../src/network_dialog.c:112
+#: ../src/wireless_dialog.c:49
 msgid "OK"
 msgstr "OK"
 
@@ -224,6 +227,14 @@ msgstr "Smazat"
 #: ../src/dns_dialog.c:59
 msgid "Close"
 msgstr "Zavřít"
+
+#: ../src/wireless_dialog.c:21
+msgid "Wireless Interface Settings"
+msgstr "Nastavení bezdrátového rozhraní"
+
+#: ../src/wireless_dialog.c:27
+msgid "wireless interface"
+msgstr "bezdrátové rozhraní"
 
 #~ msgid "Settings"
 #~ msgstr "Volby"
