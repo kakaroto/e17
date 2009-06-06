@@ -161,7 +161,7 @@ _eve_navigator_on_scroll_requested(void *data, Evas_Object *obj, void *event_inf
 
    printf("TODO: scroll requested: %dx%d %d,%d+%dx%d\n",
 	  ev->width, ev->height,
-	  ev->view.x, ev->view.y, ev->view.w, ev->view.h);
+	  ev->area.x, ev->area.y, ev->area.w, ev->area.h);
 }
 
 static void

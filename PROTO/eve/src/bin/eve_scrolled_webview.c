@@ -54,57 +54,10 @@ struct _Eve_Scrolled_Webview_Data
       Evas_Coord x, y;
       Ecore_Animator *anim;
    } mouse_move;
-   struct
-   {
-      Evas_Coord dx, dy;
-      Ecore_Animator *anim;
-   } scroll_delayed;
 };
 
 static Evas_Smart_Class _parent_sc = {NULL};
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
-
-static void
-_eve_scrolled_webview_scroll_by(Eve_Scrolled_Webview_Data *priv, int dx, int dy)
-{
-   EWebKit_Hit_Test_Contents contents;
-   Evas_Object *webframe = ewk_webpage_object_mainframe_get(priv->page);
-   ewk_webframe_object_hit_test(webframe, &contents, priv->mouse_move.x, priv->mouse_move.y);
-   ewk_webframe_object_scroll(contents.frame, dx, dy);
-}
-
-static int
-_eve_scrolled_webview_scroll_by_delayed_do(void *data)
-{
-   Eve_Scrolled_Webview_Data *priv = data;
-
-   if ((priv->scroll_delayed.dx == 0) && (priv->scroll_delayed.dy == 0))
-     {
-        priv->scroll_delayed.anim = NULL;
-        return 0;
-     }
-
-   _eve_scrolled_webview_scroll_by
-     (priv, priv->scroll_delayed.dx, priv->scroll_delayed.dy);
-   priv->scroll_delayed.dx = 0;
-   priv->scroll_delayed.dy = 0;
-   return 1;
-}
-
-static void
-_eve_scrolled_webview_scroll_by_delayed(Eve_Scrolled_Webview_Data *priv, Evas_Coord dx, Evas_Coord dy)
-{
-   if ((dx == 0) && (dy == 0))
-     return;
-
-   priv->scroll_delayed.dx += dx;
-   priv->scroll_delayed.dy += dy;
-
-   if (priv->scroll_delayed.anim)
-     return;
-   priv->scroll_delayed.anim = ecore_animator_add
-     (_eve_scrolled_webview_scroll_by_delayed_do, priv);
-}
 
 static void
 _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -121,36 +74,9 @@ _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *e
 	return;
      }
 
-   if (!ewk_event_feed_key_press(priv->webview, ev))
-      return;
-
    ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 
-   if (strcmp(value,"Left") == 0)
-     _eve_scrolled_webview_scroll_by_delayed(priv, -10, 0);
-   else if (strcmp(value,"Right") == 0)
-     _eve_scrolled_webview_scroll_by_delayed(priv, 10, 0);
-   else if (strcmp(value,"Up") == 0)
-     _eve_scrolled_webview_scroll_by_delayed(priv, 0, -10);
-   else if (strcmp(value, "Down") == 0)
-     _eve_scrolled_webview_scroll_by_delayed(priv, 0, 10);
-   else if (strcmp(value, "Prior") == 0)
-     {
-        int offset;
-	edje_object_part_geometry_get
-	  (priv->edje, EDJE_PART_CONTENT, NULL, NULL, NULL, &offset);
-        offset = (offset * 9) / 10;
-        _eve_scrolled_webview_scroll_by_delayed(priv, 0, -offset);
-     }
-   else if (strcmp(value, "Next") == 0)
-     {
-        int offset;
-	edje_object_part_geometry_get
-	  (priv->edje, EDJE_PART_CONTENT, NULL, NULL, NULL, &offset);
-        offset = (offset * 9) / 10;
-        _eve_scrolled_webview_scroll_by_delayed(priv, 0, offset);
-     }
-   else if (strcmp(value, "Home") == 0)
+   if (strcmp(value, "Home") == 0)
      printf("Command:home\n");
    else if (strcmp(value, "End") == 0)
      printf("Command:end\n");
@@ -180,24 +106,12 @@ _eve_scrolled_webview_pan_anim(void *data)
 }
 
 static void
-_eve_scrolled_webview_on_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Eve_Scrolled_Webview_Data *priv = data;
-   Evas_Event_Mouse_Move *ev = event_info;
-   ewk_event_feed_mouse_move(priv->webview, ev);
-}
-
-static void
 _eve_scrolled_webview_pan_anim_start(Eve_Scrolled_Webview_Data *priv)
 {
    if (priv->mouse_move.anim)
      return;
    priv->mouse_move.anim = ecore_animator_add
      (_eve_scrolled_webview_pan_anim, priv);
-
-   evas_object_event_callback_del
-     (priv->webview, EVAS_CALLBACK_MOUSE_MOVE,
-      _eve_scrolled_webview_on_mouse_move);
 }
 
 static void
@@ -207,15 +121,6 @@ _eve_scrolled_webview_pan_anim_stop(Eve_Scrolled_Webview_Data *priv)
      return;
    ecore_animator_del(priv->mouse_move.anim);
    priv->mouse_move.anim = NULL;
-
-   /* make sure it's not there already */
-   evas_object_event_callback_del
-     (priv->webview, EVAS_CALLBACK_MOUSE_MOVE,
-      _eve_scrolled_webview_on_mouse_move);
-
-   evas_object_event_callback_add
-     (priv->webview, EVAS_CALLBACK_MOUSE_MOVE,
-      _eve_scrolled_webview_on_mouse_move, priv);
 }
 
 static void
@@ -227,34 +132,7 @@ _eve_scrolled_webview_on_mouse_down(void *data, Evas *e, Evas_Object *obj, void 
 
    evas_object_focus_set(priv->webview, 1);
 
-   ewk_event_feed_mouse_down(priv->webview, ev);
-
    _eve_scrolled_webview_pan_anim_stop(priv);
-}
-
-static void
-_eve_scrolled_webview_on_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Eve_Scrolled_Webview_Data *priv = data;
-   Evas_Event_Mouse_Up *ev = event_info;
-
-   ewk_event_feed_mouse_up(obj, ev);
-}
-
-static void
-_eve_scrolled_webview_on_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Eve_Scrolled_Webview_Data *priv = data;
-   Evas_Event_Mouse_Wheel *ev = event_info;
-   int offset = ev->z * 20;
-
-   if (offset == 0)
-     return;
-
-   if (ev->direction == 0)
-     _eve_scrolled_webview_scroll_by_delayed(priv, 0, offset);
-   else if (ev->direction == 1)
-     _eve_scrolled_webview_scroll_by_delayed(priv, offset, 0);
 }
 
 static void
@@ -262,8 +140,6 @@ _eve_scrolled_webview_smart_del(Evas_Object *o)
 {
    EVE_SCROLLED_WEBVIEW_DATA_GET(o, priv);
 
-   if (priv->scroll_delayed.anim)
-     ecore_animator_del(priv->scroll_delayed.anim);
    _eve_scrolled_webview_pan_anim_stop(priv);
 
    evas_object_del(priv->webview); /* edje does not delete its children */
@@ -340,10 +216,7 @@ _eve_scrolled_webview_smart_add(Evas_Object *o)
       void (*cb)(void *, Evas *, Evas_Object *, void *);
    } *itr, map[] = {
      {EVAS_CALLBACK_KEY_DOWN, _eve_scrolled_webview_on_key_down},
-     {EVAS_CALLBACK_MOUSE_MOVE, _eve_scrolled_webview_on_mouse_move},
      {EVAS_CALLBACK_MOUSE_DOWN, _eve_scrolled_webview_on_mouse_down},
-     {EVAS_CALLBACK_MOUSE_UP, _eve_scrolled_webview_on_mouse_up},
-     {EVAS_CALLBACK_MOUSE_WHEEL, _eve_scrolled_webview_on_mouse_wheel},
      {-1, NULL}
    };
    for (itr = map; itr->cb != NULL; itr++)
