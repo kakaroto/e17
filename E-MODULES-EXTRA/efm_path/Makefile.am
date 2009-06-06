@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)
+	   -id $(top_srcdir)/images
 
 filesdir = $(datadir)
 files_DATA = \

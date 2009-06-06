@@ -5,7 +5,7 @@ typedef struct _Instance Instance;
 struct _Instance 
 {
    E_Gadcon_Client *gcc;
-   Evas_Object *o_entry, *o_base, *o_loc, *o_event;
+   Evas_Object *o_entry, *o_base, *o_event;
    E_Toolbar *tbar;
    char *path;
 };
@@ -34,6 +34,10 @@ static void             _cb_key_down      (void *data, Evas_Object *obj,
 					   void *event_info);
 static void             _cb_mouse_down    (void *data, Evas *e, 
 					   Evas_Object *obj, void *event_info);
+static void             _cb_clear_click   (void *data, Evas_Object *obj,
+                                           const char *emission, const char *source);
+static void             _cb_go_click      (void *data, Evas_Object *obj,
+                                           const char *emission, const char *source);
 
 static Eina_List *instances = NULL;
 static E_Module *path_mod = NULL;
@@ -65,14 +69,17 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				  _cb_mouse_down, inst);
    evas_object_show(inst->o_base);
 
-   inst->o_loc = e_widget_label_add(gc->evas, D_("Location:"));
-   edje_object_part_swallow(inst->o_base, "e.swallow.location", inst->o_loc);
-   evas_object_show(inst->o_loc);
+   edje_object_part_text_set(inst->o_base, "e.text.title", D_("Location:"));
 
    inst->o_entry = e_widget_entry_add(gc->evas, &(inst->path), NULL, NULL, NULL);
    edje_object_part_swallow(inst->o_base, "e.swallow.entry", inst->o_entry);
    evas_object_show(inst->o_entry);
 
+   edje_object_signal_callback_add(inst->o_base, "e,clear,click", "", 
+                                   _cb_clear_click, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,go,click", "", 
+                                   _cb_go_click, inst);
+   
    /* add hook to know when user changes entry */
    evas_object_smart_callback_add(inst->o_entry, "key_down", 
 				  _cb_key_down, inst);
@@ -118,7 +125,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
 
    if (inst->o_event) evas_object_del(inst->o_event);
-   if (inst->o_loc) evas_object_del(inst->o_loc);
    if (inst->o_entry) evas_object_del(inst->o_entry);
    if (inst->o_base) evas_object_del(inst->o_base);
    if (inst->path) free(inst->path);
@@ -301,19 +307,10 @@ static void
 _cb_key_down(void *data, Evas_Object *obj, void *event_info) 
 {
    Evas_Event_Key_Down *ev;
-   Instance *inst;
-   Evas_Object *o_fm;
-   const char *p;
 
    ev = event_info;
-   if (strcmp(ev->keyname, "Return")) return;
-
-   inst = data;
-   if ((!inst) || (!inst->tbar)) return;
-   p = e_widget_entry_text_get(inst->o_entry);
-   o_fm = e_toolbar_fm2_get(inst->tbar);
-   if (!o_fm) return;
-   e_fm2_path_set(o_fm, p, "/");
+   if (!strcmp(ev->keyname, "Return")) 
+      _cb_go_click(data, obj, NULL, NULL);
 }
 
 static void 
@@ -334,4 +331,31 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
    e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+}
+
+static void             
+_cb_clear_click(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+   
+   inst = data;
+   if (!inst) return;
+
+   e_widget_entry_clear(inst->o_entry);
+}
+
+static void
+_cb_go_click(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+   Evas_Object *o_fm;
+   const char *p;
+   
+   inst = data;
+   if (!inst || !inst->tbar) return;
+   o_fm = e_toolbar_fm2_get(inst->tbar);
+   if (!o_fm) return;
+   
+   p = e_widget_entry_text_get(inst->o_entry);
+   e_fm2_path_set(o_fm, p, "/");
 }
