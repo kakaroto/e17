@@ -448,8 +448,6 @@ MagwinDestroy(MagWindow * mw)
 #if USE_TIMER
    TIMER_DEL(mw->timer);
 #endif
-   EventCallbackUnregister(EwinGetClientWin(mw->ewin), 0, MagwinEvent, mw);
-   EDestroyWindow(EwinGetClientWin(mw->ewin));
    Efree(mw);
 }
 
