@@ -13,7 +13,7 @@ void popup_create(Instance* inst)
     Evas *evas;
     Evas_Coord mw, mh;
 
-    inst->popup = e_gadcon_popup_new(inst->gcc, NULL /*popup_cb_resize*/ );
+    inst->popup = e_gadcon_popup_new(inst->gcc);/*, NULL popup_cb_resize );*/
     evas = inst->popup->win->evas;
 
     edje_freeze();

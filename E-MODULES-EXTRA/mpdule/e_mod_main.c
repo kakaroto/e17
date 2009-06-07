@@ -76,7 +76,6 @@ static void _mpdule_disconnect (Instance * inst);
 static void _mpdule_update_song (Instance * inst);
 static int  _mpdule_update_song_cb (void *data);
 static void _mpdule_popup_destroy (Instance * inst);
-static void _mpdule_popup_resize (Evas_Object * obj, int *w, int *h);
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -107,7 +106,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->gcc = gcc;
   inst->mpdule = o;
 
-  inst->popup = e_gadcon_popup_new (inst->gcc, _mpdule_popup_resize);
+  inst->popup = e_gadcon_popup_new (inst->gcc);
 
   evas = inst->popup->win->evas;
   o_popup = edje_object_add (evas);
@@ -777,17 +776,4 @@ _mpdule_popup_destroy (Instance * inst)
   if (!inst->popup)
     return;
   e_object_del (E_OBJECT (inst->popup));
-}
-
-static void
-_mpdule_popup_resize (Evas_Object * obj, int *w, int *h)
-{
-  int x, y;
-  if (!(*w))
-    *w = 0;
-  if (!(*h))
-    *h = 0;
-  edje_object_size_min_calc (obj, &x, &y);
-  *w = x;
-  *h = y;
 }

@@ -57,8 +57,6 @@ static void _mail_free (Mail * mail);
 static int _mail_cb_check (void *data);
 static int _mail_cb_exe_exit (void *data, int type, void *event);
 
-static void _mail_popup_resize (Evas_Object *obj, int *w, int *h);
-
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 static E_Config_DD *conf_box_edd = NULL;
@@ -300,7 +298,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
   if (inst->popup) return;
   if ((!inst->ci->show_popup) || (!inst->ci->boxes)) return;
 
-  inst->popup = e_gadcon_popup_new (inst->gcc, _mail_popup_resize);
+  inst->popup = e_gadcon_popup_new (inst->gcc);
   snprintf (path, sizeof (path), "%s/mail.edj",
 	    e_module_dir_get (mail_config->module));
   list = e_ilist_add (inst->popup->win->evas);
@@ -317,6 +315,10 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
     }
   if (e_ilist_count (list))
     {
+       Evas_Coord mw, mh;
+
+       e_ilist_min_size_get (list, &mw, &mh);
+       evas_object_size_hint_min_set(list, mw, mh);
        e_gadcon_popup_content_set (inst->popup, list);
        e_gadcon_popup_show (inst->popup);
     }
@@ -834,14 +836,3 @@ _mail_menu_cb_exec (void *data, E_Menu * m, E_Menu_Item * mi)
     ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, cb);
   cb->exe = ecore_exe_run (cb->exec, cb);
 }
-
-static void
-_mail_popup_resize (Evas_Object *obj, int *w, int *h)
-{
-   Evas_Coord mw, mh;
-
-   e_ilist_min_size_get (obj, &mw, &mh);
-   *w = mw;
-   *h = mh;
-}
-

@@ -34,7 +34,6 @@ static Config_Item *_config_item_get(const char *id);
 static int _update_date(void *data);
 static void _update_calendar_sheet(Instance *inst);
 static void _calendar_popup_content_create(Instance *inst);
-static void _calendar_popup_resize(Evas_Object *obj, int *w, int *h);
 static void _calendar_popup_destroy(Instance *inst);
 static void _cb_action(E_Object *obj, const char *params);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -280,6 +279,7 @@ _calendar_popup_content_create(Instance *inst)
 {
    Evas_Object *o, *of, *ob;
    Evas *evas;
+   Evas_Coord mw, mh;
    char buf[32];
    time_t current_time, start_time;
    struct tm *local_time, *local_time2;
@@ -287,7 +287,7 @@ _calendar_popup_content_create(Instance *inst)
    int startwd, today, month, year, maxdays;
 
    if (inst->popup) _calendar_popup_destroy(inst);
-   inst->popup = e_gadcon_popup_new(inst->gcc, _calendar_popup_resize);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
 
    current_time = time (NULL);
    local_time = localtime (&current_time);
@@ -366,20 +366,13 @@ _calendar_popup_content_create(Instance *inst)
      }
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   e_gadcon_popup_content_set(inst->popup, o);
-}
+   e_widget_min_size_get(o, &mw, &mh);
+   if ((double) mw / mh > GOLDEN_RATIO)
+     mh = mw / GOLDEN_RATIO;
+   else if ((double) mw / mh < GOLDEN_RATIO - (double) 1)
+     mw = mh * (GOLDEN_RATIO - (double) 1);
 
-static void
-_calendar_popup_resize(Evas_Object *obj, int *w, int *h)
-{
-   if (!(*w)) *w = 0;
-   if (!(*h)) *h = 0;
-   /* Apply the golden ratio to the popup */
-   if ((double) *w / *h > GOLDEN_RATIO) {
-	*h = *w / GOLDEN_RATIO;
-   } else if ((double) *w / *h < GOLDEN_RATIO - (double) 1) {
-	*w = *h * (GOLDEN_RATIO - (double) 1);
-   }
+   e_gadcon_popup_content_set(inst->popup, o);
 }
 
 static void

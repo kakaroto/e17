@@ -193,7 +193,7 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    if (inst->popup != NULL) return;
    if (!inst->ci->show_popup) return;
    
-   inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(net_cfg->mod));
    
    bg = edje_object_add(inst->popup->win->evas);

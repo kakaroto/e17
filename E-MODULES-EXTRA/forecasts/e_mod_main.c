@@ -132,7 +132,6 @@ static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Evas_Object * _forecasts_popup_icon_create(Evas *evas, int code);
 static void _forecasts_popup_destroy(Instance *inst);
-static void _forecasts_popup_resize(Evas_Object *obj, int *w, int *h);
 
 /* Gadcon Functions */
 static E_Gadcon_Client *
@@ -1004,11 +1003,11 @@ _forecasts_popup_content_create(Instance *inst)
    Evas *evas;
    char buf[4096];
    int row = 0, i;
-   int w, h;
+   Evas_Coord w, h, mw, mh;
 
    if (!inst->location) return;
 
-   inst->popup = e_gadcon_popup_new(inst->gcc, _forecasts_popup_resize);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
@@ -1111,6 +1110,13 @@ _forecasts_popup_content_create(Instance *inst)
      }
 
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
+   e_widget_min_size_get(o, &mw, &mh);
+   if ((double) mw / mh > GOLDEN_RATIO)
+     mh = mw / GOLDEN_RATIO;
+   else if ((double) mw / mh < GOLDEN_RATIO - (double) 1)
+     mw = mh * (GOLDEN_RATIO - (double) 1);
+   e_widget_min_size_set(o, mw, mh);
+
    e_gadcon_popup_content_set(inst->popup, o);
 }
 
@@ -1182,17 +1188,4 @@ _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (inst->popup->pinned) return;
    e_gadcon_popup_hide(inst->popup);
-}
-
-static void
-_forecasts_popup_resize(Evas_Object *obj, int *w, int *h)
-{
-   if (!(*w)) *w = 0;
-   if (!(*h)) *h = 0;
-   /* Apply the golden ratio to the popup */
-   if ((double) *w / *h > GOLDEN_RATIO) {
-	*h = *w / GOLDEN_RATIO;
-   } else if ((double) *w / *h < GOLDEN_RATIO - (double) 1) {
-	*w = *h * (GOLDEN_RATIO - (double) 1);
-   }
 }

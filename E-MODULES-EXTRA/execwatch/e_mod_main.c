@@ -43,7 +43,6 @@ static void _execwatch_icon(Instance *inst, char *icon);
 static int  _execwatch_status_cmd_exec(void *data);
 static int  _execwatch_status_cmd_exit(void *data, int type, void *event);
 static void _execwatch_popup_content_create(Instance *inst);
-static void _execwatch_popup_resize(Evas_Object *obj, int *w, int *h);
 static void _execwatch_popup_destroy(Instance *inst);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -353,6 +352,7 @@ _execwatch_popup_content_create(Instance *inst)
    Evas_Object *o, *of, *ob;
    Evas *evas;
    Ecore_Exe_Event_Data_Line *lines;
+   Evas_Coord mw, mh;
    time_t current_time;
    struct tm *local_time;
    char buf[64];
@@ -385,7 +385,7 @@ _execwatch_popup_content_create(Instance *inst)
      }
 
    if (inst->popup) _execwatch_popup_destroy(inst);
-   inst->popup = e_gadcon_popup_new(inst->gcc, _execwatch_popup_resize);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
 
    current_time = time (NULL);
    local_time = localtime (&current_time);
@@ -401,19 +401,15 @@ _execwatch_popup_content_create(Instance *inst)
    e_widget_min_size_set(ob, 240, 120);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   e_gadcon_popup_content_set(inst->popup, o);
-}
 
-static void
-_execwatch_popup_resize(Evas_Object *obj, int *w, int *h)
-{
-   if (!(*w)) *w = 0;
-   if (!(*h)) *h = 0;
-   /* Apply the golden ratio to the popup */
-   if ((double) *w / *h > GOLDEN_RATIO)
-     *h = *w / GOLDEN_RATIO;
-   else if ((double) *w / *h < GOLDEN_RATIO - (double) 1)
-     *w = *h * (GOLDEN_RATIO - (double) 1);
+   e_widget_min_size_get(o, &mw, &mh);
+   if ((double) mw / mh > GOLDEN_RATIO)
+     mh = mw / GOLDEN_RATIO;
+   else if ((double) mw / mh < GOLDEN_RATIO - (double) 1)
+     mw = mh * (GOLDEN_RATIO - (double) 1);
+   e_widget_min_size_set(o, mw, mh);
+
+   e_gadcon_popup_content_set(inst->popup, o);
 }
 
 static void
