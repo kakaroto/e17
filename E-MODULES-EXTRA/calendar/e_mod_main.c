@@ -245,7 +245,7 @@ static void
 _update_calendar_sheet(Instance *inst)
 {
    Calendar *calendar;
-   char buf[4];
+   char buf[5];
    time_t current_time;
    struct tm *local_time;
    int old_popup_state=0, old_popup_pinned_state=0;
