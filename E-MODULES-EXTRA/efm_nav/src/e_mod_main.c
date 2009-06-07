@@ -23,6 +23,8 @@ static Evas_Object     *_gc_icon          (E_Gadcon_Client_Class *client_class, 
 static const char      *_gc_id_new        (E_Gadcon_Client_Class *client_class);
 static void             _cb_mouse_down    (void *data, Evas *e, 
 					   Evas_Object *obj, void *event_info);
+static void             _cb_key_down      (void *data, Evas *e,
+                                           Evas_Object *obj, void *event_info);
 static void             _cb_back_click    (void *data, Evas_Object *obj, 
 					   const char *emission, 
 					   const char *source);
@@ -58,6 +60,7 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
    Instance *inst = NULL;
+   Evas_Object *o_fm;
    char buf[4096];
 
    inst = E_NEW(Instance, 1);
@@ -135,6 +138,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    evas_object_event_callback_add(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
+   o_fm = e_toolbar_fm2_get(inst->tbar);
+   if (o_fm)
+     evas_object_event_callback_add(o_fm, EVAS_CALLBACK_KEY_DOWN,
+                                    _cb_key_down, inst);
 
    edje_object_signal_emit(inst->o_back, "e,state,disabled", "e");
    edje_object_message_signal_process(inst->o_back);
@@ -149,10 +156,14 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst = NULL;
+   Evas_Object *o_fm;
 
    inst = gcc->data;
    if (!inst) return;
    instances = eina_list_remove(instances, inst);
+   o_fm = e_toolbar_fm2_get(inst->tbar);
+   if (o_fm)
+      evas_object_event_callback_del(o_fm, EVAS_CALLBACK_KEY_DOWN, _cb_key_down);
    if (inst->history) ecore_list_destroy(inst->history);
    if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_back) evas_object_del(inst->o_back);
@@ -175,11 +186,11 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
      {
       case E_GADCON_ORIENT_TOP:
       case E_GADCON_ORIENT_BOTTOM:
-	e_gadcon_client_aspect_set(gcc, 16 * 3, 16);
+	e_gadcon_client_aspect_set(gcc, 16 * 4, 16);
 	break;
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_RIGHT:
-	e_gadcon_client_aspect_set(gcc, 16, 16 * 3);
+	e_gadcon_client_aspect_set(gcc, 16, 16 * 4);
 	break;
       default:
 	break;
@@ -250,6 +261,30 @@ e_modapi_save(E_Module *m)
 }
 
 /* local functions */
+static void
+_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   Evas_Event_Key_Down *ev;
+
+   inst = data;
+   ev = event_info;
+   if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
+     {
+        if (!strcmp(ev->key, "Left"))
+           _cb_back_click(inst, obj, "e,action,click", "e");
+        else if (!strcmp(ev->key, "Right"))
+           _cb_forward_click(inst, obj, "e,action,click", "e");
+        else if (!strcmp(ev->key, "Up"))
+           _cb_up_click(inst, obj, "e,action,click", "e");
+     }
+   else if (evas_key_modifier_is_set(ev->modifiers, "Control"))
+     {
+        if (!strcmp(ev->key, "r"))
+           _cb_refresh_click(inst, obj, "e,action,click", "e");
+     }
+}
+
 static void 
 _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info) 
 {
