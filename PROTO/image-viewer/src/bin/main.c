@@ -78,10 +78,8 @@ struct _IV
 	Eina_Bool fit_changed : 1;
 	Eina_Bool slideshow : 1;
 #ifdef HAVE_ETHUMB
-	Eina_Bool add_previews : 1;
 	Eina_Bool hide_previews : 1;
 	Eina_Bool previews_visible : 1;
-	Eina_Bool first_preview : 1;
 #endif
    } flags;
 
@@ -93,9 +91,12 @@ struct _IV
 #ifdef HAVE_ETHUMB
    Eina_List		*thumb_path;
    Eina_List		*preview_files;
+   Eina_List		*insert_before;
    Eina_Hash		*preview_items;
    Ethumb_Client        *ethumb_client;
-   int			 connection_tries;
+
+   int			 first_preview;
+   int			 connection_retry;
 
    Elm_Genlist_Item_Class *itc;
 #endif
@@ -573,14 +574,10 @@ thumb_remove(IV *iv, const char *path)
 static void
 thumb_queue_process(IV *iv)
 {
-   Eina_List *l;
    const char *file;
 
-   EINA_LIST_FOREACH(iv->preview_files, l, file)
+   EINA_LIST_FREE(iv->preview_files, file)
      {
-	if (l->next)
-	  iv->preview_files = l->next;
-
 	if (!ethumb_client_file_set(iv->ethumb_client, file, NULL))
 	  continue;
 
@@ -609,8 +606,6 @@ on_thumb_generate(long id, const char *file, const char *key, Eina_Bool success,
    iv->thumb_path = eina_list_append(iv->thumb_path, info);
    if (!iv->idler)
      iv->idler = ecore_idler_add(on_idler, iv);
-
-   iv->flags.add_previews = (iv->preview_files->next) ? EINA_TRUE : EINA_FALSE;
 }
 
 static void
@@ -620,7 +615,7 @@ on_thumb_connect(Ethumb_Client *e, Eina_Bool success, void *data)
 
    if (!success)
      {
-	iv->connection_tries--;
+	iv->connection_retry--;
 	iv->ethumb_client = NULL;
 	ERR("Error connecting to ethumbd, thumbnails will not be available!\n");
 	return;
@@ -667,9 +662,6 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
    Eina_List *head, *l, *l_next;
    const char *p2, *cur_path;
    char *dir = NULL;
-#ifdef HAVE_ETHUMB
-   IV_Thumb_Info *info;
-#endif
 
    cur_path = iv->files->data;
    switch(event)
@@ -678,7 +670,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	 head = rewind_list(iv->files);
 	 dir = ecore_file_dir_get(path);
 
-	 EINA_LIST_FOREACH_SAFE(head, l, l_next, p2)
+	 EINA_LIST_FOREACH(head, l, p2)
 	   {
 	      if (strncmp(dir, p2, strlen(dir)))
 		continue;
@@ -688,27 +680,23 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   iv->files = eina_list_prepend_relative_list(
 		       iv->files, eina_stringshare_add(path), l);
 #ifdef HAVE_ETHUMB
-		   info = eina_hash_find(iv->preview_items, l->data);
-		   elm_genlist_item_insert_before(
-		       iv->gui.preview_genlist, iv->itc, info, info->item,
-		       ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
+		   iv->insert_before = eina_list_append(
+		       iv->insert_before, eina_stringshare_add(l->data));
+		   iv->insert_before = eina_list_append(
+		       iv->insert_before, eina_stringshare_add(path));
+		   iv->preview_files = eina_list_append(iv->preview_files, path);
 #endif
 		   iv->flags.current = EINA_TRUE;
 		   break;
 		}
-	      else if ((strcmp(path, p2) > 0) && (!l_next || (strcmp(path, l_next->data) < 0)))
-		{
-		   iv->files = eina_list_append_relative_list(
-		       iv->files, eina_stringshare_add(path), l);
+	   }
+	 if (!iv->flags.current)
+	   {
+	      iv->files = eina_list_append(iv->files,
+					   eina_stringshare_add(path));
 #ifdef HAVE_ETHUMB
-		   info = eina_hash_find(iv->preview_items, l->data);
-		   elm_genlist_item_insert_after(
-		       iv->gui.preview_genlist, iv->itc, info, info->item,
-		       ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
+	      iv->preview_files = eina_list_append(iv->preview_files, path);
 #endif
-		   iv->flags.current = EINA_TRUE;
-		   break;
-		}
 	   }
 
 	 free(dir);
@@ -975,9 +963,6 @@ on_idler(void *data)
 
 	if (!renew && iv->dirs)
 	  renew = EINA_TRUE;
-#ifdef HAVE_ETHUMB
-	iv->flags.add_previews = EINA_TRUE;
-#endif
      }
 
    /* Display the first image */
@@ -1010,14 +995,11 @@ on_idler(void *data)
 	       }
 
 #ifdef HAVE_ETHUMB
-	     if (iv->flags.add_previews && iv->connection_tries)
-	       {
-		  if (!iv->preview_files)
-		    {
-		       iv->preview_files = rewind_list(iv->files);
-		       iv->flags.first_preview = EINA_TRUE;
-		    }
+	     if ((iv->first_preview-- == 2) && !iv->dirs)
+	       iv->preview_files = eina_list_clone(rewind_list(iv->files));
 
+	     if (iv->preview_files && iv->connection_retry)
+	       {
 		  if (iv->ethumb_client)
 		    thumb_queue_process(iv);
 		  else
@@ -1026,18 +1008,33 @@ on_idler(void *data)
 
 	     if (iv->thumb_path && iv->gui.preview_genlist)
 	       {
+		  Eina_List *l;
+		  IV_Thumb_Info *info2;
+
 		  EINA_LIST_FREE(iv->thumb_path, info)
 		    {
-		       info->item = elm_genlist_item_append(
-			   iv->gui.preview_genlist, iv->itc, info, NULL,
-			   ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
+		       if (iv->insert_before &&
+			   (l = eina_list_data_find_list(iv->insert_before, info->file)) &&
+			   (info2 = eina_hash_find(iv->preview_items, l->data)))
+			 {
+			    info->item = elm_genlist_item_insert_before(
+				iv->gui.preview_genlist, iv->itc, info, info2->item,
+				ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
+
+			    eina_stringshare_del(l->data);
+			    eina_stringshare_del(l->next->data);
+			    iv->insert_before = eina_list_remove_list(iv->insert_before, l->next);
+			    iv->insert_before = eina_list_remove_list(iv->insert_before, l);
+			 }
+		       else
+			 info->item = elm_genlist_item_append(
+			     iv->gui.preview_genlist, iv->itc, info, NULL,
+			     ELM_GENLIST_ITEM_NONE, on_thumb_sel, info);
 		       eina_hash_add(iv->preview_items, info->file, info);
 
-		       if (iv->flags.first_preview && !strcmp(info->file, iv->files->data))
-			 {
-			    elm_genlist_item_selected_set(info->item, EINA_TRUE);
-			    iv->flags.first_preview = EINA_FALSE;
-			 }
+		       if ((iv->first_preview-- == 1) &&
+			   !strcmp(info->file, iv->files->data))
+			 elm_genlist_item_selected_set(info->item, EINA_TRUE);
 		    }
 	       }
 
@@ -1691,10 +1688,9 @@ elm_main(int argc, char **argv)
 
 #ifdef HAVE_ETHUMB
    ethumb_client_init();
-   iv->connection_tries = 3;
+   iv->connection_retry = 3;
+   iv->first_preview = 2;
    iv->preview_items = eina_hash_string_superfast_new(NULL);
-   if (iv->files)
-     iv->flags.add_previews = EINA_TRUE;
 #endif
 
    iv->flags.fit_changed = EINA_TRUE;
