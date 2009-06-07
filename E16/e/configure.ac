@@ -16,8 +16,6 @@ if test "x$exec_prefix" = "xNONE"; then
   exec_prefix=$prefix
 fi
 
-AM_MAINTAINER_MODE
-
 AC_PROG_CC
 AM_PROG_CC_C_O
 
@@ -40,8 +38,6 @@ AC_PATH_X
 AC_PATH_XTRA
 
 AC_CHECK_HEADERS(alloca.h locale.h stdarg.h wctype.h)
-
-AC_TYPE_SIGNAL
 
 AC_C_BIGENDIAN
 AC_C_CONST
@@ -368,9 +364,8 @@ AC_DEFINE(ENABLE_THEME_TRANSPARENCY, 1, [Enable adjusting theme element pseudotr
 
 AC_SUBST(E_X_LIBS)
 
-AM_CONFIG_HEADER(config.h)
-
-AC_OUTPUT([
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 dox/Makefile
@@ -388,6 +383,7 @@ docs/Makefile
 po/Makefile.in
 e16.spec
 ])
+AC_OUTPUT
 
 if test "x$have_good_imlib2" != "xyes"; then
   echo "***************************************************************"
