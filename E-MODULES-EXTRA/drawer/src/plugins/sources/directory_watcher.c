@@ -243,23 +243,23 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 	  }
         else if (p->mime)
           {
-             char pcwd[4096];
-             Eina_List *files = NULL;
-
              desktop = e_exehist_mime_desktop_get(p->mime);
-             if (!desktop) return;
+             if (desktop)
+               {
+                  char pcwd[4096];
+                  Eina_List *files = NULL;
 
-	     getcwd(pcwd, sizeof(pcwd));
-	     chdir(inst->conf->dir);
+                  getcwd(pcwd, sizeof(pcwd));
+                  chdir(inst->conf->dir);
 
-             files = eina_list_append(files, si->data);
-             e_exec(zone, desktop, NULL, files, "drawer");
-             eina_list_free(files);
+                  files = eina_list_append(files, si->data);
+                  e_exec(zone, desktop, NULL, files, "drawer");
+                  eina_list_free(files);
 
-	     chdir(pcwd);
+                  chdir(pcwd);
+                  return;
+               }
           }
-
-	/* XXX: open the file with the default application */
 	return;
      }
 }

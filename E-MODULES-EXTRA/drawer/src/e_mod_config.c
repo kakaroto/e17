@@ -142,16 +142,13 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _conf_plugin_sel(void *data1, void *data2)
 {
-   E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
    Evas_Object *of, *ol, *packed, *otx, *oi;
    Drawer_Plugin_Type *pi;
    Evas *evas;
    Eina_List *l;
-   const char *comment = NULL;
    int i = 0, selnum = -1;
 
-   cfd = data1;
    cfdata = data2;
 
    of = cfdata->main_list;
@@ -180,11 +177,7 @@ _conf_plugin_sel(void *data1, void *data2)
      {
 	i++;
 	if (!(strcmp(cfdata->source, pi->name)))
-	  {
-	     selnum = i;
-	     if (pi->comment)
-	       comment = pi->comment;
-	  }
+          selnum = i;
 
 	/* XXX: plugin icon if one exists */
 	e_widget_ilist_append(oi, NULL, pi->title, NULL, pi, pi->name);
@@ -205,17 +198,13 @@ _conf_plugin_sel(void *data1, void *data2)
    e_widget_list_object_append(of, otx, 1, 1, 0.5);
    cfdata->views = drawer_plugins_list(DRAWER_VIEWS);
    e_widget_ilist_freeze(oi);
-   for (l = cfdata->views, i = 0, selnum = -1, comment = NULL; l; l = l->next)
+   for (l = cfdata->views, i = 0, selnum = -1; l; l = l->next)
      {
 	Drawer_Plugin_Type *pi = l->data;
 
 	i++;
 	if (!(strcmp(cfdata->view, pi->name)))
-	  {
-	     selnum = i;
-	     if (pi->comment)
-	       comment = pi->comment;
-	  }
+          selnum = i;
 
 	/* XXX: plugin icon if one exists */
 	e_widget_ilist_append(oi, NULL, pi->title, NULL, pi, pi->name);
@@ -277,13 +266,11 @@ _views_list_cb_change(void *data, Evas_Object *obj)
 static void
 _conf_plugin_set(void *data1, void *data2)
 {
-   E_Config_Dialog *cfd;
    E_Config_Dialog_Data *cfdata;
    Evas_Object *of, *ol, *packed;
    Eina_List *l;
    Evas *evas;
 
-   cfd = data1;
    cfdata = data2;
 
    of = cfdata->main_list;

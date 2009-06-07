@@ -449,7 +449,7 @@ drawer_plugin_config_button_get(Config_Item *ci, Evas *evas, Drawer_Plugin_Categ
    else if (cat == DRAWER_COMPOSITES)
      p = inst->composite;
 
-   if (p->func.config_get)
+   if (p && p->func.config_get)
      return p->func.config_get(p, evas);
    else
      return e_widget_label_add(evas, D_("The plugin is not configurable"));
@@ -605,7 +605,7 @@ _drawer_shelf_update(Instance *inst, Drawer_Source_Item *si)
 static void
 _drawer_popup_create(Instance *inst)
 {
-   inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
+   inst->popup = e_gadcon_popup_new(inst->gcc);
    if (!(e_theme_edje_object_set(inst->popup->o_bg,
 	       "base/theme/modules/drawer", "modules/drawer/container")))
      {

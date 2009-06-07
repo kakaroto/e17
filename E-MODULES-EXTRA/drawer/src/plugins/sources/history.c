@@ -203,7 +203,6 @@ drawer_source_list(Drawer_Source *s)
 EAPI void
 drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
 {
-   Instance *inst = NULL;
    Efreet_Desktop *desktop;
 
    switch(si->data_type)
@@ -230,8 +229,6 @@ drawer_source_activate(Drawer_Source *s, Drawer_Source_Item *si, E_Zone *zone)
       default:
         break;
      }
-
-   inst = DRAWER_PLUGIN(s)->data;
 }
 
 EAPI void
@@ -370,7 +367,6 @@ _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void 
    Instance *inst = data;
    Drawer_Event_Source_Update *ev;
 
-   inst = data;
    ev = E_NEW(Drawer_Event_Source_Update, 1);
    ev->source = inst->source;
    ev->id = eina_stringshare_add(inst->conf->id);

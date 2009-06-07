@@ -466,6 +466,11 @@ _list_containers_create(Instance *inst)
 	 e_box_align_set(inst->o_box, 0, 0.5);
 	 group = eina_stringshare_add("modules/drawer/list/horizontal");
 	 break;
+      default:
+	 e_box_orientation_set(inst->o_box, 0);
+	 e_box_align_set(inst->o_box, 0.5, 0.5);
+	 group = eina_stringshare_add("modules/drawer/list/vertical");
+	 break;
      }
 
    if (!e_theme_edje_object_set(inst->o_con, "base/theme/modules/drawer", group))
