@@ -937,7 +937,11 @@ handleAction(EWin * ewin, ActionType * action)
       ewin->state.in_action = 1;
    EFunc(ewin, action->params);
    if (ewin)
-      ewin->state.in_action = 0;
+     {
+	if (!EwinFindByPtr(ewin))
+	   return;		/* ewin has been destroyed */
+	ewin->state.in_action = 0;
+     }
 
    /* Did we just hose ourselves? if so, we'd best not stick around here */
    if (mode_action_destroy)
