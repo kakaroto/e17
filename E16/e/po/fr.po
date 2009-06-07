@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16-0.99.99.901\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 09:50+0200\n"
+"POT-Creation-Date: 2009-06-07 21:56+0200\n"
 "PO-Revision-Date: 2009-05-15 16:33+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -625,7 +625,7 @@ msgstr "Gauche"
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2380 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:582
 msgid "Desks"
 msgstr "Bureaux multiples"
 
@@ -987,7 +987,7 @@ msgstr " Réglages généraux: "
 msgid "Swap Window Locations"
 msgstr "Mettre en cache la position des fenêtres"
 
-#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 msgid "Groups"
 msgstr "Groupes"
 
@@ -1218,40 +1218,40 @@ msgstr ""
 "Veuillez rectifier cette erreur et vous assurer qu'il est\n"
 "correctement installé.\n"
 
-#: src/magwin.c:462
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr "Loupe"
 
-#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Thèmes"
 
-#: src/menus-misc.c:469
+#: src/menus-misc.c:480
 msgid "Border"
 msgstr "Bordures"
 
-#: src/menus-misc.c:531
+#: src/menus-misc.c:542
 msgid "Window List"
 msgstr "Liste des fenêtres"
 
-#: src/menus-misc.c:553
+#: src/menus-misc.c:564
 msgid "Go to this Desktop"
 msgstr "Aller vers ce Bureau"
 
-#: src/menus-misc.c:557 src/menus-misc.c:653
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus-misc.c:600
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr "Afficher/Masquer ce groupe"
 
-#: src/menus-misc.c:605
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr "Icônifier ce groupe"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"

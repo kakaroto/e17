@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 09:50+0200\n"
+"POT-Creation-Date: 2009-06-07 21:56+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -638,7 +638,7 @@ msgstr "Izquierdo"
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2380 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
 msgstr "Escritorio"
@@ -1003,7 +1003,7 @@ msgstr "Configuraciones Globales: "
 msgid "Swap Window Locations"
 msgstr "Solapar posiciones de Ventanas"
 
-#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
@@ -1246,42 +1246,42 @@ msgstr ""
 "Por favor, rectifique esta situación y asegúrese de que DOX\n"
 "se haya instalado correctamente.\n"
 
-#: src/magwin.c:462
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 #, fuzzy
 msgid "Themes"
 msgstr "Tema defectuoso"
 
-#: src/menus-misc.c:469
+#: src/menus-misc.c:480
 msgid "Border"
 msgstr "Borde"
 
-#: src/menus-misc.c:531
+#: src/menus-misc.c:542
 #, fuzzy
 msgid "Window List"
 msgstr "Saltar Lista de Ventanas"
 
-#: src/menus-misc.c:553
+#: src/menus-misc.c:564
 msgid "Go to this Desktop"
 msgstr "Ir a este Escritorio"
 
-#: src/menus-misc.c:557 src/menus-misc.c:653
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr "Escritorio %i"
 
-#: src/menus-misc.c:600
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr "Mostrar/Ocultar este grupo"
 
-#: src/menus-misc.c:605
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr "Iconizar este grupo"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr "Grupo %i"

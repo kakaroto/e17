@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16 0.99.99.003\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 09:50+0200\n"
+"POT-Creation-Date: 2009-06-07 21:56+0200\n"
 "PO-Revision-Date: 2009-05-16 20:50+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -543,7 +543,7 @@ msgstr "Maldekstre"
 msgid "Right"
 msgstr "Dekstre"
 
-#: src/desktops.c:2380 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:582
 msgid "Desks"
 msgstr "Labortabloj"
 
@@ -865,7 +865,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 msgid "Groups"
 msgstr "Grupoj"
 
@@ -1039,40 +1039,40 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:462
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "Etosoj"
 
-#: src/menus-misc.c:469
+#: src/menus-misc.c:480
 msgid "Border"
 msgstr "Rando"
 
-#: src/menus-misc.c:531
+#: src/menus-misc.c:542
 msgid "Window List"
 msgstr "Fenestrolisto"
 
-#: src/menus-misc.c:553
+#: src/menus-misc.c:564
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:557 src/menus-misc.c:653
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr ""
 
-#: src/menus-misc.c:600
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus-misc.c:605
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr ""

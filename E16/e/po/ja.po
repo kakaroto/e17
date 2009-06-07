@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 09:50+0200\n"
+"POT-Creation-Date: 2009-06-07 21:56+0200\n"
 "PO-Revision-Date: 2009-05-13 19:45+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -636,7 +636,7 @@ msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2380 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:582
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
@@ -1002,7 +1002,7 @@ msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 msgid "Groups"
 msgstr "グループ"
 
@@ -1240,44 +1240,44 @@ msgstr ""
 "致命的なエラーです。Enlightenment の実行を中止します。\n"
 "この状況を修正し、正しくインストールされていることを確認して下さい。\n"
 
-#: src/magwin.c:462
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr "拡大中"
 
 #
-#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 msgid "Themes"
 msgstr "テーマ"
 
 #
-#: src/menus-misc.c:469
+#: src/menus-misc.c:480
 msgid "Border"
 msgstr "ボーダー"
 
 #
-#: src/menus-misc.c:531
+#: src/menus-misc.c:542
 msgid "Window List"
 msgstr "ウィンドウリスト"
 
 #
-#: src/menus-misc.c:553
+#: src/menus-misc.c:564
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus-misc.c:557 src/menus-misc.c:653
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus-misc.c:600
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr "このグループを表示する／隠す"
 
-#: src/menus-misc.c:605
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr "このグループをアイコン化する"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"

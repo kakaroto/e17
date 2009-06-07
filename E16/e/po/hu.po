@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 09:50+0200\n"
+"POT-Creation-Date: 2009-06-07 21:56+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -626,7 +626,7 @@ msgstr "Bal"
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2380 src/menus-misc.c:571
+#: src/desktops.c:2380 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
@@ -993,7 +993,7 @@ msgstr " Globális beállítások: "
 msgid "Swap Window Locations"
 msgstr "Ablak helyének cseréje"
 
-#: src/groups.c:1018 src/menus-misc.c:631 config/strings.c:140
+#: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 #, fuzzy
 msgid "Groups"
 msgstr "%i. csoport"
@@ -1186,44 +1186,44 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:462
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:443 config/strings.c:93 config/strings.c:115
+#: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 #, fuzzy
 msgid "Themes"
 msgstr "Rossz téma"
 
-#: src/menus-misc.c:469
+#: src/menus-misc.c:480
 #, fuzzy
 msgid "Border"
 msgstr "Kerettípus"
 
-#: src/menus-misc.c:531
+#: src/menus-misc.c:542
 #, fuzzy
 msgid "Window List"
 msgstr "Ablaklista-kihagyás"
 
-#: src/menus-misc.c:553
+#: src/menus-misc.c:564
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus-misc.c:557 src/menus-misc.c:653
+#: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus-misc.c:600
+#: src/menus-misc.c:611
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus-misc.c:605
+#: src/menus-misc.c:616
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus-misc.c:616
+#: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
