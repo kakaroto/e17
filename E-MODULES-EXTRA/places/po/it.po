@@ -6,33 +6,65 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-07 17:38+0200\n"
-"PO-Revision-Date: 2009-02-02 19:26+0100\n"
+"POT-Creation-Date: 2009-06-07 12:39+0200\n"
+"PO-Revision-Date: 2009-06-07 12:49+0200\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:50
+#: src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Configurazione di Places"
 
-#: src/e_mod_config.c:116
+#: src/e_mod_config.c:118
 msgid "General"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_config.c:119
+#: src/e_mod_config.c:121
+msgid "Show in main main"
+msgstr "Mostra nel menù principale"
+
+#: src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Monta i dispositivi collegati"
 
-#: src/e_mod_config.c:123
+#: src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Apri i dispositivi collegati"
 
-#: src/e_mod_config.c:127
+#: src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Usa filemanager personalizzato"
+
+#: src/e_mod_config.c:146
+msgid "Show in menu"
+msgstr "Mostra nel menù"
+
+#: src/e_mod_config.c:149 src/e_mod_places.c:399
+msgid "Home"
+msgstr "Home"
+
+#: src/e_mod_config.c:152 src/e_mod_places.c:408
+msgid "Desktop"
+msgstr "Desktop"
+
+#: src/e_mod_config.c:155 src/e_mod_places.c:418
+msgid "Trash"
+msgstr "Cestino"
+
+#: src/e_mod_config.c:158 src/e_mod_places.c:233 src/e_mod_places.c:427
+msgid "Filesystem"
+msgstr "Filesystem"
+
+#: src/e_mod_config.c:161 src/e_mod_places.c:436
+msgid "Temp"
+msgstr "Temporanei"
+
+#: src/e_mod_config.c:164
+msgid "Favorites"
+msgstr "Preferiti"
 
 #: src/e_mod_main.c:75
 msgid "Files"
@@ -42,33 +74,13 @@ msgstr "File"
 msgid "Places"
 msgstr "Risorse"
 
-#: src/e_mod_main.c:439
+#: src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: src/e_mod_places.c:233 src/e_mod_places.c:427
-msgid "Filesystem"
-msgstr "Filesystem"
 
 #: src/e_mod_places.c:238
 msgid "No Name"
 msgstr "Senza nome"
-
-#: src/e_mod_places.c:399
-msgid "Home"
-msgstr "Home"
-
-#: src/e_mod_places.c:408
-msgid "Desktop"
-msgstr "Desktop"
-
-#: src/e_mod_places.c:418
-msgid "Trash"
-msgstr "Cestino"
-
-#: src/e_mod_places.c:436
-msgid "Temp"
-msgstr "Temporanei"
 
 #: src/e_mod_places.c:692
 msgid "free of"
