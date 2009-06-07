@@ -96,6 +96,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, auto_mount, UCHAR);
    E_CONFIG_VAL(D, T, auto_open, UCHAR);
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
+   E_CONFIG_VAL(D, T, show_menu, UCHAR);
    E_CONFIG_VAL(D, T, show_home, UCHAR);
    E_CONFIG_VAL(D, T, show_desk, UCHAR);
    E_CONFIG_VAL(D, T, show_trash, UCHAR);
@@ -151,11 +152,14 @@ e_modapi_init(E_Module *m)
    places_conf->module = m;
    e_gadcon_provider_register(&_gc_class);
    places_init();
-   
-   //~ E_Int_Menu_Augmentation *maug;
-   //~ maug = e_int_menus_menu_augmentation_add("main/1",
-                                            //~ places_augmentation,
-                                            //~ NULL, NULL, NULL);
+
+   if (places_conf->show_menu)
+     {
+       E_Int_Menu_Augmentation *maug;
+       maug = e_int_menus_menu_augmentation_add("main/1",
+						places_augmentation,
+						NULL, NULL, NULL);
+     }
 
    return m;
 }
