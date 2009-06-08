@@ -588,7 +588,7 @@ thumb_queue_process(IV *iv)
 	     ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
 	     on_thumb_generate(0, file, NULL, thumb_path, NULL, EINA_TRUE, iv);
 	  }
-	else if (!ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv))
+	else if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv) == -1)
 	  continue;
      }
 }
