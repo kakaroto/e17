@@ -198,7 +198,8 @@ ThemeExtract(const char *path)
    char                s[FILEPATH_LEN_MAX];
    char                th[FILEPATH_LEN_MAX];
    FILE               *f;
-   unsigned char       buf[320];
+   unsigned char       buf[262];
+   size_t              ret;
    char               *name;
 
    /* its a directory - just use it "as is" */
@@ -215,7 +216,8 @@ ThemeExtract(const char *path)
    f = fopen(path, "r");
    if (!f)
       return NULL;
-   fread(buf, 1, 320, f);
+   ret = fread(buf, 1, sizeof(buf), f);
+   memset(buf + ret, 0, sizeof(buf) - ret);
    fclose(f);
 
    name = fileof(path);
