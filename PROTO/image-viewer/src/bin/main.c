@@ -89,7 +89,7 @@ struct _IV
    Ecore_Timer          *config_save;
 
 #ifdef HAVE_ETHUMB
-   Eina_List		*thumb_path;
+   Eina_List		*thumb_info;
    Eina_List		*preview_files;
    Eina_List		*insert_before;
    Eina_Hash		*preview_items;
@@ -127,7 +127,7 @@ static int  on_idler(void *data);
 static void slideshow_on(IV *iv);
 static void slideshow_off(IV *iv);
 #ifdef HAVE_ETHUMB
-static void on_thumb_generate(long id, const char *file, const char *key, Eina_Bool success, void *data);
+static void on_thumb_generate(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data);
 static void on_thumb_die(Ethumb_Client *client, void *data);
 #endif
 
@@ -582,28 +582,31 @@ thumb_queue_process(IV *iv)
 	  continue;
 
 	if (ethumb_client_thumb_exists(iv->ethumb_client))
-	  on_thumb_generate(0, file, NULL, EINA_TRUE, iv);
+	  {
+	     const char *thumb_path;
+
+	     ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
+	     on_thumb_generate(0, file, NULL, thumb_path, NULL, EINA_TRUE, iv);
+	  }
 	else if (!ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv))
 	  continue;
      }
 }
 
 static void
-on_thumb_generate(long id, const char *file, const char *key, Eina_Bool success, void *data)
+on_thumb_generate(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data)
 {
    IV *iv = data;
    IV_Thumb_Info *info;
-   const char *thumb_path;
 
    if (!success) return;
 
    info = calloc(1, sizeof(IV_Thumb_Info));
-   ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
    info->thumb_path = eina_stringshare_add(thumb_path);
    info->file = eina_stringshare_add(file);
    info->iv = iv;
 
-   iv->thumb_path = eina_list_append(iv->thumb_path, info);
+   iv->thumb_info = eina_list_append(iv->thumb_info, info);
    if (!iv->idler)
      iv->idler = ecore_idler_add(on_idler, iv);
 }
@@ -1006,12 +1009,12 @@ on_idler(void *data)
 		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
 	       }
 
-	     if (iv->thumb_path && iv->gui.preview_genlist)
+	     if (iv->thumb_info && iv->gui.preview_genlist)
 	       {
 		  Eina_List *l;
 		  IV_Thumb_Info *info2;
 
-		  EINA_LIST_FREE(iv->thumb_path, info)
+		  EINA_LIST_FREE(iv->thumb_info, info)
 		    {
 		       if (iv->insert_before &&
 			   (l = eina_list_data_find_list(iv->insert_before, info->file)) &&
