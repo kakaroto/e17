@@ -122,7 +122,30 @@ e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_R
 
 
 EAPI DBusPendingCall *
-e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, const void *data)
+e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, unsigned int flags, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
-   return _dbus_call__str(conn, "StartServiceByName", name, cb_return, data);
+   const char method_name[] = "StartServiceByName";
+   DBusMessage *msg;
+   DBusPendingCall *ret;
+
+   if (!conn)
+     {
+	fprintf(stderr, "ERROR: no connection for call of %s\n", method_name);
+	return NULL;
+     }
+
+   msg = _dbus_message_method_call(method_name);
+   if (!msg)
+     return NULL;
+   dbus_message_append_args(msg,
+			    DBUS_TYPE_STRING, &name,
+			    DBUS_TYPE_UINT32, &flags,
+			    DBUS_TYPE_INVALID);
+   ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);
+   dbus_message_unref(msg);
+
+   if (!ret)
+     fprintf(stderr, "ERROR: failed to call %s(\"%s\")\n", method_name, name);
+
+   return ret;
 }

@@ -130,7 +130,7 @@ extern "C" {
    EAPI DBusPendingCall *e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name,
 					       E_DBus_Method_Return_Cb cb_return,
 					       const void *data);
-   EAPI DBusPendingCall *e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name,
+   EAPI DBusPendingCall *e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, unsigned int flags,
 						      E_DBus_Method_Return_Cb cb_return,
 						      const void *data);
 
