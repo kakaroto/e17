@@ -377,11 +377,11 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
    if (c->proxy.host)
      {
-        evas_stringshare_del(c->proxy.host);
+        eina_stringshare_del(c->proxy.host);
         c->proxy.host = NULL;
      }
    if (cfdata->proxy.host && cfdata->proxy.host[0])
-     c->proxy.host = evas_stringshare_add(cfdata->proxy.host);
+     c->proxy.host = eina_stringshare_add(cfdata->proxy.host);
    if (cfdata->proxy.port && cfdata->proxy.port[0])
      sscanf(cfdata->proxy.port, "%d", &c->proxy.port);
 
@@ -412,8 +412,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                cfdata->viewer.vcontent.font_color->r,
                cfdata->viewer.vcontent.font_color->g,
                cfdata->viewer.vcontent.font_color->b);
-      evas_stringshare_del(news->config->viewer.vcontent.font_color);
-      news->config->viewer.vcontent.font_color = evas_stringshare_add(buf);
+      eina_stringshare_del(news->config->viewer.vcontent.font_color);
+      news->config->viewer.vcontent.font_color = eina_stringshare_add(buf);
 
       c->viewer.vcontent.font_shadow = cfdata->viewer.vcontent.font_shadow;
 
@@ -424,8 +424,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                cfdata->viewer.vcontent.font_shadow_color->r,
                cfdata->viewer.vcontent.font_shadow_color->g,
                cfdata->viewer.vcontent.font_shadow_color->b);
-      evas_stringshare_del(news->config->viewer.vcontent.font_shadow_color);
-      news->config->viewer.vcontent.font_shadow_color = evas_stringshare_add(buf);
+      eina_stringshare_del(news->config->viewer.vcontent.font_shadow_color);
+      news->config->viewer.vcontent.font_shadow_color = eina_stringshare_add(buf);
 
       news_viewer_all_refresh(1, recreate);
       cfdata->viewer.vcontent.color_changed = 0;

@@ -230,7 +230,7 @@ notification_box_config_item_get(const char *id)
     }
 
   ci = E_NEW(Config_Item, 1);
-  ci->id = evas_stringshare_add(id);
+  ci->id = eina_stringshare_add(id);
   ci->show_label     = 1;
   ci->show_popup     = 1;
   ci->focus_window   = 1;
@@ -295,7 +295,7 @@ _notification_box_new(const char *id, Evas *evas)
   Notification_Box *b;
 
   b = E_NEW(Notification_Box, 1);
-  b->id = evas_stringshare_add(id);
+  b->id = eina_stringshare_add(id);
   b->o_box = e_box_add(evas);
   e_box_homogenous_set(b->o_box, 1);
   e_box_orientation_set(b->o_box, 1);
@@ -308,7 +308,7 @@ static void
 _notification_box_free(Notification_Box *b)
 {
   _notification_box_empty(b);
-  evas_stringshare_del(b->id);
+  eina_stringshare_del(b->id);
   evas_object_del(b->o_box);
   if (b->o_empty) evas_object_del(b->o_empty);
   b->o_empty = NULL;

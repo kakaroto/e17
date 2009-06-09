@@ -97,7 +97,7 @@ int photo_config_init(void)
         c->nice_trans = ITEM_NICE_TRANS_DEFAULT;
         c->pictures_from = PICTURE_FROM_DEFAULT;
         c->pictures_set_bg_purge = PICTURE_SET_BG_PURGE_DEFAULT;
-        c->pictures_viewer = evas_stringshare_add(PICTURE_VIEWER_DEFAULT);
+        c->pictures_viewer = eina_stringshare_add(PICTURE_VIEWER_DEFAULT);
         c->pictures_thumb_size = PICTURE_THUMB_SIZE_DEFAULT;
         c->local.dirs = eina_list_append(c->local.dirs,
                                          photo_picture_local_dir_new((char *)e_module_dir_get(photo->module),
@@ -205,7 +205,7 @@ Photo_Config_Item *photo_config_item_new(const char *id)
    DCONF(("config NOT found ! creating new one %s", id));
    /* no, create a new item config */
    pic = E_NEW(Photo_Config_Item, 1);
-   pic->id = evas_stringshare_add(id);
+   pic->id = eina_stringshare_add(id);
    pic->timer_s = ITEM_TIMER_S_DEFAULT;
    pic->timer_active = ITEM_TIMER_ACTIVE_DEFAULT;
    pic->alpha = ITEM_ALPHA_DEFAULT;
@@ -221,7 +221,7 @@ Photo_Config_Item *photo_config_item_new(const char *id)
 
 void photo_config_item_free(Photo_Config_Item *pic)
 {
-   evas_stringshare_del(pic->id);
+   eina_stringshare_del(pic->id);
 
    photo->config->items = eina_list_remove(photo->config->items, pic);
    free(pic);

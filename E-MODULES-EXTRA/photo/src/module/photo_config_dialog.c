@@ -367,8 +367,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    photo->config->pictures_set_bg_purge = cfdata->pictures_set_bg_purge;
    if (photo->config->pictures_viewer)
-     evas_stringshare_del(photo->config->pictures_viewer);
-   photo->config->pictures_viewer = evas_stringshare_add(cfdata->pictures_viewer);
+     eina_stringshare_del(photo->config->pictures_viewer);
+   photo->config->pictures_viewer = eina_stringshare_add(cfdata->pictures_viewer);
    photo->config->pictures_thumb_size = cfdata->pictures_thumb_size;
 
    photo->config->local.auto_reload = cfdata->local.auto_reload;

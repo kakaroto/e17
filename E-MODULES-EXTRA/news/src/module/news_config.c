@@ -149,10 +149,10 @@ news_config_init(void)
         c->viewer.varticles.sort_date = NEWS_VIEWER_VARTICLES_SORT_DATE_DEFAULT;
         c->viewer.vcontent.font_size = NEWS_VIEWER_VCONTENT_FONT_SIZE_DEFAULT;
         snprintf(buf, sizeof(buf), "%s", NEWS_VIEWER_VCONTENT_FONT_COLOR_DEFAULT);
-        c->viewer.vcontent.font_color = evas_stringshare_add(buf);
+        c->viewer.vcontent.font_color = eina_stringshare_add(buf);
         c->viewer.vcontent.font_shadow = NEWS_VIEWER_VCONTENT_FONT_SHADOW_DEFAULT;
         snprintf(buf, sizeof(buf), "%s", NEWS_VIEWER_VCONTENT_FONT_SHADOW_COLOR_DEFAULT);
-        c->viewer.vcontent.font_shadow_color = evas_stringshare_add(buf);
+        c->viewer.vcontent.font_shadow_color = eina_stringshare_add(buf);
         c->popup_news.active =  NEWS_FEED_POPUP_NEWS_ACTIVE_DEFAULT;
         c->popup_news.timer_s = NEWS_FEED_POPUP_NEWS_TIMER_S_DEFAULT;
         c->popup_other.on_timeout =  NEWS_FEED_POPUP_OTHER_ON_TIMEOUT_DEFAULT;
@@ -187,13 +187,13 @@ news_config_shutdown(void)
 
    news_feed_lang_list_free(news->config->feed.langs);
 
-   if (c->proxy.host) evas_stringshare_del(c->proxy.host);
+   if (c->proxy.host) eina_stringshare_del(c->proxy.host);
 
    while ( (nic = eina_list_data_get(c->items)) )
      news_config_item_del(nic);
 
-   evas_stringshare_del(c->viewer.vcontent.font_color);
-   evas_stringshare_del(c->viewer.vcontent.font_shadow_color);
+   eina_stringshare_del(c->viewer.vcontent.font_color);
+   eina_stringshare_del(c->viewer.vcontent.font_shadow_color);
 
    E_FREE(news->config);
 
@@ -256,7 +256,7 @@ news_config_item_add(const char *id)
    /* no, create a new item config */
    nic = E_NEW(News_Config_Item, 1);
 
-   nic->id = evas_stringshare_add(id);
+   nic->id = eina_stringshare_add(id);
    nic->view_mode = NEWS_ITEM_VIEW_MODE_DEFAULT;
    nic->openmethod = NEWS_ITEM_OPENMETHOD_DEFAULT;
    nic->browser_open_home = NEWS_ITEM_BROWSER_OPEN_HOME_DEFAULT;
@@ -269,13 +269,13 @@ news_config_item_add(const char *id)
 void
 news_config_item_del(News_Config_Item *nic)
 {
-   evas_stringshare_del(nic->id);
+   eina_stringshare_del(nic->id);
 
    while(eina_list_count(nic->feed_refs))
      {
         News_Feed_Ref *fr;
         fr = eina_list_data_get(nic->feed_refs);
-        evas_stringshare_del(fr->name);
+        eina_stringshare_del(fr->name);
         nic->feed_refs = eina_list_remove(nic->feed_refs, fr);
      }
 

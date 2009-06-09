@@ -88,8 +88,8 @@ news_util_lang_detect(void)
    const char *key, *name;
 
    lang = E_NEW(News_Feed_Lang, 1);
-   lang->key = evas_stringshare_add("en");
-   lang->name = evas_stringshare_add("English");
+   lang->key = eina_stringshare_add("en");
+   lang->name = eina_stringshare_add("English");
    list = eina_list_append(list, lang);
 
    //FIXME is that get from env correct ?
@@ -101,8 +101,8 @@ news_util_lang_detect(void)
        (name = news_feed_lang_name_get(key)))
      {
         lang = E_NEW(News_Feed_Lang, 1);
-        lang->key = evas_stringshare_add(key);
-        lang->name = evas_stringshare_add(name);
+        lang->key = eina_stringshare_add(key);
+        lang->name = eina_stringshare_add(name);
         list = eina_list_append(list, lang);
      }
 
@@ -125,8 +125,8 @@ news_util_proxy_detect(void)
    if (!port || (port == buf)) return 0;
    if (!sscanf(port+1, "%d", &c->proxy.port)) return 0;
    *port = '\0';
-   if (c->proxy.host) evas_stringshare_del(c->proxy.host);
-   c->proxy.host = evas_stringshare_add(buf);
+   if (c->proxy.host) eina_stringshare_del(c->proxy.host);
+   c->proxy.host = eina_stringshare_add(buf);
 
    return 1;
 }

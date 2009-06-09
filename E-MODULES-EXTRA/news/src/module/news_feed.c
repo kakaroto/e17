@@ -74,8 +74,8 @@ news_feed_init(void)
    while (_feed_langs[i].key)
      {
         lang = E_NEW(News_Feed_Lang, 1);
-        lang->key = evas_stringshare_add(_feed_langs[i].key);
-        lang->name = evas_stringshare_add(_feed_langs[i].name);
+        lang->key = eina_stringshare_add(_feed_langs[i].key);
+        lang->name = eina_stringshare_add(_feed_langs[i].name);
         l = eina_list_append(l, lang);
         i++;
      }
@@ -324,8 +324,8 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
      {
         if (f->name != name)
           {
-             if (f->name) evas_stringshare_del(f->name);
-             f->name = evas_stringshare_add(name);
+             if (f->name) eina_stringshare_del(f->name);
+             f->name = eina_stringshare_add(name);
           }
         f->name_ovrw = name_ovrw;
 
@@ -333,31 +333,31 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
           {
              char lang[3];
 
-             if (f->language) evas_stringshare_del(f->language);
+             if (f->language) eina_stringshare_del(f->language);
              snprintf(lang, sizeof(lang), "%2s", language);
-             if (language) f->language = evas_stringshare_add(lang);
+             if (language) f->language = eina_stringshare_add(lang);
           }
         f->language_ovrw = language_ovrw;
 
         if (f->description != description)
           {
-             if (f->description) evas_stringshare_del(f->description);
-             if (description) f->description = evas_stringshare_add(description);
+             if (f->description) eina_stringshare_del(f->description);
+             if (description) f->description = eina_stringshare_add(description);
           }
         f->description_ovrw = description_ovrw;
 
         if (f->url_home != url_home)
           {
-             if (f->url_home) evas_stringshare_del(f->url_home);
-             if (url_home) f->url_home = evas_stringshare_add(url_home);
+             if (f->url_home) eina_stringshare_del(f->url_home);
+             if (url_home) f->url_home = eina_stringshare_add(url_home);
           }
         f->url_home_ovrw = url_home_ovrw;
 
         if ( (f->url_feed != url_feed) &&
              (!f->url_feed || strcmp(f->url_feed, url_feed)) )
           {
-             if (f->url_feed) evas_stringshare_del(f->url_feed);
-             f->url_feed = evas_stringshare_add(url_feed);
+             if (f->url_feed) eina_stringshare_del(f->url_feed);
+             f->url_feed = eina_stringshare_add(url_feed);
              update = 1;
           }
 
@@ -366,7 +366,7 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
              if ( f->icon &&
                   !(icon && !strcmp(f->icon, icon)) )
                {
-                  evas_stringshare_del(f->icon);
+                  eina_stringshare_del(f->icon);
                   f->icon = NULL;
                   if (f->obj_icon)
                     {
@@ -374,7 +374,7 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
                        f->obj_icon = NULL;
                     }
                }
-             if (icon && !f->icon) f->icon = evas_stringshare_add(icon);
+             if (icon && !f->icon) f->icon = eina_stringshare_add(icon);
           }
         f->icon_ovrw = icon_ovrw;
 
@@ -402,10 +402,10 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
              ref = news_feed_ref_find(f, f->item);
              if (ref)
                {
-                  if (ref->name) evas_stringshare_del(ref->name);
-                  ref->name = evas_stringshare_add(f->name);
-                  if (ref->category) evas_stringshare_del(ref->category);
-                  ref->category = evas_stringshare_add(f->category->name);
+                  if (ref->name) eina_stringshare_del(ref->name);
+                  ref->name = eina_stringshare_add(f->name);
+                  if (ref->category) eina_stringshare_del(ref->category);
+                  ref->category = eina_stringshare_add(f->category->name);
                }
 	  }
 
@@ -444,12 +444,12 @@ news_feed_free(News_Feed *f)
    if (f->menu) news_menu_feed_hide(f);
    if (f->obj_icon) evas_object_del(f->obj_icon);
 
-   if (f->name) evas_stringshare_del(f->name);
-   if (f->language) evas_stringshare_del(f->language);
-   if (f->description) evas_stringshare_del(f->description);
-   if (f->url_home) evas_stringshare_del(f->url_home);
-   if (f->url_feed) evas_stringshare_del(f->url_feed);
-   if (f->icon) evas_stringshare_del(f->icon);
+   if (f->name) eina_stringshare_del(f->name);
+   if (f->language) eina_stringshare_del(f->language);
+   if (f->description) eina_stringshare_del(f->description);
+   if (f->url_home) eina_stringshare_del(f->url_home);
+   if (f->url_feed) eina_stringshare_del(f->url_feed);
+   if (f->icon) eina_stringshare_del(f->icon);
 
    if (f->host) free(f->host);
    if (f->file) free(f->file);
@@ -494,8 +494,8 @@ news_feed_attach(News_Feed *f, News_Feed_Ref *ref, News_Item *ni)
    if (!ref)
      {
         ref = E_NEW(News_Feed_Ref, 1);
-        ref->category = evas_stringshare_add(f->category->name);
-        ref->name = evas_stringshare_add(f->name);
+        ref->category = eina_stringshare_add(f->category->name);
+        ref->name = eina_stringshare_add(f->name);
         ref->feed = f;
         ni->config->feed_refs = eina_list_append(ni->config->feed_refs, ref);
      }
@@ -543,8 +543,8 @@ news_feed_detach(News_Feed *f, int really)
                {
                   DITEM(("feed detach : delete feed ref (%s)", ref->feed->name));
                   ni->config->feed_refs = eina_list_remove(ni->config->feed_refs, ref);
-                  evas_stringshare_del(ref->category);
-                  evas_stringshare_del(ref->name);
+                  eina_stringshare_del(ref->category);
+                  eina_stringshare_del(ref->name);
                   free(ref);
                }
              else
@@ -892,14 +892,14 @@ news_feed_category_edit(News_Feed_Category *cat, char *name, char *icon)
 
    if (cat->name != name)
      {
-        if (cat->name) evas_stringshare_del(cat->name);
-        cat->name = evas_stringshare_add(name);
+        if (cat->name) eina_stringshare_del(cat->name);
+        cat->name = eina_stringshare_add(name);
      }
 
    if (cat->icon != icon)
      {
-        if (cat->icon) evas_stringshare_del(cat->icon);
-        if (icon) cat->icon = evas_stringshare_add(icon);
+        if (cat->icon) eina_stringshare_del(cat->icon);
+        if (icon) cat->icon = eina_stringshare_add(icon);
      }
 
    return 1;
@@ -910,8 +910,8 @@ news_feed_category_free(News_Feed_Category *cat)
 {
    if (cat->feeds && eina_list_count(cat->feeds)) return;
    
-   if (cat->name) evas_stringshare_del(cat->name);
-   if (cat->icon) evas_stringshare_del(cat->icon);
+   if (cat->name) eina_stringshare_del(cat->name);
+   if (cat->icon) eina_stringshare_del(cat->icon);
    if (cat->feeds_visible_free && cat->feeds_visible)
      eina_list_free(cat->feeds_visible);
    if (cat->config_dialog) news_config_dialog_category_hide(cat);
@@ -954,8 +954,8 @@ news_feed_lang_list_free(Eina_List *list)
 
    while ((lang = eina_list_data_get(list)))
      {
-        if (lang->key) evas_stringshare_del(lang->key);
-        if (lang->name) evas_stringshare_del(lang->name);
+        if (lang->key) eina_stringshare_del(lang->key);
+        if (lang->name) eina_stringshare_del(lang->name);
         list = eina_list_remove_list(list, list);
         free(lang);
      }
@@ -1032,10 +1032,10 @@ _feed_deactivate(News_Feed *f)
 
    if (doc->parse.parser) news_parse_stop(doc);
        
-   if (doc->parse.meta_article) evas_stringshare_del(doc->parse.meta_article);
-   if (doc->parse.meta_channel) evas_stringshare_del(doc->parse.meta_channel);
-   if (doc->parse.meta_date) evas_stringshare_del(doc->parse.meta_date);
-   if (doc->parse.charset) evas_stringshare_del(doc->parse.charset);
+   if (doc->parse.meta_article) eina_stringshare_del(doc->parse.meta_article);
+   if (doc->parse.meta_channel) eina_stringshare_del(doc->parse.meta_channel);
+   if (doc->parse.meta_date) eina_stringshare_del(doc->parse.meta_date);
+   if (doc->parse.charset) eina_stringshare_del(doc->parse.charset);
 
    //FIXME: waiting ecore_con patch to be able to delete the server in all cases
    if (doc->server.conn && doc->server.waiting_reply) ecore_con_server_del(doc->server.conn);

@@ -297,22 +297,22 @@ _idler_parse_detect_metas(News_Parse *parser)
    if (ver == 1.0)
      {
         if (strstr(doc->server.buffer, "<item rdf"))
-          doc->parse.meta_article = evas_stringshare_add("<item rdf");
+          doc->parse.meta_article = eina_stringshare_add("<item rdf");
         else
-          doc->parse.meta_article = evas_stringshare_add("<item>");
+          doc->parse.meta_article = eina_stringshare_add("<item>");
 
         if (strstr(doc->server.buffer, "<channel rdf"))
-          doc->parse.meta_channel = evas_stringshare_add("<channel rdf");
+          doc->parse.meta_channel = eina_stringshare_add("<channel rdf");
         else
-          doc->parse.meta_channel = evas_stringshare_add("<channel>");
+          doc->parse.meta_channel = eina_stringshare_add("<channel>");
 
-	doc->parse.meta_date = evas_stringshare_add("<dc:date");
+	doc->parse.meta_date = eina_stringshare_add("<dc:date");
      }
    else if ((ver > 0.0) && (ver <= 2.0))
      {
-        doc->parse.meta_article = evas_stringshare_add("<item>");
-        doc->parse.meta_channel = evas_stringshare_add("<channel>");
-	doc->parse.meta_date = evas_stringshare_add("<pubDate");
+        doc->parse.meta_article = eina_stringshare_add("<item>");
+        doc->parse.meta_channel = eina_stringshare_add("<channel>");
+	doc->parse.meta_date = eina_stringshare_add("<pubDate");
      }
 
    if (!doc->parse.meta_channel)
@@ -991,7 +991,7 @@ _parse_infos_item(News_Parse *parser, char *meta, const char *prev, int *edit)
           {
              memcpy(buf, ibeg, ilen);
              buf[ilen] = '\0';
-             item = evas_stringshare_add(buf);
+             item = eina_stringshare_add(buf);
              *edit = 1;
           }
      }

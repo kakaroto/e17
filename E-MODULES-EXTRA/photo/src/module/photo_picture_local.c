@@ -261,7 +261,7 @@ Picture_Local_Dir *photo_picture_local_dir_new(char *path, int recursive, int re
      }
 
    dir = E_NEW(Picture_Local_Dir, 1);
-   dir->path = evas_stringshare_add(path);
+   dir->path = eina_stringshare_add(path);
    dir->recursive = recursive;
    dir->read_hidden = read_hidden;
    dir->state = PICTURE_LOCAL_DIR_NOT_LOADED;
@@ -275,7 +275,7 @@ void photo_picture_local_dir_free(Picture_Local_Dir *dir, int del_dialog)
 {
    if (dir->config_dialog && del_dialog)
      photo_config_dialog_dir_hide(dir);
-   evas_stringshare_del(dir->path);
+   eina_stringshare_del(dir->path);
    free(dir);
 }
 

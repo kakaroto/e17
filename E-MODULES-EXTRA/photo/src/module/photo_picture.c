@@ -47,7 +47,7 @@ Picture *photo_picture_new(char *path, int thumb_it, void (*func_done) (void *da
    DPICL(("New picture :  file %s", path));
       
    picture = E_NEW(Picture, 1);
-   picture->path = evas_stringshare_add(path);
+   picture->path = eina_stringshare_add(path);
    picture->infos.name = photo_picture_name_get(path);
    picture->from = PICTURE_LOCAL;
 
@@ -92,14 +92,14 @@ int photo_picture_free(Picture *p, int force, int force_now)
      }
 
    DD(("Picture Free : %s", p->path));
-   if (p->path) evas_stringshare_del(p->path);
+   if (p->path) eina_stringshare_del(p->path);
    if (p->picture) evas_object_del(p->picture);
 
-   if (p->infos.name) evas_stringshare_del(p->infos.name);
-   if (p->infos.author) evas_stringshare_del(p->infos.author);
-   if (p->infos.where_from) evas_stringshare_del(p->infos.where_from);
-   if (p->infos.date) evas_stringshare_del(p->infos.date);
-   if (p->infos.comments) evas_stringshare_del(p->infos.comments);
+   if (p->infos.name) eina_stringshare_del(p->infos.name);
+   if (p->infos.author) eina_stringshare_del(p->infos.author);
+   if (p->infos.where_from) eina_stringshare_del(p->infos.where_from);
+   if (p->infos.date) eina_stringshare_del(p->infos.date);
+   if (p->infos.comments) eina_stringshare_del(p->infos.comments);
 
    photo_picture_histo_picture_del(p);
 
@@ -187,7 +187,7 @@ const char *photo_picture_name_get(char *url)
    strncpy(buf, name, name_l);
    name[name_l] = '\0';
 
-   return evas_stringshare_add(name);
+   return eina_stringshare_add(name);
 }
 
 char *photo_picture_infos_get(Picture *p)

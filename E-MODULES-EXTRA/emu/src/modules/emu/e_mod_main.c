@@ -105,7 +105,7 @@ e_modapi_init(E_Module *m)
 
    emu_module = m;
    snprintf(buf, sizeof(buf), "%s/e-module-emu.edj", e_module_dir_get(m));
-   _emu_module_edje = evas_stringshare_add(buf);
+   _emu_module_edje = eina_stringshare_add(buf);
    /* Set up module's message catalogue */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
@@ -149,7 +149,7 @@ e_modapi_shutdown(E_Module *m)
    e_gadcon_provider_unregister(&_gadcon_class);
 
 // FIXME: we really want to do this at unload time.
-//   if (_emu_module_edje)   evas_stringshare_del(_emu_module_edje);
+//   if (_emu_module_edje)   eina_stringshare_del(_emu_module_edje);
 
    return 1;
 }
@@ -196,9 +196,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
         emu_face->o_button = o;
         emu_face->menus = NULL;
 
-        emu_face->name = evas_stringshare_add("Emu tester");
+        emu_face->name = eina_stringshare_add("Emu tester");
         snprintf(buf, sizeof(buf), "%s/bin/emu_client", e_module_dir_get(emu_module));
-        emu_face->command = evas_stringshare_add(buf);
+        emu_face->command = eina_stringshare_add(buf);
         if (emu_face->command)
           {
              emu_face->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu_face);
@@ -265,7 +265,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
         if (emu_face->exe)
            ecore_exe_terminate(emu_face->exe);
         if (emu_face->command)
-           evas_stringshare_del(emu_face->command);
+           eina_stringshare_del(emu_face->command);
 
         evas_object_del(emu_face->o_button);
         E_FREE(emu_face);

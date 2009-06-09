@@ -381,8 +381,8 @@ drawer_plugins_list(Drawer_Plugin_Category cat)
 	  pi->title = eina_stringshare_add(eina_hash_find(desk->x, "X-Drawer-Title"));
 	if (!pi->title) pi->title = eina_stringshare_add(desk->name);
 
-	pi->name = evas_stringshare_add(desk->name);
-	pi->comment = evas_stringshare_add(desk->comment);
+	pi->name = eina_stringshare_add(desk->name);
+	pi->comment = eina_stringshare_add(desk->comment);
 
 	ret = eina_list_append(ret, pi);
 	efreet_desktop_free(desk);

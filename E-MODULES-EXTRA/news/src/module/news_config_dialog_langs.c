@@ -184,8 +184,8 @@ _cb_lang_change(void *data, Evas_Object *obj)
         if (choice->ok)
           {
              lang = E_NEW(News_Feed_Lang, 1);
-             lang->key = evas_stringshare_add(choice->lang->key);
-             lang->name = evas_stringshare_add(choice->lang->name);
+             lang->key = eina_stringshare_add(choice->lang->key);
+             lang->name = eina_stringshare_add(choice->lang->name);
              list = eina_list_append(list, lang);
           }
      }

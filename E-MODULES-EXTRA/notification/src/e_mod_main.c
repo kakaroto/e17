@@ -151,7 +151,7 @@ _gc_id_del(E_Gadcon_Client_Class *client_class, const char *id)
    ci = notification_box_config_item_get(id);
    if (ci)
      {
-	if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->id) eina_stringshare_del(ci->id);
 	notification_cfg->items = eina_list_remove(notification_cfg->items, ci);
         free(ci);
      }
@@ -449,7 +449,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
        ci = notification_cfg->items->data;
        notification_cfg->items = eina_list_remove_list(notification_cfg->items,
                                                        notification_cfg->items);
-       if (ci->id) evas_stringshare_del(ci->id);
+       if (ci->id) eina_stringshare_del(ci->id);
        free(ci);
      }
 
