@@ -194,7 +194,7 @@ theme_text_add(const char *txt)
 
    if(!txt || (txt[0] == 0)) return;
 
-   t->message = evas_stringshare_add(txt);
+   t->message = eina_stringshare_add(txt);
    t->status_text = NULL;
    t->status = -1;
 
@@ -214,8 +214,8 @@ theme_status_set(const char *txt, int type)
    t = (Exquisite_Text_Line *)(eina_list_last(messages)->data);
    
    t->status = type;
-   if(t->status_text) evas_stringshare_del(t->status_text);
-   t->status_text = evas_stringshare_add(txt);
+   if(t->status_text) eina_stringshare_del(t->status_text);
+   t->status_text = eina_stringshare_add(txt);
    
    /*A 2 means that a status update signal will be sent*/
    theme_update_text(2);
@@ -232,8 +232,8 @@ theme_text_clear()
       for(l = messages; l != NULL; l = l->next)
         {
           t = l->data;
-          evas_stringshare_del(t->message);
-          if(t->status_text) evas_stringshare_del(t->status_text);
+          eina_stringshare_del(t->message);
+          if(t->status_text) eina_stringshare_del(t->status_text);
           free(l->data);
         }
       
