@@ -161,7 +161,7 @@ consolle_clear(void)
 
    while(stack)
    {
-      evas_stringshare_del(eina_list_data_get(stack));
+      eina_stringshare_del(eina_list_data_get(stack));
       stack = eina_list_remove_list(stack, stack);
    }
    consolle_count = 0;
@@ -171,11 +171,11 @@ consolle_log(char *text)
 {
    //printf("LOG: %s\n", text);
 
-   stack = eina_list_prepend(stack, evas_stringshare_add(text));
+   stack = eina_list_prepend(stack, eina_stringshare_add(text));
 
    while (eina_list_count(stack) > 5)
    {
-      evas_stringshare_del(eina_list_data_get(eina_list_last(stack)));
+      eina_stringshare_del(eina_list_data_get(eina_list_last(stack)));
       stack = eina_list_remove_list(stack, eina_list_last(stack));
    }
 
