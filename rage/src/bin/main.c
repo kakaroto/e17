@@ -383,7 +383,7 @@ list_string_unique_append(Eina_List *list, const char *str, int count)
 	  }
      }
    ge = calloc(1, sizeof(Genre));
-   ge->label = evas_stringshare_add(str);
+   ge->label = eina_stringshare_add(str);
    ge->count = count;
    list = eina_list_append(list, ge);
    return list;
@@ -397,7 +397,7 @@ list_string_free(Eina_List *list)
 	Genre *ge;
 
 	ge = list->data;
-	evas_stringshare_del(ge->label);
+	eina_stringshare_del(ge->label);
 	free(ge);
 	list = eina_list_remove_list(list, list);
      }
@@ -446,8 +446,8 @@ video_lib_free(void *data)
    Video_Lib *vl;
 
    vl = data;
-   evas_stringshare_del(vl->label);
-   evas_stringshare_del(vl->path);
+   eina_stringshare_del(vl->label);
+   eina_stringshare_del(vl->path);
    free(vl);
 }
 
@@ -457,8 +457,8 @@ video_lib_item_free(void *data)
    Video_Lib_Item *vli;
 
    vli = data;
-   evas_stringshare_del(vli->label);
-   evas_stringshare_del(vli->path);
+   eina_stringshare_del(vli->label);
+   eina_stringshare_del(vli->path);
    free(vli);
 }
 
@@ -539,15 +539,15 @@ main_menu_video_library(void *data)
    if (!vl)
      {
 	vl = calloc(1, sizeof(Video_Lib));
-	vl->label = evas_stringshare_add("Library");
-	vl->path = evas_stringshare_add("");
+	vl->label = eina_stringshare_add("Library");
+	vl->path = eina_stringshare_add("");
 	menu_push("menu", vl->label, video_lib_free, vl);
      }
    else
      {
 	vl = calloc(1, sizeof(Video_Lib));
-	vl->label = evas_stringshare_add(ecore_file_file_get(vli->path));
-	vl->path = evas_stringshare_add(vli->path);
+	vl->label = eina_stringshare_add(ecore_file_file_get(vli->path));
+	vl->path = eina_stringshare_add(vli->path);
 	menu_push("menu", vl->label, video_lib_free, vl);
      }
 
@@ -605,8 +605,8 @@ main_menu_video_library(void *data)
 		  else
 		    snprintf(buf, sizeof(buf), "%s", ge->label);
 		  vli = calloc(1, sizeof(Video_Lib_Item));
-		  vli->label = evas_stringshare_add(ge->label);
-		  vli->path = evas_stringshare_add(buf);
+		  vli->label = eina_stringshare_add(ge->label);
+		  vli->path = eina_stringshare_add(buf);
 		  snprintf(buf, sizeof(buf), "%i", ge->count);
 		  menu_item_add("icon/genre", vli->label,
 				"", buf,
@@ -636,8 +636,8 @@ main_menu_video_library(void *data)
 
 			    buf[0] = 0;
 			    vli = calloc(1, sizeof(Video_Lib_Item));
-			    vli->label = evas_stringshare_add(vi->name);
-			    vli->path = evas_stringshare_add(vi->rpath);
+			    vli->label = eina_stringshare_add(vi->name);
+			    vli->path = eina_stringshare_add(vi->rpath);
 			    vli->vi = vi;
 //			    snprintf(buf, sizeof(buf), "3:00:00");
 			    menu_item_add(vli->path, vli->label,

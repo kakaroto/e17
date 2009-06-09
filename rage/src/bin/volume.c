@@ -187,7 +187,7 @@ volume_deindex(char *vol)
  		  free(vi->path);
  		  free(vi->rpath);
 		  free(vi->name);
-		  if (vi->genre) evas_stringshare_del(vi->genre);
+		  if (vi->genre) eina_stringshare_del(vi->genre);
 		  free(vi);
 	       }
 	     free(s);
@@ -358,7 +358,7 @@ volume_idler(void *data)
 				 free(vi->path);
 				 free(vi->rpath);
 				 free(vi->name);
-				 if (vi->genre) evas_stringshare_del(vi->genre);
+				 if (vi->genre) eina_stringshare_del(vi->genre);
 				 free(vi);
 			      }
 			    else
@@ -498,17 +498,17 @@ volume_file_scan(char *file)
 		    {
 		       if (*c == '_') *c = ' ';
 		    }
-		  vi->genre = evas_stringshare_add(buf);
+		  vi->genre = eina_stringshare_add(buf);
 		  free(ff);
 	       }
 	     else
 	       {
-		  vi->genre = evas_stringshare_add(f);
+		  vi->genre = eina_stringshare_add(f);
 	       }
 	     free(f);
 	  }
 	else
-	  vi->genre = evas_stringshare_add("Unknown");
+	  vi->genre = eina_stringshare_add("Unknown");
      }
    ecore_event_add(VOLUME_TYPE_ADD, strdup(vi->path), NULL, NULL);
    /* FIXME: check last played and play count db entry */

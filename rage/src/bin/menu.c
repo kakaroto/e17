@@ -271,7 +271,7 @@ menu_push(const char *context, const char *name, void (*free_func) (void *data),
      }
    m = calloc(1, sizeof(Menu));
    m->selected = 1;
-   m->name = evas_stringshare_add(name);
+   m->name = eina_stringshare_add(name);
    m->data = data;
    m->free_func = free_func;
    menus = eina_list_prepend(menus, m);
@@ -300,10 +300,10 @@ menu_pop(void)
 		       if (mi->out_func) mi->out_func(mi->data);
 		    }
 		  m->items = eina_list_remove_list(m->items, m->items);
-		  if (mi->label) evas_stringshare_del(mi->label);
-		  if (mi->icon) evas_stringshare_del(mi->icon);
-		  if (mi->desc) evas_stringshare_del(mi->desc);
-		  if (mi->info) evas_stringshare_del(mi->info);
+		  if (mi->label) eina_stringshare_del(mi->label);
+		  if (mi->icon) eina_stringshare_del(mi->icon);
+		  if (mi->desc) eina_stringshare_del(mi->desc);
+		  if (mi->info) eina_stringshare_del(mi->info);
 		  if (mi->free_func) mi->free_func(mi->data);
 		  free(mi);
 	       }
@@ -315,7 +315,7 @@ menu_pop(void)
 		  _menu_realize(mm);
 	       }
 	     
-	     evas_stringshare_del(m->name);
+	     eina_stringshare_del(m->name);
 	     eina_list_free(m->items);
 	     menus = eina_list_remove_list(menus, l);
 	     free(m);
@@ -359,10 +359,10 @@ menu_item_add(const char *icon, const char *label,
    m = _menu_current_get();
    if (!m) return;
    mi = calloc(1, sizeof(Menu_Item));
-   if (label) mi->label = evas_stringshare_add(label);
-   if (icon) mi->icon = evas_stringshare_add(icon);
-   if (desc) mi->desc = evas_stringshare_add(desc);
-   if (info) mi->info = evas_stringshare_add(info);
+   if (label) mi->label = eina_stringshare_add(label);
+   if (icon) mi->icon = eina_stringshare_add(icon);
+   if (desc) mi->desc = eina_stringshare_add(desc);
+   if (info) mi->info = eina_stringshare_add(info);
    mi->func = func;
    mi->over_func = over_func;
    mi->out_func = out_func;
