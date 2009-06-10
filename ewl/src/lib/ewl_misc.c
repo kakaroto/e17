@@ -195,32 +195,32 @@ ewl_init(int *argc, char **argv)
         shutdown_queue = ecore_list_new();
         if (!shutdown_queue) {
                 fprintf(stderr, "Could not create Ewl shutdown queue.\n");
-                goto ERROR;
+                goto FAILED;
         }
 
         if (!ecore_init()) {
                 fprintf(stderr, "Could not initialize Ecore.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ecore_shutdown);
 
 #ifdef BUILD_EFREET_SUPPORT
         if (!efreet_init()) {
                 fprintf(stderr, "Could not initialize Efreet.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, efreet_shutdown);
 
         if (!efreet_mime_init()) {
                 fprintf(stderr, "Could not initialize Efreet_Mime.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, efreet_mime_shutdown);
 #endif
 
         if (!ecore_string_init()) {
                 fprintf(stderr, "Could not initialize Ecore Strings.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ecore_string_shutdown);
 
@@ -244,7 +244,7 @@ ewl_init(int *argc, char **argv)
                         || (!ewl_window_list) || (!shutdown_hooks)) {
                 fprintf(stderr, "Unable to initialize internal configuration."
                                 " Out of memory?\n");
-                goto ERROR;
+                goto FAILED;
         }
 
         /*
@@ -255,13 +255,13 @@ ewl_init(int *argc, char **argv)
 
         if (!ewl_config_init()) {
                 fprintf(stderr, "Could not initialize Ewl Config.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_config_shutdown);
 
         if (!ewl_engines_init()) {
                 fprintf(stderr, "Could not intialize Ewl Engines.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_engines_shutdown);
 
@@ -276,12 +276,12 @@ ewl_init(int *argc, char **argv)
         if (!ewl_engine_new(ewl_config_string_get(ewl_config,
                                         EWL_CONFIG_ENGINE_NAME), argc, argv)) {
                 fprintf(stderr, "Could not initialize Ewl Engine.\n");
-                goto ERROR;
+                goto FAILED;
         }
 
         if (!ewl_callbacks_init()) {
                 fprintf(stderr, "Could not initialize Ewl Callback system.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_callbacks_shutdown);
 
@@ -294,42 +294,42 @@ ewl_init(int *argc, char **argv)
 
         if (!ewl_theme_init()) {
                 fprintf(stderr, "Could not setup Ewl Theme system.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_theme_shutdown);
 
         if (!ewl_icon_theme_init()) {
                 fprintf(stderr, "Could not initialize Ewl Icon Theme system.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_icon_theme_shutdown);
 
         if (!ewl_dnd_init()) {
                 fprintf(stderr, "Could not initialize Ewl DND support.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_dnd_shutdown);
 
         if (!ewl_io_manager_init()) {
                 fprintf(stderr, "Could not initialize Ewl IO Manager.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_io_manager_shutdown);
 
         if (!ewl_text_context_init()) {
                 fprintf(stderr, "Could not initialize Ewl Text Context system.\n");
-                goto ERROR;
+                goto FAILED;
         }
         ecore_list_prepend(shutdown_queue, ewl_text_context_shutdown);
 
         if (!(idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL))) {
                 fprintf(stderr, "Could not create Idle Enterer.\n");
-                goto ERROR;
+                goto FAILED;
         }
 
         DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
-ERROR:
+FAILED:
         ewl_shutdown();
 
         DRETURN_INT(ewl_init_count, DLEVEL_STABLE);

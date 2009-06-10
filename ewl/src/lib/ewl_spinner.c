@@ -1,7 +1,6 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include <Ecore_Str.h>
 #include <math.h>
-#include <langinfo.h>
 
 #include "ewl_base.h"
 #include "ewl_spinner.h"
@@ -10,7 +9,14 @@
 #include "ewl_entry.h"
 #include "ewl_private.h"
 #include "ewl_macros.h"
+#if HAVE_LANGINFO_H
+# include <langinfo.h>
+#endif /* HAVE_LANGINFO_H */
 #include "ewl_debug.h"
+
+#ifdef HAVE_EVIL
+# include <Evil.h>
+#endif /* HAVE_EVIL */
 
 static void ewl_spinner_entry_update(Ewl_Spinner *s);
 static int ewl_spinner_timer(void *data);

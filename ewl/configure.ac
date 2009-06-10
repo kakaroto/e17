@@ -131,14 +131,9 @@ AC_CHECK_FUNCS([dup2 memmove memset nl_langinfo setenv setlocale sqrt strcasecmp
 fnmatch_libs=""
 AC_CHECK_FUNCS(fnmatch, res=yes, res=no)
 if test "x$res" = "xno"; then
-	AC_CHECK_LIB(fnmatch, fnmatch, res=yes fnmatch_libs="-lfnmatch", res=no)
-dnl Test for compilation with MinGW.
-dnl fnmatch function is in the libiberty library
+	AC_SEARCH_LIBS(fnmatch, fnmatch evil iberty, res=yes, res=no)
 	if test "x$res" = "xno"; then
-		AC_CHECK_LIB(iberty, fnmatch, res=yes fnmatch_libs="-liberty", res=no)
-	fi
-	if test "x$res" = "xno"; then
-		AC_MSG_ERROR([Cannot find fnmatch() in neither libc nor libfnmatch, nor libiberty])
+		AC_MSG_ERROR([Cannot find fnmatch() in neither libc nor libfnmatch, nor libevil, nor libiberty])
 	fi
 fi
 
