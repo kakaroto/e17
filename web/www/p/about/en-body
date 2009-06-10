@@ -23,21 +23,14 @@
     </center>
     
     <h2>Enlightenment DR16</h2>
-    <p>Version 0.16 of the Enlightenment window manager was released in 2000, along with 
-    its dependencies Imlib and Fnlib. DR16 remains in heavy usage today. While rumors of its 
-    death still circulate, DR16.8.15 was released on January 3rd, 2009, and it remains in 
-    development today with a long life still ahead of it.  DR16 has been the choice of power 
+    <p>DR16 of the Enlightenment window manager, also known as e16, was released in 2000.
+    While rumors of its death still circulate, version 1.0.0 was released on June 3rd, 2009.  DR16 has been the choice of power 
     users and artists due to its low overhead, highly graphical, widely theme-able, extremely 
     configurable, yet unobtrusive interface. Nearly all functions of the window manager can be 
     handled without mouse input, including application launching via 
     <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a>. It also remains 
     highly portable, with ports avalible for Linux, FreeBSD, IRIX, Solaris X86 and Sparc, HP-UX, 
     AIX, OS/2, and more.</p>
-
-    <p> Imlib has lived a long life, still in heavy usage today, as one of the most popular image 
-    manipulation and rendering libs available.  Its development was taken over by the GNOME 
-    project and used as GNOMEs rendering engine until it was replaced with GdkPixbuf in GNOME 2.0. 
-    Thanks to the Perl, Python and Ruby bindings Imlib as achieved popularity outside its C roots.</p>
 
     <center>
      <p>
