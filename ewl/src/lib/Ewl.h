@@ -98,6 +98,7 @@ extern"C" {
 #include <ewl_filelist.h>
 #include <ewl_filelist_model.h>
 #include <ewl_filelist_view.h>
+#include <ewl_filelist_file.h>
 #include <ewl_filepicker.h>
 #include <ewl_filedialog.h>
 
