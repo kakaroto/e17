@@ -17,4 +17,3 @@ struct Ewl_Engine_Evas_Software_DDraw
 };
 
 #endif
-
