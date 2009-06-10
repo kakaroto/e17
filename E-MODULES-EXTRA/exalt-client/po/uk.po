@@ -1,0 +1,185 @@
+# This file is put in the public domain.
+#
+# Daniel Korostil <ted.korostiled@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: exalt-client.HEAD\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-05-19 09:00-0700\n"
+"PO-Revision-Date: 2009-06-08 00:13+0300\n"
+"Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
+"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 0.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:39
+msgid "exalt Module"
+msgstr "Exalt"
+
+#: ../src/e_mod_config.c:79
+msgid "General"
+msgstr "Загальне"
+
+#: ../src/e_mod_config.c:81
+msgid "Use Switch 1"
+msgstr "Використовувати перемикання 1"
+
+#: ../src/e_mod_main.c:270
+msgid "Exalt Warning"
+msgstr "Попередження мережі"
+
+#: ../src/e_mod_main.c:273
+msgid "Warning"
+msgstr "Попередження"
+
+#: ../src/e_mod_main.c:274
+msgid "NetworkManager has been detected on your computer."
+msgstr "На вашому комп'ютері виявлено NetworkManager."
+
+#: ../src/e_mod_main.c:276
+msgid ""
+"Exalt can't work properly if networkManager is running, please stop "
+"NetworkManager or Exalt."
+msgstr "Exalt не може працювати як слід, коли запущено networkManager, будь ласка, вимкніть один із них."
+
+#: ../src/e_mod_main.c:279
+msgid "Ok"
+msgstr "Гаразд"
+
+#: ../src/e_mod_main.c:348
+msgid "exalt"
+msgstr "Exalt"
+
+#: ../src/e_mod_main.c:431
+msgid "exalt Configuration Updated"
+msgstr "Налаштування оновлені"
+
+#: ../src/e_mod_main.c:497
+msgid "Configuration"
+msgstr "Налаштування"
+
+#: ../src/popup.c:59
+msgid "Settings"
+msgstr "Налаштування"
+
+#: ../src/popup.c:201
+msgid "No IP Address"
+msgstr "Нема адреси IP"
+
+#: ../src/popup.c:205 ../src/wired_dialog.c:42
+msgid "Wired interface"
+msgstr "Вбудований інтерфейс"
+
+#: ../src/popup.c:208
+msgid "Wireless interface"
+msgstr "Інтерфейс радіомережі"
+
+#: ../src/wired_dialog.c:36
+msgid "Wired Connection Settings"
+msgstr "Налаштування з'єднання вбудованого"
+
+#: ../src/wired_dialog.c:51 ../src/network_dialog.c:72
+msgid "Activate"
+msgstr "Увімкнути"
+
+#: ../src/wired_dialog.c:54 ../src/network_dialog.c:75
+msgid "Deactivate"
+msgstr "Вимкнути"
+
+#: ../src/wired_dialog.c:58 ../src/network_dialog.c:79
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (протокол динамічної конфігурації вузла)"
+
+#: ../src/wired_dialog.c:63 ../src/network_dialog.c:84
+msgid "Static"
+msgstr "Статична"
+
+#: ../src/wired_dialog.c:68 ../src/network_dialog.c:89
+msgid "IP address: "
+msgstr "Адреса IP: "
+
+#: ../src/wired_dialog.c:73 ../src/network_dialog.c:94
+msgid "Netmask address: "
+msgstr "Адреса маски мережі:"
+
+#: ../src/wired_dialog.c:78 ../src/network_dialog.c:99
+msgid "Gateway address: "
+msgstr "Адреса шлюзу: "
+
+#: ../src/wired_dialog.c:83 ../src/network_dialog.c:104
+msgid "Command: "
+msgstr "Команда:"
+
+#: ../src/wired_dialog.c:96 ../src/network_dialog.c:112
+msgid "OK"
+msgstr "Гаразд"
+
+#: ../src/wired_dialog.c:97 ../src/network_dialog.c:113
+msgid "Apply"
+msgstr "Застосувати"
+
+#: ../src/wired_dialog.c:98 ../src/network_dialog.c:114
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: ../src/network_dialog.c:35
+msgid "Wireless Connection Settings"
+msgstr "Налаштування радіомережі"
+
+#: ../src/network_dialog.c:42
+msgid "Network information"
+msgstr "Інформація про мережу"
+
+#: ../src/network_dialog.c:44
+msgid "Essid: "
+msgstr "Essid:"
+
+#: ../src/network_dialog.c:49
+msgid "Address: "
+msgstr "Адреса:"
+
+#: ../src/network_dialog.c:54
+msgid "Quality: "
+msgstr "Якість:"
+
+#. IFACE frame
+#: ../src/network_dialog.c:63
+msgid "Wireless interface configuration"
+msgstr "Налаштування інтерфесу радіомережі"
+
+#: ../src/network_dialog.c:211
+msgid "WEP information"
+msgstr "Інформація про WEP"
+
+#: ../src/network_dialog.c:213
+msgid "Description: "
+msgstr "Опис:"
+
+#: ../src/network_dialog.c:215
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/network_dialog.c:231
+msgid "Hexadecimal Key"
+msgstr "Шістнадцятковий код"
+
+#: ../src/network_dialog.c:234
+msgid "ASCII Key"
+msgstr "ASCII код"
+
+#: ../src/network_dialog.c:240 ../src/network_dialog.c:324
+msgid "Password: "
+msgstr "Пароль:"
+
+#: ../src/network_dialog.c:263
+msgid "WPA information"
+msgstr "Інформація про WPA"
+
+#: ../src/network_dialog.c:315
+msgid "Login: "
+msgstr "Користувач:"
+
