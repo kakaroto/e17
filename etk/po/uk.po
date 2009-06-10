@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: etk.HEAD\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
 "POT-Creation-Date: 2009-04-19 08:30-0700\n"
-"PO-Revision-Date: 2009-05-20 20:11+0300\n"
+"PO-Revision-Date: 2009-06-08 00:12+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
@@ -42,98 +42,79 @@ msgid "B"
 msgstr "B"
 
 #: ../src/lib/etk_colorpicker.c:400
-#, fuzzy
 msgid "Alpha"
 msgstr "Альфа"
 
 #. Current color preview
 #: ../src/lib/etk_colorpicker.c:424
-#, fuzzy
 msgid "Current"
 msgstr "Поточний"
 
 #: ../src/lib/etk_filechooser_widget.c:495
-#, fuzzy
 msgid "Places"
 msgstr "Місця"
 
 #: ../src/lib/etk_filechooser_widget.c:506
-#, fuzzy
 msgid "Favorites"
 msgstr "Улюблені"
 
 #: ../src/lib/etk_filechooser_widget.c:517
-#, fuzzy
 msgid "Filename"
 msgstr "Назва файла"
 
 #: ../src/lib/etk_filechooser_widget.c:521
-#, fuzzy
 msgid "Date"
 msgstr "Дата"
 
 #: ../src/lib/etk_filechooser_widget.c:730
-#, fuzzy
 msgid "Home"
 msgstr "Домівка"
 
 #: ../src/lib/etk_filechooser_widget.c:735
-#, fuzzy
 msgid "Root"
 msgstr "Корінь"
 
 #: ../src/lib/etk_message_dialog.c:109
-#, fuzzy
 msgid "Warning"
 msgstr "Попередження"
 
 #: ../src/lib/etk_message_dialog.c:113
-#, fuzzy
 msgid "Question"
 msgstr "Питання"
 
 #: ../src/lib/etk_message_dialog.c:117
-#, fuzzy
 msgid "Error"
 msgstr "Помилка"
 
 #: ../src/lib/etk_message_dialog.c:122 ../src/lib/etk_message_dialog.c:264
-#, fuzzy
 msgid "Information"
 msgstr "Інформація"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:60
-#, fuzzy
 msgid "Etk Preferences"
 msgstr "Налаштування Etk"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:76
-#, fuzzy
 msgid "Category"
 msgstr "Категорія"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:81
-#, fuzzy
 msgid "Theme"
 msgstr "Тема"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:82
-#, fuzzy
 msgid "Fonts"
 msgstr "Шрифти"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:83
-#, fuzzy
 msgid "Language"
 msgstr "Мова"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:84
-#, fuzzy
 msgid "User Preferences"
 msgstr "Вподобання користувача"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:85
-#, fuzzy
 msgid "General"
 msgstr "Загальний"
 
