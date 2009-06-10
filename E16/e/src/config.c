@@ -258,7 +258,7 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 	     themepath, EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
 	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);
-   system(execline);
+   Esystem(execline);
 
    Efree(def_user);
    Efree(def_shell);

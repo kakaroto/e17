@@ -74,12 +74,17 @@ _sound_esd_Load(const char *file)
 
 	s->id = esd_sample_cache(sound_fd, format, s->ssd.rate, s->ssd.size,
 				 file);
-	write(sound_fd, s->ssd.data, s->ssd.size);
+	if (write(sound_fd, s->ssd.data, s->ssd.size) != (ssize_t) s->ssd.size)
+	  {
+	     s->id = 0;
+	     goto done;
+	  }
 	confirm = esd_confirm_sample_cache(sound_fd);
 	if (confirm != s->id)
 	   s->id = 0;
      }
 
+ done:
    _EFREE(s->ssd.data);
    if (s->id <= 0)
       _EFREE(s);

@@ -739,7 +739,7 @@ SessionRunProg(const char *prog, const char *params)
      }
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionRunProg: %s\n", s);
-   system(s);
+   Esystem(s);
 }
 
 void

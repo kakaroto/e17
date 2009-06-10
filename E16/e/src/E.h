@@ -441,6 +441,7 @@ void                About(void);
 int                 execApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
+int                 Esystem(const char *cmd);
 
 /* config.c */
 void                SkipTillEnd(FILE * ConfigFile);

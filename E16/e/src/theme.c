@@ -244,7 +244,7 @@ ThemeExtract(const char *path)
    path = th;
 
    /* exec the untar if tarred */
-   system(s);
+   Esystem(s);
 
  done:
    if (ThemeCheckPath(path))

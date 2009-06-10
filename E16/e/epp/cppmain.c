@@ -121,7 +121,11 @@ main(int argc, char **argv)
 #endif
 	if (!opts->no_output)
 	  {
-	     fwrite(parse_in.token_buffer, 1, CPP_WRITTEN(&parse_in), stdout);
+	     size_t              n;
+
+	     n = CPP_WRITTEN(&parse_in);
+	     if (fwrite(parse_in.token_buffer, 1, n, stdout) != n)
+		exit(FATAL_EXIT_CODE);
 	  }
       next:
 	parse_in.limit = parse_in.token_buffer;

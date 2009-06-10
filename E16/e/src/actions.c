@@ -200,3 +200,9 @@ EspawnCmd(const char *cmd)
    Espawn(argc, argv);
    StrlistFree(argv, argc);
 }
+
+int
+Esystem(const char *cmd)
+{
+   return system(cmd);
+}
