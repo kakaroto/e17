@@ -65,6 +65,7 @@ AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
 PKG_CHECK_MODULES([ECORE], [ecore ecore-txt ecore-file])
 PKG_CHECK_MODULES([ECORE_EVAS], [ecore-evas])
+PKG_CHECK_MODULES([ECORE_INPUT], [ecore-input])
 PKG_CHECK_MODULES([EDJE], [edje >= 0.5.0])
 
 requirements="evas ecore edje"

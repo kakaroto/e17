@@ -4,6 +4,7 @@
 
 #include "ewl_base.h"
 #include <Ecore_Win32.h>
+#include <Ecore_Input.h>
 
 #define EWL_ENGINE_WIN32(engine) ((Ewl_Engine_Win32 *)engine)
 typedef struct Ewl_Engine_Win32 Ewl_Engine_Win32;

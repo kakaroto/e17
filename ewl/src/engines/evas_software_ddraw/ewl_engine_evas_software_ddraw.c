@@ -11,8 +11,10 @@ static void ee_shutdown(Ewl_Engine *engine);
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
                 ee_canvas_setup,
-                NULL, NULL, NULL, NULL
+                NULL, NULL, NULL, NULL, NULL
         };
+
+DSTATIC_ASSERT(EWL_ENGINE_CANVAS_MAX == ARRAY_COUNT(canvas_funcs));
 
 Ecore_DList *
 ewl_engine_dependancies(void)
