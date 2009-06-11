@@ -15,7 +15,7 @@ files_DATA = edje_viewer.edj
 desktopdir   = $(datadir)/applications
 desktop_DATA = edje_viewer.desktop
 
-edje_viewer.edj: Makefile
+edje_viewer.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/edje_viewer.edc \
 	$(top_builddir)/data/edje_viewer.edj

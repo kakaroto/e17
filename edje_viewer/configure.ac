@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(edje_viewer, 0.0.1, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(edje_viewer, 0.1.0, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -42,7 +42,7 @@ PKG_CHECK_MODULES(EDJE_VIEWER,
    ecore >= 0.9.9
    ecore-file >= 0.9.9
    edje >= 0.5.0
-   etk >= 0.1.0.001
+   elementary
   ]
 )
 

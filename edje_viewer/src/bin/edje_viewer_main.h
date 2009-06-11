@@ -16,11 +16,9 @@
 
 #include <Edje.h>
 #include <Edje_Edit.h>
-#include <Etk.h>
+#include <Elementary.h>
 
-#define WINDOW_TITLE "Edje Viewer"
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define CONFIG_VERSION 1
 
 #define FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; }} while (0);
 
@@ -30,83 +28,85 @@
 #define __UNUSED__
 #endif
 
-typedef enum _Tree_Search Tree_Search;
-typedef struct _Gui Gui;
-typedef struct _Edje_Viewer_Config Edje_Viewer_Config;
-typedef struct _Demo_Edje Demo_Edje;
-typedef struct _Collection Collection;
+#define DBG(...) EINA_ERROR_PDBG(__VA_ARGS__)
+#define ERR(...) EINA_ERROR_PERR(__VA_ARGS__)
 
+typedef struct _Viewer Viewer;
+typedef struct _Config Config;
+typedef struct _Group Group;
+typedef struct _Part Part;
 
-enum _Tree_Search
+struct _Viewer
 {
-   TREE_SEARCH_START = 1,
-   TREE_SEARCH_NEXT,
-   TREE_SEARCH_PREV
+    Config *config;
+    Evas_Object *win;
+
+    struct {
+        Evas_Object *win, *ly, *tbar, *tree, *parts_list;
+        Evas_Object *toggles_win;
+    } gui;
+
+
+    Elm_Genlist_Item_Class *gc;
+
+    const char *theme_file;
+
+    Eina_Inlist *groups;
+
+    Group *visible_group;
+
+    struct {
+        char *buf;
+
+        Ecore_Timer *timer;
+
+        Eina_Bool visible : 1;
+    } typebuf;
+
+    Eet_Data_Descriptor  *config_edd;
+    Ecore_Timer *config_save_timer;
 };
 
-struct _Gui
+struct _Config
 {
-   Etk_Widget *win;
-   Etk_Widget *tree;
-   Etk_Widget *mdi_area;
-   Etk_Widget *output;
-   Etk_Widget *signal_entry;
-   Etk_Widget *source_entry;
-   Etk_Widget *dnd_x_slider;
-   Etk_Widget *dnd_y_slider;
-   
-   Etk_Widget *fm_dialog;
-   Etk_Widget *fm_chooser;
+    int config_version;
 
-   Etk_Popup_Window *popup;
-   Etk_Widget *search_entry;
-
-   Etk_Tree_Row *part_row;
-
-   Edje_Viewer_Config *config;
-
-   char *path;
+    const char *edje_file;
+    Eina_Bool show_parts;
+    Eina_Bool show_signals;
 };
 
-struct _Edje_Viewer_Config
+struct _Group
 {
-   Eina_List *recent;
+   EINA_INLIST;
 
-   int open_last;
-   int sort_parts;
+   Viewer *v;
 
-   int config_version;
+   Evas_Object *obj;
+
+   const char *name;
+   Elm_Genlist_Item *item;
+   Elm_Toolbar_Item *ti;
+
+   Eina_Inlist *parts;
+
+   Eina_Bool active : 1;
+   Eina_Bool visible : 1;
 };
 
-struct _Demo_Edje
+struct _Part
 {
-   Etk_Widget          *mdi_window;
-   Etk_Widget          *etk_evas;
-   Etk_Tree_Col        *tree_col;
-   Etk_Tree_Row        *tree_row;
-   Etk_Tree_Row        *part_row;
+   EINA_INLIST;
 
-   struct {
-      Evas_Coord           x, y, w, h;
-   } prev;
+   Group *grp;
+   const char *name;
+   Elm_List_Item *item;
 
-   Evas_Object         *edje_object;
-   Evas_Coord	        minw, minh;
-   Evas_Coord           maxw, maxh;
-   char                *name;
-   void                *data;
+   Evas_Object *highlight;
 };
 
-struct _Collection
-{
-   char        *file;
-   char        *part;
-
-   Demo_Edje   *de;
-};
-
-#include "edje_viewer_conf.h"
 #include "edje_viewer_gui.h"
-#include "edje_viewer_edje.h"
+
+void config_save(Viewer *v, Eina_Bool immediate);
 
 #endif

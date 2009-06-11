@@ -1,6 +1,8 @@
-FILES = bg.png shadow.png
+FILES = bg.png shadow.png \
+	part_border.png \
+	checkers_shadow.png \
+	toolbar_sel.png \
+	checkers.png
 
-imgdir = $(pkgdatadir)/data/images
-img_DATA = $(FILES)
 
 EXTRA_DIST = $(FILES)
