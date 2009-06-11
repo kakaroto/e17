@@ -118,7 +118,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    of = e_widget_framelist_add(evas, D_("General"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
-   ow = e_widget_check_add(evas, D_("Show in main main"),
+   ow = e_widget_check_add(evas, D_("Show in main menu"),
                            &(cfdata->show_menu));
    e_widget_framelist_object_append(of, ow);
 
