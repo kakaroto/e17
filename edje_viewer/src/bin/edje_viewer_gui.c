@@ -7,6 +7,8 @@
 static void viewer_exit(Viewer *v);
 static void edje_object_create(Group *grp);
 static void create_group_parts_list(Viewer *v);
+static void fill_group_parts_list(Viewer *v);
+static void create_signals_box(Viewer *v);
 static void toolbar_reconfigure(Group *grp);
 static void free_group_parts(Group *grp);
 static void typebuf_show(Viewer *v);
@@ -27,8 +29,11 @@ static void on_group_check_changed(void *data, Evas_Object *obj, void *event_inf
 static void on_toolbar_changed(void *data, Evas_Object *obj, void *event_info);
 static int on_entries_sort(const void *d1, const void *d2);
 static void on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info);
+static void on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info);
 static void on_group_part_select(void *data, Evas_Object *obj, void *event_info);
 static void on_group_part_unselect(void *data, Evas_Object *obj, void *event_info);
+static void on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src);
+static void on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg);
 
 static Evas_Object * gc_icon_get(const void *data, Evas_Object *obj, const char *part);
 static char *gc_label_get(const void *data, Evas_Object *obj, const char *part);
@@ -89,6 +94,8 @@ create_main_win(Viewer *v)
 
    if (v->config->show_parts)
      create_group_parts_list(v);
+   if (v->config->show_signals)
+     create_signals_box(v);
 
    evas_object_show(v->gui.win);
 }
@@ -133,13 +140,12 @@ edje_object_create(Group *grp)
    Evas_Object *o = edje_object_add(evas_object_evas_get(grp->v->gui.win));
 
    edje_object_file_set(o, grp->v->config->edje_file, grp->name);
+   edje_object_signal_callback_add(o, "*", "*", on_object_signal, grp);
+   edje_object_message_handler_set(o, on_object_message, grp);
    /*
-   edje_object_message_handler_set(o, message_cb, output);
-   edje_object_signal_callback_add(o, "*", "*", signal_cb, output);
    edje_object_part_drag_size_set(o, "dragable", 0.01, 0.5);
    edje_object_part_drag_step_set(o, "dragable", 0.1, 0.1);
    edje_object_part_drag_page_set(o, "dragable", 0.2, 0.2);
-   edje_object_size_min_calc(o, &w, &h);
    */
 
    grp->obj = o;
@@ -154,7 +160,7 @@ create_group_parts_list(Viewer *v)
    elm_list_always_select_mode_set(o, 1);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
-   edje_object_part_swallow(elm_layout_edje_get(v->gui.ly), "v.swallow.parts_list", o);
+   elm_layout_content_set(v->gui.ly, "v.swallow.parts_list", o);
    evas_object_smart_callback_add(o, "unselected", on_group_part_unselect, NULL);
 
    evas_object_show(o);
@@ -183,6 +189,28 @@ fill_group_parts_list(Viewer *v)
    elm_list_go(v->gui.parts_list);
 
    edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,show", "v");
+}
+
+static void
+create_signals_box(Viewer *v)
+{
+   Evas_Object *o;
+
+   v->gui.sig_box = o = elm_box_add(v->gui.ly);
+   elm_box_horizontal_set(o, 0);
+   elm_box_homogenous_set(o, 0);
+   evas_object_size_hint_weight_set(o, 1.0, 1.0);
+   elm_layout_content_set(v->gui.ly, "v.swallow.signals", o);
+   evas_object_show(o);
+
+   v->gui.sig_list = o = elm_list_add(v->gui.sig_box);
+   evas_object_size_hint_weight_set(o, 1.0, 1.0);
+   evas_object_size_hint_align_set(o, -1.0, -1.0);
+   elm_box_pack_start(v->gui.sig_box, o);
+
+   evas_object_show(o);
+
+   edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,show", "v");
 }
 
 static void
@@ -471,6 +499,14 @@ create_toggles_win(Viewer *v)
 				  on_parts_list_toggle_change, v);
    evas_object_show(o);
 
+   o = elm_toggle_add(bx);
+   elm_toggle_label_set(o, "Show signals log");
+   elm_toggle_state_set(o, v->config->show_signals);
+   elm_box_pack_end(bx, o);
+   evas_object_smart_callback_add(o, "changed",
+				  on_signals_toggle_change, v);
+   evas_object_show(o);
+
    elm_win_inwin_content_set(v->gui.toggles_win, bx);
 }
 
@@ -578,7 +614,7 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
 	evas_object_hide(o);
      }
 
-   edje_object_part_swallow(elm_layout_edje_get(grp->v->gui.ly), "v.swallow.main", grp->obj);
+   elm_layout_content_set(grp->v->gui.ly, "v.swallow.main", grp->obj);
    evas_object_show(grp->obj);
 
    grp->v->visible_group = grp;
@@ -619,6 +655,26 @@ on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info)
+{
+   Viewer *v = data;
+
+   v->config->show_signals = elm_toggle_state_get(obj);
+   if (v->config->show_signals)
+     {
+	if (!v->gui.sig_box)
+	  create_signals_box(v);
+     }
+   else if (v->gui.parts_list)
+     {
+	evas_object_del(v->gui.sig_box);
+	v->gui.sig_box = NULL;
+	edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,hide", "v");
+     }
+   config_save(v, 0);
+}
+
+static void
 on_group_part_select(void *data, Evas_Object *obj, void *event_info)
 {
    Part *prt = data;
@@ -647,6 +703,85 @@ on_group_part_unselect(void *data, Evas_Object *obj, void *event_info)
      }
 }
 
+static void
+on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+   Group *grp = data;
+   char str[1024];
+
+   if (!grp->v->config->show_signals) return;
+   if (eina_list_count(grp->v->signals) > 40)
+     {
+	elm_list_item_del(grp->v->signals->data);
+	grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+     }
+   
+   snprintf(str, sizeof(str), "CALLBACK for \"%s\" \"%s\"", sig, src);
+   grp->v->signals = eina_list_append(
+       grp->v->signals, elm_list_item_append(
+	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+
+   if (!strcmp(sig, "drag"))
+     {
+	double x, y;
+
+	if (eina_list_count(grp->v->signals) > 40)
+	  {
+	     elm_list_item_del(grp->v->signals->data);
+	     grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+	  }
+   
+	edje_object_part_drag_value_get(o, src, &x, &y);
+	snprintf(str, sizeof(str), "    Drag %3.3f %3.3f", x, y);
+	grp->v->signals = eina_list_append(
+	    grp->v->signals, elm_list_item_append(
+		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+     }
+
+
+   elm_list_go(grp->v->gui.sig_list);
+}
+
+
+static void
+on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
+{
+   Group *grp = data;
+   char str[1024];
+
+   if (!grp->v->config->show_signals) return;
+   if (eina_list_count(grp->v->signals) > 40)
+     {
+	elm_list_item_del(grp->v->signals->data);
+	grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+     }
+   
+   snprintf(str, sizeof(str), "MESSAGE for %p from script type %i id %i", obj, type, id);
+   grp->v->signals = eina_list_append(
+       grp->v->signals, elm_list_item_append(
+	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+
+   if (type == EDJE_MESSAGE_STRING)
+     {
+	Edje_Message_String *emsg;
+
+	if (eina_list_count(grp->v->signals) > 40)
+	  {
+	     elm_list_item_del(grp->v->signals->data);
+	     grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+	  }
+
+	emsg = (Edje_Message_String *)msg;
+	snprintf(str, 1024, "    String: \"%s\"\n", emsg->str);
+	grp->v->signals = eina_list_append(
+	    grp->v->signals, elm_list_item_append(
+		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+     }
+   edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);
+
+   elm_list_go(grp->v->gui.sig_list);
+}
+
 /* Genlist functions */
 static Evas_Object *
 gc_icon_get(const void *data, Evas_Object *obj, const char *part)
@@ -655,14 +790,14 @@ gc_icon_get(const void *data, Evas_Object *obj, const char *part)
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        Evas_Object *ck;
-        ck = elm_check_add(obj);
-        evas_object_propagate_events_set(ck, 0);
-        elm_check_state_set(ck, grp->active);
-        evas_object_smart_callback_add(ck, "changed", on_group_check_changed, data);
-        evas_object_show(ck);
+	Evas_Object *ck;
+	ck = elm_check_add(obj);
+	evas_object_propagate_events_set(ck, 0);
+	elm_check_state_set(ck, grp->active);
+	evas_object_smart_callback_add(ck, "changed", on_group_check_changed, data);
+	evas_object_show(ck);
 	grp->check = ck;
-        return ck;
+	return ck;
      }
    return NULL;
 }
@@ -682,5 +817,7 @@ gc_del(const void *data, Evas_Object *obj)
    eina_stringshare_del(grp->name);
 
    free_group_parts(grp);
+
+   grp->v->groups = eina_inlist_remove(grp->v->groups, EINA_INLIST_GET(grp));
    free(grp);
 }

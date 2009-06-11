@@ -44,6 +44,7 @@ struct _Viewer
     struct {
         Evas_Object *win, *ly, *tbar, *tree, *parts_list;
         Evas_Object *toggles_win;
+        Evas_Object *sig_box, *sig_list;
     } gui;
 
 
@@ -54,6 +55,8 @@ struct _Viewer
     Eina_Inlist *groups;
 
     Group *visible_group;
+
+    Eina_List *signals;
 
     struct {
         char *buf;

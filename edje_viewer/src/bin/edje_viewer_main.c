@@ -54,8 +54,19 @@ config_save(Viewer *v, Eina_Bool immediate)
 static void
 viewer_free(Viewer *v)
 {
+   const char *str;
+
    eina_stringshare_del(v->config->edje_file);
    eina_stringshare_del(v->theme_file);
+
+   EINA_LIST_FREE(v->signals, str)
+      eina_stringshare_del(str);
+
+   if (v->config_edd)
+     eet_data_descriptor_free(v->config_edd);
+
+   config_free(v);
+
    free(v);
 }
 
@@ -89,12 +100,14 @@ config_init(Viewer *v)
 #define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, show_parts, EET_T_CHAR);
+   C_VAL(D, T, show_signals, EET_T_CHAR);
    C_VAL(D, T, edje_file, EET_T_STRING);
 
    switch (config_load(v))
      {
       case 0:
 	 v->config->show_parts = 1;
+	 v->config->show_signals = 1;
       case -1:
 	 /* Incremental additions */
 	 v->config->config_version = CONFIG_VERSION;

@@ -75,12 +75,35 @@ collections {
                     rel2.relative: 1.0 1.0;
                 }
             }
+            part { name: "v.swallow.signals";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        relative: 0.0 1.0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.5;
+                        to_x: "v.swallow.tree";
+                    }
+                }
+                description { state: "active" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.5;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        to_x: "v.swallow.tree";
+                    }
+                }
+            }
             part { name: "v.swallow.tree";
                 type: SWALLOW;
                 description { state: "default" 0.0;
                     rel2 {
-                        relative: 0.0 1.0;
-                        offset: 250 0;
+                        relative: 0.4 0.0;
+                        to_y: "v.swallow.signals";
                     }
                 }
             }
@@ -159,6 +182,20 @@ collections {
                 action: STATE_SET "default" 0.0;
                 transition: SINUSOIDAL 1.0;
                 target:  "v.swallow.parts_list";
+            }
+            program { name: "gosl";
+                signal: "v,state,signals,show";
+                source: "v";
+                action: STATE_SET "active" 0.0;
+                transition: SINUSOIDAL 0.25;
+                target:  "v.swallow.signals";
+            }
+            program { name: "stopsl";
+                signal: "v,state,signals,hide";
+                source: "v";
+                action: STATE_SET "default" 0.0;
+                transition: SINUSOIDAL 1.0;
+                target:  "v.swallow.signals";
             }
         }
     }
