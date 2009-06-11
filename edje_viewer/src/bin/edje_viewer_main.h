@@ -83,6 +83,7 @@ struct _Group
    Viewer *v;
 
    Evas_Object *obj;
+   Evas_Object *check;
 
    const char *name;
    Elm_Genlist_Item *item;

@@ -18,6 +18,7 @@ static const Group * group_next_find(Viewer *v, int next, char *buf);
 int util_glob_case_match(const char *str, const char *glob);
 static void show_toggles(Viewer *v);
 static void create_toggles_win(Viewer *v);
+static void group_activate(Viewer *v);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
 static void on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -473,6 +474,18 @@ create_toggles_win(Viewer *v)
    elm_win_inwin_content_set(v->gui.toggles_win, bx);
 }
 
+static void
+group_activate(Viewer *v)
+{
+   Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
+   const Group *grp;
+   if (!it) return;
+   grp = elm_genlist_item_data_get(it);
+   if (!grp || !grp->check) return;
+   elm_check_state_set(grp->check, !grp->active);
+   on_group_check_changed((void *) grp, grp->check, NULL);
+}
+
 /* Callbacks */
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
@@ -499,6 +512,8 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	if (v->typebuf.visible)
 	  typebuf_match(v, 1);
      }
+   else if (!strcmp(ev->key, "Return"))
+     group_activate(v);
    else if (!evas_key_modifier_is_set(ev->modifiers, "Control") &&
        !evas_key_modifier_is_set(ev->modifiers, "Alt"))
      {
@@ -636,7 +651,7 @@ on_group_part_unselect(void *data, Evas_Object *obj, void *event_info)
 static Evas_Object *
 gc_icon_get(const void *data, Evas_Object *obj, const char *part)
 {
-   const Group *grp = data;
+   Group *grp = (Group *) data;
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
@@ -646,6 +661,7 @@ gc_icon_get(const void *data, Evas_Object *obj, const char *part)
         elm_check_state_set(ck, grp->active);
         evas_object_smart_callback_add(ck, "changed", on_group_check_changed, data);
         evas_object_show(ck);
+	grp->check = ck;
         return ck;
      }
    return NULL;

@@ -94,7 +94,7 @@ config_init(Viewer *v)
    switch (config_load(v))
      {
       case 0:
-	 v->config->show_parts = 0;
+	 v->config->show_parts = 1;
       case -1:
 	 /* Incremental additions */
 	 v->config->config_version = CONFIG_VERSION;
