@@ -1586,6 +1586,28 @@ MoveCurrentLinearAreaBy(int a)
    SetCurrentLinearArea(GetCurrentLinearArea() + a);
 }
 
+/* Return 1 to disable area switch */
+static int
+_DeskAreaSwitchCheckEwins(void)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num;
+
+   lst = EwinListGetForDesk(&num, desks.current);
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+
+	/* Disable if there are non-sticky shading windows */
+	if (EoIsSticky(ewin) || ewin->state.iconified)
+	   continue;
+	if (ewin->state.shading)
+	   return 1;
+     }
+
+   return 0;
+}
+
 void
 DeskCurrentGotoArea(int ax, int ay)
 {
@@ -1594,6 +1616,9 @@ DeskCurrentGotoArea(int ax, int ay)
 
    if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
        || (Mode.mode == MODE_RESIZE_V))
+      return;
+
+   if (_DeskAreaSwitchCheckEwins())
       return;
 
    DesksFixArea(&ax, &ay);
