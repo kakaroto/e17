@@ -718,7 +718,7 @@ on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
    
    snprintf(str, sizeof(str), "CALLBACK for \"%s\" \"%s\"", sig, src);
    grp->v->signals = eina_list_append(
-       grp->v->signals, elm_list_item_append(
+       grp->v->signals, elm_list_item_prepend(
 	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
 
    if (!strcmp(sig, "drag"))
@@ -734,7 +734,7 @@ on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
 	edje_object_part_drag_value_get(o, src, &x, &y);
 	snprintf(str, sizeof(str), "    Drag %3.3f %3.3f", x, y);
 	grp->v->signals = eina_list_append(
-	    grp->v->signals, elm_list_item_append(
+	    grp->v->signals, elm_list_item_prepend(
 		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
      }
 
@@ -758,7 +758,7 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
    
    snprintf(str, sizeof(str), "MESSAGE for %p from script type %i id %i", obj, type, id);
    grp->v->signals = eina_list_append(
-       grp->v->signals, elm_list_item_append(
+       grp->v->signals, elm_list_item_prepend(
 	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
 
    if (type == EDJE_MESSAGE_STRING)
@@ -774,7 +774,7 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
 	emsg = (Edje_Message_String *)msg;
 	snprintf(str, 1024, "    String: \"%s\"\n", emsg->str);
 	grp->v->signals = eina_list_append(
-	    grp->v->signals, elm_list_item_append(
+	    grp->v->signals, elm_list_item_prepend(
 		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
      }
    edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);

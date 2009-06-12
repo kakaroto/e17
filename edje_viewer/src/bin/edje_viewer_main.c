@@ -59,8 +59,7 @@ viewer_free(Viewer *v)
    eina_stringshare_del(v->config->edje_file);
    eina_stringshare_del(v->theme_file);
 
-   EINA_LIST_FREE(v->signals, str)
-      eina_stringshare_del(str);
+   eina_list_free(v->signals);
 
    if (v->config_edd)
      eet_data_descriptor_free(v->config_edd);
