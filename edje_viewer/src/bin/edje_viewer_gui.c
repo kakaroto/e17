@@ -1,14 +1,24 @@
 /*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{20(W4
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2(0W4
  */
 
 #include <edje_viewer_main.h>
+
+typedef struct _Hoversel_Item_Data Hoversel_Item_Data;
+
+struct _Hoversel_Item_Data
+{
+   Elm_Hoversel_Item *it;
+   Group *grp;
+   const char *label;
+};
 
 static void viewer_exit(Viewer *v);
 static void edje_object_create(Group *grp);
 static void create_group_parts_list(Viewer *v);
 static void fill_group_parts_list(Viewer *v);
 static void create_signals_box(Viewer *v);
+static void fill_signals_list(Group *grp);
 static void toolbar_reconfigure(Group *grp);
 static void free_group_parts(Group *grp);
 static void typebuf_show(Viewer *v);
@@ -21,6 +31,7 @@ int util_glob_case_match(const char *str, const char *glob);
 static void show_toggles(Viewer *v);
 static void create_toggles_win(Viewer *v);
 static void group_activate(Viewer *v);
+static void hoversel_clear(Viewer *v);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
 static void on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -34,6 +45,9 @@ static void on_group_part_select(void *data, Evas_Object *obj, void *event_info)
 static void on_group_part_unselect(void *data, Evas_Object *obj, void *event_info);
 static void on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src);
 static void on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg);
+static void on_hover_signal_select(void *data, Evas_Object *obj, void *event_info);
+static void on_hover_source_select(void *data, Evas_Object *obj, void *event_info);
+static void on_signal_button_click(void *data, Evas_Object *obj, void *event_info);
 
 static Evas_Object * gc_icon_get(const void *data, Evas_Object *obj, const char *part);
 static char *gc_label_get(const void *data, Evas_Object *obj, const char *part);
@@ -131,6 +145,8 @@ static void
 viewer_exit(Viewer *v)
 {
    config_save(v, 1);
+   if (v->config->show_signals)
+     hoversel_clear(v);
    elm_exit();
 }
 
@@ -183,18 +199,20 @@ fill_group_parts_list(Viewer *v)
 	v->visible_group->parts = eina_inlist_append(v->visible_group->parts,
 						     EINA_INLIST_GET(prt));
 
-	prt->item = elm_list_item_append(v->gui.parts_list, prt->name, NULL, NULL, on_group_part_select, prt);
+        prt->item = elm_list_item_append(v->gui.parts_list, prt->name, NULL, NULL, on_group_part_select, prt);
      }
 
    elm_list_go(v->gui.parts_list);
 
    edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,show", "v");
+
+   edje_edit_string_list_free(parts);
 }
 
 static void
 create_signals_box(Viewer *v)
 {
-   Evas_Object *o;
+   Evas_Object *o, *bx;
 
    v->gui.sig_box = o = elm_box_add(v->gui.ly);
    elm_box_horizontal_set(o, 0);
@@ -207,10 +225,78 @@ create_signals_box(Viewer *v)
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    elm_box_pack_start(v->gui.sig_box, o);
+   evas_object_show(o);
 
+   bx = elm_box_add(v->gui.sig_box);
+   elm_box_horizontal_set(bx, 1);
+   elm_box_homogenous_set(bx, 0);
+   evas_object_size_hint_weight_set(bx, 0.0, 0.0);
+   elm_box_pack_end(v->gui.sig_box, bx);
+   evas_object_show(bx);
+
+   v->gui.sig_signal = o = elm_hoversel_add(bx);
+   elm_hoversel_hover_parent_set(o, v->gui.win);
+   elm_hoversel_label_set(o, "Signals");
+   elm_box_pack_start(bx, o);
+   evas_object_show(o);
+
+   v->gui.sig_source = o = elm_hoversel_add(bx);
+   elm_hoversel_hover_parent_set(o, v->gui.win);
+   elm_hoversel_label_set(o, "Sources");
+   elm_box_pack_end(bx, o);
+   evas_object_show(o);
+
+   o = elm_button_add(bx);
+   elm_button_label_set(o, "Go");
+   evas_object_smart_callback_add(o, "clicked", on_signal_button_click, v);
+   elm_box_pack_end(bx, o);
    evas_object_show(o);
 
    edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,show", "v");
+}
+
+static void
+fill_signals_list(Group *grp)
+{
+   /* FIXME: Needs elm_hoversel_items_get | elm_hoversel_clear 
+    * & elm_hoversel_item_label_get */
+   Eina_List *programs = edje_edit_programs_list_get(grp->obj);
+   Eina_List *l;
+   const char *name;
+
+   hoversel_clear(grp->v);
+
+   EINA_LIST_FOREACH(programs, l, name)
+     {
+        const char *signal, *source;
+        Elm_Hoversel_Item *it;
+        Hoversel_Item_Data *data1, *data2;
+
+        signal = edje_edit_program_signal_get(grp->obj, name);
+        if (!signal) continue;
+        source = edje_edit_program_source_get(grp->obj, name);
+
+        data1 = calloc(1, sizeof(Hoversel_Item_Data));
+        data1->grp = grp;
+        data1->label = eina_stringshare_ref(signal);
+        data1->it = elm_hoversel_item_add(
+            grp->v->gui.sig_signal, signal, NULL, ELM_ICON_NONE,
+            on_hover_signal_select, data1);
+
+        data2 = calloc(1, sizeof(Hoversel_Item_Data));
+        data2->grp = grp;
+        data2->label = eina_stringshare_ref(source);
+        data2->it = elm_hoversel_item_add(
+            grp->v->gui.sig_source, source, NULL, ELM_ICON_NONE,
+            on_hover_source_select, data2);
+
+        grp->v->hoversel_items = eina_list_append(
+            grp->v->hoversel_items, data1);
+        grp->v->hoversel_items = eina_list_append(
+            grp->v->hoversel_items, data2);
+     }
+
+   edje_edit_string_list_free(programs);
 }
 
 static void
@@ -249,6 +335,8 @@ toolbar_reconfigure(Group *grp)
 		  evas_object_resize(v->gui.tbar, w - 1, h - 1);
 		  evas_object_resize(v->gui.tbar, w + 1, h + 1);
 
+                  if (v->config->show_signals)
+                    hoversel_clear(v);
 		  edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,hide", "v");
 	       }
 	  }
@@ -522,6 +610,20 @@ group_activate(Viewer *v)
    on_group_check_changed((void *) grp, grp->check, NULL);
 }
 
+static void
+hoversel_clear(Viewer *v)
+{
+   Hoversel_Item_Data *data;
+   EINA_LIST_FREE(v->hoversel_items, data)
+     {
+        eina_stringshare_del(data->label);
+        elm_hoversel_item_del(data->it);
+     }
+
+   elm_hoversel_label_set(v->gui.sig_signal, "Signals");
+   elm_hoversel_label_set(v->gui.sig_source, "Sources");
+}
+
 /* Callbacks */
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
@@ -620,6 +722,9 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
    grp->v->visible_group = grp;
    if (grp->v->gui.parts_list)
      fill_group_parts_list(grp->v);
+
+   if (grp->v->config->show_signals)
+     fill_signals_list(grp);
 }
 
 static int
@@ -782,6 +887,34 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
    elm_list_go(grp->v->gui.sig_list);
 }
 
+static void
+on_hover_signal_select(void *data, Evas_Object *obj, void *event_info)
+{
+   Hoversel_Item_Data *dat = data;
+
+   dat->grp->signal = eina_stringshare_ref(dat->label);
+   elm_hoversel_label_set(dat->grp->v->gui.sig_signal, dat->label);
+}
+
+static void
+on_hover_source_select(void *data, Evas_Object *obj, void *event_info)
+{
+   Hoversel_Item_Data *dat = data;
+
+   dat->grp->source = eina_stringshare_ref(dat->label);
+   elm_hoversel_label_set(dat->grp->v->gui.sig_source, dat->label);
+}
+
+static void
+on_signal_button_click(void *data, Evas_Object *obj, void *event_info)
+{
+   Viewer *v = data;
+   Group *grp;
+
+   if (!(grp = v->visible_group)) return;
+   edje_object_signal_emit(grp->obj, grp->signal, grp->source);
+}
+
 /* Genlist functions */
 static Evas_Object *
 gc_icon_get(const void *data, Evas_Object *obj, const char *part)
@@ -815,6 +948,8 @@ gc_del(const void *data, Evas_Object *obj)
 {
    Group *grp = (Group *) data;
    eina_stringshare_del(grp->name);
+   eina_stringshare_del(grp->signal);
+   eina_stringshare_del(grp->source);
 
    free_group_parts(grp);
 

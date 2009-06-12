@@ -44,7 +44,7 @@ struct _Viewer
     struct {
         Evas_Object *win, *ly, *tbar, *tree, *parts_list;
         Evas_Object *toggles_win;
-        Evas_Object *sig_box, *sig_list;
+        Evas_Object *sig_box, *sig_list, *sig_signal, *sig_source;
     } gui;
 
 
@@ -57,6 +57,7 @@ struct _Viewer
     Group *visible_group;
 
     Eina_List *signals;
+    Eina_List *hoversel_items;
 
     struct {
         char *buf;
@@ -89,6 +90,9 @@ struct _Group
    Evas_Object *check;
 
    const char *name;
+   const char *signal;
+   const char *source;
+
    Elm_Genlist_Item *item;
    Elm_Toolbar_Item *ti;
 

@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{20(W4
+ * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2(0W4
  */
 
 #include "edje_viewer_main.h"
@@ -60,6 +60,7 @@ viewer_free(Viewer *v)
    eina_stringshare_del(v->theme_file);
 
    eina_list_free(v->signals);
+   eina_list_free(v->hoversel_items);
 
    if (v->config_edd)
      eet_data_descriptor_free(v->config_edd);
