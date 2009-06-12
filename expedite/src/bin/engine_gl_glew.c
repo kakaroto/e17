@@ -179,6 +179,7 @@ engine_gl_glew_args(int argc, char **argv)
    HINSTANCE                 instance;
    HDC                       dc;
    Evas_Engine_Info_GL_Glew *einfo;
+   DWORD                     style;
    int                       depth;
    int                       i;
    int                       ok = 0;
