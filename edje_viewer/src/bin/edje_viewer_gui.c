@@ -19,7 +19,7 @@ static void create_group_parts_list(Viewer *v);
 static void fill_group_parts_list(Viewer *v);
 static void create_signals_box(Viewer *v);
 static void fill_signals_list(Group *grp);
-static void toolbar_reconfigure(Group *grp);
+static void toolbar_reconfigure(Group *grp, Eina_Bool skip_config);
 static void free_group_parts(Group *grp);
 static void typebuf_show(Viewer *v);
 static void typebuf_hide(Viewer *v);
@@ -30,7 +30,8 @@ static const Group * group_next_find(Viewer *v, int next, char *buf);
 int util_glob_case_match(const char *str, const char *glob);
 static void show_toggles(Viewer *v);
 static void create_toggles_win(Viewer *v);
-static void group_activate(Viewer *v);
+static void group_check_toggle(Viewer *v);
+static void group_toggle(Group *grp, Eina_Bool skip_config);
 static void hoversel_clear(Viewer *v);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
@@ -82,6 +83,14 @@ create_main_win(Viewer *v)
    evas_object_show(o);
    v->gui.ly = o;
 
+   o = elm_toolbar_add(v->gui.ly);
+   elm_object_style_set(o, "viewer");
+   elm_layout_content_set(v->gui.ly, "v.swallow.tbar", o);
+   evas_object_size_hint_weight_set(o, 0.0, 0.0);
+   evas_object_size_hint_align_set(o, -1.0, 0.0);
+   evas_object_show(o);
+   v->gui.tbar = o;
+
    o = elm_genlist_add(v->gui.ly);
    evas_object_show(o);
    elm_layout_content_set(v->gui.ly, "v.swallow.tree", o);
@@ -90,14 +99,6 @@ create_main_win(Viewer *v)
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_show(o);
    v->gui.tree = o;
-
-   o = elm_toolbar_add(v->gui.ly);
-   elm_object_style_set(o, "viewer");
-   elm_layout_content_set(v->gui.ly, "v.swallow.tbar", o);
-   evas_object_size_hint_weight_set(o, 0.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   evas_object_show(o);
-   v->gui.tbar = o;
 
    v->gc = calloc(1, sizeof(Elm_Genlist_Item_Class));
    v->gc->item_style     = "default";
@@ -116,7 +117,9 @@ create_main_win(Viewer *v)
 void
 open_edje_file(Viewer *v)
 {
-   Eina_List *entries, *l;
+   Eina_List *entries, *l, *ll;
+   Config_Group *cgrp;
+   Group *visible = NULL;
    const char *group;
 
    elm_genlist_clear(v->gui.tree);
@@ -134,10 +137,41 @@ open_edje_file(Viewer *v)
 	      ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 	v->groups = eina_inlist_append(v->groups, EINA_INLIST_GET(grp));
+
+        EINA_LIST_FOREACH(v->config->groups, ll, cgrp)
+          {
+             if (!strcmp(cgrp->name, grp->name))
+               {
+                  grp->active = 1;
+                  group_toggle(grp, 1);
+                  if (cgrp->visible)
+                    visible = grp;
+                  break;
+               }
+          }
      }
 
+   if (visible)
+     elm_toolbar_item_select(visible->ti);
    edje_file_collection_list_free(entries);
    elm_win_title_set(v->gui.win, v->config->edje_file);
+}
+
+void
+edje_group_activate(Viewer *v, const char *name)
+{
+   Group *grp;
+   EINA_INLIST_FOREACH(v->groups, grp)
+     {
+        if (strcmp(grp->name, name))
+          continue;
+
+        grp->active = 1;
+        if (grp->check)
+          elm_check_state_set(grp->check, grp->active);
+        group_toggle(grp, 0);
+        return;
+     }
 }
 
 static void
@@ -287,14 +321,16 @@ fill_signals_list(Group *grp)
 }
 
 static void
-toolbar_reconfigure(Group *grp)
+toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
 {
    if (grp->active)
      {
 	grp->ti = elm_toolbar_item_add(grp->v->gui.tbar, NULL, grp->name, on_toolbar_changed, grp);
-	elm_toolbar_item_select(grp->ti);
-	grp->visible = 1;
-	grp->v->visible_group = grp;
+        if (!skip_config)
+          {
+             elm_toolbar_item_select(grp->ti);
+             config_group_change(grp->v, grp->name, 1, 0);
+          }
      }
    else
      {
@@ -586,15 +622,38 @@ create_toggles_win(Viewer *v)
 }
 
 static void
-group_activate(Viewer *v)
+group_check_toggle(Viewer *v)
 {
    Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
-   const Group *grp;
+   Group *grp;
    if (!it) return;
-   grp = elm_genlist_item_data_get(it);
+   grp = (Group *) elm_genlist_item_data_get(it);
    if (!grp || !grp->check) return;
-   elm_check_state_set(grp->check, !grp->active);
-   on_group_check_changed((void *) grp, grp->check, NULL);
+   grp->active = !grp->active;
+   elm_check_state_set(grp->check, grp->active);
+   group_toggle(grp, 0);
+}
+
+static void
+group_toggle(Group *grp, Eina_Bool skip_config)
+{
+   if (grp->active)
+     {
+	if (!grp->obj)
+	  edje_object_create(grp);
+
+        if (!skip_config)
+          config_group_change(grp->v, grp->name, 1, 0);
+     }
+   else
+     {
+	edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), grp->obj);
+	evas_object_hide(grp->obj);
+        if (!skip_config)
+          config_group_change(grp->v, grp->name, 0, 1);
+     }
+
+   toolbar_reconfigure(grp, skip_config);
 }
 
 static void
@@ -639,7 +698,7 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	  typebuf_match(v, 1);
      }
    else if (!strcmp(ev->key, "Return"))
-     group_activate(v);
+     group_check_toggle(v);
    else if (!evas_key_modifier_is_set(ev->modifiers, "Control") &&
        !evas_key_modifier_is_set(ev->modifiers, "Alt"))
      {
@@ -677,18 +736,7 @@ on_group_check_changed(void *data, Evas_Object *obj, void *event_info)
    Group *grp = data;
    grp->active = elm_check_state_get(obj);
 
-   if (grp->active)
-     {
-	if (!grp->obj)
-	  edje_object_create(grp);
-     }
-   else
-     {
-	edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), grp->obj);
-	evas_object_hide(grp->obj);
-     }
-
-   toolbar_reconfigure(grp);
+   group_toggle(grp, 0);
 }
 
 static void
@@ -707,7 +755,11 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
    elm_layout_content_set(grp->v->gui.ly, "v.swallow.main", grp->obj);
    evas_object_show(grp->obj);
 
+   if (grp->v->visible_group)
+     config_group_change(grp->v, grp->v->visible_group->name, 0, 0);
    grp->v->visible_group = grp;
+   grp->visible = 1;
+   config_group_change(grp->v, grp->name, 1, 0);
    if (grp->v->gui.parts_list)
      fill_group_parts_list(grp->v);
 

@@ -33,6 +33,7 @@
 
 typedef struct _Viewer Viewer;
 typedef struct _Config Config;
+typedef struct _Config_Group Config_Group;
 typedef struct _Group Group;
 typedef struct _Part Part;
 
@@ -68,6 +69,7 @@ struct _Viewer
     } typebuf;
 
     Eet_Data_Descriptor  *config_edd;
+    Eet_Data_Descriptor  *groups_edd;
     Ecore_Timer *config_save_timer;
 };
 
@@ -76,8 +78,16 @@ struct _Config
     int config_version;
 
     const char *edje_file;
+    Eina_List *groups;
     Eina_Bool show_parts;
     Eina_Bool show_signals;
+};
+
+struct _Config_Group
+{
+    const char *name;
+
+    Eina_Bool visible;
 };
 
 struct _Group
@@ -116,5 +126,7 @@ struct _Part
 #include "edje_viewer_gui.h"
 
 void config_save(Viewer *v, Eina_Bool immediate);
+void config_group_change(Viewer *v, const char *name, Eina_Bool visible, Eina_Bool del);
+Config_Group * config_group_get(Viewer *v, const char *name);
 
 #endif
