@@ -44,7 +44,7 @@ struct _Viewer
     struct {
         Evas_Object *win, *ly, *tbar, *tree, *parts_list;
         Evas_Object *toggles_win;
-        Evas_Object *sig_box, *sig_list, *sig_signal, *sig_source;
+        Evas_Object *sig_box, *sig_list, *sig_signal;
     } gui;
 
 

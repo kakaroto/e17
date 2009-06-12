@@ -54,8 +54,6 @@ config_save(Viewer *v, Eina_Bool immediate)
 static void
 viewer_free(Viewer *v)
 {
-   const char *str;
-
    eina_stringshare_del(v->config->edje_file);
    eina_stringshare_del(v->theme_file);
 
