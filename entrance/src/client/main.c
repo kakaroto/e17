@@ -6,7 +6,6 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <string.h>
 #include <locale.h>
 #include <Ecore_X_Cursor.h>
@@ -14,6 +13,7 @@
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
 #include <Ecore_Config.h>
+#include <Ecore_Getopt.h>
 #include <Efreet.h>
 #include "entrance.h"
 #include "entrance_session.h"
@@ -575,50 +575,6 @@ _container_scroll(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * print the "Help" associated with the app, shows cli args etc
- * @param argv the argv that was passed from the application
- */
-static void
-entrance_help(char **argv)
-{
-   printf("Entrance - The Enlightened Display Manager\n");
-   printf("Usage: %s [OPTION]...\n\n", argv[0]);
-   printf
-      ("---------------------------------------------------------------------------\n");
-   printf("  -c, --config=CONFIG          Specify a custom config file\n");
-   printf
-      ("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
-   printf("  -h, --help                   Display this help message\n");
-   printf
-      ("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
-   printf
-      ("                               Use of this option disables fullscreen mode.\n");
-   printf
-      ("  -t, --theme=THEME            Specify the theme to load. You may specify\n");
-   printf
-      ("                               either the name of an installed theme, or an\n");
-   printf
-      ("                               arbitrary path to an edj file (use ./ for\n");
-   printf("                               the current directory).\n");
-   printf
-      ("  -T, --test                   Enable testing mode. This will cause xterm\n");
-   printf
-      ("                               to be executed instead of the selected\n");
-   printf
-      ("                               session upon authentication, and uses a\n");
-   printf
-      ("                               geometry of 800x600 (-g overrides this)\n");
-   printf
-      ("===========================================================================\n\n");
-   printf
-      ("Note: To automatically launch an X server that will be managed, please use\n");
-   printf
-      ("      entranced instead of entrance. Entrance requires an existing X server\n");
-   printf("      to run. Run entranced --help for more information.\n\n");
-   exit(0);
-}
-
-/**
  * we handle this iteration outside of the theme, update date and time
  * @param data a pointer to the main edje in entrance
  * @return 1 so the ecore_timer keeps going and going and ...
@@ -686,6 +642,34 @@ screen_switch_cb(void *data, Evas_Object * obj, const char *signal,
  * <li>Shut down edje, ecore_evas, ecore_x, ecore</li>
  * </ol>
  */
+
+static const Ecore_Getopt options = {
+  "entrance",
+  NULL,
+  PACKAGE_VERSION,
+  "(C) 2009 Enlightenment, see AUTHORS.",
+  "BSD with advertisement, see COPYING",
+  "Entrance Display Manager\n\n"
+  "%prog requires an existing X session.  If you want Entrance to manage\n"
+  "the X session, use \"entranced\".",
+  1,
+  {
+    ECORE_GETOPT_VERSION('V', "version"),
+    ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+    ECORE_GETOPT_LICENSE('L', "license"),
+    ECORE_GETOPT_STORE_TRUE('T', "test", "test configuration"),
+    ECORE_GETOPT_STORE_STR('c', "config", "specify config file for greeter"),
+    ECORE_GETOPT_STORE_STR('d', "display", "connect to an existing X server"),
+    ECORE_GETOPT_CALLBACK_ARGS('g', "geometry",
+      "geometry to use in x:y:w:h form.", "X:Y:W:H",
+      ecore_getopt_callback_geometry_parse, NULL),
+    ECORE_GETOPT_HELP('h', "help"),
+    ECORE_GETOPT_STORE_STR('t', "theme", "full path to theme"),
+    ECORE_GETOPT_STORE_LONG('z', "server", "pid of X server"),
+    ECORE_GETOPT_SENTINEL
+  }
+};
+
 int
 main(int argc, char *argv[])
 {
@@ -693,22 +677,27 @@ main(int argc, char *argv[])
    char *str = NULL;
    char *display = NULL;
    Ecore_Evas *e = NULL;
-   int c;
-   struct option d_opt[] = {
-      {"help", 0, 0, 'h'},
-      {"display", 1, 0, 'd'},
-      {"geometry", 1, 0, 'g'},
-      {"theme", 1, 0, 't'},
-      {"test", 0, 0, 'T'},
-      {"config", 1, 0, 'c'},
-      {0, 0, 0, 0}
-   };
-   int g_x = WINW, g_y = WINH;
-   char *theme = NULL;
+   int nonargs;
+   char *theme = NULL, *theme_path;
    char *config = NULL;
    int fullscreen = 1;
-   pid_t server_pid = 0;
-   int testing = 0;
+   long server_pid = 0;
+   Eina_Rectangle geometry = {0, 0, 0, 0};
+   unsigned char exit_option = 0, testing = 0;
+
+   Ecore_Getopt_Value values[] = {
+      ECORE_GETOPT_VALUE_BOOL(exit_option),
+      ECORE_GETOPT_VALUE_BOOL(exit_option),
+      ECORE_GETOPT_VALUE_BOOL(exit_option),
+      ECORE_GETOPT_VALUE_BOOL(testing),
+      ECORE_GETOPT_VALUE_STR(config),
+      ECORE_GETOPT_VALUE_STR(display),
+      ECORE_GETOPT_VALUE_PTR_CAST(geometry),
+      ECORE_GETOPT_VALUE_BOOL(exit_option),
+      ECORE_GETOPT_VALUE_STR(theme_path),
+      ECORE_GETOPT_VALUE_LONG(server_pid),
+      ECORE_GETOPT_VALUE_NONE
+   };
 
    eina_init();
 
@@ -739,52 +728,25 @@ main(int argc, char *argv[])
               "Please make sure you have your locale files installed for \"%s\"\n",
               getenv("LANG"));
 
-
-   /* Parse command-line options */
-   while (1)
-   {
-      c = getopt_long(argc, argv, "hd:g:t:Tc:z:", d_opt, NULL);
-      if (c == -1)
-         break;
-      switch (c)
+   nonargs = ecore_getopt_parse(&options, values, argc, argv);
+   if (nonargs < 0)
       {
-        case 'h':
-           entrance_help(argv);
-        case 'd':
-           display = strdup(optarg);
-           break;
-        case 'g':
-           atog(optarg, &g_x, &g_y);
-
-           if (!g_x || !g_y)
-           {
-              syslog(LOG_CRIT,
-                     "Invalid argument '%s' given for geometry. Exiting.",
-                     optarg);
-              return (-1);
-           }
-
-           fullscreen = 0;
-           break;
-        case 't':
-           /* Allow arbitrary paths to theme files */
-           theme = theme_normalize_path(theme, optarg);
-           break;
-        case 'T':
-           testing = 1;
-           fullscreen = 0;
-           break;
-        case 'c':
-           config = strdup(optarg);
-           break;
-        case 'z':
-           /* printf("entrance: main: z optarg = %s\n", optarg); */
-           server_pid = (pid_t) atoi(optarg);
-           break;
-        default:
-           entrance_help(argv);
+         fputs("ERROR: could not parse command line options.\n", stderr);
+	 return -1;
       }
-   }
+
+   if (exit_option)
+      return 0;
+
+   if (nonargs != argc)
+      {
+         fputs("Invalid non-option argument", stderr);
+         ecore_getopt_help(stderr, &options);
+         return 1;
+      }
+
+   if (theme_path)
+      theme = theme_normalize_path(theme, theme_path);
 
    if (!testing)
       if (!entrance_ipc_init(server_pid))
@@ -859,7 +821,13 @@ main(int argc, char *argv[])
       edje_freeze();
       edje_frametime_set(1.0 / 30.0);
 
-      e = setup_ecore_evas(0, 0, g_x, g_y, fullscreen);
+      if (geometry.x == 0 && geometry.y == 0 && geometry.w == 0 &&
+          geometry.h == 0 && !testing)
+	 fullscreen = 1;
+      else
+	 fullscreen = 0;
+      e = setup_ecore_evas(geometry.x, geometry.y, geometry.w, geometry.h,
+        fullscreen);
       if (!e)
       {
          /* Note: The actual error will be logged in setup_ecore_evas() */

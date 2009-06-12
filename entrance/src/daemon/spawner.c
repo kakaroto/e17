@@ -1,6 +1,7 @@
 #include <Ecore.h>
 #include <Ecore_Config.h>
 #include <Ecore_File.h>
+#include <Ecore_Getopt.h>
 #include "Entranced.h"
 #include "Entranced_Display.h"
 #include "auth.h"
@@ -34,25 +35,31 @@ static void _sigaction_cb_sigusr(int);
 static int _event_cb_exited(void *, int, void *);
 static int _event_cb_signal_exit(void *, int, void *);
 
-
-void
-usage(char *name)
-{
-   /* This should probably in a separate usage function, but bleh */
-   printf("Entranced - Launcher for the Entrance Display Manager\n");
-   printf("Usage: %s [OPTION] ...\n\n", name);
-   printf("--------------------------------------------------------------------------\n");
-   printf("  -c CONFIG          Specify config file for greeter\n");
-   printf("  -d DISPLAY         Connect to an existing X server\n");
-   printf("  -help              Display this help message\n");
-   printf("  -verbose           Display extra debugging info\n");
-   printf("  -nodaemon          Don't fork to background (useful for init scripts)\n");
-   printf("==========================================================================\n\n");
-   printf("Note: if you're launching Entrance from within an existing X session, don't\n");
-   printf("try to use entranced or you may get unexpected results. Instead, launch\n");
-   printf("entrance directly by typing \"entrance\".\n\n");
-   exit(0);
-}
+static const Ecore_Getopt options = {
+    "entranced",
+    NULL,
+    PACKAGE_VERSION,
+    "(C) 2009 Enlightenment, see AUTHORS.",
+    "BSD with advertisement, see COPYING",
+    "Launch Entrance Display Manager\n\n"
+    "%prog manages the X session by itself.  "
+    "If you want to launch Entrance\nfrom an existing X session,"
+    "launch it directly by typing \"entrance\".",
+    1,
+    {
+      ECORE_GETOPT_STORE_TRUE('D', "debug", "enable debug mode"),
+      ECORE_GETOPT_VERSION('V', "version"),
+      ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+      ECORE_GETOPT_LICENSE('L', "license"),
+      ECORE_GETOPT_STORE_STR('c', "config", "specify config file for greeter"),
+      ECORE_GETOPT_STORE_STR('d', "display", "connect to an existing X server"),
+      ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "don't fork to background (useful for init scripts)"),
+      ECORE_GETOPT_HELP('h', "help"),
+      ECORE_GETOPT_STORE_TRUE('a', "disable-xauth", "do not enable XAUTH"),
+      ECORE_GETOPT_STORE_TRUE('v', "verbose", "display extra debugging info"),
+      ECORE_GETOPT_SENTINEL
+    }
+};
 
 /*
  * Main function
@@ -61,20 +68,29 @@ usage(char *name)
 int
 main(int argc, char **argv)
 {
-   int c;
-   int nodaemon = 0;            /* TODO: Config-ize this variable */
+   unsigned char exit_option = 0;
+   unsigned char debug_mode = 0;
+   char *config_file = NULL;
+   char *display = NULL;
+   unsigned char nodaemon = 0;
+   unsigned char disable_xauth = 0;
+
+   Ecore_Getopt_Value values[] = {
+     ECORE_GETOPT_VALUE_BOOL(debug_mode),
+     ECORE_GETOPT_VALUE_BOOL(exit_option),
+     ECORE_GETOPT_VALUE_BOOL(exit_option),
+     ECORE_GETOPT_VALUE_BOOL(exit_option),
+     ECORE_GETOPT_VALUE_STR(config_file),
+     ECORE_GETOPT_VALUE_STR(display),
+     ECORE_GETOPT_VALUE_BOOL(nodaemon),
+     ECORE_GETOPT_VALUE_BOOL(exit_option),
+     ECORE_GETOPT_VALUE_BOOL(disable_xauth),
+     ECORE_GETOPT_VALUE_BOOL(entranced_debug_flag),
+   };
+
+   int nonargs;
    Entranced_Display *d;
    char *str = NULL;
-   struct option d_opt[] = {
-      {"config", 1, 0, 'c'},
-      {"display", 1, 0, 'd'},
-      {"nodaemon", 0, 0, 'n'},
-      {"help", 0, 0, 'h'},
-      {"disable-xauth", 0, 0, 'a'},
-      {"verbose", 0, 0, 'v'},
-      {"debug", 0, 0, 'D'},
-      {0, 0, 0, 0}
-   };
    pid_t entranced_pid = getpid();
 
    /* Initialize Ecore */
@@ -93,39 +109,32 @@ main(int argc, char **argv)
    entranced_ipc_display_set(d);
 
    /* Parse command-line options */
-   while (1)
-   {
-      c = getopt_long_only(argc, argv, "c:d:nhvD", d_opt, NULL);
-      if (c == -1)
-         break;
-      switch (c)
-      {
-        case 'c':
-           d->config = strdup(optarg);
-           break;
-        case 'd':
-           d->name = strdup(optarg);
-           break;
-        case 'a':
-           d->auth_en = 0;
-           break;
-        case 'n':
-           nodaemon = 1;
-           break;
-        case 'h':
-           usage(argv[0]);
-           break;
-        case 'v':
-           entranced_debug_flag = 1;
-           entranced_debug("Verbose output active.\n");
-           break;
-        case 'D':
-           d->xprog = DEBUG_X_SERVER;
-           break;
-      }
-   }
+   nonargs = ecore_getopt_parse(&options, values, argc, argv);
 
-   if (!d->name)
+   if (nonargs < 0)
+      return 1;
+   else if (nonargs != argc)
+      {
+          fputs("Invalid non-option argument", stderr);
+          ecore_getopt_help(stderr, &options);
+	  return 1;
+      }
+
+   if (exit_option)
+      return 0;
+
+   d->config = config_file;
+   d->auth_en = disable_xauth;
+
+   if (entranced_debug_flag)
+      entranced_debug("Verbose output active.\n");
+
+   if (debug_mode)
+      d->xprog = DEBUG_X_SERVER;
+
+   if (display)
+      d->name = display;
+   else
       d->name = strdup(X_DISP);
 
    str = strchr(d->name, ':');

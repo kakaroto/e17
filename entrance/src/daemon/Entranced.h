@@ -9,7 +9,6 @@
 #include <sys/wait.h>
 #include <X11/Xlib.h>
 #include <limits.h>
-#include <getopt.h>
 #include <syslog.h>
 
 #include <Ecore.h>

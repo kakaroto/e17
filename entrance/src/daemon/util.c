@@ -3,7 +3,7 @@
 
 /* extern Entranced_Config config; */
 
-int entranced_debug_flag = 0;
+unsigned char entranced_debug_flag = 0;
 
 void
 entranced_debug(char *fmt, ...)
