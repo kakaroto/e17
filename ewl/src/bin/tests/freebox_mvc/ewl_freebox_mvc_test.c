@@ -210,32 +210,32 @@ ewl_freebox_mvc_test_data_append(Ecore_List *d)
         Freebox_MVC_Test_Row_Data *data;
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/Draw.png");
+        data->image = ewl_test_image_copy_get("Draw.png");
         data->text = strdup("Draw");
         ecore_list_append(d, data);
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/End.png");
+        data->image = ewl_test_image_copy_get("End.png");
         data->text = strdup("End");
         ecore_list_append(d, data);
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/NewBCard.png");
+        data->image = ewl_test_image_copy_get("NewBCard.png");
         data->text = strdup("Card");
         ecore_list_append(d, data);
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/Open.png");
+        data->image = ewl_test_image_copy_get("Open.png");
         data->text = strdup("Open");
         ecore_list_append(d, data);
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/Package.png");
+        data->image = ewl_test_image_copy_get("Package.png");
         data->text = strdup("Package");
         ecore_list_append(d, data);
 
         data = calloc(1, sizeof(Freebox_MVC_Test_Row_Data));
-        data->image = strdup(PACKAGE_DATA_DIR "/ewl/images/World.png");
+        data->image = ewl_test_image_copy_get("World.png");
         data->text = strdup("World");
         ecore_list_append(d, data);
 }

@@ -6,7 +6,6 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/lib \
 -I$(top_srcdir)/src/bin \
 -I$(top_builddir)/src/bin \
--DPACKAGE_LIB_DIR=\"$(libdir)\" \
 @EDJE_CFLAGS@ \
 @ECORE_CFLAGS@ \
 @EVAS_CFLAGS@ \

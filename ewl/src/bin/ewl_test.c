@@ -58,6 +58,11 @@ static char *ewl_test_help_body =
                 "If you encounter any bugs in the test application "
                 "please report them to http://bugs.enlightenment.org.";
 
+const char *ewl_test_image_directory = ""; /* this is visible to the modules */
+static char *ewl_test_image_dir = NULL;    /* this is the private one only seen
+                                              by the test app */
+
+static int ewl_test_image_directory_init(void);
 static int ewl_test_setup_tests(void);
 static void ewl_test_free(Ewl_Test *test);
 static int ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2);
@@ -185,6 +190,11 @@ main(int argc, char **argv)
                 return 1;
         }
 
+        if (!ewl_test_image_directory_init())
+                /* this is not critical so go on */
+                printf("Unable to setup the image dir.\n");
+
+
         if (!ewl_test_setup_tests())
         {
                 printf("Unable to setup tests.\n");
@@ -250,6 +260,12 @@ main(int argc, char **argv)
 
         if (tests) ecore_list_destroy(tests);
         if (tests_path_group) ecore_path_group_del(tests_path_group);
+
+        if (ewl_test_image_dir)
+        {
+                ewl_test_image_directory = "";
+                free(ewl_test_image_dir);
+        }
 
         ecore_shutdown();
 
@@ -515,10 +531,49 @@ run_test_boxed(Ewl_Test *t)
 }
 
 static int
+ewl_test_image_directory_init(void)
+{
+        char buffer[PATH_MAX];
+        const char *data_dir;
+
+        data_dir = ewl_system_directory_get(EWL_DIRECTORY_DATA);
+        if (data_dir[0] != '\0')
+        {
+                snprintf(buffer, sizeof(buffer), "%s/images", data_dir);
+                ewl_test_image_dir = strdup(buffer);
+
+                if (ewl_test_image_dir)
+                {
+                        ewl_test_image_directory = ewl_test_image_dir;
+                        return TRUE;
+                }
+        }
+        return FALSE;
+}
+
+const char *
+ewl_test_image_get(const char *name)
+{
+        static char buffer[PATH_MAX];
+
+        snprintf(buffer, sizeof(buffer), "%s/%s", ewl_test_image_directory,
+                        name);
+
+        return buffer;
+}
+
+char *
+ewl_test_image_copy_get(const char *name)
+{
+        return strdup(ewl_test_image_get(name));
+}
+
+static int
 ewl_test_setup_tests(void)
 {
         Eina_List *list = NULL;
         char *name = NULL;
+        char buf[PATH_MAX];
 
         if (tests) return 1;
 
@@ -527,8 +582,10 @@ ewl_test_setup_tests(void)
 
         ecore_list_free_cb_set(tests, ECORE_FREE_CB(ewl_test_free));
 
+        snprintf(buf, sizeof(buf), "%s/tests",
+                        ewl_system_directory_get(EWL_DIRECTORY_LIB));
         tests_path_group = ecore_path_group_new();
-        ecore_path_group_add(tests_path_group, PACKAGE_LIB_DIR "/ewl/tests");
+        ecore_path_group_add(tests_path_group, buf);
         list = ecore_plugin_available_get(tests_path_group);
         /* no tests found ... */
         if (!list) return 0;
@@ -803,8 +860,9 @@ fill_source_text(Ewl_Test *test)
         char *txt;
         char filename[PATH_MAX];
 
-        snprintf(filename, sizeof(filename), 
-                        PACKAGE_DATA_DIR "/ewl/examples/%s", test->filename);
+        snprintf(filename, sizeof(filename), "%s/examples/%s",
+                        ewl_system_directory_get(EWL_DIRECTORY_DATA),
+                        test->filename);
 
         txt = read_file(filename);
         text_parse(txt);
@@ -821,8 +879,8 @@ fill_tutorial_text(Ewl_Test *test)
         p = strrchr(file, '_');
         if ((p != NULL) && (*p != '\0')) *p = '\0';
         
-        snprintf(filename, sizeof(filename),
-                        PACKAGE_DATA_DIR "/ewl/tutorials/%s.dox", file);
+        snprintf(filename, sizeof(filename), "%s/tutorials/%s.dox",
+                        ewl_system_directory_get(EWL_DIRECTORY_DATA), file);
         free(file);
 
         txt = read_file(filename);

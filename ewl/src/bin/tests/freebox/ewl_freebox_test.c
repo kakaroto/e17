@@ -159,12 +159,12 @@ ewl_freebox_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                 char *name;
                 char *path;
         } files[] = {
-                {"Draw", PACKAGE_DATA_DIR "/ewl/images/Draw.png"},
-                {"End", PACKAGE_DATA_DIR "/ewl/images/End.png"},
-                {"Card", PACKAGE_DATA_DIR "/ewl/images/NewBCard.png"},
-                {"Open", PACKAGE_DATA_DIR "/ewl/images/Open.png"},
-                {"Package", PACKAGE_DATA_DIR "/ewl/images/Package.png"},
-                {"World", PACKAGE_DATA_DIR "/ewl/images/World.png"},
+                {"Draw", "Draw.png"},
+                {"End", "End.png"},
+                {"Card", "NewBCard.png"},
+                {"Open", "Open.png"},
+                {"Package", "Package.png"},
+                {"World", "World.png"},
                 {NULL, NULL}
         };
 
@@ -177,10 +177,12 @@ ewl_freebox_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                 width = (rand() % 30) + 30;
                 height = (rand() % 30) + 30;
 
+
                 i = ewl_icon_new();
                 ewl_container_child_append(EWL_CONTAINER(fb), i);
                 ewl_icon_label_set(EWL_ICON(i), files[t].name);
-                ewl_icon_image_set(EWL_ICON(i), files[t].path, NULL);
+                ewl_icon_image_set(EWL_ICON(i), 
+                                ewl_test_image_get(files[t].path), NULL);
                 ewl_object_fill_policy_set(EWL_OBJECT(i),
                                                 EWL_FLAG_FILL_FILL);
                 ewl_object_minimum_size_set(EWL_OBJECT(i), (int)width,

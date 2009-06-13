@@ -268,8 +268,8 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         d->count += 2;
         d->data = realloc(d->data, sizeof(char *) * d->count);
 
-        d->data[s] = strdup(PACKAGE_DATA_DIR "/images/Package.png");
-        d->data[s + 1] = strdup(PACKAGE_DATA_DIR "/images/Open.png");
+        d->data[s] = ewl_test_image_copy_get("Package.png");
+        d->data[s + 1] = ewl_test_image_copy_get("Open.png");
 
         ewl_mvc_dirty_set(EWL_MVC(c), 1);
 

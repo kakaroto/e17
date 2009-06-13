@@ -80,8 +80,10 @@ ewl_engine_names_get(void)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        snprintf(dir, sizeof(dir), "%s/ewl/%s", PACKAGE_LIB_DIR,
-                                                EWL_ENGINE_DIR);
+        snprintf(dir, sizeof(dir), "%s/%s",
+                        ewl_system_directory_get(EWL_DIRECTORY_LIB),
+                        EWL_ENGINE_DIR);
+
         if (!ecore_file_exists(dir))
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
@@ -144,9 +146,10 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
                 char pathname[PATH_MAX];
 
                 ewl_engines_path = ecore_path_group_new();
-                snprintf(pathname, sizeof(pathname), "%s/ewl/%s/",
-                                                        PACKAGE_LIB_DIR,
-                                                        EWL_ENGINE_DIR);
+                snprintf(pathname, sizeof(pathname), "%s/%s/",
+                                ewl_system_directory_get(EWL_DIRECTORY_LIB),
+                                EWL_ENGINE_DIR);
+                                        
                 ecore_path_group_add(ewl_engines_path, pathname);
         }
 

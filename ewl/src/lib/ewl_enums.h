@@ -10,6 +10,30 @@
  */
 
 /**
+ * @enum Ewl_Directory_Type
+ * The system directory types used for querring with ewl_system_directory_get()
+ */
+enum Ewl_Directory_Type
+{
+        EWL_DIRECTORY_DATA,     /**< the directory where the system wide data,
+                                  is stored */
+        EWL_DIRECTORY_LIB,      /**< the directory where the plugins are stored
+                                  */
+        EWL_DIRECTORY_CONF,     /**< the directory where the configuration is
+                                  stored */
+        EWL_DIRECTORY_LOCALE,   /**< the directory where the translations are
+                                  stored */
+        EWL_DIRECTORY_THEME,    /**< the directory where the themes are
+                                  stored */
+        EWL_DIRECTORY_MAX
+};
+
+/**
+ * The Ewl_Directory_Type
+ */
+typedef enum Ewl_Directory_Type Ewl_Directory_Type;
+
+/**
  * @enum Ewl_Callback_Type
  * This defines the various types of callbacks that can be hooked up for each
  * widget.

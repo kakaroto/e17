@@ -201,12 +201,12 @@ tree_test_data_setup(void)
         dt = calloc(TREE_DATA_ELEMENTS, sizeof(Tree_Test_Row_Data *));
 
         dt[0] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[0]->image = ewl_test_image_copy_get("e-logo.png");
         dt[0]->text = strdup("The E logo");
         dt[0]->expandable = 0;
 
         dt[1] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/elicit.png");
+        dt[1]->image = ewl_test_image_copy_get("elicit.png");
         dt[1]->text = strdup("The Elicit image");
         dt[1]->expandable = 1;
 
@@ -215,11 +215,11 @@ tree_test_data_setup(void)
         dt[1]->subdata->row_count = 1;
         dt[1]->subdata->rows = calloc(dt[1]->subdata->count, sizeof(Tree_Test_Row_Data *));
         dt[1]->subdata->rows[0] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[1]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[1]->subdata->rows[0]->image = ewl_test_image_copy_get("e-logo.png");
         dt[1]->subdata->rows[0]->text = strdup("The First Subrow");
 
         dt[2] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
+        dt[2]->image = ewl_test_image_copy_get("entrance.png");
         dt[2]->text = strdup("The Entrance image");
         dt[2]->expandable = 1;
 
@@ -228,31 +228,31 @@ tree_test_data_setup(void)
         dt[2]->subdata->row_count = 6;
         dt[2]->subdata->rows = calloc(dt[2]->subdata->count, sizeof(Tree_Test_Row_Data *));
         dt[2]->subdata->rows[0] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[0]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[0]->text = strdup("Squee. 1.");
         dt[2]->subdata->rows[1] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[1]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[1]->text = strdup("Splat. 2.");
         dt[2]->subdata->rows[2] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[2]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[2]->text = strdup("Squee. 3.");
         dt[2]->subdata->rows[3] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[3]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[3]->text = strdup("Splat. 4.");
         dt[2]->subdata->rows[4] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[4]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[4]->text = strdup("Squee. 5.");
         dt[2]->subdata->rows[5] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[2]->subdata->rows[5]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        dt[2]->subdata->rows[5]->image = ewl_test_image_copy_get("e-logo.png");
         dt[2]->subdata->rows[5]->text = strdup("Splat. 6.");
 
         dt[3] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
+        dt[3]->image = ewl_test_image_copy_get("End.png");
         dt[3]->text = strdup("Zebra");
         dt[3]->expandable = 0;
 
         dt[4] = calloc(1, sizeof(Tree_Test_Row_Data));
-        dt[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/banner-top.png");
+        dt[4]->image = ewl_test_image_copy_get("banner-top.png");
         dt[4]->text = strdup("Ant");
         dt[4]->expandable = 0;
 

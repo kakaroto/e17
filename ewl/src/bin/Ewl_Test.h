@@ -56,5 +56,18 @@ struct Ewl_Test
         Ewl_Unit_Test *unit_tests;      /**< The test unit tests */
 };
 
+extern const char *ewl_test_image_directory;
+
+#if __cplusplus
+extern"C" {
+#endif
+
+const char      *ewl_test_image_get(const char *name);
+char            *ewl_test_image_copy_get(const char *name);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

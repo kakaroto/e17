@@ -578,8 +578,9 @@ ewl_theme_path_find(const char *name)
          * No user theme, so we try the system-wide theme.
          */
         if (!theme_found_path) {
-                snprintf(theme_tmp_path, PATH_MAX, PACKAGE_DATA_DIR
-                                "/ewl/themes/%s.edj", name);
+                snprintf(theme_tmp_path, PATH_MAX, "%s/%s.edj",
+                                ewl_system_directory_get(EWL_DIRECTORY_THEME),
+                                name);
                 if (((stat(theme_tmp_path, &st)) == 0) && S_ISREG(st.st_mode))
                         theme_found_path = strdup(theme_tmp_path);
         }

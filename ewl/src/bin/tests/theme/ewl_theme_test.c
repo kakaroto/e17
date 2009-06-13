@@ -67,7 +67,7 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(vbox), list);
         ewl_widget_show(list);
 
-        rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
+        rep = opendir(ewl_system_directory_get(EWL_DIRECTORY_THEME));
         while ((file = readdir(rep)))
         {
                 char *name;
@@ -128,8 +128,9 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
         char theme_filename[PATH_MAX];
 
         notebook = ewl_widget_name_find("notebook");
-        snprintf(theme_filename, sizeof(theme_filename),
-                        PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
+        snprintf(theme_filename, sizeof(theme_filename), "%s/%s",
+                        ewl_system_directory_get(EWL_DIRECTORY_THEME),
+                        (char *)data);
         ewl_widget_theme_path_set(notebook, theme_filename);
  
         if (selected_theme) free(selected_theme);

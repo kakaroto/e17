@@ -4,6 +4,7 @@
 #include <Ewl.h>
 #include <Edje.h>
 #include <stdio.h>
+#include <limits.h>
 
 #if HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -72,6 +73,7 @@ main(int argc, char **argv)
         Ewl_Widget *wg, *c, *vbox;
         Ewl_Widget *button[2];
         Ewl_Widget *emb;
+        char buf[PATH_MAX];
         Evas_Object *eo;
         Evas_Coord x, y, w, h;
 
@@ -99,12 +101,12 @@ main(int argc, char **argv)
         evas = ecore_evas_get(ee);
         edje = edje_object_add(evas);
 
-        if (!edje_object_file_set(edje,
-                        PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj",
-                        "main"))
+        snprintf(buf, sizeof(buf), "%s/%s", 
+                        ewl_system_directory_get(EWL_DIRECTORY_THEME),
+                        "ewl_embed_test.edj");
+        if (!edje_object_file_set(edje, buf, "main"))
         {
-                fprintf(stderr, "Error in: %s\n",
-                        PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj");
+                fprintf(stderr, "Error in: %s\n", buf);
                 return 1;
         }
 

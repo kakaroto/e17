@@ -116,7 +116,8 @@ main(int argc, char **argv)
 
         ewl_init(&argc, argv);
 
-        snprintf(tmp, PATH_MAX, "%s/ewl/images/bg.edj", PACKAGE_DATA_DIR);
+        snprintf(tmp, sizeof(tmp), "%s/images/bg.edj",
+                        ewl_system_directory_get(EWL_DIRECTORY_DATA));
 
         win = ewl_window_new();
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, close_cb, NULL);

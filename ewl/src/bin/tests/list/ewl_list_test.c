@@ -145,15 +145,15 @@ list_test_data_setup(void)
         data->rows = calloc(3, sizeof(List_Test_Row_Data *));
 
         data->rows[0] = calloc(1, sizeof(List_Test_Row_Data));
-        data->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+        data->rows[0]->image = ewl_test_image_copy_get("e-logo.png");
         data->rows[0]->text = strdup("The E logo");
 
         data->rows[1] = calloc(1, sizeof(List_Test_Row_Data));
-        data->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entice.png");
+        data->rows[1]->image = ewl_test_image_copy_get("entice.png");
         data->rows[1]->text = strdup("The Entice image");
 
         data->rows[2] = calloc(1, sizeof(List_Test_Row_Data));
-        data->rows[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
+        data->rows[2]->image = ewl_test_image_copy_get("entrance.png");
         data->rows[2]->text = strdup("The Entrance image");
 
         data->count = 3;

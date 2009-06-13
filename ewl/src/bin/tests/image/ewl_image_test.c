@@ -244,14 +244,7 @@ create_test(Ewl_Container *image_box)
         ewl_container_child_append(image_box, scrollpane);
         ewl_widget_show(scrollpane);
 
-        if ((ecore_file_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")))
-                image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
-        else if ((ecore_file_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")))
-                image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
-        else if ((ecore_file_exists("./data/images/e-logo.png")))
-                image_file = strdup("./data/images/e-logo.png");
-        else if ((ecore_file_exists("../data/images/e-logo.png")))
-                image_file = strdup("../data/images/e-logo.png");
+        image_file = ewl_test_image_copy_get("e-logo.png");
 
         /* now that we have the fullpath we need to update the entry */
         ewl_text_text_set(EWL_TEXT(entry_path), image_file);
