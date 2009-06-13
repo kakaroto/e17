@@ -100,8 +100,6 @@ struct _Group
    Evas_Object *check;
 
    const char *name;
-   const char *signal;
-   const char *source;
 
    Elm_Genlist_Item *item;
    Elm_Toolbar_Item *ti;

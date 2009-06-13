@@ -47,7 +47,6 @@ static void on_group_part_unselect(void *data, Evas_Object *obj, void *event_inf
 static void on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src);
 static void on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg);
 static void on_hover_signal_select(void *data, Evas_Object *obj, void *event_info);
-static void on_signal_button_click(void *data, Evas_Object *obj, void *event_info);
 
 static Evas_Object * gc_icon_get(const void *data, Evas_Object *obj, const char *part);
 static char *gc_label_get(const void *data, Evas_Object *obj, const char *part);
@@ -271,12 +270,6 @@ create_signals_box(Viewer *v)
    elm_hoversel_hover_parent_set(o, v->gui.win);
    elm_hoversel_label_set(o, "Signals");
    elm_box_pack_start(bx, o);
-   evas_object_show(o);
-
-   o = elm_button_add(bx);
-   elm_button_label_set(o, "Go");
-   evas_object_smart_callback_add(o, "clicked", on_signal_button_click, v);
-   elm_box_pack_end(bx, o);
    evas_object_show(o);
 
    edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,show", "v");
@@ -932,19 +925,8 @@ on_hover_signal_select(void *data, Evas_Object *obj, void *event_info)
 {
    Hoversel_Item_Data *dat = data;
 
-   dat->grp->signal = eina_stringshare_ref(dat->signal);
-   dat->grp->source = eina_stringshare_ref(dat->source);
    elm_hoversel_label_set(dat->grp->v->gui.sig_signal, dat->label);
-}
-
-static void
-on_signal_button_click(void *data, Evas_Object *obj, void *event_info)
-{
-   Viewer *v = data;
-   Group *grp;
-
-   if (!(grp = v->visible_group)) return;
-   edje_object_signal_emit(grp->obj, grp->signal, grp->source);
+   edje_object_signal_emit(dat->grp->obj, dat->signal, dat->source);
 }
 
 /* Genlist functions */
@@ -980,8 +962,6 @@ gc_del(const void *data, Evas_Object *obj)
 {
    Group *grp = (Group *) data;
    eina_stringshare_del(grp->name);
-   eina_stringshare_del(grp->signal);
-   eina_stringshare_del(grp->source);
 
    free_group_parts(grp);
 
