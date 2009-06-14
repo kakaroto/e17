@@ -11,4 +11,4 @@ EXTRA_DIST = $(SCRIPT)
 all: $(DB)
 
 $(DB): $(SCRIPT)
-		sh $< || :
+		sh ${SCRIPT} || :
