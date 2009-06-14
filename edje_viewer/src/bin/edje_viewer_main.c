@@ -165,6 +165,7 @@ config_init(Viewer *v)
 #define D v->config_edd
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, show_parts, EET_T_CHAR);
+   C_VAL(D, T, show_entry, EET_T_CHAR);
    C_VAL(D, T, show_signals, EET_T_CHAR);
    C_VAL(D, T, edje_file, EET_T_STRING);
    C_LIST(D, T, groups, v->groups_edd); /* the list */
@@ -173,6 +174,7 @@ config_init(Viewer *v)
      {
       case 0:
 	 v->config->show_parts = 1;
+	 v->config->show_entry = 1;
 	 v->config->show_signals = 1;
       case -1:
 	 /* Incremental additions */

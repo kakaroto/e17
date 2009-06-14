@@ -16,6 +16,7 @@ struct _Hoversel_Item_Data
 static void viewer_exit(Viewer *v);
 static void edje_object_create(Group *grp);
 static void create_group_parts_list(Viewer *v);
+static void create_text_entry(Viewer *v);
 static void fill_group_parts_list(Viewer *v);
 static void create_signals_box(Viewer *v);
 static void fill_signals_list(Group *grp);
@@ -33,14 +34,17 @@ static void create_toggles_win(Viewer *v);
 static void group_check_toggle(Viewer *v);
 static void group_toggle(Group *grp, Eina_Bool skip_config);
 static void hoversel_clear(Viewer *v);
+static void text_entry_toggle(Viewer *v, Eina_Bool show);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
 static void on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static int on_typebuf_timer(void *data);
 static void on_group_check_changed(void *data, Evas_Object *obj, void *event_info);
 static void on_toolbar_changed(void *data, Evas_Object *obj, void *event_info);
+static void on_entry_changed(void *data, Evas_Object *obj, void *event_info);
 static int on_entries_sort(const void *d1, const void *d2);
 static void on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info);
+static void on_text_entry_toggle_change(void *data, Evas_Object *obj, void *event_info);
 static void on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info);
 static void on_group_part_select(void *data, Evas_Object *obj, void *event_info);
 static void on_group_part_unselect(void *data, Evas_Object *obj, void *event_info);
@@ -107,6 +111,8 @@ create_main_win(Viewer *v)
 
    if (v->config->show_parts)
      create_group_parts_list(v);
+   if (v->config->show_entry)
+     create_text_entry(v);
    if (v->config->show_signals)
      create_signals_box(v);
 
@@ -210,6 +216,21 @@ create_group_parts_list(Viewer *v)
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    elm_layout_content_set(v->gui.ly, "v.swallow.parts_list", o);
    evas_object_smart_callback_add(o, "unselected", on_group_part_unselect, NULL);
+
+   evas_object_show(o);
+}
+
+static void
+create_text_entry(Viewer *v)
+{
+   Evas_Object *o;
+
+   v->gui.entry = o = elm_entry_add(v->gui.ly);
+   elm_entry_single_line_set(o, 1);
+   evas_object_size_hint_weight_set(o, 1.0, 1.0);
+   evas_object_size_hint_align_set(o, -1.0, -1.0);
+   evas_object_smart_callback_add(o, "changed", on_entry_changed, v);
+   elm_layout_content_set(v->gui.ly, "v.swallow.text_entry", o);
 
    evas_object_show(o);
 }
@@ -604,6 +625,14 @@ create_toggles_win(Viewer *v)
    evas_object_show(o);
 
    o = elm_toggle_add(bx);
+   elm_toggle_label_set(o, "Show text entry");
+   elm_toggle_state_set(o, v->config->show_entry);
+   elm_box_pack_end(bx, o);
+   evas_object_smart_callback_add(o, "changed",
+				  on_text_entry_toggle_change, v);
+   evas_object_show(o);
+
+   o = elm_toggle_add(bx);
    elm_toggle_label_set(o, "Show signals log");
    elm_toggle_state_set(o, v->config->show_signals);
    elm_box_pack_end(bx, o);
@@ -664,6 +693,42 @@ hoversel_clear(Viewer *v)
    elm_hoversel_label_set(v->gui.sig_signal, "Signals");
 }
 
+static void
+text_entry_toggle(Viewer *v, Eina_Bool show)
+{
+   Part *prt = v->visible_part;
+   char type;
+
+   if (!prt) return;
+   type = edje_edit_part_type_get(prt->grp->obj, prt->name);
+   if (type != 2/* EDJE_PART_TYPE_TEXT */ &&
+       type != 5/* EDJE_PART_TYPE_TEXTBLOCK */)
+     return;
+
+   if (show == v->entry_visible) return;
+   if (show)
+     {
+        const char *state, *text;
+
+        state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name);
+        text = edje_edit_state_text_get(prt->grp->obj, prt->name, state);
+        elm_entry_entry_set(v->gui.entry, text);
+        edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,entry,show", "v");
+        evas_object_focus_set(v->gui.entry, 1);
+        elm_object_focus(v->gui.entry);
+        v->entry_visible = 1;
+
+        edje_edit_string_free(state);
+        edje_edit_string_free(text);
+     }
+   else
+     {
+        edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,entry,hide", "v");
+        evas_object_focus_set(v->gui.ly, 1);
+        v->entry_visible = 0;
+     }
+}
+
 /* Callbacks */
 static void
 on_win_del_req(void *data, Evas_Object *obj, void *event_info)
@@ -677,6 +742,9 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Viewer *v = data;
    Evas_Event_Key_Down *ev = event_info;
+
+   if (evas_focus_get(e) != v->gui.ly)
+     return;
 
    if (!strcmp(ev->keyname, "F9"))
      show_toggles(v);
@@ -760,6 +828,22 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
      fill_signals_list(grp);
 }
 
+static void
+on_entry_changed(void *data, Evas_Object *obj, void *event_info)
+{
+   Viewer *v = data;
+   Part *prt = v->visible_part;
+   const char *state;
+
+   if (!prt) return;
+
+   state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name);
+   edje_edit_state_text_set(prt->grp->obj, prt->name, state,
+                            elm_entry_entry_get(v->gui.entry));
+
+   edje_edit_string_free(state);
+}
+
 static int
 on_entries_sort(const void *d1, const void *d2)
 {
@@ -793,6 +877,29 @@ on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+on_text_entry_toggle_change(void *data, Evas_Object *obj, void *event_info)
+{
+   Viewer *v = data;
+
+   v->config->show_entry = elm_toggle_state_get(obj);
+   if (v->config->show_entry)
+     {
+	if (!v->gui.entry)
+	  create_text_entry(v);
+
+        if (v->visible_part)
+          text_entry_toggle(v, 1);
+     }
+   else if (v->gui.entry)
+     {
+        text_entry_toggle(v, 0);
+	evas_object_del(v->gui.entry);
+	v->gui.entry = NULL;
+     }
+   config_save(v, 0);
+}
+
+static void
 on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info)
 {
    Viewer *v = data;
@@ -816,29 +923,43 @@ static void
 on_group_part_select(void *data, Evas_Object *obj, void *event_info)
 {
    Part *prt = data;
+   Viewer *v = prt->grp->v;
    Evas_Coord x, y, w, h, ox, oy;
-   Evas_Object *o;
+   Evas_Object *o = prt->highlight;
 
    edje_object_part_geometry_get(prt->grp->obj, prt->name, &x, &y, &w, &h);
-   prt->highlight = o = edje_object_add(evas_object_evas_get(prt->grp->obj));
+   if (!prt->highlight)
+     {
+        prt->highlight = o = edje_object_add(evas_object_evas_get(prt->grp->obj));
+        edje_object_file_set(o, prt->grp->v->theme_file, "viewer/part/highlight");
+     }
    evas_object_geometry_get(prt->grp->obj, &ox, &oy, NULL, NULL);
-   edje_object_file_set(o, prt->grp->v->theme_file, "viewer/part/highlight");
    evas_object_move(o, x + ox, y + oy);
    evas_object_resize(o, w, h);
    evas_object_show(o);
    edje_object_signal_emit(o, "v,state,highlight,show", "v");
+
+   v->visible_part = prt;
+   if (v->config->show_entry)
+     text_entry_toggle(v, 1);
 }
 
 static void
 on_group_part_unselect(void *data, Evas_Object *obj, void *event_info)
 {
    Part *prt = (Part *) elm_list_item_data_get(event_info);
+   Viewer *v = prt->grp->v;
 
    if (prt->highlight)
      {
 	evas_object_del(prt->highlight);
 	prt->highlight = NULL;
      }
+
+   if (v->config->show_entry)
+     text_entry_toggle(v, 0);
+
+   v->visible_part = NULL;
 }
 
 static void

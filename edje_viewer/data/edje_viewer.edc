@@ -48,9 +48,8 @@ collections {
                         to_y: "v.swallow.tbar";
                     }
                     rel2 {
-                        relative: 1.0 0.0;
+                        relative: 1.0 0.8;
                         offset: -6 -6;
-                        to_y: "v.swallow.parts_list";
                     }
                 }
             }
@@ -69,7 +68,36 @@ collections {
                 description { state: "active" 0.0;
                     inherit: "default" 0.0;
                     rel1 {
-                        relative: 1.0 0.8;
+                        relative: 1.0 1.0;
+                        offset: 0 6;
+                        to_x: "v.swallow.tree";
+                        to_y: "v.swallow.main";
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        to_y: "v.swallow.text_entry";
+                    }
+                }
+            }
+            part { name: "v.swallow.text_entry";
+                repeat_events: 0;
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        relative: 1.0 1.0;
+                        to_x: "v.swallow.tree";
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: 0 30;
+                    }
+                }
+                description { state: "active" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        relative: 1.0 1.0;
+                        offset: 0 -30;
                         to_x: "v.swallow.tree";
                     }
                     rel2.relative: 1.0 1.0;
@@ -182,6 +210,20 @@ collections {
                 action: STATE_SET "default" 0.0;
                 transition: SINUSOIDAL 1.0;
                 target:  "v.swallow.parts_list";
+            }
+            program { name: "gote";
+                signal: "v,state,entry,show";
+                source: "v";
+                action: STATE_SET "active" 0.0;
+                transition: SINUSOIDAL 0.25;
+                target:  "v.swallow.text_entry";
+            }
+            program { name: "stopte";
+                signal: "v,state,entry,hide";
+                source: "v";
+                action: STATE_SET "default" 0.0;
+                transition: SINUSOIDAL 1.0;
+                target:  "v.swallow.text_entry";
             }
             program { name: "gosl";
                 signal: "v,state,signals,show";

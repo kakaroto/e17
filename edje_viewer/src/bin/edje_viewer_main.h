@@ -44,7 +44,7 @@ struct _Viewer
 
     struct {
         Evas_Object *win, *ly, *tbar, *tree, *parts_list;
-        Evas_Object *toggles_win;
+        Evas_Object *toggles_win, *entry;
         Evas_Object *sig_box, *sig_list, *sig_signal;
     } gui;
 
@@ -56,6 +56,7 @@ struct _Viewer
     Eina_Inlist *groups;
 
     Group *visible_group;
+    Part *visible_part;
 
     Eina_List *signals;
     Eina_List *hoversel_items;
@@ -71,6 +72,8 @@ struct _Viewer
     Eet_Data_Descriptor  *config_edd;
     Eet_Data_Descriptor  *groups_edd;
     Ecore_Timer *config_save_timer;
+
+    Eina_Bool entry_visible : 1;
 };
 
 struct _Config
@@ -80,6 +83,7 @@ struct _Config
     const char *edje_file;
     Eina_List *groups;
     Eina_Bool show_parts;
+    Eina_Bool show_entry;
     Eina_Bool show_signals;
 };
 
