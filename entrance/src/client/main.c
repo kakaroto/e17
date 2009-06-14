@@ -678,7 +678,7 @@ main(int argc, char *argv[])
    char *display = NULL;
    Ecore_Evas *e = NULL;
    int nonargs;
-   char *theme = NULL, *theme_path;
+   char *theme = NULL, *theme_path = NULL;
    char *config = NULL;
    int fullscreen = 1;
    long server_pid = 0;
