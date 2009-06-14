@@ -21,6 +21,7 @@ struct _Config_Item
    const char *id;
 
    const char *display_name;
+   const char *icon_path;
    const char *status_cmd;
    const char *dblclk_cmd;
    const char *okstate_string;

@@ -7,6 +7,7 @@
 struct _E_Config_Dialog_Data
 {
    char *display_name;
+   char *icon_path;
    char *status_cmd;
    char *dblclk_cmd;
    char *okstate_string;
@@ -58,6 +59,10 @@ _fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
      cfdata->display_name = strdup(ci->display_name);
    else
      cfdata->display_name = strdup("");
+   if (ci->icon_path)
+     cfdata->icon_path = strdup(ci->icon_path);
+   else
+     cfdata->icon_path = strdup("");
    if (ci->status_cmd)
      cfdata->status_cmd = strdup(ci->status_cmd);
    else
@@ -165,14 +170,20 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    e_widget_min_size_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, D_("Doubleclick Command"));
+   ob = e_widget_label_add(evas, D_("Icon Path"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->dblclk_cmd, NULL, NULL, NULL);
+   ob = e_widget_entry_add(evas, &cfdata->icon_path, NULL, NULL, NULL);
    e_widget_min_size_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_check_add(evas, D_("Refresh after Command"), &(cfdata->refresh_after_dblclk_cmd));
+   ob = e_widget_label_add(evas, D_("Doubleclick Command"));
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->dblclk_cmd, NULL, NULL, NULL);
+   e_widget_min_size_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+
+   ob = e_widget_check_add(evas, D_("Refresh after Command"), &(cfdata->refresh_after_dblclk_cmd));
+   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -198,6 +209,8 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
    if (ci->display_name) eina_stringshare_del(ci->display_name);
    ci->display_name = eina_stringshare_add(cfdata->display_name);
+   if (ci->icon_path) eina_stringshare_del(ci->icon_path);
+   ci->icon_path = eina_stringshare_add(cfdata->icon_path);
    if (ci->status_cmd) eina_stringshare_del(ci->status_cmd);
    ci->status_cmd = eina_stringshare_add(cfdata->status_cmd);
    if (strlen(cfdata->okstate_string))

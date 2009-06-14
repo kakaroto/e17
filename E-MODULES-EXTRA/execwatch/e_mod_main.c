@@ -30,6 +30,7 @@ struct _Execwatch
    Instance *inst;
    Evas_Object *execwatch_obj;
    Evas_Object *icon_obj;
+   Evas_Object *icon_custom_obj;
 };
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
@@ -86,6 +87,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      edje_object_file_set(execwatch->execwatch_obj, buf, "modules/execwatch/main");
    evas_object_show(execwatch->execwatch_obj);
    execwatch->icon_obj = edje_object_add(gc->evas);
+   execwatch->icon_custom_obj = e_icon_add(gc->evas);
 
    gcc = e_gadcon_client_new(gc, name, id, style, execwatch->execwatch_obj);
    gcc->data = inst;
@@ -130,6 +132,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->popup) _execwatch_popup_destroy(inst);
    if (execwatch->execwatch_obj) evas_object_del(execwatch->execwatch_obj);
    if (execwatch->icon_obj) evas_object_del(execwatch->icon_obj);
+   if (execwatch->icon_custom_obj) evas_object_del(execwatch->icon_custom_obj);
    
    execwatch_config->instances = eina_list_remove(execwatch_config->instances, inst);
    E_FREE(execwatch);
@@ -210,6 +213,7 @@ _config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->display_name = eina_stringshare_add("Edit!");
+   ci->icon_path = eina_stringshare_add("");
    ci->status_cmd = eina_stringshare_add("");
    ci->dblclk_cmd = eina_stringshare_add("");
    ci->okstate_mode = 0;
@@ -241,6 +245,17 @@ _execwatch_icon(Instance *inst, char *icon)
 				"base/theme/modules/execwatch/icons", buf))
      edje_object_file_set(execwatch->icon_obj, m, buf);
    edje_object_part_swallow(execwatch->execwatch_obj, "icon", execwatch->icon_obj);
+   
+   if (inst->ci->icon_path && ecore_file_exists(inst->ci->icon_path))
+     {
+	e_icon_file_set(execwatch->icon_custom_obj, inst->ci->icon_path);
+	edje_object_part_swallow(execwatch->execwatch_obj, "custom_icon", execwatch->icon_custom_obj);
+	edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,small","e");
+     }
+   else
+     {
+	edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,big","e");
+     }
 }
 
 static int
@@ -563,6 +578,7 @@ e_modapi_init(E_Module *m)
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, display_name, STR);
+   E_CONFIG_VAL(D, T, icon_path, STR);
    E_CONFIG_VAL(D, T, status_cmd, STR);
    E_CONFIG_VAL(D, T, dblclk_cmd, STR);
    E_CONFIG_VAL(D, T, okstate_mode, INT);
@@ -589,6 +605,7 @@ e_modapi_init(E_Module *m)
 	ci = E_NEW(Config_Item, 1);
 	ci->id = eina_stringshare_add("0");
 	ci->display_name = eina_stringshare_add("Edit!");
+	ci->icon_path = eina_stringshare_add("");
 	ci->status_cmd = eina_stringshare_add("");
 	ci->dblclk_cmd = eina_stringshare_add("");
 	ci->okstate_mode = 0;
