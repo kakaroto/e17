@@ -16,7 +16,6 @@ ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
 ewl_test_SOURCES		=	Ewl_Test.h ewl_test_private.h ewl_test.c
 
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EMOTION_LIBS@ @EPSILON_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
-ewl_test_LDFLAGS		=	-rdynamic
 
 ewl_embed_test_DEPENDENCIES	=	$(top_builddir)/src/lib/libewl.la
 ewl_embed_test_SOURCES		=	ewl_embed_test.c
