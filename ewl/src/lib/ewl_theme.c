@@ -557,6 +557,11 @@ ewl_theme_path_find(const char *name)
          * always be set.
          */
         home = getenv("HOME");
+#ifdef _WIN32
+        if (!home) {
+                home = getenv("HOMEPATH");
+        }
+#endif
         if (!home) {
                 DERROR("Environment variable HOME not defined\n"
                        "Try export HOME=/home/user in a bash like environemnt or\n"
