@@ -30,7 +30,7 @@ msgstr "Проміжок оновлення:"
 #: ../e_mod_config.c:110 ../e_mod_config.c:117
 #, c-format
 msgid "%1.0f seconds"
-msgstr "%1.секунд"
+msgstr "%1.0f секунд"
 
 #: ../e_mod_config.c:114
 msgid "Check Interval:"
