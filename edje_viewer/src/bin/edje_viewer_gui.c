@@ -223,14 +223,20 @@ create_group_parts_list(Viewer *v)
 static void
 create_text_entry(Viewer *v)
 {
-   Evas_Object *o;
+   Evas_Object *o, *sc;
+
+   sc = elm_scroller_add(v->gui.ly);
+   elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   evas_object_size_hint_weight_set(sc, 1.0, 0.0);
+   evas_object_size_hint_align_set(sc, -1.0, -1.0);
+   elm_scroller_bounce_set(sc, 0, 0);
 
    v->gui.entry = o = elm_entry_add(v->gui.ly);
-   elm_entry_single_line_set(o, 1);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    evas_object_smart_callback_add(o, "changed", on_entry_changed, v);
-   elm_layout_content_set(v->gui.ly, "v.swallow.text_entry", o);
+   elm_scroller_content_set(sc, o);
+   elm_layout_content_set(v->gui.ly, "v.swallow.text_entry", sc);
 
    evas_object_show(o);
 }
@@ -834,14 +840,19 @@ on_entry_changed(void *data, Evas_Object *obj, void *event_info)
    Viewer *v = data;
    Part *prt = v->visible_part;
    const char *state;
+   char *txt;
+   int len;
 
    if (!prt) return;
 
    state = edje_edit_part_selected_state_get(prt->grp->obj, prt->name);
-   edje_edit_state_text_set(prt->grp->obj, prt->name, state,
-                            elm_entry_entry_get(v->gui.entry));
+   txt = elm_entry_markup_to_utf8(elm_entry_entry_get(v->gui.entry));
+   len = strlen(txt);
+   if (txt[len - 1] == '\n') txt[len - 1] = '\0';
+   edje_edit_state_text_set(prt->grp->obj, prt->name, state, txt);
 
    edje_edit_string_free(state);
+   free(txt);
 }
 
 static int
