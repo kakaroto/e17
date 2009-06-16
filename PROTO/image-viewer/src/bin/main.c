@@ -959,7 +959,8 @@ on_idler(void *data)
 
 	if (iv->single_file)
 	  {
-	     iv->files = eina_list_data_find_list(iv->files, iv->single_file);
+	     Eina_List *l = eina_list_data_find_list(iv->files, iv->single_file);
+	     if (l) iv->files = l;
 	     eina_stringshare_del(iv->single_file);
 	     iv->single_file = NULL;
 	  }
@@ -1174,12 +1175,16 @@ on_idler(void *data)
 	  {
 	   case PAN:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Pan");
+	   case ZOOM:
+	      elm_scroller_bounce_set(iv->gui.scroller, 1, 1);
 	      break;
 	   case FIT:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit");
+	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   case FIT_SCALE:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit & Scale");
+	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   default:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fitting");
@@ -1678,12 +1683,14 @@ elm_main(int argc, char **argv)
 	  iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add("."));
 	else if (eina_list_count(iv->files) == 1)
 	  {
-	     char *dir = ecore_file_dir_get(iv->files->data);
+	     char *path = ecore_file_realpath(iv->files->data);
+	     char *dir = ecore_file_dir_get(path);
 
 	     iv->dirs = eina_list_append(iv->dirs, eina_stringshare_add(dir));
-	     iv->single_file = iv->files->data;
+	     iv->single_file = eina_stringshare_add(path);
 	     iv->files = eina_list_remove_list(iv->files, iv->files);
 	     free(dir);
+	     free(path);
 	  }
      }
 
