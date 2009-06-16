@@ -262,7 +262,7 @@ _eve_navigator_edje_reset(Eve_Navigator_Data *priv)
 
    edje_object_part_unswallow(priv->edje, priv->scrolled);
 
-   ewk_theme_set(priv->file);
+   ewk_webview_object_theme_set(priv->webview, priv->file);
 
    if (!edje_object_file_set(priv->edje, priv->file, priv->group))
      {
