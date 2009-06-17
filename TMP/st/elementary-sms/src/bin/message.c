@@ -64,7 +64,7 @@ on_trash(void *data, Evas_Object *obj, void *event_info)
 Evas_Object *
 create_message(Evas_Object *win, 
                const char *title, const char *date, const char *icon, 
-               Evas_Bool is_me, Evas_Bool have_contact,
+               Eina_Bool is_me, Eina_Bool have_contact,
                const char *text, void *handle)
 {
    Message_UI *mui;

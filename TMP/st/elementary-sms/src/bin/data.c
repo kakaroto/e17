@@ -39,25 +39,23 @@ static Eina_List *
 _callback_del(Eina_List *list, int *walking, int *deletes, void (*func) (void *data, Data_Message *msg), const void *data)
 {
    Eina_List *l;
-   
-   for (l = list; l; l = l->next)
-     {
-        Callback *cb = l->data;
-        if ((cb->func == func) && (cb->data == data))
-          {
-             if (*walking == 0)
-               {
-                  free(cb);
-                  list = eina_list_remove_list(list, l);
-               }
-             else
-               {
-                  cb->delete_me = 1;
-                  (*deletes)++;
-               }
-             return list;
-          }
-     }
+   Callback *cb;
+
+   EINA_LIST_FOREACH(list, l, cb)
+     if ((cb->func == func) && (cb->data == data))
+       {
+	  if (*walking == 0)
+	    {
+	       free(cb);
+	       list = eina_list_remove_list(list, l);
+	    }
+	  else
+	    {
+	       cb->delete_me = 1;
+	       (*deletes)++;
+	    }
+	  return list;
+       }
    return list;
 }
 
@@ -65,22 +63,18 @@ static Eina_List *
 _callback_call(Eina_List *list, int *walking, int *deletes, Data_Message *msg)
 {
    Eina_List *l, *pl;
-   
+   Callback *cb;
+
    (*walking)++;
-   for (l = list; l; l = l->next)
-     {
-        Callback *cb = l->data;
-        if (!cb->delete_me)
-          cb->func(cb->data, msg);
-     }
+
+   EINA_LIST_FREE(list, cb)
+     if (!cb->delete_me)
+       cb->func(cb->data, msg);
    (*walking)--;
    if ((*walking == 0) && (*deletes > 0))
      {
-        for (l = list; l;)
+	EINA_LIST_FOREACH_SAFE(list, pl, l, cb)
           {
-             Callback *cb = l->data;
-             pl = l;
-             l = l->next;
              if (cb->delete_me)
                {
                   free(cb);
@@ -102,6 +96,8 @@ _data_message_load_key_val(Data_Message *msg, const char *key, const char *val)
    else if (!strcasecmp(key, "date"))
      {
         struct tm tm;
+
+	memset(&tm, 0, sizeof (tm));
         if (strptime(val, "%a, %d %b %Y %H:%M:%S %z", &tm))
           msg->timestamp = mktime(&tm);
      }
@@ -269,7 +265,7 @@ _data_message_dir_load(const char *dir, Data_Message_Flags extra_flags)
                   if (msg)
                     {
                        msg->flags |= extra_flags;
-                       messages = evas_list_prepend(messages, msg);
+                       messages = eina_list_prepend(messages, msg);
                     }
                }
              free(file);
@@ -541,7 +537,9 @@ _data_contact_save(Data_Contact *ctc, const char *file)
 {
    FILE *f;
    Eina_List *l;
-   
+   const char *str;
+   Data_Contact_Tel *tel;
+
    f = fopen(file, "wb");
    if (!f) return 0;
    fprintf(f, "BEGIN:VCARD\n");
@@ -550,34 +548,34 @@ _data_contact_save(Data_Contact *ctc, const char *file)
         fprintf(f, "VERSION:%s\n", ctc->version);
      }
    fprintf(f, "N:");
-   for (l = ctc->name.lasts; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->name.lasts, l, str)
      {
-        fprintf(f, "%s", l->data);
-        if (l->next) fprintf(f, ",");
+        fprintf(f, "%s", str);
+        if (eina_list_next(l)) fprintf(f, ",");
      }
    fprintf(f, ";");
-   for (l = ctc->name.firsts; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->name.firsts, l, str)
      {
-        fprintf(f, "%s", l->data);
-        if (l->next) fprintf(f, ",");
+        fprintf(f, "%s", str);
+        if (eina_list_next(l)) fprintf(f, ",");
      }
    fprintf(f, ";");
-   for (l = ctc->name.others; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->name.others, l, str)
      {
-        fprintf(f, "%s", l->data);
-        if (l->next) fprintf(f, ",");
+        fprintf(f, "%s", str);
+        if (eina_list_next(l)) fprintf(f, ",");
      }
    fprintf(f, ";");
-   for (l = ctc->name.titles; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->name.titles, l, str)
      {
-        fprintf(f, "%s", l->data);
-        if (l->next) fprintf(f, ",");
+        fprintf(f, "%s", str);
+        if (eina_list_next(l)) fprintf(f, ",");
      }
    fprintf(f, ";");
-   for (l = ctc->name.honorifics; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->name.honorifics, l, str)
      {
-        fprintf(f, "%s", l->data);
-        if (l->next) fprintf(f, ",");
+        fprintf(f, "%s", str);
+        if (eina_list_next(l)) fprintf(f, ",");
      }
    fprintf(f, "\n");
    if (ctc->name.display)
@@ -587,16 +585,15 @@ _data_contact_save(Data_Contact *ctc, const char *file)
    if (ctc->name.nicks)
      {
         fprintf(f, "NICKNAME:");
-        for (l = ctc->name.nicks; l; l = l->next)
+	EINA_LIST_FOREACH(ctc->name.nicks, l, str)
           {
-             fprintf(f, "%s", l->data);
-             if (l->next) fprintf(f, ",");
+             fprintf(f, "%s", str);
+             if (eina_list_next(l)) fprintf(f, ",");
           }
         fprintf(f, "\n");
      }
-   for (l = ctc->tel.numbers; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->tel.numbers, l, tel)
      {
-        Data_Contact_Tel *tel = l->data;
         int wrote = 0;
         fprintf(f, "TEL;TYPE=");
         if (tel->flags & DATA_CONTACT_TEL_HOME)
@@ -689,9 +686,9 @@ _data_contact_save(Data_Contact *ctc, const char *file)
      {
         fprintf(f, "PHOTO;VALUE=uri:file:%s\n", ctc->photo_file);
      }
-   for (l = ctc->extra_lines; l; l = l->next)
+   EINA_LIST_FOREACH(ctc->extra_lines, l, str)
      {
-        fprintf(f, "%s\n", l->data);
+        fprintf(f, "%s\n", str);
      }
    fprintf(f, "END:VCARD\n");
    fclose(f);
@@ -721,7 +718,7 @@ _data_contact_dir_load(const char *dir)
                   snprintf(buf, sizeof(buf), "%s/%s", dir, file);
                   ctc = _data_contact_load(buf);
                   if (ctc)
-                    contacts = evas_list_prepend(contacts, ctc);
+                    contacts = eina_list_prepend(contacts, ctc);
                }
              free(file);
           }
@@ -1054,9 +1051,9 @@ data_contact_name_get(Data_Contact *ctc)
    else if (ctc->name.nicks)
      snprintf(buf, sizeof(buf), "%s", ctc->name.nicks->data);
    else if ((ctc->name.lasts) && (ctc->name.firsts))
-     snprintf(buf, sizeof(buf), "%s %s", ctc->name.firsts->data, ctc->name.lasts->data);
+     snprintf(buf, sizeof(buf), "%s %s", ctc->name.firsts->data, eina_list_data_get(ctc->name.lasts));
    else if ((ctc->name.lasts) && (ctc->name.titles))
-     snprintf(buf, sizeof(buf), "%s %s", ctc->name.titles, ctc->name.lasts->data);
+     snprintf(buf, sizeof(buf), "%s %s", ctc->name.titles, eina_list_data_get(ctc->name.lasts));
    else if (ctc->name.firsts)
      snprintf(buf, sizeof(buf), "%s", ctc->name.firsts->data);
    else if (ctc->name.lasts)

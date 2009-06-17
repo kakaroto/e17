@@ -86,7 +86,7 @@ char *data_contact_name_get(Data_Contact *ctc);
 Evas_Object *
   create_message(Evas_Object *win,
                  const char *title, const char *date, const char *icon,
-                 Evas_Bool is_me, Evas_Bool have_contact,
+                 Eina_Bool is_me, Eina_Bool have_contact,
                  const char *text, void *handle);
 void
   create_compose(Data_Message *rep_to, const char *to, const char *content);
