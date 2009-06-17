@@ -321,12 +321,16 @@ void help()
     printf("-e engine\t\t: an evas engine (x11, gl, fb, xr, ddraw)\n");
     printf("--display-areas\t\t: show the border of an area\n");
     printf("--no-thumbs-bg\t\t: deactivate the creation of the thumbnails list in the background, saves a lot of memory some mode (expose, slideshow) will be slow\n");
+#ifdef PDF_SUPPORT
     printf("--generate-pdf file\t\t: generate a pdf file with all slides\n");
     printf("--size-pdf sizex sizey\t\t: the size of each slide generated in a pdf file (default: 2048 1536)\n");
+#endif
     printf("\nExamples:\n");
     printf("eyelight -p presentation/eyelight.edc -t theme/default -e gl\n");
     printf("eyelight -p presentation/eyelight.edj\n");
+#ifdef PDF_SUPPORT
     printf("eyelight -p presentation/eyelight.edj --generate-pdf pdf_file");
+#endif
 }
 
 int main(int argc, char*argv[])
@@ -381,6 +385,7 @@ int main(int argc, char*argv[])
             no_thumbs_bg = 1;
             i--;
         }
+#ifdef PDF_SUPPORT
         else if(strcmp(argv[i],"--generate-pdf")==0)
                 generate_pdf = i+1;
         else if(strcmp(argv[i],"--size-pdf") == 0)
@@ -389,6 +394,7 @@ int main(int argc, char*argv[])
                 pdf_size_h = atoi(argv[i+2]);
                 i++;
         }
+#endif
         else
         {
             fprintf(stderr,"Unknow argument %s\n",argv[i]);
@@ -520,11 +526,13 @@ int main(int argc, char*argv[])
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb,pres);
     evas_object_focus_set(container,1);
 
+#ifdef PDF_SUPPORT
     if(generate_pdf)
     {
             pres->pdf_file = strdup(argv[generate_pdf]);
             ecore_timer_add(0.0, eyelight_pdf_generate_start_timer,pres);
     }
+#endif
 
     ecore_main_loop_begin ();
 

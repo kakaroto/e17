@@ -18,6 +18,10 @@
 
 
 #include "eyelight_pdf.h"
+#include "../../config.h"
+
+#ifdef PDF_SUPPORT
+#include "hpdf.h"
 
 void eyelight_pdf_generate(Eyelight_Viewer *pres, char* file);
 
@@ -108,3 +112,12 @@ void eyelight_pdf_generate(Eyelight_Viewer *pres, char* file)
         /* clean up */
         HPDF_Free (pdf);
 }
+
+#else
+int eyelight_pdf_generate_start_timer(void *data)
+{
+    printf("No pdf support ! \n");
+}
+
+#endif
+

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="600"
+   height="200"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   inkscape:export-filename="/home/watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+   inkscape:export-xdpi="99.900002"
+   inkscape:export-ydpi="99.900002"
+   sodipodi:docname="diagram.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path3365"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <filter
+       inkscape:collect="always"
+       id="filter3279">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="6.0717299"
+         id="feGaussianBlur3281" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3315"
+       x="-0.033582613"
+       width="1.0671653"
+       y="-0.31853691"
+       height="1.6370738">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.4380563"
+         id="feGaussianBlur3317" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="219.48893"
+     inkscape:cy="-169.47516"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1678"
+     inkscape:window-height="980"
+     inkscape:window-x="0"
+     inkscape:window-y="40" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:0.7;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#111111;stroke-width:3.59670043;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2383"
+       width="569.12"
+       height="171.1265"
+       x="8.17904"
+       y="11.905243"
+       ry="27.456245"
+       rx="28.849401"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7811159;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#111111;stroke-width:4;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3279)"
+       id="rect3229"
+       width="620"
+       height="194.28571"
+       x="72.85714"
+       y="213.79073"
+       ry="31.172007"
+       rx="31.428572"
+       transform="matrix(0.9179355,0,0,0.8807982,-56.076438,-171.36815)"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#0c2bca;stroke-width:0.68028378;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3283"
+       width="143.46017"
+       height="24.286301"
+       x="33.18531"
+       y="34.101074"
+       ry="3.8965952"
+       rx="7.2721748"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7811159;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#0c2bca;stroke-width:4;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3279)"
+       id="rect3285"
+       width="620"
+       height="194.28571"
+       x="102.85714"
+       y="456.64789"
+       ry="31.172007"
+       rx="31.428572"
+       transform="matrix(0.2313874,0,0,0.1250031,10.046565,-22.266999)"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="50.368713"
+       y="51.009613"
+       id="text3287"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3289"
+         x="50.368713"
+         y="51.009613">EDC theme file</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3315);font-family:Bitstream Vera Sans"
+       x="50.780869"
+       y="51.974579"
+       id="text3291"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3293"
+         x="50.780869"
+         y="51.974579">EDC theme file</tspan></text>
+    <rect
+       style="opacity:0.7;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#28e634;stroke-width:0.68028378;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3319"
+       width="143.46017"
+       height="24.286301"
+       x="144.11201"
+       y="84.257568"
+       ry="3.8965952"
+       rx="7.2721748"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7811159;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#28e634;stroke-width:4;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3279)"
+       id="rect3321"
+       width="620"
+       height="194.28571"
+       x="102.85714"
+       y="456.64789"
+       ry="31.172007"
+       rx="31.428572"
+       transform="matrix(0.2313874,0,0,0.1250031,120.97326,27.889481)"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="161.29543"
+       y="101.16611"
+       id="text3323"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3325"
+         x="161.29543"
+         y="101.16611">EDJ theme file</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3315);font-family:Bitstream Vera Sans"
+       x="161.70758"
+       y="102.13107"
+       id="text3327"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3329"
+         x="161.70758"
+         y="102.13107">EDJ theme file</tspan></text>
+    <rect
+       style="opacity:0.7;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#0c2bca;stroke-width:0.73219442;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3331"
+       width="166.53543"
+       height="24.235874"
+       x="120.90446"
+       y="131.25562"
+       ry="3.8885045"
+       rx="8.4418888"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7811159;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#0c2bca;stroke-width:4;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3279)"
+       id="rect3333"
+       width="620"
+       height="194.28571"
+       x="102.85714"
+       y="456.64789"
+       ry="31.172007"
+       rx="31.428572"
+       transform="matrix(0.2686056,0,0,0.1247435,94.043883,75.004571)"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="132.50606"
+       y="147.63312"
+       id="text3335"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3337"
+         x="132.50606"
+         y="147.63312">ELT presentation file</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3315);font-family:Bitstream Vera Sans"
+       x="132.91821"
+       y="148.59808"
+       id="text3339"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3341"
+         x="132.91821"
+         y="148.59808">ELT presentation file</tspan></text>
+    <rect
+       style="opacity:0.7;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#ca0c1b;stroke-width:0.72673881;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3343"
+       width="164.02707"
+       height="24.241173"
+       x="377.4805"
+       y="108.01938"
+       ry="3.8893547"
+       rx="8.3147364"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <rect
+       style="opacity:0.7811159;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#ca0c1b;stroke-width:4;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3279)"
+       id="rect3345"
+       width="620"
+       height="194.28571"
+       x="102.85714"
+       y="456.64789"
+       ry="31.172007"
+       rx="31.428572"
+       transform="matrix(0.2645598,0,0,0.1247708,351.02448,51.756031)"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="394.64066"
+       y="124.90469"
+       id="text3347"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3349"
+         x="394.64066"
+         y="124.90469">Eyelight, the viewer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3315);font-family:Bitstream Vera Sans"
+       x="395.05283"
+       y="125.86966"
+       id="text3351"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002"><tspan
+         sodipodi:role="line"
+         id="tspan3353"
+         x="395.05283"
+         y="125.86966">Eyelight, the viewer</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 89.903583,65.948221 C 85.997103,101.83004 123.05031,96.147471 138.89598,97.768021"
+       id="path3357"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 294.35021,98.258341 C 301.51476,100.50538 306.0609,102.967 310.31743,106.75995 C 313.78984,109.85418 324.94256,122.15565 329.18086,122.31669 C 349.5431,123.09036 357.60616,122.63644 369.60658,122.502"
+       id="path4137"
+       sodipodi:nodetypes="cssc"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:none;stroke-opacity:1"
+       d="M 294.01753,146.88154 C 301.18208,144.6345 305.72822,142.17288 309.98475,138.37993 C 313.45716,135.2857 324.60988,122.98423 328.84818,122.82319 C 349.21042,122.04952 357.27348,122.50344 369.2739,122.63788"
+       id="path4141"
+       sodipodi:nodetypes="cssc"
+       inkscape:export-filename="/home/Watchwolf/Projects/PROTO/eyelight/data/presentations/eyelight/diagram.png"
+       inkscape:export-xdpi="99.900002"
+       inkscape:export-ydpi="99.900002" />
+  </g>
+</svg>

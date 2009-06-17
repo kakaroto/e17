@@ -19,8 +19,10 @@
 #ifndef  EYELIGHT_COMPILER_INC
 #define  EYELIGHT_COMPILER_INC
 #include "eyelight_compiler_common.h"
+#include "Eyelight.h"
+#include <Evas.h>
 
-void eyelight_compile(Eyelight_Compiler*compiler, FILE* output);
+void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide);
 
 #endif   /* ----- #ifndef EYELIGHT_COMPILER_INC  ----- */
 

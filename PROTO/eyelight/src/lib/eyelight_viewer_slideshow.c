@@ -42,7 +42,7 @@ void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select)
 
     o = edje_object_add(pres->evas);
     pres->slideshow_background = o;
-    if(edje_object_file_set(o, pres->edje_file, "slideshow/main") ==  0)
+    if(edje_object_file_set(o, pres->theme, "eyelight/slideshow") ==  0)
         printf("eyelight_viewer_slideshow_start(), edje_object_file_set() erreur! 1\n");
 
     data = edje_object_data_get(o, "nb_slides");
@@ -101,7 +101,7 @@ void _eyelight_viewer_slideshow_slides_load(Eyelight_Viewer* pres)
                 evas_object_image_data_set(o_image,thumb->thumb);
 
                 evas_object_show(o_image);
-                snprintf(buf,EYELIGHT_BUFLEN,"slideshow/swallow/%d",i+1);
+                snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d",i+1);
                 edje_object_part_swallow(pres->slideshow_background,buf,o_image);
                 edje_object_part_geometry_get(pres->slideshow_background,buf,NULL,NULL,&w_swallow, &h_swallow);
                 evas_object_image_fill_set(o_image,0,0,w_swallow,h_swallow);
@@ -141,7 +141,7 @@ void eyelight_viewer_slideshow_resize(Eyelight_Viewer* pres,int w, int h)
     {
         if(pres->slideshow_image_thumbnails[i])
         {
-            snprintf(buf,EYELIGHT_BUFLEN,"slideshow/swallow/%d",i+1);
+            snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d",i+1);
             edje_object_part_geometry_get(pres->slideshow_background,buf,NULL,NULL,
                     &w_swallow, &h_swallow);
             evas_object_image_fill_set(pres->slideshow_image_thumbnails[i],0,0,
@@ -235,7 +235,7 @@ void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const ch
 
     for(i=0;i<pres->slideshow_nb_slides-1;i++)
     {
-        snprintf(buf,EYELIGHT_BUFLEN,"slideshow/swallow/%d",i+1);
+        snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d",i+1);
         pres->slideshow_image_thumbnails[i] = pres->slideshow_image_thumbnails[i+1];
 
         if(pres->slideshow_image_thumbnails[i])
@@ -276,7 +276,7 @@ void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o, cons
     {
         pres->slideshow_image_thumbnails[i] = pres->slideshow_image_thumbnails[i-1];
 
-        snprintf(buf,EYELIGHT_BUFLEN,"slideshow/swallow/%d",i+1);
+        snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d",i+1);
         edje_object_part_swallow(pres->slideshow_background,buf,pres->slideshow_image_thumbnails[i]);
         edje_object_part_geometry_get(pres->slideshow_background,buf,NULL,NULL,&w_swallow, &h_swallow);
         evas_object_image_fill_set(pres->slideshow_image_thumbnails[i],0,0,w_swallow,h_swallow);

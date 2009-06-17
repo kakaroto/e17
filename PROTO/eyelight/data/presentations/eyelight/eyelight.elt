@@ -15,14 +15,21 @@ transition: fade_content;
 slide
 {
     layout: title;
+    custom_area: "top" 0.15 -0.2 0.85 0.53;
+    header_image: "";
 
+    area
+    {
+        name: "top";
+        image: "logo.png";
+    }
     area
     {
         name: bottom;
         text: "Author: Atton Jonathan, alias Watchwolf";
-        text: "Writting during the Google Summer Of Code 2008";
         text: "Mentor: Cedric Bail";
         text: "For the Enlightenment project";
+        text: "Thank you to the community !";
     }
 }
 
@@ -32,9 +39,9 @@ slide
     title: "General presentation";
     subtitle: "";
     transition_next: "fade";
-    custom_area: "top" 0.1 0.2 0.9 0.5;
+    custom_area: "top" 0.1 0.2 0.9 0.4;
     custom_area: "center" 0.1 0.45 0.9 0.7;
-    custom_area: "bottom" 0.1 0.71 0.9 0.9;
+    custom_area: "bottom" 0.1 0.71 0.9 0.85;
     area
     {
         name: "top";
@@ -74,33 +81,34 @@ slide
 
 slide
 {
-    layout: 2_lines_top;
+    layout: blank;
     title: "How it works";
     subtitle: "";
     transition_previous: "fade";
     transition_next: "horizontal";
+
+    custom_area: "top" 0.1 0.2 0.9 0.5;
+    custom_area: "bottom" 0.1 0.55 0.9 0.85;
     area
     {
         name: top;
         items
         {
             numbering: normal;
-	    text: "The presentation is an <outline>elt</outline> file";
-            text: "The compiler converts this file into an <outline>edc</outline> file";
-            text: "With an edc theme file, the compiler create an <outline>edje</outline> file";
-            text: "Finally the viewer displays the presentation";
+	         text: "The presentation is an <outline>elt</outline> file";
+            text: "The theme is a classic <outline>edj</outline> file";
+            text: "With the theme and the presentation file the viewer display the presentation";
+            text: "Finally we can have a beautiful <outline>presentation</outline> !";
         }
     }
 
     area
     {
-        name: bottom;
-        layout: horizontal;
-
+        name: "bottom";
         image
         {
             image: "diagram.png";
-            border: 1;
+            border: 0;
         }
     }
 }
@@ -126,7 +134,7 @@ slide
             {
                 numbering: none;
                 text: "blocks slide, items, image ...";
-                text: "properties title, image, text ...";
+                text: "properties title, image, text ... ";
             }
         }
     }
@@ -152,16 +160,16 @@ slide
         items
         {
             numbering: normal;
-            text: "A theme is a list of macros/functions";
-            text: "Some macros are used to create a slide: ";
+            text: "A theme is a classic <outline>Edje file</outline>";
+            text: "A list of groups: ";
             items
             {
                 numbering: none;
-                text: "Set_title()";
-                text: "Add_item_text_vbox()";
+                text: "eyelight/item_image";
+                text: "eyelight/layout_title";
             }
-            text: "Use what you want inside a macro";
-            text: "Add your own macros, layouts, transitions ...";
+            text: "Use what you want inside a group";
+            text: "Add your own images, animations ...";
         }
     }
     area
@@ -172,7 +180,7 @@ slide
 }
 
 foot_image: "wolf.png";
-title: "How to include an edc file";
+title: "How to include an edje file";
 slide
 {
     layout: 1_area;
@@ -183,25 +191,20 @@ slide
         name: center;
         items
         {
-            text: "Create an edc file with your animation.";
-            text: "All your file has to be in a macro with 1 argument:";
+            text: "Create an edje with 1 group for your object.";
+            text: "Or more groups if you want include more than 1 object";
+            text: "In the elt file defines A block 'edje' with 2 properties:";
             items
             {
-                text: "this argument define a part";
-                text: "all your parts have to be relative to this argument";
-            }
-            text: "In the elt file defines A block 'edc' with 2 properties:";
-            items
-            {
-                text: "the property 'file' describes the path to your edc file";
-                text: "The property 'macro' defines the name of your macro";
+                text: "the property <outline>file</outline> describes the path to your edje file";
+                text: "The property <outline>group</outline> defines the group to load";
             }
         }
         text: "Result:";
-        edc
+        edje
         {
-            macro: firefox;
-            file: firefox.edc;
+            group: icon;
+            file: firefox.edj;
         }
     }
 }
@@ -217,13 +220,13 @@ slide
     {
         name: top;
         text: "And the source code of the presentation is in eyelight.elt";
-        text: "The source code of the firefox edc file is in firefox.edc";
+        text: "The source code of the firefox edje file is in firefox.edj";
     }
 
     area
     {
         name: left;
-        image: "code_block_edc.png";
+        image: "code_block_edje.png";
     }
     area
     {

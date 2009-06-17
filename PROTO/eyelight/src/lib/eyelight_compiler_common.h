@@ -28,6 +28,7 @@ typedef struct Eyelight_Prop_Value_Type Eyelight_Prop_Value_Type;
 typedef enum Eyelight_Value_Type Eyelight_Value_Type;
 typedef struct Eyelight_Valid_Prop_Block Eyelight_Valid_Prop_Block;
 typedef struct Eyelight_Prop_Nb_Value Eyelight_Prop_Nb_Value;
+typedef struct eyelight_custom_area Eyelight_Custom_Area;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,20 +50,18 @@ enum eyelight_node_name
     EYELIGHT_NAME_ITEMS,
     EYELIGHT_NAME_ITEM,
     EYELIGHT_NAME_AREA,
-    EYELIGHT_NAME_EDC,
+    EYELIGHT_NAME_EDJ,
     EYELIGHT_NAME_TITLE,
     EYELIGHT_NAME_SUBTITLE,
     EYELIGHT_NAME_HEADER_IMAGE,
-    EYELIGHT_NAME_HEADER_IMAGE_ASPECT,
     EYELIGHT_NAME_FOOT_IMAGE,
-    EYELIGHT_NAME_FOOT_IMAGE_ASPECT,
     EYELIGHT_NAME_FOOT_TEXT,
     EYELIGHT_NAME_LAYOUT,
     EYELIGHT_NAME_NAME,
     EYELIGHT_NAME_TEXT,
     EYELIGHT_NAME_IMAGE,
     EYELIGHT_NAME_FILE,
-    EYELIGHT_NAME_MACRO,
+    EYELIGHT_NAME_GROUP,
     EYELIGHT_NAME_TRANSITION,
     EYELIGHT_NAME_TRANSITION_NEXT,
     EYELIGHT_NAME_TRANSITION_PREVIOUS,
@@ -86,20 +85,18 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "items", EYELIGHT_NAME_ITEMS },
     { "item", EYELIGHT_NAME_ITEM },
     { "area", EYELIGHT_NAME_AREA },
-    { "edc", EYELIGHT_NAME_EDC },
+    { "edje", EYELIGHT_NAME_EDJ },
     { "title", EYELIGHT_NAME_TITLE },
     { "subtitle", EYELIGHT_NAME_SUBTITLE },
     { "header_image", EYELIGHT_NAME_HEADER_IMAGE },
-    { "header_image_aspect", EYELIGHT_NAME_HEADER_IMAGE_ASPECT },
     { "foot_image", EYELIGHT_NAME_FOOT_IMAGE },
-    { "foot_image_aspect", EYELIGHT_NAME_FOOT_IMAGE_ASPECT },
     { "foot_text", EYELIGHT_NAME_FOOT_TEXT },
     { "layout", EYELIGHT_NAME_LAYOUT },
     { "name", EYELIGHT_NAME_NAME },
     { "text", EYELIGHT_NAME_TEXT },
     { "image", EYELIGHT_NAME_IMAGE },
     { "file", EYELIGHT_NAME_FILE },
-    { "macro", EYELIGHT_NAME_MACRO },
+    { "group", EYELIGHT_NAME_GROUP },
     { "transition", EYELIGHT_NAME_TRANSITION },
     { "transition_next", EYELIGHT_NAME_TRANSITION_NEXT },
     { "transition_previous", EYELIGHT_NAME_TRANSITION_PREVIOUS },
@@ -121,10 +118,8 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
 {
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_LAYOUT },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_HEADER_IMAGE },
-    { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_HEADER_IMAGE_ASPECT },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_FOOT_TEXT },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_FOOT_IMAGE },
-    { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_FOOT_IMAGE_ASPECT },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_TITLE },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_SUBTITLE },
     { EYELIGHT_NAME_ROOT, EYELIGHT_NAME_TRANSITION },
@@ -135,10 +130,8 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_LAYOUT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_SUBTITLE },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_HEADER_IMAGE },
-    { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_HEADER_IMAGE_ASPECT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_FOOT_TEXT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_FOOT_IMAGE },
-    { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_FOOT_IMAGE_ASPECT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION_NEXT },
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_TRANSITION_PREVIOUS },
@@ -155,10 +148,8 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_SCALE },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_BORDER },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_RELATIVE},
-    { EYELIGHT_NAME_EDC, EYELIGHT_NAME_IMAGE },
-    { EYELIGHT_NAME_EDC, EYELIGHT_NAME_FILE },
-    { EYELIGHT_NAME_EDC, EYELIGHT_NAME_MACRO },
-    { EYELIGHT_NAME_EDC, EYELIGHT_NAME_RELATIVE}
+    { EYELIGHT_NAME_EDJ, EYELIGHT_NAME_FILE },
+    { EYELIGHT_NAME_EDJ, EYELIGHT_NAME_GROUP },
 };
 
 
@@ -168,7 +159,7 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_block_block[] =
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_AREA },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_ITEMS },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_IMAGE },
-    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_EDC },
+    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_EDJ },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEM },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEMS },
 };
@@ -198,8 +189,6 @@ static const Eyelight_Prop_Nb_Value eyelight_prop_nb_value[]=
     {EYELIGHT_NAME_SCALE, 2},
     {EYELIGHT_NAME_SIZE, 2},
     {EYELIGHT_NAME_RELATIVE, 2},
-    {EYELIGHT_NAME_HEADER_IMAGE_ASPECT, 2},
-    {EYELIGHT_NAME_FOOT_IMAGE_ASPECT, 2}
 };
 
 
@@ -226,10 +215,6 @@ static const Eyelight_Prop_Value_Type eyelight_prop_value_type[]=
     {EYELIGHT_NAME_SIZE, 0, EYELIGHT_VALUE_TYPE_INT},
     {EYELIGHT_NAME_SIZE, 1, EYELIGHT_VALUE_TYPE_INT},
     {EYELIGHT_NAME_BORDER, 0, EYELIGHT_VALUE_TYPE_INT},
-    {EYELIGHT_NAME_HEADER_IMAGE_ASPECT, 0, EYELIGHT_VALUE_TYPE_INT} ,
-    {EYELIGHT_NAME_HEADER_IMAGE_ASPECT, 1, EYELIGHT_VALUE_TYPE_INT} ,
-    {EYELIGHT_NAME_FOOT_IMAGE_ASPECT, 0, EYELIGHT_VALUE_TYPE_INT} ,
-    {EYELIGHT_NAME_FOOT_IMAGE_ASPECT, 1, EYELIGHT_VALUE_TYPE_INT}
 };
 
 /*
@@ -272,29 +257,19 @@ struct eyelight_compiler
 
     //the node root
     Eyelight_Node *root;
+};
 
-    //defaults values
-    char* default_layout;
-    char* default_foot_text;
-    char* default_foot_image;
-    char* default_header_image;
-    char* default_title;
-    char* default_subtitle;
-    char* default_transition;
-    char* default_transition_next;
-    char* default_transition_previous;
-
-    int default_header_image_aspect_x;
-    int default_header_image_aspect_y;
-    int default_foot_image_aspect_x;
-    int default_foot_image_aspect_y;
-
+struct eyelight_custom_area
+{
+    char *name;
+    Evas_Object *obj;
 };
 
 #define EYELIGHT_NODE_TYPE_BLOCK 0
 #define EYELIGHT_NODE_TYPE_PROP 1
 #define EYELIGHT_NODE_TYPE_VALUE 2
 
+Eyelight_Compiler* eyelight_elt_load(char *input_file);
 
 
 char* eyelight_create_edc_from_elt(char* input_file, int display_areas);

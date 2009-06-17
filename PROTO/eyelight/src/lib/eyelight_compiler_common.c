@@ -17,70 +17,11 @@
 
 #include "eyelight_compiler_common.h"
 
+
 /*
  * @brief create and edj file from an edc file
  */
-char* eyelight_create_edj_from_edc(char* input_file, char* theme_file)
-{
-    const char* file_name;
-    char* folder_edc;
-    char* folder_theme;
-    char new_edc_file[EYELIGHT_BUFLEN];
-    char buf[EYELIGHT_BUFLEN];
-    char command[EYELIGHT_BUFLEN];
-    Ecore_Exe* exe;
-    int status;
-    FILE* f_read,*f_write;
-    int i;
-    char* output_file;
-
-    file_name = ecore_file_file_get(input_file);
-    char* path = ecore_file_dir_get(input_file);
-    snprintf(buf,EYELIGHT_BUFLEN,"%s/%s",path,file_name);
-    buf[strlen(buf)-1] = 'j';
-    output_file = strdup(buf);
-
-    //copy the edc file and include the theme file
-    i = 1;
-    do
-    {
-        snprintf(new_edc_file,EYELIGHT_BUFLEN,"%s/%s_tmp_%d",path,file_name,i);
-        i++;
-    }while(ecore_file_exists(new_edc_file));
-    f_read = fopen(input_file,"r");
-    f_write = fopen(new_edc_file,"w");
-
-    buf[0] = '\0';
-    for(i=0;i<strlen(input_file);i++)
-        if(input_file[i]=='/')
-            strcat(buf,"../");
-    fprintf(f_write,"#include \"%s%s\"\n",buf,theme_file);
-    while(fgets(buf,EYELIGHT_BUFLEN,f_read))
-        fprintf(f_write,"%s",buf);
-    fclose(f_read);
-    fclose(f_write);
-
-    //create the edje file
-    folder_edc= ecore_file_dir_get(input_file);
-    folder_theme = ecore_file_dir_get(theme_file);
-
-    snprintf(command,EYELIGHT_BUFLEN,"edje_cc -id %s -id %s -fd %s -fd %s %s -o %s",folder_edc,folder_theme,folder_edc,folder_theme,new_edc_file,output_file);
-
-    EYELIGHT_FREE(folder_theme);
-    EYELIGHT_FREE(folder_edc);
-
-    exe = ecore_exe_run(command,NULL);
-    waitpid(ecore_exe_pid_get(exe),&status,0);
-    remove(new_edc_file);
-
-    EYELIGHT_FREE(path);
-    return output_file;
-}
-
-/*
- * @brief create an edc file from an elt file
- */
-char* eyelight_create_edc_from_elt(char* input_file,int display_areas)
+Eyelight_Compiler* eyelight_elt_load(char *input_file)
 {
     FILE* output;
     char* end;
@@ -88,7 +29,7 @@ char* eyelight_create_edc_from_elt(char* input_file,int display_areas)
     char buf[EYELIGHT_BUFLEN];
     char* output_file;
 
-    Eyelight_Compiler* compiler = eyelight_compiler_new(input_file, display_areas);
+    Eyelight_Compiler* compiler = eyelight_compiler_new(input_file, 0);
 
     char* path = ecore_file_dir_get(input_file);
     snprintf(buf,EYELIGHT_BUFLEN,"%s/%s",path,ecore_file_file_get(input_file));
@@ -101,14 +42,7 @@ char* eyelight_create_edc_from_elt(char* input_file,int display_areas)
     p = eyelight_source_fetch(compiler->input_file,&end);
     eyelight_parse(compiler,p,end);
 
-    output = fopen(buf,"w");
-    eyelight_compile(compiler,output);
-    fclose(output);
-
-    eyelight_compiler_free(&compiler);
-    EYELIGHT_FREE(path);
-    EYELIGHT_FREE(p);
-    return output_file;
+    return compiler;
 }
 
 /*
@@ -140,11 +74,6 @@ Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
     compiler->root = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ROOT,NULL);
     compiler->input_file = strdup(input_file);
     compiler-> display_areas = display_areas;
-    compiler-> default_header_image_aspect_x = -1;
-    compiler-> default_header_image_aspect_y = -1;
-    compiler-> default_foot_image_aspect_x = -1;
-    compiler-> default_foot_image_aspect_y = -1;
-
 
     return compiler;
 }
@@ -174,15 +103,6 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
 
     EYELIGHT_FREE(compiler->input_file);
     EYELIGHT_FREE(compiler->output_file);
-    EYELIGHT_FREE(compiler->default_foot_text);
-    EYELIGHT_FREE(compiler->default_foot_image);
-    EYELIGHT_FREE(compiler->default_layout);
-    EYELIGHT_FREE(compiler->default_header_image);
-    EYELIGHT_FREE(compiler->default_title);
-    EYELIGHT_FREE(compiler->default_subtitle);
-    EYELIGHT_FREE(compiler->default_transition_previous);
-    EYELIGHT_FREE(compiler->default_transition_next);
-    EYELIGHT_FREE(compiler->default_transition);
 
     EYELIGHT_FREE(compiler);
 }
@@ -371,7 +291,7 @@ int eyelight_number_item_in_block(Eyelight_Node* current)
         else if(node->type==EYELIGHT_NODE_TYPE_BLOCK &&
                   ( node->name == EYELIGHT_NAME_ITEM
                   || node->name == EYELIGHT_NAME_IMAGE
-                  || node->name == EYELIGHT_NAME_EDC))
+                  || node->name == EYELIGHT_NAME_EDJ))
             number++;
         else if(node->type == EYELIGHT_NODE_TYPE_PROP &&
                   ( node->name == EYELIGHT_NAME_TEXT

@@ -36,8 +36,8 @@
 
 
 
-#include "eyelight_compiler_common.h"
 #include "eyelight_viewer.h"
+#include "eyelight_compiler_common.h"
 #include "eyelight_pdf.h"
 
 #endif   /* ----- #ifndef EYELIGHT_INC  ----- */

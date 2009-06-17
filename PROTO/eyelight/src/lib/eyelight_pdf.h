@@ -19,7 +19,6 @@
 #ifndef  EYELIGHT_PDF_INC
 #define  EYELIGHT_PDF_INC
 
-#include "hpdf.h"
 #include "Eyelight.h"
 
 int eyelight_pdf_generate_start_timer(void *data);

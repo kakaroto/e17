@@ -25,6 +25,31 @@ AC_SUBST(requirements)
 
 PKG_PROG_PKG_CONFIG
 
+have_pdf="no"
+pdf=""
+AC_ARG_WITH([pdf],
+            AC_HELP_STRING([--with-pdf=yes], [explicitly specify to use the pdf support (libharu is required)]),
+            [pdf=$withval])
+
+if test "$pdf" = "yes"; then
+    AC_DEFINE_UNQUOTED(PDF_SUPPORT, "${pdf}", [pdf support])
+    eyelight_lpdf_libs="-lhpdf"
+    AC_SUBST(eyelight_lpdf_libs)
+    have_pdf="yes"
+fi
+
+# Find edje_cc
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+AC_ARG_WITH(edje-cc,
+  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
+  [
+    v=$withval;
+    EDJE_CC=$v
+  ],[
+    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
+  ]
+)
+
 PKG_CHECK_MODULES(EYELIGHT, [
                         ecore >= 0.9.9.037,
                         ecore-evas >= 0.9.9.038,
@@ -38,6 +63,9 @@ eyelight_cflags=$EYELIGHT_CFLAGS
 AC_SUBST(eyelight_libs)
 AC_SUBST(eyelight_cflags)
 
+AC_SUBST(EDJE_CC)
+AC_MSG_CHECKING([Which edje_cc to use])
+AC_MSG_RESULT(${EDJE_CC})
 
 
 AC_OUTPUT([
@@ -52,8 +80,23 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/transition/Makefile
 data/themes/default/fonts/Makefile
-data/themes/old_default/Makefile
-data/themes/old_default/transition/Makefile
-data/themes/old_default/fonts/Makefile
 ])
 
+
+echo
+echo
+echo "--------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "--------------------------------------------------------"
+echo
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  pdf support (libharu is required)...: $have_pdf"
+echo
+echo "  Installation Path...................: $prefix"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
+echo "and then afterwards as root (or the user who will install this), type"
+echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo

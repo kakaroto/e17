@@ -33,11 +33,10 @@ void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres)
 
     o = edje_object_add(pres->evas);
     pres->gotoslide_object = o;
-    if(edje_object_file_set(o, pres->edje_file, "gotoslide") ==  0)
+    if(edje_object_file_set(o, pres->theme, "eyelight/gotoslide") ==  0)
         printf("eyelight_viewer_gotoslide_start(), edje_object_file_set() erreur! 1\n");
     evas_object_show(o);
     evas_object_resize(o, w_win, h_win);
-
 }
 
 void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres)
@@ -51,7 +50,7 @@ void eyelight_viewer_gotoslide_digit_add(Eyelight_Viewer* pres, int digit)
     char buf[EYELIGHT_BUFLEN];
     pres->gotoslide_number = pres->gotoslide_number * 10 + digit;
     snprintf(buf,EYELIGHT_BUFLEN,"%d",pres->gotoslide_number);
-    edje_object_part_text_set(pres->gotoslide_object,"gotoslide/text",buf);
+    edje_object_part_text_set(pres->gotoslide_object,"object.text",buf);
 }
 
 void eyelight_viewer_gotoslide_digit_last_remove(Eyelight_Viewer* pres)
@@ -59,7 +58,7 @@ void eyelight_viewer_gotoslide_digit_last_remove(Eyelight_Viewer* pres)
     char buf[EYELIGHT_BUFLEN];
     pres->gotoslide_number /= 10;
     snprintf(buf,EYELIGHT_BUFLEN,"%d",pres->gotoslide_number);
-    edje_object_part_text_set(pres->gotoslide_object,"gotoslide/text",buf);
+    edje_object_part_text_set(pres->gotoslide_object,"object.text",buf);
 }
 
 void eyelight_viewer_gotoslide_goto(Eyelight_Viewer* pres)
@@ -74,7 +73,7 @@ void eyelight_viewer_gotoslide_goto(Eyelight_Viewer* pres)
         char buf[EYELIGHT_BUFLEN];
         snprintf(buf,EYELIGHT_BUFLEN,"The presentation has %d slides.",pres->size);
         edje_object_signal_emit(pres->gotoslide_object,"gotoslide,error,show","eyelight");
-        edje_object_part_text_set(pres->gotoslide_object,"gotoslide/error",buf);
+        edje_object_part_text_set(pres->gotoslide_object,"object.error",buf);
     }
 }
 

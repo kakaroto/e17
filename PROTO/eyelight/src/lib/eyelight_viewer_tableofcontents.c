@@ -42,7 +42,7 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
 
     o = edje_object_add(pres->evas);
     pres->tableofcontents_background = o;
-    if(edje_object_file_set(o, pres->edje_file, "tableofcontents/main") ==  0)
+    if(edje_object_file_set(o, pres->theme, "eyelight/tableofcontents") ==  0)
     {
         fprintf(stderr,"table of contents is not supported by the theme\n");
         return ;
@@ -73,34 +73,70 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
     Evas_Object *o,*o_image, *o_swallow;
     char buf[EYELIGHT_BUFLEN];
     const int * pixel;
+    char *default_title;
 
     int nb_slides = pres->tableofcontents_nb_slides;
 
     int first_slide = pres->tableofcontents_current - (nb_slides/2);
 
-    for(i=0;i<nb_slides; i++)
+    Eyelight_Node *node;
+    i=0;
+    ecore_list_first_goto(pres->compiler->root->l);
+    while(i<first_slide && (node=ecore_list_next(pres->compiler->root->l)))
     {
-        if(first_slide+i<0 || i+first_slide>=pres->size)
+        if(node->type == EYELIGHT_NODE_TYPE_BLOCK && node->name == EYELIGHT_NAME_SLIDE)
+            i++;
+        else if( node->type == EYELIGHT_NODE_TYPE_PROP && node->name == EYELIGHT_NAME_TITLE)
+            default_title = eyelight_retrieve_value_of_prop(node,0);
+    }
+
+    i = 0;
+    node=ecore_list_next(pres->compiler->root->l);
+    while(i<nb_slides)
+    {
+        if(!node)
         {
             snprintf(buf,EYELIGHT_BUFLEN,"tableofcontents,slide,hide,%d",i+1);
             edje_object_signal_emit(pres->tableofcontents_background,
-                buf,"eyelight");
+                    buf,"eyelight");
+            i++;
+        }
+        else if( node->type == EYELIGHT_NODE_TYPE_PROP && node->name == EYELIGHT_NAME_TITLE)
+        {
+            default_title = eyelight_retrieve_value_of_prop(node,0);
+            node=ecore_list_next(pres->compiler->root->l);
+        }
+        else if(node->type == EYELIGHT_NODE_TYPE_BLOCK && node->name == EYELIGHT_NAME_SLIDE)
+        {
+            if(first_slide+i<0 || i+first_slide>=pres->size)
+            {
+                snprintf(buf,EYELIGHT_BUFLEN,"tableofcontents,slide,hide,%d",i+1);
+                edje_object_signal_emit(pres->tableofcontents_background,
+                        buf,"eyelight");
+            }
+            else
+            {
+                snprintf(buf,EYELIGHT_BUFLEN,"tableofcontents,slide,show,%d"
+                        ,i+1);
+                edje_object_signal_emit(pres->tableofcontents_background,
+                        buf,"eyelight");
+
+                char *title = default_title;
+                Eyelight_Node *node_title = eyelight_retrieve_node_prop(node, EYELIGHT_NAME_TITLE);
+                if(node_title)
+                    title = eyelight_retrieve_value_of_prop(node_title, 0);
+
+                snprintf(buf,EYELIGHT_BUFLEN,"object.text_%d",i+1);
+                if(title)
+                    edje_object_part_text_set(pres->tableofcontents_background
+                            ,buf,title);
+                node=ecore_list_next(pres->compiler->root->l);
+            }
+
+            i++;
         }
         else
-        {
-            snprintf(buf,EYELIGHT_BUFLEN,"tableofcontents,slide,show,%d"
-                    ,i+1);
-            edje_object_signal_emit(pres->tableofcontents_background,
-                    buf,"eyelight");
-
-            Evas_Object* slide = eyelight_viewer_slide_get(pres
-                    ,i+first_slide);
-            const char* title = edje_object_data_get(slide,"title");
-            snprintf(buf,EYELIGHT_BUFLEN,"tableofcontents/text/%d",i+1);
-            if(title)
-                edje_object_part_text_set(pres->tableofcontents_background
-                        ,buf,title);
-        }
+            node=ecore_list_next(pres->compiler->root->l);
     }
 }
 

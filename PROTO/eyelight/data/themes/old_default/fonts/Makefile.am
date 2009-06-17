@@ -1,3 +1,0 @@
-FONTS = DejaVuSans-Bold.ttf DejaVuSans.ttf DejaVuSans-Oblique.ttf
-icondir = $(pkgdatadir)/themes/old_default/fonts
-icon_DATA = $(FONTS)

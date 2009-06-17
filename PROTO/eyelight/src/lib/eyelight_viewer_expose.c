@@ -51,7 +51,7 @@ void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select, int nb_lines
 
     o = edje_object_add(pres->evas);
     pres->expose_background = o;
-    if(edje_object_file_set(o, pres->edje_file, "expose/main") ==  0)
+    if(edje_object_file_set(o, pres->theme, "eyelight/expose_main") ==  0)
         printf("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1\n");
     evas_object_show(o);
     evas_object_resize(o, w_win, h_win);
@@ -83,7 +83,7 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
     int w_body, h_body, x_body, y_body;
     int w_swallow, h_swallow;
 
-    edje_object_part_geometry_get(pres->expose_background,"expose/body",&x_body,&y_body,&w_body,&h_body);
+    edje_object_part_geometry_get(pres->expose_background,"body",&x_body,&y_body,&w_body,&h_body);
 
     int w = (w_body-(nb_cols+1))/nb_cols;
     int h = (h_body-(nb_lines+1))/nb_lines;
@@ -95,9 +95,9 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
 
         o_swallow = edje_object_add(pres->evas);
         pres->expose_slides[i] = o_swallow;
-        if(edje_object_file_set(o_swallow, pres->edje_file
-                    , "expose/slide") ==  0)
-            printf("eyelight_viewer_expose_slides_load(), edje_object_file_set() erreur! 3\n");
+        if(edje_object_file_set(o_swallow, pres->theme
+                    , "eyelight/expose_slide") ==  0)
+            printf("eyelight_viewer_expose_slides_load(), edje_object_file_set() erreur! 3 \n");
         if(i!=pres->expose_current)
             edje_object_signal_emit(o_swallow
                     ,"expose,slide,unselect","eyelight");
@@ -118,14 +118,14 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
         evas_object_image_data_set(o_image,thumb->thumb);
 
         evas_object_show(o_image);
-        edje_object_part_swallow(o_swallow,"expose/swallow",o_image);
+        edje_object_part_swallow(o_swallow,"object.swallow",o_image);
 
         evas_object_move(o_swallow,w*pos_x+x_body,h*pos_y+y_body);
         evas_object_resize(o_swallow,w,h);
         edje_object_signal_emit(o_swallow,"show","eyelight");
         evas_object_show(o_swallow);
 
-        edje_object_part_geometry_get(o_swallow,"expose/swallow",NULL,NULL,&w_swallow, &h_swallow);
+        edje_object_part_geometry_get(o_swallow,"object.swallow",NULL,NULL,&w_swallow, &h_swallow);
         evas_object_image_fill_set(o_image,0,0,w_swallow,h_swallow);
     }
 

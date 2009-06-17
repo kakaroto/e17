@@ -168,20 +168,59 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     ee = ecore_evas_buffer_new(buffer_w,buffer_h);
     e = ecore_evas_get (ee);
 
+    Eyelight_Viewer *pres_copy = calloc(1,sizeof(Eyelight_Viewer));
+    pres_copy->evas = e;
+    pres_copy->compiler = pres->compiler;
+    pres_copy->elt_file = pres->elt_file;
+    pres_copy->theme = pres->theme;
+    pres_copy->slides = calloc(pres->size,sizeof(Evas_Object*));
+    pres_copy->custom_areas = calloc(pres->size,sizeof(Eina_List*));
+    pres_copy->edje_objects = calloc(pres->size,sizeof(Eina_List*));
+    pres_copy->size = pres->size;
+
+
     //create a thumbnail of the slide
-    o = edje_object_add(e);
-    snprintf(buf,EYELIGHT_BUFLEN,"slide_%d",pos+1);
-    if(edje_object_file_set(o, pres->edje_file, buf) ==  0)
-        printf("eyelight_viewer_expose_slides_load(), edje_object_file_set() erreur! 4 %d\n",edje_object_load_error_get(o));
+    o = eyelight_viewer_slide_load(pres_copy,pos);
     evas_object_move(o,-buffer_w,-buffer_h);
     evas_object_resize(o,buffer_w,buffer_h);
     evas_object_show(o);
+
+    edje_object_signal_emit(o,"thumbnail","eyelight");
+    ecore_main_loop_iterate();
 
     pixel = ecore_evas_buffer_pixels_get(ee);
 
     pixel_resize = _eyelight_viewer_thumbnails_resize(pixel,buffer_w,buffer_h,
             size_w,
             size_h);
+
+    int i;
+    for(i=0;i<pres_copy->size;i++)
+    {
+        Eina_List *l, *l_next;
+        {
+            Evas_Object *data;
+            EINA_LIST_FOREACH_SAFE(pres_copy->edje_objects[i], l, l_next, data)
+            {
+                evas_object_del(data);
+                pres_copy->edje_objects[i] = eina_list_remove_list(pres_copy->edje_objects[i], l);
+            }
+        }
+        {
+            Eyelight_Custom_Area *data;
+            EINA_LIST_FOREACH_SAFE(pres_copy->custom_areas[i], l, l_next, data)
+            {
+                evas_object_del(data->obj);
+                EYELIGHT_FREE(data);
+                pres_copy->custom_areas[i] = eina_list_remove_list(pres_copy->custom_areas[i], l);
+            }
+        }
+    }
+
+    EYELIGHT_FREE(pres_copy->custom_areas);
+    EYELIGHT_FREE(pres_copy->edje_objects);
+
+    EYELIGHT_FREE(pres_copy->slides);
 
     ecore_evas_free(ee);
     return pixel_resize;

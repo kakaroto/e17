@@ -25,6 +25,7 @@ typedef enum Eyelight_Viewer_State Eyelight_Viewer_State;
 #include "Eyelight.h"
 #include <Eet.h>
 #include "eyelight_viewer_thumbnails.h"
+#include "eyelight_compiler_common.h"
 
 enum Eyelight_Viewer_State
 {
@@ -42,6 +43,9 @@ struct Eyelight_Viewer
     Evas* evas;
     char* presentation;
     char* elt_file;
+
+    Eyelight_Compiler *compiler;
+
     char* edc_file;
     char *edje_file;
 
@@ -52,6 +56,12 @@ struct Eyelight_Viewer
 
     int with_border;
     Evas_Object** slides;
+    //for each slide, the lis tof edje object swallow inside
+    //when we destroy a slide we need to destroy each object swallowed inside
+    Eina_List** edje_objects;
+    //for each slide, the list of custom area
+    //the type of nodes is Eyelight_Custom_Area
+    Eina_List** custom_areas;
     const char** transition_effect_next;
     const char** transition_effect_previous;
     int size;
