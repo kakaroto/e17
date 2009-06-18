@@ -285,6 +285,9 @@ EwinManage(EWin * ewin)
    /* We must reparent after getting original window position */
    EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 
+   /* Something (e.g. a match) may have changed the window size */
+   EResizeWindow(EwinGetClientWin(ewin), ewin->client.w, ewin->client.h);
+
    EwinUpdateShapeInfo(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_CREATE, ewin);
