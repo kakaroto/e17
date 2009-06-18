@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-07 21:56+0200\n"
+"POT-Creation-Date: 2009-06-11 21:37+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -578,58 +578,58 @@ msgstr ""
 "Aby schowaæ ten Pulpit na dno,\n"
 "kliknij tutaj\n"
 
-#: src/desktops.c:2291
+#: src/desktops.c:2316
 msgid "Number of virtual desktops:\n"
 msgstr "Ilo¶æ Pulpitów wirtualnych:\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2341
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/desktops.c:2322
+#: src/desktops.c:2347
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Szybko¶æ ¶lizgania siê Pulpitów: (wolno)\n"
 
-#: src/desktops.c:2336
+#: src/desktops.c:2361
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2369
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2375
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2379
 msgid "Top"
 msgstr "Góra"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2385
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2380 src/menus-misc.c:582
+#: src/desktops.c:2405 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
 msgstr "Pulpit"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2406
 msgid "Multiple Desktop Settings"
 msgstr "Ustawienia Wielu Pulpitów"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2409
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -637,43 +637,43 @@ msgstr ""
 "Okno ustawieñ Wielu Pulpitów\n"
 "Enlightenment\n"
 
-#: src/desktops.c:2475
+#: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
 msgstr "Rozmiar Wirtualnego Pulpitu :\n"
 
-#: src/desktops.c:2511
+#: src/desktops.c:2536
 msgid "Wrap virtual desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2518
+#: src/desktops.c:2543
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2521
+#: src/desktops.c:2546
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2526
+#: src/desktops.c:2551
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2531
+#: src/desktops.c:2556
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2537
+#: src/desktops.c:2562
 msgid "Resistance at edge of screen:\n"
 msgstr "Czu³o¶æ na prze³±czanie przy brzegach ekranu:\n"
 
-#: src/desktops.c:2549
+#: src/desktops.c:2574
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2550
+#: src/desktops.c:2575
 msgid "Virtual Desktop Settings"
 msgstr "Ustawienia Wirtualnego Biurka"
 
-#: src/desktops.c:2553
+#: src/desktops.c:2578
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1117,7 +1117,7 @@ msgstr "Opcje Pude³ka na Ikony"
 msgid "Iconbox Settings"
 msgstr "Ustawienia Pude³ka na Ikony"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:371
 msgid "Message"
 msgstr "Wiadomo¶æ"
 
@@ -2162,7 +2162,7 @@ msgstr "Opcje pulpitu"
 msgid "Systray Settings"
 msgstr "Ustawienia Auto-Podnoszenia"
 
-#: src/theme.c:339
+#: src/theme.c:341
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2170,34 +2170,34 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/theme.c:369
+#: src/theme.c:371
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:389
+#: src/theme.c:391
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:394
+#: src/theme.c:396
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:395
+#: src/theme.c:397
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:402
+#: src/theme.c:404
 #, fuzzy
 msgid "Theme"
 msgstr "Z³y wystrój"
 
-#: src/theme.c:403
+#: src/theme.c:405
 #, fuzzy
 msgid "Theme Settings"
 msgstr "Ustawienia ró¿ne"
 
-#: src/theme.c:406
+#: src/theme.c:408
 #, fuzzy
 msgid ""
 "Enlightenment Theme\n"

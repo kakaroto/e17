@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-07 21:56+0200\n"
+"POT-Creation-Date: 2009-06-11 21:37+0200\n"
 "PO-Revision-Date: 2009-05-13 19:45+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -593,58 +593,58 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2291
+#: src/desktops.c:2316
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2341
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2322
+#: src/desktops.c:2347
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2336
+#: src/desktops.c:2361
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2369
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2375
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2379
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2385
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2380 src/menus-misc.c:582
+#: src/desktops.c:2405 src/menus-misc.c:582
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2406
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2409
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -652,43 +652,43 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2475
+#: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2511
+#: src/desktops.c:2536
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2518
+#: src/desktops.c:2543
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2521
+#: src/desktops.c:2546
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2526
+#: src/desktops.c:2551
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2531
+#: src/desktops.c:2556
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2537
+#: src/desktops.c:2562
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2549
+#: src/desktops.c:2574
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2550
+#: src/desktops.c:2575
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2553
+#: src/desktops.c:2578
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1130,7 +1130,7 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:371
 msgid "Message"
 msgstr "メッセージ"
 
@@ -2161,7 +2161,7 @@ msgstr "システムトレイオプション"
 msgid "Systray Settings"
 msgstr "システムトレイの設定"
 
-#: src/theme.c:339
+#: src/theme.c:341
 #, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2172,35 +2172,35 @@ msgstr ""
 "%s\n"
 "にテーマがありません。このまま進めてもほとんど無意味です。\n"
 
-#: src/theme.c:369
+#: src/theme.c:371
 msgid "Changes will take effect after restart"
 msgstr "変更は再起動後に有効になります."
 
-#: src/theme.c:389
+#: src/theme.c:391
 msgid "Use theme font configuration"
 msgstr "テーマのフォント設定を使う"
 
-#: src/theme.c:394
+#: src/theme.c:396
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr "別のフォント設定を使う (%s)"
 
-#: src/theme.c:395
+#: src/theme.c:397
 msgid "Not set"
 msgstr "設定しない"
 
 #
-#: src/theme.c:402
+#: src/theme.c:404
 msgid "Theme"
 msgstr "テーマ"
 
 #
-#: src/theme.c:403
+#: src/theme.c:405
 msgid "Theme Settings"
 msgstr "テーマの設定"
 
 #
-#: src/theme.c:406
+#: src/theme.c:408
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"

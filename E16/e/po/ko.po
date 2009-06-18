@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-07 21:56+0200\n"
+"POT-Creation-Date: 2009-06-11 21:37+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -592,57 +592,57 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:2291
+#: src/desktops.c:2316
 msgid "Number of virtual desktops:\n"
 msgstr "가상 데스크탑 수:\n"
 
-#: src/desktops.c:2316
+#: src/desktops.c:2341
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/desktops.c:2322
+#: src/desktops.c:2347
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "데스크탑 미끄러짐 속도: (느림)\n"
 
-#: src/desktops.c:2336
+#: src/desktops.c:2361
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2369
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2375
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2379
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2385
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2366 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2372 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2380 src/menus-misc.c:582
+#: src/desktops.c:2405 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2406
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2409
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -650,43 +650,43 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:2475
+#: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
 msgstr "가상 데스크탑 크기:\n"
 
-#: src/desktops.c:2511
+#: src/desktops.c:2536
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2518
+#: src/desktops.c:2543
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2521
+#: src/desktops.c:2546
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2526
+#: src/desktops.c:2551
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2531
+#: src/desktops.c:2556
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2537
+#: src/desktops.c:2562
 msgid "Resistance at edge of screen:\n"
 msgstr "스크린 변두리에서의 저항감:\n"
 
-#: src/desktops.c:2549
+#: src/desktops.c:2574
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2550
+#: src/desktops.c:2575
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2553
+#: src/desktops.c:2578
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1127,7 +1127,7 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:369
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:371
 msgid "Message"
 msgstr "메시지"
 
@@ -2165,7 +2165,7 @@ msgstr "데스크탑 옵션"
 msgid "Systray Settings"
 msgstr "자동올리기 설정"
 
-#: src/theme.c:339
+#: src/theme.c:341
 #, fuzzy, c-format
 msgid ""
 "No themes were found in the default directories:\n"
@@ -2178,34 +2178,34 @@ msgstr ""
 " %s/themes/\n"
 "현재 동작 이상 진행 할 수 없습니다.\n"
 
-#: src/theme.c:369
+#: src/theme.c:371
 msgid "Changes will take effect after restart"
 msgstr ""
 
-#: src/theme.c:389
+#: src/theme.c:391
 msgid "Use theme font configuration"
 msgstr ""
 
-#: src/theme.c:394
+#: src/theme.c:396
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr ""
 
-#: src/theme.c:395
+#: src/theme.c:397
 msgid "Not set"
 msgstr ""
 
-#: src/theme.c:402
+#: src/theme.c:404
 #, fuzzy
 msgid "Theme"
 msgstr "잘못된 테마"
 
-#: src/theme.c:403
+#: src/theme.c:405
 #, fuzzy
 msgid "Theme Settings"
 msgstr "기타 설정"
 
-#: src/theme.c:406
+#: src/theme.c:408
 #, fuzzy
 msgid ""
 "Enlightenment Theme\n"
