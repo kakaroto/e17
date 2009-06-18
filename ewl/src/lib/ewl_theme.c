@@ -559,7 +559,7 @@ ewl_theme_path_find(const char *name)
         home = getenv("HOME");
 #ifdef _WIN32
         if (!home) {
-                home = getenv("HOMEPATH");
+                home = getenv("USERPROFILE");
         }
 #endif
         if (!home) {
