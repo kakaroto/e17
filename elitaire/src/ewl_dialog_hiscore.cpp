@@ -333,18 +333,18 @@ void _highscore_add(Ewl_Window * win, _Win_Hi_Points * wh)
 static void * highscore_data_fetch(void * data, unsigned int row, 
 		                                  unsigned int col)
 {
-    Evas_List * l;
+    Eina_List * l;
 
-    l = (Evas_List *) data;
-    return evas_list_nth(l, row);
+    l = (Eina_List *) data;
+    return eina_list_nth(l, row);
 }
 
 static unsigned int highscore_data_count(void * data)
 {
-    Evas_List * l;
+    Eina_List * l;
 
-    l = (Evas_List *) data;
-    return evas_list_count(l);
+    l = (Eina_List *) data;
+    return eina_list_count(l);
 }
 
 static Ewl_Widget * highscore_widget_constructor(unsigned int col, void *prd)

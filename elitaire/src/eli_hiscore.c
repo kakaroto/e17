@@ -139,7 +139,7 @@ void eli_highscore_shutdown(void)
     eet_shutdown();
 }
 
-Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
+Eina_Bool eli_highscore_entry_add(const char * game, const char * username,
                                   float points, pointsType type)
 {
     Eina_List * l = NULL;
@@ -193,7 +193,7 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
     return 1;
 }
 
-Evas_Bool eli_highscore_accept(const char * game, float points,
+Eina_Bool eli_highscore_accept(const char * game, float points,
                                pointsType type)
 {
     Eina_List * l, * list;

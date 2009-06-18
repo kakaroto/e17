@@ -206,7 +206,7 @@ void * enna_image_data_get(Evas_Object * obj, int *w, int *h)
     return evas_object_image_data_get(sd->obj, 0);
 }
 
-void enna_image_preload(Evas_Object *obj, Evas_Bool cancel)
+void enna_image_preload(Evas_Object *obj, Eina_Bool cancel)
 {
     E_Smart_Data *sd;
 

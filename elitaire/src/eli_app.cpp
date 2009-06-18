@@ -438,7 +438,7 @@ static char * theme_cut_off_suffix(const char * file)
 
 }
 
-inline Evas_Bool 
+inline Eina_Bool 
 _eli_theme_exists(Ecore_List * l, const char * theme)
 {
     char * data;
@@ -456,12 +456,12 @@ _eli_theme_exists(Ecore_List * l, const char * theme)
     return false;
 }
 
-Evas_Bool eli_theme_gui_exists(Eli_App * eap, const char * theme)
+Eina_Bool eli_theme_gui_exists(Eli_App * eap, const char * theme)
 {
     return _eli_theme_exists(eap->theme.gui.list, theme);
 }
 
-Evas_Bool eli_theme_cards_exists(Eli_App * eap, const char * theme)
+Eina_Bool eli_theme_cards_exists(Eli_App * eap, const char * theme)
 {
     return _eli_theme_exists(eap->theme.cards.list, theme);
 }

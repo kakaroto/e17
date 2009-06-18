@@ -100,8 +100,8 @@ int          eli_app_theme_init(Eli_App * eap);
 
 Ecore_List * eli_theme_names_get();
 char      ** eli_theme_dir_get();
-Evas_Bool    eli_theme_gui_exists(Eli_App * eap, const char * theme);
-Evas_Bool    eli_theme_cards_exists(Eli_App * eap, const char * theme);
+Eina_Bool    eli_theme_gui_exists(Eli_App * eap, const char * theme);
+Eina_Bool    eli_theme_cards_exists(Eli_App * eap, const char * theme);
 
 /*
  * frontend

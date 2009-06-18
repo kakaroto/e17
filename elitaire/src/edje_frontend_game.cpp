@@ -198,7 +198,7 @@ void _eli_edje_frontend_game_new(Eli_App * eap)
     Evas_Coord min_w, min_h;
     char * card_theme;
     int vel;
-    Evas_Bool bo;
+    Eina_Bool bo;
 
     eef = eli_app_edje_frontend_get(eap);
    
@@ -358,7 +358,7 @@ void _eli_edje_frontend_config_changed(Eli_App * eap, const int tag)
     case ANIMATIONS:
         if (!eef->elitaire) break;
         else {
-            Evas_Bool b;
+            Eina_Bool b;
 
             b = ecore_config_boolean_get("/graphic/animations");
             elitaire_object_animations_set(eef->elitaire, b);
@@ -368,7 +368,7 @@ void _eli_edje_frontend_config_changed(Eli_App * eap, const int tag)
     case SHADOWS:
         if (!eef->elitaire) break;
         else {
-            Evas_Bool b;
+            Eina_Bool b;
 
             b = ecore_config_boolean_get("/graphic/shadows");
             elitaire_object_shadows_set(eef->elitaire, b);

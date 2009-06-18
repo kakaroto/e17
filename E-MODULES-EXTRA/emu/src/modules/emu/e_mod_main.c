@@ -58,7 +58,7 @@ static void _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void 
 static void _emu_menu_cb_post_deactivate(void *data, E_Menu *m);
 
 static void _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
-static Evas_Bool _emu_menus_hash_cb_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Eina_Bool _emu_menus_hash_cb_free(const Eina_Hash *hash, const char *key, void *data, void *fdata);
 
 //static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
@@ -251,8 +251,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    emu_face = gcc->data;
    if (emu_face)
      {
-        evas_hash_foreach(emu_face->menus, _emu_menus_hash_cb_free, NULL);
-        evas_hash_free(emu_face->menus);
+        eina_hash_foreach(emu_face->menus, _emu_menus_hash_cb_free, NULL);
+        eina_hash_free(emu_face->menus);
         emu_face->menus = NULL;
 
         if (emu_face->read)
@@ -527,16 +527,19 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
           {
              Easy_Menu *old_menu;
 
+	     if (!emu_face->menus)
+	       emu_face->menus = eina_hash_string_small_new(NULL);
+
              /* Associate this menu with it's category. Only one menu per category. */
-             old_menu = evas_hash_find(emu_face->menus, menu->category);
+             old_menu = eina_hash_find(emu_face->menus, menu->category);
              if (old_menu)
                {                /* Clean up the old one. */
-                  emu_face->menus = evas_hash_del(emu_face->menus, menu->category, old_menu);
-                  emu_face->menus = evas_hash_del(emu_face->menus, NULL, old_menu);     /* Just to be on the safe side. */
+                  eina_hash_del(emu_face->menus, menu->category, old_menu);
+                  eina_hash_del(emu_face->menus, NULL, old_menu);     /* Just to be on the safe side. */
                   e_object_del(E_OBJECT(old_menu->menu->menu));
                }
-             /* evas_hash_direct_add is used because we allocate the key ourselves and don't deallocate it until after removing it. */
-             emu_face->menus = evas_hash_direct_add(emu_face->menus, menu->category, menu);
+             /* eina_hash_direct_add is used because we allocate the key ourselves and don't deallocate it until after removing it. */
+	     eina_hash_direct_add(emu_face->menus, menu->category, menu);
           }
      }
 }
@@ -830,7 +833,7 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	y += cy;
 
         /* Find the default menu, if there is one. */
-        menu = evas_hash_find(emu_face->menus, "");
+        menu = eina_hash_find(emu_face->menus, "");
         if (menu && menu->valid)
           {
 	     int dir;
@@ -1012,19 +1015,19 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 /**
- * Handle menu freeing from an Evas_Hash.
+ * Handle menu freeing from an Eina_Hash.
  *
- * Just a thin wrapper to cater for evas_hash_foreach().
+ * Just a thin wrapper to cater for eina_hash_foreach().
  * It's only used during freeing of a face for mass menu destruction.
  *
- * @param   hash the Evas_Hash that this menu is in.
+ * @param   hash the Eina_Hash that this menu is in.
  * @param   key the key to the menu in the hash.
  * @param   data a pointer to the data stored in the hash.
  * @param   fdata unused.
  * @ingroup Emu_Module_Menu_Group
  */
-static Evas_Bool
-_emu_menus_hash_cb_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_emu_menus_hash_cb_free(const Eina_Hash *hash, const char *key, void *data, void *fdata)
 {
    Easy_Menu *menu;
 

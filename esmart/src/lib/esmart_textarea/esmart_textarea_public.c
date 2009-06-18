@@ -107,7 +107,7 @@ esmart_textarea_cursor_delete_left(Evas_Object *o)
 
 /* focus / unfocus textarea */
 EAPI void
-esmart_textarea_focus_set(Evas_Object *o, Evas_Bool focus)
+esmart_textarea_focus_set(Evas_Object *o, Eina_Bool focus)
 {
    Esmart_Text_Area *t;
    
@@ -232,7 +232,7 @@ esmart_textarea_line_end_pos_get(Evas_Object *o)
    return _esmart_textarea_line_end_pos_get(t);
 }
 
-EAPI Evas_Bool
+EAPI Eina_Bool
 esmart_textarea_line_get(Evas_Object *o, int line, Evas_Coord *lx, 
 			  Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh)
 {
@@ -242,7 +242,7 @@ esmart_textarea_line_get(Evas_Object *o, int line, Evas_Coord *lx,
    return _esmart_textarea_line_get(t, line, lx, ly, lw, lh);
 }
 
-EAPI Evas_Bool
+EAPI Eina_Bool
 esmart_textarea_char_pos_get(Evas_Object *o, int pos, Evas_Coord *cx, 
 			      Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch)
 {

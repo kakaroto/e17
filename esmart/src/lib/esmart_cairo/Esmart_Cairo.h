@@ -8,11 +8,11 @@
 extern "C" {
 #endif
 
-EAPI Evas_Object     *esmart_image_cairo_new              (Evas *evas, Evas_Coord w, Evas_Coord h, Evas_Bool alpha);
+EAPI Evas_Object     *esmart_image_cairo_new              (Evas *evas, Evas_Coord w, Evas_Coord h, Eina_Bool alpha);
 EAPI Evas_Object     *esmart_image_cairo_new_from_surface (Evas *evas, cairo_surface_t *cairo_surface);
 EAPI cairo_surface_t *esmart_image_cairo_surface_get      (Evas_Object *object);
-EAPI Evas_Bool        esmart_image_cairo_surface_set      (Evas_Object *o, cairo_surface_t *cairo_surface);
-EAPI void             esmart_image_cairo_fill_auto_set    (Evas_Object *o, Evas_Bool enable);
+EAPI Eina_Bool        esmart_image_cairo_surface_set      (Evas_Object *o, cairo_surface_t *cairo_surface);
+EAPI void             esmart_image_cairo_fill_auto_set    (Evas_Object *o, Eina_Bool enable);
 
 #ifdef __cplusplus
 }

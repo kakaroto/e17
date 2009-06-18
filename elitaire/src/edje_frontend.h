@@ -12,8 +12,8 @@ struct Eli_Edje_Frontend {
     Evas        * evas;
     Evas_Object * gui;
     struct {
-   	Evas_Bool ctrl_down;
-	Evas_Bool alt_down;
+   	Eina_Bool ctrl_down;
+	Eina_Bool alt_down;
     } key;
     Ewl_Widget  * conmenu;
 };

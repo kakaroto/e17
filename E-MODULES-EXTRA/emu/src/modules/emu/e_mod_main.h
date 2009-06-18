@@ -45,7 +45,7 @@ struct _Emu_Face
                /**< the size of this data in bytes */
    Ecore_Exe_Event_Data_Line *lines; /**< a NULL terminated array of line data if line buffered */
 
-   Evas_Hash *menus;
+   Eina_Hash *menus;
 
    E_Menu *config_menu;
 

@@ -39,7 +39,7 @@ struct _Population
    Evas *canvas;
    Ecore_Animator *animator;
    Eina_List *penguins;
-   Evas_Hash *actions;
+   Eina_Hash *actions;
    Eina_List *customs;
    int custom_num;
    Eina_List *themes;

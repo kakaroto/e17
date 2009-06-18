@@ -52,7 +52,7 @@ struct _Smart_Data
     Evas_Object *o_icon;
     char *label;
 
-    Evas_Hash *funcs;       /* Callback functions hash */
+    Eina_Hash *funcs;       /* Callback functions hash */
 };
 
 /* local subsystem functions */

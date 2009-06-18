@@ -17,12 +17,12 @@ Evas_Object * elitaire_card_new               (Elitaire * eli, playingCard * pca
 Evas_Object * elitaire_card_next_card_get     (Evas_Object * card);
 void          elitaire_card_playingCard_set   (Evas_Object * card, playingCard * pcard);
 playingCard * elitaire_card_playingCard_get   (Evas_Object * card);
-Evas_Bool     elitaire_card_is_flying         (Evas_Object * card);
+Eina_Bool     elitaire_card_is_flying         (Evas_Object * card);
 void          elitaire_card_callback_add      (Evas_Object * card, Evas_Callback_Type type, 
                               void(*func)(void *data, Evas *e, Evas_Object *obj, void *event_info));
 void          elitaire_card_callback_del      (Evas_Object * card, Evas_Callback_Type type, 
                               void(*func)(void *data, Evas *e, Evas_Object *obj, void *event_info));
-Evas_Bool	  elitaire_card_moveable          (Evas_Object * card);
+Eina_Bool	  elitaire_card_moveable          (Evas_Object * card);
 void          elitaire_card_hint_highlight_show(Evas_Object * card);
 void          elitaire_card_hint_highlight_hide(Evas_Object * card);
 Elitaire    * elitaire_card_elitaire_get      (Evas_Object * card);

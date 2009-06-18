@@ -60,7 +60,7 @@ _esmart_textarea_init(Evas_Object *o) {
 
 /* focus / unfocus (to accept key strokes) textarea */
 void
-_esmart_textarea_focus_set(Esmart_Text_Area *t, Evas_Bool focus)
+_esmart_textarea_focus_set(Esmart_Text_Area *t, Eina_Bool focus)
 {
    evas_object_focus_set(t->text, focus);
 }
@@ -137,14 +137,14 @@ _esmart_textarea_line_end_pos_get(Esmart_Text_Area *t)
    return evas_object_textblock_line_end_pos_get(t->text);
 }
 
-Evas_Bool
+Eina_Bool
 _esmart_textarea_line_get(Esmart_Text_Area *t, int line, Evas_Coord *lx, 
 			  Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh)
 {
    return evas_object_textblock_line_get(t->text, line, lx, ly, lw, lh);
 }
 
-Evas_Bool
+Eina_Bool
 _esmart_textarea_char_pos_get(Esmart_Text_Area *t, int pos, Evas_Coord *cx, 
 			      Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch)
 {

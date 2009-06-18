@@ -73,7 +73,7 @@ _esmart_image_cairo_died(void *data, Evas *e, Evas_Object *o, void *einfo)
  * @see esmart_image_cairo_surface_set()
  */
 Evas_Object *
-esmart_image_cairo_new(Evas *evas, Evas_Coord w, Evas_Coord h, Evas_Bool alpha)
+esmart_image_cairo_new(Evas *evas, Evas_Coord w, Evas_Coord h, Eina_Bool alpha)
 {
    cairo_surface_t *surface;
    cairo_format_t format;
@@ -84,7 +84,8 @@ esmart_image_cairo_new(Evas *evas, Evas_Coord w, Evas_Coord h, Evas_Bool alpha)
      format = CAIRO_FORMAT_RGB24;
 
    surface = cairo_image_surface_create(format, w, h);
-   esmart_image_cairo_new_from_surface(evas, surface);
+
+   return esmart_image_cairo_new_from_surface(evas, surface);
 }
 
 /**
@@ -183,7 +184,7 @@ esmart_image_cairo_surface_get(Evas_Object *o)
  * @param cairo_surface the image surface to associate.
  * @return 1 on success, 0 on failure.
  */
-Evas_Bool
+Eina_Bool
 esmart_image_cairo_surface_set(Evas_Object *o, cairo_surface_t *cairo_surface)
 {
    cairo_status_t status;
@@ -280,7 +281,7 @@ _esmart_image_cairo_resized(void *data, Evas *e, Evas_Object *o, void *einfo)
  * @param enable if true, enable this behavior, false disables it.
  */
 void
-esmart_image_cairo_fill_auto_set(Evas_Object *o, Evas_Bool enable)
+esmart_image_cairo_fill_auto_set(Evas_Object *o, Eina_Bool enable)
 {
    evas_object_event_callback_del(
       o, EVAS_CALLBACK_RESIZE, _esmart_image_cairo_resized);

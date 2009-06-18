@@ -111,12 +111,12 @@
 
 
 
-static Evas_Hash *hash_config;
+static Eina_Hash *hash_config;
 
 static Eina_Bool _hash_foreach(const Eina_Hash *hash, const char *key,
         void *data, void *fdata);
-static Evas_Hash *_config_load_conf_file(char *filename);
-static Evas_Hash *_config_load_conf(char *conffile, int size);
+static Eina_Hash *_config_load_conf_file(char *filename);
+static Eina_Hash *_config_load_conf(char *conffile, int size);
 
 const char * enna_config_theme_get()
 {
@@ -193,7 +193,7 @@ enna_config_module_pair_get(const char *module_name)
     if(!hash_config || !module_name)
     return NULL;
 
-    return evas_hash_find(hash_config, module_name);
+    return eina_hash_find(hash_config, module_name);
 }
 
 void enna_config_init()
@@ -204,7 +204,7 @@ void enna_config_init()
     snprintf(filename, sizeof(filename), "%s/.enna/enna.cfg",
             enna_util_user_home_get());
     hash_config = _config_load_conf_file(filename);
-    evas_hash_foreach(hash_config, _hash_foreach, NULL);
+    eina_hash_foreach(hash_config, _hash_foreach, NULL);
 }
 
 void enna_config_shutdown()
@@ -257,7 +257,7 @@ static Eina_Bool _hash_foreach(const Eina_Hash *hash, const char *key,
     return 1;
 }
 
-static Evas_Hash * _config_load_conf_file(char *filename)
+static Eina_Hash * _config_load_conf_file(char *filename)
 {
     int fd;
     FILE *f;
@@ -316,11 +316,11 @@ static Evas_Hash * _config_load_conf_file(char *filename)
     return _config_load_conf(conffile, st.st_size);
 }
 
-static Evas_Hash * _config_load_conf(char *conffile, int size)
+static Eina_Hash * _config_load_conf(char *conffile, int size)
 {
     char *current_section = NULL;
     char *current_line = conffile;
-    Evas_Hash *config = NULL;
+    Eina_Hash *config = NULL;
     Enna_Config_Data *config_data;
 
     while (current_line < conffile + size)
@@ -375,7 +375,7 @@ static Evas_Hash * _config_load_conf(char *conffile, int size)
             config_data = calloc(1, sizeof(Enna_Config_Data));
             config_data->section = current_section;
             config_data->pair = NULL;
-            config = evas_hash_add(config, current_section, config_data);
+            config = eina_hash_add(config, current_section, config_data);
             current_line = eol + 1;
             continue;
 
@@ -404,12 +404,12 @@ static Evas_Hash * _config_load_conf(char *conffile, int size)
         pair = calloc(1, sizeof(Config_Pair));
         pair->key = strdup(key);
         pair->value = strdup(value);
-        config_data = evas_hash_find(config, current_section);
+        config_data = eina_hash_find(config, current_section);
         if (config_data)
         {
             config_data->pair = eina_list_append(config_data->pair, pair);
             /* Need this ? */
-            /*evas_hash_modify(hash, current_section, config_data);*/
+            /*eina_hash_modify(hash, current_section, config_data);*/
         }
 
         current_line = eol + 1;

@@ -26,7 +26,7 @@ void enna_scrollframe_page_size_get           (Evas_Object *obj, Evas_Coord *x, 
 void enna_scrollframe_policy_set              (Evas_Object *obj, Enna_Scrollframe_Policy hbar, Enna_Scrollframe_Policy vbar);
 void enna_scrollframe_policy_get              (Evas_Object *obj, Enna_Scrollframe_Policy *hbar, Enna_Scrollframe_Policy *vbar);
 Evas_Object *enna_scrollframe_edje_object_get (Evas_Object *obj);
-void enna_scrollframe_single_dir_set          (Evas_Object *obj, Evas_Bool single_dir);
-Evas_Bool enna_scrollframe_single_dir_get     (Evas_Object *obj);
+void enna_scrollframe_single_dir_set          (Evas_Object *obj, Eina_Bool single_dir);
+Eina_Bool enna_scrollframe_single_dir_get     (Evas_Object *obj);
 
 #endif

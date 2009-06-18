@@ -82,7 +82,7 @@ playingCard * elitaire_card_playingCard_get(Evas_Object * card)
     return NULL;
 }
 
-Evas_Bool elitaire_card_is_flying(Evas_Object * card)
+Eina_Bool elitaire_card_is_flying(Evas_Object * card)
 {
     Elitaire_Card * data = NULL;
 
@@ -122,7 +122,7 @@ void elitaire_card_callback_del(Evas_Object * o, Evas_Callback_Type type,
     }
 }
 
-Evas_Bool elitaire_card_moveable(Evas_Object * card)
+Eina_Bool elitaire_card_moveable(Evas_Object * card)
 {
     Elitaire_Card * data = NULL;
 

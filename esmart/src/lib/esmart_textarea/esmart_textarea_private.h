@@ -9,7 +9,7 @@
 
 /* textarea private core functions */
 Esmart_Text_Area *_esmart_textarea_init(Evas_Object *o);
-void              _esmart_textarea_focus_set(Esmart_Text_Area *t, Evas_Bool focus);
+void              _esmart_textarea_focus_set(Esmart_Text_Area *t, Eina_Bool focus);
 void              _esmart_textarea_bg_set(Esmart_Text_Area *t, Evas_Object *o);
 Evas_Object      *_esmart_textarea_bg_get(Esmart_Text_Area *t);
 void              _esmart_textarea_clear(Esmart_Text_Area *t);
@@ -20,8 +20,8 @@ int               _esmart_textarea_cursor_line_get(Esmart_Text_Area *t);
 int               _esmart_textarea_lines_get(Esmart_Text_Area *t);
 int               _esmart_textarea_line_start_pos_get(Esmart_Text_Area *t);
 int               _esmart_textarea_line_end_pos_get(Esmart_Text_Area *t);
-Evas_Bool         _esmart_textarea_line_get(Esmart_Text_Area *t, int line, Evas_Coord *lx, Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh);
-Evas_Bool         _esmart_textarea_char_pos_get(Esmart_Text_Area *t, int pos, Evas_Coord *lx, Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh);
+Eina_Bool         _esmart_textarea_line_get(Esmart_Text_Area *t, int line, Evas_Coord *lx, Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh);
+Eina_Bool         _esmart_textarea_char_pos_get(Esmart_Text_Area *t, int pos, Evas_Coord *lx, Evas_Coord *ly, Evas_Coord *lw, Evas_Coord *lh);
 int               _esmart_textarea_char_coords_get(Esmart_Text_Area *t, Evas_Coord x, Evas_Coord y, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw,  Evas_Coord *ch);
 void              _esmart_textarea_text_insert(Esmart_Text_Area *t, const char *text);
 char             *_esmart_textarea_text_get(Esmart_Text_Area *t, int len);

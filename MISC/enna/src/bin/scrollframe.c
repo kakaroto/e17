@@ -372,14 +372,14 @@ Evas_Object * enna_scrollframe_edje_object_get(Evas_Object *obj)
     return sd->edje_obj;
 }
 
-void enna_scrollframe_single_dir_set(Evas_Object *obj, Evas_Bool single_dir)
+void enna_scrollframe_single_dir_set(Evas_Object *obj, Eina_Bool single_dir)
 {
     API_ENTRY
     return;
     sd->one_dir_at_a_time = single_dir;
 }
 
-Evas_Bool enna_scrollframe_single_dir_get(Evas_Object *obj)
+Eina_Bool enna_scrollframe_single_dir_get(Evas_Object *obj)
 {
     API_ENTRY
     return 0;

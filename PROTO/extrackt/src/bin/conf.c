@@ -6,15 +6,24 @@
 
 #include "Extrackt.h"
 
+static Eina_Hash *
+_extrackt_eina_hash_add(Eina_Hash *hash, const char *key, void *data)
+{
+   if (!hash) hash = eina_hash_string_small_new(NULL);
+   if (!hash) return NULL;
+   eina_hash_add(hash, key, data);
+   return hash;
+}
+
 #define NEWD(str, typ) \
    eet_data_descriptor_new(str, sizeof(typ), \
 			      (void *(*) (void *))eina_list_next, \
 			      (void *(*) (void *, void *))eina_list_append, \
 			      (void *(*) (void *))eina_list_data_get, \
 			      (void *(*) (void *))eina_list_free, \
-			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
-			      (void *(*) (void *, const char *, void *))evas_hash_add, \
-			      (void  (*) (void *))evas_hash_free)
+			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))eina_hash_foreach, \
+			      (void *(*) (void *, const char *, void *))_extrackt_eina_hash_add, \
+			      (void  (*) (void *))eina_hash_free)
 
 #define FREED(eed) \
        if (eed) \

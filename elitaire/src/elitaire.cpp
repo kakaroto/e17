@@ -92,7 +92,7 @@ Evas_Object * elitaire_object_new(Evas * evas)
     return elitaire;
 }
 
-Evas_Bool elitaire_object_game_set(Evas_Object * elitaire, const char * game)
+Eina_Bool elitaire_object_game_set(Evas_Object * elitaire, const char * game)
 {
     Elitaire * eli;
     
@@ -165,7 +165,7 @@ int elitaire_object_file_set(Evas_Object * elitaire, const char * file)
     Evas_Object * card;
     Elitaire * eli;
     vector<stackLook>::const_iterator iord, iend;
-    Evas_Bool change_file;
+    Eina_Bool change_file;
     card_iterator it, it_end;
     int num_decks;
 
@@ -351,7 +351,7 @@ void elitaire_object_hints_hide(Evas_Object * elitaire)
 /*
  * return if the highlights are visible
  */
-Evas_Bool elitaire_object_hints_visible(Evas_Object * elitaire)
+Eina_Bool elitaire_object_hints_visible(Evas_Object * elitaire)
 {
     Elitaire * eli;
 
@@ -463,7 +463,7 @@ int elitaire_object_frame_rate_get(Evas_Object * elitaire)
     return 0;
 }
 
-void elitaire_object_animations_set(Evas_Object * elitaire, Evas_Bool on)
+void elitaire_object_animations_set(Evas_Object * elitaire, Eina_Bool on)
 {
     Elitaire *eli;
 
@@ -486,7 +486,7 @@ void elitaire_object_animations_set(Evas_Object * elitaire, Evas_Bool on)
 
 }
 
-Evas_Bool elitaire_object_animations_get(Evas_Object * elitaire)
+Eina_Bool elitaire_object_animations_get(Evas_Object * elitaire)
 {
     Elitaire * eli;
 
@@ -497,7 +497,7 @@ Evas_Bool elitaire_object_animations_get(Evas_Object * elitaire)
     return 0;
 }
 
-void elitaire_object_shadows_set(Evas_Object * elitaire, Evas_Bool on)
+void elitaire_object_shadows_set(Evas_Object * elitaire, Eina_Bool on)
 {
     Elitaire * eli;
 
@@ -508,7 +508,7 @@ void elitaire_object_shadows_set(Evas_Object * elitaire, Evas_Bool on)
     }
 }
 
-Evas_Bool elitaire_object_shadows_get(Evas_Object * elitaire)
+Eina_Bool elitaire_object_shadows_get(Evas_Object * elitaire)
 {
     Elitaire * eli;
 
@@ -598,7 +598,7 @@ void elitaire_object_restart(Evas_Object * elitaire)
     }
 }
 
-Evas_Bool elitaire_object_giveup(Evas_Object * elitaire)
+Eina_Bool elitaire_object_giveup(Evas_Object * elitaire)
 {
     Elitaire * eli;
 
@@ -640,7 +640,7 @@ void elitaire_object_offset_get(Evas_Object * elitaire, Evas_Coord * l,
     }
 }
 
-Evas_Bool elitaire_object_wait_for_end_of_jobs(Evas_Object * elitaire,
+Eina_Bool elitaire_object_wait_for_end_of_jobs(Evas_Object * elitaire,
                                         int (*func) (void * data), void * data)
 {
     Elitaire * eli;

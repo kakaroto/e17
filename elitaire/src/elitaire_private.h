@@ -20,10 +20,10 @@ struct Elitaire{
 	int         num_stacks;
 	int         frame_rate;	  /* pics per sec */
 	int         num_card_jobs;/* the number of cards currently flying, waiting etc. */
-	Evas_Bool   deal;
-	Evas_Bool   animate;
-	Evas_Bool   shadow;
-	Evas_Bool   hints_on;
+	Eina_Bool   deal;
+	Eina_Bool   animate;
+	Eina_Bool   shadow;
+	Eina_Bool   hints_on;
 	
 	Evas_Coord  card_w, card_h;
 	Evas_Coord  card_max_w,card_max_h;

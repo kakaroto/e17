@@ -14,9 +14,9 @@ static Ewl_Widget * conf_win = NULL;
 
 static struct
 {
-    Evas_Bool    shadows;
-    Evas_Bool    animations;
-    Evas_Bool    gl;
+    Eina_Bool    shadows;
+    Eina_Bool    animations;
+    Eina_Bool    gl;
     int          lazy;
     Ewl_Widget * vel_label;
     Ewl_Widget * frt_label;

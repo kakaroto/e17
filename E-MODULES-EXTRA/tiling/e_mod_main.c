@@ -38,7 +38,7 @@ static E_Action *act_toggletiling = NULL,
 static int currently_switching_desktop = 0;
 
 /* This hash holds the Tiling_Info-pointers for each desktop */
-static Evas_Hash *info_hash = NULL;
+static Eina_Hash *info_hash = NULL;
 
 static void _e_mod_action_toggle_tiling_cb(E_Object *obj, const char *params);
 static void _e_mod_action_toggle_floating_cb(E_Object *obj, const char *params);
@@ -585,7 +585,7 @@ _initialize_tinfo(E_Desk *desk)
    res->desk = desk;
    res->big_perc = tiling_config->big_perc;
    res->need_rearrange = 0;
-   info_hash = evas_hash_add(info_hash, desk_hash_key(desk), res);
+   eina_hash_add(info_hash, desk_hash_key(desk), res);
 
    EINA_LIST_FOREACH(e_border_client_list(), l, lbd)
      {
@@ -602,8 +602,8 @@ _desk_before_show(E_Desk *desk)
    if (tinfo->desk == desk)
      {
 	DBG("desk before show: %s \n", desk->name);
-	if (!evas_hash_modify(info_hash, desk_hash_key(desk), tinfo))
-	  info_hash = evas_hash_add(info_hash, desk_hash_key(desk), tinfo);
+	if (!eina_hash_modify(info_hash, desk_hash_key(desk), tinfo))
+	  eina_hash_add(info_hash, desk_hash_key(desk), tinfo);
      }
    tinfo = NULL;
 }
@@ -611,7 +611,7 @@ _desk_before_show(E_Desk *desk)
 static void
 _desk_show(E_Desk *desk)
 {
-   tinfo = evas_hash_find(info_hash, desk_hash_key(desk));
+   tinfo = eina_hash_find(info_hash, desk_hash_key(desk));
    if (!tinfo)
      {
 	/* We need to add a new Tiling_Info, so we weren't on that desk before.
@@ -825,7 +825,7 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 	    for (i = 0; i < (zone->desk_x_count * zone->desk_y_count); i++)
 	      {
 		 desk = zone->desks[i];
-		 if ((_tinfo = evas_hash_find(info_hash, desk_hash_key(desk))) == NULL)
+		 if ((_tinfo = eina_hash_find(info_hash, desk_hash_key(desk))) == NULL)
 		   continue;
 		 if (eina_list_data_find(_tinfo->client_list, ev->border) == ev->border)
 		   _tinfo->client_list = eina_list_remove(_tinfo->client_list, ev->border);
@@ -853,8 +853,8 @@ _e_module_tiling_desk_before_show(void *data, int type, void *event)
    return 1;
 }
 
-static Evas_Bool
-_clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_clear_bd_from_info_hash(const Eina_Hash *hash, const char *key, void *data, void *fdata)
 {
    Tiling_Info *ti = data;
    E_Event_Border_Desk_Set *ev = fdata;
@@ -889,14 +889,14 @@ _e_module_tiling_desk_set(void *data, int type, void *event)
     * a user can move the window to another desk (and events are fired) involving
     * zone changes or not (depends on the mouse position) */
    E_Event_Border_Desk_Set *ev = event;
-   Tiling_Info *_tinfo = evas_hash_find(info_hash, desk_hash_key(ev->desk));
+   Tiling_Info *_tinfo = eina_hash_find(info_hash, desk_hash_key(ev->desk));
    if (!_tinfo)
      {
 	DBG("create new info for %s\n", ev->desk->name);
 	_tinfo = _initialize_tinfo(ev->desk);
      }
 
-   evas_hash_foreach(info_hash, _clear_bd_from_info_hash, ev);
+   eina_hash_foreach(info_hash, _clear_bd_from_info_hash, ev);
    DBG("desk set\n");
 
    return 1;
@@ -951,8 +951,8 @@ e_mod_tiling_rearrange()
 /* Module setup */
 /***************************************************************************/
 
-static Evas_Bool
-_clear_info_hash(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Eina_Bool
+_clear_info_hash(const Eina_Hash *hash, const char *key, void *data, void *fdata)
 {
    Tiling_Info *ti = data;
    eina_list_free(ti->floating_windows);
@@ -976,6 +976,8 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
+
+   info_hash = eina_hash_string_small_new(NULL);
 
    /* Callback for new windows or changes */
    hook = e_border_hook_add(E_BORDER_HOOK_EVAL_POST_FETCH, _e_module_tiling_cb_hook, NULL);
@@ -1095,8 +1097,8 @@ e_modapi_shutdown(E_Module *m)
    E_CONFIG_DD_FREE(vdesk_edd);
 
    tiling_module = NULL;
-   evas_hash_foreach(info_hash, _clear_info_hash, NULL);
-   evas_hash_free(info_hash);
+   eina_hash_foreach(info_hash, _clear_info_hash, NULL);
+   eina_hash_free(info_hash);
    info_hash = NULL;
    tinfo = NULL;
 

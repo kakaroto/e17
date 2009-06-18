@@ -18,24 +18,24 @@ static void _elitaire_card_fade_in             (Evas_Object* card);
 static Elitaire_Card_Job *	_elitaire_card_job_new(Evas_Object * card);
 static void _elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data, int (*func)(void*));
 
-static Evas_Bool _elitaire_card_job_slide(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_slide(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_del_chain(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_del_chain(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_flip(Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_flip(Elitaire_Job_List * list, void * data);
+static Eina_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_drag(Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_drop(Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_wait_mouse(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_drag(Elitaire_Job_List * list, void * data);
+static Eina_Bool _elitaire_card_job_drop(Elitaire_Job_List * list, void * data);
+static Eina_Bool _elitaire_card_job_wait_mouse(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_wait_time(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_wait_time(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_fade_in(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_fade_in(Elitaire_Job_List * list, 
                                                                 void * data);
-static Evas_Bool _elitaire_card_job_fade_out(Elitaire_Job_List * list, 
+static Eina_Bool _elitaire_card_job_fade_out(Elitaire_Job_List * list, 
                                                                 void * data);
 
 /*** callbacks ***/
@@ -193,7 +193,7 @@ _elitaire_card_job_frametime_get(Elitaire_Card_Job * job)
     return ft;
 }
 
-Evas_Bool 
+Eina_Bool 
 elitaire_card_job_del_cb(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
@@ -211,7 +211,7 @@ elitaire_card_job_del_cb(Elitaire_Job_List * list, void * data)
     return 1;
 }
 
-Evas_Bool 
+Eina_Bool 
 elitaire_card_job_clean_up(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card * ecard;
@@ -240,14 +240,14 @@ _elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data,
     job->timer = ecore_animator_add(func, data);
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_slide(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_slide_cb);
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_del_chain(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
@@ -258,7 +258,7 @@ _elitaire_card_job_del_chain(Elitaire_Job_List * list, void * data)
     return 1;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
@@ -276,14 +276,14 @@ _elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_dragged(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_dragged_cb);
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_drag(Elitaire_Job_List * list, void * data)
 {
     int fr;
@@ -310,7 +310,7 @@ _elitaire_card_job_drag(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_drop(Elitaire_Job_List * list, void * data)
 {
     int fr;
@@ -333,14 +333,14 @@ _elitaire_card_job_drop(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_wait_mouse(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_wait_cb);
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_wait_time(Elitaire_Job_List * list, void * data)
 {
     int fr;
@@ -358,14 +358,14 @@ _elitaire_card_job_wait_time(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_fade_in(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_fade_in_cb);
     return 0;
 }
 
-static Evas_Bool 
+static Eina_Bool 
 _elitaire_card_job_fade_out(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_fade_out_cb);

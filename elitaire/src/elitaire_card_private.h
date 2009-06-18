@@ -29,5 +29,5 @@ void          elitaire_card_chain_next_set    (Evas_Object* o, Evas_Object* ncar
 Evas_Object * elitaire_card_chain_next_get    (Evas_Object* o);
 
 /* callbacks */
-Evas_Bool elitaire_card_job_clean_up   (Elitaire_Job_List * list, void * data);
-Evas_Bool elitaire_card_job_del_cb     (Elitaire_Job_List * list, void * data);
+Eina_Bool elitaire_card_job_clean_up   (Elitaire_Job_List * list, void * data);
+Eina_Bool elitaire_card_job_del_cb     (Elitaire_Job_List * list, void * data);

@@ -196,8 +196,8 @@ _population_init(E_Module *m)
    return pop;
 }
 
-Evas_Bool 
-_action_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+Eina_Bool 
+_action_free(const Eina_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a;
    a = data;
@@ -236,8 +236,8 @@ _population_free(Population *pop)
       cus = NULL;
    }
 
-   evas_hash_foreach(pop->actions, _action_free, NULL);
-   evas_hash_free(pop->actions);
+   eina_hash_foreach(pop->actions, _action_free, NULL);
+   eina_hash_free(pop->actions);
    pop->actions = NULL;
 }
 
@@ -315,7 +315,10 @@ _load_action(Population *pop, const char *filename, char *name, int id)
    act->speed = act->speed * pop->conf->zoom;
    act->id = id;
 
-   pop->actions = evas_hash_add(pop->actions, name, act);
+   if (!pop->actions)
+     pop->actions = eina_hash_string_small_new(NULL);
+
+   eina_hash_add(pop->actions, name, act);
 
    return act;
 }
@@ -353,8 +356,8 @@ _load_custom_action(Population *pop, const char *filename, char *name)
    return c;
 }
 
-Evas_Bool
-hash_fn(const Evas_Hash *hash, const char *key, void *data, void *fdata)
+Eina_Bool
+hash_fn(const Eina_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a = data;
    printf("PENGUINS: Load action: '%s' w:%d h:%d speed:%d\n", key, a->w, a->h, a->speed);
@@ -394,7 +397,7 @@ _theme_load(Population *pop)
    while (_load_custom_action(pop, pop->conf->theme, buf))
       snprintf(buf, sizeof(buf), "Custom_%d", i++);
 
-   // evas_hash_foreach(pop->actions, hash_fn, NULL);
+   // eina_hash_foreach(pop->actions, hash_fn, NULL);
    // Eina_List *l;
    // for (l = pop->customs; l; l = l->next )
    // {
@@ -422,7 +425,7 @@ _population_load(Population *pop)
       o = edje_object_add(pop->canvas);
       edje_object_file_set(o, pop->conf->theme, "anims");
 
-      tux->action = evas_hash_find(pop->actions,"Faller");
+      tux->action = eina_hash_find(pop->actions,"Faller");
 
       evas_object_image_alpha_set(o, 0.5);
       evas_object_color_set(o, pop->conf->alpha, pop->conf->alpha,
@@ -722,7 +725,7 @@ static void
 _start_walking_at(Penguin *tux, int at_y)
 {
    //printf("PENGUINS: Start walking...at %d\n", at_y);
-   tux->action = evas_hash_find(tux->pop->actions, "Walker");
+   tux->action = eina_hash_find(tux->pop->actions, "Walker");
    tux->custom = 0;
 
    tux->y = at_y - tux->action->h;
@@ -738,7 +741,7 @@ static void
 _start_climbing_at(Penguin *tux, int at_x)
 {
    //printf("PENGUINS: Start climbing...at: %d\n", at_x);
-   tux->action = evas_hash_find(tux->pop->actions, "Climber");
+   tux->action = eina_hash_find(tux->pop->actions, "Climber");
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
 
    if (tux->reverse)
@@ -759,7 +762,7 @@ _start_falling_at(Penguin *tux, int at_x)
    if (_RAND(FALLING_PROB))
    {
       //printf("PENGUINS: Start falling...\n");
-      tux->action = evas_hash_find(tux->pop->actions, "Faller");
+      tux->action = eina_hash_find(tux->pop->actions, "Faller");
       evas_object_resize(tux->obj, tux->action->w, tux->action->h);
 
       if (tux->reverse)
@@ -776,7 +779,7 @@ _start_falling_at(Penguin *tux, int at_x)
    else
    {
       //printf("Start floating...\n");
-      tux->action = evas_hash_find(tux->pop->actions, "Floater");
+      tux->action = eina_hash_find(tux->pop->actions, "Floater");
       evas_object_resize(tux->obj, tux->action->w, tux->action->h);
 
       if (tux->reverse)
@@ -797,7 +800,7 @@ _start_falling_at(Penguin *tux, int at_x)
 static void 
 _start_flying_at(Penguin *tux, int at_y)
 {
-   tux->action = evas_hash_find(tux->pop->actions, "Flyer");
+   tux->action = eina_hash_find(tux->pop->actions, "Flyer");
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
    tux->y = at_y - tux->action->h;
    if (tux->reverse)
@@ -810,7 +813,7 @@ static void
 _start_angel_at(Penguin *tux, int at_y)
 {
    tux->x = tux->x + (tux->action->w /2);
-   tux->action = evas_hash_find(tux->pop->actions, "Angel");
+   tux->action = eina_hash_find(tux->pop->actions, "Angel");
    if (!tux->action)
    {
       _reborn(tux);
@@ -839,7 +842,7 @@ _start_splatting_at(Penguin *tux, int at_y)
 {
   // printf("PENGUINS: Start splatting...\n");
    evas_object_hide(tux->obj);
-   tux->action = evas_hash_find(tux->pop->actions, "Splatter");
+   tux->action = eina_hash_find(tux->pop->actions, "Splatter");
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
    evas_object_image_fill_set(tux->obj, 0, 0, tux->action->w, tux->action->h);
    tux->y = at_y - tux->action->h;
@@ -880,7 +883,7 @@ _start_bombing_at(Penguin *tux, int at_y)
       edje_object_signal_emit(tux->obj, "start_bombing_right", "epenguins");
 
    tux->x = tux->x + (tux->action->w /2);
-   tux->action = evas_hash_find(tux->pop->actions, "Bomber");
+   tux->action = eina_hash_find(tux->pop->actions, "Bomber");
    tux->x = tux->x - (tux->action->w /2);
    tux->y = at_y - tux->action->h;
 

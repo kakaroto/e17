@@ -8,12 +8,12 @@ typedef enum _Elitaire_Job_Sync_Type
 typedef struct _Elitaire_Job_List Elitaire_Job_List;
 typedef struct _Elitaire_Job Elitaire_Job;
     
-typedef Evas_Bool (*Elitaire_Job_Func) (Elitaire_Job_List * list, void * data);
+typedef Eina_Bool (*Elitaire_Job_Func) (Elitaire_Job_List * list, void * data);
 
 struct _Elitaire_Job
 {
     Elitaire_Job_Sync_Type sync;
-    Evas_Bool active;
+    Eina_Bool active;
     Elitaire_Job_Func func;
     void * data;
 };
