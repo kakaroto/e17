@@ -25,7 +25,7 @@ cdef void _toolbar_callback(void *data, c_evas.Evas_Object *obj, void *event_inf
         if mapping is not None:
             callback = mapping["callback"] 
             if callback is not None and callable(callback):
-                callback(mapping["class"], "clicked")
+                callback(mapping["class"], "clicked", mapping["data"])
         else:
             print "ERROR: no callback available for the item"
     except Exception, e:
@@ -40,7 +40,7 @@ cdef class ToolbarItem:
     def __new__(self):
         self.item = NULL
 
-    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label, callback):
+    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label, callback, data = None):
         if icon is not None:
             self.item = elm_toolbar_item_add(toolbar.obj, icon.obj, label, _toolbar_callback, NULL)
         else:
@@ -50,6 +50,7 @@ cdef class ToolbarItem:
         mapping = dict()
         mapping["class"] = self
         mapping["callback"] = callback
+        mapping["data"] = data
         _toolbar_callback_mapping[<long>self.item] = mapping
 
     def delete(self):
@@ -78,7 +79,7 @@ cdef class Toolbar(Object):
         else:
             elm_toolbar_scrollable_set(self.obj, 0)
        
-    def item_add(self, c_evas.Object icon, label, callback):
+    def item_add(self, c_evas.Object icon, label, callback, data = None):
         """
         Adds a new item to the toolbar
 
@@ -91,7 +92,7 @@ cdef class Toolbar(Object):
         """
         # Everything is done in the ToolbarItem class, because of wrapping the
         # C structures in python classes
-        return ToolbarItem(self, icon, label, callback)
+        return ToolbarItem(self, icon, label, callback, data)
 
     property clicked:
         def __set__(self, value):
