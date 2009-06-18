@@ -94,7 +94,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    if (cfdata->disks)
      {
-		for (l = cfdata->disks; l; l = eina_list_next(l))
+		EINA_LIST_FOREACH(cfdata->disks, l, disk)
 		  {
 			 disk = eina_list_data_get(l);
 		     pos++;
