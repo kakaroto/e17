@@ -96,7 +96,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      {
 		EINA_LIST_FOREACH(cfdata->disks, l, disk)
 		  {
-			 disk = eina_list_data_get(l);
 		     pos++;
 
 			 snprintf (path, sizeof (path), "/sys/block/%s/device", disk);
