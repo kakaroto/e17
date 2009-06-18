@@ -33,7 +33,7 @@ cdef class Check(Object):
             elm_check_state_set(self.obj, 0)
         
     def state_get(self):
-        cdef c_evas.Evas_Bool state
+        cdef c_evas.Eina_Bool state
         state = elm_check_state_get(self.obj)
         if state == 0:
             return False
