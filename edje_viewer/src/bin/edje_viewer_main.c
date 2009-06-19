@@ -21,7 +21,7 @@ elm_main(int argc, char **argv)
    config_init(v);
    if (argc >= 2)
      {
-        if ((argc > 2) || strcmp(v->config->edje_file, argv[1]))
+        if ((argc > 2) || (v->config->edje_file && strcmp(v->config->edje_file, argv[1])))
           config_groups_free(v);
         eina_stringshare_replace(&(v->config->edje_file), argv[1]);
      }
