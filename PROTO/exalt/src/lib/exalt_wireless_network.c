@@ -62,9 +62,9 @@ Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
             (void*(*)(void*,void*))eina_list_append,
             (void*(*)(void*))eina_list_data_get,
             (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
-            (void*(*)(void*,const char*,void*))evas_hash_add,
-            (void(*)(void*))evas_hash_free);
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
+            (void*(*)(void*,const char*,void*))eina_hash_add,
+            (void(*)(void*))eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_choice", auth_choice, EET_T_INT);
@@ -98,9 +98,9 @@ Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie
             (void*(*)(void*,void*))eina_list_append,
             (void*(*)(void*))eina_list_data_get,
             (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
-            (void*(*)(void*,const char*,void*))evas_hash_add,
-            (void(*)(void*))evas_hash_free);
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
+            (void*(*)(void*,const char*,void*))eina_hash_add,
+            (void(*)(void*))eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);

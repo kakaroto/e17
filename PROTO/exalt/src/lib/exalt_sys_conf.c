@@ -39,7 +39,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     if(exalt_eth_wireless_is(eth))
         s.driver = (char*)exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
     else
-        s.driver = "wext";
+        s.driver = "no driver for wired interface";
 
     return _exalt_eet_eth_save(file, &s, exalt_eth_udi_get(eth));
 }
@@ -161,9 +161,9 @@ Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conn)
             (void*(*)(void*,void*))eina_list_append,
             (void*(*)(void*))eina_list_data_get,
             (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))evas_hash_foreach,
-            (void*(*)(void*,const char*,void*))evas_hash_add,
-            (void(*)(void*))evas_hash_free);
+            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
+            (void*(*)(void*,const char*,void*))eina_hash_add,
+            (void(*)(void*))eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "up", state, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "driver", driver, EET_T_STRING);
