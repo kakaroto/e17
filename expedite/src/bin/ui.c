@@ -52,15 +52,13 @@ static int exit_after_test = 0;
 static void
 _ui_exit(void)
 {
-   while (menu)
-     {
-        Menu_Item *mi;
+   Menu_Item *mi;
 
-        mi = (Menu_Item *)menu->data;
+   EINA_LIST_FREE(menu, mi)
+     {
         free(mi->icon);
         free(mi->text);
         free(mi);
-        menu = eina_list_remove_list(menu, menu);
      }
    engine_abort();
 }
@@ -190,7 +188,7 @@ _ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
        (!strcmp(ev->keyname, "q")) ||
        (!strcmp(ev->keyname, "Q")))
      {
-	engine_abort();
+	_ui_exit();
      }
    if (menu_active)
      {
