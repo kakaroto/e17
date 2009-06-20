@@ -41,14 +41,9 @@ struct Eyelight_Viewer
     Eyelight_Viewer_State state;
 
     Evas* evas;
-    char* presentation;
     char* elt_file;
 
     Eyelight_Compiler *compiler;
-
-    char* edc_file;
-    char *edje_file;
-
     char* theme;
 
     int default_size_w;
@@ -62,6 +57,11 @@ struct Eyelight_Viewer
     //for each slide, the list of custom area
     //the type of nodes is Eyelight_Custom_Area
     Eina_List** custom_areas;
+    //for each slide, the list of video object
+    //the type of nodes is Eyelight_Video
+    Eina_List** video_objects;
+    char *video_module;
+
     const char** transition_effect_next;
     const char** transition_effect_previous;
     int size;

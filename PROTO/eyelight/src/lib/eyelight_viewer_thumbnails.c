@@ -22,7 +22,7 @@
 int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos, int w, int h);
 int _eyelight_viewer_thumbnails_load_idle(void *data);
 int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h);
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h, int free_if_in_edj, int use_edj);
+const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h);
 
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres)
 {
@@ -31,13 +31,6 @@ void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres)
     pres->thumbnails = calloc(1,sizeof(Eyelight_Thumbnails));
     pres->thumbnails->default_size_w = pres->default_size_w/4;
     pres->thumbnails->default_size_h = pres->default_size_h/4;
-
-    file = eet_open(pres->edje_file,EET_FILE_MODE_READ_WRITE);
-    if(file)
-    {
-        pres->thumbnails->is_write_edj = 1;
-        eet_close(file);
-    }
 }
 
 void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
@@ -52,7 +45,7 @@ void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
 
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos)
 {
-        return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h,1);
+        return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h);
 }
 
 /**
@@ -60,11 +53,10 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int 
  * @param pos the slide which we want a thumbnail
  * @param w the thumbnail size
  * @param h the thumbnail size
- * @param use_edj 1 if we want try to load the thumbnail from the edj or save it into the edj
  */
-const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h, int use_edj)
+const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h)
 {
-    return _eyelight_viewer_thumbnails_get(pres,pos,w,h,0,use_edj);
+    return _eyelight_viewer_thumbnails_get(pres,pos,w,h);
 }
 
 /*
@@ -76,46 +68,22 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer
  * @param pos a valid slide position
  * @param size_w the size of the thumbnail, use if we create a new thumb
  * @param size_h the size of the thumbnail, use if we create a new thumb
- * @param free_if_in_edj, the slide will be free if it is in the edj file
- * @param use_edj, 1 if we want use the edj file (try to load and/or save into the edj)
- *              During the creation of a pdf we don't use the edj, we want create a new thumb
- *              and we don't save it into the file
  * @return returns a slide if success,
  * NULL if an error is occurs
- * and NULL if we set free_if_in_edj and free is free
  */
-const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h, int free_if_in_edj, int use_edj)
+const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h)
 {
     Eet_File* file;
     unsigned int w,h;
     int alpha,compress,quality,lossy;
     char buf[EYELIGHT_BUFLEN];
     Eyelight_Thumbnails* thumbnails;
-    int can_free = 0;
 
     if(!pres->thumbnails->thumbnails)
         pres->thumbnails->thumbnails = calloc(pres->size,sizeof(Eyelight_Thumb));
 
     thumbnails = pres->thumbnails;
     snprintf(buf,EYELIGHT_BUFLEN,"thumb/slide/%d",pos);
-
-    if(!thumbnails->thumbnails[pos].thumb && use_edj)
-    {
-        file = eet_open(pres->edje_file,EET_FILE_MODE_READ);
-        if(file)
-        {
-            thumbnails->thumbnails[pos].thumb = eet_data_image_read(file,buf,&w,&h,&alpha,
-                    &compress,&quality,&lossy);
-            if(thumbnails->thumbnails[pos].thumb)
-            {
-                thumbnails->thumbnails[pos].w = w;
-                thumbnails->thumbnails[pos].h = h;
-                thumbnails->thumbnails[pos].is_in_edj = 1;
-                can_free = 1;
-            }
-            eet_close(file);
-        }
-    }
 
     if(!thumbnails->thumbnails[pos].thumb)
     {
@@ -127,28 +95,6 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
         thumbnails->thumbnails[pos].is_in_edj = 0;
         thumbnails->thumbnails[pos].w = size_w;
         thumbnails->thumbnails[pos].h = size_h;
-
-        if(thumbnails->is_write_edj && use_edj)
-        {
-            file = eet_open(pres->edje_file,EET_FILE_MODE_READ_WRITE);
-            if(file)
-            {
-                eet_data_image_write(file,buf,
-                        thumbnails->thumbnails[pos].thumb,
-                        thumbnails->thumbnails[pos].w,
-                        thumbnails->thumbnails[pos].h,
-                        0,4,100,0);
-                eet_close(file);
-                thumbnails->thumbnails[pos].is_in_edj = 1;
-                can_free = 1;
-            }
-        }
-    }
-
-    if(free_if_in_edj && can_free)
-    {
-        EYELIGHT_FREE(thumbnails->thumbnails[pos].thumb);
-        return NULL;
     }
 
     return &(thumbnails->thumbnails[pos]);
@@ -176,7 +122,9 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     pres_copy->slides = calloc(pres->size,sizeof(Evas_Object*));
     pres_copy->custom_areas = calloc(pres->size,sizeof(Eina_List*));
     pres_copy->edje_objects = calloc(pres->size,sizeof(Eina_List*));
+    pres_copy->video_objects = calloc(pres->size,sizeof(Eina_List*));
     pres_copy->size = pres->size;
+    pres_copy->video_module = pres->video_module;
 
 
     //create a thumbnail of the slide
@@ -186,6 +134,15 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     evas_object_show(o);
 
     edje_object_signal_emit(o,"thumbnail","eyelight");
+
+    //set all videos to 33%
+    Eina_List *l;
+    Evas_Object *video;
+    EINA_LIST_FOREACH(pres_copy->video_objects[pos], l, video)
+    {
+        emotion_object_position_set(video, 100);
+    }
+
     ecore_main_loop_iterate();
 
     pixel = ecore_evas_buffer_pixels_get(ee);
@@ -204,6 +161,11 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
             {
                 evas_object_del(data);
                 pres_copy->edje_objects[i] = eina_list_remove_list(pres_copy->edje_objects[i], l);
+            }
+            EINA_LIST_FOREACH_SAFE(pres_copy->video_objects[i], l, l_next, data)
+            {
+                evas_object_del(data);
+                pres_copy->video_objects[i] = eina_list_remove_list(pres_copy->video_objects[i], l);
             }
         }
         {
@@ -285,7 +247,7 @@ int _eyelight_viewer_thumbnails_load_idle(void *data)
         return 0;
     }
 
-    Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h,1, 1);
+    Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h);
 
     thumbnails->idle_current_slide++;
     return 1;

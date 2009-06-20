@@ -28,7 +28,6 @@ struct Eyelight_Thumbnails
 {
     Eyelight_Thumb* thumbnails;
     int is_background_load;
-    int is_write_edj;
     Ecore_Idler* idle;
     int idle_current_slide;
     int default_size_w;
@@ -45,7 +44,7 @@ struct Eyelight_Thumb
 
 void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres);
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos);
-const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h, int use_edj);
+const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h);
 void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres,int min, int max);
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres);
 

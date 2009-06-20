@@ -4,18 +4,18 @@
 
 //a list of defaults value
 layout: 2_columns_left;
-foot_text :"Watchwolf , watchwolf@watchwolf.fr";
+foot_text :" Watchwolf , watchwolf@watchwolf.fr";
 foot_image: "wolf.png";
 header_image: "logo.png";
-title: "Eyelight: a presentation tools";
-subtitle: "When edje meets a presentation";
+title: " Eyelight: a presentation tools";
+subtitle: " When edje meets a presentation";
 
 transition: fade_content;
 
 slide
 {
     layout: title;
-    custom_area: "top" 0.15 -0.2 0.85 0.53;
+    custom_area: "top" 0.15 -0.2 0.85 0.5;
     header_image: "";
 
     area
@@ -26,17 +26,17 @@ slide
     area
     {
         name: bottom;
-        text: "Author: Atton Jonathan, alias Watchwolf";
-        text: "Mentor: Cedric Bail";
-        text: "For the Enlightenment project";
-        text: "Thank you to the community !";
+        text: " Author: Atton Jonathan, alias Watchwolf";
+        text: " Mentor: Cedric Bail";
+        text: " For the Enlightenment project";
+        text: " Thank you to the community !";
     }
 }
 
 slide
 {
     layout: blank;
-    title: "General presentation";
+    title: " General presentation";
     subtitle: "";
     transition_next: "fade";
     custom_area: "top" 0.1 0.2 0.9 0.4;
@@ -45,8 +45,8 @@ slide
     area
     {
         name: "top";
-        text: "With Eyelight we can create a presentation from a simple ASCII file and get a beautiful presentation.";
-        text: "Eyelight is based around the <outline>EFL (Enlightenment Foundation Libraries)</outline> (Ecore, Evas, Edje, EET ...)";
+        text: " With Eyelight we can create a presentation from a simple ASCII file and get a beautiful presentation.";
+        text: " Eyelight is based around the <outline>EFL (Enlightenment Foundation Libraries)</outline> (Ecore, Evas, Edje, EET ...)";
     }
     area
     {
@@ -57,32 +57,35 @@ slide
             image: "images/screen_slide_title.png";
             border: 1;
             relative: 0.3 1.0;
+            shadow: 1;
         }
         image
         {
             image: "images/screen_expose.png";
             border: 1;
             relative: 0.3 1.0;
+            shadow: 1;
         }
         image
         {
             image: "images/screen_slideshow.png";
             border: 1;
             relative: 0.3 1.0;
+            shadow: 1;
         }
     }
     area
     {
         name: "bottom";
-        text:"<small>Eyelight homepage: http://watchwolf.fr/wiki/doku.php?id=eyelight</small>";
-        text:"<small>Enlightenment homepage: http://enlightenment.org</small>";
+        text:" <small>Eyelight homepage: http://watchwolf.fr/wiki/doku.php?id=eyelight</small>";
+        text:" <small>Enlightenment homepage: http://enlightenment.org</small>";
     }
 }
 
 slide
 {
     layout: blank;
-    title: "How it works";
+    title: " How it works";
     subtitle: "";
     transition_previous: "fade";
     transition_next: "horizontal";
@@ -95,10 +98,10 @@ slide
         items
         {
             numbering: normal;
-	         text: "The presentation is an <outline>elt</outline> file";
-            text: "The theme is a classic <outline>edj</outline> file";
-            text: "With the theme and the presentation file the viewer display the presentation";
-            text: "Finally we can have a beautiful <outline>presentation</outline> !";
+	         text: " The presentation is an <outline>elt</outline> file";
+            text: " The theme is a classic <outline>edj</outline> file";
+            text: " With the theme and the presentation file the viewer display the presentation";
+            text: " Finally we can have a beautiful <outline>presentation</outline> !";
         }
     }
 
@@ -116,8 +119,8 @@ slide
 
 slide
 {
-    title: "Creating a presentation";
-    subtitle: "a beautifull presentation !";
+    title: " Creating a presentation";
+    subtitle: " a beautifull presentation !";
     transition_previous: "horizontal";
     transition_next: vertical;
     area
@@ -127,14 +130,14 @@ slide
         items
         {
             numbering: roman;
-            text: "The presentation is an <outline>elt file</outline>";
-            text: "Theme and content are independent";
-            text: "Use some blocks and properties to construct your slide: ";
+            text: " The presentation is an <outline>elt file</outline>";
+            text: " Theme and content are independent";
+            text: " Use some blocks and properties to construct your slide: ";
             items
             {
                 numbering: none;
-                text: "blocks slide, items, image ...";
-                text: "properties title, image, text ... ";
+                text: " blocks slide, items, image ...";
+                text: " properties title, image, text ... ";
             }
         }
     }
@@ -145,13 +148,14 @@ slide
         {
             image: "code_presentation.png";
             border: 1;
+            shadow: 1;
         }
     }
 }
 
 slide
 {
-    title: "Creating a theme";
+    title: " Creating a theme";
     subtitle: "";
     transition_previous: vertical;
     area
@@ -160,44 +164,48 @@ slide
         items
         {
             numbering: normal;
-            text: "A theme is a classic <outline>Edje file</outline>";
-            text: "A list of groups: ";
+            text: " A theme is a classic <outline>Edje file</outline>";
+            text: " A list of groups: ";
             items
             {
                 numbering: none;
-                text: "eyelight/item_image";
-                text: "eyelight/layout_title";
+                text: " eyelight/item_image";
+                text: " eyelight/layout_title";
             }
-            text: "Use what you want inside a group";
-            text: "Add your own images, animations ...";
+            text: " Use what you want inside a group";
+            text: " Add your own images, animations ...";
         }
     }
     area
     {
         name: right;
-        image: "code_theme.png";
+        image {
+            image: "code_theme.png";
+            shadow: 1;
+            border: 1;
+        }
     }
 }
 
 foot_image: "wolf.png";
-title: "How to include an edje file";
+title: " How to include an edje file";
 slide
 {
     layout: 1_area;
-    subtitle: "with some animations";
+    subtitle: " with some animations";
 
     area
     {
         name: center;
         items
         {
-            text: "Create an edje with 1 group for your object.";
-            text: "Or more groups if you want include more than 1 object";
-            text: "In the elt file defines A block 'edje' with 2 properties:";
+            text: " Create an edje with 1 group for your object.";
+            text: " Or more groups if you want include more than 1 object";
+            text: " In the elt file defines A block 'edje' with 2 properties:";
             items
             {
-                text: "the property <outline>file</outline> describes the path to your edje file";
-                text: "The property <outline>group</outline> defines the group to load";
+                text: " The property <outline>file</outline> describes the path to your edje file";
+                text: " The property <outline>group</outline> defines the group to load";
             }
         }
         text: "Result:";
@@ -214,45 +222,77 @@ slide
 slide
 {
     layout: 1_small_line_2_columns;
-    subtitle: "The source code";
+    subtitle: " The source code";
 
     area
     {
         name: top;
-        text: "And the source code of the presentation is in eyelight.elt";
-        text: "The source code of the firefox edje file is in firefox.edj";
+        text: " And the source code of the presentation is in eyelight.elt";
+        text: " The source code of the firefox edje file is in firefox.edj";
     }
 
     area
     {
         name: left;
-        image: "code_block_edje.png";
+        image {
+            image: "code_block_edje.png";
+            shadow: 1;
+        }
     }
     area
     {
         name: right;
-        image: "code_firefox.png";
+        image {
+            image: "code_firefox.png";
+            shadow: 1;
+        }
     }
 }
 
+slide {
+    layout: 1_area;
+    title: " How to include a video";
+    subtitle: " The photo manager of calaos !";
+    custom_area: "top" 0.75 0.6 0.95 0.8;
+
+    area {
+        name: "top";
+        video {
+            video: "eyelight.avi";
+            alpha: 50; //0-255
+            autoplay: 1;
+            shadow: 0;
+            border: 1;
+        }
+    }
+    area {
+        name: "center";
+        video {
+            video: "calaos.ogg";
+            shadow: 1;
+            border: 0;
+            replay: 1;
+        }
+    }
+}
 
 slide
 {
     layout: 2_columns_right;
-    title: "The tag list ";
-    subtitle: "A presentation of the default tags";
+    title: " The tag list ";
+    subtitle: " A presentation of the default tags";
 
     area
     {
         name: left;
         items
         {
-            text: "no tag";
-            text: "small: <small>small text</small>";
-            text: "big: <big>big text</big>";
-            text: "b: <b>bold</b>";
-            text: "i: <i>italic</i>";
-            text: "u: <u>underline</u>";
+            text: " no tag";
+            text: " small: <small>small text</small>";
+            text: " big: <big>big text</big>";
+            text: " b: <b>bold</b>";
+            text: " i: <i>italic</i>";
+            text: " u: <u>underline</u>";
         }
     }
     area
@@ -260,13 +300,13 @@ slide
         name: right;
         items
         {
-            text: "strike: <strike>strike</strike>";
-            text: "outline: <outline>outline</outline>";
-            text: "shadow: <shadow>shadow</shadow>";
-            text: "outline_shadow: <outline_shadow>outline shadow</outline_shadow>";
-            text: "c: <c>center</c>";
-            text: "r: <r>right</r>";
-            text: "l: <l>left</l>";
+            text: " strike: <strike>strike</strike>";
+            text: " outline: <outline>outline</outline>";
+            text: " shadow: <shadow>shadow</shadow>";
+            text: " outline_shadow: <outline_shadow>outline shadow</outline_shadow>";
+            text: " c: <c>center</c>";
+            text: " r: <r>right</r>";
+            text: " l: <l>left</l>";
         }
     }
 }
@@ -276,103 +316,103 @@ slide
 slide
 {
     layout: title;
-    title: "Layout title";
+    title: " Layout title";
 }
 
 slide
 {
     layout: 1_area;
-    title: "Layout 1_area";
+    title: " Layout 1_area";
 }
 
 slide
 {
     layout: blank;
-    title: "Layout blank";
+    title: " Layout blank";
 }
 
 slide
 {
     layout: 2_columns;
-    title: "Layout 2_columns";
+    title: " Layout 2_columns";
 }
 
 slide
 {
     layout: 2_columns_left;
-    title: "Layout 2_columns_left";
+    title: " Layout 2_columns_left";
 }
 
 slide
 {
     layout: 2_columns_right;
-    title: "Layout 2_columns_right";
+    title: " Layout 2_columns_right";
 }
 
 slide
 {
     layout: 2_lines;
-    title: "Layout 2_lines";
+    title: " Layout 2_lines";
 }
 
 slide
 {
     layout: 2_lines_top;
-    title: "Layout 2_lines_top";
+    title: " Layout 2_lines_top";
 }
 
 slide
 {
     layout: 2_lines_bottom;
-    title: "Layout 2_lines_bottom";
+    title: " Layout 2_lines_bottom";
 }
 
 slide
 {
     layout: 1_small_line_2_columns;
-    title: "Layout 1_small_line_2_columns";
+    title: " Layout 1_small_line_2_columns";
 }
 
 slide
 {
     layout: 1_line_2_columns;
-    title: "Layout 1_line_2_columns";
+    title: " Layout 1_line_2_columns";
 }
 
 slide
 {
     layout: 2_columns_1_line;
-    title: "Layout 2_columns_1_line";
+    title: " Layout 2_columns_1_line";
 }
 
 slide
 {
     layout: 2_columns_1_small_line;
-    title: "Layout 2_columns_1_small_line";
+    title: " Layout 2_columns_1_small_line";
 }
 
 slide
 {
     layout: 4_areas;
-    title: "Layout 4_areas";
+    title: " Layout 4_areas";
 }
 slide
 {
     layout: 6_areas;
-    title: "Layout 6_areas";
+    title: " Layout 6_areas";
 }
 
 slide
 {
     layout: blank;
-    title: "3 customs areas";
+    title: " 3 customs areas";
     custom_area: "center" 0.4 0.4 0.6 0.6;
     custom_area: "left" 0.3 0.2 0.35 0.7;
     custom_area: "big" 0.10 0.24 0.87 0.87;
     area
     {
         name:"center";
-        text:"hehe";
+        text:" hehe";
     }
     area
     {
@@ -384,8 +424,8 @@ slide
         name: "big";
         items
         {
-            text: "very big!";
-            text: "haha";
+            text: " very big!";
+            text: " haha";
         }
     }
 }
@@ -394,7 +434,7 @@ slide
 
 slide
 {
-    title: "last slide !!!!!!!!!!!! :)";
+    title: " last slide !!!!!!!!!!!! :)";
 }
 
 

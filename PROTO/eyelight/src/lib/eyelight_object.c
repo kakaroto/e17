@@ -18,6 +18,7 @@
 
 #include "eyelight_object.h"
 #include <Edje_Edit.h>
+#include <Emotion.h>
 
 /**
  * Returns the object which contains the area "area" <br>
@@ -186,7 +187,7 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Node
 Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Evas_Object *o_slide, int slide_number, int nb_slides)
 {
     char buf[1024];
-    snprintf(buf,1024,"%d/%d",slide_number+1,nb_slides);
+    snprintf(buf,1024," %d/%d",slide_number+1,nb_slides);
     Evas_Object *o_pages = edje_object_add(pres->evas);
     if(edje_object_file_set(o_pages, pres->theme, "eyelight/pages") ==  0)
         printf("load group eyelight/pages error! %d \n",
@@ -224,7 +225,7 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, int id_slide, 
 }
 
 
-Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *image, int border)
+Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *image, int border, int shadow)
 {
     char buf[EYELIGHT_BUFLEN];
 
@@ -247,10 +248,156 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide,
 
     if(border)
         edje_object_signal_emit(o_image, "border,show","eyelight");
+    if(shadow)
+        edje_object_signal_emit(o_image, "shadow,show","eyelight");
+
+
 
     return o_image;
 }
 
+/**   Callbacks used by a video item */
+
+
+void _video_play_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    Evas_Object *ov = data;
+    emotion_object_play_set(ov,1);
+    edje_object_signal_emit(o, "play", "video_state");
+}
+
+void _video_pause_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    Evas_Object *ov = data;
+    emotion_object_play_set(ov,0);
+    edje_object_signal_emit(o, "pause", "video_state");
+}
+
+void _video_stop_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    Evas_Object *ov = data;
+    emotion_object_play_set(ov,0);
+    emotion_object_position_set(ov, 0);
+    edje_object_signal_emit(o, "stop", "video_state");
+    edje_object_part_drag_value_set(ov, "object.slider", 0.0, 0.0);
+}
+
+void _video_slider_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    double len;
+    double x, y;
+
+    Evas_Object *ov = data;
+
+    edje_object_part_drag_value_get(o, "object.slider", &x, &y);
+    len = emotion_object_play_length_get(ov);
+    emotion_object_position_set(ov, x * len);
+    _video_play_cb(o, ov, NULL,NULL);
+}
+
+void _video_obj_progress_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    double len, pos, scale;
+
+    Evas_Object *ov = data;
+
+    pos = emotion_object_position_get(o);
+    len = emotion_object_play_length_get(o);
+    scale = (len > 0.0) ? pos / len : 0.0;
+    edje_object_part_drag_value_set(ov, "object.slider", scale, 0.0);
+}
+
+void _video_obj_replay_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    double len, pos;
+
+    Eyelight_Video *e_video = data;
+    emotion_object_position_set(e_video->o_inter,0);
+    if(e_video->replay)
+    {
+        _video_play_cb(e_video->o_inter, e_video->o_video, NULL,NULL);
+    }
+}
+
+/** */
+Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow)
+{
+    char buf[EYELIGHT_BUFLEN];
+
+    Evas_Object *o_area = eyelight_object_area_obj_get(pres, id_slide, o_slide, area, &buf);
+
+    Evas_Object *o_video = edje_object_add(pres->evas);
+    if(edje_object_file_set(o_video, pres->theme, "eyelight/item_video") ==  0)
+        printf("load group eyelight/item_video error! %d \n",
+                edje_object_load_error_get(o_video));
+    Evas_Object *part_video = edje_object_part_object_get(o_video, "object.video");
+
+
+    char *video_path = eyelight_compile_image_path_new(pres,video);
+
+    if(!ecore_file_exists(video_path))
+        printf("Video %s not found !\n",video_path);
+
+    /* basic video object setup */
+    Evas_Object *o_inter = emotion_object_add(pres->evas);
+    if (!emotion_object_init(o_inter, pres->video_module))
+    {
+        printf("Emotion init failed !\n");
+        exit (0);
+    }
+    emotion_object_vis_set(o_inter, EMOTION_VIS_NONE);
+    emotion_object_file_set(o_inter, video_path);
+    evas_object_move(o_inter, 0, 0);
+    evas_object_resize(o_inter, 320, 240);
+    emotion_object_smooth_scale_set(o_inter, 1);
+    evas_object_show(o_inter);
+    edje_object_signal_emit(o_inter, "video_state", "play");
+    evas_object_repeat_events_set(o_inter,1);
+
+    Eyelight_Video *e_video = calloc(1,sizeof(Eyelight_Video));
+    e_video->video = video;
+    e_video->o_inter = o_inter;
+    e_video->o_video = o_video;
+    e_video->replay = replay;
+    e_video->pres = pres;
+
+    evas_object_smart_callback_add(o_inter, "position_update", _video_obj_progress_cb, o_video);
+    evas_object_smart_callback_add(o_inter, "playback_finished", _video_obj_replay_cb, e_video);
+
+    edje_object_signal_callback_add (o_video,"play","video_control",_video_play_cb,o_inter);
+    edje_object_signal_callback_add (o_video,"pause","video_control",_video_pause_cb,o_inter);
+    edje_object_signal_callback_add (o_video,"stop","video_control",_video_stop_cb,o_inter);
+    edje_object_signal_callback_add (o_video,"move","video_control",_video_slider_cb,o_inter);
+
+    if(autoplay)
+        _video_play_cb(o_inter, o_video, NULL,NULL);
+    else
+        _video_stop_cb(o_inter, o_video, NULL, NULL);
+
+    if(shadow)
+        edje_object_signal_emit(o_video, "shadow,show","eyelight");
+    if(border)
+        edje_object_signal_emit(o_video, "border,show","eyelight");
+
+
+    /* end basic video setup. all the rest here is just to be fancy */
+    EYELIGHT_FREE(video_path);
+    edje_object_part_swallow(o_video,"object.swallow",o_inter);
+
+    evas_object_color_set(o_inter, 255, 255, 255, alpha);
+
+    evas_object_size_hint_align_set(o_video, -1, -1);
+    evas_object_size_hint_weight_set(o_video, -1, -1);
+    evas_object_show(o_video);
+    evas_object_move(o_video, 0, 0);
+    edje_object_part_box_append(o_area,buf,o_video);
+
+    pres->video_objects[id_slide] = eina_list_append(
+            pres->video_objects[id_slide],
+            e_video);
+
+    return o_video;
+}
 
 Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, int depth, const char *text)
 {
@@ -294,7 +441,7 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, int 
     evas_object_move(o_text, 0, 0);
     edje_object_part_box_append(o_area,buf,o_text);
 
-    snprintf(buf,EYELIGHT_BUFLEN, "%s) ", numbering_id);
+    snprintf(buf,EYELIGHT_BUFLEN, " %s) ", numbering_id);
     edje_object_part_text_set(o_text,"object.numbering",buf);
 
     int i;

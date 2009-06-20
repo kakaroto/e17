@@ -95,6 +95,7 @@ group
                 image
                 {
                     normal: "expose_shadow.png";
+                    border: 10 10 10 10;
                 }
                 fill
                 {
@@ -114,7 +115,7 @@ group
                 }
                 rel2
                 {
-                    relative: 0.95 0.95;
+                    relative: 0.97 0.97;
                     to: "base";
                 }
             }
@@ -129,16 +130,9 @@ group
                 state: "default" 0.0;
                 visible: 1;
                 color: 0 0 0 255;
-                rel1
-                {
-                    relative: 0.0 0.0;
-                    to: "shadow";
-                }
-                rel2
-                {
-                    relative: 0.95 0.95;
-                    to: "shadow";
-                }
+                rel1.to: "shadow";
+                rel2.to: "shadow";
+                rel2.offset: -15 -15;
             }
         }
         part
@@ -159,8 +153,7 @@ group
                 }
                 rel2
                 {
-                    relative: 0.95 0.95;
-                    offset: -2 -2;
+                    offset: -16 -16;
                     to: "shadow";
                 }
             }
@@ -223,7 +216,7 @@ group
             {
                 state: "default" 0.0;
                 visible: 1;
-                color: 0 0 0 150;
+                color: 80 90 95 200;
                 rel1
                 {
                     relative: 0.0 0.0;

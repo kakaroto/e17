@@ -116,7 +116,7 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
         evas_object_image_fill_set(o_image,0,0,thumb->w,thumb->h);
         evas_object_image_size_set(o_image, thumb->w, thumb->h);
         evas_object_image_data_set(o_image,thumb->thumb);
-
+        evas_object_image_filled_set(o_image,1);
         evas_object_show(o_image);
         edje_object_part_swallow(o_swallow,"object.swallow",o_image);
 

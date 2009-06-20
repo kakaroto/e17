@@ -29,6 +29,7 @@ typedef enum Eyelight_Value_Type Eyelight_Value_Type;
 typedef struct Eyelight_Valid_Prop_Block Eyelight_Valid_Prop_Block;
 typedef struct Eyelight_Prop_Nb_Value Eyelight_Prop_Nb_Value;
 typedef struct eyelight_custom_area Eyelight_Custom_Area;
+typedef struct eyelight_video Eyelight_Video;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,6 +52,7 @@ enum eyelight_node_name
     EYELIGHT_NAME_ITEM,
     EYELIGHT_NAME_AREA,
     EYELIGHT_NAME_EDJ,
+    EYELIGHT_NAME_VIDEO,
     EYELIGHT_NAME_TITLE,
     EYELIGHT_NAME_SUBTITLE,
     EYELIGHT_NAME_HEADER_IMAGE,
@@ -70,7 +72,11 @@ enum eyelight_node_name
     EYELIGHT_NAME_SCALE,
     EYELIGHT_NAME_BORDER,
     EYELIGHT_NAME_NUMBERING,
-    EYELIGHT_NAME_RELATIVE
+    EYELIGHT_NAME_RELATIVE,
+    EYELIGHT_NAME_ALPHA,
+    EYELIGHT_NAME_AUTOPLAY,
+    EYELIGHT_NAME_REPLAY,
+    EYELIGHT_NAME_SHADOW
 };
 
 struct Eyelight_Name_Key
@@ -86,6 +92,7 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "item", EYELIGHT_NAME_ITEM },
     { "area", EYELIGHT_NAME_AREA },
     { "edje", EYELIGHT_NAME_EDJ },
+    { "video", EYELIGHT_NAME_VIDEO},
     { "title", EYELIGHT_NAME_TITLE },
     { "subtitle", EYELIGHT_NAME_SUBTITLE },
     { "header_image", EYELIGHT_NAME_HEADER_IMAGE },
@@ -105,7 +112,11 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "scale", EYELIGHT_NAME_SCALE },
     { "border", EYELIGHT_NAME_BORDER},
     { "numbering", EYELIGHT_NAME_NUMBERING },
-    { "relative", EYELIGHT_NAME_RELATIVE}
+    { "relative", EYELIGHT_NAME_RELATIVE},
+    { "alpha", EYELIGHT_NAME_ALPHA},
+    { "autoplay", EYELIGHT_NAME_AUTOPLAY},
+    { "replay", EYELIGHT_NAME_REPLAY},
+    { "shadow", EYELIGHT_NAME_SHADOW}
 };
 
 struct Eyelight_Valid_Prop_Block
@@ -139,6 +150,7 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_NAME },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_TEXT },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_IMAGE },
+    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_VIDEO },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_LAYOUT },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_TEXT },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_NUMBERING },
@@ -148,8 +160,15 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_SCALE },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_BORDER },
     { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_RELATIVE},
+    { EYELIGHT_NAME_IMAGE, EYELIGHT_NAME_SHADOW},
     { EYELIGHT_NAME_EDJ, EYELIGHT_NAME_FILE },
     { EYELIGHT_NAME_EDJ, EYELIGHT_NAME_GROUP },
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_VIDEO},
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_ALPHA},
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_AUTOPLAY},
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_REPLAY},
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_SHADOW},
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_BORDER}
 };
 
 
@@ -159,6 +178,7 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_block_block[] =
     { EYELIGHT_NAME_SLIDE, EYELIGHT_NAME_AREA },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_ITEMS },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_IMAGE },
+    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_VIDEO },
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_EDJ },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEM },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEMS },
@@ -215,6 +235,10 @@ static const Eyelight_Prop_Value_Type eyelight_prop_value_type[]=
     {EYELIGHT_NAME_SIZE, 0, EYELIGHT_VALUE_TYPE_INT},
     {EYELIGHT_NAME_SIZE, 1, EYELIGHT_VALUE_TYPE_INT},
     {EYELIGHT_NAME_BORDER, 0, EYELIGHT_VALUE_TYPE_INT},
+    {EYELIGHT_NAME_ALPHA, 0, EYELIGHT_VALUE_TYPE_INT},
+    {EYELIGHT_NAME_AUTOPLAY, 0, EYELIGHT_VALUE_TYPE_INT},
+    {EYELIGHT_NAME_REPLAY, 0, EYELIGHT_VALUE_TYPE_INT},
+    {EYELIGHT_NAME_SHADOW, 0, EYELIGHT_VALUE_TYPE_INT}
 };
 
 /*
@@ -263,6 +287,15 @@ struct eyelight_custom_area
 {
     char *name;
     Evas_Object *obj;
+};
+
+struct eyelight_video
+{
+    char *video;
+    Evas_Object *o_video;
+    Evas_Object *o_inter;
+    int replay;
+    Eyelight_Viewer *pres;
 };
 
 #define EYELIGHT_NODE_TYPE_BLOCK 0

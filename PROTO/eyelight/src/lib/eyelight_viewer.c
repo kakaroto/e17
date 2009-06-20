@@ -21,10 +21,6 @@
 
 void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
-void eyelight_viewer_edje_file_set(Eyelight_Viewer* pres,char* edje_file);
-void eyelight_viewer_edc_file_set(Eyelight_Viewer* pres,char* edc_file);
-void eyelight_viewer_elt_file_set(Eyelight_Viewer* pres,char* elt_file);
-void eyelight_viewer_presentation_set(Eyelight_Viewer* pres,char* presentation);
 void eyelight_viewer_theme_set(Eyelight_Viewer* pres,char* theme);
 
 /*
@@ -40,52 +36,30 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, char* presentation, char* theme
     pres->evas = evas;
     pres->with_border = with_border;
 
-    str = ecore_file_realpath(presentation);
-    eyelight_viewer_presentation_set(pres,str);
-    EYELIGHT_FREE(str);
     if(!presentation || strlen(presentation)==0)
     {
         fprintf(stderr,"The presentation file doesn't exists !\n");
         eyelight_viewer_destroy(&pres);
         return NULL;
     }
-
-    if(strcmp(pres->presentation+(strlen(pres->presentation)-4),".elt")==0)
-        eyelight_viewer_elt_file_set(pres,pres->presentation);
-    else if(strcmp(pres->presentation+(strlen(pres->presentation)-4),".edc")==0)
-        eyelight_viewer_edc_file_set(pres,pres->presentation);
-    else if(strcmp(pres->presentation+(strlen(pres->presentation)-4),".edj")==0)
-        eyelight_viewer_edje_file_set(pres,pres->presentation);
+    if(presentation)
+        pres->elt_file = strdup(presentation);
     else
-        return NULL;
+        pres->elt_file = NULL;
 
-    if(!pres->edje_file)
+    if(!theme)
+        theme = PACKAGE_DATA_DIR"/themes/default/theme.edj";
+    pres->theme = strdup(theme);
+    if(!ecore_file_exists(pres->theme))
     {
-        //if the presentation file is not an edje file, we need to set the theme
-        if(!theme)
-            theme = PACKAGE_DATA_DIR"/themes/default/theme.edc";
-        str = ecore_file_realpath(theme);
-        eyelight_viewer_theme_set(pres,str);
-        EYELIGHT_FREE(str);
-        if(ecore_file_is_dir(pres->theme))
-        {
-            snprintf(buf,EYELIGHT_BUFLEN,"%s/theme.edc",pres->theme);
-            eyelight_viewer_theme_set(pres,buf);
-        }
-        if(!ecore_file_exists(theme))
-        {
-            snprintf(buf,EYELIGHT_BUFLEN, PACKAGE_DATA_DIR"/themes/%s",theme);
-            if(ecore_file_is_dir(buf))
-                snprintf(buf,EYELIGHT_BUFLEN, PACKAGE_DATA_DIR"/themes/%s/theme.edc",theme);
-            eyelight_viewer_theme_set(pres,buf);
-            if(!ecore_file_exists(pres->theme))
-            {
-                fprintf(stderr,"The theme doesn't exists !\n");
-                eyelight_viewer_destroy(&pres);
-                return NULL;
-            }
-        }
+        fprintf(stderr,"The theme doesn't exists !\n");
+        eyelight_viewer_destroy(&pres);
+        return NULL;
     }
+
+
+    pres->video_module = strdup("xine");
+
     return pres;
 }
 
@@ -95,10 +69,7 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, char* presentation, char* theme
 void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 {
     int i;
-    EYELIGHT_FREE((*pres)->presentation);
     EYELIGHT_FREE((*pres)->theme);
-    EYELIGHT_FREE((*pres)->edje_file);
-    EYELIGHT_FREE((*pres)->edc_file);
     EYELIGHT_FREE((*pres)->elt_file);
     for(i=0;i<(*pres)->size;i++)
         if((*pres)->edje_objects[i])
@@ -111,6 +82,20 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
                 (*pres)->edje_objects[i] = eina_list_remove_list((*pres)->edje_objects[i], l);
             }
         }
+
+    for(i=0;i<(*pres)->size;i++)
+        if((*pres)->video_objects[i])
+        {
+            Eina_List *l, *l_next;
+            Eyelight_Video *data;
+            EINA_LIST_FOREACH_SAFE((*pres)->video_objects[i], l, l_next, data)
+            {
+                evas_object_del(data->o_inter);
+                EYELIGHT_FREE(data);
+                (*pres)->video_objects[i] = eina_list_remove_list((*pres)->video_objects[i], l);
+            }
+        }
+
 
     for(i=0;i<(*pres)->size;i++)
         if((*pres)->custom_areas[i])
@@ -128,6 +113,8 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 
     EYELIGHT_FREE((*pres)->slides);
     EYELIGHT_FREE((*pres)->edje_objects);
+    EYELIGHT_FREE((*pres)->video_objects);
+    EYELIGHT_FREE((*pres)->video_module);
     EYELIGHT_FREE((*pres)->custom_areas);
     EYELIGHT_FREE((*pres)->transition_effect_next);
     EYELIGHT_FREE((*pres)->transition_effect_previous);
@@ -174,6 +161,7 @@ void eyelight_viewer_slides_init(Eyelight_Viewer*pres, int w, int h)
     pres->slide_with_transition[1] = NULL;
     pres->slides = calloc(pres->size,sizeof(Evas_Object*));
     pres->edje_objects = calloc(pres->size,sizeof(Evas_Object*));
+    pres->video_objects = calloc(pres->size,sizeof(Evas_Object*));
     pres->custom_areas = calloc(pres->size,sizeof(Evas_Object*));
 
 
@@ -187,40 +175,9 @@ void eyelight_viewer_slides_init(Eyelight_Viewer*pres, int w, int h)
     eyelight_viewer_thumbnails_init(pres);
     eyelight_viewer_resize_screen(pres,w,h);
 
-    printf("\n\n## presentation: %s\n",pres->presentation);
-    printf("## Elt file: %s\n",pres->elt_file);
-    printf("## Edc file: %s\n",pres->edc_file);
-    printf("## Edje file: %s\n",pres->edje_file);
+    printf("## Presentation file: %s\n",pres->elt_file);
     printf("## Theme: %s\n",pres->theme);
     printf("## Number of slides: %d\n\n",pres->size);
-}
-
-/*
- * @brief set the edje file
- */
-void eyelight_viewer_edje_file_set(Eyelight_Viewer* pres,char* edje_file)
-{
-    EYELIGHT_FREE(pres->edje_file);
-    pres->edje_file = strdup(edje_file);
-}
-
-
-/*
- * @brief set the edc file
- */
-void eyelight_viewer_edc_file_set(Eyelight_Viewer* pres,char* edc_file)
-{
-    EYELIGHT_FREE(pres->edc_file);
-    pres->edc_file = strdup(edc_file);
-}
-
-/*
- * @brief set the elt file
- */
-void eyelight_viewer_elt_file_set(Eyelight_Viewer* pres,char* elt_file)
-{
-    EYELIGHT_FREE(pres->elt_file);
-    pres->elt_file = strdup(elt_file);
 }
 
 /*
@@ -229,17 +186,6 @@ void eyelight_viewer_elt_file_set(Eyelight_Viewer* pres,char* elt_file)
 Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres)
 {
     return pres->state;
-}
-
-/*
- * @brief set the presentation file
- * define the first file use to create the presentation
- * (an edc file if you display the presentation from an edc file)
- */
-void eyelight_viewer_presentation_set(Eyelight_Viewer* pres,char* presentation)
-{
-    EYELIGHT_FREE(pres->presentation);
-    pres->presentation = strdup(presentation);
 }
 
 /*
@@ -479,6 +425,15 @@ void eyelight_viewer_clear(Eyelight_Viewer *pres)
                     evas_object_del(data->obj);
                     EYELIGHT_FREE(data);
                     pres->custom_areas[i] = eina_list_remove_list(pres->custom_areas[i], l);
+                }
+            }
+            {
+                Eyelight_Video *data;
+                EINA_LIST_FOREACH_SAFE(pres->video_objects[i], l, l_next, data)
+                {
+                    evas_object_del(data->o_inter);
+                    EYELIGHT_FREE(data);
+                    pres->video_objects[i] = eina_list_remove_list(pres->video_objects[i], l);
                 }
             }
         }

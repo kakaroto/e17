@@ -33,7 +33,8 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Node
 Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Evas_Object *o_slide, int slide_number, int nb_slides);
 
 Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area,const char *text);
-Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *image, int border);
+Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *image, int border, int shadow);
+Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow);
 Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, int depth, const char *text);
 Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, char *numbering_id, int depth, const char *text);
 Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *edj_file, const char *edje_group);

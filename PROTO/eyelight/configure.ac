@@ -6,7 +6,7 @@ AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(eyelight, 0.1)
+AM_INIT_AUTOMAKE(eyelight, 0.2)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -22,6 +22,7 @@ requirements="ecore ecore-evas ecore-file evas edje"
 
 AC_SUBST(version_info)
 AC_SUBST(requirements)
+AC_SUBST(packagesrcdir)
 
 PKG_PROG_PKG_CONFIG
 
@@ -56,6 +57,7 @@ PKG_CHECK_MODULES(EYELIGHT, [
                         ecore-file >= 0.9.9,
                         evas >= 0.9.9.40,
                         edje >= 0.5
+                        emotion >= 0.1
                         ])
 # required libs / cflags
 eyelight_libs=$EYELIGHT_LIBS

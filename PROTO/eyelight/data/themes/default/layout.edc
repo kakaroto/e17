@@ -1,13 +1,13 @@
 
 //theme's macro
 #define default_area()  \
-custom_area("custom",0.0,0.0,1.0,1.0,"stack") \
 custom_area("title",0.01,0.01,0.8,0.1,"horizontal")\
 custom_area("subtitle",0.6,0.15,0.99,0.2,"horizontal")\
 custom_area("header_image",0.95,0.1,0.99,0.15,"horizontal")\
 custom_area("foot_image",0.03,0.9,0.2,0.995,"horizontal")\
-custom_area("foot_text",0.25,0.96,0.7,1.0,"horizontal") \
-custom_area("pages",0.84,0.96,0.9,1.0,"horizontal")
+custom_area("foot_text",0.25,0.95,0.7,1.0,"horizontal") \
+custom_area("pages",0.8,0.955,0.9,1.0,"horizontal") \
+custom_area("custom",0.0,0.0,1.0,1.0,"stack")
 //
 
 
@@ -16,8 +16,9 @@ part                            \
 {                               \
     name: "area."area_name;     \
     type: BOX;                  \
-    mouse_events:0;             \
+                 \
     clip_to: "slide";           \
+    repeat_events: 1;           \
     description                 \
     {                           \
         state: "default" 0.0;   \
@@ -115,7 +116,8 @@ part                            \
 {                               \
     name: "area_"area_name"_border";   \
     type: IMAGE;                \
-    mouse_events:0;             \
+                 \
+    repeat_events: 1;           \
     description                 \
     {                           \
         state: "default" 0.0;   \
@@ -152,8 +154,9 @@ part                            \
 {                               \
     name: "area."area_name".name";     \
     type: TEXT;                 \
-    mouse_events:0;             \
+                 \
     effect: SOFT_OUTLINE;       \
+    repeat_events: 1;           \
     description                 \
     {                           \
         state: "default" 0.0;   \
@@ -285,14 +288,14 @@ program                         \
         parts
         {
             pre_fct();
-            custom_area("custom",0.0,0.0,1.0,1.0,"stack")
             custom_area("title",0.05,0.4,0.99,0.52,"horizontal");
             custom_area("subtitle",0.05,0.5,0.99,0.6,"horizontal");
             custom_area("header_image",0.2,0.05,0.8,0.18,"horizontal");
             custom_area("foot_image",0.03,0.9,0.2,0.995,"horizontal");
-            custom_area("foot_text",0.2,0.96,0.8,1.0,"horizontal");
+            custom_area("foot_text",0.2,0.95,0.8,1.0,"horizontal");
             custom_area("bottom",0.09,0.65,0.98,0.9,"vertical");
-            custom_area("pages",0.84,0.96,0.9,1.0,"horizontal");
+            custom_area("pages",0.85,0.955,0.95,1.0,"horizontal");
+            custom_area("custom",0.0,0.0,1.0,1.0,"stack")
             post_fct();
         }
 
@@ -373,8 +376,8 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("center",0.11,0.2,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -388,10 +391,10 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top",0.11,0.2,0.9,0.55,"horizontal");
             custom_area("left",0.11,0.56,0.5,0.82,"vertical");
             custom_area("right",0.51,0.56,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -405,10 +408,10 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top",0.11,0.2,0.9,0.40,"horizontal");
             custom_area("left",0.11,0.40,0.5,0.82,"vertical");
             custom_area("right",0.51,0.40,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -422,10 +425,10 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("bottom",0.11,0.56,0.9,0.82,"horizontal");
             custom_area("left",0.11,0.2,0.5,0.55,"vertical");
             custom_area("right",0.51,0.2,0.9,0.55,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -439,10 +442,10 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("bottom",0.11,0.71,0.9,0.82,"horizontal");
             custom_area("left",0.11,0.2,0.5,0.70,"vertical");
             custom_area("right",0.51,0.2,0.9,0.70,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -456,11 +459,11 @@ program                         \
         {
             pre_fct();
 
+            custom_area("top_right",0.51,0.2,0.9,0.51,"vertical");
+            custom_area("top_left",0.11,0.2,0.5,0.51,"vertical");
+            custom_area("bottom_right",0.51,0.52,0.9,0.83,"vertical");
+            custom_area("bottom_left",0.11,0.52,0.5,0.83,"vertical");
             default_area();
-            custom_area("top_right",0.51,0.2,0.9,0.55,"vertical");
-            custom_area("top_left",0.11,0.2,0.5,0.55,"vertical");
-            custom_area("bottom_right",0.51,0.56,0.9,0.82,"vertical");
-            custom_area("bottom_left",0.11,0.56,0.5,0.82,"vertical");
 
             post_fct();
         }
@@ -474,13 +477,13 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top_right",0.51,0.2,0.9,0.48,"vertical");
             custom_area("top_left",0.11,0.2,0.5,0.48,"vertical");
             custom_area("middle_right",0.51,0.49,0.9,0.68,"vertical");
             custom_area("middle_left",0.11,0.49,0.5,0.68,"vertical");
             custom_area("bottom_right",0.51,0.69,0.9,0.82,"vertical");
             custom_area("bottom_left",0.11,0.69,0.5,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -494,9 +497,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("left",0.06,0.2,0.5,0.82,"vertical");
             custom_area("right",0.51,0.2,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -510,9 +513,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("left",0.06,0.2,0.29,0.82,"vertical");
             custom_area("right",0.30,0.2,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -526,9 +529,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("left",0.06,0.2,0.7,0.82,"vertical");
             custom_area("right",0.71,0.2,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }
@@ -542,9 +545,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top",0.1,0.2,0.9,0.55,"horizontal");
             custom_area("bottom",0.1,0.56,0.9,0.82,"horizontal");
+            default_area();
 
             post_fct();
         }
@@ -558,9 +561,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top",0.1,0.2,0.9,0.69,"vertical");
             custom_area("bottom",0.1,0.7,0.9,0.82,"horizontal");
+            default_area();
 
             post_fct();
         }
@@ -574,9 +577,9 @@ program                         \
         {
             pre_fct();
 
-            default_area();
             custom_area("top",0.1,0.2,0.9,0.41,"horizontal");
             custom_area("bottom",0.1,0.42,0.9,0.82,"vertical");
+            default_area();
 
             post_fct();
         }

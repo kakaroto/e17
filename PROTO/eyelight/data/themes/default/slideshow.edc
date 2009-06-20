@@ -115,7 +115,8 @@ part                            \
         }                       \
         rel2                    \
         {                       \
-            relative: 0.95 0.95;\
+            relative: 1.0 1.0;  \
+            offset: -15 -15;    \
             to: "slideshow_shadow_"id_slide; \
         }                       \
     }                           \
@@ -143,8 +144,8 @@ part                            \
         }                       \
         rel2                    \
         {                       \
-            relative: 0.95 0.95;\
-            offset: -2 -2;      \
+            relative: 1.0 1.0;\
+            offset: -16 -16;      \
             to: "slideshow_shadow_"id_slide; \
         }                       \
     }                           \

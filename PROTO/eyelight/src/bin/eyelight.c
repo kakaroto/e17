@@ -525,6 +525,7 @@ int main(int argc, char*argv[])
     }
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb,pres);
     evas_object_focus_set(container,1);
+    evas_object_repeat_events_set(container,1);
 
 #ifdef PDF_SUPPORT
     if(generate_pdf)
