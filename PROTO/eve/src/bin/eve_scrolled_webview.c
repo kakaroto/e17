@@ -62,7 +62,6 @@ static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 static void
 _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Eve_Scrolled_Webview_Data *priv = data;
    Evas_Event_Key_Down *ev = event_info;
    char *value;
 
@@ -84,63 +83,18 @@ _eve_scrolled_webview_on_key_down(void *data, Evas *e, Evas_Object *obj, void *e
      ev->event_flags &= ~EVAS_EVENT_FLAG_ON_HOLD; /* unset on_hold */
 }
 
-static int
-_eve_scrolled_webview_pan_anim(void *data)
-{
-   Eve_Scrolled_Webview_Data *priv = data;
-   Evas_Coord x, y, dx, dy;
-
-   evas_pointer_output_xy_get(priv->base.evas, &x, &y);
-   dx = priv->mouse_move.x - x ;
-   dy = priv->mouse_move.y - y;
-
-   if ((dx == 0) && (dy == 0))
-     return 1;
-
-   _eve_scrolled_webview_scroll_by(priv, dx, dy);
-
-   priv->mouse_move.x = x;
-   priv->mouse_move.y = y;
-
-   return 1;
-}
-
-static void
-_eve_scrolled_webview_pan_anim_start(Eve_Scrolled_Webview_Data *priv)
-{
-   if (priv->mouse_move.anim)
-     return;
-   priv->mouse_move.anim = ecore_animator_add
-     (_eve_scrolled_webview_pan_anim, priv);
-}
-
-static void
-_eve_scrolled_webview_pan_anim_stop(Eve_Scrolled_Webview_Data *priv)
-{
-   if (!priv->mouse_move.anim)
-     return;
-   ecore_animator_del(priv->mouse_move.anim);
-   priv->mouse_move.anim = NULL;
-}
-
 static void
 _eve_scrolled_webview_on_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Eve_Scrolled_Webview_Data *priv = data;
-   Evas_Event_Mouse_Down *ev = event_info;
-   bool accepted;
 
    evas_object_focus_set(priv->webview, 1);
-
-   _eve_scrolled_webview_pan_anim_stop(priv);
 }
 
 static void
 _eve_scrolled_webview_smart_del(Evas_Object *o)
 {
    EVE_SCROLLED_WEBVIEW_DATA_GET(o, priv);
-
-   _eve_scrolled_webview_pan_anim_stop(priv);
 
    evas_object_del(priv->webview); /* edje does not delete its children */
 
