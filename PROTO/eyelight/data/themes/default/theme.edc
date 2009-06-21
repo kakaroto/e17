@@ -217,39 +217,47 @@ images
     image: "slider_select.png" COMP;
 }
 
-styles
-{
-    style
-    {
+styles {
+    style {
+        name: "summaryBeforeStyle";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000ff  wrap=word style=glow glow_color=#ffffff ";
+        tag_list();
+    }
+    style {
+        name: "summaryCurrentStyle";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000ff wrap=word style=glow glow_color=#a1c2e8 ";
+        tag_list();
+    }
+    style {
+        name: "summaryAfterStyle";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#00000088  wrap=word style=glow glow_color=#ffffff ";
+        tag_list();
+    }
+    style {
         name: "itemStyle";
         base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000  wrap=word style=glow glow_color=#ffffff ";
         tag_list();
     }
-    style
-    {
+    style {
         name: "numberingStyle";
         base: "font=DejaVuSans font_size=22 align=0.0 valign=0 color=#000000  wrap=word style=glow glow_color=#ffffff style=soft_outline outline_color=#7fa3ed color=#d8e0e3";
     }
-    style
-    {
+    style {
         name: "titleStyle";
         base: "font=DejaVuSans_Oblique font_size=40 align=center valign=0.0 wrap=word style=glow glow_color=#ffc516 color=#ffffff";
         tag_list();
     }
-    style
-    {
+    style {
         name: "subtitleStyle";
         base: "font=DejaVuSans font_size=20 align=center valign=bottom color=#ffffff  wrap=word style=soft_outline outline_color=#a1c2e8";
         tag_list();
     }
-    style
-    {
+    style {
         name: "footStyle";
         base: "+ font=DejaVuSans font_size=18 aligncenter valign=bottom color=#ffffff  wrap=word ";
         tag_list();
     }
-    style
-    {
+    style {
         name: "nbPagesStyle";
         base: "+ font=DejaVuSans font_size=18 align=right valign=bottom color=#ffffff  wrap=word ";
         tag_list();
@@ -564,6 +572,78 @@ collections
         programs
         {
             program_item_depth("depth",50);
+        }
+    }
+    group
+    {
+        name: "eyelight/item_summary_text";
+        parts
+        {
+            part
+            {
+                name: "depth";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 0.0 0.0;
+                }
+            }
+            part {
+                name : "object.text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 1.0 0.0;
+                    rel1.to_x: "depth";
+                    text {
+                        text: "TEXT";
+                        style: "itemStyle";
+                    }
+                }
+                description {
+                    state: "before" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryBeforeStyle";
+                }
+                description {
+                    state: "current" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryCurrentStyle";
+                }
+                description {
+                    state: "after" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryAfterStyle";
+                }
+            }
+        }
+        programs {
+            program_item_depth("depth",50);
+            program {
+                name: "before";
+                signal: "before";
+                source: "eyelight";
+                action: STATE_SET "before" 0.0;
+                target: "object.text";
+            }
+            program {
+                name: "current";
+                signal: "current";
+                source: "eyelight";
+                action: STATE_SET "current" 0.0;
+                target: "object.text";
+            }
+            program {
+                name: "after";
+                signal: "after";
+                source: "eyelight";
+                action: STATE_SET "after" 0.0;
+                target: "object.text";
+            }
         }
     }
     group

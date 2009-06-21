@@ -68,10 +68,37 @@ Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
     Eyelight_Compiler* compiler;
     compiler = calloc(1,sizeof(Eyelight_Compiler));
     compiler->line = 1;
-    compiler->image_list = ecore_list_new();
-    compiler->edc_files = ecore_list_new();
     compiler->last_open_block = -1;
     compiler->root = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ROOT,NULL);
+
+    //special summary slide
+    compiler->node_summary = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_SLIDE,NULL);
+    Eyelight_Node *node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_LAYOUT,
+            compiler->node_summary);
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
+    node->value = strdup("summary");
+
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_TITLE,
+            compiler->node_summary);
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
+    node->value = strdup(" Summary ");
+
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_SUBTITLE,
+            compiler->node_summary);
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
+    node->value = strdup("");
+
+    Eyelight_Node *node_area = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_AREA,
+            compiler->node_summary);
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP,EYELIGHT_NAME_NAME,
+            node_area);
+    node = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,node);
+    node->value = strdup("summary");
+
+    compiler->node_summary_items = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK,EYELIGHT_NAME_ITEMS,
+            node_area);
+    //
+
     compiler->input_file = strdup(input_file);
     compiler-> display_areas = display_areas;
 
@@ -86,20 +113,8 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
     Eyelight_Compiler* compiler = *p_compiler;
     char* str;
 
-    ecore_list_first_goto(compiler->image_list);
-    while( (str = ecore_list_next(compiler->image_list)))
-    {
-        EYELIGHT_FREE(str);
-    }
-    ecore_list_destroy(compiler->image_list);
-    ecore_list_first_goto(compiler->edc_files);
-    while( (str = ecore_list_next(compiler->edc_files)))
-    {
-        EYELIGHT_FREE(str);
-    }
-    ecore_list_destroy(compiler->edc_files);
-
-    eyelight_node_free(&(compiler->root));
+    eyelight_node_free(&(compiler->root),compiler->node_summary);
+    eyelight_node_free(&(compiler->node_summary),NULL);
 
     EYELIGHT_FREE(compiler->input_file);
     EYELIGHT_FREE(compiler->output_file);
@@ -128,7 +143,7 @@ Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node
 /*
  * @brief free a node
  */
-void eyelight_node_free(Eyelight_Node** current)
+void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free)
 {
     Eyelight_Node* node;
 
@@ -137,7 +152,8 @@ void eyelight_node_free(Eyelight_Node** current)
 
     ecore_list_first_goto((*current)->l);
     while( (node=ecore_list_next((*current)->l)))
-        eyelight_node_free(&node);
+        if(node != not_free)
+            eyelight_node_free(&node,not_free);
 
     ecore_list_destroy((*current)->l);
 
@@ -199,48 +215,6 @@ char* eyelight_source_fetch(char* file, char** p_end)
 
     //fclose(input);
     return p;
-}
-
-/*
- * @brief add an image in the image list, then these images will be add in an edc block image
- */
-int eyelight_image_add(Eyelight_Compiler* compiler,char* image)
-{
-    int find = 0;
-    char* img;
-    ecore_list_first_goto(compiler->image_list);
-    while( !find && (img = ecore_list_next(compiler->image_list)))
-    {
-        if(strcmp(image,img)==0)
-            find = 1;
-    }
-    if(!find)
-    {
-        ecore_list_append(compiler->image_list,strdup(image));
-        return 1;
-    }
-    return 0;
-}
-
-/*
- * @brief add an edc file in the list, then these files will be include
- */
-int eyelight_edc_file_add(Eyelight_Compiler* compiler,char* edc_file)
-{
-    int find = 0;
-    char* file;
-    ecore_list_first_goto(compiler->edc_files);
-    while( !find && (file = ecore_list_next(compiler->edc_files)))
-    {
-        if(strcmp(edc_file,file)==0)
-            find = 1;
-    }
-    if(!find)
-    {
-        ecore_list_append(compiler->edc_files,strdup(edc_file));
-        return 1;
-    }
-    return 0;
 }
 
 /*

@@ -358,6 +358,21 @@ program                         \
 
     group
     {
+        name: "eyelight/layout_summary";
+        parts
+        {
+            pre_fct();
+
+            custom_area("summary",0.11,0.2,0.9,0.82,"vertical");
+            default_area();
+
+            post_fct();
+        }
+        program_list();
+    }
+
+    group
+    {
         name: "eyelight/layout_blank";
         parts
         {

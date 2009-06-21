@@ -256,6 +256,8 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
     Eyelight_Node_Name name;
     char* previous_token = NULL;
     Eyelight_Node* current_node = compiler->root;
+    Eyelight_Node* current_node_summary = NULL;
+    Eyelight_Node* current_node_summary_forced = NULL;
 
     int value_size = -1;
     char* value_list[EYELIGHT_BUFLEN];
@@ -293,11 +295,34 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                 fprintf(stderr,"(line %d) A property can not be declare here. \n",compiler->line);
                 exit(EXIT_FAILURE);
             }
+
             name = eyelight_name_get(previous_token);
-            if(eyelight_is_valid_prop_in_block(name,current_node->name))
+            Eyelight_Node *old_current_node = current_node;
+            current_node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, name, current_node);
+            value_size = 0;
+
+            if(eyelight_is_valid_prop_in_block(name,old_current_node->name))
             {
-                current_node = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, name, current_node);
-                value_size = 0;
+                //add this item in the slide summary
+                if( old_current_node->name == EYELIGHT_NAME_ROOT
+                        && ( name == EYELIGHT_NAME_CHAPTER
+                            || name == EYELIGHT_NAME_SECTION) )
+                {
+                    Eyelight_Node *father = compiler->node_summary_items;
+                    if(name == EYELIGHT_NAME_SECTION)
+                        father = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK, EYELIGHT_NAME_ITEMS, father);
+                    current_node_summary = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, EYELIGHT_NAME_TEXT_SUMMARY,
+                            father);
+                    //insert the slide
+                    ecore_list_append(compiler->root->l, compiler->node_summary);
+                }
+
+
+                //if we want to display the summary here
+                if( name == EYELIGHT_NAME_SUMMARY)
+                {
+                    ecore_list_append(compiler->root->l, compiler->node_summary);
+                }
             }
             else
             {
@@ -365,6 +390,16 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                 Eyelight_Node* n;
                 n = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,current_node);
                 n->value = strdup(new);
+
+                if( current_node->father && current_node->father->name == EYELIGHT_NAME_ROOT
+                        && current_node_summary
+                        && ( current_node->name == EYELIGHT_NAME_CHAPTER
+                            || current_node->name == EYELIGHT_NAME_SECTION) )
+                {
+                    //add the value in the summary node
+                    n = eyelight_node_new(EYELIGHT_NODE_TYPE_VALUE,EYELIGHT_NAME_NONE,current_node_summary);
+                    n->value = strdup(new);
+                }
 
                 EYELIGHT_FREE(value_list[i]);
             }
