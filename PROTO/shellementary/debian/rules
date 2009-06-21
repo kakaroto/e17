@@ -19,7 +19,7 @@ install: build
 	dh_installdirs
 	DESTDIR=$(CURDIR)/debian/shellementary python setup.py --prefix=/usr install
 
-binary-arch: build install
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs ChangeLog
@@ -31,5 +31,5 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-arch
-.PHONY: build clean binary-arch binary install configure
+binary: binary-indep
+.PHONY: build clean binary install configure
