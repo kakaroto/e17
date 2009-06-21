@@ -5,13 +5,18 @@ For a list of planning features, see http://trac.enlightenment.org/e/wiki
 
 Webkit-EFL port:
 
-Download git tree from George Staikos (warning, it's huge!):
+Download git tree from Gitorious (warning, it's huge!):
 
-    git clone git://code.staikos.net/webkit
+    git clone git://gitorious.org/webkit-efl/webkit-efl.git webkit
 
 Build and install:
 
     cd webkit
-    git checkout origin/kenneth/efl-port
-    ./autogen.sh --with-port=efl --enable-web-workers=no
-    make all install
+    WebKitInstallationPrefix=<installation prefix> WebKitTools/Scripts/build-webkit --efl --makeargs=<make arguments> --no-video
+    make install -C WebKitBuild/Release
+
+Eve:
+    ./autogen.sh
+    make
+    make install
+    ./src/bin/eve (ensure it is installed before running)
