@@ -1,0 +1,15 @@
+Source: shellementary
+Section: x11
+Priority: optional
+Maintainer: quaker <quaker66@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), python-all (>= 2.4), gettext, python-evas, python-elementary
+Standards-Version: 3.8.1
+Homepage: http://code.openbossa.org
+
+Package: shellementary
+Architecture: all
+Depends: python-all (>= 2.4), python-evas, python-elementary
+Description: Shellementary app
+ Shellementary is a zenity replacement written in python-elementary.
+ It supports the same arguments as zenity, so it should be 95% compatible(5% = some missing arguments..)
+ Sometimes, app supports even more arguments than zenity.
