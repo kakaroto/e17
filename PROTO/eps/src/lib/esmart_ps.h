@@ -69,7 +69,7 @@ struct _Smart_Ps
 };
 
 Evas_Object         *esmart_ps_add (Evas *evas);
-Evas_Bool            esmart_ps_init (Evas_Object *obj);
+Eina_Bool            esmart_ps_init (Evas_Object *obj);
 
 int                  esmart_ps_file_set (Evas_Object *obj, const char *filename);
 const char          *esmart_ps_file_get (Evas_Object *obj);

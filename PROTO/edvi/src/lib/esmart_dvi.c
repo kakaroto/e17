@@ -92,7 +92,7 @@ esmart_dvi_add (Evas *evas)
  *
  * Initialize the smart dvi object @p obj
  */
-Evas_Bool
+Eina_Bool
 esmart_dvi_init (Evas_Object *obj)
 {
   Smart_Dvi *sp;

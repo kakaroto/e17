@@ -92,7 +92,7 @@ esmart_ps_add (Evas *evas)
  *
  * Initialize the smart ps object @p obj
  */
-Evas_Bool
+Eina_Bool
 esmart_ps_init (Evas_Object *obj)
 {
    Smart_Ps *sp;

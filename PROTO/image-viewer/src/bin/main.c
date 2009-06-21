@@ -500,7 +500,7 @@ Evas_Object *iv_gl_icon_get(const void *data, Evas_Object *obj, const char *part
    return NULL;
 }
 
-Evas_Bool iv_gl_state_get(const void *data, Evas_Object *obj, const char *part)
+Eina_Bool iv_gl_state_get(const void *data, Evas_Object *obj, const char *part)
 {
    return 0;
 }

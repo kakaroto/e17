@@ -92,7 +92,7 @@ esmart_pdf_add (Evas *evas)
  *
  * Initialize the smart pdf object @p obj
  */
-Evas_Bool
+Eina_Bool
 esmart_pdf_init (Evas_Object *obj)
 {
   Smart_Pdf *sp;

@@ -120,7 +120,7 @@ Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
     }
 }
 
-Evas_Bool gl_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+Eina_Bool gl_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
     return 0;
 }
