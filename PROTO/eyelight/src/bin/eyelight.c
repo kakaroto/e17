@@ -321,7 +321,7 @@ static const Ecore_Getopt options = {
     "Launch eyelight, presentation viewer\n\n"
         "%prog use Edje to display a presentation.  \n\n\n"
         "Examples: \n"
-        "eyelight -p presentation/eyelight.elt -t theme/default -e gl\n"
+        "eyelight -p presentation/eyelight.elt -t theme/default -e opengl-x11\n"
         "eyelight -p presentation/eyelight.elt",
         1,
         {
@@ -330,7 +330,9 @@ static const Ecore_Getopt options = {
             ECORE_GETOPT_LICENSE('L', "license"),
             ECORE_GETOPT_STORE_STR('p', "presentation", "specify the elt presentation file"),
             ECORE_GETOPT_STORE_STR('t', "theme", "specify the edje file theme"),
-            ECORE_GETOPT_STORE_STR('e', "engine", "specify the evas engine"),
+            ECORE_GETOPT_STORE_STR('e', "engine", "ecore-evas engine to use"),
+            ECORE_GETOPT_CALLBACK_NOARGS('E', "list-engines", "list ecore-evas engines",
+                    ecore_getopt_callback_ecore_evas_list_engines, NULL),
             ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
             ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
 #ifdef PDF_SUPPORT
@@ -349,6 +351,7 @@ int main(int argc, char*argv[])
     Evas_Coord w_win,h_win;
 
     unsigned char exit_option = 0;
+    unsigned char engines_listed = 0;
     char* engine = NULL;
     char* theme = NULL;
     char* presentation = NULL;
@@ -376,6 +379,7 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_STR(presentation),
         ECORE_GETOPT_VALUE_STR(theme),
         ECORE_GETOPT_VALUE_STR(engine),
+        ECORE_GETOPT_VALUE_BOOL(engines_listed),
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
 #ifdef PDF_SUPPORT
@@ -397,7 +401,7 @@ int main(int argc, char*argv[])
         return 1;
     }
 
-    if(exit_option)
+    if(exit_option || engines_listed)
         return 0;
 
     if(pdf_size_w==0 || pdf_size_h == 0)
@@ -439,31 +443,7 @@ int main(int argc, char*argv[])
     }
     else
     {
-        //if(strcmp(engine, "fws")==0)
-        //    ee = ecore_evas_fws_buffer_window(NULL, 0, 0, 720, 576, 0);
-        if(strcmp(engine, "sdl")==0)
-            ee = ecore_evas_sdl_new(NULL, 1024, 768, 0, 0, 0, 0);
-        else if(strcmp(engine, "sdl16")==0)
-            ee = ecore_evas_sdl16_new(NULL, 720, 576, 0, 0, 0, 0);
-        else if(strcmp(engine,"x11")==0)
-            ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(engine,"gl")==0)
-            ee = ecore_evas_gl_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(engine,"fb")==0)
-            ee = ecore_evas_fb_new (NULL, 0, 1024, 768);
-        else if(strcmp(engine,"xr")==0)
-            ee = ecore_evas_xrender_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(engine,"ddraw")==0)
-            ee = ecore_evas_software_ddraw_new (NULL, 0, 0, 1024, 768);
-        else
-        {
-            fprintf(stderr,"Unknow engine %s\n",engine);
-            eyelight_viewer_destroy(&pres);
-            evas_shutdown ();
-            ecore_shutdown ();
-
-            return EXIT_FAILURE;
-        }
+        ee = ecore_evas_new(engine, 0, 0, 1024, 768, NULL);
     }
     if(!ee)
     {

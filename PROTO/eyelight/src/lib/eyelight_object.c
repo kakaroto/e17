@@ -436,7 +436,7 @@ Evas_Object *eyelight_object_item_summary_text_add(Eyelight_Viewer *pres, int id
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
     evas_object_size_hint_align_set(o_text, -1, -1);
-    evas_object_size_hint_weight_set(o_text, -1, -1);
+    evas_object_size_hint_weight_set(o_text, 1, 1);
     evas_object_show(o_text);
     evas_object_move(o_text, 0, 0);
     edje_object_part_box_append(o_area,buf,o_text);
