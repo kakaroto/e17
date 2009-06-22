@@ -312,39 +312,49 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
     //printf("key: %s\n",event->keyname);
 }
 
-void help()
-{
-    printf("Eyelight's help\n");
-    printf("eyelight -p eyelight_viewer_file [-e engine -t theme file ]\n");
-    printf("-p presentation file\t: can be an edc file, an elt file or an edje file\n");
-    printf("-t theme file\t\t: can be a folder or an edc file\n");
-    printf("-e engine\t\t: an evas engine (x11, gl, fb, xr, ddraw)\n");
-    printf("--display-areas\t\t: show the border of an area\n");
-    printf("--no-thumbs-bg\t\t: deactivate the creation of the thumbnails list in the background, saves a lot of memory some mode (expose, slideshow) will be slow\n");
+static const Ecore_Getopt options = {
+    "eyelight",
+    NULL,
+    VERSION,
+    "(C) 2009 Enlightenment, see AUTHORS.",
+    "LGPL with advertisement, see COPYING",
+    "Launch eyelight, presentation viewer\n\n"
+        "%prog use Edje to display a presentation.  \n\n\n"
+        "Examples: \n"
+        "eyelight -p presentation/eyelight.elt -t theme/default -e gl\n"
+        "eyelight -p presentation/eyelight.elt",
+        1,
+        {
+            ECORE_GETOPT_VERSION('V', "version"),
+            ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+            ECORE_GETOPT_LICENSE('L', "license"),
+            ECORE_GETOPT_STORE_STR('p', "presentation", "specify the elt presentation file"),
+            ECORE_GETOPT_STORE_STR('t', "theme", "specify the edje file theme"),
+            ECORE_GETOPT_STORE_STR('e', "engine", "specify the evas engine"),
+            ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
+            ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
 #ifdef PDF_SUPPORT
-    printf("--generate-pdf file\t\t: generate a pdf file with all slides\n");
-    printf("--size-pdf sizex sizey\t\t: the size of each slide generated in a pdf file (default: 2048 1536)\n");
+            ECORE_GETOPT_STORE_STR('z', "generate-pdf", "specify the pdf file"),
+            ECORE_GETOPT_STORE_INT('x', "size-pdf_x", "the size of each slide generated in a pdf file (default: 2048)"),
+            ECORE_GETOPT_STORE_INT('y', "size-pdf_y", "the size of each slide generated in a pdf file (default: 1536)"),
 #endif
-    printf("\nExamples:\n");
-    printf("eyelight -p presentation/eyelight.edc -t theme/default -e gl\n");
-    printf("eyelight -p presentation/eyelight.edj\n");
-#ifdef PDF_SUPPORT
-    printf("eyelight -p presentation/eyelight.edj --generate-pdf pdf_file");
-#endif
-}
+            ECORE_GETOPT_HELP('h', "help"),
+            ECORE_GETOPT_SENTINEL
+        }
+};
 
 int main(int argc, char*argv[])
 {
     Evas          *evas;
     Evas_Coord w_win,h_win;
-    int i;
 
-    short engine = 0;
-    short theme = 0;
-    short presentation = 0;
-    short with_border = 0;
-    short no_thumbs_bg = 0;
-    short generate_pdf = 0;
+    unsigned char exit_option = 0;
+    char* engine = NULL;
+    char* theme = NULL;
+    char* presentation = NULL;
+    unsigned char with_border = 0;
+    unsigned char no_thumbs_bg = 0;
+    unsigned char generate_pdf = 0;
     int pdf_size_w = 0;
     int pdf_size_h = 0;
 
@@ -359,53 +369,36 @@ int main(int argc, char*argv[])
         return EXIT_FAILURE;
     }
 
-    i = 1;
-    while(i<argc)
-    {
-        if(strcmp(argv[i],"-h")==0)
-        {
-            help();
-            evas_shutdown ();
-            ecore_shutdown ();
-            return EXIT_SUCCESS;
-        }
-        if(strcmp(argv[i],"-e")==0)
-            engine = i+1;
-        else if(strcmp(argv[i],"-t")==0)
-            theme = i+1;
-        else if(strcmp(argv[i],"-p")==0)
-            presentation = i+1;
-        else if(strcmp(argv[i],"--display-areas")==0)
-        {
-            with_border = 1;
-            i--;
-        }
-        else if(strcmp(argv[i],"--no-thumbs-bg")==0)
-        {
-            no_thumbs_bg = 1;
-            i--;
-        }
+    Ecore_Getopt_Value values[] = {
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_STR(presentation),
+        ECORE_GETOPT_VALUE_STR(theme),
+        ECORE_GETOPT_VALUE_STR(engine),
+        ECORE_GETOPT_VALUE_BOOL(with_border),
+        ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
 #ifdef PDF_SUPPORT
-        else if(strcmp(argv[i],"--generate-pdf")==0)
-                generate_pdf = i+1;
-        else if(strcmp(argv[i],"--size-pdf") == 0)
-        {
-                pdf_size_w = atoi(argv[i+1]);
-                pdf_size_h = atoi(argv[i+2]);
-                i++;
-        }
+        ECORE_GETOPT_VALUE_BOOL(generate_pdf),
+        ECORE_GETOPT_VALUE_INT(pdf_size_w),
+        ECORE_GETOPT_VALUE_INT(pdf_size_h),
 #endif
-        else
-        {
-            fprintf(stderr,"Unknow argument %s\n",argv[i]);
-            help();
-            evas_shutdown ();
-            ecore_shutdown ();
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+    };
 
-            return EXIT_FAILURE;
-        }
-        i+=2;
+    ecore_app_args_set(argc, (const char **) argv);
+    int nonargs = ecore_getopt_parse(&options, values, argc, argv);
+    if (nonargs < 0)
+        return 1;
+    else if (nonargs != argc)
+    {
+        fputs("Invalid non-option argument", stderr);
+        ecore_getopt_help(stderr, &options);
+        return 1;
     }
+
+    if(exit_option)
+        return 0;
 
     if(pdf_size_w==0 || pdf_size_h == 0)
     {
@@ -419,7 +412,7 @@ int main(int argc, char*argv[])
         return EXIT_FAILURE;
     }
 
-    if(ecore_file_is_dir(argv[presentation]) || !ecore_file_exists(argv[presentation]))
+    if(ecore_file_is_dir(presentation) || !ecore_file_exists(presentation))
     {
         fprintf(stderr,"The presentation file doesn't exists \n");
         exit(EXIT_FAILURE);
@@ -446,25 +439,25 @@ int main(int argc, char*argv[])
     }
     else
     {
-        //if(strcmp(argv[engine], "fws")==0)
+        //if(strcmp(engine, "fws")==0)
         //    ee = ecore_evas_fws_buffer_window(NULL, 0, 0, 720, 576, 0);
-        if(strcmp(argv[engine], "sdl")==0)
+        if(strcmp(engine, "sdl")==0)
             ee = ecore_evas_sdl_new(NULL, 1024, 768, 0, 0, 0, 0);
-        else if(strcmp(argv[engine], "sdl16")==0)
+        else if(strcmp(engine, "sdl16")==0)
             ee = ecore_evas_sdl16_new(NULL, 720, 576, 0, 0, 0, 0);
-        else if(strcmp(argv[engine],"x11")==0)
+        else if(strcmp(engine,"x11")==0)
             ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(argv[engine],"gl")==0)
+        else if(strcmp(engine,"gl")==0)
             ee = ecore_evas_gl_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(argv[engine],"fb")==0)
+        else if(strcmp(engine,"fb")==0)
             ee = ecore_evas_fb_new (NULL, 0, 1024, 768);
-        else if(strcmp(argv[engine],"xr")==0)
+        else if(strcmp(engine,"xr")==0)
             ee = ecore_evas_xrender_x11_new (NULL, 0,  0, 0, 1024, 768);
-        else if(strcmp(argv[engine],"ddraw")==0)
+        else if(strcmp(engine,"ddraw")==0)
             ee = ecore_evas_software_ddraw_new (NULL, 0, 0, 1024, 768);
         else
         {
-            fprintf(stderr,"Unknow engine %s\n",argv[engine]);
+            fprintf(stderr,"Unknow engine %s\n",engine);
             eyelight_viewer_destroy(&pres);
             evas_shutdown ();
             ecore_shutdown ();
@@ -496,9 +489,9 @@ int main(int argc, char*argv[])
     Evas_Object *container= edje_object_add(evas);
 
     if(!theme)
-        pres  = eyelight_viewer_new(evas,argv[presentation],NULL,with_border);
+        pres  = eyelight_viewer_new(evas,presentation,NULL,with_border);
     else
-        pres  = eyelight_viewer_new(evas,argv[presentation],argv[theme],with_border);
+        pres  = eyelight_viewer_new(evas,presentation,theme,with_border);
     if(!pres)
     {
         fprintf(stderr,"Failed to create the presentation !\n");
@@ -511,17 +504,17 @@ int main(int argc, char*argv[])
 
     //display the presentation
     if(!generate_pdf)
-            eyelight_viewer_slides_init(pres,1024,768);
+        eyelight_viewer_slides_init(pres,1024,768);
     else if(generate_pdf )
         eyelight_viewer_slides_init(pres,pdf_size_w,pdf_size_h);
 
     eyelight_viewer_resize_screen(pres,w_win,h_win);
     if(!no_thumbs_bg)
-            eyelight_viewer_thumbnails_background_load_start(pres);
+        eyelight_viewer_thumbnails_background_load_start(pres);
 
     if(eyelight_viewer_size_get(pres)>0)
     {
-            edje_object_signal_emit(eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)),"show","eyelight");
+        edje_object_signal_emit(eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)),"show","eyelight");
     }
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb,pres);
     evas_object_focus_set(container,1);
@@ -530,8 +523,8 @@ int main(int argc, char*argv[])
 #ifdef PDF_SUPPORT
     if(generate_pdf)
     {
-            pres->pdf_file = strdup(argv[generate_pdf]);
-            ecore_timer_add(0.0, eyelight_pdf_generate_start_timer,pres);
+        pres->pdf_file = strdup(generate_pdf);
+        ecore_timer_add(0.0, eyelight_pdf_generate_start_timer,pres);
     }
 #endif
 
@@ -549,11 +542,11 @@ int main(int argc, char*argv[])
 
 static void app_resize(Ecore_Evas *ee)
 {
-        Evas_Coord w, h;
-        Evas *evas;
-        evas = ecore_evas_get(ee);
-        evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-        eyelight_viewer_resize_screen(pres,w,h);
+    Evas_Coord w, h;
+    Evas *evas;
+    evas = ecore_evas_get(ee);
+    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+    eyelight_viewer_resize_screen(pres,w,h);
 }
 
 static int app_signal_exit(void *data, int ev_type, void *ev)
