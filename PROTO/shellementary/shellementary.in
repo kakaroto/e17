@@ -214,9 +214,6 @@ def create_slider(window_name, slider_value, slider_min_value, slider_max_value,
 	slider = elementary.Slider(window_name)
 	# size hint
 	slider.size_hint_align_set(-1.0, -1.0)
-	# slider value
-	if slider_value != None:
-		slider.value = float(slider_value)
 	# print partial?
 	if slider_partial == True:
 		slider.delay_changed = (slider_print_value, slider)
@@ -254,6 +251,9 @@ def create_slider(window_name, slider_value, slider_min_value, slider_max_value,
 	# is slider vertical?
 	if slider_vertical == True:
 		slider.horizontal_set(0)
+	# slider value
+	if slider_value != None:
+		slider.value = float(slider_value)
 	# return it
 	return slider
 
