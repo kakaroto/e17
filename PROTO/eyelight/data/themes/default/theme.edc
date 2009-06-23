@@ -220,17 +220,17 @@ images
 styles {
     style {
         name: "summaryBeforeStyle";
-        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000ff  wrap=word style=glow glow_color=#ffffff ";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#000000ff  wrap=word style=glow glow_color=#ffffff ";
         tag_list();
     }
     style {
         name: "summaryCurrentStyle";
-        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#000000ff wrap=word style=glow glow_color=#a1c2e8 ";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#000000ff wrap=word style=glow glow_color=#a1c2e8 ";
         tag_list();
     }
     style {
         name: "summaryAfterStyle";
-        base: "font=DejaVuSans font_size=22 align=0.0 valign=center color=#00000088  wrap=word style=glow glow_color=#ffffff ";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#00000088  wrap=word style=glow glow_color=#ffffff ";
         tag_list();
     }
     style {
@@ -805,6 +805,7 @@ collections
         name: "eyelight/item_video";
         script {
             public controls;
+            public pause_play;
         }
         parts {
             part {
@@ -1237,6 +1238,21 @@ collections
                 target: "main_border_top";
                 target: "main_border_bottom";
             }
+
+            program {
+                name: "pause_play_auto";
+                signal: "mouse,up,3";
+                source: "capture";
+                script {
+                    if( get_int(pause_play) == 0 ) {
+                        run_program(PROGRAM:"play_up");
+                    }
+                    if( get_int(pause_play) == 1 ) {
+                        run_program(PROGRAM:"pause_up");
+                    }
+                }
+            }
+
             program {
                 name: "controls_show";
                 signal: "mouse,up,1";
@@ -1375,7 +1391,6 @@ collections
                 action: SIGNAL_EMIT "pause" "video_control";
             }
 
-
             //button stop
             program {
                 name: "stop_in";
@@ -1475,6 +1490,7 @@ collections
                 source: "video_state";
                 action: STATE_SET "play" 0.0;
                 target: "state";
+                after: "play_variable";
             }
             program {
                 name: "state_pause";
@@ -1482,6 +1498,7 @@ collections
                 source: "video_state";
                 action: STATE_SET "pause" 0.0;
                 target: "state";
+                after: "pause_variable";
             }
             program {
                 name: "state_stop";
@@ -1489,7 +1506,23 @@ collections
                 source: "video_state";
                 action: STATE_SET "stop" 0.0;
                 target: "state";
+                after: "pause_variable";
             }
+
+            program {
+                name: "pause_variable";
+                script {
+                        set_int(pause_play,0);
+                }
+            }
+
+           program {
+                name: "play_variable";
+                script {
+                        set_int(pause_play,1);
+                }
+            }
+
         }
     }
     group
