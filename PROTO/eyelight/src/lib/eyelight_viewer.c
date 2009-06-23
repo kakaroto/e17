@@ -244,7 +244,7 @@ void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *
     int i;
     for(i=0;i<2;i++)
         if(pres->slide_with_transition[i]==o)
-            pres->slide_with_transition[i] = NULL;
+                pres->slide_with_transition[i] = NULL;
 }
 
 /*

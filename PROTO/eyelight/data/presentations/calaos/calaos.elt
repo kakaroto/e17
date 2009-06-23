@@ -1,0 +1,489 @@
+layout: 2_columns;
+foot_text :" Atton Jonathan, jonathan.atton@gmail.com";
+foot_image: "logo_univ.gif";
+header_image: "logo.png";
+
+transition: fade_content;
+
+slide
+{
+    layout: title;
+    header_image: "logo_big.png";
+    title: " Présentation de stage de fin d'année";
+    subtitle: " Réalisé dans l'entreprise Calaos.";
+    area
+    {
+        name: bottom;
+        text: " Autheur: ATTON Jonathan, jonathan.atton@gmail.com";
+        text: " Stage réalisé durant le M2 informatique Ingénieurie du logiciel";
+        text: " à l'université des sciences de Nancy";
+        text: " Mentor : M. HECKY Raoul";
+    }
+}
+
+chapter: " Présentations.";
+section: " L'entreprise et le produit Calaos.";
+
+slide {
+        layout: "blank";
+        title: " L'entreprise Calaos";
+        custom_area: "center" 0.11 0.25 0.9 0.6;
+        custom_area: "bottom" 0.2 0.65 0.8 0.77;
+        area {
+                name: "center";
+                items {
+                        text: " Calaos est une jeune entreprise, 3 ans";
+                        text: " Fondateurs : M. Hecky Raoul et M. Wolf Jean-Marc";
+                        text: " Création d'un <outline>système domotique</outline> complet à destination des particuliers";
+                }
+        }
+        area {
+                name: "bottom";
+                image: "logo_big_black.png";
+        }
+}
+
+slide {
+        layout: "blank";
+        title: " Un système domotique";
+
+        custom_area: "center" 0.11 0.25 0.7 0.8;
+        custom_area: "wago" 0.73 0.25 0.9 0.42;
+        custom_area: "serveur" 0.73 0.42 0.9 0.59;
+        custom_area: "ecran" 0.73 0.59 0.9 0.76;
+
+        subtitle: " La base du système";
+        area {
+                name: "center";
+                text: " Un <outline>Automate électronique</outline> programmable";
+                text: " Un <outline>serveur</outline> de type PC";
+                text: " Un <outline>écran tactile</outline> permettant un contrôle de la maison";
+        }
+        area {
+                name: "wago";
+                image: "wago.jpg";
+        }
+        area {
+                name: "serveur";
+                image: "calaos_serveur.jpg";
+        }
+        area {
+                name: "ecran";
+                image: "calaos_ecran.jpg";
+        }
+}
+
+
+slide {
+        layout: "1_area";
+        title: " Un système domotique";
+        subtitle: " Les possibilités";
+        area {
+                name: "center";
+                items {
+                        text: " Contrôle des lumières, volets ...";
+                        text: " Gestion de plusieurs zones de musiques";
+                        text: " Contrôle des caméras";
+                        text: " Visualisation de photos ou images";
+                        text: " Création de scénarios : suite d'actions";
+                        text: " Le tout pouvant être planifié suivant des horaires";
+                }
+                items {
+                        text: " Dans le futur : ";
+                        items {
+                                text: " Contrôle de flux vidéos : média center";
+                        }
+                }
+        }
+}
+
+slide {
+        layout: "1_area";
+        title: " Un système domotique";
+        subtitle: " Le système complet";
+        area {
+                name: "center";
+                image: "calaos_plan.jpg";
+        }
+}
+
+
+section: " Les technologies utilisées.";
+
+slide {
+        layout: "1_area";
+        title: " Panoramas des technologies";
+
+        area {
+                name: "center";
+                items {
+                        text: " Langage de programmation : C/C++.";
+                        text: " Système GNU/Linux.";
+                        text: " Divers outils : Valgrind, GDB, Waf, edje_viewer ...";
+                        text: " L'application graphique est basé sur les EFL (Enlightenment Foundation Libraries).";
+                        text: " D'autres technologies : caméras, électroniques ...";
+                }
+        }
+}
+
+slide {
+        layout: "1_area";
+        title: " Enlightenment Foundation Libraries";
+        subtitle: " ou EFL !";
+
+        area {
+                name: "center";
+                items {
+                        text: " Suite de bibliothèques écrite en C.";
+                        text: " Orientées vers les performances et la simplicité d'utilisation.";
+                        text: " Utilisées dans le projet Enlightenment.";
+                        text: " L'interface graphique de Calaos utilise <outline>Edje</outline>.";
+                }
+        }
+}
+
+slide {
+        layout: "blank";
+        title: " Description de Edje";
+        subtitle: " rapide description ...";
+        custom_area: "center" 0.11 0.25 0.9 0.6;
+        custom_area: "bottom" 0.1 0.65 0.9 0.85;
+
+        area {
+                name: "center";
+                items {
+                        text: " Permet de séparer la description du design de l'application.";
+                        text: " Les fichiers sources sources sont des .edc";
+                        text: " Permet la description d'éléments d'une interface graphique : ";
+                        items {
+                                text: " L'aspect visuel ( image, rectangle ...)";
+                                text: " Des effets de transitions : passage de tel état à un autre avec dégradé.";
+                                text: " Gestion de certains évènements : souris et clavier.";
+                        }
+                }
+        }
+        area {
+                name: "bottom";
+                image: "edje.png";
+        }
+}
+
+
+section: " Les objectifs et les réalisations du stage.";
+
+slide {
+        layout: "1_area";
+        title: " Les objectifs et réalisations du stage.";
+
+        area {
+                name :"center";
+                items {
+                        text: " Les objectifs initiaux : ";
+                        items {
+                                text: " Création d'un éditeur de scénario.";
+                                text: " Intégration d'un navigateur WEB.";
+                        }
+                }
+                text: "";
+                items {
+                        text: " Les réalisations du stage : ";
+                        items {
+                                text: " L'éditeur de scénario.";
+                                text: " Le namespace CalaosHome.";
+                                text: " Un gestionnaire de photos.";
+                        }
+                        text: " Le navigateur WEB n'a pas était réalisé.";
+                }
+        }
+}
+
+chapter: " Le namespace CalaosHome.";
+
+slide {
+        layout: "1_area";
+        title: " Le namespace CalaosHome";
+        area {
+                name: "center";
+                items {
+                        text: " Le namespace se trouve <outline>coté Client</outline>.";
+                        text: " Représente l'état de la maison : pièces et entrées/sorties.";
+                        text: " Permet de manipuler les entrées et les sorties : ";
+                        items {
+                                text: "lumières, volets ...";
+                        }
+                        text: " Écrit en c++, utilisé sur <outline>l'application principale</outline> mais aussi sur <outline>l'application IPhone</outline>";
+                }
+        }
+}
+
+section: " CalaosHome est un cache local et un MVC.";
+
+slide {
+        layout: "blank";
+        title: " CalaosHome est un cache local";
+        custom_area: "center" 0.11 0.25 0.9 0.6;
+        custom_area: "bottom" 0.25 0.65 0.75 0.85;
+        area {
+                name: "center";
+                text: " Synchronisation de l'état de la maison avec le serveur.";
+                items {
+                        text: " Si une lumière s'allume";
+                        text: " Le serveur envoie l'information au client";
+                        text: " Le namespace met l'état de la lumière à jour";
+                        text: " Le client peut récupérer l'état sans accéder au serveur";
+                }
+        }
+        area {
+                name: "bottom";
+                image: "lien_ecran_serveur.png";
+        }
+}
+
+slide {
+        layout: "1_area";
+        title: " CalaosHome et les objets graphiques";
+
+        area {
+                name: "center";
+                items {
+                        text: "Le namespace permet une gestion facile des objets graphiques.";
+                        text: "Utilisation d'un MVC.";
+                        text: "Une entrée/sortie <outline>crée elle même l'objet graphique</outline>.";
+                        text: "L'objet est <outline>mis à jour automatiquement</outline>";
+                        text: "Le <outline>contrôle de l'état</outline> de l'entrée/sortie se fait par le biais de l'objet";
+                }
+        }
+}
+
+slide {
+        layout: "blank";
+        title: " CalaosHome et les objets graphiques";
+
+        custom_area: "center" 0.11 0.2 0.9 0.6;
+        custom_area: "bottom" 0.25 0.65 0.75 0.85;
+
+        area {
+                name: "center";
+                text: "Exemple avec une lumière : ";
+                items {
+                        text: "L'entrée/sortie est l'objet <b>io</b>.";
+                        text: "Création de l'objet graphique : obj = io->createNewobject().";
+                        text: "La mise à jour de l'objet graphique est automatique.";
+                        text: "Les évènements : io->setStateFromSignal('object_light', 'off').";
+                }
+        }
+
+        area {
+                name: "bottom";
+                image: "io_1.png";
+                image: "io_2.png";
+        }
+}
+
+section: " Quelques chiffres.";
+
+slide {
+        layout: "1_area";
+        title: " Quelques chiffres";
+
+        area {
+                name: "center";
+                text: " La <outline>factorisation du code</outline> dans un namespace a permis : ";
+                items {
+                        text: " La suppression de 30 000 lignes de codes.";
+                        text: " Une forte diminution des communications sur le réseau.";
+                        text: " Une Maintenance beaucoup plus facile des applications.";
+                }
+        }
+}
+
+chapter: " L'éditeur de scénario.";
+
+slide {
+        layout: "1_area";
+        title: " L'éditeur de scénario";
+
+        area {
+                name: "center";
+                items {
+                        text: " Un scénario est une suite d'actions.";
+                        text: " Exécuté manuellement ou automatiquement.";
+                        text: " Exemples : ";
+                        items {
+                                text: " Fermer tous les volets.";
+                                text: " Faire clignoter les lumières.";
+                                text: " Si on sonne, afficher la caméra de l'entrée.";
+                        }
+                }
+        }
+}
+
+section: " Les outils existants avant le stage.";
+
+slide {
+        layout: "1_area";
+        title: " Avant le stage";
+
+        area {
+                name: "center";
+                items {
+                        text: " Utilisation d'un système à base de règles sur le serveur.";
+                        text: " Conditions -> Actions.";
+                        text: " Gestion depuis l'interface Web.";
+                }
+                text: "";
+                items {
+                        text: " Système compliqué.";
+                        text: " Non accessible aux clients.";
+                }
+        }
+}
+
+section: " Réalisation d'un assistant pour les utilisateurs.";
+
+slide {
+        layout: "blank";
+        title: " Les besoins";
+
+        custom_area: "center" 0.11 0.25 0.9 0.5;
+        custom_area: "bottom" 0.25 0.5 0.75 0.85;
+
+        area {
+                name: "center";
+                items {
+                        text: " Doit être accessible à tous les utilisateurs.";
+                        text: " Simplification du système actuel.";
+                        text: " Recherche des besoins fondamentaux.";
+                }
+        }
+        area {
+                name: "bottom";
+                image: "use_case_scenario.png";
+        }
+}
+
+
+slide {
+        layout: "1_area";
+        title: " Le résultat";
+
+        area {
+                name: "center";
+                video {
+                        video: "scenario.mpeg";
+                        //autoplay: 1;
+                }
+        }
+}
+
+slide {
+        layout: "1_area";
+        title: " Les différents travaux";
+
+        area {
+                name: "center";
+                items {
+                        text: " Utilisation de Edje pour l'interface graphique.";
+                        text: " Communication avec le serveur.";
+                        text: " Sauvegarde des fichiers de configuration et des sauvegardes.";
+                        text: " De nombreux tests fonctionnels.";
+                }
+        }
+}
+
+chapter: " Le gestionnaire de photos.";
+section: " La problématique";
+
+slide {
+        layout: "blank";
+        title: " La problématique";
+
+        custom_area: "center" 0.11 0.25 0.9 0.5;
+        custom_area: "bottom" 0.25 0.5 0.75 0.85;
+
+        area {
+                name: "center";
+                items {
+                        text: " <b>Une demande régulièrement faite est la possibilité d'afficher des photos sur l'écran tactile.</b>";
+                        text: " Recherche des besoins.";
+                }
+        }
+        area {
+                name: "bottom";
+                image: "use_case_flickr.png";
+        }
+}
+
+section: " Flickr comme source mais d'autres possibles";
+
+slide {
+        layout: "1_area";
+        title: " Les sources";
+
+        area {
+                name: "center";
+                items {
+                        text: " Les photos proviennent de <outline>Flickr</outline>.";
+                        text: " D'autres sources sont possibles.";
+                        items {
+                                text: " Disque dur local.";
+                                text: " Google Photo.";
+                                text: " ...";
+                        }
+                }
+        }
+}
+
+slide {
+        layout: "1_area";
+        title: " Les sources";
+
+        area {
+                name: "center";
+                image: "class_flickr.png";
+        }
+}
+
+
+
+slide {
+        layout: "1_area";
+        title: " Le résultat";
+
+        area {
+                name: "center";
+                video {
+                        video: "calaos.ogg";
+                        //autoplay: 1;
+                }
+        }
+}
+
+chapter: " Autres travaux réalisés";
+
+slide {
+        layout: "1_area";
+        title: " Autres travaux réalisés";
+
+        area {
+                name: "center";
+                items {
+                        text: " Divers outils de configurations.";
+                        text: " Contact avec des clients, pour des démonstrations.";
+                        text: " Documentation.";
+                }
+        }
+}
+
+chapter: " Conclusion";
+
+slide {
+        layout: "1_area";
+        title: " Conclusion";
+        area {
+                name: "center";
+                text: "";
+                text: "<c><outline>Des questions ?</outline></c>";
+                text: "";
+        }
+}

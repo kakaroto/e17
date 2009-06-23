@@ -5,7 +5,7 @@ custom_area("title",0.01,0.01,0.8,0.1,"horizontal")\
 custom_area("subtitle",0.6,0.15,0.99,0.2,"horizontal")\
 custom_area("header_image",0.95,0.1,0.99,0.15,"horizontal")\
 custom_area("foot_image",0.03,0.9,0.2,0.995,"horizontal")\
-custom_area("foot_text",0.25,0.95,0.7,1.0,"horizontal") \
+custom_area("foot_text",0.22,0.95,0.72,1.0,"horizontal") \
 custom_area("pages",0.8,0.955,0.9,1.0,"horizontal") \
 custom_area("custom",0.0,0.0,1.0,1.0,"stack")
 //
