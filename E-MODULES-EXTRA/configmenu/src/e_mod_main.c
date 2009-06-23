@@ -93,7 +93,7 @@ static void _config_pre_activate_cb(void *data, E_Menu *m)
 	  mi = e_menu_item_new(m);
 	  e_menu_item_label_set(mi, eci->label);
 	  if(eci->icon)
-	  e_util_menu_item_edje_icon_set(mi, eci->icon);
+	  e_util_menu_item_theme_icon_set(mi, eci->icon);
 	  
 	  e_menu_item_callback_set(mi, _e_mod_run_cb, eci);
 	}
@@ -121,7 +121,7 @@ _e_mod_config_menu_add(void *data, E_Menu *m)
 	  mi = e_menu_item_new(m);
 	  e_menu_item_label_set(mi, ecat->label);
 	  if(ecat->icon)
-	    e_util_menu_item_edje_icon_set(mi, ecat->icon);
+	    e_util_menu_item_theme_icon_set(mi, ecat->icon);
 
 	  sub = e_menu_new();
 	  e_menu_item_submenu_set(mi, sub);
