@@ -363,6 +363,18 @@ program                         \
         {
             pre_fct();
 
+            part {
+                name: "black_line";
+                type: RECT;
+                clip_to: "slide";
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.10 0.2;
+                    rel2.relative: 0.10 0.82;
+                    rel2.offset: 2 0;
+                    color: 0 0 0 200;
+                }
+            }
             custom_area("summary",0.11,0.2,0.9,0.82,"vertical");
             default_area();
 
