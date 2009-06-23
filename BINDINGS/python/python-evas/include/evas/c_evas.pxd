@@ -139,7 +139,7 @@ cdef extern from "Evas.h":
         void      *accounting
 
 
-    ctypedef struct Evas_Rectangle:
+    ctypedef struct Eina_Rectangle:
         int x
         int y
         int w
