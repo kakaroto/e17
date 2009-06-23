@@ -57,7 +57,8 @@ static float update_interval;
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "cpu", 
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL}
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
+  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
