@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2009-06-21 19:36+CEST\n"
+"POT-Creation-Date: 2009-06-23 18:03+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,250 +15,250 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: shellementary.py:275
+#: shellementary.in:275
 msgid "Enter something here"
 msgstr ""
 
-#: shellementary.py:314 shellementary.py:544 shellementary.py:623
-#: shellementary.py:701 shellementary.py:779
+#: shellementary.in:314 shellementary.in:544 shellementary.in:623
+#: shellementary.in:701 shellementary.in:779
 msgid "Cancel"
 msgstr ""
 
-#: shellementary.py:321 shellementary.py:386 shellementary.py:466
-#: shellementary.py:551 shellementary.py:630 shellementary.py:708
-#: shellementary.py:786
+#: shellementary.in:321 shellementary.in:386 shellementary.in:466
+#: shellementary.in:551 shellementary.in:630 shellementary.in:708
+#: shellementary.in:786
 msgid "OK"
 msgstr ""
 
-#: shellementary.py:423
+#: shellementary.in:423
 msgid "Text information"
 msgstr ""
 
-#: shellementary.py:505
+#: shellementary.in:505
 msgid "Select an item from the list"
 msgstr ""
 
-#: shellementary.py:584
+#: shellementary.in:584
 msgid "I have a question"
 msgstr ""
 
-#: shellementary.py:667
+#: shellementary.in:667
 msgid "Set a value"
 msgstr ""
 
-#: shellementary.py:745
+#: shellementary.in:745
 msgid "A clock :)"
 msgstr ""
 
-#: shellementary.py:814
+#: shellementary.in:814
 msgid "About Shellementary"
 msgstr ""
 
-#: shellementary.py:844
+#: shellementary.in:844
 msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and Python.<br><b>License:</> GNU General Public License v3"
 msgstr ""
 
-#: shellementary.py:856
+#: shellementary.in:856
 msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>The Rasterman (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Gustavo Sverzut Barbieri (k-s)</> for python-efl bindings and help with developenment<br><b>Simon Busch (morphis)</> for python-elementary bindings<br><b>Johannes Schauer (josch)</> for help with python<br><b>Jonathan Atton (watchwolf)</> for help with elementary<br>"
 msgstr ""
 
-#: shellementary.py:878
+#: shellementary.in:878
 msgid "Close"
 msgstr ""
 
-#: shellementary.py:911
+#: shellementary.in:911
 msgid "OPTIONS FOR ALL DIALOGS"
 msgstr ""
 
-#: shellementary.py:911
+#: shellementary.in:911
 msgid "These are options which you can use for all dialogs."
 msgstr ""
 
-#: shellementary.py:913
+#: shellementary.in:913
 msgid "Set window title."
 msgstr ""
 
-#: shellementary.py:914
+#: shellementary.in:914
 msgid "Set window text."
 msgstr ""
 
-#: shellementary.py:915
+#: shellementary.in:915
 msgid "Set window width in pixels."
 msgstr ""
 
-#: shellementary.py:916
+#: shellementary.in:916
 msgid "Set window height in pixels."
 msgstr ""
 
-#: shellementary.py:917
+#: shellementary.in:917
 msgid "Set image as window background."
 msgstr ""
 
-#: shellementary.py:918
+#: shellementary.in:918
 msgid "Show About dialog."
 msgstr ""
 
-#: shellementary.py:921
+#: shellementary.in:921
 msgid "OPTIONS TO SHOW DIALOGS"
 msgstr ""
 
-#: shellementary.py:921
+#: shellementary.in:921
 msgid "These are options with which you can show dialogs."
 msgstr ""
 
-#: shellementary.py:923
+#: shellementary.in:923
 msgid "Show entry dialog."
 msgstr ""
 
-#: shellementary.py:924
+#: shellementary.in:924
 msgid "Show error dialog."
 msgstr ""
 
-#: shellementary.py:925
+#: shellementary.in:925
 msgid "Show warning dialog."
 msgstr ""
 
-#: shellementary.py:926
+#: shellementary.in:926
 msgid "Show information dialog."
 msgstr ""
 
-#: shellementary.py:927
+#: shellementary.in:927
 msgid "Show text information dialog."
 msgstr ""
 
-#: shellementary.py:928
+#: shellementary.in:928
 msgid "Show list dialog."
 msgstr ""
 
-#: shellementary.py:929
+#: shellementary.in:929
 msgid "Show question dialog."
 msgstr ""
 
-#: shellementary.py:930
+#: shellementary.in:930
 msgid "Show clock dialog."
 msgstr ""
 
-#: shellementary.py:931
+#: shellementary.in:931
 msgid "Show scale dialog."
 msgstr ""
 
-#: shellementary.py:934
+#: shellementary.in:934
 msgid "Arguments which can be used only with entry dialog."
 msgstr ""
 
-#: shellementary.py:934
+#: shellementary.in:934
 msgid "ENTRY DIALOG ARGUMENTS"
 msgstr ""
 
-#: shellementary.py:936
+#: shellementary.in:936
 msgid "Set entry text"
 msgstr ""
 
-#: shellementary.py:937
+#: shellementary.in:937
 msgid "Password-like entry"
 msgstr ""
 
-#: shellementary.py:940
+#: shellementary.in:940
 msgid "Arguments which can be used only with text info dialog."
 msgstr ""
 
-#: shellementary.py:940
+#: shellementary.in:940
 msgid "TEXT INFO DIALOG ARGUMENTS"
 msgstr ""
 
-#: shellementary.py:942
+#: shellementary.in:942
 msgid "Set file to show in text info, if you want to show text not from file, it reads from stdin."
 msgstr ""
 
-#: shellementary.py:943 shellementary.py:952
+#: shellementary.in:943 shellementary.in:952
 msgid "Set it editable."
 msgstr ""
 
-#: shellementary.py:944
+#: shellementary.in:944
 msgid "Disable text wrap."
 msgstr ""
 
-#: shellementary.py:947
+#: shellementary.in:947
 msgid "Arguments which can be used only with clock dialog."
 msgstr ""
 
-#: shellementary.py:947
+#: shellementary.in:947
 msgid "CLOCK DIALOG ARGUMENTS"
 msgstr ""
 
-#: shellementary.py:949
+#: shellementary.in:949
 msgid "Show seconds in clock."
 msgstr ""
 
-#: shellementary.py:950
+#: shellementary.in:950
 msgid "Show AM/PM switch."
 msgstr ""
 
-#: shellementary.py:951
+#: shellementary.in:951
 msgid "Set time in format \"HOURS, MINUTES, SECONDS\". Works in combination with --clock-editable."
 msgstr ""
 
-#: shellementary.py:955
+#: shellementary.in:955
 msgid "Arguments which can be used only with scale dialog."
 msgstr ""
 
-#: shellementary.py:955
+#: shellementary.in:955
 msgid "SCALE DIALOG ARGUMENTS"
 msgstr ""
 
-#: shellementary.py:957
+#: shellementary.in:957
 msgid "Set slider value."
 msgstr ""
 
-#: shellementary.py:958
+#: shellementary.in:958
 msgid "Set slider minimal value."
 msgstr ""
 
-#: shellementary.py:959
+#: shellementary.in:959
 msgid "Set slider maximal value."
 msgstr ""
 
-#: shellementary.py:960
+#: shellementary.in:960
 msgid "Set slider step."
 msgstr ""
 
-#: shellementary.py:961
+#: shellementary.in:961
 msgid "Print partial values."
 msgstr ""
 
-#: shellementary.py:962
+#: shellementary.in:962
 msgid "Hide value."
 msgstr ""
 
-#: shellementary.py:963
+#: shellementary.in:963
 msgid "If set, slider will be inverted."
 msgstr ""
 
-#: shellementary.py:964
+#: shellementary.in:964
 msgid "Set slider unit format - for example \"value: %0.1f\", that will print value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
 msgstr ""
 
-#: shellementary.py:965
+#: shellementary.in:965
 msgid "Set slider label."
 msgstr ""
 
-#: shellementary.py:966
+#: shellementary.in:966
 msgid "Set slider icon."
 msgstr ""
 
-#: shellementary.py:967
+#: shellementary.in:967
 msgid "If set, slider will be vertical."
 msgstr ""
 
-#: shellementary.py:1007
+#: shellementary.in:1007
 msgid "Error!"
 msgstr ""
 
-#: shellementary.py:1017
+#: shellementary.in:1017
 msgid "Warning!"
 msgstr ""
 
-#: shellementary.py:1027
+#: shellementary.in:1027
 msgid "Information"
 msgstr ""
 

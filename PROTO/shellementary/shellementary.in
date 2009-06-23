@@ -25,17 +25,17 @@ gettext.install('shellementary', '@prefix@/share/locale')
 def destroy(obj, event, data):
 	elementary.exit()
 
-# TODO
+# clicked cancel button
 def cancel_callback(obj, event, data):
 	elementary.exit()
 	# TODO: better way to exit with value 1 on cancel
-	global cancel_clicked
-	cancel_clicked = True
+	global exit_value
+	exit_value = 1
 
 ### VERSION
 shelm_version = "0.0.1"
 # TODO: better way to exit with value 1 on cancel
-cancel_clicked = False
+exit_value = 0
 
 ### MACROS
 # window
@@ -1089,12 +1089,10 @@ def elm_main():
 	elementary.run() # run the program, handle all events etc
 	elementary.shutdown() # cleanup and shutdown
 
-#########################
+#####################
 #### RUN THE APP ####
-#########################
+#####################
 elm_main()
 
 # TODO: better way to exit with value 1 on cancel
-if cancel_clicked == True:
-	sys.exit(1)
-
+sys.exit(exit_value)
