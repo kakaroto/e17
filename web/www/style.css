@@ -30,6 +30,8 @@ html, body {
   height                  : auto !important;
   height                  : 100%;
   margin                  : 0 auto -53px;
+  text-align              : center;
+  align                   : center;
 }
 
 #footer, #push {
@@ -62,7 +64,6 @@ html, body {
 #header_menu {
   background-image        : url(ti/header_menu_background.png);
   font                    : normal 10pt verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-
 }
 
 #header_last {
@@ -70,43 +71,32 @@ html, body {
   width                   : 15px;
 }
 
-#header_menu ul {
+td.nav_passive {
+  background              : url(ti/header_menu_unselected_background.png) 0 0 no-repeat;
   height                  : 63px;
-  margin                  : 0px;
-  padding                 : 0px;
-  list-style              : none;
+  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
+  font-size               : 11px;
+  padding                 : 20px 10px 10px 10px;
+  vertical-align          : bottom;
 }
 
-#header_menu li {
-  margin                  : 0px;
-  padding                 : 0px;
-  float                   : right;
-  background              : url(ti/header_menu_unselected_background.png) 0 0 no-repeat;
+td.nav_active {
+  background              : url(ti/header_menu_current_background.png) 0 0 no-repeat;
+  height                  : 63px;
+  color                   : #646464;
+  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
+  font-size               : 11px;
+  font-weight             : bold;
+  padding                 : 20px 10px 10px 10px;
+  vertical-align          : bottom;
 }
 
 #header_menu a {
   display                 : block;
-  border                  : 0px;
-  padding                 : 20px 10px 0px 10px;
-  height                  : 42px;
-  color                   : #cdcdcd;
   text-decoration         : none;
   cursor                  : pointer;
+  color                   : #cdcdcd;
 }
-
-
-#header_menu li:hover a {
-  color                   : #ffffff;
-  background              : url(ti/header_menu_hover_background.png) top center;
-}
-
-#header_menu li.active a  {
-  color                   : #646464;
-  height                  : 43px;
-  background              : url(ti/header_menu_current_background.png) 0 0 no-repeat;
-}
-
-
 
 /****************************/
 /* Footer                   */
@@ -310,6 +300,18 @@ img {
 img.thumb {
    vertical-align         : middle;
    border                 : 1px solid;
+}
+
+ul {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.9em;
+}
+
+li {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.9em;
 }
 
 pre {

@@ -23,17 +23,17 @@
           <a href="http://www.enlightenment.org"></a>
         </td>
         <td id="header_menu">
-          <ul>
-	    <?php echo(nav_button("docs", ""));?>
-	    <?php echo(nav_button("main8", ""));?>
-	    <?php echo(nav_button("main7", ""));?>
-	    <?php echo(nav_button("main6", ""));?>
-	    <?php echo(nav_button("main5", ""));?>
-	    <?php echo(nav_button("main4", ""));?>
-	    <?php echo(nav_button("main3", ""));?>
-	    <?php echo(nav_button("main2", ""));?>
+	  <table cellspacing="0" cellpadding="0"><tr>
 	    <?php echo(nav_button("main1", ""));?>
-          </ul>
+	    <?php echo(nav_button("main2", ""));?>
+	    <?php echo(nav_button("main3", ""));?>
+	    <?php echo(nav_button("main4", ""));?>
+	    <?php echo(nav_button("main5", ""));?>
+	    <?php echo(nav_button("main6", ""));?>
+	    <?php echo(nav_button("main7", ""));?>
+	    <?php echo(nav_button("main8", ""));?>
+	    <?php echo(nav_button("docs", ""));?>
+	  </tr></table>
         </td>
         <td id="header_last"></td>
       </tr></table>
