@@ -162,9 +162,13 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
                 evas_object_del(data);
                 pres_copy->edje_objects[i] = eina_list_remove_list(pres_copy->edje_objects[i], l);
             }
+	}
+	{
+	    Eyelight_Video *data;
             EINA_LIST_FOREACH_SAFE(pres_copy->video_objects[i], l, l_next, data)
             {
-                evas_object_del(data);
+                evas_object_del(data->o_inter);
+		EYELIGHT_FREE(data);
                 pres_copy->video_objects[i] = eina_list_remove_list(pres_copy->video_objects[i], l);
             }
         }
