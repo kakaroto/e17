@@ -10,7 +10,7 @@ from optparse import OptionParser
 # set destdir - for packaging
 destdir = os.getenv("DESTDIR")
 # translations list
-translations = ["cs"]
+translations = re.sub('\n', '', open('po/LINGUAS', 'r').read()).split(' ')
 
 # build shellementary from shellementary.in
 def build(prefix):
@@ -40,9 +40,12 @@ def install(destdir, prefix):
 	# set permissions to have everything right
 	os.chmod("shellementary", 0755)
 	for pngs in os.listdir("data/shellementary"):
-		os.chmod("data/shellementary/"+pngs, 0644)
+		os.chmod(os.path.join("data", "shellementary", pngs), 0644)
 	# copy files
-	shutil.copytree("data/shellementary", os.path.join(datapath, "shellementary"))
+	os.makedirs(os.path.join(datapath, "shellementary"))
+	for copy in os.listdir("data/shellementary"):
+		if copy != ".svn":
+			shutil.copy(os.path.join("data", "shellementary", copy), os.path.join(datapath, "shellementary"))
 	shutil.copy("shellementary", binpath)
 
 	# install translations
