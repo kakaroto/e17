@@ -93,7 +93,6 @@ static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
-   Evas_Object *bell_check = NULL;
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
