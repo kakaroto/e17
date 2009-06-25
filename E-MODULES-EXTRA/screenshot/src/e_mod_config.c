@@ -93,26 +93,20 @@ static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
-   Evas_Object *bell_slider = NULL, *bell_check = NULL;
+   Evas_Object *bell_check = NULL;
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_frametable_add(evas, "General Settings", 0);
-   bell_check = e_widget_check_add(evas, "Beep when taking screenshot", 
+   ow = e_widget_check_add(evas, "Beep when taking screenshot", 
 			   &(cfdata->use_bell));
-   e_widget_frametable_object_append(of, bell_check, 0, 0, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ow, 0, 0, 2, 1, 1, 0, 1, 0);
    ow = e_widget_label_add(evas, "Delay Time:");
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
-   bell_slider = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
+   ow = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
 			    &(cfdata->delay), NULL, 100);
-   e_widget_frametable_object_append(of, bell_slider, 1, 1, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ow, 1, 1, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   // set state from saved config
-   e_widget_disabled_set(bell_slider, !cfdata->use_bell); 
-
-   // handler for enable/disable widget
-   e_widget_on_change_hook_set(bell_check, _cb_disable_check, bell_slider);
 
    of = e_widget_frametable_add(evas, "Capture Mode", 0);
    rg = e_widget_radio_group_new(&(cfdata->mode));
@@ -180,26 +174,19 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
    Evas_Object *launch_check = NULL, *app_entry = NULL;
-   Evas_Object *bell_slider = NULL, *bell_check = NULL;
    Evas_Object *thumb_slider = NULL, *thumb_check = NULL;
    E_Radio_Group *rg;
 
    o = e_widget_table_add(evas, 0);
    of = e_widget_frametable_add(evas, "General Settings", 0);
-   bell_check = e_widget_check_add(evas, "Beep when taking screenshot", 
+   ow = e_widget_check_add(evas, "Beep when taking screenshot", 
 			   &(cfdata->use_bell));
-   e_widget_frametable_object_append(of, bell_check, 0, 0, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ow, 0, 0, 2, 1, 1, 0, 1, 0);
    ow = e_widget_label_add(evas, "Delay Time:");
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
-   bell_slider = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
+   ow = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
 			    &(cfdata->delay), NULL, 100);
-   e_widget_frametable_object_append(of, bell_slider, 1, 1, 1, 1, 1, 0, 1, 0);
-
-   // set state from saved config
-   e_widget_disabled_set(bell_slider, !cfdata->use_bell);
-
-   // handler for enable/disable widget
-   e_widget_on_change_hook_set(bell_check, _cb_disable_check, bell_slider);
+   e_widget_frametable_object_append(of, ow, 1, 1, 1, 1, 1, 0, 1, 0);
 
    ow = e_widget_label_add(evas, "Image Quality:");
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
