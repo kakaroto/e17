@@ -5036,3 +5036,18 @@ Aspect ratio handling tweaks  (fix for ticket 327).
 Fix problem with incorrect xinerama screen info.
 Another attempt to improve aspect ratio handling (pager sizing).
 Add missing autosave when changing virtual desktop size.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 27 07:59:36 CEST 2009
+
+--- 1.0.0.001 ---
+Autofoo cleanups, switch to non-deprecated macros.
+Fix potential crash when closing magnifier window (noted by Pietro Cerutti).
+Avoid referencing freed memory.
+Look up menu icons in ~/.e16/icons too (patch by Pietro Cerutti, ticket 328).
+Attempt to fix bs.po encoding.
+Warning fixes (based on patches by pfritz and gahr, tickets 331,342).
+Prevent area switch while shading (ticket 332).
+Update credits.
+Fix size (container window shape) of windows resized by a window match.
