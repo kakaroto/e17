@@ -100,6 +100,8 @@ m4_ifdef([AC_PROG_OBJC],
 AC_PROG_CXX
 AC_PROG_CC
 
+LT_PROG_RC
+
 
 ### Checks for libraries
 

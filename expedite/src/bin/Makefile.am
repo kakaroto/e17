@@ -158,7 +158,10 @@ endif
 
 if BUILD_SOFTWARE_16_WINCE
 expedite_SOURCES += \
-engine_software_16_wince.c engine_software_16_wince.h
+engine_software_16_wince.c engine_software_16_wince.h  engine_software_16_wince.rc
 endif
+
+.rc.lo:
+	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --tag=RC --mode=compile $(RC) $(RCFLAGS) $< -o $@
 
 EXTRA_DIST = $(bin_SCRIPTS)
