@@ -7,8 +7,8 @@
 // config - simple text file in $HOME/.alarm-config. save and load
 typedef struct 
 {
-   Evas_Bool on; // FIXME: Evas_Bool
-   Evas_Bool repeat; // FIXME: Evas_Bool
+   Eina_Bool on; // FIXME: Eina_Bool
+   Eina_Bool repeat; // FIXME: Eina_Bool
    int hours;
    int minutes;
    /** dynamic as a result of setting the alarm job **/
