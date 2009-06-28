@@ -21,22 +21,6 @@
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-/**
- * To be documented
- * FIXME: To be fixed
- */
-Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func
-		*funcs, Eina_Rectangle boundaries, int types)
-{
-	Enesim_Rasterizer *r;
-
-	r = calloc(1, sizeof(Enesim_Rasterizer));
-	r->funcs = funcs;
-	r->data = data;
-	r->boundaries = boundaries;
-	r->types = types;
-	return r;
-}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -48,27 +32,23 @@ Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
 {
 	assert(r);
-	assert(r->funcs);
-	assert(r->funcs->vertex_add);
+	assert(r->vertex_add);
 
-	r->funcs->vertex_add(r->data, x, y);
+	r->vertex_add(r->data, x, y);
 }
 
 /**
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r,
+EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Eina_Rectangle *rect,
 		Enesim_Scanline_Callback cb, void *data)
 {
 	assert(r);
-	assert(r->funcs);
-	assert(r->funcs->generate);
+	assert(r->generate);
 	assert(cb);
 
-	r->user_data = data;
-	r->scanline_callback = cb;
-	r->funcs->generate(r->data);
+	r->generate(r->data, rect, cb, data);
 	return EINA_TRUE;
 }
 
@@ -79,9 +59,7 @@ EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r,
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r)
 {
 	assert(r);
-	assert(r->funcs);
-	assert(r->funcs->delete);
+	assert(r->delete);
 
-	r->funcs->delete(r->data);
-	free(r);
+	r->delete(r->data);
 }

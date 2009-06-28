@@ -403,7 +403,7 @@ ok:
 	}
 	else if (!strcmp(opt_bench, "rasterizer"))
 	{
-		//rasterizer_bench();
+		rasterizer_bench();
 	}
 	else if (!strcmp(opt_bench, "drawer"))
 	{

@@ -10,8 +10,9 @@ noinst_LTLIBRARIES = libenesim_rasterizer.la
 
 libenesim_rasterizer_la_SOURCES = \
 cpsc.c \
-kiia.c \
-kiia8.c \
-kiia16.c
+circle.c
+# kiia.c
+#kiia8.c
+#kiia16.c
 
 libenesim_rasterizer_la_LIBADD = -lm

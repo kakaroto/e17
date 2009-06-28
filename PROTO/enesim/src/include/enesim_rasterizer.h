@@ -23,11 +23,6 @@
  * @{
  */
 
-/* TODO
- * move all types of Scanlines into a common union
- * refactor the callback
- */
-
 /**
  * To be documented
  * FIXME: To be fixed
@@ -52,26 +47,51 @@ typedef struct _Enesim_Scanline_Mask
 } Enesim_Scanline_Mask;
 
 /**
- * 
+ *
  */
-enum {
+typedef enum _Enesim_Scanline_Type
+{
 	ENESIM_SCANLINE_ALIAS  	    = (1 << 0),
 	ENESIM_SCANLINE_ANTIALIAS   = (1 << 1),
 	ENESIM_SCANLINE_MASK        = (1 << 2),
 	ENESIM_SCANLINES
-};
+} Enesim_Scanline_Type;
+
+typedef struct _Enesim_Scanline
+{
+	Enesim_Scanline_Type type;
+	union {
+		Enesim_Scanline_Alias alias;
+		Enesim_Scanline_Mask mask;
+	} data;
+
+} Enesim_Scanline /**< Scanline Handler */;
 
 /**
- * 
+ *
  */
-typedef void (*Enesim_Scanline_Callback)(void *sl, int type, void *data);
-
-typedef struct _Enesim_Scanline Enesim_Scanline; /**< Scanline Handler */
-EAPI Enesim_Scanline 	*enesim_scanline_alias_new(void);
-EAPI void 		enesim_scanline_delete(Enesim_Scanline *sl);
+typedef void (*Enesim_Scanline_Callback)(Enesim_Scanline *sl, void *data);
 
 /**
- * 
+ * @todo
+ * - make each rasterizer to export what kind of scanlines it supports
+ * - add a function/struct element to set up window boundaries i.e
+ * destination surface/clip
+ * - im not sure about using a rectangle for the boundaries, maybe only
+ * width and height?
+ * - support passing edges directly instead of vertices (useful for
+ *   subpaths)
+ * - Add a way to get the rasterizer implementation, i.e
+ * void * enesim_rasterizer_implementation_get(Enesim_Rasterizer *r);
+ * - Do we need to call the generate() directly? why not make that function
+ * return a function pointer?
+ * - Add magic checks
+ */
+
+typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */
+
+/**
+ *
  */
 typedef enum _Enesim_Rasterizer_Fill_Rule
 {
@@ -80,17 +100,22 @@ typedef enum _Enesim_Rasterizer_Fill_Rule
 	ENESIM_RASTERIZER_FILL_RULES
 } Enesim_Rasterizer_Fill_Rule;
 
-typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */
+typedef enum _Enesim_Rasterizer_Fill_Policy
+{
+	ENESIM_RASTERIZER_FILL_POLICY_BORDER,
+	ENESIM_RASTERIZER_FILL_POLICY_FILL,
+} Enesim_Rasterizer_Fill_Policy;
 
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y);
-EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Enesim_Scanline_Callback cb, void *data);
+EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Eina_Rectangle *rect, Enesim_Scanline_Callback cb, void *data);
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r);
-EAPI void enesim_rasterizer_fill_rule_set(Enesim_Rasterizer *r, Enesim_Rasterizer_Fill_Rule rule);
+EAPI void enesim_rasterizer_reset(Enesim_Rasterizer *r);
 
-EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Eina_Rectangle boundaries);
+EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(void);
 
+typedef struct _Enesim_Rasterizer_Kiia Enesim_Rasterizer_Kiia;
 /**
- * 
+ *
  */
 typedef enum
 {
@@ -100,11 +125,14 @@ typedef enum
 	ENESIM_RASTERIZER_KIIA_COUNTS
 } Enesim_Rasterizer_Kiia_Count;
 
-EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(Enesim_Rasterizer_Kiia_Count count,
-		Eina_Rectangle boundaries);
+EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(Enesim_Rasterizer_Kiia_Count count);
+EAPI void enesim_rasterizer_kiia_count_set(Enesim_Rasterizer *k, Enesim_Rasterizer_Kiia_Count count);
+EAPI void enesim_rasterizer_kiia_rule_set(Enesim_Rasterizer *r, Enesim_Rasterizer_Fill_Rule rule);
+
+EAPI Enesim_Rasterizer * enesim_rasterizer_circle_new(void);
+EAPI void enesim_rasterizer_circle_fill_policy_set(Enesim_Rasterizer *c, Enesim_Rasterizer_Fill_Policy po);
+EAPI void enesim_rasterizer_circle_radius_set(Enesim_Rasterizer *c, float radius);
 
 /** @} */ //End of Enesim_Rasterizer_Group
-
-
 
 #endif /*ENESIM_RASTERIZER_H_*/

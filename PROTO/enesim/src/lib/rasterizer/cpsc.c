@@ -18,9 +18,9 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 
-/* Code based on the algorithm "Concave Polygon Scan Conversion" by 
- * Paul Heckbert from "Graphics Gems". 
- * 
+/* Code based on the algorithm "Concave Polygon Scan Conversion" by
+ * Paul Heckbert from "Graphics Gems".
+ *
  * This doesnt support anti-aliasing.
  */
 
@@ -41,18 +41,17 @@ typedef struct _Cpsc_Edge
 	int 	i;
 } Cpsc_Edge;
 
-
 typedef struct _Cpsc
 {
+	Enesim_Rasterizer r;
 	Eina_Lalloc	*a;
-	Enesim_Rasterizer *r;
 	Cpsc_Vertex 	*vertices;
 	int 		num_vertices;
 } Cpsc;
 
 
 /*============================================================================*
- *                                  Local                                     * 
+ *                                  Local                                     *
  *============================================================================*/
 static Eina_Bool _a_alloc(Cpsc *c, int num)
 {
@@ -62,7 +61,6 @@ static Eina_Bool _a_alloc(Cpsc *c, int num)
 
 static void _a_free(Cpsc *c)
 {
-	printf("free called\n");
 	free(c->vertices);
 }
 
@@ -141,17 +139,19 @@ static void _vertex_add(Cpsc *r, float x, float y)
 	r->num_vertices++;
 }
 
-static void _generate(Cpsc *r)
+static void _generate(Cpsc *r, Eina_Rectangle *rect, Enesim_Scanline_Callback cb, void *data)
 {
-	Enesim_Scanline_Alias alias;
+	Enesim_Scanline sl;
 	Cpsc_Vertex 	*vertices;
 	Cpsc_Edge 	*aet;
 	int 		*sindex;
 	int 		y0, y1, y, i, j, k;
 	int 		nedges;
 	int 		n = r->num_vertices;
-	
+
 	if (n < 3) return;
+
+	sl.type = ENESIM_SCANLINE_ALIAS;
 
 	aet = malloc(sizeof(Cpsc_Edge) * n);
 	nedges = 0;
@@ -216,16 +216,16 @@ static void _generate(Cpsc *r)
 			int xl, xr;
 
 			/* span from j to j+1 inside, from j+1 to j+2 outside */
-			//printf("aet j = %f j + 1 = %f\n", aet[j].x , aet[j+1].x); 
+			//printf("aet j = %f j + 1 = %f\n", aet[j].x , aet[j+1].x);
 			xl = ceil(aet[j].x - 0.5);
 			xr = floor(aet[j + 1].x - 0.5);
 			if (xl <= xr)
 			{
 				/* append a new scanline from xl to xr at y */
-				alias.y = y;
-				alias.x = xl;
-				alias.w = xr - xl + 1;
-				r->r->scanline_callback(&alias, ENESIM_SCANLINE_ALIAS, r->r->user_data);
+				sl.data.alias.y = y;
+				sl.data.alias.x = xl;
+				sl.data.alias.w = xr - xl + 1;
+				cb(&sl, data);
 			}
 			aet[j].x += aet[j].dx;
 			aet[j + 1].x += aet[j + 1].dx;
@@ -239,29 +239,28 @@ static void _delete(Cpsc *c)
 {
 	free(c);
 }
-
-static Enesim_Rasterizer_Func cpsc_func = {
-	.vertex_add = ENESIM_RASTERIZER_VERTEX_ADD(_vertex_add),
-	.generate   = ENESIM_RASTERIZER_GENERATE(_generate),
-	.delete     = ENESIM_RASTERIZER_DELETE(_delete)
-};
-
+static void _reset(Cpsc *c)
+{
+}
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Eina_Rectangle boundaries)
+EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(void)
 {
-	Enesim_Rasterizer *r;
 	Cpsc *c;
 
 	c = calloc(1, sizeof(Cpsc));
 	c->a = eina_lalloc_new(c, EINA_LALLOC_ALLOC(_a_alloc),
 		EINA_LALLOC_FREE(_a_free), 0);
-	r = enesim_rasterizer_new(c, &cpsc_func, boundaries, ENESIM_SCANLINE_ALIAS);
-	c->r = r;
-	return r;
+	/* setup the rasterizer */
+	c->r.data = c;
+	c->r.vertex_add = ENESIM_RASTERIZER_VERTEX_ADD(_vertex_add);
+	c->r.reset = ENESIM_RASTERIZER_RESET(_reset);
+	c->r.generate = ENESIM_RASTERIZER_GENERATE(_generate);
+	c->r.delete = ENESIM_RASTERIZER_DELETE(_delete);
+	return &c->r;
 }

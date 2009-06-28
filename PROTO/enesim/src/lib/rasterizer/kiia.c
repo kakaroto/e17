@@ -19,14 +19,13 @@
 #include "enesim_private.h"
 
 /*============================================================================*
- *                                   API                                      * 
+ *                                   API                                      *
  *============================================================================*/
 /**
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(Enesim_Rasterizer_Kiia_Count
-		count, Eina_Rectangle boundaries)
+EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(void)
 {
 	Enesim_Rasterizer *r = NULL;
 	switch (count)
