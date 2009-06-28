@@ -19,4 +19,4 @@ msgstr "Barra indirizzo EFM"
 
 #: src/e_mod_main.c:320
 msgid "Root"
-msgstr "Radice"
+msgstr "/"
