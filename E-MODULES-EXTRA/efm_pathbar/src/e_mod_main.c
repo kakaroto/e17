@@ -48,7 +48,10 @@ static E_Module *pathbar_mod = NULL;
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "efm_pathbar", 
-     {_gc_init, _gc_shutdown, NULL, _gc_label, _gc_icon, _gc_id_new, NULL},
+   {
+      _gc_init, _gc_shutdown, NULL, _gc_label, _gc_icon, _gc_id_new, NULL,
+      e_gadcon_site_is_efm_toolbar
+   },
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -112,7 +115,10 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    
    instances = eina_list_remove(instances, inst);
    EINA_LIST_FREE(inst->l_buttons, btn)
-      evas_object_del(btn);
+     {
+        e_box_unpack(btn);
+        evas_object_del(btn);
+     }
    if (inst->o_root) evas_object_del(inst->o_root);
    if (inst->o_box) evas_object_del(inst->o_box);
    if (inst->o_scroll) evas_object_del(inst->o_scroll);
@@ -292,6 +298,7 @@ _delete_buttons_tail(Instance *inst, Eina_List *l)
    for(l_next = eina_list_next(l), btn = eina_list_data_get(l); l; 
        l = l_next, l_next = eina_list_next(l), btn = eina_list_data_get(l))
      {
+        e_box_unpack(btn);
         evas_object_del(btn);
         inst->l_buttons = eina_list_remove_list(inst->l_buttons, l);
      }

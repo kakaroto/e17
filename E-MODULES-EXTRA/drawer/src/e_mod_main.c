@@ -132,8 +132,10 @@ EAPI int DRAWER_EVENT_VIEW_ITEM_CONTEXT = 0;
 static const E_Gadcon_Client_Class _drawer_gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "drawer", 
-     {_drawer_gc_init, _drawer_gc_shutdown, _drawer_gc_orient, _drawer_gc_label,
-       	_drawer_gc_icon, _drawer_gc_id_new, NULL},
+   {
+      _drawer_gc_init, _drawer_gc_shutdown, _drawer_gc_orient, _drawer_gc_label,
+      _drawer_gc_icon, _drawer_gc_id_new, NULL, e_gadcon_site_is_not_toolbar
+   },
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
