@@ -1,55 +1,48 @@
 body
 {
-    background-color: #3f3f3f;
+    background-color: #444444;
 }
 
 a         { color: #273F60; }                                /* Color Scheme */
 a:hover   { color: #768292; }                                /* Color Scheme */
 a:visited { color: #923e3a; }                                /* Color Scheme */
 
-#top
-{
-    width: 100%;
-    margin-top: 0;
-    background-color: #ffffff;
-    background-image: url('../images/top_bg.png');
-    background-repeat: repeat-x;
-}
-
-#bottom
-{
-    width: 100%;
-    margin-bottom: 0;
-    background-color: #eeeeee;
-    background-image: url('../images/bottom_bg.png');
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-
-#bottom hr.line-top
-{
-    background-image: url('../images/bottom_line.png');
-    background-repeat: repeat-x;
-    height: 2px;
-    margin-bottom: 0;
-    width: 100%;
-}
-
 
 /*  ******
     Header
     ******  */
-#header h1 span
+#header
 {
-    display: none;
+    height: 108px;
+    background-image: url('../images/header_bg.png');
+    background-repeat: repeat-x;
 }
 
 #header h1
 {
     position: absolute;
-    width: 80px;
+    width: 44px;
     height: 54px;
     background-image: url('../images/menu_left.png');
+    background-repeat: no-repeat;
+}
+
+#header h1:hover
+{
+    width: 107px;
+    background-image: url('../images/menu_left_hover.png');
+}
+
+#header h1 a
+{
+    display: block;
+    width: 114px;
+    height: 100%;
+}
+
+#header h1 a span
+{
+    display: none;
 }
 
 #header h2
@@ -57,24 +50,23 @@ a:visited { color: #923e3a; }                                /* Color Scheme */
     display: none;
 }
 
-#header
-{
-    height: 90px;
-}
-
 #header .menu
 {
     height: 54px;
-    background-image: url('../images/menu_bg.png');
+    background-image: url("../images/menu_bg.png");
     background-repeat: repeat-x;
 }
 
 #header .menu ul
 {
+    display: block;
+    height: 100%;
     margin: 0;
+    margin-right: 80px;
+    padding-right: 2px;
     background-image: url("../images/menu_right.png");
+    background-position: top right;
     background-repeat: no-repeat;
-    background-position: right top;
 }
 
 #header .menu ul li
@@ -84,55 +76,40 @@ a:visited { color: #923e3a; }                                /* Color Scheme */
     width: 160px;
 }
 
-#header .menu ul li.first
-{
-    background-image: url("../images/menu_middle.png");
-    background-repeat: no-repeat;
-    width: 161px;
-}
-
 #header .menu ul li a
 {
     display: block;
-    width: 100%;
+    width: 100%; /* IE6 */
     line-height: 54px;
+    font-weight: bold;
+    text-transform: capitalize;
     text-align: center;
     text-decoration: none;
     color: #a8a8a8;
     background-image: url("../images/option_normal.png");
     background-repeat: no-repeat;
-    background-position: right top;
-    text-transform: capitalize;
 }
 
 #header .menu ul li a:hover
 {
-    color: white;
+    color: #dadada;
     background-image: url("../images/option_hover.png");
-    background-repeat: no-repeat;
 }
-
 
 #header .menu ul li.current a
 {
     color: #5e656e;                                          /* Color Scheme */
     font-weight: bold;
     background-image: url("../images/option_current.png");
-    background-repeat: no-repeat;
+    background-repeat: repeat-x;
 }
 
+/* IE6 */
 #header .menu ul li.current a:hover
 {
-    color: black;
-    background-image: url("../images/option_current.png"); /* IE6 */
-    background-repeat: no-repeat; /* IE6 */
-}
-
-/* This moves the last option away from the menu border when its appearance is
-   tab-like (current) */
-#header-menu-dev.current
-{
-    margin-right: 80px;
+    color: #5e656e;
+    background-image: url("../images/option_current.png");
+    background-repeat: repeat-x;
 }
 
 
@@ -141,7 +118,10 @@ a:visited { color: #923e3a; }                                /* Color Scheme */
     ******  */
 #footer
 {
-    height: 72px;
+    min-height: 72px;
+    background-color: #000000;
+    background-image: url("../images/footer_bg.png");
+    background-repeat: repeat-x;
 }
 
 #footer #copyright

@@ -21,34 +21,73 @@
 
 <body>
 
-<div id="top">
-<div class="container">
-
 <div id="header">
-    <h1><span>Enlightenment</span></h1>
+<div class="container">
+<!-- header begins -->
+
+    <h1><a href="index.html"><span>Enlightenment</span></a></h1>
     <h2><span>Beauty at your fingertips</span></h2>
 
     <div class="menu">
+        <!-- TODO: delete the current status in the home page -->
+        <!-- TODO: use the background replacement for cooler button labels -->
         <ul>
-            <li id="header-menu-dev"><a href="http://trac.enlightenment.org/e">development</a></li>
-            <li id="header-menu-commmunity"><a href="http://exchange.enlightenment.org/">community</a></li>
-            <!-- @TODO: delete the current status in the home page -->
-            <li id="header-menu-news" class="current"><a href="news.html">news</a></li>
-            <li id="header-menu-about" class="first"><a href="about.html">about</a></li>
+            <li id="h-menu-dev"><a href="http://trac.enlightenment.org/e"><span>development</span></a></li>
+            <li id="h-menu-com" class="current"><a href="http://exchange.enlightenment.org/"><span>community</span></a></li>
+            <li id="h-menu-new"><a href="news.html"><span>news</span></a></li>
+            <li id="h-menu-abo"><a href="about.html"><span>about</span></a></li>
         </ul>
     </div>
+
+<!-- header ends -->
+</div>
 </div>
 
 <div id="primary-content">
+<div class="container">
+<!-- primary content begins -->
 
-    <h2><span class="e">Enlightenment</span>, create lean and beautiful software.</h2>
+    <h2><span><span class="e">Enlightenment</span>, create lean and beautiful software</span></h2>
+
+    <div id="content-developers" class="span-6">
+        <h3><span>Developers empowered</span></h3>
+        <ul>
+            <li>The API is intuitive and spans a broad number of uses while
+                remaining consistent. From interface design to advanced data
+                types and system interaction.</li>
+            <li>The interface development approach uncouples design an
+                development at every level making your applications themeable
+                without extra effort.</li>
+            <li>Written in C99 with an emphasis on portability and performance.
+                Even the high-level language bidings are suitable for both
+                desktop and embedded development.</li>
+        </ul>
+        <p class="button learn-more"><a href="developers.html"><span>learn more</span></a></p>
+    </div>
+
+    <div id="content-artists" class="span-6 last">
+        <h3><span>Artists unleashed</span></h3>
+        <ul>
+            <li>Every aspect of interface design can be covered with a language
+                syntactically similar to CSS but capable of creating arbitrary
+                design elements at the designer's whim.</li>
+            <li>Transitions (and triggers) defined by the designer let him
+                improve usability or create aesthetically pleasing animations.
+                Without touching a line of application code.</li>
+            <li>Applications and utilities to aid designers are either already
+                available or under development, from simple viewers to WYSIWYG
+                editors.</li>
+        </ul>
+        <p class="button learn-more"><a href="artists.html"><span>learn more</span></a></p>
+    </div>
 
 
-    <div id="content-desktop" class="span-3 colborder">
+    <div id="content-desktop" class="span-12">
+        <h3><span>Featured Software</span></h3>
        <a href="desktop.html">
             <img id="main-theme-shot" class="theme-shot" src="images/home/main_theme_shot.png">
         </a>
-        <!--
+        <!-- TODO: Generate these links using the first 4 showcased themes -->
         <a href="http://exchange.enlightenment.org/theme/show/294">
             <img id="first-theme-shot" class="theme-shot" src="http://exchange.enlightenment.org/files/theme/294/smallthumb.png">
         </a>
@@ -57,58 +96,32 @@
         </a>
         <a href="http://exchange.enlightenment.org/theme/show/304">
             <img id="third-theme-shot" class="theme-shot" src="http://exchange.enlightenment.org/files/theme/304/smallthumb.png">
-        </a> -->
+        </a>
+        <a href="http://exchange.enlightenment.org/theme/show/304">
+            <img id="fourth-theme-shot" class="theme-shot" src="http://exchange.enlightenment.org/files/theme/274/smallthumb.png">
+        </a>
         <div class="ad">
-            <p><span class="main">Featuring: </span>The flagship application
-            of the enlightenment project, the e17 desktop shell. Extreme
-            flexiblity on par with other advanced window managers but kept
-            easy to setup and beautiful to look at.</p>
-            <p class="button"><a href="desktop.html">Get e17</a></p>
+            <p>Featuring the <span class="featured">E17 desktop shell</span>.
+            The flagship application of the enlightenment project features
+            flexibility comparable with the most advanced window managers yet
+            remains easy enough to be setup and customized by a novice user.
+            Despite the emphasis put on making it run acceptably in legacy
+            hardware its theme creation capabilities remain unmatched.</p>
+            <p class="button get-e17"><a href="desktop.html">get E17</a></p>
         </div>
     </div>
 
 
-    <div id="content-developers" class="span-4">
-        <h3>Developers empowered.</h3>
-        <ul>
-            <li>A different approach to graphical interface development that
-            emphasizes independence.</li>
-            <li>The API is intuitive and consistent among a broad number of
-            uses and programming languages.</li>
-            <li>Written in portable C99 with a resource footprint suitable for
-            both desktops and handleds.</li>
-        </ul>
-        <p class="button"><a href="developers.html"><span>Learn more</span></a></p>
-    </div>
-
-    <div id="content-artists" class="span-4 last">
-        <h3>Artists unleashed.</h3>
-        <ul>
-            <li>An abstract language created exclusively for interface
-            design.</li>
-            <li>Easier to learn HTML/CSS with more features and none of the
-            shortcomings.</li>
-            <li>Applications and utilities to aid designers already under
-            development.</li>
-        </ul>
-        <p class="button"><a href="artists.html"><span>Learn more</span></a></p>
-    </div>
-
-</div>
-
-<!-- Closes the top + container ids -->
+<!-- primary content ends -->
 </div>
 </div>
-
-
-<div id="bottom">
-<hr class="line-top">
-<div class="container">
 
 <div id="secondary-content">
+<div class="container">
+<!-- secondary content begins -->
 
-    <div id="content-news" class="prepend-4 span-4">
-        <h3>Official News</h3>
+    <div id="content-news" class="span-8">
+        <h3><span>Official News</span></h3>
         <div class="news-summary">
             <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
             <p>
@@ -137,7 +150,7 @@
     </div>
 
     <div id="content-planet" class="span-4 last">
-        <h3>Planet Enlightenment</h3>
+        <h3><span>Planet Enlightenment</span></h3>
         <div class="news-summary">
             <h4><a href="p.php?p=news/show&amp;l=en&amp;news_id=0">E17 + EFL Release Snapshot</a></h4>
             <p class="data small">
@@ -156,9 +169,13 @@
         </div>
     </div>
 
+<!-- secondary content ends -->
+</div>
 </div>
 
 <div id="footer">
+<div class="container">
+<!-- footer begins -->
 
     <div class="span-4">
         <p id="copyright">&copy;2009 The Enlightenment Project</p>
@@ -175,9 +192,7 @@
         </ul>
     </div>
 
-</div>
-
-<!-- Closes the bottom + container divs -->
+<!-- footer ends -->
 </div>
 </div>
 

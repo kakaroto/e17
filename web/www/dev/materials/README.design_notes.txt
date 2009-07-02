@@ -7,9 +7,9 @@ Color Scheme
 -------------
 I tried to stay true to the monochromatic nature of the e17 default theme so
 I made a simple, as desaturated as possible, triadic color scheme. My intention
-is to use the primary colors (bluish) to liven up the site a little while
-restricting the secondary colors (bluish and yellowish) to the status in trac
-lists.
+is to use the primary colors (blue-ish) to liven up the site a little while
+restricting the secondary colors (red-ish and yellow-ish) to the status in trac
+ticket lists and other similar uses.
 
 You can find various palette files in ``materials/resources``. The .gpl file
 can be copied to ``~/.gimp-2.4/palettes`` and ``~/.inkscape/palettes``.
@@ -17,16 +17,14 @@ can be copied to ``~/.gimp-2.4/palettes`` and ``~/.inkscape/palettes``.
 
 Website Structure
 -----------------
-The site is split in two divs, top and bottom, each div occupies 100% width of
-the viewport to allow for kewl streching backgrounds. Inside each one there is
-a div with the class "container" that centers and resizes everything else.
+The site is split in four sections, header, primary-content, secondary-content
+and footer. Each section needs two divs to work with full width backgrounds and
+the grid at the same time.
 
-Content is divided in two types, "primary-content" and
-"secondary-content", with each div being inside the top and bottom containers
-respectively. This separation is for aesthetic reasons in the brochure-like
-pages. Most of the time you will be using primary alone and simply setting
-secondary to "display: none", but if you think you find a good use for it by
-all means go ahead.
+The outter div has the name of the section (header, primary-content, etc.) as
+its id while the inner div has "container" as the class. The div with the id
+will strech to the 100% of the page while the container div width and position
+will be dictated by the framework grid.
 
 
 Grid & BlueprintCSS

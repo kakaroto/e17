@@ -24,25 +24,24 @@
   <defs
      id="defs4">
     <linearGradient
-       inkscape:collect="always"
-       id="linearGradient4332">
+       id="linearGradient4182">
       <stop
-         style="stop-color:#ffffff;stop-opacity:1;"
+         style="stop-color:#cccccc;stop-opacity:1;"
          offset="0"
-         id="stop4334" />
+         id="stop4184" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
+         style="stop-color:#f0f0f0;stop-opacity:1;"
          offset="1"
-         id="stop4336" />
+         id="stop4186" />
     </linearGradient>
     <linearGradient
        id="linearGradient4320">
       <stop
-         style="stop-color:#b3b3b3;stop-opacity:1;"
+         style="stop-color:#ffffff;stop-opacity:1;"
          offset="0"
          id="stop4322" />
       <stop
-         style="stop-color:#eeeeee;stop-opacity:1;"
+         style="stop-color:#ffffff;stop-opacity:1;"
          offset="1"
          id="stop4324" />
     </linearGradient>
@@ -82,11 +81,11 @@
     <linearGradient
        id="linearGradient3683">
       <stop
-         style="stop-color:#3f3f3f;stop-opacity:1;"
+         style="stop-color:#000000;stop-opacity:1;"
          offset="0"
          id="stop3685" />
       <stop
-         style="stop-color:#595959;stop-opacity:1;"
+         style="stop-color:#4c4c4c;stop-opacity:1;"
          offset="1"
          id="stop3687" />
     </linearGradient>
@@ -1195,16 +1194,6 @@
        gradientTransform="matrix(0.9999717,0,0,1.0138021,1.14379e-2,-461.42353)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3693"
-       id="linearGradient3699"
-       x1="568"
-       y1="828"
-       x2="568"
-       y2="832.99878"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-8.0001076,1.4625e-5)" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3366"
        id="linearGradient3372"
        x1="560"
@@ -1218,30 +1207,21 @@
        xlink:href="#linearGradient3683"
        id="linearGradient3376"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.9999717,0,0,1.0138021,-0.4884697,-11.923298)"
-       x1="560.50433"
-       y1="899.50818"
-       x2="560"
-       y2="828" />
+       gradientTransform="matrix(0.9999717,0,0,10.898373,-0.48836,-8903.1757)"
+       x1="560.50421"
+       y1="897.87848"
+       x2="560.50421"
+       y2="828.48541" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4320"
-       id="linearGradient4328"
-       gradientUnits="userSpaceOnUse"
+       xlink:href="#linearGradient4182"
+       id="linearGradient4188"
        x1="560"
-       y1="828"
+       y1="648"
        x2="560"
-       y2="451" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4332"
-       id="linearGradient4338"
-       x1="560"
-       y1="828"
-       x2="560"
-       y2="810"
+       y2="216"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1,0,0,2,0,-828)" />
+       gradientTransform="matrix(1,0,0,1.7200128,0,-214.55449)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1251,10 +1231,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="612.5"
-     inkscape:cy="238"
+     inkscape:cx="566.96139"
+     inkscape:cy="415.58555"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer4"
      showgrid="false"
      inkscape:showpageshadow="false"
      showguides="false"
@@ -1293,12 +1273,8 @@
        id="guide2387" />
     <sodipodi:guide
        orientation="0,1"
-       position="447,449"
+       position="-155.71394,774"
        id="guide3378" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="-21.019449,666.20421"
-       id="guide4314" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -1313,102 +1289,86 @@
   </metadata>
   <g
      inkscape:groupmode="layer"
-     id="layer1"
-     inkscape:label="bg"
-     sodipodi:insensitive="true">
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-opacity:1"
-       id="rect3381"
-       width="1120"
-       height="450"
-       x="0"
-       y="450" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="footer"
-     style="display:inline"
+     inkscape:label="bottom"
+     style="display:none"
      sodipodi:insensitive="true">
     <rect
        style="opacity:1;fill:url(#linearGradient3376);fill-opacity:1;stroke:none;stroke-width:0.97675186;stroke-linecap:square;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
        id="rect3681"
        width="1120"
-       height="72"
-       x="-0.00010763243"
-       y="828" />
-    <rect
-       style="opacity:0.44669429;fill:url(#linearGradient3699);fill-opacity:1"
-       id="rect3691"
-       width="1120"
-       height="18"
-       x="-0.00010763243"
-       y="828" />
+       height="774"
+       x="0"
+       y="126" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
-     inkscape:label="middle-footer"
-     style="display:inline"
-     sodipodi:insensitive="true">
+     inkscape:label="top"
+     style="display:inline">
     <rect
-       style="opacity:1;fill:url(#linearGradient4328);fill-opacity:1;stroke:none;stroke-opacity:1"
-       id="rect4318"
+       style="opacity:1;fill:url(#linearGradient4188);fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4180"
        width="1120"
-       height="594"
-       x="-6.6391337e-14"
-       y="234" />
-    <rect
-       style="opacity:0.4;fill:url(#linearGradient4338);fill-opacity:1;stroke:none;stroke-opacity:1"
-       id="rect4330"
-       width="1120"
-       height="36"
-       x="1.6320278e-13"
-       y="792" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="lines"
-     style="display:inline"
-     sodipodi:insensitive="true">
-    <path
-       id="path3674"
-       d="M 0.49977687,235.51604 L 1119.5003,235.51604"
-       style="opacity:1;fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.99955374;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;display:inline;enable-background:new" />
-    <path
-       style="opacity:0.1;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.9995538;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;display:inline;enable-background:new"
-       d="M 0.49977707,234.49978 L 1119.5005,234.49978"
-       id="path3678" />
-    <path
-       style="opacity:0.35;fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.99955374;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline;enable-background:new"
-       d="M 0.49977687,827.50022 L 1119.5006,827.50022"
-       id="path4340"
-       sodipodi:nodetypes="cc" />
+       height="773.99194"
+       x="0"
+       y="126.00806" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer8"
      inkscape:label="text"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <flowRoot
        xml:space="preserve"
-       id="flowRoot3261"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:160.00000238%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;enable-background:new;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(2.4023437,35.393181)"><flowRegion
-         id="flowRegion3263"><rect
-           id="rect3265"
-           width="313"
-           height="568"
+       id="flowRoot4394"
+       style="font-size:8px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion4396"><rect
+           id="rect4398"
+           width="123"
+           height="38"
+           x="316"
+           y="627" /></flowRegion><flowPara
+         id="flowPara4400"></flowPara></flowRoot>    <flowRoot
+       transform="translate(554.67773,-73.451604)"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ccd8e8;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;enable-background:new;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       id="flowRoot4406"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4408"><rect
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ccd8e8;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+           y="217"
+           x="85"
+           height="708.4516"
+           width="399.67188"
+           id="rect4410" /></flowRegion><flowPara
+         id="flowPara4412">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dolor nulla, dignissim at aliquet sed, elementum eget augue. Maecenas consequat accumsan pulvinar. Duis nec ipsum ac tortor ultricies consequat quis vel erat. Fusce auctor, orci eget semper lacinia, lectus neque vestibulum massa, tempus imperdiet mi nibh in nisl. Sed mattis metus id odio elementum non pretium eros posuere. Pellentesque sed aliquam erat. Sed dignissim convallis lectus sed faucibus. Vivamus ut nulla vitae elit rhoncus pretium. Vivamus ac lacus eu ante commodo ullamcorper quis nec sapien. Nullam at tortor eu nibh consequat congue. Morbi scelerisque purus at mauris convallis dictum. Nulla interdum nibh at mauris vulputate ultricies consectetur id elit.</flowPara><flowPara
+         id="flowPara4414" /><flowPara
+         id="flowPara4416">Integer ornare, mauris eu fermentum laoreet, magna tortor vestibulum sem, non gravida ipsum magna vel nulla. Sed porta eros volutpat nisl elementum non pretium quam cursus. Morbi mi quam, lobortis mattis mollis vitae, suscipit ac mi. Praesent tristique neque ac augue semper at tristique lorem vulputate. Duis elit nunc, suscipit non facilisis id, aliquam ut ipsum. Aliquam posuere lacinia accumsan. Etiam laoreet sollicitudin eros nec ultricies. In nisl ligula, feugiat in condimentum id, aliquet nec lacus. Etiam hendrerit, nulla et mattis iaculis, eros tellus pellentesque nibh, vitae tempor metus nulla eget nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</flowPara><flowPara
+         id="flowPara4418" /><flowPara
+         id="flowPara4420">Proin sollicitudin est ac dolor blandit ultrices. Quisque condimentum bibendum arcu, nec fringilla eros euismod vitae. In hac habitasse platea dictumst. Sed lobortis porta purus viverra gravida. Suspendisse pellentesque metus eget nulla pretium imperdiet. Donec vitae ligula urna, vel porttitor metus. Nunc ut ligula vitae sapien eleifend tempor. Sed sodales odio eu leo placerat sagittis. Morbi tempus dui eget purus eleifend imperdiet. Nunc a mauris ut mi tincidunt hendrerit nec vitae est. Donec sed ligula vitae orci viverra imperdiet. Proin nec velit lectus.</flowPara><flowPara
+         id="flowPara4422" /><flowPara
+         id="flowPara4424">Quisque non iaculis neque. Nullam eros arcu, auctor in euismod quis, sodales ut ipsum. Etiam faucibus orci consectetur purus venenatis ultricies. Cras tristique leo mi. Phasellus eros augue, vulputate sit amet viverra vitae, suscipit ut urna. Aliquam ut massa augue, et vestibulum ipsum. Quisque ultrices egestas velit eget viverra. Nulla facilisi. Integer et euismod ligula. Quisque porta interdum ullamcorper. Donec non posuere tellus. Cras hendrerit nunc eget mauris consectetur euismod. Integer augue orci, auctor ac hendrerit eu, accumsan eget turpis. Curabitur libero ipsum, tristique venenatis malesuada vitae, porttitor at magna. Pellentesque semper, lorem quis pulvinar tincidunt, velit est ultricies felis, vitae mollis urna turpis non nisl. </flowPara><flowPara
+         id="flowPara4426" /><flowPara
+         id="flowPara4428">Integer ornare, mauris eu fermentum laoreet, magna tortor vestibulum sem, non gravida ipsum magna vel nulla. Sed porta eros volutpat nisl elementum non pretium quam cursus. Morbi mi quam, lobortis mattis mollis vitae, suscipit ac mi. Praesent tristique neque ac augue semper at tristique lorem vulputate. Duis elit nunc, suscipit non facilisis id, aliquam ut ipsum. Aliquam posuere lacinia accumsan. Etiam laoreet sollicitudin eros nec ultricies. In nisl ligula, feugiat in condimentum id, aliquet nec lacus. Etiam hendrerit, nulla et mattis iaculis, eros tellus pellentesque nibh, vitae tempor metus nulla eget nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4430"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;enable-background:new;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="translate(-3.53125,-73.451604)"><flowRegion
+         id="flowRegion4432"><rect
+           id="rect4434"
+           width="399.67188"
+           height="708.4516"
            x="85"
            y="217"
-           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:160.00000238%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
-         id="flowPara3267">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dolor nulla, dignissim at aliquet sed, elementum eget augue. Maecenas consequat accumsan pulvinar. Duis nec ipsum ac tortor ultricies consequat quis vel erat. Fusce auctor, orci eget semper lacinia, lectus neque vestibulum massa, tempus imperdiet mi nibh in nisl. Sed mattis metus id odio elementum non pretium eros posuere. Pellentesque sed aliquam erat. Sed dignissim convallis lectus sed faucibus. Vivamus ut nulla vitae elit rhoncus pretium. Vivamus ac lacus eu ante commodo ullamcorper quis nec sapien. Nullam at tortor eu nibh consequat congue. Morbi scelerisque purus at mauris convallis dictum. Nulla interdum nibh at mauris vulputate ultricies consectetur id elit.</flowPara><flowPara
-         id="flowPara3269" /><flowPara
-         id="flowPara3271">Integer ornare, mauris eu fermentum laoreet, magna tortor vestibulum sem, non gravida ipsum magna vel nulla. Sed porta eros volutpat nisl elementum non pretium quam cursus. Morbi mi quam, lobortis mattis mollis vitae, suscipit ac mi. Praesent tristique neque ac augue semper at tristique lorem vulputate. Duis elit nunc, suscipit non facilisis id, aliquam ut ipsum. Aliquam posuere lacinia accumsan. Etiam laoreet sollicitudin eros nec ultricies. In nisl ligula, feugiat in condimentum id, aliquet nec lacus. Etiam hendrerit, nulla et mattis iaculis, eros tellus pellentesque nibh, vitae tempor metus nulla eget nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</flowPara><flowPara
-         id="flowPara3273" /><flowPara
-         id="flowPara3275">Proin sollicitudin est ac dolor blandit ultrices. Quisque condimentum bibendum arcu, nec fringilla eros euismod vitae. In hac habitasse platea dictumst. Sed lobortis porta purus viverra gravida. Suspendisse pellentesque metus eget nulla pretium imperdiet. Donec vitae ligula urna, vel porttitor metus. Nunc ut ligula vitae sapien eleifend tempor. Sed sodales odio eu leo placerat sagittis. Morbi tempus dui eget purus eleifend imperdiet. Nunc a mauris ut mi tincidunt hendrerit nec vitae est. Donec sed ligula vitae orci viverra imperdiet. Proin nec velit lectus.</flowPara><flowPara
-         id="flowPara3277" /><flowPara
-         id="flowPara3279">Quisque non iaculis neque. Nullam eros arcu, auctor in euismod quis, sodales ut ipsum. Etiam faucibus orci consectetur purus venenatis ultricies. Cras tristique leo mi. Phasellus eros augue, vulputate sit amet viverra vitae, suscipit ut urna. Aliquam ut massa augue, et vestibulum ipsum. Quisque ultrices egestas velit eget viverra. Nulla facilisi. Integer et euismod ligula. Quisque porta interdum ullamcorper. Donec non posuere tellus. Cras hendrerit nunc eget mauris consectetur euismod. Integer augue orci, auctor ac hendrerit eu, accumsan eget turpis. Curabitur libero ipsum, tristique venenatis malesuada vitae, porttitor at magna. Pellentesque semper, lorem quis pulvinar tincidunt, velit est ultricies felis, vitae mollis urna turpis non nisl. </flowPara></flowRoot>  </g>
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara4436">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dolor nulla, dignissim at aliquet sed, elementum eget augue. Maecenas consequat accumsan pulvinar. Duis nec ipsum ac tortor ultricies consequat quis vel erat. Fusce auctor, orci eget semper lacinia, lectus neque vestibulum massa, tempus imperdiet mi nibh in nisl. Sed mattis metus id odio elementum non pretium eros posuere. Pellentesque sed aliquam erat. Sed dignissim convallis lectus sed faucibus. Vivamus ut nulla vitae elit rhoncus pretium. Vivamus ac lacus eu ante commodo ullamcorper quis nec sapien. Nullam at tortor eu nibh consequat congue. Morbi scelerisque purus at mauris convallis dictum. Nulla interdum nibh at mauris vulputate ultricies consectetur id elit.</flowPara><flowPara
+         id="flowPara4438" /><flowPara
+         id="flowPara4440">Integer ornare, mauris eu fermentum laoreet, magna tortor vestibulum sem, non gravida ipsum magna vel nulla. Sed porta eros volutpat nisl elementum non pretium quam cursus. Morbi mi quam, lobortis mattis mollis vitae, suscipit ac mi. Praesent tristique neque ac augue semper at tristique lorem vulputate. Duis elit nunc, suscipit non facilisis id, aliquam ut ipsum. Aliquam posuere lacinia accumsan. Etiam laoreet sollicitudin eros nec ultricies. In nisl ligula, feugiat in condimentum id, aliquet nec lacus. Etiam hendrerit, nulla et mattis iaculis, eros tellus pellentesque nibh, vitae tempor metus nulla eget nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</flowPara><flowPara
+         id="flowPara4442" /><flowPara
+         id="flowPara4444">Proin sollicitudin est ac dolor blandit ultrices. Quisque condimentum bibendum arcu, nec fringilla eros euismod vitae. In hac habitasse platea dictumst. Sed lobortis porta purus viverra gravida. Suspendisse pellentesque metus eget nulla pretium imperdiet. Donec vitae ligula urna, vel porttitor metus. Nunc ut ligula vitae sapien eleifend tempor. Sed sodales odio eu leo placerat sagittis. Morbi tempus dui eget purus eleifend imperdiet. Nunc a mauris ut mi tincidunt hendrerit nec vitae est. Donec sed ligula vitae orci viverra imperdiet. Proin nec velit lectus.</flowPara><flowPara
+         id="flowPara4446" /><flowPara
+         id="flowPara4448">Quisque non iaculis neque. Nullam eros arcu, auctor in euismod quis, sodales ut ipsum. Etiam faucibus orci consectetur purus venenatis ultricies. Cras tristique leo mi. Phasellus eros augue, vulputate sit amet viverra vitae, suscipit ut urna. Aliquam ut massa augue, et vestibulum ipsum. Quisque ultrices egestas velit eget viverra. Nulla facilisi. Integer et euismod ligula. Quisque porta interdum ullamcorper. Donec non posuere tellus. Cras hendrerit nunc eget mauris consectetur euismod. Integer augue orci, auctor ac hendrerit eu, accumsan eget turpis. Curabitur libero ipsum, tristique venenatis malesuada vitae, porttitor at magna. Pellentesque semper, lorem quis pulvinar tincidunt, velit est ultricies felis, vitae mollis urna turpis non nisl. </flowPara><flowPara
+         id="flowPara4450" /><flowPara
+         id="flowPara4452">Integer ornare, mauris eu fermentum laoreet, magna tortor vestibulum sem, non gravida ipsum magna vel nulla. Sed porta eros volutpat nisl elementum non pretium quam cursus. Morbi mi quam, lobortis mattis mollis vitae, suscipit ac mi. Praesent tristique neque ac augue semper at tristique lorem vulputate. Duis elit nunc, suscipit non facilisis id, aliquam ut ipsum. Aliquam posuere lacinia accumsan. Etiam laoreet sollicitudin eros nec ultricies. In nisl ligula, feugiat in condimentum id, aliquet nec lacus. Etiam hendrerit, nulla et mattis iaculis, eros tellus pellentesque nibh, vitae tempor metus nulla eget nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</flowPara></flowRoot>  </g>
 </svg>
