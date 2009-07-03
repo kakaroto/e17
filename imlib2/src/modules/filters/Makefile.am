@@ -19,7 +19,7 @@ testfilter_la_LIBTOOLFLAGS = --tag=disable-static
 
 bumpmap_la_SOURCES    = filter_bumpmap.c
 bumpmap_la_LDFLAGS    = -module -avoid-version
-bumpmap_la_LIBADD     = $(top_builddir)/src/lib/libImlib2.la
+bumpmap_la_LIBADD     = $(top_builddir)/src/lib/libImlib2.la -lm
 bumpmap_la_LIBTOOLFLAGS = --tag=disable-static
 
 colormod_la_SOURCES   = filter_colormod.c
