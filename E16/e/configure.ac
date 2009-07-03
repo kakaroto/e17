@@ -333,14 +333,9 @@ fi
 
 AC_ARG_ENABLE(docs,
   [  --enable-docs           install html docs @<:@default=yes@:>@],,
-  enable_docs=yes)
-if test "x$enable_docs" = "xyes"; then
-  AC_CHECK_PROG(XMLTO, xmlto, xmlto)
-  if test "x$XMLTO" = "x"; then
-    enable_docs=no
-  fi
-fi
-AM_CONDITIONAL([HAVE_XMLTO], [test "x$XMLTO" != "x"])
+  enable_docs=no)
+AM_MISSING_PROG(XMLTO, xmlto)
+AM_CONDITIONAL([BUILD_DOCS], [test "x$enable_docs" = "xyes"])
 
 AC_ARG_ENABLE(gcc-cpp,
   [  --enable-gcc-cpp        compile everything as if it were C++ @<:@default=no@:>@],,
