@@ -471,7 +471,7 @@ def textinfo_dialog(window_title, window_text, window_width, window_height, wind
 
 	## Set window size manually from arguments if set
 	if window_width == None:
-		window_width = 300
+		window_width = window.size_get()[0]
 	if window_height == None:
 		window_height = 400
 	
@@ -556,7 +556,7 @@ def list_dialog(window_title, window_text, window_width, window_height, window_b
 
 	## Set window size manually from arguments if set
 	if window_width == None:
-		window_width = 200
+		window_width = window.size_get()[0]
 	if window_height == None:
 		window_height = 300
 	
