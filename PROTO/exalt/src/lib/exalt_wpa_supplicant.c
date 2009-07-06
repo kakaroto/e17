@@ -86,7 +86,6 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
  */
 void exalt_wpa_stop(Exalt_Wireless* w)
 {
-#ifdef  HAVE_WPA_SUPPLICANT
     struct wpa_ctrl *ctrl_conn;
     Exalt_Ethernet* eth;
     char buf[2048];
@@ -99,12 +98,7 @@ void exalt_wpa_stop(Exalt_Wireless* w)
         exalt_wpa_ctrl_command(ctrl_conn, "TERMINATE",buf,buf_len);
         wpa_ctrl_close(ctrl_conn);
         ctrl_conn=NULL;
-        //the wpa_supplicant daemon deactivate the interface ...
-        while(exalt_eth_up_is(eth))
-            ;
-        exalt_eth_up_without_apply(eth);
     }
-#endif
 }
 
 

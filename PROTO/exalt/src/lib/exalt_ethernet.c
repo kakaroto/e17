@@ -195,9 +195,6 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 
     EXALT_ASSERT_RETURN_VOID(eth!=NULL);
 
-    if(exalt_eth_wireless_is(eth))
-        exalt_wpa_stop(exalt_eth_wireless_get(eth));
-
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
     if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
@@ -206,6 +203,9 @@ void exalt_eth_down(Exalt_Ethernet* eth)
     ifr.ifr_flags &= ~IFF_UP;
     if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
         return ;
+
+    if(exalt_eth_wireless_is(eth))
+        exalt_wireless_down(exalt_eth_wireless_get(eth));
 }
 
 

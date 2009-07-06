@@ -54,7 +54,12 @@ const char* exalt_wireless_wpasupplicant_driver_get(Exalt_Wireless* w);
  */
 char* exalt_wireless_essid_get(Exalt_Wireless* w);
 
-
+/*
+ * @brief Called by exalt_eth_down()
+ * Stop the wpa_supplicant daemon associated to the wireless interface
+ * @param w the wireless interface
+ */
+void exalt_wireless_down(Exalt_Wireless *w);
 
 /*
  * @brief get the ethernet structure
