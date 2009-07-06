@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Shellementary\n"
-"POT-Creation-Date: 2009-06-23 18:03+CEST\n"
+"POT-Creation-Date: 2009-07-06 13:28+CEST\n"
 "PO-Revision-Date: 2009-06-24 21:32+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,46 +13,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-#: shellementary.in:275
+#: shellementary.in:277
 msgid "Enter something here"
 msgstr "Inserire qualcosa qui"
 
-#: shellementary.in:314 shellementary.in:544 shellementary.in:623
-#: shellementary.in:701 shellementary.in:779
+#: shellementary.in:316 shellementary.in:557 shellementary.in:636
+#: shellementary.in:714 shellementary.in:792
 msgid "Cancel"
 msgstr "Annulla"
 
-#: shellementary.in:321 shellementary.in:386 shellementary.in:466
-#: shellementary.in:551 shellementary.in:630 shellementary.in:708
-#: shellementary.in:786
+#: shellementary.in:323 shellementary.in:388 shellementary.in:474
+#: shellementary.in:564 shellementary.in:643 shellementary.in:721
+#: shellementary.in:799
 msgid "OK"
 msgstr "OK"
 
-#: shellementary.in:423
+#: shellementary.in:425
 msgid "Text information"
 msgstr "Testo informativo"
 
-#: shellementary.in:505
+#: shellementary.in:513
 msgid "Select an item from the list"
 msgstr "Selezionare un elemento dalla lista"
 
-#: shellementary.in:584
+#: shellementary.in:597
 msgid "I have a question"
 msgstr "Ho una domanda da fare"
 
-#: shellementary.in:667
+#: shellementary.in:680
 msgid "Set a value"
 msgstr "Imposta un valore"
 
-#: shellementary.in:745
+#: shellementary.in:758
 msgid "A clock :)"
 msgstr "Un orologio :)"
 
-#: shellementary.in:814
+#: shellementary.in:827
 msgid "About Shellementary"
 msgstr "A proposito di Shellementary"
 
-#: shellementary.in:844
+#: shellementary.in:857
 msgid ""
 "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, "
 "supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/"
@@ -65,7 +65,7 @@ msgstr ""
 "toolkit Elementary di <b>raster</> e su Python.<br><b>Licenza:</> GNU "
 "General Public License v3"
 
-#: shellementary.in:856
+#: shellementary.in:869
 msgid ""
 "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>The "
 "Rasterman (raster)</> for Enlightenment DR17, great Elementary toolkit and "
@@ -77,116 +77,117 @@ msgstr ""
 "<b>Autore:</> quaker (quaker66@gmail.com)<br><br><b>Crediti:</><br><b>The "
 "Rasterman (raster)</> per Enlightenment DR17, l'ottimo toolkit Elementary e "
 "l'aiuto nello sviluppo<br><b>Gustavo Sverzut Barbieri (k-s)</> per le "
-"estensioni python-efl e l'aiuto nello sviluppo<br><b>Simon Busch (morphis)"
-"</> per le estensioni python-elementary<br><b>Johannes Schauer (josch)</> "
-"per l'aiuto con python<br><b>Jonathan Atton (watchwolf)</> per l'aiuto con "
+"estensioni python-efl e l'aiuto nello sviluppo<br><b>Simon Busch (morphis)</"
+"> per le estensioni python-elementary<br><b>Johannes Schauer (josch)</> per "
+"l'aiuto con python<br><b>Jonathan Atton (watchwolf)</> per l'aiuto con "
 "elementary<br>"
 
-#: shellementary.in:878
+#: shellementary.in:891
 msgid "Close"
 msgstr "Chiudi"
 
-#: shellementary.in:911
+#: shellementary.in:924
 msgid "OPTIONS FOR ALL DIALOGS"
 msgstr "OPZIONI PER TUTTE LE FINESTRE DI DIALOGO"
 
-#: shellementary.in:911
+#: shellementary.in:924
 msgid "These are options which you can use for all dialogs."
 msgstr "Queste sono opzioni utilizzabili con tutte le finestre di dialogo."
 
-#: shellementary.in:913
+#: shellementary.in:926
 msgid "Set window title."
 msgstr "Imposta titolo della finestra."
 
-#: shellementary.in:914
+#: shellementary.in:927
 msgid "Set window text."
 msgstr "Imposta testo della finestra."
 
-#: shellementary.in:915
+#: shellementary.in:928
 msgid "Set window width in pixels."
 msgstr "Imposta larghezza finestra in pixel."
 
-#: shellementary.in:916
+#: shellementary.in:929
 msgid "Set window height in pixels."
 msgstr "Imposta altezza finestra in pixel."
 
-#: shellementary.in:917
+#: shellementary.in:930
 msgid "Set image as window background."
 msgstr "Imposta immagine di sfondo."
 
-#: shellementary.in:918
+#: shellementary.in:931
 msgid "Show About dialog."
 msgstr "Mostra finestra informazioni."
 
-#: shellementary.in:921
+#: shellementary.in:934
 msgid "OPTIONS TO SHOW DIALOGS"
 msgstr "OPZIONI VISUALIZZAZIONE FINESTRE DI DIALOGO"
 
-#: shellementary.in:921
+#: shellementary.in:934
 msgid "These are options with which you can show dialogs."
-msgstr "Queste sono opzioni con cui si possono visualizzare finestre di dialogo."
+msgstr ""
+"Queste sono opzioni con cui si possono visualizzare finestre di dialogo."
 
-#: shellementary.in:923
+#: shellementary.in:936
 msgid "Show entry dialog."
 msgstr "Visualizza finestra di aggiunta elemento."
 
-#: shellementary.in:924
+#: shellementary.in:937
 msgid "Show error dialog."
 msgstr "Visualizza finestra di errore."
 
-#: shellementary.in:925
+#: shellementary.in:938
 msgid "Show warning dialog."
 msgstr "Visualizza finestra di avvertimento."
 
-#: shellementary.in:926
+#: shellementary.in:939
 msgid "Show information dialog."
 msgstr "Visualizza finestra di informazione."
 
-#: shellementary.in:927
+#: shellementary.in:940
 msgid "Show text information dialog."
 msgstr "Visualizza finestra di informazione da testo."
 
-#: shellementary.in:928
+#: shellementary.in:941
 msgid "Show list dialog."
 msgstr "Visualizza finestra con elenco."
 
-#: shellementary.in:929
+#: shellementary.in:942
 msgid "Show question dialog."
 msgstr "Visualizza finestra di domanda."
 
-#: shellementary.in:930
+#: shellementary.in:943
 msgid "Show clock dialog."
 msgstr "Visualizza finestra con orologio."
 
-#: shellementary.in:931
+#: shellementary.in:944
 msgid "Show scale dialog."
 msgstr "Visualizza finestra di scalatura."
 
-#: shellementary.in:934
+#: shellementary.in:947
 msgid "Arguments which can be used only with entry dialog."
 msgstr "Argomenti utilizzabili solo con finestre di aggiunta elemento."
 
-#: shellementary.in:934
+#: shellementary.in:947
 msgid "ENTRY DIALOG ARGUMENTS"
 msgstr "ARGOMENTI PER FINESTRE AGGIUNTA ELEMENTO"
 
-#: shellementary.in:936
+#: shellementary.in:949
 msgid "Set entry text"
 msgstr "Imposta testo elemento"
 
-#: shellementary.in:937
+#: shellementary.in:950
 msgid "Password-like entry"
 msgstr "Elemento di tipo password"
 
-#: shellementary.in:940
+#: shellementary.in:953
 msgid "Arguments which can be used only with text info dialog."
 msgstr "Argomenti utilizzabili solo con finestre informazioni da testo."
 
-#: shellementary.in:940
+#: shellementary.in:953
 msgid "TEXT INFO DIALOG ARGUMENTS"
 msgstr "ARGOMENTI PER FINESTRE INFORMAZIONI DA TESTO"
 
-#: shellementary.in:942
+#: shellementary.in:955
 msgid ""
 "Set file to show in text info, if you want to show text not from file, it "
 "reads from stdin."
@@ -194,31 +195,31 @@ msgstr ""
 "Imposta file da visualizzare come testo informativo, se non si vuole "
 "visualizzare testo da un file verrà letto lo stdin."
 
-#: shellementary.in:943 shellementary.in:952
+#: shellementary.in:956 shellementary.in:965
 msgid "Set it editable."
 msgstr "Imposta come modificabile."
 
-#: shellementary.in:944
+#: shellementary.in:957
 msgid "Disable text wrap."
 msgstr "Disabilita a capo automatico."
 
-#: shellementary.in:947
+#: shellementary.in:960
 msgid "Arguments which can be used only with clock dialog."
 msgstr "Argomenti utilizzabili solo con finestre con orologio."
 
-#: shellementary.in:947
+#: shellementary.in:960
 msgid "CLOCK DIALOG ARGUMENTS"
 msgstr "ARGOMENTI PER FINESTRE CON OROLOGIO"
 
-#: shellementary.in:949
+#: shellementary.in:962
 msgid "Show seconds in clock."
 msgstr "Mostra secondi nell'orologio."
 
-#: shellementary.in:950
+#: shellementary.in:963
 msgid "Show AM/PM switch."
 msgstr "Mostra commutatore AM/PM."
 
-#: shellementary.in:951
+#: shellementary.in:964
 msgid ""
 "Set time in format \"HOURS, MINUTES, SECONDS\". Works in combination with --"
 "clock-editable."
@@ -226,43 +227,43 @@ msgstr ""
 "Imposta ora nel formato \"ORE, MINUTI, SECONDI\". Funziona in combinazione "
 "con --clock-editable."
 
-#: shellementary.in:955
+#: shellementary.in:968
 msgid "Arguments which can be used only with scale dialog."
 msgstr "Argomenti utilizzabili solo con finestre di scalatura."
 
-#: shellementary.in:955
+#: shellementary.in:968
 msgid "SCALE DIALOG ARGUMENTS"
 msgstr "ARGOMENTI PER FINESTRE DI SCALATURA"
 
-#: shellementary.in:957
+#: shellementary.in:970
 msgid "Set slider value."
 msgstr "Imposta valore per il cursore."
 
-#: shellementary.in:958
+#: shellementary.in:971
 msgid "Set slider minimal value."
 msgstr "Imposta valore minimo per il cursore."
 
-#: shellementary.in:959
+#: shellementary.in:972
 msgid "Set slider maximal value."
 msgstr "Imposta valore massimo per il cursore."
 
-#: shellementary.in:960
+#: shellementary.in:973
 msgid "Set slider step."
 msgstr "Imposta passo per il cursore."
 
-#: shellementary.in:961
+#: shellementary.in:974
 msgid "Print partial values."
 msgstr "Stampa valori parziali."
 
-#: shellementary.in:962
+#: shellementary.in:975
 msgid "Hide value."
 msgstr "Nascondi valore."
 
-#: shellementary.in:963
+#: shellementary.in:976
 msgid "If set, slider will be inverted."
 msgstr "Se impostato inverte il cursore."
 
-#: shellementary.in:964
+#: shellementary.in:977
 msgid ""
 "Set slider unit format - for example \"value: %0.1f\", that will print "
 "value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
@@ -270,26 +271,26 @@ msgstr ""
 "Imposta formato unità per cursore - ad esempio \"valore: %0.1f\", stamperà "
 "il valore: 156.1 oppure %0.2f stamperà 156.12, %0.3f 156.125 ecc."
 
-#: shellementary.in:965
+#: shellementary.in:978
 msgid "Set slider label."
 msgstr "Imposta etichetta cursore."
 
-#: shellementary.in:966
+#: shellementary.in:979
 msgid "Set slider icon."
 msgstr "Imposta icona cursore."
 
-#: shellementary.in:967
+#: shellementary.in:980
 msgid "If set, slider will be vertical."
 msgstr "Se impostato il cursore sarà verticale."
 
-#: shellementary.in:1007
+#: shellementary.in:1020
 msgid "Error!"
 msgstr "Errore!"
 
-#: shellementary.in:1017
+#: shellementary.in:1030
 msgid "Warning!"
 msgstr "Avvertenza!"
 
-#: shellementary.in:1027
+#: shellementary.in:1040
 msgid "Information"
 msgstr "Informazioni"

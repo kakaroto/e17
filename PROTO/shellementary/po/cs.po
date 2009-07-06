@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: shellementary\n"
-"POT-Creation-Date: 2009-06-21 17:16+CEST\n"
+"POT-Creation-Date: 2009-07-06 13:28+CEST\n"
 "PO-Revision-Date: 2009-06-21 17:16+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
@@ -13,258 +13,281 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-#: shellementary.py:275
+#: shellementary.in:277
 msgid "Enter something here"
 msgstr "Zadejte něco zde"
 
-#: shellementary.py:314
-#: shellementary.py:544
-#: shellementary.py:623
-#: shellementary.py:701
-#: shellementary.py:779
+#: shellementary.in:316 shellementary.in:557 shellementary.in:636
+#: shellementary.in:714 shellementary.in:792
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: shellementary.py:321
-#: shellementary.py:386
-#: shellementary.py:466
-#: shellementary.py:551
-#: shellementary.py:630
-#: shellementary.py:708
-#: shellementary.py:786
+#: shellementary.in:323 shellementary.in:388 shellementary.in:474
+#: shellementary.in:564 shellementary.in:643 shellementary.in:721
+#: shellementary.in:799
 msgid "OK"
 msgstr "OK"
 
-#: shellementary.py:423
+#: shellementary.in:425
 msgid "Text information"
 msgstr "Textová informace"
 
-#: shellementary.py:505
+#: shellementary.in:513
 msgid "Select an item from the list"
 msgstr "Vyberte položku ze seznamu"
 
-#: shellementary.py:584
+#: shellementary.in:597
 msgid "I have a question"
 msgstr "Mám otázku"
 
-#: shellementary.py:667
+#: shellementary.in:680
 msgid "Set a value"
 msgstr "Nastavte hodnotu"
 
-#: shellementary.py:745
+#: shellementary.in:758
 msgid "A clock :)"
 msgstr "Hodiny :)"
 
-#: shellementary.py:814
+#: shellementary.in:827
 msgid "About Shellementary"
 msgstr "O programu Shellementary"
 
-#: shellementary.py:844
-msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and Python.<br><b>License:</> GNU General Public License v3"
-msgstr "<b>Zobrazte dialogy ze skriptů shellu</><br>Program napsán jako náhrada zenity, podporuje stejné parametry<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Založen na skvělém toolkitu Elementary od <b>rastera</> a Pythonu.<br><b>Licence:</> GNU General Public License v3"
+#: shellementary.in:857
+msgid ""
+"<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, "
+"supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/"
+"PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> "
+"and Python.<br><b>License:</> GNU General Public License v3"
+msgstr ""
+"<b>Zobrazte dialogy ze skriptů shellu</><br>Program napsán jako náhrada "
+"zenity, podporuje stejné parametry<br><b>http://svn.enlightenment.org/svn/e/"
+"trunk/PROTO/shellementary</><br>Založen na skvělém toolkitu Elementary od "
+"<b>rastera</> a Pythonu.<br><b>Licence:</> GNU General Public License v3"
 
-#: shellementary.py:856
-msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>The Rasterman (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Gustavo Sverzut Barbieri (k-s)</> for python-efl bindings and help with developenment<br><b>Simon Busch (morphis)</> for python-elementary bindings<br><b>Johannes Schauer (josch)</> for help with python<br><b>Jonathan Atton (watchwolf)</> for help with elementary<br>"
-msgstr "<b>Autor:</> quaker (quaker66@gmail.com)<br><br><b>Poděkování:</><br><b>The Rasterman (raster)</> za Enlightenment DR17, skvělý Elementary toolkit a pomoc s vývojem<br><b>Gustavo Sverzut Barbieri (k-s)</> za python-efl bindingy a pomoc při vývoji<br><b>Simon Busch (morphis)</> za python-elementary bindingy<br><b>Johannes Schauer (josch)</> za pomoc s Pythonem<br><b>Jonathan Atton (watchwolf)</> za pomoc s Elementary<br>"
+#: shellementary.in:869
+msgid ""
+"<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>The "
+"Rasterman (raster)</> for Enlightenment DR17, great Elementary toolkit and "
+"help with developenment<br><b>Gustavo Sverzut Barbieri (k-s)</> for python-"
+"efl bindings and help with developenment<br><b>Simon Busch (morphis)</> for "
+"python-elementary bindings<br><b>Johannes Schauer (josch)</> for help with "
+"python<br><b>Jonathan Atton (watchwolf)</> for help with elementary<br>"
+msgstr ""
+"<b>Autor:</> quaker (quaker66@gmail.com)<br><br><b>Poděkování:</><br><b>The "
+"Rasterman (raster)</> za Enlightenment DR17, skvělý Elementary toolkit a "
+"pomoc s vývojem<br><b>Gustavo Sverzut Barbieri (k-s)</> za python-efl "
+"bindingy a pomoc při vývoji<br><b>Simon Busch (morphis)</> za python-"
+"elementary bindingy<br><b>Johannes Schauer (josch)</> za pomoc s "
+"Pythonem<br><b>Jonathan Atton (watchwolf)</> za pomoc s Elementary<br>"
 
-#: shellementary.py:878
+#: shellementary.in:891
 msgid "Close"
 msgstr "Zavřít"
 
-#: shellementary.py:911
+#: shellementary.in:924
 msgid "OPTIONS FOR ALL DIALOGS"
 msgstr "VOLBY PRO VŠECHNY DIALOGY"
 
-#: shellementary.py:911
+#: shellementary.in:924
 msgid "These are options which you can use for all dialogs."
 msgstr "Tyto volby můžete použít pro všechny dialogy."
 
-#: shellementary.py:913
+#: shellementary.in:926
 msgid "Set window title."
 msgstr "Nastavit titulek okna."
 
-#: shellementary.py:914
+#: shellementary.in:927
 msgid "Set window text."
 msgstr "Nastavit text okna."
 
-#: shellementary.py:915
+#: shellementary.in:928
 msgid "Set window width in pixels."
 msgstr "Nastavit šířku okna v pixelech."
 
-#: shellementary.py:916
+#: shellementary.in:929
 msgid "Set window height in pixels."
 msgstr "Nastavit výšku okna v pixelech."
 
-#: shellementary.py:917
+#: shellementary.in:930
 msgid "Set image as window background."
 msgstr "Nastavit obrázek jako pozadí okna."
 
-#: shellementary.py:918
+#: shellementary.in:931
 msgid "Show About dialog."
 msgstr "Zobrazit dialog O programu."
 
-#: shellementary.py:921
+#: shellementary.in:934
 msgid "OPTIONS TO SHOW DIALOGS"
 msgstr "VOLBY KE ZOBRAZENÍ DIALOGŮ"
 
-#: shellementary.py:921
+#: shellementary.in:934
 msgid "These are options with which you can show dialogs."
 msgstr "Volby ke zobrazení dialogů."
 
-#: shellementary.py:923
+#: shellementary.in:936
 msgid "Show entry dialog."
 msgstr "Zobrazit dialog Pole."
 
-#: shellementary.py:924
+#: shellementary.in:937
 msgid "Show error dialog."
 msgstr "Zobrazit dialog Chyba."
 
-#: shellementary.py:925
+#: shellementary.in:938
 msgid "Show warning dialog."
 msgstr "Zobrazit dialog Varování."
 
-#: shellementary.py:926
+#: shellementary.in:939
 msgid "Show information dialog."
 msgstr "Zobrazit dialog Informace."
 
-#: shellementary.py:927
+#: shellementary.in:940
 msgid "Show text information dialog."
 msgstr "Zobrazit dialog Textová informace."
 
-#: shellementary.py:928
+#: shellementary.in:941
 msgid "Show list dialog."
 msgstr "Zobrazit dialog Seznam."
 
-#: shellementary.py:929
+#: shellementary.in:942
 msgid "Show question dialog."
 msgstr "Zobrazit dialog Otázka."
 
-#: shellementary.py:930
+#: shellementary.in:943
 msgid "Show clock dialog."
 msgstr "Zobrazit dialog Hodiny."
 
-#: shellementary.py:931
+#: shellementary.in:944
 msgid "Show scale dialog."
 msgstr "Zobrazit dialog Měřítko."
 
-#: shellementary.py:934
+#: shellementary.in:947
 msgid "Arguments which can be used only with entry dialog."
 msgstr "Parametry použitelné jen pro dialog Pole."
 
-#: shellementary.py:934
+#: shellementary.in:947
 msgid "ENTRY DIALOG ARGUMENTS"
 msgstr "PARAMETRY DIALOGU POLE"
 
-#: shellementary.py:936
+#: shellementary.in:949
 msgid "Set entry text"
 msgstr "Nastavit text pole."
 
-#: shellementary.py:937
+#: shellementary.in:950
 msgid "Password-like entry"
 msgstr "Skrýt znaky(heslo)."
 
-#: shellementary.py:940
+#: shellementary.in:953
 msgid "Arguments which can be used only with text info dialog."
 msgstr "Parametry použitelné jen pri dialog Textová informace."
 
-#: shellementary.py:940
+#: shellementary.in:953
 msgid "TEXT INFO DIALOG ARGUMENTS"
 msgstr "PARAMETRY DIALOGU TEXTOVÁ INFORMACE"
 
-#: shellementary.py:942
-msgid "Set file to show in text info, if you want to show text not from file, it reads from stdin."
-msgstr "Zadat soubor ke zobrazení, pokud nechcete soubor, dialog čte také ze standartního vstupu."
+#: shellementary.in:955
+msgid ""
+"Set file to show in text info, if you want to show text not from file, it "
+"reads from stdin."
+msgstr ""
+"Zadat soubor ke zobrazení, pokud nechcete soubor, dialog čte také ze "
+"standartního vstupu."
 
-#: shellementary.py:943
-#: shellementary.py:952
+#: shellementary.in:956 shellementary.in:965
 msgid "Set it editable."
 msgstr "Upravitelný text."
 
-#: shellementary.py:944
+#: shellementary.in:957
 msgid "Disable text wrap."
 msgstr "Zakázat zalamování textu."
 
-#: shellementary.py:947
+#: shellementary.in:960
 msgid "Arguments which can be used only with clock dialog."
 msgstr "Parametry použitelné jen pro dialog Hodiny."
 
-#: shellementary.py:947
+#: shellementary.in:960
 msgid "CLOCK DIALOG ARGUMENTS"
 msgstr "PARAMETRY DIALOGU HODINY"
 
-#: shellementary.py:949
+#: shellementary.in:962
 msgid "Show seconds in clock."
 msgstr "Zobrazit sekundy."
 
-#: shellementary.py:950
+#: shellementary.in:963
 msgid "Show AM/PM switch."
 msgstr "Zobrazit přepínač Ráno/Večer."
 
-#: shellementary.py:951
-msgid "Set time in format \"HOURS, MINUTES, SECONDS\". Works in combination with --clock-editable."
-msgstr "Nastavit čas ve formátu \"HODINY, MINUTY, SEKUNDY\". Funguje v kombinaci s --clock-editable."
+#: shellementary.in:964
+msgid ""
+"Set time in format \"HOURS, MINUTES, SECONDS\". Works in combination with --"
+"clock-editable."
+msgstr ""
+"Nastavit čas ve formátu \"HODINY, MINUTY, SEKUNDY\". Funguje v kombinaci s --"
+"clock-editable."
 
-#: shellementary.py:955
+#: shellementary.in:968
 msgid "Arguments which can be used only with scale dialog."
 msgstr "Parametry použitelné jen pro dialog Měřítko."
 
-#: shellementary.py:955
+#: shellementary.in:968
 msgid "SCALE DIALOG ARGUMENTS"
 msgstr "PARAMETRY DIALOGU MĚŘÍTKO"
 
-#: shellementary.py:957
+#: shellementary.in:970
 msgid "Set slider value."
 msgstr "Nastavit počáteční hodnotu."
 
-#: shellementary.py:958
+#: shellementary.in:971
 msgid "Set slider minimal value."
 msgstr "Nastavit minimální hodnotu."
 
-#: shellementary.py:959
+#: shellementary.in:972
 msgid "Set slider maximal value."
 msgstr "Nastavit maximální hodnotu."
 
-#: shellementary.py:960
+#: shellementary.in:973
 msgid "Set slider step."
 msgstr "Nastavit velikost kroku."
 
-#: shellementary.py:961
+#: shellementary.in:974
 msgid "Print partial values."
 msgstr "Vypsat částečné hodnoty."
 
-#: shellementary.py:962
+#: shellementary.in:975
 msgid "Hide value."
 msgstr "Skrýt hodnotu."
 
-#: shellementary.py:963
+#: shellementary.in:976
 msgid "If set, slider will be inverted."
 msgstr "Invertovat jezdec."
 
-#: shellementary.py:964
-msgid "Set slider unit format - for example \"value: %0.1f\", that will print value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
-msgstr "Nastavit formát popisku napravo - například \"hodnota: %0.1f\", vypíše hodnota: 156.1 nebo %0.2f vypíše 156.12, %0.3f 156.125 atd."
+#: shellementary.in:977
+msgid ""
+"Set slider unit format - for example \"value: %0.1f\", that will print "
+"value: 156.1 or %0.2f will print 156.12, %0.3f 156.125 etc."
+msgstr ""
+"Nastavit formát popisku napravo - například \"hodnota: %0.1f\", vypíše "
+"hodnota: 156.1 nebo %0.2f vypíše 156.12, %0.3f 156.125 atd."
 
-#: shellementary.py:965
+#: shellementary.in:978
 msgid "Set slider label."
 msgstr "Nastavit popis jezdce.(vlevo)"
 
-#: shellementary.py:966
+#: shellementary.in:979
 msgid "Set slider icon."
 msgstr "Nastavit ikonu jezdce."
 
-#: shellementary.py:967
+#: shellementary.in:980
 msgid "If set, slider will be vertical."
 msgstr "Svislý jezdec."
 
-#: shellementary.py:1007
+#: shellementary.in:1020
 msgid "Error!"
 msgstr "Chyba!"
 
-#: shellementary.py:1017
+#: shellementary.in:1030
 msgid "Warning!"
 msgstr "Varování!"
 
-#: shellementary.py:1027
+#: shellementary.in:1040
 msgid "Information"
 msgstr "Informace"
-

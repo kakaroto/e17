@@ -12,6 +12,8 @@ from optparse import OptionGroup
 import re
 # read from stdin
 import sys
+# needed to check if there is something on stdin
+import select
 
 ### TRANSLATIONS SECTION
 # set locale
@@ -452,11 +454,17 @@ def textinfo_dialog(window_title, window_text, window_width, window_height, wind
 	# first set text to insert
 	# according to arguments, open the file or read stdin
 	if textinfo_filename == None:
-		input = sys.stdin
+		# select is needed to check if there is something entered on stdin
+		r, w, x = select.select([sys.stdin], [], [], 0)
+		if r:
+			# if there is, set stdin as content
+			content = sys.stdin.read()
+		else:
+			# if filename is not set and there is nothing on stdin, make an empty entry like zenity does
+			content = None
 	else:
-		input = open(textinfo_filename, "r")
-	# read it
-	content = input.read()
+		# if filename argument set, ignore stdin and set file as entry content
+		content = open(textinfo_filename, "r").read()
 	# add a textinfo
 	textinfo = create_entry(window, False, content, False, textinfo_nowrap, textinfo_editable)
 	# append it
@@ -528,8 +536,13 @@ def list_dialog(window_title, window_text, window_width, window_height, window_b
 	## create a list
 	# if not set in arguments, try to load listitems from stdin
 	if listitems == []:
-		listitems = re.split('[\n]+', sys.stdin.read())
-		listitems.remove('')
+		# select is needed to check if there is something entered on stdin
+		r, w, x = select.select([sys.stdin], [], [], 0)
+		if r:
+			# if there is, try to set list items from stdin
+			listitems = re.split('[\n]+', sys.stdin.read())
+			# remove the empty element
+			listitems.remove('')
 	# create a list widget with items
 	mainlist = create_list(window, listitems)
 	# add it to a box

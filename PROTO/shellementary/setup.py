@@ -82,8 +82,12 @@ def clean():
 		if os.path.isfile('po/'+translation+'.mo'):
 			os.remove('po/'+translation+'.mo')
 
+# make .pot file used as a base for new translations
+def makepot():
+	os.system('pygettext shellementary.in')
+
 # parse options
-usage = "usage: %prog [options] build|install|clean"
+usage = "usage: %prog [options] build|install|clean|makepot"
 parser = OptionParser(usage=usage)
 parser.add_option("-p", "--prefix", dest="prefix", help="Set installation prefix.", default="/usr")
 options, args = parser.parse_args()
@@ -97,6 +101,8 @@ elif args[0] == "install":
 	install(destdir, options.prefix)
 elif args[0] == "clean":
 	clean()
+elif args[0] == "makepot":
+	makepot()
 else:
 	print "Unsupported argument: "+str(args[0])
 	sys.exit(1)
