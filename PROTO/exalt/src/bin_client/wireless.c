@@ -215,7 +215,7 @@ void wireless_set(Wireless *wireless, Iface_List_Elt* network)
                 for(j=0;j<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);j++)
                 {
                     char buf[1024];
-                    char* pairwise =
+                    const char* pairwise =
                         exalt_wireless_network_name_from_cypher_name(
                                 exalt_wireless_network_ie_pairwise_cypher_get(ie,j));
 
@@ -276,7 +276,7 @@ void wireless_hoversel_wpa_select(void *data,
 
 void wireless_disabled_update(Wireless *wireless)
 {
-    ;
+    wireless = wireless;
 }
 
 

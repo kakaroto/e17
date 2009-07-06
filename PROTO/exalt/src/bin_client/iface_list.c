@@ -51,6 +51,7 @@ Evas_Object *gl_icon_get(const void *data, Evas_Object *obj, const char *part)
             switch(elt->iface_type)
             {
                 case IFACE_WIRED:
+                case IFACE_UNKNOWN:
                     if(!elt->is_link)
                         elm_icon_file_set(icon, DEFAULT_THEME,
                                 "exalt/icons/wired/notlink");

@@ -170,20 +170,15 @@ Exalt_Wireless_Network_Auth_Suites_List exalt_wireless_network_auth_suites_tab[]
     {AUTH_SUITES_NONE,"none"},
     {AUTH_SUITES_EAP,"EAP"},
     {AUTH_SUITES_PSK,"PSK"},
-    {AUTH_SUITES_PROPRIETARY,"proprietary"},
     {AUTH_SUITES_UNKNOWN,"unknown"}
 };
 
 Exalt_Wireless_Network_Cypher_Name_List exalt_wireless_network_cypher_name_tab[]=
 {
     {CYPHER_NAME_NONE,"none"},
-    {CYPHER_NAME_WEP40,"WEP40"},
     {CYPHER_NAME_TKIP,"TKIP"},
-    {CYPHER_NAME_WRAP,"WRAP"},
     {CYPHER_NAME_CCMP,"CCMP"},
-    {CYPHER_NAME_WEP104,"WEP104"},
-    {CYPHER_NAME_UNKNOWN,"unknown"},
-    {CYPHER_NAME_PROPRIETARY,"proprietary"}
+    {CYPHER_NAME_UNKNOWN,"unknown"}
 };
 
 Exalt_Wireless_Network_Wpa_Type_List exalt_wireless_network_wpa_type_tab[]=

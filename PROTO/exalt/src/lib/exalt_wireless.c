@@ -272,6 +272,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         {
             case WPA_TYPE_WPA: s = "WPA"; break;
             case WPA_TYPE_WPA2: s = "WPA2"; break;
+            case WPA_TYPE_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"WPA_TYPE_UNKNOWN"); break;
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d proto %s",
@@ -286,6 +287,8 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         {
             case AUTH_SUITES_PSK: s = "WPA-PSK"; break;
             case AUTH_SUITES_EAP: s = "WPA-EAP"; break;
+            case AUTH_SUITES_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_UNKNOWN"); break;
+            case AUTH_SUITES_NONE: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_NONE"); break;
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt %s",
@@ -300,6 +303,8 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         {
             case CYPHER_NAME_TKIP: s = "TKIP"; break;
             case CYPHER_NAME_CCMP: s = "CCMP"; break;
+            case CYPHER_NAME_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_UNKNOWN"); break;
+            case CYPHER_NAME_NONE: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_NONE"); break;
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d pairwise %s",
@@ -314,6 +319,8 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         {
             case CYPHER_NAME_TKIP: s = "TKIP"; break;
             case CYPHER_NAME_CCMP: s = "CCMP"; break;
+            case CYPHER_NAME_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_UNKNOWN"); break;
+            case CYPHER_NAME_NONE: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_NONE"); break;
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d group %s",

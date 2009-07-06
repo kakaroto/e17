@@ -190,9 +190,17 @@ void exalt_conn_login_set(
 
 
 /**
- * @brief return the mode of the connection
+ * @brief Returns the mode of the connection
  */
 Exalt_Enum_Mode exalt_conn_mode_get(Exalt_Connection* conn);
+
+/**
+ * @brief Returns 1 if the connection use a hexadecimal key
+ */
+
+int exalt_conn_wep_key_hexa_is(Exalt_Connection* conn);
+
+
 
 /**
  * @brief return if the wep key is a hexa key
