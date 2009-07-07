@@ -75,9 +75,9 @@ typedef struct exalt_ioctl_key
 
 /** Command to launch a dhcp */
 #ifdef DHCP_COMMAND_PATH
-    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q"
-    #define DHCLIENT_PID_FILE "/var/run/dhcp/dhclient.pid"
-    #define DHCLIENT_PID_FILE2 "/var/run/dhclient.pid"
+    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q -pf %s"
+    #define DHCLIENT_PID_FILE "/var/run/dhclient_%s.pid"
+    #define DHCLIENT_EXALT_PID_FILE "/var/run/dhclient_exalt_%s.pid"
 #endif
 
 /** Command to lauch the wpa_supplicant daemon */

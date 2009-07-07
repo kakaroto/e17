@@ -87,7 +87,6 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
 void exalt_wpa_stop(Exalt_Wireless* w)
 {
     struct wpa_ctrl *ctrl_conn;
-    Exalt_Ethernet* eth;
     char buf[2048];
     int buf_len = sizeof(buf)-1;
     EXALT_ASSERT_RETURN_VOID(w!=NULL);
@@ -101,6 +100,25 @@ void exalt_wpa_stop(Exalt_Wireless* w)
     }
 }
 
+/**
+ * @brief tell to the wpa_supplicant daemon to disconnect
+ * @param w the wireless interface
+ */
+void exalt_wpa_disconnect(Exalt_Wireless* w)
+{
+    struct wpa_ctrl *ctrl_conn;
+    char buf[2048];
+    int buf_len = sizeof(buf)-1;
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+
+    ctrl_conn = exalt_wpa_open_connection(w);
+    if(ctrl_conn)
+    {
+        exalt_wpa_ctrl_command(ctrl_conn, "DISCONNECT",buf,buf_len);
+        wpa_ctrl_close(ctrl_conn);
+        ctrl_conn=NULL;
+    }
+}
 
 /**
  * @brief send a command to the wpa_supplicant daemon

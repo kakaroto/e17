@@ -92,7 +92,7 @@ EXALT_GET(networks,Eina_List*)
 
 void exalt_wireless_down(Exalt_Wireless *w)
 {
-    exalt_wpa_stop(w);
+    exalt_wpa_disconnect(w);
 }
 
 char* exalt_wireless_essid_get(Exalt_Wireless* w)

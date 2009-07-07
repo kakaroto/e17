@@ -39,6 +39,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth);
 
 void _exalt_eth_connected_status_update(Exalt_Ethernet *eth);
 
+void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth);
 
 /**
  * @addtogroup Exalt_Ethernet
@@ -63,6 +64,7 @@ struct Exalt_Ethernet
     short _save_up;
 
     pid_t apply_pid;
+
     Ecore_Timer *apply_timer;
 
     time_t dont_apply_after_up;
@@ -76,6 +78,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
 {
     struct iwreq wrq;
     Exalt_Ethernet* eth;
+    char buf[1024];
 
     eth = (Exalt_Ethernet*)calloc(1, sizeof(Exalt_Ethernet));
     EXALT_ASSERT_RETURN(eth!=NULL);
@@ -117,6 +120,14 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
         exalt_eth_free(eth);
         eth = NULL;
     }
+
+    //delete the dhcp pid file if ti exists
+    snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
+    remove(buf);
+
+    snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
+    remove(buf);
+
     return eth;
 }
 
@@ -206,6 +217,8 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 
     if(exalt_eth_wireless_is(eth))
         exalt_wireless_down(exalt_eth_wireless_get(eth));
+
+    _exalt_eth_dhcp_daemon_kill(eth);
 }
 
 
@@ -557,6 +570,9 @@ int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_CONN_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
 
     exalt_eth_connection_set(eth,c);
+
+    _exalt_eth_dhcp_daemon_kill(eth);
+
 
     eth->apply_pid = fork();
     EXALT_ASSERT_ADV(eth->apply_pid>=0,
@@ -1182,47 +1198,85 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 {
 #ifdef HAVE_DHCP
-    char* ret;
     Ecore_Exe * exe;
     int status;
     char command[1024];
-    FILE* f = NULL;
     char buf[1024];
-    pid_t pid, pid_file;
+    char buf2[1024];
+    pid_t pid;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    sprintf(command,COMMAND_DHCLIENT,exalt_eth_name_get(eth));
+
+    snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
+    snprintf(command,1024,COMMAND_DHCLIENT,exalt_eth_name_get(eth),buf);
     exe = ecore_exe_run(command, NULL);
     pid = ecore_exe_pid_get(exe);
+
+    //write the pid in the exalt dhcp pid file
+    snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
+    FILE *f_exalt_pid = fopen(buf,"w");
+    snprintf(buf2,1024,"%d",pid);
+    fwrite(buf2,1,sizeof(buf2),f_exalt_pid);
+    fclose(f_exalt_pid);
+
     waitpid(pid, &status, 0);
+
+    //delete the exalt dhcp pid file
+    remove(buf);
+
     ecore_exe_free(exe);
 
-    //dhclient create a background process, we don't need it, we kill it.
     usleep(500);
+    _exalt_eth_dhcp_daemon_kill(eth);
 
-    const char *file = NULL;
-    if(ecore_file_exists(DHCLIENT_PID_FILE))
-        file = DHCLIENT_PID_FILE;
-    else if(ecore_file_exists(DHCLIENT_PID_FILE2))
-        file = DHCLIENT_PID_FILE2;
-
-    if(file)
-        f = fopen(file,"r");
-    if(f)
-    {
-        ret = fgets(buf,1024,f);
-        pid_file = atoi(buf);
-        kill(pid,SIGKILL);
-        remove(file);
-        fclose(f);
-    }
     return 1;
 #else
     EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp");
 #endif
 }
 
+/**
+ * Kill the dhcp daemon
+ */
+void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
+{
+    pid_t pid;
+    char* ret;
+    FILE *f = NULL;
+    char buf[1024];
+
+
+    //delete the daemon notify in the pid file
+    snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
+    f = fopen(buf,"r");
+
+    if(f)
+    {
+        ret = fgets(buf,1024,f);
+        pid = atoi(buf);
+
+        if(pid>0)
+            kill(pid,SIGKILL);
+        remove(buf);
+        fclose(f);
+    }
+
+    //delete the proc dhclient if it exists
+    snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
+    f = fopen(buf,"r");
+
+    if(f)
+    {
+        ret = fgets(buf,1024,f);
+        pid = atoi(buf);
+
+        if(pid>0)
+            kill(pid,SIGKILL);
+        remove(buf);
+        fclose(f);
+    }
+}
 
 /**
  * Hal functions

@@ -24,6 +24,7 @@
 struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w);
 int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl, char *cmd, char*buf, size_t buf_len);
 void exalt_wpa_stop(Exalt_Wireless* w);
+void exalt_wpa_disconnect(Exalt_Wireless* w);
 
 Eina_List* exalt_wpa_parse_scan_results(struct wpa_ctrl* ctrl,char *buf, Exalt_Wireless *w);
 void exalt_wpa_parse_1_result(struct wpa_ctrl* ctrl,int i, Exalt_Wireless_Network *wn);
