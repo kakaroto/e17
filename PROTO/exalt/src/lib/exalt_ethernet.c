@@ -1244,12 +1244,12 @@ void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
     pid_t pid;
     char* ret;
     FILE *f = NULL;
-    char buf[1024];
+    char buf[1024], file[1024];
 
 
     //delete the daemon notify in the pid file
-    snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
-    f = fopen(buf,"r");
+    snprintf(file,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
+    f = fopen(file,"r");
 
     if(f)
     {
@@ -1258,13 +1258,13 @@ void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
 
         if(pid>0)
             kill(pid,SIGKILL);
-        remove(buf);
+        remove(file);
         fclose(f);
     }
 
     //delete the proc dhclient if it exists
-    snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
-    f = fopen(buf,"r");
+    snprintf(file,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
+    f = fopen(file,"r");
 
     if(f)
     {
@@ -1273,7 +1273,7 @@ void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
 
         if(pid>0)
             kill(pid,SIGKILL);
-        remove(buf);
+        remove(file);
         fclose(f);
     }
 }
