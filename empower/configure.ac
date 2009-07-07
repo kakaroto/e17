@@ -89,8 +89,8 @@ PKG_CHECK_MODULES([EDJE], edje,
 
 AC_ARG_ENABLE(ewl,
         AC_HELP_STRING([--enable-ewl/--disable-ewl],
-        [enable/disable ewl version (default=autodetect)]),
-        [enable_ewl=$enableval ], [ enable_ewl=default])
+        [enable/disable ewl version (default=no)]),
+        [enable_ewl=$enableval ], [ enable_ewl=no])
 
 if test "x$enable_ewl" = "xdefault" || test "x$enable_ewl" = "xyes"; then
    PKG_CHECK_MODULES([EWL], ewl >= 0.4.0,
@@ -105,13 +105,27 @@ fi
 
 AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
 
-if test "x$enable_etk" = "xyes" && test "x$enable_ewl" = "xyes"; then
-  build_separate=yes
+if test "x$enable_ewl" = "xno"; then
+AC_ARG_ENABLE(elementary,
+        AC_HELP_STRING([--enable-elementary/--disable-elementary],
+        [enable/disable elementary version (default=autodetect)]),
+        [enable_elementary=$enableval ], [ enable_elementary=default])
+
+if test "x$enable_elementary" = "xdefault" || test "x$enable_elementary" = "xyes"; then
+   PKG_CHECK_MODULES([ELEMENTARY], elementary >= 0.5.0.0,
+      [  enable_elementary="yes"  ],
+      [
+         enable_elementary="no"
+         echo "Could not find Elementary.  If it is installed, \nplease makesure its path is in PKG_CONFIG_PATH";
+         AC_MSG_ERROR([Empower needs Elementary to compile the Elementary version.])
+      ]
+)
+fi
 else
-  build_separate=no
+enable_elementary="no"
 fi
 
-AM_CONDITIONAL(BUILD_SEPARATE, test x$build_separate = xyes)
+AM_CONDITIONAL(ENABLE_ELEMENTARY, test x$enable_elementary = xyes)
 
 AC_OUTPUT([
 Makefile 
@@ -119,17 +133,17 @@ empower.spec
 src/Makefile
 src/bin/Makefile
 src/bin/ewl/Makefile
+src/bin/elm/Makefile
+data/Makefile
 ])
 
 echo
 echo "Configuration:"
 echo
-echo "  Install path:                           ${prefix}"
+echo "  Install path:              ${prefix}"
 echo
 echo "  Toolkit Support"
 echo "  ----------------"
-echo "  Build ETK:                              $enable_etk"
-echo "  Build EWL:                              $enable_ewl"
-echo
-echo "  Building Seperate Binaries              $build_separate"
+echo "  EWL:                       $enable_ewl"
+echo "  Elementary:                $enable_elementary"
 echo 

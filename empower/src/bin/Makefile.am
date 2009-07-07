@@ -1,9 +1,13 @@
-if ENABLE_EWL
-    EWL_DIR = ewl
-else
-    EWL_DIR = 
+DIR=
+
+if ENABLE_ELEMENTARY
+  DIR += elm
 endif
 
-SUBDIRS = $(EWL_DIR)
+if ENABLE_EWL
+  DIR += ewl
+endif
+
+SUBDIRS = $(DIR)
 
 MAINTAINERCLEANFILES = Makefile.in config.h.in

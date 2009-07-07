@@ -1,0 +1,42 @@
+#include "Empower.h"
+
+int authorize(const char* password)
+{
+  Ecore_Exe* sudo_ptr;
+  char buf[128];
+    
+  snprintf(buf, 11, "sudo -v -S");
+
+  if(!sudo)
+  {
+    ecore_event_handler_add(ECORE_EXE_EVENT_DEL,sudo_done_cb,NULL);   
+    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,sudo_data_cb,NULL);
+    sudo = ecore_exe_pipe_run(buf,ECORE_EXE_PIPE_WRITE|ECORE_EXE_PIPE_READ|ECORE_EXE_PIPE_ERROR,NULL);
+  }
+  
+  if(password)
+  {
+    ecore_exe_send(sudo,(char*)password,strlen(password));
+    ecore_exe_send(sudo,"\n",1);
+  }
+  
+  return 1;
+}
+
+void check_sudo_timeout_job(void *data)
+{
+  auth_passed = 0;
+  authorize(NULL);
+}
+
+char* parse_entry(Evas_Object *e)
+{
+  char buf[4096], *markup;
+
+  snprintf(buf, sizeof(buf), elm_entry_entry_get(e));
+  markup = strstr(buf, "<br>");
+
+  if(markup) *markup = 0;
+
+  return strdup(buf);
+}
