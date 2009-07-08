@@ -1,0 +1,154 @@
+# Spanish translation for enlightenment
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the enlightenment package.
+# Federico Vera <Unknown>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-06-05 22:10+0800\n"
+"PO-Revision-Date: 2009-06-17 00:36+0000\n"
+"Last-Translator: Federico Vera <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/callbacks.c:53
+msgid "Save"
+msgstr "Guardar"
+
+#: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "Nueva Entrada"
+
+#: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
+msgid "Choose Icon"
+msgstr "Elija Ícono"
+
+#: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "Borrar Entrada"
+
+#: ../src/callbacks.c:81
+msgid "Quit"
+msgstr "Salir"
+
+#: ../src/callbacks.c:310
+msgid "No help file found!"
+msgstr "No se encontró el archivo de ayuda!"
+
+#: ../src/callbacks.c:314
+msgid "No help application found"
+msgstr "No se encontró la aplicación de ayuda"
+
+#: ../src/e16menuedit2.c:118
+msgid "Menu successfully loaded!"
+msgstr "Menú cargado satisfactoriamente!"
+
+#: ../src/icon_chooser.c:66
+msgid "Select Icon..."
+msgstr "Seleccione Ícono..."
+
+#: ../src/icon_chooser.c:102
+msgid "Icon size:"
+msgstr "Tamaño del ícono"
+
+#: ../src/treeview.c:57
+msgid "Description"
+msgstr "Descripción"
+
+#: ../src/treeview.c:64
+msgid "Icon"
+msgstr "Ícono"
+
+#: ../src/treeview.c:86
+msgid "Parameters"
+msgstr "Parámetros"
+
+#: ../src/treeview.c:203
+msgid "Menu saved!"
+msgstr "Menú guardado!"
+
+#: ../src/treeview.c:222
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "El submenú debe tener un nombre! -> menú no guardado!"
+
+#: ../src/treeview.c:226
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr ""
+"Ocurrió un error desconocido mientras se revisaba el menú -> menú no "
+"guardado!"
+
+#: ../e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>Propiedades:</b>"
+
+#: ../e16menuedit2.glade.h:2
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+msgstr ""
+"<span font_desc=\"Sans 22\">E16 Editor de Menú II</span>\n"
+"e16menuedit2 v0.0.3"
+
+#: ../e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "Elegir _Icono"
+
+#: ../e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "Editor de Menú E16"
+
+#: ../e16menuedit2.glade.h:8
+msgid "Fallback Help-Browser:"
+msgstr ""
+
+#: ../e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "Información"
+
+#: ../e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "Información acerca del Editor de Menú E16"
+
+#: ../e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "Propiedades"
+
+#: ../e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "_Contenidos"
+
+#: ../e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "Borrar Entra_da"
+
+#: ../e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "_Editar"
+
+#: ../e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "_Fichero"
+
+#: ../e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "A_yuda"
+
+#: ../e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "_Nueva Entrada"
+
+#: ../e16menuedit2.glade.h:19
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
