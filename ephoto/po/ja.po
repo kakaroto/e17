@@ -1,29 +1,28 @@
-# translation of ephoto to Simplified Chinese
-# This file is put in the public domain.
-#
-# Aron Xu <aronmalache@163.com>, 2008-2009.
-# Careone <zzbusagain@yahoo.com.cn>, 2009.
+# Japanese translation for enlightenment
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the enlightenment package.
+# Yuki Kodama <Unknown>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ephoto e17\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-11-23 20:28+0800\n"
-"PO-Revision-Date: 2009-07-06 07:19+0000\n"
-"Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
-"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"PO-Revision-Date: 2009-05-05 12:28+0000\n"
+"Last-Translator: Yuki Kodama <Unknown>\n"
+"Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/bin/ephoto_exif.c:95
 msgid "No Exif Data Exists"
-msgstr "没有 Exif 数据"
+msgstr "EXIF情報がありません"
 
 #: src/bin/ephoto_utils.c:10
 #, c-format
 msgid "%'.0f Bytes"
-msgstr "%'.0f 字节"
+msgstr "%'.0f バイト"
 
 #: src/bin/ephoto_utils.c:15
 #, c-format
@@ -42,36 +41,36 @@ msgstr "%'.1f GB"
 
 #: src/bin/ephoto_single_view.c:92
 msgid "Zoom In"
-msgstr "缩小"
+msgstr "拡大"
 
 #: src/bin/ephoto_single_view.c:100
 msgid "Zoom Out"
-msgstr "放大"
+msgstr "縮小"
 
 #: src/bin/ephoto_single_view.c:108
 msgid "Rotate Left"
-msgstr "向左旋转"
+msgstr "反時計方向に回転"
 
 #: src/bin/ephoto_single_view.c:116
 msgid "Rotate Right"
-msgstr "向右旋转"
+msgstr "時計方向に回転"
 
 #: src/bin/ephoto_single_view.c:124
 msgid "Flip Horizontally"
-msgstr "水平翻转"
+msgstr "横に反転"
 
 #: src/bin/ephoto_single_view.c:132
 msgid "Flip Vertically"
-msgstr "垂直翻转"
+msgstr "縦に反転"
 
 #: src/bin/ephoto_single_view.c:140
 msgid "Advanced Tools"
-msgstr "高级工具"
+msgstr "高度なツール"
 
 #: src/bin/ephoto_single_view.c:148
 msgid "Previous Image"
-msgstr "上张图像"
+msgstr "前の画像"
 
 #: src/bin/ephoto_single_view.c:156
 msgid "Next Image"
-msgstr "下张图像"
+msgstr "次の画像"
