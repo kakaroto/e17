@@ -112,7 +112,7 @@ AC_ARG_ENABLE(elementary,
         [enable_elementary=$enableval ], [ enable_elementary=default])
 
 if test "x$enable_elementary" = "xdefault" || test "x$enable_elementary" = "xyes"; then
-   PKG_CHECK_MODULES([ELEMENTARY], elementary >= 0.5.0.0,
+   PKG_CHECK_MODULES([ELEMENTARY], elementary >= 0.3.0.0,
       [  enable_elementary="yes"  ],
       [
          enable_elementary="no"

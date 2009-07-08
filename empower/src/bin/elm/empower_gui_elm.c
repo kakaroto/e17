@@ -9,6 +9,9 @@ void setup_window()
   Evas_Object *vbox = NULL, *vbox_frame2 = NULL, *vbox_frame = NULL;
   Evas_Object *image = NULL;
   Evas_Object *bg = NULL;
+  Evas_Object *title = NULL;
+  Evas_Object *execscroller = NULL, *passscroller = NULL;
+  Evas_Object *scrollerframe = NULL, *scrollerframe2 = NULL;
   Evas_Object *exec_frame = NULL, *exec_frame2 = NULL;
   Evas_Object *pass_frame = NULL, *pass_frame2 = NULL;
   Evas_Object *inwin = NULL;
@@ -62,13 +65,32 @@ void setup_window()
     elm_entry_editable_set(exec, 1);
     elm_entry_single_line_set(exec, 1);
 
+    scrollerframe2 = elm_frame_add(win);
+    evas_object_size_hint_weight_set(scrollerframe2, 1.0, 0.0);
+    evas_object_size_hint_align_set(scrollerframe2, -1.0, 0.0);
+    elm_frame_style_set(scrollerframe2, "pad_small");
+    elm_frame_content_set(scrollerframe2, exec);
+    
+    execscroller = elm_scroller_add(win);
+    evas_object_size_hint_weight_set(execscroller, 1.0, 1.0);
+    evas_object_size_hint_align_set(execscroller, -1.0, 1.0);
+    elm_scroller_content_min_limit(execscroller, 0, 1);
+    evas_object_size_hint_padding_set(execscroller, 5, 5, 5, 5);
+    elm_scroller_content_set(execscroller, scrollerframe2);
+    
+    scrollerframe = elm_frame_add(win);
+    evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);
+    evas_object_size_hint_align_set(scrollerframe, -1.0, 0.0);
+    elm_frame_style_set(scrollerframe, "pad_medium");
+    elm_frame_content_set(scrollerframe, execscroller);
+
     // Add callbacks
     evas_object_smart_callback_add(exec, "activated", check_pass_cb, NULL);
 
     exec_frame2 = elm_frame_add(win);
     evas_object_size_hint_weight_set(exec_frame2, 1.0, 0.0);
     evas_object_size_hint_align_set(exec_frame2, -1.0, 0.0);
-    elm_frame_content_set(exec_frame2, exec);
+    elm_frame_content_set(exec_frame2, scrollerframe);
     elm_frame_label_set(exec_frame2, "Execute");
 
     exec_frame = elm_frame_add(win);
@@ -94,13 +116,31 @@ void setup_window()
     elm_entry_single_line_set(entry, 1);
     elm_entry_password_set(entry, 1);
 
+    scrollerframe2 = elm_frame_add(win);
+    evas_object_size_hint_weight_set(scrollerframe2, 1.0, 0.0);
+    evas_object_size_hint_align_set(scrollerframe2, -1.0, 0.0);
+    elm_frame_style_set(scrollerframe2, "pad_small");
+    elm_frame_content_set(scrollerframe2, entry);
+    
+    passscroller = elm_scroller_add(win);
+    evas_object_size_hint_weight_set(passscroller, 1.0, 1.0);
+    evas_object_size_hint_align_set(passscroller, -1.0, 1.0);
+    elm_scroller_content_min_limit(passscroller, 0, 1);
+    elm_scroller_content_set(passscroller, scrollerframe2);
+
+    scrollerframe = elm_frame_add(win);
+    evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);
+    evas_object_size_hint_align_set(scrollerframe, -1.0, 0.0);
+    elm_frame_style_set(scrollerframe, "pad_medium");
+    elm_frame_content_set(scrollerframe, passscroller);
+    
     // Add callbacks
     evas_object_smart_callback_add(entry, "activated", check_pass_cb, NULL);
 
     pass_frame2 = elm_frame_add(win);
     evas_object_size_hint_weight_set(pass_frame2, 1.0, 0.0);
     evas_object_size_hint_align_set(pass_frame2, -1.0, 0.0);
-    elm_frame_content_set(pass_frame2, entry);
+    elm_frame_content_set(pass_frame2, scrollerframe);
     elm_frame_label_set(pass_frame2, "Password");
 
     pass_frame = elm_frame_add(win);

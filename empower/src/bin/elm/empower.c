@@ -71,7 +71,7 @@ int elm_main(int argc, char** argv)
   }
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,exit_cb,NULL);
-  
+
   if(mode == SUDO || mode == SUDOPROG)
     ecore_job_add(check_sudo_timeout_job, NULL);
   else if(mode == PASS)

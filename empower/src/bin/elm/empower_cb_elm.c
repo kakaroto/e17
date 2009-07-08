@@ -154,7 +154,7 @@ int sudo_done_cb(void *data, int type, void *event)
   }
   else
     elm_exit();
-  
+
   return 0;
 }
 
