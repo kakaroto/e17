@@ -6,7 +6,7 @@ void parse_options(int argc, char** argv)
   
   if(regcomp(&regexp, "empower-askpass", 0))
   {
-    printf("Failed to create regular expression\n");
+    printf(_("Failed to create regular expression\n"));
     return;
   }
 
@@ -53,10 +53,15 @@ int elm_main(int argc, char** argv)
 {
   int i;
   sudo = NULL;
+
+  // initialize gettext
+  setlocale(LC_ALL, "");
+  bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+  textdomain(PACKAGE);
   
   if(!ecore_init())
   {
-    printf("Unable to init ecore\n");
+    printf(_("Unable to init ecore\n"));
     return 1;
   }
 
@@ -64,9 +69,9 @@ int elm_main(int argc, char** argv)
   
   if(mode == HELP)
   {
-    printf("-=Usage=-\n");
-    printf("    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY OPTIONS]\n");
-    printf("    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY OPTIONS]\n");
+    printf(_("-=Usage=-\n"));
+    printf(_("    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY OPTIONS]\n"));
+    printf(_("    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY OPTIONS]\n"));
     return 0;	
   }
 

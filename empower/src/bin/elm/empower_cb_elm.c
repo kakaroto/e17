@@ -16,7 +16,7 @@ int grab_keyboard(void *data)
   // the program since we can't grab the keyboard
   if(failures++ > 20)
   {
-    printf("Unable to grab keyboard, exiting...\n");
+    printf(_("Unable to grab keyboard, exiting...\n"));
     elm_exit();
     elm_shutdown();
     exit(1);

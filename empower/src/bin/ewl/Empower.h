@@ -11,6 +11,9 @@
 #include <pwd.h>
 #include "Ecore_X.h"
 #include "Ewl.h"
+#include "locale.h"
+#include "../../../config.h"
+#define _(x) gettext(x)
 
 #define WIDTH 0
 #define HEIGHT 85

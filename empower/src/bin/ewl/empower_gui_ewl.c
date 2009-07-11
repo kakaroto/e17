@@ -50,13 +50,13 @@ void setup_window()
     ewl_callback_append(exec, EWL_CALLBACK_VALUE_CHANGED, check_pass_cb, 
               entry);
     ewl_callback_append(exec, EWL_CALLBACK_FOCUS_IN, focus_cb,
-            "Execute");
+            _("Execute"));
     ewl_callback_append(exec, EWL_CALLBACK_FOCUS_OUT, unfocus_cb,
-            "Execute");
+            _("Execute"));
     ewl_text_align_set(EWL_TEXT(exec),EWL_FLAG_ALIGN_LEFT);
-    ewl_text_text_set(EWL_TEXT(exec),"Execute");
+    ewl_text_text_set(EWL_TEXT(exec),_("Execute"));
     ewl_text_cursor_position_set(EWL_TEXT(exec),0);
-    ewl_text_color_apply(EWL_TEXT(exec),100,100,100,200,strlen("Execute"));
+    ewl_text_color_apply(EWL_TEXT(exec),100,100,100,200,strlen(_("Execute")));
     ewl_object_minimum_h_set(EWL_OBJECT(exec), 20);
     ewl_widget_show(exec);
   }	
@@ -67,13 +67,13 @@ void setup_window()
   ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, check_pass_cb, 
               entry);
   ewl_callback_append(entry, EWL_CALLBACK_FOCUS_IN, focus_cb,
-          "Password");
+          _("Password"));
   ewl_callback_append(entry, EWL_CALLBACK_FOCUS_OUT, unfocus_cb,
-          "Password");
+          _("Password"));
   ewl_text_align_set(EWL_TEXT(entry),EWL_FLAG_ALIGN_LEFT);
-  ewl_text_text_set(EWL_TEXT(entry),"Password");
+  ewl_text_text_set(EWL_TEXT(entry),_("Password"));
   ewl_text_cursor_position_set(EWL_TEXT(entry),0);
-  ewl_text_color_apply(EWL_TEXT(entry),100,100,100,200,strlen("Password"));
+  ewl_text_color_apply(EWL_TEXT(entry),100,100,100,200,strlen(_("Password")));
   ewl_object_minimum_h_set(EWL_OBJECT(entry), 20);
   
   if(!auth_passed)

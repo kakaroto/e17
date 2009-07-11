@@ -91,7 +91,7 @@ void setup_window()
     evas_object_size_hint_weight_set(exec_frame2, 1.0, 0.0);
     evas_object_size_hint_align_set(exec_frame2, -1.0, 0.0);
     elm_frame_content_set(exec_frame2, scrollerframe);
-    elm_frame_label_set(exec_frame2, "Execute");
+    elm_frame_label_set(exec_frame2, _("Execute"));
 
     exec_frame = elm_frame_add(win);
     evas_object_size_hint_weight_set(exec_frame, 1.0, 0.0);
@@ -141,7 +141,7 @@ void setup_window()
     evas_object_size_hint_weight_set(pass_frame2, 1.0, 0.0);
     evas_object_size_hint_align_set(pass_frame2, -1.0, 0.0);
     elm_frame_content_set(pass_frame2, scrollerframe);
-    elm_frame_label_set(pass_frame2, "Password");
+    elm_frame_label_set(pass_frame2, _("Password"));
 
     pass_frame = elm_frame_add(win);
     evas_object_size_hint_weight_set(pass_frame, 1.0, 0.0);
