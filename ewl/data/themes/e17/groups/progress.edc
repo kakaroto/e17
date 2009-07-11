@@ -110,7 +110,7 @@ group
                 {
                         name: "unknown-start";
                         signal: "range-unknown";
-                        source: "*";
+                        source: "ewl/this";
                         action: STATE_SET "unknown-range" 1.0;
 			transition: LINEAR 3.0;
 			after: "unknown-end";

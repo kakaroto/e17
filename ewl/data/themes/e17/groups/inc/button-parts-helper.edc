@@ -41,7 +41,38 @@ part
 
 part
 {
+	name: "clip";
+	type: RECT;
+	description
+	{
+		state: "default" 0.0;
+		color: 255 255 255 255;
+
+		rel1
+		{
+			to: "outline";
+			relative: 0.0 0.0;
+			offset: 1 1;
+		}
+		rel2
+		{
+			to: "outline";
+			relative: 1.0 1.0;
+			offset: -2 -2;
+		}
+	}
+	description
+	{
+		state: "disabled" 0.0;
+		inherit: "default" 0.0;
+		color: 255 255 255 76;
+	}
+}
+
+part
+{
 	name: "item1";
+	clip_to: "clip";
 	mouse_events: 0;
 	description
 	{

@@ -78,10 +78,6 @@ ewl_button_init(Ewl_Button *b)
 
         ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
                                 ewl_button_cb_key_down, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-                                ewl_container_cb_widget_focus_in, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-                                ewl_container_cb_widget_focus_out, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

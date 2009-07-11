@@ -267,8 +267,8 @@ ewl_progressbar_child_handle(Ewl_Container *c)
 
         /* FIXME this is not the right place to send this event*/
         if (ewl_range_unknown_get(r))
-                ewl_widget_state_set(EWL_WIDGET(c), "range-unknown",
-                                                        EWL_STATE_PERSISTENT);
+                ewl_widget_custom_state_set(EWL_WIDGET(c), "range-unknown",
+                                                        EWL_PERSISTENT);
 
         ewl_object_preferred_inner_w_set (EWL_OBJECT(c),
                         ewl_object_preferred_w_get(

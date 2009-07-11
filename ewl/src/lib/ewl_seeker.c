@@ -133,10 +133,6 @@ ewl_seeker_init(Ewl_Seeker *s)
                             ewl_seeker_cb_mouse_move, NULL);
         ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
                             ewl_seeker_cb_key_down, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-                            ewl_container_cb_widget_focus_in, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-                            ewl_container_cb_widget_focus_out, NULL);
 
         /*
          * Append a callback for catching mouse movements on the button and
@@ -423,23 +419,21 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         /*
          * If the button is pressed, then continue to calculate it's value.
          */
-        if (!ewl_widget_state_has(s->button, EWL_FLAG_STATE_PRESSED)) {
+        if (!ewl_widget_state_has(s->button, EWL_STATE_MOUSE_DOWN)) {
 
                 if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-                        if (ewl_widget_state_has(s, EWL_FLAG_STATE_PRESSED))
+                        if (ewl_widget_state_has(w, EWL_STATE_MOUSE_DOWN))
                                 s->dragstart = ev->x;
                 }
                 else {
-                        if (ewl_widget_state_has(s, EWL_FLAG_STATE_PRESSED))
+                        if (ewl_widget_state_has(w, EWL_STATE_MOUSE_DOWN))
                                 s->dragstart = ev->y;
                 }
                 DRETURN(DLEVEL_STABLE);
         }
 
         scale = ewl_seeker_mouse_value_map(s, ev->x, ev->y);
-
         ewl_range_value_set(r, scale);
-
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -471,7 +465,7 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
         s = EWL_SEEKER(w);
         r = EWL_RANGE(w);
 
-        if (ewl_widget_state_has(s->button, EWL_FLAG_STATE_PRESSED))
+        if (ewl_widget_state_has(s->button, EWL_STATE_MOUSE_DOWN))
                 DRETURN(DLEVEL_STABLE);
 
         ewl_object_current_geometry_get(EWL_OBJECT(s->button),

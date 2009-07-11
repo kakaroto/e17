@@ -41,7 +41,7 @@ ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w, void *event,
         }
 
         /* Watch for changes here */
-        if ((icon->theme_state) && (!strcmp(icon->theme_state, "parent,selected")))
+        if (ewl_widget_applied_state_has(icon, EWL_STATE_SELECTED))
         {
                 /* Our icon is selected, so we can just grab a list
                  * of the selected files from mvc

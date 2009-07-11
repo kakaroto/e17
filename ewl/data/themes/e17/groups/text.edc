@@ -89,28 +89,45 @@ group
 	{
 		program
 		{
-			name: "disable";
+			name: "disabled";
 			signal: "disabled";
-			source: "*";
+			source: "ewl/both";
 			action: STATE_SET "disabled" 0.0;
-			transition: DECELERATE 0.2;
+			target: "entry_disabled";
+			target: "entry_focus";
+		}
+		program
+		{
+			name: "disable";
+			signal: "disable";
+			source: "ewl/both";
+			action: STATE_SET "disabled" 0.0;
+			transition: DECELERATE 0.5;
 			target: "entry_disabled";
 			target: "entry_focus";
 		}
 		program
 		{
 			name: "enable";
-			signal: "enabled";
-			source: "*";
+			signal: "enable";
+			source: "ewl/both";
 			action: STATE_SET "default" 0.0;
 			transition: ACCELERATE 0.5;
 			target: "entry_disabled";
 		}
 		program
 		{
+			name: "focused";
+			signal: "focused";
+			source: "ewl/this";
+			action: STATE_SET "focus" 0.0;
+			target: "entry_focus";
+		}
+		program
+		{
 			name: "focus,in";
 			signal: "focus,in";
-			source: "*";
+			source: "ewl/this";
 			action: STATE_SET "focus" 0.0;
 			transition: DECELERATE 0.2;
 			target: "entry_focus";
@@ -119,7 +136,7 @@ group
 		{
 			name: "focus,out";
 			signal: "focus,out";
-			source: "*";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			transition: ACCELERATE 0.5;
 			target: "entry_focus";
@@ -194,7 +211,7 @@ group
 		{
 			name: "no-blink";
 			signal: "noblink";
-			source, "EWL";
+			source, "ewl/this";
 			action: ACTION_STOP;
 			target: "blink-hold-on";
 			target: "blink-hold-off";

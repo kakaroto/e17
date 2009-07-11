@@ -236,14 +236,14 @@ ewl_notebook_tabbar_visible_set(Ewl_Notebook *n, unsigned int visible)
 
         if (visible)
         {
-                ewl_widget_state_set(EWL_WIDGET(n->body.pages), "tabs",
-                                                    EWL_STATE_PERSISTENT);
+                ewl_widget_custom_state_set(EWL_WIDGET(n->body.pages), "tabs",
+                                                    EWL_PERSISTENT);
                 ewl_widget_show(n->body.tabbar);
         }
         else
         {
-                ewl_widget_state_set(EWL_WIDGET(n->body.pages), "notabs",
-                                                    EWL_STATE_PERSISTENT);
+                ewl_widget_custom_state_set(EWL_WIDGET(n->body.pages), "notabs",
+                                                    EWL_PERSISTENT);
                 ewl_widget_hide(n->body.tabbar);
         }
 
@@ -291,7 +291,8 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
                 Ewl_Widget *w;
 
                 t = ewl_attach_widget_association_get(n->cur_page);
-                if (t) ewl_widget_state_set(t, "default", EWL_STATE_PERSISTENT);
+                if (t)
+                        ewl_widget_state_remove(t, EWL_STATE_SELECTED);
 
                 /* make sure we set n->cur_page null first or the hide
                  * callback won't let us hide */
@@ -305,7 +306,7 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 
         t = ewl_attach_widget_association_get(n->cur_page);
         if (t)
-                ewl_widget_state_set(t, "selected", EWL_STATE_PERSISTENT);
+                ewl_widget_state_add(t, EWL_STATE_SELECTED);
 
         ewl_callback_call(EWL_WIDGET(n), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -429,7 +430,7 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
 
         /* if this is the current page set it's tab to selected */
         if (n->cur_page == page)
-                ewl_widget_state_set(t, "selected", EWL_STATE_PERSISTENT);
+                ewl_widget_state_add(t, EWL_STATE_SELECTED);
 
         ewl_container_child_append(EWL_CONTAINER(t), tab);
 

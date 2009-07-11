@@ -104,7 +104,6 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                 Ewl_Widget *o, *cell;
 
                 cell = ewl_cell_new();
-                ewl_cell_state_change_cb_add(EWL_CELL(cell));
                 ewl_container_child_append(EWL_CONTAINER(list), cell);
                 ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
                                 ewl_list_cb_item_clicked, list);

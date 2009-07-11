@@ -202,7 +202,7 @@ group
                 {
                         name: "drag_down";
                         signal: "mouse,down,*";
-                        source: "EWL";
+                        source: "ewl/this";
                         action: STATE_SET "down" 0.0;
                         target: "drag";
                 	target: "drag_thumb";
@@ -211,7 +211,7 @@ group
                 {
                         name: "drag_up";
                         signal: "mouse,up,*";
-                        source: "EWL";
+                        source: "ewl/this";
                         action: STATE_SET "default" 0.0;
                         target: "drag";
 			target: "drag_thumb";
@@ -289,7 +289,7 @@ group
 		{
 			name: "drag_down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "down" 0.0;
 			target: "drag";
 		}
@@ -297,7 +297,7 @@ group
 		{
 			name: "drag_up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "drag";
 		}
@@ -383,7 +383,7 @@ group
                 {
                         name: "drag_down";
                         signal: "mouse,down,*";
-                        source: "EWL";
+                        source: "ewl/this";
                         action: STATE_SET "down" 0.0;
                         target: "drag";
 			target: "drag_thumb";
@@ -392,7 +392,7 @@ group
                 {
                         name: "drag_up";
                         signal: "mouse,up,*";
-                        source: "EWL";
+                        source: "ewl/this";
                         action: STATE_SET "default" 0.0;
                         target: "drag";
 			target: "drag_thumb";
@@ -470,7 +470,7 @@ group
 		{
 			name: "drag_down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "down" 0.0;
 			target: "drag";
 		}
@@ -478,7 +478,7 @@ group
 		{
 			name: "drag_up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "drag";
 		}
@@ -535,7 +535,7 @@ group
 		{
 			name: "mouse,down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button";
 		}
@@ -543,7 +543,7 @@ group
 		{
 			name: "mouse,up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button";
 		}
@@ -600,7 +600,7 @@ group
 		{
 			name: "mouse,down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button";
 		}
@@ -608,7 +608,7 @@ group
 		{
 			name: "mouse,up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button";
 		}
@@ -665,7 +665,7 @@ group
 		{
 			name: "mouse,down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button";
 		}
@@ -673,7 +673,7 @@ group
 		{
 			name: "mouse,up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button";
 		}
@@ -730,7 +730,7 @@ group
 		{
 			name: "mouse,down";
 			signal: "mouse,down,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button";
 		}
@@ -738,7 +738,7 @@ group
 		{
 			name: "mouse,up";
 			signal: "mouse,up,*";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button";
 		}

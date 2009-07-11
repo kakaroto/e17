@@ -77,11 +77,9 @@ ewl_togglebutton_checked_set(Ewl_Togglebutton *cb, unsigned int c)
         cb->checked = !!c;
 
         if (cb->checked)
-                ewl_widget_state_set(EWL_WIDGET(cb), "checked",
-                                EWL_STATE_PERSISTENT);
+                ewl_widget_state_add(EWL_WIDGET(cb), EWL_STATE_ON);
         else
-                ewl_widget_state_set(EWL_WIDGET(cb), "default",
-                                EWL_STATE_PERSISTENT);
+                ewl_widget_state_remove(EWL_WIDGET(cb), EWL_STATE_ON);
 
         ewl_callback_call(EWL_WIDGET(cb), EWL_CALLBACK_VALUE_CHANGED);
 

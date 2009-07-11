@@ -5,8 +5,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static void ewl_cell_cb_state_changed(Ewl_Widget *w, void *ev, void *data);
-
 /**
  * @return Returns a newly allocated cell on success, NULL on failure.
  * @brief Allocate and initialize a new cell
@@ -157,79 +155,3 @@ ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param cell: The cell to work with
- * @return: Returns no value
- * @brief Adds the callback to send state changes on to the cell's children
- */
-void
-ewl_cell_state_change_cb_add(Ewl_Cell *cell)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(cell);
-        DCHECK_TYPE(cell, EWL_CELL_TYPE);
-
-        ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_STATE_CHANGED,
-                        ewl_cell_cb_state_changed, NULL);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param cell: The cell to work with
- * @return: Returns no value
- * @brief Removes the callback to send state changes on to the cell's children
- */
-void
-ewl_cell_state_change_cb_del(Ewl_Cell *cell)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(cell);
-        DCHECK_TYPE(cell, EWL_CELL_TYPE);
-
-        ewl_callback_del(EWL_WIDGET(cell), EWL_CALLBACK_STATE_CHANGED,
-                        ewl_cell_cb_state_changed);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @ev: The Ewl_Event_State_Change struct
- * @data: UNUSED
- * @return Returns no value
- * @brief Sends the state on to the cell's children
- */
-void
-ewl_cell_cb_state_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
-{
-        Ewl_Widget *o;
-        Ewl_Event_State_Change *e;
-        const char *send_state;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_PARAM_PTR(ev);
-        DCHECK_TYPE(w, EWL_CELL_TYPE);
-
-        e = EWL_EVENT_STATE_CHANGE(ev);
-
-        /* Only want this for selected signals */
-        if (!strcmp(e->state, "selected"))
-                send_state = "parent,selected";
-        else if (!strcmp(e->state, "deselect"))
-                send_state = "parent,deselect";
-        else if ((!strcmp(e->state, "parent,selected")) ||
-                        (!strcmp(e->state, "parent,deselect")))
-                send_state = e->state;
-        else
-                DRETURN(DLEVEL_STABLE);
-
-        ewl_container_child_iterate_begin(EWL_CONTAINER(w));
-        while ((o = ewl_container_child_next(EWL_CONTAINER(w))))
-                ewl_widget_state_set(o, send_state, e->flag);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}

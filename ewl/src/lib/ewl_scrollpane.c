@@ -60,12 +60,6 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
                                         ewl_scrollpane_cb_configure, NULL);
 
-
-        /* Remove the default focus out callback and replace with our own */
-        ewl_callback_del(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-                                ewl_container_cb_container_focus_out, NULL);
-
         /*
          * Create the container to hold the contents and it's configure
          * callback to position it's child.

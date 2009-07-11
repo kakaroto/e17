@@ -80,7 +80,10 @@ enum Ewl_Engine_Theme_Hooks
         EWL_ENGINE_THEME_ELEMENT_ADD,
         EWL_ENGINE_THEME_ELEMENT_FILE_SET,
         EWL_ENGINE_THEME_ELEMENT_LOAD_ERROR_GET,
-        EWL_ENGINE_THEME_ELEMENT_STATE_SET,
+        EWL_ENGINE_THEME_ELEMENT_STATE_ADD,
+        EWL_ENGINE_THEME_ELEMENT_STATE_REMOVE,
+        EWL_ENGINE_THEME_ELEMENT_STATES_APPLY,
+        EWL_ENGINE_THEME_ELEMENT_CUSTOM_STATE_SET,
         EWL_ENGINE_THEME_ELEMENT_TEXT_SET,
         EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_GET,
         EWL_ENGINE_THEME_ELEMENT_MINIMUM_SIZE_CALC,
@@ -108,10 +111,18 @@ enum Ewl_Engine_Pointer_Hooks
         EWL_ENGINE_POINTER_MAX
 };
 
+enum Ewl_Engine_State_Source
+{
+        EWL_ENGINE_STATE_SOURCE_THIS,
+        EWL_ENGINE_STATE_SOURCE_PARENT,
+        EWL_ENGINE_STATE_SOURCE_BOTH
+};
+
 typedef enum Ewl_Engine_Window_Hooks Ewl_Engine_Window_Hooks;
 typedef enum Ewl_Engine_Theme_Hooks Ewl_Engine_Theme_Hooks;
 typedef enum Ewl_Engine_Canvas_Hooks Ewl_Engine_Canvas_Hooks;
 typedef enum Ewl_Engine_Pointer_Hooks Ewl_Engine_Pointer_Hooks;
+typedef enum Ewl_Engine_State_Source Ewl_Engine_State_Source;
 
 #define EWL_ENGINE(engine) ((Ewl_Engine *)engine)
 
@@ -247,8 +258,17 @@ unsigned int     ewl_engine_theme_element_file_set(Ewl_Embed *emb, void *obj,
                                                 const char *group);
 unsigned int     ewl_engine_theme_element_load_error_get(Ewl_Embed *emb,
                                                 void *obj);
-void             ewl_engine_theme_element_state_set(Ewl_Embed *emb, void *obj,
-                                                const char *state);
+void             ewl_engine_theme_element_states_apply(Ewl_Embed *emb,
+                                                void *obj, unsigned int states,
+                                                Ewl_Engine_State_Source source);
+void             ewl_engine_theme_element_state_add(Ewl_Embed *emb,
+                                                void *obj, Ewl_State state,
+                                                Ewl_Engine_State_Source source);
+void             ewl_engine_theme_element_state_remove(Ewl_Embed *emb,
+                                                void *obj, Ewl_State state,
+                                                Ewl_Engine_State_Source source);
+void             ewl_engine_theme_element_custom_state_set(Ewl_Embed *emb,
+                                                void *obj, const char *state);
 void             ewl_engine_theme_element_text_set(Ewl_Embed *emb, void *obj,
                                                 const char *part,
                                                 const char *text);
@@ -363,7 +383,16 @@ typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_File_Set)(void *obj,
                                                 const char *path,
                                                 const char *group);
 typedef unsigned int (*Ewl_Engine_Cb_Theme_Element_Load_Error_Get)(void *obj);
-typedef void  (*Ewl_Engine_Cb_Theme_Element_State_Set)(void *obj,
+typedef void  (*Ewl_Engine_Cb_Theme_Element_State_Add)(void *obj,
+                                                Ewl_State state,
+                                                Ewl_Engine_State_Source source);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_State_Remove)(void *obj,
+                                                Ewl_State state,
+                                                Ewl_Engine_State_Source source);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_States_Apply)(void *obj,
+                                                unsigned int states,
+                                                Ewl_Engine_State_Source source);
+typedef void  (*Ewl_Engine_Cb_Theme_Element_Custom_State_Set)(void *obj,
                                                 const char *state);
 typedef void  (*Ewl_Engine_Cb_Theme_Element_Text_Set)(void *obj,
                                                 const char *part,

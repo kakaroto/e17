@@ -1519,10 +1519,78 @@ ewl_engine_theme_element_load_error_get(Ewl_Embed *embed, void *obj)
  * @brief
  */
 void
-ewl_engine_theme_element_state_set(Ewl_Embed *embed, void *obj,
+ewl_engine_theme_element_state_add(Ewl_Embed *embed, void *obj, Ewl_State state,
+                Ewl_Engine_State_Source source)
+{
+        Ewl_Engine_Cb_Theme_Element_State_Add state_add;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        state_add = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_STATE_ADD);
+        if (state_add)
+                state_add(obj, state, source);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_element_state_remove(Ewl_Embed *embed, void *obj,
+                                        Ewl_State state,
+                                        Ewl_Engine_State_Source source)
+{
+        Ewl_Engine_Cb_Theme_Element_State_Remove state_remove;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        state_remove = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_STATE_REMOVE);
+        if (state_remove)
+                state_remove(obj, state, source);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_element_states_apply(Ewl_Embed *embed, void *obj,
+                                        unsigned int states,
+                                        unsigned int source)
+{
+        Ewl_Engine_Cb_Theme_Element_States_Apply states_apply;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        states_apply = ewl_engine_hook_get(embed,
+                                        EWL_ENGINE_HOOK_TYPE_THEME,
+                                        EWL_ENGINE_THEME_ELEMENT_STATES_APPLY);
+        if (states_apply)
+                states_apply(obj, states, source);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief
+ */
+void
+ewl_engine_theme_element_custom_state_set(Ewl_Embed *embed, void *obj,
                 const char *state)
 {
-        Ewl_Engine_Cb_Theme_Element_State_Set state_set;
+        Ewl_Engine_Cb_Theme_Element_Custom_State_Set state_set;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(embed);
@@ -1530,7 +1598,7 @@ ewl_engine_theme_element_state_set(Ewl_Embed *embed, void *obj,
 
         state_set = ewl_engine_hook_get(embed,
                                         EWL_ENGINE_HOOK_TYPE_THEME,
-                                        EWL_ENGINE_THEME_ELEMENT_STATE_SET);
+                                        EWL_ENGINE_THEME_ELEMENT_CUSTOM_STATE_SET);
         if (state_set)
                 state_set(obj, state);
 

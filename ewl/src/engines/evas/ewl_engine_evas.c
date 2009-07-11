@@ -35,7 +35,12 @@ static Evas_Object *ee_theme_element_add(Ewl_Embed *embed);
 static Evas_Object *ee_theme_layer_neighbor_find_below(Ewl_Widget *w, Evas_Object *clip);
 static Evas_Object *ee_theme_layer_neighbor_find_above(Ewl_Widget *w, Evas_Object *clip);
 static unsigned int ee_theme_element_swallow(Evas_Object *obj1, Evas_Object *obj2);
-static void ee_theme_element_state_set(Evas_Object *obj, const char *signal);
+static void ee_theme_element_state_add(Evas_Object *obj, Ewl_State state, unsigned int inherited);
+static void ee_theme_element_state_remove(Evas_Object *obj, Ewl_State state, unsigned int inherited);
+static void ee_theme_element_states_apply(Evas_Object *obj, unsigned int states,
+                unsigned int inherited);
+
+static void ee_theme_element_custom_state_set(Evas_Object *obj, const char *signal);
 
 static void *ee_theme_image_add(Ewl_Embed *embed);
 static void  ee_theme_image_data_set(void *i, void *data, int w, int h, 
@@ -43,7 +48,7 @@ static void  ee_theme_image_data_set(void *i, void *data, int w, int h,
 static void *ee_theme_image_data_get(void *i, int *w, int *h,
                 Ewl_Image_Data_Mode access);
 
-static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
+static void *canvas_funcs[] =
         {
                 NULL,
                 ee_canvas_output_set,
@@ -53,15 +58,17 @@ static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
                 ee_canvas_damage_add
         };
 
-static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
+DSTATIC_ASSERT(EWL_ENGINE_CANVAS_MAX == ARRAY_COUNT(canvas_funcs));
+
+static void *theme_funcs[] =
         {
                 /* the general functions */
                 /* FIXME: disable these calls for now. They stop ejde reloading
                  *  the theme object correctly after it was obscured, in some
                  *  cases. If these problems are solved, please activate them
                  *  again. For more information see bug #3, #116 and #456*/
-                NULL, //edje_freeze,
-                NULL, //edje_thaw,
+                edje_freeze,
+                edje_thaw,
                 ee_theme_layer_stack_add,
                 ee_theme_layer_stack_del,
                 ee_theme_layer_update,
@@ -78,7 +85,10 @@ static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
                 ee_theme_element_add,
                 edje_object_file_set,
                 edje_object_load_error_get,
-                ee_theme_element_state_set,
+                ee_theme_element_state_add,
+                ee_theme_element_state_remove,
+                ee_theme_element_states_apply,
+                ee_theme_element_custom_state_set,
                 edje_object_part_text_set,
                 edje_object_size_min_get,
                 edje_object_size_min_calc,
@@ -94,6 +104,8 @@ static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
                 ee_theme_image_data_get,
                 evas_object_image_data_update_add,
         };
+
+DSTATIC_ASSERT(EWL_ENGINE_THEME_MAX == ARRAY_COUNT(theme_funcs));
 
 Ecore_DList *
 ewl_engine_dependancies(void)
@@ -288,11 +300,141 @@ ee_theme_element_swallow(Evas_Object *obj1, Evas_Object *obj2)
 }
 
 static void
-ee_theme_element_state_set(Evas_Object *obj, const char *signal)
+ee_theme_element_state_add(Evas_Object *obj, Ewl_State state,
+                Ewl_Engine_State_Source so)
+{
+        const char *signal;
+        const char *source[] = { "ewl/this", "ewl/parent", "ewl/both" };
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        switch (state)
+        {
+                case EWL_STATE_MOUSE_IN:
+                        signal = "mouse,in";
+                        break;
+                case EWL_STATE_MOUSE_DOWN:
+                        signal = "mouse,down";
+                        break;
+                case EWL_STATE_FOCUSED:
+                        signal = "focus,in";
+                        break;
+                case EWL_STATE_DISABLED:
+                        signal = "disable";
+                        break;
+                case EWL_STATE_HIGHLIGHTED:
+                        signal = "highlight,on";
+                        break;
+                case EWL_STATE_SELECTED:
+                        signal = "selection,on";
+                        break;
+                case EWL_STATE_ON:
+                        signal = "state,on";
+                        break;
+                case EWL_STATE_ODD:
+                        signal = "odd,on";
+                        break;
+                case EWL_STATE_DND:
+                        signal = "dnd,in";
+                        break;
+                default:
+                        DRETURN(DLEVEL_STABLE);
+                        break;
+        }
+
+        if (ewl_config_cache.print_signals)
+                printf("\tsignal: %s source: %s\n", signal, source[so]);
+
+        edje_object_signal_emit(obj, signal, source[so]);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_theme_element_state_remove(Evas_Object *obj, Ewl_State state,
+                Ewl_Engine_State_Source so)
+{
+        const char *signal;
+        const char *source[] = { "ewl/this", "ewl/parent", "ewl/both" };
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        switch (state)
+        {
+                case EWL_STATE_MOUSE_IN:
+                        signal = "mouse,out";
+                        break;
+                case EWL_STATE_MOUSE_DOWN:
+                        signal = "mouse,up";
+                        break;
+                case EWL_STATE_FOCUSED:
+                        signal = "focus,out";
+                        break;
+                case EWL_STATE_DISABLED:
+                        signal = "enable";
+                        break;
+                case EWL_STATE_HIGHLIGHTED:
+                        signal = "highlight,off";
+                        break;
+                case EWL_STATE_SELECTED:
+                        signal = "selection,off";
+                        break;
+                case EWL_STATE_ON:
+                        signal = "state,off";
+                        break;
+                case EWL_STATE_ODD:
+                        signal = "odd,off";
+                        break;
+                case EWL_STATE_DND:
+                        signal = "dnd,out";
+                        break;
+                default:
+                        DRETURN(DLEVEL_STABLE);
+                        break;
+        }
+
+        if (ewl_config_cache.print_signals)
+                printf("\tsignal: %s source: %s\n", signal, source[so]);
+
+        edje_object_signal_emit(obj, signal, source[so]);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_theme_element_states_apply(Evas_Object *obj, unsigned int states,
+                Ewl_Engine_State_Source so)
+{
+        const char *source[] = { "ewl/this", "ewl/parent", "ewl/both" };
+        const char *signal[] = { "hovered", "pressed", "focused", "disabled",
+                "highlighted", "selected", "on", "odd", "dnd" };
+        unsigned int i;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        for (i = 0; i < ARRAY_COUNT(signal); i++)
+        {
+                if (states & (1 << i))
+                {
+                        if (ewl_config_cache.print_signals)
+                                printf("\tsignal: %s source: %s\n", signal[i],
+                                                        source[so]);
+                        edje_object_signal_emit(obj, signal[i], source[so]);
+                }
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_theme_element_custom_state_set(Evas_Object *obj, const char *signal)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        edje_object_signal_emit(obj, signal, "EWL");
+        if (ewl_config_cache.print_signals)
+                printf("signal: %s source: %s\n", signal, "ewl/this");
+
+        edje_object_signal_emit(obj, signal, "ewl/this");
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

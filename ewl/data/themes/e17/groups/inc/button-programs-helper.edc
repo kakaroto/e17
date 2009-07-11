@@ -1,8 +1,17 @@
 program
 {
 	name: "turn,on";
-	signal: "checked";
-	source: "EWL";
+	signal: "state,on";
+	source: "ewl/this";
+	action: STATE_SET "active" 0.0;
+	target: "item1";
+}
+
+program
+{
+	name: "on";
+	signal: "on";
+	source: "ewl/this";
 	action: STATE_SET "active" 0.0;
 	target: "item1";
 }
@@ -10,27 +19,39 @@ program
 program
 {
 	name: "turn,off";
-	signal: "default";
-	source: "EWL";
+	signal: "state,off";
+	source: "ewl/this";
 	action: STATE_SET "default" 0.0;
 	target: "item1";
 }
 
 program
 {
-	name: "disable";
+	name: "disabled";
 	signal: "disabled";
-	source: "EWL";
+	source: "ewl/both";
 	action: STATE_SET "disabled" 0.0;
 	target: "outline";
+	target: "clip";
+}
+
+program
+{
+	name: "disable";
+	signal: "disable";
+	source: "ewl/both";
+	action: STATE_SET "disabled" 0.0;
+	target: "outline";
+	target: "clip";
 }
 
 program
 {
 	name: "enable";
-	signal: "enabled";
-	source: "EWL";
+	signal: "enable";
+	source: "ewl/both";
 	action: STATE_SET "default" 0.0;
 	target: "outline";
+	target: "clip";
 }
 

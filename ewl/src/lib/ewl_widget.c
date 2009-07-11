@@ -76,8 +76,6 @@ ewl_widget_init(Ewl_Widget *w)
         if (!ewl_theme_widget_init(w))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-        ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
-
         /*
          * Add the common callbacks that all widgets must perform
          */
@@ -93,18 +91,6 @@ ewl_widget_init(Ewl_Widget *w)
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_widget_cb_configure,
                                 NULL);
         ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_widget_cb_reparent,
-                                NULL);
-        ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, ewl_widget_cb_enable,
-                                NULL);
-        ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-                                ewl_widget_cb_disable, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_cb_focus_in,
-                                NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out,
-                                NULL);
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_cb_mouse_in,
-                                NULL);
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_cb_mouse_out,
                                 NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
                                 ewl_widget_cb_mouse_down, NULL);
@@ -813,10 +799,171 @@ ewl_widget_appearance_path_get(Ewl_Widget *w)
         DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
+void
+ewl_widget_state_add(Ewl_Widget *w, Ewl_State state)
+{
+        Ewl_Embed *emb;
+        Ewl_Event_State_Change ev;
+
+        if (w->states & state)
+                DRETURN(DLEVEL_STABLE);
+
+        w->states |= state;
+
+        emb = ewl_embed_widget_find(w);
+        if (emb && w->theme_object)
+        {
+                /* we print here only the start, the actual signal name
+                 * must be printed in the engine */
+                if (ewl_config_cache.print_signals)
+                        printf("%p (%s) add:\n", w, w->appearance);
+
+                ewl_engine_theme_element_state_add(emb, w->theme_object, state,
+                                                EWL_ENGINE_STATE_SOURCE_THIS);
+                /* if this state isn't inherited, send also both */
+                if (!(state & w->inherited_states))
+                        ewl_engine_theme_element_state_add(emb, w->theme_object,
+                                        state, EWL_ENGINE_STATE_SOURCE_BOTH);
+        }
+
+        ev.custom_state = FALSE;
+        ev.normal.state_add = state;
+        ev.normal.state_remove = 0;
+        ev.normal.inherited = FALSE;
+
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
+}
+
+void
+ewl_widget_state_remove(Ewl_Widget *w, Ewl_State state)
+{
+        Ewl_Embed *emb;
+        Ewl_Event_State_Change ev;
+
+        if (!(w->states & state))
+                DRETURN(DLEVEL_STABLE);
+
+        w->states &= ~state;
+
+        emb = ewl_embed_widget_find(w);
+        if (emb && w->theme_object)
+        {
+                /* we print here only the start, the actual signal name
+                 * must be printed in the engine */
+                if (ewl_config_cache.print_signals)
+                        printf("%p (%s) remove:\n", w, w->appearance);
+
+                ewl_engine_theme_element_state_remove(emb, w->theme_object,
+                                        state, EWL_ENGINE_STATE_SOURCE_THIS);
+
+                if (!(state & w->inherited_states))
+                        ewl_engine_theme_element_state_remove(emb,
+                                        w->theme_object, state,
+                                        EWL_ENGINE_STATE_SOURCE_BOTH);
+        }
+
+        ev.custom_state = FALSE;
+        ev.normal.state_add = 0;
+        ev.normal.state_remove = state;
+        ev.normal.inherited = FALSE;
+
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
+}
+
+unsigned int
+ewl_widget_state_has(Ewl_Widget *w, Ewl_State state)
+{
+        DRETURN_INT(!!(w->states & state), DLEVEL_STABLE);
+}
+
+void
+ewl_widget_inherited_state_add(Ewl_Widget *w, Ewl_State state)
+{
+        Ewl_Embed *emb;
+        Ewl_Event_State_Change ev;
+
+        if (w->inherited_states & state)
+                DRETURN(DLEVEL_STABLE);
+
+        w->inherited_states |= state;
+        emb = ewl_embed_widget_find(w);
+
+        if (emb && w->theme_object)
+        {
+                /* we print here only the start, the actual signal name
+                 * must be printed in the engine */
+                if (ewl_config_cache.print_signals)
+                        printf("%p (%s) add:\n", w, w->appearance);
+
+                ewl_engine_theme_element_state_add(emb, w->theme_object, state,
+                                                EWL_ENGINE_STATE_SOURCE_PARENT);
+                
+                if (!(state & w->states))
+                        ewl_engine_theme_element_state_add(emb, w->theme_object,
+                                        state, EWL_ENGINE_STATE_SOURCE_BOTH);
+        }
+
+        ev.custom_state = FALSE;
+        ev.normal.state_add = state;
+        ev.normal.state_remove = 0;
+        ev.normal.inherited = TRUE;
+
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
+}
+
+void
+ewl_widget_inherited_state_remove(Ewl_Widget *w, Ewl_State state)
+{
+        Ewl_Embed *emb;
+        Ewl_Event_State_Change ev;
+
+        if (!(w->inherited_states & state))
+                DRETURN(DLEVEL_STABLE);
+
+        w->inherited_states &= ~state;
+
+        emb = ewl_embed_widget_find(w);
+        if (emb && w->theme_object)
+        {
+                /* we print here only the start, the actual signal name
+                 * must be printed in the engine */
+                if (ewl_config_cache.print_signals)
+                        printf("%p (%s) remove:\n", w, w->appearance);
+
+                ewl_engine_theme_element_state_remove(emb, w->theme_object,
+                                                state,
+                                                EWL_ENGINE_STATE_SOURCE_PARENT);
+                if (!(state & w->states))
+                        ewl_engine_theme_element_state_remove(emb,
+                                        w->theme_object, state,
+                                        EWL_ENGINE_STATE_SOURCE_BOTH);
+        }
+
+        ev.custom_state = FALSE;
+        ev.normal.state_add = 0;
+        ev.normal.state_remove = state;
+        ev.normal.inherited = TRUE;
+
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
+}
+
+unsigned int
+ewl_widget_inherited_state_has(Ewl_Widget *w, Ewl_State state)
+{
+        DRETURN_INT(!!(w->inherited_states & state), DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_widget_applied_state_has(Ewl_Widget *w, Ewl_State state)
+{
+        DRETURN_INT(!!((w->inherited_states | w->states) & state), 
+                        DLEVEL_STABLE);
+}
+
 /**
  * @param w: the widget to update the appearance
  * @param state: the new state of the widget
- * @param flag: the flag for the state e.g. EWL_STATE_TRANSIENT
+ * @param flag: the flag for the state e.g. EWL_TRANSIENT
  * @return Returns no value.
  * @brief Update the appearance of the widget to a state
  *
@@ -824,7 +971,7 @@ ewl_widget_appearance_path_get(Ewl_Widget *w)
  * the state parameter.
  */
 void
-ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
+ewl_widget_custom_state_set(Ewl_Widget *w, const char *state, Ewl_Durability flag)
 {
         Ewl_Event_State_Change ev;
 
@@ -837,8 +984,8 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
          * Intentionally lose a reference to the ecore string to keep a
          * reference cached for later re-use.
          */
-        if (flag == EWL_STATE_PERSISTENT)
-                w->theme_state = ecore_string_instance((char *)state);
+        if (flag == EWL_PERSISTENT)
+                w->custom_state = ecore_string_instance(state);
 
         if (w->theme_object)
         {
@@ -846,14 +993,15 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 
                 emb = ewl_embed_widget_find(w);
                 if (ewl_config_cache.print_signals)
-                        printf("Emitting: %s to %p (%s)\n", state, w,
-                                                        w->appearance);
+                        printf("%p (%s) ", w, w->appearance);
 
-                ewl_engine_theme_element_state_set(emb, w->theme_object, state);
+                ewl_engine_theme_element_custom_state_set(emb, w->theme_object,
+                                                                state);
         }
 
-        ev.state = state;
-        ev.flag = flag;
+        ev.custom_state = TRUE;
+        ev.custom.state = state;
+        ev.custom.durability = flag;
 
         ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
 
@@ -1199,8 +1347,7 @@ ewl_widget_enable(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (DISABLED(w)) {
-                ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
-                ewl_widget_state_add(w, EWL_FLAG_STATE_NORMAL);
+                ewl_widget_state_remove(w, EWL_STATE_DISABLED);
                 ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
         }
 
@@ -1231,8 +1378,10 @@ ewl_widget_disable(Ewl_Widget *w)
                 /* and now remove us self from the info widget list */
                 ewl_embed_info_widgets_cleanup(emb, w);
                 /* finally remove the state flags and set us to disabled*/
-                ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
-                ewl_widget_state_add(w, EWL_FLAG_STATE_DISABLED);
+                ewl_widget_state_remove(w, EWL_STATE_MOUSE_IN);
+                ewl_widget_state_remove(w, EWL_STATE_MOUSE_DOWN);
+                ewl_widget_state_remove(w, EWL_STATE_FOCUSED);
+                ewl_widget_state_add(w, EWL_STATE_DISABLED);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1711,6 +1860,13 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        if (REALIZED(w))
+        {
+                DWARNING("It is not possible to set a widget internal"
+                                " if it is already realized");
+                DRETURN(DLEVEL_STABLE);
+        }
 
         if (val)
                 ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_INTERNAL,
@@ -2230,7 +2386,7 @@ ewl_widget_free(Ewl_Widget *w)
 
         IF_RELEASE(w->appearance);
         IF_RELEASE(w->inheritance);
-        IF_RELEASE(w->theme_state);
+        IF_RELEASE(w->custom_state);
 
         if (w->theme_text.list) {
                 if (w->theme_text.direct) {
@@ -2354,6 +2510,17 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                 DRETURN(DLEVEL_STABLE);
 
         /*
+         * get the inherited states
+         */
+        if (w->parent && ewl_widget_internal_is(w))
+                w->inherited_states = w->parent->states |
+                        w->parent->inherited_states;
+        else if (w->parent)
+                /* the disable state is always inherit */
+                w->inherited_states = (w->parent->states |
+                        w->parent->inherited_states) & EWL_STATE_DISABLED;
+
+        /*
          * Increment the dnd awareness counter on the embed.
          */
         if (ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_DND_TARGET,
@@ -2407,13 +2574,9 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                 /*
                  * Set the state of the theme object
                  */
-                if (w->theme_state)
-                        ewl_widget_state_set(w, (char *)w->theme_state,
-                                                EWL_STATE_TRANSIENT);
-
-                if (DISABLED(w))
-                        ewl_widget_state_set(w, "disabled",
-                                                EWL_STATE_TRANSIENT);
+                if (w->custom_state)
+                        ewl_widget_custom_state_set(w, w->custom_state,
+                                                EWL_TRANSIENT);
 
                 /*
                  * Apply any text overrides
@@ -2467,6 +2630,25 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
                         ewl_engine_theme_object_show(emb, w->theme_object);
                 if (w->smart_object)
                         ewl_engine_theme_object_show(emb, w->smart_object);
+        }
+
+        /*
+         * Apply the inherited and the direct theme states
+         */
+        if (w->theme_object)
+        {
+                if (ewl_config_cache.print_signals && 
+                                (w->states | w->inherited_states))
+                        printf("%p (%s) apply:\n", w, w->appearance);
+
+                ewl_engine_theme_element_states_apply(emb, w->theme_object,
+                                w->states, EWL_ENGINE_STATE_SOURCE_THIS);
+                ewl_engine_theme_element_states_apply(emb, w->theme_object,
+                                w->inherited_states,
+                                EWL_ENGINE_STATE_SOURCE_PARENT);
+                ewl_engine_theme_element_states_apply(emb, w->theme_object,
+                                w->states | w->inherited_states,
+                                EWL_ENGINE_STATE_SOURCE_BOTH);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2742,145 +2924,6 @@ ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The enable callback
- */
-void
-ewl_widget_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                        void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        ewl_widget_state_set(w, "enabled", EWL_STATE_PERSISTENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The disable callback
- */
-void
-ewl_widget_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                        void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        ewl_widget_state_set(w, "disabled", EWL_STATE_PERSISTENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The focus in callback
- */
-void
-ewl_widget_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The focus out callback
- */
-void
-ewl_widget_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse in callback
- */
-void
-ewl_widget_cb_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse out callback
- */
-void
-ewl_widget_cb_mouse_out(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
-{
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 /**
  * @internal
  * @param w: The widget to work with
@@ -2904,7 +2947,7 @@ ewl_widget_cb_mouse_down(Ewl_Widget *w, void *ev_data,
                 DRETURN(DLEVEL_STABLE);
 
         snprintf(state, sizeof(state), "mouse,down,%i", e->button);
-        ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
+        ewl_widget_custom_state_set(w, state, EWL_TRANSIENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2931,18 +2974,17 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
         if (DISABLED(w))
                 DRETURN(DLEVEL_STABLE);
 
-        if (ewl_widget_state_has(w, EWL_FLAG_STATE_DND)) {
-                ewl_widget_state_remove(w, EWL_FLAG_STATE_DND);
+        if (ewl_widget_state_has(w, EWL_STATE_DND)) {
+                ewl_widget_state_remove(w, EWL_STATE_DND);
                 ewl_dnd_drag_drop(w);
         }
 
         snprintf(state, sizeof(state), "mouse,up,%i", e->button);
-        ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
+        ewl_widget_custom_state_set(w, state, EWL_TRANSIENT);
 
-        if (ewl_widget_state_has(w, EWL_FLAG_STATE_MOUSE_IN)) {
+        if (ewl_widget_state_has(w, EWL_STATE_MOUSE_IN)) {
                 int x, y;
 
-                ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
                 x = e->base.x - (CURRENT_X(w) - INSET_LEFT(w));
                 y = e->base.y - (CURRENT_Y(w) - INSET_TOP(w));
                 if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
@@ -2960,9 +3002,7 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
                 else
                         ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
                                         e->base.x, e->base.y, e->base.modifiers);
-        } else
-                ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
-
+        }
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -2985,14 +3025,14 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
-        if (ewl_widget_state_has(w, EWL_FLAG_STATE_PRESSED) &&
+        /* FIXME this should go into the embed code */
+        if (ewl_widget_state_has(w, EWL_STATE_MOUSE_DOWN) &&
                         ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_DND_SOURCE,
                                 EWL_FLAGS_PROPERTY_MASK)) {
 
                 embed = ewl_embed_widget_find(w);
-                if (!ewl_widget_state_has(w, EWL_FLAG_STATE_DND)) {
-                        ewl_widget_state_add(w, EWL_FLAG_STATE_DND);
+                if (!ewl_widget_state_has(w, EWL_STATE_DND)) {
+                        ewl_widget_state_add(w, EWL_STATE_DND);
                         embed->last.drag_widget = w;
                         ewl_dnd_internal_drag_start(w);
                 }

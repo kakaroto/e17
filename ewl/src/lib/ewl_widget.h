@@ -148,14 +148,17 @@ struct Ewl_Widget
 
         const char *theme_path;     /**< Path to the file for loading */
         const char *theme_group;    /**< Group in theme to use */
-        const char *theme_state;    /**< State of the appearance */
-        const char *appearance;   /**< Key to lookup appearance in theme */
+        const char *appearance;     /**< Key to lookup appearance in theme */
         const char *inheritance;  /**< Inheritance of path widget */
+        const char *custom_state; /**< custom state */
         int layer;                /**< the layer relative to the parent */
 
         Ecore_Hash *theme;          /**< Overriding theme settings */
         Ewl_Pair_List theme_text;   /**< Overriding text in theme */
         unsigned int flags;         /**< the widget flags */
+        unsigned short states;        /**< Direct widget states */
+        unsigned short inherited_states;  /**< States that are applied to 
+                                                the theme */
         unsigned char swallowed:1;
 };
 
@@ -182,8 +185,15 @@ void             ewl_widget_data_set(Ewl_Widget *w, void *k, void *v);
 void            *ewl_widget_data_del(Ewl_Widget *w, void *k);
 void            *ewl_widget_data_get(Ewl_Widget *w, void *k);
 
-void             ewl_widget_state_set(Ewl_Widget *w, const char *state,
-                                                Ewl_State_Type flag);
+void             ewl_widget_state_add(Ewl_Widget *w, Ewl_State state);
+void             ewl_widget_state_remove(Ewl_Widget *w, Ewl_State state);
+unsigned int     ewl_widget_state_has(Ewl_Widget *w, Ewl_State state);
+void             ewl_widget_inherited_state_add(Ewl_Widget *w, Ewl_State state);
+void             ewl_widget_inherited_state_remove(Ewl_Widget *w, Ewl_State state);
+unsigned int     ewl_widget_inherited_state_has(Ewl_Widget *w, Ewl_State state);
+unsigned int     ewl_widget_applied_state_has(Ewl_Widget *w, Ewl_State state);
+void             ewl_widget_custom_state_set(Ewl_Widget *w, const char *cst,
+                                                Ewl_Durability dur);
 
 void             ewl_widget_theme_path_set(Ewl_Widget *w, const char *path);
 void             ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
@@ -328,42 +338,6 @@ void             ewl_widget_flags_remove(Ewl_Widget *o, unsigned int flags,
         (ewl_widget_flags_get(o, EWL_FLAG_PROPERTY_TOPLEVEL))
 
 /**
- * @def ewl_widget_state_add(o, state)
- * @param o: The widget to work with
- * @param state: The state to set into the widget
- * Adds the given state @a state to the widget @a o
- */
-#define ewl_widget_state_add(o, state) \
-        ewl_widget_flags_add(o, state, EWL_FLAGS_STATE_MASK)
-
-/**
- * @def ewl_widget_state_remove(o, state)
- * @param o: The widget to work with
- * @param state: The state to remove
- * Removes the given state from the given @a o widget
- */
-#define ewl_widget_state_remove(o, state) \
-        ewl_widget_flags_remove(o, state, EWL_FLAGS_STATE_MASK)
-
-/**
- * @def ewl_widget_state_has(o, state)
- * @param o: The widget to check
- * @param state: The state to check
- * Checks if the given state @a state is set on the given widget @a o
- */
-#define ewl_widget_state_has(o, state) \
-        ewl_widget_flags_has(o, state, EWL_FLAGS_STATE_MASK)
-
-/**
- * @def ewl_widget_state_get(o, state)
- * @param o: The widget to work with
- * @param state: The state to get
- * Retrives the given state @a state from the widget @a o
- */
-#define ewl_widget_state_get(o, state) \
-        ewl_widget_flags_get(o, state, EWL_FLAGS_STATE_MASK)
-
-/**
  * @def ewl_widget_queued_add(o, queued)
  * @param o: The widget to work with
  * @param queued: Add the given queue flag to the widget
@@ -473,7 +447,7 @@ void             ewl_widget_flags_remove(Ewl_Widget *o, unsigned int flags,
  * @def DISABLED(o)
  * Used to determine if a widget is disabled
  */
-#define DISABLED(o) (ewl_widget_state_has(EWL_WIDGET(o), EWL_FLAG_STATE_DISABLED))
+#define DISABLED(o) (ewl_widget_applied_state_has(EWL_WIDGET(o), EWL_STATE_DISABLED))
 
 /**
  * @def ewl_widget_in_tab_list_get(o)
@@ -513,12 +487,6 @@ void ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_enable(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_disable(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_focus_in(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_focus_out(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_mouse_in(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_cb_mouse_out(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);

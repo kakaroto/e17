@@ -55,7 +55,7 @@ test_string_get_set(char *buf, int len)
 
         conf = ewl_config_new("unit test");
 
-        ewl_config_string_set(conf, "weather", string, EWL_STATE_TRANSIENT);
+        ewl_config_string_set(conf, "weather", string, EWL_TRANSIENT);
 
         /* first try to get a string that cannot exist */
         value = ewl_config_string_get(conf, "climate");
@@ -106,7 +106,7 @@ test_int_get_set(char *buf, int len)
 
         conf = ewl_config_new("unit test");
 
-        ewl_config_int_set(conf, "number", number, EWL_STATE_TRANSIENT);
+        ewl_config_int_set(conf, "number", number, EWL_TRANSIENT);
 
         /* first try to get a value that cannot exist */
         value = ewl_config_int_get(conf, "letter");
@@ -147,7 +147,7 @@ test_float_get_set(char *buf, int len)
 
         conf = ewl_config_new("unit test");
 
-        ewl_config_float_set(conf, "velocity", number, EWL_STATE_TRANSIENT);
+        ewl_config_float_set(conf, "velocity", number, EWL_TRANSIENT);
 
         /* first try to get a value that cannot exist */
         value = ewl_config_float_get(conf, "speed");
@@ -188,7 +188,7 @@ test_color_get_set(char *buf, int len)
         conf = ewl_config_new("unit test");
 
         ewl_config_color_set(conf, "bg_color", 0, 100, 200, 255,
-                                                        EWL_STATE_TRANSIENT);
+                                                        EWL_TRANSIENT);
 
         /* first try to get a value that cannot exist */
         ewl_config_color_get(conf, "fg_color", &r, &g, &b, &a);
@@ -239,7 +239,7 @@ test_string_overwrite(char *buf, int len)
                 const char *value;
 
                 ewl_config_string_set(conf, "test key", *string,
-                                                EWL_STATE_TRANSIENT);
+                                                EWL_TRANSIENT);
                 value = ewl_config_string_get(conf, "test key");
 
                 if (strcmp(value, *string)) {
@@ -272,7 +272,7 @@ test_int_overwrite(char *buf, int len)
                 int v = RAND_RANGE(-1000, 1000);
                 int v_r;
 
-                ewl_config_int_set(conf, "test key", v, EWL_STATE_TRANSIENT);
+                ewl_config_int_set(conf, "test key", v, EWL_TRANSIENT);
                 v_r = ewl_config_int_get(conf, "test key");
 
                 if (v_r != v) {
@@ -304,7 +304,7 @@ test_float_overwrite(char *buf, int len)
                 float v = rand();
                 float v_r;
 
-                ewl_config_float_set(conf, "test key", v, EWL_STATE_TRANSIENT);
+                ewl_config_float_set(conf, "test key", v, EWL_TRANSIENT);
                 v_r = ewl_config_float_get(conf, "test key");
 
                 if (v_r != v) {
@@ -340,7 +340,7 @@ test_color_overwrite(char *buf, int len)
                 int r_r, g_r, b_r, a_r;
 
                 ewl_config_color_set(conf, "test key", r, g, b, a,
-                                                        EWL_STATE_TRANSIENT);
+                                                        EWL_TRANSIENT);
                 ewl_config_color_get(conf, "test key", &r_r, &g_r, &b_r, &a_r);
 
                 if (r_r != r || g_r != g || b_r != b || a_r != a) {

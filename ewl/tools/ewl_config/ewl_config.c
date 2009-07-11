@@ -84,7 +84,7 @@ main(int argc, char ** argv)
                                 val++;
 
                                 ewl_config_string_set(ewl_config, key, val,
-                                                        EWL_STATE_PERSISTENT);
+                                                        EWL_PERSISTENT);
                                 free(t);
 
                                 did_something = 1;
@@ -716,7 +716,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                                 ewl_config_int_get(ewl_config, checks[i].key))
                         ewl_config_int_set(ewl_config, checks[i].key,
                                         ewl_togglebutton_checked_get(EWL_TOGGLEBUTTON(o)),
-                                        EWL_STATE_PERSISTENT);
+                                        EWL_PERSISTENT);
         }
 
         for (i = 0; strings[i].name != NULL; i++)
@@ -730,7 +730,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                 {
                         ewl_config_string_set(ewl_config,
                                         strings[i].key, new,
-                                        EWL_STATE_PERSISTENT);
+                                        EWL_PERSISTENT);
                 }
         }
 
@@ -740,7 +740,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         {
                 ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL,
                                         ewl_range_value_get(EWL_RANGE(o)),
-                                        EWL_STATE_PERSISTENT);
+                                        EWL_PERSISTENT);
         }
 
         o = ewl_widget_name_find(EC_ICON_SIZE);
@@ -749,7 +749,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         {
                 ewl_config_int_set(ewl_config,
                                 EWL_CONFIG_THEME_ICON_SIZE, val,
-                                EWL_STATE_PERSISTENT);
+                                EWL_PERSISTENT);
         }
 
         o = ewl_widget_name_find(EC_EWL_THEME);
@@ -765,7 +765,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                 {
                         ewl_config_string_set(ewl_config,
                                         EWL_CONFIG_THEME_NAME, v,
-                                        EWL_STATE_PERSISTENT);
+                                        EWL_PERSISTENT);
                 }
         }
 

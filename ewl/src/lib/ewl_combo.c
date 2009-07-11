@@ -258,10 +258,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         ewl_window_raise(EWL_WINDOW(combo->popup));
         ewl_widget_focus_send(EWL_WIDGET(combo->popup));
 
-        ewl_widget_state_set(combo->button, "expanded",
-                                        EWL_STATE_PERSISTENT);
-        ewl_widget_state_set(EWL_WIDGET(combo), "expanded",
-                                        EWL_STATE_PERSISTENT);
+        ewl_widget_state_add(EWL_WIDGET(combo), EWL_STATE_ON);
 
         if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
                 DRETURN(DLEVEL_STABLE);
@@ -294,9 +291,7 @@ ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
         DCHECK_TYPE(data, EWL_COMBO_TYPE);
 
         combo = EWL_COMBO(data);
-        ewl_widget_state_set(combo->button, "collapsed", EWL_STATE_PERSISTENT);
-        ewl_widget_state_set(EWL_WIDGET(combo), "collapsed",
-                                        EWL_STATE_PERSISTENT);
+        ewl_widget_state_remove(EWL_WIDGET(combo), EWL_STATE_ON);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

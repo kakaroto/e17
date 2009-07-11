@@ -167,20 +167,29 @@ group
 	{
 		program
 		{
-			name: "disble";
+			name: "disbled";
 			signal: "disabled";
-			source: "*";
+			source: "ewl/both";
 			action: STATE_SET "disabled" 0.0;
 			transition: LINEAR 0.0;
 			target: "ewl/label/text";
 		}
 		program
 		{
+			name: "disble";
+			signal: "disable";
+			source: "ewl/both";
+			action: STATE_SET "disabled" 0.0;
+			transition: LINEAR 0.3;
+			target: "ewl/label/text";
+		}
+		program
+		{
 			name: "enable";
-			signal: "enabled";
-			source: "*";
+			signal: "enable";
+			source: "ewl/both";
 			action: STATE_SET "default" 0.0;
-			transition: LINEAR 0.0;
+			transition: LINEAR 0.3;
 			target: "ewl/label/text";
 		}
 	}

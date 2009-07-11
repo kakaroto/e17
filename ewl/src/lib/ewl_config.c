@@ -51,7 +51,7 @@ static void ewl_config_create_system_hash(Ewl_Config *cfg);
 static void ewl_config_create_user_hash(Ewl_Config *cfg);
 
 static Ecore_Hash *ewl_config_set_hash_get(Ewl_Config *cfg,
-                                        Ewl_State_Type state);
+                                        Ewl_Durability state);
 static const char *ewl_config_get(Ewl_Config *cfg, const char *key);
 static const char *ewl_config_env_get(Ewl_Config *cfg, const char *key);
 static char *ewl_config_trim(char *v);
@@ -186,7 +186,7 @@ ewl_config_destroy(Ewl_Config *cfg)
  */
 void
 ewl_config_string_set(Ewl_Config *cfg, const char *k, const char *v,
-                                                Ewl_State_Type state)
+                                                Ewl_Durability state)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(k);
@@ -225,7 +225,7 @@ ewl_config_string_get(Ewl_Config *cfg, const char *k)
  */
 void
 ewl_config_int_set(Ewl_Config *cfg, const char *k, int v,
-                                        Ewl_State_Type state)
+                                        Ewl_Durability state)
 {
         char buf[128];
 
@@ -273,7 +273,7 @@ ewl_config_int_get(Ewl_Config *cfg, const char *k)
  */
 void
 ewl_config_float_set(Ewl_Config *cfg, const char *k, float v,
-                                        Ewl_State_Type state)
+                                        Ewl_Durability state)
 {
         char buf[128];
 
@@ -325,7 +325,7 @@ ewl_config_float_get(Ewl_Config *cfg, const char *k)
 void
 ewl_config_color_set(Ewl_Config *cfg, const char *k, int r, int g,
                                         int b, int a,
-                                        Ewl_State_Type state)
+                                        Ewl_Durability state)
 {
         char buf[128];
 
@@ -1051,14 +1051,14 @@ ewl_config_create_instance_hash(Ewl_Config *cfg)
 }
 
 static Ecore_Hash *
-ewl_config_set_hash_get(Ewl_Config *cfg, Ewl_State_Type state)
+ewl_config_set_hash_get(Ewl_Config *cfg, Ewl_Durability state)
 {
         Ecore_Hash *hash = NULL;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(cfg, NULL);
 
-        if (state == EWL_STATE_TRANSIENT)
+        if (state == EWL_TRANSIENT)
         {
                 ewl_config_create_instance_hash(cfg);
                 hash = cfg->data.instance;

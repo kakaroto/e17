@@ -176,6 +176,7 @@ data
 
 	item: "/row/group" "ewl/row";
 	item: "/expansion/group" "ewl/tree/expansion";
+	item: "/nonexpandable/expansion/group" "ewl/tree/nonexpansion";
 
 	/* window related groups */
 	item: "/tooltip/group" "ewl/window";

@@ -865,7 +865,7 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
                 else
                         state_str = "default";
 
-                ewl_widget_state_set(c, state_str, EWL_STATE_PERSISTENT);
+                ewl_widget_custom_state_set(c, state_str, EWL_PERSISTENT);
                 ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINKABLE);
                 ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
                 ewl_widget_show(c);
@@ -891,7 +891,6 @@ ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model,
         DCHECK_TYPE(row, EWL_ROW_TYPE);
 
         cell = ewl_cell_new();
-        ewl_cell_state_change_cb_add(EWL_CELL(cell));
         ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(row), cell);
         ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
@@ -1023,11 +1022,9 @@ ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model,
                 if (tree->row_color_alternate)
                 {
                         if (colour)
-                                ewl_widget_state_set(row, "odd",
-                                                        EWL_STATE_PERSISTENT);
+                                ewl_widget_state_add(row, EWL_STATE_ODD);
                         else
-                                ewl_widget_state_set(row, "even",
-                                                        EWL_STATE_PERSISTENT);
+                                ewl_widget_state_remove(row, EWL_STATE_ODD);
                 }
 
                 colour = (colour + 1) % 2;
@@ -1127,7 +1124,7 @@ ewl_tree_cb_row_highlight(Ewl_Widget *w, void *ev __UNUSED__,
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_ROW_TYPE);
 
-        ewl_widget_state_set(w, "highlight,on", EWL_STATE_TRANSIENT);
+        ewl_widget_state_add(w, EWL_STATE_HIGHLIGHTED);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1139,7 +1136,7 @@ ewl_tree_cb_row_unhighlight(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNU
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_ROW_TYPE);
 
-        ewl_widget_state_set(w, "highlight,off", EWL_STATE_TRANSIENT);
+        ewl_widget_state_remove(w, EWL_STATE_HIGHLIGHTED);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

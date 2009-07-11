@@ -166,9 +166,6 @@ ewl_box_init(Ewl_Box *b)
          */
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
                                 ewl_box_cb_configure, NULL);
-        ewl_callback_del(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-                                ewl_container_cb_container_focus_out, NULL);
 
         /*
          * Check if the info structs have been created yet, if not create

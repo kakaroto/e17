@@ -1,8 +1,17 @@
 program
 {
+	name: "focused";
+	signal: "focused";
+	source: "ewl/both";
+	after: "go_active_pre";
+	after: "focus,in";
+}
+
+program
+{
 	name: "go_active_pre";
 	signal: "focus,in";
-	source: "*";
+	source: "ewl/both";
 	action: STATE_SET "default" 0.0;
 	target: "title_outline";
 	target: "title_bar";
@@ -42,7 +51,7 @@ program
 {
 	name: "go_passive_pre";
 	signal: "focus,out";
-	source: "*";
+	source: "ewl/both";
 	action: STATE_SET "active" 0.0;
 	target: "title_outline";
 	target: "title_bar";
@@ -82,7 +91,7 @@ program
 {
 	name: "focus,in";
 	action: STATE_SET "focused" 0.0;
-	source: "EWL";
+	source: "ewl/both";
 	signal: "focus,in";
 	target: "focus";
 	transition: LINEAR 0.1;
@@ -92,7 +101,7 @@ program
 {
 	name: "focus,out";
 	action: STATE_SET "default" 0.0;
-	source: "EWL";
+	source: "ewl/both";
 	signal: "focus,out";
 	target: "focus";
 	transition: LINEAR 0.1;

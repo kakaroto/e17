@@ -84,10 +84,8 @@ ewl_container_init(Ewl_Container *c)
                             ewl_container_cb_unrealize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REPARENT,
                             ewl_container_cb_reparent, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
-                            ewl_container_cb_enable, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-                            ewl_container_cb_disable, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_STATE_CHANGED,
+                            ewl_container_cb_state_change, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1373,59 +1371,64 @@ ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief When enabling a container, pass the signal to the children.
+ * @brief When changing the state of a container pass it to the (internal) children
  */
 void
-ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_state_change(Ewl_Widget *w, void *ev_data,
                                                 void *user_data __UNUSED__)
 {
         Ewl_Widget *child;
+        Ewl_Event_State_Change *ev;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(ev_data);
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
+
+        ev = ev_data;
 
         if (!EWL_CONTAINER(w)->children)
                 DRETURN(DLEVEL_STABLE);
 
+        if (ev->custom_state)
+                DRETURN(DLEVEL_STABLE);
+
         /*
-         * Enable all of the containers children
+         * we treat the disable states special here because they are also
+         * propagated to non internal children
          */
         ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
-        while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
-                ewl_widget_enable(child);
+        if (ev->normal.state_add == EWL_STATE_DISABLED)
+        {
+                while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) 
+                        ewl_widget_inherited_state_add(child, 
+                                                        EWL_STATE_DISABLED);
         }
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief When enabling a container, pass the signal to the children.
- */
-void
-ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                                void *user_data __UNUSED__)
-{
-        Ewl_Widget *child;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
-
-        if (!EWL_CONTAINER(w)->children)
-                DRETURN(DLEVEL_STABLE);
-
-        /*
-         * Disable all of the containers children
-         */
-        ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
-        while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
-                ewl_widget_disable(child);
+        else if (ev->normal.state_remove == EWL_STATE_DISABLED)
+        {
+                while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) 
+                        ewl_widget_inherited_state_remove(child,
+                                                        EWL_STATE_DISABLED);
+        }
+        else if (!ev->normal.state_remove)
+        {
+                while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) 
+                {
+                        if (!ewl_widget_internal_is(child))
+                                continue;
+                        ewl_widget_inherited_state_add(child,
+                                                        ev->normal.state_add);
+                }
+        }
+        else
+        {
+                while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) 
+                {
+                        if (!ewl_widget_internal_is(child))
+                                continue;
+                        ewl_widget_inherited_state_remove(child,
+                                                ev->normal.state_remove);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1592,69 +1595,10 @@ ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data,
         /* If its a child or is disabled then don't send a signal */
         if ((focus_in) && (!ewl_widget_parent_of(w, focus_in)) &&
                                 (!DISABLED(w)) && (focus_in != w))
-                ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param: ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief A callback to be used with end widgets such as buttons, etc
- */
-void
-ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__, 
-                                        void *user_data __UNUSED__)
-{
-        Ewl_Container *c;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        c = EWL_CONTAINER(w);
-        while (c->redirect)
-                c = c->redirect;
-
-        ecore_dlist_first_goto(c->children);
-        while ((w = ecore_dlist_next(c->children)))
-                ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief A callback to be used with end widgets
- */
-void
-ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__, 
-                                 void *user_data __UNUSED__)
-{
-        Ewl_Container *c;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-
-        if (DISABLED(w))
-                DRETURN(DLEVEL_STABLE);
-
-        c = EWL_CONTAINER(w);
-        while (c->redirect)
-                c = c->redirect;
-
-        ecore_dlist_first_goto(c->children);
-        while ((w = ecore_dlist_next(c->children)))
-                ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
+        {
+                /* XXX is this correct? */
+                ewl_widget_state_remove(w, EWL_STATE_FOCUSED);
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

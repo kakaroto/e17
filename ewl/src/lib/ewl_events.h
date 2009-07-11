@@ -369,8 +369,21 @@ typedef struct Ewl_Event_State_Change Ewl_Event_State_Change;
  */
 struct Ewl_Event_State_Change
 {
-        const char *state;
-        Ewl_State_Type flag;
+        union
+        {
+                struct
+                {
+                        const char *state;
+                        Ewl_Durability durability;
+                } custom;
+                struct
+                {
+                        Ewl_State state_add;
+                        Ewl_State state_remove;
+                        unsigned char inherited:1;
+                } normal;
+        } /* anonymous */;
+        unsigned char custom_state:1;
 };
 
 #include <ewl_model.h>

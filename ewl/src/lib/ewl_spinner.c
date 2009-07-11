@@ -80,10 +80,6 @@ ewl_spinner_init(Ewl_Spinner *s)
                                 ewl_spinner_cb_value_changed, NULL);
         ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
                                 ewl_spinner_cb_destroy, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-                                ewl_container_cb_widget_focus_in, NULL);
-        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-                                ewl_container_cb_widget_focus_out, NULL);
         ewl_container_show_notify_set(EWL_CONTAINER(w),
                                 ewl_spinner_cb_child_show);
         ewl_container_resize_notify_set(EWL_CONTAINER(w),

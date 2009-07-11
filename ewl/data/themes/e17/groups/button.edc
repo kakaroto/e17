@@ -104,8 +104,8 @@ group
 		program
 		{
 			name: "button,checked";
-			signal: "checked";
-			source: "EWL";
+			signal: "state,on";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button_image";
 		}
@@ -113,8 +113,8 @@ group
 		program
 		{
 			name: "button,unchecked";
-			signal: "default";
-			source: "EWL";
+			signal: "state,off";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button_image";
 		}
@@ -123,7 +123,7 @@ group
 		{
 			name: "button,click";
 			signal: "mouse,down,1";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "clicked" 0.0;
 			target: "button_image";
 		}
@@ -132,7 +132,7 @@ group
 		{
 			name: "button,unclick";
 			signal: "mouse,up,1";
-			source: "EWL";
+			source: "ewl/this";
 			action: STATE_SET "default" 0.0;
 			target: "button_image";
 		}
@@ -140,19 +140,28 @@ group
 		program
 		{
 			name: "disable";
-			signal: "disabled";
-			source: "EWL";
+			signal: "disable";
+			source: "ewl/*";
 			action: STATE_SET "disabled" 0.0;
 			target: "button_image";
 			target: "button_image2";
 			target: "focus";
 		}
-
+		program
+		{
+			name: "disabled";
+			signal: "disabled";
+			source: "ewl/*";
+			action: STATE_SET "disabled" 0.0;
+			target: "button_image";
+			target: "button_image2";
+			target: "focus";
+		}
 		program
 		{
 			name: "enable";
-			signal: "enabled";
-			source: "EWL";
+			signal: "enable";
+			source: "ewl/*";
 			action: STATE_SET "default" 0.0;
 			target: "button_image";
 			target: "button_image2";
@@ -162,7 +171,7 @@ group
 		{
 			name: "button,in";
 			signal: "mouse,in";
-			source: "EWL";
+			source: "ewl/this";
 			script
 			{
 				run_program(PROGRAM:"go_active");
@@ -337,6 +346,13 @@ group
 				color: 0 0 0 255;
 				color3: 255 255 255 32;
 			}
+			description
+			{
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 72 72 72 255;
+			}
+
 		}
 		part
 		{
@@ -369,6 +385,33 @@ group
 					align: 0.0 0.5;
 				}
 			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "disabled";
+			signal: "disabled";
+			source: "ewl/both";
+			action: STATE_SET "disabled" 0.0;
+			target: "ewl/label/text";
+		}
+		program
+		{
+			name: "disable";
+			signal: "disable";
+			source: "ewl/both";
+			action: STATE_SET "disabled" 0.0;
+			target: "ewl/label/text";
+		}
+		program
+		{
+			name: "enable";
+			signal: "enable";
+			source: "ewl/both";
+			action: STATE_SET "default" 0.0;
+			target: "ewl/label/text";
 		}
 	}
 }

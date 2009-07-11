@@ -185,22 +185,20 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
                 ewl_callback_append(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
                                                 ewl_entry_cb_key_down, NULL);
 
-                if (ewl_widget_state_has(EWL_WIDGET(e), EWL_FLAG_STATE_FOCUSED))
+                if (ewl_widget_state_has(EWL_WIDGET(e), EWL_STATE_FOCUSED))
                         ewl_widget_show(e->cursor);
 
-                ewl_widget_state_set(EWL_WIDGET(e), "enabled",
-                                        EWL_STATE_PERSISTENT);
+                ewl_widget_state_add(EWL_WIDGET(e), EWL_STATE_ON);
         }
         else
         {
                 ewl_callback_del(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
                                                 ewl_entry_cb_key_down);
 
-                if (ewl_widget_state_has(EWL_WIDGET(e), EWL_FLAG_STATE_FOCUSED))
+                if (ewl_widget_state_has(EWL_WIDGET(e), EWL_STATE_FOCUSED))
                         ewl_widget_hide(e->cursor);
 
-                ewl_widget_state_set(EWL_WIDGET(e), "disabled",
-                                        EWL_STATE_PERSISTENT);
+                ewl_widget_state_remove(EWL_WIDGET(e), EWL_STATE_ON);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -381,8 +379,8 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         sel = EWL_TEXT_TRIGGER(EWL_TEXT(w)->selection);
 
         /* reset the cursor blink */
-        ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink",
-                                EWL_STATE_PERSISTENT);
+        ewl_widget_custom_state_set(EWL_WIDGET(e->cursor), "noblink",
+                                        EWL_TRANSIENT);
 
         if ((!event->keyname) || (!event->keyname[0]))
                 DRETURN(DLEVEL_STABLE);

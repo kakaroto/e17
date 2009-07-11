@@ -35,17 +35,25 @@ group
 	{
 		program
 		{
-			name: "disable";
+			name: "disabled";
 			signal: "disabled";
-			source: "EWL";
+			source: "ewl/both";
+			action: STATE_SET "disabled" 0.0;
+			target: "clip";
+		}
+		program
+		{
+			name: "disable";
+			signal: "disable";
+			source: "ewl/both";
 			action: STATE_SET "disabled" 0.0;
 			target: "clip";
 		}
 		program
 		{
 			name: "enable";
-			signal: "enabled";
-			source: "EWL";
+			signal: "enable";
+			source: "ewl/both";
 			action: STATE_SET "default" 0.0;
 			target: "clip";
 		}

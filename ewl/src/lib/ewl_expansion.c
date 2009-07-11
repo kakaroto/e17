@@ -112,13 +112,12 @@ ewl_expansion_expandable_update(Ewl_Expansion *ex)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(ex);
         DCHECK_TYPE(ex, EWL_EXPANSION_TYPE);
-
+        
         if (ex->expandable)
-                ewl_widget_state_set(EWL_WIDGET(ex), "expandable", 
-                                                        EWL_STATE_TRANSIENT);
+                ewl_widget_appearance_set(EWL_WIDGET(ex), EWL_EXPANSION_TYPE);
         else
-                ewl_widget_state_set(EWL_WIDGET(ex), "nonexpandable", 
-                                                        EWL_STATE_TRANSIENT);
+                ewl_widget_appearance_set(EWL_WIDGET(ex), "nonexpandable/" 
+                                                        EWL_EXPANSION_TYPE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

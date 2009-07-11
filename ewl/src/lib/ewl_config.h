@@ -37,21 +37,21 @@ void             ewl_config_destroy(Ewl_Config *cfg);
 
 void             ewl_config_string_set(Ewl_Config *cfg, const char *k,
                                                 const char *v,
-                                                Ewl_State_Type state);
+                                                Ewl_Durability state);
 const char      *ewl_config_string_get(Ewl_Config *cfg, const char *k);
 
 void             ewl_config_int_set(Ewl_Config *cfg, const char *k, int v,
-                                                Ewl_State_Type state);
+                                                Ewl_Durability state);
 int              ewl_config_int_get(Ewl_Config *cfg, const char *k);
 
 void             ewl_config_float_set(Ewl_Config *cfg, const char *k,
                                                 float v,
-                                                Ewl_State_Type state);
+                                                Ewl_Durability state);
 float            ewl_config_float_get(Ewl_Config *cfg, const char *k);
 
 void             ewl_config_color_set(Ewl_Config *cfg, const char *k,
                                                 int r, int g, int b, int a,
-                                                Ewl_State_Type state);
+                                                Ewl_Durability state);
 void             ewl_config_color_get(Ewl_Config *cfg, const char *k,
                                                 int *r, int *g,
                                                 int *b, int *a);

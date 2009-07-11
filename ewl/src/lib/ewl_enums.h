@@ -224,17 +224,6 @@ enum Ewl_Widget_Flags
         EWL_FLAG_QUEUED_PROCESS_CONFIGURE   = 0x40000, /**< Configure in progress */
         EWL_FLAG_QUEUED_PROCESS_REVEAL      = 0x80000, /**< Reveal in progress */
         EWL_FLAG_QUEUED_PROCESS_DESTROY     = 0x100000,/**< Delete in progress */
-
-        /*
-         * The state enum specifies the current state of a widget, ie. has it
-         * been clicked, does it have the keyboard focus, etc.
-         */
-        EWL_FLAG_STATE_NORMAL   = 0,         /**< Widget state normal */
-        EWL_FLAG_STATE_MOUSE_IN = 0x200000,  /**< Mouse is in the widget */
-        EWL_FLAG_STATE_PRESSED  = 0x400000,  /**< Widget is pressed */
-        EWL_FLAG_STATE_FOCUSED  = 0x800000,  /**< Widget has focus */
-        EWL_FLAG_STATE_DISABLED = 0x1000000, /**< Widget is disabled */
-        EWL_FLAG_STATE_DND      = 0x2000000  /**< Widget is engaged in DND */
 };
 
 
@@ -431,19 +420,41 @@ enum Ewl_Key_Modifiers
 typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 
 /**
- * @enum Ewl_State_Type
- * The state type
+ * @enum Ewl_Durability
+ * The durability type
  */
-enum Ewl_State_Type
+enum Ewl_Durability
 {
-        EWL_STATE_TRANSIENT,
-        EWL_STATE_PERSISTENT
+        EWL_TRANSIENT,
+        EWL_PERSISTENT
 };
 
 /**
- * The Ewl_State_Type type
+ * The Ewl_Durability type
  */
-typedef enum Ewl_State_Type Ewl_State_Type;
+typedef enum Ewl_Durability Ewl_Durability;
+
+/**
+ * @enum Ewl_State
+ * The state type
+ */
+enum Ewl_State
+{
+        EWL_STATE_MOUSE_IN = 0x1,
+        EWL_STATE_MOUSE_DOWN = 0x2,
+        EWL_STATE_FOCUSED = 0x4,
+        EWL_STATE_DISABLED = 0x8,
+        EWL_STATE_HIGHLIGHTED = 0x10,
+        EWL_STATE_SELECTED = 0x20,
+        EWL_STATE_ON = 0x40,
+        EWL_STATE_ODD = 0x80,
+        EWL_STATE_DND = 0x100
+};
+
+/**
+ * The Ewl_State type
+ */
+typedef enum Ewl_State Ewl_State;
 
 /**
  * @enum Ewl_Stock_Type

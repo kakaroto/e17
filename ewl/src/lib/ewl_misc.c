@@ -607,13 +607,13 @@ ewl_init_parse_options(int *argc, char **argv)
         while (i < *argc) {
                 if (!strcmp(argv[i], "--ewl-segv")) {
                         ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV,
-                                                1, EWL_STATE_TRANSIENT);
+                                                1, EWL_TRANSIENT);
                         matched++;
                 }
                 else if (!strcmp(argv[i], "--ewl-backtrace")) {
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_BACKTRACE, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched++;
                 }
                 else if (!strcmp(argv[i], "--ewl-theme")) {
@@ -621,7 +621,7 @@ ewl_init_parse_options(int *argc, char **argv)
                                 ewl_config_string_set(ewl_config,
                                                         EWL_CONFIG_THEME_NAME,
                                                         argv[i + 1],
-                                                        EWL_STATE_TRANSIENT);
+                                                        EWL_TRANSIENT);
                                 matched++;
                         }
                         matched++;
@@ -629,41 +629,41 @@ ewl_init_parse_options(int *argc, char **argv)
                 else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_THEME_PRINT_KEYS, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched++;
                 }
                 else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_THEME_PRINT_SIGNALS, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched++;
                 }
                 else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_GC_REAP, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched++;
                 }
                 else if (!strcmp(argv[i], "--ewl-debug")) {
                         if ((i + 1) < *argc) {
                                 ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                                 matched++;
                         } else {
                                 ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_LEVEL, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         }
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_ENABLE, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched ++;
                 }
                 else if (!strcmp(argv[i], "--ewl-debug-paint")) {
                         ewl_config_int_set(ewl_config,
                                         EWL_CONFIG_DEBUG_EVAS_RENDER, 1,
-                                        EWL_STATE_TRANSIENT);
+                                        EWL_TRANSIENT);
                         matched ++;
                 }
                 else if (!strcmp(argv[i], "--ewl-help")) {
@@ -696,7 +696,7 @@ ewl_init_parse_options(int *argc, char **argv)
                                         {
                                                 ewl_config_string_set(ewl_config,
                                                         EWL_CONFIG_ENGINE_NAME, name,
-                                                        EWL_STATE_TRANSIENT);
+                                                        EWL_TRANSIENT);
                                                 matched ++;
 
                                                 break;
