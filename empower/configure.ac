@@ -3,31 +3,33 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(empower, 2.0.0)
-AM_CONFIG_HEADER(src/bin/config.h)
-
+AC_INIT([empower], [2.0.0], [mekius@mekius.net])
+AC_PREREQ([2.52])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
 AC_ISC_POSIX
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
+AM_CONFIG_HEADER(config.h)
+
 AC_PROG_CC
 AM_PROG_CC_STDC
+AM_PROG_CC_C_O
 AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-AM_WITH_DMALLOC
-AC_PROG_LN_S
-
-AM_PROG_CC_C_O
-
-dnl Add the languages which your application supports here.
-ALL_LINGUAS=""
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
+define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])
+AC_PROG_LIBTOOL
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Locale-specific data directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale", [Locale-specific data directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Locale-specific data directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale", [Locale-specific data directory])
 fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
@@ -48,20 +50,12 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
 fi
 
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/lib'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
-fi
-
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.12.1])
 
 PKG_CHECK_MODULES([EVAS], evas,
    [],
@@ -135,6 +129,7 @@ src/bin/Makefile
 src/bin/ewl/Makefile
 src/bin/elm/Makefile
 data/Makefile
+po/Makefile.in
 ])
 
 echo
