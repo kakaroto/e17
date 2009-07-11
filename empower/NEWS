@@ -1,3 +1,9 @@
+7-10-09:
+	Version 2.0.0 released
+	  - An Elementary based version of empower now exists and is the
+			default version that gets built.  The EWL version is still
+			around for those who love it, but will need to be explicitly
+			enabled.
 5-31-07:
 	Version 1.5 released
 		- This version should hopefully appease alot of the people who have

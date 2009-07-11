@@ -9,7 +9,7 @@ void parse_options(int argc, char** argv)
     printf("Failed to create regular expression\n");
     return;
   }
-  
+
   /*Do initial mode guessing based on executable name and number of args*/
   if(!regexec (&regexp, *argv, 0, NULL, 0))
     mode = PASS;
@@ -17,7 +17,7 @@ void parse_options(int argc, char** argv)
     mode = SUDO;
   else
     mode = SUDOPROG;
-  
+
   --argc; ++argv; //move to the next argument
   
   if(mode == SUDO || mode == SUDOPROG)

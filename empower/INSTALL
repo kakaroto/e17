@@ -1,18 +1,10 @@
-There are two versions now.  The ewl version will install as 'empower_ewl'.
-The etk version will install as 'empower_etk'.  If you only build one version,
-it will be just called empower.  See below for how to control the building of
-each version.
-
-To install empower:
+To build and install empower, do the following:
 	./autogen.sh
 	make
 	make install (as root)
-	
-To enable/disable ewl/etk:
-By default, this will be determined based on which toolkits are installed.
-To override pass one or more of the following to ./autogen.sh:
-	--enable-etk/--disable-etk     Enable/Disable ETK
-	--enable-ewl/--disable-ewl     Enable/Disable EWL
-	
-Note:
-Recently the etk version has been disabled by default due to compilation errors.
+
+By default the Elementary version will be built unless it's not installed
+or the EWL version is explicitly enabled by passing --enable-ewl to autogen.sh.
+The program will build and install as 'empower' in either case.  Both versions
+cannot be installed at the same time without renaming the resulting binary
+manually.

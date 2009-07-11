@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 rm -f config.cache
 
 AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(empower, 1.5.2)
+AM_INIT_AUTOMAKE(empower, 2.0.0)
 AM_CONFIG_HEADER(src/bin/config.h)
 
 AC_ISC_POSIX
