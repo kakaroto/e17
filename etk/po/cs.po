@@ -4,114 +4,189 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk\n"
-"Report-Msgid-Bugs-To: quaker66@gmail.com\n"
-"POT-Creation-Date: 2009-04-13 17:27+0200\n"
-"PO-Revision-Date: 2009-04-13 17:38+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-12 16:44+0200\n"
+"PO-Revision-Date: 2009-07-12 16:52+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "H"
-msgstr "O"
+#: src/tools/etk_prefs/etk_prefs.c:50
+#, c-format
+msgid "Could not init Etk. Exiting...\n"
+msgstr "Nemůžu načíst Etk. Ukončuji...\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "S"
-msgstr "S"
+#: src/tools/etk_prefs/etk_prefs.c:56
+#, c-format
+msgid "Usage: etk_prefs ARGUMENTS\n"
+msgstr "Použití: etk_prefs ARGUMENTY\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "V"
-msgstr "H"
+#: src/tools/etk_prefs/etk_prefs.c:57
+#, c-format
+msgid "ARGUMENTS:\n"
+msgstr "ARGUMENTY:\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "R"
-msgstr "R"
+#: src/tools/etk_prefs/etk_prefs.c:58
+#, c-format
+msgid "   --help : print this message\n"
+msgstr "   --help : vypsat tuto zprávu\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "G"
-msgstr "G"
+#: src/tools/etk_prefs/etk_prefs.c:59
+#, c-format
+msgid "   --theme=THEME : set theme from command line\n"
+msgstr "   --theme=TÉMA : nastavit téma z příkazové řádky\n"
 
-#: ../src/lib/etk_colorpicker.c:306
-msgid "B"
-msgstr "B"
+#: src/tools/etk_prefs/etk_prefs.c:60
+#, c-format
+msgid "   --themes-list : list themes\n"
+msgstr "   --themes-list : vypsat seznam témat\n"
 
-#: ../src/lib/etk_colorpicker.c:400
-msgid "Alpha"
-msgstr "Průhlednost"
+#: src/tools/etk_prefs/etk_prefs.c:89
+#, c-format
+msgid "Theme %s not found. Exitting..\n"
+msgstr "Téma %s nebylo nalezeno. Ukončuji..\n"
 
-#. Current color preview
-#: ../src/lib/etk_colorpicker.c:424
-msgid "Current"
-msgstr "Aktuální"
-
-#: ../src/lib/etk_filechooser_widget.c:495
-msgid "Places"
-msgstr "Místa"
-
-#: ../src/lib/etk_filechooser_widget.c:506
-msgid "Favorites"
-msgstr "Oblíbené"
-
-#: ../src/lib/etk_filechooser_widget.c:517
-msgid "Filename"
-msgstr "Název souboru"
-
-#: ../src/lib/etk_filechooser_widget.c:521
-msgid "Date"
-msgstr "Datum"
-
-#: ../src/lib/etk_filechooser_widget.c:730
-msgid "Home"
-msgstr "Domovská složka"
-
-#: ../src/lib/etk_filechooser_widget.c:735
-msgid "Root"
-msgstr "Kořenový adresář"
-
-#: ../src/lib/etk_message_dialog.c:109
-msgid "Warning"
-msgstr "Varování"
-
-#: ../src/lib/etk_message_dialog.c:113
-msgid "Question"
-msgstr "Otázka"
-
-#: ../src/lib/etk_message_dialog.c:117
-msgid "Error"
-msgstr "Chyba"
-
-#: ../src/lib/etk_message_dialog.c:122
-#: ../src/lib/etk_message_dialog.c:264
-msgid "Information"
-msgstr "Informace"
-
-#: ../src/tools/etk_prefs/etk_prefs.c:60
+#: src/tools/etk_prefs/etk_prefs.c:111
 msgid "Etk Preferences"
 msgstr "Etk nastavení"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:76
-msgid "Category"
-msgstr "Kategorie"
+#: src/tools/etk_prefs/etk_prefs.c:127
+#: src/tools/etk_prefs/etk_prefs.c:262
+#: src/tools/etk_prefs/etk_prefs.c:270
+msgid "Go to Engines page"
+msgstr "Jít na stránku s enginy"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:81
-msgid "Theme"
-msgstr "Téma"
+#: src/tools/etk_prefs/etk_prefs.c:166
+msgid "Preview"
+msgstr "Náhled"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:82
-msgid "Fonts"
-msgstr "Písma"
+#: src/tools/etk_prefs/etk_prefs.c:200
+msgid "Themes"
+msgstr "Témata"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:83
-msgid "Language"
-msgstr "Jazyk"
+#: src/tools/etk_prefs/etk_prefs.c:253
+msgid "Engines"
+msgstr "Enginy"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:84
-msgid "User Preferences"
-msgstr "Uživatelské nastavení"
+#: src/tools/etk_prefs/etk_prefs.c:265
+msgid "Go to Themes page"
+msgstr "Jít na stránku s tématy"
 
-#: ../src/tools/etk_prefs/etk_prefs.c:85
-msgid "General"
-msgstr "Hlavní"
+#: src/tools/etk_prefs/etk_prefs.c:339
+msgid "Buttons"
+msgstr "Tlačítka"
+
+#: src/tools/etk_prefs/etk_prefs.c:343
+msgid "Regular Button"
+msgstr "Normální tlačítko"
+
+#: src/tools/etk_prefs/etk_prefs.c:345
+msgid "Check Button"
+msgstr "Zaškrtávací tlačítko"
+
+#: src/tools/etk_prefs/etk_prefs.c:347
+msgid "Radio Button"
+msgstr "Přepínací tlačítko"
+
+#: src/tools/etk_prefs/etk_prefs.c:350
+msgid "Text"
+msgstr "Text"
+
+#: src/tools/etk_prefs/etk_prefs.c:355
+msgid "Sample text..."
+msgstr "Ukázkový text..."
+
+#: src/tools/etk_prefs/etk_prefs.c:359
+msgid ""
+"Multi-line text widget!\n"
+"How about that! (="
+msgstr ""
+"Několika-linkový text widget!\n"
+"Jak je videt, podpora diakritiky v textblocku potrebuje spravit (="
+
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
+msgstr "O"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
+msgstr "S"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
+msgstr "H"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
+msgstr "R"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
+msgstr "G"
+
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
+msgstr "B"
+
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
+msgstr "Průhlednost"
+
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
+msgstr "Aktuální"
+
+#: src/lib/etk_filechooser_widget.c:495
+msgid "Places"
+msgstr "Místa"
+
+#: src/lib/etk_filechooser_widget.c:506
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#: src/lib/etk_filechooser_widget.c:517
+msgid "Filename"
+msgstr "Název souboru"
+
+#: src/lib/etk_filechooser_widget.c:521
+msgid "Date"
+msgstr "Datum"
+
+#: src/lib/etk_filechooser_widget.c:730
+msgid "Home"
+msgstr "Domovská složka"
+
+#: src/lib/etk_filechooser_widget.c:735
+msgid "Root"
+msgstr "Kořenový adresář"
+
+#: src/lib/etk_message_dialog.c:109
+msgid "Warning"
+msgstr "Varování"
+
+#: src/lib/etk_message_dialog.c:113
+msgid "Question"
+msgstr "Otázka"
+
+#: src/lib/etk_message_dialog.c:117
+msgid "Error"
+msgstr "Chyba"
+
+#: src/lib/etk_message_dialog.c:122
+#: src/lib/etk_message_dialog.c:264
+msgid "Information"
+msgstr "Informace"
+
+#~ msgid "Category"
+#~ msgstr "Kategorie"
+#~ msgid "Fonts"
+#~ msgstr "Písma"
+#~ msgid "Language"
+#~ msgstr "Jazyk"
+#~ msgid "User Preferences"
+#~ msgstr "Uživatelské nastavení"
+#~ msgid "General"
+#~ msgstr "Hlavní"
 
