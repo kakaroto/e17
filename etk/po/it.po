@@ -1,47 +1,50 @@
 # Italian translation for Etk.
 # This file is put in the public domain.
-# Massimo Maiurana <maiurana@gmail.com>, 2008-2009.
+# Massimo Maiurana <maiurana@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-23 20:29+0800\n"
-"PO-Revision-Date: 2009-01-19 08:19+0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-13 07:35+0400\n"
+"PO-Revision-Date: 2009-07-13 13:54+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/lib/etk_colorpicker.c:306
+msgid "H"
+msgstr "H"
 
-#: src/tools/etk_prefs/etk_prefs.c:60
-msgid "Etk Preferences"
-msgstr "Preferenze per Etk"
+#: src/lib/etk_colorpicker.c:306
+msgid "S"
+msgstr "S"
 
-#: src/tools/etk_prefs/etk_prefs.c:76
-msgid "Category"
-msgstr "Categorie"
+#: src/lib/etk_colorpicker.c:306
+msgid "V"
+msgstr "V"
 
-#: src/tools/etk_prefs/etk_prefs.c:81
-msgid "Theme"
-msgstr "Tema"
+#: src/lib/etk_colorpicker.c:306
+msgid "R"
+msgstr "R"
 
-#: src/tools/etk_prefs/etk_prefs.c:82
-msgid "Fonts"
-msgstr "Font"
+#: src/lib/etk_colorpicker.c:306
+msgid "G"
+msgstr "G"
 
-#: src/tools/etk_prefs/etk_prefs.c:83
-msgid "Language"
-msgstr "Lingua"
+#: src/lib/etk_colorpicker.c:306
+msgid "B"
+msgstr "B"
 
-#: src/tools/etk_prefs/etk_prefs.c:84
-msgid "User Preferences"
-msgstr "Impostazioni utente"
+#: src/lib/etk_colorpicker.c:400
+msgid "Alpha"
+msgstr "Alpha"
 
-#: src/tools/etk_prefs/etk_prefs.c:85
-msgid "General"
-msgstr "Impostazioni generali"
+#: src/lib/etk_colorpicker.c:424
+msgid "Current"
+msgstr "Attuale"
 
 #: src/lib/etk_message_dialog.c:109
 msgid "Warning"
@@ -83,34 +86,94 @@ msgstr "Home"
 msgid "Root"
 msgstr "Root"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "H"
-msgstr "H"
+#: src/tools/etk_prefs/etk_prefs.c:50
+#, c-format
+msgid "Could not init Etk. Exiting...\n"
+msgstr "Impossible d'initialiser Etk. Fermeture...\n"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "S"
-msgstr "S"
+#: src/tools/etk_prefs/etk_prefs.c:56
+#, c-format
+msgid "Usage: etk_prefs ARGUMENTS\n"
+msgstr "Usage: etk_prefs ARGUMENTS\n"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "V"
-msgstr "V"
+#: src/tools/etk_prefs/etk_prefs.c:57
+#, c-format
+msgid "ARGUMENTS:\n"
+msgstr "ARGUMENTS:\n"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "R"
-msgstr "R"
+#: src/tools/etk_prefs/etk_prefs.c:58
+#, c-format
+msgid "   --help : print this message\n"
+msgstr "   --help: afficher ce message\n"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "G"
-msgstr "G"
+#: src/tools/etk_prefs/etk_prefs.c:59
+#, c-format
+msgid "   --theme=THEME : set theme from command line\n"
+msgstr "   --theme=THÈME: définir le thème en ligne de commande\n"
 
-#: src/lib/etk_colorpicker.c:306
-msgid "B"
-msgstr "B"
+#: src/tools/etk_prefs/etk_prefs.c:60
+#, c-format
+msgid "   --themes-list : list themes\n"
+msgstr "   --themes-list: liste des thèmes\n"
 
-#: src/lib/etk_colorpicker.c:400
-msgid "Alpha"
-msgstr "Alpha"
+#: src/tools/etk_prefs/etk_prefs.c:89
+#, c-format
+msgid "Theme %s not found. Exitting..\n"
+msgstr "Thème %s non trouvé. Fermeture...\n"
 
-#: src/lib/etk_colorpicker.c:424
-msgid "Current"
-msgstr "Attuale"
+#: src/tools/etk_prefs/etk_prefs.c:111
+msgid "Etk Preferences"
+msgstr "Preferenze per Etk"
+
+#: src/tools/etk_prefs/etk_prefs.c:127 src/tools/etk_prefs/etk_prefs.c:262
+#: src/tools/etk_prefs/etk_prefs.c:270
+msgid "Go to Engines page"
+msgstr "Aller à la page Moteurs"
+
+#: src/tools/etk_prefs/etk_prefs.c:166
+msgid "Preview"
+msgstr "Aperçu"
+
+#: src/tools/etk_prefs/etk_prefs.c:200
+msgid "Themes"
+msgstr "Temi"
+
+#: src/tools/etk_prefs/etk_prefs.c:253
+msgid "Engines"
+msgstr "Moteurs"
+
+#: src/tools/etk_prefs/etk_prefs.c:265
+msgid "Go to Themes page"
+msgstr "Aller à la page Thèmes"
+
+#: src/tools/etk_prefs/etk_prefs.c:339
+msgid "Buttons"
+msgstr "Boutons"
+
+#: src/tools/etk_prefs/etk_prefs.c:343
+msgid "Regular Button"
+msgstr "Bouton régulier"
+
+#: src/tools/etk_prefs/etk_prefs.c:345
+msgid "Check Button"
+msgstr "Bouton à cocher"
+
+#: src/tools/etk_prefs/etk_prefs.c:347
+msgid "Radio Button"
+msgstr "Bouton radio"
+
+#: src/tools/etk_prefs/etk_prefs.c:350
+msgid "Text"
+msgstr "Texte"
+
+#: src/tools/etk_prefs/etk_prefs.c:355
+msgid "Sample text..."
+msgstr "Exemple de texte..."
+
+#: src/tools/etk_prefs/etk_prefs.c:359
+msgid ""
+"Multi-line text widget!\n"
+"How about that! (="
+msgstr ""
+"Composant texte multi-ligne !\n"
+"Qu'en dites-vous ? (="

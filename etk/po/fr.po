@@ -5,41 +5,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etk\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-22 20:50+0400\n"
-"PO-Revision-Date: 2009-04-24 08:28+0400\n"
+"POT-Creation-Date: 2009-07-13 07:35+0400\n"
+"PO-Revision-Date: 2009-07-13 12:41+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: utf-8\n"
-
-#: src/tools/etk_prefs/etk_prefs.c:60
-msgid "Etk Preferences"
-msgstr "Préférences Etk"
-
-#: src/tools/etk_prefs/etk_prefs.c:76
-msgid "Category"
-msgstr "Catégorie"
-
-#: src/tools/etk_prefs/etk_prefs.c:81
-msgid "Theme"
-msgstr "Thème"
-
-#: src/tools/etk_prefs/etk_prefs.c:82
-msgid "Fonts"
-msgstr "Polices"
-
-#: src/tools/etk_prefs/etk_prefs.c:83
-msgid "Language"
-msgstr "Langue"
-
-#: src/tools/etk_prefs/etk_prefs.c:84
-msgid "User Preferences"
-msgstr "Préférences de l'utilisateur"
-
-#: src/tools/etk_prefs/etk_prefs.c:85
-msgid "General"
-msgstr "Général"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: src/lib/etk_colorpicker.c:306
 msgid "H"
@@ -85,7 +57,8 @@ msgstr "Question"
 msgid "Error"
 msgstr "Erreur"
 
-#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
+#: src/lib/etk_message_dialog.c:122
+#: src/lib/etk_message_dialog.c:264
 msgid "Information"
 msgstr "Informations"
 
@@ -113,134 +86,189 @@ msgstr "Dossier personnel"
 msgid "Root"
 msgstr "Root"
 
-#~ msgid "Etk Button test"
-#~ msgstr "Test bouton ETK"
+#: src/tools/etk_prefs/etk_prefs.c:50
+#, c-format
+msgid "Could not init Etk. Exiting...\n"
+msgstr "Impossible d'initialiser Etk. Fermeture...\n"
 
+#: src/tools/etk_prefs/etk_prefs.c:56
+#, c-format
+msgid "Usage: etk_prefs ARGUMENTS\n"
+msgstr "Usage: etk_prefs ARGUMENTS\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:57
+#, c-format
+msgid "ARGUMENTS:\n"
+msgstr "ARGUMENTS:\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:58
+#, c-format
+msgid "   --help : print this message\n"
+msgstr "   --help: afficher ce message\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:59
+#, c-format
+msgid "   --theme=THEME : set theme from command line\n"
+msgstr "   --theme=THÈME: définir le thème en ligne de commande\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:60
+#, c-format
+msgid "   --themes-list : list themes\n"
+msgstr "   --themes-list: liste des thèmes\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:89
+#, c-format
+msgid "Theme %s not found. Exitting..\n"
+msgstr "Thème %s non trouvé. Fermeture...\n"
+
+#: src/tools/etk_prefs/etk_prefs.c:111
+msgid "Etk Preferences"
+msgstr "Préférences Etk"
+
+#: src/tools/etk_prefs/etk_prefs.c:127
+#: src/tools/etk_prefs/etk_prefs.c:262
+#: src/tools/etk_prefs/etk_prefs.c:270
+msgid "Go to Engines page"
+msgstr "Aller à la page Moteurs"
+
+#: src/tools/etk_prefs/etk_prefs.c:166
+msgid "Preview"
+msgstr "Aperçu"
+
+#: src/tools/etk_prefs/etk_prefs.c:200
+msgid "Themes"
+msgstr "Thèmes"
+
+#: src/tools/etk_prefs/etk_prefs.c:253
+msgid "Engines"
+msgstr "Moteurs"
+
+#: src/tools/etk_prefs/etk_prefs.c:265
+msgid "Go to Themes page"
+msgstr "Aller à la page Thèmes"
+
+#: src/tools/etk_prefs/etk_prefs.c:339
+msgid "Buttons"
+msgstr "Boutons"
+
+#: src/tools/etk_prefs/etk_prefs.c:343
+msgid "Regular Button"
+msgstr "Bouton régulier"
+
+#: src/tools/etk_prefs/etk_prefs.c:345
+msgid "Check Button"
+msgstr "Bouton à cocher"
+
+#: src/tools/etk_prefs/etk_prefs.c:347
+msgid "Radio Button"
+msgstr "Bouton radio"
+
+#: src/tools/etk_prefs/etk_prefs.c:350
+msgid "Text"
+msgstr "Texte"
+
+#: src/tools/etk_prefs/etk_prefs.c:355
+msgid "Sample text..."
+msgstr "Exemple de texte..."
+
+#: src/tools/etk_prefs/etk_prefs.c:359
+msgid ""
+"Multi-line text widget!\n"
+"How about that! (="
+msgstr ""
+"Composant texte multi-ligne !\n"
+"Qu'en dites-vous ? (="
+
+#~ msgid "Category"
+#~ msgstr "Catégorie"
+#~ msgid "Fonts"
+#~ msgstr "Polices"
+#~ msgid "Language"
+#~ msgstr "Langue"
+#~ msgid "User Preferences"
+#~ msgstr "Préférences de l'utilisateur"
+#~ msgid "General"
+#~ msgstr "Général"
 #~ msgid "Normal button"
 #~ msgstr "Bouton normal"
-
 #~ msgid "Button with an image"
 #~ msgstr "Bouton avec une image"
-
-#~ msgid "Check button"
-#~ msgstr "Bouton à cocher"
-
-#~ msgid "Radio button"
-#~ msgstr "Bouton radio"
-
 #~ msgid "Toggle button"
 #~ msgstr "Bouton-poussoir"
-
 #~ msgid "Etk Canvas Test"
 #~ msgstr "Test canevas Etk"
-
 #~ msgid "Add object"
 #~ msgstr "Ajouter un objet"
-
 #~ msgid "Etk Color Picker"
 #~ msgstr "Selectionneur de couleur Etk"
-
 #~ msgid "Etk Entry test"
 #~ msgstr "Test saisie de texte Etk"
-
 #~ msgid "Print the text!!!"
 #~ msgstr "Imprimer le texte !!"
-
 #~ msgid "Etk Image Test"
 #~ msgstr "Test Image Etk"
-
 #~ msgid "Keep aspect"
 #~ msgstr "Conserver l'aspect"
-
 #~ msgid "Don't keep aspect"
 #~ msgstr "Ne pas conserver l'aspect"
-
 #~ msgid "Etk Scale test"
 #~ msgstr "Test d'échelle Etk"
-
 #~ msgid "Etk Table Test"
 #~ msgstr "Test table Etk"
-
 #~ msgid "Set Icon"
 #~ msgstr "Sélectionner un icone"
-
 #~ msgid "App name"
 #~ msgstr "Nom de l'application"
-
 #~ msgid "Generic Info"
 #~ msgstr "Info générique"
-
 #~ msgid "Executable"
 #~ msgstr "Exécutable"
-
 #~ msgid "Window name"
 #~ msgstr "Nom de la fenêtre"
-
 #~ msgid "Window class"
 #~ msgstr "Classe de la fenêtre"
-
 #~ msgid "Startup notify"
 #~ msgstr "Notification de démarrage"
-
 #~ msgid "Wait exit"
 #~ msgstr "Attendre la sortie"
-
 #~ msgid "Cancel"
 #~ msgstr "Annuler"
-
 #~ msgid "Save"
 #~ msgstr "Enregistrer"
-
 #~ msgid "Etk Test Application"
 #~ msgstr "Test application Etk"
-
 #~ msgid "<h1>Tree:</h1>"
 #~ msgstr "<h1>Arbre:</h1>"
-
 #~ msgid "<h1>List:</h1>"
 #~ msgstr "<h1>Liste:</h1>"
-
 #~ msgid "Column 1"
 #~ msgstr "Colonne 1"
-
 #~ msgid "Column 2"
 #~ msgstr "Colonne 2"
-
 #~ msgid "Column 3"
 #~ msgstr "Colonne 3"
-
 #~ msgid "Row1"
 #~ msgstr "Rangée1"
-
 #~ msgid "Row2"
 #~ msgstr "Rangée2"
-
 #~ msgid "Row3"
 #~ msgstr "Rangée3"
-
 #~ msgid "Row4"
 #~ msgstr "Rangée4"
-
 #~ msgid "Row5"
 #~ msgstr "Rangée5"
-
 #~ msgid "Row6"
 #~ msgstr "Rangée6"
-
 #~ msgid "Row7"
 #~ msgstr "Rangée7"
-
 #~ msgid "Row8"
 #~ msgstr "Rangée8"
-
 #~ msgid "Row9"
 #~ msgstr "Rangée9"
-
 #~ msgid "Row10"
 #~ msgstr "Rangée10"
-
 #~ msgid "Row11"
 #~ msgstr "Rangée11"
-
 #~ msgid "Row12"
 #~ msgstr "Rangée12"
+
