@@ -5,7 +5,7 @@ MSN:          quaker6667@hotmail.com
 Name:         Daniel Kolesa
 Location:     Kyjov, Czech Republic
 E-Mail:       quaker66@gmail.com
-Managing:     Debian packaging, Czech translations
-Contributing: Entrance, Etk - theming, PROTO/keys - makefile stuff
+Managing:     Debian packaging, Czech translations, PROTO/shellementary
+Contributing: Entrance, Etk, PROTO/keys - makefile stuff, empower, gettext stuff
 Platform:     Debian(Linux), Ubuntu(Linux)
 GeoData:      49.00596302341608 17.122246026992798
