@@ -40,7 +40,7 @@ void
 config_option_modes(void *data)
 {
    menu_push("menu", "Modes", NULL, NULL);
-   if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
+   if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_XLIB))
       menu_item_add("icon/x11", "Software",
 	    	    NULL, NULL, config_option_modes_switch,
 		    (void*)0, NULL, NULL, NULL);
