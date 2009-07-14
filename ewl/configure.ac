@@ -234,7 +234,7 @@ case "$host_os" in
         ewl_evas_engine_default="evas_software_gdi"
         ;;
      *)
-        ewl_evas_engine_default="evas_software_x11"
+        ewl_evas_engine_default="evas_software_xlib"
         ;;
 esac
 AC_SUBST(ewl_evas_engine_default)
