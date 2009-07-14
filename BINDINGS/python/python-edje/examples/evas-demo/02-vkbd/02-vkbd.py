@@ -193,7 +193,7 @@ class VirtualKeyboard(edje.Edje):
             o.signal_emit("key_down", k)
 
 
-if ecore.evas.engine_type_supported_get("software_x11_16") and \
+if ecore.evas.engine_type_supported_get("software_16_x11") and \
    '-x11' not in sys.argv:
     ee = ecore.evas.SoftwareX11_16(w=WIDTH, h=HEIGHT)
 else:

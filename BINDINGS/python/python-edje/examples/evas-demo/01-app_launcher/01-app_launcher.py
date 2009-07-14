@@ -39,7 +39,7 @@ options, args = op.parse_args()
 if options.engine == "x11":
     f = ecore.evas.SoftwareX11
 elif options.engine == "x11-16":
-    if ecore.evas.engine_type_supported_get("software_x11_16"):
+    if ecore.evas.engine_type_supported_get("software_16_x11"):
         f = ecore.evas.SoftwareX11_16
     else:
         print "warning: x11-16 is not supported, fallback to x11"
