@@ -142,6 +142,45 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         def __get__(self):
             return self.output_method_get()
 
+    def engine_info_set(self, unsigned long ptr):
+        """Set the engine information pointer.
+
+        Note that given value is a pointer, usually acquired with L{info_get()}
+        and is totally engine and platform dependent.
+
+        This call is very low level and is meant for extension to use,
+        they usually do the machinery in C and just handle pointers as
+        integers.
+
+        If in doubt, don't mess with it. Use ecore.evas instead, it's
+        the way to go for regular uses.
+        """
+        evas_engine_info_set(self.obj, <void *>ptr)
+
+    def engine_info_get(self):
+        """Get the engine information pointer.
+
+        Note that given value is a pointer and is totally engine and
+        platform dependent.
+
+        This call is very low level and is meant for extension to use,
+        they usually do the machinery in C and just handle pointers as
+        integers.
+
+        If in doubt, don't mess with it. Use ecore.evas instead, it's
+        the way to go for regular uses.
+
+        @return: pointer as integer (unsigned long).
+        """
+        return <unsigned long><void *>evas_engine_info_get(self.obj)
+
+    property engine_info:
+        def __set__(self, ptr):
+            self.engine_info_set(ptr)
+
+        def __get__(self):
+            return self.engine_info_get()
+
     def size_set(self, int w, int h):
         """Set canvas size.
 

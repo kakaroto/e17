@@ -305,6 +305,9 @@ cdef extern from "Evas.h":
     void evas_output_method_set(Evas *e, int render_method)
     int evas_output_method_get(Evas *e)
 
+    void *evas_engine_info_get(Evas *e)
+    int evas_engine_info_set(Evas *e, void *info)
+
     void evas_output_size_set(Evas *e, int w, int h)
     void evas_output_size_get(Evas *e, int *w, int *h)
     void evas_output_viewport_set(Evas *e, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
