@@ -5,11 +5,8 @@ import ecore
 import evas
 import ecore.evas
 
-if 'x11' in sys.argv:
-    ee = ecore.evas.SoftwareX11(w=800, h=480)
-else:
-    ee = ecore.evas.SoftwareX11_16(w=800, h=480)
 
+ee = ecore.evas.new(w=800, h=400)
 bg = ee.evas.Rectangle(color=(255, 255, 255, 255))
 bg.size = ee.evas.size
 bg.show()

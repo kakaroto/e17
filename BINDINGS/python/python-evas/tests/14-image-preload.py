@@ -6,23 +6,12 @@ import ecore
 import evas
 import ecore.evas
 
-ee = None
-required_image = "icon.png"
-for a in sys.argv[1:]:
-    if a == 'x11':
-        ee = ecore.evas.SoftwareX11(w=800, h=480)
-    elif a == 'x11-16':
-        ee = ecore.evas.SoftwareX11_16(w=800, h=480)
-    else:
-        if os.path.exists(a):
-            required_image = a
-        else:
-            raise SystemExit(("invalid argument: %s. "
-                              "Expected x11, x11-16 or image path.") % a)
+try:
+    required_image = sys.argv[1]
+except IndexError:
+    required_image = os.path.join(os.path.dirname(sys.argv[0]), "icon.png")
 
-if not ee:
-    ee = ecore.evas.SoftwareX11_16(w=800, h=480)
-
+ee = ecore.evas.new(w=800, h=400)
 bg = ee.evas.Rectangle(color=(255, 255, 255, 255))
 bg.size = ee.evas.size
 bg.show()

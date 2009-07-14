@@ -9,10 +9,11 @@ class CanvasConstructor(unittest.TestCase):
         self.assertEqual(c.viewport_get(), (0, 0, 1, 1))
 
     def testConstructorArgs(self):
-        m = "software_x11"
+        m = "buffer"
         s = (400, 500)
         v = (0, 0, 30, 40)
         c = evas.Canvas(method=m, size=s, viewport=v)
+        c.engine_info_set(c.engine_info_get())
         self.assertEqual(c.output_method_get(), evas.render_method_lookup(m))
         self.assertEqual(c.size_get(), s)
         self.assertEqual(c.viewport_get(), v)
@@ -22,7 +23,8 @@ class CanvasConstructor(unittest.TestCase):
 
 class CanvasMethods(unittest.TestCase):
     def setUp(self):
-        self.canvas = evas.Canvas(method="software_x11", size=(400, 500))
+        self.canvas = evas.Canvas(method="buffer", size=(400, 500))
+        self.canvas.engine_info_set(self.canvas.engine_info_get())
 
     def tearDown(self):
         del self.canvas
@@ -37,7 +39,8 @@ class CanvasMethods(unittest.TestCase):
 
 class CanvasProperties(unittest.TestCase):
     def setUp(self):
-        self.canvas = evas.Canvas(method="software_x11", size=(400, 500))
+        self.canvas = evas.Canvas(method="buffer", size=(400, 500))
+        self.canvas.engine_info_set(self.canvas.engine_info_get())
 
     def tearDown(self):
         del self.canvas

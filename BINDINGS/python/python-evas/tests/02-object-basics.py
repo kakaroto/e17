@@ -3,9 +3,10 @@ import unittest
 
 class ObjectBasics(unittest.TestCase):
     def setUp(self):
-        self.canvas = evas.Canvas(method="software_x11",
+        self.canvas = evas.Canvas(method="buffer",
                                   size=(400, 500),
                                   viewport=(0, 0, 400, 500))
+        self.canvas.engine_info_set(self.canvas.engine_info_get())
 
     def tearDown(self):
         del self.canvas
@@ -111,9 +112,10 @@ class ObjectBasics(unittest.TestCase):
 
 class ObjectProperties(unittest.TestCase):
     def setUp(self):
-        self.canvas = evas.Canvas(method="software_x11",
+        self.canvas = evas.Canvas(method="buffer",
                                   size=(400, 500),
                                   viewport=(0, 0, 400, 500))
+        self.canvas.engine_info_set(self.canvas.engine_info_get())
         self.obj = evas.Rectangle(self.canvas,
                                   geometry=(10, 20, 30, 40))
 
