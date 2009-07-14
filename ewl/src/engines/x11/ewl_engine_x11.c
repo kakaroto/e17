@@ -1,6 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include <Ewl_Engine_X11.h>
-#include <X11/Xlib.h>
 #include "ewl_private.h"
 #include "ewl_macros.h"
 #include "ewl_debug.h"
@@ -1342,21 +1341,20 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
                 char *atom;
 
                 embed = ewl_embed_canvas_window_find(UINT_TO_UINTPTR(ev->owner));
-                atom = XGetAtomName(ecore_x_display_get(), ev->target);
+                atom = ecore_x_atom_name_get(ev->target);
                 ewl_embed_dnd_data_request_feed(embed, ev, atom);
-                XFree(atom);
+                free(atom);
         }
         /* Handle everything *except* XDND selection */
         else
         {
                 char *rec, *dnd;
 
-                rec = XGetAtomName(ecore_x_display_get(), ev->selection);
-                dnd = XGetAtomName(ecore_x_display_get(),
-                                                ECORE_X_ATOM_SELECTION_XDND);
+                rec = ecore_x_atom_name_get(ev->selection);
+                dnd = ecore_x_atom_name_get(ECORE_X_ATOM_SELECTION_XDND);
                 printf("Data request event received: %s not %s\n", rec, dnd);
-                XFree(rec);
-                XFree(dnd);
+                free(rec);
+                free(dnd);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);

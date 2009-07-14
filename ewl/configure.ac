@@ -190,18 +190,30 @@ fi
 # Buffer engine
 EWL_CHECK_ENGINE([software_buffer], [buffer], [0.9.9], ["yes"])
 
-# Xlib engines
+# X11 engines
 EWL_CHECK_ENGINE([software_x11], [software X11], [0.9.9], [$have_ecore_x])
+
+have_software_xlib="no"
+have_software_xcb="no"
+if test "x$have_software_x11" = "xyes" ; then
+   have_software_xlib=`${PKG_CONFIG} --variable=Xlib evas-software-x11`
+   if test "x$have_software_xlib" = "xyes" ; then
+      AC_DEFINE(HAVE_EVAS_SOFTWARE_XLIB, 1, [Evas Software Xlib Engine Support])
+   fi
+   have_software_xcb=`${PKG_CONFIG} --variable=XCB evas-software-x11`
+   if test "x$have_software_xcb" = "xyes" ; then
+      AC_DEFINE(HAVE_EVAS_SOFTWARE_XCB, 1, [Evas Software Xlib Engine Support])
+   fi
+fi
+AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_XLIB, [test "x$have_software_xlib" = "xyes"])
+AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_XCB, [test "x$have_software_xcb" = "xyes"])
+
 EWL_CHECK_ENGINE([software_16_x11], [software 16 bpp X11], [0.9.9], [$have_ecore_x])
 EWL_CHECK_ENGINE([xrender_x11], [xrender X11], [0.9.9], [$have_ecore_x])
 EWL_CHECK_ENGINE([opengl_x11], [opengl X11], [0.9.9], [$have_ecore_x])
 
-AM_CONDITIONAL(EWL_ENABLE_X11, test "x$have_ecore_x" = "xyes" -a "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes")
-
-# XCB engine
-EWL_CHECK_ENGINE([software_xcb], [software XCB], [0.9.9], [$have_ecore_xcb])
-
-AM_CONDITIONAL(EWL_ENABLE_XCB, test "x$have_software_xcb" = "xyes" -a "x$have_ecore_xcb" = "xyes")
+AM_CONDITIONAL(EWL_ENABLE_X11, test "x$have_ecore_x" = "xyes" -a "x$have_software_xlib" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes")
+AM_CONDITIONAL(EWL_ENABLE_XCB, test "x$have_ecore_xcb" = "xyes" -a "x$have_software_xcb" = "xyes")
 
 dnl Win32 engines
 EWL_CHECK_ENGINE([software_gdi], [software GDI], [0.9.9], [$have_ecore_win32])
@@ -395,7 +407,7 @@ src/plugins/Makefile
 src/engines/x11/Makefile
 src/engines/xcb/Makefile
 src/engines/evas/Makefile
-src/engines/evas_software_x11/Makefile
+src/engines/evas_software_xlib/Makefile
 src/engines/evas_software_xcb/Makefile
 src/engines/evas_software_sdl/Makefile
 src/engines/evas_software_16_x11/Makefile

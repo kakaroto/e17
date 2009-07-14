@@ -1,5 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
-#include "Ewl_Engine_Evas_Software_X11.h"
+#include "Ewl_Engine_Evas_Software_Xlib.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
@@ -33,11 +33,11 @@ ewl_engine_dependancies(void)
 Ewl_Engine *
 ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 {
-        Ewl_Engine_Evas_Software_X11 *engine;
+        Ewl_Engine_Evas_Software_Xlib *engine;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        engine = NEW(Ewl_Engine_Evas_Software_X11, 1);
+        engine = NEW(Ewl_Engine_Evas_Software_Xlib, 1);
         if (!engine)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
@@ -99,7 +99,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         info = evas_engine_info_get(evas);
         if (!info)
         {
-                fprintf(stderr, "Unable to use software_x11 engine "
+                fprintf(stderr, "Unable to use software_x11 Xlib engine "
                                 "for rendering, ");
                 exit(-1);
         }
