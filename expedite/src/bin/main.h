@@ -21,8 +21,8 @@
 #endif
 
 #include <Evas.h>
-#if HAVE_EVAS_SOFTWARE_X11
-#include "engine_software_x11.h"
+#if HAVE_EVAS_SOFTWARE_XLIB
+#include "engine_software_xlib.h"
 #endif
 #if HAVE_EVAS_XRENDER_X11
 #include "engine_xrender_x11.h"
@@ -33,7 +33,7 @@
 #if HAVE_EVAS_SOFTWARE_XCB
 #include "engine_software_xcb.h"
 #endif
-#if HAVE_EVAS_XRENDER_X11
+#if HAVE_EVAS_XRENDER_XCB
 #include "engine_xrender_xcb.h"
 #endif
 #if HAVE_EVAS_SOFTWARE_GDI

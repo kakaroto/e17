@@ -29,14 +29,25 @@ AC_ARG_ENABLE(simple-x11,
 # Software X11
 EXPEDITE_CHECK_ENGINE([software-x11], [Software X11], "yes")
 
+if test "x${have_software_x11}" = "xyes" ; then
+   have_software_xlib=`${PKG_CONFIG} --variable=Xlib evas-software-x11`
+   if test "x${have_software_xlib}" = "xyes" ; then
+      AC_DEFINE(HAVE_EVAS_SOFTWARE_XLIB, 1, [Evas Software Xlib Engine Support])
+   fi
+   have_software_xcb=`${PKG_CONFIG} --variable=XCB evas-software-x11`
+   if test "x${have_software_xcb}" = "xyes" ; then
+      AC_DEFINE(HAVE_EVAS_SOFTWARE_XCB, 1, [Evas Software XCB Engine Support])
+   fi
+fi
+
+AM_CONDITIONAL([BUILD_SOFTWARE_XLIB], [test "x${have_software_xlib}" = "xyes"])
+AM_CONDITIONAL([BUILD_SOFTWARE_XCB], [test "x${have_software_xcb}" = "xyes"])
+
 # XRender X11
 EXPEDITE_CHECK_ENGINE([xrender-x11], [XRender X11], "yes")
 
 # OpenGL X11
 EXPEDITE_CHECK_ENGINE([opengl-x11], [OpenGL X11], "yes")
-
-# Software XCB
-EXPEDITE_CHECK_ENGINE([software-xcb], [Software XCB], "yes")
 
 # XRender XCB
 EXPEDITE_CHECK_ENGINE([xrender-xcb], [XRender XCB], "yes")
@@ -120,11 +131,11 @@ PKG_CHECK_MODULES([EVAS], evas)
 
 # Xlib
 
-if test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes"; then
+if test "x$have_software_xlib" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes"; then
    AC_PATH_XTRA
    AC_CHECK_HEADERS([X11/Xlib.h X11/Xutil.h],
-      [have_x11="yes"],
-      [have_x11="no"])
+      [have_xlib="yes"],
+      [have_xlib="no"])
    if test "x$want_evas_simple_x11" = "xyes"; then
       x_libs="${x_libs} -lX11 -lXext"
    else
@@ -133,7 +144,7 @@ if test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "
       x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
    fi
 fi
-AM_CONDITIONAL(BUILD_X11, test "x$have_x11" = "xyes")
+AM_CONDITIONAL(BUILD_X11, [test "x$have_xlib" = "xyes"])
 
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
@@ -141,7 +152,7 @@ AC_SUBST(x_libs)
 # XCB
 
 if test "x$have_software_xcb" = "xyes"; then
-   PKG_CHECK_MODULES([XCB], [xcb xcb-keysyms], [have_software_xcb="yes"], [have_software_xcb="no"])
+   PKG_CHECK_MODULES([XCB], [xcb xcb-keysyms], [have_xcb="yes"], [have_xcb="no"])
 fi
 AM_CONDITIONAL(BUILD_XCB, test "x$have_xcb" = "xyes")
 if test "x$have_xcb" = "xyes"; then
@@ -213,10 +224,9 @@ echo
 echo "  $PACKAGE $VERSION"
 echo
 echo "  Engines:"
-echo "    Software X11.................: ${have_software_x11}"
+echo "    Software X11.................: ${have_software_xlib} (Xlib: ${have_software_xlib}) (XCB: ${have_software_xcb})"
 echo "    X Render X11.................: ${have_xrender_x11}"
 echo "    Open GL X11..................: ${have_opengl_x11}"
-echo "    Software XCB.................: ${have_software_xcb}"
 echo "    X Render XCB.................: ${have_xrender_xcb}"
 echo "    Software GDI.................: ${have_software_gdi}"
 echo "    Software DirectDraw..........: ${have_software_ddraw}"

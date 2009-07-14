@@ -1199,9 +1199,9 @@ _engine_args(int argc, char **argv)
 
    /* FIXME: parse args for geometry, engine etc. */
    profile_ok = _profile_parse(argc, argv);
-#if HAVE_EVAS_SOFTWARE_X11
-   if (engine_software_x11_args(argc, argv))
-     loop_func = engine_software_x11_loop;
+#if HAVE_EVAS_SOFTWARE_XLIB
+   if (engine_software_xlib_args(argc, argv))
+     loop_func = engine_software_xlib_loop;
 #endif
 #if HAVE_EVAS_XRENDER_X11
    if (engine_xrender_x11_args(argc, argv))
@@ -1278,8 +1278,8 @@ _engine_args(int argc, char **argv)
 		"\n"
 		"Where ENGINE can be one of:\n"
 		" "
-#if HAVE_EVAS_SOFTWARE_X11
-	       	" x11"
+#if HAVE_EVAS_SOFTWARE_XLIB
+	       	" xlib"
 #endif
 #if HAVE_EVAS_XRENDER_X11
 	       	" xr"

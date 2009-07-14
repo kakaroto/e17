@@ -81,9 +81,9 @@ expedite_CXXFLAGS = -fno-rtti -fno-exceptions
 expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVIL_LIBS@ @quartz_libs@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
-if BUILD_SOFTWARE_X11
+if BUILD_SOFTWARE_XLIB
 expedite_SOURCES += \
-engine_software_x11.c engine_software_x11.h
+engine_software_xlib.c engine_software_xlib.h
 endif
 
 if BUILD_XRENDER_X11

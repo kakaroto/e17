@@ -9,7 +9,7 @@ static Window win = 0;
 static int first_expose = 0;
 
 int
-engine_software_x11_args(int argc, char **argv)
+engine_software_xlib_args(int argc, char **argv)
 {
    XSetWindowAttributes attr;
    XClassHint chint;
@@ -23,7 +23,7 @@ engine_software_x11_args(int argc, char **argv)
 	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
 	  {
 	     i++;
-	     if (!strcmp(argv[i], "x11")) ok = 1;
+	     if (!strcmp(argv[i], "xlib")) ok = 1;
 	  }
      }
    if (!ok) return 0;
@@ -35,7 +35,7 @@ engine_software_x11_args(int argc, char **argv)
    einfo = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
    if (!einfo)
      {
-	printf("Evas does not support the Software X11 Engine\n");
+	printf("Evas does not support the Software Xlib Engine\n");
 	return 0;
      }
 
@@ -67,7 +67,7 @@ engine_software_x11_args(int argc, char **argv)
    einfo->info.drawable = win;
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
-	printf("Evas can not setup the informations of the Software X11 Engine\n");
+	printf("Evas can not setup the informations of the Software Xlib Engine\n");
         return 0;
      }
 
@@ -82,12 +82,12 @@ engine_software_x11_args(int argc, char **argv)
    XMapWindow(disp, win);
    XSync(disp, False);
    while (!first_expose)
-     engine_software_x11_loop();
+     engine_software_xlib_loop();
    return 1;
 }
 
 void
-engine_software_x11_loop(void)
+engine_software_xlib_loop(void)
 {
    XEvent ev;
    KeySym ks;
