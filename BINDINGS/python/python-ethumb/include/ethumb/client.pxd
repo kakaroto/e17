@@ -28,6 +28,7 @@ cdef extern from "Ethumb_Client.h":
 
     Ethumb_Client *ethumb_client_connect(connect_callback_t cb, void *data, void (*free_data)(void *))
     void ethumb_client_disconnect(Ethumb_Client *client)
+    void ethumb_client_on_server_die_callback_set(Ethumb_Client *client, void (*on_server_die_cb)(Ethumb_Client *client, void *data), void *data)
 
     void ethumb_client_fdo_set(Ethumb_Client *client, int s)
 
@@ -68,3 +69,5 @@ cdef extern from "Ethumb_Client.h":
 
 cdef class Client:
     cdef Ethumb_Client *obj
+    cdef object _on_connect_callback
+    cdef object _on_server_die_callback
