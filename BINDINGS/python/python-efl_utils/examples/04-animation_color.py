@@ -12,7 +12,7 @@ bg.show()
 ee.data["bg"] = bg
 
 
-o1 = canvas.Rectangle(color="#ff0000", name="o1")
+o1 = canvas.Rectangle(color="#ff0000", name="o1", size=canvas.size)
 o1.show()
 
 def change_color(color, obj):
