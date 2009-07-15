@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0"/>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1242992670" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1243854883"/>
+      <summary>split EdjeBase.h in more classes</summary>
+      <comment>e.g. *file() functions</comment>
+    </item>
+  </category>
+</gtodo>

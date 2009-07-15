@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Ewl (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: sigc++-2.0 ewl evasxx
+Conflicts: 
+Libs: -L${libdir} -lewlxx
+Cflags: -I${includedir}
+

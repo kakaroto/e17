@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=src/textentry
+includedir=src
+
+Name: @PACKAGE@
+Description: Esmart_Text_Entry (EFL) C++ Wrapper, Not installed
+Version: @VERSION@
+Requires: sigc++-2.0 evasxx
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libesmartxx_textentry.la
+Cflags: -I${pcfiledir}/${includedir} 

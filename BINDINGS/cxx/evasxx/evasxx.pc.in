@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Evas (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: sigc++-2.0 eflxx evas
+Conflicts: 
+Libs: -L${libdir} -levasxx
+Cflags: -I${includedir}
+

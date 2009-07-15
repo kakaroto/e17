@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Eina (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: sigc++-2.0 einaxx eflxx
+Conflicts: 
+Libs: -L${libdir} -leinaxx
+Cflags: -I${includedir}
+

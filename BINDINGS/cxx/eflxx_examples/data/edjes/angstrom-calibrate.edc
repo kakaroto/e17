@@ -1,0 +1,128 @@
+collections {
+
+images {
+    image: "panel.png" COMP;
+    image: "shadow.png" COMP;
+    image: "angstrom.png" COMP;
+    image: "crosshair.png" COMP;
+}
+
+fonts {
+    font: "Vera.ttf" "Vera";
+}
+
+group {
+    name: "background";
+    parts {
+    part {
+        name: "background_image";
+        description {
+            state: "default" 0.0;
+            image {
+                normal: "panel.png";
+            }
+        }
+    }
+    part {
+        name: "shadow";
+        description {
+            state: "default" 0.0;
+            image {
+                normal: "shadow.png";
+            }
+        }
+    }
+
+    part {
+        name: "crosshair";
+        description {
+            state: "default" 0.0;
+            min: 31 31;
+            max: 31 31;
+            align: 0.5 0.5;
+            rel1 {
+                relative: 0.5 0.5;
+                offset: 0 0;
+            }
+            rel2 {
+                relative: 0.5 0.5;
+                offset: 0 0;
+            }
+            image {
+                normal: "crosshair.png";
+            }
+        }
+    }
+
+    part {
+        name: "logo";
+        description {
+            state: "default" 0.0;
+            min: 128 100;
+            max: 256 200;
+            align: 0.5 1.0;
+            rel1 {
+                relative: 0.5 1.0;
+                offset: 0 0;
+            }
+            rel2 {
+                relative: 0.5 1.0;
+                offset: 0 0;
+            }
+            image {
+                normal: "angstrom.png";
+            }
+        }
+    }
+
+    part {
+        name: "help";
+        type: "TEXT";
+        effect: NONE;
+        description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+
+            rel1 {
+                relative: 0.0 0.3;
+                offset: 0 0;
+            }
+            rel2 {
+                relative: 1.0 0.3;
+                offset: 0 0;
+            }
+            text {
+                text: "Click to calibrate your touchscreen";
+                font: "Vera";
+                size: 10;
+            }
+        }
+    }
+
+programs {
+
+         program {
+            name: "init";
+            signal: "load";
+            source: "";
+         }
+
+        program {
+            name:       "user_startup";
+            signal:     "show";
+            source:     "";
+            action:     SIGNAL_EMIT "user" "on";
+            after:      "crosshair_animate";
+        }
+
+    program {
+    name:       "crosshair_animate";
+    action:     STATE_SET "default" 0.0;
+    transition: LINEAR 2.0;
+    target:     "crosshair";
+    after:      "crosshair_animate";
+    }
+
+}
+}
+}

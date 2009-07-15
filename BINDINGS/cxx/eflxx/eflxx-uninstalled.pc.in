@@ -1,0 +1,13 @@
+prefix=
+exec_prefix=
+libdir=src
+includedir=include
+
+Name: @PACKAGE@
+Description: EFL C++ Wrapper common files, Not installed
+Version: @VERSION@
+Requires: 
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libeflxx.la 
+Cflags: -I${pcfiledir}/${includedir}
+

@@ -1,0 +1,7 @@
+/* most artwork is taken by the Enlightenment Team
+ * the respective licenses apply */
+
+collections {
+#include "angstrom-background.edc"
+#include "entrance-buttons.edc"
+}

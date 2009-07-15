@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Eet (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: eet
+Conflicts: 
+Libs: -L${libdir} -leetxx
+Cflags: -I${includedir}
+

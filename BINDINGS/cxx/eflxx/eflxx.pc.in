@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/eflxx
+
+Name: @PACKAGE@
+Description: EFL C++ Wrapper common files
+Version: @VERSION@
+Requires:
+Conflicts: 
+Libs: -L${libdir} -leflxx
+Cflags: -I${includedir}
+

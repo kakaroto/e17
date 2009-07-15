@@ -1,0 +1,85 @@
+#!/bin/bash
+
+####################
+##### functions ####
+####################
+
+do_bootstrap ()
+{
+  module=$1
+
+  cd $BASEDIR/$module
+
+  echo "Bootstrapping '$module'..."
+
+  ./bootstrap &> $BASEDIR/logs/$module.bootstrap.log
+ 
+  if [ $? != 0 ]; then
+    echo "Failed while bootstrapping!"
+    $val_skip_error || exit
+  else
+    echo "Successfull bootstrapped!"
+  fi
+
+  echo ""
+}
+
+do_configure ()
+{
+  module=$1
+
+  cd $BASEDIR/$module
+
+  echo "Configuring '$module'..."
+
+  ## choose debug
+  if [ $val_debug = true ]; then
+    CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure &> $BASEDIR/logs/$module.configure.log
+  else
+    ./configure &> $BASEDIR/logs/$module.configure.log
+  fi
+
+  if [ $? != 0 ]; then
+    echo "Failed while configuring!"
+    $val_skip_error || exit
+  else
+    echo "Successfull configuring!"
+  fi
+
+  echo ""
+}
+
+do_make ()
+{
+  module=$1
+  params=$2
+
+  cd $BASEDIR/$module
+
+  echo "Compiling '$module'... ($params)"
+
+  make $params &> $BASEDIR/logs/$module.make.log
+  if [ $? != 0 ]; then
+    echo "Failed while compiling ($params)!"
+    $val_skip_error || exit
+  else
+    echo "Successfull compiled ($params)!"
+  fi
+
+  echo ""
+}
+
+print_help()
+{
+cat << EOF
+
+Usage:
+$0 [OPTIONS]...
+	--help                          show this help
+  --disable-autogen               don't generate autools files (autogen.sh)
+  --skip-error                    skip errors while generating/building otherwise exit
+  --clean                         clean the sources (without generating)
+  --make                          make the sources (default)
+EOF
+
+}

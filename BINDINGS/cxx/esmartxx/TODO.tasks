@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0">
+    <item>
+      <attribute id="1243202367" priority="1" done="0" start_date="733551" enddate="99999999" notify="0" endtime="-60" last_edited="1243202367"/>
+      <summary>Fix install and header direcory</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242991747" priority="1" done="1" start_date="733549" completed_date="733559" notify="0" last_edited="1243854855"/>
+      <summary>textentry doesn't compile</summary>
+      <comment>TODO: port Edje!</comment>
+    </item>
+  </category>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1242991767" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1242991767"/>
+      <summary>Wrap more C esmart objects</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1243239539" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243239539"/>
+      <summary>compile only wrappers that are found</summary>
+      <comment/>
+    </item>
+  </category>
+</gtodo>

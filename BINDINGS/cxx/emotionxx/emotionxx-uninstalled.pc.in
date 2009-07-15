@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=src
+includedir=include
+
+Name: @PACKAGE@
+Description: Emotion (EFL) C++ Wrapper, Not installed
+Version: @VERSION@
+Requires: sigc++-2.0 emotion evasxx
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libemotionxx.la
+Cflags: -I${pcfiledir}/${includedir} 

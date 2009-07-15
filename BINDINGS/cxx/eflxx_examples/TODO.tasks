@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0">
+    <item>
+      <attribute id="1243253019" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243253019"/>
+      <summary>Usage of Size and Point</summary>
+      <comment>Replace Rect (0,0,w,h) with Size calls and same for Point</comment>
+    </item>
+  </category>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1243256172" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243256181"/>
+      <summary>setFill (Rect)</summary>
+      <comment>often used with 0,0,w,h as parameter -&gt; maybe support also w/h only version?</comment>
+    </item>
+    <item>
+      <attribute id="1243286814" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243286814"/>
+      <summary>move some ecorexx examples to evasxx</summary>
+      <comment></comment>
+    </item>
+  </category>
+</gtodo>

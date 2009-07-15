@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Elementary (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: sigc++-2.0 evasxx elementary eflxx
+Conflicts: 
+Libs: -L${libdir} -lelementaryxx
+Cflags: -I${includedir}
+

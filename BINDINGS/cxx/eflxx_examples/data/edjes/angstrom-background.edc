@@ -1,0 +1,411 @@
+images {
+    image: "logo_shad.png" COMP;
+    image: "shad.png" COMP;
+    image: "tex.jpeg" LOSSY 85;
+    image: "ref.png" LOSSY 60;
+    image: "bar_l.png" COMP;
+    image: "bar_r.png" COMP;
+    image: "bar_l_sh.png" COMP;
+    image: "bar_r_sh.png" COMP;
+    image: "angstrom.png" COMP;
+}
+
+fonts {
+    font: "Vera.ttf" "Vera";
+}
+
+group {
+    name: "background";
+    parts {
+    part {
+        name: "background_image";
+        description {
+            state: "default" 0.0;
+            image {
+                normal: "tex.jpeg";
+            }
+            fill {
+                size {
+                    relative: 0 0;
+                    offset:   800 510;
+                }
+            }
+        }
+    }
+    part {
+        name: "shad";
+        description {
+            state: "default" 0.0;
+            image {
+                normal: "shad.png";
+            }
+        }
+    }
+    part {
+        name: "bar_l_sh";
+        description {
+            state: "default" 0.0;
+            min: 0 39;
+            max: 99999 39;
+            align: 0.0 1.0;
+            rel1 {
+                to: "bar_l";
+                offset: 0 -7;
+            }
+            rel2 {
+                to: "bar_l";
+                offset: 5 6;
+            }
+            image {
+                normal: "bar_l_sh.png";
+                border: 0 60 0 0;
+            }
+            fill {
+                smooth: 0;
+            }
+        }
+    }
+    part {
+        name: "bar_r_sh";
+        description {
+            state: "default" 0.0;
+            min: 0 39;
+            max: 99999 39;
+            align: 0.0 1.0;
+            rel1 {
+                to: "bar_r";
+                offset: -5 -7;
+            }
+            rel2 {
+                to: "bar_r";
+                offset: -1 6;
+            }
+            image {
+                normal: "bar_r_sh.png";
+                border: 60 0 0 0;
+            }
+            fill {
+                smooth: 0;
+            }
+        }
+    }
+    part {
+        name: "bar_l1";
+        description {
+            state: "default" 0.0;
+            min: 0 4;
+            max: 99999 4;
+            rel1 {
+                to: "bar_l";
+                relative: 0.0 0.0;
+                offset: 0 6;
+            }
+            rel2 {
+                to: "bar_l";
+                relative: 1.0 0.0;
+                offset: -15 9;
+            }
+            image {
+                normal: "ref.png";
+            }
+            fill {
+                origin {
+                    relative: 0 0;
+                    offset: 0 0;
+                }
+                size {
+                    relative: 0 0;
+                    offset:   400 80;
+                }
+            }
+        }
+        description {
+            state: "default2" 0.0;
+            inherit: "default" 0.0;
+            fill {
+                    origin {
+                        offset: -400 80;
+                    }
+            }
+        }
+    }
+    part {
+        name: "bar_l2";
+        description {
+        state: "default" 0.0;
+        min: 0 4;
+        max: 99999 4;
+        rel1 {
+        to: "bar_l";
+        relative: 0.0 1.0;
+        offset: 0 -10;
+        }
+        rel2 {
+        to: "bar_l";
+        relative: 1.0 1.0;
+        offset: -7 -7;
+        }
+        image {
+        normal: "ref.png";
+        }
+        fill {
+        origin {
+            relative: 0 0;
+            offset: 0 0;
+        }
+        size {
+            relative: 0 0;
+            offset:   400 80;
+        }
+        }
+        }
+        description {
+        state: "default2" 0.0;
+        inherit: "default" 0.0;
+        fill {
+                origin {
+            offset: -400 -80;
+        }
+        }
+        }
+    }
+    part {
+        name: "bar_r1";
+        description {
+        state: "default" 0.0;
+        min: 0 4;
+        max: 99999 4;
+        rel1 {
+        to: "bar_r";
+        relative: 0.0 0.0;
+        offset: 14 6;
+        }
+        rel2 {
+        to: "bar_r";
+        relative: 1.0 0.0;
+        offset: -1 9;
+        }
+        image {
+        normal: "ref.png";
+        }
+        fill {
+        origin {
+            relative: 0 0;
+            offset: 0 0;
+        }
+        size {
+            relative: 0 0;
+            offset:   400 80;
+        }
+        }
+        }
+        description {
+        state: "default2" 0.0;
+        inherit: "default" 0.0;
+        fill {
+                origin {
+            offset: 400 80;
+        }
+        }
+        }
+    }
+    part {
+        name: "bar_r2";
+        description {
+        state: "default" 0.0;
+        min: 0 4;
+        max: 99999 4;
+        rel1 {
+        to: "bar_r";
+        relative: 0.0 1.0;
+        offset: 6 -10;
+        }
+        rel2 {
+        to: "bar_r";
+        relative: 1.0 1.0;
+        offset: 0 -7;
+        }
+        image {
+        normal: "ref.png";
+        }
+        fill {
+        origin {
+            relative: 0 0;
+            offset: 0 0;
+        }
+        size {
+            relative: 0 0;
+            offset:   400 80;
+        }
+        }
+        }
+        description {
+        state: "default2" 0.0;
+        inherit: "default" 0.0;
+        fill {
+                origin {
+            offset: 400 -80;
+        }
+        }
+        }
+    }
+    part {
+        name: "bar_l";
+        description {
+        state: "default" 0.0;
+        min: 0 25;
+        max: 99999 25;
+        align: 0.0 1.0;
+        rel1 {
+        relative: 0.0 1.0;
+        offset: 0 -50;
+        }
+        rel2 {
+        relative: 0.5 1.0;
+        offset: -50 -50;
+        }
+        image {
+        normal: "bar_l.png";
+        border: 0 30 0 0;
+        }
+        fill {
+        smooth: 0;
+        }
+        }
+    }
+    part {
+        name: "bar_r";
+        description {
+        state: "default" 0.0;
+        min: 0 25;
+        max: 99999 25;
+        align: 1.0 1.0;
+        rel1 {
+        relative: 0.5 1.0;
+        offset: 49 -50;
+        }
+        rel2 {
+        relative: 1.0 1.0;
+        offset: -1 -50;
+        }
+        image {
+        normal: "bar_r.png";
+        border: 30 0 0 0;
+        }
+        fill {
+        smooth: 0;
+        }
+        }
+    }
+        part {
+            name: "logo";
+            description {
+                state: "default" 0.0;
+                min: 128 100;
+                max: 256 200;
+                align: 0.5 1.0;
+                rel1 {
+                    relative: 0.5 1.0;
+                    offset: 0 -20;
+                }
+                rel2 {
+                    relative: 0.5 1.0;
+                    offset: 0 -20;
+                }
+                image {
+                    normal: "angstrom.png";
+                }
+            }
+    }
+
+    /* version text at bottom in the middle */
+    part {
+        name: "version";
+        type: "TEXT";
+        effect: OUTLINE_SOFT_SHADOW;
+        description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            /*align: 0.0 0.0;*/
+
+            rel1 {
+                relative: 0.0 0.97;
+                offset: 0 0;
+            }
+            rel2 {
+                relative: 1.0 0.97;
+                offset: 0 0;
+            }
+            text {
+                text: "SETME: Angstrom Version";
+                font: "Vera";
+                size: 14;
+            }
+        }
+    }
+
+    programs {
+    program {
+        name: "ref1_1";
+        signal: "show";
+        source: "";
+        action: STATE_SET "default2" 0.0;
+        transition: LINEAR 4.0;
+        target: "bar_l1";
+        after: "ref1_2";
+    }
+    program {
+        name: "ref1_2";
+        action: STATE_SET "default" 0.0;
+        target: "bar_l1";
+        after: "ref1_1";
+    }
+    program {
+        name: "ref2_1";
+        signal: "show";
+        source: "";
+        action: STATE_SET "default2" 0.0;
+        transition: LINEAR 5.71;
+        target: "bar_l2";
+        after: "ref2_2";
+    }
+    program {
+        name: "ref2_2";
+        action: STATE_SET "default" 0.0;
+        target: "bar_l2";
+        after: "ref2_1";
+    }
+    program {
+        name: "ref3_1";
+        signal: "show";
+        source: "";
+        action: STATE_SET "default2" 0.0;
+        transition: LINEAR 3.46;
+        target: "bar_r1";
+        after: "ref3_2";
+    }
+    program {
+        name: "ref3_2";
+        action: STATE_SET "default" 0.0;
+        target: "bar_r1";
+        after: "ref3_1";
+    }
+    program {
+        name: "ref4_1";
+        signal: "show";
+        source: "";
+        action: STATE_SET "default2" 0.0;
+        transition: LINEAR 6.32;
+        target: "bar_r2";
+        after: "ref4_2";
+    }
+    program {
+        name: "ref4_2";
+        action: STATE_SET "default" 0.0;
+        target: "bar_r2";
+        after: "ref4_1";
+    }
+    }
+}
+}
+

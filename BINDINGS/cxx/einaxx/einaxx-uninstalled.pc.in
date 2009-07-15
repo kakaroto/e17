@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=src
+includedir=include
+
+Name: @PACKAGE@
+Description: Eina (EFL) C++ Wrapper, Not installed
+Version: @VERSION@
+Requires: sigc++-2.0 eina eflxx
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libeinaxx.la
+Cflags: -I${pcfiledir}/${includedir} 

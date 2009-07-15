@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=src
+includedir=include
+
+Name: @PACKAGE@
+Description: EFL C++ Wrapper, Not installed
+Version: @VERSION@
+Requires: sigc++-2.0 eflxx evas
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libevasxx.la
+Cflags: -I${pcfiledir}/${includedir} 

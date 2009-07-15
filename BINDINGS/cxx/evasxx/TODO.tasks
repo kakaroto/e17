@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0">
+    <item>
+      <attribute id="1241895483" priority="1" done="1" start_date="733536" completed_date="733536" notify="0" last_edited="1241900146"/>
+      <summary>rename EvasTextBlockStyle</summary>
+      <comment>to EvasTextblockStyle</comment>
+    </item>
+    <item>
+      <attribute id="1241894926" priority="1" done="1" start_date="733536" completed_date="733536" notify="0" last_edited="1241900147"/>
+      <summary>HAVE_CONFIG_H support</summary>
+      <comment>#ifdef HAVE_CONFIG_H
+  #include &lt;config.h&gt;
+#endif
+</comment>
+    </item>
+    <item>
+      <attribute id="1242903918" priority="1" done="0" start_date="733548" enddate="99999999" notify="0" endtime="-60" last_edited="1242903918"/>
+      <summary>Implement copy constructor</summary>
+      <comment>where possible and forbid where not</comment>
+    </item>
+    <item>
+      <attribute id="1242991613" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1242991613"/>
+      <summary>modifiy include path</summary>
+      <comment>eflxx or evasxx as prefix for dep #include?</comment>
+    </item>
+    <item>
+      <attribute id="1242993798" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1242993798"/>
+      <summary>wrap access of mFree with protected function</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1244155914" priority="1" done="0" start_date="733563" enddate="99999999" notify="0" endtime="-60" last_edited="1244155914"/>
+      <summary>access mFree only with function and make mFree private</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1244156783" priority="1" done="0" start_date="733563" enddate="99999999" notify="0" endtime="-60" last_edited="1244156783"/>
+      <summary>trace about Evas_Object delete</summary>
+      <comment>when and who should free the C Evas_Object? Trace and debug this.</comment>
+    </item>
+    <item>
+      <attribute id="1244583502" priority="1" done="0" start_date="733567" enddate="99999999" notify="0" endtime="-60" last_edited="1244583502"/>
+      <summary>make Evas_Object C private</summary>
+      <comment>childs shouldn't access Evas_Object direct. Better create protected wrappers. At least think about this design. e.g.: evas_object_del()</comment>
+    </item>
+    <item>
+      <attribute id="1244592164" priority="1" done="0" start_date="733568" enddate="99999999" notify="0" endtime="-60" last_edited="1244592164"/>
+      <summary>EvasWindowXRenderX11 geht nicht</summary>
+      <comment></comment>
+    </item>
+  </category>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1241895536" priority="1" done="0" start_date="733536" enddate="99999999" notify="0" endtime="-60" last_edited="1241895550"/>
+      <summary>use forward declarations where possible</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1241895572" priority="1" done="0" start_date="733536" enddate="99999999" notify="0" endtime="-60" last_edited="1241895572"/>
+      <summary>think about PImpl</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242990876" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1242990876"/>
+      <summary>Decide about to wrap all enums/defines or not</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242991327" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1242991327"/>
+      <summary>Use counted_ptr?</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1243202902" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243202902"/>
+      <summary>create static Rect, Point, Size, Color</summary>
+      <comment>with often used default values (static)</comment>
+    </item>
+    <item>
+      <attribute id="1243202975" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243202975"/>
+      <summary>create general base.h include</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242589912" priority="1" done="1" start_date="733544" completed_date="733559" notify="0" last_edited="1243855010"/>
+      <summary>EvasCanvas* -&gt; EvasCanvas</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242590319" priority="1" done="1" start_date="733544" completed_date="733559" notify="0" last_edited="1243855035"/>
+      <summary>EvasCanvas as first parameter</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1243855073" priority="1" done="0" start_date="733559" enddate="99999999" notify="0" endtime="-60" last_edited="1243855073"/>
+      <summary>Support all EvasTextblock functions</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242766726" priority="1" done="1" start_date="733546" completed_date="733559" notify="0" last_edited="1243855082"/>
+      <summary>How to organize Exceptions?</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1242596617" priority="1" done="1" start_date="733544" completed_date="733559" notify="0" last_edited="1243855105"/>
+      <summary>change all x,y,w,h params as class type</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1244587130" priority="1" done="0" start_date="733568" enddate="99999999" notify="0" endtime="-60" last_edited="1244587148"/>
+      <summary>create bootstrap/configure for all</summary>
+      <comment/>
+    </item>
+  </category>
+</gtodo>

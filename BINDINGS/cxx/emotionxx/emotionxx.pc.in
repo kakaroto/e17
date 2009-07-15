@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Emotion (EFL) C++ Wrapper
+Version: @VERSION@
+Requires: sigc++-2.0 emotion evasxx
+Conflicts: 
+Libs: -L${libdir} -lemotionxx
+Cflags: -I${includedir}
+

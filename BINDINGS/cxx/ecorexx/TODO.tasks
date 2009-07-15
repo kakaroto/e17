@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0">
+    <item>
+      <attribute id="1243189348" priority="1" done="0" start_date="733551" enddate="99999999" notify="0" endtime="-60" last_edited="1243189533"/>
+      <summary>Choose resolution by env?</summary>
+      <comment>deactivated because of const. But is this really solved in a good way?</comment>
+    </item>
+    <item>
+      <attribute id="1243025629" priority="1" done="1" start_date="733549" completed_date="733559" notify="0" last_edited="1243852302"/>
+      <summary>EvasFont needed?</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1243288030" priority="1" done="1" start_date="733552" completed_date="733559" notify="0" last_edited="1243854845"/>
+      <summary>ecore_evas_init/ecore_evas_shutdown</summary>
+      <comment>where to do this automatic?
+maybe a EcoreEvasApplication class?
+and also a EcoreEdjeApplication?</comment>
+    </item>
+  </category>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1243025089" priority="1" done="0" start_date="733549" enddate="99999999" notify="0" endtime="-60" last_edited="1243025089"/>
+      <summary>Framebuffer support?</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1243244287" priority="1" done="0" start_date="733552" enddate="99999999" notify="0" endtime="-60" last_edited="1243244287"/>
+      <summary>a pc.in file for each wrapped ecore lib</summary>
+      <comment/>
+    </item>
+  </category>
+</gtodo>

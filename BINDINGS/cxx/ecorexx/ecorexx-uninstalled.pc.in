@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=src
+includedir=include
+
+Name: @PACKAGE@
+Description: Ecore (EFL) C++ Wrapper, Not installed
+Version: @VERSION@
+Requires: sigc++-2.0 eflxx evasxx
+Conflicts: 
+Libs: ${pcfiledir}/${libdir}/libecorexx.la
+Cflags: -I${pcfiledir}/${includedir} 

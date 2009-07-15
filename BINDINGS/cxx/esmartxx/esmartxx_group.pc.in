@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@exec_prefix@/lib
+includedir=@prefix@/include
+
+Name: @PACKAGE@
+Description: Esmartxx C++ implementation of a group container
+Version: @VERSION@
+Requires: sigc++-2.0 evasxx
+Conflicts: 
+Libs: -L${libdir} -lesmartxx_group
+Cflags: -I${includedir}
+
