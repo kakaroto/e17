@@ -29,26 +29,26 @@ def init():
 def shutdown():
     return ecore_evas_shutdown()
 
-cdef char *engines[16]
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "buffer"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
-engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
-engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "opengl_x11"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_XCB] = "software_xcb"
-engines[<int>ECORE_EVAS_ENGINE_XRENDER_XCB] = "xrender_xcb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_GDI] = "software_gdi"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_DDRAW] = "software_ddraw"
-engines[<int>ECORE_EVAS_ENGINE_DIRECT3D] = "direct3d"
-engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "opengl_glew"
-engines[<int>ECORE_EVAS_ENGINE_QUARTZ] = "quartz"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_SDL] = "sdl"
-engines[<int>ECORE_EVAS_ENGINE_DIRECTFB] = "directfb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "fb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_X11] = "software_16_x11"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW] = "software_16_ddraw"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE] = "software_16_wince"
-cdef int engines_len
-engines_len = sizeof(engines)/sizeof(engines[0])
+cdef object engine_id_mapping
+engine_id_mapping = {
+    "buffer": ECORE_EVAS_ENGINE_SOFTWARE_BUFFER,
+    "software_x11": ECORE_EVAS_ENGINE_SOFTWARE_XLIB,
+    "xrender_x11": ECORE_EVAS_ENGINE_XRENDER_X11,
+    "opengl_x11": ECORE_EVAS_ENGINE_OPENGL_X11,
+    "software_xcb": ECORE_EVAS_ENGINE_SOFTWARE_XCB,
+    "xrender_xcb": ECORE_EVAS_ENGINE_XRENDER_XCB,
+    "software_gdi": ECORE_EVAS_ENGINE_SOFTWARE_GDI,
+    "software_ddraw": ECORE_EVAS_ENGINE_SOFTWARE_DDRAW,
+    "direct3d": ECORE_EVAS_ENGINE_DIRECT3D,
+    "opengl_glew": ECORE_EVAS_ENGINE_OPENGL_GLEW,
+    "quartz": ECORE_EVAS_ENGINE_QUARTZ,
+    "sdl": ECORE_EVAS_ENGINE_SOFTWARE_SDL,
+    "directfb": ECORE_EVAS_ENGINE_DIRECTFB,
+    "fb": ECORE_EVAS_ENGINE_SOFTWARE_FB,
+    "software_16_x11": ECORE_EVAS_ENGINE_SOFTWARE_16_X11,
+    "software_16_ddraw": ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW,
+    "software_16_wince": ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE,
+    }
 
 cdef object engine_mapping
 engine_mapping = {
@@ -81,15 +81,7 @@ def engine_type_from_name(char *method):
     @return: >= 0 on success or -1 on failure.
     @rtype: int
     """
-    cdef int i
-
-    for i from 0 <= i < engines_len:
-        if engines[i] == NULL:
-            raise ValueError(("Ecore_Evas_Engine_Type changed and bindings are "
-                              "now invalid, position %d is now NULL!") % i)
-        if python.strcmp(method, engines[i]) == 0:
-            return i
-    return -1
+    return engine_id_mapping.get(method, -1)
 
 
 def engine_name_from_type(int type_id):
@@ -97,8 +89,9 @@ def engine_name_from_type(int type_id):
 
     @rtype: str
     """
-    if type_id >= 0 and type_id < engines_len:
-        return engines[type_id]
+    for name, id in engine_id_mapping.itervalues():
+        if id == type_id:
+            return name
     return None
 
 
@@ -107,16 +100,19 @@ def engine_type_supported_get(method):
 
     @rtype: bool
     """
-    cdef Ecore_Evas_Engine_Type method_id
+    cdef int method_id
 
     if isinstance(method, (int, long)):
         method_id = method
     elif isinstance(method, basestring):
         method_id = engine_type_from_name(method)
+        if method_id < 0:
+            raise ValueError("unknown method name %r" % method)
     else:
         return False
 
-    return bool(ecore_evas_engine_type_supported_get(method_id))
+    return bool(ecore_evas_engine_type_supported_get
+                (<Ecore_Evas_Engine_Type>method_id))
 
 
 def engines_get():
