@@ -31,7 +31,7 @@ for i
 	--help) print_help; 	        exit 0 ;;
 	--no-bootstrap)               val_bootstrap=false ;;
 	--no-configure)               val_configure=false ;;
-  --no-debug)                   val_debug=false ;;
+	--no-debug)                   val_debug=false ;;
 	--skip-error)                 val_skip_error=true ;;
 	--clean)                      val_clean=true ;;
 	--no-make)                    val_make=false ;;

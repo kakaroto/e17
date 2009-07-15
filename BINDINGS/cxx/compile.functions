@@ -75,11 +75,13 @@ cat << EOF
 
 Usage:
 $0 [OPTIONS]...
-	--help                          show this help
-  --disable-autogen               don't generate autools files (autogen.sh)
+  --help                          show this help
+  --no-bootstrap                  don't generate autotools files
+  --no-configure                  don't configure the source
+  --no-debug                      compile the sources without debug flags
   --skip-error                    skip errors while generating/building otherwise exit
   --clean                         clean the sources (without generating)
-  --make                          make the sources (default)
+  --no-make                       don't make the sources
 EOF
 
 }
