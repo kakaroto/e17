@@ -16,16 +16,28 @@ int main (int argc, char **argv)
 {
   ElmApplication elmApp (argc, argv);
   
-  // FIXME: graphic artifacts -> maybe background rect needed?
-  
   ElmWindow *elmWin = ElmWindow::factory ("window1", ELM_WIN_BASIC);
+  ElmBackground *bg = ElmBackground::factory (*elmWin);
   ElmButton *elmButton = ElmButton::factory (*elmWin);
-  ElmClock *elmClock = ElmClock::factory (*elmWin);
+  ElmClock *elmClock = ElmClock::factory (*elmButton);
   ElmToggle *elmToggle = ElmToggle::factory (*elmWin);
   ElmScroller *elmScroller = ElmScroller::factory (*elmWin);
   ElmEntry *elmEntry = ElmEntry::factory (*elmWin);
   ElmSlider *elmSlider = ElmSlider::factory (*elmWin);
-  
+
+
+  bg->setWeightHintSize (1.0, 1.0);
+  elmWin->addObjectResize (*bg);
+
+  /* set size hints. a minimum size for the bg. this should propagate back
+   * to the window thus limiting its size based off the bg as the bg is one
+   * of the window's resize objects. */
+  bg->setMinHintSize (Size (160, 160));
+  /* and set a maximum size. not needed very often. normally used together
+   * with evas_object_size_hint_min_set() at the same size to make a
+   * window not resizable */
+  bg->setMaxHintSize (Size (640, 640));
+
   elmWin->resize (Size (500, 500));
   elmButton->resize (Size (100, 50));
   elmClock->setGeometry (Rect (100, 50, 200, 50));
@@ -45,6 +57,7 @@ int main (int argc, char **argv)
   elmToggle->getEventSignal ("sub-object-del")->connect (sigc::ptr_fun (&testFunc));
   
   elmWin->show ();
+  bg->show ();
   elmButton->show ();
   elmClock->show ();
   elmToggle->show ();
