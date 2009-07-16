@@ -23,12 +23,12 @@ struct _Enesim_Surface
 	EINA_MAGIC;
 	uint32_t w;
 	uint32_t h;
-	Eina_Bool external; /* in case the user created this surface externally */
 	/* TODO make all code use this */
 	uint32_t stride; /* number of bytes per line */
 	void *data;
 	Enesim_Format format;
 	Enesim_Alpha_Flags flags;
+	Eina_Mempool *pool;
 	void *user; /* user provided data */
 };
 

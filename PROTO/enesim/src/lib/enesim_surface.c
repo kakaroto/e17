@@ -32,7 +32,6 @@
 /**
  * To be documented
  * FIXME: To be fixed
- * FIXME I dont like much this function as the user must allocate the sdata himself
  */
 EAPI Enesim_Surface *
 enesim_surface_new_data_from(int w, int h, void *data)
@@ -47,28 +46,36 @@ enesim_surface_new_data_from(int w, int h, void *data)
 
 	return s;
 }
-#if 0
-EAPI Enesim_Surface *
-enesim_surface_new_allocator_from(int w, int h, Eina_Mempool *mpool)
-{
-	Enesim_Surface *s;
-
-	s = calloc(1, sizeof(Enesim_Surface));
-	s->w = w;
-	s->h = h;
-	s->data = data;
-	EINA_MAGIC_SET(s, ENESIM_MAGIC_SURFACE);
-
-	return s;
-}
-#endif
 /**
- *
+ * To be documented
+ * FIXME: To be fixed
  */
 EAPI Enesim_Surface *
-enesim_surface_new(Enesim_Format f, int w, int h)
+enesim_surface_new_allocator_from(Enesim_Format f, int w, int h, Eina_Mempool *mpool)
 {
 	Enesim_Surface *s;
+	size_t bytes;
+	void *data;
+
+	if (!mpool)
+		return enesim_surface_new(f, w, h);
+
+	switch (f)
+	{
+		case ENESIM_FORMAT_A8:
+		bytes = w * h * sizeof(uint8_t);
+		break;
+
+		case ENESIM_FORMAT_ARGB8888:
+		bytes = w * h * sizeof(uint32_t);
+		break;
+	}
+
+	data = eina_mempool_alloc(mpool, bytes);
+	if (!data)
+	{
+		return NULL;
+	}
 
 	s = calloc(1, sizeof(Enesim_Surface));
 	s->w = w;
@@ -76,21 +83,30 @@ enesim_surface_new(Enesim_Format f, int w, int h)
 	s->stride = w;
 	s->format = f;
 	s->flags = ENESIM_ALPHA_ALL;
-	switch (f)
-	{
-		case ENESIM_FORMAT_ARGB8888:
-		s->data = calloc(w * h, sizeof(uint32_t));
-		break;
+	s->pool = mpool;
+	s->data = data;
 
-		case ENESIM_FORMAT_A8:
-		s->data = calloc(w * h, sizeof(uint8_t));
-		break;
-
-		default:
-		break;
-	}
 	EINA_MAGIC_SET(s, ENESIM_MAGIC_SURFACE);
+
 	return s;
+}
+
+/**
+ *
+ */
+EAPI Enesim_Surface *
+enesim_surface_new(Enesim_Format f, int w, int h)
+{
+	Enesim_Surface *s;
+	static Eina_Mempool *pthrough = NULL;
+
+	if (!pthrough)
+	{
+		pthrough = eina_mempool_new("pass_through", NULL, NULL);
+		if (!pthrough) return NULL;
+	}
+
+	return enesim_surface_new_allocator_from(f, w, h, pthrough);
 }
 /**
  * To be documented
@@ -131,11 +147,10 @@ EAPI void
 enesim_surface_delete(Enesim_Surface *s)
 {
 	ENESIM_MAGIC_CHECK_SURFACE(s);
-	/* FIXME delete correctly, when a user provides the data
-	 * we should NOT delete it */
-	if (!s->external)
+
+	if (s->pool)
 	{
-		free(s->data);
+		eina_mempool_free(s->pool, s->data);
 	}
 	free(s);
 }
@@ -233,7 +248,6 @@ EAPI Enesim_Surface * enesim_surface_sub_get(Enesim_Surface *s, Eina_Rectangle *
 
 	ENESIM_MAGIC_CHECK_SURFACE(s);
 	ss = malloc(sizeof(Enesim_Surface));
-	ss->external = EINA_TRUE;
 	ss->h = r->h;
 	ss->w = r->w;
 	switch (s->format)
