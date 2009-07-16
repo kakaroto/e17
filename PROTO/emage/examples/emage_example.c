@@ -48,11 +48,11 @@ int main(int argc, char **argv)
 	emage_init();
 	if (async)
 	{
-		emage_load_async(file, &s, async_cb, file, NULL);
+		emage_load_async(file, &s, ENESIM_FORMAT_ARGB8888, NULL, async_cb, file, NULL);
 	}
 	else
 	{
-		if (emage_load(file, &s, NULL))
+		if (emage_load(file, &s, ENESIM_FORMAT_ARGB8888, NULL, NULL))
 		{
 			printf("Image %s loaded sync successfully\n", file);
 		}

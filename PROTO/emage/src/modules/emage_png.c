@@ -80,7 +80,13 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	png_get_IHDR(png_ptr, info_ptr, (png_uint_32 *) (&w32), (png_uint_32 *) (&h32), &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	if (w) *w = w32;
 	if (h) *h = h32;
-	if (sfmt) *sfmt = ENESIM_CONVERTER_ARGB8888;
+	if (!sfmt)
+		return EINA_TRUE;
+	if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+		*sfmt = ENESIM_CONVERTER_ARGB8888;
+	else if (color_type == PNG_COLOR_TYPE_GRAY)
+		*sfmt = ENESIM_CONVERTER_A8;
+	return EINA_TRUE;
 }
 
 Eina_Bool _png_load(const char *file, void *data)
@@ -329,7 +335,6 @@ Eina_Bool png_provider_init(void)
 
 void png_provider_shutdown(void)
 {
-	printf("shutdown\n");
 	emage_provider_unregister(&_provider);
 }
 

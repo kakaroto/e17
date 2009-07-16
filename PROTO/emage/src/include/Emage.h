@@ -15,6 +15,8 @@ extern Eina_Error EMAGE_ERROR_EXIST;
 extern Eina_Error EMAGE_ERROR_PROVIDER;
 extern Eina_Error EMAGE_ERROR_FORMAT;
 extern Eina_Error EMAGE_ERROR_SIZE;
+extern Eina_Error EMAGE_ERROR_ALLOCATOR;
+extern Eina_Error EMAGE_ERROR_LOADING;
 
 /* TODO replace this with a priority system */
 typedef enum _Emage_Provider_Type
@@ -43,8 +45,11 @@ EAPI void emage_shutdown(void);
 EAPI void emage_dispatch(void);
 
 EAPI Eina_Bool emage_info_load(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt);
-EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s, const char *options);
-EAPI void emage_load_async(const char *file, Enesim_Surface **s, Emage_Load_Callback cb, void *data, const char *options);
+EAPI Eina_Bool emage_load(const char *file, Enesim_Surface **s,
+		Enesim_Format f, Eina_Mempool *mpool, const char *options);
+EAPI void emage_load_async(const char *file, Enesim_Surface **s,
+		Enesim_Format f, Eina_Mempool *mpool,
+		Emage_Load_Callback cb, void *data, const char *options);
 //EAPI Enesim_Surface * emage_save(const char *file);
 //EAPI Enesim_Surface * emage_save_async(const char *file, Emage_Load_Callback);
 EAPI Eina_Bool emage_provider_register(Emage_Provider *);
