@@ -1,0 +1,151 @@
+# Czech translation for enlightenment16
+# This file is put in public domain
+# Roman Horník <roman.hornik@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-06-05 22:10+0800\n"
+"PO-Revision-Date: 2009-07-16 20:01+0000\n"
+"Last-Translator: Roman Horník <roman.hornik@gmail.com>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/callbacks.c:53
+msgid "Save"
+msgstr "Uložit"
+
+#: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "Nový záznam"
+
+#: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
+msgid "Choose Icon"
+msgstr "Vybrat ikonku"
+
+#: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "Smazat záznam"
+
+#: ../src/callbacks.c:81
+msgid "Quit"
+msgstr "Konec"
+
+#: ../src/callbacks.c:310
+msgid "No help file found!"
+msgstr "Soubor s nápovědou nenalezen!"
+
+#: ../src/callbacks.c:314
+msgid "No help application found"
+msgstr "Nenalezena aplikace pro nápovědu"
+
+#: ../src/e16menuedit2.c:118
+msgid "Menu successfully loaded!"
+msgstr "Menu úspěšně načteno!"
+
+#: ../src/icon_chooser.c:66
+msgid "Select Icon..."
+msgstr "Vybrat ikonku..."
+
+#: ../src/icon_chooser.c:102
+msgid "Icon size:"
+msgstr "Velikost ikonky:"
+
+#: ../src/treeview.c:57
+msgid "Description"
+msgstr "Popis"
+
+#: ../src/treeview.c:64
+msgid "Icon"
+msgstr "Ikonka"
+
+#: ../src/treeview.c:86
+msgid "Parameters"
+msgstr "Parametry"
+
+#: ../src/treeview.c:203
+msgid "Menu saved!"
+msgstr "Menu uloženo!"
+
+#: ../src/treeview.c:222
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "Podmenu musí mít název! -> Menu neuloženo!"
+
+#: ../src/treeview.c:226
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr "Během ověřování menu nastala neznámá chyba -> menu neuloženo!"
+
+#: ../e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>Vlastnosti:</b>"
+
+#: ../e16menuedit2.glade.h:2
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+msgstr ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+
+#: ../e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "Vybrat _ikonku"
+
+#: ../e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "E16 Menu Editor"
+
+#: ../e16menuedit2.glade.h:8
+msgid "Fallback Help-Browser:"
+msgstr "Záložní prohlížeč nápovědy:"
+
+#: ../e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "Informace"
+
+#: ../e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "Informace o E16 Menu Editor"
+
+#: ../e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: ../e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "_Obsah"
+
+#: ../e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "O_dstranit záznam"
+
+#: ../e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: ../e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "_Soubor"
+
+#: ../e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "_Nápověda"
+
+#: ../e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "Nový _záznam"
+
+#: ../e16menuedit2.glade.h:19
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
