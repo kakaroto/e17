@@ -15,11 +15,12 @@ static void testFunc (void *data, Evas_Object *obj, void *event_info)
 int main (int argc, char **argv)
 {
   ElmApplication elmApp (argc, argv);
-  
+
   ElmWindow *elmWin = ElmWindow::factory ("window1", ELM_WIN_BASIC);
   ElmBackground *bg = ElmBackground::factory (*elmWin);
+
   ElmButton *elmButton = ElmButton::factory (*elmWin);
-  ElmClock *elmClock = ElmClock::factory (*elmButton);
+  ElmClock *elmClock = ElmClock::factory (*elmWin);
   ElmToggle *elmToggle = ElmToggle::factory (*elmWin);
   ElmScroller *elmScroller = ElmScroller::factory (*elmWin);
   ElmEntry *elmEntry = ElmEntry::factory (*elmWin);
