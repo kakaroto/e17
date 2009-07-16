@@ -9,7 +9,7 @@ struct _Instance
    Evas_Object *o_back, *o_up, *o_forward, *o_refresh, *o_favorites;
    E_Toolbar *tbar;
 
-   Ecore_List *history;
+   Eina_List *history, *current;
    int ignore_dir;
 };
 
@@ -71,9 +71,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    snprintf(buf, sizeof(buf), "%s/e-module-efm_nav.edj", 
 	    e_module_dir_get(nav_mod));
-
-   inst->history = ecore_list_new();
-   ecore_list_free_cb_set(inst->history, free);
 
    inst->o_base = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_base, "base/theme/modules/efm_nav", 
@@ -160,6 +157,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst = NULL;
    Evas_Object *o_fm;
+   const char *s;
 
    inst = gcc->data;
    if (!inst) return;
@@ -167,7 +165,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (o_fm)
       evas_object_event_callback_del(o_fm, EVAS_CALLBACK_KEY_DOWN, _cb_key_down);
-   if (inst->history) ecore_list_destroy(inst->history);
+   EINA_LIST_FREE(inst->history, s) eina_stringshare_del(s);
    if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_back) evas_object_del(inst->o_back);
    if (inst->o_up) evas_object_del(inst->o_up);
@@ -313,16 +311,15 @@ _cb_back_click(void *data, Evas_Object *obj, const char *emission, const char *s
 {
    Instance *inst;
    Evas_Object *o_fm;
-   char *hist;
-   int i = 0;
+   const char *hist;
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (!o_fm) return;
-   if (ecore_list_empty_is(inst->history)) return;
-   i = ecore_list_index(inst->history);
-   hist = ecore_list_index_goto(inst->history, (i + 1));
+   if (!inst->current || inst->current == eina_list_last(inst->history)) return;
+   inst->current = eina_list_next(inst->current);
+   hist = inst->current ? eina_list_data_get(inst->current) : NULL;
    if (!hist) 
      {
 	edje_object_signal_emit(inst->o_back, "e,state,disabled", "e");
@@ -338,16 +335,15 @@ _cb_forward_click(void *data, Evas_Object *obj, const char *emission, const char
 {
    Instance *inst;
    Evas_Object *o_fm;
-   char *hist;
-   int i = 0;
+   const char *hist;
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (!o_fm) return;
-   if (ecore_list_empty_is(inst->history)) return;
-   i = ecore_list_index(inst->history);
-   hist = ecore_list_index_goto(inst->history, (i - 1));
+   if (!inst->current || inst->current == inst->history) return;
+   inst->current = eina_list_prev(inst->current);
+   hist = eina_list_data_get(inst->current);
    if (!hist) 
      {
 	edje_object_signal_emit(inst->o_forward, "e,state,disabled", "e");
@@ -431,7 +427,7 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
    Instance *inst;
    Evas_Object *o_fm;
    const char *path;
-   int i = 0, count = 0;
+   int count = 0;
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
@@ -442,19 +438,19 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
    if (!inst->ignore_dir) 
      {
         const char *t;
-        t = ecore_list_current(inst->history);
-        if(!t || strcmp(t, path))
+        t = inst->current ? eina_list_data_get(inst->current) : NULL;
+        if(t != path)
           {
 	     if (t)
 	       {
-		  int i, current;
-		  current = ecore_list_index(inst->history);
-		  ecore_list_first_goto(inst->history);
-		  for(i = 0; i < current; i++)
-			  ecore_list_remove_destroy(inst->history);
+		  while (inst->history != inst->current)
+		    {
+		       eina_stringshare_del(eina_list_data_get(inst->history));
+		       inst->history = eina_list_next(inst->history);
+		    }
 	       }
-             ecore_list_prepend(inst->history, strdup(path));
-             ecore_list_first_goto(inst->history);
+             inst->history = eina_list_prepend(inst->history, eina_stringshare_ref(path));
+	     inst->current = inst->history;
           }
      }
    inst->ignore_dir = 0;
@@ -465,10 +461,9 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
 	 edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
    edje_object_message_signal_process(inst->o_up);
 
-   count = ecore_list_count(inst->history);
-   i = ecore_list_index(inst->history);
+   count = eina_list_count(inst->history);
 
-   if (count <= 1) 
+   if (count <= 1)
      {
 	edje_object_signal_emit(inst->o_back, "e,state,disabled", "e");
 	edje_object_signal_emit(inst->o_forward, "e,state,disabled", "e");
@@ -478,12 +473,12 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
      }
    else 
      {
-	if (i == (count - 1))
+	if (eina_list_last(inst->history) == inst->current)
 	  edje_object_signal_emit(inst->o_back, "e,state,disabled", "e");
 	else
 	  edje_object_signal_emit(inst->o_back, "e,state,enabled", "e");
 	edje_object_message_signal_process(inst->o_back);
-	if (i == 0) 
+	if (inst->history == inst->current)
 	  edje_object_signal_emit(inst->o_forward, "e,state,disabled", "e");
 	else
 	  edje_object_signal_emit(inst->o_forward, "e,state,enabled", "e");
