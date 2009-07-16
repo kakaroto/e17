@@ -61,9 +61,16 @@ EvasImage::~EvasImage()
   evas_object_del( o );
 }
 
+int EvasImage::setFile( const std::string &path )
+{
+  evas_object_image_file_set( o, path.c_str(), NULL );
+
+  return evas_object_image_load_error_get(o);
+}
+
 int EvasImage::setFile( const std::string &path, const std::string &key )
 {
-  evas_object_image_file_set( o, path.c_str(), key.empty() ? NULL : key.c_str() );
+  evas_object_image_file_set( o, path.c_str(), key.c_str() );
 
   return evas_object_image_load_error_get(o);
 }

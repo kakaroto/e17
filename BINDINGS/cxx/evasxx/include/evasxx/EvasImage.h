@@ -52,6 +52,15 @@ public:
 
   /*!
    * @brief Sets the @path containing the image data.
+    *
+   * @returns EVAS_LOAD_ERROR_* (EVAS_LOAD_ERROR_NONE    == success)
+   * @see evas_object_image_file_set
+   * @see evas_object_image_load_error_get
+   */
+  int setFile( const std::string &path );
+
+  /*!
+   * @brief Sets the @path containing the image data.
    * If the image data resides in an .eet you probably
    * want to supply a @key specifying the image name.
     *
@@ -59,7 +68,7 @@ public:
    * @see evas_object_image_file_set
    * @see evas_object_image_load_error_get
    */
-  int setFile( const std::string &path, const std::string &key = "" );
+  int setFile( const std::string &path, const std::string &key );
 
   /*!
    * @brief Gets the loaded image @path.
