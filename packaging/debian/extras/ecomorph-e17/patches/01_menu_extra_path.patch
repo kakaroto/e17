@@ -1,0 +1,18 @@
+diff --git a/src/bin/e_int_menus.c b/src/bin/e_int_menus.c
+index 16a2d3b..7c2827e 100644
+--- a/src/bin/e_int_menus.c
++++ b/src/bin/e_int_menus.c
+@@ -593,6 +593,13 @@ _e_int_menus_apps_start(void *data, E_Menu *m)
+ 	     free(dir);
+ 	  }
+ 	else menu = efreet_menu_get();
++	if(!menu)
++	  {
++	     char buf[PATH_MAX];
++	     snprintf(buf, sizeof(buf), "/etc/xdg/menus/enlightenment-applications.menu");
++	     if (ecore_file_exists(buf))
++	       menu = efreet_menu_parse(buf);
++	  }
+ 	e_object_data_set(E_OBJECT(m), menu);
+ 	e_object_free_attach_func_set(E_OBJECT(m), 
+                                       _e_int_menus_apps_free_hook2);

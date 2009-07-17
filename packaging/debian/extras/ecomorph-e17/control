@@ -1,0 +1,69 @@
+Source: ecomorph-e17
+Section: x11
+Priority: optional
+Maintainer:  quaker <quaker66@gmail.com>
+Build-Depends: debhelper (>= 6), cdbs, libeet-dev (>= 1.0.1),
+ libedje-dev (>= 0.9.9.061), libefreet-dev (>= 0.5.0.061),
+ libecore-dev (>= 0.9.9.061), libedbus-dev (>= 0.5.0.061),
+ libevas-dev (>= 0.9.9.061), libeina-dev (>= 0.0.2.060),
+ libasound2-dev, libxext-dev, libeet-bin, libpam0g-dev, exchange, ecomorph-core
+Standards-Version: 3.8.2
+Homepage: http://code.google.com/p/itask-module/wiki/Stuff
+
+Package: ecomorph-e17
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, ecomorph-e17-data (= ${source:Version}), libevas-svn-02-engine-software-x11, libedje-bin
+Conflicts: enlightenment, e17
+Provides: x-window-manager
+Description: The Enlightenment DR17 Window Manager
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ This package contains the core files for Enlightenment DR17(with Ecomorph support).
+
+Package: ecomorph-e17-data
+Architecture: all
+Depends: ${misc:Depends}
+Enhances: ecomorph-e17
+Conflicts: e17-data, enlightenment-data
+Description: Enlightenment Window Manager Run Time Data Files
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ These are the architecture independent runtime support files for the
+ Enlightenment DR17 Window Manager(with Ecomorph support).
+
+Package: ecomorph-e17-dev
+Architecture: any
+Section: devel
+Depends: ${misc:Depends}, ecomorph-e17 (= ${binary:Version}), efl-dev
+Conflicts: e17-dev
+Description: Enlightenment headers, static libraries and documentation
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ This package contains headers, static libraries and documentation for
+ enlightenment(with Ecomorph support).
+
+Package: ecomorph-e17-dbg
+Architecture: any
+Section: devel
+Depends: ${misc:Depends}, ecomorph-e17 (= ${binary:Version})
+Conflicts: e17-dbg
+Priority: extra
+Description: The Enlightenment DR17 Window Manager
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs
+ .
+ This package contains unstripped shared libraries. It is provided primarily
+ to provide a backtrace with names in a debugger, this makes it somewhat
+ easier to interpret core dumps. The libraries are installed in
+ /usr/lib/debug and are automatically used by gdb.(Ecomorph support)
