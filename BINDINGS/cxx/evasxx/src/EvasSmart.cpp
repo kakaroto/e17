@@ -13,6 +13,9 @@ namespace efl {
   
 EvasSmart::EvasSmart ()
 {
+  /* In the case that a existing C SMART is used than no C++ signals are bound!
+   * Take care of this!
+   */
   mFree = false;
 }
   
@@ -51,6 +54,7 @@ Evas_Object *EvasSmart::newEsmart(EvasCanvas &canvas, const std::string &name )
 
 Evas_Smart *EvasSmart::getEsmart( const std::string &name )
 {
+  cout << "getEsmart" << endl;
   sc.name = name.c_str (); // FIXME: is a unique name needed?
   sc.version =  EVAS_SMART_CLASS_VERSION;
   sc.add = wrap_add;
@@ -62,6 +66,7 @@ Evas_Smart *EvasSmart::getEsmart( const std::string &name )
   sc.color_set = wrap_color_set;
   sc.clip_set = wrap_clip_set;
   sc.clip_unset = wrap_clip_unset;
+  sc.calculate = NULL; // TODO
   sc.member_add = wrap_member_add;
   sc.member_del = wrap_member_del;
   sc.data = this;
@@ -96,17 +101,6 @@ void EvasSmart::setData (void *data)
   evas_object_smart_data_set (o, data);
 }
 
-// a wrapper function for the signals...
-static void wrapCustomEvent (void *data, Evas_Object *obj, void *event_info)
-{
-  struct CustomEventWrap *cew = static_cast <struct CustomEventWrap*> (data);
-  
-  EvasSmart *es = cew->es;
-
-  sigc::signal <void, void*, Evas_Object*, void*> *ptrSig = es->getEventSignal (cew->event);
-  ptrSig->emit (data, obj, event_info);
-}
-
 void EvasSmart::addEventSignal (const std::string &event)
 {
   struct CustomEventWrap *cew = mCustomSignalMap[event];
@@ -114,7 +108,7 @@ void EvasSmart::addEventSignal (const std::string &event)
   if (!cew)
   {
     cew = new CustomEventWrap ();
-    sigc::signal <void, void*, Evas_Object*, void*> *ptrSig = new sigc::signal <void, void*, Evas_Object*, void*> ();
+    sigc::signal <void, Evas_Object*, void*> *ptrSig = new sigc::signal <void, Evas_Object*, void*> ();
 
     cew->es = this;
     cew->customSignal = ptrSig;
@@ -140,7 +134,7 @@ void EvasSmart::delEventSignal (const std::string &event)
   mCustomSignalMap.erase (event);
 }
 
-sigc::signal <void, void*, Evas_Object*, void*> *EvasSmart::getEventSignal (const std::string &event)
+sigc::signal <void, Evas_Object*, void*> *EvasSmart::getEventSignal (const std::string &event)
 {
   // implicit add a event signal while get
   addEventSignal (event);
@@ -176,6 +170,17 @@ void EvasSmart::calculate ()
 }
 
 // C wrapper helpers
+
+// a wrapper function for the signals...
+void EvasSmart::wrapCustomEvent (void *data, Evas_Object *obj, void *event_info)
+{
+  struct CustomEventWrap *cew = static_cast <struct CustomEventWrap*> (data);
+  
+  EvasSmart *es = cew->es;
+
+  sigc::signal <void, Evas_Object*, void*> *ptrSig = es->getEventSignal (cew->event);
+  ptrSig->emit (obj, event_info);
+}
 
 void EvasSmart::wrap_add( Evas_Object *o ) 
 {

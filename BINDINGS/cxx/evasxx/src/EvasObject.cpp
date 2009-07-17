@@ -329,7 +329,9 @@ EvasObject *EvasObject::getParent (const EvasObject &obj)
 
 EvasSmart *EvasObject::getEvasSmart ()
 {
+  // FIXME
   //EAPI Evas_Smart       *evas_object_smart_smart_get       (const Evas_Object *obj);
+#warning not implemented
 }
 
 EvasObject* EvasObject::objectLink( Evas_Object* evas_object )
