@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-03-14 11:46+0000\n"
 "Last-Translator: Yuki Kodama <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
@@ -312,8 +311,8 @@ msgid ""
 "There are <hilight>feeds</hilight> in this category.<br>You have to "
 "<hilight>remove them first</hilight>"
 msgstr ""
-"このカテゴリには<hilight>フィード</hilight>があります。<br>先にそれらを<hilight>削除</hilight>しておく必要があり"
-"ます。"
+"このカテゴリには<hilight>フィード</hilight>があります。<br>先にそれらを"
+"<hilight>削除</hilight>しておく必要があります。"
 
 #: ../src/module/news_config_dialog_feeds.c:754
 #: ../src/module/news_config_dialog_feeds.c:779
@@ -415,10 +414,12 @@ msgstr "カテゴリを<hilight>選択</hilight>する必要があります"
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already "
-"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
-"with the same name<br>in one category."
-msgstr "%sという名前のフィードは既に%sカテゴリに存在しています。<br><br>1つのカテゴリに同じ名前フィードを含めることはできません。"
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
+msgstr ""
+"%sという名前のフィードは既に%sカテゴリに存在しています。<br><br>1つのカテゴリ"
+"に同じ名前フィードを含めることはできません。"
 
 #: ../src/module/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -434,8 +435,8 @@ msgstr "<hilight>名前</hilight>を入力してください！"
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already "
-"used</hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
 msgstr "入力された名前は既に別のカテゴリによって使用されています"
 
 #: ../src/module/news_menu.c:56

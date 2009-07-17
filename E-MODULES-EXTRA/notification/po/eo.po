@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-05-10 23:58+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -22,24 +22,65 @@ msgstr ""
 msgid "Configuration"
 msgstr "Agordo"
 
-#: ../src/e_mod_main.c:118
+#: ../src/e_mod_main.c:121
 msgid "Notification Box"
 msgstr "Kesto de atentigo"
 
+#: ../src/e_mod_main.c:206
+msgid "Enter Presentation Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:207
+msgid ""
+"Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, "
+"screen saver, lock and power saving will be disabled so you are not "
+"interrupted."
+msgstr ""
+
+#: ../src/e_mod_main.c:213
+msgid "Exited Presentation Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:214
+msgid ""
+"Presentation mode is over.<br>Now screen saver, lock and power saving "
+"settings will be restored."
+msgstr ""
+
+#: ../src/e_mod_main.c:229
+msgid "Enter Offline Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:230
+msgid ""
+"Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
+"that use network will stop polling remote services."
+msgstr ""
+
+#: ../src/e_mod_main.c:236
+msgid "Exited Offline Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:237
+msgid ""
+"Now in <b>online</b> mode.<br>Now modules that use network will resume "
+"regular tasks."
+msgstr ""
+
 #. register config panel entry
-#: ../src/e_mod_main.c:175
+#: ../src/e_mod_main.c:294
 msgid "Extensions"
 msgstr "Kromajxoj"
 
-#: ../src/e_mod_main.c:177
+#: ../src/e_mod_main.c:296
 msgid "Notification"
 msgstr "Atentigo"
 
-#: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
+#: ../src/e_mod_main.c:340 ../src/e_mod_main.c:358
 msgid "Notification Configuration Updated"
 msgstr "Agordo gxisdatigita de atentigo"
 
-#: ../src/e_mod_main.c:221
+#: ../src/e_mod_main.c:341
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -49,19 +90,15 @@ msgid ""
 "lacks. This new set of defaults will fix<br>that by adding it in. You can re-"
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
-"La agordo de la modulo Notification bezonas ĝisdatigon. Via malnova agordo<"
-"br> "
-"estis viŝita kaj nova aro da defaŭltoj estis pravalorizitaj. Tio okazos ofte "
-"dum<br> "
-"la programado, do ne raportu cimon. Tio simple signifas ke la modulo<br> "
-"Notification bezonas novajn datumojn de agordo defaŭlte por uzebla "
-"funkcieco<br> "
-"kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj korektos tion "
-"aldoniĝante<br> "
-"Vi povas de nove agordi nun kiel vi volas. Bonvolu pardoni por la "
-"malagrablaĵoj.<br>"
+"La agordo de la modulo Notification bezonas ĝisdatigon. Via malnova "
+"agordo<br> estis viŝita kaj nova aro da defaŭltoj estis pravalorizitaj. Tio "
+"okazos ofte dum<br> la programado, do ne raportu cimon. Tio simple signifas "
+"ke la modulo<br> Notification bezonas novajn datumojn de agordo defaŭlte por "
+"uzebla funkcieco<br> kiuj viaj agordoj mankas. Tiu nova aro da defaŭltoj "
+"korektos tion aldoniĝante<br> Vi povas de nove agordi nun kiel vi volas. "
+"Bonvolu pardoni por la malagrablaĵoj.<br>"
 
-#: ../src/e_mod_main.c:239
+#: ../src/e_mod_main.c:359
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -71,19 +108,16 @@ msgid ""
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 "Via agordo de la modulo Notification estas PLI NOVA ol la modulo mem. Tio "
-"estas ege<br> "
-"strange. Tio ne devus okazi krom se vi antaŭdatiĝis la modulon aŭ kopiis la "
-"agordon<br> "
-"el loko kie nova versio de la modulo funkciis. Tio estas malbone kaj "
-"antaŭzorge via<br> "
-"agordo estis restaŭrita al defaŭltoj. Bonvolu pardoni por la malagrablaĵoj.<"
-"br>"
+"estas ege<br> strange. Tio ne devus okazi krom se vi antaŭdatiĝis la modulon "
+"aŭ kopiis la agordon<br> el loko kie nova versio de la modulo funkciis. Tio "
+"estas malbone kaj antaŭzorge via<br> agordo estis restaŭrita al defaŭltoj. "
+"Bonvolu pardoni por la malagrablaĵoj.<br>"
 
-#: ../src/e_mod_main.c:273
+#: ../src/e_mod_main.c:393
 msgid "Error During DBus Init!"
 msgstr "Eraro dum pravalorizo de DBus!"
 
-#: ../src/e_mod_main.c:274
+#: ../src/e_mod_main.c:394
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
@@ -91,61 +125,70 @@ msgstr ""
 "Eraro dum pravalorizo de DBus! Bonvolu kontroli se ĝi estas instalata kaj "
 "funkcianta."
 
-#: ../src/e_mod_config.c:42
+#: ../src/e_mod_config.c:43
 msgid "Notification Configuration"
 msgstr "Agordo de la modulo Atentigo"
 
-#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
+#: ../src/e_mod_config.c:88 ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Urgxo"
 
-#: ../src/e_mod_config.c:87
+#: ../src/e_mod_config.c:89
 msgid "Levels of urgency to popup : "
 msgstr "Niveloj de urgxo sxprucfenestrendaj:"
 
-#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr "malalta"
 
-#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "normala"
 
-#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
+#: ../src/e_mod_config.c:95 ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "kritika"
 
-#: ../src/e_mod_config.c:98
+#: ../src/e_mod_config.c:99
+msgid "Default Timeout"
+msgstr ""
+
+#: ../src/e_mod_config.c:100
+#, c-format
+msgid "%.1f seconds"
+msgstr ""
+
+#: ../src/e_mod_config.c:106
 msgid "Placement"
 msgstr "Posicio"
 
-#: ../src/e_mod_config.c:99
+#: ../src/e_mod_config.c:107
 #, c-format
 msgid "%2.0f x"
 msgstr "%2.0f x"
 
-#: ../src/e_mod_config.c:102
+#: ../src/e_mod_config.c:110
 #, c-format
 msgid "%2.0f y"
 msgstr "%2.0f y"
 
-#: ../src/e_mod_config.c:107
+#: ../src/e_mod_config.c:115
 msgid "Direction"
 msgstr "Direkto"
 
-#: ../src/e_mod_config.c:108
+#: ../src/e_mod_config.c:116
 msgid "Direction in which popups will stack themselves : "
 msgstr "Direkto en kiuj sxprucfenestroj stakigxos: "
 
-#: ../src/e_mod_config.c:121
+#: ../src/e_mod_config.c:129
 msgid "Gap"
 msgstr "Intervalo"
 
-#: ../src/e_mod_config.c:122
+#: ../src/e_mod_config.c:130
 msgid "Size of the gap between two popups : "
 msgstr "Intervalo inter du sxprucfenestroj:"
 
-#: ../src/e_mod_config.c:124
+#: ../src/e_mod_config.c:132
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f rastrumeroj"
@@ -173,4 +216,3 @@ msgstr "Fokusigi la fontan fenestron dum alklako"
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
 msgstr "Niveloj de urgxo memorendaj:"
-

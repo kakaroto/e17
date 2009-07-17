@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Configmenu module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-26 09:17+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-26 11:40+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -14,19 +14,20 @@ msgstr ""
 "Content-Transfer-Encoding: utf-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/e_mod_config.c:39
+#. create new config dialog
+#: ../src/e_mod_config.c:39
 msgid "Config Menu Module"
 msgstr "Module Menu de configuration"
 
-#: src/e_mod_config.c:79
+#: ../src/e_mod_config.c:79
 msgid "General"
 msgstr "Paramètres généraux"
 
-#: src/e_mod_config.c:81
+#: ../src/e_mod_config.c:81
 msgid "Extend Settings Menu"
 msgstr "Extension du menu de configuration"
 
-#: src/e_mod_main.c:196
+#: ../src/e_mod_main.c:198
 msgid ""
 "Config Menu Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -44,7 +45,7 @@ msgstr ""
 "niveau pour être à nouveau fonctionnel.<br>Vous pouvez maintenant tout "
 "reconfigurer selon votre goût.<br>Désolé pour la gêne occasionnée.<br>"
 
-#: src/e_mod_main.c:216
+#: ../src/e_mod_main.c:218
 msgid ""
 "Your Config Menu Module configuration is NEWER than the module version. This "
 "is very<br>strange. This should not happen unless you downgraded<br>the "
@@ -61,14 +62,14 @@ msgstr ""
 "de précaution, votre configuration a été<br>remise à zéro. Désolé pour le "
 "désagrément.<br>"
 
-#: src/e_mod_main.c:395
+#: ../src/e_mod_main.c:397
 msgid "Config Menu"
 msgstr "Menu de configuration"
 
-#: src/e_mod_main.c:478
+#: ../src/e_mod_main.c:480
 msgid "Config Menu Configuration Updated"
 msgstr "Configuration du module Menu de configuration à lour"
 
-#: src/e_mod_main.c:613
+#: ../src/e_mod_main.c:615
 msgid "Configuration"
 msgstr "Configuration"

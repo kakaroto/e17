@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-22 04:19+0000\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -70,55 +70,55 @@ msgstr "自分の居住地のコードは以下のサイトに行き:"
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, 自分の居住地を探して、そのURLを見てください"
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr ""
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "設定"
 
-#: ../e_mod_main.c:1025
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "体感温度"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "風速"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "湿度"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "視界"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "気圧"
 
-#: ../e_mod_main.c:1056
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "上昇"
 
-#: ../e_mod_main.c:1058
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "下降"
 
-#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "横ばい"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "日の出／日の入り"
 
-#: ../e_mod_main.c:1088
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "高"
 
-#: ../e_mod_main.c:1099
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "低"
 

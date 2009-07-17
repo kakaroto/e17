@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-09 09:59+0000\n"
 "Last-Translator: Aron <Unknown>\n"
 "Language-Team: Greek <en@li.org>\n"
@@ -69,54 +69,54 @@ msgstr "Για την εύρεση του κωδικού της περιοχής
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, βρείτε την περιοχή σας, και κοιτάξτε το URL"
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Καιρικές Προβλέψεις"
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: ../e_mod_main.c:1025
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Ψύχος Ανέμου"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Ταχύτητα Ανέμου"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Υγρασία"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Ορατότητα"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Πίεση"
 
-#: ../e_mod_main.c:1056
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "Ανατολή"
 
-#: ../e_mod_main.c:1058
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "Δύση"
 
-#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "Σταθερά"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Ανατολή/Δύση Ηλίου"
 
-#: ../e_mod_main.c:1088
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "Υψηλά"
 
-#: ../e_mod_main.c:1099
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "Χαμηλά"

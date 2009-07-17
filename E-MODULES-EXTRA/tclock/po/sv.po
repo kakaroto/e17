@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-10 12:50+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
@@ -15,44 +15,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Konfiguration av Tclock"
 
-#: ../e_mod_config.c:94
+#: ../e_mod_config.c:97
 msgid "Top"
 msgstr "Överst"
 
-#: ../e_mod_config.c:96
+#: ../e_mod_config.c:99
 msgid "Show Top Line"
 msgstr ""
 
-#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
+#: ../e_mod_config.c:107 ../e_mod_config.c:121 ../e_mod_config.c:135
 msgid "Consult strftime(3) for format syntax"
 msgstr "Konsultera  strftime(3) för formatsyntax"
 
-#: ../e_mod_config.c:108
+#: ../e_mod_config.c:111
 msgid "Bottom"
 msgstr "Nederst"
 
-#: ../e_mod_config.c:110
+#: ../e_mod_config.c:113
 msgid "Show Bottom Line"
 msgstr ""
 
-#: ../e_mod_config.c:122
+#: ../e_mod_config.c:125
 msgid "Tool Tip"
 msgstr "Verktygstips"
 
-#: ../e_mod_config.c:124
+#: ../e_mod_config.c:127
 msgid "Show Tooltip"
 msgstr "Visa verktygstips"
 
-#: ../e_mod_main.c:141
+#: ../e_mod_main.c:140
 msgid "TClock"
 msgstr "TClock"
 
-#: ../e_mod_main.c:186
+#: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "Konfiguration"
 

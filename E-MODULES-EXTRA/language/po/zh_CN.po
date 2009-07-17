@@ -2,93 +2,83 @@
 # Copyright 2008 GNU project.
 # Aron Xu <aronmalache@163.com>, 2008.
 #
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Language e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-09 18:00+0000\n"
-"PO-Revision-Date: 2009-01-22 17:49+0000\n"
-"Last-Translator: Aron <aronmalache@163.com>\n"
+"POT-Creation-Date: 2009-03-31 05:49-0700\n"
+"PO-Revision-Date: 2009-06-06 22:38+0000\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/module/e_mod_config.c:104
+#: ../src/module/e_mod_config.c:104
 msgid "Language Module Settings"
 msgstr "语言模式设置"
 
-#: src/module/e_mod_config.c:174
-#: src/module/e_mod_config.c:249
+#: ../src/module/e_mod_config.c:174 ../src/module/e_mod_config.c:249
 msgid "Available Languages"
 msgstr "可用语言"
 
-#: src/module/e_mod_config.c:182
-#: src/module/e_mod_config.c:257
+#: ../src/module/e_mod_config.c:182 ../src/module/e_mod_config.c:257
 msgid "Selected Languages"
 msgstr "选择语言"
 
-#: src/module/e_mod_config.c:198
-#: src/module/e_mod_config.c:273
+#: ../src/module/e_mod_config.c:198 ../src/module/e_mod_config.c:273
 msgid "Up"
 msgstr "向上"
 
-#: src/module/e_mod_config.c:203
-#: src/module/e_mod_config.c:278
+#: ../src/module/e_mod_config.c:203 ../src/module/e_mod_config.c:278
 msgid "Down"
 msgstr "向下"
 
-#: src/module/e_mod_config.c:211
-#: src/module/e_mod_config.c:304
+#: ../src/module/e_mod_config.c:211 ../src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
 msgstr "语言切换规则"
 
-#: src/module/e_mod_config.c:214
-#: src/module/e_mod_config.c:307
+#: ../src/module/e_mod_config.c:214 ../src/module/e_mod_config.c:307
 msgid "Global"
 msgstr "全局"
 
-#: src/module/e_mod_config.c:217
-#: src/module/e_mod_config.c:310
+#: ../src/module/e_mod_config.c:217 ../src/module/e_mod_config.c:310
 msgid "Window"
 msgstr "窗口"
 
-#: src/module/e_mod_config.c:220
-#: src/module/e_mod_config.c:313
+#: ../src/module/e_mod_config.c:220 ../src/module/e_mod_config.c:313
 msgid "Application"
 msgstr "应用程序"
 
-#: src/module/e_mod_config.c:287
+#: ../src/module/e_mod_config.c:287
 msgid "Keyboard Model"
-msgstr ""
+msgstr "键盘型号"
 
-#: src/module/e_mod_config.c:295
+#: ../src/module/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr ""
+msgstr "布局变量"
 
-#: src/module/e_mod_keybindings.c:6
-#: src/module/e_mod_main.c:113
+#: ../src/module/e_mod_keybindings.c:6 ../src/module/e_mod_main.c:113
 msgid "Language"
 msgstr "语言"
 
-#: src/module/e_mod_keybindings.c:7
+#: ../src/module/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
 msgstr "切换到下一个语言"
 
-#: src/module/e_mod_keybindings.c:8
+#: ../src/module/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
 msgstr "切换到前一个语言"
 
-#: src/module/e_mod_main.c:399
+#: ../src/module/e_mod_main.c:399
 msgid "Configuration"
 msgstr "配置"
 
-#: src/module/e_mod_main.c:404
+#: ../src/module/e_mod_main.c:404
 msgid "Configure Key Bindings"
-msgstr ""
+msgstr "配置快捷键"
 
-#: src/module/e_mod_main.c:421
+#: ../src/module/e_mod_main.c:421
 msgid "Module Configuration"
 msgstr "模块设置"
 

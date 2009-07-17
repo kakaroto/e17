@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-29 23:17+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -17,28 +17,28 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-01-03 07:54+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/e_mod_main.c:236
+#: ../src/e_mod_main.c:237
 msgid "IIirk"
 msgstr "IIirk"
 
-#: ../src/e_mod_main.c:368 ../src/e_mod_main.c:785
+#: ../src/e_mod_main.c:369 ../src/e_mod_main.c:786
 msgid "Configuration"
 msgstr "תצורה"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1559
 msgid "Applications"
 msgstr "יישומים"
 
-#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1561 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "יישומי IIirk"
 
-#: ../src/e_mod_main.c:1562
+#: ../src/e_mod_main.c:1563
 msgid "Internal"
 msgstr "פנימי"
 
-#: ../src/e_mod_main.c:1563
+#: ../src/e_mod_main.c:1564
 msgid "IIirk Other"
 msgstr "IIirk אחר"
 

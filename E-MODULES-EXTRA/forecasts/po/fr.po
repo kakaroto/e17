@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Forecast module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-24 09:31+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -67,54 +67,54 @@ msgstr "Pour trouver le code de votre région, voir:"
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trouvez votre région, et regardez l'URL"
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Prévisions"
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "Configuration"
 
-#: ../e_mod_main.c:1025
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Température ressentie"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Vitesse du vent"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Humidité"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Visibilité"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Pression"
 
-#: ../e_mod_main.c:1056
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "En hausse"
 
-#: ../e_mod_main.c:1058
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "En baisse"
 
-#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "Stable"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Lever / Coucher"
 
-#: ../e_mod_main.c:1088
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "Maximum"
 
-#: ../e_mod_main.c:1099
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "Minimum"

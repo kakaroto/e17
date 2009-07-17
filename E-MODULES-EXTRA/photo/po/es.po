@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-11 15:07+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -14,38 +14,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-#: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
-#: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
-#: ../src/module/e_mod_main.c:80 ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:53 ../src/module/e_mod_main.c:60
+#: ../src/module/e_mod_main.c:67 ../src/module/e_mod_main.c:74
+#: ../src/module/e_mod_main.c:81 ../src/module/e_mod_main.c:88
 msgid "Photo Module"
 msgstr "Módulo foto"
 
-#: ../src/module/e_mod_main.c:52
+#: ../src/module/e_mod_main.c:53
 msgid "E Canvas init failed !"
 msgstr "¡Y falló la inicialización del lienzo!"
 
-#: ../src/module/e_mod_main.c:59
+#: ../src/module/e_mod_main.c:60
 msgid "Theme init failed !"
 msgstr "¡Falló la inicialización del tema!"
 
-#: ../src/module/e_mod_main.c:66
+#: ../src/module/e_mod_main.c:67
 msgid "Config init failed"
 msgstr "¡Falló la inicialización de configuración!"
 
-#: ../src/module/e_mod_main.c:73
+#: ../src/module/e_mod_main.c:74
 msgid "Picture subsystem init failed"
 msgstr "¡Falló la inicialización del subsistema de imagen!"
 
-#: ../src/module/e_mod_main.c:80
+#: ../src/module/e_mod_main.c:81
 msgid "Popup warn subsystem init failed"
 msgstr "¡Falló la inicialización del subsistema de avisos emergentes!"
 
-#: ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:88
 msgid "Popup info subsystem init failed"
 msgstr "Falló la inicialización del subsistema de notificaciones emergentes"
 
-#: ../src/module/e_mod_main.c:180
+#: ../src/module/e_mod_main.c:181
 msgid "Photo"
 msgstr "Foto"
 
@@ -312,14 +311,14 @@ msgstr "Error del módulo de fotos"
 #: ../src/module/photo_item.c:413
 #, c-format
 msgid ""
-"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file "
-"!<br>Photo module needs e17setroot util from e_utils package to set you're "
+"<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
+"<br>Photo module needs e17setroot util from e_utils package to set you're "
 "picture as backgroundPlease install it and try again"
 msgstr ""
-"<hilight>Se necesita e17setroot</hilight><br><br>¡%s no es un archivo "
-"edje!<br>El módulo de fotos necesita las utilidades de e17setroot del "
-"paquete e_utils para asignar la imagen como fondo. Por favor, instálelo y "
-"pruebe otra vez"
+"<hilight>Se necesita e17setroot</hilight><br><br>¡%s no es un archivo edje!"
+"<br>El módulo de fotos necesita las utilidades de e17setroot del paquete "
+"e_utils para asignar la imagen como fondo. Por favor, instálelo y pruebe "
+"otra vez"
 
 #: ../src/module/photo_item.c:452
 #, c-format
@@ -386,8 +385,8 @@ msgstr ""
 "<hilight>El directorio %s no existe.</hilight><br><br>Puede cambiar la "
 "carpeta de imágenes en el panel principal de configuración.<br>Éstas pueden "
 "ser jpeg o png<br><br>Después de importarlas, puede eliminar estas imágenes "
-"y se seguirán viendo<br> pero ya no podrá ponerlas como fondo de "
-"pantallas.<br><br>"
+"y se seguirán viendo<br> pero ya no podrá ponerlas como fondo de pantallas."
+"<br><br>"
 
 #: ../src/module/photo_picture_local.c:593
 msgid "Photo Module Information"

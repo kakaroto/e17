@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places modules\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-12 10:03+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-12 10:29+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,100 +15,98 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: src/e_mod_config.c:51
+#. create new config dialog
+#: ../src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Configuration"
 
-#: src/e_mod_config.c:118
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
 msgstr "Général"
 
-#: src/e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr "Afficher dans le menu principal"
 
-#: src/e_mod_config.c:125
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Montage des volumes à l'insertion"
 
-#: src/e_mod_config.c:129
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Ouvrir le gestionnaire de fichiers à l'insertion"
 
-#: src/e_mod_config.c:133
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Utiliser un gestionnaire de fichiers personnalisé"
 
-#: src/e_mod_config.c:146
+#. Display frame
+#: ../src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr "Afficher dans le menu"
 
-#: src/e_mod_config.c:149
-#: src/e_mod_places.c:399
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/e_mod_config.c:152
-#: src/e_mod_places.c:408
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
 msgid "Desktop"
 msgstr "Bureau"
 
-#: src/e_mod_config.c:155
-#: src/e_mod_places.c:418
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
 msgid "Trash"
 msgstr "Corbeille"
 
-#: src/e_mod_config.c:158
-#: src/e_mod_places.c:233
-#: src/e_mod_places.c:427
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:233
+#: ../src/e_mod_places.c:427
 msgid "Filesystem"
 msgstr "Système"
 
-#: src/e_mod_config.c:161
-#: src/e_mod_places.c:436
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
 msgid "Temp"
 msgstr "/tmp"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Favorites"
 msgstr "Favoris"
 
-#: src/e_mod_main.c:75
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:75
 msgid "Files"
 msgstr "Fichiers"
 
-#: src/e_mod_main.c:77
-#: src/e_mod_places.c:499
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
 msgid "Places"
 msgstr "Raccourcis"
 
-#: src/e_mod_main.c:443
+#: ../src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/e_mod_places.c:238
+#: ../src/e_mod_places.c:238
 msgid "No Name"
 msgstr "Sans nom"
 
-#: src/e_mod_places.c:692
+#: ../src/e_mod_places.c:692
 msgid "free of"
 msgstr "libre"
 
-#: src/e_mod_places.c:698
+#: ../src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Pas Monté"
 
-#: src/e_mod_places.c:715
+#: ../src/e_mod_places.c:715
 msgid "unmount"
 msgstr "démonter"
 
-#: src/e_mod_places.c:721
+#: ../src/e_mod_places.c:721
 msgid "eject"
 msgstr "éjecter"
 
 #~ msgid "Show"
 #~ msgstr "Afficher"
+
 #~ msgid "File manager (if blank uses Enlightenment)"
 #~ msgstr "Gestionnaire de fichiers (utilise EFM si rien n'est spécifié)"
-

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Efm_nav module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-22 21:11+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-24 08:39+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,6 +15,6 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: src/e_mod_main.c:193
+#: ../src/e_mod_main.c:205
 msgid "EFM Navigation"
 msgstr "Navigation EFM"

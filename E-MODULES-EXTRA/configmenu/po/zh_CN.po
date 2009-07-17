@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: configmenu HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-06-04 10:12-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-05 01:15+0800\n"
 "Last-Translator: Aron Xu <aronmalache@163.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -28,7 +28,7 @@ msgstr "常规"
 msgid "Extend Settings Menu"
 msgstr ""
 
-#: ../src/e_mod_main.c:196
+#: ../src/e_mod_main.c:198
 msgid ""
 "Config Menu Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -39,7 +39,7 @@ msgid ""
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:216
+#: ../src/e_mod_main.c:218
 msgid ""
 "Your Config Menu Module configuration is NEWER than the module version. This "
 "is very<br>strange. This should not happen unless you downgraded<br>the "
@@ -49,14 +49,14 @@ msgid ""
 "inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:395
+#: ../src/e_mod_main.c:397
 msgid "Config Menu"
 msgstr "配置菜单"
 
-#: ../src/e_mod_main.c:478
+#: ../src/e_mod_main.c:480
 msgid "Config Menu Configuration Updated"
 msgstr "配置菜单选项已更新"
 
-#: ../src/e_mod_main.c:613
+#: ../src/e_mod_main.c:615
 msgid "Configuration"
 msgstr "配置"

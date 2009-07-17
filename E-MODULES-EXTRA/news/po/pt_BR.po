@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-02-27 00:10+0000\n"
 "Last-Translator: Ricardo Ichizo <n1ghtcr4wler@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -260,8 +260,7 @@ msgstr "Informações do servidor"
 
 #: ../src/module/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr ""
-"Permitir que o servidor sobrescreva as informações que você forneceu ?"
+msgstr "Permitir que o servidor sobrescreva as informações que você forneceu ?"
 
 #: ../src/module/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
@@ -415,9 +414,9 @@ msgstr ""
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already "
-"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
-"with the same name<br>in one category."
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
 msgstr ""
 
 #: ../src/module/news_feed.c:311
@@ -434,11 +433,11 @@ msgstr "Você necessita fornecer um <hilight>nome</hilight> !"
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already "
-"used</hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
 msgstr ""
-"O <hilight>nome</hilight> que você forneceu <hilight>já está em "
-"uso</hilight><br>por outra categoria"
+"O <hilight>nome</hilight> que você forneceu <hilight>já está em uso</"
+"hilight><br>por outra categoria"
 
 #: ../src/module/news_menu.c:56
 msgid "Configure this feed"

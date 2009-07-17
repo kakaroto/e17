@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-02-23 18:41+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-03-24 13:11+0000\n"
 "Last-Translator: helix84 <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -14,12 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: ../e_mod_config.c:55
 msgid "Alarm Configuration"
 msgstr "Konfigurácia budíka"
 
-#: ../e_mod_config.c:155 ../e_mod_main.c:187
+#: ../e_mod_config.c:155 ../e_mod_main.c:188
 msgid "Alarm"
 msgstr "Budík"
 
@@ -47,7 +46,7 @@ msgstr "Duplikovať"
 msgid "Alarm Options"
 msgstr "Možnosti Budíka"
 
-#. 
+#.
 #. ob = e_widget_label_add(evas, D_("Time format"));
 #. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 #. rg = e_widget_radio_group_new(&(cfdata->time_format));
@@ -55,7 +54,7 @@ msgstr "Možnosti Budíka"
 #. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 #. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
 #. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-#. 
+#.
 #: ../e_mod_config.c:238
 msgid "Show next alarm"
 msgstr "Zobraziť ďalší budík"
@@ -186,9 +185,9 @@ msgid ""
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
 msgstr ""
 "<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Dátum, ktorý ste "
-"zadali pre budík má nesprávnu syntax<br><br>Musíte dodržať nasledovný formát "
-":<br> RRRR/MM/DD<br>RRRR je rok v tvare 4 číslic<br>MM je mesiac v tvare 2 "
-"číslic<br>DD je deň v tvare 2 číslic<br>"
+"zadali pre budík má nesprávnu syntax<br><br>Musíte dodržať nasledovný "
+"formát :<br> RRRR/MM/DD<br>RRRR je rok v tvare 4 číslic<br>MM je mesiac v "
+"tvare 2 číslic<br>DD je deň v tvare 2 číslic<br>"
 
 #: ../e_mod_config_alarm.c:313
 msgid ""
@@ -198,7 +197,7 @@ msgstr ""
 "<hilight>Chyba, budík nebol pridaný!</hilight><br><br>Dátum, ktorý ste "
 "vybrali je pred dneškom"
 
-#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
+#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:427
 msgid "Alarm Module Error"
 msgstr "Chyba modulu Budík"
 
@@ -265,16 +264,16 @@ msgstr "<hilight>Test budíka ZLYHAL!</hilight>"
 msgid "Alarm Module Test Report"
 msgstr "Správa z testu budíka"
 
-#: ../e_mod_main.c:398
+#: ../e_mod_main.c:399
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Budík : %s</hilight><br><br>%s"
 
-#: ../e_mod_main.c:401
+#: ../e_mod_main.c:402
 msgid "Alarm Module Popup"
 msgstr "Vyskakovací dialóg modulu Budíka"
 
-#: ../e_mod_main.c:424
+#: ../e_mod_main.c:425
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
@@ -282,47 +281,47 @@ msgstr ""
 "<hilight>Operácia zlyhala!</hilight><br><br>Budík nedokázal spustiť určený "
 "program"
 
-#: ../e_mod_main.c:658 ../e_mod_main.c:837
+#: ../e_mod_main.c:659 ../e_mod_main.c:838
 #, c-format
 msgid "Snooze %s"
 msgstr "Odložiť %s"
 
-#: ../e_mod_main.c:662
+#: ../e_mod_main.c:663
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f hodín"
 
-#: ../e_mod_main.c:665
+#: ../e_mod_main.c:666
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f minút"
 
-#: ../e_mod_main.c:672
+#: ../e_mod_main.c:673
 msgid "Ok"
 msgstr "Ok"
 
-#: ../e_mod_main.c:673
+#: ../e_mod_main.c:674
 msgid "Close"
 msgstr "Zavrieť"
 
-#: ../e_mod_main.c:845
+#: ../e_mod_main.c:846
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "Odložiť %.14s of %.2d:%.2d"
 
-#: ../e_mod_main.c:859
+#: ../e_mod_main.c:860
 msgid "Snooze (No alarm to delay)"
 msgstr "Odložiť (neexistuje budík, ktorý možno odložiť)"
 
-#: ../e_mod_main.c:866
+#: ../e_mod_main.c:867
 msgid "Add an alarm"
 msgstr "Pridať budík"
 
-#: ../e_mod_main.c:873
+#: ../e_mod_main.c:874
 msgid "Configuration"
 msgstr "Konfigurácia"
 
-#: ../e_mod_main.c:1054
+#: ../e_mod_main.c:1055
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
@@ -333,18 +332,18 @@ msgstr ""
 "konfigurácia modulu Budík<br>bola aktualizovaná<br>Vaše nastavenia a budíky "
 "boli odstránené<br>Ospravedlňujeme sa za nepríjemnosti<br><br>(%d -> %d)"
 
-#: ../e_mod_main.c:1060 ../e_mod_main.c:1074
+#: ../e_mod_main.c:1061 ../e_mod_main.c:1075
 msgid "Alarm Module version "
 msgstr "Verzia modulu Budík "
 
-#: ../e_mod_main.c:1068
+#: ../e_mod_main.c:1069
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>Modul Budík : Konfigurácia bola prevedená na nižšiu "
-"verziu</hilight><br><br>Vaša konfigurácia modulu Budík<br>bola prevedená na "
-"nižšiu verziu<br>Vaše nastavenia a budíky boli odstránené<br>Ospravedlňujeme "
-"sa za nepríjemnosti<br><br>(%d -> %d)"
+"<hilight>Modul Budík : Konfigurácia bola prevedená na nižšiu verziu</"
+"hilight><br><br>Vaša konfigurácia modulu Budík<br>bola prevedená na nižšiu "
+"verziu<br>Vaše nastavenia a budíky boli odstránené<br>Ospravedlňujeme sa za "
+"nepríjemnosti<br><br>(%d -> %d)"

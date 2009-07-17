@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-05-11 00:13+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -72,56 +72,54 @@ msgstr "Por trovi la kodon por via zono, iru al:"
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trovu vian zonon, kaj rigardu la URL-on"
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Veteroj"
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: ../e_mod_main.c:1025
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Venta malvarmigo"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Venta Rapideco"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Humideco"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Videbleco"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Aerpremo"
 
-#: ../e_mod_main.c:1056
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "Sunleviĝo"
 
-#: ../e_mod_main.c:1058
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "Krepusko"
 
-#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "Konstanta"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Suna leviĝo / malleviĝo"
 
-#: ../e_mod_main.c:1088
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "Alta"
 
-#: ../e_mod_main.c:1099
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "Malalta"
-
-

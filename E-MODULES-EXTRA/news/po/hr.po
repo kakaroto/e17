@@ -5,15 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-02-18 02:58+0000\n"
 "Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
@@ -58,8 +57,8 @@ msgid ""
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
 "<hilight>Modul Vijesti : Konfiguracija Unazađena</hilight><br><br>Vaša "
-"konfiguracija Modula Vijesti<br>je unazađena.<br>Vaše postavke su "
-"uklonjene.<br>Žalimo zbog neugodnosti.<br><br>(%d ->%d)"
+"konfiguracija Modula Vijesti<br>je unazađena.<br>Vaše postavke su uklonjene."
+"<br>Žalimo zbog neugodnosti.<br><br>(%d ->%d)"
 
 #: ../src/module/news_config_dialog.c:90
 msgid "News Main Configuration"
@@ -421,12 +420,12 @@ msgstr "Treba <hilight>odabrati kategoriju</hilight>."
 #: ../src/module/news_feed.c:302
 #, c-format
 msgid ""
-"A feed with the <hilight>name</hilight> %s <hilight>already "
-"exists</hilight><br>in the %s category<br><br>Its not possible to have feeds "
-"with the same name<br>in one category."
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
 msgstr ""
-"Izvor sa <hilight>nazivom</hilight> %s <hilight>već postoji</hilight><br>u "
-"%s kategoriji<br><br>Nije moguće imati izvore sa istim nazivom<br>u jednoj "
+"Izvor sa <hilight>nazivom</hilight> %s <hilight>već postoji</hilight><br>u %"
+"s kategoriji<br><br>Nije moguće imati izvore sa istim nazivom<br>u jednoj "
 "kategoriji."
 
 #: ../src/module/news_feed.c:311
@@ -443,8 +442,8 @@ msgstr "Morate unijeti <hilight>naziv</hilight> !"
 
 #: ../src/module/news_feed.c:888
 msgid ""
-"The <hilight>name</hilight> you entered is <hilight>already "
-"used</hilight><br>by another category"
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
 msgstr ""
 "Unešeni <hilight>naziv</hilight> je <hilight> već u upotrebi </hilight><br>u "
 "drugoj kategoriji"

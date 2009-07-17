@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-22 21:21+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-24 11:00+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,59 +15,59 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: e_mod_config.c:36
+#: ../e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "Configuration de la météo"
 
-#: e_mod_config.c:78
+#: ../e_mod_config.c:78
 msgid "Display Settings"
 msgstr "Paramètres d'affichage"
 
-#: e_mod_config.c:80
+#: ../e_mod_config.c:80
 msgid "Simple"
 msgstr "Simple"
 
-#: e_mod_config.c:82
+#: ../e_mod_config.c:82
 msgid "Detailed"
 msgstr "Détaillé"
 
-#: e_mod_config.c:84
+#: ../e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Délai d'interrogation"
 
-#: e_mod_config.c:86
+#: ../e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutes"
 
-#: e_mod_config.c:91
+#: ../e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "Paramètres de l'unité"
 
-#: e_mod_config.c:93
+#: ../e_mod_config.c:93
 msgid "Celsius"
 msgstr "Celsius"
 
-#: e_mod_config.c:95
+#: ../e_mod_config.c:95
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: e_mod_config.c:99 e_mod_config.c:100
+#: ../e_mod_config.c:99 ../e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "Code ICAO"
 
-#: e_mod_config.c:105
+#: ../e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "Récupérer votre code ICAO sur:"
 
-#: e_mod_config.c:107
+#: ../e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: e_mod_main.c:171
+#: ../e_mod_main.c:171
 msgid "Weather"
 msgstr "Météo"
 
-#: e_mod_main.c:215
+#: ../e_mod_main.c:215
 msgid "Configuration"
 msgstr "Configuration"

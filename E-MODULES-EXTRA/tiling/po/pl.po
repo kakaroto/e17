@@ -5,32 +5,31 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2009-02-24 09:01+0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"PO-Revision-Date: 2009-06-06 22:31+0000\n"
 "Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. General settings
+#: ../e_mod_config.c:217
+msgid "General"
+msgstr "Ogólne"
 
-#: ../e_mod_main.c:113 ../e_mod_main.c:118 ../e_mod_main.c:1000
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Kafelkowanie"
 
-#: ../e_mod_main.c:999
+#: ../e_mod_main.c:1006
 msgid "Windows"
 msgstr "Okna"
 
 #: ../e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Ustawienia kafelkowania"
-
-#. General settings
-#: ../e_mod_config.c:217
-msgid "General"
-msgstr ""
 
 #: ../e_mod_config.c:227
 msgid "Horizontal:"

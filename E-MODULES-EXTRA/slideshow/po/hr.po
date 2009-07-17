@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-02-13 03:49+0000\n"
 "Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -63,10 +63,10 @@ msgstr "Postavi tapetu na aktivni ekran"
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Postavi tapetu na aktivni monitor (Xinerama podržan)"
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:136
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:180
 msgid "Configuration"
 msgstr "Konfiguracija"

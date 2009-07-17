@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-22 21:20+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-24 10:58+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,43 +15,43 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: e_mod_config.c:45
+#: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Configuration de l'horloge numérique"
 
-#: e_mod_config.c:97
+#: ../e_mod_config.c:97
 msgid "Top"
 msgstr "Haut"
 
-#: e_mod_config.c:99
+#: ../e_mod_config.c:99
 msgid "Show Top Line"
 msgstr "Afficher la ligne supérieure"
 
-#: e_mod_config.c:107 e_mod_config.c:121 e_mod_config.c:135
+#: ../e_mod_config.c:107 ../e_mod_config.c:121 ../e_mod_config.c:135
 msgid "Consult strftime(3) for format syntax"
 msgstr ""
 "Consulter strftime(3) (pages de manuel de développement) pour la syntaxe"
 
-#: e_mod_config.c:111
+#: ../e_mod_config.c:111
 msgid "Bottom"
 msgstr "Bas"
 
-#: e_mod_config.c:113
+#: ../e_mod_config.c:113
 msgid "Show Bottom Line"
 msgstr "Afficher la ligne inférieure"
 
-#: e_mod_config.c:125
+#: ../e_mod_config.c:125
 msgid "Tool Tip"
 msgstr "Info-bulle"
 
-#: e_mod_config.c:127
+#: ../e_mod_config.c:127
 msgid "Show Tooltip"
 msgstr "Afficher l'info-bulle"
 
-#: e_mod_main.c:140
+#: ../e_mod_main.c:140
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:184
+#: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "Configuration"

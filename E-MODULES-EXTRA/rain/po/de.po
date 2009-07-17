@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
-"PO-Revision-Date: 2008-12-13 21:53+0000\n"
-"Last-Translator: Ansgar Burchardt <Unknown>\n"
+"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"PO-Revision-Date: 2009-07-04 17:39+0000\n"
+"Last-Translator: Tschaka <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +28,7 @@ msgstr "Wolken anzeigen"
 
 #: ../e_mod_config.c:105
 msgid "Rain Density"
-msgstr ""
+msgstr "Niederschlagsmenge"
 
 #: ../e_mod_config.c:107
 msgid "Sprinkle"
@@ -40,7 +40,7 @@ msgstr "Nieselregen"
 
 #: ../e_mod_config.c:111
 msgid "Downpour"
-msgstr ""
+msgstr "Starker Regen"
 
 #: ../e_mod_main.c:33
 msgid "Appearance"

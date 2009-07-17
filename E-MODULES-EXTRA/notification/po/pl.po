@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-02-27 08:44+0000\n"
 "Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -14,29 +14,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
 msgstr "Konfiguracja"
 
-#: ../src/e_mod_main.c:118
+#: ../src/e_mod_main.c:121
 msgid "Notification Box"
 msgstr "Okno powiadomień"
 
+#: ../src/e_mod_main.c:206
+msgid "Enter Presentation Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:207
+msgid ""
+"Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, "
+"screen saver, lock and power saving will be disabled so you are not "
+"interrupted."
+msgstr ""
+
+#: ../src/e_mod_main.c:213
+msgid "Exited Presentation Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:214
+msgid ""
+"Presentation mode is over.<br>Now screen saver, lock and power saving "
+"settings will be restored."
+msgstr ""
+
+#: ../src/e_mod_main.c:229
+msgid "Enter Offline Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:230
+msgid ""
+"Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
+"that use network will stop polling remote services."
+msgstr ""
+
+#: ../src/e_mod_main.c:236
+msgid "Exited Offline Mode"
+msgstr ""
+
+#: ../src/e_mod_main.c:237
+msgid ""
+"Now in <b>online</b> mode.<br>Now modules that use network will resume "
+"regular tasks."
+msgstr ""
+
 #. register config panel entry
-#: ../src/e_mod_main.c:175
+#: ../src/e_mod_main.c:294
 msgid "Extensions"
 msgstr "Rozszerzenia"
 
-#: ../src/e_mod_main.c:177
+#: ../src/e_mod_main.c:296
 msgid "Notification"
 msgstr "Powiadomienie"
 
-#: ../src/e_mod_main.c:220 ../src/e_mod_main.c:238
+#: ../src/e_mod_main.c:340 ../src/e_mod_main.c:358
 msgid "Notification Configuration Updated"
 msgstr "Uaktualniono konfigurację powiadomień"
 
-#: ../src/e_mod_main.c:221
+#: ../src/e_mod_main.c:341
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -55,7 +95,7 @@ msgstr ""
 "dodanie. Teraz możesz re-konfigurować rzeczy według własnego<br>uznania. "
 "Przepraszamy za niedogodności.<br>"
 
-#: ../src/e_mod_main.c:239
+#: ../src/e_mod_main.c:359
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -71,11 +111,11 @@ msgstr ""
 "twoja konfiguracja została przywrócona do ustawień<br>domyślnych. "
 "Przepraszamy za niedogodności.<br>"
 
-#: ../src/e_mod_main.c:273
+#: ../src/e_mod_main.c:393
 msgid "Error During DBus Init!"
 msgstr "Błąd inicjalizacji DBus!"
 
-#: ../src/e_mod_main.c:274
+#: ../src/e_mod_main.c:394
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
@@ -83,61 +123,70 @@ msgstr ""
 "Błąd inicjalizacji DBus! Sprawdź czy dbus jest poprawnie zainstalowany i czy "
 "działa."
 
-#: ../src/e_mod_config.c:42
+#: ../src/e_mod_config.c:43
 msgid "Notification Configuration"
 msgstr "Konfiguracja powaidomień"
 
-#: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:91
+#: ../src/e_mod_config.c:88 ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Ważność"
 
-#: ../src/e_mod_config.c:87
+#: ../src/e_mod_config.c:89
 msgid "Levels of urgency to popup : "
 msgstr "Poziomy ważności do wyświetlenia: "
 
-#: ../src/e_mod_config.c:89 ../src/e_mod_config_item.c:94
+#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr "niska"
 
-#: ../src/e_mod_config.c:91 ../src/e_mod_config_item.c:96
+#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "normalny"
 
-#: ../src/e_mod_config.c:93 ../src/e_mod_config_item.c:98
+#: ../src/e_mod_config.c:95 ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "krytyczny"
 
-#: ../src/e_mod_config.c:98
+#: ../src/e_mod_config.c:99
+msgid "Default Timeout"
+msgstr ""
+
+#: ../src/e_mod_config.c:100
+#, c-format
+msgid "%.1f seconds"
+msgstr ""
+
+#: ../src/e_mod_config.c:106
 msgid "Placement"
 msgstr "Położenie"
 
-#: ../src/e_mod_config.c:99
+#: ../src/e_mod_config.c:107
 #, c-format
 msgid "%2.0f x"
 msgstr "%2.0f x"
 
-#: ../src/e_mod_config.c:102
+#: ../src/e_mod_config.c:110
 #, c-format
 msgid "%2.0f y"
 msgstr "%2.0f y"
 
-#: ../src/e_mod_config.c:107
+#: ../src/e_mod_config.c:115
 msgid "Direction"
 msgstr "Kierunek"
 
-#: ../src/e_mod_config.c:108
+#: ../src/e_mod_config.c:116
 msgid "Direction in which popups will stack themselves : "
 msgstr "Kierunek składowania okienek : "
 
-#: ../src/e_mod_config.c:121
+#: ../src/e_mod_config.c:129
 msgid "Gap"
 msgstr "Odstęp"
 
-#: ../src/e_mod_config.c:122
+#: ../src/e_mod_config.c:130
 msgid "Size of the gap between two popups : "
 msgstr "Rozmiar przerwy między okienkami: "
 
-#: ../src/e_mod_config.c:124
+#: ../src/e_mod_config.c:132
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f pikseli"

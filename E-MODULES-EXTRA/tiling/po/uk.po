@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tiling.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-05 12:01-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:23+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,13 +13,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
+#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Мозайка"
 
-#: ../e_mod_main.c:1004
+#: ../e_mod_main.c:1006
 msgid "Windows"
 msgstr "Вікна"
 
@@ -81,4 +82,3 @@ msgstr "Межі мозайки"
 #: ../e_mod_config.c:310
 msgid "Floating border"
 msgstr "Мінливі межі"
-

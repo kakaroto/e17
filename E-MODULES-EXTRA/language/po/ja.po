@@ -1,0 +1,83 @@
+# Japanese translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-03-31 05:49-0700\n"
+"PO-Revision-Date: 2009-03-14 08:50+0000\n"
+"Last-Translator: Yuki Kodama <Unknown>\n"
+"Language-Team: Japanese <ja@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "言語ファイル設定"
+
+#: ../src/module/e_mod_config.c:174 ../src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "利用可能な言語"
+
+#: ../src/module/e_mod_config.c:182 ../src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "選択された言語"
+
+#: ../src/module/e_mod_config.c:198 ../src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "上へ"
+
+#: ../src/module/e_mod_config.c:203 ../src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "下へ"
+
+#: ../src/module/e_mod_config.c:211 ../src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "言語変更ポリシー"
+
+#: ../src/module/e_mod_config.c:214 ../src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "グローバル"
+
+#: ../src/module/e_mod_config.c:217 ../src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "ウィンドウ"
+
+#: ../src/module/e_mod_config.c:220 ../src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "アプリケーション"
+
+#: ../src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "キーボードモデル"
+
+#: ../src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "レイアウト変更"
+
+#: ../src/module/e_mod_keybindings.c:6 ../src/module/e_mod_main.c:113
+msgid "Language"
+msgstr "言語"
+
+#: ../src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "次の言語に変更"
+
+#: ../src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "前の言語に変更"
+
+#: ../src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr "設定"
+
+#: ../src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr "ショートカットキーの設定"
+
+#: ../src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr "モジュール設定"

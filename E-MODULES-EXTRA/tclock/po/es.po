@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-11 14:51+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -15,43 +15,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: ../e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Configuración Tclock"
 
-#: ../e_mod_config.c:94
+#: ../e_mod_config.c:97
 msgid "Top"
 msgstr "Arriba"
 
-#: ../e_mod_config.c:96
+#: ../e_mod_config.c:99
 msgid "Show Top Line"
 msgstr "Mostra línea superior"
 
-#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
+#: ../e_mod_config.c:107 ../e_mod_config.c:121 ../e_mod_config.c:135
 msgid "Consult strftime(3) for format syntax"
 msgstr "Consulta strftime(3) para el formato de sintaxis"
 
-#: ../e_mod_config.c:108
+#: ../e_mod_config.c:111
 msgid "Bottom"
 msgstr "Abajo"
 
-#: ../e_mod_config.c:110
+#: ../e_mod_config.c:113
 msgid "Show Bottom Line"
 msgstr "Mostrar línea inferior"
 
-#: ../e_mod_config.c:122
+#: ../e_mod_config.c:125
 msgid "Tool Tip"
 msgstr "Consejo"
 
-#: ../e_mod_config.c:124
+#: ../e_mod_config.c:127
 msgid "Show Tooltip"
 msgstr "Mostrar consejo"
 
-#: ../e_mod_main.c:141
+#: ../e_mod_main.c:140
 msgid "TClock"
 msgstr "TClock"
 
-#: ../e_mod_main.c:186
+#: ../e_mod_main.c:184
 msgid "Configuration"
 msgstr "Configuración"

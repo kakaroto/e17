@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
-"PO-Revision-Date: 2009-02-23 13:09+0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"PO-Revision-Date: 2009-06-06 22:33+0000\n"
 "Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -56,7 +56,7 @@ msgstr ""
 
 #: ../e_mod_config_box.c:213
 msgid "Port Settings"
-msgstr ""
+msgstr "Ustawienia portu"
 
 #: ../e_mod_config_box.c:215
 msgid "Use SSL:"
@@ -108,15 +108,15 @@ msgstr ""
 
 #: ../e_mod_config_box.c:433
 msgid "Inbox"
-msgstr ""
+msgstr "Odebrane"
 
 #: ../e_mod_config.c:53
 msgid "Mail Configuration"
-msgstr ""
+msgstr "Konfiguracja poczty"
 
 #: ../e_mod_config.c:96
 msgid "Always Show Labels"
-msgstr ""
+msgstr "Zawsze pokazuj etykietki"
 
 #: ../e_mod_config.c:99
 msgid "Show Mailbox Popup"
@@ -128,16 +128,16 @@ msgstr ""
 
 #: ../e_mod_config.c:104
 msgid "Check Interval"
-msgstr ""
+msgstr "Interwał sprawdzania"
 
 #: ../e_mod_config.c:107
 #, c-format
 msgid "%2.0f minutes"
-msgstr ""
+msgstr "%2.0f minut"
 
 #: ../e_mod_config.c:112
 msgid "Mail Boxes"
-msgstr ""
+msgstr "Skrzynki pocztowe"
 
 #: ../e_mod_config.c:122
 msgid "Add"
@@ -153,12 +153,12 @@ msgstr "Konfiguruj..."
 
 #: ../e_mod_main.c:189
 msgid "Mail"
-msgstr ""
+msgstr "Poczta"
 
 #: ../e_mod_main.c:242
 msgid "Mailboxes"
-msgstr ""
+msgstr "Skrzynki pocztowe"
 
 #: ../e_mod_main.c:266
 msgid "Configuration"
-msgstr ""
+msgstr "Ustawienia"

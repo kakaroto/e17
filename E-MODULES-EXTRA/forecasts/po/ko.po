@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: forecast e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-18 19:18+0000\n"
 "Last-Translator: Aron <Unknown>\n"
 "Language-Team: Korea <ko@li.org>\n"
@@ -70,54 +70,54 @@ msgstr "해당 지역의 코드를 찾을려면"
 msgid "%s, find your area, and look at the URL"
 msgstr "%s로 가서 지역을 검색하면 URL에 코드가 있습니다."
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr "일기예보"
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "설정"
 
-#: ../e_mod_main.c:1025
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "온도"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "풍속"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "습도"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "가시거리"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "기압"
 
-#: ../e_mod_main.c:1056
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "상승"
 
-#: ../e_mod_main.c:1058
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "하강"
 
-#: ../e_mod_main.c:1060
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "안정"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "일출 / 일몰"
 
-#: ../e_mod_main.c:1088
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "최고"
 
-#: ../e_mod_main.c:1099
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "최저"

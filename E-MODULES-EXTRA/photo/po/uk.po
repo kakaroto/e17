@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: photo.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-05 16:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:20+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,40 +13,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
-#: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
-#: ../src/module/e_mod_main.c:80 ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:53 ../src/module/e_mod_main.c:60
+#: ../src/module/e_mod_main.c:67 ../src/module/e_mod_main.c:74
+#: ../src/module/e_mod_main.c:81 ../src/module/e_mod_main.c:88
 msgid "Photo Module"
 msgstr "Світлина"
 
-#: ../src/module/e_mod_main.c:52
+#: ../src/module/e_mod_main.c:53
 msgid "E Canvas init failed !"
 msgstr "Не вдалось запустити полотно !"
 
-#: ../src/module/e_mod_main.c:59
+#: ../src/module/e_mod_main.c:60
 msgid "Theme init failed !"
 msgstr "Не вдалось запустити тему !"
 
-#: ../src/module/e_mod_main.c:66
+#: ../src/module/e_mod_main.c:67
 msgid "Config init failed"
 msgstr "Не вдалось запустити налаштування"
 
-#: ../src/module/e_mod_main.c:73
+#: ../src/module/e_mod_main.c:74
 msgid "Picture subsystem init failed"
 msgstr "Не вдалось запустити підсистему малюнків"
 
-#: ../src/module/e_mod_main.c:80
+#: ../src/module/e_mod_main.c:81
 msgid "Popup warn subsystem init failed"
 msgstr "Не вдалось запустити підсистему виринань застережень"
 
-#: ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:88
 msgid "Popup info subsystem init failed"
 msgstr "Не вдалось запустити підсистему виринань інформації"
 
-#: ../src/module/e_mod_main.c:180
+#: ../src/module/e_mod_main.c:181
 msgid "Photo"
 msgstr "Світлина"
 
@@ -73,8 +73,8 @@ msgid ""
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
 "<hilight>Світлина : налаштування понижені версією</hilight><br><br>Ваші "
-"налаштування світлини<br>понижені версією<br>Ваші налаштування вилучені<br>"
-"Вибачте за незручність<br><br>(%d ->%d)"
+"налаштування світлини<br>понижені версією<br>Ваші налаштування "
+"вилучені<br>Вибачте за незручність<br><br>(%d ->%d)"
 
 #: ../src/module/photo_config_dialog.c:64
 msgid "Photo Configuration"
@@ -383,8 +383,8 @@ msgid ""
 "anymore<br><br>"
 msgstr ""
 "<hilight>Тека %s не існує.</hilight><br><br>Ви можете змінити фототеку в "
-"головній панелі налаштувань<br>Вони можуть бути в jpeg або "
-"png форматі<br><br>Після імпорту, якщо ви можете вилучити ті файли і малюнки "
+"головній панелі налаштувань<br>Вони можуть бути в jpeg або png "
+"форматі<br><br>Після імпорту, якщо ви можете вилучити ті файли і малюнки "
 "буде можна <br>переглядати, але ви бажаєте встановлювати їх ще як тло<br><br>"
 
 #: ../src/module/photo_picture_local.c:593
@@ -400,10 +400,9 @@ msgid ""
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
 msgstr ""
-"<hilight>Створення ескізів</hilight><br><br>Деякі малюнки працюють <hilight>"
-"фоново</hilight>.<br>Це може зайняти трохи часу, але згодом завантаження "
-"буде швидшим і світлішим :)<br><br>Кожного разу малюнки, що не були "
-"завантажені в світлину раніше,<br>будуть завантажуватись.<br><br>Упродовж "
-"створення виринань ви не зможете бачити які-небудь малюнки в світлині<br>"
-"Сподіваюсь, я це виправлю :)"
-
+"<hilight>Створення ескізів</hilight><br><br>Деякі малюнки працюють "
+"<hilight>фоново</hilight>.<br>Це може зайняти трохи часу, але згодом "
+"завантаження буде швидшим і світлішим :)<br><br>Кожного разу малюнки, що не "
+"були завантажені в світлину раніше,<br>будуть завантажуватись."
+"<br><br>Упродовж створення виринань ви не зможете бачити які-небудь малюнки "
+"в світлині<br>Сподіваюсь, я це виправлю :)"

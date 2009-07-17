@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-08-12 17:55+0100\n"
 "Last-Translator: quaker <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -26,10 +26,10 @@ msgstr "Zobrazení"
 msgid "Show windows from all desktops"
 msgstr "Zobrazit okna ze všech ploch"
 
-#: ../e_mod_main.c:291 ../e_mod_main.c:676
+#: ../e_mod_main.c:294 ../e_mod_main.c:667
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: ../e_mod_main.c:668
+#: ../e_mod_main.c:656
 msgid "Configuration"
 msgstr "Konfigurace"

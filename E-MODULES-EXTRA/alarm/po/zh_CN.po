@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alarm e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-08 13:16+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-07-08 08:32+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
@@ -15,68 +15,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:155 ../e_mod_main.c:188
-msgid "Alarm"
-msgstr "闹钟"
-
-#: ../e_mod_config.c:226
-msgid "Alarm Options"
-msgstr "闹钟选项"
-
-#. 
-#. ob = e_widget_label_add(evas, D_("Time format"));
-#. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
-#. rg = e_widget_radio_group_new(&(cfdata->time_format));
-#. ob = e_widget_radio_add(evas, D_("12h"), TIME_FORMAT_12, rg);
-#. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-#. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
-#. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-#. 
-#: ../e_mod_config.c:238
-msgid "Show next alarm"
-msgstr "显示下一个闹钟"
-
-#: ../e_mod_config.c:244
-msgid "Alarms Defaults"
-msgstr "闹钟默认设置"
-
-#: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
-msgid "Open popup"
-msgstr "打开气泡"
-
-#: ../e_mod_config.c:256
-msgid "Auto-Remove alarms"
-msgstr "自动移除闹钟"
-
-#: ../e_mod_config_alarm.c:71
-msgid "Alarm Configuration : Setup an alarm"
-msgstr "闹钟设置：设定一个闹铃"
-
-#: ../e_mod_config_alarm.c:188
-msgid "Informations"
-msgstr "提示信息"
-
-#: ../e_mod_config_alarm.c:288
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
-"in the informations / schedule of your alarm"
-msgstr "<hilight>错误，没有添加此闹铃！</hilight><br><br>你提供的信息或者计划有误。"
-
-#: ../e_mod_config_alarm.c:293
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
-"a name for the alarm"
-msgstr "<hilight>错误，没有添加此闹铃！</hilight><br><br>你必须设定一个名称"
-
-#: ../e_mod_config_alarm.c:298
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
-"select at least one day in the week"
-msgstr "<hilight>错误，没有添加此闹铃！</hilight><br><br>你必须选择响铃的日子"
-
 #: ../e_mod_config.c:55
 msgid "Alarm Configuration"
 msgstr "闹钟配置"
+
+#: ../e_mod_config.c:155 ../e_mod_main.c:188
+msgid "Alarm"
+msgstr "闹钟"
 
 #: ../e_mod_config.c:157 ../e_mod_config_alarm.c:190
 msgid "Active"
@@ -98,9 +43,46 @@ msgstr "配置"
 msgid "Duplicate"
 msgstr "创建副本"
 
+#: ../e_mod_config.c:226
+msgid "Alarm Options"
+msgstr "闹钟选项"
+
+#.
+#. ob = e_widget_label_add(evas, D_("Time format"));
+#. e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
+#. rg = e_widget_radio_group_new(&(cfdata->time_format));
+#. ob = e_widget_radio_add(evas, D_("12h"), TIME_FORMAT_12, rg);
+#. e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+#. ob = e_widget_radio_add(evas, D_("24h"), TIME_FORMAT_24, rg);
+#. e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
+#.
+#: ../e_mod_config.c:238
+msgid "Show next alarm"
+msgstr "显示下一个闹钟"
+
+#: ../e_mod_config.c:244
+msgid "Alarms Defaults"
+msgstr "闹钟默认设置"
+
+#: ../e_mod_config.c:246 ../e_mod_config_alarm.c:404
+msgid "Open popup"
+msgstr "打开气泡"
+
 #: ../e_mod_config.c:249
 msgid "Run program"
 msgstr "运行程序"
+
+#: ../e_mod_config.c:256
+msgid "Auto-Remove alarms"
+msgstr "自动移除闹钟"
+
+#: ../e_mod_config_alarm.c:71
+msgid "Alarm Configuration : Setup an alarm"
+msgstr "闹钟设置：设定一个闹铃"
+
+#: ../e_mod_config_alarm.c:188
+msgid "Informations"
+msgstr "提示信息"
 
 #: ../e_mod_config_alarm.c:192
 msgid "Name"
@@ -172,6 +154,25 @@ msgstr "今日"
 msgid "Tomorrow"
 msgstr "明天"
 
+#: ../e_mod_config_alarm.c:288
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
+"in the informations / schedule of your alarm"
+msgstr ""
+"<hilight>错误，没有添加此闹铃！</hilight><br><br>你提供的信息或者计划有误。"
+
+#: ../e_mod_config_alarm.c:293
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
+"a name for the alarm"
+msgstr "<hilight>错误，没有添加此闹铃！</hilight><br><br>你必须设定一个名称"
+
+#: ../e_mod_config_alarm.c:298
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+"select at least one day in the week"
+msgstr "<hilight>错误，没有添加此闹铃！</hilight><br><br>你必须选择响铃的日子"
+
 #: ../e_mod_config_alarm.c:303
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
@@ -179,8 +180,8 @@ msgid ""
 "format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
 "month on 2 numbers<br>DD is the day on 2 numbers<br>"
 msgstr ""
-"<hilight>错误，提醒没有被添加！</hilight><br><br>你输入的日期格式有误<br><br>请按以下格式输入：br> "
-"年年年年/月月/日日<br>4位年<br>2位月<br>2位日<br>"
+"<hilight>错误，提醒没有被添加！</hilight><br><br>你输入的日期格式有误<br><br>"
+"请按以下格式输入：br> 年年年年/月月/日日<br>4位年<br>2位月<br>2位日<br>"
 
 #: ../e_mod_config_alarm.c:313
 msgid ""
@@ -239,7 +240,8 @@ msgid ""
 "the alarms<br>via the 'Active' check button on the<br>main Alarm "
 "configuration panel."
 msgstr ""
-"<hilight>提醒测试 成功！</hilight><br><br>请不要忘记开启提醒<br>操作方法：在主提醒配置面板里<br>选中“开启”选框。"
+"<hilight>提醒测试 成功！</hilight><br><br>请不要忘记开启提醒<br>操作方法：在"
+"主提醒配置面板里<br>选中“开启”选框。"
 
 #: ../e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -315,8 +317,8 @@ msgid ""
 "configuration of alarm module<br>has been upgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>提醒模块：配置已升级</hilight><br><br>你的提醒模块的配置<br>已升级<br>你的设置和提醒已被删除<br>很抱歉给您"
-"带来不便<br><br>(%d ->%d)"
+"<hilight>提醒模块：配置已升级</hilight><br><br>你的提醒模块的配置<br>已升级"
+"<br>你的设置和提醒已被删除<br>很抱歉给您带来不便<br><br>(%d ->%d)"
 
 #: ../e_mod_main.c:1061 ../e_mod_main.c:1075
 msgid "Alarm Module version "
@@ -329,5 +331,5 @@ msgid ""
 "configuration of Alarm module<br>has been downgraded<br>Your settings and "
 "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>提醒模块：配置已降级</hilight><br><br>你的提醒模块的配置<br>已降级<br>你的设置和提醒已被删除<br>很抱歉给您"
-"带来不便<br><br>(%d ->%d)"
+"<hilight>提醒模块：配置已降级</hilight><br><br>你的提醒模块的配置<br>已降级"
+"<br>你的设置和提醒已被删除<br>很抱歉给您带来不便<br><br>(%d ->%d)"

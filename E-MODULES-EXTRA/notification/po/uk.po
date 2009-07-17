@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: notification.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-05 19:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:19+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,22 +13,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
 msgstr "Налаштування"
 
-#: ../src/e_mod_main.c:118
+#: ../src/e_mod_main.c:121
 msgid "Notification Box"
 msgstr "Повідомлення"
 
-#: ../src/e_mod_main.c:203
+#: ../src/e_mod_main.c:206
 msgid "Enter Presentation Mode"
 msgstr "Увійти в презентаційний режим"
 
-#: ../src/e_mod_main.c:204
+#: ../src/e_mod_main.c:207
 msgid ""
 "Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, "
 "screen saver, lock and power saving will be disabled so you are not "
@@ -38,11 +38,11 @@ msgstr ""
 "режиму зберігач екрана, замикач і зберігач живлення будуть вимкнуті, щоб ви "
 "не змогли втрутитись."
 
-#: ../src/e_mod_main.c:210
+#: ../src/e_mod_main.c:213
 msgid "Exited Presentation Mode"
 msgstr "Покинути презентаційний режим"
 
-#: ../src/e_mod_main.c:211
+#: ../src/e_mod_main.c:214
 msgid ""
 "Presentation mode is over.<br>Now screen saver, lock and power saving "
 "settings will be restored."
@@ -50,11 +50,11 @@ msgstr ""
 "Презентаційний режим завершився.<br>Тепер налаштування зберігача екрана, "
 "замикача і зберігача живлення буде відновлено."
 
-#: ../src/e_mod_main.c:226
+#: ../src/e_mod_main.c:229
 msgid "Enter Offline Mode"
 msgstr "Увійти в автономний режим"
 
-#: ../src/e_mod_main.c:227
+#: ../src/e_mod_main.c:230
 msgid ""
 "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
 "that use network will stop polling remote services."
@@ -62,11 +62,11 @@ msgstr ""
 "Enlightenment є в <b>автономному</b> режимі.<br>Упродовж автономного режима, "
 "модулі, котрі використовують мережу, припинять свою роботу."
 
-#: ../src/e_mod_main.c:233
+#: ../src/e_mod_main.c:236
 msgid "Exited Offline Mode"
 msgstr "Покинути автономний режим"
 
-#: ../src/e_mod_main.c:234
+#: ../src/e_mod_main.c:237
 msgid ""
 "Now in <b>online</b> mode.<br>Now modules that use network will resume "
 "regular tasks."
@@ -75,19 +75,19 @@ msgstr ""
 "використовували мережу відновлять свою роботу."
 
 #. register config panel entry
-#: ../src/e_mod_main.c:291
+#: ../src/e_mod_main.c:294
 msgid "Extensions"
 msgstr "Розширення"
 
-#: ../src/e_mod_main.c:293
+#: ../src/e_mod_main.c:296
 msgid "Notification"
 msgstr "Повідомлення"
 
-#: ../src/e_mod_main.c:337 ../src/e_mod_main.c:355
+#: ../src/e_mod_main.c:340 ../src/e_mod_main.c:358
 msgid "Notification Configuration Updated"
 msgstr "Налаштування повідомлення оновлені"
 
-#: ../src/e_mod_main.c:338
+#: ../src/e_mod_main.c:341
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -99,13 +99,13 @@ msgid ""
 msgstr ""
 "Налаштування модуля повідомлення потребує оновлення даних. Ваші старі "
 "налаштування<br> витерлись і встановлено типові. Це<br> буде здійснюватись "
-"постійно під час розробки, тому не повідомляйте про цю<br>ваду. Це "
-"просто-напросто означає, що модуль потребує зміни даних<br>налаштувань до "
-"типових для залучення нових функцій, яких бракувало в старій версії. "
-"Встановлення до типових виправить,<br>це залучивши нові функції. Тепер ви "
-"можете налаштувати все на ваші<br> вподобання. Вибачте за незручності.<br>"
+"постійно під час розробки, тому не повідомляйте про цю<br>ваду. Це просто-"
+"напросто означає, що модуль потребує зміни даних<br>налаштувань до типових "
+"для залучення нових функцій, яких бракувало в старій версії. Встановлення до "
+"типових виправить,<br>це залучивши нові функції. Тепер ви можете налаштувати "
+"все на ваші<br> вподобання. Вибачте за незручності.<br>"
 
-#: ../src/e_mod_main.c:356
+#: ../src/e_mod_main.c:359
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -117,14 +117,14 @@ msgstr ""
 "Ваші налаштування модуля повідомлення — новіші ніж версія самого модуля. Це "
 "дуже<br>дивно. Цьому не слід траплятися, хіба що ви знизили версію<br>модуля "
 "або скопіювали налаштування звідкіллясь, де<br>є новіша версія модуля. Це "
-"недобре,<br>тому, для надійності роботи, налаштування будуть повернуті до<br>"
-"типових. Вибачте за незручність.<br>"
+"недобре,<br>тому, для надійності роботи, налаштування будуть повернуті "
+"до<br>типових. Вибачте за незручність.<br>"
 
-#: ../src/e_mod_main.c:390
+#: ../src/e_mod_main.c:393
 msgid "Error During DBus Init!"
 msgstr "Помилка при запуску DBus!"
 
-#: ../src/e_mod_main.c:391
+#: ../src/e_mod_main.c:394
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
@@ -223,4 +223,3 @@ msgstr "При натиснені фокусуватись на джерелі �
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
 msgstr "Рівні необхідності зберігання:"
-

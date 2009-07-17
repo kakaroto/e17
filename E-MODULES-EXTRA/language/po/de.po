@@ -1,0 +1,83 @@
+# German translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-03-31 05:49-0700\n"
+"PO-Revision-Date: 2009-06-04 20:58+0000\n"
+"Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Spracheinstellungen"
+
+#: ../src/module/e_mod_config.c:174 ../src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Verfügbare Sprachen"
+
+#: ../src/module/e_mod_config.c:182 ../src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Ausgewählte Sprachen"
+
+#: ../src/module/e_mod_config.c:198 ../src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Nach Oben"
+
+#: ../src/module/e_mod_config.c:203 ../src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Nach Unten"
+
+#: ../src/module/e_mod_config.c:214 ../src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Global"
+
+#: ../src/module/e_mod_config.c:217 ../src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Fenster"
+
+#: ../src/module/e_mod_config.c:220 ../src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Anwendung"
+
+#: ../src/module/e_mod_keybindings.c:6 ../src/module/e_mod_main.c:113
+msgid "Language"
+msgstr "Sprache"
+
+#: ../src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Zur nächsten Sprache wechseln"
+
+#: ../src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Zur vorherigen Sprache wechseln"
+
+#: ../src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr "Konfigurieren"
+
+#: ../src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr "Module konfigurieren"
+
+#: ../src/module/e_mod_config.c:211 ../src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Regeln zum Wechsel der Sprache"
+
+#: ../src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Tastaturmodell"
+
+#: ../src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Tastaturbelegung"
+
+#: ../src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr "Tastenkombinationen konfigurieren"

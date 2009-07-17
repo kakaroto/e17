@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alarm\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-03-20 23:35+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "Alarm Configuration"
 msgstr "アラームの設定"
 
-#: ../e_mod_config.c:155 ../e_mod_main.c:187
+#: ../e_mod_config.c:155 ../e_mod_main.c:188
 msgid "Alarm"
 msgstr "アラーム"
 
@@ -196,7 +196,7 @@ msgstr ""
 "<hilight>エラーのため、アラームは追加されません.</hilight>過去の日時が指定さ"
 "れています."
 
-#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
+#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:427
 msgid "Alarm Module Error"
 msgstr "アラームモジュールエラー"
 
@@ -263,63 +263,63 @@ msgstr "<hilight>アラームテスト失敗</hilight>"
 msgid "Alarm Module Test Report"
 msgstr "eveilモジュールテスト結果"
 
-#: ../e_mod_main.c:398
+#: ../e_mod_main.c:399
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>アラーム: %s</hilight><br><br>%s"
 
-#: ../e_mod_main.c:401
+#: ../e_mod_main.c:402
 msgid "Alarm Module Popup"
 msgstr "アラームモジュールポップアップ"
 
-#: ../e_mod_main.c:424
+#: ../e_mod_main.c:425
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
 "<hilight>失敗</hilight><br><br>指定されたプログラムが起動できませんでした."
 
-#: ../e_mod_main.c:658 ../e_mod_main.c:837
+#: ../e_mod_main.c:659 ../e_mod_main.c:838
 #, c-format
 msgid "Snooze %s"
 msgstr "スヌーズ %s"
 
-#: ../e_mod_main.c:662
+#: ../e_mod_main.c:663
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f 時間"
 
-#: ../e_mod_main.c:665
+#: ../e_mod_main.c:666
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f 分"
 
-#: ../e_mod_main.c:672
+#: ../e_mod_main.c:673
 msgid "Ok"
 msgstr ""
 
-#: ../e_mod_main.c:673
+#: ../e_mod_main.c:674
 msgid "Close"
 msgstr "閉じる"
 
-#: ../e_mod_main.c:845
+#: ../e_mod_main.c:846
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "スヌーズ: %.14s (%.2d:%.2d)"
 
-#: ../e_mod_main.c:859
+#: ../e_mod_main.c:860
 msgid "Snooze (No alarm to delay)"
 msgstr "スヌーズ (遅らせるアラーム無し)"
 
-#: ../e_mod_main.c:866
+#: ../e_mod_main.c:867
 msgid "Add an alarm"
 msgstr "アラームを追加する"
 
-#: ../e_mod_main.c:873
+#: ../e_mod_main.c:874
 msgid "Configuration"
 msgstr "設定"
 
-#: ../e_mod_main.c:1054
+#: ../e_mod_main.c:1055
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
@@ -330,11 +330,11 @@ msgstr ""
 "モジュールの設定が更新されました.<br>そのため設定内容とアラームは削除されまし"
 "た.<br>ご了承下さい.<br><br>(%d -> %d)"
 
-#: ../e_mod_main.c:1060 ../e_mod_main.c:1074
+#: ../e_mod_main.c:1061 ../e_mod_main.c:1075
 msgid "Alarm Module version "
 msgstr "アラームモジュールのバージョン "
 
-#: ../e_mod_main.c:1068
+#: ../e_mod_main.c:1069
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "

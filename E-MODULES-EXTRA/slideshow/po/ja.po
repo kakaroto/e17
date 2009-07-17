@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-03-20 16:14+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -65,11 +65,11 @@ msgstr "現在のデスクトップに壁紙を設定する"
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "現在のモニター(Xinerama対応の場合)に壁紙を設定する"
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:136
 msgid "Slideshow"
 msgstr ""
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:180
 msgid "Configuration"
 msgstr "設定"
 

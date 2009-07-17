@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: places.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-05 16:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:20+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,29 +13,64 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. create new config dialog
-#: ../src/e_mod_config.c:50
+#: ../src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Налаштування місцин"
 
 #. General frame
-#: ../src/e_mod_config.c:116
+#: ../src/e_mod_config.c:118
 msgid "General"
 msgstr "Загальні"
 
-#: ../src/e_mod_config.c:119
+#: ../src/e_mod_config.c:121
+msgid "Show in main menu"
+msgstr ""
+
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Змонтовувати том при вводі"
 
-#: ../src/e_mod_config.c:123
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Відкривати менеджера файлів при вводі"
 
-#: ../src/e_mod_config.c:127
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Використовувати звичайного менеджера файлів"
+
+#. Display frame
+#: ../src/e_mod_config.c:146
+msgid "Show in menu"
+msgstr ""
+
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
+msgid "Home"
+msgstr "Домівка"
+
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
+msgid "Desktop"
+msgstr "Стільниця"
+
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
+msgid "Trash"
+msgstr "Корзина"
+
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:233
+#: ../src/e_mod_places.c:427
+msgid "Filesystem"
+msgstr "Файлова система"
+
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
+msgid "Temp"
+msgstr "Тимчасові"
+
+#: ../src/e_mod_config.c:164
+msgid "Favorites"
+msgstr ""
 
 #. Display this Modules config info in the main Config Panel
 #: ../src/e_mod_main.c:75
@@ -46,33 +81,13 @@ msgstr "Файли"
 msgid "Places"
 msgstr "Місцини"
 
-#: ../src/e_mod_main.c:439
+#: ../src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Налаштування"
-
-#: ../src/e_mod_places.c:233 ../src/e_mod_places.c:427
-msgid "Filesystem"
-msgstr "Файлова система"
 
 #: ../src/e_mod_places.c:238
 msgid "No Name"
 msgstr "Без назви"
-
-#: ../src/e_mod_places.c:399
-msgid "Home"
-msgstr "Домівка"
-
-#: ../src/e_mod_places.c:408
-msgid "Desktop"
-msgstr "Стільниця"
-
-#: ../src/e_mod_places.c:418
-msgid "Trash"
-msgstr "Корзина"
-
-#: ../src/e_mod_places.c:436
-msgid "Temp"
-msgstr "Тимчасові"
 
 #: ../src/e_mod_places.c:692
 msgid "free of"
@@ -90,4 +105,3 @@ msgstr "демонтувати"
 #: ../src/e_mod_places.c:721
 msgid "eject"
 msgstr "вийняти"
-

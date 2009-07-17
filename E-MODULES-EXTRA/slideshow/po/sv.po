@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2006-07-28 14:54+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -65,11 +65,11 @@ msgstr ""
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr ""
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:136
 msgid "Slideshow"
 msgstr "Bildspel"
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:180
 msgid "Configuration"
 msgstr "Konfiguration"
 

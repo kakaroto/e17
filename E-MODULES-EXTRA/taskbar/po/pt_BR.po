@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-10 01:35+0000\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -26,10 +26,10 @@ msgstr "Exibição"
 msgid "Show windows from all desktops"
 msgstr "Mostrar janelas de todas as áreas de trabalho"
 
-#: ../e_mod_main.c:291 ../e_mod_main.c:676
+#: ../e_mod_main.c:294 ../e_mod_main.c:667
 msgid "Taskbar"
 msgstr "Barra de tarefas"
 
-#: ../e_mod_main.c:668
+#: ../e_mod_main.c:656
 msgid "Configuration"
 msgstr "Configuração"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-01 14:13+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: easylinux <easylinux@sachiel.eu>\n"
@@ -116,14 +116,14 @@ msgstr "Přeskočit seznam oken (%w)"
 msgid "Emu Configuration"
 msgstr "Emu konfigurace"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "Enlightenment Emu Module - error"
 msgstr "Enlightenment Emu modul - chyba"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "There is no emu."
 msgstr "Není zde žádný emu."
 
-#: ../src/modules/emu/e_mod_main.c:285
+#: ../src/modules/emu/e_mod_main.c:286
 msgid "Emu"
 msgstr "Emu"

@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: forecasts.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-19 08:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:14+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,7 +13,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../e_mod_config.c:42
 msgid "Forecasts Configuration"
@@ -69,55 +70,54 @@ msgstr "Щоб знайти код вашої місцевості, відвід
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, знайдіть вашу місцевість, і загляньте за посиланням"
 
-#: ../e_mod_main.c:256
+#: ../e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Прогноз погоди"
 
-#: ../e_mod_main.c:301
+#: ../e_mod_main.c:300
 msgid "Configuration"
 msgstr "Налаштування"
 
-#: ../e_mod_main.c:1031
+#: ../e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Прохолодний вітер"
 
-#: ../e_mod_main.c:1037
+#: ../e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Швидкий вітер"
 
-#: ../e_mod_main.c:1043
+#: ../e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Вологість"
 
-#: ../e_mod_main.c:1049
+#: ../e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Видимість"
 
-#: ../e_mod_main.c:1055
+#: ../e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Тиск"
 
-#: ../e_mod_main.c:1062
+#: ../e_mod_main.c:1061
 msgid "Rising"
 msgstr "Зростання"
 
-#: ../e_mod_main.c:1064
+#: ../e_mod_main.c:1063
 msgid "Falling"
 msgstr "Спадання"
 
-#: ../e_mod_main.c:1066
+#: ../e_mod_main.c:1065
 msgid "Steady"
 msgstr "Рівномірний"
 
-#: ../e_mod_main.c:1070
+#: ../e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Схід / Захід"
 
-#: ../e_mod_main.c:1094
+#: ../e_mod_main.c:1093
 msgid "High"
 msgstr "Високий"
 
-#: ../e_mod_main.c:1105
+#: ../e_mod_main.c:1104
 msgid "Low"
 msgstr "Низький"
-

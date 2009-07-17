@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-01-10 12:49+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
@@ -27,11 +27,11 @@ msgstr "Visa"
 msgid "Show windows from all desktops"
 msgstr "Visa fönster från alla skrivbord"
 
-#: ../e_mod_main.c:291 ../e_mod_main.c:676
+#: ../e_mod_main.c:294 ../e_mod_main.c:667
 msgid "Taskbar"
 msgstr "Aktivitetsfält"
 
-#: ../e_mod_main.c:668
+#: ../e_mod_main.c:656
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -50,5 +50,5 @@ msgstr "Konfiguration"
 #~ "apps."
 #~ msgstr ""
 #~ "Detta är Taskbar Iconified Application modulen för Enlightenment.<br>Den "
-#~ "kommer att innehålla alla program och visa aktuellt skrivbord<br> eller alla "
-#~ "program som är igång."
+#~ "kommer att innehålla alla program och visa aktuellt skrivbord<br> eller "
+#~ "alla program som är igång."

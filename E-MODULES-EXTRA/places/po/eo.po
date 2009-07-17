@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: places 0.1.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-10 22:45+0200\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-05-16 19:02+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -17,75 +17,92 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 0.3\n"
 
-#: src/e_mod_config.c:50
+#. create new config dialog
+#: ../src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Agordo de Portiloj"
 
-#: src/e_mod_config.c:116
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
 msgstr "Ĝenerala"
 
-#: src/e_mod_config.c:119
+#: ../src/e_mod_config.c:121
+msgid "Show in main menu"
+msgstr ""
+
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Surmeti portilon post enigo"
 
-#: src/e_mod_config.c:123
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Lanĉi dosieradministrilon post enigo"
 
-#: src/e_mod_config.c:127
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Uzi propran dosieradministrilon"
 
-#: src/e_mod_main.c:75
-msgid "Files"
-msgstr "Dosieroj"
+#. Display frame
+#: ../src/e_mod_config.c:146
+msgid "Show in menu"
+msgstr ""
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:499
-msgid "Places"
-msgstr "Portiloj"
-
-#: src/e_mod_main.c:439
-msgid "Configuration"
-msgstr "Agordo"
-
-#: src/e_mod_places.c:233 src/e_mod_places.c:427
-msgid "Filesystem"
-msgstr "Dosiersistemo"
-
-#: src/e_mod_places.c:238
-msgid "No Name"
-msgstr "Neniu nomo"
-
-#: src/e_mod_places.c:399
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
 msgid "Home"
 msgstr "Hejmo"
 
-#: src/e_mod_places.c:408
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
 msgid "Desktop"
 msgstr "Labortablo"
 
-#: src/e_mod_places.c:418
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
 msgid "Trash"
 msgstr "Rubujo"
 
-#: src/e_mod_places.c:436
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:233
+#: ../src/e_mod_places.c:427
+msgid "Filesystem"
+msgstr "Dosiersistemo"
+
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
 msgid "Temp"
 msgstr "provizora"
 
-#: src/e_mod_places.c:692
+#: ../src/e_mod_config.c:164
+msgid "Favorites"
+msgstr ""
+
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:75
+msgid "Files"
+msgstr "Dosieroj"
+
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
+msgid "Places"
+msgstr "Portiloj"
+
+#: ../src/e_mod_main.c:443
+msgid "Configuration"
+msgstr "Agordo"
+
+#: ../src/e_mod_places.c:238
+msgid "No Name"
+msgstr "Neniu nomo"
+
+#: ../src/e_mod_places.c:692
 msgid "free of"
 msgstr "libera je"
 
-#: src/e_mod_places.c:698
+#: ../src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s ne surmetita"
 
-#: src/e_mod_places.c:715
+#: ../src/e_mod_places.c:715
 msgid "unmount"
 msgstr "surmeti"
 
-#: src/e_mod_places.c:721
+#: ../src/e_mod_places.c:721
 msgid "eject"
 msgstr "elĵeti"

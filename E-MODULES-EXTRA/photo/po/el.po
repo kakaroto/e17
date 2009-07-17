@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-12-07 16:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -19,37 +19,37 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../src/module/e_mod_main.c:52 ../src/module/e_mod_main.c:59
-#: ../src/module/e_mod_main.c:66 ../src/module/e_mod_main.c:73
-#: ../src/module/e_mod_main.c:80 ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:53 ../src/module/e_mod_main.c:60
+#: ../src/module/e_mod_main.c:67 ../src/module/e_mod_main.c:74
+#: ../src/module/e_mod_main.c:81 ../src/module/e_mod_main.c:88
 msgid "Photo Module"
 msgstr "Άρθρωμα Photo"
 
-#: ../src/module/e_mod_main.c:52
+#: ../src/module/e_mod_main.c:53
 msgid "E Canvas init failed !"
 msgstr "Αρχικοποίηση Καμβά E απέτυχε!"
 
-#: ../src/module/e_mod_main.c:59
+#: ../src/module/e_mod_main.c:60
 msgid "Theme init failed !"
 msgstr "Αρχικοποίηση Θέματος απέτυχε!"
 
-#: ../src/module/e_mod_main.c:66
+#: ../src/module/e_mod_main.c:67
 msgid "Config init failed"
 msgstr "Αρχικοποίηση Ρύθμισης απέτυχε!"
 
-#: ../src/module/e_mod_main.c:73
+#: ../src/module/e_mod_main.c:74
 msgid "Picture subsystem init failed"
 msgstr "Αρχικοποίηση υπο-συστήματος εικόνας απέτυχε!"
 
-#: ../src/module/e_mod_main.c:80
+#: ../src/module/e_mod_main.c:81
 msgid "Popup warn subsystem init failed"
 msgstr "Αρχικοποίηση υπο-συστήματος ειδοποιήσεων απέτυχε!"
 
-#: ../src/module/e_mod_main.c:87
+#: ../src/module/e_mod_main.c:88
 msgid "Popup info subsystem init failed"
 msgstr "Αρχικοποίηση υπο-συστήματος πληροφοριών απέτυχε!"
 
-#: ../src/module/e_mod_main.c:180
+#: ../src/module/e_mod_main.c:181
 msgid "Photo"
 msgstr "Photo"
 
@@ -384,4 +384,3 @@ msgid ""
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
 msgstr ""
-

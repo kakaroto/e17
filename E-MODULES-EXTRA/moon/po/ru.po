@@ -1,0 +1,91 @@
+# Russian translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"PO-Revision-Date: 2009-04-17 18:54+0000\n"
+"Last-Translator: Roman Azarenko aka BasicXP <x12ozmouse@ya.ru>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_config.c:101
+msgid "Moon Configuration"
+msgstr "Конфигурация модуля \"Луна\""
+
+#: ../src/e_mod_config.c:157
+msgid "Display Settings"
+msgstr "Настройки отображения"
+
+#: ../src/e_mod_config.c:158
+msgid "Animated Clouds"
+msgstr "Анимированные облака"
+
+#: ../src/e_mod_config.c:162
+msgid "Moon Phase Value"
+msgstr "Значение фазы луны"
+
+#: ../src/e_mod_config.c:164
+msgid "Show always"
+msgstr "Всегда показывать"
+
+#: ../src/e_mod_config.c:166
+msgid "Show on mouse over"
+msgstr "Показывать при нахождении мыши над"
+
+#: ../src/e_mod_config.c:168
+msgid "Never show"
+msgstr "Никогда не показывать"
+
+#: ../src/e_mod_config.c:172
+msgid "Description"
+msgstr "Описание"
+
+#: ../src/e_mod_config.c:175
+msgid "Numerical"
+msgstr "Числовой"
+
+#: ../src/e_mod_main.c:207
+msgid "Moon"
+msgstr "Луна"
+
+#: ../src/e_mod_main.c:247
+msgid "Configuration"
+msgstr "Параметры"
+
+#: ../src/e_mod_main.c:491
+msgid "New Moon"
+msgstr "Новолуние"
+
+#: ../src/e_mod_main.c:493
+msgid "Waxing Crescent"
+msgstr "Полумесяц (в сторону полнолуния)"
+
+#: ../src/e_mod_main.c:495
+msgid "First Quarter"
+msgstr "Первая четверть"
+
+#: ../src/e_mod_main.c:497
+msgid "Waxing Gibbous"
+msgstr "Между полнолунием и первой четвертью"
+
+#: ../src/e_mod_main.c:499
+msgid "Full Moon"
+msgstr "Полнолуние"
+
+#: ../src/e_mod_main.c:501
+msgid "Waning Gibbous"
+msgstr "Между полнолунием и последней четвертью"
+
+#: ../src/e_mod_main.c:503
+msgid "Last Quarter"
+msgstr "Последняя четверть"
+
+#: ../src/e_mod_main.c:505
+msgid "Waning Crescent"
+msgstr "Полумесяц (в сторону новолуния)"

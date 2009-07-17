@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-29 23:45+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -63,10 +63,10 @@ msgstr "הגדר רקע עבור הצג הנוכחי"
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "הגדר רקע עבור הצג הנוכחי (תמיכה ב־Xinerama)"
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:136
 msgid "Slideshow"
 msgstr "מצגת"
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:180
 msgid "Configuration"
 msgstr "תצורה"

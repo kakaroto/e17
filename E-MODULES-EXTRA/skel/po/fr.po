@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Skeleton module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-04-11 17:57+0400\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-24 10:55+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,19 +15,20 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: src/e_mod_config.c:39
+#. create new config dialog
+#: ../src/e_mod_config.c:39
 msgid "Skeleton Module"
 msgstr "Module Squelette"
 
-#: src/e_mod_config.c:79
+#: ../src/e_mod_config.c:79
 msgid "General"
 msgstr "Paramètres généraux"
 
-#: src/e_mod_config.c:81
+#: ../src/e_mod_config.c:81
 msgid "Use Switch 1"
 msgstr "Utiliser Switch 1"
 
-#: src/e_mod_main.c:107
+#: ../src/e_mod_main.c:107
 msgid ""
 "Skeleton Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -45,7 +46,7 @@ msgstr ""
 "niveau pour être à nouveau fonctionnel.<br>Vous pouvez maintenant tout "
 "reconfigurer selon votre goût.<br>Désolé pour la gêne occasionnée.<br>"
 
-#: src/e_mod_main.c:127
+#: ../src/e_mod_main.c:127
 msgid ""
 "Your Skeleton Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -60,14 +61,14 @@ msgstr ""
 "était en cours. Ce n'est pas bon et, par<br>mesure de précaution, votre "
 "configuration a été<br>remise à zéro. Désolé pour le désagrément.<br>"
 
-#: src/e_mod_main.c:294
+#: ../src/e_mod_main.c:294
 msgid "Skeleton"
 msgstr "Squelette"
 
-#: src/e_mod_main.c:377
+#: ../src/e_mod_main.c:377
 msgid "Skeleton Configuration Updated"
 msgstr "Configuration de Squelette à jour"
 
-#: src/e_mod_main.c:434
+#: ../src/e_mod_main.c:434
 msgid "Configuration"
 msgstr "Configuration"

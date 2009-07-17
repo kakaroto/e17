@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-25 11:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -65,11 +65,10 @@ msgstr "Ορισμός ταπετσαρίας στην τρέχουσα οθόν
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Ορισμός ταπετσαρίας στο τρέχον μόνιτορ (υποστήριξη Xinerama)"
 
-#: ../e_mod_main.c:140
+#: ../e_mod_main.c:136
 msgid "Slideshow"
 msgstr "Προβολή Σλάιντ"
 
-#: ../e_mod_main.c:184
+#: ../e_mod_main.c:180
 msgid "Configuration"
 msgstr "Ρύθμιση"
-

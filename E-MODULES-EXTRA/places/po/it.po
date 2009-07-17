@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-12 19:11+0200\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-07 12:49+0200\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
@@ -14,87 +14,92 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:51
+#. create new config dialog
+#: ../src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Configurazione di Places"
 
-#: src/e_mod_config.c:118
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr "Mostra nel menù principale"
 
-#: src/e_mod_config.c:125
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Monta i dispositivi collegati"
 
-#: src/e_mod_config.c:129
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Apri i dispositivi collegati"
 
-#: src/e_mod_config.c:133
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Usa filemanager personalizzato"
 
-#: src/e_mod_config.c:146
+#. Display frame
+#: ../src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr "Mostra nel menù"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:399
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
 msgid "Home"
 msgstr "Home"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:408
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
 msgid "Desktop"
 msgstr "Desktop"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:418
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
 msgid "Trash"
 msgstr "Cestino"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:233 src/e_mod_places.c:427
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:233
+#: ../src/e_mod_places.c:427
 msgid "Filesystem"
 msgstr "Filesystem"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:436
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
 msgid "Temp"
 msgstr "Temporanei"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Favorites"
 msgstr "Preferiti"
 
-#: src/e_mod_main.c:75
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:75
 msgid "Files"
 msgstr "File"
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:499
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
 msgid "Places"
 msgstr "Risorse"
 
-#: src/e_mod_main.c:443
+#: ../src/e_mod_main.c:443
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_places.c:238
+#: ../src/e_mod_places.c:238
 msgid "No Name"
 msgstr "Senza nome"
 
-#: src/e_mod_places.c:692
+#: ../src/e_mod_places.c:692
 msgid "free of"
 msgstr "liberi di"
 
-#: src/e_mod_places.c:698
+#: ../src/e_mod_places.c:698
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s non è montato"
 
-#: src/e_mod_places.c:715
+#: ../src/e_mod_places.c:715
 msgid "unmount"
 msgstr "smonta"
 
-#: src/e_mod_places.c:721
+#: ../src/e_mod_places.c:721
 msgid "eject"
 msgstr "espelli"

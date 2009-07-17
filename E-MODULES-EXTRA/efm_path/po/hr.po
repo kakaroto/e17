@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-02-12 04:37+0000\n"
 "Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -17,10 +17,10 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-02-23 09:13+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/e_mod_main.c:68
+#: ../src/e_mod_main.c:75
 msgid "Location:"
 msgstr "Lokacija:"
 
-#: ../src/e_mod_main.c:137
+#: ../src/e_mod_main.c:146
 msgid "EFM Path"
 msgstr "EFM Put"

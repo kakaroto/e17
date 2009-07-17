@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: news.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-18 12:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-06-08 00:18+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,8 +13,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 "
-"&& (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/module/e_mod_main.c:52
 msgid "Config init failed"
@@ -59,8 +59,8 @@ msgid ""
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
 "<hilight>Новини : налаштування пониження версії</hilight><br><br>Ваші "
-"налаштуванння новин<br>були понижені версією<br>Ваші налаштування вилучені<br>"
-"Вибачте за незручності<br><br>(%d ->%d)"
+"налаштуванння новин<br>були понижені версією<br>Ваші налаштування "
+"вилучені<br>Вибачте за незручності<br><br>(%d ->%d)"
 
 #: ../src/module/news_config_dialog.c:90
 msgid "News Main Configuration"
@@ -319,8 +319,8 @@ msgid ""
 "There are <hilight>feeds</hilight> in this category.<br>You have to "
 "<hilight>remove them first</hilight>"
 msgstr ""
-"У цій категорії є <hilight>новинтарі</hilight>.<br>Спочатку ви повинні <hilight>"
-"вилучити їх</hilight>"
+"У цій категорії є <hilight>новинтарі</hilight>.<br>Спочатку ви повинні "
+"<hilight>вилучити їх</hilight>"
 
 #: ../src/module/news_config_dialog_feeds.c:754
 #: ../src/module/news_config_dialog_feeds.c:779
@@ -426,9 +426,9 @@ msgid ""
 "hilight><br>in the %s category<br><br>Its not possible to have feeds with "
 "the same name<br>in one category."
 msgstr ""
-"Новинтар з <hilight>назвою</hilight> %s <hilight>вже існує</"
-"hilight><br>в категорії %s<br><br>Неможливо мати два новинтарі з однаковою "
-"назвою<br>в одній категорії."
+"Новинтар з <hilight>назвою</hilight> %s <hilight>вже існує</hilight><br>в "
+"категорії %s<br><br>Неможливо мати два новинтарі з однаковою назвою<br>в "
+"одній категорії."
 
 #: ../src/module/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -501,4 +501,3 @@ msgstr "Новинтарі в цьому ґаджеті"
 #: ../src/module/news_viewer.c:442
 msgid "Articles in selected feed"
 msgstr "Статті у вибраному новинтарі"
-

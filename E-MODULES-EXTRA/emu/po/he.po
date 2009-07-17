@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-30 00:09+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -116,14 +116,14 @@ msgstr "דילוג על רשימת החלונות (%w)"
 msgid "Emu Configuration"
 msgstr "תצורת Emu"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "Enlightenment Emu Module - error"
 msgstr "מודול Emu ל־Enlightenment - שגיאה"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "There is no emu."
 msgstr "אין emu."
 
-#: ../src/modules/emu/e_mod_main.c:285
+#: ../src/modules/emu/e_mod_main.c:286
 msgid "Emu"
 msgstr "Emu"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2008-11-29 21:05+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "Alarm Configuration"
 msgstr "תצורת התזכורות"
 
-#: ../e_mod_config.c:155 ../e_mod_main.c:187
+#: ../e_mod_config.c:155 ../e_mod_main.c:188
 msgid "Alarm"
 msgstr "תזכורת"
 
@@ -196,7 +196,7 @@ msgid ""
 msgstr ""
 "<hilight>שגיאה, התזכורת לא נוספה !</hilight><br><br>התאריך שהזנת כבר חלף"
 
-#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:426
+#: ../e_mod_config_alarm.c:317 ../e_mod_main.c:427
 msgid "Alarm Module Error"
 msgstr "שגיאה במודול התזכורות"
 
@@ -262,63 +262,63 @@ msgstr "<hilight>התזכורת הנסיונית נכשלה !</hilight>"
 msgid "Alarm Module Test Report"
 msgstr "רישום נסיונות מודול התזכורות"
 
-#: ../e_mod_main.c:398
+#: ../e_mod_main.c:399
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>תזכורת : %s</hilight><br><br>%s"
 
-#: ../e_mod_main.c:401
+#: ../e_mod_main.c:402
 msgid "Alarm Module Popup"
 msgstr "חלונית מוקפצת של מודול התזכורות"
 
-#: ../e_mod_main.c:424
+#: ../e_mod_main.c:425
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
 "<hilight>נכשלה !</hilight><br><br>התזכורת לא הצליחה להפעיל את התוכנה שציינת"
 
-#: ../e_mod_main.c:658 ../e_mod_main.c:837
+#: ../e_mod_main.c:659 ../e_mod_main.c:838
 #, c-format
 msgid "Snooze %s"
 msgstr "השהיית %s"
 
-#: ../e_mod_main.c:662
+#: ../e_mod_main.c:663
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f שעות"
 
-#: ../e_mod_main.c:665
+#: ../e_mod_main.c:666
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f דקות"
 
-#: ../e_mod_main.c:672
+#: ../e_mod_main.c:673
 msgid "Ok"
 msgstr "אישור"
 
-#: ../e_mod_main.c:673
+#: ../e_mod_main.c:674
 msgid "Close"
 msgstr "סגור"
 
-#: ../e_mod_main.c:845
+#: ../e_mod_main.c:846
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "השהיית %.14s מתוך %.2d:%.2d"
 
-#: ../e_mod_main.c:859
+#: ../e_mod_main.c:860
 msgid "Snooze (No alarm to delay)"
 msgstr "השהייה (אין תזכורות להשהייה)"
 
-#: ../e_mod_main.c:866
+#: ../e_mod_main.c:867
 msgid "Add an alarm"
 msgstr "הוסף תזכורת"
 
-#: ../e_mod_main.c:873
+#: ../e_mod_main.c:874
 msgid "Configuration"
 msgstr "תצורה"
 
-#: ../e_mod_main.c:1054
+#: ../e_mod_main.c:1055
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
@@ -329,11 +329,11 @@ msgstr ""
 "התזכורות שלך<br>שודרגה<br>ההגדרות והתזכורות שלך הוסרו<br>סליחה על אי "
 "הנעימות<br><br>(%d -> %d)"
 
-#: ../e_mod_main.c:1060 ../e_mod_main.c:1074
+#: ../e_mod_main.c:1061 ../e_mod_main.c:1075
 msgid "Alarm Module version "
 msgstr "מודול התזכורות גירסה "
 
-#: ../e_mod_main.c:1068
+#: ../e_mod_main.c:1069
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "

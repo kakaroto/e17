@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-23 18:46+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-07-17 15:33+0800\n"
 "PO-Revision-Date: 2009-04-11 14:13+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -118,14 +118,14 @@ msgstr "Saltar lista de la ventana (%w)"
 msgid "Emu Configuration"
 msgstr "Configuración de Emu"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "Enlightenment Emu Module - error"
 msgstr "Error - módulo Emu de Enlightenement"
 
-#: ../src/modules/emu/e_mod_main.c:211
+#: ../src/modules/emu/e_mod_main.c:212
 msgid "There is no emu."
 msgstr "No hay emu."
 
-#: ../src/modules/emu/e_mod_main.c:285
+#: ../src/modules/emu/e_mod_main.c:286
 msgid "Emu"
 msgstr "Emu"
