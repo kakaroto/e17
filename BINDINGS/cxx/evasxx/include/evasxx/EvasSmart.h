@@ -18,7 +18,7 @@ namespace efl {
 struct CustomEventWrap
 {
   EvasSmart *es;
-  sigc::signal <void, void*, Evas_Object*, void*> *customSignal; // TODO: C++ style!
+  sigc::signal <void, Evas_Object*, void*> *customSignal; // TODO: C++ style!
   string event;
 };
 
@@ -97,7 +97,7 @@ public:
   
   void delEventSignal (const std::string &event);
   
-  sigc::signal <void, void*, Evas_Object*, void*> *getEventSignal (const std::string &event);
+  sigc::signal <void, Evas_Object*, void*> *getEventSignal (const std::string &event);
   
   void callEventSignal (const std::string &event, void *event_info);
   
@@ -142,8 +142,6 @@ public:
   
   /*!
    * Call user provided calculate() and unset need_calculate.
-   *
-   * @return if flag is set or not.
    */
   void calculate ();
   
@@ -157,6 +155,8 @@ protected:
 private:
   Evas_Smart *getEsmart( const std::string &name );
   Evas_Object *newEsmart( EvasCanvas &canvas, const std::string &name );
+
+  static void wrapCustomEvent (void *data, Evas_Object *obj, void *event_info);
   
   static void wrap_add(Evas_Object *o);
   static void wrap_del(Evas_Object *o);
