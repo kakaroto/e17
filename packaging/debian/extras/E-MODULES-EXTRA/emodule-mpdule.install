@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/mpdule/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/mpdule/*.edj
+debian/tmp/usr/lib/enlightenment/modules/mpdule/*/*.so

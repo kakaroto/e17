@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/systray/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/systray/*.edj
+debian/tmp/usr/lib/enlightenment/modules/systray/*/*.so

@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/net/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/net/*.edj
+debian/tmp/usr/lib/enlightenment/modules/net/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/net/locale/*

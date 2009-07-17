@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/forecasts/*.edj
+debian/tmp/usr/lib/enlightenment/modules/forecasts/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/forecasts/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/forecasts/locale/*
