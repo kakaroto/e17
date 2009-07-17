@@ -1,0 +1,33 @@
+From 9f7c10add32cf927df6bb48a61b744dc681b8549 Mon Sep 17 00:00:00 2001
+From: Albin Tonnerre <albin.tonnerre@gmail.com>
+Date: Fri, 3 Jul 2009 18:42:35 +0200
+Subject: [PATCH 1/2] patch1
+
+---
+ configure.ac |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index e3178e7..9a93553 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -10,6 +10,7 @@ AC_CANONICAL_HOST
+ AC_ISC_POSIX
+ 
+ AM_INIT_AUTOMAKE(1.6 dist-bzip2)
++AM_MAINTAINER_MODE([enabled])
+ AM_CONFIG_HEADER(config.h)
+ 
+ AC_LIBTOOL_WIN32_DLL
+@@ -29,7 +30,7 @@ case "$host_os" in
+    mingw32ce* | cegcc*)
+       ;;
+    *)
+-      release_info="-release $release"
++      release_info=""
+       ;;
+ esac
+ AC_SUBST(release_info)
+-- 
+1.6.3.1
+

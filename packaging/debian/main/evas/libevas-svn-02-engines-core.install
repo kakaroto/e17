@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/evas/modules/engines/buffer/*/module.so
+debian/tmp/usr/lib/evas/modules/engines/software_generic/*/module.so
