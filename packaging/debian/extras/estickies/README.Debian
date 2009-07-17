@@ -1,0 +1,6 @@
+What is Estickies?
+==================
+
+Estickies is a sticky notes application that uses Etk. It uses Etk's runtime
+theming support to change the look and feel of the windows and buttons.
+
