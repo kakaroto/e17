@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = default.edc colors.edc
+EXTRA_DIST = blingbling.edc colors.edc
 SUBDIRS = fonts \
 	  images \
 	  macros \
@@ -8,14 +8,14 @@ SUBDIRS = fonts \
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \
--id $(top_srcdir)/data/themes/default/images \
--fd $(top_srcdir)/data/themes/default/fonts
+-id $(top_srcdir)/data/themes/blingbling/images \
+-fd $(top_srcdir)/data/themes/blingbling/fonts
 
 filesdir = $(pkgdatadir)/themes
-files_DATA = default.edj
+files_DATA = blingbling.edj
 
 THEME_DEP = \
-default.edc \
+blingbling.edc \
 colors.edc \
 widgets/button.edc \
 widgets/check_button.edc \
@@ -41,10 +41,10 @@ widgets/tree.edc \
 widgets/label.edc \
 widgets/windows.edc
 
-default.edj: Makefile $(THEME_DEP)
+blingbling.edj: Makefile $(THEME_DEP)
 	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/themes/default/default.edc \
-	$(top_builddir)/data/themes/default/default.edj
+	$(top_srcdir)/data/themes/blingbling/blingbling.edc \
+	$(top_builddir)/data/themes/blingbling/blingbling.edj
 
 clean-local:
 	rm -f *.edj
