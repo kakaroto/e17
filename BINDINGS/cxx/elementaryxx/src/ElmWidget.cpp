@@ -8,14 +8,9 @@ using namespace std;
 
 namespace efl {
 
-ElmWidget::ElmWidget ()
-{
+ElmWidget::ElmWidget () {}
 
-}
-
-ElmWidget::~ElmWidget ()
-{
-}
+ElmWidget::~ElmWidget () {}  
 
 void ElmWidget::elmInit ()
 {
@@ -24,10 +19,18 @@ void ElmWidget::elmInit ()
   signalHandleFree.connect (sigc::mem_fun (this, &ElmWidget::freeSignalHandler));
 }
 
+void ElmWidget::destroy ()
+{
+  evas_object_del (o);
+
+  // do a suicide as the delete operator isn't public available
+  // the reason is that the C design below is a suicide design :-(
+  delete (this);
+}
+
 void ElmWidget::freeSignalHandler ()
 {
   //cout << "freeSignalHandler()" << endl;
-  mFree = false; // don't delete the C object. In this case it's yet deleted.
   delete (this);
   // !!!ATTENTION!!!
   // suicide for a C++ object is dangerous, but allowed

@@ -15,13 +15,7 @@ ElmTable::ElmTable (EvasObject &parent)
   elmInit ();
 }
 
-ElmTable::~ElmTable ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmTable::~ElmTable () {}
 
 ElmTable *ElmTable::factory (EvasObject &parent)
 {

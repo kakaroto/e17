@@ -15,13 +15,7 @@ ElmToggle::ElmToggle (EvasObject &parent)
   elmInit ();
 }
 
-ElmToggle::~ElmToggle ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmToggle::~ElmToggle () {}
 
 ElmToggle *ElmToggle::factory (EvasObject &parent)
 {

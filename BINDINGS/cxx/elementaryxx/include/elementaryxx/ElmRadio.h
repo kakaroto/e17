@@ -18,9 +18,7 @@ namespace efl {
  */
 class ElmRadio : public ElmWidget
 {
-public:
-  virtual ~ElmRadio ();
-  
+public:  
   static ElmRadio *factory (EvasObject &parent);
 
   void setLabel (const std::string &label);
@@ -39,6 +37,7 @@ private:
   ElmRadio (); // forbid standard constructor
   ElmRadio (const ElmRadio&); // forbid copy constructor
   ElmRadio (EvasObject &parent); // private construction -> use factory ()
+  ~ElmRadio (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 #if 0

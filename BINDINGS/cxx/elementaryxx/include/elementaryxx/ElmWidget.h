@@ -14,15 +14,18 @@ namespace efl {
 class ElmWidget : public EvasSmart
 {
 public:
-  virtual ~ElmWidget ();
 
 protected:
   ElmWidget (); // allow only construction for child classes
+  virtual ~ElmWidget (); // forbid direct delete -> use destroy()
   
   void elmInit ();
+
+  void destroy ();
   
 private:
   ElmWidget (const ElmWidget&); // forbid copy constructor
+
   
   void freeSignalHandler ();
 };

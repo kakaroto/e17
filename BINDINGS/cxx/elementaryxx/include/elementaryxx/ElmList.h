@@ -20,9 +20,7 @@ namespace efl {
  */
 class ElmList : public ElmWidget
 {
-public:
-  virtual ~ElmList ();
-  
+public:  
   static ElmList *factory (EvasObject &parent);
 
   void clear ();
@@ -49,6 +47,7 @@ private:
   ElmList (); // forbid standard constructor
   ElmList (const ElmList&); // forbid copy constructor
   ElmList (EvasObject &parent); // private construction -> use factory ()
+  ~ElmList (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 #if 0

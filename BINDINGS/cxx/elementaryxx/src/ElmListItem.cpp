@@ -13,10 +13,7 @@ ElmListItem::ElmListItem ()
 
 }
 
-ElmListItem::~ElmListItem ()
-{
-  // delete?
-}
+ElmListItem::~ElmListItem () {}
 
 ElmListItem *ElmListItem::factory ()
 {

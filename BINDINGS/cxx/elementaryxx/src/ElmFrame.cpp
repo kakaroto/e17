@@ -15,13 +15,7 @@ ElmFrame::ElmFrame (EvasObject &parent)
   elmInit ();
 }
 
-ElmFrame::~ElmFrame ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmFrame::~ElmFrame () {}
 
 ElmFrame *ElmFrame::factory (EvasObject &parent)
 {

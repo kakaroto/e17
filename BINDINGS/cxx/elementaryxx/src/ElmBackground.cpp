@@ -15,13 +15,7 @@ ElmBackground::ElmBackground (EvasObject &parent)
   elmInit ();
 }
 
-ElmBackground::~ElmBackground ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmBackground::~ElmBackground () {}
 
 ElmBackground *ElmBackground::factory (EvasObject &parent)
 {

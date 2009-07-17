@@ -15,8 +15,6 @@ namespace efl {
 class ElmBackground : public ElmWidget
 {
 public:
-  virtual ~ElmBackground ();
-
   static ElmBackground *factory (EvasObject &parent);
   
   void setFile (const std::string &file);
@@ -31,6 +29,7 @@ private:
   ElmBackground (); // forbid standard constructor
   ElmBackground (const ElmBackground&); // forbid copy constructor
   ElmBackground (EvasObject &parent); // private construction -> use factory ()
+  ~ElmBackground (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

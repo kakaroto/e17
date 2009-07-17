@@ -15,10 +15,7 @@ ElmBubble::ElmBubble (EvasObject &parent)
   elmInit ();
 }
 
-ElmBubble::~ElmBubble ()
-{
-  evas_object_del (o);
-}
+ElmBubble::~ElmBubble () {}
 
 ElmBubble *ElmBubble::factory (EvasObject &parent)
 {

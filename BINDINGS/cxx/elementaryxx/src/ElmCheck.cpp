@@ -15,13 +15,7 @@ ElmCheck::ElmCheck (EvasObject &parent)
   elmInit ();
 }
 
-ElmCheck::~ElmCheck ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmCheck::~ElmCheck () {}
 
 ElmCheck *ElmCheck::factory (EvasObject &parent)
 {

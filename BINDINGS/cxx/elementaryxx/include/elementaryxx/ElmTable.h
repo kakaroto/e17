@@ -15,8 +15,6 @@ namespace efl {
 class ElmTable : public ElmWidget
 {
 public:
-  virtual ~ElmTable ();
-
   static ElmTable *factory (EvasObject &parent);
   
   void setHomogenous (bool homogenous);
@@ -27,6 +25,7 @@ private:
   ElmTable (); // forbid standard constructor
   ElmTable (const ElmTable&); // forbid copy constructor
   ElmTable (EvasObject &parent); // private construction -> use factory ()
+  ~ElmTable (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

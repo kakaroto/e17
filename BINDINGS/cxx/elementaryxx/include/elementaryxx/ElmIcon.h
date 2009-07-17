@@ -19,8 +19,6 @@ namespace efl {
 class ElmIcon : public ElmWidget
 {
 public:
-  virtual ~ElmIcon ();
-  
   static ElmIcon *factory (EvasObject &parent);
 
   bool setFile (const std::string &file);
@@ -43,6 +41,7 @@ private:
   ElmIcon (); // forbid standard constructor
   ElmIcon (const ElmIcon&); // forbid copy constructor
   ElmIcon (EvasObject &parent); // private construction -> use factory ()
+  ~ElmIcon (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

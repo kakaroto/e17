@@ -28,8 +28,6 @@ namespace efl {
 class ElmEntry : public ElmWidget
 {
 public:
-  virtual ~ElmEntry ();
-  
   static ElmEntry *factory (EvasObject &parent);
 
   void setSingleLine (bool singleLine);
@@ -60,6 +58,7 @@ private:
   ElmEntry (); // forbid standard constructor
   ElmEntry (const ElmEntry&); // forbid copy constructor
   ElmEntry (EvasObject &parent); // private construction -> use factory ()
+  ~ElmEntry (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

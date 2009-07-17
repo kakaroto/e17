@@ -19,8 +19,6 @@ namespace efl {
 class ElmClock : public ElmWidget
 {
 public:
-  virtual ~ElmClock ();
-  
   static ElmClock *factory (EvasObject &parent);
   
   void setTime (int hrs, int min, int sec); // TODO
@@ -37,6 +35,7 @@ private:
   ElmClock (); // forbid standard constructor
   ElmClock (const ElmClock&); // forbid copy constructor
   ElmClock (EvasObject &parent); // private construction -> use factory ()
+  ~ElmClock (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

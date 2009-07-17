@@ -23,8 +23,6 @@ namespace efl {
 class ElmScroller : public ElmWidget
 {
 public:
-  virtual ~ElmScroller ();
-  
   static ElmScroller *factory (EvasObject &parent);
 
   void setContent (EvasObject &child);
@@ -45,6 +43,7 @@ private:
   ElmScroller (); // forbid standard constructor
   ElmScroller (const ElmScroller&); // forbid copy constructor
   ElmScroller (EvasObject &parent); // private construction -> use factory ()
+  ~ElmScroller (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

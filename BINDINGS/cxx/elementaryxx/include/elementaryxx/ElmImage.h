@@ -19,8 +19,6 @@ namespace efl {
 class ElmImage : public ElmWidget
 {
 public:
-  virtual ~ElmImage ();
-  
   static ElmImage *factory (EvasObject &parent);
 
   bool setFile (const std::string &file, const std::string &group);
@@ -41,6 +39,7 @@ private:
   ElmImage (); // forbid standard constructor
   ElmImage (const ElmImage&); // forbid copy constructor
   ElmImage (EvasObject &parent); // private construction -> use factory ()
+  ~ElmImage (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

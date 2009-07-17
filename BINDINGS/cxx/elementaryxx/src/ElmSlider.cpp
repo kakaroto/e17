@@ -15,13 +15,7 @@ ElmSlider::ElmSlider (EvasObject &parent)
   elmInit ();
 }
 
-ElmSlider::~ElmSlider ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmSlider::~ElmSlider () {}
 
 ElmSlider *ElmSlider::factory (EvasObject &parent)
 {

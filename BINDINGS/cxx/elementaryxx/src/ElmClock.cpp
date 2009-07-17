@@ -15,13 +15,7 @@ ElmClock::ElmClock (EvasObject &parent)
   elmInit ();
 }
 
-ElmClock::~ElmClock ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmClock::~ElmClock () {}
 
 ElmClock *ElmClock::factory (EvasObject &parent)
 {

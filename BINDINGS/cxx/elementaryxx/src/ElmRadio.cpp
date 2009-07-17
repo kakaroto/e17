@@ -15,13 +15,7 @@ ElmRadio::ElmRadio (EvasObject &parent)
   elmInit ();
 }
 
-ElmRadio::~ElmRadio ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmRadio::~ElmRadio () {}
 
 ElmRadio *ElmRadio::factory (EvasObject &parent)
 {

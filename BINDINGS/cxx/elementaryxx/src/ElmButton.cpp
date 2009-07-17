@@ -15,13 +15,7 @@ ElmButton::ElmButton (EvasObject &parent)
   elmInit ();
 }
 
-ElmButton::~ElmButton ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmButton::~ElmButton () {}
 
 ElmButton *ElmButton::factory (EvasObject &parent)
 {

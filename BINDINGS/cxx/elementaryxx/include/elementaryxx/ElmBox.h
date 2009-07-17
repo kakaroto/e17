@@ -15,8 +15,6 @@ namespace efl {
 class ElmBox : public ElmWidget
 {
 public:
-  virtual ~ElmBox ();
-  
   static ElmBox *factory (EvasObject &parent);
 
   void setHorizontal (bool horizontal);
@@ -35,6 +33,7 @@ private:
   ElmBox (); // forbid standard constructor
   ElmBox (const ElmBox&); // forbid copy constructor
   ElmBox (EvasObject &parent); // private construction -> use factory ()
+  ~ElmBox (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

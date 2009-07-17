@@ -15,13 +15,7 @@ ElmImage::ElmImage (EvasObject &parent)
   elmInit ();
 }
 
-ElmImage::~ElmImage ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmImage::~ElmImage () {}
 
 ElmImage *ElmImage::factory (EvasObject &parent)
 {

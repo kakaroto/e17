@@ -32,13 +32,7 @@ ElmWindow::ElmWindow (EvasObject &parent, const std::string &name, Elm_Win_Type 
   elmInit ();
 }
 
-ElmWindow::~ElmWindow ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmWindow::~ElmWindow () {}
 
 void ElmWindow::setTitle (const std::string &title)
 {

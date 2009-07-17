@@ -18,9 +18,7 @@ namespace efl {
  */
 class ElmButton : public ElmWidget
 {
-public:
-  virtual ~ElmButton ();
-  
+public:  
   static ElmButton *factory (EvasObject &parent);
 
   void setLabel (const std::string &label);
@@ -39,6 +37,7 @@ private:
   ElmButton (); // forbid standard constructor
   ElmButton (const ElmButton&); // forbid copy constructor
   ElmButton (EvasObject &parent); // private construction -> use factory ()
+  ~ElmButton (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

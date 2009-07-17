@@ -19,8 +19,6 @@ namespace efl {
 class ElmCheck : public ElmWidget
 {
 public:
-  virtual ~ElmCheck ();
-  
   static ElmCheck *factory (EvasObject &parent);
 
   void setLabel (const std::string &label);
@@ -35,6 +33,7 @@ private:
   ElmCheck (); // forbid standard constructor
   ElmCheck (const ElmCheck&); // forbid copy constructor
   ElmCheck (EvasObject &parent); // private construction -> use factory ()
+  ~ElmCheck (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 #if 0

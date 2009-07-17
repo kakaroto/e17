@@ -15,13 +15,7 @@ ElmEntry::ElmEntry (EvasObject &parent)
   elmInit ();
 }
 
-ElmEntry::~ElmEntry ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmEntry::~ElmEntry () {}
 
 ElmEntry *ElmEntry::factory (EvasObject &parent)
 {

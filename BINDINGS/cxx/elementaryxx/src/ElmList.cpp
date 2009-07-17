@@ -15,13 +15,7 @@ ElmList::ElmList (EvasObject &parent)
   elmInit ();
 }
 
-ElmList::~ElmList ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmList::~ElmList () {}
 
 ElmList *ElmList::factory (EvasObject &parent)
 {

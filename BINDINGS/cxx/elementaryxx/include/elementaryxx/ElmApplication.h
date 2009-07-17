@@ -14,8 +14,8 @@ public:
   ElmApplication (int argc, char **argv);
   virtual ~ElmApplication ();
 
-  void run ();
-  void exit ();
+  static void run ();
+  static void exit ();
 };
 
 } // end namespace efl

@@ -15,13 +15,7 @@ ElmBox::ElmBox (EvasObject &parent)
   elmInit ();
 }
 
-ElmBox::~ElmBox ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmBox::~ElmBox () {}
 
 ElmBox *ElmBox::factory (EvasObject &parent)
 {

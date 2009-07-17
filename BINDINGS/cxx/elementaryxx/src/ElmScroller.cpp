@@ -15,13 +15,7 @@ ElmScroller::ElmScroller (EvasObject &parent)
   elmInit ();
 }
 
-ElmScroller::~ElmScroller ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmScroller::~ElmScroller () {}
 
 ElmScroller *ElmScroller::factory (EvasObject &parent)
 {

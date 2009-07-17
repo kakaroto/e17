@@ -15,13 +15,7 @@ ElmLabel::ElmLabel (EvasObject &parent)
   elmInit ();
 }
 
-ElmLabel::~ElmLabel ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmLabel::~ElmLabel () {}
 
 ElmLabel *ElmLabel::factory (EvasObject &parent)
 {

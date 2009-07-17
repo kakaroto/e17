@@ -20,9 +20,7 @@ namespace efl {
  */
 class ElmWindow : public ElmWidget
 {
-public:
-  virtual ~ElmWindow ();
-  
+public:  
   static ElmWindow* factory (const std::string &name, Elm_Win_Type type);
   
   /*!
@@ -77,6 +75,7 @@ private:
   // private construction -> use factory ()
   ElmWindow (const std::string &name, Elm_Win_Type type);
   ElmWindow (EvasObject &parent, const std::string &name, Elm_Win_Type type);
+  ~ElmWindow (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl

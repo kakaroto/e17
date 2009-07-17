@@ -15,13 +15,7 @@ ElmIcon::ElmIcon (EvasObject &parent)
   elmInit ();
 }
 
-ElmIcon::~ElmIcon ()
-{
-  if (mFree)
-  {
-    evas_object_del (o);
-  }
-}
+ElmIcon::~ElmIcon () {}
 
 ElmIcon *ElmIcon::factory (EvasObject &parent)
 {

@@ -15,8 +15,6 @@ namespace efl {
 class ElmBubble : public ElmWidget
 {
 public:
-  virtual ~ElmBubble ();
-  
   static ElmBubble *factory (EvasObject &parent);
 
   void setLabel (const std::string &label);
@@ -33,6 +31,7 @@ private:
   ElmBubble (); // forbid standard constructor
   ElmBubble (const ElmBubble&); // forbid copy constructor
   ElmBubble (EvasObject &parent); // private construction -> use factory ()
+  ~ElmBubble (); // forbid direct delete -> use ElmWidget::destroy()
 };
 
 } // end namespace efl
