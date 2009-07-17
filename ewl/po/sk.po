@@ -1,312 +1,311 @@
-# Chinese translations for ewl package
-# ewl 软件包的简体中文翻译.
-# This file is put in the public domain.
-# Aron Xu <aronmalache@163.com>, 2009.
+# Slovak translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ewl HEAD\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-07-08 13:16+0800\n"
-"PO-Revision-Date: 2009-07-06 08:11+0000\n"
-"Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
-"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"PO-Revision-Date: 2009-06-12 17:16+0000\n"
+"Last-Translator: milboy <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/lib/ewl_stock.c:19
 msgid "STOCK|About"
-msgstr "STOCK|关于"
+msgstr "O programe"
 
 #: ../src/lib/ewl_stock.c:20
 msgid "STOCK|Add"
-msgstr "STOCK|添加"
+msgstr "Pridať"
 
 #: ../src/lib/ewl_stock.c:21
 msgid "STOCK|Apply"
-msgstr "STOCK|应用"
+msgstr "Použiť"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:22
 msgid "STOCK|Bottom"
-msgstr "STOCK|按钮"
+msgstr "Naspodu"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:23
 msgid "STOCK|Down"
-msgstr "STOCK|向下"
+msgstr "Dole"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:24
 msgid "STOCK|First"
-msgstr "STOCK|最前"
+msgstr "Prvý"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:25
 msgid "STOCK|Last"
-msgstr "STOCK|最后"
+msgstr "Posledný"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:26
 msgid "STOCK|Left"
-msgstr "STOCK|左"
+msgstr "Vľavo"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:27
 msgid "STOCK|Right"
-msgstr "STOCK|右"
+msgstr "Vpravo"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:28
 msgid "STOCK|Top"
-msgstr "STOCK|顶部"
+msgstr "Navrchu"
 
 #. Arrow
 #: ../src/lib/ewl_stock.c:29
 msgid "STOCK|Up"
-msgstr "STOCK|向上"
+msgstr "Hore"
 
 #: ../src/lib/ewl_stock.c:30
 msgid "STOCK|Bold"
-msgstr "STOCK|粗体"
+msgstr "Tučné"
 
 #: ../src/lib/ewl_stock.c:31
 msgid "STOCK|Cancel"
-msgstr "STOCK|取消"
+msgstr "Zrušiť"
 
 #: ../src/lib/ewl_stock.c:32
 msgid "STOCK|Clear"
-msgstr "STOCK|清除"
+msgstr "Vyčistiť"
 
 #: ../src/lib/ewl_stock.c:33
 msgid "STOCK|Close"
-msgstr "STOCK|关闭"
+msgstr "Zavrieť"
 
 #: ../src/lib/ewl_stock.c:34
 msgid "STOCK|Copy"
-msgstr "STOCK|复制"
+msgstr "Kopírovať"
 
 #: ../src/lib/ewl_stock.c:35
 msgid "STOCK|Cut"
-msgstr "STOCK|剪切"
+msgstr "Vystrihnúť"
 
 #: ../src/lib/ewl_stock.c:36
 msgid "STOCK|Delete"
-msgstr "STOCK|删除"
+msgstr "Odstrániť"
 
 #: ../src/lib/ewl_stock.c:37
 msgid "STOCK|Edit"
-msgstr "STOCK|编辑"
+msgstr "Upraviť"
 
 #: ../src/lib/ewl_stock.c:38
 msgid "STOCK|Execute"
-msgstr "STOCK|运行"
+msgstr "Spustiť"
 
 #: ../src/lib/ewl_stock.c:39
 msgid "STOCK|Find"
-msgstr "STOCK|查找"
+msgstr "Nájsť"
 
 #: ../src/lib/ewl_stock.c:40
 msgid "STOCK|Find and replace"
-msgstr "STOCK|替换"
+msgstr "Nájsť a nahradiť"
 
 #: ../src/lib/ewl_stock.c:41
 msgid "STOCK|Flip horizontal"
-msgstr "块|水平翻转"
+msgstr "Obrátiť horizontálne"
 
 #: ../src/lib/ewl_stock.c:42
 msgid "STOCK|Flip vertical"
-msgstr "块|垂直翻转"
+msgstr "Obrátiť vertikálne"
 
 #: ../src/lib/ewl_stock.c:43
 msgid "STOCK|Fullscreen"
-msgstr "STOCK|全屏"
+msgstr "Celá obrazovka"
 
 #: ../src/lib/ewl_stock.c:44
 msgid "STOCK|Help"
-msgstr "STOCK|帮助"
+msgstr "Pomocník"
 
 #: ../src/lib/ewl_stock.c:45
 msgid "STOCK|Home"
-msgstr "STOCK|主目录"
+msgstr "Doma"
 
 #: ../src/lib/ewl_stock.c:46
 msgid "STOCK|Indent"
-msgstr "STOCK|缩进"
+msgstr "Zarážka"
 
 #: ../src/lib/ewl_stock.c:47
 msgid "STOCK|Italic"
-msgstr "STOCK|斜体"
+msgstr "Kurzíva"
 
 #: ../src/lib/ewl_stock.c:48
 msgid "STOCK|Justify center"
-msgstr "块|居中"
+msgstr "Zarovnať na stred"
 
 #: ../src/lib/ewl_stock.c:49
 msgid "STOCK|Justify fill"
-msgstr "块|填充"
+msgstr "Zaplniť"
 
 #: ../src/lib/ewl_stock.c:50
 msgid "STOCK|Justify left"
-msgstr "块|靠左"
+msgstr "Zarovnať vľavo"
 
 #: ../src/lib/ewl_stock.c:51
 msgid "STOCK|Justify right"
-msgstr "块|靠右"
+msgstr "Zarovnať vpravo"
 
 #: ../src/lib/ewl_stock.c:52
 msgid "STOCK|FF"
-msgstr "块|快速前进"
+msgstr "FF"
 
 #: ../src/lib/ewl_stock.c:53
 msgid "STOCK|Next"
-msgstr "STOCK|下一个"
+msgstr "Daľší"
 
 #: ../src/lib/ewl_stock.c:54
 msgid "STOCK|Pause"
-msgstr "STOCK|暂停"
+msgstr "Pauza"
 
 #: ../src/lib/ewl_stock.c:55
 msgid "STOCK|Play"
-msgstr "STOCK|播放"
+msgstr "Prehrať"
 
 #: ../src/lib/ewl_stock.c:56
 msgid "STOCK|Previous"
-msgstr "STOCK|前一个"
+msgstr "Predchádzajúci"
 
 #: ../src/lib/ewl_stock.c:57
 msgid "STOCK|Record"
-msgstr "STOCK|记录"
+msgstr "Nahrávať"
 
 #: ../src/lib/ewl_stock.c:58
 msgid "STOCK|Rewind"
-msgstr "STOCK|返回"
+msgstr "Pretočiť"
 
 #: ../src/lib/ewl_stock.c:59
 msgid "STOCK|Stop"
-msgstr "STOCK|停止"
+msgstr "Zastaviť"
 
 #: ../src/lib/ewl_stock.c:60
 msgid "STOCK|New"
-msgstr "STOCK|新建"
+msgstr "Nový"
 
 #: ../src/lib/ewl_stock.c:61
 msgid "STOCK|Ok"
-msgstr "STOCK|确定"
+msgstr "Ok"
 
 #: ../src/lib/ewl_stock.c:62
 msgid "STOCK|Open"
-msgstr "STOCK|打开"
+msgstr "Otvoriť"
 
 #: ../src/lib/ewl_stock.c:63
 msgid "STOCK|Paste"
-msgstr "STOCK|粘贴"
+msgstr "Vložiť"
 
 #: ../src/lib/ewl_stock.c:64
 msgid "STOCK|Preferences"
-msgstr "STOCK|首选项"
+msgstr "Preferencie"
 
 #: ../src/lib/ewl_stock.c:65
 msgid "STOCK|Print"
-msgstr "STOCK|打印"
+msgstr "Tlačiť"
 
 #: ../src/lib/ewl_stock.c:66
 msgid "STOCK|Print preview"
-msgstr "STOCK|打印预览"
+msgstr "Náhľad tlače"
 
 #: ../src/lib/ewl_stock.c:67
 msgid "STOCK|Properties"
-msgstr "STOCK|详细信息"
+msgstr "Vlastnosti"
 
 #: ../src/lib/ewl_stock.c:68
 msgid "STOCK|Quit"
-msgstr "STOCK|退出"
+msgstr "Ukončiť"
 
 #: ../src/lib/ewl_stock.c:69
 msgid "STOCK|Redo"
-msgstr "STOCK|重做"
+msgstr "Prerobiť"
 
 #: ../src/lib/ewl_stock.c:70
 msgid "STOCK|Refresh"
-msgstr "STOCK|刷新"
+msgstr "Obnoviť"
 
 #: ../src/lib/ewl_stock.c:71
 msgid "STOCK|Remove"
-msgstr "STOCK|移除"
+msgstr "Odstrániť"
 
 #: ../src/lib/ewl_stock.c:72
 msgid "STOCK|Rotate left"
-msgstr "块|左旋转"
+msgstr "Otočiť vľavo"
 
 #: ../src/lib/ewl_stock.c:73
 msgid "STOCK|Rotate right"
-msgstr "块|右旋转"
+msgstr "Otočiť vpravo"
 
 #: ../src/lib/ewl_stock.c:74
 msgid "STOCK|Save"
-msgstr "STOCK|保存"
+msgstr "Uložiť"
 
 #: ../src/lib/ewl_stock.c:75
 msgid "STOCK|Save as"
-msgstr "STOCK|另存为"
+msgstr "Uložiť ako"
 
 #: ../src/lib/ewl_stock.c:76
 msgid "STOCK|Select all"
-msgstr "STOCK|全选"
+msgstr "Vybrať všetko"
 
 #: ../src/lib/ewl_stock.c:77
 msgid "STOCK|Sort ascending"
-msgstr "块|按字母升序排列"
+msgstr "Zoradiť vzostupne"
 
 #: ../src/lib/ewl_stock.c:78
 msgid "STOCK|Sort descending"
-msgstr "块|倒序排列"
+msgstr "Zoradiť zostupne"
 
 #: ../src/lib/ewl_stock.c:79
 msgid "STOCK|Spell check"
-msgstr "STOCK|拼写检查"
+msgstr "Kontrola pravopisu"
 
 #: ../src/lib/ewl_stock.c:80
 msgid "STOCK|Strikethrough"
-msgstr "块|加删除线"
+msgstr "Preškrtnúť"
 
 #: ../src/lib/ewl_stock.c:81
 msgid "STOCK|Underline"
-msgstr "STOCK|下划线"
+msgstr "Podčiarknuť"
 
 #: ../src/lib/ewl_stock.c:82
 msgid "STOCK|Undo"
-msgstr "STOCK|撤销"
+msgstr "Späť"
 
 #: ../src/lib/ewl_stock.c:83
 msgid "STOCK|Unindent"
-msgstr "块|缩进"
+msgstr ""
 
 #: ../src/lib/ewl_stock.c:84
 msgid "STOCK|Zoom 1:1"
-msgstr "STOCK|原始尺寸"
+msgstr "Priblíženie 1:1"
 
 #: ../src/lib/ewl_stock.c:85
 msgid "STOCK|Zoom fit"
-msgstr "STOCK|合适大小"
+msgstr "Prispôsobiť"
 
 #: ../src/lib/ewl_stock.c:86
 msgid "STOCK|Zoom in"
-msgstr "STOCK|放大"
+msgstr "Priblížiť"
 
 #: ../src/lib/ewl_stock.c:87
 msgid "STOCK|Zoom out"
-msgstr "STOCK|缩小"
+msgstr "Oddialiť"
 
 #: ../src/lib/ewl_colordialog.c:58
 msgid "Ewl Colordialog"
-msgstr "Ewl 调色板"
+msgstr "Ewl výber farieb"
 
 #: ../src/lib/ewl_colorpicker.c:193
 msgid "COLOR|Current:"
-msgstr "COLOR|当前："
+msgstr "Aktuálne:"
 
 #: ../src/lib/ewl_colorpicker.c:211
 msgid "COLOR|Previous:"
-msgstr "COLOR|前一个："
+msgstr "Predchádzajúce:"
