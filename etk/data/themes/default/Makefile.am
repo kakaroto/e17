@@ -5,18 +5,18 @@ SUBDIRS = img
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \
--id $(top_srcdir)/data/themes/b_and_w/img \
--fd $(top_srcdir)/data/themes/b_and_w
+-id $(top_srcdir)/data/themes/default/img \
+-fd $(top_srcdir)/data/themes/default
 
 filesdir = $(pkgdatadir)/themes
-files_DATA = b_and_w.edj
+files_DATA = default.edj
 
 THEME_DEP = main.edc
 
-b_and_w.edj: Makefile $(THEME_DEP)
+default.edj: Makefile $(THEME_DEP)
 	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/themes/b_and_w/main.edc \
-	$(top_builddir)/data/themes/b_and_w/b_and_w.edj
+	$(top_srcdir)/data/themes/default/main.edc \
+	$(top_builddir)/data/themes/default/default.edj
 
 clean-local:
 	rm -f *.edj
