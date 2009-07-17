@@ -2,14 +2,24 @@
   #include <config.h>
 #endif
 
+#include <evasxx/Evasxx.h>
 #include <elementaryxx/Elementaryxx.h>
+#include "../../common/searchFile.h"
 
 using namespace std;
 using namespace efl;
 
-static void testFunc (void *data, Evas_Object *obj, void *event_info)
+static void
+my_win_del(Evas_Object *obj, void *event_info)
 {
-  cout << "Button pressed" << endl;
+  // TODO
+  /* called when my_win_main is requested to be deleted */
+  ElmApplication::exit(); /* exit the program's main loop that runs in elm_run() */
+}
+
+static void testFunc (Evas_Object *obj, void *event_info)
+{
+  cout << "sub-object-del" << endl;
 }
 
 int main (int argc, char **argv)
@@ -17,15 +27,26 @@ int main (int argc, char **argv)
   ElmApplication elmApp (argc, argv);
 
   ElmWindow *elmWin = ElmWindow::factory ("window1", ELM_WIN_BASIC);
+  elmWin->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
+  
   ElmBackground *bg = ElmBackground::factory (*elmWin);
+
+  Evas *e = evas_object_evas_get(bg->obj ());
+
+  EvasCanvas ec (e);
+
+  EvasImage ei (ec);
+  ei.setFile (searchPixmapFile ("elementaryxx/plant_01.jpg"));
+  ei.setGeometry (Rect (100,100, 100, 100));
+  ei.show ();
 
   ElmButton *elmButton = ElmButton::factory (*elmWin);
   ElmClock *elmClock = ElmClock::factory (*elmWin);
+  elmWin->addMember (ei);
   ElmToggle *elmToggle = ElmToggle::factory (*elmWin);
   ElmScroller *elmScroller = ElmScroller::factory (*elmWin);
   ElmEntry *elmEntry = ElmEntry::factory (*elmWin);
   ElmSlider *elmSlider = ElmSlider::factory (*elmWin);
-
 
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);
@@ -55,7 +76,7 @@ int main (int argc, char **argv)
   
   elmWin->setAutoDel (true);
 
-  elmToggle->getEventSignal ("sub-object-del")->connect (sigc::ptr_fun (&testFunc));
+  //elmToggle->getEventSignal ("sub-object-del")->connect (sigc::ptr_fun (&testFunc));
   
   elmWin->show ();
   bg->show ();
@@ -65,7 +86,7 @@ int main (int argc, char **argv)
   elmScroller->show ();
   elmEntry->show ();
   elmSlider->show ();
-  
+
   elmApp.run ();
 }
 

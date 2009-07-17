@@ -9,8 +9,7 @@ using namespace std;
 using namespace efl;
 
 #ifndef ELM_LIB_QUICKLAUNCH
-static void my_win_del(void *data, Evas_Object *obj, void *event_info);
-static void my_bt_1(void *data, Evas_Object *obj, void *event_info);
+static void my_win_del(Evas_Object *obj, void *event_info);
 static void my_win_main(void);
 
 ElmApplication *elmApp;
@@ -19,7 +18,7 @@ static Size size320x320 (320, 320);
 static Size size640x640 (640, 640);
 
 static void
-my_win_del(void *data, Evas_Object *obj, void *event_info)
+my_win_del(Evas_Object *obj, void *event_info)
 {
   // TODO
   /* called when my_win_main is requested to be deleted */
