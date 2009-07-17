@@ -1,6 +1,6 @@
 # This is the Bulgarian locale definition for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Viktor Kojouharov (vkojouharov _при_ gmail точка ком), 2004.
+# Viktor Kojouharov (vkojouharov _ГЇГ°ГЁ_ gmail ГІГ®Г·ГЄГ  ГЄГ®Г¬), 2004.
 #
 msgid ""
 msgstr ""
@@ -11,13 +11,13 @@ msgstr ""
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=cp1251\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
 #, fuzzy, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "За Enlightenment %s"
+msgstr "Г‡Г  Enlightenment %s"
 
 #: src/about.c:46
 #, fuzzy, c-format
@@ -32,18 +32,18 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
-"Добре дошли в %s версия\n"
-"на администратора на прозорци Enlighenment.\n"
-"Enlightenment е все още под силно разработване, но\n"
-"ние сме се опитали за премахнем всички грешки които\n"
-"сме намерили. Ако намерите грешка във програмата,\n"
-"не се колебайте да ни кажете.\n"
-"Вижте \"Помощ\" за информация как\n"
-"да се включите в пощенският списък\n"
-"Този код е актуализиран за последно на:\n"
+"Г„Г®ГЎГ°ГҐ Г¤Г®ГёГ«ГЁ Гў %s ГўГҐГ°Г±ГЁГї\n"
+"Г­Г  Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°Г  Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ Enlighenment.\n"
+"Enlightenment ГҐ ГўГ±ГҐ Г®Г№ГҐ ГЇГ®Г¤ Г±ГЁГ«Г­Г® Г°Г Г§Г°Г ГЎГ®ГІГўГ Г­ГҐ, Г­Г®\n"
+"Г­ГЁГҐ Г±Г¬ГҐ Г±ГҐ Г®ГЇГЁГІГ Г«ГЁ Г§Г  ГЇГ°ГҐГ¬Г ГµГ­ГҐГ¬ ГўГ±ГЁГ·ГЄГЁ ГЈГ°ГҐГёГЄГЁ ГЄГ®ГЁГІГ®\n"
+"Г±Г¬ГҐ Г­Г Г¬ГҐГ°ГЁГ«ГЁ. ГЂГЄГ® Г­Г Г¬ГҐГ°ГЁГІГҐ ГЈГ°ГҐГёГЄГ  ГўГєГў ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ ,\n"
+"Г­ГҐ Г±ГҐ ГЄГ®Г«ГҐГЎГ Г©ГІГҐ Г¤Г  Г­ГЁ ГЄГ Г¦ГҐГІГҐ.\n"
+"Г‚ГЁГ¦ГІГҐ \"ГЏГ®Г¬Г®Г№\" Г§Г  ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї ГЄГ ГЄ\n"
+"Г¤Г  Г±ГҐ ГўГЄГ«ГѕГ·ГЁГІГҐ Гў ГЇГ®Г№ГҐГ­Г±ГЄГЁГїГІ Г±ГЇГЁГ±ГєГЄ\n"
+"Г’Г®Г§ГЁ ГЄГ®Г¤ ГҐ Г ГЄГІГіГ Г«ГЁГ§ГЁГ°Г Г­ Г§Г  ГЇГ®Г±Г«ГҐГ¤Г­Г® Г­Г :\n"
 "%s\n"
 "\n"
-"Успех. Надяваме се да ви хареса програмата.\n"
+"Г“Г±ГЇГҐГµ. ГЌГ Г¤ГїГўГ Г¬ГҐ Г±ГҐ Г¤Г  ГўГЁ ГµГ Г°ГҐГ±Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ .\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
@@ -52,7 +52,7 @@ msgstr ""
 #: src/cursors.c:170 src/iclass.c:337 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
-msgstr "%u отпратки остават\n"
+msgstr "%u Г®ГІГЇГ°Г ГІГЄГЁ Г®Г±ГІГ ГўГ ГІ\n"
 
 #: src/actions.c:109
 #, c-format
@@ -62,10 +62,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът не съществува.\n"
+"ГЏГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ ГЇГіГ±Г­Г ГІГ ,\n"
+"Г§Г Г№Г®ГІГ® ГґГ Г©Г«ГєГІ Г­ГҐ Г±ГєГ№ГҐГ±ГІГўГіГўГ .\n"
 
 #: src/actions.c:115
 #, c-format
@@ -78,13 +78,13 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Програмата не може да бъде пусната.\n"
-"Най-вероятно защото програмата не се намира\n"
-"в пътеката на вашата обвивка (%s). Предлагаме ви да прочетете\n"
-"пъководството на обвивката за да разберете как\n"
-"да промените пътеката за стартиращите файлове.\n"
+"ГЏГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ ГЇГіГ±Г­Г ГІГ .\n"
+"ГЌГ Г©-ГўГҐГ°Г®ГїГІГ­Г® Г§Г Г№Г®ГІГ® ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г±ГҐ Г­Г Г¬ГЁГ°Г \n"
+"Гў ГЇГєГІГҐГЄГ ГІГ  Г­Г  ГўГ ГёГ ГІГ  Г®ГЎГўГЁГўГЄГ  (%s). ГЏГ°ГҐГ¤Г«Г ГЈГ Г¬ГҐ ГўГЁ Г¤Г  ГЇГ°Г®Г·ГҐГІГҐГІГҐ\n"
+"ГЇГєГЄГ®ГўГ®Г¤Г±ГІГўГ®ГІГ® Г­Г  Г®ГЎГўГЁГўГЄГ ГІГ  Г§Г  Г¤Г  Г°Г Г§ГЎГҐГ°ГҐГІГҐ ГЄГ ГЄ\n"
+"Г¤Г  ГЇГ°Г®Г¬ГҐГ­ГЁГІГҐ ГЇГєГІГҐГЄГ ГІГ  Г§Г  Г±ГІГ Г°ГІГЁГ°Г Г№ГЁГІГҐ ГґГ Г©Г«Г®ГўГҐ.\n"
 
 #: src/actions.c:134
 #, c-format
@@ -96,11 +96,11 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Не се знае защо програмата не е стартирала. Файлът съществува,\n"
-"и вие имате права да го стартирате. \n"
-"Трабва да разберете сами защо става така.\n"
+"ГЌГҐ Г±ГҐ Г§Г­Г ГҐ Г§Г Г№Г® ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ ГҐ Г±ГІГ Г°ГІГЁГ°Г Г«Г . Г”Г Г©Г«ГєГІ Г±ГєГ№ГҐГ±ГІГўГіГўГ ,\n"
+"ГЁ ГўГЁГҐ ГЁГ¬Г ГІГҐ ГЇГ°Г ГўГ  Г¤Г  ГЈГ® Г±ГІГ Г°ГІГЁГ°Г ГІГҐ. \n"
+"Г’Г°Г ГЎГўГ  Г¤Г  Г°Г Г§ГЎГҐГ°ГҐГІГҐ Г±Г Г¬ГЁ Г§Г Г№Г® Г±ГІГ ГўГ  ГІГ ГЄГ .\n"
 
 #: src/actions.c:144
 #, c-format
@@ -111,11 +111,11 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Програмата не може да бъде пусната.\n"
-"Файл действително существува, файл е, но вие\n"
-"не можете да го стартирате, защото нямате тези права.\n"
+"ГЏГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ ГЇГіГ±Г­Г ГІГ .\n"
+"Г”Г Г©Г« Г¤ГҐГ©Г±ГІГўГЁГІГҐГ«Г­Г® Г±ГіГ№ГҐГ±ГІГўГіГўГ , ГґГ Г©Г« ГҐ, Г­Г® ГўГЁГҐ\n"
+"Г­ГҐ Г¬Г®Г¦ГҐГІГҐ Г¤Г  ГЈГ® Г±ГІГ Г°ГІГЁГ°Г ГІГҐ, Г§Г Г№Г®ГІГ® Г­ГїГ¬Г ГІГҐ ГІГҐГ§ГЁ ГЇГ°Г ГўГ .\n"
 
 #: src/actions.c:157
 #, c-format
@@ -125,10 +125,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът всъщност е директория.\n"
+"ГЏГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ ГЇГіГ±Г­Г ГІГ ,\n"
+"Г§Г Г№Г®ГІГ® ГґГ Г©Г«ГєГІ ГўГ±ГєГ№Г­Г®Г±ГІ ГҐ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГї.\n"
 
 #: src/actions.c:164
 #, c-format
@@ -138,10 +138,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Има грешка при изпълнение на програмата:\n"
+"Г€Г¬Г  ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ§ГЇГєГ«Г­ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ :\n"
 "%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът не е обичаен.\n"
+"ГЏГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ ГЇГіГ±Г­Г ГІГ ,\n"
+"Г§Г Г№Г®ГІГ® ГґГ Г©Г«ГєГІ Г­ГҐ ГҐ Г®ГЎГЁГ·Г ГҐГ­.\n"
 
 #: src/actions.c:189
 #, c-format
@@ -152,32 +152,32 @@ msgstr ""
 
 #: src/alert.c:210
 msgid "Enlightenment Error"
-msgstr "Грешка на Enlightenment"
+msgstr "ГѓГ°ГҐГёГЄГ  Г­Г  Enlightenment"
 
 #: src/alert.c:569
 msgid "Enlightenment Message Dialog"
-msgstr "Диалог за съобщения на Enlightenment"
+msgstr "Г„ГЁГ Г«Г®ГЈ Г§Г  Г±ГєГ®ГЎГ№ГҐГ­ГЁГї Г­Г  Enlightenment"
 
 #: src/alert.c:569
 msgid "Ignore this"
-msgstr "Игнорирайте това"
+msgstr "Г€ГЈГ­Г®Г°ГЁГ°Г Г©ГІГҐ ГІГ®ГўГ "
 
 #: src/alert.c:570
 msgid "Restart Enlightenment"
-msgstr "Рестартирайте Enlightenment"
+msgstr "ГђГҐГ±ГІГ Г°ГІГЁГ°Г Г©ГІГҐ Enlightenment"
 
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
-msgstr "Излезте от Enlightenment"
+msgstr "Г€Г§Г«ГҐГ§ГІГҐ Г®ГІ Enlightenment"
 
 #: src/alert.c:583
 msgid "Attention !!!"
-msgstr "Внимание !!!"
+msgstr "Г‚Г­ГЁГ¬Г Г­ГЁГҐ !!!"
 
 #: src/alert.c:583 src/dialog.c:844 src/dialog.c:2034 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
-msgstr "Да"
+msgstr "Г„Г "
 
 #: src/backgrounds.c:1521
 #, c-format
@@ -186,54 +186,54 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Информация за фона:\n"
-"Име: %s\n"
-"Файл: %s\n"
+"Г€Г­ГґГ®Г°Г¬Г Г¶ГЁГї Г§Г  ГґГ®Г­Г :\n"
+"Г€Г¬ГҐ: %s\n"
+"Г”Г Г©Г«: %s\n"
 
 #: src/backgrounds.c:1522
 msgid "-NONE-"
-msgstr "-ПРАЗНО-"
+msgstr "-ГЏГђГЂГ‡ГЌГЋ-"
 
 #: src/backgrounds.c:1695 src/backgrounds.c:1697
 msgid ""
 "No\n"
 "Background"
 msgstr ""
-"Без\n"
-"фон"
+"ГЃГҐГ§\n"
+"ГґГ®Г­"
 
 #: src/backgrounds.c:1791 src/backgrounds.c:2221
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr "Неизползвани фонове се освобождават след %2i:%02i:%02i"
+msgstr "ГЌГҐГЁГ§ГЇГ®Г«Г§ГўГ Г­ГЁ ГґГ®Г­Г®ГўГҐ Г±ГҐ Г®Г±ГўГ®ГЎГ®Г¦Г¤Г ГўГ ГІ Г±Г«ГҐГ¤ %2i:%02i:%02i"
 
 #: src/backgrounds.c:2007
 msgid "Use background image"
-msgstr "Използвай картина за фона"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© ГЄГ Г°ГІГЁГ­Г  Г§Г  ГґГ®Г­Г "
 
 #: src/backgrounds.c:2011
 msgid "Keep aspect on scale"
-msgstr "Поддържай мащаба"
+msgstr "ГЏГ®Г¤Г¤ГєГ°Г¦Г Г© Г¬Г Г№Г ГЎГ "
 
 #: src/backgrounds.c:2015
 msgid "Tile image across background"
-msgstr "Настили картината върху фона"
+msgstr "ГЌГ Г±ГІГЁГ«ГЁ ГЄГ Г°ГІГЁГ­Г ГІГ  ГўГєГ°ГµГі ГґГ®Г­Г "
 
 #: src/backgrounds.c:2024
 msgid "Move to Front\n"
-msgstr "Премести отпред\n"
+msgstr "ГЏГ°ГҐГ¬ГҐГ±ГІГЁ Г®ГІГЇГ°ГҐГ¤\n"
 
 #: src/backgrounds.c:2029
 msgid "Duplicate\n"
-msgstr "Удвои\n"
+msgstr "Г“Г¤ГўГ®ГЁ\n"
 
 #: src/backgrounds.c:2033
 msgid "Unlist\n"
-msgstr "Премахни\n"
+msgstr "ГЏГ°ГҐГ¬Г ГµГ­ГЁ\n"
 
 #: src/backgrounds.c:2038
 msgid "Delete File\n"
-msgstr "Изтрий файла\n"
+msgstr "Г€Г§ГІГ°ГЁГ© ГґГ Г©Г«Г \n"
 
 #: src/backgrounds.c:2049
 msgid ""
@@ -243,51 +243,51 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"Пропорции\n"
-"и\n"
-"мащаб\n"
-"на\n"
-"картината\n"
+"ГЏГ°Г®ГЇГ®Г°Г¶ГЁГЁ\n"
+"ГЁ\n"
+"Г¬Г Г№Г ГЎ\n"
+"Г­Г \n"
+"ГЄГ Г°ГІГЁГ­Г ГІГ \n"
 
 #: src/backgrounds.c:2106
 msgid "BG Colour\n"
-msgstr "Цвят на фона\n"
+msgstr "Г–ГўГїГІ Г­Г  ГґГ®Г­Г \n"
 
 #: src/backgrounds.c:2111
 msgid "Red:\n"
-msgstr "Червено:\n"
+msgstr "Г—ГҐГ°ГўГҐГ­Г®:\n"
 
 #: src/backgrounds.c:2122
 msgid "Green:\n"
-msgstr "Зелено:\n"
+msgstr "Г‡ГҐГ«ГҐГ­Г®:\n"
 
 #: src/backgrounds.c:2133
 msgid "Blue:\n"
-msgstr "Синьо:\n"
+msgstr "Г‘ГЁГ­ГјГ®:\n"
 
 #: src/backgrounds.c:2166
 msgid "Pre-scan BG's"
-msgstr "Предварително сканирайте"
+msgstr "ГЏГ°ГҐГ¤ГўГ Г°ГЁГІГҐГ«Г­Г® Г±ГЄГ Г­ГЁГ°Г Г©ГІГҐ"
 
 #: src/backgrounds.c:2174
 msgid "Sort by File"
-msgstr "Сортирай по файл"
+msgstr "Г‘Г®Г°ГІГЁГ°Г Г© ГЇГ® ГґГ Г©Г«"
 
 #: src/backgrounds.c:2179
 msgid "Sort by Attr."
-msgstr "или по атрибут"
+msgstr "ГЁГ«ГЁ ГЇГ® Г ГІГ°ГЁГЎГіГІ"
 
 #: src/backgrounds.c:2185
 msgid "Sort by Image"
-msgstr "или по картина"
+msgstr "ГЁГ«ГЁ ГЇГ® ГЄГ Г°ГІГЁГ­Г "
 
 #: src/backgrounds.c:2205
 msgid "Use dithering in Hi-Colour"
-msgstr "Използвай dithering в Hi-Colour"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© dithering Гў Hi-Colour"
 
 #: src/backgrounds.c:2209
 msgid "Background overrides theme"
-msgstr "Фонът не се сменя от темата"
+msgstr "Г”Г®Г­ГєГІ Г­ГҐ Г±ГҐ Г±Г¬ГҐГ­Гї Г®ГІ ГІГҐГ¬Г ГІГ "
 
 #: src/backgrounds.c:2214
 msgid "Enable background transparency compatibility mode"
@@ -295,23 +295,23 @@ msgstr ""
 
 #: src/backgrounds.c:2238 src/mod-trans.c:204
 msgid "Background"
-msgstr "Фон"
+msgstr "Г”Г®Г­"
 
 #: src/backgrounds.c:2239
 msgid "Desktop Background Settings"
-msgstr "Настройки на фон"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГґГ®Г­"
 
 #: src/backgrounds.c:2242
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
-"Е: Фон\n"
-"Диалог за настройки\n"
+"Г…: Г”Г®Г­\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/comms.c:240
 msgid "E IPC Error"
-msgstr "Грешка на Е IPC"
+msgstr "ГѓГ°ГҐГёГЄГ  Г­Г  Г… IPC"
 
 #: src/comms.c:241
 #, c-format
@@ -323,22 +323,22 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"Получено е неизвестно съобщение от клиента.\n"
-"Име на клиента:    %s\n"
-"Версия на клиента: %s\n"
-"Съобщение:\n"
+"ГЏГ®Г«ГіГ·ГҐГ­Г® ГҐ Г­ГҐГЁГ§ГўГҐГ±ГІГ­Г® Г±ГєГ®ГЎГ№ГҐГ­ГЁГҐ Г®ГІ ГЄГ«ГЁГҐГ­ГІГ .\n"
+"Г€Г¬ГҐ Г­Г  ГЄГ«ГЁГҐГ­ГІГ :    %s\n"
+"Г‚ГҐГ°Г±ГЁГї Г­Г  ГЄГ«ГЁГҐГ­ГІГ : %s\n"
+"Г‘ГєГ®ГЎГ№ГҐГ­ГЁГҐ:\n"
 "\n"
 "%s\n"
 
 #: src/config.c:197 src/config.c:297
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: игнорираме екстра данни в \"%s\"\n"
+msgstr "CONFIG: ГЁГЈГ­Г®Г°ГЁГ°Г Г¬ГҐ ГҐГЄГ±ГІГ°Г  Г¤Г Г­Г­ГЁ Гў \"%s\"\n"
 
 #: src/config.c:205 src/config.c:304
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: в \"%s\" липсват нужните данни\n"
+msgstr "CONFIG: Гў \"%s\" Г«ГЁГЇГ±ГўГ ГІ Г­ГіГ¦Г­ГЁГІГҐ Г¤Г Г­Г­ГЁ\n"
 
 #: src/config.c:215
 #, fuzzy, c-format
@@ -348,10 +348,10 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"Предупреждение: невъзможно е да се определи какво да се прави\n"
-"със следният текст в текущото определение Extras:\n"
+"ГЏГ°ГҐГ¤ГіГЇГ°ГҐГ¦Г¤ГҐГ­ГЁГҐ: Г­ГҐГўГєГ§Г¬Г®Г¦Г­Г® ГҐ Г¤Г  Г±ГҐ Г®ГЇГ°ГҐГ¤ГҐГ«ГЁ ГЄГ ГЄГўГ® Г¤Г  Г±ГҐ ГЇГ°Г ГўГЁ\n"
+"Г±ГєГ± Г±Г«ГҐГ¤Г­ГЁГїГІ ГІГҐГЄГ±ГІ Гў ГІГҐГЄГіГ№Г®ГІГ® Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГҐ Extras:\n"
 "%s\n"
-"Ще се игнорира и продължи...\n"
+"Г™ГҐ Г±ГҐ ГЁГЈГ­Г®Г°ГЁГ°Г  ГЁ ГЇГ°Г®Г¤ГєГ«Г¦ГЁ...\n"
 
 #: src/config.c:223
 #, c-format
@@ -359,20 +359,20 @@ msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Предупреждение:  Конфигурационна грешка в %s блок.\n"
-"Резултатът е съмнителен...\n"
+"ГЏГ°ГҐГ¤ГіГЇГ°ГҐГ¦Г¤ГҐГ­ГЁГҐ:  ГЉГ®Г­ГґГЁГЈГіГ°Г Г¶ГЁГ®Г­Г­Г  ГЈГ°ГҐГёГЄГ  Гў %s ГЎГ«Г®ГЄ.\n"
+"ГђГҐГ§ГіГ«ГІГ ГІГєГІ ГҐ Г±ГєГ¬Г­ГЁГІГҐГ«ГҐГ­...\n"
 
 #: src/config.c:313
 msgid "Theme versioning ERROR"
-msgstr "ГРЕШКА във версията на темата"
+msgstr "ГѓГђГ…ГГЉГЂ ГўГєГў ГўГҐГ°Г±ГЁГїГІГ  Г­Г  ГІГҐГ¬Г ГІГ "
 
 #: src/config.c:314
 msgid "Restart with Defaults"
-msgstr "Рестартирайте \"по подразбиране\""
+msgstr "ГђГҐГ±ГІГ Г°ГІГЁГ°Г Г©ГІГҐ \"ГЇГ® ГЇГ®Г¤Г°Г Г§ГЎГЁГ°Г Г­ГҐ\""
 
 #: src/config.c:315
 msgid "Abort and Exit"
-msgstr "Прекъснете и излезте"
+msgstr "ГЏГ°ГҐГЄГєГ±Г­ГҐГІГҐ ГЁ ГЁГ§Г«ГҐГ§ГІГҐ"
 
 #: src/config.c:316
 #, c-format
@@ -394,138 +394,138 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"ГРЕШКА:\n"
+"ГѓГђГ…ГГЉГЂ:\n"
 "\n"
-"Конфигурацията на темата която пускате е несъвместима.\n"
-"Нейната конфигурационна ревизия е  %i, а трябва\n"
-"да бъде маркирана като ревизия %i\n"
+"ГЉГ®Г­ГґГЁГЈГіГ°Г Г¶ГЁГїГІГ  Г­Г  ГІГҐГ¬Г ГІГ  ГЄГ®ГїГІГ® ГЇГіГ±ГЄГ ГІГҐ ГҐ Г­ГҐГ±ГєГўГ¬ГҐГ±ГІГЁГ¬Г .\n"
+"ГЌГҐГ©Г­Г ГІГ  ГЄГ®Г­ГґГЁГЈГіГ°Г Г¶ГЁГ®Г­Г­Г  Г°ГҐГўГЁГ§ГЁГї ГҐ  %i, Г  ГІГ°ГїГЎГўГ \n"
+"Г¤Г  ГЎГєГ¤ГҐ Г¬Г Г°ГЄГЁГ°Г Г­Г  ГЄГ ГІГ® Г°ГҐГўГЁГ§ГЁГї %i\n"
 "\n"
-"Моля, свържете се с автора или разработчика и ги\n"
-"уведомете, че ако искат темите им да функционират\n"
-"с тази версия на Enlightenment, трябва да я актуализират\n"
-"до текущите настройки, и после да съответстват\n"
-"ревизионните номера.\n"
+"ГЊГ®Г«Гї, Г±ГўГєГ°Г¦ГҐГІГҐ Г±ГҐ Г± Г ГўГІГ®Г°Г  ГЁГ«ГЁ Г°Г Г§Г°Г ГЎГ®ГІГ·ГЁГЄГ  ГЁ ГЈГЁ\n"
+"ГіГўГҐГ¤Г®Г¬ГҐГІГҐ, Г·ГҐ Г ГЄГ® ГЁГ±ГЄГ ГІ ГІГҐГ¬ГЁГІГҐ ГЁГ¬ Г¤Г  ГґГіГ­ГЄГ¶ГЁГ®Г­ГЁГ°Г ГІ\n"
+"Г± ГІГ Г§ГЁ ГўГҐГ°Г±ГЁГї Г­Г  Enlightenment, ГІГ°ГїГЎГўГ  Г¤Г  Гї Г ГЄГІГіГ Г«ГЁГ§ГЁГ°Г ГІ\n"
+"Г¤Г® ГІГҐГЄГіГ№ГЁГІГҐ Г­Г Г±ГІГ°Г®Г©ГЄГЁ, ГЁ ГЇГ®Г±Г«ГҐ Г¤Г  Г±ГєГ®ГІГўГҐГІГ±ГІГўГ ГІ\n"
+"Г°ГҐГўГЁГ§ГЁГ®Г­Г­ГЁГІГҐ Г­Г®Г¬ГҐГ°Г .\n"
 "\n"
-"Ако ревизията на темата е по-голяма от тази на Enlightenment,\n"
-"сигурно не сте подновявали Enlightenment наскоро, а тази тема\n"
-"се възползва от нови свойства в новата-версия.\n"
+"ГЂГЄГ® Г°ГҐГўГЁГ§ГЁГїГІГ  Г­Г  ГІГҐГ¬Г ГІГ  ГҐ ГЇГ®-ГЈГ®Г«ГїГ¬Г  Г®ГІ ГІГ Г§ГЁ Г­Г  Enlightenment,\n"
+"Г±ГЁГЈГіГ°Г­Г® Г­ГҐ Г±ГІГҐ ГЇГ®Г¤Г­Г®ГўГїГўГ Г«ГЁ Enlightenment Г­Г Г±ГЄГ®Г°Г®, Г  ГІГ Г§ГЁ ГІГҐГ¬Г \n"
+"Г±ГҐ ГўГєГ§ГЇГ®Г«Г§ГўГ  Г®ГІ Г­Г®ГўГЁ Г±ГўГ®Г©Г±ГІГўГ  Гў Г­Г®ГўГ ГІГ -ГўГҐГ°Г±ГЁГї.\n"
 
 #: src/config.c:578
 msgid "Enlightenment Starting..."
-msgstr "Enlightenment стартира..."
+msgstr "Enlightenment Г±ГІГ Г°ГІГЁГ°Г ..."
 
 #: src/container.c:1207
 #, fuzzy
 msgid "Settings..."
-msgstr "Настройки за фокуса"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГґГ®ГЄГіГ±Г "
 
 #: src/container.c:1211 src/dialog.c:856 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:124
 msgid "Close"
-msgstr "Затвори"
+msgstr "Г‡Г ГІГўГ®Г°ГЁ"
 
 #: src/container.c:1216 config/strings.c:85
 msgid "Create New Iconbox"
-msgstr "Създай нов Iconbox"
+msgstr "Г‘ГєГ§Г¤Г Г© Г­Г®Гў Iconbox"
 
 #: src/container.c:1513 src/container.c:1586
 #, c-format
 msgid "Icon size: %2d"
-msgstr "Размер на иконата: %2d"
+msgstr "ГђГ Г§Г¬ГҐГ° Г­Г  ГЁГЄГ®Г­Г ГІГ : %2d"
 
 #: src/container.c:1550
 msgid "Transparent background"
-msgstr "Прозрачен фон"
+msgstr "ГЏГ°Г®Г§Г°Г Г·ГҐГ­ ГґГ®Г­"
 
 #: src/container.c:1554
 msgid "Hide inner border"
-msgstr "Скрии вътрешната рамка"
+msgstr "Г‘ГЄГ°ГЁГЁ ГўГєГІГ°ГҐГёГ­Г ГІГ  Г°Г Г¬ГЄГ "
 
 #: src/container.c:1558
 msgid "Draw base image behind Icons"
-msgstr "Рисувай базовата картина зад иконите"
+msgstr "ГђГЁГ±ГіГўГ Г© ГЎГ Г§Г®ГўГ ГІГ  ГЄГ Г°ГІГЁГ­Г  Г§Г Г¤ ГЁГЄГ®Г­ГЁГІГҐ"
 
 #: src/container.c:1562
 msgid "Hide scrollbar when not needed"
-msgstr "Скрйй плъзгачите когато не са нужни"
+msgstr "Г‘ГЄГ°Г©Г© ГЇГ«ГєГ§ГЈГ Г·ГЁГІГҐ ГЄГ®ГЈГ ГІГ® Г­ГҐ Г±Г  Г­ГіГ¦Г­ГЁ"
 
 #: src/container.c:1566
 msgid "Automatically resize to fit Icons"
-msgstr "Автоматично променете размера за да се съберат иконите"
+msgstr "ГЂГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГЇГ°Г®Г¬ГҐГ­ГҐГІГҐ Г°Г Г§Г¬ГҐГ°Г  Г§Г  Г¤Г  Г±ГҐ Г±ГєГЎГҐГ°Г ГІ ГЁГЄГ®Г­ГЁГІГҐ"
 
 #: src/container.c:1573
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Изравняване на опората при автоматично променяне на размера:"
+msgstr "Г€Г§Г°Г ГўГ­ГїГўГ Г­ГҐ Г­Г  Г®ГЇГ®Г°Г ГІГ  ГЇГ°ГЁ Г ГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГЇГ°Г®Г¬ГҐГ­ГїГ­ГҐ Г­Г  Г°Г Г§Г¬ГҐГ°Г :"
 
 #: src/container.c:1604
 msgid "Orientation:"
-msgstr "Ориентация:"
+msgstr "ГЋГ°ГЁГҐГ­ГІГ Г¶ГЁГї:"
 
 #: src/container.c:1609
 msgid "Scrollbar side:"
-msgstr "Страна на плъзгача:"
+msgstr "Г‘ГІГ°Г Г­Г  Г­Г  ГЇГ«ГєГ§ГЈГ Г·Г :"
 
 #: src/container.c:1614
 msgid "Scrollbar arrows:"
-msgstr "Стрелки:"
+msgstr "Г‘ГІГ°ГҐГ«ГЄГЁ:"
 
 #: src/container.c:1617
 msgid "Horizontal"
-msgstr "Хоризонтална"
+msgstr "Г•Г®Г°ГЁГ§Г®Г­ГІГ Г«Г­Г "
 
 #: src/container.c:1622
 msgid "Left / Top"
-msgstr "Лява / отгоре"
+msgstr "Г‹ГїГўГ  / Г®ГІГЈГ®Г°ГҐ"
 
 #: src/container.c:1627
 msgid "Start"
-msgstr "В началото"
+msgstr "Г‚ Г­Г Г·Г Г«Г®ГІГ®"
 
 #: src/container.c:1632
 msgid "Vertical"
-msgstr "Вертикална"
+msgstr "Г‚ГҐГ°ГІГЁГЄГ Г«Г­Г "
 
 #: src/container.c:1638
 msgid "Right / Bottom"
-msgstr "Дясна / долу"
+msgstr "Г„ГїГ±Г­Г  / Г¤Г®Г«Гі"
 
 #: src/container.c:1644
 msgid "Both ends"
-msgstr "В 2-та края"
+msgstr "Г‚ 2-ГІГ  ГЄГ°Г Гї"
 
 #: src/container.c:1652
 msgid "End"
-msgstr "В края"
+msgstr "Г‚ ГЄГ°Г Гї"
 
 #: src/container.c:1660 src/focus.c:841
 msgid "None"
-msgstr "Никъде"
+msgstr "ГЌГЁГЄГєГ¤ГҐ"
 
 #: src/container.c:1670
 msgid "Show icon names"
-msgstr "Показвай имена на икони"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г© ГЁГ¬ГҐГ­Г  Г­Г  ГЁГЄГ®Г­ГЁ"
 
 #: src/container.c:1674
 msgid "Animate when iconifying to this Iconbox"
-msgstr "Анимирай когато скривате към този Iconbox"
+msgstr "ГЂГ­ГЁГ¬ГЁГ°Г Г© ГЄГ®ГЈГ ГІГ® Г±ГЄГ°ГЁГўГ ГІГҐ ГЄГєГ¬ ГІГ®Г§ГЁ Iconbox"
 
 #: src/container.c:1684
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
-"Поведение на имената на икони\n"
-"(ако едната операция не успее, опитай следващата):"
+"ГЏГ®ГўГҐГ¤ГҐГ­ГЁГҐ Г­Г  ГЁГ¬ГҐГ­Г ГІГ  Г­Г  ГЁГЄГ®Г­ГЁ\n"
+"(Г ГЄГ® ГҐГ¤Г­Г ГІГ  Г®ГЇГҐГ°Г Г¶ГЁГї Г­ГҐ ГіГ±ГЇГҐГҐ, Г®ГЇГЁГІГ Г© Г±Г«ГҐГ¤ГўГ Г№Г ГІГ ):"
 
 #: src/container.c:1689
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Снимай прозорци, Използвай икони от програми, използвай Е икони"
+msgstr "Г‘Г­ГЁГ¬Г Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁ, Г€Г§ГЇГ®Г«Г§ГўГ Г© ГЁГЄГ®Г­ГЁ Г®ГІ ГЇГ°Г®ГЈГ°Г Г¬ГЁ, ГЁГ§ГЇГ®Г«Г§ГўГ Г© Г… ГЁГЄГ®Г­ГЁ"
 
 #: src/container.c:1696
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Използвай икони от програми, Използвай Е икони, Снимай прозорц"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© ГЁГЄГ®Г­ГЁ Г®ГІ ГЇГ°Г®ГЈГ°Г Г¬ГЁ, Г€Г§ГЇГ®Г«Г§ГўГ Г© Г… ГЁГЄГ®Г­ГЁ, Г‘Г­ГЁГ¬Г Г© ГЇГ°Г®Г§Г®Г°Г¶"
 
 #: src/container.c:1701
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Използвай Е икони, Снимай прозорци"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© Г… ГЁГЄГ®Г­ГЁ, Г‘Г­ГЁГ¬Г Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/container.c:1714
 msgid ""
@@ -533,7 +533,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "E: Iconbox\n"
-"Диалог за настройки\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/coords.c:74
 #, c-format
@@ -550,13 +550,13 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Задръжте бутона на мишката и местете мишката\n"
-"за да можете да местите олето\n"
-"напред-назад.\n"
-"Щтракнете с десния бутон за списък с всички\n"
-"работни полета и техните приложения.\n"
-"Щтракнете със средния бутон за списък с всички\n"
-"работещи в момента приложения.\n"
+"Г‡Г Г¤Г°ГєГ¦ГІГҐ ГЎГіГІГ®Г­Г  Г­Г  Г¬ГЁГёГЄГ ГІГ  ГЁ Г¬ГҐГ±ГІГҐГІГҐ Г¬ГЁГёГЄГ ГІГ \n"
+"Г§Г  Г¤Г  Г¬Г®Г¦ГҐГІГҐ Г¤Г  Г¬ГҐГ±ГІГЁГІГҐ Г®Г«ГҐГІГ®\n"
+"Г­Г ГЇГ°ГҐГ¤-Г­Г Г§Г Г¤.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ Г± Г¤ГҐГ±Г­ГЁГї ГЎГіГІГ®Г­ Г§Г  Г±ГЇГЁГ±ГєГЄ Г± ГўГ±ГЁГ·ГЄГЁ\n"
+"Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ  ГЁ ГІГҐГµГ­ГЁГІГҐ ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ Г±ГєГ± Г±Г°ГҐГ¤Г­ГЁГї ГЎГіГІГ®Г­ Г§Г  Г±ГЇГЁГ±ГєГЄ Г± ГўГ±ГЁГ·ГЄГЁ\n"
+"Г°Г ГЎГ®ГІГҐГ№ГЁ Гў Г¬Г®Г¬ГҐГ­ГІГ  ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї.\n"
 
 #: src/desktops.c:135
 msgid ""
@@ -567,94 +567,94 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Това е главното поле.\n"
-"Не можете да го мърдате.\n"
-"Щтракнете с десен бутон за списък с всички\n"
-"работни полета и техните приложения.\n"
-"Щтракнете със средния бутон за списък с всички\n"
-"работещи в момента приложения.\n"
+"Г’Г®ГўГ  ГҐ ГЈГ«Г ГўГ­Г®ГІГ® ГЇГ®Г«ГҐ.\n"
+"ГЌГҐ Г¬Г®Г¦ГҐГІГҐ Г¤Г  ГЈГ® Г¬ГєГ°Г¤Г ГІГҐ.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ Г± Г¤ГҐГ±ГҐГ­ ГЎГіГІГ®Г­ Г§Г  Г±ГЇГЁГ±ГєГЄ Г± ГўГ±ГЁГ·ГЄГЁ\n"
+"Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ  ГЁ ГІГҐГµГ­ГЁГІГҐ ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ Г±ГєГ± Г±Г°ГҐГ¤Г­ГЁГї ГЎГіГІГ®Г­ Г§Г  Г±ГЇГЁГ±ГєГЄ Г± ГўГ±ГЁГ·ГЄГЁ\n"
+"Г°Г ГЎГ®ГІГҐГ№ГЁ Гў Г¬Г®Г¬ГҐГ­ГІГ  ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї.\n"
 
 #: src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
-"Щтракнете тук за да вдигнете това\n"
-"поле най-горе.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ ГІГіГЄ Г§Г  Г¤Г  ГўГ¤ГЁГЈГ­ГҐГІГҐ ГІГ®ГўГ \n"
+"ГЇГ®Г«ГҐ Г­Г Г©-ГЈГ®Г°ГҐ.\n"
 
 #: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
-"Щтракнете тук за да свалите това\n"
-"поле най-долу.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ ГІГіГЄ Г§Г  Г¤Г  Г±ГўГ Г«ГЁГІГҐ ГІГ®ГўГ \n"
+"ГЇГ®Г«ГҐ Г­Г Г©-Г¤Г®Г«Гі.\n"
 
 #: src/desktops.c:2316
 msgid "Number of virtual desktops:\n"
-msgstr "Брой на виртуални работни полета:\n"
+msgstr "ГЃГ°Г®Г© Г­Г  ГўГЁГ°ГІГіГ Г«Г­ГЁ Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ :\n"
 
 #: src/desktops.c:2341
 msgid "Slide desktops around when changing"
-msgstr "Плъзгай полетата когато ги сменяте"
+msgstr "ГЏГ«ГєГ§ГЈГ Г© ГЇГ®Г«ГҐГІГ ГІГ  ГЄГ®ГЈГ ГІГ® ГЈГЁ Г±Г¬ГҐГ­ГїГІГҐ"
 
 #: src/desktops.c:2347
 #, fuzzy
 msgid "Desktop Slide speed:\n"
-msgstr "Бързина на плъзгане на полето: (бавно)\n"
+msgstr "ГЃГєГ°Г§ГЁГ­Г  Г­Г  ГЇГ«ГєГ§ГЈГ Г­ГҐ Г­Г  ГЇГ®Г«ГҐГІГ®: (ГЎГ ГўГ­Г®)\n"
 
 #: src/desktops.c:2361
 msgid "Wrap desktops around"
-msgstr "Застъпете полетата"
+msgstr "Г‡Г Г±ГІГєГЇГҐГІГҐ ГЇГ®Г«ГҐГІГ ГІГ "
 
 #: src/desktops.c:2369
 msgid "Display desktop dragbar"
-msgstr "Показвай Dragbar-ът"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г© Dragbar-ГєГІ"
 
 #: src/desktops.c:2375
 msgid "Drag bar position:"
-msgstr "Позиция на Dragbar-ът"
+msgstr "ГЏГ®Г§ГЁГ¶ГЁГї Г­Г  Dragbar-ГєГІ"
 
 #: src/desktops.c:2379
 msgid "Top"
-msgstr "Отгоре"
+msgstr "ГЋГІГЈГ®Г°ГҐ"
 
 #: src/desktops.c:2385
 msgid "Bottom"
-msgstr "Отдолу"
+msgstr "ГЋГІГ¤Г®Г«Гі"
 
 #: src/desktops.c:2391 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
-msgstr "Левият"
+msgstr "Г‹ГҐГўГЁГїГІ"
 
 #: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
-msgstr "Десният"
+msgstr "Г„ГҐГ±Г­ГЁГїГІ"
 
 #: src/desktops.c:2405 src/menus-misc.c:582
 #, fuzzy
 msgid "Desks"
-msgstr "Поле"
+msgstr "ГЏГ®Г«ГҐ"
 
 #: src/desktops.c:2406
 msgid "Multiple Desktop Settings"
-msgstr "Настройки за много работни полета"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г¬Г­Г®ГЈГ® Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ "
 
 #: src/desktops.c:2409
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Много работни полета\n"
-"Диалог за настройки\n"
+"Г…: ГЊГ­Г®ГЈГ® Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ \n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
-msgstr "Размер на виртуалното поле:\n"
+msgstr "ГђГ Г§Г¬ГҐГ° Г­Г  ГўГЁГ°ГІГіГ Г«Г­Г®ГІГ® ГЇГ®Г«ГҐ:\n"
 
 #: src/desktops.c:2536
 msgid "Wrap virtual desktops around"
-msgstr "Застъпвай виртуалните полета"
+msgstr "Г‡Г Г±ГІГєГЇГўГ Г© ГўГЁГ°ГІГіГ Г«Г­ГЁГІГҐ ГЇГ®Г«ГҐГІГ "
 
 #: src/desktops.c:2543
 msgid "Edge Flip Mode:"
@@ -674,7 +674,7 @@ msgstr ""
 
 #: src/desktops.c:2562
 msgid "Resistance at edge of screen:\n"
-msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
+msgstr "\"Г‘ГєГЇГ°Г®ГІГЁГўГ«ГҐГ­ГЁГҐ\" Г­Г  Г°ГєГЎГ®ГўГҐГІГҐ Г­Г  ГҐГЄГ°Г Г­Г :\n"
 
 #: src/desktops.c:2574
 msgid "Areas"
@@ -682,17 +682,17 @@ msgstr ""
 
 #: src/desktops.c:2575
 msgid "Virtual Desktop Settings"
-msgstr "Настройки на виртуални полета"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГўГЁГ°ГІГіГ Г«Г­ГЁ ГЇГ®Г«ГҐГІГ "
 
 #: src/desktops.c:2578
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
-msgstr "Е: Виртуални полетаДиалог за настройки\n"
+msgstr "Г…: Г‚ГЁГ°ГІГіГ Г«Г­ГЁ ГЇГ®Г«ГҐГІГ Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/dialog.c:849
 msgid "Apply"
-msgstr "Приложи"
+msgstr "ГЏГ°ГЁГ«Г®Г¦ГЁ"
 
 #: src/ecompmgr.c:2602
 msgid ""
@@ -704,7 +704,7 @@ msgstr ""
 
 #: src/events.c:87
 msgid "X server setup error"
-msgstr "Грешка в настройките на X-сървъра"
+msgstr "ГѓГ°ГҐГёГЄГ  Гў Г­Г Г±ГІГ°Г®Г©ГЄГЁГІГҐ Г­Г  X-Г±ГєГ°ГўГєГ°Г "
 
 #: src/events.c:88
 msgid ""
@@ -717,138 +717,138 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
-"ФАТАЛНА ГРЕШКА:\n"
+"Г”ГЂГ’ГЂГ‹ГЌГЂ ГѓГђГ…ГГЉГЂ:\n"
 "\n"
-"Вашият X-сървър не поддържа расширение Shape.\n"
-"Разширението е нужно на Е да работи.\n"
+"Г‚Г ГёГЁГїГІ X-Г±ГєГ°ГўГєГ° Г­ГҐ ГЇГ®Г¤Г¤ГєГ°Г¦Г  Г°Г Г±ГёГЁГ°ГҐГ­ГЁГҐ Shape.\n"
+"ГђГ Г§ГёГЁГ°ГҐГ­ГЁГҐГІГ® ГҐ Г­ГіГ¦Г­Г® Г­Г  Г… Г¤Г  Г°Г ГЎГ®ГІГЁ.\n"
 "\n"
-"Възможно е вашият X-сървър да е прекалено стар или\n"
-"неправилно конфигуриран.\n"
+"Г‚ГєГ§Г¬Г®Г¦Г­Г® ГҐ ГўГ ГёГЁГїГІ X-Г±ГєГ°ГўГєГ° Г¤Г  ГҐ ГЇГ°ГҐГЄГ Г«ГҐГ­Г® Г±ГІГ Г° ГЁГ«ГЁ\n"
+"Г­ГҐГЇГ°Г ГўГЁГ«Г­Г® ГЄГ®Г­ГґГЁГЈГіГ°ГЁГ°Г Г­.\n"
 "\n"
-"Излиза се.\n"
+"Г€Г§Г«ГЁГ§Г  Г±ГҐ.\n"
 
 #: src/focus.c:713
 msgid "Focus follows pointer"
-msgstr "Фокусът следи показалеца"
+msgstr "Г”Г®ГЄГіГ±ГєГІ Г±Г«ГҐГ¤ГЁ ГЇГ®ГЄГ Г§Г Г«ГҐГ¶Г "
 
 #: src/focus.c:719
 msgid "Focus follows pointer sloppily"
-msgstr "Фокусът следи показалеца небрежно"
+msgstr "Г”Г®ГЄГіГ±ГєГІ Г±Г«ГҐГ¤ГЁ ГЇГ®ГЄГ Г§Г Г«ГҐГ¶Г  Г­ГҐГЎГ°ГҐГ¦Г­Г®"
 
 #: src/focus.c:725
 msgid "Focus follows mouse clicks"
-msgstr "Фокусът следи щраквания на мишката"
+msgstr "Г”Г®ГЄГіГ±ГєГІ Г±Г«ГҐГ¤ГЁ Г№Г°Г ГЄГўГ Г­ГЁГї Г­Г  Г¬ГЁГёГЄГ ГІГ "
 
 #: src/focus.c:735
 msgid "Clicking in a window always raises it"
-msgstr "Щракване върху прозорец винаги го вдига"
+msgstr "Г™Г°Г ГЄГўГ Г­ГҐ ГўГєГ°ГµГі ГЇГ°Г®Г§Г®Г°ГҐГ¶ ГўГЁГ­Г ГЈГЁ ГЈГ® ГўГ¤ГЁГЈГ "
 
 #: src/focus.c:743
 msgid "All new windows first get the focus"
-msgstr "Всички нови прозорци първи взимат фокуса"
+msgstr "Г‚Г±ГЁГ·ГЄГЁ Г­Г®ГўГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ ГЇГєГ°ГўГЁ ГўГ§ГЁГ¬Г ГІ ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:748
 msgid "Only new dialog windows get the focus"
-msgstr "Само нови диалогови прозорци взимат фокуса"
+msgstr "Г‘Г Г¬Г® Г­Г®ГўГЁ Г¤ГЁГ Г«Г®ГЈГ®ГўГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ ГўГ§ГЁГ¬Г ГІ ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "Само нови диалози чиито притежатели са фокусирани получават фокуса"
+msgstr "Г‘Г Г¬Г® Г­Г®ГўГЁ Г¤ГЁГ Г«Г®Г§ГЁ Г·ГЁГЁГІГ® ГЇГ°ГЁГІГҐГ¦Г ГІГҐГ«ГЁ Г±Г  ГґГ®ГЄГіГ±ГЁГ°Г Г­ГЁ ГЇГ®Г«ГіГ·Г ГўГ ГІ ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
-msgstr "Фокусирай прозореца докато сменяте"
+msgstr "Г”Г®ГЄГіГ±ГЁГ°Г Г© ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  Г¤Г®ГЄГ ГІГ® Г±Г¬ГҐГ­ГїГІГҐ"
 
 #: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
-msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
+msgstr "ГЏГ®ГЄГ Г§Г Г«ГҐГ¶ГєГІ Г­Г  Г¬ГЁГёГЄГ ГІГ  Г±ГҐ ГЇГ°Г Г№Г  ГЇГ°ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  ГЄГ ГІГ® Г±ГҐ Г±Г¬ГҐГ­ГЁ ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
-msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
+msgstr "ГЏГ®ГЄГ Г§Г Г«ГҐГ¶ГєГІ Г­Г  Г¬ГЁГёГЄГ ГІГ  Г±ГҐ ГЇГ°Г Г№Г  ГЇГ°ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  ГЄГ ГІГ® Г±ГҐ Г±Г¬ГҐГ­ГЁ ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:780
 msgid "Display and use focus list"
-msgstr "Показвай и използвай списъкът за фокус"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г© ГЁ ГЁГ§ГЇГ®Г«Г§ГўГ Г© Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:785
 msgid "Include sticky windows in focus list"
-msgstr "Включвай залепени прозорци в списъкът за фокус"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г© Г§Г Г«ГҐГЇГҐГ­ГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Гў Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:790
 msgid "Include shaded windows in focus list"
-msgstr "Включвай навити прозорци в списъкът за фокус"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г© Г­Г ГўГЁГІГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Гў Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:795
 msgid "Include iconified windows in focus list"
-msgstr "Включвай скрити прозорци в списъкът за фокус"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г© Г±ГЄГ°ГЁГІГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Гў Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
-msgstr "Включвай навити прозорци в списъкът за фокус"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г© Г­Г ГўГЁГІГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Гў Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:805
 msgid "Focus windows while switching"
-msgstr "Фокусирай прозореца докато сменяте"
+msgstr "Г”Г®ГЄГіГ±ГЁГ°Г Г© ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  Г¤Г®ГЄГ ГІГ® Г±Г¬ГҐГ­ГїГІГҐ"
 
 #: src/focus.c:810
 msgid "Raise windows after focus switch"
-msgstr "Вдигай прозореца след смяната на фокус"
+msgstr "Г‚Г¤ГЁГЈГ Г© ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  Г±Г«ГҐГ¤ Г±Г¬ГїГ­Г ГІГ  Г­Г  ГґГ®ГЄГіГ±"
 
 #: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
-msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
+msgstr "ГЏГ®ГЄГ Г§Г Г«ГҐГ¶ГєГІ Г­Г  Г¬ГЁГёГЄГ ГІГ  Г±ГҐ ГЇГ°Г Г№Г  ГЇГ°ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  Г±Г«ГҐГ¤ Г±Г¬ГїГ­Г  Г­Г  ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:825
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
-"Поведение на картините във Фокусната листа\n"
-"(ако едната операция се провали, да се пробва със следващата):"
+"ГЏГ®ГўГҐГ¤ГҐГ­ГЁГҐ Г­Г  ГЄГ Г°ГІГЁГ­ГЁГІГҐ ГўГєГў Г”Г®ГЄГіГ±Г­Г ГІГ  Г«ГЁГ±ГІГ \n"
+"(Г ГЄГ® ГҐГ¤Г­Г ГІГ  Г®ГЇГҐГ°Г Г¶ГЁГї Г±ГҐ ГЇГ°Г®ГўГ Г«ГЁ, Г¤Г  Г±ГҐ ГЇГ°Г®ГЎГўГ  Г±ГєГ± Г±Г«ГҐГ¤ГўГ Г№Г ГІГ ):"
 
 #: src/focus.c:829
 msgid "First E Icon, then App Icon"
-msgstr "Първо Е икони, после икони на програмата"
+msgstr "ГЏГєГ°ГўГ® Г… ГЁГЄГ®Г­ГЁ, ГЇГ®Г±Г«ГҐ ГЁГЄГ®Г­ГЁ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ "
 
 #: src/focus.c:835
 msgid "First App Icon, then E Icon"
-msgstr "Първо икони на програмата, после Е икони"
+msgstr "ГЏГєГ°ГўГ® ГЁГЄГ®Г­ГЁ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ , ГЇГ®Г±Г«ГҐ Г… ГЁГЄГ®Г­ГЁ"
 
 #: src/focus.c:849
 #, fuzzy
 msgid "Focus"
-msgstr "Никога не фокусирай"
+msgstr "ГЌГЁГЄГ®ГЈГ  Г­ГҐ ГґГ®ГЄГіГ±ГЁГ°Г Г©"
 
 #: src/focus.c:850
 msgid "Focus Settings"
-msgstr "Настройки за фокуса"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГґГ®ГЄГіГ±Г "
 
 #: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Фокус\n"
-"Диалог за настройкию\n"
+"Г…: Г”Г®ГЄГіГ±\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁГѕ\n"
 
 #: src/fx.c:934
 msgid "Effects"
-msgstr "Ефекти"
+msgstr "Г…ГґГҐГЄГІГЁ"
 
 #: src/fx.c:937
 msgid "Enable Effect: Raindrops"
-msgstr "Включи ефект: Дъждовни капки"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ ГҐГґГҐГЄГІ: Г„ГєГ¦Г¤Г®ГўГ­ГЁ ГЄГ ГЇГЄГЁ"
 
 #: src/fx.c:941
 msgid "Ripples"
-msgstr "Вълнение"
+msgstr "Г‚ГєГ«Г­ГҐГ­ГЁГҐ"
 
 #: src/fx.c:945
 msgid "Waves"
-msgstr "Вълни"
+msgstr "Г‚ГєГ«Г­ГЁ"
 
 #: src/fx.c:951
 msgid "FX"
@@ -856,19 +856,19 @@ msgstr ""
 
 #: src/fx.c:952
 msgid "Special FX Settings"
-msgstr "Настройки на специалните ефекти"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г±ГЇГҐГ¶ГЁГ Г«Г­ГЁГІГҐ ГҐГґГҐГЄГІГЁ"
 
 #: src/fx.c:955
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Специални ефекти\n"
-"Диалог за настройки\n"
+"Г…: Г‘ГЇГҐГ¶ГЁГ Г«Г­ГЁ ГҐГґГҐГЄГІГЁ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/groups.c:701
 msgid "Window Group Selection"
-msgstr "Избор на група за прозорци"
+msgstr "Г€Г§ГЎГ®Г° Г­Г  ГЈГ°ГіГЇГ  Г§Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/groups.c:704
 msgid ""
@@ -876,11 +876,11 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 "Enlightenment Window Group\n"
-"Диалог за избиране\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  ГЁГ§ГЎГЁГ°Г Г­ГҐ\n"
 
 #: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
-msgstr "Грешка на Window Group"
+msgstr "ГѓГ°ГҐГёГЄГ  Г­Г  Window Group"
 
 #: src/groups.c:729
 msgid ""
@@ -891,9 +891,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В момента този прозорец не принадлежи на никоя група.  \n"
-"  Можете да разрушавате групи, или да махате прозорци от групи  \n"
-"  през прозорец които принадлежи поне на една група.\n"
+"  Г‚ Г¬Г®Г¬ГҐГ­ГІГ  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶ Г­ГҐ ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ Г­Г  Г­ГЁГЄГ®Гї ГЈГ°ГіГЇГ .  \n"
+"  ГЊГ®Г¦ГҐГІГҐ Г¤Г  Г°Г Г§Г°ГіГёГ ГўГ ГІГҐ ГЈГ°ГіГЇГЁ, ГЁГ«ГЁ Г¤Г  Г¬Г ГµГ ГІГҐ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Г®ГІ ГЈГ°ГіГЇГЁ  \n"
+"  ГЇГ°ГҐГ§ ГЇГ°Г®Г§Г®Г°ГҐГ¶ ГЄГ®ГЁГІГ® ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ ГЇГ®Г­ГҐ Г­Г  ГҐГ¤Г­Г  ГЈГ°ГіГЇГ .\n"
 "\n"
 
 #: src/groups.c:737
@@ -905,9 +905,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В момента не съществуват групи или този прозорец  \n"
-"  вече принадлежи на всички възможни групи.  \n"
-"  Първо трябва да създадете нова група.  \n"
+"  Г‚ Г¬Г®Г¬ГҐГ­ГІГ  Г­ГҐ Г±ГєГ№ГҐГ±ГІГўГіГўГ ГІ ГЈГ°ГіГЇГЁ ГЁГ«ГЁ ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶  \n"
+"  ГўГҐГ·ГҐ ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ Г­Г  ГўГ±ГЁГ·ГЄГЁ ГўГєГ§Г¬Г®Г¦Г­ГЁ ГЈГ°ГіГЇГЁ.  \n"
+"  ГЏГєГ°ГўГ® ГІГ°ГїГЎГўГ  Г¤Г  Г±ГєГ§Г¤Г Г¤ГҐГІГҐ Г­Г®ГўГ  ГЈГ°ГіГЇГ .  \n"
 "\n"
 
 #: src/groups.c:746
@@ -917,61 +917,61 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В момента не съществуват групи.\n"
-"  Първо трябва да създадете група.  \n"
+"  Г‚ Г¬Г®Г¬ГҐГ­ГІГ  Г­ГҐ Г±ГєГ№ГҐГ±ГІГўГіГўГ ГІ ГЈГ°ГіГЇГЁ.\n"
+"  ГЏГєГ°ГўГ® ГІГ°ГїГЎГўГ  Г¤Г  Г±ГєГ§Г¤Г Г¤ГҐГІГҐ ГЈГ°ГіГЇГ .  \n"
 "\n"
 
 #: src/groups.c:836
 msgid "   Pick the group to configure:   "
-msgstr "  Изберете групата за настройки:  "
+msgstr "  Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ  Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ:  "
 
 #: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  Следните настройки са  \n"
-"  за всички групи:  "
+"  Г‘Г«ГҐГ¤Г­ГЁГІГҐ Г­Г Г±ГІГ°Г®Г©ГЄГЁ Г±Г   \n"
+"  Г§Г  ГўГ±ГЁГ·ГЄГЁ ГЈГ°ГіГЇГЁ:  "
 
 #: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
-msgstr "Смяна на рамков стил"
+msgstr "Г‘Г¬ГїГ­Г  Г­Г  Г°Г Г¬ГЄГ®Гў Г±ГІГЁГ«"
 
 #: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
-msgstr "Скриване"
+msgstr "Г‘ГЄГ°ГЁГўГ Г­ГҐ"
 
 #: src/groups.c:882 src/groups.c:979
 msgid "Killing"
-msgstr "Убиване"
+msgstr "Г“ГЎГЁГўГ Г­ГҐ"
 
 #: src/groups.c:887 src/groups.c:984
 msgid "Moving"
-msgstr "Мърдане"
+msgstr "ГЊГєГ°Г¤Г Г­ГҐ"
 
 #: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
-msgstr "Вдигане/Смъкване"
+msgstr "Г‚Г¤ГЁГЈГ Г­ГҐ/Г‘Г¬ГєГЄГўГ Г­ГҐ"
 
 #: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
-msgstr "Залепяване"
+msgstr "Г‡Г Г«ГҐГЇГїГўГ Г­ГҐ"
 
 #: src/groups.c:902 src/groups.c:999
 msgid "Shading"
-msgstr "Навиване"
+msgstr "ГЌГ ГўГЁГўГ Г­ГҐ"
 
 #: src/groups.c:909
 msgid "Window Group Settings"
-msgstr "Настройки на групи"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГЈГ°ГіГЇГЁ"
 
 #: src/groups.c:912
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Групи от прозорци\n"
-"Диалог за настройки\n"
+"Г…: ГѓГ°ГіГЇГЁ Г®ГІ ГЇГ°Г®Г§Г®Г°Г¶ГЁ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/groups.c:927
 msgid ""
@@ -980,52 +980,52 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  В момента този прозорец не принадлежи на никоя група.  \n"
+"  Г‚ Г¬Г®Г¬ГҐГ­ГІГ  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶ Г­ГҐ ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ Г­Г  Г­ГЁГЄГ®Гї ГЈГ°ГіГЇГ .  \n"
 "\n"
 
 #: src/groups.c:962
 msgid " Per-group settings: "
-msgstr "Настройки за отделна група"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г®ГІГ¤ГҐГ«Г­Г  ГЈГ°ГіГЇГ "
 
 #: src/groups.c:1008
 msgid " Global settings: "
-msgstr "Глобални настройки"
+msgstr "ГѓГ«Г®ГЎГ Г«Г­ГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/groups.c:1012
 msgid "Swap Window Locations"
-msgstr "Размени мястото на прозорците"
+msgstr "ГђГ Г§Г¬ГҐГ­ГЁ Г¬ГїГ±ГІГ®ГІГ® Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ"
 
 #: src/groups.c:1018 src/menus-misc.c:642 config/strings.c:140
 #, fuzzy
 msgid "Groups"
-msgstr "Група %i"
+msgstr "ГѓГ°ГіГЇГ  %i"
 
 #: src/groups.c:1019
 msgid "Default Group Control Settings"
-msgstr "Настройки \"по подразбиране\" за групов контрол"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ \"ГЇГ® ГЇГ®Г¤Г°Г Г§ГЎГЁГ°Г Г­ГҐ\" Г§Г  ГЈГ°ГіГЇГ®Гў ГЄГ®Г­ГІГ°Г®Г«"
 
 #: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
-"Е: Групов контрол по подразбиране\n"
-"Диалог за настройки\n"
+"Г…: ГѓГ°ГіГЇГ®Гў ГЄГ®Г­ГІГ°Г®Г« ГЇГ® ГЇГ®Г¤Г°Г Г§ГЎГЁГ°Г Г­ГҐ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/groups.c:1050
 #, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr "  Изберете групата в която този прозорец да принадлежи:  \n"
+msgstr "  Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ  Гў ГЄГ®ГїГІГ® ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶ Г¤Г  ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ:  \n"
 
 #: src/groups.c:1056
 #, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "   Изберете групата, от която да махнете прозореца.  "
+msgstr "   Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ , Г®ГІ ГЄГ®ГїГІГ® Г¤Г  Г¬Г ГµГ­ГҐГІГҐ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г .  "
 
 #: src/groups.c:1061
 #, fuzzy
 msgid "Select the group to break:"
-msgstr "  Изберете групата, която да разтрогнете  "
+msgstr "  Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ , ГЄГ®ГїГІГ® Г¤Г  Г°Г Г§ГІГ°Г®ГЈГ­ГҐГІГҐ  "
 
 #: src/handlers.c:61
 #, c-format
@@ -1039,13 +1039,13 @@ msgid ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
-"Enlightenment е изпълнил нелегално указание.\n"
+"Enlightenment ГҐ ГЁГ§ГЇГєГ«Г­ГЁГ« Г­ГҐГ«ГҐГЈГ Г«Г­Г® ГіГЄГ Г§Г Г­ГЁГҐ.\n"
 "\n"
-"Най-вероятно се случва защото имате инсталиран и пуснат\n"
-"двоичен файл на Е който е компилиран за модел процесор\n"
-"несъвместим 100%% с вашия. Моля, или инсталирайте правилният пакет\n"
-"за вашата система, или прекомпилирайте Е и по възможност\n"
-"всички поддържащи библиотеки които сте взели във двоичен формат.\n"
+"ГЌГ Г©-ГўГҐГ°Г®ГїГІГ­Г® Г±ГҐ Г±Г«ГіГ·ГўГ  Г§Г Г№Г®ГІГ® ГЁГ¬Г ГІГҐ ГЁГ­Г±ГІГ Г«ГЁГ°Г Г­ ГЁ ГЇГіГ±Г­Г ГІ\n"
+"Г¤ГўГ®ГЁГ·ГҐГ­ ГґГ Г©Г« Г­Г  Г… ГЄГ®Г©ГІГ® ГҐ ГЄГ®Г¬ГЇГЁГ«ГЁГ°Г Г­ Г§Г  Г¬Г®Г¤ГҐГ« ГЇГ°Г®Г¶ГҐГ±Г®Г°\n"
+"Г­ГҐГ±ГєГўГ¬ГҐГ±ГІГЁГ¬ 100%% Г± ГўГ ГёГЁГї. ГЊГ®Г«Гї, ГЁГ«ГЁ ГЁГ­Г±ГІГ Г«ГЁГ°Г Г©ГІГҐ ГЇГ°Г ГўГЁГ«Г­ГЁГїГІ ГЇГ ГЄГҐГІ\n"
+"Г§Г  ГўГ ГёГ ГІГ  Г±ГЁГ±ГІГҐГ¬Г , ГЁГ«ГЁ ГЇГ°ГҐГЄГ®Г¬ГЇГЁГ«ГЁГ°Г Г©ГІГҐ Г… ГЁ ГЇГ® ГўГєГ§Г¬Г®Г¦Г­Г®Г±ГІ\n"
+"ГўГ±ГЁГ·ГЄГЁ ГЇГ®Г¤Г¤ГєГ°Г¦Г Г№ГЁ ГЎГЁГЎГ«ГЁГ®ГІГҐГЄГЁ ГЄГ®ГЁГІГ® Г±ГІГҐ ГўГ§ГҐГ«ГЁ ГўГєГў Г¤ГўГ®ГЁГ·ГҐГ­ ГґГ®Г°Г¬Г ГІ.\n"
 
 #: src/handlers.c:71
 msgid ""
@@ -1060,18 +1060,18 @@ msgid ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment е причинил Floating Point изключение.\n"
+"Enlightenment ГҐ ГЇГ°ГЁГ·ГЁГ­ГЁГ« Floating Point ГЁГ§ГЄГ«ГѕГ·ГҐГ­ГЁГҐ.\n"
 "\n"
-"Това означава,  че Enlightenment или поддържащите библиотечни програми "
-"които\n"
-"вика са направили неправилна математическа операция (най-вероятно са\n"
-"разделили на нула). Това най-вероятно е грешка в програмата. Препоръчително\n"
-"е да рестартирате сега. Ако искате да помогнете в отстраняването на тази "
-"грешка,\n"
-"моля компилирайте Е с debug символи и после го пуснете през gdb за да "
-"проследите\n"
-"кога е умрял и да изпратите полезна информация с информация за  "
-"проследяването.\n"
+"Г’Г®ГўГ  Г®Г§Г­Г Г·Г ГўГ ,  Г·ГҐ Enlightenment ГЁГ«ГЁ ГЇГ®Г¤Г¤ГєГ°Г¦Г Г№ГЁГІГҐ ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­ГЁ ГЇГ°Г®ГЈГ°Г Г¬ГЁ "
+"ГЄГ®ГЁГІГ®\n"
+"ГўГЁГЄГ  Г±Г  Г­Г ГЇГ°Г ГўГЁГ«ГЁ Г­ГҐГЇГ°Г ГўГЁГ«Г­Г  Г¬Г ГІГҐГ¬Г ГІГЁГ·ГҐГ±ГЄГ  Г®ГЇГҐГ°Г Г¶ГЁГї (Г­Г Г©-ГўГҐГ°Г®ГїГІГ­Г® Г±Г \n"
+"Г°Г Г§Г¤ГҐГ«ГЁГ«ГЁ Г­Г  Г­ГіГ«Г ). Г’Г®ГўГ  Г­Г Г©-ГўГҐГ°Г®ГїГІГ­Г® ГҐ ГЈГ°ГҐГёГЄГ  Гў ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ . ГЏГ°ГҐГЇГ®Г°ГєГ·ГЁГІГҐГ«Г­Г®\n"
+"ГҐ Г¤Г  Г°ГҐГ±ГІГ Г°ГІГЁГ°Г ГІГҐ Г±ГҐГЈГ . ГЂГЄГ® ГЁГ±ГЄГ ГІГҐ Г¤Г  ГЇГ®Г¬Г®ГЈГ­ГҐГІГҐ Гў Г®ГІГ±ГІГ°Г Г­ГїГўГ Г­ГҐГІГ® Г­Г  ГІГ Г§ГЁ "
+"ГЈГ°ГҐГёГЄГ ,\n"
+"Г¬Г®Г«Гї ГЄГ®Г¬ГЇГЁГ«ГЁГ°Г Г©ГІГҐ Г… Г± debug Г±ГЁГ¬ГўГ®Г«ГЁ ГЁ ГЇГ®Г±Г«ГҐ ГЈГ® ГЇГіГ±Г­ГҐГІГҐ ГЇГ°ГҐГ§ gdb Г§Г  Г¤Г  "
+"ГЇГ°Г®Г±Г«ГҐГ¤ГЁГІГҐ\n"
+"ГЄГ®ГЈГ  ГҐ ГіГ¬Г°ГїГ« ГЁ Г¤Г  ГЁГ§ГЇГ°Г ГІГЁГІГҐ ГЇГ®Г«ГҐГ§Г­Г  ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г± ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г§Г   "
+"ГЇГ°Г®Г±Г«ГҐГ¤ГїГўГ Г­ГҐГІГ®.\n"
 
 #: src/handlers.c:83
 msgid ""
@@ -1086,18 +1086,18 @@ msgid ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment е причинил Segment Violation (Segfault)\n"
+"Enlightenment ГҐ ГЇГ°ГЁГ·ГЁГ­ГЁГ« Segment Violation (Segfault)\n"
 "\n"
-"Това означава,  че Enlightenment или поддържащите библиотечни програми "
-"които\n"
-"вика са осъществили достъп до част от системната памет за която\n"
-"нямат разрешение. Това най-вероятно е грешка в програмата. Препоръчително\n"
-"е да рестартирате сега. Ако искате да помогнете в отстраняването на тази "
-"грешка,\n"
-"моля компилирайте Е с debug символи и после го пуснете през gdb за да "
-"проследите\n"
-"кога е умрял и да изпратите полезна информация с информация за  "
-"проследяването.\n"
+"Г’Г®ГўГ  Г®Г§Г­Г Г·Г ГўГ ,  Г·ГҐ Enlightenment ГЁГ«ГЁ ГЇГ®Г¤Г¤ГєГ°Г¦Г Г№ГЁГІГҐ ГЎГЁГЎГ«ГЁГ®ГІГҐГ·Г­ГЁ ГЇГ°Г®ГЈГ°Г Г¬ГЁ "
+"ГЄГ®ГЁГІГ®\n"
+"ГўГЁГЄГ  Г±Г  Г®Г±ГєГ№ГҐГ±ГІГўГЁГ«ГЁ Г¤Г®Г±ГІГєГЇ Г¤Г® Г·Г Г±ГІ Г®ГІ Г±ГЁГ±ГІГҐГ¬Г­Г ГІГ  ГЇГ Г¬ГҐГІ Г§Г  ГЄГ®ГїГІГ®\n"
+"Г­ГїГ¬Г ГІ Г°Г Г§Г°ГҐГёГҐГ­ГЁГҐ. Г’Г®ГўГ  Г­Г Г©-ГўГҐГ°Г®ГїГІГ­Г® ГҐ ГЈГ°ГҐГёГЄГ  Гў ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ . ГЏГ°ГҐГЇГ®Г°ГєГ·ГЁГІГҐГ«Г­Г®\n"
+"ГҐ Г¤Г  Г°ГҐГ±ГІГ Г°ГІГЁГ°Г ГІГҐ Г±ГҐГЈГ . ГЂГЄГ® ГЁГ±ГЄГ ГІГҐ Г¤Г  ГЇГ®Г¬Г®ГЈГ­ГҐГІГҐ Гў Г®ГІГ±ГІГ°Г Г­ГїГўГ Г­ГҐГІГ® Г­Г  ГІГ Г§ГЁ "
+"ГЈГ°ГҐГёГЄГ ,\n"
+"Г¬Г®Г«Гї ГЄГ®Г¬ГЇГЁГ«ГЁГ°Г Г©ГІГҐ Г… Г± debug Г±ГЁГ¬ГўГ®Г«ГЁ ГЁ ГЇГ®Г±Г«ГҐ ГЈГ® ГЇГіГ±Г­ГҐГІГҐ ГЇГ°ГҐГ§ gdb Г§Г  Г¤Г  "
+"ГЇГ°Г®Г±Г«ГҐГ¤ГЁГІГҐ\n"
+"ГЄГ®ГЈГ  ГҐ ГіГ¬Г°ГїГ« ГЁ Г¤Г  ГЁГ§ГЇГ°Г ГІГЁГІГҐ ГЇГ®Г«ГҐГ§Г­Г  ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г± ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г§Г   "
+"ГЇГ°Г®Г±Г«ГҐГ¤ГїГўГ Г­ГҐГІГ®.\n"
 
 #: src/handlers.c:95
 msgid ""
@@ -1107,16 +1107,16 @@ msgid ""
 "It is highly unusual to cause Bus Errors on operational\n"
 "hardware.\n"
 msgstr ""
-"Enlightenment е причинил Bus грешка.\n"
+"Enlightenment ГҐ ГЇГ°ГЁГ·ГЁГ­ГЁГ« Bus ГЈГ°ГҐГёГЄГ .\n"
 "\n"
-"Препоръчително е да проверите оборудването и ОС инсталацията.\n"
-"Прекалено странно е Е да причини Bus грешка на работещо\n"
-"оборудване.\n"
+"ГЏГ°ГҐГЇГ®Г°ГєГ·ГЁГІГҐГ«Г­Г® ГҐ Г¤Г  ГЇГ°Г®ГўГҐГ°ГЁГІГҐ Г®ГЎГ®Г°ГіГ¤ГўГ Г­ГҐГІГ® ГЁ ГЋГ‘ ГЁГ­Г±ГІГ Г«Г Г¶ГЁГїГІГ .\n"
+"ГЏГ°ГҐГЄГ Г«ГҐГ­Г® Г±ГІГ°Г Г­Г­Г® ГҐ Г… Г¤Г  ГЇГ°ГЁГ·ГЁГ­ГЁ Bus ГЈГ°ГҐГёГЄГ  Г­Г  Г°Г ГЎГ®ГІГҐГ№Г®\n"
+"Г®ГЎГ®Г°ГіГ¤ГўГ Г­ГҐ.\n"
 
 #: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
-msgstr "ActionClass Грешка!"
+msgstr "ActionClass ГѓГ°ГҐГёГЄГ !"
 
 #: src/hints.c:600
 #, c-format
@@ -1125,15 +1125,15 @@ msgstr ""
 
 #: src/iconify.c:469
 msgid "Iconbox Options"
-msgstr "Опции за Iconbox"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  Iconbox"
 
 #: src/iconify.c:470
 msgid "Iconbox Settings"
-msgstr "Настройки за Iconbox"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Iconbox"
 
 #: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:371
 msgid "Message"
-msgstr "Съобщение"
+msgstr "Г‘ГєГ®ГЎГ№ГҐГ­ГЁГҐ"
 
 #: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
@@ -1143,16 +1143,16 @@ msgstr ""
 #: src/ipc.c:1473
 #, fuzzy
 msgid "composite"
-msgstr "Включи Композитора"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ ГЉГ®Г¬ГЇГ®Г§ГЁГІГ®Г°Г "
 
 #: src/ipc.c:1480
 #, fuzzy
 msgid "sound"
-msgstr "Звук"
+msgstr "Г‡ГўГіГЄ"
 
 #: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Помощ за командите на Enlightenment IPC\n"
+msgstr "ГЏГ®Г¬Г®Г№ Г§Г  ГЄГ®Г¬Г Г­Г¤ГЁГІГҐ Г­Г  Enlightenment IPC\n"
 
 #: src/ipc.c:1827
 msgid ""
@@ -1160,25 +1160,25 @@ msgid ""
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"\"help all\": описание за всички команди\n"
-"\"help <команда>\": описание за дадена команда\n"
+"\"help all\": Г®ГЇГЁГ±Г Г­ГЁГҐ Г§Г  ГўГ±ГЁГ·ГЄГЁ ГЄГ®Г¬Г Г­Г¤ГЁ\n"
+"\"help <ГЄГ®Г¬Г Г­Г¤Г >\": Г®ГЇГЁГ±Г Г­ГЁГҐ Г§Г  Г¤Г Г¤ГҐГ­Г  ГЄГ®Г¬Г Г­Г¤Г \n"
 "\n"
 
 #: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
-msgstr "Достъпни команди:\n"
+msgstr "Г„Г®Г±ГІГєГЇГ­ГЁ ГЄГ®Г¬Г Г­Г¤ГЁ:\n"
 
 #: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
-msgstr "\"help full\": пълно описания за всяка команда\n"
+msgstr "\"help full\": ГЇГєГ«Г­Г® Г®ГЇГЁГ±Г Г­ГЁГї Г§Г  ГўГ±ГїГЄГ  ГЄГ®Г¬Г Г­Г¤Г \n"
 
 #: src/ipc.c:1848
 msgid "Use \"help <command>\" for an individual description\n"
-msgstr "\"help <команда>\": описание за дадена команда\n"
+msgstr "\"help <ГЄГ®Г¬Г Г­Г¤Г >\": Г®ГЇГЁГ±Г Г­ГЁГҐ Г§Г  Г¤Г Г¤ГҐГ­Г  ГЄГ®Г¬Г Г­Г¤Г \n"
 
 #: src/ipc.c:1850 src/ipc.c:1862
 msgid "         <command>     : <description>\n"
-msgstr "<команда> : <описание>\n"
+msgstr "<ГЄГ®Г¬Г Г­Г¤Г > : <Г®ГЇГЁГ±Г Г­ГЁГҐ>\n"
 
 #: src/main.c:584
 #, c-format
@@ -1203,18 +1203,18 @@ msgid ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 msgstr ""
-"!!!!!!!! ***** ГРЕШКА ***** !!!!!!!!\n"
+"!!!!!!!! ***** ГѓГђГ…ГГЉГЂ ***** !!!!!!!!\n"
 "\n"
-"Невъзможно е да се намери \"utility\" програмата на Enlightenment в:\n"
+"ГЌГҐГўГєГ§Г¬Г®Г¦Г­Г® ГҐ Г¤Г  Г±ГҐ Г­Г Г¬ГҐГ°ГЁ \"utility\" ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­Г  Enlightenment Гў:\n"
 "\n"
 "%s\n"
-"Грешката е фатална - Enlightenment не може да продължи да работи.\n"
-"Моля, коригирайте тази ситуация и се осигурете че е инсталирана\n"
-"правилно.\n"
+"ГѓГ°ГҐГёГЄГ ГІГ  ГҐ ГґГ ГІГ Г«Г­Г  - Enlightenment Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЇГ°Г®Г¤ГєГ«Г¦ГЁ Г¤Г  Г°Г ГЎГ®ГІГЁ.\n"
+"ГЊГ®Г«Гї, ГЄГ®Г°ГЁГЈГЁГ°Г Г©ГІГҐ ГІГ Г§ГЁ Г±ГЁГІГіГ Г¶ГЁГї ГЁ Г±ГҐ Г®Г±ГЁГЈГіГ°ГҐГІГҐ Г·ГҐ ГҐ ГЁГ­Г±ГІГ Г«ГЁГ°Г Г­Г \n"
+"ГЇГ°Г ГўГЁГ«Г­Г®.\n"
 "\n"
-"Причината поради която програмата липсва може да бъде в неправилно\n"
-"създадени пакети, някой ръчно е изтрил програмата или е имало\n"
-"грешка при инсталирането на Enlightenment.\n"
+"ГЏГ°ГЁГ·ГЁГ­Г ГІГ  ГЇГ®Г°Г Г¤ГЁ ГЄГ®ГїГІГ® ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  Г«ГЁГЇГ±ГўГ  Г¬Г®Г¦ГҐ Г¤Г  ГЎГєГ¤ГҐ Гў Г­ГҐГЇГ°Г ГўГЁГ«Г­Г®\n"
+"Г±ГєГ§Г¤Г Г¤ГҐГ­ГЁ ГЇГ ГЄГҐГІГЁ, Г­ГїГЄГ®Г© Г°ГєГ·Г­Г® ГҐ ГЁГ§ГІГ°ГЁГ« ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  ГЁГ«ГЁ ГҐ ГЁГ¬Г Г«Г®\n"
+"ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЁГ­Г±ГІГ Г«ГЁГ°Г Г­ГҐГІГ® Г­Г  Enlightenment.\n"
 
 #: src/main.c:693
 #, c-format
@@ -1228,14 +1228,14 @@ msgid ""
 "Please rectify this situation and ensure it is installed\n"
 "correctly.\n"
 msgstr ""
-"!!!!!!!! ***** ГРЕШКА ***** !!!!!!!!\n"
+"!!!!!!!! ***** ГѓГђГ…ГГЉГЂ ***** !!!!!!!!\n"
 "\n"
-"Невъзможно е да се пусне \"utility\" програмата на Е:\n"
+"ГЌГҐГўГєГ§Г¬Г®Г¦Г­Г® ГҐ Г¤Г  Г±ГҐ ГЇГіГ±Г­ГҐ \"utility\" ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  Г­Г  Г…:\n"
 "\n"
 "%s\n"
-"Грешката е фатална - Enlightenment не може да продължи да работи.\n"
-"Моля, коригирайте тази ситуация и се осигурете че е инсталирана\n"
-"правилно.\n"
+"ГѓГ°ГҐГёГЄГ ГІГ  ГҐ ГґГ ГІГ Г«Г­Г  - Enlightenment Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЇГ°Г®Г¤ГєГ«Г¦ГЁ Г¤Г  Г°Г ГЎГ®ГІГЁ.\n"
+"ГЊГ®Г«Гї, ГЄГ®Г°ГЁГЈГЁГ°Г Г©ГІГҐ ГІГ Г§ГЁ Г±ГЁГІГіГ Г¶ГЁГї ГЁ Г±ГҐ Г®Г±ГЁГЈГіГ°ГҐГІГҐ Г·ГҐ ГҐ ГЁГ­Г±ГІГ Г«ГЁГ°Г Г­Г \n"
+"ГЇГ°Г ГўГЁГ«Г­Г®.\n"
 
 #: src/magwin.c:460
 msgid "Magnifier"
@@ -1244,60 +1244,60 @@ msgstr ""
 #: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 #, fuzzy
 msgid "Themes"
-msgstr "Некоректна тема"
+msgstr "ГЌГҐГЄГ®Г°ГҐГЄГІГ­Г  ГІГҐГ¬Г "
 
 #: src/menus-misc.c:480
 msgid "Border"
-msgstr "Рамки:"
+msgstr "ГђГ Г¬ГЄГЁ:"
 
 #: src/menus-misc.c:542
 #, fuzzy
 msgid "Window List"
-msgstr "Лист за пропускане на прозорци"
+msgstr "Г‹ГЁГ±ГІ Г§Г  ГЇГ°Г®ГЇГіГ±ГЄГ Г­ГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/menus-misc.c:564
 msgid "Go to this Desktop"
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
 msgid "Desktop %i"
-msgstr "Поле %i"
+msgstr "ГЏГ®Г«ГҐ %i"
 
 #: src/menus-misc.c:611
 msgid "Show/Hide this group"
-msgstr "Покажи/скрий тази група"
+msgstr "ГЏГ®ГЄГ Г¦ГЁ/Г±ГЄГ°ГЁГ© ГІГ Г§ГЁ ГЈГ°ГіГЇГ "
 
 #: src/menus-misc.c:616
 msgid "Iconify this group"
-msgstr "Игнорирай тази група"
+msgstr "Г€ГЈГ­Г®Г°ГЁГ°Г Г© ГІГ Г§ГЁ ГЈГ°ГіГЇГ "
 
 #: src/menus-misc.c:627
 #, c-format
 msgid "Group %i"
-msgstr "Група %i"
+msgstr "ГѓГ°ГіГЇГ  %i"
 
 #: src/menus.c:2099
 msgid "Animated display of menus"
-msgstr "Анимирай менютата"
+msgstr "ГЂГ­ГЁГ¬ГЁГ°Г Г© Г¬ГҐГ­ГѕГІГ ГІГ "
 
 #: src/menus.c:2104
 msgid "Always pop up menus on screen"
-msgstr "Винаги показвай менютата върху екрана"
+msgstr "Г‚ГЁГ­Г ГЈГЁ ГЇГ®ГЄГ Г§ГўГ Г© Г¬ГҐГ­ГѕГІГ ГІГ  ГўГєГ°ГµГі ГҐГЄГ°Г Г­Г "
 
 #: src/menus.c:2109
 msgid "Warp pointer after moving menus"
-msgstr "Застъпвай показалеца след движение на менютата"
+msgstr "Г‡Г Г±ГІГєГЇГўГ Г© ГЇГ®ГЄГ Г§Г Г«ГҐГ¶Г  Г±Г«ГҐГ¤ Г¤ГўГЁГ¦ГҐГ­ГЁГҐ Г­Г  Г¬ГҐГ­ГѕГІГ ГІГ "
 
 #: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
-msgstr "Менюта:"
+msgstr "ГЊГҐГ­ГѕГІГ :"
 
 #: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/menus.c:2119
 #, fuzzy
@@ -1305,106 +1305,106 @@ msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Фокус\n"
-"Диалог за настройкию\n"
+"Г…: Г”Г®ГЄГіГ±\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁГѕ\n"
 
 #: src/mod-trans.c:114 src/mod-trans.c:264
 #, c-format
 msgid "Theme transparency: %2d"
-msgstr "Прозрачност на темата: %2d"
+msgstr "ГЏГ°Г®Г§Г°Г Г·Г­Г®Г±ГІ Г­Г  ГІГҐГ¬Г ГІГ : %2d"
 
 #: src/mod-trans.c:143
 msgid "Changes Might Require Restart:"
-msgstr "Промените може да изискват рестартиране:"
+msgstr "ГЏГ°Г®Г¬ГҐГ­ГЁГІГҐ Г¬Г®Г¦ГҐ Г¤Г  ГЁГ§ГЁГ±ГЄГўГ ГІ Г°ГҐГ±ГІГ Г°ГІГЁГ°Г Г­ГҐ:"
 
 #: src/mod-trans.c:152
 msgid "Borders:"
-msgstr "Рамки:"
+msgstr "ГђГ Г¬ГЄГЁ:"
 
 #: src/mod-trans.c:156
 msgid "Menus:"
-msgstr "Менюта:"
+msgstr "ГЊГҐГ­ГѕГІГ :"
 
 #: src/mod-trans.c:160
 msgid "Hilights:"
-msgstr "Откроявания:"
+msgstr "ГЋГІГЄГ°Г®ГїГўГ Г­ГЁГї:"
 
 #: src/mod-trans.c:164
 msgid "E Widgets:"
-msgstr "Е Приспособления:"
+msgstr "Г… ГЏГ°ГЁГ±ГЇГ®Г±Г®ГЎГ«ГҐГ­ГЁГї:"
 
 #: src/mod-trans.c:168
 msgid "E Dialogs:"
-msgstr "E Диалози:"
+msgstr "E Г„ГЁГ Г«Г®Г§ГЁ:"
 
 #: src/mod-trans.c:172
 msgid "Tooltips:"
-msgstr "Съвети:"
+msgstr "Г‘ГєГўГҐГІГЁ:"
 
 #: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
-msgstr "Плътен"
+msgstr "ГЏГ«ГєГІГҐГ­"
 
 #: src/mod-trans.c:235
 msgid "Glass"
-msgstr "Стъкло"
+msgstr "Г‘ГІГєГЄГ«Г®"
 
 #: src/mod-trans.c:280
 #, fuzzy
 msgid "Transparency"
-msgstr "Прозрачност на темата: %2d"
+msgstr "ГЏГ°Г®Г§Г°Г Г·Г­Г®Г±ГІ Г­Г  ГІГҐГ¬Г ГІГ : %2d"
 
 #: src/mod-trans.c:281
 msgid "Selective Transparency Settings"
-msgstr "Настройки за избирателна прозрачност"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГЁГ§ГЎГЁГ°Г ГІГҐГ«Г­Г  ГЇГ°Г®Г§Г°Г Г·Г­Г®Г±ГІ"
 
 #: src/mod-trans.c:284
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Избирателна прозрачност\n"
-"Диалог за настройки\n"
+"Г…: Г€Г§ГЎГЁГ°Г ГІГҐГ«Г­Г  ГЇГ°Г®Г§Г°Г Г·Г­Г®Г±ГІ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/pager.c:1006 config/strings.c:49 config/strings.c:123
 msgid "Window Options"
-msgstr "Опции за прозореца"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  ГЇГ°Г®Г§Г®Г°ГҐГ¶Г "
 
 #: src/pager.c:1009 config/strings.c:51 config/strings.c:126
 msgid "Iconify"
-msgstr "Скрий"
+msgstr "Г‘ГЄГ°ГЁГ©"
 
 #: src/pager.c:1017 config/strings.c:125
 msgid "Annihilate"
-msgstr "Унижтожи"
+msgstr "Г“Г­ГЁГ¦ГІГ®Г¦ГЁ"
 
 #: src/pager.c:1021
 msgid "Stick / Unstick"
-msgstr "Залепи / Отлепи"
+msgstr "Г‡Г Г«ГҐГЇГЁ / ГЋГІГ«ГҐГЇГЁ"
 
 #: src/pager.c:1030
 msgid "Desktop Options"
-msgstr "Опции за олето"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  Г®Г«ГҐГІГ®"
 
 #: src/pager.c:1032
 msgid "Pager Settings..."
-msgstr "Настройки за Pager-а..."
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Pager-Г ..."
 
 #: src/pager.c:1037
 msgid "Snapshotting Off"
-msgstr "Изключване на снимки на екрана"
+msgstr "Г€Г§ГЄГ«ГѕГ·ГўГ Г­ГҐ Г­Г  Г±Г­ГЁГ¬ГЄГЁ Г­Г  ГҐГЄГ°Г Г­Г "
 
 #: src/pager.c:1041
 msgid "High Quality Off"
-msgstr "Ниско качество"
+msgstr "ГЌГЁГ±ГЄГ® ГЄГ Г·ГҐГ±ГІГўГ®"
 
 #: src/pager.c:1043
 msgid "High Quality On"
-msgstr "Високо качество"
+msgstr "Г‚ГЁГ±Г®ГЄГ® ГЄГ Г·ГҐГ±ГІГўГ®"
 
 #: src/pager.c:1048
 msgid "Snapshotting On"
-msgstr "Включване на снимки на екрана"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г­ГҐ Г­Г  Г±Г­ГЁГ¬ГЄГЁ Г­Г  ГҐГЄГ°Г Г­Г "
 
 #: src/pager.c:1052
 msgid "Zoom Off"
@@ -1416,15 +1416,15 @@ msgstr ""
 
 #: src/pager.c:1813 src/pager.c:1904
 msgid "Pager scanning speed:"
-msgstr "Скорост на сканиране на Pager-a:"
+msgstr "Г‘ГЄГ®Г°Г®Г±ГІ Г­Г  Г±ГЄГ Г­ГЁГ°Г Г­ГҐ Г­Г  Pager-a:"
 
 #: src/pager.c:1814 src/pager.c:1905
 msgid "lines per second"
-msgstr "линии в секунда"
+msgstr "Г«ГЁГ­ГЁГЁ Гў Г±ГҐГЄГіГ­Г¤Г "
 
 #: src/pager.c:1843
 msgid "Enable pager display"
-msgstr "Включи Pager-а"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ Pager-Г "
 
 #: src/pager.c:1853
 msgid "Pager Mode:"
@@ -1433,11 +1433,11 @@ msgstr ""
 #: src/pager.c:1857
 #, fuzzy
 msgid "Simple"
-msgstr "Вълнение"
+msgstr "Г‚ГєГ«Г­ГҐГ­ГЁГҐ"
 
 #: src/pager.c:1863
 msgid "Make miniature snapshots of the screen"
-msgstr "Прави малки изображения на екрана"
+msgstr "ГЏГ°Г ГўГЁ Г¬Г Г«ГЄГЁ ГЁГ§Г®ГЎГ°Г Г¦ГҐГ­ГЁГї Г­Г  ГҐГЄГ°Г Г­Г "
 
 #: src/pager.c:1870
 msgid "Live Update"
@@ -1445,52 +1445,52 @@ msgstr ""
 
 #: src/pager.c:1881
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "Плавни висококачествени снимки в снимков режим"
+msgstr "ГЏГ«Г ГўГ­ГЁ ГўГЁГ±Г®ГЄГ®ГЄГ Г·ГҐГ±ГІГўГҐГ­ГЁ Г±Г­ГЁГ¬ГЄГЁ Гў Г±Г­ГЁГ¬ГЄГ®Гў Г°ГҐГ¦ГЁГ¬"
 
 #: src/pager.c:1886
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Увеличавай прозорците в Pager-а когато мишката преминава над тях"
+msgstr "Г“ГўГҐГ«ГЁГ·Г ГўГ Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ Гў Pager-Г  ГЄГ®ГЈГ ГІГ® Г¬ГЁГёГЄГ ГІГ  ГЇГ°ГҐГ¬ГЁГ­Г ГўГ  Г­Г Г¤ ГІГїГµ"
 
 #: src/pager.c:1892
 msgid "Pop up window title when mouse is over the window"
-msgstr "Показвай заглавието на прозореца, когато мишката мине над него"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г© Г§Г ГЈГ«Г ГўГЁГҐГІГ® Г­Г  ГЇГ°Г®Г§Г®Г°ГҐГ¶Г , ГЄГ®ГЈГ ГІГ® Г¬ГЁГёГЄГ ГІГ  Г¬ГЁГ­ГҐ Г­Г Г¤ Г­ГҐГЈГ®"
 
 #: src/pager.c:1897
 msgid "Continuously scan screen to update pager"
-msgstr "Непрекъснато сканирайте екрана за промени"
+msgstr "ГЌГҐГЇГ°ГҐГЄГєГ±Г­Г ГІГ® Г±ГЄГ Г­ГЁГ°Г Г©ГІГҐ ГҐГЄГ°Г Г­Г  Г§Г  ГЇГ°Г®Г¬ГҐГ­ГЁ"
 
 #: src/pager.c:1920
 msgid "Mouse button to select and drag windows:"
-msgstr "Кой бутон на мишката избира и влече прозорци:"
+msgstr "ГЉГ®Г© ГЎГіГІГ®Г­ Г­Г  Г¬ГЁГёГЄГ ГІГ  ГЁГ§ГЎГЁГ°Г  ГЁ ГўГ«ГҐГ·ГҐ ГЇГ°Г®Г§Г®Г°Г¶ГЁ:"
 
 #: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Middle"
-msgstr "Средният"
+msgstr "Г‘Г°ГҐГ¤Г­ГЁГїГІ"
 
 #: src/pager.c:1945
 msgid "Mouse button to select desktops:"
-msgstr "Кой бутон на мишката избира работни полетеа:"
+msgstr "ГЉГ®Г© ГЎГіГІГ®Г­ Г­Г  Г¬ГЁГёГЄГ ГІГ  ГЁГ§ГЎГЁГ°Г  Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГҐГ :"
 
 #: src/pager.c:1970
 msgid "Mouse button to display pager menu:"
-msgstr "Кой бутон на мишката да показва менюто на Pager-a:"
+msgstr "ГЉГ®Г© ГЎГіГІГ®Г­ Г­Г  Г¬ГЁГёГЄГ ГІГ  Г¤Г  ГЇГ®ГЄГ Г§ГўГ  Г¬ГҐГ­ГѕГІГ® Г­Г  Pager-a:"
 
 #: src/pager.c:1994
 #, fuzzy
 msgid "Pagers"
-msgstr "Настройки на Pager-а"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Pager-Г "
 
 #: src/pager.c:1995
 msgid "Pager Settings"
-msgstr "Настройки на Pager-а"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Pager-Г "
 
 #: src/pager.c:1998
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
-"Е: Поле и място\n"
-"Диалог за настройки на Pager-а\n"
+"Г…: ГЏГ®Г«ГҐ ГЁ Г¬ГїГ±ГІГ®\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Pager-Г \n"
 
 #: src/session.c:344
 msgid ""
@@ -1506,20 +1506,20 @@ msgid ""
 "\n"
 "... I hope.\n"
 msgstr ""
-"ГРЕШКА!\n"
+"ГѓГђГ…ГГЉГЂ!\n"
 "\n"
-"Май се изгуби сесийният администратор.\n"
-"Ела тука администраторе ... ела туууукаааа ... искаш ли бисквитка?\n"
-"Явно няма да дойде. Ще продължим без него.\n"
+"ГЊГ Г© Г±ГҐ ГЁГ§ГЈГіГЎГЁ Г±ГҐГ±ГЁГ©Г­ГЁГїГІ Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°.\n"
+"Г…Г«Г  ГІГіГЄГ  Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°ГҐ ... ГҐГ«Г  ГІГіГіГіГіГЄГ Г Г Г  ... ГЁГ±ГЄГ Гё Г«ГЁ ГЎГЁГ±ГЄГўГЁГІГЄГ ?\n"
+"ГџГўГ­Г® Г­ГїГ¬Г  Г¤Г  Г¤Г®Г©Г¤ГҐ. Г™ГҐ ГЇГ°Г®Г¤ГєГ«Г¦ГЁГ¬ ГЎГҐГ§ Г­ГҐГЈГ®.\n"
 "\n"
-"Ще оцелея някак.\n"
+"Г™ГҐ Г®Г¶ГҐГ«ГҐГї Г­ГїГЄГ ГЄ.\n"
 "\n"
 "\n"
-"... Надявам се.\n"
+"... ГЌГ Г¤ГїГўГ Г¬ Г±ГҐ.\n"
 
 #: src/session.c:644
 msgid "Are you sure?"
-msgstr "Сигурни ли сте?"
+msgstr "Г‘ГЁГЈГіГ°Г­ГЁ Г«ГЁ Г±ГІГҐ?"
 
 #: src/session.c:646
 msgid ""
@@ -1531,25 +1531,25 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Сигурни ли сте че искате да излезнете ?    \n"
+"    Г‘ГЁГЈГіГ°Г­ГЁ Г«ГЁ Г±ГІГҐ Г·ГҐ ГЁГ±ГЄГ ГІГҐ Г¤Г  ГЁГ§Г«ГҐГ§Г­ГҐГІГҐ ?    \n"
 "\n"
 "\n"
 
 #: src/session.c:656
 msgid "  Yes, Shut Down  "
-msgstr "  Да, изключи компютъра  "
+msgstr "  Г„Г , ГЁГ§ГЄГ«ГѕГ·ГЁ ГЄГ®Г¬ГЇГѕГІГєГ°Г   "
 
 #: src/session.c:658
 msgid "  Yes, Reboot  "
-msgstr "  Да, рестартирай компютъра "
+msgstr "  Г„Г , Г°ГҐГ±ГІГ Г°ГІГЁГ°Г Г© ГЄГ®Г¬ГЇГѕГІГєГ°Г  "
 
 #: src/session.c:661
 msgid "  Yes, Log Out  "
-msgstr "  Да, излез  "
+msgstr "  Г„Г , ГЁГ§Г«ГҐГ§  "
 
 #: src/session.c:663
 msgid "  No  "
-msgstr "  Не  "
+msgstr "  ГЌГҐ  "
 
 #: src/session.c:798
 msgid "Enable Session Script"
@@ -1557,21 +1557,21 @@ msgstr ""
 
 #: src/session.c:803
 msgid "Enable Logout Dialog"
-msgstr "Разрешавай Изходен Диалог"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© Г€Г§ГµГ®Г¤ГҐГ­ Г„ГЁГ Г«Г®ГЈ"
 
 #: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
-msgstr "Разрешавай Рестартиране/Изключване при Изход"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© ГђГҐГ±ГІГ Г°ГІГЁГ°Г Г­ГҐ/Г€Г§ГЄГ«ГѕГ·ГўГ Г­ГҐ ГЇГ°ГЁ Г€Г§ГµГ®Г¤"
 
 #: src/session.c:814
 #, fuzzy
 msgid "Session"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/session.c:815
 #, fuzzy
 msgid "Session Settings"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/session.c:818
 #, fuzzy
@@ -1579,36 +1579,36 @@ msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Фокус\n"
-"Диалог за настройкию\n"
+"Г…: Г”Г®ГЄГіГ±\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁГѕ\n"
 
 #: src/settings.c:74
 msgid "Move Methods:"
-msgstr "Режими за движение:"
+msgstr "ГђГҐГ¦ГЁГ¬ГЁ Г§Г  Г¤ГўГЁГ¦ГҐГ­ГЁГҐ:"
 
 #: src/settings.c:79
 msgid "Resize Methods:"
-msgstr "Режими за промяна на размера:"
+msgstr "ГђГҐГ¦ГЁГ¬ГЁ Г§Г  ГЇГ°Г®Г¬ГїГ­Г  Г­Г  Г°Г Г§Г¬ГҐГ°Г :"
 
 #: src/settings.c:92 src/settings.c:97 src/settings.c:359
 msgid "Technical"
-msgstr "Технически"
+msgstr "Г’ГҐГµГ­ГЁГ·ГҐГ±ГЄГЁ"
 
 #: src/settings.c:102 src/settings.c:107 src/settings.c:364
 msgid "Box"
-msgstr "Кутия"
+msgstr "ГЉГіГІГЁГї"
 
 #: src/settings.c:112 src/settings.c:117 src/settings.c:369
 msgid "Shaded"
-msgstr "Затъмнен"
+msgstr "Г‡Г ГІГєГ¬Г­ГҐГ­"
 
 #: src/settings.c:122 src/settings.c:127 src/settings.c:374
 msgid "Semi-Solid"
-msgstr "Полу-плътен"
+msgstr "ГЏГ®Г«Гі-ГЇГ«ГєГІГҐГ­"
 
 #: src/settings.c:133
 msgid "Translucent"
-msgstr "Полупрозрачен"
+msgstr "ГЏГ®Г«ГіГЇГ°Г®Г§Г°Г Г·ГҐГ­"
 
 #: src/settings.c:142
 msgid "Avoid server grab"
@@ -1617,20 +1617,20 @@ msgstr ""
 #: src/settings.c:152
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
-"Движение/промяна на размера:\n"
-"Позиция на геометричната информация:"
+"Г„ГўГЁГ¦ГҐГ­ГЁГҐ/ГЇГ°Г®Г¬ГїГ­Г  Г­Г  Г°Г Г§Г¬ГҐГ°Г :\n"
+"ГЏГ®Г§ГЁГ¶ГЁГї Г­Г  ГЈГҐГ®Г¬ГҐГІГ°ГЁГ·Г­Г ГІГ  ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї:"
 
 #: src/settings.c:156
 msgid "Window Center (O/T/B Methods)"
-msgstr "Център на прозореца (Режим O/T/B)"
+msgstr "Г–ГҐГ­ГІГєГ° Г­Г  ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  (ГђГҐГ¦ГЁГ¬ O/T/B)"
 
 #: src/settings.c:162
 msgid "Always Screen corner"
-msgstr "В ъгъла на екрана"
+msgstr "Г‚ ГєГЈГєГ«Г  Г­Г  ГҐГЄГ°Г Г­Г "
 
 #: src/settings.c:168
 msgid "Don't show"
-msgstr "Не показвайте"
+msgstr "ГЌГҐ ГЇГ®ГЄГ Г§ГўГ Г©ГІГҐ"
 
 #: src/settings.c:180
 msgid "Default Resize Policy:"
@@ -1650,7 +1650,7 @@ msgstr ""
 
 #: src/settings.c:206
 msgid "Update window while moving"
-msgstr "Поднови прозореца докато се движи"
+msgstr "ГЏГ®Г¤Г­Г®ГўГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г  Г¤Г®ГЄГ ГІГ® Г±ГҐ Г¤ГўГЁГ¦ГЁ"
 
 #: src/settings.c:211
 msgid "Synchronize move/resize with application"
@@ -1663,83 +1663,83 @@ msgstr ""
 #: src/settings.c:222
 #, fuzzy
 msgid "Move/Resize"
-msgstr "Размер"
+msgstr "ГђГ Г§Г¬ГҐГ°"
 
 #: src/settings.c:223
 msgid "Move & Resize Settings"
-msgstr "Настройки за движение и промяна на размера"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г¤ГўГЁГ¦ГҐГ­ГЁГҐ ГЁ ГЇГ°Г®Г¬ГїГ­Г  Г­Г  Г°Г Г§Г¬ГҐГ°Г "
 
 #: src/settings.c:226
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
-"Е: движение и промяна на размера\n"
-"Диалог за настройки на режимите\n"
+"Г…: Г¤ГўГЁГ¦ГҐГ­ГЁГҐ ГЁ ГЇГ°Г®Г¬ГїГ­Г  Г­Г  Г°Г Г§Г¬ГҐГ°Г \n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г°ГҐГ¦ГЁГ¬ГЁГІГҐ\n"
 
 #: src/settings.c:313
 msgid "Dialog windows appear together with their owner"
-msgstr "Диалогови прозорци се появяват заедно с притежателите им"
+msgstr "Г„ГЁГ Г«Г®ГЈГ®ГўГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Г±ГҐ ГЇГ®ГїГўГїГўГ ГІ Г§Г ГҐГ¤Г­Г® Г± ГЇГ°ГЁГІГҐГ¦Г ГІГҐГ«ГЁГІГҐ ГЁГ¬"
 
 #: src/settings.c:318
 msgid "Switch to desktop where dialog appears"
-msgstr "Премествай екрана до полето в което се показва диалогът"
+msgstr "ГЏГ°ГҐГ¬ГҐГ±ГІГўГ Г© ГҐГЄГ°Г Г­Г  Г¤Г® ГЇГ®Г«ГҐГІГ® Гў ГЄГ®ГҐГІГ® Г±ГҐ ГЇГ®ГЄГ Г§ГўГ  Г¤ГЁГ Г«Г®ГЈГєГІ"
 
 #: src/settings.c:326
 msgid "Place windows manually"
-msgstr "Слагайте прозорците ръчно"
+msgstr "Г‘Г«Г ГЈГ Г©ГІГҐ ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ Г°ГєГ·Г­Г®"
 
 #: src/settings.c:331
 msgid "Place windows under mouse"
-msgstr "Слагай прозорците под мишката"
+msgstr "Г‘Г«Г ГЈГ Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ ГЇГ®Г¤ Г¬ГЁГёГЄГ ГІГ "
 
 #: src/settings.c:336
 #, fuzzy
 msgid "Center windows when desk is full"
-msgstr "Включвай навити прозорци в списъкът за фокус"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г© Г­Г ГўГЁГІГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Гў Г±ГЇГЁГ±ГєГЄГєГІ Г§Г  ГґГ®ГЄГіГ±"
 
 #: src/settings.c:341
 msgid "Slide windows in when they appear"
-msgstr "Плъзгай прозорците когато се показват"
+msgstr "ГЏГ«ГєГ§ГЈГ Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ ГЄГ®ГЈГ ГІГ® Г±ГҐ ГЇГ®ГЄГ Г§ГўГ ГІ"
 
 #: src/settings.c:346
 msgid "Slide windows around when cleaning up"
-msgstr "Плъзгай прозорците когато чистите"
+msgstr "ГЏГ«ГєГ§ГЈГ Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ ГЄГ®ГЈГ ГІГ® Г·ГЁГ±ГІГЁГІГҐ"
 
 #: src/settings.c:351
 msgid "Slide Method:"
-msgstr "Режим на плъзгане"
+msgstr "ГђГҐГ¦ГЁГ¬ Г­Г  ГЇГ«ГєГ§ГЈГ Г­ГҐ"
 
 #: src/settings.c:384
 #, fuzzy
 msgid "Appear Slide speed:"
-msgstr "Бързина на плъзгане на появяване: (бавно)\n"
+msgstr "ГЃГєГ°Г§ГЁГ­Г  Г­Г  ГЇГ«ГєГ§ГЈГ Г­ГҐ Г­Г  ГЇГ®ГїГўГїГўГ Г­ГҐ: (ГЎГ ГўГ­Г®)\n"
 
 #: src/settings.c:395
 #, fuzzy
 msgid "Cleanup Slide speed:"
-msgstr "Бързина на чистене на плъзгането: (бавно)\n"
+msgstr "ГЃГєГ°Г§ГЁГ­Г  Г­Г  Г·ГЁГ±ГІГҐГ­ГҐ Г­Г  ГЇГ«ГєГ§ГЈГ Г­ГҐГІГ®: (ГЎГ ГўГ­Г®)\n"
 
 #: src/settings.c:408
 msgid "Animate shading and unshading of windows"
-msgstr "Анимирай завиване и развиване на прозорци"
+msgstr "ГЂГ­ГЁГ¬ГЁГ°Г Г© Г§Г ГўГЁГўГ Г­ГҐ ГЁ Г°Г Г§ГўГЁГўГ Г­ГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/settings.c:414
 #, fuzzy
 msgid "Window Shading speed:"
-msgstr "Бързина на навиване на прозорци: (бавно)\n"
+msgstr "ГЃГєГ°Г§ГЁГ­Г  Г­Г  Г­Г ГўГЁГўГ Г­ГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ: (ГЎГ ГўГ­Г®)\n"
 
 #: src/settings.c:427
 msgid "Ignore struts"
-msgstr "Игнорирай структурите"
+msgstr "Г€ГЈГ­Г®Г°ГЁГ°Г Г© Г±ГІГ°ГіГЄГІГіГ°ГЁГІГҐ"
 
 #: src/settings.c:432
 msgid "Raise fullscreen windows"
-msgstr "Вдигни прозорци които са на цял екран"
+msgstr "Г‚Г¤ГЁГЈГ­ГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ ГЄГ®ГЁГІГ® Г±Г  Г­Г  Г¶ГїГ« ГҐГЄГ°Г Г­"
 
 #: src/settings.c:440
 msgid "Place windows on another head when full"
-msgstr "Слагай прозорците на друга глава след запълване"
+msgstr "Г‘Г«Г ГЈГ Г© ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ Г­Г  Г¤Г°ГіГЈГ  ГЈГ«Г ГўГ  Г±Г«ГҐГ¤ Г§Г ГЇГєГ«ГўГ Г­ГҐ"
 
 #: src/settings.c:448
 msgid "Placement"
@@ -1747,48 +1747,48 @@ msgstr ""
 
 #: src/settings.c:449
 msgid "Window Placement Settings"
-msgstr "Настройки за разположение на прозорци"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г°Г Г§ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/settings.c:452
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Разположение на прозорци\n"
-"Диалог за настройки\n"
+"Г…: ГђГ Г§ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/settings.c:483
 msgid "Raise Windows Automatically"
-msgstr "Автоматично вдигайте прозорците"
+msgstr "ГЂГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г©ГІГҐ ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ"
 
 #: src/settings.c:489
 msgid "Autoraise delay:"
-msgstr "Забавяне при автоматично вдигане:"
+msgstr "Г‡Г ГЎГ ГўГїГ­ГҐ ГЇГ°ГЁ Г ГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г­ГҐ:"
 
 #: src/settings.c:500
 #, fuzzy
 msgid "Autoraise"
-msgstr "Забавяне при автоматично вдигане:"
+msgstr "Г‡Г ГЎГ ГўГїГ­ГҐ ГЇГ°ГЁ Г ГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г­ГҐ:"
 
 #: src/settings.c:501
 msgid "Autoraise Settings"
-msgstr "Настройки за автоматично вдигане"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г ГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г­ГҐ"
 
 #: src/settings.c:504
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
-"Е: Автоматично вдигане\n"
-"на прозорци. Диалог за настройки\n"
+"Г…: ГЂГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г­ГҐ\n"
+"Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ. Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/settings.c:541
 msgid "Enable Dialog Headers"
-msgstr "Разрешавай header-и за диалози"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© header-ГЁ Г§Г  Г¤ГЁГ Г«Г®Г§ГЁ"
 
 #: src/settings.c:547
 msgid "Enable Button Images"
-msgstr "Разрешавай картини на бутоните"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© ГЄГ Г°ГІГЁГ­ГЁ Г­Г  ГЎГіГІГ®Г­ГЁГІГҐ"
 
 #: src/settings.c:556
 msgid "Enable sliding startup windows"
@@ -1796,55 +1796,55 @@ msgstr ""
 
 #: src/settings.c:564
 msgid "Use saveunders to reduce window exposures"
-msgstr "Използвай saveunder-и за намаляване на грешки"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© saveunder-ГЁ Г§Г  Г­Г Г¬Г Г«ГїГўГ Г­ГҐ Г­Г  ГЈГ°ГҐГёГЄГЁ"
 
 #: src/settings.c:570 config/strings.c:138 config/strings.c:154
 #, fuzzy
 msgid "Miscellaneous"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/settings.c:571
 msgid "Miscellaneous Settings"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/settings.c:574
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Други\n"
-"Диалог за настройки\n"
+"Г…: Г„Г°ГіГЈГЁ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/settings.c:615
 msgid "Enable Composite"
-msgstr "Включи Композитора"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ ГЉГ®Г¬ГЇГ®Г§ГЁГІГ®Г°Г "
 
 #: src/settings.c:623
 #, fuzzy
 msgid "Enable Fading"
-msgstr "Разрешавай обръщането през ръбовете"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© Г®ГЎГ°ГєГ№Г Г­ГҐГІГ® ГЇГ°ГҐГ§ Г°ГєГЎГ®ГўГҐГІГҐ"
 
 #: src/settings.c:629
 #, fuzzy
 msgid "Fading Speed:"
-msgstr "Бързина на изчезване\n"
+msgstr "ГЃГєГ°Г§ГЁГ­Г  Г­Г  ГЁГ§Г·ГҐГ§ГўГ Г­ГҐ\n"
 
 #: src/settings.c:642
 msgid "Shadows Off"
-msgstr "Без сенки"
+msgstr "ГЃГҐГ§ Г±ГҐГ­ГЄГЁ"
 
 #: src/settings.c:648
 msgid "Shadows Sharp"
-msgstr "Остри сенки"
+msgstr "ГЋГ±ГІГ°ГЁ Г±ГҐГ­ГЄГЁ"
 
 #: src/settings.c:654
 #, fuzzy
 msgid "Shadows Sharp2"
-msgstr "Остри сенки"
+msgstr "ГЋГ±ГІГ°ГЁ Г±ГҐГ­ГЄГЁ"
 
 #: src/settings.c:660
 msgid "Shadows Blurred"
-msgstr "Меки сенки"
+msgstr "ГЊГҐГЄГЁ Г±ГҐГ­ГЄГЁ"
 
 #: src/settings.c:671
 msgid "Default focused window opacity:"
@@ -1861,24 +1861,24 @@ msgstr ""
 #: src/settings.c:704
 #, fuzzy
 msgid "Composite"
-msgstr "Включи Композитора"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ ГЉГ®Г¬ГЇГ®Г§ГЁГІГ®Г°Г "
 
 #: src/settings.c:705
 msgid "Composite Settings"
-msgstr "Настройки за композитора"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГЄГ®Г¬ГЇГ®Г§ГЁГІГ®Г°Г "
 
 #: src/settings.c:708
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Композитор\n"
-"Диалог за настройки\n"
+"Г…: ГЉГ®Г¬ГЇГ®Г§ГЁГІГ®Г°\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/settings.c:794
 #, fuzzy
 msgid "Enlightenment Settings"
-msgstr "Enlightenment стартира..."
+msgstr "Enlightenment Г±ГІГ Г°ГІГЁГ°Г ..."
 
 #: src/setup.c:58
 msgid ""
@@ -1893,18 +1893,18 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
-"Enlightenment не може да се свърже със Х сървъра, номиниран от\n"
-"променливата на вашата обвивка, DISPLAY, Вие трябва да нагласите тази\n"
-"променлива за да може Е да намери Х сървър към който да се свърже.\n"
-"Може би все още нямате работещ Х сървър, или нямате права да се\n"
-"свържете със сървъра. Моля уверете се, че всичко е изрядно преди да\n"
-"пробвате пак. Пуснете Х като пуснете xdm или startx, или се свържете\n"
-"с вашият системен администратор, или прочетете ръководствата на Х, xdm\n"
-"и startx преди да продължитежите.\n"
+"Enlightenment Г­ГҐ Г¬Г®Г¦ГҐ Г¤Г  Г±ГҐ Г±ГўГєГ°Г¦ГҐ Г±ГєГ± Г• Г±ГєГ°ГўГєГ°Г , Г­Г®Г¬ГЁГ­ГЁГ°Г Г­ Г®ГІ\n"
+"ГЇГ°Г®Г¬ГҐГ­Г«ГЁГўГ ГІГ  Г­Г  ГўГ ГёГ ГІГ  Г®ГЎГўГЁГўГЄГ , DISPLAY, Г‚ГЁГҐ ГІГ°ГїГЎГўГ  Г¤Г  Г­Г ГЈГ«Г Г±ГЁГІГҐ ГІГ Г§ГЁ\n"
+"ГЇГ°Г®Г¬ГҐГ­Г«ГЁГўГ  Г§Г  Г¤Г  Г¬Г®Г¦ГҐ Г… Г¤Г  Г­Г Г¬ГҐГ°ГЁ Г• Г±ГєГ°ГўГєГ° ГЄГєГ¬ ГЄГ®Г©ГІГ® Г¤Г  Г±ГҐ Г±ГўГєГ°Г¦ГҐ.\n"
+"ГЊГ®Г¦ГҐ ГЎГЁ ГўГ±ГҐ Г®Г№ГҐ Г­ГїГ¬Г ГІГҐ Г°Г ГЎГ®ГІГҐГ№ Г• Г±ГєГ°ГўГєГ°, ГЁГ«ГЁ Г­ГїГ¬Г ГІГҐ ГЇГ°Г ГўГ  Г¤Г  Г±ГҐ\n"
+"Г±ГўГєГ°Г¦ГҐГІГҐ Г±ГєГ± Г±ГєГ°ГўГєГ°Г . ГЊГ®Г«Гї ГіГўГҐГ°ГҐГІГҐ Г±ГҐ, Г·ГҐ ГўГ±ГЁГ·ГЄГ® ГҐ ГЁГ§Г°ГїГ¤Г­Г® ГЇГ°ГҐГ¤ГЁ Г¤Г \n"
+"ГЇГ°Г®ГЎГўГ ГІГҐ ГЇГ ГЄ. ГЏГіГ±Г­ГҐГІГҐ Г• ГЄГ ГІГ® ГЇГіГ±Г­ГҐГІГҐ xdm ГЁГ«ГЁ startx, ГЁГ«ГЁ Г±ГҐ Г±ГўГєГ°Г¦ГҐГІГҐ\n"
+"Г± ГўГ ГёГЁГїГІ Г±ГЁГ±ГІГҐГ¬ГҐГ­ Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°, ГЁГ«ГЁ ГЇГ°Г®Г·ГҐГІГҐГІГҐ Г°ГєГЄГ®ГўГ®Г¤Г±ГІГўГ ГІГ  Г­Г  Г•, xdm\n"
+"ГЁ startx ГЇГ°ГҐГ¤ГЁ Г¤Г  ГЇГ°Г®Г¤ГєГ«Г¦ГЁГІГҐГ¦ГЁГІГҐ.\n"
 
 #: src/setup.c:156
 msgid "Another Window Manager is already running"
-msgstr "Друг Администратор на Прозорци вече работи"
+msgstr "Г„Г°ГіГЈ ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° Г­Г  ГЏГ°Г®Г§Г®Г°Г¶ГЁ ГўГҐГ·ГҐ Г°Г ГЎГ®ГІГЁ"
 
 #: src/setup.c:158
 msgid ""
@@ -1913,17 +1913,17 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 msgstr ""
-"Друг Администратор на Прозорци вече работи.\n"
+"Г„Г°ГіГЈ ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° Г­Г  ГЏГ°Г®Г§Г®Г°Г¶ГЁ ГўГҐГ·ГҐ Г°Г ГЎГ®ГІГЁ.\n"
 "\n"
-"Трябва да го затворите за да стартирате успешно Е.\n"
+"Г’Г°ГїГЎГўГ  Г¤Г  ГЈГ® Г§Г ГІГўГ®Г°ГЁГІГҐ Г§Г  Г¤Г  Г±ГІГ Г°ГІГЁГ°Г ГІГҐ ГіГ±ГЇГҐГёГ­Г® Г….\n"
 
 #: src/setup.c:167
 msgid "X server version error"
-msgstr "Грешка версия на X-сървъра"
+msgstr "ГѓГ°ГҐГёГЄГ  ГўГҐГ°Г±ГЁГї Г­Г  X-Г±ГєГ°ГўГєГ°Г "
 
 #: src/setup.c:167
 msgid "Ignore this error"
-msgstr "Игнорирай тази грешка"
+msgstr "Г€ГЈГ­Г®Г°ГЁГ°Г Г© ГІГ Г§ГЁ ГЈГ°ГҐГёГЄГ "
 
 #: src/setup.c:169
 #, c-format
@@ -1935,93 +1935,93 @@ msgid ""
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ:\n"
-"Това не е Х сървър. Всъщност разбира Х%i протокола.\n"
-"Това означава, че или Enlightenment няма да функционира, или \n"
-"или няма да го прави правилно. Ако сървърът е по-нов от Х11, то\n"
-"авторът нито има достъп до него, нито е чувал за него.\n"
+"ГЏГђГ…Г„Г“ГЏГђГ…Г†Г„Г…ГЌГ€Г…:\n"
+"Г’Г®ГўГ  Г­ГҐ ГҐ Г• Г±ГєГ°ГўГєГ°. Г‚Г±ГєГ№Г­Г®Г±ГІ Г°Г Г§ГЎГЁГ°Г  Г•%i ГЇГ°Г®ГІГ®ГЄГ®Г«Г .\n"
+"Г’Г®ГўГ  Г®Г§Г­Г Г·Г ГўГ , Г·ГҐ ГЁГ«ГЁ Enlightenment Г­ГїГ¬Г  Г¤Г  ГґГіГ­ГЄГ¶ГЁГ®Г­ГЁГ°Г , ГЁГ«ГЁ \n"
+"ГЁГ«ГЁ Г­ГїГ¬Г  Г¤Г  ГЈГ® ГЇГ°Г ГўГЁ ГЇГ°Г ГўГЁГ«Г­Г®. ГЂГЄГ® Г±ГєГ°ГўГєГ°ГєГІ ГҐ ГЇГ®-Г­Г®Гў Г®ГІ Г•11, ГІГ®\n"
+"Г ГўГІГ®Г°ГєГІ Г­ГЁГІГ® ГЁГ¬Г  Г¤Г®Г±ГІГєГЇ Г¤Г® Г­ГҐГЈГ®, Г­ГЁГІГ® ГҐ Г·ГіГўГ Г« Г§Г  Г­ГҐГЈГ®.\n"
 
 #: src/snaps.c:727
 msgid "Title:"
-msgstr "Заглавие:"
+msgstr "Г‡Г ГЈГ«Г ГўГЁГҐ:"
 
 #: src/snaps.c:739
 msgid "Name:"
-msgstr "Име:"
+msgstr "Г€Г¬ГҐ:"
 
 #: src/snaps.c:752
 msgid "Class:"
-msgstr "Клас:"
+msgstr "ГЉГ«Г Г±:"
 
 #: src/snaps.c:765
 #, fuzzy
 msgid "Role:"
-msgstr "Червено:\n"
+msgstr "Г—ГҐГ°ГўГҐГ­Г®:\n"
 
 #: src/snaps.c:778
 msgid "Command:"
-msgstr "Команда:"
+msgstr "ГЉГ®Г¬Г Г­Г¤Г :"
 
 #: src/snaps.c:818
 msgid "Track Changes"
-msgstr "Следи промени"
+msgstr "Г‘Г«ГҐГ¤ГЁ ГЇГ°Г®Г¬ГҐГ­ГЁ"
 
 #: src/snaps.c:823
 msgid "Location"
-msgstr "Място"
+msgstr "ГЊГїГ±ГІГ®"
 
 #: src/snaps.c:828
 msgid "Border style"
-msgstr "Стил на рамката"
+msgstr "Г‘ГІГЁГ« Г­Г  Г°Г Г¬ГЄГ ГІГ "
 
 #: src/snaps.c:833 config/strings.c:176
 msgid "Size"
-msgstr "Размер"
+msgstr "ГђГ Г§Г¬ГҐГ°"
 
 #: src/snaps.c:838 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
-msgstr "Поле"
+msgstr "ГЏГ®Г«ГҐ"
 
 #: src/snaps.c:843
 msgid "Shaded state"
-msgstr "Навито положение"
+msgstr "ГЌГ ГўГЁГІГ® ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ"
 
 #: src/snaps.c:848
 msgid "Sticky state"
-msgstr "Залепено положение"
+msgstr "Г‡Г Г«ГҐГЇГҐГ­Г® ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ"
 
 #: src/snaps.c:853
 msgid "Stacking layer"
-msgstr "Слой на натрупване"
+msgstr "Г‘Г«Г®Г© Г­Г  Г­Г ГІГ°ГіГЇГўГ Г­ГҐ"
 
 #: src/snaps.c:858
 msgid "Window List Skip"
-msgstr "Лист за пропускане на прозорци"
+msgstr "Г‹ГЁГ±ГІ Г§Г  ГЇГ°Г®ГЇГіГ±ГЄГ Г­ГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: src/snaps.c:864 config/strings.c:137 config/strings.c:164
 msgid "Opacity"
-msgstr "Плътност"
+msgstr "ГЏГ«ГєГІГ­Г®Г±ГІ"
 
 #: src/snaps.c:869
 msgid "Shadowing"
-msgstr "Сенки"
+msgstr "Г‘ГҐГ­ГЄГЁ"
 
 #: src/snaps.c:875
 #, fuzzy
 msgid "Flags"
-msgstr "Стъкло"
+msgstr "Г‘ГІГєГЄГ«Г®"
 
 #: src/snaps.c:894
 msgid "Restart application on login"
-msgstr "Рестартирай програмата при влизане"
+msgstr "ГђГҐГ±ГІГ Г°ГІГЁГ°Г Г© ГЇГ°Г®ГЈГ°Г Г¬Г ГІГ  ГЇГ°ГЁ ГўГ«ГЁГ§Г Г­ГҐ"
 
 #: src/snaps.c:913
 msgid "Remember this window's group(s)"
-msgstr "Запомни групата на този прозорец"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ ГЈГ°ГіГЇГ ГІГ  Г­Г  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: src/snaps.c:921
 msgid "Remembered Application Attributes"
-msgstr "Запомнени атрибути на програми"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГҐГ­ГЁ Г ГІГ°ГЁГЎГіГІГЁ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬ГЁ"
 
 #: src/snaps.c:924
 msgid ""
@@ -2029,50 +2029,50 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
-"Изберете атрибутите за този\n"
-"прозорец за който искате да се\n"
-"помни от сега нататък\n"
+"Г€Г§ГЎГҐГ°ГҐГІГҐ Г ГІГ°ГЁГЎГіГІГЁГІГҐ Г§Г  ГІГ®Г§ГЁ\n"
+"ГЇГ°Г®Г§Г®Г°ГҐГ¶ Г§Г  ГЄГ®Г©ГІГ® ГЁГ±ГЄГ ГІГҐ Г¤Г  Г±ГҐ\n"
+"ГЇГ®Г¬Г­ГЁ Г®ГІ Г±ГҐГЈГ  Г­Г ГІГ ГІГєГЄ\n"
 
 #: src/snaps.c:1014
 msgid "Delete"
-msgstr "Изтрий"
+msgstr "Г€Г§ГІГ°ГЁГ©"
 
 #: src/snaps.c:1042
 msgid "Remembered Settings..."
-msgstr "Запомнени настройки..."
+msgstr "Г‡Г ГЇГ®Г¬Г­ГҐГ­ГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ..."
 
 #: src/snaps.c:1049
 msgid "Unused"
-msgstr "Неизползван(и)"
+msgstr "ГЌГҐГЁГ§ГЇГ®Г«Г§ГўГ Г­(ГЁ)"
 
 #: src/snaps.c:1062
 msgid "There are no active windows with remembered attributes."
-msgstr "Няма активни прозорци със запомнени настройки."
+msgstr "ГЌГїГ¬Г  Г ГЄГІГЁГўГ­ГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ Г±ГєГ± Г§Г ГЇГ®Г¬Г­ГҐГ­ГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ."
 
 #: src/snaps.c:1068
 #, fuzzy
 msgid "Remember"
-msgstr "Настройки на запомняне ..."
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§Г ГЇГ®Г¬Г­ГїГ­ГҐ ..."
 
 #: src/snaps.c:1069
 msgid "Remembered Windows Settings"
-msgstr "Запомни настройките за прозорците"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁГІГҐ Г§Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁГІГҐ"
 
 #: src/snaps.c:1072
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
-"Е: Запомнени прозорци\n"
-"Диалог за настройки\n"
+"Г…: Г‡Г ГЇГ®Г¬Г­ГҐГ­ГЁ ГЇГ°Г®Г§Г®Г°Г¶ГЁ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/snaps.c:1166
 msgid "Error saving snaps file\n"
-msgstr "Грешка при записване на snap файла\n"
+msgstr "ГѓГ°ГҐГёГЄГ  ГЇГ°ГЁ Г§Г ГЇГЁГ±ГўГ Г­ГҐ Г­Г  snap ГґГ Г©Г«Г \n"
 
 #: src/sound.c:213
 msgid "Error finding sound file"
-msgstr "Грешка при намиране на звуков файл"
+msgstr "ГѓГ°ГҐГёГЄГ  ГЇГ°ГЁ Г­Г Г¬ГЁГ°Г Г­ГҐ Г­Г  Г§ГўГіГЄГ®Гў ГґГ Г©Г«"
 
 #: src/sound.c:214
 #, c-format
@@ -2083,15 +2083,15 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
-"Предупреждение!  Enlightenment не е могъл да зареди\n"
-"следния звуков файл:\n"
+"ГЏГ°ГҐГ¤ГіГЇГ°ГҐГ¦Г¤ГҐГ­ГЁГҐ!  Enlightenment Г­ГҐ ГҐ Г¬Г®ГЈГєГ« Г¤Г  Г§Г Г°ГҐГ¤ГЁ\n"
+"Г±Г«ГҐГ¤Г­ГЁГї Г§ГўГіГЄГ®Гў ГґГ Г©Г«:\n"
 "%s\n"
-"Enlightenment ще продължи да работи, но може\n"
-"да погледнете вашата конфигурация.\n"
+"Enlightenment Г№ГҐ ГЇГ°Г®Г¤ГєГ«Г¦ГЁ Г¤Г  Г°Г ГЎГ®ГІГЁ, Г­Г® Г¬Г®Г¦ГҐ\n"
+"Г¤Г  ГЇГ®ГЈГ«ГҐГ¤Г­ГҐГІГҐ ГўГ ГёГ ГІГ  ГЄГ®Г­ГґГЁГЈГіГ°Г Г¶ГЁГї.\n"
 
 #: src/sound.c:310
 msgid "Error initialising sound"
-msgstr "Грешка при пускането на звука"
+msgstr "ГѓГ°ГҐГёГЄГ  ГЇГ°ГЁ ГЇГіГ±ГЄГ Г­ГҐГІГ® Г­Г  Г§ГўГіГЄГ "
 
 #: src/sound.c:311
 #, fuzzy, c-format
@@ -2100,34 +2100,34 @@ msgid ""
 "communicating with the audio server (%s).\n"
 "Audio will now be disabled.\n"
 msgstr ""
-"Звукът е позволен в Enlightenment, но е имало грешка при\n"
-"свързването със звуковия сървър (Esound). Поддръжката на звукът\n"
-"ще бъде спряна.\n"
+"Г‡ГўГіГЄГєГІ ГҐ ГЇГ®Г§ГўГ®Г«ГҐГ­ Гў Enlightenment, Г­Г® ГҐ ГЁГ¬Г Г«Г® ГЈГ°ГҐГёГЄГ  ГЇГ°ГЁ\n"
+"Г±ГўГєГ°Г§ГўГ Г­ГҐГІГ® Г±ГєГ± Г§ГўГіГЄГ®ГўГЁГї Г±ГєГ°ГўГєГ° (Esound). ГЏГ®Г¤Г¤Г°ГєГ¦ГЄГ ГІГ  Г­Г  Г§ГўГіГЄГєГІ\n"
+"Г№ГҐ ГЎГєГ¤ГҐ Г±ГЇГ°ГїГ­Г .\n"
 
 #: src/sound.c:460
 msgid "Enable sounds"
-msgstr "Включи звукове"
+msgstr "Г‚ГЄГ«ГѕГ·ГЁ Г§ГўГіГЄГ®ГўГҐ"
 
 #: src/sound.c:466
 msgid "Sound"
-msgstr "Звук"
+msgstr "Г‡ГўГіГЄ"
 
 #: src/sound.c:467
 msgid "Audio Settings"
-msgstr "Настройки на звука"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§ГўГіГЄГ "
 
 #: src/sound.c:470
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Звук\n"
-"Диалог за настройки\n"
+"Г…: Г‡ГўГіГЄ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: src/systray.c:331 src/systray.c:431 src/systray.c:439
 #, fuzzy
 msgid "Systray Error!"
-msgstr "Ecursor Грешка!"
+msgstr "Ecursor ГѓГ°ГҐГёГЄГ !"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
@@ -2143,11 +2143,11 @@ msgstr ""
 
 #: src/systray.c:449
 msgid "Systray Options"
-msgstr "Опции за системната табла"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  Г±ГЁГ±ГІГҐГ¬Г­Г ГІГ  ГІГ ГЎГ«Г "
 
 #: src/systray.c:450
 msgid "Systray Settings"
-msgstr "Настройки за системната табла"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г±ГЁГ±ГІГҐГ¬Г­Г ГІГ  ГІГ ГЎГ«Г "
 
 #: src/theme.c:341
 #, fuzzy, c-format
@@ -2156,10 +2156,10 @@ msgid ""
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
-"Няма намерена тема в директроята за теми \"по подразбиране\":%s/themes/\n"
-"или в директорията на потребителя:\n"
+"ГЌГїГ¬Г  Г­Г Г¬ГҐГ°ГҐГ­Г  ГІГҐГ¬Г  Гў Г¤ГЁГ°ГҐГЄГІГ°Г®ГїГІГ  Г§Г  ГІГҐГ¬ГЁ \"ГЇГ® ГЇГ®Г¤Г°Г Г§ГЎГЁГ°Г Г­ГҐ\":%s/themes/\n"
+"ГЁГ«ГЁ Гў Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГїГІГ  Г­Г  ГЇГ®ГІГ°ГҐГЎГЁГІГҐГ«Гї:\n"
 "%s/themes/\n"
-"Безсмислено е да се продължава.\n"
+"ГЃГҐГ§Г±Г¬ГЁГ±Г«ГҐГ­Г® ГҐ Г¤Г  Г±ГҐ ГЇГ°Г®Г¤ГєГ«Г¦Г ГўГ .\n"
 
 #: src/theme.c:371
 msgid "Changes will take effect after restart"
@@ -2181,12 +2181,12 @@ msgstr ""
 #: src/theme.c:404
 #, fuzzy
 msgid "Theme"
-msgstr "Некоректна тема"
+msgstr "ГЌГҐГЄГ®Г°ГҐГЄГІГ­Г  ГІГҐГ¬Г "
 
 #: src/theme.c:405
 #, fuzzy
 msgid "Theme Settings"
-msgstr "Други настройки"
+msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: src/theme.c:408
 #, fuzzy
@@ -2194,37 +2194,37 @@ msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Фокус\n"
-"Диалог за настройкию\n"
+"Г…: Г”Г®ГЄГіГ±\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁГѕ\n"
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"
-msgstr "Показвай съвети"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г© Г±ГєГўГҐГІГЁ"
 
 #: src/tooltips.c:872
 msgid "Display Root Window Tips"
-msgstr "Показвайте съвети на главният прозорец"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г©ГІГҐ Г±ГєГўГҐГІГЁ Г­Г  ГЈГ«Г ГўГ­ГЁГїГІ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: src/tooltips.c:877
 msgid "Tooltip Delay:\n"
-msgstr "Забавяне на съветите:\n"
+msgstr "Г‡Г ГЎГ ГўГїГ­ГҐ Г­Г  Г±ГєГўГҐГІГЁГІГҐ:\n"
 
 #: src/tooltips.c:888
 #, fuzzy
 msgid "Tooltips"
-msgstr "Съвети:"
+msgstr "Г‘ГєГўГҐГІГЁ:"
 
 #: src/tooltips.c:889
 msgid "Tooltip Settings"
-msgstr "Настройки за съветване"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г±ГєГўГҐГІГўГ Г­ГҐ"
 
 #: src/tooltips.c:892
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Съветване\n"
-"Диалог за настройки\n"
+"Г…: Г‘ГєГўГҐГІГўГ Г­ГҐ\n"
+"Г„ГЁГ Г«Г®ГЈ Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ\n"
 
 #: config/strings.c:5
 msgid ""
@@ -2235,22 +2235,22 @@ msgstr ""
 #: config/strings.c:6 config/strings.c:8
 #, fuzzy
 msgid "Switch Desktops"
-msgstr "%i работни полета"
+msgstr "%i Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ "
 
 #: config/strings.c:7
 #, fuzzy
 msgid "Go to the next desktop."
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: config/strings.c:9
 #, fuzzy
 msgid "Go to the previous desktop."
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: config/strings.c:10
 #, fuzzy
 msgid "Move"
-msgstr "Мърдане"
+msgstr "ГЊГєГ°Г¤Г Г­ГҐ"
 
 #: config/strings.c:11 config/strings.c:23 config/strings.c:26
 #: config/strings.c:29
@@ -2264,12 +2264,12 @@ msgstr ""
 #: config/strings.c:13 config/strings.c:50 config/strings.c:53
 #, fuzzy
 msgid "Show the Window Options menu."
-msgstr "Опции за прозореца"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  ГЇГ°Г®Г§Г®Г°ГҐГ¶Г "
 
 #: config/strings.c:15
 #, fuzzy
 msgid "Show/Hide group borders."
-msgstr "Покажи/скрий тази група"
+msgstr "ГЏГ®ГЄГ Г¦ГЁ/Г±ГЄГ°ГЁГ© ГІГ Г§ГЁ ГЈГ°ГіГЇГ "
 
 #: config/strings.c:16
 msgid "Start a group."
@@ -2282,12 +2282,12 @@ msgstr ""
 #: config/strings.c:18
 #, fuzzy
 msgid "Break this window's group."
-msgstr "Запомни групата на този прозорец"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ ГЈГ°ГіГЇГ ГІГ  Г­Г  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: config/strings.c:19
 #, fuzzy
 msgid "Shade."
-msgstr "Затъмнен"
+msgstr "Г‡Г ГІГєГ¬Г­ГҐГ­"
 
 #: config/strings.c:20
 msgid "Unshade."
@@ -2296,17 +2296,17 @@ msgstr ""
 #: config/strings.c:21
 #, fuzzy
 msgid "Resize"
-msgstr "Размер"
+msgstr "ГђГ Г§Г¬ГҐГ°"
 
 #: config/strings.c:22
 #, fuzzy
 msgid "Resize this window."
-msgstr "Запомни групата на този прозорец"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ ГЈГ°ГіГЇГ ГІГ  Г­Г  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: config/strings.c:24
 #, fuzzy
 msgid "Resize Horizontally"
-msgstr "Хоризонтална"
+msgstr "Г•Г®Г°ГЁГ§Г®Г­ГІГ Г«Г­Г "
 
 #: config/strings.c:25
 msgid "Resize this window horizontally."
@@ -2315,7 +2315,7 @@ msgstr ""
 #: config/strings.c:27
 #, fuzzy
 msgid "Resize Vertically"
-msgstr "Вертикална"
+msgstr "Г‚ГҐГ°ГІГЁГЄГ Г«Г­Г "
 
 #: config/strings.c:28
 msgid "Resize this window vertically."
@@ -2356,7 +2356,7 @@ msgstr ""
 #: config/strings.c:41 config/strings.c:43
 #, fuzzy
 msgid "Send To Another Desktop"
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: config/strings.c:42
 msgid "Send this Window to the next desktop."
@@ -2369,7 +2369,7 @@ msgstr ""
 #: config/strings.c:45
 #, fuzzy
 msgid "Snapshot"
-msgstr "Включване на снимки на екрана"
+msgstr "Г‚ГЄГ«ГѕГ·ГўГ Г­ГҐ Г­Г  Г±Г­ГЁГ¬ГЄГЁ Г­Г  ГҐГЄГ°Г Г­Г "
 
 #: config/strings.c:46
 msgid "This button does nothing interesting."
@@ -2378,7 +2378,7 @@ msgstr ""
 #: config/strings.c:47 config/strings.c:130
 #, fuzzy
 msgid "Shade/Unshade"
-msgstr "Навито положение"
+msgstr "ГЌГ ГўГЁГІГ® ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2387,7 +2387,7 @@ msgstr ""
 #: config/strings.c:54
 #, fuzzy
 msgid "More Buttons"
-msgstr "Бутон"
+msgstr "ГЃГіГІГ®Г­"
 
 #: config/strings.c:55
 msgid "Show more buttons."
@@ -2401,8 +2401,8 @@ msgstr ""
 #, fuzzy
 msgid "Raise this window to the top."
 msgstr ""
-"Щтракнете тук за да вдигнете това\n"
-"поле най-горе.\n"
+"Г™ГІГ°Г ГЄГ­ГҐГІГҐ ГІГіГЄ Г§Г  Г¤Г  ГўГ¤ГЁГЈГ­ГҐГІГҐ ГІГ®ГўГ \n"
+"ГЇГ®Г«ГҐ Г­Г Г©-ГЈГ®Г°ГҐ.\n"
 
 #: config/strings.c:58 config/strings.c:129
 msgid "Lower"
@@ -2415,7 +2415,7 @@ msgstr ""
 #: config/strings.c:60 config/strings.c:131
 #, fuzzy
 msgid "Stick/Unstick"
-msgstr "Залепи / Отлепи"
+msgstr "Г‡Г Г«ГҐГЇГЁ / ГЋГІГ«ГҐГЇГЁ"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
@@ -2426,70 +2426,70 @@ msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
-"Щракване с мишката върху полето ще извърши\n"
-"следните действия"
+"Г™Г°Г ГЄГўГ Г­ГҐ Г± Г¬ГЁГёГЄГ ГІГ  ГўГєГ°ГµГі ГЇГ®Г«ГҐГІГ® Г№ГҐ ГЁГ§ГўГєГ°ГёГЁ\n"
+"Г±Г«ГҐГ¤Г­ГЁГІГҐ Г¤ГҐГ©Г±ГІГўГЁГї"
 
 #: config/strings.c:64
 msgid "Display User Menus"
-msgstr "показване на менюто на потребителя"
+msgstr "ГЇГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г­Г  ГЇГ®ГІГ°ГҐГЎГЁГІГҐГ«Гї"
 
 #: config/strings.c:65 config/strings.c:67
 msgid "Display Enlightenment Menu"
-msgstr "Показване на Е менюто"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г… Г¬ГҐГ­ГѕГІГ®"
 
 #: config/strings.c:66 config/strings.c:71
 msgid "Display Settings Menu"
-msgstr "Показване на менюто за настройки"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г§Г  Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #: config/strings.c:68
 msgid "Display Task List Menu"
-msgstr "Показване на менюто със списък задачи"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г±ГєГ± Г±ГЇГЁГ±ГєГЄ Г§Г Г¤Г Г·ГЁ"
 
 #: config/strings.c:69
 msgid "Display Desktop Menu"
-msgstr "Показване на менюто на работното поле"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г­Г  Г°Г ГЎГ®ГІГ­Г®ГІГ® ГЇГ®Г«ГҐ"
 
 #: config/strings.c:70
 msgid "Display Group Menu"
-msgstr "Показване на менюто за групи"
+msgstr "ГЏГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г§Г  ГЈГ°ГіГЇГЁ"
 
 #: config/strings.c:72
 msgid "Go Back a Desktop"
-msgstr "Отиди едно поле назад"
+msgstr "ГЋГІГЁГ¤ГЁ ГҐГ¤Г­Г® ГЇГ®Г«ГҐ Г­Г Г§Г Г¤"
 
 #: config/strings.c:73
 msgid "Go Forward a Desktop"
-msgstr "Отиди едно поле напред"
+msgstr "ГЋГІГЁГ¤ГЁ ГҐГ¤Г­Г® ГЇГ®Г«ГҐ Г­Г ГЇГ°ГҐГ¤"
 
 #: config/strings.c:78 config/strings.c:81
 #, fuzzy
 msgid "Backgrounds"
-msgstr "Фон"
+msgstr "Г”Г®Г­"
 
 #: config/strings.c:80
 #, fuzzy
 msgid "Desktop Operations"
-msgstr "Опции за олето"
+msgstr "ГЋГЇГ¶ГЁГЁ Г§Г  Г®Г«ГҐГІГ®"
 
 #: config/strings.c:82
 #, fuzzy
 msgid "Cleanup Desktop"
-msgstr "%i поле"
+msgstr "%i ГЇГ®Г«ГҐ"
 
 #: config/strings.c:83
 #, fuzzy
 msgid "Goto Next Desktop"
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: config/strings.c:84
 #, fuzzy
 msgid "Goto Previous Desktop"
-msgstr "Отиди на това поле"
+msgstr "ГЋГІГЁГ¤ГЁ Г­Г  ГІГ®ГўГ  ГЇГ®Г«ГҐ"
 
 #: config/strings.c:86
 #, fuzzy
 msgid "Create Systray"
-msgstr "Затвори системната табла"
+msgstr "Г‡Г ГІГўГ®Г°ГЁ Г±ГЁГ±ГІГҐГ¬Г­Г ГІГ  ГІГ ГЎГ«Г "
 
 #: config/strings.c:87
 msgid "Show Magnifier"
@@ -2498,17 +2498,17 @@ msgstr ""
 #: config/strings.c:89
 #, fuzzy
 msgid "Enlightenment"
-msgstr "Излезте от Enlightenment"
+msgstr "Г€Г§Г«ГҐГ§ГІГҐ Г®ГІ Enlightenment"
 
 #: config/strings.c:90 config/strings.c:190
 #, fuzzy
 msgid "User Menus"
-msgstr "показване на менюто на потребителя"
+msgstr "ГЇГ®ГЄГ Г§ГўГ Г­ГҐ Г­Г  Г¬ГҐГ­ГѕГІГ® Г­Г  ГЇГ®ГІГ°ГҐГЎГЁГІГҐГ«Гї"
 
 #: config/strings.c:91 config/strings.c:112 config/strings.c:113
 #, fuzzy
 msgid "Settings"
-msgstr "Настройки за фокуса"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГґГ®ГЄГіГ±Г "
 
 #: config/strings.c:94 config/strings.c:101 config/strings.c:116
 msgid "Maintenance"
@@ -2521,7 +2521,7 @@ msgstr ""
 #: config/strings.c:96 config/strings.c:118
 #, fuzzy
 msgid "About Enlightenment"
-msgstr "За Enlightenment %s"
+msgstr "Г‡Г  Enlightenment %s"
 
 #: config/strings.c:97 config/strings.c:119
 msgid "About this theme"
@@ -2529,12 +2529,12 @@ msgstr ""
 
 #: config/strings.c:98 config/strings.c:120 config/strings.c:194
 msgid "Restart"
-msgstr "Рестартирайте"
+msgstr "ГђГҐГ±ГІГ Г°ГІГЁГ°Г Г©ГІГҐ"
 
 #: config/strings.c:99 config/strings.c:121 config/strings.c:195
 #, fuzzy
 msgid "Log Out"
-msgstr "  Да, излез  "
+msgstr "  Г„Г , ГЁГ§Г«ГҐГ§  "
 
 #: config/strings.c:102
 msgid "Purge config file cache"
@@ -2543,7 +2543,7 @@ msgstr ""
 #: config/strings.c:103
 #, fuzzy
 msgid "Purge pager background cache"
-msgstr "Използвай картина за фона"
+msgstr "Г€Г§ГЇГ®Г«Г§ГўГ Г© ГЄГ Г°ГІГЁГ­Г  Г§Г  ГґГ®Г­Г "
 
 #: config/strings.c:104
 msgid "Purge background selector cache"
@@ -2580,32 +2580,32 @@ msgstr ""
 #: config/strings.c:132
 #, fuzzy
 msgid "Remember..."
-msgstr "Настройки на запомняне ..."
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§Г ГЇГ®Г¬Г­ГїГ­ГҐ ..."
 
 #: config/strings.c:133
 #, fuzzy
 msgid "Window Size"
-msgstr "Лист за пропускане на прозорци"
+msgstr "Г‹ГЁГ±ГІ Г§Г  ГЇГ°Г®ГЇГіГ±ГЄГ Г­ГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ"
 
 #: config/strings.c:134
 #, fuzzy
 msgid "Set Stacking"
-msgstr "Настройки за фокуса"
+msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГґГ®ГЄГіГ±Г "
 
 #: config/strings.c:135
 #, fuzzy
 msgid "Set Border Style"
-msgstr "Стил на рамката"
+msgstr "Г‘ГІГЁГ« Г­Г  Г°Г Г¬ГЄГ ГІГ "
 
 #: config/strings.c:136
 #, fuzzy
 msgid "Window Groups"
-msgstr "Грешка на Window Group"
+msgstr "ГѓГ°ГҐГёГЄГ  Г­Г  Window Group"
 
 #: config/strings.c:141
 #, fuzzy
 msgid "Configure this window's group(s)"
-msgstr "Запомни групата на този прозорец"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ ГЈГ°ГіГЇГ ГІГ  Г­Г  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: config/strings.c:142
 msgid "Start a new group"
@@ -2618,22 +2618,22 @@ msgstr ""
 #: config/strings.c:144
 #, fuzzy
 msgid "Select group to add this window to"
-msgstr "   Изберете групата, от която да махнете прозореца.  "
+msgstr "   Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ , Г®ГІ ГЄГ®ГїГІГ® Г¤Г  Г¬Г ГµГ­ГҐГІГҐ ГЇГ°Г®Г§Г®Г°ГҐГ¶Г .  "
 
 #: config/strings.c:145
 #, fuzzy
 msgid "Remove this window from a group"
-msgstr "Запомни групата на този прозорец"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГЁ ГЈГ°ГіГЇГ ГІГ  Г­Г  ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶"
 
 #: config/strings.c:146
 #, fuzzy
 msgid "Destroy a group this window belongs to"
-msgstr "  Изберете групата в която този прозорец да принадлежи:  \n"
+msgstr "  Г€Г§ГЎГҐГ°ГҐГІГҐ ГЈГ°ГіГЇГ ГІГ  Гў ГЄГ®ГїГІГ® ГІГ®Г§ГЁ ГЇГ°Г®Г§Г®Г°ГҐГ¶ Г¤Г  ГЇГ°ГЁГ­Г Г¤Г«ГҐГ¦ГЁ:  \n"
 
 #: config/strings.c:148
 #, fuzzy
 msgid "Stacking"
-msgstr "Залепяване"
+msgstr "Г‡Г Г«ГҐГЇГїГўГ Г­ГҐ"
 
 #: config/strings.c:149
 msgid "Below"
@@ -2650,7 +2650,7 @@ msgstr ""
 #: config/strings.c:152
 #, fuzzy
 msgid "On Top"
-msgstr "Отгоре"
+msgstr "ГЋГІГЈГ®Г°ГҐ"
 
 #: config/strings.c:155
 msgid "Toggle Skip Window Lists"
@@ -2667,7 +2667,7 @@ msgstr ""
 #: config/strings.c:158
 #, fuzzy
 msgid "Toggle Never Focus"
-msgstr "Никога не фокусирай"
+msgstr "ГЌГЁГЄГ®ГЈГ  Г­ГҐ ГґГ®ГЄГіГ±ГЁГ°Г Г©"
 
 #: config/strings.c:159
 msgid "Toggle Click to Focus"
@@ -2676,22 +2676,22 @@ msgstr ""
 #: config/strings.c:160
 #, fuzzy
 msgid "Toggle Never Use Area"
-msgstr "Никога не фокусирай"
+msgstr "ГЌГЁГЄГ®ГЈГ  Г­ГҐ ГґГ®ГЄГіГ±ГЁГ°Г Г©"
 
 #: config/strings.c:161
 #, fuzzy
 msgid "Toggle Button Grabs"
-msgstr "Бутон"
+msgstr "ГЃГіГІГ®Г­"
 
 #: config/strings.c:162
 #, fuzzy
 msgid "Toggle Autoshade"
-msgstr "Бутон"
+msgstr "ГЃГіГІГ®Г­"
 
 #: config/strings.c:165
 #, fuzzy
 msgid "Default"
-msgstr "Изтрий"
+msgstr "Г€Г§ГІГ°ГЁГ©"
 
 #: config/strings.c:166
 msgid "20%"
@@ -2720,12 +2720,12 @@ msgstr ""
 #: config/strings.c:172
 #, fuzzy
 msgid "Focused opacity follows unfocused"
-msgstr "Фокусът следи щраквания на мишката"
+msgstr "Г”Г®ГЄГіГ±ГєГІ Г±Г«ГҐГ¤ГЁ Г№Г°Г ГЄГўГ Г­ГЁГї Г­Г  Г¬ГЁГёГЄГ ГІГ "
 
 #: config/strings.c:173
 #, fuzzy
 msgid "Toggle Fading"
-msgstr "Разрешавай обръщането през ръбовете"
+msgstr "ГђГ Г§Г°ГҐГёГ ГўГ Г© Г®ГЎГ°ГєГ№Г Г­ГҐГІГ® ГЇГ°ГҐГ§ Г°ГєГЎГ®ГўГҐГІГҐ"
 
 #: config/strings.c:174
 msgid "Toggle Shadows"
@@ -2782,7 +2782,7 @@ msgstr ""
 #: config/strings.c:191
 #, fuzzy
 msgid "User Application List"
-msgstr "Запомнени атрибути на програми"
+msgstr "Г‡Г ГЇГ®Г¬Г­ГҐГ­ГЁ Г ГІГ°ГЁГЎГіГІГЁ Г­Г  ГЇГ°Г®ГЈГ°Г Г¬ГЁ"
 
 #: config/strings.c:192
 msgid "Other"
@@ -2791,87 +2791,87 @@ msgstr ""
 #: config/strings.c:193
 #, fuzzy
 msgid "Epplets"
-msgstr "Вълнение"
+msgstr "Г‚ГєГ«Г­ГҐГ­ГЁГҐ"
 
 #, fuzzy
 #~ msgid "Enlightenment Settings ..."
-#~ msgstr "Enlightenment стартира..."
+#~ msgstr "Enlightenment Г±ГІГ Г°ГІГЁГ°Г ..."
 
 #~ msgid "Focus Settings ..."
-#~ msgstr "Настройки за фокуса ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГґГ®ГЄГіГ±Г  ..."
 
 #~ msgid "Move & Resize Settings ..."
-#~ msgstr "Настройки за движение и промяна на размера ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г¤ГўГЁГ¦ГҐГ­ГЁГҐ ГЁ ГЇГ°Г®Г¬ГїГ­Г  Г­Г  Г°Г Г§Г¬ГҐГ°Г  ..."
 
 #~ msgid "Window Placement Settings ..."
-#~ msgstr "Настройки за разположение на прозорци ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г°Г Г§ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Г­Г  ГЇГ°Г®Г§Г®Г°Г¶ГЁ ..."
 
 #~ msgid "Multiple Desktop Settings ..."
-#~ msgstr "Настройки за много работни полета ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г¬Г­Г®ГЈГ® Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ  ..."
 
 #~ msgid "Virtual Desktop Settings ..."
-#~ msgstr "Настройки на виртуални полета ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГўГЁГ°ГІГіГ Г«Г­ГЁ ГЇГ®Г«ГҐГІГ  ..."
 
 #~ msgid "Pager Settings ..."
-#~ msgstr "Настройки на Pager-а ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Pager-Г  ..."
 
 #, fuzzy
 #~ msgid "Menu Settings ..."
-#~ msgstr "Други настройки"
+#~ msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ"
 
 #~ msgid "Autoraise Settings ..."
-#~ msgstr "Настройки за автоматично вдигане ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г ГўГІГ®Г¬Г ГІГЁГ·Г­Г® ГўГ¤ГЁГЈГ Г­ГҐ ..."
 
 #~ msgid "Tooltip Settings ..."
-#~ msgstr "Настройки за съветване ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г±ГєГўГҐГІГўГ Г­ГҐ ..."
 
 #~ msgid "Audio Settings ..."
-#~ msgstr "Настройки на звука ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§ГўГіГЄГ  ..."
 
 #~ msgid "Group Settings ..."
-#~ msgstr "Настройки на групите ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГЈГ°ГіГЇГЁГІГҐ ..."
 
 #~ msgid "Remember Settings ..."
-#~ msgstr "Настройки на запомняне ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§Г ГЇГ®Г¬Г­ГїГ­ГҐ ..."
 
 #~ msgid "Special FX Settings ..."
-#~ msgstr "Настройки за специални ефекти ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  Г±ГЇГҐГ¶ГЁГ Г«Г­ГЁ ГҐГґГҐГЄГІГЁ ..."
 
 #~ msgid "Desktop Background Settings ..."
-#~ msgstr "Настройки на фон ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  ГґГ®Г­ ..."
 
 #~ msgid "Theme Transparency Settings ..."
-#~ msgstr "Настройки за тематична прозрачност ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГІГҐГ¬Г ГІГЁГ·Г­Г  ГЇГ°Г®Г§Г°Г Г·Г­Г®Г±ГІ ..."
 
 #~ msgid "Composite Settings ..."
-#~ msgstr "Настройки за композитора ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г  ГЄГ®Г¬ГЇГ®Г§ГЁГІГ®Г°Г  ..."
 
 #, fuzzy
 #~ msgid "Session Settings ..."
-#~ msgstr "Настройки на звука ..."
+#~ msgstr "ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г­Г  Г§ГўГіГЄГ  ..."
 
 #~ msgid "Miscellaneous Settings ..."
-#~ msgstr "Други настройки ..."
+#~ msgstr "Г„Г°ГіГЈГЁ Г­Г Г±ГІГ°Г®Г©ГЄГЁ ..."
 
 #~ msgid "Mirror Shade/Iconify/Stick"
-#~ msgstr "Образец на навиване/скриване/залепване"
+#~ msgstr "ГЋГЎГ°Г Г§ГҐГ¶ Г­Г  Г­Г ГўГЁГўГ Г­ГҐ/Г±ГЄГ°ГЁГўГ Г­ГҐ/Г§Г Г«ГҐГЇГўГ Г­ГҐ"
 
 #~ msgid "%i Desktops"
-#~ msgstr "%i работни полета"
+#~ msgstr "%i Г°Г ГЎГ®ГІГ­ГЁ ГЇГ®Г«ГҐГІГ "
 
 #~ msgid "%i Desktop"
-#~ msgstr "%i поле"
+#~ msgstr "%i ГЇГ®Г«ГҐ"
 
 #~ msgid ""
 #~ "%i x %i\n"
 #~ "Screens in size"
 #~ msgstr ""
 #~ "%i x %i\n"
-#~ "Екрани с размер"
+#~ "Г…ГЄГ°Г Г­ГЁ Г± Г°Г Г§Г¬ГҐГ°"
 
 #~ msgid ""
 #~ "1\n"
 #~ "Screen in size"
 #~ msgstr ""
 #~ "1\n"
-#~ "Екран с размер"
+#~ "Г…ГЄГ°Г Г­ Г± Г°Г Г§Г¬ГҐГ°"

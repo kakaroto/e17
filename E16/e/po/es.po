@@ -12,13 +12,13 @@ msgstr ""
 "Last-Translator: Federico Vera <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/about.c:35
 #, c-format
 msgid "About Enlightenment e16 version %s"
-msgstr "Acerca de Enlightenment e16 versión %s"
+msgstr "Acerca de Enlightenment e16 versiÃ³n %s"
 
 #: ../src/about.c:46
 #, c-format
@@ -34,7 +34,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 "Bienvenido a Enlightenment e16\n"
-"versión %s.\n"
+"versiÃ³n %s.\n"
 "Si encuentra un bug, por favor no dude\n"
 "en enviar un reporte de error.\n"
 "Esperamos que disfrute este software.\n"
@@ -58,7 +58,7 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
 "Debido a que el archivo no existe.\n"
@@ -74,15 +74,15 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
-"Lo más probable es que se deba ha que este programa no está en la\n"
-"ruta de su intérprete de comandos, cuyo valor es %s. Le sugiero que consulte "
-"con la página\n"
-"del manual para dicho intérprete de comandos y lea como modificar y agregar "
+"Lo mÃ¡s probable es que se deba ha que este programa no estÃ¡ en la\n"
+"ruta de su intÃ©rprete de comandos, cuyo valor es %s. Le sugiero que consulte "
+"con la pÃ¡gina\n"
+"del manual para dicho intÃ©rprete de comandos y lea como modificar y agregar "
 "directorios a su\n"
-"ruta de ejecución.\n"
+"ruta de ejecuciÃ³n.\n"
 
 #: ../src/actions.c:134
 #, c-format
@@ -94,7 +94,7 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
 "No estoy seguro del motivo por el cual no se ha podido hacer esto. El "
@@ -111,12 +111,12 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
-"Esto se debe a que el archivo existe, es un archivo, pero no sé le ha "
+"Esto se debe a que el archivo existe, es un archivo, pero no sÃ© le ha "
 "permitido\n"
-"ejecutarlo debido a que Ud. no tiene permisos de ejecución sobre el "
+"ejecutarlo debido a que Ud. no tiene permisos de ejecuciÃ³n sobre el "
 "archivo.\n"
 
 #: ../src/actions.c:157
@@ -127,7 +127,7 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
 "Esto se debe a que el archivo es en realidad un directorio.\n"
@@ -140,7 +140,7 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Ha ocurrido un error durante la ejecución del programa:\n"
+"Ha ocurrido un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 "Este programa no pudo ser ejecutado.\n"
 "Esto se debe a que el archivo no es un archivo regular.\n"
@@ -151,7 +151,7 @@ msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
-"Hubo un error durante la ejecución del programa:\n"
+"Hubo un error durante la ejecuciÃ³n del programa:\n"
 "%s\n"
 
 #: ../src/alert.c:210
@@ -160,7 +160,7 @@ msgstr "Error de Enlightenment"
 
 #: ../src/alert.c:569
 msgid "Enlightenment Message Dialog"
-msgstr "Mensaje de Diálogo de Enlightenment"
+msgstr "Mensaje de DiÃ¡logo de Enlightenment"
 
 #: ../src/alert.c:569
 msgid "Ignore this"
@@ -176,7 +176,7 @@ msgstr "Salir de Enlightenment"
 
 #: ../src/alert.c:583
 msgid "Attention !!!"
-msgstr "Atención !!!"
+msgstr "AtenciÃ³n !!!"
 
 #: ../src/alert.c:583 ../src/dialog.c:844 ../src/dialog.c:2034
 #: ../src/events.c:87 ../src/setup.c:157 ../src/sound.c:310
@@ -190,7 +190,7 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Información de Imagen de Fondo:\n"
+"InformaciÃ³n de Imagen de Fondo:\n"
 "Nombre:  %s\n"
 "Archivo: %s\n"
 
@@ -209,7 +209,7 @@ msgstr ""
 #: ../src/backgrounds.c:1791 ../src/backgrounds.c:2221
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr "Fondos no utilizados son liberados después de %2i:%02i:%02i"
+msgstr "Fondos no utilizados son liberados despuÃ©s de %2i:%02i:%02i"
 
 #: ../src/backgrounds.c:2007
 msgid "Use background image"
@@ -248,7 +248,7 @@ msgid ""
 "Alignment\n"
 msgstr ""
 "Escalamiento\n"
-"y Alineación\n"
+"y AlineaciÃ³n\n"
 "de la\n"
 "imagen\n"
 "de Fondo\n"
@@ -329,7 +329,7 @@ msgid ""
 msgstr ""
 "Mensaje de Cliente desconocido recibido.\n"
 "Nombre del Cliente:  %s\n"
-"Versión del Cliente: %s\n"
+"VersiÃ³n del Cliente: %s\n"
 "Contenido del Mensaje:\n"
 "\n"
 "%s\n"
@@ -353,9 +353,9 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Advertencia: incapaz de determinar que hay que hacer con\n"
-"el siguiente texto en el medio de la siguiente %s definición:\n"
+"el siguiente texto en el medio de la siguiente %s definiciÃ³n:\n"
 "%s\n"
-"Se ignorará y se continuará...\n"
+"Se ignorarÃ¡ y se continuarÃ¡...\n"
 
 #: ../src/config.c:223
 #, c-format
@@ -363,16 +363,16 @@ msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Advertencia:  Error de configuración en bloque %s.\n"
-"Probablemente la salida será incorrecta.\n"
+"Advertencia:  Error de configuraciÃ³n en bloque %s.\n"
+"Probablemente la salida serÃ¡ incorrecta.\n"
 
 #: ../src/config.c:313
 msgid "Theme versioning ERROR"
-msgstr "ERROR en la versión del tema"
+msgstr "ERROR en la versiÃ³n del tema"
 
 #: ../src/config.c:314
 msgid "Restart with Defaults"
-msgstr "Reiniciar con los valores por omisión"
+msgstr "Reiniciar con los valores por omisiÃ³n"
 
 #: ../src/config.c:315
 msgid "Abort and Exit"
@@ -400,20 +400,20 @@ msgid ""
 msgstr ""
 "ERROR:\n"
 "\n"
-"La configuración del tema que está utilizando no es\n"
-"compatible. Su versión de config es %i. Necesita que\n"
-"sea marcada como la revisión <= %i\n"
+"La configuraciÃ³n del tema que estÃ¡ utilizando no es\n"
+"compatible. Su versiÃ³n de config es %i. Necesita que\n"
+"sea marcada como la revisiÃ³n <= %i\n"
 "\n"
-"Por favor comuníquese con el autor ó mantenedor del tema\n"
-"e infórmele que para que su tema funcione\n"
-"con esta versión de Enlightenment, debe\n"
-"actualizarlo a la configuración actual, y luego igualar\n"
-"la número de revisión.\n"
+"Por favor comunÃ­quese con el autor Ã³ mantenedor del tema\n"
+"e infÃ³rmele que para que su tema funcione\n"
+"con esta versiÃ³n de Enlightenment, debe\n"
+"actualizarlo a la configuraciÃ³n actual, y luego igualar\n"
+"la nÃºmero de revisiÃ³n.\n"
 "\n"
-"Si la revisión del tema es superior a Enlightenment\n"
-"podría deberse a que Ud. no ha actualizado Enlightenment por\n"
-"algún tiempo y que este tema utilize características solo\n"
-"presentes en una versión más avanzada.\n"
+"Si la revisiÃ³n del tema es superior a Enlightenment\n"
+"podrÃ­a deberse a que Ud. no ha actualizado Enlightenment por\n"
+"algÃºn tiempo y que este tema utilize caracterÃ­sticas solo\n"
+"presentes en una versiÃ³n mÃ¡s avanzada.\n"
 
 #: ../src/config.c:578
 msgid "Enlightenment Starting..."
@@ -430,12 +430,12 @@ msgstr "Cerrar"
 
 #: ../src/container.c:1216 ../config/strings.c:85
 msgid "Create New Iconbox"
-msgstr "Crear un nuevo Portaíconos"
+msgstr "Crear un nuevo PortaÃ­conos"
 
 #: ../src/container.c:1513 ../src/container.c:1586
 #, c-format
 msgid "Icon size: %2d"
-msgstr "Tamaño del Icono: %2d"
+msgstr "TamaÃ±o del Icono: %2d"
 
 #: ../src/container.c:1550
 msgid "Transparent background"
@@ -455,15 +455,15 @@ msgstr "Ocultar barras de desplazamiento si no se necesitan"
 
 #: ../src/container.c:1566
 msgid "Automatically resize to fit Icons"
-msgstr "Reajustar tamaño automáticamente"
+msgstr "Reajustar tamaÃ±o automÃ¡ticamente"
 
 #: ../src/container.c:1573
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Alineamiento de anclaje cuando se redimensiona automáticamente:"
+msgstr "Alineamiento de anclaje cuando se redimensiona automÃ¡ticamente:"
 
 #: ../src/container.c:1604
 msgid "Orientation:"
-msgstr "Orientación:"
+msgstr "OrientaciÃ³n:"
 
 #: ../src/container.c:1609
 msgid "Scrollbar side:"
@@ -511,20 +511,20 @@ msgstr "Mostrar nombre de iconos"
 
 #: ../src/container.c:1674
 msgid "Animate when iconifying to this Iconbox"
-msgstr "Animación al momento de iconizar Portaíconos"
+msgstr "AnimaciÃ³n al momento de iconizar PortaÃ­conos"
 
 #: ../src/container.c:1684
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
-"Política al mostrar iconos (si una operación falla intentar siguiente):"
+"PolÃ­tica al mostrar iconos (si una operaciÃ³n falla intentar siguiente):"
 
 #: ../src/container.c:1689
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Miniatura, icono de la aplicación, icono de Enlightenment"
+msgstr "Miniatura, icono de la aplicaciÃ³n, icono de Enlightenment"
 
 #: ../src/container.c:1696
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Icono de la aplicación, icono de Enlightenment, Miniatura"
+msgstr "Icono de la aplicaciÃ³n, icono de Enlightenment, Miniatura"
 
 #: ../src/container.c:1701
 msgid "Use Enlightenment Icon, Snapshot Window"
@@ -553,13 +553,13 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Presione el botón del ratón y arrastre\n"
-"su ratón para poder arrastrar los escritorios\n"
-"hacia adelante y atrás.\n"
-"Pulse el botón derecho del ratón para obtener una lista\n"
+"Presione el botÃ³n del ratÃ³n y arrastre\n"
+"su ratÃ³n para poder arrastrar los escritorios\n"
+"hacia adelante y atrÃ¡s.\n"
+"Pulse el botÃ³n derecho del ratÃ³n para obtener una lista\n"
 "de todos los escritorios y sus aplicaciones.\n"
-"Pulse el botón medio del ratón para obtener una lista\n"
-"de todas las aplicaciones que se están ejecutando.\n"
+"Pulse el botÃ³n medio del ratÃ³n para obtener una lista\n"
+"de todas las aplicaciones que se estÃ¡n ejecutando.\n"
 
 #: ../src/desktops.c:135
 msgid ""
@@ -570,19 +570,19 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Este es el Escritorio Raíz.\n"
-"Ud. no puede arrastrar el Escritorio Raíz.\n"
-"Pulse el botón derecho del ratón para obtener una lista\n"
+"Este es el Escritorio RaÃ­z.\n"
+"Ud. no puede arrastrar el Escritorio RaÃ­z.\n"
+"Pulse el botÃ³n derecho del ratÃ³n para obtener una lista\n"
 "de todos los escritorios y sus aplicaciones.\n"
-"Pulse el botón medio del ratón para obtener una lista\n"
-"de todas las aplicaciones que se están ejecutando.\n"
+"Pulse el botÃ³n medio del ratÃ³n para obtener una lista\n"
+"de todas las aplicaciones que se estÃ¡n ejecutando.\n"
 
 #: ../src/desktops.c:153
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
-"Pulse aquí para llevar este Escritorio\n"
+"Pulse aquÃ­ para llevar este Escritorio\n"
 "a la cima.\n"
 
 #: ../src/desktops.c:165
@@ -590,12 +590,12 @@ msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
-"Pulse aquí para llevar este Escritorio\n"
+"Pulse aquÃ­ para llevar este Escritorio\n"
 "hacia el fondo.\n"
 
 #: ../src/desktops.c:2291
 msgid "Number of virtual desktops:\n"
-msgstr "Número de Escritorios Virtuales:\n"
+msgstr "NÃºmero de Escritorios Virtuales:\n"
 
 #: ../src/desktops.c:2316
 msgid "Slide desktops around when changing"
@@ -615,7 +615,7 @@ msgstr "Mostrar Barra de Arrastre de Escritorios"
 
 #: ../src/desktops.c:2350
 msgid "Drag bar position:"
-msgstr "Ubicación de la Barra de Arrastre:"
+msgstr "UbicaciÃ³n de la Barra de Arrastre:"
 
 #: ../src/desktops.c:2354
 msgid "Top"
@@ -641,7 +641,7 @@ msgstr "Mesas"
 
 #: ../src/desktops.c:2381
 msgid "Multiple Desktop Settings"
-msgstr "Configurar Escritorios Múltiples"
+msgstr "Configurar Escritorios MÃºltiples"
 
 #: ../src/desktops.c:2384
 msgid ""
@@ -649,11 +649,11 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Multiples Escritorios Enlightenment\n"
-"Dálogo de Configuracion\n"
+"DÃ¡logo de Configuracion\n"
 
 #: ../src/desktops.c:2475
 msgid "Virtual Desktop size:\n"
-msgstr "Tamaño de Escritorio Virtual:\n"
+msgstr "TamaÃ±o de Escritorio Virtual:\n"
 
 #: ../src/desktops.c:2511
 msgid "Wrap virtual desktops around"
@@ -693,7 +693,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Escritorios Virtuales Enlightenment\n"
-"Diálogo de Configuracion\n"
+"DiÃ¡logo de Configuracion\n"
 
 #: ../src/dialog.c:849
 msgid "Apply"
@@ -709,7 +709,7 @@ msgstr ""
 
 #: ../src/events.c:87
 msgid "X server setup error"
-msgstr "Error en la configuración del Servidor X"
+msgstr "Error en la configuraciÃ³n del Servidor X"
 
 #: ../src/events.c:88
 msgid ""
@@ -724,24 +724,24 @@ msgid ""
 msgstr ""
 "ERROR FATAL:\n"
 "\n"
-"Este Servidor X no soporta la extensión Shape.\n"
+"Este Servidor X no soporta la extensiÃ³n Shape.\n"
 "Enlightenment requiere de esto para ejecutarse.\n"
 "\n"
-"Probablemente su Servidor X sea muy antiguo ó esté mal configurado.\n"
+"Probablemente su Servidor X sea muy antiguo Ã³ estÃ© mal configurado.\n"
 "\n"
 "Saliendo...\n"
 
 #: ../src/focus.c:713
 msgid "Focus follows pointer"
-msgstr "El enfoque sigue al puntero del ratón"
+msgstr "El enfoque sigue al puntero del ratÃ³n"
 
 #: ../src/focus.c:719
 msgid "Focus follows pointer sloppily"
-msgstr "El enfoque sigue al puntero del ratón lentamente"
+msgstr "El enfoque sigue al puntero del ratÃ³n lentamente"
 
 #: ../src/focus.c:725
 msgid "Focus follows mouse clicks"
-msgstr "El enfoque sigue los clicks del ratón"
+msgstr "El enfoque sigue los clicks del ratÃ³n"
 
 #: ../src/focus.c:735
 msgid "Clicking in a window always raises it"
@@ -753,12 +753,12 @@ msgstr "Todas las ventanas nuevas reciben el enfoque primero"
 
 #: ../src/focus.c:748
 msgid "Only new dialog windows get the focus"
-msgstr "Solo nuevas ventanas de diálogo reciben enfoque"
+msgstr "Solo nuevas ventanas de diÃ¡logo reciben enfoque"
 
 #: ../src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
-"Solo nuevas ventanas de diálogo cuyo padre tiene el enfoque reciben enfoque"
+"Solo nuevas ventanas de diÃ¡logo cuyo padre tiene el enfoque reciben enfoque"
 
 #: ../src/focus.c:760
 msgid "Raise windows while switching focus"
@@ -798,18 +798,18 @@ msgstr "Enfocar ventana mientras cambiamos"
 
 #: ../src/focus.c:810
 msgid "Raise windows after focus switch"
-msgstr "Elevar ventana DESPUÉS de cambio de enfoque"
+msgstr "Elevar ventana DESPUÃ‰S de cambio de enfoque"
 
 #: ../src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr ""
-"Enviar el puntero del ratón a la ventana DESPUÉS del cambio de enfoque"
+"Enviar el puntero del ratÃ³n a la ventana DESPUÃ‰S del cambio de enfoque"
 
 #: ../src/focus.c:825
 msgid ""
 "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
-"Política al mostrar la Focuslist de la imagen (si una operación falla "
+"PolÃ­tica al mostrar la Focuslist de la imagen (si una operaciÃ³n falla "
 "intentar siguiente):"
 
 #: ../src/focus.c:829
@@ -834,7 +834,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Enfoque Enlightenment\n"
-"Diálogo de Secciones\n"
+"DiÃ¡logo de Secciones\n"
 
 #: ../src/fx.c:934
 msgid "Effects"
@@ -870,7 +870,7 @@ msgstr ""
 
 #: ../src/groups.c:701
 msgid "Window Group Selection"
-msgstr "Selección de Grupo de Ventanas"
+msgstr "SelecciÃ³n de Grupo de Ventanas"
 
 #: ../src/groups.c:704
 msgid ""
@@ -878,7 +878,7 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 "Grupo de Ventanas de Enlightenment\n"
-"Diálogo de Selección\n"
+"DiÃ¡logo de SelecciÃ³n\n"
 
 #: ../src/groups.c:727 ../src/groups.c:736 ../src/groups.c:744
 #: ../src/groups.c:925
@@ -894,9 +894,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Esta ventana no pertenece a ningún grupo actualmente.  \n"
-"  Solo podrá destruir grupos ó eliminar ventanas de un grupo  \n"
-"  a través de una ventana que pertenezca al menos a un grupo.\n"
+"  Esta ventana no pertenece a ningÃºn grupo actualmente.  \n"
+"  Solo podrÃ¡ destruir grupos Ã³ eliminar ventanas de un grupo  \n"
+"  a travÃ©s de una ventana que pertenezca al menos a un grupo.\n"
 "\n"
 
 #: ../src/groups.c:737
@@ -908,7 +908,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  En este momento, no existen grupos ó esta ventana  \n"
+"  En este momento, no existen grupos Ã³ esta ventana  \n"
 "  ya pertenece a todos los grupos existentes.  \n"
 "  Primero tiene que crear otros grupos.  \n"
 "\n"
@@ -920,7 +920,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  En este momento no existe ningún grupo. Primero tiene que crear un grupo.\n"
+"  En este momento no existe ningÃºn grupo. Primero tiene que crear un grupo.\n"
 "\n"
 
 #: ../src/groups.c:836
@@ -982,7 +982,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Esta ventana no pertenece a ningún grupo.  \n"
+"  Esta ventana no pertenece a ningÃºn grupo.  \n"
 "\n"
 
 #: ../src/groups.c:962
@@ -1004,7 +1004,7 @@ msgstr "Grupos"
 
 #: ../src/groups.c:1019
 msgid "Default Group Control Settings"
-msgstr "Control de Grupo por Omisión"
+msgstr "Control de Grupo por OmisiÃ³n"
 
 #: ../src/groups.c:1022
 msgid ""
@@ -1038,13 +1038,13 @@ msgid ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
-"Enlightenment efectuó una operación ilegal.\n"
+"Enlightenment efectuÃ³ una operaciÃ³n ilegal.\n"
 "\n"
-"Lo más probable es que Ud. tenga instalado ó esté ejecutando un\n"
-"archivo binario de Enlightenment que fue compilado para una marca ó modelo\n"
-"de CPU que no es 100%% idéntico ó compatible con el suyo.\n"
-"Por favor obtenga la copia correcta para su sistema, ó de lo\n"
-"contrario vuelva a compilar Enlightenment y posiblemente aquellas librerías "
+"Lo mÃ¡s probable es que Ud. tenga instalado Ã³ estÃ© ejecutando un\n"
+"archivo binario de Enlightenment que fue compilado para una marca Ã³ modelo\n"
+"de CPU que no es 100%% idÃ©ntico Ã³ compatible con el suyo.\n"
+"Por favor obtenga la copia correcta para su sistema, Ã³ de lo\n"
+"contrario vuelva a compilar Enlightenment y posiblemente aquellas librerÃ­as "
 "de\n"
 "soporte que tiene en formato binario para ejecutar Enlightenment.\n"
 
@@ -1061,17 +1061,17 @@ msgid ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment causó una Excepción de Coma Flotante.\n"
+"Enlightenment causÃ³ una ExcepciÃ³n de Coma Flotante.\n"
 "\n"
-"Esto quiere decir que Enlightenment ó las librerías de soporte a las que "
+"Esto quiere decir que Enlightenment Ã³ las librerÃ­as de soporte a las que "
 "llama\n"
-"han realizado una operación matemática no permitida (muy probablemente\n"
-"dividir un número entre cero). Lo más seguro es que se trata de un bug.\n"
+"han realizado una operaciÃ³n matemÃ¡tica no permitida (muy probablemente\n"
+"dividir un nÃºmero entre cero). Lo mÃ¡s seguro es que se trata de un bug.\n"
 "Se recomienda reiniciar ahora. Si desea ayudar a solucionar este problema\n"
-"compile Enlightenment con soporte para símbolos de depuración y ejecute\n"
+"compile Enlightenment con soporte para sÃ­mbolos de depuraciÃ³n y ejecute\n"
 "Enlightenment bajo gdb de manera que pueda hacer un seguimiento al punto\n"
-"donde falló y enviar un reporte de bugs útil, con información sobre\n"
-"elseguimiento, y demás detalles útiles, etc.\n"
+"donde fallÃ³ y enviar un reporte de bugs Ãºtil, con informaciÃ³n sobre\n"
+"elseguimiento, y demÃ¡s detalles Ãºtiles, etc.\n"
 
 #: ../src/handlers.c:83
 msgid ""
@@ -1086,17 +1086,17 @@ msgid ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment ha causado una Violación de Segmentos (Segfault)\n"
+"Enlightenment ha causado una ViolaciÃ³n de Segmentos (Segfault)\n"
 "\n"
-"Esto quiere decir que Enlightenment ó las librerías de soporte a las que "
+"Esto quiere decir que Enlightenment Ã³ las librerÃ­as de soporte a las que "
 "llama\n"
-"han accedido a áreas de la memoria a la que no tiene permiso para\n"
-"acceder. Lo más probable es que se trate de un bug. Se recomienda\n"
+"han accedido a Ã¡reas de la memoria a la que no tiene permiso para\n"
+"acceder. Lo mÃ¡s probable es que se trate de un bug. Se recomienda\n"
 "reiniciar ahora. Si desea ayudar a solucionar este problema compile\n"
-"Enlightenment con soporte para símbolos de depuración y ejecute\n"
+"Enlightenment con soporte para sÃ­mbolos de depuraciÃ³n y ejecute\n"
 "Enlightenment bajo gdb de manera que pueda hacer un seguimiento al punto\n"
-"donde falló y enviar un reporte de bugs útil, con información sobre\n"
-"elseguimiento, y demás detalles útiles, etc.\n"
+"donde fallÃ³ y enviar un reporte de bugs Ãºtil, con informaciÃ³n sobre\n"
+"elseguimiento, y demÃ¡s detalles Ãºtiles, etc.\n"
 
 #: ../src/handlers.c:95
 msgid ""
@@ -1110,11 +1110,11 @@ msgstr ""
 "\n"
 "Se le sugiere que revise su hardware y el Sistema Operativo.\n"
 "Es muy poco usual causar errores en el Bus en equipos que\n"
-"están en estado operacional.\n"
+"estÃ¡n en estado operacional.\n"
 
 #: ../src/hints.c:600
 msgid "Selection Error!"
-msgstr "Error de Selección!"
+msgstr "Error de SelecciÃ³n!"
 
 #: ../src/hints.c:600
 #, c-format
@@ -1123,11 +1123,11 @@ msgstr ""
 
 #: ../src/iconify.c:469
 msgid "Iconbox Options"
-msgstr "Opciones del Portaíconos"
+msgstr "Opciones del PortaÃ­conos"
 
 #: ../src/iconify.c:470
 msgid "Iconbox Settings"
-msgstr "Configurar Portaíconos"
+msgstr "Configurar PortaÃ­conos"
 
 #: ../src/ipc.c:195 ../src/ipc.c:1472 ../src/ipc.c:1479 ../src/theme.c:369
 msgid "Message"
@@ -1170,11 +1170,11 @@ msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
 #: ../src/ipc.c:1848
 msgid "Use \"help <command>\" for an individual description\n"
-msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
+msgstr "Use \"Ayuda <comando>\" para obtener una descripciÃ³n individual\n"
 
 #: ../src/ipc.c:1850 ../src/ipc.c:1862
 msgid "         <command>     : <description>\n"
-msgstr "         <comando>   : <descripción>\n"
+msgstr "         <comando>   : <descripciÃ³n>\n"
 
 #: ../src/main.c:584
 #, c-format
@@ -1205,13 +1205,13 @@ msgstr ""
 "en:\n"
 "\n"
 "%s\n"
-"Este es un error fatal y Enlightenment dejará de ejecutarse.\n"
-"Por favor rectifique esta situación y asegúrese de que Enlightenment\n"
+"Este es un error fatal y Enlightenment dejarÃ¡ de ejecutarse.\n"
+"Por favor rectifique esta situaciÃ³n y asegÃºrese de que Enlightenment\n"
 "haya sido instalado correctamente.\n"
 "\n"
-"La razón por la que este archivo no se encuentra puede estar en\n"
-"paquetes mal construidos, la eliminación manual de dicho programa\n"
-"ó un error en la instalación de Enlightenment.\n"
+"La razÃ³n por la que este archivo no se encuentra puede estar en\n"
+"paquetes mal construidos, la eliminaciÃ³n manual de dicho programa\n"
+"Ã³ un error en la instalaciÃ³n de Enlightenment.\n"
 
 #: ../src/main.c:693
 #, c-format
@@ -1230,8 +1230,8 @@ msgstr ""
 "El ejecutable DOX de Enlightenment no puede ser ejecutado:\n"
 "\n"
 "%s\n"
-"Este es un error fatal y Enlightenment dejará de ejecutarse.\n"
-"Por favor, rectifique esta situación y asegúrese de que DOX\n"
+"Este es un error fatal y Enlightenment dejarÃ¡ de ejecutarse.\n"
+"Por favor, rectifique esta situaciÃ³n y asegÃºrese de que DOX\n"
 "se haya instalado correctamente.\n"
 
 #: ../src/magwin.c:462
@@ -1274,11 +1274,11 @@ msgstr "Grupo %i"
 
 #: ../src/menus.c:2099
 msgid "Animated display of menus"
-msgstr "Mostrar animación de menús"
+msgstr "Mostrar animaciÃ³n de menÃºs"
 
 #: ../src/menus.c:2104
 msgid "Always pop up menus on screen"
-msgstr "Siempre hacer aparecer menús en la pantalla"
+msgstr "Siempre hacer aparecer menÃºs en la pantalla"
 
 #: ../src/menus.c:2109
 msgid "Warp pointer after moving menus"
@@ -1286,7 +1286,7 @@ msgstr "Torcer el puntero tras mover los Menus"
 
 #: ../src/menus.c:2115
 msgid "Menus"
-msgstr "Menús"
+msgstr "MenÃºs"
 
 #: ../src/menus.c:2116
 msgid "Menu Settings"
@@ -1411,7 +1411,7 @@ msgstr "Velocidad de barrido del Conmutador:"
 
 #: ../src/pager.c:1814 ../src/pager.c:1905
 msgid "lines per second"
-msgstr "líneas por segundo"
+msgstr "lÃ­neas por segundo"
 
 #: ../src/pager.c:1843
 msgid "Enable pager display"
@@ -1439,11 +1439,11 @@ msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
 #: ../src/pager.c:1886
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
+msgstr "Realizar acercamiento cuando el ratÃ³n estÃ¡ sobre ventanas"
 
 #: ../src/pager.c:1892
 msgid "Pop up window title when mouse is over the window"
-msgstr "Mostrar título cuando el ratón está sobre ventanas"
+msgstr "Mostrar tÃ­tulo cuando el ratÃ³n estÃ¡ sobre ventanas"
 
 #: ../src/pager.c:1897
 msgid "Continuously scan screen to update pager"
@@ -1451,7 +1451,7 @@ msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
 #: ../src/pager.c:1920
 msgid "Mouse button to select and drag windows:"
-msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
+msgstr "BotÃ³n del ratÃ³n para seleccionar y arrastrar ventanas:"
 
 #: ../src/pager.c:1930 ../src/pager.c:1955 ../src/pager.c:1980
 msgid "Middle"
@@ -1459,11 +1459,11 @@ msgstr "Medio"
 
 #: ../src/pager.c:1945
 msgid "Mouse button to select desktops:"
-msgstr "Botón del ratón para seleccionar escritorios:"
+msgstr "BotÃ³n del ratÃ³n para seleccionar escritorios:"
 
 #: ../src/pager.c:1970
 msgid "Mouse button to display pager menu:"
-msgstr "Botón del ratón para Mostrar menú del Conmutador:"
+msgstr "BotÃ³n del ratÃ³n para Mostrar menÃº del Conmutador:"
 
 #: ../src/pager.c:1994
 msgid "Pagers"
@@ -1479,7 +1479,7 @@ msgid ""
 "Pager Settings Dialog\n"
 msgstr ""
 "Escritorio y Area de Enlightenment\n"
-"Diálogo de Configuración del Paginador\n"
+"DiÃ¡logo de ConfiguraciÃ³n del Paginador\n"
 
 #. Less of the hope.... E survives
 #: ../src/session.c:344
@@ -1498,19 +1498,19 @@ msgid ""
 msgstr ""
 "ERROR!\n"
 "\n"
-"¿Se perdió el Administrador de Sesiones que esta aquí?\n"
-"Aquí aquí administrador de sesiones... ¿quieres un hueso?\n"
-"Oh! Ven aquí. Deja de esconderte! Bueno, continuaremos sin\n"
+"Â¿Se perdiÃ³ el Administrador de Sesiones que esta aquÃ­?\n"
+"AquÃ­ aquÃ­ administrador de sesiones... Â¿quieres un hueso?\n"
+"Oh! Ven aquÃ­. Deja de esconderte! Bueno, continuaremos sin\n"
 "un administrador de sesiones.\n"
 "\n"
-"Sobreviviré del alguna manera.\n"
+"SobrevivirÃ© del alguna manera.\n"
 "\n"
 "\n"
 "... eso espero.\n"
 
 #: ../src/session.c:644
 msgid "Are you sure?"
-msgstr "¿Está seguro?"
+msgstr "Â¿EstÃ¡ seguro?"
 
 #: ../src/session.c:646
 msgid ""
@@ -1522,7 +1522,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    ¿Está seguro de abandonar la sesión?    \n"
+"    Â¿EstÃ¡ seguro de abandonar la sesiÃ³n?    \n"
 "\n"
 "\n"
 
@@ -1578,7 +1578,7 @@ msgstr "Redimensionamiento:"
 
 #: ../src/settings.c:92 ../src/settings.c:97 ../src/settings.c:359
 msgid "Technical"
-msgstr "Técnico"
+msgstr "TÃ©cnico"
 
 #: ../src/settings.c:102 ../src/settings.c:107 ../src/settings.c:364
 msgid "Box"
@@ -1590,11 +1590,11 @@ msgstr "Enrollado"
 
 #: ../src/settings.c:122 ../src/settings.c:127 ../src/settings.c:374
 msgid "Semi-Solid"
-msgstr "Semi-Sólido"
+msgstr "Semi-SÃ³lido"
 
 #: ../src/settings.c:133
 msgid "Translucent"
-msgstr "Translúcido"
+msgstr "TranslÃºcido"
 
 #: ../src/settings.c:142
 msgid "Avoid server grab"
@@ -1650,7 +1650,7 @@ msgstr ""
 
 #: ../src/settings.c:223
 msgid "Move & Resize Settings"
-msgstr "Configurar Tamaño y Movimiento"
+msgstr "Configurar TamaÃ±o y Movimiento"
 
 #: ../src/settings.c:226
 msgid ""
@@ -1658,15 +1658,15 @@ msgid ""
 "Method Settings Dialog\n"
 msgstr ""
 "Enlightenment, Mover y Redimensionar\n"
-"Diálogo de metodos de configuracion\n"
+"DiÃ¡logo de metodos de configuracion\n"
 
 #: ../src/settings.c:313
 msgid "Dialog windows appear together with their owner"
-msgstr "Ventanas de Diálogo aparecen junto a sus padres"
+msgstr "Ventanas de DiÃ¡logo aparecen junto a sus padres"
 
 #: ../src/settings.c:318
 msgid "Switch to desktop where dialog appears"
-msgstr "Conmutar al escritorio donde aparezca el diálogo"
+msgstr "Conmutar al escritorio donde aparezca el diÃ¡logo"
 
 #: ../src/settings.c:326
 msgid "Place windows manually"
@@ -1726,7 +1726,7 @@ msgstr ""
 
 #: ../src/settings.c:449
 msgid "Window Placement Settings"
-msgstr "Configurar Ubicación de Ventanas"
+msgstr "Configurar UbicaciÃ³n de Ventanas"
 
 #: ../src/settings.c:452
 msgid ""
@@ -1734,11 +1734,11 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment emplazamiento de Ventanas\n"
-"Dialog de Configuración\n"
+"Dialog de ConfiguraciÃ³n\n"
 
 #: ../src/settings.c:483
 msgid "Raise Windows Automatically"
-msgstr "Elevar Ventanas Automáticamente"
+msgstr "Elevar Ventanas AutomÃ¡ticamente"
 
 #: ../src/settings.c:489
 msgid "Autoraise delay:"
@@ -1750,7 +1750,7 @@ msgstr ""
 
 #: ../src/settings.c:501
 msgid "Autoraise Settings"
-msgstr "Configurar Auto elevación"
+msgstr "Configurar Auto elevaciÃ³n"
 
 #: ../src/settings.c:504
 msgid ""
@@ -1774,7 +1774,7 @@ msgstr ""
 
 #: ../src/settings.c:564
 msgid "Use saveunders to reduce window exposures"
-msgstr "Usar saveunders para reducir la exposición de ventanas"
+msgstr "Usar saveunders para reducir la exposiciÃ³n de ventanas"
 
 #. winops_misc.menu
 #: ../src/settings.c:570 ../config/strings.c:138 ../config/strings.c:154
@@ -1867,19 +1867,19 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 "Enlightenment no se puede conectar a la pantalla nombrada en\n"
-"la variable de entorno DISPLAY de su shell. Ud. podría asignar\n"
+"la variable de entorno DISPLAY de su shell. Ud. podrÃ­a asignar\n"
 "a esta variable un valor para indicar el nombre de la pantalla a la\n"
 "que E debe conectarse. Puede ser que Ud. no tenga un Servidor X\n"
-"en ejecución para atender la conexión, ó que Ud. no tenga permiso\n"
-"para conectarse a esa pantalla. Por favor asegúrese de que\n"
+"en ejecuciÃ³n para atender la conexiÃ³n, Ã³ que Ud. no tenga permiso\n"
+"para conectarse a esa pantalla. Por favor asegÃºrese de que\n"
 "todo esto sea correcto antes de reintentar conectarse.\n"
-"Ejecute xdm ó startx primero, ó contacte al administrador de\n"
-"su sistema, ó al vendedor del Servidor X, ó lea las páginas del\n"
+"Ejecute xdm Ã³ startx primero, Ã³ contacte al administrador de\n"
+"su sistema, Ã³ al vendedor del Servidor X, Ã³ lea las pÃ¡ginas del\n"
 "manual de X, xmd y startx antes de proseguir.\n"
 
 #: ../src/setup.c:156
 msgid "Another Window Manager is already running"
-msgstr "Otro Administrador de Ventanas se está ejecutando."
+msgstr "Otro Administrador de Ventanas se estÃ¡ ejecutando."
 
 #: ../src/setup.c:158
 msgid ""
@@ -1888,14 +1888,14 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 msgstr ""
-"Otro Gestor de Ventanas está ya funcionando.\n"
+"Otro Gestor de Ventanas estÃ¡ ya funcionando.\n"
 "\n"
-"Deberás cerrar tu Gestor de Ventanas primero, para poder\n"
+"DeberÃ¡s cerrar tu Gestor de Ventanas primero, para poder\n"
 "arrancar satisfactoriamente Enlightenment.\n"
 
 #: ../src/setup.c:167
 msgid "X server version error"
-msgstr "Error en la versión del Servidor X"
+msgstr "Error en la versiÃ³n del Servidor X"
 
 #: ../src/setup.c:167
 msgid "Ignore this error"
@@ -1913,8 +1913,8 @@ msgid ""
 msgstr ""
 "Advertencia\n"
 "Este no es un Servidor X11. En realidad habla el protocolo X%i.\n"
-"Esto significa que Enlightenment no funcionará, ó\n"
-"funcionará de forma incorrecta. Si es posterior a X11, entonces\n"
+"Esto significa que Enlightenment no funcionarÃ¡, Ã³\n"
+"funcionarÃ¡ de forma incorrecta. Si es posterior a X11, entonces\n"
 "los autores de Enlightenment nunca han tenido acceso ni han escuchado\n"
 "hablar de dicho servidor.\n"
 
@@ -1944,7 +1944,7 @@ msgstr "Track Changes"
 
 #: ../src/snaps.c:823
 msgid "Location"
-msgstr "Ubicación"
+msgstr "UbicaciÃ³n"
 
 #: ../src/snaps.c:828
 msgid "Border style"
@@ -1953,7 +1953,7 @@ msgstr "Estilo de Borde"
 #. winops_size.menu
 #: ../src/snaps.c:833 ../config/strings.c:176
 msgid "Size"
-msgstr "Tamaño"
+msgstr "TamaÃ±o"
 
 #: ../src/snaps.c:838 ../config/strings.c:92 ../config/strings.c:114
 msgid "Desktop"
@@ -1990,7 +1990,7 @@ msgstr ""
 
 #: ../src/snaps.c:894
 msgid "Restart application on login"
-msgstr "Reiniciar aplicación al iniciar sesión"
+msgstr "Reiniciar aplicaciÃ³n al iniciar sesiÃ³n"
 
 #: ../src/snaps.c:913
 msgid "Remember this window's group(s)"
@@ -2062,8 +2062,8 @@ msgstr ""
 "ADVERTENCIA!  Enlightenment no ha podido cargar\n"
 "el siguiente archivo de sonido:\n"
 "%s\n"
-"Enlightenment continuará operando, pero Ud.\n"
-"quizás deba revisar su configurar audio.\n"
+"Enlightenment continuarÃ¡ operando, pero Ud.\n"
+"quizÃ¡s deba revisar su configurar audio.\n"
 
 #: ../src/sound.c:310
 msgid "Error initialising sound"
@@ -2166,7 +2166,7 @@ msgstr "Mostrar Etiquetas de Ayuda"
 
 #: ../src/tooltips.c:872
 msgid "Display Root Window Tips"
-msgstr "Mostrar etiquetas en la Ventana Raíz"
+msgstr "Mostrar etiquetas en la Ventana RaÃ­z"
 
 #: ../src/tooltips.c:877
 msgid "Tooltip Delay:\n"
@@ -2371,32 +2371,32 @@ msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
-"Clicando el ratón en su escritorio provocará\n"
+"Clicando el ratÃ³n en su escritorio provocarÃ¡\n"
 "las siguientes acciones"
 
 #: ../config/strings.c:64
 msgid "Display User Menus"
-msgstr "Mostrar Menú de Usuarios"
+msgstr "Mostrar MenÃº de Usuarios"
 
 #: ../config/strings.c:65 ../config/strings.c:67
 msgid "Display Enlightenment Menu"
-msgstr "Mostrar Menú de Enlightenment"
+msgstr "Mostrar MenÃº de Enlightenment"
 
 #: ../config/strings.c:66 ../config/strings.c:71
 msgid "Display Settings Menu"
-msgstr "Mostrar Opciones de Menú"
+msgstr "Mostrar Opciones de MenÃº"
 
 #: ../config/strings.c:68
 msgid "Display Task List Menu"
-msgstr "Mostrar Menú de Lista de Tareas"
+msgstr "Mostrar MenÃº de Lista de Tareas"
 
 #: ../config/strings.c:69
 msgid "Display Desktop Menu"
-msgstr "Mostrar Menú de Escritorio"
+msgstr "Mostrar MenÃº de Escritorio"
 
 #: ../config/strings.c:70
 msgid "Display Group Menu"
-msgstr "Mostrar Menú de Grupos"
+msgstr "Mostrar MenÃº de Grupos"
 
 #: ../config/strings.c:72
 msgid "Go Back a Desktop"
@@ -2719,13 +2719,13 @@ msgstr ""
 #~ msgstr "Configurar enfoque ..."
 
 #~ msgid "Move & Resize Settings ..."
-#~ msgstr "Configurar Tamaño y Movimiento ..."
+#~ msgstr "Configurar TamaÃ±o y Movimiento ..."
 
 #~ msgid "Window Placement Settings ..."
-#~ msgstr "Configurar Ubicación de Ventanas ..."
+#~ msgstr "Configurar UbicaciÃ³n de Ventanas ..."
 
 #~ msgid "Multiple Desktop Settings ..."
-#~ msgstr "Configurar Escritorios Múltiples ..."
+#~ msgstr "Configurar Escritorios MÃºltiples ..."
 
 #~ msgid "Virtual Desktop Settings ..."
 #~ msgstr "Configurar Escritorios Virtuales ..."
@@ -2734,7 +2734,7 @@ msgstr ""
 #~ msgstr "Configurar Paginador ..."
 
 #~ msgid "Autoraise Settings ..."
-#~ msgstr "Configurar Autoelevación ..."
+#~ msgstr "Configurar AutoelevaciÃ³n ..."
 
 #~ msgid "Tooltip Settings ..."
 #~ msgstr "Configurar Ayuda ..."
@@ -2774,14 +2774,14 @@ msgstr ""
 #~ "Screens in size"
 #~ msgstr ""
 #~ "%i x %i\n"
-#~ "pantallas de tamaño"
+#~ "pantallas de tamaÃ±o"
 
 #~ msgid ""
 #~ "1\n"
 #~ "Screen in size"
 #~ msgstr ""
 #~ "1\n"
-#~ "Pantalla de tamaño"
+#~ "Pantalla de tamaÃ±o"
 
 #~ msgid "Mirror Shade/Iconify/Stick"
 #~ msgstr "Espejo Enrollar/Iconizar/Pegar"
