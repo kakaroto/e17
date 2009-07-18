@@ -184,7 +184,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    rgba_image.image = im;
    im->w = width = rgba_image.rgba.width;
    im->h = height = rgba_image.rgba.height;
-   if ((width < 1) || (height < 1) || (width > 8192) || (height > 8192))
+   if ((width < 1) || (height < 1) ||
+       (width > IMLIB_MAX_DIM) || (height > IMLIB_MAX_DIM))
      {
         TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
         TIFFClose(tif);

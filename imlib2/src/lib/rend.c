@@ -15,6 +15,9 @@
 #include "rend.h"
 #include "rotate.h"
 
+/* Maximum pixmap dimension (65535) */
+#define X_MAX_DIM ((2 << 16) - 1)
+
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
 
@@ -279,7 +282,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    if ((sw <= 0) || (sh <= 0))
       return;
    /* if the output is too big (8k arbitary limit here) dont bother */
-   if ((abs(dw) > 8192) || (abs(dh) > 8192))
+   if ((abs(dw) > X_MAX_DIM) || (abs(dh) > X_MAX_DIM))
       return;
    /* clip the source rect to be within the actual image */
    psx = sx;
@@ -304,7 +307,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    if ((sw <= 0) || (sh <= 0))
       return;
    /* if the output is too big (8k arbitary limit here) dont bother */
-   if ((abs(dw) > 8192) || (abs(dh) > 8192))
+   if ((abs(dw) > X_MAX_DIM) || (abs(dh) > X_MAX_DIM))
       return;
    /* if we are scaling the image at all make a scaling buffer */
    if (!((sw == dw) && (sh == dh)))

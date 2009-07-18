@@ -34,6 +34,9 @@
 #  define DATA8  unsigned char
 # endif
 
+/* Maximum image dimension */
+#define IMLIB_MAX_DIM (2 << 20)
+
 /* opaque data types */
 typedef void *Imlib_Context;
 typedef void *Imlib_Image;

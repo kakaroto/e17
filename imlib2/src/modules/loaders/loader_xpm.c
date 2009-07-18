@@ -204,19 +204,21 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                             xpm_parse_done();
                             return 0;
                          }
-                       if ((w > 8192) || (w < 1))
+                       if ((w > IMLIB_MAX_DIM) || (w < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: Image width > 8192 or < 1 pixels for file\n");
+                                    "IMLIB ERROR: Image width > %d or < 1 pixels for file\n",
+                                    IMLIB_MAX_DIM);
                             free(line);
                             fclose(f);
                             xpm_parse_done();
                             return 0;
                          }
-                       if ((h > 8192) || (h < 1))
+                       if ((h > IMLIB_MAX_DIM) || (h < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: Image height > 8192 or < 1 pixels for file\n");
+                                    "IMLIB ERROR: Image height > %d or < 1 pixels for file\n",
+                                    IMLIB_MAX_DIM);
                             free(line);
                             fclose(f);
                             xpm_parse_done();

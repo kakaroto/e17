@@ -58,7 +58,8 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                }
              w = gif->Image.Width;
              h = gif->Image.Height;
-	     if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
+	     if ((w < 1) || (h < 1) ||
+                 (w > IMLIB_MAX_DIM) || (h > IMLIB_MAX_DIM))
 	       {
                   DGifCloseFile(gif);
                   return 0;

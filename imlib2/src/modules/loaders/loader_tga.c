@@ -283,7 +283,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    im->w = (header->widthHi << 8) | header->widthLo;
    im->h = (header->heightHi << 8) | header->heightLo;
 
-   if ((im->w < 1) || (im->h < 1) || (im->w > 8192) || (im->h > 8192))
+   if ((im->w < 1) || (im->h < 1) ||
+       (im->w > IMLIB_MAX_DIM) || (im->h > IMLIB_MAX_DIM))
      {
 	munmap(seg, ss.st_size);
         close(fd);

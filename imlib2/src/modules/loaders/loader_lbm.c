@@ -402,7 +402,8 @@ ILBM    ilbm;
 
         im->w = L2RWORD(ilbm.bmhd.data);
         im->h = L2RWORD(ilbm.bmhd.data + 2);
-	if ((im->w < 1) || (im->h < 1) || (im->w > 8192) || (im->h > 8192))
+	if ((im->w < 1) || (im->h < 1) ||
+            (im->w > IMLIB_MAX_DIM) || (im->h > IMLIB_MAX_DIM))
 	  {
 	     ok = 0;
 	  }
