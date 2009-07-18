@@ -26,5 +26,5 @@ src/bin/etk_tree_test.c
 src/lib/etk_colorpicker.c
 src/lib/etk_filechooser_widget.c
 src/lib/etk_message_dialog.c
-src/tools/etk_prefs/etk_prefs.c
+/src/tools/etk_prefs/etk_prefs.c
 
