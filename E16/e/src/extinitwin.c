@@ -27,12 +27,85 @@
 #include "xwin.h"
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+#include <X11/extensions/Xrender.h>
+#endif
 
 typedef struct {
    Cursor              curs;
    XSetWindowAttributes attr;
    Window              cwin;
+   char                argb;
 } EiwData;
+
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+#include <Imlib2.h>
+
+static void
+_ExtInitWinLoopInit(Window win __UNUSED__, EiwData * d)
+{
+   Visual             *vis;
+
+   vis = EVisualFindARGB();
+   if (vis)
+      imlib_context_set_visual(vis);
+
+   d->curs = None;
+   d->argb = (vis) ? 1 : 0;
+}
+
+static void
+_ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
+{
+   int                 w, h;
+   XRenderPictFormat  *pictfmt;
+   Pixmap              pmap;
+   Picture             pict;
+
+   EImageGetSize(im, &w, &h);
+
+   if (d->argb)
+     {
+	pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
+	pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(pmap);
+	imlib_render_image_on_drawable(0, 0);
+	pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
+	XFreePixmap(disp, pmap);
+     }
+   else
+     {
+	/* Imlib2 will not render an ARGB pixmap without an ARGB visual */
+	XRenderPictFormat  *pictfmt1, *pictfmtm;
+	Pixmap              pmap1, mask;
+	Picture             pict1, pictm;
+
+	pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
+	pictfmt1 = XRenderFindStandardFormat(disp, PictStandardRGB24);
+	pictfmtm = XRenderFindStandardFormat(disp, PictStandardA1);
+	pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
+	EImageRenderPixmaps(im, VROOT, 0, &pmap1, &mask, 0, 0);
+	pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
+	pict1 = XRenderCreatePicture(disp, pmap1, pictfmt1, 0, 0);
+	pictm = XRenderCreatePicture(disp, mask, pictfmtm, 0, 0);
+	XRenderComposite(disp, PictOpSrc, pict1, pictm, pict, 0, 0, 0, 0, 0, 0,
+			 w, h);
+	XRenderFreePicture(disp, pict1);
+	XRenderFreePicture(disp, pictm);
+	EImagePixmapsFree(pmap1, mask);
+	XFreePixmap(disp, pmap);
+     }
+
+   if (d->curs != None)
+      XFreeCursor(disp, d->curs);
+   d->curs = XRenderCreateCursor(disp, pict, w / 2, h / 2);
+   XRenderFreePicture(disp, pict);
+
+   XDefineCursor(disp, win, d->curs);
+}
+
+#else
 
 static void
 _ExtInitWinLoopInit(Window win, EiwData * d)
@@ -81,6 +154,8 @@ _ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
    XMoveResizeWindow(disp, d->cwin, x - w / 2, y - h / 2, w, h);
    XMapWindow(disp, d->cwin);
 }
+
+#endif
 
 static              Window
 ExtInitWinMain(void)
