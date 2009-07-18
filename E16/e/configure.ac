@@ -331,11 +331,15 @@ if test "x$enable_dialogs" = "xyes"; then
   AC_DEFINE(ENABLE_DIALOGS, 1, [Configuration dialog support])
 fi
 
+AM_MISSING_PROG(XMLTO, xmlto)
+AC_ARG_ENABLE(mans,
+  [  --enable-mans           install man page @<:@default=no@:>@],,
+  enable_mans=no)
+AM_CONDITIONAL([INSTALL_MANS], [test "x$enable_mans" = "xyes"])
 AC_ARG_ENABLE(docs,
   [  --enable-docs           install html docs @<:@default=yes@:>@],,
-  enable_docs=no)
-AM_MISSING_PROG(XMLTO, xmlto)
-AM_CONDITIONAL([BUILD_DOCS], [test "x$enable_docs" = "xyes"])
+  enable_docs=yes)
+AM_CONDITIONAL([INSTALL_DOCS], [test "x$enable_docs" = "xyes"])
 
 AC_ARG_ENABLE(gcc-cpp,
   [  --enable-gcc-cpp        compile everything as if it were C++ @<:@default=no@:>@],,
@@ -419,6 +423,7 @@ echo "  D-Bus ........................ $enable_dbus"
 echo
 echo "Installation path .............. $prefix"
 echo "  Install HTML docs ............ $enable_docs"
+echo "  Install man page ............. $enable_mans"
 echo
 echo "Compilation .................... make"
 echo "Installation ................... make install"
