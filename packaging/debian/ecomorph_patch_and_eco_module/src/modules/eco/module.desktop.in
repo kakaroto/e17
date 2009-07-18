@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Ecomorph
+Icon=e-module-eco
+Comment=<title>Ecomorph</title><br>This module configure Ecomorph trough the use of DBus.
+X-Enlightenment-ModuleType=system

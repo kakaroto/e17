@@ -1,0 +1,40 @@
+images {
+   image: "icon_logo.png" COMP;
+   image: "icon_water.png" COMP;
+   image: "icon_switcher.png" COMP;
+   image: "icon_wobbly.png" COMP;
+   image: "icon_expo.png" COMP;
+   image: "icon_wall.png" COMP;
+   image: "icon_scale.png" COMP;
+   image: "icon_ring.png" COMP;
+   image: "icon_shift.png" COMP;
+   image: "icon_animation.png" COMP;
+   image: "icon_thumbnail.png" COMP;
+}
+#define ICON(NAME,ICON) \
+   group { name: NAME; \
+      parts { \
+         part { name: "image"; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               aspect: 1.0 1.0; \
+               aspect_preference: BOTH; \
+               image.normal: ICON; \
+            } \
+         } \
+      } \
+   }
+
+collections {
+   ICON("icon", "icon_logo.png")
+   ICON("icon_water", "icon_water.png")
+   ICON("icon_switcher", "icon_switcher.png")
+   ICON("icon_wobbly", "icon_wobbly.png")
+   ICON("icon_expo", "icon_expo.png")
+   ICON("icon_wall", "icon_wall.png")
+   ICON("icon_scale", "icon_scale.png")
+   ICON("icon_ring", "icon_ring.png")
+   ICON("icon_shift", "icon_shift.png")
+   ICON("icon_animation", "icon_animation.png")
+   ICON("icon_thumbnail", "icon_thumbnail.png")
+}
