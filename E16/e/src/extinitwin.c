@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -28,6 +28,60 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
+typedef struct {
+   Cursor              curs;
+   XSetWindowAttributes attr;
+   Window              cwin;
+} EiwData;
+
+static void
+_ExtInitWinLoopInit(Window win, EiwData * d)
+{
+   Pixmap              pmap, mask;
+   GC                  gc;
+   XColor              cl;
+
+   d->cwin = XCreateWindow(disp, win, 0, 0, 32, 32, 0, CopyFromParent,
+			   InputOutput, CopyFromParent,
+			   CWOverrideRedirect | CWBackingStore | CWColormap |
+			   CWBackPixel | CWBorderPixel, &d->attr);
+
+   pmap = XCreatePixmap(disp, d->cwin, 16, 16, 1);
+   gc = XCreateGC(disp, pmap, 0, NULL);
+   XSetForeground(disp, gc, 0);
+   XFillRectangle(disp, pmap, gc, 0, 0, 16, 16);
+   XFreeGC(disp, gc);
+
+   mask = XCreatePixmap(disp, d->cwin, 16, 16, 1);
+   gc = XCreateGC(disp, mask, 0, NULL);
+   XSetForeground(disp, gc, 0);
+   XFillRectangle(disp, mask, gc, 0, 0, 16, 16);
+   XFreeGC(disp, gc);
+
+   d->curs = XCreatePixmapCursor(disp, pmap, mask, &cl, &cl, 0, 0);
+   XDefineCursor(disp, win, d->curs);
+   XDefineCursor(disp, d->cwin, d->curs);
+}
+
+static void
+_ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
+{
+   Pixmap              pmap, mask;
+   Window              ww;
+   int                 dd, x, y, w, h;
+   unsigned int        mm;
+
+   EImageRenderPixmaps(im, NULL, 0, &pmap, &mask, 0, 0);
+   EImageGetSize(im, &w, &h);
+   XShapeCombineMask(disp, d->cwin, ShapeBounding, 0, 0, mask, ShapeSet);
+   XSetWindowBackgroundPixmap(disp, d->cwin, pmap);
+   EImagePixmapsFree(pmap, mask);
+   XClearWindow(disp, d->cwin);
+   XQueryPointer(disp, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
+   XMoveResizeWindow(disp, d->cwin, x - w / 2, y - h / 2, w, h);
+   XMapWindow(disp, d->cwin);
+}
+
 static              Window
 ExtInitWinMain(void)
 {
@@ -35,9 +89,9 @@ ExtInitWinMain(void)
    Ecore_X_Window      win;
    XGCValues           gcv;
    GC                  gc;
-   Pixmap              pmap, mask;
+   Pixmap              pmap;
    Atom                a;
-   XSetWindowAttributes attr;
+   EiwData             eiwd;
 
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain enter\n");
@@ -50,17 +104,17 @@ ExtInitWinMain(void)
 
    EImageInit();
 
-   attr.backing_store = NotUseful;
-   attr.override_redirect = True;
-   attr.colormap = WinGetCmap(VROOT);
-   attr.border_pixel = 0;
-   attr.background_pixel = 0;
-   attr.save_under = True;
+   eiwd.attr.backing_store = NotUseful;
+   eiwd.attr.override_redirect = True;
+   eiwd.attr.colormap = WinGetCmap(VROOT);
+   eiwd.attr.border_pixel = 0;
+   eiwd.attr.background_pixel = 0;
+   eiwd.attr.save_under = True;
    win = XCreateWindow(disp, WinGetXwin(VROOT),
 		       0, 0, WinGetW(VROOT), WinGetH(VROOT),
 		       0, CopyFromParent, InputOutput, CopyFromParent,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
+		       CWColormap | CWBackPixel | CWBorderPixel, &eiwd.attr);
 
    pmap = XCreatePixmap(disp, win,
 			WinGetW(VROOT), WinGetH(VROOT), WinGetDepth(VROOT));
@@ -81,36 +135,12 @@ ExtInitWinMain(void)
    EUngrabServer();
    ESync(0);
 
+   _ExtInitWinLoopInit(win, &eiwd);
+
    {
-      Window              w2, ww;
+      XWindowAttributes   xwa;
       char                s[1024];
       EImage             *im;
-      int                 dd, x, y, w, h;
-      unsigned int        mm;
-      Cursor              cs = 0;
-      XColor              cl;
-      XWindowAttributes   xwa;
-
-      w2 = XCreateWindow(disp, win, 0, 0, 32, 32, 0, CopyFromParent,
-			 InputOutput, CopyFromParent,
-			 CWOverrideRedirect | CWBackingStore | CWColormap |
-			 CWBackPixel | CWBorderPixel, &attr);
-
-      pmap = XCreatePixmap(disp, w2, 16, 16, 1);
-      gc = XCreateGC(disp, pmap, 0, NULL);
-      XSetForeground(disp, gc, 0);
-      XFillRectangle(disp, pmap, gc, 0, 0, 16, 16);
-      XFreeGC(disp, gc);
-
-      mask = XCreatePixmap(disp, w2, 16, 16, 1);
-      gc = XCreateGC(disp, mask, 0, NULL);
-      XSetForeground(disp, gc, 0);
-      XFillRectangle(disp, mask, gc, 0, 0, 16, 16);
-      XFreeGC(disp, gc);
-
-      cs = XCreatePixmapCursor(disp, pmap, mask, &cl, &cl, 0, 0);
-      XDefineCursor(disp, win, cs);
-      XDefineCursor(disp, w2, cs);
 
       for (i = 1;; i++)
 	{
@@ -129,16 +159,7 @@ ExtInitWinMain(void)
 	   im = ThemeImageLoad(s);
 	   if (im)
 	     {
-		EImageRenderPixmaps(im, NULL, 0, &pmap, &mask, 0, 0);
-		EImageGetSize(im, &w, &h);
-		XShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
-				  ShapeSet);
-		XSetWindowBackgroundPixmap(disp, w2, pmap);
-		EImagePixmapsFree(pmap, mask);
-		XClearWindow(disp, w2);
-		XQueryPointer(disp, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-		XMoveResizeWindow(disp, w2, x - w / 2, y - h / 2, w, h);
-		XMapWindow(disp, w2);
+		_ExtInitWinLoopRun(win, im, &eiwd);
 		EImageFree(im);
 	     }
 	   usleep(50000);
