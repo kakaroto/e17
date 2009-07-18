@@ -501,8 +501,6 @@ Ctrl-Shift F4		Show Window List menu   (default Alt-middle mouse button)
 Alt-Ctrl   a		Toggle visibility of all buttons
 Alt-Ctrl   b		Toggle visibility of theme buttons
 Alt-Ctrl   c		Toggle visibility of configuration buttons
-Alt-Ctrl   d		Switch dragbar position
-Alt-Ctrl   o		Switch dragbar button ordering
 
 
 Session Scripts
