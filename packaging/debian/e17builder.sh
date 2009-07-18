@@ -453,31 +453,34 @@ if [ "$?" -ge "1" ]; then
 	exit 1
 fi
 
-case $1 in
-	--download|-d) download
-	;;
-	--makechroots|-m) makechroots
-	;;
-	--update|-U) updatechroots
-	;;
-	--compile|-c) compile
-	;;
-	--prepare|-p) prepare
-	;;
-	--database|-D) database
-	;;
-	--upload|-u) upload
-	;;
-	--clean|-C) clean
-	;;
-	--help|-h) print_help
-	;;
-	--setup|-s) exit 0
-	;;
-	*) 
-	echo "No or bad argument, run it with --help to see what it can do."
-	exit 1
-	;;
-esac
+while [ "$1" != "" ]; do
+	case $1 in
+		--download|-d) download
+		;;
+		--makechroots|-m) makechroots
+		;;
+		--update|-U) updatechroots
+		;;
+		--compile|-c) compile
+		;;
+		--prepare|-p) prepare
+		;;
+		--database|-D) database
+		;;
+		--upload|-u) upload
+		;;
+		--clean|-C) clean
+		;;
+		--help|-h) print_help
+		;;
+		--setup|-s) exit 0
+		;;
+		*) 
+		echo "Bad argument, run it with --help to see what it can do."
+		exit 1
+		;;
+	esac
+	shift
+done
 
 exit 0
