@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/ethumb/plugins/*.so
+debian/tmp/usr/lib/ethumb/plugins/data/*

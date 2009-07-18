@@ -6,9 +6,43 @@ Build-Depends: cdbs, debhelper (>= 6), libevas-dev, libedje-dev, libeina-dev, li
 Standards-Version: 3.8.2
 Homepage: http://www.enlightenment.org
 
-Package: ethumb
+Package: libethumb1
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libethumb-bin, libethumb-data
 Description: Enlightenment thumbnailing library
  Thumbnailing library meant to replace epsilon.
+ .
+ This package contains the ethumb library.
+
+Package: libethumb-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, libethumb1
+Description: Enlightenment thumbnailing library
+ Thumbnailing library meant to replace epsilon.
+ .
+ This package contains plugins.
+
+Package: libethumb-bin
+Architecture: any
+Depends: ${shlibs:Depends}, libethumb1
+Description: Enlightenment thumbnailing library
+ Thumbnailing library meant to replace epsilon.
+ .
+ This package contains binary files.
+
+Package: libethumb-dev
+Architecture: any
+Depends: libethumb1, libethumb-plugins, libevas-dev, libedje-dev, libeina-dev, libecore-dev, libedbus-dev, libemotion0-dev
+Description: Enlightenment thumbnailing library
+ Thumbnailing library meant to replace epsilon.
+ .
+ This package contains developenment files.
+
+Package: libethumb-data
+Architecture: all
+Depends: libethumb1
+Description: Enlightenment thumbnailing library
+ Thumbnailing library meant to replace epsilon.
+ .
+ This package contains data files.
 
