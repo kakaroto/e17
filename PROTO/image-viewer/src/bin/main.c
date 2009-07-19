@@ -1176,15 +1176,15 @@ on_idler(void *data)
 	   case PAN:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Pan");
 	   case ZOOM:
-	      //elm_scroller_bounce_set(iv->gui.scroller, 1, 1);
+	      elm_scroller_bounce_set(iv->gui.scroller, 1, 1);
 	      break;
 	   case FIT:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit");
-	      //elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
+	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   case FIT_SCALE:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit & Scale");
-	      //elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
+	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   default:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fitting");
