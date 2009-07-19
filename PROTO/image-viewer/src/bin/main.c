@@ -588,7 +588,7 @@ thumb_queue_process(IV *iv)
 	     ethumb_client_thumb_path_get(iv->ethumb_client, &thumb_path, NULL);
 	     on_thumb_generate(0, file, NULL, thumb_path, NULL, EINA_TRUE, iv);
 	  }
-	else if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv) == -1)
+	else if (ethumb_client_generate(iv->ethumb_client, on_thumb_generate, iv, NULL) == -1)
 	  continue;
      }
 }
@@ -636,7 +636,7 @@ on_thumb_die(Ethumb_Client *client, void *data)
 {
    IV *iv;
 
-   iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
+   iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
    ERR("Connection to ethumbd lost!\n");
 }
 
@@ -1007,7 +1007,7 @@ on_idler(void *data)
 		  if (iv->ethumb_client)
 		    thumb_queue_process(iv);
 		  else
-		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv);
+		    iv->ethumb_client = ethumb_client_connect(on_thumb_connect, iv, NULL);
 	       }
 
 	     if (iv->thumb_info && iv->gui.preview_genlist)
@@ -1176,15 +1176,15 @@ on_idler(void *data)
 	   case PAN:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Pan");
 	   case ZOOM:
-	      elm_scroller_bounce_set(iv->gui.scroller, 1, 1);
+	      //elm_scroller_bounce_set(iv->gui.scroller, 1, 1);
 	      break;
 	   case FIT:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit");
-	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
+	      //elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   case FIT_SCALE:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fit & Scale");
-	      elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
+	      //elm_scroller_bounce_set(iv->gui.scroller, 0, 0);
 	      break;
 	   default:
 	      elm_hoversel_label_set(iv->gui.hoversel, "Fitting");
