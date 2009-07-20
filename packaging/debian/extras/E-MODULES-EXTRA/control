@@ -325,14 +325,6 @@ Description: An E17 module displaying rain on the desktop
  - display/hide trees
  - set snow density.
 
-Package: emodule-systray
-Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
-Provides: emodule0-systray
-Description: E17 fdo system tray module
- System tray that hold applications icons like Skype, Pidgin, Kopete
- and others. Implemented following freedesktop.org standard.
-
 Package: emodule-taskbar
 Architecture: any
 Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
@@ -418,7 +410,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-configmenu, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-edgar, emodule-efm-nav, emodule-efm-path, emodule-efm-pathbar, emodule-emu, emodule-exalt, emodule-execwatch, emodule-extramenu, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-itask, emodule-itask-ng, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-systray, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-trash, emodule-uptime, emodule-weather, emodule-winlist-ng, emodule-winselector, emodule-wlan
+Depends: e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-configmenu, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-edgar, emodule-efm-nav, emodule-efm-path, emodule-efm-pathbar, emodule-emu, emodule-exalt, emodule-execwatch, emodule-extramenu, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-itask, emodule-itask-ng, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-trash, emodule-uptime, emodule-weather, emodule-winlist-ng, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.
