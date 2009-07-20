@@ -8,9 +8,12 @@ Homepage: http://code.openbossa.org
 Standards-Version: 3.8.2
 Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.4), python-central (>= 0.5.6), python-setuptools (>= 0.6c8)
 Checksums-Sha1: 
- 38cc77b04c9ebf0bbd9ecd5398932c2d17f39df7 59289 python-terra_0.1.9+git20090507-1.tar.gz
+ 45317acf7e504dde1cfc6abc127fdd665ddac14a 58341 python-terra_0.1.9+git20090507.orig.tar.gz
+ 38b504db0c7457e1f6e624e17d0b8925b8ce6f13 1281 python-terra_0.1.9+git20090507-1.diff.gz
 Checksums-Sha256: 
- 1e94177fd5580058d7164a366b043face3ab152ed8d41e142ab6a994a9c1678d 59289 python-terra_0.1.9+git20090507-1.tar.gz
+ f7b045faaec86c5429fc70b836da11e08daa556a3293821bc9a3e2919ddd37c1 58341 python-terra_0.1.9+git20090507.orig.tar.gz
+ 5b729fa37c5a79dba721d19870e2badda7582e0c5810f357ffa0a6cfe984a862 1281 python-terra_0.1.9+git20090507-1.diff.gz
 Files: 
- 4763d7808ba419561c82cab4316a5f3b 59289 python-terra_0.1.9+git20090507-1.tar.gz
+ 1847a3e3946291fbbfa734e83658c490 58341 python-terra_0.1.9+git20090507.orig.tar.gz
+ aff0d51e3b76cac88030e3f7e69f2c3d 1281 python-terra_0.1.9+git20090507-1.diff.gz
 Python-Version: >= 2.5

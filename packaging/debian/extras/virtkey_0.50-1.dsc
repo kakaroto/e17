@@ -9,10 +9,13 @@ Standards-Version: 3.7.2
 Vcs-Bzr: http://bazaar.launchpad.net/~onboard/virtkey/main/
 Build-Depends: debhelper, python-central, python-all-dev, python-all, libx11-dev, libxext-dev, libxtst-dev, cdbs, libgtk2.0-dev
 Checksums-Sha1: 
- bc95ed690572acb736c44925cc8a0c9069f11e3c 23915 virtkey_0.50-1.tar.gz
+ 61fb1f83305177e07a57f8d30c95f6b4f175ffb0 22613 virtkey_0.50.orig.tar.gz
+ de4d896e0eb9d7940a7647c5444dab57a6901ec5 1302 virtkey_0.50-1.diff.gz
 Checksums-Sha256: 
- 548e98ad13f49f2a62ae60657f0d0d4816927dfad3625eb0ed7f0771229432b7 23915 virtkey_0.50-1.tar.gz
+ 697cda087178f604c7c17097b02a4075987ce9f9b94e582874368581128b40ba 22613 virtkey_0.50.orig.tar.gz
+ c20933c7093b3297025a36fb116b781a7ed2f7bc082a874128bb75791cf527fa 1302 virtkey_0.50-1.diff.gz
 Files: 
- c3a7935c5e4d816947b322df2359162d 23915 virtkey_0.50-1.tar.gz
+ 86a83abd4ef01efe6a2662079527f8b4 22613 virtkey_0.50.orig.tar.gz
+ 8f4ce7b9a6b386ba980fccd3d004229e 1302 virtkey_0.50-1.diff.gz
 Original-Maintainer: Chris Jones <cej105@soton.ac.uk>
 Python-Version: all

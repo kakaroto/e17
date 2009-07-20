@@ -8,9 +8,12 @@ Homepage: http://code.openbossa.org
 Standards-Version: 3.8.2
 Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.5), python-central (>= 0.5.6), python-setuptools (>= 0.6c8)
 Checksums-Sha1: 
- 152d87ed92d9c84c9b2ad60f0a9004d60a1d7e36 21928 canola-daemon_0.1.5+git20090507-1.tar.gz
+ 3a921d472bdc26f9adca75e60ebe0e697891c5db 20743 canola-daemon_0.1.5+git20090507.orig.tar.gz
+ f7e7867be17fe1c654bb216ff9dfd668ff2b1344 1550 canola-daemon_0.1.5+git20090507-1.diff.gz
 Checksums-Sha256: 
- 89ff9edbdd1fcb012d325cf705c153f4b29f44fa7e4f1ac663fd2c8a3bec9868 21928 canola-daemon_0.1.5+git20090507-1.tar.gz
+ 2a9221951d01124446d5d29e1566050e9ff6078ecf3f742238c1d368c1d2dd34 20743 canola-daemon_0.1.5+git20090507.orig.tar.gz
+ 1742ff09d29d130f7b5b53d0fb22423fe85a7fc383379bea999996af5fe1211a 1550 canola-daemon_0.1.5+git20090507-1.diff.gz
 Files: 
- 8dfd27bffc3fb87fbd84390801fc679e 21928 canola-daemon_0.1.5+git20090507-1.tar.gz
+ 4c6adb9639cb4798a0e9b2f4a5c96efc 20743 canola-daemon_0.1.5+git20090507.orig.tar.gz
+ fd396b94547aa4058939d965531ebf32 1550 canola-daemon_0.1.5+git20090507-1.diff.gz
 Python-Version: >= 2.5

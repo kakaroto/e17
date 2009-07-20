@@ -8,9 +8,12 @@ Homepage: http://gitweb.profusion.mobi
 Standards-Version: 3.8.2
 Build-Depends: cdbs, debhelper, python-all-dev (>= 2.4), python-central (>= 0.5.6), python-setuptools
 Checksums-Sha1: 
- 94bc034d8af7e3c7d2420dfc6fa13cebef0c8035 10773 python-dispatcher_0.1.0+git20090507-1.tar.gz
+ b5d06289e76d2a2de12acf6db1fd47ce7606dbe6 9982 python-dispatcher_0.1.0+git20090507.orig.tar.gz
+ b4e4a80f027bd0e7a0714938ad1951af3bf57333 1689 python-dispatcher_0.1.0+git20090507-1.diff.gz
 Checksums-Sha256: 
- 34264aaac9263600b00d0779bc0d88523a4002bd19514f44d2e0cf7c42c631a7 10773 python-dispatcher_0.1.0+git20090507-1.tar.gz
+ c88777cd823abf20a45a38dca519e31910051ceeeeeb1711e86164ce5750bddc 9982 python-dispatcher_0.1.0+git20090507.orig.tar.gz
+ 9ab39231dcc93dad043a15204da14dcf558531d585805c570534a160930a4be2 1689 python-dispatcher_0.1.0+git20090507-1.diff.gz
 Files: 
- 3733001c88fa2676d01101c35598e8bd 10773 python-dispatcher_0.1.0+git20090507-1.tar.gz
+ 8d99bde7a35aabf4c59a7ed64e1778cc 9982 python-dispatcher_0.1.0+git20090507.orig.tar.gz
+ 5b7bbed173d250def1115e1799730297 1689 python-dispatcher_0.1.0+git20090507-1.diff.gz
 Python-Version: >= 2.5
