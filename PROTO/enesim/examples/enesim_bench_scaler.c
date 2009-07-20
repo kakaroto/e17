@@ -1,5 +1,21 @@
 #include "enesim_bench_common.h"
 
+static void scaler(void)
+{
+	Enesim_Renderer *r;
+	Enesim_Surface *src = NULL;
+	Enesim_Surface *dst= NULL;
+
+	surfaces_create(&src, opt_fmt, &dst, opt_fmt, NULL, 0);
+	r = enesim_renderer_surface_new();
+	enesim_renderer_surface_src_set(r, src);
+	enesim_renderer_surface_h_set(r, opt_height * 2);
+	enesim_renderer_surface_w_set(r, opt_width * 2);
+	enesim_renderer_surface_x_set(r, 0);
+	enesim_renderer_surface_y_set(r, 0);
+	renderer_run(r, dst, "Scaler", "scaler");
+}
+
 static void scaler_1d(void)
 {
 	Enesim_Surface *src = NULL;
@@ -39,6 +55,7 @@ void scaler_bench(void)
 	printf("****************\n");
 	printf("* Scaler Bench *\n");
 	printf("****************\n");
-	scaler_1d();
+	scaler();
+	//scaler_1d();
 }
 

@@ -1,4 +1,5 @@
-SUBDIRS = cpu util drawer rasterizer converter scaler transformer raddist dispmap
+SUBDIRS = cpu util drawer rasterizer converter scaler transformer raddist dispmap \
+renderer
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -16,6 +17,7 @@ enesim_cpu.c \
 enesim_format.c \
 enesim_surface.c \
 enesim_rasterizer.c \
+enesim_renderer.c \
 enesim_operator.c \
 enesim_converter.c \
 enesim_drawer.c \
@@ -31,6 +33,7 @@ libenesim_la_LIBADD = \
 cpu/libenesim_cpu.la \
 util/libenesim_util.la \
 rasterizer/libenesim_rasterizer.la \
+renderer/libenesim_renderer.la \
 drawer/libenesim_drawer.la \
 converter/libenesim_converter.la \
 scaler/libenesim_scaler.la \
@@ -43,6 +46,7 @@ libenesim_la_DEPENDENCIES = \
 cpu/libenesim_cpu.la \
 util/libenesim_util.la \
 rasterizer/libenesim_rasterizer.la \
+renderer/libenesim_renderer.la \
 drawer/libenesim_drawer.la \
 converter/libenesim_converter.la \
 scaler/libenesim_scaler.la \

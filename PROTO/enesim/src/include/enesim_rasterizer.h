@@ -86,6 +86,7 @@ typedef void (*Enesim_Scanline_Callback)(Enesim_Scanline *sl, void *data);
  * - Do we need to call the generate() directly? why not make that function
  * return a function pointer?
  * - Add magic checks
+ * - Remove the data pointer from the rasterizer
  */
 
 typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */

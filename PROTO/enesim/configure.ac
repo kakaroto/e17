@@ -190,8 +190,8 @@ src/include/Makefile
 src/tool/Makefile
 src/lib/Makefile
 src/lib/cpu/Makefile
-src/lib/primitives/Makefile
 src/lib/rasterizer/Makefile
+src/lib/renderer/Makefile
 src/lib/format/Makefile
 src/lib/drawer/Makefile
 src/lib/converter/Makefile

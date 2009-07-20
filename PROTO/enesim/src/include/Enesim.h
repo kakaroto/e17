@@ -57,10 +57,9 @@ extern "C" {
 /* util headers */
 #include "enesim_matrix.h"
 #include "enesim_curve.h"
-/* old raster operations */
+
 #include "enesim_rasterizer.h"
-#include "enesim_context.h"
-#include "enesim_primitives.h"
+#include "enesim_renderer.h"
 
 #include "enesim_cpu.h"
 /* new raster operations */

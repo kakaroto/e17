@@ -16,8 +16,7 @@ enesim_matrix.h \
 enesim_drawer.h \
 enesim_rasterizer.h \
 enesim_renderer.h \
-enesim_context.h \
-enesim_primitives.h \
+enesim_renderer.h \
 enesim_reflector.h \
 enesim_repeater.h \
 enesim_rotator.h \

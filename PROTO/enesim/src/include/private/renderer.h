@@ -18,22 +18,27 @@
 #ifndef RENDERER_H_
 #define RENDERER_H_
 
-typedef Enesim_Renderer_Span (*Enesim_Renderer_Get)(Enesim_Renderer *r, Enesim_Format *f);
-typedef void (*Enesim_Renderer_Free)(Enesim_Renderer *r);
+/* TODO
+ * + add a way to setup and delete the state of a renderer
+ * + add a dirty flag for eveyr renderer, so in case of calling a span_draw()
+ * with a dirty renderable, internally we will call the create_state function
+ * + add a surface drawer too, not only span based :)
+ * + add common parameters to the renderer here like transformation matrix and quality
+ */
+
+typedef void (*Enesim_Renderer_Span_Draw)(void *r, int x, int y, unsigned int len, uint32_t *dst);
+typedef void (*Enesim_Renderer_Delete)(void *r);
 
 struct _Enesim_Renderer
 {
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
-	Enesim_Renderer_Get get;
-	Enesim_Renderer_Free free;
+	Enesim_Renderer_Span_Draw span;
+	Enesim_Renderer_Delete free;
 };
 
-#define ENESIM_RENDERER_GET(f) ((Enesim_Renderer_Get)(f))
-#define ENESIM_RENDERER_FREE(f) ((Enesim_Renderer_Free)(f))
-#define ENESIM_RENDERER_SPAN(f) ((Enesim_Renderer_Span)(f))
-
-Enesim_Renderer * enesim_renderer_new(void);
+#define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
+#define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
 
 #endif

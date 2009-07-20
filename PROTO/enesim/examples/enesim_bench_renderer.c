@@ -2,6 +2,32 @@
 /******************************************************************************
  *                        Renderer benchmark functions                        *
  ******************************************************************************/
+void renderer_run(Enesim_Renderer *r, Enesim_Surface *dst,
+		const char *title, const char *fname)
+{
+	uint32_t *d;
+	int t;
+	double start, end;
+
+	start = get_time();
+	for (t = 0; t < opt_times; t++)
+	{
+		int y = 0;
+
+		d = enesim_surface_data_get(dst);
+		while (y < opt_height)
+		{
+			enesim_renderer_span_fill(r, 0, y, opt_width, d);
+			d += opt_width;
+			y++;
+		}
+	}
+	end = get_time();
+	printf("%s         [%3.3f sec]\n", title, end - start);
+	test_finish(fname, ENESIM_FILL, dst, NULL, NULL, NULL);
+}
+
+#if 0
 static void _repeater_run_normal(Enesim_Renderer *r, double *start, double *end,
 		Enesim_Surface *dst, Enesim_Surface *src)
 {
@@ -320,3 +346,4 @@ void renderer_bench(void)
 	_scaler_repeater_bench();
 	_transformer_bench();
 }
+#endif

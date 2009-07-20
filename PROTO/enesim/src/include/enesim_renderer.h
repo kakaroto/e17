@@ -24,47 +24,29 @@
  * @{
  */
 typedef struct _Enesim_Renderer Enesim_Renderer; /**< Renderer Handler */
-/* TODO this needs to change:
- * pass x and len as pointers as maybe the renderer just drew on a subset of it
- * so the real x and len can be retrieved
- */
-typedef Eina_Bool (*Enesim_Renderer_Span)(Enesim_Renderer *r, int x, int y, int len, Enesim_Surface_Data *dst);
-
 EAPI void enesim_renderer_delete(Enesim_Renderer *r);
-EAPI Enesim_Renderer_Span enesim_renderer_func_get(Enesim_Renderer *r, Enesim_Format *f);
-/**
- * @defgroup Enesim_Renderer_Fill_Color_Group Fill Color
- * @{
- */
-EAPI Enesim_Renderer * enesim_renderer_color_new(void);
-EAPI void enesim_renderer_color_color_set(Enesim_Renderer *r, uint32_t color);
-/**
- * @}
- */
-
-EAPI Enesim_Renderer * enesim_renderer_repeater_new(void);
-EAPI void enesim_renderer_repeater_mode_set(Enesim_Renderer *r, int mode);
-EAPI void enesim_renderer_repeater_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
-
-EAPI void enesim_renderer_repeater_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
-EAPI void enesim_renderer_repeater_src_set(Enesim_Renderer *r, Enesim_Surface_Data *sdata);
-EAPI void enesim_renderer_repeater_src_unset(Enesim_Renderer *r);
-EAPI Eina_Bool enesim_renderer_repeater_src_y(Enesim_Renderer *r, int ydst, int *ysrc);
-
-EAPI void enesim_renderer_repeater_mask_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
-EAPI void enesim_renderer_repeater_mask_set(Enesim_Renderer *r, Enesim_Surface_Data *mdata);
-EAPI void enesim_renderer_repeater_mask_unset(Enesim_Renderer *r);
-EAPI Eina_Bool enesim_renderer_repeater_mask_y(Enesim_Renderer *r, int ydst, int *ysrc);
+EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
+	unsigned int len, uint32_t *dst);
 
 
-EAPI Enesim_Renderer * enesim_renderer_transformer_new(void);
-EAPI void enesim_renderer_transformer_matrix_set(Enesim_Renderer *r, Enesim_Matrix *m);
-EAPI void enesim_renderer_transformer_src_set(Enesim_Renderer *r, Enesim_Surface *src);
-EAPI void enesim_renderer_transformer_quality_set(Enesim_Renderer *r, Enesim_Quality q);
-EAPI Enesim_Quality enesim_renderer_transformer_quality_get(Enesim_Renderer *r);
+EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void);
+EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w);
+EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h);
+EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
+		Enesim_Surface *s);
+EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
+		Enesim_Surface *s);
+EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step);
+
+
+EAPI Enesim_Renderer * enesim_renderer_surface_new(void);
+EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x);
+EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y);
+EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w);
+EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h);
+EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *src);
 
 /**
- * @}
  * @}
  */
 

@@ -156,10 +156,9 @@ typedef __m128i sse2_t;
 #include "private/drawer.h"
 #include "private/matrix.h"
 #include "private/rasterizer.h"
-//#include "private/renderer.h"
+#include "private/renderer.h"
 #include "private/surface.h"
 //#include "private/transformer.h"
-#include "private/context.h"
 #include "private/cpu.h"
 /* now the surface format backends */
 #include "private/format_argb8888.h"

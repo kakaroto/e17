@@ -157,6 +157,11 @@ int bench_get(const char *name)
 		opt_bench = "dispmap";
 		return 1;
 	}
+	else if (!strcmp(name, "hswitch"))
+	{
+		opt_bench = "hswitch";
+		return 1;
+	}
 	return 0;
 }
 
@@ -230,6 +235,7 @@ void bench_help(void)
 	printf("spanner\n");
 	printf("cpu\n");
 	printf("scaler\n");
+	printf("hswitch\n");
 	printf("all\n");
 }
 
@@ -428,6 +434,10 @@ ok:
 	else if (!strcmp(opt_bench, "dispmap"))
 	{
 		dispmap_bench();
+	}
+	else if (!strcmp(opt_bench, "hswitch"))
+	{
+			hswitch_bench();
 	}
 	else if (!strcmp(opt_bench, "all"))
 	{
