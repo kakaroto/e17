@@ -433,7 +433,14 @@ EOF
 
 # script body
 
-# check for deps
+# check for deps, but first try if you don't want to install dependencies
+
+case $1 in
+	--setup|-s) 
+		setup
+		exit 0
+	;;
+esac
 
 for deps in sudo rsync ssh dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
 	which $deps
@@ -442,11 +449,6 @@ for deps in sudo rsync ssh dpkg-scanpackages gzip /usr/sbin/pbuilder ccache; do
 		exit 1
 	fi
 done
-
-case $1 in
-	--setup|-s) setup
-	;;
-esac
 
 cd $localpath
 if [ "$?" -ge "1" ]; then
@@ -473,8 +475,6 @@ while [ "$1" != "" ]; do
 		--clean|-C) clean
 		;;
 		--help|-h) print_help
-		;;
-		--setup|-s) exit 0
 		;;
 		*) 
 		echo "Bad argument, run it with --help to see what it can do."
