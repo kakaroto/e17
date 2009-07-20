@@ -11,7 +11,7 @@ Homepage: http://www.enlightenment.org
 
 Package: libewl1
 Architecture: any
-Depends: ${shlibs:Depends}, libewl1-engine-evas-software-x11, libevas-engines, ewl1-test
+Depends: ${shlibs:Depends}, libewl1-engine-evas-software-x11, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb, ewl1-test
 Suggests: libewl1-engines-all
 Description: The Enlightened Widget Library (EWL)
  EWL is a widget library based on the Enlightenment Foundation Libraries
@@ -47,7 +47,7 @@ Description: The main EVAS engine for EWL
 
 Package: libewl1-engine-evas-buffer
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Description: The buffer engine for EWL provided by EVAS
  EWL is a widget library based on the Enlightenment Foundation Libraries
  .
@@ -55,7 +55,7 @@ Description: The buffer engine for EWL provided by EVAS
 
 Package: libewl1-engine-evas-fb
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines-extras
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Description: The framebuffer engine for EWL provided by EVAS
  EWL is a widget library based on the Enlightenment Foundation Libraries
  .
@@ -63,7 +63,7 @@ Description: The framebuffer engine for EWL provided by EVAS
 
 Package: libewl1-engine-evas-gl-x11
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines-extras
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Description: The OpenGL X11 engine for EWL provided by EVAS
  EWL is a widget library based on the Enlightenment Foundation Libraries
  .
@@ -71,7 +71,7 @@ Description: The OpenGL X11 engine for EWL provided by EVAS
 
 Package: libewl1-engine-evas-software-x11
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Description: The software X11 engine for EWL provided by EVAS
  EWL is a widget library based on the Enlightenment Foundation Libraries
  .
@@ -79,7 +79,7 @@ Description: The software X11 engine for EWL provided by EVAS
 
 Package: libewl1-engine-evas-xrender
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Description: The Xrender X11 engine for EWL provided by EVAS
  EWL is a widget library based on the Enlightenment Foundation Libraries
  .

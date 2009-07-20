@@ -19,7 +19,7 @@ Description: Enlightenment thumbnailing library development files
 
 Package: libepsilon0
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-engines
+Depends: ${shlibs:Depends}, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
 Provides: libepsilon
 Replaces: libepsilon-bin
 Description: Enlightenment thumbnailing library API
