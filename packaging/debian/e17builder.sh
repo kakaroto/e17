@@ -115,6 +115,7 @@ compile_list=(
 "elitaire"
 "estickies"
 "expedite"
+"image-viewer"
 # extra modules
 "E-MODULES-EXTRA"
 # python stuff
