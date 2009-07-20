@@ -433,7 +433,7 @@ EOF
 
 # script body
 
-# check for deps, but first try if you don't want to install dependencies
+# check for deps, but first try if you don't want to install dependencies and create folder
 
 case $1 in
 	--setup|-s) 
