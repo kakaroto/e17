@@ -21,3 +21,5 @@ exalt_client_LDFLAGS = @DLLDFLAGS@
 exalt_client_LDADD = $(top_builddir)/src/lib_dbus/libexalt_dbus.la $(top_builddir)/src/lib/libexalt.la @EXALT_LIBS@
 
 MAINTAINERCLEANFILES = Makefile.in
+
+EXTRA_DIST = iface_list.h main.h wired.h wireless.h

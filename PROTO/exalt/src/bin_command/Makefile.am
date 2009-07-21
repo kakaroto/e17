@@ -17,3 +17,5 @@ exalt_command_LDFLAGS = @DLLDFLAGS@
 exalt_command_LDADD = $(top_builddir)/src/lib_dbus/libexalt_dbus.la $(top_builddir)/src/lib/libexalt.la @EXALT_LIBS@
 
 MAINTAINERCLEANFILES = Makefile.in
+
+EXTRA_DIST = $(exalt_command_INCLUDES)

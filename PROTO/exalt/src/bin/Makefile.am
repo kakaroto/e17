@@ -26,6 +26,8 @@ cb_dns.c \
 boot_process.c \
 cb_bootprocess.c
 
+EXTRA_DIST = $(exalt_daemon_INCLUDES)
+
 exalt_daemon_LDFLAGS = @DLLDFLAGS@
 exalt_daemon_LDADD = $(top_builddir)/src/lib/libexalt.la @EXALT_LIBS@
 

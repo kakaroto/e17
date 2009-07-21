@@ -12,17 +12,21 @@ INCLUDES	= \
 
 lib_LTLIBRARIES = libexalt.la
 
-EXTRA_DIST =
+EXTRA_DIST = iw/iwlib_custom.c iw/wireless.h
 
 EXALTHEADERS = \
+nettools/proc.h \
+wpa_supplicant/wpa_ctrl.h \
 libexalt.h \
 exalt_dns.h \
 exalt_ethernet.h \
+exalt_regexp.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
 exalt_wireless_network.h \
 exalt_connection.h \
 exalt_vpnc.h \
+exalt_wpa_supplicant.h \
 iw/iwlib.h
 
 libexalt_la_SOURCES = \

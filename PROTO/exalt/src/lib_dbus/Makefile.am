@@ -31,7 +31,7 @@ libexalt_dbus_private.h \
 libexalt_dbus_private.c \
 exalt_dbus_dns.c \
 exalt_dbus_response.c \
-$(EXALTHEADERS)
+$(EXALT_DBUSHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt_dbus
 installed_headers_DATA = $(EXALT_DBUSHEADERS)
