@@ -67,7 +67,7 @@ static void _generic(Hswitch *hs, int x, int y, unsigned int len, uint32_t *dst)
 			w = mx - ir.x;
 			enesim_renderer_span_fill(hs->lrend, ir.x, ir.y, w, dst);
 			dst += w;
-			enesim_renderer_span_fill(hs->rrend, mx, ir.y, ir.w + ir.x - mx , dst);
+			enesim_renderer_span_fill(hs->rrend, 0, ir.y, ir.w + ir.x - mx , dst);
 		}
 	}
 }
