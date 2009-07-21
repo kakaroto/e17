@@ -153,7 +153,7 @@ download() {
 echo "DOWNLOADING PACKAGES WITH RSYNC..."
 for down in ${compile_list[@]}; do
 	case $down in
-		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$down ./
+		eina|eet|evas|ecore|embryo|edje|e_dbus|efreet|e17|elementary) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/main/$down ./
 		;;
 		*) rsync --partial --progress --recursive --rsh=ssh $username@$eserver:$path/extras/$down ./
 		;;
