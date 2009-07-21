@@ -1680,28 +1680,6 @@ diff -Naur e17-unpatched/src/bin/e_utils.c ecomorph-e17/src/bin/e_utils.c
     path = efreet_icon_path_find(e_config->icon_theme, icon, size);
     if (!path) return 0;
     e_menu_item_icon_file_set(mi, path);
-diff -Naur e17-unpatched/src/bin/e_widget_toolbar.c ecomorph-e17/src/bin/e_widget_toolbar.c
---- e17-unpatched/src/bin/e_widget_toolbar.c	2009-06-21 19:31:00.000000000 +0200
-+++ ecomorph-e17/src/bin/e_widget_toolbar.c	2009-07-18 13:57:45.000000000 +0200
-@@ -126,12 +126,12 @@
- 			  );
-    e_box_min_size_get(wd->o_box, &mw, &mh);
-    evas_object_resize(wd->o_box, mw, mh);
--   evas_object_resize(wd->o_base, 500, 500);
--   e_scrollframe_child_viewport_size_get(wd->o_base, &vw, &vh);
--   if (wd->scrollable)
--     e_widget_min_size_set(obj, 500 - vw, mh + (500 - vh));
--   else
--     e_widget_min_size_set(obj, mw + (500 - vw), mh + (500 - vh));
-+   /* evas_object_resize(wd->o_base, 500, 500);
-+    * e_scrollframe_child_viewport_size_get(wd->o_base, &vw, &vh);
-+    * if (wd->scrollable)
-+    *   e_widget_min_size_set(obj, 500 - vw, mh + (500 - vh));
-+    * else
-+    *   e_widget_min_size_set(obj, mw + (500 - vw), mh + (500 - vh)); */
- }
- 
- EAPI void
 diff -Naur e17-unpatched/src/bin/e_zone.c ecomorph-e17/src/bin/e_zone.c
 --- e17-unpatched/src/bin/e_zone.c	2009-05-08 09:11:14.000000000 +0200
 +++ ecomorph-e17/src/bin/e_zone.c	2009-07-18 13:57:45.000000000 +0200
