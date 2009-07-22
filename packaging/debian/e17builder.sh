@@ -98,9 +98,9 @@ compile_list=(
 "elementary"
 # extra libs
 "epsilon"
-"ethumb"
 "esmart"
 "emotion"
+"ethumb"
 "exml"
 "ewl"
 "etk"
