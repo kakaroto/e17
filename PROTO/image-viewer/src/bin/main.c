@@ -1311,14 +1311,14 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 
 	o = elm_label_add(tb);
 	elm_label_label_set(o, "Slideshow: image delay");
-	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	evas_object_size_hint_align_set(o, 0.9, 0.5);
 	elm_table_pack(tb, o, 0, row, 1, 1);
 	evas_object_show(o);
 
 	o = elm_slider_add(tb);
 	elm_slider_span_size_set(o, 120);
-	evas_object_size_hint_align_set(o, 0.1, 0.5);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
+	evas_object_size_hint_align_set(o, -1, -1);
 	elm_slider_indicator_format_set(o, "%.2f");
 	elm_slider_min_max_set(o, 1.0, 10.0);
 	elm_slider_unit_format_set(o, "%1.1f seconds");
@@ -1330,48 +1330,48 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 
 	o = elm_label_add(tb);
 	elm_label_label_set(o, "Image background");
-	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	evas_object_size_hint_align_set(o, 0.9, 0.5);
 	elm_table_pack(tb, o, 0, row, 1, 1);
 	evas_object_show(o);
 
 	o = elm_toggle_add(tb);
-	evas_object_size_hint_align_set(o, 0.1, 0.5);
+	evas_object_size_hint_align_set(o, -1, -1);
 	elm_toggle_states_labels_set(o, "checkers", "black");
         if (iv->config->image_bg == IMAGE_BG_BLACK)
           elm_toggle_state_set(o, 0);
         else
           elm_toggle_state_set(o, 1);
-	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_bg_toggle_change, iv);
+	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_show(o);
 
 #ifdef HAVE_ETHUMB
 	o = elm_label_add(tb);
 	elm_label_label_set(o, "Auto-hide the preview pane");
-	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	evas_object_size_hint_align_set(o, 0.9, 0.5);
 	elm_table_pack(tb, o, 0, row, 1, 1);
 	evas_object_show(o);
 
 	o = elm_toggle_add(tb);
-	evas_object_size_hint_align_set(o, 0.1, 0.5);
+	evas_object_size_hint_align_set(o, -1, -1);
 	elm_toggle_state_set(o, iv->config->auto_hide_previews);
-	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_auto_hide_previews_toggle_change, iv);
+	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_show(o);
 #endif
 
 	o = elm_label_add(tb);
 	elm_label_label_set(o, "Image editor command");
-	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	evas_object_size_hint_align_set(o, 0.9, 0.5);
 	elm_table_pack(tb, o, 0, row, 1, 1);
 	evas_object_show(o);
 
 	sc = elm_scroller_add(tb);
 	elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	evas_object_size_hint_weight_set(sc, 1.0, 1.0);
-	evas_object_size_hint_align_set(sc, 0.1, 0.5);
+	evas_object_size_hint_align_set(sc, -1, -1);
 	elm_table_pack(tb, sc, 1, row++, 1, 1);
 	elm_scroller_bounce_set(sc, 0, 0);
 	evas_object_show(sc);
