@@ -1,1 +1,3 @@
-wrap the evas_object_image in elm_scroller, so that pan can work correctly
+The entry which allows the user to specify an image editing program is currently in a scroller. However, the scroller and the entry are not visible for some reason.
+
+File monitoring needs a lot of fixing

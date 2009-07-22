@@ -56,7 +56,7 @@ struct _IV
 
    Ecore_Idler *idler;
 
-   Ecore_Timer *slideshow_timer, *cursor_timer;
+   Ecore_Timer *slideshow_timer, *cursor_timer, *file_add_timer;
 
    Ecore_Event_Handler *on_win_move_handler;
 
@@ -108,6 +108,7 @@ struct _IV_Config {
      int	  auto_hide_previews;
      double       img_scale;
      double	  slideshow_delay;
+     const char  *image_editor;
      IV_Image_Fit fit;
      IV_Image_Bg  image_bg;
 };
@@ -368,11 +369,29 @@ on_settings_auto_hide_previews_toggle_change(void *data, Evas_Object *obj, void 
 }
 
 static void
+on_settings_edit_entry_change(void *data, Evas_Object *obj, void *event_info)
+{
+   IV *iv = data;
+   char *txt;
+   int len;
+
+   txt = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
+   len = strlen(txt);
+   if (txt[len - 1] == '\n') txt[len - 1] = '\0';
+   iv->config->image_editor = eina_stringshare_add(txt);
+
+   free(txt);
+
+   config_save(iv);
+}
+
+static void
 on_settings_close_click(void *data, Evas_Object *obj, void *event_info)
 {
    IV *iv = data;
 
    evas_object_hide(iv->gui.settings_win);
+   evas_object_focus_set(iv->gui.ly, 1);
 }
 
 static void
@@ -658,11 +677,23 @@ toggle_previews(IV *iv)
 }
 #endif
 
+static int
+on_file_add_tick(void *data)
+{
+   IV *iv = data;
+
+   if (iv && !iv->idler)
+     iv->idler = ecore_idler_add(on_idler, iv);
+
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static void
 on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
 {
    IV *iv = data;
    Eina_List *head, *l, *l_next;
+   Eina_Bool delay = EINA_FALSE;
    const char *p2, *cur_path;
    char *dir = NULL;
 
@@ -690,6 +721,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   iv->preview_files = eina_list_append(iv->preview_files, path);
 #endif
 		   iv->flags.current = EINA_TRUE;
+		   delay = EINA_TRUE;
 		   break;
 		}
 	   }
@@ -752,12 +784,24 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		iv->files = eina_list_data_find_list(iv->files, cur_path);
 	   }
 	 break;
+      case ECORE_FILE_EVENT_MODIFIED:
+	 iv->flags.current = EINA_TRUE;
+	 break;
       default:
 	 break;
      }
 
    if (!iv->idler && iv->flags.current)
-     iv->idler = ecore_idler_add(on_idler, iv);
+     {
+	if (delay)
+	  {
+	     if (iv->file_add_timer)
+	       ecore_timer_del(iv->file_add_timer);
+	     iv->file_add_timer = ecore_timer_add(1.0, on_file_add_tick, iv);
+	  }
+	else
+	  iv->idler = ecore_idler_add(on_idler, iv);
+     }
 }
 
 static void
@@ -797,6 +841,7 @@ read_image(IV *iv, IV_Image_Dest dest)
      {
 	Eina_Bool succ = EINA_FALSE;
 
+	DBG("%d : %s\n", dest, (char *) l->data);
 	img = elm_image_add(iv->gui.ly);
 	succ = elm_image_file_set(img, l->data, NULL);
 	if (succ)
@@ -1253,18 +1298,26 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 
    if (!iv->gui.settings_win)
      {
-	Evas_Object *o, *bx, *bx2, *ic;
+	Evas_Object *o, *tb, *ic, *sc;
+	int row = 0;
 
 	iv->gui.settings_win = o = elm_win_inwin_add(iv->gui.win);
 	elm_object_style_set(o, "shadow");
 	o = elm_bg_add(iv->gui.settings_win);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
 
-	bx = elm_box_add(iv->gui.settings_win);
-	o = elm_slider_add(bx);
-	elm_slider_label_set(o, "Slideshow: image delay");
+	tb = elm_table_add(iv->gui.settings_win);
+	evas_object_show(tb);
+
+	o = elm_label_add(tb);
+	elm_label_label_set(o, "Slideshow: image delay");
+	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	elm_table_pack(tb, o, 0, row, 1, 1);
+	evas_object_show(o);
+
+	o = elm_slider_add(tb);
 	elm_slider_span_size_set(o, 120);
-	evas_object_size_hint_align_set(o, -1.0, 0.5);
+	evas_object_size_hint_align_set(o, 0.1, 0.5);
 	evas_object_size_hint_weight_set(o, 1.0, 1.0);
 	elm_slider_indicator_format_set(o, "%.2f");
 	elm_slider_min_max_set(o, 1.0, 10.0);
@@ -1273,47 +1326,77 @@ on_settings_click(void *data, Evas_Object *obj, void *event_info)
 	evas_object_smart_callback_add(o, "delay,changed",
 				       on_settings_slideshow_delay_change, iv);
 	evas_object_show(o);
-	elm_box_pack_end(bx, o);
+	elm_table_pack(tb, o, 1, row++, 1, 1);
 
-	o = elm_toggle_add(bx);
-	elm_toggle_label_set(o, "Image background");
+	o = elm_label_add(tb);
+	elm_label_label_set(o, "Image background");
+	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	elm_table_pack(tb, o, 0, row, 1, 1);
+	evas_object_show(o);
+
+	o = elm_toggle_add(tb);
+	evas_object_size_hint_align_set(o, 0.1, 0.5);
 	elm_toggle_states_labels_set(o, "checkers", "black");
         if (iv->config->image_bg == IMAGE_BG_BLACK)
           elm_toggle_state_set(o, 0);
         else
           elm_toggle_state_set(o, 1);
-	elm_box_pack_end(bx, o);
+	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_bg_toggle_change, iv);
 	evas_object_show(o);
 
 #ifdef HAVE_ETHUMB
-	o = elm_toggle_add(bx);
-	elm_toggle_label_set(o, "Auto-hide the preview pane");
+	o = elm_label_add(tb);
+	elm_label_label_set(o, "Auto-hide the preview pane");
+	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	elm_table_pack(tb, o, 0, row, 1, 1);
+	evas_object_show(o);
+
+	o = elm_toggle_add(tb);
+	evas_object_size_hint_align_set(o, 0.1, 0.5);
 	elm_toggle_state_set(o, iv->config->auto_hide_previews);
-	elm_box_pack_end(bx, o);
+	elm_table_pack(tb, o, 1, row++, 1, 1);
 	evas_object_smart_callback_add(o, "changed",
 				       on_settings_auto_hide_previews_toggle_change, iv);
 	evas_object_show(o);
 #endif
 
-	bx2 = elm_box_add(bx);
-	elm_box_horizontal_set(bx2, EINA_TRUE);
-	evas_object_show(bx2);
-	elm_box_pack_end(bx, bx2);
+	o = elm_label_add(tb);
+	elm_label_label_set(o, "Image editor command");
+	evas_object_size_hint_align_set(o, 1.0, 0.5);
+	elm_table_pack(tb, o, 0, row, 1, 1);
+	evas_object_show(o);
 
-	ic = elm_icon_add(bx2);
+	sc = elm_scroller_add(tb);
+	elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+	evas_object_size_hint_weight_set(sc, 1.0, 1.0);
+	evas_object_size_hint_align_set(sc, 0.1, 0.5);
+	elm_table_pack(tb, sc, 1, row++, 1, 1);
+	elm_scroller_bounce_set(sc, 0, 0);
+	evas_object_show(sc);
+
+	o = elm_entry_add(tb);
+	elm_entry_entry_set(o, iv->config->image_editor);
+	evas_object_size_hint_weight_set(o, 1.0, 1.0);
+	evas_object_size_hint_align_set(o, -1.0, -1.0);
+	evas_object_smart_callback_add(o, "changed",
+				       on_settings_edit_entry_change, iv);
+	elm_scroller_content_set(sc, o);
+	evas_object_show(o);
+
+	ic = elm_icon_add(tb);
 	elm_icon_standard_set(ic, "close");
-	o = elm_button_add(bx2);
+	o = elm_button_add(tb);
 	elm_icon_scale_set(ic, 0, 0);
 	elm_button_icon_set(o, ic);
 	elm_button_label_set(o, "Close");
 	evas_object_smart_callback_add(o, "clicked",
 				       on_settings_close_click, iv);
+	elm_table_pack(tb, o, 0, row++, 2, 1);
 	evas_object_show(o);
-	elm_box_pack_end(bx2, o);
 
-	elm_win_inwin_content_set(iv->gui.settings_win, bx);
+	elm_win_inwin_content_set(iv->gui.settings_win, tb);
      }
 
    if (evas_object_visible_get(iv->gui.settings_win))
@@ -1398,6 +1481,23 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
      }
    else if (!strcmp(ev->keyname, "Delete"))
      trash_image(iv);
+   else if (!strcmp(ev->keyname, "F12"))
+     on_settings_click(iv, NULL, NULL);
+#ifdef HAVE_ETHUMB
+   else if (!strcmp(ev->keyname, "F9"))
+     toggle_previews(iv);
+#endif
+   else if (!strcmp(ev->keyname, "e"))
+     {
+	char buf[4096];
+	if (iv->files)
+	  {
+	     Ecore_Exe *exe;
+	     snprintf(buf, sizeof(buf), "%s -a %s", iv->config->image_editor, (char *) iv->files->data);
+	     exe = ecore_exe_run(buf, NULL);
+	     ecore_exe_free(exe);
+	  }
+     }
 
    if (iv->flags.fullscreen)
      {
@@ -1409,11 +1509,6 @@ on_key_down(void *data, Evas *a, Evas_Object *obj, void *event_info)
 	if (!strcmp(ev->keyname, "F11") || !strcmp(ev->keyname, "f"))
 	  fullscreen(iv);
      }
-
-#ifdef HAVE_ETHUMB
-   if (!strcmp(ev->keyname, "F9"))
-     toggle_previews(iv);
-#endif
 
    if (iv->flags.slideshow)
      {
@@ -1592,16 +1687,6 @@ iv_free(IV *iv)
    free(iv);
 }
 
-static Eina_Hash *
-eet_eina_hash_add_alloc(void *h, const void *key, void *data)
-{
-   Eina_Hash *hash = h;
-   if (!hash) hash = eina_hash_string_superfast_new(NULL);
-   if (!hash) return NULL;
-   eina_hash_add(hash, key, data);
-   return hash;
-}
-
 static void
 config_init(IV *iv)
 {
@@ -1616,11 +1701,9 @@ config_init(IV *iv)
    eddc.func.list_append = (void *(*)(void *l, void *d)) eina_list_append;
    eddc.func.list_data = (void *(*)(void *)) eina_list_data_get;
    eddc.func.list_free = (void *(*)(void *)) eina_list_free;
-   eddc.func.hash_foreach =
-      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))
-      eina_hash_foreach;
-   eddc.func.hash_add = (void* (*) (void *, const char *, void *)) eet_eina_hash_add_alloc;
-   eddc.func.hash_free = (void  (*) (void *)) eina_hash_free;
+   eddc.func.hash_foreach = NULL;
+   eddc.func.hash_add = NULL;
+   eddc.func.hash_free = NULL;
    eddc.name = "IV_Config";
    eddc.size = sizeof(IV_Config);
 
@@ -1633,6 +1716,7 @@ config_init(IV *iv)
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, img_scale, EET_T_DOUBLE);
    C_VAL(D, T, slideshow_delay, EET_T_DOUBLE);
+   C_VAL(D, T, image_editor, EET_T_STRING);
    C_VAL(D, T, fit, EET_T_INT);
    C_VAL(D, T, image_bg, EET_T_INT);
 
