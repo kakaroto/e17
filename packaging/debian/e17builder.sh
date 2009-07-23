@@ -27,6 +27,10 @@ md5path="$eurl/SOURCES-MD5"
 localpath="$HOME/repository_folder"
 # this is where chroot(packed/unpacked) and final result before tree preparation will be, change if you haven't got much space in /var
 pbuilderplace="/var/cache/pbuilder"
+# do apt-get update before installing deps?
+doupdate="1"
+# install dependencies on --setup?
+installdeps="1"
 # distro list
 distros=(
 ## ubuntu
@@ -247,7 +251,8 @@ done
 
 setup() {
 echo "INSTALLING PBUILDER..."
-sudo apt-get --assume-yes --force-yes install pbuilder cdebootstrap devscripts ccache rsync openssh-client
+[ "$doupdate" = "1" ] && sudo apt-get update
+[ "$installdeps" = "1" ] && sudo apt-get --assume-yes --force-yes install pbuilder cdebootstrap devscripts ccache rsync openssh-client
 echo "INSTALLING UBUNTU KEYRING..."
 if [ -z "$(dpkg -l | grep ii | grep ubuntu-keyring)" ]; then
 	wget http://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2008.03.04_all.deb
