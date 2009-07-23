@@ -17,6 +17,9 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+/* TODO instead of using two surface renderers just pass the needed renderers
+ * as parameters
+ */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
@@ -29,7 +32,6 @@ typedef struct _Hswitch
 	Enesim_Renderer *rrend;
 	float step;
 } Hswitch;
-
 
 static void _generic(Hswitch *hs, int x, int y, unsigned int len, uint32_t *dst)
 {

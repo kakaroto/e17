@@ -25,9 +25,17 @@
  */
 typedef struct _Enesim_Renderer Enesim_Renderer; /**< Renderer Handler */
 EAPI void enesim_renderer_delete(Enesim_Renderer *r);
+EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r);
+EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r);
 EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 	unsigned int len, uint32_t *dst);
 
+typedef enum _Enesim_Renderer_Draw_Mode
+{
+	ENESIM_RENDERER_DRAW_MODE_FILL = 0,
+	ENESIM_RENDERER_DRAW_MODE_STROKE = 1,
+	ENESIM_RENDERER_DRAW_MODE_STROKE_FILL = 2,
+} Enesim_Renderer_Draw_Mode;
 
 EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void);
 EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w);
@@ -38,13 +46,28 @@ EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
 		Enesim_Surface *s);
 EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step);
 
-
 EAPI Enesim_Renderer * enesim_renderer_surface_new(void);
 EAPI void enesim_renderer_surface_x_set(Enesim_Renderer *r, int x);
 EAPI void enesim_renderer_surface_y_set(Enesim_Renderer *r, int y);
 EAPI void enesim_renderer_surface_w_set(Enesim_Renderer *r, int w);
 EAPI void enesim_renderer_surface_h_set(Enesim_Renderer *r, int h);
 EAPI void enesim_renderer_surface_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+
+
+EAPI Enesim_Renderer * enesim_renderer_circle_new(void);
+EAPI void enesim_renderer_circle_center_set(Enesim_Renderer *r, float x, float y);
+EAPI void enesim_renderer_circle_radius_set(Enesim_Renderer *r, float radius);
+EAPI void enesim_renderer_circle_outline_weight_set(Enesim_Renderer *r, float weight);
+EAPI void enesim_renderer_circle_outline_color_set(Enesim_Renderer *r, unsigned int stroke_color);
+EAPI void enesim_renderer_circle_outline_renderer_set(Enesim_Renderer *r, Enesim_Renderer *o);
+EAPI void enesim_renderer_circle_fill_color_set(Enesim_Renderer *r, unsigned int fill_color);
+EAPI void enesim_renderer_circle_fill_renderer_set(Enesim_Renderer *r, Enesim_Renderer *f);
+EAPI void enesim_renderer_circle_draw_mode_set(Enesim_Renderer *r, int draw_mode);
+
+EAPI Enesim_Renderer * enesim_renderer_sqpattern_new(void);
+EAPI void enesim_renderer_sqpattern_color1_set(Enesim_Renderer *r, uint32_t color);
+EAPI void enesim_renderer_sqpattern_color2_set(Enesim_Renderer *r, uint32_t color);
+EAPI void enesim_renderer_sqpattern_size_set(Enesim_Renderer *r, int w, int h);
 
 /**
  * @}

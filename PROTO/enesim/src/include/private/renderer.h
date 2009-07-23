@@ -19,15 +19,15 @@
 #define RENDERER_H_
 
 /* TODO
- * + add a way to setup and delete the state of a renderer
- * + add a dirty flag for eveyr renderer, so in case of calling a span_draw()
- * with a dirty renderable, internally we will call the create_state function
  * + add a surface drawer too, not only span based :)
  * + add common parameters to the renderer here like transformation matrix and quality
+ * + add an x and y offset, to translate from user coords to renderer coords
  */
 
 typedef void (*Enesim_Renderer_Span_Draw)(void *r, int x, int y, unsigned int len, uint32_t *dst);
 typedef void (*Enesim_Renderer_Delete)(void *r);
+typedef Eina_Bool (*Enesim_Renderer_State_Setup)(void *r);
+typedef void (*Enesim_Renderer_State_Cleanup)(void *r);
 
 struct _Enesim_Renderer
 {
@@ -36,9 +36,20 @@ struct _Enesim_Renderer
 #endif
 	Enesim_Renderer_Span_Draw span;
 	Enesim_Renderer_Delete free;
+	Enesim_Renderer_State_Setup state_setup;
+	Enesim_Renderer_State_Cleanup state_cleanup;
+	Eina_Bool changed;
+	/* the origin of the paint */
+	int ox, oy;
+	/* a fixed point matrix */
+	int axx, axy, axz;
+	int ayx, ayy, ayz;
+	int azx, azy, azz;
 };
 
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
 #define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
+#define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
+#define ENESIM_RENDERER_STATE_CLEANUP(f) ((Enesim_Renderer_State_Cleanup)(f))
 
 #endif
