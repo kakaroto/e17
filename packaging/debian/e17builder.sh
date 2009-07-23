@@ -267,9 +267,15 @@ if [ -d $localpath ]; then
 else
 	mkdir -p $localpath
 fi
+
 echo "CREATING $pbuilderplace IF NOT EXISTS..."
 if [ ! -d "$pbuilderplace" ]; then
-	sudo mkdir $pbuilderplace
+	sudo mkdir -p $pbuilderplace
+fi
+
+if [ "$pbuilderplace" != "/var/cache/pbuilder" ]; then
+	sudo mkdir -p $pbuilderplace/{build,ccache,aptcache,pbuildd,pbuilder-mnt,pbuilder-umlresult,result}
+	sudo chmod -R 777 $pbuilderplace
 fi
 }
 
