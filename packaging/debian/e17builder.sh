@@ -353,8 +353,8 @@ for preparelist in ${distros[@]}; do
 	fi
 	echo "Preparing pool dir..."
 	cp -rf $preparepath/* $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras
-	cp -rf $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras/{eina,eet,evas,ecore,embryo,edje,e_dbus,efreet,e} $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/main
-	rm -rf $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras/{eina,eet,evas,ecore,embryo,edje,e_dbus,efreet,e}
+	cp -rf $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras/{eina,eet,evas,ecore,embryo,edje,e_dbus,efreet,e,elementary} $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/main
+	rm -rf $distro/pool/$(echo $preparelist | sed 's/#.*//')/binaries-$currentversion/extras/{eina,eet,evas,ecore,embryo,edje,e_dbus,efreet,e,elementary}
 	echo "Done. If you have binaries for all architectures in the right place, run script with --database. Don't make databases if you have only one arch in the folder, because there are also some files with architecture all, they will be rewritten when you will compile another arch and they will have different checksums."
 done
 }
