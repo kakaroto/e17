@@ -247,7 +247,7 @@ done
 
 setup() {
 echo "INSTALLING PBUILDER..."
-sudo apt-get --assume-yes --force-yes install pbuilder debootstrap devscripts ccache rsync openssh-client
+sudo apt-get --assume-yes --force-yes install pbuilder cdebootstrap devscripts ccache rsync openssh-client
 echo "INSTALLING UBUNTU KEYRING..."
 if [ -z "$(dpkg -l | grep ii | grep ubuntu-keyring)" ]; then
 	wget http://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2008.03.04_all.deb
