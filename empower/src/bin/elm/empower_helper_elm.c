@@ -28,15 +28,3 @@ void check_sudo_timeout_job(void *data)
   auth_passed = 0;
   authorize(NULL);
 }
-
-char* parse_entry(Evas_Object *e)
-{
-  char buf[4096], *markup;
-
-  snprintf(buf, sizeof(buf), elm_entry_entry_get(e));
-  markup = strstr(buf, "<br>");
-
-  if(markup) *markup = 0;
-
-  return strdup(buf);
-}

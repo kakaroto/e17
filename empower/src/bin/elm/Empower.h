@@ -52,7 +52,6 @@ int authorize(const char* password);
 //int idle(void *data);
 //int idle_exit(void *data);
 void check_sudo_timeout_job(void *data);
-char* parse_entry(Evas_Object *e);
 /* empower_helper prototypes end */
 
 #endif

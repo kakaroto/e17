@@ -87,7 +87,7 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
 
   if(!auth_passed)
   {
-    pass = parse_entry(entry);
+    pass = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
 
     if((exec != NULL) && (entry != NULL) && (pass[0] == 0))
     {
@@ -138,7 +138,7 @@ int sudo_done_cb(void *data, int type, void *event)
   }
   else if(mode == SUDOPROG)
   {
-    e = parse_entry(exec);
+    e = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
     if(exec && strlen(e))
     {
       elm_exit();
