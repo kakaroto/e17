@@ -34,6 +34,12 @@ def cancel_callback(obj, event, data):
 	global exit_value
 	exit_value = 1
 
+# entry callback
+def entry_callback(obj, event, data):
+	# print it converted from markup to utf-8
+	print elementary.Entry.markup_to_utf8(str(data.entry_get()))
+	elementary.exit()
+
 ### VERSION
 shelm_version = "0.0.1"
 # TODO: better way to exit with value 1 on cancel
@@ -145,7 +151,7 @@ def create_entry(window_name, entry_has_one_line, entry_text, entry_hide_text, e
 	entry.line_wrap_set(entry_line_wrap)
 	# set entry text
 	if entry_text != None:
-		entry.entry_set(entry.utf8_to_markup(str(entry_text)))
+		entry.entry_set(elementary.Entry.utf8_to_markup(str(entry_text)))
 	# hide text if set
 	entry.password_set(entry_hide_text)
 	# size hints
@@ -262,13 +268,6 @@ def create_slider(window_name, slider_value, slider_min_value, slider_max_value,
 ###########################
 ##### DIALOG :: ENTRY #####
 ###########################
-## callback - print entry contents
-def entry_dialog_callback(obj, event, data):
-	# print it without <br> at the end using regular expression
-	print re.sub("<br>$", "", data.entry_get())
-	elementary.exit()
-
-## create a dialog
 def entry_dialog(window_title, window_text, window_width, window_height, window_background, entry_text, entry_hide_text):
 	## according to that if window title is set, create a window with default or custom window title
 	if window_title != None:
@@ -324,7 +323,7 @@ def entry_dialog(window_title, window_text, window_width, window_height, window_
 	# add it
 	buttonbar.pack_end(button_ok)
 	# callback on click
-	button_ok.clicked = (entry_dialog_callback, entry)
+	button_ok.clicked = (entry_callback, entry)
 
 	## Set window size manually from arguments if set
 	if window_width == None:
@@ -411,12 +410,6 @@ def simple_dialog(window_title, window_text, window_width, window_height, window
 ###########################
 ### DIALOG :: TEXT INFO ###
 ###########################
-## callback - print entry contents
-def textinfo_dialog_callback(obj, event, data):
-	# print it without <br> at the end using regular expression
-	print data.markup_to_utf8(str(data.entry_get()))
-	elementary.exit()
-
 def textinfo_dialog(window_title, window_text, window_width, window_height, window_background, textinfo_filename, textinfo_editable, textinfo_nowrap):
 	## according to that if window title is set, create a window with default or custom window title
 	if window_title != None:
@@ -475,7 +468,7 @@ def textinfo_dialog(window_title, window_text, window_width, window_height, wind
 	# add it
 	box.pack_end(button_ok)
 	# callback on click
-	button_ok.clicked = (textinfo_dialog_callback, textinfo)
+	button_ok.clicked = (entry_callback, textinfo)
 
 	## Set window size manually from arguments if set
 	if window_width == None:

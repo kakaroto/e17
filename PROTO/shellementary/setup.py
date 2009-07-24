@@ -86,8 +86,23 @@ def clean():
 def makepot():
 	os.system('pygettext shellementary.in')
 
+# uninstall
+def uninstall(prefix):
+	# save path
+	path = "%s/share/data/shellementary/" % prefix
+	# remove data
+	for data in os.listdir(path):
+		os.remove("%s"+data % path)
+	# remove the dir
+	os.rmdir(path)
+	# remove the binary
+	os.remove("%s/shellementary" % os.path.join(prefix, "bin"))
+	# remove translations
+	for transrm in translations:
+		os.remove("%s/shellementary.mo" % os.path.join(datapath, "locale", transrm, "LC_MESSAGES"))
+
 # parse options
-usage = "usage: %prog [options] build|install|clean|makepot"
+usage = "usage: %prog [options] build|install|clean|uninstall|makepot"
 parser = OptionParser(usage=usage)
 parser.add_option("-p", "--prefix", dest="prefix", help="Set installation prefix.", default="/usr")
 options, args = parser.parse_args()
@@ -101,6 +116,8 @@ elif args[0] == "install":
 	install(destdir, options.prefix)
 elif args[0] == "clean":
 	clean()
+elif args[0] == "uninstall":
+	uninstall(options.prefix)
 elif args[0] == "makepot":
 	makepot()
 else:
