@@ -17,9 +17,6 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-/* TODO instead of using two surface renderers just pass the needed renderers
- * as parameters
- */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
@@ -76,8 +73,7 @@ static void _generic(Hswitch *hs, int x, int y, unsigned int len, uint32_t *dst)
 
 static void _free(Hswitch *hs)
 {
-	enesim_renderer_delete(hs->lrend);
-	enesim_renderer_delete(hs->rrend);
+
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -91,8 +87,6 @@ EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void)
 
 	h->r.free = _free;
 	h->r.span = _generic;
-	h->lrend = enesim_renderer_surface_new();
-	h->rrend = enesim_renderer_surface_new();
 
 	return h;
 }
@@ -104,8 +98,6 @@ EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w)
 	if (hs->w == w)
 		return;
 	hs->w = w;
-	enesim_renderer_surface_w_set(hs->lrend, w);
-	enesim_renderer_surface_w_set(hs->rrend, w);
 }
 
 EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h)
@@ -115,24 +107,22 @@ EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h)
 	if (hs->h == h)
 		return;
 	hs->h = h;
-	enesim_renderer_surface_h_set(hs->lrend, h);
-	enesim_renderer_surface_h_set(hs->rrend, h);
 }
 
 EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
-		Enesim_Surface *s)
+		Enesim_Renderer *left)
 {
 	Hswitch *hs = (Hswitch *)r;
 
-	enesim_renderer_surface_src_set(hs->lrend, s);
+	hs->lrend = left;
 }
 
 EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
-		Enesim_Surface *s)
+		Enesim_Renderer *right)
 {
 	Hswitch *hs = (Hswitch *)r;
 
-	enesim_renderer_surface_src_set(hs->rrend, s);
+	hs->rrend = right;
 }
 
 EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step)

@@ -41,9 +41,9 @@ EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void);
 EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w);
 EAPI void enesim_renderer_hswitch_h_set(Enesim_Renderer *r, int h);
 EAPI void enesim_renderer_hswitch_left_set(Enesim_Renderer *r,
-		Enesim_Surface *s);
+		Enesim_Renderer *left);
 EAPI void enesim_renderer_hswitch_right_set(Enesim_Renderer *r,
-		Enesim_Surface *s);
+		Enesim_Renderer *right);
 EAPI void enesim_renderer_hswitch_step_set(Enesim_Renderer *r, float step);
 
 EAPI Enesim_Renderer * enesim_renderer_surface_new(void);
