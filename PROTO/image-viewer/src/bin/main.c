@@ -67,6 +67,14 @@ struct _IV
 #ifdef HAVE_ETHUMB
 	Evas_Object *preview_win, *preview_genlist;
 #endif
+
+	struct {
+	     Evas_Coord x, y, w, h;
+	} region;
+
+	struct {
+	     Evas_Coord w, h;
+	} image_size;
    } gui;
 
    struct {
@@ -145,6 +153,12 @@ rewind_list(Eina_List *list)
 static void
 image_configure(IV *iv)
 {
+   if (!iv->gui.image_size.w || !iv->gui.image_size.h)
+     {
+	elm_image_scale_set(iv->gui.img, EINA_FALSE, EINA_FALSE);
+	evas_object_size_hint_max_get(iv->gui.img, &(iv->gui.image_size.w), &(iv->gui.image_size.h));
+     }
+
    if (iv->config->fit == ZOOM)
      {
 	elm_image_no_scale_set(iv->gui.img, EINA_FALSE);
@@ -395,27 +409,38 @@ on_settings_close_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+record_visible_region(IV *iv)
+{
+   elm_scroller_region_get(iv->gui.scroller,
+			   &(iv->gui.region.x), &(iv->gui.region.y),
+			   &(iv->gui.region.w), &(iv->gui.region.h));
+}
+
+static void
 zoom_set(IV *iv, Eina_Bool increase)
 {
+   double scale;
+
    if (iv->config->fit != ZOOM)
      {
-	int iw, w;
-	double scale = elm_object_scale_get(iv->gui.img);
+	Evas_Coord w;
+	scale = elm_object_scale_get(iv->gui.img);
 
-	evas_object_size_hint_max_get(iv->gui.img, &iw, NULL);
 	evas_object_geometry_get(iv->gui.img, NULL, NULL, &w, NULL);
 
-	if (w > iw)
+	if (w > iv->gui.image_size.w)
 	  iv->config->img_scale = scale;
 	else
 	  {
 	     if (scale == 1.0)
-	       iv->config->img_scale = (double) w / (double) iw;
+	       iv->config->img_scale = (double) w / iv->gui.image_size.w;
 	     else
 	       iv->config->img_scale = scale;
 	  }
      }
 
+   record_visible_region(iv);
+   scale = iv->config->img_scale;
    if (iv->config->img_scale >= 1)
      {
 	if (increase)
@@ -436,11 +461,19 @@ zoom_set(IV *iv, Eina_Bool increase)
    else if (iv->config->img_scale < 0.05)
      iv->config->img_scale = 0.05;
 
+   iv->gui.region.x *=  (double) iv->config->img_scale / scale;
+   iv->gui.region.y *=  (double) iv->config->img_scale / scale;
+   if (iv->gui.region.x < 0)
+     iv->gui.region.x = 0;
+   if (iv->gui.region.y < 0)
+     iv->gui.region.y = 0;
+   elm_scroller_region_show(iv->gui.scroller, iv->gui.region.x, iv->gui.region.y, iv->gui.region.w, iv->gui.region.h);
+
    iv->config->fit = ZOOM;
    iv->flags.fit_changed = EINA_TRUE;
-   config_save(iv);
    if (!iv->idler)
      iv->idler = ecore_idler_add(on_idler, iv);
+   config_save(iv);
 }
 
 static void
@@ -1107,6 +1140,8 @@ on_idler(void *data)
 	     else
 	       iv->files = rewind_list(iv->files);
 
+	     record_visible_region(iv);
+
 	     /* XXX: this is necessary for some reason, bug in elm? */
 	     elm_scroller_content_set(iv->gui.scroller, NULL);
 
@@ -1122,6 +1157,7 @@ on_idler(void *data)
 	     image_configure(iv);
 	     set_image_text(iv, ecore_file_file_get(iv->files->data));
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
+	     elm_scroller_region_show(iv->gui.scroller, iv->gui.region.x, iv->gui.region.y, iv->gui.region.w, iv->gui.region.h);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.next_img = NULL;
 
@@ -1143,6 +1179,8 @@ on_idler(void *data)
 	     else
 	       iv->files = eina_list_last(iv->files);
 
+	     record_visible_region(iv);
+
 	     /* XXX: this is necessary for some reason, bug in elm? */
 	     elm_scroller_content_set(iv->gui.scroller, NULL);
 
@@ -1158,6 +1196,7 @@ on_idler(void *data)
 	     image_configure(iv);
 	     set_image_text(iv, ecore_file_file_get(iv->files->data));
 	     elm_scroller_content_set(iv->gui.scroller, iv->gui.img);
+	     elm_scroller_region_show(iv->gui.scroller, iv->gui.region.x, iv->gui.region.y, iv->gui.region.w, iv->gui.region.h);
 	     evas_object_show(iv->gui.img);
 	     iv->gui.prev_img = NULL;
 
@@ -1191,6 +1230,8 @@ on_idler(void *data)
 	     evas_object_del(iv->gui.img);
 	     iv->gui.img = NULL;
 	  }
+
+	record_visible_region(iv);
 
 	elm_scroller_content_set(iv->gui.scroller, NULL);
 	read_image(iv, IMAGE_CURRENT);
