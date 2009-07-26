@@ -11,7 +11,7 @@ Package: python-emotion
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas
 Provides: ${python:Provides}
-Replaces: python-efl-emotion
+Conflicts: python-efl-emotion
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for emotion
  This package contains python emotion module.
@@ -22,7 +22,7 @@ Package: python-emotion-doc
 Architecture: all
 Section: doc
 Suggests: python-emotion
-Replaces: python-efl-emotion-doc
+Conflicts: python-efl-emotion-doc
 Description: Python bindings for emotion
  This package contains python emotion module.
  .

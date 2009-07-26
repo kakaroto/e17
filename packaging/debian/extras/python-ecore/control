@@ -11,7 +11,7 @@ Package: python-ecore
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas
 Provides: ${python:Provides}
-Replaces: python-efl-ecore
+Conflicts: python-efl-ecore
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for ecore
  This package contains python ecore module.
@@ -26,7 +26,7 @@ Package: python-ecore-doc
 Section: doc
 Suggests: python-ecore
 Architecture: all
-Replaces: python-efl-ecore-doc
+Conflicts: python-efl-ecore-doc
 Description: Documentation for python ecore
  Ecore is the core event abstraction layer and X abstraction layer that makes
  doing selections, Xdnd, general X stuff, and event loops, timeouts and idle

@@ -12,7 +12,7 @@ Homepage: http://code.google.com/p/itask-module/wiki/Stuff
 
 Package: ecomorph-e17
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, ecomorph-e17-data (= ${source:Version}), libevas-svn-02-engine-software-x11, libedje-bin
+Depends: ${misc:Depends}, ${shlibs:Depends}, ecomorph-e17-data (= ${source:Version}), libevas-svn-02-engine-software-x11, libedje-bin, ecomorph-core
 Conflicts: enlightenment, e17
 Provides: x-window-manager
 Description: The Enlightenment DR17 Window Manager

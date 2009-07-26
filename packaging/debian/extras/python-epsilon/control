@@ -11,7 +11,7 @@ Package: python-epsilon-efl
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
-Replaces: python-efl-epsilon
+Conflicts: python-efl-epsilon
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for epsilon
  This package contains python epsilon module.
@@ -21,7 +21,7 @@ Description: Python bindings for epsilon
 Package: python-epsilon-efl-doc
 Section: doc
 Suggests: python-epsilon-efl
-Replaces: python-efl-epsilon-doc
+Conflicts: python-efl-epsilon-doc
 Architecture: all
 Description: Documentation for python epsilon
  This package contains API documentation for python epsilon.

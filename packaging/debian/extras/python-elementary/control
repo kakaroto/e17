@@ -11,7 +11,7 @@ Package: python-elementary
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-evas, python-ecore
 Provides: ${python:Provides}
-Replaces: python-efl-elementary
+Conflicts: python-efl-elementary
 XB-Python-Version: ${python:Versions}
 Description: Python bindings for elementary
  This package contains python elementary module.

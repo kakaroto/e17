@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/*.a
 debian/tmp/usr/include/*
 debian/tmp/usr/lib/pkgconfig/*.pc
+debian/tmp/usr/lib/libelementary.so
