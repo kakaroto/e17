@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -170,48 +170,33 @@ TextclassSetJustification(TextClass * tc, int just)
    tc->justification = just;
 }
 
+#define TSTATE_SET_STATE(which, fallback) \
+   if (!tc->which) tc->which = tc->fallback;
+
 static void
-TextclassPopulate(TextClass * tclass)
+TextclassPopulate(TextClass * tc)
 {
-   if (!tclass)
+   if (!tc || !tc->norm.normal)
       return;
 
-   if (!tclass->norm.normal)
-      return;
+   TSTATE_SET_STATE(norm.hilited, norm.normal);
+   TSTATE_SET_STATE(norm.clicked, norm.normal);
+   TSTATE_SET_STATE(norm.disabled, norm.normal);
 
-   if (!tclass->norm.hilited)
-      tclass->norm.hilited = tclass->norm.normal;
-   if (!tclass->norm.clicked)
-      tclass->norm.clicked = tclass->norm.normal;
-   if (!tclass->norm.disabled)
-      tclass->norm.disabled = tclass->norm.normal;
+   TSTATE_SET_STATE(active.normal, norm.normal);
+   TSTATE_SET_STATE(active.hilited, active.normal);
+   TSTATE_SET_STATE(active.clicked, active.normal);
+   TSTATE_SET_STATE(active.disabled, active.normal);
 
-   if (!tclass->active.normal)
-      tclass->active.normal = tclass->norm.normal;
-   if (!tclass->active.hilited)
-      tclass->active.hilited = tclass->active.normal;
-   if (!tclass->active.clicked)
-      tclass->active.clicked = tclass->active.normal;
-   if (!tclass->active.disabled)
-      tclass->active.disabled = tclass->active.normal;
+   TSTATE_SET_STATE(sticky.normal, norm.normal);
+   TSTATE_SET_STATE(sticky.hilited, sticky.normal);
+   TSTATE_SET_STATE(sticky.clicked, sticky.normal);
+   TSTATE_SET_STATE(sticky.disabled, sticky.normal);
 
-   if (!tclass->sticky.normal)
-      tclass->sticky.normal = tclass->norm.normal;
-   if (!tclass->sticky.hilited)
-      tclass->sticky.hilited = tclass->sticky.normal;
-   if (!tclass->sticky.clicked)
-      tclass->sticky.clicked = tclass->sticky.normal;
-   if (!tclass->sticky.disabled)
-      tclass->sticky.disabled = tclass->sticky.normal;
-
-   if (!tclass->sticky_active.normal)
-      tclass->sticky_active.normal = tclass->norm.normal;
-   if (!tclass->sticky_active.hilited)
-      tclass->sticky_active.hilited = tclass->sticky_active.normal;
-   if (!tclass->sticky_active.clicked)
-      tclass->sticky_active.clicked = tclass->sticky_active.normal;
-   if (!tclass->sticky_active.disabled)
-      tclass->sticky_active.disabled = tclass->sticky_active.normal;
+   TSTATE_SET_STATE(sticky_active.normal, norm.normal);
+   TSTATE_SET_STATE(sticky_active.hilited, sticky_active.normal);
+   TSTATE_SET_STATE(sticky_active.clicked, sticky_active.normal);
+   TSTATE_SET_STATE(sticky_active.disabled, sticky_active.normal);
 }
 
 static int
@@ -250,6 +235,8 @@ TextclassConfigLoad(FILE * fs)
    while (GetLine(s, sizeof(s), fs))
      {
 	i1 = ConfigParseline1(s, s2, NULL, NULL);
+
+	/* tc not needed */
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -262,107 +249,97 @@ TextclassConfigLoad(FILE * fs)
 		  goto done;
 	       }
 	     tc = TextclassCreate(s2);
-	     break;
-	  case TEXT_ORIENTATION:
-	     if (ts)
-		ts->style.orientation = atoi(s2);
-	     break;
+	     continue;
+	  }
+
+	/* tc needed */
+	if (!tc)
+	   break;
+
+	switch (i1)
+	  {
 	  case TEXT_JUSTIFICATION:
-	     if (tc)
-		tc->justification = atoi(s2);
-	     break;
+	     tc->justification = atoi(s2);
+	     continue;
 	  case CONFIG_DESKTOP:
 	  case ICLASS_NORMAL:
-	     if (tc)
-		tc->norm.normal = ts = TextstateCreate(s2);
-	     break;
+	     tc->norm.normal = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_CLICKED:
-	     if (tc)
-		tc->norm.clicked = ts = TextstateCreate(s2);
-	     break;
+	     tc->norm.clicked = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_HILITED:
-	     if (tc)
-		tc->norm.hilited = ts = TextstateCreate(s2);
-	     break;
+	     tc->norm.hilited = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_DISABLED:
-	     if (tc)
-		tc->norm.disabled = ts = TextstateCreate(s2);
-	     break;
+	     tc->norm.disabled = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_NORMAL:
-	     if (tc)
-		tc->sticky.normal = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky.normal = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_CLICKED:
-	     if (tc)
-		tc->sticky.clicked = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky.clicked = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_HILITED:
-	     if (tc)
-		tc->sticky.hilited = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky.hilited = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_DISABLED:
-	     if (tc)
-		tc->sticky.disabled = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky.disabled = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_NORMAL:
-	     if (tc)
-		tc->active.normal = ts = TextstateCreate(s2);
-	     break;
+	     tc->active.normal = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_CLICKED:
-	     if (tc)
-		tc->active.clicked = ts = TextstateCreate(s2);
-	     break;
+	     tc->active.clicked = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_HILITED:
-	     if (tc)
-		tc->active.hilited = ts = TextstateCreate(s2);
-	     break;
+	     tc->active.hilited = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_ACTIVE_DISABLED:
-	     if (tc)
-		tc->active.disabled = ts = TextstateCreate(s2);
-	     break;
+	     tc->active.disabled = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     if (tc)
-		tc->sticky_active.normal = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky_active.normal = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     if (tc)
-		tc->sticky_active.clicked = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky_active.clicked = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     if (tc)
-		tc->sticky_active.hilited = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky_active.hilited = ts = TextstateCreate(s2);
+	     continue;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     if (tc)
-		tc->sticky_active.disabled = ts = TextstateCreate(s2);
-	     break;
+	     tc->sticky_active.disabled = ts = TextstateCreate(s2);
+	     continue;
+	  }
+
+	/* ts needed */
+	if (!ts)
+	   break;
+
+	switch (i1)
+	  {
+	  case TEXT_ORIENTATION:
+	     ts->style.orientation = atoi(s2);
+	     continue;
 	  case TEXT_MODE:
-	     if (ts)
-		ts->style.mode = atoi(s2);
-	     break;
+	     ts->style.mode = atoi(s2);
+	     continue;
 	  case TEXT_EFFECT:
-	     if (ts)
-		ts->style.effect = atoi(s2);
-	     break;
+	     ts->style.effect = atoi(s2);
+	     continue;
 	  case TEXT_FG_COL:
-	     if (ts)
-	       {
-		  r = g = b = 0;
-		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
-		  SET_COLOR(&ts->fg_col, r, g, b);
-	       }
-	     break;
+	     r = g = b = 0;
+	     sscanf(s, "%*s %i %i %i", &r, &g, &b);
+	     SET_COLOR(&ts->fg_col, r, g, b);
+	     continue;
 	  case TEXT_BG_COL:
-	     if (ts)
-	       {
-		  r = g = b = 0;
-		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
-		  SET_COLOR(&ts->bg_col, r, g, b);
-	       }
-	     break;
+	     r = g = b = 0;
+	     sscanf(s, "%*s %i %i %i", &r, &g, &b);
+	     SET_COLOR(&ts->bg_col, r, g, b);
+	     continue;
 	  default:
 	     ConfigParseError("TextClass", s);
-	     break;
+	     continue;
 	  }
      }
    err = -1;
