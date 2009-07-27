@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-11 21:37+0200\n"
+"POT-Creation-Date: 2009-07-27 18:51+0200\n"
 "PO-Revision-Date: 2009-05-31 15:13+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -203,7 +203,7 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2034 src/events.c:87
+#: src/alert.c:583 src/dialog.c:844 src/dialog.c:2032 src/events.c:87
 #: src/setup.c:157 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -1318,7 +1318,7 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:371
+#: src/ipc.c:195 src/ipc.c:1472 src/ipc.c:1479 src/theme.c:372
 msgid "Message"
 msgstr "Mitteilung"
 
@@ -2465,35 +2465,35 @@ msgstr ""
 " %s\n"
 "Weiter fortzufahren ist zwecklos.\n"
 
-#: src/theme.c:371
+#: src/theme.c:372
 msgid "Changes will take effect after restart"
 msgstr "Veränderungen werden erst nach einem Neustart vollzogen"
 
-#: src/theme.c:391
+#: src/theme.c:392
 msgid "Use theme font configuration"
 msgstr "Schrifteinstellung des Thema verwenden"
 
-#: src/theme.c:396
+#: src/theme.c:397
 #, c-format
 msgid "Use alternate font configuration (%s)"
 msgstr "Andere (%s) Schrifteinstellung verwenden"
 
-#: src/theme.c:397
+#: src/theme.c:398
 msgid "Not set"
 msgstr "Nicht gesetzt"
 
 # src/theme.c:354
-#: src/theme.c:404
+#: src/theme.c:405
 msgid "Theme"
 msgstr "Thema"
 
 # src/settings.c:393
-#: src/theme.c:405
+#: src/theme.c:406
 msgid "Theme Settings"
 msgstr "Thema-Einstellungen"
 
 # src/main.c:89
-#: src/theme.c:408
+#: src/theme.c:409
 msgid ""
 "Enlightenment Theme\n"
 "Settings Dialog\n"
