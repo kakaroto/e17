@@ -8,12 +8,12 @@ Homepage: http://code.openbossa.org
 Standards-Version: 3.8.2
 Build-Depends: cdbs, debhelper (>= 6), python-all-dev (>= 2.5), python-central (>= 0.5.6), python-setuptools, libedje-bin, zip, pkg-config
 Checksums-Sha1: 
- 260eae020d58ff35ed00a1e2a6c4766539a56d80 1663377 canola2_2.0.0+git20090508.orig.tar.gz
- f7b26675f9aa1fe34587aa7b2247e67e3f59bacb 2475 canola2_2.0.0+git20090508-1.diff.gz
+ d11835b5e15f99297798acad1f351dea0ed8603c 1663386 canola2_2.0.0+git20090508.orig.tar.gz
+ ccbe53180dafe553b5a87088bf214f53d05d7342 2475 canola2_2.0.0+git20090508-1.diff.gz
 Checksums-Sha256: 
- b61f26e9794df38a7d997e8e430848e7670d2cedbd8c5475e383f1332917a9a1 1663377 canola2_2.0.0+git20090508.orig.tar.gz
- 375d0ade73ba1052b06a92572d9fb663545ca57eb737b6c5f78077d4d2e59d7d 2475 canola2_2.0.0+git20090508-1.diff.gz
+ 3aab05f5ad0d3aacbee0962fb609aa988af7c06cc61d672134fa46f44c52a162 1663386 canola2_2.0.0+git20090508.orig.tar.gz
+ 2f2a8542a2d7971c5bdcc8fade900a3548dbb47d41f5004574eace5d34e8d1f3 2475 canola2_2.0.0+git20090508-1.diff.gz
 Files: 
- 83daf18db6c9bfca55f1133b7e5ec85d 1663377 canola2_2.0.0+git20090508.orig.tar.gz
- d3470bf4f36553c174f90e3d5c0300f7 2475 canola2_2.0.0+git20090508-1.diff.gz
+ 71b70198fffa5030d8603251bca6cbd9 1663386 canola2_2.0.0+git20090508.orig.tar.gz
+ da4889a93aec64ca18c1941e90ed7181 2475 canola2_2.0.0+git20090508-1.diff.gz
 Python-Version: >= 2.5
