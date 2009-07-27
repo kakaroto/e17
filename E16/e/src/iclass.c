@@ -415,10 +415,7 @@ ImageclassFind(const char *name, int fallback)
 static void
 ImageclassPopulate(ImageClass * ic)
 {
-   if (!ic)
-      return;
-
-   if (!ic->norm.normal)
+   if (!ic || !ic->norm.normal)
       return;
 
    ISTATE_SET_STATE(norm.hilited, norm.normal);
@@ -496,7 +493,7 @@ ImageclassConfigLoad(FILE * fs)
 		ic->sticky_active = ic2->sticky_active;
 		ic->padding = ic2->padding;
 	     }
-	     break;
+	     continue;
 	  case ICLASS_PADDING:
 	     l = r = t = b = 0;
 	     sscanf(p2, "%i %i %i %i", &l, &r, &t, &b);
@@ -604,7 +601,7 @@ ImageclassConfigLoad(FILE * fs)
 		INT_TO_COLOR(is->lo, lo);
 		INT_TO_COLOR(is->lolo, lolo);
 	     }
-	     break;
+	     continue;
 	  default:
 	     goto not_ok;
 	  }
