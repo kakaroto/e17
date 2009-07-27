@@ -353,6 +353,7 @@ ThemePathFind(void)
 
 #if ENABLE_DIALOGS
 #include "dialog.h"
+#include "settings.h"
 /*
  * Configuration dialog
  */
