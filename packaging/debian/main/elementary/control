@@ -9,12 +9,12 @@ Homepage: http://www.enlightenment.org
 Package: libelm-dev
 Section: libdevel
 Architecture: any
-Depends: libelm-svn-02 (= ${binary:Version}), libecore-dev, libevas-dev, libeet-dev, libedje-dev
+Depends: libelm-svn-03 (= ${binary:Version}), libecore-dev, libevas-dev, libeet-dev, libedje-dev
 Conflicts: libelm0, libelm-svn-02 (<= 0.5.0+svn41040)
 Description: Elementary - a basic widget set that is easy to use based on EFL for mobile
  This package contains devel content.
 
-Package: libelm-svn-02
+Package: libelm-svn-03
 Architecture: any
 Depends: ${shlibs:Depends}, libelm-bin, libelm-data
 Conflicts: libelm0, libelm-svn-02 (<= 0.5.0+svn41040)
@@ -29,7 +29,7 @@ Description: Elementary - a basic widget set that is easy to use based on EFL fo
 
 Package: libelm-data
 Architecture: all
-Depends: libelm-svn-02
+Depends: libelm-svn-03
 Conflicts: libelm0, libelm-svn-02 (<= 0.5.0+svn41040)
 Description: Elementary - a basic widget set that is easy to use based on EFL for mobile
  This package contains data files for Elementary.

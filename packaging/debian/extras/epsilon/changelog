@@ -1,5 +1,5 @@
-epsilon (0.3.0.012+svn41040-1) unstable; urgency=low
+epsilon (0.3.0.012+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 14:47:30 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

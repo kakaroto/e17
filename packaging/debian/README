@@ -1,3 +1,7 @@
+#########################
+##### e17builder.sh #####
+#########################
+
 ## E17 builder script for Debian, Ubuntu and its derivatives ##
 1. Copy pbuilder-config to your home folder UNDER NAME .pbuilderrc
 2. Copy the script wherever you want
@@ -8,5 +12,20 @@
 # if you compile for debian squeeze or ubuntu jaunty, replace /usr/share/cdbootstrap/suites with suites file here.
 # short versions of script arguments are also available( --compile or -c etc.. run the script with --help or -h).
 # run --update or -U when you want to update base tarballs.
+
+#########################
+##### changelogs.sh #####
+#########################
+
+## E17 changelog script for Debian, Ubuntu and its derivatives ##
+It can
+   1) generate a new changelog template from working but out of date changelog
+   2) fill the template generated with initiate
+
+It is not needed to run initiate mostly, because the changelogs are already initiated here in SVN. And update too not, because source packages are made by me and uploaded on packages.enlightenment.org :) i put it there only for people who could use it for something and also because all my work is open source.
+
+Usage:
+	Generate new changelog template from working but out-of-date changelog(you can't generate template from template because dpkg-parsechangelog refuses to accept @DATE@ etc) - ./changelogs.sh initiate
+	Fill the changelog template: ./changelogs.sh update
 
 quaker66 (trunk/devs/quaker)

@@ -1,5 +1,5 @@
-emodules (0.16.999.061+svn41223-1) unstable; urgency=low
+emodules (0.16.999.@SNAPVERSION@+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 14:42:49 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

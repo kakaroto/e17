@@ -1,5 +1,5 @@
-image-viewer (0.1.0+svn41436-1) unstable; urgency=low
+image-viewer (0.1.0+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Sat, 10 Apr 2009 10:48:03 +0100
+ -- quaker <quaker66@gmail.com>  @DATE@

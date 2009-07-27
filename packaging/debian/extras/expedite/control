@@ -2,13 +2,13 @@ Source: expedite
 Section: x11
 Priority: optional
 Maintainer: quaker <quaker66@gmail.com>
-Build-Depends: cdbs, debhelper (>= 6), libevas-dev, libxext-dev, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
+Build-Depends: cdbs, debhelper (>= 6), libevas-dev, libxext-dev, libevas-svn-03-engines-core, libevas-svn-03-engines-x, libevas-svn-03-engine-fb
 Standards-Version: 3.8.2
 Homepage: http://www.enlightenment.org
 
 Package: expedite
 Architecture: any
-Depends: ${shlibs:Depends}, libevas-svn-02, libevas-svn-02-engines-core, libevas-svn-02-engines-x, libevas-svn-02-engine-fb
+Depends: ${shlibs:Depends}, libevas-svn-03, libevas-svn-03-engines-core, libevas-svn-03-engines-x, libevas-svn-03-engine-fb
 Description: Benchmarking suite for Evas
  This is meant to be a detailed and comprehensive benchmark suite for Evas.
 

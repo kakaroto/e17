@@ -1,5 +1,5 @@
-exchange (0.0.0.002+svn41040-1) unstable; urgency=low
+exchange (0.0.0.002+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 15:39:18 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

@@ -1,6 +1,5 @@
-eina (0.0.2.061+svn41040-1) unstable; urgency=low
+eina (0.0.2.@SNAPVERSION@+svn@SNAPREVISION@-1) unstable; urgency=low
 
-  * Snapshot 061 - merge with E-SVN from pkgE
+  * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 10:11:01 +0200
-
+ -- quaker <quaker66@gmail.com>  @DATE@

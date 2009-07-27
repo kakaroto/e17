@@ -12,7 +12,7 @@ Homepage: http://enlightenment.org
 Package: libedje-bin
 Architecture: any
 Section: devel
-Depends: ${misc:Depends}, ${shlibs:Depends}, libembryo-bin (>= 0.9.9.050+svn20090204), libevas-svn-02-engine-buffer
+Depends: ${misc:Depends}, ${shlibs:Depends}, libembryo-bin (>= 0.9.9.050+svn20090204), libevas-svn-03-engine-buffer
 Description: Various binaries for use with libedje
  Edje is a graphical layout and animation library for animated resizable,
  compressed and scalable themes. It is the theming engine behind
@@ -23,7 +23,7 @@ Description: Various binaries for use with libedje
   - edje_decc: Used to decompile compiled edje files.
   - edje_recc: A convenience script to recompile EDC files.
 
-Package: libedje-svn-02
+Package: libedje-svn-03
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Suggests: libedje-bin (= ${binary:Version})
@@ -47,7 +47,7 @@ Description: libedje0 development documentation
 Package: libedje-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libedje-svn-02 (= ${binary:Version}), libedje-bin,
+Depends: ${misc:Depends}, libedje-svn-03 (= ${binary:Version}), libedje-bin,
  libeet-dev, libembryo-dev, libevas-dev (>= 0.9.9.061), libecore-dev (>= 0.9.9.061),
  libeina-dev (>= 0.0.2.060), pkg-config
 Description: libedje headers and static libraries
@@ -61,7 +61,7 @@ Package: libedje-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: ${misc:Depends}, libedje-svn-02 (= ${binary:Version})
+Depends: ${misc:Depends}, libedje-svn-03 (= ${binary:Version})
 Description: Debugging symbols for libedje
  Edje is a graphical layout and animation library for animated resizable,
  compressed and scalable themes. It is the theming engine behind

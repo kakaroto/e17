@@ -1,5 +1,5 @@
-edje-viewer (0.1.0+svn41111-1) unstable; urgency=low
+edje-viewer (0.1.0+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 14:37:44 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

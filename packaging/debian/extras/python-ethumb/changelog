@@ -1,5 +1,5 @@
-python-ethumb (0.1+svn41346-1) unstable; urgency=low
+python-ethumb (0.1+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Sat, 18 Jul 2009 11:02:56 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

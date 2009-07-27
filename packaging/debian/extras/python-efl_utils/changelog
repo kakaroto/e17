@@ -1,5 +1,5 @@
-python-efl-utils (0.1.4+svn41040-1) unstable; urgency=low
+python-efl-utils (0.1.4+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Sat, 18 Jul 2009 10:58:09 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@

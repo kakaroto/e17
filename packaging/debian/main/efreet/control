@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 6), cdbs, libecore-dev (>= 0.9.9.061), libeina-dev 
 Standards-Version: 3.8.2
 Homepage: http://www.enlightenment.org
 
-Package: libefreet-svn-02
+Package: libefreet-svn-03
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libefreet0
@@ -29,7 +29,7 @@ Description: Library that implements freedesktop.org specs for use with E17/EFL
 Package: libefreet-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libefreet-svn-02 (= ${binary:Version}), libecore-dev (>= 0.9.9.061), libeina-dev (>= 0.0.2.060)
+Depends: ${misc:Depends}, libefreet-svn-03 (= ${binary:Version}), libecore-dev (>= 0.9.9.061), libeina-dev (>= 0.0.2.060)
 Suggests: libefreet-doc
 Description: Development files for libefreet and libefreet-mime
  An implementation of several specifications from freedesktop.org intended for

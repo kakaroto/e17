@@ -1,7 +1,7 @@
 #!/bin/bash
 # e17builder - Script for compiling E17 for packages.enlightenment.org
 # license: gpl v3
-# author: quaker66
+# author: quaker <quaker66@gmail.com>
 # features:
 ## download
 ## make chroots

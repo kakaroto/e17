@@ -13,7 +13,7 @@ install/libecore-doc::
 	mkdir -p debian/libecore-doc/usr/share/doc/libecore-doc/
 	cp -R $(DEB_SRCDIR)/doc/html debian/libecore-doc/usr/share/doc/libecore-doc/
 
-$(patsubst %,install/%,$(filter %-svn-02, $(DEB_ALL_PACKAGES))) ::
+$(patsubst %,install/%,$(filter %-svn-03, $(DEB_ALL_PACKAGES))) ::
 	sed "s/PACKAGE/$(cdbs_curpkg)/" debian/pkg-name-soname.lintian-overrides.in > debian/$(cdbs_curpkg).lintian-overrides
 
 clean::

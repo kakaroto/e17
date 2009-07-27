@@ -1,5 +1,5 @@
-ethumb (0.1+svn41393-1) unstable; urgency=low
+ethumb (0.1+svn@SNAPREVISION@-1) unstable; urgency=low
 
   * a SVN release.
 
- -- quaker <quaker66@gmail.com>  Fri, 17 Jul 2009 15:24:07 +0200
+ -- quaker <quaker66@gmail.com>  @DATE@
