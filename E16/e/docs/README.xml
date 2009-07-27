@@ -4,7 +4,7 @@
 <article id="index">
   <articleinfo>
     <title>About Enlightenment e16</title>
-    <pubdate>Apr 19, 2009</pubdate>
+    <pubdate>Jul 18, 2009</pubdate>
     <abstract>
       <para>
 	Coming soon. (maybe)
@@ -667,8 +667,6 @@
 	<member>Alt-Ctrl</member><member>a</member><member>Toggle visibility of all buttons</member>
 	<member>Alt-Ctrl</member><member>b</member><member>Toggle visibility of theme buttons</member>
 	<member>Alt-Ctrl</member><member>c</member><member>Toggle visibility of configuration buttons</member>
-	<member>Alt-Ctrl</member><member>d</member><member>Switch dragbar position</member>
-	<member>Alt-Ctrl</member><member>o</member><member>Switch dragbar button ordering</member>
       </simplelist>
     </para>
   </sect1>
