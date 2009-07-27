@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -248,8 +248,7 @@ EXidSet(Window xwin, Win parent, int x, int y, int w, int h, int depth,
 }
 
 void
-EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
-		      void *prm)
+EventCallbackRegister(Win win, EventCallbackFunc * func, void *prm)
 {
    EventCallbackItem  *eci;
 
@@ -268,8 +267,7 @@ EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
 }
 
 void
-EventCallbackUnregister(Win win, int type __UNUSED__,
-			EventCallbackFunc * func, void *prm)
+EventCallbackUnregister(Win win, EventCallbackFunc * func, void *prm)
 {
    EventCallbackList  *ecl;
    EventCallbackItem  *eci;

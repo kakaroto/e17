@@ -246,12 +246,11 @@ EwinManage(EWin * ewin)
 	EobjListFocusAdd(&ewin->o, 1);
 	EobjListOrderAdd(&ewin->o);
 
-	EventCallbackRegister(EoGetWin(ewin), 0,
-			      EwinHandleEventsToplevel, ewin);
-	EventCallbackRegister(ewin->win_container, 0,
-			      EwinHandleEventsContainer, ewin);
-	EventCallbackRegister(EwinGetClientWin(ewin), 0,
-			      EwinHandleEventsClient, ewin);
+	EventCallbackRegister(EoGetWin(ewin), EwinHandleEventsToplevel, ewin);
+	EventCallbackRegister(ewin->win_container, EwinHandleEventsContainer,
+			      ewin);
+	EventCallbackRegister(EwinGetClientWin(ewin), EwinHandleEventsClient,
+			      ewin);
      }
 
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
@@ -378,10 +377,10 @@ EwinDestroy(EWin * ewin)
       Eprintf("EwinDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetTitle(ewin));
 
-   EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
-   EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
+   EventCallbackUnregister(EoGetWin(ewin), EwinHandleEventsToplevel, ewin);
+   EventCallbackUnregister(ewin->win_container, EwinHandleEventsContainer,
 			   ewin);
-   EventCallbackUnregister(EwinGetClientWin(ewin), 0, EwinHandleEventsClient,
+   EventCallbackUnregister(EwinGetClientWin(ewin), EwinHandleEventsClient,
 			   ewin);
    if (!EwinIsInternal(ewin))
       EUnregisterWindow(EwinGetClientWin(ewin));
@@ -2498,7 +2497,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 static void
 EwinsInit(void)
 {
-   EventCallbackRegister(VROOT, 0, EwinHandleEventsRoot, NULL);
+   EventCallbackRegister(VROOT, EwinHandleEventsRoot, NULL);
 }
 
 /*

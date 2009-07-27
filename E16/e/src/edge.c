@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -242,10 +242,10 @@ EdgeWindowsShow(void)
 	ESelectInput(EobjGetWin(w2), EnterWindowMask | LeaveWindowMask);
 	ESelectInput(EobjGetWin(w3), EnterWindowMask | LeaveWindowMask);
 	ESelectInput(EobjGetWin(w4), EnterWindowMask | LeaveWindowMask);
-	EventCallbackRegister(EobjGetWin(w1), 0, EdgeHandleEvents, (void *)0);
-	EventCallbackRegister(EobjGetWin(w2), 0, EdgeHandleEvents, (void *)1);
-	EventCallbackRegister(EobjGetWin(w3), 0, EdgeHandleEvents, (void *)2);
-	EventCallbackRegister(EobjGetWin(w4), 0, EdgeHandleEvents, (void *)3);
+	EventCallbackRegister(EobjGetWin(w1), EdgeHandleEvents, (void *)0);
+	EventCallbackRegister(EobjGetWin(w2), EdgeHandleEvents, (void *)1);
+	EventCallbackRegister(EobjGetWin(w3), EdgeHandleEvents, (void *)2);
+	EventCallbackRegister(EobjGetWin(w4), EdgeHandleEvents, (void *)3);
      }
    DeskCurrentGetArea(&cx, &cy);
    DesksGetAreaSize(&ax, &ay);

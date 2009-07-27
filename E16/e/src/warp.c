@@ -85,7 +85,7 @@ WarpFocusWinCreate(void)
    EoSetFade(fw, 1);
    EoSetShadow(fw, 1);
 
-   EventCallbackRegister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
+   EventCallbackRegister(EoGetWin(fw), WarpFocusHandleEvent, NULL);
    ESelectInput(EoGetWin(fw), ButtonReleaseMask);
 
    fw->tc = TextclassFind("WARPFOCUS", 0);
@@ -103,7 +103,7 @@ WarpFocusWinCreate(void)
 static void
 WarpFocusWinDestroy(WarpFocusWin * fw)
 {
-   EventCallbackUnregister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
+   EventCallbackUnregister(EoGetWin(fw), WarpFocusHandleEvent, NULL);
    EoFini(fw);
    Efree(fw);
 }

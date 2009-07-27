@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2008 Kim Woelders
+ * Copyright (C) 2003-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -607,7 +607,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
    if (sel->func)
      {
 	ESelectInput(sel->win, SubstructureNotifyMask);
-	EventCallbackRegister(sel->win, 0, sel->func, sel->data);
+	EventCallbackRegister(sel->win, sel->func, sel->data);
      }
 
    ecore_x_client_message32_send(WinGetXwin(VROOT), E_XA_MANAGER,
@@ -634,7 +634,7 @@ SelectionRelease(ESelection * sel)
    XSetSelectionOwner(disp, sel->atom, None, sel->time);
    if (sel->func)
      {
-	EventCallbackUnregister(sel->win, 0, sel->func, sel->data);
+	EventCallbackUnregister(sel->win, sel->func, sel->data);
      }
    EDestroyWindow(sel->win);
    Efree(sel);

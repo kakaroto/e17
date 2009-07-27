@@ -117,17 +117,17 @@ ContainerCreate(const char *name)
 
    ct->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
    ct->icon_win = ECreateWindow(ct->win, 0, 0, 128, 26, 0);
-   EventCallbackRegister(ct->icon_win, 0, ContainerEventIconWin, ct);
+   EventCallbackRegister(ct->icon_win, ContainerEventIconWin, ct);
    ct->cover_win = ECreateWindow(ct->win, 0, 0, 128, 26, 0);
-   EventCallbackRegister(ct->cover_win, 0, ContainerEventCoverWin, ct);
+   EventCallbackRegister(ct->cover_win, ContainerEventCoverWin, ct);
    ct->scroll_win = ECreateWindow(ct->win, 6, 26, 116, 6, 0);
-   EventCallbackRegister(ct->scroll_win, 0, ContainerEventScrollWin, ct);
+   EventCallbackRegister(ct->scroll_win, ContainerEventScrollWin, ct);
    ct->arrow1_win = ECreateWindow(ct->win, 0, 26, 6, 6, 0);
-   EventCallbackRegister(ct->arrow1_win, 0, ContainerEventArrow1Win, ct);
+   EventCallbackRegister(ct->arrow1_win, ContainerEventArrow1Win, ct);
    ct->arrow2_win = ECreateWindow(ct->win, 122, 26, 6, 6, 0);
-   EventCallbackRegister(ct->arrow2_win, 0, ContainerEventArrow2Win, ct);
+   EventCallbackRegister(ct->arrow2_win, ContainerEventArrow2Win, ct);
    ct->scrollbar_win = ECreateWindow(ct->scroll_win, 122, 26, 6, 6, 0);
-   EventCallbackRegister(ct->scrollbar_win, 0, ContainerEventScrollbarWin, ct);
+   EventCallbackRegister(ct->scrollbar_win, ContainerEventScrollbarWin, ct);
    ct->scrollbarknob_win = ECreateWindow(ct->scrollbar_win, -20, -20, 4, 4, 0);
 
    ESelectInput(ct->icon_win,

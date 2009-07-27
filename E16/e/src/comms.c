@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -290,8 +290,8 @@ CommsInit(void)
 
    comms_win = ECreateEventWindow(VROOT, -100, -100, 5, 5);
    ESelectInput(comms_win, StructureNotifyMask | SubstructureNotifyMask);
-   EventCallbackRegister(comms_win, 0, ClientHandleCommsEvents, NULL);
-   EventCallbackRegister(VROOT, 0, ClientHandleRootEvents, NULL);
+   EventCallbackRegister(comms_win, ClientHandleCommsEvents, NULL);
+   EventCallbackRegister(VROOT, ClientHandleRootEvents, NULL);
 
    Esnprintf(s, sizeof(s), "WINID %8lx", WinGetXwin(comms_win));
    ecore_x_window_prop_string_set(WinGetXwin(comms_win), E16_ATOM_COMMS_WIN, s);

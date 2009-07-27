@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Kim Woelders
+ * Copyright (C) 2007-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -433,7 +433,7 @@ MagwinCreate(const char *title, int width, int height)
       StructureNotifyMask;
    ESelectInput(win, mw->ewin->client.event_mask);
 
-   EventCallbackRegister(win, 0, MagwinEvent, mw);
+   EventCallbackRegister(win, MagwinEvent, mw);
 
    EQueryPointer(VROOT, &mw->cx, &mw->cy, NULL, NULL);
    mw->scale = 1;

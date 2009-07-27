@@ -123,7 +123,7 @@ SystrayObjManage(Container * ct, Window xwin)
       return win;
 
    ESelectInput(win, StructureNotifyMask | PropertyChangeMask);
-   EventCallbackRegister(win, 0, SystrayItemEvent, ct);
+   EventCallbackRegister(win, SystrayItemEvent, ct);
    EReparentWindow(win, ct->icon_win, 0, 0);
    XAddToSaveSet(disp, xwin);
 
@@ -144,7 +144,7 @@ SystrayObjUnmanage(Container * ct __UNUSED__, Win win, int gone)
 	EReparentWindow(win, VROOT, 0, 0);
 	XRemoveFromSaveSet(disp, WinGetXwin(win));
      }
-   EventCallbackUnregister(win, 0, SystrayItemEvent, ct);
+   EventCallbackUnregister(win, SystrayItemEvent, ct);
    EUnregisterWindow(win);
 }
 
@@ -442,7 +442,7 @@ SystrayInit(Container * ct)
 
    win = ct->icon_win;
    ESelectInputChange(win, SubstructureRedirectMask, 0);
-   EventCallbackRegister(win, 0, SystrayEvent, ct);
+   EventCallbackRegister(win, SystrayEvent, ct);
 
    /* Container parameter setup */
    ct->wm_name = "Systray";
@@ -457,7 +457,7 @@ SystrayExit(Container * ct, int wm_exit __UNUSED__)
    SelectionRelease(systray_sel);
    systray_sel = None;
 
-   EventCallbackUnregister(ct->win, 0, SystrayEvent, ct);
+   EventCallbackUnregister(ct->win, SystrayEvent, ct);
 
    while (ct->num_objs)
      {

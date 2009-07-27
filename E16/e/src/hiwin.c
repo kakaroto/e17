@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -249,7 +249,7 @@ HiwinCreate(void)
    EoSetFade(phi, 1);
    EoSetFloating(phi, 1);
    EoSetLayer(phi, 19);
-   EventCallbackRegister(EoGetWin(phi), 0, HiwinEvent, phi);
+   EventCallbackRegister(EoGetWin(phi), HiwinEvent, phi);
    ESelectInput(EoGetWin(phi),
 		ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
 		EnterWindowMask | LeaveWindowMask);
@@ -278,7 +278,7 @@ HiwinInit(Hiwin * phi, EWin * ewin)
 #if DEBUG_HIWIN
 	Eprintf("Unregister %s\n", EwinGetTitle(phi->ewin));
 #endif
-	EventCallbackUnregister(EoGetWin(phi->ewin), 0, HiwinEwinEvent, phi);
+	EventCallbackUnregister(EoGetWin(phi->ewin), HiwinEwinEvent, phi);
      }
 #endif
 
@@ -290,7 +290,7 @@ HiwinInit(Hiwin * phi, EWin * ewin)
 #if DEBUG_HIWIN
 	Eprintf("Register %s\n", EwinGetTitle(phi->ewin));
 #endif
-	EventCallbackRegister(EoGetWin(phi->ewin), 0, HiwinEwinEvent, phi);
+	EventCallbackRegister(EoGetWin(phi->ewin), HiwinEwinEvent, phi);
      }
 #endif
 

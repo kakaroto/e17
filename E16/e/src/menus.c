@@ -718,7 +718,7 @@ MenuRealize(Menu * m)
    if (!m->win)
      {
 	m->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
-	EventCallbackRegister(m->win, 0, MenuHandleEvents, m);
+	EventCallbackRegister(m->win, MenuHandleEvents, m);
      }
 
    maxh = maxw = 0;
@@ -737,7 +737,7 @@ MenuRealize(Menu * m)
 	   has_i = 1;
 
 	m->items[i]->win = ECreateWindow(m->win, 0, 0, 1, 1, 0);
-	EventCallbackRegister(m->items[i]->win, 0, MenuItemHandleEvents,
+	EventCallbackRegister(m->items[i]->win, MenuItemHandleEvents,
 			      m->items[i]);
 	ESelectInput(m->items[i]->win, MENU_ITEM_EVENT_MASK);
 	EMapWindow(m->items[i]->win);
@@ -1035,7 +1035,7 @@ MenuShowMasker(Menu * m __UNUSED__)
 	EobjSetLayer(eo, 11);
 	ESelectInput(EobjGetWin(eo), ButtonPressMask | ButtonReleaseMask |
 		     EnterWindowMask | LeaveWindowMask);
-	EventCallbackRegister(EobjGetWin(eo), 0, MenuMaskerHandleEvents, NULL);
+	EventCallbackRegister(EobjGetWin(eo), MenuMaskerHandleEvents, NULL);
 
 	Mode_menus.cover_win = eo;
      }
@@ -1051,7 +1051,7 @@ MenuHideMasker(void)
    if (!eo)
       return;
 
-   EventCallbackUnregister(EobjGetWin(eo), 0, MenuMaskerHandleEvents, NULL);
+   EventCallbackUnregister(EobjGetWin(eo), MenuMaskerHandleEvents, NULL);
    EobjWindowDestroy(eo);
    Mode_menus.cover_win = NULL;
 }

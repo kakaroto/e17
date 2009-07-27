@@ -1583,7 +1583,7 @@ ECompMgrWinNew(EObj * eo)
    cw->opacity = 0xdeadbeef;
    ECompMgrWinSetOpacity(eo, eo->opacity);
 
-   EventCallbackRegister(EobjGetWin(eo), 0, ECompMgrHandleWindowEvent, eo);
+   EventCallbackRegister(EobjGetWin(eo), ECompMgrHandleWindowEvent, eo);
 }
 
 void
@@ -1782,7 +1782,7 @@ ECompMgrWinDel(EObj * eo)
    if (eo->fading)
       ECompMgrWinFadeEnd(eo, 1);
 
-   EventCallbackUnregister(EobjGetWin(eo), 0, ECompMgrHandleWindowEvent, eo);
+   EventCallbackUnregister(EobjGetWin(eo), ECompMgrHandleWindowEvent, eo);
 
    if (!eo->gone)
      {
@@ -2495,7 +2495,7 @@ ECompMgrStart(void)
    rgn_tmp = ERegionCreate();
    rgn_tmp2 = ERegionCreate();
 
-   EventCallbackRegister(VROOT, 0, ECompMgrHandleRootEvent, NULL);
+   EventCallbackRegister(VROOT, ECompMgrHandleRootEvent, NULL);
 
    wm_cm_sel = SelectionAcquire("_NET_WM_CM_S", NULL, NULL);
 
@@ -2563,7 +2563,7 @@ ECompMgrStop(void)
       XCompositeUnredirectSubwindows(disp, WinGetXwin(VROOT),
 				     CompositeRedirectManual);
 
-   EventCallbackUnregister(VROOT, 0, ECompMgrHandleRootEvent, NULL);
+   EventCallbackUnregister(VROOT, ECompMgrHandleRootEvent, NULL);
 
 #if USE_COMPOSITE_OVERLAY_WINDOW
    if (Mode_compmgr.cow != None)

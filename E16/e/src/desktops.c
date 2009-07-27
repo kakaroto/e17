@@ -386,7 +386,7 @@ DeskCreate(int desk, int configure)
    EoSetNoRedirect(dsk, 1);
    EoInit(dsk, EOBJ_TYPE_DESK, win,
 	  0, 0, WinGetW(VROOT), WinGetH(VROOT), 0, buf);
-   EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
+   EventCallbackRegister(EoGetWin(dsk), DeskHandleEvents, dsk);
    dsk->bg.o = EoObj(dsk);
    if (desk == 0)
      {
@@ -399,7 +399,7 @@ DeskCreate(int desk, int configure)
 			      0, "Root-bg");
 	eo->floating = 0;
 	EobjSetLayer(eo, 0);
-	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+	EventCallbackRegister(EobjGetWin(eo), DeskHandleEvents, dsk);
 	dsk->bg.o_bg = eo;
 	ESelectInput(EobjGetWin(eo), EnterWindowMask);
 #endif
@@ -423,7 +423,7 @@ DeskCreate(int desk, int configure)
    EobjReparent(eo, EoObj(dsk), 0, 0);
    EobjSetLayer(eo, 0);
    dsk->bg.o_bg = eo;
-   EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+   EventCallbackRegister(EobjGetWin(eo), DeskHandleEvents, dsk);
 #endif
 #endif
 
@@ -448,12 +448,12 @@ DeskDestroy(Desk * dsk)
 #if USE_COMPOSITE
    if (dsk->bg.o_bg)
      {
-	EventCallbackUnregister(EobjGetWin(dsk->bg.o_bg), 0, DeskHandleEvents,
+	EventCallbackUnregister(EobjGetWin(dsk->bg.o_bg), DeskHandleEvents,
 				dsk);
 	EobjWindowDestroy(dsk->bg.o_bg);
      }
 #endif
-   EventCallbackUnregister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
+   EventCallbackUnregister(EoGetWin(dsk), DeskHandleEvents, dsk);
 
    DeskControlsDestroy(dsk, 1);
    DeskControlsDestroy(dsk, 2);

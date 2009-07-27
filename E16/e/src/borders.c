@@ -471,10 +471,10 @@ EwinBorderDetach(EWin * ewin)
 
    TooltipsSetPending(0, NULL, NULL);
 
-   EventCallbackUnregister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
+   EventCallbackUnregister(EoGetWin(ewin), BorderFrameHandleEvents, ewin);
    for (i = 0; i < b->num_winparts; i++)
      {
-	EventCallbackUnregister(ewin->bits[i].win, 0,
+	EventCallbackUnregister(ewin->bits[i].win,
 				BorderWinpartHandleEvents, &ewin->bits[i]);
 	if (ewin->bits[i].win)
 	   EDestroyWindow(ewin->bits[i].win);
@@ -512,7 +512,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 
    ewin->state.no_border = b->num_winparts <= 0;
 
-   EventCallbackRegister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
+   EventCallbackRegister(EoGetWin(ewin), BorderFrameHandleEvents, ewin);
 
    if (b->num_winparts > 0)
       ewin->bits = EMALLOC(EWinBit, b->num_winparts);
@@ -524,7 +524,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	ewin->bits[i].win = ECreateWindow(EoGetWin(ewin), -10, -10, 1, 1, 0);
 	ECursorApply(b->part[i].ec, ewin->bits[i].win);
 	EMapWindow(ewin->bits[i].win);
-	EventCallbackRegister(ewin->bits[i].win, 0,
+	EventCallbackRegister(ewin->bits[i].win,
 			      BorderWinpartHandleEvents, &ewin->bits[i]);
 	if (b->part[i].flags & FLAG_TITLE)
 	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_TITLE_EVENT_MASK);

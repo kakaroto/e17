@@ -145,7 +145,7 @@ PagerCreate(void)
 
    p->name = NULL;
    p->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
-   EventCallbackRegister(p->win, 0, PagerEvent, p);
+   EventCallbackRegister(p->win, PagerEvent, p);
    p->sel_win = ECreateWindow(p->win, 0, 0, 1, 1, 0);
 
    return p;

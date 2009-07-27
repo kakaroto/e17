@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -150,10 +150,9 @@ void                EDestroyWin(Win win);
 Win                 ERegisterWindow(Window xwin, XWindowAttributes * pxwa);
 void                EUnregisterWindow(Win win);
 void                EUnregisterXwin(Window xwin);
-void                EventCallbackRegister(Win win, int type,
-					  EventCallbackFunc * func, void *prm);
-void                EventCallbackUnregister(Win win, int type,
-					    EventCallbackFunc * func,
+void                EventCallbackRegister(Win win, EventCallbackFunc * func,
+					  void *prm);
+void                EventCallbackUnregister(Win win, EventCallbackFunc * func,
 					    void *prm);
 void                EventCallbacksProcess(Win win, XEvent * ev);
 

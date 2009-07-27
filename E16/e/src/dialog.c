@@ -235,7 +235,7 @@ DialogCreate(const char *name)
 
    d->name = Estrdup(name);
    d->win = ECreateClientWindow(VROOT, -20, -20, 2, 2);
-   EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
+   EventCallbackRegister(d->win, DialogHandleEvents, d);
 
    d->iclass = ImageclassAlloc("DIALOG", 1);
    d->tclass = TextclassAlloc("DIALOG", 1);
@@ -330,7 +330,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    db->func = func;
    db->image = image;
    db->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-   EventCallbackRegister(db->win, 0, DButtonHandleEvents, db);
+   EventCallbackRegister(db->win, DButtonHandleEvents, db);
    EMapWindow(db->win);
    db->x = -1;
    db->y = -1;
@@ -1016,13 +1016,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ESelectInput(di->item.slider.base_win,
 		     EnterWindowMask | LeaveWindowMask |
 		     ButtonPressMask | ButtonReleaseMask);
-	EventCallbackRegister(di->item.slider.base_win, 0, DItemHandleEvents,
-			      di);
+	EventCallbackRegister(di->item.slider.base_win, DItemHandleEvents, di);
 	ESelectInput(di->item.slider.knob_win,
 		     EnterWindowMask | LeaveWindowMask |
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
-	EventCallbackRegister(di->item.slider.knob_win, 0, DItemHandleEvents,
-			      di);
+	EventCallbackRegister(di->item.slider.knob_win, DItemHandleEvents, di);
 
 	if (!di->item.slider.ic_base)
 	  {
@@ -1098,7 +1096,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ESelectInput(di->item.area.area_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | PointerMotionMask);
-	EventCallbackRegister(di->item.area.area_win, 0, DItemHandleEvents, di);
+	EventCallbackRegister(di->item.area.area_win, DItemHandleEvents, di);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1409,7 +1407,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
      }
 
    if (di->win && register_win_callback)
-      EventCallbackRegister(di->win, 0, DItemHandleEvents, di);
+      EventCallbackRegister(di->win, DItemHandleEvents, di);
 }
 
 static void

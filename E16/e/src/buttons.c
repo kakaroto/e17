@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -165,7 +165,7 @@ ButtonCreate(const char *name, int id, const char *iclass,
    EoSetFade(b, 1);
 
    ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
-   EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
+   EventCallbackRegister(EoGetWin(b), ButtonHandleEvents, b);
 
    return b;
 }
@@ -394,7 +394,7 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
    EGetGeometry(WindowToEmbed, NULL, NULL, NULL, &w, &h, NULL, NULL);
    EMoveWindow(b->inside_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
    b->event_win = ECreateEventWindow(EoGetWin(b), 0, 0, w, h);
-   EventCallbackRegister(b->event_win, 0, ButtonHandleEvents, b);
+   EventCallbackRegister(b->event_win, ButtonHandleEvents, b);
 
    ESelectInput(b->event_win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Kim Woelders
+ * Copyright (C) 2007-2009 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -644,7 +644,7 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
    win = EobjGetWin(GLWin.eo);
    GLWin.eo->fade = GLWin.eo->shadow = 1;
 
-   EventCallbackRegister(win, 0, GlwinEvent, &GLWin);
+   EventCallbackRegister(win, GlwinEvent, &GLWin);
 
    ESelectInput(win, ExposureMask | KeyPressMask | ButtonPressMask |
 		StructureNotifyMask);
@@ -698,7 +698,7 @@ GlwinExit(void)
 
    if (GLWin.eo)
      {
-	EventCallbackUnregister(EobjGetWin(GLWin.eo), 0, GlwinEvent, &GLWin);
+	EventCallbackUnregister(EobjGetWin(GLWin.eo), GlwinEvent, &GLWin);
 	EobjUnmap(GLWin.eo);
 	EobjDestroy(GLWin.eo);
 	GLWin.eo = NULL;
