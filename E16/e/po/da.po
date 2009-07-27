@@ -12,7 +12,7 @@ msgstr ""
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
@@ -35,7 +35,7 @@ msgid ""
 msgstr ""
 "Velkommen til Enlightenment e16\n"
 "version %s.\n"
-"God fornÃ¸jelse. Vi hÃ¥ber du fÃ¥r glÃ¦de af programmet.\n"
+"God fornøjelse. Vi håber du får glæde af programmet.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -55,9 +55,9 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke kÃ¸res.\n"
+"Dette program kunne ikke køres.\n"
 "Det er fordi filen ikke eksisterer.\n"
 
 #: src/actions.c:115
@@ -71,13 +71,13 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke kÃ¸res.\n"
-"Det er sikkert fordi programmet ikke er i din skals sÃ¸gesti,\n"
-"som er %s. Jeg foreslÃ¥r at du lÃ¦ser manualsiden (man) for\n"
-"din skal, og finder ud af hvordan du Ã¦ndrer eller udvider den\n"
-"sÃ¸gesti som skallen leder efter programmer i.\n"
+"Dette program kunne ikke køres.\n"
+"Det er sikkert fordi programmet ikke er i din skals søgesti,\n"
+"som er %s. Jeg foreslår at du læser manualsiden (man) for\n"
+"din skal, og finder ud af hvordan du ændrer eller udvider den\n"
+"søgesti som skallen leder efter programmer i.\n"
 
 #: src/actions.c:134
 #, c-format
@@ -89,12 +89,12 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke kÃ¸res.\n"
-"Jeg ved ikke hvorfor du ikke kunne gÃ¸re dette. Filen eksisterer,\n"
-"er en fil, og du har tilladelse til at kÃ¸re den. Jeg foreslÃ¥r\n"
-"at du ser nÃ¦rmere pÃ¥ dette.\n"
+"Dette program kunne ikke køres.\n"
+"Jeg ved ikke hvorfor du ikke kunne gøre dette. Filen eksisterer,\n"
+"er en fil, og du har tilladelse til at køre den. Jeg foreslår\n"
+"at du ser nærmere på dette.\n"
 
 #: src/actions.c:144
 #, c-format
@@ -105,11 +105,11 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke udfÃ¸res.\n"
-"Det er fordi filen eksisterer, er en fil, men du kan ikke kÃ¸re\n"
-"den fordi du ikke har kÃ¸rerettigheder til denne fil.\n"
+"Dette program kunne ikke udføres.\n"
+"Det er fordi filen eksisterer, er en fil, men du kan ikke køre\n"
+"den fordi du ikke har kørerettigheder til denne fil.\n"
 
 #: src/actions.c:157
 #, c-format
@@ -119,9 +119,9 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke kÃ¸res.\n"
+"Dette program kunne ikke køres.\n"
 "Det er fordi filen er en mappe.\n"
 
 #: src/actions.c:164
@@ -132,9 +132,9 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"Der opstod en fejl under kÃ¸rsel af programmet:\n"
+"Der opstod en fejl under kørsel af programmet:\n"
 "%s\n"
-"Dette program kunne ikke kÃ¸res.\n"
+"Dette program kunne ikke køres.\n"
 "Dette er fordi filen ikke er en normal fil.\n"
 
 #: src/actions.c:189
@@ -156,7 +156,7 @@ msgstr "Enlightenment meddelelsesdialog"
 
 #: src/alert.c:569
 msgid "Ignore this"
-msgstr "IgnorÃ©r dette"
+msgstr "Ignorér dette"
 
 #: src/alert.c:570
 msgid "Restart Enlightenment"
@@ -213,7 +213,7 @@ msgstr "Bevar dimensioner ved skalering"
 
 #: src/backgrounds.c:2015
 msgid "Tile image across background"
-msgstr "'Tile' billede pÃ¥ baggrund"
+msgstr "'Tile' billede på baggrund"
 
 #: src/backgrounds.c:2024
 msgid "Move to Front\n"
@@ -221,7 +221,7 @@ msgstr "Flyt til front\n"
 
 #: src/backgrounds.c:2029
 msgid "Duplicate\n"
-msgstr "DuplikÃ©r\n"
+msgstr "Duplikér\n"
 
 #: src/backgrounds.c:2033
 msgid "Unlist\n"
@@ -251,15 +251,15 @@ msgstr "Bagg-farve\n"
 
 #: src/backgrounds.c:2111
 msgid "Red:\n"
-msgstr "RÃ¸d:\n"
+msgstr "Rød:\n"
 
 #: src/backgrounds.c:2122
 msgid "Green:\n"
-msgstr "GrÃ¸n:\n"
+msgstr "Grøn:\n"
 
 #: src/backgrounds.c:2133
 msgid "Blue:\n"
-msgstr "BlÃ¥:\n"
+msgstr "Blå:\n"
 
 #: src/backgrounds.c:2166
 msgid "Pre-scan BG's"
@@ -267,15 +267,15 @@ msgstr "Forskan baggrunde"
 
 #: src/backgrounds.c:2174
 msgid "Sort by File"
-msgstr "SortÃ©r efter fil"
+msgstr "Sortér efter fil"
 
 #: src/backgrounds.c:2179
 msgid "Sort by Attr."
-msgstr "SortÃ©r efter egensk."
+msgstr "Sortér efter egensk."
 
 #: src/backgrounds.c:2185
 msgid "Sort by Image"
-msgstr "SortÃ©r efter billede"
+msgstr "Sortér efter billede"
 
 #: src/backgrounds.c:2205
 msgid "Use dithering in Hi-Colour"
@@ -283,11 +283,11 @@ msgstr "Brug dithering i Hi-Colour"
 
 #: src/backgrounds.c:2209
 msgid "Background overrides theme"
-msgstr "Baggrund tilsidesÃ¦tter tema"
+msgstr "Baggrund tilsidesætter tema"
 
 #: src/backgrounds.c:2214
 msgid "Enable background transparency compatibility mode"
-msgstr "AktivÃ©r baggrundskompatibilitetsmode"
+msgstr "Aktivér baggrundskompatibilitetsmode"
 
 #: src/backgrounds.c:2238 src/mod-trans.c:204
 msgid "Background"
@@ -334,7 +334,7 @@ msgstr "KONFIG: ignorerer ekstra data i \"%s\"\n"
 #: src/config.c:205 src/config.c:304
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "KONFIG: manglende pÃ¥krÃ¦vet data i \"%s\"\n"
+msgstr "KONFIG: manglende påkrævet data i \"%s\"\n"
 
 #: src/config.c:215
 #, c-format
@@ -358,7 +358,7 @@ msgstr "Temaversionsfejl"
 
 #: src/config.c:314
 msgid "Restart with Defaults"
-msgstr "Genstart med standard vÃ¦rdier"
+msgstr "Genstart med standard værdier"
 
 #: src/config.c:315
 msgid "Abort and Exit"
@@ -387,7 +387,7 @@ msgstr ""
 "FEJL:\n"
 "\n"
 "Konfigurationen for temaet du har valgt er invalid.\n"
-"Dets revision er %i, men skal vÃ¦re <= %i.\n"
+"Dets revision er %i, men skal være <= %i.\n"
 
 #: src/config.c:578
 msgid "Enlightenment Starting..."
@@ -409,7 +409,7 @@ msgstr "Opret ny ikonboks"
 #: src/container.c:1513 src/container.c:1586
 #, c-format
 msgid "Icon size: %2d"
-msgstr "IkonstÃ¸rrelse: %2d"
+msgstr "Ikonstørrelse: %2d"
 
 #: src/container.c:1550
 msgid "Transparent background"
@@ -421,19 +421,19 @@ msgstr "Skjul indre ramme"
 
 #: src/container.c:1558
 msgid "Draw base image behind Icons"
-msgstr "Placer ikoner pÃ¥ sokkel"
+msgstr "Placer ikoner på sokkel"
 
 #: src/container.c:1562
 msgid "Hide scrollbar when not needed"
-msgstr "Skjul overflÃ¸dig rullebjÃ¦lke"
+msgstr "Skjul overflødig rullebjælke"
 
 #: src/container.c:1566
 msgid "Automatically resize to fit Icons"
-msgstr "VariÃ©r stÃ¸rrelsen efter ikonerne"
+msgstr "Variér størrelsen efter ikonerne"
 
 #: src/container.c:1573
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Forankring ved automatisk stÃ¸rrelsestilpasning:"
+msgstr "Forankring ved automatisk størrelsestilpasning:"
 
 #: src/container.c:1604
 msgid "Orientation:"
@@ -441,11 +441,11 @@ msgstr "Orientation:"
 
 #: src/container.c:1609
 msgid "Scrollbar side:"
-msgstr "RullebjÃ¦lkeside:"
+msgstr "Rullebjælkeside:"
 
 #: src/container.c:1614
 msgid "Scrollbar arrows:"
-msgstr "RullebjÃ¦lkepile:"
+msgstr "Rullebjælkepile:"
 
 #: src/container.c:1617
 msgid "Horizontal"
@@ -465,7 +465,7 @@ msgstr "Lodret"
 
 #: src/container.c:1638
 msgid "Right / Bottom"
-msgstr "HÃ¸jre / Bund"
+msgstr "Højre / Bund"
 
 #: src/container.c:1644
 msgid "Both ends"
@@ -489,19 +489,19 @@ msgstr "Animering ved minimering til denne ikonboks"
 
 #: src/container.c:1684
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "PrÃ¦ferencer for ikoner:"
+msgstr "Præferencer for ikoner:"
 
 #: src/container.c:1689
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "SkÃ¦rmdumpsvindue, brug applikationsikon, brug Enlightenment ikon"
+msgstr "Skærmdumpsvindue, brug applikationsikon, brug Enlightenment ikon"
 
 #: src/container.c:1696
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Brug applikationsikon, brug Enlightenment ikon, skÃ¦rmdumpsvindue"
+msgstr "Brug applikationsikon, brug Enlightenment ikon, skærmdumpsvindue"
 
 #: src/container.c:1701
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Brug Enlightenment ikon, skÃ¦rmdumpsvindue"
+msgstr "Brug Enlightenment ikon, skærmdumpsvindue"
 
 #: src/container.c:1714
 msgid ""
@@ -524,11 +524,11 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Hold venstre museknap nede og trÃ¦k for at flytte\n"
+"Hold venstre museknap nede og træk for at flytte\n"
 "skrivebordet frem og tilbage.\n"
-"HÃ¸jreklik for at fÃ¥ en liste over alle skriveborde\n"
+"Højreklik for at få en liste over alle skriveborde\n"
 "og deres vinduer.\n"
-"Midterklik for at fÃ¥ en liste over alle vinduer.\n"
+"Midterklik for at få en liste over alle vinduer.\n"
 
 #: src/desktops.c:135
 msgid ""
@@ -541,9 +541,9 @@ msgid ""
 msgstr ""
 "Dette er 'root'-skrivebordet.\n"
 "Denne kan ikke flyttes.\n"
-"HÃ¸jreklik for at fÃ¥ en liste over alle skriveborde\n"
+"Højreklik for at få en liste over alle skriveborde\n"
 "og deres vinduer.\n"
-"Midterklik for at fÃ¥ en liste over alle vinduer.\n"
+"Midterklik for at få en liste over alle vinduer.\n"
 
 #: src/desktops.c:153
 msgid ""
@@ -579,11 +579,11 @@ msgstr "Skriveborde wrapper rundt"
 
 #: src/desktops.c:2369
 msgid "Display desktop dragbar"
-msgstr "Vis skrivebordstrÃ¦klinie"
+msgstr "Vis skrivebordstræklinie"
 
 #: src/desktops.c:2375
 msgid "Drag bar position:"
-msgstr "TrÃ¦klinieplacering:"
+msgstr "Træklinieplacering:"
 
 #: src/desktops.c:2379
 msgid "Top"
@@ -599,7 +599,7 @@ msgstr "Venstre"
 
 #: src/desktops.c:2397 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
-msgstr "HÃ¸jre"
+msgstr "Højre"
 
 #: src/desktops.c:2405 src/menus-misc.c:582
 msgid "Desks"
@@ -619,7 +619,7 @@ msgstr ""
 
 #: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
-msgstr "Virtuel skrivebordsstÃ¸rrelse:\n"
+msgstr "Virtuel skrivebordsstørrelse:\n"
 
 #: src/desktops.c:2536
 msgid "Wrap virtual desktops around"
@@ -639,11 +639,11 @@ msgstr "Aktiveret"
 
 #: src/desktops.c:2556
 msgid "Only when moving window"
-msgstr "Kun nÃ¥r et vindue flyttes"
+msgstr "Kun når et vindue flyttes"
 
 #: src/desktops.c:2562
 msgid "Resistance at edge of screen:\n"
-msgstr "Modstand ved kanten af skÃ¦rmen:\n"
+msgstr "Modstand ved kanten af skærmen:\n"
 
 #: src/desktops.c:2574
 msgid "Areas"
@@ -672,14 +672,14 @@ msgid ""
 "Composite, Damage, Fixes, and Render\n"
 "extensions are loaded."
 msgstr ""
-"Kan ikke aktivere Composite hÃ¥ndtering.\n"
+"Kan ikke aktivere Composite håndtering.\n"
 "Brug xdpyinfo til at se om\n"
 "Composite, Damage, Fixes, og Render\n"
-"extensions er til rÃ¥dighed."
+"extensions er til rådighed."
 
 #: src/events.c:87
 msgid "X server setup error"
-msgstr "X-server opsÃ¦tningsfejl"
+msgstr "X-server opsætningsfejl"
 
 #: src/events.c:88
 msgid ""
@@ -694,7 +694,7 @@ msgid ""
 msgstr ""
 "FATAL FEJL:\n"
 "\n"
-"Din X-server understÃ¸tter ikke Shape extension.\n"
+"Din X-server understøtter ikke Shape extension.\n"
 "\n"
 "Din X-server er sikkert for gammel eller fejlkonfigureret.\n"
 "\n"
@@ -702,43 +702,43 @@ msgstr ""
 
 #: src/focus.c:713
 msgid "Focus follows pointer"
-msgstr "Fokus fÃ¸lger markÃ¸r"
+msgstr "Fokus følger markør"
 
 #: src/focus.c:719
 msgid "Focus follows pointer sloppily"
-msgstr "Fokus fÃ¸lger markÃ¸r 'sjusket'"
+msgstr "Fokus følger markør 'sjusket'"
 
 #: src/focus.c:725
 msgid "Focus follows mouse clicks"
-msgstr "Fokus fÃ¸lger museklik"
+msgstr "Fokus følger museklik"
 
 #: src/focus.c:735
 msgid "Clicking in a window always raises it"
-msgstr "Klik pÃ¥ et vindue bringer det i front"
+msgstr "Klik på et vindue bringer det i front"
 
 #: src/focus.c:743
 msgid "All new windows first get the focus"
-msgstr "Alle nye vinduer fÃ¥r fokus"
+msgstr "Alle nye vinduer får fokus"
 
 #: src/focus.c:748
 msgid "Only new dialog windows get the focus"
-msgstr "Kun nye dialogvinduer fÃ¥r fokus"
+msgstr "Kun nye dialogvinduer får fokus"
 
 #: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "Kun nye dialogvinduer hvis ejer er i fokus, fÃ¥r fokus"
+msgstr "Kun nye dialogvinduer hvis ejer er i fokus, får fokus"
 
 #: src/focus.c:760
 msgid "Raise windows while switching focus"
-msgstr "LÃ¸ft vinduer ved fokusskift"
+msgstr "Løft vinduer ved fokusskift"
 
 #: src/focus.c:766
 msgid "Send mouse pointer to window while switching focus"
-msgstr "Send markÃ¸r til vindue ved fokusskift"
+msgstr "Send markør til vindue ved fokusskift"
 
 #: src/focus.c:772
 msgid "Always send mouse pointer to window on focus switch"
-msgstr "Send altid markÃ¸r til vindue ved fokusskift"
+msgstr "Send altid markør til vindue ved fokusskift"
 
 #: src/focus.c:780
 msgid "Display and use focus list"
@@ -746,7 +746,7 @@ msgstr "Vis og brug fokusliste"
 
 #: src/focus.c:785
 msgid "Include sticky windows in focus list"
-msgstr "Inkluder klÃ¦bende vinduer in fokuslisten"
+msgstr "Inkluder klæbende vinduer in fokuslisten"
 
 #: src/focus.c:790
 msgid "Include shaded windows in focus list"
@@ -758,7 +758,7 @@ msgstr "Inkluder minimerede vinduer i fokuslisten"
 
 #: src/focus.c:800
 msgid "Include windows on other desks in focus list"
-msgstr "Inkluder vinduer pÃ¥ andre skriveborde i fokuslisten"
+msgstr "Inkluder vinduer på andre skriveborde i fokuslisten"
 
 #: src/focus.c:805
 msgid "Focus windows while switching"
@@ -766,15 +766,15 @@ msgstr "Fokuser vinduer under fokusskift"
 
 #: src/focus.c:810
 msgid "Raise windows after focus switch"
-msgstr "LÃ¸ft vinduer efter fokusskift"
+msgstr "Løft vinduer efter fokusskift"
 
 #: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
-msgstr "Send musemarkÃ¸r til vindue efter fokusskift"
+msgstr "Send musemarkør til vindue efter fokusskift"
 
 #: src/focus.c:825
 msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr "PrÃ¦ferencer for fokusliste ikoner:"
+msgstr "Præferencer for fokusliste ikoner:"
 
 #: src/focus.c:829
 msgid "First E Icon, then App Icon"
@@ -804,7 +804,7 @@ msgstr "Effekter"
 
 #: src/fx.c:937
 msgid "Enable Effect: Raindrops"
-msgstr "AktivÃ©r effekt: RegndrÃ¥ber"
+msgstr "Aktivér effekt: Regndråber"
 
 #: src/fx.c:941
 msgid "Ripples"
@@ -812,7 +812,7 @@ msgstr "Krusninger"
 
 #: src/fx.c:945
 msgid "Waves"
-msgstr "BÃ¸lger"
+msgstr "Bølger"
 
 #: src/fx.c:951
 msgid "FX"
@@ -840,7 +840,7 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 "Enlightenment vinduesgruppe\n"
-"vÃ¦lger dialog\n"
+"vælger dialog\n"
 
 #: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:925
 msgid "Window Group Error"
@@ -866,7 +866,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Dette vindue tilhÃ¸rer allerede alle\n"
+"Dette vindue tilhører allerede alle\n"
 "eksisterende grupper\n"
 
 #: src/groups.c:746
@@ -876,24 +876,24 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Ingen grupper eksisterer for tiden. Du skal starte en gruppe fÃ¸rst.\n"
+"  Ingen grupper eksisterer for tiden. Du skal starte en gruppe først.\n"
 "\n"
 
 #: src/groups.c:836
 msgid "   Pick the group to configure:   "
-msgstr "   VÃ¦lg gruppe at indstille:   "
+msgstr "   Vælg gruppe at indstille:   "
 
 #: src/groups.c:867
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  De fÃ¸lgende handlinger vil  \n"
-"  gÃ¦lde for alle gruppemedlemmer:  "
+"  De følgende handlinger vil  \n"
+"  gælde for alle gruppemedlemmer:  "
 
 #: src/groups.c:872 src/groups.c:969
 msgid "Changing Border Style"
-msgstr "Ã†ndrer kantstil"
+msgstr "Ændrer kantstil"
 
 #: src/groups.c:877 src/groups.c:974
 msgid "Iconifying"
@@ -901,7 +901,7 @@ msgstr "Ikonificerer"
 
 #: src/groups.c:882 src/groups.c:979
 msgid "Killing"
-msgstr "DrÃ¦ber"
+msgstr "Dræber"
 
 #: src/groups.c:887 src/groups.c:984
 msgid "Moving"
@@ -909,11 +909,11 @@ msgstr "Flytter"
 
 #: src/groups.c:892 src/groups.c:989
 msgid "Raising/Lowering"
-msgstr "LÃ¸fter/SÃ¦nker"
+msgstr "Løfter/Sænker"
 
 #: src/groups.c:897 src/groups.c:994
 msgid "Sticking"
-msgstr "KlÃ¦ber"
+msgstr "Klæber"
 
 #: src/groups.c:902 src/groups.c:999
 msgid "Shading"
@@ -938,7 +938,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Dette vindue hÃ¸rer ikke til i nogen grupper.  \n"
+"  Dette vindue hører ikke til i nogen grupper.  \n"
 "\n"
 
 #: src/groups.c:962
@@ -971,15 +971,15 @@ msgstr ""
 
 #: src/groups.c:1050
 msgid "Pick the group the window will belong to:"
-msgstr "VÃ¦lg gruppen som vinduet skal tilhÃ¸re:"
+msgstr "Vælg gruppen som vinduet skal tilhøre:"
 
 #: src/groups.c:1056
 msgid "Select the group to remove the window from:"
-msgstr "VÃ¦lg gruppen som vinduet skal fjernes fra:"
+msgstr "Vælg gruppen som vinduet skal fjernes fra:"
 
 #: src/groups.c:1061
 msgid "Select the group to break:"
-msgstr "VÃ¦lg gruppen som skal brydes:"
+msgstr "Vælg gruppen som skal brydes:"
 
 #: src/handlers.c:61
 #, c-format
@@ -1038,7 +1038,7 @@ msgstr "Fejl i 'Selection'!"
 #: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
-msgstr "Kunne ikke fÃ¥ fat i Selection: %s"
+msgstr "Kunne ikke få fat i Selection: %s"
 
 #: src/iconify.c:469
 msgid "Iconbox Options"
@@ -1055,7 +1055,7 @@ msgstr "Meddelelse"
 #: src/ipc.c:1472 src/ipc.c:1479
 #, c-format
 msgid "e16 was built without %s support"
-msgstr "e16 er bygget uden understÃ¸ttelse for %s"
+msgstr "e16 er bygget uden understøttelse for %s"
 
 #: src/ipc.c:1473
 msgid "composite"
@@ -1067,7 +1067,7 @@ msgstr "lyd"
 
 #: src/ipc.c:1823
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Enlightenment IPC kommandohjÃ¦lp\n"
+msgstr "Enlightenment IPC kommandohjælp\n"
 
 #: src/ipc.c:1827
 msgid ""
@@ -1081,7 +1081,7 @@ msgstr ""
 
 #: src/ipc.c:1829 src/ipc.c:1849 src/ipc.c:1861
 msgid "Commands currently available:\n"
-msgstr "Kommandoer tilgÃ¦ngelige lige nu:\n"
+msgstr "Kommandoer tilgængelige lige nu:\n"
 
 #: src/ipc.c:1847
 msgid "Use \"help full\" for full descriptions of each command\n"
@@ -1101,8 +1101,8 @@ msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
-"%s skal vÃ¦re et katalog hvor du har\n"
-"lÃ¦se, skrive og eksekveringsret.\n"
+"%s skal være et katalog hvor du har\n"
+"læse, skrive og eksekveringsret.\n"
 
 #: src/main.c:679
 #, c-format
@@ -1136,7 +1136,7 @@ msgstr ""
 
 #: src/magwin.c:460
 msgid "Magnifier"
-msgstr "ForstÃ¸rrelsesglas"
+msgstr "Forstørrelsesglas"
 
 #: src/menus-misc.c:454 config/strings.c:93 config/strings.c:115
 msgid "Themes"
@@ -1152,7 +1152,7 @@ msgstr "Vinduesliste"
 
 #: src/menus-misc.c:564
 msgid "Go to this Desktop"
-msgstr "GÃ¥ til dette skrivebord"
+msgstr "Gå til dette skrivebord"
 
 #: src/menus-misc.c:568 src/menus-misc.c:664
 #, c-format
@@ -1165,7 +1165,7 @@ msgstr "Vis/skjul denne gruppe"
 
 #: src/menus-misc.c:616
 msgid "Iconify this group"
-msgstr "IkonificÃ©r denne gruppe"
+msgstr "Ikonificér denne gruppe"
 
 #: src/menus-misc.c:627
 #, c-format
@@ -1178,11 +1178,11 @@ msgstr "Animeret visning af menuer"
 
 #: src/menus.c:2104
 msgid "Always pop up menus on screen"
-msgstr "Hold menuer inden for skÃ¦rmen"
+msgstr "Hold menuer inden for skærmen"
 
 #: src/menus.c:2109
 msgid "Warp pointer after moving menus"
-msgstr "Flyt markÃ¸r efter flytning af menuer"
+msgstr "Flyt markør efter flytning af menuer"
 
 #: src/menus.c:2115
 msgid "Menus"
@@ -1207,7 +1207,7 @@ msgstr "Gennemsigtighed af tema: %2d"
 
 #: src/mod-trans.c:143
 msgid "Changes Might Require Restart:"
-msgstr "Ã†ndringer krÃ¦ver muligvis genstart."
+msgstr "Ændringer kræver muligvis genstart."
 
 #: src/mod-trans.c:152
 msgid "Borders:"
@@ -1219,7 +1219,7 @@ msgstr "Menuer:"
 
 #: src/mod-trans.c:160
 msgid "Hilights:"
-msgstr "FremhÃ¦vet:"
+msgstr "Fremhævet:"
 
 #: src/mod-trans.c:164
 msgid "E Widgets:"
@@ -1231,7 +1231,7 @@ msgstr "E dialoger:"
 
 #: src/mod-trans.c:172
 msgid "Tooltips:"
-msgstr "VÃ¦rktÃ¸jstips:"
+msgstr "Værktøjstips:"
 
 #: src/mod-trans.c:176 src/settings.c:82 src/settings.c:87 src/settings.c:354
 msgid "Opaque"
@@ -1263,15 +1263,15 @@ msgstr "Vinduesindstillinger"
 
 #: src/pager.c:1009 config/strings.c:51 config/strings.c:126
 msgid "Iconify"
-msgstr "IkonificÃ©r"
+msgstr "Ikonificér"
 
 #: src/pager.c:1017 config/strings.c:125
 msgid "Annihilate"
-msgstr "DrÃ¦b"
+msgstr "Dræb"
 
 #: src/pager.c:1021
 msgid "Stick / Unstick"
-msgstr "KlÃ¦b / klÃ¦b ikke"
+msgstr "Klæb / klæb ikke"
 
 #: src/pager.c:1030
 msgid "Desktop Options"
@@ -1279,7 +1279,7 @@ msgstr "Skrivebordsindstillinger"
 
 #: src/pager.c:1032
 msgid "Pager Settings..."
-msgstr "SkÃ¦rmoversigtsindstillinger..."
+msgstr "Skærmoversigtsindstillinger..."
 
 #: src/pager.c:1037
 msgid "Snapshotting Off"
@@ -1287,19 +1287,19 @@ msgstr "Billedtagning fra"
 
 #: src/pager.c:1041
 msgid "High Quality Off"
-msgstr "HÃ¸j kvalitet fra"
+msgstr "Høj kvalitet fra"
 
 #: src/pager.c:1043
 msgid "High Quality On"
-msgstr "HÃ¸j kvalitet pÃ¥"
+msgstr "Høj kvalitet på"
 
 #: src/pager.c:1048
 msgid "Snapshotting On"
-msgstr "Billedtagning pÃ¥"
+msgstr "Billedtagning på"
 
 #: src/pager.c:1052
 msgid "Zoom Off"
-msgstr "AktivÃ©r zoom"
+msgstr "Aktivér zoom"
 
 #: src/pager.c:1054
 msgid "Zoom On"
@@ -1307,7 +1307,7 @@ msgstr "Deaktiver zoom"
 
 #: src/pager.c:1813 src/pager.c:1904
 msgid "Pager scanning speed:"
-msgstr "SkÃ¦rmoversigts-skanningshastighed:"
+msgstr "Skærmoversigts-skanningshastighed:"
 
 #: src/pager.c:1814 src/pager.c:1905
 msgid "lines per second"
@@ -1315,11 +1315,11 @@ msgstr "linier pr sekund"
 
 #: src/pager.c:1843
 msgid "Enable pager display"
-msgstr "Brug SkÃ¦rmoversigt"
+msgstr "Brug Skærmoversigt"
 
 #: src/pager.c:1853
 msgid "Pager Mode:"
-msgstr "SkÃ¦rmoversigtsmodus"
+msgstr "Skærmoversigtsmodus"
 
 #: src/pager.c:1857
 msgid "Simple"
@@ -1327,31 +1327,31 @@ msgstr "Simpel"
 
 #: src/pager.c:1863
 msgid "Make miniature snapshots of the screen"
-msgstr "Lav miniaturebilleder af skÃ¦rmen"
+msgstr "Lav miniaturebilleder af skærmen"
 
 #: src/pager.c:1870
 msgid "Live Update"
-msgstr "Opdater ved Ã¦ndringer"
+msgstr "Opdater ved ændringer"
 
 #: src/pager.c:1881
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "HÃ¸j kvalitet af baggrunde i 'snapshot' modus"
+msgstr "Høj kvalitet af baggrunde i 'snapshot' modus"
 
 #: src/pager.c:1886
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Zoom ind pÃ¥ skÃ¦rmoversigtsvinduer nÃ¥r musen er over"
+msgstr "Zoom ind på skærmoversigtsvinduer når musen er over"
 
 #: src/pager.c:1892
 msgid "Pop up window title when mouse is over the window"
-msgstr "Vis vinduets navn nÃ¥r markÃ¸ren er over vinduet"
+msgstr "Vis vinduets navn når markøren er over vinduet"
 
 #: src/pager.c:1897
 msgid "Continuously scan screen to update pager"
-msgstr "Skan skÃ¦rmen kontinuerligt for at opdatere oversigt"
+msgstr "Skan skærmen kontinuerligt for at opdatere oversigt"
 
 #: src/pager.c:1920
 msgid "Mouse button to select and drag windows:"
-msgstr "Museknap til at vÃ¦lge og trÃ¦kke vinduer:"
+msgstr "Museknap til at vælge og trække vinduer:"
 
 #: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Middle"
@@ -1359,7 +1359,7 @@ msgstr "Midt"
 
 #: src/pager.c:1945
 msgid "Mouse button to select desktops:"
-msgstr "Museknap til at vÃ¦lge skriveborde:"
+msgstr "Museknap til at vælge skriveborde:"
 
 #: src/pager.c:1970
 msgid "Mouse button to display pager menu:"
@@ -1367,11 +1367,11 @@ msgstr "Museknap til at vise oversigtsmenu:"
 
 #: src/pager.c:1994
 msgid "Pagers"
-msgstr "SkÃ¦rmoversigter"
+msgstr "Skærmoversigter"
 
 #: src/pager.c:1995
 msgid "Pager Settings"
-msgstr "Indstillinger for skÃ¦rmoversigter"
+msgstr "Indstillinger for skærmoversigter"
 
 #: src/pager.c:1998
 msgid ""
@@ -1379,7 +1379,7 @@ msgid ""
 "Pager Settings Dialog\n"
 msgstr ""
 "Indstillinger for\n"
-"skÃ¦rmoversigter\n"
+"skærmoversigter\n"
 
 #: src/session.c:344
 msgid ""
@@ -1410,7 +1410,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Er du sikker pÃ¥ at du Ã¸nsker at logge ud ?    \n"
+"    Er du sikker på at du ønsker at logge ud ?    \n"
 "\n"
 
 #: src/session.c:656
@@ -1431,15 +1431,15 @@ msgstr "  Nej  "
 
 #: src/session.c:798
 msgid "Enable Session Script"
-msgstr "AktivÃ©r sessionsscripts"
+msgstr "Aktivér sessionsscripts"
 
 #: src/session.c:803
 msgid "Enable Logout Dialog"
-msgstr "AktivÃ©r Logout dialog"
+msgstr "Aktivér Logout dialog"
 
 #: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
-msgstr "AktivÃ©r Genstart/Luk ned ved Logout"
+msgstr "Aktivér Genstart/Luk ned ved Logout"
 
 #: src/session.c:814
 msgid "Session"
@@ -1463,7 +1463,7 @@ msgstr "Flyttemetoder:"
 
 #: src/settings.c:79
 msgid "Resize Methods:"
-msgstr "StÃ¸rrelsesÃ¦ndrings metoder:"
+msgstr "Størrelsesændrings metoder:"
 
 #: src/settings.c:92 src/settings.c:97 src/settings.c:359
 msgid "Technical"
@@ -1487,7 +1487,7 @@ msgstr "Gennemsigtig"
 
 #: src/settings.c:142
 msgid "Avoid server grab"
-msgstr "UndgÃ¥ X-server lÃ¥s"
+msgstr "Undgå X-server lås"
 
 #: src/settings.c:152
 msgid "Move/Resize Geometry Info Postion:"
@@ -1499,7 +1499,7 @@ msgstr "Centrum af vindue"
 
 #: src/settings.c:162
 msgid "Always Screen corner"
-msgstr "HjÃ¸rne af skÃ¦rmen"
+msgstr "Hjørne af skærmen"
 
 #: src/settings.c:168
 msgid "Don't show"
@@ -1507,7 +1507,7 @@ msgstr "Vis ikke"
 
 #: src/settings.c:180
 msgid "Default Resize Policy:"
-msgstr "Standard modus for Ã¦ndring af position/stÃ¸rrelse:"
+msgstr "Standard modus for ændring af position/størrelse:"
 
 #: src/settings.c:184
 msgid "Conservative"
@@ -1515,7 +1515,7 @@ msgstr "Konservativ"
 
 #: src/settings.c:190
 msgid "Available"
-msgstr "Til rÃ¥dighed"
+msgstr "Til rådighed"
 
 #: src/settings.c:196
 msgid "Absolute"
@@ -1527,19 +1527,19 @@ msgstr "Opdater vindue mens det flyttes"
 
 #: src/settings.c:211
 msgid "Synchronize move/resize with application"
-msgstr "Synkroniser flytning/stÃ¸rrelsesÃ¦ndring med applikationen"
+msgstr "Synkroniser flytning/størrelsesændring med applikationen"
 
 #: src/settings.c:216
 msgid "Do not cover dragbar"
-msgstr "DÃ¦k ikke skrivebordstrÃ¦klinien"
+msgstr "Dæk ikke skrivebordstræklinien"
 
 #: src/settings.c:222
 msgid "Move/Resize"
-msgstr "Flytning/StÃ¸rrelse"
+msgstr "Flytning/Størrelse"
 
 #: src/settings.c:223
 msgid "Move & Resize Settings"
-msgstr "Indstillinger for flytning og stÃ¸rrelsesÃ¦ndring"
+msgstr "Indstillinger for flytning og størrelsesændring"
 
 #: src/settings.c:226
 msgid ""
@@ -1547,7 +1547,7 @@ msgid ""
 "Method Settings Dialog\n"
 msgstr ""
 "Indstillinger for\n"
-"flytning og stÃ¸rrelsesÃ¦ndring\n"
+"flytning og størrelsesændring\n"
 
 #: src/settings.c:313
 msgid "Dialog windows appear together with their owner"
@@ -1559,23 +1559,23 @@ msgstr "Skift til skrivebord hvor dialog dukker op"
 
 #: src/settings.c:326
 msgid "Place windows manually"
-msgstr "PlacÃ©r vinduer manuelt"
+msgstr "Placér vinduer manuelt"
 
 #: src/settings.c:331
 msgid "Place windows under mouse"
-msgstr "PlacÃ©r vinduer under markÃ¸r"
+msgstr "Placér vinduer under markør"
 
 #: src/settings.c:336
 msgid "Center windows when desk is full"
-msgstr "CentrÃ©r vinduer nÃ¥r skrivebordet er fuldt"
+msgstr "Centrér vinduer når skrivebordet er fuldt"
 
 #: src/settings.c:341
 msgid "Slide windows in when they appear"
-msgstr "Vinduer glider ind pÃ¥ skÃ¦rmen nÃ¥r de oprettes"
+msgstr "Vinduer glider ind på skærmen når de oprettes"
 
 #: src/settings.c:346
 msgid "Slide windows around when cleaning up"
-msgstr "Vinduer glider rundt nÃ¥r der ryddes op pÃ¥ skrivebordet"
+msgstr "Vinduer glider rundt når der ryddes op på skrivebordet"
 
 #: src/settings.c:351
 msgid "Slide Method:"
@@ -1599,15 +1599,15 @@ msgstr "Op/nedrulninghastighed:"
 
 #: src/settings.c:427
 msgid "Ignore struts"
-msgstr "IgnorÃ©r 'struts'"
+msgstr "Ignorér 'struts'"
 
 #: src/settings.c:432
 msgid "Raise fullscreen windows"
-msgstr "LÃ¸ft fuldskÃ¦rmsvinduer"
+msgstr "Løft fuldskærmsvinduer"
 
 #: src/settings.c:440
 msgid "Place windows on another head when full"
-msgstr "PlacÃ©r vinduer pÃ¥ anden skÃ¦rm hvis fuld"
+msgstr "Placér vinduer på anden skærm hvis fuld"
 
 #: src/settings.c:448
 msgid "Placement"
@@ -1627,7 +1627,7 @@ msgstr ""
 
 #: src/settings.c:483
 msgid "Raise Windows Automatically"
-msgstr "LÃ¸ft vinduer automatisk"
+msgstr "Løft vinduer automatisk"
 
 #: src/settings.c:489
 msgid "Autoraise delay:"
@@ -1635,11 +1635,11 @@ msgstr "Forsinkelse:"
 
 #: src/settings.c:500
 msgid "Autoraise"
-msgstr "AutolÃ¸ft"
+msgstr "Autoløft"
 
 #: src/settings.c:501
 msgid "Autoraise Settings"
-msgstr "AutolÃ¸ftindstillinger"
+msgstr "Autoløftindstillinger"
 
 #: src/settings.c:504
 msgid ""
@@ -1647,19 +1647,19 @@ msgid ""
 "of Windows Settings Dialog\n"
 msgstr ""
 "Indstillinger for\n"
-"automatisk lÃ¸ft af vinduer\n"
+"automatisk løft af vinduer\n"
 
 #: src/settings.c:541
 msgid "Enable Dialog Headers"
-msgstr "AktivÃ©r dialoghoveder"
+msgstr "Aktivér dialoghoveder"
 
 #: src/settings.c:547
 msgid "Enable Button Images"
-msgstr "AktivÃ©r billeder i knapper"
+msgstr "Aktivér billeder i knapper"
 
 #: src/settings.c:556
 msgid "Enable sliding startup windows"
-msgstr "AktivÃ©r glidende vinduer under start"
+msgstr "Aktivér glidende vinduer under start"
 
 #: src/settings.c:564
 msgid "Use saveunders to reduce window exposures"
@@ -1683,11 +1683,11 @@ msgstr ""
 
 #: src/settings.c:615
 msgid "Enable Composite"
-msgstr "AktivÃ©r composite"
+msgstr "Aktivér composite"
 
 #: src/settings.c:623
 msgid "Enable Fading"
-msgstr "AktivÃ©r fading"
+msgstr "Aktivér fading"
 
 #: src/settings.c:629
 msgid "Fading Speed:"
@@ -1757,7 +1757,7 @@ msgstr ""
 
 #: src/setup.c:156
 msgid "Another Window Manager is already running"
-msgstr "En anden vindueshÃ¥ndtering kÃ¸rer allerede"
+msgstr "En anden vindueshåndtering kører allerede"
 
 #: src/setup.c:158
 msgid ""
@@ -1768,7 +1768,7 @@ msgid ""
 msgstr ""
 "En anden vinduesmanager er aktiv.\n"
 "\n"
-"Du er nÃ¸dt til at lukke den ned fÃ¸r du kan bruge Enlightenment.\n"
+"Du er nødt til at lukke den ned før du kan bruge Enlightenment.\n"
 
 #: src/setup.c:167
 msgid "X server version error"
@@ -1776,7 +1776,7 @@ msgstr "X-server versionsfejl"
 
 #: src/setup.c:167
 msgid "Ignore this error"
-msgstr "IgnorÃ©r denne fejl"
+msgstr "Ignorér denne fejl"
 
 #: src/setup.c:169
 #, c-format
@@ -1811,7 +1811,7 @@ msgstr "Kommando:"
 
 #: src/snaps.c:818
 msgid "Track Changes"
-msgstr "Opdater ved Ã¦ndring"
+msgstr "Opdater ved ændring"
 
 #: src/snaps.c:823
 msgid "Location"
@@ -1823,7 +1823,7 @@ msgstr "Rammestil"
 
 #: src/snaps.c:833 config/strings.c:176
 msgid "Size"
-msgstr "StÃ¸rrelse"
+msgstr "Størrelse"
 
 #: src/snaps.c:838 config/strings.c:92 config/strings.c:114
 msgid "Desktop"
@@ -1835,7 +1835,7 @@ msgstr "Skyggestadie"
 
 #: src/snaps.c:848
 msgid "Sticky state"
-msgstr "KlÃ¦bestadie"
+msgstr "Klæbestadie"
 
 #: src/snaps.c:853
 msgid "Stacking layer"
@@ -1855,7 +1855,7 @@ msgstr "Skygger"
 
 #: src/snaps.c:875
 msgid "Flags"
-msgstr "Diverse (lÃ¥se mm.)"
+msgstr "Diverse (låse mm.)"
 
 #: src/snaps.c:894
 msgid "Restart application on login"
@@ -1875,8 +1875,8 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
-"VÃ¦lg de attributter for dette vindue\n"
-"du Ã¸nsker at huske\n"
+"Vælg de attributter for dette vindue\n"
+"du ønsker at huske\n"
 
 #: src/snaps.c:1014
 msgid "Delete"
@@ -1912,7 +1912,7 @@ msgstr ""
 
 #: src/snaps.c:1166
 msgid "Error saving snaps file\n"
-msgstr "Fejl ved gemning af skÃ¦rmdumpsfil\n"
+msgstr "Fejl ved gemning af skærmdumpsfil\n"
 
 #: src/sound.c:213
 msgid "Error finding sound file"
@@ -1927,7 +1927,7 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
-"Advarsel! e16 kunne ikke lÃ¦se denne lydfil:\n"
+"Advarsel! e16 kunne ikke læse denne lydfil:\n"
 "%s\n"
 
 #: src/sound.c:310
@@ -1972,7 +1972,7 @@ msgstr "Systray'en forsvandt?!?"
 
 #: src/systray.c:431
 msgid "Only one systray is allowed"
-msgstr "Der kan kun vÃ¦re en Systray"
+msgstr "Der kan kun være en Systray"
 
 #: src/systray.c:439
 msgid "Could not activate systray"
@@ -1996,7 +1996,7 @@ msgstr ""
 
 #: src/theme.c:371
 msgid "Changes will take effect after restart"
-msgstr "Ã†ndringer trÃ¦der i kraft efter genstart"
+msgstr "Ændringer træder i kraft efter genstart"
 
 #: src/theme.c:391
 msgid "Use theme font configuration"
@@ -2029,7 +2029,7 @@ msgstr ""
 
 #: src/tooltips.c:867
 msgid "Display Tooltips"
-msgstr "Vis vÃ¦rktÃ¸jstips"
+msgstr "Vis værktøjstips"
 
 #: src/tooltips.c:872
 msgid "Display Root Window Tips"
@@ -2041,11 +2041,11 @@ msgstr "Forsinkelse:\n"
 
 #: src/tooltips.c:888
 msgid "Tooltips"
-msgstr "VÃ¦rktÃ¸jstips"
+msgstr "Værktøjstips"
 
 #: src/tooltips.c:889
 msgid "Tooltip Settings"
-msgstr "VÃ¦rktÃ¸jstipsindstillinger"
+msgstr "Værktøjstipsindstillinger"
 
 #: src/tooltips.c:892
 msgid ""
@@ -2053,14 +2053,14 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 "Indstillinger for\n"
-"vÃ¦rktÃ¸jstips\n"
+"værktøjstips\n"
 
 #: config/strings.c:5
 msgid ""
 "Click and drag to move desktop\n"
 "(on any desktop but desktop 0)"
 msgstr ""
-"Klik og trÃ¦k for at flytte skrivebordet\n"
+"Klik og træk for at flytte skrivebordet\n"
 "(undtagen skrivebord 0)"
 
 #: config/strings.c:6 config/strings.c:8
@@ -2069,11 +2069,11 @@ msgstr "Skift skrivebord"
 
 #: config/strings.c:7
 msgid "Go to the next desktop."
-msgstr "GÃ¥ til nÃ¦ste skrivebord"
+msgstr "Gå til næste skrivebord"
 
 #: config/strings.c:9
 msgid "Go to the previous desktop."
-msgstr "GÃ¥ til foregÃ¥ende skrivebord"
+msgstr "Gå til foregående skrivebord"
 
 #: config/strings.c:10
 msgid "Move"
@@ -2102,7 +2102,7 @@ msgstr "Start en gruppe"
 
 #: config/strings.c:17
 msgid "Add to current group."
-msgstr "TilfÃ¸j til aktiv gruppe"
+msgstr "Tilføj til aktiv gruppe"
 
 #: config/strings.c:18
 msgid "Break this window's group."
@@ -2118,27 +2118,27 @@ msgstr "Rul ned"
 
 #: config/strings.c:21
 msgid "Resize"
-msgstr "StÃ¸rrelse"
+msgstr "Størrelse"
 
 #: config/strings.c:22
 msgid "Resize this window."
-msgstr "StÃ¸rrelse"
+msgstr "Størrelse"
 
 #: config/strings.c:24
 msgid "Resize Horizontally"
-msgstr "Horisontal stÃ¸rrelse"
+msgstr "Horisontal størrelse"
 
 #: config/strings.c:25
 msgid "Resize this window horizontally."
-msgstr "Ã†ndr vinduets bredde"
+msgstr "Ændr vinduets bredde"
 
 #: config/strings.c:27
 msgid "Resize Vertically"
-msgstr "Lodret stÃ¸rrelse"
+msgstr "Lodret størrelse"
 
 #: config/strings.c:28
 msgid "Resize this window vertically."
-msgstr "Ã†ndr vinduets hÃ¸jde"
+msgstr "Ændr vinduets højde"
 
 #: config/strings.c:31
 msgid "Close this window."
@@ -2146,15 +2146,15 @@ msgstr "Luk vinduet"
 
 #: config/strings.c:32
 msgid "Forcibly destroy this window."
-msgstr "Ã˜delÃ¦g vinduet"
+msgstr "Ødelæg vinduet"
 
 #: config/strings.c:33
 msgid "Maximize Height"
-msgstr "Maksimer hÃ¸jde"
+msgstr "Maksimer højde"
 
 #: config/strings.c:34 config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
-msgstr "Skift mellem maksimal hÃ¸jde og normal hÃ¸jde"
+msgstr "Skift mellem maksimal højde og normal højde"
 
 #: config/strings.c:35
 msgid "Maximize Width"
@@ -2170,7 +2170,7 @@ msgstr "Maksimer"
 
 #: config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
-msgstr "Skift mellem maksimal stÃ¸rrelse og normal stÃ¸rrelse"
+msgstr "Skift mellem maksimal størrelse og normal størrelse"
 
 #: config/strings.c:41 config/strings.c:43
 msgid "Send To Another Desktop"
@@ -2178,11 +2178,11 @@ msgstr "Send til et andet skrivebord"
 
 #: config/strings.c:42
 msgid "Send this Window to the next desktop."
-msgstr "Send vindue til nÃ¦ste skrivebord"
+msgstr "Send vindue til næste skrivebord"
 
 #: config/strings.c:44
 msgid "Send this Window to the previous desktop."
-msgstr "Send vindue til foregÃ¥ende skrivebord"
+msgstr "Send vindue til foregående skrivebord"
 
 #: config/strings.c:45
 msgid "Snapshot"
@@ -2190,7 +2190,7 @@ msgstr "Husk tilstand"
 
 #: config/strings.c:46
 msgid "This button does nothing interesting."
-msgstr "Denne knap gÃ¸r ikke noget interessant."
+msgstr "Denne knap gør ikke noget interessant."
 
 #: config/strings.c:47 config/strings.c:130
 msgid "Shade/Unshade"
@@ -2210,7 +2210,7 @@ msgstr "Vis flere knapper"
 
 #: config/strings.c:56 config/strings.c:128
 msgid "Raise"
-msgstr "LÃ¸ft"
+msgstr "Løft"
 
 #: config/strings.c:57
 msgid "Raise this window to the top."
@@ -2218,25 +2218,25 @@ msgstr "Bring dette vindue i front"
 
 #: config/strings.c:58 config/strings.c:129
 msgid "Lower"
-msgstr "SÃ¦nk"
+msgstr "Sænk"
 
 #: config/strings.c:59
 msgid "Lower this window."
-msgstr "SÃ¦nk dette vindue"
+msgstr "Sænk dette vindue"
 
 #: config/strings.c:60 config/strings.c:131
 msgid "Stick/Unstick"
-msgstr "KlÃ¦b/klÃ¦b ikke"
+msgstr "Klæb/klæb ikke"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
-msgstr "AktivÃ©r/deaktivÃ©r klÃ¦bende tilstand."
+msgstr "Aktivér/deaktivér klæbende tilstand."
 
 #: config/strings.c:63
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
-msgstr "Ved at klikke pÃ¥ skrivebordet kan du gÃ¸re fÃ¸lgende"
+msgstr "Ved at klikke på skrivebordet kan du gøre følgende"
 
 #: config/strings.c:64
 msgid "Display User Menus"
@@ -2264,11 +2264,11 @@ msgstr "Vis gruppemenu"
 
 #: config/strings.c:72
 msgid "Go Back a Desktop"
-msgstr "GÃ¥ til forrige skrivebord"
+msgstr "Gå til forrige skrivebord"
 
 #: config/strings.c:73
 msgid "Go Forward a Desktop"
-msgstr "GÃ¥ til nÃ¦ste skrivebord"
+msgstr "Gå til næste skrivebord"
 
 #: config/strings.c:78 config/strings.c:81
 msgid "Backgrounds"
@@ -2276,19 +2276,19 @@ msgstr "Baggrunde"
 
 #: config/strings.c:80
 msgid "Desktop Operations"
-msgstr "SkrivebordsopsÃ¦tning"
+msgstr "Skrivebordsopsætning"
 
 #: config/strings.c:82
 msgid "Cleanup Desktop"
-msgstr "Ryd op pÃ¥ skrivebordet"
+msgstr "Ryd op på skrivebordet"
 
 #: config/strings.c:83
 msgid "Goto Next Desktop"
-msgstr "GÃ¥ til nÃ¦ste skrivebord"
+msgstr "Gå til næste skrivebord"
 
 #: config/strings.c:84
 msgid "Goto Previous Desktop"
-msgstr "GÃ¥ til foregÃ¥ende skrivebord"
+msgstr "Gå til foregående skrivebord"
 
 #: config/strings.c:86
 msgid "Create Systray"
@@ -2296,7 +2296,7 @@ msgstr "Opret 'systray'"
 
 #: config/strings.c:87
 msgid "Show Magnifier"
-msgstr "Vis ForstÃ¸rrelsesglas"
+msgstr "Vis Forstørrelsesglas"
 
 #: config/strings.c:89
 msgid "Enlightenment"
@@ -2316,7 +2316,7 @@ msgstr "Vedligeholdelse"
 
 #: config/strings.c:95 config/strings.c:117
 msgid "Help"
-msgstr "HjÃ¦lp"
+msgstr "Hjælp"
 
 #: config/strings.c:96 config/strings.c:118
 msgid "About Enlightenment"
@@ -2344,7 +2344,7 @@ msgstr "Slet pager'ens baggrundscache"
 
 #: config/strings.c:104
 msgid "Purge background selector cache"
-msgstr "Slet baggrundsvÃ¦lgercache"
+msgstr "Slet baggrundsvælgercache"
 
 #: config/strings.c:105
 msgid "Purge all caches"
@@ -2360,7 +2360,7 @@ msgstr "Vis baggrundscacheforbrug"
 
 #: config/strings.c:108
 msgid "Query background selector cache usage"
-msgstr "Vis baggrundsvÃ¦lgercacheforbrug"
+msgstr "Vis baggrundsvælgercacheforbrug"
 
 #: config/strings.c:109
 msgid "Query all cache usage"
@@ -2380,15 +2380,15 @@ msgstr "Husk..."
 
 #: config/strings.c:133
 msgid "Window Size"
-msgstr "VinduesstÃ¸rrelse"
+msgstr "Vinduesstørrelse"
 
 #: config/strings.c:134
 msgid "Set Stacking"
-msgstr "SÃ¦t stabling"
+msgstr "Sæt stabling"
 
 #: config/strings.c:135
 msgid "Set Border Style"
-msgstr "SÃ¦t rammestil"
+msgstr "Sæt rammestil"
 
 #: config/strings.c:136
 msgid "Window Groups"
@@ -2404,11 +2404,11 @@ msgstr "Start en ny gruppe"
 
 #: config/strings.c:143
 msgid "Add this window to the current group"
-msgstr "TilfÃ¸j dette vindue til den aktive gruppe"
+msgstr "Tilføj dette vindue til den aktive gruppe"
 
 #: config/strings.c:144
 msgid "Select group to add this window to"
-msgstr "VÃ¦lg gruppen som vinduet skal tilfÃ¸jes til"
+msgstr "Vælg gruppen som vinduet skal tilføjes til"
 
 #: config/strings.c:145
 msgid "Remove this window from a group"
@@ -2416,7 +2416,7 @@ msgstr "Fjern dette vindue fra en gruppe"
 
 #: config/strings.c:146
 msgid "Destroy a group this window belongs to"
-msgstr "NedlÃ¦g en gruppe som dette vindue tilhÃ¸rer"
+msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
 #: config/strings.c:148
 msgid "Stacking"
@@ -2436,39 +2436,39 @@ msgstr "Over"
 
 #: config/strings.c:152
 msgid "On Top"
-msgstr "Ã˜verst"
+msgstr "Øverst"
 
 #: config/strings.c:155
 msgid "Toggle Skip Window Lists"
-msgstr "AktivÃ©r/deaktivÃ©r skip vindueslister"
+msgstr "Aktivér/deaktivér skip vindueslister"
 
 #: config/strings.c:156
 msgid "Toggle Fixed Position"
-msgstr "AktivÃ©r/deaktivÃ©r lÃ¥st position"
+msgstr "Aktivér/deaktivér låst position"
 
 #: config/strings.c:157
 msgid "Toggle Fixed Size"
-msgstr "AktivÃ©r/deaktivÃ©r lÃ¥st stÃ¸rrelse"
+msgstr "Aktivér/deaktivér låst størrelse"
 
 #: config/strings.c:158
 msgid "Toggle Never Focus"
-msgstr "AktivÃ©r/deaktivÃ©r fokuser aldrig"
+msgstr "Aktivér/deaktivér fokuser aldrig"
 
 #: config/strings.c:159
 msgid "Toggle Click to Focus"
-msgstr "AktivÃ©r/deaktivÃ©r klik for at fokusere"
+msgstr "Aktivér/deaktivér klik for at fokusere"
 
 #: config/strings.c:160
 msgid "Toggle Never Use Area"
-msgstr "AktivÃ©r/deaktivÃ©r brug aldrig omrÃ¥de"
+msgstr "Aktivér/deaktivér brug aldrig område"
 
 #: config/strings.c:161
 msgid "Toggle Button Grabs"
-msgstr "AktivÃ©r/deaktivÃ©r museknap 'grabs'"
+msgstr "Aktivér/deaktivér museknap 'grabs'"
 
 #: config/strings.c:162
 msgid "Toggle Autoshade"
-msgstr "AktivÃ©r/deaktivÃ©r automatisk oprulning"
+msgstr "Aktivér/deaktivér automatisk oprulning"
 
 #: config/strings.c:165
 msgid "Default"
@@ -2500,59 +2500,59 @@ msgstr "Fokuseret uigennemsigtighed 100%"
 
 #: config/strings.c:172
 msgid "Focused opacity follows unfocused"
-msgstr "Fokuseret uigennemsigtighed fÃ¸lger ufokuseret"
+msgstr "Fokuseret uigennemsigtighed følger ufokuseret"
 
 #: config/strings.c:173
 msgid "Toggle Fading"
-msgstr "AktivÃ©r/deaktivÃ©r fading"
+msgstr "Aktivér/deaktivér fading"
 
 #: config/strings.c:174
 msgid "Toggle Shadows"
-msgstr "AktivÃ©r/deaktivÃ©r skygger"
+msgstr "Aktivér/deaktivér skygger"
 
 #: config/strings.c:177
 msgid "Max Size Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r max stÃ¸rrelse"
+msgstr "Aktivér/deaktivér max størrelse"
 
 #: config/strings.c:178
 msgid "Available Max Size Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r til rÃ¥dighed vÃ¦rende stÃ¸rrelse"
+msgstr "Aktivér/deaktivér til rådighed værende størrelse"
 
 #: config/strings.c:179
 msgid "Absolute Max Size Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r max stÃ¸rrelse"
+msgstr "Aktivér/deaktivér max størrelse"
 
 #: config/strings.c:180
 msgid "Span Xinerama Screens"
-msgstr "SpÃ¦nd over Xinerama skÃ¦rmene"
+msgstr "Spænd over Xinerama skærmene"
 
 #: config/strings.c:181
 msgid "Max Height Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r max hÃ¸jde"
+msgstr "Aktivér/deaktivér max højde"
 
 #: config/strings.c:182
 msgid "Available Max Height Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r til rÃ¥dighed vÃ¦rende hÃ¸jde"
+msgstr "Aktivér/deaktivér til rådighed værende højde"
 
 #: config/strings.c:183
 msgid "Absolute Max Height Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r maksimal hÃ¸jde"
+msgstr "Aktivér/deaktivér maksimal højde"
 
 #: config/strings.c:184
 msgid "Max Width Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r max bredde"
+msgstr "Aktivér/deaktivér max bredde"
 
 #: config/strings.c:185
 msgid "Available Max Width Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r til rÃ¥dighed vÃ¦rende bredde"
+msgstr "Aktivér/deaktivér til rådighed værende bredde"
 
 #: config/strings.c:186
 msgid "Absolute Max Width Toggle"
-msgstr "AktivÃ©r/deaktivÃ©r max bredde"
+msgstr "Aktivér/deaktivér max bredde"
 
 #: config/strings.c:187
 msgid "Fullscreen/Normal"
-msgstr "FuldskÃ¦rm/Normal"
+msgstr "Fuldskærm/Normal"
 
 #: config/strings.c:188
 msgid "Zoom/Unzoom"

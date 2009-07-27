@@ -1,6 +1,6 @@
 # This is the Dutch locale definition for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
-# Dé‘žis Riedijk <ried@si.tn.tudelft.nl>, 1999-2000.
+# Dènis Riedijk <ried@si.tn.tudelft.nl>, 1999-2000.
 #
 msgid ""
 msgstr ""
@@ -8,10 +8,10 @@ msgstr ""
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2009-06-11 21:37+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
-"Last-Translator: Dé‘žis Riedijk <ried@si.tn.tudelft.nl>\n"
+"Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/about.c:35
