@@ -204,21 +204,11 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                             xpm_parse_done();
                             return 0;
                          }
-                       if ((w > IMLIB_MAX_DIM) || (w < 1))
+                       if (!IMAGE_DIMENSIONS_OK(w, h))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: Image width > %d or < 1 pixels for file\n",
-                                    IMLIB_MAX_DIM);
-                            free(line);
-                            fclose(f);
-                            xpm_parse_done();
-                            return 0;
-                         }
-                       if ((h > IMLIB_MAX_DIM) || (h < 1))
-                         {
-                            fprintf(stderr,
-                                    "IMLIB ERROR: Image height > %d or < 1 pixels for file\n",
-                                    IMLIB_MAX_DIM);
+                                    "IMLIB ERROR: Invalid image dimension: %dx%d\n",
+                                    w, h);
                             free(line);
                             fclose(f);
                             xpm_parse_done();

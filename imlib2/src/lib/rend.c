@@ -15,8 +15,9 @@
 #include "rend.h"
 #include "rotate.h"
 
-/* Maximum pixmap dimension (65535) */
-#define X_MAX_DIM ((2 << 16) - 1)
+/* The maximum pixmap dimension is 65535. */
+/* However, for now, use 46340 (46340^2 < 2^31) to avoid buffer overflow issues. */
+#define X_MAX_DIM 46340
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16

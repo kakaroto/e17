@@ -103,7 +103,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    im->w = w;
    im->h = h;
-   if ((w < 1) || (h < 1) || (w > IMLIB_MAX_DIM) || (h > IMLIB_MAX_DIM))
+   if (!IMAGE_DIMENSIONS_OK(w, h))
      {
 	fclose(f);
 	return 0;

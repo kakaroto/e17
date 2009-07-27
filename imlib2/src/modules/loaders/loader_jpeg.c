@@ -76,7 +76,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      {
         im->w = w = cinfo.output_width;
         im->h = h = cinfo.output_height;
-	if ((w < 1) || (h < 1) || (w > IMLIB_MAX_DIM) || (h > IMLIB_MAX_DIM))
+	if (!IMAGE_DIMENSIONS_OK(w, h))
 	  {
              im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
@@ -96,7 +96,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         im->h = h = cinfo.output_height;
 
         if ((cinfo.rec_outbuf_height > 16) || (cinfo.output_components <= 0) ||
-            (w < 1) || (h < 1) || (w > IMLIB_MAX_DIM) || (h > IMLIB_MAX_DIM))
+            !IMAGE_DIMENSIONS_OK(w, h))
           {
              im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);

@@ -188,4 +188,8 @@ __hidden void              __imlib_SaveImage(ImlibImage *im, const char *file,
 # define SET_FLAG(flags, f) ((flags) |= (f))
 # define UNSET_FLAG(flags, f) ((flags) &= (~f))
 
+# define IMAGE_DIMENSIONS_OK(w, h) \
+   ( ((w) > 0) && ((h) > 0) && \
+     ((unsigned long long)(w) * (unsigned long long)(w) <= (1ULL << 31) - 1) )
+
 #endif
