@@ -29,8 +29,7 @@ static void cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg);
 static void
 e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
 {
-  if(sh->sender)
-    free(sh->sender);
+  if (sh->sender) free(sh->sender);
   free(sh);
 }
 
@@ -59,11 +58,12 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
   if (dbus_error_is_set(err))
     goto error;
 
-  if (!unique_name)
-    goto error;
+//  if (!unique_name)
+//    goto error;
 
-  free(sh->sender);
-  sh->sender = strdup(unique_name);
+   if (sh->sender) free(sh->sender);
+   sh->sender = NULL;
+   if (unique_name) sh->sender = strdup(unique_name);
 
   return;
 
@@ -177,10 +177,10 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   SET_STRING(member);
 #undef SET_STRING
 
-  if(sender)
-	  sh->sender = strdup(sender);
-  else
-	  sh->sender = NULL;	
+   if (sender)
+     sh->sender = strdup(sender);
+   else
+     sh->sender = NULL;	
 
   sh->cb_signal = cb_signal;
   sh->data = data;

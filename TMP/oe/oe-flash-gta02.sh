@@ -1,5 +1,6 @@
 #!/bin/sh
-DISTRO="openmoko"
+#DISTRO="openmoko"
+DISTRO="angstrom"
 MACHINE="om-gta02"
 # 2.6.28 - bug bug bugs! panic!
 KERNEL="./t-$MACHINE.$DISTRO/deploy/glibc/images/om-gta02/uImage-om-gta02-latest.bin"
