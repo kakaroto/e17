@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: eon
+Description: Enlightenment Foundations Library based toolkit.
+Requires: @requirements@
+Version: @VERSION@
+Libs: -L${libdir} -leon
+Cflags: -I${includedir} -I${includedir}/eon

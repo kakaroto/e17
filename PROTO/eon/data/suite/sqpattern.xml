@@ -1,0 +1,5 @@
+<eon w="100%" h="100%">
+	<sqpattern x="0%" y="0%" color1="white" color2="red" id="sq01" coordspace="1"/>
+	<rect x="0" y="0" w="100%" h="100%" color="white"/>
+	<rect x="25%" y="25%" w="50%" h="50%" color="0x11111111" fill="#sq01"/>
+</eon>

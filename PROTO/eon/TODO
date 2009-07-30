@@ -1,0 +1,42 @@
+Legend:
+ST = Short Term
+MT = Mid Term
+LT = Long Term
+
+Bin
+===
++ Create an Eon builder (LT)
++ Add engine specific options to the command line (ST)
+
+Paint
+=====
++ Add a shm loader. Use ESHM for that and the new enesim_surface_new_allocator_from (ST)
+
+Core
+====
++ Move etch into its own thread. Create a fifo to receive events from etch and then select() it on main thread. Then etk2 should
+  set the attributes and only the final version should be displayed to avoid delayed rendering. (MT)
++ Do some research on changing from xml to another format, maybe using yacc/lex (LT)
+
+Shapes
+======
++ Add an Ellipse shape (ST)
+
+Parser
+======
++ Clean the exml parser (ST)
++ Remove the exml parser in favor of the expat parser (MT)
+
+Widgets
+=======
++ Implement the basic widgetery (MT)
++ Implement fancy types, like a graphviz type (LT)
++ Implement a console widget (LT)
+
+Enignes
+=======
++ Make the resize flag configurable (ST)
+
+Scripting
+=========
++ Add scripting support (LT)
