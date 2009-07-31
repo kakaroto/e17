@@ -16,6 +16,7 @@ files_DATA = module.desktop \
 	     e-module-config.edj
 
 EXTRA_DIST = $(files_DATA) \
+	     module.desktop.in \
 	     module_icon.png \
 	     e-module-config.edc
 

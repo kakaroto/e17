@@ -14,19 +14,15 @@ files_DATA = \
 	   e-module-efm_pathbar.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/home.png \
 	     images/bt_base1.png \
 	     images/bt_base2.png \
 	     images/bt_hilight.png \
 	     images/bt_shine.png \
-	     images/bt_dis_base.png \
-	     images/bt_dis_shine.png \
-	     images/bt_dis_hilight.png \
-	     images/back.png \
-	     images/forward.png \
-	     images/up.png \
-	     images/favorites.png \
-	     images/refresh.png
+	     images/left_arrow.png \
+	     images/module.png \
+	     images/right_arrow.png \
+	     module.desktop.in \
+	     e-module-efm_pathbar.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

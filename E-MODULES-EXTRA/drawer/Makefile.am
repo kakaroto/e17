@@ -12,6 +12,7 @@ filesdir =  $(datadir)
 files_DATA = module.desktop
 
 EXTRA_DIST = $(files_DATA) \
+	     module.desktop.in \
 	     data/images/module_icon.png \
 	     drawer.pc
 

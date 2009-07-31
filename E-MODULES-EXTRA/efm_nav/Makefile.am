@@ -14,6 +14,8 @@ files_DATA = \
 	   e-module-efm_nav.edj
 
 EXTRA_DIST = $(files_DATA) \
+	     e-module-efm_nav.edc \
+	     module.desktop.in \
 	     images/home.png \
 	     images/bt_base1.png \
 	     images/bt_base2.png \

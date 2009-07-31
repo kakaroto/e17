@@ -9,7 +9,8 @@ EDJE_FLAGS = -v \
 filesdir = $(datadir)
 files_DATA = e-module-alarm.edj module.desktop alarm.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-alarm.spec \
+EXTRA_DIST = $(files_DATA) module.desktop.in \
+	     e_modules-alarm.spec \
 	     alarm.edc \
 	     images/alarm_enabled.png \
 	     images/alarm_disabled.png \

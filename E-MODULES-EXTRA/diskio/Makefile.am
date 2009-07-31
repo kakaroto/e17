@@ -14,7 +14,11 @@ files_DATA = module.desktop \
 	     e-module-diskio.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/module_icon.png
+	     module.desktop.in \
+	     e-module-diskio.edc \
+	     images/module_icon.png \
+	     images/module_icon_r.png \
+	     images/module_icon_w.png
 
 ACLOCAL_AMFLAGS = -I m4
 

@@ -14,7 +14,15 @@ files_DATA = \
 	   e-module-efm_path.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     entry.png
+	     module.desktop.in \
+	     e-module-efm_path.edc \
+	     entry.png \
+	     images/bt_base1.png \
+	     images/bt_base2.png \
+	     images/bt_hilight.png \
+	     images/bt_shine.png \
+	     images/clear.png \
+	     images/go.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
