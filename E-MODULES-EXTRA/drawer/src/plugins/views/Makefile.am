@@ -23,7 +23,7 @@ grid_la_LIBADD = @E_LIBS@
 grid_la_LDFLAGS = -module -avoid-version
 grid_la_DEPENDENCIES = $(top_builddir)/config.h
 
-EXTRA_DIST = list_la_DATA grid_la_DATA
+EXTRA_DIST = $(list_la_DATA) $(grid_la_DATA)
 
 clean-local:
 	rm -rf *~

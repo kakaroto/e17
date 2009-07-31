@@ -47,7 +47,7 @@ if BUILD_XPIXMAP
 winlist_la_LIBADD += @XPIXMAP_LIBS@
 endif
 
-EXTRA_DIST = launcher_la_DATA directory_watcher_la_DATA history_la_DATA winlist_la_DATA
+EXTRA_DIST = $(launcher_la_DATA) $(directory_watcher_la_DATA) $(history_la_DATA) $(winlist_la_DATA)
 
 clean-local:
 	rm -rf *~
