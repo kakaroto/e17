@@ -8,4 +8,4 @@ e17_titlebar.png \
 FancyEgg.png \
 emu1.png
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) EmuEggTexture2.xcf

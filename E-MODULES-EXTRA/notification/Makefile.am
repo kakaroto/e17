@@ -16,10 +16,9 @@ files_DATA = module.desktop \
 	     e-module-notification.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/e17_dialog_watermark.png \
-	     images/e17_menu_bg_border.png \
-	     images/module_icon.png \
-	     images/close_btn.png
+	     module.desktop.in \
+	     e-module-notification.edc \
+	     $(wildcard *.png)
 
 ACLOCAL_AMFLAGS = -I m4
 

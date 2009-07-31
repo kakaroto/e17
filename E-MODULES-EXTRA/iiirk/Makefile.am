@@ -16,7 +16,9 @@ files_DATA = module.desktop \
 	     e-module-iiirk.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     images/module_icon.png
+	     images/module_icon.png \
+	     e-module-iiirk.edc \
+	     module.desktop.in
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

@@ -15,8 +15,9 @@ files_DATA = module.desktop \
 	     e-module-exalt.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     module_icon.png \
-	     e-module-exalt.edc
+	     $(wildcard *.png) \
+	     e-module-exalt.edc \
+	     module.desktop.in
 
 e-module-exalt.edj: $(EXTRA_DIST)
 

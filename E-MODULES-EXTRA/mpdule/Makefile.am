@@ -12,7 +12,8 @@ files_DATA = e-module-mpdule.edj \
 
 EXTRA_DIST = $(files_DATA) \
 			e_modules-mpdule.spec \
-			mpdule.edc
+			mpdule.edc \
+			$(wildcard *.png)
 
 CONFIG_CLEAN_FILES = e_modules-mpdule.spec mpdule.edj
 

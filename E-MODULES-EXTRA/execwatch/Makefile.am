@@ -13,7 +13,7 @@ execwatch.edj
 
 EXTRA_DIST = $(files_DATA) \
 execwatch.edc \
-execwatch.png \
+$(wildcard *.png) \
 e_modules-execwatch.spec
 
 # data files for the module
