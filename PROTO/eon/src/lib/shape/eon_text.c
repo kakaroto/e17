@@ -14,7 +14,6 @@
 struct _Eon_Text_Private
 {
 	char *text;
-	void *engine_data;
 };
 
 static void _update_geometry(Eon_Text *p)

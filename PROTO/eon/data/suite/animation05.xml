@@ -11,5 +11,5 @@
 	<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
 	<!-- rectangles -->
 	<!--<rect id="r01" x="10%" y="10%" w="80%" h="80%" fill="#hs01"/>-->
-	<circle id="sh01" x="50%" y="50%" radius="100" fill="#hs01"/>
+	<circle id="sh01" x="50%" y="50%" radius="100" fill_paint="#hs01" stroke_width="5" stroke_color="black"/>
 </eon>

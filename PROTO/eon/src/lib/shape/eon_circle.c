@@ -17,7 +17,6 @@ struct _Eon_Circle_Private
 	Eon_Coord x;
 	Eon_Coord y;
 	int radius;
-	void *engine_data;
 };
 
 static void _update_geometry(Eon_Circle *p)

@@ -13,13 +13,22 @@
 #define EON_SHAPE_COLOR_CHANGED "colorChanged"
 #define EON_SHAPE_ROP_CHANGED "ropChanged"
 #define EON_SHAPE_FILTER_CHANGED "filterChanged"
-#define EON_SHAPE_FILL_CHANGED "fillChanged"
+#define EON_SHAPE_FILL_COLOR_CHANGED "fill_colorChanged"
+#define EON_SHAPE_FILL_PAINT_CHANGED "fill_paintChanged"
+#define EON_SHAPE_STROKE_COLOR_CHANGED "stroke_colorChanged"
+#define EON_SHAPE_STROKE_PAINT_CHANGED "stroke_paintChanged"
+#define EON_SHAPE_STROKE_WIDTH_CHANGED "stroke_widthChanged"
 /*============================================================================*
  *                               Properties                                   *
  *============================================================================*/
 extern Ekeko_Property_Id EON_SHAPE_COLOR;
 extern Ekeko_Property_Id EON_SHAPE_ROP;
 extern Ekeko_Property_Id EON_SHAPE_FILTER;
+extern Ekeko_Property_Id EON_SHAPE_FILL_COLOR;
+extern Ekeko_Property_Id EON_SHAPE_FILL_PAINT;
+extern Ekeko_Property_Id EON_SHAPE_STROKE_COLOR;
+extern Ekeko_Property_Id EON_SHAPE_STROKE_PAINT;
+extern Ekeko_Property_Id EON_SHAPE_STROKE_WIDTH;
 /*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
@@ -43,8 +52,15 @@ EAPI Enesim_Rop eon_shape_rop_get(Eon_Shape *s);
 EAPI void eon_shape_filter_set(Eon_Shape *s, Eon_Filter *filter);
 EAPI Eon_Filter * eon_shape_filter_get(Eon_Shape *s);
 
-EAPI void eon_shape_fill_set(Eon_Shape *s, Eon_Paint *paint);
-EAPI Eon_Paint * eon_shape_fill_get(Eon_Shape *s);
+EAPI void eon_shape_fill_paint_set(Eon_Shape *s, Eon_Paint *paint);
+EAPI Eon_Paint * eon_shape_fill_paint_get(Eon_Shape *s);
+EAPI void eon_shape_fill_color_set(Eon_Shape *s, Eon_Color color);
+EAPI Eon_Color eon_shape_fill_color_get(Eon_Shape *s);
+
+EAPI void eon_shape_stroke_paint_set(Eon_Shape *s, Eon_Paint *paint);
+EAPI Eon_Paint * eon_shape_stroke_paint_get(Eon_Shape *s);
+EAPI void eon_shape_stroke_color_set(Eon_Shape *s, Eon_Color color);
+EAPI Eon_Color eon_shape_stroke_color_get(Eon_Shape *s);
 
 #define eon_shape_show(s) ekeko_renderable_show(EKEKO_RENDERABLE((s)))
 #define eon_shape_hide(s) ekeko_renderable_hide(EKEKO_RENDERABLE((s)))

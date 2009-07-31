@@ -13,7 +13,6 @@ struct _Eon_Polygon_Private
 	int xmin, xmax, ymin, ymax; /* bounding box */
 	/* our list of points, an engine might want to have its own */
 	Eina_List *points;
-	void *engine_data;
 };
 
 typedef struct _Polygon_Coord

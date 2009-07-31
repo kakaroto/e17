@@ -16,12 +16,22 @@ struct _Eon_Shape_Private
 {
 	void *context;
 	Eon_Color color; /* FIXME the color should be double state? */
-	Eon_Paint *fill;
 	Eon_Filter *filter;
 	Enesim_Rop rop;
  	/* TODO we'll only support clipping to a rect */
 	Eina_Rectangle *clip;
 	/* TODO add the engine data here instead of on every shape subclass */
+	struct
+	{
+		Eon_Paint *paint;
+		Eon_Color color;
+		float width;
+	} stroke;
+	struct
+	{
+		Eon_Paint *paint;
+		Eon_Color color;
+	} fill;
 	void *engine_data;
 };
 
@@ -66,14 +76,15 @@ static void _render(Ekeko_Renderable *r, Eina_Rectangle *rect)
 	/* FIXME by now we are avoding the case where the image isnt loaded yet, we should
 	 * find a good way to handle that
 	 */
-	if (prv->fill && !prv->fill->setup(eng, eon_paint_engine_data_get(prv->fill), s))
+	if (prv->fill.paint && !prv->fill.paint->setup(eng, eon_paint_engine_data_get(prv->fill.paint), s))
 		return;
-
+	if (prv->stroke.paint && !prv->stroke.paint->setup(eng, eon_paint_engine_data_get(prv->stroke.paint), s))
+		return;
 	/* Call the shape's render function */
 	s->render(s, eng, prv->engine_data, surface, rect);
 }
 
-static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _ext_paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	/* mark this shape a changed */
 	eon_shape_change((Eon_Shape *)data);
@@ -96,7 +107,7 @@ static void _filter_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	printf("CALLEEEEEEEEEEEEE\n");
 }
 
-static void _fill_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+static void _paint_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Shape *s = (Eon_Shape *)o;
@@ -109,13 +120,13 @@ static void _fill_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	curr = em->curr->value.object;
 	if (prev)
 	{
-		ekeko_event_listener_remove(prev, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, o);
+		ekeko_event_listener_remove(prev, EKEKO_EVENT_PROP_MODIFY, _ext_paint_change, EINA_FALSE, o);
 		/* TODO check that the prev paint doesnt have any other reference, if so
 		 * delete it
 		 */
 	}
 	if (curr)
-		ekeko_event_listener_add(curr, EKEKO_EVENT_PROP_MODIFY, _paint_change, EINA_FALSE, o);
+		ekeko_event_listener_add(curr, EKEKO_EVENT_PROP_MODIFY, _ext_paint_change, EINA_FALSE, o);
 
 	eon_shape_change(s);
 }
@@ -135,7 +146,8 @@ static void _ctor(void *instance)
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_COLOR_CHANGED, _color_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_ROP_CHANGED, _rop_change, EINA_FALSE, NULL);
 	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_FILTER_CHANGED, _filter_change, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_FILL_CHANGED, _fill_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_FILL_PAINT_CHANGED, _paint_change, EINA_FALSE, NULL);
+	ekeko_event_listener_add((Ekeko_Object *)s, EON_SHAPE_STROKE_PAINT_CHANGED, _paint_change, EINA_FALSE, NULL);
 }
 
 static void _dtor(void *shape)
@@ -205,8 +217,12 @@ Eina_Bool eon_shape_appendable(void *instance, void *child)
  *============================================================================*/
 Ekeko_Property_Id EON_SHAPE_COLOR;
 Ekeko_Property_Id EON_SHAPE_ROP;
-Ekeko_Property_Id EON_SHAPE_FILL;
 Ekeko_Property_Id EON_SHAPE_FILTER;
+Ekeko_Property_Id EON_SHAPE_FILL_COLOR;
+Ekeko_Property_Id EON_SHAPE_FILL_PAINT;
+Ekeko_Property_Id EON_SHAPE_STROKE_COLOR;
+Ekeko_Property_Id EON_SHAPE_STROKE_PAINT;
+Ekeko_Property_Id EON_SHAPE_STROKE_WIDTH;
 
 EAPI Ekeko_Type *eon_shape_type_get(void)
 {
@@ -220,7 +236,11 @@ EAPI Ekeko_Type *eon_shape_type_get(void)
 		EON_SHAPE_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, color));
 		EON_SHAPE_ROP = EKEKO_TYPE_PROP_SINGLE_ADD(type, "rop", EKEKO_PROPERTY_INT, OFFSET(Eon_Shape_Private, rop));
 		EON_SHAPE_FILTER = EKEKO_TYPE_PROP_SINGLE_ADD(type, "filter", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, filter));
-		EON_SHAPE_FILL = EKEKO_TYPE_PROP_SINGLE_ADD(type, "fill", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, fill));
+		EON_SHAPE_FILL_PAINT = EKEKO_TYPE_PROP_SINGLE_ADD(type, "fill_paint", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, fill.paint));
+		EON_SHAPE_FILL_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "fill_color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, fill.color));
+		EON_SHAPE_STROKE_PAINT = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_paint", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, stroke.paint));
+		EON_SHAPE_STROKE_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, stroke.color));
+		EON_SHAPE_STROKE_WIDTH = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_color", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Shape_Private, stroke.width));
 	}
 
 	return type;
@@ -274,20 +294,84 @@ EAPI Eon_Filter * eon_shape_filter_get(Eon_Shape *s)
 	return prv->filter;
 }
 
-EAPI void eon_shape_fill_set(Eon_Shape *s, Eon_Paint *paint)
+EAPI void eon_shape_fill_paint_set(Eon_Shape *s, Eon_Paint *paint)
 {
 	Ekeko_Value v;
 
 	ekeko_value_object_from(&v, (Ekeko_Object *)paint);
-	ekeko_object_property_value_set((Ekeko_Object *)s, "fill", &v);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "fill_paint", &v);
 }
 
-EAPI Eon_Paint * eon_shape_fill_get(Eon_Shape *s)
+EAPI Eon_Paint * eon_shape_fill_paint_get(Eon_Shape *s)
 {
 	Eon_Shape_Private *prv;
 
 	prv = PRIVATE(s);
-	return prv->fill;
+	return prv->fill.paint;
+}
+
+EAPI void eon_shape_fill_color_set(Eon_Shape *s, Eon_Color color)
+{
+	Ekeko_Value v;
+
+	eon_value_color_from(&v, color);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "fill_color", &v);
+}
+
+EAPI Eon_Color eon_shape_fill_color_get(Eon_Shape *s)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->fill.color;
+}
+
+EAPI void eon_shape_stroke_paint_set(Eon_Shape *s, Eon_Paint *paint)
+{
+	Ekeko_Value v;
+
+	ekeko_value_object_from(&v, (Ekeko_Object *)paint);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "stroke_paint", &v);
+}
+
+EAPI Eon_Paint * eon_shape_stroke_paint_get(Eon_Shape *s)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->stroke.paint;
+}
+
+EAPI void eon_shape_stroke_color_set(Eon_Shape *s, Eon_Color color)
+{
+	Ekeko_Value v;
+
+	eon_value_color_from(&v, color);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "stroke_color", &v);
+}
+
+EAPI Eon_Color eon_shape_stroke_color_get(Eon_Shape *s)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->stroke.color;
+}
+
+EAPI void eon_shape_stroke_width_set(Eon_Shape *s, float width)
+{
+	Ekeko_Value v;
+
+	ekeko_value_float_from(&v, width);
+	ekeko_object_property_value_set((Ekeko_Object *)s, "stroke_width", &v);
+}
+
+EAPI float eon_shape_stroke_width_get(Eon_Shape *s)
+{
+	Eon_Shape_Private *prv;
+
+	prv = PRIVATE(s);
+	return prv->stroke.width;
 }
 
 #if 0

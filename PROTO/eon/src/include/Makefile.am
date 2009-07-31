@@ -13,6 +13,7 @@ eon_coord.h \
 eon_color.h \
 eon_circle.h \
 eon_checker.h \
+eon_displace.h \
 eon_document.h \
 eon_engine.h \
 eon_external.h \
@@ -27,7 +28,10 @@ eon_script.h \
 eon_square.h \
 eon_transition.h \
 eon_shape.h \
-eon_value.h 
+eon_value.h \
+eon_widget.h \
+eon_button.h \
+eon_label.h 
 
 installed_headersdir = $(prefix)/include/eon
 installed_headers_DATA = $(EONHEADERS)

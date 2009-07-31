@@ -11,7 +11,6 @@ typedef struct _Eon_Neko
 	value ekeko;
 } Eon_Neko;
 
-
 static void * neko_init(void)
 {
 	Eon_Neko *en;

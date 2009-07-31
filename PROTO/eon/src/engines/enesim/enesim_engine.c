@@ -491,7 +491,7 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 	d->color = eon_shape_color_get(s);
 	d->dst = dst;
 	d->shape = s;
-	p = eon_shape_fill_get(s);
+	p = eon_shape_fill_paint_get(s);
 	/* color based */
 	if (!p)
 	{
@@ -507,7 +507,6 @@ static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 		d->cb = aliased_fill_cb;
 	}
 }
-
 /*============================================================================*
  *                                  Polygon                                   *
  *============================================================================*/
@@ -678,7 +677,7 @@ static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 	enesim_renderer_circle_center_set(c->r, x.final, y.final);
 	enesim_renderer_circle_radius_set(c->r, radius);
 	//enesim_renderer_rectangle_size_set(c->r, clip->w, clip->h);
-	p = eon_shape_fill_get((Eon_Shape *)c->c);
+	p = eon_shape_fill_paint_get((Eon_Shape *)c->c);
 	if (!p)
 	{
 		printf("The circle doesnt have a fill paint\n");
@@ -700,8 +699,8 @@ static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 #endif
 	//enesim_renderer_rectangle_draw_mode_set(c->r, ENESIM_RENDERER_DRAW_MODE_FILL);
 	enesim_renderer_circle_draw_mode_set(c->r, ENESIM_RENDERER_DRAW_MODE_FILL);
-	//enesim_renderer_circle_fill_color_set(c->r, 0xaa555555);
-	enesim_renderer_circle_outline_weight_set(c->r, 2.0);
+	//enesim_renderer_circle_outline_color_set(c->r, eon_shape_stroke_color_get((Eon_Shape *)c->c));
+	//enesim_renderer_circle_outline_weight_set(c->r, eon_shape_stroke_width_get((Eon_Shape *)c->c));
 	enesim_renderer_state_setup(c->r);
 	shape_renderer_draw((Eon_Shape *)c->c, cd, c->r, clip);
 #endif

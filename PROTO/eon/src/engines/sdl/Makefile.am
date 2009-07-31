@@ -13,4 +13,7 @@ noinst_LTLIBRARIES = libeon_engine_sdl.la
 libeon_engine_sdl_la_SOURCES = \
 sdl_engine.c
 
+libeon_engine_sdl_la_LIBADD = \
+@ECORE_SDL_LIBS@ @SDL_LIBS@
+
 endif

@@ -94,7 +94,7 @@ case "$host_os" in
     ;;
 esac
 
-requirements="eina-0 evas ecore ecore-file ecore-evas ecore-imf ecore-imf-evas edje"
+requirements="eina-0 ekeko ecore enesim emage etch"
 
 PKG_CHECK_MODULES(EINA, [eina-0 >= 0.0.1])
 PKG_CHECK_MODULES(EKEKO, [ekeko])
