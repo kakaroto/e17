@@ -31,6 +31,7 @@ typedef void (*Enesim_Renderer_State_Cleanup)(void *r);
 
 struct _Enesim_Renderer
 {
+	int  type_id;
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
@@ -42,14 +43,26 @@ struct _Enesim_Renderer
 	/* the origin of the paint */
 	int ox, oy;
 	/* a fixed point matrix */
-	int axx, axy, axz;
-	int ayx, ayy, ayz;
-	int azx, azy, azz;
+	struct {
+	    int axx, axy, axz;
+	    int ayx, ayy, ayz;
+	    int azx, azy, azz;
+	    unsigned char is_identity : 1;
+	    unsigned char is_affine : 1;
+	}  matrix;
 };
 
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
 #define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
 #define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
 #define ENESIM_RENDERER_STATE_CLEANUP(f) ((Enesim_Renderer_State_Cleanup)(f))
+
+/* some built-in renderer type identifiers */
+#define SURFACE_RENDERER (1)
+//#define FIGURE_RENDERER (2)
+#define IMAGE_RENDERER (3)
+#define RECTANGLE_RENDERER (1 << 8)
+#define CIRCLE_RENDERER (2 << 8)
+#define ELLIPSE_RENDERER (3 << 8)
 
 #endif

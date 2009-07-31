@@ -17,20 +17,24 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+/* TODO instead of colors we can also use renderers? for that we'll need the
+ * get_pixel() on each renderer
+ */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-typedef struct _Sqpattern
+typedef struct _Checker
 {
 	Enesim_Renderer base;
 	uint32_t color1;
 	uint32_t color2;
 	int sw;
 	int sh;
-} Sqpattern;
+} Checker;
 
-static void _span(Sqpattern *s, int x, int y, unsigned int len, uint32_t *dst)
+static void _span(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
+	Checker *s = (Checker *)r;
 	uint32_t color[2];
 
 	if (abs(((y - s->base.oy) / s->sh) % 2) == 0)
@@ -52,16 +56,16 @@ static void _span(Sqpattern *s, int x, int y, unsigned int len, uint32_t *dst)
 	}
 }
 
-static void _state_cleanup(Sqpattern *s)
+static void _state_cleanup(Checker *s)
 {
 }
 
-static Eina_Bool _state_setup(Sqpattern *s)
+static Eina_Bool _state_setup(Checker *s)
 {
 	return EINA_TRUE;
 }
 
-static void _free(Sqpattern *s)
+static void _free(Checker *s)
 {
 
 }
@@ -71,12 +75,12 @@ static void _free(Sqpattern *s)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Enesim_Renderer * enesim_renderer_sqpattern_new(void)
+EAPI Enesim_Renderer * enesim_renderer_checker_new(void)
 {
 	Enesim_Renderer *r;
-	Sqpattern *s;
+	Checker *s;
 
-	s = calloc(1, sizeof(Sqpattern));
+	s = calloc(1, sizeof(Checker));
 	r = (Enesim_Renderer *)s;
 
 	r->free = ENESIM_RENDERER_DELETE(_free);
@@ -87,23 +91,23 @@ EAPI Enesim_Renderer * enesim_renderer_sqpattern_new(void)
 	return r;
 }
 
-EAPI void enesim_renderer_sqpattern_color1_set(Enesim_Renderer *r, uint32_t color)
+EAPI void enesim_renderer_checker_color1_set(Enesim_Renderer *r, uint32_t color)
 {
-	Sqpattern *s = (Sqpattern *)r;
+	Checker *s = (Checker *)r;
 
 	s->color1 = color;
 }
 
-EAPI void enesim_renderer_sqpattern_color2_set(Enesim_Renderer *r, uint32_t color)
+EAPI void enesim_renderer_checker_color2_set(Enesim_Renderer *r, uint32_t color)
 {
-	Sqpattern *s = (Sqpattern *)r;
+	Checker *s = (Checker *)r;
 
 	s->color2 = color;
 }
 
-EAPI void enesim_renderer_sqpattern_size_set(Enesim_Renderer *r, int w, int h)
+EAPI void enesim_renderer_checker_size_set(Enesim_Renderer *r, int w, int h)
 {
-	Sqpattern *s = (Sqpattern *)r;
+	Checker *s = (Checker *)r;
 
 	s->sw = w;
 	s->sh = h;

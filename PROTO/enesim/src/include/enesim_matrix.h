@@ -29,6 +29,7 @@ typedef struct _Enesim_Quad
 	float x2, y2;
 	float x3, y3;
 } Enesim_Quad;
+
 EAPI Enesim_Matrix_Type enesim_matrix_type_get(Enesim_Matrix *m);
 EAPI void enesim_matrix_values_set(Enesim_Matrix *m, float a, float b, float c,
 		float d, float e, float f, float g, float h, float i);

@@ -101,8 +101,9 @@ static void _scale_good(Surface *s, int x, int y, unsigned int len, uint32_t *ds
 }
 #endif
 
-static void _scale_fast(Surface *s, int x, int y, unsigned int len, uint32_t *dst)
+static void _scale_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
+	Surface *s = (Surface *)r;
 	uint32_t sstride;
 	uint32_t *src;
 	Eina_Rectangle ir, dr;
@@ -129,8 +130,9 @@ static void _scale_fast(Surface *s, int x, int y, unsigned int len, uint32_t *ds
 	}
 }
 
-static void _noscale(Surface *s, int x, int y, unsigned int len, uint32_t *dst)
+static void _noscale(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
+	Surface *s = (Surface *)r;
 	uint32_t sstride;
 	uint32_t *src;
 

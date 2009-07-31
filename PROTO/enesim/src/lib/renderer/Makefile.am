@@ -10,10 +10,11 @@ noinst_LTLIBRARIES = libenesim_renderer.la
 
 libenesim_renderer_la_SOURCES = \
 surface.c \
-sqpattern.c \
+checker.c \
 hswitch.c \
 transition.c \
 rectangle.c \
 circle.c \
-ellipse.c
+ellipse.c \
+stripes.c
 
