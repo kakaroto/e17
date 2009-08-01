@@ -38,5 +38,6 @@ libelementaryxx_la_SOURCES = \
 	ElmListItem.cpp  \
 	ElmTable.cpp  \
 	ElmWidget.cpp  \
-	ElmLayout.cpp
+	ElmLayout.cpp  \
+	ElmHover.cpp
 
