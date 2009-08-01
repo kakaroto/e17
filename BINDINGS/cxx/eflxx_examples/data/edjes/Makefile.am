@@ -4,11 +4,12 @@ EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
 	-v \
 	-id $(top_srcdir)/data/images \
+	-id $(top_srcdir)/data/images/elementaryxx \
 	-fd $(top_srcdir)/data/fonts \
 	@EDJE_DEF@
 
 filesdir = $(pkgdatadir)/edjes
-files_DATA = simple.edj angstrom-bootmanager.edj angstrom-calibrate.edj angstrom-installer.edj esmart_text_entry_test.edj
+files_DATA = simple.edj angstrom-bootmanager.edj angstrom-calibrate.edj angstrom-installer.edj esmart_text_entry_test.edj elementaryxx-test.edj
 
 EXTRA_DIST = angstrom-background.edc \
 	     angstrom-bootmanager.edc \
@@ -17,7 +18,8 @@ EXTRA_DIST = angstrom-background.edc \
 	     e17-default-clock.edc \
 	     entrance-buttons.edc \
 	     simple.edc \
-	     esmart_text_entry_test.edc
+	     esmart_text_entry_test.edc \
+	     elementaryxx-test.edc
 
 simple.edj: Makefile simple.edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
@@ -38,6 +40,10 @@ angstrom-installer.edj: Makefile angstrom-installer.edc
 esmart_text_entry_test.edj: Makefile esmart_text_entry_test.edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/edjes/esmart_text_entry_test.edc
+
+elementaryxx-test.edj: Makefile elementaryxx-test.edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/edjes/elementaryxx-test.edc
 
 clean-local:
 	rm -f *.edj

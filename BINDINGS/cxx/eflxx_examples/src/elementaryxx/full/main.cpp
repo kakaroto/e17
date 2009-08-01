@@ -173,12 +173,6 @@ my_bt_5(void *data, Evas_Object *obj, void *event_info)
   win->show ();
 }
 
-static void testFunc (void *data, Evas_Object *obj, void *event_info)
-{
-  cout << "del" << endl;
-}
-
-
 static void
 my_bt_6(void *data, Evas_Object *obj, void *event_info)
 {
@@ -234,217 +228,212 @@ my_bt_6(void *data, Evas_Object *obj, void *event_info)
   win->show ();
 }
 
-#if 0
-
 static void
 my_bt_7(void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow win ("toggles", ELM_WIN_BASIC);
-  win.setTitle ("Toggles");
-  win.setAutoDel (true);
+  ElmWindow *win = ElmWindow::factory ("toggles", ELM_WIN_BASIC);
+  win->setTitle ("Toggles");
+  win->setAutoDel (true);
   
-  ElmBackground bg (win);
-  win.addObjectResize (bg);
-  bg.setWeightHintSize (1.0, 1.0);
-  bg.show ();
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (1.0, 1.0);
+  bg->show ();
   
-  ElmBox bx (win);
-  win.addObjectResize (bx);
-  bx.setWeightHintSize (1.0, 1.0);
-  bx.show ();
+  ElmBox *bx = ElmBox::factory (*win);
+  win->addObjectResize (*bx);
+  bx->setWeightHintSize (1.0, 1.0);
+  bx->show ();
   
-  ElmIcon ic (win);
-  ic.setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic.setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
-  ElmToggle tg (win);
-  tg.setWeightHintSize (1.0, 1.0);
-  tg.setAlignHintSize (-1.0, 0.5);
-  tg.setLabel ("Icon sized to toggle");
-  tg.setIcon (ic);
-  tg.setState (true);
-  tg.setLabelsStates ("Yes", "No");
-  bx.packEnd (tg);
-  tg.show ();
-  ic.show ();
+  ElmIcon *ic = ElmIcon::factory (*win);
+  ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
+  ElmToggle *tg = ElmToggle::factory (*win);
+  tg->setWeightHintSize (1.0, 1.0);
+  tg->setAlignHintSize (-1.0, 0.5);
+  tg->setLabel ("Icon sized to toggle");
+  tg->setIcon (*ic);
+  tg->setState (true);
+  tg->setLabelsStates ("Yes", "No");
+  bx->packEnd (*tg);
+  tg->show ();
+  ic->show ();
 
-  ElmIcon ic2 (win);
-  ic2.setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic2.setScale (false, false);
-  ElmToggle tg2 (win);
-  tg2.setLabel ("Icon no scale");
-  tg2.setIcon (ic2);
-  bx.packEnd (tg2);
-  tg2.show ();
-  ic2.show ();
+  ElmIcon *ic2 = ElmIcon::factory (*win);
+  ic2->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic2->setScale (false, false);
+  ElmToggle *tg2 = ElmToggle::factory (*win);
+  tg2->setLabel ("Icon no scale");
+  tg2->setIcon (*ic2);
+  bx->packEnd (*tg2);
+  tg2->show ();
+  ic2->show ();
   
-  ElmToggle tg3 (win);
-  tg3.setLabel ("Label Only");
-  tg3.setLabelsStates ("Big long fun times label", "Small long happy fun label");
-  bx.packEnd (tg3);
-  tg3.show ();
+  ElmToggle *tg3 = ElmToggle::factory (*win);
+  tg3->setLabel ("Label Only");
+  tg3->setLabelsStates ("Big long fun times label", "Small long happy fun label");
+  bx->packEnd (*tg3);
+  tg3->show ();
 
-  ElmIcon ic3 (win);
-  ic3.setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic3.setScale (false, false);
-  ElmToggle tg4 (win);
-  tg4.setIcon (ic3);
-  bx.packEnd (tg4);
-  tg4.show ();
-  ic3.show ();
+  ElmIcon *ic3 = ElmIcon::factory (*win);
+  ic3->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic3->setScale (false, false);
+  ElmToggle *tg4 = ElmToggle::factory (*win);
+  tg4->setIcon (*ic3);
+  bx->packEnd (*tg4);
+  tg4->show ();
+  ic3->show ();
 
-  win.show ();
+  win->show ();
 }
 
 static void
 my_bt_8(void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow win ("table", ELM_WIN_BASIC);
-  win.setTitle ("Table");
-  win.setAutoDel (true);
+  ElmWindow *win = ElmWindow::factory ("table", ELM_WIN_BASIC);
+  win->setTitle ("Table");
+  win->setAutoDel (true);
   
-  ElmBackground bg (win);
-  win.addObjectResize (bg);
-  bg.setWeightHintSize (1.0, 1.0);
-  bg.show ();
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (1.0, 1.0);
+  bg->show ();
 
-  ElmTable tb (win);
-  win.addObjectResize (tb);
-  tb.setWeightHintSize (1.0, 1.0);
-  tb.show ();
+  ElmTable *tb = ElmTable::factory (*win);
+  win->addObjectResize (*tb);
+  tb->setWeightHintSize (1.0, 1.0);
+  tb->show ();
   
-  ElmButton bt (win);
-  bt.setLabel ("Button 1");
-  bt.setWeightHintSize (1.0, 1.0);
-  bt.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt, Rect (0, 0, 1, 1));
-  bt.show ();
+  ElmButton *bt = ElmButton::factory (*win);
+  bt->setLabel ("Button 1");
+  bt->setWeightHintSize (1.0, 1.0);
+  bt->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt, Rect (0, 0, 1, 1));
+  bt->show ();
   
-  ElmButton bt2 (win);
-  bt2.setLabel ("Button 2");
-  bt2.setWeightHintSize (1.0, 1.0);
-  bt2.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt2, Rect (1, 0, 1, 1));
-  bt2.show ();
+  ElmButton *bt2 = ElmButton::factory (*win);
+  bt2->setLabel ("Button 2");
+  bt2->setWeightHintSize (1.0, 1.0);
+  bt2->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt2, Rect (1, 0, 1, 1));
+  bt2->show ();
 
-  ElmButton bt3 (win);
-  bt3.setLabel ("Button 3");
-  bt3.setWeightHintSize (1.0, 1.0);
-  bt3.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt3, Rect (2, 0, 1, 1));
-  bt3.show ();
+  ElmButton *bt3 = ElmButton::factory (*win);
+  bt3->setLabel ("Button 3");
+  bt3->setWeightHintSize (1.0, 1.0);
+  bt3->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt3, Rect (2, 0, 1, 1));
+  bt3->show ();
 
-  ElmButton bt4 (win);
-  bt4.setLabel ("Button 4");
-  bt4.setWeightHintSize (1.0, 1.0);
-  bt4.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt4, Rect (0, 1, 2, 1));
-  bt4.show ();
+  ElmButton *bt4 = ElmButton::factory (*win);
+  bt4->setLabel ("Button 4");
+  bt4->setWeightHintSize (1.0, 1.0);
+  bt4->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt4, Rect (0, 1, 2, 1));
+  bt4->show ();
 
-  ElmButton bt5 (win);
-  bt5.setLabel ("Button 5");
-  bt5.setWeightHintSize (1.0, 1.0);
-  bt5.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt5, Rect (2, 1, 1, 3));
-  bt5.show ();
+  ElmButton *bt5 = ElmButton::factory (*win);
+  bt5->setLabel ("Button 5");
+  bt5->setWeightHintSize (1.0, 1.0);
+  bt5->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt5, Rect (2, 1, 1, 3));
+  bt5->show ();
 
-  ElmButton bt6 (win);
-  bt6.setLabel ("Button 6");
-  bt6.setWeightHintSize (1.0, 1.0);
-  bt6.setAlignHintSize (-1.0, -1.0);
-  tb.pack (bt6, Rect (0, 2, 2, 2));
-  bt6.show ();
+  ElmButton *bt6 = ElmButton::factory (*win);
+  bt6->setLabel ("Button 6");
+  bt6->setWeightHintSize (1.0, 1.0);
+  bt6->setAlignHintSize (-1.0, -1.0);
+  tb->pack (*bt6, Rect (0, 2, 2, 2));
+  bt6->show ();
 
-  win.show ();
+  win->show ();
 }
 
 static void
 my_bt_9(void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow win ("clock", ELM_WIN_BASIC);
-  win.setTitle ("Clock");
-  win.setAutoDel (true);
+  ElmWindow *win = ElmWindow::factory ("clock", ELM_WIN_BASIC);
+  win->setTitle ("Clock");
+  win->setAutoDel (true);
   
-  ElmBackground bg (win);
-  win.addObjectResize (bg);
-  bg.setWeightHintSize (1.0, 1.0);
-  bg.show ();
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (1.0, 1.0);
+  bg->show ();
   
-  ElmBox bx (win);
-  win.addObjectResize (bx);
-  bx.setWeightHintSize (1.0, 1.0);
-  bx.show ();
+  ElmBox *bx = ElmBox::factory (*win);
+  win->addObjectResize (*bx);
+  bx->setWeightHintSize (1.0, 1.0);
+  bx->show ();
 
-  ElmClock ck (win);
-  bx.packEnd (ck);
-  ck.show ();
+  ElmClock *ck = ElmClock::factory (*win);
+  bx->packEnd (*ck);
+  ck->show ();
   
-  ElmClock ck2 (win);
-  ck2.setShowAmPm (true);
-  bx.packEnd (ck2);
-  ck2.show ();
+  ElmClock *ck2 = ElmClock::factory (*win);
+  ck2->setShowAmPm (true);
+  bx->packEnd (*ck2);
+  ck2->show ();
 
-  ElmClock ck3 (win);
-  ck3.setShowSeconds (true);
-  bx.packEnd (ck3);
-  ck3.show ();
+  ElmClock *ck3 = ElmClock::factory (*win);
+  ck3->setShowSeconds (true);
+  bx->packEnd (*ck3);
+  ck3->show ();
 
-  ElmClock ck4 (win);
-  ck4.setShowSeconds (true);
-  ck4.setShowAmPm (true);
-  bx.packEnd (ck4);
-  ck4.show ();
+  ElmClock *ck4 = ElmClock::factory (*win);
+  ck4->setShowSeconds (true);
+  ck4->setShowAmPm (true);
+  bx->packEnd (*ck4);
+  ck4->show ();
 
-  ElmClock ck5 (win);
-  ck5.setEdit (true);
-  ck5.setShowSeconds (true);
-  ck5.setShowAmPm (true);
-  ck5.setTime (10, 11, 12);
-  bx.packEnd (ck5);
-  ck5.show ();
+  ElmClock *ck5 = ElmClock::factory (*win);
+  ck5->setEdit (true);
+  ck5->setShowSeconds (true);
+  ck5->setShowAmPm (true);
+  ck5->setTime (10, 11, 12);
+  bx->packEnd (*ck5);
+  ck5->show ();
 
-  win.show ();
+  win->show ();
 }
-
-//// Port this below!!!!!!!!
 
 static void
 my_bt_10(void *data, Evas_Object *obj, void *event_info)
 {
-  ElmWindow win ("layout", ELM_WIN_BASIC);
-  win.setTitle ("Layout");
-  win.setAutoDel (true);
+  ElmWindow *win = ElmWindow::factory ("layout", ELM_WIN_BASIC);
+  win->setTitle ("Layout");
+  win->setAutoDel (true);
   
-  ElmBackground bg (win);
-  win.addObjectResize (bg);
-  bg.setWeightHintSize (1.0, 1.0);
-  bg.show ();
-  
-  // --> TODO
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (1.0, 1.0);
+  bg->show ();
 
-  ly = elm_layout_add(win);
-  snprintf(buf, sizeof(buf), "%s/objects/test.edj", PACKAGE_DATA_DIR);
-  elm_layout_file_set(ly, buf, "layout");
-  evas_object_size_hint_weight_set(ly, 1.0, 1.0);
-  elm_win_resize_object_add(win, ly);
-  evas_object_show(ly);
+  ElmLayout *ly = ElmLayout::factory (*win);
+  ly->setFile (searchEdjeFile ("elementaryxx-test.edj"), "layout");
+  ly->setWeightHintSize (1.0, 1.0);
+  win->addObjectResize (*ly);
+  ly->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Button 1");
-  elm_layout_content_set(ly, "element1", bt);
-  evas_object_show(bt);
+  ElmButton *bt = ElmButton::factory (*win);
+  bt->setLabel ("Button 1");
+  ly->setContent ("element1", *bt);
+  bt->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Button 2");
-  elm_layout_content_set(ly, "element2", bt);
-  evas_object_show(bt);
+  ElmButton *bt2 = ElmButton::factory (*win);
+  bt2->setLabel ("Button 2");
+  ly->setContent ("element2", *bt2);
+  bt2->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Button 3");
-  elm_layout_content_set(ly, "element3", bt);
-  evas_object_show(bt);
+  ElmButton *bt3 = ElmButton::factory (*win);
+  bt3->setLabel ("Button 3");
+  ly->setContent ("element3", *bt3);
+  bt3->show ();
 
-  evas_object_show(win);
+  win->show ();
 }
+
+#if 0
 
 static void
 my_hover_bt_1(void *data, Evas_Object *obj, void *event_info)
@@ -3548,11 +3537,11 @@ int main (int argc, char **argv)
   li->append("Box Vert", my_bt_4, NULL);
   li->append("Box Horiz", my_bt_5, NULL);
   li->append("Buttons", my_bt_6, NULL);
-  /*li->append("Toggles", my_bt_7, NULL);
+  li->append("Toggles", my_bt_7, NULL);
   li->append("Table", my_bt_8, NULL);
-  li->append("Clock", my_bt_9, NULL);*/
-  /*li.append("Layout", NULL, NULL, my_bt_10, NULL);
-  li.append("Hover", NULL, NULL, my_bt_11, NULL);
+  li->append("Clock", my_bt_9, NULL);
+  li->append("Layout", my_bt_10, NULL);
+  /*li.append("Hover", NULL, NULL, my_bt_11, NULL);
   li.append("Hover 2", NULL, NULL, my_bt_12, NULL);
   li.append("Entry", NULL, NULL, my_bt_13, NULL);
   li.append("Entry Scrolled", NULL, NULL, my_bt_14, NULL);
