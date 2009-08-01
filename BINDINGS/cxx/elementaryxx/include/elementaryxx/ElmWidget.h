@@ -5,6 +5,7 @@
 #include <string>
 
 /* EFL */
+#include <Elementary.h>
 
 /* ELFxx */
 #include <evasxx/EvasSmart.h>

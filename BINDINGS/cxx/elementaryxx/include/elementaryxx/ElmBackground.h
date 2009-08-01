@@ -4,9 +4,6 @@
 /* STL */
 #include <string>
 
-/* EFL */
-#include <Elementary.h>
-
 /* ELFxx */
 #include "ElmWidget.h"
 

@@ -27,6 +27,7 @@
 #include "ElmList.h"
 #include "ElmListItem.h"
 #include "ElmTable.h"
+#include "ElmLayout.h"
 
 #endif // ELEMENTARYXX_H
 
