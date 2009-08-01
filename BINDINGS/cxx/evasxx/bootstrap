@@ -49,6 +49,13 @@ test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
   DIE=1
 }
 
+(which xsltproc) < /dev/null > /dev/null 2>&1 || {
+  echo
+  echo "**Hint**: You must have \`xsltproc' installed"
+  echo "to generate TODO file. But it's save to continue."
+  NO_XSLTPROC=yes
+}
+
 if test "$DIE" -eq 1; then
   exit 1
 fi
@@ -68,6 +75,17 @@ automake --add-missing --foreign  $am_opt
 
 echo "Running autoconf ..."
 autoconf
+
+test -n "$NO_XSLTPROC" || {
+  echo "Running xsltproc..."
+  echo "\
+###
+### This TODO list is created from TODO.xml. Don't edit this file!
+###
+" > TODO
+
+  xsltproc gtodo-plain.xsl TODO.tasks >> TODO
+}
 
 echo "You could now exec ./configure --help to see available options"
 
