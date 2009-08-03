@@ -58,13 +58,13 @@
  </p>
 
 <h3>Introduction to the EFL [<a
-  href="http://homepages.pathfinder.gr/kazanaki/contrib/">HTML</a>] [<a
+  href="http://trac.enlightenment.org/e/wiki/IntroductionToEFL">HTML</a>] [<a
   href="http://homepages.pathfinder.gr/kazanaki/contrib/concepts.pdf">PDF</a>]</h3>
  <p>
   A high level overview of the EFL libraries. This document describes the
   general concepts behind EFL. If you are not sure why you should care, this
   document is for you. <br />
-  Written by <a href="mailto:kkapelonPLEASE@NOSPAMfreemail.gr">Kostis Kapelonisk</a>
+  Written by <a href="mailto:kkapelonPLEASE@NOSPAMfreemail.gr">Kostis Kapelonis</a>
  </p>
 
 <h3>The EFL Cookbook [<a
