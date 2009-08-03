@@ -1,3 +1,6 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
 rm -f config.cache
 
 AC_PREREQ(2.59)
@@ -78,7 +81,9 @@ AC_SUBST(x_libs)
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 e_modules-bling.spec
+module.desktop
 ], [
 ])
 

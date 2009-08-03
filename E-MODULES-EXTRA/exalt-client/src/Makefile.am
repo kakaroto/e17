@@ -1,11 +1,11 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I. \
-	 -I$(top_srcdir) \
-	 -I$(includedir) \
-	 -I$(includedir)/exalt \
-	 -I$(includedir)/exalt_dbus \
-	 @E_CFLAGS@
+	   -I$(top_srcdir) \
+	   -I$(includedir) \
+	   -I$(includedir)/exalt \
+	   -I$(includedir)/exalt_dbus \
+	   @E_CFLAGS@
 
 pkgdir = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES = module.la

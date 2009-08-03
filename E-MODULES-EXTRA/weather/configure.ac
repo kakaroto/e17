@@ -54,9 +54,11 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 images/Makefile
 po/Makefile.in
 e_modules-weather.spec
+module.desktop
 ], [
 ])
 

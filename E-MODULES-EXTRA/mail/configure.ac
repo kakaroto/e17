@@ -1,5 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
 AC_INIT(mail, 0.0.3, devilhorns@comcast.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
@@ -55,8 +58,10 @@ AM_CONDITIONAL(IMAP2, true)
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 po/Makefile.in
 e_modules-mail.spec
+module.desktop
 ], [
 ])
 

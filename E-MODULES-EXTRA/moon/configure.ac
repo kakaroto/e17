@@ -1,6 +1,6 @@
-#                                               -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.
 
+# get rid of that stupid cache mechanism
 rm -f config.cache
 
 AC_INIT(moon, 0.2.2, enlightenment-devel@lists.sourceforge.net)
@@ -60,11 +60,11 @@ AC_ARG_ENABLE(homedir-install,
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
 
-AC_CONFIG_FILES([Makefile
-                 e_modules-moon.spec
-                 data/Makefile
-                 data/themes/Makefile
-                 data/themes/images/Makefile
-                 po/Makefile.in
-                 src/Makefile])
-AC_OUTPUT
+AC_OUTPUT([
+Makefile
+e_modules-moon.spec
+po/Makefile.in
+src/Makefile
+module.desktop
+], [
+])

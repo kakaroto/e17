@@ -1,32 +1,27 @@
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
-		       missing module.desktop config.rpath mkinstalldirs \
-                       ABOUT-NLS
+		       missing module.desktop config.rpath mkinstalldirs
 
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	     -id $(top_srcdir)/images
 
-# data files for the module
-filesdir =  $(datadir)
+filesdir = $(datadir)
+files_DATA = module.desktop e-module-notification.edj
 
-files_DATA = module.desktop \
-	     e-module-notification.edj
-
-EXTRA_DIST = $(files_DATA) \
-	     module.desktop.in \
+EXTRA_DIST = module.desktop.in \
 	     e-module-notification.edc \
-	     $(wildcard *.png)
-
-ACLOCAL_AMFLAGS = -I m4
+	     e_modules-notification.spec.in \
+	     $(wildcard images/*.png)
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf e-module-notification.edj module.desktop *~
+	rm -rf e-module-notification.edj module.desktop e_modules-notification.spec *~
+
 uninstall:
-	 rm -rf $(DESTDIR)$(datadir)
+	rm -rf $(DESTDIR)$(datadir)
 

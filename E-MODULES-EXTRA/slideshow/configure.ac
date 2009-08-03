@@ -54,7 +54,9 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 e_modules-slideshow.spec
 po/Makefile.in
+module.desktop
 ], [
 ])

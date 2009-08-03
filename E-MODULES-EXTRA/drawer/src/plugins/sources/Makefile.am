@@ -1,9 +1,10 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I. \
-	 -I$(top_srcdir) \
-	 -I$(includedir) \
-	 @E_CFLAGS@
+	   -I$(top_srcdir) \
+	   -I$(includedir) \
+	   @E_CFLAGS@
+
 if BUILD_XPIXMAP
 INCLUDES += @XPIXMAP_CFLAGS@
 endif

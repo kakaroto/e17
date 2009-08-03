@@ -51,7 +51,6 @@ PKG_CHECK_MODULES(E_DBUS, edbus)
 PKG_CHECK_MODULES(E_HAL, ehal)
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -62,5 +61,6 @@ Makefile
 src/Makefile
 po/Makefile.in
 module.desktop
+e_modules-places.spec
 ], [
 ])

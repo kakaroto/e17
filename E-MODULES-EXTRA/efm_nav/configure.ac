@@ -1,3 +1,6 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
 rm -f config.cache
 
 AC_INIT(efm_nav, 0.0.1, devilhorns@devilhorns.us)

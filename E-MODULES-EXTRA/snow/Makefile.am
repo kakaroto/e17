@@ -1,31 +1,28 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = po
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop config.rpath mkinstalldirs
 
-MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = src po
 
-# data files for the module
+EDJE_FLAGS = -v \
+	     -id $(top_srcdir)/images
+
 filesdir = $(datadir)
-files_DATA = \
-tree.png \
-flake-s.png \
-flake-m.png \
-flake-l.png \
-module.desktop \
-e-module-snow.edj
+files_DATA = $(wildcard images/*.png) \
+	     module.desktop \
+	     e-module-snow.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-snow.spec
+EXTRA_DIST = module.desktop.in \
+	     e_modules-snow.spec.in \
+	     e-module-snow.edc \
+	     $(wildcard images/*.png)
 
-# the module .so file
-INCLUDES               = -I. \
-			 -I$(top_srcdir) \
-			 -I$(includedir) \
-			 @E_CFLAGS@
-pkgdir                 = $(datadir)/$(MODULE_ARCH)
-pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c \
-		         e_mod_main.h \
-		         e_mod_config.c \
-		         e_mod_config.h
-module_la_LIBADD       = @E_LIBS@
-module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+
+clean-local:
+	 rm -rf e-module-snow.edj module.desktop e_modules-snow.spec *~
+
+uninstall:
+	 rm -rf $(DESTDIR)$(datadir)

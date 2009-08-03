@@ -47,7 +47,6 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -55,8 +54,9 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
-images/Makefile
+src/Makefile
 po/Makefile.in
+module.desktop
 e_modules-forecasts.spec
 ], [
 ])

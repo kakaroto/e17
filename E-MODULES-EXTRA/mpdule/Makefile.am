@@ -1,40 +1,27 @@
-MAINTAINERCLEANFILES = Makefile.in
+ACLOCAL_AMFLAGS = -I m4
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop config.rpath mkinstalldirs
 
-SUBDIRS =
+SUBDIRS = src
 
 EDJE_FLAGS = -v \
--id $(top_srcdir)
+	     -id $(top_srcdir)/images
 
 filesdir = $(datadir)
-files_DATA = e-module-mpdule.edj \
-	     module.desktop \
-	     mpdule.edj
+files_DATA = e-module-mpdule.edj module.desktop mpdule.edj
 
-EXTRA_DIST = $(files_DATA) \
-			e_modules-mpdule.spec \
-			mpdule.edc \
-			$(wildcard *.png)
+EXTRA_DIST = module.desktop.in \
+	     e_modules-mpdule.spec.in \
+	     e-module-mpdule.edc \
+	     mpdule.edc \
+	     $(wildcard images/*.png)
 
-CONFIG_CLEAN_FILES = e_modules-mpdule.spec mpdule.edj
-
-# the module .so file
-INCLUDES               = -I. \
-			 -I$(top_srcdir) \
-			 -I$(includedir) \
-			 @E_CFLAGS@ @MPD_CFLAGS@
-
-pkgdir                 = $(datadir)/$(MODULE_ARCH)
-
-pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c \
-		         e_mod_main.h \
-			 e_mod_config.c
-module_la_LIBADD       = @E_LIBS@ @MPD_LIBS@
-module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mpdule.edj
-
-mpdule.edj:  mpdule.edc
+%.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf mpdule.edj *~
+	 rm -rf e-module-mpdule.edj mpdule.edj module.desktop e_modules-mpdule.spec *~
+
+uninstall:
+	 rm -rf $(DESTDIR)$(datadir)

@@ -59,6 +59,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 po/Makefile.in
+e_modules-configmenu.spec
 module.desktop
 ], [
 ])

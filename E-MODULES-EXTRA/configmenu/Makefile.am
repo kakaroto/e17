@@ -6,27 +6,21 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir) \
-	   -fd $(top_srcdir)
+	     -id $(top_srcdir)/images
 
-# data files for the module
-filesdir =  $(datadir)
+filesdir = $(datadir)
+files_DATA = module.desktop e-module-config.edj
 
-files_DATA = module.desktop \
-	     e-module-config.edj
-
-EXTRA_DIST = $(files_DATA) \
-	     module.desktop.in \
-	     module_icon.png \
-	     e-module-config.edc
-
-e-module-config.edj: $(EXTRA_DIST)
+EXTRA_DIST = module.desktop.in \
+	     e_modules-configmenu.spec.in \
+	     e-module-config.edc \
+	     images/module_icon.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf e-module-config.edj module.desktop *~
+	 rm -rf e-module-config.edj module.desktop e_modules-configmenu.spec *~
+
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)
-

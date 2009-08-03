@@ -1,42 +1,27 @@
-MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
+ACLOCAL_AMFLAGS = -I m4
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop config.rpath mkinstalldirs
+
+SUBDIRS = src
 
 EDJE_FLAGS = -v \
--id $(top_srcdir)
+	     -id $(top_srcdir)/images
 
-# data files for the module
-filesdir =  $(datadir)
+filesdir = $(datadir)
+files_DATA = module.desktop e-module-deskshow.edj deskshow.edj
 
-files_DATA = module.desktop \
-	     e-module-deskshow.edj \
-	     deskshow.edj
-
-EXTRA_DIST = $(files_DATA) \
+EXTRA_DIST = module.desktop.in \
+	     e_modules-deskshow.spec.in \
+	     e-module-deskshow.edc \
 	     deskshow.edc \
-	     e17_titlebar.png \
-	     e17_titlebar_glint1.png \
-	     e17_titlebar_glint2.png \
-	     e17_titlebar_glint3.png \
-	     e17_titlebar_shadow1.png \
-	     e17_titlebar_shadow2.png \
-	     module_icon.png
-
-# the module .so file
-INCLUDES = -I. \
-			  -I$(top_srcdir) \
-			  -I$(includedir) \
-			   @E_CFLAGS@
-
-pkgdir                 =  $(datadir)/$(MODULE_ARCH)
-pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c \
-		         e_mod_main.h
-
-module_la_LIBADD       = @E_LIBS@ -lm
-module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/deskshow.edj
+	     $(wildcard images/*.png)
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf deskshow.edj *~
+	 rm -rf e-module-deskshow.edj deskshow.edj module.desktop e_modules-deskshow.spec *~
+
+uninstall:
+	rm -rf $(DESTDIR)$(datadir)

@@ -6,6 +6,10 @@ SUBDIRS = src data po
 filesdir = $(datadir)
 files_DATA = module.desktop
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = module.desktop.in e_modules-news.spec.in
 
-pkgdir = $(datadir)/$(MODULE_ARCH)
+clean-local:
+	 rm -rf module.desktop e_modules-news.spec *~
+
+uninstall:
+	 rm -rf $(DESTDIR)$(datadir)

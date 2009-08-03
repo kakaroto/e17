@@ -6,26 +6,22 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)
+	     -id $(top_srcdir)/images
 
-# data files for the module
 filesdir =  $(datadir)
+files_DATA = module.desktop e-module-exalt.edj
 
-files_DATA = module.desktop \
-	     e-module-exalt.edj
-
-EXTRA_DIST = $(files_DATA) \
+EXTRA_DIST = module.desktop.in \
+	     e_modules-exalt-client.spec.in \
 	     $(wildcard *.png) \
 	     e-module-exalt.edc \
-	     module.desktop.in
-
-e-module-exalt.edj: $(EXTRA_DIST)
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj module.desktop *~
+	rm -rf e-module-exalt.edj module.desktop e_modules-exalt-client.spec *~
+
 uninstall:
-	 rm -rf $(DESTDIR)$(datadir)
+	rm -rf $(DESTDIR)$(datadir)
 

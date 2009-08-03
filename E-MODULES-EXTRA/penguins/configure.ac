@@ -54,7 +54,9 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 e_modules-penguins.spec
+module.desktop
 po/Makefile.in
 themes/Makefile
 themes/default/Makefile

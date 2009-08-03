@@ -11,13 +11,14 @@ filesdir =  $(datadir)
 
 files_DATA = module.desktop
 
-EXTRA_DIST = $(files_DATA) \
-	     module.desktop.in \
+EXTRA_DIST = module.desktop.in \
+	     e_modules-drawer.spec.in \
 	     data/images/module_icon.png \
-	     drawer.pc
+	     drawer.pc.in
 
 clean-local:
-	 rm -rf module.desktop *~
+	 rm -rf module.desktop e_modules-drawer.spec *~
+
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)
 

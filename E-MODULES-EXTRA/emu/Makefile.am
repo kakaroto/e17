@@ -1,14 +1,32 @@
 ACLOCAL_AMFLAGS = -I m4
-## Process this file with automake to produce Makefile.in
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop config.rpath mkinstalldirs
 
-SUBDIRS = src data po
+SUBDIRS = src images po
+
+EDJE_FLAGS = -v \
+	     -id $(top_srcdir)/data/images
+
+filesdir = $(datadir)
+files_DATA = e-module-emu.edj module.desktop
+
+EXTRA_DIST = module.desktop.in \
+	     EMU_PROTOCOL.txt \
+	     emu_client \
+	     e_modules-emu.spec.in \
+	     $(wildcard *.edc)
+
+e-module-emu.edj: Makefile module_edje.edc module_face.edc module_icon.edc
+		  $(EDJE_CC) $(EDJE_FLAGS) \
+		  $(top_srcdir)/src/modules/emu/module_edje.edc \
+		  e-module-emu.edj
 
 bindir = $(datadir)/bin
 bin_SCRIPTS = emu_client
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
-                       config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+clean-local:
+	 rm -rf e_modules-emu.spec e-module-emu.edj module.desktop *~
 
-EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN EMU_PROTOCOL.txt INSTALL NEWS README emu_client rebuildit
+uninstall:
+	rm -rf $(DESTDIR)$(datadir)

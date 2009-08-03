@@ -2,9 +2,9 @@
 
 images
 {
-        image: "images/alarm_enabled.png" COMP;
-        image: "images/alarm_disabled.png" COMP;
-        image: "images/alarm_snooze.png" COMP;
+        image: "alarm_enabled.png" COMP;
+        image: "alarm_disabled.png" COMP;
+        image: "alarm_snooze.png" COMP;
 }
 
 collections
@@ -44,7 +44,7 @@ collections
         		}
                         image
                         {
-                               normal: "images/alarm_disabled.png";
+                               normal: "alarm_disabled.png";
         		}
         		fill
         		{
@@ -68,7 +68,7 @@ collections
         		}
                         image
                         {
-                               normal: "images/alarm_enabled.png";
+                               normal: "alarm_enabled.png";
         		}
         		fill
         		{
@@ -320,7 +320,7 @@ collections
         		}
                         image
                         {
-                               normal: "images/alarm_snooze.png";
+                               normal: "alarm_snooze.png";
         		}
         		fill
         		{
@@ -358,7 +358,7 @@ collections
         		}
                         image
                         {
-                               normal: "images/alarm_enabled.png";
+                               normal: "alarm_enabled.png";
         		}
         		fill
         		{
@@ -396,7 +396,7 @@ collections
         		}
                         image
                         {
-                               normal: "images/alarm_disabled.png";
+                               normal: "alarm_disabled.png";
         		}
         		fill
         		{

@@ -48,7 +48,6 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-
 AC_PATH_PROG(EMPRINT, "emprint", "", $PATH)
 if test "$EMPRINT" = ""; then
   AC_MSG_ERROR(emprint not found)

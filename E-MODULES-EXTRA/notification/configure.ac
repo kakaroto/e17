@@ -63,6 +63,7 @@ Makefile
 src/Makefile
 po/Makefile.in
 module.desktop
+e_modules-notification.spec
 ], [
 ])
 

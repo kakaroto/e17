@@ -63,10 +63,10 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 e_modules-taskbar.spec
-data/Makefile
-data/themes/Makefile
 po/Makefile.in
+module.desktop
 ], [
 ])
 

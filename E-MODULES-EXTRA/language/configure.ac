@@ -68,11 +68,11 @@ AC_OUTPUT([
 e_modules-language.spec
 Makefile
 src/Makefile
-src/module/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/images/Makefile
 po/Makefile.in
+module.desktop
 ], [
 ])
 

@@ -1,5 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
 AC_INIT(alarm, 0.1.0, ooookiwi@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
@@ -45,7 +48,6 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -53,6 +55,7 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 po/Makefile.in
 e_modules-alarm.spec
 module.desktop

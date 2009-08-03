@@ -1,5 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
 AC_INIT(photo, 0.1.0, ooookiwi@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
@@ -57,8 +60,8 @@ data/Makefile
 data/images/Makefile
 data/theme/Makefile
 src/Makefile
-src/module/Makefile
 po/Makefile.in
+module.desktop
 ], [
 ])
 

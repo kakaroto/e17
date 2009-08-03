@@ -54,13 +54,10 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
-data/Makefile
-data/fonts/Makefile
-data/images/Makefile
+images/Makefile
 src/Makefile
-src/modules/Makefile
-src/modules/emu/Makefile
 po/Makefile.in
+module.desktop
 e_modules-emu.spec
 ], [
 ])

@@ -51,7 +51,6 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
-
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -65,17 +64,15 @@ AC_ARG_ENABLE([elive],
                esac],
                [elive=no])
 
-
 if test "$elive" = "yes"; then
     AC_DEFINE_UNQUOTED(ELIVE, "${elive}", [Use the special Elive extension])
 fi
-
-
 
 AC_OUTPUT([
 Makefile
 src/Makefile
 po/Makefile.in
 module.desktop
+e_modules-exalt-client.spec
 ], [
 ])

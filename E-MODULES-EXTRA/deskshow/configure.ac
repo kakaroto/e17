@@ -1,5 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
 AC_INIT(deskshow, 0.0.1, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
@@ -48,6 +51,8 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
 e_modules-deskshow.spec
+module.desktop
 ], [
 ])

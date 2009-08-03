@@ -1,30 +1,27 @@
 ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
-		       missing module.desktop config.rpath mkinstalldirs \
-                       ABOUT-NLS
+		       missing module.desktop config.rpath mkinstalldirs
 
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
 	     -id $(top_srcdir)/images
 
-# data files for the module
 filesdir =  $(datadir)
+files_DATA = module.desktop e-module-iiirk.edj
 
-files_DATA = module.desktop \
-	     e-module-iiirk.edj
-
-EXTRA_DIST = $(files_DATA) \
+EXTRA_DIST = module.desktop.in \
+	     e_modules-iiirk.spec.in \
 	     images/module_icon.png \
-	     e-module-iiirk.edc \
-	     module.desktop.in
+	     e-module-iiirk.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	rm -rf e-module-iiirk.edj module.desktop *~
+	rm -rf e-module-iiirk.edj module.desktop e_modules-iiirk.spec *~
+
 uninstall:
 	rm -rf $(DESTDIR)$(datadir)
 

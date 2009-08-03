@@ -1,3 +1,6 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
 rm -f config.cache
 
 AC_INIT(efm_pathbar, 0.0.1, sergey.semernin@gmail.com)

@@ -1,37 +1,26 @@
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 ABOUT-NLS config.h.in \
-   config.guess config.rpath config.sub configure depcomp install-sh \
-   ltmain.sh missing module.desktop mkinstalldirs config.h.in
+ACLOCAL_AMFLAGS = -I m4
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop config.rpath mkinstalldirs
 
 SUBDIRS = src po
 
 EDJE_FLAGS = -v \
-	   -id $(top_srcdir)/images \
-	   -fd $(top_srcdir)/fonts
+	     -id $(top_srcdir)/images
 
-# data files for the module
-filesdir =  $(datadir)
+filesdir = $(datadir)
+files_DATA = module.desktop e-module-places.edj
 
-files_DATA = module.desktop \
-	     e-module-places.edj
-
-EXTRA_DIST = $(files_DATA) \
-	     images/eject.png \
-	     images/eject_bg.png \
-	     images/icon_hdd.png \
-	     images/icon_ipod.png \
-	     images/icon_ms.png \
-	     images/icon_sdmmc.png \
-	     images/icon_psp.png \
-	     images/tag_ext3.png \
-	     images/tag_fat.png \
-	     images/tag_hfs.png
-
-ACLOCAL_AMFLAGS = -I m4
+EXTRA_DIST = module.desktop.in \
+	     e_modules-places.spec.in \
+	     $(wildcard images/*.png) \
+	     e-module-places.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf e-module-places.edj module.desktop *~
+	 rm -rf e-module-places.edj module.desktop e_modules-places.spec *~
+
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)

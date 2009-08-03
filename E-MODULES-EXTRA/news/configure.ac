@@ -62,8 +62,8 @@ data/images/feeds/Makefile
 data/images/categories/Makefile
 data/theme/Makefile
 src/Makefile
-src/module/Makefile
 po/Makefile.in
+module.desktop
 ], [
 ])
 

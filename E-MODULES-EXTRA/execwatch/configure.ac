@@ -54,6 +54,8 @@ AC_ARG_ENABLE(homedir-install,
 
 AC_OUTPUT([
 Makefile
+src/Makefile
+module.desktop
 e_modules-execwatch.spec
 ], [
 ])
