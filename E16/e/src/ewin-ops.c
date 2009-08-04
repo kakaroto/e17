@@ -279,6 +279,10 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
      }
    else
      {
+	if (w > 32000)
+	   w = 32000;
+	if (h > 32000)
+	   h = 32000;
 	if (ewin->ops && ewin->ops->Layout)
 	  {
 	     ewin->ops->Layout(ewin, &x, &y, &w, &h);

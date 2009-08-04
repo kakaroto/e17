@@ -221,10 +221,18 @@ EwinManage(EWin * ewin)
    Win                 frame;
    int                 type;
 
+   /* There seems to be a shape related problem when window dimensions
+    * are >= 32768. Also, it looks like it is not possible(?) to create
+    * pixmaps with dimensions >= 32768.
+    * So, limit to 32000 leaving room for borders. */
    if (ewin->client.w <= 0)
       ewin->client.w = 100;
+   else if (ewin->client.w > 32000)
+      ewin->client.w = 32000;
    if (ewin->client.h <= 0)
       ewin->client.h = 100;
+   else if (ewin->client.h > 32000)
+      ewin->client.h = 32000;
 
    if (ewin->state.docked)
       ewin->inh_wm.b.border = 1;
