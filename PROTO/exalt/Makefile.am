@@ -13,8 +13,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = README \
 AUTHORS \
-COPYING \
-COPYING-PLAIN
+COPYING
 
 
 pkgconfigdir = $(libdir)/pkgconfig
