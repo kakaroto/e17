@@ -1539,17 +1539,11 @@ diff -Naur e17-unpatched/src/bin/e_main.c ecomorph-e17/src/bin/e_main.c
 +	     evil = 0;
 +	  }
 +     }
-    
+ 
     e_init_status_set(_("Configure Shelves"));
     TS("shelf config init");
-@@ -1056,11 +1085,19 @@
-    /* no longer starting up */
-    starting = 0;
-    /* start our main loop */
--   
-+
-    ecore_timer_add(5.0, stdbg, NULL);
-    
+@@ -1068,6 +1068,14 @@
+ 
     ecore_main_loop_begin();
  
 +   if (evil && restart)
@@ -1562,7 +1556,7 @@ diff -Naur e17-unpatched/src/bin/e_main.c ecomorph-e17/src/bin/e_main.c
 +
     e_canvas_idle_flush();
     stopping = 1;
-    
+ 
 @@ -1204,6 +1241,18 @@
  {
     return 1;
