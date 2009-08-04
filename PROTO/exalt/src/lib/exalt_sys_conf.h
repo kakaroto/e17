@@ -56,12 +56,13 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi);
 Exalt_Connection *exalt_eth_conn_load(const char* file, const char* udi);
 
 /**
- * @brief Load the driver of an <ireless interface from the configuration file
+ * @brief Load the driver of an wireless interface from the configuration file
  * @param file the configuration file
  * @param udi the hal udi of the interface
  * @return Returns the state
  */
 char* exalt_eth_driver_load(const char* file, const char* udi);
+
 #endif
 
 /** @} */

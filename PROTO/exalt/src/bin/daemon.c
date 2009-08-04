@@ -55,12 +55,14 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
     if(exalt_eth_wireless_is(eth))
     {
         e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_wireless_essid_get);
+        e_dbus_interface_method_add(iface, "disconnect", NULL, "s", dbus_cb_wireless_disconnect);
         e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_wireless_wpasupplicant_driver_get);
         e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_wireless_wpasupplicant_driver_set);
         e_dbus_interface_method_add(iface, "scan", NULL, NULL, dbus_cb_wireless_scan);
     }
 
 
+    e_dbus_interface_method_add(iface, "connected_is", NULL, "b", dbus_cb_eth_connected_is);
     e_dbus_interface_method_add(iface, "up", NULL, NULL, dbus_cb_eth_up);
     e_dbus_interface_method_add(iface, "down", NULL, NULL, dbus_cb_eth_down);
 
@@ -240,7 +242,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     conn = (E_DBus_Connection*) data;
 
-    if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
+    if(action == EXALT_IFACE_ACTION_NEW || action == EXALT_IFACE_ACTION_ADD)
     {
         setup_new_iface(conn,eth);
 
@@ -297,10 +299,10 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         }
     }
 
-    if(action == EXALT_ETH_CB_ACTION_REMOVE)
+    if(action == EXALT_IFACE_ACTION_REMOVE)
         setup_del_iface(conn,eth);
 
-    if ( action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_up_is(eth))
+    if ( action == EXALT_IFACE_ACTION_LINK && exalt_eth_up_is(eth))
     {
         Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_udi_get(eth));
         if(!c)
@@ -315,7 +317,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     }
 
 
-    if ( action == EXALT_ETH_CB_ACTION_UP && exalt_eth_link_is(eth) && (time(NULL) - exalt_eth_dontapplyafterup_get(eth)>2) )
+    if ( action == EXALT_IFACE_ACTION_UP && exalt_eth_link_is(eth) && (time(NULL) - exalt_eth_dontapplyafterup_get(eth)>2) )
     {
         Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_udi_get(eth));
         if(!c)
@@ -329,26 +331,26 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         exalt_eth_save(CONF_FILE,eth);
     }
 
-    if (action == EXALT_ETH_CB_ACTION_UNLINK || action == EXALT_ETH_CB_ACTION_DOWN)
+    if (action == EXALT_IFACE_ACTION_UNLINK || action == EXALT_IFACE_ACTION_DOWN)
         //remove the default gateway
         exalt_eth_gateway_delete(eth);
 
-    if( action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN)
+    if( action == EXALT_IFACE_ACTION_UP || action == EXALT_IFACE_ACTION_DOWN)
         exalt_eth_save(CONF_FILE, eth);
 
 
-    if( action==EXALT_ETH_CB_ACTION_CONN_APPLY_DONE)
+    if( action==EXALT_IFACE_ACTION_CONN_APPLY_DONE)
     {
         //printf("apply DONE !!!\n");
         //save the new configuration
         exalt_eth_save(CONF_FILE, eth);
     }
 
-    //if(action == EXALT_ETH_CB_ACTION_CONN_APPLY_START)
+    //if(action == EXALT_IFACE_ACTION_CONN_APPLY_START)
     //    printf("apply start !!\n");
 
     //waiting card
-    if(!waiting_iface_is_done(waiting_iface_list) && waiting_iface_is(waiting_iface_list, eth) && action == EXALT_ETH_CB_ACTION_ADDRESS_NEW )
+    if(!waiting_iface_is_done(waiting_iface_list) && waiting_iface_is(waiting_iface_list, eth) && action == EXALT_IFACE_ACTION_ADDRESS_NEW )
     {
         const char *ip = exalt_eth_ip_get(eth);
 

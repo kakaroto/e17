@@ -35,6 +35,7 @@ DBusMessage * dbus_cb_eth_link_is(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_up_is(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_dhcp_is(E_DBus_Object *obj, DBusMessage *msg);
 
+DBusMessage * dbus_cb_eth_connected_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);

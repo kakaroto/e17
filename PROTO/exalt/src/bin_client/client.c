@@ -205,33 +205,33 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data __UNUSED__)
 {
     switch(action)
     {
-        case EXALT_ETH_CB_ACTION_NEW:
-        case EXALT_ETH_CB_ACTION_ADD:
+        case EXALT_IFACE_ACTION_NEW:
+        case EXALT_IFACE_ACTION_ADD:
             break;
-        case EXALT_ETH_CB_ACTION_REMOVE:
+        case EXALT_IFACE_ACTION_REMOVE:
             break;
-        case EXALT_ETH_CB_ACTION_UP:
-        case EXALT_ETH_CB_ACTION_DOWN:
+        case EXALT_IFACE_ACTION_UP:
+        case EXALT_IFACE_ACTION_DOWN:
             exalt_dbus_eth_up_is(conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_LINK:
-        case EXALT_ETH_CB_ACTION_UNLINK:
+        case EXALT_IFACE_ACTION_LINK:
+        case EXALT_IFACE_ACTION_UNLINK:
             exalt_dbus_eth_link_is(conn,eth);
             break;
-        case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+        case EXALT_WIRELESS_ACTION_ESSIDCHANGE:
             break;
-        case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
+        case EXALT_IFACE_ACTION_ADDRESS_NEW:
             exalt_dbus_eth_ip_get(conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_NETMASK_NEW:
+        case EXALT_IFACE_ACTION_NETMASK_NEW:
             exalt_dbus_eth_netmask_get(conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_GATEWAY_NEW:
+        case EXALT_IFACE_ACTION_GATEWAY_NEW:
             exalt_dbus_eth_gateway_get(conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONN_APPLY_START:
             break;
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
             break;
         default: ;
     }

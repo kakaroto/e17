@@ -92,6 +92,13 @@ EXALT_GET(networks,Eina_List*)
 
 void exalt_wireless_down(Exalt_Wireless *w)
 {
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    exalt_wireless_disconnect(w);
+}
+
+void exalt_wireless_disconnect(Exalt_Wireless *w)
+{
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     exalt_wpa_disconnect(w);
 }
 
@@ -114,7 +121,9 @@ char* exalt_wireless_essid_get(Exalt_Wireless* w)
         return NULL;
 
     if(wrq.u.essid.length>0)
+    {
         return strdup((char*) wrq.u.essid.pointer);
+    }
     else
         return NULL;
 }
@@ -398,7 +407,7 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w)
     {
         _exalt_wireless_save_essid_set(w,exalt_wireless_essid_get(w));
         if(exalt_eth_interfaces.eth_cb)
-            exalt_eth_interfaces.eth_cb(exalt_wireless_eth_get(w),EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
+            exalt_eth_interfaces.eth_cb(exalt_wireless_eth_get(w),EXALT_WIRELESS_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
         EXALT_FREE(essid);
         return 1;
     }
@@ -477,21 +486,21 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
             && strncmp(buf,connected,strlen(connected))==0
             && !exalt_eth_connected_is(eth))
     {
+        exalt_eth_connected_set(eth,1);
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(eth,
-                    EXALT_WIRELESS_CB_ACTION_CONNECTED,
+                    EXALT_WIRELESS_ACTION_CONNECTED,
                     exalt_eth_interfaces.eth_cb_user_data);
-        exalt_eth_connected_set(eth,1);
     }
     else  if(strlen(buf)>=strlen(disconnected)
             && strncmp(buf,disconnected,strlen(disconnected))==0
             && exalt_eth_connected_is(eth))
     {
+        exalt_eth_connected_set(eth,0);
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(eth,
-                    EXALT_WIRELESS_CB_ACTION_DISCONNECTED,
+                    EXALT_WIRELESS_ACTION_DISCONNECTED,
                     exalt_eth_interfaces.eth_cb_user_data);
-        exalt_eth_connected_set(eth,0);
     }
 
     return 1;

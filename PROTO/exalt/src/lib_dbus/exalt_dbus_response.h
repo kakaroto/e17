@@ -75,8 +75,12 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_IFACE_CMD_SET,
     /** Response of exalt_dbus_eth_conn_apply() */
     EXALT_DBUS_RESPONSE_IFACE_APPLY,
+    /** Response of exalt_dbus_eth_connected_is() */
+    EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS,
     /** Response of exalt_dbus_wireless_essid_get() */
     EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET,
+    /** Response of exalt_dbus_wireless_disconnect() */
+    EXALT_DBUS_RESPONSE_WIRELESS_DISCONNECT,
     /** Response of exalt_dbus_wireless_wpasupplicant_driver_get() */
     EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET,
     /** Response of exalt_dbus_wireless_wpasupplicant_driver_set() */

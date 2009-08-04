@@ -1,0 +1,33 @@
+#Vars
+CC=gcc
+DEBUG=-g -Wall
+
+DBUS_GET_CONFIGURATION_SRC=dbus_get_configuration.c
+DBUS_GET_CONFIGURATION_BIN=dbus_get_configuration
+
+DBUS_NOTIFICATIONS_SRC=dbus_notifications.c
+DBUS_NOTIFICATIONS_BIN=dbus_notifications
+
+DBUS_WIRELESS_SCAN_SRC=dbus_wireless_scan.c
+DBUS_WIRELESS_SCAN_BIN=dbus_wireless_scan
+
+DEPENDANCES=`pkg-config --libs exalt_dbus exalt ecore --cflags exalt_dbus exalt ecore`
+
+
+all: $(DBUS_GET_CONFIGURATION_BIN) $(DBUS_NOTIFICATIONS_BIN) $(DBUS_WIRELESS_SCAN_BIN)
+
+$(DBUS_GET_CONFIGURATION_BIN): $(DBUS_GET_CONFIGURATION_SRC)
+	@echo "[*] dbus_get_configuration"
+	@$(CC) $(DEPENDANCES) $(DEBUG) $(DBUS_GET_CONFIGURATION_SRC) -o $(DBUS_GET_CONFIGURATION_BIN)
+
+$(DBUS_NOTIFICATIONS_BIN): $(DBUS_NOTIFICATIONS_SRC)
+	@echo "[*] dbus_notifications"
+	@$(CC) $(DEPENDANCES) $(DEBUG) $(DBUS_NOTIFICATIONS_SRC) -o $(DBUS_NOTIFICATIONS_BIN)
+
+$(DBUS_WIRELESS_SCAN_BIN): $(DBUS_WIRELESS_SCAN_SRC)
+	@echo "[*] dbus_wireless_scan"
+	@$(CC) $(DEPENDANCES) $(DEBUG) $(DBUS_WIRELESS_SCAN_SRC) -o $(DBUS_WIRELESS_SCAN_BIN)
+
+clean:
+	@rm -f $(DBUS_GET_CONFIGURATION_BIN) $(DBUS_NOTIFICATIONS_BIN) $(DBUS_WIRELESS_SCAN_BIN)
+

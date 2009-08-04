@@ -37,47 +37,47 @@ void notify(char* eth, Exalt_Enum_Action action, void* user_data)
 {
     switch(action)
     {
-        case EXALT_ETH_CB_ACTION_NEW:
-        case EXALT_ETH_CB_ACTION_ADD:
+        case EXALT_IFACE_ACTION_NEW:
+        case EXALT_IFACE_ACTION_ADD:
             NOTIF_PRINT("New interface");
             break;
-        case EXALT_ETH_CB_ACTION_REMOVE:
+        case EXALT_IFACE_ACTION_REMOVE:
             NOTIF_PRINT("Interface removed");
             break;
-        case EXALT_ETH_CB_ACTION_UP:
+        case EXALT_IFACE_ACTION_UP:
             NOTIF_PRINT("The interface is up\n");
             break;
-        case EXALT_ETH_CB_ACTION_DOWN:
+        case EXALT_IFACE_ACTION_DOWN:
             NOTIF_PRINT("The interface is down\n");
             break;
-        case EXALT_ETH_CB_ACTION_LINK:
+        case EXALT_IFACE_ACTION_LINK:
             NOTIF_PRINT("The interface is link\n");
             break;
-        case EXALT_ETH_CB_ACTION_UNLINK:
+        case EXALT_IFACE_ACTION_UNLINK:
             NOTIF_PRINT("The interface is unlink\n");
             break;
-        case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+        case EXALT_WIRELESS_ACTION_ESSIDCHANGE:
             NOTIF_PRINT("New essid");
             exalt_dbus_wireless_essid_get(user_data,eth);
             break;
 
-        case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
+        case EXALT_IFACE_ACTION_ADDRESS_NEW:
             NOTIF_PRINT("New IP address");
             exalt_dbus_eth_ip_get(user_data,eth);
             break;
-        case EXALT_ETH_CB_ACTION_NETMASK_NEW:
+        case EXALT_IFACE_ACTION_NETMASK_NEW:
             NOTIF_PRINT("New netmask address");
             exalt_dbus_eth_netmask_get(user_data,eth);
             break;
-        case EXALT_ETH_CB_ACTION_GATEWAY_NEW:
+        case EXALT_IFACE_ACTION_GATEWAY_NEW:
             NOTIF_PRINT("New gateway address");
             exalt_dbus_eth_gateway_get(user_data,eth);
             break;
 
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONN_APPLY_START:
             NOTIF_PRINT("A new configuration is apply on the interface\n");
             break;
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
             NOTIF_PRINT("The new configuration is applied on the interface\n");
             break;
         default: ;

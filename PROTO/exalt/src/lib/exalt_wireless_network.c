@@ -50,7 +50,6 @@ struct Exalt_Wireless_Network_IE
     Exalt_Wireless_Network_Auth_Suites
         auth_suites[EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM];
     int auth_suites_number;
-
 };
 
 Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()

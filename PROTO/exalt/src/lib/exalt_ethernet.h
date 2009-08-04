@@ -44,50 +44,50 @@ extern Exalt_Ethernets exalt_eth_interfaces;
 typedef enum Exalt_Enum_Action
 {
     /** when we load the interface list */
-    EXALT_ETH_CB_ACTION_NEW ,
+    EXALT_IFACE_ACTION_NEW ,
     /** when we have a new interface */
-    EXALT_ETH_CB_ACTION_ADD,
+    EXALT_IFACE_ACTION_ADD,
     /** when we have a remove interface */
-    EXALT_ETH_CB_ACTION_REMOVE,
+    EXALT_IFACE_ACTION_REMOVE,
     /** when a known interface is up */
-    EXALT_ETH_CB_ACTION_UP ,
+    EXALT_IFACE_ACTION_UP ,
     /** when a known interface is down */
-    EXALT_ETH_CB_ACTION_DOWN,
+    EXALT_IFACE_ACTION_DOWN,
     /** when a interface is link */
-    EXALT_ETH_CB_ACTION_LINK ,
+    EXALT_IFACE_ACTION_LINK ,
     /** when a interface is unlink */
-    EXALT_ETH_CB_ACTION_UNLINK,
+    EXALT_IFACE_ACTION_UNLINK,
     /** when an essid change */
-    EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE ,
+    EXALT_WIRELESS_ACTION_ESSIDCHANGE ,
 
     /** when a wired interface is connected */
-    EXALT_ETH_CB_ACTION_CONNECTED,
+    EXALT_IFACE_ACTION_CONNECTED,
     /** when a wired interface is disconnected */
-    EXALT_ETH_CB_ACTION_DISCONNECTED,
+    EXALT_IFACE_ACTION_DISCONNECTED,
 
 
     /** when a wireless interface is connected */
-    EXALT_WIRELESS_CB_ACTION_CONNECTED,
+    EXALT_WIRELESS_ACTION_CONNECTED,
     /** when a wireless interface is disconnected */
-    EXALT_WIRELESS_CB_ACTION_DISCONNECTED,
+    EXALT_WIRELESS_ACTION_DISCONNECTED,
 
     /** when we have a new address */
-    EXALT_ETH_CB_ACTION_ADDRESS_NEW ,
+    EXALT_IFACE_ACTION_ADDRESS_NEW ,
     /** when we have a new netmask */
-    EXALT_ETH_CB_ACTION_NETMASK_NEW ,
+    EXALT_IFACE_ACTION_NETMASK_NEW ,
     /** when we have a new gateway */
-    EXALT_ETH_CB_ACTION_GATEWAY_NEW,
+    EXALT_IFACE_ACTION_GATEWAY_NEW,
 
 
     /** when we start applying a connection */
-    EXALT_ETH_CB_ACTION_CONN_APPLY_START,
+    EXALT_IFACE_ACTION_CONN_APPLY_START,
     /** when the connection is applied */
-    EXALT_ETH_CB_ACTION_CONN_APPLY_DONE,
+    EXALT_IFACE_ACTION_CONN_APPLY_DONE,
 
     /** when we configure if we want wait (or not) that the interface is init during the boot process (only used by the daemon exaltd) */
-    EXALTD_ETH_CB_WAITINGBOOT_CHANGE,
+    EXALTD_IFACE_WAITINGBOOT_CHANGE,
     /** when the value of the timeout change (only used by the daemon exaltd) */
-    EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE
+    EXALTD_IFACE_WAITINGBOOT_TIMEOUT_CHANGE
 } Exalt_Enum_Action;
 
 /** callback function used for notification when a new interface is add, new essid ... */

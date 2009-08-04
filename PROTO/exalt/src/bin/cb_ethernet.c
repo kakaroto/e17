@@ -223,6 +223,33 @@ DBusMessage * dbus_cb_eth_wireless_is(E_DBus_Object *obj __UNUSED__, DBusMessage
     return reply;
 }
 
+DBusMessage * dbus_cb_eth_connected_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Ethernet* eth;
+    int is;
+
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+
+    eth= dbus_get_eth(msg);
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply);
+
+    is = exalt_eth_connected_is(eth);
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
+            return reply);
+
+    return reply;
+}
+
 DBusMessage * dbus_cb_eth_link_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

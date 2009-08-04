@@ -56,10 +56,17 @@ char* exalt_wireless_essid_get(Exalt_Wireless* w);
 
 /*
  * @brief Called by exalt_eth_down() <br>
- * Tell to the wpa_supplicant daemon to disconnect the interface
+ * Call exalt_wireless_disconnect()
  * @param w the wireless interface
  */
 void exalt_wireless_down(Exalt_Wireless *w);
+
+/*
+ * @brief
+ * Tell to the wpa_supplicant daemon to disconnect the interface
+ * @param w the wireless interface
+ */
+void exalt_wireless_disconnect(Exalt_Wireless *w);
 
 /*
  * @brief get the ethernet structure

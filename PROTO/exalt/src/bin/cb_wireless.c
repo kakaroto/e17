@@ -62,6 +62,36 @@ DBusMessage * dbus_cb_wireless_essid_get(E_DBus_Object *obj __UNUSED__, DBusMess
     return reply;
 }
 
+
+DBusMessage * dbus_cb_wireless_disconnect(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    Exalt_Ethernet* eth;
+
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+
+    eth= dbus_get_eth(msg);
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply);
+
+    EXALT_ASSERT_CUSTOM_RET(exalt_eth_wireless_is(eth),
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
+            return reply);
+
+    exalt_wireless_disconnect(exalt_eth_wireless_get(eth));
+
+    dbus_args_valid_append(reply);
+
+    return reply;
+}
+
+
 DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;

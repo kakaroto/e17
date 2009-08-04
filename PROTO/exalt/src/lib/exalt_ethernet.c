@@ -567,7 +567,7 @@ int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
 
     //apply start
     if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_CONN_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONN_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
 
     exalt_eth_connection_set(eth,c);
 
@@ -737,7 +737,7 @@ void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
 
             if(exalt_eth_interfaces.eth_cb)
                 exalt_eth_interfaces.eth_cb(eth,
-                        EXALT_ETH_CB_ACTION_CONNECTED,
+                        EXALT_IFACE_ACTION_CONNECTED,
                         exalt_eth_interfaces.eth_cb_user_data);
         }
     }
@@ -747,7 +747,7 @@ void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
         exalt_eth_connected_set(eth,0);
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(eth,
-                    EXALT_ETH_CB_ACTION_DISCONNECTED,
+                    EXALT_IFACE_ACTION_DISCONNECTED,
                     exalt_eth_interfaces.eth_cb_user_data);
     }
 
@@ -894,7 +894,7 @@ int _exalt_eth_udi_remove(const char* udi)
         if(udi && !strcmp(exalt_eth_udi_get(eth),udi))
         {
             if(exalt_eth_interfaces.eth_cb)
-                exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_REMOVE,exalt_eth_interfaces.eth_cb_user_data);
+                exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_REMOVE,exalt_eth_interfaces.eth_cb_user_data);
 
 
             if(exalt_eth_wireless_is(eth))
@@ -964,9 +964,9 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 {
                     _exalt_eth_save_up_set(eth, exalt_eth_up_is(eth));
                     if(exalt_eth_up_is(eth) && exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_UP,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_UP,exalt_eth_interfaces.eth_cb_user_data);
                     else if(exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_DOWN,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_DOWN,exalt_eth_interfaces.eth_cb_user_data);
                 }
 
                 if(_exalt_eth_save_link_get(eth) != exalt_eth_link_is(eth))
@@ -974,9 +974,9 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                     _exalt_eth_save_link_set(eth, exalt_eth_link_is(eth));
 
                     if(exalt_eth_link_is(eth) && exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_LINK,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_LINK,exalt_eth_interfaces.eth_cb_user_data);
                     else if(exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_UNLINK,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_UNLINK,exalt_eth_interfaces.eth_cb_user_data);
                 }
 
                 if(exalt_eth_wireless_is(eth))
@@ -1004,7 +1004,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 {
                     _exalt_eth_save_ip_set(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_ADDRESS_NEW,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_ADDRESS_NEW,exalt_eth_interfaces.eth_cb_user_data);
                 }
                 EXALT_FREE(str);
 
@@ -1016,7 +1016,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 {
                     _exalt_eth_save_netmask_set(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
-                        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_NETMASK_NEW,exalt_eth_interfaces.eth_cb_user_data);
+                        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_NETMASK_NEW,exalt_eth_interfaces.eth_cb_user_data);
                 }
                 EXALT_FREE(str);
             case RTM_NEWROUTE:
@@ -1085,7 +1085,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                         //and send a broadcast message
                         _exalt_eth_save_gateway_set(eth, str);
                         if(exalt_eth_interfaces.eth_cb)
-                            exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
+                            exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
                     }
                     EXALT_FREE(str);
                 }
@@ -1131,7 +1131,7 @@ int _exalt_apply_timer(void *data)
 
     //apply done
     if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_CONN_APPLY_DONE,exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONN_APPLY_DONE,exalt_eth_interfaces.eth_cb_user_data);
 
     return 0;
 }
@@ -1290,7 +1290,7 @@ void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
     char *udi = user_data;
     E_Hal_Device_Query_Capability_Return *ret = reply_data;
     int *action = malloc(sizeof(int));
-    *action = EXALT_ETH_CB_ACTION_ADD;
+    *action = EXALT_IFACE_ACTION_ADD;
 
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
@@ -1359,7 +1359,7 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
     char *device;
     int *action = malloc(sizeof(int));
     Eina_List *l;
-    *action = EXALT_ETH_CB_ACTION_NEW;
+    *action = EXALT_IFACE_ACTION_NEW;
 
     EXALT_ASSERT_RETURN_VOID(ret!=NULL);
     EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);

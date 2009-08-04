@@ -245,7 +245,7 @@ int waiting_iface_add(const char* interface,const char* file)
     //we send a broadcast on dbus
     eth = exalt_eth_get_ethernet_byname(interface);
     if(eth)
-        eth_cb(eth,EXALTD_ETH_CB_WAITINGBOOT_CHANGE,exaltd_conn);
+        eth_cb(eth,EXALTD_IFACE_WAITINGBOOT_CHANGE,exaltd_conn);
 
     return 1;
 }
@@ -274,9 +274,9 @@ int waiting_timeout_set(int timeout, const char* file)
    /*we can't send a broadcast without specify a interface
      * that's why we create a special ethernet struct without name :)
      */
-    eth = exalt_eth_new("No interface is specify with the signal EXALTD_ETH_CB_WAITINGBOOT_CHANGE","no device");
+    eth = exalt_eth_new("No interface is specify with the signal EXALTD_IFACE_WAITINGBOOT_CHANGE","no device");
     if(eth)
-        eth_cb(eth,EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE,exaltd_conn);
+        eth_cb(eth,EXALTD_IFACE_WAITINGBOOT_TIMEOUT_CHANGE,exaltd_conn);
 
     exalt_eth_free(eth);
     return 1;
@@ -329,7 +329,7 @@ int waiting_iface_remove(const char* interface,const char* file)
 
     //we send a broadcast on dbus
     if(eth)
-        eth_cb(eth,EXALTD_ETH_CB_WAITINGBOOT_CHANGE,exaltd_conn);
+        eth_cb(eth,EXALTD_IFACE_WAITINGBOOT_CHANGE,exaltd_conn);
 
     return 1;
 }

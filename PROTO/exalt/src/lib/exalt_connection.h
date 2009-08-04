@@ -23,7 +23,7 @@
 
 /**
  * @defgroup Exalt_Connection
- * @brief The Exalt_Connection struct contains all informations about a configuration (dhcp or static mode, ip, essid ...)
+ * @brief The Exalt_Connection struct contains all information about a configuration (dhcp or static mode, ip, essid ...)
  * @ingroup Exalt
  * @{
  */
@@ -62,7 +62,7 @@ typedef enum Exalt_Enum_Encryption_Mode
     EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII
 } Exalt_Enum_Encryption_Mode;
 
-/** Define the list f connection mode*/
+/** Define the list of connection mode*/
 typedef enum Exalt_Enum_Connection_Mode
 {
     /** Ad-Hoc connection mode*/
