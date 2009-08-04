@@ -14,7 +14,7 @@ files_DATA = module.desktop e-module-exalt.edj
 EXTRA_DIST = module.desktop.in \
 	     e_modules-exalt-client.spec.in \
 	     $(wildcard *.png) \
-	     e-module-exalt.edc \
+	     e-module-exalt.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
