@@ -203,6 +203,7 @@ _MenuEwinInit(EWin * ewin)
    ewin->props.skip_focuslist = 1;
    ewin->props.skip_winlist = 1;
    ewin->props.ignorearrange = 1;
+   ewin->state.active = 1;
    EwinInhSetWM(ewin, focus, 1);
 
    ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
