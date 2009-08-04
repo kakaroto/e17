@@ -1,5 +1,5 @@
-e_mod_config.c
-e_mod_main.c
-e_mod_main.h
-machdep_freebsd.c
-machdep_linux.c
+src/e_mod_config.c
+src/e_mod_main.c
+src/e_mod_main.h
+src/machdep_freebsd.c
+src/machdep_linux.c

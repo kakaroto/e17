@@ -1,8 +1,8 @@
-src/modules/emu/border_props.c
-src/modules/emu/border_props.h
-src/modules/emu/e_mod_config.c
-src/modules/emu/e_mod_config.h
-src/modules/emu/e_mod_main.c
-src/modules/emu/e_mod_main.h
-src/modules/emu/easy_menu.c
-src/modules/emu/easy_menu.h
+src/border_props.c
+src/border_props.h
+src/e_mod_config.c
+src/e_mod_config.h
+src/e_mod_main.c
+src/e_mod_main.h
+src/easy_menu.c
+src/easy_menu.h
