@@ -140,7 +140,8 @@ FontConfigLoad(void)
      }
 
    /* Look in user config dir (not in theme dir) */
-   _FontConfigLoad1("fonts.cfg", 0);
+   if (!_FontConfigLoad1("fonts.cfg", 0))
+      return;
 
 #if USE_PANGO
    if (!_FontConfigLoad1("fonts.pango.cfg", 1))
