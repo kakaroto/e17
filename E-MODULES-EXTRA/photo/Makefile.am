@@ -13,7 +13,7 @@ files_DATA = e-module-photo.edj module.desktop
 
 EXTRA_DIST = module.desktop.in \
 	     e_modules-photo.spec.in \
-	     e-module-photo.edc \
+	     e-module-photo.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
