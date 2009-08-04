@@ -503,7 +503,7 @@ my_bt_11(void *data, Evas_Object *obj, void *event_info)
 
   bt = ElmButton::factory (*win);
   bt->setLabel ("Bottom");
-  hv->setContent ("top", *bt);
+  hv->setContent ("bottom", *bt);
   bt->show ();
 
   bt = ElmButton::factory (*win);
@@ -522,87 +522,91 @@ my_bt_11(void *data, Evas_Object *obj, void *event_info)
   win->show ();
 }
 
-#if 0
-
 static void
 my_bt_12(void *data, Evas_Object *obj, void *event_info)
 {
-  Evas_Object *win, *bg, *bx, *bt, *hv, *ic;
-  char buf[PATH_MAX];
+  ElmBox *bx = NULL;
+  ElmButton *bt = NULL;
+  
+  ElmWindow *win = ElmWindow::factory ("hover2", ELM_WIN_BASIC);
+  win->setTitle ("Hover 2");
+  win->setAutoDel (true);
+  
+  ElmBackground *bg = ElmBackground::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (1.0, 1.0);
+  bg->show ();
+  
+  bx = ElmBox::factory (*win);
+  bx->setWeightHintSize (1.0, 1.0);
+  win->addObjectResize (*bx);
+  bx->show ();
 
-  win = elm_win_add(NULL, "hover2", ELM_WIN_BASIC);
-  elm_win_title_set(win, "Hover 2");
-  elm_win_autodel_set(win, 1);
+  ElmHover *hv = ElmHover::factory (*win);
+  hv->setStyle ("popout");
 
-  bg = elm_bg_add(win);
-  elm_win_resize_object_add(win, bg);
-  evas_object_size_hint_weight_set(bg, 1.0, 1.0);
-  evas_object_show(bg);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Button");
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_hover_bt_1), hv));
+  bx->packEnd (*bt);
+  bt->show ();
+  hv->setParent (*win);
+  hv->setTarget (*bt);
 
-  bx = elm_box_add(win);
-  evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-  elm_win_resize_object_add(win, bx);
-  evas_object_show(bx);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Popup");
+  hv->setContent ("middle", *bt);
+  bt->show ();
 
-  hv = elm_hover_add(win);
-  elm_object_style_set(hv, "popout");
+  bx = ElmBox::factory (*win);
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Button");
-  evas_object_smart_callback_add(bt, "clicked", my_hover_bt_1, hv);
-  elm_box_pack_end(bx, bt);
-  evas_object_show(bt);
-  elm_hover_parent_set(hv, win);
-  elm_hover_target_set(hv, bt);
+  ElmIcon *ic = ElmIcon::factory (*win);
+  ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+  ic->setScale (0, 0);
+  bx->packEnd (*ic);
+  ic->show ();
+  
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Top 1");
+  bx->packEnd (*bt);
+  bt->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Popup");
-  elm_hover_content_set(hv, "middle", bt);
-  evas_object_show(bt);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Top 2");
+  bx->packEnd (*bt);
+  bt->show ();
 
-  bx = elm_box_add(win);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Top 3");
+  bx->packEnd (*bt);
+  bt->show ();
 
-  ic = elm_icon_add(win);
-  snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
-  elm_icon_file_set(ic, buf, NULL);
-  elm_icon_scale_set(ic, 0, 0);
-  elm_box_pack_end(bx, ic);
-  evas_object_show(ic);
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Top 1");
-  elm_box_pack_end(bx, bt);
-  evas_object_show(bt);
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Top 2");
-  elm_box_pack_end(bx, bt);
-  evas_object_show(bt);
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Top 3");
-  elm_box_pack_end(bx, bt);
-  evas_object_show(bt);
-  evas_object_show(bx);
-  elm_hover_content_set(hv, "top", bx);
+  bx->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Bot");
-  elm_hover_content_set(hv, "bottom", bt);
-  evas_object_show(bt);
+  hv->setContent ("top", *bx);
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Left");
-  elm_hover_content_set(hv, "left", bt);
-  evas_object_show(bt);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Bot");
+  hv->setContent ("bottom", *bt);
+  bt->show ();
 
-  bt = elm_button_add(win);
-  elm_button_label_set(bt, "Right");
-  elm_hover_content_set(hv, "right", bt);
-  evas_object_show(bt);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Left");
+  hv->setContent ("left", *bt);
+  bt->show ();
 
-  evas_object_size_hint_min_set(bg, 160, 160);
-  evas_object_size_hint_max_set(bg, 640, 640);
-  evas_object_resize(win, 320, 320);
-  evas_object_show(win);
+  bt = ElmButton::factory (*win);
+  bt->setLabel ("Right");
+  hv->setContent ("right", *bt);
+  bt->show ();
+  
+  bg->setMinHintSize (size160x160);
+  bg->setMaxHintSize (size640x640);
+  win->resize (size320x320);
+  win->show ();
 }
+
+#if 0
 
 static void
 my_entry_bt_1(void *data, Evas_Object *obj, void *event_info)
@@ -3542,8 +3546,8 @@ int main (int argc, char **argv)
   li->append("Clock", my_bt_9, NULL);
   li->append("Layout", my_bt_10, NULL);
   li->append("Hover", my_bt_11, NULL);
-  /*li.append("Hover 2", NULL, NULL, my_bt_12, NULL);
-  li.append("Entry", NULL, NULL, my_bt_13, NULL);
+  li->append("Hover 2", my_bt_12, NULL);
+  /*li.append("Entry", NULL, NULL, my_bt_13, NULL);
   li.append("Entry Scrolled", NULL, NULL, my_bt_14, NULL);
   li.append("Notepad", NULL, NULL, my_bt_15, NULL);
   li.append("Anchorview", NULL, NULL, my_bt_16, NULL);
