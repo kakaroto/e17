@@ -20,7 +20,9 @@ distdir %::
 
 dist-gzip %:: distdir
 	tar -czf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
 
 dist-bzip2 %:: distdir
 	tar -cjf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
 
