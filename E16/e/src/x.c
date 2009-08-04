@@ -714,12 +714,6 @@ EXWindowGetParent(Window xwin)
    else if (pch)
       XFree(pch);
 
-#if 0				/* FIXME - Remove? */
-   win = EXidLookup(xwin);
-   if (win)
-      win->parent = parent;
-#endif
-
    return parent;
 }
 

@@ -1010,19 +1010,6 @@ EwinUnmap1(EWin * ewin)
       Zoom(NULL);
 
    ActionsEnd(ewin);
-
-   if (Mode.place.doing_slide)
-     {
-#if 0				/* No event processing during slides - No use doing this here */
-	DrawEwinShape(ewin, Conf.slidemode, ewin->shape_x, ewin->shape_y,
-		      ewin->client.w, ewin->client.h, 2);
-#endif
-#if 0				/* FIXME - Do this right */
-	RemoveTimerEvent("Slide");
-	Mode.place.doing_slide = 0;
-	FocusEnable(1);
-#endif
-     }
 }
 
 static void
