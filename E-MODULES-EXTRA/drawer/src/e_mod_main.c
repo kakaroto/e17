@@ -3,11 +3,14 @@
  */
 #include "e_mod_main.h"
 #include <strings.h>
-#include <Epsilon_Request.h>
+
+#ifdef HAVE_ETHUMB
+  #include <Ethumb_Client.h>
+#endif
 
 /* Local Structures */
 typedef struct _Instance Instance;
-typedef struct _Drawer_Epsilon_Data Drawer_Epsilon_Data;
+typedef struct _Drawer_Thumb_Data Drawer_Thumb_Data;
 typedef struct _Smart_Data Smart_Data;
 
 struct _Instance 
@@ -42,11 +45,14 @@ struct _Instance
      } flags;
 };
 
-struct _Drawer_Epsilon_Data
+struct _Drawer_Thumb_Data
 {
    Evas_Object *o_icon;
 
+   const char *file;
    int w, h;
+
+   Eina_Bool object_deleted : 1;
 };
 
 struct _Smart_Data
@@ -88,23 +94,29 @@ static Drawer_Composite *_drawer_composite_new(Instance *inst, const char *name)
 
 static void _drawer_thumbnail_theme(Evas_Object *thumbnail, Drawer_Source_Item *si);
 static void _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow);
+static void _drawer_thumb_process(Drawer_Thumb_Data *td);
+static void _drawer_thumb_data_free(void *data);
 static void _drawer_content_recalc(Instance *inst, Evas_Object *obj);
 
 static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event);
 static int _drawer_global_mouse_down_cb(void *data, int type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 
-static void _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
-static void _drawer_cb_menu_post(void *data, E_Menu *menu);
-static void _drawer_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void _drawer_mouse_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event);
+static void _drawer_menu_post_cb(void *data, E_Menu *menu);
+static void _drawer_menu_configure_cb(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _drawer_thumbnail_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _drawer_thumb_connect_cb(Ethumb_Client *e, Eina_Bool success, void *data);
+static void _drawer_thumb_die_cb(Ethumb_Client *e, void *data);
+static void _drawer_thumb_generate_cb(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data);
+static void _drawer_thumb_object_del_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+
 
 static Evas_Object * _drawer_content_new(Evas *e, Evas_Object *child);
 static void _smart_init(void);
@@ -121,6 +133,9 @@ static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 static Evas_Smart *smart = NULL;
+#ifdef HAVE_ETHUMB
+static Ethumb_Client *ethumb_client = NULL;
+#endif
 
 Config *drawer_conf = NULL;
 
@@ -153,7 +168,9 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
    const char *homedir;
 
-   epsilon_request_init();
+#ifdef HAVE_ETHUMB
+   ethumb_client_init();
+#endif
 
    homedir = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/config/%s/module.drawer", 
@@ -316,7 +333,11 @@ e_modapi_shutdown(E_Module *m)
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
 
-   epsilon_request_shutdown();
+#ifdef HAVE_ETHUMB
+   if (ethumb_client)
+     ethumb_client_disconnect(ethumb_client);
+   ethumb_client_shutdown();
+#endif
 
    return 1;
 }
@@ -466,7 +487,7 @@ drawer_module_dir_get()
 EAPI Evas_Object *
 drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 {
-   Drawer_Epsilon_Data *ep = NULL;
+   Drawer_Thumb_Data *td = NULL;
    Evas_Object *o = NULL;
 
    switch(si->data_type)
@@ -524,15 +545,44 @@ drawer_util_icon_create(Drawer_Source_Item *si, Evas *evas, int w, int h)
 #endif
 	 if (!o)
 	   {
+#ifdef HAVE_ETHUMB
 	      o = edje_object_add(evas);
 
-	      ep = calloc(1, sizeof(Drawer_Epsilon_Data));
-	      ep->o_icon = o;
-	      ep->w = w;
-	      ep->h = h;
+	      td = calloc(1, sizeof(Drawer_Thumb_Data));
+	      td->o_icon = o;
+              td->file = eina_stringshare_add(si->data);
+	      td->w = w;
+	      td->h = h;
 
 	      _drawer_thumbnail_theme(o, si);
-	      epsilon_request_add(si->data, EPSILON_THUMB_NORMAL, ep);
+              evas_object_event_callback_add(o, EVAS_CALLBACK_DEL,
+                                             _drawer_thumb_object_del_cb, td);
+              if (ethumb_client)
+                _drawer_thumb_process(td);
+              else
+                ethumb_client_connect(_drawer_thumb_connect_cb, td, _drawer_thumb_data_free);
+#else
+              o = e_thumb_icon_add(evas);
+              if ((e_util_glob_case_match(si->data, "*.edj")))
+                {
+                   /* FIXME: There is probably a quicker way of doing this. */
+                   if (edje_file_group_exists(si->data, "icon"))
+                     e_thumb_icon_file_set(o, si->data, "icon");
+                   else if (edje_file_group_exists(si->data, "e/desktop/background"))
+                     e_thumb_icon_file_set(o, si->data, "e/desktop/background");
+                   else if (edje_file_group_exists(si->data, "e/init/splash"))
+                     e_thumb_icon_file_set(o, si->data, "e/init/splash");
+                   e_thumb_icon_size_set(o, w, w/4*3);
+                }
+              else
+                {
+                   e_thumb_icon_file_set(o, si->data, NULL);
+                   e_thumb_icon_size_set(o, w, h);
+                }
+
+              e_thumb_icon_begin(o);
+#endif
+
 	      return o;
 	   }
 	 break;
@@ -1142,7 +1192,7 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
 
    /* hook a mouse down. we want/have a popup menu, right ? */
    evas_object_event_callback_add(inst->o_drawer, EVAS_CALLBACK_MOUSE_DOWN, 
-                                  _drawer_cb_mouse_down, inst);
+                                  _drawer_mouse_down_cb, inst);
 
    /* add to list of running instances so we can cleanup later */
    instances = eina_list_append(instances, inst);
@@ -1159,9 +1209,6 @@ _drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *styl
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(DRAWER_EVENT_VIEW_ITEM_CONTEXT,
 				 _drawer_view_context_cb, NULL));
-   inst->handlers = eina_list_append(inst->handlers,
-	 ecore_event_handler_add(EPSILON_EVENT_DONE,
-				 _drawer_thumbnail_done_cb, NULL));
    inst->handlers = eina_list_append(inst->handlers,
 	 ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 				 _drawer_global_mouse_down_cb, inst));
@@ -1219,7 +1266,7 @@ _drawer_gc_shutdown(E_Gadcon_Client *gcc)
      {
         /* remove mouse down callback hook */
         evas_object_event_callback_del(inst->o_drawer, EVAS_CALLBACK_MOUSE_DOWN, 
-                                       _drawer_cb_mouse_down);
+                                       _drawer_mouse_down_cb);
         evas_object_del(inst->o_drawer);
      }
    if (inst->popup)
@@ -1443,6 +1490,32 @@ _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
 }
 
 static void
+_drawer_thumb_process(Drawer_Thumb_Data *td)
+{
+   if (!ethumb_client_file_set(ethumb_client, td->file, NULL))
+     return _drawer_thumb_data_free(td);
+
+   if (ethumb_client_thumb_exists(ethumb_client))
+     {
+        const char *thumb_path;
+
+        ethumb_client_thumb_path_get(ethumb_client, &thumb_path, NULL);
+        _drawer_thumb_generate_cb(0, td->file, NULL, thumb_path,
+                                  NULL, EINA_TRUE, td);
+     }
+   else if (ethumb_client_generate(ethumb_client, _drawer_thumb_generate_cb, td, _drawer_thumb_data_free) == -1)
+     _drawer_thumb_data_free(td);
+}
+
+static void
+_drawer_thumb_data_free(void *data)
+{
+   Drawer_Thumb_Data *td = data;
+   eina_stringshare_del(td->file);
+   E_FREE(td);
+}
+
+static void
 _drawer_content_recalc(Instance *inst, Evas_Object *obj)
 {
    Smart_Data *sd = evas_object_smart_data_get(obj);
@@ -1587,76 +1660,6 @@ _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
 }
 
 static int
-_drawer_thumbnail_done_cb(void *data __UNUSED__, int ev_type, void *event)
-{
-   Epsilon_Request *ev;
-   Drawer_Epsilon_Data *ep;
-   Evas_Object *o = NULL;
-   Evas *evas;
-
-   if (!(ev = event) || !(ep = ev->data)) return 1;
-
-   evas = evas_object_evas_get(ep->o_icon);
-   if (ev->dest)
-     {
-	o = e_icon_add(evas);
-	e_icon_file_set(o, ev->dest);
-	e_icon_scale_size_set(o, MAX(ep->w, ep->h));
-     }
-   else if (ev->path)
-     {
-	const char *mime = NULL;
-
-	mime = efreet_mime_globs_type_get(ev->path);
-	if (mime)
-	  {
-	     const char *icon;
-
-	     icon = e_fm_mime_icon_get(mime);
-	     if (!icon);
-	     else if (!strncmp(icon, "e/icons/fileman/mime/", 21))
-	       {
-		  o = edje_object_add(evas);
-		  if (!e_theme_edje_object_set(o, "base/theme/fileman", icon))
-		    {
-		       evas_object_del(o);
-		       o = NULL;
-		    }
-	       }
-	     else
-	       {
-		  char *p;
-
-		  p = strrchr(icon, '.');
-		  if ((p) && (!strcmp(p, ".edj")))
-		    {
-		       o = edje_object_add(evas);
-		       if (!edje_object_file_set(o, icon, "icon"))
-			 {
-			    evas_object_del(o);
-			    o = NULL;
-			 }
-		    }
-	       }
-	  }
-
-	if (!o)
-	  {
-	     o = edje_object_add(evas);
-	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
-	  }
-     }
-
-   if (o)
-     _drawer_thumbnail_swallow(ep->o_icon, o);
-
-   free(ep);
-   ev->data = NULL;
-
-   return 1;
-}
-
-static int
 _drawer_global_mouse_down_cb(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
@@ -1696,7 +1699,7 @@ _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emis
 }
 
 static void 
-_drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
+_drawer_mouse_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev = NULL;
@@ -1755,13 +1758,13 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         /* create popup menu */
         inst->menu = e_menu_new();
-        e_menu_post_deactivate_callback_set(inst->menu, _drawer_cb_menu_post, 
+        e_menu_post_deactivate_callback_set(inst->menu, _drawer_menu_post_cb, 
                                             inst);
 
         mi = e_menu_item_new(inst->menu);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "configure");
-        e_menu_item_callback_set(mi, _drawer_cb_menu_configure, inst);
+        e_menu_item_callback_set(mi, _drawer_menu_configure_cb, inst);
 
         mi = e_menu_item_new(inst->menu);
         e_menu_item_separator_set(mi, 1);
@@ -1782,7 +1785,7 @@ _drawer_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
 /* popup menu closing, cleanup */
 static void 
-_drawer_cb_menu_post(void *data, E_Menu *menu) 
+_drawer_menu_post_cb(void *data, E_Menu *menu) 
 {
    Instance *inst = NULL;
 
@@ -1794,7 +1797,7 @@ _drawer_cb_menu_post(void *data, E_Menu *menu)
 
 /* call configure from popup */
 static void 
-_drawer_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
+_drawer_menu_configure_cb(void *data, E_Menu *mn, E_Menu_Item *mi) 
 {
    Instance *inst = NULL;
    
@@ -1820,6 +1823,102 @@ _drawer_changed_size_hints_cb(void *data, Evas *e, Evas_Object *obj, void *event
    Evas_Object *parent = evas_object_data_get(obj, "con_parent");
    if (parent)
      _drawer_content_recalc((Instance *) data, parent);
+}
+
+static void
+_drawer_thumb_connect_cb(Ethumb_Client *e, Eina_Bool success, void *data)
+{
+   if (!success)
+     {
+        ethumb_client = NULL;
+        return;
+     }
+
+   ethumb_client = e;
+   ethumb_client_on_server_die_callback_set(ethumb_client, _drawer_thumb_die_cb, data);
+   _drawer_thumb_process(data);
+}
+
+static void
+_drawer_thumb_die_cb(Ethumb_Client *e, void *data)
+{
+   ethumb_client = NULL;
+   ethumb_client_connect(_drawer_thumb_connect_cb, data, _drawer_thumb_data_free);
+}
+
+static void
+_drawer_thumb_generate_cb(long id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success, void *data)
+{
+   Drawer_Thumb_Data *td = data;
+   Evas_Object *o = NULL;
+   Evas *evas;
+  
+  
+   if (td->object_deleted)
+     return _drawer_thumb_data_free(td);
+   evas = evas_object_evas_get(td->o_icon);
+
+   if (success)
+     {
+        o = e_icon_add(evas);
+        e_icon_file_set(o, thumb_path);
+        e_icon_scale_size_set(o, MAX(td->w, td->h));
+     }
+   else if (file)
+     {
+	const char *mime = NULL;
+
+	mime = efreet_mime_globs_type_get(file);
+	if (mime)
+	  {
+	     const char *icon;
+
+	     icon = e_fm_mime_icon_get(mime);
+	     if (!icon);
+	     else if (!strncmp(icon, "e/icons/fileman/mime/", 21))
+	       {
+		  o = edje_object_add(evas);
+		  if (!e_theme_edje_object_set(o, "base/theme/fileman", icon))
+		    {
+		       evas_object_del(o);
+		       o = NULL;
+		    }
+	       }
+	     else
+	       {
+		  char *p;
+
+		  p = strrchr(icon, '.');
+		  if ((p) && (!strcmp(p, ".edj")))
+		    {
+		       o = edje_object_add(evas);
+		       if (!edje_object_file_set(o, icon, "icon"))
+			 {
+			    evas_object_del(o);
+			    o = NULL;
+			 }
+		    }
+	       }
+	  }
+
+	if (!o)
+	  {
+	     o = edje_object_add(evas);
+	     e_theme_edje_object_set(o, "base/theme/fileman", "e/icons/fileman/file");
+	  }
+     }
+
+   if (o)
+     _drawer_thumbnail_swallow(td->o_icon, o);
+
+   _drawer_thumb_data_free(td);
+}
+
+static void
+_drawer_thumb_object_del_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+   Drawer_Thumb_Data *td = data;
+   td->object_deleted = EINA_TRUE;
 }
 
 static Evas_Object *

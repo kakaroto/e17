@@ -26,7 +26,6 @@ AC_PROG_LIBTOOL
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
-PKG_CHECK_MODULES(EPSILON, [epsilon])
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
@@ -72,13 +71,33 @@ AC_MSG_RESULT([${_iv_enable_xpixmap}])
 have_xpixmap="no"
 
 if test "x${_iv_enable_xpixmap}" = "xyes" ; then
-    have_xpixmap="yes"
-    AC_DEFINE(HAVE_XPIXMAP, 1, [have esmart_xpixmap code support])
+    PKG_CHECK_MODULES(XPIXMAP, esmart_xpixmap, [
+        have_xpixmap="yes"
+        AC_DEFINE(HAVE_XPIXMAP, 1, [have xpixmap code support])
+    ],[
+       have_xpixmap="no"
+    ])
 fi
 
 AM_CONDITIONAL(BUILD_XPIXMAP, test $have_xpixmap = yes)
 
-requirements_drawer="edje epsilon enlightenment"
+PKG_CHECK_MODULES(ETHUMB, [ethumb_client], [
+       have_ethumb="yes"
+       AC_DEFINE(HAVE_ETHUMB, 1, [have ethumb client support])
+   ], [
+       have_ethumb="no"
+   ])
+
+AM_CONDITIONAL(BUILD_ETHUMB, test $have_ethumb = yes)
+
+requirements_drawer="edje enlightenment"
+if test $have_ethumb = yes ; then
+    requirements_drawer="$requirements_drawer ethumb_client"
+fi
+if test $have_xpixmap = yes ; then
+    requirements_drawer="$requirements_drawer esmart_xpixmap"
+fi
+
 AC_SUBST(requirements_drawer)
 
 AC_OUTPUT([
@@ -104,7 +123,8 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  Build with esmart_xpixmap support.......: $have_xpixmap"
+echo "  Build with esmart xpixmap support.......: $have_xpixmap"
+echo "  Build with ethumb client support..,.....: $have_ethumb"
 echo
 echo "------------------------------------------------------------------------"
 echo

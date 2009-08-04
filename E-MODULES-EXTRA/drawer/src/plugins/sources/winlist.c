@@ -224,8 +224,9 @@ EAPI Evas_Object *
 drawer_source_render_item(Drawer_Source *s, Drawer_Source_Item *si, Evas *evas)
 {
    Evas_Object *o = NULL;
-  
 #ifdef HAVE_XPIXMAP
+   Evas_Coord w, h;
+
    o = esmart_xpixmap_new(evas, 0, ((E_Border *) si->data)->win);
    //Evas_Object *ic = e_icon_add(evas);
 
@@ -233,6 +234,7 @@ drawer_source_render_item(Drawer_Source *s, Drawer_Source_Item *si, Evas *evas)
    evas_object_resize(o, w, h);
    evas_object_show(o);
 #else
+
    return e_border_icon_add(si->data, evas);
 #endif
 
