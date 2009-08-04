@@ -12,7 +12,7 @@ filesdir = $(datadir)
 files_DATA = e-module-calendar.edj module.desktop calendar.edj
 
 EXTRA_DIST = module.desktop.in \
-	     e-module-calendar.spec.in \
+	     e_modules-calendar.spec.in \
 	     e-module-calendar.edc \
 	     calendar.edc \
 	     images/calendar.png \

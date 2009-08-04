@@ -13,7 +13,7 @@ files_DATA = uptime.edj module.desktop e-module-uptime.edj
 
 EXTRA_DIST = module.desktop.in \
 	     e_modules-uptime.spec.in \
-	     e-module-config.edc \
+	     e-module-uptime.edc \
 	     uptime.edc \
 	     images/module_icon.png
 

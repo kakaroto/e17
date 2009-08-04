@@ -12,7 +12,7 @@ filesdir =  $(datadir)
 files_DATA = module.desktop e-module-mail.edj mail.edj
 
 EXTRA_DIST = module.desktop.in \
-	     e_modules-main.spec.in \
+	     e_modules-mail.spec.in \
 	     e-module-mail.edc \
 	     mail.edc \
 	     images/checking.png \

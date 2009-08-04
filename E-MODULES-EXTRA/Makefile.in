@@ -15,8 +15,8 @@ distdir %::
 		test -d "$$d" -a -e "$$d/Makefile" || continue ; \
 		$(MAKE) -C $$d distdir || exit 1 ; \
 		mv $$d/$(distfolder) $(distdir) || exit 1 ; \
-		cd ..
 	done
+	cp {.indent.pro,AUTHORS,configure,configure.ac,e_modules.spec,Makefile.in,README,README.BROKEN} $(distdir)
 
 dist-gzip %:: distdir
 	tar -czf $(distdir).tar.gz $(distdir)
