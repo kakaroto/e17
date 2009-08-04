@@ -75,7 +75,9 @@ e_modapi_init(E_Module *m)
 #define T Config_Item
 #define D conf_item_edd
     E_CONFIG_VAL(D, T, id, STR);
-    E_CONFIG_VAL(D, T, switch2, INT);
+    E_CONFIG_VAL(D, T, mode, INT);
+    E_CONFIG_VAL(D, T, notification, INT);
+
 
     conf_edd = E_CONFIG_DD_NEW("Config", Config);
 #undef T
@@ -83,7 +85,8 @@ e_modapi_init(E_Module *m)
 #define T Config
 #define D conf_edd
     E_CONFIG_VAL(D, T, version, INT);
-    E_CONFIG_VAL(D, T, switch1, UCHAR); /* our var from header */
+    E_CONFIG_VAL(D, T, mode, INT); /* our var from header */
+    E_CONFIG_VAL(D, T, notification, INT); /* our var from header */
     E_CONFIG_LIST(D, T, conf_items, conf_item_edd); /* the list */
 
     /* Tell E to find any existing module data. First run ? */
@@ -300,7 +303,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     exalt_dbus_response_notify_set(inst->conn,response_cb,inst);
 
     if_wired_dialog_init(inst);
+    if_wired_dialog_basic_init(inst);
     if_network_dialog_init(inst);
+    if_network_dialog_basic_init(inst);
     if_wireless_dialog_init(inst);
     dns_dialog_init(inst);
     popup_init(inst);
@@ -405,7 +410,8 @@ _exalt_conf_new(void)
 
     /* setup defaults */
     IFMODCFG(0x008d);
-    exalt_conf->switch1 = 1;
+    exalt_conf->mode = 0;
+    exalt_conf->notification = 1;
     _exalt_conf_item_get(NULL);
     IFMODCFGEND;
 
@@ -471,7 +477,8 @@ _exalt_conf_item_get(const char *id)
     }
     ci = E_NEW(Config_Item, 1);
     ci->id = eina_stringshare_add(id);
-    ci->switch2 = 0;
+    ci->mode = 0;
+    ci->notification = 1;
     exalt_conf->conf_items = eina_list_append(exalt_conf->conf_items, ci);
     return ci;
 }
@@ -571,7 +578,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         }
     }
 
-    if(send_notif)
+    if(send_notif && exalt_conf->notification)
     {
         notify = notification_new();
     }
@@ -615,7 +622,9 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             if_wired_dialog_update(inst,response);
+            if_wired_dialog_basic_update(inst,response);
             if_network_dialog_update(inst,response);
+            if_network_dialog_basic_update(inst,response);
             if_wireless_dialog_update(inst,response);
 
             popup_update(inst,response);
@@ -629,12 +638,15 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
             if_wireless_dialog_update(inst,response);
+            if_wired_dialog_basic_update(inst,response);
+            if_network_dialog_basic_update(inst,response);
 
             popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
             if_wired_dialog_update(inst,response);
             if_network_dialog_update(inst,response);
+            if_network_dialog_new_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
             printf("%s command:\n",exalt_dbus_response_iface_get(response));
@@ -646,12 +658,19 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         case EXALT_DBUS_RESPONSE_IFACE_DOWN:
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
-            if(send_notif)
+            if(send_notif && exalt_conf->notification)
             {
                 snprintf(buf,1024,"Connected to %s\n",
                         exalt_dbus_response_string_get(response));
                 e_notification_body_set(notify,buf);
             }
+            if_network_dialog_basic_update(inst,response);
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
+            if_network_dialog_basic_update(inst,response);
+            if_network_dialog_update(inst,response);
+            if_wireless_dialog_update(inst,response);
+            popup_update(inst,response);
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
             printf("%s wpa_supplicant driver:\n",exalt_dbus_response_iface_get(response));
@@ -665,7 +684,7 @@ void response_cb(Exalt_DBus_Response* response, void* data )
         default: ;
     }
 
-    if(send_notif)
+    if(send_notif && exalt_conf->notification)
     {
         e_notification_send(notify,NULL,NULL);
         e_notification_unref(notify);
@@ -680,7 +699,8 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 
     switch(action)
     {
-        case EXALT_ETH_CB_ACTION_CONNECTED:
+        case EXALT_IFACE_ACTION_CONNECTED:
+            if(exalt_conf->notification)
             {
                 E_Notification *notify = notification_new();
 
@@ -691,7 +711,8 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
                 e_notification_unref(notify);
             }
             break;
-        case EXALT_ETH_CB_ACTION_DISCONNECTED:
+        case EXALT_IFACE_ACTION_DISCONNECTED:
+            if(exalt_conf->notification)
             {
                 E_Notification *notify = notification_new();
 
@@ -702,12 +723,14 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
                 e_notification_unref(notify);
             }
             break;
-        case EXALT_WIRELESS_CB_ACTION_CONNECTED:
+        case EXALT_WIRELESS_ACTION_CONNECTED:
             id = calloc(1,sizeof(int));
             *id = exalt_dbus_wireless_essid_get(inst->conn,eth);
             notification = eina_list_append(notification,id);
+            exalt_dbus_eth_connected_is(inst->conn,eth);
             break;
-        case EXALT_WIRELESS_CB_ACTION_DISCONNECTED:
+        case EXALT_WIRELESS_ACTION_DISCONNECTED:
+            if(exalt_conf->notification)
             {
                 E_Notification *notify = notification_new();
 
@@ -716,38 +739,39 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data)
 
                 e_notification_send(notify,NULL,NULL);
             }
+            exalt_dbus_eth_connected_is(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_NEW:
-        case EXALT_ETH_CB_ACTION_ADD:
+        case EXALT_IFACE_ACTION_NEW:
+        case EXALT_IFACE_ACTION_ADD:
             popup_iface_add(inst,eth,IFACE_WIRED);
             exalt_dbus_eth_wireless_is(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_REMOVE:
+        case EXALT_IFACE_ACTION_REMOVE:
             popup_iface_remove(inst,eth);
             break;
-        case EXALT_ETH_CB_ACTION_UP:
-        case EXALT_ETH_CB_ACTION_DOWN:
+        case EXALT_IFACE_ACTION_UP:
+        case EXALT_IFACE_ACTION_DOWN:
             exalt_dbus_eth_up_is(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_LINK:
-        case EXALT_ETH_CB_ACTION_UNLINK:
+        case EXALT_IFACE_ACTION_LINK:
+        case EXALT_IFACE_ACTION_UNLINK:
             exalt_dbus_eth_link_is(inst->conn,eth);
             break;
-        case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+        case EXALT_WIRELESS_ACTION_ESSIDCHANGE:
             break;
-        case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
+        case EXALT_IFACE_ACTION_ADDRESS_NEW:
             exalt_dbus_eth_ip_get(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_NETMASK_NEW:
+        case EXALT_IFACE_ACTION_NETMASK_NEW:
             exalt_dbus_eth_netmask_get(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_GATEWAY_NEW:
+        case EXALT_IFACE_ACTION_GATEWAY_NEW:
             exalt_dbus_eth_gateway_get(inst->conn,eth);
             break;
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONN_APPLY_START:
             edje_object_signal_emit(inst->o_exalt,"apply,start","exalt");
             break;
-        case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
             edje_object_signal_emit(inst->o_exalt,"apply,stop","exalt");
             break;
         default: ;
@@ -761,8 +785,13 @@ void notify_scan_cb(char* iface, Eina_List* networks, void* user_data )
 
 E_Notification* notification_new()
 {
+    char buf[1024];
+    snprintf(buf,1024,"%s/module_icon.png",exalt_conf->module->dir);
+
     E_Notification *notify = e_notification_new();
     e_notification_app_name_set(notify, "Exalt");
     e_notification_timeout_set(notify, 3000);
+    e_notification_app_icon_set(notify, buf);
+
     return notify;
 }

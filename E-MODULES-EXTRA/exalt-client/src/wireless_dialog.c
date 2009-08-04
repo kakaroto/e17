@@ -39,6 +39,9 @@ void if_wireless_dialog_create(Instance* inst)
     inst->wireless.btn_deactivate = e_widget_button_add(evas,D_("Deactivate"),NULL,if_wireless_dialog_cb_deactivate,inst,NULL);
     e_widget_frametable_object_append(flist, inst->wireless.btn_deactivate, 2, 0, 1, 1, 1, 0, 1, 0);
 
+    inst->wireless.btn_new = e_widget_button_add(evas,D_("Create a new network"),NULL,if_wireless_dialog_cb_new,inst,NULL);
+    e_widget_frametable_object_append(flist, inst->wireless.btn_new, 0, 1, 3, 1, 1, 0, 1, 0);
+
     e_widget_list_object_append(list, flist, 1, 0, 0.5);
 
     e_widget_min_size_get(list, &mw, &mh);
@@ -73,6 +76,7 @@ void if_wireless_dialog_set(Instance *inst, Popup_Elt* iface)
 
     exalt_dbus_eth_up_is(inst->conn,iface->iface);
     exalt_dbus_eth_link_is(inst->conn,iface->iface);
+    exalt_dbus_eth_connected_is(inst->conn, iface->iface);
 }
 
 void if_wireless_dialog_hide(Instance *inst)
@@ -118,7 +122,11 @@ void if_wireless_dialog_update(Instance* inst,Exalt_DBus_Response *response)
             inst->wireless.iface->is_link = boolean;
             if_wireless_dialog_icon_update(inst);
             break;
-
+        case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
+            boolean = exalt_dbus_response_is_get(response);
+            inst->wireless.iface->is_connected = boolean;
+            if_wireless_dialog_icon_update(inst);
+            break;
         default: break;
     }
     if_wireless_disabled_update(inst);
@@ -137,9 +145,10 @@ void if_wireless_dialog_icon_update(Instance *inst)
         edje_object_signal_emit(inst->wireless.icon,"notLink","exalt");
     else if(!inst->wireless.iface->is_up)
         edje_object_signal_emit(inst->wireless.icon,"notActivate","exalt");
+    else if(!inst->wireless.iface->is_connected)
+        edje_object_signal_emit(inst->wireless.icon,"notConnected","exalt");
     else
         edje_object_signal_emit(inst->wireless.icon,"default","exalt");
-
 }
 
 void if_wireless_disabled_update(Instance *inst)
@@ -181,4 +190,14 @@ void if_wireless_dialog_cb_deactivate(void *data, void*data2)
 {
     Instance *inst = data;
     exalt_dbus_eth_down(inst->conn, inst->wireless.iface->iface);
+}
+
+
+
+void if_wireless_dialog_cb_new(void *data, void*data2)
+{
+    Instance *inst = data;
+    if_network_dialog_new_show(inst);
+    if_network_dialog_new_set(inst, inst->wireless.iface);
+    if_wireless_dialog_hide(inst);
 }

@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  wireless_dialog.c
+ *       Filename:  network_dialog.c
  *
  *    Description:
  *
@@ -33,6 +33,7 @@ void if_network_dialog_create(Instance* inst)
 
     inst->network.dialog = e_dialog_new(inst->gcc->gadcon->zone->container, "e", "exalt_wireless_dialog");
     e_dialog_title_set(inst->network.dialog, D_("Wireless Connection Settings"));
+    snprintf(buf, sizeof(buf), "%s/e-module-exalt.edj", exalt_conf->module->dir);
     inst->network.dialog->data = inst;
 
     evas = e_win_evas_get(inst->network.dialog->win);
@@ -198,6 +199,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
     exalt_dbus_eth_dhcp_is(inst->conn,network->iface);
     exalt_dbus_eth_up_is(inst->conn,network->iface);
     exalt_dbus_eth_link_is(inst->conn,network->iface);
+    exalt_dbus_eth_connected_is(inst->conn, network->iface);
 
     e_dialog_show(inst->network.dialog);
 }
@@ -286,7 +288,7 @@ Evas_Object* if_network_dialog_wpa_new(Instance* inst,Exalt_Wireless_Network* n)
             for(j=0;j<exalt_wireless_network_ie_pairwise_cypher_number_get(ie);j++)
             {
                 char buf[1024];
-                char* pairwise = exalt_wireless_network_name_from_cypher_name(
+                const char* pairwise = exalt_wireless_network_name_from_cypher_name(
                         exalt_wireless_network_ie_pairwise_cypher_get(ie,j));
 
                 snprintf(buf,1024,"%s-%s-%s",wpa,auth,pairwise);
@@ -409,7 +411,11 @@ void if_network_dialog_update(Instance* inst,Exalt_DBus_Response *response)
             inst->network.network->is_link = boolean;
             if_network_dialog_icon_update(inst);
             break;
-
+        case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
+            boolean = exalt_dbus_response_is_get(response);
+            inst->network.network->is_connected = boolean;
+            if_network_dialog_icon_update(inst);
+            break;
         default: break;
     }
     if_network_disabled_update(inst);
@@ -428,6 +434,8 @@ void if_network_dialog_icon_update(Instance *inst)
         edje_object_signal_emit(inst->network.icon,"notLink","exalt");
     else if(!inst->network.network->is_up)
         edje_object_signal_emit(inst->network.icon,"notActivate","exalt");
+    else if(!inst->network.network->is_connected)
+        edje_object_signal_emit(inst->network.icon,"notConnected","exalt");
     else
         edje_object_signal_emit(inst->network.icon,"default","exalt");
 }

@@ -26,8 +26,11 @@ typedef enum _Popup_Enum Popup_Enum;
 typedef enum _Iface_Type Iface_Type;
 typedef struct _Popup_Elt Popup_Elt;
 typedef struct _Wired_Dialog Wired_Dialog;
+typedef struct _Wired_Dialog_Basic Wired_Dialog_Basic;
 typedef struct _Wireless_Dialog Wireless_Dialog;
+typedef struct _Network_Dialog_New Network_Dialog_New;
 typedef struct _Network_Dialog Network_Dialog;
+typedef struct _Network_Dialog_Basic Network_Dialog_Basic;
 typedef struct _DNS_Dialog DNS_Dialog;
 
 /* Base config struct. Store Item Count, etc
@@ -51,7 +54,8 @@ struct _Config
    int version;
 
    /* actual config properties; Define your own. (per-module) */
-   unsigned char switch1;
+   int mode;
+   int notification;
 };
 
 /* This struct used to hold config for individual items from above list */
@@ -61,7 +65,8 @@ struct _Config_Item
    const char *id;
 
    /* actual config properties; Define your own per-item (pos, clr) */
-   int switch2;
+   int mode;
+   int notification;
 };
 
 struct _Wired_Dialog
@@ -92,15 +97,63 @@ struct _Wired_Dialog
     char* cmd;
 };
 
+struct _Wired_Dialog_Basic
+{
+    E_Dialog *dialog;
+    Popup_Elt* iface;
+
+    Evas_Object *btn;
+    Evas_Object *icon;
+};
+
+
 struct _Wireless_Dialog
 {
     E_Dialog *dialog;
     Popup_Elt* iface;
 
     Evas_Object *btn_activate;
-    Evas_Object* nothinhg;
     Evas_Object *btn_deactivate;
     Evas_Object *icon;
+
+    Evas_Object *btn_new;
+};
+
+struct _Network_Dialog_New
+{
+    E_Dialog *dialog;
+    Popup_Elt *iface;
+
+    Evas_Object *flist_enc;
+    Evas_Object *flist_iface;
+
+    int enc;
+    Evas_Object *radio_noenc;
+    Evas_Object *radio_wep_ascii;
+    Evas_Object *radio_wep_hexa;
+    Evas_Object *radio_wpa_personnal;
+    Evas_Object *radio_wpa2_personnal;
+
+
+    Evas_Object *entry_essid;
+    char *essid;
+    Evas_Object *lbl_pwd;
+    Evas_Object *entry_pwd;
+    char *pwd;
+    Evas_Object *lbl_login;
+    Evas_Object *entry_login;
+    char *login;
+
+
+    Evas_Object *entry_ip;
+    char *ip;
+    Evas_Object *entry_netmask;
+    char *netmask;
+    Evas_Object *entry_gateway;
+    char *gateway;
+    Evas_Object *lbl_cmd;
+    Evas_Object *entry_cmd;
+    char *cmd;
 };
 
 struct _Network_Dialog
@@ -150,6 +203,33 @@ struct _Network_Dialog
     char* cmd;
 };
 
+struct _Network_Dialog_Basic
+{
+    E_Dialog *dialog;
+    Popup_Elt* network;
+
+    //main list of the window
+    Evas_Object *list;
+    //the first frame list, with the name of the network
+    Evas_Object *flist;
+    Evas_Object *btn;
+    Evas_Object *icon;
+
+    char *current_essid;
+
+    //the second flist, whith the entry for the password and the login
+    Evas_Object *frame;
+    Evas_Object* lbl_login;
+    Evas_Object* entry_login;
+    char* login;
+    Evas_Object* lbl_pwd;
+    Evas_Object* entry_pwd;
+    char* pwd;
+
+    //wep
+    int wep_key_hexa;
+};
+
 struct _DNS_Dialog
 {
     E_Dialog *dialog;
@@ -177,8 +257,11 @@ struct _Instance
     Evas_Object     *popup_ilist_obj;
 
     Wired_Dialog wired;
+    Wired_Dialog_Basic wired_basic;
     Wireless_Dialog wireless;
+    Network_Dialog_New network_new;
     Network_Dialog network;
+    Network_Dialog_Basic network_basic;
     DNS_Dialog dns;
 
     Exalt_DBus_Conn *conn;
@@ -214,6 +297,8 @@ struct _Popup_Elt
 
     int is_link;
     int is_up;
+    //use with a wireless interface
+    int is_connected;
 
     Evas_Object* icon;
 
@@ -291,6 +376,19 @@ void if_wired_dialog_cb_deactivate(void *data, void*data2);
 void if_wired_dialog_icon_update(Instance *inst);
 
 
+void if_wired_dialog_basic_init(Instance* inst);
+void if_wired_dialog_basic_create(Instance* inst);
+void if_wired_dialog_basic_show(Instance* inst);
+void if_wired_dialog_basic_set(Instance *inst, Popup_Elt* iface);
+void if_wired_dialog_basic_hide(Instance *inst);
+void if_wired_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response);
+void if_wired_dialog_basic_icon_update(Instance *inst);
+void if_wired_dialog_basic_cb_del(E_Win *win);
+void if_wired_dialog_basic_cb_close(void *data, E_Dialog *dialog);
+void if_wired_dialog_basic_cb_activate(void *data, void *data2);
+void if_wired_dialog_basic_cb_deactivate(void *data, void *data2);
+
+
 void if_wireless_dialog_init(Instance* inst);
 void if_wireless_dialog_create(Instance* inst);
 void if_wireless_dialog_show(Instance* inst);
@@ -303,7 +401,21 @@ void if_wireless_dialog_cb_ok(void *data, E_Dialog *dialog);
 void if_wireless_dialog_cb_del(E_Win *win);
 void if_wireless_dialog_cb_activate(void *data, void*data2);
 void if_wireless_dialog_cb_deactivate(void *data, void*data2);
+void if_wireless_dialog_cb_new(void *data, void*data2);
 
+
+void if_network_dialog_new_init(Instance* inst);
+void if_network_dialog_new_create(Instance* inst);
+void if_network_dialog_new_show(Instance* inst);
+void if_network_dialog_new_set(Instance *inst, Popup_Elt* iface);
+void if_network_dialog_new_hide(Instance *inst);
+void if_network_dialog_new_cb_ok(void *data, E_Dialog *dialog);
+void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog);
+void if_network_dialog_new_cb_cancel(void *data, E_Dialog *dialog);
+void if_network_dialog_new_cb_del(E_Win *win);
+void if_network_dialog_new_disabled_update(void *data, Evas_Object *obj, void *event_info);
+void if_network_dialog_new_cb_entry(void *data, void* data2);
+void if_network_dialog_new_update(Instance* inst,Exalt_DBus_Response *response);
 
 void if_network_dialog_init(Instance* inst);
 void if_network_dialog_create(Instance* inst);
@@ -325,6 +437,20 @@ void if_network_dialog_cb_cancel(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_ok(void *data, E_Dialog *dialog);
 void if_network_dialog_cb_apply(void *data, E_Dialog *dialog);
 
+
+void if_network_dialog_basic_init(Instance* inst);
+void if_network_dialog_basic_create(Instance* inst);
+void if_network_dialog_basic_show(Instance* inst);
+void if_network_dialog_basic_set(Instance *inst, Popup_Elt* network);
+void if_network_dialog_basic_hide(Instance *inst);
+void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response);
+void if_network_dialog_basic_icon_update(Instance *inst);
+void if_network_dialog_basic_cb_del(E_Win *win);
+void if_network_dialog_basic_cb_close(void *data, E_Dialog *dialog);
+void if_network_dialog_basic_cb_connect(void *data, void*data2);
+void if_network_dialog_basic_cb_disconnect(void *data, void*data2);
+Evas_Object* if_network_dialog_basic_wep_new(Instance* inst,Exalt_Wireless_Network* n);
+Evas_Object* if_network_dialog_basic_wpa_new(Instance* inst,Exalt_Wireless_Network* n);
 
 void dns_dialog_init(Instance* inst);
 void dns_dialog_create(Instance* inst);

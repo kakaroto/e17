@@ -202,6 +202,7 @@ popup_iface_add(Instance* inst, const char* iface, Iface_Type iface_type)
     exalt_dbus_eth_ip_get(inst->conn,iface);
     exalt_dbus_eth_up_is(inst->conn,iface);
     exalt_dbus_eth_link_is(inst->conn,iface);
+    exalt_dbus_eth_connected_is(inst->conn, iface);
 
     if(iface_type == IFACE_WIRELESS)
         exalt_dbus_wireless_scan(inst->conn,elt->iface);
@@ -233,26 +234,51 @@ void popup_cb_ifnet_sel(void *data)
             switch(elt->iface_type)
             {
                 case IFACE_WIRED:
-                    if_wired_dialog_show(inst);
-                    if_wired_dialog_set(inst,elt);
+                    if(!exalt_conf->mode)
+                    {
+                        if_wired_dialog_basic_show(inst);
+                        if_wired_dialog_basic_set(inst,elt);
+                        if_wired_dialog_hide(inst);
+                    }
+                    else
+                    {
+                        if_wired_dialog_show(inst);
+                        if_wired_dialog_set(inst,elt);
+                        if_wired_dialog_basic_hide(inst);
+                    }
                     if_network_dialog_hide(inst);
                     if_wireless_dialog_hide(inst);
+                    if_network_dialog_basic_hide(inst);
                     break;
                 case IFACE_WIRELESS:
                     if_wireless_dialog_show(inst);
                     if_wireless_dialog_set(inst,elt);
                     if_network_dialog_hide(inst);
                     if_wired_dialog_hide(inst);
+                    if_network_dialog_basic_hide(inst);
+                    if_wired_dialog_basic_hide(inst);
                     break;
             }
             break;
         case POPUP_NETWORK:
-            if_network_dialog_show(inst);
-            if_network_dialog_set(inst,elt);
+            if(!exalt_conf->mode)
+            {
+                if_network_dialog_basic_show(inst);
+                if_network_dialog_basic_set(inst,elt);
+                if_network_dialog_hide(inst);
+            }
+            else
+            {
+                if_network_dialog_show(inst);
+                if_network_dialog_set(inst,elt);
+                if_network_dialog_basic_hide(inst);
+            }
             if_wired_dialog_hide(inst);
+            if_wired_dialog_basic_hide(inst);
             if_wireless_dialog_hide(inst);
             break;
     }
+    if_network_dialog_new_hide(inst);
     popup_hide(inst);
 }
 
@@ -314,6 +340,25 @@ void popup_link_update(Instance* inst, char* iface, int is_link)
     popup_icon_update(inst,iface);
 }
 
+void popup_connected_update(Instance* inst, char* iface, int is_connected)
+{
+    Popup_Elt* elt;
+    Eina_List *l;
+    EINA_LIST_FOREACH(inst->l,l,elt)
+    {
+        if(elt && elt->type == POPUP_IFACE && elt->iface
+                && elt->iface_type == IFACE_WIRELESS
+                && strcmp(elt->iface,iface)==0)
+        {
+            elt->is_connected = is_connected;
+            break;
+        }
+    }
+    popup_icon_update(inst,iface);
+}
+
+
+
 void popup_icon_update(Instance* inst, const char* iface)
 {
     char* group;
@@ -329,9 +374,10 @@ void popup_icon_update(Instance* inst, const char* iface)
                 edje_object_signal_emit(elt->icon,"notLink","exalt");
             else if(!elt->is_up)
                 edje_object_signal_emit(elt->icon,"notActivate","exalt");
+            else if(!elt->is_connected && elt->iface_type == IFACE_WIRELESS)
+                edje_object_signal_emit(elt->icon,"notConnected","exalt");
             else
                 edje_object_signal_emit(elt->icon,"default","exalt");
-
             break;
         }
     }
@@ -397,6 +443,10 @@ void popup_update(Instance* inst, Exalt_DBus_Response* response)
             break;
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
             popup_link_update(inst,exalt_dbus_response_iface_get(response),
+                    exalt_dbus_response_is_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_CONNECTED_IS:
+            popup_connected_update(inst,exalt_dbus_response_iface_get(response),
                     exalt_dbus_response_is_get(response));
             break;
         default: ;
