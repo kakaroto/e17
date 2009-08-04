@@ -287,8 +287,8 @@ EAPI void eon_square_coords_get(Eon_Square *s, Eon_Coord *x, Eon_Coord *y, Eon_C
 {
 	Eon_Square_Private *prv = PRIVATE(s);
 
-	*x = prv->x;
-	*y = prv->y;
-	*w = prv->w;
-	*h = prv->h;
+	if (x) *x = prv->x;
+	if (y) *y = prv->y;
+	if (w) *w = prv->w;
+	if (h) *h = prv->h;
 }
