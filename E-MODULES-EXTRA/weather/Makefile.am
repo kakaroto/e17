@@ -14,7 +14,7 @@ files_DATA = module.desktop e-module-weather.edj weather.edj
 EXTRA_DIST = module.desktop.in \
 	     e_modules-weather.spec.in \
 	     e-module-weather.edc \
-	     weather.edc \
+	     weather.edc
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
