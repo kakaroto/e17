@@ -13,6 +13,9 @@
 #  include <time.h>
 # endif
 #endif
+#ifdef HAVE_LOCALE_H
+# include <locale.h>
+#endif
 #include "e_mod_main.h"
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
@@ -74,12 +77,19 @@ e_modapi_init(E_Module *m)
 {
    char buf[4096];
 
+#if HAVE_LOCALE_H
+   setlocale(LC_ALL, "");
+#endif
+   snprintf(buf, sizeof(buf), "%s/locale", m->dir);
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", m->dir);
 
    /* register config dialog for panel */
    e_configure_registry_category_add("extensions", 90, "Screenshot", 
 				     NULL, "preferences-extensions");
-   e_configure_registry_item_add("extensions/screenshot", 20, "Screenshot", 
+   e_configure_registry_item_add("extensions/screenshot", 20, D_("Screenshot"), 
 				 NULL, buf, 
 				 e_int_config_screenshot_module);
 
@@ -109,7 +119,7 @@ e_modapi_init(E_Module *m)
 	     /* Config Too Old */
 	     _cfg_free();
 	     ecore_timer_add(1.0, _cfg_timer,
-			     "Screenshot Module Configuration data needed "
+			     D_("Screenshot Module Configuration data needed "
 			     "upgrading. Your old configuration<br> has been"
 			     " wiped and a new set of defaults initialized. "
 			     "This<br>will happen regularly during "
@@ -120,14 +130,14 @@ e_modapi_init(E_Module *m)
 			     "configuration simply lacks. This new set of "
 			     "defaults will fix<br>that by adding it in. "
 			     "You can re-configure things now to your<br>"
-			     "liking. Sorry for the inconvenience.<br>");
+			     "liking. Sorry for the inconvenience.<br>"));
 	  }
 	else if (ss_cfg->version > MOD_CONFIG_FILE_VERSION) 
 	  {
 	     /* Config Too New */
 	     _cfg_free();
 	     ecore_timer_add(1.0, _cfg_timer, 
-			     "Your Screenshot Module configuration is NEWER "
+			     D_("Your Screenshot Module configuration is NEWER "
 			     "than the Screenshot Module version. This is "
 			     "very<br>strange. This should not happen unless"
 			     " you downgraded<br>the Screenshot Module or "
@@ -136,7 +146,7 @@ e_modapi_init(E_Module *m)
 			     "was running. This is bad and<br>as a "
 			     "precaution your configuration has been now "
 			     "restored to<br>defaults. Sorry for the "
-			     "inconvenience.<br>");
+			     "inconvenience.<br>"));
 	  }
      }
 
@@ -147,7 +157,7 @@ e_modapi_init(E_Module *m)
    if (act) 
      {
 	act->func.go = _cb_take_shot;
-	e_action_predef_name_set("Screenshot", "Take Screenshot", 
+	e_action_predef_name_set("Screenshot", D_("Take Screenshot"), 
 				 "screenshot", NULL, NULL, 0);	
      }
 
@@ -163,7 +173,7 @@ e_modapi_shutdown(E_Module *m)
 
    if (act) 
      {
-	e_action_predef_name_del("Screenshot", "Take Screenshot");
+	e_action_predef_name_del("Screenshot", D_("Take Screenshot"));
 	e_action_del("screenshot");
 	act = NULL;
      }
@@ -254,7 +264,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
-   return "Screenshot";
+   return D_("Screenshot");
 }
 
 static Evas_Object *
@@ -292,7 +302,7 @@ _cfg_free(void)
 static int 
 _cfg_timer(void *data) 
 {
-   e_util_dialog_show("Screenshot Configuration Updated", data);
+   e_util_dialog_show(D_("Screenshot Configuration Updated"), data);
    return 0;
 }
 
@@ -352,21 +362,21 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 	inst->menu_mode = mn;
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Whole Screen");
+	e_menu_item_label_set(mi, D_("Whole Screen"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_normal, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Select Window");
+	e_menu_item_label_set(mi, D_("Select Window"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 1) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_window, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Select Region");
+	e_menu_item_label_set(mi, D_("Select Region"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 2) e_menu_item_toggle_set(mi, 1);
@@ -377,11 +387,11 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 	inst->menu = mn;
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Capture Mode");
+	e_menu_item_label_set(mi, D_("Capture Mode"));
 	e_menu_item_submenu_set(mi, inst->menu_mode);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Configuration");
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _cb_menu_cfg, inst);
 
@@ -455,8 +465,8 @@ _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *s
    if (!(inst = data)) return;
    if (ss_cfg->prompt)
      {
-	e_entry_dialog_show("Screenshot Module", "enlightenment", 
-			    "Enter a new filename for this screenshot",
+	e_entry_dialog_show(D_("Screenshot Module"), "enlightenment", 
+			    D_("Enter a new filename for this screenshot"),
 			    NULL, NULL, NULL, _cb_dialog_ok, NULL, inst);
      }
    else 
@@ -691,7 +701,6 @@ _cb_timer(void *data)
 
    if (!(inst = data)) return 0;
 
-   // a count down timer should never be less zero, reset timer in that case
    if ((ss_cfg->delay - inst->counter) < 0) inst->counter = 0;
 
    snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));

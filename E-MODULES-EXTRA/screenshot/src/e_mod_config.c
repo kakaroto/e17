@@ -45,7 +45,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params)
    v->advanced.apply_cfdata = _adv_apply;
 
    snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
-   cfd = e_config_dialog_new(con, "Screenshot Configuration", "Screenshot", 
+   cfd = e_config_dialog_new(con, D_("Screenshot Configuration"), "Screenshot", 
 			     "_e_modules_screenshot_config_dialog", buf, 0, 
                              v, NULL);
    ss_cfg->cfd = cfd;
@@ -96,49 +96,49 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_frametable_add(evas, "General Settings", 0);
-   ow = e_widget_check_add(evas, "Beep when taking screenshot", 
+   of = e_widget_frametable_add(evas, D_("General Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Beep when taking screenshot"), 
 			   &(cfdata->use_bell));
    e_widget_frametable_object_append(of, ow, 0, 0, 2, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Delay Time:");
+   ow = e_widget_label_add(evas, D_("Delay Time:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    ow = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
 			    &(cfdata->delay), NULL, 100);
    e_widget_frametable_object_append(of, ow, 1, 1, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, "Capture Mode", 0);
+   of = e_widget_frametable_add(evas, D_("Capture Mode"), 0);
    rg = e_widget_radio_group_new(&(cfdata->mode));
-   ow = e_widget_radio_add(evas, "Whole Screen", 0, rg);
+   ow = e_widget_radio_add(evas, D_("Whole Screen"), 0, rg);
    e_widget_frametable_object_append(of, ow, 0, 0, 1, 1, 1, 0, 0, 0);
-   ow = e_widget_radio_add(evas, "Select Window", 1, rg);
+   ow = e_widget_radio_add(evas, D_("Select Window"), 1, rg);
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
-   ow = e_widget_radio_add(evas, "Select Region", 2, rg);
+   ow = e_widget_radio_add(evas, D_("Select Region"), 2, rg);
    e_widget_frametable_object_append(of, ow, 0, 3, 1, 1, 1, 0, 0, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, "File Settings", 0);
-   ow = e_widget_check_add(evas, "Always prompt for filename", 
+   of = e_widget_frametable_add(evas, D_("File Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Always prompt for filename"), 
 			   &(cfdata->prompt));
    e_widget_frametable_object_append(of, ow, 0, 0, 5, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Save Directory:");
+   ow = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    ow = e_widget_entry_add(evas, &(cfdata->location), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ow, 1, 1, 4, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Filename:");
+   ow = e_widget_label_add(evas, D_("Filename:"));
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
    ow = e_widget_entry_add(evas, &(cfdata->filename), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ow, 1, 2, 4, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, "Application Settings", 0);
-   ow = e_widget_check_add(evas, "Launch application after taking screenshot", 
+   of = e_widget_frametable_add(evas, D_("Application Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Launch application after taking screenshot"), 
 			   &(cfdata->use_app));
    e_widget_frametable_object_append(of, ow, 0, 0, 4, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, "Thumbnail Settings", 0);
-   ow = e_widget_check_add(evas, "Generate thumbnail from screenshot", 
+   of = e_widget_frametable_add(evas, D_("Thumbnail Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Generate thumbnail from screenshot"), 
 			   &(cfdata->use_thumb));
    e_widget_frametable_object_append(of, ow, 0, 0, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -177,53 +177,53 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    E_Radio_Group *rg;
 
    o = e_widget_table_add(evas, 0);
-   of = e_widget_frametable_add(evas, "General Settings", 0);
-   ow = e_widget_check_add(evas, "Beep when taking screenshot", 
+   of = e_widget_frametable_add(evas, D_("General Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Beep when taking screenshot"), 
 			   &(cfdata->use_bell));
    e_widget_frametable_object_append(of, ow, 0, 0, 2, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Delay Time:");
+   ow = e_widget_label_add(evas, D_("Delay Time:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    ow = e_widget_slider_add(evas, 1, 0, "%1.0f seconds", 0.0, 60.0, 1.0, 0, 
 			    &(cfdata->delay), NULL, 100);
    e_widget_frametable_object_append(of, ow, 1, 1, 1, 1, 1, 0, 1, 0);
 
-   ow = e_widget_label_add(evas, "Image Quality:");
+   ow = e_widget_label_add(evas, D_("Image Quality:"));
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
    ow = e_widget_slider_add(evas, 1, 0, "%1.0f %%", 1.0, 100.0, 1.0, 0, 
 			    NULL, &(cfdata->quality), 100);
    e_widget_frametable_object_append(of, ow, 1, 2, 1, 1, 1, 0, 1, 0);
    e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 0, 1, 0);
 
-   of = e_widget_frametable_add(evas, "Capture Mode", 0);
+   of = e_widget_frametable_add(evas, D_("Capture Mode"), 0);
    rg = e_widget_radio_group_new(&(cfdata->mode));
-   ow = e_widget_radio_add(evas, "Whole Screen", 0, rg);
+   ow = e_widget_radio_add(evas, D_("Whole Screen"), 0, rg);
    e_widget_frametable_object_append(of, ow, 0, 0, 1, 1, 1, 0, 0, 0);
-   ow = e_widget_radio_add(evas, "Select Window", 1, rg);
+   ow = e_widget_radio_add(evas, D_("Select Window"), 1, rg);
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
-   ow = e_widget_radio_add(evas, "Select Region", 2, rg);
+   ow = e_widget_radio_add(evas, D_("Select Region"), 2, rg);
    e_widget_frametable_object_append(of, ow, 0, 3, 1, 1, 1, 0, 0, 0);
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 0);
 
-   of = e_widget_frametable_add(evas, "File Settings", 0);
-   ow = e_widget_check_add(evas, "Always prompt for filename", 
+   of = e_widget_frametable_add(evas, D_("File Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Always prompt for filename"), 
 			   &(cfdata->prompt));
    e_widget_frametable_object_append(of, ow, 0, 0, 5, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Save Directory:");
+   ow = e_widget_label_add(evas, D_("Save Directory:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    ow = e_widget_entry_add(evas, &(cfdata->location), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ow, 1, 1, 4, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Filename:");
+   ow = e_widget_label_add(evas, D_("Filename:"));
    e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 0, 0, 0);
    ow = e_widget_entry_add(evas, &(cfdata->filename), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ow, 1, 2, 4, 1, 1, 0, 1, 0);
    e_widget_table_object_append(o, of, 0, 2, 2, 1, 1, 0, 1, 0);
 
-   of = e_widget_frametable_add(evas, "Application Settings", 0);
-   ow = e_widget_check_add(evas, "Launch application after taking screenshot", 
+   of = e_widget_frametable_add(evas, D_("Application Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Launch application after taking screenshot"), 
 			   &(cfdata->use_app));
    launch_check = ow;
    e_widget_frametable_object_append(of, ow, 0, 0, 4, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Application:");
+   ow = e_widget_label_add(evas, D_("Application:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    app_entry = e_widget_entry_add(evas, &(cfdata->app), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, app_entry, 1, 1, 3, 1, 1, 0, 1, 0);
@@ -235,16 +235,16 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    // handler for enable/disable widget
    e_widget_on_change_hook_set(launch_check, _cb_disable_check, app_entry);
 
-   of = e_widget_frametable_add(evas, "Thumbnail Settings", 0);
-   thumb_check = e_widget_check_add(evas, "Generate thumbnail from screenshot", 
+   of = e_widget_frametable_add(evas, D_("Thumbnail Settings"), 0);
+   thumb_check = e_widget_check_add(evas, D_("Generate thumbnail from screenshot"), 
 			   &(cfdata->use_thumb));
    e_widget_frametable_object_append(of, thumb_check, 0, 0, 4, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "Size:");
+   ow = e_widget_label_add(evas, D_("Size:"));
    e_widget_frametable_object_append(of, ow, 0, 1, 1, 1, 1, 0, 0, 0);
    thumb_slider = e_widget_slider_add(evas, 1, 0, "%1.0f %%", 10.0, 100.0, 5.0, 0, 
 			    NULL, &(cfdata->thumb_size), 100);
    e_widget_frametable_object_append(of, thumb_slider, 1, 1, 3, 1, 1, 0, 1, 0);
-   ow = e_widget_label_add(evas, "(Percentage of original image to use for thumbnail)");
+   ow = e_widget_label_add(evas, D_("(Percentage of original image to use for thumbnail)"));
    e_widget_frametable_object_append(of, ow, 0, 2, 4, 1, 1, 0, 1, 0);
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 0, 1, 0);
 

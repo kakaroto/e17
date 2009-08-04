@@ -23,8 +23,8 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-#AM_GNU_GETTEXT([external])
-#AM_GNU_GETTEXT_VERSION(0.14)
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14)
 
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
@@ -47,12 +47,12 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
-datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_PATH_PROG(EMPRINT, "emprint", "", $PATH)
 if test "$EMPRINT" = ""; then
   AC_MSG_ERROR(emprint not found)
 fi
 
+datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -61,6 +61,7 @@ AC_ARG_ENABLE(homedir-install,
 AC_OUTPUT([
 Makefile
 src/Makefile
+po/Makefile.in
 module.desktop
 e_modules-screenshot.spec
 ], [
