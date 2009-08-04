@@ -196,6 +196,7 @@ sub ProcessFile {
 
 	open(FI,$f) or return;
 	while (<FI>) {
+		s/\s+$//;
 		if (/^Name=(.*)$/) {
 			$Name = $1;
 		} elsif ($loc1 && /^Name\[$loc1\]=(.*)$/) {
