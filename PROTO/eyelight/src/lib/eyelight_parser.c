@@ -314,14 +314,14 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
                     current_node_summary = eyelight_node_new(EYELIGHT_NODE_TYPE_PROP, EYELIGHT_NAME_TEXT_SUMMARY,
                             father);
                     //insert the slide
-                    ecore_list_append(compiler->root->l, compiler->node_summary);
+                    compiler->root->l = eina_list_append(compiler->root->l, compiler->node_summary);
                 }
 
 
                 //if we want to display the summary here
                 if( name == EYELIGHT_NAME_SUMMARY)
                 {
-                    ecore_list_append(compiler->root->l, compiler->node_summary);
+                    compiler->root->l = eina_list_append(compiler->root->l, compiler->node_summary);
                 }
             }
             else

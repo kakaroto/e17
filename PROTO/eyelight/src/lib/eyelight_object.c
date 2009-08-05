@@ -65,7 +65,6 @@ Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Node *nod
         evas_object_size_hint_align_set(o_title, -1, -1);
         evas_object_size_hint_weight_set(o_title, -1, -1);
         evas_object_show(o_title);
-        evas_object_move(o_title, 0, 0);
         edje_object_part_box_append(o_slide,"area.title",o_title);
 
         return o_title;
@@ -92,7 +91,6 @@ Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Node *
         evas_object_size_hint_align_set(o_subtitle, -1, -1);
         evas_object_size_hint_weight_set(o_subtitle, -1, -1);
         evas_object_show(o_subtitle);
-        evas_object_move(o_subtitle, 0, 0);
         edje_object_part_box_append(o_slide,"area.subtitle",o_subtitle);
 
         return o_subtitle;
@@ -121,7 +119,6 @@ Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_No
         evas_object_size_hint_align_set(o_header_image, -1, -1);
         evas_object_size_hint_weight_set(o_header_image, -1, -1);
         evas_object_show(o_header_image);
-        evas_object_move(o_header_image, 0, 0);
         edje_object_part_box_append(o_slide,"area.header_image",o_header_image);
     }
 
@@ -146,7 +143,6 @@ Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Node 
         evas_object_size_hint_align_set(o_foot_text, -1, -1);
         evas_object_size_hint_weight_set(o_foot_text, -1, -1);
         evas_object_show(o_foot_text);
-        evas_object_move(o_foot_text, 0, 0);
         edje_object_part_box_append(o_slide,"area.foot_text",o_foot_text);
 
         return o_foot_text;
@@ -176,7 +172,6 @@ Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Node
         evas_object_size_hint_align_set(o_foot_image, -1, -1);
         evas_object_size_hint_weight_set(o_foot_image, -1, -1);
         evas_object_show(o_foot_image);
-        evas_object_move(o_foot_image, 0, 0);
         edje_object_part_box_append(o_slide,"area.foot_image",o_foot_image);
     }
 
@@ -196,7 +191,6 @@ Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Evas_Object *o_sli
     evas_object_size_hint_align_set(o_pages, -1, -1);
     evas_object_size_hint_weight_set(o_pages, -1, -1);
     evas_object_show(o_pages);
-    evas_object_move(o_pages, 0, 0);
     edje_object_part_box_append(o_slide,"area.pages",o_pages);
 
     return o_pages;
@@ -215,10 +209,14 @@ Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, int id_slide, 
         printf("load group eyelight/item_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
-    evas_object_size_hint_align_set(o_text, -1, -1);
+    evas_object_size_hint_align_set(o_text, -1, 0.5);
     evas_object_size_hint_weight_set(o_text, -1, -1);
+    Evas_Coord w,h;
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+    edje_object_size_max_get(o_text, &w, NULL);
+    evas_object_size_hint_max_set(o_text, w, h);
     evas_object_show(o_text);
-    evas_object_move(o_text, 0, 0);
     edje_object_part_box_append(o_area,buf,o_text);
 
     return o_text;
@@ -242,7 +240,6 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide,
     evas_object_size_hint_align_set(o_image, -1, -1);
     evas_object_size_hint_weight_set(o_image, -1, -1);
     evas_object_show(o_image);
-    evas_object_move(o_image, 0, 0);
     edje_object_part_box_append(o_area,buf,o_image);
 
 
@@ -389,7 +386,6 @@ Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, int id_slide,
     evas_object_size_hint_align_set(o_video, -1, -1);
     evas_object_size_hint_weight_set(o_video, -1, -1);
     evas_object_show(o_video);
-    evas_object_move(o_video, 0, 0);
     edje_object_part_box_append(o_area,buf,o_video);
 
     pres->video_objects[id_slide] = eina_list_append(
@@ -410,10 +406,15 @@ Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, int id_
         printf("load group eyelight/item_simple_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
-    evas_object_size_hint_align_set(o_text, -1, -1);
+    evas_object_size_hint_align_set(o_text, -1, 0.5);
     evas_object_size_hint_weight_set(o_text, -1, -1);
     evas_object_show(o_text);
-    evas_object_move(o_text, 0, 0);
+    Evas_Coord w,h;
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+    edje_object_size_max_get(o_text, &w, NULL);
+    evas_object_size_hint_max_set(o_text, w, h);
+
     edje_object_part_box_append(o_area,buf,o_text);
 
     int i;
@@ -435,10 +436,14 @@ Evas_Object *eyelight_object_item_summary_text_add(Eyelight_Viewer *pres, int id
         printf("load group eyelight/item_summary_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
-    evas_object_size_hint_align_set(o_text, -1, -1);
-    evas_object_size_hint_weight_set(o_text, 1, 1);
+    evas_object_size_hint_align_set(o_text, -1, 0.5);
+    evas_object_size_hint_weight_set(o_text, -1, -1);
     evas_object_show(o_text);
-    evas_object_move(o_text, 0, 0);
+    Evas_Coord w,h;
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+    edje_object_size_max_get(o_text, &w, NULL);
+    evas_object_size_hint_max_set(o_text, w, h);
     edje_object_part_box_append(o_area,buf,o_text);
 
     int i;
@@ -466,11 +471,15 @@ Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, int 
         printf("load group eyelight/item_simple_text error! %d \n",
                 edje_object_load_error_get(o_text));
     edje_object_part_text_set(o_text,"object.text",text);
-
-    evas_object_size_hint_align_set(o_text, -1, -1);
+    evas_object_size_hint_align_set(o_text, -1, 0.5);
     evas_object_size_hint_weight_set(o_text, -1, -1);
     evas_object_show(o_text);
-    evas_object_move(o_text, 0, 0);
+    Evas_Coord w,h;
+    edje_object_size_min_calc(o_text, &w, &h);
+    evas_object_size_hint_min_set(o_text, w, h);
+    edje_object_size_max_get(o_text, &w, NULL);
+    evas_object_size_hint_max_set(o_text, w, h);
+
     edje_object_part_box_append(o_area,buf,o_text);
 
     snprintf(buf,EYELIGHT_BUFLEN, " %s) ", numbering_id);
@@ -511,7 +520,6 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, int id_slide, 
     evas_object_size_hint_align_set(o_edje, -1, -1);
     evas_object_size_hint_weight_set(o_edje, -1, -1);
     evas_object_show(o_edje);
-    evas_object_move(o_edje, 0, 0);
     edje_object_part_box_append(o_area,buf,o_edje);
 
     pres->edje_objects[id_slide] = eina_list_append(
@@ -532,7 +540,6 @@ Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, int id_slide
     evas_object_size_hint_align_set(o_area, -1, -1);
     evas_object_size_hint_weight_set(o_area, -1, -1);
     evas_object_show(o_area);
-    evas_object_move(o_area, 0, 0);
 
     //set the size
     Edje_Message_Float_Set *msg = alloca(sizeof(Edje_Message_Float_Set) + (3 * sizeof(float)));

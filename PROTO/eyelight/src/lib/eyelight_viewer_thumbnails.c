@@ -137,12 +137,12 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
 
     //set all videos to 33%
     {
-       Eina_List *l;
-       Eyelight_Video *video;
-       EINA_LIST_FOREACH(pres_copy->video_objects[pos], l, video)
-	 {
-	    emotion_object_position_set(video->o_inter, 100);
-	 }
+        Eina_List *l;
+        Eyelight_Video *video;
+        EINA_LIST_FOREACH(pres_copy->video_objects[pos], l, video)
+        {
+            emotion_object_position_set(video->o_inter, 100);
+        }
     }
 
     ecore_main_loop_iterate();
@@ -164,13 +164,13 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
                 evas_object_del(data);
                 pres_copy->edje_objects[i] = eina_list_remove_list(pres_copy->edje_objects[i], l);
             }
-	}
- 	{
-	    Eyelight_Video *data;
+        }
+        {
+            Eyelight_Video *data;
             EINA_LIST_FOREACH_SAFE(pres_copy->video_objects[i], l, l_next, data)
             {
                 evas_object_del(data->o_inter);
-		EYELIGHT_FREE(data);
+                EYELIGHT_FREE(data);
                 pres_copy->video_objects[i] = eina_list_remove_list(pres_copy->video_objects[i], l);
             }
         }

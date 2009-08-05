@@ -43,10 +43,10 @@ program                                                                 \
         new off_x,off_y;                                                \
         custom_state(PART:part_name, "default", 0.0);                   \
         get_state_val(PART:part_name, STATE_REL2_OFFSET, off_x, off_y); \
-                                                                        \
+        \
         off_x = off_x + depth_off_x;                                    \
         set_state_val(PART:part_name, STATE_REL2_OFFSET, off_x, off_y); \
-                                                                        \
+        \
         set_state(PART:part_name, "custom", 0.0);                       \
     }                                                                   \
 }
@@ -57,7 +57,7 @@ part                                                \
 {                                                   \
     name: relative_part"_border_left";              \
     type: RECT;                                     \
-                                     \
+    \
     description                                     \
     {                                               \
         state: "default" 0.0;                       \
@@ -87,7 +87,7 @@ part                                                \
 {                                                   \
     name: relative_part"_border_right";             \
     type: RECT;                                     \
-                                     \
+    \
     description                                     \
     {                                               \
         state: "default" 0.0;                       \
@@ -117,7 +117,7 @@ part                                                \
 {                                                   \
     name: relative_part"_border_top";               \
     type: RECT;                                     \
-                                     \
+    \
     description                                     \
     {                                               \
         state: "default" 0.0;                       \
@@ -147,7 +147,7 @@ part                                                \
 {                                                   \
     name: relative_part"_border_bottom";            \
     type: RECT;                                     \
-                                     \
+    \
     description                                     \
     {                                               \
         state: "default" 0.0;                       \
@@ -271,7 +271,7 @@ part                                \
 {                                   \
     name: "slide";                  \
     type: RECT;                     \
-                    \
+    \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -307,50 +307,50 @@ part                                \
 }                                   \
 part                                            \
 {                                               \
-        name: "background";                     \
-        type: IMAGE;                            \
-                                \
-        description                             \
-        {                                       \
-                state: "default" 0.0;           \
-                visible: 1;                     \
-                color: 255 255 255 255;         \
-                rel1                            \
-                {                               \
-                        relative: 0.0 0.0;      \
-                        to: "slide";            \
-                }                               \
-                rel2                            \
-                {                               \
-                        relative: 1.0 1.0;      \
-                        to: "slide";            \
-                }                               \
-                image                           \
-                {                               \
-                        normal: "background.png";\
-                }                               \
-        }                           \
+    name: "background";                     \
+    type: IMAGE;                            \
+    \
+    description                             \
+    {                                       \
+        state: "default" 0.0;           \
+        visible: 1;                     \
+        color: 255 255 255 255;         \
+        rel1                            \
+        {                               \
+            relative: 0.0 0.0;      \
+            to: "slide";            \
+        }                               \
+        rel2                            \
+        {                               \
+            relative: 1.0 1.0;      \
+            to: "slide";            \
+        }                               \
+        image                           \
+        {                               \
+            normal: "background.png";\
+        }                               \
+    }                           \
 }                                   \
 part                                    \
 {                                       \
-        name: "background_top_color";   \
-        type: RECT;                     \
-                        \
-        description                     \
-        {                               \
-                state: "default" 0.0;   \
-                visible: 1;             \
-                color: 0 0 0 255;       \
-                rel1.to: "slide";       \
-                rel2.to: "background_top"; \
-                rel2.relative: 1.0 0.0; \
-        }                               \
+    name: "background_top_color";   \
+    type: RECT;                     \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        color: 0 0 0 255;       \
+        rel1.to: "slide";       \
+        rel2.to: "background_top"; \
+        rel2.relative: 1.0 0.0; \
+    }                               \
 }                                       \
 part                                \
 {                                   \
     name: "background_top";         \
     type: IMAGE;                    \
-                     \
+    \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -383,24 +383,24 @@ part                                \
 }                                   \
 part                                    \
 {                                       \
-        name: "background_bottom_color";\
-        type: RECT;                     \
-                        \
-        description                     \
-        {                               \
-                state: "default" 0.0;   \
-                visible: 1;             \
-                color: 0 0 0 255;       \
-                rel2.to: "slide";       \
-                rel1.to: "background_bottom"; \
-                rel1.relative: 0.0 1.0; \
-        }                               \
+    name: "background_bottom_color";\
+    type: RECT;                     \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        color: 0 0 0 255;       \
+        rel2.to: "slide";       \
+        rel1.to: "background_bottom"; \
+        rel1.relative: 0.0 1.0; \
+    }                               \
 }                                       \
 part                                \
 {                                   \
     name: "background_bottom";      \
     type: IMAGE;                    \
-                     \
+    \
     description                     \
     {                               \
         state: "default" 0.0;       \
@@ -438,7 +438,7 @@ part                            \
 {                               \
     name: "fade";               \
     type: RECT;                 \
-                \
+    \
     clip_to: "slide";           \
     repeat_events: 1;           \
     description                 \
@@ -504,6 +504,8 @@ collections
                     {
                         text: "TEXT";
                         style: "itemStyle";
+                        min: 1 1;
+                        max: 0 0;
                     }
                 }
             }
@@ -565,6 +567,8 @@ collections
                     {
                         text: "TEXT";
                         style: "itemStyle";
+                        min: 1 1;
+                        max: 0 0;
                     }
                 }
             }
@@ -602,6 +606,8 @@ collections
                     text {
                         text: "TEXT";
                         style: "itemStyle";
+                        min: 1 1;
+                        max: 0 0;
                     }
                 }
                 description {
@@ -711,6 +717,7 @@ collections
                     {
                         text: "TEXT";
                         style: "itemStyle";
+                        min: 1 1;
                         max: 0 0;
                     }
                 }
@@ -1512,14 +1519,14 @@ collections
             program {
                 name: "pause_variable";
                 script {
-                        set_int(pause_play,0);
+                    set_int(pause_play,0);
                 }
             }
 
-           program {
+            program {
                 name: "play_variable";
                 script {
-                        set_int(pause_play,1);
+                    set_int(pause_play,1);
                 }
             }
 

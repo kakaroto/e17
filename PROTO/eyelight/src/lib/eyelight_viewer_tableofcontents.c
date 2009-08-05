@@ -67,13 +67,13 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
 void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
 {
     int i;
-
     Ecore_Evas    *ee;
     Evas *e;
     Evas_Object *o,*o_image, *o_swallow;
     char buf[EYELIGHT_BUFLEN];
     const int * pixel;
     char *default_title;
+    Eina_List *l;
 
     int nb_slides = pres->tableofcontents_nb_slides;
 
@@ -81,17 +81,20 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
 
     Eyelight_Node *node;
     i=0;
-    ecore_list_first_goto(pres->compiler->root->l);
-    while(i<first_slide && (node=ecore_list_next(pres->compiler->root->l)))
+    l = pres->compiler->root->l;
+    while(i<first_slide && l)
     {
+        node = eina_list_data_get(l);
         if(node->type == EYELIGHT_NODE_TYPE_BLOCK && node->name == EYELIGHT_NAME_SLIDE)
             i++;
         else if( node->type == EYELIGHT_NODE_TYPE_PROP && node->name == EYELIGHT_NAME_TITLE)
             default_title = eyelight_retrieve_value_of_prop(node,0);
+        l = eina_list_next(l);
     }
 
     i = 0;
-    node=ecore_list_next(pres->compiler->root->l);
+    l=eina_list_next(l);
+    node = eina_list_data_get(l);
     while(i<nb_slides)
     {
         if(!node)
@@ -104,7 +107,8 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
         else if( node->type == EYELIGHT_NODE_TYPE_PROP && node->name == EYELIGHT_NAME_TITLE)
         {
             default_title = eyelight_retrieve_value_of_prop(node,0);
-            node=ecore_list_next(pres->compiler->root->l);
+            l = eina_list_next(l);
+            node = eina_list_data_get(l);
         }
         else if(node->type == EYELIGHT_NODE_TYPE_BLOCK && node->name == EYELIGHT_NAME_SLIDE)
         {
@@ -130,13 +134,17 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
                 if(title)
                     edje_object_part_text_set(pres->tableofcontents_background
                             ,buf,title);
-                node=ecore_list_next(pres->compiler->root->l);
+                l = eina_list_next(l);
+                node = eina_list_data_get(l);
             }
 
             i++;
         }
         else
-            node=ecore_list_next(pres->compiler->root->l);
+        {
+            l = eina_list_next(l);
+            node = eina_list_data_get(l);
+        }
     }
 }
 

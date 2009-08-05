@@ -62,8 +62,8 @@ char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, char *image)
 void eyelight_compile_block_item(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_item, Evas_Object *o_slide, const char *area, int depth, char *numbering, int numbering_id)
 {
     Eyelight_Node* node;
-    ecore_list_first_goto(node_item->l);
-    while((node=ecore_list_next(node_item->l)))
+    Eina_List *l;
+    EINA_LIST_FOREACH(node_item->l, l, node)
     {
         if(node->type == EYELIGHT_NODE_TYPE_PROP
                 && node->name == EYELIGHT_NAME_TEXT)
@@ -258,6 +258,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, int id_slide, Eyelight_N
     Eyelight_Node* node,*node_numbering;
     char *numbering = NULL;
     int numbering_id = 1;
+    Eina_List *l;
 
     node_numbering = eyelight_retrieve_node_prop(node_items
             ,EYELIGHT_NAME_NUMBERING);
@@ -267,8 +268,7 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, int id_slide, Eyelight_N
     if(numbering && strcmp(numbering,"none")==0)
         numbering = NULL;
 
-    ecore_list_first_goto(node_items->l);
-    while((node=ecore_list_next(node_items->l)))
+    EINA_LIST_FOREACH(node_items->l, l, node)
     {
         switch(node->type)
         {
@@ -343,6 +343,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, int id_slide, Eyelight_N
     int item_number = 0;
     char* layout;
     char* value;
+    Eina_List *l;
 
     node = eyelight_retrieve_node_prop(node_area, EYELIGHT_NAME_NAME);
     if(!node)
@@ -369,8 +370,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, int id_slide, Eyelight_N
         edje_object_signal_emit(o_area, buf, "eyelight");
     }
 
-    ecore_list_first_goto(node_area->l);
-    while((node=ecore_list_next(node_area->l)))
+    EINA_LIST_FOREACH(node_area->l, l, node)
     {
         switch(node->type)
         {
@@ -422,6 +422,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
         )
 {
     Eyelight_Node * node;
+    Eina_List *l;
 
     eyelight_object_title_add(pres,node_slide,o_slide,default_title);
     eyelight_object_subtitle_add(pres,node_slide,o_slide,default_subtitle);
@@ -431,8 +432,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
 
     eyelight_object_pages_add(pres,o_slide,slide_number, nb_slides);
 
-    ecore_list_first_goto(node_slide->l);
-    while( (node = ecore_list_next(node_slide->l)) )
+    EINA_LIST_FOREACH(node_slide->l, l, node)
     {
         switch(node->type)
         {
@@ -474,7 +474,8 @@ void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide)
     Eyelight_Compiler *compiler = pres->compiler;
     char* image,*edc_file;
     int nb_slides;
-
+    Eyelight_Node *node_slide;
+    Eina_List *l;
     int id_summary = 0;
     int old_summary = id_summary;
 
@@ -488,11 +489,11 @@ void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide)
 
     nb_slides = eyelight_nb_slides_get(compiler);
 
-    ecore_list_first_goto(compiler->root->l);
     int i_slide = -1;
-    Eyelight_Node *node_slide = NULL;
-    while( (node = ecore_list_next(compiler->root->l)) && i_slide<id_slide)
+    l = compiler->root->l;
+    while( l && i_slide<id_slide)
     {
+        node = eina_list_data_get(l);
         switch(node->type)
         {
             case EYELIGHT_NODE_TYPE_PROP:
@@ -535,6 +536,7 @@ void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide)
                 }
                 break;
         }
+        l = eina_list_next(l);
     }
     eyelight_compile_block_slide(pres, node_slide, o_slide, id_slide, nb_slides, id_summary,
             default_title, default_subtitle,
@@ -547,9 +549,9 @@ int eyelight_nb_slides_get(Eyelight_Compiler* compiler)
 {
     Eyelight_Node* node;
     int number = 0;
+    Eina_List *l;
 
-    ecore_list_first_goto(compiler->root->l);
-    while( (node = ecore_list_next(compiler->root->l)) )
+    EINA_LIST_FOREACH(compiler->root->l, l, node)
     {
         if(node->name==EYELIGHT_NAME_SLIDE)
             number++;
@@ -562,10 +564,12 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
     int i_slide = -1;
     Eyelight_Node *node_slide, *node;
     Eyelight_Compiler *compiler = pres->compiler;
+    Eina_List *l;
 
-    ecore_list_first_goto(compiler->root->l);
-    while( (node = ecore_list_next(compiler->root->l)) && i_slide<id_slide)
+    l = compiler->root->l;
+    while( l && i_slide<id_slide)
     {
+        node = eina_list_data_get(l);
         switch(node->type)
         {
             case EYELIGHT_NODE_TYPE_BLOCK:
@@ -579,6 +583,7 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
                 break;
             default : break;
         }
+        l = eina_list_next(l);
     }
 
     *next = "none";

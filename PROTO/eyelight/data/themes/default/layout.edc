@@ -36,7 +36,7 @@ part                            \
         box {                   \
             layout: _layout;    \
             padding: 5 5;       \
-            align: 0.0 0.5;     \
+            align: 0.0 0.0;     \
         }                       \
     }                           \
     description                 \
@@ -372,6 +372,8 @@ program                         \
                     rel1.relative: 0.10 0.2;
                     rel2.relative: 0.10 0.82;
                     rel2.offset: 2 0;
+                    rel1.to: "slide";
+                    rel2.to: "slide";
                     color: 0 0 0 200;
                 }
             }

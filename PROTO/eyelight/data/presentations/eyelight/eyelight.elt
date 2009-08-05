@@ -219,11 +219,11 @@ slide
             }
         }
         text: "Result:";
-        edje
-        {
-            group: icon;
-            file: firefox.edj;
-        }
+        //edje
+        //{
+        //    group: icon;
+        //    file: firefox.edj;
+        //}
     }
 }
 

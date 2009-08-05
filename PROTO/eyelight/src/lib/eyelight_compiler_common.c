@@ -127,14 +127,13 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
  */
 Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node* father)
 {
-    Eyelight_Node* node = malloc(sizeof(Eyelight_Node));
+    Eyelight_Node* node = calloc(1,sizeof(Eyelight_Node));
     node->type = type;
     node->father = father;
-    node->l = ecore_list_new();
     node->name = name;
     if(father)
     {
-        ecore_list_append(father->l,node);
+        father->l = eina_list_append(father->l,node);
     }
 
     return node;
@@ -146,17 +145,17 @@ Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node
 void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free)
 {
     Eyelight_Node* node;
+    Eina_List *l;
 
     if((*current)->type==EYELIGHT_NODE_TYPE_VALUE)
         EYELIGHT_FREE((*current)->value);
 
-    ecore_list_first_goto((*current)->l);
-    while( (node=ecore_list_next((*current)->l)))
+    EINA_LIST_FOREACH( (*current)->l ,l ,node)
         if(node != not_free)
-            eyelight_node_free(&node,not_free);
+            eyelight_node_free(&node, not_free);
 
-    ecore_list_destroy((*current)->l);
-
+    eina_list_free( (*current)->l );
+    (*current)-> l = NULL;
     EYELIGHT_FREE(*current);
 }
 
@@ -222,11 +221,8 @@ char* eyelight_source_fetch(char* file, char** p_end)
  */
 char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i)
 {
-    ecore_list_first_goto(node->l);
     Eyelight_Node *data;
-    int j;
-    for(j=0;j<=i;j++)
-        data= (Eyelight_Node*)ecore_list_next(node->l);
+    data = eina_list_nth(node->l,i);
     return data->value;
 }
 
@@ -237,11 +233,15 @@ Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node
 {
     Eyelight_Node* node = NULL;
     int find = 0;
-    ecore_list_first_goto(current->l);
-    while(!find && (node=ecore_list_next(current->l)))
+    Eina_List *l;
+
+    l = current->l;
+    while(!find && l)
     {
+        node = eina_list_data_get(l);
         if(node->type == EYELIGHT_NODE_TYPE_PROP && node->name == prop)
             find = 1;
+        l=eina_list_next(l);
     }
     if(!find)
         return NULL;
@@ -257,8 +257,9 @@ int eyelight_number_item_in_block(Eyelight_Node* current)
 {
     int number = 0;
     Eyelight_Node* node;
-    ecore_list_first_goto(current->l);
-    while((node=ecore_list_next(current->l)))
+    Eina_List *l;
+
+    EINA_LIST_FOREACH(current->l, l, node)
     {
         if(node->type == EYELIGHT_NODE_TYPE_BLOCK && node->name == EYELIGHT_NAME_ITEMS)
             number+=eyelight_number_item_in_block(node);

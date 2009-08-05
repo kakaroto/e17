@@ -266,7 +266,7 @@ struct eyelight_node
         char* value;
     };
     Eyelight_Node * father;
-    Ecore_List *l;
+    Eina_List *l;
 };
 
 struct eyelight_compiler

@@ -334,15 +334,17 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
     Evas_Object* slide;
     Eyelight_Node *node, *node_slide = NULL;
     char *default_layout = NULL;
+    Eina_List *l;
 
     Eyelight_Compiler *compiler = pres->compiler;
-    ecore_list_first_goto(compiler->root->l);
+    l = compiler->root->l;
     int i_slide = -1;
 
 
     //retrieve the slide and the layout
-    while( (node = ecore_list_next(compiler->root->l)) && i_slide < pos)
+    while( l && i_slide < pos)
     {
+        node = eina_list_data_get(l);
         switch(node->type)
         {
             case EYELIGHT_NODE_TYPE_PROP:
@@ -364,6 +366,7 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
                 }
                 break;
         }
+        l = eina_list_next(l);
     }
 
     //search the layout
