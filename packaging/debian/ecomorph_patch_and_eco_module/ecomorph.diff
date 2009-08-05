@@ -396,7 +396,7 @@ diff -Naur e17-unpatched/data/script/enlightenment_start.sh ecomorph-e17/data/sc
 diff -Naur e17-unpatched/data/script/Makefile.am ecomorph-e17/data/script/Makefile.am
 --- e17-unpatched/data/script/Makefile.am	1970-01-01 01:00:00.000000000 +0100
 +++ ecomorph-e17/data/script/Makefile.am	2009-07-18 13:57:45.000000000 +0200
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,10 @@
 +MAINTAINERCLEANFILES = Makefile.in
 +filesdir = $(bindir)/
 +files_DATA = enlightenment_start.sh
@@ -405,6 +405,8 @@ diff -Naur e17-unpatched/data/script/Makefile.am ecomorph-e17/data/script/Makefi
 +	test -z $(DESTDIR)$(bindir) || /bin/mkdir -p $(DESTDIR)$(bindir)
 +	install -c -m 755 'enlightenment_start.sh' '$(DESTDIR)$(bindir)/enlightenment_start.sh'
 +	install -c -m 755 'ecomorph.sh' '$(DESTDIR)$(bindir)/ecomorph.sh'
++
++EXTRA_DIST = $(files_DATA)
 diff -Naur e17-unpatched/data/xsession/ecomorph.desktop.in ecomorph-e17/data/xsession/ecomorph.desktop.in
 --- e17-unpatched/data/xsession/ecomorph.desktop.in	1970-01-01 01:00:00.000000000 +0100
 +++ ecomorph-e17/data/xsession/ecomorph.desktop.in	2009-07-18 13:57:45.000000000 +0200
