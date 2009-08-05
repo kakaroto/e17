@@ -399,7 +399,7 @@ diff -Naur e17-unpatched/data/script/Makefile.am ecomorph-e17/data/script/Makefi
 @@ -0,0 +1,10 @@
 +MAINTAINERCLEANFILES = Makefile.in
 +filesdir = $(bindir)/
-+files_DATA = enlightenment_start.sh
++files_DATA = ecomorph.sh enlightenment_start.sh
 +
 +install-filesDATA:
 +	test -z $(DESTDIR)$(bindir) || /bin/mkdir -p $(DESTDIR)$(bindir)
