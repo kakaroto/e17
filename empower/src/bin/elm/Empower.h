@@ -11,7 +11,9 @@
 #include <pwd.h>
 #include "Ecore_X.h"
 #include "Elementary.h"
-#include "locale.h"
+#ifdef HAVE_LOCALE_H
+# include <locale.h>
+#endif
 #include "../../../config.h"
 #define _(x) gettext(x)
 
