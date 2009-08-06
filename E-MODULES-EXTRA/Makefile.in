@@ -16,7 +16,9 @@ distdir %::
 		$(MAKE) -C $$d distdir || exit 1 ; \
 		mv $$d/$(distfolder) $(distdir) || exit 1 ; \
 	done
-	cp {.indent.pro,AUTHORS,configure,configure.ac,e_modules.spec,Makefile.in,README,README.BROKEN} $(distdir)
+	for x in .indent.pro AUTHORS configure configure.ac e_modules.spec Makefile.in README README.BROKEN ; do \
+		cp $$x $(distdir) || exit 1 ; \
+	done
 
 dist-gzip %:: distdir
 	tar -czf $(distdir).tar.gz $(distdir)
