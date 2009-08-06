@@ -26,12 +26,23 @@ typedef struct _Ekeko_Event
 	Eina_Bool stop;
 } Ekeko_Event;
 
+#define EKEKO_EVENT_OBJECT_DELETE "ObjectDelete"
+/* This event uses the core Ekeko_Event iand it is triggered before the
+ * destructor of the object is called
+ */
+
 #define EKEKO_EVENT_PROP_MODIFY "PropModify"
 #define EKEKO_EVENT_PARENT_SET "ParentSet"
 /* The EVENT_PARENT_SET event gets triggered whenever an object's parent
  * has been set (Event_Mutation).
  * target: Child
  * related: Parent
+ */
+#define EKEKO_EVENT_OBJECT_REMOVE "ObjectRemove"
+/* Whenever an object gets removed from its parent
+ * FIXME right now is the inverse
+ * target: Parent
+ * related: Child
  */
 #define EKEKO_EVENT_OBJECT_APPEND "ObjectAppend"
 /* The EVENT_OBJECT_APPEND event gets triggered whenever an object has been

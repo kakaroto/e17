@@ -306,9 +306,14 @@ void * ekeko_type_instance_new_name_from(const char *name)
 void ekeko_type_instance_delete(void *instance)
 {
 	Ekeko_Type *type;
+	Ekeko_Event ev;
 
 	if (!instance)
 		return;
+	/* first trigger the listeners for the Delete event */
+	ekeko_event_init(&ev, EKEKO_EVENT_OBJECT_DELETE, instance, EINA_FALSE);
+	ekeko_object_event_dispatch(instance, &ev);
+
 	type = object_private_type_get(instance);
 	if (!type)
 		return;

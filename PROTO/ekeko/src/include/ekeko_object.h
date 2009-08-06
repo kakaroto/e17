@@ -42,6 +42,8 @@ struct _Ekeko_Object
 EAPI Ekeko_Object * ekeko_object_cast(Ekeko_Object *o, Ekeko_Type *t);
 
 EAPI Ekeko_Object *ekeko_object_new(void);
+EAPI void ekeko_object_delete(Ekeko_Object *o);
+
 EAPI void ekeko_object_id_set(Ekeko_Object *object, const char *name);
 EAPI const char *ekeko_object_id_get(Ekeko_Object *object);
 EAPI Ekeko_Type *ekeko_object_type_get(void);

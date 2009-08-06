@@ -234,6 +234,23 @@ EAPI Ekeko_Object * ekeko_object_new(void)
 	return object;
 }
 
+EAPI void ekeko_object_delete(Ekeko_Object *o)
+{
+	Ekeko_Object_Private *prv;
+
+	prv = PRIVATE(o);
+	/* before destroying the object first detach it */
+	if (prv->parent)
+	{
+		ekeko_object_child_remove(prv->parent, o);
+	}
+	/* send the delete event */
+	/* FIXME the delete event should bubble? if so, detach first
+	 * and then send this?
+	 */
+	ekeko_type_instance_delete(o);
+}
+
 /**
  *
  * @param object
@@ -498,7 +515,22 @@ EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
  */
 EAPI void ekeko_object_child_remove(Ekeko_Object *p, Ekeko_Object *o)
 {
+	Ekeko_Object_Private *pprv, *oprv;
+	Ekeko_Event_Mutation evt;
 
+	if (!p || !o)
+		return;
+
+	pprv = PRIVATE(p);
+	oprv = PRIVATE(o);
+
+	if (oprv->parent != p)
+		return;
+
+	event_mutation_init(&evt, EKEKO_EVENT_OBJECT_REMOVE, (Ekeko_Object *)o, (Ekeko_Object *)p, NULL, NULL, NULL, EVENT_MUTATION_STATE_CURR);
+	ekeko_object_event_dispatch(o, (Ekeko_Event *)&evt);
+	pprv->children = eina_inlist_remove(pprv->children, EINA_INLIST_GET(oprv));
+	oprv->parent = NULL;
 }
 
 /**

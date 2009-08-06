@@ -124,6 +124,27 @@ static inline void _renderable_append(Ekeko_Canvas *c, Ekeko_Renderable *r,
 	}
 }
 
+static void _child_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
+{
+	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	Ekeko_Canvas *c = (Ekeko_Canvas *)data;
+	Ekeko_Renderable *r = (Ekeko_Renderable *)o;
+	Ekeko_Canvas_Private *prv;
+	Eina_Rectangle geom;
+	prv = PRIVATE(c);
+
+
+		
+#ifndef EKEKO_DEBUG
+	printf("[canvas renderable %s] Removed\n", ekeko_object_type_name_get(o));
+#endif
+	prv->renderables = eina_list_remove(prv->renderables, r);
+	if (!prv->tiler) return;
+
+	ekeko_renderable_geometry_get(r, &geom);
+	eina_tiler_rect_add(prv->tiler, &geom);
+}
+
 static void _child_geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 {
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
@@ -320,6 +341,8 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 #endif
 	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_RENDERABLE_VISIBILITY_CHANGED, _child_visibility_change, EINA_FALSE, o);
 	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_RENDERABLE_GEOMETRY_CHANGED, _child_geometry_change, EINA_FALSE, o);
+	/* FIXME what about the DELETE event? */
+	ekeko_event_listener_add((Ekeko_Object *)e->target, EKEKO_EVENT_OBJECT_REMOVE, _child_removed, EINA_FALSE, o);
 }
 
 static void _ctor(void *instance)
