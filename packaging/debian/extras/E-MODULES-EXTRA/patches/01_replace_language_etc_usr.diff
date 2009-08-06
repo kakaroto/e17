@@ -1,7 +1,7 @@
-diff --git a/language/src/module/e_mod_lang.c b/language/src/module/e_mod_lang.c
+diff --git a/language-0.0.1/src/module/e_mod_lang.c b/language-0.0.1/src/module/e_mod_lang.c
 index a3ec833..30724ba 100644
---- a/language/src/module/e_mod_lang.c
-+++ b/language/src/module/e_mod_lang.c
+--- a/language-0.0.1/src/module/e_mod_lang.c
++++ b/language-0.0.1/src/module/e_mod_lang.c
 @@ -14,7 +14,7 @@
  #ifdef __FreeBSD__
     #define DFLT_XKB_RULES_FILE   "/usr/X11R6/lib/X11/xkb/rules/xfree86"
