@@ -9,7 +9,7 @@ all %::
 		$(MAKE) -C $$d $@ || exit 1 ; \
 	done
 
-distdir %::
+distdir:
 	test -d $(distdir) && rm -rf $(distdir)/* || mkdir $(distdir)
 	for d in * ; do \
 		test -d "$$d" -a -e "$$d/Makefile" || continue ; \
@@ -20,11 +20,11 @@ distdir %::
 		cp $$x $(distdir) || exit 1 ; \
 	done
 
-dist-gzip %:: distdir
+dist-gzip: distdir
 	tar -czf $(distdir).tar.gz $(distdir)
 	rm -rf $(distdir)
 
-dist-bzip2 %:: distdir
+dist-bzip2: distdir
 	tar -cjf $(distdir).tar.gz $(distdir)
 	rm -rf $(distdir)
 
