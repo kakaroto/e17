@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 SUBDIRS = src images po
 
 EDJE_FLAGS = -v \
-	     -id $(top_srcdir)/data/images
+	     -id $(top_srcdir)/images
 
 filesdir = $(datadir)
 files_DATA = e-module-emu.edj module.desktop
@@ -19,7 +19,7 @@ EXTRA_DIST = module.desktop.in \
 
 e-module-emu.edj: Makefile module_edje.edc module_face.edc module_icon.edc
 		  $(EDJE_CC) $(EDJE_FLAGS) \
-		  $(top_srcdir)/src/modules/emu/module_edje.edc \
+		  module_edje.edc \
 		  e-module-emu.edj
 
 bindir = $(datadir)/bin
