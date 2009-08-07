@@ -33,6 +33,7 @@ struct _Ekeko_Input
 		Eina_Bool inside;
 		Ekeko_Renderable *r;
 	} pointer;
+	/* TODO keep the last modifiers */
 	struct
 	{
 
@@ -170,4 +171,28 @@ EAPI void ekeko_input_feed_mouse_up(Ekeko_Input *i)
 		event_mouse_click_init(&em, (Ekeko_Object *)r, (Ekeko_Object *)i->pointer.r, i);
 		ekeko_event_dispatch((Ekeko_Event *)&em);
 	}
+}
+
+EAPI void ekeko_input_feed_key_up(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	Ekeko_Renderable *r;
+	Ekeko_Event_Key ek;
+
+	r = ekeko_canvas_focus_get(i->c);
+	if (!r) return;
+
+	ekeko_key_up_init(&ek, r, i, key, mod);
+	ekeko_event_dispatch((Ekeko_Event *)&ek);
+}
+
+EAPI void ekeko_input_feed_key_down(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	Ekeko_Renderable *r;
+	Ekeko_Event_Key ek;
+
+	r = ekeko_canvas_focus_get(i->c);
+	if (!r) return;
+
+	ekeko_key_down_init(&ek, r, i, key, mod);
+	ekeko_event_dispatch((Ekeko_Event *)&ek);
 }

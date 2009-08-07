@@ -35,6 +35,8 @@ struct _Ekeko_Canvas_Private
 	Eina_List *renderables;
 	/* TODO obscures */
 	Eina_Inlist *inputs;
+	/* FIXME should this be a generic object or a renderable only? */
+	Ekeko_Renderable *focused;
 };
 
 void _subcanvas_in(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -134,10 +136,14 @@ static void _child_removed(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	prv = PRIVATE(c);
 
 
-		
 #ifndef EKEKO_DEBUG
 	printf("[canvas renderable %s] Removed\n", ekeko_object_type_name_get(o));
 #endif
+	if (prv->focused == r)
+	{
+		prv->focused = NULL;
+	}
+
 	prv->renderables = eina_list_remove(prv->renderables, r);
 	if (!prv->tiler) return;
 
@@ -545,4 +551,23 @@ EAPI Ekeko_Renderable * ekeko_canvas_renderable_get_at_coord(Ekeko_Canvas *c,
 	printf("[Ekeko_Canvas] no renderable found\n");
 #endif
 	return NULL;
+}
+
+/* TODO add a focus in event */
+EAPI void ekeko_canvas_focus_set(Ekeko_Canvas *c, Ekeko_Renderable *r)
+{
+	Ekeko_Canvas_Private *prv;
+
+	prv = PRIVATE(c);
+	printf("FOCUS = %p\n", r);
+	prv->focused = r;
+}
+
+/* TODO add a focus out event */
+EAPI Ekeko_Renderable * ekeko_canvas_focus_get(Ekeko_Canvas *c)
+{
+	Ekeko_Canvas_Private *prv;
+
+	prv = PRIVATE(c);
+	return prv->focused;
 }

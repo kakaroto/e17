@@ -23,5 +23,7 @@ EAPI void ekeko_input_feed_mouse_move(Ekeko_Input *i, unsigned int x, unsigned i
 EAPI void ekeko_input_feed_mouse_out(Ekeko_Input *i);
 EAPI void ekeko_input_feed_mouse_down(Ekeko_Input *i);
 EAPI void ekeko_input_feed_mouse_up(Ekeko_Input *i);
+EAPI void ekeko_input_feed_key_up(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod);
+EAPI void ekeko_input_feed_key_down(Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod);
 
 #endif /* ETK2_INPUT_H_ */

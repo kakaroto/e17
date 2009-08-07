@@ -84,6 +84,19 @@ void event_mouse_click_init(Ekeko_Event_Mouse *em, const Ekeko_Object *o, const 
 	event_ui_init((Ekeko_Event_Ui*)em, EKEKO_EVENT_UI_MOUSE_CLICK, o, related, i);
 }
 
+void ekeko_key_up_init(Ekeko_Event_Key *ek, const Ekeko_Object *o, const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	ek->key = key;
+	ek->mod = mod;
+	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_UP, o, o, i);
+}
+
+void ekeko_key_down_init(Ekeko_Event_Key *ek, const Ekeko_Object *o, const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod)
+{
+	ek->key = key;
+	ek->mod = mod;
+	event_ui_init((Ekeko_Event_Ui *)ek, EKEKO_EVENT_UI_KEY_DOWN, o, o, i);
+}
 
 /*============================================================================*
  *                                   API                                      *

@@ -37,4 +37,7 @@ void event_mouse_up_init(Ekeko_Event_Mouse *em, const Ekeko_Object *o, const Eke
 void event_mouse_click_init(Ekeko_Event_Mouse *em, const Ekeko_Object *o, const Ekeko_Object *related,
 		const Ekeko_Input *i);
 
+void ekeko_key_up_init(Ekeko_Event_Key *ek, const Ekeko_Object *o, const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod);
+void ekeko_key_down_init(Ekeko_Event_Key *ek, const Ekeko_Object *o, const Ekeko_Input *i, Ekeko_Key key, Ekeko_Key_Mod mod);
+
 #endif /* EVENT_H_ */

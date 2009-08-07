@@ -53,12 +53,6 @@ typedef struct _Ekeko_Event
  */
 #define EKEKO_EVENT_OBJECT_REMOVE "ObjectRemove"
 #define EKEKO_EVENT_OBJECT_PROCESS "ObjectProcess"
-#define EKEKO_EVENT_UI_MOUSE_MOVE "mousemove"
-#define EKEKO_EVENT_UI_MOUSE_IN "mousein"
-#define EKEKO_EVENT_UI_MOUSE_OUT "mouseout"
-#define EKEKO_EVENT_UI_MOUSE_DOWN "mousedown"
-#define EKEKO_EVENT_UI_MOUSE_UP "mouseup"
-#define EKEKO_EVENT_UI_MOUSE_CLICK "click"
 
 typedef enum _Ekeko_Event_Mutation_State
 {
@@ -77,6 +71,20 @@ typedef struct _Ekeko_Event_Mutation
 	const char *prop; /* property name */
 	Ekeko_Property_Id prop_id; /* property id */
 } Ekeko_Event_Mutation;
+
+
+/*
+ * TODO change the name of this
+ */
+
+#define EKEKO_EVENT_UI_MOUSE_MOVE "mousemove"
+#define EKEKO_EVENT_UI_MOUSE_IN "mousein"
+#define EKEKO_EVENT_UI_MOUSE_OUT "mouseout"
+#define EKEKO_EVENT_UI_MOUSE_DOWN "mousedown"
+#define EKEKO_EVENT_UI_MOUSE_UP "mouseup"
+#define EKEKO_EVENT_UI_MOUSE_CLICK "click"
+#define EKEKO_EVENT_UI_KEY_DOWN "keydown"
+#define EKEKO_EVENT_UI_KEY_UP "keyup"
 
 typedef struct _Ekeko_Event_Ui
 {
@@ -99,6 +107,39 @@ typedef struct _Ekeko_Event_Mouse
 	} screen;
 } Ekeko_Event_Mouse;
 
+typedef enum _Ekeko_Key
+{
+	EKEKO_KEYS,
+} Ekeko_Key;
+
+typedef enum _Ekeko_Key_Mod
+{
+	EKEKO_KEY_MOD_NONE  = 0x0000,
+	EKEKO_KEY_MOD_LSHIFT= 0x0001,
+	EKEKO_KEY_MOD_RSHIFT= 0x0002,
+	EKEKO_KEY_MOD_LCTRL = 0x0040,
+	EKEKO_KEY_MOD_RCTRL = 0x0080,
+	EKEKO_KEY_MOD_LALT  = 0x0100,
+	EKEKO_KEY_MOD_RALT  = 0x0200,
+	EKEKO_KEY_MOD_LMETA = 0x0400,
+	EKEKO_KEY_MOD_RMETA = 0x0800,
+	EKEKO_KEY_MOD_NUM   = 0x1000,
+	EKEKO_KEY_MOD_CAPS  = 0x2000,
+	EKEKO_KEY_MOD_MODE  = 0x4000,
+} Ekeko_Key_Mod;
+
+#define EKEKO_KEY_MOD_CTRL  (EKEKO_KEY_MOD_LCTRL | EKEKO_KEY_MOD_RCTRL)
+#define EKEKO_KEY_MOD_SHIFT (EKEKO_KEY_MOD_LSHIFT | EKEKO_KEY_MOD_RSHIFT)
+#define EKEKO_KEY_MOD_ALT   (EKEKO_KEY_MOD_LALT | EKEKO_KEY_MOD_RALT)
+#define EKEKO_KEY_MOD_META  (EKEKO_KEY_MOD_LMETA | EKEKO_KEY_MOD_RMETA)
+
+typedef struct _Ekeko_Event_Key
+{
+	Ekeko_Event_Ui ui;
+	Ekeko_Key_Mod mod;
+	Ekeko_Key key;
+} Ekeko_Event_Key;
+
 typedef void (*Event_Listener)(const Ekeko_Object *, Ekeko_Event *, void * data);
 
 EAPI void ekeko_event_listener_add(Ekeko_Object *o, const char *type, Event_Listener el, Eina_Bool bubble, void *data);
@@ -106,6 +147,5 @@ EAPI void ekeko_event_listener_remove(Ekeko_Object *o, const char *type, Event_L
 EAPI void ekeko_event_dispatch(Ekeko_Event *e);
 EAPI void ekeko_event_stop(Ekeko_Event *e);
 EAPI void ekeko_event_init(Ekeko_Event *e, const char *type, const Ekeko_Object *o, Eina_Bool bubbles);
-
 
 #endif /* EKEKO_EVENT_H_ */
