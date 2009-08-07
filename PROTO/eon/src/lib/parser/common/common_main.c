@@ -317,7 +317,7 @@ Ekeko_Object * eon_parser_object_new(Ekeko_Object *p, Eon_Type_Constructor ctr)
 		return o;
 	else
 	{
-		ekeko_type_instance_delete(o);
+		ekeko_object_delete(o);
 		return NULL;
 	}
 }

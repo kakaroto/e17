@@ -106,7 +106,7 @@ Eon_Engine * eon_engine_get(const char *name)
 	o = ekeko_type_instance_new(t);
 	if (!ekeko_type_instance_is_of(o, EON_TYPE_ENGINE))
 	{
-		ekeko_type_instance_delete(o);
+		ekeko_object_delete(o);
 	}
 	return (Eon_Engine *)o;
 }

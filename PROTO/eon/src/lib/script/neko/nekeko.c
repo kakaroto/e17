@@ -73,7 +73,7 @@ static value object_property_value_set(value prop, value v)
 	f = val_id("__inst");
 	inst = val_field(t, f);
 	val_check_kind(inst, k_object);
-	
+
 	printf("SETTING PROPERTY!!!\n");
 	if (!val_is_string(prop))
 		goto error;
@@ -107,7 +107,7 @@ error:
 static void object_delete(value v)
 {
 	printf("deleting the object!!\n");
-	ekeko_type_instance_delete(val_data(v));
+	ekeko_object_delete(val_data(v));
 }
 
 static value object_new(void)

@@ -172,17 +172,14 @@ void eon_cache_image_load(const char *file, Enesim_Surface **s,
 	Eon_Cache_Image_Load *il;
 	char key[1024];
 
-	printf("[Eon_Cache] Trying to load image at %s\n", file);
 	c = eon_cache_image_get();
 	/* TODO create the key based on more properties */
 	strncpy(key, file, 1024);
 #ifdef BUILD_CACHE_ESHM
 #else
-	printf("Searching for image %s on the cache\n", key);
 	im = eina_hash_find(c->elements, key);
 	if (im)
 	{
-		printf("[Eon_Cache] Image found on the cache\n");
 		/* create the surface from external data */
 		*s = enesim_surface_new_data_from(im->w, im->h, im->data);
 		cb(*s, data, 0);
@@ -198,7 +195,6 @@ void eon_cache_image_load(const char *file, Enesim_Surface **s,
 	/* here instead of calling directly the async function
 	 * first store the im on the hash with state LOADING and register
 	 * the same il on it */
-	printf("[Eon_Cache] Image not found\n");
 	emage_load_async(file, s, f, c->pool, _loader_callback, il, options);
 }
 /*============================================================================*

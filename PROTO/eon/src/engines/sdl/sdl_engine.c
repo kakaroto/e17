@@ -86,6 +86,24 @@ static int _mouse_move_cb(void *data, int type, void *event)
 	return 1;
 }
 
+static int _key_down_cb(void *data, int type, void *event)
+{
+	Ekeko_Input *input = (Ekeko_Input *)data;
+
+	printf("key down\n");
+	ekeko_input_feed_key_down(input, 0, 0);
+	return 1;
+}
+
+static int _key_up_cb(void *data, int type, void *event)
+{
+	Ekeko_Input *input = (Ekeko_Input *)data;
+
+	printf("key up\n");
+	ekeko_input_feed_key_up(input, 0, 0);
+	return 1;
+}
+
 static int _in_cb(void *data, int type, void *event)
 {
 	Ekeko_Input *input = (Ekeko_Input *)data;
@@ -105,6 +123,8 @@ static void * document_create(Eon_Document *d)
 	printf("[SDL] Initializing SDL\n");
 	ecore_sdl_init(NULL);
 	SDL_Init(SDL_INIT_VIDEO);
+	/* Ecore_sdl interval isnt enough */
+	SDL_EnableKeyRepeat(10, 10);
 
 	canvas = eon_document_canvas_get(d);
 	/* add the input */
@@ -117,6 +137,8 @@ static void * document_create(Eon_Document *d)
 	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, _mouse_down_cb, input);
 	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, _mouse_up_cb, input);
 	ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _mouse_move_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, _key_down_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_KEY_UP, _key_up_cb, input);
 	/* FIXME Ecore_SDL doesnt support the in/out events, make it always in */
 	ekeko_input_feed_mouse_in(input);
 	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
