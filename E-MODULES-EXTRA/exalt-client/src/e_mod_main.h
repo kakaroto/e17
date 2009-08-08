@@ -132,7 +132,6 @@ struct _Network_Dialog_New
     Evas_Object *radio_wep_ascii;
     Evas_Object *radio_wep_hexa;
     Evas_Object *radio_wpa_personnal;
-    Evas_Object *radio_wpa2_personnal;
 
 
     Evas_Object *entry_essid;

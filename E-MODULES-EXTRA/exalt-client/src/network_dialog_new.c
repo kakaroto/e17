@@ -50,10 +50,6 @@ void if_network_dialog_new_create(Instance* inst)
     e_widget_frametable_object_append(flist, o, 0, 3, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_wpa_personnal = o;
 
-    o = e_widget_radio_add(evas, D_("WPA2 personnal (recommended)"), EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII, rg);
-    evas_object_smart_callback_add(o, "changed", if_network_dialog_new_disabled_update, inst);
-    e_widget_frametable_object_append(flist, o, 0, 4, 3, 1, 1, 0, 1, 0);
-    inst->network_new.radio_wpa2_personnal = o;
     //
 
     //
@@ -139,7 +135,7 @@ void if_network_dialog_new_set(Instance *inst, Popup_Elt* iface)
     inst->network_new.iface = iface;
     iface->nb_use++;
 
-    e_widget_radio_toggle_set(inst->network_new.radio_wpa2_personnal,1);
+    e_widget_radio_toggle_set(inst->network_new.radio_wpa_personnal,1);
     e_widget_entry_text_set(inst->network_new.entry_essid,"");
     e_widget_entry_text_set(inst->network_new.entry_pwd,"");
     e_widget_entry_text_set(inst->network_new.entry_login,"");
@@ -231,6 +227,7 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
 
     exalt_conn_wep_key_hexa_set(conn, 0);
     exalt_wireless_network_essid_set(n, inst->network_new.essid);
+    exalt_wireless_network_mode_set(n, MODE_IBSS);
     switch(inst->network_new.enc)
     {
         case EXALT_ENCRYPTION_NONE:
@@ -262,32 +259,11 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
             l = eina_list_append(l, ie);
             exalt_wireless_network_ie_set(n, l);
             break;
-        case EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII:
-            exalt_wireless_network_encryption_set(n, 1);
-            exalt_conn_key_set(conn, inst->network_new.pwd);
-
-            exalt_wireless_network_ie_choice_set(n,0);
-            ie = exalt_wireless_network_ie_new();
-            exalt_wireless_network_ie_auth_choice_set(ie,0);
-            exalt_wireless_network_ie_pairwise_choice_set(ie,0);
-
-            exalt_wireless_network_ie_wpa_type_set(ie, WPA_TYPE_WPA2);
-            exalt_wireless_network_ie_group_cypher_set(ie, CYPHER_NAME_TKIP);
-            exalt_wireless_network_ie_pairwise_cypher_set(ie, CYPHER_NAME_TKIP, 0);
-            exalt_wireless_network_ie_pairwise_cypher_number_set(ie, 1);
-            exalt_wireless_network_ie_auth_suites_set(ie, AUTH_SUITES_PSK, 0);
-            exalt_wireless_network_ie_auth_suites_number_set(ie, 1);
-
-            l = exalt_wireless_network_ie_get(n);
-            l = eina_list_append(l, ie);
-            exalt_wireless_network_ie_set(n, l);
-            break;
         default: ;
     }
 
     exalt_dbus_eth_conn_apply(inst->conn,inst->network_new.iface->iface,conn);
     exalt_conn_free(&conn);
-
 }
 
 void if_network_dialog_new_cb_cancel(void *data, E_Dialog *dialog)
@@ -323,7 +299,6 @@ void if_network_dialog_new_disabled_update(void *data, Evas_Object *obj, void *e
         case EXALT_ENCRYPTION_WEP_ASCII:
         case EXALT_ENCRYPTION_WEP_HEXA:
         case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
-        case EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII:
             evas_object_show(inst->network_new.lbl_pwd);
             evas_object_show(inst->network_new.entry_pwd);
             is_pwd = 1;
