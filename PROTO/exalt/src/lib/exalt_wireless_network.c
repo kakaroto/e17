@@ -106,6 +106,7 @@ Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "encryption", encryption, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "mode", mode, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "description", description, EET_T_STRING);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "quality", quality, EET_T_INT);

@@ -244,7 +244,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     }
     else if(!l_ie)
     {
-        printf("APPLY WEP encryption\n");
+        //printf("APPLY WEP encryption\n");
 
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt NONE",
@@ -384,7 +384,6 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"SELECT_NETWORK %d",network_id);
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
-printf("network %d\n",network_id);
 
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"REASSOCIATE");

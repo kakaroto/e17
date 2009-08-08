@@ -134,7 +134,7 @@ int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd, char*buf, size
     ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &buf_len,
             /*wpa_cli_msg_cb*/ NULL);
 
-    printf("%d %s\n",ret,cmd);
+    //printf("%d %s\n",ret,cmd);
     EXALT_ASSERT_RETURN(ret>=0);
 
     return 1;
@@ -174,7 +174,8 @@ Eina_List* exalt_wpa_parse_scan_results(struct wpa_ctrl* ctrl,char *buf, Exalt_W
             Exalt_Wireless_Network *wn_;
             EINA_LIST_FOREACH(networks,l_,wn_)
             {
-                if(strcmp( exalt_wireless_network_essid_get(wn_),
+                if(exalt_wireless_network_essid_get(wn_) &&
+                        strcmp( exalt_wireless_network_essid_get(wn_),
                             exalt_wireless_network_essid_get(wn)) == 0)
                 {
                     find = 1;
@@ -276,6 +277,13 @@ void exalt_wpa_parse_flags(char* buf, Exalt_Wireless_Network *wn)
         exalt_wireless_network_encryption_set(wn,0);
     else if( strcmp(buf,"[WEP]") ==  0)
         exalt_wireless_network_encryption_set(wn,1);
+    else if( strcmp(buf,"[IBSS]") == 0)
+        exalt_wireless_network_mode_set(wn, MODE_IBSS);
+    else if( strcmp(buf,"[WEP][IBSS]") == 0)
+    {
+        exalt_wireless_network_encryption_set(wn,1);
+        exalt_wireless_network_mode_set(wn,MODE_IBSS);
+    }
     else
     {
         exalt_wireless_network_encryption_set(wn,1);
