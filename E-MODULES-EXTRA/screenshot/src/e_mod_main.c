@@ -391,8 +391,8 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 	e_menu_item_submenu_set(mi, inst->menu_mode);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_theme_icon_set(mi, "preferences-system");
+	e_menu_item_label_set(mi, D_("Settings"));
+	e_util_menu_item_theme_icon_set(mi, "configure");
 	e_menu_item_callback_set(mi, _cb_menu_cfg, inst);
 
 	mi = e_menu_item_new(mn);
