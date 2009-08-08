@@ -45,10 +45,14 @@ void if_network_dialog_new_create(Instance* inst)
     e_widget_frametable_object_append(flist, o, 0, 2, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_wep_hexa = o;
 
-    o = e_widget_radio_add(evas, D_("WPA personnal"), EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII, rg);
+    /*
+     * WPA IBSS (ad-hoc) removed because it seems not working very well with wpa_supplicant
+     * In my case (Watchwolf) the driver freeze the system
+     * o = e_widget_radio_add(evas, D_("WPA personnal"), EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII, rg);
     evas_object_smart_callback_add(o, "changed", if_network_dialog_new_disabled_update, inst);
     e_widget_frametable_object_append(flist, o, 0, 3, 3, 1, 1, 0, 1, 0);
     inst->network_new.radio_wpa_personnal = o;
+    */
 
     //
 
@@ -135,7 +139,7 @@ void if_network_dialog_new_set(Instance *inst, Popup_Elt* iface)
     inst->network_new.iface = iface;
     iface->nb_use++;
 
-    e_widget_radio_toggle_set(inst->network_new.radio_wpa_personnal,1);
+    e_widget_radio_toggle_set(inst->network_new.radio_wep_ascii,1);
     e_widget_entry_text_set(inst->network_new.entry_essid,"");
     e_widget_entry_text_set(inst->network_new.entry_pwd,"");
     e_widget_entry_text_set(inst->network_new.entry_login,"");

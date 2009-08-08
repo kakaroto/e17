@@ -65,7 +65,7 @@ Evas_Object* if_network_dialog_basic_wep_new(Instance* inst,Exalt_Wireless_Netwo
 {
     Evas_Object* lbl, *o;
 
-    Evas*evas = e_win_evas_get(inst->network.dialog->win);
+    Evas *evas = e_win_evas_get(inst->network.dialog->win);
 
     Evas_Object* flist = e_widget_frametable_add(evas, D_("WEP information"), 0);
 
