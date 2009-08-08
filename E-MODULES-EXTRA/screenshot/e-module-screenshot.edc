@@ -62,10 +62,10 @@ collections
 		    }
 		  description 
 		    {
-		       state: "bigger" 0.0;
+		       state: "pressed" 0.0;
 		       inherit: "default" 0.0;
-		       rel1.offset: -2 -2;
-		       rel2.offset: 3 3;
+		       rel1.offset: 4 4;
+		       rel2.offset: -5 -5;
 		    }
 	       }
 	     part 
@@ -141,41 +141,43 @@ collections
 	       {
 		  name: "event";
 		  mouse_events: 1;
+                  repeat_events: 0;
 		  type: RECT;
+                  ignore_flags: ON_HOLD;
 		  description 
 		    {
 		       state: "default" 0.0;
 		       color: 255 255 255 0;
+                       rel1.to: "icon";
+                       rel2.to: "icon";
 		    }
 	       }
 	  }
 	programs 
 	  {
+             program 
+               {
+                  name: "pressed";
+                  signal: "mouse,down,1";
+                  source: "event";
+                  action: STATE_SET "pressed" 0.0;
+                  target: "icon";
+               }
 	     program 
 	       {
-		  name: "mouse_in";
-		  signal: "mouse,in";
-		  source: "event";
-		  action: STATE_SET "bigger" 0.0;
-		  transition: LINEAR 0.1;
-		  target: "icon";
-	       }
-	     program 
-	       {
-		  name: "mouse_out";
-		  signal: "mouse,out";
-		  source: "event";
-		  action: STATE_SET "default" 0.0;
-		  transition: LINEAR 0.2;
-		  target: "icon";
-	       }
-	     program 
-	       {
-		  name: "mouse_down";
-		  signal: "mouse,down,1";
-		  source: "event";
+		  name: "mouse_up";
+                  signal: "mouse,clicked,1";
+                  source: "event";
 		  action: SIGNAL_EMIT "e,action,screenshot,start" "";
 	       }
+             program 
+               {
+                  name: "mouse_up_1";
+                  signal: "mouse,up,1";
+                  source: "event";
+                  action: STATE_SET "default" 0.0;
+                  target: "icon";
+               }
 	     program 
 	       {
 		  name: "do_shot";
