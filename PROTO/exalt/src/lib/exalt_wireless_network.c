@@ -28,6 +28,8 @@ struct Exalt_Wireless_Network
     char* description;
     int quality;
 
+    Exalt_Wireless_Network_Mode mode;
+
     int ie_choice;
     Eina_List* ie;
 };
@@ -147,14 +149,10 @@ struct Exalt_Wireless_Network_Cypher_Name_List
 
 Exalt_Wireless_Network_Mode_List exalt_wireless_network_mode_tab[] =
 {
-    {0,"Auto",MODE_AUTO},
-    {1,"Ad-Hoc",MODE_AD_HOC},
-    {2,"Managed",MODE_MANAGED},
-    {3,"Master",MODE_MASTER},
-    {4,"Repeater",MODE_REPEATER},
-    {5,"Secondary",MODE_SECONDARY},
-    {6,"Monitor",MODE_MONITOR},
-    {7,"Unknow/bug",MODE_UNKNOW_BUG}
+    {0,"Infrastructure",MODE_INFRASTRUCTURE},
+    {1,"IBSS",MODE_IBSS},
+    {2,"AP",MODE_AP},
+    {3, "Unknown", MODE_UNKNOWN}
 };
 
 Exalt_Wireless_Network_Security_List exalt_wireless_network_security_tab[]=
@@ -266,6 +264,7 @@ EXALT_SET(encryption,int)
 EXALT_STRING_SET(description)
 EXALT_SET(quality,int)
 EXALT_SET(ie,Eina_List*)
+EXALT_SET(mode,Exalt_Wireless_Network_Mode)
 
 EXALT_GET(iface,Exalt_Wireless*)
 EXALT_GET(ie_choice,int);
@@ -275,6 +274,7 @@ EXALT_IS(encryption,int)
 EXALT_GET(description,const char*)
 EXALT_GET(quality,int)
 EXALT_GET(ie,Eina_List*)
+EXALT_GET(mode,Exalt_Wireless_Network_Mode)
 
 #undef EXALT_FCT_NAME
 #undef EXALT_STRUCT_TYPE
@@ -314,7 +314,7 @@ const char* exalt_wireless_network_name_from_mode_id(
         if(exalt_wireless_network_mode_tab[i].id == id)
             return exalt_wireless_network_mode_tab[i].name;
 
-    return exalt_wireless_network_name_from_mode(MODE_UNKNOW_BUG);
+    return exalt_wireless_network_name_from_mode(MODE_UNKNOWN);
 }
 
 Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
@@ -325,7 +325,7 @@ Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
         if(exalt_wireless_network_mode_tab[i].id == id)
             return exalt_wireless_network_mode_tab[i].mode;
 
-    return MODE_UNKNOW_BUG;
+    return MODE_UNKNOWN;
 }
 
 const char* exalt_wireless_network_name_from_mode(
@@ -336,7 +336,7 @@ const char* exalt_wireless_network_name_from_mode(
         if(exalt_wireless_network_mode_tab[i].mode == mode)
             return exalt_wireless_network_mode_tab[i].name;
 
-    return exalt_wireless_network_name_from_mode(MODE_UNKNOW_BUG);
+    return exalt_wireless_network_name_from_mode(MODE_UNKNOWN);
 }
 
 

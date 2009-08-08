@@ -416,7 +416,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     {
         EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&args,
                     DBUS_TYPE_ARRAY,
-                    "(ssisiia(siiiiiaiiai))",
+                    "(ssiisiia(siiiiiaiiai))",
                     &iter_array));
 
         EINA_LIST_FOREACH(networks, l, wi)
@@ -459,6 +459,14 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
 
             //add the encryption (yes or no)
             integer = exalt_wireless_network_encryption_is(wi);
+            EXALT_ASSERT_CUSTOM_RET(
+                    dbus_message_iter_append_basic(&iter_w,
+                        DBUS_TYPE_INT32,
+                        &integer),
+                    dbus_message_unref(msg);return );
+
+            //add the mode
+            integer = exalt_wireless_network_mode_get(wi);
             EXALT_ASSERT_CUSTOM_RET(
                     dbus_message_iter_append_basic(&iter_w,
                         DBUS_TYPE_INT32,
@@ -805,6 +813,10 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,Exalt_Ethernet* eth
         exalt_wireless_network_encryption_set(w,integer);
 
         dbus_message_iter_next(&iter_w);
+        dbus_message_iter_get_basic(&iter_w, &integer);
+        exalt_wireless_network_mode_set(w,integer);
+
+        dbus_message_iter_next(&iter_w);
         dbus_message_iter_get_basic(&iter_w, &string);
         exalt_wireless_network_description_set(w,string);
 
@@ -877,8 +889,6 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,Exalt_Ethernet* eth
             }
             dbus_message_iter_next(&iter_ie_array);
         }
-
-
     }
 
 

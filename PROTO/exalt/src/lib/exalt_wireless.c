@@ -244,7 +244,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     }
     else if(!l_ie)
     {
-        //printf("APPLY WEP encryption\n");
+        printf("APPLY WEP encryption\n");
 
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt NONE",
@@ -294,12 +294,17 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         //
 
         //
-        switch(exalt_wireless_network_ie_auth_suites_get(ie,auth_choice))
+        if(exalt_wireless_network_mode_get(n) == MODE_IBSS)
+            s = "WPA-NONE";
+        else
         {
-            case AUTH_SUITES_PSK: s = "WPA-PSK"; break;
-            case AUTH_SUITES_EAP: s = "WPA-EAP"; break;
-            case AUTH_SUITES_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_UNKNOWN"); break;
-            case AUTH_SUITES_NONE: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_NONE"); break;
+            switch(exalt_wireless_network_ie_auth_suites_get(ie,auth_choice))
+            {
+                case AUTH_SUITES_PSK: s = "WPA-PSK"; break;
+                case AUTH_SUITES_EAP: s = "WPA-EAP"; break;
+                case AUTH_SUITES_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_UNKNOWN"); break;
+                case AUTH_SUITES_NONE: print_error(__FILE__,__func__,__LINE__,"AUTH_SUITES_NONE"); break;
+            }
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d key_mgmt %s",
@@ -310,12 +315,17 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         //
 
         //
-        switch(exalt_wireless_network_ie_pairwise_cypher_get(ie,pairwise_choice))
+        if(exalt_wireless_network_mode_get(n) == MODE_IBSS)
+            s = "NONE";
+        else
         {
-            case CYPHER_NAME_TKIP: s = "TKIP"; break;
-            case CYPHER_NAME_CCMP: s = "CCMP"; break;
-            case CYPHER_NAME_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_UNKNOWN"); break;
-            case CYPHER_NAME_NONE: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_NONE"); break;
+            switch(exalt_wireless_network_ie_pairwise_cypher_get(ie,pairwise_choice))
+            {
+                case CYPHER_NAME_TKIP: s = "TKIP"; break;
+                case CYPHER_NAME_CCMP: s = "CCMP"; break;
+                case CYPHER_NAME_UNKNOWN: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_UNKNOWN"); break;
+                case CYPHER_NAME_NONE: print_error(__FILE__,__func__,__LINE__,"CYPHER_NAME_NONE"); break;
+            }
         }
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d pairwise %s",
@@ -337,7 +347,6 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         snprintf(buf_cmd,1024,"SET_NETWORK %d group %s",
                 network_id,
                 s);
-        //printf("# %s\n",buf_cmd);
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
         //
 
@@ -350,9 +359,32 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
 
     //tell to wpa_supplicant to use this new network
     //select the network
+    //
+
+
+    buf_len=sizeof(buf_res)-1;
+    snprintf(buf_cmd,1024,"SET_NETWORK %d mode %d",
+            network_id,
+            exalt_wireless_network_mode_get(n));
+    exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+
+    if(exalt_wireless_network_mode_get(n) == MODE_IBSS)
+    {
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"AP_SCAN 2");
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+    }
+    else
+    {
+        buf_len=sizeof(buf_res)-1;
+        snprintf(buf_cmd,1024,"AP_SCAN 1");
+        exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+    }
+
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"SELECT_NETWORK %d",network_id);
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
+printf("network %d\n",network_id);
 
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"REASSOCIATE");
@@ -538,12 +570,6 @@ int _exalt_wireless_scan(Exalt_Wireless *w)
     w->networks = exalt_wpa_parse_scan_results(w->monitor,buf,w);
 
     //printf("# SCAN RESULT %d\n",eina_list_count(w->networks));
-
-    buf_len=sizeof(buf)-1;
-    exalt_wpa_ctrl_command(w->monitor
-            ,"AP_SCAN 1"
-            ,buf
-            ,buf_len);
 
     w->scanning = 0;
     //send a broadcast

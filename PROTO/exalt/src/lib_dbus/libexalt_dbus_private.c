@@ -151,6 +151,15 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
                     &integer),
                 dbus_message_unref(msg);return 0);
 
+        //add the mode
+        integer = exalt_wireless_network_mode_get(wi);
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&iter_w,
+                    DBUS_TYPE_INT32,
+                    &integer),
+                dbus_message_unref(msg);return 0);
+
+
         //add the description
         string = exalt_wireless_network_description_get(wi);
         if(!string)
@@ -383,6 +392,10 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
             dbus_message_iter_next(&iter_w);
             dbus_message_iter_get_basic(&iter_w, &integer);
             exalt_wireless_network_encryption_set(w,integer);
+
+            dbus_message_iter_next(&iter_w);
+            dbus_message_iter_get_basic(&iter_w, &integer);
+            exalt_wireless_network_mode_set(w,integer);
 
             dbus_message_iter_next(&iter_w);
             dbus_message_iter_get_basic(&iter_w, &string);

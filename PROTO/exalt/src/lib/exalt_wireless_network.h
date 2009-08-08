@@ -22,8 +22,8 @@ typedef struct Exalt_Wireless_Network_IE Exalt_Wireless_Network_IE;
 typedef enum Exalt_Wireless_Network_Wpa_Type Exalt_Wireless_Network_Wpa_Type;
 typedef enum Exalt_Wireless_Network_Cypher_Name Exalt_Wireless_Network_Cypher_Name;
 typedef enum Exalt_Wireless_Network_Auth_Suites Exalt_Wireless_Network_Auth_Suites;
-typedef enum Exalt_Wireless_Network_Mode Exalt_Wireless_Network_Mode;
 typedef enum Exalt_Wireless_Network_Security Exalt_Wireless_Network_Security;
+typedef enum Exalt_Wireless_Network_Mode Exalt_Wireless_Network_Mode;
 
 #include "exalt_wireless.h"
 #include "libexalt.h"
@@ -56,23 +56,19 @@ enum Exalt_Wireless_Network_Auth_Suites
 };
 #define EXALT_WIRELESS_NETWORK_AUTH_SUITES_NUM 5
 
-enum Exalt_Wireless_Network_Mode
-{
-    MODE_AUTO,
-    MODE_AD_HOC,
-    MODE_MANAGED,
-    MODE_MASTER,
-    MODE_REPEATER,
-    MODE_SECONDARY,
-    MODE_MONITOR,
-    MODE_UNKNOW_BUG
-};
-
 enum Exalt_Wireless_Network_Security
 {
     SECURITY_NONE,
     SECURITY_RESTRICTED,
     SECURITY_OPEN
+};
+
+enum Exalt_Wireless_Network_Mode
+{
+    MODE_INFRASTRUCTURE,
+    MODE_IBSS,
+    MODE_AP,
+    MODE_UNKNOWN
 };
 
 Exalt_Wireless_Network* exalt_wireless_network_new(
@@ -111,6 +107,15 @@ void exalt_wireless_network_address_set(
 void exalt_wireless_network_essid_set(
         Exalt_Wireless_Network *wn,
         const char* essid);
+
+/**
+ * @brief set the mode
+ */
+void exalt_wireless_network_mode_set(
+        Exalt_Wireless_Network *wn,
+        Exalt_Wireless_Network_Mode mode);
+
+
 
 /**
  * @brief set if the wireless network is encrypted
@@ -166,6 +171,14 @@ const char* exalt_wireless_network_address_get(
  */
 const char* exalt_wireless_network_essid_get(
         Exalt_Wireless_Network *wn);
+
+/**
+ * @brief get the mode
+ */
+Exalt_Wireless_Network_Mode exalt_wireless_network_mode_get(
+        Exalt_Wireless_Network *wn);
+
+
 
 /**
  * @brief get if the wireless network is encrypted

@@ -134,6 +134,7 @@ int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd, char*buf, size
     ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &buf_len,
             /*wpa_cli_msg_cb*/ NULL);
 
+    printf("%d %s\n",ret,cmd);
     EXALT_ASSERT_RETURN(ret>=0);
 
     return 1;
@@ -257,6 +258,11 @@ void exalt_wpa_parse_BBS_key(char* key, char* value, Exalt_Wireless_Network *wn)
     {
         exalt_wireless_network_description_set(wn,value);
         exalt_wpa_parse_flags(value,wn);
+    }
+    else if(strcmp(key, "ibss") == 0)
+    {
+        Exalt_Wireless_Network_Mode mode = (Exalt_Wireless_Network_Mode) atoi(value);
+        exalt_wireless_network_mode_set(wn,mode);
     }
 }
 

@@ -23,6 +23,7 @@ void network_list_notify_scan(char* iface, Eina_List* networks, void* user_data 
         printf("\tQuality\t\t:\t%d\n",exalt_wireless_network_quality_get(w));
         printf("\tAddress\t\t:\t%s\n",exalt_wireless_network_address_get(w));
         printf("\tEncryption\t:\t%s\n",(exalt_wireless_network_encryption_is(w)?"Yes":"No"));
+        printf("\tMode\t:\t%s\n",exalt_wireless_network_name_from_mode(exalt_wireless_network_mode_get(w)));
 
         // if the network is encrypted and we don't have a wpa description (the ie list)
         //      the encryption is WEP
