@@ -78,7 +78,6 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
 {
     struct iwreq wrq;
     Exalt_Ethernet* eth;
-    char buf[1024];
 
     eth = (Exalt_Ethernet*)calloc(1, sizeof(Exalt_Ethernet));
     EXALT_ASSERT_RETURN(eth!=NULL);
@@ -122,11 +121,14 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
     }
 
     //delete the dhcp pid file if ti exists
+#ifdef HAVE_DHCP
+    char buf[1024];
     snprintf(buf,1024,DHCLIENT_PID_FILE,exalt_eth_name_get(eth));
     remove(buf);
 
     snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
     remove(buf);
+#endif
 
     return eth;
 }
@@ -1241,6 +1243,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
  */
 void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
 {
+#ifdef HAVE_DHCP
     pid_t pid;
     char* ret;
     FILE *f = NULL;
@@ -1276,6 +1279,9 @@ void _exalt_eth_dhcp_daemon_kill(Exalt_Ethernet *eth)
         remove(file);
         fclose(f);
     }
+#else
+    return ;
+#endif
 }
 
 /**
