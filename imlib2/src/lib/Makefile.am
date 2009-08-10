@@ -63,11 +63,6 @@ updates.h \
 ximage.c \
 ximage.h
 
-AS        = $(CC)
-CCAS      = $(CC)
-ASFLAGS   = -I$(top_srcdir) -I$(top_builddir)
-CCASFLAGS = -I$(top_srcdir) -I$(top_builddir)
-
 MMX_SRCS = \
 asm_blend.S \
 asm_blend_cmod.S \
