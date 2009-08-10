@@ -100,7 +100,7 @@ program_frame_create(void)
    label = etk_label_new("<b>After(s)</b>");
    etk_table_attach (ETK_TABLE(table), label, 0, 0, 4, 4,ETK_TABLE_NONE,0,0);
    UI_AfterEntry = etk_entry_new();
-   etk_tooltips_tip_set(UI_AfterEntry, "Specifies program(s) to run after the current program completes.<br>The <i>source</i> and <i>signal</i> parameters of a program run as an <i>after</j> are ignored.<br>Multiple programs can be specified separated by ',' (comma).");
+   etk_tooltips_tip_set(UI_AfterEntry, "Specifies program(s) to run after the current program completes.<br>The <i>source</i> and <i>signal</i> parameters of a program run as an <i>after</j> are ignored.<br>Multiple programs can be specified separated by '|'.");
    etk_table_attach_default(ETK_TABLE(table),UI_AfterEntry, 1, 3, 4, 4);
 
    //UI_ActionComboBox
@@ -158,7 +158,7 @@ program_frame_create(void)
    UI_TargetLabel = etk_label_new("<b>Target(s)</b>");
    etk_table_attach(ETK_TABLE(table),UI_TargetLabel,0,0,6,6,ETK_TABLE_NONE,0,0);
    UI_TargetEntry = etk_entry_new();
-   etk_tooltips_tip_set(UI_TargetEntry, "Program or part on which the specified action acts.<br>Multiple target keywords may be specified, separated by ','(comma).");
+   etk_tooltips_tip_set(UI_TargetEntry, "Program or part on which the specified action acts.<br>Multiple target keywords may be specified, separated by '|'");
    etk_table_attach_default(ETK_TABLE(table), UI_TargetEntry, 1, 4, 6, 6);
 
    //UI_Param1Entry
