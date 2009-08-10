@@ -128,7 +128,7 @@ Evas_Object* if_network_dialog_basic_wpa_new(Instance* inst,Exalt_Wireless_Netwo
     if(is_eap)
     {
         lbl = e_widget_label_add(evas,D_("Login: "));
-        e_widget_frametable_object_append(flist, lbl, 0, i, 2, 1, 1, 0, 1, 0);
+        e_widget_frametable_object_append(flist, lbl, 0, i, 1, 1, 1, 0, 0, 0);
         inst->network_basic.lbl_login = lbl;
         inst->network_basic.entry_login = e_widget_entry_add(evas,&(inst->network_basic.login),NULL,NULL,NULL);
         e_widget_frametable_object_append(flist, inst->network_basic.entry_login, 2, i, 1, 1, 1, 0, 1, 0);
