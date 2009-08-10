@@ -265,6 +265,8 @@ struct _Instance
 
     Exalt_DBus_Conn *conn;
 
+    Ecore_Timer *timer_test_service;
+
     /* popup anyone ? */
     E_Menu *menu;
     E_Menu *sub_menu;

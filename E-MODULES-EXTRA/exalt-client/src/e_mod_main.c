@@ -62,10 +62,10 @@ e_modapi_init(E_Module *m)
     /* Display this Modules config info in the main Config Panel */
 
     /* starts with a category */
-    e_configure_registry_category_add("advanced", 80, "Advanced",
-            NULL, "preferences-advanced");
+    e_configure_registry_category_add("extensions", 80, "Extensions",
+            NULL, "preferences-extensions");
     /* add right-side item */
-    e_configure_registry_item_add("advanced/exalt", 110, "exalt",
+    e_configure_registry_item_add("extensions/exalt", 110, "exalt",
             NULL, buf, e_int_config_exalt_module);
 
     /* Define EET Data Storage */
@@ -216,6 +216,7 @@ int timer_test_service_cb(void *data)
     {
         exalt_dbus_notify_set(inst->conn,notify_cb,inst);
         exalt_dbus_scan_notify_set(inst->conn,notify_scan_cb,inst);
+        inst->timer_test_service = NULL;
         return 0;
     }
     else
@@ -269,7 +270,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     {
         //exalt service doesn't exists
         //launch a timer to re-test
-        Ecore_Timer *timer = ecore_timer_add(5,timer_test_service_cb,inst);
+        inst->timer_test_service = ecore_timer_add(5,timer_test_service_cb,inst);
     }
     else
     {
@@ -323,6 +324,9 @@ _gc_shutdown(E_Gadcon_Client *gcc)
     if (!(inst = gcc->data)) return;
     instances = eina_list_remove(instances, inst);
 
+    if(inst->timer_test_service)
+        ecore_timer_del(inst->timer_test_service);
+
     /* kill popup menu */
     if (inst->menu)
     {
@@ -347,7 +351,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
     exalt_dbus_free(&(inst->conn));
     exalt_dbus_shutdown();
-    //e_notification_shutdown();
+    e_notification_shutdown();
 
     E_FREE(inst);
 }

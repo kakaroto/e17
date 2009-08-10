@@ -68,6 +68,24 @@ if test "$elive" = "yes"; then
     AC_DEFINE_UNQUOTED(ELIVE, "${elive}", [Use the special Elive extension])
 fi
 
+AC_ARG_ENABLE([shave],
+              [  --disable-shave                  Use shave output cleaner when building.],
+              [ case "${enableval}" in
+               yes)    enable_shave=yes;;
+               no)    enable_shave=no;;
+               *)    AC_MSG_ERROR([bad value ${enableval} for --disable-shave]);;
+               esac],
+               [enable_shave=yes])
+
+if test x$enable_shave = xyes; then
+    SHAVE_INIT([./])
+fi
+
+AC_CONFIG_FILES([
+    shave
+    shave-libtool
+])
+
 AC_OUTPUT([
 Makefile
 src/Makefile
