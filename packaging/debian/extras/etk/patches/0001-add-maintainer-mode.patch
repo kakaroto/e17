@@ -1,0 +1,12 @@
+diff --git a/etk/configure.ac b/etk/configure.ac
+index 571e473..24b11e2 100644
+--- a/etk/configure.ac
++++ b/etk/configure.ac
+@@ -9,6 +9,7 @@ AC_CANONICAL_HOST
+ AC_ISC_POSIX
+ 
+ AM_INIT_AUTOMAKE(1.6 dist-bzip2)
++AM_MAINTAINER_MODE([enabled])
+ AM_CONFIG_HEADER(config.h)
+ 
+ AC_C_BIGENDIAN

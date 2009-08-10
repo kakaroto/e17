@@ -1,0 +1,2302 @@
+diff --git a/etk/Makefile.in b/etk/Makefile.in
+index 24c98c1..3aa23f2 100644
+--- a/etk/Makefile.in
++++ b/etk/Makefile.in
+@@ -143,6 +143,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -261,7 +262,7 @@ all: config.h
+ .SUFFIXES:
+ am--refresh:
+ 	@:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -288,9 +289,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	$(SHELL) ./config.status --recheck
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(srcdir) && $(AUTOCONF)
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+ 
+ config.h: stamp-h1
+@@ -302,7 +303,7 @@ config.h: stamp-h1
+ stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
+ 	@rm -f stamp-h1
+ 	cd $(top_builddir) && $(SHELL) ./config.status config.h
+-$(srcdir)/config.h.in:  $(am__configure_deps) 
++$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
+ 	cd $(top_srcdir) && $(AUTOHEADER)
+ 	rm -f stamp-h1
+ 	touch $@
+diff --git a/etk/aclocal.m4 b/etk/aclocal.m4
+index f6eedb0..51089c1 100644
+--- a/etk/aclocal.m4
++++ b/etk/aclocal.m4
+@@ -8540,6 +8540,35 @@ fi
+ rmdir .tst 2>/dev/null
+ AC_SUBST([am__leading_dot])])
+ 
++# Add --enable-maintainer-mode option to configure.         -*- Autoconf -*-
++# From Jim Meyering
++
++# Copyright (C) 1996, 1998, 2000, 2001, 2002, 2003, 2004, 2005
++# Free Software Foundation, Inc.
++#
++# This file is free software; the Free Software Foundation
++# gives unlimited permission to copy and/or distribute it,
++# with or without modifications, as long as this notice is preserved.
++
++# serial 4
++
++AC_DEFUN([AM_MAINTAINER_MODE],
++[AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
++  dnl maintainer-mode is disabled by default
++  AC_ARG_ENABLE(maintainer-mode,
++[  --enable-maintainer-mode  enable make rules and dependencies not useful
++			  (and sometimes confusing) to the casual installer],
++      USE_MAINTAINER_MODE=$enableval,
++      USE_MAINTAINER_MODE=no)
++  AC_MSG_RESULT([$USE_MAINTAINER_MODE])
++  AM_CONDITIONAL(MAINTAINER_MODE, [test $USE_MAINTAINER_MODE = yes])
++  MAINT=$MAINTAINER_MODE_TRUE
++  AC_SUBST(MAINT)dnl
++]
++)
++
++AU_DEFUN([jm_MAINTAINER_MODE], [AM_MAINTAINER_MODE])
++
+ # Check to see how 'make' treats includes.	            -*- Autoconf -*-
+ 
+ # Copyright (C) 2001, 2002, 2003, 2005  Free Software Foundation, Inc.
+diff --git a/etk/configure b/etk/configure
+index a560521..74a1b8e 100755
+--- a/etk/configure
++++ b/etk/configure
+@@ -837,6 +837,9 @@ LIBTOOL
+ EGREP
+ GREP
+ CPP
++MAINT
++MAINTAINER_MODE_FALSE
++MAINTAINER_MODE_TRUE
+ am__fastdepCC_FALSE
+ am__fastdepCC_TRUE
+ CCDEPMODE
+@@ -925,6 +928,7 @@ ac_subst_files=''
+ ac_user_opts='
+ enable_option_checking
+ enable_dependency_tracking
++enable_maintainer_mode
+ enable_shared
+ enable_static
+ with_pic
+@@ -1578,6 +1582,8 @@ Optional Features:
+   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+   --disable-dependency-tracking  speeds up one-time build
+   --enable-dependency-tracking   do not reject slow dependency extractors
++  --enable-maintainer-mode  enable make rules and dependencies not useful
++			  (and sometimes confusing) to the casual installer
+   --enable-shared[=PKGS]  build shared libraries [default=yes]
+   --enable-static[=PKGS]  build static libraries [default=yes]
+   --enable-fast-install[=PKGS]
+@@ -3811,6 +3817,28 @@ fi
+ 
+ 
+ 
++{ $as_echo "$as_me:$LINENO: checking whether to enable maintainer-specific portions of Makefiles" >&5
++$as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
++    # Check whether --enable-maintainer-mode was given.
++if test "${enable_maintainer_mode+set}" = set; then
++  enableval=$enable_maintainer_mode; USE_MAINTAINER_MODE=$enableval
++else
++  USE_MAINTAINER_MODE=no
++fi
++
++  { $as_echo "$as_me:$LINENO: result: $USE_MAINTAINER_MODE" >&5
++$as_echo "$USE_MAINTAINER_MODE" >&6; }
++   if test $USE_MAINTAINER_MODE = yes; then
++  MAINTAINER_MODE_TRUE=
++  MAINTAINER_MODE_FALSE='#'
++else
++  MAINTAINER_MODE_TRUE='#'
++  MAINTAINER_MODE_FALSE=
++fi
++
++  MAINT=$MAINTAINER_MODE_TRUE
++
++
+ ac_config_headers="$ac_config_headers config.h"
+ 
+ 
+@@ -7163,13 +7191,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
+ else
+   lt_cv_nm_interface="BSD nm"
+   echo "int some_variable = 0;" > conftest.$ac_ext
+-  (eval echo "\"\$as_me:7166: $ac_compile\"" >&5)
++  (eval echo "\"\$as_me:7194: $ac_compile\"" >&5)
+   (eval "$ac_compile" 2>conftest.err)
+   cat conftest.err >&5
+-  (eval echo "\"\$as_me:7169: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
++  (eval echo "\"\$as_me:7197: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
+   cat conftest.err >&5
+-  (eval echo "\"\$as_me:7172: output\"" >&5)
++  (eval echo "\"\$as_me:7200: output\"" >&5)
+   cat conftest.out >&5
+   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
+     lt_cv_nm_interface="MS dumpbin"
+@@ -8374,7 +8402,7 @@ ia64-*-hpux*)
+   ;;
+ *-*-irix6*)
+   # Find out which ABI we are using.
+-  echo '#line 8377 "configure"' > conftest.$ac_ext
++  echo '#line 8405 "configure"' > conftest.$ac_ext
+   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   (eval $ac_compile) 2>&5
+   ac_status=$?
+@@ -9709,11 +9737,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:9712: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9740: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:9716: \$? = $ac_status" >&5
++   echo "$as_me:9744: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -10048,11 +10076,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:10051: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:10079: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:10055: \$? = $ac_status" >&5
++   echo "$as_me:10083: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -10153,11 +10181,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:10156: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:10184: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:10160: \$? = $ac_status" >&5
++   echo "$as_me:10188: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -10208,11 +10236,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:10211: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:10239: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:10215: \$? = $ac_status" >&5
++   echo "$as_me:10243: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -13024,7 +13052,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 13027 "configure"
++#line 13055 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -13120,7 +13148,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 13123 "configure"
++#line 13151 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -15897,6 +15925,13 @@ $as_echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
+ Usually this means the macro was only invoked conditionally." >&2;}
+    { (exit 1); exit 1; }; }
+ fi
++if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
++  { { $as_echo "$as_me:$LINENO: error: conditional \"MAINTAINER_MODE\" was never defined.
++Usually this means the macro was only invoked conditionally." >&5
++$as_echo "$as_me: error: conditional \"MAINTAINER_MODE\" was never defined.
++Usually this means the macro was only invoked conditionally." >&2;}
++   { (exit 1); exit 1; }; }
++fi
+ 
+ if test -z "${BUILD_ENGINE_EE_S_X11_TRUE}" && test -z "${BUILD_ENGINE_EE_S_X11_FALSE}"; then
+   { { $as_echo "$as_me:$LINENO: error: conditional \"BUILD_ENGINE_EE_S_X11\" was never defined.
+diff --git a/etk/data/Makefile.in b/etk/data/Makefile.in
+index dd26f58..fd672d1 100644
+--- a/etk/data/Makefile.in
++++ b/etk/data/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = test themes wm fonts images icons
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/fonts/Makefile.in b/etk/data/fonts/Makefile.in
+index 6ace23f..84e4026 100644
+--- a/etk/data/fonts/Makefile.in
++++ b/etk/data/fonts/Makefile.in
+@@ -111,6 +111,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -204,7 +205,7 @@ EXTRA_DIST = $(FILES)
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -229,9 +230,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/Makefile.in b/etk/data/icons/Makefile.in
+index ad55e05..cb5a8c1 100644
+--- a/etk/data/icons/Makefile.in
++++ b/etk/data/icons/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = default
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/Makefile.in b/etk/data/icons/default/Makefile.in
+index 8ab609f..21e5cef 100644
+--- a/etk/data/icons/default/Makefile.in
++++ b/etk/data/icons/default/Makefile.in
+@@ -123,6 +123,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -218,7 +219,7 @@ files_DATA = default.edj
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -243,9 +244,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/Makefile.in b/etk/data/icons/default/icons/16x16/Makefile.in
+index c34c063..9c1cd89 100644
+--- a/etk/data/icons/default/icons/16x16/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -209,7 +210,7 @@ SUBDIRS = actions \
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -234,9 +235,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/actions/Makefile.in b/etk/data/icons/default/icons/16x16/actions/Makefile.in
+index 85272cb..d364953 100644
+--- a/etk/data/icons/default/icons/16x16/actions/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/actions/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -260,7 +261,7 @@ window-new.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -285,9 +286,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/apps/Makefile.in b/etk/data/icons/default/icons/16x16/apps/Makefile.in
+index 7dd937f..57fbde2 100644
+--- a/etk/data/icons/default/icons/16x16/apps/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/apps/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -217,7 +218,7 @@ utilities-terminal.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -242,9 +243,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/categories/Makefile.in b/etk/data/icons/default/icons/16x16/categories/Makefile.in
+index 639654f..33b3437 100644
+--- a/etk/data/icons/default/icons/16x16/categories/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/categories/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ preferences-system.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/devices/Makefile.in b/etk/data/icons/default/icons/16x16/devices/Makefile.in
+index 224ff5c..95413ac 100644
+--- a/etk/data/icons/default/icons/16x16/devices/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/devices/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -208,7 +209,7 @@ video-display.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -233,9 +234,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/emblems/Makefile.in b/etk/data/icons/default/icons/16x16/emblems/Makefile.in
+index 246d4e2..704386b 100644
+--- a/etk/data/icons/default/icons/16x16/emblems/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/emblems/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -195,7 +196,7 @@ emblem-unreadable.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -220,9 +221,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/emotes/Makefile.in b/etk/data/icons/default/icons/16x16/emotes/Makefile.in
+index 6c18652..2c1c465 100644
+--- a/etk/data/icons/default/icons/16x16/emotes/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/emotes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -199,7 +200,7 @@ face-wink.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -224,9 +225,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/mimetypes/Makefile.in b/etk/data/icons/default/icons/16x16/mimetypes/Makefile.in
+index c8e4393..3fe829e 100644
+--- a/etk/data/icons/default/icons/16x16/mimetypes/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/mimetypes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -204,7 +205,7 @@ x-office-spreadsheet.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -229,9 +230,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/places/Makefile.in b/etk/data/icons/default/icons/16x16/places/Makefile.in
+index 6b87bb2..b0803aa 100644
+--- a/etk/data/icons/default/icons/16x16/places/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/places/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -197,7 +198,7 @@ user-trash.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -222,9 +223,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/16x16/status/Makefile.in b/etk/data/icons/default/icons/16x16/status/Makefile.in
+index 402af41..6d49af0 100644
+--- a/etk/data/icons/default/icons/16x16/status/Makefile.in
++++ b/etk/data/icons/default/icons/16x16/status/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -201,7 +202,7 @@ user-trash-full.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -226,9 +227,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/Makefile.in b/etk/data/icons/default/icons/22x22/Makefile.in
+index e5681c9..7ef1ed6 100644
+--- a/etk/data/icons/default/icons/22x22/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -209,7 +210,7 @@ SUBDIRS = actions \
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -234,9 +235,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/actions/Makefile.in b/etk/data/icons/default/icons/22x22/actions/Makefile.in
+index 2afe306..7de6c09 100644
+--- a/etk/data/icons/default/icons/22x22/actions/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/actions/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -260,7 +261,7 @@ window-new.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -285,9 +286,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/apps/Makefile.in b/etk/data/icons/default/icons/22x22/apps/Makefile.in
+index c330798..e65f883 100644
+--- a/etk/data/icons/default/icons/22x22/apps/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/apps/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -217,7 +218,7 @@ utilities-terminal.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -242,9 +243,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/categories/Makefile.in b/etk/data/icons/default/icons/22x22/categories/Makefile.in
+index faafd24..4a5b1d9 100644
+--- a/etk/data/icons/default/icons/22x22/categories/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/categories/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ preferences-system.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/devices/Makefile.in b/etk/data/icons/default/icons/22x22/devices/Makefile.in
+index adb5c74..b07d2f9 100644
+--- a/etk/data/icons/default/icons/22x22/devices/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/devices/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -208,7 +209,7 @@ video-display.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -233,9 +234,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/emblems/Makefile.in b/etk/data/icons/default/icons/22x22/emblems/Makefile.in
+index 7b243da..7baa5bb 100644
+--- a/etk/data/icons/default/icons/22x22/emblems/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/emblems/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -195,7 +196,7 @@ emblem-unreadable.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -220,9 +221,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/emotes/Makefile.in b/etk/data/icons/default/icons/22x22/emotes/Makefile.in
+index 85896f3..08fba8b 100644
+--- a/etk/data/icons/default/icons/22x22/emotes/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/emotes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -199,7 +200,7 @@ face-wink.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -224,9 +225,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/mimetypes/Makefile.in b/etk/data/icons/default/icons/22x22/mimetypes/Makefile.in
+index 344f430..55746cc 100644
+--- a/etk/data/icons/default/icons/22x22/mimetypes/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/mimetypes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -204,7 +205,7 @@ x-office-spreadsheet.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -229,9 +230,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/places/Makefile.in b/etk/data/icons/default/icons/22x22/places/Makefile.in
+index 37dea62..14f0ab5 100644
+--- a/etk/data/icons/default/icons/22x22/places/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/places/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -197,7 +198,7 @@ user-trash.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -222,9 +223,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/22x22/status/Makefile.in b/etk/data/icons/default/icons/22x22/status/Makefile.in
+index 78867b5..506d589 100644
+--- a/etk/data/icons/default/icons/22x22/status/Makefile.in
++++ b/etk/data/icons/default/icons/22x22/status/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -201,7 +202,7 @@ user-trash-full.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -226,9 +227,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/Makefile.in b/etk/data/icons/default/icons/48x48/Makefile.in
+index 4f281ee..2aa12e3 100644
+--- a/etk/data/icons/default/icons/48x48/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -209,7 +210,7 @@ SUBDIRS = actions \
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -234,9 +235,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/actions/Makefile.in b/etk/data/icons/default/icons/48x48/actions/Makefile.in
+index 63e371c..199b4b5 100644
+--- a/etk/data/icons/default/icons/48x48/actions/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/actions/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -260,7 +261,7 @@ window-new.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -285,9 +286,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/apps/Makefile.in b/etk/data/icons/default/icons/48x48/apps/Makefile.in
+index 6eeeca8..6cd618e 100644
+--- a/etk/data/icons/default/icons/48x48/apps/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/apps/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -217,7 +218,7 @@ utilities-terminal.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -242,9 +243,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/categories/Makefile.in b/etk/data/icons/default/icons/48x48/categories/Makefile.in
+index 131a68c..85f7e18 100644
+--- a/etk/data/icons/default/icons/48x48/categories/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/categories/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ preferences-system.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/devices/Makefile.in b/etk/data/icons/default/icons/48x48/devices/Makefile.in
+index de6a1a2..598048f 100644
+--- a/etk/data/icons/default/icons/48x48/devices/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/devices/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -207,7 +208,7 @@ video-display.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -232,9 +233,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/emblems/Makefile.in b/etk/data/icons/default/icons/48x48/emblems/Makefile.in
+index 765f04f..d8a5774 100644
+--- a/etk/data/icons/default/icons/48x48/emblems/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/emblems/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -195,7 +196,7 @@ emblem-unreadable.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -220,9 +221,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/emotes/Makefile.in b/etk/data/icons/default/icons/48x48/emotes/Makefile.in
+index 9f5dd42..7a67cdc 100644
+--- a/etk/data/icons/default/icons/48x48/emotes/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/emotes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -199,7 +200,7 @@ face-wink.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -224,9 +225,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/mimetypes/Makefile.in b/etk/data/icons/default/icons/48x48/mimetypes/Makefile.in
+index a3f3550..fa45d0e 100644
+--- a/etk/data/icons/default/icons/48x48/mimetypes/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/mimetypes/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -204,7 +205,7 @@ x-office-spreadsheet.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -229,9 +230,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/places/Makefile.in b/etk/data/icons/default/icons/48x48/places/Makefile.in
+index 0aeec5a..4a92b28 100644
+--- a/etk/data/icons/default/icons/48x48/places/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/places/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -197,7 +198,7 @@ user-trash.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -222,9 +223,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/48x48/status/Makefile.in b/etk/data/icons/default/icons/48x48/status/Makefile.in
+index 3441916..18e7f46 100644
+--- a/etk/data/icons/default/icons/48x48/status/Makefile.in
++++ b/etk/data/icons/default/icons/48x48/status/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -201,7 +202,7 @@ user-trash-full.png
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -226,9 +227,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/icons/default/icons/Makefile.in b/etk/data/icons/default/icons/Makefile.in
+index 7ddc2f2..9ec697d 100644
+--- a/etk/data/icons/default/icons/Makefile.in
++++ b/etk/data/icons/default/icons/Makefile.in
+@@ -114,6 +114,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -207,7 +208,7 @@ SUBDIRS = 16x16 \
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -232,9 +233,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/images/Makefile.in b/etk/data/images/Makefile.in
+index 5a5b4aa..285ab67 100644
+--- a/etk/data/images/Makefile.in
++++ b/etk/data/images/Makefile.in
+@@ -111,6 +111,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -207,7 +208,7 @@ EXTRA_DIST = $(FILES)
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -232,9 +233,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/test/Makefile.in b/etk/data/test/Makefile.in
+index d6fdae5..bd2e91d 100644
+--- a/etk/data/test/Makefile.in
++++ b/etk/data/test/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = clock
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/test/clock/Makefile.in b/etk/data/test/clock/Makefile.in
+index a2e58ba..5a512ee 100644
+--- a/etk/data/test/clock/Makefile.in
++++ b/etk/data/test/clock/Makefile.in
+@@ -111,6 +111,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -402,7 +403,7 @@ EXTRA_DIST = $(CLOCK_DEP)
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -427,9 +428,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/Makefile.in b/etk/data/themes/Makefile.in
+index cddac9b..56c2d98 100644
+--- a/etk/data/themes/Makefile.in
++++ b/etk/data/themes/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = default blingbling
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/blingbling/Makefile.in b/etk/data/themes/blingbling/Makefile.in
+index 77ea8f1..bce7638 100644
+--- a/etk/data/themes/blingbling/Makefile.in
++++ b/etk/data/themes/blingbling/Makefile.in
+@@ -123,6 +123,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -250,7 +251,7 @@ widgets/windows.edc
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -275,9 +276,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/blingbling/fonts/Makefile.in b/etk/data/themes/blingbling/fonts/Makefile.in
+index 95214cf..7ea8451 100644
+--- a/etk/data/themes/blingbling/fonts/Makefile.in
++++ b/etk/data/themes/blingbling/fonts/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -193,7 +194,7 @@ EXTRA_DIST = VeraBd.ttf \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -218,9 +219,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/blingbling/images/Makefile.in b/etk/data/themes/blingbling/images/Makefile.in
+index f1d495d..bb61b47 100644
+--- a/etk/data/themes/blingbling/images/Makefile.in
++++ b/etk/data/themes/blingbling/images/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -306,7 +307,7 @@ EXTRA_DIST = \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -331,9 +332,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/blingbling/macros/Makefile.in b/etk/data/themes/blingbling/macros/Makefile.in
+index 97d2f33..937d7a2 100644
+--- a/etk/data/themes/blingbling/macros/Makefile.in
++++ b/etk/data/themes/blingbling/macros/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -197,7 +198,7 @@ EXTRA_DIST = dnd.edc \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -222,9 +223,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/blingbling/widgets/Makefile.in b/etk/data/themes/blingbling/widgets/Makefile.in
+index d8e3b32..19431a5 100644
+--- a/etk/data/themes/blingbling/widgets/Makefile.in
++++ b/etk/data/themes/blingbling/widgets/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -215,7 +216,7 @@ EXTRA_DIST = button.edc \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -240,9 +241,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/default/Makefile.in b/etk/data/themes/default/Makefile.in
+index f8cf0b6..1aaea27 100644
+--- a/etk/data/themes/default/Makefile.in
++++ b/etk/data/themes/default/Makefile.in
+@@ -123,6 +123,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -220,7 +221,7 @@ THEME_DEP = main.edc
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -245,9 +246,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/themes/default/img/Makefile.in b/etk/data/themes/default/img/Makefile.in
+index 83bc032..a0d7e4f 100644
+--- a/etk/data/themes/default/img/Makefile.in
++++ b/etk/data/themes/default/img/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -263,7 +264,7 @@ EXTRA_DIST = \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -288,9 +289,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/wm/Makefile.in b/etk/data/wm/Makefile.in
+index f4ac384..b448895 100644
+--- a/etk/data/wm/Makefile.in
++++ b/etk/data/wm/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = default
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/wm/default/Makefile.in b/etk/data/wm/default/Makefile.in
+index b378fcd..a94e484 100644
+--- a/etk/data/wm/default/Makefile.in
++++ b/etk/data/wm/default/Makefile.in
+@@ -123,6 +123,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -233,7 +234,7 @@ pointers.edc
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -258,9 +259,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/wm/default/fonts/Makefile.in b/etk/data/wm/default/fonts/Makefile.in
+index dadadc0..175d0d2 100644
+--- a/etk/data/wm/default/fonts/Makefile.in
++++ b/etk/data/wm/default/fonts/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -188,7 +189,7 @@ EXTRA_DIST = Vera.ttf
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -213,9 +214,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/data/wm/default/images/Makefile.in b/etk/data/wm/default/images/Makefile.in
+index 0908dee..f3ce9fc 100644
+--- a/etk/data/wm/default/images/Makefile.in
++++ b/etk/data/wm/default/images/Makefile.in
+@@ -101,6 +101,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -210,7 +211,7 @@ EXTRA_DIST = \
+ all: all-am
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -235,9 +236,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/src/Makefile.in b/etk/src/Makefile.in
+index a26a354..07e89c9 100644
+--- a/etk/src/Makefile.in
++++ b/etk/src/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = lib engines bin tools
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/src/bin/Makefile.in b/etk/src/bin/Makefile.in
+index a44935c..053ab1f 100644
+--- a/etk/src/bin/Makefile.in
++++ b/etk/src/bin/Makefile.in
+@@ -133,6 +133,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -259,7 +260,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -284,9 +285,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/Makefile.in b/etk/src/engines/Makefile.in
+index 00cd338..66a5ad8 100644
+--- a/etk/src/engines/Makefile.in
++++ b/etk/src/engines/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -206,7 +207,7 @@ SUBDIRS = ecore_evas \
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -231,9 +232,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/src/engines/ecore_evas/Makefile.in b/etk/src/engines/ecore_evas/Makefile.in
+index 672eccb..30370bb 100644
+--- a/etk/src/engines/ecore_evas/Makefile.in
++++ b/etk/src/engines/ecore_evas/Makefile.in
+@@ -134,6 +134,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -238,7 +239,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -263,9 +264,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/ecore_evas_gl_x11/Makefile.in b/etk/src/engines/ecore_evas_gl_x11/Makefile.in
+index a8ded1d..21b1232 100644
+--- a/etk/src/engines/ecore_evas_gl_x11/Makefile.in
++++ b/etk/src/engines/ecore_evas_gl_x11/Makefile.in
+@@ -134,6 +134,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -239,7 +240,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -264,9 +265,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/ecore_evas_software_x11/Makefile.in b/etk/src/engines/ecore_evas_software_x11/Makefile.in
+index 33f591f..b13ecd7 100644
+--- a/etk/src/engines/ecore_evas_software_x11/Makefile.in
++++ b/etk/src/engines/ecore_evas_software_x11/Makefile.in
+@@ -137,6 +137,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -242,7 +243,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -267,9 +268,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/ecore_evas_software_x11_16/Makefile.in b/etk/src/engines/ecore_evas_software_x11_16/Makefile.in
+index 287cff3..6dcbba1 100644
+--- a/etk/src/engines/ecore_evas_software_x11_16/Makefile.in
++++ b/etk/src/engines/ecore_evas_software_x11_16/Makefile.in
+@@ -137,6 +137,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -243,7 +244,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -268,9 +269,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/ecore_evas_x11/Makefile.in b/etk/src/engines/ecore_evas_x11/Makefile.in
+index ae3b5d8..948b4b2 100644
+--- a/etk/src/engines/ecore_evas_x11/Makefile.in
++++ b/etk/src/engines/ecore_evas_x11/Makefile.in
+@@ -139,6 +139,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -243,7 +244,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -268,9 +269,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/engines/ecore_fb/Makefile.in b/etk/src/engines/ecore_fb/Makefile.in
+index 5968d4d..c1b83e7 100644
+--- a/etk/src/engines/ecore_fb/Makefile.in
++++ b/etk/src/engines/ecore_fb/Makefile.in
+@@ -137,6 +137,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -241,7 +242,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -266,9 +267,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/lib/Makefile.in b/etk/src/lib/Makefile.in
+index 57ea2a3..e2d5487 100644
+--- a/etk/src/lib/Makefile.in
++++ b/etk/src/lib/Makefile.in
+@@ -157,6 +157,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -415,7 +416,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -440,9 +441,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+ 	@$(NORMAL_INSTALL)
+diff --git a/etk/src/tools/Makefile.in b/etk/src/tools/Makefile.in
+index 4ec504a..b66b748 100644
+--- a/etk/src/tools/Makefile.in
++++ b/etk/src/tools/Makefile.in
+@@ -113,6 +113,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -200,7 +201,7 @@ SUBDIRS = etk_prefs
+ all: all-recursive
+ 
+ .SUFFIXES:
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -225,9 +226,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+ mostlyclean-libtool:
+diff --git a/etk/src/tools/etk_prefs/Makefile.in b/etk/src/tools/etk_prefs/Makefile.in
+index 550bd79..f5cc01d 100644
+--- a/etk/src/tools/etk_prefs/Makefile.in
++++ b/etk/src/tools/etk_prefs/Makefile.in
+@@ -122,6 +122,7 @@ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBOBJS = @LTLIBOBJS@
++MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+ MKDIR_P = @MKDIR_P@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+@@ -224,7 +225,7 @@ all: all-am
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .lo .o .obj
+-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+ 	@for dep in $?; do \
+ 	  case '$(am__configure_deps)' in \
+ 	    *$$dep*) \
+@@ -249,9 +250,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
++$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
++$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
