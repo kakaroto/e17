@@ -122,6 +122,10 @@ void exalt_dbus_free(Exalt_DBus_Conn** conn)
     EXALT_ASSERT_RETURN_VOID(conn != NULL);
     EXALT_ASSERT_RETURN_VOID(*conn != NULL);
     EXALT_ASSERT_RETURN_VOID( (*conn)->e_conn != NULL);
+
+    e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->scan_notify_handler);
+    e_dbus_signal_handler_del((*conn)->e_conn, (*conn)->notify_handler);
+
     e_dbus_connection_close((*conn)->e_conn);
     EXALT_FREE((*conn)->notify);
     EXALT_FREE((*conn)->scan_notify);
