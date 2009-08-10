@@ -27,6 +27,8 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
  * @{
  */
 
+static int init = 0;
+
 /**
  * @brief Initialise the library
  * Don't forget to create a connection with Exalt_DBus_Connect() after
@@ -34,6 +36,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
  */
 int exalt_dbus_init()
 {
+    if( ++init != 1) return init;
     ecore_init();
     e_dbus_init();
 
@@ -95,8 +98,14 @@ Exalt_DBus_Conn* exalt_dbus_connect()
     //initialise the errors
     dbus_error_init(&err);
     // connect to the bus
-    conn->conn = dbus_bus_get(DBUS_BUS_SYSTEM, &err);
+    conn->conn = dbus_bus_get_private(DBUS_BUS_SYSTEM, &err);
+    EXALT_ASSERT_CUSTOM_RET(conn->conn != NULL,
+            EXALT_FREE(conn); return NULL;);
+
     conn->e_conn = e_dbus_connection_setup(conn->conn);
+    EXALT_ASSERT_CUSTOM_RET(conn->e_conn != NULL,
+            EXALT_FREE(conn); return NULL;);
+
     conn->msg_id = 1;
 
     conn -> response_notify = calloc(1,sizeof(exalt_dbus_response_data));
@@ -110,6 +119,9 @@ Exalt_DBus_Conn* exalt_dbus_connect()
  */
 void exalt_dbus_free(Exalt_DBus_Conn** conn)
 {
+    EXALT_ASSERT_RETURN_VOID(conn != NULL);
+    EXALT_ASSERT_RETURN_VOID(*conn != NULL);
+    EXALT_ASSERT_RETURN_VOID( (*conn)->e_conn != NULL);
     e_dbus_connection_close((*conn)->e_conn);
     EXALT_FREE((*conn)->notify);
     EXALT_FREE((*conn)->scan_notify);
@@ -121,6 +133,7 @@ void exalt_dbus_free(Exalt_DBus_Conn** conn)
  */
 void exalt_dbus_shutdown()
 {
+    if( --init ) return;
     e_dbus_shutdown();
     ecore_shutdown();
 }

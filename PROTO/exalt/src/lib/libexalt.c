@@ -9,6 +9,8 @@
  * @{
  */
 
+static int init = 0;
+
 Exalt_Ethernets exalt_eth_interfaces;
 
 
@@ -17,6 +19,8 @@ Exalt_Ethernets exalt_eth_interfaces;
  */
 int exalt_init()
 {
+    if( ++init != 1) return init;
+
     exalt_eth_interfaces.is_launch = 0;
     exalt_eth_interfaces.ethernets = NULL;
 
