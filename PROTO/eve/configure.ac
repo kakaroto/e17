@@ -53,7 +53,6 @@ Makefile
 data/Makefile
 data/theme/Makefile
 data/theme/default/Makefile
-data/theme/b_and_w/Makefile
 src/Makefile
 src/bin/Makefile
 ])

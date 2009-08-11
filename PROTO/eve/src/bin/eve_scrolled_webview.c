@@ -56,7 +56,7 @@ struct _Eve_Scrolled_Webview_Data
    } mouse_move;
 };
 
-static Evas_Smart_Class _parent_sc = {NULL};
+static Evas_Smart_Class _parent_sc = EVAS_SMART_CLASS_INIT_NULL;
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 
 static void
@@ -137,13 +137,13 @@ _eve_scrolled_webview_smart_add(Evas_Object *o)
    Eve_Scrolled_Webview_Data *priv = calloc(1, sizeof(*priv));
    if (!priv)
      {
-	fprintf(stderr, "ERROR: could not allocate priv data %d bytes: %s\n",
+	fprintf(stderr, "ERROR: could not allocate priv data %lu bytes: %s\n",
 		sizeof(*priv), strerror(errno));
 	return;
      }
    evas_object_smart_data_set(o, priv);
 
-   priv->file = eina_stringshare_add(PACKAGE_DATA_DIR "/data/b_and_w.edj");
+   priv->file = eina_stringshare_add(PACKAGE_DATA_DIR "/data/default.edj");
    priv->group = eina_stringshare_add("eve.scrollframe");
 
    _parent_sc.add(o);
@@ -181,9 +181,7 @@ _eve_scrolled_webview_smart_add(Evas_Object *o)
 static Evas_Smart *
 _eve_scrolled_webview_smart_new(void)
 {
-   static Evas_Smart_Class sc = {
-     "Eve_Scrolled_Webview", EVAS_SMART_CLASS_VERSION, NULL
-   };
+   static Evas_Smart_Class sc = EVAS_SMART_CLASS_INIT_NAME_VERSION("Eve_Scrolled_Webview");
 
    if (!_parent_sc.name)
      {

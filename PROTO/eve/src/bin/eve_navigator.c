@@ -325,7 +325,7 @@ _eve_navigator_smart_add(Evas_Object *o)
      }
    evas_object_smart_data_set(o, priv);
 
-   priv->file = eina_stringshare_add(PACKAGE_DATA_DIR "/data/b_and_w.edj");
+   priv->file = eina_stringshare_add(PACKAGE_DATA_DIR "/data/default.edj");
    priv->group = eina_stringshare_add("eve.navigator");
 
    _parent_sc.add(o);
