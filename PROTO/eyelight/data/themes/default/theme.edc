@@ -504,8 +504,8 @@ collections
                     {
                         text: "TEXT";
                         style: "itemStyle";
-                        min: 1 1;
-                        max: 0 0;
+                        min: 0 1;
+                        max: 0 1;
                     }
                 }
             }
@@ -568,7 +568,7 @@ collections
                         text: "TEXT";
                         style: "itemStyle";
                         min: 1 1;
-                        max: 0 0;
+                        max: 0 1;
                     }
                 }
             }

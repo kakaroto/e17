@@ -58,6 +58,7 @@ PKG_CHECK_MODULES(EYELIGHT, [
                         evas >= 0.9.9.40,
                         edje >= 0.5
                         emotion >= 0.1
+                        libpng >= 0.1
                         ])
 # required libs / cflags
 eyelight_libs=$EYELIGHT_LIBS

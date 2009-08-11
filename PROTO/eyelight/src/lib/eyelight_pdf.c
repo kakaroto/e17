@@ -76,7 +76,7 @@ void eyelight_pdf_generate(Eyelight_Viewer *pres, char* file)
         for(i=0; i<eyelight_viewer_size_get(pres);i++)
         {
                 printf("Generate slide %d\n",i+1);
-                const Eyelight_Thumb* thumb = eyelight_viewer_thumbnails_custom_size_get(pres, i, pres->default_size_w, pres->default_size_h, 0);
+                const Eyelight_Thumb* thumb = eyelight_viewer_thumbnails_custom_size_get(pres, i, pres->default_size_w, pres->default_size_h);
 
                 Evas_Object *o_image = evas_object_image_add(pres->evas);
                 evas_object_color_set(o_image,255,255,255,255);

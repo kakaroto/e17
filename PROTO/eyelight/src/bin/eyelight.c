@@ -209,6 +209,7 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                 case EYELIGHT_SELECT:
                     eyelight_viewer_expose_select(pres);
                     break;
+                default: ;
             }
             break;
         case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
@@ -246,6 +247,7 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                 case EYELIGHT_SELECT:
                     eyelight_viewer_slideshow_select(pres);
                     break;
+                default: ;
             }
             break;
         case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
@@ -265,6 +267,7 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                 case EYELIGHT_SELECT:
                     eyelight_viewer_tableofcontents_select(pres);
                     break;
+                default: ;
             }
             break;
         default:
@@ -357,7 +360,7 @@ int main(int argc, char*argv[])
     char* presentation = NULL;
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
-    unsigned char generate_pdf = 0;
+    char *generate_pdf = 0;
     int pdf_size_w = 0;
     int pdf_size_h = 0;
 
@@ -383,7 +386,7 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
 #ifdef PDF_SUPPORT
-        ECORE_GETOPT_VALUE_BOOL(generate_pdf),
+        ECORE_GETOPT_VALUE_STR(generate_pdf),
         ECORE_GETOPT_VALUE_INT(pdf_size_w),
         ECORE_GETOPT_VALUE_INT(pdf_size_h),
 #endif
