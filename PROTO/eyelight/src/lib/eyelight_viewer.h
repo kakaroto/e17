@@ -103,64 +103,64 @@ struct Eyelight_Viewer
     int tableofcontents_is_previous_program;
 };
 
-Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres);
+EAPI Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres);
 
 
-Eyelight_Viewer* eyelight_viewer_new(Evas* evas,char* pres, char* theme,int with_boder);
-void eyelight_viewer_destroy(Eyelight_Viewer**pres);
+EAPI Eyelight_Viewer* eyelight_viewer_new(Evas* evas,char* pres, char* theme,int with_boder);
+EAPI void eyelight_viewer_destroy(Eyelight_Viewer**pres);
 
 
 
-void eyelight_viewer_slides_init(Eyelight_Viewer*pres,int w, int h);
-int eyelight_viewer_size_get(Eyelight_Viewer*pres);
+EAPI void eyelight_viewer_slides_init(Eyelight_Viewer*pres,int w, int h);
+EAPI int eyelight_viewer_size_get(Eyelight_Viewer*pres);
 
-int eyelight_viewer_current_id_get(Eyelight_Viewer* pres);
+EAPI int eyelight_viewer_current_id_get(Eyelight_Viewer* pres);
 
-Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos);
-Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos);
+EAPI Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos);
+EAPI Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos);
 
-void eyelight_viewer_default_transitions_load(Eyelight_Viewer*pres);
-void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres,int slide);
-void eyelight_viewer_slide_transitions_get(Eyelight_Viewer*pres,int slide, const char** previous, const char** next);
-void eyelight_viewer_transitions_stop(Eyelight_Viewer*pres);
-void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h);
+EAPI void eyelight_viewer_default_transitions_load(Eyelight_Viewer*pres);
+EAPI void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres,int slide);
+EAPI void eyelight_viewer_slide_transitions_get(Eyelight_Viewer*pres,int slide, const char** previous, const char** next);
+EAPI void eyelight_viewer_transitions_stop(Eyelight_Viewer*pres);
+EAPI void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h);
 
-void eyelight_viewer_slide_next(Eyelight_Viewer*pres);
-void eyelight_viewer_slide_previous(Eyelight_Viewer*pres);
-void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id);
+EAPI void eyelight_viewer_slide_next(Eyelight_Viewer*pres);
+EAPI void eyelight_viewer_slide_previous(Eyelight_Viewer*pres);
+EAPI void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id);
 
-void eyelight_viewer_expose_start(Eyelight_Viewer* pres, int select,int nb_lines, int nb_cols);
-void eyelight_viewer_expose_stop(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_next(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_previous(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_window_next(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_window_previous(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_down(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_up(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_select(Eyelight_Viewer* pres);
-void eyelight_viewer_expose_resize(Eyelight_Viewer* pres,int w, int h);
+EAPI void eyelight_viewer_expose_start(Eyelight_Viewer* pres, int select,int nb_lines, int nb_cols);
+EAPI void eyelight_viewer_expose_stop(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_next(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_previous(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_window_next(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_window_previous(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_down(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_up(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_select(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_expose_resize(Eyelight_Viewer* pres,int w, int h);
 
-void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres);
-void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres);
-void eyelight_viewer_gotoslide_digit_add(Eyelight_Viewer* pres, int digit);
-void eyelight_viewer_gotoslide_goto(Eyelight_Viewer* pres);
-void eyelight_viewer_gotoslide_digit_last_remove(Eyelight_Viewer* pres);
-void eyelight_viewer_gotoslide_resize(Eyelight_Viewer* pres, int w, int h);
+EAPI void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_gotoslide_digit_add(Eyelight_Viewer* pres, int digit);
+EAPI void eyelight_viewer_gotoslide_goto(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_gotoslide_digit_last_remove(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_gotoslide_resize(Eyelight_Viewer* pres, int w, int h);
 
 
-void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select);
-void eyelight_viewer_slideshow_stop(Eyelight_Viewer* pres);
-void eyelight_viewer_slideshow_next(Eyelight_Viewer* pres);
-void eyelight_viewer_slideshow_previous(Eyelight_Viewer* pres);
-void eyelight_viewer_slideshow_select(Eyelight_Viewer* pres);
-void eyelight_viewer_slideshow_resize(Eyelight_Viewer* pres,int w, int h);
+EAPI void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select);
+EAPI void eyelight_viewer_slideshow_stop(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_slideshow_next(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_slideshow_previous(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_slideshow_select(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_slideshow_resize(Eyelight_Viewer* pres,int w, int h);
 
-void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select);
-void eyelight_viewer_tableofcontents_stop(Eyelight_Viewer* pres);
-void eyelight_viewer_tableofcontents_next(Eyelight_Viewer* pres);
-void eyelight_viewer_tableofcontents_previous(Eyelight_Viewer* pres);
-void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres);
-void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, int h);
+EAPI void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select);
+EAPI void eyelight_viewer_tableofcontents_stop(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_tableofcontents_next(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_tableofcontents_previous(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres);
+EAPI void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, int h);
 
 
 
