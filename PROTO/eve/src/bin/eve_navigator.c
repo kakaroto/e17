@@ -54,7 +54,7 @@ struct _Eve_Navigator_Data
    const char *title;
 };
 
-static Evas_Smart_Class _parent_sc = {NULL};
+static Evas_Smart_Class _parent_sc = EVAS_SMART_CLASS_INIT_NULL;
 static const char EDJE_PART_CONTENT[] = "eve.swallow.content";
 static const char EDJE_PART_LOCATION[] = "eve.text.location";
 
@@ -128,10 +128,18 @@ _eve_navigator_on_load_finished(void *data, Evas_Object *obj, void *event_info)
 {
    Eve_Navigator_Data *priv = data;
    EWebKit_Event_Load_Finished *ev = event_info;
-   if (ev->success)
+   if (!ev->exception)
      edje_object_signal_emit(priv->edje, "eve,action,load,done", "");
+   else if (ev->exception->is_cancellation)
+     fputs("DBG: previous load was cancelled.\n", stderr);
    else
-     fputs("DBG: load finished, but load succeeded flag is not set.\n", stderr);
+     {
+	const EWebKit_Load_Exception *ex = ev->exception;
+	fprintf(stderr,
+		"DBG: load finished with errors: "
+		"domain='%s', failing_url='%s', description='%s'\n",
+		ex->domain, ex->failing_url, ex->localized_description);
+     }
 }
 
 static void
@@ -311,7 +319,7 @@ _eve_navigator_smart_add(Evas_Object *o)
    Eve_Navigator_Data *priv = calloc(1, sizeof(*priv));
    if (!priv)
      {
-	fprintf(stderr, "ERROR: could not allocate priv data %d bytes: %s\n",
+	fprintf(stderr, "ERROR: could not allocate priv data %lu bytes: %s\n",
 		sizeof(*priv), strerror(errno));
 	return;
      }
@@ -357,9 +365,7 @@ _eve_navigator_smart_add(Evas_Object *o)
 static Evas_Smart *
 _eve_navigator_smart_new(void)
 {
-   static Evas_Smart_Class sc = {
-     "Eve_Navigator", EVAS_SMART_CLASS_VERSION, NULL
-   };
+   static Evas_Smart_Class sc = EVAS_SMART_CLASS_INIT_NAME_VERSION("Eve_Navigator");
 
    if (!_parent_sc.name)
      {
