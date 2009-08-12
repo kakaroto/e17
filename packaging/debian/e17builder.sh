@@ -43,14 +43,19 @@ distros=(
 # jaunty - x86*
 "jaunty#i386"
 "jaunty#amd64"
+# karmic - x86*
+"karmic#i386"
+"karmic#amd64"
 # hardy, intrepid, jaunty - armel
 "hardy#armel"
 "intrepid#armel"
 "jaunty#armel"
+"karmic#armel"
 # hardy, intrepid, jaunty - lpia
 "hardy#lpia"
 "intrepid#lpia"
 "jaunty#lpia"
+"karmic#lpia"
 ## debian
 # lenny - x86*
 "lenny#i386"
