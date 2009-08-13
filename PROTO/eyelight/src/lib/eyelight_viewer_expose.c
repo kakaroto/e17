@@ -53,6 +53,7 @@ void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select, int nb_lines
         printf("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1\n");
     evas_object_show(o);
     evas_object_resize(o, pres->current_size_w, pres->current_size_h);
+    edje_object_scale_set(o, pres->current_scale);
     evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
     evas_object_smart_member_add(o, pres->smart_obj);
     evas_object_clip_set(o, pres->current_clip);
@@ -315,6 +316,11 @@ void eyelight_viewer_expose_smart_obj_set(Eyelight_Viewer* pres,Evas_Object *obj
 void eyelight_viewer_expose_resize(Eyelight_Viewer* pres,int w, int h)
 {
     evas_object_resize(pres->expose_background,w,h);
+}
+
+void eyelight_viewer_expose_scale_set(Eyelight_Viewer* pres,double ratio)
+{
+    edje_object_scale_set(pres->expose_background,ratio);
 }
 
 void eyelight_viewer_expose_move(Eyelight_Viewer* pres,int x, int y)

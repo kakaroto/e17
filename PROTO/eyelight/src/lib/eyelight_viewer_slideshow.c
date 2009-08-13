@@ -49,6 +49,7 @@ void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select)
     pres->slideshow_nb_slides = atoi(data);
     evas_object_show(o);
     evas_object_resize(o, pres->current_size_w, pres->current_size_h);
+    edje_object_scale_set(o, pres->current_scale);
     evas_object_smart_member_add(o, pres->smart_obj);
     evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
     evas_object_clip_set(o, pres->current_clip);
@@ -133,13 +134,14 @@ void eyelight_viewer_slideshow_smart_obj_set(Eyelight_Viewer* pres,Evas_Object *
     evas_object_smart_member_add(pres->slideshow_background,obj);
 }
 
+
+void eyelight_viewer_slideshow_scale_set(Eyelight_Viewer* pres,double ratio)
+{
+    edje_object_scale_set(pres->slideshow_background,ratio);
+}
+
 void eyelight_viewer_slideshow_resize(Eyelight_Viewer* pres,int w, int h)
 {
-    int nb_slides = pres->slideshow_nb_slides;
-    int w_swallow,h_swallow;
-    int i;
-    char buf[EYELIGHT_BUFLEN];
-
     evas_object_resize(pres->slideshow_background,w,h);
 }
 

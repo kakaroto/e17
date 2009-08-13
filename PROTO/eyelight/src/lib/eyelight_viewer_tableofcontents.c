@@ -52,7 +52,7 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
     pres->tableofcontents_nb_slides = atoi(data);
     evas_object_show(o);
     evas_object_resize(o, pres->current_size_w, pres->current_size_h);
-    evas_object_scale_set(o, pres->current_scale);
+    edje_object_scale_set(o, pres->current_scale);
     evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
     evas_object_smart_member_add(o,pres->smart_obj);
     evas_object_clip_set(o, pres->current_clip);
@@ -173,7 +173,7 @@ void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, int h)
 
 void eyelight_viewer_tableofcontents_scale_set(Eyelight_Viewer* pres, double ratio)
 {
-    evas_object_scale_set(pres->tableofcontents_background,ratio);
+    edje_object_scale_set(pres->tableofcontents_background,ratio);
 }
 
 void eyelight_viewer_tableofcontents_move(Eyelight_Viewer* pres, int x, int y)

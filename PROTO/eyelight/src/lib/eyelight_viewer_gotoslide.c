@@ -40,6 +40,7 @@ void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres)
     evas_object_smart_member_add(o, pres->smart_obj);
     evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
     evas_object_clip_set(o, pres->current_clip);
+    edje_object_scale_set(o,pres->current_scale);
 }
 
 void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres)
@@ -84,6 +85,13 @@ void eyelight_viewer_gotoslide_smart_obj_set(Eyelight_Viewer* pres, Evas_Object 
 {
     evas_object_smart_member_add(pres->gotoslide_object,obj);
 }
+
+void eyelight_viewer_gotoslide_scale_set(Eyelight_Viewer* pres, double ratio)
+{
+    edje_object_scale_set(pres->gotoslide_object,ratio);
+}
+
+
 
 void eyelight_viewer_gotoslide_resize(Eyelight_Viewer* pres, int w, int h)
 {

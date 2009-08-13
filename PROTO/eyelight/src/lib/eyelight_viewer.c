@@ -323,13 +323,13 @@ void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
             eyelight_viewer_tableofcontents_scale_set(pres,ratio);
             break;
         case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
-            //eyelight_viewer_gotoslide_scale_set(pres,ratio);
+            eyelight_viewer_gotoslide_scale_set(pres,ratio);
             break;
         case EYELIGHT_VIEWER_STATE_EXPOSE:
-            //eyelight_viewer_expose_scale_set(pres,ratio);
+            eyelight_viewer_expose_scale_set(pres,ratio);
             break;
         case EYELIGHT_VIEWER_STATE_SLIDESHOW:
-            //eyelight_viewer_slideshow_scale_set(pres,ratio);
+            eyelight_viewer_slideshow_scale_set(pres,ratio);
             break;
         default: break;
     }

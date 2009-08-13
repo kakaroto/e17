@@ -131,7 +131,7 @@ EAPI int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char
 EAPI int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme);
 EAPI void eyelight_viewer_border_set(Eyelight_Viewer *pres, int border);
 EAPI void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *below);
-
+void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio);
 
 EAPI int eyelight_viewer_size_get(Eyelight_Viewer*pres);
 
@@ -166,6 +166,7 @@ EAPI void eyelight_viewer_expose_resize(Eyelight_Viewer* pres,int w, int h);
 EAPI void eyelight_viewer_expose_move(Eyelight_Viewer* pres,int x, int y);
 EAPI void eyelight_viewer_expose_clip_set(Eyelight_Viewer* pres,Evas_Object *clip);
 EAPI void eyelight_viewer_expose_smart_obj_set(Eyelight_Viewer* pres,Evas_Object *obj);
+EAPI void eyelight_viewer_expose_scale_set(Eyelight_Viewer* pres,double ratio);
 
 EAPI void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres);
 EAPI void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres);
@@ -176,6 +177,7 @@ EAPI void eyelight_viewer_gotoslide_resize(Eyelight_Viewer* pres, int w, int h);
 EAPI void eyelight_viewer_gotoslide_move(Eyelight_Viewer* pres, int x, int y);
 EAPI void eyelight_viewer_gotoslide_clip_set(Eyelight_Viewer* pres, Evas_Object *clip);
 EAPI void eyelight_viewer_gotoslide_smart_obj_set(Eyelight_Viewer* pres, Evas_Object *obj);
+EAPI void eyelight_viewer_gotoslide_scale_set(Eyelight_Viewer* pres, double ratio);
 
 EAPI void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select);
 EAPI void eyelight_viewer_slideshow_stop(Eyelight_Viewer* pres);
@@ -186,6 +188,7 @@ EAPI void eyelight_viewer_slideshow_resize(Eyelight_Viewer* pres,int w, int h);
 EAPI void eyelight_viewer_slideshow_move(Eyelight_Viewer* pres,int x, int y);
 EAPI void eyelight_viewer_slideshow_clip_set(Eyelight_Viewer* pres,Evas_Object *clip);
 EAPI void eyelight_viewer_slideshow_smart_obj_set(Eyelight_Viewer* pres,Evas_Object *obj);
+EAPI void eyelight_viewer_slideshow_scale_set(Eyelight_Viewer* pres,double ratio);
 
 EAPI void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select);
 EAPI void eyelight_viewer_tableofcontents_stop(Eyelight_Viewer* pres);
@@ -196,7 +199,7 @@ EAPI void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, i
 EAPI void eyelight_viewer_tableofcontents_move(Eyelight_Viewer* pres, int x, int y);
 EAPI void eyelight_viewer_tableofcontents_clip_set(Eyelight_Viewer* pres, Evas_Object *clip);
 EAPI void eyelight_viewer_tableofcontents_smart_obj_set(Eyelight_Viewer* pres, Evas_Object *obj);
-
+EAPI void eyelight_viewer_tableofcontents_scale_set(Eyelight_Viewer* pres, double ratio);
 
 #endif   /* ----- #ifndef EYELIGHT_VIEWER_INC  ----- */
 
