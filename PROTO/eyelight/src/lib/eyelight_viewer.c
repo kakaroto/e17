@@ -21,12 +21,10 @@
 
 void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
-void eyelight_viewer_theme_set(Eyelight_Viewer* pres,char* theme);
-
 /*
  * @create a new viewer
  */
-Eyelight_Viewer* eyelight_viewer_new(Evas* evas, char* presentation, char* theme, int with_border)
+Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* presentation, const char* theme, int with_border)
 {
     char* str;
     Eyelight_Viewer* pres;
@@ -34,150 +32,188 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, char* presentation, char* theme
     pres  = calloc(1,sizeof(Eyelight_Viewer));
     pres->state= EYELIGHT_VIEWER_STATE_DEFAULT;
     pres->evas = evas;
-    pres->with_border = with_border;
+    pres->slide_with_transition[0] = NULL;
+    pres->slide_with_transition[1] = NULL;
+    pres->current = 0;
+    pres->default_size_w = 1024;
+    pres->default_size_h = 768;
+    pres->current_scale = 1;
+    eyelight_viewer_thumbnails_init(pres);
 
-    if(!presentation || strlen(presentation)==0)
-    {
-        fprintf(stderr,"The presentation file doesn't exists !\n");
-        eyelight_viewer_destroy(&pres);
-        return NULL;
-    }
-    if(presentation)
+    eyelight_viewer_border_set(pres, with_border);
+    eyelight_viewer_theme_file_set(pres,theme);
+    eyelight_viewer_presentation_file_set(pres, presentation);
+
+    pres->video_module = strdup("xine");
+    return pres;
+}
+
+/**
+ * Set the presentation elt file
+ */
+int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* presentation)
+{
+    EYELIGHT_FREE(pres->elt_file);
+
+    eyelight_viewer_clean(pres);
+
+    if(presentation && ecore_file_exists(presentation))
         pres->elt_file = strdup(presentation);
     else
         pres->elt_file = NULL;
 
+    pres -> compiler = eyelight_elt_load(pres->elt_file);
+    pres->size = eyelight_nb_slides_get(pres->compiler);
+
+    pres->slides = calloc(pres->size,sizeof(Evas_Object*));
+    pres->edje_objects = calloc(pres->size,sizeof(Eina_List*));
+    pres->edje_items = calloc(pres->size,sizeof(Eina_List*));
+    pres->video_objects = calloc(pres->size,sizeof(Eina_List*));
+    pres->custom_areas = calloc(pres->size,sizeof(Eina_List*));
+    pres->transition_effect_next = calloc(pres->size,sizeof(char*));
+    pres->transition_effect_previous = calloc(pres->size,sizeof(char*));
+
+    if(eyelight_viewer_size_get(pres)>0)
+        eyelight_viewer_slide_goto(pres,0);
+
+
+    eyelight_viewer_thumbnails_init(pres);
+    eyelight_viewer_thumbnails_background_load_start(pres);
+
+    printf("## Presentation file: %s\n",pres->elt_file);
+    printf("## Theme: %s\n",pres->theme);
+    printf("## Number of slides: %d\n\n",pres->size);
+}
+
+/**
+ * Set the presentation elt file
+ */
+int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme)
+{
+    EYELIGHT_FREE(pres->theme);
     if(!theme)
         theme = PACKAGE_DATA_DIR"/themes/default/theme.edj";
     pres->theme = strdup(theme);
     if(!ecore_file_exists(pres->theme))
     {
-        fprintf(stderr,"The theme doesn't exists !\n");
-        eyelight_viewer_destroy(&pres);
-        return NULL;
+        EYELIGHT_FREE(pres->theme);
+        fprintf(stderr,"The theme doesn't exists , use the default\n");
+        theme = PACKAGE_DATA_DIR"/themes/default/theme.edj";
+        pres->theme = strdup(theme);
     }
 
-
-    pres->video_module = strdup("xine");
-
-    return pres;
+    //we re-set the presentation, this will init all objects
+    char *file = (pres->elt_file?strdup(pres->elt_file):NULL);
+    eyelight_viewer_presentation_file_set(pres, file);
+    EYELIGHT_FREE(file);
 }
 
-/*
- * @brief destroy a viewer
+/**
+ * Set if the border of each area should been display or not
  */
-void eyelight_viewer_destroy(Eyelight_Viewer**pres)
+void eyelight_viewer_border_set(Eyelight_Viewer *pres, int border)
+{
+    pres->with_border = border;
+    //we re-set the presentation, this will init all objects
+    char *file = (pres->elt_file?strdup(pres->elt_file):NULL);
+    eyelight_viewer_presentation_file_set(pres, file);
+    EYELIGHT_FREE(file);
+}
+
+void eyelight_viewer_clean(Eyelight_Viewer *pres)
 {
     int i;
-    EYELIGHT_FREE((*pres)->theme);
-    EYELIGHT_FREE((*pres)->elt_file);
-    for(i=0;i<(*pres)->size;i++)
-        if((*pres)->edje_objects[i])
+
+    for(i=0;i<pres->size;i++)
+        if(pres->edje_items[i])
+        {
+            eina_list_free(pres->edje_items[i]);
+            pres->edje_items[i] = NULL;
+        }
+
+    for(i=0;i<pres->size;i++)
+        if(pres->edje_objects[i])
         {
             Eina_List *l, *l_next;
             Evas_Object *data;
-            EINA_LIST_FOREACH_SAFE((*pres)->edje_objects[i], l, l_next, data)
+            EINA_LIST_FOREACH_SAFE(pres->edje_objects[i], l, l_next, data)
             {
                 evas_object_del(data);
-                (*pres)->edje_objects[i] = eina_list_remove_list((*pres)->edje_objects[i], l);
+                pres->edje_objects[i] = eina_list_remove_list(pres->edje_objects[i], l);
             }
         }
 
-    for(i=0;i<(*pres)->size;i++)
-        if((*pres)->video_objects[i])
+    for(i=0;i<pres->size;i++)
+        if(pres->video_objects[i])
         {
             Eina_List *l, *l_next;
             Eyelight_Video *data;
-            EINA_LIST_FOREACH_SAFE((*pres)->video_objects[i], l, l_next, data)
+            EINA_LIST_FOREACH_SAFE(pres->video_objects[i], l, l_next, data)
             {
                 evas_object_del(data->o_inter);
                 EYELIGHT_FREE(data);
-                (*pres)->video_objects[i] = eina_list_remove_list((*pres)->video_objects[i], l);
+                pres->video_objects[i] = eina_list_remove_list(pres->video_objects[i], l);
             }
         }
 
 
-    for(i=0;i<(*pres)->size;i++)
-        if((*pres)->custom_areas[i])
+    for(i=0;i<pres->size;i++)
+        if(pres->custom_areas[i])
         {
             Eina_List *l, *l_next;
             Eyelight_Custom_Area *data;
-            EINA_LIST_FOREACH_SAFE((*pres)->custom_areas[i], l, l_next, data)
+            EINA_LIST_FOREACH_SAFE(pres->custom_areas[i], l, l_next, data)
             {
                 evas_object_del(data->obj);
                 EYELIGHT_FREE(data);
-                (*pres)->custom_areas[i] = eina_list_remove_list((*pres)->custom_areas[i], l);
+                pres->custom_areas[i] = eina_list_remove_list(pres->custom_areas[i], l);
             }
         }
 
 
-    EYELIGHT_FREE((*pres)->slides);
-    EYELIGHT_FREE((*pres)->edje_objects);
-    EYELIGHT_FREE((*pres)->video_objects);
-    EYELIGHT_FREE((*pres)->video_module);
-    EYELIGHT_FREE((*pres)->custom_areas);
-    EYELIGHT_FREE((*pres)->transition_effect_next);
-    EYELIGHT_FREE((*pres)->transition_effect_previous);
-    EYELIGHT_FREE((*pres)->pdf_file);
+    EYELIGHT_FREE(pres->slides);
+    EYELIGHT_FREE(pres->edje_objects);
+    EYELIGHT_FREE(pres->video_objects);
+    EYELIGHT_FREE(pres->custom_areas);
+    eyelight_compiler_free(&(pres->compiler));
+    EYELIGHT_FREE(pres->transition_effect_next);
+    EYELIGHT_FREE(pres->transition_effect_previous);
 
-    switch((*pres)->state)
+    switch(pres->state)
     {
         case EYELIGHT_VIEWER_STATE_EXPOSE:
-            eyelight_viewer_expose_stop(*pres);
+            eyelight_viewer_expose_stop(pres);
             break;
         case EYELIGHT_VIEWER_STATE_SLIDESHOW:
-            eyelight_viewer_slideshow_stop(*pres);
+            eyelight_viewer_slideshow_stop(pres);
             break;
         case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
-            eyelight_viewer_gotoslide_stop(*pres);
+            eyelight_viewer_gotoslide_stop(pres);
             break;
         case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
-            eyelight_viewer_tableofcontents_stop(*pres);
+            eyelight_viewer_tableofcontents_stop(pres);
             break;
         default:
             break;
     }
-
-    eyelight_viewer_thumbnails_destroy(*pres);
-
-    EYELIGHT_FREE(*pres);
+    eyelight_viewer_thumbnails_destroy(pres);
 }
 
-/*
- * @brief init a viewer
+/**
+ * @brief destroy a viewer
  */
-void eyelight_viewer_slides_init(Eyelight_Viewer*pres, int w, int h)
+void eyelight_viewer_destroy(Eyelight_Viewer**pres)
 {
-    if(!pres->elt_file || !ecore_file_exists(pres->elt_file))
-    {
-        printf("No presentation file specified !\n");
-        exit(0);
-    }
+    if(!pres) return;
+    if(!(*pres)) return ;
 
-    pres -> compiler = eyelight_elt_load(pres->elt_file);
-    pres->size = eyelight_nb_slides_get(pres->compiler);
+    EYELIGHT_FREE((*pres)->theme);
+    EYELIGHT_FREE((*pres)->elt_file);
+    EYELIGHT_FREE((*pres)->video_module);
 
-    pres->slide_with_transition[0] = NULL;
-    pres->slide_with_transition[1] = NULL;
-    pres->slides = calloc(pres->size,sizeof(Evas_Object*));
-    pres->edje_objects = calloc(pres->size,sizeof(Evas_Object*));
-    pres->video_objects = calloc(pres->size,sizeof(Evas_Object*));
-    pres->custom_areas = calloc(pres->size,sizeof(Evas_Object*));
+    eyelight_viewer_clean(*pres);
 
-
-    pres->transition_effect_next = calloc(pres->size,sizeof(char*));
-    pres->transition_effect_previous = calloc(pres->size,sizeof(char*));
-    pres->current = 0;
-
-    pres->default_size_w = w;
-    pres->default_size_h = h;
-
-    eyelight_viewer_thumbnails_init(pres);
-    eyelight_viewer_resize_screen(pres,w,h);
-
-    printf("## Presentation file: %s\n",pres->elt_file);
-    printf("## Theme: %s\n",pres->theme);
-    printf("## Number of slides: %d\n\n",pres->size);
+    EYELIGHT_FREE(*pres);
 }
 
 /*
@@ -188,23 +224,48 @@ Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres)
     return pres->state;
 }
 
-/*
- * @brief set the theme
+
+/**
+ * If the presentation should be a member of a smart object
  */
-void eyelight_viewer_theme_set(Eyelight_Viewer* pres,char* theme)
+void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *obj)
 {
-    EYELIGHT_FREE(pres->theme);
-    pres->theme = strdup(theme);
+    int i;
+    pres->smart_obj = obj;
+
+    for(i=0;i<pres->size;i++)
+        if(pres->slides[i])
+            evas_object_smart_member_add(pres->slides[i], obj);
+
+    switch(pres->state)
+    {
+        case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
+            eyelight_viewer_tableofcontents_smart_obj_set(pres,obj);
+            break;
+        case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
+            eyelight_viewer_gotoslide_smart_obj_set(pres,obj);
+            break;
+        case EYELIGHT_VIEWER_STATE_EXPOSE:
+            eyelight_viewer_expose_smart_obj_set(pres,obj);
+            break;
+        case EYELIGHT_VIEWER_STATE_SLIDESHOW:
+            eyelight_viewer_slideshow_smart_obj_set(pres,obj);
+            break;
+        default: break;
+    }
 }
 
 
-
 /*
- * @resize all slides
+ * Resize all slides
  */
-void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
+void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
 {
     int i;
+
+    pres->current_size_w = w;
+    pres->current_size_h = h;
+
     for(i=0;i<pres->size;i++)
     {
         if(pres->slides[i])
@@ -232,7 +293,113 @@ void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coor
     double ratio_w = w/1024.;
     double ratio_h = h/768.;
     double ratio = (ratio_w+ratio_h)/2;
-    edje_scale_set(ratio);
+    eyelight_viewer_scale_set(pres, ratio);
+}
+
+/*
+ * Scale all slides
+ */
+void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
+{
+    int i;
+
+    pres->current_scale = ratio;
+
+    for(i=0;i<pres->size;i++)
+    {
+        if(pres->slides[i])
+        {
+            edje_object_scale_set(pres->slides[i], ratio);
+            Eina_List *l;
+            Evas_Object *o;
+            EINA_LIST_FOREACH(pres->edje_items[i],l,o)
+                edje_object_scale_set(o, ratio);
+        }
+    }
+
+    switch(pres->state)
+    {
+        case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
+            eyelight_viewer_tableofcontents_scale_set(pres,ratio);
+            break;
+        case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
+            //eyelight_viewer_gotoslide_scale_set(pres,ratio);
+            break;
+        case EYELIGHT_VIEWER_STATE_EXPOSE:
+            //eyelight_viewer_expose_scale_set(pres,ratio);
+            break;
+        case EYELIGHT_VIEWER_STATE_SLIDESHOW:
+            //eyelight_viewer_slideshow_scale_set(pres,ratio);
+            break;
+        default: break;
+    }
+}
+
+/*
+ * Clip all slides
+ */
+void eyelight_viewer_clip_set(Eyelight_Viewer*pres, Evas_Object *clip)
+{
+    int i;
+
+    pres->current_clip = clip;
+
+    for(i=0;i<pres->size;i++)
+    {
+        if(pres->slides[i])
+        {
+            evas_object_clip_set(pres->slides[i], clip);
+        }
+    }
+    switch(pres->state)
+    {
+        case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
+            eyelight_viewer_tableofcontents_clip_set(pres,clip);
+            break;
+        case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
+            eyelight_viewer_gotoslide_clip_set(pres,clip);
+            break;
+        case EYELIGHT_VIEWER_STATE_EXPOSE:
+            eyelight_viewer_expose_clip_set(pres,clip);
+            break;
+        case EYELIGHT_VIEWER_STATE_SLIDESHOW:
+            eyelight_viewer_slideshow_clip_set(pres,clip);
+            break;
+        default: break;
+    }
+}
+
+/*
+ * Move all slides
+ */
+void eyelight_viewer_move(Eyelight_Viewer*pres, Evas_Coord x, Evas_Coord y)
+{
+    int i;
+
+    pres->current_pos_x = x;
+    pres->current_pos_y = y;
+
+    for(i=0;i<pres->size;i++)
+    {
+        if(pres->slides[i])
+            evas_object_move(pres->slides[i], x, y);
+    }
+    switch(pres->state)
+    {
+        case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
+            eyelight_viewer_tableofcontents_move(pres,x,y);
+            break;
+        case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
+            eyelight_viewer_gotoslide_move(pres,x,y);
+            break;
+        case EYELIGHT_VIEWER_STATE_EXPOSE:
+            eyelight_viewer_expose_move(pres,x,y);
+            break;
+        case EYELIGHT_VIEWER_STATE_SLIDESHOW:
+            eyelight_viewer_slideshow_move(pres,x,y);
+            break;
+        default: break;
+    }
 }
 
 /*
@@ -296,9 +463,9 @@ Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos)
     {
         pres->slides[pos] = eyelight_viewer_slide_load(pres,pos);
         eyelight_viewer_slide_transitions_load(pres,pos);
-        evas_object_move (pres->slides[pos], 0, 0);
-        evas_output_viewport_get(pres->evas,NULL,NULL,&w,&h);
-        evas_object_resize(pres->slides[pos],w,h);
+        evas_object_move (pres->slides[pos], pres->current_pos_x, pres->current_pos_y);
+        evas_object_resize(pres->slides[pos],pres->current_size_w,pres->current_size_h);
+        evas_object_clip_set(pres->slides[pos], pres->current_clip);
         evas_object_show(pres->slides[pos]);
         edje_object_signal_emit(pres->slides[pos],"hide","eyelight");
         edje_object_signal_callback_add(pres->slides[pos],"transition,end","eyelight",_eyelight_viewer_end_transition_cb,pres);
@@ -382,6 +549,9 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
     //load the slide
     snprintf(buf,EYELIGHT_BUFLEN,"eyelight/layout_%s",layout);
     slide = edje_object_add(pres->evas);
+    edje_object_scale_set(slide, pres->current_scale);
+    evas_object_smart_member_add(slide, pres->smart_obj);
+
     if(!edje_file_group_exists(pres->theme,buf))
     {
         printf("The layout \"%s\" doesnt exists !\n",layout);
@@ -411,6 +581,9 @@ void eyelight_viewer_clear(Eyelight_Viewer *pres)
         {
             evas_object_del(pres->slides[i]);
             pres->slides[i]=NULL;
+
+            eina_list_free(pres->edje_items[i]);
+            pres->edje_items[i] = NULL;
 
             Eina_List *l, *l_next;
             {

@@ -17,8 +17,7 @@
  */
 
 #include "eyelight_compiler.h"
-
-char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, char *image);
+#include "eyelight_object.h"
 
 
 void eyelight_compile_block_image(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_image, Evas_Object *o_slide, const char *area);
@@ -28,6 +27,7 @@ void eyelight_compile_block_item(Eyelight_Viewer *pres, int id_slide, Eyelight_N
 
 void eyelight_compile_block_edj(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_edj, Evas_Object *o_slide, const char *area);
 void eyelight_compile_block_video(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_edj, Evas_Object *o_slide, const char *area);
+void eyelight_compile_block_presentation(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_pres, Evas_Object *o_slide, const char *area);
 
 void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_slide, Evas_Object *o_slide,
         int slide_number, int nb_slides, int id_summary,
@@ -42,8 +42,12 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
 /**
  * create an image path from the path of the presentation and the image file
  */
-char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, char *image)
+char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image)
 {
+    if(image[0] == '/')
+        return strdup(image);
+
+
     char *path_pres = ecore_file_dir_get(pres->elt_file);
     char *path_image = calloc(strlen(path_pres)+1+strlen(image)+1,sizeof(char));
     path_image[0] = '\0';
@@ -232,6 +236,50 @@ void eyelight_compile_block_video(Eyelight_Viewer *pres, int id_slide, Eyelight_
 
 
 /*
+ * @brief compile a block presentation (presentation, theme)
+ */
+void eyelight_compile_block_presentation(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_pres, Evas_Object *o_slide, const char *area)
+{
+    Eyelight_Node* node_presentation, *node_theme, *node_shadow, *node_border;
+
+    node_presentation = eyelight_retrieve_node_prop(node_pres,EYELIGHT_NAME_PRESENTATION);
+    node_theme = eyelight_retrieve_node_prop(node_pres,EYELIGHT_NAME_THEME);
+    node_shadow = eyelight_retrieve_node_prop(node_pres,EYELIGHT_NAME_SHADOW);
+    node_border = eyelight_retrieve_node_prop(node_pres,EYELIGHT_NAME_BORDER);
+
+    char *presentation = strdup("");
+    if(node_presentation)
+    {
+        EYELIGHT_FREE(presentation);
+        presentation = eyelight_retrieve_value_of_prop(node_presentation,0);
+        presentation = eyelight_compile_image_path_new(pres,presentation);
+    }
+
+    char *theme = strdup(PACKAGE_DATA_DIR"/themes/default/theme.edj");
+    if(node_theme)
+    {
+        EYELIGHT_FREE(theme);
+        theme = eyelight_retrieve_value_of_prop(node_theme,0);
+        theme = eyelight_compile_image_path_new(pres,theme);
+    }
+
+    int shadow = 0;
+    if(node_shadow)
+        shadow = atoi(eyelight_retrieve_value_of_prop(node_shadow,0));
+
+    int border = 0;
+    if(node_border)
+        border = atoi(eyelight_retrieve_value_of_prop(node_border,0));
+
+
+    eyelight_object_item_presentation_add(pres, id_slide, o_slide, area, presentation, theme, border, shadow);
+
+    EYELIGHT_FREE(presentation);
+    EYELIGHT_FREE(theme);
+}
+
+
+/*
  * @brief compile a block video (file, macro)
  */
 void eyelight_compile_block_edj(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node_edj, Evas_Object *o_slide, const char *area)
@@ -349,7 +397,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, int id_slide, Eyelight_N
     if(!node)
     {
         fprintf(stderr,"An area doesn't have a name\n");
-        exit(EXIT_FAILURE);
+        return;
     }
     area = eyelight_retrieve_value_of_prop(node,0);
 
@@ -360,7 +408,7 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, int id_slide, Eyelight_N
         char *layout = eyelight_retrieve_value_of_prop(node_layout, 0);
 
         Evas_Object *o_area = eyelight_object_area_obj_get(pres,id_slide,
-                o_slide, area, &buf);
+                o_slide, area, buf);
 
         if(o_area == o_slide)
             snprintf(buf,EYELIGHT_BUFLEN, "area,%s,layout,%s", area, layout);
@@ -388,6 +436,9 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, int id_slide, Eyelight_N
                         break;
                     case EYELIGHT_NAME_VIDEO:
                         eyelight_compile_block_video(pres, id_slide, node, o_slide, area);
+                        break;
+                    case EYELIGHT_NAME_PRESENTATION:
+                        eyelight_compile_block_presentation(pres, id_slide, node, o_slide, area);
                         break;
                     default : break;
                 }
@@ -424,13 +475,13 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
     Eyelight_Node * node;
     Eina_List *l;
 
-    eyelight_object_title_add(pres,node_slide,o_slide,default_title);
-    eyelight_object_subtitle_add(pres,node_slide,o_slide,default_subtitle);
-    eyelight_object_header_image_add(pres,node_slide,o_slide,default_header_image);
-    eyelight_object_foot_text_add(pres,node_slide,o_slide,default_foot_text);
-    eyelight_object_foot_image_add(pres,node_slide,o_slide,default_foot_image);
+    eyelight_object_title_add(pres,slide_number,node_slide,o_slide,default_title);
+    eyelight_object_subtitle_add(pres,slide_number,node_slide,o_slide,default_subtitle);
+    eyelight_object_header_image_add(pres,slide_number,node_slide,o_slide,default_header_image);
+    eyelight_object_foot_text_add(pres,slide_number,node_slide,o_slide,default_foot_text);
+    eyelight_object_foot_image_add(pres,slide_number,node_slide,o_slide,default_foot_image);
 
-    eyelight_object_pages_add(pres,o_slide,slide_number, nb_slides);
+    eyelight_object_pages_add(pres,slide_number,o_slide,slide_number, nb_slides);
 
     EINA_LIST_FOREACH(node_slide->l, l, node)
     {
@@ -550,6 +601,9 @@ int eyelight_nb_slides_get(Eyelight_Compiler* compiler)
     Eyelight_Node* node;
     int number = 0;
     Eina_List *l;
+
+    if(!compiler)
+        return 0;
 
     EINA_LIST_FOREACH(compiler->root->l, l, node)
     {

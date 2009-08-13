@@ -29,6 +29,9 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
     char buf[EYELIGHT_BUFLEN];
     char* output_file;
 
+    if(!input_file)
+        return NULL;
+
     Eyelight_Compiler* compiler = eyelight_compiler_new(input_file, 0);
 
     char* path = ecore_file_dir_get(input_file);
@@ -41,6 +44,10 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
 
     p = eyelight_source_fetch(compiler->input_file,&end);
     eyelight_parse(compiler,p,end);
+
+    EYELIGHT_FREE(p);
+    EYELIGHT_FREE(path);
+    EYELIGHT_FREE(output_file);
 
     return compiler;
 }
@@ -66,6 +73,8 @@ Eyelight_Node_Name eyelight_name_get(char* p)
 Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
 {
     Eyelight_Compiler* compiler;
+    if(!input_file) return NULL;
+
     compiler = calloc(1,sizeof(Eyelight_Compiler));
     compiler->line = 1;
     compiler->last_open_block = -1;
@@ -112,6 +121,8 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
 {
     Eyelight_Compiler* compiler = *p_compiler;
     char* str;
+
+    if(!p_compiler || !(*p_compiler)) return ;
 
     eyelight_node_free(&(compiler->root),compiler->node_summary);
     eyelight_node_free(&(compiler->node_summary),NULL);

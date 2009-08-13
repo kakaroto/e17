@@ -24,7 +24,7 @@ include_HEADERS = Eyelight.h \
 		  eyelight_parser.h \
 		  eyelight_viewer_thumbnails.h \
 		  eyelight_viewer.h \
-		  eyelight_pdf.h
+		  eyelight_smart.h
 
 lib_LTLIBRARIES = libeyelight.la
 
@@ -39,10 +39,10 @@ eyelight_compiler_common.c \
 eyelight_compiler.c \
 eyelight_object.c \
 eyelight_parser.c \
-eyelight_pdf.c
+eyelight_smart.c
 
 libeyelight_la_DEPENDENCIES = $(top_builddir)/config.h
-libeyelight_la_LDFLAGS = @eyelight_libs@ @eyelight_lpdf_libs@
+libeyelight_la_LDFLAGS = @eyelight_libs@
 
 clean-local:
 	@rm -rf *.gcno

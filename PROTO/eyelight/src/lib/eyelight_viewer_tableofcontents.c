@@ -51,7 +51,11 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
     data = edje_object_data_get(o, "nb_slides");
     pres->tableofcontents_nb_slides = atoi(data);
     evas_object_show(o);
-    evas_object_resize(o, w_win, h_win);
+    evas_object_resize(o, pres->current_size_w, pres->current_size_h);
+    evas_object_scale_set(o, pres->current_scale);
+    evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
+    evas_object_smart_member_add(o,pres->smart_obj);
+    evas_object_clip_set(o, pres->current_clip);
 
     edje_object_signal_callback_add(o,"tableofcontents,slide,next","eyelight",_eyelight_viewer_tableofcontents_next_cb,pres);
     edje_object_signal_callback_add(o,"tableofcontents,slide,previous","eyelight",_eyelight_viewer_tableofcontents_previous_cb,pres);
@@ -157,10 +161,29 @@ void _eyelight_viewer_tableofcontents_slides_destroy(Eyelight_Viewer* pres)
         evas_object_del(pres->tableofcontents_background);
 }
 
+void eyelight_viewer_tableofcontents_smart_obj_set(Eyelight_Viewer* pres, Evas_Object *obj)
+{
+    evas_object_smart_member_add(pres->tableofcontents_background,obj);
+}
 
 void eyelight_viewer_tableofcontents_resize(Eyelight_Viewer* pres, int w, int h)
 {
     evas_object_resize(pres->tableofcontents_background,w,h);
+}
+
+void eyelight_viewer_tableofcontents_scale_set(Eyelight_Viewer* pres, double ratio)
+{
+    evas_object_scale_set(pres->tableofcontents_background,ratio);
+}
+
+void eyelight_viewer_tableofcontents_move(Eyelight_Viewer* pres, int x, int y)
+{
+    evas_object_move(pres->tableofcontents_background,x,y);
+}
+
+void eyelight_viewer_tableofcontents_clip_set(Eyelight_Viewer* pres, Evas_Object *clip)
+{
+    evas_object_clip_set(pres->tableofcontents_background,clip);
 }
 
 void eyelight_viewer_tableofcontents_next(Eyelight_Viewer* pres)

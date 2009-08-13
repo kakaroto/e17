@@ -195,7 +195,7 @@ slide
 
 chapter: " Some examples";
 
-section: " Include an Edje group and a video";
+section: " Include an Edje group, a video and a presentation";
 
 foot_image: "wolf.png";
 title: " How to include an edje file";
@@ -219,11 +219,11 @@ slide
             }
         }
         text: "Result:";
-        //edje
-        //{
-        //    group: icon;
-        //    file: firefox.edj;
-        //}
+        edje
+        {
+            group: icon;
+            file: firefox.edj;
+        }
     }
 }
 
@@ -282,6 +282,27 @@ slide {
             shadow: 1;
             border: 0;
             replay: 1;
+        }
+    }
+}
+
+
+slide {
+    layout: 2_lines_bottom;
+    title: " How to include a presentation";
+    custom_area: bottom2 0.2 0.3 0.8 0.8;
+
+    area {
+        name: "top";
+        text: "You can include an eyelight presentation in an eyelight presentation :)";
+    }
+    area {
+        name: "bottom2";
+        presentation {
+            presentation: "../calaos/calaos.elt";
+            theme: "/usr/local/share/eyelight/theme/default/theme.edj"; //if not specified, the default theme is used
+            shadow: 1;
+            border: 1;
         }
     }
 }

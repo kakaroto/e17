@@ -13,12 +13,11 @@
 #include "../../config.h"
 
 Ecore_Evas *ee;
+Evas_Object *container;
 
 static void app_resize(Ecore_Evas *ee);
 static int app_signal_exit(void *data, int ev_type, void *ev);
 static void app_delete_request(Ecore_Evas *ee);
-
-Eyelight_Viewer *pres;
 
 typedef enum _Eyelight_Event_Action
 {
@@ -69,6 +68,7 @@ char* help_msg_desc ="display this message <NewLine>"
 "move into the slide list<NewLine>"
 "exit";
 
+Evas_Object *eyelight_smart;
 
 
 typedef struct _Eyelight_Key Eyelight_Key;
@@ -180,34 +180,34 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
         return;
     }
 
-    switch (eyelight_viewer_state_get(pres))
+    switch (eyelight_object_state_get(eyelight_smart))
     {
         case EYELIGHT_VIEWER_STATE_EXPOSE:
             switch (action)
             {
                 case EYELIGHT_RIGHT:
-                    eyelight_viewer_expose_next(pres);
+                    eyelight_object_expose_next(eyelight_smart);
                     break;
                 case EYELIGHT_LEFT:
-                    eyelight_viewer_expose_previous(pres);
+                    eyelight_object_expose_previous(eyelight_smart);
                     break;
                 case EYELIGHT_WINDOW_NEXT:
-                    eyelight_viewer_expose_window_next(pres);
+                    eyelight_object_expose_window_next(eyelight_smart);
                     break;
                 case EYELIGHT_WINDOW_PREVIOUS:
-                    eyelight_viewer_expose_window_previous(pres);
+                    eyelight_object_expose_window_previous(eyelight_smart);
                     break;
                 case EYELIGHT_UP:
-                    eyelight_viewer_expose_up(pres);
+                    eyelight_object_expose_up(eyelight_smart);
                     break;
                 case EYELIGHT_DOWN:
-                    eyelight_viewer_expose_down(pres);
+                    eyelight_object_expose_down(eyelight_smart);
                     break;
                 case EYELIGHT_QUIT:
-                    eyelight_viewer_expose_stop(pres);
+                    eyelight_object_expose_stop(eyelight_smart);
                     break;
                 case EYELIGHT_SELECT:
-                    eyelight_viewer_expose_select(pres);
+                    eyelight_object_expose_select(eyelight_smart);
                     break;
                 default: ;
             }
@@ -216,17 +216,17 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
             switch (action)
             {
                 case EYELIGHT_QUIT:
-                    eyelight_viewer_gotoslide_stop(pres);
+                    eyelight_object_gotoslide_stop(eyelight_smart);
                     break;
                 case EYELIGHT_SELECT:
-                    eyelight_viewer_gotoslide_goto(pres);
+                    eyelight_object_gotoslide_goto(eyelight_smart);
                     break;
                 case EYELIGHT_REMOVE:
-                    eyelight_viewer_gotoslide_digit_last_remove(pres);
+                    eyelight_object_gotoslide_digit_last_remove(eyelight_smart);
                     break;
                 default:
                     if (strlen(event->key) == 1 && strchr("0123456789", *event->key) != NULL)
-                        eyelight_viewer_gotoslide_digit_add(pres,atoi(event->key));
+                        eyelight_object_gotoslide_digit_add(eyelight_smart,atoi(event->key));
                     break;
             }
             break;
@@ -235,17 +235,17 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
             {
                 case EYELIGHT_RIGHT:
                 case EYELIGHT_DOWN:
-                    eyelight_viewer_slideshow_next(pres);
+                    eyelight_object_slideshow_next(eyelight_smart);
                     break;
                 case EYELIGHT_LEFT:
                 case EYELIGHT_UP:
-                    eyelight_viewer_slideshow_previous(pres);
+                    eyelight_object_slideshow_previous(eyelight_smart);
                     break;
                 case EYELIGHT_QUIT:
-                    eyelight_viewer_slideshow_stop(pres);
+                    eyelight_object_slideshow_stop(eyelight_smart);
                     break;
                 case EYELIGHT_SELECT:
-                    eyelight_viewer_slideshow_select(pres);
+                    eyelight_object_slideshow_select(eyelight_smart);
                     break;
                 default: ;
             }
@@ -255,17 +255,17 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
             {
                 case EYELIGHT_RIGHT:
                 case EYELIGHT_DOWN:
-                    eyelight_viewer_tableofcontents_next(pres);
+                    eyelight_object_tableofcontents_next(eyelight_smart);
                     break;
                 case EYELIGHT_LEFT:
                 case EYELIGHT_UP:
-                    eyelight_viewer_tableofcontents_previous(pres);
+                    eyelight_object_tableofcontents_previous(eyelight_smart);
                     break;
                 case EYELIGHT_QUIT:
-                    eyelight_viewer_tableofcontents_stop(pres);
+                    eyelight_object_tableofcontents_stop(eyelight_smart);
                     break;
                 case EYELIGHT_SELECT:
-                    eyelight_viewer_tableofcontents_select(pres);
+                    eyelight_object_tableofcontents_select(eyelight_smart);
                     break;
                 default: ;
             }
@@ -274,19 +274,21 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
             switch (action)
             {
                 case EYELIGHT_RIGHT:
-                    eyelight_viewer_slide_next(pres);
+                    eyelight_object_slide_next(eyelight_smart);
                     break;
                 case EYELIGHT_LEFT:
-                    eyelight_viewer_slide_previous(pres);
+                    eyelight_object_slide_previous(eyelight_smart);
                     break;
                 case EYELIGHT_UP:
-                    eyelight_viewer_expose_start(pres,eyelight_viewer_current_id_get(pres), 4,4);
+                    eyelight_object_expose_start(eyelight_smart,
+                            eyelight_object_current_id_get(eyelight_smart), 4, 4);
                     break;
                 case EYELIGHT_SLIDE:
-                    eyelight_viewer_slideshow_start(pres,eyelight_viewer_current_id_get(pres));
+                    eyelight_object_slideshow_start(eyelight_smart,
+                            eyelight_object_current_id_get(eyelight_smart));
                     break;
                 case EYELIGHT_TABLEOFCONTENTS:
-                    eyelight_viewer_tableofcontents_start(pres,eyelight_viewer_current_id_get(pres));
+                    eyelight_object_tableofcontents_start(eyelight_smart,eyelight_object_current_id_get(eyelight_smart));
                     break;
                 case EYELIGHT_HELP:
                     display_help(e);
@@ -304,16 +306,22 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                 default:
                     if (strlen(event->key) == 1 && strchr("0123456789", *event->key) != NULL)
                     {
-                        eyelight_viewer_gotoslide_start(pres);
-                        eyelight_viewer_gotoslide_digit_add(pres,atoi(event->key));
+                        eyelight_object_gotoslide_start(eyelight_smart);
+                        eyelight_object_gotoslide_digit_add(eyelight_smart,atoi(event->key));
                     }
             }
             break;
     }
-
     //printf("key: %s\n",event->key);
     //printf("key: %s\n",event->keyname);
 }
+
+
+void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+    evas_object_focus_set(obj, 1);
+}
+
 
 static const Ecore_Getopt options = {
     "eyelight",
@@ -338,11 +346,6 @@ static const Ecore_Getopt options = {
                     ecore_getopt_callback_ecore_evas_list_engines, NULL),
             ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
             ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
-#ifdef PDF_SUPPORT
-            ECORE_GETOPT_STORE_STR('z', "generate-pdf", "specify the pdf file"),
-            ECORE_GETOPT_STORE_INT('x', "size-pdf_x", "the size of each slide generated in a pdf file (default: 2048)"),
-            ECORE_GETOPT_STORE_INT('y', "size-pdf_y", "the size of each slide generated in a pdf file (default: 1536)"),
-#endif
             ECORE_GETOPT_HELP('h', "help"),
             ECORE_GETOPT_SENTINEL
         }
@@ -360,9 +363,6 @@ int main(int argc, char*argv[])
     char* presentation = NULL;
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
-    char *generate_pdf = 0;
-    int pdf_size_w = 0;
-    int pdf_size_h = 0;
 
     if (!ecore_init()) {
         evas_shutdown ();
@@ -385,11 +385,6 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(engines_listed),
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
-#ifdef PDF_SUPPORT
-        ECORE_GETOPT_VALUE_STR(generate_pdf),
-        ECORE_GETOPT_VALUE_INT(pdf_size_w),
-        ECORE_GETOPT_VALUE_INT(pdf_size_h),
-#endif
         ECORE_GETOPT_VALUE_BOOL(exit_option),
     };
 
@@ -407,12 +402,6 @@ int main(int argc, char*argv[])
     if(exit_option || engines_listed)
         return 0;
 
-    if(pdf_size_w==0 || pdf_size_h == 0)
-    {
-        pdf_size_w = 1024*2;
-        pdf_size_h = 768*2;
-    }
-
     if(!presentation)
     {
         fprintf(stderr,"A presentation is required !\n");
@@ -425,11 +414,7 @@ int main(int argc, char*argv[])
         exit(EXIT_FAILURE);
     }
 
-    if(generate_pdf)
-    {
-        ee = ecore_evas_buffer_new(pdf_size_w , pdf_size_h);
-    }
-    else if(!engine)
+    if(!engine)
     {
         ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
         if (!ee) {
@@ -437,7 +422,6 @@ int main(int argc, char*argv[])
             ee = ecore_evas_software_ddraw_new (NULL,  0, 0, 1024, 768);
             if (!ee) {
                 fprintf (stderr,"Can not find DirectDraw engine.\n");
-                eyelight_viewer_destroy(&pres);
                 evas_shutdown ();
                 ecore_shutdown ();
                 return EXIT_FAILURE;
@@ -451,7 +435,6 @@ int main(int argc, char*argv[])
     if(!ee)
     {
         fprintf(stderr,"Failed to init the evas engine! \n");
-        eyelight_viewer_destroy(&pres);
         evas_shutdown ();
         ecore_shutdown ();
 
@@ -469,51 +452,27 @@ int main(int argc, char*argv[])
     evas = ecore_evas_get (ee);
     evas_output_viewport_get(evas, NULL, NULL, &w_win, &h_win);
 
-    Evas_Object *container= edje_object_add(evas);
+    eyelight_smart = eyelight_object_add(evas);
+    eyelight_object_theme_file_set(eyelight_smart, theme);
+    eyelight_object_presentation_file_set(eyelight_smart, presentation);
+    eyelight_object_border_set(eyelight_smart, with_border);
+    evas_object_move(eyelight_smart,0,0);
+    evas_object_resize(eyelight_smart, 1024, 768);
+    evas_object_show(eyelight_smart);
 
-    if(!theme)
-        pres  = eyelight_viewer_new(evas,presentation,NULL,with_border);
-    else
-        pres  = eyelight_viewer_new(evas,presentation,theme,with_border);
-    if(!pres)
-    {
-        fprintf(stderr,"Failed to create the presentation !\n");
-        evas_shutdown ();
-        ecore_shutdown ();
-
-        return EXIT_FAILURE;
-    }
-
-
-    //display the presentation
-    if(!generate_pdf)
-        eyelight_viewer_slides_init(pres,1024,768);
-    else if(generate_pdf )
-        eyelight_viewer_slides_init(pres,pdf_size_w,pdf_size_h);
-
-    eyelight_viewer_resize_screen(pres,w_win,h_win);
-    if(!no_thumbs_bg)
-        eyelight_viewer_thumbnails_background_load_start(pres);
-
-    if(eyelight_viewer_size_get(pres)>0)
-    {
-        edje_object_signal_emit(eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)),"show","eyelight");
-    }
-    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb,pres);
-    evas_object_focus_set(container,1);
+    container= evas_object_rectangle_add(evas);
+    evas_object_color_set(container,0,0,0,0);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, NULL);
     evas_object_repeat_events_set(container,1);
+    evas_object_show(container);
+    evas_object_resize(container, 1024,768);
 
-#ifdef PDF_SUPPORT
-    if(generate_pdf)
-    {
-        pres->pdf_file = strdup(generate_pdf);
-        ecore_timer_add(0.0, eyelight_pdf_generate_start_timer,pres);
-    }
-#endif
+
+    evas_object_raise(container);
 
     ecore_main_loop_begin ();
-
-    eyelight_viewer_destroy(&pres);
 
     ecore_evas_shutdown ();
     ecore_shutdown ();
@@ -529,7 +488,8 @@ static void app_resize(Ecore_Evas *ee)
     Evas *evas;
     evas = ecore_evas_get(ee);
     evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-    eyelight_viewer_resize_screen(pres,w,h);
+    evas_object_resize(eyelight_smart, w,h);
+    evas_object_resize(container, w, h);
 }
 
 static int app_signal_exit(void *data, int ev_type, void *ev)

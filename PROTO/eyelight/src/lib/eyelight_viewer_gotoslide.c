@@ -36,7 +36,10 @@ void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres)
     if(edje_object_file_set(o, pres->theme, "eyelight/gotoslide") ==  0)
         printf("eyelight_viewer_gotoslide_start(), edje_object_file_set() erreur! 1\n");
     evas_object_show(o);
-    evas_object_resize(o, w_win, h_win);
+    evas_object_resize(o, pres->current_size_w, pres->current_size_h);
+    evas_object_smart_member_add(o, pres->smart_obj);
+    evas_object_move(o, pres->current_pos_x, pres->current_pos_y);
+    evas_object_clip_set(o, pres->current_clip);
 }
 
 void eyelight_viewer_gotoslide_stop(Eyelight_Viewer* pres)
@@ -77,8 +80,22 @@ void eyelight_viewer_gotoslide_goto(Eyelight_Viewer* pres)
     }
 }
 
+void eyelight_viewer_gotoslide_smart_obj_set(Eyelight_Viewer* pres, Evas_Object *obj)
+{
+    evas_object_smart_member_add(pres->gotoslide_object,obj);
+}
+
 void eyelight_viewer_gotoslide_resize(Eyelight_Viewer* pres, int w, int h)
 {
     evas_object_resize(pres->gotoslide_object,w,h);
 }
 
+void eyelight_viewer_gotoslide_move(Eyelight_Viewer* pres, int x, int y)
+{
+    evas_object_move(pres->gotoslide_object,x,y);
+}
+
+void eyelight_viewer_gotoslide_clip_set(Eyelight_Viewer* pres, Evas_Object *clip)
+{
+    evas_object_clip_set(pres->gotoslide_object,clip);
+}

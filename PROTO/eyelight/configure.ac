@@ -26,19 +26,6 @@ AC_SUBST(packagesrcdir)
 
 PKG_PROG_PKG_CONFIG
 
-have_pdf="no"
-pdf=""
-AC_ARG_WITH([pdf],
-            AC_HELP_STRING([--with-pdf=yes], [explicitly specify to use the pdf support (libharu is required)]),
-            [pdf=$withval])
-
-if test "$pdf" = "yes"; then
-    AC_DEFINE_UNQUOTED(PDF_SUPPORT, "${pdf}", [pdf support])
-    eyelight_lpdf_libs="-lhpdf"
-    AC_SUBST(eyelight_lpdf_libs)
-    have_pdf="yes"
-fi
-
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 AC_ARG_WITH(edje-cc,
@@ -92,8 +79,6 @@ echo "--------------------------------------------------------"
 echo
 echo
 echo "Configuration Options Summary:"
-echo
-echo "  pdf support (libharu is required)...: $have_pdf"
 echo
 echo "  Installation Path...................: $prefix"
 echo

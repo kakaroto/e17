@@ -154,7 +154,7 @@ part                            \
 {                               \
     name: "area."area_name".name";     \
     type: TEXT;                 \
-                 \
+    scale: 1;                    \
     effect: SOFT_OUTLINE;       \
     repeat_events: 1;           \
     description                 \

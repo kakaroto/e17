@@ -80,7 +80,9 @@ enum eyelight_node_name
     EYELIGHT_NAME_SUMMARY,
     EYELIGHT_NAME_CHAPTER,
     EYELIGHT_NAME_SECTION,
-    EYELIGHT_NAME_TEXT_SUMMARY
+    EYELIGHT_NAME_TEXT_SUMMARY,
+    EYELIGHT_NAME_PRESENTATION,
+    EYELIGHT_NAME_THEME
 };
 
 struct Eyelight_Name_Key
@@ -123,7 +125,9 @@ static const Eyelight_Name_Key eyelight_name_keys[] = {
     { "summary", EYELIGHT_NAME_SUMMARY},
     { "shadow", EYELIGHT_NAME_SHADOW},
     { "chapter", EYELIGHT_NAME_CHAPTER},
-    { "section", EYELIGHT_NAME_SECTION}
+    { "section", EYELIGHT_NAME_SECTION},
+    { "presentation", EYELIGHT_NAME_PRESENTATION},
+    { "theme", EYELIGHT_NAME_THEME}
 };
 
 struct Eyelight_Valid_Prop_Block
@@ -178,7 +182,11 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_prop_block[] =
     { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_AUTOPLAY},
     { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_REPLAY},
     { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_SHADOW},
-    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_BORDER}
+    { EYELIGHT_NAME_VIDEO, EYELIGHT_NAME_BORDER},
+    { EYELIGHT_NAME_PRESENTATION, EYELIGHT_NAME_PRESENTATION},
+    { EYELIGHT_NAME_PRESENTATION, EYELIGHT_NAME_THEME},
+    { EYELIGHT_NAME_PRESENTATION, EYELIGHT_NAME_BORDER},
+    { EYELIGHT_NAME_PRESENTATION, EYELIGHT_NAME_SHADOW}
 };
 
 
@@ -192,6 +200,7 @@ static const Eyelight_Valid_Prop_Block eyelight_valid_block_block[] =
     { EYELIGHT_NAME_AREA, EYELIGHT_NAME_EDJ },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEM },
     { EYELIGHT_NAME_ITEMS, EYELIGHT_NAME_ITEMS },
+    { EYELIGHT_NAME_AREA, EYELIGHT_NAME_PRESENTATION}
 };
 
 enum Eyelight_Value_Type
@@ -320,6 +329,7 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler);
 Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node* father);
 void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free);
 
+char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image);
 char* eyelight_remove_quote(char* p);
 char* eyelight_source_fetch(char* file, char** p_end);
 int eyelight_image_add(Eyelight_Compiler* compiler,char* image);

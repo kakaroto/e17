@@ -21,20 +21,21 @@
 
 #include "Eyelight.h"
 Evas_Object *eyelight_object_area_obj_get(Eyelight_Viewer *pres, int id_slide,
-        Evas_Object *o_slide, char *area, char **complete_area_name);
+        Evas_Object *o_slide, const char *area, char *complete_area_name);
 
 
-Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
+Evas_Object *eyelight_object_title_add(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
 
-Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
-Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, Eyelight_Node *node, Evas_Object *o_slide, const char *default_image);
-Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
-Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, Eyelight_Node *node, Evas_Object *o_slide, const char *default_image);
-Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, Evas_Object *o_slide, int slide_number, int nb_slides);
+Evas_Object *eyelight_object_subtitle_add(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
+Evas_Object *eyelight_object_header_image_add(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node, Evas_Object *o_slide, const char *default_image);
+Evas_Object *eyelight_object_foot_text_add(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node, Evas_Object *o_slide, const char *default_text);
+Evas_Object *eyelight_object_foot_image_add(Eyelight_Viewer *pres, int id_slide, Eyelight_Node *node, Evas_Object *o_slide, const char *default_image);
+Evas_Object *eyelight_object_pages_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, int slide_number, int nb_slides);
 
 Evas_Object *eyelight_object_item_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area,const char *text);
 Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *image, int border, int shadow);
 Evas_Object *eyelight_object_item_video_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *video, int alpha, int autoplay, int replay, int border, int shadow);
+Evas_Object *eyelight_object_item_presentation_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, const char *presentation, const char *theme, int border, int shadow);
 Evas_Object *eyelight_object_item_simple_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, int depth, const char *text);
 Evas_Object *eyelight_object_item_summary_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, int id_summary, int id_item,  const char *area, int depth, const char *text);
 Evas_Object *eyelight_object_item_numbering_text_add(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide, const char *area, char *numbering_id, int depth, const char *text);
