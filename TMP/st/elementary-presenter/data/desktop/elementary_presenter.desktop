@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Presenter
+Comment=Presentation tool
+Exec=elementary_presenter
+Icon=elementary_presenter
+Terminal=false
+Type=Application
+Categories=Application;Utility;
