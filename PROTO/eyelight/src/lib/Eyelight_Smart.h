@@ -2,14 +2,16 @@
 #ifndef  EYELIGHT_SMART_INC
 #define  EYELIGHT_SMART_INC
 
-EAPI Evas_Object *eyelight_object_add                   (Evas *evas);
+#include "eyelight_common.h"
+
+EAPI Evas_Object *eyelight_object_add(Evas *evas);
 
 EAPI void eyelight_object_presentation_file_set(Evas_Object *obj, const char* presentation);
 EAPI void eyelight_object_theme_file_set(Evas_Object *obj, const char* theme);
 EAPI void eyelight_object_border_set(Evas_Object *obj, int border);
 
 EAPI void eyelight_object_focus_set(Evas_Object *obj, int focus);
-void eyelight_object_event_set(Evas_Object *obj, int event);
+EAPI void eyelight_object_event_set(Evas_Object *obj, int event);
 
 EAPI void eyelight_object_slide_next(Evas_Object *obj);
 EAPI void eyelight_object_slide_previous(Evas_Object *obj);

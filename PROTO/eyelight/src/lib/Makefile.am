@@ -18,13 +18,9 @@ INCLUDES = \
 
 
 include_HEADERS = Eyelight.h \
-		  eyelight_compiler_common.h \
-		  eyelight_compiler.h \
-		  eyelight_object.h \
-		  eyelight_parser.h \
-		  eyelight_viewer_thumbnails.h \
-		  eyelight_viewer.h \
-		  eyelight_smart.h
+		  Eyelight_Smart.h \
+		  Eyelight_Edit.h \
+		  eyelight_common.h
 
 lib_LTLIBRARIES = libeyelight.la
 
@@ -35,7 +31,6 @@ eyelight_viewer_slideshow.c \
 eyelight_viewer_gotoslide.c \
 eyelight_viewer_tableofcontents.c \
 eyelight_viewer_thumbnails.c \
-eyelight_compiler_common.c \
 eyelight_compiler.c \
 eyelight_object.c \
 eyelight_parser.c \

@@ -1,5 +1,6 @@
 
 #include "Eyelight.h"
+#include "Eyelight_Smart.h"
 
 typedef struct _Smart_Data Smart_Data;
 

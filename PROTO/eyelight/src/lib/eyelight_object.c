@@ -647,3 +647,6 @@ Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, int id_slide
             o_area);
     return o_area;
 }
+
+
+

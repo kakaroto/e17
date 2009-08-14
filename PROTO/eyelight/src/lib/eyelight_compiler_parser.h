@@ -16,8 +16,8 @@
  * =====================================================================================
  */
 
-#ifndef  EYELIGHT_COMPILER_COMMON_INC
-#define  EYELIGHT_COMPILER_COMMON_INC
+#ifndef  EYELIGHT_COMPILER_PARSER_INC
+#define  EYELIGHT_COMPILER_PARSER_INC
 
 
 typedef struct eyelight_node Eyelight_Node;
@@ -39,9 +39,7 @@ typedef struct eyelight_video Eyelight_Video;
 #include <errno.h>
 #include <limits.h>
 
-#include "eyelight_parser.h"
-#include "eyelight_compiler.h"
-#include "Eyelight.h"
+#include "eyelight_viewer.h"
 
 enum eyelight_node_name
 {
@@ -329,11 +327,29 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler);
 Eyelight_Node *eyelight_node_new(int type,Eyelight_Node_Name name, Eyelight_Node* father);
 void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free);
 
+/**
+ * Add the contents in the slide id_slide (text, image ..)
+ * o_slide is the object of the slide
+ */
+void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide);
+
+/**
+ * Parse the string delimited by p and end
+ * compiler will contains the tree of the presentation
+ */
+void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end);
+
 char *eyelight_compile_image_path_new(Eyelight_Viewer *pres, const char *image);
+
+/**
+ * Remove a quote " at the start and the end of p
+ */
 char* eyelight_remove_quote(char* p);
+/**
+ * Load the file file in the char
+ * Returns the content of the file, p_end is the end of the string
+ */
 char* eyelight_source_fetch(char* file, char** p_end);
-int eyelight_image_add(Eyelight_Compiler* compiler,char* image);
-int eyelight_edc_file_add(Eyelight_Compiler* compiler,char* edc_file);
 
 char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i);
 Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node_Name p);
@@ -341,5 +357,5 @@ int eyelight_number_item_in_block(Eyelight_Node* current);
 
 int eyelight_decimal_to_roman(char *dec, char *rom);
 
-#endif   /* ----- #ifndef EYELIGHT_COMPILER_COMMON_INC  ----- */
+#endif   /* ----- #ifndef EYELIGHT_COMPILER_PARSER_INC  ----- */
 

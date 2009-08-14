@@ -19,7 +19,8 @@
 #ifndef  EYELIGHT_OBJECT_INC
 #define  EYELIGHT_OBJECT_INC
 
-#include "Eyelight.h"
+#include "eyelight_viewer.h"
+
 Evas_Object *eyelight_object_area_obj_get(Eyelight_Viewer *pres, int id_slide,
         Evas_Object *o_slide, const char *area, char *complete_area_name);
 

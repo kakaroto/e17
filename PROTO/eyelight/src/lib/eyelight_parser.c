@@ -3,7 +3,82 @@
  */
 
 
-#include "eyelight_parser.h"
+#include "eyelight_compiler_parser.h"
+
+
+/*
+ * @brief get the name of a token
+ */
+Eyelight_Node_Name eyelight_name_get(char* p)
+{
+    int i;
+    for (i = 0; i < sizeof (eyelight_name_keys) / sizeof (Eyelight_Name_Key); ++i)
+        if (strcmp(p, eyelight_name_keys[i].keyname) == 0)
+        {
+            return eyelight_name_keys[i].name;
+        }
+
+    return EYELIGHT_NAME_NONE;
+}
+
+
+/*
+ * @brief remove the first and last " of a string
+ */
+char* eyelight_remove_quote(char* p)
+{
+    if(*p=='"')
+    {
+        char* new = malloc(sizeof(char)*(strlen(p)+1-2));
+        *new = '\0';
+        strncat(new,p+1,strlen(p)-2);
+        new[strlen(p)-2] = '\0';
+        return new;
+    }
+    else
+        return strdup(p);
+}
+
+/*
+ * @brief load a file into an array
+ */
+char* eyelight_source_fetch(char* file, char** p_end)
+{
+    FILE* input;
+    char buf[EYELIGHT_BUFLEN];
+    int size = 2000;
+    int size_read = 0;
+    char * p = malloc(sizeof(char)* size);
+    char * end = p;
+
+    input = fopen(file,"r");
+    if(!input)
+    {
+        fprintf(stderr,"Can't open the file %s\n",file);
+        exit(EXIT_FAILURE);
+    }
+
+    while(fgets(buf,EYELIGHT_BUFLEN,input))
+    {
+        size_read += strlen(buf);
+        if(size_read > size)
+        {
+            char* p_new;
+            size+=2000;
+            p_new = realloc(p,size*sizeof(char));
+            end = p_new + (end-p);
+            p = p_new;
+        }
+        strncpy(end,buf,strlen(buf));
+        end += strlen(buf);
+    }
+
+    *p_end = end;
+
+    //fclose(input);
+    return p;
+}
+
 
 /*
  * @brief test if a char is a token (; : ....)
