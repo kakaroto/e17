@@ -250,13 +250,6 @@ Description: An E17 network interface monitor module
  - show text and/or graph
  - configure poll interval
  - choose device.
- 
-Package: emodule-news
-Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), xdg-utils
-Provides: emodule0-news
-Description: The E17 new modules
- An E17 module to display feeds like Rss or Atom on the desktop.
 
 Package: emodule-notification
 Architecture: any
@@ -272,16 +265,6 @@ Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
 Provides: emodule0-penguins
 Description: The E17 penguins module
  An E17 module to display penguins on the desktop.
- 
-Package: emodule-photo
-Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999)
-Provides: emodule0-photo
-Description: An E17 module for displaying pictures
- An E17 module which displays pictures in a slideshow.
- Some of the features are:
- - define mouse button to trigger action
- - actions such as set as background, show infos or open in a viewer.
 
 Package: emodule-places
 Architecture: any
@@ -410,7 +393,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-configmenu, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-edgar, emodule-efm-nav, emodule-efm-path, emodule-efm-pathbar, emodule-emu, emodule-exalt, emodule-execwatch, emodule-extramenu, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-itask, emodule-itask-ng, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-trash, emodule-uptime, emodule-weather, emodule-winlist-ng, emodule-winselector, emodule-wlan
+Depends: e17 (>= 0.16.999) | ecomorph-e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-configmenu, emodule-cpu, emodule-deskshow, emodule-diskio, emodule-drawer, emodule-edgar, emodule-efm-nav, emodule-efm-path, emodule-efm-pathbar, emodule-emu, emodule-exalt, emodule-execwatch, emodule-extramenu, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-itask, emodule-itask-ng, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-notification, emodule-penguins, emodule-places, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-trash, emodule-uptime, emodule-weather, emodule-winlist-ng, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.
