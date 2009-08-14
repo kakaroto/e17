@@ -576,10 +576,6 @@ void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                 case EYELIGHT_TABLEOFCONTENTS:
                     eyelight_object_tableofcontents_start(eyelight_smart,eyelight_object_current_id_get(eyelight_smart));
                     break;
-                case EYELIGHT_QUIT:
-                    ecore_main_loop_quit();
-                    return ;
-                    break;
                 default:
                     if (strlen(event->key) == 1 && strchr("0123456789", *event->key) != NULL)
                     {
