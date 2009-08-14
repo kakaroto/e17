@@ -83,6 +83,8 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
 
     int first_slide = pres->tableofcontents_current - (nb_slides/2);
 
+    printf("current %d\n",pres->tableofcontents_current);
+
     Eyelight_Node *node;
     i=0;
     l = pres->compiler->root->l;
@@ -97,7 +99,6 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
     }
 
     i = 0;
-    l=eina_list_next(l);
     node = eina_list_data_get(l);
     while(i<nb_slides)
     {
