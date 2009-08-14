@@ -390,7 +390,10 @@ void eyelight_object_gotoslide_digit_last_remove(Evas_Object *obj)
 
 
 
-
+void eyelight_object_event_send(Evas_Object *obj, void *event_info)
+{
+    key_event_cb(obj, evas_object_evas_get(obj), obj, event_info);
+}
 
 
 /*****************/
@@ -659,6 +662,8 @@ _smart_add(Evas_Object * obj)
     evas_object_color_set(sd->catch_event,0,0,0,0);
     evas_object_repeat_events_set(sd->catch_event,1);
     evas_object_hide(sd->catch_event);
+
+    evas_object_propagate_events_set(obj,0);
 
     _eyelight_object_init(obj);
 }
