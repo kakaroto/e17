@@ -165,13 +165,13 @@ int eyelight_object_current_id_get(Evas_Object *obj)
     return eyelight_viewer_current_id_get(sd->pres);
 }
 
-void eyelight_object_expose_start(Evas_Object *obj, int select,int nb_lines, int nb_cols)
+void eyelight_object_expose_start(Evas_Object *obj, int select)
 {
     Smart_Data *sd;
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
-    eyelight_viewer_expose_start(sd->pres, select, nb_lines, nb_cols);
+    eyelight_viewer_expose_start(sd->pres, select);
 }
 
 void eyelight_object_expose_stop(Evas_Object *obj)
@@ -566,7 +566,7 @@ void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                     break;
                 case EYELIGHT_UP:
                     eyelight_object_expose_start(eyelight_smart,
-                            eyelight_object_current_id_get(eyelight_smart), 4, 4);
+                            eyelight_object_current_id_get(eyelight_smart));
                     break;
                 case EYELIGHT_SLIDE:
                     eyelight_object_slideshow_start(eyelight_smart,

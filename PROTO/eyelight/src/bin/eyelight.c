@@ -281,7 +281,7 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                     break;
                 case EYELIGHT_UP:
                     eyelight_object_expose_start(eyelight_smart,
-                            eyelight_object_current_id_get(eyelight_smart), 4, 4);
+                            eyelight_object_current_id_get(eyelight_smart));
                     break;
                 case EYELIGHT_SLIDE:
                     eyelight_object_slideshow_start(eyelight_smart,

@@ -91,7 +91,6 @@ struct Eyelight_Viewer
     char* pdf_file;
 
     //expose
-    Evas_Object** expose_slides;
     Evas_Object** expose_image_thumbnails;
     Evas_Object* expose_background;
     int expose_current;
@@ -153,7 +152,7 @@ EAPI void eyelight_viewer_slide_previous(Eyelight_Viewer*pres);
 EAPI void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h);
 EAPI void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id);
 
-EAPI void eyelight_viewer_expose_start(Eyelight_Viewer* pres, int select,int nb_lines, int nb_cols);
+EAPI void eyelight_viewer_expose_start(Eyelight_Viewer* pres, int select);
 EAPI void eyelight_viewer_expose_stop(Eyelight_Viewer* pres);
 EAPI void eyelight_viewer_expose_next(Eyelight_Viewer* pres);
 EAPI void eyelight_viewer_expose_previous(Eyelight_Viewer* pres);

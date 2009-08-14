@@ -18,7 +18,7 @@ EAPI Eyelight_Viewer_State eyelight_object_state_get(Evas_Object *obj);
 
 EAPI int eyelight_object_current_id_get(Evas_Object *obj);
 
-EAPI void eyelight_object_expose_start(Evas_Object *obj, int select,int nb_lines, int nb_cols);
+EAPI void eyelight_object_expose_start(Evas_Object *obj, int select);
 EAPI void eyelight_object_expose_stop(Evas_Object *obj);
 EAPI void eyelight_object_expose_next(Evas_Object *obj);
 EAPI void eyelight_object_expose_previous(Evas_Object *obj);

@@ -24,7 +24,6 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres);
 void _eyelight_viewer_expose_slides_destroy(Eyelight_Viewer* pres);
 void _eyelight_viewer_expose_window_next(Eyelight_Viewer* pres, int pos);
 void _eyelight_viewer_expose_window_previous(Eyelight_Viewer* pres, int pos);
-void _eyelight_viewer_expose_slide_select_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _eyelight_viewer_expose_next_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _eyelight_viewer_expose_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _eyelight_viewer_expose_up_cb(void *data, Evas_Object *o, const char *emission, const char *source);
@@ -34,23 +33,34 @@ int _eyelight_viewer_expose_slides_load_idle(void *data);
 
 
 
-void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select, int nb_lines, int nb_cols)
+void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select)
 {
     Evas_Object *o;
-    int nb_slides = nb_lines * nb_cols;
+    int nb_slides;
+    int first_slide;
+    int nb_lines, nb_cols;
+    const char* data;
+
+    o = edje_object_add(pres->evas);
+    pres->expose_background = o;
+    if(edje_object_file_set(o, pres->theme, "eyelight/expose") ==  0)
+        printf("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1\n");
 
 
-    int first_slide = select/nb_slides * nb_slides;
+    data = edje_object_data_get(o, "nb_cols");
+    nb_cols = atoi(data);
+    data = edje_object_data_get(o, "nb_lines");
+    nb_lines = atoi(data);
+
+    nb_slides = nb_lines * nb_cols;
+
+    first_slide = select/nb_slides * nb_slides;
     pres->expose_current = select-first_slide;
     pres->state = EYELIGHT_VIEWER_STATE_EXPOSE;
     pres->expose_nb_lines = nb_lines;
     pres->expose_nb_cols = nb_cols;
     pres->expose_first_slide = first_slide;
 
-    o = edje_object_add(pres->evas);
-    pres->expose_background = o;
-    if(edje_object_file_set(o, pres->theme, "eyelight/expose_main") ==  0)
-        printf("eyelight_viewer_expose_start(), edje_object_file_set() erreur! 1\n");
     evas_object_show(o);
     evas_object_resize(o, pres->current_size_w, pres->current_size_h);
     edje_object_scale_set(o, pres->current_scale);
@@ -77,7 +87,6 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
     int nb_lines = pres->expose_nb_lines;
     int nb_slides = nb_lines * nb_cols;
 
-    pres->expose_slides = calloc(nb_slides,sizeof(Evas_Object*));
     pres->expose_image_thumbnails = calloc(nb_slides,sizeof(Evas_Object*));
 
     Evas_Object *o_image, *o_swallow;
@@ -90,44 +99,51 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
     int w = (w_body-(nb_cols+1))/nb_cols;
     int h = (h_body-(nb_lines+1))/nb_lines;
 
-    for(i=0;i<nb_slides && i+first_slide<pres->size;i++)
+    for(i=0;i<nb_slides;i++)
     {
         int pos_y = i/nb_cols;
         int pos_x = i%nb_cols;
+        char buf[EYELIGHT_BUFLEN];
 
-        o_swallow = edje_object_add(pres->evas);
-        evas_object_smart_member_add(o_swallow, pres->smart_obj);
-        pres->expose_slides[i] = o_swallow;
-        if(edje_object_file_set(o_swallow, pres->theme
-                    , "eyelight/expose_slide") ==  0)
-            printf("eyelight_viewer_expose_slides_load(), edje_object_file_set() erreur! 3 \n");
-        if(i!=pres->expose_current)
-            edje_object_signal_emit(o_swallow
-                    ,"expose,slide,unselect","eyelight");
+        if(i+first_slide>=pres->size)
+        {
+            snprintf(buf,EYELIGHT_BUFLEN, "hide,%d_%d",pos_y,pos_x);
+            edje_object_signal_emit(
+                    pres->expose_background,
+                    buf,"eyelight");
+        }
         else
-            edje_object_signal_emit(o_swallow
-                    ,"expose,slide,select","eyelight");
-        edje_object_signal_callback_add(o_swallow
-                ,"expose,slide,choose","eyelight"
-                ,_eyelight_viewer_expose_slide_select_cb,pres);
+        {
+            snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d_%d",pos_y,pos_x);
+            const Eyelight_Thumb* thumb = eyelight_viewer_thumbnails_get(pres,i+first_slide);
 
-        const Eyelight_Thumb* thumb = eyelight_viewer_thumbnails_get(pres,i+first_slide);
+            o_image = evas_object_image_add(pres->evas);
+            pres->expose_image_thumbnails[i] = o_image;
+            evas_object_color_set(o_image,255,255,255,255);
+            evas_object_image_size_set(o_image, thumb->w, thumb->h);
+            evas_object_image_data_set(o_image,thumb->thumb);
+            evas_object_image_filled_set(o_image,1);
+            evas_object_show(o_image);
+            edje_object_part_swallow(pres->expose_background,buf,o_image);
 
-        o_image = evas_object_image_add(pres->evas);
-        pres->expose_image_thumbnails[i] = o_image;
-        evas_object_color_set(o_image,255,255,255,255);
-        evas_object_image_size_set(o_image, thumb->w, thumb->h);
-        evas_object_image_data_set(o_image,thumb->thumb);
-        evas_object_image_filled_set(o_image,1);
-        evas_object_show(o_image);
-        edje_object_part_swallow(o_swallow,"object.swallow",o_image);
+            snprintf(buf,EYELIGHT_BUFLEN,"show,%d_%d",pos_y,pos_x);
+            edje_object_signal_emit(pres->expose_background,buf,"eyelight");
 
-        evas_object_move(o_swallow,w*pos_x+x_body+pres->current_pos_x,h*pos_y+y_body+pres->current_pos_y);
-        evas_object_clip_set(o_swallow,pres->current_clip);
-        evas_object_resize(o_swallow,w,h);
-        edje_object_signal_emit(o_swallow,"show","eyelight");
-        evas_object_show(o_swallow);
+            snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
+            edje_object_signal_emit(
+                    pres->expose_background,
+                    buf,"eyelight");
+        }
     }
+
+    //select the current slide
+    char buf[EYELIGHT_BUFLEN];
+    int pos_x = pres->expose_current % pres->expose_nb_cols;
+    int pos_y = pres->expose_current / pres->expose_nb_cols;
+    snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
+    edje_object_signal_emit(
+            pres->expose_background,
+            buf,"eyelight");
 
     eyelight_viewer_thumbnails_clean(pres, first_slide, first_slide+nb_slides);
 }
@@ -139,15 +155,12 @@ void _eyelight_viewer_expose_slides_destroy(Eyelight_Viewer* pres)
 
     for(i=0;i<size;i++)
     {
-        if(pres->expose_slides[i])
-            evas_object_del(pres->expose_slides[i]);
         if(pres->expose_image_thumbnails[i])
         {
             evas_object_image_data_set(pres->expose_image_thumbnails[i],NULL);
             evas_object_del(pres->expose_image_thumbnails[i]);
         }
     }
-    EYELIGHT_FREE(pres->expose_slides);
     EYELIGHT_FREE(pres->expose_image_thumbnails);
 }
 
@@ -221,14 +234,21 @@ void eyelight_viewer_expose_next(Eyelight_Viewer* pres)
     }
     else
     {
+        char buf[EYELIGHT_BUFLEN];
+        int pos_x = pres->expose_current % pres->expose_nb_cols;
+        int pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
         edje_object_signal_emit(
-                pres->expose_slides[pres->expose_current],
-                "expose,slide,unselect","eyelight");
+                pres->expose_background,
+                buf,"eyelight");
 
         pres->expose_current++;
+        pos_x = pres->expose_current % pres->expose_nb_cols;
+        pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
         edje_object_signal_emit(
-                pres->expose_slides[pres->expose_current],
-                "expose,slide,select","eyelight");
+                pres->expose_background,
+                buf,"eyelight");
     }
 }
 
@@ -246,12 +266,21 @@ void eyelight_viewer_expose_down(Eyelight_Viewer* pres)
     }
     else
     {
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,unselect","eyelight");
+        char buf[EYELIGHT_BUFLEN];
+        int pos_x = pres->expose_current % pres->expose_nb_cols;
+        int pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
 
         pres->expose_current+=pres->expose_nb_cols;
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,select","eyelight");
+        pos_x = pres->expose_current % pres->expose_nb_cols;
+        pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
     }
 }
 
@@ -268,12 +297,21 @@ void eyelight_viewer_expose_previous(Eyelight_Viewer* pres)
     }
     else
     {
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,unselect","eyelight");
+        char buf[EYELIGHT_BUFLEN];
+        int pos_x = pres->expose_current % pres->expose_nb_cols;
+        int pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
 
         pres->expose_current--;
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,select","eyelight");
+        pos_x = pres->expose_current % pres->expose_nb_cols;
+        pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
     }
 }
 
@@ -291,12 +329,21 @@ void eyelight_viewer_expose_up(Eyelight_Viewer* pres)
     }
     else
     {
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,unselect","eyelight");
+        char buf[EYELIGHT_BUFLEN];
+        int pos_x = pres->expose_current % pres->expose_nb_cols;
+        int pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
 
         pres->expose_current-=pres->expose_nb_cols;
-        edje_object_signal_emit(pres->expose_slides[pres->expose_current],
-                "expose,slide,select","eyelight");
+        pos_x = pres->expose_current % pres->expose_nb_cols;
+        pos_y = pres->expose_current / pres->expose_nb_cols;
+        snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
+        edje_object_signal_emit(
+                pres->expose_background,
+                buf,"eyelight");
     }
 }
 
@@ -325,67 +372,14 @@ void eyelight_viewer_expose_scale_set(Eyelight_Viewer* pres,double ratio)
 
 void eyelight_viewer_expose_move(Eyelight_Viewer* pres,int x, int y)
 {
-    int w_body, h_body, x_body, y_body;
-    int w_swallow, h_swallow;
-    int i;
-    int nb_cols = pres->expose_nb_cols;
-    int nb_lines = pres->expose_nb_lines;
-    int nb_slides = nb_lines * nb_cols;
-    int w,h;
-
-    w = pres->current_size_w;
-    h = pres->current_size_h;
-
     evas_object_move(pres->expose_background,x,y);
-
-    edje_object_part_geometry_get(pres->expose_background,"expose/body",&x_body,&y_body,&w_body,&h_body);
-
-    int w_slide = (w_body-(nb_cols+1))/nb_cols;
-    int h_slide = (h_body-(nb_lines+1))/nb_lines;
-
-    for(i=0;i<nb_slides;i++)
-    {
-        int pos_y = i/nb_cols;
-        int pos_x = i%nb_cols;
-        if(pres->expose_slides[i])
-        {
-            evas_object_resize(pres->expose_slides[i],w_slide,h_slide);
-                evas_object_move(pres->expose_slides[i],
-                        w_slide*pos_x+x_body+pres->current_pos_x,h_slide*pos_y+y_body+pres->current_pos_y);
-        }
-    }
 }
 
 void eyelight_viewer_expose_clip_set(Eyelight_Viewer* pres,Evas_Object *clip)
 {
-    int i;
-
     evas_object_clip_set(pres->expose_background,clip);
-
-    int nb_slides = eyelight_viewer_size_get(pres);
-    for(i=0;i<nb_slides;i++)
-    {
-        if(pres->expose_slides[i])
-            evas_object_clip_set(pres->expose_slides[i],clip);
-    }
 }
 
-
-void _eyelight_viewer_expose_slide_select_cb(void *data, Evas_Object *o, const char *emission, const char *source)
-{
-    Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
-    int i;
-
-    for(i=0;i<pres->expose_nb_lines*pres->expose_nb_cols;i++)
-    {
-        if(o==pres->expose_slides[i])
-        {
-            pres->expose_current=i;
-            eyelight_viewer_expose_select(pres);
-            return ;
-        }
-    }
-}
 
 void _eyelight_viewer_expose_window_next_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
