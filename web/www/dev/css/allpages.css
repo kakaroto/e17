@@ -64,7 +64,7 @@ a:visited { color: #923e3a; }                                /* Color Scheme */
     margin: 0;
     margin-right: 80px;
     padding-right: 2px;
-    background-image: url("../images/menu_right.png");
+    background-image: url("../images/option_normal.png");
     background-position: top right;
     background-repeat: no-repeat;
 }
@@ -81,35 +81,33 @@ a:visited { color: #923e3a; }                                /* Color Scheme */
     display: block;
     width: 100%; /* IE6 */
     line-height: 54px;
-    font-weight: bold;
     text-transform: capitalize;
     text-align: center;
     text-decoration: none;
-    color: #a8a8a8;
+    color: #bfbfbf;
     background-image: url("../images/option_normal.png");
     background-repeat: no-repeat;
 }
 
 #header .menu ul li a:hover
 {
-    color: #dadada;
+    color: #ffffff;
     background-image: url("../images/option_hover.png");
 }
 
 #header .menu ul li.current a
 {
     color: #5e656e;                                          /* Color Scheme */
-    font-weight: bold;
+    font-weight: normal;
     background-image: url("../images/option_current.png");
     background-repeat: repeat-x;
 }
 
-/* IE6 */
 #header .menu ul li.current a:hover
 {
-    color: #5e656e;
-    background-image: url("../images/option_current.png");
-    background-repeat: repeat-x;
+    color: #000000;
+    background-image: url("../images/option_current.png"); /* IE6 */
+    background-repeat: repeat-x; /* IE6 */
 }
 
 

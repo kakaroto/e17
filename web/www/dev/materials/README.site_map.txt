@@ -63,7 +63,7 @@ exchange art and application repository.
 about
 =====
 The "about" section consists of 5 brochure-like pages if we count the main page
-besides the pagess for enlightenment artists, the desktop shell, desktop
+along the pages for enlightenment artists, the desktop shell, desktop
 development and embedded development.
 
 These pages are intended to be static portals to the rest of the project,
@@ -269,6 +269,7 @@ This is basically eXchange with a few modifications to make it a community page.
   of the guide.
 - A small area linking to the desktop shell about page and a few links to
   the most relevant anchors inside that page, namely support, download, etc.
-- Modify the stile to fit the rest of the website including the vertical rythm.
+- Modify the style to fit the rest of the website including the vertical rythm.
   This will require some modifications to the PHP code in order to force the
-  thumbnails to be a multiple of 18, etc.
+  thumbnails to be a multiple of 18 -or image height + margin == multiple of
+  18-, etc.
