@@ -20,9 +20,9 @@
 #define  THUMBNAILS_INC
 
 #include "eyelight_viewer.h"
+#include "Eyelight_Edit.h"
 
 typedef struct Eyelight_Thumbnails Eyelight_Thumbnails;
-typedef struct Eyelight_Thumb Eyelight_Thumb;
 
 struct Eyelight_Thumbnails
 {
@@ -34,23 +34,20 @@ struct Eyelight_Thumbnails
     int default_size_h;
 };
 
-struct Eyelight_Thumb
-{
-    int* thumb;
-    int w;
-    int h;
-    int is_in_edj;
-};
 
-EAPI void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres);
+void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres);
 
-EAPI const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos);
-EAPI const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h);
+const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos);
+const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h);
 EAPI void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres,int min, int max);
 
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres);
 
 
+/**
+ * Do not use the cache, the thumbnail is created and returns
+ */
+const Eyelight_Thumb* eyelight_viewer_thumbnails_get_new(Eyelight_Viewer* pres, int pos);
 
 
 #endif   /* ----- #ifndef THUMBNAILS_INC  ----- */

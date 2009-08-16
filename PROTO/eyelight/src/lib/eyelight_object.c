@@ -19,6 +19,7 @@
 #include "eyelight_object.h"
 #include <Edje_Edit.h>
 #include <Emotion.h>
+#include "Eyelight_Smart.h"
 
 /**
  * Returns the object which contains the area "area" <br>

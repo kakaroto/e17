@@ -108,6 +108,16 @@ int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme)
     EYELIGHT_FREE(file);
 }
 
+EAPI const char* eyelight_viewer_presentation_file_get(Eyelight_Viewer *pres)
+{
+    return pres->elt_file;
+}
+
+EAPI const char* eyelight_viewer_theme_file_get(Eyelight_Viewer *pres)
+{
+    return pres->theme;
+}
+
 /**
  * Set if the border of each area should been display or not
  */
@@ -452,6 +462,14 @@ int eyelight_viewer_size_get(Eyelight_Viewer*pres)
     return pres->size;
 }
 
+/**
+ * If 1 the cache of slides is never cleared
+ */
+void eyelight_viewer_clear_cache_set(Eyelight_Viewer *pres, int clear)
+{
+    pres->do_not_clear_cache = clear;
+}
+
 /*
  * @brief return a slide, load it if necessary
  */
@@ -461,6 +479,40 @@ Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos)
 
     if(!pres->slides[pos])
     {
+        //you clear the others data of the slide,
+        //because maybe the slide has to be remove with eyelight_edit_remove_slide
+        {
+            eina_list_free(pres->edje_items[pos]);
+            pres->edje_items[pos] = NULL;
+
+            Eina_List *l, *l_next;
+            {
+                Evas_Object *data;
+                EINA_LIST_FOREACH_SAFE(pres->edje_objects[pos], l, l_next, data)
+                {
+                    evas_object_del(data);
+                    pres->edje_objects[pos] = eina_list_remove_list(pres->edje_objects[pos], l);
+                }
+            }
+            {
+                Eyelight_Custom_Area *data;
+                EINA_LIST_FOREACH_SAFE(pres->custom_areas[pos], l, l_next, data)
+                {
+                    evas_object_del(data->obj);
+                    EYELIGHT_FREE(data);
+                    pres->custom_areas[pos] = eina_list_remove_list(pres->custom_areas[pos], l);
+                }
+            }
+            {
+                Eyelight_Video *data;
+                EINA_LIST_FOREACH_SAFE(pres->video_objects[pos], l, l_next, data)
+                {
+                    evas_object_del(data->o_inter);
+                    EYELIGHT_FREE(data);
+                    pres->video_objects[pos] = eina_list_remove_list(pres->video_objects[pos], l);
+                }
+            }
+        }
         pres->slides[pos] = eyelight_viewer_slide_load(pres,pos);
         eyelight_viewer_slide_transitions_load(pres,pos);
         evas_object_move (pres->slides[pos], pres->current_pos_x, pres->current_pos_y);
@@ -575,6 +627,9 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
 void eyelight_viewer_clear(Eyelight_Viewer *pres)
 {
     int i;
+    if(pres->do_not_clear_cache)
+        return ;
+
     for(i=0;i<pres->size;i++)
     {
         if(pres->slides[i] && (i<pres->current-1 || i>pres->current+1))

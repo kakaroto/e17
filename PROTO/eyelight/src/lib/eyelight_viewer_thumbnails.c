@@ -76,14 +76,12 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     Eet_File* file;
     unsigned int w,h;
     int alpha,compress,quality,lossy;
-    char buf[EYELIGHT_BUFLEN];
     Eyelight_Thumbnails* thumbnails;
 
     if(!pres->thumbnails->thumbnails)
         pres->thumbnails->thumbnails = calloc(pres->size,sizeof(Eyelight_Thumb));
 
     thumbnails = pres->thumbnails;
-    snprintf(buf,EYELIGHT_BUFLEN,"thumb/slide/%d",pos);
 
     if(!thumbnails->thumbnails[pos].thumb)
     {
@@ -98,6 +96,17 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     }
 
     return &(thumbnails->thumbnails[pos]);
+}
+
+const Eyelight_Thumb* eyelight_viewer_thumbnails_get_new(Eyelight_Viewer* pres, int pos)
+{
+    Eyelight_Thumb *thumb = calloc(1,sizeof(Eyelight_Thumb));
+
+    thumb->thumb = _eyelight_viewer_thumbnails_create(pres,pos,pres->thumbnails->default_size_w,pres->thumbnails->default_size_h);
+    thumb->w = pres->thumbnails->default_size_w;
+    thumb->h = pres->thumbnails->default_size_h;
+
+    return thumb;
 }
 
 int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)

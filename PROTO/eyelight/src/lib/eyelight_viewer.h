@@ -24,6 +24,7 @@
 #include <Eet.h>
 #include "eyelight_viewer_thumbnails.h"
 #include "eyelight_compiler_parser.h"
+#include "Eyelight_Edit.h"
 
 struct Eyelight_Viewer
 {
@@ -46,6 +47,9 @@ struct Eyelight_Viewer
 
     double current_scale;
     Evas_Object *current_clip;
+
+    //if 1, the cache of slides is never cleared
+    int do_not_clear_cache;
 
     //If the presentation should be a member of a smart obj
     Evas_Object *smart_obj;
@@ -108,8 +112,8 @@ struct Eyelight_Viewer
     int tableofcontents_is_previous_program;
 };
 
-Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos);
 Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos);
+Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos);
 
 void eyelight_viewer_default_transitions_load(Eyelight_Viewer*pres);
 void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres,int slide);

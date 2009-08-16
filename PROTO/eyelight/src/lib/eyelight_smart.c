@@ -102,6 +102,24 @@ void eyelight_object_theme_file_set(Evas_Object *obj, const char* theme)
     eyelight_viewer_theme_file_set(sd->pres,theme);
 }
 
+EAPI const char* eyelight_object_presentation_file_get(Evas_Object *obj)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return NULL;
+
+    return eyelight_viewer_presentation_file_get(sd->pres);
+}
+
+EAPI const char* eyelight_object_theme_file_get(Evas_Object *obj)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return NULL;
+
+    return eyelight_viewer_theme_file_get(sd->pres);
+}
+
 void eyelight_object_border_set(Evas_Object *obj, int border)
 {
     Smart_Data *sd;
@@ -109,6 +127,23 @@ void eyelight_object_border_set(Evas_Object *obj, int border)
     if (!sd->pres) return;
 
     eyelight_viewer_border_set(sd->pres,border);
+}
+
+Eyelight_Viewer *eyelight_object_pres_get(Evas_Object *obj)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    return sd->pres;
+}
+
+
+void eyelight_object_clear_cache_set(Evas_Object *obj, int clear)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return;
+
+    eyelight_viewer_clear_cache_set(sd->pres, clear);
 }
 
 /**
@@ -139,6 +174,15 @@ void eyelight_object_focus_set(Evas_Object *obj, int focus)
     evas_object_focus_set(sd->catch_event, focus);
 }
 
+int eyelight_object_size_get(Evas_Object* obj)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return;
+
+    return eyelight_viewer_size_get(sd->pres);
+}
+
 void eyelight_object_slide_next(Evas_Object *obj)
 {
     Smart_Data *sd;
@@ -155,6 +199,15 @@ void eyelight_object_slide_previous(Evas_Object *obj)
     if (!sd->pres) return;
 
     eyelight_viewer_slide_previous(sd->pres);
+}
+
+void eyelight_object_slide_goto(Evas_Object *obj, int id)
+{
+    Smart_Data *sd;
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+    if (!sd->pres) return;
+
+    eyelight_viewer_slide_goto(sd->pres, id);
 }
 
 int eyelight_object_current_id_get(Evas_Object *obj)
