@@ -32,6 +32,9 @@ struct Eyelight_Thumbnails
     int idle_current_slide;
     int default_size_w;
     int default_size_h;
+
+    Eyelight_Thumbnails_slide_done_cb done_cb;
+    void *done_cb_data;
 };
 
 
@@ -42,12 +45,6 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer
 EAPI void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres,int min, int max);
 
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres);
-
-
-/**
- * Do not use the cache, the thumbnail is created and returns
- */
-const Eyelight_Thumb* eyelight_viewer_thumbnails_get_new(Eyelight_Viewer* pres, int pos);
 
 
 #endif   /* ----- #ifndef THUMBNAILS_INC  ----- */

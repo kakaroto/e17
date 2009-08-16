@@ -27,6 +27,7 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
 void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres)
 {
     Eet_File* file;
+    if(pres->thumbnails) return ;
 
     pres->thumbnails = calloc(1,sizeof(Eyelight_Thumbnails));
     pres->thumbnails->default_size_w = pres->default_size_w/4;
@@ -93,20 +94,13 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
         thumbnails->thumbnails[pos].is_in_edj = 0;
         thumbnails->thumbnails[pos].w = size_w;
         thumbnails->thumbnails[pos].h = size_h;
+
+        if(pres->thumbnails->done_cb)
+            pres->thumbnails->done_cb(pres, pos, &(thumbnails->thumbnails[pos]),
+                    pres->thumbnails->done_cb_data);
     }
 
     return &(thumbnails->thumbnails[pos]);
-}
-
-const Eyelight_Thumb* eyelight_viewer_thumbnails_get_new(Eyelight_Viewer* pres, int pos)
-{
-    Eyelight_Thumb *thumb = calloc(1,sizeof(Eyelight_Thumb));
-
-    thumb->thumb = _eyelight_viewer_thumbnails_create(pres,pos,pres->thumbnails->default_size_w,pres->thumbnails->default_size_h);
-    thumb->w = pres->thumbnails->default_size_w;
-    thumb->h = pres->thumbnails->default_size_h;
-
-    return thumb;
 }
 
 int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)
@@ -203,6 +197,7 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     EYELIGHT_FREE(pres_copy->slides);
     EYELIGHT_FREE(pres_copy);
     ecore_evas_free(ee);
+
     return pixel_resize;
 }
 

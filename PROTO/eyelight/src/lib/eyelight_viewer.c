@@ -783,4 +783,10 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
     eyelight_viewer_clear (pres);
 }
 
+void eyelight_viewer_thumbnails_done_cb_set(Eyelight_Viewer* pres, Eyelight_Thumbnails_slide_done_cb cb, void *user_data)
+{
+    eyelight_viewer_thumbnails_init(pres);
+    pres->thumbnails->done_cb = cb;
+    pres->thumbnails->done_cb_data = user_data;
+}
 

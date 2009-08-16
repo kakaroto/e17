@@ -50,9 +50,4 @@ const char* eyelight_edit_slide_title_get(Eyelight_Viewer *pres, int id_slide)
     return title;
 }
 
-Eyelight_Thumb* eyelight_edit_thumbnails_get_new(Eyelight_Viewer* pres, int pos)
-{
-    return (Eyelight_Thumb*)eyelight_viewer_thumbnails_get_new(pres, pos);
-}
-
 

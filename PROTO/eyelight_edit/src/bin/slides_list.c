@@ -31,8 +31,6 @@ struct list_item {
 };
 
 List_Item* _l_items = NULL;
-int _i_item_idle;
-Ecore_Idler* _idle = NULL;
 Evas_Object *_sl = NULL;
 
 char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part);
@@ -88,25 +86,20 @@ Evas_Object *slides_list_new()
     return vbox;
 }
 
+void _thumb_done_cb(Eyelight_Viewer *pres, int id_slide, Eyelight_Thumb* thumb, void* user_data)
+{
+    _l_items[id_slide].thumb = thumb;
+    elm_genlist_item_update(_l_items[id_slide].item);
+}
 
 void slides_list_update()
 {
     int i;
 
-    for(i=0;_l_items && i<eyelight_object_size_get(pres);i++)
-    {
-        if(_l_items[i].thumb)
-        {
-            free(_l_items[i].thumb->thumb);
-            free(_l_items[i].thumb);
-        }
-    }
-
     if(_l_items) free(_l_items);
-
     _l_items = calloc(eyelight_object_size_get(pres), sizeof(List_Item));
-    if(_idle) ecore_idler_del(_idle);
-    _i_item_idle = 0;
+
+    eyelight_viewer_thumbnails_done_cb_set(eyelight_object_pres_get(pres), _thumb_done_cb, NULL);
 
     elm_genlist_clear(slides_list);
     for(i=0;i<eyelight_object_size_get(pres);i++)
@@ -119,29 +112,7 @@ void slides_list_update()
                 _slides_list_sel,
                 (void*)i);
     }
-
-    _idle = ecore_idler_add(_thumbnails_load_idle,pres);
 }
-
-int _thumbnails_load_idle(void *data)
-{
-    Evas_Object* pres = (Evas_Object*)data;
-
-    if(_i_item_idle>=eyelight_object_size_get(pres))
-    {
-        _idle = NULL;
-        _i_item_idle = 0;
-        return 0;
-    }
-
-    _l_items[_i_item_idle].thumb = eyelight_edit_thumbnails_get_new(eyelight_object_pres_get(pres),
-            _i_item_idle);
-    elm_genlist_item_update(_l_items[_i_item_idle].item);
-
-    _i_item_idle++;
-    return 1;
-}
-
 
 char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part)
 {
