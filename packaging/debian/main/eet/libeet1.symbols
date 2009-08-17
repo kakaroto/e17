@@ -69,6 +69,7 @@ libeet.so.1 libeet1 #MINVER#
  eet_node_null_new@Base 1.2.0
  eet_node_short_new@Base 1.2.0
  eet_node_string_new@Base 1.2.0
+ eet_node_struct_child_new@Base 1.2.2
  eet_node_struct_new@Base 1.2.0
  eet_node_unsigned_char_new@Base 1.2.0
  eet_node_unsigned_int_new@Base 1.2.0
