@@ -116,14 +116,10 @@ void
 places_update_all_gadgets(void)
 {
    Eina_List *l;
-   
-   for (l = instances; l; l = l->next)
-   {
-      Instance *inst;
-      
-      inst = l->data;
-      places_fill_box(inst->o_box);
-   }
+   Instance *inst;
+
+   EINA_LIST_FOREACH(instances, l, inst)
+     places_fill_box(inst->o_box);
 }
 
 int
@@ -510,14 +506,11 @@ static int
 _places_poller(void *data)
 {
    Eina_List *l;
+   Volume *vol;
 
-   for (l = volumes; l; l = l->next)
-   {
-      Volume *vol = l->data;
-
-      if (!vol->valid || !vol->mounted) continue;
-      _places_update_size(vol->obj, vol);
-   }
+   EINA_LIST_FOREACH(volumes, l, vol)
+     if (vol->valid && vol->mounted)
+       _places_update_size(vol->obj, vol);
 
    return 1;
 }
@@ -859,23 +852,19 @@ _places_device_rem_cb(void *data, DBusMessage *msg)
    DBusError err;
    char *udi;
    Eina_List *l;
+   Volume *v;
 
    dbus_error_init(&err);
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
 
-   for (l = volumes; l; l = l->next)
-   {
-      Volume *v;
-      
-      v = l->data;
+   EINA_LIST_FOREACH(volumes, l, v)
       if (!strcmp(v->udi, udi))
       {
-         printf("PLACES Removed %s\n", v->udi);
+         //~ printf("PLACES Removed %s\n", v->udi);
          _places_volume_del(v);
          places_update_all_gadgets();
          return;
       }
-   }
 }
 
 /* Dbus CB - Called when a device change some properties */
@@ -883,7 +872,7 @@ void
 _places_volume_prop_modified_cb(void *data, DBusMessage *msg)
 {
    Volume *v = data;
-   printf("properties\n");
+   //~ printf("properties\n");
    e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
 }
 
@@ -1057,5 +1046,3 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    places_update_all_gadgets(); //TODO Update only this volume, not all
    return;
 }
-
-
