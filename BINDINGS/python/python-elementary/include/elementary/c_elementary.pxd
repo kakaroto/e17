@@ -8,7 +8,7 @@
 # (at your option) any later version.
 #
 # python-elementary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# but WITHOUT ANY WARRANTY without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #
@@ -459,23 +459,23 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_pager_content_top_get(evas.c_evas.Evas_Object *obj)
    
     # Fileselector widget
-    evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent);
-    char*  elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj);
-    void         elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path);
-    void         elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool expand);
+    evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
+    char*  elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
+    void         elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path)
+    void         elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool expand)
 
     # Progressbar widget
-    evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent);
-    void         elm_progressbar_label_set(evas.c_evas.Evas_Object *obj, const char *label);
-    void         elm_progressbar_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon);
-    void         elm_progressbar_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size);
-    void         elm_progressbar_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal);
-    void         elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted);
-    void         elm_progressbar_pulse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool pulse);
-    void         elm_progressbar_pulse(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state);
-    void         elm_progressbar_unit_format_set(evas.c_evas.Evas_Object *obj, char *format);
-    void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val);
-    double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj);
+    evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
+    void         elm_progressbar_label_set(evas.c_evas.Evas_Object *obj, char *label)
+    void         elm_progressbar_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    void         elm_progressbar_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
+    void         elm_progressbar_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
+    void         elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
+    void         elm_progressbar_pulse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool pulse)
+    void         elm_progressbar_pulse(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
+    void         elm_progressbar_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
+    void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
+    double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
 
  
     
