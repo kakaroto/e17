@@ -23,14 +23,17 @@ cdef class Button(Object):
     property clicked:
         def __set__(self, value):
             self._callback_add("clicked",value)
-    
+
     def label_set(self, label): 
         elm_button_label_set(self.obj, label)
 
     def icon_set(self, c_evas.Object icon):
         elm_button_icon_set(self.obj, icon.obj)
 
+    def icon_get(self):
+        cdev c_evas.Object *icon = elm_button_icon_get(self.obj)
+        return icon
+
     def style_set(self, style):
         elm_button_style_set(self.obj, style)
-
 

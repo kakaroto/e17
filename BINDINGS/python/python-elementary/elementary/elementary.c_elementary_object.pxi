@@ -55,6 +55,14 @@ cdef class Object(evas.c_evas.Object):
         cdef char *style
         style = elm_object_style_get(self.obj)
         return style
+
+    def disabled_set(self, disabled):
+        elm_object_disabled_set(self.obj, disabled)
+
+    def disabled_get(self):
+        cdef int *disabled
+        disabled = elm_object_disabled_get(self.obj)
+        return disabled
     
     def focus(self):
         elm_object_focus(self.obj)
