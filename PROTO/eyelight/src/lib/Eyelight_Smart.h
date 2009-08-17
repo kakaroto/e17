@@ -57,6 +57,7 @@ EAPI void eyelight_object_gotoslide_goto(Evas_Object *obj);
 EAPI void eyelight_object_gotoslide_digit_add(Evas_Object *obj, int digit);
 EAPI void eyelight_object_gotoslide_digit_last_remove(Evas_Object *obj);
 
+EAPI void eyelight_object_thumbnails_size_set(Evas_Object *obj, int w, int h);
 
 #endif   /* ----- #ifndef EYELIGHT_SMART_INC  ----- */
 

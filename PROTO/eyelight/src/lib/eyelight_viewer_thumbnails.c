@@ -44,6 +44,27 @@ void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
     pres->thumbnails->idle = ecore_idler_add(_eyelight_viewer_thumbnails_load_idle,pres);
 }
 
+
+void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
+{
+    int i;
+
+    if(!pres->thumbnails)
+        pres->thumbnails = calloc(1,sizeof(Eyelight_Thumbnails));
+    pres->thumbnails->default_size_w = w;
+    pres->thumbnails->default_size_h = h;
+
+    //recreate all thumbs already created
+    for(i=0; pres->thumbnails->thumbnails && i<eyelight_viewer_size_get(pres); i++)
+    {
+        if(pres->thumbnails->thumbnails[i].thumb)
+        {
+            EYELIGHT_FREE(pres->thumbnails->thumbnails[i].thumb);
+            eyelight_viewer_thumbnails_get(pres, i);
+        }
+    }
+}
+
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos)
 {
         return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h);

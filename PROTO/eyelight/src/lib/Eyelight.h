@@ -54,7 +54,7 @@ EAPI void eyelight_viewer_clean(Eyelight_Viewer *pres);
 
 
 EAPI Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres);
-
+EAPI void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h);
 
 EAPI int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* presentation);
 EAPI int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme);
