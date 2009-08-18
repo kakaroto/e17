@@ -38,10 +38,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#if defined(__alpha__) && defined(__GNUC__) && ((__GNUC__ == 2) && (__GNUC_MINOR__ < 96))	/* gets rid of some misalignment in GCC */
-#pragma 2
-#endif
-
 #define EDOX_DEFAULT_W  512
 #define EDOX_DEFAULT_H  400
 
@@ -242,6 +238,15 @@ LoadFile(const char *file, const char *docfile)
    fclose(f);
 }
 
+static void
+usage(const char *prog)
+{
+   printf("usage:\n"
+	  "%s [-page page_number] [-file Edoc_fname] [-size width height] [Edoc_dir]\n",
+	  prog);
+   exit(1);
+}
+
 #define ApplyImage3(win, im) \
 	XClearWindow(disp, win)
 
@@ -294,17 +299,33 @@ main(int argc, char **argv)
 
    w = EDOX_DEFAULT_W;
    h = EDOX_DEFAULT_H;
-   x = 0;
-   y = 0;
    pagenum = 0;
 
-   if (argc < 1)
+   docfile = "MAIN";
+   for (i = 1; i < argc; i++)
      {
-	printf("usage:\n"
-	       "%s [-page page_number] [-file Edoc_fname] [-size width height] [Edoc_dir]\n",
-	       argv[0]);
-	exit(1);
+	if (!strcmp(argv[i], "-help"))
+	   usage(argv[0]);
+	else if ((!strcmp(argv[i], "-page")) && (i < (argc - 1)))
+	   pagenum = atoi(argv[++i]);
+	else if ((!strcmp(argv[i], "-file")) && (i < (argc - 1)))
+	   docfile = argv[++i];
+	else if ((!strcmp(argv[i], "-size")) && (i < (argc - 2)))
+	  {
+	     w = atoi(argv[++i]);
+	     h = atoi(argv[++i]);
+	  }
+	else
+	   docdir = strdup(argv[i]);
      }
+   if (docdir == NULL)
+      docdir = strdup(doxdir);
+   s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
+
+   sprintf(s, "%s/%s", docdir, docfile);
+   findLocalizedFile(s);
+
+   LoadFile(s, docfile);
 
    if ((disp = XOpenDisplay(NULL)) == NULL)
      {
@@ -323,28 +344,6 @@ main(int argc, char **argv)
    setlocale(LC_NUMERIC, "C");
 
    VRootInit();
-
-   docfile = "MAIN";
-   for (i = 1; i < argc; i++)
-     {
-	if ((!strcmp(argv[i], "-page")) && (i < (argc - 1)))
-	   pagenum = atoi(argv[++i]);
-	else if ((!strcmp(argv[i], "-file")) && (i < (argc - 1)))
-	   docfile = argv[++i];
-	else if ((!strcmp(argv[i], "-size")) && (i < (argc - 2)))
-	  {
-	     w = atoi(argv[++i]);
-	     h = atoi(argv[++i]);
-	  }
-	else
-	   docdir = strdup(argv[i]);
-     }
-   if (docdir == NULL)
-      docdir = strdup(doxdir);
-   s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
-
-   sprintf(s, "%s/%s", docdir, docfile);
-   findLocalizedFile(s);
 
    im_title = ImageLoadDox("title.png");
    imlib_context_set_image(im_title);
@@ -419,8 +418,6 @@ main(int argc, char **argv)
    ApplyImage1(win_prev, im_prev1);
    ApplyImage1(win_next, im_next1);
    ApplyImage1(win_exit, im_exit1);
-
-   LoadFile(s, docfile);
 
    l = RenderPage(draw, pagenum, w, h);
    UPDATE_NOW;
