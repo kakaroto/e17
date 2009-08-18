@@ -89,7 +89,7 @@ Eina_Bool _png_info_load(const char *file, int *w, int *h, Enesim_Converter_Form
 	return EINA_TRUE;
 }
 
-Eina_Bool _png_load(const char *file, void *data)
+Eina_Bool _png_load(const char *file, Enesim_Converter_Data *data)
 {
 	FILE *f;
 	int bit_depth, color_type, interlace_type;
@@ -102,7 +102,7 @@ Eina_Bool _png_load(const char *file, void *data)
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 
-	uint32_t *sdata = data;
+	uint32_t *sdata = data->argb8888.plane0;
 	Eina_Bool ret = EINA_TRUE;
 
 	hasa = 0;

@@ -29,36 +29,34 @@ typedef struct _Emage_Job
 } Emage_Job;
 
 /* TODO this can be merged into enesim itself */
-static void * _provider_data_create(Enesim_Converter_Format cfmt, int w, int h)
+static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter_Format cfmt, int w, int h)
 {
-	void *data;
 	switch(cfmt)
 	{
 		case ENESIM_CONVERTER_ARGB8888:
 		case ENESIM_CONVERTER_ARGB8888_PRE:
-		data = malloc(w * h * sizeof(uint32_t));
+		cdata->argb8888.plane0 = malloc(w * h * sizeof(uint32_t));
 		break;
 
 		case ENESIM_CONVERTER_RGB565:
-		data = malloc(w * h * sizeof(uint16_t));
+		cdata->rgb565.plane0 = malloc(w * h * sizeof(uint16_t));
 		break;
 
 		default:
+		printf("No such format\n");
 		break;
 	}
-	return data;
 }
 
-static void _provider_data_convert(uint32_t *cdata,
+static void _provider_data_convert(Enesim_Converter_Data *cdata,
 		Enesim_Converter_Format cfmt, uint32_t w, uint32_t h, Enesim_Surface *s)
 {
-	Enesim_Operator op;
-	Enesim_Cpu **cpu;
+	Enesim_Converter_1D conv;
 	Enesim_Format fmt;
-	int cpunum;
 	uint32_t sw, sh;
 	uint32_t *src;
 	uint32_t sstride;
+	uint32_t *ndata;
 
 	src = enesim_surface_data_get(s);
 	enesim_surface_size_get(s, &sw, &sh);
@@ -68,22 +66,19 @@ static void _provider_data_convert(uint32_t *cdata,
 	 * parameter to the load function
 	 */
 	/* FIXME use the 2d converter */
-	cpu = enesim_cpu_get(&cpunum);
-	if (!cpunum)
-	{
-		printf("No enesim cpus available\n");
-		return;
-	}
-	if (!enesim_converter_1d_to_get(&op, cpu[0], cfmt, fmt))
+	conv = enesim_converter_span_get(cfmt, ENESIM_ANGLE_0, fmt);
+	if (!conv)
 	{
 		printf("No enesim converter available\n");
 		return;
 	}
+	ndata = cdata->argb8888.plane0;
 	while (sh--)
 	{
-		enesim_operator_converter_1d(&op, src, sw, cdata);
+		conv(cdata, sw, src);
 		src += sstride;
-		cdata += w;
+		/* FIXME this is wrong, we should increment on the right way */
+		ndata += w;
 	}
 }
 
@@ -108,11 +103,11 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 	Enesim_Surface *stmp;
 	int w, h;
 	Enesim_Converter_Format cfmt;
-	uint32_t *cdata;
+	Enesim_Converter_Data cdata;
 
 	_provider_info_load(p, file, &w, &h, &cfmt);
 	/* create a buffer of format cfmt where the provider will fill */
-	cdata = _provider_data_create(cfmt, w, h);
+	_provider_data_create(&cdata, cfmt, w, h);
 	if (!*s)
 	{
 		*s = enesim_surface_new_allocator_from(f, w, h, mpool);
@@ -123,13 +118,15 @@ static Eina_Bool _provider_data_load(Emage_Provider *p, const char *file,
 		}
 	}
 	/* load the file */
-	if (p->load(file, cdata) == EINA_FALSE)
+	if (p->load(file, &cdata) == EINA_FALSE)
 	{
 		*err = EMAGE_ERROR_LOADING;
 		return EINA_FALSE;
 	}
 	/* convert */
-	_provider_data_convert(cdata, cfmt, w, h, *s);
+	_provider_data_convert(&cdata, cfmt, w, h, *s);
+	/* free the allocated data */
+	free(cdata.argb8888.plane0);
 	return EINA_TRUE;
 }
 

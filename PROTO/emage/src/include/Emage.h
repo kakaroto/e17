@@ -35,7 +35,7 @@ typedef struct _Emage_Provider
 	/* void * (*options_parse)(const char *options) */
 	Eina_Bool (*loadable)(const char *file);
 	Eina_Bool (*info_get)(const char *file, int *w, int *h, Enesim_Converter_Format *sfmt); // void * options
-	Eina_Bool (*load)(const char *file, void *data); // void *options
+	Eina_Bool (*load)(const char *file, Enesim_Converter_Data *data); // void *options
 } Emage_Provider;
 
 typedef void (*Emage_Load_Callback)(Enesim_Surface *s, void *data, int error);
