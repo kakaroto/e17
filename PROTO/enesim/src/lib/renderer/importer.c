@@ -20,40 +20,71 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-static void _span_argb8888_argb8888(uint32_t *native, uint32_t len,
-		Enesim_Converter_Data *data)
+typedef struct _Importer
 {
-	uint32_t *ssrc = data->argb8888.plane0;
+	Enesim_Renderer base;
+	Enesim_Converter_Data cdata;
+	Enesim_Converter_Format cfmt;
+	Enesim_Angle angle;
+} Importer;
 
+static void _span_argb8888_none_argb8888(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+{
+	Importer *i = (Importer *)r;
+	uint32_t *ssrc = i->cdata.argb8888.plane0;
+
+	ssrc = ssrc + (i->cdata.argb8888.plane0_stride * y) + x;
 	while (len--)
 	{
 		uint16_t a = (*ssrc >> 24) + 1;
 
 		if (a != 256)
 		{
-			*native = (*ssrc & 0xff000000) + (((((*ssrc) >> 8) & 0xff) * a) & 0xff00) +
+			*dst = (*ssrc & 0xff000000) + (((((*ssrc) >> 8) & 0xff) * a) & 0xff00) +
 			(((((*ssrc) & 0x00ff00ff) * a) >> 8) & 0x00ff00ff);
 		}
 		else
-			*native = *ssrc;
+			*dst = *ssrc;
 
-		native++;
+		dst++;
 		ssrc++;
 	}
 }
 
-static void _span_argb8888_a8(uint32_t *native, uint32_t len,
-		Enesim_Converter_Data *data)
+static void _span_a8_none_argb8888(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
-	uint8_t *ssrc = data->a8.plane0;
+	Importer *i = (Importer *)r;
+	uint8_t *ssrc = i->cdata.a8.plane0;
 
+	ssrc = ssrc + (i->cdata.a8.plane0_stride * y) + x;
 	while (len--)
 	{
-		*native = *ssrc << 24;;
+		*dst = *ssrc << 24;;
 
-		native++;
+		dst++;
 		ssrc++;
 	}
+}
+
+static Eina_Bool _state_setup(Enesim_Renderer *r)
+{
+	Importer *i = (Importer *)r;
+
+	/* TODO use a LUT for this */
+	switch (i->cfmt)
+	{
+		case ENESIM_CONVERTER_ARGB8888:
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_span_argb8888_none_argb8888);
+		break;
+
+		case ENESIM_CONVERTER_A8:
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_span_a8_none_argb8888);
+		break;
+
+		default:
+		break;
+	}
+	return EINA_TRUE;
 }
 /*============================================================================*
  *                                 Global                                     *
@@ -63,5 +94,28 @@ static void _span_argb8888_a8(uint32_t *native, uint32_t len,
  *============================================================================*/
 EAPI Enesim_Renderer * enesim_renderer_importer_new(void)
 {
+	Importer *i;
+	Enesim_Renderer *r;
 
+	i = calloc(1, sizeof(Importer));
+
+	r = (Enesim_Renderer *)i;
+	enesim_renderer_init(r);
+	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
+	return r;
+}
+
+
+EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle)
+{
+	Importer *i = (Importer *)r;
+
+	i->angle = angle;
+}
+
+EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter_Data *cdata)
+{
+	Importer *i = (Importer *)r;
+
+	i->cdata = *cdata;
 }

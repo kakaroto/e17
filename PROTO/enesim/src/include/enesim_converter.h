@@ -51,16 +51,19 @@ typedef enum _Enesim_Converter_Format
 typedef struct _Enesim_Converter_Argb8888
 {
 	uint32_t *plane0;
+	int plane0_stride;
 } Enesim_Converter_Argb8888;
 
 typedef struct _Enesim_Converter_Rgb565
 {
 	uint16_t *plane0;
+	int plane0_stride;
 } Enesim_Converter_Rgb565;
 
 typedef struct _Enesim_Converter_A8
 {
 	uint8_t *plane0;
+	int plane0_stride;
 } Enesim_Converter_A8;
 
 typedef union _Enesim_Converter_Data

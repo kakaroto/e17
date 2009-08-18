@@ -15,5 +15,5 @@ hswitch.c \
 rectangle.c \
 circle.c \
 ellipse.c \
-stripes.c
-
+stripes.c \
+importer.c

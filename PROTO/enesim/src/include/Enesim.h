@@ -58,10 +58,10 @@ extern "C" {
 #include "enesim_matrix.h"
 #include "enesim_curve.h"
 /* main subsystems */
+#include "enesim_converter.h"
+#include "enesim_compositor.h"
 #include "enesim_rasterizer.h"
 #include "enesim_renderer.h"
-#include "enesim_compositor.h"
-#include "enesim_converter.h"
 
 #ifdef __cplusplus
 }
