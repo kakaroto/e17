@@ -27,7 +27,7 @@
 #include "xwin.h"
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
 #include <X11/extensions/Xrender.h>
 #endif
 
@@ -38,7 +38,7 @@ typedef struct {
    char                argb;
 } EiwData;
 
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
 #include <Imlib2.h>
 
 static void

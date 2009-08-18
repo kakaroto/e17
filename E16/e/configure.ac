@@ -253,20 +253,33 @@ if test "x$enable_xrandr" = "xyes"; then
   AC_CHECK_HEADERS(X11/extensions/Xrandr.h,,,[#include <X11/Xlib.h>])
 fi
 
+AC_ARG_ENABLE(xrender,
+  [  --enable-render         compile with Render support @<:@default=yes@:>@],,
+  enable_xrender=yes)
+if test "x$enable_xrender" = "xyes"; then
+  AC_CHECK_LIB(Xrender, XRenderQueryExtension,
+    AC_DEFINE(USE_XRENDER, 1, [Render support])
+    E_X_LIBS="-lXrender $E_X_LIBS",
+    enable_xrender=no
+    AC_MSG_WARN([Render support was requested but not found]),
+    -lX11)
+  AC_CHECK_HEADERS(X11/extensions/Xrender.h,,,[#include <X11/Xlib.h>])
+fi
+
 # FIXME - Do this properly
 AC_ARG_ENABLE(composite,
   [  --enable-composite      compile with Composite support @<:@default=yes@:>@],,
   enable_composite=yes)
+if test "x$enable_xrender" != "xyes"; then enable_composite=no; fi
 if test "x$enable_composite" = "xyes"; then
   AC_CHECK_LIB(Xcomposite, XCompositeQueryExtension,
     AC_DEFINE(USE_COMPOSITE, 1, [Composite support])
-    E_X_LIBS="-lXcomposite -lXdamage -lXfixes -lXrender $E_X_LIBS",
+    E_X_LIBS="-lXcomposite -lXdamage -lXfixes $E_X_LIBS",
     enable_composite=no,
     -lXext -lX11)
   AC_CHECK_HEADERS(X11/extensions/Xcomposite.h ,, enable_composite=no, [#include <X11/Xlib.h>])
   AC_CHECK_HEADERS(X11/extensions/Xdamage.h    ,, enable_composite=no, [#include <X11/Xlib.h>])
   AC_CHECK_HEADERS(X11/extensions/Xfixes.h     ,, enable_composite=no, [#include <X11/Xlib.h>])
-  AC_CHECK_HEADERS(X11/extensions/Xrender.h    ,, enable_composite=no, [#include <X11/Xlib.h>])
   if test "x$enable_composite" != "xyes"; then
     AC_MSG_WARN([Composite support was requested but required component was not found])
   fi
@@ -408,6 +421,7 @@ echo "  Pango ........................ $enable_pango"
 echo "  Xft .......................... $enable_xft"
 echo "  Xinerama ..................... $enable_xinerama"
 echo "  RandR ........................ $enable_xrandr"
+echo "  Render ....................... $enable_xrender"
 echo "  Sync ......................... $enable_xsync"
 echo "  Composite .................... $enable_composite"
 echo "  Modules ...................... $enable_modules"

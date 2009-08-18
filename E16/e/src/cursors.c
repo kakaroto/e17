@@ -28,7 +28,7 @@
 #include "emodule.h"
 #include "xwin.h"
 #include <X11/cursorfont.h>
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
 #include <X11/extensions/Xrender.h>
 #endif
 
@@ -48,7 +48,7 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
 {
    Cursor              curs;
 
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
    /* Assuming we have XRenderCreateCursor (render >= 0.5) */
    Pixmap              pmap;
    XGCValues           gcv;

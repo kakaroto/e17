@@ -35,7 +35,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 #include <X11/extensions/shape.h>
-#if USE_COMPOSITE
+#if USE_XRENDER
 #include <X11/extensions/Xrender.h>
 #endif
 #if USE_GLX
@@ -1860,7 +1860,7 @@ ESync(unsigned int mask)
  * Visuals
  */
 
-#if USE_COMPOSITE
+#if USE_XRENDER
 
 Visual             *
 EVisualFindARGB(void)

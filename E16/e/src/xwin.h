@@ -72,10 +72,8 @@ void                EFlush(void);
 #define ESYNC_STARTUP	0x0100
 void                ESync(unsigned int mask);
 
-#if USE_COMPOSITE
 int                 EVisualIsARGB(Visual * vis);
 Visual             *EVisualFindARGB(void);
-#endif
 
 Time                EGetTimestamp(void);
 

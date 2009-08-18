@@ -24,7 +24,7 @@
 #include "eimage.h"
 #include "xwin.h"
 #include <Imlib2.h>
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
 #include <X11/extensions/Xrender.h>
 #endif
 
@@ -485,7 +485,7 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 	  int sx, int sy, int sw, int sh,
 	  int dx, int dy, int dw, int dh, int flags)
 {
-#if HAVE_X11_EXTENSIONS_XRENDER_H
+#if USE_XRENDER
    if (Conf.testing.use_render_for_scaling)
      {
 	XRenderPictFormat  *pictfmt;
