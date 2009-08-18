@@ -17,7 +17,15 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-
+/*============================================================================*
+ *                                  Local                                     *
+ *============================================================================*/
+#define ENESIM_MAGIC_RASTERIZER 0xe7e51401
+#define ENESIM_MAGIC_CHECK_RASTERIZER(d)\
+	do {\
+		if (!EINA_MAGIC_CHECK(d, ENESIM_MAGIC_RASTERIZER))\
+			EINA_MAGIC_FAIL(d, ENESIM_MAGIC_RASTERIZER);\
+	} while(0)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
@@ -31,7 +39,7 @@
 /* TODO replace this call with edge add */
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
 {
-	assert(r);
+	ENESIM_MAGIC_CHECK_RASTERIZER(r);
 	assert(r->vertex_add);
 
 	r->vertex_add(r->data, x, y);
@@ -44,7 +52,7 @@ EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
 EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Eina_Rectangle *rect,
 		Enesim_Scanline_Callback cb, void *data)
 {
-	assert(r);
+	ENESIM_MAGIC_CHECK_RASTERIZER(r);
 	assert(r->generate);
 	assert(cb);
 
@@ -58,7 +66,7 @@ EAPI Eina_Bool enesim_rasterizer_generate(Enesim_Rasterizer *r, Eina_Rectangle *
  */
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r)
 {
-	assert(r);
+	ENESIM_MAGIC_CHECK_RASTERIZER(r);
 	assert(r->delete);
 
 	r->delete(r->data);

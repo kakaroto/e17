@@ -19,14 +19,13 @@ static const char * quality_name_get(Enesim_Quality q)
 
 static void dispmap_map_create(Enesim_Surface **s)
 {
-	Enesim_Operator op;
 	uint32_t *d;
 	uint32_t y;
 	int i;
 	int stride;
 
 	*s = enesim_surface_new(ENESIM_FORMAT_ARGB8888, opt_width, opt_height);
-	enesim_drawer_span_color_op_get(opt_cpu, &op, ENESIM_FILL, opt_fmt, 0xaaffffff);
+	enesim_compositor_span_color_get(opt_cpu, &op, ENESIM_FILL, opt_fmt, 0xaaffffff);
 	d = enesim_surface_data_get(*s);
 	stride = enesim_surface_stride_get(*s);
 

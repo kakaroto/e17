@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/include \
 @ENESIM_CFLAGS@
 
-noinst_LTLIBRARIES = libenesim_transformer.la
+noinst_LTLIBRARIES = libenesim_compositor.la
 
-libenesim_transformer_la_SOURCES = \
+libenesim_compositor_la_SOURCES = \
 argb8888.c

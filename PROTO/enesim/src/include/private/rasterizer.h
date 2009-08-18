@@ -30,6 +30,7 @@ typedef void (*Enesim_Rasterizer_Delete)(void *r);
 
 struct _Enesim_Rasterizer
 {
+	EINA_MAGIC;
 	Enesim_Rasterizer_Vertex_Add vertex_add;
 	Enesim_Rasterizer_Generate generate;
 	Enesim_Rasterizer_Delete delete;

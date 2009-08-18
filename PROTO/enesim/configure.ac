@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([enesim], [0.0.2], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([enesim], [0.0.3], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -189,16 +189,10 @@ src/Makefile
 src/include/Makefile
 src/tool/Makefile
 src/lib/Makefile
-src/lib/cpu/Makefile
+src/lib/compositor/Makefile
+src/lib/converter/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
-src/lib/format/Makefile
-src/lib/drawer/Makefile
-src/lib/converter/Makefile
-src/lib/raddist/Makefile
-src/lib/dispmap/Makefile
-src/lib/scaler/Makefile
-src/lib/transformer/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile
@@ -222,6 +216,8 @@ echo "Configuration Options Summary:"
 echo
 echo "  Build example.............................: ${enable_benchmark}"
 echo "  Coverage..................................: ${enable_coverage}"
+echo
+echo "Converter:"
 echo "  Build ARGB8888_UNPRE format support.......: ${format_argb8888_unpre}"
 echo "  Build RGB8888_A8 format support...........: ${format_rgb888_a8}"
 echo "  Build RGB565_XA5 format support...........: ${format_rgb565_xa5}"

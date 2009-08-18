@@ -21,163 +21,70 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-typedef Enesim_Converter_1D Enesim_Converter_1D_From_Lut[ENESIM_FORMATS][ENESIM_CONVERTER_FORMATS];
-typedef Enesim_Converter_1D Enesim_Converter_1D_To_Lut[ENESIM_CONVERTER_FORMATS][ENESIM_FORMATS];
+typedef Enesim_Converter_1D Enesim_Converter_1D_Lut[ENESIM_CONVERTER_FORMATS][ENESIM_ANGLES][ENESIM_FORMATS];
+typedef Enesim_Converter_2D Enesim_Converter_2D_Lut[ENESIM_CONVERTER_FORMATS][ENESIM_ANGLES][ENESIM_FORMATS];
 
-typedef Enesim_Converter_2D Enesim_Converter_2D_Lut[ENESIM_FORMATS][ENESIM_ROTATOR_ANGLES][ENESIM_CONVERTER_FORMATS];
-
-Enesim_Converter_1D_From_Lut *_converters_from1d;
-Enesim_Converter_1D_To_Lut *_converters_to1d;
-Enesim_Converter_2D_Lut *_converters2d;
+Enesim_Converter_1D_Lut _converters_1d;
+Enesim_Converter_2D_Lut _converters_2d;
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
 void enesim_converter_init(void)
 {
-	Enesim_Cpu **cpus;
-	int numcpu;
-	int i;
-
-	cpus = enesim_cpu_get(&numcpu);
-	_converters_from1d = calloc(numcpu, sizeof(Enesim_Converter_1D_From_Lut));
-	_converters_to1d = calloc(numcpu, sizeof(Enesim_Converter_1D_From_Lut));
-	_converters2d = calloc(numcpu, sizeof(Enesim_Converter_2D_Lut));
-	for (i = 0; i < numcpu; i++)
-	{
-		enesim_converter_argb8888_init(cpus[i]);
-		enesim_converter_rgb565_init(cpus[i]);
-	}
+	enesim_converter_argb8888_init();
+	enesim_converter_rgb565_init();
 }
 void enesim_converter_shutdown(void)
 {
-	free(_converters_from1d);
-	free(_converters_to1d);
-	free(_converters2d);
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI void enesim_converter_1d_from_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Converter_Format dfmt)
+EAPI void enesim_converter_span_register(Enesim_Converter_1D cnv,
+		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt)
 {
-	unsigned int cpuid;
-	Enesim_Converter_1D_From_Lut *t;
 
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters_from1d[cpuid];
-	*t[sfmt][dfmt] = cnv;
+	_converters_1d[dfmt][angle][sfmt] = cnv;
 }
 
-EAPI void enesim_converter_1d_to_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
-		Enesim_Converter_Format sfmt, Enesim_Format dfmt)
+EAPI void enesim_converter_surface_register(Enesim_Converter_2D cnv,
+		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt)
 {
-	unsigned int cpuid;
-	Enesim_Converter_1D_To_Lut *t;
-
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters_to1d[cpuid];
-	*t[sfmt][dfmt] = cnv;
+	_converters_2d[dfmt][angle][sfmt] = cnv;
 }
 
-EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt)
+EAPI Enesim_Converter_1D enesim_converter_span_get(Enesim_Converter_Format dfmt,
+		Enesim_Angle angle, Enesim_Format f)
 {
-	unsigned int cpuid;
-	Enesim_Converter_2D_Lut *t;
-
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters2d[cpuid];
-	*t[sfmt][angle][dfmt] = cnv;
+	return _converters_1d[dfmt][angle][f];
 }
 
-EAPI Eina_Bool enesim_converter_1d_from_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
-		Enesim_Converter_Format dfmt)
+EAPI Enesim_Converter_2D enesim_converter_surface_get(Enesim_Converter_Format dfmt,
+		Enesim_Angle angle, Enesim_Format f)
 {
-	unsigned int cpuid;
-	Enesim_Converter_1D_From_Lut *t;
-	Enesim_Converter_1D c;
-
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters_from1d[cpuid];
-	c = *t[sfmt][dfmt];
-	if (c)
-	{
-		op->cpu = cpu;
-		op->id = ENESIM_OPERATOR_CONVERTER1D;
-		op->cb = c;
-		return EINA_TRUE;
-	}
-	else
-	{
-		op->cb = NULL;
-		return EINA_FALSE;
-	}
-}
-
-EAPI Eina_Bool enesim_converter_1d_to_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Converter_Format sfmt,
-		Enesim_Format dfmt)
-{
-	unsigned int cpuid;
-	Enesim_Converter_1D_To_Lut *t;
-	Enesim_Converter_1D c;
-
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters_to1d[cpuid];
-	c = *t[sfmt][dfmt];
-	if (c)
-	{
-		op->cpu = cpu;
-		op->id = ENESIM_OPERATOR_CONVERTER1D;
-		op->cb = c;
-		return EINA_TRUE;
-	}
-	else
-	{
-		op->cb = NULL;
-		return EINA_FALSE;
-	}
-}
-
-
-EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
-		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt)
-{
-	unsigned int cpuid;
-	Enesim_Converter_2D_Lut *t;
-	Enesim_Converter_2D c;
-
-	cpuid = enesim_cpu_id_get(cpu);
-	t = &_converters2d[cpuid];
-	c = *t[sfmt][angle][dfmt];
-	if (c)
-	{
-		op->cpu = cpu;
-		op->id = ENESIM_OPERATOR_CONVERTER2D;
-		op->cb = c;
-		return EINA_TRUE;
-	}
-	else
-	{
-		op->cb = NULL;
-		return EINA_FALSE;
-	}
+	return _converters_2d[dfmt][angle][f];
 }
 /**
- *
+ * FIXME how to handle the gray?
  */
-EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
+EAPI Enesim_Converter_Format enesim_converter_rgb_format_get(uint8_t aoffset, uint8_t alen,
 		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
-		uint8_t boffset, uint8_t blen)
+		uint8_t boffset, uint8_t blen, Eina_Bool premul)
 {
+	if ((boffset == 0) && (blen == 5) && (goffset == 5) && (glen == 6) &&
+			(roffset == 11) && (rlen == 5) && (aoffset == 0) && (alen == 0))
+		return ENESIM_CONVERTER_RGB565;
 
-}
-/**
- *
- */
-EAPI Eina_Bool enesim_converter_format_cmp(Enesim_Format fmt, Enesim_Converter_Format cfmt)
-{
-	if (fmt == ENESIM_FORMAT_ARGB8888 && cfmt == ENESIM_CONVERTER_ARGB8888_PRE)
-		return EINA_TRUE;
-	else
-		return EINA_FALSE;
+	if ((boffset == 0) && (blen == 8) && (goffset == 8) && (glen == 8) &&
+			(roffset == 16) && (rlen == 8) && (aoffset == 24) && (alen == 8))
+	{
+		if (premul)
+			return ENESIM_CONVERTER_ARGB8888_PRE;
+		else
+			return ENESIM_CONVERTER_ARGB8888;
+	}
+
+	if ((boffset == 0) && (blen == 0) && (goffset == 0) && (glen == 0) &&
+			(roffset == 0) && (rlen == 0) && (aoffset == 0) && (alen == 8))
+		return ENESIM_CONVERTER_A8;
 }

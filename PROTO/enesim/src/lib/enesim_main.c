@@ -36,13 +36,8 @@ EAPI int enesim_init(void)
 		 * get the cpuid for this
 		 */
 		eina_init();
-		enesim_cpu_init();
-		enesim_drawer_init();
+		enesim_compositor_init();
 		enesim_converter_init();
-		enesim_scaler_init();
-		enesim_transformer_init();
-		enesim_raddist_init();
-		enesim_dispmap_init();
 #ifdef EFL_HAVE_MMX
 		EINA_ERROR_PINFO("MMX Drawer available\n");
 #endif
@@ -58,7 +53,7 @@ EAPI int enesim_init(void)
  */
 EAPI void enesim_shutdown(void)
 {
-	enesim_drawer_shutdown();
+	enesim_compositor_shutdown();
 	enesim_converter_shutdown();
 	eina_shutdown();
 }

@@ -151,17 +151,14 @@ typedef __m128i sse2_t;
 
 #include "extender_int.h"
 // #include "extender_float.h"
-#include "private/format.h"
 #include "private/curve.h"
-#include "private/drawer.h"
+/* now the surface format backends */
+#include "private/format.h"
+#include "private/format_argb8888.h"
+#include "private/compositor.h"
 #include "private/matrix.h"
 #include "private/rasterizer.h"
 #include "private/renderer.h"
 #include "private/surface.h"
-//#include "private/transformer.h"
-#include "private/cpu.h"
-/* now the surface format backends */
-#include "private/format_argb8888.h"
-//#include "private/format_a8.h"
 /** @} */
 #endif

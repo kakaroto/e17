@@ -3,10 +3,11 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-static void _2d_rgb565_argb8888_none(uint32_t *src, uint32_t sw, uint32_t sh,
-		uint32_t spitch, uint16_t *dst, uint32_t dw, uint32_t dh,
-		uint32_t dpitch)
+static void _2d_rgb565_argb8888_none(Enesim_Converter_Data *data, uint32_t dw, uint32_t dh,
+		uint32_t dpitch, uint32_t *src, uint32_t sw, uint32_t sh,
+		uint32_t spitch)
 {
+	uint16_t *dst = data->rgb565.plane0;
 	while (dh--)
 	{
 		uint16_t *ddst = dst;
@@ -26,13 +27,13 @@ static void _2d_rgb565_argb8888_none(uint32_t *src, uint32_t sw, uint32_t sh,
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
-void enesim_converter_rgb565_init(Enesim_Cpu *cpu)
+void enesim_converter_rgb565_init(void)
 {
-	unsigned int numcpu;
-	Enesim_Cpu **cpus;
-
-	cpus = enesim_cpu_get(&numcpu);
 	/* TODO check if the cpu is the host */
-	enesim_converter_2d_register(ENESIM_CONVERTER_2D(_2d_rgb565_argb8888_none), cpu, ENESIM_FORMAT_ARGB8888, ENESIM_ROTATOR_NONE, ENESIM_CONVERTER_RGB565);
+	enesim_converter_surface_register(
+			ENESIM_CONVERTER_2D(_2d_rgb565_argb8888_none),
+			ENESIM_CONVERTER_RGB565,
+			ENESIM_ANGLE_0,
+			ENESIM_FORMAT_ARGB8888);
 }
 

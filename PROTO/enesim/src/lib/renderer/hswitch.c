@@ -83,12 +83,14 @@ static void _free(Hswitch *hs)
  *============================================================================*/
 EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void)
 {
+	Enesim_Renderer *r;
 	Hswitch *h = calloc(1, sizeof(Hswitch));
 
-	h->r.free = _free;
-	h->r.span = _generic;
+	r = &h->r;
+	r->free = ENESIM_RENDERER_DELETE(_free);
+	r->span = ENESIM_RENDERER_SPAN_DRAW(_generic);
 
-	return h;
+	return r;
 }
 
 EAPI void enesim_renderer_hswitch_w_set(Enesim_Renderer *r, int w)

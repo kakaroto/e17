@@ -5,32 +5,6 @@ static inline void argb8888_blend(uint32_t *dplane0, uint16_t a, uint32_t splane
 
 #ifdef EFL_HAVE_MMX
 
-/*
- * [a a a a]
- */
-static inline mmx_t a2v_mmx(uint16_t a)
-{
-	mmx_t r;
-
-	r = _mm_cvtsi32_si64(a);
-	r = _mm_unpacklo_pi16(r, r);
-	r = _mm_unpacklo_pi32(r, r);
-
-	return r;
-}
-/*
- * [0a 0r 0g 0b]
- */
-static inline mmx_t c2v_mmx(uint32_t c)
-{
-	mmx_t z, r;
-
-	r = _mm_cvtsi32_si64(c);
-	z = _mm_cvtsi32_si64(0);
-	r = _mm_unpacklo_pi8(r, z);
-
-	return r;
-}
 static inline void blend_mmx(uint32_t *d, mmx_t alpha, mmx_t color)
 {
 	mmx_t r;
@@ -46,79 +20,6 @@ static inline void blend_mmx(uint32_t *d, mmx_t alpha, mmx_t color)
 #endif
 
 #ifdef EFL_HAVE_SSE2
-
-// for debug purpose
-typedef union
-{
-	mmx_t mmx[2];
-	sse2_t sse2;
-} sse2_d;
-
-/*
- * [aa aa aa aa]
- */
-static inline sse2_t a2v_sse2(uint16_t a)
-{
-	sse2_t s;
-
-	s = _mm_cvtsi32_si128(a);
-	s = _mm_unpacklo_epi16(s, s);
-	s = _mm_unpacklo_epi32(s, s);
-	s = _mm_unpacklo_epi64(s, s);
-
-	return s;
-}
-
-/*
- * [a1a1 a1a1 a2a2 a2a2]
- */
-static inline sse2_t aa2v_sse2(uint64_t c)
-{
-	mmx_t m, r;
-	sse2_t s;
-
-	r = (mmx_t)c;
-	m = (mmx_t)UINT64_C(0xff000000ff000000);
-	r = _mm_and_si64(r, m);
-	r = _mm_srli_pi32(r, 24);
-	m = (mmx_t)UINT64_C(0x0000010000000100);
-	r = _mm_sub_pi16(m, r);
-	r = _mm_packs_pi32(r, r);
-	s = _mm_movpi64_epi64(r);
-	s = _mm_unpacklo_epi16(s, s);
-	s = _mm_unpacklo_epi32(s, s);
-
-	return s;
-}
-
-/*
- * [0a 0r 0g 0b 0a 0r 0g 0b]
- */
-static inline sse2_t c2v_sse2(uint32_t c)
-{
-	sse2_t z, r;
-
-	r = _mm_cvtsi32_si128(c);
-	z = _mm_cvtsi32_si128(0);
-	r = _mm_unpacklo_epi8(r, z);
-	r = _mm_unpacklo_epi64(r, r);
-
-	return r;
-}
-
-/*
- * [0a1 0r1 0g1 0b1 0a2 0r2 0g2 0b2]
- */
-static inline sse2_t cc2v_sse2(uint64_t c)
-{
-	sse2_t r, z;
-
-	r = _mm_movpi64_epi64((mmx_t)c);
-	z = _mm_cvtsi32_si128(0);
-	r = _mm_unpacklo_epi8(r, z);
-
-	return r;
-}
 
 static inline void blend_sse2(uint64_t *d, sse2_t alpha, sse2_t color)
 {

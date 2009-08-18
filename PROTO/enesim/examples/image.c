@@ -3,119 +3,7 @@
 #include <setjmp.h>
 
 #define PNG_BYTES_TO_CHECK 4
-#if 0
-/* TODO
- * fix all this mess */
-void image_load(Enesim_Surface *s, const char *file)
-{
-	png_uint_32 w32, h32;
-	int w, h;
-	FILE *f;
-	png_structp png_ptr = NULL;
-	png_infop info_ptr = NULL;
-	int bit_depth, color_type, interlace_type;
-	unsigned char buf[PNG_BYTES_TO_CHECK];
-	unsigned char **lines;
-	char hasa, hasg;
-	int i;
-	Enesim_Surface_Data sdata;
 
-	if ((!file)) return;
-	hasa = 0;
-	hasg = 0;
-	f = fopen(file, "rb");
-	if (!f) return;
-
-	/* if we havent read the header before, set the header data */
-	fread(buf, 1, PNG_BYTES_TO_CHECK, f);
-	if (!png_check_sig(buf, PNG_BYTES_TO_CHECK))
-	{
-		fclose(f);
-		return;
-	}
-	rewind(f);
-	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr)
-	{
-		fclose(f);
-		return;
-	}
-	info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr)
-	{
-		png_destroy_read_struct(&png_ptr, NULL, NULL);
-		fclose(f);
-		return;
-	}
-	if (setjmp(png_ptr->jmpbuf))
-	{
-		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		fclose(f);
-		return;
-	}
-	png_init_io(png_ptr, f);
-	png_read_info(png_ptr, info_ptr);
-	png_get_IHDR(png_ptr, info_ptr, (png_uint_32 *) (&w32),
-		(png_uint_32 *) (&h32), &bit_depth, &color_type,
-		&interlace_type, NULL, NULL);
-	enesim_surface_size_get(s, &w, &h);
-	if ((w32 != w) || (h32 != h))
-	{
-		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-		fclose(f);
-		return;
-	}
-	if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_expand(png_ptr);
-	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA) hasa = 1;
-	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-	{
-		hasa = 1;
-		hasg = 1;
-	}
-	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY) hasg = 1;
-	//if (hasa) im->flags |= RGBA_IMAGE_HAS_ALPHA;
-
-	if (hasa) png_set_expand(png_ptr);
-	/* we want ARGB */
-#ifdef WORDS_BIGENDIAN
-	png_set_swap_alpha(png_ptr);
-	png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
-#else
-	png_set_bgr(png_ptr);
-	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-#endif
-	/* 16bit color -> 8bit color */
-	png_set_strip_16(png_ptr);
-	/* pack all pixels to byte boundaires */
-	png_set_packing(png_ptr);
-	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-		png_set_expand(png_ptr);
-	/*evas_common_image_surface_alloc(im->image);
-	if (!im->image->data)
-	{
-		evas_common_image_surface_free(im->image);
-		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-		fclose(f);
-		return 0;
-	}*/
-	lines = (unsigned char **) alloca(h * sizeof(unsigned char *));
-
-	if (hasg)
-	{
-		png_set_gray_to_rgb(png_ptr);
-		if (png_get_bit_depth(png_ptr, info_ptr) < 8)
-			png_set_gray_1_2_4_to_8(png_ptr);
-	}
-	enesim_surface_data_get(s, &sdata);
-	for (i = 0; i < h; i++)
-		lines[i] = ((unsigned char *)(sdata.plane0)) + (i * w * sizeof(uint32_t));
-	png_read_image(png_ptr, lines);
-	png_read_end(png_ptr, info_ptr);
-	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-	fclose(f);
-        //enesim_color_data_argb_premul(sdata, w * h);
-}
-#endif
 void image_save(Enesim_Surface *s, const char *file, int compress)
 {
 	FILE *f;
@@ -129,7 +17,8 @@ void image_save(Enesim_Surface *s, const char *file, int compress)
 	png_bytep row_ptr, png_data = NULL;
 	png_color_8 sig_bit;
 
-	Enesim_Operator op;
+	Enesim_Converter_Data cdata;
+	Enesim_Converter_1D conv;
 
 	f = fopen(file, "wb");
 	if (!f)
@@ -171,20 +60,22 @@ void image_save(Enesim_Surface *s, const char *file, int compress)
 	sig_bit.alpha = 8;
 	png_set_sBIT(png_ptr, info_ptr, &sig_bit);
 
-	png_set_compression_level( png_ptr, compress);
-	png_write_info( png_ptr, info_ptr);
+	png_set_compression_level(png_ptr, compress);
+	png_write_info(png_ptr, info_ptr);
 	png_set_shift(png_ptr, &sig_bit);
 	png_set_packing(png_ptr);
 	/* setup the operator */
-	if (!enesim_converter_1d_from_get(&op, opt_cpu, ENESIM_FORMAT_ARGB8888, ENESIM_CONVERTER_ARGB8888))
+	if (!(conv = enesim_converter_span_get(ENESIM_CONVERTER_ARGB8888, ENESIM_ANGLE_0, ENESIM_FORMAT_ARGB8888)))
 	{
 		printf("Error calling the converter\n");
 		return;
 	}
+	cdata.argb8888.plane0 = data;
+	row_ptr = (png_bytep) data;
+
 	for (y = 0; y < h; y++)
 	{
-		enesim_operator_converter_1d(&op, sdata, w, data);
-		row_ptr = (png_bytep) data;
+		conv(&cdata, w, sdata);
 		png_write_rows(png_ptr, &row_ptr, 1);
 		sdata += w;
 	}
@@ -193,6 +84,7 @@ void image_save(Enesim_Surface *s, const char *file, int compress)
 	png_destroy_info_struct(png_ptr, (png_infopp) & info_ptr);
 	free(data);
 	fclose(f);
+
 	return;
 
 error_jmp:

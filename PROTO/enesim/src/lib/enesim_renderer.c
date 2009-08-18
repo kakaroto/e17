@@ -20,9 +20,23 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+#define ENESIM_MAGIC_RENDERER 0xe7e51402
+#define ENESIM_MAGIC_CHECK_RENDERER(d)\
+	do {\
+		if (!EINA_MAGIC_CHECK(d, ENESIM_MAGIC_RENDERER))\
+			EINA_MAGIC_FAIL(d, ENESIM_MAGIC_RENDERER);\
+	} while(0)
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
+void enesim_renderer_init(Enesim_Renderer *r)
+{
+	EINA_MAGIC_SET(r, ENESIM_MAGIC_RENDERER);
+	/* common properties */
+	r->ox = 0;
+	r->oy = 0;
+	enesim_f16p16_matrix_identity(&r->matrix.values);
+}
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -32,39 +46,16 @@
  */
 EAPI void enesim_renderer_transform_set(Enesim_Renderer *r, Enesim_Matrix *m)
 {
-	if (!r)
-		return;
+	ENESIM_MAGIC_CHECK_RENDERER(r);
+
 	if (!m)
 	{
-		r->matrix.axx = r->matrix.ayy = r->matrix.azz = 65536;
-		r->matrix.axy = r->matrix.axz = 0;
-		r->matrix.ayx = r->matrix.ayz = 0;
-		r->matrix.azx = r->matrix.azy = 0;
-		r->matrix.is_identity = r->matrix.is_affine = 1;
+		enesim_f16p16_matrix_identity(&r->matrix.values);
+		r->matrix.type = ENESIM_MATRIX_IDENTITY;
 		return;
 	}
-	r->matrix.axx = m->xx * 65536;
-	r->matrix.axy = m->xy * 65536;
-	r->matrix.axz = m->xz * 65536;
-	r->matrix.ayx = m->yx * 65536;
-	r->matrix.ayy = m->yy * 65536;
-	r->matrix.ayz = m->yz * 65536;
-	r->matrix.azx = m->zx * 65536;
-	r->matrix.azy = m->zy * 65536;
-	r->matrix.azz = m->zz * 65536;
-
-	r->matrix.is_affine = r->matrix.is_identity = 0;
-	if ( (r->matrix.azx == 0) && (r->matrix.azy == 0) && (r->matrix.azz == 65536) )
-	{
-		r->matrix.is_affine = 1;
-		if ( (r->matrix.axx == 65536) &&
-		      (r->matrix.ayy == 65536) &&
-		      (r->matrix.axy == 0) &&
-		      (r->matrix.axz == 0) &&
-		      (r->matrix.ayx == 0) &&
-		      (r->matrix.ayz == 0) )
-			r->matrix.is_identity = 1;
-	}
+	enesim_matrix_f16p16_matrix_to(m, &r->matrix.values);
+	r->matrix.type = enesim_f16p16_matrix_type_get(&r->matrix.values);
 }
 /**
  * To be documented
@@ -72,7 +63,8 @@ EAPI void enesim_renderer_transform_set(Enesim_Renderer *r, Enesim_Matrix *m)
  */
 EAPI void enesim_renderer_delete(Enesim_Renderer *r)
 {
-	if (r && r->free)
+	ENESIM_MAGIC_CHECK_RENDERER(r);
+	if (r->free)
 		r->free(r);
 	free(r);
 }
@@ -82,7 +74,7 @@ EAPI void enesim_renderer_delete(Enesim_Renderer *r)
  */
 EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r)
 {
-	if (!r) return EINA_FALSE;
+	ENESIM_MAGIC_CHECK_RENDERER(r);
 	if (!r->state_setup) return EINA_TRUE;
 	return r->state_setup(r);
 }
@@ -92,7 +84,8 @@ EAPI Eina_Bool enesim_renderer_state_setup(Enesim_Renderer *r)
  */
 EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r)
 {
-	if (r && r->state_cleanup)
+	ENESIM_MAGIC_CHECK_RENDERER(r);
+	if (r->state_cleanup)
 		r->state_cleanup(r);
 }
 /**
@@ -102,7 +95,8 @@ EAPI void enesim_renderer_state_cleanup(Enesim_Renderer *r)
 EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 	unsigned int len, uint32_t *dst)
 {
-	if (r && r->span)
+	ENESIM_MAGIC_CHECK_RENDERER(r);
+	if (r->span)
 		r->span(r, x, y, len, dst);
 
 // This won't work well since some renderers may use others
@@ -127,6 +121,7 @@ EAPI void enesim_renderer_span_fill(Enesim_Renderer *r, int x, int y,
 
 EAPI void enesim_renderer_origin_set(Enesim_Renderer *r, int x, int y)
 {
+	ENESIM_MAGIC_CHECK_RENDERER(r);
 	r->ox = x;
 	r->oy = y;
 }

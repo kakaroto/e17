@@ -57,22 +57,11 @@ extern "C" {
 /* util headers */
 #include "enesim_matrix.h"
 #include "enesim_curve.h"
-
+/* main subsystems */
 #include "enesim_rasterizer.h"
 #include "enesim_renderer.h"
-
-#include "enesim_cpu.h"
-/* new raster operations */
-#include "enesim_operator.h"
-#include "enesim_drawer.h"
-#include "enesim_reflector.h"
-#include "enesim_repeater.h"
-#include "enesim_rotator.h"
-#include "enesim_scaler.h"
-#include "enesim_transformer.h"
+#include "enesim_compositor.h"
 #include "enesim_converter.h"
-#include "enesim_raddist.h"
-#include "enesim_dispmap.h"
 
 #ifdef __cplusplus
 }

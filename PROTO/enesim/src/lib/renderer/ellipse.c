@@ -52,8 +52,8 @@ struct _Ellipse {
 static void _span_color_outlined_paint_filled_affine(Enesim_Renderer *p, int x, int y, unsigned int len, uint32_t *dst)
 {
 	Ellipse *ellipse = (Ellipse *) p;
-	int axx = p->matrix.axx, axy = p->matrix.axy, axz = p->matrix.axz;
-	int ayx = p->matrix.ayx, ayy = p->matrix.ayy, ayz = p->matrix.ayz;
+	int axx = p->matrix.values.xx, axy = p->matrix.values.xy, axz = p->matrix.values.xz;
+	int ayx = p->matrix.values.yx, ayy = p->matrix.values.yy, ayz = p->matrix.values.yz;
 	int do_inner = ellipse->do_inner;
 	unsigned int ocolor = ellipse->stroke.color;
 	unsigned int icolor = ellipse->fill.color;
@@ -73,12 +73,12 @@ static void _span_color_outlined_paint_filled_affine(Enesim_Renderer *p, int x, 
 	int xx, yy;
 	int fill_only = 0;
 
-	if (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE)
+	if (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 	  {
 		icolor = 0;
 		fpaint = NULL;
 	  }
-	if (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_FILL)
+	if (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
 	  {
 		ocolor = icolor;
 		fill_only = 1;
@@ -86,7 +86,7 @@ static void _span_color_outlined_paint_filled_affine(Enesim_Renderer *p, int x, 
 		if (fpaint)
 			fpaint->span(fpaint, x, y, len, dst);
 	  }
-	if ((ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
+	if ((ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
 	xx = (axx * x) + (axy * y) + axz;
@@ -169,9 +169,9 @@ static void _span_color_outlined_paint_filled_proj(Enesim_Renderer *p, int x, in
 		unsigned int len, uint32_t *dst)
 {
 	Ellipse *ellipse = (Ellipse *) p;
-	int axx = p->matrix.axx, axy = p->matrix.axy, axz = p->matrix.axz;
-	int ayx = p->matrix.ayx, ayy = p->matrix.ayy, ayz = p->matrix.ayz;
-	int azx = p->matrix.azx, azy = p->matrix.azy, azz = p->matrix.azz;
+	int axx = p->matrix.values.xx, axy = p->matrix.values.xy, axz = p->matrix.values.xz;
+	int ayx = p->matrix.values.yx, ayy = p->matrix.values.yy, ayz = p->matrix.values.yz;
+	int azx = p->matrix.values.zx, azy = p->matrix.values.zy, azz = p->matrix.values.zz;
 	int do_inner = ellipse->do_inner;
 	unsigned int ocolor = ellipse->stroke.color;
 	unsigned int icolor = ellipse->fill.color;
@@ -191,12 +191,12 @@ static void _span_color_outlined_paint_filled_proj(Enesim_Renderer *p, int x, in
 	int xx, yy, zz;
 	int fill_only = 0;
 
-	if (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE)
+	if (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 	  {
 		icolor = 0;
 		fpaint = NULL;
 	  }
-	if (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_FILL)
+	if (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
 	  {
 		ocolor = icolor;
 		fill_only = 1;
@@ -204,7 +204,7 @@ static void _span_color_outlined_paint_filled_proj(Enesim_Renderer *p, int x, in
 		if (fpaint)
 			fpaint->span(fpaint, x, y, len, dst);
 	  }
-	if ((ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
+	if ((ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
 	xx = (axx * x) + (axy * y) + axz;
@@ -345,15 +345,15 @@ static int _state_setup(Enesim_Renderer *p)
 	}
 
 	if (ellipse->fill.paint &&
-	    ((ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_FILL) ||
-	     (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE_FILL)))
+	    ((ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
+	     (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
 	{
 		if (!enesim_renderer_state_setup(ellipse->fill.paint))
 			return EINA_FALSE;
 	}
 
 	p->span = ENESIM_RENDERER_SPAN_DRAW(_span_color_outlined_paint_filled_proj);
-	if (p->matrix.is_affine)
+	if (p->matrix.type == ENESIM_MATRIX_AFFINE || p->matrix.type == ENESIM_MATRIX_IDENTITY)
 		p->span = ENESIM_RENDERER_SPAN_DRAW(_span_color_outlined_paint_filled_affine);
 
 	p->changed = EINA_FALSE;
@@ -365,8 +365,8 @@ static void _state_cleanup(Enesim_Renderer *p)
 	Ellipse *ellipse = (Ellipse *) p;
 
 	if (ellipse->fill.paint &&
-	    ((ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_FILL) ||
-	     (ellipse->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE_FILL)))
+	    ((ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
+	     (ellipse->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
 		enesim_renderer_state_cleanup(ellipse->fill.paint);
 }
 
@@ -393,11 +393,11 @@ EAPI Enesim_Renderer * enesim_renderer_ellipse_new(void)
 	p = (Enesim_Renderer *) ellipse;
 
 	p->type_id = ELLIPSE_RENDERER;
-	p->matrix.axx = p->matrix.ayy = p->matrix.azz = 65536;
+	enesim_renderer_init(p);
 	p->free = ENESIM_RENDERER_DELETE(_free);
 	p->state_cleanup = ENESIM_RENDERER_STATE_CLEANUP(_state_cleanup);
 	p->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
-	p->matrix.is_identity = p->matrix.is_affine = 1;
+
 	p->changed = EINA_TRUE;
 	//   if (!ellipse_setup_state(p, 0)) { free(ellipse); return NULL; }
 	return p;
@@ -499,16 +499,16 @@ EAPI void enesim_renderer_ellipse_fill_paint_set(Enesim_Renderer *p, Enesim_Rend
 //	p->changed = EINA_TRUE;
 }
 
-EAPI void enesim_renderer_ellipse_draw_mode_set(Enesim_Renderer *p, Enesim_Figure_Draw_Mode draw_mode)
+EAPI void enesim_renderer_ellipse_draw_mode_set(Enesim_Renderer *p, Enesim_Shape_Draw_Mode draw_mode)
 {
 	Ellipse *ellipse;
 
 	ellipse = (Ellipse *) p;
 	if (!ellipse) return;
-	if ((draw_mode != ENESIM_FIGURE_DRAW_MODE_STROKE) &&
-		(draw_mode != ENESIM_FIGURE_DRAW_MODE_FILL) &&
-		(draw_mode != ENESIM_FIGURE_DRAW_MODE_STROKE_FILL))
-		draw_mode = ENESIM_FIGURE_DRAW_MODE_FILL;
+	if ((draw_mode != ENESIM_SHAPE_DRAW_MODE_STROKE) &&
+		(draw_mode != ENESIM_SHAPE_DRAW_MODE_FILL) &&
+		(draw_mode != ENESIM_SHAPE_DRAW_MODE_STROKE_FILL))
+		draw_mode = ENESIM_SHAPE_DRAW_MODE_FILL;
 	if (ellipse->draw_mode == draw_mode)
 		return;
 	ellipse->draw_mode = draw_mode;

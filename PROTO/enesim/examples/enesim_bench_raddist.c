@@ -21,7 +21,7 @@ static void raddist_1d_run(Enesim_Quality q)
 {
 	Enesim_Surface *src = NULL;
 	Enesim_Surface *dst= NULL;
-	Enesim_Operator op;
+	Enesim_Compositor_Span op;
 	uint32_t *s;
 	uint32_t *d;
 	int t;

@@ -29,7 +29,8 @@ noinst_LTLIBRARIES = libenesim_converter.la
 
 libenesim_converter_la_SOURCES = \
 rgb565.c \
-argb8888.c
+argb8888.c \
+a8.c
 #$(ARGB8888_UNPRE_REQ) \
 #$(RGB565_XA5_REQ) \
 #$(RGB565_B1A3_REQ)

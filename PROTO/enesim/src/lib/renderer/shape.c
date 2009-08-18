@@ -17,15 +17,52 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
-
-#include "_fast.c"
 /*============================================================================*
- *                                 Global                                     *
+ *                                  Local                                     *
  *============================================================================*/
-void enesim_dispmap_argb8888_init(Enesim_Cpu *cpu)
+typedef struct _Enesim_Renderer_Shape {
+	Enesim_Renderer base;
+	struct {
+		unsigned int color;
+		Enesim_Renderer *paint;
+		float weight;
+	} stroke;
+
+	struct {
+		unsigned int color;
+		Enesim_Renderer *paint;
+	} fill;
+
+	int draw_mode;
+} Enesim_Renderer_Shape;
+
+
+EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *p, float weight)
 {
-	/* TODO check if the cpu is the host */
-	enesim_dispmap_1d_register(cpu,
-			_dm_argb8888_fast_argb8888,
-			ENESIM_FORMAT_ARGB8888,	ENESIM_FAST, ENESIM_FORMAT_ARGB8888);
+
+}
+
+EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *p, unsigned int stroke_color)
+{
+
+}
+
+EAPI void enesim_renderer_shape_outline_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
+{
+
+}
+
+EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *p, unsigned int fill_color)
+{
+
+}
+
+EAPI void enesim_renderer_shape_fill_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
+{
+
+}
+
+EAPI void enesim_renderer_shape_draw_mode_set(Enesim_Renderer *p, Enesim_Shape_Draw_Mode draw_mode)
+{
+
 }

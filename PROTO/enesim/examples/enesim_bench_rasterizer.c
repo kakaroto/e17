@@ -11,7 +11,8 @@ typedef struct Points
 typedef struct _Enesim_Rasterizer_Compositor
 {
 	Enesim_Surface *dst;
-	Enesim_Operator op;
+	Enesim_Compositor_Span span;
+	Enesim_Compositor_Point point;
 } Enesim_Rasterizer_Compositor;
 
 #define POINTS_NUM 6
@@ -42,8 +43,7 @@ static void rasterizer_span_alias_callback(Enesim_Scanline *sl, void *data)
 	ddata = enesim_surface_data_get(rcmp->dst);
 	stride = enesim_surface_stride_get(rcmp->dst);
 	ddata = ddata +(sl->data.alias.y * stride) + sl->data.alias.x;
-	enesim_operator_drawer_span(&rcmp->op, ddata, sl->data.alias.w, NULL, 0xffffffff, NULL);
-
+	rcmp->span(ddata, sl->data.alias.w, NULL, 0xffffffff, NULL);
 }
 
 static void cpsc_bench(Points *p, Eina_Rectangle *rect)
@@ -83,7 +83,7 @@ static void circle_bench(Eina_Rectangle *rect)
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	if (opt_debug)
 	{
-		enesim_drawer_point_color_op_get(opt_cpu, &rcmp.op, ENESIM_FILL, opt_fmt, color);
+		rcmp.point = enesim_compositor_point_color_get(ENESIM_FILL, opt_fmt, color);
 		rcmp.dst = dst;
 		cb = rasterizer_point_alias_callback;
 		data = &rcmp;
@@ -121,7 +121,7 @@ static void circle_fill_bench(Eina_Rectangle *rect)
 	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
 	if (opt_debug)
 	{
-		enesim_drawer_span_color_op_get(opt_cpu, &rcmp.op, ENESIM_FILL, opt_fmt, color);
+		rcmp.span = enesim_compositor_span_color_get(ENESIM_FILL, opt_fmt, color);
 		rcmp.dst = dst;
 		cb = rasterizer_span_alias_callback;
 		data = &rcmp;

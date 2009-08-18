@@ -37,12 +37,7 @@
  *     1       3        1        3
  * <------P0------>.<------P1------>.
  */
-/* TODO
- * define a surface_data similar to what enesim had before
- * but for the destination surfaces, there are different multi plane
- * formats for different display controllers, like the a1_rgb565 found
- * on davinci processors.
- */
+
 typedef enum _Enesim_Converter_Format
 {
 	ENESIM_CONVERTER_RGB565,
@@ -53,28 +48,50 @@ typedef enum _Enesim_Converter_Format
 	ENESIM_CONVERTER_FORMATS
 } Enesim_Converter_Format;
 
-typedef void (*Enesim_Converter_2D)(uint32_t *src, uint32_t sw, uint32_t sh,
-		uint32_t spitch, uint16_t *dst, uint32_t dw, uint32_t dh,
-		uint32_t dpitch);
+typedef struct _Enesim_Converter_Argb8888
+{
+	uint32_t *plane0;
+} Enesim_Converter_Argb8888;
 
-typedef void (*Enesim_Converter_1D)(uint32_t *src, uint32_t len, uint32_t *d);
+typedef struct _Enesim_Converter_Rgb565
+{
+	uint16_t *plane0;
+} Enesim_Converter_Rgb565;
+
+typedef struct _Enesim_Converter_A8
+{
+	uint8_t *plane0;
+} Enesim_Converter_A8;
+
+typedef union _Enesim_Converter_Data
+{
+	Enesim_Converter_Argb8888 argb8888;
+	Enesim_Converter_Rgb565 rgb565;
+	Enesim_Converter_A8 a8;
+} Enesim_Converter_Data;
+
+typedef void (*Enesim_Converter_2D)(Enesim_Converter_Data *data, uint32_t dw, uint32_t dh,
+		uint32_t dpitch, uint32_t *src, uint32_t sw, uint32_t sh,
+		uint32_t spitch);
+
+typedef void (*Enesim_Converter_1D)(Enesim_Converter_Data *data, uint32_t len, uint32_t *src);
 
 #define ENESIM_CONVERTER_1D(f) ((Enesim_Converter_1D)(f))
 #define ENESIM_CONVERTER_2D(f) ((Enesim_Converter_2D)(f))
 
-EAPI Eina_Bool enesim_converter_1d_from_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format nfmt,
-		Enesim_Converter_Format cfmt);
-EAPI Eina_Bool enesim_converter_1d_to_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Converter_Format cfmt,
-		Enesim_Format nfmt);
-EAPI Eina_Bool enesim_converter_2d_get(Enesim_Operator *op, Enesim_Cpu *cpu, Enesim_Format sfmt,
-		Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
-EAPI void enesim_converter_1d_from_register(Enesim_Converter_1D cnv, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Converter_Format dfmt);
-EAPI void enesim_converter_2d_register(Enesim_Converter_2D cnv, Enesim_Cpu *cpu,
-		Enesim_Format sfmt, Enesim_Rotator_Angle angle, Enesim_Converter_Format dfmt);
+EAPI void enesim_converter_span_register(Enesim_Converter_1D cnv,
+		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt);
+EAPI void enesim_converter_surface_register(Enesim_Converter_2D cnv,
+		Enesim_Converter_Format dfmt, Enesim_Angle angle, Enesim_Format sfmt);
+
 EAPI Enesim_Converter_Format enesim_converter_format_get(uint8_t aoffset, uint8_t alen,
 		uint8_t roffset, uint8_t rlen, uint8_t goffset, uint8_t glen,
 		uint8_t boffset, uint8_t blen);
+
+EAPI Enesim_Converter_1D enesim_converter_span_get(Enesim_Converter_Format dfmt,
+		Enesim_Angle angle, Enesim_Format f);
+EAPI Enesim_Converter_2D enesim_converter_surface_get(Enesim_Converter_Format dfmt,
+		Enesim_Angle angle, Enesim_Format f);
 
 /** @} */
 #endif /*ENESIM_CONVERTER_H_*/

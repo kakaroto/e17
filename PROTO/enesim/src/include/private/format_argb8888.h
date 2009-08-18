@@ -21,24 +21,6 @@
 /*============================================================================*
  *                                   Core                                     *
  *============================================================================*/
-#if 0
-static inline void argb8888_data_copy(Enesim_Surface_Data *s, Enesim_Surface_Data *d)
-{
-	d->plane0 = s->plane0;
-}
-static inline void argb8888_data_increment(Enesim_Surface_Data *d, unsigned int len)
-{
-	d->plane0 += len;
-}
-static inline void argb8888_data_offset(Enesim_Surface_Data *s, Enesim_Surface_Data *d, unsigned int offset)
-{
-	d->plane0 = s->plane0 + offset;
-}
-static inline unsigned char argb8888_data_alpha_get(Enesim_Surface_Data *d)
-{
-	return (*d->plane0 >> 24) & 0xff;
-}
-#endif
 /* Functions needed by the other subsystems */
 static inline unsigned char argb8888_alpha_get(uint32_t plane0)
 {
@@ -88,63 +70,193 @@ static inline void argb8888_fill(uint32_t *dplane0, uint32_t splane0)
 {
 	*dplane0 = splane0;
 }
-
-/* TODO
- * remove this
- */
-#define INTERP_256(a, c0, c1) \
- ( (((((((c0) >> 8) & 0xff00ff) - (((c1) >> 8) & 0xff00ff)) * (a)) \
-   + ((c1) & 0xff00ff00)) & 0xff00ff00) + \
-   (((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (a)) >> 8) \
-   + ((c1) & 0xff00ff)) & 0xff00ff) )
-#define interp_256 INTERP_256
-
 /*============================================================================*
- *                                Surface                                     *
+ *                               MMX Helper                                   *
  *============================================================================*/
-#if 0
-static inline void argb8888_pixel_components_from(Enesim_Surface_Pixel *color,
-		uint8_t a, uint8_t r, uint8_t g, uint8_t b)
-{
-	unsigned int alpha = a + 1;
+#ifdef EFL_HAVE_MMX
 
-	color->plane0 = (a << 24) | (((r * alpha) >> 8) << 16) | (((g * alpha) >> 8) << 8)
-			| ((b * alpha) >> 8);
-	//argb8888_from_components(&color->plane0, a, r, g, b);
+/*
+ * [a a a a]
+ */
+static inline mmx_t a2v_mmx(uint16_t a)
+{
+	mmx_t r;
+
+	r = _mm_cvtsi32_si64(a);
+	r = _mm_unpacklo_pi16(r, r);
+	r = _mm_unpacklo_pi32(r, r);
+
+	return r;
+}
+/*
+ * [0a 0r 0g 0b]
+ */
+static inline mmx_t c2v_mmx(uint32_t c)
+{
+	mmx_t z, r;
+
+	r = _mm_cvtsi32_si64(c);
+	z = _mm_cvtsi32_si64(0);
+	r = _mm_unpacklo_pi8(r, z);
+
+	return r;
 }
 
-static inline void argb8888_pixel_components_to(Enesim_Surface_Pixel *color,
-		uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)
-{
-	uint32_t argb_unpre;
-	uint8_t pa = argb8888_alpha_get(color->plane0);
+#endif
+/*============================================================================*
+ *                               SSE2 Helper                                  *
+ *============================================================================*/
+#ifdef EFL_HAVE_SSE2
 
-	if ((pa > 0) && (pa < 255))
-	{
-		if (a) *a = pa;
-		if (r) *r = (argb8888_red_get(color->plane0) * 255) / pa;
-		if (g) *g = (argb8888_green_get(color->plane0) * 255) / pa;
-		if (b) *b = (argb8888_blue_get(color->plane0) * 255) / pa;
-	}
-	else
-	{
-		if (a) *a = pa;
-		if (r) *r = argb8888_red_get(color->plane0);
-		if (g) *g = argb8888_green_get(color->plane0);
-		if (b) *b = argb8888_blue_get(color->plane0);
-	}
+// for debug purpose
+typedef union
+{
+	mmx_t mmx[2];
+	sse2_t sse2;
+} sse2_d;
+
+/*
+ * [aa aa aa aa]
+ */
+static inline sse2_t a2v_sse2(uint16_t a)
+{
+	sse2_t s;
+
+	s = _mm_cvtsi32_si128(a);
+	s = _mm_unpacklo_epi16(s, s);
+	s = _mm_unpacklo_epi32(s, s);
+	s = _mm_unpacklo_epi64(s, s);
+
+	return s;
 }
-static inline void argb8888_pixel_blend(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
-{
-	uint16_t a;
 
-	a = 256 - argb8888_alpha_get(p->plane0);
-	argb8888_blend(d->plane0, a, p->plane0);
+/*
+ * [a1a1 a1a1 a2a2 a2a2]
+ */
+static inline sse2_t aa2v_sse2(uint64_t c)
+{
+	mmx_t m, r;
+	sse2_t s;
+
+	r = (mmx_t)c;
+	m = (mmx_t)UINT64_C(0xff000000ff000000);
+	r = _mm_and_si64(r, m);
+	r = _mm_srli_pi32(r, 24);
+	m = (mmx_t)UINT64_C(0x0000010000000100);
+	r = _mm_sub_pi16(m, r);
+	r = _mm_packs_pi32(r, r);
+	s = _mm_movpi64_epi64(r);
+	s = _mm_unpacklo_epi16(s, s);
+	s = _mm_unpacklo_epi32(s, s);
+
+	return s;
 }
 
-static inline void argb8888_pixel_fill(Enesim_Surface_Data *d, Enesim_Surface_Pixel *p)
+/*
+ * [0a 0r 0g 0b 0a 0r 0g 0b]
+ */
+static inline sse2_t c2v_sse2(uint32_t c)
 {
-	argb8888_fill(d->plane0, p->plane0);
+	sse2_t z, r;
+
+	r = _mm_cvtsi32_si128(c);
+	z = _mm_cvtsi32_si128(0);
+	r = _mm_unpacklo_epi8(r, z);
+	r = _mm_unpacklo_epi64(r, r);
+
+	return r;
+}
+
+/*
+ * [0a1 0r1 0g1 0b1 0a2 0r2 0g2 0b2]
+ */
+static inline sse2_t cc2v_sse2(uint64_t c)
+{
+	sse2_t r, z;
+
+	r = _mm_movpi64_epi64((mmx_t)c);
+	z = _mm_cvtsi32_si128(0);
+	r = _mm_unpacklo_epi8(r, z);
+
+	return r;
 }
 #endif
+
+/*============================================================================*
+ *                             Pixel operations                               *
+ *============================================================================*/
+/* FIXME remove this */
+#define INTERP_256 argb8888_interp_256
+/*
+ * r = (c0 - c1) * a + c1
+ * a = 0 => r = c1
+ * a = 1 => r = c0
+ */
+static inline uint32_t argb8888_interp_256(uint16_t a, uint32_t c0, uint32_t c1)
+{
+#ifdef EFL_HAVE_MMX_ERROR
+	mmx_t rc0, rc1;
+	mmx_t ra;
+	uint32_t res;
+#if 0
+	typedef union
+	{
+		mmx_t mmx;
+		uint32_t u32[2];
+	} mmx_td;
+
+	mmx_td deb;
+#endif
+	ra = a2v_mmx(a);
+	rc0 = c2v_mmx(c0);
+	rc1 = c2v_mmx(c1);
+
+	//deb.mmx = rc0;
+	//printf("RC0   %08x-%08x\n", deb.u32[0], deb.u32[1]);
+	rc0 = _mm_sub_pi16(rc1, rc0);
+	rc0 = _mm_mullo_pi16(ra, rc0);
+	rc0 = _mm_srli_pi16(rc0, 8);
+	rc0 = _mm_add_pi16(rc0, rc1);
+	rc0  = _mm_packs_pu16(rc0, rc0);
+	res = _mm_cvtsi64_si32(rc0);
+	_mm_empty();
+
+	return res;
+
+#else
+	return ( (((((((c0) >> 8) & 0xff00ff) - (((c1) >> 8) & 0xff00ff)) * (a))
+			+ ((c1) & 0xff00ff00)) & 0xff00ff00) +
+			(((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (a)) >> 8)
+			+ ((c1) & 0xff00ff)) & 0xff00ff) );
+#endif
+}
+/*
+ * [a1 r1 g1 b1], [a2 r2 g2 b2] => [a1*a2 r1*r2 g1*g2 b1*b2]
+ */
+static inline uint32_t argb8888_mul4_sym(uint32_t c1, uint32_t c2)
+{
+	return ( ((((((c1) >> 16) & 0xff00) * (((c2) >> 16) & 0xff00)) + 0xff0000) & 0xff000000) +
+	   ((((((c1) >> 8) & 0xff00) * (((c2) >> 16) & 0xff)) + 0xff00) & 0xff0000) +
+	   ((((((c1) & 0xff00) * ((c2) & 0xff00)) + 0xff00) >> 16) & 0xff00) +
+	   (((((c1) & 0xff) * ((c2) & 0xff)) + 0xff) >> 8) );
+}
+
+/*
+ *
+ */
+static inline uint32_t argb8888_mul_256(uint16_t a, uint32_t c)
+{
+	return  ( (((((c) >> 8) & 0x00ff00ff) * (a)) & 0xff00ff00) +
+	(((((c) & 0x00ff00ff) * (a)) >> 8) & 0x00ff00ff) );
+}
+
+/*
+ *
+ */
+static inline uint32_t argb8888_mul_sym(uint16_t a, uint32_t c)
+{
+	return ( (((((c) >> 8) & 0x00ff00ff) * (a) + 0xff00ff) & 0xff00ff00) +
+	   (((((c) & 0x00ff00ff) * (a) + 0xff00ff) >> 8) & 0x00ff00ff) );
+}
+
 #endif /* FORMAT_ARGB8888_H_*/

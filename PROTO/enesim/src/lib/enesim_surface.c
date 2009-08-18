@@ -98,6 +98,7 @@ EAPI Enesim_Surface *
 enesim_surface_new(Enesim_Format f, int w, int h)
 {
 	Enesim_Surface *s;
+
 	static Eina_Mempool *pthrough = NULL;
 
 	if (!pthrough)
@@ -176,6 +177,7 @@ enesim_surface_data_set(Enesim_Surface *s, void *data)
 	s->data = data;
 }
 /**
+ * FIXME rename this to enesim_color_components_from
  * Create a pixel from the given unpremultiplied components
  */
 EAPI void enesim_surface_pixel_components_from(uint32_t *color,
@@ -202,7 +204,7 @@ EAPI void enesim_surface_pixel_components_from(uint32_t *color,
 }
 
 /**
- *
+ * FIXME rename this to enesim_color_components_to
  */
 EAPI void enesim_surface_pixel_components_to(uint32_t color,
 		Enesim_Format f, uint8_t *a, uint8_t *r, uint8_t *g, uint8_t *b)

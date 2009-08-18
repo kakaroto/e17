@@ -71,6 +71,10 @@ static float _cos(float x)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 EAPI Enesim_Matrix_Type enesim_matrix_type_get(Enesim_Matrix *m)
 {
 	if ((MATRIX_ZX(m) != 0) || (MATRIX_ZY(m) != 0) || (MATRIX_ZZ(m) != 1))
@@ -79,6 +83,23 @@ EAPI Enesim_Matrix_Type enesim_matrix_type_get(Enesim_Matrix *m)
 	{
 		if ((MATRIX_XX(m) == 1) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
 				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 1) && (MATRIX_YZ(m) == 0))
+			return ENESIM_MATRIX_IDENTITY;
+		else
+			return ENESIM_MATRIX_AFFINE;
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI Enesim_Matrix_Type enesim_f16p16_matrix_type_get(Enesim_F16p16_Matrix *m)
+{
+	if ((MATRIX_ZX(m) != 0) || (MATRIX_ZY(m) != 0) || (MATRIX_ZZ(m) != 65536))
+		return ENESIM_MATRIX_PROJECTIVE;
+	else
+	{
+		if ((MATRIX_XX(m) == 65536) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
+				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 65536) && (MATRIX_YZ(m) == 0))
 			return ENESIM_MATRIX_IDENTITY;
 		else
 			return ENESIM_MATRIX_AFFINE;
@@ -136,6 +157,15 @@ EAPI void enesim_matrix_fixed_values_get(Enesim_Matrix *m, Eina_F16p16 *a,
 	if (h) *h = eina_f16p16_float_from(MATRIX_ZY(m));
 	if (i) *i = eina_f16p16_float_from(MATRIX_ZZ(m));
 }
+
+EAPI void enesim_matrix_f16p16_matrix_to(Enesim_Matrix *m,
+		Enesim_F16p16_Matrix *fm)
+{
+	enesim_matrix_fixed_values_get(m, &fm->xx, &fm->xy, &fm->xz,
+			&fm->yx, &fm->yy, &fm->yz,
+			&fm->zx, &fm->zy, &fm->zz);
+}
+
 /**
  * To be documented
  * FIXME: To be fixed
@@ -355,6 +385,24 @@ EAPI void enesim_matrix_identity(Enesim_Matrix *m)
 	MATRIX_ZY(m) = 0;
 	MATRIX_ZZ(m) = 1;
 }
+
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void enesim_f16p16_matrix_identity(Enesim_F16p16_Matrix *m)
+{
+	MATRIX_XX(m) = 65536;
+	MATRIX_XY(m) = 0;
+	MATRIX_XZ(m) = 0;
+	MATRIX_YX(m) = 0;
+	MATRIX_YY(m) = 65536;
+	MATRIX_YZ(m) = 0;
+	MATRIX_ZX(m) = 0;
+	MATRIX_ZY(m) = 0;
+	MATRIX_ZZ(m) = 65536;
+}
+
 /**
  * To be documented
  * FIXME: To be fixed

@@ -1,18 +1,25 @@
-
-#define INTERP_256(a, c0, c1) \
- ( (((((((c0) >> 8) & 0xff00ff) - (((c1) >> 8) & 0xff00ff)) * (a)) \
-   + ((c1) & 0xff00ff00)) & 0xff00ff00) + \
-   (((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (a)) >> 8) \
-   + ((c1) & 0xff00ff)) & 0xff00ff) )
-
-/* FIXME actually this code is not the "fast" but the "good" version
- * Move the INTERP_256 and the sampling function out of here
- * the transformer also needs this
- * Use eina_f16p16 for the fixed point math
- * Define on eina an Eina_F16p16 eina_f16p16_one_get() function
+/* ENESIM - Direct Rendering Library
+ * Copyright (C) 2007-2008 Jorge Luis Zapata
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-#define FIXED 0
-
+#include "Enesim.h"
+#include "enesim_private.h"
+/*============================================================================*
+ *                                  Local                                     *
+ *============================================================================*/
 /* P'(x,y) <- P( x + scale * (XC(x,y) - .5), y + scale * (YC(x,y) - .5)) */
 static void _dm_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t sw, uint32_t sh,
 		float scale, uint32_t *map,
@@ -101,3 +108,11 @@ next:
 		dx++;
 	}
 }
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI Enesim_Renderer * enesim_dispmap_new(void)
+{
+
+}
+

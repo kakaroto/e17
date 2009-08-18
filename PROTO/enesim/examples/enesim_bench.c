@@ -15,8 +15,7 @@ FILE *opt_file;
 int opt_debug = 0;
 int opt_rop = ENESIM_FILL;
 Enesim_Format opt_fmt = ENESIM_FORMAT_ARGB8888;
-char *opt_bench = "drawer";
-Enesim_Cpu *opt_cpu = NULL;
+char *opt_bench = "compositor";
 
 double get_time(void)
 {
@@ -127,24 +126,9 @@ int bench_get(const char *name)
 		opt_bench = "rasterizer";
 		return 1;
 	}
-	else if (!strcmp(name, "drawer"))
+	else if (!strcmp(name, "compositor"))
 	{
-		opt_bench = "drawer";
-		return 1;
-	}
-	else if (!strcmp(name, "transformer"))
-	{
-		opt_bench = "transformer";
-		return 1;
-	}
-	else if (!strcmp(name, "cpu"))
-	{
-		opt_bench = "cpu";
-		return 1;
-	}
-	else if (!strcmp(name, "scaler"))
-	{
-		opt_bench = "scaler";
+		opt_bench = "compositor";
 		return 1;
 	}
 	else if (!strcmp(name, "raddist"))
@@ -162,39 +146,17 @@ int bench_get(const char *name)
 		opt_bench = "hswitch";
 		return 1;
 	}
-	return 0;
-}
-
-
-int cpu_get(const char *name, Enesim_Cpu **cpu)
-{
-	Enesim_Cpu **cpus;
-	int numcpus;
-
-	cpus = enesim_cpu_get(&numcpus);
-	while (numcpus)
+	else if (!strcmp(name, "checker"))
 	{
-		if (!strcmp(enesim_cpu_name_get(cpus[numcpus - 1]), name))
-		{
-			*cpu = cpus[numcpus - 1];
-			return 1;
-		}
-		numcpus--;
+		opt_bench = "checker";
+		return 1;
+	}
+	else if (!strcmp(name, "stripes"))
+	{
+		opt_bench = "stripes";
+		return 1;
 	}
 	return 0;
-}
-
-void cpu_help(void)
-{
-	Enesim_Cpu **cpus;
-	int numcpus;
-
-	cpus = enesim_cpu_get(&numcpus);
-	while (numcpus)
-	{
-		printf("%s\n", enesim_cpu_name_get(cpus[numcpus - 1]));
-		numcpus--;
-	}
 }
 
 int fmt_get(const char *name, Enesim_Format *fmt)
@@ -227,15 +189,14 @@ void rop_help(void)
 void bench_help(void)
 {
 	printf("dispmap\n");
-	printf("drawer\n");
-	printf("transformer\n");
+	printf("compositor\n");
 	printf("raddist\n");
 	printf("rasterizer\n");
 	printf("renderer\n");
 	printf("spanner\n");
-	printf("cpu\n");
-	printf("scaler\n");
 	printf("hswitch\n");
+	printf("stripes\n");
+	printf("checker\n");
 	printf("all\n");
 }
 
@@ -296,8 +257,6 @@ void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
 
 int main(int argc, char **argv)
 {
-	Enesim_Cpu **cpus;
-	int numcpus;
 	char *short_options = "dhf:t:r:m:w:e:b:c:";
 	struct option long_options[] = {
 		{"opt_debug", 0, 0, 'd'},
@@ -372,31 +331,12 @@ int main(int argc, char **argv)
 					return 1;
 				}
 				break;
-			case 'c':
-				if (!cpu_get(optarg, &opt_cpu))
-				{
-					cpu_help();
-					return 1;
-				}
-				break;
 			default:
 				break;
 		}
 	}
 ok:
 	printf("Enesim Bench\n");
-	cpus = enesim_cpu_get(&numcpus);
-	if (!numcpus)
-	{
-		printf("No cpu's registered\n");
-		return -1;
-	}
-	/* default cpu set to index 0 */
-	if (!opt_cpu)
-	{
-		opt_cpu = cpus[0];
-	}
-	printf("* CPU = %s\n", enesim_cpu_name_get(opt_cpu));
 	printf("* BENCH = %s\n", opt_bench);
 	printf("* SIZE = %dx%d\n", opt_width, opt_height);
 	printf("* ROP = %s\n", rop_name(opt_rop));
@@ -411,42 +351,42 @@ ok:
 	{
 		rasterizer_bench();
 	}
-	else if (!strcmp(opt_bench, "drawer"))
+	else if (!strcmp(opt_bench, "compositor"))
 	{
-		drawer_bench();
-	}
-	else if (!strcmp(opt_bench, "transformer"))
-	{
-		transformer_bench();
-	}
-	else if (!strcmp(opt_bench, "cpu"))
-	{
-		//cpu_bench();
+		compositor_bench();
 	}
 	else if (!strcmp(opt_bench, "scaler"))
 	{
-		scaler_bench();
+		//scaler_bench();
 	}
 	else if (!strcmp(opt_bench, "raddist"))
 	{
-		raddist_bench();
+		//raddist_bench();
 	}
 	else if (!strcmp(opt_bench, "dispmap"))
 	{
-		dispmap_bench();
+		//dispmap_bench();
+	}
+	else if (!strcmp(opt_bench, "checker"))
+	{
+		checker_bench();
+	}
+	else if (!strcmp(opt_bench, "stripes"))
+	{
+		stripes_bench();
 	}
 	else if (!strcmp(opt_bench, "hswitch"))
 	{
-			hswitch_bench();
+		//hswitch_bench();
 	}
 	else if (!strcmp(opt_bench, "all"))
 	{
-		drawer_bench();
-		transformer_bench();
-		scaler_bench();
+		compositor_bench();
+		//transformer_bench();
+		//scaler_bench();
 		//rasterizer_bench();
-		raddist_bench();
-		dispmap_bench();
+		//raddist_bench();
+		//dispmap_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

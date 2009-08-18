@@ -319,14 +319,14 @@ static void drawer_definition(Format *f)
 		}
 	}
 	/*
-	 * Enesim_Drawer_Span sp_mask_color[COLOR_TYPES];
-	 * Enesim_Drawer_Span sp_pixel[ENESIM_SURFACE_FORMATS];
-	 * Enesim_Drawer_Span sp_pixel_color[ENESIM_SURFACE_FORMATS][COLOR_TYPES];	
-	 * Enesim_Drawer_Span sp_pixel_mask[ENESIM_SURFACE_FORMATS];
-	 * Enesim_Drawer_Point pt_mask_color[COLOR_TYPES];
-	 * Enesim_Drawer_Point pt_pixel[ENESIM_SURFACE_FORMATS];
-	 * Enesim_Drawer_Point pt_pixel_color[ENESIM_SURFACE_FORMATS][COLOR_TYPES];
-	 * Enesim_Drawer_Point pt_pixel_mask[ENESIM_SURFACE_FORMATS];
+	 * Enesim_Compositor_Span sp_mask_color[COLOR_TYPES];
+	 * Enesim_Compositor_Span sp_pixel[ENESIM_SURFACE_FORMATS];
+	 * Enesim_Compositor_Span sp_pixel_color[ENESIM_SURFACE_FORMATS][COLOR_TYPES];	
+	 * Enesim_Compositor_Span sp_pixel_mask[ENESIM_SURFACE_FORMATS];
+	 * Enesim_Compositor_Point pt_mask_color[COLOR_TYPES];
+	 * Enesim_Compositor_Point pt_pixel[ENESIM_SURFACE_FORMATS];
+	 * Enesim_Compositor_Point pt_pixel_color[ENESIM_SURFACE_FORMATS][COLOR_TYPES];
+	 * Enesim_Compositor_Point pt_pixel_mask[ENESIM_SURFACE_FORMATS];
 	 */
 	fprintf(fout, "};\n");
 }

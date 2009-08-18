@@ -15,42 +15,11 @@
  * License along with this library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DRAWER_H_
-#define DRAWER_H_
+#ifndef COMPOSITOR_H_
+#define COMPOSITOR_H_
 
-void enesim_drawer_init(void);
-void enesim_drawer_shutdown(void);
-
-/* The above functions are useful for other subsystems */
-/* TODO optimize the below functions with MMX/SSE */
-static inline uint32_t argb8888_interp_256(uint16_t a, uint32_t c0, uint32_t c1)
-{
-	 return ( (((((((c0) >> 8) & 0xff00ff) - (((c1) >> 8) & 0xff00ff)) * (a)) \
-	   + ((c1) & 0xff00ff00)) & 0xff00ff00) + \
-	   (((((((c0) & 0xff00ff) - ((c1) & 0xff00ff)) * (a)) >> 8) \
-	   + ((c1) & 0xff00ff)) & 0xff00ff) );
-}
-/*
- * [a1 r1 g1 b1], [a2 r2 g2 b2] => [a1*a2 r1*r2 g1*g2 b1*b2]
- */
-static inline uint32_t argb8888_mul4_sym(uint32_t c1, uint32_t c2)
-{
-	return ( ((((((c1) >> 16) & 0xff00) * (((c2) >> 16) & 0xff00)) + 0xff0000) & 0xff000000) + \
-	   ((((((c1) >> 8) & 0xff00) * (((c2) >> 16) & 0xff)) + 0xff00) & 0xff0000) + \
-	   ((((((c1) & 0xff00) * ((c2) & 0xff00)) + 0xff00) >> 16) & 0xff00) + \
-	   (((((c1) & 0xff) * ((c2) & 0xff)) + 0xff) >> 8) );
-}
-static inline uint32_t argb8888_mul_256(uint16_t a, uint32_t c)
-{
-	return  ( (((((c) >> 8) & 0x00ff00ff) * (a)) & 0xff00ff00) +
-	(((((c) & 0x00ff00ff) * (a)) >> 8) & 0x00ff00ff) );
-}
-
-static inline uint32_t argb8888_mul_sym(uint16_t a, uint32_t c)
-{
-	return ( (((((c) >> 8) & 0x00ff00ff) * (a) + 0xff00ff) & 0xff00ff00) +
-	   (((((c) & 0x00ff00ff) * (a) + 0xff00ff) >> 8) & 0x00ff00ff) );
-}
+void enesim_compositor_init(void);
+void enesim_compositor_shutdown(void);
 
 /*============================================================================*
  *                                  Fill                                      *
@@ -241,8 +210,8 @@ static void argb8888_sp_pixel_fill_argb8888_mmx(Enesim_Surface_Data *d,
 /* specific drawers */
 Eina_Bool enesim_drawer_generic_init(void);
 void enesim_drawer_generic_shutdown(void);
-Eina_Bool enesim_drawer_argb8888_init(void);
+Eina_Bool enesim_compositor_argb8888_init(void);
 void enesim_drawer_argb8888_shutdown(void);
 #endif
 
-#endif /*DRAWER_H_*/
+#endif /* COMPOSITOR_H_*/

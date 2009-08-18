@@ -48,8 +48,8 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 		int len, unsigned int *dst)
 {
 	Circle *circ = (Circle *)r;
-	int axx = r->matrix.axx, axy = r->matrix.axy, axz = r->matrix.axz;
-	int ayx = r->matrix.ayx, ayy = r->matrix.ayy, ayz = r->matrix.ayz;
+	int axx = r->matrix.values.xx, axy = r->matrix.values.xy, axz = r->matrix.values.xz;
+	int ayx = r->matrix.values.yx, ayy = r->matrix.values.yy, ayz = r->matrix.values.yz;
 	int do_inner = circ->do_inner;
 	unsigned int ocolor = circ->stroke.color;
 	unsigned int icolor = circ->fill.color;
@@ -61,7 +61,7 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 	unsigned int *d = dst, *e = d + len;
 	int xx, yy;
 
-	if (circ->draw_mode == ENESIM_FIGURE_DRAW_MODE_STROKE)
+	if (circ->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 		icolor = 0;
 
 	if (do_inner)
@@ -199,10 +199,11 @@ EAPI Enesim_Renderer * enesim_renderer_circle_new(void)
 	circ->stroke.color = 0xffffffff;
 
 	r = (Enesim_Renderer *) circ;
+	enesim_renderer_init(r);
 	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
 	r->state_cleanup = ENESIM_RENDERER_STATE_CLEANUP(_state_cleanup);
 	r->free = ENESIM_RENDERER_DELETE(_free);
-	r->matrix.axx = r->matrix.ayy = r->matrix.azz = 65536;
+
 	//   if (!circle_setup_state(p, 0)) { free(circ); return NULL; }
 	return r;
 }
@@ -280,7 +281,7 @@ EAPI void enesim_renderer_circle_fill_renderer_set(Enesim_Renderer *r, Enesim_Re
 	r->changed = EINA_TRUE;
 }
 
-EAPI void enesim_renderer_circle_draw_mode_set(Enesim_Renderer *r, Enesim_Figure_Draw_Mode draw_mode)
+EAPI void enesim_renderer_circle_draw_mode_set(Enesim_Renderer *r, Enesim_Shape_Draw_Mode draw_mode)
 {
 	Circle *circ;
 
