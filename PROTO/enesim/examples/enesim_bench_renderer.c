@@ -108,8 +108,10 @@ void renderer_run(Enesim_Renderer *r, Enesim_Surface *dst,
 	{
 		Enesim_Matrix m;
 		char rfname[256];
+		const char *mtype;
 
-		snprintf(rfname, 256, "%s_%s", fname, _matrix_name_get(mt));
+		mtype = _matrix_name_get(mt);
+		snprintf(rfname, 256, "%s_%s", fname, mtype);
 
 		_matrix_get(mt, &m);
 		enesim_renderer_transform_set(r, &m);
