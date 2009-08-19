@@ -40,27 +40,29 @@ struct _Enesim_Renderer
 	Eina_Bool changed;
 	/* the renderer common properties */
 	int ox, oy; /* the origin */
-#if 1
 	struct {
 		Enesim_F16p16_Matrix values;
 		Enesim_Matrix_Type type;
 	} matrix;
-#else
-	/* a fixed point matrix */
-	struct {
-	    int axx, axy, axz;
-	    int ayx, ayy, ayz;
-	    int azx, azy, azz;
-	    unsigned char is_identity : 1;
-	    unsigned char is_affine : 1;
-	}  matrix;
-#endif
 };
 
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
 #define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
 #define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
 #define ENESIM_RENDERER_STATE_CLEANUP(f) ((Enesim_Renderer_State_Cleanup)(f))
+
+/* TODO Helper functions needed by other renderers */
+static inline void renderer_affine_setup(Enesim_Renderer *r, int x, int y,
+		Eina_F16p16 *fpx, Eina_F16p16 *fpy)
+{
+
+}
+
+static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
+		Eina_F16p16 *fpx, Eina_F16p16 *fpy)
+{
+
+}
 
 /* some built-in renderer type identifiers */
 #define SURFACE_RENDERER (1)

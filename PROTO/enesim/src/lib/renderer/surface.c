@@ -26,7 +26,7 @@
  *============================================================================*/
 typedef struct _Surface
 {
-	Enesim_Renderer r;
+	Enesim_Renderer base;
 	Enesim_Surface *s;
 	int x, y;
 	unsigned int w, h;
@@ -108,7 +108,7 @@ static void _scale_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint
 	uint32_t *src;
 	Eina_Rectangle ir, dr;
 
-	if (y < s->r.oy || y > s->r.oy + s->w)
+	if (y < r->oy || y > r->oy + s->w)
 	{
 		while (len--)
 			*dst++ = 0;
@@ -117,12 +117,12 @@ static void _scale_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint
 
 	src = enesim_surface_data_get(s->s);
 	sstride = enesim_surface_stride_get(s->s);
-	src += sstride * s->yoff[y - s->r.oy];
+	src += sstride * s->yoff[y - r->oy];
 
 	while (len--)
 	{
-		if (x >= s->r.ox && x < s->r.ox + s->w)
-			*dst = *(src + s->xoff[x - s->r.ox]);
+		if (x >= r->ox && x < r->ox + s->w)
+			*dst = *(src + s->xoff[x - r->ox]);
 		else
 			*dst = 0;
 		x++;
@@ -136,7 +136,7 @@ static void _noscale(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_
 	uint32_t sstride;
 	uint32_t *src;
 
-	if (y < s->r.oy || y > s->r.oy + s->w)
+	if (y < r->oy || y > r->oy + s->w)
 	{
 		while (len--)
 			*dst++ = 0;
@@ -145,22 +145,23 @@ static void _noscale(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_
 
 	src = enesim_surface_data_get(s->s);
 	sstride = enesim_surface_stride_get(s->s);
-	src += sstride * (y - s->r.oy);
-	x -= s->r.ox;
-
+	x -= r->ox;
+	src += sstride * (y - r->oy) + x;
 	while (len--)
 	{
-		if (x >= s->r.ox && x < s->r.ox + s->w)
+		if (x >= r->ox && x < r->ox + s->w)
 			*dst = *src;
 		else
 			*dst = 0;
 		x++;
 		dst++;
+		src++;
 	}
 }
 
-static void _state_cleanup(Surface *s)
+static void _state_cleanup(Enesim_Renderer *r)
 {
+	Surface *s = (Surface *)r;
 	if (s->xoff)
 	{
 		free(s->xoff);
@@ -182,7 +183,7 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 	if (s->w < 1 || s->h < 1)
 		return EINA_FALSE;
 
-	_state_cleanup(s);
+	_state_cleanup(r);
 	enesim_surface_size_get(s->s, &sw, &sh);
 
 	if (sw != s->w && sh != s->h)
@@ -200,9 +201,9 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 	return EINA_TRUE;
 }
 
-static void _free(Surface *s)
+static void _free(Enesim_Renderer *r)
 {
-	_state_cleanup(s);
+	_state_cleanup(r);
 }
 
 /*============================================================================*
@@ -219,6 +220,7 @@ EAPI Enesim_Renderer * enesim_renderer_surface_new(void)
 	s = calloc(1, sizeof(Surface));
 	r = (Enesim_Renderer *)s;
 
+	enesim_renderer_init(r);
 	r->free = ENESIM_RENDERER_DELETE(_free);
 	r->state_cleanup = ENESIM_RENDERER_STATE_CLEANUP(_state_cleanup);
 	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);

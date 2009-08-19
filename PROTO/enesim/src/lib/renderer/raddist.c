@@ -74,12 +74,11 @@ static void _span_identity(Enesim_Renderer *r, int x, int y,
 static Eina_Bool _state_setup(Enesim_Renderer *r)
 {
 	r->span = ENESIM_RENDERER_SPAN_DRAW(_span_identity);
-#if 0
+
 	if (r->matrix.type == ENESIM_MATRIX_IDENTITY)
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_identity);
-	else if (r->matrix.type == ENESIM_MATRIX_AFFINE)
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_affine);
-#endif
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_span_identity);
+	else
+		return EINA_FALSE;
 	return EINA_TRUE;
 }
 /*============================================================================*

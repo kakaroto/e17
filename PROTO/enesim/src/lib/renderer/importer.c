@@ -105,7 +105,6 @@ EAPI Enesim_Renderer * enesim_renderer_importer_new(void)
 	return r;
 }
 
-
 EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle)
 {
 	Importer *i = (Importer *)r;

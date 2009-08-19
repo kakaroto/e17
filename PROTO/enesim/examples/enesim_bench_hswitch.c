@@ -25,7 +25,7 @@ static void hswitch(void)
 	enesim_renderer_hswitch_right_set(r, rrend);
 	enesim_renderer_hswitch_h_set(r, opt_height);
 	enesim_renderer_hswitch_w_set(r, opt_width);
-	enesim_renderer_hswitch_step_set(r, 0.3);
+	enesim_renderer_hswitch_step_set(r, 0.48);
 	renderer_run(r, dst, "Horizontal Switch", "horswitch");
 }
 

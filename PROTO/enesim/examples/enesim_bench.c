@@ -377,7 +377,7 @@ ok:
 	}
 	else if (!strcmp(opt_bench, "hswitch"))
 	{
-		//hswitch_bench();
+		hswitch_bench();
 	}
 	else if (!strcmp(opt_bench, "all"))
 	{
@@ -387,6 +387,8 @@ ok:
 		rasterizer_bench();
 		raddist_bench();
 		dispmap_bench();
+		stripes_bench();
+		hswitch_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

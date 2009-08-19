@@ -22,7 +22,7 @@
  *============================================================================*/
 typedef struct _Hswitch
 {
-	Enesim_Renderer r;
+	Enesim_Renderer base;
 	unsigned int w;
 	unsigned int h;
 	Enesim_Renderer *lrend;
@@ -30,8 +30,96 @@ typedef struct _Hswitch
 	float step;
 } Hswitch;
 
-static void _generic(Hswitch *hs, int x, int y, unsigned int len, uint32_t *dst)
+
+static void _generic_good(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
+	Hswitch *hs = (Hswitch *)r;
+	uint32_t *end = dst + len;
+	Eina_F16p16 mmx;
+	int mx;
+
+	mmx = eina_f16p16_float_from(hs->w - (float)(hs->w * hs->step));
+	mx = eina_f16p16_int_to(mmx);
+	while (dst < end)
+	{
+		uint32_t p0;
+
+		if (x > mx)
+		{
+			enesim_renderer_span_fill(hs->rrend, x, y, 1, &p0);
+		}
+		else if (x < mx)
+		{
+			enesim_renderer_span_fill(hs->lrend, x, y, 1, &p0);
+		}
+		else
+		{
+			uint32_t p1;
+			uint16_t a;
+
+			a = 1 + ((mmx & 0xffff) >> 8);
+			enesim_renderer_span_fill(hs->lrend, x, y, 1, &p0);
+			enesim_renderer_span_fill(hs->rrend, 0, y, 1, &p1);
+			p0 = argb8888_interp_256(a, p0, p1);
+		}
+		*dst++ = p0;
+		x++;
+	}
+}
+
+static void _affine_good(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+{
+	Hswitch *hs = (Hswitch *)r;
+	uint32_t *end = dst + len;
+	Eina_F16p16 mmx, xx, yy;
+	int mx;
+
+	yy = eina_f16p16_int_from(y);
+	xx = eina_f16p16_int_from(x);
+	yy = eina_f16p16_mul(r->matrix.values.yx, xx) +
+			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
+	xx = eina_f16p16_mul(r->matrix.values.xx, xx) +
+			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+
+	/* FIXME put this on the state setup */
+	mmx = eina_f16p16_float_from(hs->w - (float)(hs->w * hs->step));
+	mx = eina_f16p16_int_to(mmx);
+	while (dst < end)
+	{
+		uint32_t p0;
+
+		x = eina_f16p16_int_to(xx);
+		y = eina_f16p16_int_to(yy);
+		if (x > mx)
+		{
+			enesim_renderer_span_fill(hs->rrend, x, y, 1, &p0);
+		}
+		else if (x < mx)
+		{
+			enesim_renderer_span_fill(hs->lrend, x, y, 1, &p0);
+		}
+		/* FIXME, what should we use here? mmx or xx?
+		 * or better use a subpixel center?
+		 */
+		else
+		{
+			uint32_t p1;
+			uint16_t a;
+
+			a = 1 + ((xx & 0xffff) >> 8);
+			enesim_renderer_span_fill(hs->lrend, x, y, 1, &p0);
+			enesim_renderer_span_fill(hs->rrend, 0, y, 1, &p1);
+			p0 = argb8888_interp_256(a, p1, p0);
+		}
+		*dst++ = p0;
+		xx += r->matrix.values.xx;
+		yy += r->matrix.values.yx;
+	}
+}
+
+static void _generic_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+{
+	Hswitch *hs = (Hswitch *)r;
 	int mx;
 	Eina_Rectangle ir, dr;
 
@@ -40,14 +128,14 @@ static void _generic(Hswitch *hs, int x, int y, unsigned int len, uint32_t *dst)
 	if (!eina_rectangle_intersection(&ir, &dr))
 		return;
 
-	mx = hs->w * hs->step;
+	mx = hs->w - (hs->w * hs->step);
 	if (mx == 0)
 	{
-		enesim_renderer_span_fill(hs->lrend, ir.x, ir.y, ir.w, dst);
+		enesim_renderer_span_fill(hs->rrend, ir.x, ir.y, ir.w, dst);
 	}
 	else if (mx == hs->w)
 	{
-		enesim_renderer_span_fill(hs->rrend, ir.x, ir.y, ir.w, dst);
+		enesim_renderer_span_fill(hs->lrend, ir.x, ir.y, ir.w, dst);
 	}
 	else
 	{
@@ -75,6 +163,20 @@ static void _free(Hswitch *hs)
 {
 
 }
+
+static Eina_Bool _state_setup(Enesim_Renderer *r)
+{
+	Hswitch *h = (Hswitch *)r;
+
+	if (!h->lrend || !h->rrend)
+		return EINA_FALSE;
+	if (!enesim_renderer_state_setup(h->lrend))
+		return EINA_FALSE;
+	if (!enesim_renderer_state_setup(h->rrend))
+		return EINA_FALSE;
+
+	return EINA_TRUE;
+}
 /*============================================================================*
  *                                 Global                                     *
  *============================================================================*/
@@ -84,11 +186,14 @@ static void _free(Hswitch *hs)
 EAPI Enesim_Renderer * enesim_renderer_hswitch_new(void)
 {
 	Enesim_Renderer *r;
-	Hswitch *h = calloc(1, sizeof(Hswitch));
+	Hswitch *h;
 
-	r = &h->r;
+	h = calloc(1, sizeof(Hswitch));
+	r = (Enesim_Renderer *)h;
+	enesim_renderer_init(r);
 	r->free = ENESIM_RENDERER_DELETE(_free);
-	r->span = ENESIM_RENDERER_SPAN_DRAW(_generic);
+	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
+	r->span = ENESIM_RENDERER_SPAN_DRAW(_affine_good);
 
 	return r;
 }

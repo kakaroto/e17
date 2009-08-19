@@ -18,7 +18,7 @@ static void _affine_matrix_get(Enesim_Matrix *m)
 
 	enesim_matrix_identity(m);
 	enesim_matrix_translate(m, opt_width/2, opt_height/2);
-	enesim_matrix_scale(&tmp, 2, 2);
+	enesim_matrix_scale(&tmp, 1.0 / 0.5, 1.0 / 0.5);
 	enesim_matrix_compose(m, &tmp, m);
 	enesim_matrix_rotate(&tmp, M_PI/4);
 	enesim_matrix_compose(m, &tmp, m);
