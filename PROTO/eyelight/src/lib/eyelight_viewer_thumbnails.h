@@ -26,13 +26,16 @@ typedef struct Eyelight_Thumbnails Eyelight_Thumbnails;
 
 struct Eyelight_Thumbnails
 {
-    Eyelight_Thumb* thumbnails;
+    //when we load the slides thumbnails in the background
     int is_background_load;
     Ecore_Idler* idle;
     int idle_current_slide;
+
+    //default size of a thumbnail
     int default_size_w;
     int default_size_h;
 
+    //call when a thumbnail is done
     Eyelight_Thumbnails_slide_done_cb done_cb;
     void *done_cb_data;
 };

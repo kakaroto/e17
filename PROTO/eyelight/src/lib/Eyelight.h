@@ -45,7 +45,6 @@ struct Eyelight_Thumb
     int* thumb;
     int w;
     int h;
-    int is_in_edj;
 };
 
 EAPI Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* pres, const char* theme,int with_boder);

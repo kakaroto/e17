@@ -47,19 +47,17 @@ void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
 
 void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
 {
-    int i;
+    int i = 0;
 
-    if(!pres->thumbnails)
-        pres->thumbnails = calloc(1,sizeof(Eyelight_Thumbnails));
-    pres->thumbnails->default_size_w = w;
-    pres->thumbnails->default_size_h = h;
+    eyelight_viewer_thumbnails_init(pres);
 
     //recreate all thumbs already created
-    for(i=0; pres->thumbnails->thumbnails && i<eyelight_viewer_size_get(pres); i++)
+    for(i=0; i<eyelight_viewer_size_get(pres); i++)
     {
-        if(pres->thumbnails->thumbnails[i].thumb)
+        Eyelight_Slide *slide = eina_list_nth(pres->slides, i);
+        if(slide->thumb.thumb)
         {
-            EYELIGHT_FREE(pres->thumbnails->thumbnails[i].thumb);
+            EYELIGHT_FREE(slide->thumb.thumb);
             eyelight_viewer_thumbnails_get(pres, i);
         }
     }
@@ -100,28 +98,24 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     int alpha,compress,quality,lossy;
     Eyelight_Thumbnails* thumbnails;
 
-    if(!pres->thumbnails->thumbnails)
-        pres->thumbnails->thumbnails = calloc(pres->size,sizeof(Eyelight_Thumb));
+    Eyelight_Slide *slide = eina_list_nth(pres->slides, pos);
 
-    thumbnails = pres->thumbnails;
-
-    if(!thumbnails->thumbnails[pos].thumb)
+    if(!slide->thumb.thumb)
     {
-        thumbnails->thumbnails[pos].thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
+        slide->thumb.thumb = _eyelight_viewer_thumbnails_create(pres,pos,size_w,size_h);
 
-        if(!thumbnails->thumbnails[pos].thumb)
+        if(!slide->thumb.thumb)
             return NULL;
 
-        thumbnails->thumbnails[pos].is_in_edj = 0;
-        thumbnails->thumbnails[pos].w = size_w;
-        thumbnails->thumbnails[pos].h = size_h;
+        slide->thumb.w = size_w;
+        slide->thumb.h = size_h;
 
         if(pres->thumbnails->done_cb)
-            pres->thumbnails->done_cb(pres, pos, &(thumbnails->thumbnails[pos]),
+            pres->thumbnails->done_cb(pres, pos, &(slide->thumb),
                     pres->thumbnails->done_cb_data);
     }
 
-    return &(thumbnails->thumbnails[pos]);
+    return &(slide->thumb);
 }
 
 int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w, int size_h)
@@ -132,6 +126,9 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     char buf[EYELIGHT_BUFLEN];
     int *pixel_resize;
     const int *pixel;
+    Eina_List *l;
+    Eyelight_Slide *slide;
+    int i;
 
     int buffer_w= pres->default_size_w;
     int buffer_h= pres->default_size_h;
@@ -140,20 +137,18 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
 
     Eyelight_Viewer *pres_copy = calloc(1,sizeof(Eyelight_Viewer));
     pres_copy->evas = e;
-    pres_copy->compiler = pres->compiler;
-    pres_copy->elt_file = pres->elt_file;
-    pres_copy->theme = pres->theme;
-    pres_copy->slides = calloc(pres->size,sizeof(Evas_Object*));
-    pres_copy->custom_areas = calloc(pres->size,sizeof(Eina_List*));
-    pres_copy->edje_objects = calloc(pres->size,sizeof(Eina_List*));
-    pres_copy->edje_items = calloc(pres->size,sizeof(Eina_List*));
-    pres_copy->video_objects = calloc(pres->size,sizeof(Eina_List*));
     pres_copy->size = pres->size;
     pres_copy->video_module = pres->video_module;
+    pres_copy->compiler = pres->compiler;
+    pres_copy->theme = pres->theme;
+    pres_copy->elt_file = pres->elt_file;
 
+    for(i=0;i<pres_copy->size;i++)
+        pres_copy->slides = eina_list_append(pres_copy->slides, calloc(1,sizeof(Eyelight_Slide)));
 
+    slide = eina_list_nth(pres_copy->slides, pos);
     //create a thumbnail of the slide
-    o = eyelight_viewer_slide_load(pres_copy,pos);
+    o = eyelight_viewer_slide_load(pres_copy,slide,pos);
     evas_object_move(o,-buffer_w,-buffer_h);
     evas_object_resize(o,buffer_w,buffer_h);
     evas_object_show(o);
@@ -161,10 +156,11 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
     edje_object_signal_emit(o,"thumbnail","eyelight");
 
     //set all videos to 33%
+    //TODO Do not work because the video is not loaded at this time
     {
         Eina_List *l;
         Eyelight_Video *video;
-        EINA_LIST_FOREACH(pres_copy->video_objects[pos], l, video)
+        EINA_LIST_FOREACH(slide->items_video, l, video)
         {
             emotion_object_position_set(video->o_inter, 100);
         }
@@ -178,44 +174,11 @@ int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int size_w
             size_w,
             size_h);
 
-    int i;
-    for(i=0;i<pres_copy->size;i++)
+    EINA_LIST_FREE(pres_copy->slides, slide)
     {
-        eina_list_free(pres_copy->edje_items[i]);
-        Eina_List *l, *l_next;
-        {
-            Evas_Object *data;
-            EINA_LIST_FOREACH_SAFE(pres_copy->edje_objects[i], l, l_next, data)
-            {
-                evas_object_del(data);
-                pres_copy->edje_objects[i] = eina_list_remove_list(pres_copy->edje_objects[i], l);
-            }
-        }
-        {
-            Eyelight_Video *data;
-            EINA_LIST_FOREACH_SAFE(pres_copy->video_objects[i], l, l_next, data)
-            {
-                evas_object_del(data->o_inter);
-                EYELIGHT_FREE(data);
-                pres_copy->video_objects[i] = eina_list_remove_list(pres_copy->video_objects[i], l);
-            }
-        }
-        {
-            Eyelight_Custom_Area *data;
-            EINA_LIST_FOREACH_SAFE(pres_copy->custom_areas[i], l, l_next, data)
-            {
-                evas_object_del(data->obj);
-                EYELIGHT_FREE(data);
-                pres_copy->custom_areas[i] = eina_list_remove_list(pres_copy->custom_areas[i], l);
-            }
-        }
+        eyelight_slide_clean(slide);
+        EYELIGHT_FREE(slide);
     }
-
-    EYELIGHT_FREE(pres_copy->custom_areas);
-    EYELIGHT_FREE(pres_copy->edje_objects);
-    EYELIGHT_FREE(pres_copy->video_objects);
-
-    EYELIGHT_FREE(pres_copy->slides);
     EYELIGHT_FREE(pres_copy);
     ecore_evas_free(ee);
 
@@ -227,14 +190,11 @@ void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres, int min, int max)
     int i;
 
     for(i=0;i<pres->size;i++)
-        if((i<min || i>=max)
-                && (
-                    !pres->thumbnails->is_background_load
-                    || pres->thumbnails->thumbnails[i].is_in_edj ))
-            EYELIGHT_FREE(pres->thumbnails->thumbnails[i].thumb);
-
-    //for(i=0;i<pres->size;i++)
-    //    printf("%d: %p\n",i,pres->thumbnails->thumbnails[i].thumb);
+        if(!pres->thumbnails->is_background_load && (i<min || i>=max) )
+        {
+            Eyelight_Slide *slide = eina_list_nth(pres->slides, i);
+            EYELIGHT_FREE(slide->thumb.thumb);
+        }
 }
 
 int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h)
@@ -295,15 +255,6 @@ void eyelight_viewer_thumbnails_destroy(Eyelight_Viewer* pres)
     if(pres->thumbnails->idle)
         ecore_idler_del(pres->thumbnails->idle);
 
-    if(pres->thumbnails->thumbnails)
-    {
-        int i;
-        for(i=0;i<pres->size;i++)
-        {
-            EYELIGHT_FREE(pres->thumbnails->thumbnails[i].thumb);
-        }
-    }
-    EYELIGHT_FREE(pres->thumbnails->thumbnails);
     EYELIGHT_FREE(pres->thumbnails);
 }
 

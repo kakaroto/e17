@@ -267,22 +267,9 @@ slide {
 
     area {
         name: "top";
-        video {
-            video: "eyelight.avi";
-            alpha: 50; //0-255
-            autoplay: 1;
-            shadow: 0;
-            border: 1;
-        }
     }
     area {
         name: "center";
-        video {
-            video: "calaos.ogg";
-            shadow: 1;
-            border: 0;
-            replay: 1;
-        }
     }
 }
 

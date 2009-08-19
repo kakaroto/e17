@@ -65,13 +65,11 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
     pres -> compiler = eyelight_elt_load(pres->elt_file);
     pres->size = eyelight_nb_slides_get(pres->compiler);
 
-    pres->slides = calloc(pres->size,sizeof(Evas_Object*));
-    pres->edje_objects = calloc(pres->size,sizeof(Eina_List*));
-    pres->edje_items = calloc(pres->size,sizeof(Eina_List*));
-    pres->video_objects = calloc(pres->size,sizeof(Eina_List*));
-    pres->custom_areas = calloc(pres->size,sizeof(Eina_List*));
-    pres->transition_effect_next = calloc(pres->size,sizeof(char*));
-    pres->transition_effect_previous = calloc(pres->size,sizeof(char*));
+    int i;
+    for(i=0; i<pres->size; i++)
+    {
+        pres->slides = eina_list_append(pres->slides, calloc(1, sizeof(Eyelight_Slide)));
+    }
 
     if(eyelight_viewer_size_get(pres)>0)
         eyelight_viewer_slide_goto(pres,0);
@@ -134,60 +132,15 @@ void eyelight_viewer_clean(Eyelight_Viewer *pres)
 {
     int i;
 
-    for(i=0;i<pres->size;i++)
-        if(pres->edje_items[i])
-        {
-            eina_list_free(pres->edje_items[i]);
-            pres->edje_items[i] = NULL;
-        }
+    Eyelight_Slide *slide;
+    EINA_LIST_FREE(pres->slides, slide)
+    {
+        eyelight_slide_clean(slide);
+        EYELIGHT_FREE(slide->thumb.thumb);
+        EYELIGHT_FREE(slide);
+    }
 
-    for(i=0;i<pres->size;i++)
-        if(pres->edje_objects[i])
-        {
-            Eina_List *l, *l_next;
-            Evas_Object *data;
-            EINA_LIST_FOREACH_SAFE(pres->edje_objects[i], l, l_next, data)
-            {
-                evas_object_del(data);
-                pres->edje_objects[i] = eina_list_remove_list(pres->edje_objects[i], l);
-            }
-        }
-
-    for(i=0;i<pres->size;i++)
-        if(pres->video_objects[i])
-        {
-            Eina_List *l, *l_next;
-            Eyelight_Video *data;
-            EINA_LIST_FOREACH_SAFE(pres->video_objects[i], l, l_next, data)
-            {
-                evas_object_del(data->o_inter);
-                EYELIGHT_FREE(data);
-                pres->video_objects[i] = eina_list_remove_list(pres->video_objects[i], l);
-            }
-        }
-
-
-    for(i=0;i<pres->size;i++)
-        if(pres->custom_areas[i])
-        {
-            Eina_List *l, *l_next;
-            Eyelight_Custom_Area *data;
-            EINA_LIST_FOREACH_SAFE(pres->custom_areas[i], l, l_next, data)
-            {
-                evas_object_del(data->obj);
-                EYELIGHT_FREE(data);
-                pres->custom_areas[i] = eina_list_remove_list(pres->custom_areas[i], l);
-            }
-        }
-
-
-    EYELIGHT_FREE(pres->slides);
-    EYELIGHT_FREE(pres->edje_objects);
-    EYELIGHT_FREE(pres->video_objects);
-    EYELIGHT_FREE(pres->custom_areas);
     eyelight_compiler_free(&(pres->compiler));
-    EYELIGHT_FREE(pres->transition_effect_next);
-    EYELIGHT_FREE(pres->transition_effect_previous);
 
     switch(pres->state)
     {
@@ -226,6 +179,39 @@ void eyelight_viewer_destroy(Eyelight_Viewer**pres)
     EYELIGHT_FREE(*pres);
 }
 
+/**
+ * clean a slide
+ * The method does not destroy slide
+ */
+void eyelight_slide_clean(Eyelight_Slide *slide)
+{
+    Evas_Object *o;
+    Eyelight_Video *video;
+    Eyelight_Custom_Area *area;
+
+    evas_object_del(slide->obj);
+    slide->obj=NULL;
+
+    eina_list_free(slide->items_all);
+    slide->items_all = NULL;
+
+    EINA_LIST_FREE(slide->items_edje, o)
+        evas_object_del(o);
+
+    EINA_LIST_FREE(slide->items_video, video)
+    {
+        evas_object_del(video->o_inter);
+        EYELIGHT_FREE(video);
+    }
+
+    EINA_LIST_FREE(slide->custom_areas, area)
+    {
+        evas_object_del(area->obj);
+        EYELIGHT_FREE(area);
+    }
+
+}
+
 /*
  * @brief return the current state of the viewer (none, expose ...)
  */
@@ -241,11 +227,12 @@ Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres)
 void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *obj)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
     pres->smart_obj = obj;
 
-    for(i=0;i<pres->size;i++)
-        if(pres->slides[i])
-            evas_object_smart_member_add(pres->slides[i], obj);
+    EINA_LIST_FOREACH(pres->slides, l, slide)
+        evas_object_smart_member_add(slide->obj, obj);
 
     switch(pres->state)
     {
@@ -272,18 +259,18 @@ void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *obj)
 void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
 
     pres->current_size_w = w;
     pres->current_size_h = h;
 
-    for(i=0;i<pres->size;i++)
+    EINA_LIST_FOREACH(pres->slides, l, slide)
     {
-        if(pres->slides[i])
-        {
-            evas_object_resize(pres->slides[i], w, h);
-            edje_object_signal_emit(pres->slides[i],"resize","eyelight");
-        }
+        evas_object_resize(slide->obj, w, h);
+        edje_object_signal_emit(slide->obj, "resize", "eyelight");
     }
+
     switch(pres->state)
     {
         case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
@@ -312,19 +299,18 @@ void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
 void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
 
     pres->current_scale = ratio;
 
-    for(i=0;i<pres->size;i++)
+    EINA_LIST_FOREACH(pres->slides, l, slide)
     {
-        if(pres->slides[i])
-        {
-            edje_object_scale_set(pres->slides[i], ratio);
-            Eina_List *l;
-            Evas_Object *o;
-            EINA_LIST_FOREACH(pres->edje_items[i],l,o)
-                edje_object_scale_set(o, ratio);
-        }
+        edje_object_scale_set(slide->obj, ratio);
+        Eina_List *l2;
+        Evas_Object *obj;
+        EINA_LIST_FOREACH(slide->items_all, l2, obj)
+            edje_object_scale_set(obj, ratio);
     }
 
     switch(pres->state)
@@ -351,16 +337,14 @@ void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
 void eyelight_viewer_clip_set(Eyelight_Viewer*pres, Evas_Object *clip)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
 
     pres->current_clip = clip;
 
-    for(i=0;i<pres->size;i++)
-    {
-        if(pres->slides[i])
-        {
-            evas_object_clip_set(pres->slides[i], clip);
-        }
-    }
+    EINA_LIST_FOREACH(pres->slides, l, slide)
+        evas_object_clip_set(slide->obj, clip);
+
     switch(pres->state)
     {
         case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
@@ -385,15 +369,15 @@ void eyelight_viewer_clip_set(Eyelight_Viewer*pres, Evas_Object *clip)
 void eyelight_viewer_move(Eyelight_Viewer*pres, Evas_Coord x, Evas_Coord y)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
 
     pres->current_pos_x = x;
     pres->current_pos_y = y;
 
-    for(i=0;i<pres->size;i++)
-    {
-        if(pres->slides[i])
-            evas_object_move(pres->slides[i], x, y);
-    }
+    EINA_LIST_FOREACH(pres->slides, l, slide)
+            evas_object_move(slide->obj, x, y);
+
     switch(pres->state)
     {
         case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
@@ -420,29 +404,29 @@ void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     int i;
     for(i=0;i<2;i++)
-        if(pres->slide_with_transition[i]==o)
+        if(pres->slide_with_transition[i] && pres->slide_with_transition[i]->obj==o)
                 pres->slide_with_transition[i] = NULL;
 }
 
 /*
  * @brief load the transitions of a slide
  */
-void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres,int slideid)
+void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres, Eyelight_Slide *slide, int id)
 {
-    Evas_Object* slide = eyelight_viewer_slide_get(pres,slideid);
-    const char* trans = edje_object_data_get(slide, "transition");
-    pres->transition_effect_previous[slideid] = trans;
-    pres->transition_effect_next[slideid] = trans;
+    slide->obj = eyelight_viewer_slide_get(pres,slide,id);
+    const char* trans = edje_object_data_get(slide->obj, "transition");
+    slide->transition_effect_previous = trans;
+    slide->transition_effect_next = trans;
 
-    trans = edje_object_data_get(slide, "transition_next");
+    trans = edje_object_data_get(slide->obj, "transition_next");
     if(trans)
     {
-        pres->transition_effect_next[slideid] = trans;
+        slide->transition_effect_next = trans;
     }
-    trans = edje_object_data_get(slide, "transition_previous");
+    trans = edje_object_data_get(slide->obj, "transition_previous");
     if(trans)
     {
-        pres->transition_effect_previous[slideid] = trans;
+        slide->transition_effect_previous = trans;
     }
 }
 
@@ -473,84 +457,49 @@ void eyelight_viewer_clear_cache_set(Eyelight_Viewer *pres, int clear)
 /*
  * @brief return a slide, load it if necessary
  */
-Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos)
+Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,Eyelight_Slide *slide,int pos)
 {
     int w,h;
 
-    if(!pres->slides[pos])
+    if(!slide->obj)
     {
-        //you clear the others data of the slide,
-        //because maybe the slide has to be remove with eyelight_edit_remove_slide
-        {
-            eina_list_free(pres->edje_items[pos]);
-            pres->edje_items[pos] = NULL;
-
-            Eina_List *l, *l_next;
-            {
-                Evas_Object *data;
-                EINA_LIST_FOREACH_SAFE(pres->edje_objects[pos], l, l_next, data)
-                {
-                    evas_object_del(data);
-                    pres->edje_objects[pos] = eina_list_remove_list(pres->edje_objects[pos], l);
-                }
-            }
-            {
-                Eyelight_Custom_Area *data;
-                EINA_LIST_FOREACH_SAFE(pres->custom_areas[pos], l, l_next, data)
-                {
-                    evas_object_del(data->obj);
-                    EYELIGHT_FREE(data);
-                    pres->custom_areas[pos] = eina_list_remove_list(pres->custom_areas[pos], l);
-                }
-            }
-            {
-                Eyelight_Video *data;
-                EINA_LIST_FOREACH_SAFE(pres->video_objects[pos], l, l_next, data)
-                {
-                    evas_object_del(data->o_inter);
-                    EYELIGHT_FREE(data);
-                    pres->video_objects[pos] = eina_list_remove_list(pres->video_objects[pos], l);
-                }
-            }
-        }
-        pres->slides[pos] = eyelight_viewer_slide_load(pres,pos);
-        eyelight_viewer_slide_transitions_load(pres,pos);
-        evas_object_move (pres->slides[pos], pres->current_pos_x, pres->current_pos_y);
-        evas_object_resize(pres->slides[pos],pres->current_size_w,pres->current_size_h);
-        evas_object_clip_set(pres->slides[pos], pres->current_clip);
-        evas_object_show(pres->slides[pos]);
-        edje_object_signal_emit(pres->slides[pos],"hide","eyelight");
-        edje_object_signal_callback_add(pres->slides[pos],"transition,end","eyelight",_eyelight_viewer_end_transition_cb,pres);
+        slide->obj = eyelight_viewer_slide_load(pres,slide,pos);
+        eyelight_viewer_slide_transitions_load(pres,slide,pos);
+        evas_object_move (slide->obj, pres->current_pos_x, pres->current_pos_y);
+        evas_object_resize(slide->obj,pres->current_size_w,pres->current_size_h);
+        evas_object_clip_set(slide->obj, pres->current_clip);
+        evas_object_show(slide->obj);
+        edje_object_signal_emit(slide->obj,"hide","eyelight");
+        edje_object_signal_callback_add(slide->obj,"transition,end","eyelight",_eyelight_viewer_end_transition_cb,pres);
 
         switch(pres->state)
         {
             case EYELIGHT_VIEWER_STATE_EXPOSE:
-                evas_object_stack_below(pres->slides[pos]
+                evas_object_stack_below(slide->obj
                         ,pres->expose_background);
                 break;
             case EYELIGHT_VIEWER_STATE_SLIDESHOW:
-                evas_object_stack_below(pres->slides[pos]
+                evas_object_stack_below(slide->obj
                         ,pres->slideshow_background);
                 break;
             case EYELIGHT_VIEWER_STATE_TABLEOFCONTENTS:
-                evas_object_stack_below(pres->slides[pos]
+                evas_object_stack_below(slide->obj
                         ,pres->tableofcontents_background);
                 break;
             case EYELIGHT_VIEWER_STATE_GOTOSLIDE:
-                evas_object_stack_below(pres->slides[pos]
+                evas_object_stack_below(slide->obj
                         ,pres->gotoslide_object);
                 break;
             default: break;
         }
-        edje_object_signal_emit(pres->slides[pos],"resize","eyelight");
+        edje_object_signal_emit(slide->obj,"resize","eyelight");
     }
-    return pres->slides[pos];
+    return slide->obj;
 }
 
-Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
+Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos)
 {
     char buf[EYELIGHT_BUFLEN];
-    Evas_Object* slide;
     Eyelight_Node *node, *node_slide = NULL;
     char *default_layout = NULL;
     Eina_List *l;
@@ -600,24 +549,24 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
 
     //load the slide
     snprintf(buf,EYELIGHT_BUFLEN,"eyelight/layout_%s",layout);
-    slide = edje_object_add(pres->evas);
-    edje_object_scale_set(slide, pres->current_scale);
-    evas_object_smart_member_add(slide, pres->smart_obj);
+    slide->obj = edje_object_add(pres->evas);
+    edje_object_scale_set(slide->obj, pres->current_scale);
+    evas_object_smart_member_add(slide->obj, pres->smart_obj);
 
     if(!edje_file_group_exists(pres->theme,buf))
     {
         printf("The layout \"%s\" doesnt exists !\n",layout);
-        exit(0);
+        return slide->obj;
     }
-    if(edje_object_file_set(slide, pres->theme, buf) ==  0)
+    if(edje_object_file_set(slide->obj, pres->theme, buf) ==  0)
         printf("eyelight_viewer_slide_load(), edje_object_file_set() erreur! %d \n",
-                edje_object_load_error_get(slide));
+                edje_object_load_error_get(slide->obj));
 
     if(pres->with_border)
-        edje_object_signal_emit(slide, "border,show","eyelight");
-    eyelight_compile(pres, pos, slide);
+        edje_object_signal_emit(slide->obj, "border,show","eyelight");
+    eyelight_compile(pres, slide, pos);
 
-    return slide;
+    return slide->obj;
 }
 
 
@@ -627,51 +576,21 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos)
 void eyelight_viewer_clear(Eyelight_Viewer *pres)
 {
     int i;
+    Eina_List *l;
+    Eyelight_Slide *slide;
     if(pres->do_not_clear_cache)
         return ;
 
-    for(i=0;i<pres->size;i++)
+    i=0;
+    EINA_LIST_FOREACH(pres->slides, l, slide)
     {
-        if(pres->slides[i] && (i<pres->current-1 || i>pres->current+1))
+        if(slide->obj && (i<pres->current-1 || i>pres->current+1))
+            eyelight_slide_clean(slide);
+        else if(!slide->obj && i>=pres->current-1 && i<=pres->current+1)
         {
-            evas_object_del(pres->slides[i]);
-            pres->slides[i]=NULL;
-
-            eina_list_free(pres->edje_items[i]);
-            pres->edje_items[i] = NULL;
-
-            Eina_List *l, *l_next;
-            {
-                Evas_Object *data;
-                EINA_LIST_FOREACH_SAFE(pres->edje_objects[i], l, l_next, data)
-                {
-                    evas_object_del(data);
-                    pres->edje_objects[i] = eina_list_remove_list(pres->edje_objects[i], l);
-                }
-            }
-            {
-                Eyelight_Custom_Area *data;
-                EINA_LIST_FOREACH_SAFE(pres->custom_areas[i], l, l_next, data)
-                {
-                    evas_object_del(data->obj);
-                    EYELIGHT_FREE(data);
-                    pres->custom_areas[i] = eina_list_remove_list(pres->custom_areas[i], l);
-                }
-            }
-            {
-                Eyelight_Video *data;
-                EINA_LIST_FOREACH_SAFE(pres->video_objects[i], l, l_next, data)
-                {
-                    evas_object_del(data->o_inter);
-                    EYELIGHT_FREE(data);
-                    pres->video_objects[i] = eina_list_remove_list(pres->video_objects[i], l);
-                }
-            }
+            slide->obj = eyelight_viewer_slide_get(pres,slide,i);
         }
-        else if(!pres->slides[i] && i>=pres->current-1 && i<=pres->current+1)
-        {
-            pres->slides[i] = eyelight_viewer_slide_get(pres,i);
-        }
+        i++;
     }
 }
 
@@ -682,11 +601,12 @@ void eyelight_viewer_transitions_stop(Eyelight_Viewer* pres)
     {
         if(pres->slide_with_transition[i]!=NULL)
         {
-            edje_object_signal_emit(pres->slide_with_transition[i],"stop,transition","eyelight");
-            if(pres->slide_with_transition[i]==pres->slides[pres->current])
-                edje_object_signal_emit(pres->slide_with_transition[i],"show","eyelight");
+            edje_object_signal_emit(pres->slide_with_transition[i]->obj,"stop,transition","eyelight");
+            Eyelight_Slide *current_slide = eina_list_nth(pres->slides, pres->current);
+            if(pres->slide_with_transition[i]==current_slide)
+                edje_object_signal_emit(pres->slide_with_transition[i]->obj,"show","eyelight");
             else
-                edje_object_signal_emit(pres->slide_with_transition[i],"hide","eyelight");
+                edje_object_signal_emit(pres->slide_with_transition[i]->obj,"hide","eyelight");
         }
     }
 }
@@ -697,32 +617,35 @@ void eyelight_viewer_slide_next(Eyelight_Viewer*pres)
     const char* trans_previous;
     const char* trans_next;
     eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
-    Evas_Object* slide;
 
     if(pres->current>=pres->size-1)
         return ;
+
+    Eyelight_Slide *slide = eina_list_nth(pres->slides,pres->current);
+    Eyelight_Slide *slide_next = eina_list_nth(pres->slides,pres->current+1);
+
     eyelight_viewer_transitions_stop(pres);
     if(strcmp(trans_next,"none")==0)
     {
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)+1);
-        edje_object_signal_emit(slide,"show","eyelight");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
-        edje_object_signal_emit(slide,"hide","eyelight");
+        slide_next->obj = eyelight_viewer_slide_get(pres,slide_next,pres->current+1);
+        edje_object_signal_emit(slide_next->obj,"show","eyelight");
+        slide->obj = eyelight_viewer_slide_get(pres,slide,pres->current);
+        edje_object_signal_emit(slide->obj,"hide","eyelight");
     }
     else
     {
         snprintf(buf,EYELIGHT_BUFLEN,"%s,%s",trans_next,"next,next");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)+1);
-        edje_object_signal_emit(slide,buf,"eyelight");
+        slide_next->obj = eyelight_viewer_slide_get(pres,slide_next,pres->current+1);
+        edje_object_signal_emit(slide_next->obj,buf,"eyelight");
 
         snprintf(buf,EYELIGHT_BUFLEN,"%s,%s",trans_next,"current,next");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
-        edje_object_signal_emit(slide,buf,"eyelight");
+        slide->obj = eyelight_viewer_slide_get(pres,slide,pres->current);
+        edje_object_signal_emit(slide->obj,buf,"eyelight");
     }
-    pres->slide_with_transition[0] = eyelight_viewer_slide_get(pres,pres->current);
-    pres->slide_with_transition[1] = eyelight_viewer_slide_get(pres,pres->current+1);
+    pres->slide_with_transition[0] = slide;
+    pres->slide_with_transition[1] = slide_next;
+    slide_next->obj = eyelight_viewer_slide_get(pres,slide_next, pres->current+1);
     pres->current++;
-    slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
     eyelight_viewer_clear (pres);
 }
 
@@ -731,50 +654,55 @@ void eyelight_viewer_slide_previous(Eyelight_Viewer*pres)
     char buf[EYELIGHT_BUFLEN];
     const char* trans_previous;
     const char* trans_next;
-    Evas_Object* slide;
+
     eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
 
     if(pres->current<=0)
         return ;
 
+    Eyelight_Slide *slide = eina_list_nth(pres->slides,pres->current);
+    Eyelight_Slide *slide_prev = eina_list_nth(pres->slides,pres->current-1);
+
     eyelight_viewer_transitions_stop(pres);
 
     if(strcmp(trans_previous,"none")==0)
     {
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)-1);
-        edje_object_signal_emit(slide,"show","eyelight");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
-        edje_object_signal_emit(slide,"hide","eyelight");
+        slide_prev->obj = eyelight_viewer_slide_get(pres,slide_prev,pres->current-1);
+        edje_object_signal_emit(slide_prev->obj,"show","eyelight");
+        slide->obj = eyelight_viewer_slide_get(pres, slide, pres->current);
+        edje_object_signal_emit(slide->obj,"hide","eyelight");
     }
     else
     {
         snprintf(buf,EYELIGHT_BUFLEN,"%s,%s",trans_previous,"previous,previous");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres)-1);
-        edje_object_signal_emit(slide,buf,"eyelight");
+        slide_prev->obj = eyelight_viewer_slide_get(pres,slide_prev, pres->current-1);
+        edje_object_signal_emit(slide_prev->obj,buf,"eyelight");
 
         snprintf(buf,EYELIGHT_BUFLEN,"%s,%s",trans_previous,"current,previous");
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
-        edje_object_signal_emit(slide,buf,"eyelight");
+        slide->obj = eyelight_viewer_slide_get(pres,slide,pres->current);
+        edje_object_signal_emit(slide->obj,buf,"eyelight");
     }
-    pres->slide_with_transition[0] = eyelight_viewer_slide_get(pres,pres->current);
-    pres->slide_with_transition[1] = eyelight_viewer_slide_get(pres,pres->current-1);
+    pres->slide_with_transition[0] = slide;
+    pres->slide_with_transition[1] = slide_prev;
+    slide_prev->obj = eyelight_viewer_slide_get(pres,slide_prev,pres->current-1);
     pres->current--;
-    slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
     eyelight_viewer_clear (pres);
 }
 
 void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 {
-    Evas_Object* slide;
+    Eyelight_Slide *slide = eina_list_nth(pres->slides, slide_id);
+    if(!slide) return ;
 
     eyelight_viewer_transitions_stop(pres);
 
-    slide = eyelight_viewer_slide_get(pres,slide_id);
-    edje_object_signal_emit(slide,"show","eyelight");
+    slide->obj = eyelight_viewer_slide_get(pres,slide, slide_id);
+    edje_object_signal_emit(slide->obj,"show","eyelight");
     if(pres->current!=slide_id)
     {
-        slide = eyelight_viewer_slide_get(pres,eyelight_viewer_current_id_get(pres));
-        edje_object_signal_emit(slide,"hide","eyelight");
+        slide = eina_list_nth(pres->slides, pres->current);
+        slide->obj = eyelight_viewer_slide_get(pres,slide, pres->current);
+        edje_object_signal_emit(slide->obj,"hide","eyelight");
         pres->current = slide_id;
     }
 

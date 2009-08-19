@@ -20,11 +20,34 @@
 #define  EYELIGHT_VIEWER_INC
 
 
+typedef struct Eyelight_Slide Eyelight_Slide;
+
 #include "Eyelight.h"
 #include <Eet.h>
 #include "eyelight_viewer_thumbnails.h"
 #include "eyelight_compiler_parser.h"
 #include "Eyelight_Edit.h"
+
+
+struct Eyelight_Slide
+{
+    Evas_Object *obj;
+    // Lists of type Evas_Object*
+    // All items of a slide
+    Eina_List *items_all;
+    // Items of type Edje
+    Eina_List *items_edje;
+    // List of type  Eyelight_Video*;
+    // Items of type video
+    Eina_List *items_video;
+    // List of type Eyelight_Custom_Area
+    Eina_List *custom_areas;
+
+    const char* transition_effect_next;
+    const char* transition_effect_previous;
+
+    Eyelight_Thumb thumb;
+};
 
 struct Eyelight_Viewer
 {
@@ -55,33 +78,33 @@ struct Eyelight_Viewer
     Evas_Object *smart_obj;
 
     int with_border;
-    Evas_Object** slides;
+
+    //list of type Eyelight_Slide
+    Eina_List* slides;
+
+    //Evas_Object** slides;
     //for each slide, the list of items (text item, image ...)
     //we need this list to apply the scale when the size of the presentation change
     //theses objects are destroyed when the slide is destroyed, we do not need to destroy them
-    Eina_List** edje_items;
+    //Eina_List** edje_items;
     //for each slide, the list of edje object swallow inside
     //this is the objects added by the block edje{} in a presentation
     //when we destroy a slide we need to destroy each object swallowed inside
-    Eina_List** edje_objects;
+    //Eina_List** edje_objects;
     //for each slide, the list of custom area
     //the type of nodes is Eyelight_Custom_Area
-    Eina_List** custom_areas;
+    //Eina_List** custom_areas;
     //for each slide, the list of video object
     //the type of nodes is Eyelight_Video
-    Eina_List** video_objects;
+    //Eina_List** video_objects;
+
     char *video_module;
 
-    const char** transition_effect_next;
-    const char** transition_effect_previous;
     int size;
     int current;
-    Evas_Object* slide_with_transition[2];
+    Eyelight_Slide* slide_with_transition[2];
 
     Eyelight_Thumbnails* thumbnails;
-
-    //pdf generator
-    char* pdf_file;
 
     //expose
     Evas_Object** expose_image_thumbnails;
@@ -111,12 +134,13 @@ struct Eyelight_Viewer
     int tableofcontents_is_next_program;
     int tableofcontents_is_previous_program;
 };
+void eyelight_slide_clean(Eyelight_Slide *slide);
 
-Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,int pos);
-Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos);
+Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos);
+Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos);
 
 void eyelight_viewer_default_transitions_load(Eyelight_Viewer*pres);
-void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres,int slide);
+void eyelight_viewer_slide_transitions_load(Eyelight_Viewer*pres, Eyelight_Slide *slide, int id);
 void eyelight_viewer_slide_transitions_get(Eyelight_Viewer*pres,int slide, const char** previous, const char** next);
 void eyelight_viewer_transitions_stop(Eyelight_Viewer*pres);
 

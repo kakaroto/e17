@@ -331,7 +331,7 @@ void eyelight_node_free(Eyelight_Node** current, Eyelight_Node *not_free);
  * Add the contents in the slide id_slide (text, image ..)
  * o_slide is the object of the slide
  */
-void eyelight_compile(Eyelight_Viewer *pres, int id_slide, Evas_Object *o_slide);
+void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide);
 
 /**
  * Parse the string delimited by p and end

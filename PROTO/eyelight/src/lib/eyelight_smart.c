@@ -78,7 +78,7 @@ Eina_Bool _eyelight_object_init(Evas_Object *obj)
 void eyelight_object_thumbnails_size_set(Evas_Object *obj, int w, int h)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, 0);
+    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return ;
 
     eyelight_viewer_thumbnails_size_set(sd->pres, w, h);
