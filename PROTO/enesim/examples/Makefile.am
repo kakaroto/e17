@@ -26,6 +26,8 @@ enesim_bench_renderer.c \
 enesim_bench_checker.c \
 enesim_bench_stripes.c \
 enesim_bench_hswitch.c \
+enesim_bench_dispmap.c \
+enesim_bench_raddist.c \
 image.c
 
 endif

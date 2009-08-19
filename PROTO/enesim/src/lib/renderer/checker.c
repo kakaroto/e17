@@ -260,14 +260,13 @@ static void _span_projective(Enesim_Renderer *r, int x, int y, unsigned int len,
 	}
 }
 
-static void _state_cleanup(Checker *s)
+static void _state_cleanup(Enesim_Renderer *r)
 {
 
 }
 
 static Eina_Bool _state_setup(Enesim_Renderer *r)
 {
-	Enesim_Matrix_Type mt;
 	Checker *c = (Checker *)r;
 
 	if (r->matrix.type == ENESIM_MATRIX_IDENTITY)

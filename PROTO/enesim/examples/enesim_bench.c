@@ -361,11 +361,11 @@ ok:
 	}
 	else if (!strcmp(opt_bench, "raddist"))
 	{
-		//raddist_bench();
+		raddist_bench();
 	}
 	else if (!strcmp(opt_bench, "dispmap"))
 	{
-		//dispmap_bench();
+		dispmap_bench();
 	}
 	else if (!strcmp(opt_bench, "checker"))
 	{
@@ -384,9 +384,9 @@ ok:
 		compositor_bench();
 		//transformer_bench();
 		//scaler_bench();
-		//rasterizer_bench();
-		//raddist_bench();
-		//dispmap_bench();
+		rasterizer_bench();
+		raddist_bench();
+		dispmap_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

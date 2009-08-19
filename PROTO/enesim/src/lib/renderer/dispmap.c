@@ -17,102 +17,199 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+/*
+ * P'(x,y) <- P(x + scale * (XC(x,y) - .5), y + scale * (YC(x,y) - .5))
+ */
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-/* P'(x,y) <- P( x + scale * (XC(x,y) - .5), y + scale * (YC(x,y) - .5)) */
-static void _dm_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t sw, uint32_t sh,
-		float scale, uint32_t *map,
-		uint32_t dx, uint32_t dy, uint32_t dlen,
-		uint32_t *dst)
+typedef struct _Dispamp
 {
-	uint32_t *e = dst + dlen;
+	Enesim_Renderer base;
+	Enesim_Surface *map;
+	Enesim_Surface *src;
+	float scale;
+} Dispmap;
 
-	while (dst < e)
+static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
+		unsigned int len, uint32_t *dst)
+{
+	Dispmap *d = (Dispmap *)r;
+	uint32_t *end = dst + len;
+	uint32_t *map, *src;
+	int mstride;
+	int sstride;
+	int sw, sh, mw, mh;
+	Eina_F16p16 scale, xx, yy;
+
+	/* setup the parameters */
+	enesim_surface_size_get(d->src, &sw, &sh);
+	enesim_surface_size_get(d->map, &mw, &mh);
+	mstride = enesim_surface_stride_get(d->map);
+	sstride = enesim_surface_stride_get(d->src);
+	map = enesim_surface_data_get(d->map);
+	src = enesim_surface_data_get(d->src);
+
+	map = map + (mstride * y) + x;
+	/* FIXME put this on the setup */
+	yy = eina_f16p16_int_from(y);
+	scale = eina_f16p16_float_from(d->scale);
+
+	while (dst < end)
 	{
-		uint32_t p0 = 0;
-		uint16_t a;
-		int32_t sx, sy;
-		int32_t sxx, syy;
-#if FIXED
-		int32_t vx, vy;
-#else
-		float vx, vy;
-#endif
-		/* first we transform input coords to src coords... */
-		if (dx >= sw || dy >= sh)
+		Eina_F16p16 sxx, syy, vx, vy;
+		int sx, sy;
+		uint32_t p0;
+		uint16_t m0;
+		uint16_t m1;
+
+		if (x < 0 || x >= mw || y < 0 || y >= mh)
 			goto next;
-		a = *(map) >> 24;
-		/*
-		{
-			uint32_t tmp = *map;
-			a = tmp >> 24;
-			if (a > 0 && a < 255)
-				a = ((tmp >> 16) & 0xff) * 255 / a;
-			else
-				a = a;
 
-		}*/
-#if FIXED
-		vx = ((a - 127) * 65536) / (255 * 65536);
-		vy = ((a - 127) * 65536) / (255 * 65536);
-		sxx = (dx * 65535) + (scale * 65536 * vx);
-		syy = (dy * 65535) + (scale * 65536 * vy);
-#else
-		vx = (a / 255.0) - 0.5;
-		vy = (a / 255.0) - 0.5;
-		sxx = (dx + (scale * vx)) * 65536;
-		syy = (dy + (scale * vy)) * 65536;
+		xx = eina_f16p16_int_from(x);
 
-#endif
-		sx = (sxx >> 16);
-		sy = (syy >> 16);
-		/* ... then we sample the src. */
-		if ( (((unsigned) (sx + 1)) < (sw + 1)) && (((unsigned) (sy + 1)) < (sh + 1)) )
-		{
-			unsigned int  p3 = 0, p2 = 0, p1 = 0;
-			unsigned int *p = src + (sy * spitch) + sx;
-#if 0
+		m0 = *map >> 24;
+		m1 = *map & 0xff;
+		/* FIXME define fixed(255) as a constant */
+		vx = eina_f16p16_int_from(m0 - 127);
+		vx = eina_f16p16_mul((((int64_t)(vx) << 16) / eina_f16p16_int_from(255)), scale);
 
-			if ((sx > -1) && (sy > -1))
-				p0 = *p;
-			if ((sy > -1) && ((sx + 1) < sw))
-				p1 = *(p + 1);
-			if ((sy + 1) < sh)
-			{
-				if (sx > -1)
-					p2 = *(p + spitch);
-				if ((sx + 1) < sw)
-					p3 = *(p + spitch + 1);
-			}
-			if (p0 | p1 | p2 | p3)
-			{
-				sx = 1 + ((sxx >> 8) & 0xff);
-				sy = 1 + ((syy >> 8) & 0xff);
+		vy = eina_f16p16_int_from(m1 - 127);
+		vy = eina_f16p16_mul((((int64_t)(vy) << 16) / eina_f16p16_int_from(255)), scale);
 
-				p0 = INTERP_256(sx, p1, p0);
-				p2 = INTERP_256(sx, p3, p2);
-				p0 = INTERP_256(sy, p2, p0);
-			}
-#else
-			if ((sx > -1) && (sy > -1))
-				p0 = *p;
-#endif
-			//printf("moving %d %d (%d)\n", vx >> 16, vy >> 16, a);
-			//printf("moving %g %g (%d)\n", vx, vy, a);
-			//printf("from %d %d to %d %d\n", dx, dy, sx, sy);
-		}
+		sxx = xx + vx;
+		syy = yy + vy;
+
+		sx = eina_f16p16_int_to(sxx);
+		sy = eina_f16p16_int_to(syy);
+		p0 = argb8888_sample_good(src, sstride, sw, sh, sxx, syy, sx, sy);
+
 next:
 		*dst++ = p0;
 		map++;
-		dx++;
+		x++;
 	}
+}
+
+static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
+		unsigned int len, uint32_t *dst)
+{
+	Dispmap *d = (Dispmap *)r;
+	uint32_t *end = dst + len;
+	uint32_t *map, *src;
+	int mstride;
+	int sstride;
+	int sw, sh, mw, mh;
+	Eina_F16p16 scale, xx, yy;
+
+	/* setup the parameters */
+	enesim_surface_size_get(d->src, &sw, &sh);
+	enesim_surface_size_get(d->map, &mw, &mh);
+	mstride = enesim_surface_stride_get(d->map);
+	sstride = enesim_surface_stride_get(d->src);
+	map = enesim_surface_data_get(d->map);
+	src = enesim_surface_data_get(d->src);
+
+	/* TODO move by the origin */
+	yy = eina_f16p16_int_from(y);
+	xx = eina_f16p16_int_from(x);
+	yy = eina_f16p16_mul(r->matrix.values.yx, xx) +
+			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
+	xx = eina_f16p16_mul(r->matrix.values.xx, xx) +
+			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+
+	scale = eina_f16p16_float_from(d->scale);
+
+	while (dst < end)
+	{
+		Eina_F16p16 sxx, syy, vx, vy;
+		int sx, sy;
+		uint32_t p0 = 0;
+		uint16_t m0;
+		uint16_t m1;
+
+		x = eina_f16p16_int_to(xx);
+		y = eina_f16p16_int_to(yy);
+
+		if (x < 0 || x >= mw || y < 0 || y >= mh)
+			goto next;
+
+		m0 = *(map + (mstride * y) + x);
+		m1 = m0 & 0xff;
+		m0 = m0 >> 24;
+
+		/* FIXME define fixed(255) as a constant */
+		vx = eina_f16p16_int_from(m0 - 127);
+		vx = eina_f16p16_mul((((int64_t)(vx) << 16) / eina_f16p16_int_from(255)), scale);
+
+		vy = eina_f16p16_int_from(m1 - 127);
+		vy = eina_f16p16_mul((((int64_t)(vy) << 16) / eina_f16p16_int_from(255)), scale);
+
+		sxx = xx + vx;
+		syy = yy + vy;
+
+		sx = eina_f16p16_int_to(sxx);
+		sy = eina_f16p16_int_to(syy);
+		p0 = argb8888_sample_good(src, sstride, sw, sh, sxx, syy, sx, sy);
+
+next:
+		*dst++ = p0;
+		map++;
+		yy += r->matrix.values.yx;
+		xx += r->matrix.values.xx;
+	}
+}
+
+
+
+static void _state_cleanup(Enesim_Renderer *r)
+{
+
+}
+
+static Eina_Bool _state_setup(Enesim_Renderer *r)
+{
+	if (r->matrix.type == ENESIM_MATRIX_IDENTITY)
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_identity);
+	else if (r->matrix.type == ENESIM_MATRIX_AFFINE)
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_affine);
+	return EINA_TRUE;
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-EAPI Enesim_Renderer * enesim_dispmap_new(void)
+EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void)
 {
+	Dispmap *d;
+	Enesim_Renderer *r;
 
+	d = calloc(1, sizeof(Dispmap));
+
+	r = (Enesim_Renderer *)d;
+	enesim_renderer_init(r);
+	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
+
+	return r;
 }
 
+EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map)
+{
+	Dispmap *d = (Dispmap *)r;
+
+	d->map = map;
+}
+
+
+EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src)
+{
+	Dispmap *d = (Dispmap *)r;
+
+	d->src = src;
+}
+
+EAPI void enesim_renderer_dispmap_scale_set(Enesim_Renderer *r, float scale)
+{
+	Dispmap *d = (Dispmap *)r;
+
+	d->scale = scale;
+}

@@ -78,6 +78,16 @@ EAPI void enesim_renderer_stripes_color_set(Enesim_Renderer *p,
 EAPI void enesim_renderer_stripes_thickness_set(Enesim_Renderer *p,
 		float thickness_0, float thickness_1);
 
+EAPI Enesim_Renderer * enesim_renderer_dispmap_new(void);
+EAPI void enesim_renderer_dispmap_map_set(Enesim_Renderer *r, Enesim_Surface *map);
+EAPI void enesim_renderer_dispmap_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+EAPI void enesim_renderer_dispmap_scale_set(Enesim_Renderer *r, float scale);
+
+EAPI Enesim_Renderer * enesim_renderer_raddist_new(void);
+EAPI void enesim_renderer_raddist_radius_set(Enesim_Renderer *r, float radius);
+EAPI void enesim_renderer_raddist_scale_set(Enesim_Renderer *r, float scale);
+EAPI void enesim_renderer_raddist_src_set(Enesim_Renderer *r, Enesim_Surface *src);
+EAPI void enesim_renderer_raddist_center_set(Enesim_Renderer *r, int ox, int oy);
 
 EAPI Enesim_Renderer * enesim_renderer_importer_new(void);
 EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle);

@@ -1,22 +1,9 @@
 #include "enesim_bench_common.h"
 /******************************************************************************
- *                         Raddist benchmark functions                        *
+ *                             Dispmap functions                              *
  ******************************************************************************/
-static const char * quality_name_get(Enesim_Quality q)
-{
-	switch (q)
-	{
-		case ENESIM_FAST:
-		return "fast";
 
-		case ENESIM_GOOD:
-		return "good";
-
-		default:
-		return NULL;
-	}
-}
-
+#if 0
 static void dispmap_map_create(Enesim_Surface **s)
 {
 	uint32_t *d;
@@ -46,26 +33,19 @@ static void dispmap_map_create(Enesim_Surface **s)
 	}
 
 }
+#endif
 
-static void dispmap_1d_run(Enesim_Quality q)
+void dispmap_bench(void)
 {
 	Enesim_Surface *src = NULL;
-	Enesim_Surface *dst= NULL;
-	Enesim_Surface *map= NULL;
-	Enesim_Operator op;
-	uint32_t *s;
-	uint32_t *d;
-	uint32_t *m;
-	int t;
-	double start, end;
-	char name[256];
+	Enesim_Surface *dst = NULL;
+	Enesim_Surface *map = NULL;
+	Enesim_Renderer *r;
 
-	snprintf(name, 256, "dispmap_%s", quality_name_get(q));
-	if (!enesim_dispmap_1d_op_get(&op, opt_cpu, opt_fmt, q, opt_fmt))
-	{
-		printf("%s         [NOT BUILT]\n", name);
-		return;
-	}
+	printf("*********************\n");
+	printf("*   Dispmap Bench   *\n");
+	printf("*********************\n");
+
 #if 1
 	surfaces_create(&src, opt_fmt, &dst, opt_fmt, &map, opt_fmt);
 #else
@@ -73,40 +53,9 @@ static void dispmap_1d_run(Enesim_Quality q)
 	dispmap_map_create(&map);
 #endif
 
-	s = enesim_surface_data_get(src);
-	m = enesim_surface_data_get(map);
-	start = get_time();
-	for (t = 0; t < opt_times; t++)
-	{
-		int h = opt_height;
-		int y = 0;
-
-		d = enesim_surface_data_get(dst);
-		while (h--)
-		{
-			enesim_operator_dispmap_1d(&op,
-					s, opt_width, opt_width, opt_height,
-					64, m,
-					0, y, opt_width, d);
-			y++;
-			d += opt_width;
-			m += opt_width;
-		}
-	}
-	end = get_time();
-	printf("%s         [%3.3f sec]\n", name, end - start);
-	test_finish(name, ENESIM_FILL, dst, src, NULL, NULL);
-	enesim_surface_delete(map);
-}
-
-void dispmap_bench(void)
-{
-	Enesim_Quality q;
-
-	printf("*********************\n");
-	printf("*   Dispmap Bench   *\n");
-	printf("*********************\n");
-
-	//for (q = 0; q < ENESIM_QUALITIES; q++)
-		dispmap_1d_run(ENESIM_FAST);
+	r = enesim_renderer_dispmap_new();
+	enesim_renderer_dispmap_map_set(r, map);
+	enesim_renderer_dispmap_src_set(r, src);
+	enesim_renderer_dispmap_scale_set(r, 10);
+	renderer_run(r, dst, "Dispmap", "dispmap");
 }

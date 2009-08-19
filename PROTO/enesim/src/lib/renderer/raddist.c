@@ -17,70 +17,117 @@
  */
 #include "Enesim.h"
 #include "enesim_private.h"
+
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-static void _rd_argb8888_fast_argb8888(uint32_t *src, uint32_t spitch,  uint32_t sw, uint32_t sh,
-		float x0, float y0, float r0, float scale,
-		uint32_t x, uint32_t y, uint32_t dlen,
-		uint32_t *dst)
+typedef struct _Raddist
 {
-	uint32_t *e = dst + dlen;
-	float r0_inv = 1.0f/r0;
-	int32_t dx = x - x0;
-	int32_t dy = y - y0;
+	Enesim_Renderer base;
+	Enesim_Surface *src;
+	float scale;
+	float radius;
+	/* the x and y origin of the circle */
+	int orx, ory;
+} Raddist;
 
-	while (dst < e)
+static void _span_identity(Enesim_Renderer *r, int x, int y,
+		unsigned int len, uint32_t *dst)
+{
+	Raddist *rd = (Raddist *)r;
+	uint32_t *end = dst + len;
+	float r_inv;
+	uint32_t *src;
+	int sw, sh;
+	int sstride;
+
+	/* setup the parameters */
+	enesim_surface_size_get(rd->src, &sw, &sh);
+	sstride = enesim_surface_stride_get(rd->src);
+	src = enesim_surface_data_get(rd->src);
+	/* FIXME move this to the setup */
+	r_inv = 1.0f / rd->radius;
+
+	x -= rd->orx;
+	y -= rd->ory;
+
+	while (dst < end)
 	{
-		/* first we transform input coords to src coords... */
-		unsigned int  p0 = 0;
-		int     sxx, syy, sx, sy;
-		float   r = hypot(dx, dy);
+		Eina_F16p16 sxx, syy;
+		uint32_t p0;
+		int sx, sy;
+		float r = hypot(x, y);
 
-		r = (((scale * (r0 - r)) + r) * r0_inv);
-		sxx = ((r * dx) + x0) * 65536;  sx = (sxx >> 16);
-		syy = ((r * dy) + y0) * 65536;  sy = (syy >> 16);
-		/* ... then we sample the src. */
-		if ( (((unsigned) (sx + 1)) < (sw + 1)) && (((unsigned) (sy + 1)) < (sh + 1)) )
-		{
-			unsigned int  p3 = 0, p2 = 0, p1 = 0;
-			unsigned int *p = src + (sy * spitch) + sx;
-#if 0
+		r = (((rd->scale * (rd->radius - r)) + r) * r_inv);
+		sxx = eina_f16p16_int_from((r * x) + rd->orx);
+		syy = eina_f16p16_int_from((r * y) + rd->ory);
 
-			if ((sx > -1) && (sy > -1))
-				p0 = *p;
-			if ((sy > -1) && ((sx + 1) < sw))
-				p1 = *(p + 1);
-			if ((sy + 1) < sh)
-			{
-				if (sx > -1)
-					p2 = *(p + spitch);
-				if ((sx + 1) < sw)
-					p3 = *(p + spitch + 1);
-			}
-			if (p0 | p1 | p2 | p3)
-			{
-				sx = 1 + ((sxx >> 8) & 0xff);
-				sy = 1 + ((syy >> 8) & 0xff);
+		sy = (syy >> 16);
+		sx = (sxx >> 16);
+		p0 = argb8888_sample_good(src, sstride, sw, sh, sxx, syy, sx, sy);
 
-				p0 = INTERP_256(sx, p1, p0);
-				p2 = INTERP_256(sx, p3, p2);
-				p0 = INTERP_256(sy, p2, p0);
-			}
-#else
-			if ((sx > -1) && (sy > -1))
-				p0 = *p;
-#endif
-		}
 		*dst++ = p0;
-		dx++;
+		x++;
 	}
+}
+
+static Eina_Bool _state_setup(Enesim_Renderer *r)
+{
+	r->span = ENESIM_RENDERER_SPAN_DRAW(_span_identity);
+#if 0
+	if (r->matrix.type == ENESIM_MATRIX_IDENTITY)
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_identity);
+	else if (r->matrix.type == ENESIM_MATRIX_AFFINE)
+		r->span = ENESIM_RENDERER_SPAN_DRAW(_argb8888_a_b_span_affine);
+#endif
+	return EINA_TRUE;
 }
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
 EAPI Enesim_Renderer * enesim_renderer_raddist_new(void)
 {
+	Raddist *rd;
+	Enesim_Renderer *r;
 
+	rd = calloc(1, sizeof(Raddist));
+
+	r = (Enesim_Renderer *)rd;
+	enesim_renderer_init(r);
+	r->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
+
+	return r;
 }
 
+EAPI void enesim_renderer_raddist_radius_set(Enesim_Renderer *r, float radius)
+{
+	Raddist *rd = (Raddist *)r;
+
+	if (!radius)
+		radius = 1;
+	rd->radius = radius;
+}
+
+EAPI void enesim_renderer_raddist_scale_set(Enesim_Renderer *r, float scale)
+{
+	Raddist *rd = (Raddist *)r;
+
+	if (scale > 1.0)
+			scale = 1.0;
+	rd->scale = scale;
+}
+
+EAPI void enesim_renderer_raddist_src_set(Enesim_Renderer *r, Enesim_Surface *src)
+{
+	Raddist *rd = (Raddist *)r;
+
+	rd->src = src;
+}
+
+EAPI void enesim_renderer_raddist_center_set(Enesim_Renderer *r, int ox, int oy)
+{
+	Raddist *rd = (Raddist *)r;
+
+	rd->orx = ox;
+	rd->ory = oy;
+}

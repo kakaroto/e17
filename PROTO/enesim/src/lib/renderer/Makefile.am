@@ -16,4 +16,6 @@ rectangle.c \
 circle.c \
 ellipse.c \
 stripes.c \
+dispmap.c \
+raddist.c \
 importer.c

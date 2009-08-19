@@ -259,4 +259,48 @@ static inline uint32_t argb8888_mul_sym(uint16_t a, uint32_t c)
 	   (((((c) & 0x00ff00ff) * (a) + 0xff00ff) >> 8) & 0x00ff00ff) );
 }
 
+/*
+ *
+ */
+static inline uint32_t argb8888_sample_good(uint32_t *data, int stride, int sw,
+		int sh, Eina_F16p16 xx, Eina_F16p16 yy, int x, int y)
+{
+	if (x < sw && y < sh && x >= 0 && y >= 0)
+	{
+		uint32_t p0 = 0, p1 = 0, p2 = 0, p3 = 0;
+
+		data = data + (stride * y) + x;
+
+		if ((x > -1) && (y > - 1))
+			p0 = *data;
+
+		if ((y > -1) && ((x + 1) < sw))
+				p1 = *(data + 1);
+
+		if ((y + 1) < sh)
+		{
+			if (x > -1)
+				p2 = *(data + stride);
+			if ((x + 1) < sw)
+				p3 = *(data + stride + 1);
+		}
+
+		if (p0 | p1 | p2 | p3)
+		{
+			uint16_t ax, ay;
+
+			ax = 1 + ((xx & 0xffff) >> 8);
+			ay = 1 + ((yy & 0xffff) >> 8);
+
+			p0 = argb8888_interp_256(ax, p1, p0);
+			p2 = argb8888_interp_256(ax, p3, p2);
+			p0 = argb8888_interp_256(ay, p2, p0);
+		}
+		return p0;
+	}
+	else
+		return 0;
+}
+
+
 #endif /* FORMAT_ARGB8888_H_*/
