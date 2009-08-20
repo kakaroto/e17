@@ -198,6 +198,23 @@ case "$host_os" in
 esac
 AC_SUBST(WIN32_CFLAGS)
 
+EXPEDITE_CXXFLAGS=""
+AC_LANG_PUSH([C++])
+CXXFLAGS_save="${CXXFLAGS}"
+CXXFLAGS="${CXXFLAGS} -fno-rtti -fno-exceptions"
+AC_COMPILE_IFELSE(
+   [AC_LANG_PROGRAM([[]])],
+   [have_cxx_flags="yes"],
+   [have_cxx_flags="no"])
+AC_MSG_CHECKING([whether the compiler supports -fno-rtti -fno-exceptions])
+AC_MSG_RESULT([${have_cxx_flags}])
+CXXFLAGS="${CXXFLAGS_save}"
+if test "x${have_cxx_flags}" = "xyes" ; then
+   EXPEDITE_CXXFLAGS="-fno-rtti -fno-exceptions"
+fi
+AC_LANG_POP([C++])
+AC_SUBST(EXPEDITE_CXXFLAGS)
+
 
 ### Checks for linker characteristics
 
