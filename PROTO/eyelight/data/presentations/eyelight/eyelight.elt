@@ -1,7 +1,6 @@
 //Some ways use in this presentation are a bit stupid (define a default subtitle ...)
 //but this file is used to test the compiler
 
-
 //a list of defaults value
 layout: 2_columns_left;
 foot_text :" Watchwolf , watchwolf@watchwolf.fr";

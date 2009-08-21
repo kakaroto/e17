@@ -82,22 +82,6 @@ struct Eyelight_Viewer
     //list of type Eyelight_Slide
     Eina_List* slides;
 
-    //Evas_Object** slides;
-    //for each slide, the list of items (text item, image ...)
-    //we need this list to apply the scale when the size of the presentation change
-    //theses objects are destroyed when the slide is destroyed, we do not need to destroy them
-    //Eina_List** edje_items;
-    //for each slide, the list of edje object swallow inside
-    //this is the objects added by the block edje{} in a presentation
-    //when we destroy a slide we need to destroy each object swallowed inside
-    //Eina_List** edje_objects;
-    //for each slide, the list of custom area
-    //the type of nodes is Eyelight_Custom_Area
-    //Eina_List** custom_areas;
-    //for each slide, the list of video object
-    //the type of nodes is Eyelight_Video
-    //Eina_List** video_objects;
-
     char *video_module;
 
     int size;

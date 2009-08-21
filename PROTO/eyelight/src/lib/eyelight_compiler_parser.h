@@ -279,7 +279,6 @@ struct eyelight_node
 struct eyelight_compiler
 {
     char* input_file;
-    char* output_file;
 
     int display_areas;
 

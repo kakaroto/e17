@@ -73,7 +73,40 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
 
     if(eyelight_viewer_size_get(pres)>0)
         eyelight_viewer_slide_goto(pres,0);
+    else
+        pres->current = -1;
 
+
+    eyelight_viewer_thumbnails_init(pres);
+    eyelight_viewer_thumbnails_background_load_start(pres);
+
+    printf("## Presentation file: %s\n",pres->elt_file);
+    printf("## Theme: %s\n",pres->theme);
+    printf("## Number of slides: %d\n\n",pres->size);
+}
+
+int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char* presentation)
+{
+    EYELIGHT_FREE(pres->elt_file);
+
+    eyelight_viewer_clean(pres);
+
+    if(presentation && ecore_file_exists(presentation))
+        pres->elt_file = strdup(presentation);
+    else
+        pres->elt_file = NULL;
+
+    pres -> compiler = eyelight_elt_load(pres->elt_file);
+    pres->size = eyelight_nb_slides_get(pres->compiler);
+
+    int i;
+    for(i=0; i<pres->size; i++)
+    {
+        pres->slides = eina_list_append(pres->slides, calloc(1, sizeof(Eyelight_Slide)));
+    }
+
+
+    pres->current = -1;
 
     eyelight_viewer_thumbnails_init(pres);
     eyelight_viewer_thumbnails_background_load_start(pres);
@@ -463,6 +496,8 @@ Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,Eyelight_Slide *slid
 
     if(!slide->obj)
     {
+        eyelight_slide_clean(slide);
+
         slide->obj = eyelight_viewer_slide_load(pres,slide,pos);
         eyelight_viewer_slide_transitions_load(pres,slide,pos);
         evas_object_move (slide->obj, pres->current_pos_x, pres->current_pos_y);
@@ -507,7 +542,6 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *sli
     Eyelight_Compiler *compiler = pres->compiler;
     l = compiler->root->l;
     int i_slide = -1;
-
 
     //retrieve the slide and the layout
     while( l && i_slide < pos)
@@ -616,10 +650,11 @@ void eyelight_viewer_slide_next(Eyelight_Viewer*pres)
     char buf[EYELIGHT_BUFLEN];
     const char* trans_previous;
     const char* trans_next;
-    eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
 
     if(pres->current>=pres->size-1)
         return ;
+
+    eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
 
     Eyelight_Slide *slide = eina_list_nth(pres->slides,pres->current);
     Eyelight_Slide *slide_next = eina_list_nth(pres->slides,pres->current+1);
@@ -655,10 +690,10 @@ void eyelight_viewer_slide_previous(Eyelight_Viewer*pres)
     const char* trans_previous;
     const char* trans_next;
 
-    eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
-
     if(pres->current<=0)
         return ;
+
+    eyelight_slide_transitions_get(pres,pres->current,&trans_previous, &trans_next);
 
     Eyelight_Slide *slide = eina_list_nth(pres->slides,pres->current);
     Eyelight_Slide *slide_prev = eina_list_nth(pres->slides,pres->current-1);
@@ -698,14 +733,14 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 
     slide->obj = eyelight_viewer_slide_get(pres,slide, slide_id);
     edje_object_signal_emit(slide->obj,"show","eyelight");
-    if(pres->current!=slide_id)
+    if(pres->current!=slide_id && pres->current>=0)
     {
         slide = eina_list_nth(pres->slides, pres->current);
         slide->obj = eyelight_viewer_slide_get(pres,slide, pres->current);
         edje_object_signal_emit(slide->obj,"hide","eyelight");
-        pres->current = slide_id;
     }
 
+    pres->current = slide_id;
     pres->slide_with_transition[0] = NULL;
     pres->slide_with_transition[1] = NULL;
     eyelight_viewer_clear (pres);

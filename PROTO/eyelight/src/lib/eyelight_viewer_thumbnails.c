@@ -44,6 +44,15 @@ void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
     pres->thumbnails->idle = ecore_idler_add(_eyelight_viewer_thumbnails_load_idle,pres);
 }
 
+void eyelight_viewer_thumbnails_background_load_stop(Eyelight_Viewer* pres)
+{
+    if(pres->thumbnails->idle)
+    {
+        ecore_idler_del(pres->thumbnails->idle);
+        pres->thumbnails->idle = NULL;
+    }
+    pres->thumbnails->is_background_load = 0;
+}
 
 void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
 {

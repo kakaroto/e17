@@ -47,29 +47,19 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
 {
     FILE* output;
     char* end;
-    char* p;
+    char* p = NULL;
     char buf[EYELIGHT_BUFLEN];
     char* output_file;
 
-    if(!input_file)
-        return NULL;
-
     Eyelight_Compiler* compiler = eyelight_compiler_new(input_file, 0);
 
-    char* path = ecore_file_dir_get(input_file);
-    snprintf(buf,EYELIGHT_BUFLEN,"%s/%s",path,ecore_file_file_get(input_file));
-    buf[strlen(buf)-2] = 'd';
-    buf[strlen(buf)-1] = 'c';
-
-    compiler->output_file = strdup(buf);
-    output_file = strdup(buf);
-
-    p = eyelight_source_fetch(compiler->input_file,&end);
-    eyelight_parse(compiler,p,end);
+    if(input_file)
+    {
+        p = eyelight_source_fetch(compiler->input_file,&end);
+        eyelight_parse(compiler,p,end);
+    }
 
     EYELIGHT_FREE(p);
-    EYELIGHT_FREE(path);
-    EYELIGHT_FREE(output_file);
 
     return compiler;
 }
@@ -81,7 +71,6 @@ Eyelight_Compiler* eyelight_elt_load(char *input_file)
 Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
 {
     Eyelight_Compiler* compiler;
-    if(!input_file) return NULL;
 
     compiler = calloc(1,sizeof(Eyelight_Compiler));
     compiler->line = 1;
@@ -116,7 +105,8 @@ Eyelight_Compiler* eyelight_compiler_new(char* input_file, int display_areas)
             node_area);
     //
 
-    compiler->input_file = strdup(input_file);
+    if(input_file)
+        compiler->input_file = strdup(input_file);
     compiler-> display_areas = display_areas;
 
     return compiler;
@@ -136,7 +126,6 @@ void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
     eyelight_node_free(&(compiler->node_summary),NULL);
 
     EYELIGHT_FREE(compiler->input_file);
-    EYELIGHT_FREE(compiler->output_file);
 
     EYELIGHT_FREE(compiler);
 }

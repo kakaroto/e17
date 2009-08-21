@@ -57,6 +57,7 @@ EAPI void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int 
 
 EAPI int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* presentation);
 EAPI int eyelight_viewer_theme_file_set(Eyelight_Viewer *pres, const char* theme);
+EAPI int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char* presentation);
 EAPI const char* eyelight_viewer_presentation_file_get(Eyelight_Viewer *pres);
 EAPI const char* eyelight_viewer_theme_file_get(Eyelight_Viewer *pres);
 
