@@ -32,6 +32,7 @@ enesim_bench_shape.c \
 enesim_bench_circle.c \
 enesim_bench_ellipse.c \
 enesim_bench_rectangle.c \
+enesim_bench_perlin.c \
 image.c
 
 endif

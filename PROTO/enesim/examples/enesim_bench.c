@@ -171,6 +171,11 @@ int bench_get(const char *name)
 		opt_bench = "rectangle";
 		return 1;
 	}
+	else if (!strcmp(name, "perlin"))
+	{
+		opt_bench = "perlin";
+		return 1;
+	}
 	return 0;
 }
 
@@ -215,6 +220,7 @@ void bench_help(void)
 	printf("circle\n");
 	printf("ellipse\n");
 	printf("rectangle\n");
+	printf("perlin\n");
 	printf("all\n");
 }
 
@@ -408,6 +414,10 @@ ok:
 	else if (!strcmp(opt_bench, "rectangle"))
 	{
 		rectangle_bench();
+	}
+	else if (!strcmp(opt_bench, "perlin"))
+	{
+		perlin_bench();
 	}
 	else if (!strcmp(opt_bench, "all"))
 	{

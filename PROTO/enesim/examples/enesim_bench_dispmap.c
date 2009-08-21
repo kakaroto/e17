@@ -2,38 +2,28 @@
 /******************************************************************************
  *                             Dispmap functions                              *
  ******************************************************************************/
-
-#if 0
 static void dispmap_map_create(Enesim_Surface **s)
 {
-	uint32_t *d;
-	uint32_t y;
+	Enesim_Renderer *r;
 	int i;
-	int stride;
+	uint32_t *data;
 
 	*s = enesim_surface_new(ENESIM_FORMAT_ARGB8888, opt_width, opt_height);
-	enesim_compositor_span_color_get(opt_cpu, &op, ENESIM_FILL, opt_fmt, 0xaaffffff);
-	d = enesim_surface_data_get(*s);
-	stride = enesim_surface_stride_get(*s);
+	data = enesim_surface_data_get(*s);
 
-	for (i = 0; i < opt_height / 3; i++)
+	r = enesim_renderer_perlin_new();
+	enesim_renderer_perlin_octaves_set(r, 4);
+	enesim_renderer_perlin_frequency_set(r, 0.01);
+	enesim_renderer_perlin_persistence_set(r, 0.9);
+	enesim_renderer_state_setup(r);
+	for (i = 0; i < opt_height; i++)
 	{
-		enesim_operator_drawer_span(&op, d, opt_width, NULL, 0xffffffff, NULL);
-		d += stride;
+		enesim_renderer_span_fill(r, 0, i, opt_width, data);
+		data += opt_width;
 	}
-	for (i = 0; i < opt_height / 3; i++)
-	{
-		enesim_operator_drawer_span(&op, d, opt_width, NULL, 0x77777777, NULL);
-		d += stride;
-	}
-	for (i = 0; i < opt_height / 3; i++)
-	{
-		enesim_operator_drawer_span(&op, d, opt_width, NULL, 0x0, NULL);
-		d += stride;
-	}
-
+	enesim_renderer_state_cleanup(r);
+	enesim_renderer_delete(r);
 }
-#endif
 
 void dispmap_bench(void)
 {
@@ -46,12 +36,8 @@ void dispmap_bench(void)
 	printf("*   Dispmap Bench   *\n");
 	printf("*********************\n");
 
-#if 1
-	surfaces_create(&src, opt_fmt, &dst, opt_fmt, &map, opt_fmt);
-#else
 	surfaces_create(&src, opt_fmt, &dst, opt_fmt, NULL, 0);
 	dispmap_map_create(&map);
-#endif
 
 	r = enesim_renderer_dispmap_new();
 	enesim_renderer_dispmap_map_set(r, map);

@@ -103,6 +103,13 @@ EAPI Enesim_Renderer * enesim_renderer_importer_new(void);
 EAPI void enesim_renderer_importer_angle_set(Enesim_Renderer *r, Enesim_Angle angle);
 EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter_Data *cdata);
 
+
+EAPI Enesim_Renderer * enesim_renderer_perlin_new(void);
+EAPI void enesim_renderer_perlin_octaves_set(Enesim_Renderer *r, unsigned int octaves);
+EAPI void enesim_renderer_perlin_persistence_set(Enesim_Renderer *r, float persistence);
+EAPI void enesim_renderer_perlin_frequency_set(Enesim_Renderer *r, float freq);
+
+
 /**
  * @}
  */
