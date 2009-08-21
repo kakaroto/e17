@@ -89,8 +89,7 @@ static void _span_affine(Enesim_Renderer *r, int x, int y, unsigned int len, uin
 	/* translate to the origin */
 	y -= s->base.oy;
 	x -= s->base.ox;
-	yy = (r->matrix.values.yx * x) + (r->matrix.values.yy * y) + r->matrix.values.yz;
-	xx = (r->matrix.values.xx * x) + (r->matrix.values.xy * y) + r->matrix.values.xz;
+	renderer_affine_setup(r, x, y, &xx, &yy);
 	/* TODO move this to the state setup */
 	ww = eina_f16p16_int_from(s->sw);
 	ww2 = ww * 2;
@@ -177,9 +176,7 @@ static void _span_projective(Enesim_Renderer *r, int x, int y, unsigned int len,
 	/* translate to the origin */
 	y -= s->base.oy;
 	x -= s->base.ox;
-	yy = (r->matrix.values.yx * x) + (r->matrix.values.yy * y) + r->matrix.values.yz;
-	xx = (r->matrix.values.xx * x) + (r->matrix.values.xy * y) + r->matrix.values.xz;
-	zz = (r->matrix.values.zx * x) + (r->matrix.values.zy * y) + r->matrix.values.zz;
+	renderer_projective_setup(r, x, y, &xx, &yy, &zz);
 	/* TODO move this to the state setup */
 	ww = eina_f16p16_int_from(s->sw);
 	ww2 = ww * 2;

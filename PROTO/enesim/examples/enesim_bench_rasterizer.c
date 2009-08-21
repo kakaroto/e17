@@ -46,7 +46,7 @@ static void rasterizer_span_alias_callback(Enesim_Scanline *sl, void *data)
 	rcmp->span(ddata, sl->data.alias.w, NULL, 0xffffffff, NULL);
 }
 
-static void cpsc_bench(Points *p, Eina_Rectangle *rect)
+static void _cpsc_bench(Points *p, Eina_Rectangle *rect)
 {
 	Enesim_Rasterizer *rs;
 	int i;
@@ -69,7 +69,7 @@ static void cpsc_bench(Points *p, Eina_Rectangle *rect)
 
 }
 
-static void circle_bench(Eina_Rectangle *rect)
+static void _circle_bench(Eina_Rectangle *rect)
 {
 	Enesim_Rasterizer *rs;
 	Enesim_Scanline_Callback cb;
@@ -107,7 +107,7 @@ static void circle_bench(Eina_Rectangle *rect)
 	enesim_rasterizer_delete(rs);
 }
 
-static void circle_fill_bench(Eina_Rectangle *rect)
+static void _circle_fill_bench(Eina_Rectangle *rect)
 {
 	Enesim_Rasterizer *rs;
 	Enesim_Scanline_Callback cb;
@@ -166,9 +166,9 @@ void rasterizer_bench(void)
 
 	/* Test every rasterizer */
 	eina_rectangle_coords_from(&rect, 0, 0, opt_width, opt_height);
-	cpsc_bench(points, &rect);
-	circle_bench(&rect);
-	circle_fill_bench(&rect);
+	_cpsc_bench(points, &rect);
+	_circle_bench(&rect);
+	_circle_fill_bench(&rect);
 
 
 

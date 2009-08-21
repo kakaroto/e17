@@ -59,7 +59,7 @@ static void _argb8888_a_b_span_identity(Enesim_Renderer *r, int x, int y,
 	{
 		Eina_F16p16 sxx, syy, vx, vy;
 		int sx, sy;
-		uint32_t p0;
+		uint32_t p0 = 0;
 		uint16_t m0;
 		uint16_t m1;
 
@@ -111,13 +111,7 @@ static void _argb8888_a_b_span_affine(Enesim_Renderer *r, int x, int y,
 	src = enesim_surface_data_get(d->src);
 
 	/* TODO move by the origin */
-	yy = eina_f16p16_int_from(y);
-	xx = eina_f16p16_int_from(x);
-	yy = eina_f16p16_mul(r->matrix.values.yx, xx) +
-			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
-	xx = eina_f16p16_mul(r->matrix.values.xx, xx) +
-			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
-
+	renderer_affine_setup(r, x, y, &xx, &yy);
 	scale = eina_f16p16_float_from(d->scale);
 
 	while (dst < end)

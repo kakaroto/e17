@@ -22,7 +22,7 @@
  *                                  Local                                     *
  *============================================================================*/
 typedef struct _Rectangle {
-	Enesim_Renderer base;
+	Enesim_Renderer_Shape base;
 
 	int w, h;
 	struct {
@@ -33,19 +33,6 @@ typedef struct _Rectangle {
 	       unsigned char bl : 1;
 	       unsigned char br : 1;
 	} corner;
-
-	struct {
-		unsigned int color;
-		Enesim_Renderer *paint;
-		float weight;
-	} stroke;
-
-	struct {
-		unsigned int color;
-		Enesim_Renderer *paint;
-	} fill;
-
-	int draw_mode;
 
 	int lxx0, rxx0;
 	int tyy0, byy0;
@@ -311,25 +298,25 @@ static void _span_rounded_color_outlined_paint_filled_affine(Enesim_Renderer *p,
 	int axx = p->matrix.values.xx, axy = p->matrix.values.xy, axz = p->matrix.values.xz;
 	int ayx = p->matrix.values.yx, ayy = p->matrix.values.yy, ayz = p->matrix.values.yz;
 	int do_inner = rect->do_inner;
-	unsigned int ocolor = rect->stroke.color;
-	unsigned int icolor = rect->fill.color;
+	unsigned int ocolor = rect->base.stroke.color;
+	unsigned int icolor = rect->base.fill.color;
 	int stw = rect->sw;
 	int rr0 = rect->rr0, rr1 = rr0 + 65536;
 	int irr0 = rect->irr0, irr1 = irr0 + 65536;
 	int lxx0 = rect->lxx0, rxx0 = rect->rxx0;
 	int tyy0 = rect->tyy0, byy0 = rect->byy0;
-	Enesim_Renderer *fpaint = rect->fill.paint;
+	Enesim_Renderer *fpaint = rect->base.fill.rend;
 	unsigned int *d = dst, *e = d + len;
 	int xx, yy;
 	int fill_only = 0;
 	char bl = rect->corner.bl, br = rect->corner.br, tl = rect->corner.tl, tr = rect->corner.tr;
 
-	if (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
+	if (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 	  {
 		icolor = 0;
 		fpaint = NULL;
 	  }
-	if (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
+	if (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
 	  {
 		ocolor = icolor;
 		fill_only = 1;
@@ -337,11 +324,20 @@ static void _span_rounded_color_outlined_paint_filled_affine(Enesim_Renderer *p,
 		if (fpaint)
 			fpaint->span(fpaint, x, y, len, dst);
 	  }
-	if ((rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
+	if ((rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
+#if 1
+	yy = eina_f16p16_int_from(y);
+	xx = eina_f16p16_int_from(x);
+	yy = eina_f16p16_mul(p->matrix.values.yx, xx) +
+			eina_f16p16_mul(p->matrix.values.yy, yy) + p->matrix.values.yz;
+	xx = eina_f16p16_mul(p->matrix.values.xx, xx) +
+			eina_f16p16_mul(p->matrix.values.xy, yy) + p->matrix.values.xz;
+#else
 	xx = (axx * x) + (axy * y) + axz;
 	yy = (ayx * x) + (ayy * y) + ayz;
+#endif
 
 	while (d < e)
 	{
@@ -446,32 +442,32 @@ static void _span_rounded_color_outlined_paint_filled_proj(Enesim_Renderer *p, i
 	int ayx = p->matrix.values.yx, ayy = p->matrix.values.yy, ayz = p->matrix.values.yz;
 	int azx = p->matrix.values.zx, azy = p->matrix.values.zy, azz = p->matrix.values.zz;
 	int do_inner = rect->do_inner;
-	unsigned int ocolor = rect->stroke.color;
-	unsigned int icolor = rect->fill.color;
+	unsigned int ocolor = rect->base.stroke.color;
+	unsigned int icolor = rect->base.fill.color;
 	int stw = rect->sw;
 	int rr0 = rect->rr0, rr1 = rr0 + 65536;
 	int irr0 = rect->irr0, irr1 = irr0 + 65536;
 	int lxx0 = rect->lxx0, rxx0 = rect->rxx0;
 	int tyy0 = rect->tyy0, byy0 = rect->byy0;
-	Enesim_Renderer *fpaint = rect->fill.paint;
+	Enesim_Renderer *fpaint = rect->base.fill.rend;
 	unsigned int *d = dst, *e = d + len;
 	int xx, yy, zz;
 	int fill_only = 0;
 	char bl = rect->corner.bl, br = rect->corner.br, tl = rect->corner.tl, tr = rect->corner.tr;
 
-	if (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
+	if (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
 	{
 		icolor = 0;
 		fpaint = NULL;
 	}
-	if (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
+	if (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
 	{
 		ocolor = icolor;
 		fill_only = 1;
 		do_inner = 0;
 		if (fpaint)  fpaint->span(fpaint, x, y, len, dst);
 	}
-	if ((rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
+	if ((rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner && fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
 	xx = (axx * x) + (axy * y) + axz;
@@ -587,7 +583,7 @@ static Eina_Bool _state_setup(Enesim_Renderer *p)
 	if (!rect || (rect->w < 1) || (rect->h < 1))
 		return EINA_FALSE;
 
-	if (p->changed)
+	if (1)
 	{
 		float rad;
 		int sw;
@@ -603,7 +599,7 @@ static Eina_Bool _state_setup(Enesim_Renderer *p)
 		rect->rxx0 = (rect->w - rad - 1) * 65536;
 		rect->byy0 = (rect->h - rad - 1) * 65536;
 
-		sw = rect->stroke.weight;
+		sw = rect->base.stroke.weight;
 		rect->do_inner = 1;
 		if ((sw >= (rect->w / 2.0)) || (sw >= (rect->h / 2.0)))
 		{
@@ -618,11 +614,11 @@ static Eina_Bool _state_setup(Enesim_Renderer *p)
 		rect->sw = sw;
 	}
 
-	if (rect->fill.paint &&
-	    ((rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
-	     (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
+	if (rect->base.fill.rend &&
+	    ((rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
+	     (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
 	{
-		if (!enesim_renderer_state_setup(rect->fill.paint))
+		if (!enesim_renderer_state_setup(rect->base.fill.rend))
 			return EINA_FALSE;
 	}
 
@@ -638,10 +634,10 @@ static void _state_cleanup(Enesim_Renderer *p)
 {
 	Rectangle *rect = (Rectangle *) p;
 
-	if (rect->fill.paint &&
-	    ((rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
-	     (rect->draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
-		enesim_renderer_state_cleanup(rect->fill.paint);
+	if (rect->base.fill.rend &&
+	    ((rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL) ||
+	     (rect->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL)))
+		enesim_renderer_state_cleanup(rect->base.fill.rend);
 //	if (rect->stroke.paint)
 //		enesim_renderer_state_cleanup(rect->stroke.paint);
 }
@@ -663,11 +659,10 @@ EAPI Enesim_Renderer * enesim_renderer_rectangle_new(void)
 	rect = calloc(1, sizeof(Rectangle));
 	if (!rect)
 		return NULL;
-	rect->fill.color = 0xffffffff;
-	rect->stroke.color = 0xffffffff;
+
 	p = (Enesim_Renderer *) rect;
 	p->type_id = RECTANGLE_RENDERER;
-	enesim_renderer_init(p);
+	enesim_renderer_shape_init(p);
 	p->free = ENESIM_RENDERER_DELETE(_free);
 	p->state_cleanup = ENESIM_RENDERER_STATE_CLEANUP(_state_cleanup);
 	p->state_setup = ENESIM_RENDERER_STATE_SETUP(_state_setup);
@@ -690,7 +685,6 @@ EAPI void enesim_renderer_rectangle_size_set(Enesim_Renderer *p, int w, int h)
 		return;
 	rect->w = w;
 	rect->h = h;
-	p->changed = EINA_TRUE;
 }
 
 EAPI void enesim_renderer_rectangle_corner_radius_set(Enesim_Renderer *p, float radius)
@@ -719,85 +713,4 @@ EAPI void enesim_renderer_rectangle_corners_set(Enesim_Renderer *p, int tl, int 
 		return;
 	rect->corner.tl = tl;  rect->corner.tr = tr;
 	rect->corner.bl = bl;  rect->corner.br = br;
-//	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_outline_weight_set(Enesim_Renderer *p, float weight)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if (weight < 0.000009)
-		weight = 0;
-	if (rect->stroke.weight == weight)
-		return;
-	rect->stroke.weight = weight;
-	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_outline_color_set(Enesim_Renderer *p, unsigned int stroke_color)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if (rect->stroke.color == stroke_color)
-		return;
-	rect->stroke.color = stroke_color;
-//	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_outline_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if (p == paint) return;
-	if (rect->stroke.paint == paint)
-		return;
-	rect->stroke.paint = paint;
-//	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_fill_color_set(Enesim_Renderer *p, unsigned int fill_color)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if (rect->fill.color == fill_color)
-		return;
-	rect->fill.color = fill_color;
-//	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_fill_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if (p == paint) return;
-	if (rect->fill.paint == paint)
-		return;
-	rect->fill.paint = paint;
-//	p->changed = EINA_TRUE;
-}
-
-EAPI void enesim_renderer_rectangle_draw_mode_set(Enesim_Renderer *p, Enesim_Shape_Draw_Mode draw_mode)
-{
-	Rectangle *rect;
-
-	rect = (Rectangle *) p;
-	if (!rect) return;
-	if ((draw_mode != ENESIM_SHAPE_DRAW_MODE_STROKE) &&
-		(draw_mode != ENESIM_SHAPE_DRAW_MODE_FILL) &&
-		(draw_mode != ENESIM_SHAPE_DRAW_MODE_STROKE_FILL))
-		draw_mode = ENESIM_SHAPE_DRAW_MODE_FILL;
-	if (rect->draw_mode == draw_mode)
-		return;
-	rect->draw_mode = draw_mode;
-//	p->changed = EINA_TRUE;
 }

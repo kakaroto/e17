@@ -20,49 +20,66 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
-typedef struct _Enesim_Renderer_Shape {
-	Enesim_Renderer base;
-	struct {
-		unsigned int color;
-		Enesim_Renderer *paint;
-		float weight;
-	} stroke;
-
-	struct {
-		unsigned int color;
-		Enesim_Renderer *paint;
-	} fill;
-
-	int draw_mode;
-} Enesim_Renderer_Shape;
-
-
-EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *p, float weight)
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+void enesim_renderer_shape_init(Enesim_Renderer *r)
 {
+	Enesim_Renderer_Shape *s = (Enesim_Renderer_Shape *)r;
 
+	s->fill.color = 0xffffffff;
+	s->stroke.color = 0xffffffff;
+	enesim_renderer_init(r);
+}
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+EAPI void enesim_renderer_shape_outline_weight_set(Enesim_Renderer *r, float weight)
+{
+	Enesim_Renderer_Shape *s;
+
+	if (weight < 1)
+		weight = 1;
+	s = (Enesim_Renderer_Shape *)r;
+	s->stroke.weight = weight;
 }
 
-EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *p, unsigned int stroke_color)
+EAPI void enesim_renderer_shape_outline_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
+	Enesim_Renderer_Shape *s;
 
+	s = (Enesim_Renderer_Shape *)r;
+	s->stroke.color = color;
 }
 
-EAPI void enesim_renderer_shape_outline_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
+EAPI void enesim_renderer_shape_outline_renderer_set(Enesim_Renderer *r, Enesim_Renderer *outline)
 {
+	Enesim_Renderer_Shape *s;
 
+	s = (Enesim_Renderer_Shape *)r;
+	s->stroke.rend = outline;
 }
 
-EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *p, unsigned int fill_color)
+EAPI void enesim_renderer_shape_fill_color_set(Enesim_Renderer *r, Enesim_Color color)
 {
+	Enesim_Renderer_Shape *s;
 
+	s = (Enesim_Renderer_Shape *)r;
+	s->fill.color = color;
 }
 
-EAPI void enesim_renderer_shape_fill_paint_set(Enesim_Renderer *p, Enesim_Renderer *paint)
+EAPI void enesim_renderer_shape_fill_renderer_set(Enesim_Renderer *r, Enesim_Renderer *fill)
 {
+	Enesim_Renderer_Shape *s;
 
+	s = (Enesim_Renderer_Shape *)r;
+	s->fill.rend = fill;
 }
 
-EAPI void enesim_renderer_shape_draw_mode_set(Enesim_Renderer *p, Enesim_Shape_Draw_Mode draw_mode)
+EAPI void enesim_renderer_shape_draw_mode_set(Enesim_Renderer *r, Enesim_Shape_Draw_Mode draw_mode)
 {
+	Enesim_Renderer_Shape *s;
 
+	s = (Enesim_Renderer_Shape *)r;
+	s->draw_mode = draw_mode;
 }

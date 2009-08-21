@@ -156,6 +156,21 @@ int bench_get(const char *name)
 		opt_bench = "stripes";
 		return 1;
 	}
+	else if (!strcmp(name, "circle"))
+	{
+		opt_bench = "circle";
+		return 1;
+	}
+	else if (!strcmp(name, "ellipse"))
+	{
+		opt_bench = "ellipse";
+		return 1;
+	}
+	else if (!strcmp(name, "rectangle"))
+	{
+		opt_bench = "rectangle";
+		return 1;
+	}
 	return 0;
 }
 
@@ -197,6 +212,9 @@ void bench_help(void)
 	printf("hswitch\n");
 	printf("stripes\n");
 	printf("checker\n");
+	printf("circle\n");
+	printf("ellipse\n");
+	printf("rectangle\n");
 	printf("all\n");
 }
 
@@ -379,6 +397,18 @@ ok:
 	{
 		hswitch_bench();
 	}
+	else if (!strcmp(opt_bench, "circle"))
+	{
+		circle_bench();
+	}
+	else if (!strcmp(opt_bench, "ellipse"))
+	{
+		ellipse_bench();
+	}
+	else if (!strcmp(opt_bench, "rectangle"))
+	{
+		rectangle_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		compositor_bench();
@@ -389,6 +419,9 @@ ok:
 		dispmap_bench();
 		stripes_bench();
 		hswitch_bench();
+		circle_bench();
+		ellipse_bench();
+		rectangle_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

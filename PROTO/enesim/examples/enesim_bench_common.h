@@ -41,7 +41,11 @@ void raddist_bench(void);
 void dispmap_bench(void);
 void stripes_bench(void);
 void checker_bench(void);
-
+void shape_bench(Enesim_Renderer *r, Enesim_Surface *dst, const char *bname,
+		const char *name);
+void rectangle_bench(void);
+void circle_bench(void);
+void ellipse_bench(void);
 
 char * opacity_get(uint32_t color, Enesim_Format f);
 void surfaces_create(Enesim_Surface **src, Enesim_Format sfmt,

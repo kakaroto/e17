@@ -46,6 +46,22 @@ struct _Enesim_Renderer
 	} matrix;
 };
 
+typedef struct _Enesim_Renderer_Shape
+{
+	Enesim_Renderer base;
+	struct {
+		Enesim_Color color;
+		Enesim_Renderer *rend;
+		float weight;
+	} stroke;
+
+	struct {
+		Enesim_Color color;
+		Enesim_Renderer *rend;
+	} fill;
+	Enesim_Shape_Draw_Mode draw_mode;
+} Enesim_Renderer_Shape;
+
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
 #define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
 #define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
@@ -55,14 +71,34 @@ struct _Enesim_Renderer
 static inline void renderer_affine_setup(Enesim_Renderer *r, int x, int y,
 		Eina_F16p16 *fpx, Eina_F16p16 *fpy)
 {
+	Eina_F16p16 xx, yy;
 
+	xx = eina_f16p16_int_from(x);
+	yy = eina_f16p16_int_from(y);
+
+	*fpx = eina_f16p16_mul(r->matrix.values.xx, xx) +
+			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+	*fpy = eina_f16p16_mul(r->matrix.values.yx, xx) +
+			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
 }
 
 static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
-		Eina_F16p16 *fpx, Eina_F16p16 *fpy)
+		Eina_F16p16 *fpx, Eina_F16p16 *fpy, Eina_F16p16 *fpz)
 {
+	Eina_F16p16 xx, yy;
 
+	xx = eina_f16p16_int_from(x);
+	yy = eina_f16p16_int_from(y);
+
+	*fpy = eina_f16p16_mul(r->matrix.values.yx, xx) +
+			eina_f16p16_mul(r->matrix.values.yy, yy) + r->matrix.values.yz;
+	*fpx = eina_f16p16_mul(r->matrix.values.xx, xx) +
+			eina_f16p16_mul(r->matrix.values.xy, yy) + r->matrix.values.xz;
+	*fpz = eina_f16p16_mul(r->matrix.values.zx, xx) +
+			eina_f16p16_mul(r->matrix.values.zy, yy) + r->matrix.values.zz;
 }
+
+void enesim_renderer_shape_init(Enesim_Renderer *r);
 
 /* some built-in renderer type identifiers */
 #define SURFACE_RENDERER (1)

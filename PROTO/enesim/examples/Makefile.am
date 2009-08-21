@@ -28,6 +28,10 @@ enesim_bench_stripes.c \
 enesim_bench_hswitch.c \
 enesim_bench_dispmap.c \
 enesim_bench_raddist.c \
+enesim_bench_shape.c \
+enesim_bench_circle.c \
+enesim_bench_ellipse.c \
+enesim_bench_rectangle.c \
 image.c
 
 endif

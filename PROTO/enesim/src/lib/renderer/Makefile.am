@@ -18,4 +18,5 @@ ellipse.c \
 stripes.c \
 dispmap.c \
 raddist.c \
+shape.c \
 importer.c
