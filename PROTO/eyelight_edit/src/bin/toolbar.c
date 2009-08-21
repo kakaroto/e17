@@ -15,8 +15,8 @@ Evas_Object *toolbar_create()
     evas_object_size_hint_align_set(tb, -1.0, 0.0);
 
     Elm_Toolbar_Item *item_empty = elm_toolbar_item_add(tb, NULL, "", NULL, tb);
-    elm_toolbar_item_add(tb, NULL, "Open a presentation", _tb_open, item_empty);
-    elm_toolbar_item_add(tb, NULL, "Slideshow", _tb_slideshow, item_empty);
+    elm_toolbar_item_add(tb, NULL, D_("Open a presentation"), _tb_open, item_empty);
+    elm_toolbar_item_add(tb, NULL, D_("Slideshow"), _tb_slideshow, item_empty);
 
     evas_object_show(tb);
     return tb;
@@ -64,7 +64,9 @@ static void _pres_fileselector_done(void *data, Evas_Object *obj, void *event_in
    if (selected)
    {
        eyelight_object_presentation_file_set(pres,selected);
+       eyelight_object_thumbnails_size_set(pres, 1024/2, 768/2);
        slides_list_update();
+       slides_grid_update();
    }
 
    evas_object_del(data);

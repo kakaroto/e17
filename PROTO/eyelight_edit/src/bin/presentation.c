@@ -25,6 +25,7 @@ static void _scroll_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *
 static void _scroll_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scroll_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _pres_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _thumb_done_cb(Eyelight_Viewer *pres, int id_slide, Eyelight_Thumb* thumb, void* user_data);
 
 Evas_Object *_pres_shadow = NULL;
 Evas_Object *_pres_rect;
@@ -91,6 +92,7 @@ Evas_Object *presentation_create()
     elm_scroller_content_set(sc, box);
 
     pres = eyelight_object_add(evas_object_evas_get(win));
+    eyelight_viewer_thumbnails_done_cb_set(eyelight_object_pres_get(pres), _thumb_done_cb, NULL);
     eyelight_object_event_set(pres,1);
     evas_object_size_hint_min_set(pres, 1024/2,768/2);
     evas_object_size_hint_max_set(pres, 1024/2,768/2);
@@ -102,7 +104,6 @@ Evas_Object *presentation_create()
     //
 
     //shadow
-        // TODO: enable the shadow
     _pres_shadow = edje_object_add(evas_object_evas_get(win));
     edje_object_file_set(_pres_shadow, buf, "presentation/shadow");
     evas_object_smart_member_add(_pres_shadow, pres);
@@ -121,6 +122,14 @@ Evas_Object *presentation_create()
 
     evas_object_show(vbox);
     return vbox;
+}
+
+static void _thumb_done_cb(Eyelight_Viewer *pres, int id_slide, Eyelight_Thumb* thumb, void* user_data)
+{
+    List_Item *item = eina_list_nth(l_slides, id_slide);
+    item->thumb = thumb;
+    elm_genlist_item_update(item->item);
+    slides_grid_thumb_done_cb(id_slide);
 }
 
 void presentation_resize(int w, int h)

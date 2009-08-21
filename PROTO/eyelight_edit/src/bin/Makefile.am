@@ -11,5 +11,5 @@ INCLUDES = \
 
 bin_PROGRAMS = eyelight-edit
 
-eyelight_edit_SOURCES = main.c slides_list.c presentation.c toolbar.c slideshow.c
+eyelight_edit_SOURCES = main.c slide_utils.c slides_list.c presentation.c toolbar.c slideshow.c grid_object.c slides_grid.c tabpanel.c slide_menu.c
 eyelight_edit_LDADD = @eyelight_libs@

@@ -24,6 +24,9 @@ AC_SUBST(packagedatadir)
 
 PKG_PROG_PKG_CONFIG
 
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 AC_ARG_WITH(edje-cc,

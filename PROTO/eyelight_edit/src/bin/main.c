@@ -20,6 +20,10 @@
 
 #include "main.h"
 
+
+
+Eina_List* l_slides = NULL;
+
 static void win_del(void *data, Evas_Object *obj, void *event_info)
 {
     elm_exit();
@@ -44,15 +48,14 @@ static void win_main(void)
     evas_object_size_hint_weight_set(tb, 1.0, 1.0);
     evas_object_show(tb);
 
+    Evas_Object *slides_list =slides_list_new();
+    elm_table_pack(tb, slides_list, 0, 1, 1, 1);
 
     Evas_Object *toolbar = toolbar_create();
     elm_table_pack(tb, toolbar, 0, 0, 3, 1);
 
-    Evas_Object *presentation = presentation_create();
-    elm_table_pack(tb, presentation, 1, 1, 1, 1);
-
-    Evas_Object *slides_list =slides_list_new();
-    elm_table_pack(tb, slides_list, 0, 1, 1, 1);
+    Evas_Object *tabpanel = tabpanel_create();
+    elm_table_pack(tb, tabpanel, 1, 1, 1, 1);
 
     evas_object_resize(win, 700, 600);
     evas_object_show(win);
