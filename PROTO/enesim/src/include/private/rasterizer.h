@@ -38,7 +38,7 @@ struct _Enesim_Rasterizer
 	void *data;
 };
 
-Enesim_Rasterizer * enesim_rasterizer_new(void *data);
+void enesim_rasterizer_init(Enesim_Rasterizer *r);
 Enesim_Rasterizer * enesim_rasterizer_kiia8_new(Eina_Rectangle boundaries);
 Enesim_Rasterizer * enesim_rasterizer_kiia16_new(Eina_Rectangle boundaries);
 

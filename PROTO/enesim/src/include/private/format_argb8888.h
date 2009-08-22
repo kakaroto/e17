@@ -275,7 +275,7 @@ static inline uint32_t argb8888_sample_good(uint32_t *data, int stride, int sw,
 			p0 = *data;
 
 		if ((y > -1) && ((x + 1) < sw))
-				p1 = *(data + 1);
+			p1 = *(data + 1);
 
 		if ((y + 1) < sh)
 		{

@@ -39,5 +39,6 @@ EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(void)
 	case ENESIM_RASTERIZER_KIIA_COUNT_32:
 		break;
 	}
+	enesim_rasterizer_init(r);
 	return r;
 }

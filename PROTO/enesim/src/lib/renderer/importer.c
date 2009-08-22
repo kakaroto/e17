@@ -118,3 +118,10 @@ EAPI void enesim_renderer_importer_data_set(Enesim_Renderer *r, Enesim_Converter
 
 	i->cdata = *cdata;
 }
+
+EAPI void enesim_renderer_importer_format_set(Enesim_Renderer *r, Enesim_Converter_Format fmt)
+{
+	Importer *i = (Importer *)r;
+
+	i->cfmt = fmt;
+}

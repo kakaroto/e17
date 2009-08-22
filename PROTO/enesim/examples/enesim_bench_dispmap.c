@@ -13,7 +13,8 @@ static void dispmap_map_create(Enesim_Surface **s)
 
 	r = enesim_renderer_perlin_new();
 	enesim_renderer_perlin_octaves_set(r, 4);
-	enesim_renderer_perlin_frequency_set(r, 0.01);
+	enesim_renderer_perlin_xfrequency_set(r, 0.01);
+	enesim_renderer_perlin_yfrequency_set(r, 0.08);
 	enesim_renderer_perlin_persistence_set(r, 0.9);
 	enesim_renderer_state_setup(r);
 	for (i = 0; i < opt_height; i++)

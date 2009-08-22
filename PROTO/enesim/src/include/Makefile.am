@@ -11,6 +11,7 @@ enesim_curve.h \
 enesim_format.h \
 enesim_converter.h \
 enesim_matrix.h \
+enesim_perlin.h \
 enesim_compositor.h \
 enesim_rasterizer.h \
 enesim_renderer.h

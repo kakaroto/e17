@@ -14,8 +14,9 @@ void perlin_bench(void)
 	/* 4, 0.1, 0.8 */
 	/* 6 0.01 1.2 triggers the error */
 	r = enesim_renderer_perlin_new();
-	enesim_renderer_perlin_octaves_set(r, 6);
-	enesim_renderer_perlin_frequency_set(r, 0.01);
-	enesim_renderer_perlin_persistence_set(r, 1.3);
+	enesim_renderer_perlin_octaves_set(r, 4);
+	enesim_renderer_perlin_xfrequency_set(r, 0.1);
+	enesim_renderer_perlin_yfrequency_set(r, 0.003);
+	enesim_renderer_perlin_persistence_set(r, 0.8);
 	renderer_run(r, dst, "Perlin", "perlin");
 }

@@ -257,6 +257,7 @@ EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(void)
 	c->a = eina_lalloc_new(c, EINA_LALLOC_ALLOC(_a_alloc),
 		EINA_LALLOC_FREE(_a_free), 0);
 	/* setup the rasterizer */
+	enesim_rasterizer_init(&c->r);
 	c->r.data = c;
 	c->r.vertex_add = ENESIM_RASTERIZER_VERTEX_ADD(_vertex_add);
 	c->r.reset = ENESIM_RASTERIZER_RESET(_reset);

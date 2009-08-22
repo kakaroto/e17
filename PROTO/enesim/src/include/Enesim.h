@@ -55,6 +55,7 @@ extern "C" {
 #include "enesim_format.h"
 #include "enesim_surface.h"
 /* util headers */
+#include "enesim_perlin.h"
 #include "enesim_matrix.h"
 #include "enesim_curve.h"
 /* main subsystems */

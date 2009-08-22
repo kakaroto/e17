@@ -25,6 +25,14 @@
 /*============================================================================*
  *                                  Local                                     *
  *============================================================================*/
+/* Fixed point definitions */
+#define FP16 1048576
+#define FP8 524288
+#define FP4 262144
+#define FP2 131072
+#define FP1 65536
+
+/* TODO Do some research on other pseudo random generators */
 static Eina_F16p16 noise(int x, int y)
 {
 	int n;
@@ -39,17 +47,15 @@ static Eina_F16p16 noise(int x, int y)
 	return tmp;
 }
 
-#define FP16 1048576
-#define FP8 524288
-#define FP4 262144
-#define FP2 131072
-#define FP1 65536
+static inline Eina_F16p16 _f16p16_interpolate(Eina_F16p16 r, Eina_F16p16 x, Eina_F16p16 y)
+{
+	return eina_f16p16_mul((x - y), r) + y;
+}
 
 static Eina_F16p16 smoothnoise(int x, int y)
 {
 	Eina_F16p16 corners, sides, center;
 
-	/* corners */
 	corners = noise(x - 1, y - 1) + noise(x + 1, y - 1) + noise(x - 1, y + 1)
 			+ noise(x + 1, y + 1);
 	corners = (((int64_t) (corners) << 16) / FP16);
@@ -62,12 +68,6 @@ static Eina_F16p16 smoothnoise(int x, int y)
 	return corners + sides + center;
 }
 
-
-static Eina_F16p16 interpolate(Eina_F16p16 x, Eina_F16p16 y, Eina_F16p16 r)
-{
-	return eina_f16p16_mul((x - y), r) + y;
-}
-
 static Eina_F16p16 interpolatenoise(Eina_F16p16 x, Eina_F16p16 y)
 {
 	Eina_F16p16 v1, v2, v3, v4;
@@ -78,28 +78,29 @@ static Eina_F16p16 interpolatenoise(Eina_F16p16 x, Eina_F16p16 y)
 	fy = eina_f16p16_fracc_get(y);
 	ix = eina_f16p16_int_to(x);
 	iy = eina_f16p16_int_to(y);
-#if 0
-	v1 = smoothnoise(ix, iy);
-	v2 = smoothnoise(ix + 1, iy);
-	v3 = smoothnoise(ix, iy + 1);
-	v4 = smoothnoise(ix + 1, iy + 1);
-#else
+#if 1
 	v1 = noise(ix, iy);
 	v2 = noise(ix + 1, iy);
 	v3 = noise(ix, iy + 1);
 	v4 = noise(ix + 1, iy + 1);
+#else
+	v1 = smoothnoise(ix, iy);
+	v2 = smoothnoise(ix + 1, iy);
+	v3 = smoothnoise(ix, iy + 1);
+	v4 = smoothnoise(ix + 1, iy + 1);
+
 #endif
-	v1 = interpolate(v1, v2, fx);
-	v2 = interpolate(v3, v4, fx);
-	//return interpolate(v1, v2, fy);
-	return smoothnoise(ix, iy);
+	v1 = _f16p16_interpolate(fx, v2, v1);
+	v2 = _f16p16_interpolate(fx, v4, v3);
+	return _f16p16_interpolate(fy, v2, v1);
 }
 
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Eina_F16p16 enesim_perlin(Eina_F16p16 xx, Eina_F16p16 yy, unsigned int octaves,
-		Eina_F16p16 *freq, Eina_F16p16 *ampl)
+EAPI Eina_F16p16 enesim_perlin_get(Eina_F16p16 xx, Eina_F16p16 yy,
+	unsigned int octaves, Eina_F16p16 *xfreq, Eina_F16p16 *yfreq,
+	Eina_F16p16 *ampl)
 {
 	int i;
 	Eina_F16p16 total = 0;
@@ -108,15 +109,32 @@ Eina_F16p16 enesim_perlin(Eina_F16p16 xx, Eina_F16p16 yy, unsigned int octaves,
 	{
 		Eina_F16p16 x, y, res;
 
-		//printf("%d %d %d\n", i, freq[i], ampl[i]);
-		x = eina_f16p16_mul(xx, freq[i]);
-		y = eina_f16p16_mul(yy, freq[i]);
+		x = eina_f16p16_mul(xx, xfreq[i]);
+		y = eina_f16p16_mul(yy, yfreq[i]);
 		res = interpolatenoise(x, y);
-		//printf("%d\n", res);
 		total = total + eina_f16p16_mul(res, ampl[i]);
 	}
 	/* rescale to 0:2? */
 	//total += 65536;
 	total = abs(total);
 	return total;
+}
+
+EAPI void enesim_perlin_coeff_set(unsigned int octaves, float persistence,
+	float xfreq, float yfreq, float amplitude, Eina_F16p16 *xfreqcoeff,
+	Eina_F16p16 *yfreqcoeff, Eina_F16p16 *amplcoeff)
+{
+	Eina_F16p16 per;
+	int i;
+
+	per = eina_f16p16_float_from(persistence);
+	xfreqcoeff[0] = eina_f16p16_mul(eina_f16p16_float_from(xfreq), 131072);
+	yfreqcoeff[0] = eina_f16p16_mul(eina_f16p16_float_from(yfreq), 131072);
+	amplcoeff[0] = eina_f16p16_mul(eina_f16p16_float_from(amplitude), per);
+	for (i = 1; i < octaves; i++)
+	{
+		xfreqcoeff[i] = eina_f16p16_mul(xfreqcoeff[i- 1], 131072);
+		yfreqcoeff[i] = eina_f16p16_mul(yfreqcoeff[i- 1], 131072);
+		amplcoeff[i] = eina_f16p16_mul(amplcoeff[i- 1], per);
+	}
 }
