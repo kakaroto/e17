@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(eon, 0.1.0.0, jorgeluis.zapata@gmail.com)
+AC_INIT([eon], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD

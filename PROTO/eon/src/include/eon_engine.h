@@ -50,9 +50,9 @@ struct _Eon_Engine
 	Eina_Bool (*fade_setup)(void *i, Eon_Shape *s);
 	void (*fade_delete)(void *i);
 	/* sqpattern callbacks */
-	void * (*sqpattern_create)(Eon_Checker *i);
-	Eina_Bool (*sqpattern_setup)(void *i, Eon_Shape *s);
-	void (*sqpattern_delete)(void *i);
+	void * (*checker_create)(Eon_Checker *i);
+	Eina_Bool (*checker_setup)(void *i, Eon_Shape *s);
+	void (*checker_delete)(void *i);
 	/* debug */
 	void (*debug_rect)(void *c, uint32_t color, int x, int y, int w, int h);
 };
@@ -89,9 +89,9 @@ EAPI void * eon_engine_fade_create(Eon_Engine *e, Eon_Paint *p);
 EAPI Eina_Bool eon_engine_fade_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
 EAPI void eon_engine_fade_delete(Eon_Engine *e, void *engine_data);
 
-EAPI void * eon_engine_sqpattern_create(Eon_Engine *e, Eon_Paint *p);
-EAPI Eina_Bool eon_engine_sqpattern_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
-EAPI void eon_engine_sqpattern_delete(Eon_Engine *e, void *engine_data);
+EAPI void * eon_engine_checker_create(Eon_Engine *e, Eon_Paint *p);
+EAPI Eina_Bool eon_engine_checker_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s);
+EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data);
 
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x, int y, int w, int h);
 

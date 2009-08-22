@@ -241,19 +241,19 @@ EAPI void eon_engine_fade_delete(Eon_Engine *e, void *engine_data)
 	e->fade_delete(engine_data);
 }
 
-EAPI void * eon_engine_sqpattern_create(Eon_Engine *e, Eon_Paint *p)
+EAPI void * eon_engine_checker_create(Eon_Engine *e, Eon_Paint *p)
 {
-	return e->sqpattern_create((Eon_Checker *)p);
+	return e->checker_create((Eon_Checker *)p);
 }
 
-EAPI Eina_Bool eon_engine_sqpattern_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
+EAPI Eina_Bool eon_engine_checker_setup(Eon_Engine *e, void *engine_data, Eon_Shape *s)
 {
-	return e->sqpattern_setup(engine_data, s);
+	return e->checker_setup(engine_data, s);
 }
 
-EAPI void eon_engine_sqpattern_delete(Eon_Engine *e, void *engine_data)
+EAPI void eon_engine_checker_delete(Eon_Engine *e, void *engine_data)
 {
-	e->sqpattern_delete(engine_data);
+	e->checker_delete(engine_data);
 }
 /* Debug */
 EAPI void eon_engine_debug_rect(Eon_Engine *e, void *c, uint32_t color, int x,  int y, int w, int h)

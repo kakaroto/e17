@@ -200,3 +200,9 @@ EAPI Eon_Paint_Coordspace eon_paint_coordspace_get(Eon_Paint *p)
 
 	return prv->coordspace;
 }
+
+EAPI void eon_paint_x_set(Eon_Paint *p, int x)
+{
+	Eon_Coord;
+
+}

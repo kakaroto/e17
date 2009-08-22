@@ -5,7 +5,7 @@
 			<key value="0" start="3s" calc="0"/>
 			<key value="1" start="6s" calc="0"/>
 		</anim>
-		<image file="tiger.png" x="0%" y="0%" w="100%" h="100%" coordspace="0"/>
+		<image file="block.png" x="0%" y="0%" w="100%" h="100%" coordspace="0"/>
 		<sqpattern x="0%" y="0%" color1="white" color2="red" id="sq01" coordspace="0"/>
 	</fade>
 	<rect x="0%" y="0%" w="100%" h="100%" color="white"/>

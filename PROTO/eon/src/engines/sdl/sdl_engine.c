@@ -242,10 +242,10 @@ static void _enesim_blit(void *s, void *context, void *src, Eina_Rectangle *srec
 static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 {
 	Enesim_Surface *es = src;
-	Enesim_Operator op;
-	Enesim_Cpu **cpus;
+	Enesim_Converter_1D conv;
+	Enesim_Converter_Data cdata;
 	uint32_t *sdata;
-	uint8_t *cdata;
+	uint8_t *sdldata;
 
 	SDL_Surface *s;
 
@@ -269,23 +269,24 @@ static Eina_Bool canvas_flush(void *src, Eina_Rectangle *srect)
 	stride = enesim_surface_stride_get(es);
 
 	sdata = enesim_surface_data_get(es);
-	cdata = s->pixels;
+	sdldata = s->pixels;
 
 	soffset = (stride * srect->y) + srect->x;
 	coffset = (s->pitch * srect->y) + (srect->x * 4);
 
-	cdata += coffset;
+	sdldata += coffset;
 	sdata += soffset;
+	cdata.argb8888.plane0 = (uint32_t *)sdldata;
+	cdata.argb8888.plane0_stride = s->pitch / 4;
 	/* convert */
-	cpus = enesim_cpu_get(&numcpus);
-	enesim_converter_1d_from_get(&op, cpus[0], ENESIM_FORMAT_ARGB8888, ENESIM_CONVERTER_ARGB8888);
+	conv = enesim_converter_span_get(ENESIM_CONVERTER_ARGB8888, ENESIM_ANGLE_0, ENESIM_FORMAT_ARGB8888);
 
 	_lock(s);
 	while (h--)
 	{
-		enesim_operator_converter_1d(&op, sdata, srect->w, cdata);
+		conv(&cdata, srect->w, sdata);
 		sdata += stride;
-		cdata += s->pitch;
+		cdata.argb8888.plane0 += cdata.argb8888.plane0_stride;
 	}
 	_unlock(s);
 	return _flush(s, srect);
