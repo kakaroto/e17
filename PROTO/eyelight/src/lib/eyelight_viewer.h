@@ -88,7 +88,7 @@ struct Eyelight_Viewer
     int current;
     Eyelight_Slide* slide_with_transition[2];
 
-    Eyelight_Thumbnails* thumbnails;
+    Eyelight_Thumbnails thumbnails;
 
     //expose
     Evas_Object** expose_image_thumbnails;
@@ -118,6 +118,7 @@ struct Eyelight_Viewer
     int tableofcontents_is_next_program;
     int tableofcontents_is_previous_program;
 };
+
 void eyelight_slide_clean(Eyelight_Slide *slide);
 
 Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *slide, int pos);

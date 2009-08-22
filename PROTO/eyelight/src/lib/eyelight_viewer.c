@@ -38,7 +38,9 @@ Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* presentation, const
     pres->default_size_w = 1024;
     pres->default_size_h = 768;
     pres->current_scale = 1;
-    eyelight_viewer_thumbnails_init(pres);
+
+    pres->thumbnails.default_size_w = pres->default_size_w/4;
+    pres->thumbnails.default_size_h = pres->default_size_h/4;
 
     eyelight_viewer_border_set(pres, with_border);
     eyelight_viewer_theme_file_set(pres,theme);
@@ -76,8 +78,7 @@ int eyelight_viewer_presentation_file_set(Eyelight_Viewer *pres, const char* pre
     else
         pres->current = -1;
 
-
-    eyelight_viewer_thumbnails_init(pres);
+    eyelight_viewer_thumbnails_background_load_stop(pres);
     eyelight_viewer_thumbnails_background_load_start(pres);
 
     printf("## Presentation file: %s\n",pres->elt_file);
@@ -108,7 +109,7 @@ int eyelight_viewer_new_presentation_file_set(Eyelight_Viewer *pres, const char*
 
     pres->current = -1;
 
-    eyelight_viewer_thumbnails_init(pres);
+    eyelight_viewer_thumbnails_background_load_stop(pres);
     eyelight_viewer_thumbnails_background_load_start(pres);
 
     printf("## Presentation file: %s\n",pres->elt_file);
@@ -748,8 +749,7 @@ void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 
 void eyelight_viewer_thumbnails_done_cb_set(Eyelight_Viewer* pres, Eyelight_Thumbnails_slide_done_cb cb, void *user_data)
 {
-    eyelight_viewer_thumbnails_init(pres);
-    pres->thumbnails->done_cb = cb;
-    pres->thumbnails->done_cb_data = user_data;
+    pres->thumbnails.done_cb = cb;
+    pres->thumbnails.done_cb_data = user_data;
 }
 

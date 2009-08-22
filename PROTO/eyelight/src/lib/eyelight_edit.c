@@ -126,7 +126,7 @@ void eyelight_edit_slide_insert(Eyelight_Viewer *pres, int after)
     eyelight_viewer_slide_goto(pres, after + 1);
 
     //create the thumbnail
-    if(pres->thumbnails->is_background_load)
+    if(pres->thumbnails.is_background_load)
     {
         eyelight_viewer_thumbnails_background_load_stop(pres);
         eyelight_viewer_thumbnails_background_load_start(pres);

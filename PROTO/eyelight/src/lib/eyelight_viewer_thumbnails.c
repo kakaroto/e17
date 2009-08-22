@@ -24,41 +24,29 @@ int _eyelight_viewer_thumbnails_load_idle(void *data);
 int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int new_w,int new_h);
 const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h);
 
-void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres)
-{
-    Eet_File* file;
-    if(pres->thumbnails) return ;
-
-    pres->thumbnails = calloc(1,sizeof(Eyelight_Thumbnails));
-    pres->thumbnails->default_size_w = pres->default_size_w/4;
-    pres->thumbnails->default_size_h = pres->default_size_h/4;
-}
-
 void eyelight_viewer_thumbnails_background_load_start(Eyelight_Viewer* pres)
 {
-    if(pres->thumbnails->is_background_load)
+    if(pres->thumbnails.is_background_load)
         return ;
-    pres->thumbnails->is_background_load = 1;
+    pres->thumbnails.is_background_load = 1;
 
-    pres->thumbnails->idle_current_slide =  0;
-    pres->thumbnails->idle = ecore_idler_add(_eyelight_viewer_thumbnails_load_idle,pres);
+    pres->thumbnails.idle_current_slide =  0;
+    pres->thumbnails.idle = ecore_idler_add(_eyelight_viewer_thumbnails_load_idle,pres);
 }
 
 void eyelight_viewer_thumbnails_background_load_stop(Eyelight_Viewer* pres)
 {
-    if(pres->thumbnails->idle)
+    if(pres->thumbnails.idle)
     {
-        ecore_idler_del(pres->thumbnails->idle);
-        pres->thumbnails->idle = NULL;
+        ecore_idler_del(pres->thumbnails.idle);
+        pres->thumbnails.idle = NULL;
     }
-    pres->thumbnails->is_background_load = 0;
+    pres->thumbnails.is_background_load = 0;
 }
 
 void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
 {
     int i = 0;
-
-    eyelight_viewer_thumbnails_init(pres);
 
     //recreate all thumbs already created
     for(i=0; i<eyelight_viewer_size_get(pres); i++)
@@ -74,7 +62,7 @@ void eyelight_viewer_thumbnails_size_set(Eyelight_Viewer *pres, int w, int h)
 
 const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos)
 {
-        return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h);
+        return eyelight_viewer_thumbnails_custom_size_get(pres,pos,pres->thumbnails.default_size_w, pres->thumbnails.default_size_h);
 }
 
 /**
@@ -105,7 +93,6 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
     Eet_File* file;
     unsigned int w,h;
     int alpha,compress,quality,lossy;
-    Eyelight_Thumbnails* thumbnails;
 
     Eyelight_Slide *slide = eina_list_nth(pres->slides, pos);
 
@@ -119,9 +106,9 @@ const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int
         slide->thumb.w = size_w;
         slide->thumb.h = size_h;
 
-        if(pres->thumbnails->done_cb)
-            pres->thumbnails->done_cb(pres, pos, &(slide->thumb),
-                    pres->thumbnails->done_cb_data);
+        if(pres->thumbnails.done_cb)
+            pres->thumbnails.done_cb(pres, pos, &(slide->thumb),
+                    pres->thumbnails.done_cb_data);
     }
 
     return &(slide->thumb);
@@ -199,7 +186,7 @@ void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres, int min, int max)
     int i;
 
     for(i=0;i<pres->size;i++)
-        if(!pres->thumbnails->is_background_load && (i<min || i>=max) )
+        if(!pres->thumbnails.is_background_load && (i<min || i>=max) )
         {
             Eyelight_Slide *slide = eina_list_nth(pres->slides, i);
             EYELIGHT_FREE(slide->thumb.thumb);
@@ -240,31 +227,26 @@ int* _eyelight_viewer_thumbnails_resize(const int* pixel,int src_w,int src_h,int
 int _eyelight_viewer_thumbnails_load_idle(void *data)
 {
     Eyelight_Viewer* pres = (Eyelight_Viewer*)data;
-    Eyelight_Thumbnails *thumbnails = pres->thumbnails;
 
-    int i = thumbnails->idle_current_slide;
+    int i = pres->thumbnails.idle_current_slide;
 
     if(i>=pres->size)
     {
-        thumbnails->idle = NULL;
+        pres->thumbnails.idle = NULL;
         return 0;
     }
 
-    const Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails->default_size_w, pres->thumbnails->default_size_h);
+    const Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails.default_size_w, pres->thumbnails.default_size_h);
 
-    thumbnails->idle_current_slide++;
+    pres->thumbnails.idle_current_slide++;
     return 1;
 }
 
 
 void eyelight_viewer_thumbnails_destroy(Eyelight_Viewer* pres)
 {
-    if(!pres->thumbnails)
-        return;
-    if(pres->thumbnails->idle)
-        ecore_idler_del(pres->thumbnails->idle);
-
-    EYELIGHT_FREE(pres->thumbnails);
+    if(pres->thumbnails.idle)
+        ecore_idler_del(pres->thumbnails.idle);
 }
 
 

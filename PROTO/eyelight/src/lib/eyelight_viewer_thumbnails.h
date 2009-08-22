@@ -48,8 +48,6 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int 
 const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer* pres, int pos, int w, int h);
 EAPI void eyelight_viewer_thumbnails_clean(Eyelight_Viewer* pres,int min, int max);
 
-void eyelight_viewer_thumbnails_init(Eyelight_Viewer* pres);
-
 
 #endif   /* ----- #ifndef THUMBNAILS_INC  ----- */
 

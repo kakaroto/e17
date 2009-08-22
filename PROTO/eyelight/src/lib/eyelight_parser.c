@@ -4,6 +4,7 @@
 
 
 #include "eyelight_compiler_parser.h"
+#include <locale.h>
 
 
 /*
@@ -337,6 +338,8 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
     int value_size = -1;
     char* value_list[EYELIGHT_BUFLEN];
 
+    //just to be sure we use the '.' as decimal separator
+    setlocale(LC_NUMERIC,"C");
     while( (token=eyelight_next_token(compiler,p,end,&p)) )
     {
         if(eyelight_is_open_block_token(token))
@@ -424,7 +427,9 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
             {
                 Eyelight_Value_Type type = eyelight_get_type_value_of_prop(current_node->name,i);
                 char* end_float=NULL;
-                double v=0;
+                long exponent = 0;
+                long long mantisse = 0;
+                double v;
                 switch(type)
                 {
                     case EYELIGHT_VALUE_TYPE_NONE:
