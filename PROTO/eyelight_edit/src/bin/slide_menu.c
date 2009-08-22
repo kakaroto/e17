@@ -57,7 +57,7 @@ void slide_menu_show(List_Item *item, int x, int y)
     // top
     Evas_Object *top = elm_box_add(win);
     btn = elm_button_add(win);
-    elm_button_label_set(btn, "Insert before fes efsfse");
+    elm_button_label_set(btn, "Insert before");
     evas_object_smart_callback_add(btn, "clicked", _insert_before_cb, item);
     evas_object_show(btn);
     elm_box_pack_end(top, btn);
