@@ -206,7 +206,7 @@ libewl_la_SOURCES = \
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
-libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EVIL_LIBS@ @fnmatch_libs@ -lm
+libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EVIL_LIBS@ @fnmatch_libs@ @LTLIBINTL@ -lm
 libewl_la_LDFLAGS = @lt_no_undefined@ @lt_enable_auto_import@ -version-info @INTERFACE_VERSION@
 libewl_la_LIBTOOLFLAGS =
 
