@@ -90,6 +90,14 @@ static void paint_coords_get(Eon_Paint *p, Eon_Shape *s, int *x, int *y, int *w,
 	printf("CSPACE = %d [%d %d %d %d] -> %d %d %d %d\n", eon_paint_coordspace_get(p), geom.x, geom.y, geom.w, geom.h, x ? *x : -1, y ? *y : -1, w ? *w : -1, h ? *h : -1);
 #endif
 }
+
+static void paint_setup(Paint *p)
+{
+	Enesim_Matrix m;
+
+	eon_paint_matrix_inv_get(p->p, &m);
+	enesim_renderer_transform_set(p->r, &m);
+}
 /*============================================================================*
  *                                 Horswitch                                  *
  *============================================================================*/
@@ -207,7 +215,7 @@ Eina_Bool checker_setup(void *data, Eon_Shape *s)
 	int dx, dy;
 
 	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
-
+	paint_setup(p);
 	enesim_renderer_origin_set(p->r, dx, dy);
 	enesim_renderer_checker_color1_set(p->r, eon_checker_color1_get(sq));
 	enesim_renderer_checker_color2_set(p->r, eon_checker_color2_get(sq));
@@ -274,6 +282,7 @@ Eina_Bool image_setup(void *data, Eon_Shape *s)
 		return EINA_FALSE;
 	}
 	paint_coords_get(p->p, s, &dx, &dy, &dw, &dh);
+	paint_setup(p);
 	enesim_renderer_surface_w_set(p->r, dw);
 	enesim_renderer_surface_h_set(p->r, dh);
 	enesim_renderer_origin_set(p->r, dx, dy);

@@ -136,6 +136,13 @@ Eina_Bool eon_paint_appendable(Ekeko_Object *p, Ekeko_Object *child)
 	else
 		return EINA_TRUE;
 }
+
+void eon_paint_matrix_inv_get(Eon_Paint *p, Enesim_Matrix *m)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+	*m = prv->inverse;
+}
+
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
@@ -176,12 +183,18 @@ EAPI Eon_Paint * eon_paint_new(Eon_Canvas *c)
 	return r;
 }
 
-EAPI void eon_paint_matrix_set(Eon_Paint *i, Enesim_Matrix *m)
+EAPI void eon_paint_matrix_set(Eon_Paint *p, Enesim_Matrix *m)
 {
 	Ekeko_Value v;
 
 	eon_value_matrix_from(&v, m);
-	ekeko_object_property_value_set((Ekeko_Object *)i, "matrix", &v);
+	ekeko_object_property_value_set((Ekeko_Object *)p, "matrix", &v);
+}
+
+EAPI void eon_paint_matrix_get(Eon_Paint *p, Enesim_Matrix *m)
+{
+	Eon_Paint_Private *prv = PRIVATE(p);
+	*m = prv->matrix;
 }
 
 EAPI void eon_paint_coords_get(Eon_Paint *p, Eon_Coord *x, Eon_Coord *y, Eon_Coord *w, Eon_Coord *h)
