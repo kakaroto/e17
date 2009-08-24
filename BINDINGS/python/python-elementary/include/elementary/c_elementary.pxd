@@ -157,6 +157,8 @@ cdef extern from "Elementary.h":
     double       elm_object_scale_get(evas.c_evas.Evas_Object *obj)
     void         elm_object_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char*        elm_object_style_get(evas.c_evas.Evas_Object *obj)
+    void         elm_object_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
+    int          elm_object_disabled_get(evas.c_evas.Evas_Object *obj)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)
@@ -238,6 +240,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
     void elm_button_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_button_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    evas.c_evas.Evas_Object *elm_button_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_button_style_set(evas.c_evas.Evas_Object *obj, char *style)
     
     # Scroller object

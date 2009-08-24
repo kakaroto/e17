@@ -60,7 +60,7 @@ cdef class Object(evas.c_evas.Object):
         elm_object_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
-        cdef int *disabled
+        cdef int disabled
         disabled = elm_object_disabled_get(self.obj)
         return disabled
     
