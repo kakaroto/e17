@@ -31,7 +31,7 @@ cdef class Button(Object):
         elm_button_icon_set(self.obj, icon.obj)
 
     def icon_get(self):
-        cdev c_evas.Object *icon = elm_button_icon_get(self.obj)
+        cdef c_evas.Object *icon = elm_button_icon_get(self.obj)
         return icon
 
     def style_set(self, style):
