@@ -78,6 +78,7 @@ dtb=(
 "hardy"
 "intrepid"
 "jaunty"
+"karmic"
 ## debian
 "lenny"
 "squeeze"
@@ -309,10 +310,35 @@ for distrocomp in ${distros[@]}; do
 		pbuildpath="$pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')"
 		cd $comp
 		echo "Compiling: $comp"
-		sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
-		if [ "$?" -ge "1" ]; then
-			echo "ERROR, exitting."
-			exit 1
+		if [ "$comp" = "elitaire" ] && [ "$(echo $distrocomp | sed 's/#.*//')" = "karmic" ]; then
+			rm updatealt
+			echo -e "rm /usr/bin/gcc /usr/bin/g++\nln -s /usr/bin/gcc-4.3 /usr/bin/gcc\nln -s /usr/bin/g++-4.3 /usr/bin/g++" > updatealt
+			chmod +x updatealt
+			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder execute --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --save-after-exec --no-targz -- updatealt
+			if [ "$?" -ge "1" ]; then
+				echo "ERROR, exitting."
+				exit 1
+			fi
+			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
+			if [ "$?" -ge "1" ]; then
+				echo "ERROR, exitting."
+				exit 1
+			fi
+			rm updatealt
+			echo -e "rm /usr/bin/gcc /usr/bin/g++\nln -s /usr/bin/gcc-4.4 /usr/bin/gcc\nln -s /usr/bin/g++-4.4 /usr/bin/g++" > updatealt
+			chmod +x updatealt
+			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder execute --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --save-after-exec --no-targz -- updatealt
+			if [ "$?" -ge "1" ]; then
+				echo "ERROR, exitting."
+				exit 1
+			fi
+			rm updatealt
+		else
+			sudo DIST="$(echo $distrocomp | sed 's/#.*//')" ARCH="$(echo $distrocomp | sed 's/.*#//')" PBUILDERPLACE="$pbuilderplace" pbuilder build --debbuildopts "-b" --buildresult $pbuilderplace/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/result --buildplace $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//') --no-targz *.dsc
+			if [ "$?" -ge "1" ]; then
+				echo "ERROR, exitting."
+				exit 1
+			fi
 		fi
 		cd ..
 		sudo rm -rf $pbuilderplace/build/$(echo $distrocomp | sed 's/#.*//')-$(echo $distrocomp | sed 's/.*#//')/tmp/buildd/*
@@ -349,7 +375,7 @@ prepare() {
 for preparelist in ${distros[@]}; do
 	preparepath="$pbuilderplace/$(echo $preparelist | sed 's/#.*//')-$(echo $preparelist | sed 's/.*#//')/result/binaries"
 	case $(echo $preparelist | sed 's/#.*//') in
-		hardy|intrepid|jaunty) distro=ubuntu
+		hardy|intrepid|jaunty|karmic) distro=ubuntu
 		;;
 		*) distro=debian
 		;;
@@ -379,7 +405,7 @@ done
 database() {
 for databases in ${dtb[@]}; do
 	case $databases in
-		hardy|intrepid|jaunty) distr=ubuntu
+		hardy|intrepid|jaunty|karmic) distr=ubuntu
 		;;
 		*) distr=debian
 		;;
@@ -406,7 +432,7 @@ done
 }
 
 upload() {
-up_ubuntu=$(echo "${distros[@]}" | egrep "(hardy|intrepid|jaunty)")
+up_ubuntu=$(echo "${distros[@]}" | egrep "(hardy|intrepid|jaunty|karmic)")
 up_debian=$(echo "${distros[@]}" | egrep "(lenny|squeeze|sid)")
 if test "$up_ubuntu"; then
 	echo "Uploading ubuntu dir."

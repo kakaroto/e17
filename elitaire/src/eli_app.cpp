@@ -425,7 +425,7 @@ static char * theme_cut_off_suffix(const char * file)
     char * end;
 
     /*find the begin of the suffix, the new end */
-    end = strrchr(file, '.');
+    end = strrchr((char *)file, '.');
 
     /*copy the rest */
     new_file = (char *) malloc(sizeof(char) * (end - file + 1));

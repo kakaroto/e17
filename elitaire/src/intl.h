@@ -20,7 +20,7 @@ inline char * sgettext(const char *msgid)
 {
 	char *msgval = gettext (msgid);
 	if (msgval == msgid)
-		msgval = strrchr (msgid, '|') + 1;
+		msgval = strrchr ((char *)msgid, '|') + 1;
 	return msgval;
 }
 
