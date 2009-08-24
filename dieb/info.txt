@@ -1,0 +1,12 @@
+Login:        dieb
+IRC Nick:     dieb_
+Cloak:        developer/dieb
+Name:         Andre Dieb Martins
+Location:     Campina Grande, Brazil
+E-Mail:       andre.dieb@gmail.com
+WWW:          http://genuinepulse.blogspot.com
+Managing:     eupnp
+Contributing: eina, ecore
+Group:        Core, Libraries
+Platform:     Ubuntu (Linux), Maemo (Linux)
+GeoData:      -7.218743 -35.909464
