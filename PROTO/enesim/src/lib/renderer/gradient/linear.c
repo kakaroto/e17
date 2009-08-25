@@ -62,8 +62,8 @@ static void _argb8888_pad_span(Enesim_Renderer *r, int x, int y,
 			uint16_t a;
 
 			a = eina_f16p16_fracc_get(yy) >> 8;
-			//printf("CALLED %d %08x %08x %d\n", sy, g->src[g->slen + 1], g->src[g->slen], a);
-			p0 = argb8888_interp_256(1 + a, g->src[g->slen + 1], g->src[g->slen]);
+			//printf("CALLED %d %08x %08x %d %08x\n", sy, g->src[sy + 1], g->src[sy], a, *g->src);
+			p0 = argb8888_interp_256(1 + a, g->src[sy + 1], g->src[sy]);
 		}
 		*dst++ = p0;
 		yy += l->ayx;

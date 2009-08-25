@@ -41,25 +41,24 @@ void enesim_renderer_gradient_state_setup(Enesim_Renderer *r, int len)
 	Enesim_Renderer_Gradient *g = (Enesim_Renderer_Gradient *)r;
 	Eina_List *tmp;
 	Stop *curr, *next;
-	Eina_F16p16 xx, limit, inc;
+	Eina_F16p16 xx, inc;
 	int end = len;
+	uint32_t *dst;
 
 	/* TODO check that we have at least two stops */
 	/* TODO check that we have one at 0 and one at 1 */
 	curr = eina_list_data_get(g->stops);
 	tmp = eina_list_next(g->stops);
 	next = eina_list_data_get(tmp);
-	//limit = eina_f16p16_float_from(next->pos * len);
 	/* Check that we dont divide by 0 */
 	inc = eina_f16p16_float_from(1.0 / ((next->pos - curr->pos) * len));
 	xx = 0;
 
-	g->src = malloc(sizeof(uint32_t) * len);
+	g->src = dst = malloc(sizeof(uint32_t) * len);
 	memset(g->src, 0xff, len);
-	/* Im not sure if we increment xx by the 1 / ((next - curr) * len) value
+	/* FIXME Im not sure if we increment xx by the 1 / ((next - curr) * len) value
 	 * as it might not be too accurate
 	 */
-	/* TODO actually generate the gradient */
 	while (end--)
 	{
 		uint16_t off;
@@ -69,7 +68,6 @@ void enesim_renderer_gradient_state_setup(Enesim_Renderer *r, int len)
 		if (xx >= 65536)
 		{
 			tmp = eina_list_next(tmp);
-			printf("%p\n", tmp);
 			curr = next;
 			next = eina_list_data_get(tmp);
 			inc = eina_f16p16_float_from(1.0 / ((next->pos - curr->pos) * len));
@@ -77,8 +75,7 @@ void enesim_renderer_gradient_state_setup(Enesim_Renderer *r, int len)
 		}
 		off = 1 + (eina_f16p16_fracc_get(xx) >> 8);
 		p0 = argb8888_interp_256(off, next->color, curr->color);
-		printf("%g %d %08x\n", eina_f16p16_float_to(xx), off, p0);
-		*g->src++ = p0;
+		*dst++ = p0;
 		xx += inc;
 	}
 	g->slen = len;
