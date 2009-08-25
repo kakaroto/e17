@@ -114,6 +114,11 @@ EAPI Enesim_Renderer * enesim_renderer_gradient_linear_new(void);
 EAPI void enesim_renderer_gradient_linear_pos_set(Enesim_Renderer *r, float x0,
 		float x1, float y0, float y1);
 
+
+EAPI void enesim_renderer_gradient_stop_add(Enesim_Renderer *r, Enesim_Color c,
+		float pos);
+EAPI void enesim_renderer_gradient_clear(Enesim_Renderer *r);
+
 /**
  * @}
  */

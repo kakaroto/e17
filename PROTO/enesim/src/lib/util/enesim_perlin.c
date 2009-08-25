@@ -112,11 +112,15 @@ EAPI Eina_F16p16 enesim_perlin_get(Eina_F16p16 xx, Eina_F16p16 yy,
 		x = eina_f16p16_mul(xx, xfreq[i]);
 		y = eina_f16p16_mul(yy, yfreq[i]);
 		res = interpolatenoise(x, y);
-		total = total + eina_f16p16_mul(res, ampl[i]);
+		total = ((int64_t)(total + eina_f16p16_mul(res, ampl[i]) << 16)) / FP2;
 	}
 	/* rescale to 0:2? */
 	//total += 65536;
-	total = abs(total);
+	//total = abs(total);
+/*	if (total < 0)
+		total = 0;
+	else if (total > 65536)
+		total = 65536;*/
 	return total;
 }
 

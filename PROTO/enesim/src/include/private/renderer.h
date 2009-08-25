@@ -67,6 +67,7 @@ typedef struct _Enesim_Renderer_Gradient
 	Enesim_Renderer base;
 	uint32_t *src;
 	int slen;
+	Eina_List *stops;
 } Enesim_Renderer_Gradient;
 
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
