@@ -62,6 +62,13 @@ typedef struct _Enesim_Renderer_Shape
 	Enesim_Shape_Draw_Mode draw_mode;
 } Enesim_Renderer_Shape;
 
+typedef struct _Enesim_Renderer_Gradient
+{
+	Enesim_Renderer base;
+	uint32_t *src;
+	int slen;
+} Enesim_Renderer_Gradient;
+
 #define ENESIM_RENDERER_DELETE(f) ((Enesim_Renderer_Delete)(f))
 #define ENESIM_RENDERER_SPAN_DRAW(f) ((Enesim_Renderer_Span_Draw)(f))
 #define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
@@ -99,6 +106,8 @@ static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
 }
 
 void enesim_renderer_shape_init(Enesim_Renderer *r);
+void enesim_renderer_gradient_init(Enesim_Renderer *r);
+void enesim_renderer_gradient_state_setup(Enesim_Renderer *r, int len);
 
 /* some built-in renderer type identifiers */
 #define SURFACE_RENDERER (1)

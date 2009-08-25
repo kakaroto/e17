@@ -1,3 +1,5 @@
+SUBDIRS = gradient shape filter
+
 MAINTAINERCLEANFILES = \
 Makefile.in
 
@@ -20,4 +22,16 @@ dispmap.c \
 raddist.c \
 shape.c \
 importer.c \
-perlin.c
+perlin.c \
+gradient.c
+
+libenesim_renderer_la_LIBADD = \
+gradient/libenesim_renderer_gradient.la \
+shape/libenesim_renderer_shape.la \
+filter/libenesim_renderer_filter.la
+
+libenesim_renderer_la_DEPENDENCIES = \
+gradient/libenesim_renderer_gradient.la \
+shape/libenesim_renderer_shape.la \
+filter/libenesim_renderer_filter.la
+

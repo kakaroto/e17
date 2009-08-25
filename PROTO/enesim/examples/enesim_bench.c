@@ -176,6 +176,11 @@ int bench_get(const char *name)
 		opt_bench = "perlin";
 		return 1;
 	}
+	else if (!strcmp(name, "gradient_linear"))
+	{
+		opt_bench = "gradient_linear";
+		return 1;
+	}
 	return 0;
 }
 
@@ -221,6 +226,7 @@ void bench_help(void)
 	printf("ellipse\n");
 	printf("rectangle\n");
 	printf("perlin\n");
+	printf("gradient_linear\n");
 	printf("all\n");
 }
 
@@ -418,6 +424,10 @@ ok:
 	else if (!strcmp(opt_bench, "perlin"))
 	{
 		perlin_bench();
+	}
+	else if (!strcmp(opt_bench, "gradient_linear"))
+	{
+		gradient_linear_bench();
 	}
 	else if (!strcmp(opt_bench, "all"))
 	{

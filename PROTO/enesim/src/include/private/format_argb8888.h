@@ -185,6 +185,14 @@ static inline sse2_t cc2v_sse2(uint64_t c)
 /*============================================================================*
  *                             Pixel operations                               *
  *============================================================================*/
+#if 0
+typedef union
+{
+	mmx_t mmx;
+	uint32_t u32[2];
+} mmx_td;
+#endif
+
 /* FIXME remove this */
 #define INTERP_256 argb8888_interp_256
 /*
@@ -194,30 +202,22 @@ static inline sse2_t cc2v_sse2(uint64_t c)
  */
 static inline uint32_t argb8888_interp_256(uint16_t a, uint32_t c0, uint32_t c1)
 {
-#ifdef EFL_HAVE_MMX_ERROR
+#ifdef EFL_HAVE_MMX
 	mmx_t rc0, rc1;
-	mmx_t ra;
+	mmx_t ra, ra255;
 	uint32_t res;
-#if 0
-	typedef union
-	{
-		mmx_t mmx;
-		uint32_t u32[2];
-	} mmx_td;
 
-	mmx_td deb;
-#endif
 	ra = a2v_mmx(a);
+	ra255 = a2v_mmx(255);
 	rc0 = c2v_mmx(c0);
 	rc1 = c2v_mmx(c1);
 
-	//deb.mmx = rc0;
-	//printf("RC0   %08x-%08x\n", deb.u32[0], deb.u32[1]);
-	rc0 = _mm_sub_pi16(rc1, rc0);
+	rc0 = _mm_sub_pi16(rc0, rc1);
 	rc0 = _mm_mullo_pi16(ra, rc0);
 	rc0 = _mm_srli_pi16(rc0, 8);
 	rc0 = _mm_add_pi16(rc0, rc1);
-	rc0  = _mm_packs_pu16(rc0, rc0);
+	rc0 = _mm_and_si64(rc0, ra255);
+	rc0 = _mm_packs_pu16(rc0, rc0);
 	res = _mm_cvtsi64_si32(rc0);
 	_mm_empty();
 

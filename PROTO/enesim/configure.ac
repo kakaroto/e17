@@ -193,6 +193,9 @@ src/lib/compositor/Makefile
 src/lib/converter/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
+src/lib/renderer/gradient/Makefile
+src/lib/renderer/shape/Makefile
+src/lib/renderer/filter/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile

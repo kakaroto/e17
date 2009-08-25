@@ -33,6 +33,7 @@ enesim_bench_circle.c \
 enesim_bench_ellipse.c \
 enesim_bench_rectangle.c \
 enesim_bench_perlin.c \
+enesim_bench_gradient_linear.c \
 image.c
 
 endif

@@ -110,6 +110,9 @@ EAPI void enesim_renderer_perlin_persistence_set(Enesim_Renderer *r, float persi
 EAPI void enesim_renderer_perlin_xfrequency_set(Enesim_Renderer *r, float freq);
 EAPI void enesim_renderer_perlin_yfrequency_set(Enesim_Renderer *r, float freq);
 
+EAPI Enesim_Renderer * enesim_renderer_gradient_linear_new(void);
+EAPI void enesim_renderer_gradient_linear_pos_set(Enesim_Renderer *r, float x0,
+		float x1, float y0, float y1);
 
 /**
  * @}
