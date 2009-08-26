@@ -14,12 +14,7 @@ libenesim_renderer_la_SOURCES = \
 surface.c \
 checker.c \
 hswitch.c \
-rectangle.c \
-circle.c \
-ellipse.c \
 stripes.c \
-dispmap.c \
-raddist.c \
 shape.c \
 importer.c \
 perlin.c \

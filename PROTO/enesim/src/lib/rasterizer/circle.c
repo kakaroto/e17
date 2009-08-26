@@ -218,6 +218,8 @@ EAPI Enesim_Rasterizer * enesim_rasterizer_circle_new(void)
 	Circle *c;
 
 	c = calloc(1, sizeof(Circle));
+
+	enesim_rasterizer_init(&c->r);
 	c->cp = _point_plot;
 	/* setup the rasterizer */
 	c->r.data = c;

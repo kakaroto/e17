@@ -109,17 +109,23 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 	l->fy1 = eina_f16p16_mul(r->matrix.values.yx, x1) -
 			eina_f16p16_mul(eina_f16p16_mul(r->matrix.values.xx, y1), f) -
 			r->matrix.values.yz;
+#if 0
+	printf("x0 %d y0 %d x1 %d y1 %d %d\n",
+		eina_f16p16_int_to(l->fx0), 
+		eina_f16p16_int_to(l->fy0), 
+		eina_f16p16_int_to(l->fx1), 
+		eina_f16p16_int_to(l->fy1),
+		eina_f16p16_int_to(f));
+#endif
 	/* get the length of the transformed points */
 	x0 = l->fx1 - l->fx0;
-	y0 = l->fy1 - l->fx1;
-	f = eina_f16p16_sqrt(eina_f16p16_mul(x0, x0) + eina_f16p16_mul(y0, y0));
+	y0 = l->fy1 - l->fy0;
+	/* we need to use floats because of the limitation of 16.16 values */
+	f = eina_f16p16_float_from(hypot(eina_f16p16_float_to(x0), eina_f16p16_float_to(y0)));
 	f += 32768;
-	/* FIXME the len is correct? */
-	printf("%d %d %d %d\n", eina_f16p16_int_to(l->fx0), eina_f16p16_int_to(l->fx1), eina_f16p16_int_to(l->fy0), eina_f16p16_int_to(l->fy1));
-	printf("len = %d\n", eina_f16p16_int_to(f));
+	//printf("len = %d %d\n", eina_f16p16_int_to(f), f);
 	l->ayx = ((int64_t)x0 << 16) / f;
 	l->ayy = ((int64_t)y0 << 16) / f;
-	printf("%d %d\n", eina_f16p16_int_to(l->ayx), eina_f16p16_int_to(l->ayy));
 	/* TODO check that the difference between x0 - x1 and y0 - y1 is
 	 * < tolerance
 	 */
@@ -145,7 +151,7 @@ EAPI Enesim_Renderer * enesim_renderer_gradient_linear_new(void)
 }
 
 EAPI void enesim_renderer_gradient_linear_pos_set(Enesim_Renderer *r, float x0,
-		float x1, float y0, float y1)
+		float y0, float x1, float y1)
 {
 	Linear *l = (Linear *)r;
 

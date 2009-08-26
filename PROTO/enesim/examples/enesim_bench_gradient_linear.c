@@ -12,7 +12,7 @@ void gradient_linear_bench(void)
 	surfaces_create(NULL, 0, NULL, 0, &dst, opt_fmt);
 
 	r = enesim_renderer_gradient_linear_new();
-	enesim_renderer_gradient_linear_pos_set(r, 10, 10, -150, -150);
+	enesim_renderer_gradient_linear_pos_set(r, 0, 0, opt_width, opt_height);
 	enesim_renderer_gradient_stop_add(r, 0xff000000, 0);
 	enesim_renderer_gradient_stop_add(r, 0xffff0000, 0.75);
 	enesim_renderer_gradient_stop_add(r, 0xffffffff, 1);

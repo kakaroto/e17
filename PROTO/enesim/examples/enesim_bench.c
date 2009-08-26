@@ -181,6 +181,11 @@ int bench_get(const char *name)
 		opt_bench = "gradient_linear";
 		return 1;
 	}
+	else if (!strcmp(name, "all"))
+	{
+		opt_bench = "all";
+		return 1;
+	}
 	return 0;
 }
 
@@ -437,11 +442,14 @@ ok:
 		rasterizer_bench();
 		raddist_bench();
 		dispmap_bench();
+		checker_bench();
 		stripes_bench();
 		hswitch_bench();
 		circle_bench();
 		ellipse_bench();
 		rectangle_bench();
+		perlin_bench();
+		gradient_linear_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test
