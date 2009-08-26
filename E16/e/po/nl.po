@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-27 18:51+0200\n"
+"POT-Creation-Date: 2009-08-04 20:23+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -1164,29 +1164,29 @@ msgstr "Minimaliseer deze groep"
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: src/menus.c:2099
+#: src/menus.c:2100
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: src/menus.c:2104
+#: src/menus.c:2105
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: src/menus.c:2109
+#: src/menus.c:2110
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2115
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menus"
 msgstr "Rand stijl"
 
-#: src/menus.c:2116
+#: src/menus.c:2117
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Audio Instellingen"
 
-#: src/menus.c:2119
+#: src/menus.c:2120
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

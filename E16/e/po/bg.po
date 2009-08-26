@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-27 18:51+0200\n"
+"POT-Creation-Date: 2009-08-04 20:23+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -1277,29 +1277,29 @@ msgstr "Игнорирай тази група"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2099
+#: src/menus.c:2100
 msgid "Animated display of menus"
 msgstr "Анимирай менютата"
 
-#: src/menus.c:2104
+#: src/menus.c:2105
 msgid "Always pop up menus on screen"
 msgstr "Винаги показвай менютата върху екрана"
 
-#: src/menus.c:2109
+#: src/menus.c:2110
 msgid "Warp pointer after moving menus"
 msgstr "Застъпвай показалеца след движение на менютата"
 
-#: src/menus.c:2115
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menus"
 msgstr "Менюта:"
 
-#: src/menus.c:2116
+#: src/menus.c:2117
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Други настройки"
 
-#: src/menus.c:2119
+#: src/menus.c:2120
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
