@@ -32,6 +32,7 @@ struct _Eon_Document_Private
 {
 	struct {
 		char *name;
+		void *data;
 		Eon_Engine *backend;
 	} engine;
 	Eina_Rectangle size;
@@ -90,12 +91,7 @@ static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	if (!prv->canvas)
 	{
 		prv->canvas = (Eon_Canvas *)e->target;
-		eon_engine_document_create(prv->engine.backend, d);
 	}
-	/* TODO set the engine automatically */
-	/* TODO what happens if the user doesnt set the engine and then appends
-	 * a canvas
-	 */
 }
 
 static void _prop_modify_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -161,6 +157,15 @@ Eon_Engine * eon_document_engine_get(Eon_Document *d)
 	prv = PRIVATE(d);
 	return prv->engine.backend;
 }
+
+void * eon_document_engine_data_get(Eon_Document *d)
+{
+	Eon_Document_Private *prv;
+
+	prv = PRIVATE(d);
+	return prv->engine.data;
+}
+
 Etch * eon_document_etch_get(Eon_Document *d)
 {
 	Eon_Document_Private *prv;
@@ -229,6 +234,7 @@ EAPI Eon_Document * eon_document_new(const char *engine, int w, int h, const cha
 	/* the gfx engine */
 	prv->engine.backend = eon_engine_get(engine);
 	eon_engine_ref(prv->engine.backend, d);
+	prv->engine.data = eon_engine_document_create(prv->engine.backend, d, options);
 	/* the script engine */
 	prv->vm.sm = eon_script_get("neko");
 	/* FIXME only initializa whenever we have a script element */

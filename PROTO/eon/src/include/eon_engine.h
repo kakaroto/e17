@@ -1,3 +1,20 @@
+/* EON - Canvas and Toolkit library
+ * Copyright (C) 2008-2009 Jorge Luis Zapata
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef EON_ENGINE_H_
 #define EON_ENGINE_H_
 
@@ -16,10 +33,10 @@ struct _Eon_Engine
 	Ekeko_Object parent;
 	Eon_Engine_Private *private;
 	/* document callbacks */
-	void * (*document_create)(Eon_Document *d);
+	void * (*document_create)(Eon_Document *d, const char *options);
 	void (*document_delete)(void *);
 	/* canvas callbacks */
-	void * (*canvas_create)(Eon_Canvas *c, Eina_Bool root, int w, int h);
+	void * (*canvas_create)(void *d, Eon_Canvas *c, Eina_Bool root, int w, int h);
 	void (*canvas_delete)(void *);
 	Eina_Bool (*canvas_blit)(void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
 	Eina_Bool (*canvas_flush)(void *c, Eina_Rectangle *r);
@@ -61,11 +78,11 @@ struct _Eon_Engine
  *============================================================================*/
 EAPI Ekeko_Type *eon_engine_type_get(void);
 
-EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d);
+EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const char *options);
 
 EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *r, void *c, Eina_Rectangle *sr);
 EAPI Eina_Bool eon_engine_canvas_flush(Eon_Engine *e, void *c, Eina_Rectangle *r);
-EAPI void * eon_engine_canvas_create(Eon_Engine *e, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h);
+EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *dd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h);
 
 EAPI void * eon_engine_rect_create(Eon_Engine *e, Eon_Rect *r);
 EAPI void eon_engine_rect_render(Eon_Engine *e, void *r, void *c, Eina_Rectangle *clip);

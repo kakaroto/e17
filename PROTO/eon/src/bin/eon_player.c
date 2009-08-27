@@ -25,6 +25,7 @@ void help(void)
 	printf("-W Width\n");
 	printf("-H Height\n");
 	printf("-I Image directory\n");
+	printf("-o Engine options\n");
 	printf("FILE Eon XML file\n");
 }
 
@@ -77,17 +78,19 @@ int main(int argc, char **argv)
 	int w = 320;
 	int h = 240;
 
-	char *short_options = "I:e:hW:H:";
+	char *short_options = "I:e:hW:H:o:";
 	struct option long_options[] = {
 		{"image", 1, 0, 'I'},
 		{"engine", 1, 0, 'e'},
 		{"help", 0, 0, 'h'},
 		{"width", 1, 0, 'W'},
 		{"height", 1, 0, 'H'},
+		{"options", 1, 0, 'o'},
 		{0, 0, 0, 0}
 	};
 	int option;
 	char c;
+	char *options = NULL;
 	char *file = argv[argc - 1];
 
 	while ((c = getopt_long(argc, argv, short_options, long_options,
@@ -111,6 +114,10 @@ int main(int argc, char **argv)
 			h = atoi(optarg);
 			break;
 
+			case 'o':
+			options = strdup(optarg);
+			break;
+
 			default:
 			help();
 			return 0;
@@ -119,7 +126,7 @@ int main(int argc, char **argv)
 	}
 	/* create the context */
 	eon_init();
-	doc = eon_document_new(engine, w, h, NULL);
+	doc = eon_document_new(engine, w, h, options);
 	/* create the canvas */
 	canvas = eon_document_canvas_get(doc);
 	/* create the external object */

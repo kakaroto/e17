@@ -32,6 +32,20 @@ typedef struct _Engine_SDL
 	Engine_SDL_Private *prv;
 } Engine_SDL;
 
+typedef struct _Engine_SDL_Document
+{
+	Eon_Canvas *root;
+	/* options */
+	char resizable:1;
+	char dbuffer:1;
+} Engine_SDL_Document;
+
+typedef struct _Engine_SDL_Canvas
+{
+
+} Engine_SDL_Canvas;
+
+
 static void _rect(void *surface, void *context, int x, int y, int w, int h)
 {
 	SDL_Rect rect;
@@ -115,35 +129,20 @@ static int _out_cb(void *data, int type, void *event)
 	return 1;
 }
 
-static void * document_create(Eon_Document *d)
+
+/* TODO handle parameters */
+static void * document_create(Eon_Document *d, const char *options)
 {
-	Ekeko_Input *input;
-	Eon_Canvas *canvas;
+	Engine_SDL_Document *sdoc;
 
 	printf("[SDL] Initializing SDL\n");
-	ecore_sdl_init(NULL);
-	SDL_Init(SDL_INIT_VIDEO);
-	/* Ecore_sdl interval isnt enough */
-	SDL_EnableKeyRepeat(10, 10);
-
-	canvas = eon_document_canvas_get(d);
-	/* add the input */
-	input = ekeko_canvas_input_new((Ekeko_Canvas *)canvas);
-	/* add the callbacks */
-	//ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, canvas);
-	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, d);
-	ecore_event_handler_add(ECORE_SDL_EVENT_GOT_FOCUS, _in_cb, input);
-	ecore_event_handler_add(ECORE_SDL_EVENT_LOST_FOCUS, _out_cb, input);
-	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, _mouse_down_cb, input);
-	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, _mouse_up_cb, input);
-	ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _mouse_move_cb, input);
-	ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, _key_down_cb, input);
-	ecore_event_handler_add(ECORE_EVENT_KEY_UP, _key_up_cb, input);
-	/* FIXME Ecore_SDL doesnt support the in/out events, make it always in */
-	ekeko_input_feed_mouse_in(input);
-	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
-	ecore_timer_add(0.008, _sdl_event, NULL);
-	return NULL;
+	sdoc = calloc(1, sizeof(Engine_SDL_Document));
+	if (options)
+	{
+		if (!strcmp(options, "resizable"))
+			sdoc->resizable = 1;
+	}
+	return sdoc;
 }
 
 static void _delete(Eon_Document *d, void *data)
@@ -204,30 +203,63 @@ static Eina_Bool _flush(void *src, Eina_Rectangle *srect)
 
 }
 
-static void * _sdl_surface_create(Eina_Bool root, int w, int h)
+static void _root_canvas_create(Ekeko_Canvas *c)
 {
+	Ekeko_Input *input;
+	Eon_Document *d;
+
+	d = eon_canvas_document_get(c);
+	ecore_sdl_init(NULL);
+	SDL_Init(SDL_INIT_VIDEO);
+	/* Ecore_sdl interval isnt enough */
+	SDL_EnableKeyRepeat(10, 10);
+
+	/* add the input */
+	input = ekeko_canvas_input_new((Ekeko_Canvas *)c);
+	/* add the callbacks */
+	//ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, canvas);
+	ecore_event_handler_add(ECORE_SDL_EVENT_RESIZE, _resize_cb, d);
+	ecore_event_handler_add(ECORE_SDL_EVENT_GOT_FOCUS, _in_cb, input);
+	ecore_event_handler_add(ECORE_SDL_EVENT_LOST_FOCUS, _out_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, _mouse_down_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, _mouse_up_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, _mouse_move_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, _key_down_cb, input);
+	ecore_event_handler_add(ECORE_EVENT_KEY_UP, _key_up_cb, input);
+	/* FIXME Ecore_SDL doesnt support the in/out events, make it always in */
+	ekeko_input_feed_mouse_in(input);
+	/* the event feeder evas/ecore has a very weird way to feed sdl events! */
+	ecore_timer_add(0.008, _sdl_event, NULL);
 }
 
-
-static void * canvas_create(Eon_Canvas *c, Eina_Bool root, int w, int h)
+static void * canvas_create(Eon_Canvas *c, void *dd, Eina_Bool root, int w, int h)
 {
+	Engine_SDL_Document *sdoc = dd;
 	Enesim_Surface *es;
 
 	es = enesim_surface_new(ENESIM_FORMAT_ARGB8888, w, h);
 	if (root)
 	{
 		SDL_Surface *s;
+		Uint32 flags;
 
+		/* only register the events once */
+		if (!sdoc->root)
+		{
+			_root_canvas_create(c);
+			sdoc->root = c;
+		}
+		flags = SDL_SRCALPHA;
+		if (sdoc->resizable)
+			flags |= SDL_RESIZABLE;
 		/* the destination surface */
 		printf("[SDL] Setting video mode to %d %d\n", w, h);
 #ifdef SINGLE_BUFFER
-		s = SDL_SetVideoMode(w, h, 32, SDL_RESIZABLE | SDL_SRCALPHA);
-		//return SDL_SetVideoMode(w, h, 32, SDL_SRCALPHA);
+		s = SDL_SetVideoMode(w, h, 32, flags);
 #else
-		//return SDL_SetVideoMode(w, h, 32, SDL_RESIZABLE | SDL_SRCALPHA |
-		//		SDL_DOUBLEBUF);
 		s = SDL_SetVideoMode(w, h, 32, SDL_SRCALPHA | SDL_DOUBLEBUF);
 #endif
+		printf("%p %p\n", es, s);
 		enesim_surface_private_set(es, s);
 	}
 	return es;

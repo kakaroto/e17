@@ -140,11 +140,13 @@ static void _document_surface_create(const Ekeko_Object *o, Ekeko_Event *e, void
 	Eon_Canvas *c;
 	Eon_Canvas_Private *prv;
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
+	void *doc_data;
 
+	doc_data = eon_document_engine_data_get((Eon_Document *)o);
 	eng = eon_document_engine_get((Eon_Document *)o);
 	c = data;
 	prv = PRIVATE(c);
-	prv->engine_data = eon_engine_canvas_create(eng, c, prv->root, em->curr->value.rect.w, em->curr->value.rect.h);
+	prv->engine_data = eon_engine_canvas_create(eng, doc_data, c, prv->root, em->curr->value.rect.w, em->curr->value.rect.h);
 }
 
 static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
@@ -152,6 +154,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
 	Eon_Canvas_Private *prv = PRIVATE(o);
 	Eon_Engine *eng;
+	void *doc_data;
 	int w, h;
 
 	/* check if the change is the rectangle */
@@ -174,6 +177,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 	w = prv->w.final;
 	h = prv->h.final;
 	eng = eon_document_engine_get(prv->doc);
+	doc_data = eon_document_engine_data_get(prv->doc);
 	/* TODO add a callback whenever the matrix is set and put the above code */
 #if 0
 	if (!prv->context)
@@ -182,7 +186,7 @@ static void _geometry_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
 		func->context->matrix_set(prv->context, &prv->inverse);
 	}
 #endif
-	prv->engine_data = eon_engine_canvas_create(eng, (Eon_Canvas *)o, prv->root, w, h);
+	prv->engine_data = eon_engine_canvas_create(eng, doc_data, (Eon_Canvas *)o, prv->root, w, h);
 }
 
 /* Once the matrix or the coordinates have changed, update the renderable

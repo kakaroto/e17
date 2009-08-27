@@ -27,30 +27,6 @@ struct _Eon_Engine_Private
 
 static Eina_Hash *_engines = NULL;
 
-static void shape_color_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-
-}
-
-static void shape_rop_change(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-
-}
-
-
-static void _child_append_cb(const Ekeko_Object *o, Ekeko_Event *e, void *data)
-{
-	Ekeko_Event_Mutation *em = (Ekeko_Event_Mutation *)e;
-
-	/* add callbacks to the different types */
-	if (ekeko_type_instance_is_of(e->target, EON_TYPE_SHAPE))
-	{
-		ekeko_event_listener_add(o, EON_SHAPE_COLOR_CHANGED, shape_color_change, EINA_FALSE, NULL);
-		ekeko_event_listener_add(o, EON_SHAPE_ROP_CHANGED, shape_rop_change, EINA_FALSE, NULL);
-		printf("%s appended to the document\n", ekeko_object_type_name_get(e->target));
-	}
-}
-
 static void _ctor(void *instance)
 {
 	Eon_Engine *e;
@@ -114,7 +90,6 @@ Eon_Engine * eon_engine_get(const char *name)
 void eon_engine_ref(Eon_Engine *e, Eon_Document *d)
 {
 	/* register the needed callbacks */
-	ekeko_event_listener_add((Ekeko_Object *)d, EKEKO_EVENT_OBJECT_APPEND, _child_append_cb, EINA_TRUE, e);
 }
 
 void eon_engine_unref(Eon_Engine *e, Eon_Document *d)
@@ -139,14 +114,17 @@ EAPI Ekeko_Type *eon_engine_type_get(void)
 
 }
 
-EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d)
+EAPI void * eon_engine_document_create(Eon_Engine *e, Eon_Document *d, const char *options)
 {
-	return e->document_create(d);
+	void *dd = e->document_create(d, options);
+
+	printf("%p\n", dd);
+	return dd;
 }
 
-EAPI void * eon_engine_canvas_create(Eon_Engine *e, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h)
+EAPI void * eon_engine_canvas_create(Eon_Engine *e, void *cd, Eon_Canvas *c, Eina_Bool root, uint32_t w, uint32_t h)
 {
-	return e->canvas_create(c, root, w, h);
+	return e->canvas_create(c, cd, root, w, h);
 }
 
 EAPI Eina_Bool eon_engine_canvas_blit(Eon_Engine *e, void *sc, Eina_Rectangle *sr, void *c, Eina_Rectangle *r)
