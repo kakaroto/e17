@@ -5051,3 +5051,24 @@ Warning fixes (based on patches by pfritz and gahr, tickets 331,342).
 Prevent area switch while shading (ticket 332).
 Update credits.
 Fix size (container window shape) of windows resized by a window match.
+
+-------------------------------------------------------------------------------
+
+Thu Aug 27 19:21:04 CEST 2009
+
+--- 1.0.0.901 ---
+Avoid need for xmlto when building from tarball.
+Update translations from launchpad (es, zh_CN, pt_BR).
+docs: Dragbar bindings have been removed from bindings.cfg.
+docs: One page html docs. Fix distcheck and rpmbuild.
+Fix property fetch functions.
+Refactor restart cursor code.
+Use xrender cursor for restart cursor.
+docs: Update README.xml (Yasufumi Haga).
+Save some code bytes in tclass parser.
+Strip trailing whitespace when parsing .desktop files.
+Set menu window state to active to always show an active border.
+Add some window size sanity checks.
+Fix font configuration file search order (default should be fonts.cfg).
+edox: Add -help option, remove cruft, move some lines of code.
+Update translations from launchpad (ar, es, nl, sk).
