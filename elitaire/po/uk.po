@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: elitaire.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
-"POT-Creation-Date: 2009-05-20 10:00-0700\n"
+"Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-08 00:11+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -14,8 +14,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 "
-"&& n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:703
 #: ../src/edje_frontend_gui.cpp:757
@@ -262,4 +262,3 @@ msgstr "Помилка: неможливо запустити налаштува
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
 msgstr "Помилка: неможливо запустити Ewl\n"
-

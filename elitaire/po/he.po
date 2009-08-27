@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-11-30 00:04+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -90,12 +90,12 @@ msgstr "CONTEXT|עזרה"
 msgid "CONTEXT|New"
 msgstr "CONTEXT|חדשות"
 
-#: ../src/eli_app.cpp:290
+#: ../src/eli_app.cpp:291
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "שגיאה ב־Elitaire: אין קובת ערכת נושא תחת %s!\n"
 
-#: ../src/eli_app.cpp:306
+#: ../src/eli_app.cpp:307
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "שגיאה ב־Elitaire: אין קובץ קלפים תחת %s!\n"

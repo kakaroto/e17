@@ -9,17 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire e17\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2009-07-08 13:16+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-06 07:46+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
-msgid "OpenGL (testing)"
-msgstr "OpenGL(测试阶段)"
 
 #: ../src/edje_frontend_game.cpp:61 ../src/edje_frontend_gui.cpp:703
 #: ../src/edje_frontend_gui.cpp:757
@@ -208,6 +204,10 @@ msgstr "更改仅影响新局"
 #: ../src/ewl_dialog_config.cpp:226 ../src/ewl_dialog_config.cpp:292
 msgid "Software"
 msgstr "软件"
+
+#: ../src/ewl_dialog_config.cpp:234 ../src/ewl_dialog_config.cpp:295
+msgid "OpenGL (testing)"
+msgstr "OpenGL(测试阶段)"
 
 #: ../src/ewl_dialog_config.cpp:271
 #, c-format
