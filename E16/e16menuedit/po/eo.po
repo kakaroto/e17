@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-16 10:37+0200\n"
+"POT-Creation-Date: 2009-08-27 21:09+0800\n"
 "PO-Revision-Date: 2009-05-16 10:43+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -16,55 +16,76 @@ msgstr ""
 "X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: e16menuedit2.glade:8
-msgid "E16 Menu Editor"
-msgstr "Menuredaktilo de E16"
+#: ../src/callbacks.c:53
+msgid "Save"
+msgstr ""
 
-#: e16menuedit2.glade:41
-msgid "_File"
-msgstr "_Dosiero"
-
-#: e16menuedit2.glade:86
-msgid "_Edit"
-msgstr "R_edakti"
-
-#: e16menuedit2.glade:95
-msgid "_New Entry"
-msgstr "_Nova ero"
-
-#: e16menuedit2.glade:116
-msgid "_Delete Entry"
-msgstr "Forigi eron (_D)"
-
-#: e16menuedit2.glade:136
-msgid "Choose _Icon"
-msgstr "Elekti p_itktogramon"
-
-#: e16menuedit2.glade:161
-msgid "_Help"
-msgstr "_Helpo"
-
-#: e16menuedit2.glade:170
-msgid "_Contents"
-msgstr "Enhavo (_C)"
-
-#: e16menuedit2.glade:262 e16menuedit2.glade:547
+#: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
 msgid "New Entry"
 msgstr "Nova ero"
 
-#: e16menuedit2.glade:280 e16menuedit2.glade:587
-msgid "Delete Entry"
-msgstr "Forigi eron"
-
-#: e16menuedit2.glade:296 e16menuedit2.glade:567
+#: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
 msgid "Choose Icon"
 msgstr "Elekti piktogramon"
 
-#: e16menuedit2.glade:393
-msgid "Info about E16 Menu Editor"
-msgstr "Informoj pri la menuredaktilo de E16"
+#: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "Forigi eron"
 
-#: e16menuedit2.glade:452
+#: ../src/callbacks.c:81
+msgid "Quit"
+msgstr ""
+
+#: ../src/callbacks.c:310
+msgid "No help file found!"
+msgstr ""
+
+#: ../src/callbacks.c:314
+msgid "No help application found"
+msgstr ""
+
+#: ../src/e16menuedit2.c:118
+msgid "Menu successfully loaded!"
+msgstr ""
+
+#: ../src/icon_chooser.c:66
+msgid "Select Icon..."
+msgstr ""
+
+#: ../src/icon_chooser.c:102
+msgid "Icon size:"
+msgstr ""
+
+#: ../src/treeview.c:57
+msgid "Description"
+msgstr ""
+
+#: ../src/treeview.c:64
+msgid "Icon"
+msgstr ""
+
+#: ../src/treeview.c:86
+#, fuzzy
+msgid "Parameters"
+msgstr "Ecoj"
+
+#: ../src/treeview.c:203
+msgid "Menu saved!"
+msgstr ""
+
+#: ../src/treeview.c:222
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr ""
+
+#: ../src/treeview.c:226
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr ""
+
+#: ../e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>Ecoj:</b>"
+
+#: ../e16menuedit2.glade.h:2
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
 "e16menuedit2 v0.0.3"
@@ -72,19 +93,55 @@ msgstr ""
 "<span font_desc=\"Sans 22\">Menuredaktilo de E16</span>\n"
 "e16menuedit2 v0.0.3"
 
-#: e16menuedit2.glade:479
-msgid "Info"
-msgstr "Informo"
+#: ../e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "Elekti p_itktogramon"
 
-#: e16menuedit2.glade:607
-msgid "Properties"
-msgstr "Ecoj"
+#: ../e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "Menuredaktilo de E16"
 
-#: e16menuedit2.glade:654
+#: ../e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
 msgstr "Retropaŝa helpo-foliumilo:"
 
-#: e16menuedit2.glade:675
+#: ../e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "Informo"
+
+#: ../e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "Informoj pri la menuredaktilo de E16"
+
+#: ../e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "Ecoj"
+
+#: ../e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "Enhavo (_C)"
+
+#: ../e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "Forigi eron (_D)"
+
+#: ../e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "R_edakti"
+
+#: ../e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "_Dosiero"
+
+#: ../e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "_Helpo"
+
+#: ../e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "_Nova ero"
+
+#: ../e16menuedit2.glade.h:19
 msgid ""
 "mozilla\n"
 "firefox\n"
@@ -95,8 +152,3 @@ msgstr ""
 "firefox\n"
 "epiphany\n"
 "konqueror"
-
-#: e16menuedit2.glade:694
-msgid "<b>Properties:</b>"
-msgstr "<b>Ecoj:</b>"
-

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-20 11:46+0200\n"
+"POT-Creation-Date: 2009-08-27 21:09+0800\n"
 "PO-Revision-Date: 2004-10-27 20:51+0200\n"
 "Last-Translator: Onur Küçük <onur@delipenguen.net>\n"
 "Language-Team: Turkish <onur@delipenguen.net>\n"
@@ -16,75 +16,75 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/callbacks.c:53
+#: ../src/callbacks.c:53
 msgid "Save"
 msgstr "Kaydet"
 
-#: src/callbacks.c:60 src/treeview.c:149 e16menuedit2.glade.h:11
+#: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
 msgid "New Entry"
 msgstr "Yeni Girdi"
 
-#: src/callbacks.c:67 e16menuedit2.glade.h:4
+#: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
 msgid "Choose Icon"
 msgstr "Simge Seç"
 
-#: src/callbacks.c:74 e16menuedit2.glade.h:6
+#: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
 msgid "Delete Entry"
 msgstr "Girdi Sil"
 
-#: src/callbacks.c:81
+#: ../src/callbacks.c:81
 msgid "Quit"
 msgstr "Çýkýþ"
 
-#: src/callbacks.c:310
+#: ../src/callbacks.c:310
 msgid "No help file found!"
 msgstr ""
 
-#: src/callbacks.c:314
+#: ../src/callbacks.c:314
 msgid "No help application found"
 msgstr ""
 
-#: src/e16menuedit2.c:118
+#: ../src/e16menuedit2.c:118
 msgid "Menu successfully loaded!"
 msgstr "Menü baþarýyla yüklendi!"
 
-#: src/icon_chooser.c:66
+#: ../src/icon_chooser.c:66
 msgid "Select Icon..."
 msgstr "Simge Seç..."
 
-#: src/icon_chooser.c:102
+#: ../src/icon_chooser.c:102
 msgid "Icon size:"
 msgstr "Simge boyutu:"
 
-#: src/treeview.c:57
+#: ../src/treeview.c:57
 msgid "Description"
 msgstr "Açýklama"
 
-#: src/treeview.c:64
+#: ../src/treeview.c:64
 msgid "Icon"
 msgstr "Simge"
 
-#: src/treeview.c:86
+#: ../src/treeview.c:86
 msgid "Parameters"
 msgstr "Parametreler"
 
-#: src/treeview.c:203
+#: ../src/treeview.c:203
 msgid "Menu saved!"
 msgstr "Menü kaydedildi!"
 
-#: src/treeview.c:222
+#: ../src/treeview.c:222
 msgid "Submenu must have a name! -> menu not saved!"
 msgstr "Altmenünün bir ismi olmalý! -> menü kaydedilmedi!"
 
-#: src/treeview.c:226
+#: ../src/treeview.c:226
 msgid "Unknown error occurred while checking menu -> menu not saved!"
 msgstr "Menü incelenirken bilinmeyen bir hata oluþtu -> menü kaydedilmedi!"
 
-#: e16menuedit2.glade.h:1
+#: ../e16menuedit2.glade.h:1
 msgid "<b>Properties:</b>"
 msgstr "<b>Özellikler:</b>"
 
-#: e16menuedit2.glade.h:2
+#: ../e16menuedit2.glade.h:2
 #, fuzzy
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
@@ -93,55 +93,55 @@ msgstr ""
 "<span font_desc=\"Sans 22\">E16 Menü Düzenleyici II</span>\n"
 "e16menuedit2 v0.0.1"
 
-#: e16menuedit2.glade.h:5
+#: ../e16menuedit2.glade.h:5
 msgid "Choose _Icon"
 msgstr "_Simge Seç"
 
-#: e16menuedit2.glade.h:7
+#: ../e16menuedit2.glade.h:7
 msgid "E16 Menu Editor"
 msgstr "E16 Menü Düzenleyici"
 
-#: e16menuedit2.glade.h:8
+#: ../e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
 msgstr "Yardým-Tarayýcýsý"
 
-#: e16menuedit2.glade.h:9
+#: ../e16menuedit2.glade.h:9
 msgid "Info"
 msgstr "Bilgi"
 
-#: e16menuedit2.glade.h:10
+#: ../e16menuedit2.glade.h:10
 msgid "Info about E16 Menu Editor"
 msgstr "E16 Menü Düzenleyici hakkýnda bilgi"
 
-#: e16menuedit2.glade.h:12
+#: ../e16menuedit2.glade.h:12
 msgid "Properties"
 msgstr "Özellikler"
 
-#: e16menuedit2.glade.h:13
+#: ../e16menuedit2.glade.h:13
 msgid "_Contents"
 msgstr "Ýçe_rik"
 
-#: e16menuedit2.glade.h:14
+#: ../e16menuedit2.glade.h:14
 msgid "_Delete Entry"
 msgstr "Girdi _Sil"
 
-#: e16menuedit2.glade.h:15
+#: ../e16menuedit2.glade.h:15
 msgid "_Edit"
 msgstr "Dü_zenle"
 
-#: e16menuedit2.glade.h:16
+#: ../e16menuedit2.glade.h:16
 msgid "_File"
 msgstr "_Dosya"
 
-#: e16menuedit2.glade.h:17
+#: ../e16menuedit2.glade.h:17
 msgid "_Help"
 msgstr "_Yardým"
 
-#: e16menuedit2.glade.h:18
+#: ../e16menuedit2.glade.h:18
 msgid "_New Entry"
 msgstr "_Yeni Girdi"
 
-#: e16menuedit2.glade.h:19
+#: ../e16menuedit2.glade.h:19
 msgid ""
 "mozilla\n"
 "firefox\n"

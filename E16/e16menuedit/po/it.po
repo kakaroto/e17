@@ -1,89 +1,87 @@
+# Italian translation for enlightenment
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the enlightenment package.
+# Minasss <francesco.pischedda@gmail.com>, 2009.
 #
-# Copyright (C) 2004
-# This file is distributed under the same license as the e16menuedit2 package.
-# Andreas Volz <linux@brachttal.net>, 2004.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: e16menuedit2\n"
+"Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-27 21:09+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Andreas Volz <linux@brachttal.net>\n"
-"Language-Team: German <linux@brachttal.net>\n"
+"PO-Revision-Date: 2009-08-10 10:29+0000\n"
+"Last-Translator: Minasss <francesco.pischedda@gmail.com>\n"
+"Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/callbacks.c:53
 msgid "Save"
-msgstr "Speichern"
+msgstr "Salva"
 
 #: ../src/callbacks.c:60 ../src/treeview.c:149 ../e16menuedit2.glade.h:11
 msgid "New Entry"
-msgstr "Neuer Eintrag"
+msgstr "Nuova voce"
 
 #: ../src/callbacks.c:67 ../e16menuedit2.glade.h:4
 msgid "Choose Icon"
-msgstr "Wähle Symbol"
+msgstr "Scegli icona"
 
 #: ../src/callbacks.c:74 ../e16menuedit2.glade.h:6
 msgid "Delete Entry"
-msgstr "Lösche Eintrag"
+msgstr "Rimuovi voce"
 
 #: ../src/callbacks.c:81
 msgid "Quit"
-msgstr "Beenden"
+msgstr "Esci"
 
 #: ../src/callbacks.c:310
 msgid "No help file found!"
-msgstr "Kein Hilfedatei gefunden!"
+msgstr "Nessun file di help trovato!"
 
 #: ../src/callbacks.c:314
 msgid "No help application found"
-msgstr "Kein Programm zum Anzeigen der Hilfe gefunden"
+msgstr "Nessuna applicazione di help trovata"
 
 #: ../src/e16menuedit2.c:118
 msgid "Menu successfully loaded!"
-msgstr "Menü erfolgreich geladen!"
+msgstr "Menu caricato con successo!"
 
 #: ../src/icon_chooser.c:66
 msgid "Select Icon..."
-msgstr "Wähle Symbol..."
+msgstr "Seleziona icona..."
 
 #: ../src/icon_chooser.c:102
 msgid "Icon size:"
-msgstr "Symbolgröße:"
+msgstr "Dimensione icona:"
 
 #: ../src/treeview.c:57
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "Descrizione"
 
 #: ../src/treeview.c:64
 msgid "Icon"
-msgstr "Symbol"
+msgstr "Icona"
 
 #: ../src/treeview.c:86
 msgid "Parameters"
-msgstr "Parameter"
+msgstr "Parametri"
 
 #: ../src/treeview.c:203
 msgid "Menu saved!"
-msgstr "Menü gespeichert!"
+msgstr "Menu salvato!"
 
 #: ../src/treeview.c:222
 msgid "Submenu must have a name! -> menu not saved!"
-msgstr "Untermenü muss einen Namen haben -> Menü nicht gespeichert!"
+msgstr ""
 
 #: ../src/treeview.c:226
 msgid "Unknown error occurred while checking menu -> menu not saved!"
 msgstr ""
-"Unbekannter Fehler beim kontrollieren des Menüs -> Menü nicht gespeichert!"
 
 #: ../e16menuedit2.glade.h:1
 msgid "<b>Properties:</b>"
-msgstr "<b>Eigenschaften:</b>"
+msgstr "<b>ProprietÃ :</b>"
 
 #: ../e16menuedit2.glade.h:2
 msgid ""
@@ -93,51 +91,51 @@ msgstr ""
 
 #: ../e16menuedit2.glade.h:5
 msgid "Choose _Icon"
-msgstr "Wähle _Symbol"
+msgstr ""
 
 #: ../e16menuedit2.glade.h:7
 msgid "E16 Menu Editor"
-msgstr "E16 Menü Editor"
+msgstr "Editor Menu per E16"
 
 #: ../e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
-msgstr "Hilfe Navigator (Fallback):"
+msgstr ""
 
 #: ../e16menuedit2.glade.h:9
 msgid "Info"
-msgstr "Info"
+msgstr "Informazioni"
 
 #: ../e16menuedit2.glade.h:10
 msgid "Info about E16 Menu Editor"
-msgstr "Informationen über E16 Menü Editor"
+msgstr "Informazioni sull'editor di Menu di E16"
 
 #: ../e16menuedit2.glade.h:12
 msgid "Properties"
-msgstr "Parameter"
+msgstr "ProprietÃ "
 
 #: ../e16menuedit2.glade.h:13
 msgid "_Contents"
-msgstr "_Inhalt"
+msgstr "_Contenuti"
 
 #: ../e16menuedit2.glade.h:14
 msgid "_Delete Entry"
-msgstr "_Lösche Eintrag"
+msgstr "_Elimina Voce"
 
 #: ../e16menuedit2.glade.h:15
 msgid "_Edit"
-msgstr "_Bearbeiten"
+msgstr "_Modifica"
 
 #: ../e16menuedit2.glade.h:16
 msgid "_File"
-msgstr "_Datei"
+msgstr "_File"
 
 #: ../e16menuedit2.glade.h:17
 msgid "_Help"
-msgstr "_Hilfe"
+msgstr "_Aiuto"
 
 #: ../e16menuedit2.glade.h:18
 msgid "_New Entry"
-msgstr "_Neuer Eintrag"
+msgstr "_Nuova Voce"
 
 #: ../e16menuedit2.glade.h:19
 msgid ""
@@ -146,3 +144,7 @@ msgid ""
 "epiphany\n"
 "konqueror"
 msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
