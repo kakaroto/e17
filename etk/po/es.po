@@ -5,111 +5,197 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-11-23 20:29+0800\n"
-"PO-Revision-Date: 2009-01-22 19:49+0000\n"
-"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"PO-Revision-Date: 2009-08-19 03:40+0000\n"
+"Last-Translator: Federico Vera <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:60
-msgid "Etk Preferences"
-msgstr "Preferencias de Etk"
-
-#: src/tools/etk_prefs/etk_prefs.c:76
-msgid "Category"
-msgstr "Categoría"
-
-#: src/tools/etk_prefs/etk_prefs.c:81
-msgid "Theme"
-msgstr "Tema"
-
-#: src/tools/etk_prefs/etk_prefs.c:82
-msgid "Fonts"
-msgstr "Tipografía"
-
-#: src/tools/etk_prefs/etk_prefs.c:83
-msgid "Language"
-msgstr "Idioma"
-
-#: src/tools/etk_prefs/etk_prefs.c:84
-msgid "User Preferences"
-msgstr "Preferencias de usuario"
-
-#: src/tools/etk_prefs/etk_prefs.c:85
-msgid "General"
-msgstr "General"
-
-#: src/lib/etk_message_dialog.c:109
-msgid "Warning"
-msgstr "Aviso"
-
-#: src/lib/etk_message_dialog.c:113
-msgid "Question"
-msgstr "Pregunta"
-
-#: src/lib/etk_message_dialog.c:117
-msgid "Error"
-msgstr "Error"
-
-#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
-msgid "Information"
-msgstr "Información"
-
-#: src/lib/etk_filechooser_widget.c:495
-msgid "Places"
-msgstr "Lugares"
-
-#: src/lib/etk_filechooser_widget.c:506
-msgid "Favorites"
-msgstr "Favoritos"
-
-#: src/lib/etk_filechooser_widget.c:517
-msgid "Filename"
-msgstr "Nombre de archivo"
-
-#: src/lib/etk_filechooser_widget.c:521
-msgid "Date"
-msgstr "Fecha"
-
-#: src/lib/etk_filechooser_widget.c:730
-msgid "Home"
-msgstr "Inicio"
-
-#: src/lib/etk_filechooser_widget.c:735
-msgid "Root"
-msgstr "Administrador"
-
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "H"
 msgstr "H"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "S"
 msgstr "S"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "V"
 msgstr "V"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "R"
 msgstr "R"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "G"
 msgstr "V"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "B"
 msgstr "B"
 
-#: src/lib/etk_colorpicker.c:400
+#: ../src/lib/etk_colorpicker.c:400
 msgid "Alpha"
 msgstr "Alfa"
 
-#: src/lib/etk_colorpicker.c:424
+#. Current color preview
+#: ../src/lib/etk_colorpicker.c:424
 msgid "Current"
 msgstr "Actual"
+
+#: ../src/lib/etk_filechooser_widget.c:495
+msgid "Places"
+msgstr "Lugares"
+
+#: ../src/lib/etk_filechooser_widget.c:506
+msgid "Favorites"
+msgstr "Favoritos"
+
+#: ../src/lib/etk_filechooser_widget.c:517
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#: ../src/lib/etk_filechooser_widget.c:521
+msgid "Date"
+msgstr "Fecha"
+
+#: ../src/lib/etk_filechooser_widget.c:730
+msgid "Home"
+msgstr "Inicio"
+
+#: ../src/lib/etk_filechooser_widget.c:735
+msgid "Root"
+msgstr "Administrador"
+
+#: ../src/lib/etk_message_dialog.c:109
+msgid "Warning"
+msgstr "Aviso"
+
+#: ../src/lib/etk_message_dialog.c:113
+msgid "Question"
+msgstr "Pregunta"
+
+#: ../src/lib/etk_message_dialog.c:117
+msgid "Error"
+msgstr "Error"
+
+#: ../src/lib/etk_message_dialog.c:122 ../src/lib/etk_message_dialog.c:264
+msgid "Information"
+msgstr "Información"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:50
+#, c-format
+msgid "Could not init Etk. Exiting...\n"
+msgstr "Incapaz de iniciar Etk. Saliendo...\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:56
+#, c-format
+msgid "Usage: etk_prefs ARGUMENTS\n"
+msgstr "Uso: etk_prefs ARGUMENTOS\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:57
+#, c-format
+msgid "ARGUMENTS:\n"
+msgstr "ARGUMENTOS:\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:58
+#, c-format
+msgid "   --help : print this message\n"
+msgstr "   --help : muestra este mensaje\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:59
+#, c-format
+msgid "   --theme=THEME : set theme from command line\n"
+msgstr "   --theme=TEMA : asigna el tema desde la línea de comandos\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:60
+#, c-format
+msgid "   --themes-list : list themes\n"
+msgstr "   --themes-list : lista de temas\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:89
+#, c-format
+msgid "Theme %s not found. Exitting..\n"
+msgstr "No se encontró el tema %s . Saliendo...\n"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:111
+msgid "Etk Preferences"
+msgstr "Preferencias de Etk"
+
+#. button for switching pages
+#: ../src/tools/etk_prefs/etk_prefs.c:127
+#: ../src/tools/etk_prefs/etk_prefs.c:262
+#: ../src/tools/etk_prefs/etk_prefs.c:270
+msgid "Go to Engines page"
+msgstr "Ir a la página de Motores"
+
+#. the preview
+#: ../src/tools/etk_prefs/etk_prefs.c:166
+msgid "Preview"
+msgstr "Vista previa"
+
+#. add frame
+#: ../src/tools/etk_prefs/etk_prefs.c:200
+msgid "Themes"
+msgstr "Temas"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:253
+msgid "Engines"
+msgstr "Motores"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:265
+msgid "Go to Themes page"
+msgstr "Ir a la página de Temas"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:339
+msgid "Buttons"
+msgstr "Botones"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:343
+msgid "Regular Button"
+msgstr "Botón Normal"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:345
+msgid "Check Button"
+msgstr "Botón de casilla"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:347
+msgid "Radio Button"
+msgstr "Botón de radio"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:350
+msgid "Text"
+msgstr "Texto"
+
+#: ../src/tools/etk_prefs/etk_prefs.c:355
+msgid "Sample text..."
+msgstr "Texto de muestra..."
+
+#: ../src/tools/etk_prefs/etk_prefs.c:359
+msgid ""
+"Multi-line text widget!\n"
+"How about that! (="
+msgstr ""
+"Accesorio de texto Multi-línea!\n"
+"Que te parece!!! =)"
+
+#~ msgid "User Preferences"
+#~ msgstr "Preferencias de usuario"
+
+#~ msgid "General"
+#~ msgstr "General"
+
+#~ msgid "Category"
+#~ msgstr "Categoría"
+
+#~ msgid "Fonts"
+#~ msgstr "Tipografía"
+
+#~ msgid "Language"
+#~ msgstr "Idioma"

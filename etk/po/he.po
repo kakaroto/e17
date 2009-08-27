@@ -1,15 +1,16 @@
-# Slovak translation for enlightenment
-# This file is distributed under the same license as the enlightenment package.
+# Hebrew translation for etk
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the etk package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-03-24 15:04+0000\n"
-"Last-Translator: helix84 <Unknown>\n"
-"Language-Team: Slovak <sk@li.org>\n"
+"PO-Revision-Date: 2009-07-31 04:07+0000\n"
+"Last-Translator: lielf <Unknown>\n"
+"Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,52 +41,52 @@ msgstr "B"
 
 #: ../src/lib/etk_colorpicker.c:400
 msgid "Alpha"
-msgstr "Alfa"
+msgstr "שקיפות"
 
 #. Current color preview
 #: ../src/lib/etk_colorpicker.c:424
 msgid "Current"
-msgstr "Aktuálne"
+msgstr "נוכחי"
 
 #: ../src/lib/etk_filechooser_widget.c:495
 msgid "Places"
-msgstr "Miesta"
+msgstr "מקומות"
 
 #: ../src/lib/etk_filechooser_widget.c:506
 msgid "Favorites"
-msgstr "Obľúbené"
+msgstr "מועדפים"
 
 #: ../src/lib/etk_filechooser_widget.c:517
 msgid "Filename"
-msgstr "Názov súboru"
+msgstr "שם הקובץ"
 
 #: ../src/lib/etk_filechooser_widget.c:521
 msgid "Date"
-msgstr "Dátum"
+msgstr "תאריך"
 
 #: ../src/lib/etk_filechooser_widget.c:730
 msgid "Home"
-msgstr "Domov"
+msgstr "בית"
 
 #: ../src/lib/etk_filechooser_widget.c:735
 msgid "Root"
-msgstr "Koreň"
+msgstr "תיקיית על"
 
 #: ../src/lib/etk_message_dialog.c:109
 msgid "Warning"
-msgstr "Upozornenie"
+msgstr "אזהרה"
 
 #: ../src/lib/etk_message_dialog.c:113
 msgid "Question"
-msgstr "Otázka"
+msgstr "שאלה"
 
 #: ../src/lib/etk_message_dialog.c:117
 msgid "Error"
-msgstr "Chyba"
+msgstr "שגיאה"
 
 #: ../src/lib/etk_message_dialog.c:122 ../src/lib/etk_message_dialog.c:264
 msgid "Information"
-msgstr "Informácie"
+msgstr "מידע"
 
 #: ../src/tools/etk_prefs/etk_prefs.c:50
 #, c-format
@@ -124,7 +125,7 @@ msgstr ""
 
 #: ../src/tools/etk_prefs/etk_prefs.c:111
 msgid "Etk Preferences"
-msgstr "Nastavenie Etk"
+msgstr "העדפות Etk"
 
 #. button for switching pages
 #: ../src/tools/etk_prefs/etk_prefs.c:127
@@ -140,9 +141,8 @@ msgstr ""
 
 #. add frame
 #: ../src/tools/etk_prefs/etk_prefs.c:200
-#, fuzzy
 msgid "Themes"
-msgstr "Téma vzhľadu"
+msgstr ""
 
 #: ../src/tools/etk_prefs/etk_prefs.c:253
 msgid "Engines"
@@ -181,18 +181,3 @@ msgid ""
 "Multi-line text widget!\n"
 "How about that! (="
 msgstr ""
-
-#~ msgid "Category"
-#~ msgstr "Kategória"
-
-#~ msgid "Fonts"
-#~ msgstr "Písma"
-
-#~ msgid "Language"
-#~ msgstr "Jazyk"
-
-#~ msgid "User Preferences"
-#~ msgstr "Používateľské nastavenia"
-
-#~ msgid "General"
-#~ msgstr "Všeobecné"
