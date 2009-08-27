@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EMPOWER\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-11 10:35+0200\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-11 10:36+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: cs <quaker66@gmail.com>\n"
@@ -13,46 +13,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/bin/elm/empower.c:9
-#: ../src/bin/ewl/empower.c:9
+#: ../src/bin/elm/empower.c:9 ../src/bin/ewl/empower.c:9
 #, c-format
 msgid "Failed to create regular expression\n"
 msgstr "Nepodařilo se vytvořit regulární výraz\n"
 
-#: ../src/bin/elm/empower.c:64
-#: ../src/bin/ewl/empower.c:63
+#: ../src/bin/elm/empower.c:66 ../src/bin/ewl/empower.c:65
 #, c-format
 msgid "Unable to init ecore\n"
 msgstr "Nepodařilo se načíst ecore\n"
 
-#: ../src/bin/elm/empower.c:72
-#: ../src/bin/ewl/empower.c:77
+#: ../src/bin/elm/empower.c:74 ../src/bin/ewl/empower.c:79
 #, c-format
 msgid "-=Usage=-\n"
 msgstr "-=Použití=-\n"
 
-#: ../src/bin/elm/empower.c:73
+#: ../src/bin/elm/empower.c:75
 #, c-format
-msgid "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY OPTIONS]\n"
-msgstr "    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY ELEMENTARY]\n"
+msgid ""
+"    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY "
+"OPTIONS]\n"
+msgstr ""
+"    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY "
+"ELEMENTARY]\n"
 
-#: ../src/bin/elm/empower.c:74
+#: ../src/bin/elm/empower.c:76
 #, c-format
-msgid "    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY OPTIONS]\n"
-msgstr "    AskPass:  empower-askpass [VOLBY ELEMENTARY] nebo empower -p [VOLBY ELEMENTARY]\n"
+msgid ""
+"    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY "
+"OPTIONS]\n"
+msgstr ""
+"    AskPass:  empower-askpass [VOLBY ELEMENTARY] nebo empower -p [VOLBY "
+"ELEMENTARY]\n"
 
-#: ../src/bin/elm/empower_gui_elm.c:94
-#: ../src/bin/ewl/empower_gui_ewl.c:53
-#: ../src/bin/ewl/empower_gui_ewl.c:55
-#: ../src/bin/ewl/empower_gui_ewl.c:57
+#: ../src/bin/elm/empower_gui_elm.c:94 ../src/bin/ewl/empower_gui_ewl.c:53
+#: ../src/bin/ewl/empower_gui_ewl.c:55 ../src/bin/ewl/empower_gui_ewl.c:57
 #: ../src/bin/ewl/empower_gui_ewl.c:59
 msgid "Execute"
 msgstr "Spustit"
 
-#: ../src/bin/elm/empower_gui_elm.c:144
-#: ../src/bin/ewl/empower_gui_ewl.c:70
-#: ../src/bin/ewl/empower_gui_ewl.c:72
-#: ../src/bin/ewl/empower_gui_ewl.c:74
+#: ../src/bin/elm/empower_gui_elm.c:144 ../src/bin/ewl/empower_gui_ewl.c:70
+#: ../src/bin/ewl/empower_gui_ewl.c:72 ../src/bin/ewl/empower_gui_ewl.c:74
 #: ../src/bin/ewl/empower_gui_ewl.c:76
 msgid "Password"
 msgstr "Heslo"
@@ -62,27 +63,33 @@ msgstr "Heslo"
 msgid "Unable to grab keyboard, exiting...\n"
 msgstr "Nepodařilo se získat klávesnici, vypínám...\n"
 
-#: ../src/bin/ewl/empower.c:69
+#: ../src/bin/ewl/empower.c:71
 #, c-format
 msgid "Unable to init ewl\n"
 msgstr "Nepodařilo se načíst ewl\n"
 
-#: ../src/bin/ewl/empower.c:78
+#: ../src/bin/ewl/empower.c:80
 #, c-format
-msgid "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
-msgstr "    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY EWL]\n"
+msgid ""
+"    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
+msgstr ""
+"    Sudo:  empower [VOLBY SUDO] [PROGRAM] [VOLBY PROGRAMU] [VOLBY EWL]\n"
 
-#: ../src/bin/ewl/empower.c:79
+#: ../src/bin/ewl/empower.c:81
 #, c-format
-msgid "    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
-msgstr "    AskPass:  empower-askpass [VOLBY EWL] nebo empower -p [VOLBY EWL]\n"
+msgid ""
+"    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
+msgstr ""
+"    AskPass:  empower-askpass [VOLBY EWL] nebo empower -p [VOLBY EWL]\n"
 
 #~ msgid "Enter a command you want to execute here."
 #~ msgstr "Zadejte příkaz ke spuštění."
+
 #~ msgid "Enter your password here."
 #~ msgstr "Zadejte vaše heslo."
+
 #~ msgid "Cancel"
 #~ msgstr "Zrušit"
+
 #~ msgid "OK"
 #~ msgstr "OK"
-

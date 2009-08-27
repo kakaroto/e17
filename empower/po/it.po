@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Empower\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-11 10:35+0200\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-11 19:59+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: French <enlightenment-intl@lists.sourceforge.net>\n"
@@ -18,26 +18,26 @@ msgstr ""
 msgid "Failed to create regular expression\n"
 msgstr "Impossibile creare espressione regolare\n"
 
-#: ../src/bin/elm/empower.c:64 ../src/bin/ewl/empower.c:63
+#: ../src/bin/elm/empower.c:66 ../src/bin/ewl/empower.c:65
 #, c-format
 msgid "Unable to init ecore\n"
 msgstr "Impossibile inizializzare ecore\n"
 
-#: ../src/bin/elm/empower.c:72 ../src/bin/ewl/empower.c:77
+#: ../src/bin/elm/empower.c:74 ../src/bin/ewl/empower.c:79
 #, c-format
 msgid "-=Usage=-\n"
 msgstr "-=Uso=-\n"
 
-#: ../src/bin/elm/empower.c:73
+#: ../src/bin/elm/empower.c:75
 #, c-format
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY "
 "OPTIONS]\n"
 msgstr ""
-"    Sudo:  empower [OPZIONI SUDO] [PROGRAMMA] [OPZIONI PROGRAMMA] "
-"[OPZIONI ELEMENTARY]\n"
+"    Sudo:  empower [OPZIONI SUDO] [PROGRAMMA] [OPZIONI PROGRAMMA] [OPZIONI "
+"ELEMENTARY]\n"
 
-#: ../src/bin/elm/empower.c:74
+#: ../src/bin/elm/empower.c:76
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY "
@@ -63,19 +63,20 @@ msgstr "Password"
 msgid "Unable to grab keyboard, exiting...\n"
 msgstr "Impossibile ricevere dalla tastiera, in uscita...\n"
 
-#: ../src/bin/ewl/empower.c:69
+#: ../src/bin/ewl/empower.c:71
 #, c-format
 msgid "Unable to init ewl\n"
 msgstr "Impossibile inizializzare ewl\n"
 
-#: ../src/bin/ewl/empower.c:78
+#: ../src/bin/ewl/empower.c:80
 #, c-format
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
 msgstr ""
-"    Sudo:  empower [OPZIONI SUDO] [PROGRAMMA] [OPZIONI PROGRAMMA] [OPZIONI EWL]\n"
+"    Sudo:  empower [OPZIONI SUDO] [PROGRAMMA] [OPZIONI PROGRAMMA] [OPZIONI "
+"EWL]\n"
 
-#: ../src/bin/ewl/empower.c:79
+#: ../src/bin/ewl/empower.c:81
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
