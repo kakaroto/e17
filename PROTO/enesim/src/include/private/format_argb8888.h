@@ -202,7 +202,8 @@ typedef union
  */
 static inline uint32_t argb8888_interp_256(uint16_t a, uint32_t c0, uint32_t c1)
 {
-#ifdef EFL_HAVE_MMX
+	/* Let's disable this until we find the reason of the fp exception */
+#ifdef EFL_HAVE_MMX_
 	mmx_t rc0, rc1;
 	mmx_t ra, ra255;
 	uint32_t res;

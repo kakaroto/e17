@@ -119,6 +119,12 @@ EAPI void enesim_renderer_gradient_stop_add(Enesim_Renderer *r, Enesim_Color c,
 		float pos);
 EAPI void enesim_renderer_gradient_clear(Enesim_Renderer *r);
 
+
+EAPI Enesim_Renderer * enesim_renderer_compound_new(void);
+EAPI void enesim_renderer_compound_layer_add(Enesim_Renderer *r,
+		Enesim_Renderer *rend, Enesim_Rop rop);
+EAPI void enesim_renderer_compound_clear(Enesim_Renderer *r);
+
 /**
  * @}
  */

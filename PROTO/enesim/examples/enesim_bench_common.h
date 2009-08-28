@@ -47,6 +47,8 @@ void rectangle_bench(void);
 void circle_bench(void);
 void ellipse_bench(void);
 void perlin_bench(void);
+void gradient_linear_bench(void);
+void compound_bench(void);
 
 char * opacity_get(uint32_t color, Enesim_Format f);
 void surfaces_create(Enesim_Surface **src, Enesim_Format sfmt,

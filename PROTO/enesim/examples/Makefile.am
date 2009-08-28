@@ -34,6 +34,7 @@ enesim_bench_ellipse.c \
 enesim_bench_rectangle.c \
 enesim_bench_perlin.c \
 enesim_bench_gradient_linear.c \
+enesim_bench_compound.c \
 image.c
 
 endif

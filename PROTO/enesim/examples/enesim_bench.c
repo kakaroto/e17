@@ -181,6 +181,11 @@ int bench_get(const char *name)
 		opt_bench = "gradient_linear";
 		return 1;
 	}
+	else if (!strcmp(name, "compound"))
+	{
+		opt_bench = "compound";
+		return 1;
+	}
 	else if (!strcmp(name, "all"))
 	{
 		opt_bench = "all";
@@ -232,6 +237,7 @@ void bench_help(void)
 	printf("rectangle\n");
 	printf("perlin\n");
 	printf("gradient_linear\n");
+	printf("compound\n");
 	printf("all\n");
 }
 
@@ -434,6 +440,10 @@ ok:
 	{
 		gradient_linear_bench();
 	}
+	else if (!strcmp(opt_bench, "compound"))
+	{
+		compound_bench();
+	}
 	else if (!strcmp(opt_bench, "all"))
 	{
 		compositor_bench();
@@ -450,6 +460,7 @@ ok:
 		rectangle_bench();
 		perlin_bench();
 		gradient_linear_bench();
+		compound_bench();
 	}
 	enesim_shutdown();
 	/* this bench should be on test

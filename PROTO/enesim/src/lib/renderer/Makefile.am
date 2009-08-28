@@ -18,7 +18,8 @@ stripes.c \
 shape.c \
 importer.c \
 perlin.c \
-gradient.c
+gradient.c \
+compound.c
 
 libenesim_renderer_la_LIBADD = \
 gradient/libenesim_renderer_gradient.la \

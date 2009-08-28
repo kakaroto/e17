@@ -47,11 +47,24 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 	Enesim_Renderer *fpaint = circ->base.fill.rend;
 	unsigned int *d = dst, *e = d + len;
 	int xx, yy;
+	int fill_only = 0;
 
 	if (circ->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE)
+	{
 		icolor = 0;
+		fpaint = NULL;
+	}
 
-	if (do_inner)
+	if (circ->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_FILL)
+	{
+		ocolor = icolor;
+		fill_only = 1;
+		do_inner = 0;
+		if (fpaint)
+			fpaint->span(fpaint, x, y, len, dst);
+	}
+	if ((circ->base.draw_mode == ENESIM_SHAPE_DRAW_MODE_STROKE_FILL) && do_inner
+			&& fpaint)
 		fpaint->span(fpaint, x, y, len, dst);
 
 	xx = (axx * x) + (axy * y) + axz - xx0;
@@ -65,6 +78,9 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 		{
 			unsigned int op0 = ocolor, p0;
 			int a = 256;
+
+			if (fill_only && fpaint)
+				op0 = argb8888_mul4_sym(*d, op0);
 
 			if (abs(xx) + abs(yy) >= rr0)
 			{
@@ -88,10 +104,13 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 			p0 = op0;
 			if (do_inner && (abs(xx) <= irr1) && (abs(yy) <= irr1))
 			{
-				p0 = *d;
-				if (icolor != 0xffffffff)
-					p0 = argb8888_mul4_sym(icolor, p0);
-
+				p0 = icolor;
+				if (fpaint)
+				{
+					p0 = *d;
+					if (icolor != 0xffffffff)
+						p0 = argb8888_mul4_sym(icolor, p0);
+				}
 				a = 256;
 				if (abs(xx) + abs(yy) >= irr0)
 				{
@@ -110,7 +129,7 @@ static void _outlined_fill_paint(Enesim_Renderer *r, int x, int y,
 				}
 
 				if (a < 256)
-					p0 = INTERP_256(a, p0, op0);
+					p0 = argb8888_interp_256(a, p0, op0);
 			}
 			q0 = p0;
 		}
@@ -150,8 +169,9 @@ static int _state_setup(Enesim_Renderer *r)
 	{
 		if (!enesim_renderer_state_setup(circ->base.fill.rend))
 			return EINA_FALSE;
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_outlined_fill_paint);
+
 	}
+	r->span = ENESIM_RENDERER_SPAN_DRAW(_outlined_fill_paint);
 
 	return EINA_TRUE;
 }
