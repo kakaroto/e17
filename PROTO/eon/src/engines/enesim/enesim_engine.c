@@ -91,12 +91,13 @@ static void paint_coords_get(Eon_Paint *p, Eon_Shape *s, int *x, int *y, int *w,
 #endif
 }
 
-static void paint_setup(Paint *p)
+static void paint_setup(Paint *p, int ox, int oy)
 {
 	Enesim_Matrix m;
 
 	eon_paint_matrix_inv_get(p->p, &m);
 	enesim_renderer_transform_set(p->r, &m);
+	enesim_renderer_origin_set(p->r, ox, oy);
 }
 /*============================================================================*
  *                                 Horswitch                                  *
@@ -215,8 +216,7 @@ Eina_Bool checker_setup(void *data, Eon_Shape *s)
 	int dx, dy;
 
 	paint_coords_get(p->p, s, &dx, &dy, NULL, NULL);
-	paint_setup(p);
-	enesim_renderer_origin_set(p->r, dx, dy);
+	paint_setup(p, dx, dy);
 	enesim_renderer_checker_color1_set(p->r, eon_checker_color1_get(sq));
 	enesim_renderer_checker_color2_set(p->r, eon_checker_color2_get(sq));
 	enesim_renderer_checker_size_set(p->r, 20, 20);
@@ -282,11 +282,12 @@ Eina_Bool image_setup(void *data, Eon_Shape *s)
 		return EINA_FALSE;
 	}
 	paint_coords_get(p->p, s, &dx, &dy, &dw, &dh);
-	paint_setup(p);
+	paint_setup(p, dx, dy);
 	enesim_renderer_surface_w_set(p->r, dw);
 	enesim_renderer_surface_h_set(p->r, dh);
 	enesim_renderer_origin_set(p->r, dx, dy);
 	enesim_renderer_surface_src_set(p->r, eon_image_surface_get(i));
+
 	return EINA_TRUE;
 }
 
@@ -521,6 +522,29 @@ void aliased_fill_cb(Enesim_Scanline *sl, void *data)
 	free(fdata);
 }
 
+static void shape_renderer_setup(Eon_Shape *s, Enesim_Renderer *r)
+{
+	Eon_Paint *p;
+	Paint *pa;
+	float stroke;
+	Eon_Color color;
+
+	/* the fill properties */
+	p = eon_shape_fill_paint_get(s);
+	if (p)
+	{
+		pa = eon_paint_engine_data_get(p);
+		enesim_renderer_shape_fill_renderer_set(r, pa->r);
+	}
+	/* the stroke properties */
+	stroke = eon_shape_stroke_width_get(s);
+	color = eon_shape_stroke_color_get(s);
+	enesim_renderer_shape_outline_weight_set(r, stroke);
+	enesim_renderer_shape_outline_color_set(r, color);
+	/* common fill/stroke properties */
+	enesim_renderer_shape_draw_mode_set(r, ENESIM_SHAPE_DRAW_MODE_STROKE_FILL);
+}
+
 static void shape_setup(Eon_Shape *s, Shape_Drawer_Data *d, Enesim_Surface *dst)
 {
 	Enesim_Rop rop;
@@ -655,24 +679,13 @@ static void circle_render(void *ec, void *cd, Eina_Rectangle *clip)
 	int radius;
 	Shape_Drawer_Data sdd;
 	int dh, dy;
-	Eon_Paint *p;
-	Paint *pa;
 
+	shape_renderer_setup((Eon_Shape *)c->c, c->r);
 	eon_circle_x_get(c->c, &x);
 	eon_circle_y_get(c->c, &y);
 	radius = eon_circle_radius_get(c->c);
-
 	enesim_renderer_circle_center_set(c->r, x.final, y.final);
 	enesim_renderer_circle_radius_set(c->r, radius);
-	p = eon_shape_fill_paint_get((Eon_Shape *)c->c);
-	if (!p)
-	{
-		printf("The circle doesnt have a fill paint\n");
-		return;
-	}
-	pa = eon_paint_engine_data_get(p);
-	enesim_renderer_shape_fill_renderer_set(c->r, pa->r);
-	enesim_renderer_shape_draw_mode_set(c->r, ENESIM_SHAPE_DRAW_MODE_FILL);
 	enesim_renderer_state_setup(c->r);
 	shape_renderer_draw((Eon_Shape *)c->c, cd, c->r, clip);
 }

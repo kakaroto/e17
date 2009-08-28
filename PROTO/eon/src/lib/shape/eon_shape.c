@@ -240,7 +240,7 @@ EAPI Ekeko_Type *eon_shape_type_get(void)
 		EON_SHAPE_FILL_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "fill_color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, fill.color));
 		EON_SHAPE_STROKE_PAINT = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_paint", EKEKO_PROPERTY_OBJECT, OFFSET(Eon_Shape_Private, stroke.paint));
 		EON_SHAPE_STROKE_COLOR = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_color", EON_PROPERTY_COLOR, OFFSET(Eon_Shape_Private, stroke.color));
-		EON_SHAPE_STROKE_WIDTH = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_color", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Shape_Private, stroke.width));
+		EON_SHAPE_STROKE_WIDTH = EKEKO_TYPE_PROP_SINGLE_ADD(type, "stroke_width", EKEKO_PROPERTY_FLOAT, OFFSET(Eon_Shape_Private, stroke.width));
 	}
 
 	return type;

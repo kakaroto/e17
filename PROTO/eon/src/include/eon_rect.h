@@ -8,6 +8,16 @@
 #ifndef EON_RECT_H_
 #define EON_RECT_H_
 /*============================================================================*
+ *                                 Events                                     *
+ *============================================================================*/
+#define EON_RECT_CORNERS_CHANGED "cornersChanged"
+#define EON_RECT_CORNER_RADIUS_CHANGED "cornerRadiusChanged"
+/*============================================================================*
+ *                               Properties                                   *
+ *============================================================================*/
+extern Ekeko_Property_Id EON_RECT_CORNERS;
+extern Ekeko_Property_Id EON_RECT_CORNER_RADIUS;
+/*============================================================================*
  *                                 Class                                      *
  *============================================================================*/
 typedef struct _Eon_Rect_Private Eon_Rect_Private;

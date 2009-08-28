@@ -65,10 +65,8 @@ static void _dtor(void *rect)
 /*============================================================================*
  *                                   API                                      *
  *============================================================================*/
-Ekeko_Property_Id EON_RECT_X;
-Ekeko_Property_Id EON_RECT_Y;
-Ekeko_Property_Id EON_RECT_W;
-Ekeko_Property_Id EON_RECT_H;
+Ekeko_Property_Id EON_RECT_CORNERS;
+Ekeko_Property_Id EON_RECT_CORNER_RADIUS;
 
 EAPI Ekeko_Type *eon_rect_type_get(void)
 {

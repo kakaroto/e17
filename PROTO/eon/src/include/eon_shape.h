@@ -61,6 +61,8 @@ EAPI void eon_shape_stroke_paint_set(Eon_Shape *s, Eon_Paint *paint);
 EAPI Eon_Paint * eon_shape_stroke_paint_get(Eon_Shape *s);
 EAPI void eon_shape_stroke_color_set(Eon_Shape *s, Eon_Color color);
 EAPI Eon_Color eon_shape_stroke_color_get(Eon_Shape *s);
+EAPI void eon_shape_stroke_width_set(Eon_Shape *s, float width);
+EAPI float eon_shape_stroke_width_get(Eon_Shape *s);
 
 #define eon_shape_show(s) ekeko_renderable_show(EKEKO_RENDERABLE((s)))
 #define eon_shape_hide(s) ekeko_renderable_hide(EKEKO_RENDERABLE((s)))

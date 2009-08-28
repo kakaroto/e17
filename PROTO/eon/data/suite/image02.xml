@@ -4,7 +4,7 @@
 	<!-- rectangles -->
 	<!--<rect x="10%" y="35%" w="80%" h="80%" fill="#im01"/>-->
 	<!-- circles -->
-	<circle radius="70" y="50%" x="50%" fill="#im01" color="0xffffffff"/>
+	<circle radius="70" y="50%" x="50%" stroke_color="0xff000000" stroke_width="25.0" fill_paint="#im01" color="0xffff0000"/>
 	<!-- polygons -->-->
 	<!--<poly points="0,0 128,10 10,200 30,0" color="0xaaaaaa00" fill="#im01"/>-->
 </eon>
