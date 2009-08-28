@@ -668,7 +668,6 @@ ewl_init_parse_options(int *argc, char **argv)
                 }
                 else if (!strcmp(argv[i], "--ewl-help")) {
                         ewl_print_help();
-                        matched ++;
 
                         /* this has to exit. otherwise we end up returning
                          * FALSE from ewl_init which triggers the app to
