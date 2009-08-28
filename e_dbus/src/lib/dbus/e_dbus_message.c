@@ -19,6 +19,9 @@ cb_pending(DBusPendingCall *pending, void *user_data)
   if (!dbus_pending_call_get_completed(pending))
   {
     printf("NOT COMPLETED\n");
+    free(data);
+    dbus_message_unref(msg);
+    dbus_pending_call_unref(pending);
     return;
   }
 
@@ -77,7 +80,12 @@ e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Ret
     pdata->data = data;
 
     if (!dbus_pending_call_set_notify(pending, cb_pending, pdata, free))
+    {
       free(pdata);
+      dbus_message_unref(msg);
+      dbus_pending_call_cancel(pending);
+      return NULL;
+    }
   }
 
   return pending;
