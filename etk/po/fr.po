@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Etk\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-28 02:24+0000\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-13 12:41+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -13,163 +13,168 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "H"
 msgstr "H"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "S"
 msgstr "S"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "V"
 msgstr "V"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "R"
 msgstr "R"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "G"
 msgstr "G"
 
-#: src/lib/etk_colorpicker.c:306
+#: ../src/lib/etk_colorpicker.c:306
 msgid "B"
 msgstr "B"
 
-#: src/lib/etk_colorpicker.c:400
+#: ../src/lib/etk_colorpicker.c:400
 msgid "Alpha"
 msgstr "Alpha"
 
-#: src/lib/etk_colorpicker.c:424
+#. Current color preview
+#: ../src/lib/etk_colorpicker.c:424
 msgid "Current"
 msgstr "Actuel"
 
-#: src/lib/etk_filechooser_widget.c:495
+#: ../src/lib/etk_filechooser_widget.c:495
 msgid "Places"
 msgstr "Emplacements"
 
-#: src/lib/etk_filechooser_widget.c:506
+#: ../src/lib/etk_filechooser_widget.c:506
 msgid "Favorites"
 msgstr "Favoris"
 
-#: src/lib/etk_filechooser_widget.c:517
+#: ../src/lib/etk_filechooser_widget.c:517
 msgid "Filename"
 msgstr "Nom du fichier"
 
-#: src/lib/etk_filechooser_widget.c:521
+#: ../src/lib/etk_filechooser_widget.c:521
 msgid "Date"
 msgstr "Date"
 
-#: src/lib/etk_filechooser_widget.c:730
+#: ../src/lib/etk_filechooser_widget.c:730
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/lib/etk_filechooser_widget.c:735
+#: ../src/lib/etk_filechooser_widget.c:735
 msgid "Root"
 msgstr "Root"
 
-#: src/lib/etk_message_dialog.c:109
+#: ../src/lib/etk_message_dialog.c:109
 msgid "Warning"
 msgstr "Avertissement"
 
-#: src/lib/etk_message_dialog.c:113
+#: ../src/lib/etk_message_dialog.c:113
 msgid "Question"
 msgstr "Question"
 
-#: src/lib/etk_message_dialog.c:117
+#: ../src/lib/etk_message_dialog.c:117
 msgid "Error"
 msgstr "Erreur"
 
-#: src/lib/etk_message_dialog.c:122 src/lib/etk_message_dialog.c:264
+#: ../src/lib/etk_message_dialog.c:122 ../src/lib/etk_message_dialog.c:264
 msgid "Information"
 msgstr "Informations"
 
-#: src/tools/etk_prefs/etk_prefs.c:50
+#: ../src/tools/etk_prefs/etk_prefs.c:50
 #, c-format
 msgid "Could not init Etk. Exiting...\n"
 msgstr "Impossible d'initialiser Etk. Fermeture...\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:56
+#: ../src/tools/etk_prefs/etk_prefs.c:56
 #, c-format
 msgid "Usage: etk_prefs ARGUMENTS\n"
 msgstr "Usage: etk_prefs ARGUMENTS\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:57
+#: ../src/tools/etk_prefs/etk_prefs.c:57
 #, c-format
 msgid "ARGUMENTS:\n"
 msgstr "ARGUMENTS:\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:58
+#: ../src/tools/etk_prefs/etk_prefs.c:58
 #, c-format
 msgid "   --help : print this message\n"
 msgstr "   --help: afficher ce message\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:59
+#: ../src/tools/etk_prefs/etk_prefs.c:59
 #, c-format
 msgid "   --theme=THEME : set theme from command line\n"
 msgstr "   --theme=THÈME: définir le thème en ligne de commande\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:60
+#: ../src/tools/etk_prefs/etk_prefs.c:60
 #, c-format
 msgid "   --themes-list : list themes\n"
 msgstr "   --themes-list: liste des thèmes\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:89
+#: ../src/tools/etk_prefs/etk_prefs.c:89
 #, c-format
 msgid "Theme %s not found. Exitting..\n"
 msgstr "Thème %s non trouvé. Fermeture...\n"
 
-#: src/tools/etk_prefs/etk_prefs.c:111
+#: ../src/tools/etk_prefs/etk_prefs.c:111
 msgid "Etk Preferences"
 msgstr "Préférences Etk"
 
-#: src/tools/etk_prefs/etk_prefs.c:127 src/tools/etk_prefs/etk_prefs.c:262
-#: src/tools/etk_prefs/etk_prefs.c:270
+#. button for switching pages
+#: ../src/tools/etk_prefs/etk_prefs.c:127
+#: ../src/tools/etk_prefs/etk_prefs.c:262
+#: ../src/tools/etk_prefs/etk_prefs.c:270
 msgid "Go to Engines page"
 msgstr "Aller à la page Moteurs"
 
-#: src/tools/etk_prefs/etk_prefs.c:166
+#. the preview
+#: ../src/tools/etk_prefs/etk_prefs.c:166
 msgid "Preview"
 msgstr "Aperçu"
 
-#: src/tools/etk_prefs/etk_prefs.c:200
+#. add frame
+#: ../src/tools/etk_prefs/etk_prefs.c:200
 msgid "Themes"
 msgstr "Thèmes"
 
-#: src/tools/etk_prefs/etk_prefs.c:253
+#: ../src/tools/etk_prefs/etk_prefs.c:253
 msgid "Engines"
 msgstr "Moteurs"
 
-#: src/tools/etk_prefs/etk_prefs.c:265
+#: ../src/tools/etk_prefs/etk_prefs.c:265
 msgid "Go to Themes page"
 msgstr "Aller à la page Thèmes"
 
-#: src/tools/etk_prefs/etk_prefs.c:339
+#: ../src/tools/etk_prefs/etk_prefs.c:339
 msgid "Buttons"
 msgstr "Boutons"
 
-#: src/tools/etk_prefs/etk_prefs.c:343
+#: ../src/tools/etk_prefs/etk_prefs.c:343
 msgid "Regular Button"
 msgstr "Bouton régulier"
 
-#: src/tools/etk_prefs/etk_prefs.c:345
+#: ../src/tools/etk_prefs/etk_prefs.c:345
 msgid "Check Button"
 msgstr "Bouton à cocher"
 
-#: src/tools/etk_prefs/etk_prefs.c:347
+#: ../src/tools/etk_prefs/etk_prefs.c:347
 msgid "Radio Button"
 msgstr "Bouton radio"
 
-#: src/tools/etk_prefs/etk_prefs.c:350
+#: ../src/tools/etk_prefs/etk_prefs.c:350
 msgid "Text"
 msgstr "Texte"
 
-#: src/tools/etk_prefs/etk_prefs.c:355
+#: ../src/tools/etk_prefs/etk_prefs.c:355
 msgid "Sample text..."
 msgstr "Exemple de texte..."
 
-#: src/tools/etk_prefs/etk_prefs.c:359
+#: ../src/tools/etk_prefs/etk_prefs.c:359
 msgid ""
 "Multi-line text widget!\n"
 "How about that! (="
