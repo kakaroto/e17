@@ -71,7 +71,7 @@ enesim_surface_new_allocator_from(Enesim_Format f, int w, int h, Eina_Mempool *m
 		break;
 	}
 
-	data = eina_mempool_alloc(mpool, bytes);
+	data = eina_mempool_malloc(mpool, bytes);
 	if (!data)
 	{
 		return NULL;
@@ -103,7 +103,7 @@ enesim_surface_new(Enesim_Format f, int w, int h)
 
 	if (!pthrough)
 	{
-		pthrough = eina_mempool_new("pass_through", NULL, NULL);
+		pthrough = eina_mempool_add("pass_through", NULL, NULL);
 		if (!pthrough) return NULL;
 	}
 
