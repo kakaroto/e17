@@ -21,7 +21,6 @@
 /* TODO
  * + add a surface drawer too, not only span based :)
  * + add common parameters to the renderer here like transformation matrix and quality
- * + add an x and y offset, to translate from user coords to renderer coords
  */
 
 typedef void (*Enesim_Renderer_Span_Draw)(void *r, int x, int y, unsigned int len, uint32_t *dst);
@@ -75,11 +74,14 @@ typedef struct _Enesim_Renderer_Gradient
 #define ENESIM_RENDERER_STATE_SETUP(f) ((Enesim_Renderer_State_Setup)(f))
 #define ENESIM_RENDERER_STATE_CLEANUP(f) ((Enesim_Renderer_State_Cleanup)(f))
 
-/* TODO Helper functions needed by other renderers */
+/* Helper functions needed by other renderers */
 static inline void renderer_affine_setup(Enesim_Renderer *r, int x, int y,
 		Eina_F16p16 *fpx, Eina_F16p16 *fpy)
 {
 	Eina_F16p16 xx, yy;
+
+	x -= r->ox;
+	y -= r->oy;
 
 	xx = eina_f16p16_int_from(x);
 	yy = eina_f16p16_int_from(y);
@@ -94,6 +96,9 @@ static inline void renderer_projective_setup(Enesim_Renderer *r, int x, int y,
 		Eina_F16p16 *fpx, Eina_F16p16 *fpy, Eina_F16p16 *fpz)
 {
 	Eina_F16p16 xx, yy;
+
+	x -= r->ox;
+	y -= r->oy;
 
 	xx = eina_f16p16_int_from(x);
 	yy = eina_f16p16_int_from(y);

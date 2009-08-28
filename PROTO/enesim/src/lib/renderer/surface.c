@@ -101,14 +101,17 @@ static void _scale_good(Surface *s, int x, int y, unsigned int len, uint32_t *ds
 }
 #endif
 
-static void _scale_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+static void _scale_fast_identity(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
 	Surface *s = (Surface *)r;
 	uint32_t sstride;
 	uint32_t *src;
 	Eina_Rectangle ir, dr;
 
-	if (y < r->oy || y > r->oy + s->w)
+	y -= r->oy;
+	x -= r->ox;
+
+	if (y < 0 || y >= s->h)
 	{
 		while (len--)
 			*dst++ = 0;
@@ -117,18 +120,56 @@ static void _scale_fast(Enesim_Renderer *r, int x, int y, unsigned int len, uint
 
 	src = enesim_surface_data_get(s->s);
 	sstride = enesim_surface_stride_get(s->s);
-	src += sstride * s->yoff[y - r->oy];
+	src += sstride * s->yoff[y];
 
 	while (len--)
 	{
-		if (x >= r->ox && x < r->ox + s->w)
-			*dst = *(src + s->xoff[x - r->ox]);
+		if (x >= 0 && x < s->w)
+			*dst = *(src + s->xoff[x]);
 		else
 			*dst = 0;
 		x++;
 		dst++;
 	}
 }
+
+static void _scale_fast_affine(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
+{
+	Surface *s = (Surface *)r;
+	uint32_t sstride;
+	uint32_t *src;
+	Eina_Rectangle ir, dr;
+	Eina_F16p16 xx, yy;
+	int sw, sh;
+
+	renderer_affine_setup(r, x, y, &xx, &yy);
+
+	src = enesim_surface_data_get(s->s);
+	enesim_surface_size_get(s->s, &sw, &sh);
+	sstride = enesim_surface_stride_get(s->s);
+
+
+	while (len--)
+	{
+		uint32_t p0 = 0;
+		int sx, sy;
+
+		x = eina_f16p16_int_to(xx);
+		y = eina_f16p16_int_to(yy);
+
+		if (x >= 0 && x < s->w && y >= 0 && y < s->h)
+		{
+			sy = s->yoff[y];
+			sx = s->xoff[x];
+			p0 = argb8888_sample_good(src, sstride, sw, sh, xx, yy, sx, sy);
+		}
+
+		*dst++ = p0;
+		yy += r->matrix.values.yx;
+		xx += r->matrix.values.xx;
+	}
+}
+
 
 static void _noscale(Enesim_Renderer *r, int x, int y, unsigned int len, uint32_t *dst)
 {
@@ -192,7 +233,11 @@ static Eina_Bool _state_setup(Enesim_Renderer *r)
 		s->yoff = malloc(sizeof(int) * s->h);
 		_offsets(s->x, s->w, sw, s->xoff);
 		_offsets(s->y, s->h, sh, s->yoff);
-		r->span = ENESIM_RENDERER_SPAN_DRAW(_scale_fast);
+
+		if (r->matrix.type == ENESIM_MATRIX_IDENTITY)
+			r->span = ENESIM_RENDERER_SPAN_DRAW(_scale_fast_identity);
+		else if (r->matrix.type == ENESIM_MATRIX_AFFINE)
+			r->span = ENESIM_RENDERER_SPAN_DRAW(_scale_fast_affine);
 	}
 	else
 	{
