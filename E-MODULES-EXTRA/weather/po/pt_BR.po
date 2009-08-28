@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-01-10 01:33+0000\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:36
+#: ../src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "Configuração do Clima"
 
-#: ../e_mod_config.c:78
+#: ../src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "Mostrar Configurações"
 
-#: ../e_mod_config.c:80
+#: ../src/e_mod_config.c:80
 msgid "Simple"
 msgstr "Simples"
 
-#: ../e_mod_config.c:82
+#: ../src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "Detalhado"
 
-#: ../e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Tempo da enquete"
 
-#: ../e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutos"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "Configurações de gradação"
 
-#: ../e_mod_config.c:93
+#: ../src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "Celsius"
 
-#: ../e_mod_config.c:95
+#: ../src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "Fahrenheit"
 
-#: ../e_mod_config.c:99 ../e_mod_config.c:100
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "Código ICAO"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "Pegue o seu código ICAO em:"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: ../e_mod_main.c:171
+#: ../src/e_mod_main.c:171
 msgid "Weather"
 msgstr "Clima"
 
-#: ../e_mod_main.c:215
+#: ../src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "Configuração"

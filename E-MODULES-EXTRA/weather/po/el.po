@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-12-07 16:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -16,59 +16,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../e_mod_config.c:36
+#: ../src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "Ρύθμιση Καιρού"
 
-#: ../e_mod_config.c:78
+#: ../src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "Ρυθμίσεις Προβολής"
 
-#: ../e_mod_config.c:80
+#: ../src/e_mod_config.c:80
 msgid "Simple"
 msgstr "Απλό"
 
-#: ../e_mod_config.c:82
+#: ../src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "Αναλυτικό"
 
-#: ../e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Χρόνος Σφυγμομέτρησης"
 
-#: ../e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f λεπτά"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "Ρυθμίσεις Κλίμακας"
 
-#: ../e_mod_config.c:93
+#: ../src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "Κελσίου"
 
-#: ../e_mod_config.c:95
+#: ../src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "Φαρενάιτ"
 
-#: ../e_mod_config.c:99 ../e_mod_config.c:100
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "Κωδικός ICAO"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "Βρείτε τον κωδικό ICAO σας, στο:"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: ../e_mod_main.c:171
+#: ../src/e_mod_main.c:171
 msgid "Weather"
 msgstr "Καιρός"
 
-#: ../e_mod_main.c:215
+#: ../src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "Ρύθμιση"

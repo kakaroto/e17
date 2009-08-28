@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-12-07 12:03+0400\n"
+"POT-Creation-Date: 2009-08-28 16:31+0800\n"
 "PO-Revision-Date: 2008-12-30 08:06+0100\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: Hungarian <pclinuxos-i18n@googlegroups.com>\n"
@@ -20,74 +20,95 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/e_mod_config.c:42
+#. create new config dialog
+#: ../src/e_mod_config.c:51
 msgid "Places Configuration"
 msgstr "Beállítások"
 
-#: src/e_mod_config.c:88
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
 msgstr "Általános"
 
-#: src/e_mod_config.c:91
+#: ../src/e_mod_config.c:121
+msgid "Show in main menu"
+msgstr ""
+
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Eszközök felcsatolása csatlakoztatáskor"
 
-#: src/e_mod_config.c:95
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Fájlkezelő megnyitása felcsatoláskor"
 
-#: src/e_mod_config.c:100
-msgid "File manager (if blank uses Enlightenment)"
-msgstr "Fájlkezelő (ha üres, akkor az e17 fájlkezelőjét használja)"
+#: ../src/e_mod_config.c:133
+msgid "Use a custom file manager"
+msgstr ""
 
-#: src/e_mod_main.c:75
-msgid "Files"
-msgstr "Fájlok"
+#. Display frame
+#: ../src/e_mod_config.c:146
+msgid "Show in menu"
+msgstr ""
 
-#: src/e_mod_main.c:77
-#: src/e_mod_places.c:367
-msgid "Places"
-msgstr "Helyek"
-
-#: src/e_mod_main.c:427
-msgid "Configuration"
-msgstr "Beállítás"
-
-#: src/e_mod_places.c:164
-#: src/e_mod_places.c:304
-msgid "Filesystem"
-msgstr "Fájlrendszer"
-
-#: src/e_mod_places.c:169
-msgid "No Name"
-msgstr "Nincs név"
-
-#: src/e_mod_places.c:285
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:395
 msgid "Home"
 msgstr "Saját könyvtár"
 
-#: src/e_mod_places.c:291
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:404
 msgid "Desktop"
 msgstr "Munkaasztal"
 
-#: src/e_mod_places.c:298
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:414
 msgid "Trash"
 msgstr "Szemétkosár"
 
-#: src/e_mod_places.c:574
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
+#: ../src/e_mod_places.c:423
+msgid "Filesystem"
+msgstr "Fájlrendszer"
+
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:432
+msgid "Temp"
+msgstr ""
+
+#: ../src/e_mod_config.c:164
+msgid "Favorites"
+msgstr ""
+
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:75
+msgid "Files"
+msgstr "Fájlok"
+
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:495
+msgid "Places"
+msgstr "Helyek"
+
+#: ../src/e_mod_main.c:443
+msgid "Configuration"
+msgstr "Beállítás"
+
+#: ../src/e_mod_places.c:234
+msgid "No Name"
+msgstr "Nincs név"
+
+#: ../src/e_mod_places.c:685
 msgid "free of"
 msgstr "szabad hely"
 
-#: src/e_mod_places.c:580
+#: ../src/e_mod_places.c:691
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s nincs felcsatolva"
 
-#: src/e_mod_places.c:597
+#: ../src/e_mod_places.c:708
 msgid "unmount"
 msgstr "leválasztás"
 
-#: src/e_mod_places.c:603
+#: ../src/e_mod_places.c:714
 msgid "eject"
 msgstr "kiadás"
 
+#~ msgid "File manager (if blank uses Enlightenment)"
+#~ msgstr "Fájlkezelő (ha üres, akkor az e17 fájlkezelőjét használja)"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-03-20 16:29+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -15,60 +15,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:36
+#: ../src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "weather の設定"
 
-#: ../e_mod_config.c:78
+#: ../src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: ../e_mod_config.c:80
+#: ../src/e_mod_config.c:80
 msgid "Simple"
 msgstr "簡略"
 
-#: ../e_mod_config.c:82
+#: ../src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "詳細"
 
-#: ../e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "監視間隔"
 
-#: ../e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f 分"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "温度単位"
 
-#: ../e_mod_config.c:93
+#: ../src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "摂氏"
 
-#: ../e_mod_config.c:95
+#: ../src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "華氏"
 
-#: ../e_mod_config.c:99 ../e_mod_config.c:100
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "ICAO コード"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "指定 ICAO コードの入手先"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr ""
 
-#: ../e_mod_main.c:171
+#: ../src/e_mod_main.c:171
 msgid "Weather"
 msgstr ""
 
-#: ../e_mod_main.c:215
+#: ../src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "設定"
 

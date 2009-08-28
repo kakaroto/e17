@@ -1,0 +1,59 @@
+# Arabic translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
+"PO-Revision-Date: 2009-08-24 13:45+0000\n"
+"Last-Translator: Nizar Kerkeni <nizar.kerkeni@gmail.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/e_mod_config.c:44
+msgid "Wlan Configuration"
+msgstr "إعدادات الشبكة المحلية الاسلكية (Wlan)"
+
+#: ../src/e_mod_config.c:117
+msgid "General Settings"
+msgstr "الإعدادات العامة"
+
+#: ../src/e_mod_config.c:119
+msgid "Always Show Text"
+msgstr "اعرض النص دائماً"
+
+#: ../src/e_mod_config.c:121
+msgid "Show Text On Mouse Over"
+msgstr "اعرض النص عند مرور الفأرة"
+
+#: ../src/e_mod_config.c:124
+msgid "Show Text As Percent"
+msgstr "أعرض النص كنسبة"
+
+#: ../src/e_mod_config.c:128
+msgid "Check Interval:"
+msgstr "فاصل الفحص :"
+
+#: ../src/e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f ثواني"
+
+#: ../src/e_mod_config.c:138
+msgid "Device Settings"
+msgstr "إعدادات الجهاز"
+
+#: ../src/e_mod_main.c:107
+msgid "Wlan"
+msgstr "الشبكة المحلية اللاسلكية (Wlan)"
+
+#: ../src/e_mod_main.c:165
+msgid "Configuration"
+msgstr "الإعدادات"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mem.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-08 00:16+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -16,47 +16,47 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_config.c:43
+#: ../src/e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Налаштування пам'яті"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:92
 msgid "General Settings"
 msgstr "Загальні налаштування"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Завжди показувати текст"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Показувати текст при наведені курсора"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Показувати у відсотках"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "Нехтувати пам'ятю буферів"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "Нехтувати пам'ятю кеша"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Проміжок перевірки:"
 
-#: ../e_mod_config.c:115
+#: ../src/e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f секунд"
 
-#: ../e_mod_main.c:105
+#: ../src/e_mod_main.c:105
 msgid "Mem"
 msgstr "Пам'ять"
 
-#: ../e_mod_main.c:162
+#: ../src/e_mod_main.c:162
 msgid "Configuration"
 msgstr "Налаштування"

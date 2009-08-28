@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wlan.HEAD\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-05-05 11:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2009-06-08 00:36+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -13,46 +13,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_config.c:44
+#: ../src/e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Налаштування локальної радіомережі"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "General Settings"
 msgstr "Загальні налаштування"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Постійно показувати текст"
 
-#: ../e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Показувати текст лише при піднесенні курсора миші"
 
-#: ../e_mod_config.c:124
+#: ../src/e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Показувати текст у відсотках"
 
-#: ../e_mod_config.c:128
+#: ../src/e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Проміжок перевірки:"
 
-#: ../e_mod_config.c:131
+#: ../src/e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f секунд"
 
-#: ../e_mod_config.c:138
+#: ../src/e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Налаштування пристроя"
 
-#: ../e_mod_main.c:107
+#: ../src/e_mod_main.c:107
 msgid "Wlan"
 msgstr "Локальна радіомережа"
 
-#: ../e_mod_main.c:165
+#: ../src/e_mod_main.c:165
 msgid "Configuration"
 msgstr "Налаштування"
-

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-11 14:52+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -15,69 +15,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1007
+#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Enlosado"
 
-#: ../e_mod_main.c:1006
+#: ../src/e_mod_main.c:1006
 msgid "Windows"
 msgstr "Ventanas"
 
-#: ../e_mod_config.c:70
+#: ../src/e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Configuración de enlosado"
 
 #. General settings
-#: ../e_mod_config.c:217
+#: ../src/e_mod_config.c:217
 msgid "General"
 msgstr "General"
 
-#: ../e_mod_config.c:227
+#: ../src/e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Horizontal:"
 
-#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
 
-#: ../e_mod_config.c:231
+#: ../src/e_mod_config.c:231
 msgid "Vertical:"
 msgstr "Vertical:"
 
 #. Virtual desktop settings
-#: ../e_mod_config.c:241
+#: ../src/e_mod_config.c:241
 msgid "Virtual Desktops"
 msgstr "Escritorios virtuales"
 
 #. Grid mode settings
-#: ../e_mod_config.c:279
+#: ../src/e_mod_config.c:279
 msgid "Grid mode settings"
 msgstr "Preferencias del modo de malla"
 
-#: ../e_mod_config.c:283
+#: ../src/e_mod_config.c:283
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
 #. Bigmain settings
-#: ../e_mod_config.c:288
+#: ../src/e_mod_config.c:288
 msgid "Bigmain settings"
 msgstr "Preferencias del Bigmain"
 
-#: ../e_mod_config.c:289
+#: ../src/e_mod_config.c:289
 msgid "Big win takes percent of screen:"
 msgstr "Gran ganancia por porcentaje de pantalla"
 
-#: ../e_mod_config.c:290
+#: ../src/e_mod_config.c:290
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: ../e_mod_config.c:296
+#: ../src/e_mod_config.c:296
 msgid "Tiling border"
 msgstr "Bordes de teselas"
 
-#: ../e_mod_config.c:310
+#: ../src/e_mod_config.c:310
 msgid "Floating border"
 msgstr "Borde flotante"

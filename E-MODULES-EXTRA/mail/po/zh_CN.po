@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-06 08:15+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,151 +17,151 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config_box.c:71
+#: ../src/e_mod_config_box.c:71
 msgid "Mailbox Configuration"
 msgstr "邮箱配置"
 
-#: ../e_mod_config_box.c:163 ../e_mod_config.c:94
+#: ../src/e_mod_config_box.c:163 ../src/e_mod_config.c:94
 msgid "General Settings"
 msgstr "常规设置"
 
-#: ../e_mod_config_box.c:165
+#: ../src/e_mod_config_box.c:165
 msgid "Start Program When New Mail Arrives"
 msgstr "有新邮件时启动程序"
 
-#: ../e_mod_config_box.c:170
+#: ../src/e_mod_config_box.c:170
 msgid "Program:"
 msgstr "程序："
 
-#: ../e_mod_config_box.c:182
+#: ../src/e_mod_config_box.c:182
 msgid "Mailbox Type"
 msgstr "邮箱类型"
 
-#: ../e_mod_config_box.c:184
+#: ../src/e_mod_config_box.c:184
 msgid "Pop3"
 msgstr "Pop3"
 
-#: ../e_mod_config_box.c:187
+#: ../src/e_mod_config_box.c:187
 msgid "Imap"
 msgstr "Imap"
 
-#: ../e_mod_config_box.c:190
+#: ../src/e_mod_config_box.c:190
 msgid "Maildir"
 msgstr "邮件目录"
 
-#: ../e_mod_config_box.c:193
+#: ../src/e_mod_config_box.c:193
 msgid "Mbox"
 msgstr "邮件箱"
 
-#: ../e_mod_config_box.c:196
+#: ../src/e_mod_config_box.c:196
 msgid "Monitor Mbox file permanently"
 msgstr "监视邮件箱中未改变的文件"
 
-#: ../e_mod_config_box.c:213
+#: ../src/e_mod_config_box.c:213
 msgid "Port Settings"
 msgstr "端口设置"
 
-#: ../e_mod_config_box.c:215
+#: ../src/e_mod_config_box.c:215
 msgid "Use SSL:"
 msgstr "使用 SSL："
 
-#: ../e_mod_config_box.c:222
+#: ../src/e_mod_config_box.c:222
 msgid "v2"
 msgstr "v2"
 
-#: ../e_mod_config_box.c:225
+#: ../src/e_mod_config_box.c:225
 msgid "v3"
 msgstr "v3"
 
-#: ../e_mod_config_box.c:229
+#: ../src/e_mod_config_box.c:229
 msgid "Port:"
 msgstr "端口："
 
-#: ../e_mod_config_box.c:235
+#: ../src/e_mod_config_box.c:235
 msgid "Local:"
 msgstr "本地："
 
-#: ../e_mod_config_box.c:241
+#: ../src/e_mod_config_box.c:241
 msgid "Mailbox Settings"
 msgstr "邮箱设定"
 
-#: ../e_mod_config_box.c:242
+#: ../src/e_mod_config_box.c:242
 msgid "Name:"
 msgstr "姓名："
 
-#: ../e_mod_config_box.c:247
+#: ../src/e_mod_config_box.c:247
 msgid "Mail Host:"
 msgstr "邮件主机："
 
-#: ../e_mod_config_box.c:252
+#: ../src/e_mod_config_box.c:252
 msgid "Username:"
 msgstr "用户名："
 
-#: ../e_mod_config_box.c:257
+#: ../src/e_mod_config_box.c:257
 msgid "Password:"
 msgstr "密码："
 
-#: ../e_mod_config_box.c:263
+#: ../src/e_mod_config_box.c:263
 msgid "New Mail Path:"
 msgstr "新邮件路径："
 
-#: ../e_mod_config_box.c:275
+#: ../src/e_mod_config_box.c:275
 msgid "Current Mail Path:"
 msgstr "当前邮件路径："
 
-#: ../e_mod_config_box.c:433
+#: ../src/e_mod_config_box.c:433
 msgid "Inbox"
 msgstr "收件箱"
 
-#: ../e_mod_config.c:53
+#: ../src/e_mod_config.c:53
 msgid "Mail Configuration"
 msgstr "邮件配置"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Always Show Labels"
 msgstr "总是显示标签"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Show Mailbox Popup"
 msgstr "显示邮箱弹出框"
 
-#: ../e_mod_config.c:102
+#: ../src/e_mod_config.c:102
 msgid "Show All Boxes In Popup"
 msgstr "以弹出框方式显示全部邮箱"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Check Interval"
 msgstr "检查间隔"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f 分钟"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Mail Boxes"
 msgstr "多个邮箱"
 
-#: ../e_mod_config.c:122
+#: ../src/e_mod_config.c:122
 msgid "Add"
 msgstr "添加"
 
-#: ../e_mod_config.c:126
+#: ../src/e_mod_config.c:126
 msgid "Delete"
 msgstr "删除"
 
-#: ../e_mod_config.c:132
+#: ../src/e_mod_config.c:132
 msgid "Configure..."
 msgstr "配置..."
 
-#: ../e_mod_main.c:189
+#: ../src/e_mod_main.c:189
 msgid "Mail"
 msgstr "电子邮件"
 
-#: ../e_mod_main.c:242
+#: ../src/e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "邮箱"
 
-#: ../e_mod_main.c:266
+#: ../src/e_mod_main.c:266
 msgid "Configuration"
 msgstr "配置"

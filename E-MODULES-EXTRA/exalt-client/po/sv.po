@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-01-10 12:09+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,49 +15,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. create new config dialog
-#: ../src/e_mod_config.c:39
-msgid "exalt Module"
-msgstr ""
+#: ../src/e_mod_config.c:40
+#, fuzzy
+msgid "Exalt Configuration"
+msgstr "Konfiguration"
 
-#: ../src/e_mod_config.c:79
+#: ../src/e_mod_config.c:82
 msgid "General"
 msgstr "Allmänt"
 
-#: ../src/e_mod_config.c:81
-msgid "Use Switch 1"
+#: ../src/e_mod_config.c:87
+msgid "Basic mode"
 msgstr ""
 
-#: ../src/e_mod_main.c:281
-msgid "Exalt Warning"
+#: ../src/e_mod_config.c:89
+msgid "Advanced mode"
 msgstr ""
 
-#: ../src/e_mod_main.c:284
-msgid "Warning"
+#: ../src/e_mod_config.c:94
+#, fuzzy
+msgid "Notifications"
+msgstr "Konfiguration"
+
+#: ../src/e_mod_config.c:96
+msgid "Enable the notifications"
 msgstr ""
 
 #: ../src/e_mod_main.c:285
+msgid "Exalt Warning"
+msgstr ""
+
+#: ../src/e_mod_main.c:288
+msgid "Warning"
+msgstr ""
+
+#: ../src/e_mod_main.c:289
 msgid "NetworkManager has been detected on your computer."
 msgstr ""
 
-#: ../src/e_mod_main.c:287
+#: ../src/e_mod_main.c:291
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
 msgstr ""
 
-#: ../src/e_mod_main.c:290
+#: ../src/e_mod_main.c:294
 msgid "Ok"
 msgstr ""
 
-#: ../src/e_mod_main.c:362
+#: ../src/e_mod_main.c:371
 msgid "exalt"
 msgstr "exalt"
 
-#: ../src/e_mod_main.c:445
+#: ../src/e_mod_main.c:455
 msgid "exalt Configuration Updated"
 msgstr ""
 
-#: ../src/e_mod_main.c:511
+#: ../src/e_mod_main.c:522
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -74,15 +88,15 @@ msgstr ""
 msgid "Mobile Phone (3G)"
 msgstr ""
 
-#: ../src/popup.c:213
+#: ../src/popup.c:214
 msgid "No IP Address"
 msgstr ""
 
-#: ../src/popup.c:217 ../src/wired_dialog.c:42
+#: ../src/popup.c:218 ../src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr ""
 
-#: ../src/popup.c:220
+#: ../src/popup.c:221
 msgid "Wireless interface"
 msgstr ""
 
@@ -90,50 +104,50 @@ msgstr ""
 msgid "Wired Connection Settings"
 msgstr ""
 
-#: ../src/wired_dialog.c:51 ../src/network_dialog.c:72
+#: ../src/wired_dialog.c:51 ../src/network_dialog.c:73
 #: ../src/wireless_dialog.c:36
 msgid "Activate"
 msgstr ""
 
-#: ../src/wired_dialog.c:54 ../src/network_dialog.c:75
+#: ../src/wired_dialog.c:54 ../src/network_dialog.c:76
 #: ../src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr ""
 
-#: ../src/wired_dialog.c:58 ../src/network_dialog.c:79
+#: ../src/wired_dialog.c:58 ../src/network_dialog.c:80
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr ""
 
-#: ../src/wired_dialog.c:63 ../src/network_dialog.c:84
+#: ../src/wired_dialog.c:63 ../src/network_dialog.c:85
 msgid "Static"
 msgstr ""
 
-#: ../src/wired_dialog.c:68 ../src/network_dialog.c:89
+#: ../src/wired_dialog.c:68 ../src/network_dialog.c:90
 msgid "IP address: "
 msgstr ""
 
-#: ../src/wired_dialog.c:73 ../src/network_dialog.c:94
+#: ../src/wired_dialog.c:73 ../src/network_dialog.c:95
 msgid "Netmask address: "
 msgstr ""
 
-#: ../src/wired_dialog.c:78 ../src/network_dialog.c:99
+#: ../src/wired_dialog.c:78 ../src/network_dialog.c:100
 msgid "Gateway address: "
 msgstr ""
 
-#: ../src/wired_dialog.c:83 ../src/network_dialog.c:104
+#: ../src/wired_dialog.c:83 ../src/network_dialog.c:105
 msgid "Command: "
 msgstr ""
 
-#: ../src/wired_dialog.c:96 ../src/network_dialog.c:112
-#: ../src/wireless_dialog.c:49
+#: ../src/wired_dialog.c:96 ../src/network_dialog.c:113
+#: ../src/wireless_dialog.c:52
 msgid "OK"
 msgstr ""
 
-#: ../src/wired_dialog.c:97 ../src/network_dialog.c:113
+#: ../src/wired_dialog.c:97 ../src/network_dialog.c:114
 msgid "Apply"
 msgstr ""
 
-#: ../src/wired_dialog.c:98 ../src/network_dialog.c:114
+#: ../src/wired_dialog.c:98 ../src/network_dialog.c:115
 msgid "Cancel"
 msgstr ""
 
@@ -141,56 +155,56 @@ msgstr ""
 msgid "Wireless Connection Settings"
 msgstr ""
 
-#: ../src/network_dialog.c:42
+#: ../src/network_dialog.c:43
 msgid "Network information"
 msgstr ""
 
-#: ../src/network_dialog.c:44
+#: ../src/network_dialog.c:45
 msgid "Essid: "
 msgstr ""
 
-#: ../src/network_dialog.c:49
+#: ../src/network_dialog.c:50
 msgid "Address: "
 msgstr ""
 
-#: ../src/network_dialog.c:54
+#: ../src/network_dialog.c:55
 msgid "Quality: "
 msgstr ""
 
 #. IFACE frame
-#: ../src/network_dialog.c:63
+#: ../src/network_dialog.c:64
 msgid "Wireless interface configuration"
 msgstr ""
 
-#: ../src/network_dialog.c:211
+#: ../src/network_dialog.c:213
 msgid "WEP information"
 msgstr ""
 
-#: ../src/network_dialog.c:213
+#: ../src/network_dialog.c:215
 msgid "Description: "
 msgstr ""
 
-#: ../src/network_dialog.c:215
+#: ../src/network_dialog.c:217
 msgid "WEP"
 msgstr ""
 
-#: ../src/network_dialog.c:231
+#: ../src/network_dialog.c:233
 msgid "Hexadecimal Key"
 msgstr ""
 
-#: ../src/network_dialog.c:234
+#: ../src/network_dialog.c:236
 msgid "ASCII Key"
 msgstr ""
 
-#: ../src/network_dialog.c:240 ../src/network_dialog.c:324
+#: ../src/network_dialog.c:242 ../src/network_dialog.c:326
 msgid "Password: "
 msgstr ""
 
-#: ../src/network_dialog.c:263
+#: ../src/network_dialog.c:265
 msgid "WPA information"
 msgstr ""
 
-#: ../src/network_dialog.c:315
+#: ../src/network_dialog.c:317
 msgid "Login: "
 msgstr ""
 
@@ -226,4 +240,8 @@ msgstr ""
 
 #: ../src/wireless_dialog.c:27
 msgid "wireless interface"
+msgstr ""
+
+#: ../src/wireless_dialog.c:42
+msgid "Create a new network"
 msgstr ""

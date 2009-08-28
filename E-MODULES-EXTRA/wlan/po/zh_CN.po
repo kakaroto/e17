@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wlan module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2009-03-22 18:05+0000\n"
 "Last-Translator: Aron <Unknown>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -15,44 +15,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-#: ../e_mod_config.c:44
+#: ../src/e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Wlan 配置"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "General Settings"
 msgstr "常规设置"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "总是显示文本"
 
-#: ../e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "当鼠标移过时显示"
 
-#: ../e_mod_config.c:124
+#: ../src/e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "以百分比显示"
 
-#: ../e_mod_config.c:128
+#: ../src/e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "检查间隔"
 
-#: ../e_mod_config.c:131
+#: ../src/e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f 秒"
 
-#: ../e_mod_config.c:138
+#: ../src/e_mod_config.c:138
 msgid "Device Settings"
 msgstr "设备设置"
 
-#: ../e_mod_main.c:107
+#: ../src/e_mod_main.c:107
 msgid "Wlan"
 msgstr "Wlan"
 
-#: ../e_mod_main.c:165
+#: ../src/e_mod_main.c:165
 msgid "Configuration"
 msgstr "配置"

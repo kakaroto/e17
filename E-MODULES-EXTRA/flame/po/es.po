@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Flame\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-11 14:19+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,63 +15,64 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:61
+#: ../src/e_mod_main.c:61
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: ../e_mod_main.c:63
+#: ../src/e_mod_main.c:63
 msgid "Flame"
 msgstr "Llama"
 
-#: ../e_mod_config.c:47
+#: ../src/e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Configuracion de llama"
 
-#: ../e_mod_config.c:94 ../e_mod_config.c:177
+#: ../src/e_mod_config.c:94 ../src/e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Color de llama"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Gold"
 msgstr "Oro"
 
-#: ../e_mod_config.c:98
+#: ../src/e_mod_config.c:98
 msgid "Fire"
 msgstr "Fuego"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Plasma"
 msgstr "Plasma"
 
-#: ../e_mod_config.c:102
+#: ../src/e_mod_config.c:102
 msgid "Matrix"
 msgstr "Matrix"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ice"
 msgstr "Hielo"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "White"
 msgstr "Blanco"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Custom"
 msgstr "Personalizar"
 
-#: ../e_mod_config.c:179
+#: ../src/e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Cantidad de rojo"
 
-#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:189
+#: ../src/e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../e_mod_config.c:186
+#: ../src/e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Cantidad de azul"
 
-#: ../e_mod_config.c:193
+#: ../src/e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Cantidad de verde"

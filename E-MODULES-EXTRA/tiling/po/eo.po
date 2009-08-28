@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiling 0.0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-05-16 12:43+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -17,69 +17,69 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 0.3\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1007
+#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Kahela aranĝo"
 
-#: ../e_mod_main.c:1006
+#: ../src/e_mod_main.c:1006
 msgid "Windows"
 msgstr "Fenestroj"
 
-#: ../e_mod_config.c:70
+#: ../src/e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Agordo de kahela aranĝo"
 
 #. General settings
-#: ../e_mod_config.c:217
+#: ../src/e_mod_config.c:217
 msgid "General"
 msgstr "Ĝenerala"
 
-#: ../e_mod_config.c:227
+#: ../src/e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Horizontala:"
 
-#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f rastrumeroj"
 
-#: ../e_mod_config.c:231
+#: ../src/e_mod_config.c:231
 msgid "Vertical:"
 msgstr "Vertikala:"
 
 #. Virtual desktop settings
-#: ../e_mod_config.c:241
+#: ../src/e_mod_config.c:241
 msgid "Virtual Desktops"
 msgstr "Virtualaj Labortabloj"
 
 #. Grid mode settings
-#: ../e_mod_config.c:279
+#: ../src/e_mod_config.c:279
 msgid "Grid mode settings"
 msgstr "Agordo de la krada reĝimo"
 
-#: ../e_mod_config.c:283
+#: ../src/e_mod_config.c:283
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
 #. Bigmain settings
-#: ../e_mod_config.c:288
+#: ../src/e_mod_config.c:288
 msgid "Bigmain settings"
 msgstr "Agordoj por la grandaj fenestroj"
 
-#: ../e_mod_config.c:289
+#: ../src/e_mod_config.c:289
 msgid "Big win takes percent of screen:"
 msgstr "Grandaj fenestroj uzas elcentojn de la ekrano:"
 
-#: ../e_mod_config.c:290
+#: ../src/e_mod_config.c:290
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: ../e_mod_config.c:296
+#: ../src/e_mod_config.c:296
 msgid "Tiling border"
 msgstr "Rando de kahela aranĝo"
 
-#: ../e_mod_config.c:310
+#: ../src/e_mod_config.c:310
 msgid "Floating border"
 msgstr "Glita rando"

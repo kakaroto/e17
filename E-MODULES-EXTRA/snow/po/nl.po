@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-16 17:56+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -14,38 +14,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Configuratie Weergeven"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "General Settings"
 msgstr "Algemene Instellingen"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Bomen Weergeven"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Sneeuwdichtheid"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Sparse"
 msgstr "Krap"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Medium"
 msgstr "Middelmatig"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Dense"
 msgstr "Dicht"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Weergave"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Sneeuw"

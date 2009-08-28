@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Efm_pathbar module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-16 15:30+0200\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-16 15:33+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <Enlightenment i18n Czech>\n"
@@ -13,11 +13,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_main.c:126
+#: ../src/e_mod_main.c:132
 msgid "EFM Pathbar"
 msgstr "EFM navigační panel"
 
-#: ../src/e_mod_main.c:320
+#: ../src/e_mod_main.c:327
 msgid "Root"
 msgstr "Kořenový adresář"
-

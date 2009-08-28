@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-08 13:16+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-04 16:11+0000\n"
 "Last-Translator: Tschaka <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
@@ -14,108 +14,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Vorhersageeinstellungen"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Display Settings"
 msgstr ""
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Aktualisierungsintervall"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f Minuten"
 
-#: ../e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Show Description"
 msgstr "Beschreibung anzeigen"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr ""
 
-#: ../e_mod_config.c:103
+#: ../src/e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Einheiteneinstellungen"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Metric"
 msgstr "Metrisch"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "English"
 msgstr "Englisch"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Yahoo Wettervorhersage Code"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo Wettervorhersage Code/US Zip Code"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Um den Code für Ihre Region zu finden, gehen Sie auf"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, suchen Sie Ihre Region und entnehmen den Code der URL"
 
-#: ../e_mod_main.c:255
+#: ../src/e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Wettervorhersagen"
 
-#: ../e_mod_main.c:300
+#: ../src/e_mod_main.c:300
 msgid "Configuration"
 msgstr "Einstellungen"
 
-#: ../e_mod_main.c:1030
+#: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr ""
 
-#: ../e_mod_main.c:1036
+#: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Windgeschwindigkeit"
 
-#: ../e_mod_main.c:1042
+#: ../src/e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Luftfeuchtigkeit"
 
-#: ../e_mod_main.c:1048
+#: ../src/e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Sicht"
 
-#: ../e_mod_main.c:1054
+#: ../src/e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Luftdruck"
 
-#: ../e_mod_main.c:1061
+#: ../src/e_mod_main.c:1061
 msgid "Rising"
 msgstr ""
 
-#: ../e_mod_main.c:1063
+#: ../src/e_mod_main.c:1063
 msgid "Falling"
 msgstr ""
 
-#: ../e_mod_main.c:1065
+#: ../src/e_mod_main.c:1065
 msgid "Steady"
 msgstr ""
 
-#: ../e_mod_main.c:1069
+#: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Sonnenaufgang / Sonnenuntergang"
 
-#: ../e_mod_main.c:1093
+#: ../src/e_mod_main.c:1093
 msgid "High"
 msgstr ""
 
-#: ../e_mod_main.c:1104
+#: ../src/e_mod_main.c:1104
 msgid "Low"
 msgstr ""

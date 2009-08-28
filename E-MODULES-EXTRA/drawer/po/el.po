@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Drawer module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-30 16:53+0200\n"
 "Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <Enlightenment i18n Greek>\n"
@@ -47,7 +47,7 @@ msgstr "Ρυθμίσεις πηγής"
 msgid "View settings"
 msgstr "Ρυθμίσεις προβολής"
 
-#: ../src/e_mod_main.c:195
+#: ../src/e_mod_main.c:212
 msgid ""
 "Drawer Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -58,7 +58,7 @@ msgid ""
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:215
+#: ../src/e_mod_main.c:232
 msgid ""
 "Your Drawer Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -67,46 +67,46 @@ msgid ""
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: ../src/e_mod_main.c:457
+#: ../src/e_mod_main.c:478
 msgid "The plugin is not configurable"
 msgstr "Η επέκταση δεν ρυθμίζεται"
 
-#: ../src/e_mod_main.c:894 ../src/e_mod_main.c:902 ../src/e_mod_main.c:916
-#: ../src/e_mod_main.c:928 ../src/e_mod_main.c:996 ../src/e_mod_main.c:1047
-#: ../src/e_mod_main.c:1092
+#: ../src/e_mod_main.c:944 ../src/e_mod_main.c:952 ../src/e_mod_main.c:966
+#: ../src/e_mod_main.c:978 ../src/e_mod_main.c:1046 ../src/e_mod_main.c:1097
+#: ../src/e_mod_main.c:1142
 msgid "Drawer Plugins"
 msgstr "Επεκτάσεις συρταριού"
 
-#: ../src/e_mod_main.c:895
+#: ../src/e_mod_main.c:945
 #, c-format
 msgid "The plugin '%s' was not found."
 msgstr "Η επέκταση '%s' δεν βρέθηκε."
 
-#: ../src/e_mod_main.c:903
+#: ../src/e_mod_main.c:953
 #, c-format
 msgid "The plugin '%s' could not be opened."
 msgstr "Η επέκταση '%s' δεν μπόρεσε να ανοιχθεί."
 
-#: ../src/e_mod_main.c:917 ../src/e_mod_main.c:997 ../src/e_mod_main.c:1048
-#: ../src/e_mod_main.c:1093
+#: ../src/e_mod_main.c:967 ../src/e_mod_main.c:1047 ../src/e_mod_main.c:1098
+#: ../src/e_mod_main.c:1143
 #, c-format
 msgid "The plugin '%s' does not contain all required functions."
 msgstr "Η επέκταση '%s' δεν περιέχει όλες τις απαιτούμενες λειτουργίες."
 
-#: ../src/e_mod_main.c:929
+#: ../src/e_mod_main.c:979
 #, c-format
 msgid "The plugin '%s' does not have the required API version."
 msgstr "Η επέκταση '%s' δεν έχει την απαιτούμενη έκδοση ΑΡΙ"
 
-#: ../src/e_mod_main.c:1267
+#: ../src/e_mod_main.c:1314
 msgid "Drawer"
 msgstr "Συρτάρι"
 
-#: ../src/e_mod_main.c:1353
+#: ../src/e_mod_main.c:1400
 msgid "Drawer Configuration Updated"
 msgstr "Ρύθμιση συρταριού ανανεώθηκε"
 
-#: ../src/e_mod_main.c:1762
+#: ../src/e_mod_main.c:1765
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 

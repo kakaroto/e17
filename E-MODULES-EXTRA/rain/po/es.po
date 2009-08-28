@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-11 14:42+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -15,38 +15,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Módulo Rain"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "General Settings"
 msgstr "Configuración general"
 
-#: ../e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Mostrar nubes"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Densidad de lluvia"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Rocío"
 
-#: ../e_mod_config.c:109
+#: ../src/e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Lluvia leve"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Downpour"
 msgstr "Aguacero"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Rain"
 msgstr "Lluvia"

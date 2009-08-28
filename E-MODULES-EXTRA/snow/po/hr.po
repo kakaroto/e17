@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-02-13 03:38+0000\n"
 "Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -14,38 +14,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Konfiguracija Snijega"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "General Settings"
 msgstr "Opće Postavke"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Prikaži Drveće"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Gustoća Snijega"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Sparse"
 msgstr "Rijedak"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Medium"
 msgstr "Srednji"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Dense"
 msgstr "Gust"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Izgled"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Snijeg"

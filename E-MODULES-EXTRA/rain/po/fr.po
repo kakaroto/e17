@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rain module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-24 09:33+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -14,39 +14,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: utf-8\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Module Pluie"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "General Settings"
 msgstr "Paramètres généraux"
 
-#: ../e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Afficher les nuages"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Densité de pluie"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Quelques gouttes"
 
-#: ../e_mod_config.c:109
+#: ../src/e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Crachin"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Downpour"
 msgstr "Averse"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Apparence"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Rain"
 msgstr "Pluie"
 

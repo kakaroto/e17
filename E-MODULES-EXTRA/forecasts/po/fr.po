@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Forecast module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-24 09:31+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -13,108 +13,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: utf-8\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Configuration des prévisions"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Paramètres d'affichage"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Intervalle d'interrogation"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minutes"
 
-#: ../e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Show Description"
 msgstr "Afficher la description"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "Montrer le pop-up au survol"
 
-#: ../e_mod_config.c:103
+#: ../src/e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Système de mesure"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Metric"
 msgstr "Métrique"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "English"
 msgstr "Anglais"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Code des prévisions Yahoo"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Code des prévisions Yahoo/Code ZIP USA"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Pour trouver le code de votre région, voir:"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trouvez votre région, et regardez l'URL"
 
-#: ../e_mod_main.c:255
+#: ../src/e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Prévisions"
 
-#: ../e_mod_main.c:300
+#: ../src/e_mod_main.c:300
 msgid "Configuration"
 msgstr "Configuration"
 
-#: ../e_mod_main.c:1030
+#: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Température ressentie"
 
-#: ../e_mod_main.c:1036
+#: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Vitesse du vent"
 
-#: ../e_mod_main.c:1042
+#: ../src/e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Humidité"
 
-#: ../e_mod_main.c:1048
+#: ../src/e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Visibilité"
 
-#: ../e_mod_main.c:1054
+#: ../src/e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Pression"
 
-#: ../e_mod_main.c:1061
+#: ../src/e_mod_main.c:1061
 msgid "Rising"
 msgstr "En hausse"
 
-#: ../e_mod_main.c:1063
+#: ../src/e_mod_main.c:1063
 msgid "Falling"
 msgstr "En baisse"
 
-#: ../e_mod_main.c:1065
+#: ../src/e_mod_main.c:1065
 msgid "Steady"
 msgstr "Stable"
 
-#: ../e_mod_main.c:1069
+#: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Lever / Coucher"
 
-#: ../e_mod_main.c:1093
+#: ../src/e_mod_main.c:1093
 msgid "High"
 msgstr "Maximum"
 
-#: ../e_mod_main.c:1104
+#: ../src/e_mod_main.c:1104
 msgid "Low"
 msgstr "Minimum"

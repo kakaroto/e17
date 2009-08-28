@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Snow module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-01-10 12:48+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish\n"
@@ -15,40 +15,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Snökonfiguration"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "General Settings"
 msgstr "Allmänna inställningar"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Visa träd"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Snödensitet"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Sparse"
 msgstr "Tunn"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Medium"
 msgstr "Medel"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Dense"
 msgstr "Tät"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Utseende"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Snö"
 

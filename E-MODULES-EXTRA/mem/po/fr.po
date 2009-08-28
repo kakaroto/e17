@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mem module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-24 10:47+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,47 +15,47 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: ../e_mod_config.c:43
+#: ../src/e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Configuration du module mémoire"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:92
 msgid "General Settings"
 msgstr "Paramètres généraux"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Toujours afficher le texte"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Afficher le texte au survol"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Afficher le texte en pourcentage"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "Ignorer les tampons de fichiers"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "Ignorer la mémoire cache"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Intervalle des vérifications:"
 
-#: ../e_mod_config.c:115
+#: ../src/e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f secondes"
 
-#: ../e_mod_main.c:105
+#: ../src/e_mod_main.c:105
 msgid "Mem"
 msgstr "Mem"
 
-#: ../e_mod_main.c:162
+#: ../src/e_mod_main.c:162
 msgid "Configuration"
 msgstr "Configuration"

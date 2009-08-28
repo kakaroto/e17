@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: flame.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-08 00:14+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -16,63 +16,64 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_main.c:61
+#: ../src/e_mod_main.c:61
 msgid "Appearance"
 msgstr "Вигляд"
 
-#: ../e_mod_main.c:63
+#: ../src/e_mod_main.c:63
 msgid "Flame"
 msgstr "Полум'я"
 
-#: ../e_mod_config.c:47
+#: ../src/e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "Налаштування полум'я"
 
-#: ../e_mod_config.c:94 ../e_mod_config.c:177
+#: ../src/e_mod_config.c:94 ../src/e_mod_config.c:177
 msgid "Flame Color"
 msgstr "Колір полум'я"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Gold"
 msgstr "Золотий"
 
-#: ../e_mod_config.c:98
+#: ../src/e_mod_config.c:98
 msgid "Fire"
 msgstr "Вогняний"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Plasma"
 msgstr "Плазмовий"
 
-#: ../e_mod_config.c:102
+#: ../src/e_mod_config.c:102
 msgid "Matrix"
 msgstr "Матричний"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ice"
 msgstr "Льодовий"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "White"
 msgstr "Білий"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Custom"
 msgstr "Звичайний"
 
-#: ../e_mod_config.c:179
+#: ../src/e_mod_config.c:179
 msgid "Red Amount"
 msgstr "Обсяг червоного"
 
-#: ../e_mod_config.c:182 ../e_mod_config.c:189 ../e_mod_config.c:196
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:189
+#: ../src/e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../e_mod_config.c:186
+#: ../src/e_mod_config.c:186
 msgid "Blue Amount"
 msgstr "Обсяг синього"
 
-#: ../e_mod_config.c:193
+#: ../src/e_mod_config.c:193
 msgid "Green Amount"
 msgstr "Обсяг зеленого"

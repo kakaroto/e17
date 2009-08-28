@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2008-12-30 22:39+0100\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: Hungarian <pclinuxos-i18n@googlegroups.com>\n"
@@ -20,69 +20,69 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1005
+#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Tiling"
 
-#: ../e_mod_main.c:1004
+#: ../src/e_mod_main.c:1006
 msgid "Windows"
 msgstr "Ablakok"
 
-#: ../e_mod_config.c:70
+#: ../src/e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Beállítások"
 
 #. General settings
-#: ../e_mod_config.c:217
+#: ../src/e_mod_config.c:217
 msgid "General"
 msgstr "Általános"
 
-#: ../e_mod_config.c:227
+#: ../src/e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Horizontális:"
 
-#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f pixel"
 
-#: ../e_mod_config.c:231
+#: ../src/e_mod_config.c:231
 msgid "Vertical:"
 msgstr "Vertikális:"
 
 #. Virtual desktop settings
-#: ../e_mod_config.c:241
+#: ../src/e_mod_config.c:241
 msgid "Virtual Desktops"
 msgstr "Virtuális munkaasztalok"
 
 #. Grid mode settings
-#: ../e_mod_config.c:279
+#: ../src/e_mod_config.c:279
 msgid "Grid mode settings"
 msgstr "Rács mód beállítások"
 
-#: ../e_mod_config.c:283
+#: ../src/e_mod_config.c:283
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
 #. Bigmain settings
-#: ../e_mod_config.c:288
+#: ../src/e_mod_config.c:288
 msgid "Bigmain settings"
 msgstr "Nagy  alap beállítások"
 
-#: ../e_mod_config.c:289
+#: ../src/e_mod_config.c:289
 msgid "Big win takes percent of screen:"
 msgstr "Nagyított ablakok a képernyő ennyi %-át foglalják el:"
 
-#: ../e_mod_config.c:290
+#: ../src/e_mod_config.c:290
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: ../e_mod_config.c:296
+#: ../src/e_mod_config.c:296
 msgid "Tiling border"
 msgstr "Keret csempézése"
 
-#: ../e_mod_config.c:310
+#: ../src/e_mod_config.c:310
 msgid "Floating border"
 msgstr "Keret úsztatása"

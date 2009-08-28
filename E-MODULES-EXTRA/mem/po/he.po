@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-11-29 21:38+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -14,47 +14,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:43
+#: ../src/e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "תצורת הזכרון"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:92
 msgid "General Settings"
 msgstr "הגדרות כלליות"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "הצג טקסט תמיד"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "הצג טקסט עם העברת סמן העכבר"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "הצג טקסט כאחוזים"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "התעלם מחוצצים"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "התעלם ממטמון"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "המתנה בין בדיקות:"
 
-#: ../e_mod_config.c:115
+#: ../src/e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f שניות"
 
-#: ../e_mod_main.c:105
+#: ../src/e_mod_main.c:105
 msgid "Mem"
 msgstr "זיכרון"
 
-#: ../e_mod_main.c:162
+#: ../src/e_mod_main.c:162
 msgid "Configuration"
 msgstr "תצורה"

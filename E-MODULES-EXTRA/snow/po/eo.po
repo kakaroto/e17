@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-02-11 19:50+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -16,38 +16,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Konfiguraĵo de Neĝo"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "General Settings"
 msgstr "Ĝeneralaj Agordoj"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Vidigi Arbojn"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Neĝa Denseco"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Sparse"
 msgstr "Malabunda"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Medium"
 msgstr "Meza"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Dense"
 msgstr "Densa"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Aspekto"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Neĝo"

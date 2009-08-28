@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: photo 0.1.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-05-11 00:03+0000\n"
 "Last-Translator: Olivier <eliovir@nospam.gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -17,41 +17,40 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 0.3\n"
 
-#: ../src/module/e_mod_main.c:53 ../src/module/e_mod_main.c:60
-#: ../src/module/e_mod_main.c:67 ../src/module/e_mod_main.c:74
-#: ../src/module/e_mod_main.c:81 ../src/module/e_mod_main.c:88
+#: ../src/e_mod_main.c:53 ../src/e_mod_main.c:60 ../src/e_mod_main.c:67
+#: ../src/e_mod_main.c:74 ../src/e_mod_main.c:81 ../src/e_mod_main.c:88
 msgid "Photo Module"
 msgstr "Modulo Foto"
 
-#: ../src/module/e_mod_main.c:53
+#: ../src/e_mod_main.c:53
 msgid "E Canvas init failed !"
 msgstr "Pravalorizo de E Canvas malsukcesis!"
 
-#: ../src/module/e_mod_main.c:60
+#: ../src/e_mod_main.c:60
 msgid "Theme init failed !"
 msgstr "Pravalorizo de etoso malsukcesis!"
 
-#: ../src/module/e_mod_main.c:67
+#: ../src/e_mod_main.c:67
 msgid "Config init failed"
 msgstr "Pravalorizo de agordo malsukcesis"
 
-#: ../src/module/e_mod_main.c:74
+#: ../src/e_mod_main.c:74
 msgid "Picture subsystem init failed"
 msgstr "Pravalorizo de la bildo-subsitemo malsukcesis"
 
-#: ../src/module/e_mod_main.c:81
+#: ../src/e_mod_main.c:81
 msgid "Popup warn subsystem init failed"
 msgstr "Pravalorizo de la subsistemo de averta ŝprucfenestro malsukcesis"
 
-#: ../src/module/e_mod_main.c:88
+#: ../src/e_mod_main.c:88
 msgid "Popup info subsystem init failed"
 msgstr "Pravalorizo de la informo-subsitemo malsukcesis"
 
-#: ../src/module/e_mod_main.c:181
+#: ../src/e_mod_main.c:181
 msgid "Photo"
 msgstr "Foto"
 
-#: ../src/module/photo_config.c:65
+#: ../src/photo_config.c:65
 #, c-format
 msgid ""
 "<hilight>Photo module : Configuration Upgraded</hilight><br><br>Your "
@@ -62,11 +61,11 @@ msgstr ""
 "modulo<br>estis ĝisdatigita<br>Viaj agordoj estis forigitaj<br>Bonvolu "
 "pardoni por la ĝeno<br><br>(%d -> %d)"
 
-#: ../src/module/photo_config.c:71 ../src/module/photo_config.c:85
+#: ../src/photo_config.c:71 ../src/photo_config.c:85
 msgid "Photo Module version "
 msgstr "Versio de la modulo Foto"
 
-#: ../src/module/photo_config.c:79
+#: ../src/photo_config.c:79
 #, c-format
 msgid ""
 "<hilight>Photo module : Configuration Downgraded</hilight><br><br>Your "
@@ -77,224 +76,215 @@ msgstr ""
 "modulo Foto<br>estis antaŭdatigita<br>Viaj agordojestis forigitaj<br>Bonvolu "
 "pardoni por la malagrablaĵoj<br><br>(%d ->%d)"
 
-#: ../src/module/photo_config_dialog.c:64
+#: ../src/photo_config_dialog.c:64
 msgid "Photo Configuration"
 msgstr "Agordo de Foto"
 
-#: ../src/module/photo_config_dialog.c:220
+#: ../src/photo_config_dialog.c:220
 msgid "Picture directories"
 msgstr "Dosierujoj de bildoj"
 
-#: ../src/module/photo_config_dialog.c:235
+#: ../src/photo_config_dialog.c:235
 msgid "Add"
 msgstr "Aldoni"
 
-#: ../src/module/photo_config_dialog.c:237
+#: ../src/photo_config_dialog.c:237
 msgid "Delete"
 msgstr "Forigi"
 
-#: ../src/module/photo_config_dialog.c:239
+#: ../src/photo_config_dialog.c:239
 msgid "Configure"
 msgstr "Agordi"
 
-#: ../src/module/photo_config_dialog.c:242
+#: ../src/photo_config_dialog.c:242
 msgid "Reload picture directories"
 msgstr "Reŝargi la dosierujojn de bildoj"
 
-#: ../src/module/photo_config_dialog.c:245
+#: ../src/photo_config_dialog.c:245
 msgid "Stop loading"
 msgstr "Ĉesigi ŝargadon"
 
-#: ../src/module/photo_config_dialog.c:252
-#: ../src/module/photo_config_dialog_item.c:127
+#: ../src/photo_config_dialog.c:252 ../src/photo_config_dialog_item.c:127
 msgid "Appearance"
 msgstr "Aspekto"
 
-#: ../src/module/photo_config_dialog.c:254
-#: ../src/module/photo_config_dialog_item.c:136
+#: ../src/photo_config_dialog.c:254 ../src/photo_config_dialog_item.c:136
 msgid "Always show label"
 msgstr "Ĉiam vidigi etikedon"
 
-#: ../src/module/photo_config_dialog.c:256
+#: ../src/photo_config_dialog.c:256
 msgid "Nice transitions"
 msgstr "Agrablaj transiroj"
 
-#: ../src/module/photo_config_dialog.c:262
+#: ../src/photo_config_dialog.c:262
 msgid "Default Mouse actions"
 msgstr "Defaŭltaj musaj agadoj"
 
-#: ../src/module/photo_config_dialog.c:264
-#: ../src/module/photo_config_dialog_item.c:191
+#: ../src/photo_config_dialog.c:264 ../src/photo_config_dialog_item.c:191
 msgid "Over"
 msgstr "Supre"
 
-#: ../src/module/photo_config_dialog.c:268
-#: ../src/module/photo_config_dialog_item.c:195
+#: ../src/photo_config_dialog.c:268 ../src/photo_config_dialog_item.c:195
 msgid "Left"
 msgstr "Maldekstren"
 
-#: ../src/module/photo_config_dialog.c:270
-#: ../src/module/photo_config_dialog.c:276
-#: ../src/module/photo_config_dialog_item.c:197
-#: ../src/module/photo_config_dialog_item.c:203
+#: ../src/photo_config_dialog.c:270 ../src/photo_config_dialog.c:276
+#: ../src/photo_config_dialog_item.c:197 ../src/photo_config_dialog_item.c:203
 msgid "click"
 msgstr "klaki"
 
-#: ../src/module/photo_config_dialog.c:274
-#: ../src/module/photo_config_dialog_item.c:201
+#: ../src/photo_config_dialog.c:274 ../src/photo_config_dialog_item.c:201
 msgid "Middle"
 msgstr "Meza"
 
-#: ../src/module/photo_config_dialog.c:279
-#: ../src/module/photo_config_dialog_item.c:142
+#: ../src/photo_config_dialog.c:279 ../src/photo_config_dialog_item.c:142
 msgid "No"
 msgstr "Ne"
 
-#: ../src/module/photo_config_dialog.c:318
+#: ../src/photo_config_dialog.c:318
 msgid "Popups"
 msgstr "Ŝprucfenestroj"
 
-#: ../src/module/photo_config_dialog.c:320
+#: ../src/photo_config_dialog.c:320
 msgid "Picture loader popup"
 msgstr "Ŝprucfenestro de bildo-ŝargilo"
 
-#: ../src/module/photo_config_dialog.c:323
+#: ../src/photo_config_dialog.c:323
 msgid "Never"
 msgstr "Neniam"
 
-#: ../src/module/photo_config_dialog.c:325
+#: ../src/photo_config_dialog.c:325
 msgid "Summary"
 msgstr "Resumo"
 
-#: ../src/module/photo_config_dialog.c:327
+#: ../src/photo_config_dialog.c:327
 msgid "Verbose"
 msgstr "Detaleme"
 
-#: ../src/module/photo_config_dialog.c:332
+#: ../src/photo_config_dialog.c:332
 msgid "Miscellaneous"
 msgstr "Diversaj"
 
-#: ../src/module/photo_config_dialog.c:334
+#: ../src/photo_config_dialog.c:334
 msgid "Remove generated backgrounds"
 msgstr "Forigi generitajn ekranfonojn"
 
-#: ../src/module/photo_config_dialog.c:338
+#: ../src/photo_config_dialog.c:338
 msgid "Pictures viewer"
 msgstr "Bildo-regardilo"
 
-#: ../src/module/photo_config_dialog.c:344
+#: ../src/photo_config_dialog.c:344
 msgid "Images Quality"
 msgstr "Kvalito de bildoj"
 
-#: ../src/module/photo_config_dialog.c:346
+#: ../src/photo_config_dialog.c:346
 #, c-format
 msgid "%1.0f pix"
 msgstr "%1.0f rastrumeroj"
 
-#: ../src/module/photo_config_dialog.c:353
+#: ../src/photo_config_dialog.c:353
 msgid "Automaticly reload directories"
 msgstr "Aŭtomate reŝargi la dosierujojn de bildoj"
 
-#: ../src/module/photo_config_dialog.c:356
+#: ../src/photo_config_dialog.c:356
 msgid "when add / modify directory list"
 msgstr "post aldono/modifo de la listo de dosierujoj"
 
-#: ../src/module/photo_config_dialog.h:36
+#: ../src/photo_config_dialog.h:36
 msgid "Show label"
 msgstr "Vidigi etikedon"
 
-#: ../src/module/photo_config_dialog.h:38
+#: ../src/photo_config_dialog.h:38
 msgid "Show informations"
 msgstr "Vidigi informojn"
 
-#: ../src/module/photo_config_dialog.h:40 ../src/module/photo_menu.c:44
+#: ../src/photo_config_dialog.h:40 ../src/photo_menu.c:44
 msgid "Previous picture"
 msgstr "Antaŭa bildo"
 
-#: ../src/module/photo_config_dialog.h:42 ../src/module/photo_menu.c:40
+#: ../src/photo_config_dialog.h:42 ../src/photo_menu.c:40
 msgid "Next picture"
 msgstr "Sekva bildo"
 
-#: ../src/module/photo_config_dialog.h:44
+#: ../src/photo_config_dialog.h:44
 msgid "Pause"
 msgstr "Paŭzo"
 
-#: ../src/module/photo_config_dialog.h:46 ../src/module/photo_menu.c:58
+#: ../src/photo_config_dialog.h:46 ../src/photo_menu.c:58
 msgid "Set as background"
 msgstr "Difini kiel ekranfonon"
 
-#: ../src/module/photo_config_dialog.h:48
+#: ../src/photo_config_dialog.h:48
 msgid "Open viewer"
 msgstr "Malfermi rigardilon"
 
-#: ../src/module/photo_config_dialog.h:50
+#: ../src/photo_config_dialog.h:50
 msgid "Show menu"
 msgstr "Montru menuon"
 
-#: ../src/module/photo_config_dialog_dir.c:38
+#: ../src/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
 msgstr "Agordo de la dosiero de bildoj"
 
-#: ../src/module/photo_config_dialog_dir.c:118
+#: ../src/photo_config_dialog_dir.c:118
 msgid "Directory"
 msgstr "Dosierujo   "
 
-#: ../src/module/photo_config_dialog_dir.c:127
+#: ../src/photo_config_dialog_dir.c:127
 msgid "Loading options"
 msgstr "Opcioj de ŝargado"
 
-#: ../src/module/photo_config_dialog_dir.c:129
+#: ../src/photo_config_dialog_dir.c:129
 msgid "Recursive"
 msgstr "Rekursiva"
 
-#: ../src/module/photo_config_dialog_dir.c:131
+#: ../src/photo_config_dialog_dir.c:131
 msgid "Read hidden files"
 msgstr "Legi kaŝitajn dosierojn"
 
-#: ../src/module/photo_config_dialog_dir.c:158
+#: ../src/photo_config_dialog_dir.c:158
 msgid "Photo Module Warning"
 msgstr "Averto de la modulo Foto"
 
-#: ../src/module/photo_config_dialog_item.c:48
+#: ../src/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
 msgstr "Agordo de elemento de Foto"
 
-#: ../src/module/photo_config_dialog_item.c:112
+#: ../src/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
 msgstr "Tempo inter ŝanĝoj de bildoj"
 
-#: ../src/module/photo_config_dialog_item.c:114
+#: ../src/photo_config_dialog_item.c:114
 msgid "Activate"
 msgstr "Ebligi"
 
-#: ../src/module/photo_config_dialog_item.c:117
+#: ../src/photo_config_dialog_item.c:117
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekundoj"
 
-#: ../src/module/photo_config_dialog_item.c:129
+#: ../src/photo_config_dialog_item.c:129
 msgid "Alpha"
 msgstr "Alfo"
 
-#: ../src/module/photo_config_dialog_item.c:132
+#: ../src/photo_config_dialog_item.c:132
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../src/module/photo_config_dialog_item.c:140
+#: ../src/photo_config_dialog_item.c:140
 msgid "Yes"
 msgstr "Jes"
 
-#: ../src/module/photo_config_dialog_item.c:144
-#: ../src/module/photo_config_dialog_item.c:206
+#: ../src/photo_config_dialog_item.c:144 ../src/photo_config_dialog_item.c:206
 msgid "Default setting"
 msgstr "Apriora agordo"
 
-#: ../src/module/photo_config_dialog_item.c:189
+#: ../src/photo_config_dialog_item.c:189
 msgid "Mouse actions"
 msgstr "Musaj agoj"
 
-#: ../src/module/photo_item.c:389
+#: ../src/photo_item.c:389
 #, c-format
 msgid ""
 "<hilight>File %s doesnt exists.</hilight><br><br>This file is in Photo "
@@ -305,13 +295,12 @@ msgstr ""
 "listo de bildoj de la modulo, sed verŝajne vi forigis ĝin el la disko.<br>Ĝi "
 "ne povas esti difinata kiel ekranfono."
 
-#: ../src/module/photo_item.c:392 ../src/module/photo_item.c:417
-#: ../src/module/photo_item.c:455 ../src/module/photo_item.c:475
-#: ../src/module/photo_picture_local.c:259
+#: ../src/photo_item.c:392 ../src/photo_item.c:417 ../src/photo_item.c:455
+#: ../src/photo_item.c:475 ../src/photo_picture_local.c:259
 msgid "Photo Module Error"
 msgstr "Eraro de la modulo Foto"
 
-#: ../src/module/photo_item.c:413
+#: ../src/photo_item.c:413
 #, c-format
 msgid ""
 "<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !"
@@ -322,7 +311,7 @@ msgstr ""
 "<br>La modulo Foto bezonas la aplikaĵon e17setroot el la pakaĵo e_utils por "
 "difini vian bildon kiel ekranfono. Bonvolu instali ĝin ka provi de nove."
 
-#: ../src/module/photo_item.c:452
+#: ../src/photo_item.c:452
 #, c-format
 msgid ""
 "<hilight>File %s doesnt exists !</hilight><br><br>This file is in Photo's "
@@ -333,7 +322,7 @@ msgstr ""
 "listo de bildoj de la modulo, sed verŝajne vi forigis ĝin el la disko.<br>Ĝi "
 "ne povas malfermiĝi en la regardilo."
 
-#: ../src/module/photo_item.c:472
+#: ../src/photo_item.c:472
 #, c-format
 msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
@@ -342,39 +331,39 @@ msgstr ""
 "<hilight>Regardilo %s ne trovita!</hilight><br><br> Vi povas ŝanĝi la "
 "regardilon por bildoj en la panelo de agordo de la modulo Foto (detala vido)"
 
-#: ../src/module/photo_menu.c:30
+#: ../src/photo_menu.c:30
 msgid "Pause slideshow"
 msgstr "Paŭzi la bildoprezenton"
 
-#: ../src/module/photo_menu.c:35
+#: ../src/photo_menu.c:35
 msgid "Resume slideshow"
 msgstr "Restarigi la bildoprezenton"
 
-#: ../src/module/photo_menu.c:54
+#: ../src/photo_menu.c:54
 msgid "Picture informations"
 msgstr "Informoj de la bildo"
 
-#: ../src/module/photo_menu.c:62
+#: ../src/photo_menu.c:62
 msgid "Open in"
 msgstr "Malfermu en"
 
-#: ../src/module/photo_menu.c:71
+#: ../src/photo_menu.c:71
 msgid "Configure Photo module"
 msgstr "Agordi la modulon Foto"
 
-#: ../src/module/photo_menu.c:75
+#: ../src/photo_menu.c:75
 msgid "Configure this Photo gadget"
 msgstr "Agordi tiun akcesoraĵon Foto"
 
-#: ../src/module/photo_menu.c:82
+#: ../src/photo_menu.c:82
 msgid "Configure Gadget and Shelf"
 msgstr "Agordi akcesoraĵojn kaj bretojn"
 
-#: ../src/module/photo_picture_histo.c:121
+#: ../src/photo_picture_histo.c:121
 msgid "Historic"
 msgstr "Antaŭaj agoj"
 
-#: ../src/module/photo_picture_local.c:253
+#: ../src/photo_picture_local.c:253
 #, c-format
 msgid ""
 "<hilight>Directory %s doesnt exists.</hilight><br><br>You can change the "
@@ -388,11 +377,11 @@ msgstr ""
 "aŭ png<br><br> Post enportado, se vi forigis tiujn dosierojn kaj se la "
 "bildoj<br> ĉiam videblas, sed vi ne plu povos uzi ilin kiel ekranfono<br><br>"
 
-#: ../src/module/photo_picture_local.c:593
+#: ../src/photo_picture_local.c:593
 msgid "Photo Module Information"
 msgstr "Informo de la modulo Foto"
 
-#: ../src/module/photo_picture_local.c:594
+#: ../src/photo_picture_local.c:594
 msgid ""
 "<hilight>Creating thumbs</hilight><br><br>Some pictures are being thumbed in "
 "a <hilight>background task</hilight>.<br>It can take a while, but after, "

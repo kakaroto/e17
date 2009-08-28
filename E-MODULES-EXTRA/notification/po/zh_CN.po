@@ -9,17 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-06 09:55+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../src/e_mod_config.c:43
-msgid "Notification Configuration"
-msgstr "提醒区配置"
 
 #: ../src/e_mod_box.c:675 ../src/e_mod_box.c:823
 msgid "Configuration"
@@ -38,7 +34,9 @@ msgid ""
 "Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, "
 "screen saver, lock and power saving will be disabled so you are not "
 "interrupted."
-msgstr "Enlightenment 处于<b>演示</b>模式。<br>在“演示”模式，屏幕保护，时钟和省电功能将被禁用，所以不会被中断。"
+msgstr ""
+"Enlightenment 处于<b>演示</b>模式。<br>在“演示”模式，屏幕保护，时钟和省电功能"
+"将被禁用，所以不会被中断。"
 
 #: ../src/e_mod_main.c:213
 msgid "Exited Presentation Mode"
@@ -58,7 +56,8 @@ msgstr "进入脱机模式"
 msgid ""
 "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
 "that use network will stop polling remote services."
-msgstr "Enlightenment 处于<b>脱机</b>模式。<br>在“脱机”模式，不会启用网络连接。"
+msgstr ""
+"Enlightenment 处于<b>脱机</b>模式。<br>在“脱机”模式，不会启用网络连接。"
 
 #: ../src/e_mod_main.c:236
 msgid "Exited Offline Mode"
@@ -93,8 +92,9 @@ msgid ""
 "lacks. This new set of defaults will fix<br>that by adding it in. You can re-"
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
-"通知模块配置数据需要升级。你的旧配置<br>已被清除，并设定为新的默认值。这通常出现在<br>程序开发时，不需要报告为<br>Bug。这只是因为通知模块增"
-"加了<br>新选项设置来实现新功能。<br>你也可以重新进行设置。非常抱歉给您带来不便。<br>"
+"通知模块配置数据需要升级。你的旧配置<br>已被清除，并设定为新的默认值。这通常"
+"出现在<br>程序开发时，不需要报告为<br>Bug。这只是因为通知模块增加了<br>新选项"
+"设置来实现新功能。<br>你也可以重新进行设置。非常抱歉给您带来不便。<br>"
 
 #: ../src/e_mod_main.c:359
 msgid ""
@@ -105,8 +105,9 @@ msgid ""
 "is bad and<br>as a precaution your configuration has been now restored "
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
-"你的通知模块配置文件比当前程序的版本要新。这有点<br>奇怪。可能是你降级了<br>通知模块，或者从别的地方复制了<br>高版本的模块配置文件。这不适合当"
-"前程序<br>为安全起见，程序已自动还原为<br>默认值。非常抱歉给您带来不便。<br>"
+"你的通知模块配置文件比当前程序的版本要新。这有点<br>奇怪。可能是你降级了<br>"
+"通知模块，或者从别的地方复制了<br>高版本的模块配置文件。这不适合当前程序<br>"
+"为安全起见，程序已自动还原为<br>默认值。非常抱歉给您带来不便。<br>"
 
 #: ../src/e_mod_main.c:393
 msgid "Error During DBus Init!"
@@ -117,6 +118,10 @@ msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
 msgstr "DBus 初始化出错！请检查 dbug 是否已经安装正确并已运行。"
+
+#: ../src/e_mod_config.c:43
+msgid "Notification Configuration"
+msgstr "提醒区配置"
 
 #: ../src/e_mod_config.c:88 ../src/e_mod_config_item.c:91
 msgid "Urgency"

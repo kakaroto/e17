@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: forecasts.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-08 00:14+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -16,108 +16,108 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Налаштування пронозу погоди"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Налаштування екрана"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Час запиту"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f хвилин"
 
-#: ../e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Show Description"
 msgstr "Показати опис"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "Виринання при наведені курсора"
 
-#: ../e_mod_config.c:103
+#: ../src/e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Налаштування одиниць вимірювання"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Metric"
 msgstr "Метричний"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "English"
 msgstr "Англійська"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Код прогнозу погоди Yahoo"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Код/US Zip код прогнозу погоди Yahoo"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Щоб знайти код вашої місцевості, відвідайте:"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, знайдіть вашу місцевість, і загляньте за посиланням"
 
-#: ../e_mod_main.c:255
+#: ../src/e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Прогноз погоди"
 
-#: ../e_mod_main.c:300
+#: ../src/e_mod_main.c:300
 msgid "Configuration"
 msgstr "Налаштування"
 
-#: ../e_mod_main.c:1030
+#: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Прохолодний вітер"
 
-#: ../e_mod_main.c:1036
+#: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Швидкий вітер"
 
-#: ../e_mod_main.c:1042
+#: ../src/e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Вологість"
 
-#: ../e_mod_main.c:1048
+#: ../src/e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Видимість"
 
-#: ../e_mod_main.c:1054
+#: ../src/e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Тиск"
 
-#: ../e_mod_main.c:1061
+#: ../src/e_mod_main.c:1061
 msgid "Rising"
 msgstr "Зростання"
 
-#: ../e_mod_main.c:1063
+#: ../src/e_mod_main.c:1063
 msgid "Falling"
 msgstr "Спадання"
 
-#: ../e_mod_main.c:1065
+#: ../src/e_mod_main.c:1065
 msgid "Steady"
 msgstr "Рівномірний"
 
-#: ../e_mod_main.c:1069
+#: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Схід / Захід"
 
-#: ../e_mod_main.c:1093
+#: ../src/e_mod_main.c:1093
 msgid "High"
 msgstr "Високий"
 
-#: ../e_mod_main.c:1104
+#: ../src/e_mod_main.c:1104
 msgid "Low"
 msgstr "Низький"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rain e17\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-07-06 07:21+0000\n"
 "Last-Translator: Careone <zzbusagain@yahoo.com.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -17,38 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Rain 模块"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "General Settings"
 msgstr "常规设置"
 
-#: ../e_mod_config.c:101
+#: ../src/e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "显示云彩"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Rain Density"
 msgstr "雨大小"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "毛毛雨"
 
-#: ../e_mod_config.c:109
+#: ../src/e_mod_config.c:109
 msgid "Drizzle"
 msgstr "细雨"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Downpour"
 msgstr "倾盆大雨"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "外观"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Rain"
 msgstr "雨"

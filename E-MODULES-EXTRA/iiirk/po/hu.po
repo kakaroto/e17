@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-08-28 16:31+0800\n"
 "PO-Revision-Date: 2008-07-18 17:49+0200\n"
 "Last-Translator: Lisovszki Sándor <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <mypclinuxos.com>\n"
@@ -16,28 +16,28 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../src/e_mod_main.c:236
+#: ../src/e_mod_main.c:237
 msgid "IIirk"
 msgstr "Ilirk"
 
-#: ../src/e_mod_main.c:368 ../src/e_mod_main.c:785
+#: ../src/e_mod_main.c:369 ../src/e_mod_main.c:786
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: ../src/e_mod_main.c:1558
+#: ../src/e_mod_main.c:1559
 msgid "Applications"
 msgstr "Alkalmazások"
 
-#: ../src/e_mod_main.c:1560 ../src/e_int_config_iiirk.c:52
+#: ../src/e_mod_main.c:1561 ../src/e_int_config_iiirk.c:52
 #: ../src/e_int_config_iiirk.c:67
 msgid "IIirk Applications"
 msgstr "Ilirk alkalmazások"
 
-#: ../src/e_mod_main.c:1562
+#: ../src/e_mod_main.c:1563
 msgid "Internal"
 msgstr "Belső"
 
-#: ../src/e_mod_main.c:1563
+#: ../src/e_mod_main.c:1564
 msgid "IIirk Other"
 msgstr "Ilirk egyéb"
 

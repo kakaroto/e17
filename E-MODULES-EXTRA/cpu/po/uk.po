@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cpu.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-07 23:38+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -16,30 +16,30 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_main.c:132
+#: ../src/e_mod_main.c:132
 msgid "Cpu"
 msgstr "Центральний процесор"
 
-#: ../e_mod_main.c:366
+#: ../src/e_mod_main.c:366
 msgid "Fast (0.5 sec)"
 msgstr "Швидкий (0.5 секунди)"
 
-#: ../e_mod_main.c:373
+#: ../src/e_mod_main.c:373
 msgid "Medium (1 sec)"
 msgstr "Середній (1 секунда)"
 
-#: ../e_mod_main.c:380
+#: ../src/e_mod_main.c:380
 msgid "Normal (2 sec)"
 msgstr "Звичайний (2 секунди)"
 
-#: ../e_mod_main.c:387
+#: ../src/e_mod_main.c:387
 msgid "Slow (5 sec)"
 msgstr "Повільний (5 секунд)"
 
-#: ../e_mod_main.c:394
+#: ../src/e_mod_main.c:394
 msgid "Very Slow (30 sec)"
 msgstr "Неквапкий (30 секунд)"
 
-#: ../e_mod_main.c:405
+#: ../src/e_mod_main.c:405
 msgid "Time Between Updates"
 msgstr "Час оновлення"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2008-02-02 23:45+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,59 +17,59 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../e_mod_config.c:40
+#: ../src/e_mod_config.c:36
 msgid "Weather Configuration"
 msgstr "Időjárás beállítás"
 
-#: ../e_mod_config.c:86
+#: ../src/e_mod_config.c:78
 msgid "Display Settings"
 msgstr "Megjelenítési beállítások"
 
-#: ../e_mod_config.c:88
+#: ../src/e_mod_config.c:80
 msgid "Simple"
 msgstr "Egyszerű"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:82
 msgid "Detailed"
 msgstr "Részletes"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:84
 msgid "Poll Time"
 msgstr "Kutatási idő"
 
-#: ../e_mod_config.c:95
+#: ../src/e_mod_config.c:86
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f perc"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:91
 msgid "Degree Settings"
 msgstr "Fok beállítások"
 
-#: ../e_mod_config.c:102
+#: ../src/e_mod_config.c:93
 msgid "Celsius"
 msgstr "Celsius"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:95
 msgid "Farenheit"
 msgstr "Farenheit"
 
-#: ../e_mod_config.c:108 ../e_mod_config.c:109
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
 msgstr "ICAO Kód"
 
-#: ../e_mod_config.c:114
+#: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
 msgstr "Töltsd le az ICAO kódodat:"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
-#: ../e_mod_main.c:179
+#: ../src/e_mod_main.c:171
 msgid "Weather"
 msgstr "Időjárás"
 
-#: ../e_mod_main.c:224
+#: ../src/e_mod_main.c:215
 msgid "Configuration"
 msgstr "Beállítás"

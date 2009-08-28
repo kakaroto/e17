@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiling\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-06-08 11:08+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,69 +14,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_main.c:83 ../e_mod_main.c:88 ../e_mod_main.c:1007
+#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
 msgid "Tiling"
 msgstr "Tiling"
 
-#: ../e_mod_main.c:1006
+#: ../src/e_mod_main.c:1006
 msgid "Windows"
 msgstr "Finestre"
 
-#: ../e_mod_config.c:70
+#: ../src/e_mod_config.c:70
 msgid "Tiling Configuration"
 msgstr "Configurazione modulo Tiling"
 
 #. General settings
-#: ../e_mod_config.c:217
+#: ../src/e_mod_config.c:217
 msgid "General"
 msgstr "Impostazioni generali"
 
-#: ../e_mod_config.c:227
+#: ../src/e_mod_config.c:227
 msgid "Horizontal:"
 msgstr "Orizzontale:"
 
-#: ../e_mod_config.c:228 ../e_mod_config.c:232
+#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
 
-#: ../e_mod_config.c:231
+#: ../src/e_mod_config.c:231
 msgid "Vertical:"
 msgstr "Verticale:"
 
 #. Virtual desktop settings
-#: ../e_mod_config.c:241
+#: ../src/e_mod_config.c:241
 msgid "Virtual Desktops"
 msgstr "Desktop virtuali"
 
 #. Grid mode settings
-#: ../e_mod_config.c:279
+#: ../src/e_mod_config.c:279
 msgid "Grid mode settings"
 msgstr "Impostazioni modalità griglia"
 
-#: ../e_mod_config.c:283
+#: ../src/e_mod_config.c:283
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
 #. Bigmain settings
-#: ../e_mod_config.c:288
+#: ../src/e_mod_config.c:288
 msgid "Bigmain settings"
 msgstr "Impostazioni superfinestra"
 
-#: ../e_mod_config.c:289
+#: ../src/e_mod_config.c:289
 msgid "Big win takes percent of screen:"
 msgstr "Percentuale schermo occupato dalla superfinestra:"
 
-#: ../e_mod_config.c:290
+#: ../src/e_mod_config.c:290
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: ../e_mod_config.c:296
+#: ../src/e_mod_config.c:296
 msgid "Tiling border"
 msgstr "Bordo mosaico"
 
-#: ../e_mod_config.c:310
+#: ../src/e_mod_config.c:310
 msgid "Floating border"
 msgstr "Bordo fluttuante"

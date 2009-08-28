@@ -1,0 +1,122 @@
+# Arabic translation for enlightenment
+# Copyright (c) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-28 16:31+0800\n"
+"PO-Revision-Date: 2009-08-24 16:35+0000\n"
+"Last-Translator: Nizar Kerkeni <nizar.kerkeni@gmail.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_config.c:42
+msgid "Forecasts Configuration"
+msgstr "إعدادات التنبؤات"
+
+#: ../src/e_mod_config.c:90
+msgid "Display Settings"
+msgstr "إعدادات العرض"
+
+#: ../src/e_mod_config.c:91
+msgid "Poll Time"
+msgstr "استطلاع الوقت"
+
+#: ../src/e_mod_config.c:94
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f دقائق"
+
+#: ../src/e_mod_config.c:97
+msgid "Show Description"
+msgstr "اعرض الوصف"
+
+#: ../src/e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr "نافذة منبثقة عند مرور الفأرة"
+
+#: ../src/e_mod_config.c:103
+msgid "Unit Settings"
+msgstr "إعدادات الوحدات"
+
+#: ../src/e_mod_config.c:105
+msgid "Metric"
+msgstr "متري"
+
+#: ../src/e_mod_config.c:107
+msgid "English"
+msgstr "الإنجليزية"
+
+#: ../src/e_mod_config.c:111
+msgid "Yahoo Forecasts Code"
+msgstr "رمز تنبؤات ياهو"
+
+#: ../src/e_mod_config.c:112
+msgid "Yahoo Forecasts Code/US Zip Code"
+msgstr "رمز تنبؤات ياهو /الرمز البريدي في الولايات المتحدة"
+
+#: ../src/e_mod_config.c:117
+msgid "To find the code for your area, go to:"
+msgstr "للعثور على رمز المنطقة الخاصة بك، اذهب إلى :"
+
+#: ../src/e_mod_config.c:119
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr "%s، اعثر على منطقتك، والق نظرة على العنوان"
+
+#: ../src/e_mod_main.c:255
+msgid "Forecasts"
+msgstr "الخطة"
+
+#: ../src/e_mod_main.c:300
+msgid "Configuration"
+msgstr "الإعدادات"
+
+#: ../src/e_mod_main.c:1030
+msgid "Wind Chill"
+msgstr "برودة الرياح"
+
+#: ../src/e_mod_main.c:1036
+msgid "Wind Speed"
+msgstr "سرعة الرياح"
+
+#: ../src/e_mod_main.c:1042
+msgid "Humidity"
+msgstr "الرطوبة"
+
+#: ../src/e_mod_main.c:1048
+msgid "Visibility"
+msgstr "الرؤية"
+
+#: ../src/e_mod_main.c:1054
+msgid "Pressure"
+msgstr "الضغط"
+
+#: ../src/e_mod_main.c:1061
+msgid "Rising"
+msgstr "الشروق"
+
+#: ../src/e_mod_main.c:1063
+msgid "Falling"
+msgstr "الغروب"
+
+#: ../src/e_mod_main.c:1065
+msgid "Steady"
+msgstr "هادئ"
+
+#: ../src/e_mod_main.c:1069
+msgid "Sunrise / Sunset"
+msgstr "الشروق / الغروب"
+
+#: ../src/e_mod_main.c:1093
+msgid "High"
+msgstr "عالي"
+
+#: ../src/e_mod_main.c:1104
+msgid "Low"
+msgstr "منخفض"

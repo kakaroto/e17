@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: forecasts\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-01-03 14:58+0800\n"
+"POT-Creation-Date: 2009-08-28 16:31+0800\n"
 "PO-Revision-Date: 2008-11-22 05:08+0000\n"
 "Last-Translator: lisovszki <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -16,108 +16,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Előrejelzés beállításai"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Display Settings"
 msgstr "Megjelenítési beállítások"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Kutatási idő"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f perc"
 
-#: ../e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Show Description"
 msgstr "Leírás megjelenítése"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr "Felbukkanó ablak, ha az egér rajta van"
 
-#: ../e_mod_config.c:103
+#: ../src/e_mod_config.c:103
 msgid "Unit Settings"
 msgstr "Egység beállítások"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Metric"
 msgstr "Metrikus"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "English"
 msgstr "Angol"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Yahoo előrejelzés kód"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Yahoo előrejelzés kód/USA Zip kód"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Hogy megtaláld a területi kódodat, menj ide:"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, keresd meg a területed, és néz meg az URL-t"
 
-#: ../e_mod_main.c:256
+#: ../src/e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Előrejelzés"
 
-#: ../e_mod_main.c:301
+#: ../src/e_mod_main.c:300
 msgid "Configuration"
 msgstr "Beállítás"
 
-#: ../e_mod_main.c:1025
+#: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
 msgstr "Hőmérséklet"
 
-#: ../e_mod_main.c:1031
+#: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Szélsebesség"
 
-#: ../e_mod_main.c:1037
+#: ../src/e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Páratartalom"
 
-#: ../e_mod_main.c:1043
+#: ../src/e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Látótávolság"
 
-#: ../e_mod_main.c:1049
+#: ../src/e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Légnyomás"
 
-#: ../e_mod_main.c:1056
+#: ../src/e_mod_main.c:1061
 msgid "Rising"
 msgstr "Napsütés"
 
-#: ../e_mod_main.c:1058
+#: ../src/e_mod_main.c:1063
 msgid "Falling"
 msgstr "Eső"
 
-#: ../e_mod_main.c:1060
+#: ../src/e_mod_main.c:1065
 msgid "Steady"
 msgstr "Stabil"
 
-#: ../e_mod_main.c:1064
+#: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Napkelte / Napnyugta"
 
-#: ../e_mod_main.c:1088
+#: ../src/e_mod_main.c:1093
 msgid "High"
 msgstr "Maximum"
 
-#: ../e_mod_main.c:1099
+#: ../src/e_mod_main.c:1104
 msgid "Low"
 msgstr "Minimum"

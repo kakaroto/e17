@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-02-23 16:11+0800\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2008-11-29 21:38+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -14,43 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:44
+#: ../src/e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "תצורת Wlan"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "General Settings"
 msgstr "הגדרות כלליות"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "הצג טקסט תמיד"
 
-#: ../e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "הצג טקסט עם העברת סמן העכבר"
 
-#: ../e_mod_config.c:124
+#: ../src/e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "הצג טקסט כאחוזים"
 
-#: ../e_mod_config.c:128
+#: ../src/e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "המתנה בין בדיקות:"
 
-#: ../e_mod_config.c:131
+#: ../src/e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f שניות"
 
-#: ../e_mod_config.c:138
+#: ../src/e_mod_config.c:138
 msgid "Device Settings"
 msgstr "הגדרות ההתקן"
 
-#: ../e_mod_main.c:107
+#: ../src/e_mod_main.c:107
 msgid "Wlan"
 msgstr "Wlan"
 
-#: ../e_mod_main.c:165
+#: ../src/e_mod_main.c:165
 msgid "Configuration"
 msgstr "תצורה"

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-07-08 13:17+0800\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2009-04-29 09:24+0000\n"
 "Last-Translator: kayle.sk <webmaster@kayle.sk>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -14,43 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:44
+#: ../src/e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Nastavenie WLAN"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "General Settings"
 msgstr "Všeobecné nastavenia"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 msgid "Always Show Text"
 msgstr "Vždy zobraziť text"
 
-#: ../e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show Text On Mouse Over"
 msgstr "Zobraziť text ak je kurzor nad ikonou"
 
-#: ../e_mod_config.c:124
+#: ../src/e_mod_config.c:124
 msgid "Show Text As Percent"
 msgstr "Zobraziť text ako percentá"
 
-#: ../e_mod_config.c:128
+#: ../src/e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Interval kontroly:"
 
-#: ../e_mod_config.c:131
+#: ../src/e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekúnd"
 
-#: ../e_mod_config.c:138
+#: ../src/e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Nastavenia zariadenia"
 
-#: ../e_mod_main.c:107
+#: ../src/e_mod_main.c:107
 msgid "Wlan"
 msgstr "WLAN"
 
-#: ../e_mod_main.c:165
+#: ../src/e_mod_main.c:165
 msgid "Configuration"
 msgstr "Nastavenia"

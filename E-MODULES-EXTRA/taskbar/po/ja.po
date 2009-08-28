@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-03-14 10:46+0000\n"
 "Last-Translator: Yuki Kodama <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -14,22 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:30
+#: ../src/e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "タスクバー設定"
 
-#: ../e_mod_config.c:71
+#: ../src/e_mod_config.c:71
 msgid "Display"
 msgstr "表示"
 
-#: ../e_mod_config.c:72
+#: ../src/e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "全てのデスクトップからウィンドウを表示する"
 
-#: ../e_mod_main.c:294 ../e_mod_main.c:667
+#: ../src/e_mod_main.c:294 ../src/e_mod_main.c:667
 msgid "Taskbar"
 msgstr "タスクバー"
 
-#: ../e_mod_main.c:656
+#: ../src/e_mod_main.c:656
 msgid "Configuration"
 msgstr "設定"

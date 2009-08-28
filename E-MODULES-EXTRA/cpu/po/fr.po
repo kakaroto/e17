@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cpu module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-04-24 08:58+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <Enlightenment i18n French>\n"
@@ -15,30 +15,30 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: ../e_mod_main.c:132
+#: ../src/e_mod_main.c:132
 msgid "Cpu"
 msgstr "Cpu"
 
-#: ../e_mod_main.c:366
+#: ../src/e_mod_main.c:366
 msgid "Fast (0.5 sec)"
 msgstr "Rapide (0.5 s)"
 
-#: ../e_mod_main.c:373
+#: ../src/e_mod_main.c:373
 msgid "Medium (1 sec)"
 msgstr "Moyen (1 s)"
 
-#: ../e_mod_main.c:380
+#: ../src/e_mod_main.c:380
 msgid "Normal (2 sec)"
 msgstr "Normal (2 s)"
 
-#: ../e_mod_main.c:387
+#: ../src/e_mod_main.c:387
 msgid "Slow (5 sec)"
 msgstr "Lent (5 s)"
 
-#: ../e_mod_main.c:394
+#: ../src/e_mod_main.c:394
 msgid "Very Slow (30 sec)"
 msgstr "Très lent (30 s)"
 
-#: ../e_mod_main.c:405
+#: ../src/e_mod_main.c:405
 msgid "Time Between Updates"
 msgstr "Délai d'actualisation"

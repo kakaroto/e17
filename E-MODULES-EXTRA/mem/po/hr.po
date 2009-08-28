@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-02-12 23:22+0000\n"
 "Last-Translator: Miro Glavic <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -17,47 +17,47 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-04-12 06:45+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../e_mod_config.c:43
+#: ../src/e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Konfiguracija Mem"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:92
 msgid "General Settings"
 msgstr "Opće Postavke"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Uvijek Prikaži Tekst"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Prikaži Tekst Kad je Miš Preko"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Prikaži Tekst Kao Postotak"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "Ignoriraj Međuspremnike"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "Ignoriraj Priručno Memorirano"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Provjeri Interval:"
 
-#: ../e_mod_config.c:115
+#: ../src/e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekundi"
 
-#: ../e_mod_main.c:105
+#: ../src/e_mod_main.c:105
 msgid "Mem"
 msgstr "Mem"
 
-#: ../e_mod_main.c:162
+#: ../src/e_mod_main.c:162
 msgid "Configuration"
 msgstr "Konfiguracija"

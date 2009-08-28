@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: snow.HEAD\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-08 00:21+0300\n"
 "Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -16,38 +16,38 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Налаштування снігопаду"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "General Settings"
 msgstr "Загальні налаштування"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Показувати ялинки"
 
-#: ../e_mod_config.c:104
+#: ../src/e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Густота"
 
-#: ../e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Sparse"
 msgstr "Розсіяний"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:108
 msgid "Medium"
 msgstr "Середній"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Dense"
 msgstr "Густий"
 
-#: ../e_mod_main.c:33
+#: ../src/e_mod_main.c:33
 msgid "Appearance"
 msgstr "Поява"
 
-#: ../e_mod_main.c:35
+#: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Сніг"

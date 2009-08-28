@@ -1,6 +1,6 @@
 # Simplified Chinese translation of iiirk in e17
 # This file is put in the public domain.
-# Aron Xu <aronmalache@163.com>, 2008.Lisovszki Sándor <lisovszki@gmail.com>, 2008.
+# Aron Xu <aronmalache@163.com>, 2008.
 #
 #
 msgid ""
@@ -14,11 +14,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/e_mod_main.c:237
 msgid "IIirk"
-msgstr "Ilirk"
+msgstr "IIirk"
 
 #: ../src/e_mod_main.c:369 ../src/e_mod_main.c:786
 msgid "Configuration"

@@ -5,117 +5,119 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-07-08 13:16+0800\n"
-"PO-Revision-Date: 2009-05-27 19:17+0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"PO-Revision-Date: 2009-08-13 09:09+0000\n"
 "Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: ../e_mod_config.c:42
+#: ../src/e_mod_config.c:42
 msgid "Forecasts Configuration"
 msgstr "Konfiguracja prognoz"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Display Settings"
-msgstr "Ustawienia wyświetlania"
+msgstr "Ustawienia wyglądu"
 
-#: ../e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Poll Time"
 msgstr "Sprawdź czas"
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:94
 #, c-format
 msgid "%2.0f minutes"
 msgstr "%2.0f minut"
 
-#: ../e_mod_config.c:97
+#: ../src/e_mod_config.c:97
 msgid "Show Description"
 msgstr "Pokaż opis"
 
-#: ../e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
 msgstr ""
 
-#: ../e_mod_config.c:103
+#: ../src/e_mod_config.c:103
 msgid "Unit Settings"
-msgstr ""
+msgstr "Ustawienia jednostek"
 
-#: ../e_mod_config.c:105
+#: ../src/e_mod_config.c:105
 msgid "Metric"
 msgstr "Metryczne"
 
-#: ../e_mod_config.c:107
+#: ../src/e_mod_config.c:107
 msgid "English"
 msgstr "Angielskie"
 
-#: ../e_mod_config.c:111
+#: ../src/e_mod_config.c:111
 msgid "Yahoo Forecasts Code"
 msgstr "Kod prognoz Yahoo"
 
-#: ../e_mod_config.c:112
+#: ../src/e_mod_config.c:112
 msgid "Yahoo Forecasts Code/US Zip Code"
 msgstr "Kod prognoz Yahoo/Kod pocztowy US"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
 msgstr "Aby znaleźć kod dla twojej okolicy, idź do:"
 
-#: ../e_mod_config.c:119
+#: ../src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, znajdź swoją okolicę i spójrz na URL"
 
-#: ../e_mod_main.c:255
+#: ../src/e_mod_main.c:255
 msgid "Forecasts"
 msgstr "Prognozy"
 
-#: ../e_mod_main.c:300
+#: ../src/e_mod_main.c:300
 msgid "Configuration"
 msgstr "Ustawienia"
 
-#: ../e_mod_main.c:1030
+#: ../src/e_mod_main.c:1030
 msgid "Wind Chill"
-msgstr ""
+msgstr "Chłód wiatru"
 
-#: ../e_mod_main.c:1036
+#: ../src/e_mod_main.c:1036
 msgid "Wind Speed"
 msgstr "Prędkość wiatru"
 
-#: ../e_mod_main.c:1042
+#: ../src/e_mod_main.c:1042
 msgid "Humidity"
 msgstr "Wilgotność"
 
-#: ../e_mod_main.c:1048
+#: ../src/e_mod_main.c:1048
 msgid "Visibility"
 msgstr "Widoczność"
 
-#: ../e_mod_main.c:1054
+#: ../src/e_mod_main.c:1054
 msgid "Pressure"
 msgstr "Ciśnienie"
 
-#: ../e_mod_main.c:1061
+#: ../src/e_mod_main.c:1061
 msgid "Rising"
-msgstr ""
+msgstr "Rośnie"
 
-#: ../e_mod_main.c:1063
+#: ../src/e_mod_main.c:1063
 msgid "Falling"
 msgstr "Upadające"
 
-#: ../e_mod_main.c:1065
+#: ../src/e_mod_main.c:1065
 msgid "Steady"
 msgstr "Spokojne"
 
-#: ../e_mod_main.c:1069
+#: ../src/e_mod_main.c:1069
 msgid "Sunrise / Sunset"
 msgstr "Wschód / Zachód słońca"
 
-#: ../e_mod_main.c:1093
+#: ../src/e_mod_main.c:1093
 msgid "High"
 msgstr "Wysoka"
 
-#: ../e_mod_main.c:1104
+#: ../src/e_mod_main.c:1104
 msgid "Low"
 msgstr "Niska"

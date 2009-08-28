@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2008-12-07 16:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: Greek <en@li.org>\n"
@@ -47,24 +47,24 @@ msgstr ""
 msgid "Show in menu"
 msgstr ""
 
-#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:399
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:395
 msgid "Home"
 msgstr "Home"
 
-#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:408
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:404
 msgid "Desktop"
 msgstr "Επιφάνεια Εργασίας"
 
-#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:418
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:414
 msgid "Trash"
 msgstr "Απορρίμματα"
 
-#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:233
-#: ../src/e_mod_places.c:427
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:229
+#: ../src/e_mod_places.c:423
 msgid "Filesystem"
 msgstr "Σύστημα Αρχείων"
 
-#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:436
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:432
 msgid "Temp"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Files"
 msgstr "Σύστημα Αρχείων"
 
-#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:499
+#: ../src/e_mod_main.c:77 ../src/e_mod_places.c:495
 msgid "Places"
 msgstr "Τοποθεσίες"
 
@@ -86,24 +86,24 @@ msgstr "Τοποθεσίες"
 msgid "Configuration"
 msgstr "Ρύθμιση"
 
-#: ../src/e_mod_places.c:238
+#: ../src/e_mod_places.c:234
 msgid "No Name"
 msgstr "Χωρίς Όνομα"
 
-#: ../src/e_mod_places.c:692
+#: ../src/e_mod_places.c:685
 msgid "free of"
 msgstr ""
 
-#: ../src/e_mod_places.c:698
+#: ../src/e_mod_places.c:691
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s δεν είναι Προσαρτημένο"
 
-#: ../src/e_mod_places.c:715
+#: ../src/e_mod_places.c:708
 msgid "unmount"
 msgstr "αποπροσάρτηση"
 
-#: ../src/e_mod_places.c:721
+#: ../src/e_mod_places.c:714
 msgid "eject"
 msgstr "εξαγωγή"
 

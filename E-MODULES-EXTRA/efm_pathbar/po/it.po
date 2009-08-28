@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Efm_pathbar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-06-11 19:08+0400\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-06-15 15:09+0400\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,10 +13,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:126
+#: ../src/e_mod_main.c:132
 msgid "EFM Pathbar"
 msgstr "Barra indirizzo EFM"
 
-#: src/e_mod_main.c:320
+#: ../src/e_mod_main.c:327
 msgid "Root"
 msgstr "/"

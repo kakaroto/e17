@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tclock\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-11-11 21:39+0800\n"
+"POT-Creation-Date: 2009-08-28 16:32+0800\n"
 "PO-Revision-Date: 2008-02-02 23:36+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -17,42 +17,49 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../e_mod_config.c:45
-msgid "Tclock Configuration"
-msgstr "Tclock beállítása"
+#: ../src/e_mod_config.c:39
+msgid "Tclock Settings"
+msgstr ""
 
-#: ../e_mod_config.c:94
+#: ../src/e_mod_config.c:88
 msgid "Top"
 msgstr "Fent"
 
-#: ../e_mod_config.c:96
+#: ../src/e_mod_config.c:90
 msgid "Show Top Line"
 msgstr "Felső vonal megjelenítése"
 
-#: ../e_mod_config.c:104 ../e_mod_config.c:118 ../e_mod_config.c:132
+#: ../src/e_mod_config.c:98 ../src/e_mod_config.c:113
+#: ../src/e_mod_config.c:129
 msgid "Consult strftime(3) for format syntax"
 msgstr "Konzultálj az strftime(3)-al, a forma szinkronhoz"
 
-#: ../e_mod_config.c:108
+#: ../src/e_mod_config.c:102
 msgid "Bottom"
 msgstr "Lent"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:104
 msgid "Show Bottom Line"
 msgstr "Alsó vonal megjelenítése"
 
-#: ../e_mod_config.c:122
+#: ../src/e_mod_config.c:117
 msgid "Tool Tip"
 msgstr "Eszköz tipp"
 
-#: ../e_mod_config.c:124
+#: ../src/e_mod_config.c:119
 msgid "Show Tooltip"
 msgstr "Buboréksúgó megjelenítése"
 
-#: ../e_mod_main.c:141
+#: ../src/e_mod_main.c:140
 msgid "TClock"
 msgstr "TClock"
 
-#: ../e_mod_main.c:186
-msgid "Configuration"
-msgstr "Beállítás"
+#: ../src/e_mod_main.c:184
+msgid "Settings"
+msgstr ""
+
+#~ msgid "Tclock Configuration"
+#~ msgstr "Tclock beállítása"
+
+#~ msgid "Configuration"
+#~ msgstr "Beállítás"

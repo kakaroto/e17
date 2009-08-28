@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-07-17 15:33+0800\n"
+"POT-Creation-Date: 2009-08-25 17:14+0800\n"
 "PO-Revision-Date: 2009-01-10 19:22+0000\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -14,59 +14,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../e_mod_config.c:37
+#: ../src/e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "Configuração da apresentação de slides"
 
-#: ../e_mod_config.c:90
+#: ../src/e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "Tempo do ciclo"
 
-#: ../e_mod_config.c:92
+#: ../src/e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Desativar tempo"
 
-#: ../e_mod_config.c:95
+#: ../src/e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f segundos"
 
-#: ../e_mod_config.c:100
+#: ../src/e_mod_config.c:100
 msgid "Directory"
 msgstr "Diretório"
 
-#: ../e_mod_config.c:102
+#: ../src/e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Sub-diretório para ser utilizado para planos de fundo"
 
-#: ../e_mod_config.c:109
+#: ../src/e_mod_config.c:109
 msgid "Extra"
 msgstr "Extra"
 
-#: ../e_mod_config.c:110
+#: ../src/e_mod_config.c:110
 msgid "Randomize order"
 msgstr "Randomizar órdem"
 
-#: ../e_mod_config.c:113
+#: ../src/e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
 msgstr "Ajustar papel de parede em todas as áreas de trabalho"
 
-#: ../e_mod_config.c:115
+#: ../src/e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
 msgstr "Ajustar papel de parede na área de trabalho atual"
 
-#: ../e_mod_config.c:117
+#: ../src/e_mod_config.c:117
 msgid "Set wallpaper on current screen"
 msgstr "Ajustar papel de parede na tela atual"
 
-#: ../e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Ajustar papel de parede no monitor atual (suporte Xinerama)"
 
-#: ../e_mod_main.c:136
+#: ../src/e_mod_main.c:136
 msgid "Slideshow"
 msgstr "Apresentação de slides"
 
-#: ../e_mod_main.c:180
+#: ../src/e_mod_main.c:180
 msgid "Configuration"
 msgstr "Configuração"
