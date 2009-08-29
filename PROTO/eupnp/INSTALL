@@ -1,0 +1,18 @@
+INSTALL
+
+
+Run on the terminal:
+
+    $ ./autogen.sh
+
+Compiling:
+
+    $ make
+
+Installing:
+
+    $ sudo make install
+
+    or (as root)
+
+    # make install
