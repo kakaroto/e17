@@ -7,6 +7,8 @@ static int _init_count = 0;
 static Eina_Array *_modules = NULL;
 static Eina_List *_providers = NULL;
 static int _fifo[2]; /* the communication between the main thread and the async ones */
+static Enesim_Renderer *_importer;
+
 
 Eina_Error EMAGE_ERROR_EXIST;
 Eina_Error EMAGE_ERROR_PROVIDER;
@@ -36,10 +38,12 @@ static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter
 		case ENESIM_CONVERTER_ARGB8888:
 		case ENESIM_CONVERTER_ARGB8888_PRE:
 		cdata->argb8888.plane0 = malloc(w * h * sizeof(uint32_t));
+		cdata->argb8888.plane0_stride = w;
 		break;
 
 		case ENESIM_CONVERTER_RGB565:
 		cdata->rgb565.plane0 = malloc(w * h * sizeof(uint16_t));
+		cdata->rgb565.plane0_stride = w;
 		break;
 
 		default:
@@ -51,35 +55,32 @@ static void _provider_data_create(Enesim_Converter_Data *cdata, Enesim_Converter
 static void _provider_data_convert(Enesim_Converter_Data *cdata,
 		Enesim_Converter_Format cfmt, uint32_t w, uint32_t h, Enesim_Surface *s)
 {
-	Enesim_Converter_1D conv;
 	Enesim_Format fmt;
 	uint32_t sw, sh;
 	uint32_t *src;
 	uint32_t sstride;
 	uint32_t *ndata;
+	int y = 0;
 
 	src = enesim_surface_data_get(s);
 	enesim_surface_size_get(s, &sw, &sh);
 	sstride = enesim_surface_stride_get(s);
 	fmt = enesim_surface_format_get(s);
-	/* FIXME by default we are using the first cpu, it should be a
-	 * parameter to the load function
-	 */
-	/* FIXME use the 2d converter */
-	conv = enesim_converter_span_get(cfmt, ENESIM_ANGLE_0, fmt);
-	if (!conv)
+
+	enesim_renderer_importer_format_set(_importer, cfmt);
+	enesim_renderer_importer_data_set(_importer, cdata);
+	if (!enesim_renderer_state_setup(_importer))
 	{
 		printf("No enesim converter available\n");
 		return;
 	}
-	ndata = cdata->argb8888.plane0;
 	while (sh--)
 	{
-		conv(cdata, sw, src);
+		enesim_renderer_span_fill(_importer, 0, y, sw, src);
 		src += sstride;
-		/* FIXME this is wrong, we should increment on the right way */
-		ndata += w;
+		y++;
 	}
+	enesim_renderer_state_cleanup(_importer);
 }
 
 static void _provider_info_load(Emage_Provider *p, const char *file,
@@ -198,6 +199,7 @@ EAPI int emage_init(void)
 			enesim_shutdown();
 			return 0;
 		}
+		_importer = enesim_renderer_importer_new();
 		fcntl(_fifo[0], F_SETFL, O_NONBLOCK);
 		/* the errors */
 		EMAGE_ERROR_EXIST = eina_error_msg_register("Files does not exist");
@@ -228,7 +230,7 @@ EAPI void emage_shutdown(void)
 	{
 		/* unload every module */
 #if 1
-		eina_module_list_delete(_modules);
+		eina_module_list_flush(_modules);
 #else
 		png_provider_exit();
 #endif
@@ -237,6 +239,7 @@ EAPI void emage_shutdown(void)
 		/* the fifo */
 		close(_fifo[0]);
 		close(_fifo[1]);
+		enesim_renderer_delete(_importer);
 		enesim_shutdown();
 		eina_shutdown();
 	}
