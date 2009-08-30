@@ -63,6 +63,8 @@ struct _actionclass {
 static void         UnGrabActionKey(Action * aa);
 static void         GrabActionKey(Action * aa);
 
+static void         BindingsSave(void);
+
 static Ecore_List  *aclass_list = NULL;
 static Ecore_List  *aclass_list_global = NULL;
 
@@ -683,13 +685,80 @@ AclassEncodeTT(const char *str, char *buf, int len)
 }
 
 static void
+AclassConfigLineParse(char *s, ActionClass ** pac, Action ** paa)
+{
+   char                prm1[128], prm2[128], prm3[128];
+   ActionClass        *ac = *pac;
+   Action             *aa = *paa;
+   int                 len, len2;
+
+   len = strcspn(s, "#\r\n");
+   if (len <= 0)
+      return;
+   s[len] = '\0';
+
+   prm3[0] = '\0';
+   len2 = 0;
+   len = sscanf(s, "%16s %n%128s %16s", prm1, &len2, prm2, prm3);
+   if (len < 2)
+      return;
+
+   if (!strcmp(prm1, "Aclass"))
+     {
+	if (!strcmp(prm2, "KEYBINDINGS_UNCHANGABLE"))
+	  {
+	     /* No more "unchangable" keybindings. */
+	     ac = ActionclassFindGlobal("KEYBINDINGS");
+	     prm2[11] = '\0';
+	  }
+	else
+	  {
+	     ac = ActionclassFindAny(prm2);
+	     if (ac)
+		ActionclassEmpty(ac);
+	  }
+
+	if (!ac)
+	   ac = ActionclassCreate(prm2, prm3[0] == 'g');
+
+	Mode.keybinds_changed = 1;
+	aa = NULL;
+     }
+   else if (!strncmp(prm1, "Key", 3) || !strncmp(prm1, "Mouse", 5))
+     {
+	if (!ac)
+	   return;
+
+	aa = ActionDecode(s);
+	if (!aa)
+	   return;
+
+	ActionclassAddAction(ac, aa);
+	GrabActionKey(aa);
+     }
+   else if (!strcmp(prm1, "Tooltip"))
+     {
+	/* FIXME - Multiple line strings may break */
+	if (aa)
+	  {
+	     aa->tooltipstring = Estrdupcat2(aa->tooltipstring, "\n", s + len2);
+	  }
+	else if (ac)
+	  {
+	     ac->tooltipstring = Estrdupcat2(ac->tooltipstring, "\n", s + len2);
+	  }
+     }
+
+   *pac = ac;
+   *paa = aa;
+}
+
+static void
 AclassConfigLoad2(FILE * fs)
 {
    char                s[FILEPATH_LEN_MAX], *ss;
-   char                prm1[128], prm2[128], prm3[128];
    ActionClass        *ac = NULL;
    Action             *aa = NULL;
-   int                 len, len2;
 
    for (;;)
      {
@@ -697,64 +766,35 @@ AclassConfigLoad2(FILE * fs)
 	if (!ss)
 	   break;
 
+	AclassConfigLineParse(s, &ac, &aa);
+     }
+}
+
+static void
+AclassConfigParseIpc(const char *p)
+{
+   char               *s, *ss;
+   int                 len;
+   ActionClass        *ac = NULL;
+   Action             *aa = NULL;
+
+   ss = s = Estrdup(p);
+   if (!s)
+      return;
+
+   for (;; s += len + 1)
+     {
 	len = strcspn(s, "#\r\n");
 	if (len <= 0)
-	   continue;
+	   break;
 	s[len] = '\0';
 
-	prm3[0] = '\0';
-	len2 = 0;
-	len = sscanf(s, "%16s %n%128s %16s", prm1, &len2, prm2, prm3);
-	if (len < 2)
-	   continue;
-
-	if (!strcmp(prm1, "Aclass"))
-	  {
-	     if (!strcmp(prm2, "KEYBINDINGS_UNCHANGABLE"))
-	       {
-		  /* No more "unchangable" keybindings. */
-		  ac = ActionclassFindGlobal("KEYBINDINGS");
-		  prm2[11] = '\0';
-	       }
-	     else
-	       {
-		  ac = ActionclassFindAny(prm2);
-		  if (ac)
-		     ActionclassEmpty(ac);
-	       }
-
-	     if (!ac)
-		ac = ActionclassCreate(prm2, prm3[0] == 'g');
-
-	     aa = NULL;
-	  }
-	else if (!strncmp(prm1, "Key", 3) || !strncmp(prm1, "Mouse", 5))
-	  {
-	     if (!ac)
-		continue;
-
-	     aa = ActionDecode(s);
-	     if (!aa)
-		continue;
-
-	     ActionclassAddAction(ac, aa);
-	     GrabActionKey(aa);
-	  }
-	else if (!strcmp(prm1, "Tooltip"))
-	  {
-	     /* FIXME - Multiple line strings may break */
-	     if (aa)
-	       {
-		  aa->tooltipstring =
-		     Estrdupcat2(aa->tooltipstring, "\n", s + len2);
-	       }
-	     else if (ac)
-	       {
-		  ac->tooltipstring =
-		     Estrdupcat2(ac->tooltipstring, "\n", s + len2);
-	       }
-	  }
+	AclassConfigLineParse(s, &ac, &aa);
      }
+
+   Efree(ss);
+
+   BindingsSave();
 }
 
 static void
@@ -1165,7 +1205,10 @@ AclassIpc(const char *params)
      }
    else if (!strncmp(cmd, "kb", 2))
      {
-	AclassConfigWrite(ActionclassFindGlobal("KEYBINDINGS"), IpcPrintf);
+	if (!strcmp(prm, "set"))
+	   AclassConfigParseIpc(p);
+	else
+	   AclassConfigWrite(ActionclassFindGlobal("KEYBINDINGS"), IpcPrintf);
      }
    else if (!strncmp(cmd, "list", 2))
      {
@@ -1204,6 +1247,8 @@ AclassIpc(const char *params)
      }
 }
 
+#define ENABLE_OLD_E16KEYEDIT_INTERFACE 1
+#if ENABLE_OLD_E16KEYEDIT_INTERFACE
 /* Should only be used via e16keyedit */
 static void
 IPC_KeybindingsGet(const char *params __UNUSED__)
@@ -1376,6 +1421,7 @@ IPC_KeybindingsSet(const char *params)
 
    BindingsSave();
 }
+#endif /* ENABLE_OLD_E16KEYEDIT_INTERFACE */
 
 static const IpcItem AclassIpcArray[] = {
    {
@@ -1383,8 +1429,10 @@ static const IpcItem AclassIpcArray[] = {
     "aclass", "ac",
     "Action class functions",
     "  aclass kb                 List key bindings\n"
+    "  aclass kb set ...         Set key bindings\n"
     "  aclass list [name/all]    List action class[es]\n"
     "  aclass load [name]        Reload action classes (default is bindings.cfg)\n"}
+#if ENABLE_OLD_E16KEYEDIT_INTERFACE
    ,
    {
     IPC_KeybindingsGet, "get_keybindings", NULL,
@@ -1393,7 +1441,7 @@ static const IpcItem AclassIpcArray[] = {
    {
     IPC_KeybindingsSet, "set_keybindings", NULL, "Set keybindings (deprecated)",
     NULL}
-   ,
+#endif
 };
 #define N_IPC_FUNCS (sizeof(AclassIpcArray)/sizeof(IpcItem))
 
