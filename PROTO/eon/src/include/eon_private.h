@@ -33,6 +33,7 @@
 #define EON_TYPE_SCRIPT "Eon_Script"
 
 #define EON_TYPE_SHAPE "Eon_Shape"
+#define EON_TYPE_TEXT "Eon_Text"
 #define EON_TYPE_RECT "Eon_Rect"
 #define EON_TYPE_POLYGON "Eon_Polygon"
 #define EON_TYPE_CIRCLE "Eon_Circle"

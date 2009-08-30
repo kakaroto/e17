@@ -28,10 +28,11 @@ eon_script.h \
 eon_square.h \
 eon_transition.h \
 eon_shape.h \
+eon_text.h \
 eon_value.h \
 eon_widget.h \
 eon_button.h \
-eon_label.h 
+eon_label.h
 
 installed_headersdir = $(prefix)/include/eon
 installed_headers_DATA = $(EONHEADERS)

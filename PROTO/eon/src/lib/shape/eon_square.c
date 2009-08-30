@@ -192,12 +192,6 @@ EAPI Ekeko_Type *eon_square_type_get(void)
 		EON_SQUARE_Y = EKEKO_TYPE_PROP_SINGLE_ADD(type, "y", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, y));
 		EON_SQUARE_W = EKEKO_TYPE_PROP_SINGLE_ADD(type, "w", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, w));
 		EON_SQUARE_H = EKEKO_TYPE_PROP_SINGLE_ADD(type, "h", EON_PROPERTY_COORD, OFFSET(Eon_Square_Private, h));
-#if 0
-	ekeko_event_listener_add((Ekeko_Object *)i, EON_PAINT_X_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)i, EON_PAINT_Y_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)i, EON_PAINT_W_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-	ekeko_event_listener_add((Ekeko_Object *)i, EON_PAINT_H_CHANGED, _geometry_calc, EINA_FALSE, NULL);
-#endif
 	}
 
 	return type;

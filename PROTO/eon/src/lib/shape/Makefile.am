@@ -13,4 +13,5 @@ eon_circle.c \
 eon_polygon.c \
 eon_rect.c \
 eon_shape.c \
-eon_square.c
+eon_square.c \
+eon_text.c
