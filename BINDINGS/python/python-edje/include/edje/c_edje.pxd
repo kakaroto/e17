@@ -191,6 +191,8 @@ cdef extern from "Edje.h":
     void edje_object_part_unswallow(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *obj_swallow)
     evas.c_evas.Evas_Object *edje_object_part_swallow_get(evas.c_evas.Evas_Object *obj, char *part)
 
+    evas.c_evas.Eina_Bool edje_object_part_box_append(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child)
+
     char *edje_object_part_state_get(evas.c_evas.Evas_Object *obj, char *part, double *val_ret)
 
     int edje_object_part_drag_dir_get(evas.c_evas.Evas_Object *obj, char *part)

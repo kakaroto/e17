@@ -477,6 +477,15 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         o = edje_object_part_swallow_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long>o)
 
+    def part_box_append(self, char *part, c_evas.Object obj):
+        """Adds an item to a BOX part.
+
+        Appends an item to the BOX edje part, where some box's properties
+        inherited. Like the color properties has some nice effect on the
+        box's childrens.
+        """
+        return bool(edje_object_part_box_append(self.obj, part, obj.obj))
+
     def part_state_get(self, char *part):
         "@rtype: (name, value)"
         cdef double sv
