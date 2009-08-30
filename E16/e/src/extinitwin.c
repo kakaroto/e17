@@ -27,7 +27,9 @@
 #include "xwin.h"
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#define USE_EIWC_WINDOW 1
 #if USE_XRENDER
+#define USE_EIWC_RENDER 1
 #include <X11/extensions/Xrender.h>
 #endif
 
@@ -35,27 +37,34 @@ typedef struct {
    Cursor              curs;
    XSetWindowAttributes attr;
    Window              cwin;
-   char                argb;
 } EiwData;
 
-#if USE_XRENDER
+typedef void        (EiwLoopFunc) (Window win, EImage * im, EiwData * d);
+
+#if USE_EIWC_RENDER
 #include <Imlib2.h>
 
-static void
-_ExtInitWinLoopInit(Window win __UNUSED__, EiwData * d)
+static void         _eiw_render_loop(Window win, EImage * im, EiwData * d);
+
+static EiwLoopFunc *
+_eiw_render_init(Window win __UNUSED__, EiwData * d)
 {
    Visual             *vis;
 
+   /* Quit if no ARGB visual.
+    * If we have, assume(?) a colored XRenderCreateCursor is available. */
    vis = EVisualFindARGB();
-   if (vis)
-      imlib_context_set_visual(vis);
+   if (!vis)
+      return NULL;
 
+   imlib_context_set_visual(vis);
    d->curs = None;
-   d->argb = (vis) ? 1 : 0;
+
+   return _eiw_render_loop;
 }
 
 static void
-_ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
+_eiw_render_loop(Window win, EImage * im, EiwData * d)
 {
    int                 w, h;
    XRenderPictFormat  *pictfmt;
@@ -64,38 +73,13 @@ _ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
 
    EImageGetSize(im, &w, &h);
 
-   if (d->argb)
-     {
-	pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
-	pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
-	imlib_context_set_image(im);
-	imlib_context_set_drawable(pmap);
-	imlib_render_image_on_drawable(0, 0);
-	pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
-	XFreePixmap(disp, pmap);
-     }
-   else
-     {
-	/* Imlib2 will not render an ARGB pixmap without an ARGB visual */
-	XRenderPictFormat  *pictfmt1, *pictfmtm;
-	Pixmap              pmap1, mask;
-	Picture             pict1, pictm;
-
-	pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
-	pictfmt1 = XRenderFindStandardFormat(disp, PictStandardRGB24);
-	pictfmtm = XRenderFindStandardFormat(disp, PictStandardA1);
-	pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
-	EImageRenderPixmaps(im, VROOT, 0, &pmap1, &mask, 0, 0);
-	pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
-	pict1 = XRenderCreatePicture(disp, pmap1, pictfmt1, 0, 0);
-	pictm = XRenderCreatePicture(disp, mask, pictfmtm, 0, 0);
-	XRenderComposite(disp, PictOpSrc, pict1, pictm, pict, 0, 0, 0, 0, 0, 0,
-			 w, h);
-	XRenderFreePicture(disp, pict1);
-	XRenderFreePicture(disp, pictm);
-	EImagePixmapsFree(pmap1, mask);
-	XFreePixmap(disp, pmap);
-     }
+   pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
+   pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(pmap);
+   imlib_render_image_on_drawable(0, 0);
+   pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
+   XFreePixmap(disp, pmap);
 
    if (d->curs != None)
       XFreeCursor(disp, d->curs);
@@ -105,10 +89,14 @@ _ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
    XDefineCursor(disp, win, d->curs);
 }
 
-#else
+#endif /* USE_EIWC_RENDER */
 
-static void
-_ExtInitWinLoopInit(Window win, EiwData * d)
+#if USE_EIWC_WINDOW
+
+static void         _eiw_window_loop(Window win, EImage * im, EiwData * d);
+
+static EiwLoopFunc *
+_eiw_window_init(Window win, EiwData * d)
 {
    Pixmap              pmap, mask;
    GC                  gc;
@@ -134,10 +122,12 @@ _ExtInitWinLoopInit(Window win, EiwData * d)
    d->curs = XCreatePixmapCursor(disp, pmap, mask, &cl, &cl, 0, 0);
    XDefineCursor(disp, win, d->curs);
    XDefineCursor(disp, d->cwin, d->curs);
+
+   return _eiw_window_loop;
 }
 
 static void
-_ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
+_eiw_window_loop(Window win, EImage * im, EiwData * d)
 {
    Pixmap              pmap, mask;
    Window              ww;
@@ -155,18 +145,19 @@ _ExtInitWinLoopRun(Window win, EImage * im, EiwData * d)
    XMapWindow(disp, d->cwin);
 }
 
-#endif
+#endif /* USE_EIWC_WINDOW */
 
 static              Window
 ExtInitWinMain(void)
 {
-   int                 i, err;
+   int                 i, loop, err;
    Ecore_X_Window      win;
    XGCValues           gcv;
    GC                  gc;
    Pixmap              pmap;
    Atom                a;
    EiwData             eiwd;
+   EiwLoopFunc        *eiwc_loop_func;
 
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain enter\n");
@@ -210,14 +201,24 @@ ExtInitWinMain(void)
    EUngrabServer();
    ESync(0);
 
-   _ExtInitWinLoopInit(win, &eiwd);
+#if USE_EIWC_WINDOW && USE_EIWC_RENDER
+   eiwc_loop_func = _eiw_render_init(win, &eiwd);
+   if (!eiwc_loop_func)
+      eiwc_loop_func = _eiw_window_init(win, &eiwd);
+#elif USE_EIWC_RENDER
+   eiwc_loop_func = _eiw_render_init(win, &eiwd);
+#elif USE_EIWC_WINDOW
+   eiwc_loop_func = _eiw_window_init(win, &eiwd);
+#endif
+   if (!eiwc_loop_func)
+      return None;
 
    {
       XWindowAttributes   xwa;
       char                s[1024];
       EImage             *im;
 
-      for (i = 1;; i++)
+      for (i = loop = 1;; i++, loop++)
 	{
 	   if (i > 12)
 	      i = 1;
@@ -234,11 +235,15 @@ ExtInitWinMain(void)
 	   im = ThemeImageLoad(s);
 	   if (im)
 	     {
-		_ExtInitWinLoopRun(win, im, &eiwd);
+		eiwc_loop_func(win, im, &eiwd);
 		EImageFree(im);
 	     }
-	   usleep(50000);
 	   ESync(0);
+	   usleep(50000);
+
+	   /* If we still are here after 5 sec something is wrong. */
+	   if (loop > 100)
+	      break;
 	}
    }
 
