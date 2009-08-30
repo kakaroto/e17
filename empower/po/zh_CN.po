@@ -29,7 +29,7 @@ msgstr "无法初始化 ecore\n"
 #: ../src/bin/elm/empower.c:74 ../src/bin/ewl/empower.c:79
 #, c-format
 msgid "-=Usage=-\n"
-msgstr "-=用法=-"
+msgstr "-=用法=-\n"
 
 #: ../src/bin/elm/empower.c:75
 #, c-format
