@@ -679,7 +679,7 @@ EwinStateUpdate(EWin * ewin)
 }
 
 static void
-AddToFamily(EWin * ewin, Window xwin)
+AddToFamily(EWin * ewin, Window xwin, int startup)
 {
    EWin               *ewin2;
    EWin              **lst;
@@ -707,6 +707,9 @@ AddToFamily(EWin * ewin, Window xwin)
    WindowMatchEwinOps(ewin);	/* Window matches */
    EwinManage(ewin);
    EwinConfigure(ewin);
+
+   if (startup)
+      ewin->state.placed = 1;
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    dsk = EoGetDesk(ewin);
@@ -1076,7 +1079,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	if (ewin->state.state == EWIN_STATE_ICONIC)
 	   EwinDeIconify(ewin);
 	else if (ewin->state.state == EWIN_STATE_WITHDRAWN)
-	   AddToFamily(ewin, win);
+	   AddToFamily(ewin, win, 0);
 	else
 	  {
 	     Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
@@ -1098,7 +1101,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	     EwinShow(ewin);
 	  }
 	else
-	   AddToFamily(NULL, win);
+	   AddToFamily(NULL, win, 0);
      }
 }
 
@@ -2186,7 +2189,7 @@ EwinsManage(void)
 	  }
 	else
 	  {
-	     AddToFamily(NULL, xwin);
+	     AddToFamily(NULL, xwin, 1);
 	  }
      }
    XFree(xwins);
