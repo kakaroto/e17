@@ -16,9 +16,13 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Exchange.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <string.h>
+#include "Exchange.h"
+#include "exchange_private.h"
 
 xmlSAXHandler ThemeParser = {
    0, /* internalSubset */
@@ -345,7 +349,6 @@ _theme_connect(const char *theme)
    xmlInitParser();
    tdata->name = (char *)theme;
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/read?object=theme&name=%s", theme);
-   //snprintf(url, sizeof(url), "http://localhost/cerium.xml", theme);
    ret = xmlSAXUserParseFile(&ThemeParser, &state, url);
    xmlCleanupParser();
    return ret;

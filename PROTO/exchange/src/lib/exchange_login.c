@@ -16,8 +16,12 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Exchange.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <string.h>
+#include "Exchange.h"
 
 xmlSAXHandler LoginParser = {
    0, /* internalSubset */

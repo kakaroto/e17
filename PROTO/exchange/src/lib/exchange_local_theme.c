@@ -15,10 +15,15 @@
  * License along with this library;
  * if not, see <http://www.gnu.org/licenses/>.
  */
+ 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#include "Exchange.h"
 #include <string.h>
 #include <Ecore_File.h>
+#include "Exchange.h"
+#include "exchange_private.h"
 
 /**
  * @addtogroup Exchange_Local_Theme_Group Exchange Local Theme Functions

@@ -19,8 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <Exchange.h>
 #include <getopt.h>
+#include <Exchange.h>
 
 #define Q_PRINTF(outf, v1, v2, outq) {\
             if (quiet) \

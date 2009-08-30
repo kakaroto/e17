@@ -16,9 +16,12 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Exchange.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <string.h>
+#include "Exchange.h"
 
 xmlSAXHandler ThemeGroupParser = {
    0, /* internalSubset */
@@ -121,7 +124,6 @@ _theme_group_connect(void)
 
    xmlInitParser();
    snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=theme_group");
-   //snprintf(url, sizeof(url), "http://localhost/theme_group.xml");
    ret = xmlSAXUserParseFile(&ThemeGroupParser, &state, url);
    xmlCleanupParser();
    return ret;

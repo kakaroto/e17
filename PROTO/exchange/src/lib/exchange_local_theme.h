@@ -35,10 +35,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 EAPI char *exchange_local_theme_name_get(const char *file);
 EAPI char *exchange_local_theme_author_get(const char *file);
 EAPI char *exchange_local_theme_license_get(const char *file);

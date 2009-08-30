@@ -16,15 +16,15 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ecore_Evas.h>
-#include <Exchange.h>
-#include <Ecore_File.h>
-#include <Ecore.h>
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+
+#include <string.h>
+#include <Ecore_Evas.h>
+#include <Ecore_File.h>
+#include <Ecore.h>
+#include <Exchange.h>
 
 static Evas_Object *bg, *cont, *exsm;
 
@@ -108,14 +108,18 @@ main(int argc, char **argv)
    char buf[4096];
 
    /* Init Stuff */
-   eina_init();
-   eina_error_init();
-   ecore_init();
+   if (!eina_init())
+      return 0;
+   if (!ecore_init())
+      goto shutdown_eina; //return 0;
    evas_init();
-   ecore_evas_init();
-   ecore_file_init();
+   if (!ecore_evas_init())
+      goto shutdown_ecore; //return 0;
+   if (!ecore_file_init())
+      goto shutdown_evas; //return 0;
    edje_init();
-   exchange_init();
+   if (!exchange_init())
+      goto shutdown_ecore_file; //return 0;
 
    /* Create Ecore Evas Window */
    ee = ecore_evas_software_x11_new(NULL, 0, 0, 450, 400, 0);
@@ -173,10 +177,14 @@ main(int argc, char **argv)
    /* Shutdown everything else */
    exchange_shutdown();
    edje_shutdown();
-   evas_shutdown();
-   ecore_shutdown();
-   eina_error_shutdown();
-   eina_shutdown();
+   shutdown_ecore_file:
+      ecore_file_shutdown();
+   shutdown_evas:
+      evas_shutdown();
+   shutdown_ecore:
+      ecore_shutdown();
+   shutdown_eina:
+      eina_shutdown();
 
    return 0;
 }

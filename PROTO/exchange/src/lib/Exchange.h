@@ -29,7 +29,8 @@
 /**
  * @mainpage Exchange
  * @author Massimiliano Calamelli
- * @date 09/11/2008
+ * @author Dave Andreoli
+ * @date 30/08/2009
  *
  * @section intro Introduction
  *
@@ -47,35 +48,6 @@
 
 #include <libxml/parser.h>
 #include <Edje.h>
-
-/**
- * \struct _Exchange_Object
- * \brief Metadata for themes, applications and modules
- */
-typedef struct _Exchange_Object {
-   int id; /**< id */
-   char *name; /**< name */
-   char *author; /**< author */
-   char *license; /**< license */
-   char *version; /**< version */
-   char description[4096]; /**< description */
-   char *url; /**< URL */
-   char *thumbnail; /**< thumbnail URL */
-   char *screenshot; /**< screenshot URL */
-   float rating; /**< rating */ 
-   int user_id; /**< User id of the author */
-   char *created_at; /**< creation timestamp */
-   char *updated_at; /**< last update timestamp */
-} Exchange_Object;
-
-#include "exchange_private.h"
-#include "exchange_local_theme.h"
-#include "exchange_remote_theme.h"
-#include "exchange_login.h"
-#include "exchange_theme_group.h"
-#include "exchange_smart.h"
-#include "exchange_async.h"
-
 
 #ifdef EAPI
 # undef EAPI
@@ -106,6 +78,48 @@ typedef struct _Exchange_Object {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef enum {
+   PARSER_START,
+   PARSER_RSP,
+   PARSER_LIST,
+   PARSER_THEME,
+   PARSER_THEME_GROUP,
+   PARSER_THEME_GROUP_START,
+   PARSER_ID,
+   PARSER_NAME,
+   PARSER_TITLE,
+   PARSER_AUTHOR,
+   PARSER_LICENSE,
+   PARSER_VERSION,
+   PARSER_DESCRIPTION,
+   PARSER_URL,
+   PARSER_THUMBNAIL,
+   PARSER_SCREENSHOT,
+   PARSER_RATING,
+   PARSER_USER_ID,
+   PARSER_CREATED,
+   PARSER_UPDATED,
+   PARSER_LIST_START,
+   PARSER_FINISH,
+   PARSER_KNOWN,
+   PARSER_UNKNOWN,
+} Parser_States;
+
+
+/**
+ * \struct _Exchange_Object
+ * \brief Metadata for themes, applications and modules
+ */
+typedef struct _Exchange_Object Exchange_Object;
+
+#include "exchange_local_theme.h"
+#include "exchange_remote_theme.h"
+#include "exchange_login.h"
+#include "exchange_theme_group.h"
+#include "exchange_smart.h"
+#include "exchange_async.h"
+
 
 EAPI int  exchange_init(void);
 EAPI int  exchange_shutdown(void);

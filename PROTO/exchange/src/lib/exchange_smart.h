@@ -19,11 +19,6 @@
 #ifndef _EXCHANGE_SMART_H
 #define _EXCHANGE_SMART_H
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-
 unsigned char exchange_smart_init(void);
 void exchange_smart_shutdown(void);
 

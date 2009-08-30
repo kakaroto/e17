@@ -16,7 +16,12 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include "Exchange.h"
+#include "exchange_private.h"
 
 static int _exchange_init_count = 0;
 
@@ -51,6 +56,8 @@ exchange_init(void)
    if (++_exchange_init_count != 1) return _exchange_init_count;
 
    edje_init();
+   if (!exchange_smart_init())
+      return 0;
 
    return _exchange_init_count;
 }
@@ -69,10 +76,10 @@ exchange_shutdown(void)
    _theme_free_data();
    _login_free_data();
    _theme_group_free_data();
-   exchange_smart_shutdown();
 
+   exchange_smart_shutdown();
    edje_shutdown();
-   
+
    return _exchange_init_count;
 }
 

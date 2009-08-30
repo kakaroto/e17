@@ -19,11 +19,7 @@
 #ifndef _EXCHANGE_PRIVATE_H
 #define _EXCHANGE_PRIVATE_H
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-typedef enum {
+/* typedef enum {
    PARSER_START,
    PARSER_RSP,
    PARSER_LIST,
@@ -48,6 +44,22 @@ typedef enum {
    PARSER_FINISH,
    PARSER_KNOWN,
    PARSER_UNKNOWN,
-} Parser_States;
+} Parser_States; */
+
+struct _Exchange_Object {
+   int id; /**< id */
+   char *name; /**< name */
+   char *author; /**< author */
+   char *license; /**< license */
+   char *version; /**< version */
+   char description[4096]; /**< description */
+   char *url; /**< URL */
+   char *thumbnail; /**< thumbnail URL */
+   char *screenshot; /**< screenshot URL */
+   float rating; /**< rating */ 
+   int user_id; /**< User id of the author */
+   char *created_at; /**< creation timestamp */
+   char *updated_at; /**< last update timestamp */
+};
 
 #endif /* _EXCHANGE_PRIVATE_H */

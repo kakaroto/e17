@@ -19,10 +19,6 @@
 #ifndef _EXCHANGE_THEMES_ASYNC_H
 #define _EXCHANGE_THEMES_ASYNC_H
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 /**
  * @file exchange_async.h
  * @brief This file contains the function exchange_remote_list

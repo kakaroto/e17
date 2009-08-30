@@ -16,11 +16,14 @@
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <string.h>
 #include <Ecore_File.h>
-#include <Ecore.h>
-#include <Ecore_Con.h>
 #include "Exchange.h"
+#include "exchange_private.h"
 
 /* TODO
  *
@@ -234,7 +237,7 @@ _list_complete_cb(Eina_List *results, void *data)
    Exchange_Smart_Data *sd = data;
    char buf[255];
    
-   printf("POPULATING... %d\n", eina_list_count(results));
+   EINA_ERROR_PDBG("POPULATING... %d\n", eina_list_count(results));
    
    /* Populate the List */
    evas_object_text_text_set(sd->obj_lbl, "");
@@ -345,7 +348,9 @@ exchange_smart_shutdown(void)
    if (_smart_theme) eina_stringshare_del(_smart_theme);
    if (_smart_cache) eina_stringshare_del(_smart_cache);
    //if (_smart) TODO How to del the smart class?
+   eina_shutdown();
 }
+
 /*** The Evas Smart Object ***/
 static void
 _exchange_smart_add(Evas_Object *obj)
@@ -590,7 +595,7 @@ _download_thumb_complete_cb(void *data, const char *file, int status)
 {
    Evas_Object *elem = data;
 
-   printf("THUMB COMPLETE %d %s\n", status, file);
+   EINA_ERROR_PDBG("THUMB COMPLETE %d %s\n", status, file);
    //TODO check if download finish well
    edje_object_signal_emit(elem, "set,idle", "exchange");
    _exchange_smart_thumb_swallow(elem, file);
@@ -600,7 +605,7 @@ int
 _download_thumb_progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow)
 {
    //Evas_Object *elem = data;
-   //printf("DOWNLOAD THUMB PROGRESS '%s' dltotal: %ld dlnow: %ld\n", file, dltotal, dlnow);
+   //EINA_ERROR_PDBG("DOWNLOAD THUMB PROGRESS '%s' dltotal: %ld dlnow: %ld\n", file, dltotal, dlnow);
    return 0;
 }
 
