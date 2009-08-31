@@ -175,5 +175,21 @@ int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
     }
 }
 
+/**
+ * @brief Returns a boolean the network connection
+ */
+Exalt_Connection *exalt_dbus_response_connection_get(Exalt_DBus_Response* response)
+{
+    switch(response->type)
+    {
+        case EXALT_DBUS_RESPONSE_NETWORK_CONNECTION_GET:
+            return response->c;
+        default:
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an network connection\n");
+            return 0;
+    }
+}
+
+
 /** @} */
 

@@ -27,7 +27,8 @@ exalt_wireless_network.h \
 exalt_connection.h \
 exalt_vpnc.h \
 exalt_wpa_supplicant.h \
-iw/iwlib.h
+iw/iwlib.h \
+exalt_connection_network.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \
@@ -45,6 +46,7 @@ libexalt_private.h \
 exalt_connection.c \
 exalt_wpa_supplicant.c \
 iw/iwlib.c \
+exalt_connection_network.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt

@@ -92,6 +92,7 @@ struct _exalt_dbus_response
 
     Eina_List* l;
 
+    Exalt_Connection *c;
     char* iface;
     char* address;
     char* string;

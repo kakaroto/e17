@@ -77,6 +77,55 @@ Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 }
 
 
+int exalt_conn_network_save(const char* file, Exalt_Connection *c)
+{
+    Eet_Data_Descriptor *edd_network, *edd;
+    int res;
+    Eet_File *f;
+    char buf[1024];
+
+    edd_network = exalt_conn_network_edd_new();
+    edd = exalt_conn_edd_new(edd_network);
+
+    snprintf(buf, 1024, "wireless_network_%s", exalt_conn_network_essid_get(exalt_conn_network_get(c)));
+
+    f = eet_open(file, EET_FILE_MODE_READ_WRITE);
+    if(!f)
+        f = eet_open(file, EET_FILE_MODE_WRITE);
+    res=eet_data_write(f, edd, buf, c, 0);
+    EXALT_ASSERT(res!=0);
+
+    eet_close(f);
+    eet_data_descriptor_free(edd);
+    eet_data_descriptor_free(edd_network);
+
+    return 1;
+}
+
+Exalt_Connection *exalt_conn_network_load(const char *file,const char *network)
+{
+    Eet_Data_Descriptor *edd, *edd_network;
+    char buf[1024];
+    Eet_File *f;
+    Exalt_Connection *data;
+
+    snprintf(buf, 1024, "wireless_network_%s", network);
+
+    edd_network = exalt_conn_network_edd_new();
+    edd = exalt_conn_edd_new(edd_network);
+
+    f = eet_open(file, EET_FILE_MODE_READ);
+    EXALT_ASSERT_RETURN(f!=NULL);
+
+    data = eet_data_read(f, edd, buf);
+
+    eet_close(f);
+    eet_data_descriptor_free(edd);
+    eet_data_descriptor_free(edd_network);
+
+    return data;
+}
+
 /** @} */
 
 
@@ -93,11 +142,10 @@ Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *data = NULL;
-    Eet_Data_Descriptor *edd, *edd_conn, *edd_network, *edd_ie;
+    Eet_Data_Descriptor *edd, *edd_conn, *edd_network;
     Eet_File *f;
 
-    edd_ie = exalt_wireless_network_ie_edd_new();
-    edd_network = exalt_wireless_network_edd_new(edd_ie);
+    edd_network = exalt_conn_network_edd_new();
 
     edd_conn = exalt_conn_edd_new(edd_network);
     edd = _exalt_eth_save_edd_new(edd_conn);
@@ -109,7 +157,6 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 
     eet_close(f);
     eet_data_descriptor_free(edd);
-    eet_data_descriptor_free(edd_ie);
     eet_data_descriptor_free(edd_network);
     eet_data_descriptor_free(edd_conn);
     return data;
@@ -125,11 +172,10 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
 {
     int res;
-    Eet_Data_Descriptor *edd, *edd_conn, *edd_network, *edd_ie;
+    Eet_Data_Descriptor *edd, *edd_conn, *edd_network;
     Eet_File *f;
 
-    edd_ie = exalt_wireless_network_ie_edd_new();
-    edd_network = exalt_wireless_network_edd_new(edd_ie);
+    edd_network = exalt_conn_network_edd_new();
 
     edd_conn = exalt_conn_edd_new(edd_network);
     edd = _exalt_eth_save_edd_new(edd_conn);
@@ -142,7 +188,6 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
 
     eet_close(f);
     eet_data_descriptor_free(edd);
-    eet_data_descriptor_free(edd_ie);
     eet_data_descriptor_free(edd_network);
     eet_data_descriptor_free(edd_conn);
     return res;

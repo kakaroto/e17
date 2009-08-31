@@ -22,6 +22,7 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 #include <Ecore.h>
 #include <Eina.h>
 #include <stdio.h>
+#include "exalt_connection_network.h"
 
 /**
  * @brief create a new Exalt_Wireless

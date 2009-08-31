@@ -132,14 +132,6 @@ void exalt_wireless_network_description_set(
         const char* desc);
 
 /**
- * @brief set the ie choice
- */
-void exalt_wireless_network_ie_choice_set(
-        Exalt_Wireless_Network *wn,
-        int choice);
-
-
-/**
  * @brief set the quality
  */
 void exalt_wireless_network_quality_set(
@@ -192,13 +184,6 @@ int exalt_wireless_network_encryption_is(
 const char* exalt_wireless_network_description_get(
         Exalt_Wireless_Network *wn);
 
-/**
- * @brief get the ie choice
- */
-int exalt_wireless_network_ie_choice_get(
-        Exalt_Wireless_Network *wn);
-
-
 
 /**
  * @brief get the quality
@@ -221,21 +206,6 @@ Eina_List* exalt_wireless_network_ie_get(
 void exalt_wireless_network_ie_description_set(
         Exalt_Wireless_Network_IE *ie,
         const char* desc);
-
-/**
- * @brief set the auth choice
- */
-void exalt_wireless_network_ie_auth_choice_set(
-        Exalt_Wireless_Network_IE *ie,
-        int choice);
-
-/**
- * @brief set the pairwise choice
- */
-void exalt_wireless_network_ie_pairwise_choice_set(
-        Exalt_Wireless_Network_IE *ie,
-        int choice);
-
 
 /**
  * @brief set the wpa type
@@ -285,18 +255,6 @@ void exalt_wireless_network_ie_auth_suites_number_set(
  * @brief retrieve the ie description
  */
 const char* exalt_wireless_network_ie_description_get(
-        Exalt_Wireless_Network_IE *ie);
-
-/**
- * @brief retrieve the auth choice
- */
-int exalt_wireless_network_ie_auth_choice_get(
-        Exalt_Wireless_Network_IE *ie);
-
-/**
- * @brief retrieve the pairwise choice
- */
-int exalt_wireless_network_ie_pairwise_choice_get(
         Exalt_Wireless_Network_IE *ie);
 
 

@@ -63,6 +63,22 @@ Exalt_Connection *exalt_eth_conn_load(const char* file, const char* udi);
  */
 char* exalt_eth_driver_load(const char* file, const char* udi);
 
+/**
+ * @brief Save a wireless network configuration
+ * @param file the configuration file
+ * @param cn the network configuration
+ * @return Returns 0 if an error occurs, else 1
+ */
+int exalt_conn_network_save(const char* file, Exalt_Connection *c);
+
+/**
+ * @brief Load a wireless network configuration
+ * @param file the configuration file
+ * @param network the network name (essid)
+ * @return Returns the network configuration or null if failed
+ */
+Exalt_Connection *exalt_conn_network_load(const char *file,const char *network);
+
 #endif
 
 /** @} */

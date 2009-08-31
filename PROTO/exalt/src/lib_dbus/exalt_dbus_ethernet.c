@@ -511,13 +511,13 @@ void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> address = strdup(exalt_dbus_response_string(msg,1));
     }
     if(id->conn->response_notify->cb)
@@ -539,13 +539,13 @@ void _exalt_dbus_eth_netmask_get_cb(void *data, DBusMessage *msg, DBusError *err
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> address = strdup(exalt_dbus_response_string(msg,1));
     }
     if(id->conn->response_notify->cb)
@@ -567,13 +567,13 @@ void _exalt_dbus_eth_gateway_get_cb(void *data, DBusMessage *msg, DBusError *err
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> address = strdup(exalt_dbus_response_string(msg,1));
     }
     if(id->conn->response_notify->cb)
@@ -592,13 +592,13 @@ void _exalt_dbus_eth_list_get_cb(void *data, DBusMessage *msg, DBusError *error)
     response->msg_id = id->id;
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response->l = exalt_dbus_response_strings(msg,1);
     }
 
@@ -620,13 +620,13 @@ void _exalt_dbus_eth_wireless_is_cb(void *data, DBusMessage *msg, DBusError *err
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)
@@ -647,13 +647,13 @@ void _exalt_dbus_eth_link_is_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)
@@ -674,13 +674,13 @@ void _exalt_dbus_eth_dhcp_is_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)
@@ -701,13 +701,13 @@ void _exalt_dbus_eth_up_is_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)
@@ -729,13 +729,13 @@ void _exalt_dbus_eth_cmd_get_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> string = strdup(exalt_dbus_response_string(msg,1));
     }
     if(id->conn->response_notify->cb)
@@ -756,13 +756,13 @@ void _exalt_dbus_eth_cmd_set_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -784,13 +784,13 @@ void _exalt_dbus_eth_apply_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -811,13 +811,13 @@ void _exalt_dbus_eth_up_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -837,13 +837,13 @@ void _exalt_dbus_eth_down_cb(void *data, DBusMessage *msg, DBusError *error)
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -864,13 +864,13 @@ void _exalt_dbus_eth_connected_is_cb(void *data, DBusMessage *msg, DBusError *er
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)

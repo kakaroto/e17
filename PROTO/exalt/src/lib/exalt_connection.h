@@ -93,7 +93,7 @@ typedef enum Exalt_Enum_Mode
 
 #include "libexalt.h"
 #include <Eet.h>
-
+#include "exalt_connection_network.h"
 
 /**
  * @brief create a default connection
@@ -123,14 +123,6 @@ short exalt_conn_valid_is(Exalt_Connection* c);
 void exalt_conn_mode_set(
         Exalt_Connection* conn,
         Exalt_Enum_Mode mode);
-
-/**
- * @brief set if the wep key is a hexa key
- */
-void exalt_conn_wep_key_hexa_set(
-        Exalt_Connection* conn,
-        int is_hexa);
-
 
 /**
  * @brief set the IP address
@@ -172,34 +164,12 @@ void exalt_conn_wireless_set(
  */
 void exalt_conn_network_set(
         Exalt_Connection* conn,
-        Exalt_Wireless_Network* n);
-
-/**
- * @brief set the key
- */
-void exalt_conn_key_set(
-        Exalt_Connection* conn,
-        const char* key);
-
-/**
- * @brief set the login
- */
-void exalt_conn_login_set(
-        Exalt_Connection* conn,
-        const char* login);
-
+        Exalt_Connection_Network* n);
 
 /**
  * @brief Returns the mode of the connection
  */
 Exalt_Enum_Mode exalt_conn_mode_get(Exalt_Connection* conn);
-
-/**
- * @brief Returns 1 if the connection use a hexadecimal key
- */
-
-int exalt_conn_wep_key_hexa_is(Exalt_Connection* conn);
-
 
 
 /**
@@ -238,18 +208,7 @@ int exalt_conn_wireless_is(Exalt_Connection* conn);
 /**
  * @brief return the network information (essid, encyption ...)
  */
-Exalt_Wireless_Network* exalt_conn_network_get(Exalt_Connection* conn);
-
-/**
- * @brief return the key of the connection
- */
-const char* exalt_conn_key_get(Exalt_Connection* conn);
-
-/**
- * @brief return the login of the connection
- */
-const char* exalt_conn_login_get(Exalt_Connection* conn);
-
+Exalt_Connection_Network* exalt_conn_network_get(Exalt_Connection* conn);
 
 /**
  * @brief return the connection mode of the connection

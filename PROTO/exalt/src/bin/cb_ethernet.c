@@ -407,7 +407,7 @@ DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
                 EXALT_DBUS_INTERFACE_ERROR);
             return reply);
 
-     if( connection_from_dbusmessage(c,eth,msg,reply) )
+     if( connection_from_dbusmessage(c,msg,reply) )
          return reply;
 
     if(!exalt_conn_valid_is(c))
@@ -418,8 +418,12 @@ DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
         return reply;
     }
     else
+    {
         exalt_eth_conn_apply(eth, c);
-
+        if(exalt_conn_wireless_is(c) &&
+                exalt_conn_network_save_when_apply_is(exalt_conn_network_get(c)))
+            exalt_conn_network_save(CONF_FILE, c);
+    }
     dbus_args_valid_append(reply);
 
     return reply;

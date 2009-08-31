@@ -31,6 +31,7 @@
  */
 
 int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn);
+int exalt_dbus_network_connection_get(Exalt_DBus_Conn *conn, const char* essid);
 
 int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* eth);
 int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* eth);

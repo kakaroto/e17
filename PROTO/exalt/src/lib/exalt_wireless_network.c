@@ -30,16 +30,12 @@ struct Exalt_Wireless_Network
 
     Exalt_Wireless_Network_Mode mode;
 
-    int ie_choice;
     Eina_List* ie;
 };
 
 struct Exalt_Wireless_Network_IE
 {
     char* description;
-
-    int auth_choice;
-    int pairwise_choice;
 
     Exalt_Wireless_Network_Wpa_Type wpa_type;
 
@@ -68,8 +64,6 @@ Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
             (void(*)(void*))eina_hash_free);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "auth_choice", auth_choice, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "pairwise_choice", pairwise_choice, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "wpa_type", wpa_type, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "group_cypher", group_cypher, EET_T_INT);
 
@@ -110,8 +104,6 @@ Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "description", description, EET_T_STRING);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "quality", quality, EET_T_INT);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "ie_choice", ie_choice, EET_T_INT);
 
     EET_DATA_DESCRIPTOR_ADD_LIST(edd, Exalt_Wireless_Network, "ies", ie, edd_ie);
     return edd;
@@ -258,7 +250,6 @@ void exalt_wireless_network_ie_free(
 #define EXALT_STRUCT_TYPE Exalt_Wireless_Network
 
 EXALT_STRING_SET(essid)
-EXALT_SET(ie_choice,int);
 EXALT_STRING_SET(address);
 EXALT_SET(iface,Exalt_Wireless*)
 EXALT_SET(encryption,int)
@@ -268,7 +259,6 @@ EXALT_SET(ie,Eina_List*)
 EXALT_SET(mode,Exalt_Wireless_Network_Mode)
 
 EXALT_GET(iface,Exalt_Wireless*)
-EXALT_GET(ie_choice,int);
 EXALT_GET(address,const char*)
 EXALT_GET(essid,const char*)
 EXALT_IS(encryption,int)
@@ -284,8 +274,6 @@ EXALT_GET(mode,Exalt_Wireless_Network_Mode)
 #define EXALT_STRUCT_TYPE Exalt_Wireless_Network_IE
 
 EXALT_STRING_SET(description)
-EXALT_SET(auth_choice,int)
-EXALT_SET(pairwise_choice,int)
 EXALT_SET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
 EXALT_SET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_TAB_SET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)
@@ -294,8 +282,6 @@ EXALT_TAB_SET(auth_suites,Exalt_Wireless_Network_Auth_Suites)
 EXALT_SET(auth_suites_number,int)
 
 EXALT_GET(description,const char*)
-EXALT_GET(auth_choice,int)
-EXALT_GET(pairwise_choice,int)
 EXALT_GET(wpa_type,Exalt_Wireless_Network_Wpa_Type)
 EXALT_GET(group_cypher,Exalt_Wireless_Network_Cypher_Name)
 EXALT_TAB_GET(pairwise_cypher,Exalt_Wireless_Network_Cypher_Name)

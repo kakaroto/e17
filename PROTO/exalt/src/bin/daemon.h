@@ -60,7 +60,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Eina_List* networks, void* data);
 
 
-DBusMessage* connection_from_dbusmessage(Exalt_Connection* c, Exalt_Ethernet* eth,DBusMessage *msg,DBusMessage *reply);
+DBusMessage* connection_from_dbusmessage(Exalt_Connection* c, DBusMessage *msg,DBusMessage *reply);
 
 
 int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error);

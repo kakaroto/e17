@@ -176,12 +176,12 @@ void _exalt_dbus_dns_add_cb(void *data, DBusMessage *msg, DBusError *error)
     response -> msg_id = id->id;
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
     }
     else
-        response -> is_error = 1;
+        response -> is_error = 0;
 
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -199,12 +199,12 @@ void _exalt_dbus_dns_del_cb(void *data, DBusMessage *msg, DBusError *error)
     response->msg_id = id->id;
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
     }
     else
-        response -> is_error = 1;
+        response -> is_error = 0;
 
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -222,12 +222,12 @@ void _exalt_dbus_dns_replace_cb(void *data, DBusMessage *msg, DBusError *error)
     response->msg_id = id->id;
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(strdup(exalt_dbus_error_get_msg(msg)));
     }
     else
-        response -> is_error = 1;
+        response -> is_error = 0;
 
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
@@ -246,13 +246,13 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
     response->msg_id = id->id;
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_error = 0;
+        response->is_error = 1;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
     }
     else
     {
-        response -> is_error = 1;
+        response -> is_error = 0;
         response->l = exalt_dbus_response_strings(msg,1);
     }
 

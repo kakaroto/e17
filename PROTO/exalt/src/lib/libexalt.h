@@ -189,6 +189,7 @@
 #include "exalt_wireless.h"
 #include "exalt_dns.h"
 #include "exalt_sys_conf.h"
+#include "exalt_connection_network.h"
 #include "exalt_connection.h"
 #include "exalt_vpnc.h"
 
