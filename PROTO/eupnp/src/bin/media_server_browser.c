@@ -30,7 +30,7 @@
 #include <string.h>
 #include <signal.h>
 #include <Eina.h>
-#include <eupnp.h>
+#include "Eupnp.h"
 
 #define MEDIA_SERVER_DEVICE_TYPE "urn:schemas-upnp-org:device:MediaServer:1"
 #define CDS_SERVICE_TYPE "urn:schemas-upnp-org:service:ContentDirectory:1"

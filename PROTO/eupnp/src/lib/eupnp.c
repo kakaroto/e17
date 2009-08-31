@@ -20,7 +20,7 @@
  */
 
 #include <stdio.h>
-#include "eupnp.h"
+#include "Eupnp.h"
 
 
 static int _eupnp_main_count = 0;

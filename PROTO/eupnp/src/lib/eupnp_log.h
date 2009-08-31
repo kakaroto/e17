@@ -25,7 +25,9 @@
 
 #include <Eina.h>
 
-extern int EUPNP_LOGGING_DOM_GLOBAL;
+#include "Eupnp.h"
+
+EAPI extern int EUPNP_LOGGING_DOM_GLOBAL;
 
 #define WARN(...) EINA_LOG_DOM_WARN(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
 #define DEBUG(...) EINA_LOG_DOM_DBG(EUPNP_LOGGING_DOM_GLOBAL, __VA_ARGS__)
@@ -40,8 +42,8 @@ extern int EUPNP_LOGGING_DOM_GLOBAL;
 #define ERROR_D(DOM, ...) EINA_LOG_DOM_ERR(DOM, __VA_ARGS__)
 #define CRIT_D(DOM, ...) EINA_LOG_DOM_CRIT(DOM, __VA_ARGS__)
 
-int eupnp_log_init(void);
-int eupnp_log_shutdown(void);
+EAPI int eupnp_log_init(void);
+EAPI int eupnp_log_shutdown(void);
 
 
 #endif /* _EUPNP_LOG_H */

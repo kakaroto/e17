@@ -23,11 +23,6 @@
 #include <Eina.h>
 
 #include "eupnp_control_point.h"
-#include "eupnp_ssdp.h"
-#include "eupnp_log.h"
-#include "eupnp_event_bus.h"
-#include "eupnp_device_info.h"
-#include "eupnp_private.h"
 
 
 /*
@@ -43,7 +38,8 @@ static Eupnp_Subscriber *_device_found = NULL;
  *
  * Starts the process of fetching
  */
-static Eina_Bool _on_device_found(void *user_data, Eupnp_Event_Type type, void *event_data)
+static Eina_Bool
+_on_device_found(void *user_data, Eupnp_Event_Type type, void *event_data)
 {
    // TODO add an option for skipping this device mount
    Eupnp_Device_Info *device_info = event_data;
@@ -61,7 +57,7 @@ static Eina_Bool _on_device_found(void *user_data, Eupnp_Event_Type type, void *
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-int
+EAPI int
 eupnp_control_point_init(void)
 {
    if (_eupnp_control_point_main_count)
@@ -128,7 +124,7 @@ eupnp_control_point_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-int
+EAPI int
 eupnp_control_point_shutdown(void)
 {
    if (_eupnp_control_point_main_count != 1)
@@ -151,7 +147,7 @@ eupnp_control_point_shutdown(void)
  *
  * @return A new Eupnp_Control_Point instance. On error, returns NULL.
  */
-Eupnp_Control_Point *
+EAPI Eupnp_Control_Point *
 eupnp_control_point_new(void)
 {
    Eupnp_Control_Point *c;
@@ -182,7 +178,7 @@ eupnp_control_point_new(void)
  *
  * @param c Eupnp_Control_Point instance to be destroyed.
  */
-void
+EAPI void
 eupnp_control_point_free(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET(c);
@@ -191,7 +187,7 @@ eupnp_control_point_free(Eupnp_Control_Point *c)
    free(c);
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_control_point_start(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
@@ -200,7 +196,7 @@ eupnp_control_point_start(Eupnp_Control_Point *c)
    return EINA_TRUE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_control_point_stop(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, EINA_FALSE);
@@ -219,7 +215,7 @@ eupnp_control_point_stop(Eupnp_Control_Point *c)
  *
  * @return The ssdp socket.
  */
-int
+EAPI int
 eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
 {
    CHECK_NULL_RET_VAL(c, -1);
@@ -240,7 +236,7 @@ eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c)
  *
  * @return On success EINA_TRUE, EINA_FALSE on error.
  */
-Eina_Bool
+EAPI Eina_Bool
 eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target)
 {
    DEBUG_D(_log_dom, "Discovery request sent for target %s with mx %d\n", search_target, mx);

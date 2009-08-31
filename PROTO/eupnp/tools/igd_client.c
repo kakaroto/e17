@@ -3,7 +3,7 @@
 
 #include <Eina.h>
 #include <Elementary.h>
-#include <eupnp.h>
+#include <Eupnp.h>
 
 
 #define IGD_DEVICE_TYPE "urn:schemas-upnp-org:device:InternetGatewayDevice:1"

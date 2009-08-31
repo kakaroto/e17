@@ -10,7 +10,7 @@ AM_CFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
 lib_LTLIBRARIES = libeupnp.la
 
 include_HEADERS = \
-	eupnp.h \
+	Eupnp.h \
 	eupnp_utils.h \
 	eupnp_ssdp.h \
 	eupnp_log.h \

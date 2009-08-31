@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Eina.h>
-#include <eupnp.h>
+#include "Eupnp.h"
 
 #define SWITCH_POWER_SERVICE_TYPE "urn:schemas-upnp-org:service:SwitchPower:1"
 

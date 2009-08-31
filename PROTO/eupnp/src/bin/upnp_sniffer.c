@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Eina.h>
-#include <eupnp.h>
+#include "Eupnp.h"
 
 static int _log_domain = -1;
 

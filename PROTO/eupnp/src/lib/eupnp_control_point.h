@@ -23,7 +23,14 @@
 #define _EUPNP_CONTROL_POINT_H
 
 #include <Eina.h>
-#include <eupnp_ssdp.h>
+
+#include "Eupnp.h"
+
+#include "eupnp_ssdp.h"
+#include "eupnp_log.h"
+#include "eupnp_event_bus.h"
+#include "eupnp_device_info.h"
+#include "eupnp_private.h"
 
 /*
  * Generic Search Targets (ST's)
@@ -34,20 +41,19 @@
 
 typedef struct _Eupnp_Control_Point Eupnp_Control_Point;
 
-
 struct _Eupnp_Control_Point {
    Eupnp_SSDP_Server *ssdp_server;
 };
 
-int                  eupnp_control_point_init(void);
-int                  eupnp_control_point_shutdown(void);
+EAPI int                  eupnp_control_point_init(void);
+EAPI int                  eupnp_control_point_shutdown(void);
 
-Eupnp_Control_Point *eupnp_control_point_new(void);
-void                 eupnp_control_point_free(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_control_point_start(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_control_point_stop(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
-int                  eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c);
+EAPI Eupnp_Control_Point *eupnp_control_point_new(void);
+EAPI void                 eupnp_control_point_free(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_start(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_stop(Eupnp_Control_Point *c) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_control_point_discovery_request_send(Eupnp_Control_Point *c, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
+EAPI int                  eupnp_control_point_ssdp_socket_get(Eupnp_Control_Point *c);
 
 
 #endif /* _EUPNP_CONTROL_POINT_H */

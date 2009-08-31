@@ -27,7 +27,7 @@
 
 
 static int _eupnp_log_init_count = 0;
-int EUPNP_LOGGING_DOM_GLOBAL = -1;
+EAPI int EUPNP_LOGGING_DOM_GLOBAL = -1;
 
 
 /*
@@ -38,7 +38,7 @@ int EUPNP_LOGGING_DOM_GLOBAL = -1;
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-int
+EAPI int
 eupnp_log_init(void)
 {
    if (_eupnp_log_init_count) return ++_eupnp_log_init_count;
@@ -66,7 +66,7 @@ eupnp_log_init(void)
  *
  * @return 0 if completely shutted down.
  */
-int
+EAPI int
 eupnp_log_shutdown(void)
 {
    if (_eupnp_log_init_count != 1) return --_eupnp_log_init_count;

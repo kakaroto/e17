@@ -3,7 +3,7 @@
 
 #include <Eina.h>
 #include <Elementary.h>
-#include <eupnp.h>
+#include <Eupnp.h>
 
 
 /*
