@@ -7,7 +7,7 @@ try:
 except IndexError, e:
     raise SystemExit("missing input file name")
 except OSError, e:
-    raise SystemExit("could not open file '%s': %s" % (argv[1], e))
+    raise SystemExit("could not open file '%s': %s" % (sys.argv[1], e))
 
 rec = re.compile
 
@@ -84,11 +84,28 @@ issues = {
     wrn: 0,
 }
 
+authors = []
 cur_file = None
 cur_hunk = None
 cur_hunk_add = 0
 cur_hunk_del = 0
 for i, line in enumerate(infile):
+    if cur_file is None:
+        if line.startswith("By: "):
+            s = line[4:].strip()
+            if s:
+                for x in s.split(","):
+                    x = x.strip()
+                    if x:
+                        authors.append(x)
+            continue
+        elif len(line) > 73:
+            print ("%sWARNING%s: message line '%d' should not be larger "
+                   "than 72 characters") % (
+                color["WARNING"], color["CLEAR"], i)
+            issues[wrn] += 1
+            continue
+
     if line.startswith("@@ "):
         idx = line.index(" @@")
         cur_hunk = parse_hunk(line[3:idx])
@@ -151,6 +168,11 @@ for i, line in enumerate(infile):
 
 infile.close()
 
+if not authors:
+    print "%sWARNING%s: missing patch author (\"By: \") line." % (
+        color["WARNING"], color["CLEAR"])
+    issues[wrn] += 1
+
 sep_line = None
 for code, count in issues.iteritems():
     if count == 0:
@@ -162,3 +184,7 @@ for code, count in issues.iteritems():
     print "%s%s%s: %d issues" % (
         color[codename], codename, color["CLEAR"], count)
 
+if sep_line is not None:
+    sys.exit(-1)
+else:
+    sys.exit(0)
