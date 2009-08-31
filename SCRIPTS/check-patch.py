@@ -90,7 +90,8 @@ cur_hunk_add = 0
 cur_hunk_del = 0
 for i, line in enumerate(infile):
     if line.startswith("@@ "):
-        cur_hunk = parse_hunk(line[3:-4])
+        idx = line.index(" @@")
+        cur_hunk = parse_hunk(line[3:idx])
         cur_hunk_add = 0
         cur_hunk_del = 0
     elif line.startswith("Index: "):
