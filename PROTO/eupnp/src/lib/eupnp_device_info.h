@@ -71,17 +71,17 @@ struct _Eupnp_Device_Icon {
 };
 
 
-int                   eupnp_device_info_init(void);
-int                   eupnp_device_info_shutdown(void);
+EAPI int                   eupnp_device_info_init(void);
+EAPI int                   eupnp_device_info_shutdown(void);
 
-Eupnp_Device_Info    *eupnp_device_info_new(const char *udn, const char *location, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4);
-void                  eupnp_device_info_free(Eupnp_Device_Info *d) EINA_ARG_NONNULL(1);
-Eupnp_Device_Info    *eupnp_device_info_ref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
-void                  eupnp_device_info_unref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
-void                  eupnp_device_info_fetch(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
-void                  eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *icon) EINA_ARG_NONNULL(1,2);
-void                  eupnp_device_info_service_add(Eupnp_Device_Info *device_info, Eupnp_Service_Info *service) EINA_ARG_NONNULL(1,2);
-void                  eupnp_device_info_device_add(Eupnp_Device_Info *device, Eupnp_Device_Info *new) EINA_ARG_NONNULL(1,2);
-void                  eupnp_device_info_dump(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI Eupnp_Device_Info    *eupnp_device_info_new(const char *udn, const char *location, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4);
+EAPI void                  eupnp_device_info_free(Eupnp_Device_Info *d) EINA_ARG_NONNULL(1);
+EAPI Eupnp_Device_Info    *eupnp_device_info_ref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                  eupnp_device_info_unref(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                  eupnp_device_info_fetch(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
+EAPI void                  eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *icon) EINA_ARG_NONNULL(1,2);
+EAPI void                  eupnp_device_info_service_add(Eupnp_Device_Info *device_info, Eupnp_Service_Info *service) EINA_ARG_NONNULL(1,2);
+EAPI void                  eupnp_device_info_device_add(Eupnp_Device_Info *device, Eupnp_Device_Info *new) EINA_ARG_NONNULL(1,2);
+EAPI void                  eupnp_device_info_dump(Eupnp_Device_Info *device_info) EINA_ARG_NONNULL(1);
 
 #endif /* _EUPNP_DEVICE_INFO_H */

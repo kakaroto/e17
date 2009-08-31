@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -28,8 +32,9 @@
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 
-#include <eupnp_log.h>
-#include <eupnp_udp_transport.h>
+#include "Eupnp.h"
+#include "eupnp_log.h"
+#include "eupnp_udp_transport.h"
 
 
 /*
@@ -145,7 +150,7 @@ eupnp_udp_transport_prepare(Eupnp_UDP_Transport *s)
  *
  * @return On success, a new Eupnp_UDP_Transport instance. Otherwise NULL.
  */
-Eupnp_UDP_Transport *
+EAPI Eupnp_UDP_Transport *
 eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr)
 {
    Eupnp_UDP_Transport *s;
@@ -181,7 +186,7 @@ eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr)
 /*
  * Closes the Eupnp_UDP_Transport socket.
  */
-int
+EAPI int
 eupnp_udp_transport_close(Eupnp_UDP_Transport *s)
 {
    if (!s) return -1;
@@ -193,7 +198,7 @@ eupnp_udp_transport_close(Eupnp_UDP_Transport *s)
  *
  * @param s Eupnp_UDP_Transport instance to be destroyed.
  */
-void
+EAPI void
 eupnp_udp_transport_free(Eupnp_UDP_Transport *s)
 {
    free(s);
@@ -207,7 +212,7 @@ eupnp_udp_transport_free(Eupnp_UDP_Transport *s)
  * @return On success, a Eupnp_UDP_Datagram instance representing the datagram
  *         received. Otherwise, returns NULL.
  */
-Eupnp_UDP_Datagram *
+EAPI Eupnp_UDP_Datagram *
 eupnp_udp_transport_recv(Eupnp_UDP_Transport *s)
 {
    Eupnp_UDP_Datagram *d;
@@ -239,7 +244,7 @@ eupnp_udp_transport_recv(Eupnp_UDP_Transport *s)
  * @return On success, a Eupnp_UDP_Datagram instance representing the datagram
  *         received. Otherwise, returns NULL.
  */
-Eupnp_UDP_Datagram *
+EAPI Eupnp_UDP_Datagram *
 eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s)
 {
    Eupnp_UDP_Datagram *d;
@@ -277,7 +282,7 @@ eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s)
  *
  * @return The length of the message sent. In case of failure, returns -1.
  */
-int
+EAPI int
 eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const char *addr, int port)
 {
    int cnt;
@@ -303,7 +308,7 @@ eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const cha
  *
  * @param datagram Eupnp_UDP_Datagram to be destroyed.
  */
-void
+EAPI void
 eupnp_udp_transport_datagram_free(Eupnp_UDP_Datagram *datagram)
 {
    eupnp_udp_datagram_free(datagram);

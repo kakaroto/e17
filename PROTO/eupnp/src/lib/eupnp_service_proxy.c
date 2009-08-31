@@ -19,16 +19,21 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 
+#include "Eupnp.h"
+#include "eupnp_service_proxy.h"
 #include "eupnp_log.h"
 #include "eupnp_core.h"
 #include "eupnp_event_server.h"
 #include "eupnp_service_parser.h"
-#include "eupnp_service_proxy.h"
 #include "eupnp_service_info.h"
 #include "eupnp_http_message.h"
 #include "eupnp_private.h"
@@ -228,7 +233,7 @@ _event_notification(void *data, Eupnp_Event_Type event_type, void *event_data)
  * Public API
  */
 
-int
+EAPI int
 eupnp_service_proxy_init(void)
 {
    if (_eupnp_service_proxy_init_count)
@@ -280,7 +285,7 @@ eupnp_service_proxy_init(void)
    return 0;
 }
 
-int
+EAPI int
 eupnp_service_proxy_shutdown(void)
 {
    if (_eupnp_service_proxy_init_count != 1)
@@ -297,7 +302,7 @@ eupnp_service_proxy_shutdown(void)
    return --_eupnp_service_proxy_init_count;
 }
 
-Eupnp_Service_Action *
+EAPI Eupnp_Service_Action *
 eupnp_service_action_new(void)
 {
    Eupnp_Service_Action *a;
@@ -316,7 +321,7 @@ eupnp_service_action_new(void)
    return a;
 }
 
-void
+EAPI void
 eupnp_service_action_free(Eupnp_Service_Action *a)
 {
    if (!a) return;
@@ -337,7 +342,7 @@ eupnp_service_action_free(Eupnp_Service_Action *a)
    free(a);
 }
 
-void
+EAPI void
 eupnp_service_action_dump(Eupnp_Service_Action *a)
 {
    if (!a) return;
@@ -354,7 +359,7 @@ eupnp_service_action_dump(Eupnp_Service_Action *a)
      }
 }
 
-Eupnp_State_Variable *
+EAPI Eupnp_State_Variable *
 eupnp_service_state_variable_new(const char *name, int name_len)
 {
    Eupnp_State_Variable *st;
@@ -382,7 +387,7 @@ eupnp_service_state_variable_new(const char *name, int name_len)
    return st;
 }
 
-Eupnp_State_Variable *
+EAPI Eupnp_State_Variable *
 eupnp_service_state_variable_new1()
 {
    Eupnp_State_Variable *st;
@@ -407,7 +412,7 @@ eupnp_service_state_variable_new1()
    return st;
 }
 
-void
+EAPI void
 eupnp_service_state_variable_free(Eupnp_State_Variable *st)
 {
    CHECK_NULL_RET(st);
@@ -433,7 +438,7 @@ eupnp_service_state_variable_free(Eupnp_State_Variable *st)
    free(st);
 }
 
-void
+EAPI void
 eupnp_service_state_variable_dump(Eupnp_State_Variable *st)
 {
    CHECK_NULL_RET(st);
@@ -457,7 +462,7 @@ eupnp_service_state_variable_dump(Eupnp_State_Variable *st)
    }
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_State_Variable_Allowed_Value *v)
 {
    CHECK_NULL_RET_VAL(st, EINA_FALSE);
@@ -468,7 +473,7 @@ eupnp_service_state_variable_allowed_value_add(Eupnp_State_Variable *st, Eupnp_S
    return EINA_TRUE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_action_argument_add(Eupnp_Service_Action *action, Eupnp_Service_Action_Argument *arg)
 {
    CHECK_NULL_RET_VAL(action, EINA_FALSE);
@@ -479,7 +484,7 @@ eupnp_service_action_argument_add(Eupnp_Service_Action *action, Eupnp_Service_Ac
    return EINA_TRUE;
 }
 
-Eupnp_Service_Action_Argument *
+EAPI Eupnp_Service_Action_Argument *
 eupnp_service_action_argument_new(void)
 {
    Eupnp_Service_Action_Argument *arg;
@@ -504,7 +509,7 @@ eupnp_service_action_argument_free(Eupnp_Service_Action_Argument *arg)
    free(arg);
 }
 
-void
+EAPI void
 eupnp_service_action_argument_dump(Eupnp_Service_Action_Argument *arg)
 {
    CHECK_NULL_RET(arg);
@@ -517,7 +522,7 @@ eupnp_service_action_argument_dump(Eupnp_Service_Action_Argument *arg)
    INFO_D(_log_dom, "\t\t\tretval: %s\n", (char *)arg->retval);
 }
 
-Eupnp_State_Variable_Allowed_Value *
+EAPI Eupnp_State_Variable_Allowed_Value *
 eupnp_service_state_variable_allowed_value_new(void)
 {
    Eupnp_State_Variable_Allowed_Value *v;
@@ -535,7 +540,7 @@ eupnp_service_state_variable_allowed_value_new(void)
    return v;
 }
 
-void
+EAPI void
 eupnp_service_state_variable_allowed_value_free(Eupnp_State_Variable_Allowed_Value *value)
 {
    CHECK_NULL_RET(value);
@@ -548,7 +553,7 @@ eupnp_service_state_variable_allowed_value_free(Eupnp_State_Variable_Allowed_Val
  *
  * Creates a service proxy capable of controlling the service.
  */
-void
+EAPI void
 eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_Cb ready_cb, void *data)
 {
    CHECK_NULL_RET(service);
@@ -579,7 +584,7 @@ eupnp_service_proxy_new(Eupnp_Service_Info *service, Eupnp_Service_Proxy_Ready_C
    eupnp_service_proxy_fetch(proxy, service->location, service->scpd_URL);
 }
 
-Eupnp_Service_Proxy *
+EAPI Eupnp_Service_Proxy *
 eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET_VAL(proxy, NULL);
@@ -592,7 +597,7 @@ eupnp_service_proxy_ref(Eupnp_Service_Proxy *proxy)
    return proxy;
 }
 
-void
+EAPI void
 eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
@@ -611,7 +616,7 @@ eupnp_service_proxy_unref(Eupnp_Service_Proxy *proxy)
       eupnp_service_proxy_free(proxy);
 }
 
-void
+EAPI void
 eupnp_service_proxy_free(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
@@ -649,7 +654,7 @@ eupnp_service_proxy_free(Eupnp_Service_Proxy *proxy)
    free(proxy);
 }
 
-void
+EAPI void
 eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, const char *scpd_url)
 {
    CHECK_NULL_RET(proxy);
@@ -691,7 +696,7 @@ eupnp_service_proxy_fetch(Eupnp_Service_Proxy *proxy, const char *base_url, cons
      }
 }
 
-void
+EAPI void
 eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
@@ -704,7 +709,7 @@ eupnp_service_proxy_dump(Eupnp_Service_Proxy *proxy)
    eupnp_service_proxy_state_table_dump(proxy);
 }
 
-void
+EAPI void
 eupnp_service_proxy_actions_dump(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
@@ -715,7 +720,7 @@ eupnp_service_proxy_actions_dump(Eupnp_Service_Proxy *proxy)
 	eupnp_service_action_dump(action);
 }
 
-void
+EAPI void
 eupnp_service_proxy_state_table_dump(Eupnp_Service_Proxy *proxy)
 {
    CHECK_NULL_RET(proxy);
@@ -726,7 +731,7 @@ eupnp_service_proxy_state_table_dump(Eupnp_Service_Proxy *proxy)
 	eupnp_service_state_variable_dump(st);
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action *action)
 {
    CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
@@ -737,7 +742,7 @@ eupnp_service_proxy_action_add(Eupnp_Service_Proxy *proxy, Eupnp_Service_Action 
    return EINA_TRUE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_state_variable_add(Eupnp_Service_Proxy *proxy, Eupnp_State_Variable *st)
 {
    CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
@@ -748,7 +753,7 @@ eupnp_service_proxy_state_variable_add(Eupnp_Service_Proxy *proxy, Eupnp_State_V
    return EINA_TRUE;
 }
 
-Eupnp_State_Variable *
+EAPI Eupnp_State_Variable *
 eupnp_service_proxy_state_variable_get(Eupnp_Service_Proxy *proxy, const char *name, int name_len)
 {
    CHECK_NULL_RET_VAL(proxy, NULL);
@@ -768,7 +773,7 @@ eupnp_service_proxy_state_variable_get(Eupnp_Service_Proxy *proxy, const char *n
    return NULL;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_has_action(Eupnp_Service_Proxy *proxy, const char *action)
 {
    CHECK_NULL_RET_VAL(action, EINA_FALSE);
@@ -784,7 +789,7 @@ eupnp_service_proxy_has_action(Eupnp_Service_Proxy *proxy, const char *action)
 }
 
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, Eupnp_Action_Response_Cb response_cb, void *data, ...)
 {
    CHECK_NULL_RET_VAL(proxy, EINA_FALSE);
@@ -959,7 +964,7 @@ eupnp_service_proxy_action_send(Eupnp_Service_Proxy *proxy, const char *action, 
    return EINA_FALSE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_has_variable(Eupnp_Service_Proxy *proxy, const char *variable_name)
 {
    CHECK_NULL_RET_VAL(variable_name, EINA_FALSE);
@@ -974,7 +979,7 @@ eupnp_service_proxy_has_variable(Eupnp_Service_Proxy *proxy, const char *variabl
    return EINA_FALSE;
 }
 
-Eupnp_Event_Subscriber *
+EAPI Eupnp_Event_Subscriber *
 eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, const char *var_name, Eupnp_State_Variable_Event_Cb cb, Eina_Bool auto_renew, Eina_Bool infinite_subscription, int timeout, void *data)
 {
    // TODO use auto-renew
@@ -1151,7 +1156,7 @@ eupnp_service_proxy_state_variable_events_subscribe(Eupnp_Service_Proxy *proxy, 
 }
 
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_proxy_state_variable_events_unsubscribe(Eupnp_Event_Subscriber *subscriber)
 {
    CHECK_NULL_RET_VAL(subscriber, EINA_FALSE);

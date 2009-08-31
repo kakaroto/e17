@@ -22,6 +22,10 @@
 #ifndef _EUPNP_H
 #define _EUPNP_H
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifdef EAPI
 # undef EAPI
 #endif

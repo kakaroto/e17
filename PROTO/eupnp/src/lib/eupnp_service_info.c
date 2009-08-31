@@ -19,11 +19,16 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <stdio.h>
 #include <string.h>
+
 #include <Eina.h>
 
+#include "Eupnp.h"
 #include "eupnp_log.h"
 #include "eupnp_service_info.h"
 #include "eupnp_private.h"
@@ -45,7 +50,7 @@ static int _log_dom = -1;
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-int
+EAPI int
 eupnp_service_info_init(void)
 {
    if (_eupnp_service_info_main_count)
@@ -76,7 +81,7 @@ eupnp_service_info_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-int
+EAPI int
 eupnp_service_info_shutdown(void)
 {
    if (_eupnp_service_info_main_count != 1)
@@ -102,7 +107,7 @@ eupnp_service_info_shutdown(void)
  *
  * @return On success, a Eupnp_Service_Info instance. Otherwise, NULL.
  */
-Eupnp_Service_Info *
+EAPI Eupnp_Service_Info *
 eupnp_service_info_new(const char *udn, const char *location, const char *service_type, void *resource, void (* resource_free)(void *resource))
 {
    /* FIXME Location can point to a root device XML (upnp) or just to the
@@ -157,7 +162,7 @@ eupnp_service_info_new(const char *udn, const char *location, const char *servic
  *
  * @param d Eupnp_Service_Info instance
  */
-void
+EAPI void
 eupnp_service_info_free(Eupnp_Service_Info *d)
 {
    /*
@@ -202,7 +207,7 @@ eupnp_service_info_free(Eupnp_Service_Info *d)
  *
  * @return The reference to the object
  */
-Eupnp_Service_Info *
+EAPI Eupnp_Service_Info *
 eupnp_service_info_ref(Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET_VAL(service_info, NULL);
@@ -219,7 +224,7 @@ eupnp_service_info_ref(Eupnp_Service_Info *service_info)
  *
  * @param service_info Instance to dereference
  */
-void
+EAPI void
 eupnp_service_info_unref(Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET(service_info);
@@ -238,7 +243,7 @@ eupnp_service_info_unref(Eupnp_Service_Info *service_info)
       eupnp_service_info_free(service_info);
 }
 
-void
+EAPI void
 eupnp_service_info_dump(Eupnp_Service_Info *service_info)
 {
    CHECK_NULL_RET(service_info);

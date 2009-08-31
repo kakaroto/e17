@@ -9,7 +9,7 @@ AM_CFLAGS = -I$(top_srcdir)/src/lib @EINA_CFLAGS@ @LIBXML2_CFLAGS@
 
 lib_LTLIBRARIES = libeupnp.la
 
-include_HEADERS = \
+EUPNPHEADERS = \
 	Eupnp.h \
 	eupnp_utils.h \
 	eupnp_ssdp.h \
@@ -47,3 +47,10 @@ libeupnp_la_SOURCES = \
 
 libeupnp_la_LIBADD = @EINA_LIBS@ @LIBXML2_LIBS@
 libeupnp_la_LDFLAGS = -version-info @version_info@
+
+installed_mainheaderdir = $(includedir)/eupnp-@VMAJ@
+dist_installed_mainheader_DATA = Eupnp.h
+
+installed_headersdir = $(includedir)/eupnp-@VMAJ@
+dist_installed_headers_DATA = $(EUPNPHEADERS)
+

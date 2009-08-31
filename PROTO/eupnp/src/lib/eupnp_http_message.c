@@ -19,10 +19,16 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Eina.h>
 
+#include "Eupnp.h"
 #include "eupnp_log.h"
 #include "eupnp_http_message.h"
 #include "eupnp_udp_transport.h"

@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -33,12 +37,14 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <ifaddrs.h>
+
 #include <Eina.h>
 
+#include "Eupnp.h"
 #include "eupnp_utils.h"
 
 
-char *
+EAPI char *
 current_date_http_string_get()
 {
    struct tm tm;
@@ -55,7 +61,7 @@ current_date_http_string_get()
    return strdup(date);
 }
 
-int
+EAPI int
 random_port_get()
 {
    srand(time(NULL));
@@ -65,7 +71,7 @@ random_port_get()
 /*
  * Returns the length of <scheme>://<netloc> from a complete URL.
  */
-int
+EAPI int
 eupnp_utils_url_base_get(const char *url)
 {
    if (!url) return 0;
@@ -90,7 +96,7 @@ eupnp_utils_url_base_get(const char *url)
  * Returns EINA_TRUE if the url is relative, that is, does not contain
  * <scheme>://<netloc>.
  */
-Eina_Bool
+EAPI Eina_Bool
 eupnp_utils_url_is_relative(const char *url)
 {
    if (!eupnp_utils_url_base_get(url)) return EINA_TRUE;
@@ -100,7 +106,7 @@ eupnp_utils_url_is_relative(const char *url)
 /*
  * Returns the current system time
  */
-double
+EAPI double
 eupnp_time_get(void) {
    struct timeval tv;
    gettimeofday(&tv, NULL);
@@ -192,7 +198,7 @@ get_host_ip(const char *name)
 * Author: Jorn Baayen <jorn@openedhand.com>
 *
 */
-const char *
+EAPI const char *
 default_host_ip_get(void)
 {
    FILE *fp;

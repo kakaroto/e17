@@ -24,6 +24,8 @@
 
 #include <libxml/SAX2.h>
 #include <Eina.h>
+
+#include "Eupnp.h"
 #include "eupnp_service_proxy.h"
 
 typedef struct _Eupnp_Service_Parser_State Eupnp_Service_Parser_State;
@@ -79,9 +81,9 @@ struct _Eupnp_Service_Parser {
    int chunk_acum_len;
 };
 
-int       eupnp_service_parser_init(void);
-int       eupnp_service_parser_shutdown(void);
-Eina_Bool eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Proxy *s) EINA_ARG_NONNULL(1,2,3);
+EAPI int       eupnp_service_parser_init(void);
+EAPI int       eupnp_service_parser_shutdown(void);
+EAPI Eina_Bool eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Proxy *s) EINA_ARG_NONNULL(1,2,3);
 
 
 #endif /* _EUPNP_SERVICE_PARSER_H */

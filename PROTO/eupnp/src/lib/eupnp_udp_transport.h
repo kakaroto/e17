@@ -19,13 +19,13 @@
  *
  */
 
+#ifndef _EUPNP_UDP_TRANSPORT_H
+#define _EUPNP_UDP_TRANSPORT_H
+
 #include <Eina.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
-#ifndef _EUPNP_UDP_TRANSPORT_H
-#define _EUPNP_UDP_TRANSPORT_H
 
 
 #define EUPNP_UDP_PACKET_LEN 5000
@@ -51,12 +51,12 @@ struct _Eupnp_UDP_Datagram {
 };
 
 
-Eupnp_UDP_Transport   *eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr) EINA_ARG_NONNULL(1,2,3);
-int                    eupnp_udp_transport_close(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
-void                   eupnp_udp_transport_free(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
-Eupnp_UDP_Datagram    *eupnp_udp_transport_recv(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
-Eupnp_UDP_Datagram    *eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
-int                    eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const char *addr, int port) EINA_ARG_NONNULL(1,2,3,4);
-void                   eupnp_udp_transport_datagram_free(Eupnp_UDP_Datagram *datagram) EINA_ARG_NONNULL(1);
+EAPI Eupnp_UDP_Transport   *eupnp_udp_transport_new(const char *addr, int port, const char *iface_addr) EINA_ARG_NONNULL(1,2,3);
+EAPI int                    eupnp_udp_transport_close(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
+EAPI void                   eupnp_udp_transport_free(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
+EAPI Eupnp_UDP_Datagram    *eupnp_udp_transport_recv(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
+EAPI Eupnp_UDP_Datagram    *eupnp_udp_transport_recvfrom(Eupnp_UDP_Transport *s) EINA_ARG_NONNULL(1);
+EAPI int                    eupnp_udp_transport_sendto(Eupnp_UDP_Transport *s, const void *buffer, const char *addr, int port) EINA_ARG_NONNULL(1,2,3,4);
+EAPI void                   eupnp_udp_transport_datagram_free(Eupnp_UDP_Datagram *datagram) EINA_ARG_NONNULL(1);
 
 #endif /* _Eupnp_UDP_Transport_H */

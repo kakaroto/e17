@@ -24,6 +24,8 @@
 
 #include <libxml/SAX2.h>
 #include <Eina.h>
+
+#include "Eupnp.h"
 #include "eupnp_log.h"
 #include "eupnp_device_info.h"
 #include "eupnp_service_info.h"
@@ -87,8 +89,8 @@ struct _Eupnp_Device_Parser {
    xmlParserCtxtPtr ctx;
 };
 
-extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
+EAPI extern int EUPNP_ERROR_DEVICE_PARSER_INSUFFICIENT_FEED;
 
-Eina_Bool eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_Info *d);
+EAPI Eina_Bool eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_Info *d);
 
 #endif /* _EUPNP_DEVICE_PARSER_H */

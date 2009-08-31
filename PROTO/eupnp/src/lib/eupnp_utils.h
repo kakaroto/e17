@@ -24,13 +24,13 @@
 
 #include <Eina.h>
 
-char       *current_date_http_string_get();
-int         random_port_get();
-const char *default_host_ip_get();
+EAPI char       *current_date_http_string_get();
+EAPI int         random_port_get();
+EAPI const char *default_host_ip_get();
 
-int       eupnp_utils_url_base_get(const char *url);
-Eina_Bool eupnp_utils_url_is_relative(const char *url);
+EAPI int         eupnp_utils_url_base_get(const char *url);
+EAPI Eina_Bool   eupnp_utils_url_is_relative(const char *url);
 
-double    eupnp_time_get(void);
+EAPI double      eupnp_time_get(void);
 
 #endif /* _EUPNP_UTILS_H */

@@ -24,7 +24,7 @@ if USE_MODULE_EUPNP_ECORE
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = eupnp.pc $(pecore)
+pkgconfig_DATA = eupnp-0.pc $(pecore)
 
 
 # Tests

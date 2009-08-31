@@ -24,6 +24,7 @@ VMIN=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $2);}'`
 VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
+AC_SUBST(VMAJ)
 AC_SUBST(version_info)
 
 AC_CHECK_FUNCS(realpath)
@@ -50,7 +51,7 @@ AC_OPTIONAL_MODULE([eupnp_ecore], true, [CHECK_MODULE_ECORE])
 PKG_CHECK_MODULES(ELM, elementary)
 
 AC_OUTPUT([
-eupnp.pc
+eupnp-0.pc
 eupnp-ecore.pc
 Makefile
 src/Makefile

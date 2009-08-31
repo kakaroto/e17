@@ -27,6 +27,7 @@
 
 #include "eupnp_udp_transport.h"
 
+
 struct _Eupnp_HTTP_Header {
    const char *key;
    const char *value;
@@ -60,27 +61,27 @@ typedef struct _Eupnp_HTTP_Response Eupnp_HTTP_Response;
 typedef struct _Eupnp_HTTP_Header Eupnp_HTTP_Header;
 
 
-Eupnp_HTTP_Request  *eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1);
-Eupnp_HTTP_Response *eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1);
+EAPI Eupnp_HTTP_Request  *eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1);
+EAPI Eupnp_HTTP_Response *eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1);
 
-Eina_Bool            eupnp_http_message_is_response(const char *msg) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_http_message_is_request(const char *msg) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_http_message_is_response(const char *msg) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_http_message_is_request(const char *msg) EINA_ARG_NONNULL(1);
 
-Eupnp_HTTP_Header   *eupnp_http_header_new(const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3);
-void                 eupnp_http_header_free(Eupnp_HTTP_Header *h) EINA_ARG_NONNULL(1);
-const char          *eupnp_http_header_get(Eina_Array *headers, const char *key) EINA_ARG_NONNULL(1,2);
+EAPI Eupnp_HTTP_Header   *eupnp_http_header_new(const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3);
+EAPI void                 eupnp_http_header_free(Eupnp_HTTP_Header *h) EINA_ARG_NONNULL(1);
+EAPI const char          *eupnp_http_header_get(Eina_Array *headers, const char *key) EINA_ARG_NONNULL(1,2);
 
-Eupnp_HTTP_Request  *eupnp_http_request_new(const char *method, int method_len, const char *uri, int uri_len, const char *httpver, int httpver_len, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4,5,6,7,8);
-void                 eupnp_http_request_free(Eupnp_HTTP_Request *r) EINA_ARG_NONNULL(1);
-void                 eupnp_http_request_dump(const Eupnp_HTTP_Request *r) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_http_request_header_add(Eupnp_HTTP_Request *r, const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3,4);
-const char          *eupnp_http_request_header_get(Eupnp_HTTP_Request *r, const char *key) EINA_ARG_NONNULL(1,2);
+EAPI Eupnp_HTTP_Request  *eupnp_http_request_new(const char *method, int method_len, const char *uri, int uri_len, const char *httpver, int httpver_len, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4,5,6,7,8);
+EAPI void                 eupnp_http_request_free(Eupnp_HTTP_Request *r) EINA_ARG_NONNULL(1);
+EAPI void                 eupnp_http_request_dump(const Eupnp_HTTP_Request *r) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_http_request_header_add(Eupnp_HTTP_Request *r, const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3,4);
+EAPI const char          *eupnp_http_request_header_get(Eupnp_HTTP_Request *r, const char *key) EINA_ARG_NONNULL(1,2);
 
-Eupnp_HTTP_Response *eupnp_http_response_new(const char *httpver, int httpver_len, const char *status_code, int status_code_len, const char *reason_phrase, int reason_phrase_len, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4,5,6,7,8);
-void                 eupnp_http_response_free(Eupnp_HTTP_Response *r) EINA_ARG_NONNULL(1);
-void                 eupnp_http_response_dump(Eupnp_HTTP_Response *r) EINA_ARG_NONNULL(1);
-Eina_Bool            eupnp_http_response_header_add(Eupnp_HTTP_Response *r, const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3,4);
-const char          *eupnp_http_response_header_get(Eupnp_HTTP_Response *r, const char *key) EINA_ARG_NONNULL(1,2);
+EAPI Eupnp_HTTP_Response *eupnp_http_response_new(const char *httpver, int httpver_len, const char *status_code, int status_code_len, const char *reason_phrase, int reason_phrase_len, void *resource, void (*resource_free)(void *resource)) EINA_ARG_NONNULL(1,2,3,4,5,6,7,8);
+EAPI void                 eupnp_http_response_free(Eupnp_HTTP_Response *r) EINA_ARG_NONNULL(1);
+EAPI void                 eupnp_http_response_dump(Eupnp_HTTP_Response *r) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool            eupnp_http_response_header_add(Eupnp_HTTP_Response *r, const char *key, int key_len, const char *value, int value_len) EINA_ARG_NONNULL(1,2,3,4);
+EAPI const char          *eupnp_http_response_header_get(Eupnp_HTTP_Response *r, const char *key) EINA_ARG_NONNULL(1,2);
 
 
 #endif /* _EUPNP_HTTP_MESSAGE_H */

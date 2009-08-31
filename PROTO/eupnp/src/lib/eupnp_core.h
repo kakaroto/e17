@@ -23,6 +23,8 @@
 #define _EUPNP_CORE_H
 
 #include <Eina.h>
+
+#include "Eupnp.h"
 #include "eupnp_http_message.h"
 
 typedef void* Eupnp_Fd_Handler;
@@ -72,40 +74,40 @@ typedef void (*Eupnp_Server_Free_Func) (Eupnp_Server server);
 typedef const char * (*Eupnp_Server_Url_Get_Func) (Eupnp_Server server);
 
 
-void        eupnp_core_fd_handler_add_func_set(Eupnp_Fd_Handler_Add_Func func);
-void        eupnp_core_fd_handler_del_func_set(Eupnp_Fd_Handler_Del_Func func);
-void        eupnp_core_timer_add_func_set(Eupnp_Timer_Add_Func func);
-void        eupnp_core_timer_del_func_set(Eupnp_Timer_Del_Func func);
-void        eupnp_core_idler_add_func_set(Eupnp_Idler_Add_Func func);
-void        eupnp_core_idler_del_func_set(Eupnp_Idler_Del_Func func);
+EAPI void        eupnp_core_fd_handler_add_func_set(Eupnp_Fd_Handler_Add_Func func);
+EAPI void        eupnp_core_fd_handler_del_func_set(Eupnp_Fd_Handler_Del_Func func);
+EAPI void        eupnp_core_timer_add_func_set(Eupnp_Timer_Add_Func func);
+EAPI void        eupnp_core_timer_del_func_set(Eupnp_Timer_Del_Func func);
+EAPI void        eupnp_core_idler_add_func_set(Eupnp_Idler_Add_Func func);
+EAPI void        eupnp_core_idler_del_func_set(Eupnp_Idler_Del_Func func);
 
-void        eupnp_core_request_func_set(Eupnp_Request_Func func);
-void        eupnp_core_request_free_func_set(Eupnp_Request_Free_Func func);
+EAPI void        eupnp_core_request_func_set(Eupnp_Request_Func func);
+EAPI void        eupnp_core_request_free_func_set(Eupnp_Request_Free_Func func);
 
-void        eupnp_core_server_add_func_set(Eupnp_Server_Add_Func func);
-void        eupnp_core_server_free_func_set(Eupnp_Server_Free_Func func);
-void        eupnp_core_server_listen_url_get_func_set(Eupnp_Server_Url_Get_Func func);
+EAPI void        eupnp_core_server_add_func_set(Eupnp_Server_Add_Func func);
+EAPI void        eupnp_core_server_free_func_set(Eupnp_Server_Free_Func func);
+EAPI void        eupnp_core_server_listen_url_get_func_set(Eupnp_Server_Url_Get_Func func);
 
 
 /*
  * Public API
  */
 
-Eupnp_Fd_Handler eupnp_core_fd_handler_add(int fd, Eupnp_Fd_Flags flags, Eupnp_Fd_Handler_Cb cb, void *data);
-Eina_Bool        eupnp_core_fd_handler_del(Eupnp_Fd_Handler handler);
+EAPI Eupnp_Fd_Handler eupnp_core_fd_handler_add(int fd, Eupnp_Fd_Flags flags, Eupnp_Fd_Handler_Cb cb, void *data);
+EAPI Eina_Bool        eupnp_core_fd_handler_del(Eupnp_Fd_Handler handler);
 
-Eupnp_Timer      eupnp_core_timer_add(double interval, Eupnp_Timer_Cb timer, void *data);
-Eina_Bool        eupnp_core_timer_del(Eupnp_Timer timer);
+EAPI Eupnp_Timer      eupnp_core_timer_add(double interval, Eupnp_Timer_Cb timer, void *data);
+EAPI Eina_Bool        eupnp_core_timer_del(Eupnp_Timer timer);
 
-Eupnp_Idler      eupnp_core_idler_add(Eupnp_Idler_Cb idler_func, void *data);
-Eina_Bool        eupnp_core_idler_del(Eupnp_Idler idler);
+EAPI Eupnp_Idler      eupnp_core_idler_add(Eupnp_Idler_Cb idler_func, void *data);
+EAPI Eina_Bool        eupnp_core_idler_del(Eupnp_Idler idler);
 
-Eupnp_Request    eupnp_core_http_request_send(const char *url, const char *request, Eina_Array *additional_headers, const char *content_type, size_t body_length, const char *body, Eupnp_Request_Data_Cb data_cb, Eupnp_Request_Completed_Cb completed_cb, void *data);
-void             eupnp_core_http_request_free(Eupnp_Request request);
+EAPI Eupnp_Request    eupnp_core_http_request_send(const char *url, const char *request, Eina_Array *additional_headers, const char *content_type, size_t body_length, const char *body, Eupnp_Request_Data_Cb data_cb, Eupnp_Request_Completed_Cb completed_cb, void *data);
+EAPI void             eupnp_core_http_request_free(Eupnp_Request request);
 
-Eupnp_Server     eupnp_core_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *data);
-void             eupnp_core_server_free(Eupnp_Server server);
+EAPI Eupnp_Server     eupnp_core_server_add(const char *name, int port, Eupnp_Client_Data_Cb cb, void *data);
+EAPI void             eupnp_core_server_free(Eupnp_Server server);
 
-const char      *eupnp_core_server_listen_url_get(Eupnp_Server server);
+EAPI const char      *eupnp_core_server_listen_url_get(Eupnp_Server server);
 
 #endif /* _EUPNP_CORE_H */

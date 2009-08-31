@@ -19,8 +19,13 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <string.h>
 
+#include "Eupnp.h"
 #include "eupnp_service_parser.h"
 #include "eupnp_log.h"
 
@@ -593,7 +598,7 @@ eupnp_service_parse_check_finished(Eupnp_Service_Proxy *d)
  * Public API
  */
 
-int
+EAPI int
 eupnp_service_parser_init(void)
 {
    if (_eupnp_service_parser_init)
@@ -619,7 +624,7 @@ eupnp_service_parser_init(void)
    return ++_eupnp_service_parser_init;
 }
 
-int
+EAPI int
 eupnp_service_parser_shutdown(void)
 {
    if (_eupnp_service_parser_init != 1)
@@ -634,7 +639,7 @@ eupnp_service_parser_shutdown(void)
    return --_eupnp_service_parser_init;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_service_parse_buffer(const char *buffer, int buffer_len, Eupnp_Service_Proxy *s)
 {
    Eina_Bool ret = EINA_FALSE;

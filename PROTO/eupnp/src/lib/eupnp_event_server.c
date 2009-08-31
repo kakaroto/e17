@@ -19,9 +19,15 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <string.h>
+
 #include <Eina.h>
 
+#include "Eupnp.h"
 #include "eupnp_event_server.h"
 #include "eupnp_log.h"
 #include "eupnp_core.h"

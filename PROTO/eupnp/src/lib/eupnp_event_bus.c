@@ -19,9 +19,15 @@
  *
  */
 
-#include <Eina.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 
+#include <Eina.h>
+
+#include "Eupnp.h"
 #include "eupnp_log.h"
 #include "eupnp_event_bus.h"
 #include "eupnp_private.h"

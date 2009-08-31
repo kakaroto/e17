@@ -19,9 +19,15 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
+
 #include <Eina.h>
 
+#include "Eupnp.h"
 #include "eupnp_control_point.h"
 
 
