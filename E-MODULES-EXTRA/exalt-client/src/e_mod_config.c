@@ -5,6 +5,7 @@ struct _E_Config_Dialog_Data
 {
     int mode;
     int notification;
+    int save_network;
 };
 
 /* Local Function Prototypes */
@@ -69,6 +70,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
     /* load a temp copy of the config variables */
     cfdata->mode = exalt_conf->mode;
     cfdata->notification = exalt_conf->notification;
+    cfdata->save_network = exalt_conf->save_network;
 }
 
     static Evas_Object *
@@ -91,6 +93,14 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+
+    of = e_widget_framelist_add(evas, D_("Wireless network"), 0);
+    e_widget_framelist_content_align_set(of, 0.0, 0.0);
+    notif = e_widget_check_add(evas, D_("Save the configuration of each wireless network"), &(cfdata->save_network));
+    e_widget_framelist_object_append(of, notif);
+
+    e_widget_list_object_append(o, of, 1, 1, 0.5);
+
     of = e_widget_framelist_add(evas, D_("Notifications"), 0);
     e_widget_framelist_content_align_set(of, 0.0, 0.0);
     notif = e_widget_check_add(evas, D_("Enable the notifications"), &(cfdata->notification));
@@ -110,6 +120,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
     exalt_conf->mode = cfdata->mode;
     exalt_conf->notification = cfdata->notification;
+    exalt_conf->save_network = cfdata->save_network;
     e_config_save_queue();
     return 1;
 }

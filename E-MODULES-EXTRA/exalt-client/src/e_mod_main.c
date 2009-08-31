@@ -77,7 +77,7 @@ e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, id, STR);
     E_CONFIG_VAL(D, T, mode, INT);
     E_CONFIG_VAL(D, T, notification, INT);
-
+    E_CONFIG_VAL(D, T, save_network, INT)
 
     conf_edd = E_CONFIG_DD_NEW("Config", Config);
 #undef T
@@ -87,6 +87,7 @@ e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, version, INT);
     E_CONFIG_VAL(D, T, mode, INT); /* our var from header */
     E_CONFIG_VAL(D, T, notification, INT); /* our var from header */
+    E_CONFIG_VAL(D, T, save_network, INT);
     E_CONFIG_LIST(D, T, conf_items, conf_item_edd); /* the list */
 
     /* Tell E to find any existing module data. First run ? */
@@ -415,6 +416,7 @@ _exalt_conf_new(void)
     /* setup defaults */
     IFMODCFG(0x008d);
     exalt_conf->mode = 0;
+    exalt_conf->save_network = 1;
     exalt_conf->notification = 1;
     _exalt_conf_item_get(NULL);
     IFMODCFGEND;
@@ -483,6 +485,7 @@ _exalt_conf_item_get(const char *id)
     ci->id = eina_stringshare_add(id);
     ci->mode = 0;
     ci->notification = 1;
+    ci->save_network=1;
     exalt_conf->conf_items = eina_list_append(exalt_conf->conf_items, ci);
     return ci;
 }
@@ -567,6 +570,9 @@ void response_cb(Exalt_DBus_Response* response, void* data )
     Instance* inst = data;
     char buf[1024];
     E_Notification* notify;
+
+    if(exalt_dbus_response_error_is(response))
+        return;
 
     int id = exalt_dbus_response_msg_id_get(response);
     int send_notif = 0;
@@ -682,8 +688,11 @@ void response_cb(Exalt_DBus_Response* response, void* data )
             printf("%s\n",exalt_dbus_response_string_get(response));
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET:
-
             printf("The new driver is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_NETWORK_CONNECTION_GET:
+            if_network_dialog_update(inst, response);
+            if_network_dialog_basic_update(inst, response);
             break;
         default: ;
     }

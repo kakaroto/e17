@@ -56,6 +56,7 @@ struct _Config
    /* actual config properties; Define your own. (per-module) */
    int mode;
    int notification;
+   int save_network;
 };
 
 /* This struct used to hold config for individual items from above list */
@@ -67,6 +68,7 @@ struct _Config_Item
    /* actual config properties; Define your own per-item (pos, clr) */
    int mode;
    int notification;
+   int save_network;
 };
 
 struct _Wired_Dialog
@@ -191,7 +193,10 @@ struct _Network_Dialog
     Evas_Object* entry_pwd;
     char* pwd;
 
+    Evas_Object *radio_wpa[32];
     //wep
+    Evas_Object *radio_wep_hexa;
+    Evas_Object *radio_wep_ascii;
     int wep_key_hexa;
 
     //wpa

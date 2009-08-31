@@ -226,42 +226,32 @@ void if_network_dialog_new_cb_apply(void *data, E_Dialog *dialog)
     exalt_conn_cmd_after_apply_set(conn, inst->network_new.cmd);
 
     //wireless part
-    Exalt_Wireless_Network *n = exalt_wireless_network_new(NULL);
+    Exalt_Connection_Network *n = exalt_conn_network_new();
     exalt_conn_network_set(conn,n);
+    exalt_conn_network_essid_set(n, inst->network_new.essid);
+    exalt_conn_network_mode_set(n, MODE_IBSS);
 
-    exalt_conn_wep_key_hexa_set(conn, 0);
-    exalt_wireless_network_essid_set(n, inst->network_new.essid);
-    exalt_wireless_network_mode_set(n, MODE_IBSS);
     switch(inst->network_new.enc)
     {
         case EXALT_ENCRYPTION_NONE:
 
             break;
         case EXALT_ENCRYPTION_WEP_HEXA:
-            exalt_conn_wep_key_hexa_set(conn, 1);
+            exalt_conn_network_wep_hexa_set(n, 1);
         case EXALT_ENCRYPTION_WEP_ASCII:
-            exalt_wireless_network_encryption_set(n, 1);
-            exalt_conn_key_set(conn, inst->network_new.pwd);
+            exalt_conn_network_wep_set(n ,1);
+            exalt_conn_network_encryption_set(n, 1);
+            exalt_conn_network_key_set(n, inst->network_new.pwd);
             break;
         case EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII:
-            exalt_wireless_network_encryption_set(n, 1);
-            exalt_conn_key_set(conn, inst->network_new.pwd);
+            exalt_conn_network_encryption_set(n, 1);
+            exalt_conn_network_key_set(n, inst->network_new.pwd);
+            exalt_conn_network_wpa_set(n, 1);
 
-            exalt_wireless_network_ie_choice_set(n,0);
-            ie = exalt_wireless_network_ie_new();
-            exalt_wireless_network_ie_auth_choice_set(ie,0);
-            exalt_wireless_network_ie_pairwise_choice_set(ie,0);
-
-            exalt_wireless_network_ie_wpa_type_set(ie, WPA_TYPE_WPA);
-            exalt_wireless_network_ie_group_cypher_set(ie, CYPHER_NAME_TKIP);
-            exalt_wireless_network_ie_pairwise_cypher_set(ie, CYPHER_NAME_TKIP, 0);
-            exalt_wireless_network_ie_pairwise_cypher_number_set(ie, 1);
-            exalt_wireless_network_ie_auth_suites_set(ie, AUTH_SUITES_PSK, 0);
-            exalt_wireless_network_ie_auth_suites_number_set(ie, 1);
-
-            l = exalt_wireless_network_ie_get(n);
-            l = eina_list_append(l, ie);
-            exalt_wireless_network_ie_set(n, l);
+            exalt_conn_network_wpa_type_set(n,WPA_TYPE_WPA);
+            exalt_conn_network_group_cypher_set(n, CYPHER_NAME_TKIP);
+            exalt_conn_network_pairwise_cypher_set(n, CYPHER_NAME_TKIP);
+            exalt_conn_network_auth_suites_set(n, AUTH_SUITES_PSK);
             break;
         default: ;
     }

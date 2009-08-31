@@ -192,6 +192,7 @@ void if_network_dialog_basic_set(Instance *inst, Popup_Elt* network)
     exalt_dbus_eth_link_is(inst->conn,network->iface);
     exalt_dbus_wireless_essid_get(inst->conn,network->iface);
     exalt_dbus_eth_connected_is(inst->conn,network->iface);
+    exalt_dbus_network_connection_get(inst->conn, exalt_wireless_network_essid_get(network->n));
 }
 
 void if_network_dialog_basic_hide(Instance *inst)
@@ -217,13 +218,19 @@ void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response
     char* string;
     int boolean;
     char buf[1024];
+    Exalt_Connection_Network *cn;
+    Exalt_Connection *c;
 
     if(!inst->network_basic.dialog)
         return ;
 
-    string = exalt_dbus_response_iface_get(response);
-    if(!inst->network_basic.network->iface || !string || !strcmp(inst->network_basic.network->iface,string)==0)
-        return;
+    if(exalt_dbus_response_type_get(response)!=EXALT_DBUS_RESPONSE_NETWORK_CONNECTION_GET)
+    {
+        string = exalt_dbus_response_iface_get(response);
+        if( !inst->network_basic.network->iface || !string
+                || !strcmp(inst->network_basic.network->iface,string)==0)
+            return;
+    }
 
     switch(exalt_dbus_response_type_get(response))
     {
@@ -247,6 +254,11 @@ void if_network_dialog_basic_update(Instance* inst,Exalt_DBus_Response *response
             inst->network_basic.network->is_connected = boolean;
             if_network_dialog_basic_icon_update(inst);
             break;
+        case EXALT_DBUS_RESPONSE_NETWORK_CONNECTION_GET:
+            c = exalt_dbus_response_connection_get(response);
+            cn = exalt_conn_network_get(c);
+            e_widget_entry_text_set(inst->network_basic.entry_pwd, exalt_conn_network_key_get(cn));
+            e_widget_entry_text_set(inst->network_basic.entry_login, exalt_conn_network_login_get(cn));
         default: break;
     }
 
@@ -324,24 +336,42 @@ void if_network_dialog_basic_cb_connect(void *data, void*data2)
     exalt_conn_mode_set(conn,EXALT_DHCP);
 
     //wireless part
-    Exalt_Wireless_Network *n = inst->network_basic.network->n;
+    Exalt_Connection_Network *n = exalt_conn_network_new();
     exalt_conn_network_set(conn,n);
 
-    exalt_conn_key_set(conn,
+    exalt_conn_network_key_set(n,
             e_widget_entry_text_get(inst->network_basic.entry_pwd));
-    exalt_conn_login_set(conn,
+    exalt_conn_network_login_set(n,
             e_widget_entry_text_get(inst->network_basic.entry_login));
 
-    exalt_conn_wep_key_hexa_set(conn,inst->network_basic.wep_key_hexa);
+    exalt_conn_network_essid_set(n,
+            exalt_wireless_network_essid_get(inst->network_basic.network->n));
+    exalt_conn_network_encryption_set(n,
+            exalt_wireless_network_encryption_is(inst->network_basic.network->n));
+    exalt_conn_network_wep_hexa_set(n,inst->network_basic.wep_key_hexa);
+    exalt_conn_network_mode_set(n,
+            exalt_wireless_network_mode_get(inst->network_basic.network->n));
 
-    exalt_wireless_network_ie_choice_set(n,0);
     Exalt_Wireless_Network_IE *ie = eina_list_nth(
-            exalt_wireless_network_ie_get(n),0);
+            exalt_wireless_network_ie_get(inst->network_basic.network->n),0);
+
     if(ie)
     {
-        exalt_wireless_network_ie_auth_choice_set(ie,0);
-        exalt_wireless_network_ie_pairwise_choice_set(ie,0);
+        exalt_conn_network_wpa_set(n, 1);
+        exalt_conn_network_wpa_type_set(n,
+                exalt_wireless_network_ie_wpa_type_get(ie));
+        exalt_conn_network_group_cypher_set(n,
+                exalt_wireless_network_ie_group_cypher_get(ie));
+        exalt_conn_network_pairwise_cypher_set(n,
+                exalt_wireless_network_ie_pairwise_cypher_get(ie, 0));
+        exalt_conn_network_auth_suites_set(n,
+                exalt_wireless_network_ie_auth_suites_get(ie, 0));
+
     }
+    else if(exalt_conn_network_encryption_is(n))
+        exalt_conn_network_wep_set(n, 1);
+    if(exalt_conf->save_network)
+        exalt_conn_network_save_when_apply_set(n,1);
 
     exalt_dbus_eth_conn_apply(inst->conn,inst->network_basic.network->iface,conn);
     exalt_conn_free(&conn);
