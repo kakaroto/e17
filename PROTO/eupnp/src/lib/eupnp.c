@@ -34,7 +34,7 @@ static int _eupnp_main_count = 0;
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-int
+EAPI int
 eupnp_init(void)
 {
    if (_eupnp_main_count) return ++_eupnp_main_count;
@@ -98,7 +98,7 @@ eupnp_init(void)
  *
  * @return 0 if completely shutted down.
  */
-int
+EAPI int
 eupnp_shutdown(void)
 {
    if (_eupnp_main_count != 1) return --_eupnp_main_count;

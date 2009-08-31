@@ -22,6 +22,20 @@
 #ifndef _EUPNP_H
 #define _EUPNP_H
 
+#ifdef EAPI
+# undef EAPI
+#endif
+
+#ifdef __GNUC__
+# if __GNUC__ >= 4
+#  define EAPI __attribute__ ((visibility("default")))
+# else
+#  define EAPI
+# endif
+#else
+# define EAPI
+#endif
+
 #include "eupnp_core.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_http_message.h"
@@ -34,7 +48,7 @@
 #include "eupnp_service_info.h"
 #include "eupnp_device_info.h"
 
-int eupnp_init(void);
-int eupnp_shutdown(void);
+EAPI int eupnp_init(void);
+EAPI int eupnp_shutdown(void);
 
 #endif /* _EUPNP_H */
