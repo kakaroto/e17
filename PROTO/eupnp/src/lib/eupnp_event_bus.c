@@ -92,7 +92,7 @@ eupnp_event_bus_clear_subscribers(void)
  * @return On error, returns 0. Otherwise, returns the number of times it's been
  * called.
  */
-int
+EAPI int
 eupnp_event_bus_init(void)
 {
    if (_eupnp_event_bus_main_count) return ++_eupnp_event_bus_main_count;
@@ -134,7 +134,7 @@ eupnp_event_bus_init(void)
  *
  * @return 0 if completely shutted down the module.
  */
-int
+EAPI int
 eupnp_event_bus_shutdown(void)
 {
    if (_eupnp_event_bus_main_count != 1) return --_eupnp_event_bus_main_count;
@@ -156,7 +156,7 @@ eupnp_event_bus_shutdown(void)
  * @param event_type Event type to be published
  * @param event_data Event data
  */
-void
+EAPI void
 eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
 {
    if (event_type <= EUPNP_EVENT_NONE) return;
@@ -205,7 +205,7 @@ eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
  * @return A handler that can be used for unsubscribing - an Eupnp_Subscriber
  *         instance.
  */
-Eupnp_Subscriber *
+EAPI Eupnp_Subscriber *
 eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data)
 {
    CHECK_NULL_RET_VAL(cb, NULL);
@@ -233,7 +233,7 @@ eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *
  *
  * @param s subscription handler - an Eupnp_Subscriber instance.
  */
-void
+EAPI void
 eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
 {
    CHECK_NULL_RET(s);
@@ -253,7 +253,7 @@ eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s)
    WARN_D(_log_dom, "Could not find subscriber %p on subscribers list\n", s);
 }
 
-Eupnp_Event_Type
+EAPI Eupnp_Event_Type
 eupnp_event_bus_event_type_new(void)
 {
    _event_max++;

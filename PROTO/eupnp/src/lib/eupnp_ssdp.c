@@ -20,11 +20,12 @@
  */
 
 #include <stdio.h>
-#include <Eina.h>
 #include <string.h>
+#include <Eina.h>
 
-#include "eupnp_core.h"
+#include "Eupnp.h"
 #include "eupnp_ssdp.h"
+#include "eupnp_core.h"
 #include "eupnp_log.h"
 #include "eupnp_udp_transport.h"
 #include "eupnp_device_info.h"
@@ -404,7 +405,7 @@ _eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Server *ssdp)
      }
 }
 
-Eina_Bool
+EAPI Eina_Bool
 _eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
 {
    _eupnp_ssdp_on_datagram_available(data);
@@ -421,7 +422,7 @@ _eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
 * @return On error, returns 0. Otherwise, returns the number of times it's been
 * called.
 */
-int
+EAPI int
 eupnp_ssdp_init(void)
 {
 if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
@@ -506,7 +507,7 @@ if (_eupnp_ssdp_main_count) return ++_eupnp_ssdp_main_count;
  *
  * @return 0 if completely shutted down the module.
  */
-int
+EAPI int
 eupnp_ssdp_shutdown(void)
 {
    if (_eupnp_ssdp_main_count != 1) return --_eupnp_ssdp_main_count;
@@ -530,7 +531,7 @@ eupnp_ssdp_shutdown(void)
  *
  * @return On success, a new Eupnp_SSDP_Server instance. Otherwise, NULL.
  */
-Eupnp_SSDP_Server *
+EAPI Eupnp_SSDP_Server *
 eupnp_ssdp_server_new(void)
 {
    Eupnp_SSDP_Server *ssdp;
@@ -560,7 +561,7 @@ eupnp_ssdp_server_new(void)
    return ssdp;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_ssdp_server_start(Eupnp_SSDP_Server *s)
 {
    CHECK_NULL_RET_VAL(s, EINA_FALSE);
@@ -576,7 +577,7 @@ eupnp_ssdp_server_start(Eupnp_SSDP_Server *s)
    return EINA_TRUE;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 eupnp_ssdp_server_stop(Eupnp_SSDP_Server *s)
 {
    CHECK_NULL_RET_VAL(s, EINA_FALSE);
@@ -602,7 +603,7 @@ eupnp_ssdp_server_stop(Eupnp_SSDP_Server *s)
  *
  * @param ssdp Eupnp_SSDP_Server instance to be destroyed
  */
-void
+EAPI void
 eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp)
 {
    CHECK_NULL_RET(ssdp);
@@ -621,7 +622,7 @@ eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp)
  *        document for more).
  * @return On success EINA_TRUE, EINA_FALSE on error.
  */
-Eina_Bool
+EAPI Eina_Bool
 eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *search_target)
 {
    char *msearch;

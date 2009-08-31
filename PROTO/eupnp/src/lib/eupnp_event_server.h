@@ -23,13 +23,15 @@
 #define _EUPNP_EVENT_SERVER_H
 
 #include <Eina.h>
+
+#include "Eupnp.h"
 #include "eupnp_event_bus.h"
 
 
-int   eupnp_event_server_init(void);
-int   eupnp_event_server_shutdown(void);
+EAPI int   eupnp_event_server_init(void);
+EAPI int   eupnp_event_server_shutdown(void);
 
-const char *eupnp_event_server_url_get();
-int         eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data);
+EAPI const char *eupnp_event_server_url_get();
+EAPI int         eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data);
 
 #endif /* _EUPNP_EVENT_SERVER_H */

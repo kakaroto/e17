@@ -22,10 +22,11 @@
 #include <string.h>
 #include <Eina.h>
 
-#include "eupnp_log.h"
 #include "eupnp_event_server.h"
+#include "eupnp_log.h"
 #include "eupnp_core.h"
 #include "eupnp_private.h"
+#include "eupnp_event_bus.h"
 #include "eupnp_http_message.h"
 
 
@@ -40,7 +41,6 @@ static const char *_url = NULL;
 static int _event_server_init_count = 0;
 static int _log_dom = -1;
 static int _backends = 0;
-
 
 static void
 _client_data_ready(void *buffer, int size, void *data)
@@ -84,7 +84,7 @@ _client_data_ready(void *buffer, int size, void *data)
  * Public API
  */
 
-int
+EAPI int
 eupnp_event_server_init(void)
 {
    if (_event_server_init_count) return ++_event_server_init_count;
@@ -153,7 +153,7 @@ eupnp_event_server_init(void)
    return 0;
 }
 
-int
+EAPI int
 eupnp_event_server_shutdown(void)
 {
    if (_event_server_init_count != 1) return --_event_server_init_count;
@@ -173,13 +173,13 @@ eupnp_event_server_shutdown(void)
 
 
 /*
- * Call cb(void *buffer, int size, void *data) when a client from "from" sends
+ * Calls cb(void *buffer, int size, void *data) when a client from "from" sends
  * a request.
  *
  * Associate the pair (cb, from_addr) to an event type that will be emitted by
  * the server whenever events occur.
  */
-int
+EAPI int
 eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 {
    CHECK_NULL_RET_VAL(cb, EINA_FALSE);
@@ -200,7 +200,12 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
    return event;
 }
 
-const char *
+/*
+ * Returns the URL at which the server is currently listening on.
+ *
+ * @return Listening url
+ */
+EAPI const char *
 eupnp_event_server_url_get()
 {
    return _url;

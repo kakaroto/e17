@@ -23,6 +23,7 @@
 #define _EUPNP_EVENT_BUS_H
 
 #include <Eina.h>
+#include "Eupnp.h"
 
 typedef struct _Eupnp_Subscriber Eupnp_Subscriber;
 
@@ -47,14 +48,14 @@ struct _Eupnp_Subscriber {
    void *user_data;
 };
 
-int                eupnp_event_bus_init(void);
-int                eupnp_event_bus_shutdown(void);
+EAPI int                eupnp_event_bus_init(void);
+EAPI int                eupnp_event_bus_shutdown(void);
 
-void               eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data);
-Eupnp_Subscriber  *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data) EINA_ARG_NONNULL(2);
-void               eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s) EINA_ARG_NONNULL(1);
+EAPI void               eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data);
+EAPI Eupnp_Subscriber  *eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *user_data) EINA_ARG_NONNULL(2);
+EAPI void               eupnp_event_bus_unsubscribe(Eupnp_Subscriber *s) EINA_ARG_NONNULL(1);
 
-Eupnp_Event_Type   eupnp_event_bus_event_type_new(void);
+EAPI Eupnp_Event_Type   eupnp_event_bus_event_type_new(void);
 
 
 #endif /* _EUPNP_EVENT_BUS_H */

@@ -23,8 +23,10 @@
 #define _EUPNP_SSDP_H
 
 #include <Eina.h>
-#include <eupnp_udp_transport.h>
-#include <eupnp_core.h>
+
+#include "Eupnp.h"
+#include "eupnp_udp_transport.h"
+#include "eupnp_core.h"
 
 #define EUPNP_SSDP_ADDR "239.255.255.250"
 #define EUPNP_SSDP_PORT 1900
@@ -43,13 +45,12 @@
 /*
  * Shared strings, retrieve it with stringshare{ref|add}
  */
-char *_eupnp_ssdp_notify;
-char *_eupnp_ssdp_msearch;
-char *_eupnp_ssdp_http_version;
+EAPI char *_eupnp_ssdp_notify;
+EAPI char *_eupnp_ssdp_msearch;
+EAPI char *_eupnp_ssdp_http_version;
 
 
 typedef struct _Eupnp_SSDP_Server Eupnp_SSDP_Server;
-
 
 struct _Eupnp_SSDP_Server {
    Eupnp_UDP_Transport *udp_transport;
@@ -59,14 +60,14 @@ struct _Eupnp_SSDP_Server {
 };
 
 
-int                 eupnp_ssdp_init(void);
-int                 eupnp_ssdp_shutdown(void);
+EAPI int                 eupnp_ssdp_init(void);
+EAPI int                 eupnp_ssdp_shutdown(void);
 
-Eupnp_SSDP_Server  *eupnp_ssdp_server_new(void);
-void                eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-Eina_Bool           eupnp_ssdp_server_start(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-Eina_Bool           eupnp_ssdp_server_stop(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
-Eina_Bool           eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
+EAPI Eupnp_SSDP_Server  *eupnp_ssdp_server_new(void);
+EAPI void                eupnp_ssdp_server_free(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_server_start(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_server_stop(Eupnp_SSDP_Server *ssdp) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool           eupnp_ssdp_discovery_request_send(Eupnp_SSDP_Server *ssdp, int mx, const char *search_target) EINA_ARG_NONNULL(1,2,3);
 
 
 #endif /* _EUPNP_SSDP_H */
