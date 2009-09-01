@@ -32,7 +32,7 @@ void network_conf_dialog_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_min_size_set(ilist, 150, 150);
+    e_widget_size_min_set(ilist, 150, 150);
     e_widget_frametable_object_append(flist, ilist,0, 0, 1, 1, 1, 1, 1, 1);
     //
 
@@ -44,7 +44,7 @@ void network_conf_dialog_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_min_size_set(ilist, 150, 150);
+    e_widget_size_min_set(ilist, 150, 150);
     e_widget_frametable_object_append(flist, ilist,1, 0, 1, 1, 1, 1, 1, 1);
     //
 
@@ -59,7 +59,7 @@ void network_conf_dialog_create(Instance* inst)
     e_widget_frametable_object_append(flist, inst->network_conf.bt_delete, 0, 2, 2, 1, 1, 1, 1, 1);
     //
 
-    e_widget_min_size_get(flist, &mw, &mh);
+    e_widget_size_min_get(flist, &mw, &mh);
     e_dialog_content_set(inst->network_conf.dialog, flist, mw, mh);
 
     e_win_delete_callback_set(inst->network_conf.dialog->win, network_conf_dialog_cb_del);
@@ -183,8 +183,6 @@ void network_conf_dialog_cb_delete(void *data, void *data2)
     e_widget_ilist_remove_num(inst->network_conf.list, select);
 
     exalt_dbus_network_delete(inst->conn, essid);
-    e_widget_disabled_set(inst->network_conf.bt_delete,1);
-    e_widget_disabled_set(inst->network_conf.bt_add,1);
 }
 
 void network_conf_dialog_cb_close(void *data, E_Dialog *dialog)

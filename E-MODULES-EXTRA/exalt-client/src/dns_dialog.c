@@ -32,7 +32,6 @@ void dns_dialog_create(Instance* inst)
     e_widget_ilist_go(ilist);
     e_widget_ilist_thaw(ilist);
 
-    e_widget_size_min_set(ilist, 300, 100);
     e_widget_frametable_object_append(flist, ilist,0, 0, 5, 1, 1, 1, 1, 1);
     //
 
