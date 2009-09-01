@@ -12,6 +12,7 @@ daemon.h \
 cb_ethernet.h \
 cb_wireless.h \
 cb_wirelessnetwork.h \
+cb_network.h \
 define.h \
 cb_dns.h \
 boot_process.h \
@@ -22,6 +23,7 @@ daemon.c \
 cb_ethernet.c \
 cb_wireless.c \
 cb_wirelessnetwork.c \
+cb_network.c \
 cb_dns.c \
 boot_process.c \
 cb_bootprocess.c

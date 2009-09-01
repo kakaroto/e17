@@ -326,15 +326,15 @@ void wireless_cb_apply(void *data __UNUSED__,
 {
     Wireless *wireless = data;
 
-    Exalt_Connection* c = exalt_conn_new();
+    Exalt_Configuration* c = exalt_conf_new();
 
-    exalt_conn_wireless_set(c,1);
-    exalt_conn_mode_set(c,EXALT_DHCP);
+    exalt_conf_wireless_set(c,1);
+    exalt_conf_mode_set(c,EXALT_DHCP);
 
-    Exalt_Connection_Network *n = exalt_conn_network_new();
-    exalt_conn_network_set(c,n);
+    Exalt_Configuration_Network *n = exalt_conf_network_new();
+    exalt_conf_network_set(c,n);
 
-    //exalt_conn_cmd_after_apply_set(c,
+    //exalt_conf_cmd_after_apply_set(c,
     //        elm_entry_entry_get(wireless->entry_cmd));
 
     /*
@@ -358,15 +358,15 @@ void wireless_cb_apply(void *data __UNUSED__,
     int save_when_apply;
     */
     // TODO: manage the mode BSSID
-    exalt_conn_network_essid_set(n, exalt_wireless_network_essid_get(wireless->network->wn));
-    exalt_conn_network_encryption_set(n, exalt_wireless_network_encryption_is(wireless->network->wn));
+    exalt_conf_network_essid_set(n, exalt_wireless_network_essid_get(wireless->network->wn));
+    exalt_conf_network_encryption_set(n, exalt_wireless_network_encryption_is(wireless->network->wn));
 
     if( elm_radio_value_get(wireless->radio_plain) != 0)
-        exalt_conn_network_wep_hexa_set(n,1);
+        exalt_conf_network_wep_hexa_set(n,1);
 
     if(exalt_wireless_network_ie_get(wireless->network->wn))
     {
-        exalt_conn_network_wpa_set(n, 1);
+        exalt_conf_network_wpa_set(n, 1);
 
         int choice = wireless->data_hoversel_current->choice;
         int ie_choice = choice/100;
@@ -375,19 +375,19 @@ void wireless_cb_apply(void *data __UNUSED__,
         //printf("CHOICE %d %d %d %d\n",choice,ie_choice,auth_choice,pairwise_choice);
         Exalt_Wireless_Network_IE *ie = eina_list_nth(
                 exalt_wireless_network_ie_get(wireless->network->wn),ie_choice);
-        exalt_conn_network_wpa_type_set(n, exalt_wireless_network_ie_wpa_type_get(ie));
-        exalt_conn_network_group_cypher_set(n, exalt_wireless_network_ie_group_cypher_get(ie));
-        exalt_conn_network_pairwise_cypher_set(n, exalt_wireless_network_ie_pairwise_cypher_get(ie, pairwise_choice));
-        exalt_conn_network_auth_suites_set(n, exalt_wireless_network_ie_auth_suites_get(ie, auth_choice));
+        exalt_conf_network_wpa_type_set(n, exalt_wireless_network_ie_wpa_type_get(ie));
+        exalt_conf_network_group_cypher_set(n, exalt_wireless_network_ie_group_cypher_get(ie));
+        exalt_conf_network_pairwise_cypher_set(n, exalt_wireless_network_ie_pairwise_cypher_get(ie, pairwise_choice));
+        exalt_conf_network_auth_suites_set(n, exalt_wireless_network_ie_auth_suites_get(ie, auth_choice));
     }
-    else if(exalt_conn_network_encryption_is(n))
-        exalt_conn_network_wep_set(n, 1);
+    else if(exalt_conf_network_encryption_is(n))
+        exalt_conf_network_wep_set(n, 1);
 
-    exalt_conn_network_key_set(n,
+    exalt_conf_network_key_set(n,
             elm_entry_entry_get(wireless->entry_password));
 
-    exalt_dbus_eth_conn_apply(conn,wireless->network->iface,c);
-    exalt_conn_free(&c);
+    exalt_dbus_eth_conf_apply(conn,wireless->network->iface,c);
+    exalt_conf_free(&c);
 }
 
 

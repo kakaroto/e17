@@ -78,7 +78,7 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
     e_dbus_interface_method_add(iface, "wireless_is", NULL, "b", dbus_cb_eth_wireless_is);
     e_dbus_interface_method_add(iface, "command_set", NULL, "s", dbus_cb_eth_cmd_set);
     e_dbus_interface_method_add(iface, "command_get", NULL, "s", dbus_cb_eth_cmd_get);
-    e_dbus_interface_method_add(iface, "apply", NULL, NULL, dbus_cb_eth_conn_apply);
+    e_dbus_interface_method_add(iface, "apply", NULL, NULL, dbus_cb_eth_conf_apply);
 
     e_dbus_object_interface_attach(obj, iface);
 
@@ -112,10 +112,8 @@ int setup(E_DBus_Connection *conn)
     obj = e_dbus_object_add(conn, EXALTD_PATH_WIRELESSS, NULL);
     iface = e_dbus_interface_new(EXALTD_INTERFACE_WIRELESSS);
     e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_wireless_list_get);
-    e_dbus_interface_method_add(iface, "network_configuration_get", "s", "isssssiissiiiiiiii", dbus_cb_wireless_network_configuration_get);
+    e_dbus_interface_method_add(iface, "network_configuration_get", "s", "isssssiissiiiiiiii", dbus_cb_network_configuration_get);
     e_dbus_object_interface_attach(obj, iface);
-
-
 
     return 1;
 }
@@ -272,14 +270,14 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         //else
         //  we down the card
 
-        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_udi_get(eth));
+        Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
         short not_c = 0;
         if(!c)
         {
-            c = exalt_conn_new();
+            c = exalt_conf_new();
             not_c = 1;
         }
-        exalt_eth_connection_set(eth,c);
+        exalt_eth_configuration_set(eth,c);
 
         if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == EXALT_UP)
         {
@@ -293,7 +291,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             }
 
             if(exalt_eth_link_is(eth) && exalt_eth_up_is(eth))
-                exalt_eth_conn_apply(eth, c);
+                exalt_eth_conf_apply(eth, c);
         }
         else
         {
@@ -306,30 +304,30 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if ( action == EXALT_IFACE_ACTION_LINK && exalt_eth_up_is(eth))
     {
-        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_udi_get(eth));
+        Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
         if(!c)
-            c = exalt_conn_new();
+            c = exalt_conf_new();
         if(exalt_eth_wireless_is(eth))
-            exalt_conn_wireless_set(c, 1);
+            exalt_conf_wireless_set(c, 1);
         else
-            exalt_conn_wireless_set(c, 0);
+            exalt_conf_wireless_set(c, 0);
 
-        exalt_eth_conn_apply(eth, c);
+        exalt_eth_conf_apply(eth, c);
         exalt_eth_save(CONF_FILE,eth);
     }
 
 
     if ( action == EXALT_IFACE_ACTION_UP && exalt_eth_link_is(eth) && (time(NULL) - exalt_eth_dontapplyafterup_get(eth)>2) )
     {
-        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_udi_get(eth));
+        Exalt_Configuration *c = exalt_eth_conf_load(CONF_FILE, exalt_eth_udi_get(eth));
         if(!c)
-            c = exalt_conn_new();
+            c = exalt_conf_new();
         if(exalt_eth_wireless_is(eth))
-            exalt_conn_wireless_set(c, 1);
+            exalt_conf_wireless_set(c, 1);
         else
-            exalt_conn_wireless_set(c, 0);
+            exalt_conf_wireless_set(c, 0);
 
-        exalt_eth_conn_apply(eth, c);
+        exalt_eth_conf_apply(eth, c);
         exalt_eth_save(CONF_FILE,eth);
     }
 
@@ -341,14 +339,14 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         exalt_eth_save(CONF_FILE, eth);
 
 
-    if( action==EXALT_IFACE_ACTION_CONN_APPLY_DONE)
+    if( action==EXALT_IFACE_ACTION_CONF_APPLY_DONE)
     {
         //printf("apply DONE !!!\n");
         //save the new configuration
         exalt_eth_save(CONF_FILE, eth);
     }
 
-    //if(action == EXALT_IFACE_ACTION_CONN_APPLY_START)
+    //if(action == EXALT_IFACE_ACTION_CONF_APPLY_START)
     //    printf("apply start !!\n");
 
     //waiting card
@@ -667,7 +665,7 @@ Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
 }
 
 
-DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DBusMessage *reply)
+DBusMessage* conf_from_dbusmessage(Exalt_Configuration* c,DBusMessage *msg,DBusMessage *reply)
 {
     DBusMessageIter args;
     int i;
@@ -684,10 +682,10 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
     }
     else
         dbus_message_iter_get_basic(&args, &i);
-    exalt_conn_mode_set(c,i);
+    exalt_conf_mode_set(c,i);
     dbus_message_iter_next(&args);
 
-    if(exalt_conn_mode_get(c)==EXALT_STATIC)
+    if(exalt_conf_mode_get(c)==EXALT_STATIC)
     {
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
@@ -698,7 +696,7 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
         }
         else
             dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_ip_set(c,s);
+        exalt_conf_ip_set(c,s);
         dbus_message_iter_next(&args);
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
@@ -710,7 +708,7 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
         }
         else
             dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_netmask_set(c,s);
+        exalt_conf_netmask_set(c,s);
         dbus_message_iter_next(&args);
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
@@ -722,7 +720,7 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
         }
         else
             dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_gateway_set(c,s);
+        exalt_conf_gateway_set(c,s);
         printf("gateway: %s\n",s);
         dbus_message_iter_next(&args);
     }
@@ -736,7 +734,7 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
     }
     else
         dbus_message_iter_get_basic(&args, &i);
-    exalt_conn_wireless_set(c,i);
+    exalt_conf_wireless_set(c,i);
     dbus_message_iter_next(&args);
 
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
@@ -748,68 +746,72 @@ DBusMessage* connection_from_dbusmessage(Exalt_Connection* c,DBusMessage *msg,DB
     }
     else
         dbus_message_iter_get_basic(&args, &s);
-    exalt_conn_cmd_after_apply_set(c,s);
+    exalt_conf_cmd_after_apply_set(c,s);
 
-    if(exalt_conn_wireless_is(c))
+    if(exalt_conf_wireless_is(c))
     {
         char* string;
         int integer;
-        Exalt_Connection_Network* n;
+        Exalt_Configuration_Network* n;
 
-        n = exalt_conn_network_new();
-        exalt_conn_network_set(c, n);
-
-        dbus_message_iter_next(&args);
-        dbus_message_iter_get_basic(&args, &string);
-        exalt_conn_network_essid_set(n,string);
-
-        dbus_message_iter_next(&args);
-        dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_encryption_set(n,integer);
-
-        dbus_message_iter_next(&args);
-        dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_mode_set(n,integer);
+        n = exalt_conf_network_new();
+        exalt_conf_network_set(c, n);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &string);
-        exalt_conn_network_login_set(n,string);
+        exalt_conf_network_essid_set(n,string);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &integer);
+        exalt_conf_network_encryption_set(n,integer);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &integer);
+        exalt_conf_network_mode_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &string);
-        exalt_conn_network_key_set(n,string);
+        exalt_conf_network_login_set(n,string);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &string);
+        exalt_conf_network_key_set(n,string);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_wep_set(n,integer);
+        exalt_conf_network_wep_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_wep_hexa_set(n,integer);
+        exalt_conf_network_wep_hexa_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_wpa_set(n,integer);
+        exalt_conf_network_wpa_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_wpa_type_set(n,integer);
+        exalt_conf_network_wpa_type_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_group_cypher_set(n,integer);
+        exalt_conf_network_group_cypher_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_pairwise_cypher_set(n,integer);
+        exalt_conf_network_pairwise_cypher_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_auth_suites_set(n,integer);
+        exalt_conf_network_auth_suites_set(n,integer);
 
         dbus_message_iter_next(&args);
         dbus_message_iter_get_basic(&args, &integer);
-        exalt_conn_network_save_when_apply_set(n,integer);
+        exalt_conf_network_favoris_set(n,integer);
+
+        dbus_message_iter_next(&args);
+        dbus_message_iter_get_basic(&args, &integer);
+        exalt_conf_network_save_when_apply_set(n,integer);
     }
 
 

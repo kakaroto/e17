@@ -27,7 +27,7 @@ typedef enum Exalt_Wireless_Network_Mode Exalt_Wireless_Network_Mode;
 
 #include "exalt_wireless.h"
 #include "libexalt.h"
-#include "exalt_connection.h"
+#include "exalt_configuration.h"
 #include <Eina.h>
 
 enum Exalt_Wireless_Network_Wpa_Type

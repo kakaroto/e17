@@ -386,14 +386,14 @@ int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth)
 }
 
 /**
- * @brief Apply a connection to the interface.
- * This function ask to the daemon for applying the configuration. When the connection will be apply a message will be notify (see Exalt_Enum_Action)
- * @param conn a connection
+ * @brief Apply a configuration to the interface.
+ * This function ask to the daemon for applying the configuration. When the configuration will be apply a message will be notify (see Exalt_Enum_Action)
+ * @param conn a configuration
  * @param eth the interface name
- * @param c the connection
+ * @param c the configuration
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Connection* c)
+int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Configuration* c)
 {
     DBusMessage *msg;
     char path[PATH_MAX];
@@ -403,7 +403,7 @@ int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Conn
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    EXALT_ASSERT_RETURN(exalt_conn_valid_is(c));
+    EXALT_ASSERT_RETURN(exalt_conf_valid_is(c));
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
@@ -412,7 +412,7 @@ int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Conn
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
 
-    if(!exalt_dbus_connection_encaps(c,msg))
+    if(!exalt_dbus_conf_encaps(c,msg))
         return 0;
 
     EXALT_ASSERT_CUSTOM_RET(
@@ -425,8 +425,8 @@ int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth, Exalt_Conn
 }
 
 /**
- * @brief Get the command which will be run after a connection is applied
- * @param conn a connection
+ * @brief Get the command which will be run after a configuration is applied
+ * @param conn a configuration
  * @param eth a eth interface name
  * @return Returns the command
  */

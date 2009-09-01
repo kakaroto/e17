@@ -53,7 +53,7 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi);
  * @param udi the hal udi of the interface
  * @return Returns the state
  */
-Exalt_Connection *exalt_eth_conn_load(const char* file, const char* udi);
+Exalt_Configuration *exalt_eth_conf_load(const char* file, const char* udi);
 
 /**
  * @brief Load the driver of an wireless interface from the configuration file
@@ -69,7 +69,7 @@ char* exalt_eth_driver_load(const char* file, const char* udi);
  * @param cn the network configuration
  * @return Returns 0 if an error occurs, else 1
  */
-int exalt_conn_network_save(const char* file, Exalt_Connection *c);
+int exalt_conf_network_save(const char* file, Exalt_Configuration *c);
 
 /**
  * @brief Load a wireless network configuration
@@ -77,7 +77,7 @@ int exalt_conn_network_save(const char* file, Exalt_Connection *c);
  * @param network the network name (essid)
  * @return Returns the network configuration or null if failed
  */
-Exalt_Connection *exalt_conn_network_load(const char *file,const char *network);
+Exalt_Configuration *exalt_conf_network_load(const char *file,const char *network);
 
 #endif
 

@@ -383,16 +383,16 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_conf_apply(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     Exalt_Ethernet* eth;
-    Exalt_Connection* c;
+    Exalt_Configuration* c;
 
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
-    c = exalt_conn_new();
+    c = exalt_conf_new();
     EXALT_ASSERT_CUSTOM_RET(c!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_CONN_NEW_ERROR_ID,
@@ -407,22 +407,22 @@ DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
                 EXALT_DBUS_INTERFACE_ERROR);
             return reply);
 
-     if( connection_from_dbusmessage(c,msg,reply) )
+     if( conf_from_dbusmessage(c,msg,reply) )
          return reply;
 
-    if(!exalt_conn_valid_is(c))
+    if(!exalt_conf_valid_is(c))
     {
         dbus_args_error_append(reply,
-                EXALT_DBUS_CONNECTION_NOT_VALID_ID,
-                EXALT_DBUS_CONNECTION_NOT_VALID);
+                EXALT_DBUS_CONFIGURATION_NOT_VALID_ID,
+                EXALT_DBUS_CONFIGURATION_NOT_VALID);
         return reply;
     }
     else
     {
-        exalt_eth_conn_apply(eth, c);
-        if(exalt_conn_wireless_is(c) &&
-                exalt_conn_network_save_when_apply_is(exalt_conn_network_get(c)))
-            exalt_conn_network_save(CONF_FILE, c);
+        exalt_eth_conf_apply(eth, c);
+        if(exalt_conf_wireless_is(c) &&
+                exalt_conf_network_save_when_apply_is(exalt_conf_network_get(c)))
+            exalt_conf_network_save(CONF_FILE, c);
     }
     dbus_args_valid_append(reply);
 
@@ -447,7 +447,7 @@ DBusMessage * dbus_cb_eth_cmd_get(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
                 EXALT_DBUS_INTERFACE_ERROR);
             return reply);
 
-    cmd = exalt_conn_cmd_after_apply_get(exalt_eth_connection_get(eth));
+    cmd = exalt_conf_cmd_after_apply_get(exalt_eth_configuration_get(eth));
 
     if(!cmd)
     {
@@ -505,7 +505,7 @@ DBusMessage * dbus_cb_eth_cmd_set(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
         return reply;
         );
 
-    exalt_conn_cmd_after_apply_set(exalt_eth_connection_get(eth),cmd);
+    exalt_conf_cmd_after_apply_set(exalt_eth_configuration_get(eth),cmd);
     exalt_eth_save(CONF_FILE, eth);
 
     dbus_args_valid_append(reply);

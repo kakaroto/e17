@@ -52,7 +52,7 @@ struct Exalt_Ethernet
     char* udi;
     int ifindex;
 
-    Exalt_Connection *connection;
+    Exalt_Configuration *configuration;
     Exalt_Wireless* wireless; //if null, the interface is not wireless
 
     short connected;
@@ -150,8 +150,8 @@ void exalt_eth_free(void *data)
     EXALT_FREE(eth->_save_ip);
     EXALT_FREE(eth->_save_netmask);
     EXALT_FREE(eth->_save_gateway);
-    if(eth->connection)
-        exalt_conn_free(&(eth->connection));
+    if(eth->configuration)
+        exalt_conf_free(&(eth->configuration));
     if(exalt_eth_wireless_is(eth))
         exalt_wireless_free(&(eth->wireless));
     EXALT_FREE(eth);
@@ -293,7 +293,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     EXALT_GET(device,const char*)
     EXALT_GET(udi,const char*)
     EXALT_GET(ifindex,int)
-    EXALT_GET(connection,Exalt_Connection*)
+    EXALT_GET(configuration,Exalt_Configuration*)
     EXALT_GET(wireless,Exalt_Wireless*)
     EXALT_IS(connected,short)
 
@@ -326,14 +326,14 @@ short exalt_eth_link_is(Exalt_Ethernet* eth)
     return edata.data ? 1 : 0;
 }
 
-short exalt_eth_connection_set(Exalt_Ethernet* eth, Exalt_Connection* c)
+short exalt_eth_configuration_set(Exalt_Ethernet* eth, Exalt_Configuration* c)
 {
     EXALT_ASSERT_RETURN(eth!=NULL);
     EXALT_ASSERT_RETURN(c!=NULL);
 
-    if(eth->connection && eth->connection != c)
-        exalt_conn_free(&(eth->connection));
-    eth->connection = c;
+    if(eth->configuration && eth->configuration != c)
+        exalt_conf_free(&(eth->configuration));
+    eth->configuration = c;
     return 1;
 }
 
@@ -498,11 +498,11 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
 
 int exalt_eth_dhcp_is(Exalt_Ethernet* eth)
 {
-    Exalt_Connection *c;
+    Exalt_Configuration *c;
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    if( (c=exalt_eth_connection_get(eth)))
-        return exalt_conn_mode_get(c) == EXALT_DHCP;
+    if( (c=exalt_eth_configuration_get(eth)))
+        return exalt_conf_mode_get(c) == EXALT_DHCP;
     else
         return -1;
 }
@@ -556,22 +556,22 @@ int exalt_eth_cb_set(Exalt_Eth_Cb fct, void * user_data)
 
 
 
-int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
+int exalt_eth_conf_apply(Exalt_Ethernet* eth, Exalt_Configuration *c)
 {
     int res;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
-    //if the connection is not valid, we send the information as the configuration is done
+    //if the configuration is not valid, we send the information as the configuration is done
     //else an application will wait a very long time the end of the configuration
     //(_exalt_apply_timer())
-    EXALT_ASSERT_CUSTOM_RET(exalt_conn_valid_is(c),
+    EXALT_ASSERT_CUSTOM_RET(exalt_conf_valid_is(c),
             eth->apply_pid = -1; _exalt_apply_timer(eth));
 
     //apply start
     if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONN_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONF_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
 
-    exalt_eth_connection_set(eth,c);
+    exalt_eth_configuration_set(eth,c);
 
     _exalt_eth_dhcp_daemon_kill(eth);
 
@@ -584,12 +584,12 @@ int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection *c)
     if(eth->apply_pid == 0)
     {
         if(exalt_eth_wireless_is(eth))
-            exalt_wireless_conn_apply(exalt_eth_wireless_get(eth));
+            exalt_wireless_conf_apply(exalt_eth_wireless_get(eth));
 
         //remove the old gateway
         exalt_eth_gateway_delete(eth);
 
-        if(exalt_conn_mode_get(c) == EXALT_DHCP)
+        if(exalt_conf_mode_get(c) == EXALT_DHCP)
             res = _exalt_eth_apply_dhcp(eth);
         else
             res = _exalt_eth_apply_static(eth);
@@ -1116,8 +1116,8 @@ int _exalt_apply_timer(void *data)
     }
 
 
-    Exalt_Connection* c = exalt_eth_connection_get(eth);
-    const char *cmd = exalt_conn_cmd_after_apply_get(c);
+    Exalt_Configuration* c = exalt_eth_configuration_get(eth);
+    const char *cmd = exalt_conf_cmd_after_apply_get(c);
     if(cmd && strcmp(cmd,"")!=0)
     {
         Ecore_Exe * exe;
@@ -1133,7 +1133,7 @@ int _exalt_apply_timer(void *data)
 
     //apply done
     if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONN_APPLY_DONE,exalt_eth_interfaces.eth_cb_user_data);
+        exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONF_APPLY_DONE,exalt_eth_interfaces.eth_cb_user_data);
 
     return 0;
 }
@@ -1148,35 +1148,35 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
     struct rtentry rt;
-    Exalt_Connection *c;
+    Exalt_Configuration *c;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
-    c = exalt_eth_connection_get(eth);
+    c = exalt_eth_configuration_get(eth);
     EXALT_ASSERT_RETURN(c!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
     //apply the ip
-    printf("APPLY IP: %s\n",exalt_conn_ip_get(c));
-    sin.sin_addr.s_addr = inet_addr (exalt_conn_ip_get(c));
+    printf("APPLY IP: %s\n",exalt_conf_ip_get(c));
+    sin.sin_addr.s_addr = inet_addr (exalt_conf_ip_get(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
     if( !exalt_ioctl(&ifr, SIOCSIFADDR) )
         return -1;
 
     //apply the netmask
-    sin.sin_addr.s_addr = inet_addr (exalt_conn_netmask_get(c));
+    sin.sin_addr.s_addr = inet_addr (exalt_conf_netmask_get(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
     if( !exalt_ioctl(&ifr, SIOCSIFNETMASK ) )
         return -1;
 
 
-    if(!exalt_conn_gateway_get(c))
+    if(!exalt_conf_gateway_get(c))
         return 1;
 
     //apply the new default gateway
     memset((char *) &rt, 0, sizeof(struct rtentry));
     rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
-    sin.sin_addr.s_addr = inet_addr (exalt_conn_gateway_get(c));
+    sin.sin_addr.s_addr = inet_addr (exalt_conf_gateway_get(c));
     rt.rt_gateway = *(struct sockaddr *) &sin;
     sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
     rt.rt_dst = *(struct sockaddr *) &sin;

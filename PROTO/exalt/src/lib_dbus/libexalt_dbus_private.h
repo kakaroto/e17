@@ -92,7 +92,7 @@ struct _exalt_dbus_response
 
     Eina_List* l;
 
-    Exalt_Connection *c;
+    Exalt_Configuration *c;
     char* iface;
     char* address;
     char* string;
@@ -102,7 +102,7 @@ struct _exalt_dbus_response
 
 int exalt_dbus_msg_id_next(Exalt_DBus_Conn* conn);
 
-int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg);
+int exalt_dbus_conf_encaps(Exalt_Configuration* c, DBusMessage *msg);
 
 const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
 Eina_List* exalt_dbus_response_strings(DBusMessage *msg, int pos);

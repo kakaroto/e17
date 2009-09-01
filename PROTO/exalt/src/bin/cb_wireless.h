@@ -22,7 +22,6 @@
 #include "daemon.h"
 
 DBusMessage * dbus_cb_wireless_list_get(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wireless_network_configuration_get(E_DBus_Object *obj, DBusMessage *msg);
 
 DBusMessage * dbus_cb_wireless_essid_get(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_wireless_disconnect(E_DBus_Object *obj, DBusMessage *msg);

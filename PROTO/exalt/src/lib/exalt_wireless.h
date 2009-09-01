@@ -22,7 +22,7 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 #include <Ecore.h>
 #include <Eina.h>
 #include <stdio.h>
-#include "exalt_connection_network.h"
+#include "exalt_configuration_network.h"
 
 /**
  * @brief create a new Exalt_Wireless
@@ -111,7 +111,7 @@ Exalt_Wireless_Network* exalt_wireless_network_get_byessid(Exalt_Wireless* w,con
  * @param w the interface
  * @return Return 1 if the configuration is apply, else 0
  */
-int exalt_wireless_conn_apply(Exalt_Wireless *w);
+int exalt_wireless_conf_apply(Exalt_Wireless *w);
 /**
  * @brief Print all informations about the interface in stdout
  * @param w the Exalt_Wireless

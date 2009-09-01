@@ -229,9 +229,9 @@ void notify_cb(char* eth, Exalt_Enum_Action action, void* user_data __UNUSED__)
         case EXALT_IFACE_ACTION_GATEWAY_NEW:
             exalt_dbus_eth_gateway_get(conn,eth);
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONF_APPLY_START:
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONF_APPLY_DONE:
             break;
         default: ;
     }

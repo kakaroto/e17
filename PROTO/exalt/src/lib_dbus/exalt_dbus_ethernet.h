@@ -26,7 +26,7 @@
 
 /**
  * @defgroup Ethernet_interface
- * @brief Functions about an ethernet interface (get ip address, apply a connection ...)
+ * @brief Functions about an ethernet interface (get ip address, apply a configuration ...)
  * @ingroup Exalt_DBus
  * @{
  */
@@ -45,7 +45,7 @@ int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* eth);
 int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* eth);
 int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* eth);
 
-int exalt_dbus_eth_conn_apply(Exalt_DBus_Conn* conn, const char* eth,Exalt_Connection*c);
+int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* eth,Exalt_Configuration*c);
 
 
 int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth);

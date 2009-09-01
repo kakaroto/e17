@@ -7,7 +7,7 @@ typedef struct Exalt_Eth_Save
 {
     Exalt_Enum_State state;
     char* driver;
-    Exalt_Connection *connection;
+    Exalt_Configuration *conf;
 }Exalt_Eth_Save;
 
 Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* interface);
@@ -16,8 +16,8 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* interfa
 
 Eet_Data_Descriptor * _exalt_eth_save_edd_new();
 
-Exalt_Connection* _exalt_eet_wireless_conn_load(const char* file, const char* essid);
-int _exalt_eet_wireless_conn_save(const char* file,Exalt_Connection* c);
+Exalt_Configuration* _exalt_eet_wireless_conf_load(const char* file, const char* essid);
+int _exalt_eet_wireless_conf_save(const char* file,Exalt_Configuration* c);
 
 
 
@@ -35,7 +35,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     EXALT_ASSERT_RETURN(eth!=NULL);
 
     s.state = exalt_eth_up_is(eth);
-    s.connection = exalt_eth_connection_get(eth);
+    s.conf = exalt_eth_configuration_get(eth);
     if(exalt_eth_wireless_is(eth))
         s.driver = (char*)exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
     else
@@ -50,7 +50,7 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
     EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Enum_State st = s->state;
     EXALT_FREE(s->driver);
-    exalt_conn_free(&(s->connection));
+    exalt_conf_free(&(s->conf));
     EXALT_FREE(s);
     return st;
 }
@@ -60,34 +60,34 @@ char* exalt_eth_driver_load(const char* file, const char* udi)
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
     EXALT_ASSERT_RETURN(s!=NULL);
     char* driver = s->driver;
-    exalt_conn_free(&(s->connection));
+    exalt_conf_free(&(s->conf));
     EXALT_FREE(s);
     return driver;
 }
 
 
-Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
+Exalt_Configuration* exalt_eth_conf_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
-    Exalt_Connection *c = s->connection;
+    Exalt_Configuration *c = s->conf;
     EXALT_FREE(s->driver);
     EXALT_FREE(s);
     return c;
 }
 
 
-int exalt_conn_network_save(const char* file, Exalt_Connection *c)
+int exalt_conf_network_save(const char* file, Exalt_Configuration *c)
 {
     Eet_Data_Descriptor *edd_network, *edd;
     int res;
     Eet_File *f;
     char buf[1024];
 
-    edd_network = exalt_conn_network_edd_new();
-    edd = exalt_conn_edd_new(edd_network);
+    edd_network = exalt_conf_network_edd_new();
+    edd = exalt_conf_edd_new(edd_network);
 
-    snprintf(buf, 1024, "wireless_network_%s", exalt_conn_network_essid_get(exalt_conn_network_get(c)));
+    snprintf(buf, 1024, "wireless_network_%s", exalt_conf_network_essid_get(exalt_conf_network_get(c)));
 
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if(!f)
@@ -102,17 +102,17 @@ int exalt_conn_network_save(const char* file, Exalt_Connection *c)
     return 1;
 }
 
-Exalt_Connection *exalt_conn_network_load(const char *file,const char *network)
+Exalt_Configuration *exalt_conf_network_load(const char *file,const char *network)
 {
     Eet_Data_Descriptor *edd, *edd_network;
     char buf[1024];
     Eet_File *f;
-    Exalt_Connection *data;
+    Exalt_Configuration *data;
 
     snprintf(buf, 1024, "wireless_network_%s", network);
 
-    edd_network = exalt_conn_network_edd_new();
-    edd = exalt_conn_edd_new(edd_network);
+    edd_network = exalt_conf_network_edd_new();
+    edd = exalt_conf_edd_new(edd_network);
 
     f = eet_open(file, EET_FILE_MODE_READ);
     EXALT_ASSERT_RETURN(f!=NULL);
@@ -142,13 +142,13 @@ Exalt_Connection *exalt_conn_network_load(const char *file,const char *network)
 Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *data = NULL;
-    Eet_Data_Descriptor *edd, *edd_conn, *edd_network;
+    Eet_Data_Descriptor *edd, *edd_conf, *edd_network;
     Eet_File *f;
 
-    edd_network = exalt_conn_network_edd_new();
+    edd_network = exalt_conf_network_edd_new();
 
-    edd_conn = exalt_conn_edd_new(edd_network);
-    edd = _exalt_eth_save_edd_new(edd_conn);
+    edd_conf = exalt_conf_edd_new(edd_network);
+    edd = _exalt_eth_save_edd_new(edd_conf);
 
     f = eet_open(file, EET_FILE_MODE_READ);
     EXALT_ASSERT_RETURN(f!=NULL);
@@ -158,7 +158,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
     eet_close(f);
     eet_data_descriptor_free(edd);
     eet_data_descriptor_free(edd_network);
-    eet_data_descriptor_free(edd_conn);
+    eet_data_descriptor_free(edd_conf);
     return data;
 }
 
@@ -172,13 +172,13 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
 {
     int res;
-    Eet_Data_Descriptor *edd, *edd_conn, *edd_network;
+    Eet_Data_Descriptor *edd, *edd_conf, *edd_network;
     Eet_File *f;
 
-    edd_network = exalt_conn_network_edd_new();
+    edd_network = exalt_conf_network_edd_new();
 
-    edd_conn = exalt_conn_edd_new(edd_network);
-    edd = _exalt_eth_save_edd_new(edd_conn);
+    edd_conf = exalt_conf_edd_new(edd_network);
+    edd = _exalt_eth_save_edd_new(edd_conf);
 
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if(!f)
@@ -189,7 +189,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
     eet_close(f);
     eet_data_descriptor_free(edd);
     eet_data_descriptor_free(edd_network);
-    eet_data_descriptor_free(edd_conn);
+    eet_data_descriptor_free(edd_conf);
     return res;
 }
 
@@ -197,7 +197,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
  * @brief Create an eet descriptor for the structure Exalt_Eth_Save
  * @return Returns the descriptor
  */
-Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conn)
+Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conf)
 {
     Eet_Data_Descriptor *edd;
 
@@ -213,7 +213,7 @@ Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conn)
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "up", state, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "driver", driver, EET_T_STRING);
 
-    EET_DATA_DESCRIPTOR_ADD_SUB(edd, Exalt_Eth_Save, "connection", connection, edd_conn);
+    EET_DATA_DESCRIPTOR_ADD_SUB(edd, Exalt_Eth_Save, "configuration", conf, edd_conf);
 
     return edd;
 }

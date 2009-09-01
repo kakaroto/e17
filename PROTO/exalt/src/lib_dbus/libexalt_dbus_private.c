@@ -26,47 +26,47 @@ int exalt_dbus_msg_id_next(Exalt_DBus_Conn* conn)
     return id;
 }
 
-int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
+int exalt_dbus_conf_encaps(Exalt_Configuration* c, DBusMessage *msg)
 {
     const char* s;
     int i;
     DBusMessageIter args;
 
     dbus_message_iter_init_append(msg, &args);
-    //add the connection
-    i=exalt_conn_mode_get(c);
+    //add the conf
+    i=exalt_conf_mode_get(c);
     EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
             dbus_message_unref(msg); return 0);
 
-    if(exalt_conn_mode_get(c)==EXALT_STATIC)
+    if(exalt_conf_mode_get(c)==EXALT_STATIC)
     {
-        s = exalt_conn_ip_get(c);
+        s = exalt_conf_ip_get(c);
         if(!s)
             s="";
         EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
                 dbus_message_unref(msg); return 0);
 
 
-        s = exalt_conn_netmask_get(c);
+        s = exalt_conf_netmask_get(c);
         if(!s)
             s="";
         EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
                 dbus_message_unref(msg); return 0);
 
-        s = exalt_conn_gateway_get(c);
+        s = exalt_conf_gateway_get(c);
         if(!s)
             s="";
         EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
                 dbus_message_unref(msg); return 0);
     }
 
-    i=exalt_conn_wireless_is(c);
+    i=exalt_conf_wireless_is(c);
     EXALT_ASSERT_CUSTOM_RET(
             dbus_message_iter_append_basic(&args,
                 DBUS_TYPE_INT32, &i),
             dbus_message_unref(msg); return 0);
 
-    const char* cmd = exalt_conn_cmd_after_apply_get(c);
+    const char* cmd = exalt_conf_cmd_after_apply_get(c);
     if(!cmd)
         cmd="";
     EXALT_ASSERT_CUSTOM_RET(
@@ -75,16 +75,16 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
             dbus_message_unref(msg); return 0);
 
 
-    if(exalt_conn_wireless_is(c))
+    if(exalt_conf_wireless_is(c))
     {
         //add the network information
         int integer;
         const char *string;
-        Exalt_Connection_Network *n;
+        Exalt_Configuration_Network *n;
 
-        n = exalt_conn_network_get(c);
+        n = exalt_conf_network_get(c);
 
-        string = exalt_conn_network_essid_get(n);
+        string = exalt_conf_network_essid_get(n);
         if(!string)
             string="";
         EXALT_ASSERT_CUSTOM_RET(
@@ -92,7 +92,7 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
                     DBUS_TYPE_STRING, &string),
                 dbus_message_unref(msg); return 0);
 
-        integer = exalt_conn_network_encryption_is(n);
+        integer = exalt_conf_network_encryption_is(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
@@ -100,14 +100,14 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
                 dbus_message_unref(msg);return 0);
 
 
-        integer = exalt_conn_network_mode_get(n);
+        integer = exalt_conf_network_mode_get(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        string = exalt_conn_network_login_get(n);
+        string = exalt_conf_network_login_get(n);
         if(!string)
             string="";
         EXALT_ASSERT_CUSTOM_RET(
@@ -115,7 +115,7 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
                     DBUS_TYPE_STRING, &string),
                 dbus_message_unref(msg); return 0);
 
-        string = exalt_conn_network_key_get(n);
+        string = exalt_conf_network_key_get(n);
         if(!string)
             string="";
         EXALT_ASSERT_CUSTOM_RET(
@@ -124,56 +124,63 @@ int exalt_dbus_connection_encaps(Exalt_Connection* c, DBusMessage *msg)
                 dbus_message_unref(msg); return 0);
 
 
-        integer = exalt_conn_network_wep_is(n);
+        integer = exalt_conf_network_wep_is(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_wep_hexa_is(n);
+        integer = exalt_conf_network_wep_hexa_is(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_wpa_is(n);
+        integer = exalt_conf_network_wpa_is(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_wpa_type_get(n);
+        integer = exalt_conf_network_wpa_type_get(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_group_cypher_get(n);
+        integer = exalt_conf_network_group_cypher_get(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_pairwise_cypher_get(n);
+        integer = exalt_conf_network_pairwise_cypher_get(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_auth_suites_get(n);
+        integer = exalt_conf_network_auth_suites_get(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,
                     &integer),
                 dbus_message_unref(msg);return 0);
 
-        integer = exalt_conn_network_save_when_apply_is(n);
+        integer = exalt_conf_network_favoris_is(n);
+        EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_append_basic(&args,
+                    DBUS_TYPE_INT32,
+                    &integer),
+                dbus_message_unref(msg);return 0);
+
+        integer = exalt_conf_network_save_when_apply_is(n);
         EXALT_ASSERT_CUSTOM_RET(
                 dbus_message_iter_append_basic(&args,
                     DBUS_TYPE_INT32,

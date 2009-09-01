@@ -415,26 +415,26 @@ void wired_cb_apply(void *data __UNUSED__, Evas_Object* obj __UNUSED__,
 {
     Wired *wired = data;
 
-    Exalt_Connection* c = exalt_conn_new();
+    Exalt_Configuration* c = exalt_conf_new();
 
-    exalt_conn_wireless_set(c,0);
+    exalt_conf_wireless_set(c,0);
     if(elm_radio_value_get(wired->radio_dhcp) != 0)
     {
-        exalt_conn_mode_set(c,EXALT_STATIC);
-        exalt_conn_ip_set(c,
+        exalt_conf_mode_set(c,EXALT_STATIC);
+        exalt_conf_ip_set(c,
                 elm_entry_entry_get(wired->entry_ip));
-        exalt_conn_netmask_set(c,
+        exalt_conf_netmask_set(c,
                 elm_entry_entry_get(wired->entry_netmask));
-        exalt_conn_gateway_set(c,
+        exalt_conf_gateway_set(c,
                 elm_entry_entry_get(wired->entry_gateway));
     }
     else
-        exalt_conn_mode_set(c,EXALT_DHCP);
-    exalt_conn_cmd_after_apply_set(c,
+        exalt_conf_mode_set(c,EXALT_DHCP);
+    exalt_conf_cmd_after_apply_set(c,
             elm_entry_entry_get(wired->entry_cmd));
 
-    exalt_dbus_eth_conn_apply(conn,wired->iface->iface,c);
-    exalt_conn_free(&c);
+    exalt_dbus_eth_conf_apply(conn,wired->iface->iface,c);
+    exalt_conf_free(&c);
 }
 
 void wired_cb_activate(void *data,

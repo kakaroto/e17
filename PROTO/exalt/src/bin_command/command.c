@@ -74,10 +74,10 @@ void notify(char* eth, Exalt_Enum_Action action, void* user_data)
             exalt_dbus_eth_gateway_get(user_data,eth);
             break;
 
-        case EXALT_IFACE_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONF_APPLY_START:
             NOTIF_PRINT("A new configuration is apply on the interface\n");
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONF_APPLY_DONE:
             NOTIF_PRINT("The new configuration is applied on the interface\n");
             break;
         default: ;

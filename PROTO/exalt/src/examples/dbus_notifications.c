@@ -46,10 +46,10 @@ void notify_cb(char* iface, Exalt_Enum_Action action, void* data)
         case EXALT_IFACE_ACTION_GATEWAY_NEW:
             printf("The interface %s has a new default gateway address\n",iface);
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_START:
+        case EXALT_IFACE_ACTION_CONF_APPLY_START:
             printf("The interface %s start to apply a new configuration\n",iface);
             break;
-        case EXALT_IFACE_ACTION_CONN_APPLY_DONE:
+        case EXALT_IFACE_ACTION_CONF_APPLY_DONE:
             printf("The new configuration of the interface %s is applied\n",iface);
             break;
         case EXALT_IFACE_ACTION_DISCONNECTED:

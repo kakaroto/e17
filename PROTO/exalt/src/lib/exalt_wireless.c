@@ -193,28 +193,28 @@ int exalt_wireless_radiobutton_on_is(Exalt_Wireless *w)
 
 
 
-int exalt_wireless_conn_apply(Exalt_Wireless *w)
+int exalt_wireless_conf_apply(Exalt_Wireless *w)
 {
     struct wpa_ctrl *ctrl_conn;
     Exalt_Ethernet* eth;
-    Exalt_Connection* c;
+    Exalt_Configuration* c;
     char buf_res[1024];
     char buf_cmd[1024];
     size_t buf_len;
-    Exalt_Connection_Network *n;
+    Exalt_Configuration_Network *n;
 
     EXALT_ASSERT_RETURN(w!=NULL);
     eth = exalt_wireless_eth_get(w);
 
-    c = exalt_eth_connection_get(eth);
-    EXALT_ASSERT_RETURN(exalt_conn_valid_is(c));
-    EXALT_ASSERT_RETURN(exalt_conn_wireless_is(c));
+    c = exalt_eth_configuration_get(eth);
+    EXALT_ASSERT_RETURN(exalt_conf_valid_is(c));
+    EXALT_ASSERT_RETURN(exalt_conf_wireless_is(c));
 
-    n = exalt_conn_network_get(c);
+    n = exalt_conf_network_get(c);
 
-    //exalt_conn_network_print(n);
+    //exalt_conf_network_print(n);
 
-    //open a connection with wpa_supplicant
+    //open a confection with wpa_supplicant
     //create a new network configuration
     //set the essid
     ctrl_conn = exalt_wpa_open_connection(exalt_eth_wireless_get(eth));
@@ -228,12 +228,12 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"SET_NETWORK %d ssid \"%s\"",
             network_id,
-            exalt_conn_network_essid_get(n));
+            exalt_conf_network_essid_get(n));
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
 
 
-    if(!exalt_conn_network_encryption_is(n))
+    if(!exalt_conf_network_encryption_is(n))
     {
         //printf("APPLY NO ENCRYPTION \n");
 
@@ -242,7 +242,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
                 network_id);
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
     }
-    else if(exalt_conn_network_wep_is(n))
+    else if(exalt_conf_network_wep_is(n))
     {
         //printf("APPLY WEP encryption\n");
 
@@ -252,14 +252,14 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
         buf_len=sizeof(buf_res)-1;
-        if(exalt_conn_network_wep_hexa_is(n))
+        if(exalt_conf_network_wep_hexa_is(n))
             snprintf(buf_cmd,1024,"SET_NETWORK %d wep_key0 %s",
                     network_id,
-                    exalt_conn_network_key_get(n));
+                    exalt_conf_network_key_get(n));
         else
             snprintf(buf_cmd,1024,"SET_NETWORK %d wep_key0 \"%s\"",
                     network_id,
-                    exalt_conn_network_key_get(n));
+                    exalt_conf_network_key_get(n));
 
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
@@ -272,7 +272,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     {
         //
         char * s = NULL;
-        switch(exalt_conn_network_wpa_type_get(n))
+        switch(exalt_conf_network_wpa_type_get(n))
         {
             case WPA_TYPE_WPA: s = "WPA"; break;
             case WPA_TYPE_WPA2: s = "WPA2"; break;
@@ -287,11 +287,11 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         //
 
         //
-        if(exalt_conn_network_mode_get(n) == MODE_IBSS)
+        if(exalt_conf_network_mode_get(n) == MODE_IBSS)
             s = "WPA-NONE";
         else
         {
-            switch(exalt_conn_network_auth_suites_get(n))
+            switch(exalt_conf_network_auth_suites_get(n))
             {
                 case AUTH_SUITES_PSK: s = "WPA-PSK"; break;
                 case AUTH_SUITES_EAP: s = "WPA-EAP"; break;
@@ -308,11 +308,11 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         //
 
         //
-        if(exalt_conn_network_mode_get(n) == MODE_IBSS)
+        if(exalt_conf_network_mode_get(n) == MODE_IBSS)
             s = "NONE";
         else
         {
-            switch(exalt_conn_network_pairwise_cypher_get(n))
+            switch(exalt_conf_network_pairwise_cypher_get(n))
             {
                 case CYPHER_NAME_TKIP: s = "TKIP"; break;
                 case CYPHER_NAME_CCMP: s = "CCMP"; break;
@@ -329,7 +329,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         //
 
         //
-        switch(exalt_conn_network_group_cypher_get(n))
+        switch(exalt_conf_network_group_cypher_get(n))
         {
             case CYPHER_NAME_TKIP: s = "TKIP"; break;
             case CYPHER_NAME_CCMP: s = "CCMP"; break;
@@ -346,7 +346,7 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"SET_NETWORK %d psk \"%s\"",
                 network_id,
-                exalt_conn_network_key_get(n));
+                exalt_conf_network_key_get(n));
         exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
     }
 
@@ -358,10 +358,10 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     buf_len=sizeof(buf_res)-1;
     snprintf(buf_cmd,1024,"SET_NETWORK %d mode %d",
             network_id,
-            exalt_conn_network_mode_get(n));
+            exalt_conf_network_mode_get(n));
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
-    if(exalt_conn_network_mode_get(n) == MODE_IBSS)
+    if(exalt_conf_network_mode_get(n) == MODE_IBSS)
     {
         buf_len=sizeof(buf_res)-1;
         snprintf(buf_cmd,1024,"AP_SCAN 2");
@@ -383,12 +383,12 @@ int exalt_wireless_conn_apply(Exalt_Wireless *w)
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
     buf_len=sizeof(buf_res)-1;
-    snprintf(buf_cmd,1024,"RECONNECT");
+    snprintf(buf_cmd,1024,"REconfECT");
     exalt_wpa_ctrl_command(ctrl_conn,buf_cmd,buf_res,buf_len);
 
 
 
-    //close the connection
+    //close the confection
     wpa_ctrl_close(ctrl_conn);
     ctrl_conn=NULL;
 

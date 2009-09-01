@@ -24,7 +24,7 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include "libexalt.h"
 #include "exalt_wireless.h"
 #include "exalt_wireless_network.h"
-#include "exalt_connection.h"
+#include "exalt_configuration.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
 #include <E_Hal.h>
@@ -79,10 +79,10 @@ typedef enum Exalt_Enum_Action
     EXALT_IFACE_ACTION_GATEWAY_NEW,
 
 
-    /** when we start applying a connection */
-    EXALT_IFACE_ACTION_CONN_APPLY_START,
-    /** when the connection is applied */
-    EXALT_IFACE_ACTION_CONN_APPLY_DONE,
+    /** when we start applying a configuration */
+    EXALT_IFACE_ACTION_CONF_APPLY_START,
+    /** when the configuration is applied */
+    EXALT_IFACE_ACTION_CONF_APPLY_DONE,
 
     /** when we configure if we want wait (or not) that the interface is init during the boot process (only used by the daemon exaltd) */
     EXALTD_IFACE_WAITINGBOOT_CHANGE,
@@ -285,33 +285,33 @@ int exalt_eth_cb_set(Exalt_Eth_Cb fct, void* user_data);
 int exalt_eth_scan_cb_set(Exalt_Wifi_Scan_Cb fct, void* user_data);
 
 /**
- * @brief apply the connection for the interface "eth"
+ * @brief apply the configuration for the interface "eth"
  * @param eth the interface
- * @param c the connection
+ * @param c the configuration
  * @return Returns 1 if the configuration is apply, else 0
  */
-int exalt_eth_conn_apply(Exalt_Ethernet* eth, Exalt_Connection* c);
+int exalt_eth_conf_apply(Exalt_Ethernet* eth, Exalt_Configuration* c);
 /**
- * @brief get the connection of the interface "eth"
+ * @brief get the configuration of the interface "eth"
  * @param eth the interface
- * @return Returns the connection
+ * @return Returns the configuration
  */
-Exalt_Connection* exalt_eth_connection_get(Exalt_Ethernet* eth);
+Exalt_Configuration* exalt_eth_configuration_get(Exalt_Ethernet* eth);
 /**
- * @brief set the connection of the interface "eth"
+ * @brief set the configuration of the interface "eth"
  * this function doesn't apply the configuration, only set the variable
  * @param eth the interface
- * @param c the connection
+ * @param c the configuration
  * @return returns 1 if the connexion is set, else 0
  */
-short exalt_eth_connection_set(Exalt_Ethernet* eth, Exalt_Connection* c);
+short exalt_eth_configuration_set(Exalt_Ethernet* eth, Exalt_Configuration* c);
 
 
 /**
  * @brief set the time in seconds when you up the interface
- * then the daemon will use this value to know if it will apply or not the connection when it will get the notification from the kernel
+ * then the daemon will use this value to know if it will apply or not the configuration when it will get the notification from the kernel
  * the daemon use a timeout of x secondes
- * if(current_time - value > x) apply a connection
+ * if(current_time - value > x) apply a configuration
  * @param eth the interface
  * @param the value in seconds
  */
